@@ -1,0 +1,10 @@
+﻿.env
+.venv/
+
+scraper/udacity_session/
+scraper/*.json
+scraper/*.html
+
+udacity_session/
+*.json
+*.html
