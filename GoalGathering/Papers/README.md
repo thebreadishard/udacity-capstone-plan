@@ -2,12 +2,15 @@
 
 Papers downloaded for the project bibliography (`Relevant_Scientific_Papers.md`).
 
-## ✅ Available (13 papers)
+## ✅ Available (16 papers)
 
 | File | Paper |
 |------|-------|
+| `01_Ramakrishnan2014_QM9.pdf` | Ramakrishnan et al. (2014) — QM9 dataset. DOI:10.1038/sdata.2014.22 |
 | `02_Schutt2017_SchNet.pdf` | Schütt et al. (2017) — SchNet continuous-filter CNN. arXiv:1706.08566 |
 | `03_Gastegger2017_MLMD_IR.pdf` | Gastegger et al. (2017) — Machine Learning MD for IR spectra. arXiv:1705.05907 |
+| `04_Kaser2021_TransferLearning_CCSDT.pdf` | Käser et al. (2021) — Transfer learning to CCSD(T) anharmonic frequencies. arXiv:2103.05491 |
+| `05_Dral2025_ANI-1ccx-gelu.pdf` | Dral et al. (2025) — ANI-1ccx-gelu universal interatomic potential. ChemRxiv:2024-c8s16 / DOI:10.1021/acs.jpclett.4c03031 |
 | `06_NequIP_Equivariant.pdf` | Batzner et al. (2022) — E(3)-equivariant NNPs. arXiv:2101.03164 |
 | `07_NewtonNet.pdf` | Haghighatlari et al. (2021) — NewtonNet. arXiv:2108.02913 |
 | `08_ApJ2020_HighThroughputPAH.pdf` | Kovács et al. (2020) — High-throughput PAH spectra. DOI:10.3847/1538-4357/abb5b6 |
@@ -20,10 +23,10 @@ Papers downloaded for the project bibliography (`Relevant_Scientific_Papers.md`)
 | `15a_AA2026_JWST_Study1.pdf` | A&A (2026) — JWST application (aa59248-26) |
 | `15b_AA2026_JWST_Study2.pdf` | A&A (2026) — JWST application (aa59999-26) |
 
-## ❌ Still Missing (3 papers — paywalled)
+## Source notes
 
-| Paper | Where to Get |
-|-------|-------------|
-| Ramakrishnan et al. (2014) — QM9 Dataset | [Nature Scientific Data](https://www.nature.com/articles/sdata201422) — open access, try institutional login |
-| Käser et al. (2021) — Transfer Learning CCSD(T) | [ACS JCTC](https://pubs.acs.org/doi/10.1021/acs.jctc.1c00249) |
-| Dral et al. (2025) — ANI-1ccx-gelu | [ACS JPCL](https://pubs.acs.org/doi/10.1021/acs.jpcl.4c02899) / [ChemRxiv preprint](https://chemrxiv.org/engage/chemrxiv/article-details/66ff6b5751558a15ef1283cf) |
+| File | Source used |
+|------|-------------|
+| `01_Ramakrishnan2014_QM9.pdf` | [Nature Scientific Data PDF](https://www.nature.com/articles/sdata201422.pdf) (open access) |
+| `04_Kaser2021_TransferLearning_CCSDT.pdf` | [arXiv preprint](https://arxiv.org/pdf/2103.05491) (published in *JCTC* 2021) |
+| `05_Dral2025_ANI-1ccx-gelu.pdf` | [ChemRxiv preprint](https://chemrxiv.org/engage/chemrxiv/article-details/6703551351558a15ef5007a9) (published in *JPCL* 2025) |
