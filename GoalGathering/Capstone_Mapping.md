@@ -1,7 +1,7 @@
 # Capstone Mapping — Working Document
 
-**Status:** DRAFT — Passes 1–5 complete (extraction + gap analysis + dataset mapping + non-negotiables validation). Professor-review blocking issues 1–3 resolved in spec (2026-08-22): Workstream P1 (§4.1); implementable \(E=\mathcal{E}[\rho,R]\) (Distilled Plan §6); data-generation method + cost pilot + shrink ladder (Distilled Plan §5.1). Pass 6 (module-by-module sign-off) is the only remaining mapping step before this is treated as final. Issues 4–6 of the professor review are still open.
-**Purpose:** Single source of truth for dividing the FNO-NCA research plan ([Distilled_Project_Plan_and_Quality_Checks.md](Distilled_Project_Plan_and_Quality_Checks.md), [Overarching_Goal.md](Overarching_Goal.md)) across Udacity capstone modules 02–08 ([../CapstoneProjects](../CapstoneProjects)). Phase 1 of the Distilled Plan is **not** a Udacity module; it is owned by Workstream P1 (§4.1).
+**Status:** DRAFT — Passes 1–5 complete (extraction + gap analysis + dataset mapping + non-negotiables validation). Professor-review blocking issues 1–4 resolved in spec (2026-08-22): Workstream P1 (§4.1); implementable \(E=\mathcal{E}[\rho,R]\) (Distilled Plan §6); data-generation method + cost pilot + shrink ladder (Distilled Plan §5.1); prime directive reconciled with Distilled Plan §9 ([Overarching_Goal.md](Overarching_Goal.md)). Horizon PAH work is post-master’s Projects 10–12, not Modules 02–09. Pass 6 (module-by-module sign-off) is the only remaining mapping step before this is treated as final. Issues 5–6 of the professor review are still open.
+**Purpose:** Single source of truth for dividing the FNO-NCA research plan ([Distilled_Project_Plan_and_Quality_Checks.md](Distilled_Project_Plan_and_Quality_Checks.md), [Overarching_Goal.md](Overarching_Goal.md)) across Udacity capstone modules 02–08 ([../CapstoneProjects](../CapstoneProjects)). Phase 1 of the Distilled Plan is **not** a Udacity module; it is owned by Workstream P1 (§4.1). Projects 10–12 are **not** Udacity modules.
 
 ---
 
@@ -12,7 +12,7 @@ When a module's rubric has no clean 1:1 match with a research-plan phase, fill t
 - **(A) Natural fit** — the module's required technique/deliverable is already produced by a research phase as-is.
 - **(B) Bridge / invented sub-project** — a new, genuinely useful sub-study designed to satisfy the rubric's technique requirement *and* materially advance the pipeline (not busywork).
 - **(C) Check / QA project** — a project whose deliverable is to verify, stress-test, or automate quality-assurance of a *previous* phase's output (e.g., automating the Phase 0 numerical-verification protocol, or the §8 quality checklist).
-- **(D) Forward-looking / value-add project** — extends toward the ultimate goal (arbitrary-size aromatic molecule → chemically precise IR spectrum) even if not strictly required by the current phase, e.g. transferability/generalization studies.
+- **(D) Forward-looking / value-add project** — extends toward the horizon (chemically precise **labels**; later, PAH **band envelopes**) even if not strictly required by the current phase, e.g. transferability/generalization studies. “Chemically precise IR spectrum of arbitrarily large PAHs” is Projects 10–12, not a Module 02–08 category-D excuse.
 
 Every gap-fill choice must be tagged with its category (A/B/C/D) and a one-line justification when we get to the mapping pass, so we can audit later whether we drifted into "busywork to satisfy a rubric" vs. genuine project value.
 
@@ -105,7 +105,7 @@ For each module, the assigned category (A/B/C/D), the concrete proposal, why it 
 ### Module 08 — Industry-Integrated AI Systems Synthesis
 **Category: (A) natural fit** (by design — depends on 04–07 being built first).
 
-- **Proposal:** integrate ≥3 of {04 baseline model, 05 benzene FNO-NCA model, 06 generative augmentation model, 07 QA agent} under an industry frame tying back to the project bibliography's own culminating application ([Relevant_Scientific_Papers.md](Relevant_Scientific_Papers.md) item 15, JWST/astrochemical PAH detection): "AI-accelerated infrared spectral identification for atmospheric/astrochemical sensing," where 05 is the predictive engine, 07 is the reliability/deployment-gate layer, 06 is the mechanism for extending coverage to new molecules, and 04 is the evidence justifying the field-based approach over simpler baselines. The H₂O field-PES leg of the 3-way comparison comes from Workstream P1, not from Module 04. If P1 failed its gates, 08 reports the field-vs-baseline claim as incomplete and does **not** substitute 04's non-field model for the field model (§4.1).
+- **Proposal:** integrate ≥3 of {04 baseline model, 05 benzene FNO-NCA model, 06 generative augmentation model, 07 QA agent} under an industry frame of **reliability-gated spectral emulation for small molecules**. JWST / PAH identification ([Relevant_Scientific_Papers.md](Relevant_Scientific_Papers.md) item 15) is **why anyone would care later** (Projects 10–12), not a capability Module 08 built. 05 is the predictive engine, 07 is the fail-closed gate layer, 06 is a proposal mechanism, 04 is one baseline leg. The H₂O field-PES leg of the 3-way comparison comes from Workstream P1, not from Module 04. If P1 failed its gates, 08 reports the field-vs-baseline claim as incomplete and does **not** substitute 04's non-field model for the field model (§4.1).
 - **Why it satisfies the rubric:** integrates ≥3 prior projects explicitly and intentionally, industry-specific framing, reflective paper can honestly trace how each prior artifact informed the design (because it's true, not fabricated for the assignment).
 
 ### Cross-cutting open risk (applies to Modules 04–06)
@@ -177,7 +177,7 @@ Module 07 must not assume “Phase 1 exists and passed.” It assumes “P1 prod
 
 | Requirement | Applies to | Status |
 |---|---|---|
-| Train/Validation/Test sets must be chemically precise (CCSD(T)/CBS, sub-cm⁻¹) | 04 (H₂O descriptors), **P1** (H₂O volumetric field PES), 05 (benzene) — the actual pipeline's ML data | **Compliant on energy (and default forces)** — CCSD(T)/cc-pVTZ per Distilled Plan §5.1. Density is the pinned 1-RDM recipe (default: relaxed CCSD), a documented density-level gap, not a slogan “exact CCSD(T) density.” A cheaper density proxy is **not** compliant unless the §5.1 shrink ladder fires and the Overarching Goal escape clause is invoked. P1 is ungraded infrastructure, not a fourth graded dataset. |
+| Train/Validation/Test sets must be chemically precise **labels** (CCSD(T)/cc-pVTZ per Distilled Plan §5.1). Sub-cm⁻¹ is a **spectrum** claim and is forbidden for this thesis (Distilled Plan §9; Overarching Goal §3). | 04 (H₂O descriptors), **P1** (H₂O volumetric field PES), 05 (benzene) — the actual pipeline's ML data | **Compliant on energy (and default forces)** — CCSD(T)/cc-pVTZ per Distilled Plan §5.1. Density is the pinned 1-RDM recipe (default: relaxed CCSD), a documented density-level gap, not a slogan “exact CCSD(T) density.” A cheaper density proxy is **not** compliant unless the §5.1 shrink ladder fires and the Overarching Goal escape clause is invoked. P1 is ungraded infrastructure, not a fourth graded dataset. |
 | Deviation only with "absolutely no other technical solution" + "extremely compelling, well-documented reason" | 06 (cheaper-level corpus) | **Reclassified — no deviation needed at all** (see §5.3 below), not merely an accepted exception. |
 | Small molecules (QM9/ANI-1ccx) OK for validating pipeline *mechanics* | 02 | **Compliant, with a scope caveat**: Module 02's QM9 use is EDA-only, not a mechanics test of the real pipeline code — see required disclaimer in §5.4. |
 | Leverage latest architectures, don't reinvent the wheel | 04 (KRR/GPR precedent), 05 (FNO/NCA hybrid), 06 (VAE/diffusion), 07 (standard agent/tool-use pattern) | **Compliant** — all use established architecture families, nothing bespoke-for-its-own-sake. |
@@ -195,7 +195,7 @@ Module 07 must not assume “Phase 1 exists and passed.” It assumes “P1 prod
 | NOT periodic/naive Poisson solver | 03 (Phase 0 validation), 05 | **Compliant** — Module 03's sweep explicitly tests the Hockney–Eastwood solver. |
 | NOT claiming egg-box elimination, only control | 03 | **Action item:** report wording must say "reduced/controlled as a function of σ/Δx," never "eliminated." |
 | NOT quantum computing | — | Not touched by any module; no action needed. |
-| NOT claiming chemical precision for large PAHs as core deliverable | 08 (synthesis paper) | **Action item:** any mention of scaling beyond benzene must be framed as outlook/future work only, per §9's defensible-claims list. |
+| NOT claiming chemical precision for large PAHs as core deliverable | 08 (synthesis paper) | **Action item:** any mention of scaling beyond benzene must be framed as outlook / Projects 10–12 only, per §9 and the rewritten Overarching Goal. Module 08 sells reliability-gated small-molecule emulation, not a PAH spectrometer. |
 | NOT quantum-mechanical rovibrational line-list precision | 05, 07 (if Phase 2 spectra shown), 08 | **Action item:** all spectral claims must use §9's approved wording ("band positions and relative envelopes/intensities within a stated cm⁻¹ tolerance"), never "chemically precise spectral lines." |
 | NOT naphthalene as a pass/fail milestone | 08 | **Action item:** if mentioned at all, explicitly labeled exploratory/outlook, matching the Distilled Plan's own treatment. |
 | NOT requesting supercomputer time up front | 05 | **Note, not a violation:** Module 05's benzene *campaign* is the plan's biggest compute bottleneck. Scope it for local/consumer hardware first. The Distilled Plan §5.1 10-geometry pilot is the kill switch: if local \(T_{\mathrm{campaign}}\) does not fit, take the shrink ladder (including remapping 05) rather than apply for HPC on day one. |
@@ -222,5 +222,20 @@ DFT/HF-level data appears in exactly two places — **Module 02's QM9 subset** a
 - [x] **Pass 5:** Validate draft against Overarching_Goal.md non-negotiables and Distilled Plan §4 ("what the project is NOT"). Module 04 publication risk resolved via mitigation, Module 06 precision question reclassified as compliant-by-construction (not a deviation), several report-wording action items identified (§5.2).
 - [x] **Professor review, blocking issue 1:** Phase 1 assigned to ungraded Workstream P1 (§4.1), 2026-08-22.
 - [x] **Professor review, blocking issue 2:** Distilled Plan §6 now specifies implementable \(E=\mathcal{E}[\rho,R]\); leftover \(\rho_{Im}\)/EM channels deleted; Hockney–Eastwood vs learned FNO jobs split.
-- [x] **Professor review, blocking issue 3:** Distilled Plan §5.1 is now a method (1-RDM, force recipe, counted Hessians, 10-geometry cost pilot as Phase 0 exit, shrink ladder, noise-floor force gate). Mapping 04/P1/05 datasets are “per §5.1,” not “CCSD(T) everything.” Closed as a *spec*. Closed as *science* only when the smoke-test table and 10-geometry numbers exist. Remaining review issues 4–6 are still open.
+- [x] **Professor review, blocking issue 3:** Distilled Plan §5.1 is now a method (1-RDM, force recipe, counted Hessians, 10-geometry cost pilot as Phase 0 exit, shrink ladder, noise-floor force gate). Mapping 04/P1/05 datasets are “per §5.1,” not “CCSD(T) everything.” Closed as a *spec*. Closed as *science* only when the smoke-test table and 10-geometry numbers exist.
+- [x] **Professor review, blocking issue 4:** [Overarching_Goal.md](Overarching_Goal.md) rewritten (labels vs spectra; §9 adopted in the prime directive; Module 08 product named). README and this checklist no longer say “sub-cm⁻¹” as a dataset rule. Horizon path is post-master’s Projects 10–12. Remaining review issues 5–6 are still open.
 - [ ] **Pass 6:** Module-by-module sign-off, one at a time — walk through each module's final spec (dataset, deliverables, action items from §5.2/§5.4) and get explicit go-ahead before implementation begins.
+
+---
+
+## 7. Post-master’s horizon (Projects 10–12) — not Udacity, not Pass 6
+
+These files live in [`../CapstoneProjects/`](../CapstoneProjects/) next to the scraped rubrics so the horizon is as visible as the degree. They are **not** gradeable modules. Module 08 must not claim them.
+
+| # | File | Wall | Exit (short) |
+|---|---|---|---|
+| 10 | [10_Size_Extensive_Aromatic_PES.md](../CapstoneProjects/10_Size_Extensive_Aromatic_PES.md) | Labels + size-extensivity | Gold-anchored PES transfers to the next ring; representation fork decided from the master’s field-vs-GNN test |
+| 11 | [11_Anharmonic_IR_and_Intensities.md](../CapstoneProjects/11_Anharmonic_IR_and_Intensities.md) | Nuclear motion + intensities | GVPT2-class band families + relative intensities; four-term error budget; MD+FFT is diagnostic only |
+| 12 | [12_Astrophysical_PAH_Identification.md](../CapstoneProjects/12_Astrophysical_PAH_Identification.md) | Excitation + fail-closed ID | Pre-registered match to one frozen JWST/PAHdb product; “any size” means until measured error exceeds the band tolerance |
+
+Order is mandatory: 10 then 11 then 12. A single extra project, if only one exists, is 10.
