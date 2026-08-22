@@ -81,7 +81,7 @@ For each module, the assigned category (A/B/C/D), the concrete proposal, why it 
 ### Module 05 — Deep Learning Systems
 **Category: (A) natural fit.**
 
-- **Proposal:** the actual flagship **hybrid FNO-NCA architecture on benzene (Phase 5)** — the local $3\times3\times3$ NCA update *is* a 3D-CNN-family architecture (voxel-grid convolutions). The required controlled comparison (Task 4) is **local-CNN-only vs. full hybrid FNO+CNN**, i.e., with/without the spectral Poisson layer — a real, scientifically meaningful ablation, not an arbitrary hyperparameter tweak.
+- **Proposal:** the actual flagship **hybrid FNO-NCA architecture on benzene (Phase 5)**, using the Distilled Plan §6 forward pass (energy is \(\mathcal{E}[\rho,R]\); no latent energy head). The local $3\times3\times3$ NCA update *is* a 3D-CNN-family architecture (voxel-grid convolutions). The required controlled comparison (Task 4) is **same \(\mathcal{E}\), same fixed Hockney–Eastwood \(E_{\mathrm{es}}\); encoder = local-NCA-only vs local-NCA+FNO**. The FNO is a non-local mixer in the density encoder, **not** a learned Poisson replacement.
 - **Why it satisfies the rubric:** PyTorch, explicit CNN-family architecture, genuine controlled experiment with a clearly stated "what changed / what stayed the same," own dataset (benzene, ≥5,000 configs) distinct from Module 04's H₂O set — satisfying the "not reused from ANY previous capstone project" rule.
 - **Why it's genuinely valuable:** this is the actual thesis centerpiece (§7 Phase 5) — no invention needed, just correct framing/justification of the architecture as "CNN-family" for the rubric.
 - **Risk/mitigation:** must explicitly justify the CNN framing in the report (cite the local-convolution structure) so a grader doesn't view a physics-simulation architecture as evading the CNN/RNN/Transformer requirement. Module 05 is the **benzene scale-up**, not the first time the hybrid architecture is trained: Workstream P1 is the H₂O \(32^3\) rehearsal and must start before 05 training if the engine/architecture is not yet stable (§4.1).
@@ -143,7 +143,7 @@ Modules 04–06 forbid "synthetic/AI-generated" datasets. CCSD(T)-computed confi
 | **Not a module** | No Udacity notebook, no rubric credit, never submitted as a module dataset |
 | **Owner** | The research repo (same codebase as the Phase 0 engine) |
 | **Inputs** | Phase 0 engine (must pass its numerical gates); H₂O CCSD(T)/cc-pVTZ campaign that also emits Module 04's descriptor CSV |
-| **What it trains** | Route B hybrid FNO-NCA on H₂O volumetric fields, \(32^3\), \(\ge 2000\) configs |
+| **What it trains** | Distilled Plan §6 forward pass: Route B \(E=\mathcal{E}[\rho,R]\) (fixed Hockney–Eastwood \(E_{\mathrm{es}}\) + learned \(\varepsilon_\theta[\rho]\); NCA ± FNO encoder) on H₂O volumetric fields, \(32^3\), \(\ge 2000\) configs. No latent energy head. |
 | **Deliverables** | Frozen weights; force/energy/harmonic-frequency report vs Distilled Plan §7 Phase 1 gates; config-level split manifest |
 | **Who consumes it** | Module 07 (Phases 2–3 and Go/No-Go tools); Module 05 (architecture already working before benzene scale-up); Module 08 (field leg of the 3-way comparison) |
 | **When** | After Phase 0 and the H₂O PySCF campaign; **before** Module 07. Start before Module 05 training, not after |
@@ -187,9 +187,10 @@ Module 07 must not assume “Phase 1 exists and passed.” It assumes “P1 prod
 | Constraint | Applies to | Status |
 |---|---|---|
 | NOT a GNN (no discrete atom-nodes/bond types) | 04, P1, 05 | **Compliant.** 04 uses a descriptor/kernel regressor (not a graph net); P1 and 05's grid/voxel CNN+FNO have no atom-graph structure. |
-| NOT DFT, no exceptions for pipeline data | 04, P1, 05 (the real pipeline) | **Compliant** — all CCSD(T). DFT/HF-level data appears *only* in 02 and 06, which are formally outside the pipeline's train/val/test sets (§5.3). |
-| NOT purely local CA — needs FNO/global Poisson layer | P1, 05 | **Compliant by design**, and directly demonstrated by 05's own required controlled experiment (local-only vs. +FNO). P1 uses the same hybrid. |
-| NOT density-first / Route A for forces | P1, 05 | **Action item:** P1 implementation and the Module 05 report must explicitly state Route B (energy-first, autograd forces) is used. |
+| NOT DFT, no exceptions for pipeline data | 04, P1, 05 (the real pipeline) | **Compliant** — all CCSD(T). DFT/HF-level data appears *only* in 02 and 06, which are formally outside the pipeline's train/val/test sets (§5.3). Hohenberg–Kohn *shape* \(E=\mathcal{E}[\rho]\) is the claim, not KS-DFT / library XC. |
+| NOT purely local CA — FNO is encoder-only; Poisson is fixed Hockney–Eastwood | P1, 05 | **Compliant by design.** Module 05 ablates encoder = local-NCA vs local-NCA+FNO; \(E_{\mathrm{es}}\) stays the Phase 0 kernel. |
+| NOT a multi-head regressor with auxiliary density | P1, 05 | **Compliant by spec** (Distilled Plan §6). Implementation must not add a latent \(E\) head that can ignore \(\rho\). |
+| NOT density-first / Route A for forces | P1, 05 | **Action item:** P1 implementation and the Module 05 report must explicitly state Route B: forces are \(-\partial\mathcal{E}[\rho_\theta,R]/\partial R_A\), autograd through \(\rho_\theta\). |
 | NOT trained on spectral loss | P1, 05 | **Action item:** P1 and Module 05 losses must be the multitask $L_E+L_F+L_H+L_\rho$ only; any Phase 2 MD/FFT spectrum shown (e.g., in Module 07's agent demo) must be presented as a frozen-weight, post-hoc *evaluation*, never as a training signal. |
 | NOT periodic/naive Poisson solver | 03 (Phase 0 validation), 05 | **Compliant** — Module 03's sweep explicitly tests the Hockney–Eastwood solver. |
 | NOT claiming egg-box elimination, only control | 03 | **Action item:** report wording must say "reduced/controlled as a function of σ/Δx," never "eliminated." |
@@ -218,6 +219,7 @@ DFT/HF-level data appears in exactly two places — **Module 02's QM9 subset** a
 
 - [x] **Pass 3:** Formal gap analysis session — go tension-by-tension above, decide A/B/C/D category, sketch what the bridge/check project would concretely contain.
 - [x] **Pass 4:** Draft full module→phase mapping table (one row per module 02–08), consolidating Pass 3's proposals into final form (dataset names, exact deliverable filenames, explicit dependency order since 08 depends on 04–07).
-- [x] **Pass 5:** Validate draft against Overarching_Goal.md non-negotiables and Distilled Plan §4 ("what the project is NOT"); Module 04 publication risk resolved via mitigation, Module 06 precision question reclassified as compliant-by-construction (not a deviation), several report-wording action items identified (§5.2).
+- [x] **Pass 5:** Validate draft against Overarching_Goal.md non-negotiables and Distilled Plan §4 ("what th
+- [x] **Professor review, blocking issue 2:** Distilled Plan §6 now specifies implementable \(E=\mathcal{E}[\rho,R]\); leftover \(\rho_{Im}\)/EM channels deleted; Hockney–Eastwood vs learned FNO jobs split. Remaining review issues 3–6le 04 publication risk resolved via mitigation, Module 06 precision question reclassified as compliant-by-construction (not a deviation), several report-wording action items identified (§5.2).
 - [x] **Professor review, blocking issue 1:** Phase 1 assigned to ungraded Workstream P1 (§4.1), 2026-08-22. Remaining review issues are still open.
 - [ ] **Pass 6:** Module-by-module sign-off, one at a time — walk through each module's final spec (dataset, deliverables, action items from §5.2/§5.4) and get explicit go-ahead before implementation begins.

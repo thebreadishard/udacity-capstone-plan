@@ -44,6 +44,8 @@ So the model that justifies the flagship physical proofs is extra-curricular. Ei
 
 ### 2. The energy is not yet a functional of the field
 
+**Status (2026-08-22):** Addressed in the Distilled Plan — implementable forward pass in §6.1, fossils deleted in §3, Hockney–Eastwood vs FNO split in §6.2. Not closed as a scientific issue until P1/05 code matches that graph; the *spec* hole is closed.
+
 Route B is written as
 
 \[
