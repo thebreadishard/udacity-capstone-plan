@@ -135,7 +135,7 @@ Modules 04–06 forbid "synthetic/AI-generated" datasets. CCSD(T)-computed confi
 
 ### 4.1 Workstream P1 — H₂O FNO-NCA PES (resolves professor-review blocking issue 1)
 
-**Decision (2026-08-22):** Phase 1 is not crammed into Modules 04, 05, or 07. It is an explicit **ungraded research workstream** with the same seriousness as a module row. 04 stays the tabular non-field baseline; 05 stays the graded CNN-family benzene scale-up; 07 stays a tool-user over logged results. See [Professor_Review_2026-08-22.md](Professor_Review_2026-08-22.md) blocking issue 1.
+**Decision (2026-08-22):** Phase 1 is not crammed into Modules 04, 05, or 07. It is an explicit **ungraded research workstream** with the same seriousness as a module row. 04 stays the tabular non-field baseline; 05 stays the graded CNN-family benzene scale-up; 07 stays a tool-user over logged results. See [Professor_Review_2026-08-22_Round1.md](Professor_Review_2026-08-22_Round1.md) blocking issue 1.
 
 | | |
 |---|---|

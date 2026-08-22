@@ -1,6 +1,6 @@
 # Critical Professor Review — Round 2 (2026-08-22)
 
-**Status:** No green light. Blocking issues **7–15** are open. This review continues the numbering of [Professor_Review_2026-08-22.md](Professor_Review_2026-08-22.md); issues 1–6 stand as closed-in-spec and are not re-litigated here.
+**Status:** No green light. Blocking issues **7–15** are open. This review continues the numbering of [Professor_Review_2026-08-22_Round1.md](Professor_Review_2026-08-22_Round1.md); issues 1–6 stand as closed-in-spec and are not re-litigated here.
 
 **Scope reviewed:** [Overarching_Goal.md](Overarching_Goal.md), [Distilled_Project_Plan_and_Quality_Checks.md](Distilled_Project_Plan_and_Quality_Checks.md), [Capstone_Mapping.md](Capstone_Mapping.md), [Relevant_Scientific_Papers.md](Relevant_Scientific_Papers.md), [Papers/README.md](Papers/README.md), the module rubrics in [`../CapstoneProjects/`](../CapstoneProjects/), and repository hygiene.
 
