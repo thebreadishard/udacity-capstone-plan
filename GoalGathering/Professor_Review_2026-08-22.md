@@ -28,6 +28,8 @@ The project deserves a high standard because the *standards already on the page*
 
 ### 1. Phase 1 has no owner
 
+**Status (2026-08-22):** Addressed in mapping — ungraded [Workstream P1](Capstone_Mapping.md#41-workstream-p1--h₂o-fno-nca-pes-resolves-professor-review-blocking-issue-1). Not closed as a scientific issue until P1 actually exists as code; the *ownership* hole is closed.
+
 This is the structural failure.
 
 The Distilled Plan’s first real ML result is an H₂O field PES (Phase 1). Phases 2 and 3 — emergent IR, D₂O isotope shift, CO₂ selection rules — are defined on **that** frozen model.
