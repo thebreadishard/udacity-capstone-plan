@@ -111,8 +111,10 @@ architecture operating on continuous 3D electron-density fields. Key design choi
 - **Energy-first (Route B):** \(E=\mathcal{E}[\rho,R]\) — fixed Hockney–Eastwood
   electrostatics plus a learned remainder \(\varepsilon_\theta[\rho]\). No latent
   energy head. Forces come from autograd through \(\rho_\theta\).
-- **Strictly non-DFT *data*:** all training targets are CCSD(T)/cc-pVTZ, with no
-  library XC functionals (B3LYP/PBE/…). The Hohenberg–Kohn *shape* is the claim.
+- **Strictly non-DFT *energies* (default forces too):** CCSD(T)/cc-pVTZ per
+  Distilled Plan §5.1. Density is the pinned 1-RDM recipe (default: relaxed CCSD),
+  not a slogan “exact CCSD(T) density.” No library XC functionals in the pipeline
+  unless the §5.1 shrink ladder fires. The Hohenberg–Kohn *shape* is the claim.
 - **Emergent spectroscopy:** IR spectra are *not* trained on — they emerge as blind
   predictions from frozen-weight MD simulations via dipole-autocorrelation FFT.
 - **Phased roadmap with hard Go/No-Go gates:** H₂O → D₂O/CO₂ (zero-shot) → benzene,
@@ -123,8 +125,10 @@ architecture operating on continuous 3D electron-density fields. Key design choi
 ## Current Status
 
 The planning phase is substantially complete (Passes 1–5 of the mapping document are
-done). Phase 1 of the research plan is owned by ungraded Workstream P1 (see the mapping
-§4.1), not by a Udacity module. The remaining mapping step before implementation begins:
+done). Phase 1 is owned by ungraded Workstream P1 (mapping §4.1). Energy is an
+implementable \(E=\mathcal{E}[\rho,R]\) (Distilled Plan §6). Data generation is a
+method plus a measured cost pilot (Distilled Plan §5.1), not “CCSD(T) via PySCF.”
+Professor-review issues 4–6 and Pass 6 remain open.
 
 - **Pass 6:** Module-by-module sign-off — walk through each module's final specification
   and get explicit go-ahead.
