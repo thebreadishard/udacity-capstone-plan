@@ -108,10 +108,11 @@ The technical plan (fully detailed in [`Distilled_Project_Plan_and_Quality_Check
 proposes a **hybrid Fourier Neural Operator – Neural Cellular Automaton (FNO-NCA)**
 architecture operating on continuous 3D electron-density fields. Key design choices:
 
-- **Energy-first (Route B):** the network outputs a scalar energy; forces come from exact
-  autograd differentiation, guaranteeing conservative forces by construction.
-- **Strictly non-DFT data:** all training targets are CCSD(T)/cc-pVTZ, with no
-  approximate exchange-correlation functionals anywhere in the pipeline.
+- **Energy-first (Route B):** \(E=\mathcal{E}[\rho,R]\) — fixed Hockney–Eastwood
+  electrostatics plus a learned remainder \(\varepsilon_\theta[\rho]\). No latent
+  energy head. Forces come from autograd through \(\rho_\theta\).
+- **Strictly non-DFT *data*:** all training targets are CCSD(T)/cc-pVTZ, with no
+  library XC functionals (B3LYP/PBE/…). The Hohenberg–Kohn *shape* is the claim.
 - **Emergent spectroscopy:** IR spectra are *not* trained on — they emerge as blind
   predictions from frozen-weight MD simulations via dipole-autocorrelation FFT.
 - **Phased roadmap with hard Go/No-Go gates:** H₂O → D₂O/CO₂ (zero-shot) → benzene,
