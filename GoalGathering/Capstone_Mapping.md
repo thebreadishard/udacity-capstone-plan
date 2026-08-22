@@ -185,6 +185,7 @@ Module 07 must not assume “Phase 1 exists and passed.” It assumes “P1 prod
 | **Deliverables** | Frozen weights; same-split metrics; wall-clock and parameter count; one-page gate report |
 | **Primary metric (the §2 test)** | Leave-one-mode-out (or held-out mode-family) energy/force error on the **same** split for field and GNN — H₂O first; benzene if 05 exists |
 | **Secondary** | In-domain \(E/F\) RMSE; harmonic frequencies vs the **one** §5.1 equilibrium Hessian; frozen-weight MD stability; train/inference cost |
+| **Pre-registered confound** | MACE is **exactly** rotation-equivariant; the field model is not, because a voxel lattice is not isotropic. The Phase 0 translational and rotational invariance residuals (Distilled Plan §8 item 13) must be **published before** G1 is compared to the field model. Otherwise “the field representation transfers worse” and “our discretization broke a symmetry the competitor gets for free” are indistinguishable, and the §2 answer is unreadable either way. |
 | **Not flagship** | D₂O mass-only swap (Phase 3 **sanity**). H₂O→CO₂ zero-shot (field hardness test, unfair as a GNN bake-off). Naphthalene (outlook). |
 | **Who consumes it** | Module 08 **only assembles**. Module 07 does **not** own G1 and does not “invoke GNN training.” |
 | **When** | H₂O G1 **in parallel with P1** (after the H₂O campaign and the P1 split freeze). Benzene G1 **after** the benzene campaign and its split freeze, **before** 08 writes the claim. |
