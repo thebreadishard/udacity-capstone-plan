@@ -62,6 +62,8 @@ Same ambiguity for the long-range piece: is Hockney–Eastwood a **fixed** isola
 
 ### 3. The data-generation claim is not yet a method
 
+**Status (2026-08-22):** Addressed in spec — Distilled Plan [§5.1](Distilled_Project_Plan_and_Quality_Checks.md#51-data-generation-method-resolves-professor-review-blocking-issue-3) is now a method (which 1-RDM, which force, how many Hessians), with a 10-geometry cost pilot as a Phase 0 exit, a shrink ladder, and a Phase 1 force gate that sits above a measured noise floor. Mapping 04/P1/05 now say “per §5.1,” not “CCSD(T) everything via PySCF.” Not closed as a scientific issue until the smoke-test table and the 10-geometry numbers exist; the *methods* hole is closed.
+
 “Exact CCSD(T)/cc-pVTZ density, forces, Hessian via PySCF” for \(\ge 2000\) H₂O and \(\ge 5000\) benzene configs is written as if it were a download.
 
 It is not. The plan needs, in writing:
@@ -116,7 +118,7 @@ A **conditional green light to begin Phase 0 only** after a short addendum (one 
 
 1. Assign Phase 1 to a named workstream: either it is in-scope for a module (and the mapping says so), or it is an explicit ungraded prerequisite with a date and a failure mode.
 2. Write \(E=\mathcal{E}[\rho,R]\) as an implementable functional; remove or justify \(\rho_{Im}\) and EM channels; state whether Poisson is fixed Hockney–Eastwood or learned FNO.
-3. Replace “CCSD(T) densities/forces/Hessians via PySCF” with a methods paragraph plus a 10-geometry benzene cost pilot as a Phase 0 exit criterion.
+3. ~~Replace “CCSD(T) densities/forces/Hessians via PySCF” with a methods paragraph plus a 10-geometry benzene cost pilot as a Phase 0 exit criterion.~~ **Done in spec** (Distilled Plan §5.1, 2026-08-22). Still needs measured pilot numbers before it is closed as science.
 4. Reconcile [Overarching_Goal.md](Overarching_Goal.md) with Distilled Plan §9.
 5. Fix the Module 03 row count/source rule, collapse the Module 06 dataset contradiction, and put the GNN baseline on the critical path of the scientific claim rather than in the synthesis appendix.
 
