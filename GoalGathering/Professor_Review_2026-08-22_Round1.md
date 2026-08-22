@@ -1,6 +1,6 @@
-# Critical Professor Review — 2026-08-22
+# Critical Professor Review — Round 1 (2026-08-22)
 
-**Status:** No green light yet. Blocking issues 1–6 are closed **in spec** (separate commits). Pass 6 and the Phase 0 measured addendum remain.
+**Status:** No green light yet. Blocking issues 1–6 are closed **in spec** (separate commits). Pass 6 and the Phase 0 measured addendum remain. Round 2 adds blocking issues 7–15: see [Professor_Review_2026-08-22_Round2.md](Professor_Review_2026-08-22_Round2.md).
 
 **Scope reviewed:** [Overarching_Goal.md](Overarching_Goal.md), [Distilled_Project_Plan_and_Quality_Checks.md](Distilled_Project_Plan_and_Quality_Checks.md), [Capstone_Mapping.md](Capstone_Mapping.md), and the module rubrics in [`../CapstoneProjects/`](../CapstoneProjects/). Pass 6 of the mapping is still open; that matches this judgment.
 
