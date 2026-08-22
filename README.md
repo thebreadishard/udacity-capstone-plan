@@ -42,7 +42,8 @@ across the seven gradeable Udacity capstone modules as follows:
 |--------|-------|----------------|------------------|
 | **02** | AI Programming Foundations | *(Motivation)* | EDA on QM9 benchmark → documented justification for why custom CCSD(T) data is needed |
 | **03** | Statistical Analysis | Phase 0 | Hypothesis tests on the differentiable-physics engine's numerical foundation (egg-box, grid convergence) |
-| **04** | Applied ML | Phase 4 (partial) | Simple non-field NN baseline trained on H₂O CCSD(T) data — one leg of the required three-way comparison |
+| **04** | Applied ML | Phase 4 (partial) | Simple non-field NN baseline trained on the H₂O CCSD(T) **descriptor CSV** — one leg of the required three-way comparison |
+| *(P1)* | *Ungraded workstream* | Phase 1 | H₂O hybrid FNO-NCA field PES (\(32^3\)) — research infra, not a Udacity module; must exist before Module 07 |
 | **05** | Deep Learning Systems | Phase 5 | The flagship hybrid FNO-NCA architecture on benzene (CNN-family, with ablation study) |
 | **06** | Generative AI | *(Bridge — B/D)* | VAE/diffusion model for generating candidate molecular geometries to augment training data |
 | **07** | Agentic Workflows | Phases 2 & 3 | Computational-chemistry lab-assistant agent automating Go/No-Go QA checks and phase-gate decisions |
@@ -66,7 +67,7 @@ CapstonePlan/
 │   ├── Distilled_Project_Plan_and_Quality_Checks.md
 │   │                            # Full technical plan: architecture, data,
 │   │                            # phased roadmap (Phases 0–5), QA protocol
-│   ├── Capstone_Mapping.md      # Module-by-module mapping (Passes 1–5),
+│   ├── Capstone_Mapping.md      # Module-by-module mapping (Passes 1–5 + P1),
 │   │                            # gap analysis, dataset table, validation
 │   ├── Relevant_Scientific_Papers.md
 │   │                            # Annotated bibliography (15 key papers)
@@ -121,7 +122,8 @@ architecture operating on continuous 3D electron-density fields. Key design choi
 ## Current Status
 
 The planning phase is substantially complete (Passes 1–5 of the mapping document are
-done). The remaining step before implementation begins:
+done). Phase 1 of the research plan is owned by ungraded Workstream P1 (see the mapping
+§4.1), not by a Udacity module. The remaining mapping step before implementation begins:
 
 - **Pass 6:** Module-by-module sign-off — walk through each module's final specification
   and get explicit go-ahead.
