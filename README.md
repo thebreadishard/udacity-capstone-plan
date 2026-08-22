@@ -10,24 +10,27 @@
 
 ## The Overarching Goal
 
-**Acquire chemically precise anharmonic infrared spectra for arbitrarily sized Polycyclic
-Aromatic Hydrocarbons (PAHs).**
+**This thesis:** chemically precise **labels** (CCSD(T)/cc-pVTZ); **emergent IR band
+envelopes** for H₂O / D₂O / CO₂ / benzene from a conservative field PES. Not
+chemically precise spectral **lines**. Not arbitrarily sized PAHs.
 
-The leading strategy is a machine-learning pipeline that maps molecular geometry directly
-to a potential energy surface (PES), from which IR spectra emerge via classical molecular
-dynamics — but the ML pipeline is only a means to an end. Any approach that reliably and
-efficiently yields chemically precise spectra (< 1 kcal/mol error, sub-wavenumber
-precision, grounded in CCSD(T) or complete-basis-set-limit calculations) is a valid path.
+The scientific question is whether \(E=\mathcal{E}[\rho,R]\) transfers better than an
+atomistic equivariant GNN on the same labels. Module 08 delivers a reliability-gated
+small-molecule IR-emulation stack plus that comparison — not a PAH spectrometer.
+
+**Horizon** (not scored here): very large PAH band families and relative intensities,
+then fail-closed identification. That path is post-master’s Projects 10 → 11 → 12.
 
 The actual implementation of this pipeline will be carried out across separate capstone
-project repositories. This repo answers the question: *"How do we slice this research
+project repositories. This repo answers the question: *"How do we slice the **master’s** research
 program into 7 individually gradeable capstone projects that are each self-contained,
-rubric-compliant, and collectively build toward the end goal?"*
+rubric-compliant, and collectively answer the field-vs-GNN question — without
+promising a PAH line list?"*
 
 For full details see:
 
 - [`GoalGathering/Overarching_Goal.md`](GoalGathering/Overarching_Goal.md) — the prime
-  directive and precision requirements.
+  directive: chemically precise **labels**; §9 band envelopes; horizon = Projects 10–12.
 - [`GoalGathering/Distilled_Project_Plan_and_Quality_Checks.md`](GoalGathering/Distilled_Project_Plan_and_Quality_Checks.md)
   — the complete technical plan (architecture, data pipeline, phased roadmap, QA protocol).
 
@@ -46,7 +49,10 @@ across the seven gradeable Udacity capstone modules as follows:
 | *(P1)* | *Ungraded workstream* | Phase 1 | H₂O hybrid FNO-NCA field PES (\(32^3\)) — research infra, not a Udacity module; must exist before Module 07 |
 | **05** | Deep Learning Systems | Phase 5 | The flagship hybrid FNO-NCA architecture on benzene (CNN-family, with ablation study) |
 | **06** | Generative AI | *(Bridge — B/D)* | VAE/diffusion model for generating candidate molecular geometries to augment training data |
-| **07** | Agentic Workflows | Phases 2 & 3 | Computational-chemistry lab-assistant agent automating Go/No-Go QA checks and phase-gate decisions |
+| **07** | Agentic Workflows | Phases 2 & 3 | Computational-chemistry lab-assi: reliability-gated **small-molecule** IR emulation (JWST/PAH ID is horizon, not a built capability) |
+| *(10)* | *Post-master’s* | Horizon | Size-extensive gold-anchored aromatic PES — not a Udacity module |
+| *(11)* | *Post-master’s* | Horizon | GVPT2-class anharmonic bands + intensities — not a Udacity module |
+| *(12)* | *Post-master’s* | Horizon | Fail-closed astrophysical identification — not a Udacity module
 | **08** | Industry Synthesis | Phase 4 (full) | Integrates ≥ 3 prior projects under an industry frame (AI-accelerated spectral ID for astrochemistry) |
 
 Each mapping is categorized as **(A)** natural fit, **(B)** bridge project, **(C)** QA
@@ -84,7 +90,10 @@ CapstonePlan/
 │   ├── 06_Generative_AI_Applications.md
 │   ├── 07_Design_of_Autonomous_and_Semi_Autonomous_Agentic_Workflows.md
 │   ├── 08_Industry_Integrated_AI_Systems_Synthesis.md
-│   └── 09_Professional_Industry_Defense.md
+│   ├── 09_Professional_Industry_Defense.md
+│   ├── 10_Size_Extensive_Aromatic_PES.md      # post-master’s; not Udacity
+│   ├── 11_Anharmonic_IR_and_Intensities.md    # post-master’s; not Udacity
+│   └── 12_Astrophysical_PAH_Identification.md # post-master’s; not Udacity
 │
 ├── scraper/                     # Tooling used to extract rubric content
 │   ├── scraper.py               # Playwright-based Udacity classroom crawler
@@ -128,7 +137,8 @@ The planning phase is substantially complete (Passes 1–5 of the mapping docume
 done). Phase 1 is owned by ungraded Workstream P1 (mapping §4.1). Energy is an
 implementable \(E=\mathcal{E}[\rho,R]\) (Distilled Plan §6). Data generation is a
 method plus a measured cost pilot (Distilled Plan §5.1), not “CCSD(T) via PySCF.”
-Professor-review issues 4–6 and Pass 6 remain open.
+The prime directive matches Distilled Plan §9 (issue 4). Horizon PAH work is
+Projects 10–12. Professor-review issues 5–6 and Pass 6 remain open.
 
 - **Pass 6:** Module-by-module sign-off — walk through each module's final specification
   and get explicit go-ahead.

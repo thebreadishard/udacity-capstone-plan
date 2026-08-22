@@ -79,6 +79,8 @@ The Phase 1 force gate of \(<1\,\text{meV/Å}\) is also tighter than is acceptab
 
 ### 4. Two governing documents still disagree
 
+**Status (2026-08-22):** Addressed in spec — [Overarching_Goal.md](Overarching_Goal.md) rewritten. Labels (CCSD(T)/cc-pVTZ per Distilled Plan §5.1) are split from spectra (Distilled Plan §9 band envelopes). “Sub-wavenumber” is no longer a dataset requirement. Module 08’s product is named: reliability-gated small-molecule IR emulation plus a yes/no on the representation hypothesis. Horizon PAH work is post-master’s [Projects 10–12](../CapstoneProjects/10_Size_Extensive_Aromatic_PES.md), not a slogan in the prime directive. Not closed as a *cultural* issue until Module 08 drafts stop quoting the old title; the *document* hole is closed.
+
 [Overarching_Goal.md](Overarching_Goal.md) still promises “chemically precise anharmonic infrared **spectral lines**” and “sub-wavenumber precision.” Distilled Plan §9 correctly forbids that claim for classical MD + FFT.
 
 That is not a wording nit. It is the prime directive versus the methods chapter. A reader — or a later Module 08 draft — will quote the older sentence. Update the goal document to §9’s defensible language, or treat the project as not yet self-consistent.
@@ -119,7 +121,7 @@ A **conditional green light to begin Phase 0 only** after a short addendum (one 
 1. Assign Phase 1 to a named workstream: either it is in-scope for a module (and the mapping says so), or it is an explicit ungraded prerequisite with a date and a failure mode.
 2. Write \(E=\mathcal{E}[\rho,R]\) as an implementable functional; remove or justify \(\rho_{Im}\) and EM channels; state whether Poisson is fixed Hockney–Eastwood or learned FNO.
 3. ~~Replace “CCSD(T) densities/forces/Hessians via PySCF” with a methods paragraph plus a 10-geometry benzene cost pilot as a Phase 0 exit criterion.~~ **Done in spec** (Distilled Plan §5.1, 2026-08-22). Still needs measured pilot numbers before it is closed as science.
-4. Reconcile [Overarching_Goal.md](Overarching_Goal.md) with Distilled Plan §9.
+4. ~~Reconcile [Overarching_Goal.md](Overarching_Goal.md) with Distilled Plan §9.~~ **Done in spec** (Overarching Goal rewrite + README/mapping satellites, 2026-08-22). Horizon remainder is Projects 10–12, not Module 08.
 5. Fix the Module 03 row count/source rule, collapse the Module 06 dataset contradiction, and put the GNN baseline on the critical path of the scientific claim rather than in the synthesis appendix.
 
 Until then: **no green light.** The project is good enough to deserve that standard. It is not yet good enough to start the expensive parts.
