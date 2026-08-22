@@ -16,6 +16,7 @@
 8. **Data-generation method (2026-08-22):** professor-review blocking issue 3 required replacing “exact CCSD(T) density/forces/Hessian via PySCF” with a recipe (which 1-RDM, which force, how many Hessians), a measured 10-geometry cost pilot as a Phase 0 exit, a shrink ladder if the campaign does not fit local hardware, and a Phase 1 force gate that sits above the measured noise floor. That lock is written into §5.1 and §7 below.
 9. **Goal lock (2026-08-22):** professor-review blocking issue 4 required the prime directive to stop promising “chemically precise spectral lines” / “sub-wavenumber” as a this-thesis claim. [Overarching_Goal.md](Overarching_Goal.md) now splits **labels** (CCSD(T)/cc-pVTZ per §5.1) from **spectra** (§9 band envelopes). Horizon PAH work is post-master’s Projects 10–12, not Module 08.
 10. **Baseline lock (2026-08-22):** professor-review blocking issue 6 required the GNN competitor to live on the critical path, not in Module 08. Mapping [§4.2 Workstream G1](Capstone_Mapping.md#42-workstream-g1--equivariant-atomistic-pes-resolves-professor-review-blocking-issue-6) trains MACE from scratch on the **same** P1/05 split manifests. Module 08 **assembles**. D₂O (Phase 3) is a **sanity check**, not the flagship proof that the field representation learned physics. The §2 test is leave-one-mode-out transfer vs G1.
+11. **Density-representation lock (2026-08-22):** [round-2](Professor_Review_2026-08-22_Round2.md) blocking issue 7 showed the grid cannot carry an all-electron density at \(\Delta x\approx0.2\,\text{Å}\), and issue 10 showed \(\Phi\) was a nuclear-identity bypass channel in \(\varepsilon_\theta\). §3, §5.1, §6.1, §6.2, §6.3, §7 and §8 below now specify a **reference split**: an analytic promolecular density carries the cusps, only the smooth deformation density \(\Delta\rho_\theta\) touches the voxel grid, and \(\varepsilon_\theta\) sees density-derived local scalars only.
 
 ---
 
@@ -38,15 +39,18 @@ This replaced the original, much broader claim ("can an AI find a universal CA u
 - **Emergent spectroscopy, not trained spectroscopy**: the network is trained *only* on static configurations (energies, forces, Hessians, densities). Once trained and frozen, it runs forward-only classical MD for tens of picoseconds; the IR spectrum is obtained via FFT of the dipole autocorrelation function purely as a **blind post-hoc prediction**, never as a training signal.
 - **Strictly non-DFT *energies and (default) forces*** for every pipeline target (see §5.1). The density target is the pinned 1-RDM recipe, not a slogan “exact CCSD(T) density.” A cheaper density proxy is allowed only via the §5.1 shrink ladder and must invoke the Overarching Goal escape clause.
 - **Rigorously phased**, with hard numerical Go/No-Go gates between phases (§7), scoped to what is achievable in a ~6–7 month master's thesis on local consumer hardware, with supercomputer time reserved only for later-phase scaling.
-- **Grid/channel representation** (Born–Oppenheimer; real density only): $N\times N\times N$ voxel grid, $\Delta x \approx 0.20$–$0.25\,\text{Å}$.
-  - **Keep:** one real, non-negative density channel \(\rho\ge 0\) with \(\int\rho\,dV=N_e\) on every forward pass; \(V_{\mathrm{nucl}}\) / \(\Phi\) as **computed** Hockney–Eastwood fields, not free learned channels; a handful of latent NCA memory channels, labeled as hidden state.
-  - **Delete:** \(\rho_{Re},\rho_{Im}\) and \(E_x,E_y,E_z\). Those are fossils of the rejected Ehrenfest / photon / complex-wavefunction story. A BO PES has no EM grid and no imaginary density. The IR dipole is \(\boldsymbol{\mu}=\int\mathbf{r}\,(\rho_{\mathrm{nucl}}-\rho_\theta)\,dV\) from the same real \(\rho\).
+- **Grid/channel representation** (Born–Oppenheimer; real density only): \(N\times N\times N\) voxel grid, \(\Delta x \approx 0.20\)–\(0.25\,\text{Å}\), carrying the **deformation** density only (see the reference split below).
+  - **Keep:** one real, *sign-changing* deformation channel \(\Delta\rho_\theta\) with \(\int\Delta\rho_\theta\,dV=0\) enforced by mean subtraction on every forward pass; total positivity \(\rho_{\mathrm{ref}}+\Delta\rho_\theta\ge0\) as a **monitored diagnostic plus soft penalty**, not a hard constraint; a handful of latent NCA memory channels, labeled as hidden state.
+  - **Delete:** \(\rho_{Re},\rho_{Im}\) and \(E_x,E_y,E_z\). Those are fossils of the rejected Ehrenfest / photon / complex-wavefunction story. A BO PES has no EM grid and no imaginary density. The IR dipole is \(\boldsymbol{\mu}=\int\mathbf{r}\,(\rho_{\mathrm{nucl}}-\rho_{\mathrm{tot}})\,dV\) with \(\rho_{\mathrm{tot}}=\rho_{\mathrm{ref}}+\Delta\rho_\theta\); the \(\rho_{\mathrm{ref}}\) part of \(\boldsymbol{\mu}\) is analytic.
+  - **Also deleted:** \(\mathrm{softplus}\)-and-renormalize-to-\(N_e\). That scheme is what pushed the unrepresentable core charge into the valence region. A deformation density is negative in depleted regions; \(\mathrm{softplus}\) is the wrong sign structure.
+- **Reference split (resolves round-2 blocking issue 7):** the physical density is \(\rho_{\mathrm{tot}}=\rho_{\mathrm{ref}}+\Delta\rho_\theta\), where \(\rho_{\mathrm{ref}}(\mathbf{r};\mathbf{R})=\sum_A\rho^{\mathrm{atom}}_{Z_A}(|\mathbf{r}-\mathbf{R}_A|)\) is a **promolecular** superposition of spherically averaged free-atom ground-state densities, fitted once per element to a short sum of spherical Gaussians and then frozen. \(\rho_{\mathrm{ref}}\) carries the core cusps and is integrated **analytically**; the grid never sees it. This is not a convenience: measured on an all-electron H₂O model density ([probes/issue07_grid_representability.py](../probes/issue07_grid_representability.py)), putting \(\rho_{\mathrm{tot}}\) on a \(0.20\,\text{Å}\) grid gives an \(11\%\) electron-count error (§8 item 9 demands \(0.01\%\)) and a rigid-translation energy artifact of \(3.8\,\text{Hartree}\) per grid cell; the same measurement on \(\Delta\rho\) alone gives \(3\times10^{-10}\,e\) and \(1.2\times10^{-9}\,\text{Hartree}\).
 
 ---
 
 ## 4. What the Project is explicitly NOT
 
 - **NOT a Graph Neural Network**: no discrete atom-nodes, bond types, or hard-coded per-element sub-networks (rejecting the SchNet/PhysNet/MLAtom/ANI-1 style architecture). One single universal update rule / energy functional must work for any element purely from local field values (charge density, potential gradients), the way physical law itself doesn't have separate equations per bond type.
+  - **Stated concession (round-2 issue 7):** the promolecular reference \(\rho_{\mathrm{ref}}\) *is* element-specific. It is not a learned per-element sub-network — it is a physical constant of nature (the free-atom ground-state density), entering on the same footing as \(Z_A\), which this plan already allows. All **learned** content (\(\Delta\rho_\theta\), \(\varepsilon_\theta\)) still sees only fields. Extending to a new element costs one atomic calculation, not retraining. Say this in the Module 05 report and in the Module 09 defense rather than leaving it to be discovered.
 - **NOT Density Functional Theory (DFT)**: no approximate exchange-correlation functionals (B3LYP, PBE, M06-2X, etc.), which are known to make systematic errors on dispersion and aromatic π-delocalization. This exclusion applies to every input and every target dataset, with no exceptions planned. The Hohenberg–Kohn *shape* \(E=\mathcal{E}[\rho]\) is the research claim, not a KS-DFT calculation: \(\varepsilon_\theta\) is a learned remainder, not a library XC functional, and no DFT data enter the pipeline.
 - **NOT a purely local Cellular Automaton**: a plain $3\times3\times3$ convolution cannot resolve long-range structure in \(\rho\) in a trainable number of steps — the density encoder may use a learned FNO. Isolated-molecule \(1/r\) electrostatics in the energy are still the **fixed** Hockney–Eastwood kernel, not a learned Poisson layer.
 - **NOT a multi-head regressor with auxiliary density**: the network must not emit a scalar \(E\) from pooled latents that can ignore \(\rho\), with \(L_\rho\) as a regularizer. That tests "3D CNN vs SOAP," not the field-functional hypothesis. There is no energy head that can see \(Z_A\), one-hot elements, bond lists, or raw \(\mathbf{R}\) except through the fields in §6.
@@ -90,7 +94,7 @@ A level of theory plus a count is not a method. This subsection is the method. C
 
 #### Code path is a decision procedure, not a wish
 
-**Step 0 — pin.** One PySCF version, one basis (`cc-pVTZ`), one SCF/CC convergence, one grid for exporting \(\rho\) (the §6 grid, not a mysterious default cube).
+**Step 0 — pin.** One PySCF version, one basis (`cc-pVTZ`), one SCF/CC convergence, one grid for exporting the density (the §6 grid, not a mysterious default cube), and **one frozen set of per-element atomic reference fits** (§6.1 step 0), each accepted only if \(\int\lvert\rho^{\mathrm{fit}}_Z-\rho^{\mathrm{atom}}_Z\rvert\,dV\,/\,Z<10^{-3}\). The campaign exports \(\Delta\rho=\rho_{\mathrm{QM}}-\rho_{\mathrm{ref}}\), **not** raw \(\rho\); the raw cube is retained for one geometry per molecule as a Phase 0 diagnostic, never as the training target.
 
 **Step 1 — one-geometry smoke test (H₂O, then benzene).** For each molecule, record pass/fail for: energy, 1-RDM, analytic gradient, Hessian. This table lives in the campaign manifest and is filled with numbers, not “via PySCF.”
 
@@ -108,7 +112,7 @@ T_{\text{campaign}} \approx N_{\text{geom}}\times \bar t_{\text{geom}}
 
 No A100 folklore. If \(T\) does not fit local hardware on a calendar that can be lived with, do **not** start the 5000-config run. Take the shrink ladder.
 
-Every row in the campaign manifest gets: `theory_energy`, `theory_density`, `theory_force`, `rdm_relaxed|unrelaxed`, `pyscf_version`, `grid`, `wall_s`, `max_rss_gb`. If those fields are blank, it is not a dataset.
+Every row in the campaign manifest gets: `theory_energy`, `theory_density`, `theory_force`, `rdm_relaxed|unrelaxed`, `pyscf_version`, `grid`, `ref_fit_id`, `wall_s`, `max_rss_gb`. If those fields are blank, it is not a dataset.
 
 #### Shrink ladder (in the plan *before* the pilot)
 
@@ -120,6 +124,15 @@ Stop at the first rung that fits:
 4. **Benzene field campaign becomes outlook.** Module 05 must then be remapped. Do not keep “≥5000 benzene CCSD(T) volumes” as a scored promise.
 
 H₂O (2000 configs, \(32^3\), 3 atoms) is assumed cheaper. If the *H₂O* pilot already fails, the field thesis is locally infeasible: **stop before P1**, not after.
+
+#### Density-representation ladder (round-2 issue 7)
+
+Separate from the cost ladder. Fires if the Phase 0 real-cube test shows \(\Delta\rho\) is still not grid-representable — i.e. if its narrowest feature is sharper than \(\approx1.25\,\Delta x\), which the [issue-7 probe](../probes/issue07_grid_representability.py) measures as the point where the translation artifact crosses \(1\,\text{meV/Å}\). Stop at the first rung that works:
+
+1. \(\Delta x\to0.15\,\text{Å}\) for the \(\Delta\rho\) grid only.
+2. Add a per-element **core-relaxation** term: one extra spherical Gaussian per atom whose coefficient is learned. Integrals stay analytic; the grid stays smooth.
+3. Small-core **ECP**, valence-only density. Labels become CCSD(T)/cc-pVTZ-PP — a real change to the label level, so this rung **requires the Overarching Goal escape clause**.
+4. H₂O-only field model; the benzene field becomes outlook. (Same destination as rung 4 of the cost ladder above — if either ladder reaches its last rung, Module 05 is remapped.)
 
 #### Force gate sits above noise
 
@@ -140,34 +153,63 @@ Workstream P1 and Module 05 **share this forward pass**. They must not diverge i
 
 ### 6.1 Forward pass (implements \(E=\mathcal{E}[\rho,R]\))
 
-**1. Nuclei → fields (not learned).** Continuous Gaussian charge clouds, not point charges:
+**0. Reference split (not learned; resolves round-2 blocking issue 7).**
 
-$$\rho_{\mathrm{nucl}}(\mathbf{r};\{\mathbf{R}_A\}) = \sum_A Z_A \left(\frac{1}{2\pi\sigma^2}\right)^{3/2}\exp\left(-\frac{|\mathbf{r}-\mathbf{R}_A|^2}{2\sigma^2}\right),\quad \sigma \geq 1.5\,\Delta x$$
+$$\rho_{\mathrm{tot}}(\mathbf{r};\mathbf{R})=\underbrace{\sum_A \rho^{\mathrm{atom}}_{Z_A}\!\big(|\mathbf{r}-\mathbf{R}_A|\big)}_{\rho_{\mathrm{ref}}\ \text{— analytic, frozen}}+\ \Delta\rho_\theta(\mathbf{r};\mathbf{R}),\qquad \rho^{\mathrm{atom}}_{Z}(u)=\sum_k c_{Z,k}\left(\frac{\alpha_{Z,k}}{\pi}\right)^{3/2}e^{-\alpha_{Z,k}u^2}$$
 
-\(V_{\mathrm{nucl}}\) is the Hockney–Eastwood potential of \(\rho_{\mathrm{nucl}}\). These are inputs.
+The per-element coefficients are fitted **once**, offline, to the spherically averaged free-atom ground-state density, then frozen. Every integral over \(\rho_{\mathrm{ref}}\) is closed form — Gaussian–point-charge is \(Z\,\mathrm{erf}(\sqrt{\alpha}\,r)/r\), Gaussian–Gaussian is an \(\mathrm{erf}\) of the reduced exponent — and analytically differentiable in \(\mathbf{R}_A\), so autograd forces stay exact. **Only \(\Delta\rho_\theta\) is ever discretized.**
 
-**2. Density encoder (NCA / optional FNO).** State on the grid: one real, non-negative density channel plus latent NCA memory (hidden state, not physics). Local \(3\times3\times3\) NCA steps handle short range. An optional learned FNO is a non-local mixer **inside this encoder only**. Readout:
+**1. Nuclei → fields (not learned).**
 
-$$\rho_\theta(\mathbf{r};\mathbf{R})=\mathrm{softplus}(s(\mathbf{r})),\qquad \int\rho_\theta\,dV=N_e$$
+- \(E_{nn}\) is **exact analytic point charges**, \(\sum_{A<B}Z_AZ_B/R_{AB}\). It is *not* read off a smeared grid: at \(\sigma=0.3\,\text{Å}\) the Gaussian–Gaussian O–H repulsion is short by a factor \(\mathrm{erf}(R/2\sigma)=0.976\), i.e. \(\approx0.1\,\)Ha of geometry-dependent error that \(\varepsilon_\theta\) would otherwise have to repair at the mHa level.
+- Gaussian smearing \(\sigma\ge1.5\,\Delta x\) survives **only** as the grid kernel for terms that integrate \(\Delta\rho_\theta\) against a nuclear potential:
 
-(renormalize every forward pass). No \(\rho_{Im}\). No EM channels.
+$$V^{\sigma}_{\mathrm{nucl}}(\mathbf{r})=-\sum_A Z_A\,\frac{\mathrm{erf}\!\big(|\mathbf{r}-\mathbf{R}_A|/\sqrt{2}\sigma\big)}{|\mathbf{r}-\mathbf{R}_A|}$$
 
-**3. Energy is a functional of that density.** No second head:
+which is finite and smooth at the nucleus. Smooth kernel × smooth \(\Delta\rho\) is the only regime in which \(0.2\,\text{Å}\) quadrature is defensible.
 
-$$E_\theta(\mathbf{R})=E_{\mathrm{es}}[\rho_\theta,\mathbf{R}]+\int \varepsilon_\theta\!\big(\rho_\theta,|\nabla\rho_\theta|\big)\,dV$$
+**2. Density encoder (NCA / optional FNO).** State on the grid: one real, **sign-changing** deformation channel plus latent NCA memory (hidden state, not physics). Local \(3\times3\times3\) NCA steps handle short range. An optional learned FNO is a non-local mixer **inside this encoder only**. Readout:
 
-- \(E_{\mathrm{es}}\): classical electron–nuclear, Hartree, and nuclear–nuclear electrostatics, all from **one fixed Hockney–Eastwood solve** on \(\rho_{\mathrm{nucl}}-\rho_\theta\). Same kernel Phase 0 already validates. Not learned.
-- \(\varepsilon_\theta\): a tiny MLP / \(1\times1\times1\) conv on **local density features only** (may see \(\rho\), \(|\nabla\rho|\), and \(\Phi\)). This is a learned kinetic+remainder functional, not B3LYP. It must **not** see \(Z_A\), one-hot elements, bond lists, or raw \(\mathbf{R}\).
+$$\Delta\rho_\theta(\mathbf{r};\mathbf{R})=s(\mathbf{r})-\frac{1}{V}\int s\,dV,\qquad \int\Delta\rho_\theta\,dV=0$$
 
-**4. Forces.** \(\mathbf{F}_A=-\partial E_\theta/\partial\mathbf{R}_A\) via PyTorch autograd through the Gaussian nuclear placement **and** through \(\rho_\theta(\mathbf{R})\). Do not `stop_grad` on \(\rho\). Hellmann–Feynman alone is not exact for a learned \(\rho\) fitted to CCSD(T).
+No \(\mathrm{softplus}\), no renormalize-to-\(N_e\), no \(\rho_{Im}\), no EM channels. Total positivity \(\rho_{\mathrm{ref}}+\Delta\rho_\theta\ge0\) is a monitored diagnostic with a soft penalty, not a hard architectural constraint.
 
-If this graph is implemented, \(E\) *is* \(\mathcal{E}[\rho,R]\). A trunk that emits both \(\rho\) and a scalar \(E\) from pooled latents is a spec violation, not a variant.
+**3. Energy is a functional of the total density.** No second head:
+
+$$E_\theta(\mathbf{R})=\sum_A E^{\mathrm{atom}}_{Z_A}+E_{\mathrm{es}}\big[\rho_{\mathrm{ref}}+\Delta\rho_\theta,\mathbf{R}\big]+\int\varepsilon_\theta\,dV$$
+
+\(E_{\mathrm{es}}\) is expanded so that each piece is computed where it is accurate:
+
+| Piece | How | Why there |
+|---|---|---|
+| \(E_{nn}\) | analytic point charges | exact and free |
+| \(-\sum_A Z_A\!\int\rho_{\mathrm{ref}}/|\mathbf{r}-\mathbf{R}_A|\) | **analytic** | largest, sharpest e–n term; never voxelized |
+| \(-\sum_A Z_A\!\int\Delta\rho_\theta/|\mathbf{r}-\mathbf{R}_A|\) | grid, against \(V^{\sigma}_{\mathrm{nucl}}\) | smooth × smooth |
+| \(\tfrac12\langle\rho_{\mathrm{ref}}|\rho_{\mathrm{ref}}\rangle\) | **analytic** | dominant Hartree piece |
+| \(\langle\rho_{\mathrm{ref}}|\Delta\rho_\theta\rangle\) | grid, against the analytic promolecular Hartree potential \(V_{\mathrm{ref}}\) (erf form, finite at the nucleus) | smooth × smooth |
+| \(\tfrac12\langle\Delta\rho_\theta|\Delta\rho_\theta\rangle\) | **Hockney–Eastwood FFT** | the only term that needs the solver |
+
+Because \(\int\Delta\rho_\theta\,dV=0\) exactly, the source handed to Hockney–Eastwood is charge-neutral and its potential decays at least as fast as a dipole — the zero-padding requirement gets *cheaper*, and Phase 0 finally validates the solver on the object it will actually be given.
+
+**Anchoring of \(\varepsilon_\theta\) — named open fork, decided in Phase 0 / P1, not in Module 05.** The same core-domination disease afflicts \(\int\varepsilon_\theta\,dV\) (Thomas–Fermi kinetic density goes as \(\rho^{5/3}\)). Two candidate forms:
+
+- **(i) Vanishing anchor:** \(\varepsilon_\theta\equiv\Delta\rho_\theta\cdot f_\theta(\rho_{\mathrm{ref}},\Delta\rho_\theta,|\nabla\Delta\rho_\theta|)\), identically zero at \(\Delta\rho=0\). Removes the core-dominated quadrature outright and cuts the dynamic range the learned term must span from \(\sim76\,\)Ha (round-2 issue 9) to the bonding remainder, \(\sim1\,\)Ha. Cost: it asserts that the promolecule's energy is \(\sum_A E^{\mathrm{atom}}_{Z_A}\) plus classical electrostatics, which omits the Pauli/exchange repulsion of overlapping atomic densities; the learned term must absorb that at physical geometries.
+- **(ii) Difference form:** \(\varepsilon_\theta=g_\theta(\rho_{\mathrm{tot}},|\nabla\rho_{\mathrm{tot}}|)-g_\theta(\rho_{\mathrm{ref}},|\nabla\rho_{\mathrm{ref}}|)\). Keeps a genuine functional of \(\rho_{\mathrm{tot}}\), but each term is individually cusped and the cancellation is numerical rather than analytic.
+
+**Decision rule:** measure the quadrature error of \(\int\varepsilon\,dV\) for both forms against a fine reference grid on the Phase 0 real cube, then on P1 H₂O. Pick one **before** the benzene campaign. Do not carry both into Module 05.
+
+**Inputs to \(\varepsilon_\theta\) (resolves round-2 blocking issue 10).** \(\varepsilon_\theta\) is a tiny MLP / \(1\times1\times1\) conv on **density-derived local scalars only**: \(\rho_{\mathrm{ref}}\), \(\Delta\rho_\theta\), \(|\nabla\Delta\rho_\theta|\). It must **not** see \(Z_A\), one-hot elements, bond lists, or raw \(\mathbf{R}\) — **and it must not see \(\Phi\) or \(V_{\mathrm{nucl}}\)**. \(\Phi\) is the *external* potential; near a nucleus it is a direct readout of \(Z_A/|\mathbf{r}-\mathbf{R}_A|\), so feeding it hands the "functional" a channel through which it can learn part of \(E(\mathbf{R})\) without consulting the density — exactly the multi-head-regressor failure §4 forbids. **Required diagnostic:** freeze \(\Delta\rho_\theta\) at a deliberately wrong density and confirm the predicted energy degrades.
+
+**4. Forces.** \(\mathbf{F}_A=-\partial E_\theta/\partial\mathbf{R}_A\) via PyTorch autograd through the analytic \(\rho_{\mathrm{ref}}\) placement, through the nuclear kernel, **and** through \(\Delta\rho_\theta(\mathbf{R})\). Do not `stop_grad` on \(\Delta\rho\). Hellmann–Feynman alone is not exact for a learned density fitted to CCSD(T).
+
+If this graph is implemented, \(E\) *is* \(\mathcal{E}[\rho,R]\) — \(\rho_{\mathrm{ref}}\) is a parameter-free deterministic function of \(\mathbf{R}\), so the split changes how the functional is evaluated, not what it is a functional of. A trunk that emits both \(\rho\) and a scalar \(E\) from pooled latents is a spec violation, not a variant.
 
 ### 6.2 Poisson vs FNO — two objects
 
 | Object | Role | Who validates it |
 |---|---|---|
-| **Hockney–Eastwood** | Isolated-molecule electrostatics in \(E_{\mathrm{es}}\) and \(V_{\mathrm{nucl}}\). Embed \(N^3\) in a \(2N\times2N\times2N\) zero-padded box; cap the Coulomb kernel at the box radius. | Phase 0 |
+| **Analytic Gaussian integrals** | Everything involving \(\rho_{\mathrm{ref}}\): \(E_{nn}\), the promolecular e–n attraction, \(\tfrac12\langle\rho_{\mathrm{ref}}|\rho_{\mathrm{ref}}\rangle\), and the analytic \(V_{\mathrm{ref}}\) evaluated at grid points. Closed form, no quadrature. | Phase 0 (against a fine-grid reference) |
+| **Hockney–Eastwood** | Poisson for the **smooth, charge-neutral** \(\Delta\rho_\theta\) only. Embed \(N^3\) in a \(2N\times2N\times2N\) zero-padded box; cap the Coulomb kernel at the box radius. | Phase 0 |
 | **Learned FNO** | Optional non-local block **in the density encoder** | Module 05 ablation |
 
 Do **not** treat the FNO as a learned Poisson solver. Phase 0 would then validate something 05 immediately replaces, and the ablation would mix two physics stories.
@@ -185,7 +227,7 @@ $$L_{train} = \lambda_E L_E + \lambda_F L_F + \lambda_H L_H + \lambda_\rho L_\rh
 - $L_E$: MSE on total energy vs. CCSD(T).
 - $L_F$: MSE on per-atom forces vs. the §5.1 force recipe (analytic CCSD(T) if the smoke test returns it; else analytic CCSD; else H₂O-only finite-difference of CCSD(T) energies).
 - $L_H$: Hessian supervision at the **counted** stationary points in §5.1 (1 H₂O + 1 benzene equilibrium Hessian first). Force-only supervision does **not** guarantee correct 2nd/3rd-order PES derivatives.
-- $L_\rho$: MSE on the 3D electron density vs. the §5.1 density target (default: relaxed CCSD 1-RDM, not a slogan “exact CCSD(T) density”). This supervises the *argument* of \(\mathcal{E}\); it is not an optional extra head and not the force source.
+- $L_\rho$: MSE on the **deformation** density \(\Delta\rho=\rho_{\mathrm{QM}}-\rho_{\mathrm{ref}}\), where \(\rho_{\mathrm{QM}}\) is the §5.1 density target (default: relaxed CCSD 1-RDM, not a slogan “exact CCSD(T) density”). This supervises the *argument* of \(\mathcal{E}\); it is not an optional extra head and not the force source. Supervising \(\Delta\rho\) rather than \(\rho\) also removes the core domination that made a plain \(L_\rho\) nearly blind to the diffuse valence tail — the tail that sets \(\boldsymbol{\mu}\) (round-2 issue 11).
 
 ### 6.4 MD / emergent spectroscopy protocol (run only after training, weights frozen)
 
@@ -201,7 +243,7 @@ $$L_{train} = \lambda_E L_E + \lambda_F L_F + \lambda_H L_H + \lambda_\rho L_\rh
 
 | Phase | Goal | Molecule(s)/Grid | Hard Go/No-Go Criteria |
 |---|---|---|---|
-| **Fase 0 — Numerical foundation** | Validate the differentiable physics engine itself, with **no ML**; lock the §5.1 data recipe | Analytical/reference energy functional + 1-geometry smoke tests + **10-geometry H₂O and benzene cost pilots** | Energy drift $<10^{-5}$ Hartree/ps · egg-box amplitude $<10^{-4}$ Hartree · $\lVert\mathbf{F}_{autograd}-\mathbf{F}_{finite\text{-}diff}\rVert < 10^{-5}$ a.u. (closed-loop force conservation + finite-difference check) · Hockney FFT-Poisson solver validated · rigid-translation egg-box test across $\sigma/\Delta x \in \{1,1.5,2,2.5,3\}$ · grid-convergence study across $\Delta x \in \{0.40,\dots,0.15\}\,\text{Å}$ · box-size/boundary convergence for the Poisson solver · **filled smoke-test table** (energy / 1-RDM / analytic grad / Hessian for H₂O and benzene) · **measured** \(\bar t_{\mathrm{geom}}\), peak RAM, and export size · **published force noise floor** (engine FD, egg-box residual, 5-point repeated QM force on one H₂O) · if \(T_{\mathrm{campaign}}\) does not fit, **shrink ladder chosen in writing** before any 2000/5000-config run |
+| **Fase 0 — Numerical foundation** | Validate the differentiable physics engine itself, with **no ML**; lock the §5.1 data recipe | Analytical/reference energy functional + 1-geometry smoke tests + **10-geometry H₂O and benzene cost pilots** | Energy drift $<10^{-5}$ Hartree/ps · egg-box amplitude $<10^{-4}$ Hartree · $\lVert\mathbf{F}_{autograd}-\mathbf{F}_{finite\text{-}diff}\rVert < 10^{-5}$ a.u. (closed-loop force conservation + finite-difference check) · Hockney FFT-Poisson solver validated · rigid-translation egg-box test across $\sigma/\Delta x \in \{1,1.5,2,2.5,3\}$ · grid-convergence study across $\Delta x \in \{0.40,\dots,0.15\}\,\text{Å}$ · box-size/boundary convergence for the Poisson solver · **filled smoke-test table** (energy / 1-RDM / analytic grad / Hessian for H₂O and benzene) · **measured** \(\bar t_{\mathrm{geom}}\), peak RAM, and export size · **published force noise floor** (engine FD, egg-box residual, 5-point repeated QM force on one H₂O) · **per-element atomic reference fits** accepted at \(\int\lvert\rho^{\mathrm{fit}}-\rho^{\mathrm{atom}}\rvert dV/Z<10^{-3}\) · **real-cube representability**: on one real H₂O CCSD 1-RDM, \(\lvert\int\Delta\rho\,dV\rvert<10^{-4}\,e\) and grid-vs-analytic \(E_{ne}\), \(E_H\) agreement \(<0.1\,\)mHa · **egg-box re-measured on that real cube and reported in force units** (not Hartree) · **\(\varepsilon_\theta\) anchoring fork (i) vs (ii) decided in writing** from the same cube · if \(T_{\mathrm{campaign}}\) does not fit, **shrink ladder chosen in writing** before any 2000/5000-config run |
 | **Fase 1 — H₂O PES training** | Learn $\mathbf{R}\to E,\mathbf{F},\rho$ | H₂O, ≥2,000 CCSD(T)/cc-pVTZ configs (per §5.1), $32^3$ grid | Force RMSE below the **greater of** \(1\,\text{meV/Å}\) **and** \(3\times\) the Phase 0 measured noise floor · harmonic frequencies within 5 cm⁻¹ of the CCSD(T) Hessian (the one equilibrium Hessian from §5.1, not a per-config Hessian) |
 | **Fase 2 — Emergent IR (H₂O)** | Blind spectral prediction, weights frozen | 5×50 ps MD trajectories | $\nu_1,\nu_2,\nu_3$ band centers within 10–15 cm⁻¹ of experimental gas-phase FTIR envelopes — obtained with **no spectral fitting** |
 | **Fase 3 — Physical hardness tests** | Sanity + hardness, **not** the §2 bake-off | D₂O (mass-only swap, frozen weights); CO₂ (linear, symmetric) | D₂O per-mode isotope shift consistent with theory (≈1.35–1.39) — **necessary, not flagship**; CO₂ $\nu_1$ symmetric-stretch intensity ≈ 0 (correctly IR-inactive), $\nu_2/\nu_3$ correctly active |
@@ -230,6 +272,7 @@ These checks were raised piecemeal across both conversations (mostly in the 23-p
 10. **Do not treat compute budgets as fixed a priori** — the earlier "18–24 hours on one A100 for benzene" estimate was flagged as likely too optimistic. Two measured budgets are required, and neither is a guess:
     - **Data campaign** (§5.1): \(T_{\mathrm{campaign}}\approx N_{\mathrm{geom}}\times\bar t_{\mathrm{geom}}\) from the 10-geometry H₂O and benzene pilots. This is a Phase 0 **exit**. If it does not fit, take the shrink ladder *before* P1/05 training.
     - **MD inference** (this item, original intent): derive a realistic 20–50 ps trajectory cost only *after* a real 10-ps H₂O run on the frozen PES, then extrapolate memory/time. Do not quote A100 folklore.
+11. **Reference-split validation** (round-2 issue 7) — a standing check, not a one-off. For \(\ge20\) geometries per molecule, compare the grid pipeline's \(E_{ne}\) and \(E_H\) against their **exact analytic values in the Gaussian basis**, which PySCF returns for free. Report max and RMS deviation. Any drift in this number over the campaign means the export grid, the reference fit, or the smearing width changed without anyone noticing.
 
 ---
 
