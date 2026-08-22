@@ -66,7 +66,7 @@ For each module, the assigned category (A/B/C/D), the concrete proposal, why it 
 ### Module 03 — Statistical Analysis
 **Category: (A) natural fit + (C) check/QA.**
 
-- **Proposal:** descriptive stats + hypothesis test(s) run directly on **Phase 0 numerical-foundation sweep data** — e.g., $H_0$: egg-box artifact amplitude is independent of the $\sigma/\Delta x$ ratio (§8 point 3), tested across the required sweep $\sigma/\Delta x \in \{1,1.5,2,2.5,3\}$ with repeated rigid-translation trials as rows; or a grid-convergence correlation test (§8 point 4) across $\Delta x \in \{0.40,\dots,0.15\}\,\text{Å}$. The CSV is rubric-legal **by spec** (see Pass 4 row): \(\ge 500\) rows, \(\ge 6\) columns, `sigma_over_dx` stored as a **categorical** factor, Zenodo DOI **before** the notebook claims a source (§5.5). Do not swap this for a Kaggle toy table.
+- **Proposal:** descriptive stats + hypothesis test(s) run directly on **Phase 0a numerical-foundation sweep data** — e.g., \(H_0\): mean egg-box force artifact is independent of the \(\sigma/\Delta x\) ratio (§8 point 3), tested across \(\sigma/\Delta x \in \{1,1.5,2,2.5,3\}\); plus a \(\sigma/\Delta x \times \Delta x\) interaction test (two-way ANOVA) and a molecule-factor comparison. The CSV is rubric-legal **by spec** (see Pass 4 row): 800 rows, 15 columns, two categorical factors, Zenodo DOI **before** the notebook claims a source (§5.5). **The noise model is declared and physical** — random rigid pose, random sub-cell offset, random thermal geometry per row — because a hypothesis test run on repeated evaluations of a deterministic engine would be a category error, not a statistics project. Do not swap this for a Kaggle toy table.
 - **Why it satisfies the rubric:** genuine hypothesis test with clearly stated $H_0$/$H_1$, own dataset distinct from Module 02's QM9 table, ≥3 visualizations of the sweep results, \(\ge 500\) rows / \(\ge 6\) cols / grouping variable / public DOI.
 - **Why it's genuinely valuable:** this *is* the required §8 QA protocol output (egg-box quantification / grid-convergence study), formally statistically validated instead of eyeballed — directly strengthens Phase 0's Go/No-Go evidence.
 
@@ -119,7 +119,7 @@ Modules 04–06 forbid "synthetic/AI-generated" datasets. CCSD(T)-computed confi
 | Module | Exact dataset | Format & size | Key deliverable files | Depends on |
 |---|---|---|---|---|
 | 02 | QM9 properties table (Ramakrishnan et al. 2014), random subset of ~5,000–10,000 molecules, minus the ~3,054 QM9-flagged "uncharacterized" geometries | Single CSV, rows = molecules, columns = SMILES, atom count, μ, α, HOMO, LUMO, gap, ZPVE, U₀, Cᵥ, etc. (≫5 cols, ≫200 rows) | `data_workflow.ipynb`, `module_summary.pdf`, `README.md`, `requirements.txt`, GitHub repo | None |
-| 03 | Phase 0 numerical-foundation sweep results (own-generated, not QM9) | CSV, **\(\ge 500\) rows, \(\ge 6\) columns**, one numeric + one **categorical** grouping variable. Frozen columns: `trial_id`, `molecule` (categorical), `sigma_over_dx` (**categorical** factor: `1.0`/`1.5`/`2.0`/`2.5`/`3.0`), `delta_x_angstrom`, `box_pad_factor`, `translation_step`, `energy_hartree`, `force_error`, `egg_box_amplitude_hartree`, `egg_box_force_mev_per_ang`. The force-unit column is not optional: Distilled Plan §7 states every artifact tolerance in force units, so the Hartree column alone cannot be tested against the engine-artifact ceiling. Frozen count (honest, not padded): \(5\,(\sigma/\Delta x)\times 50\text{ translations}\times 2\text{ molecules}\times 2\text{ repeats} + 6\,(\Delta x)\times 50\text{ translations} = 800\). A cheaper product is allowed only if it is written as a number \(\ge 500\), never “several hundred.” | `analysis.ipynb`, `module_summary.pdf`, sweep-results CSV **in the submission folder**, `requirements.txt` | **Phase 0 engine must already be built.** **§5.5:** Zenodo DOI **before** the notebook claims a source. Do not replace this with a UCI toy table. |
+| 03 | Phase 0a numerical-foundation sweep results (own-generated, not QM9) | CSV, **800 rows, 15 columns** (floor: 500). **Design (round-2 issue 14):** full factorial \(5\,(\sigma/\Delta x)\times5\,(\Delta x)\times2\,\text{molecules}=50\) cells \(\times\,16\) replicates \(=800\); floor is \(50\times10=500\). Arithmetic is executed, not asserted: [probes/issue14_sweep_design.py](../probes/issue14_sweep_design.py). **The replicates are not repeats of a deterministic calculation** — each row is an independent draw of the *experimental conditions*: random rigid pose relative to the voxel lattice, random sub-cell offset, random thermally displaced geometry. That is the declared noise model, without which a hypothesis test on a deterministic engine is a category error. Frozen columns: `trial_id`, `molecule` (categorical), `sigma_over_dx` (categorical), `delta_x_angstrom`, `seed`, `pose_rotation_deg`, `subvoxel_offset_frac`, `geometry_temperature_k`, `box_pad_factor`, `energy_hartree`, `egg_box_amplitude_hartree`, `egg_box_force_mev_per_ang`, `net_force_mev_per_ang`, `torque_force_equiv_mev_per_ang`, `charge_integral_error`, `wall_s`. Two categorical factors make a two-way ANOVA available, not just a t-test. | `analysis.ipynb`, `module_summary.pdf`, sweep-results CSV **in the submission folder**, `requirements.txt` | **Phase 0a only** — engine plus sweep harness. **Not** Phase 0b, not the PySCF campaign: every row is an engine evaluation with no QM, so this module is deliberately off the QM critical path. **§5.5:** Zenodo DOI **before** the notebook claims a source. Do not replace this with a UCI toy table. |
 | 04 | H₂O **descriptor CSV** from the Distilled Plan §5.1 campaign (same geometries as P1; not the volumetric tensors) | CSV, one row per config: `config_id, r_OH1, r_OH2, theta_HOH, energy_hartree, fx_O, fy_O, fz_O, fx_H1, …` plus the §5.1 theory tags (`theory_energy`, `theory_force`, `pyscf_version`, …). Bond-length/angle descriptor → energy/forces; deliberately *not* the 3D density grid. CSV **copy in the submission folder** (`df.head`). | `modeling.ipynb`, `Machine_Learning_Analysis_Report.pdf`, `requirements.txt`, dataset CSV | H₂O campaign per Distilled Plan §5.1. Same geometries may also feed P1; only this CSV is the Module 04 dataset. **§5.5:** Zenodo DOI **before** the source sentence. |
 | 05 | Benzene configuration set (Phase 5), **nominal** ≥5,000 configs, 64³ grid — **per Distilled Plan §5.1** | Volumetric tensors (`.npz`/HDF5), one file per config: nuclear positions, target ρ(r) from the pinned 1-RDM recipe, E, F, selected Hessian entries — plus an indexing manifest CSV with the §5.1 theory tags; **not CSV-only**; **not** the 04 CSV and **not** P1 tensors | `deep_learning.ipynb`, `Deep_Learning_Systems_Analysis_Report.pdf`, `requirements.txt`, dataset **hosted externally with access instructions** | Phase 5 benzene campaign — **the single biggest compute bottleneck**. \(N\) and grid are **targets until the 10-geometry pilot exits Phase 0**. If the shrink ladder fires to rung 4, 05 must be remapped. Prefer P1 architecture-stable before 05 training starts (§4.1). **§5.5:** Zenodo DOI **before** the source sentence. |
 | 06 | New, independent corpus: ~1,000–2,000 geometries across 5–8 small aromatics **that are not benzene** (toluene, pyridine, aniline, phenol, styrene, furan, pyrrole), **HF/6-31G or B3LYP/6-31G\*** only. Task: **VAE, representation learning over geometries.** | XYZ/`.npz` + manifest CSV | `generative_ai.ipynb`, `Generative_AI_Analysis_Report.pdf`, `requirements.txt`, geometry corpus | None (parallel with 04/05). **Not** benzene CCSD(T). **Not** a pipeline label source. **§5.5:** DOI before the source sentence. |
@@ -131,7 +131,7 @@ Modules 04–06 forbid "synthetic/AI-generated" datasets. CCSD(T)-computed confi
 - **Phase 4's comparison has three trainers and one assembler.** Module 04 delivers the simple non-field NN. **G1** (§4.2) delivers MACE on the **same** P1/05 split manifests. P1/05 deliver the field PES. Module 08 **assembles** the table. It does not train the competitor.
 - **Module 06 precision question:** its training corpus is deliberately *not* CCSD(T)-level — resolved in Pass 5 as *not* a deviation (proposal only). Pass 3 no longer contradicts this: the benzene-CCSD(T) VAE sentence is **deleted**.
 - **Distinctness check:** 02 (QM9 properties), 03 (Phase 0 sweep), 04 (H₂O descriptors), 05 (benzene volumetric), 06 (independent small-aromatic corpus) are all disjoint *graded* sources/formats/molecules — no dataset-reuse violations across 02–06. P1's H₂O volumetric tensors are research infrastructure, never submitted as a module dataset.
-- **Dependency chain is now explicit:** Phase 0 engine **and** §5.1 smoke tests + 10-geometry cost pilots (→03 sweep write-up; pilots are a Phase 0 *exit*) → H₂O campaign per §5.1 (→04 descriptor CSV **and** P1 volumetric tensors) → **P1 H₂O field PES** in parallel with **G1 H₂O MACE** (same split manifest) → Phase 5 benzene campaign **at the \(N\)/grid the pilot allows** (→05, the long pole) → **G1 benzene MACE** after the 05 split freeze → Phases 2/3 on P1 weights (→07) → 08 (needs ≥3 of 04/05/06/07 **and** the G1 gate report to claim §2). Module 06's corpus has no dependency and can be produced any time in parallel. If the H₂O pilot fails, stop before P1/G1. If the benzene pilot fails, take the shrink ladder before promising 05.
+- **Dependency chain is now explicit:** **Phase 0a** engine + sweep (→ 03; needs no QM at all) ‖ **Phase 0b** §5.1 smoke tests + 10-geometry cost pilots on Linux/WSL2 → H₂O campaign per §5.1 (→04 descriptor CSV **and** P1 volumetric tensors) → **P1 H₂O field PES** in parallel with **G1 H₂O MACE** (same split manifest, frozen per Distilled Plan §7.1) → Phase 5 benzene campaign **at the \(N\)/grid the pilot allows** (→05, the long pole) → **G1 benzene MACE** after the 05 split freeze → Phases 2/3 on P1 weights (→07) → 08 (needs ≥3 of 04/05/06/07 **and** the G1 gate report to claim §2) → 09. Modules 02 and 06 have **no dependency at all** and should be front-loaded (§8.4). If the H₂O pilot fails, stop before P1/G1. If the benzene pilot fails, take the shrink ladder before promising 05.
 
 ### 4.1 Workstream P1 — H₂O FNO-NCA PES (resolves professor-review blocking issue 1)
 
@@ -260,7 +260,7 @@ These are **submission gates**, not notes to self. Order is mandatory: **DOI exi
 
 | Module | Dataset | Gate | Required report sentence (do not improvise a chemistry lecture) |
 |---|---|---|---|
-| **03** | Phase 0 sweep CSV | Zenodo DOI + public GitHub; CSV **also** in the submission folder. \(\ge 500\) rows, \(\ge 6\) cols, `sigma_over_dx` categorical. | This table is numerical output of a **deterministic classical physics engine** (Gaussian nuclei, Hockney–Eastwood, autograd), not an AI-generated or GAN-simulated dataset. |
+| **03** | Phase 0a sweep CSV | Zenodo DOI + public GitHub; CSV **also** in the submission folder. 800 rows (floor 500), 15 cols, two categorical factors. | This table is measured output of a **deterministic classical physics engine** (Gaussian nuclei, Hockney–Eastwood, autograd), not an AI-generated or GAN-simulated dataset. The randomisation is in the **experimental conditions** — the molecule's pose and geometry are drawn at random, exactly as sample placement is randomised on a physical instrument — while the measured response is deterministic physics. Seeds are published so every row is reproducible. |
 | **04** | H₂O descriptor CSV | Zenodo DOI **before** Task 1; CSV copy in the zip for `df.head`. | Computed with **PySCF** under Distilled Plan §5.1 (ab initio CCSD(T)/cc-pVTZ energy; forces per the pinned recipe) — first-principles numerical data, **not** an AI/ML-generated synthetic dataset. |
 | **05** | Benzene volumes | Zenodo (or versioned record) **before** the report; access instructions in the notebook. Not the 04 CSV; not P1 tensors. | Same PySCF / §5.1 sentence as 04, plus: this volumetric set is **not reused** from any prior capstone project. |
 | **06** | Cheap non-benzene geometry corpus | Zenodo DOI **before** the source sentence. | The **dataset** is QM at HF/6-31G or B3LYP/6-31G\* (not AI-generated as a dataset). VAE **outputs** are generated samples the rubric requires showing; they are **not** pipeline labels unless recomputed at §5.1. |
@@ -295,3 +295,76 @@ These files live in [`../CapstoneProjects/`](../CapstoneProjects/) next to the s
 | 12 | [12_Astrophysical_PAH_Identification.md](../CapstoneProjects/12_Astrophysical_PAH_Identification.md) | Excitation + fail-closed ID | Pre-registered match to one frozen JWST/PAHdb product; “any size” means until measured error exceeds the band tolerance |
 
 Order is mandatory: 10 then 11 then 12. A single extra project, if only one exists, is 10.
+
+---
+
+## 8. Calendar and critical path (resolves round-2 blocking issue 15)
+
+**Status:** closed as *structure*; **open until the three anchors in §8.1 are filled in.** Round-1 stamp condition 1 required Phase 1 to have "a date and a failure mode". The failure mode has existed since §4.1. The date has never existed anywhere in this repository, and neither has any other date.
+
+### 8.1 Anchors — fill these in before this section is real
+
+| Anchor | Value | Who knows it |
+|---|---|---|
+| \(T_0\) — capstone/thesis start | *(to fill)* | you |
+| Udacity module deadlines 02–09, or "self-paced" | *(to fill)* | the Udacity classroom |
+| Sustained hours per week | *(to fill)* | you |
+
+Everything below is in **weeks after \(T_0\)** for one person. Convert to dates once \(T_0\) exists. If the hours/week figure is materially below full-time, **multiply** every estimate before comparing against deadlines — do not compress the estimates to fit the calendar. That is the failure this section exists to prevent.
+
+### 8.2 Effort estimates and owners
+
+| Workstream | Est. weeks | Depends on | Unblocks | Drop-dead rule |
+|---|---|---|---|---|
+| **Module 02** (QM9 EDA) | 1–2 | *nothing* | — | Start in week 1. It is the only graded module with zero dependencies. |
+| **Module 06** (VAE corpus) | 2–3 | *nothing* | — | Free schedule slack; run it in any waiting period. |
+| **Env:** Linux/WSL2 + PySCF | 0.5–1 | — | Phase 0b | Week 1. PySCF has no native Windows build (Distilled Plan §5.1 platform note). |
+| **Phase 0a** engine + sweeps | 4–6 | — | Module 03 | If the §7 engine gates are not met by ~week 8, re-scope before continuing. |
+| **Module 03** (statistics) | 1–2 | Phase 0a | — | — |
+| **Phase 0b** smoke + cost pilots | 1–2 | Env, Phase 0a | H₂O campaign | The pilot is the kill switch (Distilled Plan §5.1). |
+| **H₂O campaign** | **measured in 0b** | Phase 0b | 04, P1, G1 | If \(T_{\mathrm{campaign}}\) does not fit, stop **before** P1. |
+| **Module 04** | 1–2 | H₂O descriptor CSV | — | — |
+| **P1** H₂O field PES | 3–4 | H₂O tensors | 07, 05, 08 | §4.1 failure mode. |
+| **G1** H₂O MACE | 1–2 | P1 split freeze (§7.1) | 08 | §4.2 failure mode. |
+| **Benzene campaign** | **measured in 0b** | Phase 0b | 05 | Shrink ladder; rung 4 remaps Module 05. |
+| **Module 05** | 3–4 | Benzene tensors; P1 architecture stable | 08 | — |
+| **Phases 2–3 + Module 07** | 3–4 | P1 weights (may be FAIL) | 08 | 07 ships even if P1 failed; refusing PASS is the demo. |
+| **Module 08** | 2–3 | ≥3 of 04–07 + G1 report | 09 | Nothing may debut here. |
+| **Module 09** defense | 1 | 08 | — | See §8.5. |
+
+These are estimates. See §8.6.
+
+### 8.3 The arithmetic nobody had done
+
+Serial critical path, **excluding** the two PySCF campaigns:
+
+\[
+\underbrace{5}_{0a}+\underbrace{2}_{\text{env}+0b}+\underbrace{3.5}_{P1}+\underbrace{3.5}_{05}+\underbrace{3.5}_{07}+\underbrace{2.5}_{08}+\underbrace{1}_{09}\;\approx\;21\ \text{weeks}
+\]
+
+Against the plan's own "~6–7 month" budget (26–30 weeks), that leaves **5–9 weeks for both QM campaigns combined**.
+
+That is the entire plan in one sentence: **the Phase 0b pilot does not inform the schedule, it decides it.** If the measured \(\bar t_{\mathrm{geom}}\) implies more than roughly five weeks of wall-clock for H₂O plus benzene together, the §5.1 shrink ladder fires — and on this arithmetic that should be treated as the *expected* outcome, not the contingency.
+
+### 8.4 Ordering rules
+
+1. **Week 1 runs three things in parallel:** Module 02, the Linux/WSL2 + PySCF environment, and Phase 0a. None blocks the others, and two of them are pure schedule insurance.
+2. **Module 06 fills any waiting period.** No dependencies, and it is graded.
+3. **Module 03 needs only Phase 0a.** That split (Distilled Plan §7) is the whole point: it keeps the second graded submission off the QM critical path, which was the degree risk flagged in round-2 issue 15.
+4. **P1 and G1 train in parallel** on the same frozen split, per Distilled Plan §7.1.
+5. **Nothing debuts in Module 08.** If a leg is missing, 08 reports the claim incomplete (§4.1, §4.2).
+
+### 8.5 Module 09 — now has an owner (closes a non-blocking round-2 item)
+
+Module 09 is a live 15-minute presentation plus 15 minutes of defense on the Module 08 system. It is the single highest-risk place for the honest-scope narrative to collapse under questioning, and until now nothing in this repository owned it.
+
+**Deliverable, owned by whoever writes Module 08** — a one-page defense brief covering:
+
+- what was claimed (Distilled Plan §9 wording: band positions and relative envelopes within a stated cm⁻¹ tolerance, never lines);
+- what was **not** built (PAH identification — that is Projects 10–12);
+- the two questions most likely to be asked, with answers already written: *"isn't this just orbital-free DFT?"* (Distilled Plan §2.1) and *"why does a physics simulator count as a CNN?"* (§3 Module 05 framing);
+- which ladder rungs fired (§2.1 functional escalation, §5.1 cost shrink, §5.1 density representation) — because a rung that fired and went unmentioned is the fastest way to lose a defense.
+
+### 8.6 Re-estimation rule
+
+This project does not accept unmeasured numbers, and §8.2 is currently a set of unmeasured numbers. After **two weeks** of Phase 0a work, re-estimate from measured velocity and rewrite §8.2. If the re-estimate exceeds the §8.3 budget, the shrink ladder fires **then** — in month one, where it is cheap — rather than in month five, where it is not.
