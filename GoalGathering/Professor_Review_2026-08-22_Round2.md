@@ -1,6 +1,6 @@
 # Critical Professor Review — Round 2 (2026-08-22)
 
-**Status:** No green light. Blocking issues **9, 11–15** are open; **7, 8 and 10 are closed in spec** (2026-08-22). This review continues the numbering of [Professor_Review_2026-08-22_Round1.md](Professor_Review_2026-08-22_Round1.md); issues 1–6 stand as closed-in-spec and are not re-litigated here.
+**Status:** No green light. Blocking issues **9, 13, 14, 15** are open; **7, 8, 10, 11 and 12 are closed in spec** (2026-08-22). This review continues the numbering of [Professor_Review_2026-08-22_Round1.md](Professor_Review_2026-08-22_Round1.md); issues 1–6 stand as closed-in-spec and are not re-litigated here.
 
 **Scope reviewed:** [Overarching_Goal.md](Overarching_Goal.md), [Distilled_Project_Plan_and_Quality_Checks.md](Distilled_Project_Plan_and_Quality_Checks.md), [Capstone_Mapping.md](Capstone_Mapping.md), [Relevant_Scientific_Papers.md](Relevant_Scientific_Papers.md), [Papers/README.md](Papers/README.md), the module rubrics in [`../CapstoneProjects/`](../CapstoneProjects/), and repository hygiene.
 
@@ -96,6 +96,12 @@ Related magnitude problem: \(\varepsilon_\theta\) must supply the kinetic energy
 
 ### 11. The IR observable is never trained, never validated, and its gate has no number
 
+**Status (2026-08-22):** Addressed in spec — Distilled Plan §3, §6.4 precondition, §7 Phase 1 dipole gates, §7 Phase 3 CO₂ gate, §8 item 12. Measured in [probes/issue11_12_observable_and_invariance.py](../probes/issue11_12_observable_and_invariance.py).
+
+The reference split turns out to fix this more deeply than expected. A promolecule of neutral spherical atoms has **identically zero** dipole, so \(\boldsymbol{\mu}=-\int\mathbf{r}\,\Delta\rho_\theta\,dV\) exactly: the graded observable is a direct integral of the object that is supervised, instead of a residue of two numbers \(\approx7\times\) larger. And the old scheme was worse than a cancellation problem — the grid density carried \(+1.14\,e\) of net charge, so its “dipole” was not origin-independent and was not a dipole at all; it moved by \(39\%\) under a one-cell translation. Deformation-only: \(2\times10^{-7}\%\) error, \(5\times10^{-7}\%\) swing.
+
+New numbers where there were none: \(\lVert\boldsymbol{\mu}_\theta-\boldsymbol{\mu}_{\mathrm{QM}}\rVert<0.01\,ea_0\); \(d\boldsymbol{\mu}/d\mathbf{R}\) relative error \(<5\%\) (from \(I\propto\lvert d\boldsymbol{\mu}/dQ\rvert^2\) and the §9 \(\sim10\%\) envelope claim); \(\boldsymbol{\mu}\) grid artifact \(<0.1\%\); CO₂ \(I(\nu_1)/I(\nu_3)<10^{-2}\) **and** consistent with \(\delta^2\). §8 item 12 also records that \(L_\rho\) still does not optimize \(\boldsymbol{\mu}\) — an unweighted MSE can improve while a first moment worsens — with a \(\boldsymbol{\mu}\) loss term as the named remedy.
+
 The deliverable is band envelopes and *relative intensities*. Those come from \(\boldsymbol{\mu}=\int\mathbf{r}(\rho_{\text{nucl}}-\rho_\theta)\,dV\) and its derivative \(d\boldsymbol{\mu}/d\mathbf{R}\). Yet:
 
 - \(L_\rho\) is plain MSE on \(\rho\), numerically dominated by the core and near-blind to the diffuse valence tail that sets \(\boldsymbol{\mu}\). Minimizing it does not optimize the dipole.
@@ -105,6 +111,12 @@ The deliverable is band envelopes and *relative intensities*. Those come from \(
 **Fix:** add a Phase 1 exit criterion — dipole RMSE and \(d\boldsymbol{\mu}/d\mathbf{R}\) RMSE vs the QM reference, with stated thresholds — plus a stated forbidden-mode residual tolerance for CO₂.
 
 ### 12. There is no invariance budget — and it is the mechanism by which G1 wins
+
+**Status (2026-08-22):** Addressed in spec — Distilled Plan §6.4 precondition, §7 Phase 0 rotation sweep, §8 item 13, and a pre-registered-confound row in [Capstone_Mapping.md](Capstone_Mapping.md) §4.2.
+
+One correction to this review's own claim. \(\lVert\sum_A\mathbf{F}_A\rVert\) is \(-\partial E/\partial(\text{rigid shift})\) — it **is** the egg-box force in a different costume, so it needs no new gate, only the issue-8 ceiling plus an online monitor during MD. Rotation is the genuinely uncovered quantity. Measured as a force-equivalent \(\tau_{\max}/r_{\max}\): \(1.7\times10^{3}\,\)meV/Å for the full density on the grid, \(3\times10^{-5}\,\)meV/Å under the reference split. Contrary to what this review asserted, rotation is *not* the larger of the two residuals — but that ordering was not knowable in advance, which is precisely why it is now a gate rather than an assumption.
+
+The confound survives regardless of magnitude: rotation is the symmetry MACE satisfies by construction, so both residuals must be published **before** the Phase 4 bake-off, or a G1 win cannot be distinguished from a discretization artifact.
 
 A voxel-grid energy is neither rotationally nor translationally invariant. Consequences: \(\sum_A \mathbf{F}_A \ne 0\) and \(\sum_A \mathbf{R}_A\times\mathbf{F}_A \ne 0\) — spurious net force and torque, integrated over 40,000–100,000 steps. Rigid rotation/translation augmentation is a soft, data-level patch, not a guarantee. Neither residual appears in the §8 ten-point protocol.
 
