@@ -1,6 +1,6 @@
 # Critical Professor Review — Round 2 (2026-08-22)
 
-**Status:** No green light. Blocking issues **9, 13, 14, 15** are open; **7, 8, 10, 11 and 12 are closed in spec** (2026-08-22). This review continues the numbering of [Professor_Review_2026-08-22_Round1.md](Professor_Review_2026-08-22_Round1.md); issues 1–6 stand as closed-in-spec and are not re-litigated here.
+**Status:** No green light. Blocking issues **14 and 15** are open; **7–13 are closed in spec** (2026-08-22). This review continues the numbering of [Professor_Review_2026-08-22_Round1.md](Professor_Review_2026-08-22_Round1.md); issues 1–6 stand as closed-in-spec and are not re-litigated here.
 
 **Scope reviewed:** [Overarching_Goal.md](Overarching_Goal.md), [Distilled_Project_Plan_and_Quality_Checks.md](Distilled_Project_Plan_and_Quality_Checks.md), [Capstone_Mapping.md](Capstone_Mapping.md), [Relevant_Scientific_Papers.md](Relevant_Scientific_Papers.md), [Papers/README.md](Papers/README.md), the module rubrics in [`../CapstoneProjects/`](../CapstoneProjects/), and repository hygiene.
 
@@ -77,6 +77,14 @@ Note also that the finite-difference check cannot rescue this: autograd and FD s
 
 ### 9. The novelty check missed the field that already owns this idea
 
+**Status (2026-08-22):** Addressed in spec — new Distilled Plan §2.1, revised §4 heading, and [Relevant_Scientific_Papers.md](Relevant_Scientific_Papers.md) items 21–25 (all verified against arXiv/APS, not recalled). The bibliography was also missing items 16–20, whose PDFs were already in `Papers/`; those are now listed too.
+
+The positioning is stated bluntly rather than defensively: an ML functional of \(\rho\) (2012), bypassing the KS equations with a learned \(\mathbf{R}\to\rho\) map and running MD on it (Brockherde 2017), and size-extrapolation of a density functional (M-OFDFT 2024) are all **not novel here**. What remains is the *combination* of CCSD(T) labels, autograd forces through \(\rho_\theta\), emergent frozen-weight IR, and a pre-registered field-vs-GNN transfer test — and §2.1 says in writing that removing the last of those leaves an incremental variation on a populated field.
+
+M-OFDFT turned out to cut both ways and both are recorded: it reports that **essential non-locality** was required (so the plan's local \(\varepsilon_\theta(\rho,\lvert\nabla\rho\rvert)\) is the form the field found insufficient), *and* that its model extrapolates to molecules far larger than those trained on (so part of the size-extensivity claim is already someone else's result). Teller (1962) is cited as the historical boundary condition.
+
+§2.1 also pre-registers the escalation ladder — local \(\varepsilon_\theta\) → switch anchoring fork → **non-local** \(\varepsilon_\theta\) → atomic-basis representation (outlook) — with the rule that a failure at rung 1 is a result about \(\varepsilon_\theta\), **not** a falsification of the field hypothesis. Only a failure after rung 3 may be reported as negative for field representations.
+
 \(E = E_{\mathrm{es}}[\rho] + \int \varepsilon_\theta(\rho,|\nabla\rho|)\,dV\), with \(\rho\) predicted from \(\mathbf{R}\) and forces by autograd, **is machine-learned orbital-free DFT**. The 21-paper bibliography contains none of it. The lineage that must be cited and positioned against includes Snyder et al. (2012), **Brockherde et al. (2017)** — which maps \(\mathbf{R}\to\rho\), evaluates \(E[\rho]\), and *runs MD with it*, i.e. the Route B pipeline — Chandrasekaran et al. (2019), Kohn–Sham-as-regularizer (2021), and M-OFDFT (2024).
 
 Two damages:
@@ -125,6 +133,12 @@ This is not a detail. **MACE is exactly equivariant by construction.** If G1 bea
 **Fix:** pre-register that confound now, and add \(\lVert\sum_A\mathbf{F}_A\rVert\) and the torque residual as Phase 0/1 gates.
 
 ### 13. The central comparison is not yet an experiment
+
+**Status (2026-08-22):** Addressed in spec — new Distilled Plan §7.1, referenced as a precondition from the §7 Phase 4 gate and from a new pre-registration row in [Capstone_Mapping.md](Capstone_Mapping.md) §4.2.
+
+Seven items, all of which must be committed **before** any leg of the comparison trains: frozen split file with a hash quoted in every gate report; \(\ge3\) seeds with mean \(\pm\) SD; equal hyperparameter budget with MACE starting from its authors' recipe (an untuned competitor is a straw man and a reviewer will say so); a declared effect size \(\Delta\), provisionally \(0.10\) and finalized as \(3\times\) the within-model seed scatter measured on **validation** before the held-out mode family is touched; five named confounds; frozen analysis; and the test set evaluated once.
+
+The item that matters most is the smallest: **“inconclusive” is pre-authorised as a publishable outcome.** Without that, every incentive at month six points at spinning a null result.
 
 Distilled Plan §2 is falsifiable in wording only. Missing:
 
