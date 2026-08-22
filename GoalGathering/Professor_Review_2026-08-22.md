@@ -87,6 +87,8 @@ That is not a wording nit. It is the prime directive versus the methods chapter.
 
 ### 5. Three rubric landmines are still live
 
+**Status (2026-08-22):** Addressed in spec — mapping Pass 3 Module 06 rewritten; Pass 4 Module 03 is \(\ge 500\) (target 800) with categorical `sigma_over_dx`; §5.5 makes Zenodo DOI a **gate** before the source sentence for 03/04/05/06. Not closed as a *submission* issue until the DOIs exist; the *spec* hole is closed. The GNN half of stamp item 5 remains **issue 6**.
+
 These are not “remember to phrase it nicely.” They can fail a module even if the science is good.
 
 **Module 03.** The rubric needs \(\ge 500\) rows, \(\ge 6\) columns, a categorical/grouping variable, public source, and “not synthetic.” The planned sweep table is “several hundred” rows. That may already fail the count. Self-generated numerical QA data is also the easiest thing for a grader to call synthetic. Zenodo-before-submission is necessary here, not only for Module 04. Encode a real grouping factor (e.g. \(\sigma/\Delta x\) as a categorical factor) and commit to \(\ge 500\) rows in the spec.
@@ -122,6 +124,6 @@ A **conditional green light to begin Phase 0 only** after a short addendum (one 
 2. Write \(E=\mathcal{E}[\rho,R]\) as an implementable functional; remove or justify \(\rho_{Im}\) and EM channels; state whether Poisson is fixed Hockney–Eastwood or learned FNO.
 3. ~~Replace “CCSD(T) densities/forces/Hessians via PySCF” with a methods paragraph plus a 10-geometry benzene cost pilot as a Phase 0 exit criterion.~~ **Done in spec** (Distilled Plan §5.1, 2026-08-22). Still needs measured pilot numbers before it is closed as science.
 4. ~~Reconcile [Overarching_Goal.md](Overarching_Goal.md) with Distilled Plan §9.~~ **Done in spec** (Overarching Goal rewrite + README/mapping satellites, 2026-08-22). Horizon remainder is Projects 10–12, not Module 08.
-5. Fix the Module 03 row count/source rule, collapse the Module 06 dataset contradiction, and put the GNN baseline on the critical path of the scientific claim rather than in the synthesis appendix.
+5. ~~Fix the Module 03 row count/source rule and collapse the Module 06 dataset contradiction.~~ **Done in spec** (mapping Pass 3/4 + §5.5, 2026-08-22). Still needs live DOIs before it is closed as a submission. **GNN on the critical path remains issue 6** — do not treat this strike-through as closing the comparison.
 
 Until then: **no green light.** The project is good enough to deserve that standard. It is not yet good enough to start the expensive parts.

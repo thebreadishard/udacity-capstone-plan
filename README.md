@@ -48,7 +48,7 @@ across the seven gradeable Udacity capstone modules as follows:
 | **04** | Applied ML | Phase 4 (partial) | Simple non-field NN baseline trained on the H₂O CCSD(T) **descriptor CSV** — one leg of the required three-way comparison |
 | *(P1)* | *Ungraded workstream* | Phase 1 | H₂O hybrid FNO-NCA field PES (\(32^3\)) — research infra, not a Udacity module; must exist before Module 07 |
 | **05** | Deep Learning Systems | Phase 5 | The flagship hybrid FNO-NCA architecture on benzene (CNN-family, with ablation study) |
-| **06** | Generative AI | *(Bridge — B/D)* | VAE/diffusion model for generating candidate molecular geometries to augment training data |
+| **06** | Generative AI | *(Bridge — B/D)* | VAE **representation learning** on a cheap **non-benzene** aromatic corpus (proposal only; not pipeline labels) |
 | **07** | Agentic Workflows | Phases 2 & 3 | Computational-chemistry lab-assi: reliability-gated **small-molecule** IR emulation (JWST/PAH ID is horizon, not a built capability) |
 | *(10)* | *Post-master’s* | Horizon | Size-extensive gold-anchored aromatic PES — not a Udacity module |
 | *(11)* | *Post-master’s* | Horizon | GVPT2-class anharmonic bands + intensities — not a Udacity module |
@@ -137,8 +137,10 @@ The planning phase is substantially complete (Passes 1–5 of the mapping docume
 done). Phase 1 is owned by ungraded Workstream P1 (mapping §4.1). Energy is an
 implementable \(E=\mathcal{E}[\rho,R]\) (Distilled Plan §6). Data generation is a
 method plus a measured cost pilot (Distilled Plan §5.1), not “CCSD(T) via PySCF.”
-The prime directive matches Distilled Plan §9 (issue 4). Horizon PAH work is
-Projects 10–12. Professor-review issues 5–6 and Pass 6 remain open.
+The prime directive matches Distilled Plan §9 (issue 4). Rubric landmines are
+locked (issue 5: \(\ge 500\)-row Module 03 table, one Module 06 VAE story, DOI
+before claim). Horizon PAH work is Projects 10–12. Professor-review issue 6
+and Pass 6 remain open.
 
 - **Pass 6:** Module-by-module sign-off — walk through each module's final specification
   and get explicit go-ahead.
