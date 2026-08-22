@@ -1,6 +1,6 @@
 # Critical Professor Review — Round 2 (2026-08-22)
 
-**Status:** No green light. Blocking issues **14 and 15** are open; **7–13 are closed in spec** (2026-08-22). This review continues the numbering of [Professor_Review_2026-08-22_Round1.md](Professor_Review_2026-08-22_Round1.md); issues 1–6 stand as closed-in-spec and are not re-litigated here.
+**Status:** No green light. **7–14 are closed in spec**; **15 is closed as structure and open until three calendar anchors are filled in** ([Capstone_Mapping.md](Capstone_Mapping.md) §8.1). This review continues the numbering of [Professor_Review_2026-08-22_Round1.md](Professor_Review_2026-08-22_Round1.md); issues 1–6 stand as closed-in-spec and are not re-litigated here.
 
 **Scope reviewed:** [Overarching_Goal.md](Overarching_Goal.md), [Distilled_Project_Plan_and_Quality_Checks.md](Distilled_Project_Plan_and_Quality_Checks.md), [Capstone_Mapping.md](Capstone_Mapping.md), [Relevant_Scientific_Papers.md](Relevant_Scientific_Papers.md), [Papers/README.md](Papers/README.md), the module rubrics in [`../CapstoneProjects/`](../CapstoneProjects/), and repository hygiene.
 
@@ -151,7 +151,13 @@ Distilled Plan §2 is falsifiable in wording only. Missing:
 Without those, a \(10\%\) difference is a coin flip and a loss is indistinguishable from "we tuned ours worse." Two seeds and a stated margin cost almost nothing now and are unrecoverable later.
 
 ### 14. Module 03's frozen row count is arithmetically wrong, and its "repeats" have no noise model
+**Status (2026-08-22):** Addressed in spec — [Capstone_Mapping.md](Capstone_Mapping.md) §3 Module 03, §4 Pass 4 row, §5.5; design arithmetic executed in [probes/issue14_sweep_design.py](../probes/issue14_sweep_design.py).
 
+Replaced with a full factorial that lands on the intended number honestly: \(5\,(\sigma/\Delta x)\times5\,(\Delta x)\times2\,\text{molecules}=50\) cells \(\times16\) replicates \(=800\) rows, floor \(50\times10=500\), 15 columns. The count is now asserted by a script rather than by prose, which is the appropriate response to a spec whose “frozen, honest, not padded” number did not evaluate to itself.
+
+The deeper fix is the noise model. Replicates are **independent draws of the experimental conditions** — random rigid pose relative to the lattice, random sub-cell offset, random thermally displaced geometry — not repeated evaluations of a deterministic engine. This makes the hypothesis tests real (one-way ANOVA on \(\sigma/\Delta x\), two-way interaction with \(\Delta x\), molecule-factor comparison), and it improves the science: the egg-box study becomes a distribution instead of a curve. The §5.5 “not synthetic” sentence was rewritten accordingly — randomised *conditions*, deterministic *response*, published seeds.
+
+The sweep also now carries the issue 7, 8 and 12 quantities as columns, so Module 03's graded dataset **is** the Phase 0a gate evidence rather than a parallel artifact.
 [Capstone_Mapping.md](Capstone_Mapping.md) §4 freezes: \(5\times50\times2\times2 + 6\times50 = 800\). That is \(1000+300 = 1300\). The number presented as "honest, not padded" to close blocking issue 5 does not evaluate to itself. (Both readings clear \(\ge500\), so the rubric survives; the *credibility of a frozen number* does not.)
 
 Worse: **the engine is deterministic.** What varies between "2 repeats"? If nothing, those are duplicate rows, and a hypothesis test on a noiseless generator is a category error a statistics grader is entitled to notice.
@@ -159,6 +165,20 @@ Worse: **the engine is deterministic.** What varies between "2 repeats"? If noth
 **Fix:** declare a genuine source of variation — random molecular orientation, random sub-voxel offset, thermally sampled geometries — in the sweep design, and recompute the count. This is also better science: it turns the egg-box study from a curve into a distribution.
 
 ### 15. There is no calendar, and the second graded submission sits behind the hardest unfunded work
+
+**Status (2026-08-22):** Closed as **structure**, open until anchors exist — new [Capstone_Mapping.md](Capstone_Mapping.md) §8, plus the Phase 0a / 0b split in Distilled Plan §7 and a platform note in §5.1.
+
+Three things came out of doing the arithmetic rather than describing it.
+
+**The dependency was structural, not just unlucky.** Splitting Phase 0 into **0a** (engine + sweeps, no QM) and **0b** (smoke tests + cost pilots, needs PySCF) takes Module 03 off the QM critical path entirely — every row of its sweep is an engine evaluation. That is a better fix than rescheduling.
+
+**The serial path leaves almost no room.** Excluding both PySCF campaigns, the critical path is \(\approx21\) weeks against a 26–30 week budget, so **5–9 weeks remain for H₂O plus benzene combined**. The Phase 0b pilot therefore does not inform the schedule, it decides it, and on this arithmetic the shrink ladder firing is the *expected* outcome rather than the contingency. That sentence did not exist anywhere before.
+
+**A week-1 surprise was hiding.** PySCF publishes no native Windows wheels; the campaign environment is Linux or WSL2. Cheap to check on day one, expensive to discover in month three.
+
+Also closed here: Module 09 now has an owner and a deliverable (§8.5) — a one-page defense brief naming what was claimed, what was **not** built, the two questions most likely to be asked, and which ladder rungs fired.
+
+**Still open:** \(T_0\), the Udacity module deadlines, and sustained hours per week (§8.1). Until those are filled in, §8 is a shape, not a schedule. §8.6 requires re-estimating from measured velocity after two weeks of Phase 0a.
 
 Round-1 stamp condition 1 required Phase 1 assigned "with a date and a failure mode." [Capstone_Mapping.md](Capstone_Mapping.md) §4.1 delivers an excellent failure mode and **no date**. Nowhere in the repository is there a month, a deadline, or an effort estimate.
 
