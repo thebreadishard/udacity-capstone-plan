@@ -1,6 +1,6 @@
 # Critical Professor Review — 2026-08-22
 
-**Status:** No green light yet. Each blocking point below will be handled in a separate follow-up commit.
+**Status:** No green light yet. Blocking issues 1–6 are closed **in spec** (separate commits). Pass 6 and the Phase 0 measured addendum remain.
 
 **Scope reviewed:** [Overarching_Goal.md](Overarching_Goal.md), [Distilled_Project_Plan_and_Quality_Checks.md](Distilled_Project_Plan_and_Quality_Checks.md), [Capstone_Mapping.md](Capstone_Mapping.md), and the module rubrics in [`../CapstoneProjects/`](../CapstoneProjects/). Pass 6 of the mapping is still open; that matches this judgment.
 
@@ -87,7 +87,7 @@ That is not a wording nit. It is the prime directive versus the methods chapter.
 
 ### 5. Three rubric landmines are still live
 
-**Status (2026-08-22):** Addressed in spec — mapping Pass 3 Module 06 rewritten; Pass 4 Module 03 is \(\ge 500\) (target 800) with categorical `sigma_over_dx`; §5.5 makes Zenodo DOI a **gate** before the source sentence for 03/04/05/06. Not closed as a *submission* issue until the DOIs exist; the *spec* hole is closed. The GNN half of stamp item 5 remains **issue 6**.
+**Status (2026-08-22):** Addressed in spec — mapping Pass 3 Module 06 rewritten; Pass 4 Module 03 is \(\ge 500\) (target 800) with categorical `sigma_over_dx`; §5.5 makes Zenodo DOI a **gate** before the source sentence for 03/04/05/06. Not closed as a *submission* issue until the DOIs exist; the *spec* hole is closed. The GNN half of the original stamp item 5 is **issue 6** (closed in spec via G1).
 
 These are not “remember to phrase it nicely.” They can fail a module even if the science is good.
 
@@ -98,6 +98,8 @@ These are not “remember to phrase it nicely.” They can fail a module even if
 **Module 04/05 “public, not synthetic.”** Publishing H₂O CCSD(T) with a DOI is the right mitigation. Do it **before** the notebook claims a source link. Do not argue with the grader that PySCF is “not AI.” Put the sentence in the report and put the files on the internet.
 
 ### 6. The comparison that tests the thesis is in the wrong module
+
+**Status (2026-08-22):** Addressed in spec — [Workstream G1](Capstone_Mapping.md#42-workstream-g1--equivariant-atomistic-pes-resolves-professor-review-blocking-issue-6) owns MACE (NequIP fallback) on the same P1/05 split manifests. Distilled Plan §7 Phase 4 primary gate is leave-one-mode-out vs G1. Module 08 assembles; it does not train. D₂O stays Phase 3 sanity. Not closed as a scientific issue until G1 weights exist; the *ownership* hole is closed.
 
 The scientific claim is field vs atomistic GNN. Module 05 only compares local CNN vs CNN+FNO on benzene. That is a good ablation of **this** architecture. It does not answer the research question.
 
@@ -124,6 +126,7 @@ A **conditional green light to begin Phase 0 only** after a short addendum (one 
 2. Write \(E=\mathcal{E}[\rho,R]\) as an implementable functional; remove or justify \(\rho_{Im}\) and EM channels; state whether Poisson is fixed Hockney–Eastwood or learned FNO.
 3. ~~Replace “CCSD(T) densities/forces/Hessians via PySCF” with a methods paragraph plus a 10-geometry benzene cost pilot as a Phase 0 exit criterion.~~ **Done in spec** (Distilled Plan §5.1, 2026-08-22). Still needs measured pilot numbers before it is closed as science.
 4. ~~Reconcile [Overarching_Goal.md](Overarching_Goal.md) with Distilled Plan §9.~~ **Done in spec** (Overarching Goal rewrite + README/mapping satellites, 2026-08-22). Horizon remainder is Projects 10–12, not Module 08.
-5. ~~Fix the Module 03 row count/source rule and collapse the Module 06 dataset contradiction.~~ **Done in spec** (mapping Pass 3/4 + §5.5, 2026-08-22). Still needs live DOIs before it is closed as a submission. **GNN on the critical path remains issue 6** — do not treat this strike-through as closing the comparison.
+5. ~~Fix the Module 03 row count/source rule and collapse the Module 06 dataset contradiction.~~ **Done in spec** (mapping Pass 3/4 + §5.5, 2026-08-22). Still needs live DOIs before it is closed as a submission.
+6. ~~Put the GNN baseline on the critical path rather than in the synthesis appendix.~~ **Done in spec** (mapping §4.2 Workstream G1 + Distilled Plan §7 Phase 4, 2026-08-22). Still needs G1 weights and the leave-one-mode-out table before it is closed as science.
 
-Until then: **no green light.** The project is good enough to deserve that standard. It is not yet good enough to start the expensive parts.
+The six *spec* holes in this stamp list are closed. **Pass 6** (module-by-module sign-off) is still open. **No green light** to start the expensive parts until Pass 6 and the Phase 0 addendum (smoke-test table + 10-geometry numbers) exist. The project is good enough to deserve that standard. It is not yet good enough to start the expensive parts.

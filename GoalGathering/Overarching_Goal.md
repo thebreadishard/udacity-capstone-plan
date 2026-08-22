@@ -1,6 +1,6 @@
 # Overarching Objective: Chemically Precise Labels; Emergent IR Band Envelopes
 
-**Status (2026-08-22):** Rewritten to close professor-review blocking issue 4. This file is the prime directive of **this thesis**. It must agree with Distilled Plan §2 and §9. It must not be quotable as a rovibrational line-list promise.
+**Status (2026-08-22):** Rewritten to close professor-review blocking issue 4. §5 item 4 now names Workstream G1 (issue 6). This file is the prime directive of **this thesis**. It must agree with Distilled Plan §2 and §9. It must not be quotable as a rovibrational line-list promise.
 
 Horizon work (very large PAHs, anharmonic band families, intensities, JWST-facing identification) is specified in post-master’s [Project 10](../CapstoneProjects/10_Size_Extensive_Aromatic_PES.md), [Project 11](../CapstoneProjects/11_Anharmonic_IR_and_Intensities.md), and [Project 12](../CapstoneProjects/12_Astrophysical_PAH_Identification.md). Those are **not** Udacity modules and are **not** scored in Modules 02–09.
 
@@ -74,7 +74,7 @@ A gated system assembled from prior artifacts:
 1. Conservative field PES (P1 on H₂O; 05 on benzene if the §5.1 pilot allows).
 2. Blind band envelopes from frozen-weight MD + dipole ACF FFT, within the stated cm⁻¹.
 3. A fail-closed reliability layer (07). If P1 missed gates, 08 says the field claim is incomplete.
-4. Evidence the field was worth it (04 + P1 + 05; GNN-on-same-splits is still professor-review issue 6).
+4. Evidence the field was worth it: 04 (simple NN) + P1/05 (field) + **G1** (MACE on the same splits). 08 **assembles** that table. It does not train G1. If G1 is missing, say the §2 claim is incomplete.
 5. A proposal mechanism (06), not a data source.
 6. An honest scope sentence: JWST / large-PAH identification is **why anyone would care later**. It is not a capability that was built.
 

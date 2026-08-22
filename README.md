@@ -139,8 +139,9 @@ implementable \(E=\mathcal{E}[\rho,R]\) (Distilled Plan §6). Data generation is
 method plus a measured cost pilot (Distilled Plan §5.1), not “CCSD(T) via PySCF.”
 The prime directive matches Distilled Plan §9 (issue 4). Rubric landmines are
 locked (issue 5: \(\ge 500\)-row Module 03 table, one Module 06 VAE story, DOI
-before claim). Horizon PAH work is Projects 10–12. Professor-review issue 6
-and Pass 6 remain open.
+before claim). The GNN baseline is Workstream G1 (issue 6): MACE on the same
+P1/05 splits; Module 08 assembles only. Horizon PAH work is Projects 10–12.
+Pass 6 remains open. All six professor-review *spec* issues are closed.
 
 - **Pass 6:** Module-by-module sign-off — walk through each module's final specification
   and get explicit go-ahead.

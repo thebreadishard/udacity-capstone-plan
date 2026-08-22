@@ -4,7 +4,7 @@
 
 **Horizon role:** first wall between the master’s small-molecule field-PES experiment and chemically precise-enough IR of very large PAHs. Labels and size-extensivity. Without this project, Project 11 is DFT-IR in a nicer notebook.
 
-**Depends on:** a finished master’s comparison of \(E=\mathcal{E}[\rho,R]\) vs an atomistic equivariant GNN on the **same** CCSD(T) splits (Distilled Plan §2; professor-review issue 6). Distilled Plan §5.1 is the methods ancestor of the theory ladder below.
+**Depends on:** a finished master’s comparison of \(E=\mathcal{E}[\rho,R]\) vs an atomistic equivariant GNN on the **same** CCSD(T) splits (Distilled Plan §2; Workstream G1). Distilled Plan §5.1 is the methods ancestor of the theory ladder below.
 
 **Hands to:** [Project 11](11_Anharmonic_IR_and_Intensities.md).
 
