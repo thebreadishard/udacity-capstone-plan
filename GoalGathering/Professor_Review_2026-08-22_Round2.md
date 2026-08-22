@@ -1,6 +1,6 @@
 # Critical Professor Review — Round 2 (2026-08-22)
 
-**Status:** No green light. Blocking issues **7–15** are open. This review continues the numbering of [Professor_Review_2026-08-22_Round1.md](Professor_Review_2026-08-22_Round1.md); issues 1–6 stand as closed-in-spec and are not re-litigated here.
+**Status:** No green light. Blocking issues **8, 9, 11–15** are open; **7 and 10 are closed in spec** (2026-08-22). This review continues the numbering of [Professor_Review_2026-08-22_Round1.md](Professor_Review_2026-08-22_Round1.md); issues 1–6 stand as closed-in-spec and are not re-litigated here.
 
 **Scope reviewed:** [Overarching_Goal.md](Overarching_Goal.md), [Distilled_Project_Plan_and_Quality_Checks.md](Distilled_Project_Plan_and_Quality_Checks.md), [Capstone_Mapping.md](Capstone_Mapping.md), [Relevant_Scientific_Papers.md](Relevant_Scientific_Papers.md), [Papers/README.md](Papers/README.md), the module rubrics in [`../CapstoneProjects/`](../CapstoneProjects/), and repository hygiene.
 
@@ -19,6 +19,19 @@ The credit earned there is spent below.
 ## Blocking issues
 
 ### 7. The grid cannot represent the density being supervised, and Phase 0 never finds out
+
+**Status (2026-08-22):** Addressed in spec — reference split written into Distilled Plan §3, §4 (stated concession), §5.1 (atomic fits pinned, campaign exports \(\Delta\rho\), density-representation ladder), §6.1 step 0, §6.2, §6.3, §7 Phase 0 gates, §8 item 11. Measured with a model all-electron H₂O density in [probes/issue07_grid_representability.py](../probes/issue07_grid_representability.py):
+
+| Quantity at \(\Delta x=0.20\,\text{Å}\) | Full \(\rho\) on grid | \(\Delta\rho\) only |
+|---|---|---|
+| electron-count error (§8 budget: \(10^{-4}\)) | \(1.1\times10^{-1}\) | \(3\times10^{-11}\) |
+| electron-count swing over one cell | \(0.31\,e\) | \(9\times10^{-10}\,e\) |
+| \(E_{ne}\) swing over one cell | \(3.8\,\)Ha | \(1.2\times10^{-9}\,\)Ha |
+| implied force artifact | \(\sim10^{6}\,\)meV/Å | \(1.7\times10^{-3}\,\)meV/Å |
+
+Refinement does not rescue scheme A: even at \(\Delta x=0.05\,\text{Å}\) the electron-count error is \(1.7\times10^{-3}\), still \(17\times\) over the §8 budget, and the sequence is non-monotonic — the aliasing signature. The probe also fixes the acceptance criterion for the split: the narrowest feature of \(\Delta\rho\) must satisfy \(w\gtrsim1.25\,\Delta x\), since \(w=0.75\,\Delta x\) already gives \(3.3\,\)meV/Å and \(w=0.5\,\Delta x\) gives \(2\times10^{4}\,\)meV/Å.
+
+**Not closed as science.** The probe uses a *model* density with a synthetic smooth \(\Delta\rho\); a real CCSD deformation density retains residual core-relaxation structure, so the scheme-B numbers above are optimistic and the values below \(\sim10^{-3}\,\)meV/Å sit at the probe's own derivative noise floor. The real-cube measurement is now a Phase 0 gate.
 
 \(\Delta x \approx 0.20\)–\(0.25\,\text{Å}\) is fine for a *smeared nuclear* charge with \(\sigma \ge 1.5\Delta x\). It is not fine for an all-electron CCSD 1-RDM. The oxygen 1s cusp has a decay length \(\sim a_0/Z \approx 0.066\,\text{Å}\); the tightest cc-pVTZ oxygen s-primitive has an effective width near \(0.003\,\text{Å}\). On a \(0.378\,\text{bohr}\) grid that structure is not under-resolved — it is invisible.
 
@@ -58,6 +71,8 @@ Two damages:
 Related magnitude problem: \(\varepsilon_\theta\) must supply the kinetic energy, \(\sim 76\,\)Ha for water, to \(\sim1\,\)mHa. A "tiny MLP on local density features" is being asked for \(10^{-5}\) relative accuracy on the largest term in the equation. Say how that is expected to work (energy differences on a narrow manifold, reference subtraction), or the number will be discovered empirically at the worst moment.
 
 ### 10. \(\Phi\) is a bypass channel, and it violates §4
+
+**Status (2026-08-22):** Addressed in spec — Distilled Plan §6.1 now restricts \(\varepsilon_\theta\) to density-derived local scalars (\(\rho_{\mathrm{ref}}\), \(\Delta\rho_\theta\), \(|\nabla\Delta\rho_\theta|\)) and explicitly forbids \(\Phi\) and \(V_{\mathrm{nucl}}\), with the frozen-wrong-density diagnostic as the required check. Not closed as a scientific issue until P1 code matches that graph.
 
 §6.1 forbids \(\varepsilon_\theta\) from seeing \(Z_A\), one-hot elements, bond lists, or raw \(\mathbf{R}\) — then hands it \(\Phi\). If \(\Phi\) is (or contains) \(V_{\mathrm{nucl}}\), it is an analytic function of \(\{Z_A,\mathbf{R}_A\}\) alone. The functional can then learn a partial \(E(\mathbf{R})\) map that ignores \(\rho_\theta\) — exactly the "multi-head regressor with auxiliary density" that §4 calls a spec violation.
 
