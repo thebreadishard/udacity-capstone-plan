@@ -1,6 +1,6 @@
 # Critical Professor Review — Round 2 (2026-08-22)
 
-**Status:** No green light. Blocking issues **8, 9, 11–15** are open; **7 and 10 are closed in spec** (2026-08-22). This review continues the numbering of [Professor_Review_2026-08-22_Round1.md](Professor_Review_2026-08-22_Round1.md); issues 1–6 stand as closed-in-spec and are not re-litigated here.
+**Status:** No green light. Blocking issues **9, 11–15** are open; **7, 8 and 10 are closed in spec** (2026-08-22). This review continues the numbering of [Professor_Review_2026-08-22_Round1.md](Professor_Review_2026-08-22_Round1.md); issues 1–6 stand as closed-in-spec and are not re-litigated here.
 
 **Scope reviewed:** [Overarching_Goal.md](Overarching_Goal.md), [Distilled_Project_Plan_and_Quality_Checks.md](Distilled_Project_Plan_and_Quality_Checks.md), [Capstone_Mapping.md](Capstone_Mapping.md), [Relevant_Scientific_Papers.md](Relevant_Scientific_Papers.md), [Papers/README.md](Papers/README.md), the module rubrics in [`../CapstoneProjects/`](../CapstoneProjects/), and repository hygiene.
 
@@ -46,6 +46,22 @@ Three consequences, all fatal if unaddressed:
 **Also add to Phase 0:** run the egg-box and grid-convergence sweep on a **real H₂O CCSD 1-RDM cube**, not only on analytic test functions. Report \(\int\rho\,dV\) error and the translational \(E_{\mathrm{es}}\) artifact. This doubles as a genuine second factor for Module 03.
 
 ### 8. The Phase 0 gates and the Phase 1 force gate contradict each other by two orders of magnitude
+
+**Status (2026-08-22):** Addressed in spec — arithmetic in [probes/issue08_gate_consistency.py](../probes/issue08_gate_consistency.py); Distilled Plan §5.1 (“force gate sits above *label* noise”), §7 Phase 0 and Phase 1 rows, §7 gate unit discipline note, §8 items 2, 3, 7, and the Module 03 column list.
+
+The conceptual fix is the split between an **engine artifact** (a bug, with a ceiling) and **label noise** (irreducible, and the only thing allowed to loosen the acceptance gate). Feeding the egg-box residual into the noise floor meant a worse engine bought a looser gate.
+
+| | Old | New |
+|---|---|---|
+| engine artifact ceiling | none (implied \(42.7\,\)meV/Å by the \(10^{-4}\,\)Ha egg-box tolerance) | \(0.1\,\)meV/Å \(=1.9\times10^{-6}\,\)a.u. |
+| egg-box energy tolerance | \(10^{-4}\,\)Ha | \(2.3\times10^{-7}\,\)Ha at \(\Delta x=0.20\,\text{Å}\) (\(427\times\) tighter, derived not asserted) |
+| autograd-vs-FD | \(10^{-5}\,\)a.u. | \(10^{-6}\,\)a.u., float64, and explicitly **blind to the egg-box** |
+| energy drift | \(10^{-5}\,\)Ha/ps | \(<1\%\) of \((3N-6)k_BT\) over the production length (\(6\times10^{-7}\,\)Ha/ps for H₂O / 50 ps) |
+| effective Phase 1 gate | \(128\,\)meV/Å | \(\max(1\,\text{meV/Å},\,3\times\text{label floor})\) |
+
+The old drift gate allowed a 50 ps H₂O trajectory to lose 18% of the vibrational energy it is supposed to hold. The new ceiling is reachable **only because of** the issue-7 reference split: deformation-only sits at \(1.7\times10^{-3}\,\)meV/Å (\(57\times\) headroom), where full-\(\rho\)-on-grid missed it by \(10^{7}\).
+
+**Not closed as science** until the real-cube egg-box, the label noise floor, and the force/frequency reconciliation are measured in Phase 0 / Phase 1.
 
 Phase 0 admits an egg-box amplitude of \(10^{-4}\,\text{Hartree}\) over one cell. For a periodic artifact of period \(\Delta x = 0.2\,\text{Å}\), the implied force artifact is
 
