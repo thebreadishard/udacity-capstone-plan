@@ -8,3 +8,6 @@ scraper/*.html
 udacity_session/
 *.json
 *.html
+
+__pycache__/
+*.pyc
