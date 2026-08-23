@@ -14,9 +14,11 @@
 envelopes** for H₂O / D₂O / CO₂ / benzene from a conservative field PES. Not
 chemically precise spectral **lines**. Not arbitrarily sized PAHs.
 
-The scientific question is whether \(E=\mathcal{E}[\rho,R]\) transfers better than an
-atomistic equivariant GNN on the same labels. Module 08 delivers a reliability-gated
-small-molecule IR-emulation stack plus that comparison — not a PAH spectrometer.
+The scientific question is whether, under identical energy/force supervision,
+Field-EF transfers better than MACE-EF on unseen vibrational modes, and what additional
+benefit comes from density supervision (Field-EFρ vs Field-EF). Module 08 delivers a
+reliability-gated small-molecule IR-emulation stack plus that comparison — not a PAH
+spectrometer.
 
 **Horizon** (not scored here): very large PAH band families and relative intensities,
 then fail-closed identification. That path is post-master’s Projects 10 → 11 → 12.

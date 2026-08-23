@@ -20,11 +20,11 @@ The path from this thesis to the horizon is Projects 10 → 11 → 12, in that o
 
 Obtain a **conservative field PES**, trained only on static chemically precise **labels**, from which **vibrational band positions and relative IR envelopes** emerge via frozen-weight classical MD.
 
-- The scientific question is Distilled Plan §2: does \(E=\mathcal{E}[\rho,R]\) transfer better than an atomistic equivariant GNN on the **same** CCSD(T) splits?
+- The scientific question is Distilled Plan §2: under identical \(E/F\) supervision and the same CCSD(T) splits, does the Field-EF architecture transfer better than MACE-EF, and what additional benefit comes from explicit density supervision (Field-EFρ vs Field-EF)?
 - The scored molecules are **H₂O / D₂O / CO₂ / benzene**.
 - IR is a **frozen-weight readout**, never a training loss.
 - Large PAHs, naphthalene as a pass/fail, and “any size” are **outlook**.
-- Module 08 delivers a **reliability-gated small-molecule IR-emulation stack** plus a yes/no on the representation hypothesis — not a PAH spectrometer.
+- Module 08 delivers a **reliability-gated small-molecule IR-emulation stack** plus the pre-registered three-way conclusion: representation advantage, density-supervision advantage only, no demonstrated advantage, or inconclusive — not a PAH spectrometer.
 
 If a sentence cannot survive this section, it does not belong in this file.
 
@@ -74,7 +74,7 @@ A gated system assembled from prior artifacts:
 1. Conservative field PES (P1 on H₂O; 05 on benzene if the §5.1 pilot allows).
 2. Blind band envelopes from frozen-weight MD + dipole ACF FFT, within the stated cm⁻¹.
 3. A fail-closed reliability layer (07). If P1 missed gates, 08 says the field claim is incomplete.
-4. Evidence the field was worth it: 04 (simple NN) + P1/05 (field) + **G1** (MACE on the same splits). 08 **assembles** that table. It does not train G1. If G1 is missing, say the §2 claim is incomplete.
+4. Evidence the field was worth it: 04 (simple NN) plus the pre-registered **Field-EF vs MACE-EF** equal-label test and **Field-EFρ vs Field-EF** density-supervision ablation. P1/05 train the field legs; **G1** trains MACE-EF on the same splits; 08 only assembles the table. If Field-EF or G1 is missing, say the §2 representation claim is incomplete.
 5. A proposal mechanism (06), not a data source.
 6. An honest scope sentence: JWST / large-PAH identification is **why anyone would care later**. It is not a capability that was built.
 

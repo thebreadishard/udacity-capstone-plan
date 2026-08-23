@@ -20,16 +20,17 @@
 12. **Gate lock (2026-08-22):** round-2 blocking issue 8 showed the Phase 0 tolerances (quoted in Hartree) and the Phase 1 acceptance gate (quoted in meV/Å) were mutually inconsistent by two orders of magnitude, and that feeding engine artifacts into the Phase 1 “noise floor” made that gate **self-loosening**. §5.1 and §7 now derive every artifact tolerance *from* the acceptance gate, in force units, and admit only irreducible **label** scatter into the noise floor.
 13. **Observable and invariance lock (2026-08-22):** round-2 blocking issues 11 and 12 — the IR observable (\(\boldsymbol{\mu}\), \(d\boldsymbol{\mu}/d\mathbf{R}\)) was never trained or validated and the CO₂ gate had no number; and no gate covered the fact that a voxel grid is neither translation- nor rotation-invariant. §6.4, §7 and §8 now carry dipole gates before any production MD, a numeric CO₂ forbidden-mode gate, and an explicit invariance budget.
 14. **Prior-art and pre-registration lock (2026-08-22):** round-2 blocking issue 9 — the novelty check missed the machine-learned orbital-free DFT lineage that this architecture belongs to; §2.1 now positions against it and pre-registers a fallback if the local \(\varepsilon_\theta\) stalls. Round-2 blocking issue 13 — the §2 comparison was falsifiable in wording only; §7.1 now fixes splits, seeds, tuning parity, effect size and confounds **before** any leg trains.
+15. **Representation-identifiability lock (2026-08-23):** round-3 blocking issue 1 showed that a density-supervised field model versus an \(E/F\)-only MACE does not isolate representation; it compares unequal label information. §2, §6.3, §7 and §7.1 now make the equal-label **Field-EF vs MACE-EF** result primary, add a controlled **Field-EFρ vs Field-EF** density-supervision ablation, and reserve the full \(E/F/H/\rho\) model for the operational spectroscopy result rather than the representation-only claim.
 
 ---
 
 ## 2. Central Research Question (final formulation)
 
-> "Does a continuous 3D neural field representation of the electron density (FNO-NCA), via a hybrid Fourier Neural Operator – Neural Cellular Automaton, yield a more physically transferable, energy-conserving Potential Energy Surface (PES) than existing atomistic equivariant Graph Neural Networks — from which molecular vibrational/infrared bands emerge via classical molecular dynamics?"
+> "Under equal energy/force supervision, does a continuous 3D neural field architecture (FNO-NCA) transfer better to unseen vibrational modes than an atomistic equivariant GNN, and what additional benefit is attributable to explicit electron-density supervision?"
 
 This replaced the original, much broader claim ("can an AI find a universal CA update rule that predicts chemically precise IR lines of arbitrarily large PAHs"), which both professors judged too broad and not falsifiable enough for a master's thesis.
 
-**Core hypothesis:** representing electrons as a continuous 3D field (rather than pairwise atom-centered distances, as in GNNs) should capture non-local charge delocalization and π-polarization more faithfully, giving better transferability to unseen vibrational modes.
+**Core hypothesis:** under identical \(E/F\) labels, representing the PES through a continuous 3D field (rather than atom-centered graph features) should improve transfer to unseen vibrational modes. A separate controlled ablation tests whether explicit \(\rho\) labels add value beyond the architecture. The full density- and Hessian-supervised model may be the best operational spectroscopic system, but it cannot by itself establish that representation caused a win over MACE.
 
 ### 2.1 Prior art this thesis must be positioned against (resolves round-2 blocking issue 9)
 
@@ -60,8 +61,9 @@ Only after rung 3 fails may the §2 claim be reported as negative for field repr
 
 - **A differentiable molecular-dynamics simulator**: explicit classical nuclei (positions $\mathbf{R}_A$, velocities $\mathbf{V}_A$, mass $M_A$, charge $Z_A$) coupled to a continuous 3D electron-density field $\rho(\mathbf{r})$ living on the same grid.
 - **Energy-first (Route B) architecture**: the *only* scalar energy is the functional in §6, $E_\theta(\mathbf{R})=\mathcal{E}[\rho_\theta(\mathbf{r};\mathbf{R}),\mathbf{R}]$. There is no second energy head. Forces are obtained by **exact automatic differentiation**, $\mathbf{F}_A = -\partial E_\theta/\partial \mathbf{R}_A$, which *guarantees* $\oint \mathbf{F}\cdot d\mathbf{R} = 0$ and $\nabla_\mathbf{R}\times\mathbf{F}=0$ (conservative forces), unlike the earlier density-first design. The 3D density is the argument of \(\mathcal{E}\) and a supervised target; it is not differentiated by itself to produce forces.
+- **An equal-information representation test:** the production model supervises the field with \(L_\rho\), but the §2 representation claim comes only from a separate **Field-EF** leg trained on the same \(E/F\) labels as **MACE-EF**. A matched **Field-EFρ** leg changes only \(\lambda_\rho\) and measures the benefit of density supervision. If Field-EF fails independent density/dipole evaluation, its internal field is treated as a learned latent field, not claimed to be a physical electron density.
 - **A hybrid FNO-NCA *density encoder***: local $3\times3\times3$ NCA convolutions handle short-range structure in \(\rho_\theta\); an optional learned FNO is a non-local mixer **inside the encoder only**. Long-range \(1/r\) electrostatics in the *energy* are **not** learned — they come from the fixed Hockney–Eastwood solver in \(E_{\mathrm{es}}\) (§6). A purely local CA would need ~60+ steps just to propagate charge information across one aromatic ring; that is why the encoder may use an FNO. It is not a reason to replace the Poisson kernel.
-- **Isotope shift as a required sanity check, not the flagship representation proof**: because atomic mass $M_A$ enters only the classical Newtonian/Verlet integration step (not the learned network), the frozen, already-trained model must reproduce the H₂O → D₂O red-shift correctly with **zero retraining**, purely from $\mathbf{F}/M_A$. Almost any vaguely correct PES will do this. The test that answers §2 is **leave-one-mode-out transfer vs Workstream G1** (same splits), not D₂O.
+- **Isotope shift as a required sanity check, not the flagship representation proof**: because atomic mass $M_A$ enters only the classical Newtonian/Verlet integration step (not the learned network), the frozen, already-trained model must reproduce the H₂O → D₂O red-shift correctly with **zero retraining**, purely from $\mathbf{F}/M_A$. Almost any vaguely correct PES will do this. The test that answers §2 is **leave-one-mode-out Field-EF vs MACE-EF under identical labels and splits**, not D₂O.
 - **Emergent spectroscopy, not trained spectroscopy**: the network is trained *only* on static configurations (energies, forces, Hessians, densities). Once trained and frozen, it runs forward-only classical MD for tens of picoseconds; the IR spectrum is obtained via FFT of the dipole autocorrelation function purely as a **blind post-hoc prediction**, never as a training signal.
 - **Strictly non-DFT *energies and (default) forces*** for every pipeline target (see §5.1). The density target is the pinned 1-RDM recipe, not a slogan “exact CCSD(T) density.” A cheaper density proxy is allowed only via the §5.1 shrink ladder and must invoke the Overarching Goal escape clause.
 - **Rigorously phased**, with hard numerical Go/No-Go gates between phases (§7), scoped to what is achievable in a ~6–7 month master's thesis on local consumer hardware, with supercomputer time reserved only for later-phase scaling.
@@ -256,12 +258,24 @@ Do not invent a more exotic \(\mathcal{E}\) (orbital-free kinetic libraries, lea
 
 ### 6.3 Training loss (static configurations only — no spectral term)
 
+**Production spectroscopy model:**
+
 $$L_{train} = \lambda_E L_E + \lambda_F L_F + \lambda_H L_H + \lambda_\rho L_\rho$$
 
 - $L_E$: MSE on total energy vs. CCSD(T).
 - $L_F$: MSE on per-atom forces vs. the §5.1 force recipe (analytic CCSD(T) if the smoke test returns it; else analytic CCSD; else H₂O-only finite-difference of CCSD(T) energies).
 - $L_H$: Hessian supervision at the **counted** stationary points in §5.1 (1 H₂O + 1 benzene equilibrium Hessian first). Force-only supervision does **not** guarantee correct 2nd/3rd-order PES derivatives.
 - $L_\rho$: MSE on the **deformation** density \(\Delta\rho=\rho_{\mathrm{QM}}-\rho_{\mathrm{ref}}\), where \(\rho_{\mathrm{QM}}\) is the §5.1 density target (default: relaxed CCSD 1-RDM, not a slogan “exact CCSD(T) density”). This supervises the *argument* of \(\mathcal{E}\); it is not an optional extra head and not the force source. Supervising \(\Delta\rho\) rather than \(\rho\) also removes the core domination that made a plain \(L_\rho\) nearly blind to the diffuse valence tail — the tail that sets \(\boldsymbol{\mu}\) (round-2 issue 11).
+
+**§2 comparison cohort (round-3 issue 1):** three separately trained models use the same configurations, \(E/F\) labels, splits and seeds. To keep the information comparison clean, \(\lambda_H=0\) for all three comparison legs; the equilibrium Hessian remains an evaluation target.
+
+| Leg | Training labels | Purpose |
+|---|---|---|
+| **MACE-EF** | \(E,F\) | Equivariant-GNN comparator |
+| **Field-EF** | \(E,F\), with \(\lambda_\rho=0\) | Primary equal-label representation test against MACE-EF |
+| **Field-EFρ** | \(E,F,\rho\) | Density-supervision ablation against Field-EF |
+
+Field-EF and Field-EFρ have identical architecture, initialization seeds, optimizer schedule and fixed hyperparameters; only \(\lambda_\rho\) changes. Density and dipole errors are evaluation-only for Field-EF. Passing them is not required for the equal-label force comparison, but failure means its internal field must not be described as a physical electron density. The full \(E/F/H/\rho\) production model is reported separately and may support the spectroscopy result, never the representation-only causal claim.
 
 ### 6.4 MD / emergent spectroscopy protocol (run only after training, weights frozen)
 
@@ -286,7 +300,7 @@ $$L_{train} = \lambda_E L_E + \lambda_F L_F + \lambda_H L_H + \lambda_\rho L_\rh
 | **Fase 1 — H₂O PES training** | Learn $\mathbf{R}\to E,\mathbf{F},\rho$ | H₂O, ≥2,000 CCSD(T)/cc-pVTZ configs (per §5.1), $32^3$ grid | **Two independent conditions.** (a) Phase 0's engine-artifact ceiling still holds \((<0.1\,\text{meV/Å})\) — an engine artifact is a bug to be fixed, never a floor that licenses a looser gate. (b) Force RMSE below the **greater of** \(1\,\text{meV/Å}\) and \(3\times\) the measured **label** noise floor · harmonic frequencies within 5 cm⁻¹ of the CCSD(T) Hessian (the one equilibrium Hessian from §5.1, not a per-config Hessian) · **the force and frequency gates must be reconciled empirically once the model exists** — report both; a model that passes one and fails the other means the *pair* is mis-specified, and the pair gets fixed before Phase 2 · **dipole gates (round-2 issue 11), all three required before any production MD:** (i) \(\lVert\boldsymbol{\mu}_\theta-\boldsymbol{\mu}_{\mathrm{QM}}\rVert<0.01\,e a_0\) (\(\approx0.025\,\)D, \(\approx1.4\%\) of the H₂O dipole) on held-out configs; (ii) relative error in \(d\boldsymbol{\mu}/d\mathbf{R}\) \(<5\%\), since \(I\propto\lvert d\boldsymbol{\mu}/dQ\rvert^2\) and the §9 claim is *relative* envelopes at the \(\sim10\%\) level; (iii) grid artifact in \(\boldsymbol{\mu}\) under rigid translation \(<0.1\%\) of \(\lvert\boldsymbol{\mu}\rvert\) |
 | **Fase 2 — Emergent IR (H₂O)** | Blind spectral prediction, weights frozen | 5×50 ps MD trajectories | $\nu_1,\nu_2,\nu_3$ band centers within 10–15 cm⁻¹ of experimental gas-phase FTIR envelopes — obtained with **no spectral fitting** |
 | **Fase 3 — Physical hardness tests** | Sanity + hardness, **not** the §2 bake-off | D₂O (mass-only swap, frozen weights); CO₂ (linear, symmetric) | D₂O per-mode isotope shift consistent with theory (≈1.35–1.39) — **necessary, not flagship**; CO₂ forbidden-mode gate with a **number**: \(I(\nu_1)/I(\nu_3)<10^{-2}\), and the measured ratio must be consistent with \(\delta^2\), where \(\delta\) is the independently measured relative \(d\boldsymbol{\mu}/dQ\) error from Phase 1. A voxel grid breaks \(D_{\infty h}\), so the residual is **not** zero and “\(\approx0\)” was never a gate; if the ratio greatly exceeds \(\delta^2\) the model has learned an asymmetric density and the failure is physical, not numerical. \(\nu_2/\nu_3\) correctly active |
-| **Fase 4 — Baseline benchmark** | Answer §2: field vs atomistic GNN on the **same** splits | Same H₂O/benzene `config_id`s as P1/05 | **Owners:** 04 trains simple NN; **G1** trains MACE from scratch (NequIP fallback); P1/05 are the field legs; **08 assembles only**. **§7.1 pre-registration is a precondition** — frozen split hash, \(\ge3\) seeds, tuning parity and a declared effect size, all committed before any leg trains. **Primary gate:** leave-one-mode-out (or held-out mode-family) \(E/F\) vs G1. Secondary: in-domain RMSE, harmonic error vs the one §5.1 Hessian, MD stability, cost. If G1 is missing, the phase is **incomplete** — do not substitute 04 for MACE. |
+| **Fase 4 — Baseline benchmark** | Answer §2 under equal labels, then quantify density supervision | Same H₂O/benzene `config_id`s as P1/05 | **Owners:** 04 trains simple NN; **G1** trains MACE-EF from scratch (NequIP fallback); P1/05 train Field-EF and Field-EFρ; **08 assembles only**. **§7.1 pre-registration is a precondition** — frozen split hash, \(\ge3\) seeds, tuning parity and a declared effect size, all committed before any leg trains. **Primary gate:** leave-one-mode-out Field-EF vs MACE-EF on identical \(E/F\) labels. **Controlled ablation:** Field-EFρ vs Field-EF, differing only in \(\lambda_\rho\). The full \(E/F/H/\rho\) production result is reported separately. Secondary: in-domain RMSE, harmonic error vs the one §5.1 Hessian, MD stability, cost. If G1 or Field-EF is missing, the representation test is **incomplete** — do not substitute 04 or the density-supervised production model. |
 | **Fase 5 — Finale: benzene** | Aromatic generalization | C₆H₆, nominal $64^3$ / ≥5,000 configs **subject to the §5.1 pilot and shrink ladder**, 20 ps forward MD | Aromatic ring/C–H modes within 15 cm⁻¹ of one fixed gas-phase NIST FTIR dataset. If rung 4 of the shrink ladder fired, this phase is outlook — do not keep the nominal \(N\) as a scored promise |
 | *(Outlook only, not scored)* | OOD transferability discussion | Naphthalene (C₁₀H₈) via atomic density superposition, zero-shot | Discussed as an exploratory result in the thesis, explicitly **not** a pass/fail milestone |
 
@@ -298,11 +312,11 @@ $$L_{train} = \lambda_E L_E + \lambda_F L_F + \lambda_H L_H + \lambda_\rho L_\rh
 
 **1. Frozen splits.** One file per campaign, `splits/{molecule}_{version}.json`, containing train / validation / test `config_id`s and the held-out mode family for the leave-one-mode-out test. Committed and tagged; its hash appears in every gate report from P1, 05, G1 and 04. Every leg reads that file — nobody re-splits.
 
-**2. Seeds and error bars.** Minimum **3 seeds per model per split**. The primary metric is reported as mean ± SD across seeds. A single-seed number is not a result.
+**2. Models, seeds and error bars.** The comparison cohort is frozen as MACE-EF, Field-EF and Field-EFρ (§6.3), with minimum **3 seeds per model per split**. The primary metric is reported as mean ± SD across seeds. A single-seed number is not a result. The full \(E/F/H/\rho\) production model is outside this causal cohort and is labeled separately in every table.
 
-**3. Tuning parity.** Equal hyperparameter budget: same number of trials and same wall-clock budget for the field model and for G1, tuned on the **validation** split only. MACE starts from its authors' recommended recipe as trial 0 — an untuned competitor is a straw man and a reviewer will say so. The field model starts from its §6.1 default. Trial count and budget go in the gate report.
+**3. Tuning parity.** Equal hyperparameter budget: same number of trials and same wall-clock budget for Field-EF and MACE-EF, tuned on the **validation** split only. MACE starts from its authors' recommended recipe as trial 0 — an untuned competitor is a straw man and a reviewer will say so. Field-EF starts from its §6.1 default. After those hyperparameters are frozen, Field-EFρ reuses the selected Field-EF architecture and training schedule; only \(\lambda_\rho\) is enabled, so the density ablation does not become a second unequal search. Trial count and budget go in the gate report.
 
-**4. Pre-registered effect size.** Primary metric: the ratio \(r=\mathrm{RMSE}^{F}_{\text{field}}/\mathrm{RMSE}^{F}_{\text{GNN}}\) on the held-out mode family. Declared in advance:
+**4. Pre-registered effect size.** Primary metric: the ratio \(r=\mathrm{RMSE}^{F}_{\text{Field-EF}}/\mathrm{RMSE}^{F}_{\text{MACE-EF}}\) on the held-out mode family. Declared in advance:
 
 | Outcome | Condition |
 |---|---|
@@ -312,7 +326,20 @@ $$L_{train} = \lambda_E L_E + \lambda_F L_F + \lambda_H L_H + \lambda_\rho L_\rh
 
 \(\Delta\) is provisionally \(0.10\) and is finalized as \(3\times\) the measured within-model seed scatter **on the validation split**, before either model is evaluated on the held-out mode family. Setting \(\Delta\) from validation scatter is legitimate; setting it after seeing the comparison is not. **“Inconclusive” is a publishable outcome and must be reported as such** — the thesis question is whether the field representation transfers better, and “we could not tell” is an honest answer to it.
 
-**5. Confounds registered in advance.** Named now so they cannot be discovered as excuses later: (a) MACE is exactly rotation-equivariant and the field model is not (§8 item 13 — both invariance residuals published **before** the bake-off); (b) tuning-maturity asymmetry; (c) equal training-data volume and identical labels; (d) which §6.1 anchoring fork and which §2.1 fallback rung the field model used; (e) whether the §5.1 shrink ladder fired.
+The density-supervision effect is the matched ratio \(r_\rho=\mathrm{RMSE}^{F}_{\text{Field-EFρ}}/\mathrm{RMSE}^{F}_{\text{Field-EF}}\), reported with the same seeds and held-out family. It is secondary and does not replace the primary equal-label test.
+
+**Allowed conclusions are frozen:**
+
+| Result | Defensible conclusion |
+|---|---|
+| Field-EF beats MACE-EF | Evidence supporting the field-representation hypothesis under equal \(E/F\) supervision |
+| Field-EF does not beat MACE-EF, but Field-EFρ does | The density-supervised field pipeline wins; representation alone is not established |
+| Neither field leg beats MACE-EF | No demonstrated transfer advantage over the equivariant GNN |
+| Any comparison lies within the effect-size margin | Inconclusive |
+
+The full production model may be the best spectroscopic system, but its result is never substituted into the first row.
+
+**5. Confounds registered in advance.** Named now so they cannot be discovered as excuses later: (a) MACE is exactly rotation-equivariant and the field model is not (§8 item 13 — both invariance residuals published **before** the bake-off); (b) tuning-maturity asymmetry; (c) equal training-data volume and identical \(E/F\) labels for the primary test; (d) density supervision is privileged information and appears only in the explicitly secondary Field-EFρ ablation; (e) which §6.1 anchoring fork and which §2.1 fallback rung the field model used; (f) whether the §5.1 shrink ladder fired.
 
 **6. Analysis frozen.** Metric, aggregation over seeds, and the comparison plot are specified before test evaluation. No post-hoc metric shopping.
 
