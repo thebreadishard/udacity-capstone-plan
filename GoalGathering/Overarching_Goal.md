@@ -1,4 +1,4 @@
-# Overarching Objective: Chemically Precise Labels; Emergent IR Band Envelopes
+# Overarching Objective: Chemically Precise Static Labels; Frozen-Weight IR Band Envelopes
 
 **Status (2026-08-22):** Rewritten to close professor-review blocking issue 4. §5 item 4 now names Workstream G1 (issue 6). This file is the prime directive of **this thesis**. It must agree with Distilled Plan §2 and §9. It must not be quotable as a rovibrational line-list promise.
 
@@ -18,11 +18,11 @@ The path from this thesis to the horizon is Projects 10 → 11 → 12, in that o
 
 ## 2. This thesis (the only prime directive that counts)
 
-Obtain a **conservative field PES**, trained only on static chemically precise **labels**, from which **vibrational band positions and relative IR envelopes** emerge via frozen-weight classical MD.
+Obtain a **conservative field PES and dipole surface**, trained only on static chemically precise **labels**, from which vibrational band positions and relative IR envelopes are predicted via frozen-weight classical MD. Band positions emerge from the PES; relative intensities use a statically supervised dipole surface. No spectrum, peak position or intensity is a training target.
 
 - The scientific question is Distilled Plan §2: under identical \(E/F\) supervision and the same CCSD(T) splits, does the Field-EF architecture transfer better than MACE-EF, and what additional benefit comes from explicit density supervision (Field-EFρ vs Field-EF)?
 - The scored molecules are **H₂O / D₂O / CO₂ / benzene**.
-- IR is a **frozen-weight readout**, never a training loss.
+- IR is a **frozen-weight readout**. Static dipoles supervise the production dipole surface, but spectra, peak positions and intensities are never training losses.
 - Large PAHs, naphthalene as a pass/fail, and “any size” are **outlook**.
 - Module 08 delivers a **reliability-gated small-molecule IR-emulation stack** plus the pre-registered three-way conclusion: representation advantage, density-supervision advantage only, no demonstrated advantage, or inconclusive — not a PAH spectrometer.
 
@@ -51,7 +51,7 @@ This thesis does **not** claim:
 
 The allowed spectral claim is §9’s:
 
-> Vibrational band positions and relative IR envelopes/intensities within a **stated** cm⁻¹ tolerance (Phase 2/5: 10–15 cm⁻¹, not 0.1 cm⁻¹), for H₂O, D₂O, CO₂, and benzene.
+> Vibrational band positions and relative IR envelopes/intensities from a static-label-trained PES and dipole surface, within a **stated** cm⁻¹ tolerance (Phase 2/5: 10–15 cm⁻¹, not 0.1 cm⁻¹), for H₂O, D₂O, CO₂, and benzene.
 
 ExoMol / HITRAN / NIST are **blind envelope checks**, never a training loss and never a line-list score. Intensities mean **relative envelopes** and forbidden-mode residuals, not \(\lvert\langle f\lvert\mu\rvert i\rangle\rvert^2\) line lists.
 
@@ -72,7 +72,7 @@ Named use already in the plan: §5.1 shrink-ladder rung 3.
 A gated system assembled from prior artifacts:
 
 1. Conservative field PES (P1 on H₂O; 05 on benzene if the §5.1 pilot allows).
-2. Blind band envelopes from frozen-weight MD + dipole ACF FFT, within the stated cm⁻¹.
+2. Band envelopes from frozen-weight MD + dipole ACF FFT, within the stated cm⁻¹, with no spectral fitting. Dipoles are statically supervised; dipole derivatives remain evaluation-only.
 3. A fail-closed reliability layer (07). If P1 missed gates, 08 says the field claim is incomplete.
 4. Evidence the field was worth it: 04 (simple NN) plus the pre-registered **Field-EF vs MACE-EF** equal-label test and **Field-EFρ vs Field-EF** density-supervision ablation. P1/05 train the field legs; **G1** trains MACE-EF on the same splits; 08 only assembles the table. If Field-EF or G1 is missing, say the §2 representation claim is incomplete.
 5. A proposal mechanism (06), not a data source.

@@ -10,8 +10,9 @@
 
 ## The Overarching Goal
 
-**This thesis:** chemically precise **labels** (CCSD(T)/cc-pVTZ); **emergent IR band
-envelopes** for H₂O / D₂O / CO₂ / benzene from a conservative field PES. Not
+**This thesis:** chemically precise static **labels** (CCSD(T)/cc-pVTZ energies and
+derivatives; pinned density/dipole recipe); **frozen-weight IR band envelopes** for
+H₂O / D₂O / CO₂ / benzene from a conservative field PES and dipole surface. Not
 chemically precise spectral **lines**. Not arbitrarily sized PAHs.
 
 The scientific question is whether, under identical energy/force supervision,
@@ -128,8 +129,10 @@ architecture operating on continuous 3D electron-density fields. Key design choi
   energies as targets. Density is the pinned 1-RDM recipe (default: relaxed CCSD),
   not a slogan “exact CCSD(T) density.” No library XC functionals in the pipeline
   unless the §5.1 shrink ladder fires. The Hohenberg–Kohn *shape* is the claim.
-- **Emergent spectroscopy:** IR spectra are *not* trained on — they emerge as blind
-  predictions from frozen-weight MD simulations via dipole-autocorrelation FFT.
+- **Frozen-weight spectroscopy without spectral fitting:** the production dipole surface
+  is supervised on static dipoles, but spectra, peak positions, intensities and dipole
+  derivatives are never training targets. Band positions and envelopes are evaluated
+  post hoc from frozen-weight MD via dipole-autocorrelation FFT.
 - **Phased roadmap with hard Go/No-Go gates:** H₂O → D₂O/CO₂ (zero-shot) → benzene,
   each with quantitative pass/fail thresholds.
 
