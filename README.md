@@ -10,8 +10,9 @@
 
 ## The Overarching Goal
 
-**This thesis:** chemically precise static **labels** (CCSD(T)/cc-pVTZ energies and
-derivatives; pinned density/dipole recipe); **frozen-weight IR band envelopes** for
+**This thesis:** static **CCSD(T)/cc-pVTZ-level labels**, audited against a frozen
+CCSD(T)/CBS(T,Q) reference set before any molecule-specific “chemically accurate”
+claim (plus a pinned density/dipole recipe); **frozen-weight IR band envelopes** for
 H₂O / D₂O / CO₂ / benzene from a conservative field PES and dipole surface. Not
 chemically precise spectral **lines**. Not arbitrarily sized PAHs.
 
@@ -72,7 +73,7 @@ non-negotiables.
 ```
 CapstonePlan/
 ├── GoalGathering/               # Research planning artifacts
-│   ├── Overarching_Goal.md      # Prime directive & precision requirements
+│   ├── Overarching_Goal.md      # Prime directive & audited precision rules
 │   ├── Distilled_Project_Plan_and_Quality_Checks.md
 │   │                            # Full technical plan: architecture, data,
 │   │                            # phased roadmap (Phases 0–5), QA protocol
