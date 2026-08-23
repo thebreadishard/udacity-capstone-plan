@@ -300,56 +300,60 @@ Order is mandatory: 10 then 11 then 12. A single extra project, if only one exis
 
 ## 8. Calendar and critical path (resolves round-2 blocking issue 15)
 
-**Status:** closed as *structure*; **open until the three anchors in §8.1 are filled in.** Round-1 stamp condition 1 required Phase 1 to have "a date and a failure mode". The failure mode has existed since §4.1. The date has never existed anywhere in this repository, and neither has any other date.
+**Status:** anchors filled 2026-08-23. The program is self-paced, so there is no institutional submission deadline to miss, but the plan still needs an honest completion baseline. At 10 human hours/week, the old 26–30-calendar-week framing is withdrawn; §8.3 converts the existing estimates into human hours and calendar time. Campaign and HPC durations remain measured gates, not guessed dates.
 
-### 8.1 Anchors — fill these in before this section is real
+### 8.1 Anchors
 
-| Anchor | Value | Who knows it |
-|---|---|---|
-| \(T_0\) — capstone/thesis start | *(to fill)* | you |
-| Udacity module deadlines 02–09, or "self-paced" | *(to fill)* | the Udacity classroom |
-| Sustained hours per week | *(to fill)* | you |
+| Anchor | Value |
+|---|---|
+| \(T_0\) — capstone/thesis start | **2026-09-01** |
+| Udacity module deadlines 02–09 | **Self-paced; no fixed institutional deadlines** |
+| Sustained human attention | **10 hours/week** |
+| GitHub Copilot Max / unattended automation | May implement, test, document and monitor jobs outside the human-attention window, subject to repository permissions and tool availability |
+| HPC / local compute runtime | May run continuously when resources permit; queue and wall time are tracked separately from human hours |
 
-Everything below is in **weeks after \(T_0\)** for one person. Convert to dates once \(T_0\) exists. If the hours/week figure is materially below full-time, **multiply** every estimate before comparing against deadlines — do not compress the estimates to fit the calendar. That is the failure this section exists to prevent.
+**Accounting rule:** autonomous output is not accepted merely because it ran. Scientific decisions, review of generated code/results, failed-run diagnosis, rubric checks and defense preparation consume the 10-hour human budget. Agent and compute runtime may shorten elapsed time only when they do not require concurrent human attention. Re-estimation uses measured throughput (§8.6), not a speculative “AI productivity multiplier.”
 
 ### 8.2 Effort estimates and owners
 
-| Workstream | Est. weeks | Depends on | Unblocks | Drop-dead rule |
-|---|---|---|---|---|
-| **Module 02** (QM9 EDA) | 1–2 | *nothing* | — | Start in week 1. It is the only graded module with zero dependencies. |
-| **Module 06** (VAE corpus) | 2–3 | *nothing* | — | Free schedule slack; run it in any waiting period. |
-| **Env:** Linux/WSL2 + PySCF | 0.5–1 | — | Phase 0b | Week 1. PySCF has no native Windows build (Distilled Plan §5.1 platform note). |
-| **Phase 0a** engine + sweeps | 4–6 | — | Module 03 | If the §7 engine gates are not met by ~week 8, re-scope before continuing. |
-| **Module 03** (statistics) | 1–2 | Phase 0a | — | — |
-| **Phase 0b** smoke + cost pilots | 1–2 | Env, Phase 0a | Label audit, H₂O campaign | The pilot is the kill switch (Distilled Plan §5.1). |
-| **CBS(T,Q) label audit** | **measured after 1 benzene QZ job** | Phase 0b smoke test, confirmed HPC allocation | Precision wording; H₂O campaign | Freeze 19 H₂O / 13 CO₂ / 12 benzene geometries before results. If allocation fails, downgrade the claim; do not reduce counts silently. |
-| **H₂O campaign** | **measured in 0b** | Phase 0b | 04, P1, G1 | If \(T_{\mathrm{campaign}}\) does not fit, stop **before** P1. |
-| **Module 04** | 1–2 | H₂O descriptor CSV | — | — |
-| **P1** H₂O field PES | 3–4 | H₂O tensors | 07, 05, 08 | §4.1 failure mode. |
-| **G1** H₂O MACE | 1–2 | P1 split freeze (§7.1) | 08 | §4.2 failure mode. |
-| **Benzene campaign** | **measured in 0b** | Phase 0b | 05 | Shrink ladder; rung 4 remaps Module 05. |
-| **Module 05** | 3–4 | Benzene tensors; P1 architecture stable | 08 | — |
-| **Phases 2–3 + Module 07** | 3–4 | P1 weights (may be FAIL) | 08 | 07 ships even if P1 failed; refusing PASS is the demo. |
-| **Module 08** | 2–3 | ≥3 of 04–07 + G1 report | 09 | Nothing may debut here. |
-| **Module 09** defense | 1 | 08 | — | See §8.5. |
+The original estimates were full-time person-weeks. The table now states their implied human hours at 40 hours/person-week and calendar duration at the available 10 hours/week. These are planning priors until §8.6 replaces them with measured velocity.
+
+| Workstream | Human hours | Calendar weeks at 10 h/week | Depends on | Unblocks / rule |
+|---|---:|---:|---|---|
+| **Module 02** (QM9 EDA) | 40–80 | 4–8 | *nothing* | Start at \(T_0\). |
+| **Module 06** (VAE corpus) | 80–120 | 8–12 | *nothing* | Fill compute/queue waiting periods without displacing the critical path. |
+| **Env:** Linux/WSL2 + PySCF | 20–40 | 2–4 | — | Phase 0b; start at \(T_0\). |
+| **Phase 0a** engine + sweeps | 160–240 | 16–24 | — | Module 03. If gates are not met after **320 human hours** (32 calendar weeks, approximately 2027-04-13), re-scope. |
+| **Module 03** (statistics) | 40–80 | 4–8 | Phase 0a | — |
+| **Phase 0b** smoke + cost pilots | 40–80 | 4–8 | Env, Phase 0a | Label audit, H₂O campaign; pilot is the kill switch. |
+| **CBS(T,Q) label audit** | **human setup/review measured after pilot** | **queue + wall + review measured after 1 benzene QZ job** | Phase 0b smoke test, confirmed HPC allocation | Precision wording and H₂O campaign. Freeze 19 H₂O / 13 CO₂ / 12 benzene geometries before results; if allocation fails, downgrade the claim. |
+| **H₂O campaign** | **human setup/review measured in 0b** | **compute + review elapsed time measured in 0b** | Phase 0b | 04, P1, G1. If \(T_{\mathrm{campaign}}\) does not fit, stop **before** P1. |
+| **Module 04** | 40–80 | 4–8 | H₂O descriptor CSV | — |
+| **P1** H₂O field PES | 120–160 | 12–16 | H₂O tensors | 07, 05, 08; §4.1 failure mode. |
+| **G1** H₂O MACE | 40–80 | 4–8 | P1 split freeze (§7.1) | 08; §4.2 failure mode. |
+| **Benzene campaign** | **human setup/review measured in 0b** | **compute + review elapsed time measured in 0b** | Phase 0b | 05. Shrink ladder; rung 4 remaps Module 05. |
+| **Module 05** | 120–160 | 12–16 | Benzene tensors; P1 architecture stable | 08. |
+| **Phases 2–3 + Module 07** | 120–160 | 12–16 | P1 weights (may be FAIL) | 08; 07 ships even if P1 failed. |
+| **Module 08** | 80–120 | 8–12 | ≥3 of 04–07 + G1 report | 09; nothing may debut here. |
+| **Module 09** defense | 40 | 4 | 08 | See §8.5. |
 
 These are estimates. See §8.6.
 
 ### 8.3 The arithmetic nobody had done
 
-Serial critical path, **excluding** the two PySCF campaigns:
+Serial critical path, **excluding** the two PySCF campaigns and the CBS(T,Q) audit:
 
 \[
-\underbrace{5}_{0a}+\underbrace{2}_{\text{env}+0b}+\underbrace{3.5}_{P1}+\underbrace{3.5}_{05}+\underbrace{3.5}_{07}+\underbrace{2.5}_{08}+\underbrace{1}_{09}\;\approx\;21\ \text{weeks}
+21\ \text{full-time person-weeks}\times40\ \text{h/week}=840\ \text{human hours}.
 \]
 
-Against the plan's own "~6–7 month" budget (26–30 weeks), that leaves **5–9 weeks for both QM campaigns combined**.
+At 10 human hours/week, that is approximately **84 calendar weeks**, from 2026-09-01 to **2028-04-11**, before adding measured campaign work, HPC queue time or audit review. The old 26–30 week target would provide only 260–300 human hours and is therefore rejected rather than compressed.
 
-That is the entire production plan in one sentence: **the Phase 0b pilot does not inform the schedule, it decides it.** If the measured \(\bar t_{\mathrm{geom}}\) implies more than roughly five weeks of wall-clock for H₂O plus benzene together, the §5.1 shrink ladder fires — and on this arithmetic that should be treated as the *expected* outcome, not the contingency. The CBS(T,Q) audit runs on the confirmed HPC allocation and gets its own measured calendar row; queue time is not treated as free parallelism.
+Because the program is self-paced, this duration is administratively possible, but it is still the minimum honest baseline. Copilot may reduce measured human hours and unattended compute may overlap them; neither benefit is booked until demonstrated. Phase 0b decides the two campaign durations and the shrink-ladder rung. The CBS(T,Q) audit runs on the confirmed HPC allocation and gets its own measured elapsed-time and human-review entries; queue time is not treated as free parallelism.
 
 ### 8.4 Ordering rules
 
-1. **Week 1 runs three things in parallel:** Module 02, the Linux/WSL2 + PySCF environment, and Phase 0a. None blocks the others, and two of them are pure schedule insurance.
+1. **At \(T_0\), open three tracks:** Module 02, the Linux/WSL2 + PySCF environment, and Phase 0a. Human attention is allocated explicitly each week; “parallel” means agent/compute progress may overlap, not that one person has three simultaneous 10-hour budgets.
 2. **Module 06 fills any waiting period.** No dependencies, and it is graded.
 3. **Module 03 needs only Phase 0a.** That split (Distilled Plan §7) is the whole point: it keeps the second graded submission off the QM critical path, which was the degree risk flagged in round-2 issue 15.
 4. **P1 and G1 train in parallel** on the same frozen split, per Distilled Plan §7.1.
@@ -368,4 +372,4 @@ Module 09 is a live 15-minute presentation plus 15 minutes of defense on the Mod
 
 ### 8.6 Re-estimation rule
 
-This project does not accept unmeasured numbers, and §8.2 is currently a set of unmeasured numbers. After **two weeks** of Phase 0a work, re-estimate from measured velocity and rewrite §8.2. If the re-estimate exceeds the §8.3 budget, the shrink ladder fires **then** — in month one, where it is cheap — rather than in month five, where it is not.
+This project does not accept unmeasured numbers, and §8.2 starts as a converted prior. After the first **20 human hours** of Phase 0a work (nominally two calendar weeks), record human hours by task, agent runtime, compute runtime, review/rework time and completed acceptance criteria. Re-estimate every §8.2 row from that measured velocity. Repeat after 80 human hours and after each campaign pilot. If the estimate becomes unacceptable, fire the shrink ladder then; self-paced does not mean scope-unbounded.
