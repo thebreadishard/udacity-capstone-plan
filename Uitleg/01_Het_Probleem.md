@@ -150,15 +150,21 @@ onderscheidende van *dit* project zit in twee keuzes:
   uitsluitend CCSD(T)-data gebruikt (hoofdstuk 3).
 - **De vorm waarin het molecuul aan het netwerk wordt aangeboden is anders.**
   Gebruikelijk is een *graaf*: bolletjes (atomen) met streepjes (bindingen) ertussen.
-  Hier wordt het molecuul aangeboden als een **continue elektronenwolk op een
-  driedimensionaal rooster** (hoofdstuk 5).
+  Hier blijven de atoomkernen expliciete, vrij bewegende puntdeeltjes — zonder
+  bewegende kernen zijn er immers geen trillingen en dus geen infraroodspectrum —
+  maar de **elektronen** eromheen worden beschreven als een continu veld op een
+  **driedimensionaal rooster**, in plaats van te worden samengevat in bindingen
+  tussen bolletjes (hoofdstuk 5).
 
 Die tweede keuze is de eigenlijke onderzoeksvraag.
 
 > **De centrale onderzoeksvraag**
-> Als je twee modellen precies dezelfde leerstof geeft, generaliseert een model
-> dat met een *rooster van elektronendichtheid* werkt dan beter naar trillingen
-> die het nooit gezien heeft dan een model dat met een *graaf van atomen* werkt?
+> Beide modellen krijgen dezelfde invoer — de standen van de atoomkernen — en
+> leveren dezelfde uitvoer: één energie. De vraag gaat uitsluitend over wat er
+> daartussen gebeurt. Als je twee modellen precies dezelfde leerstof geeft,
+> generaliseert een model dat de elektronen beschrijft als een *rooster van
+> elektronendichtheid* dan beter naar trillingen die het nooit gezien heeft dan
+> een model dat de elektronen samenvat in een *graaf van atomen en bindingen*?
 
 Merk op hoe bescheiden en hoe scherp die vraag is. Er wordt niet beweerd dat het
 gaat werken. Er wordt een eerlijke vergelijking opgezet, en het antwoord mag ook

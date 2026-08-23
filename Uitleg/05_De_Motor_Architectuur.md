@@ -25,6 +25,13 @@ getal op.
 > driedimensionale broertje van de pixel). Sla per voxel één getal op: de
 > gemiddelde dichtheid daar.
 
+Let op wat er *niet* op het rooster staat: de kernen. Die houden hun eigen,
+continue coördinaten $\mathbf R_A$ en bewegen dwars door de voxels heen. Het
+rooster draagt als toestand uitsluitend elektronendichtheid — en na §5.3 alleen
+nog het gladde deel daarvan. De kernen verschijnen er hooguit indirect, als een
+potentiaal die bij elke berekening opnieuw uit $\mathbf R$ wordt gegenereerd
+(§5.5).
+
 In dit project:
 
 | Molecuul | Rooster | $\Delta x$ | Doosribbe | Aantal voxels | Geheugen per configuratie |
