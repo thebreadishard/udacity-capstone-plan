@@ -21,6 +21,7 @@
 13. **Observable and invariance lock (2026-08-22):** round-2 blocking issues 11 and 12 — the IR observable (\(\boldsymbol{\mu}\), \(d\boldsymbol{\mu}/d\mathbf{R}\)) was never trained or validated and the CO₂ gate had no number; and no gate covered the fact that a voxel grid is neither translation- nor rotation-invariant. §6.4, §7 and §8 now carry dipole gates before any production MD, a numeric CO₂ forbidden-mode gate, and an explicit invariance budget.
 14. **Prior-art and pre-registration lock (2026-08-22):** round-2 blocking issue 9 — the novelty check missed the machine-learned orbital-free DFT lineage that this architecture belongs to; §2.1 now positions against it and pre-registers a fallback if the local \(\varepsilon_\theta\) stalls. Round-2 blocking issue 13 — the §2 comparison was falsifiable in wording only; §7.1 now fixes splits, seeds, tuning parity, effect size and confounds **before** any leg trains.
 15. **Representation-identifiability lock (2026-08-23):** round-3 blocking issue 1 showed that a density-supervised field model versus an \(E/F\)-only MACE does not isolate representation; it compares unequal label information. §2, §6.3, §7 and §7.1 now make the equal-label **Field-EF vs MACE-EF** result primary, add a controlled **Field-EFρ vs Field-EF** density-supervision ablation, and reserve the full \(E/F/H/\rho\) model for the operational spectroscopy result rather than the representation-only claim.
+16. **Same-surface label lock (2026-08-23):** round-3 blocking issue 2 showed that CCSD(T) energies paired with CCSD force targets do not define one conservative PES. §5.1 now forbids that mixture, requires a measured directional-derivative consistency pilot, uses full finite-difference CCSD(T) gradients for H₂O, and permits seeded CCSD(T) directional derivatives for benzene only when complete gradients fail the measured budget. §6.3 and §7 evaluate every model against derivatives of the same CCSD(T) energy surface.
 
 ---
 
@@ -109,7 +110,7 @@ Training-set sizing (revised upward after the 150-configuration training set was
 
 A level of theory plus a count is not a method. This subsection is the method. Code-path cells are filled after a one-geometry smoke test; scientific defaults are locked now.
 
-**One campaign, two products (H₂O).** The same H₂O geometries feed Module 04 (descriptor CSV: \(R,E,F\)) and Workstream P1 (volumetric \(\rho,E,F\), selected \(H\)). Benzene is a **second** campaign for Module 05. Module 06 stays off this path.
+**One campaign, two products (H₂O).** The same H₂O geometries feed Module 04 (descriptor CSV: \(R,E,F\)) and Workstream P1 (volumetric \(\rho,E,F\), selected \(H\)); H₂O uses complete same-surface gradients. Benzene is a **second** campaign and may carry complete gradients or directional derivatives according to the decision ladder below. Module 06 stays off this path.
 
 #### Scientific defaults (lock now)
 
@@ -117,8 +118,8 @@ A level of theory plus a count is not a method. This subsection is the method. C
 |---|---|---|
 | Energy | **CCSD(T)/cc-pVTZ**, frozen-core, one geometry convention (Å vs Bohr) everywhere | This is the precision claim. |
 | Density target \(\rho\) | **Relaxed CCSD 1-RDM**, mapped onto the same real-space grid as §6, renormalized to \(N_e\) | A unique CCSD(T) density is often not what the code returns. Supervising \(\rho\) on a CCSD relaxed density while \(E\) is CCSD(T) is a **documented density-level gap**, not a silent DFT sneak-in. If a verified CCSD(T) density path exists in the *pinned* PySCF, use it and write that in the manifest. If only an *unrelaxed* CCSD 1-RDM is available, that is the fallback — the manifest must say **unrelaxed**. Never write “exact CCSD(T) density” unless the smoke test produced one. |
-| Forces | **Analytic CCSD(T) gradients if the smoke test returns them.** Else analytic **CCSD** gradients (energy still CCSD(T)). Else **central finite-difference of CCSD(T) energies**, H₂O only. | Benzene finite-difference forces (12 atoms × 2 × \(E_{\mathrm{CCSD(T)}}\)) are the thing most likely to kill Module 05. Do not plan them as the default. |
-| Hessians | **Not per config.** Equilibrium geometry only at first: **1 H₂O** + **1 benzene** Hessian, by finite-difference of the *same* force recipe used above. Add more stationary points only if the first Hessian is cheap enough that \(L_H\) is not the long pole. | “Selected stationary points” now has a count. |
+| Energy derivatives | **Same-surface rule:** analytic CCSD(T) gradients if the pinned code returns them; otherwise central finite differences of CCSD(T) energies. H₂O gets complete Cartesian gradients. Benzene gets complete gradients if the pilot permits, otherwise seeded CCSD(T) directional derivatives. | A CCSD force must never be paired with a CCSD(T) energy as though both label one conservative PES. Method mismatch is systematic bias, not label noise. |
+| Hessians | **Not per config.** Equilibrium geometry only at first: **1 H₂O** + **1 benzene** Hessian, derived from the same CCSD(T) energy surface by finite differences of available CCSD(T) gradients or energies. Add more stationary points only if the first Hessian is cheap enough that \(L_H\) is not the long pole. | “Selected stationary points” now has a count, and the Hessian cannot silently inherit a CCSD/CCSD(T) mismatch. |
 
 #### Code path is a decision procedure, not a wish
 
@@ -126,12 +127,12 @@ A level of theory plus a count is not a method. This subsection is the method. C
 
 **Platform note.** PySCF publishes no native Windows wheels. The campaign environment is Linux or WSL2, and standing that up is a **week-1 task**, not a week-10 discovery. Verify it on day one — a cheap check with an expensive surprise. Phase 0a needs none of this, which is why the phase is split.
 
-**Step 1 — one-geometry smoke test (H₂O, then benzene).** For each molecule, record pass/fail for: energy, 1-RDM, analytic gradient, Hessian. This table lives in the campaign manifest and is filled with numbers, not “via PySCF.”
+**Step 1 — one-geometry smoke test (H₂O, then benzene).** For each molecule, record pass/fail for: energy, 1-RDM, **analytic CCSD(T) gradient**, Hessian. An available CCSD gradient is recorded as a diagnostic only; it is not an accepted force target for a CCSD(T) energy. This table lives in the campaign manifest and is filled with numbers, not “via PySCF.”
 
 **Step 2 — 10-geometry cost pilot (benzene and H₂O).** This is a **Phase 0 exit criterion**, before P1 training and before promising Module 05 \(N=5000\). Measure, per geometry:
 
-- wall time and peak RAM for \(E\), \(\rho\), \(F\)
-- whether analytic \(F\) existed
+- wall time and peak RAM for \(E\), \(\rho\), a complete finite-difference gradient, and one central directional derivative
+- whether an analytic CCSD(T) gradient existed
 - export size of one \(64^3\) (and \(32^3\)) tensor
 
 Then write the only budget that counts:
@@ -142,7 +143,30 @@ T_{\text{campaign}} \approx N_{\text{geom}}\times \bar t_{\text{geom}}
 
 No A100 folklore. If \(T\) does not fit local hardware on a calendar that can be lived with, do **not** start the 5000-config run. Take the shrink ladder.
 
-Every row in the campaign manifest gets: `theory_energy`, `theory_density`, `theory_force`, `rdm_relaxed|unrelaxed`, `pyscf_version`, `grid`, `ref_fit_id`, `wall_s`, `max_rss_gb`. If those fields are blank, it is not a dataset.
+Every row in the campaign manifest gets: `theory_energy`, `theory_density`, `derivative_kind` (`analytic_gradient|fd_full_gradient|fd_directional`), `derivative_theory`, `fd_step_bohr`, `direction_seed`, `direction_vector` (null for full gradients), `derivative_uncertainty`, `rdm_relaxed|unrelaxed`, `pyscf_version`, `grid`, `ref_fit_id`, `wall_s`, `max_rss_gb`. If the applicable fields are blank, it is not a dataset.
+
+#### Same-surface derivative decision (round-3 blocking issue 2)
+
+The scalar energy and every supervised derivative must describe the **same CCSD(T)/cc-pVTZ surface**. Never minimize \(L_E\) against CCSD(T) while minimizing \(L_F\) against analytic CCSD forces. A conservative model cannot, in general, satisfy both, and the mismatch must not be relabeled as irreducible noise.
+
+**Pilot measurement.** At each of the 10 H₂O and 10 benzene pilot geometries, draw at least three normalized directions \(\mathbf v\) from committed seeds and compute
+
+\[
+D_{\mathbf v}E_{\mathrm{CCSD(T)}} \approx
+\frac{E_{\mathrm{CCSD(T)}}(\mathbf R+h\mathbf v)-E_{\mathrm{CCSD(T)}}(\mathbf R-h\mathbf v)}{2h}.
+\]
+
+Repeat at \(h\) and \(h/2\); their difference is the derivative's numerical-uncertainty estimate. Also report \(D_{\mathbf v}E_{\mathrm{CCSD(T)}}+\mathbf F_{\mathrm{CCSD}}\cdot\mathbf v\) as a **method-consistency diagnostic only**. That discrepancy is systematic CCSD-vs-CCSD(T) bias and never enters the label noise floor.
+
+**Decision ladder — stop at the first rung that fits the measured calendar:**
+
+1. Use analytic CCSD(T) gradients if the pinned implementation returns and validates them.
+2. Otherwise, use complete central finite-difference CCSD(T) gradients for every H₂O configuration.
+3. For benzene, use complete central finite-difference CCSD(T) gradients if the pilot budget permits.
+4. If complete benzene gradients do not fit, supervise **seeded random directional derivatives of CCSD(T) energy**: target three directions per configuration, floor one. Field and MACE receive the identical directions and projected-derivative loss. Reserve at least five held-out benzene geometries with complete finite-difference CCSD(T) gradients for force-vector evaluation; these are never training rows.
+5. If even rung 4 plus the held-out complete-gradient set does not fit, fire the shrink ladder and remap Module 05. Do not substitute CCSD force labels.
+
+For every finite difference, step-size convergence and electronic-structure convergence must make `derivative_uncertainty` smaller than one third of the Phase 1 force-acceptance threshold. A label that misses this gate is recomputed or discarded; it does not loosen the acceptance threshold.
 
 #### Shrink ladder (in the plan *before* the pilot)
 
@@ -150,7 +174,7 @@ Stop at the first rung that fits:
 
 1. Cut benzene \(N\) (5000 → 2000 → 1000). Keep CCSD(T) energies and the density recipe above.
 2. Store benzene \(\rho\) on \(32^3\) (or downsample after a finer QM cube). Training grid and QM cube may differ if the export method is written down.
-3. **Density proxy, energy/force still CCSD(T):** \(\rho\) from HF or a documented DFT *density only*. This is a real precision exception and **must** use the Overarching Goal escape clause. Allowed only if the smoke test / pilot shows CCSD densities are the long pole. Module 06-style “it’s just sampling” does **not** cover this.
+3. **Density proxy, energy/derivatives still same-surface CCSD(T):** \(\rho\) from HF or a documented DFT *density only*. This is a real precision exception and **must** use the Overarching Goal escape clause. Allowed only if the smoke test / pilot shows CCSD densities are the long pole. Module 06-style “it’s just sampling” does **not** cover this.
 4. **Benzene field campaign becomes outlook.** Module 05 must then be remapped. Do not keep “≥5000 benzene CCSD(T) volumes” as a scored promise.
 
 H₂O (2000 configs, \(32^3\), 3 atoms) is assumed cheaper. If the *H₂O* pilot already fails, the field thesis is locally infeasible: **stop before P1**, not after.
@@ -171,7 +195,7 @@ The Phase 1 force Go/No-Go is not a chat number — and it is not a number that 
 | Category | Examples | Status |
 |---|---|---|
 | **Engine artifact** | egg-box residual, autograd-vs-FD mismatch, Poisson boundary error, quadrature error | A **bug with a ceiling**. Fix it. It never enters the noise floor. |
-| **Label noise** | scatter of a 5-point repeated CCSD(T) (or FD) force on one fixed H₂O geometry | Irreducible property of the data. **Only this** may loosen the gate. |
+| **Label numerical uncertainty** | finite-difference step-size and electronic-convergence sensitivity on the same CCSD(T) surface | Irreducible property of the accepted data. **Only this** may loosen the gate. CCSD-vs-CCSD(T) method bias is excluded. |
 
 The original formulation — \(\max(1\,\text{meV/Å},\,3\times\text{noise floor})\) with the egg-box residual *inside* the noise floor — is circular: a worse engine buys a looser gate. Arithmetic in [probes/issue08_gate_consistency.py](../probes/issue08_gate_consistency.py): the old \(10^{-4}\,\)Ha egg-box tolerance implies a \(42.7\,\text{meV/Å}\) force artifact, which would have set the effective Phase 1 gate at \(128\,\text{meV/Å}\) — \(128\times\) looser than the stated target, and irreconcilable with the \(5\,\text{cm}^{-1}\) harmonic gate in the same table row.
 
@@ -263,17 +287,17 @@ Do not invent a more exotic \(\mathcal{E}\) (orbital-free kinetic libraries, lea
 $$L_{train} = \lambda_E L_E + \lambda_F L_F + \lambda_H L_H + \lambda_\rho L_\rho$$
 
 - $L_E$: MSE on total energy vs. CCSD(T).
-- $L_F$: MSE on per-atom forces vs. the §5.1 force recipe (analytic CCSD(T) if the smoke test returns it; else analytic CCSD; else H₂O-only finite-difference of CCSD(T) energies).
+- $L_F$: MSE on complete force vectors derived from the CCSD(T) energy surface, when available. For the §5.1 benzene directional fallback, replace this term row-wise with \(L_D=\lvert\nabla_{\mathbf R}E_\theta\cdot\mathbf v-D_{\mathbf v}E_{\mathrm{CCSD(T)}}\rvert^2\). Field and MACE receive the same derivative kind and direction for every `config_id`; analytic CCSD forces are never targets.
 - $L_H$: Hessian supervision at the **counted** stationary points in §5.1 (1 H₂O + 1 benzene equilibrium Hessian first). Force-only supervision does **not** guarantee correct 2nd/3rd-order PES derivatives.
 - $L_\rho$: MSE on the **deformation** density \(\Delta\rho=\rho_{\mathrm{QM}}-\rho_{\mathrm{ref}}\), where \(\rho_{\mathrm{QM}}\) is the §5.1 density target (default: relaxed CCSD 1-RDM, not a slogan “exact CCSD(T) density”). This supervises the *argument* of \(\mathcal{E}\); it is not an optional extra head and not the force source. Supervising \(\Delta\rho\) rather than \(\rho\) also removes the core domination that made a plain \(L_\rho\) nearly blind to the diffuse valence tail — the tail that sets \(\boldsymbol{\mu}\) (round-2 issue 11).
 
-**§2 comparison cohort (round-3 issue 1):** three separately trained models use the same configurations, \(E/F\) labels, splits and seeds. To keep the information comparison clean, \(\lambda_H=0\) for all three comparison legs; the equilibrium Hessian remains an evaluation target.
+**§2 comparison cohort (round-3 issue 1):** three separately trained models use the same configurations, CCSD(T) energies, same-surface full or directional derivative labels, splits and seeds. To keep the information comparison clean, \(\lambda_H=0\) for all three comparison legs; the equilibrium Hessian remains an evaluation target.
 
 | Leg | Training labels | Purpose |
 |---|---|---|
-| **MACE-EF** | \(E,F\) | Equivariant-GNN comparator |
-| **Field-EF** | \(E,F\), with \(\lambda_\rho=0\) | Primary equal-label representation test against MACE-EF |
-| **Field-EFρ** | \(E,F,\rho\) | Density-supervision ablation against Field-EF |
+| **MACE-EF** | \(E\) plus the accepted same-surface full/directional derivatives | Equivariant-GNN comparator |
+| **Field-EF** | Identical energy/derivative labels, with \(\lambda_\rho=0\) | Primary equal-label representation test against MACE-EF |
+| **Field-EFρ** | Identical energy/derivative labels plus \(\rho\) | Density-supervision ablation against Field-EF |
 
 Field-EF and Field-EFρ have identical architecture, initialization seeds, optimizer schedule and fixed hyperparameters; only \(\lambda_\rho\) changes. Density and dipole errors are evaluation-only for Field-EF. Passing them is not required for the equal-label force comparison, but failure means its internal field must not be described as a physical electron density. The full \(E/F/H/\rho\) production model is reported separately and may support the spectroscopy result, never the representation-only causal claim.
 
@@ -296,11 +320,11 @@ Field-EF and Field-EFρ have identical architecture, initialization seeds, optim
 | Phase | Goal | Molecule(s)/Grid | Hard Go/No-Go Criteria |
 |---|---|---|---|
 | **Fase 0a — Engine and artifact sweeps** (no ML, **no QM**) | Validate the differentiable physics engine itself and produce the Module 03 sweep | Analytic/reference densities + per-element atomic reference fits | **Total engine artifact \(<0.1\,\text{meV/Å}\)** \((1.9\times10^{-6}\,\text{a.u.})\), which at \(\Delta x=0.20\,\text{Å}\) means egg-box amplitude \(<2.3\times10^{-7}\,\)Hartree · \(\lVert\mathbf{F}_{autograd}-\mathbf{F}_{finite\text{-}diff}\rVert<0.05\,\text{meV/Å}\) \((10^{-6}\,\text{a.u.}, \text{float64})\) — a check of the autograd graph, **not** of discretization · closed-loop force conservation · energy drift over the **production trajectory length** \(<1\%\) of \((3N-6)k_BT\) (H₂O / 50 ps / 300 K: \(6\times10^{-7}\,\)Hartree/ps) · Hockney FFT-Poisson solver validated · egg-box across \(\sigma/\Delta x \in \{1,1.5,2,2.5,3\}\) over **randomly drawn rigid poses** (which subsumes the \(x/y/z\)/diagonal requirement), reported as a distribution in force units · **rigid-rotation residual** as \(\tau_{\max}/r_{\max}\) against the same ceiling · grid-convergence study across \(\Delta x \in \{0.40,\dots,0.15\}\,\text{Å}\) · box-size/boundary convergence · **per-element atomic reference fits** accepted at \(\int\lvert\rho^{\mathrm{fit}}-\rho^{\mathrm{atom}}\rvert dV/Z<10^{-3}\) · **the 800-row sweep CSV exists** ([Capstone_Mapping.md](Capstone_Mapping.md) §4) | **Unblocks Module 03.** |
-| **Fase 0b — QM foundation and cost** (needs PySCF) | Lock the §5.1 recipe with **measured** numbers | 1-geometry smoke tests + **10-geometry H₂O and benzene cost pilots** + one real H₂O CCSD 1-RDM cube | **Filled smoke-test table** (energy / 1-RDM / analytic grad / Hessian for H₂O and benzene) · **measured** \(\bar t_{\mathrm{geom}}\), peak RAM, export size · **published label noise floor** (5-point repeated QM force on one H₂O geometry) · **real-cube representability**: \(\lvert\int\Delta\rho\,dV\rvert<10^{-4}\,e\) and grid-vs-analytic \(E_{ne}\), \(E_H\) agreement \(<0.1\,\)mHa · **egg-box re-measured on that real cube**, in force units · **\(\varepsilon_\theta\) anchoring fork (i) vs (ii) decided in writing** from the same cube · if \(T_{\mathrm{campaign}}\) does not fit, **shrink ladder chosen in writing** before any 2000/5000-config run | **Unblocks the H₂O campaign**, hence 04 / P1 / G1. |
+| **Fase 0b — QM foundation and cost** (needs PySCF) | Lock the §5.1 recipe with **measured** numbers | 1-geometry smoke tests + **10-geometry H₂O and benzene cost pilots** + one real H₂O CCSD 1-RDM cube | **Filled smoke-test table** (energy / 1-RDM / analytic CCSD(T) gradient / Hessian for H₂O and benzene) · **same-surface derivative pilot passed:** at least 3 seeded directions per pilot geometry, \(h\) vs \(h/2\) convergence reported, CCSD-vs-CCSD(T) discrepancy reported as method bias · **derivative rung selected in writing** with measured complete-gradient and directional costs · derivative uncertainty \(<1/3\) of the Phase 1 threshold · **measured** \(\bar t_{\mathrm{geom}}\), peak RAM, export size · **real-cube representability**: \(\lvert\int\Delta\rho\,dV\rvert<10^{-4}\,e\) and grid-vs-analytic \(E_{ne}\), \(E_H\) agreement \(<0.1\,\)mHa · **egg-box re-measured on that real cube**, in force units · **\(\varepsilon_\theta\) anchoring fork (i) vs (ii) decided in writing** from the same cube · if \(T_{\mathrm{campaign}}\) does not fit, **shrink ladder chosen in writing** before any 2000/5000-config run | **Unblocks the H₂O campaign**, hence 04 / P1 / G1. |
 | **Fase 1 — H₂O PES training** | Learn $\mathbf{R}\to E,\mathbf{F},\rho$ | H₂O, ≥2,000 CCSD(T)/cc-pVTZ configs (per §5.1), $32^3$ grid | **Two independent conditions.** (a) Phase 0's engine-artifact ceiling still holds \((<0.1\,\text{meV/Å})\) — an engine artifact is a bug to be fixed, never a floor that licenses a looser gate. (b) Force RMSE below the **greater of** \(1\,\text{meV/Å}\) and \(3\times\) the measured **label** noise floor · harmonic frequencies within 5 cm⁻¹ of the CCSD(T) Hessian (the one equilibrium Hessian from §5.1, not a per-config Hessian) · **the force and frequency gates must be reconciled empirically once the model exists** — report both; a model that passes one and fails the other means the *pair* is mis-specified, and the pair gets fixed before Phase 2 · **dipole gates (round-2 issue 11), all three required before any production MD:** (i) \(\lVert\boldsymbol{\mu}_\theta-\boldsymbol{\mu}_{\mathrm{QM}}\rVert<0.01\,e a_0\) (\(\approx0.025\,\)D, \(\approx1.4\%\) of the H₂O dipole) on held-out configs; (ii) relative error in \(d\boldsymbol{\mu}/d\mathbf{R}\) \(<5\%\), since \(I\propto\lvert d\boldsymbol{\mu}/dQ\rvert^2\) and the §9 claim is *relative* envelopes at the \(\sim10\%\) level; (iii) grid artifact in \(\boldsymbol{\mu}\) under rigid translation \(<0.1\%\) of \(\lvert\boldsymbol{\mu}\rvert\) |
 | **Fase 2 — Emergent IR (H₂O)** | Blind spectral prediction, weights frozen | 5×50 ps MD trajectories | $\nu_1,\nu_2,\nu_3$ band centers within 10–15 cm⁻¹ of experimental gas-phase FTIR envelopes — obtained with **no spectral fitting** |
 | **Fase 3 — Physical hardness tests** | Sanity + hardness, **not** the §2 bake-off | D₂O (mass-only swap, frozen weights); CO₂ (linear, symmetric) | D₂O per-mode isotope shift consistent with theory (≈1.35–1.39) — **necessary, not flagship**; CO₂ forbidden-mode gate with a **number**: \(I(\nu_1)/I(\nu_3)<10^{-2}\), and the measured ratio must be consistent with \(\delta^2\), where \(\delta\) is the independently measured relative \(d\boldsymbol{\mu}/dQ\) error from Phase 1. A voxel grid breaks \(D_{\infty h}\), so the residual is **not** zero and “\(\approx0\)” was never a gate; if the ratio greatly exceeds \(\delta^2\) the model has learned an asymmetric density and the failure is physical, not numerical. \(\nu_2/\nu_3\) correctly active |
-| **Fase 4 — Baseline benchmark** | Answer §2 under equal labels, then quantify density supervision | Same H₂O/benzene `config_id`s as P1/05 | **Owners:** 04 trains simple NN; **G1** trains MACE-EF from scratch (NequIP fallback); P1/05 train Field-EF and Field-EFρ; **08 assembles only**. **§7.1 pre-registration is a precondition** — frozen split hash, \(\ge3\) seeds, tuning parity and a declared effect size, all committed before any leg trains. **Primary gate:** leave-one-mode-out Field-EF vs MACE-EF on identical \(E/F\) labels. **Controlled ablation:** Field-EFρ vs Field-EF, differing only in \(\lambda_\rho\). The full \(E/F/H/\rho\) production result is reported separately. Secondary: in-domain RMSE, harmonic error vs the one §5.1 Hessian, MD stability, cost. If G1 or Field-EF is missing, the representation test is **incomplete** — do not substitute 04 or the density-supervised production model. |
+| **Fase 4 — Baseline benchmark** | Answer §2 under equal labels, then quantify density supervision | Same H₂O/benzene `config_id`s as P1/05 | **Owners:** 04 trains simple NN; **G1** trains MACE-EF from scratch (NequIP fallback); P1/05 train Field-EF and Field-EFρ; **08 assembles only**. **§7.1 pre-registration is a precondition** — frozen split hash, \(\ge3\) seeds, tuning parity and a declared effect size, all committed before any leg trains. **Primary gate:** leave-one-mode-out Field-EF vs MACE-EF on identical CCSD(T) energies and identical same-surface full or directional derivatives. **Controlled ablation:** Field-EFρ vs Field-EF, differing only in \(\lambda_\rho\). The full \(E/F/H/\rho\) production result is reported separately. Secondary: complete-gradient force RMSE on the held-out §5.1 set, in-domain error, harmonic error vs the one §5.1 Hessian, MD stability, cost. If G1 or Field-EF is missing, the representation test is **incomplete** — do not substitute 04 or the density-supervised production model. |
 | **Fase 5 — Finale: benzene** | Aromatic generalization | C₆H₆, nominal $64^3$ / ≥5,000 configs **subject to the §5.1 pilot and shrink ladder**, 20 ps forward MD | Aromatic ring/C–H modes within 15 cm⁻¹ of one fixed gas-phase NIST FTIR dataset. If rung 4 of the shrink ladder fired, this phase is outlook — do not keep the nominal \(N\) as a scored promise |
 | *(Outlook only, not scored)* | OOD transferability discussion | Naphthalene (C₁₀H₈) via atomic density superposition, zero-shot | Discussed as an exploratory result in the thesis, explicitly **not** a pass/fail milestone |
 

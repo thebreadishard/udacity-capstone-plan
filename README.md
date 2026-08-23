@@ -122,8 +122,10 @@ architecture operating on continuous 3D electron-density fields. Key design choi
 - **Energy-first (Route B):** \(E=\mathcal{E}[\rho,R]\) — fixed Hockney–Eastwood
   electrostatics plus a learned remainder \(\varepsilon_\theta[\rho]\). No latent
   energy head. Forces come from autograd through \(\rho_\theta\).
-- **Strictly non-DFT *energies* (default forces too):** CCSD(T)/cc-pVTZ per
-  Distilled Plan §5.1. Density is the pinned 1-RDM recipe (default: relaxed CCSD),
+- **Same-surface non-DFT energies and derivatives:** CCSD(T)/cc-pVTZ per
+  Distilled Plan §5.1. Derivatives are complete gradients or seeded directional
+  derivatives of that same energy; CCSD forces are never paired with CCSD(T)
+  energies as targets. Density is the pinned 1-RDM recipe (default: relaxed CCSD),
   not a slogan “exact CCSD(T) density.” No library XC functionals in the pipeline
   unless the §5.1 shrink ladder fires. The Hohenberg–Kohn *shape* is the claim.
 - **Emergent spectroscopy:** IR spectra are *not* trained on — they emerge as blind
