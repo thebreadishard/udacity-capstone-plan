@@ -1,5 +1,15 @@
 # Distilled Final Project Plan & Quality Checks
 
+> **PRE-PIVOT — SUPERSEDED IN PART, REWRITE IN PROGRESS (2026-08-23).**
+> The prime directive changed on 2026-08-23: see [Overarching_Goal.md](Overarching_Goal.md) section 1 (**R3**)
+> and [Restructure_Proposal_2026-08-23_Project12_in_Module08.md](Restructure_Proposal_2026-08-23_Project12_in_Module08.md).
+> The voxel field model is no longer the production PES (it is now the dipole-surface leg), the
+> canonical-CCSD(T) volumetric campaigns are cancelled, and classical MD + dipole-ACF FFT is a
+> diagnostic rather than the deliverable. **Every section below that has not yet been rewritten
+> describes the pre-pivot plan and must not be quoted as current.** Rewrite order: 1-2, then 3-4,
+> then 5, then 6, then 7, then 8-9. The pre-pivot text stays in git history by design; the evolution
+> log in section 1 is where the change gets recorded.
+
 **Source material:** This document is distilled from the full, multi-round conversations in [gemini_chat_2.md](AI_Chats/gemini_chat_2.md) and [grok_chat_2.md](AI_Chats/grok_chat_2.md), cross-checked against the earlier exploratory conversations [gemini_chat_1.md](AI_Chats/gemini_chat_1.md) and [grok_chat_1.md](AI_Chats/grok_chat_1.md). It reconstructs the plan as it stood after the "strict professor" critique loop: the plan was drafted with Gemini, stress-tested by Grok, revised, re-submitted to Grok, and — after a final, very harsh 23-point external review (pasted into both chats) — reworked one last time. **Gemini's final response to that 23-point review is the most advanced, self-consistent version of the plan and is treated here as the definitive baseline.** Grok's conversation ends one step earlier (agreeing the 23 points must be addressed, without yet seeing the reworked plan), so where the two diverge, the later Gemini revision supersedes the earlier Grok-approved version.
 
 ---

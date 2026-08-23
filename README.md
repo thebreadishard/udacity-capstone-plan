@@ -10,37 +10,48 @@
 
 ## The Overarching Goal
 
-**This thesis:** static **CCSD(T)/cc-pVTZ-level labels**, audited against a frozen
-CCSD(T)/CBS(T,Q) reference set before any molecule-specific “chemically accurate”
-claim (plus a pinned density/dipole recipe); **frozen-weight IR band envelopes** for
-H₂O / D₂O / CO₂ / benzene from a conservative field PES and dipole surface. Not
-chemically precise spectral **lines**. Not arbitrarily sized PAHs.
+> **Pivot, 2026-08-23.** The prime directive was rewritten. The paragraph below is current; anything
+> elsewhere in this repository that still describes a voxel field PES, own CCSD(T) volumetric
+> campaigns, or H₂O band envelopes as the deliverable is **pre-pivot** and carries a banner saying so.
+> Rationale and evidence: [`GoalGathering/Restructure_Proposal_2026-08-23_Project12_in_Module08.md`](GoalGathering/Restructure_Proposal_2026-08-23_Project12_in_Module08.md).
 
-The scientific question is whether, under identical energy/force supervision,
-Field-EF transfers better than MACE-EF on unseen vibrational modes, and what additional
-benefit comes from density supervision (Field-EFρ vs Field-EF). Module 08 delivers a
-reliability-gated small-molecule IR-emulation stack plus that comparison — not a PAH
-spectrometer.
+**This thesis (R3):** **anharmonic infrared band families and relative intensities for named PAH
+sizes and charge states**, from a potential-energy surface anchored to a **measured** coupled-cluster
+gold rung, with quantum nuclear motion (GVPT2-class) and a **four-term error budget** — ending in a
+**pre-registered, fail-closed identification** against one frozen JWST/PAHdb product.
 
-**Horizon** (not scored here): very large PAH band families and relative intensities,
-then fail-closed identification. That path is post-master’s Projects 10 → 11 → 12.
+Precision is carried by the **theory ladder** and the **nuclear-motion method**, not by a novel neural
+architecture. Established equivariant machine-learned potentials are fine-tuned and Δ-learned up to
+the gold rung; the contribution is the anchor, the budget and the fail-closed rule.
+
+Not claimed: rovibrational **line lists**, sub-wavenumber lines, or "any size" without the measured
+stop rung attached. Classical MD + dipole-ACF FFT is a diagnostic, not the deliverable.
+
+**There is no post-master's horizon.** Projects 10–12 are absorbed into Modules 03–08 and kept only as
+provenance. Whatever R3 does not reach is a **limitation in Module 08**, never a queued project.
 
 The actual implementation of this pipeline will be carried out across separate capstone
-project repositories. This repo answers the question: *"How do we slice the **master’s** research
+project repositories. This repo answers the question: *"How do we slice the **master's** research
 program into 7 individually gradeable capstone projects that are each self-contained,
-rubric-compliant, and collectively answer the field-vs-GNN question — without
-promising a PAH line list?"*
+rubric-compliant, and collectively deliver R3 — without promising a PAH line list?"*
 
 For full details see:
 
 - [`GoalGathering/Overarching_Goal.md`](GoalGathering/Overarching_Goal.md) — the prime
-  directive: chemically precise **labels**; §9 band envelopes; horizon = Projects 10–12.
+  directive: R1/R2/R3, the four-term error budget, and the labels / spectra / identification split.
+- [`GoalGathering/Restructure_Proposal_2026-08-23_Project12_in_Module08.md`](GoalGathering/Restructure_Proposal_2026-08-23_Project12_in_Module08.md)
+  — why the plan changed, the alternatives weighed, the literature, and the module remap.
 - [`GoalGathering/Distilled_Project_Plan_and_Quality_Checks.md`](GoalGathering/Distilled_Project_Plan_and_Quality_Checks.md)
-  — the complete technical plan (architecture, data pipeline, phased roadmap, QA protocol).
+  — the technical plan. **Currently mid-rewrite; read its banner first.**
 
 ---
 
 ## How the Plan Maps to Capstone Modules
+
+> **PRE-PIVOT TABLE.** The mapping below is the voxel-era one. The proposed replacement is in
+> [`Restructure_Proposal_2026-08-23_Project12_in_Module08.md`](GoalGathering/Restructure_Proposal_2026-08-23_Project12_in_Module08.md)
+> section 7, and is deliberately **not** written here yet: the mapping is ratified only after the
+> Distilled Plan rewrite and a Round-4 review, so that a rejected pivot does not cost two rewrites.
 
 The research plan defines six execution phases (0–5) plus an outlook. These are distributed
 across the seven gradeable Udacity capstone modules as follows:

@@ -1,5 +1,13 @@
 # Capstone Mapping — Working Document
 
+> **PRE-PIVOT — SUPERSEDED, REWRITE PENDING (2026-08-23).**
+> The prime directive changed on 2026-08-23: see [Overarching_Goal.md](Overarching_Goal.md) section 1
+> (**R3**) and [Restructure_Proposal_2026-08-23_Project12_in_Module08.md](Restructure_Proposal_2026-08-23_Project12_in_Module08.md)
+> section 7. The module-to-dataset mapping, Workstreams P1 and G1, the horizon section 7 and the
+> calendar in section 8 all describe the pre-pivot plan. This document is rewritten **after** the
+> Distilled Plan rewrite and after a Round-4 review, so that a rejected pivot does not cost two
+> rewrites.
+
 **Status:** DRAFT — Passes 1–5 complete (extraction + gap analysis + dataset mapping + non-negotiables validation). Professor-review blocking issues 1–6 resolved in spec (2026-08-22): Workstream P1 (§4.1); implementable \(E=\mathcal{E}[\rho,R]\) (Distilled Plan §6); data-generation method + cost pilot + shrink ladder (Distilled Plan §5.1); prime directive reconciled with Distilled Plan §9 ([Overarching_Goal.md](Overarching_Goal.md)); rubric landmines locked (§3 Module 06 rewrite, Pass 4 Module 03 \(\ge 500\) table, §5.5 DOI-before-claim); Workstream G1 (§4.2) owns the MACE baseline on the same splits. Horizon PAH work is post-master’s Projects 10–12, not Modules 02–09. Pass 6 (module-by-module sign-off) is the only remaining mapping step before this is treated as final.
 **Purpose:** Single source of truth for dividing the FNO-NCA research plan ([Distilled_Project_Plan_and_Quality_Checks.md](Distilled_Project_Plan_and_Quality_Checks.md), [Overarching_Goal.md](Overarching_Goal.md)) across Udacity capstone modules 02–08 ([../CapstoneProjects](../CapstoneProjects)). Phase 1 of the Distilled Plan is **not** a Udacity module; it is owned by Workstream P1 (§4.1). Projects 10–12 are **not** Udacity modules.
 
