@@ -1,98 +1,188 @@
-# Overarching Objective: Audited CCSD(T) Static Labels; Frozen-Weight IR Band Envelopes
+# Overarching Objective: Gold-Anchored Anharmonic IR Band Families for Named PAHs, Fail-Closed
 
-**Status (2026-08-22):** Rewritten to close professor-review blocking issue 4. §5 item 4 now names Workstream G1 (issue 6). This file is the prime directive of **this thesis**. It must agree with Distilled Plan §2 and §9. It must not be quotable as a rovibrational line-list promise.
+**Status (2026-08-23):** Rewritten to adopt **R3** (§1) as the definition of "chemically precise", per
+[Restructure_Proposal_2026-08-23_Project12_in_Module08.md](Restructure_Proposal_2026-08-23_Project12_in_Module08.md)
+decisions 1–3. Supersedes the 2026-08-22 version, whose deliverable was small-molecule band envelopes
+plus a field-vs-GNN representation verdict.
 
-Horizon work (very large PAHs, anharmonic band families, intensities, JWST-facing identification) is specified in post-master’s [Project 10](../CapstoneProjects/10_Size_Extensive_Aromatic_PES.md), [Project 11](../CapstoneProjects/11_Anharmonic_IR_and_Intensities.md), and [Project 12](../CapstoneProjects/12_Astrophysical_PAH_Identification.md). Those are **not** Udacity modules and are **not** scored in Modules 02–09.
+This file is the prime directive of **this thesis**. Every other document must agree with it. It must
+not be quotable as a rovibrational line-list promise.
 
----
-
-## 1. Horizon (not scored)
-
-The long-term scientific ambition is **chemically precise enough infrared band families and relative intensities for very large PAHs** — the object JWST / PAHdb identification actually needs — with a published error budget.
-
-That ambition is **not** a master’s deliverable. Canonical CCSD(T) does not label arbitrarily large PAHs. A global \(N^3\) field PES does not automatically size-extend. Classical MD + dipole-ACF FFT does not produce ExoMol-style lines. Science already has a small-molecule IR-emulation stack (Gastegger ML-MD, MLAtom / ANI, VPT2). Reproducing that stack on H₂O is not a contribution.
-
-The path from this thesis to the horizon is Projects 10 → 11 → 12, in that order.
-
----
-
-## 2. This thesis (the only prime directive that counts)
-
-Obtain a **conservative field PES and dipole surface**, trained on static **CCSD(T)/cc-pVTZ-level labels** whose chemical-accuracy wording is conditional on the Distilled Plan §5.1 CBS(T,Q) audit, from which vibrational band positions and relative IR envelopes are predicted via frozen-weight classical MD. Band positions emerge from the PES; relative intensities use a statically supervised dipole surface. No spectrum, peak position or intensity is a training target.
-
-- The scientific question is Distilled Plan §2: under identical \(E/F\) supervision and the same CCSD(T) splits, does the Field-EF architecture transfer better than MACE-EF, and what additional benefit comes from explicit density supervision (Field-EFρ vs Field-EF)?
-- The scored molecules are **H₂O / D₂O / CO₂ / benzene**.
-- IR is a **frozen-weight readout**. Static dipoles supervise the production dipole surface, but spectra, peak positions and intensities are never training losses.
-- Large PAHs, naphthalene as a pass/fail, and “any size” are **outlook**.
-- Module 08 delivers a **reliability-gated small-molecule IR-emulation stack** plus the pre-registered three-way conclusion: representation advantage, density-supervision advantage only, no demonstrated advantage, or inconclusive — not a PAH spectrometer.
-
-If a sentence cannot survive this section, it does not belong in this file.
+**There is no post-master's horizon.** Projects 10–12 are absorbed into Modules 03–08. The files
+[10](../CapstoneProjects/10_Size_Extensive_Aromatic_PES.md),
+[11](../CapstoneProjects/11_Anharmonic_IR_and_Intensities.md) and
+[12](../CapstoneProjects/12_Astrophysical_PAH_Identification.md) are retained as **provenance** — they
+record why the walls exist — not as a roadmap. Whatever R3 does not reach is named as a **limitation
+in Module 08**, never as a queued project.
 
 ---
 
-## 3. Split “chemical precision” (do not glue these again)
+## 1. The deliverable: R3, and only R3
 
-Sub-wavenumber is **not** a property of a CCSD(T) energy table. \(1\,\text{kcal/mol}\approx 350\,\text{cm}^{-1}\). Putting them in one parenthetical is how the documents started lying to each other.
+Three readings of "chemically precise IR spectra" exist. Naming which one is meant is not pedantry;
+it is the difference between a defensible thesis and a lost defense.
 
-### A. Labels (hard rule — this degree)
+| | Reading | Status |
+|---|---|---|
+| **R1** | Rovibrational **line lists** — ExoMol/POKAZATEL grade, sub-cm⁻¹ positions, \(I\propto\lvert\langle f\lvert\boldsymbol\mu\rvert i\rangle\rvert^2\) | **Forbidden.** Not achievable for any PAH by anyone inside a master's. Claiming it is a free kill. |
+| **R2** | Band **envelopes** from classical MD + dipole-ACF FFT, ±10–15 cm⁻¹ | **Not the deliverable.** Already published at 216-carbon scale (Mai et al. 2025). Retained only as a temperature diagnostic. |
+| **R3** | **Anharmonic band families** — quantum (GVPT2-class) band centers within a stated cm⁻¹ of a **named** experimental standard, **plus** relative integrated intensities from a dipole moment surface, **plus** a four-term error budget | **This is the objective.** |
 
-Train / validation / test **energies and supervised derivatives** belong to the same **CCSD(T)/cc-pVTZ** (or better) energy surface, per Distilled Plan §5.1. Derivatives may be complete gradients or seeded directional derivatives; CCSD forces must never be paired with CCSD(T) energies as targets. Density is the pinned 1-RDM recipe (default: relaxed CCSD), not a slogan “exact CCSD(T) density.” “Chemically accurate” is allowed only molecule-by-molecule and quantity-by-quantity after the frozen CBS(T,Q) audit passes; otherwise use “CCSD(T)/cc-pVTZ-level.”
+**Provisional numbers, frozen in a dated commit before the first gold-rung job runs:**
 
-- Module 06 sampling is **not** a deviation (proposal only; every trusted geometry is re-labelled).
-- Distilled Plan §5.1 shrink-ladder **rung 3** (density proxy, energy/force still CCSD(T)) **is** a deviation and must use §4 below.
+- Band centers ≤ **10 cm⁻¹** against gas-phase experiment where it exists; ≤ **15 cm⁻¹** against
+  matrix data **with** a stated, frozen matrix-shift model. Never mix corrected and uncorrected.
+- Relative integrated intensities within a band family ≤ **20 %**, with neutral-vs-cation intensity
+  swaps reproduced qualitatively.
+- Scored band families, named in advance: **3.3 μm**, **6–9 μm**, **11–12 μm**.
 
-### B. Spectra (adopt Distilled Plan §9 here)
+**Four-term error budget, mandatory next to every cm⁻¹ claim.** A single pooled number is a fail.
 
-This thesis does **not** claim:
-
-- chemically precise spectral **lines**
-- rovibrational line-list precision
-- sub-wavenumber line positions from classical MD + FFT
-
-The allowed spectral claim is §9’s:
-
-> Vibrational band positions and relative IR envelopes/intensities from a static-label-trained PES and dipole surface, within a **stated** cm⁻¹ tolerance (Phase 2/5: 10–15 cm⁻¹, not 0.1 cm⁻¹), for H₂O, D₂O, CO₂, and benzene.
-
-ExoMol / HITRAN / NIST are **blind envelope checks**, never a training loss and never a line-list score. Intensities mean **relative envelopes** and forbidden-mode residuals, not \(\lvert\langle f\lvert\mu\rvert i\rangle\rvert^2\) line lists.
-
----
-
-## 4. Rules for deviation (labels only)
-
-Deviate from §3.A only if there is **absolutely no other technical solution**, and only with an extremely compelling, written reason. Compromising the mathematical accuracy of the baseline **label** sets is the last resort.
-
-This clause is **not** a license to call an FFT a line list. It does not move large PAHs into the scored master’s scope.
-
-Named use already in the plan: §5.1 shrink-ladder rung 3.
+| Term | What it measures |
+|---|---|
+| **(A)** | ML/PES error against the gold rung |
+| **(B)** | Electronic-structure error — local coupled cluster against canonical CCSD(T) |
+| **(C)** | Nuclear-motion error — GVPT2 against selected VCI or against experiment |
+| **(D)** | Environment error — matrix shift and/or excitation model |
 
 ---
 
-## 5. What Module 08 may put on the table
+## 2. What carries the precision (the thing that changed)
 
-A gated system assembled from prior artifacts:
+**Precision lives in the theory ladder and the nuclear-motion method, not in the neural
+architecture.** The ML model is an interpolator between gold-rung points. This is not a retreat from
+ambition; it is the only arrangement in which R3 is reachable, and §6 has always said the ML pipeline
+is a means.
 
-1. Conservative field PES (P1 on H₂O; 05 on benzene if the §5.1 pilot allows).
-2. Band envelopes from frozen-weight MD + dipole ACF FFT, within the stated cm⁻¹, with no spectral fitting. Dipoles are statically supervised; dipole derivatives remain evaluation-only.
-3. A fail-closed reliability layer (07). If P1 missed gates, 08 says the field claim is incomplete.
-4. Evidence the field was worth it: 04 (simple NN) plus the pre-registered **Field-EF vs MACE-EF** equal-label test and **Field-EFρ vs Field-EF** density-supervision ablation. P1/05 train the field legs; **G1** trains MACE-EF on the same splits; 08 only assembles the table. If Field-EF or G1 is missing, say the §2 representation claim is incomplete.
-5. A proposal mechanism (06), not a data source.
-6. An honest scope sentence: JWST / large-PAH identification is **why anyone would care later**. It is not a capability that was built.
+Consequences, binding:
 
-Industry frame: **reliability-gated spectral emulation for small molecules.** PAH identification is Projects 10–12.
+1. **The gold rung is measured, never asserted.** Canonical CCSD(T) is computed where it is
+   computable, local coupled cluster (DLPNO/LNO) is computed on the same molecules, and the
+   difference is published **per band family and per charge state** before the local method is used
+   on anything larger. That difference is error term (B).
+2. **The production surface is a fine-tuned equivariant machine-learned interatomic potential**,
+   lifted to gold-rung quality by Δ-learning / transfer learning. Borrowing a mature architecture to
+   avoid a comparison is required, not merely permitted.
+3. **Nuclear motion is quantum.** GVPT2 with explicit resonance treatment, from a quartic force field
+   derived from the ML surface. Selected VCI is the declared escalation. Running longer classical
+   trajectories is **not** an escalation and may never be substituted for one.
+4. **Intensities require a dipole moment surface.** Relative band strengths without a DMS are not
+   shipped. Positions and intensities are gated **separately**, on purpose: an intensity failure
+   withdraws intensity claims and leaves positions standing.
+5. **Scaled-harmonic B3LYP — the status quo of the PAH spectral libraries — is the baseline that must
+   be beaten**, and it is reproduced first. A result that cannot be compared to the status quo cannot
+   be interpreted.
+
+If a sentence cannot survive §1 and §2, it does not belong in this file.
 
 ---
 
-## 6. Approach constraints (unchanged in spirit)
+## 3. Split the precision claims (do not glue these again)
 
-- Start as small as necessary. QM9 / ANI-1ccx may validate **mechanics** or motivate custom data (Module 02). They are not eligible pipeline labels under the §5.1 method-and-audit contract.
-- Leverage existing architecture families (FNO, NCA, equivariant GNNs as **baselines**). Do not reinvent a wheel to avoid a comparison.
-- The ML pipeline is a means. Any method that honestly answers §2 on gold labels is valid. Glue without the field-vs-GNN test is not a thesis.
+Sub-wavenumber is **not** a property of a coupled-cluster energy table. \(1\,\text{kcal/mol}\approx
+350\,\text{cm}^{-1}\). Putting them in one parenthetical is how the documents started lying to each
+other. Three separate claims, three separate ladders.
+
+### A. Labels (hard rule)
+
+Every energy and every supervised derivative in the pipeline belongs to a **coupled-cluster**
+surface — canonical CCSD(T) where computable, otherwise local CCSD(T) **with its measured error
+against canonical**. Energies and derivatives must describe the **same** surface; a CCSD force may
+never be paired with a CCSD(T) energy as a training target.
+
+DFT appears only as (i) the cheap baseline of a Δ-learning pair, (ii) the reproduced status-quo
+baseline, (iii) public reference libraries used for motivation and EDA. **None of those is a pipeline
+label.**
+
+"Chemically accurate" is allowed molecule-by-molecule and quantity-by-quantity **only after** the
+gold-rung audit passes for that molecule and that quantity. Otherwise the wording is
+"CCSD(T)-level", or "local-CCSD(T)-level with measured error (B)".
+
+### B. Spectra
+
+Allowed:
+
+> Anharmonic band centers for [named species and charge states] within [stated] cm⁻¹ of [named
+> dataset], with relative integrated intensities of the diagnostic band families reproduced to
+> [stated] %, accompanied by the four-term error budget.
+
+**Not** allowed: line lists, sub-wavenumber lines, "any size", or any intensity claim not backed by a
+DMS that passed its own gate. Experimental libraries (gas-phase FTIR, IRMPD action spectroscopy,
+PAHdb) are **blind checks**, never a training loss.
+
+### C. Identification
+
+Allowed **only** inside the pre-registered target list, band families, match metric and verdict rule,
+all committed **before** the frozen observational product is opened. Permitted verdicts:
+**Supported / Rejected / Unidentified-degenerate**. A negative control that must fail is part of the
+deliverable. "Consistent with PAHs" without a species list is a fail.
 
 ---
 
-## 7. Forbidden quotes (delete if they reappear)
+## 4. Rules for deviation
 
-- “Chemically precise anharmonic infrared spectral lines” as a **this-thesis** deliverable.
-- “Sub-wavenumber precision” as a **dataset** requirement.
-- “Arbitrarily sized PAHs” as something Module 08 acquires.
-- “We identified PAHs in a JWST spectrum” as a master’s result.
+Deviate from §3.A only if there is **absolutely no other technical solution**, and only with an
+extremely compelling written reason recorded in the artifact. Compromising label quality is the last
+resort, never a scheduling tool.
+
+Escalation ladders are declared **in advance**, and the rung that fired is reported in every
+downstream claim. A rung that fired and went unmentioned is the fastest way to lose Module 09.
+
+Ending the molecule ladder early is **not** a deviation. "Any size" means *transfer until the measured
+error exceeds the band tolerance, then stop and report where.* Stopping at the measured limit is the
+correct result; climbing past it is misconduct.
+
+---
+
+## 5. What Module 08 puts on the table
+
+A gated system assembled from prior modules — **nothing debuts here**:
+
+1. **Anharmonic band families and relative intensities** for the pre-registered molecule/charge
+   ladder, from a gold-anchored surface and a gated dipole moment surface.
+2. **The four-term error budget**, next to every number.
+3. **A comparison against the scaled-harmonic status quo**, so the contribution is measurable rather
+   than asserted.
+4. **A pre-registered, fail-closed identification** against one frozen JWST/PAHdb product, including
+   the isomer-degeneracy rule and the negative control.
+5. **A reliability layer** that refuses a verdict without citing measured value against threshold.
+6. **An honest limitations section** naming every species and every quantity the method cannot
+   reach — size, charge, missing DMS, GVPT2 breakdown — and stating that line lists remain out of
+   scope.
+
+Industry frame: **reliability-gated spectral identification for astrochemistry.**
+
+---
+
+## 6. Approach constraints
+
+- **Borrow the representation; own the anchor.** Established architectures (equivariant MLIPs),
+  established local-correlation methods and established VPT2/VCI machinery are used as-is. The
+  contribution is the **gold anchor**, the **error budget** and the **fail-closed rule** — not a new
+  network. Reinventing a wheel to avoid a comparison is forbidden.
+- **Reproduce before improving.** The published baseline is reproduced first. Nothing downstream is
+  interpretable otherwise.
+- **The electron-density field survives as the dipole surface, not the energy surface.** Because a
+  promolecular reference gives \(\boldsymbol\mu=-\int\mathbf r\,\Delta\rho\,dV\) exactly, the field
+  model competes as a DMS against an equivariant-tensor model and a charge model, under
+  pre-registration, with "inconclusive" publishable. If it loses it is dropped and the spectra ship
+  regardless. It is never on the critical path.
+- **Every comparison is pre-registered.** Frozen split files with hashes, ≥3 seeds, tuning parity, a
+  declared effect size and a frozen analysis — committed before any leg trains.
+- **Measured, not guessed.** Every budget, tolerance and cost comes from a pilot with numbers in it.
+  Estimates are re-baselined from observed velocity, never defended.
+- **Start as small as necessary.** Public libraries may validate mechanics or motivate custom data.
+  They are not eligible pipeline labels under §3.A.
+
+---
+
+## 7. Forbidden quotes (delete on sight)
+
+- "Chemically precise infrared spectral **lines**" as a deliverable.
+- "Sub-wavenumber precision" as a dataset or spectral requirement.
+- "Arbitrarily large PAHs" or "any size" without the measured stop rung attached.
+- "We identified PAHs in a JWST spectrum" without the pre-registered list, metric and verdict rule.
+- "Within X cm⁻¹" as a single pooled number with no four-term budget beside it.
+- "Chemically accurate labels" before the gold-rung audit passed for that molecule and quantity.
+- Any intensity claim not backed by a DMS that passed its gate.
+- Any reference to Projects 10–12 as future work rather than as absorbed scope.

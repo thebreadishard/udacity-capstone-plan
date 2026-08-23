@@ -1,5 +1,12 @@
 # Project 10 — Size-Extensive Aromatic PES (post-master’s)
 
+> **ABSORBED 2026-08-23 — PROVENANCE ONLY, NOT A ROADMAP.**
+> Per [Overarching_Goal.md](../GoalGathering/Overarching_Goal.md) there is no post-master's horizon.
+> This project's load-bearing content — the measured electronic-structure ladder and the scored
+> molecule/charge transfer ladder — now lives in Modules 03–05 and 08. The file is kept because it
+> records **why the walls exist**, which the Module 09 defense needs. The text below still says
+> "post-master's"; read it as history, not as plan.
+
 **Not a Udacity module.** Not scored in Modules 02–09. Does not replace Module 08.
 
 **Horizon role:** first wall between the master’s small-molecule field-PES experiment and chemically precise-enough IR of very large PAHs. Labels and size-extensivity. Without this project, Project 11 is DFT-IR in a nicer notebook.

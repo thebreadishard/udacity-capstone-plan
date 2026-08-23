@@ -1,5 +1,12 @@
 # Project 12 — Astrophysical PAH Identification (post-master’s)
 
+> **ABSORBED 2026-08-23 — PROVENANCE ONLY, NOT A ROADMAP.**
+> Per [Overarching_Goal.md](../GoalGathering/Overarching_Goal.md) section 3.C, this project's exit is
+> now **Module 08's** exit: pre-registered, fail-closed identification against one frozen JWST/PAHdb
+> product, with the negative control and the isomer-degeneracy rule. Section 2's "why Module 08 is not
+> this project" table is therefore **obsolete and inverted**. Everything else — the pre-registration
+> requirements (3.2), the verdict vocabulary (3.4) and the forbidden list (6) — is binding.
+
 **Not a Udacity module.** Not scored in Modules 02–09. Module 08’s JWST framing is **motivation only**; this is the first project allowed to confront an observation as a *scientific* claim, and only after [Project 11](11_Anharmonic_IR_and_Intensities.md) exits.
 
 **Horizon role:** use the Project 11 anharmonic band families (positions + relative intensities, named sizes and charge states) under an **astrophysical excitation / environment model**, and attempt identification against a **frozen** observational product (JWST spectrum or a PAHdb-style catalog). This is the remainder of the original “decode PAHs in space” title.

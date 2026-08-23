@@ -1,5 +1,12 @@
 # Project 11 — Anharmonic IR and Intensities (post-master’s)
 
+> **ABSORBED 2026-08-23 — PROVENANCE ONLY, NOT A ROADMAP.**
+> Per [Overarching_Goal.md](../GoalGathering/Overarching_Goal.md), this project's exit **is** the
+> master's deliverable (**R3**): GVPT2-class anharmonic band families, relative intensities from a
+> dipole moment surface, and the four-term error budget defined in section 3.4 below. Those
+> requirements are now binding on Module 08. The file is kept as the specification of record for what
+> R3 means; read "post-master's" as history.
+
 **Not a Udacity module.** Not scored in Modules 02–09. Does not replace Module 08.
 
 **Horizon role:** second wall. Given a size-extensive, gold-anchored PES from [Project 10](10_Size_Extensive_Aromatic_PES.md), produce **defensible** infrared band positions and **relative intensities** for large PAHs. Classical MD + dipole-ACF FFT stays an envelope diagnostic (Distilled Plan §9). It is not the precision path.
