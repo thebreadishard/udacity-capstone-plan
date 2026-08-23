@@ -36,7 +36,7 @@ Sub-wavenumber is **not** a property of a CCSD(T) energy table. \(1\,\text{kcal/
 
 ### A. Labels (hard rule — this degree)
 
-Train / validation / test **energies**, and default **forces**, are **CCSD(T)/cc-pVTZ** (or better), per Distilled Plan §5.1. Density is the pinned 1-RDM recipe (default: relaxed CCSD), not a slogan “exact CCSD(T) density.”
+Train / validation / test **energies and supervised derivatives** belong to the same **CCSD(T)/cc-pVTZ** (or better) energy surface, per Distilled Plan §5.1. Derivatives may be complete gradients or seeded directional derivatives; CCSD forces must never be paired with CCSD(T) energies as targets. Density is the pinned 1-RDM recipe (default: relaxed CCSD), not a slogan “exact CCSD(T) density.”
 
 - Module 06 sampling is **not** a deviation (proposal only; every trusted geometry is re-labelled).
 - Distilled Plan §5.1 shrink-ladder **rung 3** (density proxy, energy/force still CCSD(T)) **is** a deviation and must use §4 below.
