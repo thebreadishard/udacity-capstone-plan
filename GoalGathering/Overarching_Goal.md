@@ -1,4 +1,4 @@
-# Overarching Objective: Chemically Precise Static Labels; Frozen-Weight IR Band Envelopes
+# Overarching Objective: Audited CCSD(T) Static Labels; Frozen-Weight IR Band Envelopes
 
 **Status (2026-08-22):** Rewritten to close professor-review blocking issue 4. §5 item 4 now names Workstream G1 (issue 6). This file is the prime directive of **this thesis**. It must agree with Distilled Plan §2 and §9. It must not be quotable as a rovibrational line-list promise.
 
@@ -18,7 +18,7 @@ The path from this thesis to the horizon is Projects 10 → 11 → 12, in that o
 
 ## 2. This thesis (the only prime directive that counts)
 
-Obtain a **conservative field PES and dipole surface**, trained only on static chemically precise **labels**, from which vibrational band positions and relative IR envelopes are predicted via frozen-weight classical MD. Band positions emerge from the PES; relative intensities use a statically supervised dipole surface. No spectrum, peak position or intensity is a training target.
+Obtain a **conservative field PES and dipole surface**, trained on static **CCSD(T)/cc-pVTZ-level labels** whose chemical-accuracy wording is conditional on the Distilled Plan §5.1 CBS(T,Q) audit, from which vibrational band positions and relative IR envelopes are predicted via frozen-weight classical MD. Band positions emerge from the PES; relative intensities use a statically supervised dipole surface. No spectrum, peak position or intensity is a training target.
 
 - The scientific question is Distilled Plan §2: under identical \(E/F\) supervision and the same CCSD(T) splits, does the Field-EF architecture transfer better than MACE-EF, and what additional benefit comes from explicit density supervision (Field-EFρ vs Field-EF)?
 - The scored molecules are **H₂O / D₂O / CO₂ / benzene**.
@@ -36,7 +36,7 @@ Sub-wavenumber is **not** a property of a CCSD(T) energy table. \(1\,\text{kcal/
 
 ### A. Labels (hard rule — this degree)
 
-Train / validation / test **energies and supervised derivatives** belong to the same **CCSD(T)/cc-pVTZ** (or better) energy surface, per Distilled Plan §5.1. Derivatives may be complete gradients or seeded directional derivatives; CCSD forces must never be paired with CCSD(T) energies as targets. Density is the pinned 1-RDM recipe (default: relaxed CCSD), not a slogan “exact CCSD(T) density.”
+Train / validation / test **energies and supervised derivatives** belong to the same **CCSD(T)/cc-pVTZ** (or better) energy surface, per Distilled Plan §5.1. Derivatives may be complete gradients or seeded directional derivatives; CCSD forces must never be paired with CCSD(T) energies as targets. Density is the pinned 1-RDM recipe (default: relaxed CCSD), not a slogan “exact CCSD(T) density.” “Chemically accurate” is allowed only molecule-by-molecule and quantity-by-quantity after the frozen CBS(T,Q) audit passes; otherwise use “CCSD(T)/cc-pVTZ-level.”
 
 - Module 06 sampling is **not** a deviation (proposal only; every trusted geometry is re-labelled).
 - Distilled Plan §5.1 shrink-ladder **rung 3** (density proxy, energy/force still CCSD(T)) **is** a deviation and must use §4 below.
@@ -84,7 +84,7 @@ Industry frame: **reliability-gated spectral emulation for small molecules.** PA
 
 ## 6. Approach constraints (unchanged in spirit)
 
-- Start as small as necessary. QM9 / ANI-1ccx may validate **mechanics** or motivate custom data (Module 02). They are not chemically precise pipeline labels.
+- Start as small as necessary. QM9 / ANI-1ccx may validate **mechanics** or motivate custom data (Module 02). They are not eligible pipeline labels under the §5.1 method-and-audit contract.
 - Leverage existing architecture families (FNO, NCA, equivariant GNNs as **baselines**). Do not reinvent a wheel to avoid a comparison.
 - The ML pipeline is a means. Any method that honestly answers §2 on gold labels is valid. Glue without the field-vs-GNN test is not a thesis.
 
