@@ -164,7 +164,7 @@ Dat is project 11.
 
 ## §17.8 Verboden
 
-Uit [`10_Size_Extensive_Aromatic_PES.md`](../CapstoneProjects/10_Size_Extensive_Aromatic_PES.md):
+Uit [`10_Size_Extensive_Aromatic_PES.md`](../GoalGathering/Horizon/10_Size_Extensive_Aromatic_PES.md):
 
 - Trainen op PAHdb- of JWST-spectra in plaats van op een energielandschap. Dat is
   patroonherkenning, geen natuurkunde.

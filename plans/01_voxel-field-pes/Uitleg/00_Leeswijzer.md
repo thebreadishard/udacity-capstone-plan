@@ -93,7 +93,7 @@ Alles in dit boek is afgeleid uit de volgende bestanden in deze repository:
 - [`GoalGathering/Overarching_Goal.md`](../GoalGathering/Overarching_Goal.md) — het hoofddoel
 - [`GoalGathering/Distilled_Project_Plan_and_Quality_Checks.md`](../GoalGathering/Distilled_Project_Plan_and_Quality_Checks.md) — het technische plan
 - [`GoalGathering/Capstone_Mapping.md`](../GoalGathering/Capstone_Mapping.md) — de verdeling over de projecten
-- [`CapstoneProjects/`](../CapstoneProjects/) — de eisen per project
+- [`Rubrics/`](../../../Rubrics/) — de eisen per project
 - [`probes/`](../probes/) — kleine rekenprogramma's die enkele beweringen narekenen
 
 Waar een hoofdstuk een getal noemt, staat erbij uit welk bestand het komt.

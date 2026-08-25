@@ -25,7 +25,7 @@ This is **not** “we identified every PAH in a JWST cube.” It is a fail-close
 | 300 K NVE dipole ACF | Isolated-PAH emission is not 300 K thermal MD |
 | Must not claim a capability that was not built | May claim identification **only** inside the pre-registered list and tolerances |
 
-Papers 8–15 in [Relevant_Scientific_Papers.md](../GoalGathering/Relevant_Scientific_Papers.md) already live in this world (charge-aware PAH features, ML-MD on PAHs, JWST applications). This project must **cite them as prior art**, not rediscover “PAHs have IR bands.”
+Papers 8–15 in [Relevant_Scientific_Papers.md](../Relevant_Scientific_Papers.md) already live in this world (charge-aware PAH features, ML-MD on PAHs, JWST applications). This project must **cite them as prior art**, not rediscover “PAHs have IR bands.”
 
 ---
 

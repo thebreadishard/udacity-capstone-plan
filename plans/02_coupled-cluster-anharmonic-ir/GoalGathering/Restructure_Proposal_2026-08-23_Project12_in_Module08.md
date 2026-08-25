@@ -6,7 +6,7 @@
 changed. This document is the argument; adoption is a separate decision.
 
 **Brief given:** reshape the whole (not-yet-executed) project so that the end result of
-[Project 12](../CapstoneProjects/12_Astrophysical_PAH_Identification.md) is delivered inside
+[Project 12](Horizon/12_Astrophysical_PAH_Identification.md) is delivered inside
 Module 08. Any design element may change, including the voxel/field approach. The only hard
 constraint: at the end of the master's capstone, chemically precise IR spectra are predicted.
 
@@ -22,7 +22,7 @@ Three readings exist:
 |---|---|---|
 | **R1 — line lists** | ExoMol/POKAZATEL-grade rovibrational transitions, sub-cm⁻¹, \(I\propto\lvert\langle f\lvert\mu\rvert i\rangle\rvert^2\) | **No.** Not for a 3-atom molecule inside this budget, and not for any PAH by anyone. This is a career. |
 | **R2 — band envelopes** | Band centers ±10–15 cm⁻¹, relative envelopes, classical MD + dipole ACF | Yes — this is the *current* plan's Module 08 exit. But it is also **already published at PAH scale** (see §4, Mai et al. 2025). Delivering it is not a contribution. |
-| **R3 — anharmonic band families** | Quantum anharmonic (GVPT2-class) band centers within a **stated** cm⁻¹ of a named experimental standard, **plus** relative integrated intensities from a dipole moment surface, **plus** a four-term error budget | Yes, with the restructure below. This is exactly [Project 11](../CapstoneProjects/11_Anharmonic_IR_and_Intensities.md)'s exit and it is what identification actually consumes. |
+| **R3 — anharmonic band families** | Quantum anharmonic (GVPT2-class) band centers within a **stated** cm⁻¹ of a named experimental standard, **plus** relative integrated intensities from a dipole moment surface, **plus** a four-term error budget | Yes, with the restructure below. This is exactly [Project 11](Horizon/11_Anharmonic_IR_and_Intensities.md)'s exit and it is what identification actually consumes. |
 
 **This proposal adopts R3 and states it once, in the prime directive.** R3 is the strongest reading
 that survives a defense. Promising R1 loses Module 09 in one question; delivering R2 in 2028 loses
@@ -40,7 +40,7 @@ already uses for CCSD(T)/CBS(T,Q):
   (D) environment error (matrix shift / excitation model).
 
 A single pooled "we are within X cm⁻¹" number remains a fail, exactly as
-[Project 11 §3.4](../CapstoneProjects/11_Anharmonic_IR_and_Intensities.md) already demands.
+[Project 11 §3.4](Horizon/11_Anharmonic_IR_and_Intensities.md) already demands.
 
 ---
 
@@ -70,7 +70,7 @@ Three further structural blockers, each independently fatal to reaching Project 
 more of the same:
 
 1. **The global \(N^3\) cube does not size-extend.** Cost grows with box volume, not atom count.
-   [Project 10 §2](../CapstoneProjects/10_Size_Extensive_Aromatic_PES.md) already says this. A
+   [Project 10 §2](Horizon/10_Size_Extensive_Aromatic_PES.md) already says this. A
    64³ grid was the *benzene* long pole; coronene needs a box roughly an order of magnitude larger
    in volume.
 2. **Canonical CCSD(T)/cc-pVTZ labels stop at benzene.** The plan's own shrink ladder anticipates
@@ -89,7 +89,7 @@ precision out of the neural architecture and into the theory ladder and the nucl
 | # | Option | Verdict |
 |---|---|---|
 | **A** | Keep everything; run Phases 0–5 faster and add PAHs at the end | **Reject.** Blockers 1–3 above. Speed does not fix a representation that scales with box volume, labels that stop at 6 carbons, and a nuclear-motion method that cannot express ZPE. |
-| **B** | Keep the field PES, but train it on DFT labels to reach PAH size | **Reject.** Violates Overarching_Goal §3.A, and lands on "DFT-IR in a nicer notebook" — [Project 10](../CapstoneProjects/10_Size_Extensive_Aromatic_PES.md)'s own words. Also strictly worse than existing MLMD work. |
+| **B** | Keep the field PES, but train it on DFT labels to reach PAH size | **Reject.** Violates Overarching_Goal §3.A, and lands on "DFT-IR in a nicer notebook" — [Project 10](Horizon/10_Size_Extensive_Aromatic_PES.md)'s own words. Also strictly worse than existing MLMD work. |
 | **C** | Delete the field idea entirely; build a conventional MLIP + VPT2 pipeline | **Partly accept.** This is the productive core, but deleting the field idea outright throws away the one genuinely original element and the pre-registered §2 experiment, which is good science that is already paid for on paper. |
 | **D** | Keep the field as the *production* PES, borrow everything else | **Reject.** Same blocker 1. Also loses rotational equivariance that the competitor gets for free (Distilled §8 item 13), which is exactly the wrong trade when transferring across molecule sizes. |
 | **E** | **Invert the stack: borrow the representation, own the theory anchor and the nuclear motion; demote the field to a scoped, fail-closed comparison — and reassign it from the PES to the dipole surface** | **Recommended.** Detailed below. |
@@ -126,7 +126,7 @@ Verified via arXiv on 2026-08-23. These are new bibliography entries; none of th
   DLPNO-CCSD(T)-F12: **CBS-quality coupled-cluster energies for systems above 550 atoms and 5,000
   basis functions, on a single multi-core computer in under three days**, RMSD 0.3 kcal/mol vs
   extrapolated canonical CCSD(T). *A gold rung on PAH-sized aromatics is a workstation job today.*
-  This single fact retires most of [Project 10 §3.1](../CapstoneProjects/10_Size_Extensive_Aromatic_PES.md).
+  This single fact retires most of [Project 10 §3.1](Horizon/10_Size_Extensive_Aromatic_PES.md).
 - **Sylvetsky, Banerjee, Alonso & Martin (2020)**, arXiv:2001.08641, JCTC 16, 3641. The necessary
   caveat: for **delocalized / static-correlation-prone π systems**, DLPNO-CCSD(T) needs TightPNO
   settings, and LNO-CCSD(T)/tight is required for sub-kcal agreement with canonical. *This is not a

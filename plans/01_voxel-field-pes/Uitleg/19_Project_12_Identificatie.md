@@ -180,7 +180,7 @@ methode maar een **gemeten grens**.
 
 ## §19.9 Verboden
 
-Uit [`12_Astrophysical_PAH_Identification.md`](../CapstoneProjects/12_Astrophysical_PAH_Identification.md):
+Uit [`12_Astrophysical_PAH_Identification.md`](../GoalGathering/Horizon/12_Astrophysical_PAH_Identification.md):
 
 - JWST-data als trainingsdata gebruiken;
 - lijnlijstnauwkeurigheid claimen;

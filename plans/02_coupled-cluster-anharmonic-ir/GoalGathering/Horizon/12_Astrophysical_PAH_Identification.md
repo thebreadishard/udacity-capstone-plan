@@ -1,7 +1,7 @@
 # Project 12 — Astrophysical PAH Identification (post-master’s)
 
 > **ABSORBED 2026-08-23 — PROVENANCE ONLY, NOT A ROADMAP.**
-> Per [Overarching_Goal.md](../GoalGathering/Overarching_Goal.md) section 3.C, this project's exit is
+> Per [Overarching_Goal.md](../Overarching_Goal.md) section 3.C, this project's exit is
 > now **Module 08's** exit: pre-registered, fail-closed identification against one frozen JWST/PAHdb
 > product, with the negative control and the isomer-degeneracy rule. Section 2's "why Module 08 is not
 > this project" table is therefore **obsolete and inverted**. Everything else — the pre-registration
@@ -32,7 +32,7 @@ This is **not** “we identified every PAH in a JWST cube.” It is a fail-close
 | 300 K NVE dipole ACF | Isolated-PAH emission is not 300 K thermal MD |
 | Must not claim a capability that was not built | May claim identification **only** inside the pre-registered list and tolerances |
 
-Papers 8–15 in [Relevant_Scientific_Papers.md](../GoalGathering/Relevant_Scientific_Papers.md) already live in this world (charge-aware PAH features, ML-MD on PAHs, JWST applications). This project must **cite them as prior art**, not rediscover “PAHs have IR bands.”
+Papers 8–15 in [Relevant_Scientific_Papers.md](../Relevant_Scientific_Papers.md) already live in this world (charge-aware PAH features, ML-MD on PAHs, JWST applications). This project must **cite them as prior art**, not rediscover “PAHs have IR bands.”
 
 ---
 

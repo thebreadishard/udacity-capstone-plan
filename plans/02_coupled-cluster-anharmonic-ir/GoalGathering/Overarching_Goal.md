@@ -1,7 +1,7 @@
 # Overarching Objective: Anharmonic IR Band Families for Named PAHs, Anchored to a Measured Coupled-Cluster Reference
 
 **Terminology note (2026-08-23).** This repository uses **"gold rung"** and **"gold-anchored"** as internal
-shorthand, inherited from [Project 10](../CapstoneProjects/10_Size_Extensive_Aromatic_PES.md). *"Gold
+shorthand, inherited from [Project 10](Horizon/10_Size_Extensive_Aromatic_PES.md). *"Gold
 standard"* for CCSD(T) is established literature usage; **"gold-anchored" is not** — it is this
 project's own term. It is defined here once and may be used freely inside these documents, but a
 thesis chapter, abstract or paper title must instead say **"anchored to a measured coupled-cluster
@@ -21,9 +21,9 @@ This file is the prime directive of **this thesis**. Every other document must a
 not be quotable as a rovibrational line-list promise.
 
 **There is no post-master's horizon.** Projects 10–12 are absorbed into Modules 03–08. The files
-[10](../CapstoneProjects/10_Size_Extensive_Aromatic_PES.md),
-[11](../CapstoneProjects/11_Anharmonic_IR_and_Intensities.md) and
-[12](../CapstoneProjects/12_Astrophysical_PAH_Identification.md) are retained as **provenance** — they
+[10](Horizon/10_Size_Extensive_Aromatic_PES.md),
+[11](Horizon/11_Anharmonic_IR_and_Intensities.md) and
+[12](Horizon/12_Astrophysical_PAH_Identification.md) are retained as **provenance** — they
 record why the walls exist — not as a roadmap. Whatever R3 does not reach is named as a **limitation
 in Module 08**, never as a queued project.
 
