@@ -24,7 +24,7 @@ is dus geen formaliteit maar de kern van wetenschappelijk werk.
 
 | Wat | Vorm | Herkomst |
 |---|---|---|
-| Wetenschappelijke artikelen | PDF's en verwijzingen | Vakliteratuur, in deze repository verzameld in [`GoalGathering/Papers/`](../GoalGathering/Papers/) |
+| Wetenschappelijke artikelen | PDF's en verwijzingen | Vakliteratuur, in deze repository verzameld in [`Papers/`](../../../Papers/) |
 | Documentatie van software en datasets | Webpagina's, handleidingen | Makers van de gebruikte programma's |
 | De schrijfrichtlijnen zelf | De module-inhoud | Udacity |
 

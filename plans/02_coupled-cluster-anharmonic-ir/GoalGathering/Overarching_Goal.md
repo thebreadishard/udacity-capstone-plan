@@ -1,4 +1,16 @@
-# Overarching Objective: Gold-Anchored Anharmonic IR Band Families for Named PAHs, Fail-Closed
+# Overarching Objective: Anharmonic IR Band Families for Named PAHs, Anchored to a Measured Coupled-Cluster Reference
+
+**Terminology note (2026-08-23).** This repository uses **"gold rung"** and **"gold-anchored"** as internal
+shorthand, inherited from [Project 10](../CapstoneProjects/10_Size_Extensive_Aromatic_PES.md). *"Gold
+standard"* for CCSD(T) is established literature usage; **"gold-anchored" is not** — it is this
+project's own term. It is defined here once and may be used freely inside these documents, but a
+thesis chapter, abstract or paper title must instead say **"anchored to a measured coupled-cluster
+reference"** or **"CCSD(T)-quality"**.
+
+> **Gold rung** — the highest level of electronic-structure theory that is actually computed for a
+> given molecule (canonical CCSD(T) where affordable), against which every cheaper method used on
+> that molecule has a **measured**, published error. A rung that is assumed rather than measured is
+> not a gold rung.
 
 **Status (2026-08-23):** Rewritten to adopt **R3** (§1) as the definition of "chemically precise", per
 [Restructure_Proposal_2026-08-23_Project12_in_Module08.md](Restructure_Proposal_2026-08-23_Project12_in_Module08.md)

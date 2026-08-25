@@ -1,9 +1,15 @@
 # Literature Papers
 
-Papers downloaded for the project bibliography (`Relevant_Scientific_Papers.md`).
+Reference PDFs, numbered to match the bibliographies in `plans/*/GoalGathering/Relevant_Scientific_Papers.md`.
 
-**Updated 2026-08-23 (R3 pivot):** 15 PDFs retrieved for items 21–24 and 26–36. Every file in this
-folder was verified to begin with the `%PDF` signature. **36 PDFs, one gap (item 25, paywalled).**
+**This folder is shared between both project plans** (see [`../plans/README.md`](../plans/README.md)).
+Literature is not version-specific, and duplicating ~85 MB of PDFs per plan would be waste. Items
+1–25 are cited by both plans; items 26–36 are cited only by plan 02, and items 16/17/19 are scoped
+to plan 02's dipole-surface leg. The annotations below therefore describe each paper's role in the
+**current** plan.
+
+**Updated 2026-08-23:** 15 PDFs retrieved for items 21–24 and 26–36. Every file in this folder was
+verified to begin with the `%PDF` signature. **36 PDFs, one gap (item 25, paywalled).**
 
 ## ✅ Available (36 papers)
 

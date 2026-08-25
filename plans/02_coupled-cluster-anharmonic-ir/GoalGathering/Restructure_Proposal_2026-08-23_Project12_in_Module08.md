@@ -430,7 +430,7 @@ understated or misdescribed them; those entries were corrected rather than dupli
 | 35 | Kovács et al. (2023, rev. 2025), MACE-OFF — arXiv:2312.15211 | Added — foundation-model line; **neutral organics only**, so a fallback rather than the primary. ASL weights. |
 | 36 | Batatia et al. (2026), MACE-POLAR-1 — arXiv:2602.19411 | Added — polarisable electrostatic foundation model on OMol25 with variable charge **and spin**; the DMS-tensor leg, and a genuine competitor to the voxel DMS rather than a strawman. |
 
-PDFs for items 21–24 and 26–36 were retrieved into [`Papers/`](Papers/) on 2026-08-23 (15 files, all
+PDFs for items 21–24 and 26–36 were retrieved into [`Papers/`](../../../Papers/) on 2026-08-23 (15 files, all
 open-access arXiv, all signature-verified). Only item 25 (Teller 1962, pre-arXiv *RMP*) remains
 without a local copy.
 

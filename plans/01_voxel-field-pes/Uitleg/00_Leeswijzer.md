@@ -1,15 +1,5 @@
 # Uitleg van het Capstone-project — Leeswijzer
 
-> **VEROUDERD SINDS 2026-08-23 — HERSCHRIJVING VOLGT.**
-> Het plan is op 2026-08-23 fundamenteel omgegooid, zie
-> [Overarching_Goal.md](../GoalGathering/Overarching_Goal.md) en
-> [het herstructureringsvoorstel](../GoalGathering/Restructure_Proposal_2026-08-23_Project12_in_Module08.md).
-> Kort: het voxel-/veldmodel is niet langer de motor voor de energie (het strijdt nu alleen nog mee
-> als **dipooloppervlak**), de eigen CCSD(T)-campagnes vervallen, en het einddoel is niet meer
-> H₂O-bandenveloppen maar **anharmonische bandfamilies van benoemde PAK's, met foutbudget en een
-> fail-closed identificatie**. Deze hele Uitleg-serie (hoofdstuk 01 t/m 20) beschrijft nog het oude
-> plan en wordt pas herschreven nadat het nieuwe plan een professor-review heeft doorstaan.
-
 *Een verklaring van dit onderzoeksplan op het niveau van klas 6 vwo.*
 
 ---
