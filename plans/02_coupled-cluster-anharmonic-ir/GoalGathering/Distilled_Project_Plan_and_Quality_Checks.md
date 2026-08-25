@@ -8,7 +8,7 @@
 > |---|---|
 > | §1 evolution log, §2 research question, §2.1 prior art, §2.2 demoted DMS question | ✅ **rewritten** |
 > | §3 what the project IS, §4 what it is NOT | ✅ **rewritten** |
-> | §5 data pipeline, §5.1 data-generation method | ⛔ pre-pivot |
+> | §5 data pipeline (§5.0 ladder → §5.8 derivative gate) | ✅ **rewritten** |
 > | §6 architecture and training | ⛔ pre-pivot |
 > | §7 phased roadmap, §7.1 pre-registration | ⛔ pre-pivot |
 > | §8 QA protocol, §9 precision claims | ⛔ pre-pivot |
@@ -164,94 +164,158 @@ This is a fair fight, which is the point of demoting it rather than deleting it:
 
 ---
 
-## 5. Data Pipeline (strictly non-DFT)
+## 5. Data Pipeline (coupled-cluster labels; DFT only as the Δ-learning baseline)
 
-| Molecule(s) | $t=0$ input generation | Target / validation data |
-|---|---|---|
-| H₂O, CO₂ | One PySCF campaign per §5.1: CCSD(T)/cc-pVTZ **energy**; density and forces from the pinned recipe (not “exact CCSD(T) everything”); Hessian only at selected stationary points | ExoMol (POKAZATEL line list), HITRAN/HITEMP — used only for final blind spectral comparison, never as training loss |
-| C₆H₆ (benzene) | Second PySCF campaign per §5.1. Nominal target **≥5,000** configs on a **64³** export grid — a target, not a promise, until the 10-geometry cost pilot exits Phase 0 | NIST Chemistry WebBook gas-phase FTIR (one specific dataset/resolution must be fixed as the benchmark) |
-| Large PAHs (outlook only) | Atomic Density Superposition: pre-computed CCSD(T) C–H/C–C fragment densities from benzene, spatially superposed at target atom coordinates, renormalized to exact electron count, relaxed with one Poisson update | NASA PAHdb (matrix-isolated experimental FTIR, Ar/Ne, ~10 K) with an explicit matrix-shift correction (2–15 cm⁻¹, per Boersma et al.) — outlook/discussion only |
+### 5.0 The molecule ladder and its blind standards
 
-Training-set sizing (revised upward after the 150-configuration training set was judged "far too small" for a model that must reproduce density, forces, multiple modes, and MD stability): **≥2,000 configurations for H₂O**, **≥5,000 for benzene** as *nominal* campaign sizes, sampled via normal-mode displacements (harmonic and anharmonic amplitudes), random thermal displacements (100–600 K), and rigid rotations/translations (augmentation) — split by configuration, not by random points drawn from near-identical trajectories, and including leave-one-mode-out validation. Rigid rotations/translations augment **inputs**; they are not extra QM jobs and do **not** count toward the 2000/5000 CCSD(T) budget. If the §5.1 pilot says the nominal \(N\) does not fit, take the shrink ladder — do not keep the number as a scored promise.
+Every rung is scored. Climbing **stops** at the first rung where measured error exceeds the §9 band
+tolerance, and that rung is published as the measured limit.
 
-### 5.1 Data-generation method (resolves professor-review blocking issue 3)
+| Rung | Molecule(s) | Charge | Electronic-structure work | Blind validation standard |
+|---|---|---|---|---|
+| **0** | Benzene | neutral | Canonical CCSD(T) **and** local CC (the gate-G1 pair); Δ-ML set; equilibrium Hessian; DMS labels | One frozen NIST gas-phase FTIR dataset, resolution fixed in writing |
+| **1** | Naphthalene | neutral **+ cation** | Canonical CCSD(T) if the cost pilot permits (G1 pair); local CC in production | Gas-phase / He-tagged IR where it exists; else PAHdb **with** the frozen matrix-shift model |
+| **2** | Anthracene **and** phenanthrene | neutral + cation | Local CC, carrying the rung-0/1 measured error | PAHdb. The isomer pair is deliberate: it supplies the degeneracy case §3.C needs |
+| **3** | Pyrene | neutral + cation | Local CC | IRMPD action spectroscopy (item 31) |
+| **—** | Negative control: one wrong size or wrong charge state | — | Identical treatment | Must **fail** the identification, or the fail-closed rule is untested |
 
-A level of theory plus a count is not a method. This subsection is the method. Code-path cells are filled after a one-geometry smoke test; scientific defaults are locked now.
+**Toolchain unit tests, not flagship science.** H₂O, D₂O and CO₂ are retained because they are cheap,
+have exactly known answers, and break the pipeline loudly when it is wrong: H₂O for canonical
+CCSD(T) and the same-surface derivative check, D₂O for the mass-only isotope shift with zero
+retraining, CO₂ for the symmetry-forbidden intensity residual. They are **regression tests**. No R3
+claim rests on them, and no chapter is built from them.
 
-**One campaign, two products (H₂O).** The same H₂O geometries feed Module 04 (descriptor CSV: \(R,E,F\)) and Workstream P1 (volumetric \(\rho,E,F\), selected \(H\)); H₂O uses complete same-surface gradients. Benzene is a **second** campaign and may carry complete gradients or directional derivatives according to the decision ladder below. Module 06 stays off this path.
+**PAHdb and JWST products are blind checks.** They are never a training input, never a
+hyperparameter-selection criterion, and never an early-stopping signal. With identification as the
+endpoint, this is not hygiene — it is the rule that protects the entire result.
 
-#### Scientific defaults (lock now)
+### 5.1 Three data products, and only three
+
+The pre-pivot plan had one campaign per molecule producing everything. That coupled the cheap
+products to the expensive ones. Under R3 the products have different sizes, different theory levels
+and different consumers, so they are specified separately.
+
+| | Product | Size | Consumer | May it ever train a model? |
+|---|---|---|---|---|
+| **P-A** | **Gold-rung benchmark**: canonical CCSD(T) vs local CC on the same geometries | Counted, frozen before results are seen | Gate **G1**; error term **(B)** | **No.** Audit only. |
+| **P-B** | **Δ-ML / transfer-learning set**: cheap-level and coupled-cluster energies (plus derivatives where the code returns them) on the same geometries | Order **10²** per molecule class, grown by active learning | The production MLIP | Yes — this is the training set |
+| **P-C** | **Evaluation-only sets**: dipoles and dipole derivatives, held-out complete gradients, equilibrium Hessians | Counted per §5.3 | Gates G2–G4; the DMS bake-off | **No.** Touched once, at the end. |
+
+**Sizing is an output of the pilot, not an input to the plan.** The pre-pivot numbers — ≥2,000 H₂O
+and ≥5,000 benzene configurations with volumetric density export — are withdrawn, not reduced. The
+literature that replaces them is specific: Käser & Meuwly reach CCSD(T) quality by transfer learning
+from on the order of **100** high-level points, and Qu et al. built a Δ-ML acetylacetone PES that
+matched the LCCSD(T) barrier to 0.05 kcal/mol from **430** training energies. The design target is
+therefore **order 10², not order 10³**, with active learning (§6) deciding where the next point goes
+rather than a pre-declared grid.
+
+If the pilot says even that does not fit, take the §5.5 shrink ladder. Do not keep a number as a
+scored promise.
+
+**Split discipline, unchanged from the pre-pivot plan because it was right.** Split by
+configuration, never by random points drawn from near-identical trajectories. One frozen split file
+per campaign, committed and hash-referenced in every gate report. Leave-one-mode-out validation.
+Rigid rotations and translations augment **inputs** only; they are not extra quantum-chemistry jobs
+and do not count toward any budget.
+
+### 5.2 Scientific defaults (locked now)
 
 | Quantity | Default | Why |
 |---|---|---|
-| Energy | **CCSD(T)/cc-pVTZ**, frozen-core, one geometry convention (Å vs Bohr) everywhere | This is the precision claim. |
-| Density target \(\rho\) | **Relaxed CCSD 1-RDM**, mapped onto the same real-space grid as §6, renormalized to \(N_e\) | A unique CCSD(T) density is often not what the code returns. Supervising \(\rho\) on a CCSD relaxed density while \(E\) is CCSD(T) is a **documented density-level gap**, not a silent DFT sneak-in. If a verified CCSD(T) density path exists in the *pinned* PySCF, use it and write that in the manifest. If only an *unrelaxed* CCSD 1-RDM is available, that is the fallback — the manifest must say **unrelaxed**. Never write “exact CCSD(T) density” unless the smoke test produced one. |
-| Energy derivatives | **Same-surface rule:** analytic CCSD(T) gradients if the pinned code returns them; otherwise central finite differences of CCSD(T) energies. H₂O gets complete Cartesian gradients. Benzene gets complete gradients if the pilot permits, otherwise seeded CCSD(T) directional derivatives. | A CCSD force must never be paired with a CCSD(T) energy as though both label one conservative PES. Method mismatch is systematic bias, not label noise. |
-| Hessians | **Not per config.** Equilibrium geometry only at first: **1 H₂O** + **1 benzene** Hessian, derived from the same CCSD(T) energy surface by finite differences of available CCSD(T) gradients or energies. Add more stationary points only if the first Hessian is cheap enough that \(L_H\) is not the long pole. | “Selected stationary points” now has a count, and the Hessian cannot silently inherit a CCSD/CCSD(T) mismatch. |
-| Dipole target \(\boldsymbol\mu\) | **Every density-labelled configuration.** Evaluate the electronic expectation analytically in the AO basis from the same pinned 1-RDM used for \(\rho\), add the nuclear term, and store all three Cartesian components in one frozen origin convention. | The coarse voxel integral is a model prediction and grid diagnostic, never the reference label. If the density-proxy ladder fires, the dipole theory follows that declared density rung and inherits its precision exception. |
-| Dipole derivatives | **Evaluation only; never \(L_{d\mu}\).** H₂O: complete \(3\times9\) atomic polar tensor at equilibrium. CO₂: complete \(3\times9\) tensor at equilibrium. Benzene: \(d\boldsymbol\mu/dQ_k\) for all 30 vibrational normal modes. | These labels gate relative-intensity claims without training directly on the gate. D₂O needs no new electronic labels. |
+| **Reference energy** | **Canonical CCSD(T)/cc-pVTZ**, frozen-core, one geometry convention (Å vs Bohr) everywhere | The meterstick. Computed only where computable — that is the point of measuring rather than assuming. |
+| **Production energy** | **DLPNO-CCSD(T)-F12 at TightPNO** (ORCA), with **LNO-CCSD(T)/tight** (MRCC) as the G1 arbiter on the hardest cases | Sylvetsky & Martin (item 30): for delocalized π, looser PNO settings carry real error. Aromatics are that regime. |
+| **Cheap baseline** | One pinned DFT level, declared per molecule class, used **only** as the lower half of the Δ-learning pair | This is the one permitted DFT contact in the label path, and it is named rather than smuggled. The MLIP's pre-training level (ωB97M-VV10 for MACE-OMOL-0) is disclosed alongside it. |
+| **Energy derivatives** | **Same-surface rule.** Analytic gradients if the pinned code returns and validates them; otherwise central finite differences **of the same energy expression**. Never a CCSD force against a CCSD(T) energy. | Method mismatch is systematic bias, not label noise, and a conservative model cannot fit both. Unchanged from the pre-pivot plan; it was one of its best rules. |
+| **Hessians** | **Reference Hessians only at the G1 audit geometries**, to score the ≤5 cm⁻¹ mode-shift gate. Production Hessians, cubic and semidiagonal quartic constants come from the **MLIP**, not from coupled cluster. | This is the structural change R3 forces. A quartic force field for a 24-atom PAH has tens of thousands of constants; computing them ab initio is the thing the ML surface exists to avoid. |
+| **Density \(\rho\)** | **Only where the DMS-field leg is trained** (rungs 0–1), from a pinned 1-RDM recipe, exported as the deformation density \(\Delta\rho=\rho_{\mathrm{QM}}-\rho_{\mathrm{ref}}\). Default relaxed CCSD 1-RDM; the manifest says **relaxed** or **unrelaxed** and never "exact CCSD(T) density". | Density labels are no longer a pipeline-wide requirement — they serve one demoted comparison (§2.2). If the DMS-field leg is dropped, this product disappears entirely and nothing downstream notices. |
+| **Dipole \(\boldsymbol\mu\)** | **Every P-B configuration.** Analytic AO-basis expectation from the pinned 1-RDM plus the nuclear term, three Cartesian components, one frozen origin convention. | Intensities are half the R3 deliverable. A grid integral is a model prediction and a diagnostic, never the reference label. |
+| **Dipole derivatives** | **Evaluation only, never a training loss.** Complete atomic polar tensor at equilibrium for the unit-test molecules; \(d\boldsymbol\mu/dQ_k\) over the scored normal modes for each ladder rung. | These gate the relative-intensity claim. Training on them would train on the gate. |
 
-#### Code path is a decision procedure, not a wish
+### 5.3 Code path is a decision procedure, not a wish
 
-**Step 0 — pin.** One PySCF version, one basis (`cc-pVTZ`), one SCF/CC convergence, one grid for exporting the density (the §6 grid, not a mysterious default cube), and **one frozen set of per-element atomic reference fits** (§6.1 step 0), each accepted only if \(\int\lvert\rho^{\mathrm{fit}}_Z-\rho^{\mathrm{atom}}_Z\rvert\,dV\,/\,Z<10^{-3}\). The campaign exports \(\Delta\rho=\rho_{\mathrm{QM}}-\rho_{\mathrm{ref}}\), **not** raw \(\rho\); the raw cube is retained for one geometry per molecule as a Phase 0b diagnostic, never as the training target.
+**Step 0 — pin.** One ORCA version; one basis (`cc-pVTZ`, plus the F12 auxiliary sets); one SCF/CC
+convergence; one PNO setting (**TightPNO**) with the arbiter setting named separately; frozen-core
+convention; one geometry convention (Å vs Bohr) everywhere. For the DMS-field leg only: the export
+grid and the frozen per-element atomic reference fits, each accepted at
+\(\int\lvert\rho^{\mathrm{fit}}_Z-\rho^{\mathrm{atom}}_Z\rvert\,dV/Z<10^{-3}\).
 
-**Platform note.** PySCF publishes no native Windows wheels. The campaign environment is Linux or WSL2, and standing that up is a **week-1 task**, not a week-10 discovery. Verify it on day one — a cheap check with an expensive surprise. Phase 0a needs none of this, which is why the phase is split.
+**Platform note — this changed, and in the cheap direction.** The pre-pivot plan budgeted a week-1
+Linux/WSL2 task because PySCF publishes no native Windows wheels. ORCA ships **native Windows, Linux
+and macOS** builds and is free for academic use, so that task disappears from the critical path.
+PySCF survives as an optional cross-check on one geometry. Stand the toolchain up on day one
+regardless: a cheap check with an expensive surprise.
 
-**Step 1 — one-geometry smoke test (H₂O, then benzene).** For each molecule, record pass/fail for: energy, 1-RDM, **analytic CCSD(T) gradient**, Hessian. An available CCSD gradient is recorded as a diagnostic only; it is not an accepted force target for a CCSD(T) energy. This table lives in the campaign manifest and is filled with numbers, not “via PySCF.”
+**Step 1 — smoke test, per molecule *and per charge state*.** Record pass/fail with numbers, never
+"via ORCA", for: canonical CCSD(T) energy; DLPNO-CCSD(T)-F12 energy; **whether an analytic gradient
+exists and validates** at each level; numerical Hessian; analytic AO dipole. Open-shell rows are
+**separate rows** — a closed-shell pass says nothing about a cation, and the cations are the
+astrophysically diagnostic species.
 
-**Step 2 — 10-geometry cost pilot (benzene and H₂O).** This is a **Phase 0 exit criterion**, before P1 training and before promising Module 05 \(N=5000\). Measure, per geometry:
-
-- wall time and peak RAM for \(E\), \(\rho\), a complete finite-difference gradient, and one central directional derivative
-- whether an analytic CCSD(T) gradient existed
-- export size of one \(64^3\) (and \(32^3\)) tensor
-
-Then write the only budget that counts:
-
-\[
-T_{\text{campaign}} \approx N_{\text{geom}}\times \bar t_{\text{geom}}
-\]
-
-No A100 folklore. If \(T\) does not fit local hardware on a calendar that can be lived with, do **not** start the 5000-config run. Take the shrink ladder.
-
-Every row in the campaign manifest gets: `theory_energy`, `theory_density`, `derivative_kind` (`analytic_gradient|fd_full_gradient|fd_directional`), `derivative_theory`, `fd_step_bohr`, `direction_seed`, `direction_vector` (null for full gradients), `derivative_uncertainty`, `dipole_theory`, `dipole_origin`, `dipole_x_e_bohr`, `dipole_y_e_bohr`, `dipole_z_e_bohr`, `rdm_relaxed|unrelaxed`, `pyscf_version`, `grid`, `ref_fit_id`, `wall_s`, `max_rss_gb`. If the applicable fields are blank, it is not a dataset.
-
-#### Dipole and dipole-derivative protocol (round-3 blocking issue 4)
-
-The production model's dipole is \(\boldsymbol\mu_\theta=-\int\mathbf r\,\Delta\rho_\theta\,dV\), but its reference label is evaluated analytically from the pinned 1-RDM in the AO basis. This cleanly separates model/grid error from electronic-structure error. Because the 1-RDM already exists for every density-labelled configuration, all train/validation/test rows receive \(\boldsymbol\mu_{\mathrm{QM}}\); only the training partition enters \(L_\mu\).
-
-Dipole derivatives are frozen **evaluation sets**, generated by central differences of those analytic dipoles:
-
-- **H₂O:** all 9 Cartesian nuclear coordinates at \(\pm h\), plus \(\pm h/2\) for step convergence: **36 displaced dipole calculations**.
-- **CO₂:** the same complete atomic polar tensor and convergence design: **36 displaced dipole calculations**, evaluation-only; using its labels does not retrain the zero-shot model.
-- **Benzene:** all 30 vibrational normal modes at \(\pm h\): **60 displaced dipole calculations**. Step convergence at \(\pm h/2\) is added for six mode ranks fixed from the harmonic frequencies before dipoles are inspected (1, 6, 12, 18, 24, 30): **12 additional calculations**, 72 total.
-- **D₂O:** no new electronic calculations; isotopic substitution changes masses, not the electronic dipole surface at fixed geometry.
-
-The accepted \(h\), coordinate/mode vectors, phase convention and derivative uncertainty are stored in the observable manifest. The derivative uncertainty must be below one third of the 5% Phase 1 derivative-error gate. No dipole-derivative label is used in training or hyperparameter selection.
-
-#### Higher-level label-accuracy audit (round-3 blocking issue 5)
-
-CCSD(T)/cc-pVTZ is a declared method, not proof of chemical accuracy. Before the production campaigns begin, freeze this audit set by `config_id`, coordinates, normal-mode vectors, thermal seeds and hashes. Reference results are **audit-only**: they never enter model training, hyperparameter selection or split construction.
-
-**Frozen geometry set:**
-
-- **H₂O — 19 geometries:** equilibrium plus \(\pm0.5\), \(\pm1\) and \(\pm2\) thermal-amplitude displacements along each of its three normal modes.
-- **CO₂ — 13 geometries:** equilibrium, \(\pm1\) thermal-amplitude displacement along each of its four vibrational modes, and four seeded thermal geometries.
-- **Benzene — 12 geometries:** equilibrium; \(\pm1\) thermal-amplitude displacement for four mode families fixed before reference energies are seen (lowest ring deformation, ring breathing, C–C stretch and C–H stretch); and three seeded thermal geometries.
-- **D₂O:** no separate electronic audit; it shares the H₂O Born–Oppenheimer PES.
-
-Mode selection uses the production-level equilibrium Hessian only. For each named benzene family, select the mode nearest the pre-registered frequency-region center; ties go to the lower mode index. Do not replace a difficult geometry after seeing its error.
-
-**Reference method.** For each geometry compute frozen-core CCSD(T)/cc-pVTZ and CCSD(T)/cc-pVQZ in the same code and convergence convention. Let \(E_{\mathrm{corr},X}=E_{\mathrm{CCSD(T)},X}-E_{\mathrm{HF},X}\), with cardinal numbers \(X=3,4\). The audit reference is
+**Step 2 — 10-geometry cost pilot, per rung.** Measure wall time and peak RAM for canonical and
+local coupled cluster *separately*, plus the cost of one complete finite-difference gradient. The
+only budget that counts:
 
 \[
-E_{\mathrm{ref}}=E_{\mathrm{HF},Q}+\frac{4^3E_{\mathrm{corr},Q}-3^3E_{\mathrm{corr},T}}{4^3-3^3}.
+T_{\text{rung}} \approx N_{\text{geom}}\times \bar t_{\text{geom}},\qquad\text{computed per rung, canonical and local separately.}
 \]
 
-This is a **CCSD(T)/CBS(T,Q) basis-convergence audit**, not proof that post-CCSD(T), core-correlation, relativistic or nuclear-motion errors vanish. Those residual terms remain explicit limitations.
+No folklore, no borrowed benchmarks. The pilot decides three things **in writing before any
+production run**: (i) how far up the §5.0 ladder canonical CCSD(T) actually reaches; (ii) which
+derivative rung §5.4 selects; (iii) whether the §5.5 shrink ladder fires.
 
-**Derivative and curvature audit.** At every audit geometry, use one committed seeded unit direction and central differences of \(E_{\mathrm{ref}}\) at \(\pm h\) and \(\pm h/2\). Report step convergence and compare the accepted directional derivative with the production CCSD(T)/cc-pVTZ derivative. Use the paired normal-mode displacements above to compare mode curvatures and harmonic-frequency shifts. The reference finite-difference uncertainty must be below one third of the applicable acceptance threshold.
+**Manifest columns.** Every row gets: `config_id`, `molecule`, `charge`, `multiplicity`,
+`ladder_rung`, `theory_energy`, `pno_setting`, `basis`, `frozen_core`, `error_vs_canonical`
+(null where canonical was not computed, and **never silently null**), `derivative_kind`
+(`analytic_gradient|fd_full_gradient|fd_directional`), `derivative_theory`, `fd_step_bohr`,
+`direction_seed`, `direction_vector`, `derivative_uncertainty`, `dipole_theory`, `dipole_origin`,
+`dipole_x_e_bohr`, `dipole_y_e_bohr`, `dipole_z_e_bohr`, `rdm_relaxed|unrelaxed` (DMS-field leg
+only), `orca_version`, `wall_s`, `max_rss_gb`. If the applicable fields are blank, it is not a
+dataset.
 
-**Pre-registered acceptance thresholds:**
+### 5.4 Dipole and dipole-derivative protocol
+
+Intensities are half of R3, so \(\boldsymbol\mu\) and \(d\boldsymbol\mu/d\mathbf{R}\) are first-class
+labels rather than an afterthought. Reference dipoles are evaluated **analytically** from the pinned
+1-RDM in the AO basis; any grid or model integral is a prediction to be scored, never the reference.
+Every P-B configuration receives \(\boldsymbol\mu_{\mathrm{QM}}\); only the training partition enters
+the dipole loss.
+
+Dipole derivatives are frozen **evaluation sets**, generated by central differences of those analytic
+dipoles, and **never** enter training or hyperparameter selection:
+
+- **Unit-test molecules (H₂O, CO₂):** complete \(3\times9\) atomic polar tensor at equilibrium, with
+  \(\pm h\) and \(\pm h/2\) step-convergence checks — 36 displaced dipole calculations each.
+- **Each scored ladder rung:** \(d\boldsymbol\mu/dQ_k\) over the normal modes belonging to the three
+  scored band families (3.3 μm, 6–9 μm, 11–12 μm), at \(\pm h\), with \(\pm h/2\) convergence added
+  for a fixed subset of mode ranks chosen from the harmonic frequencies **before** any dipole is
+  inspected. Counts are fixed per rung in the observable manifest at freeze time.
+- **Cations get their own set.** Neutral-to-cation intensity swaps in the 6–9 μm and 11–12 μm
+  families are the diagnostic astronomers actually use; inheriting neutral derivatives would erase
+  exactly the signal being claimed.
+- **D₂O:** no new electronic calculations. Isotopic substitution changes masses, not the electronic
+  dipole surface at fixed geometry.
+
+The accepted \(h\), mode vectors, phase convention and derivative uncertainty are stored in the
+observable manifest. Derivative uncertainty must sit below one third of the applicable acceptance
+threshold.
+
+### 5.5 The gold-rung audit — error term (B), in two parts
+
+"Coupled cluster" is a declared method, not a demonstration of accuracy. Term (B) is measured, and it
+has **two** components that the pre-pivot plan conflated into one:
+
+| | Component | Measured how | Where it is affordable |
+|---|---|---|---|
+| **B1** | **Local vs canonical.** DLPNO/LNO-CCSD(T) against canonical CCSD(T), same basis, same convergence | Paired calculations on the frozen audit geometries | Every rung where canonical CC is computable — this is what the ladder's reach is *defined* by |
+| **B2** | **Basis-set convergence.** Canonical CCSD(T)/cc-pVTZ against CCSD(T)/CBS(T,Q) | \(E_{\mathrm{ref}}=E_{\mathrm{HF},Q}+\dfrac{4^3E_{\mathrm{corr},Q}-3^3E_{\mathrm{corr},T}}{4^3-3^3}\) | **Unit-test molecules and benzene only.** Not affordable at naphthalene and above, and that is a stated limitation, not a gap to be quietly ignored |
+
+Freeze the audit set by `config_id`, coordinates, normal-mode vectors, thermal seeds and hashes
+**before** any reference result is seen. Audit results are audit-only: they never enter training,
+hyperparameter selection or split construction. Mode selection uses the production-level equilibrium
+Hessian; for each named band family take the mode nearest the pre-registered region centre, ties to
+the lower index. **Do not replace a difficult geometry after seeing its error.**
+
+**Pre-registered acceptance thresholds**, applied to B1 and B2 separately:
 
 | Quantity | Pass condition |
 |---|---|
@@ -259,75 +323,122 @@ This is a **CCSD(T)/CBS(T,Q) basis-convergence audit**, not proof that post-CCSD
 | Directional derivative | RMSE \(\le1.0\,\mathrm{meV/Å}\) |
 | Audited harmonic modes | absolute frequency shift \(\le5\,\mathrm{cm}^{-1}\) |
 
-Report molecule-specific and pooled results; a pooled pass cannot hide a benzene failure.
+The mode-shift threshold is the one that matters most: it is **half** the R3 band tolerance, so an
+electronic-structure error at the gate consumes half the budget before nuclear motion has been
+attempted at all.
 
-**Claim ladder:**
+Report **per molecule, per charge state and per band family**. A pooled pass may not hide a cation
+failure or a fingerprint-region failure — that is the whole reason the error is resolved this finely.
 
-1. If all three gates pass for a molecule, the allowed wording is: “CCSD(T)/cc-pVTZ labels are chemically accurate relative to the declared CCSD(T)/CBS(T,Q) reference over the audited domain.”
-2. If only the energy gate passes, “chemical accuracy” applies only to relative energies; derivatives and curvatures are described by method level and measured discrepancy.
-3. If the energy gate fails, use only “CCSD(T)/cc-pVTZ-level labels” for that molecule. Do not call them chemically precise.
-4. If the reference audit cannot be completed, the precision claim is **unverified** and the same downgrade applies. Missing reference data never counts as a pass.
+**Claim ladder — what the result licenses:**
 
-**HPC gate.** Before submitting the full array, run one benzene equilibrium CCSD(T)/cc-pVQZ job on the allocated system and record wall time, peak RAM, scratch, core count and queue policy. Extrapolate the complete audit job count and confirm it fits the awarded allocation and calendar in writing. If it does not fit, reduce no counts silently: obtain more allocation or take claim-ladder rung 4.
+1. All gates pass for a molecule and charge state ⇒ *"local-CCSD(T) labels for [species] are accurate
+   to [measured value] against canonical CCSD(T) over the audited domain, and canonical/cc-pVTZ is
+   converged to [measured value] against CBS(T,Q) where that was computable."*
+2. Only the energy gate passes ⇒ accuracy is claimed for relative energies only; derivatives and
+   curvatures are reported by method level and measured discrepancy.
+3. The energy gate fails ⇒ the wording drops to *"local-CCSD(T)-level labels with a measured
+   discrepancy of [value]"*. Nothing is called chemically accurate.
+4. The audit could not be completed for a rung ⇒ that rung's precision claim is **unverified**, and
+   the molecule ladder stops there. **Missing reference data never counts as a pass.**
 
-#### Same-surface derivative decision (round-3 blocking issue 2)
+**Compute gate.** Before committing to a rung, run one job at that rung's most expensive setting —
+canonical CCSD(T) on the largest species, or the QZ reference where B2 applies — and record wall
+time, peak RAM, scratch and core count. Extrapolate the full job count and confirm in writing that it
+fits. If it does not, reduce nothing silently: take the §5.6 shrink ladder or claim-ladder rung 4.
 
-The scalar energy and every supervised derivative must describe the **same CCSD(T)/cc-pVTZ surface**. Never minimize \(L_E\) against CCSD(T) while minimizing \(L_F\) against analytic CCSD forces. A conservative model cannot, in general, satisfy both, and the mismatch must not be relabeled as irreducible noise.
 
-**Pilot measurement.** At each of the 10 H₂O and 10 benzene pilot geometries, draw at least three normalized directions \(\mathbf v\) from committed seeds and compute
+
+### 5.6 Same-surface derivative decision
+
+The scalar energy and every supervised derivative must describe the **same** surface. Never minimize
+an energy loss against CCSD(T) while minimizing a force loss against analytic CCSD forces. A
+conservative model cannot in general satisfy both, and the mismatch must not be relabelled as
+irreducible noise. **This rule is inherited unchanged from the pre-pivot plan.** It was one of its
+best, and Δ-learning makes it sharper rather than looser: a Δ-model learns
+\(E_{\mathrm{gold}}-E_{\mathrm{cheap}}\), so *both* halves of that difference must be
+self-consistent, and a derivative taken at one level against an energy at the other corrupts the
+correction itself.
+
+**Pilot measurement.** At each pilot geometry, draw at least three normalized directions \(\mathbf v\)
+from committed seeds and compute
 
 \[
-D_{\mathbf v}E_{\mathrm{CCSD(T)}} \approx
-\frac{E_{\mathrm{CCSD(T)}}(\mathbf R+h\mathbf v)-E_{\mathrm{CCSD(T)}}(\mathbf R-h\mathbf v)}{2h}.
+D_{\mathbf v}E \approx \frac{E(\mathbf R+h\mathbf v)-E(\mathbf R-h\mathbf v)}{2h},
 \]
 
-Repeat at \(h\) and \(h/2\); their difference is the derivative's numerical-uncertainty estimate. Also report \(D_{\mathbf v}E_{\mathrm{CCSD(T)}}+\mathbf F_{\mathrm{CCSD}}\cdot\mathbf v\) as a **method-consistency diagnostic only**. That discrepancy is systematic CCSD-vs-CCSD(T) bias and never enters the label noise floor.
+at \(h\) and \(h/2\); their difference is the numerical-uncertainty estimate. Report
+\(D_{\mathbf v}E_{\mathrm{CCSD(T)}}+\mathbf F_{\mathrm{CCSD}}\cdot\mathbf v\) as a **method-consistency
+diagnostic only** — that discrepancy is systematic bias and never enters the label noise floor.
 
 **Decision ladder — stop at the first rung that fits the measured calendar:**
 
-1. Use analytic CCSD(T) gradients if the pinned implementation returns and validates them.
-2. Otherwise, use complete central finite-difference CCSD(T) gradients for every H₂O configuration.
-3. For benzene, use complete central finite-difference CCSD(T) gradients if the pilot budget permits.
-4. If complete benzene gradients do not fit, supervise **seeded random directional derivatives of CCSD(T) energy**: target three directions per configuration, floor one. Field and MACE receive the identical directions and projected-derivative loss. Reserve at least five held-out benzene geometries with complete finite-difference CCSD(T) gradients for force-vector evaluation; these are never training rows.
-5. If even rung 4 plus the held-out complete-gradient set does not fit, fire the shrink ladder and remap Module 05. Do not substitute CCSD force labels.
+1. Analytic gradients at the production level, if the pinned implementation returns **and validates**
+   them. Validate separately for closed and open shell.
+2. Complete central finite-difference gradients, where the pilot cost permits.
+3. Seeded random directional derivatives, three per configuration, floor one. Every model in a
+   comparison receives the **identical** directions and projected-derivative loss.
+4. Energy-only training for that rung, with derivatives reserved entirely for evaluation. Permitted
+   only if a held-out complete-gradient set of at least five geometries still exists for scoring.
+5. If even rung 4 does not fit, the rung is dropped from the ladder. **Do not substitute a
+   lower-theory force label.**
 
-For every finite difference, step-size convergence and electronic-structure convergence must make `derivative_uncertainty` smaller than one third of the Phase 1 force-acceptance threshold. A label that misses this gate is recomputed or discarded; it does not loosen the acceptance threshold.
+Reserve, at every rung, a held-out set with **complete** gradients that never enters training. For
+every finite difference, step-size and electronic convergence must keep `derivative_uncertainty`
+below one third of the applicable force gate. A label that misses this is recomputed or discarded; it
+does not loosen the gate.
 
-#### Shrink ladder (in the plan *before* the pilot)
+### 5.7 Shrink ladder, declared before the pilot
 
-Stop at the first rung that fits:
+Stop at the first rung that fits. Which rung fired is reported in every downstream claim.
 
-1. Cut benzene \(N\) (5000 → 2000 → 1000). Keep CCSD(T) energies and the density recipe above.
-2. Store benzene \(\rho\) on \(32^3\) (or downsample after a finer QM cube). Training grid and QM cube may differ if the export method is written down.
-3. **Density proxy, energy/derivatives still same-surface CCSD(T):** \(\rho\) from HF or a documented DFT *density only*. This is a real precision exception and **must** use the Overarching Goal escape clause. Allowed only if the smoke test / pilot shows CCSD densities are the long pole. Module 06-style “it’s just sampling” does **not** cover this.
-4. **Benzene field campaign becomes outlook.** Module 05 must then be remapped. Do not keep “≥5000 benzene CCSD(T) volumes” as a scored promise.
+1. **Shrink P-B.** Cut the Δ-ML set and lean harder on active learning; the literature floor is order
+   10², not order 10³.
+2. **Cheapen the Δ-learning baseline**, keeping the coupled-cluster upper half untouched. The
+   correction gets harder to learn; the label level does not move.
+3. **Reduce the workhorse basis** for production while keeping the canonical reference at cc-pVTZ, and
+   carry the resulting basis error explicitly in term (B).
+4. **Stop the molecule ladder one rung earlier.** This is the preferred rung, not a defeat: §5.0 is
+   built to stop, and a measured limit is a result.
+5. **Neutrals only.** Cations become outlook. This costs the charge-state intensity swap, which is the
+   most astrophysically diagnostic part of the claim — so it ranks below stopping early.
+6. **Benzene and naphthalene only.** R3 then covers two species with a full error budget. That is a
+   smaller claim, honestly stated, and still more than a DFT-anchored spectrum of ten species.
 
-H₂O (2000 configs, \(32^3\), 3 atoms) is assumed cheaper. If the *H₂O* pilot already fails, the field thesis is locally infeasible: **stop before P1**, not after.
+**No rung of this ladder is allowed to lower the label level below coupled cluster.** The pre-pivot
+plan had a rung that swapped in a DFT density; there is no equivalent here, because the coupled-cluster
+anchor *is* the contribution. If the anchor cannot be afforded at a rung, the rung is dropped.
 
-#### Density-representation ladder (round-2 issue 7)
+### 5.8 The derivative-quality gate sits above *label* noise, not above model defects
 
-Separate from the cost ladder. Fires if the Phase 0 real-cube test shows \(\Delta\rho\) is still not grid-representable — i.e. if its narrowest feature is sharper than \(\approx1.25\,\Delta x\), which the [issue-7 probe](../probes/issue07_grid_representability.py) measures as the point where the translation artifact crosses \(1\,\text{meV/Å}\). Stop at the first rung that works:
+Inherited from the pre-pivot plan's issue-8 analysis, with the artifact category re-aimed. Two
+categories, never mixed:
 
-1. \(\Delta x\to0.15\,\text{Å}\) for the \(\Delta\rho\) grid only.
-2. Add a per-element **core-relaxation** term: one extra spherical Gaussian per atom whose coefficient is learned. Integrals stay analytic; the grid stays smooth.
-3. Small-core **ECP**, valence-only density. Labels become CCSD(T)/cc-pVTZ-PP — a real change to the label level, so this rung **requires the Overarching Goal escape clause**.
-4. H₂O-only field model; the benzene field becomes outlook. (Same destination as rung 4 of the cost ladder above — if either ladder reaches its last rung, Module 05 is remapped.)
-
-#### Force gate sits above *label* noise, not above engine bugs (revised, round-2 issue 8)
-
-The Phase 1 force Go/No-Go is not a chat number — and it is not a number that may be relaxed by the engine's own defects. Two categories, never mixed:
-
-| Category | Examples | Status |
+| Category | Examples, post-pivot | Status |
 |---|---|---|
-| **Engine artifact** | egg-box residual, autograd-vs-FD mismatch, Poisson boundary error, quadrature error | A **bug with a ceiling**. Fix it. It never enters the noise floor. |
-| **Label numerical uncertainty** | finite-difference step-size and electronic-convergence sensitivity on the same CCSD(T) surface | Irreducible property of the accepted data. **Only this** may loosen the gate. CCSD-vs-CCSD(T) method bias is excluded. |
+| **Model artifact** | MLIP high-order derivative noise, step-size instability in the cubic force constants, non-smooth activations, float32 round-off in a QFF | A **bug with a ceiling**. Fix it. It never enters the noise floor. |
+| **Label numerical uncertainty** | finite-difference step-size and electronic-convergence sensitivity on the *same* energy surface | Irreducible property of the accepted data. **Only this** may loosen a gate. Method bias between theory levels is excluded. |
 
-The original formulation — \(\max(1\,\text{meV/Å},\,3\times\text{noise floor})\) with the egg-box residual *inside* the noise floor — is circular: a worse engine buys a looser gate. Arithmetic in [probes/issue08_gate_consistency.py](../probes/issue08_gate_consistency.py): the old \(10^{-4}\,\)Ha egg-box tolerance implies a \(42.7\,\text{meV/Å}\) force artifact, which would have set the effective Phase 1 gate at \(128\,\text{meV/Å}\) — \(128\times\) looser than the stated target, and irreconcilable with the \(5\,\text{cm}^{-1}\) harmonic gate in the same table row.
+The original circularity is worth restating because it is easy to reinvent: a gate of the form
+\(\max(\text{floor},\,3\times\text{noise})\) that counts the model's own defects as "noise" means **a
+worse model buys a looser gate**. The [issue-8 probe](../probes/issue08_gate_consistency.py) measured
+what that cost in the pre-pivot plan — a stated \(10^{-4}\) Ha tolerance implied a \(42.7\,\text{meV/Å}\)
+force artifact and an effective gate \(128\times\) looser than intended, irreconcilable with the
+\(5\,\text{cm}^{-1}\) frequency gate sitting in the same table. Re-run that probe rather than
+re-deriving by hand whenever a tolerance changes.
 
-**Replacement, derived rather than asserted.** A cell-periodic artifact of peak-to-peak amplitude \(A\) and period \(\Delta x\) implies a peak force artifact \(\pi A/\Delta x\). Requiring the total engine artifact to sit a factor of 10 below the acceptance gate gives:
+**Gates, in the units the claim is made in:**
 
-- **Engine artifact ceiling:** \(<0.1\,\text{meV/Å}\) \((1.9\times10^{-6}\,\text{a.u.})\), which back-converts to an egg-box energy tolerance of \(2.3\times10^{-7}\,\)Ha at \(\Delta x=0.20\,\text{Å}\) — \(427\times\) tighter than the old number.
-- **Phase 1 acceptance gate:** force RMSE \(<\max\big(1\,\text{meV/Å},\ 3\times\text{label noise floor}\big)\).
+- **Force RMSE** against the gold rung: \(<\max\big(1\,\text{meV/Å},\ 3\times\text{label noise floor}\big)\).
+- **Harmonic frequencies** from the MLIP Hessian against the reference Hessian: \(\le5\,\text{cm}^{-1}\).
+- **Cubic force constants**: stable under step-size refinement to within a pre-registered tolerance.
+  This gate has no pre-pivot ancestor and is the one most likely to fail silently — Käser et al.
+  report VPT2 outliers up to \(150\,\text{cm}^{-1}\) from surfaces whose energies and forces looked
+  acceptable. A model can pass every gate above and still be useless for a quartic force field.
+
+Publish the measured label floor next to each gate, and the measured artifact next to each ceiling.
+
+
 
 That ceiling is reachable *only because of* the §6.1 reference split: measured on the model density, the deformation-only scheme sits at \(1.7\times10^{-3}\,\text{meV/Å}\) (\(57\times\) headroom), while putting the full \(\rho\) on the grid missed it by \(10^{7}\). Publish the label floor next to the gate, and publish the measured artifact next to the ceiling.
 
