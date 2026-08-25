@@ -1,9 +1,16 @@
 # Restructure Proposal — pull Project 12's exit into Module 08
 
-**Status:** Proposal, 2026-08-23. Not yet adopted. Nothing in
-[Distilled_Project_Plan_and_Quality_Checks.md](Distilled_Project_Plan_and_Quality_Checks.md),
-[Overarching_Goal.md](Overarching_Goal.md) or [Capstone_Mapping.md](Capstone_Mapping.md) has been
-changed. This document is the argument; adoption is a separate decision.
+**Status: ADOPTED.** Written 2026-08-23 as an argument; decisions 1–6 accepted by the repository
+owner on 2026-08-23 and 2026-08-25, and executed. [Overarching_Goal.md](Overarching_Goal.md) and all
+nine sections of [Distilled_Project_Plan_and_Quality_Checks.md](Distilled_Project_Plan_and_Quality_Checks.md)
+have been rewritten accordingly, and the molecule ladder and tolerances are frozen in
+[Frozen_Ladder_and_Tolerances_2026-08-25.md](Frozen_Ladder_and_Tolerances_2026-08-25.md).
+[Capstone_Mapping.md](Capstone_Mapping.md) is deliberately **not** yet rewritten — it waits for the
+Round-4 review, so that a rejected pivot does not cost two rewrites.
+
+This document is retained as the **argument of record**: the diagnosis, the six weighed alternatives,
+the literature evidence and the effort arithmetic that justified the change. It is not a live
+proposal, and §12's decision list is a historical record of what was decided, not an open question.
 
 **Brief given:** reshape the whole (not-yet-executed) project so that the end result of
 [Project 12](Horizon/12_Astrophysical_PAH_Identification.md) is delivered inside
