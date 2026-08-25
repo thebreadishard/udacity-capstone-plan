@@ -66,14 +66,11 @@ model. A single pooled number is a fail.
 | Section | State |
 |---|---|
 | `Overarching_Goal.md` | ✅ rewritten |
-| `Distilled` §1 evolution, §2 question, §2.1 prior art, §2.2 demoted DMS question | ✅ rewritten |
-| `Distilled` §3 what it IS, §4 what it is NOT | ✅ rewritten |
-| `Distilled` §5 data pipeline — molecule ladder, three data products, gold-rung audit, shrink ladder | ✅ rewritten |
-| `Distilled` §6 architecture — MLIP, training loss, active learning, QFF/GVPT2, dipole surface, excitation model | ✅ rewritten |
-| `Distilled` §7 roadmap — gates G0–G6, three pre-registered comparisons | ✅ rewritten |
-| `Distilled` §8 QA, §9 precision claims | ⛔ still plan 01 |
+| `Distilled` §1–§9, all nine sections | ✅ rewritten |
+| `Relevant_Scientific_Papers.md` | ✅ items 26–36 added, three entries corrected |
 | `Capstone_Mapping.md` | ⛔ still plan 01 — rewritten only after a Round-4 review, so a rejected pivot does not cost two rewrites |
 | `GoalGathering/Horizon/10–12` | ⛔ still plan 01, banner-marked as absorbed provenance |
+| The molecule ladder and cm⁻¹ tolerances | ✗ **not yet frozen.** Decision 6 below: a dated commit before the first gold-rung job |
 | Dutch `Uitleg/` | ✗ none yet — plan 01's version explains the voxel approach |
 
 ## Review status
