@@ -70,7 +70,7 @@ model. A single pooled number is a fail.
 | `Relevant_Scientific_Papers.md` | ✅ items 26–36 added, three entries corrected |
 | `Capstone_Mapping.md` | ⛔ still plan 01 — rewritten only after a Round-4 review, so a rejected pivot does not cost two rewrites |
 | `GoalGathering/Horizon/10–12` | ⛔ still plan 01, banner-marked as absorbed provenance |
-| The molecule ladder and cm⁻¹ tolerances | ✗ **not yet frozen.** Decision 6 below: a dated commit before the first gold-rung job |
+| The molecule ladder and cm⁻¹ tolerances | ✅ **frozen 2026-08-25** — [Frozen_Ladder_and_Tolerances_2026-08-25.md](GoalGathering/Frozen_Ladder_and_Tolerances_2026-08-25.md) |
 | Dutch `Uitleg/` | ✗ none yet — plan 01's version explains the voxel approach |
 
 ## Review status
@@ -122,7 +122,7 @@ discipline, but whether the twelve landed correctly.
 | 3 | **No post-master's horizon.** Projects 10–12 are absorbed into Modules 03–08. Whatever R3 does not reach is a limitation in Module 08, not a queued project. |
 | 4 | **ORCA** as the single production stack (free academically, native Windows, canonical CC and DLPNO in one code), with **MRCC / LNO-CCSD(T)** as arbiter for gate G1 only. |
 | 5 | **MACE family**: MACE-OMOL-0 primary (charge/spin embedding, so cations work), MACE-OFF as fallback, MACE-POLAR-1 as the dipole-surface comparator. Code MIT, weights ASL (academic, non-commercial). |
-| 6 | The molecule ladder and cm⁻¹ tolerances are **frozen in a dated commit before the first gold-rung job**. Not yet done. |
+| 6 | The molecule ladder and cm⁻¹ tolerances are **frozen**, 2026-08-25, before any gold-rung calculation: [Frozen_Ladder_and_Tolerances_2026-08-25.md](GoalGathering/Frozen_Ladder_and_Tolerances_2026-08-25.md). One item stays open by design — the GVPT2 resonance criterion, which closes at G0 in a dated amendment, without which no GVPT2 result may be reported. |
 | 7 | Dataset eligibility for Modules 03–05 still needs **written mentor approval** (Round 3, issue 3). Reduced by the pivot, not closed. |
 
 ## Terminology

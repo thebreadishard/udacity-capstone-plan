@@ -40,10 +40,13 @@ it is the difference between a defensible thesis and a lost defense.
 | **R2** | Band **envelopes** from classical MD + dipole-ACF FFT, ±10–15 cm⁻¹ | **Not the deliverable.** Already published at 216-carbon scale (Mai et al. 2025). Retained only as a temperature diagnostic. |
 | **R3** | **Anharmonic band families** — quantum (GVPT2-class) band centers within a stated cm⁻¹ of a **named** experimental standard, **plus** relative integrated intensities from a dipole moment surface, **plus** a four-term error budget | **This is the objective.** |
 
-**Provisional numbers, frozen in a dated commit before the first gold-rung job runs:**
+**Frozen 2026-08-25 in [Frozen_Ladder_and_Tolerances_2026-08-25.md](Frozen_Ladder_and_Tolerances_2026-08-25.md), before any gold-rung calculation:**
 
 - Band centers ≤ **10 cm⁻¹** against gas-phase experiment where it exists; ≤ **15 cm⁻¹** against
   matrix data **with** a stated, frozen matrix-shift model. Never mix corrected and uncorrected.
+- **And**, separately required: mean absolute error **no worse than the scaled-harmonic baseline** on
+  the same modes. ML-corrected scaling already reaches ~5 cm⁻¹, so the absolute number alone would
+  let this method pass while being worse than the status quo.
 - Relative integrated intensities within a band family ≤ **20 %**, with neutral-vs-cation intensity
   swaps reproduced qualitatively.
 - Scored band families, named in advance: **3.3 μm**, **6–9 μm**, **11–12 μm**.
