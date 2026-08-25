@@ -41,7 +41,7 @@ CapstonePlan/
 │   ├── README.md                          comparison of the two plans, and why 01 was superseded
 │   ├── 01_voxel-field-pes/                superseded plan, complete
 │   │   ├── GoalGathering/                 prime directive, technical plan, module mapping,
-│   │   │   │                              bibliography, 3 professor reviews, chat transcripts
+│   │   │   │                              bibliography, 3 professor reviews
 │   │   │   └── Horizon/                   this plan's own projects 10–12
 │   │   ├── probes/                        numerical probes that measure the plan's arithmetic
 │   │   └── Uitleg/                        Dutch VWO-6 explanation, 21 chapters
@@ -52,19 +52,23 @@ CapstonePlan/
 │
 ├── Rubrics/                               SHARED — Udacity module rubrics 01–09, treated as fixed
 ├── Papers/                                SHARED — 36 reference PDFs, numbered to the bibliography
-├── scraper/                               tooling used to extract the rubrics
+├── AI_Chats/                              SHARED — the planning conversations behind the project
+├── scraper/                               tooling, and the raw scrapes it produced
 ├── requirements.txt
 └── README.md                              ← you are here
 ```
 
-**Shared** is anything neither plan can change: the Udacity rubrics are the constraint both were
-designed against, and the literature is not version-specific. Duplicating the 36 PDFs would add
-~85 MB per plan. Everything else is duplicated on purpose, so each plan reads without
-cross-references.
+**Shared** is anything neither plan may claim as its own. The Udacity rubrics are the constraint both
+were designed against; the literature is not version-specific; and the planning conversations predate
+the split — the original ambition recorded in `gemini_chat_1.md` is closer to plan 02's goal than to
+plan 01's. Everything else is duplicated on purpose, so each plan reads without cross-references.
+
+The **professor reviews are deliberately not shared.** They reviewed plan 01. Copying them into plan
+02 would imply plan 02 had survived them, and Round 4 is still pending; plan 02 carries an
+inheritance table instead, showing where each of the fifteen blocking issues landed.
 
 Documents 10–12 are **not** rubrics — they are each plan's own horizon-planning documents, and they
-differ between plans, which is why they sit inside `GoalGathering/Horizon/` rather than next to the
-scraped rubrics.
+differ between plans, which is why they sit inside `GoalGathering/Horizon/`.
 
 ## Conventions this repository tries to keep
 
