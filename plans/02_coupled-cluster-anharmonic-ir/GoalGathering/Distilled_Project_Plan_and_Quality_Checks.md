@@ -1,22 +1,18 @@
 # Distilled Final Project Plan & Quality Checks
 
-> **PRE-PIVOT — REWRITE IN PROGRESS (2026-08-23).**
-> The prime directive changed on 2026-08-23: see [Overarching_Goal.md](Overarching_Goal.md) section 1 (**R3**)
-> and [Restructure_Proposal_2026-08-23_Project12_in_Module08.md](Restructure_Proposal_2026-08-23_Project12_in_Module08.md).
+> **REWRITTEN FOR R3 (2026-08-23 → 2026-08-25).**
+> This plan supersedes [plan 01](../../01_voxel-field-pes/), whose deliverable was classical-MD band
+> envelopes for H₂O, D₂O, CO₂ and benzene. The prime directive is
+> [Overarching_Goal.md](Overarching_Goal.md) §1 (**R3**); the argument for the change, the six weighed
+> alternatives and the effort arithmetic are in
+> [Restructure_Proposal_2026-08-23_Project12_in_Module08.md](Restructure_Proposal_2026-08-23_Project12_in_Module08.md).
 >
-> | Section | Status |
-> |---|---|
-> | §1 evolution log, §2 research question, §2.1 prior art, §2.2 demoted DMS question | ✅ **rewritten** |
-> | §3 what the project IS, §4 what it is NOT | ✅ **rewritten** |
-> | §5 data pipeline (§5.0 ladder → §5.8 derivative gate) | ✅ **rewritten** |
-> | §6 architecture, training, nuclear motion (§6.1 → §6.7) | ✅ **rewritten** |
-> | §7 roadmap G0–G6, §7.1 pre-registration | ✅ **rewritten** |
-> | §8 QA protocol, §9 precision claims | ⛔ pre-pivot |
+> **All nine sections have been rewritten.** §1 item 19 records why the plan turned. The pre-pivot
+> text remains in git history and, complete and self-consistent, in plan 01.
 >
-> **Sections marked ⛔ describe the voxel-era plan and must not be quoted as current.** They still
-> assume a voxel field PES, own canonical-CCSD(T) volumetric campaigns, and classical MD + dipole-ACF
-> FFT as the deliverable. The pre-pivot text stays in git history by design; §1 item 19 is where the
-> change is recorded.
+> Not yet rewritten in this folder: [Capstone_Mapping.md](Capstone_Mapping.md) and the
+> [Horizon/](Horizon/) documents, both deliberately held until after a Round-4 review so that a
+> rejected pivot does not cost two rewrites. Both carry their own banners.
 
 **Source material:** This document is distilled from the full, multi-round conversations in [gemini_chat_2.md](../../../AI_Chats/gemini_chat_2.md) and [grok_chat_2.md](../../../AI_Chats/grok_chat_2.md), cross-checked against the earlier exploratory conversations [gemini_chat_1.md](../../../AI_Chats/gemini_chat_1.md) and [grok_chat_1.md](../../../AI_Chats/grok_chat_1.md). It reconstructs the plan as it stood after the "strict professor" critique loop: the plan was drafted with Gemini, stress-tested by Grok, revised, re-submitted to Grok, and — after a final, very harsh 23-point external review (pasted into both chats) — reworked one last time. **Gemini's final response to that 23-point review is the most advanced, self-consistent version of the plan and is treated here as the definitive baseline.** Grok's conversation ends one step earlier (agreeing the 23 points must be addressed, without yet seeing the reworked plan), so where the two diverge, the later Gemini revision supersedes the earlier Grok-approved version.
 
@@ -769,37 +765,150 @@ after seeing the data is a fail, and "we identified something else instead" is n
 
 ---
 
-## 8. Additional Quality-Assurance / Verification Protocol
+## 8. Quality-Assurance and Verification Protocol
 
-These checks were raised piecemeal across both conversations (mostly in the 23-point review) and apply throughout, not just at Phase 0:
+Applies throughout, not only at gates. Where a check is inherited from the pre-pivot plan it says so,
+because the discipline was the best thing that plan produced and the provenance is worth keeping
+visible.
 
-1. **Conservativity verification**: test $\oint\mathbf{F}\cdot d\mathbf{R}$ over dozens of random closed loops in configuration space, not just one molecule/one path.
-2. **Force finite-difference check**: $F_i \stackrel{?}{=} -\dfrac{E(\mathbf{R}+\delta\mathbf{e}_i)-E(\mathbf{R}-\delta\mathbf{e}_i)}{2\delta}$, in float64, targeting \(<0.05\,\text{meV/Å}\) \((10^{-6}\,\text{a.u.})\). **This check cannot see the egg-box**: autograd and finite differences read the same discretized \(E\) and will agree beautifully on a wrong force. It validates the autograd graph, and nothing else.
-3. **Egg-box quantification**: rigidly translate a molecule across a full grid cell in small steps and plot $E(\delta)$, $F(\delta)$ for several $\sigma/\Delta x$ ratios **and along \(x\), \(y\), \(z\) and a body diagonal**; report the residual artificial periodicity **in force units**, as the max over directions, against the \(0.1\,\text{meV/Å}\) engine-artifact ceiling. Never report it in Hartree alone.
-4. **Grid-convergence study**: report vibrational frequency, energy, and force as a function of $\Delta x$ (e.g. 0.40 → 0.15 Å) so that ML error is not confounded with grid discretization error.
-5. **Poisson boundary-condition convergence**: show convergence of results with increasing padding/box size for the isolated-molecule electrostatics.
-6. **Error decomposition** — explicitly separate and report three distinct error sources rather than conflating them into one "accuracy" number:
-   - (A) ML error = model vs. CCSD(T);
-  - (B) electronic-structure error = production CCSD(T)/cc-pVTZ vs. the frozen §5.1 CCSD(T)/CBS(T,Q) audit, reported by molecule and quantity; residual post-CCSD(T), core-correlation and relativistic effects remain limitations;
-   - (C) spectroscopic/nuclear-motion error = classical MD vs. the true quantum rovibrational result.
-7. **Extended energy-conservation metrics** beyond drift alone: $\Delta E_{max}$, $\Delta E_{RMS}$, force-consistency ($\lVert\nabla_\mathbf{R}\times\mathbf{F}\rVert$), and timestep-convergence. Drift is budgeted **over the production trajectory length** as a fraction of \((3N-6)k_BT\) (§7 gate unit discipline), never as a bare Hartree/ps figure.
-8. **Extended spectral-quality metrics**: peak-position error, integrated-intensity error, relative-intensity error, forbidden-mode residual intensity, linewidth, and convergence with trajectory length.
-9. **Charge/dipole sanity check**: numerically verify $\int\rho(\mathbf{r},t)\,d^3r = N_e$ stays within 0.01% throughout a run (a corrupted charge integral at $t=0$ was flagged early as poisoning all downstream gradients).
-10. **Do not treat compute budgets as fixed a priori** — the earlier "18–24 hours on one A100 for benzene" estimate was flagged as likely too optimistic. Two measured budgets are required, and neither is a guess:
-    - **Data campaign** (§5.1): \(T_{\mathrm{campaign}}\approx N_{\mathrm{geom}}\times\bar t_{\mathrm{geom}}\) from the 10-geometry H₂O and benzene pilots. This is a Phase 0 **exit**. If it does not fit, take the shrink ladder *before* P1/05 training.
-    - **MD inference** (this item, original intent): derive a realistic 20–50 ps trajectory cost only *after* a real 10-ps H₂O run on the frozen PES, then extrapolate memory/time. Do not quote A100 folklore.
-11. **Reference-split validation** (round-2 issue 7) — a standing check, not a one-off. For \(\ge20\) geometries per molecule, compare the grid pipeline's \(E_{ne}\) and \(E_H\) against their **exact analytic values in the Gaussian basis**, which PySCF returns for free. Report max and RMS deviation. Any drift in this number over the campaign means the export grid, the reference fit, or the smearing width changed without anyone noticing.
-12. **Observable validation** (round-2 issue 11; round-3 issue 4) — the graded deliverable is band positions **and relative intensities**, so \(\boldsymbol{\mu}\) and \(d\boldsymbol{\mu}/d\mathbf{R}\) are first-class quantities. Report held-out \(\boldsymbol{\mu}\) error, evaluation-only \(d\boldsymbol{\mu}/d\mathbf{R}\) relative error, and the translational grid artifact in \(\boldsymbol{\mu}\), against the §7 Phase 1 gates. \(L_\mu\) is pre-registered in the production loss because \(L_\rho\) alone does not optimize a first moment. If either gate fails, block production MD and withdraw relative-intensity claims; do not add a new loss after observing the test result.
-13. **Invariance budget** (round-2 issue 12) — a voxel-grid energy is neither translation- nor rotation-invariant, and neither residual was previously gated:
-    - **Translation:** \(\lVert\sum_A\mathbf{F}_A\rVert\) is \(-\partial E/\partial(\text{rigid shift})\), i.e. the egg-box force in a different costume. It is *not* a new gate — it is bounded by the same \(0.1\,\text{meV/Å}\) ceiling, and it is a cheap **online** monitor of that ceiling during production MD.
-    - **Rotation:** \(\lVert\sum_A\mathbf{R}_A\times\mathbf{F}_A\rVert\) is **not** covered by any translation sweep and must be measured with its own rigid-rotation scan, reported as \(\tau_{\max}/r_{\max}\) in meV/Å against the same ceiling. Measured on the model density, the reference split gives \(3\times10^{-5}\,\text{meV/Å}\) against \(1.7\times10^{3}\,\text{meV/Å}\) for the full density on the grid — but that ordering was not knowable in advance, which is exactly why it is a gate and not an assumption.
-    - **Pre-registered confound:** rotation is the symmetry an equivariant GNN satisfies *by construction*. Both residuals must be published **before** the Phase 4 bake-off, so that a G1 win can be read correctly — “the field representation is worse” and “our discretization broke a symmetry the competitor gets for free” are different conclusions, and only pre-registered numbers can tell them apart.
+### 8.1 The four-term error budget — the reporting rule everything else serves
+
+Every cm⁻¹ and every intensity claim carries all four terms, separately. **A single pooled number is
+a fail**, and this is the rule most likely to be quietly broken under deadline pressure.
+
+| Term | What it is | Measured at | Notes |
+|---|---|---|---|
+| **(A)** | ML/PES error against the gold rung | G2 | Energies, forces **and** curvature — a good force fit does not imply good curvature |
+| **(B1)** | Local coupled cluster vs canonical | G1 | Per molecule, charge state and band family |
+| **(B2)** | Canonical/cc-pVTZ vs CBS(T,Q) | G1, unit-test molecules and benzene only | Not affordable above naphthalene; that is a stated limitation, not an omission |
+| **(C)** | Nuclear-motion error: GVPT2 vs selected VCI, or vs experiment | G3, G5 | Where VCI is unaffordable, the term is bounded rather than measured, and said to be |
+| **(D)** | Environment: matrix shift and/or excitation model | G5, G6 | Never folded into (A)–(C) |
+
+Report **per molecule, per charge state, per band family**. Pooling is what lets a cation failure or
+a fingerprint-region failure hide behind an easy C–H stretch.
+
+### 8.2 Inherited checks, re-aimed
+
+| # | Check | What changed |
+|---|---|---|
+| 1 | **Force finite-difference check.** \(F_i \stackrel{?}{=} -[E(\mathbf R+\delta\mathbf e_i)-E(\mathbf R-\delta\mathbf e_i)]/2\delta\), float64 | Still valid, and the pre-pivot caveat still applies with a new target: it validates the **autograd graph**, not the fit. Autograd and finite differences read the same model and will agree beautifully on a confidently wrong force |
+| 2 | **Conservativity**, \(\oint\mathbf F\cdot d\mathbf R\) over many random closed loops | Demoted from gate to smoke check: an energy-first MLIP with autograd forces is conservative by construction. Run it once to confirm the implementation, not repeatedly to confirm the mathematics |
+| 3 | **Error decomposition** | Expanded from three terms to four, with (B) split (§8.1) |
+| 4 | **Measured, not guessed, compute budgets** | Re-aimed: \(T_{\text{rung}}\approx N_{\text{geom}}\times\bar t_{\text{geom}}\) per rung, canonical and local separately (§5.3), plus a measured QFF+GVPT2 cost per molecule before promising a rung. No borrowed benchmarks |
+| 5 | **Observable validation** | Now central rather than an addendum: held-out \(\boldsymbol\mu\) error, evaluation-only \(d\boldsymbol\mu/dQ\) relative error, CO₂ forbidden-mode residual, cation intensity swap (§6.5) |
+| 6 | **Extended spectral-quality metrics** | Survives and grows into the deliverable: band-centre error, integrated-intensity error, relative-intensity error within a family, forbidden-mode residual — all band-family resolved |
+| 7 | **Invariance budget and its pre-registered confound** | Free for the PES (the MLIP is exactly equivariant), still **required** for the DMS-field leg, where both residuals are published before the P2 bake-off |
+| 8 | **Energy-conservation metrics** (\(\Delta E_{\max}\), \(\Delta E_{\mathrm{RMS}}\), timestep convergence) | Applies only to the MD **diagnostic** runs, which no longer carry a band-position claim |
+
+### 8.3 New checks, because R3 needs them
+
+None of these has a pre-pivot ancestor. They exist because the deliverable moved from a classical
+envelope to a quantum anharmonic spectrum.
+
+1. **High-order derivative convergence.** Cubic and semidiagonal quartic constants recomputed at
+   \(h\), \(h/2\) and \(h/4\); the spread is reported next to every QFF. This is the §5.8 gate and the
+   most likely silent failure in the whole plan — Käser et al. report VPT2 outliers up to 150 cm⁻¹
+   from surfaces whose energies and forces looked fine.
+2. **Mode matching by overlap, never by index.** Reference and model normal modes are paired by
+   maximum overlap of their displacement vectors, and the overlap value is reported. Index-matching
+   silently swaps near-degenerate modes and produces excellent agreement between the wrong pairs —
+   an error that looks like success.
+3. **Imaginary-frequency check.** Any imaginary harmonic frequency at a structure claimed to be a
+   minimum halts the rung. It means the optimization or the surface is wrong, and every anharmonic
+   number computed on top of it is meaningless.
+4. **Zero-point energy sanity.** Anharmonic ZPE from the QFF against the harmonic ZPE. A ZPE that
+   moves implausibly is the cheapest available signal that the quartic terms are wrong.
+5. **Resonance audit.** For every species: which Fermi and Darling–Dennison resonances were
+   identified, at what pre-registered threshold, which polyads were treated variationally, and the
+   deperturbed-versus-variational numbers side by side. A GVPT2 spectrum without this table is not
+   checkable.
+6. **VPT2 versus VCI cross-check** on at least one species per band family, where affordable. This is
+   how term (C) becomes a measurement instead of an assumption.
+7. **Charge-state consistency.** Neutral and cation run through identical pipeline settings; any
+   deviation is declared. Otherwise the intensity swap in §6.5 is not attributable to physics.
+8. **Blind-standard discipline.** Each rung's experimental standard is opened **once**, after that
+   rung's model is frozen. Repeated comparison during development is training on the test set with
+   extra steps.
+9. **Active-learning round bookkeeping.** Every reported number names the round it was computed at
+   (§6.3). Numbers from different rounds are not comparable.
+
+### 8.4 Retired checks, and why
+
+Listed rather than deleted, so the removal is visible and reversible.
+
+| Retired | Reason |
+|---|---|
+| Egg-box quantification | No voxel grid in the PES. **Retained for the DMS-field leg only** |
+| Grid-convergence study across \(\Delta x\) | Same — DMS-field leg only |
+| **Poisson boundary-condition convergence** | The Hockney–Eastwood solver is gone (§6.7). A dipole is a first moment |
+| Reference-split validation of \(E_{ne}\), \(E_H\) against analytic values | No energy is computed from the field |
+| Charge integral \(\int\rho\,dV=N_e\) to 0.01 % | DMS-field leg only, where it becomes \(\int\Delta\rho\,dV=0\) |
+| The \(\varepsilon_\theta\) frozen-wrong-density diagnostic | \(\varepsilon_\theta\) no longer exists; the analogous DMS-field check is in §6.7 |
+
+### 8.5 Reproducibility manifest
+
+Every gate report states, without exception: code versions (ORCA, MRCC, MLIP, QFF/VPT2 tooling),
+basis and PNO settings, frozen-core convention, split-file hash **and active-learning round index**,
+seed list, tuning trial count and wall-clock budget, which escalation and shrink-ladder rungs fired,
+and which claim-ladder rung the wording is drawn from. A result whose manifest is incomplete is a
+draft, not a result.
 
 ---
 
-## 9. Precision Claims — final, defensible wording
+## 9. Precision Claims — what may be said, and only after which gate
 
-- ✅ "From a static-label-trained PES and dipole surface, frozen-weight dynamics predict vibrational band positions and relative IR spectral envelopes/intensities within a stated cm⁻¹ tolerance for H₂O, D₂O, CO₂ and benzene. No spectra, peak positions or intensities are training targets."
-- ✅ "The frozen model reproduces the H₂O→D₂O isotope shift and CO₂ symmetry-forbidden intensity with zero retraining."
-- ❌ "We predict chemically precise, high-resolution IR spectral lines" (rovibrational-line-list precision) — not defensible with classical MD + FFT.
-- ❌ "Chemical precision on large PAHs (C₄₈+)" — explicitly out of scope for the thesis; at most a discussion-chapter outlook via naphthalene. The post-master’s path is [Project 10](Horizon/10_Size_Extensive_Aromatic_PES.md) (labels + size-extensivity) → [Project 11](Horizon/11_Anharmonic_IR_and_Intensities.md) (GVPT2-class bands + intensities) → [Project 12](Horizon/12_Astrophysical_PAH_Identification.md) (fail-closed identification). None of those is a Udacity module.
+Wording is a gated deliverable like any other. Each sentence below becomes available **only** when
+its gate passes, and the gate that licensed it is cited beside it.
+
+### 9.1 The claim ladder
+
+| After | Allowed |
+|---|---|
+| **G1** | *"For [species, charge state], local-CCSD(T) labels agree with canonical CCSD(T) to [measured value] over the audited domain."* Only for the species where canonical CC was actually computed. |
+| **G2** | *"The machine-learned surface reproduces gold-rung energies to [value], forces to [value] and harmonic frequencies to [value] cm⁻¹, with cubic force constants stable to [value] under step-size refinement."* |
+| **G3** | *"GVPT2 anharmonic band centres for [species] lie within [value] cm⁻¹ of [named dataset] for the [named] band families, against [value] cm⁻¹ for scaled-harmonic B3LYP and [value] cm⁻¹ for DFT-VPT2 on the same modes."* The comparison is part of the sentence, not a footnote. |
+| **G4** | *"Relative integrated intensities within [named band family] are reproduced to [value] %, from a dipole moment surface with \(d\boldsymbol\mu/dQ\) accurate to [value] %."* |
+| **G5** | *"…for [named sizes and charge states], with the four-term error budget in Table [n]. Transfer was tested to [next rung] and [passed / exceeded the band tolerance by value], which is the measured limit of this method."* |
+| **G6** | *"Under the pre-registration dated [date], the identification of [species] against [named product] is **Supported / Rejected / Unidentified-degenerate**, with the negative control [species] correctly failing."* |
+
+**Nothing may be said before its gate.** If G4 fails, G3's sentence still stands and every intensity
+sentence is withdrawn — that separation is the whole reason the gates are independent.
+
+### 9.2 Always attached
+
+- The **four-term error budget** (§8.1), per molecule, per charge state, per band family.
+- Which **escalation rungs** fired: electronic structure (§2.1), nuclear motion (§2.1), shrink ladder
+  (§5.7), claim ladder (§5.5).
+- The **stop rung**: the size or charge state at which measured error exceeded the tolerance.
+- The **limitations paragraph**: residual post-CCSD(T) correlation, core-correlation and relativistic
+  effects; unmeasured basis convergence above benzene; species marked UNRESOLVED; and the fact that
+  line lists remain out of scope.
+
+### 9.3 Forbidden, in any document, at any stage
+
+- ❌ *"Chemically precise infrared spectral **lines**"* — rovibrational line-list precision is R1 and is
+  not obtainable here by any route in this plan.
+- ❌ *"Sub-wavenumber"* as a dataset or spectral requirement.
+- ❌ *"Any size"* or *"arbitrarily large PAHs"* without the measured stop rung attached in the same
+  sentence.
+- ❌ *"Within X cm⁻¹"* as a single pooled number with no four-term budget beside it.
+- ❌ *"Chemically accurate labels"* before the §5.5 audit passed for **that** molecule and **that**
+  quantity.
+- ❌ Any intensity claim not backed by a DMS that passed its §6.5 gate.
+- ❌ *"We identified PAHs in a JWST spectrum"* without the pre-registered target list, metric and
+  verdict rule — and without the negative control having failed.
+- ❌ Any reference to Projects 10–12 as future work. They are **absorbed** (§1 item 19); what R3 does
+  not reach is a limitation in Module 08, not a queued project.
+
+### 9.4 The two sentences most likely to be written by accident
+
+Worth naming, because both are true-sounding and both would be fatal at a defense:
+
+1. *"Our anharmonic treatment improves on the harmonic baseline."* — Only if G3 measured it against
+   **both** baselines. Tang et al. (item 31) found scaled harmonic already sufficient for pristine
+   pyrene cations, so this sentence is not free; for some band families the honest finding may be
+   that anharmonicity did not pay for itself, and §2 pre-registers that outcome.
+2. *"The spectra agree with PAHdb."* — PAHdb's theoretical library is **scaled-harmonic B3LYP**.
+   Agreeing with it is agreeing with the status quo, which is a reproduction result, not a precision
+   result. The precision claim requires a **gas-phase or action-spectroscopy** standard, or PAHdb's
+   *experimental* library with the frozen matrix-shift model applied.
