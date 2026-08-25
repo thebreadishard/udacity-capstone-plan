@@ -74,6 +74,46 @@ model. A single pooled number is a fail.
 | `GoalGathering/Horizon/10–12` | ⛔ still plan 01, banner-marked as absorbed provenance |
 | Dutch `Uitleg/` | ✗ none yet — plan 01's version explains the voxel approach |
 
+## Review status
+
+**This plan has not been reviewed.** Round 4 is pending, and is deliberately scheduled *after* the
+Distilled Plan rewrite so that a rejected pivot does not cost two rewrites.
+
+The three professor reviews live in [plan 01](../01_voxel-field-pes/GoalGathering/), because that is
+what they reviewed. They are **not** copied here: three reviews sitting in this folder would imply
+this plan had survived them, and it has not.
+
+What did carry over is the findings. Plan 01 closed fifteen blocking issues; the pivot inherited,
+transferred or superseded each one deliberately rather than discarding them:
+
+| Issue | Origin | Fate in this plan |
+|---|---|---|
+| 1 — Phase 1 has no owner | R1 | **Superseded.** No Workstream P1; the production surface is a module deliverable. |
+| 2 — \(E=\mathcal{E}[\rho,R]\) is a slogan, not an implementation | R1 | **Superseded.** No longer the energy model (§2.2). |
+| 3 — a level of theory plus a count is not a method | R1 | **Inherited** → §5.3, as a decision procedure with smoke test and cost pilot. |
+| 4 — prime directive promises spectral lines | R1 | **Inherited and sharpened** → the R1/R2/R3 split in `Overarching_Goal.md` §1. |
+| 5 — rubric landmines, DOI before claim | R1 | **Inherited**, still binding. |
+| 6 — the GNN competitor is off the critical path | R1 | **Inverted.** The equivariant GNN *is* the production surface (§4). |
+| 7 — the grid cannot carry an all-electron density | R2 | **Transferred** to the DMS-field leg, where the reference split still applies. |
+| 8 — gates are mutually inconsistent and self-loosening | R2 | **Inherited** → §5.8, with the artifact category re-aimed at MLIP derivative noise. |
+| 9 — the novelty check missed ML orbital-free DFT | R2 | **Inherited as method** → §2.1 rewritten against the *current* neighbours; the OF-DFT lineage is scoped to §2.2. |
+| 10 — \(\Phi\) is a nuclear-identity bypass channel | R2 | **Scoped** to the DMS-field leg. |
+| 11 — the IR observable was never trained or validated | R2 | **Inherited** → §5.4. Its finding that \(\boldsymbol\mu=-\int\mathbf r\,\Delta\rho\,dV\) exactly is now the *basis* of the DMS-field leg. |
+| 12 — no gate covers translation/rotation invariance | R2 | **Resolved by construction.** An equivariant GNN is exactly rotation-invariant; this is one of the reasons it replaced the voxel model. |
+| 13 — the comparison is falsifiable in wording only | R2 | **Inherited** → §7.1 pre-registration, retargeted at the DMS bake-off and the model bake-off. |
+| 14 — the Module 03 row count does not add up | R2 | **Superseded** with the dataset it counted. |
+| 15 — there is no calendar anywhere | R2 | **Inherited** → the restructure proposal §10 effort arithmetic. |
+| R3-1 — the experiment does not isolate representation | R3 | **Superseded** with the research question (§2). |
+| R3-2 — energy and force labels may be mutually inconsistent | R3 | **Inherited verbatim** → §5.6. Δ-learning makes it stricter, not looser. |
+| R3-3 — dataset eligibility is unresolved | R3 | **Still open.** Reduced by the pivot, not closed. Decision 7 below. |
+| R3-4 — dipole supervision is unfinished | R3 | **Inherited** → §5.4, with separate derivative sets for cations. |
+| R3-5 — "chemically precise" is asserted, not demonstrated | R3 | **Inherited and strengthened** → §5.5 splits error term (B) into local-vs-canonical and basis convergence, both measured. |
+| R3-6 — the calendar is non-operational | R3 | **Inherited** → restructure proposal §10. |
+
+Six superseded, one inverted, one resolved by construction, twelve carried forward, one still open.
+A Round-4 reviewer should start from this table: the question is not whether the pivot discarded the
+discipline, but whether the twelve landed correctly.
+
 ## Decisions taken
 
 | # | Decision |

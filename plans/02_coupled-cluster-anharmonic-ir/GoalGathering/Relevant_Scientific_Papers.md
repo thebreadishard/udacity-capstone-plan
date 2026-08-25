@@ -87,7 +87,7 @@ This document captures the relevant scientific papers discussed during the goal 
 
 ## Machine-Learned Density Functionals — the lineage this thesis actually sits in
 
-Added 2026-08-22 to close [round-2](Professor_Review_2026-08-22_Round2.md) blocking issue 9. The Distilled Plan's \(E=E_{\mathrm{es}}[\rho]+\int\varepsilon_\theta\,dV\) **is** machine-learned orbital-free DFT. Positioning against this lineage is in Distilled Plan §2.1.
+Added 2026-08-22 to close [round-2](../../01_voxel-field-pes/GoalGathering/Professor_Review_2026-08-22_Round2.md) blocking issue 9. The Distilled Plan's \(E=E_{\mathrm{es}}[\rho]+\int\varepsilon_\theta\,dV\) **is** machine-learned orbital-free DFT. Positioning against this lineage is in Distilled Plan §2.1.
 
 21. **Finding Density Functionals with Machine Learning** (Snyder, Rupp, Hansen, Müller & Burke, *Phys. Rev. Lett.* 108, 253002, 2012)
     - *URL:* [arXiv:1112.5441](https://arxiv.org/abs/1112.5441) · DOI:10.1103/PhysRevLett.108.253002
