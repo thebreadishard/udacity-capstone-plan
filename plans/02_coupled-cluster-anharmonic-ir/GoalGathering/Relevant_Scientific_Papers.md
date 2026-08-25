@@ -26,7 +26,7 @@ This document captures the relevant scientific papers discussed during the goal 
 
 4. **MP2 Is Not Good Enough: Transfer Learning ML Models for Accurate VPT2 Frequencies** (Käser, Boittier, Upadhyay & Meuwly, *JCTC*, 2021)
    - *URL:* [arXiv:2103.05491](https://arxiv.org/abs/2103.05491) · PDF: `Papers/04_Kaser2021_TransferLearning_CCSDT.pdf`
-   - *Attribution corrected 2026-08-23:* this entry previously read *"Transfer Learning to CCSD(T): Accurate Anharmonic Frequencies from Machine Learning Models (Nandi et al., JCTC, 2021)"*. The stored PDF is arXiv:2103.05491, and [Papers/README.md](Papers/README.md) has always named it correctly as Käser et al. The **title and authors in this bibliography were wrong**; the significance was right. Caught only because the R3 literature sweep re-added the same paper as a "new" item — a reminder that a bibliography entry written from recall is not a citation.
+   - *Attribution corrected 2026-08-23:* this entry previously read *"Transfer Learning to CCSD(T): Accurate Anharmonic Frequencies from Machine Learning Models (Nandi et al., JCTC, 2021)"*. The stored PDF is arXiv:2103.05491, and [Papers/README.md](../../../Papers/README.md) has always named it correctly as Käser et al. The **title and authors in this bibliography were wrong**; the significance was right. Caught only because the R3 literature sweep re-added the same paper as a "new" item — a reminder that a bibliography entry written from recall is not a citation.
    - *Significance:* The "NN + VPT2" protocol: high-dimensional NN potentials learned at MP2, CCSD(T) and CCSD(T)-F12 levels, with transfer learning used for the largest molecules and highest levels, from which harmonic and VPT2 frequencies are extracted. Anharmonic frequencies land within 20 cm⁻¹ of experiment for ~90 % of modes and within 10 cm⁻¹ for >60 % at the best level; MP2-quality surfaces produce outliers up to 150 cm⁻¹. **Now load-bearing, and the title is the lesson:** the level of theory under the ML model, not the ML model, sets the ceiling. This is the mechanism by which the gold rung reaches the quartic force field.
 5. **ANI-1ccx-gelu Universal Interatomic Potential and Its Fine-Tuning: Toward Accurate and Efficient Anharmonic Vibrational Frequencies** (Dral et al., *JPCL*, 2025)
    - *Significance:* The capstone architectural fix. Exchanged standard activation functions for GELU, completely resolving the "wrinkly PES" issue to allow error-free extraction of the Hessian/VPT2 highest-order derivatives. **Now a gate, not a remark:** G2 must measure step-size stability of the cubic force constants, and this paper is both the reason why and the declared fallback if the selected MLIP fails that test.
@@ -109,7 +109,7 @@ Added 2026-08-22 to close [round-2](Professor_Review_2026-08-22_Round2.md) block
 
 ---
 
-## The R3 evidence base — what makes gold-anchored anharmonic PAH IR reachable
+## The R3 evidence base — what makes coupled-cluster-anchored anharmonic PAH IR reachable
 
 Added 2026-08-23. These items are the technical justification for
 [Restructure_Proposal_2026-08-23_Project12_in_Module08.md](Restructure_Proposal_2026-08-23_Project12_in_Module08.md).
