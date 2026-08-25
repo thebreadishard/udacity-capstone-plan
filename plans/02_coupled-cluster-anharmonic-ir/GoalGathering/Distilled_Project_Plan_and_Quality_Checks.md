@@ -163,7 +163,9 @@ This is a fair fight, which is the point of demoting it rather than deleting it:
 ## 5. Data Pipeline (coupled-cluster labels; DFT only as the Δ-learning baseline)
 
 ### 5.0 The molecule ladder and its blind standards
-
+Frozen 2026-08-25 in
+[Frozen_Ladder_and_Tolerances_2026-08-25.md](Frozen_Ladder_and_Tolerances_2026-08-25.md), which is
+the authoritative version of this table and of every tolerance quoted in this plan.
 Every rung is scored. Climbing **stops** at the first rung where measured error exceeds the §9 band
 tolerance, and that rung is published as the measured limit.
 
