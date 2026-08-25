@@ -9,7 +9,7 @@
 > | §1 evolution log, §2 research question, §2.1 prior art, §2.2 demoted DMS question | ✅ **rewritten** |
 > | §3 what the project IS, §4 what it is NOT | ✅ **rewritten** |
 > | §5 data pipeline (§5.0 ladder → §5.8 derivative gate) | ✅ **rewritten** |
-> | §6 architecture and training | ⛔ pre-pivot |
+> | §6 architecture, training, nuclear motion (§6.1 → §6.7) | ✅ **rewritten** |
 > | §7 phased roadmap, §7.1 pre-registration | ⛔ pre-pivot |
 > | §8 QA protocol, §9 precision claims | ⛔ pre-pivot |
 >
@@ -444,111 +444,234 @@ That ceiling is reachable *only because of* the §6.1 reference split: measured 
 
 ---
 
-## 6. Architecture & Training Details (final)
-Workstream P1 and Module 05 **share this forward pass**. They must not diverge into a latent energy head on one molecule and a functional on the other.
+## 6. Architecture, Training and Nuclear Motion
 
-### 6.1 Forward pass (implements \(E=\mathcal{E}[\rho,R]\))
+Every choice below is made for **reliability of high-order derivatives**, not for novelty. The
+surface exists to be differentiated four times; that is the only requirement that matters, and it is
+the one that a good energy/force fit does not automatically satisfy.
 
-**0. Reference split (not learned; resolves round-2 blocking issue 7).**
+### 6.1 The production surface: a fine-tuned equivariant interatomic potential
 
-$$\rho_{\mathrm{tot}}(\mathbf{r};\mathbf{R})=\underbrace{\sum_A \rho^{\mathrm{atom}}_{Z_A}\!\big(|\mathbf{r}-\mathbf{R}_A|\big)}_{\rho_{\mathrm{ref}}\ \text{— analytic, frozen}}+\ \Delta\rho_\theta(\mathbf{r};\mathbf{R}),\qquad \rho^{\mathrm{atom}}_{Z}(u)=\sum_k c_{Z,k}\left(\frac{\alpha_{Z,k}}{\pi}\right)^{3/2}e^{-\alpha_{Z,k}u^2}$$
+**Starting checkpoint.** MACE-OMOL-0 (OMol25, ωB97M-VV10) as primary, because it carries explicit
+**charge and spin embedding** and therefore handles the cation rungs that the whole astrophysical
+claim rests on. MACE-OFF23/24 is the fallback for neutrals only. If the ASL licence ever becomes a
+problem, the escape hatch is training the same architecture from scratch on the Δ-corrected set —
+the *code* is MIT and only the weights are restricted.
 
-The per-element coefficients are fitted **once**, offline, to the spherically averaged free-atom ground-state density, then frozen. Every integral over \(\rho_{\mathrm{ref}}\) is closed form — Gaussian–point-charge is \(Z\,\mathrm{erf}(\sqrt{\alpha}\,r)/r\), Gaussian–Gaussian is an \(\mathrm{erf}\) of the reduced exponent — and analytically differentiable in \(\mathbf{R}_A\), so autograd forces stay exact. **Only \(\Delta\rho_\theta\) is ever discretized.**
+**Two ways to attach the coupled-cluster anchor. Choose by measurement at G2, not by argument:**
 
-**1. Nuclei → fields (not learned).**
+| | Design | Inference cost | Risk |
+|---|---|---|---|
+| **(a) Δ-model** | A separate model learns \(E_{\mathrm{gold}}-E_{\mathrm{cheap}}\); the prediction is baseline + correction | Both models evaluated every step | The correction inherits the baseline's roughness; two surfaces must both be smooth |
+| **(b) Fine-tune** | Continue training the foundation weights directly on coupled-cluster labels | One model | Catastrophic forgetting: the pretrained surface can degrade away from the fine-tuning data, which is exactly where a QFF probes |
 
-- \(E_{nn}\) is **exact analytic point charges**, \(\sum_{A<B}Z_AZ_B/R_{AB}\). It is *not* read off a smeared grid: at \(\sigma=0.3\,\text{Å}\) the Gaussian–Gaussian O–H repulsion is short by a factor \(\mathrm{erf}(R/2\sigma)=0.976\), i.e. \(\approx0.1\,\)Ha of geometry-dependent error that \(\varepsilon_\theta\) would otherwise have to repair at the mHa level.
-- Gaussian smearing \(\sigma\ge1.5\,\Delta x\) survives **only** as the grid kernel for terms that integrate \(\Delta\rho_\theta\) against a nuclear potential:
+Both are standard; neither is obviously right here. The tiebreaker is the §5.8 cubic-force-constant
+stability test, not the energy RMSE — a design can win on energies and lose on third derivatives.
 
-$$V^{\sigma}_{\mathrm{nucl}}(\mathbf{r})=-\sum_A Z_A\,\frac{\mathrm{erf}\!\big(|\mathbf{r}-\mathbf{R}_A|/\sqrt{2}\sigma\big)}{|\mathbf{r}-\mathbf{R}_A|}$$
+**Non-negotiable numerical requirements.**
 
-which is finite and smooth at the nucleus. Smooth kernel × smooth \(\Delta\rho\) is the only regime in which \(0.2\,\text{Å}\) quadrature is defensible.
+- **float64 throughout.** Not cosmetic: a semi-numerical quartic force field differentiates the
+  surface repeatedly, and float32 round-off is indistinguishable from anharmonicity.
+- **Smooth activations** (GELU-class). Dral et al. (item 5) document the "wrinkly PES" pathology
+  that destroys numerically differentiated high-order derivatives while leaving energies and forces
+  looking fine. This is a requirement, not a preference.
+- **Exact rotational equivariance and size-extensivity by construction.** Both were gated properties
+  in the pre-pivot plan and are free here.
 
-**2. Density encoder (NCA / optional FNO).** State on the grid: one real, **sign-changing** deformation channel plus latent NCA memory (hidden state, not physics). Local \(3\times3\times3\) NCA steps handle short range. An optional learned FNO is a non-local mixer **inside this encoder only**. Readout:
+**One transferable model, not one model per molecule.** The ladder's entire point is transfer to an
+unseen ring count, which a per-molecule PES cannot test. A single model is trained across the
+aromatic set and evaluated on the next rung **zero-shot** before any of that rung's data is added.
+Per-rung fine-tuning is permitted only as a declared fallback, reported separately, and never
+substituted for the zero-shot number.
 
-$$\Delta\rho_\theta(\mathbf{r};\mathbf{R})=s(\mathbf{r})-\frac{1}{V}\int s\,dV,\qquad \int\Delta\rho_\theta\,dV=0$$
+**What the model may never see.** No spectral quantity, at any stage: not as a label, not as a
+selection criterion, not as an early-stopping signal, and not as a reason to hand-tune a
+hyperparameter for one molecule. With identification as the endpoint, a spectral leak would not be a
+methodological wobble — it would fabricate the result.
 
-No \(\mathrm{softplus}\), no renormalize-to-\(N_e\), no \(\rho_{Im}\), no EM channels. Total positivity \(\rho_{\mathrm{ref}}+\Delta\rho_\theta\ge0\) is a monitored diagnostic with a soft penalty, not a hard architectural constraint.
+### 6.2 Training loss (static labels only)
 
-**3. Energy is a functional of the total density.** No second head:
+$$L = \lambda_E L_E + \lambda_F L_F + \lambda_\mu L_\mu \;\;(+\;\lambda_\rho L_\rho\ \text{for the DMS-field leg only})$$
 
-$$E_\theta(\mathbf{R})=\sum_A E^{\mathrm{atom}}_{Z_A}+E_{\mathrm{es}}\big[\rho_{\mathrm{ref}}+\Delta\rho_\theta,\mathbf{R}\big]+\int\varepsilon_\theta\,dV$$
+- \(L_E\): energy against the accepted coupled-cluster level for that rung.
+- \(L_F\): complete force vectors where §5.6 rung 1–2 applies. Under rung 3 it is replaced row-wise
+  by the projected-derivative loss
+  \(L_D=\lvert\nabla_{\mathbf R}E_\theta\cdot\mathbf v-D_{\mathbf v}E\rvert^2\), with **every model in
+  a comparison receiving the identical directions** for every `config_id`.
+- \(L_\mu\): the three standardized Cartesian dipole components against the §5.4 analytic label.
+  Enabled from the first production run, never added after a failed gate.
+- \(L_\rho\): deformation density, **only** for the §2.2 DMS-field leg. It does not exist in the
+  production PES.
 
-\(E_{\mathrm{es}}\) is expanded so that each piece is computed where it is accurate:
+Loss weights come from a fixed candidate grid, selected on **validation** data among models that
+already pass the validation energy and derivative gates, and frozen before the test set is touched.
 
-| Piece | How | Why there |
+**There is no Hessian loss, and that is a deliberate consistency choice.** §5.5 makes the reference
+Hessians **audit-only**; training on them would destroy the ≤5 cm⁻¹ gate that licenses the whole
+claim. Machine-learned potentials routinely recover harmonic frequencies from energies and forces
+alone, and the gate is there to check it rather than assume it.
+
+**Pre-registered escalation if the ≤5 cm⁻¹ frequency gate fails:** generate a **new, separate**
+curvature-label set, disjoint from the audit geometries and declared before it is computed, and add
+a Hessian term. Reusing audit Hessians as training data is forbidden — it would convert the gate
+into a training-set score, which is the same category of error as training on spectra.
+
+### 6.3 Active learning: where the next expensive point goes
+
+The Δ-ML set is order 10², so *which* geometries get gold-rung labels matters more than how many.
+
+- **Uncertainty from a committee.** The ≥3 seeds already required by §7.1 double as the ensemble;
+  disagreement in predicted **forces** is the selection signal, because forces are what the QFF
+  consumes.
+- **Proposal pool** from the Module 06 generative model plus normal-mode and thermal displacements.
+  Proposals are candidates, never data.
+- **Every selected geometry is labelled at the accepted coupled-cluster level before it is
+  trusted.** No self-training, no pseudo-labels, no model-generated energies entering the training
+  set. This is the same rule the pre-pivot plan applied to its Module 06 corpus, and it survives
+  unchanged.
+- **Stopping rule, declared in advance:** stop when a round of new points fails to move validation
+  force RMSE by more than the seed scatter, or when the rung's compute budget is spent — whichever
+  comes first.
+- **Bookkeeping hazard.** Active learning mutates the training set, so the frozen split file gets a
+  **round index**, and every gate report names the round it was computed at. A comparison across
+  different active-learning rounds is not a comparison.
+
+### 6.4 Nuclear motion: quartic force field, GVPT2, and the escalation ladder
+
+This is where R3 is actually delivered, and it is the part the pre-pivot plan did not have.
+
+**Quartic force field from the MLIP.** Built in normal coordinates around each optimized structure,
+semidiagonal in the quartic terms, using the released MLIP→QFF→VPT2 tooling (item 26). Step sizes
+are converged and **reported**, and the cubic-constant stability check of §5.8 is run here — a QFF
+whose constants move with the step size is not a QFF.
+
+**GVPT2, with the resonance treatment declared before results are seen.** Plain VPT2 diverges
+whenever two states are near-degenerate, and PAH fingerprint regions are full of such pairs.
+Required: explicit identification of Fermi and Darling–Dennison resonances by a **pre-registered
+threshold**, deperturbation of the resonant terms out of the perturbative sum, and variational
+treatment of the resulting polyads. Choosing the resonance threshold after inspecting the spectrum
+is the anharmonic equivalent of metric shopping.
+
+**Escalation ladder (from §2.1, restated here because this is where it fires):**
+
+1. GVPT2 with explicit resonance treatment — the default.
+2. **Selected VCI** over the affected polyads, for the congested 6–9 μm region.
+3. Report only the band families that converged; mark the species **UNRESOLVED** for the rest.
+4. **Longer classical trajectories are not on this ladder.** Substituting MD for a failed VCI is the
+   single most tempting way to lose this thesis.
+
+**What classical MD is still for.** Temperature dependence — band shifts and broadening as a
+function of internal energy, which VPT2 does not give directly. It lives in a diagnostic appendix,
+is labelled as such, and never carries a band-position claim.
+
+**Tooling decision, made at G0 by measurement.** MLatom and the Kotaru/Bowman release are both run
+on H₂O and benzene against known references; one is kept. Do not carry both past G0.
+
+### 6.5 The dipole moment surface and relative intensities
+
+Intensities are half of R3 and are where DFT-based work is least controlled, so the DMS gets its own
+gates rather than riding on the PES gates.
+
+**Three legs, pre-registered under §7.1** — frozen splits, ≥3 seeds, tuning parity, declared effect
+size, "inconclusive" publishable:
+
+| Leg | Representation | Note |
 |---|---|---|
-| \(E_{nn}\) | analytic point charges | exact and free |
-| \(-\sum_A Z_A\!\int\rho_{\mathrm{ref}}/|\mathbf{r}-\mathbf{R}_A|\) | **analytic** | largest, sharpest e–n term; never voxelized |
-| \(-\sum_A Z_A\!\int\Delta\rho_\theta/|\mathbf{r}-\mathbf{R}_A|\) | grid, against \(V^{\sigma}_{\mathrm{nucl}}\) | smooth × smooth |
-| \(\tfrac12\langle\rho_{\mathrm{ref}}|\rho_{\mathrm{ref}}\rangle\) | **analytic** | dominant Hartree piece |
-| \(\langle\rho_{\mathrm{ref}}|\Delta\rho_\theta\rangle\) | grid, against the analytic promolecular Hartree potential \(V_{\mathrm{ref}}\) (erf form, finite at the nucleus) | smooth × smooth |
-| \(\tfrac12\langle\Delta\rho_\theta|\Delta\rho_\theta\rangle\) | **Hockney–Eastwood FFT** | the only term that needs the solver |
+| **DMS-tensor** | Equivariant atom-centred vector head, MACE-POLAR-1 class (item 36) | Handles variable charge and spin natively; a strong baseline, not a strawman |
+| **DMS-field** | \(\boldsymbol\mu=-\int\mathbf r\,\Delta\rho_\theta\,dV\), which holds **exactly** for a promolecular reference | The salvaged voxel model (§2.2) |
+| **DMS-charge** | Environment-dependent partial charges | The cheap classical floor |
 
-Because \(\int\Delta\rho_\theta\,dV=0\) exactly, the source handed to Hockney–Eastwood is charge-neutral and its potential decays at least as fast as a dipole — the zero-padding requirement gets *cheaper*, and Phase 0 finally validates the solver on the object it will actually be given.
+**The DMS must be differentiable to the order the intensity formula needs.** VPT2 intensities
+require first *and* second dipole derivatives with respect to normal coordinates; a DMS that only
+reproduces \(\boldsymbol\mu\) well is not sufficient, and that distinction is exactly what §5.4's
+evaluation-only derivative sets exist to expose.
 
-**Anchoring of \(\varepsilon_\theta\) — named open fork, decided in Phase 0 / P1, not in Module 05.** The same core-domination disease afflicts \(\int\varepsilon_\theta\,dV\) (Thomas–Fermi kinetic density goes as \(\rho^{5/3}\)). Two candidate forms:
+**Gates, all on untouched evaluation labels, all before any intensity is published:**
 
-- **(i) Vanishing anchor:** \(\varepsilon_\theta\equiv\Delta\rho_\theta\cdot f_\theta(\rho_{\mathrm{ref}},\Delta\rho_\theta,|\nabla\Delta\rho_\theta|)\), identically zero at \(\Delta\rho=0\). Removes the core-dominated quadrature outright and cuts the dynamic range the learned term must span from \(\sim76\,\)Ha (round-2 issue 9) to the bonding remainder, \(\sim1\,\)Ha. Cost: it asserts that the promolecule's energy is \(\sum_A E^{\mathrm{atom}}_{Z_A}\) plus classical electrostatics, which omits the Pauli/exchange repulsion of overlapping atomic densities; the learned term must absorb that at physical geometries.
-- **(ii) Difference form:** \(\varepsilon_\theta=g_\theta(\rho_{\mathrm{tot}},|\nabla\rho_{\mathrm{tot}}|)-g_\theta(\rho_{\mathrm{ref}},|\nabla\rho_{\mathrm{ref}}|)\). Keeps a genuine functional of \(\rho_{\mathrm{tot}}\), but each term is individually cusped and the cancellation is numerical rather than analytic.
+- \(\lVert\boldsymbol\mu_\theta-\boldsymbol\mu_{\mathrm{QM}}\rVert\) below the per-molecule threshold
+  fixed at freeze time.
+- Relative error in \(d\boldsymbol\mu/dQ\) **< 5 %**, because \(I\propto\lvert d\boldsymbol\mu/dQ\rvert^2\)
+  and the R3 intensity claim is at the 20 % level.
+- **CO₂ forbidden-mode residual** as a symmetry regression test: \(I(\nu_1)/I(\nu_3)<10^{-2}\), and
+  the measured ratio consistent with \(\delta^2\) where \(\delta\) is the independently measured
+  relative dipole-derivative error.
+- **Neutral-to-cation intensity swap reproduced qualitatively** in the 6–9 μm and 11–12 μm families.
+  This is the diagnostic astronomers actually use; failing it while passing the others means the
+  model is right about positions and wrong about the thing being claimed.
 
-**Decision rule:** measure the quadrature error of \(\int\varepsilon\,dV\) for both forms against a fine reference grid on the Phase 0 real cube, then on P1 H₂O. Pick one **before** the benzene campaign. Do not carry both into Module 05.
+If a DMS gate fails, **intensity claims are withdrawn and band positions still ship.** The gates are
+separate on purpose (§3).
 
-**Inputs to \(\varepsilon_\theta\) (resolves round-2 blocking issue 10).** \(\varepsilon_\theta\) is a tiny MLP / \(1\times1\times1\) conv on **density-derived local scalars only**: \(\rho_{\mathrm{ref}}\), \(\Delta\rho_\theta\), \(|\nabla\Delta\rho_\theta|\). It must **not** see \(Z_A\), one-hot elements, bond lists, or raw \(\mathbf{R}\) — **and it must not see \(\Phi\) or \(V_{\mathrm{nucl}}\)**. \(\Phi\) is the *external* potential; near a nucleus it is a direct readout of \(Z_A/|\mathbf{r}-\mathbf{R}_A|\), so feeding it hands the "functional" a channel through which it can learn part of \(E(\mathbf{R})\) without consulting the density — exactly the multi-head-regressor failure §4 forbids. **Required diagnostic:** freeze \(\Delta\rho_\theta\) at a deliberately wrong density and confirm the predicted energy degrades.
+### 6.6 Excitation and environment model — error term (D)
 
-**4. Forces.** \(\mathbf{F}_A=-\partial E_\theta/\partial\mathbf{R}_A\) via PyTorch autograd through the analytic \(\rho_{\mathrm{ref}}\) placement, through the nuclear kernel, **and** through \(\Delta\rho_\theta(\mathbf{R})\). Do not `stop_grad` on \(\Delta\rho\). Hellmann–Feynman alone is not exact for a learned density fitted to CCSD(T).
+A laboratory absorption spectrum and an astrophysical emission spectrum are different observables,
+and comparing one to the other without a model is the error that would invalidate §3.C.
 
-If this graph is implemented, \(E\) *is* \(\mathcal{E}[\rho,R]\) — \(\rho_{\mathrm{ref}}\) is a parameter-free deterministic function of \(\mathbf{R}\), so the split changes how the functional is evaluated, not what it is a functional of. A trunk that emits both \(\rho\) and a scalar \(E\) from pooled latents is a spec violation, not a variant.
+- **Against laboratory standards** (NIST gas-phase FTIR, IRMPD, PAHdb): absorption, compared
+  directly. PAHdb matrix data requires the **frozen** matrix-shift model, applied identically to
+  every species. Corrected and uncorrected numbers never appear in the same table.
+- **Against an astrophysical product**: isolated-PAH emission follows UV photon absorption and
+  vibrational cascade, not a 300 K thermal population. The model is a **microcanonical cascade**
+  following the Chen/Li/Li template (item 33), with the internal-energy distribution stated.
+- **Frozen before the observational product is opened**, together with the target list, band
+  families, match metric and verdict rule (§3.C). Retuning the excitation model to improve a match
+  is a fail.
+- Its residual is error term **(D)** and appears in the budget beside (A), (B) and (C) — never
+  folded into them.
 
-### 6.2 Poisson vs FNO — two objects
+---
 
-| Object | Role | Who validates it |
-|---|---|---|
-| **Analytic Gaussian integrals** | Everything involving \(\rho_{\mathrm{ref}}\): \(E_{nn}\), the promolecular e–n attraction, \(\tfrac12\langle\rho_{\mathrm{ref}}|\rho_{\mathrm{ref}}\rangle\), and the analytic \(V_{\mathrm{ref}}\) evaluated at grid points. Closed form, no quadrature. | Phase 0 (against a fine-grid reference) |
-| **Hockney–Eastwood** | Poisson for the **smooth, charge-neutral** \(\Delta\rho_\theta\) only. Embed \(N^3\) in a \(2N\times2N\times2N\) zero-padded box; cap the Coulomb kernel at the box radius. | Phase 0 |
-| **Learned FNO** | Optional non-local block **in the density encoder** | Module 05 ablation |
+### 6.7 The DMS-field leg: what survives from the voxel model, and what got simpler
 
-Do **not** treat the FNO as a learned Poisson solver. Phase 0 would then validate something 05 immediately replaces, and the ablation would mix two physics stories.
+The field model is no longer an energy functional. As a **dipole** surface it keeps the parts of the
+pre-pivot design that were measured to work, and sheds the parts that existed only to make an energy
+out of a grid.
 
-**Module 05 controlled experiment:** same \(\mathcal{E}\), same \(E_{\mathrm{es}}\); encoder = local-NCA-only vs local-NCA+FNO. One changed variable. The question is whether the non-local encoder improves \(\rho\) and therefore \(E\) and \(\mathbf{F}\).
+**Kept — the reference split.** The physical density is
+\(\rho_{\mathrm{tot}}=\rho_{\mathrm{ref}}+\Delta\rho_\theta\), with
+\(\rho_{\mathrm{ref}}=\sum_A\rho^{\mathrm{atom}}_{Z_A}(|\mathbf r-\mathbf R_A|)\) a **promolecular**
+superposition of spherically averaged free-atom densities, fitted once per element to a short sum of
+Gaussians and frozen. Only the smooth \(\Delta\rho_\theta\) is ever discretized, with
+\(\int\Delta\rho_\theta\,dV=0\) enforced by mean subtraction on every forward pass. The
+[issue-7 probe](../probes/issue07_grid_representability.py) measured why this is not a convenience:
+putting \(\rho_{\mathrm{tot}}\) on a 0.20 Å grid gives an 11 % electron-count error and a 3.8 Ha
+per-cell translation artifact, while \(\Delta\rho\) alone gives \(3\times10^{-10}\,e\).
 
-**Optional diagnostic (not the rubric ablation):** drop \(E_{\mathrm{es}}\) and keep only \(\int\varepsilon_\theta\). If that works as well, the field-functional story is weaker than claimed. Report it; do not train that way by default.
+**Kept — the exact observable.** Because a promolecule of neutral spherical atoms has identically
+zero dipole,
 
-Do not invent a more exotic \(\mathcal{E}\) (orbital-free kinetic libraries, learned pair densities) until this one fails. This is the smallest object that makes the equation true.
+$$\boldsymbol\mu=\int\mathbf r\,(\rho_{\mathrm{nucl}}-\rho_{\mathrm{tot}})\,dV=-\int\mathbf r\,\Delta\rho_\theta\,dV\quad\text{exactly.}$$
 
-### 6.3 Training loss (static configurations only — no spectral term)
+The graded observable is therefore a direct integral of the object that is actually supervised, not
+the residue of two much larger numbers. This identity — found while closing round-2 issue 11 — is
+the entire reason the field model is still in this plan.
 
-**Production spectroscopy model:**
+**Kept — the measured artifact budgets.** The translational artifact in \(\boldsymbol\mu\) (< 0.1 % of
+\(\lvert\boldsymbol\mu\rvert\)) and the rigid-rotation residual both transfer unchanged from
+[the issue-11/12 probe](../probes/issue11_12_observable_and_invariance.py). They matter more here than
+they did for the energy: an equivariant tensor DMS satisfies these symmetries by construction, so
+any field-leg loss must be reported alongside its symmetry residual or the comparison is
+uninterpretable (§7.1 confound (a)).
 
-$$L_{train} = \lambda_E L_E + \lambda_F L_F + \lambda_H L_H + \lambda_\rho L_\rho + \lambda_\mu L_\mu$$
+**Dropped, and the plan is smaller for it:**
 
-- $L_E$: MSE on total energy vs. CCSD(T).
-- $L_F$: MSE on complete force vectors derived from the CCSD(T) energy surface, when available. For the §5.1 benzene directional fallback, replace this term row-wise with \(L_D=\lvert\nabla_{\mathbf R}E_\theta\cdot\mathbf v-D_{\mathbf v}E_{\mathrm{CCSD(T)}}\rvert^2\). Field and MACE receive the same derivative kind and direction for every `config_id`; analytic CCSD forces are never targets.
-- $L_H$: Hessian supervision at the **counted** stationary points in §5.1 (1 H₂O + 1 benzene equilibrium Hessian first). Force-only supervision does **not** guarantee correct 2nd/3rd-order PES derivatives.
-- $L_\rho$: MSE on the **deformation** density \(\Delta\rho=\rho_{\mathrm{QM}}-\rho_{\mathrm{ref}}\), where \(\rho_{\mathrm{QM}}\) is the §5.1 density target (default: relaxed CCSD 1-RDM, not a slogan “exact CCSD(T) density”). This supervises the *argument* of \(\mathcal{E}\); it is not an optional extra head and not the force source. Supervising \(\Delta\rho\) rather than \(\rho\) also removes the core domination that made a plain \(L_\rho\) nearly blind to the diffuse valence tail — the tail that sets \(\boldsymbol{\mu}\) (round-2 issue 11).
-- $L_\mu$: MSE on the three standardized Cartesian components of \(\boldsymbol\mu_\theta\) against the analytic §5.1 dipole label. It is enabled from the first production run, not added after a failed gate. The fixed candidate grid is \(\lambda_\mu\in\{0.01,0.1,1,10\}\) after standardization by training-set component variance. Select on validation data by minimum dipole RMSE among models that pass the validation energy/derivative gates; freeze before the test set is touched. There is **no** \(L_{d\mu}\) and no spectral loss.
+| Removed | Why it is no longer needed |
+|---|---|
+| \(\varepsilon_\theta\) and the anchoring fork (vanishing anchor vs difference form) | There is no learned energy functional to anchor |
+| \(E_{\mathrm{es}}\), the analytic Gaussian integral table, \(E_{nn}\) as point charges | No energy is computed from the field |
+| **The Hockney–Eastwood open-boundary Poisson solver** | It existed to evaluate \(\tfrac12\langle\Delta\rho\vert\Delta\rho\rangle\). A dipole is a first moment: no Poisson solve, no zero-padded \(2N\) box, no boundary-convergence study |
+| Autograd forces through the density; the conservativity machinery | Forces come from the MLIP |
+| The Φ-bypass prohibition (round-2 issue 10) | \(\varepsilon_\theta\) is gone, so there is nothing to bypass |
 
-**§2 comparison cohort (round-3 issue 1):** three separately trained models use the same configurations, CCSD(T) energies, same-surface full or directional derivative labels, splits and seeds. To keep the information comparison clean, \(\lambda_H=0\) for all three comparison legs; the equilibrium Hessian remains an evaluation target.
+**What remains to build** is therefore a density encoder — local \(3\times3\times3\) convolutions
+with an optional non-local FNO mixer — plus one first-moment integral. That is a far smaller object
+than the pre-pivot design, which is exactly why it can be run as a falsifiable side-comparison
+instead of a critical-path dependency.
 
-| Leg | Training labels | Purpose |
-|---|---|---|
-| **MACE-EF** | \(E\) plus the accepted same-surface full/directional derivatives | Equivariant-GNN comparator |
-| **Field-EF** | Identical energy/derivative labels, with \(\lambda_\rho=0\) | Primary equal-label representation test against MACE-EF |
-| **Field-EFρ** | Identical energy/derivative labels plus \(\rho\) | Density-supervision ablation against Field-EF |
-
-Field-EF and Field-EFρ have identical architecture, initialization seeds, optimizer schedule and fixed hyperparameters; only \(\lambda_\rho\) changes. Neither comparison leg receives \(L_\mu\); density and dipole errors are evaluation-only there. Passing them is not required for the equal-label force comparison, but failure means the internal field must not be described as a physical electron density. The full \(E/F/H/\rho/\mu\) production model is reported separately and may support the spectroscopy result, never the representation-only causal claim.
-
-### 6.4 MD / frozen-weight spectroscopy protocol (run only after static-label training)
-
-**Precondition (round-2 issue 11; round-3 issue 4).** Do not start a production trajectory until the §7 Phase 1 **dipole** gates have passed on untouched evaluation labels. \(I(\omega)\) is a functional of \(\boldsymbol{\mu}(t)\); 50 ps of MD cannot repair a wrong \(d\boldsymbol{\mu}/d\mathbf{R}\), it only spends compute on it. If either dipole gate fails, production MD is blocked and relative-intensity claims are withdrawn. Do not add \(L_\mu\) or \(L_{d\mu}\) after seeing the failure.
-
-**Precondition (round-2 issue 12).** Report \(\lVert\sum_A\mathbf{F}_A\rVert\) and total linear/angular momentum drift over the trajectory. Projecting out net force and torque before integration is allowed **only** if the residual is already below the §7 engine-artifact ceiling — i.e. as cosmetics, never as a crutch that hides a broken engine.
-
-- Timestep $\Delta t = 0.5\,\text{fs}$ (this was judged fine on its own — ~20 samples per C–H stretch period).
-- Trajectory length **20–50 ps** (40,000–100,000 steps) — a deliberate, large increase from the earlier 0.5–1 ps, which was shown to give only ~33–67 cm⁻¹ Fourier resolution, incompatible with a 10–15 cm⁻¹ precision claim. 50 ps gives ≈0.67 cm⁻¹ resolution.
-- Ensemble of **5–10 independent NVE trajectories** after NVT equilibration at $T=300\,\text{K}$ (a single trajectory from the equilibrium geometry is not treated as a full spectroscopic experiment).
-- Spectrum via dipole autocorrelation with the standard harmonic quantum-correction factor:
-    $$I(\omega) \propto \omega\cdot\tanh\!\left(\frac{\beta\hbar\omega}{2}\right)\int_{-\infty}^{\infty}\langle\boldsymbol{\mu}(0)\cdot\boldsymbol{\mu}(t)\rangle e^{-i\omega t}\,dt$$
+**Leg-specific gates.** Grid convergence of \(\boldsymbol\mu\) with \(\Delta x\); translation and
+rotation residuals against the §6.5 thresholds; and the frozen-wrong-density diagnostic — feed a
+deliberately incorrect \(\Delta\rho\) and confirm the predicted dipole degrades. If this leg cannot
+pass its own gates it is dropped, and §6.5's tensor or charge leg carries the intensities.
 
 ---
 
