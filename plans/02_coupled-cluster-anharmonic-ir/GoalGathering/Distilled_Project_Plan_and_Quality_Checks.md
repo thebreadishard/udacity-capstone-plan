@@ -10,7 +10,7 @@
 > | §3 what the project IS, §4 what it is NOT | ✅ **rewritten** |
 > | §5 data pipeline (§5.0 ladder → §5.8 derivative gate) | ✅ **rewritten** |
 > | §6 architecture, training, nuclear motion (§6.1 → §6.7) | ✅ **rewritten** |
-> | §7 phased roadmap, §7.1 pre-registration | ⛔ pre-pivot |
+> | §7 roadmap G0–G6, §7.1 pre-registration | ✅ **rewritten** |
 > | §8 QA protocol, §9 precision claims | ⛔ pre-pivot |
 >
 > **Sections marked ⛔ describe the voxel-era plan and must not be quoted as current.** They still
@@ -619,8 +619,6 @@ and comparing one to the other without a model is the error that would invalidat
 - Its residual is error term **(D)** and appears in the budget beside (A), (B) and (C) — never
   folded into them.
 
----
-
 ### 6.7 The DMS-field leg: what survives from the voxel model, and what got simpler
 
 The field model is no longer an energy functional. As a **dipole** surface it keeps the parts of the
@@ -675,59 +673,99 @@ pass its own gates it is dropped, and §6.5's tensor or charge leg carries the i
 
 ---
 
-## 7. Phased Roadmap with Go/No-Go Quality Gates
+## 7. Roadmap: gates G0–G6
 
-| Phase | Goal | Molecule(s)/Grid | Hard Go/No-Go Criteria |
-|---|---|---|---|
-| **Fase 0a — Engine and artifact sweeps** (no ML, **no QM**) | Validate the differentiable physics engine itself and produce the Module 03 sweep | Analytic/reference densities + per-element atomic reference fits | **Total engine artifact \(<0.1\,\text{meV/Å}\)** \((1.9\times10^{-6}\,\text{a.u.})\), which at \(\Delta x=0.20\,\text{Å}\) means egg-box amplitude \(<2.3\times10^{-7}\,\)Hartree · \(\lVert\mathbf{F}_{autograd}-\mathbf{F}_{finite\text{-}diff}\rVert<0.05\,\text{meV/Å}\) \((10^{-6}\,\text{a.u.}, \text{float64})\) — a check of the autograd graph, **not** of discretization · closed-loop force conservation · energy drift over the **production trajectory length** \(<1\%\) of \((3N-6)k_BT\) (H₂O / 50 ps / 300 K: \(6\times10^{-7}\,\)Hartree/ps) · Hockney FFT-Poisson solver validated · egg-box across \(\sigma/\Delta x \in \{1,1.5,2,2.5,3\}\) over **randomly drawn rigid poses** (which subsumes the \(x/y/z\)/diagonal requirement), reported as a distribution in force units · **rigid-rotation residual** as \(\tau_{\max}/r_{\max}\) against the same ceiling · grid-convergence study across \(\Delta x \in \{0.40,\dots,0.15\}\,\text{Å}\) · box-size/boundary convergence · **per-element atomic reference fits** accepted at \(\int\lvert\rho^{\mathrm{fit}}-\rho^{\mathrm{atom}}\rvert dV/Z<10^{-3}\) · **the 800-row sweep CSV exists** ([Capstone_Mapping.md](Capstone_Mapping.md) §4) | **Unblocks Module 03.** |
-| **Fase 0b — QM foundation, cost and label audit** (needs PySCF + limited HPC) | Lock the §5.1 recipe and precision wording with **measured** numbers | 1-geometry smoke tests + **10-geometry H₂O and benzene cost pilots** + one real H₂O CCSD 1-RDM cube + frozen CBS(T,Q) audit | **Filled smoke-test table** (energy / 1-RDM / analytic CCSD(T) gradient / analytic AO dipole / Hessian for H₂O and benzene) · AO dipole agrees with the real-cube/reference-split reconstruction within the grid-artifact budget · **same-surface derivative pilot passed:** at least 3 seeded directions per pilot geometry, \(h\) vs \(h/2\) convergence reported, CCSD-vs-CCSD(T) discrepancy reported as method bias · **derivative rung selected in writing** with measured complete-gradient and directional costs · derivative uncertainty \(<1/3\) of the Phase 1 threshold · **CBS(T,Q) audit complete** for the frozen 19 H₂O / 13 CO₂ / 12 benzene geometries, with molecule-specific energy/derivative/curvature verdict and claim-ladder rung · benzene QZ HPC resource pilot and allocation arithmetic published · **measured** \(\bar t_{\mathrm{geom}}\), peak RAM, export size · **real-cube representability**: \(\lvert\int\Delta\rho\,dV\rvert<10^{-4}\,e\) and grid-vs-analytic \(E_{ne}\), \(E_H\) agreement \(<0.1\,\)mHa · **egg-box re-measured on that real cube**, in force units · **\(\varepsilon_\theta\) anchoring fork (i) vs (ii) decided in writing** from the same cube · if \(T_{\mathrm{campaign}}\) does not fit, **shrink ladder chosen in writing** before any 2000/5000-config run | **Unblocks the H₂O campaign** and freezes the allowed precision wording. |
-| **Fase 1 — H₂O PES training** | Learn $\mathbf{R}\to E,\mathbf{F},\rho$ | H₂O, ≥2,000 CCSD(T)/cc-pVTZ configs (per §5.1), $32^3$ grid | **Two independent conditions.** (a) Phase 0's engine-artifact ceiling still holds \((<0.1\,\text{meV/Å})\) — an engine artifact is a bug to be fixed, never a floor that licenses a looser gate. (b) Force RMSE below the **greater of** \(1\,\text{meV/Å}\) and \(3\times\) the measured **label** noise floor · harmonic frequencies within 5 cm⁻¹ of the CCSD(T) Hessian (the one equilibrium Hessian from §5.1, not a per-config Hessian) · **the force and frequency gates must be reconciled empirically once the model exists** — report both; a model that passes one and fails the other means the *pair* is mis-specified, and the pair gets fixed before Phase 2 · **dipole gates (round-2 issue 11), all three required before any production MD:** (i) \(\lVert\boldsymbol{\mu}_\theta-\boldsymbol{\mu}_{\mathrm{QM}}\rVert<0.01\,e a_0\) (\(\approx0.025\,\)D, \(\approx1.4\%\) of the H₂O dipole) on held-out configs; (ii) relative error in \(d\boldsymbol{\mu}/d\mathbf{R}\) \(<5\%\), since \(I\propto\lvert d\boldsymbol{\mu}/dQ\rvert^2\) and the §9 claim is *relative* envelopes at the \(\sim10\%\) level; (iii) grid artifact in \(\boldsymbol{\mu}\) under rigid translation \(<0.1\%\) of \(\lvert\boldsymbol{\mu}\rvert\) |
-| **Fase 2 — Frozen-weight IR (H₂O)** | Spectral prediction with no spectral fitting | 5×50 ps MD trajectories | $\nu_1,\nu_2,\nu_3$ band centers within 10–15 cm⁻¹ of experimental gas-phase FTIR envelopes; the dipole surface was trained only on static dipoles, never on spectra or intensities |
-| **Fase 3 — Physical hardness tests** | Sanity + hardness, **not** the §2 bake-off | D₂O (mass-only swap, frozen weights); CO₂ (linear, symmetric) | D₂O per-mode isotope shift consistent with theory (≈1.35–1.39) — **necessary, not flagship**; CO₂ forbidden-mode gate with a **number**: \(I(\nu_1)/I(\nu_3)<10^{-2}\), and the measured ratio must be consistent with \(\delta^2\), where \(\delta\) is the independently measured relative \(d\boldsymbol{\mu}/dQ\) error from Phase 1. A voxel grid breaks \(D_{\infty h}\), so the residual is **not** zero and “\(\approx0\)” was never a gate; if the ratio greatly exceeds \(\delta^2\) the model has learned an asymmetric density and the failure is physical, not numerical. \(\nu_2/\nu_3\) correctly active |
-| **Fase 4 — Baseline benchmark** | Answer §2 under equal labels, then quantify density supervision | Same H₂O/benzene `config_id`s as P1/05 | **Owners:** 04 trains simple NN; **G1** trains MACE-EF from scratch (NequIP fallback); P1/05 train Field-EF and Field-EFρ; **08 assembles only**. **§7.1 pre-registration is a precondition** — frozen split hash, \(\ge3\) seeds, tuning parity and a declared effect size, all committed before any leg trains. **Primary gate:** leave-one-mode-out Field-EF vs MACE-EF on identical CCSD(T) energies and identical same-surface full or directional derivatives. **Controlled ablation:** Field-EFρ vs Field-EF, differing only in \(\lambda_\rho\). The full \(E/F/H/\rho\) production result is reported separately. Secondary: complete-gradient force RMSE on the held-out §5.1 set, in-domain error, harmonic error vs the one §5.1 Hessian, MD stability, cost. If G1 or Field-EF is missing, the representation test is **incomplete** — do not substitute 04 or the density-supervised production model. |
-| **Fase 5 — Finale: benzene** | Aromatic generalization | C₆H₆, nominal $64^3$ / ≥5,000 configs **subject to the §5.1 pilot and shrink ladder**, 20 ps forward MD | Aromatic ring/C–H modes within 15 cm⁻¹ of one fixed gas-phase NIST FTIR dataset. If rung 4 of the shrink ladder fired, this phase is outlook — do not keep the nominal \(N\) as a scored promise |
-| *(Outlook only, not scored)* | OOD transferability discussion | Naphthalene (C₁₀H₈) via atomic density superposition, zero-shot | Discussed as an exploratory result in the thesis, explicitly **not** a pass/fail milestone |
+Seven gates replace the pre-pivot Phases 0a–5. Each is a **measurement with a written verdict**, not
+a milestone. A gate that cannot be evaluated is a failed gate; missing data never counts as a pass.
 
-**Gate unit discipline (round-2 issue 8).** Every artifact tolerance above is quoted in **force units**, because that is the unit the acceptance gates are in. An artifact quoted in Hartree is a force tolerance in disguise: a cell-periodic energy artifact of peak-to-peak amplitude \(A\) and period \(\Delta x\) implies a peak force artifact \(\pi A/\Delta x\). The conversion, and the derivation of each number from the Phase 1 acceptance gate, is in [probes/issue08_gate_consistency.py](../probes/issue08_gate_consistency.py) — re-run it rather than re-deriving by hand if \(\Delta x\), the trajectory length, or the acceptance gate ever changes. Energy drift is likewise budgeted over the **production trajectory length** against \((3N-6)k_BT\), not quoted as a rate in isolation: the old \(10^{-5}\,\)Hartree/ps allowed the 50 ps H₂O run to lose 18% of the vibrational energy it is supposed to be holding.
+| Gate | Goal | Scope | Hard criteria | Unblocks |
+|---|---|---|---|---|
+| **G0 — Environment and baseline reproduction** | Reproduce the status quo before improving it | ORCA + MRCC + MLIP + QFF/VPT2 toolchain; benzene and naphthalene | Toolchain installed and executing end to end · **scaled-harmonic B3LYP spectra of benzene and naphthalene reproduced against PAHdb to within the published scatter** · nuclear-motion tooling bake-off (MLatom vs the Kotaru/Bowman release) run on H₂O and benzene against known references, **one selected in writing** · a pipeline that cannot reproduce a known answer has not been debugged | Everything |
+| **G1 — The gold rung, measured** | Earn the word "gold" | §5.5 frozen audit set, per molecule **and charge state** | Smoke-test table filled with numbers, closed- and open-shell as separate rows · cost pilot per rung, canonical and local separately · **B1** local-vs-canonical and **B2** basis convergence both reported per molecule, charge state **and band family** · relative energy RMSE ≤ 1.0 kcal/mol (max ≤ 2.0) · directional derivative RMSE ≤ 1.0 meV/Å · **harmonic mode shift ≤ 5 cm⁻¹** · derivative rung (§5.6) and shrink-ladder rung (§5.7) selected **in writing before any production run** · claim-ladder rung recorded | The Δ-ML campaign |
+| **G2 — Surface quality** | A surface worth differentiating four times | Δ-ML set; both attachment designs from §6.1 | Held-out energy ≤ 1 kcal/mol and forces ≤ 1 meV/Å against the gold rung · harmonic frequencies within **5 cm⁻¹** of the reference Hessian · **cubic force constants stable under step-size refinement** — the gate with no pre-pivot ancestor and the one most likely to fail silently · Δ-model vs fine-tune decided on that stability test, **not** on energy RMSE · zero-shot next-rung error reported **before** that rung's data is added | Nuclear motion |
+| **G3 — Nuclear motion** | Anharmonicity that is real, not fitted | Benzene (rung 0) | GVPT2 band centres within **10 cm⁻¹** of the one frozen gas-phase FTIR dataset, for all three scored band families · resonance treatment documented and its threshold **shown to have been pre-registered** · any VCI escalation declared · **compared against both baselines**: scaled-harmonic and DFT-VPT2, so an improvement is attributable to the anchor rather than to the method | Intensities |
+| **G4 — Intensities** | Earn the second half of R3 | DMS bake-off, all three legs | \(\lVert\boldsymbol\mu_\theta-\boldsymbol\mu_{\mathrm{QM}}\rVert\) below the frozen per-molecule threshold · relative error in \(d\boldsymbol\mu/dQ\) **< 5 %** · CO₂ forbidden-mode residual \(I(\nu_1)/I(\nu_3)<10^{-2}\), consistent with \(\delta^2\) · **neutral-to-cation intensity swap reproduced qualitatively** · **failure withdraws intensity claims and leaves band positions standing** | The ladder |
+| **G5 — Transfer** | Find the measured limit | §5.0 ladder, rung by rung | Per rung: band centres inside the §9 tolerance against that rung's **named** standard · the **four-term error budget published per rung**, never pooled · the first rung that fails is the **stop rung** and is published as the measured limit · stopping is a result, and climbing past a failed rung is misconduct | Identification |
+| **G6 — Fail-closed identification** | Confront one observation, once | One frozen JWST/PAHdb product | Pre-registration document **dated before the product is opened**: target list, band families, match metric, PASS/FAIL/UNIDENTIFIED rule, isomer-degeneracy rule · excitation model (§6.6) frozen in the same commit · **negative control must fail** · test evaluated **once** · verdicts limited to **Supported / Rejected / Unidentified-degenerate** | Module 09 |
 
-### 7.1 Pre-registration of the §2 comparison (resolves round-2 blocking issue 13)
+**Ordering rules.**
 
-§2 is currently falsifiable in wording only. A comparison between a bespoke architecture and a mature, author-tuned package is not an experiment until the following are fixed **in a commit that predates any leg of the comparison being trained**. All of it is free; none of it is recoverable afterwards.
+1. **G0 blocks everything.** Nothing downstream is interpretable without the reproduced baseline.
+2. **G1 and G2 are not interchangeable.** G1 measures the *labels*; G2 measures the *model*. A model
+   that fits bad labels beautifully passes G2 and is worthless.
+3. **G3 and G4 gate different halves of the claim** and are evaluated independently, so that an
+   intensity failure cannot silently sink band positions.
+4. **G5's target list feeds G6's pre-registration.** Restricting the identification list to species
+   that passed G5 is legitimate, because G5 never touches the observational product. Restricting it
+   *after* opening that product is a fail.
+5. **Nothing debuts at G6.** Every component has already passed its own gate.
 
-**1. Frozen splits.** One file per campaign, `splits/{molecule}_{version}.json`, containing train / validation / test `config_id`s and the held-out mode family for the leave-one-mode-out test. Committed and tagged; its hash appears in every gate report from P1, 05, G1 and 04. Every leg reads that file — nobody re-splits.
+**Gate unit discipline, inherited and re-aimed.** Every tolerance above is quoted in the unit the
+claim is made in — cm⁻¹ for positions, per-cent for relative intensities, meV/Å for forces,
+kcal/mol for energies. A tolerance quoted in a convenient unit is a tolerance nobody can check
+against the deliverable. The conversion arithmetic and the anti-circularity derivation live in
+[probes/issue08_gate_consistency.py](../probes/issue08_gate_consistency.py); re-run it rather than
+re-deriving by hand whenever a tolerance changes.
 
-**2. Models, seeds and error bars.** The comparison cohort is frozen as MACE-EF, Field-EF and Field-EFρ (§6.3), with minimum **3 seeds per model per split**. The primary metric is reported as mean ± SD across seeds. A single-seed number is not a result. The full \(E/F/H/\rho\) production model is outside this causal cohort and is labeled separately in every table.
+### 7.1 Pre-registration
 
-**3. Tuning parity.** Equal hyperparameter budget: same number of trials and same wall-clock budget for Field-EF and MACE-EF, tuned on the **validation** split only. MACE starts from its authors' recommended recipe as trial 0 — an untuned competitor is a straw man and a reviewer will say so. Field-EF starts from its §6.1 default. After those hyperparameters are frozen, Field-EFρ reuses the selected Field-EF architecture and training schedule; only \(\lambda_\rho\) is enabled, so the density ablation does not become a second unequal search. Trial count and budget go in the gate report.
+Three comparisons in this plan can be gamed after the fact, and none is an experiment until it is
+fixed **in a commit that predates the first result**. All of this is free now and unrecoverable
+later.
 
-**4. Pre-registered effect size.** Primary metric: the ratio \(r=\mathrm{RMSE}^{F}_{\text{Field-EF}}/\mathrm{RMSE}^{F}_{\text{MACE-EF}}\) on the held-out mode family. Declared in advance:
+**Common machinery, applied to all three.** One frozen split file per campaign, with an
+active-learning **round index** (§6.3), committed and hash-referenced in every gate report — nobody
+re-splits. Minimum **3 seeds** per model; a single-seed number is not a result, and the primary
+metric is reported as mean ± SD. **Tuning parity**: equal trial count and equal wall-clock budget,
+tuned on validation only, with each competitor starting from its authors' recommended recipe as
+trial 0 — an untuned competitor is a straw man and a reviewer will say so. The analysis, aggregation
+and plot are specified before test evaluation. **The test set is touched once**, and any
+re-evaluation is disclosed with its reason.
+
+**P1 — Anchor attachment (gate G2).** Δ-model versus fine-tune, §6.1.
 
 | Outcome | Condition |
 |---|---|
-| field wins | \(r<1-\Delta\) with non-overlapping \(\pm1\) SD |
-| GNN wins | \(r>1+\Delta\) with non-overlapping \(\pm1\) SD |
-| **inconclusive** | otherwise |
+| Δ-model | cubic-constant stability better by more than the pre-registered margin, with non-overlapping ±1 SD |
+| fine-tune | the same, reversed |
+| **inconclusive** | otherwise — in which case take the cheaper design and say so |
 
-\(\Delta\) is provisionally \(0.10\) and is finalized as \(3\times\) the measured within-model seed scatter **on the validation split**, before either model is evaluated on the held-out mode family. Setting \(\Delta\) from validation scatter is legitimate; setting it after seeing the comparison is not. **“Inconclusive” is a publishable outcome and must be reported as such** — the thesis question is whether the field representation transfers better, and “we could not tell” is an honest answer to it.
+The primary metric is **step-size stability of the cubic force constants**, declared here so it
+cannot later be swapped for the energy RMSE that happens to look better.
 
-The density-supervision effect is the matched ratio \(r_\rho=\mathrm{RMSE}^{F}_{\text{Field-EFρ}}/\mathrm{RMSE}^{F}_{\text{Field-EF}}\), reported with the same seeds and held-out family. It is secondary and does not replace the primary equal-label test.
-
-**Allowed conclusions are frozen:**
+**P2 — Dipole moment surface (gate G4).** DMS-field vs DMS-tensor vs DMS-charge, §6.5. Primary
+metric: relative error in \(d\boldsymbol\mu/dQ\) on the held-out modes. Effect size \(\Delta\)
+finalised as **3× the measured within-model seed scatter on the validation split**, before any leg is
+evaluated on held-out modes. Setting \(\Delta\) from validation scatter is legitimate; setting it
+after seeing the comparison is not.
 
 | Result | Defensible conclusion |
 |---|---|
-| Field-EF beats MACE-EF | Evidence supporting the field-representation hypothesis under equal \(E/F\) supervision |
-| Field-EF does not beat MACE-EF, but Field-EFρ does | The density-supervised field pipeline wins; representation alone is not established |
-| Neither field leg beats MACE-EF | No demonstrated transfer advantage over the equivariant GNN |
-| Any comparison lies within the effect-size margin | Inconclusive |
+| DMS-field beats DMS-tensor | Evidence that a real-space density representation carries dipole derivatives better, under equal labels |
+| DMS-tensor wins or ties | No demonstrated advantage for the field representation; it is dropped and the tensor leg carries intensities |
+| DMS-charge is not beaten by either | The expensive legs bought nothing — report it plainly |
+| Any comparison inside \(\Delta\) | **Inconclusive**, which is publishable |
 
-The full production model may be the best spectroscopic system, but its result is never substituted into the first row.
+**"Inconclusive" is a pre-authorised outcome.** It was in the pre-pivot plan for the same reason and
+must survive here: the honest answer to "did the field representation help?" may be "we could not
+tell", and a plan that cannot say that will find a way to say something else.
 
-**5. Confounds registered in advance.** Named now so they cannot be discovered as excuses later: (a) MACE is exactly rotation-equivariant and the field model is not (§8 item 13 — both invariance residuals published **before** the bake-off); (b) tuning-maturity asymmetry; (c) equal training-data volume and identical \(E/F\) labels for the primary test; (d) density supervision is privileged information and appears only in the explicitly secondary Field-EFρ ablation; (e) which §6.1 anchoring fork and which §2.1 fallback rung the field model used; (f) whether the §5.1 shrink ladder fired.
+**P3 — Identification (gate G6).** The pre-registration *is* the experiment. Frozen before the
+observational product is opened: the target species and charge states (drawn only from rungs that
+passed G5), the scored band families, the match metric, the PASS/FAIL/UNIDENTIFIED thresholds, the
+rule for when two isomers both fit, and the negative control that must fail. Changing any of these
+after seeing the data is a fail, and "we identified something else instead" is not a result.
 
-**6. Analysis frozen.** Metric, aggregation over seeds, and the comparison plot are specified before test evaluation. No post-hoc metric shopping.
+**Confounds registered in advance**, so that they cannot be discovered as excuses later:
 
-**7. The test set is touched once.** The held-out mode family is evaluated once per model, at the end. Any re-evaluation must be disclosed with its reason in the gate report.
+| | Confound |
+|---|---|
+| (a) | The DMS-tensor leg is exactly equivariant and the field leg is not. **Both symmetry residuals are published before the P2 bake-off**, so that a field-leg loss can be read correctly — "worse representation" and "broken discretization" are different conclusions. |
+| (b) | Tuning-maturity asymmetry: the tensor leg is a released foundation model, the field leg is bespoke. |
+| (c) | Which §5.7 shrink-ladder rung fired. |
+| (d) | Which §2.1 escalation rung fired, for electronic structure and for nuclear motion separately. |
+| (e) | The active-learning round index each result was computed at. |
+| (f) | Whether canonical coupled cluster was available at that rung, or only the local method with its measured error. |
 
 ---
 

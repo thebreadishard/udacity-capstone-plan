@@ -70,7 +70,8 @@ model. A single pooled number is a fail.
 | `Distilled` §3 what it IS, §4 what it is NOT | ✅ rewritten |
 | `Distilled` §5 data pipeline — molecule ladder, three data products, gold-rung audit, shrink ladder | ✅ rewritten |
 | `Distilled` §6 architecture — MLIP, training loss, active learning, QFF/GVPT2, dipole surface, excitation model | ✅ rewritten |
-| `Distilled` §7 roadmap, §8 QA, §9 precision claims | ⛔ still plan 01 |
+| `Distilled` §7 roadmap — gates G0–G6, three pre-registered comparisons | ✅ rewritten |
+| `Distilled` §8 QA, §9 precision claims | ⛔ still plan 01 |
 | `Capstone_Mapping.md` | ⛔ still plan 01 — rewritten only after a Round-4 review, so a rejected pivot does not cost two rewrites |
 | `GoalGathering/Horizon/10–12` | ⛔ still plan 01, banner-marked as absorbed provenance |
 | Dutch `Uitleg/` | ✗ none yet — plan 01's version explains the voxel approach |
