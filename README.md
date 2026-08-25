@@ -41,23 +41,30 @@ CapstonePlan/
 │   ├── README.md                          comparison of the two plans, and why 01 was superseded
 │   ├── 01_voxel-field-pes/                superseded plan, complete
 │   │   ├── GoalGathering/                 prime directive, technical plan, module mapping,
-│   │   │                                  bibliography, 3 professor reviews, chat transcripts
-│   │   ├── CapstoneProjects/              Udacity rubrics 01–09 + horizon projects 10–12
+│   │   │   │                              bibliography, 3 professor reviews, chat transcripts
+│   │   │   └── Horizon/                   this plan's own projects 10–12
 │   │   ├── probes/                        numerical probes that measure the plan's arithmetic
 │   │   └── Uitleg/                        Dutch VWO-6 explanation, 21 chapters
 │   └── 02_coupled-cluster-anharmonic-ir/  current plan
 │       ├── GoalGathering/                 + the restructure proposal that argues the pivot
-│       ├── CapstoneProjects/
+│       │   └── Horizon/                   projects 10–12, marked as absorbed provenance
 │       └── probes/
 │
+├── Rubrics/                               SHARED — Udacity module rubrics 01–09, treated as fixed
 ├── Papers/                                SHARED — 36 reference PDFs, numbered to the bibliography
-├── scraper/                               tooling used to extract the Udacity rubrics
+├── scraper/                               tooling used to extract the rubrics
 ├── requirements.txt
 └── README.md                              ← you are here
 ```
 
-`Papers/` is shared because literature is not version-specific and duplicating it would add ~85 MB
-per plan. Everything else is duplicated on purpose, so each plan reads without cross-references.
+**Shared** is anything neither plan can change: the Udacity rubrics are the constraint both were
+designed against, and the literature is not version-specific. Duplicating the 36 PDFs would add
+~85 MB per plan. Everything else is duplicated on purpose, so each plan reads without
+cross-references.
+
+Documents 10–12 are **not** rubrics — they are each plan's own horizon-planning documents, and they
+differ between plans, which is why they sit inside `GoalGathering/Horizon/` rather than next to the
+scraped rubrics.
 
 ## Conventions this repository tries to keep
 

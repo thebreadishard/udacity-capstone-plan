@@ -9,7 +9,7 @@
 > rewrites.
 
 **Status:** DRAFT — Passes 1–5 complete (extraction + gap analysis + dataset mapping + non-negotiables validation). Professor-review blocking issues 1–6 resolved in spec (2026-08-22): Workstream P1 (§4.1); implementable \(E=\mathcal{E}[\rho,R]\) (Distilled Plan §6); data-generation method + cost pilot + shrink ladder (Distilled Plan §5.1); prime directive reconciled with Distilled Plan §9 ([Overarching_Goal.md](Overarching_Goal.md)); rubric landmines locked (§3 Module 06 rewrite, Pass 4 Module 03 \(\ge 500\) table, §5.5 DOI-before-claim); Workstream G1 (§4.2) owns the MACE baseline on the same splits. Horizon PAH work is post-master’s Projects 10–12, not Modules 02–09. Pass 6 (module-by-module sign-off) is the only remaining mapping step before this is treated as final.
-**Purpose:** Single source of truth for dividing the FNO-NCA research plan ([Distilled_Project_Plan_and_Quality_Checks.md](Distilled_Project_Plan_and_Quality_Checks.md), [Overarching_Goal.md](Overarching_Goal.md)) across Udacity capstone modules 02–08 ([../CapstoneProjects](../CapstoneProjects)). Phase 1 of the Distilled Plan is **not** a Udacity module; it is owned by Workstream P1 (§4.1). Projects 10–12 are **not** Udacity modules.
+**Purpose:** Single source of truth for dividing the FNO-NCA research plan ([Distilled_Project_Plan_and_Quality_Checks.md](Distilled_Project_Plan_and_Quality_Checks.md), [Overarching_Goal.md](Overarching_Goal.md)) across Udacity capstone modules 02–08 ([../CapstoneProjects](../../../Rubrics)). Phase 1 of the Distilled Plan is **not** a Udacity module; it is owned by Workstream P1 (§4.1). Projects 10–12 are **not** Udacity modules.
 
 ---
 
@@ -294,13 +294,13 @@ Do **not** argue with the grader that coupled-cluster is “not AI.” Put the l
 
 ## 7. Post-master’s horizon (Projects 10–12) — not Udacity, not Pass 6
 
-These files live in [`../CapstoneProjects/`](../CapstoneProjects/) next to the scraped rubrics so the horizon is as visible as the degree. They are **not** gradeable modules. Module 08 must not claim them.
+These files live in [`../../../Rubrics/`](../../../Rubrics/) next to the scraped rubrics so the horizon is as visible as the degree. They are **not** gradeable modules. Module 08 must not claim them.
 
 | # | File | Wall | Exit (short) |
 |---|---|---|---|
-| 10 | [10_Size_Extensive_Aromatic_PES.md](../CapstoneProjects/10_Size_Extensive_Aromatic_PES.md) | Labels + size-extensivity | Gold-anchored PES transfers to the next ring; representation fork decided from the master’s field-vs-GNN test |
-| 11 | [11_Anharmonic_IR_and_Intensities.md](../CapstoneProjects/11_Anharmonic_IR_and_Intensities.md) | Nuclear motion + intensities | GVPT2-class band families + relative intensities; four-term error budget; MD+FFT is diagnostic only |
-| 12 | [12_Astrophysical_PAH_Identification.md](../CapstoneProjects/12_Astrophysical_PAH_Identification.md) | Excitation + fail-closed ID | Pre-registered match to one frozen JWST/PAHdb product; “any size” means until measured error exceeds the band tolerance |
+| 10 | [10_Size_Extensive_Aromatic_PES.md](Horizon/10_Size_Extensive_Aromatic_PES.md) | Labels + size-extensivity | Gold-anchored PES transfers to the next ring; representation fork decided from the master’s field-vs-GNN test |
+| 11 | [11_Anharmonic_IR_and_Intensities.md](Horizon/11_Anharmonic_IR_and_Intensities.md) | Nuclear motion + intensities | GVPT2-class band families + relative intensities; four-term error budget; MD+FFT is diagnostic only |
+| 12 | [12_Astrophysical_PAH_Identification.md](Horizon/12_Astrophysical_PAH_Identification.md) | Excitation + fail-closed ID | Pre-registered match to one frozen JWST/PAHdb product; “any size” means until measured error exceeds the band tolerance |
 
 Order is mandatory: 10 then 11 then 12. A single extra project, if only one exists, is 10.
 

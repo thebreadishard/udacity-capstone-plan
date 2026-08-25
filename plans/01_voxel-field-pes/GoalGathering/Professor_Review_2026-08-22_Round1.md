@@ -2,7 +2,7 @@
 
 **Status:** No green light yet. Blocking issues 1–6 are closed **in spec** (separate commits). Pass 6 and the Phase 0 measured addendum remain. Round 2 adds blocking issues 7–15: see [Professor_Review_2026-08-22_Round2.md](Professor_Review_2026-08-22_Round2.md).
 
-**Scope reviewed:** [Overarching_Goal.md](Overarching_Goal.md), [Distilled_Project_Plan_and_Quality_Checks.md](Distilled_Project_Plan_and_Quality_Checks.md), [Capstone_Mapping.md](Capstone_Mapping.md), and the module rubrics in [`../CapstoneProjects/`](../CapstoneProjects/). Pass 6 of the mapping is still open; that matches this judgment.
+**Scope reviewed:** [Overarching_Goal.md](Overarching_Goal.md), [Distilled_Project_Plan_and_Quality_Checks.md](Distilled_Project_Plan_and_Quality_Checks.md), [Capstone_Mapping.md](Capstone_Mapping.md), and the module rubrics in [`../../../Rubrics/`](../../../Rubrics/). Pass 6 of the mapping is still open; that matches this judgment.
 
 This is a serious plan, not a costume. It is worth supervising. It is not yet stamped ready to execute.
 
@@ -79,7 +79,7 @@ The Phase 1 force gate of \(<1\,\text{meV/Å}\) is also tighter than is acceptab
 
 ### 4. Two governing documents still disagree
 
-**Status (2026-08-22):** Addressed in spec — [Overarching_Goal.md](Overarching_Goal.md) rewritten. Labels (CCSD(T)/cc-pVTZ per Distilled Plan §5.1) are split from spectra (Distilled Plan §9 band envelopes). “Sub-wavenumber” is no longer a dataset requirement. Module 08’s product is named: reliability-gated small-molecule IR emulation plus a yes/no on the representation hypothesis. Horizon PAH work is post-master’s [Projects 10–12](../CapstoneProjects/10_Size_Extensive_Aromatic_PES.md), not a slogan in the prime directive. Not closed as a *cultural* issue until Module 08 drafts stop quoting the old title; the *document* hole is closed.
+**Status (2026-08-22):** Addressed in spec — [Overarching_Goal.md](Overarching_Goal.md) rewritten. Labels (CCSD(T)/cc-pVTZ per Distilled Plan §5.1) are split from spectra (Distilled Plan §9 band envelopes). “Sub-wavenumber” is no longer a dataset requirement. Module 08’s product is named: reliability-gated small-molecule IR emulation plus a yes/no on the representation hypothesis. Horizon PAH work is post-master’s [Projects 10–12](Horizon/10_Size_Extensive_Aromatic_PES.md), not a slogan in the prime directive. Not closed as a *cultural* issue until Module 08 drafts stop quoting the old title; the *document* hole is closed.
 
 [Overarching_Goal.md](Overarching_Goal.md) still promises “chemically precise anharmonic infrared **spectral lines**” and “sub-wavenumber precision.” Distilled Plan §9 correctly forbids that claim for classical MD + FFT.
 

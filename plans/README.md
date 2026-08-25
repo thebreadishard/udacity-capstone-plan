@@ -60,13 +60,18 @@ without rewriting:
 plans/<version>/
   GoalGathering/     prime directive, technical plan, module mapping, bibliography,
                      professor reviews, source chat transcripts
-  CapstoneProjects/  Udacity module rubrics 01-09 (scraped) + horizon projects 10-12
+    Horizon/         this plan's projects 10-12 (they differ between plans)
   probes/            numerical probes that measure, rather than assert, the plan's arithmetic
   Uitleg/            Dutch VWO-6 explanation (version 01 only)
 ```
 
-`Papers/` sits at the repository root and is **shared**: the literature is not version-specific, and
-duplicating 36 PDFs would add ~85 MB per version.
+Two folders sit at the repository root and are **shared**, because neither plan may change them:
+
+- `Rubrics/` — the Udacity module rubrics 01-09. These are the constraint both plans were designed
+  against, treated as fixed (version 1.5.1). If Udacity ever revises them, add a sibling folder
+  rather than overwriting; several decisions turn on exact wording.
+- `Papers/` — 36 reference PDFs. Literature is not version-specific, and duplicating it would add
+  ~85 MB per plan.
 
 ## Adding a version 03
 

@@ -2,7 +2,7 @@
 
 **Status (2026-08-22):** Rewritten to close professor-review blocking issue 4. §5 item 4 now names Workstream G1 (issue 6). This file is the prime directive of **this thesis**. It must agree with Distilled Plan §2 and §9. It must not be quotable as a rovibrational line-list promise.
 
-Horizon work (very large PAHs, anharmonic band families, intensities, JWST-facing identification) is specified in post-master’s [Project 10](../CapstoneProjects/10_Size_Extensive_Aromatic_PES.md), [Project 11](../CapstoneProjects/11_Anharmonic_IR_and_Intensities.md), and [Project 12](../CapstoneProjects/12_Astrophysical_PAH_Identification.md). Those are **not** Udacity modules and are **not** scored in Modules 02–09.
+Horizon work (very large PAHs, anharmonic band families, intensities, JWST-facing identification) is specified in post-master’s [Project 10](Horizon/10_Size_Extensive_Aromatic_PES.md), [Project 11](Horizon/11_Anharmonic_IR_and_Intensities.md), and [Project 12](Horizon/12_Astrophysical_PAH_Identification.md). Those are **not** Udacity modules and are **not** scored in Modules 02–09.
 
 ---
 

@@ -2,7 +2,7 @@
 
 **Status:** No green light. **7–14 are closed in spec**; **15 is closed as structure and open until three calendar anchors are filled in** ([Capstone_Mapping.md](Capstone_Mapping.md) §8.1). This review continues the numbering of [Professor_Review_2026-08-22_Round1.md](Professor_Review_2026-08-22_Round1.md); issues 1–6 stand as closed-in-spec and are not re-litigated here.
 
-**Scope reviewed:** [Overarching_Goal.md](Overarching_Goal.md), [Distilled_Project_Plan_and_Quality_Checks.md](Distilled_Project_Plan_and_Quality_Checks.md), [Capstone_Mapping.md](Capstone_Mapping.md), [Relevant_Scientific_Papers.md](Relevant_Scientific_Papers.md), [Papers/README.md](../../../Papers/README.md), the module rubrics in [`../CapstoneProjects/`](../CapstoneProjects/), and repository hygiene.
+**Scope reviewed:** [Overarching_Goal.md](Overarching_Goal.md), [Distilled_Project_Plan_and_Quality_Checks.md](Distilled_Project_Plan_and_Quality_Checks.md), [Capstone_Mapping.md](Capstone_Mapping.md), [Relevant_Scientific_Papers.md](Relevant_Scientific_Papers.md), [Papers/README.md](../../../Papers/README.md), the module rubrics in [`../../../Rubrics/`](../../../Rubrics/), and repository hygiene.
 
 **Why a round 2.** The six issues closed on 2026-08-22 were closed at the level of *governance* — who owns what, what may be claimed, which document wins. That work is genuine and it holds. The holes below are at the level of *physics and arithmetic*. Three of them would be discovered in month four, after the expensive data campaign — which is precisely the failure mode round 1 was written to prevent.
 

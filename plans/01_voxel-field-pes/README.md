@@ -71,5 +71,9 @@ are fixed here too, because this plan is a plan and not a snapshot.
 
 ## Not shared with plan 02
 
-`Papers/` lives at the repository root and is shared. `Uitleg/` exists only here — plan 02 has no
-Dutch explanation yet.
+`Uitleg/` exists only here — plan 02 has no Dutch explanation yet.
+
+Two folders at the repository root are shared with plan 02 and may not be changed by either:
+[`Papers/`](../../Papers/) (literature) and [`Rubrics/`](../../Rubrics/) (the Udacity module
+requirements this plan was designed against, version 1.5.1). This plan's own horizon documents
+10–12 are **not** rubrics and live in [`GoalGathering/Horizon/`](GoalGathering/Horizon/).
