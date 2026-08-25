@@ -58,7 +58,7 @@ model. A single pooled number is a fail.
 
 1. [GoalGathering/Overarching_Goal.md](GoalGathering/Overarching_Goal.md) — the prime directive
 2. [GoalGathering/Restructure_Proposal_2026-08-23_Project12_in_Module08.md](GoalGathering/Restructure_Proposal_2026-08-23_Project12_in_Module08.md) — why the plan turned, six weighed alternatives, the literature, the module remap, gates G0–G6, the effort arithmetic, the risk register
-3. [GoalGathering/Distilled_Project_Plan_and_Quality_Checks.md](GoalGathering/Distilled_Project_Plan_and_Quality_Checks.md) — the technical plan. **Read its banner first: §1–§4 are rewritten, §5–§9 are still plan 01's text.**
+3. [GoalGathering/Distilled_Project_Plan_and_Quality_Checks.md](GoalGathering/Distilled_Project_Plan_and_Quality_Checks.md) — the technical plan, §1–§9. All nine sections are rewritten for R3.
 4. [GoalGathering/Relevant_Scientific_Papers.md](GoalGathering/Relevant_Scientific_Papers.md) — bibliography, items 26–36 are the R3 evidence base
 
 ## Rewrite status
@@ -75,12 +75,20 @@ model. A single pooled number is a fail.
 
 ## Review status
 
-**This plan has not been reviewed.** Round 4 is pending, and is deliberately scheduled *after* the
-Distilled Plan rewrite so that a rejected pivot does not cost two rewrites.
+**Round 4, Pass A (cold read) complete** — see
+[Professor_Review_2026-08-25_Round4_PassA.md](GoalGathering/Professor_Review_2026-08-25_Round4_PassA.md).
+Three blocking findings, all documentation-status drift, all closed. Verdict: sound enough to proceed
+to Pass B.
 
-The three professor reviews live in [plan 01](../01_voxel-field-pes/GoalGathering/), because that is
+**Round 4, Pass B (adversarial domain review) is pending** — the brief is
+[here](GoalGathering/Review_Brief_2026-08-25_Round4_PassB.md). It attacks the chemistry: whether the
+core hypothesis is backwards, whether the coupled-cluster cost arithmetic survives contact with
+reality, whether a quartic force field works at pyrene-scale congestion, and whether the residual
+contribution is real. **Until Pass B returns, this plan's science has not been reviewed.**
+
+The three earlier reviews live in [plan 01](../01_voxel-field-pes/GoalGathering/), because that is
 what they reviewed. They are **not** copied here: three reviews sitting in this folder would imply
-this plan had survived them, and it has not.
+this plan had survived them.
 
 What did carry over is the findings. Plan 01 closed fifteen blocking issues; the pivot inherited,
 transferred or superseded each one deliberately rather than discarding them:
@@ -109,7 +117,21 @@ transferred or superseded each one deliberately rather than discarding them:
 | R3-5 — "chemically precise" is asserted, not demonstrated | R3 | **Inherited and strengthened** → §5.5 splits error term (B) into local-vs-canonical and basis convergence, both measured. |
 | R3-6 — the calendar is non-operational | R3 | **Inherited** → restructure proposal §10. |
 
-Six superseded, one inverted, one resolved by construction, twelve carried forward, one still open.
+**Tally, so it can be audited rather than trusted** — 21 issues:
+
+| Fate | Count | Issues |
+|---|---:|---|
+| Superseded | 4 | 1, 2, 14, R3-1 |
+| Inverted | 1 | 6 |
+| Resolved by construction | 1 | 12 |
+| Re-scoped to the dipole-surface leg | 2 | 7, 10 |
+| Carried forward | 12 | 3, 4, 5, 8, 9, 11, 13, 15, R3-2, R3-4, R3-5, R3-6 |
+| **Still open** | 1 | R3-3 |
+
+*(Corrected 2026-08-25 after Round-4 Pass A. The previous summary said "six superseded" and omitted
+the re-scoped category entirely. It was wrong, and it was exactly the kind of unaudited count this
+table exists to prevent — which is why the tally is now itemised.)*
+
 A Round-4 reviewer should start from this table: the question is not whether the pivot discarded the
 discipline, but whether the twelve landed correctly.
 

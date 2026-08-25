@@ -124,7 +124,42 @@ the point at which each closes:
 | The NIST dataset ID and resolution for rung 0 | G0 | Must be a specific dataset, recorded once |
 | The observational product for G6 | G6 pre-registration | Must be named before it is opened, not before it is chosen |
 
-## 7. Checklist for a reviewer
+## 7. Form of an amendment
+
+Several items in §6 close in a **dated amendment to this document**. Round-4 Pass A noted that the
+required form was never shown, so here it is. An amendment is a new file named
+`Amendment_<date>_<subject>.md` in this folder, containing exactly:
+
+```
+# Amendment to Frozen_Ladder_and_Tolerances_2026-08-25 — <subject>
+
+Date: <ISO date>
+Closes: <which §6 open item>
+Gate: <the gate at which this closes>
+
+## What is now fixed
+<the value, criterion or identifier, stated so it can be checked>
+
+## Convention it follows
+<the toolchain, dataset or literature convention, cited>
+
+## What this does not change
+<explicit: nothing else in the frozen document moves>
+```
+
+Worked example, for the item most likely to be fudged:
+
+> **Closes:** the GVPT2 resonance criterion.
+> **What is now fixed:** Fermi resonances identified by the Martin test with thresholds
+> \(K_{\text{test}} > X\) cm⁻¹ and \(\lvert\omega_i-\omega_j-\omega_k\rvert < Y\) cm⁻¹; Darling–Dennison
+> pairs by \(\lvert 2\omega_i-2\omega_j\rvert < Z\) cm⁻¹. Resonant terms deperturbed from the
+> perturbative sum and the resulting polyads diagonalised variationally.
+> **Convention it follows:** as implemented in \<selected toolchain, version\>.
+
+The amendment's commit date is the evidence. An amendment written after the result it governs is not
+an amendment.
+
+## 8. Checklist for a reviewer
 
 - [ ] Is this document's commit date earlier than the first gold-rung calculation?
 - [ ] Does a dated resonance-criterion amendment exist, and does it predate the first GVPT2 result?
