@@ -11,3 +11,11 @@ udacity_session/
 
 __pycache__/
 *.pyc
+
+# Psi4 scratch and run logs; the .json results ARE committed
+plans/*/probes/results_dft_locality/*.log
+plans/*/probes/results_dft_locality/run_log.txt
+plans/*/probes/psi4_benchmark.log
+timer.dat
+psi.*.clean
+*.molden
