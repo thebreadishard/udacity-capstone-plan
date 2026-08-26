@@ -1,5 +1,10 @@
 # Frozen targets: molecule ladder, band families and tolerances
-
+> **SUPERSEDED 2026-08-26** by
+> [Frozen_Ladder_and_Tolerances_2026-08-26.md](Frozen_Ladder_and_Tolerances_2026-08-26.md), after
+> Round 4 Pass B. The ladder shrank to neutrals-first and the method became a hybrid quartic force
+> field. **This file is retained unedited** — it is the record of what was promised first, and the
+> pointer above is the only permitted addition to it. Read it to see what the scope was before the
+> review, not to find out what is current.
 **Frozen 2026-08-25.** Committed **before** any gold-rung calculation, any model training and any
 comparison against an experimental standard.
 

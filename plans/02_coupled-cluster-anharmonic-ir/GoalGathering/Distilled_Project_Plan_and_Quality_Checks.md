@@ -62,9 +62,13 @@ This replaces the previous formulation ("under equal \(E/F\) supervision, does a
 | **Q2 — Does the anchor buy accuracy?** Do gold-anchored anharmonic band centers and relative intensities beat the scaled-harmonic / DFT-VPT2 status quo against **named** experimental standards? | PES + nuclear motion | **(A)**, **(C)** | Modules 04/05, gates G2–G3, G5 |
 | **Q3 — Is the budget small enough to decide anything?** Under a pre-registered match rule and excitation model, does identification return **Supported** or **Rejected** rather than always **Unidentified-degenerate**? | everything + environment | **(D)** | Modules 07/08, gate G6 |
 
-**Core hypothesis.** The dominant error in current large-PAH IR predictions is electronic-structure error, not nuclear-motion error — and it is invisible because nobody quantifies it. If that is right, replacing a DFT surface with a gold-anchored one improves band positions and, more sharply, **relative intensities**, which depend on the dipole surface and are where DFT is least controlled.
+**Core hypothesis, sharpened after Round 4 Pass B.** A fundamental is \(\nu=\omega+\delta_{\mathrm{anh}}\), and \(\omega\) is the overwhelming majority of that number. Electron correlation lands mostly in \(\omega\); its effect on the cubic and quartic constants that produce \(\delta_{\mathrm{anh}}\) is substantially smaller (Boese, Klopper & Martin 2005, item 37; Lam, Abdul-Al & Allouche 2020, item 38). The hypothesis is therefore **not** the coarse "electronic-structure error dominates", which Pass B challenged and which is withdrawn as untestable, but the sharper and far cheaper:
 
-**The hypothesis is falsifiable in a way that matters.** Tang et al. (2025) already report that harmonic-plus-empirical-scaling reproduces the experimental band profile of pristine and partially superhydrogenated pyrene cations, and that anharmonic treatment becomes *mandatory* only in the fully superhydrogenated case. If gate G1 finds the local-vs-canonical error is small **and** gate G5 finds gold-anchoring does not move band centers outside the scaled-harmonic scatter, then the honest result is: *for these band families, at these sizes, the electronic-structure rung is not the limiting term.* That is a publishable, useful negative result, it is pre-registered here, and it must not be rescued by quietly switching to a metric that flatters the method.
+> **Coupled cluster improves \(\omega\), not \(\delta_{\mathrm{anh}}\)** — so a *hybrid* quartic force field (gold-rung harmonics plus cheap-level anharmonic corrections) reaches the same band centres as a full gold-rung QFF, at a fraction of the cost, and beats the scaled-harmonic status quo.
+
+This is tested **before any production spend**, at gate **G1b**, by the three-way comparison frozen in [Frozen_Ladder_and_Tolerances_2026-08-26.md](Frozen_Ladder_and_Tolerances_2026-08-26.md) §3.4. Its outcome decides whether gold-rung third and fourth derivatives are ever computed at all.
+
+**The hypothesis is falsifiable in a way that matters.** Tang et al. (2025) already report that harmonic-plus-empirical-scaling reproduces the experimental band profile of pristine and partially superhydrogenated pyrene cations, and that anharmonic treatment becomes *mandatory* only in the fully superhydrogenated case. If G1b finds that a full gold-rung QFF does not beat scaled harmonic, then the honest result is: *for these band families, at these sizes, the electronic-structure rung is not the limiting term.* That is a publishable, useful negative result, it is pre-registered here, and it must not be rescued by quietly switching to a metric that flatters the method.
 
 **What is explicitly not the question.** Whether a novel architecture is better than MACE. Whether voxels beat graphs. Whether more MD helps. The ML model is an interpolator between gold-rung points, and §6 of this plan is now about how to build a *reliable* one, not a *new* one.
 
@@ -81,12 +85,14 @@ The pre-pivot §2.1 positioned this work against machine-learned orbital-free DF
 
 **What is therefore *not* novel here:** anharmonic IR spectra of large PAHs (2025); VPT2 on a machine-learned potential (2021, and at 21 atoms in 2026); transfer learning a PES to CCSD(T) quality (2021–2023); IR cascade emission models for astrophysical PAHs (2026); local coupled cluster on large aromatics (2020); ML classification of PAH spectra (2020–2026).
 
-**What is left, stated plainly.** Every anharmonic PAH spectrum in the astrophysical literature rests on DFT with an **unquantified** electronic-structure error. The residual contribution is the *combination* of (a) a **measured** gold rung — canonical CCSD(T) versus local CCSD(T), reported per band family and per charge state, rather than a local method assumed to be gold; (b) a Δ-learned / transfer-learned MLIP carrying that anchor to sizes where canonical CC cannot go; (c) the **four-term error budget** published next to every cm⁻¹ claim; and (d) a **pre-registered fail-closed identification** with a negative control and an isomer-degeneracy rule. Remove (a) and (c) and what remains is a re-run of Mai 2025 with extra steps. That is the honest framing, and it is still a thesis.
+**What is left, stated plainly.** Every anharmonic PAH spectrum in the astrophysical literature rests on DFT with an **unquantified** electronic-structure error. The residual contribution is the *combination* of (a) a **measured** gold rung — canonical CCSD(T) versus local CCSD(T), reported per band family and per charge state, rather than a local method assumed to be gold; (b) a hybrid quartic force field whose split between gold-rung harmonics and cheap anharmonic corrections is **decided by measurement** (gate G1b) rather than assumed; (c) the **four-term error budget** published next to every cm⁻¹ claim; and (d) a **pre-registered fail-closed identification** with a negative control and an isomer-degeneracy rule. Remove (a) and (c) and what remains is a re-run of Mai 2025 with extra steps.
+
+**Stated bluntly, because Round 4 Pass B said it and it is true:** the chemical contribution here is **the measured error budget, not a new method**. Every component — local coupled cluster, hybrid QFFs, GVPT2, MLIPs, cascade emission models — already exists and is someone else's. A chemistry referee will see a rigorous wrapper around established methods; an astronomy referee is more likely to value the fail-closed identification. The thesis is therefore framed as **reliability-gated spectral identification for astrochemistry** ([Overarching_Goal.md](Overarching_Goal.md) §5), and that framing is not marketing — it is where the contribution actually lies.
 
 **The transferability risk this literature makes explicit.** Two, and they are different in kind from the pre-pivot one.
 
 1. **The gold may not be gold.** Sylvetsky, Banerjee, Alonso & Martin (2020, item 30) show that for delocalized, static-correlation-prone π systems DLPNO-CCSD(T) — and even DLPNO-CCSD(T1) — carry significant error unless TightPNO cutoffs are used, with LNO-CCSD(T)/tight required for sub-kcal agreement. Aromatics are exactly that regime. This is why G1 is a **measurement with an arbiter code**, not a citation.
-2. **The anchor may not survive differentiation four times.** R3 needs third and fourth derivatives of the ML surface. Dral et al. (2025, item 5) document the "wrinkly PES" pathology that destroys numerically differentiated high-order derivatives; Käser et al. (item 4) show that an MP2-quality surface produces VPT2 outliers up to 150 cm⁻¹ even when the fit looks good. A surface can pass an energy and force gate and still be useless for a quartic force field.
+2. **The anchor may not survive differentiation four times.** Dral et al. (2025, item 5) document the "wrinkly PES" pathology that destroys numerically differentiated high-order derivatives; Käser et al. (item 4) show that an MP2-quality surface produces VPT2 outliers up to 150 cm⁻¹ even when the fit looks good. A surface can pass an energy and force gate and still be useless for a quartic force field. **Reduced but not removed by the hybrid restructure (§6.4):** the MLIP no longer needs to carry *gold-rung* third derivatives, only cheap-level ones, and Round 4 Pass B verified that nobody has published a demonstration of the former. Any species reached without an affordable Hessian still relies on a differentiated surface.
 
 **Pre-registered escalation ladders (declare now, not after gate G5).** Which rung fired is reported in every downstream claim.
 
@@ -436,9 +442,39 @@ re-deriving by hand whenever a tolerance changes.
 
 Publish the measured label floor next to each gate, and the measured artifact next to each ceiling.
 
+### 5.9 The cost table that decided the ladder
 
+Round 4 Pass B's central finding: the plan cited DLPNO-CCSD(T)-F12 on 550+ atoms in under three days
+and treated it as a campaign budget. **That is a single-point energy.** Two facts the reviewer
+verified, neither of which was in the plan:
 
-That ceiling is reachable *only because of* the §6.1 reference split: measured on the model density, the deformation-only scheme sits at \(1.7\times10^{-3}\,\text{meV/Å}\) (\(57\times\) headroom), while putting the full \(\rho\) on the grid missed it by \(10^{7}\). Publish the label floor next to the gate, and publish the measured artifact next to the ceiling.
+- **ORCA provides no analytic gradients for full DLPNO-CCSD(T)**, so a gradient costs ~6N single points.
+- **Nor an analytic DLPNO-CCSD(T) Hessian.** The hybrid restructure (§6.4) removes the need for
+  hundreds of gradients, but it does **not** remove the need for one Hessian per scored species.
+
+Open-shell adds roughly 1.5×; TightPNO — required for delocalized π (item 30) — is substantially more
+expensive than default settings.
+
+**Estimated single-point count per Hessian**, energy-only central differences, \(\approx 2(3N)^2\):
+
+| Species | Atoms | 3N | Single points per Hessian | With analytic gradients (6N gradient calls) |
+|---|---:|---:|---:|---:|
+| Benzene | 12 | 36 | ~2,600 | 72 |
+| Naphthalene | 18 | 54 | ~5,800 | 108 |
+| Anthracene / phenanthrene | 24 | 72 | ~10,400 | 144 |
+| Pyrene | 26 | 78 | ~12,200 | 156 |
+
+**These are estimates, and this plan does not accept estimates.** Gate **G1a** replaces every number
+here with a measurement under the exact production settings, before any rung is committed to.
+
+**What the table already decided.** At TightPNO cost per single point, with a 10 h/week human budget
+and no confirmed HPC allocation, benzene is comfortable, naphthalene is plausible, and everything
+above it is not a promise anyone should make. That is the arithmetic behind the scope reduction in
+[Frozen_Ladder_and_Tolerances_2026-08-26.md](Frozen_Ladder_and_Tolerances_2026-08-26.md): **benzene
+and naphthalene, neutral, are promised; the rest is bonus.**
+
+The cheap half of the hybrid QFF (§6.4) does not appear in this table because it is not the
+constraint. That is the entire point of the split.
 
 ---
 
@@ -534,36 +570,50 @@ The Δ-ML set is order 10², so *which* geometries get gold-rung labels matters 
   **round index**, and every gate report names the round it was computed at. A comparison across
   different active-learning rounds is not a comparison.
 
-### 6.4 Nuclear motion: quartic force field, GVPT2, and the escalation ladder
+### 6.4 Nuclear motion: a **hybrid** quartic force field, GVPT2, and the escalation ladder
 
-This is where R3 is actually delivered, and it is the part the pre-pivot plan did not have.
+This is where R3 is delivered, and Round 4 Pass B changed how.
 
-**Quartic force field from the MLIP.** Built in normal coordinates around each optimized structure,
-semidiagonal in the quartic terms, using the released MLIP→QFF→VPT2 tooling (item 26). Step sizes
-are converged and **reported**, and the cubic-constant stability check of §5.8 is run here — a QFF
-whose constants move with the step size is not a QFF.
+**The split, and why it is the whole point.** A fundamental is
+\(\nu=\omega+\delta_{\mathrm{anh}}\). The two terms are computed at **different levels**:
 
-**GVPT2, with the resonance treatment declared before results are seen.** Plain VPT2 diverges
-whenever two states are near-degenerate, and PAH fingerprint regions are full of such pairs.
-Required: explicit identification of Fermi and Darling–Dennison resonances by a **pre-registered
-threshold**, deperturbation of the resonant terms out of the perturbative sum, and variational
-treatment of the resulting polyads. Choosing the resonance threshold after inspecting the spectrum
-is the anharmonic equivalent of metric shopping.
+| Term | Level | Cost driver |
+|---|---|---|
+| \(\omega\) — harmonic | **The measured gold rung.** Canonical CCSD(T) Hessian where affordable, DLPNO/LNO-TightPNO beyond, with the B1 error reported on *frequencies* | One Hessian per species (§5.9) |
+| \(\delta_{\mathrm{anh}}\) — anharmonic correction | **A frozen cheaper level**, fixed at G0 in a dated amendment: a B3LYP-family QFF, or the MLIP trained at that level | Cubic and semidiagonal quartic constants |
 
-**Escalation ladder (from §2.1, restated here because this is where it fires):**
+This is established practice, not an invention: Boese, Klopper & Martin (2005) recommend exactly this
+division, and Lam, Abdul-Al & Allouche (2020) implement the machine-learned version of it over 37
+molecules. **The plan adopted it only after Pass B pointed out that it was buying coupled-cluster
+quality in order to take a fourth derivative of it.**
+
+**Consequence for the MLIP, stated plainly.** Its role drops from *carrier of the precision* to
+**accelerator of the cheap half**. It no longer needs to reproduce gold-rung third derivatives —
+which Pass B verified nobody has demonstrated for a fine-tuned foundation model on a 26-atom aromatic.
+It needs to reproduce *cheap-level* anharmonic corrections, where training data is abundant and the
+requirement is a correction rather than a gold standard. Whether an MLIP is needed at all, or direct
+cheap-level QFFs suffice, is decided on measured cost at G1a.
+
+**GVPT2, with the resonance treatment declared before results are seen.** Unchanged, and it matters
+more now that the anharmonic term is the cheap one: plain VPT2 diverges wherever two states are
+near-degenerate, and PAH fingerprint regions are full of such pairs. Required: explicit identification
+of Fermi and Darling–Dennison resonances by a **pre-registered threshold**, deperturbation of the
+resonant terms, and variational treatment of the resulting polyads. Choosing the threshold after
+inspecting the spectrum is the anharmonic equivalent of metric shopping.
+
+**Escalation ladder, unchanged:**
 
 1. GVPT2 with explicit resonance treatment — the default.
 2. **Selected VCI** over the affected polyads, for the congested 6–9 μm region.
 3. Report only the band families that converged; mark the species **UNRESOLVED** for the rest.
-4. **Longer classical trajectories are not on this ladder.** Substituting MD for a failed VCI is the
-   single most tempting way to lose this thesis.
+4. **Longer classical trajectories are not on this ladder.**
 
-**What classical MD is still for.** Temperature dependence — band shifts and broadening as a
-function of internal energy, which VPT2 does not give directly. It lives in a diagnostic appendix,
-is labelled as such, and never carries a band-position claim.
+**Added after Pass B issue 3:** the **fraction of 6–9 μm modes left UNRESOLVED must be reported for
+benzene and naphthalene** before any larger species is attempted. If that fraction is already high at
+naphthalene, the bonus rungs are not attempted at all.
 
-**Tooling decision, made at G0 by measurement.** MLatom and the Kotaru/Bowman release are both run
-on H₂O and benzene against known references; one is kept. Do not carry both past G0.
+**Tooling decision, made at G0 by measurement.** MLatom and the Kotaru/Bowman release are both run on
+H₂O and benzene against known references; one is kept.
 
 ### 6.5 The dipole moment surface and relative intensities
 
@@ -679,7 +729,8 @@ a milestone. A gate that cannot be evaluated is a failed gate; missing data neve
 | Gate | Goal | Scope | Hard criteria | Unblocks |
 |---|---|---|---|---|
 | **G0 — Environment and baseline reproduction** | Reproduce the status quo before improving it | ORCA + MRCC + MLIP + QFF/VPT2 toolchain; benzene and naphthalene | Toolchain installed and executing end to end · **scaled-harmonic B3LYP spectra of benzene and naphthalene reproduced against PAHdb to within the published scatter** · nuclear-motion tooling bake-off (MLatom vs the Kotaru/Bowman release) run on H₂O and benzene against known references, **one selected in writing** · a pipeline that cannot reproduce a known answer has not been debugged | Everything |
-| **G1 — The gold rung, measured** | Earn the word "gold" | §5.5 frozen audit set, per molecule **and charge state** | Smoke-test table filled with numbers, closed- and open-shell as separate rows · cost pilot per rung, canonical and local separately · **B1** local-vs-canonical and **B2** basis convergence both reported per molecule, charge state **and band family** · relative energy RMSE ≤ 1.0 kcal/mol (max ≤ 2.0) · directional derivative RMSE ≤ 1.0 meV/Å · **harmonic mode shift ≤ 5 cm⁻¹** · derivative rung (§5.6) and shrink-ladder rung (§5.7) selected **in writing before any production run** · claim-ladder rung recorded | The Δ-ML campaign |
+| **G1a — Cost, measured** | Replace the §5.9 estimates with numbers before committing to any rung | §5.5 frozen audit set, per molecule **and charge state** | Smoke-test table filled with numbers, closed- and open-shell as **separate rows** · **measured wall time, core-hours, peak RAM and scratch for one Hessian per candidate species**, canonical and local separately, under exact production settings · **B1** local-vs-canonical and **B2** basis convergence reported per molecule, charge state **and band family** · relative energy RMSE ≤ 1.0 kcal/mol (max ≤ 2.0) · directional derivative RMSE ≤ 1.0 meV/Å · **harmonic mode shift ≤ 5 cm⁻¹** · shrink-ladder rung selected **in writing before any production run** · claim-ladder rung recorded · **which rungs remain affordable, stated as a number** | G1b |
+| **G1b — The hybrid decision** | Decide whether gold-rung third and fourth derivatives are ever computed | Benzene, against the one frozen NIST dataset | Three treatments computed on the same geometries and modes: (1) \(\omega_{\text{gold}}+\delta_{\text{cheap}}\), (2) full gold-rung QFF, (3) scaled-harmonic B3LYP · decision by the rule frozen in [Frozen_Ladder_and_Tolerances_2026-08-26.md](Frozen_Ladder_and_Tolerances_2026-08-26.md) §3.4 · **all three MAEs recorded, whichever wins** · if (1) is within **3 cm⁻¹** of (2), gold-rung high-order derivatives are **forbidden thereafter** · if (2) does not beat (3), the electronic-structure rung is **not the limiting term** and that is the thesis finding | G2, and the production spend |
 | **G2 — Surface quality** | A surface worth differentiating four times | Δ-ML set; both attachment designs from §6.1 | Held-out energy ≤ 1 kcal/mol and forces ≤ 1 meV/Å against the gold rung · harmonic frequencies within **5 cm⁻¹** of the reference Hessian · **cubic force constants stable under step-size refinement** — the gate with no pre-pivot ancestor and the one most likely to fail silently · Δ-model vs fine-tune decided on that stability test, **not** on energy RMSE · zero-shot next-rung error reported **before** that rung's data is added | Nuclear motion |
 | **G3 — Nuclear motion** | Anharmonicity that is real, not fitted | Benzene (rung 0) | GVPT2 band centres within **10 cm⁻¹** of the one frozen gas-phase FTIR dataset, for all three scored band families · resonance treatment documented and its threshold **shown to have been pre-registered** · any VCI escalation declared · **compared against both baselines**: scaled-harmonic and DFT-VPT2, so an improvement is attributable to the anchor rather than to the method | Intensities |
 | **G4 — Intensities** | Earn the second half of R3 | DMS bake-off, all three legs | \(\lVert\boldsymbol\mu_\theta-\boldsymbol\mu_{\mathrm{QM}}\rVert\) below the frozen per-molecule threshold · relative error in \(d\boldsymbol\mu/dQ\) **< 5 %** · CO₂ forbidden-mode residual \(I(\nu_1)/I(\nu_3)<10^{-2}\), consistent with \(\delta^2\) · **neutral-to-cation intensity swap reproduced qualitatively** · **failure withdraws intensity claims and leaves band positions standing** | The ladder |
@@ -689,14 +740,17 @@ a milestone. A gate that cannot be evaluated is a failed gate; missing data neve
 **Ordering rules.**
 
 1. **G0 blocks everything.** Nothing downstream is interpretable without the reproduced baseline.
-2. **G1 and G2 are not interchangeable.** G1 measures the *labels*; G2 measures the *model*. A model
-   that fits bad labels beautifully passes G2 and is worthless.
-3. **G3 and G4 gate different halves of the claim** and are evaluated independently, so that an
+2. **G1a blocks G1b, and G1b blocks the production spend.** The cost pilot decides what is
+   attemptable; the hybrid pilot decides what method is used. Running production before either is
+   how the pre-pivot plan would have discovered its compute wall in month fourteen.
+3. **G1a measures the *labels*; G2 measures the *model*.** A model that fits bad labels beautifully
+   passes G2 and is worthless.
+4. **G3 and G4 gate different halves of the claim** and are evaluated independently, so that an
    intensity failure cannot silently sink band positions.
-4. **G5's target list feeds G6's pre-registration.** Restricting the identification list to species
+5. **G5's target list feeds G6's pre-registration.** Restricting the identification list to species
    that passed G5 is legitimate, because G5 never touches the observational product. Restricting it
    *after* opening that product is a fail.
-5. **Nothing debuts at G6.** Every component has already passed its own gate.
+6. **Nothing debuts at G6.** Every component has already passed its own gate.
 
 **Gate unit discipline, inherited and re-aimed.** Every tolerance above is quoted in the unit the
 claim is made in — cm⁻¹ for positions, per-cent for relative intensities, meV/Å for forces,

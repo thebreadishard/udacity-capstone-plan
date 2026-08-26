@@ -152,6 +152,42 @@ All identifiers were fetched from arXiv on 2026-08-23.
     - *URL:* [arXiv:2607.20015](https://arxiv.org/abs/2607.20015)
     - *Significance:* **The template for §3.C, and the gap it leaves.** VPT2 anharmonic properties plus an optimized microcanonical sampling algorithm produce environment-dependent IR **cascade emission** spectra for neutral, cationic and anionic cyanonaphthalenes — the excitation machinery [Project 12](Horizon/12_Astrophysical_PAH_Identification.md) §3.1 demands, already built. It is computed at **B3LYP/N07D**. Every anharmonic PAH spectrum in this literature rests on DFT with an unquantified electronic-structure error; supplying a measured coupled-cluster anchor and the four-term budget underneath that machinery is what R3 contributes.
 
+### The hybrid quartic force field — items 37–39 (added 2026-08-26, Round 4 Pass B)
+
+These arrived through the review, not the original sweep, and they changed the architecture. They are
+the reason §6.4 splits \(\omega\) from \(\delta_{\mathrm{anh}}\).
+
+37. **Anharmonic force fields and thermodynamic functions using density functional theory** (Boese, Klopper & Martin, *Mol. Phys.* 103, 863, 2005)
+    - *URL:* [arXiv:physics/0411065](https://arxiv.org/abs/physics/0411065) · DOI:10.1080/00268970512331339369
+    - *Significance:* **The origin of the hybrid split this plan now uses.** Establishes DFT as a
+      cost-effective source of **anharmonic** corrections *for use in conjunction with* benchmark ab
+      initio methods for the rest. Same Jan Martin as item 30's local-coupled-cluster caveat — the
+      plan was already citing him about where correlation matters, while ignoring him about where it
+      does not.
+38. **Combining quantum mechanics and machine-learning calculations for anharmonic corrections to vibrational frequencies** (Lam, Abdul-Al & Allouche, *JCTC* 15, 2020)
+    - *URL:* [arXiv:1909.12661](https://arxiv.org/abs/1909.12661) · DOI:10.1021/acs.jctc.9b00964
+    - *Significance:* **The closest published precedent for §6.4, and a warning attached to it.**
+      Quantum mechanics for the harmonic part, machine learning for the anharmonic corrections, over
+      37 molecules, with linear rather than quadratic scaling. It works — and it reports **RMSD
+      21 cm⁻¹** against its reference level and **23 cm⁻¹** against experiment, which is *twice* this
+      project's frozen 10 cm⁻¹ tolerance. Cited in the 2026-08-26 freeze precisely so the tolerance is
+      not quietly relaxed to match it. Same group as item 8's PAH ML work.
+39. **Anharmonic vibrational spectroscopy of Polycyclic Aromatic Hydrocarbons** (Mulas, Falvo, Cassam-Chenaï & Joblin, *JCP* 149, 2018)
+    - *URL:* [arXiv:1809.05669](https://arxiv.org/abs/1809.05669) · DOI:10.1063/1.5050087
+    - *Significance:* Anharmonic treatment of **pyrene and coronene** with full resonance handling —
+      the size regime this plan's bonus rungs target. Two findings that cut both ways: band positions
+      are *significantly improved* over harmonic DFT, and *"the main limitation being the accuracy of
+      the underlying calculations of the quartic force field"*. The second is the sentence gate G1b
+      exists to test.
+
+**Reported but not yet verified.** Round 4 Pass B cited *Watrous et al. (2023)* for hybrid QFFs
+reaching full-CC-QFF accuracy at under a quarter of the cost. The author and research programme are
+verified — A. G. Watrous publishes quartic force fields for astrochemistry with Ryan Fortenberry
+([arXiv:2109.11605](https://arxiv.org/abs/2109.11605)) — but the specific 2023 result is not on arXiv
+and **has not been checked against its DOI**. It is recorded here as reviewer-reported and must not be
+cited in the thesis until verified. The repository rule is never cite from recall, and that applies to
+a reviewer's recall too.
+
 ### Tooling adopted (decision 5)
 
 34. **MACE: Higher Order Equivariant Message Passing Neural Networks for Fast and Accurate Force Fields** (Batatia, Kovács, Simm, Ortner & Csányi, *NeurIPS*, 2022)

@@ -40,15 +40,19 @@ it is the difference between a defensible thesis and a lost defense.
 | **R2** | Band **envelopes** from classical MD + dipole-ACF FFT, ±10–15 cm⁻¹ | **Not the deliverable.** Already published at 216-carbon scale (Mai et al. 2025). Retained only as a temperature diagnostic. |
 | **R3** | **Anharmonic band families** — quantum (GVPT2-class) band centers within a stated cm⁻¹ of a **named** experimental standard, **plus** relative integrated intensities from a dipole moment surface, **plus** a four-term error budget | **This is the objective.** |
 
-**Frozen 2026-08-25 in [Frozen_Ladder_and_Tolerances_2026-08-25.md](Frozen_Ladder_and_Tolerances_2026-08-25.md), before any gold-rung calculation:**
+**Frozen 2026-08-26 in [Frozen_Ladder_and_Tolerances_2026-08-26.md](Frozen_Ladder_and_Tolerances_2026-08-26.md)**, which supersedes the 2026-08-25 freeze after Round 4 Pass B. Committed before any gold-rung calculation:
 
+- **Promised: benzene and naphthalene, neutral.** Cations, anthracene/phenanthrene and pyrene are
+  **bonus, not promise** — attempted in ladder order if measured cost allows, and their absence is a
+  stated limitation rather than a broken claim. The scope of this thesis got smaller on 2026-08-26,
+  and that sentence belongs in the thesis.
 - Band centers ≤ **10 cm⁻¹** against gas-phase experiment where it exists; ≤ **15 cm⁻¹** against
   matrix data **with** a stated, frozen matrix-shift model. Never mix corrected and uncorrected.
 - **And**, separately required: mean absolute error **no worse than the scaled-harmonic baseline** on
   the same modes. ML-corrected scaling already reaches ~5 cm⁻¹, so the absolute number alone would
   let this method pass while being worse than the status quo.
-- Relative integrated intensities within a band family ≤ **20 %**, with neutral-vs-cation intensity
-  swaps reproduced qualitatively.
+- Relative integrated intensities within a band family ≤ **20 %**. The neutral-vs-cation intensity
+  swap is reported as **untested** if no cation rung is reached.
 - Scored band families, named in advance: **3.3 μm**, **6–9 μm**, **11–12 μm**.
 
 **Four-term error budget, mandatory next to every cm⁻¹ claim.** A single pooled number is a fail.
@@ -76,8 +80,10 @@ Consequences, binding:
    difference is published **per band family and per charge state** before the local method is used
    on anything larger. That difference is error term (B).
 2. **The production surface is a fine-tuned equivariant machine-learned interatomic potential**,
-   lifted to gold-rung quality by Δ-learning / transfer learning. Borrowing a mature architecture to
-   avoid a comparison is required, not merely permitted.
+   supplying the **cheap half** of a hybrid quartic force field. Since Round 4 Pass B its role is an
+   *accelerator*, not a carrier of precision: the harmonic term comes from the measured gold rung,
+   the anharmonic correction from a frozen cheaper level. Borrowing a mature architecture to avoid a
+   comparison is required, not merely permitted.
 3. **Nuclear motion is quantum.** GVPT2 with explicit resonance treatment, from a quartic force field
    derived from the ML surface. Selected VCI is the declared escalation. Running longer classical
    trajectories is **not** an escalation and may never be substituted for one.

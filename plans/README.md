@@ -7,14 +7,14 @@ Neither has been executed. Nothing in this repository is a result.
 
 | | [01 — Voxel Field PES](01_voxel-field-pes/) | [02 — Coupled-Cluster Anharmonic IR](02_coupled-cluster-anharmonic-ir/) |
 |---|---|---|
-| **Status** | Superseded 2026-08-23. Complete and coherent; not being developed. | **Current.** Rewrite in progress. |
-| **Deliverable** | Vibrational band positions and relative IR envelopes for H₂O, D₂O, CO₂, benzene, within 10–15 cm⁻¹ | Anharmonic IR band families and relative intensities for named PAH sizes and charge states, with a four-term error budget, ending in a fail-closed identification |
+| **Status** | Superseded 2026-08-23. Complete and coherent; not being developed. | **Current.** Complete as a plan; blocked on measurement. |
+| **Deliverable** | Vibrational band positions and relative IR envelopes for H₂O, D₂O, CO₂, benzene, within 10–15 cm⁻¹ | Anharmonic IR band families and relative intensities for **benzene and naphthalene, neutral**, with a four-term error budget, ending in a fail-closed identification. Cations and larger rings are bonus. |
 | **Where precision comes from** | Own CCSD(T)/cc-pVTZ labels | A **measured** coupled-cluster rung — canonical vs local CC, error published per band family and charge state |
-| **The model** | Bespoke: energy as a functional of a voxel electron-density field, \(E=\mathcal{E}[\rho,R]\), hybrid FNO-NCA encoder, forces by autograd | Borrowed: a fine-tuned equivariant MLIP, lifted to the gold rung by Δ-learning / transfer learning |
-| **Nuclear motion** | Classical MD + dipole-ACF FFT | GVPT2 from a quartic force field, escalating to selected VCI |
+| **The model** | Bespoke: energy as a functional of a voxel electron-density field, \(E=\mathcal{E}[\rho,R]\), hybrid FNO-NCA encoder, forces by autograd | Borrowed: a fine-tuned equivariant MLIP supplying the **cheap half** of a hybrid quartic force field |
+| **Nuclear motion** | Classical MD + dipole-ACF FFT | GVPT2 from a hybrid quartic force field — gold-rung harmonics, cheap-level anharmonic corrections — escalating to selected VCI |
 | **Central question** | Does a continuous 3D field representation transfer better to unseen vibrational modes than an equivariant GNN? | Does a measured coupled-cluster anchor buy accuracy that DFT-anchored anharmonic PAH IR does not have? |
 | **Horizon** | Post-master's Projects 10 → 11 → 12 | None. Projects 10–12 are absorbed into Modules 03–08. |
-| **Reviews survived** | 3 professor rounds, 15 blocking issues | Round 4 pending |
+| **Reviews survived** | 3 professor rounds, 15 blocking issues | Round 4, two passes. Conditional approval; scope reduced as a result. |
 
 ---
 
@@ -74,9 +74,10 @@ Three folders sit at the repository root and are **shared**, because neither pla
 - `AI_Chats/` — the planning conversations. They predate the split, and the original ambition
   recorded in them is closer to plan 02's goal than to plan 01's.
 
-The **professor reviews are not shared.** They reviewed plan 01 and live there. Plan 02 carries an
-inheritance table instead, showing where each of the fifteen blocking issues landed — because
-copying the reviews across would imply plan 02 had survived them, and Round 4 is still pending.
+The **professor reviews are not shared.** Rounds 1–3 reviewed plan 01 and live there; Round 4
+reviewed plan 02 and lives there. Plan 02 additionally carries an inheritance table, showing where
+each of the fifteen blocking issues from rounds 1–3 landed — because copying those reviews across
+would imply plan 02 had survived them.
 
 ## Adding a version 03
 

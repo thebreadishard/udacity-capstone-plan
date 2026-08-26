@@ -1,9 +1,13 @@
 # Plan 02 — Coupled-Cluster Anharmonic IR
 
-**Status: current, rewrite in progress.** Supersedes [plan 01](../01_voxel-field-pes/) as of
-2026-08-23. See [../README.md](../README.md) for why the project turned.
+**Status: complete as a plan, blocked on measurement.** Supersedes
+[plan 01](../01_voxel-field-pes/) as of 2026-08-23; reviewed and scope-reduced 2026-08-26 after
+Round 4. Nothing here has been executed.
 
-Nothing here has been executed. This is a plan.
+**Promised deliverable:** anharmonic infrared band positions and relative intensities for **benzene
+and naphthalene, neutral**, with a four-term error budget, both baselines, and a hybrid quartic force
+field whose split is decided by measurement. Cations, anthracene/phenanthrene and pyrene are **bonus,
+not promise**.
 
 ---
 
@@ -65,33 +69,53 @@ model. A single pooled number is a fail.
 
 | Section | State |
 |---|---|
-| `Overarching_Goal.md` | ✅ rewritten |
-| `Distilled` §1–§9, all nine sections | ✅ rewritten |
-| `Relevant_Scientific_Papers.md` | ✅ items 26–36 added, three entries corrected |
-| `Capstone_Mapping.md` | ⛔ still plan 01 — rewritten only after a Round-4 review, so a rejected pivot does not cost two rewrites |
+| `Overarching_Goal.md` | ✅ rewritten, scope-reduced 2026-08-26 |
+| `Distilled` §1–§9, all nine sections | ✅ rewritten; §2, §5.9, §6.4 and §7 revised after Round 4 |
+| `Relevant_Scientific_Papers.md` | ✅ items 26–39, three entries corrected |
+| Molecule ladder and tolerances | ✅ **frozen twice** — [v1 2026-08-25](GoalGathering/Frozen_Ladder_and_Tolerances_2026-08-25.md), [v2 2026-08-26](GoalGathering/Frozen_Ladder_and_Tolerances_2026-08-26.md). v1 retained unedited to show what the scope was before the review |
+| Round 4 review | ✅ [Pass A](GoalGathering/Professor_Review_2026-08-25_Round4_PassA.md), [Pass B](GoalGathering/Professor_Review_2026-08-25_Round4_PassB.md) |
+| `Capstone_Mapping.md` | ⛔ still plan 01. **Blocked by Pass B approval conditions 1–3**, which require calculations that have not been run |
 | `GoalGathering/Horizon/10–12` | ⛔ still plan 01, banner-marked as absorbed provenance |
-| The molecule ladder and cm⁻¹ tolerances | ✅ **frozen 2026-08-25** — [Frozen_Ladder_and_Tolerances_2026-08-25.md](GoalGathering/Frozen_Ladder_and_Tolerances_2026-08-25.md) |
 | Dutch `Uitleg/` | ✗ none yet — plan 01's version explains the voxel approach |
+
+### What has to happen before this plan moves again
+
+| # | Blocked on | Gate |
+|---|---|---|
+| 1 | Measured cost table — one Hessian per candidate species, exact production settings | **G1a** |
+| 2 | The hybrid decision: \(\omega_{\text{gold}}+\delta_{\text{cheap}}\) vs full gold QFF vs scaled harmonic, on benzene | **G1b** |
+| 3 | Two dated amendments: the cheap level for \(\delta_{\mathrm{anh}}\), and the GVPT2 resonance criterion | **G0** |
+| 4 | Written mentor approval on dataset eligibility (R3 issue 3, open since round 3) | — |
+
+Until 1–3 exist, `Capstone_Mapping.md` stays unwritten. That is deliberate: the module mapping
+depends on which rungs turn out to be affordable.
 
 ## Review status
 
-**Round 4, Pass A (cold read) complete** — see
-[Professor_Review_2026-08-25_Round4_PassA.md](GoalGathering/Professor_Review_2026-08-25_Round4_PassA.md).
-Three blocking findings, all documentation-status drift, all closed. Verdict: sound enough to proceed
-to Pass B.
+**Round 4 complete.** Both passes returned, both recorded, all findings closed or accepted.
 
-**Round 4, Pass B (adversarial domain review) is pending** — the brief is
-[here](GoalGathering/Review_Brief_2026-08-25_Round4_PassB.md). It attacks the chemistry: whether the
-core hypothesis is backwards, whether the coupled-cluster cost arithmetic survives contact with
-reality, whether a quartic force field works at pyrene-scale congestion, and whether the residual
-contribution is real. **Until Pass B returns, this plan's science has not been reviewed.**
+| Pass | Verdict | Record |
+|---|---|---|
+| **A** — cold read | Sound enough to proceed. Three blocking findings, all documentation-status drift, all closed | [Pass A](GoalGathering/Professor_Review_2026-08-25_Round4_PassA.md) |
+| **B** — adversarial domain | **Conditional.** Green light only for a neutrals-first ladder with option F as the default deliverable. **No green light for the full neutral+cation pyrene claim** | [Pass B](GoalGathering/Professor_Review_2026-08-25_Round4_PassB.md) |
+
+Pass B did not find the plan wrong. It found it **more expensive than it needed to be, aimed at the
+wrong derivative, and promising more than the calendar allows.** Two decisions followed, both taken
+2026-08-26:
+
+1. **The hybrid quartic force field is now the primary method** — gold-rung harmonics,
+   cheap-level anharmonic corrections, with gate **G1b** deciding before any production spend whether
+   gold-rung high-order derivatives are ever computed.
+2. **Option F is the primary deliverable** — benzene and naphthalene, neutral. Everything else is
+   bonus.
+
+**Plan 02 is now complete as a plan and blocked on measurement.** Three of the reviewer's five
+approval conditions require calculations that have not been run; the other two are done. That is the
+correct terminal state for a document whose whole argument was that it would measure rather than
+assert.
 
 The three earlier reviews live in [plan 01](../01_voxel-field-pes/GoalGathering/), because that is
-what they reviewed. They are **not** copied here: three reviews sitting in this folder would imply
-this plan had survived them.
-
-What did carry over is the findings. Plan 01 closed fifteen blocking issues; the pivot inherited,
-transferred or superseded each one deliberately rather than discarding them:
+what they reviewed. What carried over is the findings:
 
 | Issue | Origin | Fate in this plan |
 |---|---|---|
@@ -144,8 +168,10 @@ discipline, but whether the twelve landed correctly.
 | 3 | **No post-master's horizon.** Projects 10–12 are absorbed into Modules 03–08. Whatever R3 does not reach is a limitation in Module 08, not a queued project. |
 | 4 | **ORCA** as the single production stack (free academically, native Windows, canonical CC and DLPNO in one code), with **MRCC / LNO-CCSD(T)** as arbiter for gate G1 only. |
 | 5 | **MACE family**: MACE-OMOL-0 primary (charge/spin embedding, so cations work), MACE-OFF as fallback, MACE-POLAR-1 as the dipole-surface comparator. Code MIT, weights ASL (academic, non-commercial). |
-| 6 | The molecule ladder and cm⁻¹ tolerances are **frozen**, 2026-08-25, before any gold-rung calculation: [Frozen_Ladder_and_Tolerances_2026-08-25.md](GoalGathering/Frozen_Ladder_and_Tolerances_2026-08-25.md). One item stays open by design — the GVPT2 resonance criterion, which closes at G0 in a dated amendment, without which no GVPT2 result may be reported. |
+| 6 | The molecule ladder and tolerances are **frozen twice**: [v1 2026-08-25](GoalGathering/Frozen_Ladder_and_Tolerances_2026-08-25.md) before any calculation, and [v2 2026-08-26](GoalGathering/Frozen_Ladder_and_Tolerances_2026-08-26.md) after Round 4 reduced the scope. v1 is retained unedited so the reduction is visible. |
 | 7 | Dataset eligibility for Modules 03–05 still needs **written mentor approval** (Round 3, issue 3). Reduced by the pivot, not closed. |
+| 8 | **The hybrid quartic force field is the primary method** (2026-08-26). Gold-rung harmonics, cheap-level anharmonic corrections, with gate G1b deciding whether gold-rung high-order derivatives are computed at all. |
+| 9 | **Option F is the primary deliverable** (2026-08-26). Benzene and naphthalene neutral are promised; cations and larger rings are bonus. |
 
 ## Terminology
 

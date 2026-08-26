@@ -15,20 +15,22 @@ than one being overwritten by the other.
 | | Plan | Status |
 |---|---|---|
 | **01** | [Voxel Field PES (FNO-NCA)](plans/01_voxel-field-pes/) | Superseded 2026-08-23 — complete, coherent, not in development |
-| **02** | [Coupled-Cluster Anharmonic IR](plans/02_coupled-cluster-anharmonic-ir/) | **Current** — rewrite in progress |
+| **02** | [Coupled-Cluster Anharmonic IR](plans/02_coupled-cluster-anharmonic-ir/) | **Current** — complete as a plan, blocked on measurement |
 
 Start at [`plans/README.md`](plans/README.md) for the comparison and for why the project turned.
 
 ## The current objective (plan 02)
 
-**Anharmonic infrared band families and relative intensities for named PAH sizes and charge states**,
+**Anharmonic infrared band positions and relative intensities for benzene and naphthalene, neutral**,
 from a potential-energy surface anchored to a **measured** coupled-cluster reference, with quantum
 nuclear motion (GVPT2-class) and a **four-term error budget** — ending in a **pre-registered,
-fail-closed identification** against one frozen JWST/PAHdb product.
+fail-closed identification** against one frozen JWST/PAHdb product. Cations, anthracene/phenanthrene
+and pyrene are **bonus, not promise**: attempted in ladder order if the measured cost allows.
 
 Precision is carried by the theory ladder and the nuclear-motion method, not by a novel neural
-architecture. Established equivariant machine-learned potentials are fine-tuned and Δ-learned up to
-the gold rung; the contribution is the anchor, the budget and the fail-closed rule.
+architecture. The quartic force field is **hybrid** — harmonic term from the gold rung, anharmonic
+correction from a frozen cheaper level — and a front-loaded gate decides whether the expensive half
+is worth computing at all. The contribution is the anchor, the budget and the fail-closed rule.
 
 **Not claimed:** rovibrational line lists, sub-wavenumber lines, or "any size" without the measured
 stop rung attached. Classical MD + dipole-ACF FFT is a diagnostic, not the deliverable.
@@ -63,9 +65,10 @@ were designed against; the literature is not version-specific; and the planning 
 the split — the original ambition recorded in `gemini_chat_1.md` is closer to plan 02's goal than to
 plan 01's. Everything else is duplicated on purpose, so each plan reads without cross-references.
 
-The **professor reviews are deliberately not shared.** They reviewed plan 01. Copying them into plan
-02 would imply plan 02 had survived them, and Round 4 is still pending; plan 02 carries an
-inheritance table instead, showing where each of the fifteen blocking issues landed.
+The **professor reviews are deliberately not shared.** Rounds 1–3 reviewed plan 01 and live there;
+Round 4 reviewed plan 02 and lives there. Plan 02 additionally carries an inheritance table, showing
+where each of the fifteen blocking issues from rounds 1–3 landed — because copying those reviews
+across would imply plan 02 had survived them.
 
 Documents 10–12 are **not** rubrics — they are each plan's own horizon-planning documents, and they
 differ between plans, which is why they sit inside `GoalGathering/Horizon/`.
