@@ -76,7 +76,7 @@ model. A single pooled number is a fail.
 | Round 4 review | ✅ [Pass A](GoalGathering/Professor_Review_2026-08-25_Round4_PassA.md), [Pass B](GoalGathering/Professor_Review_2026-08-25_Round4_PassB.md) |
 | `Capstone_Mapping.md` | ⛔ still plan 01. **Blocked by Pass B approval conditions 1–3**, which require calculations that have not been run |
 | `GoalGathering/Horizon/10–12` | ⛔ still plan 01, banner-marked as absorbed provenance |
-| Dutch `Uitleg/` | ✗ none yet — plan 01's version explains the voxel approach |
+| Dutch `Uitleg/` | ✅ started — [leeswijzer](Uitleg/00_Leeswijzer.md) + ch. 01. Havo-4 level, a running log of what has actually been measured |
 
 ### What has to happen before this plan moves again
 
