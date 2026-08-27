@@ -50,6 +50,7 @@ OUT = HERE / "batch_results"
 LOG = OUT / "run.log"
 STATUS = OUT / "STATUS.md"
 HEARTBEAT = OUT / "heartbeat.json"
+STOP = OUT / "STOP"   # touch this file to stop cleanly after the current job
 
 
 # ------------------------------------------------------------------- bookkeeping
@@ -220,6 +221,10 @@ def main():
         # A runner you have to restart to extend is a runner that waits for a human.
         jobs = json.loads(JOBS.read_text(encoding="utf-8"))
         write_status(jobs)
+
+        if STOP.exists():
+            log("STOP file present, exiting cleanly between jobs")
+            break
 
         pending = [j for j in jobs if not is_done(j) and j["id"] not in attempted]
         if not pending:
