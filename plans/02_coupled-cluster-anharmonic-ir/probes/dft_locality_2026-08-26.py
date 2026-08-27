@@ -66,11 +66,21 @@ BAY_HH_ANG = 2.5      # non-neighbouring CH pair closer than this sits across a 
 RESULTS = Path(__file__).parent / "results_dft_locality"
 
 # (name, SMILES, (n_C, n_H), bays) -- bay count is documentation, not used in logic
+#
+# Chosen for TWO things, because the first pass was chosen for only one and the
+# transfer test came back void. A class must appear in at least two different host
+# molecules or its spread measures symmetry, not transferability.
+#   bays      : phenanthrene 1, triphenylene 3, chrysene 1 -> does the penalty scale?
+#   transfer  : solo in anthracene + tetracene; quartet in naphthalene + anthracene
+#               + tetracene; duo in phenanthrene + pyrene + chrysene
 MOLECULES = [
     ("benzene",      "c1ccccc1",                     (6, 6),   0),
     ("naphthalene",  "c1ccc2ccccc2c1",               (10, 8),  0),
+    ("anthracene",   "c1ccc2cc3ccccc3cc2c1",         (14, 10), 0),
     ("phenanthrene", "c1ccc2c(c1)ccc1ccccc12",       (14, 10), 1),
     ("pyrene",       "c1cc2ccc3cccc4ccc(c1)c2c34",   (16, 10), 0),
+    ("tetracene",    "c1ccc2cc3cc4ccccc4cc3cc2c1",   (18, 12), 0),
+    ("chrysene",     "c1ccc2c(c1)ccc1c2ccc2ccccc21", (18, 12), 1),
     ("triphenylene", "c1ccc2c(c1)c1ccccc1c1ccccc21", (18, 12), 3),
 ]
 
@@ -79,7 +89,11 @@ LITERATURE_OOP = {1: 890.0, 2: 833.0, 3: 787.0, 4: 745.0}
 
 # MMFF result being tested, from the notebook. Quoted so the comparison is explicit.
 MMFF_OOP = {1: 964.9, 2: 854.8, 3: 793.8, 4: 764.1}
-MMFF_BAY_PENALTY = -11.2
+
+# Bay penalty PER CLASS from the MMFF run (bay-free mean minus with-bay mean).
+# Per class, not pooled: the two runs cover different molecule sets, so a pooled
+# average would compare different mixtures and attribute the difference to physics.
+MMFF_BAY_BY_CLASS = {2: 857.7 - 842.1, 3: 800.5 - 790.5, 4: 768.5 - 760.4}
 
 # --------------------------------------------------------------------- constants
 
@@ -250,7 +264,15 @@ def run_molecule(name, smiles, expect, n_bays):
         raise RuntimeError(f"{name}: atom order diverged between RDKit and Psi4")
 
     t0 = time.perf_counter()
-    psi4.optimize(FUNCTIONAL, molecule=pmol)
+    try:
+        psi4.optimize(FUNCTIONAL, molecule=pmol)
+    except psi4.OptimizationConvergenceError:
+        # Triphenylene's three bays make the internal-coordinate step ill-behaved;
+        # Cartesian coordinates converge it where redundant internals stall.
+        psi4.core.clean()
+        psi4.set_options({"opt_coordinates": "cartesian", "geom_maxiter": 300})
+        psi4.optimize(FUNCTIONAL, molecule=pmol)
+        psi4.set_options({"opt_coordinates": "internal", "geom_maxiter": 200})
     t_opt = time.perf_counter() - t0
 
     t0 = time.perf_counter()
@@ -366,41 +388,59 @@ def report(results):
               f"{(f'{np.mean(vals)-lit:+.0f}' if lit else '-'):>10}")
 
     print("\n\nTEST 2 -- does a motif transfer between host molecules?")
-    print(f"{'class':>9}{'group':>11}{'n':>4}{'mean':>9}{'spread':>9}   verdict")
-    print("-" * 62)
+    print("A group spanning only one molecule is symmetry-equivalent copies, not a")
+    print("transfer test, and is marked VOID however small its spread.\n")
+    print(f"{'class':>9}{'group':>11}{'n':>4}{'hosts':>7}{'mean':>9}{'spread':>9}   verdict")
+    print("-" * 69)
     for size in sorted(by_class):
         for label, subset in (("bay-free", [r for r in by_class[size] if not r["bay"]]),
                               ("with bay", [r for r in by_class[size] if r["bay"]])):
             if not subset:
                 continue
             vals = np.array([r["bright"] for r in subset])
+            hosts = len({r["molecule"] for r in subset})
             spread = float(np.ptp(vals))
-            verdict = "transfers" if spread < TOLERANCE_CM else "EXCEEDS TOLERANCE"
-            print(f"{CLASS_NAME[size]:>9}{label:>11}{len(vals):>4}"
+            if hosts < 2:
+                verdict = "VOID -- one host only"
+            elif spread < TOLERANCE_CM:
+                verdict = "transfers"
+            else:
+                verdict = "EXCEEDS TOLERANCE"
+            print(f"{CLASS_NAME[size]:>9}{label:>11}{len(vals):>4}{hosts:>7}"
                   f"{vals.mean():>9.1f}{spread:>9.1f}   {verdict}")
 
-    shifts = []
+    print("\n\nTEST 3 -- THE ONE THAT DECIDES IT: the bay penalty, class by class")
+    print("Pooling classes would compare different molecule mixtures between the two")
+    print("runs and blame the difference on electrons. So: like for like only.\n")
+    print(f"{'class':>9}{'bay-free':>10}{'with bay':>10}{'DFT':>9}{'MMFF':>9}{'change':>9}")
+    print("-" * 56)
+    comparable = []
     for size in sorted(by_class):
         free = [r["bright"] for r in by_class[size] if not r["bay"]]
         bayed = [r["bright"] for r in by_class[size] if r["bay"]]
-        if free and bayed:
-            shifts.append(np.mean(bayed) - np.mean(free))
+        if not (free and bayed):
+            continue
+        dft_pen = float(np.mean(bayed) - np.mean(free))
+        mmff_pen = -MMFF_BAY_BY_CLASS.get(size, np.nan)
+        comparable.append((size, dft_pen, mmff_pen))
+        print(f"{CLASS_NAME[size]:>9}{np.mean(free):>10.1f}{np.mean(bayed):>10.1f}"
+              f"{dft_pen:>+9.1f}{mmff_pen:>+9.1f}{dft_pen - mmff_pen:>+9.1f}")
 
-    print("\n\nTEST 3 -- THE ONE THAT DECIDES IT: the bay penalty")
-    if shifts:
-        dft_penalty = float(np.mean(shifts))
-        print(f"  MMFF94 measured : {MMFF_BAY_PENALTY:+.1f} cm^-1")
-        print(f"  B3LYP measured  : {dft_penalty:+.1f} cm^-1")
-        print(f"  change on adding electrons : {dft_penalty - MMFF_BAY_PENALTY:+.1f} cm^-1\n")
-        if abs(dft_penalty - MMFF_BAY_PENALTY) < 5.0:
-            print("  The penalty survived essentially unchanged. It is MECHANICAL.")
-            print("  A motif atlas needs bays as separate motifs, and that is the whole fix.")
+    if comparable:
+        changes = [abs(d - m) for _, d, m in comparable if np.isfinite(m)]
+        print(f"\n  largest like-for-like change on adding electrons: {max(changes):.1f} cm^-1")
+        if max(changes) < 5.0:
+            print("  The penalty survived. The bay effect is MECHANICAL, and the atlas fix")
+            print("  is simply that bays are their own motifs.")
         else:
-            print("  The penalty moved substantially. Electrons are contributing, so the")
-            print("  bay is not merely a steric clash and locality is weaker than MMFF said.")
+            print("  The penalty moved. Electrons contribute to the bay, so it is not")
+            print("  merely a steric clash and locality is weaker than MMFF said.")
+        print(f"\n  Classes with both a bay-free and a bay-bearing run: {len(comparable)}.")
+        if len(comparable) < 2:
+            print("  One class is one data point. This does not yet separate the two")
+            print("  explanations; triphenylene (3 bays) is what would.")
     else:
-        print("  No class contained both a bay-free and a bay-bearing run.")
-        print("  Add a molecule that shares a class with a bay-free one, or this is void.")
+        print("  No class contained both a bay-free and a bay-bearing run: nothing to compare.")
 
     print("\n" + "=" * 72)
 
@@ -412,7 +452,8 @@ def main():
     psi4.set_output_file(str(RESULTS / "psi4.log"), False)  # be_quiet() needs /dev/null
     psi4.set_memory(f"{MEMORY_GB} GB")
     psi4.set_num_threads(THREADS)
-    psi4.set_options({"scf_type": "df", "basis": BASIS, "g_convergence": "gau_tight"})
+    psi4.set_options({"scf_type": "df", "basis": BASIS,
+                      "g_convergence": "gau", "geom_maxiter": 200})
 
     print(f"{FUNCTIONAL.upper()}/{BASIS}, {THREADS} threads, {MEMORY_GB} GB")
     print(f"results -> {RESULTS}\n")
