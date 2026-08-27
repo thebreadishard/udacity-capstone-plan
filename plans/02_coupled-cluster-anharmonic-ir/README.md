@@ -82,10 +82,11 @@ model. A single pooled number is a fail.
 
 | # | Blocked on | Gate |
 |---|---|---|
-| 1 | Measured cost table — one Hessian per candidate species, exact production settings | **G1a** |
-| 2 | The hybrid decision: \(\omega_{\text{gold}}+\delta_{\text{cheap}}\) vs full gold QFF vs scaled harmonic, on benzene | **G1b** |
-| 3 | Two dated amendments: the cheap level for \(\delta_{\mathrm{anh}}\), and the GVPT2 resonance criterion | **G0** |
-| 4 | Written mentor approval on dataset eligibility (R3 issue 3, open since round 3) | — |
+| 1 | **A timed coupled-cluster single point and Hessian on benzene.** The single missing number in the whole plan: no coupled-cluster timing exists anywhere in this repository | **G1a** |
+| 2 | Measured cost table — one Hessian per candidate species, exact production settings | **G1a** |
+| 3 | The hybrid decision: \(\omega_{\text{gold}}+\delta_{\text{cheap}}\) vs full gold QFF vs scaled harmonic, on benzene | **G1b** |
+| 4 | Two dated amendments: the cheap level for \(\delta_{\mathrm{anh}}\), and the GVPT2 resonance criterion | **G0** |
+| 5 | Written mentor approval on dataset eligibility (R3 issue 3, open since round 3) | — |
 
 Until 1–3 exist, `Capstone_Mapping.md` stays unwritten. That is deliberate: the module mapping
 depends on which rungs turn out to be affordable.
@@ -172,6 +173,7 @@ discipline, but whether the twelve landed correctly.
 | 7 | Dataset eligibility for Modules 03–05 still needs **written mentor approval** (Round 3, issue 3). Reduced by the pivot, not closed. |
 | 8 | **The hybrid quartic force field is the primary method** (2026-08-26). Gold-rung harmonics, cheap-level anharmonic corrections, with gate G1b deciding whether gold-rung high-order derivatives are computed at all. |
 | 9 | **Option F is the primary deliverable** (2026-08-26). Benzene and naphthalene neutral are promised; cations and larger rings are bonus. |
+| 10 | **Two budgets, not one** (2026-08-27): ~8 h/week of human attention and ~168 h/week of wall-clock compute, a factor of twenty-one apart. Recorded in [Compute_Budget_2026-08-27.md](GoalGathering/Compute_Budget_2026-08-27.md). Queue generously, order jobs by what they decide, and spend the human hours on judgement. The frozen scope is **not** reopened by this: it turns on the gold rung, which is still untimed. |
 
 ## Terminology
 
