@@ -262,6 +262,47 @@ def perplexity(weights):
 
 # ------------------------------------------------------------------ one molecule
 
+def class_band_centres(mol, pairs, basis, hmw, spectrum, min_overlap=0.02):
+    """Band centre per adjacency class, intensity-weighted. This is THE band.
+
+    Replaces "take the strongest absorption in the window", which is not a rule at
+    all when two bands tie: tetracene has one at 66.1 km/mol and another at 66.0,
+    they belong to different edge classes, and picking between them on a difference
+    of 0.1 produced a spurious 127 cm^-1 shift.
+
+    So: for each class, build the in-phase wag over every run of that class, see
+    which real normal modes carry it, and weight those by how much infrared light
+    they actually absorb.
+    """
+    nu, modes = frequencies(hmw)
+
+    intensity = np.zeros_like(nu)
+    for freq, value in spectrum:
+        intensity[int(np.argmin(np.abs(nu - freq)))] = value
+
+    grouped = {}
+    for run in adjacency_runs(mol, pairs):
+        grouped.setdefault(len(run), []).extend(run)
+
+    total = max(intensity[nu > 1.0].sum(), 1e-9)
+    out = {}
+    for size, members in grouped.items():
+        in_phase = basis[:, members].sum(axis=1)
+        norm = np.linalg.norm(in_phase)
+        if norm == 0:
+            continue
+        overlap = (modes.T @ (in_phase / norm)) ** 2
+        weight = np.where((nu > 1.0) & (overlap > min_overlap), overlap * intensity, 0.0)
+        if weight.sum() <= 0:
+            continue
+        out[str(size)] = dict(
+            centre_cm=float((weight * nu).sum() / weight.sum()),
+            n_groups=len(members),
+            ir_share=float(weight.sum() / total),
+        )
+    return out
+
+
 def band_from_normal_modes(run, basis, hmw):
     """Where the observable band sits, using the whole molecule rather than a frozen ring.
 
@@ -390,6 +431,8 @@ def run_molecule(name, smiles, expect, n_bays):
         frequencies_cm=[float(x) for x in np.sort(nu_all)],
         ir_spectrum=[[f, i] for f, i in spectrum],
         oop_bands=[[f, i] for f, i in in_window],
+        class_bands=class_band_centres(mol, pairs, v_oop, hmw, spectrum),
+        # Kept as a diagnostic only. It is NOT the band: see class_band_centres.
         strongest_oop_cm=strongest[0],
         strongest_oop_km_mol=strongest[1],
         ch_stretch_local_cm=[float(x) for x in nu_str],
