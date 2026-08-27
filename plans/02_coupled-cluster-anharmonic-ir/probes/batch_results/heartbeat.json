@@ -1,7 +1,7 @@
 {
-  "written": "2026-08-27 13:44:01",
-  "pid": 18416,
+  "written": "2026-08-27 19:49:01",
+  "pid": 23896,
   "state": "running",
-  "current_job": "02_freq_phenanthrene",
-  "current_started": "2026-08-27 13:44:01"
+  "current_job": "06_freq_pyrene",
+  "current_started": "2026-08-27 19:49:01"
 }
