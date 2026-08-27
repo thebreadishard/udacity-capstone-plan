@@ -33,21 +33,34 @@ conflation, stated outright, in the document that set the scope.
 
 ## 2. The measured scaling
 
-Three full frequency jobs at B3LYP/6-31G* — geometry optimisation, Hessian and dipole
-derivatives, 8 threads — timed on this laptop today:
+Full frequency jobs at B3LYP/6-31G* — geometry optimisation, Hessian and dipole
+derivatives, 8 threads — timed on this laptop:
 
 | molecule | atoms | wall time |
 |---|---:|---:|
 | benzene | 12 | 8.1 min |
 | naphthalene | 18 | 28.0 min |
 | anthracene | 24 | 86.0 min |
+| **phenanthrene** | **24** | **40.1 min** |
 
-A log–log fit over those three points gives
+A log–log fit over the first three gives
 
 $$t \;[\text{min}] = 1.73\times10^{-3}\, N^{3.39}$$
 
-which reproduces the three inputs to within 10 %. Three points is thin, and the
-exponent should be re-fitted every time a larger molecule finishes.
+which reproduces those three to within 10 %.
+
+**And then phenanthrene arrived and broke it.** Anthracene and phenanthrene are
+isomers: same formula, same atom count, same basis-set size. One took 86 minutes
+and the other 40.
+
+**A factor of two, at identical size.** Cost depends on molecular *shape* — how
+quickly the geometry optimiser converges, how the density is distributed — and not
+on atom count alone. Every extrapolation below therefore carries a factor-of-two
+uncertainty that the fit does not express, and the honest reading of the tables is
+"this order of magnitude", never "this many hours".
+
+The exponent must be re-fitted as larger molecules land, and the fit needs a
+shape descriptor before it deserves to be called a model.
 
 ## 3. What 168 h/week buys — harmonic
 
@@ -134,17 +147,24 @@ locality probe already satisfies 1–4.
 
 ## 8. What must be measured next
 
-In this order, because each one bounds the next.
+Items 1 and 2 were answered the same afternoon this document was written, by the
+batch runner in §10. They are kept here with their answers because the answers
+change what the remaining items mean.
 
-1. **A coupled-cluster single point on benzene**, timed, at increasing basis size.
-   This is the missing number in the entire plan and the reason G1a exists.
-2. **A coupled-cluster Hessian on benzene**, or the measurement that it is not
-   affordable. §5.9 estimates ~2,600 single points; that estimate has never been tested
-   against a clock.
-3. **Re-fit the scaling exponent** once a 30-atom and a 36-atom job have finished. The
-   current 3.39 rests on three points spanning 12 to 24 atoms.
-4. **A memory ceiling measurement**: the largest molecule that fits in 31 GB at this
-   basis, found by trying rather than by estimating.
+1. ~~A coupled-cluster single point on benzene, timed.~~ **Done.** CCSD(T)/6-31G* runs
+   in **19.6 s**. The gold rung is not out of reach on this machine; it is out of reach
+   at a useful *basis*.
+2. ~~Whether it is affordable at all.~~ **Bounded.** CCSD(T) fails at 114 basis functions
+   even with 28 GB, and succeeds at 102. The wall is the (T) step's in-core $O^3V^3$
+   storage, not the method and not the molecule.
+3. **Where the wall sits in molecule size** at the basis that fits. Queued as
+   `01d_cc_naphthalene_631gs`, 156 basis functions, expected to fail and thereby
+   bracket the gold rung to within one molecule.
+4. **A shape term for the cost model**, or an explicit admission that there is none.
+5. **A memory ceiling measurement** for the DFT side: the largest molecule that fits in
+   31 GB, found by trying rather than by estimating.
+
+## 9. Effect on the frozen scope
 
 ## 9. Effect on the frozen scope
 
@@ -165,6 +185,33 @@ likely to be delivered.
 
 ---
 
+## 10. Measured the same afternoon, by the runner this document argued for
+
+Written before any of it existed, §8 called a timed coupled-cluster single point "the
+missing number in the entire plan". The batch runner produced four in six minutes.
+
+| job | basis functions | outcome |
+|---|---:|---|
+| CCSD(T) / cc-pVDZ, 24 GB | 114 | **failed** — not enough memory (ccsd) |
+| CCSD(T) / cc-pVDZ, 28 GB | 114 | **failed** — same |
+| CCSD / cc-pVDZ | 114 | **19.6 s** |
+| CCSD(T) / 6-31G* | 102 | **19.6 s**, E = −231.530413 |
+
+Read together: **CCSD(T) on benzene runs on this laptop in twenty seconds.** The wall
+is neither the method nor the molecule — it is the perturbative triples step, whose
+in-core storage goes as $O^3V^3$ and lands near 14 GB at 102 basis functions and 22 GB
+at 114. Drop the (T) and cc-pVDZ fits; keep the (T) and shrink the basis and it fits.
+
+So the gold rung exists on hardware already owned, at a basis this project would
+rightly call inadequate. Canonical CCSD(T) tops out near 110 basis functions here.
+
+**That is why the plan named ORCA and DLPNO — except that was an assumption then and
+is a measurement now.** It also sharpens what the freeze in §9 is waiting for: not
+whether coupled cluster runs, but whether a *local* coupled cluster reaches a basis
+worth the name.
+
+---
+
 ## Where the numbers come from
 
 | source | what it holds |
@@ -175,7 +222,10 @@ likely to be delivered.
 
 ## Open
 
-- The exponent 3.39 comes from three points and will move.
+- **The cost model has no shape term.** Anthracene and phenanthrene are isomers and
+  differ by a factor of two in wall time. Until the fit carries something beyond atom
+  count, every projection here is an order of magnitude rather than a number.
 - Every anharmonic figure in §4 assumes $6N$ Hessians, which is a textbook count and
   not something this project has verified for its own pipeline.
-- No coupled-cluster timing exists anywhere in this repository.
+- §3 and §4 predate the coupled-cluster measurements in §5 and have not been redone
+  with them.
