@@ -50,6 +50,7 @@ Deze gelden voor elk hoofdstuk dat hier bij komt.
 |---|---|---|---|
 | [01](01_Trillingen_Buren_en_Afstand.md) | Trillingen, buren en afstand | 2026-08-27 | De lokaliteitsmeting: krachtveld en DFT |
 | [02](02_Waartegen_Meet_Je.md) | Waartegen meet je eigenlijk? | 2026-08-27 | Wat "fout" betekent als er geen bekend antwoord is |
+| [03](03_Verkeerde_Trilling.md) | Ik keek naar de verkeerde trilling | 2026-08-27 | **Corrigeert 01.** De controle tegen echte metingen |
 
 ## Hoe voeg je er een toe
 
