@@ -64,6 +64,7 @@ TOLERANCE_CM = 10.0   # the project's frozen band-centre tolerance
 BAY_HH_ANG = 2.5      # non-neighbouring CH pair closer than this sits across a bay
 OOP_WINDOW = (600.0, 1000.0)   # where CH out-of-plane bands live
 MIN_IR_KM_MOL = 1.0            # below this a mode is not a band anyone measures
+SYMMETRIZE_TOL = 1e-2          # snap tolerance for symmetry="auto"; see psi4_geometry
 
 RESULTS = Path(__file__).parent / "results_dft_locality"
 
@@ -135,15 +136,26 @@ def rdkit_molecule(name, smiles, expect):
     return mol
 
 
-def psi4_geometry(mol):
-    """XYZ block in RDKit atom order, with reorientation disabled so indices survive."""
+def psi4_geometry(mol, symmetry="c1"):
+    """XYZ block in RDKit atom order, with reorientation disabled so indices survive.
+
+    symmetry="auto" instead snaps the MMFF geometry onto its nearest point group and
+    lets Psi4 use it. The MMFF coordinates are never exactly symmetric, so without
+    that snap Psi4 detects C1 for every molecule here and computes the whole Hessian
+    without symmetry.
+    """
     conf = mol.GetConformer()
     lines = [
         f" {a.GetSymbol()} {p.x:14.8f} {p.y:14.8f} {p.z:14.8f}"
         for a, p in ((a, conf.GetAtomPosition(a.GetIdx())) for a in mol.GetAtoms())
     ]
-    lines += ["symmetry c1", "no_reorient", "no_com"]
-    return psi4.geometry("\n".join(lines) + "\n")
+    if symmetry != "auto":
+        lines += [f"symmetry {symmetry}", "no_reorient", "no_com"]
+    pmol = psi4.geometry("\n".join(lines) + "\n")
+    if symmetry == "auto":
+        pmol.symmetrize(SYMMETRIZE_TOL)
+        pmol.update_geometry()
+    return pmol
 
 
 # ------------------------------------------------------------------- vibrations
@@ -337,9 +349,9 @@ def band_from_normal_modes(run, basis, hmw):
     )
 
 
-def run_molecule(name, smiles, expect, n_bays):
+def run_molecule(name, smiles, expect, n_bays, symmetry="c1"):
     mol = rdkit_molecule(name, smiles, expect)
-    pmol = psi4_geometry(mol)
+    pmol = psi4_geometry(mol, symmetry)
 
     if [a.GetSymbol() for a in mol.GetAtoms()] != [pmol.symbol(i) for i in range(pmol.natom())]:
         raise RuntimeError(f"{name}: atom order diverged between RDKit and Psi4")

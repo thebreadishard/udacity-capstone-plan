@@ -104,15 +104,17 @@ def job_freq(params):
     # Importing the module does not configure psi4; only its main() did, and the
     # runner never calls that. Without this every job dies on "Unable to find a
     # basis set", which is a two-second failure that looks exactly like a real one.
-    psi4.set_output_file(str(OUT / f"{params['name']}_freq.log"), False)
+    psi4.set_output_file(str(OUT / f"{params.get('log', params['name'])}_freq.log"), False)
     psi4.set_memory(f"{params.get('memory_gb', 12)} GB")
     psi4.set_num_threads(params.get("threads", 8))
     psi4.set_options({"scf_type": "df", "basis": dft.BASIS,
-                      "g_convergence": "gau", "geom_maxiter": 200})
+                      "g_convergence": params.get("g_convergence", "gau"),
+                      "geom_maxiter": 200})
 
     data, arrays = dft.run_molecule(
         params["name"], params["smiles"],
-        tuple(params["formula"]), params.get("bays", 0))
+        tuple(params["formula"]), params.get("bays", 0),
+        params.get("symmetry", "c1"))
     return data, arrays
 
 
