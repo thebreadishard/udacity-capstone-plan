@@ -256,6 +256,40 @@ def perplexity(weights):
 
 # ------------------------------------------------------------------ one molecule
 
+def band_from_normal_modes(run, basis, hmw):
+    """Where the observable band sits, using the whole molecule rather than a frozen ring.
+
+    The local-basis 'bright' frequency freezes every atom outside the run, and
+    measurement against NIST spectra showed that throws away most of the
+    molecule-to-molecule variation: naphthalene and anthracene quartets differ by
+    56 cm-1 in the lab and by 6 cm-1 in the frozen model.
+
+    So instead: build the in-phase combination of the run's local wags, and ask how
+    the real normal modes carry it.
+
+    Returns the best-matching mode, the overlap-weighted centroid, and the overlap
+    itself. A low overlap means the in-phase character is smeared over many modes
+    and 'the band' is not one mode at all -- which is itself worth reporting.
+    """
+    in_phase = basis[:, run].sum(axis=1)
+    in_phase /= np.linalg.norm(in_phase)
+
+    nu, modes = frequencies(hmw)
+    overlaps = (modes.T @ in_phase) ** 2
+    real = nu > 1.0
+    overlaps = np.where(real, overlaps, 0.0)
+
+    best = int(np.argmax(overlaps))
+    total = overlaps.sum()
+    centroid = float((overlaps * nu).sum() / total) if total > 0 else float("nan")
+    return dict(
+        band_best_mode=float(nu[best]),
+        band_centroid=float(centroid),
+        max_overlap=float(overlaps[best]),
+        overlap_captured=float(total),
+    )
+
+
 def run_molecule(name, smiles, expect, n_bays):
     mol = rdkit_molecule(name, smiles, expect)
     pmol = psi4_geometry(mol)
@@ -308,14 +342,16 @@ def run_molecule(name, smiles, expect, n_bays):
         block = w_oop[np.ix_(run, run)]
         eigvals, eigvecs = np.linalg.eigh(block)
         bright = int(np.argmax(np.abs(eigvecs.sum(axis=0))))
-        runs.append(dict(
+        entry = dict(
             size=len(run),
             bay=bool(bays & set(run)),
             nu0=float(nu_oop[run].mean()),
             beta=(float(K_AU**2 * block[0, 1] / (2 * nu_oop[run[0]]))
                   if len(run) > 1 else None),
             bright=float(K_AU * np.sqrt(abs(eigvals[bright]))),
-        ))
+        )
+        entry.update(band_from_normal_modes(run, v_oop, hmw))
+        runs.append(entry)
 
     topo = Chem.GetDistanceMatrix(mol)
     decay = [
@@ -336,10 +372,22 @@ def run_molecule(name, smiles, expect, n_bays):
         stretch_perplexity=1.0 + float(np.mean([perplexity(np.abs(r)) for r in coup_str])),
         stretch_decay=decay,
         oop_runs=runs,
-    )
+    ), dict(hessian_au=hess, coords_bohr=coords_bohr, masses_amu=masses,
+            pairs=np.array(pairs))
 
 
 # ------------------------------------------------------------------- the report
+
+# Measured NIST gas-phase band positions, from verify_oop_bands_2026-08-27.py.
+# These are what the calculation has to reproduce; the 890/833/787/745 set are
+# interstellar feature centres, not molecular constants, and are not used here.
+EXPERIMENT = {
+    ("benzene", 6): 673.0,
+    ("naphthalene", 4): 781.5,
+    ("anthracene", 4): 725.6,
+    ("anthracene", 1): 875.2,
+}
+
 
 def report(results):
     print("\n" + "=" * 72)
@@ -375,6 +423,31 @@ def report(results):
     by_class = {}
     for run in runs:
         by_class.setdefault(run["size"], []).append(run)
+
+    print("\n\nTEST 0 -- against measured spectra, frozen ring vs whole molecule")
+    print("The frozen local basis lost most of the molecule-to-molecule variation.")
+    print("This is whether using the real normal modes recovers it.\n")
+    print(f"{'molecule':<14}{'class':>9}{'frozen':>9}{'best mode':>11}{'centroid':>10}"
+          f"{'overlap':>9}{'experiment':>12}")
+    print("-" * 74)
+    errors = {"frozen": [], "best": [], "centroid": []}
+    for run in sorted(runs, key=lambda r: (r["molecule"], -r["size"])):
+        exp = EXPERIMENT.get((run["molecule"], run["size"]))
+        if exp is None:
+            continue
+        for key, val in (("frozen", run["bright"]), ("best", run.get("band_best_mode")),
+                         ("centroid", run.get("band_centroid"))):
+            if val is not None:
+                errors[key].append(abs(val - exp))
+        print(f"{run['molecule']:<14}{CLASS_NAME[run['size']]:>9}{run['bright']:>9.1f}"
+              f"{run.get('band_best_mode', float('nan')):>11.1f}"
+              f"{run.get('band_centroid', float('nan')):>10.1f}"
+              f"{run.get('max_overlap', float('nan')):>9.2f}{exp:>12.1f}")
+    for key, label in (("frozen", "frozen local basis"), ("best", "best normal mode"),
+                       ("centroid", "overlap centroid")):
+        if errors[key]:
+            print(f"\n  mean |error| vs experiment, {label:<20} "
+                  f"{np.mean(errors[key]):.1f} cm^-1")
 
     print("\n\nTEST 1 -- the CH out-of-plane ladder")
     print(f"{'class':>9}{'n':>4}{'DFT':>10}{'MMFF':>10}{'literature':>12}{'DFT-lit':>10}")
@@ -461,7 +534,10 @@ def main():
     results = []
     for name, smiles, expect, n_bays in MOLECULES:
         path = RESULTS / f"{name}.json"
-        if path.exists():
+        raw = RESULTS / f"{name}.npz"
+        # Both must exist: the .npz is what makes re-analysis free, and a result
+        # without it would force another hour of Hessian to answer a new question.
+        if path.exists() and raw.exists():
             print(f"{name:<14} cached")
             results.append(json.loads(path.read_text(encoding="utf-8")))
             continue
@@ -469,12 +545,13 @@ def main():
         print(f"{name:<14} running ...", end=" ", flush=True)
         started = time.perf_counter()
         try:
-            data = run_molecule(name, smiles, expect, n_bays)
+            data, arrays = run_molecule(name, smiles, expect, n_bays)
         except Exception as exc:
             print(f"FAILED after {(time.perf_counter()-started)/60:.1f}m: {type(exc).__name__}: {exc}")
             psi4.core.clean()
             continue
         path.write_text(json.dumps(data, indent=2), encoding="utf-8")
+        np.savez_compressed(raw, **arrays)
         print(f"done in {(time.perf_counter()-started)/60:.1f}m "
               f"({data['n_imaginary']} imaginary)")
         results.append(data)
