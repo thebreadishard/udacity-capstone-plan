@@ -27,3 +27,8 @@ plans/*/probes/results_dft_locality/*.npz
 plans/*/probes/batch_results/*.npz
 plans/*/probes/batch_results/*.log
 !plans/*/probes/batch_results/*.json
+
+# The queue carries the pre-registered reason for every job. A criterion that is not
+# in version control is not pre-registered.
+!plans/*/probes/jobs.json
+plans/*/probes/*.log
