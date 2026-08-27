@@ -29,6 +29,69 @@ in Module 08**, never as a queued project.
 
 ---
 
+## 0. Why anyone wants this
+
+**Added 2026-08-27.** This file said what the thesis delivers and how it is gated, but never why the
+question exists. A defense that cannot answer "so what" in two sentences fails regardless of how
+clean the error budget is. Sources are named; anything unverified is marked as such.
+
+**The observable.** Infrared emission from interstellar dust shows a recurring set of bands near
+3.3, 6.2, 7.7, 8.6, 11.2 and 12.7 μm, attributed to polycyclic aromatic hydrocarbons. JWST now
+resolves them spatially in photodissociation regions such as the Orion Bar, so the bands are no
+longer one integrated spectrum per sightline but a map that changes with distance from the
+illuminating star.
+
+**What astronomers actually extract from them, and what they cannot.** Not molecule names. Hundreds
+of PAHs and their ions share the same band pattern, so the spectrum constrains a **class** — edge
+topology, charge state, size bin, aliphatic fraction — and leaves the isomer open. This is not a
+temporary limitation of the analysis; it is what the data can carry. Wang (2026) is the honest form
+of the claim: a classifier over 23,000 spectra assigning size and charge **categories**, not species
+(item 15 in [Relevant_Scientific_Papers.md](Relevant_Scientific_Papers.md)).
+
+**Why band positions in particular.** The 11–15 μm region is CH out-of-plane bending, and it splits
+by how many hydrogens sit adjacent on a ring edge: solo, duo, trio, quartet. Edge shape is what
+survives from molecule to spectrum, so this region is the field's structural probe. PAHdb and the
+PAH-IR literature have been organised around that classification since the 1980s. Intensities and
+band envelopes are already well served — Mai et al. (2025) published temperature-dependent envelopes
+for 1,704 PAHdb species up to C216 (item 12) — which is why this thesis is scored on **positions**.
+
+**Why a window of ~10 cm⁻¹ and not a line.** The astrophysical signal is emission from a mixture, at
+a distribution of temperatures and charge states, so a single carrier's rotational fine structure is
+never recovered. Sub-wavenumber accuracy has no observational meaning here. Ten wavenumbers is
+roughly where **class discrimination** lives: close enough to tell one edge type from another, wide
+enough to be reachable. The tolerance is defended from the observation side here and from the
+method side in §1, where scaled-harmonic B3LYP at ~5 cm⁻¹ MAE (item 14) sets the bar an anharmonic
+method must clear to have earned its cost.
+
+**What blocks it.** The molecules that matter astronomically are large, and the two things that would
+make their band positions trustworthy both scale badly. Canonical CCSD(T) frequencies stop being
+computable very early — measured in this repository on 2026-08-27, the wall sits **between benzene
+and naphthalene** on 31 GB, on the (T) step's in-core storage. A global quartic force field plus
+GVPT2 grows with \(3N-6\) in both cost and resonance count. So nobody computes a large PAH honestly;
+they compute a small one and assume the answer carries.
+
+**What this repository has measured about that assumption, and why it matters here.** The assumption
+is that band positions are **local** — that an edge motif carries its band from a small molecule into
+a large one. Measured on 2026-08-27 at B3LYP/6-31G*, it does not, at this tolerance: the CH
+out-of-plane band of a single adjacency class spreads 24–43 cm⁻¹ across molecules, and a "bay"
+correction measured in two independent controlled isomer pairs gives +6.5 and +16.8 cm⁻¹ — a
+disagreement equal to the entire tolerance.
+
+> **Open and load-bearing (2026-08-27).** Argon-matrix data reported for the same three C₁₈H₁₂
+> isomers cluster near 741–748 cm⁻¹, i.e. the measured band barely moves, while B3LYP/6-31G* puts
+> them at 735.0, 733.8 and 751.8. If that holds, the conclusion "the bay is not additive" survives
+> and is strengthened, but the +16.8 cm⁻¹ step it was argued from is an artefact of the functional.
+> The matrix numbers are cited third-hand (item 16) and are **not yet verified against the primary
+> literature.** No sentence in this repository may rest on them until they are.
+
+**The consequence for the deliverable.** If locality holds, the method scales and the thesis ships
+band positions for molecules nobody can compute directly. If it fails, the thesis ships the
+**measured size at which it fails**, which the field currently asserts rather than measures. Both are
+results; only one of them is a surprise. This is why §1's tolerance, §2's transfer residual and §5's
+limitations section are not hedging — they are the deliverable in the case that is more likely.
+
+---
+
 ## 1. The deliverable: R3, and only R3
 
 Three readings of "chemically precise IR spectra" exist. Naming which one is meant is not pedantry;
