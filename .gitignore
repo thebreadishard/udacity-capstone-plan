@@ -19,3 +19,7 @@ plans/*/probes/psi4_benchmark.log
 timer.dat
 psi.*.clean
 *.molden
+
+# The probe results ARE the measurement, so they override the blanket *.json rule
+!plans/*/probes/results_dft_locality/*.json
+plans/*/probes/results_dft_locality/run_log*.txt
