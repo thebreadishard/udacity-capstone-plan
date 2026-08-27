@@ -69,21 +69,25 @@ RESULTS = Path(__file__).parent / "results_dft_locality"
 
 # (name, SMILES, (n_C, n_H), bays) -- bay count is documentation, not used in logic
 #
-# Chosen for TWO things, because the first pass was chosen for only one and the
-# transfer test came back void. A class must appear in at least two different host
-# molecules or its spread measures symmetry, not transferability.
-#   bays      : phenanthrene 1, triphenylene 3, chrysene 1 -> does the penalty scale?
-#   transfer  : solo in anthracene + tetracene; quartet in naphthalene + anthracene
-#               + tetracene; duo in phenanthrene + pyrene + chrysene
+# ORDERED BY WHAT EACH ONE DECIDES, not by size. With IR intensities a Hessian
+# costs about 2.3x a bare one, so the full set is ~11 hours and the order is the
+# difference between an answer this afternoon and an answer tomorrow.
+#
+#   1-3  done: the three with measured NIST spectra, which fixed the method
+#   4    phenanthrene  1 bay   -> re-measures the bay penalty against naphthalene
+#                                 and anthracene, whose quartets are bay-free
+#   5    triphenylene  3 bays  -> does the penalty scale with bay count?
+#   6    chrysene      1 bay   -> second independent single-bay point
+#   7-8  pyrene, tetracene     -> transfer coverage for duo/trio/solo, no bays
 MOLECULES = [
     ("benzene",      "c1ccccc1",                     (6, 6),   0),
     ("naphthalene",  "c1ccc2ccccc2c1",               (10, 8),  0),
     ("anthracene",   "c1ccc2cc3ccccc3cc2c1",         (14, 10), 0),
     ("phenanthrene", "c1ccc2c(c1)ccc1ccccc12",       (14, 10), 1),
+    ("triphenylene", "c1ccc2c(c1)c1ccccc1c1ccccc21", (18, 12), 3),
+    ("chrysene",     "c1ccc2c(c1)ccc1c2ccc2ccccc21", (18, 12), 1),
     ("pyrene",       "c1cc2ccc3cccc4ccc(c1)c2c34",   (16, 10), 0),
     ("tetracene",    "c1ccc2cc3cc4ccccc4cc3cc2c1",   (18, 12), 0),
-    ("chrysene",     "c1ccc2c(c1)ccc1c2ccc2ccccc21", (18, 12), 1),
-    ("triphenylene", "c1ccc2c(c1)c1ccccc1c1ccccc21", (18, 12), 3),
 ]
 
 CLASS_NAME = {1: "solo", 2: "duo", 3: "trio", 4: "quartet", 5: "quintet", 6: "sextet"}
@@ -512,38 +516,33 @@ def report(results):
             print(f"{CLASS_NAME[size]:>9}{label:>11}{len(vals):>4}{hosts:>7}"
                   f"{vals.mean():>9.1f}{spread:>9.1f}   {verdict}")
 
-    print("\n\nTEST 3 -- THE ONE THAT DECIDES IT: the bay penalty, class by class")
-    print("Pooling classes would compare different molecule mixtures between the two")
-    print("runs and blame the difference on electrons. So: like for like only.\n")
-    print(f"{'class':>9}{'bay-free':>10}{'with bay':>10}{'DFT':>9}{'MMFF':>9}{'change':>9}")
-    print("-" * 56)
-    comparable = []
-    for size in sorted(by_class):
-        free = [r["bright"] for r in by_class[size] if not r["bay"]]
-        bayed = [r["bright"] for r in by_class[size] if r["bay"]]
-        if not (free and bayed):
+    print("\n\nTEST 3 -- THE BAY PENALTY, re-measured from the band that absorbs")
+    print("The earlier -11.2 cm^-1 came from the frozen local basis, the same")
+    print("discredited quantity as the withdrawn transfer claim. This is the")
+    print("strongest IR band, molecule by molecule, which is what a spectrum shows.\n")
+    scale_here = scale or 1.0
+    print(f"{'molecule':<14}{'bays':>6}{'strongest band':>16}{'scaled':>9}{'km/mol':>9}")
+    print("-" * 54)
+    for r in sorted(results, key=lambda r: (r["n_bays_expected"], r["n_c"])):
+        band = r.get("strongest_oop_cm")
+        if band is None or not np.isfinite(band):
             continue
-        dft_pen = float(np.mean(bayed) - np.mean(free))
-        mmff_pen = -MMFF_BAY_BY_CLASS.get(size, np.nan)
-        comparable.append((size, dft_pen, mmff_pen))
-        print(f"{CLASS_NAME[size]:>9}{np.mean(free):>10.1f}{np.mean(bayed):>10.1f}"
-              f"{dft_pen:>+9.1f}{mmff_pen:>+9.1f}{dft_pen - mmff_pen:>+9.1f}")
+        print(f"{r['molecule']:<14}{r['n_bays_expected']:>6}{band:>16.1f}"
+              f"{band * scale_here:>9.1f}{r.get('strongest_oop_km_mol', 0):>9.1f}")
 
-    if comparable:
-        changes = [abs(d - m) for _, d, m in comparable if np.isfinite(m)]
-        print(f"\n  largest like-for-like change on adding electrons: {max(changes):.1f} cm^-1")
-        if max(changes) < 5.0:
-            print("  The penalty survived. The bay effect is MECHANICAL, and the atlas fix")
-            print("  is simply that bays are their own motifs.")
-        else:
-            print("  The penalty moved. Electrons contribute to the bay, so it is not")
-            print("  merely a steric clash and locality is weaker than MMFF said.")
-        print(f"\n  Classes with both a bay-free and a bay-bearing run: {len(comparable)}.")
-        if len(comparable) < 2:
-            print("  One class is one data point. This does not yet separate the two")
-            print("  explanations; triphenylene (3 bays) is what would.")
+    free = [r for r in results if r["n_bays_expected"] == 0
+            and np.isfinite(r.get("strongest_oop_cm", float("nan")))]
+    bayed = [r for r in results if r["n_bays_expected"] > 0
+             and np.isfinite(r.get("strongest_oop_cm", float("nan")))]
+    if bayed:
+        print("\n  Bay-bearing molecules present. A penalty is only meaningful against")
+        print("  a bay-free molecule of the SAME adjacency class and similar size,")
+        print("  so read the table above rather than a single pooled number:")
+        print("  naphthalene and anthracene are the bay-free quartet references.")
     else:
-        print("  No class contained both a bay-free and a bay-bearing run: nothing to compare.")
+        print("\n  No bay-bearing molecule has finished yet, so the penalty is not")
+        print("  re-measured and the old 11.2 cm^-1 figure stands WITHDRAWN, not")
+        print("  replaced. Phenanthrene (1 bay) and triphenylene (3 bays) decide it.")
 
     print("\n" + "=" * 72)
 
