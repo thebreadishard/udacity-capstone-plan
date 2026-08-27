@@ -62,6 +62,8 @@ SEED = 0xC0FFEE
 
 TOLERANCE_CM = 10.0   # the project's frozen band-centre tolerance
 BAY_HH_ANG = 2.5      # non-neighbouring CH pair closer than this sits across a bay
+OOP_WINDOW = (600.0, 1000.0)   # where CH out-of-plane bands live
+MIN_IR_KM_MOL = 1.0            # below this a mode is not a band anyone measures
 
 RESULTS = Path(__file__).parent / "results_dft_locality"
 
@@ -310,8 +312,23 @@ def run_molecule(name, smiles, expect, n_bays):
     t_opt = time.perf_counter() - t0
 
     t0 = time.perf_counter()
-    hess = np.array(psi4.hessian(FUNCTIONAL, molecule=pmol))
+    # frequency() rather than hessian(): it also produces dipole derivatives, and
+    # therefore IR intensities, which is what lets the band be picked the way a
+    # spectrometer picks it instead of by a hand-built assignment rule.
+    _, wfn = psi4.frequency(FUNCTIONAL, molecule=pmol, return_wfn=True)
     t_hess = time.perf_counter() - t0
+    hess = np.array(wfn.hessian())
+
+    vib = wfn.frequency_analysis
+    omega = np.asarray(vib["omega"].data).real
+    ir_int = np.asarray(vib["IR_intensity"].data).real
+    is_vib = np.asarray(vib["TRV"].data) == "V"
+    spectrum = sorted(
+        (float(f), float(i)) for f, i in zip(omega[is_vib], ir_int[is_vib])
+        if i >= MIN_IR_KM_MOL
+    )
+    in_window = [(f, i) for f, i in spectrum if OOP_WINDOW[0] < f < OOP_WINDOW[1]]
+    strongest = max(in_window, key=lambda t: t[1]) if in_window else (float("nan"),) * 2
 
     coords_bohr = np.array(pmol.geometry())
     coords_ang = coords_bohr * BOHR_TO_ANG
@@ -367,6 +384,10 @@ def run_molecule(name, smiles, expect, n_bays):
         n_imaginary=int(np.sum(nu_all < -1.0)),
         n_near_zero=int(np.sum(np.abs(nu_all) < 1.0)),
         frequencies_cm=[float(x) for x in np.sort(nu_all)],
+        ir_spectrum=[[f, i] for f, i in spectrum],
+        oop_bands=[[f, i] for f, i in in_window],
+        strongest_oop_cm=strongest[0],
+        strongest_oop_km_mol=strongest[1],
         ch_stretch_local_cm=[float(x) for x in nu_str],
         ch_oop_local_cm=[float(x) for x in nu_oop],
         stretch_perplexity=1.0 + float(np.mean([perplexity(np.abs(r)) for r in coup_str])),
@@ -424,30 +445,39 @@ def report(results):
     for run in runs:
         by_class.setdefault(run["size"], []).append(run)
 
-    print("\n\nTEST 0 -- against measured spectra, frozen ring vs whole molecule")
-    print("The frozen local basis lost most of the molecule-to-molecule variation.")
-    print("This is whether using the real normal modes recovers it.\n")
-    print(f"{'molecule':<14}{'class':>9}{'frozen':>9}{'best mode':>11}{'centroid':>10}"
-          f"{'overlap':>9}{'experiment':>12}")
-    print("-" * 74)
-    errors = {"frozen": [], "best": [], "centroid": []}
-    for run in sorted(runs, key=lambda r: (r["molecule"], -r["size"])):
-        exp = EXPERIMENT.get((run["molecule"], run["size"]))
-        if exp is None:
+    print("\n\nTEST 0 -- against measured spectra, band picked by IR intensity")
+    print("No assignment rule: the band is the strongest absorption in the window,")
+    print("which is how a spectrometer picks it too.\n")
+
+    scale = None
+    bench = [r for r in results if r["molecule"] == "benzene"]
+    if bench and np.isfinite(bench[0].get("strongest_oop_cm", float("nan"))):
+        # Fitted on benzene ALONE, so every other molecule below is a held-out test.
+        scale = EXPERIMENT[("benzene", 6)] / bench[0]["strongest_oop_cm"]
+        print(f"Harmonic scale factor fitted on benzene only: {scale:.4f}\n")
+
+    print(f"{'molecule':<14}{'harmonic':>10}{'scaled':>9}{'experiment':>12}"
+          f"{'error':>8}{'km/mol':>9}{'bands':>7}")
+    print("-" * 69)
+    residuals = []
+    for r in results:
+        band = r.get("strongest_oop_cm")
+        if band is None or not np.isfinite(band):
             continue
-        for key, val in (("frozen", run["bright"]), ("best", run.get("band_best_mode")),
-                         ("centroid", run.get("band_centroid"))):
-            if val is not None:
-                errors[key].append(abs(val - exp))
-        print(f"{run['molecule']:<14}{CLASS_NAME[run['size']]:>9}{run['bright']:>9.1f}"
-              f"{run.get('band_best_mode', float('nan')):>11.1f}"
-              f"{run.get('band_centroid', float('nan')):>10.1f}"
-              f"{run.get('max_overlap', float('nan')):>9.2f}{exp:>12.1f}")
-    for key, label in (("frozen", "frozen local basis"), ("best", "best normal mode"),
-                       ("centroid", "overlap centroid")):
-        if errors[key]:
-            print(f"\n  mean |error| vs experiment, {label:<20} "
-                  f"{np.mean(errors[key]):.1f} cm^-1")
+        exp = next((v for (m, _), v in EXPERIMENT.items() if m == r["molecule"]), None)
+        scaled = band * scale if scale else float("nan")
+        err = f"{scaled - exp:+.1f}" if exp and scale else "-"
+        if exp and scale and r["molecule"] != "benzene":
+            residuals.append(scaled - exp)
+        print(f"{r['molecule']:<14}{band:>10.1f}{scaled:>9.1f}"
+              f"{(f'{exp:.1f}' if exp else '-'):>12}{err:>8}"
+              f"{r.get('strongest_oop_km_mol', float('nan')):>9.1f}"
+              f"{len(r.get('oop_bands', [])):>7}")
+    if residuals:
+        print(f"\n  held-out mean |error| after scaling: "
+              f"{np.mean(np.abs(residuals)):.1f} cm^-1 over {len(residuals)} molecules")
+        print("  Benzene is excluded: the scale factor was fitted on it, so its")
+        print("  residual is zero by construction and would flatter the average.")
 
     print("\n\nTEST 1 -- the CH out-of-plane ladder")
     print(f"{'class':>9}{'n':>4}{'DFT':>10}{'MMFF':>10}{'literature':>12}{'DFT-lit':>10}")
