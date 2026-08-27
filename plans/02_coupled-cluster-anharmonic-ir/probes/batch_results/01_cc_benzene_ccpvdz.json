@@ -1,0 +1,7 @@
+{
+  "_failed": true,
+  "_error": "RuntimeError: \nFatal Error: not enough memory (ccsd).\nError occurred in file: C:/bld/psi4_1786163301228/work/psi4/src/psi4/fnocc/df_ccsd.cc on line: 629\n",
+  "_traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\thebr\\Documents\\CapstonePlan\\plans\\02_coupled-cluster-anharmonic-ir\\probes\\batch_runner.py\", line 200, in main\n    data, arrays = KINDS[job[\"kind\"]](job[\"params\"])\n                   ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^\n  File \"C:\\Users\\thebr\\Documents\\CapstonePlan\\plans\\02_coupled-cluster-anharmonic-ir\\probes\\batch_runner.py\", line 122, in job_cc_timing\n    energy = psi4.energy(params[\"method\"] + \"/\" + params[\"basis\"], molecule=mol)\n  File \"C:\\Users\\thebr\\.conda\\envs\\qc\\Lib\\site-packages\\psi4\\driver\\driver.py\", line 533, in energy\n    wfn = procedures['energy'][lowername](lowername, molecule=molecule, **kwargs)\n  File \"C:\\Users\\thebr\\.conda\\envs\\qc\\Lib\\site-packages\\psi4\\driver\\procrouting\\proc.py\", line 992, in select_ccsd_t_\n    return func(name, **kwargs)\n  File \"C:\\Users\\thebr\\.conda\\envs\\qc\\Lib\\site-packages\\psi4\\driver\\procrouting\\proc.py\", line 5609, in run_fnodfcc\n    fnocc_wfn = core.fnocc(ref_wfn)\nRuntimeError: \nFatal Error: not enough memory (ccsd).\nError occurred in file: C:/bld/psi4_1786163301228/work/psi4/src/psi4/fnocc/df_ccsd.cc on line: 629\n\n",
+  "seconds": 2.7511770999990404,
+  "started": "2026-08-27 13:34:29"
+}
