@@ -89,6 +89,7 @@ MOLECULES = [
     ("chrysene",     "c1ccc2c(c1)ccc1c2ccc2ccccc21", (18, 12), 1),
     ("pyrene",       "c1cc2ccc3cccc4ccc(c1)c2c34",   (16, 10), 0),
     ("tetracene",    "c1ccc2cc3cc4ccccc4cc3cc2c1",   (18, 12), 0),
+    ("coronene",     "c1cc2ccc3ccc4ccc5ccc6ccc1c1c2c3c4c5c61", (24, 12), 0),
 ]
 
 CLASS_NAME = {1: "solo", 2: "duo", 3: "trio", 4: "quartet", 5: "quintet", 6: "sextet"}
