@@ -72,17 +72,23 @@ they compute a small one and assume the answer carries.
 
 **What this repository has measured about that assumption, and why it matters here.** The assumption
 is that band positions are **local** — that an edge motif carries its band from a small molecule into
-a large one. Measured on 2026-08-27 at B3LYP/6-31G*, it does not, at this tolerance: the CH
-out-of-plane band of a single adjacency class spreads 24–43 cm⁻¹ across molecules, and a "bay"
-correction measured in two independent controlled isomer pairs gives +6.5 and +16.8 cm⁻¹ — a
-disagreement equal to the entire tolerance.
+a large one. Measured on 2026-08-27 at B3LYP/6-31G* and checked against laboratory data on
+2026-08-28, it does not, at this tolerance. Five molecules that all carry quartet edges put that one
+class's band across a **60.2 cm⁻¹ range in the argon-matrix measurements** — naphthalene 785.8,
+anthracene 725.6, phenanthrene 735.0, tetracene 742.9, chrysene 761.0 cm⁻¹ — against a matrix
+tolerance of 15. The calculated spread, 43.4 cm⁻¹, is *smaller* than the measured one, so this is not
+a deficiency of the functional. Laboratory values from the PAHdb experimental library (item 16),
+reproduced by [pahdb_experimental_2026-08-28.py](../probes/pahdb_experimental_2026-08-28.py).
 
-> **Open and load-bearing (2026-08-27).** Argon-matrix data reported for the same three C₁₈H₁₂
-> isomers cluster near 741–748 cm⁻¹, i.e. the measured band barely moves, while B3LYP/6-31G* puts
-> them at 735.0, 733.8 and 751.8. If that holds, the conclusion "the bay is not additive" survives
-> and is strengthened, but the +16.8 cm⁻¹ step it was argued from is an artefact of the functional.
-> The matrix numbers are cited third-hand (item 16) and are **not yet verified against the primary
-> literature.** No sentence in this repository may rest on them until they are.
+> **Corrected 2026-08-28.** An earlier version of this passage also claimed the "bay" correction was
+> non-additive because two one-bay steps came out +6.5 and +16.8 cm⁻¹, "a disagreement equal to the
+> entire tolerance". That reasoning was wrong. The claim under test is that *one constant* serves
+> every bay, and fitting one constant to two points absorbs half their difference: the residual is
+> 5.2 cm⁻¹, inside tolerance. The laboratory says the same (steps +9.4 and +18.1, constant +13.8,
+> residual 4.4). **On two pairs, additivity survives.** What breaks it is triphenylene, where three
+> bays move the band by −1.2 cm⁻¹ — and triphenylene has **no experimental spectrum** in the PAHdb
+> laboratory library, so that half of the argument is calculation-only. The class-spread result
+> above needs no fitted parameter, which is why it is the one that carries weight.
 
 **The consequence for the deliverable.** If locality holds, the method scales and the thesis ships
 band positions for molecules nobody can compute directly. If it fails, the thesis ships the
