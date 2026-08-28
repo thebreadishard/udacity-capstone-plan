@@ -236,6 +236,109 @@ def main():
             print(f"{name:<14}{CLASS_NAME[size]:>9}{ours:>10.1f}{nu:>13.1f}"
                   f"{inten:>9.1f}{ours - nu:>+8.1f}")
 
+    what_a_band_tells_you(dft, bay, loudest)
+
+
+def what_a_band_tells_you(dft, bay, loudest):
+    """Two different questions get two different answers, and both are in the data.
+
+    Astronomy asks: given a band position, which EDGE TYPE is out there? This thesis
+    asks: given an edge type, WHERE is the band, to ten wavenumbers? The first can
+    succeed while the second fails, and the numbers below say that it does.
+    """
+    print("\n\n" + "=" * 66)
+    print("WHAT A BAND POSITION CAN AND CANNOT TELL YOU")
+    print("=" * 66)
+
+    # Which class owns the loudest band is not decided by eye: it is the class the
+    # calculation says carries the most infrared intensity. Edge counts are PAHdb's
+    # own, not this repository's, so the classification is an independent source.
+    print("\nAssigning the loudest laboratory band to a class. The owner is the class")
+    print("carrying the most computed infrared intensity; edge counts are PAHdb's.\n")
+    print(f"{'molecule':<14}{'PAHdb edges':>26}{'owner':>9}{'share':>7}{'lab band':>10}")
+    print("-" * 68)
+
+    owned = {}
+    for name, (uid, _) in LAB.items():
+        stem = COMPUTED.get(name)
+        if stem is None or not stem.with_suffix(".npz").exists():
+            continue
+        data = json.loads(stem.with_suffix(".json").read_text(encoding="utf-8"))
+        bands = bay.class_bands(dft, data, stem.with_suffix(".npz"))
+        owner = max(bands, key=lambda s: bands[s]["share_of_total_intensity"])
+        share = bands[owner]["share_of_total_intensity"]
+        edges = ", ".join(f"{bands[s]['n_groups']} {CLASS_NAME[s]}"
+                          for s in sorted(bands, reverse=True))
+        owned.setdefault(owner, []).append((name, loudest[name][0]))
+        print(f"{name:<14}{edges:>26}{CLASS_NAME[owner]:>9}{share:>6.0%}"
+              f"{loudest[name][0]:>10.1f}")
+
+    print("\n\nQUESTION 1 - can you read the EDGE TYPE off a band position?")
+    print("This is what astronomers do with the 11-15 micron region.\n")
+    print(f"{'class':>9}{'molecules':>11}{'window':>18}{'width':>8}")
+    print("-" * 47)
+    windows = {}
+    for size in sorted(owned):
+        vals = [v for _, v in owned[size]]
+        lo, hi = min(vals), max(vals)
+        windows[size] = (lo, hi)
+        print(f"{CLASS_NAME[size]:>9}{len(vals):>11}{f'{lo:.1f} - {hi:.1f}':>18}{hi - lo:>8.1f}")
+
+    sizes = sorted(windows, key=lambda s: windows[s][0])   # by position, not class number
+    print()
+    overlap = False
+    gaps = []
+    for a, b in zip(sizes, sizes[1:]):
+        gap = windows[b][0] - windows[a][1]
+        gaps.append(gap)
+        if gap > 0:
+            print(f"   {CLASS_NAME[a]} and {CLASS_NAME[b]} do not overlap: "
+                  f"{gap:.1f} cm-1 of empty space between them")
+        else:
+            overlap = True
+            print(f"   {CLASS_NAME[a]} and {CLASS_NAME[b]} OVERLAP by {-gap:.1f} cm-1")
+    widest = max(hi - lo for lo, hi in windows.values())
+    if not overlap:
+        print(f"\n   So yes. A band in one window names the edge type. The smallest gap")
+        print(f"   between windows is {min(gaps):.1f} cm-1 and the widest window is "
+              f"{widest:.1f} cm-1,")
+        print("   so the separation is about the size of the scatter inside a class -")
+        print("   comfortable enough to classify, nowhere near clean.")
+
+    print("\n\nQUESTION 2 - can you read the MOLECULE off a band position?\n")
+    for size in sizes:
+        names = ", ".join(n for n, _ in owned[size])
+        print(f"   {CLASS_NAME[size]:>7} window holds {len(owned[size])} of the "
+              f"{sum(len(v) for v in owned.values())} measured molecules: {names}")
+    biggest = max(owned.values(), key=len)
+    print(f"\n   No. {len(biggest)} different molecules put their loudest band inside one")
+    print("   window, and those are only the ones somebody has measured. Every larger")
+    print("   PAH with the same edge type lands there too. The band names a building")
+    print("   block, never a species.")
+
+    print("\n\nQUESTION 3 - is the class enough to PREDICT a band to this project's")
+    print(f"tolerance of {MATRIX_TOLERANCE:.0f} cm-1?\n")
+    for size in sizes:
+        vals = [v for _, v in owned[size]]
+        centre = float(np.mean(vals))
+        worst = max(abs(v - centre) for v in vals)
+        verdict = "passes" if worst <= MATRIX_TOLERANCE else "FAILS"
+        print(f"   {CLASS_NAME[size]:>7}: best single guess {centre:.1f}, worst miss "
+              f"{worst:.1f} cm-1 -> {verdict}")
+
+    print("\n   Knowing nothing at all, a CH out-of-plane band could sit anywhere in")
+    print("   the 600-1000 window, a range of 400 cm-1. Knowing the edge type narrows")
+    print("   that to a few tens. That is a large gain and it is still an order of")
+    print("   magnitude short of what this thesis promised.")
+
+    print("\n\nBOTH ANSWERS AT ONCE")
+    print("   The edge type is readable from the spectrum, and that is exactly why")
+    print("   the molecule is not: many species share an edge type and pile into the")
+    print("   same window. The same fact that makes the classification work makes")
+    print("   identification impossible.")
+    print("   And a window is not a prediction. A method that only reproduces the")
+    print("   window has reproduced what the field already had in the 1980s.")
+
 
 if __name__ == "__main__":
     main()
