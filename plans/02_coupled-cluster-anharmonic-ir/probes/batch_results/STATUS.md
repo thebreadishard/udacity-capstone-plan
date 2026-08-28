@@ -1,7 +1,7 @@
 # Batch status
 
-Regenerated 2026-08-27 20:44:14 by `batch_runner.py` (pid 23896).
-**7 done, 5 failed, 1 queued.**
+Regenerated 2026-08-28 02:17:28 by `batch_runner.py` (pid 12144).
+**9 done, 5 failed, 0 queued.**
 
 Machine: Asus18, 16 logical cores.
 
@@ -21,9 +21,10 @@ Error occurred i |
 | 8 | `04_freq_chrysene` | freq | done | 75.3 min | band 778.0 cm-1 |
 | 9 | `05_freq_triphenylene` | freq | done | 72.1 min | band 757.9 cm-1 |
 | 10 | `06_freq_pyrene` | freq | done | 54.0 min | band 866.0 cm-1 |
-| 11 | `07_freq_coronene` | freq | queued |  |  |
-| 12 | `04_cc_benzene_ccpvtz` | cc_timing | FAILED |  | Error occurred in file: C:/bld/psi4_1786163301228/work/psi4/src/psi4/f |
-| 13 | `08_cc_naphthalene_ccpvdz` | cc_timing | FAILED |  | Error occurred in file: C:/bld/psi4_1786163301228/work/psi4/src/psi4/f |
+| 11 | `09_freq_benzene_tight` | freq | done | 4.2 min | band 694.3 cm-1 |
+| 12 | `07_freq_coronene` | freq | done | 173.5 min | band 879.5 cm-1 |
+| 13 | `04_cc_benzene_ccpvtz` | cc_timing | FAILED |  | Error occurred in file: C:/bld/psi4_1786163301228/work/psi4/src/psi4/f |
+| 14 | `08_cc_naphthalene_ccpvdz` | cc_timing | FAILED |  | Error occurred in file: C:/bld/psi4_1786163301228/work/psi4/src/psi4/f |
 
 `heartbeat.json` carries the pid and the job in flight. If its timestamp is
 stale and the pid is gone, the runner died and can simply be started again:
