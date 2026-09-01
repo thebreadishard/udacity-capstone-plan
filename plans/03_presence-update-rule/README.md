@@ -6,6 +6,8 @@ Plan 01 and plan 02 remain in the repository until a later deletion pass. They a
 
 Contradiction pass 2026-09-01 is recorded in
 [GoalGathering/Frozen_Ladder_and_Tolerances.md](GoalGathering/Frozen_Ladder_and_Tolerances.md).
+The remaining freeze (two budgets, \(k=1\), P2 = 200 steps, kernel 3, conservation off) is
+[GoalGathering/Compute_Budget_2026-09-01.md](GoalGathering/Compute_Budget_2026-09-01.md).
 Do not call this folder “complete as a plan” until a review has closed.
 
 **Promised deliverable.** A *single* translation-equivariant local update rule

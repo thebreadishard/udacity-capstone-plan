@@ -17,9 +17,13 @@ These were mutually inconsistent in the 2026-08-29 draft. The 2026-09-01 default
 | Distilled §4 “changing the grid after Module 02 is a deviation” | Changing the grid after **Q0 is hashed** is a deviation. Q0 is a Module 05 scientific-corpus gate. |
 | P1 gate after an 8 h pilot; Module 08 had no number until then | Module 08 may quote the **default** P1 target \(< 5\times 10^{-3}\) relative \(L^2\) on \(\rho_-\) until a dated pilot note replaces it. The 8 h pilot may only **tighten**, never loosen, without a §4 note. |
 | P3 “no numerical gate” | Still no absolute gate. Headline is **beat the frozen linear stencil or say inconclusive**. That is the P4 language on water, not a secret extra number. |
-| Effort “hours-to-days”, asserted | Still asserted until `probes/` print a number. The 80 h grid+teacher cap stays. Do not type a wall-clock into markdown by hand. |
+| Effort “hours-to-days”, asserted | Caps live in [Compute_Budget_2026-09-01.md](Compute_Budget_2026-09-01.md). No wall-clock is typed by hand. |
+| P2 “200 teacher steps or 1 fs” | **P2 = 200 teacher steps.** 1 fs is a bonus report if it fits the teacher cap, not a second gate. |
+| Learner \(k\) undeclared | **\(k=1\)**. |
+| Conservation penalty “allowed” | **Off** until a dated pre-training note turns it on. |
+| Kernel 3 or 5 | Default **3×3×3**. 5×5×5 is the Module 05 comparison axis. |
 
-Teacher code for every promised rung: **Octopus** (Andrade et al. 2020 family). Input decks are hashed. NWChem is not the teacher.
+Teacher code for every promised rung: **Octopus** (Andrade et al. 2020 family). Input decks are hashed. NWChem is not the teacher. The dated freeze of remaining OR-choices is [Compute_Budget_2026-09-01.md](Compute_Budget_2026-09-01.md).
 
 ## Molecule ladder
 
@@ -49,9 +53,9 @@ If rung 1 teacher cannot be produced inside the 80 h grid+teacher cap, **stop**.
 
 | Test | Quantity | Gate (H₂) | Gate (H₂O transfer) |
 |---|---|---|---|
-| P0 fixed point | \(\lvert N(t)-N(0)\rvert / N(0)\) after \(T_0\) | \(< 10^{-3}\) | \(< 5\times 10^{-3}\) |
-| P1 one-step | relative \(L^2\) on \(\rho_-\) | pre-register after a 8 h pilot; default target \(< 5\times 10^{-3}\) | report only |
-| P2 rollout | same, after \(T = 200\) teacher steps or 1 fs, whichever is declared | \(< 5\times 10^{-2}\) or fail-closed | report only |
+| P0 fixed point | \(\lvert N(t)-N(0)\rvert / N(0)\) after \(T_0=200\) field-free steps | \(< 10^{-3}\) | \(< 5\times 10^{-3}\) |
+| P1 one-step | relative \(L^2\) on \(\rho_-\) | default \(< 5\times 10^{-3}\); 8 h pilot may only tighten | report only |
+| P2 rollout | same, after \(T = 200\) teacher steps (\(k=1\); \(\approx 0.24\) fs) | \(< 5\times 10^{-2}\) or fail-closed | report only |
 | P3 transfer | P1-style on H₂O, zero-shot | — | no numerical gate; beat linear baseline or say inconclusive |
 | P4 baseline | learned vs linear stencil | declared \(\Delta\) in relative \(L^2\), 3 seeds | same |
 
