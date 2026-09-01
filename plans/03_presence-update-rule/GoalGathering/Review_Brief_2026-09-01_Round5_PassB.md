@@ -25,6 +25,28 @@ plan 02’s pyrene promise unless you can name an affordable measurement that re
 
 You are **not** reviewing PAH anharmonic IR. Do not spend this pass on GVPT2, MLIPs, or JWST.
 
+## What to read
+
+This review runs in a **VS Code chat on the CapstonePlan workspace**. Read the files **in this
+workspace**. Do not fetch GitHub; the remote is a public copy and may lag.
+
+Read **after** Pass A’s findings exist as a written file in this folder (there is no
+`Professor_Review_*` for plan 03 until Pass A writes one). Same corpus as Pass A; do not wander
+into `plans/01_*` or `plans/02_*` except where a Pass A finding names them.
+
+0. [README.md](../../../README.md) and [plans/README.md](../../README.md) — status banners
+1. [../README.md](../README.md)
+2. [Overarching_Goal.md](Overarching_Goal.md)
+3. [Frozen_Ladder_and_Tolerances.md](Frozen_Ladder_and_Tolerances.md)
+4. [Compute_Budget_2026-09-01.md](Compute_Budget_2026-09-01.md)
+5. [Distilled_Project_Plan_and_Quality_Checks.md](Distilled_Project_Plan_and_Quality_Checks.md)
+6. [Capstone_Mapping.md](Capstone_Mapping.md)
+7. [Relevant_Scientific_Papers.md](Relevant_Scientific_Papers.md)
+8. [Inheritance_of_Reviews.md](Inheritance_of_Reviews.md)
+9. [../probes/README.md](../probes/README.md) and, for attack 5, [../probes/linear_stencil.py](../probes/linear_stencil.py)
+
+Pass A findings, once written, live next to this brief. Ignore [Horizon/](Horizon/) and any `Uitleg/`.
+
 ## The plan in one paragraph
 
 Learn **one** translation-equivariant local update
