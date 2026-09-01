@@ -41,8 +41,9 @@ Pass A asks one question:
 
 Repository: `https://github.com/thebreadishard/udacity-capstone-plan`
 
-In this order, **plan 03 files only**:
+In this order:
 
+0. Root `README.md` and `plans/README.md` — status banners only (must say plan 03 is **current and draft**, not complete)
 1. `plans/03_presence-update-rule/README.md` — orientation
 2. `plans/03_presence-update-rule/GoalGathering/Overarching_Goal.md` — the prime directive
 3. `plans/03_presence-update-rule/GoalGathering/Frozen_Ladder_and_Tolerances.md`
@@ -55,8 +56,7 @@ In this order, **plan 03 files only**:
 
 Ignore for now:
 
-- `plans/03_presence-update-rule/PATCH_plans_README.md` (index patch; held)
-- Root `README.md` and `plans/README.md` (may still describe plan 02 as current)
+- `plans/03_presence-update-rule/PATCH_plans_README.md` (applied 2026-09-01; argument of record, not a live proposal)
 - `GoalGathering/Horizon/`
 - `plans/01_*` and `plans/02_*` except as named in the inheritance table
 - Any `Uitleg/` folder (Dutch study notes; not the English plan)
