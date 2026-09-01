@@ -39,25 +39,27 @@ Pass A asks one question:
 
 ## What to read
 
-Repository: `https://github.com/thebreadishard/udacity-capstone-plan`
+This review runs in a **VS Code chat on the CapstonePlan workspace**. Read the files **in this
+workspace**. Do not fetch GitHub; the remote is a public copy and may lag. Workspace root is the
+folder that contains `README.md` and `plans/`.
 
 In this order:
 
-0. Root `README.md` and `plans/README.md` — status banners only (must say plan 03 is **current and draft**, not complete)
-1. `plans/03_presence-update-rule/README.md` — orientation
-2. `plans/03_presence-update-rule/GoalGathering/Overarching_Goal.md` — the prime directive
-3. `plans/03_presence-update-rule/GoalGathering/Frozen_Ladder_and_Tolerances.md`
-4. `plans/03_presence-update-rule/GoalGathering/Compute_Budget_2026-09-01.md`
-5. `plans/03_presence-update-rule/GoalGathering/Distilled_Project_Plan_and_Quality_Checks.md`
-6. `plans/03_presence-update-rule/GoalGathering/Capstone_Mapping.md`
-7. `plans/03_presence-update-rule/GoalGathering/Relevant_Scientific_Papers.md`
-8. `plans/03_presence-update-rule/GoalGathering/Inheritance_of_Reviews.md` — itemised map of 01/02 issues
-9. `plans/03_presence-update-rule/probes/README.md` — what is a script vs a result
+0. [README.md](../../../README.md) and [plans/README.md](../../README.md) — status banners only (must say plan 03 is **current and draft**, not complete)
+1. [../README.md](../README.md) — orientation
+2. [Overarching_Goal.md](Overarching_Goal.md) — the prime directive
+3. [Frozen_Ladder_and_Tolerances.md](Frozen_Ladder_and_Tolerances.md)
+4. [Compute_Budget_2026-09-01.md](Compute_Budget_2026-09-01.md)
+5. [Distilled_Project_Plan_and_Quality_Checks.md](Distilled_Project_Plan_and_Quality_Checks.md)
+6. [Capstone_Mapping.md](Capstone_Mapping.md)
+7. [Relevant_Scientific_Papers.md](Relevant_Scientific_Papers.md)
+8. [Inheritance_of_Reviews.md](Inheritance_of_Reviews.md) — itemised map of 01/02 issues
+9. [../probes/README.md](../probes/README.md) — what is a script vs a result
 
 Ignore for now:
 
-- `plans/03_presence-update-rule/PATCH_plans_README.md` (applied 2026-09-01; argument of record, not a live proposal)
-- `GoalGathering/Horizon/`
+- [../PATCH_plans_README.md](../PATCH_plans_README.md) (applied 2026-09-01; argument of record, not a live proposal)
+- [Horizon/](Horizon/)
 - `plans/01_*` and `plans/02_*` except as named in the inheritance table
 - Any `Uitleg/` folder (Dutch study notes; not the English plan)
 
@@ -92,8 +94,11 @@ without a DOI, PATCH files a cold reader is told to ignore but that still sit in
 
 ## Output format
 
-Match the earlier reviews in `plans/01_voxel-field-pes/GoalGathering/Professor_Review_*.md` and
-`plans/02_coupled-cluster-anharmonic-ir/GoalGathering/Professor_Review_2026-08-25_Round4_PassA.md`.
+Match the earlier reviews’ *shape* (workspace copies, not GitHub):
+[plans/01_voxel-field-pes/GoalGathering/Professor_Review_2026-08-22_Round1.md](../../01_voxel-field-pes/GoalGathering/Professor_Review_2026-08-22_Round1.md)
+and
+[plans/02_coupled-cluster-anharmonic-ir/GoalGathering/Professor_Review_2026-08-25_Round4_PassA.md](../../02_coupled-cluster-anharmonic-ir/GoalGathering/Professor_Review_2026-08-25_Round4_PassA.md).
+Do not copy their chemistry. Do not fetch the remote.
 
 ```
 Verdict: [one line — is this internally sound enough to proceed to Pass B?]
