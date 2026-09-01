@@ -82,7 +82,7 @@ Closing a row in *spec* is not a green light. Plan 03 has zero professor reviews
 
 | # | Finding | Fate in 03 | Where |
 |---|---|---|---|
-| R4A-1 | Stale README / reading-order vs rewrite-status | **Carried as a class.** Plan 03 README already says **draft, not complete.** [PATCH_plans_README.md](../PATCH_plans_README.md) must **not** say “complete as a plan” until a review closes. | [README.md](../README.md) |
+| R4A-1 | Stale README / reading-order vs rewrite-status | **Carried as a class.** Plan 03 README, root README, and `plans/README.md` say **draft, not complete** (index patch applied 2026-09-01). [PATCH_plans_README.md](../PATCH_plans_README.md) is the argument of that apply; it must **not** say “complete as a plan.” | [README.md](../README.md) |
 | R4A-2 | Adopted-vs-draft status drift | **Carried.** This folder is **draft as of 2026-09-01.** Plans 01/02 remain until a deletion pass. | README status banner |
 | R4A-3 | Inheritance tally unauditable | **This file.** Named rows. If a later README summary disagrees with the 30-finding table, the README is wrong. | this file |
 

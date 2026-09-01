@@ -1,8 +1,10 @@
-# Patch for `plans/README.md` (apply by hand in the real repo)
+# Patch for `plans/README.md`
 
-Replace the opening sentence “planned twice” with “planned three times.”
+**Status: APPLIED 2026-09-01** to [`plans/README.md`](../README.md) and the root
+[`README.md`](../../README.md). This file is the argument of what was applied, not a live
+proposal. **Plan 03 remains draft. Do not call it complete as a plan.**
 
-Replace the comparison table header and add a third column. Suggested table:
+The applied opening is “planned three times.” The applied comparison table is:
 
 | | [01 — Voxel Field PES](01_voxel-field-pes/) | [02 — Coupled-Cluster Anharmonic IR](02_coupled-cluster-anharmonic-ir/) | [03 — Presence-Update-Rule](03_presence-update-rule/) |
 |---|---|---|---|
@@ -15,8 +17,10 @@ Replace the comparison table header and add a third column. Suggested table:
 | **Horizon** | Projects 10–12 | Absorbed / none | Projects 10–12 (phase, pair density, scale) |
 | **Reviews survived** | Rounds 1–3 | Round 4 | None yet |
 
-Add a section **Why there are three** pointing at `03_presence-update-rule/GoalGathering/Why_03_Supersedes_02.md`.
+Applied also:
 
-Keep the paragraph that 01 was not wrong. Add: 02 was not wrong; it is blocked on a label factory the rubric sequence cannot wait for.
+- section **Why there are three** pointing at [`GoalGathering/Why_03_Supersedes_02.md`](GoalGathering/Why_03_Supersedes_02.md)
+- 01 was not wrong; 02 was not wrong — it is blocked on a label factory the rubric sequence cannot wait for
+- “Adding a version 04” keeps the copy-folder rule
 
-Under “Adding a version 04”, keep the same copy-folder rule.
+This patch does **not** make plan 03 complete. Root and `plans/README.md` now say **current / draft**.
