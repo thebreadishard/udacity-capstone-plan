@@ -2,7 +2,8 @@
 
 **Date.** 2026-08-29.
 
-Plan 02 remains in the repository. It is not deleted. It is no longer current.
+Plan 02 is no longer in this tree (removed 2026-09-01). It remains in git history. This file is the
+argument of record for why 03 replaced it; it is not a pointer into a live 02 folder.
 
 ## The block that 02 cannot lift inside a master’s
 

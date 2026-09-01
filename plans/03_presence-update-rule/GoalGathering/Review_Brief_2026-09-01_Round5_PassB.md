@@ -31,8 +31,9 @@ This review runs in a **VS Code chat on the CapstonePlan workspace**. Read the f
 workspace**. Do not fetch GitHub; the remote is a public copy and may lag.
 
 Read **after** Pass A’s findings exist as a written file in this folder (there is no
-`Professor_Review_*` for plan 03 until Pass A writes one). Same corpus as Pass A; do not wander
-into `plans/01_*` or `plans/02_*` except where a Pass A finding names them.
+`Professor_Review_*` for plan 03 until Pass A writes one). Same corpus as Pass A. Folders for
+plans 01 and 02 are **not in this workspace**; do not fetch git history or GitHub to reconstruct
+them. Use the inheritance map when a Pass A finding names a source issue.
 
 0. [README.md](../../../README.md) and [plans/README.md](../../README.md) — status banners
 1. [../README.md](../README.md)

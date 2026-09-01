@@ -23,7 +23,8 @@ Pass A asks one question:
   value, a cap, or an estimate. Probe scripts that lack teacher files must print `NOT_RUN`.
 - The plan you are reading (**plan 03**, Presence-Update-Rule) replaced plan 02 on 2026-08-29, with a
   contradiction pass and remaining freeze dated **2026-09-01**. Plan 02 had replaced plan 01. Plans 01
-  and 02 remain in the repository until a later deletion pass; they are **not** current.
+  and 02 were **removed from the tree on 2026-09-01**; they remain in git history only. They are
+  **not** in this workspace and are **not** current.
 - Plan 01 closed fifteen blocking issues across Rounds 1–2 plus six Round-3 findings, in *spec*.
   Plan 02 closed Round-4 Pass A/B findings, then died as a *label factory* (coupled-cluster rung
   blocked on measurement). Plan 03 inherits those findings as a **map**, not as a stamp. The map is
@@ -60,8 +61,8 @@ Ignore for now:
 
 - [../PATCH_plans_README.md](../PATCH_plans_README.md) (applied 2026-09-01; argument of record, not a live proposal)
 - [Horizon/](Horizon/)
-- `plans/01_*` and `plans/02_*` except as named in the inheritance table
 - Any `Uitleg/` folder (Dutch study notes; not the English plan)
+- Do not look for `plans/01_*` or `plans/02_*`: those folders are gone. Use the inheritance table, not git history, for source findings.
 
 ## The five questions
 
@@ -94,11 +95,9 @@ without a DOI, PATCH files a cold reader is told to ignore but that still sit in
 
 ## Output format
 
-Match the earlier reviews’ *shape* (workspace copies, not GitHub):
-[plans/01_voxel-field-pes/GoalGathering/Professor_Review_2026-08-22_Round1.md](../../01_voxel-field-pes/GoalGathering/Professor_Review_2026-08-22_Round1.md)
-and
-[plans/02_coupled-cluster-anharmonic-ir/GoalGathering/Professor_Review_2026-08-25_Round4_PassA.md](../../02_coupled-cluster-anharmonic-ir/GoalGathering/Professor_Review_2026-08-25_Round4_PassA.md).
-Do not copy their chemistry. Do not fetch the remote.
+Match the *shape* below. Do **not** open deleted plan-01/02 `Professor_Review_*` files (they are
+not in this workspace; do not fetch git history or GitHub to copy them). Do not copy their
+chemistry. Do not fetch the remote.
 
 ```
 Verdict: [one line — is this internally sound enough to proceed to Pass B?]

@@ -2,11 +2,11 @@
 
 Reference PDFs, numbered to match the bibliographies in `plans/*/GoalGathering/Relevant_Scientific_Papers.md`.
 
-**This folder is shared between both project plans** (see [`../plans/README.md`](../plans/README.md)).
-Literature is not version-specific, and duplicating ~85 MB of PDFs per plan would be waste. Items
-1–25 are cited by both plans; items 26–36 are cited only by plan 02, and items 16/17/19 are scoped
-to plan 02's dipole-surface leg. The annotations below therefore describe each paper's role in the
-**current** plan.
+**This folder is a shared literature dump** (see [`../plans/README.md`](../plans/README.md)).
+It is not owned by any plan. Plan 03's bibliography is the index of what the current plan cites.
+Items 1–25 were cited by the deleted earlier plans as well; items 26–36 were cited only by plan 02,
+and items 16/17/19 were scoped to plan 02's dipole-surface leg. The annotations below therefore
+describe each paper's role in the **current** plan.
 
 **Updated 2026-08-23:** 15 PDFs retrieved for items 21–24 and 26–36. Every file in this folder was
 verified to begin with the `%PDF` signature. **36 PDFs, one gap (item 25, paywalled).**
