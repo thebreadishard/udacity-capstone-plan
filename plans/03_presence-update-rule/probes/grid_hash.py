@@ -31,6 +31,8 @@ def digest() -> str:
             f"REFINEMENT_RULE={grid_spec.REFINEMENT_RULE}".encode(),
             f"DT_TEACHER_AU={grid_spec.DT_TEACHER_AU:.16e}".encode(),
             f"LEARNER_K={grid_spec.LEARNER_K}".encode(),
+            f"PERIODIC_BOX={int(grid_spec.PERIODIC_BOX)}".encode(),
+            f"MAXWELL_COURANT_SAFETY={grid_spec.MAXWELL_COURANT_SAFETY:.16e}".encode(),
             f"PLUS_CHANNEL={grid_spec.PLUS_CHANNEL}".encode(),
             f"CHANNEL_ORDER={','.join(grid_spec.CHANNEL_ORDER)}".encode(),
         ]
@@ -47,6 +49,8 @@ def main() -> None:
     print(f"refinement_rule {grid_spec.REFINEMENT_RULE}")
     print(f"dt_teacher_au {grid_spec.DT_TEACHER_AU:.16e}")
     print(f"learner_k {grid_spec.LEARNER_K}")
+    print(f"n_channels {grid_spec.N_CHANNELS}")
+    print(f"periodic_box {int(grid_spec.PERIODIC_BOX)}")
     print(f"generator {Path(grid_spec.__file__).as_posix()}")
 
 

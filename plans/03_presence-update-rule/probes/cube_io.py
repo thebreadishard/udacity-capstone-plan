@@ -109,7 +109,7 @@ def load_field(path: Path, channel: str = "rho_minus") -> dict:
 
 
 def load_state_stack(path: Path) -> dict:
-    """Full 12-channel npz, or fail closed."""
+    """Full state stack (all of CHANNEL_ORDER, 11 channels), or fail closed."""
     path = Path(path)
     if not path.is_file():
         die_not_run(f"missing state stack {path}")

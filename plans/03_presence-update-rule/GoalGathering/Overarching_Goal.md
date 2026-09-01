@@ -37,7 +37,7 @@ A scored stack that contains all of the following, or an explicit fail-closed se
    - **P0** fixed point: unperturbed ground-state rollout may not drain or create more than \(\varepsilon_N\) electrons in \(T_0\) steps.
    - **P1** one-step: next-cell error vs teacher on a held-out H₂ time window, \(\ge 3\) seeds, declared MAE / relative \(L^2\).
    - **P2** rollout: error vs teacher after \(T\) steps on H₂, same seeds.
-   - **P3** transfer: the H₂-trained rule, **untrained on water**, scored on H₂O teacher windows (zero-shot). Fine-tune-on-water is a labelled ablation, not the headline.
+   - **P3** transfer: the H₂-trained rule, **untrained on water**, scored on H₂O teacher windows (zero-shot). Two things are reported together and neither may be dropped: the zero-shot error itself, and the comparison against the frozen linear stencil on the same windows (beat it or say inconclusive). There is no absolute numerical gate on water, and no P0 gate on water either — that number is reported. Fine-tune-on-water is a labelled ablation, not the headline.
    - **P4** baseline: the learned rule vs a frozen linear stencil (finite-difference continuity + Maxwell + a declared constitutive closure). Inconclusive is a valid outcome.
 5. An honest scope sentence: C₃₈₄H₄₈, anharmonic IR, and JWST/PAHdb identification are why a later worker would care. They are not capabilities built in Modules 02–09.
 
@@ -58,7 +58,7 @@ Plan 02 is complete as a plan and blocked on measurement: a coupled-cluster rung
 
 Plan 03 moves the scarce resource to a question that Modules 03–06 can actually score: a local dynamical rule with public-or-generated-computational trajectories, a frozen discretisation, and tests that do not wait on a 31 GB in-core CCSD(T) naphthalene.
 
-Plan 01 already died on the other wall: two-thirds of 840 h spent making voxels respectable so that a spectrum could be read off. Plan 03 forbids that spend. The grid is frozen when Q0 is hashed (Module 05 scientific corpus) and then only *audited*, never redesigned, unless a probe shows the teacher itself is grid-divergent. Redesign requires a written deviation under Distilled Plan §4. Module 02 does not touch cubes.
+Plan 01 already died on the other wall: two-thirds of its 840 h were **budgeted** to making voxels respectable so that a spectrum could be read off. Plan 03 forbids that spend. The grid is frozen when Q0 is hashed (Module 05 scientific corpus) and then only *audited*, never redesigned, unless a probe shows the teacher itself is grid-divergent. Redesign requires a written deviation under Distilled Plan §4. Module 02 does not touch cubes.
 
 ## What is inherited
 
@@ -76,11 +76,11 @@ The field representation survives. The PES-to-IR product does not. The CC-anharm
 
 ## Hours
 
-Fixed baseline **840 h** across Modules 02–09, matching plan 01’s accounting unit.
+Fixed baseline **840 h** across Modules 02–09, matching plan 01’s accounting unit. At ~10 h/week that is ~84 weeks; the calendar cannot be checked until T0 is a date.
 
 | Bucket | Cap | Why |
 |---|---|---|
-| Frozen grid + teacher I/O | 80 h | Plan 01 spent ~560 h here. That is forbidden. |
+| Frozen grid + teacher I/O | 80 h | Plan 01 **budgeted** ~560 h here. That is forbidden. |
 | Public-rubric datasets (M02–M04) | 160 h | Rubrics 02–04 demand third-party tabular data. |
 | Learned stencil + tests P0–P4 | 320 h | The thesis. |
 | Generative + agentic + synthesis | 200 h | Rubrics 06–08. |
@@ -88,7 +88,7 @@ Fixed baseline **840 h** across Modules 02–09, matching plan 01’s accounting
 
 If the teacher-grid bucket exceeds 80 h, the plan is off the rails. Stop and write the deviation. Do not silently become plan 01.
 
-Two budgets, not one: the 80 h cap is **human I/O**. Octopus wall-clock for the promised H / H₂ / H₂O Maxwell set is capped at **168 h** in [Compute_Budget_2026-09-01.md](Compute_Budget_2026-09-01.md). Neither number is a measured runtime.
+Two budgets, not one: the 80 h cap is **human** I/O. Octopus wall-clock for the promised H / H₂ / H₂O Maxwell set is capped at **168 h** — one calendar week of an unattended machine, as a total for the set, not a weekly allowance — in [Compute_Budget_2026-09-01.md](Compute_Budget_2026-09-01.md). Neither number is a measured runtime.
 
 ## Industry frame
 

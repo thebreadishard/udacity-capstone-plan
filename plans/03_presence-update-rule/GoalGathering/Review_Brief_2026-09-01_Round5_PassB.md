@@ -30,10 +30,13 @@ You are **not** reviewing PAH anharmonic IR. Do not spend this pass on GVPT2, ML
 This review runs in a **VS Code chat on the CapstonePlan workspace**. Read the files **in this
 workspace**. Do not fetch GitHub; the remote is a public copy and may lag.
 
-Read **after** Pass A’s findings exist as a written file in this folder (there is no
-`Professor_Review_*` for plan 03 until Pass A writes one). Same corpus as Pass A. Folders for
-plans 01 and 02 are **not in this workspace**; do not fetch git history or GitHub to reconstruct
-them. Use the inheritance map when a Pass A finding names a source issue.
+Read **after** Pass A's findings exist as a written file in this folder — they do:
+[Professor_Review_2026-09-01_Round5_PassA.md](Professor_Review_2026-09-01_Round5_PassA.md), and its
+findings were addressed in spec on 2026-09-01. Read it before you start; findings 2–4 change the premise
+of attack 5 below. Same corpus as Pass A. The plan-01 and plan-02 *documents* are not in this workspace
+(git history only), though `plans/02_.../probes/` survives on disk as git-ignored run leftovers; do not
+fetch git history or GitHub to reconstruct the deleted plans. Use the inheritance map when a Pass A
+finding names a source issue.
 
 0. [README.md](../../../README.md) and [plans/README.md](../../README.md) — status banners
 1. [../README.md](../README.md)
@@ -59,7 +62,7 @@ Learn **one** translation-equivariant local update
 \]
 
 as a 3-D conv stencil (default \(3\times 3\times 3\), \(k=1\)) on a **frozen** real-space grid
-(\(0.20\,a_0\) outer, nuclear refinement \(\sim a_0/Z\)). Teacher: **Octopus RT-TDDFT, ALDA**, with
+(\(0.20\,a_0\) outer, nuclear refinement \(\sim 0.20\,a_0/Z\), non-periodic finite box). Teacher: **Octopus RT-TDDFT, ALDA**, with
 \(\mathbf{E},\mathbf{B}\) from **Maxwell–TDDFT** (Poisson reconstruction of \(\mathbf{E}\) from
 \(\rho\) is forbidden unless Distilled §4). Nuclei are frozen point charges. Train on **H₂**;
 zero-shot transfer to **H₂O**. Gates P0 (fixed point), P1 (one-step), P2 (200-step rollout),
@@ -71,7 +74,7 @@ grid+teacher I/O, 168 h wall-clock for the promised teacher set. Stop if Octopus
 
 ### 1. A local \(3\times 3\times 3\) stencil cannot imitate a KS + Maxwell step
 
-The Kohn–Sham Hartree potential is nonlocal (Poisson / FFT). The KS kinetic piece is not a 12-channel
+The Kohn–Sham Hartree potential is nonlocal (Poisson / FFT). The KS kinetic piece is not an 11-channel
 neighbourhood of \((\rho_\pm,\mathbf{j},\mathbf{E},\mathbf{B})\). Maxwell itself is local in the
 curl, but the *constitutive* response of the electrons is not.
 
@@ -128,6 +131,11 @@ P4 compares the learned rule to frozen finite-difference continuity + Maxwell wi
 constitutive closure, current held. If that baseline already rolls out H₂ for 200 steps, the
 learned stencil has nothing to beat. If it immediately violates P0, the comparison is against a
 straw man and a “win” is uninformative.
+
+**Pass A already measured part of this** (its findings 3 and 4): the baseline was periodic, so P0 on it
+could not fail — random noise passed at \(4\times10^{-15}\) — and its Maxwell update was forward Euler at
+\(c\Delta t/h = 34.26\), 59× the 3-D limit, reaching NaN inside the P2 horizon. Both were repaired on
+2026-09-01 (non-periodic; leapfrog with 119 CFL sub-steps). Take that as given and go further.
 
 **What to do:** without running code, from the equations in `probes/linear_stencil.py` / Distilled
 §5.3, is this baseline a serious constitutive model or a discretisation of vacuum Maxwell plus
