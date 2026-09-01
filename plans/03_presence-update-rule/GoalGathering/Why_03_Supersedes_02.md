@@ -39,4 +39,6 @@ That is a *label-factory* block. Waiting on it spends the capstone on instrument
 
 ## Effort arithmetic (asserted; probes must confirm)
 
-Teacher generation for H₂ and H₂O on a frozen Octopus-class grid is hours-to-days, not a naphthalene-CC wall. Training one 3×3×3 (or 5×5×5) conv-stencil on those windows is a Module 05 object. The scarce resource is *evaluation honesty* (P0–P4), not integral evaluation.
+Teacher generation for H₂ and H₂O is **Octopus RT-TDDFT (ALDA) with Maxwell–TDDFT fields** on the frozen grid, not a naphthalene-CC wall. Nuclei are frozen point charges on the scored window. The 80 h grid+teacher cap in `Overarching_Goal.md` is the stop condition. Do not type a wall-clock into this file; a probe must print it. Training one 3×3×3 (or 5×5×5) conv-stencil on those windows is a Module 05 object. The scarce resource is *evaluation honesty* (P0–P4), not integral evaluation.
+
+Contradiction pass 2026-09-01: H₂ is not an exact two-electron teacher in Modules 02–09. That teacher is Horizon 10. \(\mathbf{E},\mathbf{B}\) are teacher Maxwell channels, not a Poisson reconstruction.

@@ -15,14 +15,16 @@ Not: does a voxel PES beat an equivariant GNN on IR peaks.
 ## §3 Labels and teachers
 
 - Scientific labels = teacher time series from a named code and a hashed input deck.
-- H₂ teacher: declare 2-electron exact **or** RT-TDDFT before the first training run.
-- H₂O teacher: RT-TDDFT, same grid family.
-- Density and current come from the teacher. \(\mathbf{E},\mathbf{B}\) come from the teacher Maxwell solver **or** from a Poisson/magnetostatic reconstruction that is hashed. Do not mix reconstructions mid-study.
+- Teacher code: **Octopus**. Functional: **ALDA**. Same grid family on H₂ and H₂O.
+- H₂ teacher: Octopus RT-TDDFT. Exact two-electron evolution is **not** the Module 08 teacher; it is Horizon 10 / the H-atom diagnostic.
+- H₂O teacher: Octopus RT-TDDFT, same grid family.
+- Density and current come from the teacher. \(\mathbf{E},\mathbf{B}\) come from the **teacher Maxwell–TDDFT solver**, hashed with the deck. Do not mix in a Poisson reconstruction mid-study.
+- Nuclei are frozen point charges on the scored window. They source \(\mathbf{E}\) only.
 - Module 02–04 labels are third-party public tables. They are not teacher cubes.
 
 ## §4 Deviations
 
-A deviation is allowed only in writing, dated, with the probe that forced it. Compromising P0 to save P2 is forbidden. Changing the grid after Module 02 is a deviation.
+A deviation is allowed only in writing, dated, with the probe that forced it. Compromising P0 to save P2 is forbidden. Changing the grid after **Q0 is hashed** (Module 05 scientific corpus) is a deviation. Module 02 never sees a cube, so it cannot freeze one.
 
 ## §5 Architecture
 
@@ -42,7 +44,7 @@ A deviation is allowed only in writing, dated, with the probe that forced it. Co
 
 | ID | Check |
 |---|---|
-| Q0 | Grid hash reproducible from the generator |
+| Q0 | Grid hash reproducible from the generator (Module 05 scientific corpus, not Module 02) |
 | Q1 | \(\int\rho_-\) equals electron count on teacher frame 0 |
 | Q2 | Dipole identity holds on teacher \(\rho_-\) to a stated residual |
 | Q3 | P0 script exists and writes a number |

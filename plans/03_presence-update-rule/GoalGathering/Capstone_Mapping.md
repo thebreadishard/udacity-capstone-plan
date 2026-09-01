@@ -15,7 +15,7 @@ The clause “must not be synthetic or AI-generated” in Modules 02–06 is tre
 - Work: load, two documented cleaners (unit checks, impossible-dipole filter), EDA on dipole vs polarizability and on element counts.
 - Why this is not a detour: Module 08’s dipole diagnostic \(\boldsymbol\mu=-\int\mathbf{r}\,\Delta\rho\,dV\) needs fluency with dipole as a column before it is an integral.
 
-**Not used here.** Any Octopus cube. Any network output.
+**Not used here.** Any Octopus cube. Any network output. The frozen-grid **hash is not a Module 02 artifact.** Q0 (generator + \(0.20\,a_0\) + box) is hashed when the scientific corpus is built, in Module 05.
 
 ## Module 03 — Statistical analysis
 
@@ -46,6 +46,7 @@ The clause “must not be synthetic or AI-generated” in Modules 02–06 is tre
 
 **Plan 03 use — this is the first module that is allowed to see a grid.**
 
+- **Q0 lives here.** Hash the generator script + outer spacing \(0.20\,a_0\) + box + nuclear-refinement rule before any training window is cut. After that hash, the grid is a constant.
 - Treat a **published 3-D electron-density volume** as an image stack. Public sources: QM9 voxel densities from Jørgensen & Bhowmik / VASP QM9-density releases (document the exact Zenodo/Figshare DOI in the freeze file).
 - Task A (rubric-shaped): CNN on 2-D slices through published densities, auxiliary target already in QM9 (e.g. dipole component from the slice statistics) — only if that target is in the public table and not computed by us.
 - Task B (thesis-shaped, same notebook family): 3-D conv stencil trained on **teacher pairs** from H₂ (scientific corpus). The rubric write-up foregrounds Task A if a reviewer treats self-run TDDFT as “synthetic.” Task B is the paper. Both are implemented.
