@@ -1,8 +1,12 @@
 # Plan 03 — Presence-Update-Rule
 
-**Status: current as of 2026-08-29.**  
+**Status: draft as of 2026-09-01. Current plan; not complete.**  
 Supersedes plan 02 (Coupled-Cluster Anharmonic IR).  
-Plan 01 and plan 02 remain in the repository, complete and readable.
+Plan 01 and plan 02 remain in the repository until a later deletion pass. They are not current.
+
+Contradiction pass 2026-09-01 is recorded in
+[GoalGathering/Frozen_Ladder_and_Tolerances.md](GoalGathering/Frozen_Ladder_and_Tolerances.md).
+Do not call this folder “complete as a plan” until a review has closed.
 
 **Promised deliverable.** A *single* translation-equivariant local update rule
 

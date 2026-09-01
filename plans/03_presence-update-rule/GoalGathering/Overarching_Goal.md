@@ -1,7 +1,7 @@
 # Overarching Goal — Plan 03 Presence-Update-Rule
 
-**Status.** Current plan as of 2026-08-29. Supersedes plan 02.  
-This file is the prime directive. Distilled Plan §2 and §9 must agree with it.
+**Status.** Current plan as of 2026-08-29; contradiction pass 2026-09-01. Supersedes plan 02.  
+**Not complete as a plan.** This file is the prime directive. Distilled Plan §2 and §9 must agree with it.
 
 ## Prime directive
 
@@ -30,8 +30,8 @@ The physical content, stated without software:
 
 A scored stack that contains all of the following, or an explicit fail-closed sentence naming which gate failed:
 
-1. Frozen grid specification (hash of the generator script + spacing + box + nuclear-refinement rule). The grid is a constant. It is not a research object after Module 02.
-2. Teacher trajectories for **H atom** (analytic / 1-e sanity), **H₂** (two-electron or high-rung RT-TDDFT, declared), **H₂O** (RT-TDDFT, declared functional and basis or grid).
+1. Frozen grid specification (hash of the generator script + spacing + box + nuclear-refinement rule). The grid is a constant. Q0 hashes it when the scientific corpus is built (Module 05). It is not a research object after that hash. Module 02 is a public table and does not freeze the grid.
+2. Teacher trajectories for **H atom** (analytic / 1-e sanity), **H₂** (Octopus RT-TDDFT, ALDA, frozen grid), **H₂O** (same teacher family).
 3. One shared conv-stencil trained on H₂ (and optionally H-atom) teacher pairs \((\text{neighbourhood}_t \to \text{cell}_{t+\Delta t})\).
 4. Pre-registered tests, frozen before training:
    - **P0** fixed point: unperturbed ground-state rollout may not drain or create more than \(\varepsilon_N\) electrons in \(T_0\) steps.
@@ -58,7 +58,7 @@ Plan 02 is complete as a plan and blocked on measurement: a coupled-cluster rung
 
 Plan 03 moves the scarce resource to a question that Modules 03–06 can actually score: a local dynamical rule with public-or-generated-computational trajectories, a frozen discretisation, and tests that do not wait on a 31 GB in-core CCSD(T) naphthalene.
 
-Plan 01 already died on the other wall: two-thirds of 840 h spent making voxels respectable so that a spectrum could be read off. Plan 03 forbids that spend. The grid is frozen in Module 02 and then only *audited*, never redesigned, unless a probe shows the teacher itself is grid-divergent. Redesign requires a written deviation under Distilled Plan §4.
+Plan 01 already died on the other wall: two-thirds of 840 h spent making voxels respectable so that a spectrum could be read off. Plan 03 forbids that spend. The grid is frozen when Q0 is hashed (Module 05 scientific corpus) and then only *audited*, never redesigned, unless a probe shows the teacher itself is grid-divergent. Redesign requires a written deviation under Distilled Plan §4. Module 02 does not touch cubes.
 
 ## What is inherited
 
