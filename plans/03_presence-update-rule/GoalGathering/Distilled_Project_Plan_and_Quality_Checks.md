@@ -28,16 +28,17 @@ A deviation is allowed only in writing, dated, with the probe that forced it. Co
 
 ## §5 Architecture
 
-- Default: 3-D convolution, kernel 3 or 5, shared weights, channels = declared state.
+- Default: 3-D convolution, kernel **3×3×3**, shared weights, 12 channels as declared.
 - State channels: \(\rho_+\), \(\rho_-\), \(j_x,j_y,j_z\), \(E_x,E_y,E_z\), \(B_x,B_y,B_z\) (12). Drop \(\mathbf{B}\) only if a probe shows it is numerically zero on the ladder; that drop is a deviation.
 - Optional packing \(z=\rho_++i\rho_-\) is bookkeeping, not \(\psi\).
 - One forward pass per time step over the whole tensor. No per-cell Python loop.
-- Baselines: linear finite-difference stencil; optional small FNO as the Module 05 comparison axis.
+- Learner \(k=1\): one forward pass = one teacher \(\Delta t = 0.05\) au.
+- Baselines: linear finite-difference stencil (continuity + Maxwell). The single Module 05 comparison axis is kernel **5×5×5**, not an FNO, unless a §4 note says otherwise.
 
 ## §6 Training
 
-- Loss: weighted MSE on \(\rho_-\) and \(\mathbf{j}\); \(\mathbf{E},\mathbf{B}\) included if they are teacher channels.
-- Conservation penalty on \(N=\int\rho_-\) is allowed, declared before training.
+- Loss: weighted MSE on \(\rho_-\) and \(\mathbf{j}\); \(\mathbf{E},\mathbf{B}\) are teacher Maxwell channels and **are** in the loss.
+- Conservation penalty on \(N=\int\rho_-\) is **off**. Turning it on requires a dated note before training, with the weight frozen then.
 - Seeds \(\ge 3\). Tuning parity with the baseline. No test-window peeking.
 
 ## §7 Quality checks (must all be runnable scripts under `probes/`)

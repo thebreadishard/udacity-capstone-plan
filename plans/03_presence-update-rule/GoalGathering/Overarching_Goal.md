@@ -88,6 +88,8 @@ Fixed baseline **840 h** across Modules 02–09, matching plan 01’s accounting
 
 If the teacher-grid bucket exceeds 80 h, the plan is off the rails. Stop and write the deviation. Do not silently become plan 01.
 
+Two budgets, not one: the 80 h cap is **human I/O**. Octopus wall-clock for the promised H / H₂ / H₂O Maxwell set is capped at **168 h** in [Compute_Budget_2026-09-01.md](Compute_Budget_2026-09-01.md). Neither number is a measured runtime.
+
 ## Industry frame
 
 Reliability-gated **surrogate electronic propagator** for digital-twin and attosecond-lab software: a lab or vendor can step a presence field locally when a full TDDFT step is too slow, with a published fixed-point and rollout certificate. Not “AI for drug discovery.” Not “PAH identification as a service.”

@@ -11,5 +11,6 @@ Minimum set before any Module 05 training run:
 | `dipole_identity.py` | residual of \(\boldsymbol\mu+\int\mathbf{r}\,\rho_-\,dV\) |
 | `p0_fixed_point.py` | relative \(N\) drift after \(T_0\) field-free steps of the *untrained* linear stencil and, later, of the trained rule |
 | `split_overlap.py` | 0 if train/test hashes disjoint |
+| `teacher_cost.py` | wall-clock of H / H₂ / H₂O Maxwell windows vs the 168 h cap, or an honest “not run” exit |
 
-Do not type those numbers into a markdown file by hand.
+Do not type those numbers into a markdown file by hand. Caps are in `GoalGathering/Compute_Budget_2026-09-01.md`.
