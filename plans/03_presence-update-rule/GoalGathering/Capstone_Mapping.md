@@ -113,7 +113,7 @@ Folder numbers, not the rubric’s internal “Project 1 = module 02” offset.
 
 **Q0 lives here.** Hash generator + \(0.20\,a_0\) + box + nuclear-refinement rule **before** any training window is cut. After that hash, the grid is a constant.
 
-**Task A (rubric-shaped, public voxels).** 3-D electron-density volumes treated as image stacks. Pin the exact Zenodo/Figshare DOI of the QM9-density release (bibliography items 10 / 13) before the report source sentence. CNN on 2-D slices; auxiliary target **already in the public QM9 table** (e.g. a dipole component), not computed by us.
+**Task A (rubric-shaped, public voxels).** 3-D electron-density volumes treated as image stacks. Pin the exact Zenodo/Figshare DOI of the QM9-density release (bibliography item 10) before the report source sentence. CNN on 2-D slices; auxiliary target **already in the public QM9 table** (e.g. a dipole component), not computed by us. **2026-09-01:** item 10 is still unpinned as a cube dump (DeepDFT is a model paper; item 13 is 1-D TDDFT). Do not write the Task A source sentence. The hard fallback below stays in force until a voxel DOI is recorded.
 
 **Task B (thesis).** 3-D conv stencil on **H₂ teacher pairs** (Octopus RT-TDDFT + Maxwell). Controlled comparison: kernel **3×3×3 vs 5×5×5**, exactly that one axis. Metrics: P1; loss curves; P0 as pass/fail. Not an FNO unless Distilled §4.
 
