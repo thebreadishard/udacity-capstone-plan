@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Q3 / P0. Relative N drift after T0 field-free steps of the linear stencil.
 
-Needs a 12-channel state npz. Later, --rule learned.npz may be added;
-until then only the untrained linear stencil runs.
+Needs a full state npz (all of grid_spec.CHANNEL_ORDER). Later, --rule
+learned.npz may be added; until then only the untrained linear stencil runs.
 
   python p0_fixed_point.py state.npz
   python p0_fixed_point.py   # NOT_RUN
@@ -19,8 +19,14 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from cube_io import die_not_run, load_state_stack, print_kv  # noqa: E402
-from grid_spec import T0_STEPS  # noqa: E402
-from linear_stencil import electron_count, spacing_from_volume, step  # noqa: E402
+from grid_spec import PERIODIC_BOX, T0_STEPS  # noqa: E402
+from linear_stencil import (  # noqa: E402
+    courant_number,
+    electron_count,
+    maxwell_substeps,
+    spacing_from_volume,
+    step,
+)
 
 
 def main() -> None:
@@ -56,6 +62,9 @@ def main() -> None:
         n_t=n_t,
         p0_rel=rel,
         h=h,
+        periodic=int(PERIODIC_BOX),
+        courant=courant_number(h),
+        maxwell_substeps=maxwell_substeps(h),
         gate_h2=1.0e-3,
         path=str(Path(args.path)),
     )

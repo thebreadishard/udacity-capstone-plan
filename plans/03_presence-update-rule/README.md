@@ -1,10 +1,11 @@
 # Plan 03 — Presence-Update-Rule
 
 **Status: draft as of 2026-09-01. Current plan; not complete.**  
-Supersedes plan 02 (Coupled-Cluster Anharmonic IR). Plans 01 and 02 were **removed from the tree**
-on 2026-09-01; they remain in git history only.
+Supersedes plan 02 (Coupled-Cluster Anharmonic IR). The plan-01 and plan-02 **documents** were removed
+from version control on 2026-09-01 and remain in git history only; `plans/02_.../probes/` survives on disk
+as git-ignored run leftovers and is not part of this plan.
 
-Contradiction pass 2026-09-01 is recorded in
+Contradiction pass 2026-09-01 and the Round-5 Pass A pass are recorded in
 [GoalGathering/Frozen_Ladder_and_Tolerances.md](GoalGathering/Frozen_Ladder_and_Tolerances.md).
 The remaining freeze (two budgets, \(k=1\), P2 = 200 steps, kernel 3, conservation off) is
 [GoalGathering/Compute_Budget_2026-09-01.md](GoalGathering/Compute_Budget_2026-09-01.md).
@@ -35,13 +36,14 @@ Nothing in this folder has been executed. Nothing here is a result.
 7. [GoalGathering/Relevant_Scientific_Papers.md](GoalGathering/Relevant_Scientific_Papers.md)
 8. [GoalGathering/Inheritance_of_Reviews.md](GoalGathering/Inheritance_of_Reviews.md) — itemised map of plan-01/02 issues (not a stamp)
 9. [probes/README.md](probes/README.md)
+10. [GoalGathering/Why_03_Supersedes_02.md](GoalGathering/Why_03_Supersedes_02.md) — argument of record for the pivot
 
-Round 5 briefs (give Pass A first; do not give Pass B until Pass A is written down):
+Round 5:
 
-- [GoalGathering/Review_Brief_2026-09-01_Round5_PassA.md](GoalGathering/Review_Brief_2026-09-01_Round5_PassA.md)
-- [GoalGathering/Review_Brief_2026-09-01_Round5_PassB.md](GoalGathering/Review_Brief_2026-09-01_Round5_PassB.md)
+- [GoalGathering/Professor_Review_2026-09-01_Round5_PassA.md](GoalGathering/Professor_Review_2026-09-01_Round5_PassA.md) — **the first review of this plan** (cold read). Findings addressed in spec on 2026-09-01; see the Round-5 Pass A block in the frozen ladder.
+- [GoalGathering/Review_Brief_2026-09-01_Round5_PassA.md](GoalGathering/Review_Brief_2026-09-01_Round5_PassA.md) — the brief that produced it
+- [GoalGathering/Review_Brief_2026-09-01_Round5_PassB.md](GoalGathering/Review_Brief_2026-09-01_Round5_PassB.md) — adversarial domain pass, **not yet run**
 
-There is no `Professor_Review_*` for plan 03 yet. Do not copy deleted plan-01/02 reviews from git
-history into this folder.
+Do not copy deleted plan-01/02 reviews from git history into this folder.
 
 Inheritance tally (must match [Inheritance_of_Reviews.md](GoalGathering/Inheritance_of_Reviews.md)): **8 superseded** (2, 10, 11, 14, R3-2, R4B-1, R4B-3, R4B-4), **5 re-scoped** (1, 7, 12, R3-1, R3-4), **16 carried** (3, 4, 5, 8, 9, 13, 15, R3-3, R3-5, R3-6, R4A-1, R4A-2, R4A-3, R4B-2, R4B-5, R4B-6), **1 addressed in spec** (6). \(8+5+16+1=30\).

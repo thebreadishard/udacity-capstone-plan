@@ -59,7 +59,7 @@ Scientific labels = teacher time series from a **named code** and a **hashed inp
 | Propagation | Real-time TDDFT |
 | \(\mathbf{E},\mathbf{B}\) | Teacher **Maxwell–TDDFT**. Not Poisson. Not mixed mid-study. |
 | Nuclei | Frozen **point charges**. They source \(\mathbf{E}\) only. |
-| Grid | Cartesian, outer spacing \(0.20\,a_0\), nuclear refinement \(h(r)\sim a_0/Z\), box = molecule + \(\ge 6\,a_0\) vacuum, absorbing rim if ionising |
+| Grid | Cartesian, outer spacing \(0.20\,a_0\), nuclear refinement \(h(r)\sim 0.20\,a_0/Z\), box = molecule + \(\ge 6\,a_0\) vacuum, absorbing rim if ionising, **non-periodic** |
 | \(\Delta t\) | Teacher \(0.05\) au. Learner \(k=1\). |
 | H-atom | Analytic 1-e / grid TDSE. Diagnostic only. |
 | H₂ | Octopus RT-TDDFT + Maxwell. **Promised** train + P0–P2. |
@@ -84,7 +84,7 @@ Caps: 80 h human I/O; 168 h wall-clock for H + H₂ + H₂O. Escalation is §7.2
 
 ## §4 Deviations
 
-A deviation is allowed only in writing, dated, with the probe that forced it.
+A deviation is allowed only in writing, dated, with the probe that forced it. **A deviation note that changes a gate number, a split, or a frozen constant must be committed *before* the affected quantity is measured.** A note written after the number is known is not a deviation, it is a result being edited; the honest form of that is a failed gate.
 
 Forbidden without a note:
 
@@ -94,6 +94,9 @@ Forbidden without a note:
 - Mixing Poisson into a Maxwell study.
 - Putting water in the H₂ train hash.
 - Quoting a spectrum, JWST, or C₃₈₄H₄₈ as a Module 08 result.
+- **Loosening any P0–P4 number, in either direction, once the 8 h pilot has printed.**
+- **Promoting the 5×5×5 comparison axis (or any other axis) to the thesis object after 3×3×3 has been scored.**
+- **Editing the frozen linear baseline in `probes/linear_stencil.py` after Q0.**
 
 Module 02 never sees a cube, so it cannot freeze one.
 
@@ -105,7 +108,7 @@ The object is **one** translation-equivariant 3-D convolution.
 
 ### §5.1 State
 
-Twelve channels, same order everywhere:
+**Eleven** channels, same order everywhere (2 densities + 3 current + 3 electric + 3 magnetic). The count is `len(grid_spec.CHANNEL_ORDER)`; no prose number overrides it. *Corrected 2026-09-01: this list was described as twelve in four places while enumerating eleven.*
 
 \[
 (\rho_+,\;\rho_-,\;j_x,j_y,j_z,\;E_x,E_y,E_z,\;B_x,B_y,B_z)
@@ -117,16 +120,18 @@ Drop \(\mathbf{B}\) only if a probe prints that it is numerically zero on the la
 
 ### §5.2 Forward pass
 
-- Input: the 12-channel tensor on the frozen grid at time \(t\).
-- Operator: 3-D conv, **shared weights**, kernel **3×3×3**, padding that preserves the grid shape (periodic only if the teacher box is periodic; otherwise zero / absorb to match the teacher rim).
-- Output: the 12-channel tensor at \(t+\Delta t\). One forward pass = one teacher step (\(k=1\)).
+- Input: the 11-channel tensor on the frozen grid at time \(t\).
+- Operator: 3-D conv, **shared weights**, kernel **3×3×3**, padding that preserves the grid shape (periodic only if the teacher box is periodic; otherwise zero / absorb to match the teacher rim). The frozen box is finite, so **non-periodic is the default** and the learner and the P4 baseline must use the same boundary treatment.
+- Output: the 11-channel tensor at \(t+\Delta t\). One forward pass = one teacher step (\(k=1\)).
 - No per-cell Python loop. One conv over the volume (Q6 times this).
 - Nuclei enter as **fixed point sources of \(\mathbf{E}\)**, not as atom-type features and not as a moving \(\rho_+\) fluid.
 
 ### §5.3 Baseline and comparison axis
 
-- **P4 baseline:** frozen **linear** finite-difference stencil: continuity for \(\rho_-,\mathbf{j}\) plus discrete Maxwell for \(\mathbf{E},\mathbf{B}\), with a constitutive closure declared in the same hashed deck as the teacher (no learned coefficients).
-- **Module 05 axis:** kernel **5×5×5**, everything else identical. Not an FNO unless a §4 note says otherwise.
+- **P4 baseline:** frozen **linear** finite-difference stencil: continuity for \(\rho_-,\mathbf{j}\) plus discrete Maxwell for \(\mathbf{E},\mathbf{B}\), with a constitutive closure declared in the same hashed deck as the teacher (no learned coefficients). Implemented in [`probes/linear_stencil.py`](../probes/linear_stencil.py); after Q0 it is frozen (§4).
+  - **Boundaries are non-periodic**, matching the frozen box. A periodic baseline conserves \(N\) to round-off by construction, which would make P0 on the baseline a test that cannot fail. *Corrected 2026-09-01: it was periodic, and P0 passed on random noise at \(4\times10^{-15}\).*
+  - **Maxwell is leapfrogged and CFL sub-cycled.** At the frozen \(h=0.20\,a_0\) and \(\Delta t=0.05\) au the ratio \(c\,\Delta t/h = 34.26\), against an explicit 3-D limit of \(1/\sqrt{3}\approx0.577\). The baseline therefore takes \(\lceil 34.26/(0.5/\sqrt{3})\rceil = 119\) Maxwell sub-steps per teacher step. *Corrected 2026-09-01: forward Euler at one sub-step reached NaN inside the 200-step P2 horizon while P0 still printed pass.* The teacher's own integrator is Octopus's, not this one; the sub-cycling is a property of the baseline only.
+- **Module 05 axis:** kernel **5×5×5**, everything else identical. Not an FNO unless a §4 note says otherwise. It is a comparison axis, not a fallback thesis object (§4).
 - Fine-tune-on-water is a labelled ablation. It is not the P3 headline.
 
 ---
@@ -148,6 +153,7 @@ No spectral term. No molecule embedding. No test-window peeking.
 - Seeds \(\ge 3\).
 - Tuning budget equal to the linear baseline (the baseline has none: it is frozen). The learned rule may use a declared validation slice of the **H₂ train** windows only.
 - Stop on that validation slice, never on H₂ test, never on H₂O.
+- The 8 h P1 pilot runs on that same **train/validation** slice. It may not touch an H₂ test window or any H₂O window, so the P4 effect size declared after it is not declared after seeing the comparison it governs.
 - Report mean ± SD across seeds for P1–P4.
 
 ---
@@ -166,7 +172,7 @@ Scripts under `probes/`. A number that is not printed by a script is not a resul
 | Q3 | `p0_fixed_point.py` | relative \(N\) drift after \(T_0\) printed for linear stencil and, later, the learned rule |
 | Q4 | `split_overlap.py` | prints `0` if train/test hashes disjoint |
 | Q5 | same family | prints `0` if no water in the H₂ train hash |
-| Q6 | timed conv | one training step is one conv over the volume |
+| Q6 | timed conv — **script does not exist yet**; waits on a hashed PyTorch op | one training step is one conv over the volume |
 | — | `teacher_cost.py` | wall-clock vs 168 h, or honest “not run” |
 
 ### §7.2 Gates (P) — fail-closed
@@ -175,11 +181,13 @@ Numbers Module 08 may quote now (pilot may only tighten):
 
 | Gate | What | H₂ | H₂O |
 |---|---|---|---|
-| P0 | \(\lvert N(t)-N(0)\rvert/N(0)\) after \(T_0=200\) field-free steps | \(< 10^{-3}\) | \(< 5\times 10^{-3}\) (report) |
+| P0 | \(\lvert N(t)-N(0)\rvert/N(0)\) after \(T_0=200\) field-free steps | \(< 10^{-3}\) | \(< 5\times 10^{-3}\), **report only** |
 | P1 | one-step relative \(L^2\) on \(\rho_-\) | \(< 5\times 10^{-3}\), \(\ge 3\) seeds | report only |
 | P2 | same after \(T=200\) steps | \(< 5\times 10^{-2}\) or fail-closed | report only |
-| P3 | P1-style, zero-shot | — | beat linear stencil or **inconclusive** |
+| P3 | P1-style, zero-shot | — | measured, then compared: beat linear stencil or **inconclusive** |
 | P4 | learned vs linear, relative \(L^2\) | declared \(\Delta\), 3 seeds | same language |
+
+P3 is one test with two parts, and both are reported: the **zero-shot error itself** (the Overarching Goal's definition) and the **comparison to the frozen linear stencil on the same windows** (its pass language). Neither part may be dropped because the other looked better.
 
 If P0 fails, P2 is not interpreted. Energy drift is reported, not a hidden gate.
 
@@ -188,7 +196,7 @@ If P0 fails, P2 is not interpreted. Energy drift is reported, not a hidden gate.
 1. Octopus+Maxwell cannot be installed inside the caps → **stop**. Name the missing binary. Do not Poisson.
 2. First H₂ window exceeds 168 h wall-clock → **stop**. Do not coarsen \(0.20\,a_0\).
 3. Human grid+teacher I/O exceeds 80 h → **stop**. Do not redesign the grid.
-4. P0 fails on the linear stencil → fix teacher/grid; do not train.
+4. P0 fails on the linear stencil → the teacher or the grid is wrong, not the learner; do not train. Any repair to the grid after Q0 is a dated §4 note, exactly as in rungs 2 and 3 — this rung is not a licence to re-cut the grid quietly.
 5. P0 fails only on the learned rule → fail-closed; do not interpret P2.
 6. P3 does not beat the linear stencil → **inconclusive**. That is a result.
 7. Teacher itself is grid-divergent (Q1/Q2 blow up when spacing is audited) → dated §4 note. Redesign is not silent.

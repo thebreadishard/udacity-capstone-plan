@@ -1,6 +1,9 @@
 # Literature Papers
 
-Reference PDFs, numbered to match the bibliographies in `plans/*/GoalGathering/Relevant_Scientific_Papers.md`.
+Reference PDFs. **Filenames carry their own numbering, which no longer matches plan 03's bibliography**
+— plan 03 renumbered from scratch, so its “item 10” is a missing voxel corpus while `10_Meng2023_...` here
+is a PAH-charges paper, and its “item 4” is stored as `16_Li2020_...`. Cite by *filename* when you mean a
+PDF and by *item number* only inside the plan whose bibliography you are reading.
 
 **This folder is a shared literature dump** (see [`../plans/README.md`](../plans/README.md)).
 It is not owned by any plan. Plan 03's bibliography is the index of what the current plan cites.
@@ -9,9 +12,11 @@ and items 16/17/19 were scoped to plan 02's dipole-surface leg. The annotations 
 describe each paper's role in the **current** plan.
 
 **Updated 2026-08-23:** 15 PDFs retrieved for items 21–24 and 26–36. Every file in this folder was
-verified to begin with the `%PDF` signature. **36 PDFs, one gap (item 25, paywalled).**
+verified to begin with the `%PDF` signature. **37 PDFs, one gap (item 25, paywalled).** *Count corrected
+2026-09-01: the folder holds 37 files; `37_the_hydrogen_molecular_ion_revisited.pdf` was present but
+unlisted and does not follow the `NN_FirstAuthorYear_Topic.pdf` convention.*
 
-## ✅ Available (36 papers)
+## ✅ Available (37 papers)
 
 | File | Paper |
 |------|-------|
@@ -62,6 +67,7 @@ verified to begin with the `%PDF` signature. **36 PDFs, one gap (item 25, paywal
 | `34_Batatia2022_MACE.pdf` | Batatia, Kovács, Simm, Ortner & Csányi (2022) — MACE. arXiv:2206.07697, *NeurIPS* — selected production architecture (code MIT) |
 | `35_Kovacs2023_MACE-OFF.pdf` | Kovács et al. (2023, rev. 2025) — MACE-OFF transferable organic force fields. arXiv:2312.15211 — fallback PES start; **neutral organics only** (ASL weights) |
 | `36_Batatia2026_MACE-POLAR-1.pdf` | Batatia et al. (2026) — MACE-POLAR-1 polarisable electrostatic foundation model, OMol25, variable charge **and spin**. arXiv:2602.19411 — **the DMS-tensor leg of the dipole-surface bake-off** |
+| `37_the_hydrogen_molecular_ion_revisited.pdf` | *Provenance not recorded.* Added without a bibliography entry and not following the `NN_FirstAuthorYear_Topic.pdf` convention. Not cited by plan 03. Fetch a landing page before citing it anywhere. |
 
 ## Source notes
 

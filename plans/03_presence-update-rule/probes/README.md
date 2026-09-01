@@ -13,8 +13,8 @@ Run from this folder. No Octopus job is started here.
 | `split_overlap.py` | overlap count; `0` if disjoint (Q4). `--label q5` for no water in the H₂ train hash. |
 | `teacher_cost.py` | H / H₂ / H₂O seconds vs 168 h, or honest `NOT_RUN` |
 | `b_numerically_zero.py` | \(\max\|B\|\). Drop-\(B\) stays forbidden until this prints ~0 **and** a §4 note. |
-| `linear_stencil.py` | library; P4 / P0 baseline (continuity + Maxwell, no learned coefficients) |
+| `linear_stencil.py` | library; P4 / P0 baseline (continuity + Maxwell, no learned coefficients). **Non-periodic** (a periodic version conserves \(N\) by construction and made P0 unfailable), leapfrog Maxwell, CFL sub-cycled — 119 sub-steps per teacher step at the frozen \(h,\Delta t\). Frozen after Q0. |
 
-Helpers: `grid_spec.py` (frozen constants; part of the Q0 digest), `cube_io.py` (cube / npz).
+Helpers: `grid_spec.py` (frozen constants; part of the Q0 digest), `cube_io.py` (cube / npz). The state is **11** channels; the count is `len(grid_spec.CHANNEL_ORDER)` and nothing else.
 
 Q6 (one training step = one conv over the volume) is not a file yet; it waits on a hashed PyTorch op.

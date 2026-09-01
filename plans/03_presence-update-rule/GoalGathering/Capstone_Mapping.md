@@ -35,7 +35,7 @@ Folder numbers, not the rubric’s internal “Project 1 = module 02” offset.
 | # | Module | Technique | Dataset rules | Core deliverables | Landmines |
 |---|---|---|---|---|---|
 | 02 | AI Programming Foundations | No ML. Pandas/NumPy/plots, EDA | ≥200 rows, ≥5 cols, tabular, academic-safe | `data_workflow.ipynb`, summary PDF, `requirements.txt`, README, git history | Must not train |
-| 03 | Statistical analysis | Descriptive + ≥1 hypothesis test, ≥3 labelled figures | Own dataset; must differ from 02 once 04’s reuse rule is in force | `analysis.ipynb`, summary PDF, dataset file | PLOS ONE Huebner + one more scholarly source |
+| 03 | Statistical analysis | Descriptive + ≥1 hypothesis test, ≥3 labelled figures | **Kaggle / UCI / Data.gov / FiveThirtyEight / open-gov portals only.** ≥500 rows, ≥6 cols, numeric + grouping. Not the 02 file. Not synthetic/AI-generated | `analysis.ipynb`, summary PDF, dataset file | Accepted-sources list is **closed**, like 04's — an institutional repository (RODARE, Zenodo) or a bare academic release is **not** on it. PLOS ONE Huebner + one more scholarly source |
 | 04 | Applied ML | sklearn or PyTorch; supervised or unsupervised | **Kaggle / UCI / Data.gov / open-gov only.** Not 02 or 03. Not synthetic/AI-generated | `modeling.ipynb`, report PDF, CSV | Accepted-sources list has no “own data” carve-out |
 | 05 | Deep learning | PyTorch; CNN **or** RNN **or** Transformer + one controlled comparison | Not reused from any prior module. Not synthetic/AI-generated | `deep_learning.ipynb`, report with ethics, access instructions | CNN-family must be explicit |
 | 06 | Generative AI | GAN, VAE, diffusion, or Transformer | Not synthetic as a *dataset*; not reused | `generative_ai.ipynb`, ethics tied to *this* run | Do not ship samples as new molecules |
@@ -49,7 +49,7 @@ Folder numbers, not the rubric’s internal “Project 1 = module 02” offset.
 
 | Phase | Goal | Data | Owner |
 |---|---|---|---|
-| Public tables | Fluency with dipole-as-a-column; hygiene | QM9 (02), RODARE flatten (03), QM9 other-target (04) | M02–M04 |
+| Public tables | Fluency with dipole-as-a-column; hygiene | QM9 (02), accepted-portal table (03), QM9 other target (04) | M02–M04 |
 | Q0 + teacher | Hash the grid; produce H / H₂ / H₂O Maxwell windows | Octopus cubes | Scientific corpus, **M05** (not M02) |
 | Stencil | Learn one 3×3×3 rule on H₂ pairs | Teacher pairs | **M05 Task B** (thesis). Task A is the rubric shield |
 | Generative | VAE on published density slices, new split | Same voxel *source* as M05 Task A, different hash | M06 |
@@ -79,17 +79,22 @@ Folder numbers, not the rubric’s internal “Project 1 = module 02” offset.
 
 **Tag: (A)** + **(C)** (time-axis discipline for later P-gates).
 
-**Rubric.** Different public CSV, \(\ge 500\) rows, \(\ge 6\) columns, numeric + grouping, one hypothesis test. Huebner et al. PLOS ONE 2024 + one more scholarly source.
+**Rubric.** Different public CSV, \(\ge 500\) rows, \(\ge 6\) columns, numeric + grouping, one hypothesis test. **Accepted Sources are a closed list** — Kaggle, UCI, Data.gov, FiveThirtyEight, open government portals — exactly as in Module 04. Huebner et al. PLOS ONE 2024 + one more scholarly source.
 
-**Dataset (frozen intent).** Flatten HZDR RODARE record **3995** (“Dataset for Machine Learning Time Propagators for TDDFT”, 2,048 1-D trajectories) to rows = (system, time). Columns: integrated density moments, dipole, laser amplitude, **intensity / wavelength bin** as the grouping variable. Pin the record URL before the notebook source sentence. Verify-on-use: bibliography item 3.
+**Dataset — OPEN, blocking (Round 5 Pass A issue 5).** The previously frozen intent was a flatten of HZDR **RODARE record 3995**, with **QM7-X** as fallback. Neither is on the accepted-sources list, and the earlier version of this file recorded that list for Module 04 only. Both are therefore ineligible as *the* Module 03 dataset until one of the following is true, recorded in a dated note:
 
-**Hypothesis (pre-registered).** Dipole-response amplitude does not differ across two declared intensity bins (two-sample test on a frozen split). Inconclusive allowed.
+1. an accepted-portal mirror of the record is pinned by slug/URL, or
+2. a different accepted-portal table is pinned instead.
 
-**Fallback.** If RODARE packaging cannot be flattened to \(\ge 500\) honest rows, use a **QM7-X** public table (\(\ge 500\) rows), grouping = contains oxygen / not, test a dipole or HOMO shift. Still public. Still not a cube. Declare the fallback in a dated note; do not mix both as “the” M03 file.
+Do not write the Module 03 source sentence until one of those exists. Do not argue the list is advisory; the wording is “Accepted Sources”, and plan 01 issue 5 is carried precisely because this class of clause is read literally by graders.
 
-**Required citations.** Huebner et al. PLOS ONE 19(1): e0295726; one TDDFT/density paper from `Relevant_Scientific_Papers.md` after Verify is filled.
+**RODARE 3995 keeps a role, just not this one.** It is the scientific-context dataset (bibliography item 3, verified) and the closest published prior art via item 13. It may be cited in the report and used in Module 08's appendix. It is not the graded CSV.
 
-**Required sentence.** “This CSV is a flatten of a published computational corpus. It is not synthetic and not the Module 02 QM9 table.”
+**Hypothesis (pre-registered, dataset-agnostic).** A declared numeric response does not differ across two declared groups of the frozen grouping variable (two-sample test on a frozen split). Inconclusive allowed. The pre-registration is of the *form*; the variables are named in the same dated note that pins the dataset, before any test is run.
+
+**Required citations.** Huebner et al. PLOS ONE 19(**5**): e0295726 (bibliography item 14 — note the corrected issue number); one further peer-reviewed source from `Relevant_Scientific_Papers.md` after Verify is filled.
+
+**Required sentence.** “This CSV comes from the named accepted portal. It is not synthetic, not AI-generated, and not the Module 02 table.”
 
 ### Module 04 — Applied machine learning
 
@@ -97,7 +102,9 @@ Folder numbers, not the rubric’s internal “Project 1 = module 02” offset.
 
 **Rubric.** Dataset from **Kaggle, UCI, Data.gov, or open government portal only.** Tabular. Supervised or unsupervised. Not the M02 or M03 file. Not synthetic/AI-generated.
 
-**Dataset (frozen intent).** A **Kaggle QM9 dump whose prediction target is not the M02 EDA focus.** Freeze **polarizability** (or \(C_v\) if that column is cleaner in the dump). The file hash must differ from M02. Mordred-featurised QM9 is allowed only if it is a *distinct Kaggle dump* with its own slug — verify before freezing.
+**Dataset (frozen intent).** A **Kaggle QM9 dump whose prediction target is not the M02 EDA focus.** Freeze **polarizability** (or \(C_v\) if that column is cleaner in the dump). Mordred-featurised QM9 is allowed only if it is a *distinct Kaggle dump* with its own slug — verify before freezing.
+
+**Not the same dataset, not merely not the same file.** The rubric bar is “Not the same dataset used in Projects 1 or 2”. A differing file hash is necessary and **not sufficient** — re-exporting one CSV changes the hash while leaving the dataset identical. If 02 and 04 would both be QM9, 04 must take a **different molecular set entirely** unless the dumps have different provenance, different slugs *and* different columns, and the report says so in one sentence.
 
 **Model.** scikit-learn ridge or random forest. Composition + simple shape descriptors → frozen target. Split, leakage check, metric, bias. This module does **not** score the stencil.
 
@@ -117,7 +124,13 @@ Folder numbers, not the rubric’s internal “Project 1 = module 02” offset.
 
 **Task B (thesis).** 3-D conv stencil on **H₂ teacher pairs** (Octopus RT-TDDFT + Maxwell). Controlled comparison: kernel **3×3×3 vs 5×5×5**, exactly that one axis. Metrics: P1; loss curves; P0 as pass/fail. Not an FNO unless Distilled §4.
 
-**Hard fallback (pre-declared).** If a mentor treats self-run TDDFT cubes as “synthetic,” Module 05 **ships on Task A alone**. P1 waits for Module 08’s scientific appendix. Do not improvise a third dataset.
+**Hard fallback (pre-declared, repaired 2026-09-01).** The old fallback was “if a mentor treats self-run TDDFT cubes as synthetic, Module 05 **ships on Task A alone**”. That was circular: Task A's source is bibliography item 10, which is marked **FAIL**, so both branches ended on the same missing object (Round 5 Pass A issue 6). The ladder is now:
+
+1. **A1** — a QM9-style 3-D voxel corpus is pinned by DOI. Task A as written above.
+2. **A2** — no voxel DOI exists by the time Module 05 starts: Task A takes a **different public volumetric or image corpus**, pinned by DOI and recorded as a new numbered bibliography entry *before* the source sentence. Module 05's rubric has **no** closed accepted-sources list (unlike 03 and 04), so this branch is open; it is blocked only on an identifier no one has fetched yet. Do not name one from recall.
+3. **A3** — neither A1 nor A2 is available and cubes are rejected as data: Module 05 **stops** and the stop is reported. Do not improvise a third dataset.
+
+Pinning A1 or A2 is a **blocking precondition of Module 05**, not a task inside it. Module 06 inherits whichever branch fired, since it uses the same source with a new split hash.
 
 **Required sentences.** “Task A uses a published voxel corpus, not AI-generated, not reused from Modules 02–04.” “Task B cubes are computational experiments; they are not the graded Task A dataset.”
 
@@ -174,7 +187,7 @@ Defend the *rule*, the *gates*, and the *refusal* to spend the thesis on a grid 
 | Module | Molecule / rows | Format | Source class | Reused? |
 |---|---|---|---|---|
 | 02 | QM9 properties, \(\ge 200\) rows | CSV | Kaggle table | No |
-| 03 | RODARE 3995 flatten (fallback QM7-X) | CSV | Public computational table | No — not QM9 |
+| 03 | Accepted-portal table, pinned slug/URL (RODARE and QM7-X are **not** accepted sources) | CSV | Kaggle / UCI / Data.gov / FiveThirtyEight / open-gov | No — not the 02 file |
 | 04 | QM9, **other target**, other file hash | CSV | Kaggle table | No — not the M02 file |
 | 05 Task A | Published QM9 **voxels**, pinned DOI | volumes / slices | Zenodo/Figshare | No — not a CSV from 02–04 |
 | 05 Task B | H₂ teacher pairs | cubes | Own Octopus | Scientific corpus; not the graded Task A set |
@@ -194,12 +207,12 @@ Before any notebook source sentence:
 
 | Module | What must exist first |
 |---|---|
-| 02 | Kaggle slug + version (or Figshare DOI) |
-| 03 | RODARE 3995 landing URL, or QM7-X DOI if fallback fired |
-| 04 | Kaggle slug + version, hash \(\neq\) M02 |
-| 05 A | Zenodo/Figshare DOI of the voxel dump |
+| 02 | Kaggle slug + version (or Figshare DOI — Module 02 has no closed source list) |
+| 03 | Accepted-portal slug/URL. **Not** the RODARE landing page |
+| 04 | Kaggle slug + version; a different dataset from M02, not merely a different hash |
+| 05 A | DOI of the voxel dump (branch A1) or of the substitute corpus (branch A2) |
 | 05 B | Hash of Octopus deck + Q0 grid hash |
-| 06 | Same DOI as 05 A + new split hash |
+| 06 | Same DOI as whichever 05 A branch fired + new split hash |
 
 ### “Not AI-generated” sentences
 
@@ -207,13 +220,13 @@ Required in 02, 03, 04, 05 A, 06 as written above. Teacher cubes are **computati
 
 ### Mentor fallback
 
-Self-run cubes rejected as data → 05 ships on Task A; P1 in M08 appendix. Pre-declared.
+Self-run cubes rejected as data → Module 05 follows the A1/A2/A3 ladder above; if it reaches A3 it stops and reports the stop. P1 then lives in the Module 08 appendix. Pre-declared.
 
 ---
 
 ## 6. Calendar and 840 h (structure only)
 
-T0 is the date Module 02 starts, not a calendar date in this draft. Human 840 h from Overarching Goal. Wall-clock 168 h for the promised teacher set from the compute-budget file.
+T0 is the date Module 02 starts, not a calendar date in this draft. Human 840 h from Overarching Goal — at ~10 h/week, ~84 weeks. Wall-clock 168 h for the promised teacher set from the compute-budget file, as a total, not a weekly allowance. **The calendar is not evaluable until T0 is a date** (plan-01 issue 15 / R3-6, still open).
 
 | Bucket | Hours | Modules |
 |---|---|---|

@@ -1,17 +1,18 @@
 # Project plan versions
 
-This project has been planned three times. Folders for plans 01 (voxel field PES) and 02
-(coupled-cluster anharmonic IR) were **removed from the tree on 2026-09-01**. They remain in
-git history. They are not in this workspace.
+This project has been planned three times. The plan-01 and plan-02 **documents** were removed from
+version control on 2026-09-01 and remain in git history only. `plans/02_coupled-cluster-anharmonic-ir/`
+still exists on disk as a git-ignored leftover of plan 02's probe runs (psi4 logs, `.npz` frequency
+results). It is not a plan, and it is not evidence about plan 03.
 
-Neither 01, 02, nor 03 has been executed. Nothing in this repository is a result.
+Neither 01, 02, nor 03 has been executed as a plan. Nothing in plan 03 is a result.
 **Do not call plan 03 complete as a plan.** Completeness waits on a review of that folder.
 
 | | Plan | Status |
 |---|---|---|
 | **03** | [Presence-Update-Rule](03_presence-update-rule/) | **Current.** Draft as of 2026-09-01; not complete as a plan; not executed. |
 
-Historic comparison (folders 01 and 02 are gone; this table is not a set of links):
+Historic comparison (the 01 and 02 plan documents are gone; this table is not a set of links):
 
 | | 01 — Voxel Field PES | 02 — Coupled-Cluster Anharmonic IR | 03 — Presence-Update-Rule |
 |---|---|---|---|
@@ -22,7 +23,7 @@ Historic comparison (folders 01 and 02 are gone; this table is not a set of link
 | **Nuclear motion** | Classical MD + dipole-ACF | GVPT2 / hybrid QFF | Frozen nuclei on the scored window |
 | **Central question** | Field vs GNN transfer on vibrations | Does a CC anchor beat DFT-anchored PAH IR? | Does one local field rule transfer H₂ → H₂O and stay a fixed point? |
 | **Horizon** | Projects 10–12 | Absorbed / none | Projects 10–12 (phase, pair density, scale) |
-| **Reviews survived** | Rounds 1–3 (git history) | Round 4 (git history) | None yet |
+| **Reviews survived** | Rounds 1–3 (git history) | Round 4 (git history) | Round 5 Pass A (cold read, 2026-09-01); Pass B not yet run |
 
 ---
 
@@ -67,12 +68,15 @@ not. Itemised fates of the thirty source findings:
 
 ## Layout
 
-Only plan 03 is in this tree:
+Only plan 03 is a plan in this tree:
 
 ```
+plans/02_coupled-cluster-anharmonic-ir/
+  probes/            git-ignored leftovers of plan 02's runs. Not a plan, not evidence about 03.
+
 plans/03_presence-update-rule/
   GoalGathering/     prime directive, technical plan, module mapping, bibliography,
-                     inheritance map, Round-5 review briefs
+                     inheritance map, Round-5 briefs and the Round-5 Pass A review
     Horizon/         this plan's projects 10-12
   probes/            numerical probes that measure, rather than assert, the plan's arithmetic
   PATCH_plans_README.md
@@ -88,7 +92,8 @@ Three folders sit at the repository root and are **shared dumps**, because no pl
 - `AI_Chats/` — the planning conversations. They predate the splits.
 
 The **professor reviews of plans 01 and 02 are not in this tree.** They remain in git history.
-Plan 03 has no professor review yet. Copying 01/02 reviews into 03 would imply 03 had survived them.
+Plan 03's own review record starts with Round 5 Pass A (2026-09-01). Copying 01/02 reviews into 03
+would imply 03 had survived them.
 
 ## Adding a version 04
 
