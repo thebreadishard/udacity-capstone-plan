@@ -33,10 +33,9 @@ workspace**. Do not fetch GitHub; the remote is a public copy and may lag.
 Read **after** Pass A's findings exist as a written file in this folder — they do:
 [Professor_Review_2026-09-01_Round5_PassA.md](Professor_Review_2026-09-01_Round5_PassA.md), and its
 findings were addressed in spec on 2026-09-01. Read it before you start; findings 2–4 change the premise
-of attack 5 below. Same corpus as Pass A. The plan-01 and plan-02 *documents* are not in this workspace
-(git history only), though `plans/02_.../probes/` survives on disk as git-ignored run leftovers; do not
-fetch git history or GitHub to reconstruct the deleted plans. Use the inheritance map when a Pass A
-finding names a source issue.
+of attack 5 below. Same corpus as Pass A. Folders for plans 01 and 02 are **not in this workspace**; do
+not fetch git history or GitHub to reconstruct them. Use the inheritance map when a Pass A finding names
+a source issue.
 
 0. [README.md](../../../README.md) and [plans/README.md](../../README.md) — status banners
 1. [../README.md](../README.md)

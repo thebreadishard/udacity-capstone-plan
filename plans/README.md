@@ -1,9 +1,10 @@
 # Project plan versions
 
-This project has been planned three times. The plan-01 and plan-02 **documents** were removed from
-version control on 2026-09-01 and remain in git history only. `plans/02_coupled-cluster-anharmonic-ir/`
-still exists on disk as a git-ignored leftover of plan 02's probe runs (psi4 logs, `.npz` frequency
-results). It is not a plan, and it is not evidence about plan 03.
+This project has been planned three times. Folders for plans 01 (voxel field PES) and 02
+(coupled-cluster anharmonic IR) were **removed from the tree on 2026-09-01**: the documents from
+version control, and plan 02's leftover psi4 run artifacts from disk. They remain in git history.
+Plan 02's ten raw `.npz` frequency arrays were never committed, so they were force-added in `800f3aa`
+immediately before the deletion — `git show 800f3aa:<path>` retrieves one.
 
 Neither 01, 02, nor 03 has been executed as a plan. Nothing in plan 03 is a result.
 **Do not call plan 03 complete as a plan.** Completeness waits on a review of that folder.
@@ -68,12 +69,9 @@ not. Itemised fates of the thirty source findings:
 
 ## Layout
 
-Only plan 03 is a plan in this tree:
+Only plan 03 is in this tree:
 
 ```
-plans/02_coupled-cluster-anharmonic-ir/
-  probes/            git-ignored leftovers of plan 02's runs. Not a plan, not evidence about 03.
-
 plans/03_presence-update-rule/
   GoalGathering/     prime directive, technical plan, module mapping, bibliography,
                      inheritance map, Round-5 briefs and the Round-5 Pass A review
