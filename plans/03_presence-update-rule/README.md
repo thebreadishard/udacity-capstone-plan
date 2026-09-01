@@ -1,9 +1,9 @@
 # Plan 03 — Presence-Update-Rule
 
 **Status: draft as of 2026-09-01. Current plan; not complete.**  
-Supersedes plan 02 (Coupled-Cluster Anharmonic IR). The plan-01 and plan-02 **documents** were removed
-from version control on 2026-09-01 and remain in git history only; `plans/02_.../probes/` survives on disk
-as git-ignored run leftovers and is not part of this plan.
+Supersedes plan 02 (Coupled-Cluster Anharmonic IR). Plans 01 and 02 were **removed from the tree** on
+2026-09-01 — documents and, for plan 02, its leftover psi4 run artifacts. They remain in git history;
+plan 02's raw `.npz` frequency arrays were force-added in `800f3aa` first.
 
 Contradiction pass 2026-09-01 and the Round-5 Pass A pass are recorded in
 [GoalGathering/Frozen_Ladder_and_Tolerances.md](GoalGathering/Frozen_Ladder_and_Tolerances.md).

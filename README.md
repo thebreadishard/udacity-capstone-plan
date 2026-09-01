@@ -1,20 +1,20 @@
 # Udacity AI Mastery — Capstone Project Plan
 
 > **This repository is a planning and coordination artifact.** It contains no scientific results for the
-> current plan: nothing in plan 03 has been executed. It does contain tooling — probe scripts, a scraper —
-> and, on disk but untracked, leftover run artifacts from the superseded plan 02 (see below). Its purpose is
-> to design a coherent research project and distribute it across the Udacity Master in AI capstone sequence
-> (Modules 02–09), so that every module both advances the science *and* satisfies the school's rubric.
+> current plan: nothing in plan 03 has been executed. It does contain tooling — probe scripts, a scraper.
+> Its purpose is to design a coherent research project and distribute it across the Udacity Master in AI
+> capstone sequence (Modules 02–09), so that every module both advances the science *and* satisfies the
+> school's rubric.
 
 ---
 
 ## Current plan
 
-The project was planned three times. The plan-01 and plan-02 **documents** were removed from version
-control on 2026-09-01 and remain in git history only. One caveat, so nobody is misled by a folder they can
-see: `plans/02_coupled-cluster-anharmonic-ir/probes/` still exists **on disk**, holding git-ignored psi4
-logs and `.npz` frequency results from plan 02's runs. Those are not part of any current plan and not part
-of plan 03. Nothing in plan 03 has been executed.
+The project was planned three times. Plans 01 (voxel field PES) and 02 (coupled-cluster anharmonic IR)
+were **removed from the tree on 2026-09-01** — documents from version control, and plan 02's leftover run
+artifacts from disk. They remain in git history. Plan 02's raw frequency arrays (ten `.npz` Hessians and
+geometries, ~10 h of psi4) had never been committed, so they were force-added in `800f3aa` before the
+deletion; retrieve one with `git show 800f3aa:<path>`.
 
 | | Plan | Status |
 |---|---|---|
@@ -43,7 +43,6 @@ plan” before a review of *this* folder has closed. Nothing here is a result.
 CapstonePlan/
 ├── plans/
 │   ├── README.md                          why 01/02 were dropped; 03 is current
-│   ├── 02_coupled-cluster-anharmonic-ir/   git-ignored run leftovers only; not a plan
 │   └── 03_presence-update-rule/           current — draft, not complete
 │       ├── GoalGathering/                 prime directive, freeze, mapping, bibliography,
 │       │   │                              inheritance map, Round-5 review briefs
