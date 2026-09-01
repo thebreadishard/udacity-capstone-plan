@@ -3,10 +3,10 @@
 Cleaned transcripts of the conversations that produced this project, parsed from shared-chat pages
 with the tooling in [`../scraper/`](../scraper/).
 
-**Shared between all project plans.** These are primary sources, not plan documents. They predate the
-split and belong to neither plan: `gemini_chat_1.md` contains the original ambition — chemically
-precise IR spectra of large aromatic molecules — which plan 01 deliberately downgraded and plan 02
-partly restored. Filing them under either plan would misrepresent whose idea they were.
+**A shared dump of primary sources, not plan documents.** They predate the splits and belong to
+no plan: `gemini_chat_1.md` contains the original ambition — chemically precise IR spectra of large
+aromatic molecules — which plan 01 deliberately downgraded and plan 02 partly restored. Filing them
+under plan 03 would misrepresent whose idea they were. Plans 01 and 02 are git history only.
 
 | File | What it is |
 |---|---|

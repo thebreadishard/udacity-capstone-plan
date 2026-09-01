@@ -1,25 +1,32 @@
 # Project plan versions
 
-This project has been planned three times. All three folders stay here so the reasoning is legible
-without reading git history. Plans 01 and 02 remain until a later deletion pass.
+This project has been planned three times. Folders for plans 01 (voxel field PES) and 02
+(coupled-cluster anharmonic IR) were **removed from the tree on 2026-09-01**. They remain in
+git history. They are not in this workspace.
 
 Neither 01, 02, nor 03 has been executed. Nothing in this repository is a result.
 **Do not call plan 03 complete as a plan.** Completeness waits on a review of that folder.
 
-| | [01 — Voxel Field PES](01_voxel-field-pes/) | [02 — Coupled-Cluster Anharmonic IR](02_coupled-cluster-anharmonic-ir/) | [03 — Presence-Update-Rule](03_presence-update-rule/) |
+| | Plan | Status |
+|---|---|---|
+| **03** | [Presence-Update-Rule](03_presence-update-rule/) | **Current.** Draft as of 2026-09-01; not complete as a plan; not executed. |
+
+Historic comparison (folders 01 and 02 are gone; this table is not a set of links):
+
+| | 01 — Voxel Field PES | 02 — Coupled-Cluster Anharmonic IR | 03 — Presence-Update-Rule |
 |---|---|---|---|
-| **Status** | Superseded 2026-08-23. Complete as a plan; not developed. | Superseded 2026-08-29. Complete as a plan; blocked on measurement. | **Current.** Draft as of 2026-09-01; not complete as a plan; not executed. |
+| **Status** | Superseded 2026-08-23. Removed from the tree 2026-09-01. | Superseded 2026-08-29. Removed from the tree 2026-09-01. | **Current.** Draft; not complete as a plan; not executed. |
 | **Deliverable** | Vibrational band positions / IR envelopes, H₂O–benzene | Anharmonic IR families, benzene and naphthalene, four-term error budget | A shared local presence-update rule with P0–P4 gates on H₂ and H₂O |
 | **Where precision comes from** | Own CCSD(T)/cc-pVTZ labels | A measured CC rung | Named Octopus RT-TDDFT (ALDA) on a **frozen** grid |
 | **The model** | Hybrid FNO-NCA, \(E=\mathcal{E}[\rho,R]\) | Fine-tuned equivariant MLIP as cheap QFF half | 3-D conv stencil on \((\rho_\pm,\mathbf{j},\mathbf{E},\mathbf{B})\) |
 | **Nuclear motion** | Classical MD + dipole-ACF | GVPT2 / hybrid QFF | Frozen nuclei on the scored window |
 | **Central question** | Field vs GNN transfer on vibrations | Does a CC anchor beat DFT-anchored PAH IR? | Does one local field rule transfer H₂ → H₂O and stay a fixed point? |
 | **Horizon** | Projects 10–12 | Absorbed / none | Projects 10–12 (phase, pair density, scale) |
-| **Reviews survived** | Rounds 1–3 | Round 4 | None yet |
+| **Reviews survived** | Rounds 1–3 (git history) | Round 4 (git history) | None yet |
 
 ---
 
-## Why there are three
+## Why the earlier plans were dropped
 
 Plan 01 was not abandoned because it was wrong. It was reviewed three times, and every blocking
 issue raised against it was closed *in spec*. It was abandoned because of two things measured
@@ -42,7 +49,7 @@ on in-core CCSD(T) naphthalene.
 
 The argument of record is
 [Why_03_Supersedes_02.md](03_presence-update-rule/GoalGathering/Why_03_Supersedes_02.md).
-Plan 02's restructure proposal remains the argument for why 01 died.
+The deleted plan-02 restructure proposal (git history only) is the argument for why 01 died.
 
 ## What survives into 03
 
@@ -60,30 +67,31 @@ not. Itemised fates of the thirty source findings:
 
 ## Layout
 
-Each version is self-contained and mirrors the same internal structure, so its relative links work
-without rewriting:
+Only plan 03 is in this tree:
 
 ```
-plans/<version>/
-  GoalGathering/     prime directive, technical plan, module mapping, bibliography
-    Horizon/         this plan's projects 10-12 (they differ between plans)
+plans/03_presence-update-rule/
+  GoalGathering/     prime directive, technical plan, module mapping, bibliography,
+                     inheritance map, Round-5 review briefs
+    Horizon/         this plan's projects 10-12
   probes/            numerical probes that measure, rather than assert, the plan's arithmetic
-  Uitleg/            Dutch VWO-6 explanation (version 01; 03 not started)
+  PATCH_plans_README.md
 ```
 
-Three folders sit at the repository root and are **shared**, because no plan may claim them:
+`Uitleg/` is not started for plan 03.
+
+Three folders sit at the repository root and are **shared dumps**, because no plan may claim them:
 
 - `Rubrics/` — the Udacity module rubrics 01-09, treated as fixed (version 1.5.1). If Udacity ever
   revises them, add a sibling folder rather than overwriting; several decisions turn on exact wording.
-- `Papers/` — reference PDFs. Literature is not version-specific, and duplicating it would add tens
-  of MB per plan.
+- `Papers/` — reference PDFs. Literature is a dump; plan 03's bibliography is the index.
 - `AI_Chats/` — the planning conversations. They predate the splits.
 
-The **professor reviews are not shared.** Rounds 1–3 reviewed plan 01 and live there; Round 4
-reviewed plan 02 and lives there. Plan 03 has no professor review yet. Copying 01/02 reviews into 03
-would imply 03 had survived them.
+The **professor reviews of plans 01 and 02 are not in this tree.** They remain in git history.
+Plan 03 has no professor review yet. Copying 01/02 reviews into 03 would imply 03 had survived them.
 
 ## Adding a version 04
 
-Copy the current version's folder, rename it, and add a row to the table above. The point of this
-layout is that a superseded plan stays readable instead of becoming a diff.
+Copy the current version's folder, rename it, and add a row to the current-plan table above. A
+superseded plan stays readable in **git history** instead of becoming an unreadable diff. Do not
+resurrect the deleted 01 or 02 folders to satisfy that rule.

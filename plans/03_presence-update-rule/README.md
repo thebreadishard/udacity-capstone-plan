@@ -1,8 +1,8 @@
 # Plan 03 — Presence-Update-Rule
 
 **Status: draft as of 2026-09-01. Current plan; not complete.**  
-Supersedes plan 02 (Coupled-Cluster Anharmonic IR).  
-Plan 01 and plan 02 remain in the repository until a later deletion pass. They are not current.
+Supersedes plan 02 (Coupled-Cluster Anharmonic IR). Plans 01 and 02 were **removed from the tree**
+on 2026-09-01; they remain in git history only.
 
 Contradiction pass 2026-09-01 is recorded in
 [GoalGathering/Frozen_Ladder_and_Tolerances.md](GoalGathering/Frozen_Ladder_and_Tolerances.md).
@@ -41,6 +41,7 @@ Round 5 briefs (give Pass A first; do not give Pass B until Pass A is written do
 - [GoalGathering/Review_Brief_2026-09-01_Round5_PassA.md](GoalGathering/Review_Brief_2026-09-01_Round5_PassA.md)
 - [GoalGathering/Review_Brief_2026-09-01_Round5_PassB.md](GoalGathering/Review_Brief_2026-09-01_Round5_PassB.md)
 
-There is no `Professor_Review_*` for plan 03 yet. Do not copy the plan 01 or plan 02 reviews into this folder.
+There is no `Professor_Review_*` for plan 03 yet. Do not copy deleted plan-01/02 reviews from git
+history into this folder.
 
 Inheritance tally (must match [Inheritance_of_Reviews.md](GoalGathering/Inheritance_of_Reviews.md)): **8 superseded** (2, 10, 11, 14, R3-2, R4B-1, R4B-3, R4B-4), **5 re-scoped** (1, 7, 12, R3-1, R3-4), **16 carried** (3, 4, 5, 8, 9, 13, 15, R3-3, R3-5, R3-6, R4A-1, R4A-2, R4A-3, R4B-2, R4B-5, R4B-6), **1 addressed in spec** (6). \(8+5+16+1=30\).

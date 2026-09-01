@@ -4,9 +4,13 @@
 [`README.md`](../../README.md). This file is the argument of what was applied, not a live
 proposal. **Plan 03 remains draft. Do not call it complete as a plan.**
 
-The applied opening is “planned three times.” The applied comparison table is:
+A later pass on **2026-09-01** removed the plan-01 and plan-02 folders from the tree. Live index
+files now list **only plan 03**. The three-column comparison below is **historic**. It is not a
+set of workspace links.
 
-| | [01 — Voxel Field PES](01_voxel-field-pes/) | [02 — Coupled-Cluster Anharmonic IR](02_coupled-cluster-anharmonic-ir/) | [03 — Presence-Update-Rule](03_presence-update-rule/) |
+The applied opening was “planned three times.” The applied comparison table was:
+
+| | 01 — Voxel Field PES | 02 — Coupled-Cluster Anharmonic IR | 03 — Presence-Update-Rule |
 |---|---|---|---|
 | **Status** | Superseded 2026-08-23. Complete; not developed. | Superseded 2026-08-29. Complete as a plan; blocked on measurement. | **Current.** Draft; not complete as a plan; not executed. |
 | **Deliverable** | Vibrational band positions / IR envelopes, H₂O–benzene | Anharmonic IR families, benzene and naphthalene, four-term error budget | A shared local presence-update rule with P0–P4 gates on H₂ and H₂O |
@@ -21,6 +25,6 @@ Applied also:
 
 - section **Why there are three** pointing at [`GoalGathering/Why_03_Supersedes_02.md`](GoalGathering/Why_03_Supersedes_02.md)
 - 01 was not wrong; 02 was not wrong — it is blocked on a label factory the rubric sequence cannot wait for
-- “Adding a version 04” keeps the copy-folder rule
+- “Adding a version 04” keeps the copy-folder rule (new versions; do not resurrect deleted 01/02 folders)
 
 This patch does **not** make plan 03 complete. Root and `plans/README.md` now say **current / draft**.
