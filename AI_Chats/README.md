@@ -6,11 +6,12 @@ with the tooling in [`../scraper/`](../scraper/).
 **A shared dump of primary sources, not plan documents.** They predate the splits and belong to
 no plan: `gemini_chat_1.md` contains the original ambition — chemically precise IR spectra of large
 aromatic molecules — which plan 01 deliberately downgraded and plan 02 partly restored. Filing them
-under plan 03 would misrepresent whose idea they were. Plans 01 and 02 are git history only.
-Plan 04 is incoming and will replace 03; these chats still belong to no plan. Plan 04's Module 08
-exit is again an IR pipeline for an arbitrary individual aromatic (sequence ends at 09; no
-Projects 10–12) — that is the original ambition returning as a scored product, not a reason to
-file these chats under 04.
+under a plan folder would misrepresent whose idea they were. Plans 01, 02 and 03 are git history
+only. Plan 04 is current; these chats still belong to no plan. Plan 04's Module 08 exit is again
+an IR pipeline for an arbitrary individual aromatic (sequence ends at 09; no Projects 10–12) —
+that is the original ambition returning as a scored product, not a reason to file these chats
+under 04. `grok_chat_4.md` is plan 04's named source conversation, read in full when 04 was
+created; it stays in this dump.
 
 | File | What it is |
 |---|---|

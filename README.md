@@ -35,7 +35,7 @@ anywhere for that molecule, judged per band against laboratory data.
 
 | | Plan | Status |
 |---|---|---|
-| **03** | [Presence-Update-Rule](plans/03_presence-update-rule/) | Superseded by 04 (2026-09-02). Draft; not complete as a plan; not executed. Scheduled for removal from the tree. |
+| **03** | Presence-Update-Rule | Superseded by 04 (2026-09-02); **removed from the tree the same day**, git history keeps it. Draft; never complete as a plan; never executed. |
 | **04** | [CC-Anchored-IR-Pipeline](plans/04_cc-anchored-ir-pipeline/) | **Current.** Draft as of 2026-09-02. Module 08: any individual aromatic → IR spectrum vs frozen lines. Ends at 09. No Projects 10–12. |
 
 Start at [`plans/README.md`](plans/README.md) for why the earlier plans were dropped and what 04 is
@@ -65,7 +65,6 @@ not actually run and been scored. Nothing here is a result.
 CapstonePlan/
 ├── plans/
 │   ├── README.md                          why 01/02/03 were dropped; 04 is current
-│   ├── 03_presence-update-rule/           superseded; scheduled for removal; git history keeps it
 │   └── 04_cc-anchored-ir-pipeline/        current — draft, created 2026-09-02
 │       ├── GoalGathering/                 prime directive, frozen lines to beat
 │       └── probes/                        conventions declared; no probes yet
@@ -82,15 +81,12 @@ CapstonePlan/
 The Udacity rubrics are the constraint. Literature PDFs are a dump, not a second plan. Planning
 conversations predate the splits and belong to no plan folder.
 
-Plan 03 has two reviews of its own: the
-[Round-5 Pass A cold read](plans/03_presence-update-rule/GoalGathering/Professor_Review_2026-09-01_Round5_PassA.md)
-(2026-09-01, findings addressed in spec the same day) and the
-[Round-5 Pass B adversarial domain review](plans/03_presence-update-rule/GoalGathering/Professor_Review_2026-09-01_Round5_PassB.md)
-(2026-09-01, **findings not addressed**: no green light for the scope as frozen).
-It also carries an
-[inheritance map](plans/03_presence-update-rule/GoalGathering/Inheritance_of_Reviews.md) of thirty
-source findings from the deleted plans — because copying those reviews into this folder would imply
-plan 03 had survived them. The review files themselves are in git history only.
+Plan 03's review record — the Round-5 Pass A cold read (2026-09-01, findings addressed in spec
+the same day), the Round-5 Pass B adversarial domain review (2026-09-01, **findings not
+addressed**: no green light for the scope as frozen), and an inheritance map of thirty source
+findings from the deleted plans — was removed from the tree with the plan-03 folder on
+2026-09-02 and remains in **git history**. Pass B's architectural verdict (one scope, one
+clock) binds plan 04 and is restated in its prime directive.
 
 Documents 10–12 are **not** rubrics — they were plan 03's horizon and sit in its
 `GoalGathering/Horizon/` until that folder's removal. Plan 04 has no horizon documents.
