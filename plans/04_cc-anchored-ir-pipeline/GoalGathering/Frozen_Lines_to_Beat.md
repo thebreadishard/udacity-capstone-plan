@@ -79,8 +79,11 @@ from what the atlas actually contains.
 - **What it does.** Anharmonic IR via MLMD for **1,704 PAHdb species up to C₂₁₆, at several
   temperatures**, linear scaling. Its accuracy ceiling is its DFT teacher — the paper's own
   claim is accuracy "comparable to conventional quantum chemical calculations."
-- **Role.** The opponent for large rungs (C₂₄–C₂₁₆) and for every temperature-dependent
-  (tier-2) claim. Beating it means beating its *teacher*, which is what the CC anchor is for.
+- **Role.** The opponent for large rungs and for every temperature-dependent (tier-2) claim.
+  On **accuracy rungs** (where its coverage and lab data overlap), beating it means beating
+  its *teacher* — which is what the CC anchor is for. On **reach rungs** (R4–R5 sit inside
+  its C₂₁₆ coverage) comparisons against it are theory-vs-theory and labelled as such; no
+  "beat" is claimed there (Ladder §1).
 
 ## 5. Scoreboards (laboratory truth)
 

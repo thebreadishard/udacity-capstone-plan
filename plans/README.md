@@ -21,7 +21,7 @@ Historic comparison (the 01, 02 and 03 plan documents are gone; this table is no
 
 | | 01 — Voxel Field PES | 02 — Coupled-Cluster Anharmonic IR | 03 — Presence-Update-Rule |
 |---|---|---|---|
-| **Status** | Superseded 2026-08-23. Removed from the tree 2026-09-01. | Superseded 2026-08-29. Removed from the tree 2026-09-01. | Superseded by 04 on 2026-09-02. Draft; not complete as a plan; not executed. Scheduled for removal. |
+| **Status** | Superseded 2026-08-23. Removed from the tree 2026-09-01. | Superseded 2026-08-29. Removed from the tree 2026-09-01. | Superseded by 04 on 2026-09-02 and removed from the tree the same day. Draft; never complete as a plan; never executed. |
 | **Deliverable** | Vibrational band positions / IR envelopes, H₂O–benzene | Anharmonic IR families, benzene and naphthalene, four-term error budget | A shared local presence-update rule with P0–P4 gates on H₂ and H₂O |
 | **Where precision comes from** | Own CCSD(T)/cc-pVTZ labels | A measured CC rung | Named Octopus RT-TDDFT (ALDA) on a **frozen** grid |
 | **The model** | Hybrid FNO-NCA, \(E=\mathcal{E}[\rho,R]\) | Fine-tuned equivariant MLIP as cheap QFF half | 3-D conv stencil on \((\rho_\pm,\mathbf{j},\mathbf{E},\mathbf{B})\) |
@@ -102,7 +102,8 @@ Three folders sit at the repository root and are **shared dumps**, because no pl
 
 The **professor reviews of plans 01–03 are not in this tree.** They remain in git history.
 Plan 03's review record (Round 5 Pass A, addressed; Round 5 Pass B, no green light, not
-addressed) went with its folder. Plan 04's review record starts empty. Copying old reviews into
+addressed) went with its folder. Plan 04's review record is in its own README: Round-6 Pass A
+(2026-09-02) is in the tree and addressed; Pass B is not yet run. Copying old reviews into
 04 would imply 04 had survived them.
 
 ## Version 04 (created 2026-09-02)

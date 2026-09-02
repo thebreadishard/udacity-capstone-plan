@@ -61,7 +61,9 @@ Forbidden without one:
   the pipeline** (M05 surfaces, both Δ/direct arms, samplers). The **M04 calibrated baseline
   is the single declared exception**: it trains on lab residuals *by design*, is evaluated
   leave-molecule-out, its recipe is frozen in the pilot note (Ladder §4.6), and its outputs
-  never enter the pipeline — they only appear as an opponent column in P2.
+  never enter the pipeline's **training or its spectra** — they appear in exactly two report
+  roles: an opponent column in P2, and the labelled empirical component of the reach-rung
+  error budget (P5).
 - Weakening the M04 baseline (features, tuning, seeds) after the pilot note.
 - Swapping or re-versioning an opponent line after a comparison against it is scored.
 - "Beat" language on a reach rung; a scale factor on anharmonic output.
@@ -117,7 +119,7 @@ Scripts under `probes/`. A number not printed by a script is not a result.
 | P2 | **the beat comparison** (accuracy rungs): paired per-band \|error\| **on band positions** vs lab, pipeline vs line A, M04 baseline, and line B where present; margins from the pilot note; per family. Intensities are reported alongside, and scored only where the pilot note names a gas-phase intensity scoreboard — matrix intensities never score | "beat / lost / inconclusive" |
 | P3 | the §5 axis: Δ-learning vs direct, ≥3 seeds, effect size declared in the pilot note (Ladder §4.5) | "the anchor buys X" |
 | P4 | **null rows, mandatory** (Pass-A/B lessons: gates must fail on garbage and on doing nothing): (a) Δ=0 (harmonic-only), scored by **the same script, same bands, same windows, same seeds and same aggregation as the P2 claim it nullifies** (one flag switches the arm), must lose that P2 comparison — else the anharmonic claim is void and is reported as "explained by the calibrated harmonic baseline"; (b) a noise-input run must fail Q5/P0 | — |
-| P5 | reach certificate (R4–R6): end-to-end run + error budget + theory-vs-theory table + the certificate or refusal | "reached", never "beat" |
+| P5 | reach certificate (R4–R6): end-to-end run + error budget (its empirical component is the M04 uncertainty layer, labelled as such) + theory-vs-theory table + the certificate or refusal | "reached", never "beat" |
 
 If P0 fails at a rung, P2 is not interpreted there. If P4(a) shows Δ=0 passing, the one
 pre-authorised sentence — identical here and in §8 — is: **"the anharmonic claim is void and
