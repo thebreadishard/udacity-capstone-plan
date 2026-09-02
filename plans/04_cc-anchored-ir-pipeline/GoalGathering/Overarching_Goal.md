@@ -7,8 +7,9 @@ other file is patched.
 ## Prime directive
 
 Build **one pipeline**: any individual aromatic molecule in, an infrared spectrum out —
-and make that spectrum **demonstrably more accurate than the best prediction currently
-available anywhere for that molecule**.
+and make that spectrum's **band positions demonstrably more accurate than the best prediction
+currently available anywhere for that molecule** (positions are the scored quantity — see
+"What is scored"; intensities are reported, not part of this criterion).
 
 The success criterion is **relative and measured**, not absolute. "Chemical precision" is not
 the promise; *beating the frozen lines* is. The opponents are named and versioned in
@@ -73,7 +74,9 @@ after UV heating; that is handled as three declared tiers:
   our contribution is better input bands, not a new emission model.
 - **Tier 2 — conditional.** If the per-molecule ML surface exists, MD at chosen internal
   energy yields temperature-dependent band shifts and widths from the dipole autocorrelation
-  — a measured bonus, pre-registered before it is run.
+  — a measured bonus. Its comparison protocol may be written **only after** the tier-2 lab
+  references are pinned (bibliography debt 4 is unpaid); no tier-2 plot is ever shown against
+  literature fetched after the plot exists.
 - **Tier 3 — not promised.** A new microcanonical photon-by-photon radiative model is someone
   else's thesis.
 

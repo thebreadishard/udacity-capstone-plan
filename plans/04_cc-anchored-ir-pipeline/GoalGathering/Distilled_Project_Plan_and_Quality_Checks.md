@@ -14,11 +14,10 @@ Agrees with [Overarching_Goal.md](Overarching_Goal.md); the Goal file wins on dr
 
 A per-molecule pipeline — geometry, best affordable Hessian, and a machine-learned anharmonic
 correction trained on self-generated DLPNO-CCSD(T) points — produces IR **band positions**
-(scored) and intensities (reported; scored only where the pilot note names a gas-phase
-intensity scoreboard) that, on the accuracy rungs R0–R3, beat the frozen lines per band
-against laboratory data under a pre-registered paired comparison; and on reach rung R6
-produces a spectrum with a stated error budget where no anharmonic prediction of any kind
-exists.
+that, on the accuracy rungs R0–R3, beat the frozen lines per band against laboratory data
+under a pre-registered paired comparison; and on reach rung R6 produces a spectrum with a
+stated error budget where no anharmonic prediction of any kind exists. Intensities are
+computed and reported (Goal, "What is scored"); they are **not part of this claim**.
 
 If a gate fails, the claim is the fail-closed sentence of §8, not a quieter product.
 
@@ -43,8 +42,8 @@ CC-anchored per-molecule pipeline across a declared size ladder.
 | Item | Choice |
 |---|---|
 | Geometry + harmonic Hessian | DFT (B3LYP-class, basis per rung), the *baseline level*; frozen per rung in the Q0 deck |
-| Anchor points | DLPNO-CCSD(T), thresholds frozen in the deck; **licensed by the R1 canonical check, which is itself conditional** — canonical CCSD(T) is measured-affordable at R0 (benzene, plan-02 provenance: Compute_Budget §4) and sits at/over the old machine's measured wall at R1, so the first R1 probe measures whether it runs on the new machine at any usable basis; if not, the license downgrades to R0-only plus a declared cross-basis protocol (Ladder §2 R1) and every anchor claim says so |
-| Anharmonic machinery | ML surface on sampled geometries (normal-mode + short-MD sampling; M06 proposals once available) → VPT2 or MD-ACF spectra; declared per rung |
+| Anchor points | DLPNO-CCSD(T), thresholds frozen in the deck; **licensed by measured deltas, not by trust**: (i) DLPNO−canonical **harmonic frequency** deltas at the license molecule (R1 if canonical runs there — conditional exactly as before: measured-affordable at R0, at/over the old machine's wall at R1, first R1 probe decides; else R0-only + declared cross-basis protocol, stated in every anchor claim); (ii) TightPNO−NormalPNO frequency deltas at the license molecule **and** one R2-size spot-check mode family; (iii) the Q6 smoothness probe along every promised normal mode. If any of those deltas ≳ the P2 beat margin for a family, DLPNO anchors do not license "beat" language on that family | 
+| Anharmonic machinery | ML surface on sampled geometries (normal-mode + short-MD sampling; M06 proposals once available) → spectra via one of three **resonance-explicit** routes, chosen per rung in the pilot note (Ladder §4.7): (a) **GVPT2** — VPT2 with Fermi / Darling–Dennison resonances taken out of the perturbative treatment, named r₃/r₄ thresholds and a polyad cap, CH-stretch dropped from scored families if the cap is exceeded; (b) **MD-ACF only**, CH-stretch labelled classical, Fermi structure not claimed; (c) CH-stretch never scored at that rung. Raw VPT2 without resonance treatment is forbidden on any promised family (Mulas 2018's own breakdown warning, bib 6) |
 | Intensities | dipole derivatives at the declared level; no charge-flux shortcut (plan-01/02 lesson) |
 | Scale factors | **none on anharmonic output.** A harmonic fallback declares its factor + fit set |
 | Emission | tier 1 = published cascade model on our bands, labelled inherited |
@@ -109,6 +108,7 @@ Scripts under `probes/`. A number not printed by a script is not a result.
 | Q3 | split overlap | prints 0 |
 | Q4 | lab-leak check: no scoreboard value reachable from any training artifact **of the pipeline** (M05 surfaces, Δ/direct arms, samplers); the M04 baseline is the declared §4 exception, checked instead for leave-molecule-out evaluation | prints 0 |
 | Q5 | minimum check: converged geometry, 0 imaginary frequencies, 3N−6 modes | pass/fail per molecule |
+| Q6 | anchor-license probes: DLPNO−canonical and TightPNO−NormalPNO harmonic-frequency deltas at the license molecule (+ one R2-size spot check), and normal-mode smoothness (energy/force continuity, second-difference noise vs step size) along every promised mode; thresholds frozen in the Q0 deck | deltas and noise printed; breach **is** Ladder stop 4 |
 
 ### P (science, fail-closed)
 

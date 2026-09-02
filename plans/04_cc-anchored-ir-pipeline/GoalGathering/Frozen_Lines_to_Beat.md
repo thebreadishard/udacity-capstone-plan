@@ -117,7 +117,8 @@ harmonic line" must mean per band class, and they are already measured, not asse
 3. MNRAS landing page for Mai 2025; Mulas 2018 landing page — re-fetch.
 4. Temperature-dependence lab references for tier 2 (Joblin-era band-shift measurements) —
    identify and pin before any tier-2 pre-registration.
-5. DLPNO-CCSD(T) / ORCA method citations; Sylvetsky & Martin exact identifier — pin before
-   the M05 corpus deck is frozen.
+5. DLPNO-CCSD(T) / ORCA method citations — still unpaid; the Sylvetsky & Martin identifier was
+   pinned 2026-09-02 (bibliography item 15, during the Pass B review) and needs re-verifying
+   at scored use.
 6. Whether C₃₈₄H₄₈ itself (vs. same-bin species) has a PAHdb v4.00 entry — check by
    boundary-edge/formula search before the top rung is worded.
