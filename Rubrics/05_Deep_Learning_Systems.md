@@ -1,5 +1,12 @@
 # Deep Learning Systems
 
+> **Reading note (workspace, 2026-09-02):** This module has **no** *Accepted Sources* list. Do not
+> import Module 03/04’s Kaggle/UCI/Data.gov bullets into this file. The load-bearing rule is public
+> availability **before this project starts**, academic-use appropriate, not synthetic/AI-generated,
+> not reused from a prior capstone project. Standard benchmarks and curated real-world datasets are
+> explicitly allowed; a self-computed corpus published (GitHub/Zenodo) before the module begins can
+> satisfy that. See [`README.md`](README.md).
+
 ## Project Overview
 
 1. APA Resources

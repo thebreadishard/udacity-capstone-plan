@@ -1,5 +1,11 @@
 # Applied Machine Learning
 
+> **Reading note (workspace, 2026-09-02):** *Accepted Sources* below is illustrative, not a closed
+> set. The load-bearing rule is public availability **before this project starts**, academic-use
+> appropriate, not synthetic/AI-generated, not reused from Projects 1 or 2. A self-computed corpus
+> published (GitHub/Zenodo) before the module begins can satisfy that. Do not treat “must be on
+> Kaggle or Data.gov” as the rule. See [`README.md`](README.md).
+
 ## Project Overview
 
 1. APA Resources
