@@ -15,6 +15,7 @@ under plan 03 would misrepresent whose idea they were. Plans 01 and 02 are git h
 | `gemini_chat_2.md` | The long one. Grid-over-graph, the rejected Ehrenfest design, and the ground-up restructuring after the 23-point external review |
 | `grok_chat_1.md` | First "strict professor" pass; also where quantum computing was investigated and rejected for the NISQ era |
 | `grok_chat_2.md` | Second professor pass, ending one step before the final Gemini revision |
+| `grok_chat_4.md` | HAVO/VWO walkthrough: CC energy → PES → IR lines; why a full CC surface fails for coronene |
 
 ## Provenance caveat
 
