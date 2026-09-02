@@ -10,8 +10,10 @@ No probes exist yet. Conventions, carried from plans 01–03:
 
 First probes owed (with the ladder freeze, not before):
 
-1. Benzene end-to-end pilot: geometry → Hessian → harmonic bands → lab comparison, timed —
-   the laptop rung that proves the pipeline shape.
+1. Benzene R0 pilot: geometry → Hessian → harmonic bands, **timed, and nothing further** — it
+   produces no pipeline-vs-lab number. The lab comparison for benzene runs only after the
+   pilot note is committed (Ladder §4); running it earlier would let the note be written
+   against known results.
 2. Lab-scoreboard re-read: regenerate the plan-02 band table (PAHdb experimental uids, NIST
    JCAMP) under this plan's own hash, so §6 of the frozen-lines file rests on a script in
    *this* tree.

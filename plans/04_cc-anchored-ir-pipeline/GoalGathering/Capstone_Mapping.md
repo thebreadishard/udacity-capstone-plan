@@ -81,12 +81,14 @@ is the *opponent* of this project's pipeline, not its training data."
 
 **Contribution.** The lab truth the whole plan is scored against, plus the number the ladder
 currently only asserts: the **matrix tolerance**. Dataset: PAHdb *experimental* libraries
-(v3.10 matrix, 84 species; gas-phase v1.00) plus NIST WebBook JCAMP gas-phase spectra
-(parser exists in plan-02 probes, git history). Descriptive statistics per band family;
-**pre-registered hypothesis test** (form frozen before the data is joined): *matrix-to-gas
+(v3.10 matrix, 84 species; gas-phase v1.00) plus NIST WebBook JCAMP gas-phase spectra (working
+parser + cache recipe: plan-02 `probes/verify_oop_bands_2026-08-27.py`; band reads with
+recorded uids: plan-02 `probes/pahdb_experimental_2026-08-28.py` — both git history,
+regenerated under this plan's hash per probes/README item 2). Descriptive statistics per band
+family; **pre-registered hypothesis test** (form frozen before the data is joined): *matrix-to-gas
 band shift is zero* per band family — two-sided, declared α, inconclusive allowed. Output
 feeds §4 of the ladder: the pilot note's band lists and the measured (not conventional)
-15 cm⁻¹ tolerance.
+matrix tolerance (pilot-note item 4).
 
 **Rubric fit.** Public before start (both sources are public downloads today); ≥500 rows
 (84 species × bands), ≥6 columns, numeric + grouping (band family / phase / charge); distinct
@@ -107,14 +109,23 @@ against the lab band** (the Ethereal-AI-class approach, our own implementation).
 harmonic DFT, that is the honest headline; (2) the per-band uncertainty estimate attached to
 R4–R6 reach spectra, where no lab exists.
 
-**Dataset — distinctness DECIDED (user, 2026-09-02): reading 1.** The training table is the
-*paired* theory↔lab band match (M02 opponent atlas joined to the M03 scoreboard), published as
-its own versioned release (Zenodo DOI) **before Module 04 starts**. It is a genuinely new
-object — new DOI, new columns (the residual), new unit of analysis (matched pair) — and the
-report carries one explicit provenance paragraph saying exactly that. Mentor pre-approval is
-**not** sought in advance (user decision, same date); if a grader or mentor later rejects the
-reading, the fallback stays as declared: an independent public vibrational benchmark, found
-and verified at that moment — none is named here from recall.
+**Dataset — distinctness DECIDED (user, 2026-09-02): reading 1 of two.** The rubric bar in
+play is the **reuse rule** ("not the same dataset used in Projects 1 or 2"), not the
+Accepted-Sources note — that note only covers portal names. The training table is the *paired*
+theory↔lab band match (M02 opponent atlas joined to the M03 scoreboard), published as its own
+versioned release (Zenodo DOI) **before Module 04 starts**. *Reading 1 (adopted):* the pair
+table is distinct — new DOI, new columns (the residual), new unit of analysis (matched pair) —
+and the report carries one explicit provenance paragraph saying exactly that. *Reading 2
+(rejected for now):* a derived join is reuse; under that reading Module 04 would need an
+independent public vibrational benchmark, found and verified at that moment — none is named
+here from recall. Mentor pre-approval is **not** sought in advance (user decision, same date);
+if a grader or mentor later applies reading 2, the fallback above executes.
+
+**Q4 exception, declared.** This module trains on lab residuals *by design* and is therefore
+the single declared exception to the Distilled §4 lab-leak rule: it is evaluated strictly
+leave-molecule-out, its recipe (features, tuning budget, seeds) is frozen in the pilot note
+(Ladder §4.6), and its outputs never enter the pipeline — they appear only as an opponent
+column in P2.
 
 **Required sentence (reading 1).** "The training table is a published derived dataset (DOI …)
 matching public computed bands to public laboratory bands; its provenance and distinctness
@@ -210,8 +221,8 @@ R1-checked local-CC, and the Δ-learning comparison measures exactly what that b
 | 08 | — | integrates 03, 05, 07 (+04 baseline) | — | reuse by design |
 
 DOI-before-claim: no notebook writes its source sentence before the identifier exists in
-[Relevant_Scientific_Papers](Frozen_Lines_to_Beat.md) (bibliography file owed) or the freeze
-note. "Not AI-generated" sentences required in 02, 03, 04, 05, 06 as written above.
+[Relevant_Scientific_Papers.md](Relevant_Scientific_Papers.md) or a dated freeze note.
+"Not AI-generated" sentences required in 02, 03, 04, 05, 06 as written above.
 
 ## 5. Open items — all three RESOLVED by the user on 2026-09-02 (Pass 5)
 

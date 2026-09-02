@@ -36,6 +36,11 @@ any B2-governed decision cites a number.
 If pipeline infrastructure exceeds 200 h, the plan is drifting toward plan 01's failure mode
 (two-thirds of the budget on plumbing). Stop and write the deviation.
 
+**Booking rule.** Each logged hour is booked to exactly one bucket. The module names in the
+table are examples of where a bucket is typically spent, not exclusive owners — a module may
+draw from more than one bucket, but an hour can never be counted twice, and the bucket, not
+the module, is the cap.
+
 ## 3. B3 — cluster node-hours (the new budget)
 
 Nothing is measured. What exists is one **assertion** from the source conversation
@@ -63,6 +68,10 @@ Provenance for expectations only; every number is re-measured on the new machine
   (intensities) ≈ 3× a bare Hessian; coronene frequency job 176 min.
 - Full plan-02 batch machinery (queue runner, detached execution, STATUS files) exists in git
   history and is the starting point for the pipeline's job control.
+
+Provenance pointers: raw plan-02 `.npz` arrays are preserved in commit `800f3aa`; the timing
+and band-read scripts are plan-02 `probes/` files in git history (e.g.
+`pahdb_experimental_2026-08-28.py`, `verify_oop_bands_2026-08-27.py`).
 
 ## 5. Protocol
 

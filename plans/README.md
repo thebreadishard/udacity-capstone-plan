@@ -10,8 +10,7 @@ None of plans 01–04 has been executed as a plan. Nothing in plans 03 or 04 is 
 **Do not call plan 04 complete as a plan.** Completeness waits on a review of that folder.
 
 **Plan 04 is the current plan** (decided 2026-09-02; folder created the same day). It replaces
-plan 03. Do not treat 03 as the destination of new work; 03 stays in the tree only until its
-scheduled removal.
+plan 03, which was **removed from the tree on 2026-09-02**; git history keeps it.
 
 | | Plan | Status |
 |---|---|---|
@@ -86,7 +85,9 @@ Only plan 04 is in this tree (01, 02 and 03 are git history):
 ```
 plans/04_cc-anchored-ir-pipeline/
   README.md          orientation and reading order
-  GoalGathering/     Overarching_Goal (prime directive), Frozen_Lines_to_Beat
+  GoalGathering/     prime directive, frozen lines, ladder + tolerances, compute budget,
+                     capstone mapping, distilled plan + gates, bibliography, Round-6 briefs
+                     and the Round-6 Pass A review
   probes/            conventions declared; no probes yet
 ```
 
@@ -96,7 +97,7 @@ Three folders sit at the repository root and are **shared dumps**, because no pl
 
 - `Rubrics/` — the Udacity module rubrics 01-09, treated as fixed (version 1.5.1). If Udacity ever
   revises them, add a sibling folder rather than overwriting; several decisions turn on exact wording.
-- `Papers/` — reference PDFs. Literature is a dump; plan 03's bibliography is the index.
+- `Papers/` — reference PDFs. Literature is a dump; plan 04's bibliography is the index.
 - `AI_Chats/` — the planning conversations. They predate the splits.
 
 The **professor reviews of plans 01–03 are not in this tree.** They remain in git history.
@@ -107,7 +108,7 @@ addressed) went with its folder. Plan 04's review record starts empty. Copying o
 ## Version 04 (created 2026-09-02)
 
 Plan 04 exists: [`04_cc-anchored-ir-pipeline/`](04_cc-anchored-ir-pipeline/). Plan 03 was **not**
-edited in place; it stays readable until its scheduled removal, and in git history after that.
+edited in place; it was removed from the tree on 2026-09-02 and remains readable in git history.
 Do not resurrect the deleted 01 or 02 folders.
 
 **Product.** Module 08 is a pipeline: any individual aromatic molecule in, an infrared spectrum
