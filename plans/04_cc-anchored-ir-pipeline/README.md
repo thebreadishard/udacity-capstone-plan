@@ -24,18 +24,21 @@ Chemically better IR of complex aromatics is the reason for the work, not a post
 5. [GoalGathering/Compute_Budget_2026-09-02.md](GoalGathering/Compute_Budget_2026-09-02.md) —
    three budgets (human / laptop / cluster node-hours) and the timed-probe protocol
 6. [GoalGathering/Capstone_Mapping.md](GoalGathering/Capstone_Mapping.md) — modules 02–09
-   against Rubrics v1.5.1; every artifact load-bearing; three open items flagged to the user
-7. [probes/README.md](probes/README.md) — probe conventions (no probes exist yet)
+   against Rubrics v1.5.1; every artifact load-bearing; the three 2026-09-02 user decisions
+7. [GoalGathering/Distilled_Project_Plan_and_Quality_Checks.md](GoalGathering/Distilled_Project_Plan_and_Quality_Checks.md)
+   — levels and anchors, the Δ-vs-direct axis, Q/P gates with mandatory null rows
+8. [GoalGathering/Relevant_Scientific_Papers.md](GoalGathering/Relevant_Scientific_Papers.md)
+   — working bibliography with per-item verify status and named debts
+9. [probes/README.md](probes/README.md) — probe conventions (no probes exist yet)
 
-## Not yet written (owed, in order)
+## Not yet done (owed, in order)
 
-- **Relevant_Scientific_Papers** (working bibliography; the frozen-lines doc carries the
-  verified identifiers so far, plus its own list of verification debts).
-- **Distilled technical plan and quality gates** (the Q/P-gate machinery, splits, hashes).
-- **Round-6 review, two passes.** When — and only when — the plan is complete, it is reviewed
-  before execution: **Pass A** (cold read, internal consistency) and **Pass B** (adversarial
-  domain review), each from its own written brief, exactly as plan 03 was reviewed. Plan 04's
-  review record starts empty; no inherited stamp counts.
+- **The pilot note** (after the R0 pilot and the scoreboard re-read probe: band lists, beat
+  margins, P-gate numbers, P3 effect size — frozen before any comparison is scored).
+- **Round-6 review, two passes.** Now that the plan documents exist, the review comes before
+  execution: **Pass A** (cold read, internal consistency) and **Pass B** (adversarial domain
+  review), each from its own written brief, exactly as plan 03 was reviewed. Plan 04's review
+  record starts empty; no inherited stamp counts.
 
 ## Provenance
 

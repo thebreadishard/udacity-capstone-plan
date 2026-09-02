@@ -107,19 +107,14 @@ against the lab band** (the Ethereal-AI-class approach, our own implementation).
 harmonic DFT, that is the honest headline; (2) the per-band uncertainty estimate attached to
 R4–R6 reach spectra, where no lab exists.
 
-**Dataset + the one open distinctness question (BLOCKING, goes to the user/mentor).** The
-natural training table is the *paired* theory↔lab band match (M02 opponent atlas joined to the
-M03 scoreboard), published as its own versioned release (Zenodo DOI) before Module 04 starts.
-It is a genuinely new object (match keys, residuals) but derived from both prior datasets. The
-rubric bar is "not the same dataset used in Projects 1 or 2". **Two readings exist; do not
-pick one silently:**
-- *Reading 1 (derived-is-distinct):* new DOI, new columns (the residual), new unit of
-  analysis (matched pair) → distinct. Requires one explicit paragraph in the report and,
-  ideally, mentor confirmation before the module starts.
-- *Reading 2 (derived-is-reuse):* then Module 04 needs an independent public vibrational
-  benchmark instead. **No candidate is named here from recall**; pinning one is a
-  verify-on-use task recorded in the frozen-lines debts style.
-Until the user/mentor picks a reading, the Module 04 source sentence is not written.
+**Dataset — distinctness DECIDED (user, 2026-09-02): reading 1.** The training table is the
+*paired* theory↔lab band match (M02 opponent atlas joined to the M03 scoreboard), published as
+its own versioned release (Zenodo DOI) **before Module 04 starts**. It is a genuinely new
+object — new DOI, new columns (the residual), new unit of analysis (matched pair) — and the
+report carries one explicit provenance paragraph saying exactly that. Mentor pre-approval is
+**not** sought in advance (user decision, same date); if a grader or mentor later rejects the
+reading, the fallback stays as declared: an independent public vibrational benchmark, found
+and verified at that moment — none is named here from recall.
 
 **Required sentence (reading 1).** "The training table is a published derived dataset (DOI …)
 matching public computed bands to public laboratory bands; its provenance and distinctness
@@ -208,7 +203,7 @@ R1-checked local-CC, and the Δ-learning comparison measures exactly what that b
 |---|---|---|---|---|
 | 02 | PAHdb v4.00 computed band table | NASA public download | yes (public today) | no |
 | 03 | PAHdb experimental v3.10 + gas v1.00 + NIST JCAMP | NASA/NIST public | yes (public today) | no — measurements, not the 02 predictions |
-| 04 | paired theory↔lab table, own versioned release | derived, Zenodo DOI | must be, before M04 | **OPEN — reading 1 vs 2, user/mentor decides** |
+| 04 | paired theory↔lab table, own versioned release | derived, Zenodo DOI | must be, before M04 | distinct per reading 1 — **decided by user 2026-09-02**; provenance paragraph required |
 | 05 | own DLPNO corpus, deck hashes | computed, Zenodo DOI | must be, before M05 | no |
 | 06 | own geometry corpus, new split hash | computed, Zenodo DOI | must be, before M06 | source shared with 05 pipeline, split disjoint by hash |
 | 07 | — | — | — | — |
@@ -218,19 +213,16 @@ DOI-before-claim: no notebook writes its source sentence before the identifier e
 [Relevant_Scientific_Papers](Frozen_Lines_to_Beat.md) (bibliography file owed) or the freeze
 note. "Not AI-generated" sentences required in 02, 03, 04, 05, 06 as written above.
 
-## 5. Open items that go back to the user (Pass 5)
+## 5. Open items — all three RESOLVED by the user on 2026-09-02 (Pass 5)
 
-Per the §0 rule — flagged, not papered over:
-
-1. **Module 04 distinctness reading** (§3, M04). Decision needed before the M04 source
-   sentence: derived-is-distinct (publish the pair table, one explicit provenance paragraph,
-   mentor confirmation) or derived-is-reuse (then a public vibrational benchmark must be
-   found and verified; none is named from recall).
-2. **Module 05 model family.** Transformer-family is frozen intent; if the distilled plan's
-   architecture work argues for something outside CNN/RNN/Transformer, rubric conflict —
-   return to user before training.
-3. **Mentor pre-approval** of self-computed published corpora as Module 04–06 datasets
-   (carried from every earlier plan; still the cheapest insurance available).
+1. **Module 04 distinctness reading — DECIDED: reading 1** (derived pair table is distinct;
+   own DOI + provenance paragraph). See §3 M04.
+2. **Module 05 model family — NOTED.** Transformer-family stands as frozen intent; any
+   architecture outside CNN/RNN/Transformer is a rubric conflict that returns to the user
+   *before* training.
+3. **Mentor pre-approval — NOT REQUIRED in advance** (user decision). The plan proceeds; an
+   unexpected "no" later is handled when it happens, with the declared fallbacks. This
+   supersedes the carried plan-01/02/03 recommendation to seek written approval first.
 
 ## 6. Ordering and hours (structure)
 
