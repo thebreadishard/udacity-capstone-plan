@@ -15,7 +15,7 @@ Do not treat 03 as the destination of new work, and do not edit 03 in place to b
 | | Plan | Status |
 |---|---|---|
 | **03** | [Presence-Update-Rule](03_presence-update-rule/) | Last written. Draft as of 2026-09-01; not complete as a plan; not executed. **Will be replaced by 04.** |
-| **04** | — | **Incoming.** Not yet a folder. Will supersede 03. |
+| **04** | — | **Incoming.** Not yet a folder. Will supersede 03. Module 08: any individual aromatic → IR spectrum. Ends at 09. No Projects 10–12. |
 
 Historic comparison (the 01 and 02 plan documents are gone; this table is not a set of links):
 
@@ -104,6 +104,12 @@ written folder (`03_presence-update-rule/`), rename it, and turn the 04 row in t
 “incoming” into a link. Do **not** edit 03 in place. A superseded plan stays readable in **git
 history** instead of becoming an unreadable diff. Do not resurrect the deleted 01 or 02 folders.
 
-Plan 03 does two things at once (light–matter interaction **and** an IR network). Round-5 Pass B
-gave no green light for that frozen scope. Plan 04's job is to **pick one**; do not carry both
-clocks forward as if Pass B had not happened.
+**Product, frozen as intent until the folder exists.** Module 08 is a pipeline: any individual
+aromatic molecule in, an infrared spectrum out. Module 09 is the defense. The degree **ends there**.
+Do not create a `Horizon/` or Projects 10–12 in plan 04. Plan 03's exile of IR / JWST / C₃₈₄H₄₈
+to Horizon 10–12 does **not** carry forward.
+
+Round-5 Pass B still binds the *architecture*: plan 03 tried to own light–matter interaction and
+an IR network on one frozen clock, and that scope has no green light. Plan 04 does not get to
+ignore that. It also does not get to “pick one” by dropping the IR product. The IR pipeline is the
+Module 08 exit; how the clocks and the teacher are chosen is what 04 has to design.
