@@ -26,7 +26,7 @@ were **removed from the tree on 2026-09-01** — documents from version control,
 artifacts from disk. They remain in git history. Plan 02's raw frequency arrays (ten `.npz` Hessians and
 geometries, ~10 h of psi4) had never been committed, so they were force-added in `800f3aa` before the
 deletion; retrieve one with `git show 800f3aa:<path>`. Plan 03 (presence-update rule) is superseded and
-scheduled for removal.
+was **removed from the tree on 2026-09-02**; git history keeps it.
 
 Plan **04 is the current plan** (created 2026-09-02): a per-molecule IR pipeline — geometry, best
 affordable Hessian, machine-learned anharmonic correction on self-generated DLPNO-CCSD(T) points —

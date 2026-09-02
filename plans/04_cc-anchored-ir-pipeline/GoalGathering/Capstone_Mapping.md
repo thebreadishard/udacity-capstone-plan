@@ -124,8 +124,10 @@ if a grader or mentor later applies reading 2, the fallback above executes.
 **Q4 exception, declared.** This module trains on lab residuals *by design* and is therefore
 the single declared exception to the Distilled §4 lab-leak rule: it is evaluated strictly
 leave-molecule-out, its recipe (features, tuning budget, seeds) is frozen in the pilot note
-(Ladder §4.6), and its outputs never enter the pipeline — they appear only as an opponent
-column in P2.
+(Ladder §4.6), and its outputs never enter the pipeline's training or its spectra — they
+appear in exactly two report roles: an opponent column in P2, and the labelled empirical
+component of the reach-rung error budget (P5). Those two roles are use (1) and use (2) above,
+and there is no third.
 
 **Required sentence (reading 1).** "The training table is a published derived dataset (DOI …)
 matching public computed bands to public laboratory bands; its provenance and distinctness
@@ -135,7 +137,9 @@ from the Module 02/03 datasets are described in §…; it is not AI-generated."
 
 **Contribution.** The object the whole plan exists for. Per-molecule ML surface / correction
 trained on self-generated DLPNO-CCSD(T) points (geometries along normal modes and short MD),
-with the R1 DLPNO-vs-canonical check as the anchor's license.
+with the R1 DLPNO-vs-canonical check as the anchor's license — a **conditional** license: if
+canonical (T) cannot run at R1 on the new machine, it downgrades to R0-only plus a declared
+cross-basis protocol (Ladder §2 R1), and every anchor claim says so.
 
 **Dataset.** Own computed corpus, **published (Zenodo DOI, deck hashes) before Module 05
 starts** — that publication step is a blocking precondition, exactly the plan-03 A1/A2/A3
