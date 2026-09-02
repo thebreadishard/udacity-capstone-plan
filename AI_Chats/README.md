@@ -7,7 +7,10 @@ with the tooling in [`../scraper/`](../scraper/).
 no plan: `gemini_chat_1.md` contains the original ambition — chemically precise IR spectra of large
 aromatic molecules — which plan 01 deliberately downgraded and plan 02 partly restored. Filing them
 under plan 03 would misrepresent whose idea they were. Plans 01 and 02 are git history only.
-Plan 04 is incoming and will replace 03; these chats still belong to no plan.
+Plan 04 is incoming and will replace 03; these chats still belong to no plan. Plan 04's Module 08
+exit is again an IR pipeline for an arbitrary individual aromatic (sequence ends at 09; no
+Projects 10–12) — that is the original ambition returning as a scored product, not a reason to
+file these chats under 04.
 
 | File | What it is |
 |---|---|

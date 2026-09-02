@@ -9,6 +9,11 @@
 > **Incoming: plan 04.** Plan 03 is the last written plan in this tree and is **not** the destination of
 > new work. A plan 04 will replace it (folder not yet created). Do not edit plan 03 in place to become 04;
 > copy a new folder when 04 is written. Round-5 Pass B gave **no green light** for plan 03's frozen scope.
+>
+> **Plan 04 product (decided 2026-09-02, not yet written).** Module 08 ships a pipeline: any individual
+> aromatic molecule in, an infrared spectrum out. The sequence ends at Module 09. There are **no**
+> Projects 10–12. Chemically precise IR of complex aromatics is the reason for the work, not a horizon
+> item after the degree.
 
 ---
 
@@ -26,7 +31,7 @@ exists, treat 03 as last-written provenance, not as the live destination.
 | | Plan | Status |
 |---|---|---|
 | **03** | [Presence-Update-Rule](plans/03_presence-update-rule/) | Last written. Draft as of 2026-09-01; **not** complete as a plan; not executed. **Will be replaced by 04.** |
-| **04** | — | **Incoming.** Not yet a folder. Will supersede 03. Do not start it by editing 03. |
+| **04** | — | **Incoming.** Not yet a folder. Will supersede 03. Do not start it by editing 03. Module 08: any individual aromatic → IR spectrum. Ends at 09. No Projects 10–12. |
 
 Start at [`plans/README.md`](plans/README.md) for why the earlier plans were dropped and what 04 is
 allowed to inherit.
