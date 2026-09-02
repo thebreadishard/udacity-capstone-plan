@@ -28,6 +28,8 @@ history), re-verify at first scored use; **NOT FETCHED** = named debt.
 | 18 | Boundary-edge codes (M02 atlas parsing) | Hansen et al. 1996; Caporossi & Hansen 1998, J. Chem. Inf. Comput. Sci. **38**, 610 | **record** (named in the v4.00 paper) — fetch at M02 |
 | 19 | Rubric-required M03 methods citation | Huebner et al., PLOS ONE **19**(5): e0295726 (2024). DOI 10.1371/journal.pone.0295726 | **record** (plan-03, verified 2026-09-01; issue number is 5, not 1; Huebner is a coauthor) |
 | 20 | Temperature-dependent PAH band shifts (tier 2 scoreboard) | Joblin-era measurements — exact papers not identified | **NOT FETCHED** — debt. Identify and pin before any tier-2 pre-registration |
+| 21 | **M04 fallback dataset (reading-2 insurance)** | NIST CCCBDB, Standard Reference Database 101, Release 22 (May 2022), ed. R. D. Johnson III. DOI 10.18434/T47C7Z | **OK (2026-09-02)** — cccbdb.nist.gov landing: 2,186 gas-phase molecules, experimental + computed vibrational frequencies; includes tetracene, coronene, C₆₀. US-government source |
+| 22 | **M04 fallback dataset, second option** | Zapata Trujillo & McKemmish, "VIBFREQ1295: A New Database for Vibrational Frequency Calculations", J. Phys. Chem. A **126**(25), 4100–4122 (2022). DOI 10.1021/acs.jpca.2c01438; dataset DOI 10.7910/DVN/VLVNU7 (Harvard Dataverse) | **OK (2026-09-02)** — Crossref record fetched (title, authors, venue, pages, dataset reference) |
 
 ## Named debts (same list as Frozen_Lines §7, kept in sync)
 

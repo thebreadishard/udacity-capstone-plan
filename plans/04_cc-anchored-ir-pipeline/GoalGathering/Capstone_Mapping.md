@@ -119,7 +119,13 @@ and the report carries one explicit provenance paragraph saying exactly that. *R
 (rejected for now):* a derived join is reuse; under that reading Module 04 would need an
 independent public vibrational benchmark, found and verified at that moment — none is named
 here from recall. Mentor pre-approval is **not** sought in advance (user decision, same date);
-if a grader or mentor later applies reading 2, the fallback above executes.
+if a grader or mentor later applies reading 2, the fallback executes with a **named, verified
+candidate** (pinned 2026-09-02 after Round-6 Pass B finding 10): **NIST CCCBDB** — SRD 101,
+Release 22 (May 2022), DOI 10.18434/T47C7Z, 2,186 gas-phase molecules with experimental *and*
+computed vibrational frequencies, a US-government source on the rubric's own example list,
+and it even contains tetracene and coronene; second option **VIBFREQ1295** (Zapata Trujillo &
+McKemmish 2022, JPCA 126, 4100, DOI 10.1021/acs.jpca.2c01438; data DOI 10.7910/DVN/VLVNU7).
+Both are bibliography items 21–22.
 
 **Q4 exception, declared.** This module trains on lab residuals *by design* and is therefore
 the single declared exception to the Distilled §4 lab-leak rule: it is evaluated strictly

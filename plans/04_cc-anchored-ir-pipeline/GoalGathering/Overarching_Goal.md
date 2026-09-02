@@ -38,6 +38,9 @@ reported with provenance (dipole derivatives at the declared level); they are *s
 where the pilot note names a gas-phase intensity scoreboard for that molecule — matrix
 intensities never score. Band pairing for the position comparison is fixed in the pilot note
 and never chosen by "strongest band in a window" at comparison time (a measured plan-02 bug).
+On R2–R3 the accuracy question is answered only on families that pass the **Module-03
+matrix–gas decidability gate** (Ladder §2, Promised); a family whose matrix–gas delta swamps
+its beat margin is pre-declared inconclusive on matrix — that sentence is part of the claim.
 
 The gap is documented in the frozen-lines file: harmonic DFT reaches C₃₈₆, MLMD-anharmonic
 (DFT teacher) reaches C₂₁₆, QFF-anharmonic reaches C₁₈–C₂₄, CC-quality reaches approximately

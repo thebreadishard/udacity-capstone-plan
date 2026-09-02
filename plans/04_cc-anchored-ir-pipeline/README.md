@@ -45,16 +45,24 @@ Chemically better IR of complex aromatics is the reason for the work, not a post
   reported split; R2 A-set separated from unscored triphenylene + charge-state rule; stale
   layout/links/acronyms fixed; P3 effect size binned; booking rule added; ~1 cm⁻¹ bind
   carried).
-- **Round 6, Pass B** (adversarial domain): **not run.** Use
-  [Review_Brief_2026-09-02_Round6_PassB.md](GoalGathering/Review_Brief_2026-09-02_Round6_PassB.md)
-  only now that Pass A's findings exist and are addressed.
+- **Round 6, Pass B** (adversarial domain, 2026-09-02, run by the user in a fresh chat):
+  [Professor_Review_2026-09-02_Round6_PassB.md](GoalGathering/Professor_Review_2026-09-02_Round6_PassB.md)
+  — verdict: **no green light for the promised set as then worded**; 5 blocking + 6
+  non-blocking. Addressed the same day in two steps. *Factual fixes* (commit `040371f`):
+  resonance-explicit machinery (raw VPT2 forbidden on promised families), Q6 anchor-license
+  probes as the stop-4 trigger, mechanical N_min × wall-clock kill rule, positions-only
+  criterion sentences, Tang demoted to context, tier-2 blocked on debt 4, Sylvetsky pinned.
+  *Scope decisions* (user, same day): R2–R3 stay promised **behind the M03 matrix–gas
+  decidability gate** (matrix-limited families pre-declared inconclusive); R6 stays promised
+  **conditional on B3**, its certificate an explicitly-labelled extrapolation with no accuracy
+  claim (Distilled §9.5 rewritten); the M04 reading-2 fallback is now **named and verified**
+  (NIST CCCBDB, DOI 10.18434/T47C7Z; VIBFREQ1295 as second option — bibliography items 21–22).
 
 ## Not yet done (owed, in order)
 
-- **Round-6 Pass B** (see review record above).
 - **The pilot note** (after the R0 pilot and the scoreboard re-read probe: band lists, beat
-  margins, P-gate numbers, matrix tolerance as measured, P3 effect size, M04 baseline recipe —
-  frozen before any pipeline-vs-lab number exists).
+  margins, P-gate numbers, matrix tolerance as measured, P3 effect size, M04 baseline recipe,
+  resonance route per rung, N_min per rung — frozen before any pipeline-vs-lab number exists).
 
 ## Provenance
 
