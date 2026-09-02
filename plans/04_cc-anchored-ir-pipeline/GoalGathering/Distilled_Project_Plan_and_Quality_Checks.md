@@ -14,10 +14,13 @@ Agrees with [Overarching_Goal.md](Overarching_Goal.md); the Goal file wins on dr
 
 A per-molecule pipeline — geometry, best affordable Hessian, and a machine-learned anharmonic
 correction trained on self-generated DLPNO-CCSD(T) points — produces IR **band positions**
-that, on the accuracy rungs R0–R3, beat the frozen lines per band against laboratory data
-under a pre-registered paired comparison; and on reach rung R6 produces a spectrum with a
-stated error budget where no anharmonic prediction of any kind exists. Intensities are
-computed and reported (Goal, "What is scored"); they are **not part of this claim**.
+that, on the accuracy rungs, beat the frozen lines per band against laboratory data under a
+pre-registered paired comparison: **unconditionally promised on R0–R1 (gas-phase); on R2–R3
+only for families that pass the M03 matrix–gas decidability gate**, all other families
+pre-declared inconclusive on matrix. On reach rung R6 — **conditional on B3** — it produces a
+labelled theory-vs-theory spectrum with an uncertainty statement that is explicitly an
+extrapolation, where no anharmonic prediction of any kind exists. Intensities are computed
+and reported (Goal, "What is scored"); they are **not part of this claim**.
 
 If a gate fails, the claim is the fail-closed sentence of §8, not a quieter product.
 
@@ -132,6 +135,8 @@ negotiated after the fact.
 - "Rung Rn ran and lost to [line] on [families]: paired table attached."
 - "The anharmonic correction did not improve on Δ=0 at Rn; the anharmonic claim is void and
   the result is reported as explained by the calibrated harmonic baseline."
+- "Family [F] at Rn is **pre-declared inconclusive on matrix**: the M03-measured
+  |matrix−gas| delta is not smaller than the beat margin (table attached). No beat, no loss."
 - "Reach rung Rn produced a spectrum with the attached error budget; no accuracy claim is
   made because no laboratory spectrum exists."
 

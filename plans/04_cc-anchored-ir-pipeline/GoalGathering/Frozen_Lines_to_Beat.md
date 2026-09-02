@@ -5,10 +5,12 @@ After a comparison against a line has been **scored**, that line may not be swap
 re-versioned, or reweighted; before that, changes require a dated note. Verify-on-use still
 applies: every identifier below is re-fetched before it enters a scored Module 03–09 document.
 
-**The criterion (from [Overarching_Goal.md](Overarching_Goal.md)).** The pipeline's spectrum
-for a molecule must be demonstrably more accurate than the best prediction currently available
-anywhere for that molecule, judged per band against laboratory data wherever laboratory data
-exists. "Best available" is what this file freezes.
+**The criterion (from [Overarching_Goal.md](Overarching_Goal.md)).** The pipeline's band
+positions for a molecule must be demonstrably more accurate than the best prediction
+currently available anywhere for that molecule, judged per band against laboratory data —
+**where that data can decide the comparison**: gas-phase rungs unconditionally, matrix-scored
+families only if the M03-measured matrix–gas delta is smaller than the beat margin (Ladder
+§2, Promised), and never on reach rungs. "Best available" is what this file freezes.
 
 ---
 
