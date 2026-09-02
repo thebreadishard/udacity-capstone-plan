@@ -58,8 +58,10 @@ Per molecule, with the rung chosen by a declared size ladder:
    reduced-dimensional surface trained on self-generated **DLPNO-CCSD(T)** points (DLPNO =
    domain-based local pair natural orbital coupled cluster — a controlled locality truncation
    usable where canonical CC is not), sampled along normal modes and short MD; C–H stretches
-   treated with extra care; **VPT2** (second-order vibrational perturbation theory) or
-   MD-based spectra from that surface.
+   treated with extra care; spectra via the **resonance-explicit routes of Distilled §3**
+   (GVPT2 with named thresholds and a polyad cap, MD-ACF with CH-stretch labelled classical,
+   or CH-stretch unscored at that rung). **Raw VPT2 without resonance treatment is forbidden
+   on promised families.**
 3. **Error budget**: every claimed band carries a stated, measured error source (level,
    fit RMSE, sampling), compared per band against the lab scoreboard.
 4. Known risks, named in the source conversation itself: DLPNO local-threshold roughness of

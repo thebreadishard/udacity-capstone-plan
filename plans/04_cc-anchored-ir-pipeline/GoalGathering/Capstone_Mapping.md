@@ -205,10 +205,13 @@ decision (submit R2 batch / refuse cluster job). No dataset.
 (scoreboard + measured tolerance), **M05** (anharmonic correction), **M07** (officer running
 the campaigns); M04's baseline appears inside every comparison table. Artifact: a small CLI /
 service — molecule identifier in → spectrum + per-band error budget + certificate out, **or a
-refusal naming the rung/cap/gate that blocked it**. Runs: R0–R3 accuracy comparisons under
-the pilot note; R6 reach demonstration; tier-1 emission post-processing via the published
-cascade model, labelled inherited. Paper (1,500–2,000 words): industry frame per the
-Overarching Goal; the accuracy/reach split stated; losses and inconclusives reported as such.
+refusal naming the rung/cap/gate that blocked it**. Runs: R0–R1 accuracy comparisons under
+the pilot note (gas-phase, unconditional); R2–R3 accuracy comparisons **only on families that
+pass the M03 matrix–gas gate**, the rest reported pre-declared inconclusive; R6 reach
+demonstration **only if B3 exists** (else the refusal is the demonstration); tier-1 emission
+post-processing via the published cascade model, labelled inherited. Paper (1,500–2,000
+words): industry frame per the Overarching Goal; the accuracy/reach split stated; losses and
+inconclusives reported as such.
 
 ### Module 09 — defense
 

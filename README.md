@@ -13,7 +13,11 @@
 >
 > **Plan 04 product.** Module 08 ships a pipeline: any individual aromatic molecule in, an
 > infrared spectrum out — scored against frozen state-of-the-art lines
-> ([Frozen_Lines_to_Beat.md](plans/04_cc-anchored-ir-pipeline/GoalGathering/Frozen_Lines_to_Beat.md)).
+> ([Frozen_Lines_to_Beat.md](plans/04_cc-anchored-ir-pipeline/GoalGathering/Frozen_Lines_to_Beat.md)),
+> with pre-registered gates: "beat" claims are unconditional only on the gas-phase rungs
+> (benzene, naphthalene); larger accuracy rungs are decided — or pre-declared inconclusive —
+> by a measured matrix–gas gate, and the C₃₈₄H₄₈-class reach demonstration is conditional on
+> cluster access and carries no accuracy claim.
 > The sequence ends at Module 09. There are **no** Projects 10–12. Demonstrably-better IR of
 > complex aromatics is the reason for the work, not a horizon item after the degree.
 
