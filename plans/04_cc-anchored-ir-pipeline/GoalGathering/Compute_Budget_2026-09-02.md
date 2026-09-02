@@ -54,7 +54,10 @@ node; 10⁴ points ≈ thousands of node-hours. An assertion is not a budget. Th
    frozen in a dated note derived from that probe.
 2. The first timed DLPNO probe (any size) also runs **on the laptop** if ORCA installs there —
    the R1 DLPNO-vs-canonical check is a laptop job by intent, and its timing decides whether
-   R2/R3 point factories are B2 or B3 work.
+   R2/R3 point factories are B2 or B3 work. **The kill rule is arithmetic:** with N_min for
+   the rung frozen in the pilot note (Ladder §4.8), if `wall_clock_per_point × N_min > 168 h`
+   the factory is a B3 object; if B3's preconditions (§3.1) are then not met, the rung does
+   not run and is reported fail-closed. No judgement call sits between the probe and the stop.
 3. Reach rungs (R4–R6) are B3-only by assumption and therefore blocked on §3.1 in full.
 
 ## 4. Measured facts on file (old laptop, plan-02 probes, git history)

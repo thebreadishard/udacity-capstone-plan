@@ -22,7 +22,7 @@ history), re-verify at first scored use; **NOT FETCHED** = named debt.
 | 12 | PAHdb Anharmonic v1.00 method papers | Mackie et al. 2015–2022; Esposito et al. 2024a–c (per the v4.00 outlook) | **NOT FETCHED** — debt. Pin before any scored comparison against line B's PAHdb half |
 | 13 | Closest precedent for the M05 method, and its warning | Lam, Abdul-Al, Allouche, JCTC (2020). DOI 10.1021/acs.jctc.9b00964; arXiv:1909.12661 | **record** (plan-02). QM harmonic + ML anharmonic corrections, 37 molecules; RMSD 21/23 cm⁻¹ — cited so tolerances are not quietly relaxed to match it |
 | 14 | Origin of the hybrid split (harmonic anchor + cheap anharmonic) | Boese, Klopper, Martin, Mol. Phys. **103**, 863 (2005). DOI 10.1080/00268970512331339369; arXiv:physics/0411065 | **record** (plan-02) |
-| 15 | DLPNO caveat on delocalized π | Sylvetsky & Martin (2020) — TightPNO (the tightest standard DLPNO threshold set) needed for delocalized systems | **record** (plan-02; exact identifier must be re-pulled from the plan-02 bibliography in git history before use). Directly feeds the R1 license check and the roughness stop-condition |
+| 15 | DLPNO caveat on delocalized π | Sylvetsky, Banerjee, Alonso & Martin, JCTC **16**, 3641–3653 (2020); arXiv:2001.08641 | **pinned 2026-09-02 during the Round-6 Pass B review** (arXiv abstract + repo PDF `Papers/30_Sylvetsky2020_LocalCC_Porphyrins.pdf`); re-verify at scored use. NB: the paper benchmarks **relative energies** (expanded porphyrins, TightPNO needed under static correlation) — it is *not* a frequency/Hessian license; that is exactly why the Q6 frequency-delta probes exist |
 | 16 | Δ-learning precedent (~10² high-level points suffice) | Käser & Meuwly, arXiv:2103.05491; and Käser et al., arXiv:2109.08407 | **record** (plan-02; note the plan-02 lesson that these two were once confused with each other — check filenames against text) |
 | 17 | DLPNO-CCSD(T) method / ORCA | Neese group — exact method + software citations | **NOT FETCHED** — debt. Pin the specific DLPNO-CCSD(T) paper(s) and the ORCA release before the M05 corpus deck is frozen |
 | 18 | Boundary-edge codes (M02 atlas parsing) | Hansen et al. 1996; Caporossi & Hansen 1998, J. Chem. Inf. Comput. Sci. **38**, 610 | **record** (named in the v4.00 paper) — fetch at M02 |
@@ -35,7 +35,8 @@ history), re-verify at first scored use; **NOT FETCHED** = named debt.
 2. Mackie/Esposito anharmonic method papers (item 12).
 3. MNRAS landing for Mai 2025 (item 5); Mulas 2018 landing re-fetch (item 6).
 4. Joblin-era T-dependence references (item 20).
-5. DLPNO/ORCA method citations (item 17); Sylvetsky & Martin exact identifier (item 15).
+5. DLPNO-CCSD(T) / ORCA method citations — still unpaid. The Sylvetsky identifier half of this
+   debt was pinned 2026-09-02 (item 15, during Pass B); re-verify at scored use.
 6. C₃₈₄H₄₈ per-species presence in PAHdb v4.00 (boundary-edge/formula search) — an M02 task.
 
 **Status.** Working bibliography after the 2026-09-02 survey pass. Not a claim that plan 04 is

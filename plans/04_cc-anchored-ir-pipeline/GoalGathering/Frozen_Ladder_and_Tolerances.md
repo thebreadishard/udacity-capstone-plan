@@ -22,7 +22,7 @@ on drift. Costs live in [Compute_Budget_2026-09-02.md](Compute_Budget_2026-09-02
 |---|---|---|---|---|---|
 | **R0** | benzene C₆H₆ | A | End-to-end laptop pilot; canonical CCSD(T) is affordable here (measured, plan 02: single point ~20 s) | A, B | NIST gas-phase; PAHdb experimental |
 | **R1** | naphthalene C₁₀H₈ | A | The plan-02 measured canonical-(T) wall (~114 basis functions at 28 GB, old machine) sits **between R0 and R1 at production bases** — so the R1 canonical-vs-DLPNO check is itself conditional: the first R1 probe measures whether canonical (T) runs on the *new* machine at any usable basis. If yes, R1 is the same-molecule license for all DLPNO anchors above it. If no, the license downgrades to **R0-only plus a declared cross-basis protocol**, and every anchor claim above R0 states that limitation | A, B | NIST; PAHdb experimental |
-| **R2** | pyrene C₁₆H₁₀, tetracene and chrysene C₁₈H₁₂ (the **A-scored set**); triphenylene C₁₈H₁₂ is computed and **reported, not scored** — it has no laboratory spectrum | A | The PAHdb Anharmonic front ends at C₁₈H₁₂ — first territory where beating line B means beating the *best* small-molecule work; lab uids already recorded in plan-02 probes | A, B | PAHdb experimental (uids 334, 282, 291). IRMPD (Tang 2025 class) scores **only** a pipeline run of the *same cation* — a cation measurement never scores a neutral spectrum |
+| **R2** | pyrene C₁₆H₁₀, tetracene and chrysene C₁₈H₁₂ (the **A-scored set**); triphenylene C₁₈H₁₂ is computed and **reported, not scored** — it has no laboratory spectrum | A | The PAHdb Anharmonic front ends at C₁₈H₁₂ — first territory where beating line B means beating the *best* small-molecule work; lab uids already recorded in plan-02 probes | A, B | PAHdb experimental (uids 334, 282, 291). IRMPD (Tang 2025 class) is **literature context only** for these neutral rungs — a cation measurement never scores a neutral spectrum |
 | **R3** | coronene C₂₄H₁₂ | A | The source conversation's named case; Mulas 2018's molecule; the largest PAH with a usable matrix spectrum in hand (uid 18) | A, B (Mulas), C | PAHdb experimental (uid 18); cluster libraries as context only |
 | **R4** | circumcoronene-class, C₅₄H₁₈ → ~C₉₆ | R | PAHdb-only + Mai territory; first rung with no per-molecule lab truth | A, C (theory-vs-theory) | — |
 | **R5** | ~C₂₁₆ (top of Mai's set) | R | Meet line C at its own ceiling | A, C (theory-vs-theory) | — |
@@ -90,6 +90,11 @@ R0 comparison table is the same act as re-windowing and is treated as such.
    before either arm is scored).
 6. The **M04 baseline recipe** (features, tuning budget, seeds), frozen so the baseline cannot
    be weakened after it is known what the pipeline finds hard.
+7. **Resonance handling per rung** (Distilled §3): GVPT2 with named r₃/r₄ thresholds and a
+   polyad cap; or MD-ACF with CH-stretch labelled classical; or CH-stretch unscored at that
+   rung — chosen **before** any anharmonic surface for that rung is fitted.
+8. **N_min per rung**: the minimum point count for a usable surface at that rung (with its
+   justification), so the B2/B3 kill rule (Compute_Budget §3) is arithmetic, not judgement.
 
 ## 5. Stop conditions and escalation (declared in advance)
 
@@ -102,10 +107,13 @@ R0 comparison table is the same act as re-windowing and is treated as such.
 3. **Cluster access not formalized when first needed:** reach rungs stop and the stop is
    reported. The plan does not assume UvA access until an account and allocation exist in
    writing (dated note).
-4. **DLPNO surface roughness defeats the anharmonic fit at R2/R3** (the source conversation's
-   own named risk): that is a *measured result*, reported as such. Pre-declared fallback:
-   hybrid output — best-level harmonic + declared-provenance anharmonic correction — clearly
-   labelled; it competes against the lines under the same protocol and may lose.
+4. **The Q6 license/smoothness probes breach their frozen thresholds at R2/R3** (DLPNO
+roughness — the source conversation's own named risk, now a *defined trigger*: DLPNO−canonical
+or TightPNO−NormalPNO frequency deltas, or normal-mode second-difference noise, ≳ the P2 beat
+margin for a family): that is a *measured result*, reported as such, and DLPNO anchors stop
+licensing "beat" language on the affected families. Pre-declared fallback: hybrid output —
+best-level harmonic + declared-provenance anharmonic correction — clearly labelled; it
+competes against the lines under the same protocol and may lose.
 5. **A promised accuracy rung loses to a line:** the loss is published with the paired table.
    The criterion is symmetric; losing is a result, not a reason to re-window bands.
 

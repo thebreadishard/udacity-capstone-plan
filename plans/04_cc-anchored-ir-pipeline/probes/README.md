@@ -17,5 +17,13 @@ First probes owed (with the ladder freeze, not before):
 2. Lab-scoreboard re-read: regenerate the plan-02 band table (PAHdb experimental uids, NIST
    JCAMP) under this plan's own hash, so §6 of the frozen-lines file rests on a script in
    *this* tree.
-3. DLPNO point cost: one timed DLPNO-CCSD(T) single point at a declared rung size, before any
-   node-hour budget is frozen.
+3. DLPNO point cost: one timed DLPNO-CCSD(T) energy+gradient at a declared rung size and the
+   frozen basis/thresholds, on the laptop — **the kill probe**: its wall-clock × the rung's
+   frozen N_min against the 168 h B2 cap decides mechanically whether that rung's factory is
+   B2, B3, or not run (Compute_Budget §3).
+4. Resonance probe (before any R2 surface is fitted, DFT level is enough): pyrene CH-stretch
+   family via GVPT2 vs raw VPT2 vs MD-ACF; if raw VPT2 moves the band by more than the beat
+   margin relative to GVPT2, raw VPT2 is forbidden on that family (it already is forbidden on
+   promised families — this probe measures by how much).
+5. Anchor-license probes (Distilled Q6): DLPNO−canonical and TightPNO−NormalPNO
+   harmonic-frequency deltas at the license molecule + normal-mode smoothness scan.
