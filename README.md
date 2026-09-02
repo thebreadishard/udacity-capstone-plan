@@ -7,8 +7,8 @@
 > school's rubric.
 
 > **Current: plan 04.** Plan 04 — [CC-Anchored IR Pipeline](plans/04_cc-anchored-ir-pipeline/) —
-> was created on 2026-09-02 and supersedes plan 03. Plan 03 remains in the tree only until its
-> scheduled removal; do not add new work to it. Round-5 Pass B gave **no green light** for plan
+> was created on 2026-09-02 and supersedes plan 03. Plan 03 was **removed from the tree on
+> 2026-09-02**; git history keeps it. Round-5 Pass B gave **no green light** for plan
 > 03's frozen scope, and that verdict binds plan 04's architecture (one scope, one clock).
 >
 > **Plan 04 product.** Module 08 ships a pipeline: any individual aromatic molecule in, an
@@ -51,10 +51,11 @@ anywhere for that molecule (PAHdb v4.00 scaled-harmonic DFT; Mai 2025 MLMD; the 
 anharmonic front), judged per band against laboratory data. Opponents are named and versioned in
 [Frozen_Lines_to_Beat.md](plans/04_cc-anchored-ir-pipeline/GoalGathering/Frozen_Lines_to_Beat.md).
 
-Size must scale to **C₃₈₄H₄₈ and larger** — where the only existing prediction on Earth is
-scaled harmonic B3LYP/4-31G. Compute starts on a laptop (benzene pilot) and escalates to UvA
-supercomputer access when a rung demands it. Emission after UV heating (the astronomical use
-case) is a declared post-processing tier, not a co-owned solver.
+Size must scale to **C₃₈₄H₄₈-class species and larger** — the 101–386-carbon PAHdb bin, where
+the only existing predictions anywhere are scaled harmonic B3LYP/4-31G. Compute starts on a
+laptop (benzene pilot) and escalates to UvA supercomputer access when a rung demands it.
+Emission after UV heating (the astronomical use case) is a declared post-processing tier, not a
+co-owned solver.
 
 **Not claimed:** absolute "chemical precision"; JWST species identification; any rung that has
 not actually run and been scored. Nothing here is a result.

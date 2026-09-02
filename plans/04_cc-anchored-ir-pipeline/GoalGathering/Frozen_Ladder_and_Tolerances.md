@@ -21,8 +21,8 @@ on drift. Costs live in [Compute_Budget_2026-09-02.md](Compute_Budget_2026-09-02
 | Rung | Molecule(s) | Type | Why this rung | Opponent line(s) | Lab scoreboard |
 |---|---|---|---|---|---|
 | **R0** | benzene C₆H₆ | A | End-to-end laptop pilot; canonical CCSD(T) is affordable here (measured, plan 02: single point ~20 s) | A, B | NIST gas-phase; PAHdb experimental |
-| **R1** | naphthalene C₁₀H₈ | A | The measured canonical-(T) memory wall sits between R0 and R1 (plan 02); DLPNO becomes necessary — the first honest DLPNO-vs-canonical check | A, B | NIST; PAHdb experimental |
-| **R2** | pyrene C₁₆H₁₀ + the C₁₈H₁₂ trio (tetracene, chrysene; triphenylene has no lab spectrum) | A | The PAHdb Anharmonic front ends at C₁₈H₁₂ — first territory where beating line B means beating the *best* small-molecule work; lab uids already recorded in plan-02 probes | A, B | PAHdb experimental (uids 334, 282, 291); IRMPD for cations (Tang 2025 class) |
+| **R1** | naphthalene C₁₀H₈ | A | The plan-02 measured canonical-(T) wall (~114 basis functions at 28 GB, old machine) sits **between R0 and R1 at production bases** — so the R1 canonical-vs-DLPNO check is itself conditional: the first R1 probe measures whether canonical (T) runs on the *new* machine at any usable basis. If yes, R1 is the same-molecule license for all DLPNO anchors above it. If no, the license downgrades to **R0-only plus a declared cross-basis protocol**, and every anchor claim above R0 states that limitation | A, B | NIST; PAHdb experimental |
+| **R2** | pyrene C₁₆H₁₀, tetracene and chrysene C₁₈H₁₂ (the **A-scored set**); triphenylene C₁₈H₁₂ is computed and **reported, not scored** — it has no laboratory spectrum | A | The PAHdb Anharmonic front ends at C₁₈H₁₂ — first territory where beating line B means beating the *best* small-molecule work; lab uids already recorded in plan-02 probes | A, B | PAHdb experimental (uids 334, 282, 291). IRMPD (Tang 2025 class) scores **only** a pipeline run of the *same cation* — a cation measurement never scores a neutral spectrum |
 | **R3** | coronene C₂₄H₁₂ | A | The source conversation's named case; Mulas 2018's molecule; the largest PAH with a usable matrix spectrum in hand (uid 18) | A, B (Mulas), C | PAHdb experimental (uid 18); cluster libraries as context only |
 | **R4** | circumcoronene-class, C₅₄H₁₈ → ~C₉₆ | R | PAHdb-only + Mai territory; first rung with no per-molecule lab truth | A, C (theory-vs-theory) | — |
 | **R5** | ~C₂₁₆ (top of Mai's set) | R | Meet line C at its own ceiling | A, C (theory-vs-theory) | — |
@@ -32,8 +32,13 @@ on drift. Costs live in [Compute_Budget_2026-09-02.md](Compute_Budget_2026-09-02
 **Bonus:** R4, R5, and anything beyond R6. A bonus rung that does not run is not a failure;
 a promised rung that does not run is reported fail-closed with the rung and cap named.
 
+**Charge.** All rungs are **neutral species** unless a rung's pilot note names a charge state
+explicitly. A laboratory spectrum of one charge state never scores a pipeline spectrum of
+another.
+
 **Ordering.** R0 before anything. R1 before any DLPNO-based accuracy claim (the
-DLPNO-vs-canonical check at R1 is the license for DLPNO anchors above it). Reach rungs may not
+DLPNO-vs-canonical check at R1 — or its declared R0-only downgrade — is the license for DLPNO
+anchors above it). Reach rungs may not
 start before R3 has been scored — a pipeline that has not beaten anything has no business
 burning node-hours on size.
 
@@ -43,28 +48,48 @@ burning node-hours on size.
   (6.2 / 7.7 / 8.6 µm), CH-oop by adjacency class (solo / duo / trio / quartet, 10–15 µm).
 - **Resolution floor:** no claim finer than **10 cm⁻¹** is made in any astronomical framing
   (emission from a T- and charge-distributed ensemble has no sub-10 cm⁻¹ observational
-  meaning). Lab-facing claims may be finer if the measurement supports it.
-- **Matrix tolerance:** Ar-matrix comparisons carry a **15 cm⁻¹** shift tolerance (plan-02
-  convention); gas-phase preferred over matrix wherever both exist.
+  meaning). A lab-facing claim may be finer **only if** the measurement uncertainty *and* the
+  declared controls (test RMSE, DLPNO-threshold sensitivity) both support it, printed by the
+  comparison probe — and never finer than the scoreboard's own uncertainty (the source
+  conversation's ~1 cm⁻¹ bind, carried).
+- **Matrix tolerance:** Ar-matrix comparisons carry a shift tolerance. The **working
+  convention is 15 cm⁻¹** (plan-02); the **binding value is the Module-03 measured one**,
+  frozen in the pilot note (§4 item 4). This number lives in exactly one bin: the pilot note.
+  No matrix-scored comparison may run before that note exists. Gas-phase preferred over matrix
+  wherever both exist.
 - **Comparison form (pre-registered):** paired per-band absolute error, pipeline vs line, on
   identical lab bands; aggregated per band family; reported as mean ± spread per family.
   ≥3 seeds for every ML component; mean ± SD across seeds. **Inconclusive is a publishable
-  outcome.** The scoreboard is never a training or validation input (Q-gate in the distilled
-  plan, owed).
+  outcome.** The scoreboard is never a training or validation input of the pipeline
+  (Distilled Q4; the M04 baseline is the declared exception recorded there).
 - **No lab band may be scored twice under different windows.** Window and class assignment per
   band are fixed in the pilot note before any pipeline number exists for that molecule.
 
 ## 4. Frozen at the pilot note (form fixed now, numbers then)
 
-The following numbers are written into a dated pilot note after the R0 pilot and the
-lab-scoreboard re-read probe have printed, and before any pipeline-vs-line comparison is scored:
+The following numbers are written into a dated pilot note after (a) the **R0 pilot**, which
+produces **no pipeline-vs-lab number** — it stops at geometry, Hessian, harmonic bands and
+timings — and (b) the **scoreboard re-read probe**, which is lab-side only. The note is
+committed **before any pipeline-vs-lab number exists for any molecule**; its inputs are the
+lab side and the opponent side only, never pipeline output. Writing or amending it after a
+pipeline-vs-lab number exists is forbidden (Distilled §4) — choosing windows after seeing an
+R0 comparison table is the same act as re-windowing and is treated as such.
 
-1. The exact band list per molecule (uid / NIST CAS, window, class).
+1. The exact band list per molecule (uid / NIST CAS, window, class). **Every §3 family that
+   has laboratory data for a promised molecule must appear**; omitting one requires a dated
+   justification inside the pilot note itself.
 2. The "beat" margin per family: line beaten only if the pipeline's family mean |error| is
-   smaller by at least that margin, and no promised family worsens by more than it.
+   smaller by at least that margin, and no promised family worsens by more than it. The list
+   of promised families is closed in the same note.
 3. The P-gate numbers for pipeline sanity (0 imaginary frequencies off-minimum tolerance,
    scale-factor policy: the pipeline uses **no** empirical scale factor on anharmonic output —
    if a harmonic fallback fires, its scale factor and fit set are declared).
+4. The **matrix shift tolerance**, as measured by Module 03 (supersedes the 15 cm⁻¹ working
+   convention of §3).
+5. The **P3 effect size** for the Δ-vs-direct comparison (declared here, per Distilled §7,
+   before either arm is scored).
+6. The **M04 baseline recipe** (features, tuning budget, seeds), frozen so the baseline cannot
+   be weakened after it is known what the pipeline finds hard.
 
 ## 5. Stop conditions and escalation (declared in advance)
 

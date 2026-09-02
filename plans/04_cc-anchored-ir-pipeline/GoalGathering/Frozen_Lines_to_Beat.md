@@ -22,7 +22,11 @@ exists. "Best available" is what this file freezes.
 | CC-quality vibrations | ~benzene/naphthalene | scattered literature | plan-02 record; no PAH-scale product exists |
 
 Between C₁₈ and C₃₈₄ no anharmonic-beyond-DFT or CC-anchored prediction exists. For
-C₃₈₄H₄₈-class species the **only** prediction on Earth is scaled harmonic B3LYP/4-31G.
+C₃₈₄H₄₈-class species (the 101–386-carbon bin) the **only** predictions on Earth are scaled
+harmonic B3LYP/4-31G. Whether C₃₈₄H₄₈ *itself* has a v4.00 entry is **not verified** — the
+evidence on file is the size bin plus NASA's own fit parameter N_carbon,max = 384, and a fit
+parameter is not a species entry (debt 6; an M02 atlas task). The R6 target species is chosen
+from what the atlas actually contains.
 
 ## 2. Line A — PAHdb v4.00 scaled harmonic (the breadth line)
 
@@ -40,7 +44,8 @@ C₃₈₄H₄₈-class species the **only** prediction on Earth is scaled harmo
 - **Why it is beatable.** The v4.00 paper itself: systematic uncertainties of the PAHdb
   spectra "are currently unquantified." Plan-02 probes measured the class of error for the
   scaled-harmonic approach (see §6).
-- **Role.** The default opponent for every molecule; the *only* opponent at C₃₈₄H₄₈.
+- **Role.** The default opponent for every molecule; the *only* opponent at C₃₈₄H₄₈-class
+  sizes (the specific R6 species comes from the M02 atlas; see debt 6).
 
 ## 3. Line B — anharmonic small-molecule front (the accuracy line)
 
@@ -58,8 +63,10 @@ C₃₈₄H₄₈-class species the **only** prediction on Earth is scaled harmo
   Hydrocarbons with Machine Learning DFT Scaling Factors", ACS Omega **10**(50), 62282–62290
   (2025-12-10). DOI `10.1021/acsomega.5c10225`. Bibliographic record **verified via Crossref
   2026-09-02**; the MAE value recorded in plan 02 (~5 cm⁻¹) is **not re-read** (ACS full text
-  returned 403) — re-read before quoting a number. If ML-corrected scaling really delivers
-  ~5 cm⁻¹ MAE, an anharmonic method that lands at 10 cm⁻¹ has not earned its cost.
+  returned 403) — re-read before quoting a number. Whatever MAE the full text reports, the
+  role is fixed: the cheap line defines the cost bar — an anharmonic method must beat
+  **ML-corrected** scaling, not merely raw scaling, or it has not earned its cost. The figure
+  itself is quoted nowhere in this plan until the re-read.
 - **Role.** The bar for benzene-to-tetracene-size rungs, where the pipeline must beat *good*
   predictions, not just broad ones.
 
@@ -100,12 +107,14 @@ factor vs Ar-matrix lab values — quartet CH-oop band mean |error| **7.1 cm⁻�
 **60.2 cm⁻¹**, wider than computed. These numbers set the scale of what "beating the
 harmonic line" must mean per band class, and they are already measured, not asserted.
 
-## 7. Open verification debts (before any scored use)
+## 7. Open verification debts (before any scored use; identical to the bibliography's list)
 
 1. ACS Omega full text — read the actual MAE (§3).
 2. PAHdb Anharmonic v1.00 method papers (Mackie / Esposito) — fetch and pin.
 3. MNRAS landing page for Mai 2025; Mulas 2018 landing page — re-fetch.
 4. Temperature-dependence lab references for tier 2 (Joblin-era band-shift measurements) —
    identify and pin before any tier-2 pre-registration.
-5. Whether C₃₈₄H₄₈ itself (vs. same-bin species) has a PAHdb v4.00 entry — check by
+5. DLPNO-CCSD(T) / ORCA method citations; Sylvetsky & Martin exact identifier — pin before
+   the M05 corpus deck is frozen.
+6. Whether C₃₈₄H₄₈ itself (vs. same-bin species) has a PAHdb v4.00 entry — check by
    boundary-edge/formula search before the top rung is worded.
