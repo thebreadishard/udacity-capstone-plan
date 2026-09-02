@@ -23,13 +23,12 @@ Chemically better IR of complex aromatics is the reason for the work, not a post
    — rungs R0–R6, accuracy vs reach claims, stop conditions
 5. [GoalGathering/Compute_Budget_2026-09-02.md](GoalGathering/Compute_Budget_2026-09-02.md) —
    three budgets (human / laptop / cluster node-hours) and the timed-probe protocol
-6. [probes/README.md](probes/README.md) — probe conventions (no probes exist yet)
+6. [GoalGathering/Capstone_Mapping.md](GoalGathering/Capstone_Mapping.md) — modules 02–09
+   against Rubrics v1.5.1; every artifact load-bearing; three open items flagged to the user
+7. [probes/README.md](probes/README.md) — probe conventions (no probes exist yet)
 
 ## Not yet written (owed, in order)
 
-- **Capstone_Mapping** (module map 02–09 against Rubrics v1.5.1; note the corrected reading in
-  [`Rubrics/README.md`](../../Rubrics/README.md): the Module 03/04 Accepted-Sources lists are
-  examples, not a closed gate).
 - **Relevant_Scientific_Papers** (working bibliography; the frozen-lines doc carries the
   verified identifiers so far, plus its own list of verification debts).
 - **Distilled technical plan and quality gates** (the Q/P-gate machinery, splits, hashes).
