@@ -20,6 +20,7 @@ created; it stays in this dump.
 | `gemini_chat_2.md` | The long one. Grid-over-graph, the rejected Ehrenfest design, and the ground-up restructuring after the 23-point external review |
 | `grok_chat_1.md` | First "strict professor" pass; also where quantum computing was investigated and rejected for the NISQ era |
 | `grok_chat_2.md` | Second professor pass, ending one step before the final Gemini revision |
+| `grok_chat_3.md` | The motif-transfer counterproposal ("motif-local gold rungs + a transferable anharmonic correction", 2026-08-27); also the source of the third-hand Hudgins & Sandford matrix numbers that were later verified against PAHdb |
 | `grok_chat_4.md` | HAVO/VWO walkthrough: CC energy → PES → IR lines; why a full CC surface fails for coronene |
 
 ## Provenance caveat
