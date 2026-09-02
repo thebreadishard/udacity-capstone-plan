@@ -19,21 +19,24 @@ Chemically better IR of complex aromatics is the reason for the work, not a post
 2. [GoalGathering/Overarching_Goal.md](GoalGathering/Overarching_Goal.md) — prime directive
 3. [GoalGathering/Frozen_Lines_to_Beat.md](GoalGathering/Frozen_Lines_to_Beat.md) — the named,
    versioned opponents and the laboratory scoreboards
-4. [probes/README.md](probes/README.md) — probe conventions (no probes exist yet)
+4. [GoalGathering/Frozen_Ladder_and_Tolerances.md](GoalGathering/Frozen_Ladder_and_Tolerances.md)
+   — rungs R0–R6, accuracy vs reach claims, stop conditions
+5. [GoalGathering/Compute_Budget_2026-09-02.md](GoalGathering/Compute_Budget_2026-09-02.md) —
+   three budgets (human / laptop / cluster node-hours) and the timed-probe protocol
+6. [probes/README.md](probes/README.md) — probe conventions (no probes exist yet)
 
 ## Not yet written (owed, in order)
 
-- **Molecule ladder + tolerances** (dated freeze doc; benzene laptop pilot is the declared
-  first rung intent, C₃₈₄H₄₈-and-larger the declared top; rungs and stop conditions must be
-  measured, not asserted).
-- **Compute budget** (dated doc; three budgets now: human hours, laptop wall-clock, cluster
-  node-hours — the third is new in plan 04).
 - **Capstone_Mapping** (module map 02–09 against Rubrics v1.5.1; note the corrected reading in
   [`Rubrics/README.md`](../../Rubrics/README.md): the Module 03/04 Accepted-Sources lists are
   examples, not a closed gate).
 - **Relevant_Scientific_Papers** (working bibliography; the frozen-lines doc carries the
-  verified identifiers so far).
-- Distilled technical plan, quality gates, review briefs.
+  verified identifiers so far, plus its own list of verification debts).
+- **Distilled technical plan and quality gates** (the Q/P-gate machinery, splits, hashes).
+- **Round-6 review, two passes.** When — and only when — the plan is complete, it is reviewed
+  before execution: **Pass A** (cold read, internal consistency) and **Pass B** (adversarial
+  domain review), each from its own written brief, exactly as plan 03 was reviewed. Plan 04's
+  review record starts empty; no inherited stamp counts.
 
 ## Provenance
 
