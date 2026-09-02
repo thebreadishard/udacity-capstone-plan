@@ -38,9 +38,11 @@ Check: \(8+5+16+1=30\).
 
 **Open in 03** is a flag on a subset, not a fifth fate: **3** (no teacher cube), **5 / R3-3** (voxel DOI + mentor approval; bibliography item 10 FAIL), **7** (Q1/Q2 on a real teacher), **14** (Module 03 dataset not yet pinned to an accepted source), **15 / R3-6** (T0 not a calendar date), **R4B-2** (`teacher_cost.py` prints `NOT_RUN`).
 
-Closing a row in *spec* is not a green light. Plan 03's own review record is one pass deep:
-[Round 5 Pass A](Professor_Review_2026-09-01_Round5_PassA.md), a cold read, 2026-09-01. The adversarial
-domain pass (Pass B) has not run.
+Closing a row in *spec* is not a green light. Plan 03's own review record is two passes deep:
+[Round 5 Pass A](Professor_Review_2026-09-01_Round5_PassA.md), a cold read, 2026-09-01, addressed the
+same day; and [Round 5 Pass B](Professor_Review_2026-09-01_Round5_PassB.md), the adversarial domain
+pass, 2026-09-01, whose twelve blocking findings are **not** addressed. Pass B's verdict is **no green
+light for the scope as frozen**, so no row below may be read as settled on the teacher side.
 
 ---
 
@@ -133,10 +135,11 @@ The class table is **not** a substitute for the named rows.
 
 ## What a new review is for
 
-Plan 03's review record is **one pass deep**. The briefs ask for a **new** Round 5 (Pass A cold, Pass B adversarial TDDFT / ML-propagator), not a copy of 01 or 02.
+Plan 03's review record is **two passes deep**. The briefs asked for a **new** Round 5 (Pass A cold, Pass B adversarial TDDFT / ML-propagator), not a copy of 01 or 02. Both have now run.
 
 - [Professor_Review_2026-09-01_Round5_PassA.md](Professor_Review_2026-09-01_Round5_PassA.md) — **done** 2026-09-01; 9 blocking, 6 non-blocking, 8 loopholes; addressed in spec the same day
 - [Review_Brief_2026-09-01_Round5_PassA.md](Review_Brief_2026-09-01_Round5_PassA.md) — the brief that produced it
-- [Review_Brief_2026-09-01_Round5_PassB.md](Review_Brief_2026-09-01_Round5_PassB.md) — **not yet run.** Hand it Pass A's findings 2–4 with the brief.
+- [Professor_Review_2026-09-01_Round5_PassB.md](Professor_Review_2026-09-01_Round5_PassB.md) — **done** 2026-09-01; 12 blocking, 5 non-blocking. **Not addressed.** Verdict: no green light for the scope as frozen; conditional green light for a matter-only scope.
+- [Review_Brief_2026-09-01_Round5_PassB.md](Review_Brief_2026-09-01_Round5_PassB.md) — the brief that produced it
 
 **Status.** Draft map. Not complete as a plan.
