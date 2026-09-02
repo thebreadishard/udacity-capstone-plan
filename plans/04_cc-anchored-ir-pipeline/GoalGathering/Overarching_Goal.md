@@ -122,6 +122,25 @@ Do not write any of the following as a Module 08 result:
 - "The pipeline works to C₃₈₄H₄₈" unless that molecule's rung actually ran and was scored.
 - Any band position without its measured error source named.
 
+## Value hierarchy (user directive, 2026-09-02)
+
+Beating the lines on benzene is **not the point** — benzene's existing data may already be
+excellent, and losing there is not a project failure. The small rungs exist to *license and
+calibrate* the pipeline (the R1 anchor check, the pilot note, the gates), not to be its
+destination. **The destination is the territory where nothing exists yet**: super-large
+aromatics that no method has ever treated beyond scaled-harmonic DFT. Entering unknown
+territory is the goal, not a risk to be minimised away.
+
+Two consequences, so this directive cannot be quoted against the freeze:
+
+1. **Winning small is not a precondition for going large.** The ladder requires R3 to be
+   *scored* before reach rungs start — scored includes lost and inconclusive. An honest loss
+   or a gate-closed inconclusive on R2–R3 does not cancel R6.
+2. **The honesty rules are how unknown territory is entered, not why it is avoided.** No
+   accuracy claim without a scoreboard, labelled extrapolations, fail-closed certificates —
+   those rules exist precisely so the pipeline *can* go where nothing can check it, without
+   lying about what that means.
+
 ## What is inherited
 
 From plans 01–03, method-agnostic and kept: measured-not-asserted probes; never cite from
