@@ -33,12 +33,13 @@ Chemically better IR of complex aromatics is the reason for the work, not a post
 
 ## Not yet done (owed, in order)
 
+- **Round-6 review, two passes — briefs are written, reviews are not run.**
+  [Pass A brief](GoalGathering/Review_Brief_2026-09-02_Round6_PassA.md) (cold read) first;
+  [Pass B brief](GoalGathering/Review_Brief_2026-09-02_Round6_PassB.md) (adversarial domain)
+  only after Pass A's findings exist as a file. Plan 04's review record starts empty; no
+  inherited stamp counts. Do not call this folder complete before both passes have closed.
 - **The pilot note** (after the R0 pilot and the scoreboard re-read probe: band lists, beat
   margins, P-gate numbers, P3 effect size — frozen before any comparison is scored).
-- **Round-6 review, two passes.** Now that the plan documents exist, the review comes before
-  execution: **Pass A** (cold read, internal consistency) and **Pass B** (adversarial domain
-  review), each from its own written brief, exactly as plan 03 was reviewed. Plan 04's review
-  record starts empty; no inherited stamp counts.
 
 ## Provenance
 
