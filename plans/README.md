@@ -9,15 +9,19 @@ immediately before the deletion — `git show 800f3aa:<path>` retrieves one.
 Neither 01, 02, nor 03 has been executed as a plan. Nothing in plan 03 is a result.
 **Do not call plan 03 complete as a plan.** Completeness waits on a review of that folder.
 
+**Plan 04 is incoming** (decided 2026-09-02; folder not yet created). It will replace plan 03.
+Do not treat 03 as the destination of new work, and do not edit 03 in place to become 04.
+
 | | Plan | Status |
 |---|---|---|
-| **03** | [Presence-Update-Rule](03_presence-update-rule/) | **Current.** Draft as of 2026-09-01; not complete as a plan; not executed. |
+| **03** | [Presence-Update-Rule](03_presence-update-rule/) | Last written. Draft as of 2026-09-01; not complete as a plan; not executed. **Will be replaced by 04.** |
+| **04** | — | **Incoming.** Not yet a folder. Will supersede 03. |
 
 Historic comparison (the 01 and 02 plan documents are gone; this table is not a set of links):
 
 | | 01 — Voxel Field PES | 02 — Coupled-Cluster Anharmonic IR | 03 — Presence-Update-Rule |
 |---|---|---|---|
-| **Status** | Superseded 2026-08-23. Removed from the tree 2026-09-01. | Superseded 2026-08-29. Removed from the tree 2026-09-01. | **Current.** Draft; not complete as a plan; not executed. |
+| **Status** | Superseded 2026-08-23. Removed from the tree 2026-09-01. | Superseded 2026-08-29. Removed from the tree 2026-09-01. | Last written. Draft; not complete as a plan; not executed. **Will be replaced by 04.** |
 | **Deliverable** | Vibrational band positions / IR envelopes, H₂O–benzene | Anharmonic IR families, benzene and naphthalene, four-term error budget | A shared local presence-update rule with P0–P4 gates on H₂ and H₂O |
 | **Where precision comes from** | Own CCSD(T)/cc-pVTZ labels | A measured CC rung | Named Octopus RT-TDDFT (ALDA) on a **frozen** grid |
 | **The model** | Hybrid FNO-NCA, \(E=\mathcal{E}[\rho,R]\) | Fine-tuned equivariant MLIP as cheap QFF half | 3-D conv stencil on \((\rho_\pm,\mathbf{j},\mathbf{E},\mathbf{B})\) |
@@ -69,7 +73,7 @@ not. Itemised fates of the thirty source findings:
 
 ## Layout
 
-Only plan 03 is in this tree:
+Only plan 03 is in this tree (04 is incoming and has no folder yet):
 
 ```
 plans/03_presence-update-rule/
@@ -93,8 +97,13 @@ The **professor reviews of plans 01 and 02 are not in this tree.** They remain i
 Plan 03's own review record starts with Round 5 Pass A (2026-09-01). Copying 01/02 reviews into 03
 would imply 03 had survived them.
 
-## Adding a version 04
+## Adding a version 04 (this is now the next action)
 
-Copy the current version's folder, rename it, and add a row to the current-plan table above. A
-superseded plan stays readable in **git history** instead of becoming an unreadable diff. Do not
-resurrect the deleted 01 or 02 folders to satisfy that rule.
+Plan 04 is **decided** (2026-09-02) and **not yet written**. When it is written: copy the last
+written folder (`03_presence-update-rule/`), rename it, and turn the 04 row in the table above from
+“incoming” into a link. Do **not** edit 03 in place. A superseded plan stays readable in **git
+history** instead of becoming an unreadable diff. Do not resurrect the deleted 01 or 02 folders.
+
+Plan 03 does two things at once (light–matter interaction **and** an IR network). Round-5 Pass B
+gave no green light for that frozen scope. Plan 04's job is to **pick one**; do not carry both
+clocks forward as if Pass B had not happened.

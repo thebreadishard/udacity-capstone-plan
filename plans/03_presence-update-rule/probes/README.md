@@ -1,5 +1,7 @@
 # Probes — Plan 03
 
+Plan 04 is incoming and will replace plan 03. These scripts stay with 03 until that folder exists; do not treat this directory as the start of 04.
+
 Nothing in this folder is a result until a script has printed a number and the command line that produced it is recorded. Missing teacher files print `NOT_RUN` and exit 2. Do not type those numbers into a markdown file by hand. Caps are in [`../GoalGathering/Compute_Budget_2026-09-01.md`](../GoalGathering/Compute_Budget_2026-09-01.md).
 
 Run from this folder. No Octopus job is started here.
