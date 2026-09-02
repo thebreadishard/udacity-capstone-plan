@@ -15,10 +15,10 @@ scheduled removal.
 
 | | Plan | Status |
 |---|---|---|
-| **03** | [Presence-Update-Rule](03_presence-update-rule/) | Superseded by 04. Draft as of 2026-09-01; not complete as a plan; not executed. Scheduled for removal from the tree. |
+| **03** | Presence-Update-Rule | Superseded by 04. **Removed from the tree on 2026-09-02**; git history keeps it. Draft; never complete as a plan; never executed. |
 | **04** | [CC-Anchored-IR-Pipeline](04_cc-anchored-ir-pipeline/) | **Current.** Draft as of 2026-09-02. Module 08: any individual aromatic → IR spectrum, scored against frozen state-of-the-art lines. Ends at 09. No Projects 10–12. |
 
-Historic comparison (the 01 and 02 plan documents are gone; this table is not a set of links):
+Historic comparison (the 01, 02 and 03 plan documents are gone; this table is not a set of links):
 
 | | 01 — Voxel Field PES | 02 — Coupled-Cluster Anharmonic IR | 03 — Presence-Update-Rule |
 |---|---|---|---|
@@ -60,8 +60,8 @@ physical timescales in play, and the IR product — the reason for the work — 
 modules entirely. Plan 04 returns the IR product to Module 08 and drops the co-owned light–matter
 solver.
 
-The argument of record is
-[Why_03_Supersedes_02.md](03_presence-update-rule/GoalGathering/Why_03_Supersedes_02.md).
+The argument of record for the 02→03 pivot was `Why_03_Supersedes_02.md` (git history, in the
+removed plan-03 folder).
 The deleted plan-02 restructure proposal (git history only) is the argument for why 01 died.
 
 ## What survives into 04
@@ -77,15 +77,13 @@ From plan 02 specifically: the measured lab-comparison machinery (PAHdb experime
 with recorded uids, NIST JCAMP parsing) — git history, recomputable, and the quantitative floor
 under plan 04's frozen lines. From plan 03: nothing method-specific survives; its Maxwell–TDDFT
 scope is dropped, its governance was already shared. Itemised fates of the thirty plan-01/02
-review findings: [03 inheritance map](03_presence-update-rule/GoalGathering/Inheritance_of_Reviews.md)
-(in git history after 03's removal).
+review findings: `Inheritance_of_Reviews.md` in the removed plan-03 folder (git history).
 
 ## Layout
 
-Plans 03 (superseded, scheduled for removal) and 04 (current) are in this tree:
+Only plan 04 is in this tree (01, 02 and 03 are git history):
 
 ```
-plans/03_presence-update-rule/         superseded; scheduled for removal; git history keeps it
 plans/04_cc-anchored-ir-pipeline/
   README.md          orientation and reading order
   GoalGathering/     Overarching_Goal (prime directive), Frozen_Lines_to_Beat
@@ -101,9 +99,10 @@ Three folders sit at the repository root and are **shared dumps**, because no pl
 - `Papers/` — reference PDFs. Literature is a dump; plan 03's bibliography is the index.
 - `AI_Chats/` — the planning conversations. They predate the splits.
 
-The **professor reviews of plans 01 and 02 are not in this tree.** They remain in git history.
-Plan 03's own review record starts with Round 5 Pass A (2026-09-01). Copying 01/02 reviews into 03
-would imply 03 had survived them.
+The **professor reviews of plans 01–03 are not in this tree.** They remain in git history.
+Plan 03's review record (Round 5 Pass A, addressed; Round 5 Pass B, no green light, not
+addressed) went with its folder. Plan 04's review record starts empty. Copying old reviews into
+04 would imply 04 had survived them.
 
 ## Version 04 (created 2026-09-02)
 
