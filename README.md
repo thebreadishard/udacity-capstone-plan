@@ -61,9 +61,11 @@ CapstonePlan/
 The Udacity rubrics are the constraint. Literature PDFs are a dump, not a second plan. Planning
 conversations predate the splits and are not filed under plan 03.
 
-Plan 03 has one review of its own: the
+Plan 03 has two reviews of its own: the
 [Round-5 Pass A cold read](plans/03_presence-update-rule/GoalGathering/Professor_Review_2026-09-01_Round5_PassA.md)
-(2026-09-01, findings addressed in spec the same day). Pass B, the adversarial domain review, has not run.
+(2026-09-01, findings addressed in spec the same day) and the
+[Round-5 Pass B adversarial domain review](plans/03_presence-update-rule/GoalGathering/Professor_Review_2026-09-01_Round5_PassB.md)
+(2026-09-01, **findings not addressed**: no green light for the scope as frozen).
 It also carries an
 [inheritance map](plans/03_presence-update-rule/GoalGathering/Inheritance_of_Reviews.md) of thirty
 source findings from the deleted plans — because copying those reviews into this folder would imply

@@ -42,7 +42,8 @@ Round 5:
 
 - [GoalGathering/Professor_Review_2026-09-01_Round5_PassA.md](GoalGathering/Professor_Review_2026-09-01_Round5_PassA.md) — **the first review of this plan** (cold read). Findings addressed in spec on 2026-09-01; see the Round-5 Pass A block in the frozen ladder.
 - [GoalGathering/Review_Brief_2026-09-01_Round5_PassA.md](GoalGathering/Review_Brief_2026-09-01_Round5_PassA.md) — the brief that produced it
-- [GoalGathering/Review_Brief_2026-09-01_Round5_PassB.md](GoalGathering/Review_Brief_2026-09-01_Round5_PassB.md) — adversarial domain pass, **not yet run**
+- [GoalGathering/Professor_Review_2026-09-01_Round5_PassB.md](GoalGathering/Professor_Review_2026-09-01_Round5_PassB.md) — the adversarial domain review, 2026-09-01. **Verdict: no green light for the scope as frozen**; conditional green light for a matter-only scope. Twelve blocking findings, **none addressed**.
+- [GoalGathering/Review_Brief_2026-09-01_Round5_PassB.md](GoalGathering/Review_Brief_2026-09-01_Round5_PassB.md) — the brief that produced it
 
 Do not copy deleted plan-01/02 reviews from git history into this folder.
 
