@@ -1,7 +1,8 @@
 # Plan 03 — Presence-Update-Rule
 
-**Status: draft as of 2026-09-01. Current plan; not complete.**  
-Supersedes plan 02 (Coupled-Cluster Anharmonic IR). Plans 01 and 02 were **removed from the tree** on
+**Status: draft as of 2026-09-01. Last written plan; not complete. Plan 04 will replace this folder.**  
+Do **not** treat this as the destination of new work, and do not edit this folder in place to become
+04. Supersedes plan 02 (Coupled-Cluster Anharmonic IR). Plans 01 and 02 were **removed from the tree** on
 2026-09-01 — documents and, for plan 02, its leftover psi4 run artifacts. They remain in git history;
 plan 02's raw `.npz` frequency arrays were force-added in `800f3aa` first.
 

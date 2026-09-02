@@ -6,10 +6,11 @@ is a PAH-charges paper, and its “item 4” is stored as `16_Li2020_...`. Cite 
 PDF and by *item number* only inside the plan whose bibliography you are reading.
 
 **This folder is a shared literature dump** (see [`../plans/README.md`](../plans/README.md)).
-It is not owned by any plan. Plan 03's bibliography is the index of what the current plan cites.
+It is not owned by any plan. Plan 03's bibliography is the index of what the **last written** plan
+cites; plan 04 is incoming and will replace 03, so do not treat this dump as already re-indexed for 04.
 Items 1–25 were cited by the deleted earlier plans as well; items 26–36 were cited only by plan 02,
 and items 16/17/19 were scoped to plan 02's dipole-surface leg. The annotations below therefore
-describe each paper's role in the **current** plan.
+describe each paper's role in the **last written** plan (03). Plan 04 is incoming and has no bibliography yet.
 
 **Updated 2026-08-23:** 15 PDFs retrieved for items 21–24 and 26–36. Every file in this folder was
 verified to begin with the `%PDF` signature. **37 PDFs, one gap (item 25, paywalled).** *Count corrected

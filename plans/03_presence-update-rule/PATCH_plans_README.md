@@ -27,4 +27,6 @@ Applied also:
 - 01 was not wrong; 02 was not wrong — it is blocked on a label factory the rubric sequence cannot wait for
 - “Adding a version 04” keeps the copy-folder rule (new versions; do not resurrect deleted 01/02 folders)
 
-This patch does **not** make plan 03 complete. Root and `plans/README.md` now say **current / draft**.
+This patch does **not** make plan 03 complete. It was applied when root and `plans/README.md` said
+**current / draft**. Live indexes as of 2026-09-02 say **04 incoming / 03 last written** instead;
+this file is not the live index.

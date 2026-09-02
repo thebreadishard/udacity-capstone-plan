@@ -1,14 +1,18 @@
 # Udacity AI Mastery — Capstone Project Plan
 
 > **This repository is a planning and coordination artifact.** It contains no scientific results for the
-> current plan: nothing in plan 03 has been executed. It does contain tooling — probe scripts, a scraper.
+> last written plan: nothing in plan 03 has been executed. It does contain tooling — probe scripts, a scraper.
 > Its purpose is to design a coherent research project and distribute it across the Udacity Master in AI
 > capstone sequence (Modules 02–09), so that every module both advances the science *and* satisfies the
 > school's rubric.
 
+> **Incoming: plan 04.** Plan 03 is the last written plan in this tree and is **not** the destination of
+> new work. A plan 04 will replace it (folder not yet created). Do not edit plan 03 in place to become 04;
+> copy a new folder when 04 is written. Round-5 Pass B gave **no green light** for plan 03's frozen scope.
+
 ---
 
-## Current plan
+## Plan versions
 
 The project was planned three times. Plans 01 (voxel field PES) and 02 (coupled-cluster anharmonic IR)
 were **removed from the tree on 2026-09-01** — documents from version control, and plan 02's leftover run
@@ -16,13 +20,18 @@ artifacts from disk. They remain in git history. Plan 02's raw frequency arrays 
 geometries, ~10 h of psi4) had never been committed, so they were force-added in `800f3aa` before the
 deletion; retrieve one with `git show 800f3aa:<path>`.
 
+Plan **04 is decided as the next version** (2026-09-02) and is **not yet in the tree**. Until that folder
+exists, treat 03 as last-written provenance, not as the live destination.
+
 | | Plan | Status |
 |---|---|---|
-| **03** | [Presence-Update-Rule](plans/03_presence-update-rule/) | **Current.** Draft as of 2026-09-01; **not** complete as a plan; not executed |
+| **03** | [Presence-Update-Rule](plans/03_presence-update-rule/) | Last written. Draft as of 2026-09-01; **not** complete as a plan; not executed. **Will be replaced by 04.** |
+| **04** | — | **Incoming.** Not yet a folder. Will supersede 03. Do not start it by editing 03. |
 
-Start at [`plans/README.md`](plans/README.md) for why the earlier plans were dropped.
+Start at [`plans/README.md`](plans/README.md) for why the earlier plans were dropped and what 04 is
+allowed to inherit.
 
-## The current objective (plan 03)
+## The last-written objective (plan 03) — about to be replaced
 
 A **single** translation-equivariant local presence-update rule on a **frozen** real-space grid:
 the neighbourhood of a cell \((\rho_+,\rho_-,\mathbf{j},\mathbf{E},\mathbf{B})\) maps to the same
@@ -42,8 +51,8 @@ plan” before a review of *this* folder has closed. Nothing here is a result.
 ```
 CapstonePlan/
 ├── plans/
-│   ├── README.md                          why 01/02 were dropped; 03 is current
-│   └── 03_presence-update-rule/           current — draft, not complete
+│   ├── README.md                          why 01/02 were dropped; 04 incoming, 03 last written
+│   └── 03_presence-update-rule/           last written — draft, not complete; 04 will replace it
 │       ├── GoalGathering/                 prime directive, freeze, mapping, bibliography,
 │       │   │                              inheritance map, Round-5 review briefs
 │       │   └── Horizon/                   projects 10–12 (phase, pair density, scale)
