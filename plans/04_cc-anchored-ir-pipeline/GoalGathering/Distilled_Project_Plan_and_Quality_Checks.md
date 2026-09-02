@@ -119,7 +119,7 @@ Scripts under `probes/`. A number not printed by a script is not a result.
 | P2 | **the beat comparison** (accuracy rungs): paired per-band \|error\| **on band positions** vs lab, pipeline vs line A, M04 baseline, and line B where present; margins from the pilot note; per family. Intensities are reported alongside, and scored only where the pilot note names a gas-phase intensity scoreboard — matrix intensities never score | "beat / lost / inconclusive" |
 | P3 | the §5 axis: Δ-learning vs direct, ≥3 seeds, effect size declared in the pilot note (Ladder §4.5) | "the anchor buys X" |
 | P4 | **null rows, mandatory** (Pass-A/B lessons: gates must fail on garbage and on doing nothing): (a) Δ=0 (harmonic-only), scored by **the same script, same bands, same windows, same seeds and same aggregation as the P2 claim it nullifies** (one flag switches the arm), must lose that P2 comparison — else the anharmonic claim is void and is reported as "explained by the calibrated harmonic baseline"; (b) a noise-input run must fail Q5/P0 | — |
-| P5 | reach certificate (R4–R6): end-to-end run + error budget (its empirical component is the M04 uncertainty layer, labelled as such) + theory-vs-theory table + the certificate or refusal | "reached", never "beat" |
+| P5 | reach certificate (R4–R6): end-to-end run + error budget (its empirical component is the M04 uncertainty layer, labelled as such, and the budget is labelled **an extrapolation from R0–R3**; the certificate names what could and could not falsify it) + theory-vs-theory table + the certificate or refusal | "reached", never "beat" |
 
 If P0 fails at a rung, P2 is not interpreted there. If P4(a) shows Δ=0 passing, the one
 pre-authorised sentence — identical here and in §8 — is: **"the anharmonic claim is void and
@@ -138,11 +138,17 @@ negotiated after the fact.
 ## §9 Claim ladder (keyed to gates)
 
 1. P0+P1 at R0 → "the pipeline exists and is convention-clean."
-2. P2 win at R0–R1 + P4 clean → "CC-anchored anharmonic beats the lines on small PAHs."
+2. P2 win at R0–R1 + P4 clean → "CC-anchored anharmonic beats the lines on small PAHs,
+   against gas-phase data."
 3. P3 effect ≠ 0 → "the anchor itself, not the fitting, buys the improvement."
-4. P2 at R2–R3 → "…and it holds where PAHdb's anharmonic front ends."
-5. P5 at R6 → "the pipeline reaches C₃₈₄H₄₈-class with a stated error budget — the first
-   beyond-scaled-harmonic spectrum there."
+4. P2 at R2–R3, **on families that pass the M03 matrix–gas gate** (Ladder §2 Promised) →
+   "…and it holds where PAHdb's anharmonic front ends, on the families where the lab data can
+   decide it." Matrix-limited families are pre-declared inconclusive; that sentence is part
+   of the claim, not a footnote.
+5. P5 at R6 (conditional on B3) → "the pipeline reaches a C₃₈₄H₄₈-class species from the
+   atlas: a labelled theory-vs-theory spectrum plus an uncertainty statement that is
+   **explicitly an extrapolation from R0–R3** — no accuracy claim; the certificate itself
+   names what could and could not falsify that statement at this size."
 6. Tier-1 emission on any of the above → "and here is what JWST would see, via the inherited
    cascade model."
 

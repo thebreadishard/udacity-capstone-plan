@@ -28,7 +28,14 @@ on drift. Costs live in [Compute_Budget_2026-09-02.md](Compute_Budget_2026-09-02
 | **R5** | ~C₂₁₆ (top of Mai's set) | R | Meet line C at its own ceiling | A, C (theory-vs-theory) | — |
 | **R6** | C₃₈₄H₄₈-class | R | Only line A exists here, at 4-31G; any physics beyond scaled-harmonic is new | A (theory-vs-theory) | — |
 
-**Promised:** R0–R3 scored as accuracy rungs, R6 reached as a reach rung.
+**Promised:** R0–R1 scored as accuracy rungs against gas-phase data. R2–R3 scored as accuracy
+rungs **conditional on the M03 matrix–gas gate** (decided 2026-09-02, after Round-6 Pass B
+finding 1): the Module-03 per-band matrix-vs-gas delta table must print **before** any R2–R3
+P2 language is used; a family whose |matrix−gas| delta is ≳ its beat margin is scored
+**"pre-declared inconclusive on matrix"** — not "beat", not "lost" — and only families with
+gas-grade decidability carry "beat" language. R6 reached as a reach rung, **conditional on
+B3** (Compute_Budget §3.1): if the allocation never exists, R6 is reported fail-closed, never
+silently demoted.
 **Bonus:** R4, R5, and anything beyond R6. A bonus rung that does not run is not a failure;
 a promised rung that does not run is reported fail-closed with the rung and cap named.
 
