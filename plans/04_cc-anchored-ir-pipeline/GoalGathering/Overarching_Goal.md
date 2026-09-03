@@ -8,14 +8,18 @@ other file is patched.
 
 Build **one pipeline**: any individual aromatic molecule in, an infrared spectrum out —
 and make that spectrum's **band positions demonstrably more accurate than the best prediction
-currently available anywhere for that molecule** (positions are the scored quantity — see
-"What is scored"; intensities are reported, not part of this criterion).
+currently available anywhere for that molecule**, wherever the laboratory data can decide it:
+unconditional on the gas-phase rungs (R0–R1); behind the M03 matrix–gas decidability gate on
+R2–R3 (undecidable families are pre-declared inconclusive); and never on reach rungs, where
+the deliverable is a labelled theory-vs-theory spectrum, conditional on cluster access.
+Positions are the scored quantity (see "What is scored"); intensities are reported, not part
+of this criterion.
 
 The success criterion is **relative and measured**, not absolute. "Chemical precision" is not
-the promise; *beating the frozen lines* is. The opponents are named and versioned in
-[Frozen_Lines_to_Beat.md](Frozen_Lines_to_Beat.md) and may not be swapped after a comparison
-has been scored. The scoreboard is laboratory data (matrix-isolation, gas-phase, IRMPD),
-never another calculation, wherever laboratory data exists.
+the promise; *beating the frozen lines where the data can decide it* is. The opponents are
+named and versioned in [Frozen_Lines_to_Beat.md](Frozen_Lines_to_Beat.md) and may not be
+swapped after a comparison has been scored. The scoreboard is laboratory data
+(matrix-isolation, gas-phase, IRMPD), never another calculation.
 
 ## The scientific question — two questions, one per claim type
 

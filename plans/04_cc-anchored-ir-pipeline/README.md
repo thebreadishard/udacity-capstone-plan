@@ -5,10 +5,12 @@ Supersedes plan 03 (Presence-Update-Rule), which was **removed from the tree on 
 Plans 01–03 are git history only.
 
 **Promised deliverable (Module 08).** A pipeline: **any individual aromatic molecule in, an
-infrared spectrum out** — with a per-size method ladder, a coupled-cluster-anchored accuracy
-claim where the ladder affords it, and a pre-registered comparison against the frozen
-state-of-the-art lines in
-[GoalGathering/Frozen_Lines_to_Beat.md](GoalGathering/Frozen_Lines_to_Beat.md).
+infrared spectrum out** — with a per-size method ladder and a pre-registered, **gated**
+comparison against the frozen state-of-the-art lines in
+[GoalGathering/Frozen_Lines_to_Beat.md](GoalGathering/Frozen_Lines_to_Beat.md): "beat" claims
+unconditional only on the gas-phase rungs (R0–R1); R2–R3 decided — or pre-declared
+inconclusive — by the M03 matrix–gas gate; the C₃₈₄H₄₈-class reach demonstration conditional
+on cluster access and carrying no accuracy claim.
 
 The sequence **ends at Module 09**. There is no `Horizon/` and there are no Projects 10–12.
 Chemically better IR of complex aromatics is the reason for the work, not a post-degree item.
@@ -29,7 +31,7 @@ Chemically better IR of complex aromatics is the reason for the work, not a post
    — levels and anchors, the Δ-vs-direct axis, Q/P gates with mandatory null rows
 8. [GoalGathering/Relevant_Scientific_Papers.md](GoalGathering/Relevant_Scientific_Papers.md)
    — working bibliography with per-item verify status and named debts
-9. [probes/README.md](probes/README.md) — probe conventions (no probes exist yet)
+9. [probes/README.md](probes/README.md) — probe conventions and the probes that exist
 
 ## Review record
 

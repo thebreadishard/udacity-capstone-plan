@@ -46,8 +46,10 @@ another.
 **Ordering.** R0 before anything. R1 before any DLPNO-based accuracy claim (the
 DLPNO-vs-canonical check at R1 — or its declared R0-only downgrade — is the license for DLPNO
 anchors above it). Reach rungs may not
-start before R3 has been scored — a pipeline that has not beaten anything has no business
-burning node-hours on size.
+start before R3 has been **scored** — and scored includes lost and pre-declared inconclusive
+(Goal, Value hierarchy): an honest R2–R3 outcome of any kind opens the way to size; what is
+forbidden is burning node-hours on size before the small rungs have been honestly scored at
+all.
 
 ## 3. Frozen now (not pilot-dependent)
 
