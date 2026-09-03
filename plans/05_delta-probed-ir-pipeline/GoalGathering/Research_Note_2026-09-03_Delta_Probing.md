@@ -158,6 +158,37 @@ dynamics at CC accuracy" arXiv abstract. Everything else in this note was seen i
 result snippets only and is marked **record (search 2026-09-03)** in the bibliography —
 re-fetch before any scored use.
 
+## 8. Errata and status upgrades after Round-7 Pass A (2026-09-03, same day)
+
+This section is appended; the text above is left as written so the record of what was
+searched and claimed on 2026-09-03 stays intact.
+
+- **Atom and mode counts (§1).** Coronene C₂₄H₁₂: 36 atoms, 3N−6 = 102 modes. C₃₈₄H₄₈: 432
+  atoms, 1,290 modes; "C₃₈₄H₄₈-class" species differ in size, so the count is for that formula.
+- **TeraChem GPU CCSD(T) (§5).** arXiv:2512.01055 was posted in December 2025; the JPCA
+  article (130(10), 2225–2237) went online 2026-02-26 (Crossref).
+- **Sanders et al. (§2).** "Not extended to coupled cluster or to anharmonic constants by its
+  authors" overstated what one full text can show; the correct statement is that the paper
+  itself treats a DFT Hessian only and that the 2026-09-03 search found no later extension.
+- **Locality (§2).** "Short-ranged in real space" is the plan's bet, supported by evidence on
+  *energies* in other systems; no curvature evidence on PAHs exists in this note. Q8 exists
+  because of that.
+- **Status upgrades.** After Pass A issue 8 the following were fetched and their statuses in
+  the bibliography raised: Crossref records for Bégué, Carbonnière & Pouchan 2005 (item 27,
+  author list now verified; its numerical result remains unquoted); Ruth, Gerbig & Schreiner
+  2022 (37); Fusè et al. 2024 (28); Madriaga & Crawford 2025 (30; the μE_h / >100 % figures in
+  §4.3 above came from a search snippet and are **not relied on** in any frozen document);
+  Nagy & Kállay 2019 (34); Welborn, Cheng & Miller 2018 (36); O1NumHess JCTC (23); Sanders
+  et al. (24); Fajen et al. JPCA 2026 (26); REST (41; the "no local coupled cluster" statement
+  rests on an abstract seen in a search snippet). arXiv abstracts for Zhou et al. (38; Phys.
+  Rev. B 100, 184308, 2019) and GPU4PySCF (25; the abstract states a 30× speed-up over a
+  32-core node and does not mention Hessians — the 84-atom/30-min figure in §3 above is a
+  snippet figure, not a cite).
+- **Item 27's number.** The "<0.8 %" figure in §4.4 above is from a search snippet. The
+  harmonic-first allocation in plan 05 rests on the hybrid-split precedent as a *design
+  choice* (item 14, plan-02 record; item 27, Crossref) and is tested by Q7's Δ₃/Δ₄ arm and
+  P4(a), not justified by that number.
+
 ## 7. Honest limits of this note
 
 - No cost in this note is a measurement of this project. The probe-count classes ("~2M",

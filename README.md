@@ -114,15 +114,15 @@ findings from the deleted plans — was removed from the tree with the plan-03 f
 2026-09-02 and remains in **git history**. Pass B's architectural verdict (one scope, one
 clock) binds plan 04 and is restated in its prime directive.
 
-Documents 10–12 are **not** rubrics — they were plan 03's horizon and sit in its
-`GoalGathering/Horizon/` until that folder's removal. Plans 04 and 05 have no horizon documents.
+Documents 10–12 are **not** rubrics — they were plan 03's horizon and went with the plan-03
+folder on 2026-09-02 (git history). Plans 04 and 05 have no horizon documents.
 
 ## Conventions this repository tries to keep
 
 These outlived the pivot and are the most portable thing here:
 
 - **Measured, not asserted.** Arithmetic that matters is executed in probes
-  ([plan 04 conventions](plans/04_cc-anchored-ir-pipeline/probes/README.md)), not written out
+  ([plan 05 conventions](plans/05_delta-probed-ir-pipeline/probes/README.md)), not written out
   by hand. Missing inputs print `NOT_RUN`.
 - **Never cite from recall.** Every identifier is fetched. Three bibliography entries turned out to
   be wrong under this rule, and one of them is what triggered the pivot.
