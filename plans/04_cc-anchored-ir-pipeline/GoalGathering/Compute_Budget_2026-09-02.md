@@ -1,5 +1,9 @@
 # Compute budget — Plan 04 (2026-09-02)
 
+> **SUPERSEDED 2026-09-03** by [Compute_Budget_2026-09-03.md](Compute_Budget_2026-09-03.md)
+> (user directive: no cap on human hours; B2 caps become checkpoints). This file is kept
+> unedited below this banner, per its own supersede-only rule.
+
 **Status.** Caps and protocol frozen 2026-09-02. Caps are **not estimates**: nothing below is a
 predicted runtime, and no cap may be read as "this is how long it takes". Measured slots are
 filled only by timed probes; until then they read NOT_RUN. Agrees with

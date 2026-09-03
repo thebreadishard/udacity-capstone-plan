@@ -23,8 +23,9 @@ Chemically better IR of complex aromatics is the reason for the work, not a post
    versioned opponents and the laboratory scoreboards
 4. [GoalGathering/Frozen_Ladder_and_Tolerances.md](GoalGathering/Frozen_Ladder_and_Tolerances.md)
    — rungs R0–R6, accuracy vs reach claims, stop conditions
-5. [GoalGathering/Compute_Budget_2026-09-02.md](GoalGathering/Compute_Budget_2026-09-02.md) —
-   three budgets (human / laptop / cluster node-hours) and the timed-probe protocol
+5. [GoalGathering/Compute_Budget_2026-09-03.md](GoalGathering/Compute_Budget_2026-09-03.md) —
+   human hours uncapped (logged, never limited); machine checkpoints as honesty devices; the
+   timed-probe protocol. Supersedes the 2026-09-02 budget
 6. [GoalGathering/Capstone_Mapping.md](GoalGathering/Capstone_Mapping.md) — modules 02–09
    against Rubrics v1.5.1; every artifact load-bearing; the three 2026-09-02 user decisions
 7. [GoalGathering/Distilled_Project_Plan_and_Quality_Checks.md](GoalGathering/Distilled_Project_Plan_and_Quality_Checks.md)

@@ -3,7 +3,7 @@
 **Status.** Frozen 2026-09-02 in *form*; the pilot-dependent numbers (§4) are frozen by a dated
 note **before** any comparison they govern is scored. After that note, no number may be loosened
 in either direction. Agrees with [Overarching_Goal.md](Overarching_Goal.md); the Goal file wins
-on drift. Costs live in [Compute_Budget_2026-09-02.md](Compute_Budget_2026-09-02.md).
+on drift. Costs live in [Compute_Budget_2026-09-03.md](Compute_Budget_2026-09-03.md).
 
 ---
 
@@ -110,9 +110,11 @@ R0 comparison table is the same act as re-windowing and is treated as such.
 1. **ORCA/DLPNO unavailable** (license, install, or the new laptop underperforms): the rung
    stops; the missing binary or measurement is named. Do not substitute a different level and
    keep the rung's name.
-2. **A rung exceeds its frozen cost cap** (budget doc): stop. Do not coarsen the basis, loosen
-   DLPNO thresholds, or drop sampling to stay under the cap silently — that is a §-deviation
-   note or a fail-closed report.
+2. **A rung crosses a machine checkpoint** (budget doc, 2026-09-03): a dated decision note is
+   mandatory — continue knowingly, reroute to B3, or stop. Silent overrun is forbidden, and so
+   is ducking under a checkpoint by coarsening the basis, loosening DLPNO thresholds, or
+   shrinking sampling — those are science decisions under Distilled §4, never bookkeeping.
+   **Human hours are never a stop condition** (Goal, Hours).
 3. **Cluster access not formalized when first needed:** reach rungs stop and the stop is
    reported. The plan does not assume UvA access until an account and allocation exist in
    writing (dated note).
