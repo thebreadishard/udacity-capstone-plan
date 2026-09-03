@@ -1,21 +1,32 @@
 # Project plan versions
 
-This project has been planned four times. Folders for plans 01 (voxel field PES) and 02
+> **Plan 05 is the current plan** (created 2026-09-03): [`05_delta-probed-ir-pipeline/`](05_delta-probed-ir-pipeline/)
+> — the same criterion, ladder, opponents and gates as plan 04, with the coupled-cluster anchor
+> obtained by **probing the CC−DFT force-constant correction** at a measured, size-saturating
+> probe count instead of learning a per-molecule surface. Plan 04 is **superseded and kept in
+> the tree** until the user decides on its removal; see
+> [`05_delta-probed-ir-pipeline/GoalGathering/Why_05_Supersedes_04.md`](05_delta-probed-ir-pipeline/GoalGathering/Why_05_Supersedes_04.md).
+> The paragraphs below this banner describe the state up to plan 04 and are unedited.
+
+This project has been planned five times (01–05). Folders for plans 01 (voxel field PES) and 02
 (coupled-cluster anharmonic IR) were **removed from the tree on 2026-09-01**: the documents from
 version control, and plan 02's leftover psi4 run artifacts from disk. They remain in git history.
 Plan 02's ten raw `.npz` frequency arrays were never committed, so they were force-added in `800f3aa`
 immediately before the deletion — `git show 800f3aa:<path>` retrieves one.
 
-None of plans 01–04 has been executed as a plan. Nothing in plans 03 or 04 is a result.
-**Do not call plan 04 complete as a plan.** Completeness waits on a review of that folder.
+None of plans 01–05 has been executed as a plan. Nothing in plans 03, 04 or 05 is a result.
+**Do not call plan 04 or plan 05 complete as a plan.** Plan 05's completeness waits on its
+Round-7 reviews.
 
-**Plan 04 is the current plan** (decided 2026-09-02; folder created the same day). It replaces
-plan 03, which was **removed from the tree on 2026-09-02**; git history keeps it.
+**Plan 04 was the current plan from 2026-09-02 to 2026-09-03** (it replaced plan 03, which was
+**removed from the tree on 2026-09-02**; git history keeps it). **Plan 05 is current** as of
+2026-09-03; plan 04's folder is kept until the user decides on its removal.
 
 | | Plan | Status |
 |---|---|---|
 | **03** | Presence-Update-Rule | Superseded by 04. **Removed from the tree on 2026-09-02**; git history keeps it. Draft; never complete as a plan; never executed. |
-| **04** | [CC-Anchored-IR-Pipeline](04_cc-anchored-ir-pipeline/) | **Current.** Draft as of 2026-09-02. Module 08: any individual aromatic → IR spectrum, scored against frozen state-of-the-art lines. Ends at 09. No Projects 10–12. |
+| **04** | [CC-Anchored-IR-Pipeline](04_cc-anchored-ir-pipeline/) | Superseded by 05 (2026-09-03); **kept in the tree pending the user's removal decision**. Draft; Round-6 Pass A and B run and addressed; never executed. |
+| **05** | [Δ-Probed-IR-Pipeline](05_delta-probed-ir-pipeline/) | **Current.** Draft as of 2026-09-03. Same product and criterion as 04; CC anchor obtained by probing the CC−DFT force-constant correction (probe count K measured per rung). Round-7 reviews not yet run. |
 
 Historic comparison (the 01, 02 and 03 plan documents are gone; this table is not a set of links):
 
@@ -63,7 +74,7 @@ The argument of record for the 02→03 pivot was `Why_03_Supersedes_02.md` (git 
 removed plan-03 folder).
 The deleted plan-02 restructure proposal (git history only) is the argument for why 01 died.
 
-## What survives into 04
+## What survives into 04 (and, through it, into 05)
 
 Method-agnostic, from 01–03:
 
@@ -80,33 +91,51 @@ review findings: `Inheritance_of_Reviews.md` in the removed plan-03 folder (git 
 
 ## Layout
 
-Only plan 04 is in this tree (01, 02 and 03 are git history):
+Plans 04 (superseded, kept pending removal) and 05 (current) are in this tree; 01, 02 and 03 are
+git history:
 
 ```
-plans/04_cc-anchored-ir-pipeline/
-  README.md          orientation and reading order
-  GoalGathering/     prime directive, frozen lines, ladder + tolerances, compute budget,
-                     capstone mapping, distilled plan + gates, bibliography, Round-6 briefs
-                     and the Round-6 Pass A review
-  probes/            conventions declared; no probes yet
+plans/04_cc-anchored-ir-pipeline/     superseded 2026-09-03
+  README.md          orientation; Round-6 review record
+  GoalGathering/     goal, frozen lines, ladder, budgets, mapping, distilled plan, bibliography,
+                     Round-6 briefs and reviews, project proposal of 2026-09-03
+  probes/            the NIST gas-coverage probe and its raw cache
+
+plans/05_delta-probed-ir-pipeline/    current — draft, created 2026-09-03
+  README.md          orientation and reading order; Round-7 review record (not yet run)
+  GoalGathering/     goal, why-05-supersedes-04, research note (source), frozen lines (carried),
+                     ladder + tolerances, compute budget, distilled plan + gates, bibliography
+  probes/            conventions declared; probes owed, none run
 ```
 
-`Uitleg/` is not started for plan 04.
+`Uitleg/` is not started for plan 04 or 05.
 
 Three folders sit at the repository root and are **shared dumps**, because no plan may claim them:
 
 - `Rubrics/` — the Udacity module rubrics 01-09, treated as fixed (version 1.5.1). If Udacity ever
   revises them, add a sibling folder rather than overwriting; several decisions turn on exact wording.
-- `Papers/` — reference PDFs. Literature is a dump; plan 04's bibliography is the index.
+- `Papers/` — reference PDFs. Literature is a dump; the current plan's bibliography is the index.
 - `AI_Chats/` — the planning conversations. They predate the splits.
 
 The **professor reviews of plans 01–03 are not in this tree.** They remain in git history.
 Plan 03's review record (Round 5 Pass A, addressed; Round 5 Pass B, no green light, not
 addressed) went with its folder. Plan 04's review record is in its own README: Round-6 Pass A
-(2026-09-02) is in the tree and addressed; Pass B is not yet run. Copying old reviews into
-04 would imply 04 had survived them.
+and Pass B (both 2026-09-02) are in the tree and addressed. Plan 05's review record is in its
+own README: Round 7 not yet run. Copying old reviews into a new plan folder would imply the new
+plan had survived them.
 
-## Version 04 (created 2026-09-02)
+## Version 05 (created 2026-09-03)
+
+Plan 05 exists: [`05_delta-probed-ir-pipeline/`](05_delta-probed-ir-pipeline/). Plan 04 was **not**
+edited in place and is **not yet removed**: its folder stays until the user decides. Plan 05
+keeps plan 04's product, criterion, ladder, opponents, scoreboards, gates and Round-6 closures,
+and changes how the coupled-cluster anchor is obtained — a probed correction to the force
+constants at a measured probe count K, instead of a learned per-molecule surface. The argument
+of record is
+[`05_delta-probed-ir-pipeline/GoalGathering/Why_05_Supersedes_04.md`](05_delta-probed-ir-pipeline/GoalGathering/Why_05_Supersedes_04.md).
+Nothing in plan 05 is a result; its Round-7 reviews have not run.
+
+## Version 04 (created 2026-09-02; superseded 2026-09-03)
 
 Plan 04 exists: [`04_cc-anchored-ir-pipeline/`](04_cc-anchored-ir-pipeline/). Plan 03 was **not**
 edited in place; it was removed from the tree on 2026-09-02 and remains readable in git history.
