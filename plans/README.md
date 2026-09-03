@@ -114,7 +114,10 @@ Do not resurrect the deleted 01 or 02 folders.
 
 **Product.** Module 08 is a pipeline: any individual aromatic molecule in, an infrared spectrum
 out, scored against the frozen lines in
-[04 Frozen_Lines_to_Beat.md](04_cc-anchored-ir-pipeline/GoalGathering/Frozen_Lines_to_Beat.md).
+[04 Frozen_Lines_to_Beat.md](04_cc-anchored-ir-pipeline/GoalGathering/Frozen_Lines_to_Beat.md)
+under pre-registered gates: "beat" unconditional only on the gas-phase rungs; larger accuracy
+rungs decided — or pre-declared inconclusive — by a measured matrix–gas gate; the reach
+demonstration conditional on cluster access, with no accuracy claim.
 Module 09 is the defense. The degree **ends there**. Plan 04 has no `Horizon/` and no Projects
 10–12. Plan 03's exile of IR / JWST / C₃₈₄H₄₈ to Horizon 10–12 did **not** carry forward.
 

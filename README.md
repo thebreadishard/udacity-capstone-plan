@@ -1,7 +1,9 @@
 # Udacity AI Mastery — Capstone Project Plan
 
-> **This repository is a planning and coordination artifact.** It contains no scientific results for the
-> current plan: nothing in plan 04 has been executed. It does contain tooling — probe scripts, a scraper.
+> **This repository is a planning and coordination artifact.** It contains no pipeline results
+> for the current plan: no rung of plan 04 has run. What has run is one **coverage probe**
+> (which laboratory data exists where — a measurement about data availability, committed with
+> its raw evidence). It also contains tooling — probe scripts, a scraper.
 > Its purpose is to design a coherent research project and distribute it across the Udacity Master in AI
 > capstone sequence (Modules 02–09), so that every module both advances the science *and* satisfies the
 > school's rubric.
