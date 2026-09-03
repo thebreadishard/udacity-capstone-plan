@@ -108,8 +108,6 @@ plans/05_delta-probed-ir-pipeline/    current — draft, created 2026-09-03
   probes/            conventions declared; probes owed, none run
 ```
 
-`Uitleg/` is not started for plan 04 or 05.
-
 Three folders sit at the repository root and are **shared dumps**, because no plan may claim them:
 
 - `Rubrics/` — the Udacity module rubrics 01-09, treated as fixed (version 1.5.1). If Udacity ever

@@ -49,5 +49,5 @@ it without leaving a trace.
 
 Documents 10–12 used to sit alongside these rubrics. They are **not** rubrics — they are the
 project's own horizon-planning documents, and they differ between plans. Plan 03 kept them in
-its `GoalGathering/Horizon/` (git history since 2026-09-02); plan 04 has no horizon documents
-by design — the sequence ends at Module 09.
+its `GoalGathering/Horizon/` (git history since 2026-09-02); plans 04 and 05 have no horizon
+documents by design — the sequence ends at Module 09.

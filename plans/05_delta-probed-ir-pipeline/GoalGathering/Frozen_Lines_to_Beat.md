@@ -83,7 +83,7 @@ force-constant correction at any size; that absence is a search result, not a fa
 |---|---|---|
 | PAHdb experimental library **v3.10** (2023-04-13) | 84 species, matrix isolation (Ar, ~5–15 K) | versions page verified 2026-09-02; band-read recipe with recorded uids in plan-02 probes (git history) |
 | PAHdb gas-phase library **v1.00** (2026-07-01) | 5 spectra (Canadian Light Source), CN-substituted range | versions page verified 2026-09-02 |
-| NIST WebBook gas-phase IR | JCAMP-DX per CAS number | working parser + cache recipe in plan-02 probes; **coverage probe run** under plan 04 (gas IR present for benzene, naphthalene, pyrene, chrysene, triphenylene; tetracene solid-only; coronene absent) — raw evidence in plan 04's `probes/nist_cache/`, to be re-run under plan 05's hash |
+| NIST WebBook gas-phase IR | JCAMP-DX per CAS number | working parser + cache recipe in plan-02 probes; **coverage probe run** under plan 04 (gas IR present for benzene, naphthalene, pyrene, chrysene, triphenylene; tetracene solid-only; coronene absent; the R2 gas grids are ~4 cm⁻¹) — raw evidence in plan 04's `probes/nist_cache/`, to be re-run under plan 05's hash; the R2 row of the Ladder was re-read against it (dated note there) |
 | IRMPD / jet-cooled literature | e.g. cationic pyrene (Tang et al. 2025, arXiv:2504.11898) | context only for neutral rungs; verify per use |
 
 Matrix data carries a matrix shift; gas-phase is preferred where both exist; the comparison
@@ -98,14 +98,16 @@ factor vs Ar-matrix lab values — quartet CH-oop band mean |error| **7.1 cm⁻�
 **60.2 cm⁻¹**, wider than computed. These numbers set the scale of what "beating the harmonic
 line" must mean per band class.
 
-## 7. Open verification debts (before any scored use; identical to the bibliography's list)
+## 7. Open verification debts (before any scored use; identical to the bibliography's "Named debts")
 
-1. ACS Omega full text — read the actual MAE (§3).
-2. PAHdb Anharmonic v1.00 method papers (Mackie / Esposito) — fetch and pin.
-3. MNRAS landing page for Mai 2025; Mulas 2018 landing page — re-fetch.
-4. Temperature-dependence lab references for tier 2 — identify and pin before any tier-2
-   pre-registration.
-5. DLPNO-CCSD(T) / LNO-CCSD(T) / ORCA / Psi4 / MRCC method and software citations — unpaid;
-   the Sylvetsky & Martin identifier was pinned 2026-09-02; the plan-05 code choice adds the
-   Psi4 DLPNO and MRCC LNO papers to this debt.
-6. Whether C₃₈₄H₄₈ itself has a PAHdb v4.00 entry — check before the top rung is worded.
+1. Bos 2025 full text → the actual MAE (item 7).
+2. Mackie/Esposito anharmonic method papers (item 12).
+3. MNRAS landing for Mai 2025 (item 5); Mulas 2018 landing re-fetch (item 6).
+4. Joblin-era T-dependence references (item 20).
+5. Local-CC method and software citations — DLPNO (ORCA, Psi4), LNO (MRCC, PySCFAD) — items
+   17, 32, 33, 34; Sylvetsky pinned; the rest unpaid.
+6. C₃₈₄H₄₈ per-species presence in PAHdb v4.00 — an M02 task.
+
+Debts that concern plan 05's *method* rather than its opponents (full texts of items 27, 28,
+30, 37; the O1NumHess code version; the GPU Hessian timing) are listed only in the
+bibliography under "Method debts" and are not part of this list.
