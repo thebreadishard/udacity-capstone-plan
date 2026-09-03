@@ -52,9 +52,11 @@ allowed to inherit.
 A **per-molecule infrared pipeline**: equilibrium geometry, the best affordable Hessian, and a
 machine-learned / reduced-dimensional anharmonic correction trained on self-generated
 DLPNO-CCSD(T) points — producing band positions and intensities with a stated, measured error
-budget. The success criterion is **relative**: beat the best prediction currently available
-anywhere for that molecule (PAHdb v4.00 scaled-harmonic DFT; Mai 2025 MLMD; the small-molecule
-anharmonic front), judged per band against laboratory data. Opponents are named and versioned in
+budget. The success criterion is **relative and gated**: beat the best prediction currently
+available anywhere for that molecule (PAHdb v4.00 scaled-harmonic DFT; Mai 2025 MLMD; the
+small-molecule anharmonic front), judged per band against laboratory data **where that data
+can decide it** — gas-phase rungs unconditionally, larger rungs via the measured matrix–gas
+gate, never on reach rungs. Opponents are named and versioned in
 [Frozen_Lines_to_Beat.md](plans/04_cc-anchored-ir-pipeline/GoalGathering/Frozen_Lines_to_Beat.md).
 
 Size must scale to **C₃₈₄H₄₈-class species and larger** — the 101–386-carbon PAHdb bin, where
@@ -74,7 +76,7 @@ CapstonePlan/
 │   ├── README.md                          why 01/02/03 were dropped; 04 is current
 │   └── 04_cc-anchored-ir-pipeline/        current — draft, created 2026-09-02
 │       ├── GoalGathering/                 prime directive, frozen lines to beat
-│       └── probes/                        conventions declared; no probes yet
+│       └── probes/                        conventions + the NIST gas-coverage probe (evidence in-tree)
 │
 ├── Rubrics/                               Udacity module rubrics 01–09, treated as fixed
 ├── Papers/                                reference PDFs (dump; plan bibliographies are the index)
