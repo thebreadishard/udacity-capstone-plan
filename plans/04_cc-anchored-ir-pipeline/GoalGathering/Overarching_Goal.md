@@ -98,9 +98,10 @@ after UV heating; that is handled as three declared tiers:
   what the opponent atlas actually contains.
 - **Compute:** the plan must not die on compute. Start on a laptop (benzene pilot proves the
   pipeline end-to-end), escalate to UvA supercomputer access (collaboration with a UvA
-  professor — the user's sister) when a rung demands it. Three budgets, each capped in a
-  dated compute-budget doc before the corresponding rung starts: human hours, laptop
-  wall-clock, cluster node-hours. The source conversation's own estimate — ~10⁴ DLPNO points
+  professor — the user's sister) when a rung demands it. Three budgets, tracked in the dated
+  compute-budget doc (2026-09-03): human hours **logged, never capped** (see Hours); laptop
+  wall-clock as **checkpoints** that force dated decisions; cluster node-hours under per-rung
+  dated notes after timed probes. The source conversation's own estimate — ~10⁴ DLPNO points
   for coronene = thousands of node-hours — is the class of cost the third budget exists for.
 
 ## Scope boundaries
@@ -160,11 +161,15 @@ What success *means* differs by size, and the four meanings chain into one argum
 3. **Large PAHs (R4–R5).** No sharp truth exists. The expectation is results of which a
    domain expert says: *"those are better, first try, than I expected."* That is **reported
    expert judgment, not a P-gate** — the gates stay as frozen; the expert assessment is an
-   honest, named, additional datum in the report.
+   honest, named, additional datum in the report. **The expert(s) and the exact question they
+   will be asked are named in a dated note committed before any R4 pipeline spectrum
+   exists** — an opinion solicited after the numbers is a quote, not a datum.
 4. **Super-large PAHs (R6).** The claim is **earned trust**: the same pipeline, unchanged,
-   demonstrated at three tiers, now applied where nothing can check it. The R6 certificate
-   cites the tier-1/2/3 record as its grounds — trust transfers from demonstrated performance,
-   not from an error bar that nothing could contradict.
+   applied where nothing can check it, citing the tier record **as it actually stands** —
+   naming which tiers demonstrated what. A chain whose middle tiers ended inconclusive is
+   reported as exactly that ("grounded in tier-1 agreement and tier-3 expert judgment"),
+   never rounded up to "demonstrated at three tiers". Trust transfers from the demonstrated
+   record, not from an error bar that nothing could contradict.
 
 This chain is the plan's answer to the falsifiability objection (Round-6 Pass B, finding 5):
 the reach claim is not "this spectrum is right", it is "this is what the method that did
@@ -175,7 +180,10 @@ the reach claim is not "this spectrum is right", it is "this is what the method 
 **There is no cap on human hours anywhere in this plan.** The hours that are needed will be
 spent, even if the project takes years. Hours are logged, never limited; no deadline is a
 gate; see [Compute_Budget_2026-09-03.md](Compute_Budget_2026-09-03.md). Machine checkpoints
-(B2/B3) survive as honesty devices — forced dated decisions — never as time pressure.
+(B2/B3) survive as honesty devices — forced dated decisions — never as time pressure. The
+Udacity module sequence keeps its own administrative deadlines: those are school facts,
+handled in the mapping, never a science gate — a module may ship an honest fail-closed state
+to meet its date, and the science continues past it.
 
 ## What is inherited
 
