@@ -3,7 +3,7 @@
 Agrees with [Overarching_Goal.md](Overarching_Goal.md); the Goal file wins on drift. Opponents:
 [Frozen_Lines_to_Beat.md](Frozen_Lines_to_Beat.md). Rungs and stop conditions:
 [Frozen_Ladder_and_Tolerances.md](Frozen_Ladder_and_Tolerances.md). Caps:
-[Compute_Budget_2026-09-02.md](Compute_Budget_2026-09-02.md). Modules:
+[Compute_Budget_2026-09-03.md](Compute_Budget_2026-09-03.md). Modules:
 [Capstone_Mapping.md](Capstone_Mapping.md).
 
 **Status.** Draft, 2026-09-02. Not complete as a plan. Nothing here is a result.

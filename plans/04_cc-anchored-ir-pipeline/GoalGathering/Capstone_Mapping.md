@@ -13,7 +13,7 @@ computed ab initio data — and every report says so in one sentence.
 Prime directive: [Overarching_Goal.md](Overarching_Goal.md). Opponents:
 [Frozen_Lines_to_Beat.md](Frozen_Lines_to_Beat.md). Ladder:
 [Frozen_Ladder_and_Tolerances.md](Frozen_Ladder_and_Tolerances.md). Caps:
-[Compute_Budget_2026-09-02.md](Compute_Budget_2026-09-02.md).
+[Compute_Budget_2026-09-03.md](Compute_Budget_2026-09-03.md).
 
 ---
 
@@ -254,6 +254,7 @@ DOI-before-claim: no notebook writes its source sentence before the identifier e
 parallel with 02–03 (it is probe work, budget B2). M05 blocked on: R1 check + corpus DOI.
 M06 blocked on: geometry corpus DOI. M07 may start as soon as the ladder + one probe exist;
 it must refuse everything it cannot certify. M08 assembles; it trains nothing new. Human
-hours per bucket: see the budget file (B1 table); this file adds no numbers.
+hours are **logged, never capped** (budget doc 2026-09-03; user directive — the project takes
+the time it takes); this file adds no numbers.
 
 Pass 6 (module-by-module sign-off) is **not** done. This mapping is a draft.

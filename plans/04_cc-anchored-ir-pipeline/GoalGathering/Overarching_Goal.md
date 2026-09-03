@@ -145,6 +145,38 @@ Two consequences, so this directive cannot be quoted against the freeze:
    those rules exist precisely so the pipeline *can* go where nothing can check it, without
    lying about what that means.
 
+## Expectations per size tier (user directive, 2026-09-03)
+
+What success *means* differs by size, and the four meanings chain into one argument:
+
+1. **Small PAHs (R0–R1).** Truth is known — measurements and calculations agree. The task is
+   to prove the pipeline **matches that truth within the stated error margin**. This is an
+   agreement test; "beat" language here is secondary to "agrees with what everyone knows".
+2. **Medium PAHs (R2–R3).** Calculations with (learned or hand-tuned) correction factors
+   exist; the truth is approximately known. The task is to land **within our error margin
+   natively — without any generic standard correction** (the no-scale-factor rule is exactly
+   this expectation, frozen). Matching what others need an empirical patch for, without the
+   patch, is the medium-tier result.
+3. **Large PAHs (R4–R5).** No sharp truth exists. The expectation is results of which a
+   domain expert says: *"those are better, first try, than I expected."* That is **reported
+   expert judgment, not a P-gate** — the gates stay as frozen; the expert assessment is an
+   honest, named, additional datum in the report.
+4. **Super-large PAHs (R6).** The claim is **earned trust**: the same pipeline, unchanged,
+   demonstrated at three tiers, now applied where nothing can check it. The R6 certificate
+   cites the tier-1/2/3 record as its grounds — trust transfers from demonstrated performance,
+   not from an error bar that nothing could contradict.
+
+This chain is the plan's answer to the falsifiability objection (Round-6 Pass B, finding 5):
+the reach claim is not "this spectrum is right", it is "this is what the method that did
+1–3 produces at a size where no one has ever produced anything better than scaled-harmonic".
+
+## Hours (user directive, 2026-09-03)
+
+**There is no cap on human hours anywhere in this plan.** The hours that are needed will be
+spent, even if the project takes years. Hours are logged, never limited; no deadline is a
+gate; see [Compute_Budget_2026-09-03.md](Compute_Budget_2026-09-03.md). Machine checkpoints
+(B2/B3) survive as honesty devices — forced dated decisions — never as time pressure.
+
 ## What is inherited
 
 From plans 01–03, method-agnostic and kept: measured-not-asserted probes; never cite from
