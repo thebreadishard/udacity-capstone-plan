@@ -30,6 +30,7 @@ Exit: prints a per-molecule table and a GATE INPUT summary; prints NOT_RUN per
 from __future__ import annotations
 
 import time
+import urllib.error
 import urllib.request
 from pathlib import Path
 
@@ -67,6 +68,14 @@ def fetch(nist_id: str, index: int) -> str | None:
             with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=60) as r:
                 text = r.read().decode("utf-8", "replace")
             break
+        except urllib.error.HTTPError as e:
+            # NIST answers a nonexistent index with 404 + "##TITLE=Spectrum not found."
+            # That is a definitive miss, not a network failure. (Learned 2026-09-03:
+            # an earlier version retried these for six hours.)
+            if e.code == 404:
+                miss.write_text("", encoding="utf-8")
+                return None
+            continue
         except Exception:
             continue
     if text is None:
