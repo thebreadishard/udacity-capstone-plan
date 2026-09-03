@@ -14,13 +14,14 @@ Agrees with [Overarching_Goal.md](Overarching_Goal.md); the Goal file wins on dr
 
 A per-molecule pipeline — geometry, best affordable Hessian, and a machine-learned anharmonic
 correction trained on self-generated DLPNO-CCSD(T) points — produces IR **band positions**
-that, on the accuracy rungs, beat the frozen lines per band against laboratory data under a
-pre-registered paired comparison: **unconditionally promised on R0–R1 (gas-phase); on R2–R3
-only for families that pass the M03 matrix–gas decidability gate**, all other families
-pre-declared inconclusive on matrix. On reach rung R6 — **conditional on B3** — it produces a
-labelled theory-vs-theory spectrum with an uncertainty statement that is explicitly an
-extrapolation, where no anharmonic prediction of any kind exists. Intensities are computed
-and reported (Goal, "What is scored"); they are **not part of this claim**.
+that, on the gas-phase rungs R0–R1, **agree with the known truth within the stated margin —
+the primary tier-1 claim — and beat the frozen lines under the pre-registered paired
+comparison (secondary to agreement)**; on R2–R3 the beat comparison runs only for families
+that pass the M03 matrix–gas decidability gate, all other families pre-declared inconclusive.
+On reach rung R6 — **conditional on B3** — it produces a labelled theory-vs-theory spectrum
+with an uncertainty statement that is explicitly an extrapolation, where no anharmonic
+prediction of any kind exists. Intensities are computed and reported (Goal, "What is
+scored"); they are **not part of this claim**.
 
 If a gate fails, the claim is the fail-closed sentence of §8, not a quieter product.
 
@@ -143,8 +144,9 @@ negotiated after the fact.
 ## §9 Claim ladder (keyed to gates)
 
 1. P0+P1 at R0 → "the pipeline exists and is convention-clean."
-2. P2 win at R0–R1 + P4 clean → "CC-anchored anharmonic beats the lines on small PAHs,
-   against gas-phase data."
+2. Agreement with the known truth within the stated margin at R0–R1 (the tier-1 expectation,
+   Goal) plus P2 win + P4 clean → "CC-anchored anharmonic reproduces known truth on small
+   PAHs against gas-phase data — and beats the lines, secondary to that agreement."
 3. P3 effect ≠ 0 → "the anchor itself, not the fitting, buys the improvement."
 4. P2 at R2–R3, **on families that pass the M03 matrix–gas gate** (Ladder §2 Promised) →
    "…and it holds where PAHdb's anharmonic front ends, on the families where the lab data can

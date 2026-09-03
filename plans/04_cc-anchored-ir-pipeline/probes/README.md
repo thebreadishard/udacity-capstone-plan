@@ -27,9 +27,10 @@ Conventions, carried from plans 01–03:
    JCAMP) under this plan's own hash, so §6 of the frozen-lines file rests on a script in
    *this* tree.
 3. DLPNO point cost: one timed DLPNO-CCSD(T) energy+gradient at a declared rung size and the
-   frozen basis/thresholds, on the laptop — **the kill probe**: its wall-clock × the rung's
-   frozen N_min against the 168 h B2 cap decides mechanically whether that rung's factory is
-   B2, B3, or not run (Compute_Budget §3).
+   frozen basis/thresholds, on the laptop — **the classification probe**: its wall-clock × the
+   rung's frozen N_min against the 168 h B2 checkpoint classifies the factory as B2 or B3 work
+   and forces a dated decision (Compute_Budget 2026-09-03 §3); it does not kill a rung by
+   itself.
 4. Resonance probe (before any R2 surface is fitted, DFT level is enough): pyrene CH-stretch
    family via GVPT2 vs raw VPT2 vs MD-ACF; if raw VPT2 moves the band by more than the beat
    margin relative to GVPT2, raw VPT2 is forbidden on that family (it already is forbidden on

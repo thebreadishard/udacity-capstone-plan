@@ -36,13 +36,14 @@ was **removed from the tree on 2026-09-02**; git history keeps it.
 
 Plan **04 is the current plan** (created 2026-09-02): a per-molecule IR pipeline — geometry, best
 affordable Hessian, machine-learned anharmonic correction on self-generated DLPNO-CCSD(T) points —
-whose success criterion is **relative and measured**: beat the best prediction currently available
-anywhere for that molecule, judged per band against laboratory data.
+whose success criterion is **relative, measured and gated**: agree with known truth on small PAHs,
+beat the best available prediction per band where the laboratory data can decide it, and earn
+trust for the sizes where nothing can check anyone.
 
 | | Plan | Status |
 |---|---|---|
 | **03** | Presence-Update-Rule | Superseded by 04 (2026-09-02); **removed from the tree the same day**, git history keeps it. Draft; never complete as a plan; never executed. |
-| **04** | [CC-Anchored-IR-Pipeline](plans/04_cc-anchored-ir-pipeline/) | **Current.** Draft as of 2026-09-02. Module 08: any individual aromatic → IR spectrum vs frozen lines. Ends at 09. No Projects 10–12. |
+| **04** | [CC-Anchored-IR-Pipeline](plans/04_cc-anchored-ir-pipeline/) | **Current.** Draft as of 2026-09-02. Module 08: any individual aromatic → IR spectrum vs frozen lines, under pre-registered gates. Ends at 09. No Projects 10–12. |
 
 Start at [`plans/README.md`](plans/README.md) for why the earlier plans were dropped and what 04 is
 allowed to inherit.

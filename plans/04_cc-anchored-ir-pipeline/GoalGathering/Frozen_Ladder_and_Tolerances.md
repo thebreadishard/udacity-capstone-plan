@@ -103,7 +103,9 @@ R0 comparison table is the same act as re-windowing and is treated as such.
    polyad cap; or MD-ACF with CH-stretch labelled classical; or CH-stretch unscored at that
    rung — chosen **before** any anharmonic surface for that rung is fitted.
 8. **N_min per rung**: the minimum point count for a usable surface at that rung (with its
-   justification), so the B2/B3 kill rule (Compute_Budget §3) is arithmetic, not judgement.
+   justification), so the B2/B3 **classification rule** (Compute_Budget 2026-09-03 §3) is
+   arithmetic, not judgement — it classifies the factory as B2 or B3 work and forces a dated
+   decision; it does not kill a rung by itself.
 
 ## 5. Stop conditions and escalation (declared in advance)
 
