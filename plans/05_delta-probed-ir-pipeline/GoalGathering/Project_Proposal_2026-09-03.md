@@ -387,7 +387,8 @@ Listed here because a supervisor's objection to any of them would reopen it.
    thing that changes that.
 6. **The side project becomes a time sink** — the failure mode that ended plan 01. Response:
    its own budget line, a twelve-week checkpoint, a kill criterion frozen in advance, and an
-   alarm that forces a written review if its hours outgrow the three data modules combined.
+   four-weekly alarm that forces a written review if its hours outgrow the pipeline's
+   infrastructure bucket.
 
 ## 12. Fit to the capstone programme
 
