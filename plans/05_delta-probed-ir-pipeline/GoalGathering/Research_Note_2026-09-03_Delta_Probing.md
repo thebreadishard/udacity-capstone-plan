@@ -257,7 +257,7 @@ this section wins and the frozen documents follow it.
   premise and scored on probes designed under it can return a local Δ₂ whose fit passes. Q8
   is therefore computed on the reference Hessian at R0–R1 and on a prior-free direct-block
   probe at R2–R3 (deck-chosen π-system pairs, four-point differences, ≈12 energies per pair),
-  with an anthracene numerical Δ₂ (≈133 energies) as the cheapest dated bonus test of whether
+  with an anthracene direct-coupling probe (count printed; superseded wording, see §9) as the cheapest dated bonus test of whether
   the C–C block is long-ranged. r_c is a measured output, not a pilot-note number.
 - **The local-approximation error grows with acene length** (Altun et al. 2021, item 44:
   DLPNO absolute-energy error ≈ linear in ring count; CPS(6/7) extrapolation as remedy at 2×
@@ -302,7 +302,7 @@ this section wins and the frozen documents follow it.
 - **Round-9 Pass B (2026-09-04):** the mode-E response is the symmetric combination over ± pattern
   pairs (the raw energy difference is dominated by the CC−DFT force term Δ₁·p, which §§1–7 and §8
   never mention); the frozen space transports occupied and virtual vectors by projection (no
-  maximal-overlap assignment — §8's "assignment switches" are a design artefact that no longer
-  exists); only R0 is scored unconditionally (naphthalene's NIST gas spectra are hot vapour); the
+  maximal-overlap assignment — the "assignment switches" of the Round-8 Ladder text were a
+  design artefact that no longer exists); only R0 is scored unconditionally (naphthalene's NIST gas spectra are hot vapour); the
   coronene fragment test is one comparison at one shell, with a "pending (b′)" outcome; Q8(c) is
   read at a common threshold; σ divides by n − p and is pooled per arm.

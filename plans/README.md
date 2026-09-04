@@ -33,7 +33,7 @@ mapping's Pass 6 and on its first probes.
 |---|---|---|
 | **03** | [Presence-Update-Rule](03_presence-update-rule/) | Superseded by 04. Removed from the tree on 2026-09-02, **restored 2026-09-04** as a read-only record. Draft; never complete as a plan; never executed. |
 | **04** | [CC-Anchored-IR-Pipeline](04_cc-anchored-ir-pipeline/) | Superseded by 05 (2026-09-03); kept as a read-only record (decision 2). Draft; Round-6 Pass A and B run and addressed; never executed. |
-| **05** | [Δ-Probed-IR-Pipeline](05_delta-probed-ir-pipeline/) | **Current.** Draft as of 2026-09-03, amended 2026-09-04. Same product and criterion as 04; CC anchor obtained by probing the CC−DFT harmonic force-constant correction (probe count measured per rung). Round 7 (A, B) and Rounds 8 and 9 (A, B) run and addressed. |
+| **05** | [Δ-Probed-IR-Pipeline](05_delta-probed-ir-pipeline/) | **Current.** Draft as of 2026-09-03, amended 2026-09-04. Same product and criterion as 04; CC anchor obtained by probing the CC−DFT harmonic force-constant correction (probe count measured per rung). Round 7 (A, B) and Rounds 8 and 9 (A, B) and Round 10 Pass A run and addressed; Round 10 Pass B owed. |
 
 Historic comparison (the 01, 02 and 03 folders were restored on 2026-09-04: [01](01_voxel-field-pes/), [02](02_coupled-cluster-anharmonic-ir/), [03](03_presence-update-rule/); their documents are read-only records):
 
@@ -128,7 +128,7 @@ their own folders); they are records of dead plans, not of plan 05.
 Plan 03's review record (Round 5 Pass A, addressed; Round 5 Pass B, no green light, not
 addressed) went with its folder. Plan 04's review record is in its own README: Round-6 Pass A
 and Pass B (both 2026-09-02) are in the tree and addressed. Plan 05's review record is in its
-own README: Rounds 7, 8 and 9 (both passes each) run and addressed.
+own README: Rounds 7, 8 and 9 (both passes each) and Round 10 Pass A run and addressed; Round 10 Pass B owed.
 Copying old reviews into a new plan folder would imply the new plan had survived them.
 
 ## Version 05 (created 2026-09-03)
@@ -140,8 +140,8 @@ and changes how the coupled-cluster anchor is obtained — a probed correction t
 constants at a measured probe count K, instead of a learned per-molecule surface. The argument
 of record is
 [`05_delta-probed-ir-pipeline/GoalGathering/Why_05_Supersedes_04.md`](05_delta-probed-ir-pipeline/GoalGathering/Why_05_Supersedes_04.md).
-Nothing in plan 05 is a result; its Round-7, Round-8 and Round-9 reviews have run and been
-addressed.
+Nothing in plan 05 is a result; its Round-7, Round-8 and Round-9 reviews and Round-10 Pass A have run and been
+addressed; Round-10 Pass B is owed.
 
 ## Version 04 (created 2026-09-02; superseded 2026-09-03)
 

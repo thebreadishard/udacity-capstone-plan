@@ -1,7 +1,7 @@
 # Capstone mapping — Plan 05 Δ-Probed IR Pipeline
 
-**Status.** Draft as of 2026-09-03, revised 2026-09-04 after the user's decisions and Round-8
-Pass A, for the promised set as decided (Δ₂ only; mode E guaranteed, mode G built in the side
+**Status.** Draft as of 2026-09-03, revised 2026-09-04 after the user's decisions, Round-8 (A, B),
+Round-9 (A, B) and Round-10 Pass A, for the promised set as decided (Δ₂ only; mode E guaranteed, mode G built in the side
 project; R6 fragment-probed under the fragment licence). Passes 1–5 written; Pass 6
 (module-by-module sign-off) not done; decision 7 closed 2026-09-04, so nothing blocks it. Not complete as a
 plan.
@@ -275,7 +275,7 @@ rung's size class; no size sentence without Q8(c) output in both required ratios
 adjective anywhere** (a regex over the report draft is part of the tool); no learned prior in
 an R0–R3 scored spectrum, and none on R4–R6 without the licence earned at both R2 and R3; no
 reach rung before R3 is scored; no R6 job other than fragment-probed, and none before the
-fragment licence's four parts (a), (b), (b′), (c) have printed; no local-CC probe before probe M1 has passed; no
+fragment licence's four parts (a), (b), (b′), (c) have passed ((b) passed or resolved by (b′)); no local-CC probe before probe M1 has passed; no
 displaced-geometry local-CC gradient before the pilot note.
 Observed failure cases for the report: a poisoned deck hash → refusal; a draft sentence
 containing "size-independent" → refusal with the Ladder §1 citation.
@@ -293,8 +293,8 @@ promised path; **M05** appears as the P3 experiment on R0–R3 and, if its licen
 load-bearing prior of the R4–R6 certificates; **M06** as the pattern-efficiency experiment;
 both labelled exactly so. Artifact: a small
 CLI / service — molecule identifier in → spectrum + per-band error budget + **cost record** +
-certificate out, **or a refusal naming the rung/cap/gate that blocked it**. Runs: R0–R1
-accuracy comparisons under the pilot note (gas-phase, unconditional); R2–R3 per family under
+certificate out, **or a refusal naming the rung/cap/gate that blocked it**. Runs: R0
+unconditionally under the pilot note; R1–R3 per family under
 the decidability rule and the per-mode Q6 noise gate; the fragment-probed R6 under its
 four-part licence, or its measured refusal;
 tier-1 emission post-processing via the published cascade model, labelled inherited. Paper:
@@ -336,12 +336,12 @@ required in advance. New for plan 05, all routed to the Goal's open-decision lis
 
 1. ~~M05 target and corpus~~ — decided by the user 2026-09-04: adopted as specified in §3
    M05 (aromatic-heavy subset; licence as success criterion; reading 1 with fallback).
-4. ~~Open decision 7~~ — closed 2026-09-04: nothing submitted; the draft QM9 Foundations
+2. ~~Open decision 7~~ — closed 2026-09-04: nothing submitted; the draft QM9 Foundations
    repository will be renamed or archived; M02 stands as planned. The M02 report's provenance
    paragraph mentions the renamed draft so no grader mistakes it for a submission.
-2. ~~Fragment probing~~ — decided by the user 2026-09-04: a permitted method, licensed by Q8
+3. ~~Fragment probing~~ — decided by the user 2026-09-04: a permitted method, licensed by Q8
    at R2–R3; M08 ships the fragment-probed R6 spectrum or its measured refusal.
-3. ~~The R2 A-scored set~~ — decided by the user 2026-09-04 (re-read stands); M03's R2 band
+4. ~~The R2 A-scored set~~ — decided by the user 2026-09-04 (re-read stands); M03's R2 band
    list covers pyrene, chrysene, triphenylene (gas) and tetracene (matrix).
 
 ## 6. Ordering and hours (structure)

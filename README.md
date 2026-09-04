@@ -31,7 +31,7 @@
 > infrared spectrum out — scored against frozen state-of-the-art lines
 > ([Frozen_Lines_to_Beat.md](plans/04_cc-anchored-ir-pipeline/GoalGathering/Frozen_Lines_to_Beat.md)),
 > with pre-registered gates: "beat" claims are unconditional only on the gas-phase rungs
-> (benzene, naphthalene); larger accuracy rungs are decided — or pre-declared inconclusive —
+> (benzene, naphthalene — plan 05: benzene only, naphthalene per family); larger accuracy rungs are decided — or pre-declared inconclusive —
 > by a measured matrix–gas gate, and the C₃₈₄H₄₈-class reach demonstration is conditional on
 > cluster access and carries no accuracy claim.
 > The sequence ends at Module 09. There are **no** Projects 10–12. Demonstrably-better IR of
@@ -61,7 +61,7 @@ constants, at a probe count measured per rung.
 | **01** | [Voxel-Field-PES](plans/01_voxel-field-pes/) | Superseded 2026-08-23; restored to the tree 2026-09-04 as a read-only record. |
 | **02** | [Coupled-Cluster-Anharmonic-IR](plans/02_coupled-cluster-anharmonic-ir/) | Superseded 2026-08-29; restored 2026-09-04 as a read-only record. |
 | **04** | [CC-Anchored-IR-Pipeline](plans/04_cc-anchored-ir-pipeline/) | Superseded by 05 on 2026-09-03; kept as a read-only record. Draft; Round-6 reviews run and addressed; never executed. |
-| **05** | [Δ-Probed-IR-Pipeline](plans/05_delta-probed-ir-pipeline/) | **Current.** Draft as of 2026-09-03, amended 2026-09-04. Same product and criterion as 04; CC anchor by probing the CC−DFT harmonic force-constant correction. Round 7 (A, B) run and addressed; Rounds 8 and 9 (A, B) run and addressed. |
+| **05** | [Δ-Probed-IR-Pipeline](plans/05_delta-probed-ir-pipeline/) | **Current.** Draft as of 2026-09-03, amended 2026-09-04. Same product and criterion as 04; CC anchor by probing the CC−DFT harmonic force-constant correction. Round 7 (A, B) run and addressed; Rounds 8 and 9 (A, B) and Round 10 Pass A run and addressed; Round 10 Pass B owed. |
 
 Start at [`plans/README.md`](plans/README.md) for why the earlier plans were dropped and what 05
 inherits.
@@ -76,8 +76,8 @@ a measured number K of local-CC evaluations
 producing band positions with a stated, measured error budget (intensities reported). The success criterion is **relative and gated**: beat the best prediction currently
 available anywhere for that molecule (PAHdb v4.00 scaled-harmonic DFT; Mai 2025 MLMD; the
 small-molecule anharmonic front), judged per band against laboratory data **where that data
-can decide it** — gas-phase rungs unconditionally, larger rungs via the measured matrix–gas
-gate, never on reach rungs. Opponents are named and versioned in
+can decide it** — benzene unconditionally, naphthalene and the larger accuracy rungs per family
+by the measured band-centre uncertainty and the matrix–gas gate, never on reach rungs. Opponents are named and versioned in
 [Frozen_Lines_to_Beat.md](plans/05_delta-probed-ir-pipeline/GoalGathering/Frozen_Lines_to_Beat.md)
 (carried unchanged from plan 04).
 

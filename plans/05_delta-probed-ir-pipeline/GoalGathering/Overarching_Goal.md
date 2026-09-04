@@ -2,7 +2,7 @@
 
 **Status.** Prime directive as of 2026-09-03; revised the same day after Round-7 Pass A and
 Pass B; amended on 2026-09-04 by seven user decisions and two user directives, and revised again
-the same day after Round-8 Pass A and Pass B and after Round-9 Pass A and Pass B. Supersedes plan 04's Goal file; plan 04's folder stays in
+the same day after Round-8 Pass A and Pass B and after Round-9 Pass A and Pass B and Round-10 Pass A. Supersedes plan 04's Goal file; plan 04's folder stays in
 the tree as a read-only record (decision 2). Draft; not complete as a plan. Every other plan-05
 document must agree with this file; if they drift, this file wins and the other file is patched.
 
@@ -20,7 +20,10 @@ document must agree with this file; if they drift, this file wins and the other 
   dimensionless normal-coordinate units; **response** = in mode E the symmetric combination
   R_s(p) = ½[ΔE(+p) + ΔE(−p)] − ΔE(0) of the CC−DFT energy difference over the pattern pair ±p
   (Ladder §3; the first-order term Δ₁·p cancels), in mode G the CC−DFT gradient difference at a
-  pattern; every pattern enters the deck as ±p.
+  pattern; every pattern enters the deck as the pair ±p, which carries **one deck index** and is
+  the hold-out unit; **R_a** = ½[ΔE(+p) − ΔE(−p)], the antisymmetric by-product (Δ₁·p + O(p³));
+  **Δ₁** = the CC−DFT gradient at the DFT equilibrium geometry (not zero; a by-product, never a
+  geometry correction).
 - **ρ** = the held-out residual (Distilled §3); **ρ\*** = the stopping threshold c·ρ_noise, computed per rung and mode (only c is frozen); **f_h** = the
   held-out fraction; **K** = the measured count of energies (mode E; a ± pair counts 2) or gradients (mode G) at
   which ρ ≤ ρ\*; in mode E,
@@ -36,8 +39,10 @@ document must agree with this file; if they drift, this file wins and the other 
   (long-range share), **η₈** (coupling disagreement, absolute form: a fraction of the pair's
   distance-class coupling scale **S**), **γ** (saturation factor), **h** (Cartesian probe step) = the Q8
   numbers (pilot-note item 12); **σ_E**, **σ_g** = the Q6 per-point noise scatters in mode E /
-  mode G (RMS residuals about a low-order polynomial fit; Ladder §3); **ρ_noise** = σ/RMS of
-  the rung's held-out responses; **c** = the stopping constant (ρ\* = c·ρ_noise; item 8);
+  mode G (√(SSR/(n − p)) about a low-order polynomial fit, **pooled per freezing arm** over the four
+  Q6 modes — the pooled value gates, the per-mode values are printed; Ladder §3); **ρ_noise** = σ_resp/RMS of
+  the rung's held-out responses, σ_resp = σ(R_s) = σ_E/√2 in mode E and σ_g in mode G;
+  **ρ\*_common** = max(ρ\*(R_n), ρ\*(R_{n+1})), the threshold Q8(c) reads both rungs' K at; **c** = the stopping constant (ρ\* = c·ρ_noise; item 8);
   **u_band** = the measured band-centre uncertainty of a laboratory band (resolution, centroid
   precision, temperature term); **the fragment licence** = parts (a), (b), (b′), (c) of Ladder
   §3.
@@ -51,7 +56,14 @@ document must agree with this file; if they drift, this file wins and the other 
   (stored occupied and virtual vectors transported by projection onto the displaced geometry's
   occupied and virtual spaces and Löwdin-orthonormalised; no localiser and no assignment at a
   displaced geometry); **σ_g^assumed** = 2.8·τ·q_s, the value mode G's c and K_cap are read
-  at in the pilot note (item 8).
+  at in the pilot note (item 8); **continuity diagnostics** = M1's per-point printout of the
+  smallest singular value of the occupied overlap S_oo(x) = C_occ(0)ᵀ S(x) C_occ(x) and the
+  largest pre-Löwdin off-diagonal, for both transported halves; **shell** = the fragment-radius
+  unit, a complete ring shell around the pair or region served; **pending (b′)** = the fragment
+  licence's state when (b) failed at one shell at coronene and only (b′) can test two shells;
+  **u_T** = u_band's temperature term, with **T_source** the source's stated temperature,
+  **χ_max** = 0.03 cm⁻¹ K⁻¹ (recalled) its unpinned slope and **χ_F** a pinned per-family slope
+  (items 52–53).
 - **AD / FD** = automatic differentiation / finite differences; **GC-IRD** = gas-chromatography
   infrared detection, the vapour-phase instrument behind the NIST/EPA library; **IRMPD** =
   infrared multiple-photon dissociation; **SRD 35** = NIST Standard Reference Database 35, the
@@ -74,7 +86,8 @@ document must agree with this file; if they drift, this file wins and the other 
 Build **one pipeline**: any individual aromatic molecule in, an infrared spectrum out —
 and make that spectrum's **band positions demonstrably more accurate than the best prediction
 currently available anywhere for that molecule**, wherever the laboratory data can decide it:
-unconditional on R0 (room-temperature gas cell spectra exist); on R1–R3 per family, gas-scored families
+unconditional on R0 (cell spectra exist; their measurement temperature is read from the
+source's documentation before the note); on R1–R3 per family, gas-scored families
 decidable only where the scoreboard's **measured band-centre uncertainty** u_band is smaller
 than the beat margin (the R1 and R2 C–C families are expected inconclusive by construction on the
 NIST hot-vapour sources unless a hot-band correction is pinned before the pilot note, and the
