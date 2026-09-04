@@ -243,8 +243,9 @@ fragment-probing decision is recorded in it.
 - No whole-molecule "gold rung" language above R1; anchors are "local-CC, R1-checked".
 - No motif-transfer claim: every molecule gets its own probed Δ₂ — or, at R4–R6, a
   fragment-probed Δ₂ whose locality was measured on direct blocks at R2–R3 and is labelled as
-  such (user directive 2026-09-04: a method decided by measurement, not a transfer of spectra). **[05]** The learned prior is not a transfer claim: it is scored by what it saves on
-  bonus material, and the probes remain the answer.
+  such (user directive 2026-09-04: a method decided by measurement, not a transfer of spectra). **[05]** The learned prior is not a transfer claim: it is scored by
+  what it saves (P3), licensed per rung against prior-free checks, and the probes remain the
+  answer.
 - No CC correction to anharmonic constants as a promise; no "coupled-cluster anharmonic"
   language.
 - No editing this ladder after a rung it governs has been scored, except by dated deviation
