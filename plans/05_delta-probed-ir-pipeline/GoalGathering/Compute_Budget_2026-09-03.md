@@ -59,7 +59,7 @@ budget fact until printed. Literature figures are motivation only:
 
 The plan-02 old-laptop facts remain provenance only (CCSD(T)/6-31G* benzene 19.6 s; canonical
 (T) fails at ~114 bf with 28 GB; B3LYP/6-31G* Hessians: benzene 3.3 min, naphthalene 12.7 min,
-coronene frequency job 176 min). Every one is re-timed on the new machine before use.
+coronene frequency job 176 min). Every one is re-timed on the B2 laptop named in §1 before use (the plan-02 numbers come from an older machine).
 
 ## 4. Order of timed probes (each prints machine, date, settings, wall-clock; gradient probes also peak memory)
 
@@ -86,7 +86,7 @@ After the pilot note:
 6. **R0 probe batch and Q7 references** (B2): the first real `wall_clock_per_probe`, K(R0),
    the cost record; the numerical local-CC and canonical Hessians; Q7 printed for
    diagonal-only and full recovery; the diagonal-cubic bonus probe.
-7. **R1**: canonical feasibility on the new machine (the Q6/Q7 canonical arm at R1 exists only
+7. **R1**: canonical feasibility on the B2 laptop (the Q6/Q7 canonical arm at R1 exists only
    if it runs); R1 probe batch; Q7 twice; Q8(a/b) on the reference Hessian; Q6 threshold
    column.
 8. **Anthracene locality probe** (dated bonus, B2 or B3 by the rule; ≈ 2×66+1 = 133 frozen-
