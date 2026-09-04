@@ -8,7 +8,9 @@ intended accuracy?* It is a **source**, like `AI_Chats/grok_chat_4.md` was for p
 plan, not a result. Every identifier below carries a verify status; nothing here is a measured
 number of this project. **§§1–7 are left as written on the morning of 2026-09-03; §8 records
 what the same day's two reviews corrected; §9 records what the 2026-09-04 decisions changed.**
-Where they disagree, §9 wins over §8 and §8 over §§1–7.
+Where they disagree, §9 wins over §8 and §8 over §§1–7. **From 2026-09-04 the frozen
+documents (Goal, Ladder, Distilled) win over every section of this note**; §9's closing bullets
+list what Round-8 Pass B and Round-9 Pass A changed after §9 was first written.
 
 The trigger: the user reported that a separate assistant session estimated that one large PAH
 would still take "many, many hours" of supercomputer time through the plan-04 pipeline. That
@@ -275,9 +277,9 @@ this section wins and the frozen documents follow it.
 - **Mode E is the guaranteed route and mode G the aimed-for route** that a pre-registered side
   project builds (Side_Project_2026-09-04); §8's "mode G is a bonus" is superseded. The
   frozen-space energy code that mode E needs is main-project probe M1 under Ladder stop 1.
-- **Fragment probing is a permitted method** (decision 1), used at R6 under a three-part
-  measured licence (Q8 at R2–R3; coronene probed in fragments vs whole at R3; direct blocks on
-  the R6 fragments); §5's "scope decision the user has not made" and §8's "open decision 1"
+- **Fragment probing is a permitted method** (decision 1), used at R6 under the four-part
+  measured licence of Ladder §3 (Q8 at R2–R3; coronene fragments vs whole at R3; the same on a
+  larger molecule conditional on B3; a fragment-radius convergence test on the rung's interior); §5's "scope decision the user has not made" and §8's "open decision 1"
   are closed. Whole-molecule R6 is not promised.
 - **Module 05 is adopted** (decision 4): the Δ₂-support Transformer on an aromatic-heavy
   Hessian-QM9 corpus; §8's "the user may veto a DFT–DFT target" is closed. The learned prior
@@ -288,3 +290,12 @@ this section wins and the frozen documents follow it.
   serves the goal or rests on a measurement.
 - The "O(1)" language of §2 is a description of the literature it cites; plan 05 itself writes
   no cost adjective (Goal, forbidden quotes).
+- **Changed after this section was first written (Round-8 Pass B and Round-9 Pass A,
+  2026-09-04; the frozen documents hold the wording):** the R1 smoothness probe has four modes
+  (one totally symmetric added) and 72 energies, not three modes and ~30; the direct-coupling
+  probe is four energies per (pair, family) at step h, not ≈12 per pair; the fragment licence has
+  four parts; K stops by the noise-aware rule ρ ≤ c·ρ_noise with two guards (ρ_max = 0.5; a
+  minimum count), not at a transferred target; η₈ is absolute per distance class; σ_E is the RMS
+  residual about a degree-4 fit and the mode-G line σ_g ≤ 2.8·τ·q_s follows from the same 2τ
+  convention as the 0.82 line (2√2 ≈ 2.8); the anchor basis is cc-pVTZ at R0–R1 with a
+  one-point canonical feasibility probe; decidability is by u_band.

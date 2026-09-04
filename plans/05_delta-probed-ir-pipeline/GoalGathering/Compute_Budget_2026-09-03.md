@@ -2,9 +2,12 @@
 
 **Status.** First plan-05 budget, written 2026-09-03 and revised the same day after Round-7
 Pass A (issues 1, 2, 19d, 20) and Pass B (issues 1, 5, 6, 8, 10). Inherits plan 04's
-2026-09-03 budget (human hours uncapped; own-machine checkpoints; external preconditions) under
-that file's own supersede-only rule — a later change needs a new dated file, never an edit in
-place. Caps and checkpoints are **not estimates**; measured slots read NOT_RUN until a probe
+2026-09-03 budget (human hours uncapped; own-machine checkpoints; external preconditions).
+Plan 04's supersede-only rule is **not** inherited (inheritance is not authority): this file is
+edited in place with dated markers, and every revision is listed here — Round-8 Pass A/B
+(2026-09-04: B2 laptop named; canonical feasibility probe; noise-injection column) and Round-9
+Pass A (2026-09-04: the feasibility probe's decision rule; the pre-note list aligned with
+probes/README; K_cap(G) wording). Caps and checkpoints are **not estimates**; measured slots read NOT_RUN until a probe
 prints them. Notation (K, K_off, K_cap, ρ\*, mode E/G) is defined in the Goal and Ladder.
 
 ---
@@ -50,12 +53,12 @@ budget fact until printed. Literature figures are motivation only:
 |---|---|---|
 | Energy-only diagonal Δ₂ in the DFT mode basis | arithmetic: 2M energies (M modes; naphthalene 48, pyrene 72, coronene 102, C₃₈₄H₄₈ 1,290) — the CMA-0 count (bib 42–43) | the mode-E floor — fixed by M |
 | Off-diagonal count | Sanders et al.: ~30 % of columns on anthracene in a cheap-method eigenbasis, ~log growth to 15 rings, DFT level (bib 24, fetched); CMA-2: ~33 selected off-diagonals on small molecules (bib 43, fetched) | **K_off** per rung — NOT_RUN; the quantity Q8(c) tests |
-| Gradients for a full Hessian, DFT level | O1NumHess: a gradient count that levels off around 100–124 for hundreds of atoms; worst covalent case a conjugated polyene, MAD 6–12 cm⁻¹ (bib 23, fetched) | K(G) per rung — NOT_RUN; mode G is the aimed-for route, built in the side project; K_cap(G) is frozen from the gradient-mode dry run for every rung |
+| Gradients for a full Hessian, DFT level | O1NumHess: a gradient count that levels off around 100–124 for hundreds of atoms; worst covalent case a conjugated polyene, MAD 6–12 cm⁻¹ (bib 23, fetched) | K(G) per rung — NOT_RUN; mode G is the aimed-for route, built in the side project; K_cap(G), n_min(G) and c(G) are frozen from the noise-injected gradient-mode dry run for every rung |
 | Local-CC single point, coronene, TZ | grok_chat_4 assertion: tens of minutes to hours per node | wall_clock_per_probe(R3) — NOT_RUN |
 | Local-approximation error growth | Altun et al.: DLPNO error on acenes grows ≈ linearly with ring count; CPS(6/7) reduces it at 2× cost (bib 44, fetched) | Q6 threshold line; c_CPS — NOT_RUN |
 | DFT Hessian on GPU | GPU4PySCF: 30× over a 32-core node (abstract, bib 25); an 84-atom def2-TZVPP Hessian in ~30 min on one A100 (snippet only) | **B3 (rented) at every rung — the B2 laptop has no CUDA GPU**; the CPU Hessian timing per rung through R3 is the B2 slot — NOT_RUN. **R6 (C₃₈₄H₄₈: 3,552 basis functions at 4-31G, ~1,300 perturbations) is B3** unless a timed probe at the R4 species shows otherwise |
 | Canonical CCSD(T) on GPU | TeraChem: 63 atoms / >1,000 bf, (T) in ~8 h on one node (bib 26, fetched) | Q6 licence-reference timing at pyrene — NOT_RUN, B3 |
-| Local-CC(T) gradient | PySCFAD's differentiable LNO-CCSD(T) exists in released code (`pyscfad/lno/`, bib 49, fetched 2026-09-04) and is reported to 29 atoms (bib 33); its behaviour with frozen spaces and its memory at PAH sizes are unmeasured | the gradient run/no-run before the note; side-project M2–M5 with peak memory — NOT_RUN |
+| Local-CC(T) gradient | PySCFAD's released code has an LNO-CC module with a `ccsd_t.py` (`pyscfad/lno/`, bib 49, directory listing fetched 2026-09-04; whether (T) is differentiated end-to-end is side-project item (a)) and is reported to 29 atoms (bib 33); its behaviour with frozen spaces and its memory at PAH sizes are unmeasured | the gradient run/no-run before the note; side-project M2–M5 with peak memory — NOT_RUN |
 
 The plan-02 old-laptop facts remain provenance only (CCSD(T)/6-31G* benzene 19.6 s; canonical
 (T) fails at ~114 bf with 28 GB; B3LYP/6-31G* Hessians: benzene 3.3 min, naphthalene 12.7 min,
@@ -76,9 +79,15 @@ Before the pilot note (DFT-only and timings; no local-CC Δ₂ may exist yet):
    B2 laptop's per-molecule DFT Hessian timing** (which fixes the M05 subset size by dated
    note). Feeds pilot-note items 8, 9 (both modes), 13.
 1b. **Canonical feasibility probe** (B2): one canonical CCSD(T) energy of benzene in the anchor
-   basis (cc-pVTZ) on the B2 laptop; wall-clock and peak memory printed and extrapolated to the
-   R0 Hessian count (≈ 61 energies or ≈ 72 gradients). Decides whether Q6's bias line exists at
-   R0 in the anchor basis, in cc-pVDZ with both arms re-run, or as the first B3 request (Ladder
+   basis (cc-pVTZ) on the B2 laptop; wall-clock and peak memory printed and extrapolated, by
+   factors frozen in the Q0 deck before the probe runs, to **two counts**: the Q6 bias line
+   (61 energies — the diagonal along benzene's 30 modes) and the full canonical reference
+   Hessian for Q7(i)/(iv) (72 canonical CCSD(T) gradients if the chosen code has them — printed
+   — else 1,801 energies by central differences). **"Fits"** = extrapolated wall-clock ≤ the
+   168 h checkpoint **and** peak memory ≤ 31.3 GB, per object. Decides, per object, whether it
+   runs at R0 in the anchor basis, in cc-pVDZ with both arms re-run (bias line only), or as the
+   first B3 request; if only the bias line fits, Q7(i) at R0 compares to the local-CC reference
+   only and Q7(iv) reads the reference Hessian from the local-CC arm, sentence printed (Ladder
    §3, anchor basis).
 2. **Probe M1 — frozen spaces** (B2, main project): the candidate local-CC code stores its
    spaces at the reference geometry and, at displaced geometries, maps occupied orbitals by
@@ -86,18 +95,23 @@ Before the pilot note (DFT-only and timings; no local-CC Δ₂ may exist yet):
    reproduces the reference energy to 10⁻⁹ E_h; along one totally symmetric, one degenerate and
    one non-symmetric benzene mode prints the assignment permutation and E(displaced, frozen) −
    E(displaced, fresh) per point, without a verdict. Fails → Ladder stop 1.
+2a. **Lab-scoreboard re-read and u_band** (no compute; probes/README 2a): the plan-02 band
+   table and the plan-04 NIST coverage scan regenerated under this plan's hash; per gas-phase
+   band the stated resolution, centroid precision, temperature term and their quadrature sum
+   u_band; the decidability verdict per family. Feeds pilot-note item 1.
 3. **Gradient availability, run/no-run at equilibrium** (B2): for each candidate code (ORCA
    DLPNO, Psi4 DLPNO, MRCC LNO, PySCFAD LNO-CC), does an analytic gradient at the anchor level
    run **at the equilibrium geometry** of benzene and naphthalene, with frozen spaces? Prints
    run/no-run, version, wall-clock, peak memory. No displaced-geometry gradient is computed
    before the pilot note. The side project's M2–M5 later supply the answers at R0–R3.
-4. **Single-point timing** (B2): one local-CC energy at benzene with frozen spaces — a timing
-   only.
-5. **R1 smoothness probe** (B2, ~40 local-CC energies of naphthalene): four modes (C–C
+4. **R0 pilot** (B2): geometry → DFT Hessian → harmonic bands, timed; one local-CC energy at
+   benzene with frozen spaces — a timing only. **No local-CC Δ₂ and no pipeline-vs-lab number.**
+5. **R1 smoothness probe** (B2, 72 local-CC energies of naphthalene = 4 modes × 9 points ×
+   2 arms): four modes (C–C
    stretch, C–H stretch, CH-oop, one totally symmetric), nine points each at q ∈ [−1, 1],
    TightPNO, with and without frozen spaces; the script prints **σ_E as the RMS residual about a
-   degree-4 polynomial fit** per mode and arm (and σ_g about a degree-3 fit where a gradient
-   runs) against the Q6 lines at each grid step, and writes the **fit coefficients** (which
+   degree-4 polynomial fit** per mode and arm against the Q6 lines at each grid step (no σ_g
+   exists before the note; mode G's constants are read at σ_g^assumed, Ladder §4 item 8), and writes the **fit coefficients** (which
    contain the diagonal Δ₂ elements) to a hashed, sealed file opened only after the pilot note.
    Fixes the pattern amplitude.
 6. **Pilot note committed** (the 2026-09-04 decisions recorded by reference).
@@ -139,4 +153,4 @@ After the pilot note:
 - A timing quoted anywhere but a `probes/` script output is invalid.
 - Time on a quiet machine or twice (plan-02 lesson: load produced a spurious 2× effect).
 - Queue generously; order jobs by what they *decide*; spend human hours on judgement.
-- Supersede this file only with a new dated compute-budget doc.
+- Edit this file in place with a dated marker; the status line lists every revision.

@@ -23,7 +23,7 @@ immediately before the deletion — `git show 800f3aa:<path>` retrieves one.
 
 None of plans 01–05 has been executed as a plan. Nothing in plans 03, 04 or 05 is a result.
 **Do not call plan 04 or plan 05 complete as a plan.** Plan 05's completeness waits on its
-Round-8 Pass B and on the mapping's Pass 6.
+Round-9 Pass B and on the mapping's Pass 6.
 
 **Plan 04 was the current plan from 2026-09-02 to 2026-09-03** (it replaced plan 03, which was
 **removed from the tree on 2026-09-02**; git history keeps it). **Plan 05 is current** as of
@@ -33,7 +33,7 @@ Round-8 Pass B and on the mapping's Pass 6.
 |---|---|---|
 | **03** | [Presence-Update-Rule](03_presence-update-rule/) | Superseded by 04. Removed from the tree on 2026-09-02, **restored 2026-09-04** as a read-only record. Draft; never complete as a plan; never executed. |
 | **04** | [CC-Anchored-IR-Pipeline](04_cc-anchored-ir-pipeline/) | Superseded by 05 (2026-09-03); kept as a read-only record (decision 2). Draft; Round-6 Pass A and B run and addressed; never executed. |
-| **05** | [Δ-Probed-IR-Pipeline](05_delta-probed-ir-pipeline/) | **Current.** Draft as of 2026-09-03, amended 2026-09-04. Same product and criterion as 04; CC anchor obtained by probing the CC−DFT harmonic force-constant correction (probe count measured per rung). Round 7 (A, B) and Round 8 Pass A run and addressed; Round 8 Pass B owed. |
+| **05** | [Δ-Probed-IR-Pipeline](05_delta-probed-ir-pipeline/) | **Current.** Draft as of 2026-09-03, amended 2026-09-04. Same product and criterion as 04; CC anchor obtained by probing the CC−DFT harmonic force-constant correction (probe count measured per rung). Round 7 (A, B) and Round 8 (A, B) and Round 9 Pass A run and addressed; Round 9 Pass B owed. |
 
 Historic comparison (the 01, 02 and 03 folders were restored on 2026-09-04: [01](01_voxel-field-pes/), [02](02_coupled-cluster-anharmonic-ir/), [03](03_presence-update-rule/); their documents are read-only records):
 
@@ -110,7 +110,7 @@ plans/04_cc-anchored-ir-pipeline/     superseded 2026-09-03
   probes/            the NIST gas-coverage probe and its raw cache
 
 plans/05_delta-probed-ir-pipeline/    current — draft, created 2026-09-03
-  README.md          orientation and reading order; Round-7 and Round-8 review record
+  README.md          orientation and reading order; Round-7, Round-8 and Round-9 review record
   GoalGathering/     goal, why-05-supersedes-04, research note (source), frozen lines (carried),
                      ladder + tolerances, compute budget, distilled plan + gates, bibliography
   probes/            conventions declared; probes owed, none run
@@ -128,7 +128,7 @@ their own folders); they are records of dead plans, not of plan 05.
 Plan 03's review record (Round 5 Pass A, addressed; Round 5 Pass B, no green light, not
 addressed) went with its folder. Plan 04's review record is in its own README: Round-6 Pass A
 and Pass B (both 2026-09-02) are in the tree and addressed. Plan 05's review record is in its
-own README: Round 7 (both passes) and Round 8 Pass A run and addressed, Round 8 Pass B owed.
+own README: Rounds 7 and 8 (both passes) and Round 9 Pass A run and addressed, Round 9 Pass B owed.
 Copying old reviews into a new plan folder would imply the new plan had survived them.
 
 ## Version 05 (created 2026-09-03)
@@ -140,8 +140,8 @@ and changes how the coupled-cluster anchor is obtained — a probed correction t
 constants at a measured probe count K, instead of a learned per-molecule surface. The argument
 of record is
 [`05_delta-probed-ir-pipeline/GoalGathering/Why_05_Supersedes_04.md`](05_delta-probed-ir-pipeline/GoalGathering/Why_05_Supersedes_04.md).
-Nothing in plan 05 is a result; its Round-7 reviews and Round-8 Pass A have run and been
-addressed; Round-8 Pass B is owed.
+Nothing in plan 05 is a result; its Round-7 and Round-8 reviews and Round-9 Pass A have run and been
+addressed; Round-9 Pass B is owed.
 
 ## Version 04 (created 2026-09-02; superseded 2026-09-03)
 

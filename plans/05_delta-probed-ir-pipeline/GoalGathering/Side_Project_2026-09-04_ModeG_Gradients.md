@@ -95,10 +95,10 @@ before the note. M2–M5 run **after** the pilot note.
 | # | Milestone | Pass condition (printed by a `probes/` script) | Machine |
 |---|---|---|---|
 | M1 (main project) | Frozen spaces exist and behave | (i) E(reference geometry, reloaded spaces) − E(reference geometry, fresh spaces) = 0 to 10⁻⁹ E_h (a round-trip sanity check); (ii) along one **totally symmetric**, one **degenerate** and one non-symmetric benzene mode, nine points on q ∈ [−1, 1]: the assignment permutation per point and E(displaced, frozen) − E(displaced, fresh) in µE_h — the freezing bias and any switch, **printed without a verdict** (the τ it would be judged against does not exist yet) | B2 laptop |
-| M2 | Engine pinned; gradient correct, smooth, and its projection term measured, at benzene | (a) printed; AD gradient (projection inside the graph) vs central finite differences of the **re-projected** frozen-space energy, cc-pVTZ: max component deviation ≤ 10⁻⁵ E_h/bohr; the Q6 **mode-G noise line** (σ_g ≤ 2.8·τ·q_s, Ladder §3 estimator) under the line at the deck's q_s along the Q6 modes; and a **third printed number**: AD(projection inside) − AD(projection under `stop_gradient`) at one displaced geometry per Q6 mode — the size of §1.2's hole | B2 laptop |
-| M3 | Gradient correct, smooth and affordable at naphthalene | the same three printouts at naphthalene/cc-pVTZ; wall-clock per gradient and peak memory printed; peak memory ≤ 28 GB | B2 laptop |
-| M4 | Pyrene fits somewhere | one gradient at pyrene/cc-pVTZ with frozen spaces, correctness (FD along the Q6 modes, six energies) and σ_g, peak memory and wall-clock printed, on the laptop or on a B3 machine under the budget's preconditions | B2 or B3 |
-| M5 | Coronene: both checks | one gradient at coronene in the R3 deck basis with frozen spaces: run/no-run, wall-clock, peak memory, **and** AD-vs-FD along the three Q6 modes (six frozen-space energies) and σ_g at the R3 size class — the two checks the licensing rule requires | B3 by expectation |
+| M2 | Engine pinned; gradient correct, smooth, and its projection term measured, at benzene | (a) printed; AD gradient (projection inside the graph) vs central finite differences of the **re-projected** frozen-space energy, cc-pVTZ: max component deviation ≤ 10⁻⁵ E_h/bohr; the Q6 **mode-G noise line** (σ_g ≤ 2.8·τ·q_s, Ladder §3 estimator) under the line at the deck's q_s along the Q6 modes, and printed against the σ_g^assumed = 2.8·τ·q_s at which the note's c(G) and K_cap(G) were read (Ladder §4 item 8); and a **third printed number**: AD(projection inside) − AD(projection under `stop_gradient`) at one displaced geometry per Q6 mode — the size of §1.2's hole | B2 laptop |
+| M3 | Gradient correct, smooth and affordable at naphthalene | the same three printouts at naphthalene/cc-pVTZ; wall-clock per gradient and peak memory printed; peak memory ≤ 28 GB (the B2 laptop's 31.3 GB usable minus ≈ 3 GB for the operating system and the process outside the tensor store) | B2 laptop |
+| M4 | Pyrene fits somewhere | one gradient at pyrene in the R2 deck basis with frozen spaces, correctness (FD along the four Q6 modes, eight re-projected energies) and σ_g, peak memory and wall-clock printed, on the laptop or on a B3 machine under the budget's preconditions | B2 or B3 |
+| M5 | Coronene: both checks | one gradient at coronene in the R3 deck basis with frozen spaces: run/no-run, wall-clock, peak memory, **and** AD-vs-FD along the four Q6 modes (eight re-projected frozen-space energies) and σ_g at the R3 size class — the two checks the licensing rule requires | B3 by expectation |
 
 **Kill criterion.** The side project stops, by dated note, if **M3 is not reached within 12
 calendar weeks of the pilot note's commit date**, or if M2's correctness check fails after the
@@ -110,9 +110,10 @@ the plan-01 alarm on the table / stop), never a silent overrun.
 **What success means.** Mode G is *licensed* on a rung when (i) the milestone for that rung's
 molecule passed **both checks** — correctness against re-projected finite differences and the
 mode-G noise line at that size class (M2 → R0, M3 → R1, M4 → R2, M5 → R3) — and (ii) the
-gradient probe printed "run" there. No pilot-note item changes: K_cap(G) and the stopping
+gradient probe printed "run" there. No pilot-note item changes: K_cap(G), n_min(G) and the stopping
 constant for mode G are frozen in the note from the **gradient-mode, noise-injected dry run**
-(Compute_Budget §4.1). On a licensed rung mode G runs in addition to mode E and the rung carries
+(Compute_Budget §4.1), read at σ_g^assumed = 2.8·τ·q_s (Ladder §4 item 8) because no σ_g exists
+before the note; M2 prints the first measured σ_g against that assumption. On a licensed rung mode G runs in addition to mode E and the rung carries
 two cost records. "Beat" language from mode G requires its noise line to have passed (Ladder
 §1).
 
@@ -136,8 +137,9 @@ two cost records. "Beat" language from mode G requires its noise line to have pa
 
 ## 5. What changes in the plan on success (by dated note, not now)
 
-- Goal, "Cost" question: mode G's K on the rungs it licenses stands beside mode E's K_off.
-- Ladder §1: the mode-G size sentence needs M3, M4 and M5 (both checks each) and Q8(c) on K.
+- (Already in the text since Round-8 Pass B, not awaiting success: the Goal's cost question
+  carries mode G's K beside mode E's K_off, and Ladder §1 requires M3, M4 and M5 with both
+  checks for the mode-G size sentence.)
 - Distilled §3, anchor level: the deck pins the PySCFAD/pyscf-forge commits used.
 - Distilled §3, patterns: mode-G patterns (a gradient gives 3N responses per pattern) run
   alongside the mode-E patterns on licensed rungs; K is measured per mode as before.

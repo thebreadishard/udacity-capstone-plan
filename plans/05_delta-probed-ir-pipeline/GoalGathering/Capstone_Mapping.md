@@ -59,7 +59,7 @@ What the end goal requires, independent of any rubric:
 | Need | Where it lands | Changed from plan 04? |
 |---|---|---|
 | A machine-readable **opponent table** (line A's predictions, queryable) | M02 | no |
-| A **lab scoreboard** with measured tolerances (matrix vs gas shifts; **the gas grid per molecule and family** that the decidability rule consumes) | M03 | extended |
+| A **lab scoreboard** with measured tolerances (matrix vs gas shifts; **the measured band-centre uncertainty u_band per band** that the decidability rule consumes) | M03 | extended |
 | The strongest **fair cheap baseline** + a per-band error model of scaled-harmonic DFT (the M04 calibrated harmonic, the opponent column and the reach-rung uncertainty layer) | M04 | no |
 | The **Δ₂ recovery solver** (banded structural prior; classical convex optimisation) — the promised object on R0–R3 | pipeline infrastructure, exercised by the R0 dry run; **not a module's ML artifact** | new |
 | A **frozen-space local-CC code** (probe M1) | pipeline infrastructure, main project, under Ladder stop 1 | new |
@@ -92,7 +92,7 @@ figures, no training. Module 02 allows "or use your own dataset"; this one is NA
 library (DOI 10.3847/1538-4365/ae1c38). It is computed science data, not AI-generated, and it
 is the *opponent* of this project's pipeline, not its training data."
 
-### Module 03 — the scoreboard, the measured tolerance, and the gas grid (carried, extended)
+### Module 03 — the scoreboard, the measured tolerance, and u_band (carried, extended)
 
 **Contribution.** The lab truth the whole plan is scored against, plus two numbers the ladder
 only asserts until this module measures them: the **matrix tolerance** (pilot-note item 4) and
@@ -272,7 +272,7 @@ rung's size class; no size sentence without Q8(c) output in both required ratios
 adjective anywhere** (a regex over the report draft is part of the tool); no learned prior in
 an R0–R3 scored spectrum, and none on R4–R6 without the licence earned at both R2 and R3; no
 reach rung before R3 is scored; no R6 job other than fragment-probed, and none before the
-fragment licence's three parts have printed; no local-CC probe before probe M1 has passed; no
+fragment licence's four parts (a), (b), (b′), (c) have printed; no local-CC probe before probe M1 has passed; no
 displaced-geometry local-CC gradient before the pilot note.
 Observed failure cases for the report: a poisoned deck hash → refusal; a draft sentence
 containing "size-independent" → refusal with the Ladder §1 citation.
@@ -284,7 +284,7 @@ with the course's tools only.
 ### Module 08 — the pipeline, assembled and scored
 
 **Contribution.** The end goal. Integrates (trace in the paper) **M02** (opponent atlas),
-**M03** (scoreboard, matrix tolerance, gas grid), **M04** (calibrated harmonic column and the
+**M03** (scoreboard, matrix tolerance, u_band), **M04** (calibrated harmonic column and the
 reach uncertainty layer) and **M07** (officer running the campaigns) — four, all on the
 promised path; **M05** appears as the P3 experiment on R0–R3 and, if its licence was earned, as the
 load-bearing prior of the R4–R6 certificates; **M06** as the pattern-efficiency experiment;
@@ -293,7 +293,7 @@ CLI / service — molecule identifier in → spectrum + per-band error budget + 
 certificate out, **or a refusal naming the rung/cap/gate that blocked it**. Runs: R0–R1
 accuracy comparisons under the pilot note (gas-phase, unconditional); R2–R3 per family under
 the decidability rule and the per-mode Q6 noise gate; the fragment-probed R6 under its
-three-part licence, or its measured refusal;
+four-part licence, or its measured refusal;
 tier-1 emission post-processing via the published cascade model, labelled inherited. Paper:
 industry frame per the Goal; the accuracy/reach split; the cost record table across rungs
 with, if earned, the numeric size sentence; losses and inconclusives reported as such.

@@ -30,7 +30,7 @@ before anything else.
 
 1. This file — orientation. **Draft, not complete.**
 2. [GoalGathering/Why_05_Supersedes_04.md](GoalGathering/Why_05_Supersedes_04.md) — every
-   change relative to plan 04, in one table (27 rows)
+   change relative to plan 04, in one table (32 rows)
 3. [GoalGathering/Overarching_Goal.md](GoalGathering/Overarching_Goal.md) — glossary, prime
    directive, the two 2026-09-04 directives, the decision record
 4. [GoalGathering/Research_Note_2026-09-03_Delta_Probing.md](GoalGathering/Research_Note_2026-09-03_Delta_Probing.md)
@@ -45,7 +45,7 @@ before anything else.
 8. [GoalGathering/Distilled_Project_Plan_and_Quality_Checks.md](GoalGathering/Distilled_Project_Plan_and_Quality_Checks.md)
    — the Δ-probing object, gates Q0–Q8 / P0–P5, fail-closed sentences
 9. [GoalGathering/Relevant_Scientific_Papers.md](GoalGathering/Relevant_Scientific_Papers.md)
-   — bibliography with per-item verify status (items 23–49 new)
+   — bibliography with per-item verify status (items 23–51 new)
 10. [probes/README.md](probes/README.md) — conventions and the probes owed
 11. [GoalGathering/Capstone_Mapping.md](GoalGathering/Capstone_Mapping.md) — modules 02–09
     against Rubrics v1.5.1; Pass 6 (sign-off) not done
@@ -128,11 +128,40 @@ before anything else.
   per (pair, family) with a step h; M1 given its displaced-geometry columns; the alarm's early
   quietness stated. Brief: [Review_Brief_2026-09-04_Round8_PassB.md](GoalGathering/Review_Brief_2026-09-04_Round8_PassB.md).
 
+- **Round 9, Pass A** (2026-09-04; cold read of the Round-8 Pass B patches, no web):
+  [Professor_Review_2026-09-04_Round9_PassA.md](GoalGathering/Professor_Review_2026-09-04_Round9_PassA.md)
+  — verdict "not yet"; 5 blocking + 23 non-blocking. **All 28 addressed in spec the same day:**
+  (1) mode G's c and K_cap read at σ_g^assumed = 2.8·τ·q_s in the note, labelled, M2 printing its
+  σ_g against it; "σ_g where a gradient runs" removed from every pre-note description;
+  (2) the stopping rule closed with two guards — ρ\* < ρ_max = 0.5 or the rung-mode is "at
+  noise" (K = NOT_RUN), and a minimum count (the 2M single-mode block consumed first in mode E;
+  n_min(G) frozen in item 9) — and the cost record carrying σ, RMS_resp, ρ_noise, c, ρ(K);
+  (3) σ_coupling = σ_E/(2h²) written out; (4) the canonical feasibility probe given two
+  extrapolation targets (61-energy bias line; 72-gradient / 1,801-energy full reference Hessian),
+  a "fits" rule (≤ 168 h and ≤ 31.3 GB per object) frozen before it runs, and the Q7(i)/(iv)
+  fallback when only the bias line fits; (5) which r_f part (c) uses, run once, the passing
+  radius in the certificate; (6) "means sealed" → fit coefficients; (7) 72 energies everywhere;
+  (8) four Q6 modes in M4/M5; (9) the 2.8 constant derived beside 0.82; (10) ρ\* redefined in the
+  glossary as computed, only c frozen; (11) change table rows 7/21/22 corrected, rows ordered,
+  32 rows, "does not change" paragraph amended; (12) "three parts" survivors → four;
+  (13) the seven pilot-note inputs in Budget §4, Proposal §7/§8; (14)–(15) K_cap(G) and the
+  PySCFAD sentence corrected; (16) the proposal's "verified" → snippet grade; (17) "gas grid" →
+  u_band; (18) Q6 grid not at R0, R1 fallback without a cross-basis protocol, M4 in the R2 deck
+  basis; (19) the amplitude grid stated as a single test at q_s = 1.0; σ's rung index defined;
+  (20) S per distance class with equal frozen counts; (21) K_prior < K_struct required, PAH
+  effect size informational; (22) 28 GB explained; (23) the budget's supersede-only rule dropped
+  (inheritance is not authority), probe numbering aligned; (24) entry-point banners, decision
+  count and numbering; (25) note status line and §9 extended; (26) glossary terms and acronyms
+  added; (27) Frozen_Lines criterion and §7 trailer; (28) proposal header, §5.3, §11 order.
+  Brief: [Review_Brief_2026-09-04_Round9_PassA.md](GoalGathering/Review_Brief_2026-09-04_Round9_PassA.md).
+- **Round 9, Pass B** (owed): did the eighteen Round-8 closures hold; attacks A–G on what
+  they introduced. Brief: [Review_Brief_2026-09-04_Round9_PassB.md](GoalGathering/Review_Brief_2026-09-04_Round9_PassB.md).
+
 Plan 04's Round-6 findings and their closures bind plan 05 and are not re-litigated.
 
 ## Decisions
 
-All six decisions of 2026-09-04 are closed and recorded in the Goal ("Decisions of
+Decisions 1–6 of 2026-09-04 are closed and recorded in the Goal ("Decisions of
 2026-09-04"): 1 fragment probing as a method under the fragment licence; 2 all plan folders
 stay; 3 the R2 re-read stands; 4 Module 05 adopted; 5 the promised set — Δ₂ only, mode E
 guaranteed, mode G built in the side project; 6 the B2 laptop named.
@@ -144,9 +173,8 @@ corpus carries no module-02 reuse exposure (Goal, decision 7). **No decision is 
 
 ## Not yet done (owed, in order)
 
-- **Round 9** (if the user wants the loop closed once more): a cold read of the Round-8 Pass B
-  patches and a short Pass-B confirmation that its eight closures held — Pass B itself said
-  "whether those closures hold is for a further pass to say".
+- **Round 9 Pass B**: the domain confirmation that Round-8's eighteen closures held (Pass A of
+  Round 9 has run and is addressed; see the review record).
 - Capstone mapping Pass 6 (module-by-module sign-off).
 - **Probe M1** (frozen LNO spaces reproduce the reference energy) — the first code of the
   project, main-project work.
