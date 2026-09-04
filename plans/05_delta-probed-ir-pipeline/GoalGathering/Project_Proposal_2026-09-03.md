@@ -1,8 +1,9 @@
 # Probed coupled-cluster corrections to the harmonic force constants of polycyclic aromatic hydrocarbons: an infrared pipeline with a measured cost
 
 **Master's capstone project proposal — plan 05**
-Prepared for supervision review, 3 September 2026. Supersedes the plan-04 proposal of the
-same date. Companion documents: this proposal summarises a frozen plan and explains *why* its
+Prepared for supervision review, 3 September 2026; revised 4 September 2026 after the
+student's decisions and a second cold-read review. Supersedes the plan-04 proposal of 3
+September. Companion documents: this proposal summarises a frozen plan and explains *why* its
 major decisions were taken; the binding technical documents (goal, ladder, tolerances,
 opponents, gates, budget, mapping) live in the same folder and take precedence where they are
 more specific. Two external reviews of this plan (a cold read and an adversarial domain
@@ -162,7 +163,7 @@ fragment-probed form.
 | R2 | pyrene, chrysene, triphenylene (gas-phase data), tetracene (matrix only) | accuracy | first off-diagonal-count ratio; direct-block locality probe; canonical diagonal check |
 | R3 | coronene | accuracy | second ratio; the numeric size sentence is decided here |
 | R4–R5 | C₅₄–C₂₁₆ class | reach (bonus) | expert-judgment datum; the learned-prior experiment |
-| R6 | C₃₈₄H₄₈-class | reach | fragment-probed only, if the student decides fragments in; otherwise a refusal |
+| R6 | C₃₈₄H₄₈-class | reach | fragment-probed only, under a three-part measured licence (locality at R2–R3; coronene probed in fragments reproducing coronene probed whole; direct blocks on the R6 fragments); otherwise a per-family or full refusal |
 
 One change to R2 was forced by the project's own measurement: plan 04 had excluded
 triphenylene as having no laboratory spectrum, but plan 04's NIST coverage probe found
@@ -183,19 +184,28 @@ domain review's reading of the software landscape: no production code offers an 
 nuclear gradient for local CCSD(T). The student's response (4 September 2026) was not to accept
 that as a limit but to build it: a pre-registered side project extends the open PySCFAD
 implementation of LNO-CCSD(T) gradients by automatic differentiation — demonstrated by its
-authors to about 29 atoms — to frozen correlation spaces and PAH sizes. Two facts make this a
-realistic engineering project rather than new theory: the plan already freezes the correlation
-domains at the reference geometry, and on that surface the automatic-differentiation gradient
-with fixed spaces is the exact derivative, so the response terms that make general local-CC
-gradients hard do not arise; and the LNO fragment structure lets the memory of reverse-mode
-differentiation scale with the largest fragment rather than the molecule. The side project has
+authors to about 29 atoms — to frozen correlation spaces and PAH sizes. Two arguments — the plan's own reasoning, to be tested by the side project's first
+milestones, not published facts — make this an engineering project rather than new theory: the
+plan already freezes the correlation spaces at the reference geometry, and on that surface an
+automatic-differentiation gradient with fixed spaces should be the derivative of the surface
+actually probed, so the response terms that make general local-CC gradients hard should not
+arise (whether the frozen-space mapping can be kept inside the differentiated graph is the
+first thing measured); and the fragment structure of the local method should let the memory of
+reverse-mode differentiation scale with the largest fragment rather than the molecule (a thing
+to be built, not a property of the released code). The released code itself is hedged
+honestly in the plan: the paper reports the gradient, the repository's front page does not name
+it, and the released energy code is listed as CCSD, so locating the gradient code and
+verifying the triples correction is the side project's first step. The side project has
 four milestones with printed pass conditions, its own budget line, a twelve-week checkpoint and
 a kill criterion, all frozen before any code exists. If it succeeds, the gradient route is the
 plan's primary route on the rungs it licenses and the size question is answered on the probe
 count itself; if it fails, the energy-only route — whose diagonal part costs two energies per
 mode by construction — remains the guaranteed route, and the honest question is whether its
-off-diagonal part saturates. Either way the question has a pre-registered losing condition and
-the plan reports whichever answer it gets.
+off-diagonal count grows with size. Either way the question has a pre-registered losing
+condition and the plan reports whichever answer it gets. One thing the energy-only route does
+need, whatever the side project does: a local-CC code whose correlation spaces can be frozen.
+That is main-project work (probe M1), with its own stop condition if no code can be made to do
+it.
 
 ## 6. What this project deliberately does not do, and why
 
@@ -266,7 +276,8 @@ than plan 04's. Before any pilot note is written: a DFT-only dry run of the whol
 machinery at any size the laptop affords; a probe of which codes offer gradients at the anchor
 level, with memory; one timed coupled-cluster point; and the naphthalene noise-floor
 measurement (about thirty energies). After the note: the benzene probe batch and its references
-(the only rung where a canonical coupled-cluster Hessian is certainly affordable); naphthalene;
+(the rung where a canonical coupled-cluster Hessian is expected to be affordable — the only
+datum is a 2026-08 single-point timing on an older machine, labelled provenance); naphthalene;
 an anthracene locality probe of about 130 energies as a dated bonus, because anthracene is the
 first acene where DFT's delocalisation error is visible; then classification of the pyrene- and
 coronene-size batches as laptop or cluster work by an arithmetic rule. The domain review priced
@@ -287,17 +298,20 @@ addressed the same day; the domain reviewer confirmed the patches held. The doma
 measurement programme once six blocking items were written in, and no green light for the
 promised set *as it was then worded* — which promised a coupled-cluster anharmonic correction
 the probes could not build, hung its cost question on a gradient that does not exist in
-production codes, and treated the largest species as a whole-molecule object. All six items are
-now written into the frozen documents in the form the reviewer specified; the re-worded
-promised set — harmonic correction only, energy-only probing as the promised route, the
-largest species dependent on the fragment decision — is the set the reviewer described as "not
-a mistake relative to plan 04". Whether to adopt that re-worded set is the student's decision
-(§10), and this proposal is written for it. The reviewer's own words on the cheapest
-measurements that would settle whether the plan is a mistake are the first five owed probes.
+production codes, and treated the largest species as a whole-molecule object. All six items were
+written into the frozen documents in the form the reviewer specified. On 4 September 2026 the
+student decided the re-worded set in two parts (§10): the harmonic-only correction is accepted;
+the energy-only route is accepted as the *guaranteed* route but not as a limit, and the
+gradient route is built in the side project of §5.3; the largest species is reached by
+fragment probing under a measured licence. A second cold-read review (Round 8, Pass A, 4
+September) then found the seams those decisions had left across the documents — eleven
+blocking — and all were closed the same day; the domain re-assessment (Round 8, Pass B) is
+owed and its verdict is not yet known. The Round-7 reviewer's own words on the cheapest
+measurements that would settle whether the plan is a mistake are the first owed probes.
 
-## 10. Decisions the student has not yet made
+## 10. Decisions the student made on 4 September 2026, and the one still open
 
-Listed here because a supervisor's view on them is more useful before than after.
+Listed here because a supervisor's objection to any of them would reopen it.
 
 1. ~~Fragment probing at the largest sizes~~ — decided 4 September 2026: a permitted method,
    used if the locality measurement at the middle rungs licenses it; the C₃₈₄H₄₈-class
@@ -313,6 +327,13 @@ Listed here because a supervisor's view on them is more useful before than after
    route but not as a limit, and the gradient route is built in the side project of §5.3.
 5. ~~Whether to remove the plan-04 folder~~ — decided 4 September 2026: every plan version stays
    in the repository as a read-only record, so a reader can follow the whole history.
+6. ~~The development machine~~ — decided 4 September 2026: the student's current laptop (an
+   8-core Ryzen 7 260, 32 GB, integrated graphics, no CUDA GPU) is the own-machine budget; a
+   replacement only if a probe shows it necessary.
+7. **Still open:** whether the programme's Foundations module has already been submitted, and
+   on which dataset. The rubric material in the repository contains the student's own words
+   naming QM9 for that project; if so, the Module-05 corpus (built on Hessian QM9) needs its
+   reuse argument re-made. A one-line answer settles it.
 
 ## 11. Risks
 
@@ -330,8 +351,9 @@ Listed here because a supervisor's view on them is more useful before than after
    family, the anthracene probe, and a pre-registered per-family losing condition that
    withdraws the reach story for exactly those families.
 4. **The coupled-cluster harmonic correction does not beat calibrated harmonics.** The
-   opponents' fitted scale factors already absorb the mean of a ~5 cm⁻¹ harmonic difference;
-   what remains to buy is the per-family scatter. Response: the expected-effect line is written
+   opponents' fitted scale factors already absorb the mean of a harmonic difference that one
+   naphthalene study puts near 5 cm⁻¹ (a figure the plan carries at snippet grade until the
+   full text is read); what remains to buy is the per-family scatter. Response: the expected-effect line is written
    into the pilot note before any result, and losing is publishable.
 5. **Laboratory decidability** (carried): the per-family rule pre-declares undecidable
    families inconclusive; gas-phase or jet-cooled sources beyond PAHdb and the NIST WebBook
@@ -348,8 +370,9 @@ baseline; the campaign officer that enforces the budget rules and the two permit
 sentences; and the assembled pipeline with its scored ladder and cost records. Two modules —
 the deep-learning support predictor and the generative pattern proposer — are honest efficiency
 experiments on the off-diagonal probe count, run on DFT-only corpora at zero coupled-cluster
-cost and kept off the promised path; the mapping says so rather than pretending otherwise, and
-the first of them is one of the decisions in §10. Module deadlines are administrative facts; a
+cost; the deep-learning model is measured on the accuracy rungs and, if it earns its licence
+there, becomes load-bearing on the reach rungs — the mapping says exactly that rather than
+pretending otherwise. Module deadlines are administrative facts; a
 module may ship an honest fail-closed state to meet its date, and the science continues past it.
 
 ## 13. What is asked of the supervisor
@@ -358,8 +381,9 @@ module may ship an honest fail-closed state to meet its date, and the science co
    correction, and why it is recovered by probing) and of §7 (the evaluation contract) — the
    places where the plan's honesty either holds or does not.
 2. A view on the fragment-probing route to the largest sizes (§4) and on the Module-05 target
-   (§10), both now decided by the student as methods subject to measurement — a supervisor's
-   objection would reopen either.
+   (§10), both decided by the student as methods subject to measurement — a supervisor's
+   objection would reopen either — and on the side project of §5.3, which is where the
+   plan's ambition and its main time risk both sit.
 3. Advice on laboratory sources: gas-phase or jet-cooled spectra for tetracene- and
    coronene-class species would directly enlarge the decidable set.
 4. When the naphthalene measurements justify it: sponsorship of a cluster-time request sized

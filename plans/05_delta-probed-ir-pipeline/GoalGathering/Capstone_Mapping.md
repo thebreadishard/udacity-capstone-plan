@@ -1,8 +1,10 @@
 # Capstone mapping — Plan 05 Δ-Probed IR Pipeline
 
-**Status.** Draft as of 2026-09-03, written after Round-7 Pass A and Pass B were addressed
-and for the **Pass-B re-worded promised set** (Δ₂ only; mode E primary; R6 per open decision
-1). Passes 1–5 written; Pass 6 (module-by-module sign-off) not done. Not complete as a plan.
+**Status.** Draft as of 2026-09-03, revised 2026-09-04 after the user's decisions and Round-8
+Pass A, for the promised set as decided (Δ₂ only; mode E guaranteed, mode G built in the side
+project; R6 fragment-probed under the fragment licence). Passes 1–5 written; Pass 6
+(module-by-module sign-off) not done, and blocked on open decision 7 (§5). Not complete as a
+plan.
 Where plan 05 inherits plan 04's module design unchanged, this file says "carried" and does
 not re-argue it; plan 04's mapping (in its folder) is the argument of record for those parts.
 
@@ -30,9 +32,10 @@ papered over with busywork. Tags below name each module's contribution to the en
 
 Plan 05 had one module where this rule bit and was escalated rather than papered over:
 **Module 05**. The user decided it on 2026-09-04 (§3 M05; Goal decision 4): adopted, with the
-learned prior admitted to promised rungs under the Ladder §3 licence — load-bearing for the
-cost record if P3 succeeds, a published negative result if it does not. Everything else is
-load-bearing for the promised spectra or for the promised cost record.
+learned prior **earning a licence on R2–R3 and spending it on R4–R6** (Ladder §3) — on the
+reach rungs it is load-bearing for the spectrum and the cost record; on R0–R3 the scored
+spectra are always structural. Everything else is load-bearing for the promised spectra or for
+the promised cost record.
 
 ## 1. Rubric matrix (Pass 1; carried from plan 04, checked against the rubric files 2026-09-03)
 
@@ -58,15 +61,17 @@ What the end goal requires, independent of any rubric:
 | A machine-readable **opponent table** (line A's predictions, queryable) | M02 | no |
 | A **lab scoreboard** with measured tolerances (matrix vs gas shifts; **the gas grid per molecule and family** that the decidability rule consumes) | M03 | extended |
 | The strongest **fair cheap baseline** + a per-band error model of scaled-harmonic DFT (the M04 calibrated harmonic, the opponent column and the reach-rung uncertainty layer) | M04 | no |
-| The **Δ₂ recovery solver** (banded structural prior; classical convex optimisation) — the promised object | pipeline infrastructure, exercised by the R0 dry run; **not a module's ML artifact** | new |
-| A learned **Δ₂-support predictor** for pattern design on bonus material (the P3 arm) | M05 | replaces the learned surface |
+| The **Δ₂ recovery solver** (banded structural prior; classical convex optimisation) — the promised object on R0–R3 | pipeline infrastructure, exercised by the R0 dry run; **not a module's ML artifact** | new |
+| A **frozen-space local-CC code** (probe M1) | pipeline infrastructure, main project, under Ladder stop 1 | new |
+| A learned **Δ₂-support predictor** that earns a licence on R2–R3 and is spent on R4–R6 (the P3 arm) | M05 | replaces the learned surface |
 | **Pattern-proposal efficiency** for the probe batches (K_off is the scarce quantity) | M06 | replaces geometry sampling |
 | A **campaign officer** that runs multi-day probe queues, enforces the classification rule and the two cost-sentence forms, and refuses ungated claims | M07 | extended |
 | The assembled pipeline, the R0–R3 comparisons, the cost records, the fragment-probed R6 or its measured refusal, the paper | M08 | extended |
 
-Delete M02, M03, M04, M07 or M08 and a promised rung stops. Delete M05 or M06 and the
-**bonus** material stops (P3; prior-assisted R4–R5; pattern efficiency beyond the deterministic
-deck). That asymmetry is stated, not hidden (§3 M05, M06).
+Delete M02, M03, M04, M07 or M08 and a promised rung stops. Delete M05 and the R4–R6 reach
+rungs lose their licensed prior (they still run, structurally, at higher cost); delete M06 and
+pattern efficiency beyond the deterministic deck stops. That asymmetry is stated, not hidden
+(§3 M05, M06).
 
 ## 3. Module map (Pass 3)
 
@@ -139,32 +144,33 @@ from the Module 02/03 datasets are described in §…; it is not AI-generated."
 tokens) predicts the **support of Δ₂ in the DFT normal-mode basis** — which off-diagonal blocks
 between which DFT modes are large — from DFT-level features (mode frequencies, compositions,
 atomic environments). That is the Concordant Mode Approach's Level-C diagnostic (bib 43)
-learned instead of computed. Its output is a **learned prior** for the recovery: scored on the dry-run corpus (P3), run on
-bonus rungs (R4–R5) as a labelled arm, and admitted to a promised rung only under the Ladder
-§3 licence (P3 saving shown; prior-free reference check at that rung; `prior = learned` in
-the cost record) — user directive 2026-09-04: inheritance is not authority.
+learned instead of computed. Its output is a **learned prior** for the recovery: scored on the dry-run corpus (P3);
+**earned** on R2 and R3 by running both recoveries on the same responses and agreeing with the
+structural Δ₂ per family within τ₇ (direct blocks within η₈); **spent** on R4–R6, where a
+prior-assisted recovery may be the only full recovery and the certificate says the spectrum
+depends on it (Ladder §3) — user directive 2026-09-04: inheritance is not authority.
 
-**Why it is load-bearing for something real, and what it is not load-bearing for.** K_off is
-the promised route's open cost quantity. A predictor that names the large off-diagonal blocks
-before any local-CC response exists lets the deck place explicit two-mode patterns where they
-matter, which is the one lever on K_off that does not cost CC energies. On bonus rungs that is
-worth node-hours; on promised rungs the plan forbids it, so that the promised spectra never
-depend on a learned object. **The promised spectra do not need this module; the promised cost record may.** Under the
-2026-09-04 inheritance ruling the learned prior can earn a licence to enter promised rungs,
-so if P3 succeeds M05 becomes load-bearing for K_off on R2–R3 and R6 — rule 0 in the strong
-form. If P3 fails, rule 0 holds only in the weak form (the P3 experiment and the CC-free lever
-on K_off stop). That conditional was escalated as open decision 4 and **decided on 2026-09-04: adopted**, with
-the three specifications below (aromatic-heavy subset; licence as the success criterion;
-reading 1 with the reading-2 fallback). If the user will not accept it, M05 is a
-demonstration and the report defends it as one.
+**Why it is load-bearing, and for which rungs.** K_off is the guaranteed route's open cost
+quantity. A predictor that names the large off-diagonal blocks before any local-CC response
+exists lets the deck place explicit two-mode patterns where they matter — the one lever on
+K_off that costs no CC energies. On **R0–R3 the scored spectra are always the structural
+recovery**; there the prior is measured (P3 on the dry-run corpus; the licence-earning
+comparison on real responses at R2 and R3) and never load-bearing. On **R4–R6**, once the
+licence is earned at both R2 and R3, the prior-assisted recovery may be the only full recovery:
+there M05 is load-bearing for the spectrum and the cost record, and the certificate says so.
+Rule 0 therefore holds in the strong form for the reach rungs and in the weak form for the
+accuracy rungs. That conditional was escalated as decision 4 and **decided on 2026-09-04:
+adopted**, with the three specifications below (aromatic-heavy subset; licence as the success
+criterion; reading 1 with the reading-2 fallback).
 
 **Dataset (Round-7 Pass B issue 9; Distilled §6; decided 2026-09-04).** Seven probed local-CC
 Δ₂ tensors by R3 is not a deep-learning corpus. The corpus is therefore DFT-vs-DFT at scale:
 the public **Hessian QM9** set (bib 47: 41,645 molecules, ωB97x/6-31G* Hessians) plus
 **B3LYP/6-31G* Hessians recomputed on an aromatic-heavy QM9 subset** — benzene derivatives and
-conjugated rings over-represented, several thousand molecules, B2 work under the 168 h
-checkpoint — giving Δ₂ = ωB97x − B3LYP per molecule with the exact-exchange contrast the dry
-run needs. The PAH dry-run tensors and the probed tensors from the rungs that have run are a
+conjugated rings over-represented; **the subset's size is fixed by a dated note after the
+zero-CC dry run has printed the B2 laptop's per-molecule Hessian timing** (no size appears
+here; Round-8 Pass A issue 10) — giving Δ₂ = ωB97x − B3LYP per molecule with the exact-exchange
+contrast the dry run needs. The PAH dry-run tensors and the probed tensors from the rungs that have run are a
 **held-out test set only**. Published as its own release (Zenodo DOI, deck hashes) **before
 Module 05 starts**.
 
@@ -183,8 +189,12 @@ publishable either way.
 
 **Distinctness — the reuse clause, reading 1 (confirmed by the user 2026-09-04 under decision
 4).** The rubric's bar is "not be reused from any previous capstone
-project" and "publicly available … before this project starts". Hessian QM9 is public today
-and belongs to no earlier module. The recomputed B3LYP side is new computed data produced for
+project" and "publicly available … before this project starts". Hessian QM9 is public today.
+**Whether QM9 itself served an earlier module is open decision 7**: the scraped rubric pages
+carry the student's words naming QM9 for the Foundations project (Round-8 Pass A issue 20). If
+module 02 was submitted on QM9, the Hessian QM9 parent set is exposed to reading 2 and this row
+is re-argued — the fallback is then a different public Hessian source, named and verified at
+that moment. The recomputed B3LYP side is new computed data produced for
 this module. The derived Δ₂ tensors are a new quantity with their own DOI. Under reading 1 the
 corpus is distinct; the report carries a provenance paragraph saying exactly that and stating
 that the PAH dry-run tensors were computed under plan 05's `probes/` and appear in no earlier
@@ -198,9 +208,9 @@ the corpus, so Q4 is trivially clean.
 
 **Required sentences.** "The training corpus is the public Hessian QM9 set (arXiv:2408.08006)
 plus B3LYP Hessians recomputed by the named decks (DOI …, hashes …); computed ab initio data,
-not AI-generated; not used in any earlier capstone module." "The laboratory scoreboard is
-never a training, validation, or stopping input." "The learned prior enters a promised rung only under the licence of Ladder §3, and every
-cost record says which prior it used."
+not AI-generated; [not used in any earlier capstone module — pending open decision 7]." "The laboratory scoreboard is
+never a training, validation, or stopping input." "On R0–R3 every scored spectrum is the structural recovery; the learned prior is spent only on
+R4–R6 under the licence of Ladder §3, and every cost record says which prior it used."
 
 ### Module 06 — generative pattern proposal (the CC-free efficiency arm)
 
@@ -235,12 +245,16 @@ officer. Tools: `queue_submit` (wraps the batch runner; refuses a batch whose de
 match Q0), `check_deck_hash`, `check_budget` (reads the classification rule with K_cap and
 c_CPS; refuses B3 submission unless the budget file's preconditions are met), `run_probe`,
 `print_cost_record` (emits Ladder §1's record form and nothing else), `write_certificate_or_refuse`.
-Memory: the frozen ladder, the budget rules, the pilot note, the Q8 verdicts per family.
+Memory: the frozen ladder, the budget rules, the pilot note, the Q8 verdicts per family, the
+two licences' status.
 Safeguards, each a refusal with a logged reason: no "beat" sentence without the pilot-note
-hash and the P2 probe output; no "beat" on a mode-E rung whose Q6 noise line did not pass; no
-size sentence without Q8(c) output in both required ratios; **no cost adjective anywhere** (a
-regex over the report draft is part of the tool); no learned-prior run on R0–R3 or R6; no
-reach rung before R3 is scored; no R6 job other than fragment-probed, and none before Q8 has printed at R2 and R3.
+hash and the P2 probe output; no "beat" from a mode whose Q6 noise line did not pass at the
+rung's size class; no size sentence without Q8(c) output in both required ratios; **no cost
+adjective anywhere** (a regex over the report draft is part of the tool); no learned prior in
+an R0–R3 scored spectrum, and none on R4–R6 without the licence earned at both R2 and R3; no
+reach rung before R3 is scored; no R6 job other than fragment-probed, and none before the
+fragment licence's three parts have printed; no local-CC probe before probe M1 has passed; no
+displaced-geometry local-CC gradient before the pilot note.
 Observed failure cases for the report: a poisoned deck hash → refusal; a draft sentence
 containing "size-independent" → refusal with the Ladder §1 citation.
 
@@ -253,12 +267,14 @@ with the course's tools only.
 **Contribution.** The end goal. Integrates (trace in the paper) **M02** (opponent atlas),
 **M03** (scoreboard, matrix tolerance, gas grid), **M04** (calibrated harmonic column and the
 reach uncertainty layer) and **M07** (officer running the campaigns) — four, all on the
-promised path; **M05** and **M06** appear as the reported bonus experiments (P3; pattern
-efficiency), clearly labelled as not load-bearing for the promised spectra. Artifact: a small
+promised path; **M05** appears as the P3 experiment on R0–R3 and, if its licence was earned, as the
+load-bearing prior of the R4–R6 certificates; **M06** as the pattern-efficiency experiment;
+both labelled exactly so. Artifact: a small
 CLI / service — molecule identifier in → spectrum + per-band error budget + **cost record** +
 certificate out, **or a refusal naming the rung/cap/gate that blocked it**. Runs: R0–R1
 accuracy comparisons under the pilot note (gas-phase, unconditional); R2–R3 per family under
-the decidability rule and the Q6 noise gate; the fragment-probed R6, or its measured refusal;
+the decidability rule and the per-mode Q6 noise gate; the fragment-probed R6 under its
+three-part licence, or its measured refusal;
 tier-1 emission post-processing via the published cascade model, labelled inherited. Paper:
 industry frame per the Goal; the accuracy/reach split; the cost record table across rungs
 with, if earned, the numeric size sentence; losses and inconclusives reported as such.
@@ -270,8 +286,10 @@ cost record as a scientific deliverable (a database keeper can price a species);
 to promise Δ₂ only (the hybrid-QFF argument and the φ_ijk arithmetic); why mode E is the
 promised route on the 2026-09-03 gradient landscape; and the expected questions "isn't this
 CMA?" (answer: CMA is the diagonal part, cited; the off-diagonal recovery, frozen local CC at
-PAH sizes, and the measured locality are the thesis) and "isn't this just Mai 2025 with extra
-steps?" (answer: Mai's ceiling is its DFT teacher).
+PAH sizes, and the measured locality are the thesis), "why is mode E the guaranteed route?"
+(answer: no production local-CC(T) gradient existed on 2026-09-03; the side project built one
+or reported why not) and "isn't this just Mai 2025 with extra steps?" (answer: Mai's ceiling is
+its DFT teacher).
 
 ## 4. Distinctness and DOI-before-claim (Pass 4)
 
@@ -280,7 +298,7 @@ steps?" (answer: Mai's ceiling is its DFT teacher).
 | 02 | PAHdb v4.00 computed band table | NASA public download | yes (public today) | no |
 | 03 | PAHdb experimental v3.10 + gas v1.00 + NIST JCAMP | NASA/NIST public | yes (public today) | no — measurements, not the 02 predictions |
 | 04 | paired theory↔lab table, own versioned release | derived, Zenodo DOI | must be, before M04 | distinct per reading 1 — decided by the user 2026-09-02 (carried); provenance paragraph required |
-| 05 | Hessian QM9 + recomputed B3LYP Hessians → Δ₂ tensors; PAH dry-run tensors as labelled test set | public benchmark + own computed, Zenodo DOI | Hessian QM9 is; the release must be, before M05 | distinct per reading 1 (proposed; user to confirm under open decision 4); reading-2 fallback executable |
+| 05 | Hessian QM9 + recomputed B3LYP Hessians → Δ₂ tensors; PAH dry-run tensors as labelled test set | public benchmark + own computed, Zenodo DOI | Hessian QM9 is; the release must be, before M05 | distinct per reading 1 (decision 4), **pending open decision 7** on whether QM9 served module 02; reading-2 fallback executable |
 | 06 | PAH dry-run tensor corpus + pattern-response records, own release, new split hash | computed, Zenodo DOI | must be, before M06 | distinct from 05's QM9-derived corpus; split disjoint by hash |
 | 07 | — | — | — | — |
 | 08 | — | integrates 02, 03, 04, 07 (+05, 06 as bonus reports) | — | reuse by design |
@@ -296,6 +314,11 @@ required in advance. New for plan 05, all routed to the Goal's open-decision lis
 
 1. ~~M05 target and corpus~~ — decided by the user 2026-09-04: adopted as specified in §3
    M05 (aromatic-heavy subset; licence as success criterion; reading 1 with fallback).
+4. **Open decision 7 (new, 2026-09-04):** has module 02 been submitted, and on which dataset?
+   The rubric folder's scraped classroom transcript names QM9 for the Foundations project. If
+   so, M02's atlas row is a plan for a module already done on other data (rule 0's atlas moves
+   to M03 or M08), and M05's reading-2 exposure includes Hessian QM9's parent set. One sentence
+   from the user settles it; Pass 6 waits for it.
 2. ~~Fragment probing~~ — decided by the user 2026-09-04: a permitted method, licensed by Q8
    at R2–R3; M08 ships the fragment-probed R6 spectrum or its measured refusal.
 3. ~~The R2 A-scored set~~ — decided by the user 2026-09-04 (re-read stands); M03's R2 band
@@ -309,8 +332,10 @@ work, budget B2) and must be printed before the pilot note; the pilot note is co
 M04's opponent column is used in any comparison. M05 blocked on: the Hessian QM9 + B3LYP
 corpus release. M06 blocked on: the dry-run corpus release. M07 may start as soon as the
 ladder and one probe exist; it must refuse everything it cannot certify. M08 assembles; it
-trains nothing new. The mode-G side project (2026-09-04) runs in parallel with 02–03 on its
-own B1 bucket; it belongs to no module and its milestones feed the gradient-availability probe. Human hours are **logged, never capped** (budget doc; user directive);
+trains nothing new. Probe M1 (frozen spaces) is pipeline infrastructure and precedes every local-CC probe. The
+mode-G side project (2026-09-04) starts after the pilot note, on its own B1 bucket with a
+calendar 12-week checkpoint; it belongs to no module and its milestones M2–M5 are the
+gradient-availability probe's answers at R0–R3. Human hours are **logged, never capped** (budget doc; user directive);
 this file adds no numbers.
 
 Pass 6 (module-by-module sign-off) is **not** done. This mapping is a draft.

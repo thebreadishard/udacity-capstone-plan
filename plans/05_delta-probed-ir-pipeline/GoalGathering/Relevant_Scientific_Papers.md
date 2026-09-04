@@ -75,13 +75,19 @@ after Round-7 Pass B (issues 2, 4, 7, 8, 9) and verified via Crossref/arXiv.
 2. Mackie/Esposito anharmonic method papers (item 12).
 3. MNRAS landing for Mai 2025 (item 5); Mulas 2018 landing re-fetch (item 6).
 4. Joblin-era T-dependence references (item 20).
-5. Local-CC method and software citations — DLPNO (ORCA, Psi4), LNO (MRCC, PySCFAD) — items
-   17, 32, 33, 34; Sylvetsky pinned; the rest unpaid.
+5. Local-CC method and software citations — the DLPNO-CCSD(T) method papers (item 17, NOT
+   FETCHED) and the Mester et al. 2025 MRCC overview (item 34, second identifier); items 32,
+   33 and 34's Nagy & Kállay are OK; Sylvetsky pinned.
 6. C₃₈₄H₄₈ per-species presence in PAHdb v4.00 — an M02 task.
 
 ## Method debts (plan 05 only; not in Frozen_Lines because they concern method, not opponents)
 
-- Full texts of items 27, 28, 30, 37 before any number from them is quoted anywhere.
+- Full texts of items 27, 28, 37 before any number from them is quoted anywhere (item 30's
+  full text was read by the Round-7 Pass B reviewer and its figures are quoted with that
+  provenance; the author's own re-read is owed before a scored document quotes them).
+- Item 46 (mode-tracking, snippet level) before it is cited as prior art in a scored
+  document; item 44's full text re-read by the author (its figures come from the Round-7
+  Pass B reviewer's reading).
 - The O1NumHess licence and code version, pinned before its pattern construction is used.
 - Mester et al. 2025 (MRCC overview) landing page, if MRCC is the chosen code.
 - The GPU4PySCF Hessian timing, re-measured (never quoted from the snippet).

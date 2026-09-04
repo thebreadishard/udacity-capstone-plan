@@ -15,7 +15,7 @@ Two of the three are plan 04's; the changes are named (Why_05 change 10).
 
 | Budget | Currency | Rule | Governs |
 |---|---|---|---|
-| B1 human | attention hours | **uncapped, logged** (user directive 2026-09-03): one bucket per entry; the plan-01 alarm (plumbing dominating the log) triggers a written review, never a ceiling. **A separate bucket "side project: mode G"** (2026-09-04) with a 12-week checkpoint on that bucket and the alarm rule of the side-project note §4 | everything a person does |
+| B1 human | attention hours | **uncapped, logged** (user directive 2026-09-03): one bucket per entry; the plan-01 alarm (plumbing dominating the log) triggers a written review, never a ceiling. **A separate bucket "side project: mode G"** (2026-09-04) for milestones M2–M5, with a calendar 12-week checkpoint from the pilot note's commit date and the 4-weekly alarm rule of the side-project note §4; probe M1 is booked to pipeline infrastructure | everything a person does |
 | B2 own machine | wall-clock hours on **the machine the student owns**. **Decided 2026-09-04: this is the current laptop, an ASUS Vivobook 18 M1807HA-S8022W** — AMD Ryzen 7 260 at 3.80 GHz (8 cores / 16 threads) with integrated AMD Radeon 780M graphics (512 MB, no CUDA-class GPU), **32.0 GB DDR5-5600 (31.3 GB usable)**, 954 GB SSD with ~790 GB free — read from the machine's System → About page on 2026-09-04 (screenshot supplied by the user); the R0 pilot probe re-prints RAM and free disk at run time. A replacement is bought **only if a probe shows it necessary**, by dated note | **168 h per rung pilot is a checkpoint, not a kill**: crossing it forces a dated note — continue knowingly / reroute to B3 / stop | DFT Hessians through R3, dry runs, R0–R1 probes, ML training |
 | B3 external | cluster node-hours **and rented GPU-hours** (a plan-05 addition) | **no number until three things exist in writing**: (a) access — an allocation, or a dated spend cap for rented time; (b) a timed probe on the actual machine, printed by a script; (c) a per-rung cap note derived from it | local-CC probe batches that do not fit B2; reach rungs **including their DFT Hessians**; GPU canonical-CC licence runs |
 
@@ -50,7 +50,7 @@ budget fact until printed. Literature figures are motivation only:
 |---|---|---|
 | Energy-only diagonal Δ₂ in the DFT mode basis | arithmetic: 2M energies (M modes; naphthalene 48, pyrene 72, coronene 102, C₃₈₄H₄₈ 1,290) — the CMA-0 count (bib 42–43) | the mode-E floor — fixed by M |
 | Off-diagonal count | Sanders et al.: ~30 % of columns on anthracene in a cheap-method eigenbasis, ~log growth to 15 rings, DFT level (bib 24, fetched); CMA-2: ~33 selected off-diagonals on small molecules (bib 43, fetched) | **K_off** per rung — NOT_RUN; the quantity Q8(c) tests |
-| Gradients for a full Hessian, DFT level | O1NumHess: saturates ~100–124 for hundreds of atoms; worst covalent case a conjugated polyene, MAD 6–12 cm⁻¹ (bib 23, fetched) | K(G) per rung — NOT_RUN; mode G is a bonus on the 2026-09-03 landscape |
+| Gradients for a full Hessian, DFT level | O1NumHess: a gradient count that levels off around 100–124 for hundreds of atoms; worst covalent case a conjugated polyene, MAD 6–12 cm⁻¹ (bib 23, fetched) | K(G) per rung — NOT_RUN; mode G is the aimed-for route, built in the side project; K_cap(G) is frozen from the gradient-mode dry run for every rung |
 | Local-CC single point, coronene, TZ | grok_chat_4 assertion: tens of minutes to hours per node | wall_clock_per_probe(R3) — NOT_RUN |
 | Local-approximation error growth | Altun et al.: DLPNO error on acenes grows ≈ linearly with ring count; CPS(6/7) reduces it at 2× cost (bib 44, fetched) | Q6 threshold line; c_CPS — NOT_RUN |
 | DFT Hessian on GPU | GPU4PySCF: 30× over a 32-core node (abstract, bib 25); an 84-atom def2-TZVPP Hessian in ~30 min on one A100 (snippet only) | **B3 (rented) at every rung — the B2 laptop has no CUDA GPU**; the CPU Hessian timing per rung through R3 is the B2 slot — NOT_RUN. **R6 (C₃₈₄H₄₈: 3,552 basis functions at 4-31G, ~1,300 perturbations) is B3** unless a timed probe at the R4 species shows otherwise |
@@ -65,43 +65,57 @@ coronene frequency job 176 min). Every one is re-timed on the B2 laptop named in
 
 Before the pilot note (DFT-only and timings; no local-CC Δ₂ may exist yet):
 
-1. **Zero-CC dry run** (B2): Δ between B3LYP and a high-exact-exchange functional at R0 and at
-   the largest sizes the laptop's DFT Hessian affords; recovered by the plan's own solver from
-   a hashed, ordered pattern set with seeded hold-out. Prints the residual curve, the dry-run K
-   and K_off, the flagged off-diagonal blocks, and the recovered-vs-direct frequency error per
-   family. Feeds pilot-note items 8, 9, 13.
-2. **Gradient availability** (B2): for each candidate code (ORCA DLPNO, Psi4 DLPNO, MRCC LNO,
-   PySCFAD LNO-CCSD(T) — the last as extended by the side project of 2026-09-04, milestones
-   M1–M4), does an analytic gradient at the anchor level run at R0, then at naphthalene/cc-pVTZ,
-   then at pyrene if the machine allows, with frozen domains? Prints yes/no, version,
-   wall-clock, peak memory. Decides mode E vs G per rung. The side project's M2/M3/M4 *are*
-   this probe's "yes" at R0/R1/R2.
-3. **Single-point timing** (B2): one local-CC energy (and gradient if available) at benzene
-   with frozen domains — a timing only.
-4. **R1 smoothness probe** (B2, ~30 local-CC energies of naphthalene): three modes, nine
-   points each at q ∈ [−1, 1], TightPNO, with and without frozen data; second-difference
-   scatter printed against the Q6 noise line on the step grid. Fixes the pattern amplitude.
-5. **Pilot note committed** (with the 2026-09-04 fragment-probing decision recorded).
+1. **Zero-CC dry run, both modes** (B2): Δ between B3LYP and a high-exact-exchange functional
+   at R0 and at the largest sizes the laptop's DFT Hessian affords; recovered by the plan's own
+   solver from a hashed, ordered pattern set with seeded hold-out, once from energies and once
+   from DFT gradients. Prints the residual curves, the dry-run K and K_off per mode, the
+   flagged off-diagonal blocks, the recovered-vs-direct frequency error per family, and **the
+   B2 laptop's per-molecule DFT Hessian timing** (which fixes the M05 subset size by dated
+   note). Feeds pilot-note items 8, 9 (both modes), 13.
+2. **Probe M1 — frozen spaces** (B2, main project): the candidate local-CC code stores its
+   spaces at the reference geometry and reloads them at displaced geometries; reproduces the
+   reference energy to 10⁻⁹ E_h; prints (does not judge) the second-difference scatter along
+   one benzene mode. Fails → Ladder stop 1.
+3. **Gradient availability, run/no-run at equilibrium** (B2): for each candidate code (ORCA
+   DLPNO, Psi4 DLPNO, MRCC LNO, PySCFAD LNO-CC), does an analytic gradient at the anchor level
+   run **at the equilibrium geometry** of benzene and naphthalene, with frozen spaces? Prints
+   run/no-run, version, wall-clock, peak memory. No displaced-geometry gradient is computed
+   before the pilot note. The side project's M2–M5 later supply the answers at R0–R3.
+4. **Single-point timing** (B2): one local-CC energy at benzene with frozen spaces — a timing
+   only.
+5. **R1 smoothness probe** (B2, ~30 local-CC energies of naphthalene): three modes, nine
+   points each at q ∈ [−1, 1], TightPNO, with and without frozen spaces; the script prints the
+   second-difference **scatter** σ_E per mode and step against the Q6 mode-E line and writes
+   the second-difference **means** to a hashed, sealed file opened only after the pilot note.
+   Fixes the pattern amplitude.
+6. **Pilot note committed** (the 2026-09-04 decisions recorded by reference).
 
 After the pilot note:
 
-6. **R0 probe batch and Q7 references** (B2): the first real `wall_clock_per_probe`, K(R0),
+7. **R0 probe batch and Q7 references** (B2): the first real `wall_clock_per_probe`, K(R0),
    the cost record; the numerical local-CC and canonical Hessians; Q7 printed for
-   diagonal-only and full recovery; the diagonal-cubic bonus probe.
-7. **R1**: canonical feasibility on the B2 laptop (the Q6/Q7 canonical arm at R1 exists only
+   diagonal-only and full recovery; the diagonal-cubic bonus probe; the sealed smoothness
+   means opened; **side-project M2** (gradient correct and under the mode-G noise line at
+   benzene).
+8. **R1**: canonical feasibility on the B2 laptop (the Q6/Q7 canonical arm at R1 exists only
    if it runs); R1 probe batch; Q7 twice; Q8(a/b) on the reference Hessian; Q6 threshold
-   column.
-8. **Anthracene locality probe** (dated bonus, B2 or B3 by the rule; ≈ 2×66+1 = 133 frozen-
+   column; **side-project M3**.
+9. **Anthracene locality probe** (dated bonus, B2 or B3 by the rule; ≈ 2×66+1 = 133 frozen-
    domain local-CC energies): a full numerical Δ₂ printed as Q8(a) per pair and as the
    mode-basis matrix per family — the cheapest direct test of whether the C–C block is
    long-ranged before R2 money is spent.
-9. **R2/R3 classification** (B2 probe, then the rule decides, with c_CPS).
-10. **R2**: the pyrene canonical diagonal check (two canonical CCSD(T)/cc-pVDZ energies per
-    mode, one mode per family; B3 if the machine cannot); the direct-block probe (≈12
-    energies per deck-chosen pair); probe batch; Q8(a/b) on direct blocks; Q8(c) R1→R2.
-11. **R3**: direct-block probe; batch; Q8(c) R2→R3.
-12. **B3 probes** only after §1's three preconditions; the R4 DFT-Hessian timing probe decides
-    whether the R6 Hessian is B3.
+10. **R2/R3 classification** (B2 probe, then the rule decides, with c_CPS).
+11. **R2**: the pyrene canonical diagonal check (two canonical CCSD(T)/cc-pVDZ energies per
+    mode, one mode per family; B3 if the machine cannot); the Q6 noise grid at R2 size in the
+    mode(s) used; the direct-block probe (≈12 energies per deck-chosen pair); probe batch
+    (structural recovery, and the prior-assisted recovery on the same responses for the
+    licence-earning comparison); Q8(a/b) on direct blocks; Q8(c) R1→R2; **side-project M4**.
+12. **R3**: direct-block probe; batch (both recoveries); **coronene probed in fragments** and
+    compared with coronene probed whole (the fragment licence, part b); Q8(c) R2→R3;
+    **side-project M5** (gradient run/no-run at coronene).
+13. **B3 probes** only after §1's three preconditions; the R4 DFT-Hessian timing probe decides
+    whether the R6 Hessian is B3; the direct-block probe on the R6 fragments (fragment
+    licence, part c).
 
 ## 5. Protocol (carried)
 
