@@ -3,7 +3,8 @@
 **Status.** Argument of record, 2026-09-03; revised the same day after Round-7 Pass A (issues
 1, 8, 15, 16) and Pass B (issues 3, 4, 5, 13); amended 2026-09-04 by the user's seven decisions
 and two directives, revised the same day after Round-8 Pass A (issues 11, 13) and Pass B (rows
-28–32), and after Round-9 Pass A (rows 7, 21, 22 corrected; rows put in numerical order). Plan 04 is
+28–32), after Round-9 Pass A (rows 7, 21, 22 corrected; rows put in numerical order), Round-9 Pass B
+(rows 28, 29, 31 amended) and Round-10 Pass A (row 31 restored after a patch defect). Plan 04 is
 **not** wrong; it is superseded because its cost sits in the wrong object. All five plan
 folders are in the tree as read-only records (decision 2).
 

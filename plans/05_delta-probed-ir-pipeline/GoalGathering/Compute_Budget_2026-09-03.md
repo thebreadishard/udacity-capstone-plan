@@ -58,11 +58,11 @@ budget fact until printed. Literature figures are motivation only:
 | Local-CC single point, coronene, TZ | grok_chat_4 assertion: tens of minutes to hours per node | wall_clock_per_probe(R3) — NOT_RUN |
 | Local-approximation error growth | Altun et al.: DLPNO error on acenes grows ≈ linearly with ring count; CPS(6/7) reduces it at 2× cost (bib 44, fetched) | Q6 threshold line; c_CPS — NOT_RUN |
 | DFT Hessian on GPU | GPU4PySCF: 30× over a 32-core node (abstract, bib 25); an 84-atom def2-TZVPP Hessian in ~30 min on one A100 (snippet only) | **B3 (rented) at every rung — the B2 laptop has no CUDA GPU**; the CPU Hessian timing per rung through R3 is the B2 slot — NOT_RUN. **R6 (C₃₈₄H₄₈: 3,552 basis functions at 4-31G, ~1,300 perturbations) is B3** unless a timed probe at the R4 species shows otherwise |
-| Canonical CCSD(T) on GPU | TeraChem: 63 atoms / >1,000 bf, (T) in ~8 h on one node (bib 26, fetched) | Q6 licence-reference timing at pyrene — NOT_RUN, B3 |
+| Canonical CCSD(T) on GPU | TeraChem: 63 atoms / >1,000 basis functions, (T) in ~8 h on one node (bib 26, fetched) | Q6 licence-reference timing at pyrene — NOT_RUN, B3 |
 | Local-CC(T) gradient | PySCFAD's released code has an LNO-CC module with a `ccsd_t.py` (`pyscfad/lno/`, bib 49, directory listing fetched 2026-09-04; whether (T) is differentiated end-to-end is side-project item (a)) and is reported to 29 atoms (bib 33); its behaviour with frozen spaces and its memory at PAH sizes are unmeasured | the gradient run/no-run before the note; side-project M2–M5 with peak memory — NOT_RUN |
 
 The plan-02 old-laptop facts remain provenance only (CCSD(T)/6-31G* benzene 19.6 s; canonical
-(T) fails at ~114 bf with 28 GB; B3LYP/6-31G* Hessians: benzene 3.3 min, naphthalene 12.7 min,
+(T) fails at ~114 basis functions with 28 GB; B3LYP/6-31G* Hessians: benzene 3.3 min, naphthalene 12.7 min,
 coronene frequency job 176 min). Every one is re-timed on the B2 laptop named in §1 before use (the plan-02 numbers come from an older machine).
 
 ## 4. Order of timed probes (each prints machine, date, settings, wall-clock; gradient probes also peak memory)
@@ -117,8 +117,10 @@ Before the pilot note (DFT-only and timings; no local-CC Δ₂ may exist yet):
    2 arms): four modes (C–C
    stretch, C–H stretch, CH-oop, one totally symmetric), nine points each at q ∈ [−1, 1],
    TightPNO, with and without frozen spaces; the script prints **σ_E as the RMS residual about a
-   degree-4 polynomial fit** per mode and arm against the Q6 lines at each grid step (no σ_g
-   exists before the note; mode G's constants are read at σ_g^assumed, Ladder §4 item 8), and writes the **fit coefficients** (which
+   degree-4 polynomial fit** per mode and arm, **and pooled per arm (ν = 16) — the pooled value is what is tested against
+   the Q6 lines** at each grid step, the per-mode values printed and flagged if above twice the
+   pooled (no σ_g exists before the note; mode G's constants are read at σ_g^assumed, Ladder §4
+   item 8), and writes the **fit coefficients** (which
    contain the diagonal Δ₂ elements) to a hashed, sealed file opened only after the pilot note.
    Fixes the pattern amplitude.
 6. **Pilot note committed** (the 2026-09-04 decisions recorded by reference).
@@ -134,10 +136,11 @@ After the pilot note:
 8. **R1**: canonical feasibility on the B2 laptop (the Q6/Q7 canonical arm at R1 exists only
    if it runs); R1 probe batch; Q7 twice; Q8(a/b) on the reference Hessian; Q6 threshold
    column; **side-project M3**.
-9. **Anthracene locality probe** (dated bonus, B2 or B3 by the rule; ≈ 2×66+1 = 133 frozen-
-   domain local-CC energies): a full numerical Δ₂ printed as Q8(a) per pair and as the
-   mode-basis matrix per family — the cheapest direct test of whether the C–C block is
-   long-ranged before R2 money is spent.
+9. **Anthracene direct-coupling probe** (dated bonus, B2 or B3 by the rule): the Q8(a)
+   direct-coupling probe on anthracene with a deck-chosen pair list — four frozen-space local-CC
+   energies per (pair, family), 4 × pairs × families, count printed (nine pairs and five families
+   would be 180) — the cheapest direct test of whether the C–C couplings are long-ranged before
+   R2 money is spent. (It is not a full Δ₂: that would be 1 + 2·66 + 4·C(66,2) = 8,713 energies.)
 10. **R2/R3 classification** (B2 probe, then the rule decides, with c_CPS).
 11. **R2**: the pyrene canonical diagonal check (two canonical CCSD(T) energies per mode in
     the R2 deck basis, one mode per family; B3 if the machine cannot); the Q6 noise grid at R2
@@ -155,8 +158,8 @@ After the pilot note:
     whether the R6 Hessian is B3; at R4 the **fragment-vs-whole comparison on circumcoronene**
     (part b′, conditional on B3 classification) and the **fragment-radius convergence test on
     its central ring** (part c, first instance); at R6 the convergence test on the flake's
-    interior (a probe batch classified by §2, of order 360 fragment energies — laptop at one
-    shell, B3 at two) and, where B3 allows, whole-flake direct couplings.
+    interior (a probe batch classified by §2, 72 × families energies, ≈ 360 for five — expected
+    laptop at one shell, B3 at two) and, where B3 allows, whole-flake direct couplings.
 
 ## 5. Protocol (carried)
 

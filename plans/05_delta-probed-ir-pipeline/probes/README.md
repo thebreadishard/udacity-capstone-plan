@@ -27,8 +27,9 @@ single-mode scatter with sealed fit coefficients, and timings; no local-CC Δ₂
 1. **Zero-CC dry run, both modes** (`dryrun_dft_delta_recovery.py`): Δ between B3LYP and a
    high-exact-exchange functional at R0 and at the largest molecules the laptop's DFT Hessian
    affords; recover Δ₂ with the banded structural prior from a hashed, ordered pattern set with
-   seeded hold-out, from energies and from DFT gradients; print the residual curves ρ(n), the
-   dry-run K and K_off per mode at a declared ρ, the off-diagonal blocks flagged large, the
+   seeded hold-out (the pair ±p is the hold-out unit), from energies — as symmetric combinations
+   R_s over ± pairs — and from DFT gradients; print the residual curves ρ(n), the dry-run K and
+   K_off per mode at a declared ρ (**K in energies, a ± pair counting 2, exactly as probe 6**), the off-diagonal blocks flagged large, the
    recovered-vs-direct frequency error per family for the diagonal-only and the full recovery,
    the band width w and weights by the Ladder §3 rule, and the per-molecule DFT Hessian
    wall-clock on the B2 laptop; then the **noise-injection column**: the same recoveries with
@@ -60,7 +61,8 @@ single-mode scatter with sealed fit coefficients, and timings; no local-CC Δ₂
    the stated temperature, the source's stated resolution (from its documentation, never
    `DELTAX`), the centroid precision from the signal-to-noise, the temperature term (pinned
    hot-band correction with ±30 % and the temperature uncertainty, or the Ladder §2 floor
-   χ_max·(T_source − 296 K) + 1 cm⁻¹), their quadrature sum **u_band**, and the decidability
+   χ_max·(T_source − 296 K) + 1 cm⁻¹; T_source from the record, else from the series'
+   documentation — item 56 for the NIST Quantitative IR series — else hot), their quadrature sum **u_band**, and the decidability
    verdict per family (feeds pilot-note item 1). Expected: R0 decidable throughout; R1 and R2
    C–C families inconclusive by construction unless the correction is pinned.
 3. **Gradient availability, run/no-run at equilibrium** (`anchor_gradient_availability.py`):
@@ -77,7 +79,8 @@ single-mode scatter with sealed fit coefficients, and timings; no local-CC Δ₂
    TightPNO, with and without frozen spaces; **σ_E = the RMS residual of ΔE(q) about a degree-4
    least-squares polynomial**, σ_E = √(SSR/(n − p)) with n = 9, p = 5, per mode and arm and
    **pooled over the four modes per arm** (ν = 16) with studentised residuals per point, is
-   printed against 0.82·τ·q_s² (2.8·τ·q_s) for each q_s ∈ {0.25, 0.5, 1.0}; the fit
+   printed against 0.82·τ·q_s² (2.8·τ·q_s) for each q_s ∈ {0.25, 0.5, 1.0} — the pooled value
+   gates, the per-mode values are flagged above twice the pooled; the fit
    coefficients (which contain the diagonal Δ₂ elements) are written to a hashed, sealed file
    that the script refuses to open before the pilot note's commit hash exists. Fixes the pattern
    amplitude (item 13). 72 local-CC energies (4 × 9 × 2).
@@ -85,8 +88,9 @@ single-mode scatter with sealed fit coefficients, and timings; no local-CC Δ₂
 **After the pilot note is committed:**
 
 6. **R0 probe batch and Q7** (`q7_probing_licence.py`): the R0 responses (symmetric combinations over ± pairs) in hashed order,
-   K(R0) and K_off at ρ\*, the cost record with σ, RMS_resp, ρ_noise, c, ρ(K) and the stored
-   ρ(n) curve; then the references (numerical local-CC Hessian
+   K(R0) and K_off at ρ\* (energies, evaluated per complete pair), the cost record with σ(R_s),
+   RMS_resp, ρ_noise, c, ρ(K) and the stored ρ(n) curve (the ρ\*_common column NOT_RUN until the
+   Q8(c) probe re-prints it); then the references (numerical local-CC Hessian
    with frozen spaces; the canonical CCSD(T) Hessian where the feasibility probe placed it at
    R0, else the local-CC arm's) and the Q7 table (i)–(iv) — the recovered
    Δ₂ printed as a matrix in the DFT mode basis, for the diagonal-only and the full recovery,
@@ -106,9 +110,10 @@ single-mode scatter with sealed fit coefficients, and timings; no local-CC Δ₂
    stopping rule; Q7 twice (with the "tests the recovery, not the freezing" sentence if no
    canonical arm); Q8(a/b) on the reference Hessian (`q8_locality.py`); side-project **M3**
    (naphthalene: the three M2 printouts, wall-clock, peak memory ≤ 28 GB).
-9. **Anthracene locality probe** (dated bonus between R1 and R2, ≈ 133 frozen-space local-CC
-   energies): full numerical Δ₂ minus B3LYP; Q8(a) per pair and the mode-basis matrix per
-   family; fail-closed reading pre-written in the dated note.
+9. **Anthracene direct-coupling probe** (dated bonus between R1 and R2; `q8_direct_couplings.py`
+   on anthracene with a deck-chosen pair list, four frozen-space energies per (pair, family),
+   count printed): Q8(a) per pair against distance; fail-closed reading pre-written in the dated
+   note.
 10. **Resonance probe** (before any R2 spectrum, DFT level is enough): pyrene CH-stretch
     family via GVPT2 vs raw VPT2 vs MD-ACF; the resonance-closed family set printed.
 11. **Classification probe** per rung: `wall_clock_per_probe × K_cap × c_CPS` against the
@@ -140,7 +145,8 @@ single-mode scatter with sealed fit coefficients, and timings; no local-CC Δ₂
     Budget §2.
 15. **R6 (fragment licence, part c)** (`fragment_convergence.py` on the flake): deck-chosen
     interior and edge pairs, direct couplings from fragments of radius r_f (Ladder §3's rule:
-    R3's value, or (b′)'s if larger) and r_f + one ring carved from the R6 DFT geometry,
+    R3's value, or (b′)'s if larger) and r_f + one shell carved from the R6 DFT geometry,
     agreement within η₈·S; run once, the passing radius printed in the certificate; energy count
-    printed (of order 360) and classified by Budget §2 — B3 at two shells; whole-flake direct couplings where
+    printed (72 × families; ≈ 360 for five) and classified by Budget §2 — expected B3 at two
+    shells; whole-flake direct couplings where
     B3 allows.

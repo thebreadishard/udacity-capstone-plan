@@ -218,9 +218,9 @@ re-localising and matching them. The main project's probe M1 prints the continui
 before the pilot note; the side project's
 first milestone prints the projection term of the gradient. The side project has
 four milestones with printed pass conditions, its own budget line, a twelve-week checkpoint and
-a kill criterion, all frozen before any code exists. If it succeeds, the gradient route is the
-plan's primary route on the rungs it licenses and the size question is answered on the probe
-count itself; if it fails, the energy-only route — whose diagonal part costs two energies per
+a kill criterion, all frozen before any code exists. If it succeeds, the gradient route runs
+in addition to the energy route on the rungs it licenses — each rung then carries two cost
+records — and the size question is also answered on the gradient count; if it fails, the energy-only route — whose diagonal part costs two energies per
 mode by construction — remains the guaranteed route, and the honest question is whether its
 off-diagonal count grows with size. Either way the question has a pre-registered losing
 condition and the plan reports whichever answer it gets. One thing the energy-only route does
@@ -298,11 +298,14 @@ a justified, probe-backed request for cluster or rented GPU time — but the fir
 than plan 04's. Before any pilot note is written: a DFT-only dry run of the whole probing
 machinery at any size the laptop affords; the frozen-space probe M1; one canonical
 coupled-cluster energy of benzene as a feasibility probe; a probe of which codes offer
-gradients at the anchor level, with memory; one timed coupled-cluster point; and the
-naphthalene noise-floor measurement (72 energies). After the note: the benzene probe batch and its references
-(the rung where a canonical coupled-cluster Hessian is expected to be affordable — the only
-datum is a 2026-08 single-point timing on an older machine, labelled provenance); naphthalene;
-an anthracene locality probe of about 130 energies as a dated bonus, because anthracene is the
+gradients at the anchor level, with memory; the laboratory scoreboard re-read with its measured
+band uncertainties; one timed coupled-cluster point; and the naphthalene noise-floor measurement
+(72 energies). After the note: the benzene probe batch and its references
+(the rung where the canonical bias line is expected to fit the laptop and the full canonical
+reference Hessian is expected not to — the feasibility probe decides, and the only prior datum
+is a 2026-08 single-point timing on an older machine, labelled provenance); naphthalene;
+an anthracene direct-coupling probe (four energies per pair and family, count printed) as a
+dated bonus, because anthracene is the
 first acene where DFT's delocalisation error is visible; then classification of the pyrene- and
 coronene-size batches as laptop or cluster work by an arithmetic rule. The domain review priced
 plan 05's own probes as cheaper than plan 04's first factory batch, and placed coronene's
@@ -340,8 +343,18 @@ test on the target molecule's own interior) and the gas-phase decidability of th
 (now measured as a band-centre uncertainty, with the expected inconclusive verdict stated in
 advance). The reviewer also settled, by fetching the code, the engine facts this plan had
 hedged. Whether those closures hold is for a further pass to say; none of them needs a
-measurement first. The Round-7 reviewer's own words on the cheapest
-measurements that would settle whether the plan is a mistake are the first owed probes.
+measurement first.
+
+The third round (4 September, two passes) re-read those closures. Its cold read found seams in
+the new objects and the domain pass found that seventeen of the eighteen closures held; it then
+changed three things in the design itself: the energy-mode response became a symmetric
+combination over paired displacements (the raw difference is dominated by the coupled-cluster
+force at the DFT geometry), the frozen orbital spaces are transported by projection rather than
+re-localised and matched, and only benzene is scored unconditionally, because naphthalene's
+public gas-phase spectra are hot-vapour measurements. A fourth round (4 September) re-read
+those patches; its cold read is addressed and its domain pass is recorded in the plan's README.
+The Round-7 reviewer's own words on the cheapest measurements that would settle whether the
+plan is a mistake are the first owed probes.
 
 ## 10. Decisions the student made on 4 September 2026
 

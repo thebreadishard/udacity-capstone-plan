@@ -36,7 +36,7 @@ after Round-7 Pass B (issues 2, 4, 7, 8, 9) and verified via Crossref/arXiv.
 | 17 | DLPNO-CCSD(T) method / ORCA citations | Neese group | **NOT FETCHED** (debt 5) |
 | 18 | Boundary-edge codes (M02 atlas) | Hansen et al. 1996; Caporossi & Hansen 1998 | **record** — fetch at M02 |
 | 19 | Rubric-required M03 methods citation | Huebner et al., PLOS ONE **19**(5): e0295726 (2024). DOI 10.1371/journal.pone.0295726 | **record (plan-03)** |
-| 20 | Temperature-dependent PAH band shifts (tier-2 scoreboard) | Joblin-era measurements — not identified | **NOT FETCHED** (debt 4) |
+| 20 | \1 — now identified as items 52–53 for the u_band temperature term; the tier-2 emission-scoreboard use remains a separate, unpaid debt|
 | 21 | M04 fallback dataset | NIST CCCBDB, SRD 101, Release 22 (2022). DOI 10.18434/T47C7Z | **OK (2026-09-02)** |
 | 22 | M04 fallback dataset, second option | Zapata Trujillo & McKemmish, J. Phys. Chem. A **126**(25), 4100 (2022). DOI 10.1021/acs.jpca.2c01438 | **OK (2026-09-02; Crossref)** |
 | **23** | **O(1)-gradient Hessian recovery (off-diagonal low rank)** — the pattern construction plan 05 adopts | Wang, Luo, Wang & Liu, "O1NumHess: A Fast and Accurate Seminumerical Hessian Algorithm Using Only O(1) Gradients", JCTC **21**(21), 10893–10909 (2025). DOI 10.1021/acs.jctc.5c01354; arXiv:2508.07544. Open-source Python (O1NumHess, O1NumHess_QC; ORCA + BDF interfaces) | **OK (2026-09-03; arXiv abstract + HTML full text; Crossref)**. Numbers quoted (~100–124 gradients; ~2× conventional error) are from the full text |
@@ -73,6 +73,9 @@ after Round-7 Pass B (issues 2, 4, 7, 8, 9) and verified via Crossref/arXiv.
 | **51** | PNO-space relaxation terms in local-correlation gradients (the term the side project's projection must carry) | Pinski & Neese, DLPNO-MP2 analytic gradient, JCP **148**, 031101 (2018) and JCP **150**, 164102 (2019) | **record (search 2026-09-04)** — "dramatic errors for orbital-relaxed properties" when PNO constraints are omitted (snippet); fetch before M2 is specified in a deck |
 | **52** | PAH hot-band shift with temperature — the u_band temperature term's pinned reference (naphthalene, pyrene, coronene vs temperature) | Joblin, Boissel, Léger, d'Hendecourt, Défourneau, A&A **299**, 835 (1995), "Infrared spectroscopy of gas-phase PAH molecules. II. Role of the temperature" | **reference known, not opened** — cited from the Round-9 Pass B reviewer's search (a snippet quotes a C–C stretch shift of about −0.02 cm⁻¹ K⁻¹); the ADS abstract page returned 405 to the author on 2026-09-04 and no Crossref record exists for this 1995 A&A paper; **first paid debt**: obtain and read before M03 prints u_band |
 | **53** | Naphthalene hot-band spectroscopy and anharmonic parameters — second pinnable source for the R1 temperature correction | Pirali, Vervloet, Mulas, Malloci, Joblin, PCCP **11**, 3443 (2009), DOI 10.1039/b814037e, "High-resolution infrared absorption spectroscopy of thermally excited naphthalene. Measurements and calculations of anharmonic parameters and vibrational interactions" | **Crossref record verified 2026-09-04 (author)**; numbers not read — full text before any shift rate is quoted |
+| **54** | NIST WebBook, benzene (CAS 71-43-2), IR spectrum list — the R0 gas scoreboard's source record | webbook.nist.gov `cbook.cgi?ID=C71432&Mask=80` | **opened 2026-09-04 by the Round-9 reviewer and by the author**: a Coblentz gas spectrum (70 mmHg + N₂ to 600 mmHg, 2 cm⁻¹), a NIST MS Data Center gas entry, and **twenty NIST Quantitative Infrared Database gas-phase entries at 0.125–1.93 cm⁻¹** (Bruker IFS66V, five apodizations); **no entry states a temperature** — the series' documentation (item 56) supplies it |
+| **55** | NIST WebBook, naphthalene (CAS 91-20-3), IR spectrum list — the R1 gas scoreboard's source record | webbook.nist.gov `cbook.cgi?ID=C91203&Mask=80` | **opened 2026-09-04 by the Round-9 reviewer and by the author**: a Coblentz solution spectrum; a Coblentz **vapour spectrum at 245 °C**, 4 cm⁻¹, digitised from hard copy; a NIST MS Data Center gas (GC-IRD) entry; **no room-temperature gas-phase spectrum** |
+| **56** | The NIST Quantitative Infrared Database — measurement conditions (temperature, path, resolution) of the R0 cell spectra | Chu, Guenther, Rhoderick, Lafferty, J. Res. Natl. Inst. Stand. Technol. **104**, 59 (1999), DOI 10.6028/jres.104.004 | **Crossref record verified 2026-09-04 (author)**; the paper itself not read — M03 reads it before u_band is printed, because R0's "unconditional" rests on the temperature it states |
 
 ## Named debts (identical to Frozen_Lines §7)
 
@@ -107,7 +110,10 @@ after Round-7 Pass B (issues 2, 4, 7, 8, 9) and verified via Crossref/arXiv.
 - **QM9's size range** (≤ 9 heavy atoms; no PAH beyond benzene — recalled by the Round-8
   reviewer): verify against the QM9 paper (item 1 of plan 01's bibliography, `Papers/01_…`)
   when the M05 corpus is built.
-- Item 50's description PDF, text-extracted and read, before u_band is printed.
+- Item 50's description PDF, text-extracted and read, before u_band is printed; the 250 °C
+  lightpipe temperature used as its default is recalled until then.
+- Item 56 (the NIST Quantitative IR database paper) read before u_band is printed: R0's
+  "unconditional" rests on the measurement temperature it states.
 - Item 45's MAD figure and mode-resolved table (full text) before the expected-effect line is
   written into the pilot note; item 47's journal landing page; the CMA code/paper details
   (items 42–43) re-read by the author, not only by the Pass B reviewer, before Q7's

@@ -31,8 +31,8 @@ before anything else.
 1. This file — orientation. **Draft, not complete.**
 2. [GoalGathering/Why_05_Supersedes_04.md](GoalGathering/Why_05_Supersedes_04.md) — every
    change relative to plan 04, in one table (32 rows)
-3. [GoalGathering/Overarching_Goal.md](GoalGathering/Overarching_Goal.md) — glossary, prime
-   directive, the two 2026-09-04 directives, the decision record
+3. [GoalGathering/Overarching_Goal.md](GoalGathering/Overarching_Goal.md) — glossary (Δ₂, R_s, R_a, K, ρ\*, ρ\*_common, u_band, the fragment licence and every other
+   symbol), prime directive, the two 2026-09-04 directives, the decision record
 4. [GoalGathering/Research_Note_2026-09-03_Delta_Probing.md](GoalGathering/Research_Note_2026-09-03_Delta_Probing.md)
    — the source document as written that morning; §8 records what the Round-7 reviews
    corrected and §9 what the 2026-09-04 decisions changed; §§8–9 win over §§1–7
@@ -45,7 +45,7 @@ before anything else.
 8. [GoalGathering/Distilled_Project_Plan_and_Quality_Checks.md](GoalGathering/Distilled_Project_Plan_and_Quality_Checks.md)
    — the Δ-probing object, gates Q0–Q8 / P0–P5, fail-closed sentences
 9. [GoalGathering/Relevant_Scientific_Papers.md](GoalGathering/Relevant_Scientific_Papers.md)
-   — bibliography with per-item verify status (items 23–51 new)
+   — bibliography with per-item verify status (items 23–56 new)
 10. [probes/README.md](probes/README.md) — conventions and the probes owed
 11. [GoalGathering/Capstone_Mapping.md](GoalGathering/Capstone_Mapping.md) — modules 02–09
     against Rubrics v1.5.1; Pass 6 (sign-off) not done
@@ -180,6 +180,34 @@ before anything else.
   the r_f rule; (12) the diagonal-cubic bonus counted as two extra energies per mode.
   Brief: [Review_Brief_2026-09-04_Round9_PassB.md](GoalGathering/Review_Brief_2026-09-04_Round9_PassB.md).
 
+- **Round 10, Pass A** (2026-09-04; cold read of the Round-9 Pass B patches, no web):
+  [Professor_Review_2026-09-04_Round10_PassA.md](GoalGathering/Professor_Review_2026-09-04_Round10_PassA.md)
+  — verdict "not yet"; 7 blocking + 13 non-blocking. **All 20 addressed in spec the same day:**
+  (1) ΔE(0) declared one shared reference per rung whose offset the recovery's fitted constant
+  absorbs, so σ(R_s) = σ_E/√2 is the response σ and ρ_noise = σ(R_s)/RMS_resp everywhere (the √6
+  of the Q6 line kept as the conservative threshold convention); (2) K counted in energies in
+  every sentence, ρ(n) evaluated per complete pair, K_off ≥ 2, the dry-run script counting the
+  same way; (3) the ± pair is the hold-out unit with one deck index; (4) the pooled σ per arm
+  gates Q6, per-mode σ's informational with a 2× flag, q_s one number per rung and mode;
+  (5) change-table row 31 restored (a literal `\1` from the Round-9 Pass B patch had replaced it);
+  (6) "R0–R1 unconditional" removed from Mapping M08 and the root README; (7) the anthracene
+  probe redefined as a direct-coupling probe with the count printed (133 was the diagonal-only
+  count); (8) status lines and counts brought to Round 9/10; (9) the 360 arithmetic written and
+  the B3 verdict labelled an expectation; (10) "one ring" → shell; (11) the 1 cm⁻¹ term labelled
+  recalled and the no-stated-temperature default written (series documentation, else hot);
+  (12) WebBook lists as items 54–55, both opened by the author too, and the Quantitative IR
+  database paper as item 56 (Crossref-verified) — the benzene records state no temperature, so
+  R0 is "expected unconditional" until M03 reads item 56; (13) the Δ₁·p size labelled recalled;
+  (14) glossary entries for R_a, Δ₁, ρ\*_common, continuity diagnostics, shell, pending (b′),
+  u_T, T_source, χ_max, χ_F, pooled σ; (15) "printed" → "passed" in the licence, "by the shell
+  rule"; (16) proposal survivors (mode G in addition; the expected feasibility outcome; the
+  u_band re-read in §8; §9 extended); (17) M2's FD check stated as Cartesian, 72 energies; M4
+  given run/no-run; (18) item 20 pointed at items 52–53, the note's erratum re-pointed;
+  (19) 61 / 72 / 1,801 with their arithmetic; (20) the ρ\*_common column NOT_RUN until Q8(c).
+  Brief: [Review_Brief_2026-09-04_Round10_PassA.md](GoalGathering/Review_Brief_2026-09-04_Round10_PassA.md).
+- **Round 10, Pass B** (owed): did the twelve Round-9 closures hold; attacks A–G. Brief:
+  [Review_Brief_2026-09-04_Round10_PassB.md](GoalGathering/Review_Brief_2026-09-04_Round10_PassB.md).
+
 Plan 04's Round-6 findings and their closures bind plan 05 and are not re-litigated.
 
 ## Decisions
@@ -196,9 +224,7 @@ corpus carries no module-02 reuse exposure (Goal, decision 7). **No decision is 
 
 ## Not yet done (owed, in order)
 
-- **Round 10** (optional, the user's call): a cold read of the Round-9 Pass B patches — the
-  symmetrised response, the projection-only frozen space and the R1 decidability change touched
-  the Goal, Ladder, Distilled plan, Budget, probes README and side project at once.
+- **Round 10 Pass B** (in progress): the domain confirmation that Round-9's twelve closures held.
 - **The first paid literature debt**: items 52–53 (PAH hot-band shift rates) read before M03
   prints u_band.
 - Capstone mapping Pass 6 (module-by-module sign-off).
