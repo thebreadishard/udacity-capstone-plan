@@ -47,6 +47,9 @@ before anything else.
 9. [GoalGathering/Relevant_Scientific_Papers.md](GoalGathering/Relevant_Scientific_Papers.md)
    — bibliography with per-item verify status (items 23–60 new)
 10. [probes/README.md](probes/README.md) — conventions and the probes owed
+10a. [Uitleg/00_Leeswijzer.md](Uitleg/00_Leeswijzer.md) — Dutch, VWO-6 level, 18 chapters: the
+    plan explained for a reader without AI or quantum-chemistry background, with the data
+    structures of modules 04–08 and a checklist for mapping Pass 6 (not binding; the Ladder wins)
 11. [GoalGathering/Capstone_Mapping.md](GoalGathering/Capstone_Mapping.md) — modules 02–09
     against Rubrics v1.5.1; Pass 6 (sign-off) not done
 12. [GoalGathering/Project_Proposal_2026-09-03.md](GoalGathering/Project_Proposal_2026-09-03.md)
