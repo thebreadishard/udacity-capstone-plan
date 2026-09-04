@@ -149,7 +149,9 @@ expectations section below are numbered separately.
   is an unpaid check (frozen-lines debt 6); the R6 target species is chosen from the atlas.
   How R6 is reached — fragment probing or not at all — is open decision 1 and is made
   **before the pilot note**, because it decides whether R6 is a promised object.
-- **Compute:** the plan must not die on compute. Start on the laptop (R0 pilot proves the
+- **Compute:** the plan must not die on compute. Start on the current laptop — the B2 machine
+  named in the budget (decided 2026-09-04: an 8-core Ryzen 7 260 without a CUDA-class GPU;
+  replaced only if a probe shows it necessary) — (R0 pilot proves the
   pipeline end-to-end, including a **zero-CC dry run** of the probing machinery — Δ between
   B3LYP and a functional with markedly more exact exchange, so the dry run brackets
   delocalisation error — at any size the DFT Hessian affords); escalate to UvA supercomputer

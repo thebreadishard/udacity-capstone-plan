@@ -242,8 +242,9 @@ literature figures that motivated the design (a hundred-odd gradients for a full
 30 % of columns on anthracene; a few micro-hartree of local-correlation noise) are recorded as
 motivation and are forbidden in any budget sentence.
 
-The escalation path is unchanged in kind — laptop first, then a justified, probe-backed
-request for cluster or rented GPU time — but the first steps are cheaper and more decisive
+The escalation path is unchanged in kind — the student's current laptop first (an 8-core
+Ryzen 7 260 with integrated graphics and no CUDA-class GPU, so GPU work is rented time), then
+a justified, probe-backed request for cluster or rented GPU time — but the first steps are cheaper and more decisive
 than plan 04's. Before any pilot note is written: a DFT-only dry run of the whole probing
 machinery at any size the laptop affords; a probe of which codes offer gradients at the anchor
 level, with memory; one timed coupled-cluster point; and the naphthalene noise-floor

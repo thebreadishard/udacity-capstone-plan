@@ -16,12 +16,14 @@ Two of the three are plan 04's; the changes are named (Why_05 change 10).
 | Budget | Currency | Rule | Governs |
 |---|---|---|---|
 | B1 human | attention hours | **uncapped, logged** (user directive 2026-09-03): one bucket per entry; the plan-01 alarm (plumbing dominating the log) triggers a written review, never a ceiling | everything a person does |
-| B2 own machine | wall-clock hours on **the machine the student owns** — the laptop or its replacement, with or without a GPU | **168 h per rung pilot is a checkpoint, not a kill**: crossing it forces a dated note — continue knowingly / reroute to B3 / stop | DFT Hessians through R3, dry runs, R0–R1 probes, ML training |
+| B2 own machine | wall-clock hours on **the machine the student owns**. **Decided 2026-09-04: this is the current laptop, an ASUS Vivobook 18 M1807HA-S8022W** — AMD Ryzen 7 260 (8 cores / 16 threads), integrated AMD Radeon graphics (no CUDA-class GPU), RAM as printed by the R0 pilot probe (the SKU ships as 16 or 32 GB DDR5; the plan-04 proposal recorded 32 GB); a replacement is bought **only if a probe shows it necessary**, by dated note | **168 h per rung pilot is a checkpoint, not a kill**: crossing it forces a dated note — continue knowingly / reroute to B3 / stop | DFT Hessians through R3, dry runs, R0–R1 probes, ML training |
 | B3 external | cluster node-hours **and rented GPU-hours** (a plan-05 addition) | **no number until three things exist in writing**: (a) access — an allocation, or a dated spend cap for rented time; (b) a timed probe on the actual machine, printed by a script; (c) a per-rung cap note derived from it | local-CC probe batches that do not fit B2; reach rungs **including their DFT Hessians**; GPU canonical-CC licence runs |
 
 Rented GPU time is a B3 object because it is bought, not because it is remote; the same three
-preconditions apply, with a money cap where an allocation would stand. If the student buys a
-machine, it becomes B2 by a dated note naming it; nothing about B2 is a precondition.
+preconditions apply, with a money cap where an allocation would stand. Because the current
+laptop has no CUDA-class GPU, **every GPU DFT Hessian is B3** (rented), and the CPU path is the
+B2 default for DFT Hessians through R3. If the student buys a machine, it becomes B2 by a dated
+note naming it; nothing about B2 is a precondition.
 
 ## 2. The classification rule (arithmetic, not judgement)
 
@@ -51,7 +53,7 @@ budget fact until printed. Literature figures are motivation only:
 | Gradients for a full Hessian, DFT level | O1NumHess: saturates ~100–124 for hundreds of atoms; worst covalent case a conjugated polyene, MAD 6–12 cm⁻¹ (bib 23, fetched) | K(G) per rung — NOT_RUN; mode G is a bonus on the 2026-09-03 landscape |
 | Local-CC single point, coronene, TZ | grok_chat_4 assertion: tens of minutes to hours per node | wall_clock_per_probe(R3) — NOT_RUN |
 | Local-approximation error growth | Altun et al.: DLPNO error on acenes grows ≈ linearly with ring count; CPS(6/7) reduces it at 2× cost (bib 44, fetched) | Q6 threshold line; c_CPS — NOT_RUN |
-| DFT Hessian on GPU | GPU4PySCF: 30× over a 32-core node (abstract, bib 25); an 84-atom def2-TZVPP Hessian in ~30 min on one A100 (snippet only) | B2 timing per rung through R3 — NOT_RUN. **R6 (C₃₈₄H₄₈: 3,552 basis functions at 4-31G, ~1,300 perturbations) is B3** unless a timed probe at the R4 species shows otherwise |
+| DFT Hessian on GPU | GPU4PySCF: 30× over a 32-core node (abstract, bib 25); an 84-atom def2-TZVPP Hessian in ~30 min on one A100 (snippet only) | **B3 (rented) at every rung — the B2 laptop has no CUDA GPU**; the CPU Hessian timing per rung through R3 is the B2 slot — NOT_RUN. **R6 (C₃₈₄H₄₈: 3,552 basis functions at 4-31G, ~1,300 perturbations) is B3** unless a timed probe at the R4 species shows otherwise |
 | Canonical CCSD(T) on GPU | TeraChem: 63 atoms / >1,000 bf, (T) in ~8 h on one node (bib 26, fetched) | Q6 licence-reference timing at pyrene — NOT_RUN, B3 |
 | Local-CC(T) gradient | PySCFAD AD gradients demonstrated to 29 atoms; no production code offers one (bib 31–34, fetched) | the gradient-availability probe with peak memory — NOT_RUN |
 
