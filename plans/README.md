@@ -11,7 +11,7 @@
 > — the same criterion, ladder, opponents and gates as plan 04, with the coupled-cluster anchor
 > obtained by **probing the CC−DFT force-constant correction** at a measured, size-saturating
 > probe count instead of learning a per-molecule surface. Plan 04 is **superseded and kept in
-> the tree** until the user decides on its removal; see
+> the tree** as a read-only record (user decision 2, 2026-09-04); see
 > [`05_delta-probed-ir-pipeline/GoalGathering/Why_05_Supersedes_04.md`](05_delta-probed-ir-pipeline/GoalGathering/Why_05_Supersedes_04.md).
 > The paragraphs below this banner describe the state up to plan 04 and are unedited.
 

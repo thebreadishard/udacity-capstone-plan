@@ -19,8 +19,9 @@ of the aromatic infrared bands JWST now resolves. The reference predictions — 
 the NASA Ames PAH IR Spectroscopic Database (PAHdb) — rest on scaled harmonic DFT, whose
 systematic uncertainties its own current paper calls "currently unquantified" (Ricca et al.
 2026). This project builds and tests one pipeline: any individual neutral aromatic molecule
-in, an infrared absorption spectrum out, with the **harmonic force constants corrected to
-coupled-cluster quality** and a measured error budget on every claimed band.
+in, an infrared absorption spectrum out, with the **harmonic force constants corrected by a local coupled-cluster anchor, checked
+against canonical coupled cluster where affordable**, and a measured error budget on every
+claimed band.
 
 Plan 04, reviewed in the previous round, obtained its coupled-cluster anchor by learning a
 per-molecule potential-energy surface from thousands of local coupled-cluster points. Its
@@ -136,7 +137,8 @@ fragment-probed form.
 ### 5.1 The pipeline, per molecule
 
 1. **Geometry, harmonic Hessian and dipole derivatives** at a declared DFT level, analytic, on
-   a GPU where the deck names one; DFT cubic and semi-diagonal quartic constants for the scored
+   the student's laptop's CPU through coronene (it has no CUDA GPU; any GPU work is rented
+   time); DFT cubic and semi-diagonal quartic constants for the scored
    band families and every mode the resonance search couples to them.
 2. **Δ₂-probing.** A hashed, ordered set of displacement patterns; at each, local coupled
    cluster and DFT with frozen domains; sparse recovery of the correction in the DFT
@@ -160,9 +162,9 @@ fragment-probed form.
 |---|---|---|---|
 | R0 | benzene | accuracy | probing licence against local and canonical references; the DFT-only dry run |
 | R1 | naphthalene | accuracy | the noise-floor measurement; the anchor licence; first locality read |
-| R2 | pyrene, chrysene, triphenylene (gas-phase data), tetracene (matrix only) | accuracy | first off-diagonal-count ratio; direct-block locality probe; canonical diagonal check |
+| R2 | pyrene, chrysene, triphenylene (gas-phase data — hot-vapour GC-IR spectra at 8 cm⁻¹, so the C–C families are expected undecidable on this source), tetracene (matrix only) | accuracy | first off-diagonal-count ratio; direct-block locality probe; canonical diagonal check |
 | R3 | coronene | accuracy | second ratio; the numeric size sentence is decided here |
-| R4–R5 | C₅₄–C₂₁₆ class | reach (bonus) | expert-judgment datum; the learned-prior experiment |
+| R4–R5 | C₅₄–C₂₁₆ class | reach (bonus as spectra; the R4 fragment checks promised conditional on cluster access) | expert-judgment datum; the first rungs where the learned prior, if it earned its licence at R2–R3, may carry the recovery; the fragment-vs-whole comparison on a molecule larger than coronene and the fragment-radius convergence test |
 | R6 | C₃₈₄H₄₈-class | reach | fragment-probed only, under a three-part measured licence (locality at R2–R3; coronene probed in fragments reproducing coronene probed whole; direct blocks on the R6 fragments); otherwise a per-family or full refusal |
 
 One change to R2 was forced by the project's own measurement: plan 04 had excluded
@@ -170,8 +172,14 @@ triphenylene as having no laboratory spectrum, but plan 04's NIST coverage probe
 gas-phase spectra for pyrene, chrysene and triphenylene and none for tetracene. Plan 05
 scores triphenylene on its gas-phase families and gates tetracene fully. A per-family
 decidability rule replaces plan 04's rung-level gate: a gas-scored family is decidable if the
-measured spectral grid is finer than its beat margin; a matrix-scored family passes through the
-matrix–gas gate or is pre-declared inconclusive.
+scoreboard's **measured band-centre uncertainty** — instrument resolution, centroid precision
+and a temperature term — is smaller than its beat margin; a matrix-scored family passes through
+the matrix–gas gate or is pre-declared inconclusive. The second domain review (4 September)
+verified that the NIST gas-phase spectra for the pyrene-size molecules are hot-vapour GC-IR
+spectra homogenised to 8 cm⁻¹ resolution without concentration data; on that source the C–C
+stretching families at R2 are expected to be undecidable by construction, and the plan says so
+before any number exists. Deciding those families on gas data needs a source the project does
+not yet have — which is why §13.3's request to the supervisor is load-bearing, not polite.
 
 ### 5.3 Why the cost is reported and never described
 
@@ -192,10 +200,14 @@ actually probed, so the response terms that make general local-CC gradients hard
 arise (whether the frozen-space mapping can be kept inside the differentiated graph is the
 first thing measured); and the fragment structure of the local method should let the memory of
 reverse-mode differentiation scale with the largest fragment rather than the molecule (a thing
-to be built, not a property of the released code). The released code itself is hedged
-honestly in the plan: the paper reports the gradient, the repository's front page does not name
-it, and the released energy code is listed as CCSD, so locating the gradient code and
-verifying the triples correction is the side project's first step. The side project has
+to be built, not a property of the released code). The released code was located on 4 September 2026 (a directory `pyscfad/lno/` with the
+differentiable CCSD(T) energy; `pyscf/lno/` in pyscf-forge with closed- and open-shell
+LNO-CCSD(T)); what remains unmeasured is its behaviour with frozen spaces and its memory at
+PAH sizes, which the side project's first milestones print. The second domain review added the
+one physics question the side project must answer first: whether the frozen space, once
+projected onto a displaced geometry's orbitals, is a smooth function of the nuclei on the two
+six-fold-symmetric molecules (benzene, coronene), where the orbital assignment can switch. The
+first milestone prints exactly that. The side project has
 four milestones with printed pass conditions, its own budget line, a twelve-week checkpoint and
 a kill criterion, all frozen before any code exists. If it succeeds, the gradient route is the
 plan's primary route on the rungs it licenses and the size question is answered on the probe
@@ -305,8 +317,18 @@ the energy-only route is accepted as the *guaranteed* route but not as a limit, 
 gradient route is built in the side project of §5.3; the largest species is reached by
 fragment probing under a measured licence. A second cold-read review (Round 8, Pass A, 4
 September) then found the seams those decisions had left across the documents — eleven
-blocking — and all were closed the same day; the domain re-assessment (Round 8, Pass B) is
-owed and its verdict is not yet known. The Round-7 reviewer's own words on the cheapest
+blocking — and all were closed the same day. The second domain re-assessment (Round 8, Pass B,
+4 September) returned **conditional**: a green light for the pre-pilot-note measurement
+programme and for the benzene and naphthalene rungs once four in-spec items were written in
+(a reproducible estimator for the noise gate; a noise-aware stopping rule for the probe count;
+an absolute agreement metric for the locality couplings; a feasibility probe for the canonical
+reference), and no green light yet for the pyrene and coronene rungs on two points, both closed
+in spec the same day: the fragment licence (now three measured parts including a convergence
+test on the target molecule's own interior) and the gas-phase decidability of the C–C families
+(now measured as a band-centre uncertainty, with the expected inconclusive verdict stated in
+advance). The reviewer also settled, by fetching the code, the engine facts this plan had
+hedged. Whether those closures hold is for a further pass to say; none of them needs a
+measurement first. The Round-7 reviewer's own words on the cheapest
 measurements that would settle whether the plan is a mistake are the first owed probes.
 
 ## 10. Decisions the student made on 4 September 2026, and the one still open
@@ -358,6 +380,11 @@ Listed here because a supervisor's objection to any of them would reopen it.
 5. **Laboratory decidability** (carried): the per-family rule pre-declares undecidable
    families inconclusive; gas-phase or jet-cooled sources beyond PAHdb and the NIST WebBook
    would enlarge the decidable set.
+7. **The R2 gas scoreboard cannot decide the C–C families.** Verified on 4 September: the
+   NIST/EPA spectra are hot-vapour GC-IR at 8 cm⁻¹ resolution. Response: the decidability rule
+   now measures the band-centre uncertainty per family before the pilot note and pre-declares
+   those families inconclusive by construction; a better gas-phase source (§13.3) is the only
+   thing that changes that.
 6. **The side project becomes a time sink** — the failure mode that ended plan 01. Response:
    its own budget line, a twelve-week checkpoint, a kill criterion frozen in advance, and an
    alarm that forces a written review if its hours outgrow the three data modules combined.
@@ -384,8 +411,10 @@ module may ship an honest fail-closed state to meet its date, and the science co
    (§10), both decided by the student as methods subject to measurement — a supervisor's
    objection would reopen either — and on the side project of §5.3, which is where the
    plan's ambition and its main time risk both sit.
-3. Advice on laboratory sources: gas-phase or jet-cooled spectra for tetracene- and
-   coronene-class species would directly enlarge the decidable set.
+3. **Laboratory sources — now load-bearing.** Gas-phase or jet-cooled spectra of pyrene,
+   chrysene and triphenylene at better than 8 cm⁻¹ resolution and known temperature would make
+   the C–C families at the pyrene-size rung decidable, which the NIST hot-vapour spectra cannot;
+   the same for tetracene- and coronene-class species would enlarge the decidable set further.
 4. When the naphthalene measurements justify it: sponsorship of a cluster-time request sized
    by the timed probes, and, at the large-rung stage, serving as or nominating the named expert
    whose pre-registered judgment is the honest datum where no laboratory truth exists.

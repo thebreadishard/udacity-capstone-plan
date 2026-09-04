@@ -96,13 +96,19 @@ is the *opponent* of this project's pipeline, not its training data."
 
 **Contribution.** The lab truth the whole plan is scored against, plus two numbers the ladder
 only asserts until this module measures them: the **matrix tolerance** (pilot-note item 4) and
-the **gas-phase grid per molecule and family** (the decidability rule of Ladder §2; the ~4 cm⁻¹
-figure from plan 04's coverage probe is provenance until re-measured here). Dataset: PAHdb
+the **measured band-centre uncertainty u_band per gas-phase band** (the decidability rule of
+Ladder §2: the source's stated resolution — the NIST/EPA GC-IRD spectra are homogenised to
+8 cm⁻¹ at snippet grade, item 50, never the 4 cm⁻¹ point spacing — the centroid precision from
+the signal-to-noise, and a temperature term for hot-vapour sources; printed per family before
+the pilot note, with the verdict *gas-decidable / matrix-gated / inconclusive by construction*;
+the R2 C–C families are expected in the last class). Dataset: PAHdb
 *experimental* libraries (v3.10 matrix, 84 species; gas-phase v1.00) plus NIST WebBook JCAMP
 gas-phase spectra (plan-02 parser and cache recipe, git history; plan-04 coverage probe and
 `nist_cache/`). Descriptive statistics per band family; **pre-registered hypothesis test**
 (form frozen before the data is joined): *matrix-to-gas band shift is zero* per band family —
-two-sided, declared α, inconclusive allowed. Output feeds pilot-note items 1, 2 and 4.
+two-sided, declared α, inconclusive allowed. Output feeds pilot-note items 1, 2 and 4. M03 is also where the supervisor's help with
+gas-phase or jet-cooled sources (Proposal §13.3) becomes load-bearing: without such a source the
+R2 C–C families cannot be decided on gas data.
 
 **Rubric fit.** Public before start; ≥500 rows; ≥6 columns; numeric + grouping (band family /
 phase / charge); distinct from M02 (measurements vs computed predictions). Sources are not on
@@ -146,7 +152,7 @@ between which DFT modes are large — from DFT-level features (mode frequencies,
 atomic environments). That is the Concordant Mode Approach's Level-C diagnostic (bib 43)
 learned instead of computed. Its output is a **learned prior** for the recovery: scored on the dry-run corpus (P3);
 **earned** on R2 and R3 by running both recoveries on the same responses and agreeing with the
-structural Δ₂ per family within τ₇ (direct blocks within η₈); **spent** on R4–R6, where a
+structural Δ₂ per family within τ₇ (direct couplings within η₈·S); **spent** on R4–R6, where a
 prior-assisted recovery may be the only full recovery and the certificate says the spectrum
 depends on it (Ladder §3) — user directive 2026-09-04: inheritance is not authority.
 
@@ -169,9 +175,11 @@ the public **Hessian QM9** set (bib 47: 41,645 molecules, ωB97x/6-31G* Hessians
 **B3LYP/6-31G* Hessians recomputed on an aromatic-heavy QM9 subset** — benzene derivatives and
 conjugated rings over-represented; **the subset's size is fixed by a dated note after the
 zero-CC dry run has printed the B2 laptop's per-molecule Hessian timing** (no size appears
-here; Round-8 Pass A issue 10) — giving Δ₂ = ωB97x − B3LYP per molecule with the exact-exchange
-contrast the dry run needs. The PAH dry-run tensors and the probed tensors from the rungs that have run are a
-**held-out test set only**. Published as its own release (Zenodo DOI, deck hashes) **before
+here; Round-8 Pass A issue 10) — giving Δ₂ = ωB97x − B3LYP per molecule with the exact-exchange contrast the dry run needs.
+QM9 molecules have at most nine heavy atoms (recalled by the Round-8 reviewer; verified when
+the corpus is built), so the corpus contains no PAH larger than benzene and is off-distribution
+from every rung: the PAH dry-run tensors and the probed tensors from the rungs that have run are
+a **held-out test set only**, and P3's effect size is reported on them as well as on the corpus. Published as its own release (Zenodo DOI, deck hashes) **before
 Module 05 starts**.
 
 **Problem domain and model family (rubric).** Domain: **sequence** (a molecule as a sequence of
@@ -193,8 +201,8 @@ project" and "publicly available … before this project starts". Hessian QM9 is
 **Whether QM9 itself served an earlier module is open decision 7**: the scraped rubric pages
 carry the student's words naming QM9 for the Foundations project (Round-8 Pass A issue 20). If
 module 02 was submitted on QM9, the Hessian QM9 parent set is exposed to reading 2 and this row
-is re-argued — the fallback is then a different public Hessian source, named and verified at
-that moment. The recomputed B3LYP side is new computed data produced for
+is re-argued — the fallback is then a different public Hessian source — **a named debt, to be searched and
+verified before Module 05 starts; none is named from recall.** The recomputed B3LYP side is new computed data produced for
 this module. The derived Δ₂ tensors are a new quantity with their own DOI. Under reading 1 the
 corpus is distinct; the report carries a provenance paragraph saying exactly that and stating
 that the PAH dry-run tensors were computed under plan 05's `probes/` and appear in no earlier
@@ -228,10 +236,20 @@ the published outcome; the rubric is satisfied either way. On promised rungs the
 add patterns to the deck *before the hash* (they are then ordinary patterns); it may never
 touch the deck after any response exists.
 
-**Dataset.** The PAH dry-run tensor corpus and the pattern-response records of the dry runs
-(own computed corpus, its own Zenodo release, **new split hash**) — distinct from M05's
-QM9-derived corpus. Generated patterns are model *output*, never shipped as data; only their
-computed responses are.
+**Dataset.** The **pattern-response records of the QM9-subset dry runs** (own computed corpus,
+its own Zenodo release, **new split hash**) — distinct from M05's QM9-derived Δ₂ corpus in
+quantity (responses to patterns, not Hessians) and, because the PAH dry-run tensors are M05's
+held-out test set and are **excluded from M06's training data**, without cross-module overlap.
+Generated patterns are model *output*, never shipped as data; only their computed responses
+are.
+
+**Display and qualitative evaluation (rubric Task 4).** A displacement pattern is neither an
+image nor a sentence; the notebook renders generated patterns as displacement arrows on the
+molecular frame beside deterministic-deck patterns, and evaluates them qualitatively against
+three stated criteria: symmetry consistency with the molecule's point group, locality (the
+pattern's atoms lie within r_max of each other), and non-redundancy with patterns already in
+the deck; failure cases (patterns that duplicate the deck, or that displace atoms with no
+shared family mode) are shown.
 
 **Ethics (tied to this run).** A proposed pattern entering a deck after responses exist (the
 pre-registration leak the hash rule prevents); a surrogate's proposals mistaken for a
@@ -248,7 +266,8 @@ c_CPS; refuses B3 submission unless the budget file's preconditions are met), `r
 Memory: the frozen ladder, the budget rules, the pilot note, the Q8 verdicts per family, the
 two licences' status.
 Safeguards, each a refusal with a logged reason: no "beat" sentence without the pilot-note
-hash and the P2 probe output; no "beat" from a mode whose Q6 noise line did not pass at the
+hash and the P2 probe output; no "decidable" verdict without M03's u_band for that family; no
+rung R1–R3 batch without mode E; no "beat" from a mode whose Q6 noise line did not pass at the
 rung's size class; no size sentence without Q8(c) output in both required ratios; **no cost
 adjective anywhere** (a regex over the report draft is part of the tool); no learned prior in
 an R0–R3 scored spectrum, and none on R4–R6 without the licence earned at both R2 and R3; no
@@ -299,7 +318,7 @@ its DFT teacher).
 | 03 | PAHdb experimental v3.10 + gas v1.00 + NIST JCAMP | NASA/NIST public | yes (public today) | no — measurements, not the 02 predictions |
 | 04 | paired theory↔lab table, own versioned release | derived, Zenodo DOI | must be, before M04 | distinct per reading 1 — decided by the user 2026-09-02 (carried); provenance paragraph required |
 | 05 | Hessian QM9 + recomputed B3LYP Hessians → Δ₂ tensors; PAH dry-run tensors as labelled test set | public benchmark + own computed, Zenodo DOI | Hessian QM9 is; the release must be, before M05 | distinct per reading 1 (decision 4), **pending open decision 7** on whether QM9 served module 02; reading-2 fallback executable |
-| 06 | PAH dry-run tensor corpus + pattern-response records, own release, new split hash | computed, Zenodo DOI | must be, before M06 | distinct from 05's QM9-derived corpus; split disjoint by hash |
+| 06 | pattern-response records of the QM9-subset dry runs, own release, new split hash (PAH dry-run tensors excluded — they are M05's test set) | computed, Zenodo DOI | must be, before M06 | distinct from 05's QM9-derived Δ₂ corpus; no overlap with 05's test set; split disjoint by hash |
 | 07 | — | — | — | — |
 | 08 | — | integrates 02, 03, 04, 07 (+05, 06 as bonus reports) | — | reuse by design |
 
