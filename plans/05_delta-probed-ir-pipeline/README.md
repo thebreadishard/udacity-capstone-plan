@@ -137,16 +137,16 @@ All six decisions of 2026-09-04 are closed and recorded in the Goal ("Decisions 
 stay; 3 the R2 re-read stands; 4 Module 05 adopted; 5 the promised set — Δ₂ only, mode E
 guaranteed, mode G built in the side project; 6 the B2 laptop named.
 
-**Open:** 7. Has the Foundations module (02) already been submitted, and on which dataset?
-(Round-8 Pass A issue 20: the scraped rubric page contains the student's words naming QM9 for
-that project.) The mapping's M02 and M05 rows depend on the answer.
+**Decision 7 (closed 2026-09-04):** nothing has been submitted to the school; the draft
+Foundations project on QM9 in the user's GitHub account was never submitted and will be renamed
+or archived to make room for the plan's Module 02. M02 is a plan, not a record; M05's Hessian-QM9
+corpus carries no module-02 reuse exposure (Goal, decision 7). **No decision is open.**
 
 ## Not yet done (owed, in order)
 
 - **Round 9** (if the user wants the loop closed once more): a cold read of the Round-8 Pass B
   patches and a short Pass-B confirmation that its eight closures held — Pass B itself said
   "whether those closures hold is for a further pass to say".
-- The user's answer to open decision 7.
 - Capstone mapping Pass 6 (module-by-module sign-off).
 - **Probe M1** (frozen LNO spaces reproduce the reference energy) — the first code of the
   project, main-project work.
