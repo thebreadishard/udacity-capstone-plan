@@ -7,7 +7,8 @@ enough that super-large PAHs fit into roughly a year of computing, without givin
 intended accuracy?* It is a **source**, like `AI_Chats/grok_chat_4.md` was for plan 04 — not a
 plan, not a result. Every identifier below carries a verify status; nothing here is a measured
 number of this project. **§§1–7 are left as written on the morning of 2026-09-03; §8 records
-what the same day's two reviews corrected.** Where §8 contradicts an earlier section, §8 wins.
+what the same day's two reviews corrected; §9 records what the 2026-09-04 decisions changed.**
+Where they disagree, §9 wins over §8 and §8 over §§1–7.
 
 The trigger: the user reported that a separate assistant session estimated that one large PAH
 would still take "many, many hours" of supercomputer time through the plan-04 pipeline. That
@@ -268,3 +269,22 @@ this section wins and the frozen documents follow it.
   recomputed B3LYP Hessians; the user may veto a DFT–DFT target (open decision 4).
 - **R6's DFT Hessian is itself a B3 object** (C₃₈₄H₄₈ at 4-31G: 3,552 basis functions, ~1,300
   perturbations) unless a timed probe at the R4 species shows otherwise.
+
+## 9. What the 2026-09-04 decisions changed (appended; wins over §§1–8 where they differ)
+
+- **Mode E is the guaranteed route and mode G the aimed-for route** that a pre-registered side
+  project builds (Side_Project_2026-09-04); §8's "mode G is a bonus" is superseded. The
+  frozen-space energy code that mode E needs is main-project probe M1 under Ladder stop 1.
+- **Fragment probing is a permitted method** (decision 1), used at R6 under a three-part
+  measured licence (Q8 at R2–R3; coronene probed in fragments vs whole at R3; direct blocks on
+  the R6 fragments); §5's "scope decision the user has not made" and §8's "open decision 1"
+  are closed. Whole-molecule R6 is not promised.
+- **Module 05 is adopted** (decision 4): the Δ₂-support Transformer on an aromatic-heavy
+  Hessian-QM9 corpus; §8's "the user may veto a DFT–DFT target" is closed. The learned prior
+  earns a licence on R2–R3 and is spent on R4–R6 (Ladder §3).
+- **The R2 set** (decision 3), **all plan folders in the tree** (decision 2) and **the B2
+  laptop** (decision 6) are recorded in the Goal.
+- **Inheritance is not authority** (user directive): no rule of plan 04 binds plan 05 unless it
+  serves the goal or rests on a measurement.
+- The "O(1)" language of §2 is a description of the literature it cites; plan 05 itself writes
+  no cost adjective (Goal, forbidden quotes).

@@ -108,8 +108,9 @@ line" must mean per band class.
 2. Mackie/Esposito anharmonic method papers (item 12).
 3. MNRAS landing for Mai 2025 (item 5); Mulas 2018 landing re-fetch (item 6).
 4. Joblin-era T-dependence references (item 20).
-5. Local-CC method and software citations — DLPNO (ORCA, Psi4), LNO (MRCC, PySCFAD) — items
-   17, 32, 33, 34; Sylvetsky pinned; the rest unpaid.
+5. Local-CC method and software citations — the DLPNO-CCSD(T) method papers (item 17, NOT
+   FETCHED) and the Mester et al. 2025 MRCC overview (item 34, second identifier); items 32,
+   33 and 34's Nagy & Kállay are OK; Sylvetsky pinned.
 6. C₃₈₄H₄₈ per-species presence in PAHdb v4.00 — an M02 task.
 
 Debts that concern plan 05's *method* rather than its opponents (full texts of items 27, 28,

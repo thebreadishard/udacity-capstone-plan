@@ -18,13 +18,12 @@
 > **Current: plan 05.** Plan 05 — [Δ-Probed IR Pipeline](plans/05_delta-probed-ir-pipeline/) —
 > was created on 2026-09-03 and supersedes plan 04, keeping plan 04's product, criterion,
 > ladder, opponents and gates and changing one thing: the coupled-cluster anchor is a
-> **probed correction to the force constants** (probe count measured per rung, expected to
-> stop growing with size) instead of a learned per-molecule surface. Plan 04's folder stays in
-> the tree until the user decides on its removal. The paragraphs below describing plan 04 are
+> **probed correction to the force constants** (probe count measured per rung) instead of a learned per-molecule surface. All plan folders
+> stay in the tree (user decision, 2026-09-04). The paragraphs below describing plan 04 are
 > kept as written on 2026-09-02/03; where they say "current", read plan 05.
 >
 > **Plan 04** — [CC-Anchored IR Pipeline](plans/04_cc-anchored-ir-pipeline/) —
-> was created on 2026-09-02 and supersedes plan 03. Plan 03 was **removed from the tree on
+> was created on 2026-09-02 and supersedes plan 03 (kept in the tree as a read-only record). Plan 03 was **removed from the tree on
 > 2026-09-02**; git history keeps it. Round-5 Pass B gave **no green light** for plan
 > 03's frozen scope, and that verdict binds plan 04's architecture (one scope, one clock).
 >
@@ -59,8 +58,10 @@ constants, at a probe count measured per rung.
 | | Plan | Status |
 |---|---|---|
 | **03** | [Presence-Update-Rule](plans/03_presence-update-rule/) | Superseded by 04 (2026-09-02); removed from the tree the same day and **restored 2026-09-04** as a read-only record. Draft; never complete as a plan; never executed. |
-| **04** | [CC-Anchored-IR-Pipeline](plans/04_cc-anchored-ir-pipeline/) | Superseded by 05 on 2026-09-03; kept in the tree pending the user's removal decision. Draft; Round-6 reviews run and addressed; never executed. |
-| **05** | [Δ-Probed-IR-Pipeline](plans/05_delta-probed-ir-pipeline/) | **Current.** Draft as of 2026-09-03. Same product and criterion as 04; CC anchor by probing the CC−DFT force-constant correction. Round-7 reviews not yet run. |
+| **01** | [Voxel-Field-PES](plans/01_voxel-field-pes/) | Superseded 2026-08-23; restored to the tree 2026-09-04 as a read-only record. |
+| **02** | [Coupled-Cluster-Anharmonic-IR](plans/02_coupled-cluster-anharmonic-ir/) | Superseded 2026-08-29; restored 2026-09-04 as a read-only record. |
+| **04** | [CC-Anchored-IR-Pipeline](plans/04_cc-anchored-ir-pipeline/) | Superseded by 05 on 2026-09-03; kept as a read-only record. Draft; Round-6 reviews run and addressed; never executed. |
+| **05** | [Δ-Probed-IR-Pipeline](plans/05_delta-probed-ir-pipeline/) | **Current.** Draft as of 2026-09-03, amended 2026-09-04. Same product and criterion as 04; CC anchor by probing the CC−DFT harmonic force-constant correction. Round 7 (A, B) run and addressed; Round 8 Pass A run and addressed; Round 8 Pass B owed. |
 
 Start at [`plans/README.md`](plans/README.md) for why the earlier plans were dropped and what 05
 inherits.

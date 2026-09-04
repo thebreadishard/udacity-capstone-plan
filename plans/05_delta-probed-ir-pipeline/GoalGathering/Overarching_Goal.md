@@ -1,21 +1,48 @@
 # Overarching Goal — Plan 05 Δ-Probed IR Pipeline
 
 **Status.** Prime directive as of 2026-09-03; revised the same day after Round-7 Pass A and
-again after Round-7 Pass B. Supersedes plan 04's Goal file (kept in the tree until the user
-removes plan 04). Draft; not complete as a plan. Every other plan-05 document must agree with
-this file; if they drift, this file wins and the other file is patched.
+Pass B; amended on 2026-09-04 by six user decisions and two user directives, and revised again
+the same day after Round-8 Pass A. Supersedes plan 04's Goal file; plan 04's folder stays in
+the tree as a read-only record (decision 2). Draft; not complete as a plan. Every other plan-05
+document must agree with this file; if they drift, this file wins and the other file is patched.
 
-**Notation.** Δ = local coupled cluster (local CC: DLPNO- or LNO-CCSD(T), a controlled locality
-truncation of CCSD(T)) minus DFT, as force constants: **Δ₂** (Hessian correction), **Δ₃**
-(cubic), **Δ₄** (semi-diagonal quartic). **Mode E** = Δ recovered from energies only; **mode G**
-= from analytic local-CC gradients. **K** = the number of local-CC evaluations a rung needed
-(measured; Ladder §3 defines it); in mode E, K = 2M + K_off, where 2M is the diagonal floor
-(M modes) and **K_off** the off-diagonal count. **Structural prior** = the fixed, parameter-free
-regulariser of the promised recovery (frequency-banded; Distilled §3); **learned prior** = the
-Module-05 Transformer, a bonus. **GVPT2** = resonance-explicit second-order vibrational
-perturbation theory; **MD-ACF** = spectrum from the dipole autocorrelation of molecular
-dynamics; **CMA** = the Concordant Mode Approach (bibliography items 42–43), the nearest
-published relative of this plan's diagonal recovery.
+## Glossary (defined here; every other file uses these terms without redefining them)
+
+- **Δ** = local coupled cluster minus DFT, as force constants near equilibrium: **Δ₂** the
+  Hessian correction, **Δ₃** cubic, **Δ₄** semi-diagonal quartic. Only Δ₂ is promised.
+- **Local CC** = DLPNO-CCSD(T) (domain-based local pair natural orbital) or LNO-CCSD(T) (local
+  natural orbital): controlled locality truncations of CCSD(T). **PNO/LNO spaces**: the
+  per-pair / per-fragment virtual spaces those methods truncate to. **Frozen spaces**: those
+  spaces held fixed at the reference geometry for every probe. **CPS** = complete-PNO-space
+  extrapolation. **TightPNO / NormalPNO** = threshold presets.
+- **Mode E** = Δ₂ recovered from energies only; **mode G** = from analytic local-CC gradients.
+- **Pattern** = one simultaneous multi-atom displacement geometry; **q_s** = its amplitude in
+  dimensionless normal-coordinate units; **response** = the CC−DFT energy (mode E) or gradient
+  (mode G) difference at a pattern.
+- **ρ** = the held-out residual (Distilled §3); **ρ\*** = its frozen target; **f_h** = the
+  held-out fraction; **K** = the measured pattern count at which ρ ≤ ρ\*; in mode E,
+  K = 2M + K_off with M the number of modes and **K_off** the off-diagonal count; **K_cap** =
+  the pilot-note cap on K.
+- **Structural prior** = the fixed, parameter-free, frequency-banded regulariser of the
+  recovery (band width **w**); **learned prior** = the Module-05 Transformer's predicted
+  support; **the licence** = the conditions under which the learned prior may enter a rung
+  (Ladder §3).
+- **τ** = the smallest beat margin (pilot-note item 2); **τ₇** = the Q7 agreement tolerance in
+  cm⁻¹ per family; **d₇** = the Q7 discriminability factor; **r_c** = fitted locality length
+  (measured); **r_max**, **ε₈** (long-range share), **η₈** (relative block disagreement),
+  **γ** (saturation factor) = the Q8 numbers (pilot-note item 12); **σ_E**, **σ_g** = the Q6
+  noise scatters in mode E / mode G.
+- **Gates**: **Q0–Q8** integrity gates, **P0–P5** science gates (Distilled §7). **Rungs
+  R0–R6**; **A** = accuracy rung, **R** = reach rung. **Budgets B1** (human hours), **B2** (own
+  machine), **B3** (cluster or rented time). **M1–M5** = the frozen-space probe (main project)
+  and the side project's milestones. **Reading 1 / reading 2** = the two readings of the
+  rubric's dataset-reuse clause (Mapping §3 M04). **The pilot note** = the dated note that
+  freezes the pilot-dependent numbers (Ladder §4). **The dated notes of Ladder §2** = the R2
+  re-read note and the R6-form note.
+- **CMA** = the Concordant Mode Approach (items 42–43): **CMA-0** diagonal-only high-level
+  force constants in a low-level mode basis; **CMA-2** with diagnostic-selected off-diagonals.
+- **GVPT2** = resonance-explicit second-order vibrational perturbation theory; **MD-ACF** =
+  spectrum from the dipole autocorrelation of molecular dynamics; **QFF** = quartic force field.
 
 ## Prime directive
 
@@ -29,16 +56,18 @@ deliverable is a labelled theory-vs-theory spectrum, conditional on cluster acce
 are the scored quantity; intensities are reported, not part of this criterion.
 
 **And record what the coupled-cluster part cost, as a measured probe count per rung.** The
-**guaranteed route is mode E**: K = 2M + K_off local-CC energies with frozen domains, where the
-open cost question lives in K_off. **The aimed-for route is mode G** — Δ₂ from analytic
-local-CC gradients with frozen domains, at O(1)-class probe counts — which no production code
-offers today and which plan 05 therefore **builds** in a pre-registered side project with
-frozen milestones and a kill criterion ([Side_Project_2026-09-04_ModeG_Gradients.md](Side_Project_2026-09-04_ModeG_Gradients.md); user decision 2026-09-04). On every
-rung where the side project's milestone licenses it, mode G is the route and the cost record
-says so; elsewhere mode E runs. The cost record is promised for every rung that ran. **The only
-size sentence the thesis may write is numeric** (Ladder §1): how K (mode G) or K_off (mode E)
-went from R1 to R3 against how M went. No cost adjective is ever written. A rung where mode E cannot resolve the correction above the
-local-CC noise floor (Q6, a frozen formula) carries no "beat" language and says so.
+**guaranteed route is mode E**: K = 2M + K_off local-CC energies with frozen spaces, where the
+open cost question lives in K_off; it is guaranteed given a frozen-space local-CC energy code,
+which is main-project probe M1 under Ladder stop 1. **The aimed-for route is mode G**: Δ₂ from
+analytic local-CC gradients with frozen spaces, where each pattern returns 3N responses instead
+of one. No production code offers it today; plan 05 **builds** it in a pre-registered side
+project with frozen milestones and a kill criterion
+([Side_Project_2026-09-04_ModeG_Gradients.md](Side_Project_2026-09-04_ModeG_Gradients.md);
+decision 5). On every rung where its milestone licenses it, mode G is the route and the cost
+record says so; elsewhere mode E runs. The cost record is promised for every rung that ran.
+**The only size sentence the thesis may write is numeric** (Ladder §1): how K (mode G) or K_off
+(mode E) went from R1 to R3 against how M went. No cost adjective is ever written, in this file
+or any other.
 
 The success criterion is **relative and measured**, not absolute. "Chemical precision" is not
 the promise; *beating the frozen lines where the data can decide it* is. The opponents are
@@ -53,21 +82,21 @@ The accuracy/reach split ([Frozen_Ladder_and_Tolerances.md](Frozen_Ladder_and_To
 
 > **Accuracy (rungs R0–R3).** Can a per-molecule pipeline — DFT geometry, harmonic Hessian
 > and anharmonic constants, plus a **probed coupled-cluster correction Δ₂ to the harmonic
-> force constants**, recovered from K local-CC energies with frozen domains — produce infrared
-> band positions that measurably beat scaled-harmonic DFT (PAHdb v4.00), the in-house
-> calibrated harmonic baseline, and — where its coverage reaches — DFT-ceiling MLMD (Mai
-> 2025), per band against laboratory spectra?
+> force constants**, recovered with the structural prior from K local-CC responses with frozen
+> spaces — produce infrared band positions that measurably beat scaled-harmonic DFT (PAHdb
+> v4.00), the in-house calibrated harmonic baseline, and — where its coverage reaches —
+> DFT-ceiling MLMD (Mai 2025), per band against laboratory spectra?
 >
 > **Cost (all rungs that ran).** How many local-CC evaluations did the correction need at the
-> frozen residual target, per rung — K in mode G where the side project has licensed it, K_off
-> in mode E elsewhere — and did that number saturate between R1, R2 and R3 (Q8c)?
+> frozen residual target, per rung — K in mode G where licensed, K = 2M + K_off in mode E — and
+> did that number (K, or K_off) saturate between R1, R2 and R3 (Q8c)?
 >
-> **Reach (rung R6).** Can the same pipeline — with Δ₂ obtained by **fragment probing**,
-> licensed by Q8 on directly measured blocks at R2–R3 (user directive 2026-09-04: a permitted
-> method, decided by measurement) — produce a spectrum with a stated error budget at sizes
-> where no anharmonic or CC-quality prediction exists at all, with its cost record printed
-> beside R3's? **Whole-molecule probing at R6 is not promised in any branch**: in mode E it is
-> at least 2M = 2,580 local-CC energies of a 432-atom molecule.
+> **Reach (rung R6).** Can the same pipeline — with Δ₂ obtained by **fragment probing**, under
+> the fragment licence of Ladder §3 (Q8 on direct blocks at R2–R3; the fragment-vs-whole
+> comparison at R3; a direct-block probe on the R6 fragments themselves) — produce a spectrum
+> with a stated error budget at sizes where no anharmonic or CC-quality prediction exists at
+> all, with its cost record printed beside R3's? **Whole-molecule probing at R6 is not
+> promised**: in mode E it is at least 2M = 2,580 local-CC energies of a 432-atom molecule.
 
 **Where CC is spent, and why only there.** The promised correction is harmonic (Δ₂). The
 hybrid quartic-force-field literature (items 14, 27, and the Esposito 2024 naphthalene work,
@@ -76,15 +105,14 @@ quartic constants at DFT level; and the energy-only probes of mode E cannot prod
 three-index cubic constants φ_ijk that PAH combination-band resonances need (Round-7 Pass B
 issue 3). Plan 05 therefore promises **no CC correction to anharmonic constants**. A
 **diagonal-cubic bonus probe** (Δ₃ along each scored family's mode, four energies per mode)
-reports how large that correction would have been; if it is below the beat margin at R0–R1,
-that is the published reason the allocation was right. The DFT cubic and semi-diagonal quartic
+reports how large that correction would have been. The DFT cubic and semi-diagonal quartic
 constants are computed for a family set **closed under the resonance search** (partner modes
 displaced too).
 
 **What is scored.** Band **positions**. Intensities are computed from DFT dipole derivatives
 and reported with provenance; no CC correction to dipoles is promised — local-correlation
 domain changes produce micro-hartree discontinuities that wreck finite-difference field
-properties even with fixed PNO dimensions (item 30, full text) — and they are *scored* only
+properties even with fixed PNO dimensions (item 30, full text read) — and they are *scored* only
 where the pilot note names a gas-phase intensity scoreboard. Band pairing is fixed in the pilot
 note, never chosen by "strongest band in a window".
 
@@ -93,47 +121,43 @@ note, never chosen by "strongest band in a window".
 Per molecule, with the rung chosen by the declared size ladder:
 
 1. **Geometry + harmonic Hessian + dipole derivatives** at a declared DFT level (B3LYP-class,
-   basis frozen per rung), analytic, on GPU where the deck names one. The global, delocalised
-   part; per molecule. At R6 this Hessian is itself a B3 object (thousands of basis functions,
-   ~1,300 perturbations) unless a timed probe at the R4 species shows otherwise. DFT cubic and
-   semi-diagonal quartic constants from finite differences of the analytic DFT Hessian along
-   the resonance-closed family set.
+   basis frozen per rung), analytic, on the B2 laptop's CPU through R3 (it has no CUDA-class
+   GPU; any GPU Hessian is rented B3 time). At R6 this Hessian is itself a B3 object unless a
+   timed probe at the R4 species shows otherwise. DFT cubic and semi-diagonal quartic constants
+   from finite differences of the analytic DFT Hessian along the resonance-closed family set.
 2. **Δ-probing (Δ₂).** A hashed, ordered set of displacement patterns: simultaneous multi-atom
    displacements built so every atom's local displacement space is complete, plus explicit
    two-mode patterns for every off-diagonal block the zero-CC dry run flags as large (CMA-2's
    diagnostic, written as a pattern rule before any response exists). Amplitudes are chosen
    **from** the Q6 step grid (the largest step under the noise line), never the reverse. At
-   every pattern, local CC and DFT are evaluated **with correlation domains, pair lists and
-   PNO counts frozen at the reference geometry**. Patterns are consumed in hashed order; the
-   recovery (sparse, in the DFT normal-mode basis, **frequency-banded** structural prior:
-   off-diagonals within a frequency band unpenalised, outside it ℓ₁-penalised, plus a low-rank
-   term) is re-solved as patterns accrue, and **K is the count at which the held-out residual
-   first falls below the frozen target ρ\***. Licences: Q6 (anchor noise, bias and threshold
-   sensitivity against frozen formulas), Q7 (recovery vs direct references at R0–R1, printed
-   for the diagonal-only and the full recovery), Q8 (locality on **directly measured** blocks,
-   and saturation of K_off).
+   every pattern, local CC and DFT are evaluated **with frozen spaces**. Patterns are consumed in
+   hashed order; the recovery (sparse, in the DFT normal-mode basis, structural prior) is
+   re-solved as patterns accrue, and **K is the count at which ρ first falls below ρ\***.
+   Licences: Q6 (anchor noise in the mode used, bias and threshold sensitivity against frozen
+   formulas), Q7 (recovery vs direct references at R0–R1, printed for the diagonal-only and the
+   full recovery), Q8 (locality on **directly measured** blocks, and saturation).
 3. **Spectra** via the **resonance-explicit routes** frozen in plan 04 — GVPT2 with named
    thresholds and a polyad cap; MD-ACF on a *defined* DFT-plus-Δ potential (Distilled §3); or
    CH-stretch unscored at that rung — on DFT-plus-Δ₂. **Raw VPT2 without resonance treatment
    is forbidden on promised families.** No scale factor on anharmonic output.
-4. **Error budget**: every claimed band carries its measured error sources — DFT level;
-   held-out residual; local-CC noise floor and domain-freezing bias against the Q6 formulas;
-   the long-range share of the family's correction measured on direct blocks (Q8b);
-   matrix–gas shift where matrix data is used.
+4. **Error budget**: every claimed band carries its measured error sources — DFT level; ρ;
+   local-CC noise floor and space-freezing bias against the Q6 formulas; the long-range share
+   of the family's correction measured on direct blocks (Q8b); matrix–gas shift where matrix
+   data is used.
 
-Known risks, named now, each with the gate that measures it: frozen-domain local-CC energies
+Known risks, named now, each with the gate that measures it: frozen-space local-CC energies
 may not be smooth at the micro-hartree level that mode E needs — the published fixed-PNO-
 dimension remedy failed for field derivatives (item 30) and nuclear displacements are untested
 (Q6, with thresholds); Δ₂ may not be near-diagonal in the DFT mode basis for aromatic ring
 modes — CMA-0 fails on exactly those (item 43) — which is why the prior is banded and Q7 prints
 diagonal-only and full recoveries side by side; Δ may not be local, or local for C–H modes and
 not for the delocalised C–C families (Q8a/b on direct blocks, per family); K_off may grow with
-the near-degenerate manifold (Q8c on K_off); mode G may not exist above R1 on the verified
-landscape (the gradient-availability probe, with memory); the local-approximation error itself
-grows with acene length (item 44; the TightPNO/NormalPNO and CPS columns of Q6); the CC
-correction may not improve on DFT-level anharmonicity on some families (P4's Δ=0 null row) or
-may lose to calibrated harmonics, whose fitted factors already absorb the mean of a ~5 cm⁻¹
-harmonic difference (item 45, snippet; a P2 outcome) — both publishable.
+the near-degenerate manifold (Q8c); mode G may not materialise (the side project's kill
+criterion); the local-approximation error itself grows with acene length (item 44; the
+TightPNO/NormalPNO and CPS columns of Q6); the CC correction may not improve on DFT-level
+anharmonicity on some families (P4's Δ=0 null row) or may lose to calibrated harmonics, whose
+fitted factors already absorb the mean of a ~5 cm⁻¹ harmonic difference (item 45, snippet
+grade; a P2 outcome) — both publishable.
 
 ## Temperature and emission (the 0 K question) — carried from plan 04
 
@@ -150,72 +174,34 @@ expectations section below are numbered separately.
 - **Size:** the method must work on super-large aromatics — **including C₃₈₄H₄₈-class species
   (the 101–386-carbon PAHdb bin) and larger**. Whether C₃₈₄H₄₈ itself has a PAHdb v4.00 entry
   is an unpaid check (frozen-lines debt 6); the R6 target species is chosen from the atlas.
-  R6 is reached by fragment probing, licensed by Q8 at R2–R3 (decided 2026-09-04; recorded
-  in the pilot note).
+  R6 is reached by fragment probing under the fragment licence (decision 1; Ladder §3).
 - **Compute:** the plan must not die on compute. Start on the current laptop — the B2 machine
-  named in the budget (decided 2026-09-04: an 8-core Ryzen 7 260 without a CUDA-class GPU;
-  replaced only if a probe shows it necessary) — (R0 pilot proves the
-  pipeline end-to-end, including a **zero-CC dry run** of the probing machinery — Δ between
-  B3LYP and a functional with markedly more exact exchange, so the dry run brackets
-  delocalisation error — at any size the DFT Hessian affords); escalate to UvA supercomputer
-  access or rented GPU time when a rung demands it, under
+  named in the budget (decision 6: an 8-core Ryzen 7 260, 32 GB, no CUDA-class GPU; replaced
+  only if a probe shows it necessary) — with the R0 pilot and a **zero-CC dry run** of the
+  probing machinery (Δ between B3LYP and a high-exact-exchange functional, run in **both**
+  modes since DFT gradients exist, at any size the DFT Hessian affords); escalate to UvA
+  supercomputer access or rented GPU time when a rung demands it, under
   [Compute_Budget_2026-09-03.md](Compute_Budget_2026-09-03.md): human hours **logged, never
   capped**; own-machine wall-clock as **checkpoints**; cluster node-hours and rented GPU-hours
   under per-rung dated notes after timed probes. The classification rule is
-  `wall_clock_per_probe × K_cap` against the 168 h checkpoint, with K_cap a pilot-note cap;
-  if Q6 makes CPS threshold extrapolation mandatory, every probe counts double in that rule.
+  `wall_clock_per_probe × K_cap × c_CPS` against the 168 h checkpoint.
 
-## Scope boundaries (carried)
+## Scope boundaries
 
 - The degree **ends at Module 09**. No Horizon documents, no Projects 10–12.
-- Light–matter dynamics is **out** (plan-03 Pass B verdict binds: one scope, one clock).
+- Light–matter dynamics is **out** (plan-03 Pass B verdict, one scope, one clock — kept because
+  it serves the goal, not by inheritance).
 - JWST spectra motivate the work; **species identification is not a promise**.
 - No sub-tolerance language: observational meaning ends around 10 cm⁻¹; matrix data carries
   its own measured shift; ~1 cm⁻¹-class accuracy is claimed **only if** the lab comparison and
-  the declared controls (held-out residual, local-CC noise floor, threshold sensitivity) all
-  allow it — and never on matrix data.
+  the declared controls (ρ, local-CC noise floor, threshold sensitivity) all allow it — and
+  never on matrix data.
 - **No transferable, train-once spectrum model** — because motif transfer of band positions
   was measured to fail (plan-02 probes), not because plan 04 said so. Every molecule gets its
-  own probed Δ₂. The learned prior (M05) is scored first on the dry-run corpus (P3); the learned prior may enter a promised rung only under a **licence**: (i) P3 has
-  demonstrated its saving on the dry-run corpus at matched K; (ii) at that rung the reference
-  check — Q7 at R0–R1, the direct-block Q8 check at R2–R3 — is computed prior-free and the
-  prior-assisted recovery agrees with it within τ₇ / ε₈; (iii) the cost record says
-  `prior = learned`, and a size sentence compares like with like (same prior at both rungs).
-  Without that licence the promised route is the structural prior.
-
-## Open decisions for the user (not part of the promised set until decided)
-
-1. ~~Fragment probing~~ — **decided 2026-09-04: in, subject to Q8** (see "The goal binds;
-   methods are means"). R6 is promised as fragment-probed Δ₂, conditional on Q8 on direct
-   blocks at R2–R3 and on B3. Whole-molecule R6 is not promised.
-2. ~~Removal of the plan-04 folder~~ — **decided 2026-09-04: every plan folder stays in the tree** (plans 01–03 restored as read-only records).
-3. ~~The R2 A-scored set~~ — **decided 2026-09-04: the re-read stands** (Why_05 change 14;
-   Ladder §2 dated note).
-4. ~~The Module-05 target and corpus~~ — **decided 2026-09-04: adopted** (Distilled §5–§6;
-   Mapping §3 M05). A Transformer predicting the *support* of Δ₂ in the DFT mode basis; corpus
-   = an aromatic-heavy subset of the public Hessian QM9 set (item 47) plus recomputed B3LYP
-   Hessians, with the PAH dry-run and probed tensors as a held-out test set only; success
-   criterion = the P3 saving on the corpus and the per-rung licence of the scope boundaries
-   above, never accuracy for its own sake; the rubric's reuse clause read as for M04 (reading
-   1, reading-2 fallback executable mid-module). With the licence route, M05 is load-bearing
-   for the cost record if P3 succeeds and a published negative result if it does not.
-
-## Forbidden quotes (this thesis)
-
-Do not write any of the following as a Module 08 result:
-
-- "Chemically precise infrared lines."
-- "We beat PAHdb / Mai 2025" without the pre-registered per-band comparison printed by a probe.
-- "We identified PAHs in a JWST spectrum."
-- "The pipeline works to C₃₈₄H₄₈" unless that molecule's rung actually ran and was scored.
-- **"Size-independent", "O(1)", "does not grow with the molecule", "saturates", or any cost
-  adjective** — cost is reported as the printed record (Ladder §1) and, after Q8(c), as the
-  printed ratios; never as an adjective.
-- "A coupled-cluster anharmonic correction" — none is promised; the diagonal-cubic probe is a
-  reported bonus number.
-- "Never done before" — the diagonal mode-E recovery is CMA-0 applied to a difference (items
-  42–43); what the search did not find is stated in the Research note §8 and nowhere else.
-- Any band position without its measured error source named.
+  own probed Δ₂. The learned prior **earns its licence on R2 and R3 and spends it on R4–R6**
+  (Ladder §3): on R0–R3 the scored spectrum is always the structural recovery; on R4–R6 a
+  prior-assisted recovery may be the only full recovery, and the certificate then says that the
+  spectrum depends on the learned prior and how that dependence was checked.
 
 ## The goal binds; methods are means (user directive, 2026-09-04)
 
@@ -226,23 +212,77 @@ must be reached: a pipeline that works.* Consequences, so this directive cannot 
 against the freeze:
 
 1. **Fragment probing is a permitted method, not a scope question.** Whether it is *used* at
-   R4–R6 is decided by measurement — Q8(a/b) on directly measured blocks at R2 and R3 for the
-   scored families — and by nothing else. Open decision 1 is closed: **in, subject to Q8**.
+   R6 is decided by the **fragment licence** (Ladder §3), which is measurement and nothing but
+   measurement: Q8(a/b) on directly measured blocks at R2 and R3 for the scored families; the
+   **fragment-vs-whole comparison at R3** (coronene probed whole *and* in fragments, the two Δ₂
+   agreeing per family within τ₇) and at R4 where whole-molecule probing is affordable; and a
+   **direct-block probe on the R6 fragments themselves** (interior and edge pairs).
 2. **The no-transfer rule is clarified, not weakened.** It forbids transferring *spectra or
    band positions* between molecules (the motif-atlas failure plan 02 measured). A
    locality-verified electronic correction, measured on one region and applied to another
-   region whose local environment is the same within r_max, is a method whose validity Q8
-   measures per family; it is labelled as such in every certificate that uses it.
-3. **R6 stays a promised object**, as fragment-probed Δ₂, conditional on Q8 at R2–R3 and on
-   B3. If Q8 fails for a family, that family's correction is withdrawn from the R6 certificate
-   with the measured long-range share; if it fails for all scored families, R6 is reported
-   with the fail-closed sentence of Distilled §8 — the goal was kept in sight and the method
-   was measured to fall short of it, which is a result.
+   region whose local environment is the same within r_max, is a method whose validity the
+   fragment licence measures per family; it is labelled as such in every certificate that uses
+   it.
+3. **R6 stays a promised object**, as fragment-probed Δ₂, conditional on the fragment licence
+   and on B3. If the licence fails for a family, that family's correction is withdrawn from
+   the R6 certificate with the measured long-range share; if it fails for all scored families,
+   R6 is reported with the fail-closed sentence of Distilled §8 — the goal was kept in sight
+   and the method was measured to fall short of it, which is a result.
 4. **The honesty rules remain the way the goal is pursued, not a reason to stop short of it.**
    No gate in this plan exists to avoid the large molecules; every gate exists so that the
    pipeline can be taken there without lying about what it delivers.
 
-## Value hierarchy (user directive 2026-09-02, carried)
+## Inheritance is not authority (user directive, 2026-09-04)
+
+Nothing is forbidden in plan 05 because plan 04 forbade it. A rule from an earlier plan survives
+here only if it still serves the goal or rests on a measurement that still stands. If knowledge
+transfer makes plan 05 succeed, it is allowed. Decided under this rule: the no-transfer rule is
+kept for spectra and band positions (a measurement); fragment probing is licensed by
+measurement; the learned prior is licensed by measurement (Ladder §3). Round-8 Pass B is asked
+to walk every other inherited rule and say whether it rests on a measurement, on the goal, or
+on habit.
+
+## Decisions of 2026-09-04 (all closed; recorded here so this file, which wins on drift, carries them)
+
+1. **Fragment probing** — a permitted method, used at R6 under the fragment licence; R6 promised
+   as fragment-probed Δ₂, conditional on that licence and on B3; whole-molecule R6 not promised.
+2. **All plan folders stay in the tree**; plans 01–03 restored as read-only records.
+3. **The R2 A-scored set** as re-read against the coverage probe stands: pyrene, chrysene,
+   triphenylene (gas families), tetracene (matrix, M03-gated).
+4. **Module 05 adopted**: a Transformer predicting the support of Δ₂ in the DFT mode basis;
+   corpus = an aromatic-heavy subset of public Hessian QM9 plus recomputed B3LYP Hessians (size
+   fixed by dated note after the B2 Hessian timing is printed), PAH tensors held out as test
+   set only; success = the P3 saving and the licence, not accuracy; reuse clause under reading 1
+   with the reading-2 fallback executable mid-module.
+5. **The promised set**: the harmonic-only correction (Δ₂) is accepted; mode E is the guaranteed
+   route and is *not* accepted as a limit — mode G is built in the side project; R6 per
+   decision 1.
+6. **B2 is the current ASUS Vivobook 18 M1807HA-S8022W** (Ryzen 7 260, 8C/16T, 32 GB DDR5,
+   Radeon 780M, no CUDA GPU); a replacement only if a probe shows it necessary.
+
+**Open (new, 2026-09-04, from Round-8 Pass A issue 20):** 7. Whether the Foundations module
+(02) has already been submitted and on which dataset — the scraped rubric page contains the
+student's words naming QM9 for that project. The mapping's M02 and M05 rows depend on the
+answer; the user is asked to state it.
+
+## Forbidden quotes (this thesis)
+
+Do not write any of the following as a Module 08 result:
+
+- "Chemically precise infrared lines."
+- "We beat PAHdb / Mai 2025" without the pre-registered per-band comparison printed by a probe.
+- "We identified PAHs in a JWST spectrum."
+- "The pipeline works to C₃₈₄H₄₈" unless that molecule's rung actually ran and was scored.
+- **"Size-independent", "O(1)", "does not grow with the molecule", "saturates", or any cost
+  adjective, with or without "-class"** — cost is reported as the printed record (Ladder §1)
+  and, after Q8(c), as the printed ratios; never as an adjective.
+- "A coupled-cluster anharmonic correction" — none is promised; the diagonal-cubic probe is a
+  reported bonus number.
+- "Never done before" — the diagonal mode-E recovery is CMA-0 applied to a difference (items
+  42–43); what the search did not find is stated in the Research note §8 and nowhere else.
+- Any band position without its measured error source named.
+
+## Value hierarchy (user directive 2026-09-02, carried because it is the goal)
 
 Beating the lines on benzene is **not the point**; the small rungs license and calibrate. **The
 destination is the territory where nothing exists yet**: super-large aromatics that no method
@@ -264,23 +304,15 @@ is avoided.
 is a gate; machine checkpoints survive as honesty devices only. Udacity module deadlines are
 school facts handled in the mapping, never a science gate.
 
-## What is inherited — and the rule about inheritance (user directive, 2026-09-04)
+## What is inherited
 
-**Inheritance is not authority.** Nothing is forbidden in plan 05 because plan 04 forbade it.
-A rule from an earlier plan survives here only if it still serves the goal or rests on a
-measurement that still stands. Two cases decided under this rule on 2026-09-04: the
-no-transfer rule is kept for *spectra and band positions* because the plan-02 probes measured
-that motif transfer fails by tens of cm⁻¹ — a measurement, not an inheritance; and transfer of
-a locality-verified electronic correction, or of a learned prior, is **permitted wherever a
-gate shows it serves the goal** (fragment probing under Q8; the learned prior under the
-licence below). If knowledge transfer makes plan 05 succeed, it is allowed.
-
-From plans 01–04, method-agnostic and kept: measured-not-asserted probes; never cite from
-recall; pre-registration, frozen splits with hashes, ≥3 seeds, tuning parity; declared effect
-size, inconclusive publishable; escalation ladders declared in advance, stopping is a result;
-fail-closed reporting; deviations as dated notes committed before the affected number is known.
-From plan 02: the lab-comparison machinery (git history). From plan 04 specifically: the
-opponents, scoreboards, ladder, tolerances, gates and both Round-6 reviews with their closures.
+From plans 01–04, method-agnostic and kept because each serves the goal: measured-not-asserted
+probes; never cite from recall; pre-registration, frozen splits with hashes, ≥3 seeds, tuning
+parity; declared effect size, inconclusive publishable; escalation ladders declared in advance,
+stopping is a result; fail-closed reporting; deviations as dated notes committed before the
+affected number is known. From plan 02: the lab-comparison machinery (git history and the
+restored folder). From plan 04 specifically: the opponents, scoreboards, ladder, tolerances,
+gates and both Round-6 reviews with their closures.
 
 ## Industry frame (carried)
 
