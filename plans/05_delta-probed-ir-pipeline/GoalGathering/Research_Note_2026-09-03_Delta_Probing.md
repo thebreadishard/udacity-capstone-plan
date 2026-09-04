@@ -6,7 +6,8 @@ make the plan-04 pipeline (aromatic molecule in, infrared spectrum out, CC-ancho
 enough that super-large PAHs fit into roughly a year of computing, without giving up the
 intended accuracy?* It is a **source**, like `AI_Chats/grok_chat_4.md` was for plan 04 — not a
 plan, not a result. Every identifier below carries a verify status; nothing here is a measured
-number of this project.
+number of this project. **§§1–7 are left as written on the morning of 2026-09-03; §8 records
+what the same day's two reviews corrected.** Where §8 contradicts an earlier section, §8 wins.
 
 The trigger: the user reported that a separate assistant session estimated that one large PAH
 would still take "many, many hours" of supercomputer time through the plan-04 pipeline. That
@@ -71,7 +72,8 @@ grow with molecule size**:
 compressed-sensing or O(1)-gradient Hessian recovery to the *difference* between a local-CC
 and a DFT surface; any extension of that recovery to cubic/semi-diagonal quartic Δ constants
 for GVPT2; any application at PAH sizes above anthracene at a coupled-cluster level. That
-combination is the proposal.
+combination is the proposal. *(Corrected in §8: the Concordant Mode Approach is prior art for
+the diagonal part.)*
 
 ## 3. What would slot where (the plan-05 method skeleton, in one paragraph)
 
@@ -99,7 +101,8 @@ and the measured locality tail.
    DFT normal-mode basis (K ≈ 2M for the diagonal Δ₂ plus a frozen number of multi-mode
    probes for the off-diagonal part; M = number of modes). A workable split, to be probed:
    CCSD-level gradients plus energy-only (T), since the (T) increment is the smoothest, most
-   local piece (Ruth, Gerbig & Schreiner 2022 learned it from few points).
+   local piece (Ruth, Gerbig & Schreiner 2022 learned it from few points). *(Withdrawn in §8:
+   no engine exists for that split.)*
 2. **Locality decay.** The Δ₂ element between two atoms must decay with their distance within
    the molecule. Measured at R1–R3 before anything larger runs; the decay length r_c is a
    pilot-note number. If Δ₂ does not decay, the probe count does not saturate and the method
@@ -158,37 +161,6 @@ dynamics at CC accuracy" arXiv abstract. Everything else in this note was seen i
 result snippets only and is marked **record (search 2026-09-03)** in the bibliography —
 re-fetch before any scored use.
 
-## 8. Errata and status upgrades after Round-7 Pass A (2026-09-03, same day)
-
-This section is appended; the text above is left as written so the record of what was
-searched and claimed on 2026-09-03 stays intact.
-
-- **Atom and mode counts (§1).** Coronene C₂₄H₁₂: 36 atoms, 3N−6 = 102 modes. C₃₈₄H₄₈: 432
-  atoms, 1,290 modes; "C₃₈₄H₄₈-class" species differ in size, so the count is for that formula.
-- **TeraChem GPU CCSD(T) (§5).** arXiv:2512.01055 was posted in December 2025; the JPCA
-  article (130(10), 2225–2237) went online 2026-02-26 (Crossref).
-- **Sanders et al. (§2).** "Not extended to coupled cluster or to anharmonic constants by its
-  authors" overstated what one full text can show; the correct statement is that the paper
-  itself treats a DFT Hessian only and that the 2026-09-03 search found no later extension.
-- **Locality (§2).** "Short-ranged in real space" is the plan's bet, supported by evidence on
-  *energies* in other systems; no curvature evidence on PAHs exists in this note. Q8 exists
-  because of that.
-- **Status upgrades.** After Pass A issue 8 the following were fetched and their statuses in
-  the bibliography raised: Crossref records for Bégué, Carbonnière & Pouchan 2005 (item 27,
-  author list now verified; its numerical result remains unquoted); Ruth, Gerbig & Schreiner
-  2022 (37); Fusè et al. 2024 (28); Madriaga & Crawford 2025 (30; the μE_h / >100 % figures in
-  §4.3 above came from a search snippet and are **not relied on** in any frozen document);
-  Nagy & Kállay 2019 (34); Welborn, Cheng & Miller 2018 (36); O1NumHess JCTC (23); Sanders
-  et al. (24); Fajen et al. JPCA 2026 (26); REST (41; the "no local coupled cluster" statement
-  rests on an abstract seen in a search snippet). arXiv abstracts for Zhou et al. (38; Phys.
-  Rev. B 100, 184308, 2019) and GPU4PySCF (25; the abstract states a 30× speed-up over a
-  32-core node and does not mention Hessians — the 84-atom/30-min figure in §3 above is a
-  snippet figure, not a cite).
-- **Item 27's number.** The "<0.8 %" figure in §4.4 above is from a search snippet. The
-  harmonic-first allocation in plan 05 rests on the hybrid-split precedent as a *design
-  choice* (item 14, plan-02 record; item 27, Crossref) and is tested by Q7's Δ₃/Δ₄ arm and
-  P4(a), not justified by that number.
-
 ## 7. Honest limits of this note
 
 - No cost in this note is a measurement of this project. The probe-count classes ("~2M",
@@ -199,3 +171,100 @@ searched and claimed on 2026-09-03 stays intact.
 - The locality of the *DFT-vs-DFT* Δ (usable as a zero-CC dry run of the recovery machinery
   at any size) is not the locality of the CC−DFT Δ; the dry run validates the estimator, not
   the physics.
+
+## 8. Errata and corrections after Round-7 Pass A and Pass B (2026-09-03, same day)
+
+Appended after both reviews; the sections above are left as written. Where they disagree,
+this section wins and the frozen documents follow it.
+
+**After Pass A (issues 8, 19):**
+
+- **Atom and mode counts (§1).** Coronene C₂₄H₁₂: 36 atoms, 3N−6 = 102 modes. C₃₈₄H₄₈: 432
+  atoms, 1,290 modes; "C₃₈₄H₄₈-class" species differ in size, so the count is for that formula.
+- **TeraChem GPU CCSD(T) (§5).** arXiv:2512.01055 was posted in December 2025; the JPCA
+  article (130(10), 2225–2237) went online 2026-02-26 (Crossref).
+- **Sanders et al. (§2).** The paper itself treats a DFT Hessian only; the 2026-09-03 search
+  found no later extension by its authors — a search result, not a claim about a decade.
+- **Locality (§2).** "Short-ranged in real space" is the plan's bet, supported by evidence on
+  *energies* in other systems; no curvature evidence on PAHs exists in this note. Q8 exists
+  because of that.
+- **Status upgrades.** Crossref records fetched for Bégué, Carbonnière & Pouchan 2005 (item 27;
+  author list verified; its "<0.8 %" figure in §4.4 is from a search snippet and the frozen
+  documents do not rest on it), Ruth, Gerbig & Schreiner 2022 (37), Fusè et al. 2024 (28),
+  Madriaga & Crawford 2025 (30), Nagy & Kállay 2019 (34), Welborn, Cheng & Miller 2018 (36),
+  O1NumHess JCTC (23), Sanders et al. (24), Fajen et al. JPCA 2026 (26), REST (41; the "no
+  local coupled cluster" statement rests on an abstract seen in a search snippet). arXiv
+  abstracts for Zhou et al. (38; Phys. Rev. B 100, 184308, 2019) and GPU4PySCF (25; the
+  abstract states a 30× speed-up over a 32-core node and does not mention Hessians — the
+  84-atom/30-min figure in §3 is a snippet figure, not a cite).
+
+**After Pass B (issues 1–6, 8, 13):**
+
+- **The novelty sentence of §2 is false as written.** The diagonal part of the energy-only
+  recovery — high-level force constants along low-level normal modes from single-point
+  energies — is the **Concordant Mode Approach** (Lahm et al., JACS 2022; Kitzmiller et al.,
+  JCTC 2024, "CMA-2"; bibliography items 42–43): CCSD(T)/cc-pVTZ diagonal constants in a
+  B3LYP or MP2 mode basis, off-diagonals selected by a cheap diagnostic, canonical CC,
+  molecules to ~17 atoms. Computing F_CC,ii in the DFT basis and computing Δ₂,ii are the same
+  measurement. Also prior art: mode-tracking (Reiher & Neugebauer 2003, item 46) for selected
+  modes at high level from few gradients; and Sanders et al. also recovered Hessians from
+  gradients at randomly displaced geometries, not only from columns. **What remains
+  proposed:** local CC with frozen domains, pair lists and PNO counts at PAH sizes; the
+  off-diagonal block of Δ₂ by banded sparse recovery from multi-mode patterns rather than one
+  element at a time; the recovery licensed against direct references; and locality and K_off
+  measured as a function of size. The forbidden-quotes list of the Goal now bans "never done".
+- **CMA-2's own result is the strongest evidence against §2 property 3.** Diagonal-only CMA
+  fails on aromatic ring modes (pyridine errors to ±28 cm⁻¹, from ring-stretch/CH-in-plane-
+  rock couplings; benzene, pyrrole and furan flagged), because low- and high-level mode
+  compositions differ there. The plan's structural prior is therefore **frequency-banded**
+  (off-diagonals between nearby modes unpenalised), Q7 prints the diagonal-only and the full
+  recovery side by side, and the dry run pairs B3LYP with a high-exact-exchange functional so
+  that its Δ contains mode rotations. O1NumHess's own worst covalent case — a conjugated
+  polyene, MAD 6–12 cm⁻¹ — is the same phenomenon inside a paper this note had already fetched.
+- **Δ₃/Δ₄ are withdrawn from the promised set (§3, §4.4).** Energy-only 1-D and 2-D cuts give
+  φ_iii, φ_iiii, φ_iij, φ_ijj and φ_iijj but **not φ_ijk**, and PAH combination-band resonances
+  are φ_ijk resonances (Mulas 2018 obtains them by differencing analytic Hessians along modes).
+  The hybrid-QFF literature (items 14, 27, 45) puts the CC pay-off in the quadratic constants.
+  Plan 05 therefore promises Δ₂ only; a diagonal-cubic probe reports the size of the CC
+  correction to φ_iii as a bonus; DFT anharmonic constants are computed on a family set closed
+  under the resonance search.
+- **Mode E's noise floor has a formula (§4.3).** For a diagonal Δ₂ element by central second
+  differences at dimensionless step q_s, resolving a δω̃ correction needs a per-point energy
+  scatter σ_E ≤ 0.82·δω̃·q_s² — 18.6 μE_h at q_s = 1, 4.7 μE_h at q_s = 0.5, 1.2 μE_h at
+  q_s = 0.25 for 5 cm⁻¹ (Pass B issue 1; independent of the mode's frequency; the q_s²
+  contamination is (q_s²/12)·Δ₄, not E₄, which is what makes q_s ≈ 1 admissible for a
+  difference). Madriaga & Crawford (item 30, full text now read): discontinuities ~1 μE_h,
+  largest 6.09 μE_h for water under field steps, and **fixing the per-pair PNO dimensions did
+  not remove them**. Whether small nuclear displacements mix PNOs less violently than field
+  steps is unknown; the R1 smoothness probe (naphthalene, three modes, nine points, frozen
+  data, ~30 energies) measures it before the pilot note, and Q6 has thresholds (pilot-note
+  item 13). Psi4 documents no domain reuse: stop 1 fires for Psi4 unless freezing is
+  implemented.
+- **The gradient landscape (§4.1), verified by the Pass B reviewer on 2026-09-03:** no
+  local-CC(T) nuclear gradient in ORCA 6.1.1, Psi4, MRCC or Molpro PNO methods; PySCFAD AD
+  gradients demonstrated to 29 atoms; canonical CCSD(T) gradients exist. **Mode E is the
+  promised route; mode G is a bonus.** The "CCSD gradient + energy-only (T)" split of §4.1 has
+  **no engine** (no production DLPNO-CCSD nuclear gradient either) and is withdrawn.
+- **Cost model that follows.** Mode E: K = 2M + K_off local-CC energies per molecule —
+  coronene ≥ 204 + K_off; K_off is the unknown and the quantity Q8(c) tests. **Whole-molecule
+  R6 in mode E is ≥ 2,580 energies of a 432-atom molecule and is not promised in any branch**;
+  fragment probing (§5) is the only route by which R6's CC cost stops depending on M, so the
+  user's open decision 1 is made before the pilot note and decides R6's form.
+- **Locality must be measured on direct blocks (§4.2).** A recovery built on a locality
+  premise and scored on probes designed under it can return a local Δ₂ whose fit passes. Q8
+  is therefore computed on the reference Hessian at R0–R1 and on a prior-free direct-block
+  probe at R2–R3 (deck-chosen π-system pairs, four-point differences, ≈12 energies per pair),
+  with an anthracene numerical Δ₂ (≈133 energies) as the cheapest dated bonus test of whether
+  the C–C block is long-ranged. r_c is a measured output, not a pilot-note number.
+- **The local-approximation error grows with acene length** (Altun et al. 2021, item 44:
+  DLPNO absolute-energy error ≈ linear in ring count; CPS(6/7) extrapolation as remedy at 2×
+  cost). Q6 has a threshold column and the deck a CPS field; if mandatory, every probe counts
+  double in the classification rule.
+- **Mulas 2018 used B97-1**, not B3LYP (TZ2P pyrene, 6-31G* coronene); the P2 comparison
+  against line B is functional-specific. Recorded in Frozen_Lines §3 and item 6.
+- **Module 05 corpus.** Seven probed CC tensors by R3 is not a deep-learning corpus. The M05
+  target becomes the *support* of Δ₂ in the DFT mode basis (CMA-2's diagnostic, learned), on a
+  DFT-vs-DFT corpus built from public Hessian QM9 (item 47; 41,645 ωB97x/6-31G* Hessians) plus
+  recomputed B3LYP Hessians; the user may veto a DFT–DFT target (open decision 4).
+- **R6's DFT Hessian is itself a B3 object** (C₃₈₄H₄₈ at 4-31G: 3,552 basis functions, ~1,300
+  perturbations) unless a timed probe at the R4 species shows otherwise.

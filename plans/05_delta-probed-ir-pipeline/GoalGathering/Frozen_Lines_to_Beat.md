@@ -29,8 +29,10 @@ Between C₁₈ and C₃₈₄ no anharmonic-beyond-DFT or CC-anchored predictio
 C₃₈₄H₄₈-class species (the 101–386-carbon bin) the **only** predictions found are scaled
 harmonic B3LYP/4-31G. Whether C₃₈₄H₄₈ *itself* has a v4.00 entry is **not verified** (debt 6;
 an M02 atlas task). The 2026-09-03 search for plan 05 (Research note §6) found no new entry
-in this table — no CC-anchored PAH spectrum above naphthalene size, and no probe-based CC
-force-constant correction at any size; that absence is a search result, not a fact.
+in this table — no CC-anchored PAH spectrum above naphthalene size. What it *did* find, and
+Round-7 Pass B added, is the Concordant Mode Approach (bibliography items 42–43): CCSD(T)
+force constants in a DFT normal-mode basis from single-point energies, on small molecules —
+prior art for plan 05's diagonal recovery, not an opponent line (it produces no PAH spectra).
 
 ## 2. Line A — PAHdb v4.00 scaled harmonic (the breadth line)
 
@@ -56,8 +58,10 @@ force-constant correction at any size; that absence is a search result, not a fa
   (Mackie et al. 2015–2022; Esposito et al. 2024a–c) **not yet individually verified**.
 - **Mulas, Falvo, Cassam-Chenaï, Joblin**, JCP **149**, 144102 (2018). DOI `10.1063/1.5050087`,
   arXiv:1809.05669. Identifiers from the plan-02 bibliography; re-verified by plan 04's Pass B
-  reviewer on 2026-09-02 (arXiv). Anharmonic DFT-QFF for pyrene and coronene; its own stated
-  limitation is the accuracy of the underlying QFF — exactly the CC gap.
+  reviewer on 2026-09-02 (arXiv); full text read by plan 05's Pass B reviewer on 2026-09-03.
+  Anharmonic **B97-1** QFF (TZ2P pyrene, 6-31G* coronene) for pyrene and coronene; its own
+  stated limitation is the accuracy of the underlying QFF — exactly the CC gap. The P2
+  comparison against this line is functional-specific.
 - **Cheap-line marker: Bos et al.**, "Ethereal AI: Infrared Spectra of Polycyclic Aromatic
   Hydrocarbons with Machine Learning DFT Scaling Factors", ACS Omega **10**(50), 62282–62290
   (2025-12-10). DOI `10.1021/acsomega.5c10225`. Record **verified via Crossref 2026-09-02**;
