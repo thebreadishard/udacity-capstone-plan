@@ -1,9 +1,10 @@
 # Capstone mapping — Plan 05 Δ-Probed IR Pipeline
 
 **Status.** Draft as of 2026-09-03, revised 2026-09-04 after the user's decisions, Round-8 (A, B),
-Round-9 (A, B) and Round-10 Pass A, for the promised set as decided (Δ₂ only; mode E guaranteed, mode G built in the side
+Round-9 (A, B) and Round-10 (A, B), for the promised set as decided (Δ₂ only; mode E guaranteed, mode G built in the side
 project; R6 fragment-probed under the fragment licence). Passes 1–5 written; Pass 6
-(module-by-module sign-off) not done; decision 7 closed 2026-09-04, so nothing blocks it. Not complete as a
+(module-by-module sign-off) not done (the user asked to wait with it, 2026-09-04); text otherwise
+frozen 2026-09-04 with the rest of the plan-05 set; decision 7 closed 2026-09-04, so nothing blocks it. Not complete as a
 plan.
 Where plan 05 inherits plan 04's module design unchanged, this file says "carried" and does
 not re-argue it; plan 04's mapping (in its folder) is the argument of record for those parts.

@@ -8,7 +8,10 @@ edited in place with dated markers, and every revision is listed here — Round-
 (2026-09-04: B2 laptop named; canonical feasibility probe; noise-injection column) and Round-9
 Pass A (2026-09-04: the feasibility probe's decision rule; the pre-note list aligned with
 probes/README; K_cap(G) wording) and Round-9 Pass B (2026-09-04: symmetrised dry-run responses;
-M1 by projection; one canonical gradient; M4/M5 at 36 gradients; part (c) classified). Caps and checkpoints are **not estimates**; measured slots read NOT_RUN until a probe
+M1 by projection; one canonical gradient; M4/M5 at 36 gradients; part (c) classified), Round-10 Pass A (2026-09-04: K in energies;
+61 / 72 / 1,801 with arithmetic; anthracene as a direct-coupling probe) and Round-10 Pass B
+(2026-09-04: per-energy noise injection and c₀ in §4.1; the §3 units paragraph; arms A/B in
+§4.2 and §4.5). **Frozen text as of 2026-09-04 (after review rounds 7–10 and the seam check of the Round-10 Pass B patch).** From here on this file changes only by a dated note that names the finding or measurement behind the change; the Ladder is the single binding statement of every rule, and other files cite it rather than restate it. Caps and checkpoints are **not estimates**; measured slots read NOT_RUN until a probe
 prints them. Notation (K, K_off, K_cap, ρ\*, mode E/G) is defined in the Goal and Ladder.
 
 ---
@@ -79,8 +82,8 @@ Before the pilot note (DFT-only and timings; no local-CC Δ₂ may exist yet):
    a high-exact-exchange functional at R0 and at the largest sizes the laptop's DFT Hessian
    affords; recovered by the plan's own solver from a hashed, ordered pattern set with seeded
    hold-out, once from energies and once from DFT gradients; then **the same recoveries with
-   Gaussian noise at a grid of σ values added to every response**, K and ρ printed per σ — the
-   column the stopping constant c and K_cap are taken from. Responses are the symmetric
+   Gaussian noise injected per energy (below), R_s formed from the noisy energies**, K and ρ
+   printed per σ_E — the column the stopping constant c and K_cap are taken from. Responses are the symmetric
    combinations R_s over ± pairs exactly as in the real run (Ladder §3), so the dry run measures
    Δ₂ recovery and not the fitting of the DFT−DFT force term. **Noise is injected per energy**
    (independent ε on every displaced energy; one shared ε₀ per molecule for the reference, drawn
@@ -110,8 +113,8 @@ Before the pilot note (DFT-only and timings; no local-CC Δ₂ may exist yet):
    virtual vectors by projection and Löwdin-orthonormalises them (Ladder §3 object; no localiser,
    no assignment); reproduces the reference energy to 10⁻⁹ E_h; along one totally symmetric, one
    degenerate and one non-symmetric benzene mode prints the continuity diagnostics (smallest
-   singular value and largest pre-Löwdin off-diagonal of the overlaps) and E(displaced, frozen) −
-   E(displaced, fresh) per point, without a verdict; the raw displaced energies go to the sealed
+   singular value and largest pre-Löwdin off-diagonal of the overlaps) and E(A) − E(B), E(A) − E(C)
+   per point (arms per Ladder §3), without a verdict; the raw displaced energies go to the sealed
    file, not to the printout. Fails → Ladder stop 1.
 2a. **Lab-scoreboard re-read and u_band** (no compute; probes/README 2a): the plan-02 band
    table and the plan-04 NIST coverage scan regenerated under this plan's hash; per gas-phase
@@ -127,7 +130,7 @@ Before the pilot note (DFT-only and timings; no local-CC Δ₂ may exist yet):
 5. **R1 smoothness probe** (B2, 72 local-CC energies of naphthalene = 4 modes × 9 points ×
    2 arms): four modes (C–C
    stretch, C–H stretch, CH-oop, one totally symmetric), nine points each at q ∈ [−1, 1],
-   TightPNO, with and without frozen spaces; the script prints **σ_E as the RMS residual about a
+   TightPNO, arms A and B of the Ladder §3 object (never arm C); the script prints **σ_E as the RMS residual about a
    degree-4 polynomial fit** per mode and arm, **and pooled per arm (ν = 16) — the pooled value is what is tested against
    the Q6 lines** at each grid step, the per-mode values printed and flagged if above twice the
    pooled (no σ_g exists before the note; mode G's constants are read at σ_g^assumed, Ladder §4

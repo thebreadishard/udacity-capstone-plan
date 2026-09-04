@@ -2,12 +2,12 @@
 
 **Master's capstone project proposal — plan 05**
 Prepared for supervision review, 3 September 2026; revised 4 September 2026 after the
-student's decisions and a second cold-read review. Supersedes the plan-04 proposal of 3
+student's decisions and four review rounds. Supersedes the plan-04 proposal of 3
 September. Companion documents: this proposal summarises a frozen plan and explains *why* its
 major decisions were taken; the binding technical documents (goal, ladder, tolerances,
 opponents, gates, budget, mapping) live in the same folder and take precedence where they are
-more specific. Six external review passes of this plan (cold reads and adversarial domain reviews on 3 and
-4 September 2026) are in the folder with every finding and its closure; the domain reviews'
+more specific. Eight external review passes of this plan (four cold reads and four adversarial domain reviews
+on 3 and 4 September 2026) are in the folder with every finding and its closure; the domain reviews'
 verdicts were conditional, and §9 says on what.
 
 ---

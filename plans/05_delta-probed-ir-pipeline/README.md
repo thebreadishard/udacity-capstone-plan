@@ -252,13 +252,14 @@ corpus carries no module-02 reuse exposure (Goal, decision 7). **No decision is 
 
 ## Not yet done (owed, in order)
 
-- **Round 11** (optional, the user's call): a cold read of the Round-10 Pass B patches (the
-  per-energy noise injection, the c₀ identification, the Δ₁ geometry term, the PNNL source, the
-  A/B/C arms touched the Goal, Ladder, Distilled plan, Budget, probes README and bibliography).
+- ~~Round 11~~ — not planned. The review loop was closed on 2026-09-04 after a seam check of the
+  Round-10 Pass B patch ([Seam_Check_2026-09-04_Round10B_patch.md](GoalGathering/Seam_Check_2026-09-04_Round10B_patch.md),
+  19 seams, all mechanical, all closed). **The plan-05 text is frozen**: changes only by dated
+  note naming the finding or measurement behind them; the Ladder is the single binding statement
+  of every rule and other files cite it. The remaining risk is retired by measurements, not by
+  further reading.
 - **The first paid literature debts**: items 52–53 (hot-band slopes), 56–57 and 59 (the R0 and R1
   source conditions), 60 — read before M03 prints u_band.
-- **The first paid literature debt**: items 52–53 (PAH hot-band shift rates) read before M03
-  prints u_band.
 - Capstone mapping Pass 6 (module-by-module sign-off).
 - **Probe M1** (frozen LNO spaces reproduce the reference energy) — the first code of the
   project, main-project work.

@@ -4,7 +4,7 @@
 1, 8, 15, 16) and Pass B (issues 3, 4, 5, 13); amended 2026-09-04 by the user's seven decisions
 and two directives, revised the same day after Round-8 Pass A (issues 11, 13) and Pass B (rows
 28–32), after Round-9 Pass A (rows 7, 21, 22 corrected; rows put in numerical order), Round-9 Pass B
-(rows 28, 29, 31 amended) Round-10 Pass A (row 31 restored after a patch defect) and Round-10 Pass B (rows 28–29 amended; row 33 added). Plan 04 is
+(rows 28, 29, 31 amended) Round-10 Pass A (row 31 restored after a patch defect) and Round-10 Pass B (rows 28–29 amended; row 33 added). **Frozen text as of 2026-09-04 (after review rounds 7–10 and the seam check of the Round-10 Pass B patch).** From here on this file changes only by a dated note that names the finding or measurement behind the change; the Ladder is the single binding statement of every rule, and other files cite it rather than restate it. Plan 04 is
 **not** wrong; it is superseded because its cost sits in the wrong object. All five plan
 folders are in the tree as read-only records (decision 2).
 
@@ -54,7 +54,7 @@ One idea: **where the coupled-cluster budget is spent and how it is collected.**
 consequences touch more documents than one line, so every change of frozen intent relative to
 plan 04 is listed here. Anything not on this list is inherited unchanged. Rows 1–17 date from
 2026-09-03; rows 18–27 from the 2026-09-04 decisions and Round-8 Pass A; rows 28–32 from
-Round-8 Pass B.
+Round-8 Pass B; row 33 from Round-10 Pass B.
 
 | # | Plan 04 | Plan 05 | Where |
 |---|---|---|---|
