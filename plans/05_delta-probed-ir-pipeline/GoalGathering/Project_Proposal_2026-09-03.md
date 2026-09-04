@@ -191,8 +191,11 @@ whichever answer it gets.
 **No transferable, train-once spectrum model** (carried from plan 04; the measured failure of
 motif transfer is the reason). Every molecule gets its own probed correction. The Module-05
 deep-learning component predicts only *where* the correction is likely to have large
-off-diagonal elements, is trained on a public DFT-vs-DFT Hessian corpus, and never enters a
-promised rung.
+off-diagonal elements, is trained on a public DFT-vs-DFT Hessian corpus, and enters a promised
+rung only after a licence: its saving demonstrated on that corpus, and its result checked
+prior-free at that rung. On 4 September 2026 the student ruled more generally that a rule
+inherited from an earlier plan carries no authority of its own — knowledge transfer is allowed
+wherever a gate shows it makes the pipeline succeed.
 
 **No coupled-cluster anharmonic correction** (§2). **No full coupled-cluster surface or global
 quartic force field** (carried). **No new empirical scale factors** (carried; the ML-corrected

@@ -60,7 +60,7 @@ declared size ladder, with the probe count as a reported quantity.
 | Anchor level | local CC = **DLPNO-CCSD(T) or LNO-CCSD(T)**, code and thresholds fixed in the deck; deck field `PNO extrapolation: none | CPS(6/7)` (bib 44); **domains, pair lists and per-pair PNO counts frozen at the reference geometry for every displaced evaluation**; **licensed by measured deltas against frozen formulas, not by trust** (Q6) |
 | **Patterns** | a hashed, ordered set of simultaneous multi-atom displacements built so every atom's local displacement space is complete (O1NumHess-class construction, bib 23), plus explicit two-mode patterns for every off-diagonal block the dry run flags as large (the CMA-2 diagnostic as a pattern rule, bib 43). Amplitude q_s from the Q6 step grid (Ladder §3) |
 | **Responses** | mode E: the energy difference Δ(E) at the pattern geometry minus at equilibrium; mode G: the components of the gradient difference Δ(∇E). Every response is local CC minus DFT, both with frozen domains |
-| **Structural prior** (the promised route) | sparse recovery of Δ₂ in the DFT normal-mode basis with a **frequency-banded** regulariser: off-diagonal elements between modes closer than w are unpenalised (the DFT–CC mode-rotation block the near-diagonal model gets wrong on aromatics, bib 43); outside the band an ℓ₁ penalty; plus an off-diagonal low-rank term. w and the weights are deck numbers from the dry run. "Structural" means it contains no learned parameters; the **learned prior** (M05) replaces the banded term by a Transformer-predicted support and is a bonus arm only |
+| **Structural prior** (the promised route) | sparse recovery of Δ₂ in the DFT normal-mode basis with a **frequency-banded** regulariser: off-diagonal elements between modes closer than w are unpenalised (the DFT–CC mode-rotation block the near-diagonal model gets wrong on aromatics, bib 43); outside the band an ℓ₁ penalty; plus an off-diagonal low-rank term. w and the weights are deck numbers from the dry run. "Structural" means it contains no learned parameters; the **learned prior** (M05) replaces the banded term by a Transformer-predicted support and enters a promised rung only under the Ladder §3 licence |
 | **Dry run** | Δ between **B3LYP and a functional with markedly more exact exchange** (BHLYP-class or HF), so that the calibration Δ contains mode rotations of the kind the CC Δ will; never two functionals of one family |
 | **Hold-out and residual ρ** | a fraction f_h of patterns, chosen by the seeded deck rule before any response exists, never enters the recovery. **ρ** = RMS over held-out patterns of (response predicted by the recovered Δ₂ − computed response) ÷ RMS of the computed held-out responses; dimensionless. ρ is the error-budget term, the P3 metric and the quantity K is defined on |
 | **K** | measured: the smallest pattern count, in hashed order, at which ρ ≤ ρ\* (Ladder §3); K_off = K − 2M in mode E. Reported in the cost record. Capped by K_cap (pilot note) |
@@ -89,8 +89,9 @@ Forbidden without one:
   exception (trains on lab residuals by design; leave-molecule-out; recipe frozen; outputs
   appear only as a P2 opponent column and the P5 empirical uncertainty layer).
 - Weakening the M04 baseline after the pilot note.
-- **The learned prior on any promised rung (R0–R3, R6)** — spectrum, K or cost record; a Q8
-  ratio or an R6 sentence that mixes priors or modes.
+- **The learned prior on a promised rung without the Ladder §3 licence** (P3 saving shown;
+  prior-free reference check at that rung within τ₇ / ε₈; `prior = learned` in the cost
+  record); a Q8 ratio or an R6 sentence that mixes priors or modes.
 - Swapping or re-versioning an opponent line after a comparison against it is scored.
 - "Beat" language on a reach rung, or on a mode-E rung whose Q6 noise gate did not pass; a
   scale factor on anharmonic output; a cost sentence outside Ladder §1's two forms; a CC
@@ -110,8 +111,9 @@ Forbidden without one:
 - **The controlled comparison (frozen): learned prior vs structural prior at matched K, on the
   dry-run corpus (primary) and on a bonus rung if one runs.** Same patterns, same held-out set,
   same solver, ≥3 seeds for the prior: does the prior lower ρ at fixed K, or reach ρ\* at lower
-  K? The effect size is pilot-note item 5. **No promised spectrum or cost record depends on its
-  outcome.**
+  K? The effect size is pilot-note item 5. **No promised spectrum depends on its outcome**; a
+  promised rung's cost record may, once the Ladder §3 licence is earned (user directive
+  2026-09-04).
 - Baselines in every comparison table: line A (scaled harmonic), M04 calibrated harmonic, and
   the null rows (§7, P4).
 

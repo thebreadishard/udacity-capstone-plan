@@ -171,10 +171,14 @@ expectations section below are numbered separately.
   its own measured shift; ~1 cm⁻¹-class accuracy is claimed **only if** the lab comparison and
   the declared controls (held-out residual, local-CC noise floor, threshold sensitivity) all
   allow it — and never on matrix data.
-- **No transferable, train-once spectrum model.** Every molecule gets its own probed Δ₂. The
-  learned prior (M05) is an efficiency experiment whose effect is measured (P3) **on the
-  dry-run corpus and bonus rungs only**; it never enters any promised rung — R0–R3 or R6 —
-  neither the scored spectrum nor K.
+- **No transferable, train-once spectrum model** — because motif transfer of band positions
+  was measured to fail (plan-02 probes), not because plan 04 said so. Every molecule gets its
+  own probed Δ₂. The learned prior (M05) is scored first on the dry-run corpus (P3); the learned prior may enter a promised rung only under a **licence**: (i) P3 has
+  demonstrated its saving on the dry-run corpus at matched K; (ii) at that rung the reference
+  check — Q7 at R0–R1, the direct-block Q8 check at R2–R3 — is computed prior-free and the
+  prior-assisted recovery agrees with it within τ₇ / ε₈; (iii) the cost record says
+  `prior = learned`, and a size sentence compares like with like (same prior at both rungs).
+  Without that licence the promised route is the structural prior.
 
 ## Open decisions for the user (not part of the promised set until decided)
 
@@ -186,7 +190,9 @@ expectations section below are numbered separately.
    Ladder §2 dated note).
 4. **The Module-05 target and corpus** (Distilled §5–§6): a Transformer that predicts the
    *support* of Δ₂ in the DFT mode basis, trained on a DFT-vs-DFT corpus built from the public
-   Hessian QM9 set (item 47) plus recomputed B3LYP Hessians. If the user will not accept a
+   Hessian QM9 set (item 47) plus recomputed B3LYP Hessians. Under the 2026-09-04 inheritance
+   rule its output may enter promised rungs once licensed (scope boundaries above), which
+   makes M05 load-bearing for the cost record if P3 succeeds. If the user will not accept a
    DFT–DFT target for the deep-learning module, M05 is a demonstration and is defended as one.
 
 ## Forbidden quotes (this thesis)
@@ -253,7 +259,16 @@ is avoided.
 is a gate; machine checkpoints survive as honesty devices only. Udacity module deadlines are
 school facts handled in the mapping, never a science gate.
 
-## What is inherited
+## What is inherited — and the rule about inheritance (user directive, 2026-09-04)
+
+**Inheritance is not authority.** Nothing is forbidden in plan 05 because plan 04 forbade it.
+A rule from an earlier plan survives here only if it still serves the goal or rests on a
+measurement that still stands. Two cases decided under this rule on 2026-09-04: the
+no-transfer rule is kept for *spectra and band positions* because the plan-02 probes measured
+that motif transfer fails by tens of cm⁻¹ — a measurement, not an inheritance; and transfer of
+a locality-verified electronic correction, or of a learned prior, is **permitted wherever a
+gate shows it serves the goal** (fragment probing under Q8; the learned prior under the
+licence below). If knowledge transfer makes plan 05 succeed, it is allowed.
 
 From plans 01–04, method-agnostic and kept: measured-not-asserted probes; never cite from
 recall; pre-registration, frozen splits with hashes, ≥3 seeds, tuning parity; declared effect
