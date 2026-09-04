@@ -290,8 +290,8 @@ Listed here because a supervisor's view on them is more useful before than after
 3. **The R2 scored set** as re-read against the coverage probe (triphenylene in; tetracene
    gated).
 4. **Adoption of the re-worded promised set** of §9.
-5. Whether to remove the plan-04 folder from the repository (it is superseded and kept for
-   the record).
+5. ~~Whether to remove the plan-04 folder~~ — decided 4 September 2026: every plan version stays
+   in the repository as a read-only record, so a reader can follow the whole history.
 
 ## 11. Risks
 
