@@ -191,8 +191,8 @@ the corpus, so Q4 is trivially clean.
 **Required sentences.** "The training corpus is the public Hessian QM9 set (arXiv:2408.08006)
 plus B3LYP Hessians recomputed by the named decks (DOI …, hashes …); computed ab initio data,
 not AI-generated; not used in any earlier capstone module." "The laboratory scoreboard is
-never a training, validation, or stopping input." "The learned prior is not used on any
-promised rung."
+never a training, validation, or stopping input." "The learned prior enters a promised rung only under the licence of Ladder §3, and every
+cost record says which prior it used."
 
 ### Module 06 — generative pattern proposal (the CC-free efficiency arm)
 
