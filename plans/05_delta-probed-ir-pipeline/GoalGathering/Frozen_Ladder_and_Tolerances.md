@@ -166,8 +166,8 @@ Written into a dated pilot note after (a) the **R0 pilot** — geometry, DFT Hes
 bands, timings, the zero-CC dry run at R0 and at the largest sizes the laptop affords, **no
 local-CC Δ₂ and no pipeline-vs-lab number** — (b) the **scoreboard re-read probe**, (c) the
 gradient-availability probe and (d) the R1 smoothness probe. Committed **before any local-CC
-Δ₂ response and before any pipeline-vs-lab number exists for any molecule**. Open decision 1
-is recorded in it.
+Δ₂ response and before any pipeline-vs-lab number exists for any molecule**. The 2026-09-04
+fragment-probing decision is recorded in it.
 
 1. The exact band list per molecule (uid / NIST CAS, window, class); every §3 family with lab
    data for a promised molecule must appear; per family, whether it is gas-scored or
