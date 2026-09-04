@@ -21,13 +21,17 @@ Goal file wins on drift. Costs live in [Compute_Budget_2026-09-03.md](Compute_Bu
 - **[05] Cost sentences.** Exactly two kinds exist, and this is the only place that defines
   them; every other document conforms to this section.
   - **The cost record** — allowed on any rung once printed, and *promised* for every rung that
-    ran, **one per mode that ran on the rung**: `K = n (of which 2M = … diagonal, K_off = …
-    off-diagonal) at rung R, mode E|G, prior = structural|learned, ρ* = …, PNO extrapolation =
-    none|CPS, wall-clock w per probe on machine m, printed by probes/<file>`. Nothing else about
+    ran, **one per mode that ran on the rung**: `K = n energies|gradients (mode E: of which 2M = … in the single-mode ± block, K_off = …
+    in ± pairs of off-diagonal patterns; K_off at the common threshold ρ*_common = …) at rung R,
+    mode E|G, prior = structural|learned, σ = …, RMS_resp = …, ρ_noise = …, c = …, ρ* = …,
+    ρ(K) = …, PNO extrapolation = none|CPS, wall-clock w per probe on machine m, printed by
+    probes/<file>`. Nothing else about
     cost may be written.
   - **The size sentence** — numeric only, in one of two forms, each allowed only after Q8(c)
-    has passed for that quantity at R1→R2 and R2→R3 with the structural prior at the same ρ\*
-    rule: *mode-E form* (always earnable, because mode E runs on every rung R1–R3 that runs):
+    has passed for that quantity at R1→R2 and R2→R3 with the structural prior, both counts read
+    from the rungs' stored ρ(n) curves at the **common threshold** ρ\*_common =
+    max(ρ\*(R_n), ρ\*(R_{n+1})) (§3 Q8c; ρ\* is rung-dependent, so the record K_off alone would
+    report threshold drift as a property of Δ₂): *mode-E form* (always earnable, because mode E runs on every rung R1–R3 that runs):
     "K_off went n₁ → n₂ → n₃ from R1 to R3 while the mode count went M₁ → M₂ → M₃"; *mode-G
     form* (only if mode G was licensed and ran on R1, R2 **and** R3 — side-project milestones M3,
     M4, M5 with both checks each): the same for K. The adjectives "size-independent", "O(1)",
@@ -41,8 +45,8 @@ Goal file wins on drift. Costs live in [Compute_Budget_2026-09-03.md](Compute_Bu
 
 | Rung | Molecule(s) | Type | Why this rung | Opponents | Lab scoreboard | **[05] what it licenses** |
 |---|---|---|---|---|---|---|
-| **R0** | benzene C₆H₆ (12 atoms, 30 modes) | A | End-to-end laptop pilot; canonical CCSD(T) **expected** affordable in the anchor basis — plan-02 measured 19.6 s/point at 6-31G* and a failure at ~114 functions with 28 GB on the old machine, provenance only — **measured by the one-point canonical feasibility probe before the pilot note** (§3; Budget §4) | A, B | NIST gas; PAHdb experimental | **Q7 probing licence for Δ₂** against the frozen-space local-CC reference *and* the canonical reference — **the canonical arm is the only one that licenses the space freezing** (Q6 bias), so its feasibility is measured first; Q8(a/b) on the reference Hessian as Q7's sub-item (iv); the zero-CC dry run in both modes with its noise-injection column; probe M1's assignment log; side-project M2 (after the pilot note) |
-| **R1** | naphthalene C₁₀H₈ (18 atoms, 48 modes) | A | The canonical-vs-local-CC licence molecule, conditional exactly as in plan 04: the first R1 probe measures whether canonical (T) runs on the B2 laptop at any usable basis; if not, the canonical arm at R1 is absent, Q7 at R1 tests the recovery and not the freezing (that sentence printed with the result), and the freezing licence rests on R0 alone, in the basis the feasibility probe allowed (cc-pVTZ, or cc-pVDZ with both arms in that basis) — stated in every anchor claim | A, B | NIST; PAHdb experimental | **The Q6 smoothness probe** (four modes — a C–C stretch, a C–H stretch, a CH-oop mode and one totally symmetric mode — nine points each, both freezing arms, 72 energies; the σ_E estimator of §3; σ_E printed before the pilot note, fit coefficients sealed); Q6 anchor licence; Q7 at a second size, printed for diagonal-only and full recovery; first Q8(a/b) rung read (on the reference Hessian); expected-effect line printed; side-project M3 (after the note) |
+| **R0** | benzene C₆H₆ (12 atoms, 30 modes) | A | End-to-end laptop pilot; canonical CCSD(T) **expected** affordable in the anchor basis — plan-02 measured 19.6 s/point at 6-31G* and a failure at ~114 functions with 28 GB on the old machine, provenance only — **measured by the one-point canonical feasibility probe before the pilot note** (§3; Budget §4) | A, B | NIST gas — **room-temperature cell spectra exist** (the NIST Quantitative IR series, 0.125–1.93 cm⁻¹, and a Coblentz 2 cm⁻¹ gas spectrum; WebBook list opened 2026-09-04 by the Round-9 reviewer); the entry scored is named in the pilot note; PAHdb experimental | **Q7 probing licence for Δ₂** against the frozen-space local-CC reference *and* the canonical reference — **the canonical arm is the only one that licenses the space freezing** (Q6 bias), so its feasibility is measured first; Q8(a/b) on the reference Hessian as Q7's sub-item (iv); the zero-CC dry run in both modes with its noise-injection column; probe M1's continuity diagnostics; side-project M2 (after the pilot note) |
+| **R1** | naphthalene C₁₀H₈ (18 atoms, 48 modes) | A | The canonical-vs-local-CC licence molecule, conditional exactly as in plan 04: the first R1 probe measures whether canonical (T) runs on the B2 laptop at any usable basis; if not, the canonical arm at R1 is absent, Q7 at R1 tests the recovery and not the freezing (that sentence printed with the result), and the freezing licence rests on R0 alone, in the basis the feasibility probe allowed (cc-pVTZ, or cc-pVDZ with both arms in that basis) — stated in every anchor claim | A, B | NIST gas — **hot sources only**: a Coblentz vapour spectrum at 245 °C, 4 cm⁻¹, digitised from hard copy, and a NIST MS Data Center GC-IRD entry; **no room-temperature gas spectrum is listed** (WebBook list opened 2026-09-04 by the reviewer and the author). Scored per family by u_band; the C–C families are expected inconclusive by construction unless a hot-band correction is pinned before the note; PAHdb experimental | **The Q6 smoothness probe** (four modes — a C–C stretch, a C–H stretch, a CH-oop mode and one totally symmetric mode — nine points each, both freezing arms, 72 energies; the σ_E estimator of §3; σ_E printed before the pilot note, fit coefficients sealed); Q6 anchor licence; Q7 at a second size, printed for diagonal-only and full recovery; first Q8(a/b) rung read (on the reference Hessian); expected-effect line printed; side-project M3 (after the note) |
 | **R2** | pyrene C₁₆H₁₀ (26 atoms, 72 modes); chrysene C₁₈H₁₂; triphenylene C₁₈H₁₂; tetracene C₁₈H₁₂ (each 30 atoms, 84 modes) | A | First territory beyond PAHdb's anharmonic front | A, B | **Gas (NIST WebBook / NIST-EPA gas-phase IR database, GC-IRD hot-vapour spectra; JCAMP `DELTAX` 4 cm⁻¹, stated resolution 8 cm⁻¹ at snippet grade, no concentration):** pyrene, chrysene, triphenylene — **decidable per family only by the measured band-centre uncertainty rule below; the C–C families are expected inconclusive by construction on this source.** **Matrix (PAHdb experimental uids 334, 282, 291 as recorded in plan-02 probes):** pyrene, tetracene, chrysene. Tetracene has no gas-phase IR (solid-only) and is scored on matrix data only, every family M03-gated. IRMPD = context only | Q6 at R2 size: the **canonical diagonal check at pyrene** (two energies per mode, one mode per family) and the TightPNO/NormalPNO column; the Q6 noise grid at R2 size in the mode(s) used; **prior-free direct-coupling probe** for Q8(a/b); mode E runs; K and K_off printed; Q8(c) first ratio (R1→R2); **the learned prior's licence is earned here** (§3); side-project M4 |
 | **R3** | coronene C₂₄H₁₂ (36 atoms, 102 modes) | A | Mulas 2018's molecule (B97-1 QFF, item 6); largest PAH with a usable matrix spectrum (uid 18); no gas-phase IR in the WebBook | A, B (Mulas), C | PAHdb experimental (uid 18), every family M03-gated | direct-coupling probe; mode E runs (mode G in addition if M5 licensed it); Q8(c) second ratio (R2→R3); the size sentence is decided here; **the fragment-vs-whole comparison at the smallest passing radius** (fragment licence part b); the learned prior's licence earned here too; side-project M5 (both checks at coronene) |
 | **R4** | circumcoronene-class, C₅₄H₁₈ → ~C₉₆ | R | First rung with no per-molecule lab truth | A, C (theory-vs-theory) | — | expert-judgment datum (Goal, expectations tier 3); the first rung where a spent learned-prior licence may run (§3); **the fragment-vs-whole comparison on a molecule larger than coronene — promised conditional on B3 classification, not bonus** (fragment licence part b′); the **fragment-radius convergence test on circumcoronene's central ring** (part c, first instance); the R6 DFT-Hessian timing probe |
@@ -78,15 +82,30 @@ quadrature sum of (i) the instrument resolution as stated by the source's docume
 the JCAMP point spacing), (ii) the centroid precision from the spectrum's signal-to-noise, and
 (iii) a **temperature term** for hot-vapour sources (a declared hot-band shift per family from a
 pinned reference, or, until one is pinned, the labelled uncertainty "hot-vapour scoreboard,
-0 K prediction" with its estimated magnitude) — is smaller than the family's beat margin. M03
+0 K prediction" **with a floor written now**: for a source above room temperature u_T ≥
+χ_max·(T_source − 296 K) + 1 cm⁻¹, for a room-temperature source u_T ≥ 1 cm⁻¹, with χ_max =
+0.03 cm⁻¹ K⁻¹ (recalled order of PAH hot-band shift rates; replaced by the pinned reference's
+table on fetch — items 52–53) and T_source the source's stated temperature (245 °C for the
+Coblentz naphthalene vapour entry; the SRD 35 lightpipe temperature once item 50's PDF is read,
+until then 250 °C, labelled recalled). A pinned per-family **correction** χ_F·(T_source − 296 K)
+from items 52–53 may replace the floor, carrying ±30 % of the correction plus the temperature
+uncertainty as u_T; if that brings a C–C family under its margin it is decidable, and the pilot
+note says so with the citation) — is smaller than the family's beat margin. M03 prints, per
+spectrum, the source class (cell / vapour cell / GC-IRD), the stated temperature and the stated
+resolution as columns. M03
 prints u_band and the verdict per molecule and family **before the pilot note**; the pilot note's
 item 1 records per family *gas-decidable / matrix-gated / inconclusive by construction*. A family
 with matrix data only passes through the **M03 matrix–gas gate**: if the M03-measured
 |matrix−gas| delta for that family is not smaller than its beat margin, it is scored
 **"pre-declared inconclusive on matrix"** — not "beat", not "lost". R0–R1 are gas-scored
-throughout against NIST spectra whose u_band M03 measures the same way; they are unconditional
-in the sense that no matrix gate applies, and their C–H and CH-oop families are expected
-decidable.
+throughout against NIST spectra whose u_band M03 measures the same way. **R0 is unconditional**:
+room-temperature cell spectra with stated resolution exist (the NIST Quantitative IR series; the
+entry is named in the pilot note). **R1 is per family under the same rule as R2**: naphthalene's
+only NIST gas spectra are a 245 °C Coblentz vapour spectrum and a GC-IRD entry (WebBook list
+opened 2026-09-04); at χ_max the unpinned temperature floor is ≈ 7–8 cm⁻¹, above τ, so R1's C–C
+families are **expected inconclusive by construction unless a hot-band correction is pinned
+before the note** (items 52–53 — the first paid debt), while its C–H and CH-oop families are
+expected decidable. No matrix gate applies on R0–R1.
 
 **Promised:** R0–R1 scored as accuracy rungs against gas-phase data. R2–R3 scored as accuracy
 rungs per family under the decidability rule above and the "beat and noise" rule of §1. R6 per
@@ -138,7 +157,10 @@ for fragment probing, before the R3 fragment-vs-whole comparison has printed.
   frozen before that rung's first probe. The Q6 bias line compares Δ₂(frozen) and Δ₂(canonical)
   in the same basis. **The canonical feasibility probe** (Budget §4.1b) prints one canonical
   CCSD(T) energy of benzene at cc-pVTZ on the B2 laptop and extrapolates its wall-clock and peak
-  memory, by factors frozen in the Q0 deck before the probe runs, to **two counts**: the Q6 bias
+  memory to **two counts** — and, where the code has it, also runs **one canonical CCSD(T)
+  gradient** of benzene (PySCF ships `pyscf/grad/ccsd_t.py`; directory listing fetched
+  2026-09-04 by the reviewer and the author), so the gradient-to-energy factor is measured, not
+  typed; only the count factors are deck numbers —: the Q6 bias
   line (61 energies — the diagonal along benzene's 30 modes) and the full canonical reference
   Hessian that Q7(i) and Q7(iv) consume (72 canonical CCSD(T) gradients if the chosen code has
   them, printed; else 1,801 energies by central differences). **"Fits"** means extrapolated
@@ -147,14 +169,27 @@ for fragment probing, before the R3 fragment-vs-whole comparison has printed.
   arm re-run in that basis, labelled, or is the first B3 request; if only the bias line fits,
   Q7(i) at R0 compares to the local-CC reference only, Q7(iv) reads the reference Hessian from
   the local-CC arm, and the full canonical Hessian is the first B3 request — that sentence is
-  printed with the R0 result and a dated note says which.
+  printed with the R0 result and a dated note says which. The **expected** printout, written now
+  so it is not a contingency: the bias line fits and the full reference does not. A bias line
+  measured in cc-pVDZ is a **lower bound** on the cc-pVTZ freezing bias (the bias scales with the
+  LNO truncation error, which is larger at TZ); the TZ arm's freezing then stays unlicensed, and
+  "beat" language from the TZ arm requires the DZ bias ≤ τ/2.
 - **[05] The promised correction is Δ₂ only.** No CC correction to cubic or quartic constants
   is promised; the diagonal-cubic probe is a bonus number. DFT anharmonic constants are computed
   for a family set closed under the resonance search **to closure depth one** (a scored family
   mode's partners; the partners' own diagonal anharmonicity from their 1-D cut only), bounded by
   the polyad cap; the pilot note prints the closed set's size and Hessian count per rung.
-- **[05] K is a measurement, not a choice — with a noise-aware stopping rule.** Patterns are
-  consumed in the hashed order of the Q0 deck. At each count n the held-out residual ρ(n)
+- **[05] K is a measurement, not a choice — with a noise-aware stopping rule.** **Every pattern
+  p enters the Q0 deck as the pair ±p, and the mode-E response is the symmetric combination**
+  R_s(p) = ½[ΔE(+p) + ΔE(−p)] − ΔE(0) = ½ pᵀΔ₂ p + O(p⁴): the first-order term Δ₁·p — the CC−DFT
+  force at the DFT geometry, which is not zero and is several times the Δ₂ signal per bond at
+  q_s = 1 (Round-9 Pass B finding 1) — and the cubic term cancel exactly. The antisymmetric
+  combination R_a(p) = ½[ΔE(+p) − ΔE(−p)] = Δ₁·p + O(p³) is a free by-product (Δ₁ from the
+  single-mode block; φ_iii once a second amplitude exists — the diagonal-cubic bonus). The mode-G
+  response ∇ΔE(p) − ∇ΔE(0) removes Δ₁ by construction. **K counts energies in mode E (a ± pair
+  counts 2) and gradients in mode G**; ρ, RMS_resp and ρ_noise are defined on R_s, with
+  σ(R_s) = σ_E/√2. Patterns are consumed in the hashed order of the Q0 deck, pairs together. At
+  each count n the held-out residual ρ(n)
   (Distilled §3) is computed together with its **noise floor** ρ_noise(rung, mode) =
   σ(mode, size)/RMS_resp(rung), where σ is the per-point scatter σ_E or σ_g of the §3 estimator
   from the **largest Q6 noise measurement at or below the rung's size that exists before the
@@ -182,15 +217,26 @@ for fragment probing, before the R3 fragment-vs-whole comparison has printed.
   Q0 deck (deck seed + pattern index), fraction f_h (item 10).
 - **[05] Frozen spaces — the object, written once.** At the reference geometry the local-CC code
   stores the localized occupied orbitals and each fragment's LNO (or PNO) vectors in the AO
-  basis. At a displaced geometry: the localized occupied orbitals are mapped to the stored ones
-  by maximal overlap and the **assignment permutation is printed**; the stored virtual-space
-  vectors are **projected onto the new geometry's virtual space and Löwdin-orthonormalised**; that
-  projected, orthonormalised set is "the frozen space", and the correlation energy is evaluated in
-  it. For mode G the projection is **inside the differentiated graph**. Every local-CC probe
+  basis. At a displaced geometry **both halves are transported by projection, and nothing is
+  re-localised or assigned**: the occupied set is C_occ(x) = Löwdin[P_occ(x) C_occ(0)], P_occ(x)
+  the projector onto the displaced geometry's occupied space (no localiser runs at a displaced
+  geometry, so no assignment exists and no permutation can switch — Round-9 Pass B finding 2:
+  π localisation on the D₆h rungs is soft, and re-localise-and-assign would mix, not switch); the
+  stored virtual-space vectors are likewise **projected onto the new geometry's virtual space and
+  Löwdin-orthonormalised**; that projected, orthonormalised pair of sets is "the frozen space",
+  and the correlation energy is evaluated in it. The map is analytic while the overlaps are
+  nonsingular (for |q| ≤ 1 the smallest singular value is 1 − O(q²)); for mode G the projection is
+  **inside the differentiated graph** for both halves. Every local-CC probe
   evaluation at a displaced geometry uses frozen spaces so defined. **Probe M1** tests that the
   candidate code (the pyscf-forge LNO code, item 48) can do this and prints, along one totally
-  symmetric, one degenerate and one non-symmetric benzene mode, the assignment permutation and
-  E(displaced, frozen) − E(displaced, fresh) per point, without a verdict. A code that cannot
+  symmetric, one degenerate and one non-symmetric benzene mode, per point: the **continuity
+  diagnostics** — the smallest singular value of the occupied overlap S_oo(x) = C_occ(0)ᵀ S(x)
+  C_occ(x) and the largest off-diagonal of the pre-Löwdin overlap, for both halves — and
+  E(displaced, frozen) − E(displaced, fresh); for the fresh arm also the localiser's functional
+  value and its overlap with the transported set, so the localiser's landing arbitrariness is
+  visible in the "fresh" column and not attributed to freezing. All without a verdict. **M1's raw
+  displaced energies are not printed**: they go to the same hashed, sealed file as the R1 fit
+  coefficients (they would otherwise make three benzene Δ₂,ii readable before the note). A code that cannot
   freeze spaces is reported under stop 1 (as of 2026-09-04: ORCA documents freezing for
   DLPNO-MP2 only; Psi4 documents none).
 - **[05] The structural prior is frequency-banded** (Distilled §3): off-diagonal Δ₂ elements
@@ -212,7 +258,9 @@ for fragment probing, before the R3 fragment-vs-whole comparison has printed.
   removing or re-weighting patterns after any residual is known is a Distilled §4 deviation.
 - **[05] Order of the pilot inputs, and what they may not contain.** The pilot note is written
   with: the lab side (including M03's u_band table); the opponent side; the **zero-CC dry run**
-  (both modes, with its noise-injection column); probe M1's printout; the **canonical feasibility
+  (both modes, with its noise-injection column); probe M1's printout (its raw displaced energies
+  sealed with the R1 fit coefficients; only the difference column and the continuity diagnostics
+  are printed); the **canonical feasibility
   probe** (one canonical CCSD(T) energy of benzene in the anchor basis on the B2 laptop:
   wall-clock, peak memory, extrapolated to the Hessian count); the gradient-availability probe
   **as a run/no-run at the equilibrium geometry only**; the **R1 smoothness probe's σ only** — its
@@ -250,22 +298,32 @@ for fragment probing, before the R3 fragment-vs-whole comparison has printed.
   Fragment probing may produce a rung's Δ₂ only when all of the following have printed:
   (a) Q8(a/b) on direct couplings at R2 and R3 for the scored families;
   (b) the **fragment-vs-whole comparison at R3** — coronene's Δ₂ recovered whole and recovered
-  from capped fragments **at the smallest fragment radius r_f that passes**, agreeing per scored
-  family within τ₇; r_f is printed against coronene's own radius, and if no r_f smaller than the
-  molecule passes, that is printed as the result and part (b) has failed;
+  from capped fragments, agreeing per scored family within τ₇. **The fragment, written once:**
+  ring-closed, hydrogen-capped, carved **unrelaxed** from the rung's DFT geometry, its radius
+  counted in ring shells around the pair or region it serves, in the rung's deck basis. At
+  coronene the ring-closed fragments containing an interior pair are exactly two — the central
+  ring (one shell) and the whole molecule — so (b) is **one comparison at one shell for interior
+  pairs** (edge pairs use the ring-closed three- to five-ring pieces), not a scan; r_f = one shell
+  if it passes. If one shell fails, the two-shell hypothesis is **untestable at coronene** and the
+  licence is **pending (b′)** — earned only if (b′) passes at two shells on circumcoronene, not
+  earned otherwise; that is printed as the result, never "failed";
   (b′) the same comparison **on a molecule larger than coronene** (circumcoronene-class, R4),
   **promised conditional on B3 classification** of the whole-molecule batch, since it is the only
-  comparison on a fragment that is not the whole molecule;
+  comparison on a fragment that is not the whole molecule and the only test of two shells;
   (c) the **fragment-radius convergence test on the rung's own interior**: for the deck-chosen
   interior and edge pairs, the family-projected direct couplings (Q8(a) below) computed from
-  fragments of radius r_f and r_f + one ring carved from the rung's own DFT geometry, agreeing
-  within the absolute η₈; first instance on circumcoronene's central ring at R4, then on the R6
-  flake; whole-flake direct couplings, where B3 allows, as the gold check. **Which r_f:** (c)
-  uses the R3 value from (b); if (b′) ran and its smallest passing radius is larger, that larger
-  value; (c) is run once at (r_f, r_f + one ring) and is not re-run at a larger radius without a
-  dated note before the second run; the R6 fragment probe uses the radius at which (c) passed on
-  the R6 flake, printed in the certificate. If (b) found no passing radius smaller than coronene,
-  the licence is not earned and R6 is not fragment-probed (Distilled §8, all-families refusal).
+  fragments of r_f and r_f + one shell carved from the rung's own DFT geometry, agreeing within
+  the absolute η₈; first instance on circumcoronene's central ring at R4, then on the R6 flake;
+  whole-flake direct couplings, where B3 allows, as the gold check. **(c) is a probe batch like
+  any other**: its energy count is printed (three pairs per class × the scored families × four
+  energies × two radii — of order 360 fragment energies at R6, coronene- and circumcoronene-size
+  fragments if r_f = two shells) and it is classified by Budget §2's rule; at r_f = one shell it is
+  laptop work, at two shells B3. **Which r_f:** (c) uses the R3 value from (b); if (b′) ran and
+  its smallest passing radius is larger, that larger value; (c) is run once at (r_f, r_f + one
+  shell) and is not re-run at a larger radius without a dated note before the second run; the R6
+  fragment probe uses the radius at which (c) passed on the R6 flake, printed in the certificate.
+  If neither (b) nor (b′) found a passing radius smaller than its molecule, the licence is not
+  earned and R6 is not fragment-probed (Distilled §8, all-families refusal).
   Families that fail any part are withdrawn from that rung's certificate with the measured share.
 - **[05] Q8 has a fixed form** (Distilled Q8) and is computed on **directly measured
   couplings** wherever it decides anything: (a) the measured quantity per atom pair (A, B) and
@@ -278,8 +336,9 @@ for fragment probing, before the R3 fragment-vs-whole comparison has printed.
   couplings come from the reference Hessian, at R2–R3 from the prior-free direct probe; the
   recovered couplings are printed beside them. **Agreement metric (absolute form):** the
   disagreement |recovered − direct| is normalised by the coupling scale of the pair's
-  **distance class**: the deck's pair list has three classes — near, mid, far — with an **equal
-  frozen count per class** (item 12; at least three pairs per class), S_class =
+  **distance class**: the deck's pair list has three classes by bond count — **near** = bonded, **mid** = two or three bonds apart, **far** =
+  four or more — with an **equal frozen count per class** (item 12; at least three pairs per
+  class); the probe prints S_class, n_class, σ_coupling and the class windows, S_class =
   √(Σ_class direct² / n_class), and a pair passes if it is ≤ η₈·S_class ("η₈·S" anywhere in this
   plan means η₈·S_class; the mid class is the one the test is meant to bite on, and a near pair
   cannot carry a mid pair). A pair whose direct coupling is below 3σ_coupling is reported **"at
@@ -289,15 +348,25 @@ for fragment probing, before the R3 fragment-vs-whole comparison has printed.
   disagreement beyond η₈·S_class on a resolved pair is a Q7-class breach. (b) per scored
   family, the share of the family's Δ-shift carried by pairs beyond r_max is ≤ ε₈, computed with
   the direct far couplings substituted into the recovered Δ₂; (c) saturation, **same mode and
-  same prior at both rungs, at the same ρ\* rule**: in mode E on K_off — K_off(R_{n+1}) ≤
+  same prior at both rungs, both counts read from the rungs' stored ρ(n) curves at the common
+  threshold ρ\*_common = max(ρ\*(R_n), ρ\*(R_{n+1}))** — both rungs reached it, since each reached
+  its own ρ\* ≤ ρ\*_common; the record K and the common-threshold K are both printed and Q8(c)
+  uses the latter: in mode E on K_off — K_off(R_{n+1}) ≤
   γ·K_off(R_n) for R1→R2 and R2→R3 — and in mode G on K over the rungs mode G ran. r_max, ε₈,
   η₈, γ and h are pilot-note item 12.
 - **[05] Q6 has thresholds** (item 13), each a formula frozen now with its numbers filled at
   the pilot note, and **one estimator**: along each probe mode, ΔE(q) (mode E) or the
   gradient-difference component g(q) (mode G) is sampled at nine points on q ∈ [−1, 1] (spacing
-  0.25) per freezing arm; **σ_E is the RMS residual of ΔE(q) about a least-squares polynomial of
-  degree 4**, and **σ_g the RMS residual of g(q) about a polynomial of degree 3** — the per-point
-  scatters the noise lines were derived for. Both lines come from one convention — the
+  0.25) per freezing arm; **σ_E = √(SSR/(n − p))** of ΔE(q) about a least-squares polynomial of degree 4 (n = 9 points,
+  p = 5 coefficients, ν = 4 per mode — never √(SSR/n), which under-reads σ by √(4/9)); **σ_g
+  likewise about a polynomial of degree 3 (p = 4)**, with g(q) = ∇ΔE·∂x/∂q the gradient component
+  along the same dimensionless q, and **pooled over all 3N Cartesian components** (each fitted to
+  its own degree-3 polynomial; ν = 5·3N). **One σ per freezing arm, pooled over the four modes**
+  (ν = 16 in mode E), the per-mode values printed beside it — a single-mode σ from ν = 4 has a
+  90 % range of [0.42, 1.54]·σ; the noise lines are evaluated on the pooled σ and the pilot note
+  records its 90 % interval. Studentised residuals are printed per point and |r| > 2.5 is
+  flagged as a candidate discontinuity beside M1's continuity diagnostics. These are the
+  per-point scatters the noise lines were derived for. Both lines come from one convention — the
   single-mode estimate of a diagonal element must have σ(Δ̂₂,ii) ≤ 2τ: mode E's three-point
   second difference (E₊ − 2E₀ + E₋)/q_s² has σ = σ_E·√6/q_s², giving σ_E ≤ (2/√6)·τ·q_s² ≈
   0.82·τ·q_s²; mode G's central first difference (g₊ − g₋)/(2q_s) has σ = σ_g/(√2·q_s), giving
@@ -358,8 +427,8 @@ number exists for any molecule**. The 2026-09-04 decisions are recorded in it by
     than the smallest beat margin of item 2**; and the **discriminability factor** d₇. No Q7
     result exists when they are written.
 12. **[05] The Q8 numbers**: r_max, ε₈, η₈ (absolute form), γ, the Cartesian step h, and the
-    direct-coupling pair list per rung (which atom pairs, at which distances; for R4 and R6,
-    interior and edge pairs on the fragments).
+    direct-coupling pair list per rung (which atom pairs, in which bond-count class — near, mid,
+    far — with equal counts per class; for R4 and R6, interior and edge pairs on the fragments).
 13. **[05] The Q6 numbers**: τ inserted into the two noise lines, the bias line and the
     threshold formulas of §3 with the §3 estimator; the pattern amplitude q_s per mode chosen from
     the R1 smoothness grid; the CPS decision; the band width w and regularisation weights of the

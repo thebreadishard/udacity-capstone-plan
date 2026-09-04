@@ -6,7 +6,7 @@ student's decisions and a second cold-read review. Supersedes the plan-04 propos
 September. Companion documents: this proposal summarises a frozen plan and explains *why* its
 major decisions were taken; the binding technical documents (goal, ladder, tolerances,
 opponents, gates, budget, mapping) live in the same folder and take precedence where they are
-more specific. Five external review passes of this plan (cold reads and adversarial domain reviews on 3 and
+more specific. Six external review passes of this plan (cold reads and adversarial domain reviews on 3 and
 4 September 2026) are in the folder with every finding and its closure; the domain reviews'
 verdicts were conditional, and §9 says on what.
 
@@ -180,7 +180,11 @@ spectra without concentration data (the 8 cm⁻¹ homogenised resolution rests o
 description snippet and the vapour temperature on recall; both are graded so in the
 bibliography); on that source the C–C
 stretching families at R2 are expected to be undecidable by construction, and the plan says so
-before any number exists. Deciding those families on gas data needs a source the project does
+before any number exists. The third review (4 September) found that naphthalene's only NIST
+gas-phase spectra are likewise hot (a 245 °C vapour spectrum and a GC-IRD entry), so the same
+rule now governs the second rung: benzene is scored unconditionally on room-temperature cell
+spectra, naphthalene per family, with its C–C families expected undecidable unless a published
+hot-band correction is pinned first — the plan's first paid literature debt. Deciding those families on gas data needs a source the project does
 not yet have — which is why §13.3's request to the supervisor is load-bearing, not polite.
 
 ### 5.3 Why the cost is reported and never described
@@ -208,8 +212,10 @@ LNO-CCSD(T)); what remains unmeasured is its behaviour with frozen spaces and it
 PAH sizes, which the side project's first milestones print. The second domain review added the
 one physics question the side project must answer first: whether the frozen space, once
 projected onto a displaced geometry's orbitals, is a smooth function of the nuclei on the two
-six-fold-symmetric molecules (benzene, coronene), where the orbital assignment can switch. The
-main project's probe M1 prints the assignment log before the pilot note; the side project's
+six-fold-symmetric molecules (benzene, coronene), where a re-localised orbital set would be
+arbitrary — which is why the plan now transports the stored orbitals by projection instead of
+re-localising and matching them. The main project's probe M1 prints the continuity diagnostics
+before the pilot note; the side project's
 first milestone prints the projection term of the gradient. The side project has
 four milestones with printed pass conditions, its own budget line, a twelve-week checkpoint and
 a kill criterion, all frozen before any code exists. If it succeeds, the gradient route is the
@@ -418,8 +424,8 @@ module may ship an honest fail-closed state to meet its date, and the science co
    (§10), both decided by the student as methods subject to measurement — a supervisor's
    objection would reopen either — and on the side project of §5.3, which is where the
    plan's ambition and its main time risk both sit.
-3. **Laboratory sources — now load-bearing.** Gas-phase or jet-cooled spectra of pyrene,
-   chrysene and triphenylene at better than 8 cm⁻¹ resolution and known temperature would make
+3. **Laboratory sources — now load-bearing.** Gas-phase or jet-cooled spectra of naphthalene,
+   pyrene, chrysene and triphenylene at better than 8 cm⁻¹ resolution and known temperature would make
    the C–C families at the pyrene-size rung decidable, which the NIST hot-vapour spectra cannot;
    the same for tetracene- and coronene-class species would enlarge the decidable set further.
 4. When the naphthalene measurements justify it: sponsorship of a cluster-time request sized

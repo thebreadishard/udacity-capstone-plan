@@ -10,8 +10,8 @@ applies: every identifier below is re-fetched before it enters a scored Module 0
 **The criterion (from [Overarching_Goal.md](Overarching_Goal.md)).** The pipeline's band
 positions for a molecule must be demonstrably more accurate than the best prediction
 currently available anywhere for that molecule, judged per band against laboratory data —
-**where that data can decide the comparison**: unconditionally on the gas-phase rungs R0–R1;
-on R2–R3 per family — gas-scored families only where M03's measured band-centre uncertainty
+**where that data can decide the comparison**: unconditionally on R0;
+on R1–R3 per family — gas-scored families only where M03's measured band-centre uncertainty
 u_band is smaller than the beat margin, matrix-scored families only if the M03-measured
 matrix–gas delta is smaller than it (Ladder §2, Promised) — and never on reach rungs.
 

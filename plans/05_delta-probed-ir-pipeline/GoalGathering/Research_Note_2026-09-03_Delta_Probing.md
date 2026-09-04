@@ -299,3 +299,10 @@ this section wins and the frozen documents follow it.
   residual about a degree-4 fit and the mode-G line σ_g ≤ 2.8·τ·q_s follows from the same 2τ
   convention as the 0.82 line (2√2 ≈ 2.8); the anchor basis is cc-pVTZ at R0–R1 with a
   one-point canonical feasibility probe; decidability is by u_band.
+- **Round-9 Pass B (2026-09-04):** the mode-E response is the symmetric combination over ± pattern
+  pairs (the raw energy difference is dominated by the CC−DFT force term Δ₁·p, which §§1–7 and §8
+  never mention); the frozen space transports occupied and virtual vectors by projection (no
+  maximal-overlap assignment — §8's "assignment switches" are a design artefact that no longer
+  exists); only R0 is scored unconditionally (naphthalene's NIST gas spectra are hot vapour); the
+  coronene fragment test is one comparison at one shell, with a "pending (b′)" outcome; Q8(c) is
+  read at a common threshold; σ divides by n − p and is pooled per arm.

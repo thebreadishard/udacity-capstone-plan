@@ -37,26 +37,32 @@ single-mode scatter with sealed fit coefficients, and timings; no local-CC Δ₂
    subset-size note.
 1b. **Canonical feasibility probe** (`r0_canonical_feasibility.py`): one canonical CCSD(T)
    energy of benzene in the anchor basis on the B2 laptop; wall-clock and peak memory printed
-   and extrapolated, by deck-frozen factors, to the bias-line count (61 energies) and the full
-   canonical reference-Hessian count (72 canonical gradients if the code has them, printed, else
-   1,801 energies); "fits" = ≤ 168 h and ≤ 31.3 GB per object; decides the basis of the Q6 bias
+   and extrapolated to the bias-line count (61 energies) and the full canonical reference-Hessian
+   count (72 canonical gradients — one canonical CCSD(T) gradient is also run and timed where
+   the code has it, `pyscf/grad/ccsd_t.py` fetched 2026-09-04 — else 1,801 energies); "fits" = ≤ 168 h and ≤ 31.3 GB per object; decides the basis of the Q6 bias
    line and whether the R0 canonical reference Hessian is R0 work or the first B3 request
    (Ladder §3; Budget §4.1b).
 2. **Probe M1 — frozen spaces** (`m1_frozen_spaces.py`): the candidate local-CC code
    (pyscf-forge LNO-CCSD(T), item 48; version pinned and printed) stores fragment
    list, localized orbitals and LNO vectors at the reference geometry and, at displaced
-   geometries, maps occupied orbitals by maximal overlap and projects/orthonormalises the stored
-   virtual spaces (the Ladder §3 object); prints the reference-energy reproduction (target
-   10⁻⁹ E_h) and, along one totally symmetric, one degenerate and one non-symmetric benzene
-   mode, the assignment permutation and E(displaced, frozen) − E(displaced, fresh) per point,
-   **without a verdict** (the τ it would be judged against does not exist yet). Fails → Ladder
+   geometries, transports the occupied and the virtual vectors by projection and
+   Löwdin-orthonormalises them (the Ladder §3 object; no localiser, no assignment); prints the
+   reference-energy reproduction (target 10⁻⁹ E_h) and, along one totally symmetric, one
+   degenerate and one non-symmetric benzene mode, the continuity diagnostics (smallest singular
+   value of the occupied overlap, largest pre-Löwdin off-diagonal, both halves; the fresh arm's
+   localiser functional and its overlap with the transported set) and E(displaced, frozen) −
+   E(displaced, fresh) per point, **without a verdict**; the raw displaced energies are written
+   to the hashed, sealed file of probe 5, never printed (the τ it would be judged against does not exist yet). Fails → Ladder
    stop 1.
 2a. **Lab-scoreboard re-read and u_band** (`m03_band_uncertainty.py`): regenerate the plan-02
    band table (PAHdb experimental uids, NIST JCAMP) and the plan-04 NIST coverage scan under
-   this plan's hash; per gas-phase band print the source's stated resolution (from its
-   documentation, never `DELTAX`), the centroid precision from the signal-to-noise, the
-   temperature term (declared hot-band shift or the labelled hot-vapour uncertainty), their
-   quadrature sum **u_band**, and the decidability verdict per family (feeds pilot-note item 1).
+   this plan's hash; per gas-phase band print the source class (cell / vapour cell / GC-IRD),
+   the stated temperature, the source's stated resolution (from its documentation, never
+   `DELTAX`), the centroid precision from the signal-to-noise, the temperature term (pinned
+   hot-band correction with ±30 % and the temperature uncertainty, or the Ladder §2 floor
+   χ_max·(T_source − 296 K) + 1 cm⁻¹), their quadrature sum **u_band**, and the decidability
+   verdict per family (feeds pilot-note item 1). Expected: R0 decidable throughout; R1 and R2
+   C–C families inconclusive by construction unless the correction is pinned.
 3. **Gradient availability, run/no-run at equilibrium** (`anchor_gradient_availability.py`):
    per candidate code, does an analytic gradient at the anchor level run **at the equilibrium
    geometry** of benzene and naphthalene with frozen spaces? Prints code, version, run/no-run,
@@ -69,24 +75,29 @@ single-mode scatter with sealed fit coefficients, and timings; no local-CC Δ₂
 5. **R1 smoothness probe** (`q6_smoothness.py`): naphthalene, four modes (a C–C stretch, a C–H
    stretch, a CH-oop mode and one totally symmetric mode), nine points each at q ∈ [−1, 1],
    TightPNO, with and without frozen spaces; **σ_E = the RMS residual of ΔE(q) about a degree-4
-   least-squares polynomial** per mode and arm is printed against 0.82·τ·q_s² (2.8·τ·q_s) for each q_s ∈ {0.25, 0.5, 1.0}; the fit
+   least-squares polynomial**, σ_E = √(SSR/(n − p)) with n = 9, p = 5, per mode and arm and
+   **pooled over the four modes per arm** (ν = 16) with studentised residuals per point, is
+   printed against 0.82·τ·q_s² (2.8·τ·q_s) for each q_s ∈ {0.25, 0.5, 1.0}; the fit
    coefficients (which contain the diagonal Δ₂ elements) are written to a hashed, sealed file
    that the script refuses to open before the pilot note's commit hash exists. Fixes the pattern
    amplitude (item 13). 72 local-CC energies (4 × 9 × 2).
 
 **After the pilot note is committed:**
 
-6. **R0 probe batch and Q7** (`q7_probing_licence.py`): the R0 responses in hashed order,
-   K(R0) and K_off at ρ\*, the cost record; then the references (numerical local-CC Hessian
+6. **R0 probe batch and Q7** (`q7_probing_licence.py`): the R0 responses (symmetric combinations over ± pairs) in hashed order,
+   K(R0) and K_off at ρ\*, the cost record with σ, RMS_resp, ρ_noise, c, ρ(K) and the stored
+   ρ(n) curve; then the references (numerical local-CC Hessian
    with frozen spaces; the canonical CCSD(T) Hessian where the feasibility probe placed it at
    R0, else the local-CC arm's) and the Q7 table (i)–(iv) — the recovered
    Δ₂ printed as a matrix in the DFT mode basis, for the diagonal-only and the full recovery,
    the discriminability factor, the shuffled-probe null, and Q8(a/b) on reference vs
    recovered (R0's only Q8 read). Also the **diagonal-cubic bonus probe** (φ_iii along each
-   scored mode, four energies per mode; a reported number), the opening of the sealed
+   scored mode from the antisymmetric combinations of the single-mode block plus one further
+   amplitude — two extra energies per mode; a reported number), the opening of the sealed
    smoothness fits, and side-project **M2** (`sp_m2_gradient_benzene.py`: AD gradient with the
    projection inside the graph vs finite differences of the **re-projected** frozen-space
-   energy; the mode-G noise line σ_g ≤ 2.8·τ·q_s along the Q6 modes; and the third number,
+   energy; the mode-G noise line σ_g ≤ 2.8·τ·q_s from nine gradients per Q6 mode, σ_g pooled over all
+   3N components; and the third number,
    AD(projection inside) − AD(projection under stop_gradient) per Q6 mode).
 7. **Anchor-licence probes** (Q6, `q6_anchor_licence.py`): the bias line at R0 (frozen vs
    canonical Δ₂ per mode); local CC vs canonical and TightPNO vs NormalPNO harmonic-frequency
@@ -106,25 +117,30 @@ single-mode scatter with sealed fit coefficients, and timings; no local-CC Δ₂
     probe** (`q8_direct_couplings.py`: deck-chosen π-system pairs at near, mid, far distances;
     per pair and scored family the family-projected coupling ∂²ΔE/∂u_A∂u_B by four-point
     differences at step h — four energies per (pair, family); the full 3×3 block for the near
-    pair only; equal frozen counts per distance class; pairs below 3σ_coupling = 3σ_E/(2h²)
+    pair only; equal frozen counts per bond-count class (near = bonded, mid = 2–3 bonds, far = ≥ 4),
+    S_class, n_class and σ_coupling printed; pairs below 3σ_coupling = 3σ_E/(2h²)
     reported "at noise"; agreement within η₈·S_class); the Q6 noise grid at the R2-size
     family in the mode(s) used; probe batches in mode E (and G if licensed) — the structural
     recovery, and the prior-assisted recovery on the same responses
     (`licence_prior_vs_structural.py`: per-family agreement within τ₇, couplings within η₈·S,
     the structural recovery's own Q8(a/b) passed); Q8(a/b) on direct couplings with the
-    recovered couplings beside; Q8(c) R1→R2 per mode; side-project **M4**.
+    recovered couplings beside; Q8(c) R1→R2 per mode at the common threshold ρ\*_common (both K_off values printed);
+    side-project **M4** (nine gradients per Q6 mode, 36, classified by Budget §2).
 13. **R3**: direct-coupling probe; batch (both modes where licensed; both recoveries;
     licence-earning comparison); **fragment-vs-whole** (`fragment_licence.py`: coronene's Δ₂
-    from capped fragments at the smallest passing radius r_f vs whole, per family within τ₇;
-    r_f printed against the molecule's radius); Q8(a/b); Q8(c) R2→R3 per mode; side-project
-    **M5** (gradient at coronene: run/no-run, AD-vs-FD along the Q6 modes, σ_g at R3 size); the
+    from ring-closed, H-capped, unrelaxed fragments at one shell vs whole, per family within τ₇ —
+    one comparison for interior pairs; verdict "passed at one shell" / "pending (b′)"); Q8(a/b);
+    Q8(c) R2→R3 per mode at the common threshold; side-project **M5** (36 gradients at coronene:
+    run/no-run, AD-vs-FD along the four Q6 modes, σ_g pooled at R3 size; classified by Budget §2); the
     cost records side by side.
 14. **R4 (fragment licence, parts b′ and c, first instance)**: `fragment_licence.py` on
     circumcoronene — whole vs fragments, conditional on B3 classification of the whole batch;
     `fragment_convergence.py` — direct couplings on the central ring from fragments of radius
-    r_f and r_f + one ring, agreement within η₈·S.
+    r_f and r_f + one shell, agreement within η₈·S; energy count printed and classified by
+    Budget §2.
 15. **R6 (fragment licence, part c)** (`fragment_convergence.py` on the flake): deck-chosen
     interior and edge pairs, direct couplings from fragments of radius r_f (Ladder §3's rule:
     R3's value, or (b′)'s if larger) and r_f + one ring carved from the R6 DFT geometry,
-    agreement within η₈·S; run once, the passing radius printed in the certificate; whole-flake direct couplings where
+    agreement within η₈·S; run once, the passing radius printed in the certificate; energy count
+    printed (of order 360) and classified by Budget §2 — B3 at two shells; whole-flake direct couplings where
     B3 allows.

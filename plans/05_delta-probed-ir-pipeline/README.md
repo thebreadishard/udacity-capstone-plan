@@ -154,8 +154,31 @@ before anything else.
   count and numbering; (25) note status line and §9 extended; (26) glossary terms and acronyms
   added; (27) Frozen_Lines criterion and §7 trailer; (28) proposal header, §5.3, §11 order.
   Brief: [Review_Brief_2026-09-04_Round9_PassA.md](GoalGathering/Review_Brief_2026-09-04_Round9_PassA.md).
-- **Round 9, Pass B** (owed): did the eighteen Round-8 closures hold; attacks A–G on what
-  they introduced. Brief: [Review_Brief_2026-09-04_Round9_PassB.md](GoalGathering/Review_Brief_2026-09-04_Round9_PassB.md).
+- **Round 9, Pass B** (2026-09-04; hostile domain re-examination, with web):
+  [Professor_Review_2026-09-04_Round9_PassB.md](GoalGathering/Professor_Review_2026-09-04_Round9_PassB.md)
+  — verdict **conditional**: R0–R1 green once four in-spec items landed; R2–R3 under those plus
+  one; beyond R3 conditional on one in-spec item and on B3. Part 1: 17 of the 18 Round-8 closures
+  held, one (M5's σ_g) was a re-wording. 6 blocking + 6 non-blocking. **All 12 addressed in spec
+  the same day:** (1) the mode-E response symmetrised over ± pattern pairs — R_s = ½[ΔE(+p) +
+  ΔE(−p)] − ΔE(0) — because the raw difference is dominated by the CC−DFT force term Δ₁·p; K
+  counts energies (a pair counts 2); ρ, RMS_resp, ρ_noise on R_s; the dry run the same; (2) the
+  frozen space transports both occupied and virtual vectors by projection — no localiser and no
+  maximal-overlap assignment at displaced geometries — with M1 printing continuity diagnostics
+  instead of a permutation; (3) only R0 scored unconditionally: naphthalene's NIST gas spectra
+  are a 245 °C vapour spectrum and a GC-IRD entry (WebBook list opened by reviewer and author),
+  so R1 is per family under u_band, the unpinned temperature term has a floor, and the hot-band
+  references (items 52–53: Joblin 1995, not opened; Pirali 2009, Crossref-verified) are the first
+  paid debt; (4) the fragment written once (ring-closed, H-capped, unrelaxed, radius in shells),
+  (b) at coronene stated as one comparison at one shell with a "pending (b′)" outcome, part (c)
+  classified as a probe batch by Budget §2 (of order 360 fragment energies at R6); (5) Q8(c) read
+  from the stored ρ(n) curves at the common threshold max(ρ\*(R_n), ρ\*(R_{n+1})); (6) σ =
+  √(SSR/(n − p)), pooled over the four modes per arm, studentised residuals printed; (7) M2–M5 at
+  nine gradients per Q6 mode, σ_g pooled over 3N components, M4/M5 classified; (8) M1's raw
+  displaced energies sealed; (9) the feasibility probe also runs one canonical gradient
+  (`pyscf/grad/ccsd_t.py` fetched), the expected outcome written, the DZ bias line a lower bound;
+  (10) distance classes by bond count with S_class printed; (11) the Goal's item 1 (c) carries
+  the r_f rule; (12) the diagonal-cubic bonus counted as two extra energies per mode.
+  Brief: [Review_Brief_2026-09-04_Round9_PassB.md](GoalGathering/Review_Brief_2026-09-04_Round9_PassB.md).
 
 Plan 04's Round-6 findings and their closures bind plan 05 and are not re-litigated.
 
@@ -173,8 +196,11 @@ corpus carries no module-02 reuse exposure (Goal, decision 7). **No decision is 
 
 ## Not yet done (owed, in order)
 
-- **Round 9 Pass B**: the domain confirmation that Round-8's eighteen closures held (Pass A of
-  Round 9 has run and is addressed; see the review record).
+- **Round 10** (optional, the user's call): a cold read of the Round-9 Pass B patches — the
+  symmetrised response, the projection-only frozen space and the R1 decidability change touched
+  the Goal, Ladder, Distilled plan, Budget, probes README and side project at once.
+- **The first paid literature debt**: items 52–53 (PAH hot-band shift rates) read before M03
+  prints u_band.
 - Capstone mapping Pass 6 (module-by-module sign-off).
 - **Probe M1** (frozen LNO spaces reproduce the reference energy) — the first code of the
   project, main-project work.
