@@ -66,9 +66,9 @@ single-mode scatter with sealed fit coefficients, and timings; no local-CC Δ₂
    the stated temperature, the source's stated resolution (from its documentation, never
    `DELTAX`), the centroid precision from the signal-to-noise, the temperature term (pinned
    hot-band correction with ±30 % and the temperature uncertainty, or the Ladder §2 floor
-   χ_max·(T_source − 296 K) + 1 cm⁻¹; T_source from the record, else from the series'
+   χ_max·(T_source − 296 K) + u_296; T_source from the record, else from the series'
    documentation — item 56 for the NIST Quantitative IR series, items 57 and 59 for the PNNL/NWIR
-   naphthalene record — else hot; u_296 per molecule per Ladder §2), their quadrature sum **u_band**, and the decidability
+   naphthalene record — else hot; u_296 per molecule per Ladder §2: 1 / 3 / 5 cm⁻¹, recalled), their quadrature sum **u_band**, and the decidability
    verdict per family (feeds pilot-note item 1). Expected: R0 and R1 decidable throughout on their room-temperature
    sources (the hot WebBook naphthalene entries as labelled extra columns); R2 C–C families
    inconclusive by construction unless the correction is pinned.
@@ -96,7 +96,7 @@ single-mode scatter with sealed fit coefficients, and timings; no local-CC Δ₂
 
 6. **R0 probe batch and Q7** (`q7_probing_licence.py`): the R0 responses (symmetric combinations over ± pairs) in hashed order,
    K(R0) and K_off at ρ\* (energies, evaluated per complete pair), the cost record with σ(R_s),
-   RMS_resp, ρ_noise, c, ρ(K) and the stored ρ(n) curve (the ρ\*_common column NOT_RUN until the
+   c₀, RMS_resp, ρ_noise, c, ρ(K), the q₂ block count and the stored ρ(n) curve (the ρ\*_common column NOT_RUN until the
    Q8(c) probe re-prints it); then the references (numerical local-CC Hessian
    with frozen spaces; the canonical CCSD(T) Hessian where the feasibility probe placed it at
    R0, else the local-CC arm's) and the Q7 table (i)–(iv) — the recovered
@@ -104,7 +104,8 @@ single-mode scatter with sealed fit coefficients, and timings; no local-CC Δ₂
    the discriminability factor, the shuffled-probe null, and Q8(a/b) on reference vs
    recovered (R0's only Q8 read). Also the **diagonal-cubic bonus probe** (φ_iii along each
    scored mode from the antisymmetric combinations of the single-mode block plus one further
-   amplitude — two extra energies per mode; a reported number), the opening of the sealed
+   amplitude — two extra energies per scored mode, mandatory because the same energies identify
+   c₀, Ladder §3; printed in the cost record as the q₂ block, outside K), the opening of the sealed
    smoothness fits, and side-project **M2** (`sp_m2_gradient_benzene.py`: AD gradient with the
    projection inside the graph vs finite differences of the **re-projected** frozen-space
    energy; the mode-G noise line σ_g ≤ 2.8·τ·q_s from nine gradients per Q6 mode, σ_g pooled over all

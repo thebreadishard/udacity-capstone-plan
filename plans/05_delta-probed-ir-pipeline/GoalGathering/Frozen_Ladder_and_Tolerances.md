@@ -2,7 +2,8 @@
 
 **Status.** Frozen 2026-09-03 in *form*; revised the same day after Round-7 Pass A and Pass B;
 amended 2026-09-04 by the user's decisions and revised the same day after Round-8 Pass A and
-Pass B, Round-9 Pass A and Pass B, and Round-10 Pass A and Pass B. Carried from plan 04 with the plan-05 additions marked **[05]**; the
+Pass B, Round-9 Pass A and Pass B, and Round-10 Pass A and Pass B; seam check of the Round-10 Pass B
+patch 2026-09-04. **Frozen text as of 2026-09-04 (after review rounds 7–10 and the seam check of the Round-10 Pass B patch).** From here on this file changes only by a dated note that names the finding or measurement behind the change; the Ladder is the single binding statement of every rule, and other files cite it rather than restate it. Carried from plan 04 with the plan-05 additions marked **[05]**; the
 pilot-dependent numbers (§4) are frozen by a dated note **before** any comparison they govern is
 scored. After that note, no number may be loosened in either direction. Agrees with
 [Overarching_Goal.md](Overarching_Goal.md), whose glossary defines every symbol used here; the
@@ -24,7 +25,8 @@ Goal file wins on drift. Costs live in [Compute_Budget_2026-09-03.md](Compute_Bu
     ran, **one per mode that ran on the rung**: `K = n energies|gradients (mode E: of which 2M = … in the single-mode ± block, K_off = …
     energies (… ± pairs of off-diagonal patterns); K_off at the common threshold ρ*_common = …,
     NOT_RUN until the Q8(c) probe re-prints the record with both neighbours' values) at rung R,
-    mode E|G, prior = structural|learned, σ = …, RMS_resp = …, ρ_noise = …, c = …, ρ* = …,
+    mode E|G, prior = structural|learned, σ = …, c₀ = …, q₂ block = 2·M_scored energies
+    (outside K), RMS_resp = …, ρ_noise = …, c = …, ρ* = …,
     ρ(K) = …, PNO extrapolation = none|CPS, wall-clock w per probe on machine m, printed by
     probes/<file>`. Nothing else about
     cost may be written.
@@ -220,6 +222,9 @@ for fragment probing, before the R3 fragment-vs-whole comparison has printed.
   bonus, now mandatory on the scored modes), so Δ₂,ii = 2[R_s(q₂) − R_s(q_s)]/(q₂² − q_s²) is
   c₀-free and c₀ = R_s(q_s) − ½Δ₂,ii q_s² is over-determined across those modes; its mean is
   subtracted from every response before the recovery and printed in the cost record beside σ.
+  **Counting:** the q₂ energies (two per scored mode, 2·M_scored in all) are **outside K**: K
+  counts the ±q_s single-mode block (2M) and the off-diagonal pairs (K_off), so K = 2M + K_off
+  stands; the q₂ block is its own line in the cost record and does not enter Q8(c).
   The same two-amplitude read removes the quartic contamination Δ₄,iiii q_s²/12 on the scored
   modes exactly; on the multi-atom patterns that term is a labelled bias of order 0.1–1 cm⁻¹
   (recalled scales), printed after the note from the sealed degree-4 fits. The per-response scatter is therefore **σ(R_s) = σ_E/√2** (the two displaced

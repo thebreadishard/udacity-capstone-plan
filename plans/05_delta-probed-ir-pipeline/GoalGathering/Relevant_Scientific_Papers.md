@@ -107,7 +107,8 @@ after Round-7 Pass B (issues 2, 4, 7, 8, 9) and verified via Crossref/arXiv.
   49 — locations now fetched).
 - **PAH hot-band shift references** for the u_band temperature term (items 52–53, now named):
   obtain and read before M03 prints u_band — **the first paid debt**, because a pinned per-family
-  correction is the only route to decidable C–C families on the existing gas data at R1 and R2;
+  correction is the only route to decidable C–C families on the existing gas data at R2, and the
+  only pin for the R1 hot columns and u_296;
   until then the term is the Ladder §2 floor (χ_max = 0.03 cm⁻¹ K⁻¹, recalled).
 - **The M05 reading-2 fallback**: a public Hessian dataset other than Hessian QM9, searched and
   verified before Module 05 starts; none named from recall.

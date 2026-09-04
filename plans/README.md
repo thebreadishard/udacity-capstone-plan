@@ -110,7 +110,7 @@ plans/04_cc-anchored-ir-pipeline/     superseded 2026-09-03
   probes/            the NIST gas-coverage probe and its raw cache
 
 plans/05_delta-probed-ir-pipeline/    current — draft, created 2026-09-03
-  README.md          orientation and reading order; Round-7, Round-8 and Round-9 review record
+  README.md          orientation and reading order; Round-7 to Round-10 review record
   GoalGathering/     goal, why-05-supersedes-04, research note (source), frozen lines (carried),
                      ladder + tolerances, compute budget, distilled plan + gates, bibliography
   probes/            conventions declared; probes owed, none run

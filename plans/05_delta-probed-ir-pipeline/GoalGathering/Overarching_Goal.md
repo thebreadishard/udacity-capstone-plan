@@ -2,7 +2,8 @@
 
 **Status.** Prime directive as of 2026-09-03; revised the same day after Round-7 Pass A and
 Pass B; amended on 2026-09-04 by seven user decisions and two user directives, and revised again
-the same day after Round-8 Pass A and Pass B and after Round-9 Pass A and Pass B and Round-10 Pass A and Pass B. Supersedes plan 04's Goal file; plan 04's folder stays in
+the same day after Round-8 Pass A and Pass B and after Round-9 Pass A and Pass B and Round-10 Pass A and Pass B; seam check of the Round-10
+Pass B patch 2026-09-04. **Frozen text as of 2026-09-04 (after review rounds 7–10 and the seam check of the Round-10 Pass B patch).** From here on this file changes only by a dated note that names the finding or measurement behind the change; the Ladder is the single binding statement of every rule, and other files cite it rather than restate it. Supersedes plan 04's Goal file; plan 04's folder stays in
 the tree as a read-only record (decision 2). Draft; not complete as a plan. Every other plan-05
 document must agree with this file; if they drift, this file wins and the other file is patched.
 
@@ -30,7 +31,8 @@ document must agree with this file; if they drift, this file wins and the other 
 - **ρ** = the held-out residual (Distilled §3); **ρ\*** = the stopping threshold c·ρ_noise, computed per rung and mode (only c is frozen); **f_h** = the
   held-out fraction; **K** = the measured count of energies (mode E; a ± pair counts 2) or gradients (mode G) at
   which ρ ≤ ρ\*; in mode E,
-  K = 2M + K_off with M the number of modes and **K_off** the off-diagonal count; **K_cap** =
+  K = 2M + K_off with M the number of modes and **K_off** the off-diagonal count (the q₂ block of
+  2·M_scored energies is printed separately and is outside K; Ladder §3); **K_cap** =
   the pilot-note cap on K.
 - **Structural prior** = the fixed, parameter-free, frequency-banded regulariser of the
   recovery (band width **w**); **learned prior** = the Module-05 Transformer's predicted
@@ -192,7 +194,8 @@ Per molecule, with the rung chosen by the declared size ladder:
    full recovery), Q8 (locality on **directly measured** blocks, and saturation).
 3. **Spectra** via the **resonance-explicit routes** frozen in plan 04 — GVPT2 with named
    thresholds and a polyad cap; MD-ACF on a *defined* DFT-plus-Δ potential (Distilled §3); or
-   CH-stretch unscored at that rung — on DFT-plus-Δ₂. **Raw VPT2 without resonance treatment
+   CH-stretch unscored at that rung — on DFT-plus-Δ₂ plus the first-order geometry term of
+   Ladder §3. **Raw VPT2 without resonance treatment
    is forbidden on promised families.** No scale factor on anharmonic output.
 4. **Error budget**: every claimed band carries its measured error sources — DFT level; the
    first-order geometry term Σ_j φ_iij δq_j applied and printed (Ladder §3); ρ;
