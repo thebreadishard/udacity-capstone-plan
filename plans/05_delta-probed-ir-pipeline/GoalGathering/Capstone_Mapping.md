@@ -28,9 +28,11 @@ demonstrate a known conclusion. If a rubric cannot be satisfied by something the
 genuinely needs, the mapping **stops and the options go back to the user** — the gap is not
 papered over with busywork. Tags below name each module's contribution to the end goal.
 
-Plan 05 has one module where this rule bites and is escalated rather than papered over:
-**Module 05** (§3, and open decision 4 in the Goal). Everything else is load-bearing for the
-promised spectra or for the promised cost record.
+Plan 05 had one module where this rule bit and was escalated rather than papered over:
+**Module 05**. The user decided it on 2026-09-04 (§3 M05; Goal decision 4): adopted, with the
+learned prior admitted to promised rungs under the Ladder §3 licence — load-bearing for the
+cost record if P3 succeeds, a published negative result if it does not. Everything else is
+load-bearing for the promised spectra or for the promised cost record.
 
 ## 1. Rubric matrix (Pass 1; carried from plan 04, checked against the rubric files 2026-09-03)
 
@@ -130,7 +132,7 @@ P5 empirical uncertainty layer.
 matching public computed bands to public laboratory bands; its provenance and distinctness
 from the Module 02/03 datasets are described in §…; it is not AI-generated."
 
-### Module 05 — the Δ₂-support predictor (the P3 arm; the module where rule 0 is escalated)
+### Module 05 — the Δ₂-support predictor (the P3 arm; decided by the user 2026-09-04)
 
 **Contribution.** The efficiency experiment plan 05 keeps off the promised path on purpose
 (Ladder §3; Distilled §5). A **Transformer** (equivariant attention over atom / DFT-mode
@@ -151,16 +153,20 @@ depend on a learned object. **The promised spectra do not need this module; the 
 2026-09-04 inheritance ruling the learned prior can earn a licence to enter promised rungs,
 so if P3 succeeds M05 becomes load-bearing for K_off on R2–R3 and R6 — rule 0 in the strong
 form. If P3 fails, rule 0 holds only in the weak form (the P3 experiment and the CC-free lever
-on K_off stop). That conditional is why it is still escalated: **open decision 4 in the Goal.** If the user will not accept it, M05 is a
+on K_off stop). That conditional was escalated as open decision 4 and **decided on 2026-09-04: adopted**, with
+the three specifications below (aromatic-heavy subset; licence as the success criterion;
+reading 1 with the reading-2 fallback). If the user will not accept it, M05 is a
 demonstration and the report defends it as one.
 
-**Dataset (Round-7 Pass B issue 9; Distilled §6).** Seven probed local-CC Δ₂ tensors by R3 is
-not a deep-learning corpus. The corpus is therefore DFT-vs-DFT at scale: the public **Hessian
-QM9** set (bib 47: 41,645 molecules, ωB97x/6-31G* Hessians) plus **B3LYP/6-31G* Hessians
-recomputed on QM9 subsets**, giving Δ₂ = ωB97x − B3LYP per molecule with the exact-exchange
-contrast the dry run needs; plus the PAH dry-run tensors; plus the probed tensors from the
-rungs that have run (labelled, held out as a PAH test set). Published as its own release
-(Zenodo DOI, deck hashes) **before Module 05 starts**.
+**Dataset (Round-7 Pass B issue 9; Distilled §6; decided 2026-09-04).** Seven probed local-CC
+Δ₂ tensors by R3 is not a deep-learning corpus. The corpus is therefore DFT-vs-DFT at scale:
+the public **Hessian QM9** set (bib 47: 41,645 molecules, ωB97x/6-31G* Hessians) plus
+**B3LYP/6-31G* Hessians recomputed on an aromatic-heavy QM9 subset** — benzene derivatives and
+conjugated rings over-represented, several thousand molecules, B2 work under the 168 h
+checkpoint — giving Δ₂ = ωB97x − B3LYP per molecule with the exact-exchange contrast the dry
+run needs. The PAH dry-run tensors and the probed tensors from the rungs that have run are a
+**held-out test set only**. Published as its own release (Zenodo DOI, deck hashes) **before
+Module 05 starts**.
 
 **Problem domain and model family (rubric).** Domain: **sequence** (a molecule as a sequence of
 DFT-mode tokens with atomic-environment features; the target a per-token-pair label). Model:
@@ -170,11 +176,13 @@ user before training.
 **Controlled comparison (rubric; frozen in Distilled §5).** **Learned prior vs structural
 prior at matched K**, on the dry-run corpus: same patterns, same held-out set, same solver, ≥3
 seeds; what changed = the prior; what stayed the same = everything else. Metric: ρ at fixed K,
-and K to reach ρ\*. Effect size: pilot-note item 5. "High accuracy is not required" — the
-outcome is publishable either way.
+and K to reach ρ\*. Effect size: pilot-note item 5. **The success criterion is the licence, not
+accuracy**: does the prior save patterns on the corpus, and does the prior-assisted recovery on
+a real rung agree with the prior-free check? "High accuracy is not required" — the outcome is
+publishable either way.
 
-**Distinctness — the reuse clause, decided in this file, reading 1 proposed (user to confirm
-under open decision 4).** The rubric's bar is "not be reused from any previous capstone
+**Distinctness — the reuse clause, reading 1 (confirmed by the user 2026-09-04 under decision
+4).** The rubric's bar is "not be reused from any previous capstone
 project" and "publicly available … before this project starts". Hessian QM9 is public today
 and belongs to no earlier module. The recomputed B3LYP side is new computed data produced for
 this module. The derived Δ₂ tensors are a new quantity with their own DOI. Under reading 1 the
@@ -286,8 +294,8 @@ DOI-before-claim: no notebook writes its source sentence before the identifier e
 Carried as decided for plan 04 (user, 2026-09-02): M04 reading 1; mentor pre-approval not
 required in advance. New for plan 05, all routed to the Goal's open-decision list:
 
-1. **M05 target and corpus** (Goal open decision 4): the Δ₂-support predictor on the
-   QM9-derived DFT-vs-DFT corpus, reading 1 proposed here. If vetoed, M05 is a demonstration.
+1. ~~M05 target and corpus~~ — decided by the user 2026-09-04: adopted as specified in §3
+   M05 (aromatic-heavy subset; licence as success criterion; reading 1 with fallback).
 2. ~~Fragment probing~~ — decided by the user 2026-09-04: a permitted method, licensed by Q8
    at R2–R3; M08 ships the fragment-probed R6 spectrum or its measured refusal.
 3. ~~The R2 A-scored set~~ — decided by the user 2026-09-04 (re-read stands); M03's R2 band
