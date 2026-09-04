@@ -8,6 +8,13 @@
 > capstone sequence (Modules 02–09), so that every module both advances the science *and* satisfies the
 > school's rubric.
 
+> **All five plan folders are in the tree (user decision, 2026-09-04).** Plans 01, 02 and 03 were
+> removed from the tree on 2026-09-01/02 and were **restored on 2026-09-04** from the commits
+> just before their deletion, so that a reader of the repository can open them without git.
+> They are superseded, read-only records: nothing in them is current, and they are not edited.
+> Plan 04 is superseded and kept; **plan 05 is current.** Sentences below that say a plan was
+> "removed from the tree" describe history and are left as written.
+>
 > **Current: plan 05.** Plan 05 — [Δ-Probed IR Pipeline](plans/05_delta-probed-ir-pipeline/) —
 > was created on 2026-09-03 and supersedes plan 04, keeping plan 04's product, criterion,
 > ladder, opponents and gates and changing one thing: the coupled-cluster anchor is a
@@ -51,7 +58,7 @@ constants, at a probe count measured per rung.
 
 | | Plan | Status |
 |---|---|---|
-| **03** | Presence-Update-Rule | Superseded by 04 (2026-09-02); **removed from the tree the same day**, git history keeps it. Draft; never complete as a plan; never executed. |
+| **03** | [Presence-Update-Rule](plans/03_presence-update-rule/) | Superseded by 04 (2026-09-02); removed from the tree the same day and **restored 2026-09-04** as a read-only record. Draft; never complete as a plan; never executed. |
 | **04** | [CC-Anchored-IR-Pipeline](plans/04_cc-anchored-ir-pipeline/) | Superseded by 05 on 2026-09-03; kept in the tree pending the user's removal decision. Draft; Round-6 reviews run and addressed; never executed. |
 | **05** | [Δ-Probed-IR-Pipeline](plans/05_delta-probed-ir-pipeline/) | **Current.** Draft as of 2026-09-03. Same product and criterion as 04; CC anchor by probing the CC−DFT force-constant correction. Round-7 reviews not yet run. |
 
@@ -87,8 +94,11 @@ not actually run and been scored. Nothing here is a result.
 ```
 CapstonePlan/
 ├── plans/
-│   ├── README.md                          why 01/02/03 were dropped; 05 is current, 04 superseded
-│   ├── 04_cc-anchored-ir-pipeline/        superseded 2026-09-03 — kept pending removal decision
+│   ├── README.md                          why 01/02/03 were dropped; 05 is current, 01–04 superseded
+│   ├── 01_voxel-field-pes/                superseded 2026-08-23 — restored to the tree 2026-09-04, read-only
+│   ├── 02_coupled-cluster-anharmonic-ir/  superseded 2026-08-29 — restored 2026-09-04, read-only
+│   ├── 03_presence-update-rule/           superseded 2026-09-02 — restored 2026-09-04, read-only
+│   ├── 04_cc-anchored-ir-pipeline/        superseded 2026-09-03 — kept, read-only
 │   │   ├── GoalGathering/                 prime directive, frozen lines, Round-6 reviews, proposal
 │   │   └── probes/                        the NIST gas-coverage probe (evidence in-tree)
 │   └── 05_delta-probed-ir-pipeline/       current — draft, created 2026-09-03

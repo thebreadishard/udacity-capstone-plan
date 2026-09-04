@@ -3,7 +3,7 @@
 **Status: draft, folder created 2026-09-03. Not complete as a plan. Nothing here is a result.**
 Supersedes plan 04 (CC-Anchored IR Pipeline), whose folder **stays in the tree** until the
 user decides to remove it (see [GoalGathering/Why_05_Supersedes_04.md](GoalGathering/Why_05_Supersedes_04.md)).
-Plans 01–03 are git history only.
+Plans 01–03 are superseded, read-only records restored to the tree on 2026-09-04.
 
 **Promised deliverable (Module 08).** A pipeline: **any individual aromatic molecule in, an
 infrared spectrum out** — plan 04's criterion, ladder, opponents, scoreboards and gates — with
