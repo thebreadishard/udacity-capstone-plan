@@ -56,7 +56,9 @@ milestones below; τ is the smallest beat margin (pilot-note item 2); q_s the pa
    symmetric mode) are built to see any remaining non-smoothness.
 3. **One codebase closes both software gaps.** Psi4 cannot freeze domains; ORCA freezes them
    for DLPNO-MP2 only. In PySCF/PySCFAD the fragment definitions and LNO vectors are Python
-   objects — M1 tests whether they can be stored, projected and reloaded as §1.2 requires.
+   objects — M1 tests whether they can be stored, projected and reloaded as §1.2 requires; the
+   released LNO class takes the localized occupied set as an input but rebuilds the LNO spaces
+   on every call (item 48), so arm A needs a small, commit-pinned override of that construction.
 4. **Verification is cheap, and one check is genuinely new.** Gradients are checked against
    finite differences of the **same re-projected frozen-space energies** at benzene and
    naphthalene, and against the Q6 mode-G noise line (because AD and FD agree on a non-smooth

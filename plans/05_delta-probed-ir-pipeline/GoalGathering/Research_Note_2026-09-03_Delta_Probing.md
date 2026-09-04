@@ -306,3 +306,8 @@ this section wins and the frozen documents follow it.
   design artefact that no longer exists); only R0 is scored unconditionally (naphthalene's NIST gas spectra are hot vapour); the
   coronene fragment test is one comparison at one shell, with a "pending (b′)" outcome; Q8(c) is
   read at a common threshold; σ divides by n − p and is pooled per arm.
+- **Round-10 Pass B (2026-09-04):** the dry run injects noise per energy; the shared reference
+  energy's offset is identified from a second amplitude on the scored modes, not fitted; Δ₁ is
+  load-bearing — the scored harmonic part carries the first-order corrected-surface-minimum term
+  Σ_j φ_iij δq_j; a room-temperature 0.1 cm⁻¹ naphthalene spectrum exists (PNNL/NWIR), so R1 is
+  expected unconditional like R0; the frozen-space arms A/B/C are defined once.

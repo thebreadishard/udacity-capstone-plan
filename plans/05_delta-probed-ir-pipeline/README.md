@@ -30,7 +30,7 @@ before anything else.
 
 1. This file — orientation. **Draft, not complete.**
 2. [GoalGathering/Why_05_Supersedes_04.md](GoalGathering/Why_05_Supersedes_04.md) — every
-   change relative to plan 04, in one table (32 rows)
+   change relative to plan 04, in one table (33 rows)
 3. [GoalGathering/Overarching_Goal.md](GoalGathering/Overarching_Goal.md) — glossary (Δ₂, R_s, R_a, K, ρ\*, ρ\*_common, u_band, the fragment licence and every other
    symbol), prime directive, the two 2026-09-04 directives, the decision record
 4. [GoalGathering/Research_Note_2026-09-03_Delta_Probing.md](GoalGathering/Research_Note_2026-09-03_Delta_Probing.md)
@@ -45,7 +45,7 @@ before anything else.
 8. [GoalGathering/Distilled_Project_Plan_and_Quality_Checks.md](GoalGathering/Distilled_Project_Plan_and_Quality_Checks.md)
    — the Δ-probing object, gates Q0–Q8 / P0–P5, fail-closed sentences
 9. [GoalGathering/Relevant_Scientific_Papers.md](GoalGathering/Relevant_Scientific_Papers.md)
-   — bibliography with per-item verify status (items 23–56 new)
+   — bibliography with per-item verify status (items 23–60 new)
 10. [probes/README.md](probes/README.md) — conventions and the probes owed
 11. [GoalGathering/Capstone_Mapping.md](GoalGathering/Capstone_Mapping.md) — modules 02–09
     against Rubrics v1.5.1; Pass 6 (sign-off) not done
@@ -205,8 +205,36 @@ before anything else.
   given run/no-run; (18) item 20 pointed at items 52–53, the note's erratum re-pointed;
   (19) 61 / 72 / 1,801 with their arithmetic; (20) the ρ\*_common column NOT_RUN until Q8(c).
   Brief: [Review_Brief_2026-09-04_Round10_PassA.md](GoalGathering/Review_Brief_2026-09-04_Round10_PassA.md).
-- **Round 10, Pass B** (owed): did the twelve Round-9 closures hold; attacks A–G. Brief:
-  [Review_Brief_2026-09-04_Round10_PassB.md](GoalGathering/Review_Brief_2026-09-04_Round10_PassB.md).
+- **Round 10, Pass B** (2026-09-04; hostile domain re-examination, with web):
+  [Professor_Review_2026-09-04_Round10_PassB.md](GoalGathering/Professor_Review_2026-09-04_Round10_PassB.md)
+  — verdict **conditional, all conditions in-spec**: R0–R1 green once four items landed; R2–R3
+  under the same four; beyond R3 green as worded, conditional on B3. Part 1: **all twelve
+  Round-9 closures held** (Round-10 Pass A's twenty also checked). 4 blocking + 13 non-blocking.
+  **All 17 addressed in spec the same day:** (1) the dry run injects noise **per energy** (with
+  one shared ε₀ for the reference), its column indexed by σ_E, so c and K_cap are read at the
+  real run's noise; (2) the shared reference energy's offset c₀ is **identified from the second
+  amplitude on the scored modes**, not fitted — a fitted constant is collinear with a uniform
+  diagonal shift and would have let c₀ shift every frequency the same way; the bonus's two extra
+  energies are now mandatory on the scored modes; (3) **Δ₁ is load-bearing**: the scored harmonic
+  part carries the first-order corrected-surface-minimum term Σ_j φ_iij^DFT δq_j, printed per
+  band; the DFT cubic set gains the totally symmetric modes; no atom is moved (change table row
+  33); (4) a **room-temperature 0.1 cm⁻¹ naphthalene spectrum exists** in the PNNL/NWIR database
+  (Schneider 2024, item 57; Sharpe 2004, item 59 — Crossref-verified by the author), named now
+  under the no-swap rule, so **R0 and R1 are both expected unconditional**; Pirali 2009 also a
+  room-temperature source; Maltseva 2016 (item 58) named for the R2 C–H-stretch family;
+  (5) u_296 per molecule (1 / 3 / 5 cm⁻¹, recalled) replaces the flat 1 cm⁻¹ term, the floor's
+  form kept as conservative (item 60); (6) the frozen-space arms A / B / C written once — the
+  pyscf-forge LNO class takes the localized set as input but rebuilds LNO spaces each call
+  (opened), so arm A needs a pinned override and Q6's reference arm is B; (7) the quartic term a
+  labelled bias removed on scored modes by the second amplitude; (8) a units paragraph in Budget
+  §3; (9) the Q8(c) ratio also printed at ρ_ref = 0.3; (10) the 2× flag's false-positive rate
+  stated; (11) the mode-G size sentence marked B3-conditional; (12) `max_memory` and peak RSS in
+  the feasibility probe; (13) the DFT grid and thresholds as deck numbers, the DFT-arm floor
+  printed, σ_E "both arms' noise"; (14) status residues, Goal "expected unconditional",
+  Proposal §7; (15) Δ₁ at equilibrium noted as readable and not a note input; (16) fragment
+  part (b) scored per family on the shift-carrying pairs; (17) (c)'s R4 instance may run under
+  a pending licence without resolving it.
+  Brief: [Review_Brief_2026-09-04_Round10_PassB.md](GoalGathering/Review_Brief_2026-09-04_Round10_PassB.md).
 
 Plan 04's Round-6 findings and their closures bind plan 05 and are not re-litigated.
 
@@ -224,7 +252,11 @@ corpus carries no module-02 reuse exposure (Goal, decision 7). **No decision is 
 
 ## Not yet done (owed, in order)
 
-- **Round 10 Pass B** (in progress): the domain confirmation that Round-9's twelve closures held.
+- **Round 11** (optional, the user's call): a cold read of the Round-10 Pass B patches (the
+  per-energy noise injection, the c₀ identification, the Δ₁ geometry term, the PNNL source, the
+  A/B/C arms touched the Goal, Ladder, Distilled plan, Budget, probes README and bibliography).
+- **The first paid literature debts**: items 52–53 (hot-band slopes), 56–57 and 59 (the R0 and R1
+  source conditions), 60 — read before M03 prints u_band.
 - **The first paid literature debt**: items 52–53 (PAH hot-band shift rates) read before M03
   prints u_band.
 - Capstone mapping Pass 6 (module-by-module sign-off).

@@ -65,6 +65,12 @@ The plan-02 old-laptop facts remain provenance only (CCSD(T)/6-31G* benzene 19.6
 (T) fails at ~114 basis functions with 28 GB; B3LYP/6-31G* Hessians: benzene 3.3 min, naphthalene 12.7 min,
 coronene frequency job 176 min). Every one is re-timed on the B2 laptop named in §1 before use (the plan-02 numbers come from an older machine).
 
+**Units.** K and K_off are counted in energies (mode E; a ± pair counts 2) or gradients (mode
+G). No literature figure in the table above is in that unit: Sanders counts Hessian columns,
+O1NumHess gradients (one gradient = 3N responses), CMA-2 selected off-diagonal *elements* (each
+costing four energies). Every off-diagonal response costs two energies by design; the dry run
+measures K_off, and the plan claims no number for it in advance.
+
 ## 4. Order of timed probes (each prints machine, date, settings, wall-clock; gradient probes also peak memory)
 
 Before the pilot note (DFT-only and timings; no local-CC Δ₂ may exist yet):
@@ -76,7 +82,12 @@ Before the pilot note (DFT-only and timings; no local-CC Δ₂ may exist yet):
    Gaussian noise at a grid of σ values added to every response**, K and ρ printed per σ — the
    column the stopping constant c and K_cap are taken from. Responses are the symmetric
    combinations R_s over ± pairs exactly as in the real run (Ladder §3), so the dry run measures
-   Δ₂ recovery and not the fitting of the DFT−DFT force term. Prints the residual curves, the
+   Δ₂ recovery and not the fitting of the DFT−DFT force term. **Noise is injected per energy**
+   (independent ε on every displaced energy; one shared ε₀ per molecule for the reference, drawn
+   once; per component in mode G), the column indexed by σ_E — so c and K_cap are read at the
+   noise the real run has — and the identification of the reference constant c₀ from the
+   two-amplitude modes is tested here. The noiseless single-mode block prints the **DFT-arm
+   floor** (grid-quadrature scatter of the DFT energies along the modes). Prints the residual curves, the
    dry-run K and K_off per mode and per σ, the flagged off-diagonal blocks, the band width w and
    weights by the Ladder §3 rule, the recovered-vs-direct frequency error per family, and **the
    B2 laptop's per-molecule DFT Hessian timing** (which fixes the M05 subset size by dated

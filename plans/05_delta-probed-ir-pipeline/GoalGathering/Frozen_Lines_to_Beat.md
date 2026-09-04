@@ -10,8 +10,8 @@ applies: every identifier below is re-fetched before it enters a scored Module 0
 **The criterion (from [Overarching_Goal.md](Overarching_Goal.md)).** The pipeline's band
 positions for a molecule must be demonstrably more accurate than the best prediction
 currently available anywhere for that molecule, judged per band against laboratory data —
-**where that data can decide the comparison**: unconditionally on R0;
-on R1–R3 per family — gas-scored families only where M03's measured band-centre uncertainty
+**where that data can decide the comparison**: unconditionally (expected) on R0 and R1;
+on R2–R3 per family — gas-scored families only where M03's measured band-centre uncertainty
 u_band is smaller than the beat margin, matrix-scored families only if the M03-measured
 matrix–gas delta is smaller than it (Ladder §2, Promised) — and never on reach rungs.
 
@@ -89,6 +89,8 @@ prior art for plan 05's diagonal recovery, not an opponent line (it produces no 
 | PAHdb experimental library **v3.10** (2023-04-13) | 84 species, matrix isolation (Ar, ~5–15 K) | versions page verified 2026-09-02; band-read recipe with recorded uids in plan-02 probes (git history) |
 | PAHdb gas-phase library **v1.00** (2026-07-01) | 5 spectra (Canadian Light Source), CN-substituted range | versions page verified 2026-09-02 |
 | NIST WebBook gas-phase IR | JCAMP-DX per CAS number; the R2 entries are **NIST/EPA gas-phase IR database GC-IRD spectra** (hot vapour; `DELTAX` 4 cm⁻¹; stated resolution 8 cm⁻¹ at snippet grade, item 50; no concentration data, so no intensity scoreboard) | working parser + cache recipe in plan-02 probes; **coverage probe run** under plan 04 (gas IR present for benzene, naphthalene, pyrene, chrysene, triphenylene; tetracene solid-only; coronene absent) — raw evidence in plan 04's `probes/nist_cache/`, to be re-run under plan 05's hash; triphenylene's entry verified by the Round-8 Pass B reviewer 2026-09-04; the Ladder's R2 row and decidability rule were re-read against it (dated note there): decidability is by M03's measured band-centre uncertainty u_band, never by the point spacing, and the R2 C–C families are expected inconclusive by construction on this source |
+| **PNNL/NWIR quantitative vapour-phase IR database** (Sharpe et al. 2004, item 59; naphthalene entry documented in Schneider et al. 2024, item 57) | 25 °C, 0.1 cm⁻¹, 760 Torr N₂-broadened composite spectra; **naphthalene** present — the R1 room-temperature gas scoreboard | named 2026-09-04 before any M03 print (no-swap rule); Crossref records verified by the author; the record's stated conditions read by M03 before u_band |
+| **Jet-cooled 3 µm IR–UV ion-dip spectra** (Maltseva et al. 2016, item 58) | pyrene, chrysene, triphenylene (and others), band widths down to 1 cm⁻¹ — a cold gas-phase source for the R2 **C–H-stretch family only** | named 2026-09-04; Crossref record verified by the author; abstract read by the Round-10 reviewer |
 | IRMPD / jet-cooled literature | e.g. cationic pyrene (Tang et al. 2025, arXiv:2504.11898) | context only for neutral rungs; verify per use |
 
 Matrix data carries a matrix shift; gas-phase is preferred where both exist; the comparison

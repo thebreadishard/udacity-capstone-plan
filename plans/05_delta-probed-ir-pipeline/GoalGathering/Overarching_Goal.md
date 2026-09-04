@@ -2,7 +2,7 @@
 
 **Status.** Prime directive as of 2026-09-03; revised the same day after Round-7 Pass A and
 Pass B; amended on 2026-09-04 by seven user decisions and two user directives, and revised again
-the same day after Round-8 Pass A and Pass B and after Round-9 Pass A and Pass B and Round-10 Pass A. Supersedes plan 04's Goal file; plan 04's folder stays in
+the same day after Round-8 Pass A and Pass B and after Round-9 Pass A and Pass B and Round-10 Pass A and Pass B. Supersedes plan 04's Goal file; plan 04's folder stays in
 the tree as a read-only record (decision 2). Draft; not complete as a plan. Every other plan-05
 document must agree with this file; if they drift, this file wins and the other file is patched.
 
@@ -22,8 +22,11 @@ document must agree with this file; if they drift, this file wins and the other 
   (Ladder §3; the first-order term Δ₁·p cancels), in mode G the CC−DFT gradient difference at a
   pattern; every pattern enters the deck as the pair ±p, which carries **one deck index** and is
   the hold-out unit; **R_a** = ½[ΔE(+p) − ΔE(−p)], the antisymmetric by-product (Δ₁·p + O(p³));
-  **Δ₁** = the CC−DFT gradient at the DFT equilibrium geometry (not zero; a by-product, never a
-  geometry correction).
+  **Δ₁** = the CC−DFT gradient at the DFT equilibrium geometry (not zero; measured from R_a of the
+  single-mode block and used only as the printed first-order term Σ_j φ_iij^DFT δq_j on the
+  scored harmonic part — no atom is moved; Ladder §3); **c₀** = the shared reference energy's
+  error, identified from the two-amplitude read and subtracted; **arms A / B / C** = frozen–frozen
+  / transported occupied with fresh LNO spaces / fresh–fresh (Ladder §3).
 - **ρ** = the held-out residual (Distilled §3); **ρ\*** = the stopping threshold c·ρ_noise, computed per rung and mode (only c is frozen); **f_h** = the
   held-out fraction; **K** = the measured count of energies (mode E; a ± pair counts 2) or gradients (mode G) at
   which ρ ≤ ρ\*; in mode E,
@@ -61,7 +64,8 @@ document must agree with this file; if they drift, this file wins and the other 
   largest pre-Löwdin off-diagonal, for both transported halves; **shell** = the fragment-radius
   unit, a complete ring shell around the pair or region served; **pending (b′)** = the fragment
   licence's state when (b) failed at one shell at coronene and only (b′) can test two shells;
-  **u_T** = u_band's temperature term, with **T_source** the source's stated temperature,
+  **u_T** = u_band's temperature term, with **T_source** the source's stated temperature, **u_296**
+  the per-molecule 0 → 296 K term (1 / 3 / 5 cm⁻¹ at benzene / naphthalene / R2, recalled),
   **χ_max** = 0.03 cm⁻¹ K⁻¹ (recalled) its unpinned slope and **χ_F** a pinned per-family slope
   (items 52–53).
 - **AD / FD** = automatic differentiation / finite differences; **GC-IRD** = gas-chromatography
@@ -86,12 +90,13 @@ document must agree with this file; if they drift, this file wins and the other 
 Build **one pipeline**: any individual aromatic molecule in, an infrared spectrum out —
 and make that spectrum's **band positions demonstrably more accurate than the best prediction
 currently available anywhere for that molecule**, wherever the laboratory data can decide it:
-unconditional on R0 (cell spectra exist; their measurement temperature is read from the
-source's documentation before the note); on R1–R3 per family, gas-scored families
+expected unconditional on R0 and R1 (room-temperature cell spectra with stated resolution exist
+for both — the NIST Quantitative IR series for benzene, the PNNL/NWIR database for naphthalene,
+items 54–59 — and their documented measurement temperatures are read before the note); on R2–R3
+per family, gas-scored families
 decidable only where the scoreboard's **measured band-centre uncertainty** u_band is smaller
-than the beat margin (the R1 and R2 C–C families are expected inconclusive by construction on the
-NIST hot-vapour sources unless a hot-band correction is pinned before the pilot note, and the
-plan says so now) and matrix-scored families
+than the beat margin (the R2 C–C families are expected inconclusive by construction on the NIST hot-vapour
+sources unless a hot-band correction is pinned before the pilot note, and the plan says so now) and matrix-scored families
 behind the M03 matrix–gas gate (undecidable families pre-declared inconclusive); and never on
 reach rungs, where the
 deliverable is a labelled theory-vs-theory spectrum, conditional on cluster access. Positions
@@ -189,7 +194,8 @@ Per molecule, with the rung chosen by the declared size ladder:
    thresholds and a polyad cap; MD-ACF on a *defined* DFT-plus-Δ potential (Distilled §3); or
    CH-stretch unscored at that rung — on DFT-plus-Δ₂. **Raw VPT2 without resonance treatment
    is forbidden on promised families.** No scale factor on anharmonic output.
-4. **Error budget**: every claimed band carries its measured error sources — DFT level; ρ;
+4. **Error budget**: every claimed band carries its measured error sources — DFT level; the
+   first-order geometry term Σ_j φ_iij δq_j applied and printed (Ladder §3); ρ;
    local-CC noise floor and space-freezing bias against the Q6 formulas; the long-range share
    of the family's correction measured on direct couplings (Q8b); matrix–gas shift where matrix
    data is used.
