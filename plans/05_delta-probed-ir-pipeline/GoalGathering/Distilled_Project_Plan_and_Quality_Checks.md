@@ -3,9 +3,9 @@
 Agrees with [Overarching_Goal.md](Overarching_Goal.md), which defines the notation; the Goal
 file wins on drift. Opponents: [Frozen_Lines_to_Beat.md](Frozen_Lines_to_Beat.md). Rungs and
 stop conditions: [Frozen_Ladder_and_Tolerances.md](Frozen_Ladder_and_Tolerances.md). Costs:
-[Compute_Budget_2026-09-03.md](Compute_Budget_2026-09-03.md). Modules: `Capstone_Mapping.md`
-— **owed**, written after the Round-7 reviews; references to "the mapping" below are to that
-owed file.
+[Compute_Budget_2026-09-03.md](Compute_Budget_2026-09-03.md). Modules:
+[Capstone_Mapping.md](Capstone_Mapping.md) (written after the Round-7 reviews; Pass 6 not
+done).
 
 **Status.** Draft, 2026-09-03; revised the same day after Round-7 Pass A and Pass B. Not
 complete as a plan. Nothing here is a result.
