@@ -1,0 +1,140 @@
+[
+  {
+    "id": "01_cc_benzene_ccpvdz",
+    "kind": "cc_timing",
+    "why": "DONE, failed. The single missing number in the plan: no coupled-cluster timing existed anywhere in this repository. Failed at 24 GB in 3 s with 'not enough memory (ccsd)'. The (T) step wants roughly O^3 V^3 in core, about 22 GB at 114 basis functions. The failure IS the measurement.",
+    "params": {
+      "name": "benzene", "method": "ccsd(t)", "basis": "cc-pVDZ",
+      "memory_gb": 24, "threads": 8,
+      "geometry": " C  1.3970  0.0000  0.0000\n C  0.6985  1.2098  0.0000\n C -0.6985  1.2098  0.0000\n C -1.3970  0.0000  0.0000\n C -0.6985 -1.2098  0.0000\n C  0.6985 -1.2098  0.0000\n H  2.4810  0.0000  0.0000\n H  1.2405  2.1487  0.0000\n H -1.2405  2.1487  0.0000\n H -2.4810  0.0000  0.0000\n H -1.2405 -2.1487  0.0000\n H  1.2405 -2.1487  0.0000\n"
+    }
+  },
+  {
+    "id": "01a_cc_benzene_ccpvdz_28gb",
+    "kind": "cc_timing",
+    "why": "DONE, failed. Same job at 28 GB of the machine's 31. Still out of memory, so the wall is real rather than a setting.",
+    "params": {
+      "name": "benzene", "method": "ccsd(t)", "basis": "cc-pVDZ",
+      "memory_gb": 28, "threads": 8,
+      "geometry": " C  1.3970  0.0000  0.0000\n C  0.6985  1.2098  0.0000\n C -0.6985  1.2098  0.0000\n C -1.3970  0.0000  0.0000\n C -0.6985 -1.2098  0.0000\n C  0.6985 -1.2098  0.0000\n H  2.4810  0.0000  0.0000\n H  1.2405  2.1487  0.0000\n H -1.2405  2.1487  0.0000\n H -2.4810  0.0000  0.0000\n H -1.2405 -2.1487  0.0000\n H  1.2405 -2.1487  0.0000\n"
+    }
+  },
+  {
+    "id": "01b_ccsd_benzene_ccpvdz",
+    "kind": "cc_timing",
+    "why": "DONE, 14.6 s. CCSD without the (T) fits at 114 basis functions, isolating the perturbative triples as the step that exhausts memory.",
+    "params": {
+      "name": "benzene", "method": "ccsd", "basis": "cc-pVDZ",
+      "memory_gb": 26, "threads": 8,
+      "geometry": " C  1.3970  0.0000  0.0000\n C  0.6985  1.2098  0.0000\n C -0.6985  1.2098  0.0000\n C -1.3970  0.0000  0.0000\n C -0.6985 -1.2098  0.0000\n C  0.6985 -1.2098  0.0000\n H  2.4810  0.0000  0.0000\n H  1.2405  2.1487  0.0000\n H -1.2405  2.1487  0.0000\n H -2.4810  0.0000  0.0000\n H -1.2405 -2.1487  0.0000\n H  1.2405 -2.1487  0.0000\n"
+    }
+  },
+  {
+    "id": "01c_cc_benzene_631gs",
+    "kind": "cc_timing",
+    "why": "DONE, 19.6 s. CCSD(T) at 102 basis functions FITS. The gold rung runs on this laptop; the wall is basis-set size, near 110 functions, not the method.",
+    "params": {
+      "name": "benzene", "method": "ccsd(t)", "basis": "6-31G*",
+      "memory_gb": 26, "threads": 8,
+      "geometry": " C  1.3970  0.0000  0.0000\n C  0.6985  1.2098  0.0000\n C -0.6985  1.2098  0.0000\n C -1.3970  0.0000  0.0000\n C -0.6985 -1.2098  0.0000\n C  0.6985 -1.2098  0.0000\n H  2.4810  0.0000  0.0000\n H  1.2405  2.1487  0.0000\n H -1.2405  2.1487  0.0000\n H -2.4810  0.0000  0.0000\n H -1.2405 -2.1487  0.0000\n H  1.2405 -2.1487  0.0000\n"
+    }
+  },
+  {
+    "id": "02_freq_phenanthrene",
+    "kind": "freq",
+    "why": "DONE, 40 min, 0 imaginary. Meant to re-measure the bay penalty against anthracene. It did not, and that is the finding: anthracene and phenanthrene differ in ring ARRANGEMENT as well as in bays, so their 7.2 cm-1 gap cannot be attributed to the bay. Ring count alone moves this band 57 cm-1. The isomer series below is the controlled version of the question.",
+    "params": {
+      "name": "phenanthrene", "smiles": "c1ccc2c(c1)ccc1ccccc12",
+      "formula": [14, 10], "bays": 1
+    }
+  },
+
+  {
+    "id": "01d_cc_naphthalene_631gs",
+    "kind": "cc_timing",
+    "why": "Runs first because it takes about a minute either way. Benzene CCSD(T)/6-31G* fitted at 102 basis functions and cc-pVDZ failed at 114, so the wall is basis size. This finds the wall in MOLECULE size at the basis that works: naphthalene/6-31G* is 156 functions and will probably fail, bracketing the gold rung to within one molecule.",
+    "params": {
+      "name": "naphthalene", "method": "ccsd(t)", "basis": "6-31G*",
+      "memory_gb": 26, "threads": 8,
+      "geometry": " C  0.0000  0.7160  0.0000\n C  0.0000 -0.7160  0.0000\n C  1.2404  1.4031  0.0000\n C  2.4302  0.7057  0.0000\n C  2.4302 -0.7057  0.0000\n C  1.2404 -1.4031  0.0000\n C -1.2404  1.4031  0.0000\n C -2.4302  0.7057  0.0000\n C -2.4302 -0.7057  0.0000\n C -1.2404 -1.4031  0.0000\n H  1.2389  2.4880  0.0000\n H  3.3707  1.2519  0.0000\n H  3.3707 -1.2519  0.0000\n H  1.2389 -2.4880  0.0000\n H -1.2389  2.4880  0.0000\n H -3.3707  1.2519  0.0000\n H -3.3707 -1.2519  0.0000\n H -1.2389 -2.4880  0.0000\n"
+    }
+  },
+
+  {
+    "id": "03_freq_tetracene",
+    "kind": "freq",
+    "why": "CONTROLLED BAY SERIES 1 of 3, the zero-bay reference. Tetracene, chrysene and triphenylene are all C18H12 with four rings and 0, 1 and 3 bays. Same formula, same ring count: only bay count and folding differ. Comparing across different formulas, which the phenanthrene job tried, confounds the bay with everything else at once.",
+    "params": {
+      "name": "tetracene", "smiles": "c1ccc2cc3cc4ccccc4cc3cc2c1",
+      "formula": [18, 12], "bays": 0
+    }
+  },
+  {
+    "id": "04_freq_chrysene",
+    "kind": "freq",
+    "why": "CONTROLLED BAY SERIES 2 of 3. One bay, same formula and ring count as tetracene.",
+    "params": {
+      "name": "chrysene", "smiles": "c1ccc2c(c1)ccc1c2ccc2ccccc21",
+      "formula": [18, 12], "bays": 1
+    }
+  },
+  {
+    "id": "05_freq_triphenylene",
+    "kind": "freq",
+    "why": "CONTROLLED BAY SERIES 3 of 3. Three bays, same formula. If the shift is roughly linear in bay count across these three, the bay is a real additive motif effect and the atlas needs it as a key. If it is not, the bay is not separable from shape and the atlas needs a different key altogether. Either answer settles the question.",
+    "params": {
+      "name": "triphenylene", "smiles": "c1ccc2c(c1)c1ccccc1c1ccccc21",
+      "formula": [18, 12], "bays": 3
+    }
+  },
+
+  {
+    "id": "06_freq_pyrene",
+    "kind": "freq",
+    "why": "Trio and duo coverage with no bays, so those classes appear in a second host molecule and their spread measures transfer rather than symmetry.",
+    "params": {
+      "name": "pyrene", "smiles": "c1cc2ccc3cccc4ccc(c1)c2c34",
+      "formula": [16, 10], "bays": 0
+    }
+  },
+  {
+    "id": "09_freq_benzene_tight",
+    "kind": "freq",
+    "why": "Benzene's e2g pair is doubly degenerate by symmetry: two modes that must land on the same wavenumber. In the committed C1 run they land on 619.1 and 642.2, split by 23 cm-1, more than twice the project tolerance. Either the geometry optimisation is too loose or something worse is true. This repeats benzene with gau_tight and nothing else changed; the split either collapses or it does not. Eight minutes to find out whether every number in this campaign carries a 20 cm-1 wobble.",
+    "params": {
+      "name": "benzene", "smiles": "c1ccccc1",
+      "formula": [6, 6], "bays": 0,
+      "g_convergence": "gau_tight", "log": "benzene_tight"
+    }
+  },
+  {
+    "id": "07_freq_coronene",
+    "kind": "freq",
+    "why": "36 atoms, six duos, no bays. The largest molecule the plan currently calls out of reach, and the point that re-fits the cost exponent, which today rests on three points and already shows a factor-two spread between isomers of equal atom count. RESTARTED 2026-08-27 after an accidental reboot killed it at displacement 133 of 211; Psi4's finite-difference Hessian has no resume, so those two hours are gone.",
+    "params": {
+      "name": "coronene", "smiles": "c1cc2ccc3ccc4ccc5ccc6ccc1c1c2c3c4c5c61",
+      "formula": [24, 12], "bays": 0
+    }
+  },
+
+  {
+    "id": "04_cc_benzene_ccpvtz",
+    "kind": "cc_timing",
+    "why": "DONE, failed on memory as expected. Kept as the record that cc-pVTZ is out of reach for canonical CCSD(T) on this machine.",
+    "params": {
+      "name": "benzene", "method": "ccsd(t)", "basis": "cc-pVTZ",
+      "memory_gb": 26, "threads": 8,
+      "geometry": " C  1.3970  0.0000  0.0000\n C  0.6985  1.2098  0.0000\n C -0.6985  1.2098  0.0000\n C -1.3970  0.0000  0.0000\n C -0.6985 -1.2098  0.0000\n C  0.6985 -1.2098  0.0000\n H  2.4810  0.0000  0.0000\n H  1.2405  2.1487  0.0000\n H -1.2405  2.1487  0.0000\n H -2.4810  0.0000  0.0000\n H -1.2405 -2.1487  0.0000\n H  1.2405 -2.1487  0.0000\n"
+    }
+  },
+  {
+    "id": "08_cc_naphthalene_ccpvdz",
+    "kind": "cc_timing",
+    "why": "DONE, failed on memory as expected. Superseded by 01d, which uses the basis that actually fits.",
+    "params": {
+      "name": "naphthalene", "method": "ccsd(t)", "basis": "cc-pVDZ",
+      "memory_gb": 26, "threads": 8,
+      "geometry": " C  0.0000  0.7160  0.0000\n C  0.0000 -0.7160  0.0000\n C  1.2404  1.4031  0.0000\n C  2.4302  0.7057  0.0000\n C  2.4302 -0.7057  0.0000\n C  1.2404 -1.4031  0.0000\n C -1.2404  1.4031  0.0000\n C -2.4302  0.7057  0.0000\n C -2.4302 -0.7057  0.0000\n C -1.2404 -1.4031  0.0000\n H  1.2389  2.4880  0.0000\n H  3.3707  1.2519  0.0000\n H  3.3707 -1.2519  0.0000\n H  1.2389 -2.4880  0.0000\n H -1.2389  2.4880  0.0000\n H -3.3707  1.2519  0.0000\n H -3.3707 -1.2519  0.0000\n H -1.2389 -2.4880  0.0000\n"
+    }
+  }
+]
