@@ -115,8 +115,8 @@ re-litigated.
    fragment-probed Δ₂ conditional on Q8 at R2–R3 and B3. Out → R6 leaves the promised set.
    Whole-molecule R6 is not promised either way (Goal, Ladder §2 dated note).
 2. ~~Removal of the plan-04 folder~~ — **decided 2026-09-04: all plan folders stay in the tree**; plans 01–03 were restored as read-only records.
-3. **The R2 A-scored set** as re-read against the coverage probe (triphenylene in on gas
-   families; tetracene fully gated) — veto by dated note restores plan 04's set.
+3. ~~The R2 A-scored set~~ — **decided 2026-09-04: the re-read stands** (triphenylene in on
+   its gas families; tetracene matrix-only and fully M03-gated).
 4. **The Module-05 target** (Δ₂ support on a DFT-vs-DFT corpus from Hessian QM9) — veto makes
    M05 a demonstration, defended as one.
 5. **Adoption of the Pass-B re-worded promised set** (Δ₂ only; mode E primary; R6 per

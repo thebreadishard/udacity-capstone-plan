@@ -48,7 +48,8 @@ laboratory spectrum" and was written before plan 04's own NIST coverage probe co
 probe (plan 04 `probes/nist_gas_coverage.py`, raw evidence in its `nist_cache/`) found gas-phase
 IR for pyrene, chrysene **and triphenylene**, none for tetracene (solid-only), none for
 coronene. Plan 05 therefore scores triphenylene on its gas families and gates tetracene fully.
-The user may veto this by dated note (Goal, open decision 3).
+**Confirmed by the user on 2026-09-04** (open decision 3 closed); the R2 A-scored set is
+pyrene, chrysene, triphenylene (gas families) and tetracene (matrix, M03-gated).
 
 **Dated note, 2026-09-03 (R6 form, after Round-7 Pass B).** R6's promised form depends on the
 user's open decision 1, which must be made before the pilot note: **in** → R6 promised as
