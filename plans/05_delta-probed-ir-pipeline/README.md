@@ -97,8 +97,36 @@ before anything else.
   sub-item; Distilled §1/§2 for both modes; glossary moved into the Goal); (20) the QM9 /
   Foundations-module question raised as **open decision 7**. Brief:
   [Review_Brief_2026-09-04_Round8_PassA.md](GoalGathering/Review_Brief_2026-09-04_Round8_PassA.md).
-- **Round 8, Pass B** (re-assessment): not yet run. Brief:
-  [Review_Brief_2026-09-04_Round8_PassB.md](GoalGathering/Review_Brief_2026-09-04_Round8_PassB.md).
+- **Round 8, Pass B** (re-assessment, 2026-09-04, fresh context, literature and code verified):
+  [Professor_Review_2026-09-04_Round8_PassB.md](GoalGathering/Professor_Review_2026-09-04_Round8_PassB.md)
+  — verdict: **conditional** — green light for the pre-pilot-note programme and for R0–R1 once
+  four in-spec items were written in; no green light yet for R2–R3 on two points; the side
+  project may open with its M2 additions. Part 1: of Round 7's six closures, two closed, four
+  re-worded. 8 blocking + 10 non-blocking. **All 18 addressed in spec the same day:** (1) Q6
+  given one estimator — σ_E/σ_g as RMS residuals about low-order polynomial fits, the noise
+  lines evaluated per grid step from that one σ, a totally symmetric mode added; (2) K given a
+  noise-aware stopping rule (ρ\* = c·ρ_noise; χ² per point), c and K_cap taken from a
+  noise-injected dry run, never the noiseless one; (3) η₈ made absolute (a fraction of the rung's
+  coupling scale S, "at noise" pairs enter the fit with uncertainty) in Q7(iv), Q8 and both
+  licences; (4) the fragment licence rebuilt — smallest passing radius at R3, a larger-molecule
+  comparison at R4 promised conditional on B3, and a fragment-radius convergence test on the
+  rung's own interior in place of the circular part (c); (5) the frozen-space object written
+  once (mapped by maximal overlap, projected and orthonormalised, assignment printed; projection
+  inside the graph), M1 given an assignment log along symmetric modes, M2 an FD reference that
+  re-projects and a printed projection-term size; (6) decidability re-based on M03's measured
+  band-centre uncertainty u_band (resolution, centroid, temperature term), the R2 C–C families
+  pre-declared inconclusive by construction on the NIST hot-vapour source, the supervisor ask
+  made load-bearing; (7) mode E runs on every rung R1–R3, mode G in addition where licensed,
+  Q8(c) per mode; (8) the anchor basis fixed per rung and a one-point R0 canonical feasibility
+  probe added before the note with a written fallback; non-blocking 9–18: M5 given both checks;
+  resonance closure bounded to depth one; P3 reported on the PAH held-out tensors and the
+  licence tied to the structural recovery's own Q8; M06's display criteria written and its
+  training data separated from M05's test set, the M05 fallback made a named debt; the
+  inheritance walk recorded in the Goal with the neutral-species rule re-justified; proposal
+  staleness swept; engine facts confirmed by the author's own fetch (items 48–49 upgraded; item
+  50–51 added); the direct probe re-specified as family-projected couplings at four energies
+  per (pair, family) with a step h; M1 given its displaced-geometry columns; the alarm's early
+  quietness stated. Brief: [Review_Brief_2026-09-04_Round8_PassB.md](GoalGathering/Review_Brief_2026-09-04_Round8_PassB.md).
 
 Plan 04's Round-6 findings and their closures bind plan 05 and are not re-litigated.
 
@@ -115,18 +143,21 @@ that project.) The mapping's M02 and M05 rows depend on the answer.
 
 ## Not yet done (owed, in order)
 
-- **Round 8, Pass B** — the re-assessment that turns Round 7's "conditional" into a verdict on
-  the set as it now stands.
+- **Round 9** (if the user wants the loop closed once more): a cold read of the Round-8 Pass B
+  patches and a short Pass-B confirmation that its eight closures held — Pass B itself said
+  "whether those closures hold is for a further pass to say".
 - The user's answer to open decision 7.
 - Capstone mapping Pass 6 (module-by-module sign-off).
 - **Probe M1** (frozen LNO spaces reproduce the reference energy) — the first code of the
   project, main-project work.
-- **The pilot note** (after the R0 pilot, the two-mode zero-CC dry run, the gradient
-  run/no-run at equilibrium, probe M1 and the R1 smoothness probe's scatter; before any
-  local-CC Δ₂ number is readable): band lists, margins and the expected-effect line, P-gate
-  numbers, matrix tolerance, P3 effect size, M04 recipe, resonance route and resonance-closed
-  family set, ρ\* and K_cap per mode, f_h and seed, τ₇ and d₇, Q8 numbers and direct-block
-  pairs, Q6 numbers and the pattern amplitude.
+- **The pilot note** (after the R0 pilot, the two-mode zero-CC dry run with its
+  noise-injection column, M03's u_band table, the canonical feasibility probe, the gradient
+  run/no-run at equilibrium, probe M1 and the R1 smoothness probe's σ with fits sealed; before
+  any local-CC Δ₂ number is readable): band lists with decidability verdicts, margins and the
+  expected-effect line, P-gate numbers, matrix tolerance, P3 effect size, M04 recipe, resonance
+  route and the depth-one family set, the stopping constant c and K_cap per mode, f_h and seed,
+  τ₇ and d₇, Q8 numbers (r_max, ε₈, η₈, γ, h) and direct-coupling pairs, Q6 numbers and the
+  pattern amplitude.
 
 ## Provenance
 
