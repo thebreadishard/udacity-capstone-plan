@@ -123,9 +123,12 @@ whole-molecule probing of a 432-atom molecule with energies only costs at least 
 per vibrational mode — 2,580 coupled-cluster energies of a very large molecule — and is **not
 promised**. The only route by which that cost stops depending on size is to probe the
 correction on capped fragments of the flake, which uses a locality-verified electronic
-correction obtained on one region for another. Whether that counts as the kind of transfer the
-project forbids is a scope decision the student has not yet made (§10); the plan is written so
-that either answer is honest.
+correction obtained on one region for another. On 4 September 2026 the student ruled that this
+is not a scope question but a method: if it works and the goal is reached with it, it is used;
+if the locality measurement at the middle rungs says it does not, it is not — and the goal, a
+pipeline that works up to the largest species, stays in sight either way. The plan is written
+so that both outcomes are honest, and the largest species remains a promised object in the
+fragment-probed form.
 
 ## 5. Approach
 
@@ -282,9 +285,9 @@ measurements that would settle whether the plan is a mistake are the first five 
 
 Listed here because a supervisor's view on them is more useful before than after.
 
-1. **Fragment probing at the largest sizes** — in or out. It decides whether the project's
-   final deliverable at C₃₈₄H₄₈-class size is a spectrum or an explicit refusal. Both are
-   honest outcomes under the plan; only one reaches the territory the project exists for.
+1. ~~Fragment probing at the largest sizes~~ — decided 4 September 2026: a permitted method,
+   used if the locality measurement at the middle rungs licenses it; the C₃₈₄H₄₈-class
+   deliverable is a fragment-probed spectrum, or the measured reason it could not be produced.
 2. **The Module-05 target** — a Transformer predicting the support of the correction on a
    public DFT-vs-DFT Hessian corpus, never used on a promised rung. If that is judged too far
    from the science, the module becomes a demonstration and is defended as one.
@@ -334,8 +337,8 @@ module may ship an honest fail-closed state to meet its date, and the science co
 1. A critical reading of §2–§3 (why the coupled-cluster budget moves to the harmonic
    correction, and why it is recovered by probing) and of §7 (the evaluation contract) — the
    places where the plan's honesty either holds or does not.
-2. A view on the two decisions in §10 that shape the deliverable: fragment probing at the
-   largest sizes, and the Module-05 target.
+2. A view on the fragment-probing route to the largest sizes (§4, now decided as a method
+   subject to measurement) and on the Module-05 target (§10).
 3. Advice on laboratory sources: gas-phase or jet-cooled spectra for tetracene- and
    coronene-class species would directly enlarge the decidable set.
 4. When the naphthalene measurements justify it: sponsorship of a cluster-time request sized

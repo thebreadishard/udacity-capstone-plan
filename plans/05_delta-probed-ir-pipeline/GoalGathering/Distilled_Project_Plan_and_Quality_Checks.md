@@ -22,8 +22,8 @@ the gas-phase rungs R0–R1, **agree with the known truth within the stated marg
 and beat the frozen lines under the pre-registered paired comparison (secondary)**; on R2–R3
 the beat comparison runs per family under the Ladder §2 decidability rule, and only where the
 Q6 noise gate passed at that size class, all others pre-declared inconclusive. On reach rung
-R6 — in the form the user's open decision 1 fixes, and conditional on Q8 at R2–R3 and on B3 —
-it produces a labelled theory-vs-theory spectrum with an uncertainty statement that is
+R6 — as fragment-probed Δ₂ (decided 2026-09-04), conditional on Q8 at R2–R3 and on B3 — it
+produces a labelled theory-vs-theory spectrum with an uncertainty statement that is
 explicitly an extrapolation. **For every rung that ran, the cost record (Ladder §1) is part of
 the claim.** A size sentence is written only under Ladder §1's conditions. No CC correction to
 anharmonic constants is claimed. Intensities are reported, not part of this claim.
@@ -97,7 +97,7 @@ Forbidden without one:
   correction to anharmonic constants entering a spectrum.
 - Starting a B3 job without the budget file's preconditions; starting any reach rung before
   R3 is scored; wording a size sentence before Q8(c) has printed at R1→R2 and R2→R3; starting
-  R6 in a form other than the one open decision 1 fixed.
+  R6 as a whole-molecule probe, or as a fragment probe before Q8 has printed at R2 and R3.
 
 ## §5 Architecture and the one comparison axis
 
@@ -191,8 +191,8 @@ If P0 fails at a rung, P2 is not interpreted there.
   delta is not smaller than the beat margin. No beat, no loss."
 - "Reach rung Rn produced a spectrum with the attached error budget; no accuracy claim is made
   because no laboratory spectrum exists."
-- "R6 is not in the promised set: open decision 1 was 'out' / Q8 failed on direct blocks at
-  R2–R3 for [families] / B3 did not exist — the refusal is the Module 08 result for R6."
+- "R6 is not reached: Q8 failed on direct blocks at R2–R3 for [families] / B3 did not exist —
+  the refusal, with the measured long-range shares, is the Module 08 result for R6."
 - "Δ₂ was not recovered at Rn within K_cap; the rung's Δ₂ is absent and the fallback of Ladder
   §5.4 was scored instead."
 - "Δ₂ is not local at Rn on family F: Q8(a/b) on direct blocks breached with the attached decay
@@ -217,7 +217,7 @@ If P0 fails at a rung, P2 is not interpreted there.
    front ends, on the families the lab data can decide."
 7. Q8(c) on K_off at R1→R2 and R2→R3 → the mode-E size sentence, numeric form only.
 8. P3 effect ≠ 0 → "the learned prior buys X on the dry-run corpus" (bonus; never load-bearing).
-9. P5 at R6, in the form decision 1 fixed → "the pipeline reaches a C₃₈₄H₄₈-class species from
+9. P5 at R6 → "the pipeline reaches a C₃₈₄H₄₈-class species from
    the atlas by fragment-probed Δ₂ whose locality was measured at R2–R3, with the attached cost
    record beside R3's: a labelled theory-vs-theory spectrum plus an uncertainty statement that
    is explicitly an extrapolation from R0–R3" — or the refusal.

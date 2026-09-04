@@ -79,7 +79,7 @@ Before the pilot note (DFT-only and timings; no local-CC Δ₂ may exist yet):
 4. **R1 smoothness probe** (B2, ~30 local-CC energies of naphthalene): three modes, nine
    points each at q ∈ [−1, 1], TightPNO, with and without frozen data; second-difference
    scatter printed against the Q6 noise line on the step grid. Fixes the pattern amplitude.
-5. **Pilot note committed** (with open decision 1 recorded).
+5. **Pilot note committed** (with the 2026-09-04 fragment-probing decision recorded).
 
 After the pilot note:
 

@@ -39,9 +39,9 @@ drift. Costs live in [Compute_Budget_2026-09-03.md](Compute_Budget_2026-09-03.md
 | **R1** | naphthalene C₁₀H₈ (18 atoms, 48 modes) | A | The canonical-vs-local-CC licence molecule, conditional exactly as in plan 04: the first R1 probe measures whether canonical (T) runs on the B2 laptop at any usable basis; if not, the licence downgrades to **R0-only plus a declared cross-basis protocol**, stated in every anchor claim | A, B | NIST; PAHdb experimental | **The Q6 smoothness probe** (three modes, nine points, frozen data — the first rung with truncated pairs); Q6 anchor licence; Q7 at a second size, printed for diagonal-only and full recovery; first **Q8(a/b)** on the reference Hessian; the gradient probe with memory; expected-effect line printed |
 | **R2** | pyrene C₁₆H₁₀ (26 atoms, 72 modes); chrysene C₁₈H₁₂; triphenylene C₁₈H₁₂; tetracene C₁₈H₁₂ (each 30 atoms, 84 modes) | A | First territory beyond PAHdb's anharmonic front | A, B | **Gas (NIST WebBook, grids ~4 cm⁻¹ per the plan-04 coverage probe, re-measured under this plan's hash):** pyrene, chrysene, triphenylene. **Matrix (PAHdb experimental uids 334, 282, 291 as recorded in plan-02 probes):** pyrene, tetracene, chrysene. Tetracene has no gas-phase IR (solid-only) and is scored on matrix data only, every family M03-gated. IRMPD = context only | Q6 at R2 size: the **canonical diagonal check at pyrene** (two energies per mode, one mode per family) and the TightPNO/NormalPNO column; **prior-free direct-block probe** for Q8(a/b); K and K_off printed; Q8(c) first ratio (R1→R2) |
 | **R3** | coronene C₂₄H₁₂ (36 atoms, 102 modes) | A | Mulas 2018's molecule (B97-1 QFF, item 6); largest PAH with a usable matrix spectrum (uid 18); no gas-phase IR in the WebBook | A, B (Mulas), C | PAHdb experimental (uid 18), every family M03-gated | direct-block probe; Q8(c) second ratio (R2→R3); the size sentence is decided here |
-| **R4** | circumcoronene-class, C₅₄H₁₈ → ~C₉₆ | R | First rung with no per-molecule lab truth | A, C (theory-vs-theory) | — | expert-judgment datum (Goal, expectations tier 3); the learned-prior arm (P3) may run here, labelled; fragment probing here first if decision 1 is "in"; the R6 DFT-Hessian timing probe |
+| **R4** | circumcoronene-class, C₅₄H₁₈ → ~C₉₆ | R | First rung with no per-molecule lab truth | A, C (theory-vs-theory) | — | expert-judgment datum (Goal, expectations tier 3); the learned-prior arm (P3) may run here, labelled; **fragment probing exercised here first**, its certificate compared with whole-molecule probing where the size still allows both; the R6 DFT-Hessian timing probe |
 | **R5** | ~C₂₁₆ (top of Mai's set) | R | Meet line C at its own ceiling | A, C | — | as R4 |
-| **R6** | C₃₈₄H₄₈-class (for C₃₈₄H₄₈ itself: 432 atoms, 1,290 modes) | R | Only line A exists here, at 4-31G | A (theory-vs-theory) | — | **fragment-probed Δ₂ only** (decision 1 "in"); the reach certificate; cost record in the same table as R3's, same mode, same prior. **Whole-molecule probing is not promised**: mode E would be ≥ 2,580 energies of a 432-atom molecule |
+| **R6** | C₃₈₄H₄₈-class (for C₃₈₄H₄₈ itself: 432 atoms, 1,290 modes) | R | Only line A exists here, at 4-31G | A (theory-vs-theory) | — | **fragment-probed Δ₂ only** (decided 2026-09-04, licensed by Q8 at R2–R3); the reach certificate; cost record in the same table as R3's, same mode, same prior. **Whole-molecule probing is not promised**: mode E would be ≥ 2,580 energies of a 432-atom molecule |
 
 **Dated note, 2026-09-03 (R2 re-read).** Plan 04's R2 row excluded triphenylene as having "no
 laboratory spectrum" and was written before plan 04's own NIST coverage probe completed. That
@@ -51,11 +51,12 @@ coronene. Plan 05 therefore scores triphenylene on its gas families and gates te
 **Confirmed by the user on 2026-09-04** (open decision 3 closed); the R2 A-scored set is
 pyrene, chrysene, triphenylene (gas families) and tetracene (matrix, M03-gated).
 
-**Dated note, 2026-09-03 (R6 form, after Round-7 Pass B).** R6's promised form depends on the
-user's open decision 1, which must be made before the pilot note: **in** → R6 promised as
-fragment-probed Δ₂, conditional on Q8(a/b) passing on direct blocks at R2 and R3 for the scored
-families and on B3; **out** → R6 leaves the promised set and Module 08 reports the refusal.
-Whole-molecule R6 is promised in neither branch.
+**Dated note, 2026-09-03 (R6 form, after Round-7 Pass B), closed 2026-09-04.** R6's promised
+form depended on the user's open decision 1. **Decided 2026-09-04: in, subject to measurement**
+(Goal, "The goal binds; methods are means"). R6 is promised as **fragment-probed Δ₂**,
+conditional on Q8(a/b) passing on direct blocks at R2 and R3 for the scored families and on B3;
+families that fail Q8 are withdrawn from the R6 certificate with their measured long-range
+share. Whole-molecule R6 is not promised.
 
 **Decidability per family (frozen form).** A family is scored against gas-phase data wherever
 gas data exists for that molecule and family; it is **decidable** if the measured gas grid
@@ -69,8 +70,9 @@ rungs per family under the decidability rule above — **"beat" language on a mo
 requires the Q6 noise gate to have passed at that rung's size class.** R6 per the dated note
 above. **[05]** The **cost record** (§1) for every rung that ran.
 **Bonus:** R4, R5, anything beyond R6, the learned-prior arm (P3), the diagonal-cubic probe
-(Δ₃ along scored modes), the anthracene locality probe, the mode-G size sentence, and the size
-sentence itself (it is earned or not; its absence is not a failure).
+(Δ₃ along scored modes), the anthracene locality probe, the mode-G size sentence, the size
+sentence itself (it is earned or not; its absence is not a failure), and the whole-molecule vs
+fragment comparison at R4.
 
 **Charge.** All rungs are **neutral species** unless a rung's pilot note names a charge state.
 
@@ -80,7 +82,8 @@ themselves are produced only after Q7 has printed. The Q6 smoothness probe at R1
 under the line before any mode-E "beat" sentence anywhere. Q8(a/b) must be printed at R1 (on
 the reference), R2 and R3 (on direct blocks) and Q8(c) at R1→R2 and R2→R3 before any size
 sentence is worded. Reach rungs may not start before R3 has been **scored** (scored includes
-lost and pre-declared inconclusive). Open decision 1 is made before the pilot note.
+lost and pre-declared inconclusive). Open decision 1 was made on 2026-09-04 (in, subject to Q8)
+and is recorded in the pilot note.
 
 ## 3. Frozen now (not pilot-dependent)
 
@@ -225,8 +228,8 @@ is recorded in it.
    families where Q7 passed, labelled per family** — it competes under the same protocol and
    may lose. Q8(a/b) breach on a family: that family's Δ₂ is reported with its long-range share
    and carries no accuracy claim finer than that share; if the breach is at R2–R3 on the
-   scored families, fragment probing is invalid for those families and R6 (decision 1 "in")
-   loses them from its certificate. **Q8(c) breach: no size sentence** — the plan does not fall
+   scored families, fragment probing is invalid for those families and R6 loses them from its
+   certificate. **Q8(c) breach: no size sentence** — the plan does not fall
    back to a point factory whose affordability no plan has measured.
 5. **A promised accuracy rung loses to a line:** published with the paired table.
 
@@ -234,9 +237,9 @@ is recorded in it.
 
 - No global QFF of a huge molecule as a deliverable.
 - No whole-molecule "gold rung" language above R1; anchors are "local-CC, R1-checked".
-- No motif-transfer claim: every molecule gets its own probed Δ₂ — or, at R6 under decision 1,
-  a fragment-probed Δ₂ whose locality was measured on direct blocks at R2–R3 and is labelled as
-  such. **[05]** The learned prior is not a transfer claim: it is scored by what it saves on
+- No motif-transfer claim: every molecule gets its own probed Δ₂ — or, at R4–R6, a
+  fragment-probed Δ₂ whose locality was measured on direct blocks at R2–R3 and is labelled as
+  such (user directive 2026-09-04: a method decided by measurement, not a transfer of spectra). **[05]** The learned prior is not a transfer claim: it is scored by what it saves on
   bonus material, and the probes remain the answer.
 - No CC correction to anharmonic constants as a promise; no "coupled-cluster anharmonic"
   language.

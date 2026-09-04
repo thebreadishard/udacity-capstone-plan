@@ -60,7 +60,7 @@ What the end goal requires, independent of any rubric:
 | A learned **Δ₂-support predictor** for pattern design on bonus material (the P3 arm) | M05 | replaces the learned surface |
 | **Pattern-proposal efficiency** for the probe batches (K_off is the scarce quantity) | M06 | replaces geometry sampling |
 | A **campaign officer** that runs multi-day probe queues, enforces the classification rule and the two cost-sentence forms, and refuses ungated claims | M07 | extended |
-| The assembled pipeline, the R0–R3 comparisons, the cost records, R6 in the form decision 1 fixes, the paper | M08 | extended |
+| The assembled pipeline, the R0–R3 comparisons, the cost records, the fragment-probed R6 or its measured refusal, the paper | M08 | extended |
 
 Delete M02, M03, M04, M07 or M08 and a promised rung stops. Delete M05 or M06 and the
 **bonus** material stops (P3; prior-assisted R4–R5; pattern efficiency beyond the deterministic
@@ -75,8 +75,8 @@ theoretical library into a tidy band table: species uid, formula, charge, size, 
 intensity, scale factor applied, basis (6-31G* vs 4-31G). EDA (no ML): coverage by size,
 charge and band family; where the 4-31G regime starts; which rungs have entries; **which
 C₃₈₄H₄₈-class species exist** (frozen-lines debt 6) — the input to the R6 target choice and,
-under open decision 1, to the count of symmetry-unique local environments a fragment-probed
-R6 would need.
+to the count of symmetry-unique local environments the fragment-probed R6 needs (decided
+2026-09-04).
 
 **Rubric fit.** Public tabular data (≥10⁴ species → ≥10⁵ band rows), documented cleaning,
 figures, no training. Module 02 allows "or use your own dataset"; this one is NASA-public.
@@ -226,12 +226,12 @@ officer. Tools: `queue_submit` (wraps the batch runner; refuses a batch whose de
 match Q0), `check_deck_hash`, `check_budget` (reads the classification rule with K_cap and
 c_CPS; refuses B3 submission unless the budget file's preconditions are met), `run_probe`,
 `print_cost_record` (emits Ladder §1's record form and nothing else), `write_certificate_or_refuse`.
-Memory: the frozen ladder, the budget rules, the pilot note, open decision 1's recorded value.
+Memory: the frozen ladder, the budget rules, the pilot note, the Q8 verdicts per family.
 Safeguards, each a refusal with a logged reason: no "beat" sentence without the pilot-note
 hash and the P2 probe output; no "beat" on a mode-E rung whose Q6 noise line did not pass; no
 size sentence without Q8(c) output in both required ratios; **no cost adjective anywhere** (a
 regex over the report draft is part of the tool); no learned-prior run on R0–R3 or R6; no
-reach rung before R3 is scored; no R6 job in a form other than the one decision 1 fixed.
+reach rung before R3 is scored; no R6 job other than fragment-probed, and none before Q8 has printed at R2 and R3.
 Observed failure cases for the report: a poisoned deck hash → refusal; a draft sentence
 containing "size-independent" → refusal with the Ladder §1 citation.
 
@@ -249,7 +249,7 @@ efficiency), clearly labelled as not load-bearing for the promised spectra. Arti
 CLI / service — molecule identifier in → spectrum + per-band error budget + **cost record** +
 certificate out, **or a refusal naming the rung/cap/gate that blocked it**. Runs: R0–R1
 accuracy comparisons under the pilot note (gas-phase, unconditional); R2–R3 per family under
-the decidability rule and the Q6 noise gate; R6 in the form decision 1 fixed, or its refusal;
+the decidability rule and the Q6 noise gate; the fragment-probed R6, or its measured refusal;
 tier-1 emission post-processing via the published cascade model, labelled inherited. Paper:
 industry frame per the Goal; the accuracy/reach split; the cost record table across rungs
 with, if earned, the numeric size sentence; losses and inconclusives reported as such.
@@ -287,8 +287,8 @@ required in advance. New for plan 05, all routed to the Goal's open-decision lis
 
 1. **M05 target and corpus** (Goal open decision 4): the Δ₂-support predictor on the
    QM9-derived DFT-vs-DFT corpus, reading 1 proposed here. If vetoed, M05 is a demonstration.
-2. **Fragment probing** (Goal open decision 1) — decides whether M08 ships an R6 spectrum or
-   an R6 refusal; must be decided before the pilot note, i.e. before M03 finishes.
+2. ~~Fragment probing~~ — decided by the user 2026-09-04: a permitted method, licensed by Q8
+   at R2–R3; M08 ships the fragment-probed R6 spectrum or its measured refusal.
 3. ~~The R2 A-scored set~~ — decided by the user 2026-09-04 (re-read stands); M03's R2 band
    list covers pyrene, chrysene, triphenylene (gas) and tetracene (matrix).
 

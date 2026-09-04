@@ -111,16 +111,17 @@ re-litigated.
 
 ## Open decisions for the user
 
-1. **Fragment probing — before the pilot note; decides R6's form.** In → R6 promised as
-   fragment-probed Δ₂ conditional on Q8 at R2–R3 and B3. Out → R6 leaves the promised set.
-   Whole-molecule R6 is not promised either way (Goal, Ladder §2 dated note).
+1. ~~Fragment probing~~ — **decided 2026-09-04: in, subject to Q8.** The user's ruling (Goal,
+   "The goal binds; methods are means"): whether fragments are used is decided by measurement;
+   the goal — a pipeline that works, up to the largest species — stays in sight. R6 is promised
+   as fragment-probed Δ₂ conditional on Q8 at R2–R3 and B3; whole-molecule R6 is not promised.
 2. ~~Removal of the plan-04 folder~~ — **decided 2026-09-04: all plan folders stay in the tree**; plans 01–03 were restored as read-only records.
 3. ~~The R2 A-scored set~~ — **decided 2026-09-04: the re-read stands** (triphenylene in on
    its gas families; tetracene matrix-only and fully M03-gated).
 4. **The Module-05 target** (Δ₂ support on a DFT-vs-DFT corpus from Hessian QM9) — veto makes
    M05 a demonstration, defended as one.
-5. **Adoption of the Pass-B re-worded promised set** (Δ₂ only; mode E primary; R6 per
-   decision 1) — the default this folder is written to.
+5. **Adoption of the Pass-B re-worded promised set** (Δ₂ only; mode E primary; R6
+   fragment-probed) — the default this folder is written to.
 6. ~~Machine~~ — **decided 2026-09-04: B2 is the current ASUS Vivobook 18 M1807HA-S8022W** (Ryzen 7 260, 8C/16T, Radeon 780M integrated, no CUDA GPU, 32 GB DDR5, ~790 GB free disk — from the machine's About page); a new machine only if a probe shows it necessary. GPU DFT Hessians are therefore B3.
 
 ## Not yet done (owed, in order)
@@ -129,7 +130,7 @@ re-litigated.
 - Capstone mapping Pass 6 (module-by-module sign-off) once decisions 1, 3 and 4 are made.
 - **The pilot note** (after the R0 pilot, the zero-CC dry run, the gradient-availability probe
   with memory, the R1 smoothness probe and the scoreboard re-read; before any local-CC Δ₂
-  recovery exists; with open decision 1 recorded): band lists, margins and the
+  recovery exists; with the fragment-probing decision recorded): band lists, margins and the
   expected-effect line, P-gate numbers, matrix tolerance, P3 effect size, M04 recipe,
   resonance route and resonance-closed family set, ρ\*, K_cap, f_h and seed, τ₇ and d₇, Q8
   numbers and direct-block pairs, Q6 numbers and the pattern amplitude.
