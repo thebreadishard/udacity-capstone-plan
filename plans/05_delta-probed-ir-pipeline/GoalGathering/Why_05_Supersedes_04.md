@@ -77,7 +77,7 @@ plan 04 is listed here. Anything not on this list is inherited unchanged.
 | 16 | M05 training corpus: own DLPNO point corpus | M05 corpus: **public Hessian QM9 plus recomputed B3LYP Hessians** (a DFT-vs-DFT Δ₂ corpus at scale), plus the PAH dry-run and probed tensors; M05 target = the **support of Δ₂** in the DFT mode basis (CMA-2's diagnostic, learned); distinctness under the rubric decided in the mapping; the target itself is open decision 4 | Distilled §5–§6 |
 | 17 | Machine: CPU laptop → cluster | DFT Hessians on GPU where the deck names one; local CC as before | Goal, Budget |
 | 18 | Cost question implicit | **Cost question anchored on mode E / K_off** (the promised route); mode G is a bonus on the verified 2026-09-03 gradient landscape (no production local-CC(T) nuclear gradient; PySCFAD AD gradients demonstrated to 29 atoms); the "CCSD gradient + energy-only (T)" idea of the research note has **no engine** and is withdrawn | Goal, Ladder §1, Research note §8 |
-| 19 | R6 promised as a whole-molecule run conditional on B3 | **R6's form depends on the user's open decision 1 (fragment probing), made before the pilot note**: in → fragment-probed Δ₂ conditional on Q8 on direct blocks at R2–R3 and on B3; out → R6 leaves the promised set. Whole-molecule R6 is not promised in any branch | Goal, Ladder §2 |
+| 19 | R6 promised as a whole-molecule run conditional on B3 | **R6 promised as fragment-probed Δ₂**, conditional on Q8 on direct blocks at R2–R3 and on B3 (user decision 2026-09-04: fragment probing is a method decided by measurement, not a scope question). Whole-molecule R6 is not promised | Goal, Ladder §2 |
 | 20 | — | **Novelty rewritten with citation**: the diagonal mode-E recovery is the Concordant Mode Approach applied to a difference (items 42–43); mode-tracking (item 46) and gradient-based compressed sensing (item 24) are named prior art; what remains proposed is stated in Research note §8 | Research note §8, Distilled §2, Frozen_Lines §1 |
 | 21 | Dry run: two DFT functionals, unspecified | Dry run: **B3LYP against a high-exact-exchange functional**, so the calibration Δ contains mode rotations; dry-run-flagged blocks get explicit two-mode patterns | Distilled §3, Budget §4 |
 | 22 | Q8 on whatever the pipeline produced | Q8 on **direct blocks** (reference Hessian at R0–R1; a prior-free direct-block probe at R2–R3); an **anthracene** locality probe as a dated bonus between R1 and R2 | Ladder §3, Distilled Q8, Budget §4 |
@@ -88,8 +88,9 @@ plan 04 is listed here. Anything not on this list is inherited unchanged.
 The rungs and species R0–R6 and their claim types A/R; the opponents and their versions; the
 scoreboards; the numerical tolerances (10 cm⁻¹ floor, 15 cm⁻¹ working matrix convention with
 the M03-measured binding value, ~1 cm⁻¹ bind); the hours directive; the module skeleton 02–09
-and rule 0 of the mapping; the no-transfer rule as plan 04 wrote it (fragment probing, which
-would touch it, is open decision 1); the emission tiers; the neutral-charge rule; the Round-6
+and rule 0 of the mapping; the no-transfer rule as plan 04 wrote it — clarified on 2026-09-04
+to what it always covered, spectra and band positions, so that a locality-verified electronic
+correction is a method Q8 measures, not a transfer; the emission tiers; the neutral-charge rule; the Round-6
 closures.
 
 ## The measurement that would say plan 05 was a mistake

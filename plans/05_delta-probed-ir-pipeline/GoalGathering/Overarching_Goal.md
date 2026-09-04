@@ -59,9 +59,9 @@ The accuracy/reach split ([Frozen_Ladder_and_Tolerances.md](Frozen_Ladder_and_To
 > correction need at the frozen residual target, per rung — and did K_off saturate between
 > R1, R2 and R3 (Q8c)? In mode G, if it exists at all three rungs, the same for K.
 >
-> **Reach (rung R6).** Can the same pipeline — with Δ₂ obtained by **fragment probing**, if
-> and only if the user decides fragment probing in (open decision 1) and Q8 has passed on
-> directly measured blocks at R2–R3 — produce a spectrum with a stated error budget at sizes
+> **Reach (rung R6).** Can the same pipeline — with Δ₂ obtained by **fragment probing**,
+> licensed by Q8 on directly measured blocks at R2–R3 (user directive 2026-09-04: a permitted
+> method, decided by measurement) — produce a spectrum with a stated error budget at sizes
 > where no anharmonic or CC-quality prediction exists at all, with its cost record printed
 > beside R3's? **Whole-molecule probing at R6 is not promised in any branch**: in mode E it is
 > at least 2M = 2,580 local-CC energies of a 432-atom molecule.
@@ -147,8 +147,8 @@ expectations section below are numbered separately.
 - **Size:** the method must work on super-large aromatics — **including C₃₈₄H₄₈-class species
   (the 101–386-carbon PAHdb bin) and larger**. Whether C₃₈₄H₄₈ itself has a PAHdb v4.00 entry
   is an unpaid check (frozen-lines debt 6); the R6 target species is chosen from the atlas.
-  How R6 is reached — fragment probing or not at all — is open decision 1 and is made
-  **before the pilot note**, because it decides whether R6 is a promised object.
+  R6 is reached by fragment probing, licensed by Q8 at R2–R3 (decided 2026-09-04; recorded
+  in the pilot note).
 - **Compute:** the plan must not die on compute. Start on the current laptop — the B2 machine
   named in the budget (decided 2026-09-04: an 8-core Ryzen 7 260 without a CUDA-class GPU;
   replaced only if a probe shows it necessary) — (R0 pilot proves the
@@ -178,14 +178,9 @@ expectations section below are numbered separately.
 
 ## Open decisions for the user (not part of the promised set until decided)
 
-1. **Fragment probing — decide before the pilot note.** Probing Δ₂ on capped fragments of
-   radius r_max instead of on the whole flake is the only route by which R6's CC cost stops
-   depending on the mode count. It is transfer of a *locality-verified electronic correction*,
-   not of a spectrum, and it is valid only if Q8 passes on directly measured blocks at R2–R3.
-   Plan 04's no-transfer rule was written against motif transfer of band positions. **If in:**
-   R6 is promised as fragment-probed Δ₂, conditional on Q8 at R2–R3 and on B3. **If out:** R6
-   leaves the promised set and Module 08 reports the refusal, as Round 6 already advised for
-   plan 04's R6. Whole-molecule R6 is not promised either way.
+1. ~~Fragment probing~~ — **decided 2026-09-04: in, subject to Q8** (see "The goal binds;
+   methods are means"). R6 is promised as fragment-probed Δ₂, conditional on Q8 on direct
+   blocks at R2–R3 and on B3. Whole-molecule R6 is not promised.
 2. ~~Removal of the plan-04 folder~~ — **decided 2026-09-04: every plan folder stays in the tree** (plans 01–03 restored as read-only records).
 3. ~~The R2 A-scored set~~ — **decided 2026-09-04: the re-read stands** (Why_05 change 14;
    Ladder §2 dated note).
@@ -210,6 +205,31 @@ Do not write any of the following as a Module 08 result:
 - "Never done before" — the diagonal mode-E recovery is CMA-0 applied to a difference (items
   42–43); what the search did not find is stated in the Research note §8 and nowhere else.
 - Any band position without its measured error source named.
+
+## The goal binds; methods are means (user directive, 2026-09-04)
+
+The user's ruling on fragment probing, recorded verbatim in substance: *it is not for the
+user to dictate whether probing in fragments is allowed. If it works and the goal is reached
+with it, fine; if it does not work, then not. The goal must not drop out of sight. The goal
+must be reached: a pipeline that works.* Consequences, so this directive cannot be quoted
+against the freeze:
+
+1. **Fragment probing is a permitted method, not a scope question.** Whether it is *used* at
+   R4–R6 is decided by measurement — Q8(a/b) on directly measured blocks at R2 and R3 for the
+   scored families — and by nothing else. Open decision 1 is closed: **in, subject to Q8**.
+2. **The no-transfer rule is clarified, not weakened.** It forbids transferring *spectra or
+   band positions* between molecules (the motif-atlas failure plan 02 measured). A
+   locality-verified electronic correction, measured on one region and applied to another
+   region whose local environment is the same within r_max, is a method whose validity Q8
+   measures per family; it is labelled as such in every certificate that uses it.
+3. **R6 stays a promised object**, as fragment-probed Δ₂, conditional on Q8 at R2–R3 and on
+   B3. If Q8 fails for a family, that family's correction is withdrawn from the R6 certificate
+   with the measured long-range share; if it fails for all scored families, R6 is reported
+   with the fail-closed sentence of Distilled §8 — the goal was kept in sight and the method
+   was measured to fall short of it, which is a result.
+4. **The honesty rules remain the way the goal is pursued, not a reason to stop short of it.**
+   No gate in this plan exists to avoid the large molecules; every gate exists so that the
+   pipeline can be taken there without lying about what it delivers.
 
 ## Value hierarchy (user directive 2026-09-02, carried)
 
