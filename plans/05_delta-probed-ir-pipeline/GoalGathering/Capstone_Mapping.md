@@ -3,7 +3,7 @@
 **Status.** Draft as of 2026-09-03, revised 2026-09-04 after the user's decisions and Round-8
 Pass A, for the promised set as decided (Δ₂ only; mode E guaranteed, mode G built in the side
 project; R6 fragment-probed under the fragment licence). Passes 1–5 written; Pass 6
-(module-by-module sign-off) not done, and blocked on open decision 7 (§5). Not complete as a
+(module-by-module sign-off) not done; decision 7 closed 2026-09-04, so nothing blocks it. Not complete as a
 plan.
 Where plan 05 inherits plan 04's module design unchanged, this file says "carried" and does
 not re-argue it; plan 04's mapping (in its folder) is the argument of record for those parts.
@@ -198,11 +198,11 @@ publishable either way.
 **Distinctness — the reuse clause, reading 1 (confirmed by the user 2026-09-04 under decision
 4).** The rubric's bar is "not be reused from any previous capstone
 project" and "publicly available … before this project starts". Hessian QM9 is public today.
-**Whether QM9 itself served an earlier module is open decision 7**: the scraped rubric pages
-carry the student's words naming QM9 for the Foundations project (Round-8 Pass A issue 20). If
-module 02 was submitted on QM9, the Hessian QM9 parent set is exposed to reading 2 and this row
-is re-argued — the fallback is then a different public Hessian source — **a named debt, to be searched and
-verified before Module 05 starts; none is named from recall.** The recomputed B3LYP side is new computed data produced for
+**Decision 7 (2026-09-04) closes the QM9 question**: no capstone module has been submitted; the
+student's draft Foundations repository on QM9 was never submitted and will be renamed or
+archived, so Hessian QM9's parent set carries no module-02 reuse exposure. The reading-2 fallback
+(a different public Hessian source) stays a named debt as ordinary insurance, to be searched and
+verified before Module 05 starts; none is named from recall. The recomputed B3LYP side is new computed data produced for
 this module. The derived Δ₂ tensors are a new quantity with their own DOI. Under reading 1 the
 corpus is distinct; the report carries a provenance paragraph saying exactly that and stating
 that the PAH dry-run tensors were computed under plan 05's `probes/` and appear in no earlier
@@ -216,7 +216,7 @@ the corpus, so Q4 is trivially clean.
 
 **Required sentences.** "The training corpus is the public Hessian QM9 set (arXiv:2408.08006)
 plus B3LYP Hessians recomputed by the named decks (DOI …, hashes …); computed ab initio data,
-not AI-generated; [not used in any earlier capstone module — pending open decision 7]." "The laboratory scoreboard is
+not AI-generated; not used in any earlier capstone module (decision 7: none submitted)." "The laboratory scoreboard is
 never a training, validation, or stopping input." "On R0–R3 every scored spectrum is the structural recovery; the learned prior is spent only on
 R4–R6 under the licence of Ladder §3, and every cost record says which prior it used."
 
@@ -317,7 +317,7 @@ its DFT teacher).
 | 02 | PAHdb v4.00 computed band table | NASA public download | yes (public today) | no |
 | 03 | PAHdb experimental v3.10 + gas v1.00 + NIST JCAMP | NASA/NIST public | yes (public today) | no — measurements, not the 02 predictions |
 | 04 | paired theory↔lab table, own versioned release | derived, Zenodo DOI | must be, before M04 | distinct per reading 1 — decided by the user 2026-09-02 (carried); provenance paragraph required |
-| 05 | Hessian QM9 + recomputed B3LYP Hessians → Δ₂ tensors; PAH dry-run tensors as labelled test set | public benchmark + own computed, Zenodo DOI | Hessian QM9 is; the release must be, before M05 | distinct per reading 1 (decision 4), **pending open decision 7** on whether QM9 served module 02; reading-2 fallback executable |
+| 05 | Hessian QM9 + recomputed B3LYP Hessians → Δ₂ tensors; PAH dry-run tensors as labelled test set | public benchmark + own computed, Zenodo DOI | Hessian QM9 is; the release must be, before M05 | distinct per reading 1 (decision 4); decision 7 removes the module-02 exposure; reading-2 fallback a named debt |
 | 06 | pattern-response records of the QM9-subset dry runs, own release, new split hash (PAH dry-run tensors excluded — they are M05's test set) | computed, Zenodo DOI | must be, before M06 | distinct from 05's QM9-derived Δ₂ corpus; no overlap with 05's test set; split disjoint by hash |
 | 07 | — | — | — | — |
 | 08 | — | integrates 02, 03, 04, 07 (+05, 06 as bonus reports) | — | reuse by design |
@@ -333,11 +333,9 @@ required in advance. New for plan 05, all routed to the Goal's open-decision lis
 
 1. ~~M05 target and corpus~~ — decided by the user 2026-09-04: adopted as specified in §3
    M05 (aromatic-heavy subset; licence as success criterion; reading 1 with fallback).
-4. **Open decision 7 (new, 2026-09-04):** has module 02 been submitted, and on which dataset?
-   The rubric folder's scraped classroom transcript names QM9 for the Foundations project. If
-   so, M02's atlas row is a plan for a module already done on other data (rule 0's atlas moves
-   to M03 or M08), and M05's reading-2 exposure includes Hessian QM9's parent set. One sentence
-   from the user settles it; Pass 6 waits for it.
+4. ~~Open decision 7~~ — closed 2026-09-04: nothing submitted; the draft QM9 Foundations
+   repository will be renamed or archived; M02 stands as planned. The M02 report's provenance
+   paragraph mentions the renamed draft so no grader mistakes it for a submission.
 2. ~~Fragment probing~~ — decided by the user 2026-09-04: a permitted method, licensed by Q8
    at R2–R3; M08 ships the fragment-probed R6 spectrum or its measured refusal.
 3. ~~The R2 A-scored set~~ — decided by the user 2026-09-04 (re-read stands); M03's R2 band

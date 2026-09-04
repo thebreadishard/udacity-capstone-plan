@@ -331,9 +331,9 @@ hedged. Whether those closures hold is for a further pass to say; none of them n
 measurement first. The Round-7 reviewer's own words on the cheapest
 measurements that would settle whether the plan is a mistake are the first owed probes.
 
-## 10. Decisions the student made on 4 September 2026, and the one still open
+## 10. Decisions the student made on 4 September 2026
 
-Listed here because a supervisor's objection to any of them would reopen it.
+All closed; listed here because a supervisor's objection to any of them would reopen it.
 
 1. ~~Fragment probing at the largest sizes~~ — decided 4 September 2026: a permitted method,
    used if the locality measurement at the middle rungs licenses it; the C₃₈₄H₄₈-class
@@ -352,10 +352,9 @@ Listed here because a supervisor's objection to any of them would reopen it.
 6. ~~The development machine~~ — decided 4 September 2026: the student's current laptop (an
    8-core Ryzen 7 260, 32 GB, integrated graphics, no CUDA GPU) is the own-machine budget; a
    replacement only if a probe shows it necessary.
-7. **Still open:** whether the programme's Foundations module has already been submitted, and
-   on which dataset. The rubric material in the repository contains the student's own words
-   naming QM9 for that project; if so, the Module-05 corpus (built on Hessian QM9) needs its
-   reuse argument re-made. A one-line answer settles it.
+7. ~~Whether the Foundations module was already submitted~~ — decided 4 September 2026: nothing
+   has been submitted; an unsubmitted draft on QM9 will be renamed to make room for the plan's
+   Module 02, so the Module-05 corpus carries no reuse exposure from it.
 
 ## 11. Risks
 

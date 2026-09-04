@@ -291,10 +291,7 @@ against line A; written in Distilled §3); *the 10 cm⁻¹ astronomical floor an
 6. **B2 is the current ASUS Vivobook 18 M1807HA-S8022W** (Ryzen 7 260, 8C/16T, 32 GB DDR5,
    Radeon 780M, no CUDA GPU); a replacement only if a probe shows it necessary.
 
-**Open (new, 2026-09-04, from Round-8 Pass A issue 20):** 7. Whether the Foundations module
-(02) has already been submitted and on which dataset — the scraped rubric page contains the
-student's words naming QM9 for that project. The mapping's M02 and M05 rows depend on the
-answer; the user is asked to state it.
+7. **The Foundations module and QM9** (raised by Round-8 Pass A issue 20) — **Decision 7 (closed 2026-09-04):** no capstone module has been submitted to the school. A draft Foundations project on QM9 exists in the user's GitHub account (`ai-programming-foundations-project`) but was never submitted; the user will rename or archive that repository so that a fresh Module 02 built on the plan's opponent atlas takes its place. Consequences: the mapping's M02 row is a plan, not a record; the Module-05 corpus (Hessian QM9) faces no "reused from a previous capstone project" exposure from module 02, since nothing was submitted — the reading-2 fallback stays a named debt as ordinary insurance; the renamed draft is mentioned in the M02 report's provenance paragraph so no grader mistakes it for a submission.
 
 ## Forbidden quotes (this thesis)
 
