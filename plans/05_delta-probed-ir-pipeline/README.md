@@ -121,7 +121,7 @@ re-litigated.
    M05 a demonstration, defended as one.
 5. **Adoption of the Pass-B re-worded promised set** (Δ₂ only; mode E primary; R6 per
    decision 1) — the default this folder is written to.
-6. ~~Machine~~ — **decided 2026-09-04: B2 is the current ASUS Vivobook 18 M1807HA-S8022W** (Ryzen 7 260, 8C/16T, integrated Radeon, no CUDA GPU); a new machine only if a probe shows it necessary. GPU DFT Hessians are therefore B3.
+6. ~~Machine~~ — **decided 2026-09-04: B2 is the current ASUS Vivobook 18 M1807HA-S8022W** (Ryzen 7 260, 8C/16T, Radeon 780M integrated, no CUDA GPU, 32 GB DDR5, ~790 GB free disk — from the machine's About page); a new machine only if a probe shows it necessary. GPU DFT Hessians are therefore B3.
 
 ## Not yet done (owed, in order)
 
