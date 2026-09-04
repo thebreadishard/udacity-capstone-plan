@@ -211,7 +211,7 @@ for fragment probing, before the R3 fragment-vs-whole comparison has printed.
   prior-assisted blocks within η₈ (absolute form below); P3 must have shown a saving on the
   dry-run corpus **and its effect size on the PAH held-out tensors is reported beside it**.
   *Spending:* on R4–R6, a prior-assisted recovery may be the only full recovery, provided the
-  licence was earned at **both** R2 and R3, the rung's direct-block probe agrees with the
+  licence was earned at **both** R2 and R3, the rung's direct-coupling probe agrees with the
   prior-assisted blocks within η₈, and the cost record says `prior = learned`. On a spent-licence
   rung the scored spectrum depends on the learned prior; the certificate says so, cites the two
   earning rungs, and carries the rung's direct-coupling agreement as its prior-independent number.
