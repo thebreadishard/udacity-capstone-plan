@@ -56,8 +56,12 @@ The sequence **ends at Module 09**. There is no `Horizon/` and there are no Proj
 9. [GoalGathering/Relevant_Scientific_Papers.md](GoalGathering/Relevant_Scientific_Papers.md)
    — bibliography with per-item verify status (items 23–47 new)
 10. [probes/README.md](probes/README.md) — conventions and the probes owed
-11. `GoalGathering/Capstone_Mapping.md` — **owed** (next)
-12. `GoalGathering/Project_Proposal_<date>.md` — **owed** (after the mapping)
+11. [GoalGathering/Capstone_Mapping.md](GoalGathering/Capstone_Mapping.md) — modules 02–09
+    against Rubrics v1.5.1 for the re-worded promised set; Pass 6 (sign-off) not done; M05's
+    rule-0 escalation is open decision 4
+12. [GoalGathering/Project_Proposal_2026-09-03.md](GoalGathering/Project_Proposal_2026-09-03.md)
+    — the supervisor proposal: the *why* of the major decisions, the conditional review
+    status, and the decisions the student has not yet made
 
 ## Review record
 
@@ -100,7 +104,7 @@ The sequence **ends at Module 09**. There is no `Horizon/` and there are no Proj
   written in the review. The promised set beyond R1, as re-worded above, is the set Pass B
   described as "not a mistake relative to plan 04"; whether that re-worded set is adopted is
   the **user's decision**, together with open decisions 1, 3 and 4 below. The mapping and the
-  proposal that follow are written for the re-worded set and say so.
+  proposal (reading-order items 11–12) are written for the re-worded set and say so.
 
 Plan 04's Round-6 Pass A and Pass B findings and their closures bind plan 05 and are not
 re-litigated.
@@ -121,9 +125,8 @@ re-litigated.
 
 ## Not yet done (owed, in order)
 
-- Capstone mapping (modules 02–09 against Rubrics v1.5.1), including the M05 corpus
-  distinctness call.
-- Project proposal for the supervisor.
+- The user's decisions 1–6 above (the proposal's §10 puts them to the supervisor as well).
+- Capstone mapping Pass 6 (module-by-module sign-off) once decisions 1, 3 and 4 are made.
 - **The pilot note** (after the R0 pilot, the zero-CC dry run, the gradient-availability probe
   with memory, the R1 smoothness probe and the scoreboard re-read; before any local-CC Δ₂
   recovery exists; with open decision 1 recorded): band lists, margins and the
