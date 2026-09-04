@@ -3,7 +3,7 @@
 **Status.** Argument of record, 2026-09-03; revised the same day after Round-7 Pass A (issues
 1, 8, 15, 16) and Pass B (issues 3, 4, 5, 13). Plan 04 is **not** wrong; it is superseded
 because its cost sits in the wrong object. Plan 04's folder is **kept in the tree** for now —
-removing it is the user's decision, not this document's; plans 01–03 remain git history only.
+removing it is the user's decision, not this document's; plans 01–03 were restored to the tree on 2026-09-04 as read-only records (user decision 2).
 
 **Notation used from here on.** Δ is the difference between the local coupled-cluster (local-CC)
 and the DFT potential energy surfaces near the equilibrium geometry, written as force
