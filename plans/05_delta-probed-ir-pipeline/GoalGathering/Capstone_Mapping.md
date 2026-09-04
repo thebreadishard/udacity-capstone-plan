@@ -99,9 +99,12 @@ only asserts until this module measures them: the **matrix tolerance** (pilot-no
 the **measured band-centre uncertainty u_band per gas-phase band** (the decidability rule of
 Ladder §2: the source's stated resolution — the NIST/EPA GC-IRD spectra are homogenised to
 8 cm⁻¹ at snippet grade, item 50, never the 4 cm⁻¹ point spacing — the centroid precision from
-the signal-to-noise, and a temperature term for hot-vapour sources; printed per family before
-the pilot note, with the verdict *gas-decidable / matrix-gated / inconclusive by construction*;
-the R2 C–C families are expected in the last class). Dataset: PAHdb
+the signal-to-noise, and a temperature term for hot-vapour sources with the Ladder §2 floor or a
+pinned hot-band correction, items 52–53; the source class, temperature and resolution printed as
+columns; printed per family before the pilot note, with the verdict *gas-decidable /
+matrix-gated / inconclusive by construction*; the R1 and R2 C–C families are expected in the
+last class unless the correction is pinned — naphthalene's NIST gas spectra are hot vapour
+only). Dataset: PAHdb
 *experimental* libraries (v3.10 matrix, 84 species; gas-phase v1.00) plus NIST WebBook JCAMP
 gas-phase spectra (plan-02 parser and cache recipe, git history; plan-04 coverage probe and
 `nist_cache/`). Descriptive statistics per band family; **pre-registered hypothesis test**

@@ -38,19 +38,22 @@ milestones below; τ is the smallest beat margin (pilot-note item 2); q_s the pa
    recomputation and that the (T) backward pass is computed on the fly.
 2. **Frozen spaces as a differentiable object — the plan's own reasoning, defined precisely and
    tested by M1–M2.** Ladder §3 defines the object: stored localized occupied orbitals and
-   per-fragment LNO vectors in the AO basis; at a displaced geometry, occupied orbitals mapped by
-   maximal overlap (assignment printed), stored virtual vectors **projected onto the new
-   virtual space and Löwdin-orthonormalised**; the correlation energy is evaluated in that
-   space. Between assignment switches E_frozen(x) is smooth. **If the projection is inside the
+   per-fragment LNO vectors in the AO basis; at a displaced geometry, the stored occupied and virtual
+   vectors are both **transported by projection onto the new geometry's spaces and
+   Löwdin-orthonormalised** (no localiser and no assignment at a displaced geometry — Round-9
+   Pass B finding 2); the correlation energy is evaluated in that space. E_frozen(x) is then an
+   analytic function of the nuclei while the overlaps are nonsingular. **If the projection is inside the
    differentiated graph**, the AD gradient is the exact derivative of E_frozen; if it is outside
    (NumPy, or `stop_gradient`), the gradient misses the response of the energy to the geometry
    dependence of the projected space — a term that is not zero for a truncated CC energy
    (non-stationarity with respect to kept/discarded virtual rotations; Pinski & Neese report
    "dramatic errors" when PNO constraints are omitted for relaxed properties, item 51, record
-   grade). M2 prints that term. **The maximal-overlap assignment is discrete** and can switch
-   along symmetric modes of the two D₆h rungs (benzene, coronene); a switch is a µE_h-class
-   discontinuity that free spaces do not have — M1's assignment log and the Q6 grids (which now
-   include a totally symmetric mode) are built to see it.
+   grade). M2 prints that term. The earlier design — re-localise at each geometry and assign by
+   maximal overlap — was dropped because π localisation on the D₆h rungs is soft (the localiser
+   lands on a continuously moving or arbitrary set), so the map would mix rather than switch and
+   the argmax would have no derivative; M1's continuity diagnostics (singular values of the
+   overlaps, the fresh arm's localiser functional) and the Q6 grids (which include a totally
+   symmetric mode) are built to see any remaining non-smoothness.
 3. **One codebase closes both software gaps.** Psi4 cannot freeze domains; ORCA freezes them
    for DLPNO-MP2 only. In PySCF/PySCFAD the fragment definitions and LNO vectors are Python
    objects — M1 tests whether they can be stored, projected and reloaded as §1.2 requires.
@@ -64,9 +67,9 @@ milestones below; τ is the smallest beat margin (pilot-note item 2); q_s the pa
 ## 2. Scope (what is built, and what is not)
 
 **Main-project work, not this side project (M1, under Ladder stop 1):** frozen spaces across
-displacements in pyscf-forge's LNO-CC — the Ladder §3 object: store; map by maximal overlap;
-project and orthonormalise; evaluate; print the assignment permutation and E(displaced, frozen)
-− E(displaced, fresh) per point; deck-hash the stored spaces. Mode E needs this whether or not
+displacements in pyscf-forge's LNO-CC — the Ladder §3 object: store; transport both halves by
+projection and orthonormalise; evaluate; print the continuity diagnostics and E(displaced,
+frozen) − E(displaced, fresh) per point (raw energies sealed); deck-hash the stored spaces. Mode E needs this whether or not
 the side project exists.
 
 **Built here:**
@@ -77,8 +80,8 @@ the side project exists.
 - (b) **Per-fragment reverse-mode AD with graph release**, so that peak memory scales with the
   largest fragment, not the molecule; checkpointing / rematerialisation of the ⟨ov|vv⟩-class
   intermediates (building on `_checkpointed.py`); optional disk offload per fragment.
-- (c) **Frozen spaces inside the differentiated graph**: the maximal-overlap mapping and the
-  projection/orthonormalisation of Ladder §3 implemented as JAX operations, with a switch to
+- (c) **Frozen spaces inside the differentiated graph**: the projection and Löwdin
+  orthonormalisation of both halves (Ladder §3) implemented as JAX operations, with a switch to
   place the projection under `stop_gradient` for M2's diagnostic.
 - (d) **The probe interface**: given a pattern geometry, return E_CC − E_DFT and ∇E_CC − ∇E_DFT
   with frozen spaces, in the response format Distilled §3 defines for mode G.
@@ -94,11 +97,11 @@ before the note. M2–M5 run **after** the pilot note.
 
 | # | Milestone | Pass condition (printed by a `probes/` script) | Machine |
 |---|---|---|---|
-| M1 (main project) | Frozen spaces exist and behave | (i) E(reference geometry, reloaded spaces) − E(reference geometry, fresh spaces) = 0 to 10⁻⁹ E_h (a round-trip sanity check); (ii) along one **totally symmetric**, one **degenerate** and one non-symmetric benzene mode, nine points on q ∈ [−1, 1]: the assignment permutation per point and E(displaced, frozen) − E(displaced, fresh) in µE_h — the freezing bias and any switch, **printed without a verdict** (the τ it would be judged against does not exist yet) | B2 laptop |
-| M2 | Engine pinned; gradient correct, smooth, and its projection term measured, at benzene | (a) printed; AD gradient (projection inside the graph) vs central finite differences of the **re-projected** frozen-space energy, cc-pVTZ: max component deviation ≤ 10⁻⁵ E_h/bohr; the Q6 **mode-G noise line** (σ_g ≤ 2.8·τ·q_s, Ladder §3 estimator) under the line at the deck's q_s along the Q6 modes, and printed against the σ_g^assumed = 2.8·τ·q_s at which the note's c(G) and K_cap(G) were read (Ladder §4 item 8); and a **third printed number**: AD(projection inside) − AD(projection under `stop_gradient`) at one displaced geometry per Q6 mode — the size of §1.2's hole | B2 laptop |
-| M3 | Gradient correct, smooth and affordable at naphthalene | the same three printouts at naphthalene/cc-pVTZ; wall-clock per gradient and peak memory printed; peak memory ≤ 28 GB (the B2 laptop's 31.3 GB usable minus ≈ 3 GB for the operating system and the process outside the tensor store) | B2 laptop |
-| M4 | Pyrene fits somewhere | one gradient at pyrene in the R2 deck basis with frozen spaces, correctness (FD along the four Q6 modes, eight re-projected energies) and σ_g, peak memory and wall-clock printed, on the laptop or on a B3 machine under the budget's preconditions | B2 or B3 |
-| M5 | Coronene: both checks | one gradient at coronene in the R3 deck basis with frozen spaces: run/no-run, wall-clock, peak memory, **and** AD-vs-FD along the four Q6 modes (eight re-projected frozen-space energies) and σ_g at the R3 size class — the two checks the licensing rule requires | B3 by expectation |
+| M1 (main project) | Frozen spaces exist and behave | (i) E(reference geometry, reloaded spaces) − E(reference geometry, fresh spaces) = 0 to 10⁻⁹ E_h (a round-trip sanity check); (ii) along one **totally symmetric**, one **degenerate** and one non-symmetric benzene mode, nine points on q ∈ [−1, 1]: the continuity diagnostics per point (smallest singular value of the occupied overlap, largest pre-Löwdin off-diagonal, the fresh arm's localiser functional and overlap with the transported set) and E(displaced, frozen) − E(displaced, fresh) in µE_h — the freezing bias and any non-smoothness, **printed without a verdict**; raw energies sealed (the τ it would be judged against does not exist yet) | B2 laptop |
+| M2 | Engine pinned; gradient correct, smooth, and its projection term measured, at benzene | (a) printed; AD gradient (projection inside the graph) vs central finite differences of the **re-projected** frozen-space energy, cc-pVTZ: max component deviation ≤ 10⁻⁵ E_h/bohr; the Q6 **mode-G noise line** (σ_g ≤ 2.8·τ·q_s, Ladder §3 estimator) under the line at the deck's q_s along the Q6 modes — **nine gradients per Q6 mode (36)**, σ_g = √(SSR/(n − p)) pooled over all 3N components — and printed against the σ_g^assumed = 2.8·τ·q_s at which the note's c(G) and K_cap(G) were read (Ladder §4 item 8); and a **third printed number**: AD(projection inside) − AD(projection under `stop_gradient`) at one displaced geometry per Q6 mode — the size of §1.2's hole | B2 laptop |
+| M3 | Gradient correct, smooth and affordable at naphthalene | the same three printouts at naphthalene/cc-pVTZ (36 gradients); wall-clock per gradient and peak memory printed; peak memory ≤ 28 GB (the B2 laptop's 31.3 GB usable minus ≈ 3 GB for the operating system and the process outside the tensor store) | B2 laptop |
+| M4 | Pyrene fits somewhere | nine gradients per Q6 mode (36) at pyrene in the R2 deck basis with frozen spaces, correctness (FD along the four Q6 modes, eight re-projected energies) and the pooled σ_g, peak memory and wall-clock per gradient printed, the batch classified by Budget §2, on the laptop or on a B3 machine under the budget's preconditions | B2 or B3 |
+| M5 | Coronene: both checks | nine gradients per Q6 mode (36) at coronene in the R3 deck basis with frozen spaces, classified by Budget §2: run/no-run, wall-clock per gradient, peak memory, **and** AD-vs-FD along the four Q6 modes (eight re-projected frozen-space energies) and the pooled σ_g at the R3 size class — the two checks the licensing rule requires | B3 by expectation |
 
 **Kill criterion.** The side project stops, by dated note, if **M3 is not reached within 12
 calendar weeks of the pilot note's commit date**, or if M2's correctness check fails after the
@@ -160,8 +163,9 @@ milestone table is attached to the Module 08 paper as the measured reason.
    12-week checkpoint and the 4-weekly alarm rule of §4.
 2. **JAX memory on a 32 GB laptop** — per-fragment graph release is the design answer; if it is
    not enough at pyrene, M4 is B3 work and says so.
-3. **The frozen-space surface is not smooth on the D₆h rungs** (assignment switches), or the
-   projection term is large — M1's assignment log and M2's third number measure both; a
+3. **The frozen-space surface is not smooth on the D₆h rungs** (near-singular overlaps at
+   large q, or a residual localiser artefact in the fresh arm), or the projection term is large
+   — M1's continuity diagnostics and M2's third number measure both; a
    gradient that is exact for a non-smooth surface is as noisy as the energies, which is why the
    mode-G noise line is part of every milestone.
 4. **(T) under AD on frozen spaces** — the code exists (item 48–49, fetched); its numerical

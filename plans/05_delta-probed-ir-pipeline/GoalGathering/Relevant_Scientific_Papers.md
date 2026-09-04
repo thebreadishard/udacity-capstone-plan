@@ -71,6 +71,8 @@ after Round-7 Pass B (issues 2, 4, 7, 8, 9) and verified via Crossref/arXiv.
 
 | **50** | NIST/EPA Gas-Phase Infrared Database (SRD 35) description — the R2 gas scoreboard's provenance | nist.gov/document/35204jcmp-revisedpdf (JCAMP format description) | **record (search 2026-09-04)** — the Round-8 Pass B reviewer downloaded the PDF but could not text-extract it; the statements used (EPA spectra at 4 cm⁻¹; **all spectra converted to 8.0 cm⁻¹ resolution**; all GC/IR, concentrations unknown; 5,228 spectra) are **snippet grade**; the triphenylene species page and JCAMP (`##STATE=gas`, `##DELTAX=4.0`, no resolution or temperature line, "molar absorptivity values cannot be derived") were fetched by the reviewer. M03 re-reads the description before u_band is printed |
 | **51** | PNO-space relaxation terms in local-correlation gradients (the term the side project's projection must carry) | Pinski & Neese, DLPNO-MP2 analytic gradient, JCP **148**, 031101 (2018) and JCP **150**, 164102 (2019) | **record (search 2026-09-04)** — "dramatic errors for orbital-relaxed properties" when PNO constraints are omitted (snippet); fetch before M2 is specified in a deck |
+| **52** | PAH hot-band shift with temperature — the u_band temperature term's pinned reference (naphthalene, pyrene, coronene vs temperature) | Joblin, Boissel, Léger, d'Hendecourt, Défourneau, A&A **299**, 835 (1995), "Infrared spectroscopy of gas-phase PAH molecules. II. Role of the temperature" | **reference known, not opened** — cited from the Round-9 Pass B reviewer's search (a snippet quotes a C–C stretch shift of about −0.02 cm⁻¹ K⁻¹); the ADS abstract page returned 405 to the author on 2026-09-04 and no Crossref record exists for this 1995 A&A paper; **first paid debt**: obtain and read before M03 prints u_band |
+| **53** | Naphthalene hot-band spectroscopy and anharmonic parameters — second pinnable source for the R1 temperature correction | Pirali, Vervloet, Mulas, Malloci, Joblin, PCCP **11**, 3443 (2009), DOI 10.1039/b814037e, "High-resolution infrared absorption spectroscopy of thermally excited naphthalene. Measurements and calculations of anharmonic parameters and vibrational interactions" | **Crossref record verified 2026-09-04 (author)**; numbers not read — full text before any shift rate is quoted |
 
 ## Named debts (identical to Frozen_Lines §7)
 
@@ -96,8 +98,10 @@ after Round-7 Pass B (issues 2, 4, 7, 8, 9) and verified via Crossref/arXiv.
 - The GPU4PySCF Hessian timing, re-measured (never quoted from the snippet).
 - Side project item (a): pin the PySCFAD and pyscf-forge commit hashes actually used (items 48,
   49 — locations now fetched).
-- **PAH hot-band shift references** for the u_band temperature term (GC-IRD hot vapour vs 0 K):
-  identify and pin before M03 prints u_band; until then the term is a labelled uncertainty.
+- **PAH hot-band shift references** for the u_band temperature term (items 52–53, now named):
+  obtain and read before M03 prints u_band — **the first paid debt**, because a pinned per-family
+  correction is the only route to decidable C–C families on the existing gas data at R1 and R2;
+  until then the term is the Ladder §2 floor (χ_max = 0.03 cm⁻¹ K⁻¹, recalled).
 - **The M05 reading-2 fallback**: a public Hessian dataset other than Hessian QM9, searched and
   verified before Module 05 starts; none named from recall.
 - **QM9's size range** (≤ 9 heavy atoms; no PAH beyond benzene — recalled by the Round-8

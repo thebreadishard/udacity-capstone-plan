@@ -7,7 +7,8 @@ Plan 04's supersede-only rule is **not** inherited (inheritance is not authority
 edited in place with dated markers, and every revision is listed here — Round-8 Pass A/B
 (2026-09-04: B2 laptop named; canonical feasibility probe; noise-injection column) and Round-9
 Pass A (2026-09-04: the feasibility probe's decision rule; the pre-note list aligned with
-probes/README; K_cap(G) wording). Caps and checkpoints are **not estimates**; measured slots read NOT_RUN until a probe
+probes/README; K_cap(G) wording) and Round-9 Pass B (2026-09-04: symmetrised dry-run responses;
+M1 by projection; one canonical gradient; M4/M5 at 36 gradients; part (c) classified). Caps and checkpoints are **not estimates**; measured slots read NOT_RUN until a probe
 prints them. Notation (K, K_off, K_cap, ρ\*, mode E/G) is defined in the Goal and Ladder.
 
 ---
@@ -73,14 +74,17 @@ Before the pilot note (DFT-only and timings; no local-CC Δ₂ may exist yet):
    affords; recovered by the plan's own solver from a hashed, ordered pattern set with seeded
    hold-out, once from energies and once from DFT gradients; then **the same recoveries with
    Gaussian noise at a grid of σ values added to every response**, K and ρ printed per σ — the
-   column the stopping constant c and K_cap are taken from. Prints the residual curves, the
+   column the stopping constant c and K_cap are taken from. Responses are the symmetric
+   combinations R_s over ± pairs exactly as in the real run (Ladder §3), so the dry run measures
+   Δ₂ recovery and not the fitting of the DFT−DFT force term. Prints the residual curves, the
    dry-run K and K_off per mode and per σ, the flagged off-diagonal blocks, the band width w and
    weights by the Ladder §3 rule, the recovered-vs-direct frequency error per family, and **the
    B2 laptop's per-molecule DFT Hessian timing** (which fixes the M05 subset size by dated
    note). Feeds pilot-note items 8, 9 (both modes), 13.
 1b. **Canonical feasibility probe** (B2): one canonical CCSD(T) energy of benzene in the anchor
-   basis (cc-pVTZ) on the B2 laptop; wall-clock and peak memory printed and extrapolated, by
-   factors frozen in the Q0 deck before the probe runs, to **two counts**: the Q6 bias line
+   basis (cc-pVTZ) on the B2 laptop; wall-clock and peak memory printed and extrapolated to **two
+   counts** (with one canonical CCSD(T) gradient also run where the code has it — PySCF
+   `pyscf/grad/ccsd_t.py`, fetched 2026-09-04 — so the gradient factor is measured): the Q6 bias line
    (61 energies — the diagonal along benzene's 30 modes) and the full canonical reference
    Hessian for Q7(i)/(iv) (72 canonical CCSD(T) gradients if the chosen code has them — printed
    — else 1,801 energies by central differences). **"Fits"** = extrapolated wall-clock ≤ the
@@ -88,13 +92,16 @@ Before the pilot note (DFT-only and timings; no local-CC Δ₂ may exist yet):
    runs at R0 in the anchor basis, in cc-pVDZ with both arms re-run (bias line only), or as the
    first B3 request; if only the bias line fits, Q7(i) at R0 compares to the local-CC reference
    only and Q7(iv) reads the reference Hessian from the local-CC arm, sentence printed (Ladder
-   §3, anchor basis).
+   §3, anchor basis). Expected printout: the bias line fits, the full reference does not; a
+   cc-pVDZ bias line is a lower bound on the TZ freezing bias (Ladder §3).
 2. **Probe M1 — frozen spaces** (B2, main project): the candidate local-CC code stores its
-   spaces at the reference geometry and, at displaced geometries, maps occupied orbitals by
-   maximal overlap and projects/orthonormalises the stored virtual spaces (Ladder §3 object);
-   reproduces the reference energy to 10⁻⁹ E_h; along one totally symmetric, one degenerate and
-   one non-symmetric benzene mode prints the assignment permutation and E(displaced, frozen) −
-   E(displaced, fresh) per point, without a verdict. Fails → Ladder stop 1.
+   spaces at the reference geometry and, at displaced geometries, transports the occupied and the
+   virtual vectors by projection and Löwdin-orthonormalises them (Ladder §3 object; no localiser,
+   no assignment); reproduces the reference energy to 10⁻⁹ E_h; along one totally symmetric, one
+   degenerate and one non-symmetric benzene mode prints the continuity diagnostics (smallest
+   singular value and largest pre-Löwdin off-diagonal of the overlaps) and E(displaced, frozen) −
+   E(displaced, fresh) per point, without a verdict; the raw displaced energies go to the sealed
+   file, not to the printout. Fails → Ladder stop 1.
 2a. **Lab-scoreboard re-read and u_band** (no compute; probes/README 2a): the plan-02 band
    table and the plan-04 NIST coverage scan regenerated under this plan's hash; per gas-phase
    band the stated resolution, centroid precision, temperature term and their quadrature sum
@@ -137,16 +144,19 @@ After the pilot note:
     size in the mode(s) used; the direct-coupling probe (four energies per deck-chosen pair and
     family, step h); probe batch in mode E (and mode G if licensed) — structural recovery, and
     the prior-assisted recovery on the same responses for the licence-earning comparison;
-    Q8(a/b) on direct couplings; Q8(c) R1→R2 per mode; **side-project M4**.
+    Q8(a/b) on direct couplings; Q8(c) R1→R2 per mode at the common threshold; **side-project
+    M4** (nine gradients per Q6 mode, 36; classified by §2).
 12. **R3**: direct-coupling probe; batch (both modes where licensed; both recoveries);
     **coronene probed from fragments at the smallest passing radius** and compared with
-    coronene probed whole (fragment licence, part b); Q8(c) R2→R3 per mode; **side-project M5**
-    (gradient at coronene with both checks).
+    coronene probed whole (fragment licence, part b: one comparison at one shell for interior
+    pairs; "pending (b′)" if it fails); Q8(c) R2→R3 per mode at the common threshold;
+    **side-project M5** (36 gradients at coronene with both checks; classified by §2).
 13. **B3 probes** only after §1's three preconditions; the R4 DFT-Hessian timing probe decides
     whether the R6 Hessian is B3; at R4 the **fragment-vs-whole comparison on circumcoronene**
     (part b′, conditional on B3 classification) and the **fragment-radius convergence test on
     its central ring** (part c, first instance); at R6 the convergence test on the flake's
-    interior and, where B3 allows, whole-flake direct couplings.
+    interior (a probe batch classified by §2, of order 360 fragment energies — laptop at one
+    shell, B3 at two) and, where B3 allows, whole-flake direct couplings.
 
 ## 5. Protocol (carried)
 

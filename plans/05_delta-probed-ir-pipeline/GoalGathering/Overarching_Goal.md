@@ -2,7 +2,7 @@
 
 **Status.** Prime directive as of 2026-09-03; revised the same day after Round-7 Pass A and
 Pass B; amended on 2026-09-04 by seven user decisions and two user directives, and revised again
-the same day after Round-8 Pass A and Pass B and after Round-9 Pass A. Supersedes plan 04's Goal file; plan 04's folder stays in
+the same day after Round-8 Pass A and Pass B and after Round-9 Pass A and Pass B. Supersedes plan 04's Goal file; plan 04's folder stays in
 the tree as a read-only record (decision 2). Draft; not complete as a plan. Every other plan-05
 document must agree with this file; if they drift, this file wins and the other file is patched.
 
@@ -17,10 +17,13 @@ document must agree with this file; if they drift, this file wins and the other 
   extrapolation. **TightPNO / NormalPNO** = threshold presets.
 - **Mode E** = Δ₂ recovered from energies only; **mode G** = from analytic local-CC gradients.
 - **Pattern** = one simultaneous multi-atom displacement geometry; **q_s** = its amplitude in
-  dimensionless normal-coordinate units; **response** = the CC−DFT energy (mode E) or gradient
-  (mode G) difference at a pattern.
+  dimensionless normal-coordinate units; **response** = in mode E the symmetric combination
+  R_s(p) = ½[ΔE(+p) + ΔE(−p)] − ΔE(0) of the CC−DFT energy difference over the pattern pair ±p
+  (Ladder §3; the first-order term Δ₁·p cancels), in mode G the CC−DFT gradient difference at a
+  pattern; every pattern enters the deck as ±p.
 - **ρ** = the held-out residual (Distilled §3); **ρ\*** = the stopping threshold c·ρ_noise, computed per rung and mode (only c is frozen); **f_h** = the
-  held-out fraction; **K** = the measured pattern count at which ρ ≤ ρ\*; in mode E,
+  held-out fraction; **K** = the measured count of energies (mode E; a ± pair counts 2) or gradients (mode G) at
+  which ρ ≤ ρ\*; in mode E,
   K = 2M + K_off with M the number of modes and **K_off** the off-diagonal count; **K_cap** =
   the pilot-note cap on K.
 - **Structural prior** = the fixed, parameter-free, frequency-banded regulariser of the
@@ -45,8 +48,9 @@ document must agree with this file; if they drift, this file wins and the other 
   means η₈·S_class; **resolved pair** = a pair whose direct coupling is at least 3σ_coupling,
   with σ_coupling = σ_E/(2h²); **at noise** = a pair below that floor, or a rung-and-mode whose
   c·ρ_noise ≥ ρ_max; **re-projected** = evaluated in the frozen space as Ladder §3 defines it
-  (stored vectors projected onto the displaced geometry's virtual space and
-  Löwdin-orthonormalised); **σ_g^assumed** = 2.8·τ·q_s, the value mode G's c and K_cap are read
+  (stored occupied and virtual vectors transported by projection onto the displaced geometry's
+  occupied and virtual spaces and Löwdin-orthonormalised; no localiser and no assignment at a
+  displaced geometry); **σ_g^assumed** = 2.8·τ·q_s, the value mode G's c and K_cap are read
   at in the pilot note (item 8).
 - **AD / FD** = automatic differentiation / finite differences; **GC-IRD** = gas-chromatography
   infrared detection, the vapour-phase instrument behind the NIST/EPA library; **IRMPD** =
@@ -70,10 +74,11 @@ document must agree with this file; if they drift, this file wins and the other 
 Build **one pipeline**: any individual aromatic molecule in, an infrared spectrum out —
 and make that spectrum's **band positions demonstrably more accurate than the best prediction
 currently available anywhere for that molecule**, wherever the laboratory data can decide it:
-unconditional on the gas-phase rungs (R0–R1); on R2–R3 per family, gas-scored families
+unconditional on R0 (room-temperature gas cell spectra exist); on R1–R3 per family, gas-scored families
 decidable only where the scoreboard's **measured band-centre uncertainty** u_band is smaller
-than the beat margin (the R2 C–C families are expected inconclusive by construction on the
-NIST hot-vapour source, and the plan says so before the pilot note) and matrix-scored families
+than the beat margin (the R1 and R2 C–C families are expected inconclusive by construction on the
+NIST hot-vapour sources unless a hot-band correction is pinned before the pilot note, and the
+plan says so now) and matrix-scored families
 behind the M03 matrix–gas gate (undecidable families pre-declared inconclusive); and never on
 reach rungs, where the
 deliverable is a labelled theory-vs-theory spectrum, conditional on cluster access. Positions
@@ -115,7 +120,7 @@ The accuracy/reach split ([Frozen_Ladder_and_Tolerances.md](Frozen_Ladder_and_To
 > **Cost (all rungs that ran).** How many local-CC evaluations did the correction need under
 > the noise-aware stopping rule, per rung — K = 2M + K_off in mode E on every rung, and K in
 > mode G where licensed — and did K_off (and K, where mode G ran on all three) saturate between
-> R1, R2 and R3 (Q8c)?
+> R1, R2 and R3, read at a common threshold (Q8c)?
 >
 > **Reach (rung R6).** Can the same pipeline — with Δ₂ obtained by **fragment probing**, under
 > the fragment licence of Ladder §3 (Q8 on direct couplings at R2–R3; the fragment-vs-whole
@@ -131,7 +136,8 @@ item 45) puts the coupled-cluster pay-off in the quadratic constants and leaves 
 quartic constants at DFT level; and the energy-only probes of mode E cannot produce the
 three-index cubic constants φ_ijk that PAH combination-band resonances need (Round-7 Pass B
 issue 3). Plan 05 therefore promises **no CC correction to anharmonic constants**. A
-**diagonal-cubic bonus probe** (Δ₃ along each scored family's mode, four energies per mode)
+**diagonal-cubic bonus probe** (Δ₃ along each scored family's mode, from the antisymmetric combinations of the single-mode
+± block plus one further amplitude: two extra energies per mode)
 reports how large that correction would have been. The DFT cubic and semi-diagonal quartic
 constants are computed for a family set **closed under the resonance search to depth one**
 (partner modes displaced too; partners' own diagonal anharmonicity from their 1-D cut; bounded
@@ -153,7 +159,9 @@ Per molecule, with the rung chosen by the declared size ladder:
    GPU; any GPU Hessian is rented B3 time). At R6 this Hessian is itself a B3 object unless a
    timed probe at the R4 species shows otherwise. DFT cubic and semi-diagonal quartic constants
    from finite differences of the analytic DFT Hessian along the resonance-closed family set.
-2. **Δ-probing (Δ₂).** A hashed, ordered set of displacement patterns: simultaneous multi-atom
+2. **Δ-probing (Δ₂).** A hashed, ordered set of displacement patterns, each entered as the pair ±p so
+   the mode-E response is the symmetric combination that cancels the CC−DFT force term (Ladder
+   §3): the single-mode block first, then simultaneous multi-atom
    displacements built so every atom's local displacement space is complete, plus explicit
    two-mode patterns for every off-diagonal block the zero-CC dry run flags as large (CMA-2's
    diagnostic, written as a pattern rule before any response exists). Amplitudes are chosen
@@ -247,9 +255,10 @@ against the freeze:
    r_f printed against coronene's own radius; (b′) the same comparison **on a molecule larger
    than coronene** at R4, promised conditional on B3 classification — the only comparison on a
    fragment that is not the whole molecule; and (c) a **fragment-radius convergence test on the
-   rung's own interior** (direct couplings from fragments of radius r_f and r_f + one ring carved
-   from the rung's DFT geometry, agreeing within the absolute η₈), first on circumcoronene's
-   central ring, then on the R6 flake; whole-flake direct couplings, where B3 allows, as the
+   rung's own interior** (direct couplings from fragments of radius r_f and r_f + one shell carved
+   from the rung's DFT geometry, agreeing within the absolute η₈; r_f is the R3 value from (b), or
+   (b′)'s if larger; run once, the passing radius printed in the certificate; a probe batch
+   classified like any other), first on circumcoronene's central ring, then on the R6 flake; whole-flake direct couplings, where B3 allows, as the
    gold check. A measurement that could not fail for the reason that matters — the interior
    differing from anything measured — is not a licence, which is why (b′) and (c) exist.
 2. **The no-transfer rule is clarified, not weakened.** It forbids transferring *spectra or
