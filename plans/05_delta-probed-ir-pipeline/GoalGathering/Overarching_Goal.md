@@ -184,7 +184,7 @@ expectations section below are numbered separately.
    R6 is promised as fragment-probed Δ₂, conditional on Q8 at R2–R3 and on B3. **If out:** R6
    leaves the promised set and Module 08 reports the refusal, as Round 6 already advised for
    plan 04's R6. Whole-molecule R6 is not promised either way.
-2. **Removal of the plan-04 folder** from the tree (git history keeps it either way).
+2. ~~Removal of the plan-04 folder~~ — **decided 2026-09-04: every plan folder stays in the tree** (plans 01–03 restored as read-only records).
 3. **The R2 A-scored set** as re-read against the coverage probe (Why_05 change 14); veto by
    dated note restores plan 04's set.
 4. **The Module-05 target and corpus** (Distilled §5–§6): a Transformer that predicts the
