@@ -66,6 +66,9 @@ after Round-7 Pass B (issues 2, 4, 7, 8, 9) and verified via Crossref/arXiv.
 | **46** | Mode-tracking: selected high-level modes from few gradients (prior art named in the novelty rewrite) | Reiher & Neugebauer, "A mode-selective quantum chemical method for tracking molecular vibrations applied to functionalized carbon nanotubes", JCP **118**, 1634–1641 (2003). DOI 10.1063/1.1523908 | **OK (2026-09-03; Crossref)**; content at snippet level |
 | **47** | **M05 corpus**: public Hessian set for the DFT-vs-DFT Δ₂ corpus | Williams, Kabalan, Stojanovic, Zolyomi & Pyzer-Knapp, "Hessian QM9: A quantum chemistry database of molecular Hessians in implicit solvents", arXiv:2408.08006 (2024); 41,645 QM9 molecules, ωB97x/6-31G* | **OK (2026-09-03; arXiv abstract)**; the Sci. Data landing page NOT FETCHED |
 
+| **48** | LNO-CC energy code the side project extends | pyscf-forge, CHANGELOG entry for **1.1.0 (2026-02-20)**: "LNO-CCSD for molecules and PBC systems"; github.com/pyscf/pyscf-forge | **OK (2026-09-04; changelog page fetched)** — the entry names LNO-CCSD; whether the released code includes (T) is verified at side-project milestone M1 |
+| **49** | PySCFAD repository (automatic differentiation for PySCF; Apache-2.0; Python/JAX) | github.com/fishjojo/pyscfad; the LNO-CC gradient of item 33 was built on it | **OK (2026-09-04; repository page fetched)** — the README does not mention LNO-CC; where that code lives is verified at M1. The PySCF ten-year overview (arXiv:2603.14155) states LNO-CCSD and CCSD(T) in pyscf-forge at **snippet** level |
+
 ## Named debts (identical to Frozen_Lines §7)
 
 1. Bos 2025 full text → the actual MAE (item 7).
@@ -82,6 +85,8 @@ after Round-7 Pass B (issues 2, 4, 7, 8, 9) and verified via Crossref/arXiv.
 - The O1NumHess licence and code version, pinned before its pattern construction is used.
 - Mester et al. 2025 (MRCC overview) landing page, if MRCC is the chosen code.
 - The GPU4PySCF Hessian timing, re-measured (never quoted from the snippet).
+- Side project M1: the exact location and version of PySCFAD's LNO-CC gradient code and of
+  pyscf-forge's LNO-CCSD(T) (items 33, 48, 49).
 - Item 45's MAD figure and mode-resolved table (full text) before the expected-effect line is
   written into the pilot note; item 47's journal landing page; the CMA code/paper details
   (items 42–43) re-read by the author, not only by the Pass B reviewer, before Q7's

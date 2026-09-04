@@ -81,6 +81,7 @@ plan 04 is listed here. Anything not on this list is inherited unchanged.
 | 20 | — | **Novelty rewritten with citation**: the diagonal mode-E recovery is the Concordant Mode Approach applied to a difference (items 42–43); mode-tracking (item 46) and gradient-based compressed sensing (item 24) are named prior art; what remains proposed is stated in Research note §8 | Research note §8, Distilled §2, Frozen_Lines §1 |
 | 21 | Dry run: two DFT functionals, unspecified | Dry run: **B3LYP against a high-exact-exchange functional**, so the calibration Δ contains mode rotations; dry-run-flagged blocks get explicit two-mode patterns | Distilled §3, Budget §4 |
 | 22 | Q8 on whatever the pipeline produced | Q8 on **direct blocks** (reference Hessian at R0–R1; a prior-free direct-block probe at R2–R3); an **anthracene** locality probe as a dated bonus between R1 and R2 | Ladder §3, Distilled Q8, Budget §4 |
+| 24 | — | **A pre-registered side project builds frozen-domain LNO-CCSD(T) gradients in PySCFAD** (mode G) with frozen milestones M1–M4, a 12-week checkpoint on its own B1 bucket and a kill criterion; mode E stays the guaranteed route; user decision 2026-09-04 ("we can extend the software") | Side_Project_2026-09-04, Goal, Budget |
 | 23 | Mulas 2018 described as "anharmonic DFT-QFF" | Functional named: **B97-1** (TZ2P pyrene, 6-31G* coronene), verified by the Round-7 Pass B reviewer from the full text | Frozen_Lines §3, bibliography item 6 |
 
 ## What plan 05 does not change

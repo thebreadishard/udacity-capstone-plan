@@ -309,7 +309,8 @@ work, budget B2) and must be printed before the pilot note; the pilot note is co
 M04's opponent column is used in any comparison. M05 blocked on: the Hessian QM9 + B3LYP
 corpus release. M06 blocked on: the dry-run corpus release. M07 may start as soon as the
 ladder and one probe exist; it must refuse everything it cannot certify. M08 assembles; it
-trains nothing new. Human hours are **logged, never capped** (budget doc; user directive);
+trains nothing new. The mode-G side project (2026-09-04) runs in parallel with 02–03 on its
+own B1 bucket; it belongs to no module and its milestones feed the gradient-availability probe. Human hours are **logged, never capped** (budget doc; user directive);
 this file adds no numbers.
 
 Pass 6 (module-by-module sign-off) is **not** done. This mapping is a draft.

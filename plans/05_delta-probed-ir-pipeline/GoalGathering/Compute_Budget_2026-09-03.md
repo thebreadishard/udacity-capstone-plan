@@ -15,7 +15,7 @@ Two of the three are plan 04's; the changes are named (Why_05 change 10).
 
 | Budget | Currency | Rule | Governs |
 |---|---|---|---|
-| B1 human | attention hours | **uncapped, logged** (user directive 2026-09-03): one bucket per entry; the plan-01 alarm (plumbing dominating the log) triggers a written review, never a ceiling | everything a person does |
+| B1 human | attention hours | **uncapped, logged** (user directive 2026-09-03): one bucket per entry; the plan-01 alarm (plumbing dominating the log) triggers a written review, never a ceiling. **A separate bucket "side project: mode G"** (2026-09-04) with a 12-week checkpoint on that bucket and the alarm rule of the side-project note §4 | everything a person does |
 | B2 own machine | wall-clock hours on **the machine the student owns**. **Decided 2026-09-04: this is the current laptop, an ASUS Vivobook 18 M1807HA-S8022W** — AMD Ryzen 7 260 at 3.80 GHz (8 cores / 16 threads) with integrated AMD Radeon 780M graphics (512 MB, no CUDA-class GPU), **32.0 GB DDR5-5600 (31.3 GB usable)**, 954 GB SSD with ~790 GB free — read from the machine's System → About page on 2026-09-04 (screenshot supplied by the user); the R0 pilot probe re-prints RAM and free disk at run time. A replacement is bought **only if a probe shows it necessary**, by dated note | **168 h per rung pilot is a checkpoint, not a kill**: crossing it forces a dated note — continue knowingly / reroute to B3 / stop | DFT Hessians through R3, dry runs, R0–R1 probes, ML training |
 | B3 external | cluster node-hours **and rented GPU-hours** (a plan-05 addition) | **no number until three things exist in writing**: (a) access — an allocation, or a dated spend cap for rented time; (b) a timed probe on the actual machine, printed by a script; (c) a per-rung cap note derived from it | local-CC probe batches that do not fit B2; reach rungs **including their DFT Hessians**; GPU canonical-CC licence runs |
 
@@ -71,9 +71,11 @@ Before the pilot note (DFT-only and timings; no local-CC Δ₂ may exist yet):
    and K_off, the flagged off-diagonal blocks, and the recovered-vs-direct frequency error per
    family. Feeds pilot-note items 8, 9, 13.
 2. **Gradient availability** (B2): for each candidate code (ORCA DLPNO, Psi4 DLPNO, MRCC LNO,
-   PySCFAD LNO-CCSD(T)), does an analytic gradient at the anchor level run at R0, then at
-   naphthalene/cc-pVTZ, then at pyrene if the machine allows, with frozen domains? Prints
-   yes/no, version, wall-clock, peak memory. Decides mode E vs G per rung.
+   PySCFAD LNO-CCSD(T) — the last as extended by the side project of 2026-09-04, milestones
+   M1–M4), does an analytic gradient at the anchor level run at R0, then at naphthalene/cc-pVTZ,
+   then at pyrene if the machine allows, with frozen domains? Prints yes/no, version,
+   wall-clock, peak memory. Decides mode E vs G per rung. The side project's M2/M3/M4 *are*
+   this probe's "yes" at R0/R1/R2.
 3. **Single-point timing** (B2): one local-CC energy (and gradient if available) at benzene
    with frozen domains — a timing only.
 4. **R1 smoothness probe** (B2, ~30 local-CC energies of naphthalene): three modes, nine
