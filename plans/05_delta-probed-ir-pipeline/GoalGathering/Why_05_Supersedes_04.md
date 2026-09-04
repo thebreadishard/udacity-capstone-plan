@@ -63,7 +63,7 @@ plan 04 is listed here. Anything not on this list is inherited unchanged.
 | 2 | CC data collected by sampled geometries, learned by a Transformer surface | **Probed**: a hashed, ordered set of simultaneously multi-displaced patterns; Δ₂ recovered by sparse recovery in the DFT normal-mode basis with a fixed, **frequency-banded** structural prior | Distilled §3 |
 | 3 | Where CC enters the spectrum: anharmonic correction on a DFT Hessian | **Harmonic only** (Δ₂); DFT supplies cubic and semi-diagonal quartic constants on a resonance-closed family set — the hybrid-QFF allocation (items 14, 27, 45), adopted because mode E cannot produce the three-index cubic constants PAH resonances need (Pass B issue 3) | Distilled §3 |
 | 4 | Local-CC noise averaged by the fit; Q6 smoothness probe | **Domains, pair lists and PNO counts frozen at the reference geometry** for every probe; noise, bias and threshold sensitivity measured against **frozen formulas** (Q6 with thresholds, pilot-note item 13); CPS extrapolation as a deck option | Ladder §3, Distilled Q6 |
-| 5 | P3 axis: Δ-learning vs direct fit | P3 axis: **learned prior vs structural prior at matched K** on the dry-run corpus — a bonus experiment, never on a promised rung | Distilled §5 |
+| 5 | P3 axis: Δ-learning vs direct fit | P3 axis: **learned prior vs structural prior at matched K** on the dry-run corpus — a bonus experiment that can earn a per-rung licence to enter promised rungs (Ladder §3; user directive 2026-09-04) | Distilled §5 |
 | 6 | Gates Q0–Q6 | Gates Q0–Q8: **Q7 probing licence** (Δ₂ vs direct references at R0–R1, printed for diagonal-only and full recovery, with a discriminability clause and a shuffled-probe null), **Q8 locality and saturation on directly measured blocks** in a form frozen now | Distilled §7 |
 | 7 | Pilot-note item 5 = P3 effect size (Δ vs direct); item 8 = N_min | Item 5 redefined (prior saving); N_min removed; **new items 8–13**: residual target ρ\*, cap K_cap, hold-out fraction and seed, Q7 tolerance and d₇, Q8 numbers and direct-block pairs, Q6 numbers and pattern amplitude; item 2 gains an expected-effect line | Ladder §4 |
 | 8 | Two sentence types (accuracy, reach) | **A third sentence type, the cost record**, promised for every rung that ran; a separate **numeric size sentence** in a mode-E form (on K_off, the promised route) and a mode-G form (bonus), each allowed only after Q8(c) | Ladder §1 |
@@ -88,9 +88,10 @@ plan 04 is listed here. Anything not on this list is inherited unchanged.
 The rungs and species R0–R6 and their claim types A/R; the opponents and their versions; the
 scoreboards; the numerical tolerances (10 cm⁻¹ floor, 15 cm⁻¹ working matrix convention with
 the M03-measured binding value, ~1 cm⁻¹ bind); the hours directive; the module skeleton 02–09
-and rule 0 of the mapping; the no-transfer rule as plan 04 wrote it — clarified on 2026-09-04
-to what it always covered, spectra and band positions, so that a locality-verified electronic
-correction is a method Q8 measures, not a transfer; the emission tiers; the neutral-charge rule; the Round-6
+and rule 0 of the mapping; the no-transfer rule **only insofar as it rests on the plan-02 measurement** (motif transfer
+of band positions fails) — the user ruled on 2026-09-04 that inheritance is not authority and
+that knowledge transfer is allowed wherever it makes plan 05 succeed, so fragment probing (Q8)
+and the learned prior (Ladder §3 licence) are methods decided by gates; the emission tiers; the neutral-charge rule; the Round-6
 closures.
 
 ## The measurement that would say plan 05 was a mistake

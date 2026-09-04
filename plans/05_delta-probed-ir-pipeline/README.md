@@ -119,7 +119,8 @@ re-litigated.
 3. ~~The R2 A-scored set~~ — **decided 2026-09-04: the re-read stands** (triphenylene in on
    its gas families; tetracene matrix-only and fully M03-gated).
 4. **The Module-05 target** (Δ₂ support on a DFT-vs-DFT corpus from Hessian QM9) — veto makes
-   M05 a demonstration, defended as one.
+   M05 a demonstration, defended as one. Since the 2026-09-04 inheritance ruling the learned
+   prior may enter promised rungs under a licence (Ladder §3), so a yes makes M05 load-bearing.
 5. **Adoption of the Pass-B re-worded promised set** (Δ₂ only; mode E primary; R6
    fragment-probed) — the default this folder is written to.
 6. ~~Machine~~ — **decided 2026-09-04: B2 is the current ASUS Vivobook 18 M1807HA-S8022W** (Ryzen 7 260, 8C/16T, Radeon 780M integrated, no CUDA GPU, 32 GB DDR5, ~790 GB free disk — from the machine's About page); a new machine only if a probe shows it necessary. GPU DFT Hessians are therefore B3.

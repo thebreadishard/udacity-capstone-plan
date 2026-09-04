@@ -132,10 +132,14 @@ and is recorded in the pilot note.
   Δ₂ number exists when ρ\*, K_cap, the Q7 tolerance or the beat margins are written; the
   smoothness probe is second differences along single modes, not a Δ₂ recovery, and its use
   is confined to item 13 and the amplitude rule.
-- **[05] The promised route uses the structural prior.** The learned prior never enters a
-  promised rung (R0–R3, R6): not the scored spectrum, not K, not the cost record. It may run on
-  the dry-run corpus and R4–R5 as a labelled bonus arm; a prior-assisted K is labelled
-  `prior = learned` and never appears in a Q8 ratio or an R6 sentence.
+- **[05] The promised route uses the structural prior by default;** the learned prior may enter a promised rung only under a **licence**: (i) P3 has
+  demonstrated its saving on the dry-run corpus at matched K; (ii) at that rung the reference
+  check — Q7 at R0–R1, the direct-block Q8 check at R2–R3 — is computed prior-free and the
+  prior-assisted recovery agrees with it within τ₇ / ε₈; (iii) the cost record says
+  `prior = learned`, and a size sentence compares like with like (same prior at both rungs).
+  Unlicensed, the learned prior runs on the dry-run corpus and R4–R5 as a labelled bonus arm
+  only (user directive 2026-09-04: inheritance is not authority — a transfer that a gate shows
+  to serve the goal is allowed).
 - **[05] Q8 has a fixed form** (Distilled Q8) and is computed on **directly measured blocks**
   wherever it decides anything: (a) per atom pair, the Frobenius norm of the 3×3 Δ₂ block
   against interatomic distance, fitted to A·exp(−r/r_c) — r_c is a measured output — with the

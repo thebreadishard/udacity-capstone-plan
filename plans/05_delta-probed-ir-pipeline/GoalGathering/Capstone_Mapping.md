@@ -137,20 +137,21 @@ from the Module 02/03 datasets are described in §…; it is not AI-generated."
 tokens) predicts the **support of Δ₂ in the DFT normal-mode basis** — which off-diagonal blocks
 between which DFT modes are large — from DFT-level features (mode frequencies, compositions,
 atomic environments). That is the Concordant Mode Approach's Level-C diagnostic (bib 43)
-learned instead of computed. Its output is a **learned prior** for the recovery: used only on
-the dry-run corpus and on bonus rungs (R4–R5), never on R0–R3 or R6, never in a cost record
-that enters a Q8 ratio.
+learned instead of computed. Its output is a **learned prior** for the recovery: scored on the dry-run corpus (P3), run on
+bonus rungs (R4–R5) as a labelled arm, and admitted to a promised rung only under the Ladder
+§3 licence (P3 saving shown; prior-free reference check at that rung; `prior = learned` in
+the cost record) — user directive 2026-09-04: inheritance is not authority.
 
 **Why it is load-bearing for something real, and what it is not load-bearing for.** K_off is
 the promised route's open cost quantity. A predictor that names the large off-diagonal blocks
 before any local-CC response exists lets the deck place explicit two-mode patterns where they
 matter, which is the one lever on K_off that does not cost CC energies. On bonus rungs that is
 worth node-hours; on promised rungs the plan forbids it, so that the promised spectra never
-depend on a learned object. **The promised spectra do not need this module.** Rule 0 therefore
-does not hold for M05 in the strong form ("delete it and a promised rung stops"); it holds in
-the weak form ("delete it and the P3 experiment, the prior-assisted bonus rungs and the only
-CC-free lever on K_off stop"). This is exactly the case rule 0 says to escalate, and it is
-escalated: **open decision 4 in the Goal.** If the user will not accept it, M05 is a
+depend on a learned object. **The promised spectra do not need this module; the promised cost record may.** Under the
+2026-09-04 inheritance ruling the learned prior can earn a licence to enter promised rungs,
+so if P3 succeeds M05 becomes load-bearing for K_off on R2–R3 and R6 — rule 0 in the strong
+form. If P3 fails, rule 0 holds only in the weak form (the P3 experiment and the CC-free lever
+on K_off stop). That conditional is why it is still escalated: **open decision 4 in the Goal.** If the user will not accept it, M05 is a
 demonstration and the report defends it as one.
 
 **Dataset (Round-7 Pass B issue 9; Distilled §6).** Seven probed local-CC Δ₂ tensors by R3 is
