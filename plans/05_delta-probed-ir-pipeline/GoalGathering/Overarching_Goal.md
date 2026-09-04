@@ -185,8 +185,8 @@ expectations section below are numbered separately.
    leaves the promised set and Module 08 reports the refusal, as Round 6 already advised for
    plan 04's R6. Whole-molecule R6 is not promised either way.
 2. ~~Removal of the plan-04 folder~~ — **decided 2026-09-04: every plan folder stays in the tree** (plans 01–03 restored as read-only records).
-3. **The R2 A-scored set** as re-read against the coverage probe (Why_05 change 14); veto by
-   dated note restores plan 04's set.
+3. ~~The R2 A-scored set~~ — **decided 2026-09-04: the re-read stands** (Why_05 change 14;
+   Ladder §2 dated note).
 4. **The Module-05 target and corpus** (Distilled §5–§6): a Transformer that predicts the
    *support* of Δ₂ in the DFT mode basis, trained on a DFT-vs-DFT corpus built from the public
    Hessian QM9 set (item 47) plus recomputed B3LYP Hessians. If the user will not accept a

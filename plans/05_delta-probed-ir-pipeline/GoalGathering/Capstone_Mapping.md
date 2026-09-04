@@ -289,7 +289,8 @@ required in advance. New for plan 05, all routed to the Goal's open-decision lis
    QM9-derived DFT-vs-DFT corpus, reading 1 proposed here. If vetoed, M05 is a demonstration.
 2. **Fragment probing** (Goal open decision 1) — decides whether M08 ships an R6 spectrum or
    an R6 refusal; must be decided before the pilot note, i.e. before M03 finishes.
-3. **The R2 A-scored set** (Goal open decision 3) — decides M03's band list for R2.
+3. ~~The R2 A-scored set~~ — decided by the user 2026-09-04 (re-read stands); M03's R2 band
+   list covers pyrene, chrysene, triphenylene (gas) and tetracene (matrix).
 
 ## 6. Ordering and hours (structure)
 

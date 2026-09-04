@@ -287,8 +287,8 @@ Listed here because a supervisor's view on them is more useful before than after
 2. **The Module-05 target** — a Transformer predicting the support of the correction on a
    public DFT-vs-DFT Hessian corpus, never used on a promised rung. If that is judged too far
    from the science, the module becomes a demonstration and is defended as one.
-3. **The R2 scored set** as re-read against the coverage probe (triphenylene in; tetracene
-   gated).
+3. ~~The R2 scored set~~ — decided 4 September 2026: triphenylene is scored on its gas-phase
+   families; tetracene is matrix-only and gated.
 4. **Adoption of the re-worded promised set** of §9.
 5. ~~Whether to remove the plan-04 folder~~ — decided 4 September 2026: every plan version stays
    in the repository as a read-only record, so a reader can follow the whole history.
