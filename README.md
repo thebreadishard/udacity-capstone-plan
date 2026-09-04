@@ -61,7 +61,7 @@ constants, at a probe count measured per rung.
 | **01** | [Voxel-Field-PES](plans/01_voxel-field-pes/) | Superseded 2026-08-23; restored to the tree 2026-09-04 as a read-only record. |
 | **02** | [Coupled-Cluster-Anharmonic-IR](plans/02_coupled-cluster-anharmonic-ir/) | Superseded 2026-08-29; restored 2026-09-04 as a read-only record. |
 | **04** | [CC-Anchored-IR-Pipeline](plans/04_cc-anchored-ir-pipeline/) | Superseded by 05 on 2026-09-03; kept as a read-only record. Draft; Round-6 reviews run and addressed; never executed. |
-| **05** | [Δ-Probed-IR-Pipeline](plans/05_delta-probed-ir-pipeline/) | **Current.** Draft as of 2026-09-03, amended 2026-09-04. Same product and criterion as 04; CC anchor by probing the CC−DFT harmonic force-constant correction. Round 7 (A, B) run and addressed; Round 8 Pass A run and addressed; Round 8 Pass B owed. |
+| **05** | [Δ-Probed-IR-Pipeline](plans/05_delta-probed-ir-pipeline/) | **Current.** Draft as of 2026-09-03, amended 2026-09-04. Same product and criterion as 04; CC anchor by probing the CC−DFT harmonic force-constant correction. Round 7 (A, B) run and addressed; Round 8 (A, B) and Round 9 Pass A run and addressed; Round 9 Pass B owed. |
 
 Start at [`plans/README.md`](plans/README.md) for why the earlier plans were dropped and what 05
 inherits.

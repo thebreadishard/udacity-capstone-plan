@@ -6,9 +6,9 @@ student's decisions and a second cold-read review. Supersedes the plan-04 propos
 September. Companion documents: this proposal summarises a frozen plan and explains *why* its
 major decisions were taken; the binding technical documents (goal, ladder, tolerances,
 opponents, gates, budget, mapping) live in the same folder and take precedence where they are
-more specific. Two external reviews of this plan (a cold read and an adversarial domain
-review, both on 3 September 2026) are in the folder with every finding and its closure; the
-domain review's verdict was conditional, and §9 says on what.
+more specific. Five external review passes of this plan (cold reads and adversarial domain reviews on 3 and
+4 September 2026) are in the folder with every finding and its closure; the domain reviews'
+verdicts were conditional, and §9 says on what.
 
 ---
 
@@ -143,8 +143,8 @@ fragment-probed form.
 2. **Δ₂-probing.** A hashed, ordered set of displacement patterns; at each, local coupled
    cluster and DFT with frozen domains; sparse recovery of the correction in the DFT
    normal-mode basis with a frequency-banded structural prior; the probe count K is the number
-   at which a held-out residual first meets a target frozen before any coupled-cluster response
-   exists. Three licences gate it: an anchor licence against frozen noise, bias and threshold
+   at which a held-out residual first falls to a frozen multiple of the rung's own noise floor,
+   the multiple fixed before any coupled-cluster response exists. Three licences gate it: an anchor licence against frozen noise, bias and threshold
    formulas; a probing licence at benzene and naphthalene against directly computed reference
    corrections (including a canonical coupled-cluster reference, the only one independent of
    the domain freezing); and a locality test computed on directly measured Hessian blocks —
@@ -162,10 +162,10 @@ fragment-probed form.
 |---|---|---|---|
 | R0 | benzene | accuracy | probing licence against local and canonical references; the DFT-only dry run |
 | R1 | naphthalene | accuracy | the noise-floor measurement; the anchor licence; first locality read |
-| R2 | pyrene, chrysene, triphenylene (gas-phase data — hot-vapour GC-IR spectra at 8 cm⁻¹, so the C–C families are expected undecidable on this source), tetracene (matrix only) | accuracy | first off-diagonal-count ratio; direct-block locality probe; canonical diagonal check |
+| R2 | pyrene, chrysene, triphenylene (gas-phase data — hot-vapour GC-IR spectra, stated resolution 8 cm⁻¹ at snippet grade, so the C–C families are expected undecidable on this source), tetracene (matrix only) | accuracy | first off-diagonal-count ratio; direct-block locality probe; canonical diagonal check |
 | R3 | coronene | accuracy | second ratio; the numeric size sentence is decided here |
 | R4–R5 | C₅₄–C₂₁₆ class | reach (bonus as spectra; the R4 fragment checks promised conditional on cluster access) | expert-judgment datum; the first rungs where the learned prior, if it earned its licence at R2–R3, may carry the recovery; the fragment-vs-whole comparison on a molecule larger than coronene and the fragment-radius convergence test |
-| R6 | C₃₈₄H₄₈-class | reach | fragment-probed only, under a three-part measured licence (locality at R2–R3; coronene probed in fragments reproducing coronene probed whole; direct blocks on the R6 fragments); otherwise a per-family or full refusal |
+| R6 | C₃₈₄H₄₈-class | reach | fragment-probed only, under a four-part measured licence (locality at R2–R3; coronene probed in fragments reproducing coronene probed whole; the same on a larger molecule where the cluster allows; a fragment-radius convergence test on the flake's own interior); otherwise a per-family or full refusal |
 
 One change to R2 was forced by the project's own measurement: plan 04 had excluded
 triphenylene as having no laboratory spectrum, but plan 04's NIST coverage probe found
@@ -175,8 +175,10 @@ decidability rule replaces plan 04's rung-level gate: a gas-scored family is dec
 scoreboard's **measured band-centre uncertainty** — instrument resolution, centroid precision
 and a temperature term — is smaller than its beat margin; a matrix-scored family passes through
 the matrix–gas gate or is pre-declared inconclusive. The second domain review (4 September)
-verified that the NIST gas-phase spectra for the pyrene-size molecules are hot-vapour GC-IR
-spectra homogenised to 8 cm⁻¹ resolution without concentration data; on that source the C–C
+established that the NIST gas-phase spectra for the pyrene-size molecules are hot-vapour GC-IR
+spectra without concentration data (the 8 cm⁻¹ homogenised resolution rests on a database
+description snippet and the vapour temperature on recall; both are graded so in the
+bibliography); on that source the C–C
 stretching families at R2 are expected to be undecidable by construction, and the plan says so
 before any number exists. Deciding those families on gas data needs a source the project does
 not yet have — which is why §13.3's request to the supervisor is load-bearing, not polite.
@@ -184,7 +186,7 @@ not yet have — which is why §13.3's request to the supervisor is load-bearing
 ### 5.3 Why the cost is reported and never described
 
 The plan allows exactly two kinds of cost sentence. The **cost record** — probe count, mode,
-prior, residual target, wall-clock per probe, the script that printed it — is promised for
+prior, noise floor and stopping threshold, wall-clock per probe, the script that printed it — is promised for
 every rung that ran. A **size sentence** is numeric only: how the off-diagonal count went from
 naphthalene to coronene against how the mode count went. The adjectives "size-independent",
 "O(1)" and "saturates" are forbidden everywhere, including this proposal. The reason is the
@@ -207,7 +209,8 @@ PAH sizes, which the side project's first milestones print. The second domain re
 one physics question the side project must answer first: whether the frozen space, once
 projected onto a displaced geometry's orbitals, is a smooth function of the nuclei on the two
 six-fold-symmetric molecules (benzene, coronene), where the orbital assignment can switch. The
-first milestone prints exactly that. The side project has
+main project's probe M1 prints the assignment log before the pilot note; the side project's
+first milestone prints the projection term of the gradient. The side project has
 four milestones with printed pass conditions, its own budget line, a twelve-week checkpoint and
 a kill criterion, all frozen before any code exists. If it succeeds, the gradient route is the
 plan's primary route on the rungs it licenses and the size question is answered on the probe
@@ -244,10 +247,12 @@ The evaluation contract is inherited from plan 04 and was tightened by both revi
 **Frozen opponents and pre-registered comparisons** (carried): named, versioned lines; paired
 per-band absolute error on identical laboratory bands; band lists, windows and margins frozen
 in a dated pilot note written before any pipeline-vs-laboratory number exists. Plan 05 adds a
-rule about the pilot note's inputs: it is written with the laboratory side, the opponent side,
-a DFT-only dry run of the probing machinery, the noise-floor measurement and single-point
-timings in hand — and **nothing else**. The first coupled-cluster correction is computed after
-the note is committed, so no residual target, probe cap, tolerance or margin can be shaped by
+rule about the pilot note's inputs: it is written with seven inputs in hand — the laboratory side with
+its measured band uncertainties, the opponent side, a DFT-only dry run of the probing machinery
+with a noise-injected column, the frozen-space probe M1, a one-point canonical feasibility
+probe, a run/no-run gradient check at equilibrium, and the naphthalene noise-floor measurement
+with its fits sealed — and **nothing else**. The first coupled-cluster correction is computed after
+the note is committed, so no stopping constant, probe cap, tolerance or margin can be shaped by
 a result.
 
 **Mandatory null tests** (carried, extended). The Δ=0 arm — DFT harmonic plus DFT anharmonic,
@@ -285,9 +290,10 @@ The escalation path is unchanged in kind — the student's current laptop first 
 Ryzen 7 260 with integrated graphics and no CUDA-class GPU, so GPU work is rented time), then
 a justified, probe-backed request for cluster or rented GPU time — but the first steps are cheaper and more decisive
 than plan 04's. Before any pilot note is written: a DFT-only dry run of the whole probing
-machinery at any size the laptop affords; a probe of which codes offer gradients at the anchor
-level, with memory; one timed coupled-cluster point; and the naphthalene noise-floor
-measurement (about thirty energies). After the note: the benzene probe batch and its references
+machinery at any size the laptop affords; the frozen-space probe M1; one canonical
+coupled-cluster energy of benzene as a feasibility probe; a probe of which codes offer
+gradients at the anchor level, with memory; one timed coupled-cluster point; and the
+naphthalene noise-floor measurement (72 energies). After the note: the benzene probe batch and its references
 (the rung where a canonical coupled-cluster Hessian is expected to be affordable — the only
 datum is a 2026-08 single-point timing on an older machine, labelled provenance); naphthalene;
 an anthracene locality probe of about 130 energies as a dated bonus, because anthracene is the
@@ -323,7 +329,7 @@ programme and for the benzene and naphthalene rungs once four in-spec items were
 (a reproducible estimator for the noise gate; a noise-aware stopping rule for the probe count;
 an absolute agreement metric for the locality couplings; a feasibility probe for the canonical
 reference), and no green light yet for the pyrene and coronene rungs on two points, both closed
-in spec the same day: the fragment licence (now three measured parts including a convergence
+in spec the same day: the fragment licence (now four measured parts including a convergence
 test on the target molecule's own interior) and the gas-phase decidability of the C–C families
 (now measured as a band-centre uncertainty, with the expected inconclusive verdict stated in
 advance). The reviewer also settled, by fetching the code, the engine facts this plan had
@@ -338,17 +344,17 @@ All closed; listed here because a supervisor's objection to any of them would re
 1. ~~Fragment probing at the largest sizes~~ — decided 4 September 2026: a permitted method,
    used if the locality measurement at the middle rungs licenses it; the C₃₈₄H₄₈-class
    deliverable is a fragment-probed spectrum, or the measured reason it could not be produced.
-2. ~~The Module-05 target~~ — decided 4 September 2026: a Transformer predicting the support
+2. ~~Whether to remove the plan-04 folder~~ — decided 4 September 2026: every plan version stays
+   in the repository as a read-only record, so a reader can follow the whole history.
+3. ~~The R2 scored set~~ — decided 4 September 2026: triphenylene is scored on its gas-phase
+   families; tetracene is matrix-only and gated.
+4. ~~The Module-05 target~~ — decided 4 September 2026: a Transformer predicting the support
    of the correction, trained on an aromatic-heavy subset of the public Hessian QM9 set with
    recomputed B3LYP Hessians; its success criterion is the measured saving and the per-rung
    licence, not accuracy; admitted to a promised rung only under that licence.
-3. ~~The R2 scored set~~ — decided 4 September 2026: triphenylene is scored on its gas-phase
-   families; tetracene is matrix-only and gated.
-4. ~~Adoption of the re-worded promised set~~ — decided 4 September 2026 in two parts: the
+5. ~~Adoption of the re-worded promised set~~ — decided 4 September 2026 in two parts: the
    harmonic-only correction is accepted; the energy-only route is accepted as the *guaranteed*
    route but not as a limit, and the gradient route is built in the side project of §5.3.
-5. ~~Whether to remove the plan-04 folder~~ — decided 4 September 2026: every plan version stays
-   in the repository as a read-only record, so a reader can follow the whole history.
 6. ~~The development machine~~ — decided 4 September 2026: the student's current laptop (an
    8-core Ryzen 7 260, 32 GB, integrated graphics, no CUDA GPU) is the own-machine budget; a
    replacement only if a probe shows it necessary.
@@ -379,12 +385,13 @@ All closed; listed here because a supervisor's objection to any of them would re
 5. **Laboratory decidability** (carried): the per-family rule pre-declares undecidable
    families inconclusive; gas-phase or jet-cooled sources beyond PAHdb and the NIST WebBook
    would enlarge the decidable set.
-7. **The R2 gas scoreboard cannot decide the C–C families.** Verified on 4 September: the
-   NIST/EPA spectra are hot-vapour GC-IR at 8 cm⁻¹ resolution. Response: the decidability rule
+6. **The R2 gas scoreboard cannot decide the C–C families.** Established on 4 September
+   (resolution at snippet grade): the NIST/EPA spectra are hot-vapour GC-IR, stated resolution
+   8 cm⁻¹. Response: the decidability rule
    now measures the band-centre uncertainty per family before the pilot note and pre-declares
    those families inconclusive by construction; a better gas-phase source (§13.3) is the only
    thing that changes that.
-6. **The side project becomes a time sink** — the failure mode that ended plan 01. Response:
+7. **The side project becomes a time sink** — the failure mode that ended plan 01. Response:
    its own budget line, a twelve-week checkpoint, a kill criterion frozen in advance, and an
    four-weekly alarm that forces a written review if its hours outgrow the pipeline's
    infrastructure bucket.
@@ -392,7 +399,7 @@ All closed; listed here because a supervisor's objection to any of them would re
 ## 12. Fit to the capstone programme
 
 Each module is mapped onto a load-bearing pipeline artifact: the opponent atlas; the
-laboratory scoreboard with the measured matrix tolerance and gas grids; the calibrated-harmonic
+laboratory scoreboard with the measured matrix tolerance and per-band uncertainties; the calibrated-harmonic
 baseline; the campaign officer that enforces the budget rules and the two permitted cost
 sentences; and the assembled pipeline with its scored ladder and cost records. Two modules —
 the deep-learning support predictor and the generative pattern proposer — are honest efficiency

@@ -1,8 +1,8 @@
 # Overarching Goal — Plan 05 Δ-Probed IR Pipeline
 
 **Status.** Prime directive as of 2026-09-03; revised the same day after Round-7 Pass A and
-Pass B; amended on 2026-09-04 by six user decisions and two user directives, and revised again
-the same day after Round-8 Pass A and Pass B. Supersedes plan 04's Goal file; plan 04's folder stays in
+Pass B; amended on 2026-09-04 by seven user decisions and two user directives, and revised again
+the same day after Round-8 Pass A and Pass B and after Round-9 Pass A. Supersedes plan 04's Goal file; plan 04's folder stays in
 the tree as a read-only record (decision 2). Draft; not complete as a plan. Every other plan-05
 document must agree with this file; if they drift, this file wins and the other file is patched.
 
@@ -19,7 +19,7 @@ document must agree with this file; if they drift, this file wins and the other 
 - **Pattern** = one simultaneous multi-atom displacement geometry; **q_s** = its amplitude in
   dimensionless normal-coordinate units; **response** = the CC−DFT energy (mode E) or gradient
   (mode G) difference at a pattern.
-- **ρ** = the held-out residual (Distilled §3); **ρ\*** = its frozen target; **f_h** = the
+- **ρ** = the held-out residual (Distilled §3); **ρ\*** = the stopping threshold c·ρ_noise, computed per rung and mode (only c is frozen); **f_h** = the
   held-out fraction; **K** = the measured pattern count at which ρ ≤ ρ\*; in mode E,
   K = 2M + K_off with M the number of modes and **K_off** the off-diagonal count; **K_cap** =
   the pilot-note cap on K.
@@ -30,14 +30,29 @@ document must agree with this file; if they drift, this file wins and the other 
 - **τ** = the smallest beat margin (pilot-note item 2); **τ₇** = the Q7 agreement tolerance in
   cm⁻¹ per family; **d₇** = the Q7 discriminability factor; **r_c** = fitted locality length
   (measured); **r_f** = the smallest passing fragment radius (measured); **r_max**, **ε₈**
-  (long-range share), **η₈** (coupling disagreement, absolute form: a fraction of the rung's
-  coupling scale **S**), **γ** (saturation factor), **h** (Cartesian probe step) = the Q8
+  (long-range share), **η₈** (coupling disagreement, absolute form: a fraction of the pair's
+  distance-class coupling scale **S**), **γ** (saturation factor), **h** (Cartesian probe step) = the Q8
   numbers (pilot-note item 12); **σ_E**, **σ_g** = the Q6 per-point noise scatters in mode E /
   mode G (RMS residuals about a low-order polynomial fit; Ladder §3); **ρ_noise** = σ/RMS of
   the rung's held-out responses; **c** = the stopping constant (ρ\* = c·ρ_noise; item 8);
   **u_band** = the measured band-centre uncertainty of a laboratory band (resolution, centroid
   precision, temperature term); **the fragment licence** = parts (a), (b), (b′), (c) of Ladder
   §3.
+- **RMS_resp** = the RMS of a rung's held-out responses; **ρ_max** = 0.5, the frozen ceiling
+  below which ρ\* must lie for the stopping rule to be evaluated (Ladder §3); **n_min(G)** = the
+  mode-G minimum pattern count (pilot-note item 9); **S** = the coupling scale of a pair's
+  distance class (near / mid / far), written S_class where the class matters — "η₈·S" anywhere
+  means η₈·S_class; **resolved pair** = a pair whose direct coupling is at least 3σ_coupling,
+  with σ_coupling = σ_E/(2h²); **at noise** = a pair below that floor, or a rung-and-mode whose
+  c·ρ_noise ≥ ρ_max; **re-projected** = evaluated in the frozen space as Ladder §3 defines it
+  (stored vectors projected onto the displaced geometry's virtual space and
+  Löwdin-orthonormalised); **σ_g^assumed** = 2.8·τ·q_s, the value mode G's c and K_cap are read
+  at in the pilot note (item 8).
+- **AD / FD** = automatic differentiation / finite differences; **GC-IRD** = gas-chromatography
+  infrared detection, the vapour-phase instrument behind the NIST/EPA library; **IRMPD** =
+  infrared multiple-photon dissociation; **SRD 35** = NIST Standard Reference Database 35, the
+  NIST/EPA gas-phase infrared database; **BHLYP** = Becke half-and-half exchange with LYP
+  correlation (50 % exact exchange), the dry run's high-exchange partner.
 - **Gates**: **Q0–Q8** integrity gates, **P0–P5** science gates (Distilled §7). **Rungs
   R0–R6**; **A** = accuracy rung, **R** = reach rung. **Budgets B1** (human hours), **B2** (own
   machine), **B3** (cluster or rented time). **M1–M5** = the frozen-space probe (main project)

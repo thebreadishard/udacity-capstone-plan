@@ -1,8 +1,9 @@
 # Why plan 05 supersedes plan 04
 
 **Status.** Argument of record, 2026-09-03; revised the same day after Round-7 Pass A (issues
-1, 8, 15, 16) and Pass B (issues 3, 4, 5, 13); amended 2026-09-04 by the user's six decisions
-and two directives, and revised the same day after Round-8 Pass A (issues 11, 13). Plan 04 is
+1, 8, 15, 16) and Pass B (issues 3, 4, 5, 13); amended 2026-09-04 by the user's seven decisions
+and two directives, revised the same day after Round-8 Pass A (issues 11, 13) and Pass B (rows
+28–32), and after Round-9 Pass A (rows 7, 21, 22 corrected; rows put in numerical order). Plan 04 is
 **not** wrong; it is superseded because its cost sits in the wrong object. All five plan
 folders are in the tree as read-only records (decision 2).
 
@@ -62,7 +63,7 @@ Round-8 Pass B.
 | 4 | Local-CC noise averaged by the fit; Q6 smoothness probe | **Spaces frozen at the reference geometry** for every probe (probe M1); noise, bias and threshold sensitivity measured against **frozen formulas** (Q6 with thresholds, pilot-note item 13); CPS extrapolation as a deck option | Ladder §3, Distilled Q6 |
 | 5 | P3 axis: Δ-learning vs direct fit | P3 axis: **learned prior vs structural prior at matched K** on the dry-run corpus, repeated on real responses at R2–R3 as the licence-earning check | Distilled §5 |
 | 6 | Gates Q0–Q6 | Gates Q0–Q8: **Q7 probing licence** (Δ₂ vs direct references at R0–R1, printed for diagonal-only and full recovery, with a discriminability clause and a shuffled-probe null), **Q8 locality and saturation on directly measured couplings** in a form frozen now | Distilled §7 |
-| 7 | Pilot-note item 5 = P3 effect size (Δ vs direct); item 8 = N_min | Item 5 redefined (prior saving); N_min removed; **new items 8–13**: residual target ρ\*, cap K_cap per mode, hold-out fraction and seed, Q7 tolerance τ₇ and d₇, Q8 numbers (r_max, ε₈, η₈, γ) and direct-coupling pairs, Q6 numbers and pattern amplitude; item 2 gains an expected-effect line | Ladder §4 |
+| 7 | Pilot-note item 5 = P3 effect size (Δ vs direct); item 8 = N_min | Item 5 redefined (prior saving); N_min removed; **new items 8–13**: the stopping constant c per mode, cap K_cap per mode and n_min(G), hold-out fraction and seed, Q7 tolerance τ₇ and d₇, Q8 numbers (r_max, ε₈ , η₈ absolute, γ, the step h) and the direct-coupling pair list, Q6 numbers and pattern amplitude; item 2 gains an expected-effect line | Ladder §4 |
 | 8 | Two sentence types (accuracy, reach) | **A third sentence type, the cost record**, promised for every rung that ran; a separate **numeric size sentence** in a mode-E form (on K_off) and a mode-G form (on K), each allowed only after Q8(c); a "beat and noise" rule tying "beat" to the Q6 noise line of the mode used | Ladder §1 |
 | 9 | Prime directive: one sentence | Prime directive gains a second sentence (its 2026-09-04 form): the CC cost is recorded as a measured probe count; **mode E is the guaranteed route, mode G the aimed-for route that the side project builds**; no cost adjective is ever written | Goal |
 | 10 | B2 = the laptop; B3 = cluster node-hours | B2 = **the named current laptop** (decision 6: ASUS Vivobook 18, Ryzen 7 260, 32 GB, no CUDA GPU); B3 = cluster node-hours **and rented GPU-hours**, same three preconditions with a money cap in place of an allocation | Budget §1 |
@@ -76,25 +77,26 @@ Round-8 Pass B.
 | 18 | Cost question implicit | **Cost question on both modes**: K where mode G is licensed, K_off in mode E; the verified 2026-09-03 gradient landscape (no production local-CC(T) nuclear gradient; PySCFAD AD gradients reported to 29 atoms) is why mode E is guaranteed; the "CCSD gradient + energy-only (T)" idea of the research note has **no engine** and is withdrawn | Goal, Ladder §1, Research note §8 |
 | 19 | R6 promised as a whole-molecule run conditional on B3 | **R6 promised as fragment-probed Δ₂ under the fragment licence** (Q8 at R2–R3 on direct blocks; the fragment-vs-whole comparison at R3, and at R4 where affordable; a fragment-radius convergence test on the R6 interior (row 30)), conditional on B3 (decision 1: fragment probing is a method decided by measurement). Whole-molecule R6 is not promised | Goal, Ladder §2–§3 |
 | 20 | — | **Novelty rewritten with citation**: the diagonal mode-E recovery is the Concordant Mode Approach applied to a difference (items 42–43); mode-tracking (item 46) and gradient-based compressed sensing (item 24) are named prior art; what remains proposed is stated in Research note §8 | Research note §8, Distilled §2, Frozen_Lines §1 |
-| 21 | Dry run: two DFT functionals, unspecified | Dry run: **B3LYP against a high-exact-exchange functional**, in **both modes** (so K_cap and ρ\* are frozen for mode G without any local-CC gradient existing); dry-run-flagged blocks get explicit two-mode patterns | Distilled §3, Budget §4 |
-| 22 | Q8 on whatever the pipeline produced | Q8 on **direct couplings** (reference Hessian at R0–R1; a prior-free direct-coupling probe at R2–R3), with a relative block-disagreement tolerance η₈; an **anthracene** locality probe as a dated bonus between R1 and R2 | Ladder §3, Distilled Q8, Budget §4 |
+| 21 | Dry run: two DFT functionals, unspecified | Dry run: **B3LYP against a high-exact-exchange functional**, in **both modes** (so K_cap(G), n_min(G) and the stopping constant c(G) are frozen for mode G without any local-CC gradient existing); dry-run-flagged blocks get explicit two-mode patterns | Distilled §3, Budget §4 |
+| 22 | Q8 on whatever the pipeline produced | Q8 on **direct couplings** (reference Hessian at R0–R1; a prior-free direct-coupling probe at R2–R3), with the coupling-disagreement tolerance η₈ (made absolute in row 29); an **anthracene** locality probe as a dated bonus between R1 and R2 | Ladder §3, Distilled Q8, Budget §4 |
 | 23 | Mulas 2018 described as "anharmonic DFT-QFF" | Functional named: **B97-1** (TZ2P pyrene, 6-31G* coronene), verified by the Round-7 Pass B reviewer from the full text | Frozen_Lines §3, bibliography item 6 |
 | 24 | — | **A pre-registered side project builds frozen-space LNO-CC gradients in PySCFAD** (mode G) with milestones M2–M5, a calendar 12-week checkpoint on its own B1 bucket and a kill criterion; probe M1 (frozen spaces) is main-project work under stop 1; mode E stays the guaranteed route (decision 5: "we can extend the software") | Side_Project_2026-09-04, Goal, Budget |
 | 25 | Anchor code: ORCA DLPNO by default | **Candidate anchor code: the pyscf-forge LNO-CCSD(T) code** (closed- and open-shell (T) present in the released `pyscf/lno/`, fetched 2026-09-04), because it is the one in which spaces can be frozen (probe M1) and gradients pursued (PySCFAD `pyscfad/lno/`, fetched) | Distilled §3 |
+| 26 | Learned model never on the promised path | **The learned prior earns a licence on R2–R3 and spends it on R4–R6** (both recoveries on the same responses, agreement within τ₇ per family; direct blocks within η₈; P3 saving shown); on R0–R3 the scored spectrum is always structural; on a spent-licence rung the certificate says the spectrum depends on the prior (user directive: inheritance is not authority) | Ladder §3, Distilled §3/§5 |
+| 27 | Plan 04's prohibitions carried as such | **Inheritance is not authority**: every inherited rule survives only if it serves the goal or rests on a measurement; the no-transfer rule is kept for spectra and band positions (a measurement); Round-8 Pass B walks the rest | Goal |
 | 28 | Gas-phase families decidable by the spectrum's point spacing | **Decidability by M03's measured band-centre uncertainty u_band** (resolution, centroid precision, temperature term); the NIST/EPA GC-IRD spectra are hot vapour at 8 cm⁻¹ (snippet grade); the R2 C–C families pre-declared inconclusive by construction on that source (Round-8 Pass B finding 6) | Ladder §2, Goal, Mapping M03 |
 | 29 | K stopped at a residual target transferred from a noiseless dry run | **Noise-aware stopping rule**: ρ\* = c·ρ_noise with σ from the R1 smoothness probe; c and K_cap from the **noise-injected** dry run; η₈ in absolute form; Q6's σ as an RMS residual about a polynomial fit (Round-8 Pass B findings 1–3) | Ladder §3, Distilled §3, Q6 |
 | 30 | Fragment licence: locality at R3 plus a self-check on the fragment | **Fragment licence in four parts** — (a) Q8 at R2–R3; (b) coronene fragment-vs-whole at the smallest passing radius; (b′) the same on circumcoronene, promised conditional on B3; (c) a fragment-radius convergence test on the rung's own interior (Round-8 Pass B finding 4) | Ladder §3, Goal |
 | 31 | Frozen spaces named, not defined | **The frozen-space object defined once** (maximal-overlap mapping with printed assignment; projection onto the new virtual space and Löwdin orthonormalisation; projection inside the differentiated graph); M1 logs assignments along symmetric modes; M2 prints the projection term; mode E runs on every rung, mode G in addition where licensed (Round-8 Pass B findings 5, 7) | Ladder §3, Side project |
 | 32 | Canonical R0 reference assumed affordable | **Anchor basis fixed per rung (cc-pVTZ at R0–R1) and a one-point canonical feasibility probe before the pilot note**, with a written fallback for the bias line (Round-8 Pass B finding 8) | Ladder §3, Budget §4 |
-| 26 | Learned model never on the promised path | **The learned prior earns a licence on R2–R3 and spends it on R4–R6** (both recoveries on the same responses, agreement within τ₇ per family; direct blocks within η₈; P3 saving shown); on R0–R3 the scored spectrum is always structural; on a spent-licence rung the certificate says the spectrum depends on the prior (user directive: inheritance is not authority) | Ladder §3, Distilled §3/§5 |
-| 27 | Plan 04's prohibitions carried as such | **Inheritance is not authority**: every inherited rule survives only if it serves the goal or rests on a measurement; the no-transfer rule is kept for spectra and band positions (a measurement); Round-8 Pass B walks the rest | Goal |
 
 ## What plan 05 does not change
 
 The rungs and species R0–R6 and their claim types A/R; the opponents and their versions; the
-scoreboards; the numerical tolerances (10 cm⁻¹ floor, 15 cm⁻¹ working matrix convention with
-the M03-measured binding value, ~1 cm⁻¹ bind); the hours directive; the module skeleton 02–09
-and rule 0 of the mapping; the emission tiers; the neutral-charge rule; the Round-6 closures.
+scoreboards; the matrix-side numerical tolerances (10 cm⁻¹ floor, 15 cm⁻¹ working matrix convention with
+the M03-measured binding value, ~1 cm⁻¹ bind) — the gas side gains u_band, row 28; the hours
+directive; the module skeleton 02–09 and rule 0 of the mapping; the emission tiers; neutral
+charge as the per-rung default (a pilot note may name another, Ladder §2); the Round-6 closures.
 
 ## The measurement that would say plan 05 was a mistake
 

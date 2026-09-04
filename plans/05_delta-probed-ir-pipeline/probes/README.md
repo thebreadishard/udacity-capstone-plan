@@ -15,14 +15,14 @@ Conventions, carried from plans 01–04:
 
 None under plan 05 yet. Plan 04's NIST gas-phase coverage probe and its raw cache exist in
 `plans/04_cc-anchored-ir-pipeline/probes/` and are re-run under this plan's hash as owed
-probe 2 below; their measured result (gas IR present for benzene, naphthalene, pyrene,
-chrysene, triphenylene; tetracene solid-only; coronene absent; R2 gas grids ~4 cm⁻¹) is
+probe 2a below; their measured result (gas IR present for benzene, naphthalene, pyrene,
+chrysene, triphenylene; tetracene solid-only; coronene absent; R2 JCAMP point spacing ~4 cm⁻¹) is
 carried as provenance and already re-shaped the R2 row (Ladder §2, dated note).
 
 ## Probes owed (in the order they decide things; Compute_Budget §4 gives the timing order)
 
 **Before the pilot note** (DFT-only work, probe M1, a run/no-run gradient check at equilibrium,
-single-mode scatter with sealed means, and timings; no local-CC Δ₂ number may be readable):
+single-mode scatter with sealed fit coefficients, and timings; no local-CC Δ₂ number may be readable):
 
 1. **Zero-CC dry run, both modes** (`dryrun_dft_delta_recovery.py`): Δ between B3LYP and a
    high-exact-exchange functional at R0 and at the largest molecules the laptop's DFT Hessian
@@ -35,11 +35,15 @@ single-mode scatter with sealed means, and timings; no local-CC Δ₂ number may
    Gaussian noise at a grid of σ added to every response, K and ρ per σ (the source of the
    stopping constant c and of K_cap). Feeds pilot-note items 8, 9 (both modes), 13, and the M05
    subset-size note.
-1a. **Canonical feasibility probe** (`r0_canonical_feasibility.py`): one canonical CCSD(T)
+1b. **Canonical feasibility probe** (`r0_canonical_feasibility.py`): one canonical CCSD(T)
    energy of benzene in the anchor basis on the B2 laptop; wall-clock and peak memory printed
-   and extrapolated to the R0 Hessian count; decides the basis of the Q6 bias line (Ladder §3).
-1b. **Probe M1 — frozen spaces** (`m1_frozen_spaces.py`): the candidate local-CC code
-   (pyscf-forge LNO-CC; whether the release is CCSD or CCSD(T) is printed) stores fragment
+   and extrapolated, by deck-frozen factors, to the bias-line count (61 energies) and the full
+   canonical reference-Hessian count (72 canonical gradients if the code has them, printed, else
+   1,801 energies); "fits" = ≤ 168 h and ≤ 31.3 GB per object; decides the basis of the Q6 bias
+   line and whether the R0 canonical reference Hessian is R0 work or the first B3 request
+   (Ladder §3; Budget §4.1b).
+2. **Probe M1 — frozen spaces** (`m1_frozen_spaces.py`): the candidate local-CC code
+   (pyscf-forge LNO-CCSD(T), item 48; version pinned and printed) stores fragment
    list, localized orbitals and LNO vectors at the reference geometry and, at displaced
    geometries, maps occupied orbitals by maximal overlap and projects/orthonormalises the stored
    virtual spaces (the Ladder §3 object); prints the reference-energy reproduction (target
@@ -47,7 +51,7 @@ single-mode scatter with sealed means, and timings; no local-CC Δ₂ number may
    mode, the assignment permutation and E(displaced, frozen) − E(displaced, fresh) per point,
    **without a verdict** (the τ it would be judged against does not exist yet). Fails → Ladder
    stop 1.
-2. **Lab-scoreboard re-read and u_band** (`m03_band_uncertainty.py`): regenerate the plan-02
+2a. **Lab-scoreboard re-read and u_band** (`m03_band_uncertainty.py`): regenerate the plan-02
    band table (PAHdb experimental uids, NIST JCAMP) and the plan-04 NIST coverage scan under
    this plan's hash; per gas-phase band print the source's stated resolution (from its
    documentation, never `DELTAX`), the centroid precision from the signal-to-noise, the
@@ -56,25 +60,26 @@ single-mode scatter with sealed means, and timings; no local-CC Δ₂ number may
 3. **Gradient availability, run/no-run at equilibrium** (`anchor_gradient_availability.py`):
    per candidate code, does an analytic gradient at the anchor level run **at the equilibrium
    geometry** of benzene and naphthalene with frozen spaces? Prints code, version, run/no-run,
-   wall-clock, peak memory. No displaced geometry before the pilot note. K_cap(G) comes from
-   the dry run regardless; the side project's M2–M5 later answer per rung.
+   wall-clock, peak memory. No displaced geometry before the pilot note. K_cap(G), n_min(G) and c(G) come from
+   the noise-injected dry run regardless, read at σ_g^assumed (Ladder §4 item 8); the side
+   project's M2–M5 later answer per rung.
 4. **R0 pilot**: geometry → DFT Hessian → harmonic bands, **timed**; one timed local-CC
    single point with frozen spaces (timing only). Produces **no local-CC Δ₂ and no
    pipeline-vs-lab number**.
-5. **R1 smoothness probe** (`q6_smoothness.py`): naphthalene, three modes (a C–C stretch, a C–H
-   stretch, a CH-oop), nine points each at q ∈ [−1, 1], TightPNO, with and without frozen
-   spaces, plus one totally symmetric mode; **σ_E = the RMS residual of ΔE(q) about a degree-4
-   least-squares polynomial** per mode and arm (σ_g about a degree-3 fit where a gradient runs)
-   is printed against 0.82·τ·q_s² (2.8·τ·q_s) for each q_s ∈ {0.25, 0.5, 1.0}; the fit
+5. **R1 smoothness probe** (`q6_smoothness.py`): naphthalene, four modes (a C–C stretch, a C–H
+   stretch, a CH-oop mode and one totally symmetric mode), nine points each at q ∈ [−1, 1],
+   TightPNO, with and without frozen spaces; **σ_E = the RMS residual of ΔE(q) about a degree-4
+   least-squares polynomial** per mode and arm is printed against 0.82·τ·q_s² (2.8·τ·q_s) for each q_s ∈ {0.25, 0.5, 1.0}; the fit
    coefficients (which contain the diagonal Δ₂ elements) are written to a hashed, sealed file
    that the script refuses to open before the pilot note's commit hash exists. Fixes the pattern
-   amplitude (item 13). ≈ 40 local-CC energies.
+   amplitude (item 13). 72 local-CC energies (4 × 9 × 2).
 
 **After the pilot note is committed:**
 
 6. **R0 probe batch and Q7** (`q7_probing_licence.py`): the R0 responses in hashed order,
    K(R0) and K_off at ρ\*, the cost record; then the references (numerical local-CC Hessian
-   with frozen spaces; canonical CCSD(T) Hessian) and the Q7 table (i)–(iv) — the recovered
+   with frozen spaces; the canonical CCSD(T) Hessian where the feasibility probe placed it at
+   R0, else the local-CC arm's) and the Q7 table (i)–(iv) — the recovered
    Δ₂ printed as a matrix in the DFT mode basis, for the diagonal-only and the full recovery,
    the discriminability factor, the shuffled-probe null, and Q8(a/b) on reference vs
    recovered (R0's only Q8 read). Also the **diagonal-cubic bonus probe** (φ_iii along each
@@ -101,7 +106,8 @@ single-mode scatter with sealed means, and timings; no local-CC Δ₂ number may
     probe** (`q8_direct_couplings.py`: deck-chosen π-system pairs at near, mid, far distances;
     per pair and scored family the family-projected coupling ∂²ΔE/∂u_A∂u_B by four-point
     differences at step h — four energies per (pair, family); the full 3×3 block for the near
-    pair only; pairs below 3σ_coupling reported "at noise"); the Q6 noise grid at the R2-size
+    pair only; equal frozen counts per distance class; pairs below 3σ_coupling = 3σ_E/(2h²)
+    reported "at noise"; agreement within η₈·S_class); the Q6 noise grid at the R2-size
     family in the mode(s) used; probe batches in mode E (and G if licensed) — the structural
     recovery, and the prior-assisted recovery on the same responses
     (`licence_prior_vs_structural.py`: per-family agreement within τ₇, couplings within η₈·S,
@@ -118,6 +124,7 @@ single-mode scatter with sealed means, and timings; no local-CC Δ₂ number may
     `fragment_convergence.py` — direct couplings on the central ring from fragments of radius
     r_f and r_f + one ring, agreement within η₈·S.
 15. **R6 (fragment licence, part c)** (`fragment_convergence.py` on the flake): deck-chosen
-    interior and edge pairs, direct couplings from fragments of radius r_f and r_f + one ring
-    carved from the R6 DFT geometry, agreement within η₈·S; whole-flake direct couplings where
+    interior and edge pairs, direct couplings from fragments of radius r_f (Ladder §3's rule:
+    R3's value, or (b′)'s if larger) and r_f + one ring carved from the R6 DFT geometry,
+    agreement within η₈·S; run once, the passing radius printed in the certificate; whole-flake direct couplings where
     B3 allows.

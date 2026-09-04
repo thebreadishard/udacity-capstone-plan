@@ -10,9 +10,10 @@ applies: every identifier below is re-fetched before it enters a scored Module 0
 **The criterion (from [Overarching_Goal.md](Overarching_Goal.md)).** The pipeline's band
 positions for a molecule must be demonstrably more accurate than the best prediction
 currently available anywhere for that molecule, judged per band against laboratory data —
-**where that data can decide the comparison**: gas-phase rungs unconditionally, matrix-scored
-families only if the M03-measured matrix–gas delta is smaller than the beat margin (Ladder
-§2, Promised), and never on reach rungs.
+**where that data can decide the comparison**: unconditionally on the gas-phase rungs R0–R1;
+on R2–R3 per family — gas-scored families only where M03's measured band-centre uncertainty
+u_band is smaller than the beat margin, matrix-scored families only if the M03-measured
+matrix–gas delta is smaller than it (Ladder §2, Promised) — and never on reach rungs.
 
 ---
 
@@ -113,6 +114,6 @@ line" must mean per band class.
    33 and 34's Nagy & Kállay are OK; Sylvetsky pinned.
 6. C₃₈₄H₄₈ per-species presence in PAHdb v4.00 — an M02 task.
 
-Debts that concern plan 05's *method* rather than its opponents (full texts of items 27, 28,
-30, 37; the O1NumHess code version; the GPU Hessian timing) are listed only in the
+Debts that concern plan 05's *method* rather than its opponents (full texts, code pins, the
+hot-band references, the M05 fallback and the rest, as listed there) are listed only in the
 bibliography under "Method debts" and are not part of this list.
