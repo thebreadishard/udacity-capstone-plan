@@ -26,8 +26,8 @@ drift. Costs live in [Compute_Budget_2026-09-03.md](Compute_Budget_2026-09-03.md
   - **The size sentence** — numeric only, in one of two forms, each allowed only after Q8(c)
     has passed for that quantity at R1→R2 and R2→R3 with the structural prior at the same ρ\*:
     *mode-E form* (the promised route): "K_off went n₁ → n₂ → n₃ from R1 to R3 while the mode
-    count went M₁ → M₂ → M₃"; *mode-G form* (bonus, only if the gradient probe printed "yes" at
-    all three rungs): the same for K. The adjectives "size-independent", "O(1)", "saturates",
+    count went M₁ → M₂ → M₃"; *mode-G form* (on rungs where the side project of 2026-09-04 has licensed mode G — its
+    milestones M3/M4 — and the gradient probe printed "yes"): the same for K. The adjectives "size-independent", "O(1)", "saturates",
     "does not grow" are forbidden everywhere, including the Module 08 paper. A rung where mode
     E's Q6 noise gate did not pass carries a cost record but no "beat" language.
 
@@ -70,9 +70,9 @@ rungs per family under the decidability rule above — **"beat" language on a mo
 requires the Q6 noise gate to have passed at that rung's size class.** R6 per the dated note
 above. **[05]** The **cost record** (§1) for every rung that ran.
 **Bonus:** R4, R5, anything beyond R6, the learned-prior arm (P3), the diagonal-cubic probe
-(Δ₃ along scored modes), the anthracene locality probe, the mode-G size sentence, the size
-sentence itself (it is earned or not; its absence is not a failure), and the whole-molecule vs
-fragment comparison at R4.
+(Δ₃ along scored modes), the anthracene locality probe, the size sentence itself (it is
+earned or not; its absence is not a failure), the whole-molecule vs fragment comparison at R4,
+and the mode-G side project's success (its failure costs the promised set nothing).
 
 **Charge.** All rungs are **neutral species** unless a rung's pilot note names a charge state.
 

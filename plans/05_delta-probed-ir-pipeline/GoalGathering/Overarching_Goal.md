@@ -29,12 +29,15 @@ deliverable is a labelled theory-vs-theory spectrum, conditional on cluster acce
 are the scored quantity; intensities are reported, not part of this criterion.
 
 **And record what the coupled-cluster part cost, as a measured probe count per rung.** The
-promised route is **mode E**: K = 2M + K_off local-CC energies with frozen domains, where the
-science and the open cost question live in K_off. The cost record is promised for every rung
-that ran. **The only size sentence the thesis may write is numeric** (Ladder §1): how K_off went
-from R1 to R3 against how M went — and, if analytic local-CC gradients turn out to run at all
-three rungs (mode G, a bonus on the verified 2026-09-03 landscape), the same for K. No cost
-adjective is ever written. A rung where mode E cannot resolve the correction above the
+**guaranteed route is mode E**: K = 2M + K_off local-CC energies with frozen domains, where the
+open cost question lives in K_off. **The aimed-for route is mode G** — Δ₂ from analytic
+local-CC gradients with frozen domains, at O(1)-class probe counts — which no production code
+offers today and which plan 05 therefore **builds** in a pre-registered side project with
+frozen milestones and a kill criterion ([Side_Project_2026-09-04_ModeG_Gradients.md](Side_Project_2026-09-04_ModeG_Gradients.md); user decision 2026-09-04). On every
+rung where the side project's milestone licenses it, mode G is the route and the cost record
+says so; elsewhere mode E runs. The cost record is promised for every rung that ran. **The only
+size sentence the thesis may write is numeric** (Ladder §1): how K (mode G) or K_off (mode E)
+went from R1 to R3 against how M went. No cost adjective is ever written. A rung where mode E cannot resolve the correction above the
 local-CC noise floor (Q6, a frozen formula) carries no "beat" language and says so.
 
 The success criterion is **relative and measured**, not absolute. "Chemical precision" is not
@@ -55,9 +58,9 @@ The accuracy/reach split ([Frozen_Ladder_and_Tolerances.md](Frozen_Ladder_and_To
 > calibrated harmonic baseline, and — where its coverage reaches — DFT-ceiling MLMD (Mai
 > 2025), per band against laboratory spectra?
 >
-> **Cost (all rungs that ran).** In mode E, how many off-diagonal probes K_off did the
-> correction need at the frozen residual target, per rung — and did K_off saturate between
-> R1, R2 and R3 (Q8c)? In mode G, if it exists at all three rungs, the same for K.
+> **Cost (all rungs that ran).** How many local-CC evaluations did the correction need at the
+> frozen residual target, per rung — K in mode G where the side project has licensed it, K_off
+> in mode E elsewhere — and did that number saturate between R1, R2 and R3 (Q8c)?
 >
 > **Reach (rung R6).** Can the same pipeline — with Δ₂ obtained by **fragment probing**,
 > licensed by Q8 on directly measured blocks at R2–R3 (user directive 2026-09-04: a permitted

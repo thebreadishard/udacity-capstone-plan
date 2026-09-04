@@ -62,6 +62,9 @@ The sequence **ends at Module 09**. There is no `Horizon/` and there are no Proj
 12. [GoalGathering/Project_Proposal_2026-09-03.md](GoalGathering/Project_Proposal_2026-09-03.md)
     — the supervisor proposal: the *why* of the major decisions, the conditional review
     status, and the decisions the student has not yet made
+13. [GoalGathering/Side_Project_2026-09-04_ModeG_Gradients.md](GoalGathering/Side_Project_2026-09-04_ModeG_Gradients.md)
+    — the pre-registered side project that builds frozen-domain local-CC gradients (mode G):
+    milestones M1–M4, kill criterion, budget bucket, what changes on success or failure
 
 ## Review record
 
@@ -123,14 +126,23 @@ re-litigated.
    recomputed B3LYP Hessians, with the PAH tensors as a held-out test set; success = the P3
    saving and the per-rung licence (Ladder §3), not accuracy; dataset distinctness under
    reading 1 with the reading-2 fallback executable (Mapping §3 M05).
-5. **Adoption of the Pass-B re-worded promised set** (Δ₂ only; mode E primary; R6
-   fragment-probed) — the default this folder is written to.
+5. ~~Adoption of the Pass-B re-worded promised set~~ — **decided 2026-09-04, in two parts.**
+   Point 1 (Δ₂ only, no CC anharmonic correction promised): **accepted**. Point 2 (mode E as
+   the primary route because no gradient exists): **not accepted as a limit** — mode E stays
+   the guaranteed route, and mode G is *built* in a pre-registered side project with frozen
+   milestones and a kill criterion
+   ([GoalGathering/Side_Project_2026-09-04_ModeG_Gradients.md](GoalGathering/Side_Project_2026-09-04_ModeG_Gradients.md)).
+   Point 3 (R6 via fragments under Q8): decided under decision 1.
 6. ~~Machine~~ — **decided 2026-09-04: B2 is the current ASUS Vivobook 18 M1807HA-S8022W** (Ryzen 7 260, 8C/16T, Radeon 780M integrated, no CUDA GPU, 32 GB DDR5, ~790 GB free disk — from the machine's About page); a new machine only if a probe shows it necessary. GPU DFT Hessians are therefore B3.
 
 ## Not yet done (owed, in order)
 
-- The user's decisions 1–6 above (the proposal's §10 puts them to the supervisor as well).
-- Capstone mapping Pass 6 (module-by-module sign-off) once decisions 1, 3 and 4 are made.
+- **Round 8** (a fresh cold read and a Pass-B re-assessment of the set as it now stands,
+  including the five decisions of 2026-09-04 and the side project), so that Pass B's
+  "conditional" becomes a verdict on the current set.
+- Capstone mapping Pass 6 (module-by-module sign-off).
+- Side project milestone M1 (frozen LNO spaces reproduce the reference energy) — the first
+  code of the project.
 - **The pilot note** (after the R0 pilot, the zero-CC dry run, the gradient-availability probe
   with memory, the R1 smoothness probe and the scoreboard re-read; before any local-CC Δ₂
   recovery exists; with the fragment-probing decision recorded): band lists, margins and the

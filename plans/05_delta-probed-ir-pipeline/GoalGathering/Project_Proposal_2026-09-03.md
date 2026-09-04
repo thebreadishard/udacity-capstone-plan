@@ -180,11 +180,22 @@ every rung that ran. A **size sentence** is numeric only: how the off-diagonal c
 naphthalene to coronene against how the mode count went. The adjectives "size-independent",
 "O(1)" and "saturates" are forbidden everywhere, including this proposal. The reason is the
 domain review's reading of the software landscape: no production code offers an analytic
-nuclear gradient for local CCSD(T), so the gradient-based route on which an O(1) probe count
-would rest is a bonus, not the plan. The promised route is energy-only, its diagonal part costs
-two energies per mode by construction, and the honest question is whether the off-diagonal
-part saturates. That question has a pre-registered losing condition and the plan reports
-whichever answer it gets.
+nuclear gradient for local CCSD(T). The student's response (4 September 2026) was not to accept
+that as a limit but to build it: a pre-registered side project extends the open PySCFAD
+implementation of LNO-CCSD(T) gradients by automatic differentiation — demonstrated by its
+authors to about 29 atoms — to frozen correlation spaces and PAH sizes. Two facts make this a
+realistic engineering project rather than new theory: the plan already freezes the correlation
+domains at the reference geometry, and on that surface the automatic-differentiation gradient
+with fixed spaces is the exact derivative, so the response terms that make general local-CC
+gradients hard do not arise; and the LNO fragment structure lets the memory of reverse-mode
+differentiation scale with the largest fragment rather than the molecule. The side project has
+four milestones with printed pass conditions, its own budget line, a twelve-week checkpoint and
+a kill criterion, all frozen before any code exists. If it succeeds, the gradient route is the
+plan's primary route on the rungs it licenses and the size question is answered on the probe
+count itself; if it fails, the energy-only route — whose diagonal part costs two energies per
+mode by construction — remains the guaranteed route, and the honest question is whether its
+off-diagonal part saturates. Either way the question has a pre-registered losing condition and
+the plan reports whichever answer it gets.
 
 ## 6. What this project deliberately does not do, and why
 
@@ -297,7 +308,9 @@ Listed here because a supervisor's view on them is more useful before than after
    licence, not accuracy; admitted to a promised rung only under that licence.
 3. ~~The R2 scored set~~ — decided 4 September 2026: triphenylene is scored on its gas-phase
    families; tetracene is matrix-only and gated.
-4. **Adoption of the re-worded promised set** of §9.
+4. ~~Adoption of the re-worded promised set~~ — decided 4 September 2026 in two parts: the
+   harmonic-only correction is accepted; the energy-only route is accepted as the *guaranteed*
+   route but not as a limit, and the gradient route is built in the side project of §5.3.
 5. ~~Whether to remove the plan-04 folder~~ — decided 4 September 2026: every plan version stays
    in the repository as a read-only record, so a reader can follow the whole history.
 
@@ -323,6 +336,9 @@ Listed here because a supervisor's view on them is more useful before than after
 5. **Laboratory decidability** (carried): the per-family rule pre-declares undecidable
    families inconclusive; gas-phase or jet-cooled sources beyond PAHdb and the NIST WebBook
    would enlarge the decidable set.
+6. **The side project becomes a time sink** — the failure mode that ended plan 01. Response:
+   its own budget line, a twelve-week checkpoint, a kill criterion frozen in advance, and an
+   alarm that forces a written review if its hours outgrow the three data modules combined.
 
 ## 12. Fit to the capstone programme
 
