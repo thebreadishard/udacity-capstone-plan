@@ -291,9 +291,10 @@ Listed here because a supervisor's view on them is more useful before than after
 1. ~~Fragment probing at the largest sizes~~ — decided 4 September 2026: a permitted method,
    used if the locality measurement at the middle rungs licenses it; the C₃₈₄H₄₈-class
    deliverable is a fragment-probed spectrum, or the measured reason it could not be produced.
-2. **The Module-05 target** — a Transformer predicting the support of the correction on a
-   public DFT-vs-DFT Hessian corpus, never used on a promised rung. If that is judged too far
-   from the science, the module becomes a demonstration and is defended as one.
+2. ~~The Module-05 target~~ — decided 4 September 2026: a Transformer predicting the support
+   of the correction, trained on an aromatic-heavy subset of the public Hessian QM9 set with
+   recomputed B3LYP Hessians; its success criterion is the measured saving and the per-rung
+   licence, not accuracy; admitted to a promised rung only under that licence.
 3. ~~The R2 scored set~~ — decided 4 September 2026: triphenylene is scored on its gas-phase
    families; tetracene is matrix-only and gated.
 4. **Adoption of the re-worded promised set** of §9.
@@ -340,8 +341,9 @@ module may ship an honest fail-closed state to meet its date, and the science co
 1. A critical reading of §2–§3 (why the coupled-cluster budget moves to the harmonic
    correction, and why it is recovered by probing) and of §7 (the evaluation contract) — the
    places where the plan's honesty either holds or does not.
-2. A view on the fragment-probing route to the largest sizes (§4, now decided as a method
-   subject to measurement) and on the Module-05 target (§10).
+2. A view on the fragment-probing route to the largest sizes (§4) and on the Module-05 target
+   (§10), both now decided by the student as methods subject to measurement — a supervisor's
+   objection would reopen either.
 3. Advice on laboratory sources: gas-phase or jet-cooled spectra for tetracene- and
    coronene-class species would directly enlarge the decidable set.
 4. When the naphthalene measurements justify it: sponsorship of a cluster-time request sized

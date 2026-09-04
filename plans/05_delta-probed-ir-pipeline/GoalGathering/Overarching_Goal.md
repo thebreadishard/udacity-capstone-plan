@@ -188,12 +188,14 @@ expectations section below are numbered separately.
 2. ~~Removal of the plan-04 folder~~ — **decided 2026-09-04: every plan folder stays in the tree** (plans 01–03 restored as read-only records).
 3. ~~The R2 A-scored set~~ — **decided 2026-09-04: the re-read stands** (Why_05 change 14;
    Ladder §2 dated note).
-4. **The Module-05 target and corpus** (Distilled §5–§6): a Transformer that predicts the
-   *support* of Δ₂ in the DFT mode basis, trained on a DFT-vs-DFT corpus built from the public
-   Hessian QM9 set (item 47) plus recomputed B3LYP Hessians. Under the 2026-09-04 inheritance
-   rule its output may enter promised rungs once licensed (scope boundaries above), which
-   makes M05 load-bearing for the cost record if P3 succeeds. If the user will not accept a
-   DFT–DFT target for the deep-learning module, M05 is a demonstration and is defended as one.
+4. ~~The Module-05 target and corpus~~ — **decided 2026-09-04: adopted** (Distilled §5–§6;
+   Mapping §3 M05). A Transformer predicting the *support* of Δ₂ in the DFT mode basis; corpus
+   = an aromatic-heavy subset of the public Hessian QM9 set (item 47) plus recomputed B3LYP
+   Hessians, with the PAH dry-run and probed tensors as a held-out test set only; success
+   criterion = the P3 saving on the corpus and the per-rung licence of the scope boundaries
+   above, never accuracy for its own sake; the rubric's reuse clause read as for M04 (reading
+   1, reading-2 fallback executable mid-module). With the licence route, M05 is load-bearing
+   for the cost record if P3 succeeds and a published negative result if it does not.
 
 ## Forbidden quotes (this thesis)
 

@@ -119,12 +119,15 @@ Forbidden without one:
 
 ## §6 Training discipline
 
-- **The M05 corpus** (frozen intent; open decision 4 lets the user veto the target): the
-  public **Hessian QM9** set (bib 47: 41,645 molecules, ωB97x/6-31G* Hessians) plus
-  B3LYP/6-31G* Hessians recomputed on QM9 subsets, giving Δ₂ = ωB97x − B3LYP per molecule with
-  the exact-exchange contrast the dry run needs; plus the PAH dry-run tensors; plus the probed
-  local-CC Δ₂ tensors from the rungs that have run (by R3: seven). Published (Zenodo DOI, deck
-  hashes) before Module 05 starts. Whether the recomputed side counts as reuse under the
+- **The M05 corpus** (decided by the user 2026-09-04): the public **Hessian QM9** set (bib 47:
+  41,645 molecules, ωB97x/6-31G* Hessians) plus B3LYP/6-31G* Hessians recomputed on an
+  **aromatic-heavy subset** (benzene derivatives and conjugated rings over-represented; several
+  thousand molecules; B2 work under the 168 h checkpoint — plan-02 provenance: 3.3 min per
+  benzene Hessian on the old laptop), giving Δ₂ = ωB97x − B3LYP per molecule with the
+  exact-exchange contrast the dry run needs. The PAH dry-run tensors and the probed local-CC Δ₂
+  tensors from the rungs that have run (by R3: seven) are a **held-out test set only**, never
+  training data. Published (Zenodo DOI, deck hashes) before Module 05 starts. Success is the
+  P3 saving and the Ladder §3 licence, not accuracy for its own sake. Whether the recomputed side counts as reuse under the
   rubric is **decided in the mapping** (plan 04's reading-1 / reading-2 logic for M04 is the
   template); nothing here pre-empts it. Splits by molecule and by pattern batch, hashed (Q3).
   Stopping on validation only. Test touched once per pre-registered evaluation.
