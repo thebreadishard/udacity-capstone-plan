@@ -33,14 +33,19 @@ single-mode scatter with sealed fit coefficients, and timings; no local-CC Δ₂
    recovered-vs-direct frequency error per family for the diagonal-only and the full recovery,
    the band width w and weights by the Ladder §3 rule, and the per-molecule DFT Hessian
    wall-clock on the B2 laptop; then the **noise-injection column**: the same recoveries with
-   Gaussian noise at a grid of σ added to every response, K and ρ per σ (the source of the
+   Gaussian noise injected **per energy** (independent on every displaced energy, one shared ε₀
+   per molecule for the reference; per component in mode G) at a grid of σ_E, R_s formed from the
+   noisy energies, K and ρ per σ_E, the reference constant c₀ identified from the two-amplitude
+   modes and printed, and the noiseless block's **DFT-arm floor** printed (the source of the
    stopping constant c and of K_cap). Feeds pilot-note items 8, 9 (both modes), 13, and the M05
    subset-size note.
 1b. **Canonical feasibility probe** (`r0_canonical_feasibility.py`): one canonical CCSD(T)
    energy of benzene in the anchor basis on the B2 laptop; wall-clock and peak memory printed
    and extrapolated to the bias-line count (61 energies) and the full canonical reference-Hessian
    count (72 canonical gradients — one canonical CCSD(T) gradient is also run and timed where
-   the code has it, `pyscf/grad/ccsd_t.py` fetched 2026-09-04 — else 1,801 energies); "fits" = ≤ 168 h and ≤ 31.3 GB per object; decides the basis of the Q6 bias
+   the code has it, `pyscf/grad/ccsd_t.py` fetched 2026-09-04 — else 1,801 energies); "fits" = ≤ 168 h and ≤ 31.3 GB per object; `max_memory` = 28,000 MB set explicitly, peak RSS
+   and the disk high-water mark printed (PySCF blocks the (T) lambda and density over virtual
+   triples, so time, not memory, is expected to bind); decides the basis of the Q6 bias
    line and whether the R0 canonical reference Hessian is R0 work or the first B3 request
    (Ladder §3; Budget §4.1b).
 2. **Probe M1 — frozen spaces** (`m1_frozen_spaces.py`): the candidate local-CC code
@@ -50,9 +55,9 @@ single-mode scatter with sealed fit coefficients, and timings; no local-CC Δ₂
    Löwdin-orthonormalises them (the Ladder §3 object; no localiser, no assignment); prints the
    reference-energy reproduction (target 10⁻⁹ E_h) and, along one totally symmetric, one
    degenerate and one non-symmetric benzene mode, the continuity diagnostics (smallest singular
-   value of the occupied overlap, largest pre-Löwdin off-diagonal, both halves; the fresh arm's
-   localiser functional and its overlap with the transported set) and E(displaced, frozen) −
-   E(displaced, fresh) per point, **without a verdict**; the raw displaced energies are written
+   value of the occupied overlap, largest pre-Löwdin off-diagonal, both halves; arm C's
+   localiser functional and its overlap with the transported set) and E(A) − E(B), E(A) − E(C)
+   per point (arms per Ladder §3; the arm-A override's commit hash printed), **without a verdict**; the raw displaced energies are written
    to the hashed, sealed file of probe 5, never printed (the τ it would be judged against does not exist yet). Fails → Ladder
    stop 1.
 2a. **Lab-scoreboard re-read and u_band** (`m03_band_uncertainty.py`): regenerate the plan-02
@@ -62,9 +67,11 @@ single-mode scatter with sealed fit coefficients, and timings; no local-CC Δ₂
    `DELTAX`), the centroid precision from the signal-to-noise, the temperature term (pinned
    hot-band correction with ±30 % and the temperature uncertainty, or the Ladder §2 floor
    χ_max·(T_source − 296 K) + 1 cm⁻¹; T_source from the record, else from the series'
-   documentation — item 56 for the NIST Quantitative IR series — else hot), their quadrature sum **u_band**, and the decidability
-   verdict per family (feeds pilot-note item 1). Expected: R0 decidable throughout; R1 and R2
-   C–C families inconclusive by construction unless the correction is pinned.
+   documentation — item 56 for the NIST Quantitative IR series, items 57 and 59 for the PNNL/NWIR
+   naphthalene record — else hot; u_296 per molecule per Ladder §2), their quadrature sum **u_band**, and the decidability
+   verdict per family (feeds pilot-note item 1). Expected: R0 and R1 decidable throughout on their room-temperature
+   sources (the hot WebBook naphthalene entries as labelled extra columns); R2 C–C families
+   inconclusive by construction unless the correction is pinned.
 3. **Gradient availability, run/no-run at equilibrium** (`anchor_gradient_availability.py`):
    per candidate code, does an analytic gradient at the anchor level run **at the equilibrium
    geometry** of benzene and naphthalene with frozen spaces? Prints code, version, run/no-run,
@@ -76,7 +83,7 @@ single-mode scatter with sealed fit coefficients, and timings; no local-CC Δ₂
    pipeline-vs-lab number**.
 5. **R1 smoothness probe** (`q6_smoothness.py`): naphthalene, four modes (a C–C stretch, a C–H
    stretch, a CH-oop mode and one totally symmetric mode), nine points each at q ∈ [−1, 1],
-   TightPNO, with and without frozen spaces; **σ_E = the RMS residual of ΔE(q) about a degree-4
+   TightPNO, arms A and B of the Ladder §3 object (never arm C); **σ_E = the RMS residual of ΔE(q) about a degree-4
    least-squares polynomial**, σ_E = √(SSR/(n − p)) with n = 9, p = 5, per mode and arm and
    **pooled over the four modes per arm** (ν = 16) with studentised residuals per point, is
    printed against 0.82·τ·q_s² (2.8·τ·q_s) for each q_s ∈ {0.25, 0.5, 1.0} — the pooled value
@@ -134,12 +141,14 @@ single-mode scatter with sealed fit coefficients, and timings; no local-CC Δ₂
 13. **R3**: direct-coupling probe; batch (both modes where licensed; both recoveries;
     licence-earning comparison); **fragment-vs-whole** (`fragment_licence.py`: coronene's Δ₂
     from ring-closed, H-capped, unrelaxed fragments at one shell vs whole, per family within τ₇ —
-    one comparison for interior pairs; verdict "passed at one shell" / "pending (b′)"); Q8(a/b);
+    one comparison, scored per family on the pairs carrying that family's Δ-shift (interior for
+    C–C, edge pieces for the CH families); verdict "passed at one shell" / "pending (b′)"); Q8(a/b);
     Q8(c) R2→R3 per mode at the common threshold; side-project **M5** (36 gradients at coronene:
     run/no-run, AD-vs-FD along the four Q6 modes, σ_g pooled at R3 size; classified by Budget §2); the
     cost records side by side.
 14. **R4 (fragment licence, parts b′ and c, first instance)**: `fragment_licence.py` on
-    circumcoronene — whole vs fragments, conditional on B3 classification of the whole batch;
+    circumcoronene — whole vs fragments, conditional on B3 classification of the whole batch
+    (the (c) instance below may run under a pending licence; it does not resolve it);
     `fragment_convergence.py` — direct couplings on the central ring from fragments of radius
     r_f and r_f + one shell, agreement within η₈·S; energy count printed and classified by
     Budget §2.

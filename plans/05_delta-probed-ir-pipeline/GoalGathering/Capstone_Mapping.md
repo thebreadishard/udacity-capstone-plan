@@ -102,10 +102,10 @@ Ladder §2: the source's stated resolution — the NIST/EPA GC-IRD spectra are h
 the signal-to-noise, and a temperature term for hot-vapour sources with the Ladder §2 floor or a
 pinned hot-band correction, items 52–53; the source class, temperature and resolution printed as
 columns; printed per family before the pilot note, with the verdict *gas-decidable /
-matrix-gated / inconclusive by construction*; the R1 and R2 C–C families are expected in the
-last class unless the correction is pinned — naphthalene's NIST gas spectra are hot vapour
-only). Dataset: PAHdb
-*experimental* libraries (v3.10 matrix, 84 species; gas-phase v1.00) plus NIST WebBook JCAMP
+matrix-gated / inconclusive by construction*; the R2 C–C families are expected in the last class unless the correction is pinned;
+R1 is expected decidable throughout on the PNNL/NWIR room-temperature record, its hot WebBook
+entries scored as labelled hot columns). Dataset: PAHdb
+*experimental* libraries (v3.10 matrix, 84 species; gas-phase v1.00) plus the PNNL/NWIR naphthalene record (items 57, 59) and NIST WebBook JCAMP
 gas-phase spectra (plan-02 parser and cache recipe, git history; plan-04 coverage probe and
 `nist_cache/`). Descriptive statistics per band family; **pre-registered hypothesis test**
 (form frozen before the data is joined): *matrix-to-gas band shift is zero* per band family —
@@ -293,9 +293,9 @@ promised path; **M05** appears as the P3 experiment on R0–R3 and, if its licen
 load-bearing prior of the R4–R6 certificates; **M06** as the pattern-efficiency experiment;
 both labelled exactly so. Artifact: a small
 CLI / service — molecule identifier in → spectrum + per-band error budget + **cost record** +
-certificate out, **or a refusal naming the rung/cap/gate that blocked it**. Runs: R0
-unconditionally under the pilot note; R1–R3 per family under
-the decidability rule and the per-mode Q6 noise gate; the fragment-probed R6 under its
+certificate out, **or a refusal naming the rung/cap/gate that blocked it**. Runs: R0–R1
+expected unconditional under the pilot note (room-temperature sources named); R2–R3 per family
+under the decidability rule and the per-mode Q6 noise gate; the fragment-probed R6 under its
 four-part licence, or its measured refusal;
 tier-1 emission post-processing via the published cascade model, labelled inherited. Paper:
 industry frame per the Goal; the accuracy/reach split; the cost record table across rungs

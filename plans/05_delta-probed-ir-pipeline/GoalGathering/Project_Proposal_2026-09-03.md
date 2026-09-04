@@ -181,10 +181,12 @@ description snippet and the vapour temperature on recall; both are graded so in 
 bibliography); on that source the C–C
 stretching families at R2 are expected to be undecidable by construction, and the plan says so
 before any number exists. The third review (4 September) found that naphthalene's only NIST
-gas-phase spectra are likewise hot (a 245 °C vapour spectrum and a GC-IRD entry), so the same
-rule now governs the second rung: benzene is scored unconditionally on room-temperature cell
-spectra, naphthalene per family, with its C–C families expected undecidable unless a published
-hot-band correction is pinned first — the plan's first paid literature debt. Deciding those families on gas data needs a source the project does
+gas-phase spectra are hot (a 245 °C vapour spectrum and a GC-IRD entry); the fourth review found
+a room-temperature quantitative vapour-phase naphthalene spectrum at 0.1 cm⁻¹ in the PNNL
+database, which the plan names now, before any scoring, because a source may not be added after
+a comparison has been scored. Benzene and naphthalene are therefore both expected to be scored
+unconditionally on room-temperature cell spectra; the hot NIST entries become labelled extra
+columns, and the published hot-band shift papers remain the plan's first paid literature debt. Deciding those families on gas data needs a source the project does
 not yet have — which is why §13.3's request to the supervisor is load-bearing, not polite.
 
 ### 5.3 Why the cost is reported and never described
@@ -255,7 +257,7 @@ per-band absolute error on identical laboratory bands; band lists, windows and m
 in a dated pilot note written before any pipeline-vs-laboratory number exists. Plan 05 adds a
 rule about the pilot note's inputs: it is written with seven inputs in hand — the laboratory side with
 its measured band uncertainties, the opponent side, a DFT-only dry run of the probing machinery
-with a noise-injected column, the frozen-space probe M1, a one-point canonical feasibility
+with a noise-injected column (noise added per energy), the frozen-space probe M1, a one-point canonical feasibility
 probe, a run/no-run gradient check at equilibrium, and the naphthalene noise-floor measurement
 with its fits sealed — and **nothing else**. The first coupled-cluster correction is computed after
 the note is committed, so no stopping constant, probe cap, tolerance or margin can be shaped by
@@ -352,7 +354,11 @@ combination over paired displacements (the raw difference is dominated by the co
 force at the DFT geometry), the frozen orbital spaces are transported by projection rather than
 re-localised and matched, and only benzene is scored unconditionally, because naphthalene's
 public gas-phase spectra are hot-vapour measurements. A fourth round (4 September) re-read
-those patches; its cold read is addressed and its domain pass is recorded in the plan's README.
+those patches: all twelve closures held, and its domain pass added four more in-spec changes —
+noise injected per energy in the dry run, the shared reference energy's offset identified from a
+second displacement amplitude rather than fitted, a first-order geometry term (the corrected
+surface's own minimum) applied and printed on every scored band, and the room-temperature
+naphthalene source above. All are in the text; the plan's README records the closures.
 The Round-7 reviewer's own words on the cheapest measurements that would settle whether the
 plan is a mistake are the first owed probes.
 
@@ -437,9 +443,11 @@ module may ship an honest fail-closed state to meet its date, and the science co
    (§10), both decided by the student as methods subject to measurement — a supervisor's
    objection would reopen either — and on the side project of §5.3, which is where the
    plan's ambition and its main time risk both sit.
-3. **Laboratory sources — now load-bearing.** Gas-phase or jet-cooled spectra of naphthalene,
-   pyrene, chrysene and triphenylene at better than 8 cm⁻¹ resolution and known temperature would make
-   the C–C families at the pyrene-size rung decidable, which the NIST hot-vapour spectra cannot;
+3. **Laboratory sources — now load-bearing.** Gas-phase or jet-cooled spectra of pyrene,
+   chrysene and triphenylene **in the 6–15 µm region** at better than 8 cm⁻¹ resolution and known
+   temperature would make the C–C families at the pyrene-size rung decidable, which the NIST
+   hot-vapour spectra cannot (the 3 µm C–H-stretch region is covered by published jet-cooled
+   spectra; naphthalene is covered by the PNNL database);
    the same for tetracene- and coronene-class species would enlarge the decidable set further.
 4. When the naphthalene measurements justify it: sponsorship of a cluster-time request sized
    by the timed probes, and, at the large-rung stage, serving as or nominating the named expert
