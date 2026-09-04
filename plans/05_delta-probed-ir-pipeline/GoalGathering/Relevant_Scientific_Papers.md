@@ -36,7 +36,7 @@ after Round-7 Pass B (issues 2, 4, 7, 8, 9) and verified via Crossref/arXiv.
 | 17 | DLPNO-CCSD(T) method / ORCA citations | Neese group | **NOT FETCHED** (debt 5) |
 | 18 | Boundary-edge codes (M02 atlas) | Hansen et al. 1996; Caporossi & Hansen 1998 | **record** — fetch at M02 |
 | 19 | Rubric-required M03 methods citation | Huebner et al., PLOS ONE **19**(5): e0295726 (2024). DOI 10.1371/journal.pone.0295726 | **record (plan-03)** |
-| 20 | \1 — now identified as items 52–53 for the u_band temperature term; the tier-2 emission-scoreboard use remains a separate, unpaid debt|
+| 20 | Temperature-dependent PAH band shifts (tier-2 scoreboard) | Joblin-era measurements — now identified as items 52–53 for the u_band temperature term | **NOT FETCHED** (debt 4; the tier-2 emission-scoreboard use remains a separate, unpaid debt) |
 | 21 | M04 fallback dataset | NIST CCCBDB, SRD 101, Release 22 (2022). DOI 10.18434/T47C7Z | **OK (2026-09-02)** |
 | 22 | M04 fallback dataset, second option | Zapata Trujillo & McKemmish, J. Phys. Chem. A **126**(25), 4100 (2022). DOI 10.1021/acs.jpca.2c01438 | **OK (2026-09-02; Crossref)** |
 | **23** | **O(1)-gradient Hessian recovery (off-diagonal low rank)** — the pattern construction plan 05 adopts | Wang, Luo, Wang & Liu, "O1NumHess: A Fast and Accurate Seminumerical Hessian Algorithm Using Only O(1) Gradients", JCTC **21**(21), 10893–10909 (2025). DOI 10.1021/acs.jctc.5c01354; arXiv:2508.07544. Open-source Python (O1NumHess, O1NumHess_QC; ORCA + BDF interfaces) | **OK (2026-09-03; arXiv abstract + HTML full text; Crossref)**. Numbers quoted (~100–124 gradients; ~2× conventional error) are from the full text |
