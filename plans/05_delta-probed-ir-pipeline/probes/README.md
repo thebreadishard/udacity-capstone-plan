@@ -57,7 +57,8 @@ single-mode scatter with sealed fit coefficients, and timings; no local-CC Δ₂
    triples, so time, not memory, is expected to bind); decides the basis of the Q6 bias
    line and whether the R0 canonical reference Hessian is R0 work or the first B3 request
    (Ladder §3; Budget §4.1b).
-2. **Probe M1 — frozen spaces** (`m1_frozen_spaces.py`): the candidate local-CC code
+2. **Probe M1 — frozen spaces** (`m1_frozen_spaces.py`; runs in WSL, `~/qc05` — pyscf-forge 1.1.1,
+   pyscfad 0.3.3, installed 2026-09-05): the candidate local-CC code
    (pyscf-forge LNO-CCSD(T), item 48; version pinned and printed) stores fragment
    list, localized orbitals and LNO vectors at the reference geometry and, at displaced
    geometries, transports the occupied and the virtual vectors by projection and

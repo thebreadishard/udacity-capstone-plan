@@ -276,6 +276,10 @@ corpus carries no module-02 reuse exposure (Goal, decision 7). **No decision is 
   band), and mode E needs σ_E ≲ 2 µE_h for the off-diagonals — ten times stricter than the Q6
   line. **Six proposals (P1–P6) await the user's decision; no frozen rule changed.**
 
+- **2026-09-05 — WSL and the anchor-code environment installed** (Budget §3 dated note): Ubuntu
+  26.04 under WSL 2 with `~/qc05` (Python 3.12: pyscf 2.14.0, pyscf-forge 1.1.1, pyscfad 0.3.3, jax
+  0.10.2); the LNO modules import; 28 GB given to WSL. Probe M1 is unblocked.
+
 ## Not yet done (owed, in order)
 
 - **Decide P1–P6 of the 2026-09-05 dry-run note** (ρ on the off-diagonal residual; the model
