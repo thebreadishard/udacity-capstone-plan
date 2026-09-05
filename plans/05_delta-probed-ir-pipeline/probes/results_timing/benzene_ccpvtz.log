@@ -1,0 +1,7 @@
+[14:17:06] anchor single-point timing on Asus18, 8 threads, thresholds tight = [1e-06, 1e-07]
+[14:17:07] cc-pvtz: 264 basis functions
+[14:17:09] cc-pvtz: RHF(DF) 1.8 s, E = -230.77843477
+[14:17:10] cc-pvtz: PM localisation 0.6 s, 15 LMOs
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
