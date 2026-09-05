@@ -87,7 +87,14 @@ code (pyscf-forge LNO-CCSD(T); PySCFAD for the side project) runs on Linux only,
 and every local-CC probe need WSL (or the cluster)** — a software precondition that stands beside
 stop 1 and is recorded here. DFT-only work (the dry run, the R0 pilot's DFT part, the module-05
 corpus) runs now in `qc`. PyTorch is installed in a separate environment when module 05 starts,
-so the psi4 environment stays intact.
+so the psi4 environment stays intact. **Update, later on 2026-09-05:** WSL 2 (2.7.13) with Ubuntu
+26.04 LTS is installed by the user; inside it a Python 3.12 environment `~/qc05` (created with uv)
+holds **pyscf 2.14.0, pyscf-forge 1.1.1** (`pyscf.lno` with `lnoccsd_t.py` imports), **pyscfad
+0.3.3** (`pyscfad.lno.ccsd_t` imports), jax 0.10.2, NumPy 2.5.2, SciPy 1.18.1, h5py 3.16; gfortran
+15.2, cmake 4.2, OpenBLAS from apt. WSL is given 28 GB and 16 processors via `~/.wslconfig`
+(default was 15 GB). Invocation from Windows: `wsl ~/qc05/bin/python <script>`; the repo is at
+`/mnt/c/Users/thebr/Documents/CapstonePlan`. The PyPI versions are the pins until the deck names
+commit hashes (side-project item (a)). Probe M1 can now run.
 
 ## 4. Order of timed probes (each prints machine, date, settings, wall-clock; gradient probes also peak memory)
 
