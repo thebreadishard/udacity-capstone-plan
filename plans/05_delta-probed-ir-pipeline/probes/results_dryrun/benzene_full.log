@@ -1,0 +1,150 @@
+[10:57:59] dry run: benzene, out = C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_dryrun\benzene, quick = False
+[10:57:59] deck: 364 patterns (incl. q₂ block), hash 0158e1306bfdf3c6…
+[10:59:57] stage B: 5/364 pairs, 1.8 min elapsed, 21.6 s per pair (4 gradient calls)
+[11:01:49] stage B: 10/364 pairs, 3.7 min elapsed, 22.0 s per pair (4 gradient calls)
+[11:03:45] stage B: 15/364 pairs, 5.6 min elapsed, 22.4 s per pair (4 gradient calls)
+[11:05:46] stage B: 20/364 pairs, 7.6 min elapsed, 22.8 s per pair (4 gradient calls)
+[11:07:45] stage B: 25/364 pairs, 9.6 min elapsed, 23.0 s per pair (4 gradient calls)
+[11:09:34] stage B: 30/364 pairs, 11.4 min elapsed, 22.8 s per pair (4 gradient calls)
+[11:11:26] stage B: 35/364 pairs, 13.3 min elapsed, 22.8 s per pair (4 gradient calls)
+[11:13:19] stage B: 40/364 pairs, 15.2 min elapsed, 22.7 s per pair (4 gradient calls)
+[11:15:12] stage B: 45/364 pairs, 17.1 min elapsed, 22.7 s per pair (4 gradient calls)
+[11:17:12] stage B: 50/364 pairs, 19.1 min elapsed, 22.9 s per pair (4 gradient calls)
+[11:19:08] stage B: 55/364 pairs, 21.0 min elapsed, 22.9 s per pair (4 gradient calls)
+[11:20:59] stage B: 60/364 pairs, 22.8 min elapsed, 22.8 s per pair (4 gradient calls)
+[11:22:53] stage B: 65/364 pairs, 24.7 min elapsed, 22.8 s per pair (4 gradient calls)
+[11:25:23] stage B: 70/364 pairs, 27.2 min elapsed, 23.3 s per pair (4 gradient calls)
+[11:27:35] stage B: 75/364 pairs, 29.4 min elapsed, 23.5 s per pair (4 gradient calls)
+[11:29:35] stage B: 80/364 pairs, 31.4 min elapsed, 23.6 s per pair (4 gradient calls)
+[11:31:24] stage B: 85/364 pairs, 33.3 min elapsed, 23.5 s per pair (4 gradient calls)
+[11:33:15] stage B: 90/364 pairs, 35.1 min elapsed, 23.4 s per pair (4 gradient calls)
+[11:35:03] stage B: 95/364 pairs, 36.9 min elapsed, 23.3 s per pair (4 gradient calls)
+[11:37:09] stage B: 100/364 pairs, 39.0 min elapsed, 23.4 s per pair (4 gradient calls)
+[11:39:34] stage B: 105/364 pairs, 41.4 min elapsed, 23.7 s per pair (4 gradient calls)
+[11:41:49] stage B: 110/364 pairs, 43.7 min elapsed, 23.8 s per pair (4 gradient calls)
+[11:43:59] stage B: 115/364 pairs, 45.8 min elapsed, 23.9 s per pair (4 gradient calls)
+[11:46:10] stage B: 120/364 pairs, 48.0 min elapsed, 24.0 s per pair (4 gradient calls)
+[11:48:22] stage B: 125/364 pairs, 50.2 min elapsed, 24.1 s per pair (4 gradient calls)
+[11:50:35] stage B: 130/364 pairs, 52.4 min elapsed, 24.2 s per pair (4 gradient calls)
+[11:52:42] stage B: 135/364 pairs, 54.6 min elapsed, 24.2 s per pair (4 gradient calls)
+[11:54:49] stage B: 140/364 pairs, 56.7 min elapsed, 24.3 s per pair (4 gradient calls)
+[11:56:52] stage B: 145/364 pairs, 58.7 min elapsed, 24.3 s per pair (4 gradient calls)
+[11:58:57] stage B: 150/364 pairs, 60.8 min elapsed, 24.3 s per pair (4 gradient calls)
+[12:00:59] stage B: 155/364 pairs, 62.8 min elapsed, 24.3 s per pair (4 gradient calls)
+[12:02:55] stage B: 160/364 pairs, 64.8 min elapsed, 24.3 s per pair (4 gradient calls)
+[12:05:02] stage B: 165/364 pairs, 66.9 min elapsed, 24.3 s per pair (4 gradient calls)
+[12:07:15] stage B: 170/364 pairs, 69.1 min elapsed, 24.4 s per pair (4 gradient calls)
+[12:09:42] stage B: 175/364 pairs, 71.5 min elapsed, 24.5 s per pair (4 gradient calls)
+[12:12:02] stage B: 180/364 pairs, 73.9 min elapsed, 24.6 s per pair (4 gradient calls)
+[12:14:21] stage B: 185/364 pairs, 76.2 min elapsed, 24.7 s per pair (4 gradient calls)
+[12:16:37] stage B: 190/364 pairs, 78.5 min elapsed, 24.8 s per pair (4 gradient calls)
+[12:18:49] stage B: 195/364 pairs, 80.7 min elapsed, 24.8 s per pair (4 gradient calls)
+[12:20:49] stage B: 200/364 pairs, 82.7 min elapsed, 24.8 s per pair (4 gradient calls)
+[12:22:51] stage B: 205/364 pairs, 84.7 min elapsed, 24.8 s per pair (4 gradient calls)
+[12:25:02] stage B: 210/364 pairs, 86.9 min elapsed, 24.8 s per pair (4 gradient calls)
+[12:27:13] stage B: 215/364 pairs, 89.1 min elapsed, 24.9 s per pair (4 gradient calls)
+[12:29:23] stage B: 220/364 pairs, 91.2 min elapsed, 24.9 s per pair (4 gradient calls)
+[12:31:38] stage B: 225/364 pairs, 93.5 min elapsed, 24.9 s per pair (4 gradient calls)
+[12:33:53] stage B: 230/364 pairs, 95.7 min elapsed, 25.0 s per pair (4 gradient calls)
+[12:36:10] stage B: 235/364 pairs, 98.0 min elapsed, 25.0 s per pair (4 gradient calls)
+[12:38:24] stage B: 240/364 pairs, 100.3 min elapsed, 25.1 s per pair (4 gradient calls)
+[12:40:41] stage B: 245/364 pairs, 102.5 min elapsed, 25.1 s per pair (4 gradient calls)
+[12:42:57] stage B: 250/364 pairs, 104.8 min elapsed, 25.2 s per pair (4 gradient calls)
+[12:45:14] stage B: 255/364 pairs, 107.1 min elapsed, 25.2 s per pair (4 gradient calls)
+[12:47:27] stage B: 260/364 pairs, 109.3 min elapsed, 25.2 s per pair (4 gradient calls)
+[12:49:44] stage B: 265/364 pairs, 111.6 min elapsed, 25.3 s per pair (4 gradient calls)
+[12:51:55] stage B: 270/364 pairs, 113.8 min elapsed, 25.3 s per pair (4 gradient calls)
+[12:54:07] stage B: 275/364 pairs, 116.0 min elapsed, 25.3 s per pair (4 gradient calls)
+[12:56:22] stage B: 280/364 pairs, 118.2 min elapsed, 25.3 s per pair (4 gradient calls)
+[12:58:35] stage B: 285/364 pairs, 120.4 min elapsed, 25.4 s per pair (4 gradient calls)
+[13:00:49] stage B: 290/364 pairs, 122.7 min elapsed, 25.4 s per pair (4 gradient calls)
+[13:03:05] stage B: 295/364 pairs, 124.9 min elapsed, 25.4 s per pair (4 gradient calls)
+[13:05:22] stage B: 300/364 pairs, 127.2 min elapsed, 25.4 s per pair (4 gradient calls)
+[13:07:33] stage B: 305/364 pairs, 129.4 min elapsed, 25.5 s per pair (4 gradient calls)
+[13:09:30] stage B: 310/364 pairs, 131.4 min elapsed, 25.4 s per pair (4 gradient calls)
+[13:11:25] stage B: 315/364 pairs, 133.3 min elapsed, 25.4 s per pair (4 gradient calls)
+[13:13:17] stage B: 320/364 pairs, 135.1 min elapsed, 25.3 s per pair (4 gradient calls)
+[13:15:11] stage B: 325/364 pairs, 137.0 min elapsed, 25.3 s per pair (4 gradient calls)
+[13:16:59] stage B: 330/364 pairs, 138.8 min elapsed, 25.2 s per pair (4 gradient calls)
+[13:18:45] stage B: 335/364 pairs, 140.6 min elapsed, 25.2 s per pair (4 gradient calls)
+[13:20:25] stage B: 340/364 pairs, 142.3 min elapsed, 25.1 s per pair (4 gradient calls)
+[13:22:03] stage B: 345/364 pairs, 143.9 min elapsed, 25.0 s per pair (4 gradient calls)
+[13:23:45] stage B: 350/364 pairs, 145.6 min elapsed, 25.0 s per pair (4 gradient calls)
+[13:25:26] stage B: 355/364 pairs, 147.3 min elapsed, 24.9 s per pair (4 gradient calls)
+[13:27:09] stage B: 360/364 pairs, 149.0 min elapsed, 24.8 s per pair (4 gradient calls)
+[13:28:30] stage B done
+
+# Dry run — benzene — 2026-09-05 13:31 — machine Asus18, 8 threads, psi4 1.11
+
+## Timing (B2 laptop, this run)
+- optimize_s: 0.18 min
+- hessian_b3lyp_s: 6.47 min
+- hessian_bhhlyp_s: 7.57 min
+
+## Modes: M = 30; families: CC-stretch×6, CH-ip-bend×7, CH-oop×9, CH-stretch×6, ring-ip×2
+- totally symmetric mode used by the Q6 scan: index 12 (1020 cm⁻¹)
+
+## Deck: hash 0158e1306bfdf3c6…, 334 ± pairs in K (30 single-mode + 304 off-diagonal), 61 held out (f_h = 0.2), q_s = 1.0, q₂ = 0.5; 729 energies evaluated per arm (gradients too)
+
+## Reference constant c₀ = 0.196 ± 0.257 µE_h (two-amplitude read over all modes)
+## Δ₁ (∂ΔE/∂q at the B3LYP geometry, dimensionless q), |Δ₁| max = 2724.1 µE_h per unit q
+
+## The w rule: w = 25.0 cm⁻¹ (λ = 1e-06); table:
+- w = 25: hold-out ρ = 0.005, worst family RMS = 0.43 cm⁻¹
+- w = 50: hold-out ρ = 0.005, worst family RMS = 0.43 cm⁻¹
+- w = 100: hold-out ρ = 0.005, worst family RMS = 0.43 cm⁻¹
+- w = 200: hold-out ρ = 0.006, worst family RMS = 0.42 cm⁻¹
+- w = 400: hold-out ρ = 0.077, worst family RMS = 2.32 cm⁻¹
+
+## Mode E: K at declared ρ = 0.1: 62 energies (K_off = 2); ρ with all training pairs = 0.005; RMS held-out response = 215.02 µE_h
+- recovered-vs-direct RMS frequency error per family (cm⁻¹), full recovery (re-diagonalised) / diagonal-only (CMA-0):
+  - CC-stretch (n=6): full 0.36 / diag-only 6.90
+  - CH-ip-bend (n=7): full 0.43 / diag-only 7.47
+  - CH-oop (n=9): full 0.21 / diag-only 0.62
+  - CH-stretch (n=6): full 0.11 / diag-only 0.04
+  - ring-ip (n=2): full 0.31 / diag-only 0.37
+- ρ(n) curve (energies, ρ): (62,0.024), (102,0.019), (142,0.021), (182,0.021), (222,0.028), (262,0.041), (302,0.036), (342,0.034), (382,0.032), (422,0.031), (462,0.007), (502,0.005), (542,0.005)
+- **model floor** ρ_dry = 0.0049 (noiseless responses, all training pairs): the quartic contamination of the quadratic model at q_s = 1.0
+- **off-diagonal view**: RMS of the off-diagonal part of the held-out responses = 5.16 µE_h (vs 215.02 raw); ρ_off(n) curve: (62,1.000), (102,0.771), (142,0.878), (182,0.886), (222,1.170), (262,1.705), (302,1.498), (342,1.421), (382,1.315), (422,1.303), (462,0.297), (502,0.212), (542,0.205); K at declared ρ_off = None
+- **diagonal-anchored recovery** (diagonal from the single block, off-diagonals fitted to the residual): ρ_off = 0.221; family RMS (cm⁻¹): CC-stretch 0.41, CH-ip-bend 0.45, CH-oop 0.22, CH-stretch 0.05, ring-ip 0.27
+- **quartic-corrected, diagonal-anchored recovery** (Δ_ii and Δ₄,iiii from the two amplitudes; Σ Δ₄ a⁴/24 subtracted): off-diagonal RMS after subtraction = 5.18 µE_h; ρ_off = 0.187; family RMS (cm⁻¹): CC-stretch 0.20, CH-ip-bend 0.45, CH-oop 0.20, CH-stretch 0.07, ring-ip 0.21; two-amplitude diagonal alone: CC-stretch 7.26, CH-ip-bend 7.41, CH-oop 0.66, CH-stretch 0.07, ring-ip 0.32
+
+## Mode G: K at declared ρ: 60 gradients; family error (full):
+  - CC-stretch: 0.30 cm⁻¹
+  - CH-ip-bend: 0.16 cm⁻¹
+  - CH-oop: 0.21 cm⁻¹
+  - CH-stretch: 0.03 cm⁻¹
+  - ring-ip: 0.09 cm⁻¹
+
+## Off-diagonal blocks flagged large in the direct Δ₂ (|Δ_ij| > 0.2 × RMS diagonal); (i, j, ratio, ω_i, ω_j):
+- (15, 18, +0.95, 1186, 1357)
+- (17, 22, -0.41, 1208, 1656)
+- (16, 23, +0.40, 1208, 1656)
+- (13, 20, +0.34, 1069, 1531)
+- (14, 21, +0.34, 1069, 1532)
+
+## DFT-arm noise floor (nine-point degree-4 estimator): pooled σ_E = 0.147 µE_h (ν = 16)
+- CC-stretch (1532 cm⁻¹): σ_E = 0.229 µE_h, max |studentised residual| = 1.49
+- CH-stretch (3199 cm⁻¹): σ_E = 0.064 µE_h, max |studentised residual| = 1.14
+- CH-oop (865 cm⁻¹): σ_E = 0.002 µE_h, max |studentised residual| = 1.48
+- totally-symmetric (1020 cm⁻¹): σ_E = 0.174 µE_h, max |studentised residual| = 1.16
+
+## Noise-injection column (K in energies or gradients at ρ* = c·ρ_noise; 'at-noise' if c·ρ_noise ≥ 0.5)
+- mode E, σ_E = 0.5 µE_h: ρ_noise = 0.002; c=1.0: K=not-reached; c=1.5: K=not-reached; c=2.0: K=not-reached; c=3.0: K=496  | with the model floor, ρ* = max(1.1·ρ_dry, c·ρ_noise): c=1.0: K=490; c=1.5: K=490; c=2.0: K=490; c=3.0: K=490
+- mode G, σ_g = 0.5 µE_h/bohr: ρ_noise = 0.004; c=1.0: K=not-reached; c=1.5: K=not-reached; c=2.0: K=not-reached; c=3.0: K=not-reached
+- mode E, σ_E = 1.0 µE_h: ρ_noise = 0.003; c=1.0: K=not-reached; c=1.5: K=538; c=2.0: K=496; c=3.0: K=448  | with the model floor, ρ* = max(1.1·ρ_dry, c·ρ_noise): c=1.0: K=498; c=1.5: K=498; c=2.0: K=496; c=3.0: K=448
+- mode G, σ_g = 1.0 µE_h/bohr: ρ_noise = 0.008; c=1.0: K=not-reached; c=1.5: K=not-reached; c=2.0: K=not-reached; c=3.0: K=not-reached
+- mode E, σ_E = 2.0 µE_h: ρ_noise = 0.007; c=1.0: K=not-reached; c=1.5: K=496; c=2.0: K=430; c=3.0: K=76  | with the model floor, ρ* = max(1.1·ρ_dry, c·ρ_noise): c=1.0: K=not-reached; c=1.5: K=496; c=2.0: K=430; c=3.0: K=76
+- mode G, σ_g = 2.0 µE_h/bohr: ρ_noise = 0.016; c=1.0: K=not-reached; c=1.5: K=not-reached; c=2.0: K=not-reached; c=3.0: K=not-reached
+- mode E, σ_E = 5.0 µE_h: ρ_noise = 0.016; c=1.0: K=not-reached; c=1.5: K=76; c=2.0: K=62; c=3.0: K=62  | with the model floor, ρ* = max(1.1·ρ_dry, c·ρ_noise): c=1.0: K=not-reached; c=1.5: K=76; c=2.0: K=62; c=3.0: K=62
+- mode G, σ_g = 5.0 µE_h/bohr: ρ_noise = 0.039; c=1.0: K=not-reached; c=1.5: K=not-reached; c=2.0: K=not-reached; c=3.0: K=not-reached
+- mode E, σ_E = 10.0 µE_h: ρ_noise = 0.033; c=1.0: K=76; c=1.5: K=62; c=2.0: K=62; c=3.0: K=62  | with the model floor, ρ* = max(1.1·ρ_dry, c·ρ_noise): c=1.0: K=76; c=1.5: K=62; c=2.0: K=62; c=3.0: K=62
+- mode G, σ_g = 10.0 µE_h/bohr: ρ_noise = 0.078; c=1.0: K=not-reached; c=1.5: K=not-reached; c=2.0: K=not-reached; c=3.0: K=not-reached
+- mode E, σ_E = 20.0 µE_h: ρ_noise = 0.066; c=1.0: K=62; c=1.5: K=62; c=2.0: K=62; c=3.0: K=62  | with the model floor, ρ* = max(1.1·ρ_dry, c·ρ_noise): c=1.0: K=62; c=1.5: K=62; c=2.0: K=62; c=3.0: K=62
+- mode G, σ_g = 20.0 µE_h/bohr: ρ_noise = 0.156; c=1.0: K=not-reached; c=1.5: K=not-reached; c=2.0: K=not-reached; c=3.0: K=not-reached
+
+## Deviations from the frozen form (this version)
+- low-rank term of the structural prior not implemented (banded l1 only)
+- completion patterns are random sparse mode combinations, not O1NumHess
+
+Printed by probes/dryrun_dft_delta_recovery.py. Both arms are DFT; no local-CC number exists here.

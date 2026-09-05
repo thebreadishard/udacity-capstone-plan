@@ -451,9 +451,9 @@ def stage_c(a: dict, deck: dict, out: str, quick: bool) -> dict:
         rec = cache[str(p["index"])]
         gp = (np.array(rec["+"]["high"]["g"]) - np.array(rec["+"]["low"]["g"])) * Minv
         gm = (np.array(rec["-"]["high"]["g"]) - np.array(rec["-"]["low"]["g"])) * Minv
-        if noise_sigma is not None:
-            gp = gp + rng.normal(0, noise_sigma, size=gp.shape); gm = gm + rng.normal(0, noise_sigma, size=gm.shape)
         qp = (L.T @ gp) / np.sqrt(omega); qm = (L.T @ gm) / np.sqrt(omega)
+        if noise_sigma is not None:      # σ_g per projected component, E_h per unit q (the plan's σ_g)
+            qp = qp + rng.normal(0, noise_sigma, size=qp.shape); qm = qm + rng.normal(0, noise_sigma, size=qm.shape)
         return 0.5 * (qp - qm)          # = Δ₂ a in dimensionless units
 
     singles = [p for p in deck["patterns"] if p["kind"] == "single"]
@@ -605,6 +605,9 @@ def stage_c(a: dict, deck: dict, out: str, quick: bool) -> dict:
     dG_full = fista_lasso(AG_tr, bG_tr, wtsG)
     fam_err_G = family_rms_freq_error(unpack(dG_full, pairs, M), D2_direct, omega, families)
     rms_resp_G = float(np.sqrt(np.mean(bG_ho ** 2)))
+    rho_dry_floor_G = rho_of(dG_full, AG_ho, bG_ho)
+    RHO_OFF_DECLARED = 0.3
+    K_E_off_03 = next((n for n, r in curve_E_off if r <= RHO_OFF_DECLARED), None)
 
     # ---- off-diagonal blocks flagged large in the direct Δ₂ (for the real deck's two-mode patterns)
     diag_scale = np.sqrt(np.mean(np.diag(D2_direct) ** 2)) + 1e-30
@@ -660,11 +663,14 @@ def stage_c(a: dict, deck: dict, out: str, quick: bool) -> dict:
             rows = np.concatenate([np.arange(k * M, (k + 1) * M) for k in idx_tr_pairs])
             d = fista_lasso(AG_all[rows], bGn[rows], wtsG, n_iter=1000)
             curveG.append((2 * len(idx_tr_pairs), rho_of(d, AG_ho, bG_ho)))
-        entryG = {"sigma_g_uEh_per_bohr": s_ueh, "mode": "G", "rho_noise": rho_noise_G, "K_at": {}}
+        entryG = {"sigma_g_uEh_per_q": s_ueh, "mode": "G", "rho_noise": rho_noise_G, "K_at": {}, "K_at_with_floor": {}}
         for c in C_GRID:
             rho_star = c * rho_noise_G
             entryG["K_at"][str(c)] = ("at-noise" if rho_star >= RHO_MAX
                                       else next((n for n, r in curveG if r <= rho_star), "not-reached"))
+            rho_star_f = max(rho_dry_floor_G * 1.1, rho_star)
+            entryG["K_at_with_floor"][str(c)] = ("at-noise" if rho_star_f >= RHO_MAX
+                                                 else next((n for n, r in curveG if r <= rho_star_f), "not-reached"))
         noise_table.append(entryG)
 
     # ---- DFT-arm floor from the nine-point scans (stage B2, if present)
@@ -687,7 +693,8 @@ def stage_c(a: dict, deck: dict, out: str, quick: bool) -> dict:
                                         "family_error": fam_err_qc, "family_error_diag_two_amplitude": fam_err_diag_q,
                                         "Delta4_iiii": d4.tolist()}},
         "modeG": {"rho_curve": curve_G, "K_at_declared_rho": K_G, "rms_resp_holdout": rms_resp_G,
-                  "family_error_full": fam_err_G},
+                  "rho_dry_floor": rho_dry_floor_G, "family_error_full": fam_err_G},
+        "K_off_at_rho_off_0.3_energies": (K_E_off_03 - 2 * M) if K_E_off_03 else None,
         "flagged_offdiagonal_blocks": flagged[:40],
         "noise_column": noise_table, "dft_arm_floor": floor,
         "declared_rho": RHO_DECLARED, "rho_max": RHO_MAX,
@@ -784,7 +791,7 @@ def write_report(a, deck, c, out, quick):
     P(f"- **off-diagonal view**: RMS of the off-diagonal part of the held-out responses = {e['rms_offdiag_holdout_Eh']*1e6:.2f} µE_h "
       f"(vs {e['rms_resp_holdout_Eh']*1e6:.2f} raw); ρ_off(n) curve: " +
       ", ".join(f"({n},{r:.3f})" for n, r in e['rho_off_curve'][::max(1,len(e['rho_off_curve'])//12)]) +
-      f"; K at declared ρ_off = {e['K_at_declared_rho_off']}")
+      f"; K at declared ρ_off = {e['K_at_declared_rho_off']}; **K_off at ρ_off ≤ 0.3 = {c['K_off_at_rho_off_0.3_energies']} energies**")
     P(f"- **diagonal-anchored recovery** (diagonal from the single block, off-diagonals fitted to the residual): "
       f"ρ_off = {e['rho_off_diagonal_anchored']:.3f}; family RMS (cm⁻¹): " +
       ", ".join(f"{fam} {v['rms_full_rediag_cm']:.2f}" for fam, v in e['family_error_diagonal_anchored'].items()))
@@ -795,7 +802,7 @@ def write_report(a, deck, c, out, quick):
       "; two-amplitude diagonal alone: " +
       ", ".join(f"{fam} {v['rms_full_rediag_cm']:.2f}" for fam, v in qc['family_error_diag_two_amplitude'].items()))
     P("")
-    P(f"## Mode G: K at declared ρ: {c['modeG']['K_at_declared_rho']} gradients; family error (full):")
+    P(f"## Mode G: K at declared ρ: {c['modeG']['K_at_declared_rho']} gradients; model floor ρ_dry(G) = {c['modeG']['rho_dry_floor']:.4f}; family error (full):")
     for fam, v in c["modeG"]["family_error_full"].items():
         P(f"  - {fam}: {v['rms_full_rediag_cm']:.2f} cm⁻¹")
     P("")
@@ -817,8 +824,9 @@ def write_report(a, deck, c, out, quick):
               "  | with the model floor, ρ* = max(1.1·ρ_dry, c·ρ_noise): " +
               "; ".join(f"c={k}: K={v}" for k, v in e["K_at_with_floor"].items()))
         else:
-            P(f"- mode G, σ_g = {e['sigma_g_uEh_per_bohr']} µE_h/bohr: ρ_noise = {e['rho_noise']:.3f}; " +
-              "; ".join(f"c={k}: K={v}" for k, v in e["K_at"].items()))
+            P(f"- mode G, σ_g = {e['sigma_g_uEh_per_q']} µE_h per unit q: ρ_noise = {e['rho_noise']:.3f}; " +
+              "; ".join(f"c={k}: K={v}" for k, v in e["K_at"].items()) +
+              "  | with the floor: " + "; ".join(f"c={k}: K={v}" for k, v in e["K_at_with_floor"].items()))
     P("")
     P("## Deviations from the frozen form (this version)")
     for d in c["deviations"]:
