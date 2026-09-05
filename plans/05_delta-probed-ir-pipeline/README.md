@@ -263,6 +263,11 @@ corpus carries no module-02 reuse exposure (Goal, decision 7). **No decision is 
   unchanged. Files touched: Ladder §2, bibliography (61–64), Frozen_Lines §5, Mapping M03,
   probes README 2a.
 
+- **2026-09-05 — machine and software facts** (Budget §3 dated note): the plan-02 timings were
+  measured on this laptop, not an older one (provenance until a plan-05 probe re-prints them);
+  the laptop has psi4 1.11 in the conda environment `qc` but no pyscf, no PyTorch and no WSL, so
+  probe M1 and every local-CC probe need WSL or the cluster. DFT-only work runs now.
+
 ## Not yet done (owed, in order)
 
 - ~~Round 11~~ — not planned. The review loop was closed on 2026-09-04 after a seam check of the
