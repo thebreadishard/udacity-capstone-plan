@@ -1,0 +1,29 @@
+{
+ "basis": "cc-pvtz",
+ "nbf": 264,
+ "natom": 12,
+ "threads": 8,
+ "lno_thresh": [
+  1e-06,
+  1e-07
+ ],
+ "thresh_name": "tight",
+ "machine": "Asus18",
+ "python": "3.12.14",
+ "t_scf_s": 1.7592852115631104,
+ "e_scf": -230.7784347731007,
+ "scf_converged": true,
+ "t_localise_s": 0.6095812320709229,
+ "n_lmo": 15,
+ "t_lno_ccsd_t_s": 2086.93088555336,
+ "e_corr_pt2": -0.9504199859641758,
+ "e_corr_ccsd": -0.9763499282555481,
+ "e_corr_ccsd_t": -1.0284451915209278,
+ "e_tot_lno_ccsd_t": -231.80687996462163,
+ "peak_rss_gb_after_lno": 5.457725524902344,
+ "t_canonical_ccsd_t_s": 754.6471478939056,
+ "e_corr_canonical_ccsd": -0.9762393675960084,
+ "e_corr_canonical_ccsd_t": -1.0285695361927918,
+ "lno_minus_canonical_ccsd_t_uEh": 124.34467186395182,
+ "peak_rss_gb_after_canonical": 7.276416778564453
+}
