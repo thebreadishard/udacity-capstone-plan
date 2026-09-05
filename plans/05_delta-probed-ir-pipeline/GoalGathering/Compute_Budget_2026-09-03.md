@@ -100,14 +100,35 @@ cc-pVDZ (114 bf) LNO-CCSD(T) 180 s, canonical CCSD(T) 27 s, LNO − canonical 16
 **cc-pVTZ (264 bf) LNO-CCSD(T) 2087 s, peak 5.5 GB; canonical CCSD(T) 755 s, peak 7.3 GB; LNO −
 canonical 124 µE_h.** For the anchor-basis feasibility rule (Ladder §3): the Q6 bias line, 61
 canonical energies × 755 s ≈ 12.8 h, **fits** (≤ 168 h, ≤ 31.3 GB); the full canonical reference
-Hessian by energies, 1,801 × 755 s ≈ 378 h, **does not fit**; the 72-gradient branch waits for the
-one measured canonical gradient (`canonical_gradient_timing.py`, running). A local-CC energy at the
+Hessian by energies, 1,801 × 755 s ≈ 378 h, **does not fit**; the 72-gradient branch is settled below. A local-CC energy at the
 anchor basis costs 3× a canonical one at benzene — locality pays only at larger molecules; probe M1
 is therefore developed at cc-pVDZ (3 min per energy) and run once at cc-pVTZ (35 min per energy).
 **Availability (user, 2026-09-05):** the B2 laptop is dedicated to the capstone and available 24/7
 (the user works weekdays on a separate client machine); long runs may start on any day and are checked
 asynchronously. This changes scheduling, not the rule: 168 h of compute per batch remains the B2/B3
 classification threshold and is now reached in seven calendar days.
+
+**Measured 2026-09-05 evening (`canonical_gradient_timing.py`, WSL, 8 threads, pyscf 2.14.0 conventional
+integrals, frozen core):** one canonical **CCSD(T) analytic gradient of benzene at cc-pVDZ (114 bf) takes
+1,399 s (23.3 min) and peaks at 13.9 GB resident**, against 27 s for the canonical CCSD(T) energy in the
+same basis — a gradient-to-energy factor of ≈ 50 in this implementation. The cc-pVTZ gradient was attempted twice: the first attempt (15:08) reached the gradient
+stage after CCSD (472 s, 20.1 GB) and was lost when Windows tore the WSL VM down (below); the second
+attempt runs alone under the new 22 GB ceiling, and its outcome is appended to the log. **72-gradient
+branch at the anchor basis on this laptop: B3** — by memory before time (the cc-pVDZ gradient alone needs
+13.9 GB of the 22 GB WSL can have; the cc-pVTZ one exceeded 20 GB before the gradient stage began) and by
+time anyway (72 × ≥ 50 × 755 s ≈ 32 days). The Ladder's rule is unchanged; this only records that on
+this machine the full canonical reference at cc-pVTZ is reachable by neither branch, and the Q6 bias line
+(61 energies, 12.8 h) is what the laptop contributes.
+
+**Incident 2026-09-05 18:15 (recorded because it changes an operating rule):** with `~/.wslconfig`
+at 28 GB on a 31.3 GB machine, the cc-pVTZ gradient job and probe M1 running together brought vmmemWSL
+to 29.8 GB; Windows logged a low-virtual-memory condition (Resource-Exhaustion-Detector event 2004,
+18:15:09) and terminated the VM, killing both jobs (M1 at 22 of 27 points, later resumed by reloading
+the saved frozen spaces — reload test +0.0000 µE_h). Rules from this: the WSL ceiling is **22 GB**
+(Windows keeps ~9 GB); jobs that need more than 22 GB do not fit this laptop; anchor-level jobs run
+**one at a time, chained in a single WSL session**; the harness reports a VM kill as a clean exit, so
+completion is read from the result files, never from the exit code; and a WSL session's processes die
+with the session leader, so a chain shell is never killed while a wanted child runs.
 
 ## 4. Order of timed probes (each prints machine, date, settings, wall-clock; gradient probes also peak memory)
 
