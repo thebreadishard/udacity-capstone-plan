@@ -1,0 +1,15 @@
+[15:12:56] M1: benzene cc-pvdz, thresholds [1e-05, 1e-06], modes [12] (1020 cm⁻¹ CH-ip-bend), 3 points, 8 threads
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[15:15:46] reference: arm C 170 s; 15 fragments; sizes [(14, 69), (14, 69), (14, 69), (14, 62), (14, 69)]…; frozen-space hash 10b828887fbb36b5
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[15:18:46] stage 0 round trip: E_A(0) − E_C(0) = 0.0000 µE_h (target |·| ≤ 1e-3 µE_h = 1e-9 E_h); arm A 180 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
