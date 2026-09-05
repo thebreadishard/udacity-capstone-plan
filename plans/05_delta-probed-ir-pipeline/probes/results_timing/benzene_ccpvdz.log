@@ -1,0 +1,22 @@
+[14:13:17] anchor single-point timing on Asus18, 8 threads, thresholds tight = [1e-06, 1e-07]
+[14:13:17] cc-pvdz: 114 basis functions
+[14:13:18] cc-pvdz: RHF(DF) 0.8 s, E = -230.72142257
+[14:13:18] cc-pvdz: PM localisation 0.4 s, 15 LMOs
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+E(LNOMP2) = -231.504985400057  E_corr = -0.783562833336878
+E(LNOCCSD) = -231.544977601929  E_corr = -0.823555035208144
+E(LNOCCSD_T) = -231.581027961543  E_corr = -0.859605394822878
+Summary by spin components
+LNOMP2   Ess = -0.205699998472116  Eos = -0.577862834864762  Escs = -0.761933501328929
+LNOCCSD  Ess = -0.184120698105653  Eos = -0.639434337102491  Escs = -0.828633396992172
+[14:16:18] cc-pvdz: LNO-CCSD(T) 180.1 s, E_corr(T) = -0.85960539, peak RSS 1.17 GB
+[14:16:45] cc-pvdz: canonical CCSD(T) 26.7 s, LNO − canonical = 16.3 µE_h, peak RSS 1.17 GB
+
+# Anchor single-point timing — benzene at the dry-run B3LYP/6-31G* geometry — 2026-09-05 14:16, Asus18 (WSL), 8 threads, LNO thresholds [1e-06, 1e-07]
+| basis | nbf | RHF(DF) s | PM s | LNO-CCSD(T) s | peak RSS GB | E_corr LNO-CCSD(T) | canonical CCSD(T) s | LNO − canonical µE_h |
+|---|---|---|---|---|---|---|---|---|
+| cc-pvdz | 114 | 1 | 0 | 180 | 1.17 | -0.859605 | 27 | 16.3 |
+
+Printed by probes/anchor_single_point_timing.py. A timing; no Δ, no displaced geometry.

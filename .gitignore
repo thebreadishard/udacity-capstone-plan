@@ -32,3 +32,9 @@ plans/*/probes/batch_results/*.log
 # in version control is not pre-registered.
 !plans/*/probes/jobs.json
 plans/*/probes/*.log
+
+# Plan 05: the probe results are the measurement (JSON, npz, logs, reports); psi4 scratch output is not
+!plans/*/probes/results_*/**/*.json
+!plans/*/probes/results_*/*.json
+plans/*/probes/results_*/**/psi4.out
+plans/*/probes/results_*/psi4.out
