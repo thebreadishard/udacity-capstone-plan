@@ -37,13 +37,14 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--basis", default="cc-pvtz")
     ap.add_argument("--threads", type=int, default=8)
+    ap.add_argument("--max-memory", type=int, default=24000, help="pyscf max_memory in MB (lower values push CCSD intermediates to disk scratch)")
     args = ap.parse_args()
     from pyscf import gto, scf, cc, lib
     lib.num_threads(args.threads)
     a = json.load(open(STAGEA))
     mol = gto.M(atom=[(s, tuple(c)) for s, c in zip(a["symbols"], np.array(a["coords_bohr"]))], unit="Bohr",
-                basis=args.basis, verbose=0, max_memory=24000, symmetry=False)
-    rec = {"basis": args.basis, "nbf": mol.nao_nr(), "threads": args.threads, "machine": platform.node()}
+                basis=args.basis, verbose=0, max_memory=args.max_memory, symmetry=False)
+    rec = {"basis": args.basis, "nbf": mol.nao_nr(), "threads": args.threads, "machine": platform.node(), "max_memory_mb": args.max_memory, "tmpdir": os.environ.get("PYSCF_TMPDIR", os.environ.get("TMPDIR", "/tmp"))}
     log(f"canonical CCSD(T) gradient, benzene {args.basis}, {mol.nao_nr()} bf, {args.threads} threads")
     t0 = time.time()
     mf = scf.RHF(mol)          # conventional integrals: the CC gradient code needs the exact ERIs

@@ -1,3 +1,101 @@
 [15:07:55] canonical CCSD(T) gradient, benzene cc-pvtz, 264 bf, 8 threads
 [15:08:04] RHF 8.5 s
 [15:15:56] CCSD 472.4 s, peak 20.11 GB
+=== second attempt Sat Sep  5 21:37:04 CEST 2026, alone, WSL ceiling 22 GB (cc-pVDZ gradient peaked near 9 GB, so this one is expected to exceed the ceiling) ===
+[21:37:05] canonical CCSD(T) gradient, benzene cc-pvtz, 264 bf, 8 threads
+[21:37:13] RHF 8.0 s
+Traceback (most recent call last):
+  File "/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/ao2mo/outcore.py", line 324, in general
+    async_write(icomp, row0, row1, outbuf)
+  File "/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/lib/misc.py", line 1184, in async_fn
+    raise ThreadRuntimeError('Error on thread %s:\n%s'
+pyscf.lib.misc.ThreadRuntimeError: Error on thread <pyscf.lib.misc.call_in_background object at 0x703b8d1b3ec0>:
+[Errno 28] Can't synchronously write data (file write failed: time = Sat Sep  5 21:38:26 2026
+, filename = '/tmp/ow95up5y', file descriptor = 5, errno = 28, error message = 'No space left on device', buf = 0x703881724040, total write size = 440336, bytes this sub-write = 440336, offset = 3245690880)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/lib/misc.py", line 1202, in __exit__
+    handler.result()
+  File "/home/thebreadishard/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/concurrent/futures/_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/thebreadishard/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/lib/misc.py", line 1182, in async_fn
+    handlers[i].result()
+  File "/home/thebreadishard/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/concurrent/futures/_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/thebreadishard/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/home/thebreadishard/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/concurrent/futures/thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/ao2mo/outcore.py", line 288, in save
+    h5d_eri[row0:row1] = buf[:row1-row0]
+    ~~~~~~~^^^^^^^^^^^
+  File "h5py/_objects.pyx", line 54, in h5py._objects.with_phil.wrapper
+  File "h5py/_objects.pyx", line 55, in h5py._objects.with_phil.wrapper
+  File "/home/thebreadishard/qc05/lib/python3.12/site-packages/h5py/_hl/dataset.py", line 1110, in __setitem__
+    self.id.write(mspace, fspace, val, mtype, dxpl=self._dxpl)
+  File "h5py/_objects.pyx", line 54, in h5py._objects.with_phil.wrapper
+  File "h5py/_objects.pyx", line 55, in h5py._objects.with_phil.wrapper
+  File "h5py/h5d.pyx", line 305, in h5py.h5d.DatasetID.write
+  File "h5py/_proxy.pyx", line 122, in h5py._proxy.dset_rw
+OSError: [Errno 28] Can't synchronously write data (file write failed: time = Sat Sep  5 21:38:26 2026
+, filename = '/tmp/ow95up5y', file descriptor = 5, errno = 28, error message = 'No space left on device', buf = 0x703881724040, total write size = 440336, bytes this sub-write = 440336, offset = 3245690880)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/canonical_gradient_timing.py", line 82, in <module>
+    main()
+  File "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/canonical_gradient_timing.py", line 57, in main
+    mycc.kernel()
+  File "/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/cc/ccsd.py", line 1088, in kernel
+    return self.ccsd(t1, t2, eris)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/cc/ccsd.py", line 1100, in ccsd
+    eris = self.ao2mo(self.mo_coeff)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/cc/ccsd.py", line 1208, in ao2mo
+    return _make_eris_outcore(self, mo_coeff)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/cc/ccsd.py", line 1561, in _make_eris_outcore
+    ao2mo.full(mol, orbv, eris.feri2, max_memory=max_memory, verbose=log)
+  File "/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/ao2mo/__init__.py", line 157, in full
+    return mod.full(eri_or_mol, mo_coeff, erifile, dataname, intor,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/ao2mo/outcore.py", line 110, in full
+    general(mol, (mo_coeff,)*4, erifile, dataname,
+  File "/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/ao2mo/outcore.py", line 309, in general
+    with lib.call_in_background(save) as async_write:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/lib/misc.py", line 1204, in __exit__
+    raise ThreadRuntimeError('Error on thread %s:\n%s' % (self, e))
+pyscf.lib.misc.ThreadRuntimeError: Error on thread <pyscf.lib.misc.call_in_background object at 0x703b8d1b3ec0>:
+[Errno 28] Can't synchronously write data (file write failed: time = Sat Sep  5 21:38:26 2026
+, filename = '/tmp/ow95up5y', file descriptor = 5, errno = 28, error message = 'No space left on device', buf = 0x703881724040, total write size = 440336, bytes this sub-write = 440336, offset = 3245690880)
+Exception ignored in: <function H5FileWrap.__del__ at 0x703b91c40860>
+Traceback (most recent call last):
+  File "/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/lib/misc.py", line 1252, in __del__
+  File "/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/lib/misc.py", line 1242, in _finished
+  File "/home/thebreadishard/qc05/lib/python3.12/site-packages/h5py/_hl/files.py", line 629, in flush
+  File "h5py/_objects.pyx", line 54, in h5py._objects.with_phil.wrapper
+  File "h5py/_objects.pyx", line 55, in h5py._objects.with_phil.wrapper
+  File "h5py/h5f.pyx", line 163, in h5py.h5f.flush
+OSError: [Errno 28] File write failed: time = sat sep  5 21:38:32 2026
+, filename = '/tmp/ow95up5y', file descriptor = 5, errno = 28, error message = 'no space left on device', buf = 0x1d705448, total write size = 6296, bytes this sub-write = 6296, offset = 1727238144 (file write failed: time = Sat Sep  5 21:38:32 2026
+, filename = '/tmp/ow95up5y', file descriptor = 5, errno = 28, error message = 'No space left on device', buf = 0x70388178f9d8, total write size = 472392, bytes this sub-write = 472392, offset = 3246131216)
+Traceback (most recent call last):
+  File "h5py/_objects.pyx", line 210, in h5py._objects.ObjectID._dealloc
+  File "h5py/_objects.pyx", line 213, in h5py._objects.ObjectID._dealloc
+RuntimeError: Can't decrement id ref count (slist already enabled?)
+Exception ignored in: 'h5py._objects.ObjectID.__dealloc__'
+Traceback (most recent call last):
+  File "h5py/_objects.pyx", line 210, in h5py._objects.ObjectID._dealloc
+  File "h5py/_objects.pyx", line 213, in h5py._objects.ObjectID._dealloc
+RuntimeError: Can't decrement id ref count (slist already enabled?)
+=== chain done Sat Sep  5 21:38:33 CEST 2026 ===
