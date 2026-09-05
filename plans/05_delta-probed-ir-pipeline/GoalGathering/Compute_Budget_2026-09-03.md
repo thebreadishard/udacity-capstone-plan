@@ -94,7 +94,16 @@ holds **pyscf 2.14.0, pyscf-forge 1.1.1** (`pyscf.lno` with `lnoccsd_t.py` impor
 15.2, cmake 4.2, OpenBLAS from apt. WSL is given 28 GB and 16 processors via `~/.wslconfig`
 (default was 15 GB). Invocation from Windows: `wsl ~/qc05/bin/python <script>`; the repo is at
 `/mnt/c/Users/thebr/Documents/CapstonePlan`. The PyPI versions are the pins until the deck names
-commit hashes (side-project item (a)). Probe M1 can now run.
+commit hashes (side-project item (a)). Probe M1 can now run. **Measured later the same day (probe 4, `anchor_single_point_timing.py`,
+WSL, 8 threads, benzene at the dry-run geometry, LNO thresholds 10⁻⁶/10⁻⁷, 15 fragments):**
+cc-pVDZ (114 bf) LNO-CCSD(T) 180 s, canonical CCSD(T) 27 s, LNO − canonical 16 µE_h, peak 1.2 GB;
+**cc-pVTZ (264 bf) LNO-CCSD(T) 2087 s, peak 5.5 GB; canonical CCSD(T) 755 s, peak 7.3 GB; LNO −
+canonical 124 µE_h.** For the anchor-basis feasibility rule (Ladder §3): the Q6 bias line, 61
+canonical energies × 755 s ≈ 12.8 h, **fits** (≤ 168 h, ≤ 31.3 GB); the full canonical reference
+Hessian by energies, 1,801 × 755 s ≈ 378 h, **does not fit**; the 72-gradient branch waits for the
+one measured canonical gradient (`canonical_gradient_timing.py`, running). A local-CC energy at the
+anchor basis costs 3× a canonical one at benzene — locality pays only at larger molecules; probe M1
+is therefore developed at cc-pVDZ (3 min per energy) and run once at cc-pVTZ (35 min per energy).
 
 ## 4. Order of timed probes (each prints machine, date, settings, wall-clock; gradient probes also peak memory)
 

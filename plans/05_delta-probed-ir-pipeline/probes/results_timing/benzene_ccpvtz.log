@@ -5,3 +5,18 @@
 
 WARN: Input vhf is not found. Building vhf from SCF MO.
 
+E(LNOMP2) = -231.728854759065  E_corr = -0.950419985964176
+E(LNOCCSD) = -231.754784701356  E_corr = -0.976349928255548
+E(LNOCCSD_T) = -231.806879964622  E_corr = -1.02844519152093
+Summary by spin components
+LNOMP2   Ess = -0.238589178946336  Eos = -0.711830807017839  Escs = -0.933647165010537
+LNOCCSD  Ess = -0.213241405461362  Eos = -0.763108522794186  Escs = -0.986739615371657
+[14:51:56] cc-pvtz: LNO-CCSD(T) 2086.9 s, E_corr(T) = -1.02844519, peak RSS 5.46 GB
+[15:04:31] cc-pvtz: canonical CCSD(T) 754.6 s, LNO − canonical = 124.3 µE_h, peak RSS 7.28 GB
+
+# Anchor single-point timing — benzene at the dry-run B3LYP/6-31G* geometry — 2026-09-05 15:04, Asus18 (WSL), 8 threads, LNO thresholds [1e-06, 1e-07]
+| basis | nbf | RHF(DF) s | PM s | LNO-CCSD(T) s | peak RSS GB | E_corr LNO-CCSD(T) | canonical CCSD(T) s | LNO − canonical µE_h |
+|---|---|---|---|---|---|---|---|---|
+| cc-pvtz | 264 | 2 | 1 | 2087 | 7.28 | -1.028445 | 755 | 124.3 |
+
+Printed by probes/anchor_single_point_timing.py. A timing; no Δ, no displaced geometry.

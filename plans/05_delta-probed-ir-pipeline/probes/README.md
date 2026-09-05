@@ -22,6 +22,14 @@ Conventions, carried from plans 01–04:
   O1NumHess. **Still owed for item 1:** the run at the largest laptop-affordable molecules
   (naphthalene next), and the deviations closed.
 
+- **`anchor_single_point_timing.py`** (probe 4, 2026-09-05, WSL `~/qc05`): benzene at the dry-run
+  geometry — cc-pVDZ: LNO-CCSD(T) 180 s / canonical CCSD(T) 27 s / difference 16 µE_h / 1.2 GB;
+  **cc-pVTZ: LNO-CCSD(T) 2087 s, 5.5 GB / canonical CCSD(T) 755 s, 7.3 GB / difference 124 µE_h.**
+  Results in `results_timing/`. This also answers probe 1b's energy branch: the bias line (61
+  energies ≈ 12.8 h) fits the laptop; the 1,801-energy full reference (≈ 378 h) does not.
+- **`canonical_gradient_timing.py`** (probe 1b, gradient branch, 2026-09-05): one canonical CCSD(T)
+  analytic gradient of benzene at cc-pVTZ — running; result to be recorded here.
+
 Otherwise none under plan 05 yet. Plan 04's NIST gas-phase coverage probe and its raw cache exist in
 `plans/04_cc-anchored-ir-pipeline/probes/` and are re-run under this plan's hash as owed
 probe 2a below; their measured result (gas IR present for benzene, naphthalene, pyrene,
