@@ -280,6 +280,18 @@ corpus carries no module-02 reuse exposure (Goal, decision 7). **No decision is 
   26.04 under WSL 2 with `~/qc05` (Python 3.12: pyscf 2.14.0, pyscf-forge 1.1.1, pyscfad 0.3.3, jax
   0.10.2); the LNO modules import; 28 GB given to WSL. Probe M1 is unblocked.
 
+- **2026-09-05 — probe M1 ran** ([Research_Note_2026-09-05_Probe_M1.md](GoalGathering/Research_Note_2026-09-05_Probe_M1.md)):
+  benzene, cc-pVDZ, three modes × nine points, three arms, against a canonical CCSD(T) truth line on
+  the same 27 geometries. The frozen-space object exists, round-trips (0.0000 µE_h) and **reloads**
+  from file (+0.0000 µE_h). **Arm A is smooth to 0.002–0.06 µE_h where the re-selecting arms B and C
+  carry 7–11 µE_h of LNO discontinuity**; its bias is a clean q² term — 5–28 cm⁻¹ on the bare
+  LNO-CCSD(T) energy, **0.5–2.6 cm⁻¹ on the composite with the MP2 correction**. One implementation
+  fact cost a run: the transported blocks must be semicanonicalised at the displaced geometry.
+  **Proposals P7–P9 await the user; no frozen rule changed.** Also measured: a canonical CCSD(T)
+  gradient costs ≈ 50 energies and 13.9 GB at cc-pVDZ (72-gradient branch B3 on this laptop); and the
+  WSL VM was torn down once by host memory pressure (Budget §3 incident note: 22 GB ceiling, one
+  anchor job at a time).
+
 ## Not yet done (owed, in order)
 
 - **Decide P1–P6 of the 2026-09-05 dry-run note** (ρ on the off-diagonal residual; the model
@@ -295,8 +307,9 @@ corpus carries no module-02 reuse exposure (Goal, decision 7). **No decision is 
 - **The first paid literature debts**: items 52–53 (hot-band slopes), 56–57 and 59 (the R0 and R1
   source conditions), 60 — read before M03 prints u_band.
 - Capstone mapping Pass 6 (module-by-module sign-off).
-- **Probe M1** (frozen LNO spaces reproduce the reference energy) — the first code of the
-  project, main-project work.
+- ~~Probe M1~~ — ran 2026-09-05 at cc-pVDZ (see the dated note above); owed still: **decide P7–P9**,
+  the tight-threshold scan (running), the cc-pVTZ scan and truth line (≈ 2.5 days), and the
+  off-diagonal bias read from the R0 probe batch.
 - **The pilot note** (after the R0 pilot, the two-mode zero-CC dry run with its
   noise-injection column, M03's u_band table, the canonical feasibility probe, the gradient
   run/no-run at equilibrium, probe M1 and the R1 smoothness probe's σ with fits sealed; before

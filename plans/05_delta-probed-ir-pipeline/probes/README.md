@@ -33,8 +33,16 @@ Conventions, carried from plans 01–04:
   with the WSL VM (Budget §3 incident note); second attempt alone under the 22 GB ceiling, outcome in
   `results_timing/benzene_ccpvtz_canonical_gradient.log`. Verdict for the 72-gradient branch on this
   laptop: B3, by memory before time (Budget §3).
-- **`m1_frozen_spaces.py`** and **`m1_canonical_truth.py`** (probe M1, 2026-09-05, WSL): see item 2
-  below and `Research_Note_2026-09-05_Probe_M1.md` (written after the semicanonicalised rerun).
+- **`m1_frozen_spaces.py`** (probe M1, 2026-09-05, WSL `~/qc05`): the three arms along three benzene
+  modes × nine points; the arm-A override transports each fragment's LNO spaces by projection +
+  Löwdin and **semicanonicalises the transported active blocks** (pyscf-forge's solver assumes it);
+  `--resume` reloads the saved reference spaces (reload test +0.0000 µE_h). Raw energies sealed.
+  **`m1_canonical_truth.py`**: canonical CCSD(T) at the same geometries (cc-pVDZ: 44–48 s per point)
+  and, per mode and arm, σ about a degree-4 fit and the curvature bias 2·a₂ in cm⁻¹, for the bare and
+  the composite (MP2-corrected) energy. Results: `results_m1/benzene_cc-pvdz_normal_semican/` (the
+  numbers of the dated note), `..._normal/` (first run, arm A not yet semicanonicalised — kept as the
+  record of §2.5 of the note), `..._tight/` (running). See
+  [Research_Note_2026-09-05_Probe_M1.md](../GoalGathering/Research_Note_2026-09-05_Probe_M1.md).
 
 Otherwise none under plan 05 yet. Plan 04's NIST gas-phase coverage probe and its raw cache exist in
 `plans/04_cc-anchored-ir-pipeline/probes/` and are re-run under this plan's hash as owed

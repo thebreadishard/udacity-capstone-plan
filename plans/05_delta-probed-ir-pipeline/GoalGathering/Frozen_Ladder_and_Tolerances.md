@@ -311,6 +311,15 @@ for fragment probing, before the R3 fragment-vs-whole comparison has printed.
   coefficients (they would otherwise make three benzene Δ₂,ii readable before the note). A code that cannot
   freeze spaces is reported under stop 1 (as of 2026-09-04: ORCA documents freezing for
   DLPNO-MP2 only; Psi4 documents none).
+  **Dated note 2026-09-05 (measurement; no rule changed):** probe M1 ran on benzene at cc-pVDZ
+  (`Research_Note_2026-09-05_Probe_M1.md`). The object round-trips and reloads exactly; arm A is
+  smooth to 0.002–0.06 µE_h against canonical CCSD(T) where arms B and C carry 7–11 µE_h of LNO
+  re-selection noise; arm A's curvature bias is a pure q² term of 5–28 cm⁻¹ on the bare LNO-CCSD(T)
+  energy and 0.5–2.6 cm⁻¹ on the MP2-corrected composite. Two things the object text does not yet
+  say and the run needed: the transported active blocks must be **semicanonicalised at x** (a rotation
+  within the frozen space; pyscf-forge's impurity solver assumes diagonal orbital energies for its MP2
+  start and its (T) — proposal P7), and the energy the arms report should be the **composite**
+  (proposal P8). Both await the user's decision; until then this bullet stands as written.
 - **[05] The structural prior is frequency-banded** (Distilled §3): off-diagonal Δ₂ elements
   between DFT modes closer than w are unpenalised; outside the band they carry the ℓ₁ penalty;
   plus a low-rank term. **w and the weights are fixed from the dry run by a stated rule** (item
