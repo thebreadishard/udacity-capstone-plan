@@ -28,7 +28,13 @@ Conventions, carried from plans 01–04:
   Results in `results_timing/`. This also answers probe 1b's energy branch: the bias line (61
   energies ≈ 12.8 h) fits the laptop; the 1,801-energy full reference (≈ 378 h) does not.
 - **`canonical_gradient_timing.py`** (probe 1b, gradient branch, 2026-09-05): one canonical CCSD(T)
-  analytic gradient of benzene at cc-pVTZ — running; result to be recorded here.
+  analytic gradient of benzene. **cc-pVDZ: 1,399 s (23.3 min), peak 13.9 GB**, against 27 s for the
+  energy — a gradient-to-energy factor ≈ 50 in pyscf 2.14's implementation. cc-pVTZ: first attempt lost
+  with the WSL VM (Budget §3 incident note); second attempt alone under the 22 GB ceiling, outcome in
+  `results_timing/benzene_ccpvtz_canonical_gradient.log`. Verdict for the 72-gradient branch on this
+  laptop: B3, by memory before time (Budget §3).
+- **`m1_frozen_spaces.py`** and **`m1_canonical_truth.py`** (probe M1, 2026-09-05, WSL): see item 2
+  below and `Research_Note_2026-09-05_Probe_M1.md` (written after the semicanonicalised rerun).
 
 Otherwise none under plan 05 yet. Plan 04's NIST gas-phase coverage probe and its raw cache exist in
 `plans/04_cc-anchored-ir-pipeline/probes/` and are re-run under this plan's hash as owed
