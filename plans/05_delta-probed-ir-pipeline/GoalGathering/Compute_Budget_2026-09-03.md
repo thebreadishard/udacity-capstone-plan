@@ -104,6 +104,10 @@ Hessian by energies, 1,801 × 755 s ≈ 378 h, **does not fit**; the 72-gradient
 one measured canonical gradient (`canonical_gradient_timing.py`, running). A local-CC energy at the
 anchor basis costs 3× a canonical one at benzene — locality pays only at larger molecules; probe M1
 is therefore developed at cc-pVDZ (3 min per energy) and run once at cc-pVTZ (35 min per energy).
+**Availability (user, 2026-09-05):** the B2 laptop is dedicated to the capstone and available 24/7
+(the user works weekdays on a separate client machine); long runs may start on any day and are checked
+asynchronously. This changes scheduling, not the rule: 168 h of compute per batch remains the B2/B3
+classification threshold and is now reached in seven calendar days.
 
 ## 4. Order of timed probes (each prints machine, date, settings, wall-clock; gradient probes also peak memory)
 

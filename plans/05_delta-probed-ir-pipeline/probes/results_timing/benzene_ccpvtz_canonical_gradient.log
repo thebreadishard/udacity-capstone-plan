@@ -1,1 +1,3 @@
-[15:05:47] canonical CCSD(T) gradient, benzene cc-pvtz, 264 bf, 8 threads
+[15:07:55] canonical CCSD(T) gradient, benzene cc-pvtz, 264 bf, 8 threads
+[15:08:04] RHF 8.5 s
+[15:15:56] CCSD 472.4 s, peak 20.11 GB
