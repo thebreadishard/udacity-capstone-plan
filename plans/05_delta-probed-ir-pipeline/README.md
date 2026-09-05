@@ -268,7 +268,19 @@ corpus carries no module-02 reuse exposure (Goal, decision 7). **No decision is 
   the laptop has psi4 1.11 in the conda environment `qc` but no pyscf, no PyTorch and no WSL, so
   probe M1 and every local-CC probe need WSL or the cluster. DFT-only work runs now.
 
+- **2026-09-05 — the R0 dry run ran** ([Research_Note_2026-09-05_DryRun_Benzene.md](GoalGathering/Research_Note_2026-09-05_DryRun_Benzene.md)):
+  mode E recovers benzene's off-diagonal Δ₂ with the full deck (family errors ≤ 0.43 cm⁻¹ vs
+  7 cm⁻¹ diagonal-only), mode G from 60 gradients; but the raw held-out ρ is blind to the
+  off-diagonals (2.4 % of the response), the frozen stopping rule is unreachable below a model
+  floor of 0.005, the large couplings are same-symmetry pairs 170–450 cm⁻¹ apart (not a frequency
+  band), and mode E needs σ_E ≲ 2 µE_h for the off-diagonals — ten times stricter than the Q6
+  line. **Six proposals (P1–P6) await the user's decision; no frozen rule changed.**
+
 ## Not yet done (owed, in order)
+
+- **Decide P1–P6 of the 2026-09-05 dry-run note** (ρ on the off-diagonal residual; the model
+  floor; the mode-E noise ceiling; the symmetry prior; the declared ρ; the mode-E cost picture),
+  then amend the Ladder by dated note.
 
 - ~~Round 11~~ — not planned. The review loop was closed on 2026-09-04 after a seam check of the
   Round-10 Pass B patch ([Seam_Check_2026-09-04_Round10B_patch.md](GoalGathering/Seam_Check_2026-09-04_Round10B_patch.md),

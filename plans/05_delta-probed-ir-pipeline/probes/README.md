@@ -13,7 +13,16 @@ Conventions, carried from plans 01–04:
 
 ## Probes that exist
 
-None under plan 05 yet. Plan 04's NIST gas-phase coverage probe and its raw cache exist in
+- **`dryrun_dft_delta_recovery.py`** (probe 1, first version, 2026-09-05): the zero-CC dry run at
+  **R0 (benzene) only** — both modes, hashed deck with ± pairs and pair-wise hold-out, banded
+  recovery, the q₂ block, the DFT-arm floor, the noise-injection column. Results in
+  `results_dryrun/benzene/` (`REPORT.md`); findings and proposals in
+  [Research_Note_2026-09-05_DryRun_Benzene.md](../GoalGathering/Research_Note_2026-09-05_DryRun_Benzene.md).
+  Deviations printed by the script: no low-rank term; random completion patterns instead of
+  O1NumHess. **Still owed for item 1:** the run at the largest laptop-affordable molecules
+  (naphthalene next), and the deviations closed.
+
+Otherwise none under plan 05 yet. Plan 04's NIST gas-phase coverage probe and its raw cache exist in
 `plans/04_cc-anchored-ir-pipeline/probes/` and are re-run under this plan's hash as owed
 probe 2a below; their measured result (gas IR present for benzene, naphthalene, pyrene,
 chrysene, triphenylene; tetracene solid-only; coronene absent; R2 JCAMP point spacing ~4 cm⁻¹) is
