@@ -253,6 +253,16 @@ Foundations project on QM9 in the user's GitHub account was never submitted and 
 or archived to make room for the plan's Module 02. M02 is a plan, not a record; M05's Hessian-QM9
 corpus carries no module-02 reuse exposure (Goal, decision 7). **No decision is open.**
 
+## Dated notes after the freeze
+
+- **2026-09-05 — R2/R3 gas-phase sources.** An exhaustive search
+  ([Research_Note_2026-09-05_R2_GasPhase_MidIR_Sources.md](GoalGathering/Research_Note_2026-09-05_R2_GasPhase_MidIR_Sources.md))
+  found no room-temperature 6–15 µm gas spectrum for any R2/R3 species; it found jet-cooled band
+  lists for tetracene (item 61) and coronene (item 62) and one cold pyrene band (item 63), added
+  as labelled cold columns by the dated note in Ladder §2. The expected R2 C–C verdict is
+  unchanged. Files touched: Ladder §2, bibliography (61–64), Frozen_Lines §5, Mapping M03,
+  probes README 2a.
+
 ## Not yet done (owed, in order)
 
 - ~~Round 11~~ — not planned. The review loop was closed on 2026-09-04 after a seam check of the

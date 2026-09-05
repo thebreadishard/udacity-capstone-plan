@@ -106,7 +106,7 @@ columns; printed per family before the pilot note, with the verdict *gas-decidab
 matrix-gated / inconclusive by construction*; the R2 C–C families are expected in the last class unless the correction is pinned;
 R1 is expected decidable throughout on the PNNL/NWIR room-temperature record, its hot WebBook
 entries scored as labelled hot columns). Dataset: PAHdb
-*experimental* libraries (v3.10 matrix, 84 species; gas-phase v1.00) plus the PNNL/NWIR naphthalene record (items 57, 59) and NIST WebBook JCAMP
+*experimental* libraries (v3.10 matrix, 84 species; gas-phase v1.00) plus the PNNL/NWIR naphthalene record (items 57, 59), the jet-cooled band lists for tetracene and coronene (items 61–62, labelled cold columns; Ladder §2 dated note 2026-09-05) and NIST WebBook JCAMP
 gas-phase spectra (plan-02 parser and cache recipe, git history; plan-04 coverage probe and
 `nist_cache/`). Descriptive statistics per band family; **pre-registered hypothesis test**
 (form frozen before the data is joined): *matrix-to-gas band shift is zero* per band family —

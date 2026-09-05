@@ -68,7 +68,8 @@ single-mode scatter with sealed fit coefficients, and timings; no local-CC Δ₂
    hot-band correction with ±30 % and the temperature uncertainty, or the Ladder §2 floor
    χ_max·(T_source − 296 K) + u_296; T_source from the record, else from the series'
    documentation — item 56 for the NIST Quantitative IR series, items 57 and 59 for the PNNL/NWIR
-   naphthalene record — else hot; u_296 per molecule per Ladder §2: 1 / 3 / 5 cm⁻¹, recalled), their quadrature sum **u_band**, and the decidability
+   naphthalene record; for the jet-cooled band lists of items 61–62 the FEL bandwidth as the
+   resolution term and "cold" as the class — else hot; u_296 per molecule per Ladder §2: 1 / 3 / 5 cm⁻¹, recalled), their quadrature sum **u_band**, and the decidability
    verdict per family (feeds pilot-note item 1). Expected: R0 and R1 decidable throughout on their room-temperature
    sources (the hot WebBook naphthalene entries as labelled extra columns); R2 C–C families
    inconclusive by construction unless the correction is pinned.
