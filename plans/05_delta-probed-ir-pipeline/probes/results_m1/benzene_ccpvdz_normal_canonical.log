@@ -1,0 +1,46 @@
+[18:48:25] canonical truth line: benzene cc-pvdz, 27 arm points, 0 already done, 8 threads
+[18:49:08] mode 12 q=-1.00: canonical CCSD(T) done, 43 s
+[18:49:51] mode 12 q=-0.75: canonical CCSD(T) done, 43 s
+[18:50:42] mode 12 q=-0.50: canonical CCSD(T) done, 51 s
+[18:51:15] mode 12 q=-0.25: canonical CCSD(T) done, 34 s
+[18:51:54] mode 12 q=+0.00: canonical CCSD(T) done, 39 s
+[18:52:39] mode 12 q=+0.25: canonical CCSD(T) done, 45 s
+[18:53:23] mode 12 q=+0.50: canonical CCSD(T) done, 44 s
+[18:54:14] mode 12 q=+0.75: canonical CCSD(T) done, 51 s
+[18:55:02] mode 12 q=+1.00: canonical CCSD(T) done, 48 s
+[18:55:49] mode 18 q=-1.00: canonical CCSD(T) done, 48 s
+[18:56:38] mode 18 q=-0.75: canonical CCSD(T) done, 48 s
+[18:57:26] mode 18 q=-0.50: canonical CCSD(T) done, 48 s
+[18:58:13] mode 18 q=-0.25: canonical CCSD(T) done, 48 s
+[18:58:49] mode 18 q=+0.00: canonical CCSD(T) done, 36 s
+[18:59:41] mode 18 q=+0.25: canonical CCSD(T) done, 51 s
+[19:00:33] mode 18 q=+0.50: canonical CCSD(T) done, 52 s
+[19:01:21] mode 18 q=+0.75: canonical CCSD(T) done, 48 s
+[19:02:08] mode 18 q=+1.00: canonical CCSD(T) done, 48 s
+[19:02:53] mode 6 q=-1.00: canonical CCSD(T) done, 45 s
+[19:03:38] mode 6 q=-0.75: canonical CCSD(T) done, 45 s
+[19:04:14] mode 6 q=-0.50: canonical CCSD(T) done, 36 s
+[19:04:50] mode 6 q=-0.25: canonical CCSD(T) done, 36 s
+[19:05:25] mode 6 q=+0.00: canonical CCSD(T) done, 36 s
+[19:06:02] mode 6 q=+0.25: canonical CCSD(T) done, 36 s
+[19:06:37] mode 6 q=+0.50: canonical CCSD(T) done, 36 s
+[19:07:22] mode 6 q=+0.75: canonical CCSD(T) done, 44 s
+[19:08:06] mode 6 q=+1.00: canonical CCSD(T) done, 44 s
+
+# Probe M1 — arms against canonical CCSD(T) — benzene cc-pvdz, 2026-09-05 19:08, Asus18 (WSL)
+
+Difference E_arm − E_canonical (same DF-RHF reference, frozen core) at each point; fitted per mode as a degree-4 polynomial in q. σ = residual about that fit (the arm's roughness against the truth). a2, a4 = even-part coefficients of the difference (a0 + a2 q² + a4 q⁴ fitted to ½[d(q)+d(−q)]); **2·a2 is the bias the arm puts on the CC curvature** of the mode, given also in cm⁻¹ (E = ½ ω q²). Absolute energies sealed (`canonical_truth_sealed.json`), not printed.
+
+| mode | family | ω (cm⁻¹) | arm | n | σ about deg-4 fit (µE_h) | a2 (µE_h) | a4 (µE_h) | curvature bias 2·a2 (µE_h) | ≈ Δω (cm⁻¹) | d(±1) even (µE_h) | d(±0.5) even (µE_h) |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 6 | CH-oop | 865 | A | 9 | 0.050 | +334.95 | -17.02 | +669.90 | +147.03 | +317.98 | +82.76 |
+| 6 | CH-oop | 865 | B | 9 | 6.638 | -23.02 | +18.40 | -46.04 | -10.10 | -0.40 | +5.63 |
+| 6 | CH-oop | 865 | C | 9 | 8.944 | +13.88 | +11.46 | +27.76 | +6.09 | +21.36 | -8.18 |
+| 12 | CH-ip-bend | 1020 | A | 9 | 0.005 | +51.57 | -0.59 | +103.14 | +22.64 | +50.99 | +12.86 |
+| 12 | CH-ip-bend | 1020 | B | 9 | 7.442 | -50.02 | +49.68 | -100.05 | -21.96 | -7.47 | -16.67 |
+| 12 | CH-ip-bend | 1020 | C | 9 | 10.741 | +63.00 | -27.60 | +126.01 | +27.66 | +46.31 | +24.81 |
+| 18 | CC-stretch | 1357 | A | 9 | 0.060 | +105.80 | -1.15 | +211.61 | +46.44 | +104.60 | +26.35 |
+| 18 | CC-stretch | 1357 | B | 9 | 10.546 | +63.83 | -19.81 | +127.67 | +28.02 | +35.85 | -2.52 |
+| 18 | CC-stretch | 1357 | C | 9 | 11.108 | +45.59 | -11.01 | +91.17 | +20.01 | +25.24 | -7.84 |
+
+Reading aid: an arm with small σ is smooth; an arm with small |2·a2| is unbiased. The pipeline needs both. Arm A holds the reference frozen spaces at every q; B transports the occupied LMOs and re-selects LNOs; C is fresh. No verdict (the τ it would be judged against does not exist yet). Printed by probes/m1_canonical_truth.py.

@@ -184,6 +184,9 @@ def main():
     ap.add_argument("--modes", default="auto", help="comma-separated DFT mode indices: totally symmetric, degenerate, non-symmetric")
     ap.add_argument("--threads", type=int, default=8)
     ap.add_argument("--tag", default="")
+    ap.add_argument("--resume", action="store_true",
+                    help="continue an interrupted run: keep the finished points in the output dir (their rows and sealed "
+                         "energies), verify the recomputed frozen-space hash against the saved reference, run only the missing points")
     args = ap.parse_args()
     from pyscf import lib
     lib.num_threads(args.threads)
@@ -215,15 +218,33 @@ def main():
     S0 = mf0.get_ovlp()
     nocc = int(np.count_nonzero(mf0.mo_occ))
     C_occ_act0 = mf0.mo_coeff[:, FROZEN_CORE:nocc]
-    lo0, pm0 = pm_localise(mol0, C_occ_act0)
-    frag_lolist = [[i] for i in range(lo0.shape[1])]
     emp2_0 = full_mp2(mf0)
-    mccC0 = Recording(mf0, lo0, frag_lolist, frozen=FROZEN_CORE)
-    mccC0.lno_thresh = THRESH[args.thresh]; mccC0.verbose = 2
-    mccC0.kernel()
-    E_C0 = energies_of(mccC0, mf0, emp2_0)
+    prior_rows, prior_points, prior_ref, resumed_note = [], [], None, ""
+    if args.resume:
+        # The reference localisation and LNO construction are not bit-reproducible between runs (thread order),
+        # so a resumed run must RELOAD the saved spaces — which is exactly the pipeline's own path for a frozen object.
+        zp = np.load(os.path.join(out, "frozen_spaces_reference.npz"))
+        assert np.max(np.abs(zp["coords0"] - coords0)) < 1e-12, "saved reference is for another geometry"
+        lo0 = zp["lo0"]
+        nfrag = len([k for k in zp.files if k.startswith("orbfrag_")])
+        recorded = [(zp[f"orbfrag_{i}"], zp[f"frzfrag_{i}"], f"frag {i} [reloaded]") for i in range(nfrag)]
+        prior_rows = json.load(open(os.path.join(out, "m1_rows.json")))["rows"]
+        prior_sealed = json.load(open(os.path.join(out, "m1_sealed_energies.json")))
+        prior_points, prior_ref = prior_sealed["points"], prior_sealed["reference"]
+        E_C0 = prior_ref["C"]
+        resumed_note = (f"resumed {datetime.now():%Y-%m-%d %H:%M}: reference spaces reloaded from `frozen_spaces_reference.npz`, "
+                        f"{len(prior_rows)} finished points kept from the interrupted run")
+        log(resumed_note)
+    else:
+        lo0, pm0 = pm_localise(mol0, C_occ_act0)
+        mccC0 = Recording(mf0, lo0, [[i] for i in range(lo0.shape[1])], frozen=FROZEN_CORE)
+        mccC0.lno_thresh = THRESH[args.thresh]; mccC0.verbose = 2
+        mccC0.kernel()
+        E_C0 = energies_of(mccC0, mf0, emp2_0)
+        recorded = mccC0.recorded
+    frag_lolist = [[i] for i in range(lo0.shape[1])]
     stored = []
-    for orbfrag, frzfrag, msg in mccC0.recorded:
+    for orbfrag, frzfrag, msg in recorded:
         n_occfrz = int(np.sum(frzfrag < nocc))          # core + frozen occupied LNOs
         n_virfrz = int(np.sum(frzfrag >= nocc))
         nmo = orbfrag.shape[1]
@@ -234,16 +255,31 @@ def main():
     t_ref = time.time() - t0
     space_blob = np.concatenate([lo0.ravel()] + [s["orbfrag"].ravel() for s in stored]).tobytes()
     frozen_space_hash = hashlib.sha256(space_blob).hexdigest()
-    np.savez(os.path.join(out, "frozen_spaces_reference.npz"), lo0=lo0, coords0=coords0,
+    if not args.resume:
+      np.savez(os.path.join(out, "frozen_spaces_reference.npz"), lo0=lo0, coords0=coords0,
              **{f"orbfrag_{i}": s["orbfrag"] for i, s in enumerate(stored)},
              **{f"frzfrag_{i}": s["frzfrag"] for i, s in enumerate(stored)})
-    log(f"reference: arm C {t_ref:.0f} s; {len(stored)} fragments; sizes "
+    log(f"reference: {'reloaded' if args.resume else 'arm C'} {t_ref:.0f} s; {len(stored)} fragments; sizes "
         f"{[(int(s['occ_act'].stop - s['occ_act'].start), int(s['vir_act'].stop - s['vir_act'].start)) for s in stored][:5]}…; "
         f"frozen-space hash {frozen_space_hash[:16]}")
 
     def arm_A(mf, S, lo_x):
-        """Arm A at geometry x: transport every fragment's LAS, run the impurity solves only."""
+        """Arm A at geometry x: transport every fragment's LAS, run the impurity solves only.
+
+        The transported active blocks are semicanonicalised at x (Fock diagonalised within the occupied-active
+        and the virtual-active block, a rotation that leaves the *space* unchanged). pyscf-forge's own make_las
+        does the same for fresh LNOs, and the impurity solver relies on it: its MP2 start amplitudes and its
+        (T) use diagonal orbital energies. Without this step the first full run (2026-09-05 15:40, tag "")
+        gave arm-A LNO-MP2 pieces thousands of µE_h off and a (T) of unknown quality.
+        """
         nmo_x = mf.mo_coeff.shape[1]
+        F_ao = mf.get_fock()
+
+        def semican(C):
+            if C.shape[1] == 0:
+                return C
+            e, U = np.linalg.eigh(C.T @ F_ao @ C)
+            return C @ U
         C_core = mf.mo_coeff[:, :FROZEN_CORE]
         C_occ = mf.mo_coeff[:, FROZEN_CORE:nocc]
         C_vir = mf.mo_coeff[:, nocc:]
@@ -253,6 +289,7 @@ def main():
             occ_act0, vir_act0 = of[:, s["occ_act"]], of[:, s["vir_act"]]
             occ_act_x, sv_o, O_o = transport(occ_act0, C_occ, S)
             vir_act_x, sv_v, O_v = transport(vir_act0, C_vir, S)
+            occ_act_x, vir_act_x = semican(occ_act_x), semican(vir_act_x)
             n_occ_frz_lno = s["n_occfrz"] - FROZEN_CORE
             occ_frz_x = complement_within(C_occ, occ_act_x, S, n_occ_frz_lno) if n_occ_frz_lno > 0 else np.zeros((of.shape[0], 0))
             vir_frz_x = complement_within(C_vir, vir_act_x, S, s["n_virfrz"]) if s["n_virfrz"] > 0 else np.zeros((of.shape[0], 0))
@@ -270,12 +307,21 @@ def main():
     mccA0, dA0 = arm_A(mf0, S0, lo0)
     E_A0 = energies_of(mccA0, mf0, emp2_0)
     roundtrip = E_A0["e_corr_lno_ccsd_t"] - E_C0["e_corr_lno_ccsd_t"]
+    if prior_ref is not None:
+        d_ref = (E_A0["e_corr_lno_ccsd_t"] - prior_ref["A"]["e_corr_lno_ccsd_t"]) * 1e6
+        log(f"reload test: E_A(0) from the reloaded spaces − E_A(0) of the interrupted run = {d_ref:+.4f} µE_h")
+        if abs(d_ref) > 1e-2:
+            raise SystemExit("--resume refused: the reloaded spaces do not reproduce E_A(0) to 0.01 µE_h.")
+        resumed_note += f"; reload test {d_ref:+.4f} µE_h"
     log(f"stage 0 round trip: E_A(0) − E_C(0) = {roundtrip*1e6:.4f} µE_h (target |·| ≤ 1e-3 µE_h = 1e-9 E_h); arm A {time.time()-t0:.0f} s")
 
     # ---------------- displaced points
-    rows, sealed = [], {"reference": {"C": E_C0, "A": E_A0}, "points": []}
+    rows, sealed = list(prior_rows), {"reference": {"C": E_C0, "A": E_A0}, "points": list(prior_points)}
+    done = {(r["mode"], round(r["q"], 6)) for r in prior_rows}
     for m in modes:
         for q in qs:
+            if (int(m), round(float(q), 6)) in done:
+                continue
             t_pt = time.time()
             v = np.zeros(len(omega)); v[m] = q
             x = coords0 + ((L @ (v / np.sqrt(omega))) * Minv).reshape(-1, 3)
@@ -308,12 +354,13 @@ def main():
                    "EA_minus_EB_uEh": (E_A["e_corr_lno_ccsd_t"] - E_B["e_corr_lno_ccsd_t"]) * 1e6,
                    "EA_minus_EC_uEh": (E_A["e_corr_lno_ccsd_t"] - E_C["e_corr_lno_ccsd_t"]) * 1e6,
                    "EB_minus_EC_uEh": (E_B["e_corr_lno_ccsd_t"] - E_C["e_corr_lno_ccsd_t"]) * 1e6,
+                   "EA_minus_EC_lnomp2_uEh": (E_A["e_corr_lno_mp2"] - E_C["e_corr_lno_mp2"]) * 1e6,
                    "wall_s": time.time() - t_pt, "peak_rss_gb": rss_gb()}
             rows.append(row)
             sealed["points"].append({"mode": int(m), "q": float(q), "A": E_A, "B": E_B, "C": E_C})
             log(f"mode {m} q={q:+.2f}: s_min occ {row['occ_smin']:.4f} vir {row['vir_smin']:.4f}; "
                 f"pre-Löwdin off-diag occ {row['occ_offdiag_max']:.2e} vir {row['vir_offdiag_max']:.2e}; "
-                f"A−B {row['EA_minus_EB_uEh']:+.2f} A−C {row['EA_minus_EC_uEh']:+.2f} µE_h; "
+                f"A−B {row['EA_minus_EB_uEh']:+.2f} A−C {row['EA_minus_EC_uEh']:+.2f} µE_h (LNO-MP2 piece A−C {row['EA_minus_EC_lnomp2_uEh']:+.1f}); "
                 f"PM fresh {pm_c:.4f} transported {pm_t if pm_t is None else round(pm_t,4)}; match {best_match_min:.3f}; {row['wall_s']:.0f} s")
             json.dump({"rows": rows}, open(os.path.join(out, "m1_rows.json"), "w"), indent=1)
             blob = json.dumps(sealed, sort_keys=True).encode()
@@ -328,6 +375,7 @@ def main():
              f"arm C at the reference {t_ref:.0f} s",
              f"- **stage 0 round trip** E_A(0) − E_C(0) = {roundtrip*1e6:.4f} µE_h (the object reloads; target ≤ 1e-3 µE_h)",
              f"- raw energies sealed: `m1_sealed_energies.json`, sha256 `{seal_hash[:16]}…` — not printed",
+             *([f"- {resumed_note}"] if resumed_note else []),
              "", "| mode | family | ω (cm⁻¹) | q | s_min occ | off-diag occ | s_min vir | off-diag vir | PM fresh | PM transported | match | A−B (µE_h) | A−C (µE_h) | B−C (µE_h) | s |",
              "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
     for r in rows:
