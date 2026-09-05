@@ -66,13 +66,28 @@ budget fact until printed. Literature figures are motivation only:
 
 The plan-02 old-laptop facts remain provenance only (CCSD(T)/6-31G* benzene 19.6 s; canonical
 (T) fails at ~114 basis functions with 28 GB; B3LYP/6-31G* Hessians: benzene 3.3 min, naphthalene 12.7 min,
-coronene frequency job 176 min). Every one is re-timed on the B2 laptop named in §1 before use (the plan-02 numbers come from an older machine).
+coronene frequency job 176 min). Every one is re-timed by a plan-05 probe before use (the plan-02 numbers were measured on this same laptop — see the dated note of 2026-09-05 below — but by plan-02 scripts, so they are provenance).
 
 **Units.** K and K_off are counted in energies (mode E; a ± pair counts 2) or gradients (mode
 G). No literature figure in the table above is in that unit: Sanders counts Hessian columns,
 O1NumHess gradients (one gradient = 3N responses), CMA-2 selected off-diagonal *elements* (each
 costing four energies). Every off-diagonal response costs two energies by design; the dry run
 measures K_off, and the plan claims no number for it in advance.
+
+**Dated note 2026-09-05 (machine and software facts; permitted change under the freeze — names its
+findings).** (1) The plan-02 timings quoted in §3 were measured on **this** laptop (the plan-02
+batch status names the machine Asus18 with 16 logical cores, 2026-08-28), not on an older
+machine; the sentence "the plan-02 numbers come from an older machine" is withdrawn. They remain
+provenance until a plan-05 probe re-prints them, because the plan-02 scripts are not plan-05
+probes. Measured there with psi4 1.11, B3LYP/6-31G*: benzene Hessian 4.2 min, pyrene 54 min,
+tetracene 72 min, chrysene 75 min, triphenylene 72 min, coronene 174 min (frequency jobs
+including optimisation). (2) The B2 laptop has a working conda environment `qc` (psi4 1.11,
+NumPy 2.5, SciPy 1.18, pandas 3.0) and **no pyscf, no PyTorch and no WSL**. The plan's anchor
+code (pyscf-forge LNO-CCSD(T); PySCFAD for the side project) runs on Linux only, so **probe M1
+and every local-CC probe need WSL (or the cluster)** — a software precondition that stands beside
+stop 1 and is recorded here. DFT-only work (the dry run, the R0 pilot's DFT part, the module-05
+corpus) runs now in `qc`. PyTorch is installed in a separate environment when module 05 starts,
+so the psi4 environment stays intact.
 
 ## 4. Order of timed probes (each prints machine, date, settings, wall-clock; gradient probes also peak memory)
 
