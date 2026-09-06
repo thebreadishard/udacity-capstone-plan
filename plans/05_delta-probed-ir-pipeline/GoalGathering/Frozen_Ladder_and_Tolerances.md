@@ -144,6 +144,42 @@ verdict for the R2 C–C families is unchanged (inconclusive by construction on 
 the supervisor ask (Proposal §13.3) stands and is now known to have no public answer; tetracene
 and coronene gain a cold column whose decidability u_band decides, not this note.
 
+**Dated note 2026-09-06 (temperature term pinned; permitted change under the freeze — the
+paragraph above said "replaced by the pinned reference's table on fetch", and the fetch has
+happened).** Items 52 and 64 (Joblin et al. 1995, 1994; ADS scans) were read in full on
+2026-09-06; the transcription is in
+[Relevant_Scientific_Papers.md](Relevant_Scientific_Papers.md), "Readings of 2026-09-06 —
+laboratory sources". Findings that change the numbers above, none of which changes the rule:
+(i) the recalled **χ_max = 0.03 cm⁻¹ K⁻¹ is exceeded** by the measured coronene 6.2 µm slope
+(−0.038 to −0.044 cm⁻¹ K⁻¹) and by the 3.3 µm slopes of coronene and ovalene (−0.033 to
+−0.049); the measured 6–15 µm slopes are 7.7 µm 0.022–0.024, 8.5–8.8 µm 0.008–0.010,
+11.8–12 µm 0.014–0.023, 6.2 µm 0.038–0.044. From now on the temperature term uses the
+**per-family measured slope χ_F from item 52, Table 1**, with the paper's ±0.5 K thermocouple
+and the ±30 % already written; a family without a measured slope takes the largest measured
+6–15 µm slope, **0.044 cm⁻¹ K⁻¹**, as its floor; (ii) the recalled u_296 values (1 / 3 / 5
+cm⁻¹) are replaced by **u_296 per family computed by 2a from item 52's Eqs. (4)–(6)** with the
+paper's mean bath frequencies (ν_m = 221 cm⁻¹ pyrene, 303 cm⁻¹ coronene) — the author's
+arithmetic gives 1–6 cm⁻¹ across the measured families (coronene 6.2 µm the largest), which 2a
+reprints and which is binding only when printed; naphthalene has a measured slope at 3.3 µm
+only, so its 6–15 µm u_296 carries pyrene's slopes as a labelled stand-in until item 53 is
+read; (iii) the R3 **cold column** (item 62) was cross-checked against the hot column (item
+64) and the slope table: the C–H out-of-plane and low-frequency bands sit between the hot gas
+and the Ne matrix as the model says, but the 7.7 and 8.8 µm bands sit **below** the 770 K
+values where the model puts them 6–18 cm⁻¹ above — a disagreement of 10–19 cm⁻¹, of the order
+of the FEL bandwidth (0.5–1 % of the frequency). The cold column's resolution term per family
+is therefore the larger of the FEL bandwidth and this measured disagreement; the 7.7 and
+8.8 µm families of the R3 cold column are inconclusive by construction by measurement, the
+longer-wavelength families are decided by u_band as before; (iv) item 56 read: the benzene
+intensities of the NIST Quantitative IR series are **not certified in 1325–1900 cm⁻¹**, so the
+R0 intensity score of decision 18 carries the ≈ 1480 cm⁻¹ C–C band as a labelled non-certified
+column (positions are unaffected; the wavenumber scale is calibrated to 0.0042 cm⁻¹ RMS);
+(v) item 57 read: the PNNL naphthalene record's cell temperature is stated as 25 °C in the
+methods and 50 °C in the figure caption; 2a reads the record header and prints what it found —
+at 50 °C the added term is under 0.5 cm⁻¹ on the measured pyrene slopes, so "R1 expected
+unconditional" stands either way; (vi) item 4 read: the PAHdb matrix A-values are scaled to
+the computed sum over 500–1550 cm⁻¹, so the matrix column scores relative intensities only —
+consistent with decision 18, recorded so no absolute matrix intensity is ever scored.
+
 **Promised:** R0–R1 scored as accuracy rungs against gas-phase data. R2–R3 scored as accuracy
 rungs per family under the decidability rule above and the "beat and noise" rule of §1. R6 per
 the dated note above. **[05]** The **cost record** (§1) for every rung and mode that ran; **mode E

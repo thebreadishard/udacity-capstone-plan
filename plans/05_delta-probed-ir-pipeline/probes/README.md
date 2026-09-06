@@ -112,7 +112,13 @@ single-mode scatter with sealed fit coefficients, and timings; no local-CC Δ₂
    χ_max·(T_source − 296 K) + u_296; T_source from the record, else from the series'
    documentation — item 56 for the NIST Quantitative IR series, items 57 and 59 for the PNNL/NWIR
    naphthalene record; for the jet-cooled band lists of items 61–62 the FEL bandwidth as the
-   resolution term and "cold" as the class — else hot; u_296 per molecule per Ladder §2: 1 / 3 / 5 cm⁻¹, recalled), their quadrature sum **u_band**, and the decidability
+   resolution term and "cold" as the class — else hot; u_296 **per family from item 52's Eqs. (4)–(6) and Table 1** (Ladder dated note
+   2026-09-06; the recalled 1 / 3 / 5 cm⁻¹ are retired), χ_F per family from the same table with
+   0.044 cm⁻¹ K⁻¹ as the floor for unmeasured families, T_source for the PNNL naphthalene record
+   from its header (item 57 states 25 °C and 50 °C in different places), the R3 cold column's
+   resolution term as the larger of the FEL bandwidth and the measured cold–hot disagreement
+   (10–19 cm⁻¹ at 7.7 and 8.8 µm), and the R0 intensity rows flagged non-certified inside
+   1325–1900 cm⁻¹ (item 56)), their quadrature sum **u_band**, and the decidability
    verdict per family (feeds pilot-note item 1). Expected: R0 and R1 decidable throughout on their room-temperature
    sources (the hot WebBook naphthalene entries as labelled extra columns); R2 C–C families
    inconclusive by construction unless the correction is pinned.

@@ -358,12 +358,21 @@ sense: a fragment-probed spectrum, or the measured reason none could be produced
 
 *Laboratory sources per rung.* Benzene: the NIST Quantitative Infrared Database cell spectra (Chu
 et al. 1999), with calibrated intensities. Naphthalene: the PNNL quantitative vapour-phase record
-at 25 °C and 0.1 cm⁻¹ (Schneider et al. 2024, in the database described by Sharpe et al. 2004),
+at 0.1 cm⁻¹ and 25 or 50 °C — the paper states both, the record header decides — (Schneider et al.
+2024, in the database described by Sharpe et al. 2004),
 with calibrated intensities; the hot NIST WebBook entries as labelled extra columns; Pirali et al.
 2009 and Joblin et al. 1995 for the temperature term. Pyrene, chrysene, triphenylene: NIST WebBook hot-vapour GC-IR
 spectra at 8 cm⁻¹ without concentration data. Tetracene: matrix isolation, plus a jet-cooled band
 list (Lemmens et al. 2019). Coronene: matrix isolation, plus five jet-cooled 6–15 µm bands
-(Lemmens, Rijs & Buma 2021).
+(Lemmens, Rijs & Buma 2021). All of these sources were read in full on 6 September 2026 and their
+conditions transcribed (bibliography, "Readings of 2026-09-06 — laboratory sources"). Three
+readings changed numbers, not rules: the benzene intensities are certified outside
+1325–1900 cm⁻¹ only, so the intensity score at benzene excludes the C–C band near 1480 cm⁻¹;
+the hot-band slopes of Joblin et al. 1995 replace the earlier recalled floor (the largest
+measured 6–15 µm slope is 0.044 cm⁻¹ K⁻¹, coronene's 6.2 µm band), and their model gives the
+room-temperature term per family; and the jet-cooled coronene bands at 7.7 and 8.8 µm lie
+10–19 cm⁻¹ from where the hot spectra and the slopes put a cold band, so those two cold families
+are inconclusive by measurement, not by expectation.
 
 A per-family decidability rule replaces plan 04's rung-level gate: a gas-scored family is
 decidable if the scoreboard's **measured band-centre uncertainty** — instrument resolution,
