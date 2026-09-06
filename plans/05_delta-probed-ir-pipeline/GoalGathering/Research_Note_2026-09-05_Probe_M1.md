@@ -17,6 +17,7 @@ differences between local-CC arms and canonical CCSD(T), never a CC−DFT curvat
 | Canonical CCSD(T) truth line, same 27 geometries | cc-pVDZ, frozen core, same DF-RHF reference | 27 | 20 min (44–48 s per point) | `canonical_truth_sealed.json` (copied into every M1 directory) |
 | **Rerun, arm A semicanonicalised** (the numbers of §2) | cc-pVDZ / normal | 27 | 19:11–21:37 (≈ 5.5 min per point, three arms) | `benzene_cc-pvdz_normal_semican/` |
 | **Tight thresholds** [10⁻⁶, 10⁻⁷] (§2.2b) | cc-pVDZ / tight | 27 | 21:45–02:07 (≈ 9.5 min per point, three arms; 1.4 GB) | `benzene_cc-pvdz_tight/` |
+| Anchor basis, tight thresholds (P9 ii; decision 16) | cc-pVTZ / tight | 27 + 27 canonical | started 2026-09-06 07:31; ≈ 2.5 days | `benzene_cc-pvtz_tight/` |
 
 Modes (chosen by the script from the dry run's Hessian): **12** (1020 cm⁻¹, the totally symmetric
 mode; dry-run family label CH-ip-bend), **18** (1357 cm⁻¹, a CC-stretch member of a degenerate pair),
@@ -133,6 +134,13 @@ scan is ≈ 2 days and the cc-pVTZ truth line 27 × 755 s ≈ 6 h — both fit t
   three-arm scan and the truth line at cc-pVTZ (≈ 2.5 days); (iii) the off-diagonal bias of arm A is
   unmeasured — single-mode scans see only Δ₂,ii — and is read from the R0 probe batch's two-mode pairs
   against canonical two-mode points, which the R0 pilot should include (a small deck number).
+  **Accepted by the user 2026-09-06 (decision 16).** (ii) started 2026-09-06 07:31 (tight thresholds,
+  27 points × three arms, then the cc-pVTZ truth line and both comparisons; expected end of the scan
+  ≈ Tuesday 2026-09-08 midday, the truth line ≈ 6 h later; `results_m1/benzene_cc-pvtz_tight/`). (iii)
+  becomes a deck number of the R0 pilot: canonical CCSD(T) at the two-mode ± points of the largest
+  same-representation coupling pairs (the number frozen in the deck; 30 pairs = 60 points is the
+  working figure: 45 min at cc-pVDZ, ≈ 12.6 h at cc-pVTZ), from which the off-diagonal bias of arm A
+  is read as 2·a₂ of E_A − E_canonical along the pair, before the pilot note says anything about arm A.
 
 ## 4. What did not change
 
