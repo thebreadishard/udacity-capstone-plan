@@ -134,7 +134,8 @@ shell and pyscf wrote to the 14 GB /tmp tmpfs (now fixed in `~/.profile`); the *
 430 s at 13.8 GB and had been in the gradient stage for three hours when **the laptop powered off
 abruptly at 05:15:47** (Kernel-Power 41 and EventLog 6008 at the 06:39 restart; no bugcheck, no
 minidump, no WHEA and no Resource-Exhaustion event — not a Windows crash and not a memory event that
-Windows saw). Cause unknown from the logs (power or thermal cut-off are the candidates). **No fourth
+Windows saw). Cause, from the user on 2026-09-06: the laptop was switched off by hand that night in
+the belief that nothing was running. **No fourth
 attempt on this laptop**: the cc-pVDZ measurement already settles the branch. **72-gradient
 branch at the anchor basis on this laptop: B3** — by memory before time (the cc-pVDZ gradient alone needs
 13.9 GB of the 22 GB WSL can have; the cc-pVTZ one exceeded 20 GB before the gradient stage began) and by
@@ -151,9 +152,10 @@ the saved frozen spaces — reload test +0.0000 µE_h). Rules from this: the WSL
 **one at a time, chained in a single WSL session**; the harness reports a VM kill as a clean exit, so
 completion is read from the result files, never from the exit code; and a WSL session's processes die
 with the session leader, so a chain shell is never killed while a wanted child runs. **Added
-2026-09-06:** the host itself went down once during a sustained 8-thread job (05:15:47, above); before
-the multi-day cc-pVTZ scan the laptop's power and thermal situation is checked (mains power, fan,
-no sleep timer), and every long chain writes per-point results so a power loss costs one point.
+2026-09-06:** the laptop was switched off by hand once while a job ran (05:15:47, above); a long run
+is therefore announced to the user with its expected end time, the user checks for running jobs with
+`wsl -e bash -c 'ps -eo etime,rss,cmd | grep "[p]ython"'` before switching off, and every long chain
+writes per-point results so an interruption costs one point (M1 already does; `--resume` reloads).
 
 ## 4. Order of timed probes (each prints machine, date, settings, wall-clock; gradient probes also peak memory)
 

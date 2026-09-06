@@ -31,7 +31,7 @@ Conventions, carried from plans 01–04:
   analytic gradient of benzene. **cc-pVDZ: 1,399 s (23.3 min), peak 13.9 GB**, against 27 s for the
   energy — a gradient-to-energy factor ≈ 50 in pyscf 2.14's implementation. cc-pVTZ: three attempts,
   none completed — lost with the WSL VM (18:15), ENOSPC on the /tmp tmpfs (21:37), and the laptop's
-  abrupt power-off at 05:15 on 2026-09-06 after three hours in the gradient stage (Budget §3); no
+  switch-off by hand at 05:15 on 2026-09-06 after three hours in the gradient stage (Budget §3); no
   fourth attempt. Log: `results_timing/benzene_ccpvtz_canonical_gradient.log`. Verdict for the
   72-gradient branch on this laptop: B3, by memory before time (Budget §3).
 - **`m1_frozen_spaces.py`** (probe M1, 2026-09-05, WSL `~/qc05`): the three arms along three benzene
