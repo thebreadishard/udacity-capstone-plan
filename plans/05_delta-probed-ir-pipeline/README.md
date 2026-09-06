@@ -255,7 +255,11 @@ corpus carries no module-02 reuse exposure (Goal, decision 7).
 
 **Decision 8 (closed 2026-09-06):** P1 of the dry-run note accepted — in mode E, ρ, ρ_noise and the
 stopping rule are computed on the off-diagonal residual R_s,off (Ladder §3 dated amendment;
-Distilled §3 row updated). **Open:** P2–P6 (dry-run note) and P7–P9 (probe M1 note).
+Distilled §3 row updated).
+
+**Decision 9 (closed 2026-09-06):** P2 accepted — the stopping threshold is ρ\* = max(1.1·ρ_dry,
+c·ρ_noise), ρ_dry the noiseless dry run's model floor per rung and mode (Ladder §3 dated amendment;
+Distilled §3 K row). **Open:** P3–P6 (dry-run note) and P7–P9 (probe M1 note).
 
 ## Dated notes after the freeze
 
@@ -299,10 +303,10 @@ Distilled §3 row updated). **Open:** P2–P6 (dry-run note) and P7–P9 (probe 
 
 ## Not yet done (owed, in order)
 
-- **Decide P2–P6 of the 2026-09-05 dry-run note** (the model floor; the mode-E noise ceiling; the
-  symmetry prior; the declared ρ; the mode-E cost picture) and **P7–P9 of the probe M1 note**, then
-  amend the Ladder by dated note. P1 (ρ on the off-diagonal residual) was accepted 2026-09-06
-  (decision 8).
+- **Decide P3–P6 of the 2026-09-05 dry-run note** (the mode-E noise ceiling; the symmetry prior; the
+  declared ρ; the mode-E cost picture) and **P7–P9 of the probe M1 note**, then amend the Ladder by
+  dated note. P1 (ρ on the off-diagonal residual) and P2 (the model floor) were accepted 2026-09-06
+  (decisions 8 and 9).
 
 - ~~Round 11~~ — not planned. The review loop was closed on 2026-09-04 after a seam check of the
   Round-10 Pass B patch ([Seam_Check_2026-09-04_Round10B_patch.md](GoalGathering/Seam_Check_2026-09-04_Round10B_patch.md),

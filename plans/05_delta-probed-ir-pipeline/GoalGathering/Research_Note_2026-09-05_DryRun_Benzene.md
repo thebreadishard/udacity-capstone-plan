@@ -73,6 +73,8 @@ molecules (README item 1 asks for "the largest molecules the laptop affords") ha
 - **P2 — restore the model floor.** ρ\* = max(1.1·ρ_dry(rung, mode), c·ρ_noise), with ρ_dry printed
   by the dry run per rung and mode. The Round-9 reviewer proposed this floor; the plan dropped
   it; the measurement says it is needed.
+  **Accepted by the user 2026-09-06; written into Ladder §3 as a dated amendment (decision 9). Under
+  P1 the floor is read on ρ_off, where benzene's value is ≈ 0.2, not 0.0049.**
 - **P3 — the mode-E noise requirement is set by the off-diagonal signal, not by the Q6 line.** At
   benzene the off-diagonal signal is 5 µE_h RMS, so mode E needs σ_E ≲ 2 µE_h to recover the
   couplings, ten times stricter than the 18.7 µE_h line (which was derived for the diagonal

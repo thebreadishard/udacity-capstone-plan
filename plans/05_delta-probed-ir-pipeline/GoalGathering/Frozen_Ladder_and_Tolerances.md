@@ -290,6 +290,19 @@ for fragment probing, before the R3 fragment-vs-whole comparison has printed.
   with the 7 cm⁻¹ diagonal-only errors in place; on ρ_off the same deck needs K_off = 388 energies
   for ρ_off ≤ 0.3. Mode G has no diagonal block and is unchanged. The dry run's printed ρ_off column
   is the reference implementation (`probes/dryrun_dft_delta_recovery.py`, stage C).
+  **Dated amendment 2026-09-06 (P2 of the dry-run note, accepted by the user; measurement behind
+  it: dry-run note §2 items 8–9).** The threshold gains the **model floor**: **ρ\* = max(1.1·ρ_dry,
+  c·ρ_noise)**, where ρ_dry(rung, mode) is the residual the quadratic model reaches on the
+  **noiseless** dry run of that rung and mode with all training pairs — the quartic and higher
+  contamination the Hessian model cannot fit at q_s — printed by the dry run beside K_cap, never
+  typed; in mode E it is read on ρ_off (P1), in mode G on ρ. Both guards stand: the rule is void when
+  ρ\* ≥ ρ_max = 0.5, and it is evaluated only for n > 2M (mode E) or n ≥ n_min(G). Reason: without
+  the floor the rule is unreachable whenever c·ρ_noise < ρ_dry — on benzene, raw ρ_dry = 0.0049, so
+  every σ_E ≲ 1 µE_h at c ≤ 3 ran to the cap and was written "not recovered" though the recovery
+  was as good as the model allows (dry run: at σ_E = 0.5 µE_h no stop for c ≤ 2 without the floor,
+  K = 490 with it); on ρ_off the benzene floor is ≈ 0.2 (0.205 with all training data, 0.187 after
+  the quartic correction), the same order as ρ_noise,off at σ_E = 1–2 µE_h (0.14–0.27), so the
+  floor is load-bearing under P1. The cost record carries ρ_dry beside ρ_noise, c and ρ(K).
 - **[05] Hold-out membership is decided before any response exists:** by a seeded rule in the
   Q0 deck (deck seed + pair index: **one deck index per pair ±p, and the pair is the hold-out
   unit** — a pair is never split between hold-out and training), fraction f_h (item 10).
