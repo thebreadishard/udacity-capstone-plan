@@ -1,5 +1,7 @@
 # Verzoek om PDF's aan de begeleider — 6 september 2026
 
+> **Stand later op 6 september:** inmiddels zelf legaal verkregen (open access): 1, 3, 5, 6, 14, 18, 23. Open bij de uitgever maar alleen door een mens te downloaden: 9, 11, 12, 15. **Nog van de begeleider nodig: 2, 4, 7, 8, 10, 13, 16, 17, 19, 20, 21, 22.**
+
 Bronnen die het plan citeert of nodig heeft en waarvan de volledige tekst nog niet gelezen is
 (status per item in `Relevant_Scientific_Papers.md`). Open-access-artikelen (arXiv, PMC, IOP CC BY,
 ACS Omega, PLOS) staan hier niet: die halen we zelf. Gerangschikt naar wanneer we ze nodig hebben.

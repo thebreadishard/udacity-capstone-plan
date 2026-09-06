@@ -168,6 +168,12 @@ Fetched by the author with the user's consent; first page checked against the re
 | 61 | Lemmens_2019_tetracene_jetcooled_AA628_A130.pdf (arXiv v1, 10 pp.) | arXiv:1907.09351 |
 | 62 | Lemmens_2021_coronene_jetcooled_ApJ923_238.pdf (11 pp., CC BY) | IOP |
 | PySCFAD (side project, item 48's companion) | Zhang_2024_PySCFAD_local_CC_gradients.pdf (29 pp.) | arXiv:2404.03129 |
+| 14 | Boese_Klopper_Martin_2005_anharmonic_DFT_MolPhys103_863.pdf (arXiv v1, 32 pp.) | arXiv:physics/0411065 |
+| 13 | Lam_2020_QM_ML_anharmonic_JCTC16_1681.pdf (arXiv, 10 pp.) | arXiv:1909.12661 |
+| 4 | Mattioda_2020_PAHdb_laboratory_ApJS251_22.pdf (16 pp.) | IOP (bronze OA) |
+| 52 | Joblin_1995_gasphase_PAH_temperature_AA299_835.pdf (ADS scan, 12 pp.) | articles.adsabs.harvard.edu |
+| 64 | Joblin_1994_gasphase_PAH_heatpipe_AA281_923.pdf (ADS scan, 14 pp.) | articles.adsabs.harvard.edu |
+| 57 | Schneider_2024_quantitative_vapor_naphthalene_JQSRT323_109045.pdf (accepted manuscript, 13 pp.) | OSTI 2477598 (green OA) |
 
-The remaining items of `PDF_Request_2026-09-06.md` (groups A 2–7, B, C) are paywalled and asked of the supervisor.
+Checked with OpenAlex and Europe PMC on 2026-09-06: **open at the publisher but bot-blocked** (a person can download them): the 2026 CMA paper (JPCA, open PDF), Altun 2021 (JPCA, hybrid OA), Esposito 2024 (JCP 160, hybrid OA), Fusè 2024 (Spectrochim. Acta A, hybrid OA). **Closed, no author manuscript found**: Sharpe 2004, Pirali 2009, Brumfield 2012, Lahm 2022, Wang 2025, Bégué 2005, Ruth 2022, Reiher 2003, Pinski & Neese 2018 and 2019, Riplinger et al. 2013a, 2013b and 2016, Hudgins & Sandford 1998; the PAHdb-Anharmonic method papers were not looked up individually. These are asked of the supervisor.
 
