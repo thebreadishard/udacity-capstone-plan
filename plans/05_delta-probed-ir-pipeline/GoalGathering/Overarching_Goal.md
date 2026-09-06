@@ -169,6 +169,21 @@ domain changes produce micro-hartree discontinuities that wreck finite-differenc
 properties even with fixed PNO dimensions (item 30, full text read) — and they are *scored* only
 where the pilot note names a gas-phase intensity scoreboard. Band pairing is fixed in the pilot
 note, never chosen by "strongest band in a window".
+**Dated addition 2026-09-06 (decision 18, user):** intensities are **scored on R0 and R1** — the two
+rungs with quantitative gas-phase intensities (the NIST Quantitative Infrared Database for benzene,
+item 56; the PNNL/NWIR naphthalene record, items 57 and 59) — as a **second, separately reported
+quantity** with its own beat comparison; band positions remain the primary claim and the only one
+carried to R2 and above (no quantitative gas intensity exists there; matrix intensities never
+score). The scored intensity is the **integrated band intensity** of each scored band, absolute
+(km/mol) where the source carries concentration and path, else the ratio to the strongest scored
+band of the same molecule; the pipeline's value is the **anharmonic (GVPT2) intensity from DFT
+dipole first and second derivatives**, compared with the scaled-harmonic baseline's harmonic
+intensity and with line A where it reports intensities; tolerance from the source's stated
+intensity uncertainty, fixed in the pilot note. **No CC correction to dipoles is promised** (item
+30 stands); whether the frozen-space object of Ladder §3 removes item 30's discontinuities is a
+**measured question** (probe M1-μ, Ladder §3 dated note), and only a printed result can turn a
+dipole correction into a proposal. Band **widths** are not predicted: a spectrum is drawn with the
+source's resolution and temperature as a labelled presentation choice.
 
 ## Method skeleton (to be distilled)
 

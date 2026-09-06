@@ -95,6 +95,10 @@ is the *opponent* of this project's pipeline, not its training data."
 
 ### Module 03 — the scoreboard, the measured tolerance, and u_band (carried, extended)
 
+*Dated addition 2026-09-06 (decision 18):* for benzene and naphthalene the scoreboard also carries
+**integrated band intensities** with the source's stated uncertainty (NIST Quantitative, item 56;
+PNNL, items 57 and 59); intensities are scored on those two rungs as a second quantity (Goal).
+
 **Contribution.** The lab truth the whole plan is scored against, plus two numbers the ladder
 only asserts until this module measures them: the **matrix tolerance** (pilot-note item 4) and
 the **measured band-centre uncertainty u_band per gas-phase band** (the decidability rule of

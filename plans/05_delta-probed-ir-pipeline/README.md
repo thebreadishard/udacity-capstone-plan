@@ -296,7 +296,17 @@ points from which arm A's off-diagonal bias is read before the pilot note. **All
 
 **Decision 17 (closed 2026-09-06):** module 07's agent runs on **LangGraph** (user, 2026-09-05) with the
 **Anthropic API** as model endpoint, model id logged in every run (confirmed by the user 2026-09-06).
-**No decision is open.**
+
+**Decision 18 (closed 2026-09-06):** intensities are scored on R0 and R1 as a second quantity
+(integrated band intensity, GVPT2 from DFT dipole derivatives, against the NIST Quantitative and
+PNNL records); positions stay the primary claim; no CC dipole correction promised; probe M1-μ
+measures whether the frozen-space object removes item 30's discontinuity (Goal, Distilled, Ladder §3,
+probes README 2b, mapping M03, Uitleg §1.3, proposal §15).
+
+**Decision 19 (closed 2026-09-06):** silent-only coupling blocks are measured per rung — the deck
+prints their count, the rung's DFT dry run recovers with and without them, and they are dropped only
+where every scored family's position moves by less than τ₇; default keep (Ladder §3 structural-prior
+dated note). **No decision is open.**
 
 ## Dated notes after the freeze
 

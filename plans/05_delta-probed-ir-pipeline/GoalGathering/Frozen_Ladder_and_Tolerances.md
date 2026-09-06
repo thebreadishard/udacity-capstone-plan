@@ -365,6 +365,18 @@ for fragment probing, before the R3 fragment-vs-whole comparison has printed.
   start and its (T) — proposal P7, **accepted 2026-09-06 as decision 14 and written into the bullet
   above**), and the energy the arms report is the **composite** (proposal P8, **accepted 2026-09-06
   as decision 15 and written into the bullet above**).
+  **Dated note 2026-09-06 (decision 18, user) — probe M1-μ, the frozen-space dipole.** Item 30's
+  objection to local-CC intensities is that domain re-selection under a field produces
+  micro-hartree discontinuities; the §3 object re-selects nothing. Whether that removes the
+  discontinuity is measured, not assumed: along the three M1 benzene modes and the same nine points,
+  arm A's dipole moment μ(q) — from the relaxed CC density where the code provides it, else by
+  finite field in the frozen spaces (±F along each axis, the field a deck number) — against the
+  canonical CCSD(T) dipole at the same geometries; printed: σ of μ(q) about a degree-4 fit per
+  component (the smoothness), and the bias of ∂μ/∂q at q = 0 against canonical, in km/mol on that
+  mode's intensity; the same for arm B. **No verdict, no promise:** intensities stay DFT-level
+  (Goal, decision 18) unless this probe prints a smooth, small-bias dipole and a later dated note
+  proposes Δμ′ with its cost (two dipoles per mode, ≈ 2× an energy each with the relaxed density).
+  Cost of the probe at cc-pVDZ: 27 dipoles per arm, hours; owed after the cc-pVTZ M1 scan.
 - **[05] The structural prior is frequency-banded** (Distilled §3): off-diagonal Δ₂ elements
   between DFT modes closer than w are unpenalised; outside the band they carry the ℓ₁ penalty;
   plus a low-rank term. **w and the weights are fixed from the dry run by a stated rule** (item
@@ -391,6 +403,16 @@ for fragment probing, before the R3 fragment-vs-whole comparison has printed.
   criterion the w rule used; until that test has printed, the banded prior above stands as the
   deck's rule and the w rule with it. The novelty sentence (Distilled §2, bib 24 row) is then read
   as "a symmetry-blocked recovery of a **difference** Hessian with a frozen local-CC anchor".
+  **Dated note 2026-09-06 (decision 19, user) — silent-only coupling blocks, measured per rung.**
+  Modes that are IR-inactive **by symmetry** (their representation carries no dipole component; the
+  label from the DFT code, never a numeric intensity threshold) couple to IR-active modes only
+  within their own representation, and their fundamentals reach the spectrum only through
+  anharmonic resonances. Per rung the deck therefore **prints** the number of same-representation
+  pairs made of inactive modes only, and the rung's DFT dry run runs the recovery **with and without
+  those blocks** and reports the scored bands' positions after GVPT2 (resonances included) for both.
+  Dropping the blocks is a **deck decision for that rung only if** every scored family's position
+  moves by less than τ₇ in the dry run; otherwise the blocks stay. Default: keep. The diagonal of
+  every mode (2 energies) is always measured; the rule touches off-diagonal counts only.
 - **[05] Pattern amplitudes come from the Q6 step grid**: the largest step at which the
   smoothness probe's σ is under the noise line of the mode used; never chosen to make a recovery
   converge. Stated plainly: with **one pooled σ per arm** (Q6 bullet) and a line that rises with

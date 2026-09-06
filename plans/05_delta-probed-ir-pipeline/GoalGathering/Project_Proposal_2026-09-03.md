@@ -523,6 +523,18 @@ here are printed by scripts in `probes/` and recorded in dated notes in this fol
 9. Module 07's agent is built on **LangGraph** (admissible through the programme's
    LangChain/LangGraph elective) with the Anthropic API as model endpoint, model id logged
    (decision 17).
+10. **Intensities (decision 18), answering the supervisor's wish for the whole spectral shape.**
+   Positions remain the primary claim; on benzene and naphthalene, the two rungs with calibrated
+   gas-phase intensities, the **integrated band intensity** is scored as a second quantity (GVPT2
+   anharmonic intensities from DFT dipole derivatives, against NIST Quantitative and PNNL). No
+   coupled-cluster correction to intensities is promised — the published objection (item 30:
+   local-correlation domain changes wreck field derivatives) stands — but the plan's frozen-space
+   object is exactly what that objection is about, so whether it removes the problem is measured
+   (probe M1-μ) before anything is proposed. Widths are drawn at the source's resolution and
+   temperature and labelled as presentation. **Silent modes (decision 19):** IR-inactive modes are
+   not dropped — their diagonal costs two energies each and their fundamentals matter through
+   resonances — but the coupling blocks made only of inactive modes are tested per rung in the
+   DFT dry run and dropped from the deck only where the scored positions do not move.
 
 **Process.** The review loop closed on 4 September after a seam check of the last patch (19
 seams, all mechanical); no further review round is planned, and the remaining risk is retired

@@ -44,6 +44,15 @@ breed. De reden is praktisch: van de kleine PAK's is de positie in het lab tot o
 1 cm⁻¹ bekend, en dat is precies het soort getal waarop een voorspelling kan worden
 afgerekend.
 
+> **Aanvulling 6 september 2026 (besluit 18).** Voor benzeen en naftaleen bestaan wél
+> gekalibreerde gasfase-intensiteiten (NIST Quantitative, PNNL). Daar wordt de **intensiteit**
+> als tweede, apart gerapporteerde grootheid gescoord: de geïntegreerde bandsterkte uit de
+> anharmonische (GVPT2) berekening met DFT-dipoolafgeleiden. Posities blijven de hoofdbelofte
+> en de enige die naar de grotere moleculen meegaat. Een CC-correctie op de intensiteit wordt
+> niet beloofd; of de bevroren ruimte van hoofdstuk 5 die mogelijk maakt, wordt gemeten
+> (probe M1-μ). Breedtes worden niet voorspeld, alleen getekend bij de resolutie en temperatuur
+> van de bron, en zo gelabeld.
+
 > **Definitie 1.1 — De maatstaf**
 > De pijplijn is geslaagd voor een molecuul als haar bandposities aantoonbaar dichter bij de
 > laboratoriumwaarden liggen dan de beste voorspelling die er nu, voor dat molecuul, ergens
