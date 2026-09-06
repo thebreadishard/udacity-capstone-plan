@@ -15,7 +15,7 @@
 | Probes | batchrunner via M07 | deck | antwoordrecords (O5) | hash-controle, budgetregel |
 | Recovery | solver | O5, prior | Δ₂, ρ-curve, K, K_off, c₀, Δ₁ (O6) | stopregel, K_cap |
 | Licenties | probes | O6, referenties | Q6 / Q7 / Q8-uitslagen | fail-closed zinnen |
-| Spectrum | pijplijn | DFT + Δ₂ + geometrieterm, GVPT2 | bandposities per familie | resonantieregels |
+| Spectrum | pijplijn | DFT + Δ₂ + geometrieterm, GVPT2 | bandposities per familie; intensiteiten (DFT-dipolen, anharmonisch), gescoord bij benzeen en naftaleen; breedte als tekenkeuze | resonantieregels |
 | Score | M08 | spectrum, O8, O9, M04-kolom | beat / verloren / onbeslisbaar per familie | u_band, Δ = 0-nulrij |
 | Record en certificaat | M07 | alles | O7, O13 of weigering | de weigeringslijst |
 | Steunvoorspeller | M05 | Δ₂-corpus (O11) | geleerde prior; P3 | licentie verdiend op R2 én R3 |
