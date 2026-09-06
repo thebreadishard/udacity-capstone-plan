@@ -38,7 +38,7 @@ Historic comparison ([01](01_voxel-field-pes/), [02](02_coupled-cluster-anharmon
 | **Nuclear motion** | Classical MD + dipole-ACF | GVPT2 / hybrid QFF | Frozen nuclei on the scored window |
 | **Central question** | Field vs GNN transfer on vibrations | Does a CC anchor beat DFT-anchored PAH IR? | Does one local field rule transfer H₂ → H₂O and stay a fixed point? |
 | **Horizon** | Projects 10–12 | Absorbed / none | Projects 10–12 (phase, pair density, scale) |
-| **Reviews survived** | Rounds 1–3 (git history) | Round 4 (git history) | Round 5 Pass A (cold read, 2026-09-01), addressed. Round 5 Pass B (domain, 2026-09-01): **no green light for the scope as frozen**, not addressed |
+| **Reviews survived** | Rounds 1–3 (in its folder) | Round 4 (in its folder) | Round 5 Pass A (cold read, 2026-09-01), addressed. Round 5 Pass B (domain, 2026-09-01): **no green light for the scope as frozen**, not addressed |
 
 ---
 
@@ -85,7 +85,7 @@ Method-agnostic, from 01–03:
 - fail-closed reporting; DOI-before-claim; measured-not-asserted probes
 
 From plan 02 specifically: the measured lab-comparison machinery (PAHdb experimental band reads
-with recorded uids, NIST JCAMP parsing) — git history, recomputable, and the quantitative floor
+with recorded uids, NIST JCAMP parsing) — in plan 02's `probes/`, recomputable, and the quantitative floor
 under plan 04's frozen lines. From plan 03: nothing method-specific survives; its Maxwell–TDDFT
 scope is dropped, its governance was already shared. Itemised fates of the thirty plan-01/02
 review findings: [`03_presence-update-rule/GoalGathering/Inheritance_of_Reviews.md`](03_presence-update-rule/GoalGathering/Inheritance_of_Reviews.md).
