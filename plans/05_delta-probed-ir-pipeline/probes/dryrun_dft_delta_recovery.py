@@ -58,7 +58,10 @@ DECK_SEED = 20260905
 HOLDOUT_SEED = 20260905 + 1
 BAND_W_CANDIDATES = [25.0, 50.0, 100.0, 200.0, 400.0]   # cm⁻¹, for the w rule
 TAU7_CM = 5.0      # Q7-class tolerance used only to read off w in the dry run (pilot-note item 11 later)
-RHO_DECLARED = 0.10  # the "declared ρ" at which the dry-run K is read (README item 1); c comes later
+RHO_DECLARED = 0.10  # LEGACY reporting threshold, retired by decision 12 (2026-09-06, P5): a fixed declared ρ
+                     # reads K_off = 2 on raw ρ and is unreachable on ρ_off; K is read at the Ladder threshold
+                     # max(1.1·ρ_dry, c·ρ_noise) on ρ_off in the noise column ("K_at_P1P2" below). Kept only so
+                     # the old JSON keys stay comparable.
 RHO_MAX = 0.5
 SIGMA_GRID_UEH = [0.5, 1.0, 2.0, 5.0, 10.0, 20.0]        # µE_h per energy, the noise-injection grid
 C_GRID = [1.0, 1.5, 2.0, 3.0]
@@ -637,6 +640,16 @@ def stage_c(a: dict, deck: dict, out: str, quick: bool) -> dict:
         entry = {"sigma_E_uEh": s_ueh, "mode": "E", "rho_noise": rho_noise_E, "c0_reidentified": c0n,
                  "rho_final": curve[-1][1] if curve else None, "K_at": {}}
         entry["K_at_with_floor"] = {}
+        # P1 + P2 reading (decisions 8, 9, 12): everything on the off-diagonal residual. The recovery's residual is
+        # the same vector in both views, so ρ_off(n) = ρ(n)·RMS_resp/RMS_off exactly, and likewise ρ_noise,off and
+        # ρ_dry,off; the ρ_max guard is applied on the off scale (that is where it bites, P3).
+        entry["rho_noise_off"] = rho_noise_E * ratio_off
+        entry["rho_dry_off"] = rho_dry_floor * ratio_off
+        entry["K_at_P1P2"] = {}
+        for c in C_GRID:
+            rho_star_off = max(1.1 * rho_dry_floor * ratio_off, c * rho_noise_E * ratio_off)
+            entry["K_at_P1P2"][str(c)] = ("at-noise" if rho_star_off >= RHO_MAX
+                                          else next((n for n, r in curve if r * ratio_off <= rho_star_off), "not-reached"))
         for c in C_GRID:
             rho_star = c * rho_noise_E
             if rho_star >= RHO_MAX:
@@ -777,9 +790,10 @@ def write_report(a, deck, c, out, quick):
     for t in c["w_table"]:
         P(f"- w = {t['w_cm']:.0f}: hold-out ρ = {t['rho_holdout']:.3f}, worst family RMS = {t['worst_family_rms_cm']:.2f} cm⁻¹")
     P("")
-    P(f"## Mode E: K at declared ρ = {c['declared_rho']}: {c['modeE']['K_at_declared_rho']} energies "
-      f"(K_off = {c['modeE']['K_off']}); ρ with all training pairs = {c['modeE']['rho_final_all_training']:.3f}; "
-      f"RMS held-out response = {c['modeE']['rms_resp_holdout_Eh']*1e6:.2f} µE_h")
+    P(f"## Mode E: ρ with all training pairs = {c['modeE']['rho_final_all_training']:.3f}; "
+      f"RMS held-out response = {c['modeE']['rms_resp_holdout_Eh']*1e6:.2f} µE_h. "
+      f"(Legacy: at the retired declared ρ = {c['declared_rho']} the raw curve would stop at {c['modeE']['K_at_declared_rho']} energies, "
+      f"K_off = {c['modeE']['K_off']} — the blindness of decision 8/12; K is read in the noise column below.)")
     P("- recovered-vs-direct RMS frequency error per family (cm⁻¹), full recovery (re-diagonalised) / diagonal-only (CMA-0):")
     for fam, v in c["modeE"]["family_error_full"].items():
         vd = c["modeE"]["family_error_diagonal_only"][fam]
@@ -823,6 +837,9 @@ def write_report(a, deck, c, out, quick):
               "; ".join(f"c={k}: K={v}" for k, v in e["K_at"].items()) +
               "  | with the model floor, ρ* = max(1.1·ρ_dry, c·ρ_noise): " +
               "; ".join(f"c={k}: K={v}" for k, v in e["K_at_with_floor"].items()))
+            P(f"    P1+P2 reading on ρ_off (decisions 8, 9, 12): ρ_noise,off = {e.get('rho_noise_off', float('nan')):.3f}, "
+              f"ρ_dry,off = {e.get('rho_dry_off', float('nan')):.3f}; " +
+              "; ".join(f"c={k}: K={v}" for k, v in e.get("K_at_P1P2", {}).items()))
         else:
             P(f"- mode G, σ_g = {e['sigma_g_uEh_per_q']} µE_h per unit q: ρ_noise = {e['rho_noise']:.3f}; " +
               "; ".join(f"c={k}: K={v}" for k, v in e["K_at"].items()) +

@@ -92,6 +92,8 @@ molecules (README item 1 asks for "the largest molecules the laptop affords") ha
   conditional on the naphthalene dry-run test; the banded rule stands until that test prints.**
 - **P5 — the declared ρ.** 0.1 is far too loose; whatever c is read into pilot-note item 8 must be
   read on ρ_off (P1).
+  **Accepted by the user 2026-09-06 (decision 12): the fixed declared ρ is retired; c is read on ρ_off
+  under the P2 threshold; the script prints the "P1+P2 reading" per noise level (stage C rerun).**
 - **P6 — the mode-E cost picture.** K_off ≈ 390 energies at benzene is ≈ 0.9 × the number of
   off-diagonal unknowns: the sparsity saving at R0 is small. The size sentence is a measurement
   at R1–R3, not R0, and R0 is 12 atoms; but the plan should expect K_off of order M² /2 in mode E

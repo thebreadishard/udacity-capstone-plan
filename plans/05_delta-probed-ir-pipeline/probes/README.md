@@ -61,7 +61,8 @@ single-mode scatter with sealed fit coefficients, and timings; no local-CC Δ₂
    affords; recover Δ₂ with the banded structural prior from a hashed, ordered pattern set with
    seeded hold-out (the pair ±p is the hold-out unit), from energies — as symmetric combinations
    R_s over ± pairs — and from DFT gradients; print the residual curves ρ(n), the dry-run K and
-   K_off per mode at a declared ρ (**K in energies, a ± pair counting 2, exactly as probe 6**), the off-diagonal blocks flagged large, the
+   K_off per mode at the Ladder threshold max(1.1·ρ_dry, c·ρ_noise) on ρ_off for the c grid and the noise
+   grid (the fixed "declared ρ" was retired by decision 12, 2026-09-06; **K in energies, a ± pair counting 2, exactly as probe 6**), the off-diagonal blocks flagged large, the
    recovered-vs-direct frequency error per family for the diagonal-only and the full recovery,
    the band width w and weights by the Ladder §3 rule, and the per-molecule DFT Hessian
    wall-clock on the B2 laptop; then the **noise-injection column**: the same recoveries with

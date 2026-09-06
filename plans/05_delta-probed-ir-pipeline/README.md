@@ -270,7 +270,12 @@ Distilled pointer).
 (different-representation elements zero, same-representation elements free, ℓ₁/low-rank only where
 the point group leaves too many free elements), entering the deck after the naphthalene dry run
 reproduces the direct Δ₂ within τ₇ with it; the banded rule stands until then (Ladder §3 dated
-amendment; Distilled rows). **Open:** P5–P6 (dry-run note) and P7–P9 (probe M1 note).
+amendment; Distilled rows).
+
+**Decision 12 (closed 2026-09-06):** P5 accepted — the dry run's fixed "declared ρ = 0.1" is retired;
+c (pilot-note item 8) is read on ρ_off under the P2 threshold from the noise-injected column (Ladder
+item 8 dated amendment; probes README item 1; script prints the P1+P2 reading). **Open:** P6
+(dry-run note) and P7–P9 (probe M1 note).
 
 ## Dated notes after the freeze
 
@@ -314,9 +319,9 @@ amendment; Distilled rows). **Open:** P5–P6 (dry-run note) and P7–P9 (probe 
 
 ## Not yet done (owed, in order)
 
-- **Decide P5–P6 of the 2026-09-05 dry-run note** (the declared ρ; the mode-E cost picture) and
-  **P7–P9 of the probe M1 note**, then amend the Ladder by dated note. P1–P4 were accepted
-  2026-09-06 (decisions 8–11); P4 waits for the naphthalene dry run before it enters the deck.
+- **Decide P6 of the 2026-09-05 dry-run note** (the mode-E cost picture) and **P7–P9 of the probe M1
+  note**, then amend the Ladder by dated note. P1–P5 were accepted 2026-09-06 (decisions 8–12); P4
+  waits for the naphthalene dry run before it enters the deck.
 
 - ~~Round 11~~ — not planned. The review loop was closed on 2026-09-04 after a seam check of the
   Round-10 Pass B patch ([Seam_Check_2026-09-04_Round10B_patch.md](GoalGathering/Seam_Check_2026-09-04_Round10B_patch.md),

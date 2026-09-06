@@ -578,7 +578,13 @@ number exists for any molecule**. The 2026-09-04 decisions are recorded in it by
    printed; for mode G at **σ_g^assumed = 2.8·τ·q_s**, the mode-G noise line itself (the worst
    admissible noise), labelled an assumption because no σ_g exists before the note; M2 prints its
    measured σ_g against it — and the response type the residual is computed on in each mode
-   (Distilled §3).
+   (Distilled §3). **Dated amendment 2026-09-06 (P5 of the dry-run note, accepted; decision 12):**
+   in mode E, c is read on the **off-diagonal residual ρ_off** under the P2 threshold
+   max(1.1·ρ_dry, c·ρ_noise), from the noise-injected dry-run column printed on that scale (the
+   dry-run script's "P1+P2 reading"); a c calibrated on raw ρ would carry raw ρ's blindness to the
+   off-diagonals into the constant. The dry run's former fixed "declared ρ = 0.1" is **retired** as a
+   reading threshold (on raw ρ any value ≥ 0.03 read K_off = 2; on ρ_off 0.1 lies under benzene's
+   model floor of ≈ 0.2); no fixed ρ is declared anywhere — K is read at the Ladder threshold only.
 9. **[05] K_cap per rung and per mode (E and G)**, derived from the **noise-injected** dry-run K
    at that rung's molecule (or the largest dry-run size available), at the same σ per mode as
    item 8 (σ_E measured; σ_g^assumed for mode G), by a factor stated in the note; together with
