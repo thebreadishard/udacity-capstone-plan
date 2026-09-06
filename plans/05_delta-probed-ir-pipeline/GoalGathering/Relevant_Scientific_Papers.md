@@ -151,3 +151,23 @@ Eight queries, each read from the result list and, where open, the abstract or f
 8. "normal mode displacements high-level correction low-level Hessian difference CCSD(T) DFT ... multi-mode displacements energies only" — nearest: normal-mode sampling for ML training sets; iGVPT2; Δ-ML as in 3.
 
 **Result.** Every ingredient exists in print; the combination — a symmetry-blocked recovery of the CC−DFT difference Hessian from multi-mode energy patterns, computed in frozen local-correlation spaces transported across geometries, with the probe count and the locality measured per size — was not found. Re-run before the Module-08 paper is written; the 2026 CMA paper is added to the reading list (not yet fetched: paywalled).
+
+## PDFs held locally (2026-09-06; folder `C:/Users/thebr/Documents/CapstoneLiterature/`, outside the repository; open-access sources only)
+
+Fetched by the author with the user's consent; first page checked against the reference. **Held is not read**: each item's status above changes to "read" only when the author has read it and says so, dated.
+
+| item | file | source |
+|---|---|---|
+| 5 | Mai_2025_MLMD_PAH_MNRAS541_3073.pdf (arXiv v3, 8 pp.) | arXiv:2503.05120 |
+| 6 | Mulas_2018_anharmonic_pyrene_coronene_JCP149_144102.pdf (arXiv, 42 pp.) | arXiv:1809.05669 |
+| 16 | Kaeser_Meuwly_2021_transfer_learning_CCSDT_JCTC17_3687.pdf (arXiv v2, 70 pp.; arXiv title "MP2 Is Not Good Enough: Transfer Learning ML Models for Accurate VPT2 Frequencies") | arXiv:2103.05491 |
+| 30 | Madriaga_Crawford_2025_PNO_discontinuities_JPCA129_10014.pdf (17 pp.) | Europe PMC, PMC12581137 |
+| 43 | Kitzmiller_2024_CMA2_JCTC20_10886.pdf (13 pp.) | Europe PMC, PMC11673116 |
+| 47 | Williams_2024_Hessian_QM9.pdf (7 pp.) | arXiv:2408.08006 |
+| 56 | Chu_1999_NIST_Quantitative_IR_JResNIST104_59.pdf (23 pp.) | nvlpubs.nist.gov |
+| 61 | Lemmens_2019_tetracene_jetcooled_AA628_A130.pdf (arXiv v1, 10 pp.) | arXiv:1907.09351 |
+| 62 | Lemmens_2021_coronene_jetcooled_ApJ923_238.pdf (11 pp., CC BY) | IOP |
+| PySCFAD (side project, item 48's companion) | Zhang_2024_PySCFAD_local_CC_gradients.pdf (29 pp.) | arXiv:2404.03129 |
+
+The remaining items of `PDF_Request_2026-09-06.md` (groups A 2–7, B, C) are paywalled and asked of the supervisor.
+
