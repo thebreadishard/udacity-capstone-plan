@@ -152,7 +152,7 @@ Eight queries, each read from the result list and, where open, the abstract or f
 
 **Result.** Every ingredient exists in print; the combination — a symmetry-blocked recovery of the CC−DFT difference Hessian from multi-mode energy patterns, computed in frozen local-correlation spaces transported across geometries, with the probe count and the locality measured per size — was not found. Re-run before the Module-08 paper is written; the 2026 CMA paper is added to the reading list (not yet fetched: paywalled).
 
-## PDFs held locally (2026-09-06; folder `C:/Users/thebr/Documents/CapstoneLiterature/`, outside the repository; open-access sources only)
+## PDFs held locally (2026-09-06; folder `Papers/` at the repository root, git-ignored; open-access sources only)
 
 Fetched by the author with the user's consent; first page checked against the reference. **Held is not read**: each item's status above changes to "read" only when the author has read it and says so, dated.
 
@@ -175,5 +175,5 @@ Fetched by the author with the user's consent; first page checked against the re
 | 64 | Joblin_1994_gasphase_PAH_heatpipe_AA281_923.pdf (ADS scan, 14 pp.) | articles.adsabs.harvard.edu |
 | 57 | Schneider_2024_quantitative_vapor_naphthalene_JQSRT323_109045.pdf (accepted manuscript, 13 pp.) | OSTI 2477598 (green OA) |
 
-Checked with OpenAlex and Europe PMC on 2026-09-06: **open at the publisher but bot-blocked** (a person can download them): the 2026 CMA paper (JPCA, open PDF), Altun 2021 (JPCA, hybrid OA), Esposito 2024 (JCP 160, hybrid OA), Fusè 2024 (Spectrochim. Acta A, hybrid OA). **Closed, no author manuscript found**: Sharpe 2004, Pirali 2009, Brumfield 2012, Lahm 2022, Wang 2025, Bégué 2005, Ruth 2022, Reiher 2003, Pinski & Neese 2018 and 2019, Riplinger et al. 2013a, 2013b and 2016, Hudgins & Sandford 1998; the PAHdb-Anharmonic method papers were not looked up individually. These are asked of the supervisor.
+Checked with OpenAlex and Europe PMC on 2026-09-06: **open at the publisher but bot-blocked**, downloaded by the user the same day and now in `Papers/`: the 2026 CMA paper (CMA_2026_intermolecular_benchmarks_JPCA130_3249.pdf, 12 pp.), Altun 2021 (Altun_2021_local_error_acenes_CPS_JPCA125_9932.pdf, 8 pp.; item 44), Esposito 2024 (Esposito_2024_CH_overtone_benzene_naphthalene_JCP160_211101.pdf, 11 pp.; item 45), Fusè 2024 (Fuse_2024_scaling_up_VPT2_SpectrochimActaA311_123969.pdf, 18 pp.; item 28). **Closed, no author manuscript found**: Sharpe 2004, Pirali 2009, Brumfield 2012, Lahm 2022, Wang 2025, Bégué 2005, Ruth 2022, Reiher 2003, Pinski & Neese 2018 and 2019, Riplinger et al. 2013a, 2013b and 2016, Hudgins & Sandford 1998; the PAHdb-Anharmonic method papers were not looked up individually. These are asked of the supervisor.
 

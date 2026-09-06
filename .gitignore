@@ -38,3 +38,6 @@ plans/*/probes/*.log
 !plans/*/probes/results_*/*.json
 plans/*/probes/results_*/**/psi4.out
 plans/*/probes/results_*/psi4.out
+
+# local literature copies (open-access downloads; the repo holds references only)
+Papers/
