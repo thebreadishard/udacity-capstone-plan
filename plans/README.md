@@ -115,14 +115,14 @@ plans/05_delta-probed-ir-pipeline/    current — draft, created 2026-09-03
   README.md          orientation and reading order; Round-7 to Round-10 review record
   GoalGathering/     goal, why-05-supersedes-04, research note (source), frozen lines (carried),
                      ladder + tolerances, compute budget, distilled plan + gates, bibliography
-  probes/            conventions declared; probes owed, none run
+  probes/            conventions; probes owed; the probes that ran (DFT dry run, anchor timings, M1)
 ```
 
-Three folders sit at the repository root and are **shared dumps**, because no plan may claim them:
+Two tracked folders and one local folder sit at the repository root, because no plan may claim them:
 
 - `Rubrics/` — the Udacity module rubrics 01-09, treated as fixed (version 1.5.1). If Udacity ever
   revises them, add a sibling folder rather than overwriting; several decisions turn on exact wording.
-- `Papers/` — reference PDFs. Literature is a dump; the current plan's bibliography is the index.
+- `Papers/` — local only, **git-ignored since 2026-09-06**: the PDFs were removed from the repository and from its history (`Papers_Inventory_2026-09-06.md` at the root records how); the current plan's bibliography is the index of what is held and read.
 - `AI_Chats/` — the planning conversations. They predate the splits.
 
 The **professor reviews of plans 01–03 are back in this tree** since the 2026-09-04 restore (inside

@@ -1,6 +1,6 @@
 # Verzoek om PDF's aan de begeleider — 6 september 2026
 
-> **Stand later op 6 september:** inmiddels zelf legaal verkregen (open access): 1, 3, 5, 6, 14, 18, 23. Open bij de uitgever, door de gebruiker gedownload: 9, 11, 12, 15. **Nog van de begeleider nodig: 2, 4, 7, 8, 10, 13, 16, 17, 19, 20, 21, 22.**
+> **Stand later op 6 september:** inmiddels zelf legaal verkregen (open access): 1, 3, 5, 6, 14, 18, 23. Open bij de uitgever, door de gebruiker gedownload: 9, 11, 12, 15. **Nog van de begeleider nodig: 2, 4, 7, 8, 13, 16, 17, 19, 20, 21, 22** (10 vervallen op 6 september: de arXiv-tekst is al gelezen, item 23).
 
 Bronnen die het plan citeert of nodig heeft en waarvan de volledige tekst nog niet gelezen is
 (status per item in `Relevant_Scientific_Papers.md`). Open-access-artikelen (arXiv, PMC, IOP CC BY,
@@ -20,7 +20,7 @@ ACS Omega, PLOS) staan hier niet: die halen we zelf. Gerangschikt naar wanneer w
 
 8. Lahm, Kitzmiller, Mull, Allen & Schaefer, *J. Am. Chem. Soc.* **144**, 23271 (2022), DOI 10.1021/jacs.2c11158 — Concordant Mode Approach (het diagonale deel van ons idee is hier prior art).
 9. *Concordant Mode Approach (CMA): Vibrational Analysis of New and Upgraded Intermolecular Benchmarks for Noncovalent Bonding*, *J. Phys. Chem. A* **130**, 3249 (2026), DOI 10.1021/acs.jpca.6c00689 — de nieuwste CMA-uitbreiding; gevonden bij de nieuwheidszoektocht van 6 september.
-10. Wang, Luo, Wang & Liu, *J. Chem. Theory Comput.* **21**, 10893 (2025), DOI 10.1021/acs.jctc.5c01354 — O1NumHess: volledige Hessiaan uit weinig gradiënten.
+10. ~~Wang, Luo, Wang & Liu, *J. Chem. Theory Comput.* **21**, 10893 (2025), DOI 10.1021/acs.jctc.5c01354 — O1NumHess: volledige Hessiaan uit weinig gradiënten.~~ Vervallen: arXiv:2508.07544 (volledige tekst gelezen 2026-09-03, item 23).
 11. Altun, Ghosh, Riplinger, Neese & Bistoni, *J. Phys. Chem. A* **125**, 9932 (2021), DOI 10.1021/acs.jpca.1c09106 — groei van de lokale-benaderingsfout met de aceenlengte; CPS-extrapolatie.
 12. Esposito, Fortenberry, Boersma & Allamandola, *J. Chem. Phys.* **160**, 211101 (2024), DOI 10.1063/5.0208597 — CCSD(T)-F12b-harmonischen met DFT-QFF op benzeen/naftaleen (de ~5 cm⁻¹ uit het abstract; de verwachte-effectlijn).
 13. Bégué, Carbonnière & Pouchan, *J. Phys. Chem. A* **109**, 4611 (2005), DOI 10.1021/jp0406114 — hybride QFF: CC-kwadratisch, DFT-anharmonisch.

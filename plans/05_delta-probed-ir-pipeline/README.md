@@ -243,6 +243,37 @@ before anything else.
   a pending licence without resolving it.
   Brief: [Review_Brief_2026-09-04_Round10_PassB.md](GoalGathering/Review_Brief_2026-09-04_Round10_PassB.md).
 
+**Cold read 2026-09-06, literature focus** (fresh reader, no web; brief
+[Review_Brief_2026-09-06_ColdRead_Literature.md](GoalGathering/Review_Brief_2026-09-06_ColdRead_Literature.md),
+report [Cold_Read_2026-09-06_Literature.md](GoalGathering/Cold_Read_2026-09-06_Literature.md)):
+4 blocking, 13 major, 12 minor; 31 spot checks against the texts on disk, 29 exact. **All 31
+addressed the same day:** (1) Esposito 2024 struck as the CC/DFT allocation precedent in the
+proposal, Goal, Distilled plan, bibliography and research note — its force field is DFT
+throughout; the precedent rests on items 14 and 27 (27 unread); (2) the Ladder's expected-effect
+line rewritten: benzene 5.45 cm⁻¹ MAD, read in full, no figure exists at R1 (Goal and Uitleg 09
+aligned); (3) the proposal's reference list brought to the readings (Chu, Joblin 1995, Schneider;
+Joblin 1994 added); (4) "Bowman 2024" struck; (5) "five" coronene bands → six in four files;
+(6) Kitzmiller's ±28 cm⁻¹ qualified as pyridine, ≤ 5 cm⁻¹ on benzene-type rings (proposal,
+Distilled); (7) bibliography statuses, both debt lists, Frozen Lines §7 debt 4 and two Uitleg
+sentences brought to the 2026-09-06 readings; (8) Goal glossary: u_296 per family and χ_max 0.044
+per the Ladder note; (9) CMA 2026 given item 65, the three descriptions reconciled; (10) Wang
+2025 struck from the supervisor request; (11) Budget "33 selected off-diagonals" → "+33 % cost";
+(12) the O1NumHess "polyene 6–12 cm⁻¹" phrase withdrawn in Budget and note until the PDF is read,
+the CMA "~17 atoms / ±20–28" row re-worded from item 43; (13) Lam 2020 status: PDF held, abstract
+read; (14) **"sealed" defined** (user decision 2026-09-06: files stay tracked): hash-committed,
+readable, tamper-sealed, with an undertaking not to open before the pilot note — Ladder §3 and
+proposal §11; (15) initials dropped from the three unfetched entries, the rule reworded;
+(16) Käser, Boittier, Upadhyay & Meuwly; (17) PNNL temperature 25/50 °C and 0.112 cm⁻¹ in the
+Ladder R1 row, Frozen Lines §5, Uitleg 08; the introduction's 50 °C framing added to the bib;
+(18) "2–6 September"; (19) Brumfield/Zhang/Joblin 1994 aligned; (20) the four non-certified
+regions named; (21) 0.112 cm⁻¹; (22) D₂h count attributed to the deck; (23) item 34/48 cited for
+the MP2 correction; (24) the 495i artefact's source named; (25) `plans/README.md` layout
+corrected; (26) `Papers/` duplicates noted under the PDF table; (27) journal records of items 13
+and 16 marked unverified; (28) Bégué "0.8 %" labelled snippet in place; (29) the Chakraborty
+correction appended to the R2 note; (30) Joblin 1994's 20 % qualified; (31) Uitleg counts and
+source aligned. Left as history: the past `REPORT.md` files and the script comments keep the
+word "sealed", now defined in the Ladder.
+
 Plan 04's Round-6 findings and their closures bind plan 05 and are not re-litigated.
 
 ## Decisions

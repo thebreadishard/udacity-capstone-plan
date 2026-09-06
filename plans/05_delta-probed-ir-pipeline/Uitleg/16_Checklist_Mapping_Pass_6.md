@@ -122,7 +122,7 @@ voorwaarde; ✘ open vraag voor de gebruiker.
 | architectuur, datastroom, aannames, grenzen | H6 §6.4; Distilled §5; de weigeringen als grenzen | ✔ | mapping §3 M08 |
 | nieuw werk | CLI, certificaat, weigering, de R0–R3-metingen | ✔ | H13 §7 |
 | evaluatie in realistische scenario's met mislukkingen | de rungs zelf; de fail-closed-zinnen | ✔ | Distilled §8 |
-| paper 1500–2000 woorden; ≥ 2 bronnen, ≥ 1 wetenschappelijk | industrieframe; bibliografie van 60 items | ✔ | Goal |
+| paper 1500–2000 woorden; ≥ 2 bronnen, ≥ 1 wetenschappelijk | industrieframe; bibliografie van 65 items | ✔ | Goal |
 | ethiek en governance specifiek | de officier; pre-registratie; eerlijk verliezen | ✔ | H13 |
 | de R6-uitkomst als geldig resultaat | "niet bereikt, om deze gemeten reden" | ✔ | Distilled §8 |
 | deadline vs. fail-closed | een module mag eerlijk fail-closed inleveren | ✔ maar gevoelig: benoemen als het gebeurt | mapping §6 |

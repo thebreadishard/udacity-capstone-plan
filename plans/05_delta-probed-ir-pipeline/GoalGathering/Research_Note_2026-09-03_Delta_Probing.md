@@ -41,7 +41,7 @@ Let Δ be the difference between the local-CC and the DFT potential energy surfa
 equilibrium geometry, expanded in force constants: Δ₂ (Hessian correction), Δ₃ (cubic), Δ₄
 (semi-diagonal quartic). Three properties of Δ that the full surface does not have:
 
-1. **Small and smooth** — the standard Δ-learning observation (Käser & Meuwly and many
+1. **Small and smooth** — the standard Δ-learning observation (Käser, Boittier, Upadhyay & Meuwly and many
    others): the CC−DFT difference varies far less with geometry than either surface.
 2. **Short-ranged in real space** — the correlation-energy error of DFT is a local quantity.
    This is the premise of every local-correlation method (DLPNO, LNO, PNO-LCCSD), of
@@ -120,7 +120,7 @@ and the measured locality tail.
    100 % in finite-difference field derivatives — the same failure mode this project would meet
    on curvatures. Which code, and whether domains can be frozen, is a Q-gate.
 4. **Where CC pays.** The hybrid-force-field literature (Bégué et al. 2005, acetonitrile:
-   CCSD(T) quadratic + B3LYP cubic/quartic gives mean deviations under 0.8 %; the Barone /
+   CCSD(T) quadratic + B3LYP cubic/quartic gives mean deviations under 0.8 % — from a search snippet, item 27 unread; the Barone /
    Puzzarini CC/DFT hybrid schemes) puts the high level in the **harmonic** constants and the
    cheap level in the anharmonic ones. Plan 04 had it the other way round (DFT Hessian, CC in
    the anharmonic correction). Δ-probing spends CC where that literature says it pays most —
@@ -224,10 +224,12 @@ this section wins and the frozen documents follow it.
   recovery side by side, and the dry run pairs B3LYP with a high-exact-exchange functional so
   that its Δ contains mode rotations. O1NumHess's own worst covalent case — a conjugated
   polyene, MAD 6–12 cm⁻¹ — is the same phenomenon inside a paper this note had already fetched.
+  [2026-09-06: this phrase is not in the bibliography's record of item 23 and is withdrawn until the
+  PDF is read; the sentence stays as history.]
 - **Δ₃/Δ₄ are withdrawn from the promised set (§3, §4.4).** Energy-only 1-D and 2-D cuts give
   φ_iii, φ_iiii, φ_iij, φ_ijj and φ_iijj but **not φ_ijk**, and PAH combination-band resonances
   are φ_ijk resonances (Mulas 2018 obtains them by differencing analytic Hessians along modes).
-  The hybrid-QFF literature (items 14, 27, 45) puts the CC pay-off in the quadratic constants.
+  The hybrid-QFF literature (items 14, 27; item 45 struck 2026-09-06 — its force field is DFT throughout) puts the CC pay-off in the quadratic constants.
   Plan 05 therefore promises Δ₂ only; a diagonal-cubic probe reports the size of the CC
   correction to φ_iii as a bonus; DFT anharmonic constants are computed on a family set closed
   under the resonance search.

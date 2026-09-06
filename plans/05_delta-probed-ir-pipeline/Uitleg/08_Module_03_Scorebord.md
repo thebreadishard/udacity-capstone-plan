@@ -26,13 +26,14 @@ lijst voorbeelden, geen gesloten poort. De toets moet vooraf worden vastgelegd.
   trifenyleen). Voor de R2-moleculen zijn dat GC-IR-spectra van hete damp, gehomogeniseerd
   tot 8 cm⁻¹; voor naftaleen een dampspectrum bij 245 °C en een GC-IR-vermelding; voor
   benzeen twintig kwantitatieve celspectra bij 0,125–1,93 cm⁻¹.
-- **PNNL/NWIR**: het kwantitatieve dampfasespectrum van naftaleen bij 25 °C en 0,1 cm⁻¹
+- **PNNL/NWIR**: het kwantitatieve dampfasespectrum van naftaleen bij 25 of 50 °C (het artikel noemt beide; de kop van het databestand beslist) en 0,112 cm⁻¹
   (gevonden in de laatste review; genoemd vóór deze module iets print, zoals de
   niet-verwisselregel eist).
 - **De documentatie van die bronnen** (bibliografie-items 50, 56, 57, 59): daarin staan
   de meetcondities (temperatuur, resolutie) die het JCAMP-bestand zelf vaak niet noemt.
 - **De hot-band-literatuur** (items 52–53, 60): hoeveel cm⁻¹ per kelvin een band
-  verschuift, per familie. Nog niet gelezen; de eerste literatuurschuld die betaald wordt.
+  verschuift, per familie. Items 52 en 64 (Joblin 1995/1994) gelezen op 6 september 2026: de
+  hellingen per familie staan in de bibliografie; item 53 (Pirali 2009) komt nog van de begeleider.
 - **De parser en cache uit plan 02 en 04** (in de git-geschiedenis).
 
 ## 4. Bewerking

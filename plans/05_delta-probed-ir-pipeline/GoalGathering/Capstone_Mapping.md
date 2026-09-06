@@ -132,7 +132,7 @@ libraries and NIST WebBook. Not synthetic, not AI-generated, not the Module 02 d
 layer for reach rungs. Supervised sklearn model: molecular/band descriptors → per-band **error
 of scaled-harmonic DFT against the lab band** (the Ethereal-AI-class approach, our own
 implementation). Two uses: (1) the calibrated harmonic opponent column in P2 — Round-7 Pass B
-issue 7 says out loud what this column does: it absorbs the *mean* of a ~5 cm⁻¹ harmonic
+issue 7 says out loud what this column does: it absorbs the *mean* of the harmonic CC−DFT difference (the only literature figure is benzene's 5.45 cm⁻¹, item 45; none exists at R1 — wording corrected 2026-09-06) — of a ~5 cm⁻¹ harmonic
 CC−DFT difference per family, so Δ₂ has to buy the per-family scatter; (2) the per-band
 uncertainty estimate attached to R4–R6 reach spectra.
 

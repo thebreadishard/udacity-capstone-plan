@@ -92,3 +92,13 @@ Web searches (17 distinct queries):
 Fetches / records opened (outcomes): arXiv 1907.09351 abstract (ok) and PDF (saved, text-extracted with pypdf; Table A.2 read); IOP 10.3847/1538-4357/ac2f9d (ok twice; Table A1 read); arXiv 1904.02899 (ok; KBr pellet); ScienceDirect JQSRT (403); ADS abstract pages (405), articles.adsabs full-scan (302 to scan manifest, not followed); Crossref records for 10.1051/0004-6361/201935631, 10.3847/1538-4357/ac2f9d, 10.1063/1.4961438, 10.1039/b605448j, 10.1021/acs.jpclett.0c02714, 10.1021/acs.jpca.8b11016, 10.1021/jp9834816, 10.3847/0004-637X/831/1/58, 10.1002/cphc.200300776, 10.1016/j.jqsrt.2025.109689, 10.1038/380227a0, 10.1080/00268976.2023.2252936 (all ok); Crossref bibliographic queries for Semmler 1991 (DOI found), Faraday Discussions 2023 (10.1039/d2fd00180b found), Brumfield 2012 (10.1021/jz300769k found); PubMed pages (cookie wall, unusable); PMC7649846 (ok, twice); PMC10510036 (captcha; Europe PMC XML ok instead); PMC6557715 (ok); Europe PMC REST abstracts for Pirali 2006 and Mackie 2016 (ok), for jz300769k (no record); Semantic Scholar for Joblin 1994/1995 (records found, abstracts absent), Kurtz 1992 (title found), Semmler 1991 (abstract withheld), Cook 1996 (abstract withheld), Brumfield 2012 (abstract withheld); AIP/ACS/RSC/aanda/T&F article pages (403); IOP ae1c38 (bot wall); astrochem.org Ricca 2025 PDF (404); EAS 2011 review PDF (403); NIST WebBook pages for pyrene, chrysene, triphenylene, tetracene, coronene (ok); McCall group page (ok).
 
 Search complete
+
+**Correction 2026-09-06 (after the literature cold read).** (i) The row above that says
+"Chakraborty et al. 2019 Table 2 quotes Joblin χ′ values for pyrene bands at 709, 750, 1096,
+1435 cm⁻¹" cannot be Joblin 1995's Table 1, which (read from the scan on 2026-09-06) gives pyrene
+slopes at 3.3, 8.5 and 12 µm only; whatever Chakraborty 2019 tabulated for those bands is that
+paper's, not Joblin's, and those four values are not re-used anywhere — the direct transcription in
+the bibliography supersedes them. (ii) Two different papers are cited as "Chakraborty" in this plan:
+Chakraborty et al. 2019, J. Phys. Chem. A 123, 4139 (KBr pellets; this note) and Chakraborty, Mulas,
+Rapacioli & Joblin, arXiv:2102.06582 (item 60). (iii) The count "five strongest 6–15 µm bands" for
+coronene is six: 770.1 cm⁻¹ was missed (bibliography readings, item 62).

@@ -98,8 +98,9 @@ waargenomen.
 
 Plan 05 maakt hier een scherpe keuze. De **dure** methode wordt alleen gebruikt voor de
 harmonische correctie Δ₂. De anharmonische correctie komt uit de **goedkope** methode.
-Waarom? Twee redenen. Ten eerste laat de literatuur zien dat het grootste deel van het
-verschil tussen goedkope en dure spectra in de harmonische term zit; anharmonische
+Waarom? Twee redenen. Ten eerste laat de literatuur (twee studies aan kleine moleculen, items
+14 en 27; een PAK-precedent bestaat niet) zien dat het grootste deel van het verschil tussen
+goedkope en dure spectra in de harmonische term zit; anharmonische
 constanten zijn bij de goedkope methode al redelijk. Ten tweede zou het opmeten van de dure
 anharmonische constanten het aantal benodigde berekeningen enorm vergroten, en juist dat
 aantal wil het plan klein houden. Het plan belooft daarom uitdrukkelijk **geen**

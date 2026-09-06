@@ -104,7 +104,8 @@ small and smooth. Paying coupled-cluster prices to relearn the DFT part is where
 went.
 
 Third, where the difference pays. The hybrid quartic-force-field literature (Boese, Klopper &
-Martin 2005; Bégué, Carbonnière & Pouchan 2005; and, on naphthalene, Esposito et al. 2024) puts the
+Martin 2005; Bégué, Carbonnière & Pouchan 2005 — both on small molecules; there is no PAH precedent,
+and Bégué's full text is unread) puts the
 coupled-cluster level in the **harmonic** constants and leaves cubic and quartic constants at DFT
 level. Plan 04 had it the other way round. Plan 05 corrects the harmonic force constants only —
 Δ₂ — and lets DFT supply the anharmonic constants. The domain review sharpened this further:
@@ -131,8 +132,9 @@ The domain review established that the *diagonal* part of this idea is not new: 
 Mode Approach (Lahm et al. 2022; Kitzmiller et al. 2024) computes CCSD(T) force constants along
 DFT normal modes from single-point energies and adds selected off-diagonal elements by a cheap
 diagnostic. It is cited as prior art throughout the plan, and its own result — that diagonal-only
-recovery fails on aromatic ring modes by up to ±28 cm⁻¹, because DFT and coupled-cluster mode
-compositions differ there — is the strongest evidence for the plan's design choices. What plan 05
+recovery fails on pyridine's ring modes by up to ±28 cm⁻¹ and leaves residuals up to 5 cm⁻¹ on
+benzene, pyrrole and furan, because DFT and coupled-cluster mode compositions differ there — is the
+strongest evidence for the plan's design choices. What plan 05
 proposes beyond CMA: local coupled cluster with frozen correlation spaces at PAH sizes; the
 off-diagonal block recovered from multi-mode patterns by a **symmetry-blocked** solve of a
 *difference* Hessian, rather than one element at a time; the recovery licensed against directly
@@ -147,7 +149,7 @@ work that combines them:
 |---|---|---|
 | coupled-cluster force constants along DFT normal modes from energies; selected off-diagonals; symmetry-forbidden couplings zeroed in the full matrix | Concordant Mode Approach (Lahm et al. 2022; Kitzmiller et al. 2024; Olive Dornshuld et al. 2026, read in full: 17 intermolecular complexes, MP2/haTZ modes, CMA-2A converges with 3 % of the off-diagonals; its persistent benzene outlier is one same-representation ring-deformation coupling, the same phenomenon our rehearsal found) | the target is the *difference* Δ₂, not the CC force constants; the off-diagonal block is recovered as a whole from multi-mode patterns, not element by element; symmetry used as the recovery prior rather than as a clean-up; local rather than canonical coupled cluster, at PAH sizes |
 | recovering a Hessian from few measurements by exploiting its structure | compressed sensing in a cheap method's eigenbasis (Sanders et al. 2015); O1NumHess (Wang et al. 2025) | applied to a difference Hessian rather than a full one; the prior is the molecule's symmetry, parameter-free, instead of generic sparsity; the probe count is a measured, pre-registered quantity |
-| correcting DFT towards CCSD(T) by learning the difference | Δ-machine learning of potential-energy surfaces (e.g. Bowman and co-workers, 2024; transfer learning to CCSD(T), Käser & Meuwly 2021) | nothing is learned per molecule; the difference is measured; a learned model is a possible follow-up gated by the measured range (§6) |
+| correcting DFT towards CCSD(T) by learning the difference | Δ-machine learning of potential-energy surfaces (transfer learning to CCSD(T), Käser, Boittier, Upadhyay & Meuwly 2021) | nothing is learned per molecule; the difference is measured; a learned model is a possible follow-up gated by the measured range (§6) |
 | local-correlation spaces held fixed for numerical derivatives | fixed domains for DLPNO-MP2 numerical derivatives (ORCA); the discontinuity problem itself (Madriaga & Crawford 2025) | frozen LNO-CCSD(T) fragment spaces transported by projection across displaced geometries, semicanonicalised, with the smoothness and bias measured against canonical CCSD(T) — no publication found that does this or measures it |
 | scaled or ML-corrected harmonic DFT for PAH spectra | PAHdb (Ricca et al. 2026); Ethereal AI (Bos et al. 2025) | these are the opponents; the plan adds a measured coupled-cluster correction and an error budget per band |
 
@@ -178,7 +180,7 @@ printed, the banded rule stands as the fallback. It also sets the cost expectati
 without a prior the off-diagonal block costs about M(M−1)/2 energies for M modes — the benzene
 rehearsal needed 388 off-diagonal energies for 435 unknowns (§8), so sparsity as such saved
 nothing — and with the symmetry prior naphthalene has **141** same-representation couplings
-instead of 1,128 (from the textbook D₂h assignment of its 48 modes, 9a_g + 3b_1g + 4b_2g + 8b_3g +
+instead of 1,128 (the deck's own analysis; the count is reproduced by the standard D₂h assignment of its 48 modes, 9a_g + 3b_1g + 4b_2g + 8b_3g +
 4a_u + 8b_1u + 8b_2u + 4b_3u). The representation of each mode is determined by the deck's own
 symmetry analysis in the molecule's **full** point group: DFT programs run in Abelian subgroups
 (benzene in D₂h, where its degenerate modes split artificially — Esposito et al. 2024 note the
@@ -311,7 +313,8 @@ sense: a fragment-probed spectrum, or the measured reason none could be produced
    literature (the PAHdb-anharmonic standard is B3LYP/N07D with a 200 × 974 integration grid,
    Esposito et al. 2024; the CMA studies find basis quality to matter more than correlation level
    for the normal-mode basis; aug-cc-pVTZ is excluded for benzene-type rings by a documented
-   linear-dependence artefact), before the naphthalene rehearsal runs, so that the rehearsal constants the stopping
+   linear-dependence artefact — the spurious 495i cm⁻¹ ring-puckering frequency reported by Olive
+   Dornshuld et al. 2026), before the naphthalene rehearsal runs, so that the rehearsal constants the stopping
    rule uses (§3.4) and the noise-injected column of the pilot note are read at the production
    level; the benzene rehearsal so far used B3LYP/6-31G* against BHHLYP/6-31G*, and the Module-05
    corpus uses B3LYP. The choice is recorded in the pilot note with its reasons.
@@ -358,16 +361,18 @@ sense: a fragment-probed spectrum, or the measured reason none could be produced
 
 *Laboratory sources per rung.* Benzene: the NIST Quantitative Infrared Database cell spectra (Chu
 et al. 1999), with calibrated intensities. Naphthalene: the PNNL quantitative vapour-phase record
-at 0.1 cm⁻¹ and 25 or 50 °C — the paper states both, the record header decides — (Schneider et al.
+at 0.112 cm⁻¹ and 25 or 50 °C — the methods state 25 °C, the introduction and the figure caption
+50 °C; the record header decides — (Schneider et al.
 2024, in the database described by Sharpe et al. 2004),
 with calibrated intensities; the hot NIST WebBook entries as labelled extra columns; Pirali et al.
 2009 and Joblin et al. 1995 for the temperature term. Pyrene, chrysene, triphenylene: NIST WebBook hot-vapour GC-IR
 spectra at 8 cm⁻¹ without concentration data. Tetracene: matrix isolation, plus a jet-cooled band
-list (Lemmens et al. 2019). Coronene: matrix isolation, plus five jet-cooled 6–15 µm bands
+list (Lemmens et al. 2019). Coronene: matrix isolation, plus six jet-cooled 6–15 µm bands
 (Lemmens, Rijs & Buma 2021). All of these sources were read in full on 6 September 2026 and their
 conditions transcribed (bibliography, "Readings of 2026-09-06 — laboratory sources"). Three
-readings changed numbers, not rules: the benzene intensities are certified outside
-1325–1900 cm⁻¹ only, so the intensity score at benzene excludes the C–C band near 1480 cm⁻¹;
+readings changed numbers, not rules: the benzene intensities are not certified where water,
+CO and CO₂ absorb (1325–1900, 2050–2225, 2295–2385 and 3550–3950 cm⁻¹), so the intensity score at
+benzene excludes the C–C band near 1480 cm⁻¹;
 the hot-band slopes of Joblin et al. 1995 replace the earlier recalled floor (the largest
 measured 6–15 µm slope is 0.044 cm⁻¹ K⁻¹, coronene's 6.2 µm band), and their model gives the
 room-temperature term per family; and the jet-cooled coronene bands at 7.7 and 8.8 µm lie
@@ -523,7 +528,10 @@ inputs in hand and **nothing else**:
 
 The first real coupled-cluster correction is computed after the note is committed, so no stopping
 constant, probe cap, tolerance or margin can be shaped by a result; the raw displaced energies of
-probe M1 are sealed for the same reason, and this proposal quotes only differences between
+probe M1 are hash-committed for the same reason — the files are readable in the repository, the
+SHA-256 sidecar proves they were not altered, and the author has undertaken not to open them before
+the pilot note; "sealed" elsewhere in the plan means exactly this — and this proposal quotes only
+differences between
 methods.
 
 **Mandatory null tests.** The Δ=0 arm — DFT harmonic plus DFT anharmonic, no coupled-cluster
@@ -772,13 +780,13 @@ date, and the science continues past it.
 Verification status is tracked per item in the working bibliography of this folder; every
 identifier is re-verified against the primary source before it appears in any scored document.
 
-Cited in this proposal (verified by Crossref, arXiv or full text on 2–5 September 2026 unless
-marked otherwise; author initials are given only where the working bibliography records them):
+Cited in this proposal (verified by Crossref, arXiv or full text on 2–6 September 2026 unless
+marked otherwise; author initials are given only where a held PDF's first page shows them):
 
 - Altun, A., Ghosh, S., Riplinger, C., Neese, F., Bistoni, G. 2021, J. Phys. Chem. A 125, 9932.
   DOI 10.1021/acs.jpca.1c09106. (Local-approximation error grows with acene length; CPS
   extrapolation.)
-- Bégué, D., Carbonnière, P., Pouchan, C. 2005, J. Phys. Chem. A 109, 4611.
+- Bégué, Carbonnière & Pouchan 2005, J. Phys. Chem. A 109, 4611.
   DOI 10.1021/jp0406114. (Hybrid CC-quadratic / DFT-anharmonic force field.)
 - Boese, Klopper & Martin 2005, Mol. Phys. 103, 863. DOI 10.1080/00268970512331339369. (Origin
   of the hybrid split: coupled-cluster harmonics, cheap anharmonics.)
@@ -786,10 +794,11 @@ marked otherwise; author initials are given only where the working bibliography 
   scaling; the approach the in-house calibrated-harmonic baseline reproduces.)
 - Brumfield, Stewart & McCall 2012, J. Phys. Chem. Lett. 3, 1985.
   DOI 10.1021/jz300769k. (One rotationally resolved cold band of pyrene near 8.5 µm; Crossref
-  record; content at abstract grade.)
+  record; content at snippet grade; band origin not read.)
 - Chu, Guenther, Rhoderick & Lafferty 1999, J. Res. Natl. Inst. Stand.
-  Technol. 104, 59. DOI 10.6028/jres.104.004. (The NIST Quantitative Infrared Database; Crossref
-  record; read by the scoreboard module before any uncertainty is printed.)
+  Technol. 104, 59. DOI 10.6028/jres.104.004. (The NIST Quantitative Infrared Database; read in full
+  2026-09-06 from the NIST PDF: 296 K, 760 Torr N₂, 0.12 cm⁻¹, intensities 3.3 % at k = 2, not
+  certified in the water, CO and CO₂ regions.)
 - Esposito, V. J., Fortenberry, R. C., Boersma, C., Allamandola, L. J. 2024, J. Chem. Phys. 160,
   211101. DOI 10.1063/5.0208597. (C–H overtone spectra of benzene and naphthalene; the
   PAHdb-anharmonic protocol; B3LYP/N07D vs CCSD(T)-F12b benzene harmonics, MAD 5.45 cm⁻¹.)
@@ -798,10 +807,14 @@ marked otherwise; author initials are given only where the working bibliography 
 - Olive Dornshuld, L. N., Lahm, M. E., Kitzmiller, N. L., Allen, W. D., Schaefer, H. F. 2026,
   J. Phys. Chem. A 130, 3249. DOI 10.1021/acs.jpca.6c00689. (CMA for intermolecular vibrations.)
 - Joblin, Boissel, Léger, d'Hendecourt & Défourneau 1995, Astron. Astrophys.
-  299, 835. (PAH band shifts with temperature; reference known, not yet opened.)
+  299, 835. (PAH band shifts with temperature; read in full 2026-09-06 from the ADS scan; Tables 1–2
+  transcribed in the bibliography.)
+- Joblin, d'Hendecourt, Léger & Défourneau 1994, Astron. Astrophys. 281, 923. (Gas-phase, solid and
+  Ne-matrix PAH spectra 3–20 µm, the hot spectra of the coronene cross-check; read in full 2026-09-06
+  from the ADS scan.)
 - Kitzmiller, N. L., Lahm, M. E., Olive Dornshuld, L. N., Jin, J., Allen, W. D., Schaefer, H. F.
   2024, J. Chem. Theory Comput. 20, 10886. DOI 10.1021/acs.jctc.4c01240. (CMA-2.)
-- Lahm, M. E., Kitzmiller, N. L., Mull, H. F., Allen, W. D., Schaefer, H. F. 2022, J. Am. Chem.
+- Lahm, Kitzmiller, Mull, Allen & Schaefer 2022, J. Am. Chem.
   Soc. 144, 23271. DOI 10.1021/jacs.2c11158. (Concordant Mode Approach.)
 - Lemmens, Rap, Thunnissen, Mackie, Candian, Tielens, Rijs & Buma 2019, Astron. Astrophys. 628, A130.
   DOI 10.1051/0004-6361/201935631. (Jet-cooled mid-infrared band list of tetracene.)
@@ -823,18 +836,19 @@ marked otherwise; author initials are given only where the working bibliography 
   (Compressed-sensing Hessians; polyacenes.)
 - Schneider, Baker, Scharko, Blake, Tonkyn, Forland & Johnson 2024, J. Quant. Spectrosc. Radiat. Transfer 323, 109045.
   DOI 10.1016/j.jqsrt.2024.109045. (Quantitative vapour-phase spectra of solids, naphthalene among
-  them, 25 °C, 0.1 cm⁻¹; Crossref record; read by the scoreboard module.)
+  them; 25 °C in the methods, 50 °C in the introduction and the Fig. 6 caption; 0.112 cm⁻¹; ±8 % at
+  2σ; read in full 2026-09-06 from the OSTI author manuscript.)
 - Sharpe, Johnson, Sams, Chu, Rhoderick & Johnson 2004,
   Appl. Spectrosc. 58, 1452. DOI 10.1366/0003702042641281. (The PNNL gas-phase quantitative IR
   database.)
-- Wang, B., Luo, S., Wang, Z., Liu, W. 2025, J. Chem. Theory Comput. 21, 10893.
+- Wang, Luo, Wang & Liu 2025, J. Chem. Theory Comput. 21, 10893.
   DOI 10.1021/acs.jctc.5c01354. (O1NumHess.)
 - Williams, N. J., Kabalan, L., Stojanovic, L., Zolyomi, V., Pyzer-Knapp, E. O. 2024,
   arXiv:2408.08006. (Hessian QM9.)
-- Zhang, X., et al. 2024, arXiv:2404.03129. (Automatic-differentiation gradients for local coupled
+- Zhang, X., et al. 2024, J. Chem. Phys. 161, 014109; arXiv:2404.03129. (Automatic-differentiation gradients for local coupled
   cluster, PySCFAD.)
 
 Other plan-04 sources carried in the working bibliography and used by the modules (matrix
-scoreboards, the DLPNO caveats): Bauschlicher et al. 2018; Chen, Li & Li 2026; Hudgins & Sandford 1998; Käser & Meuwly 2021; Lam, Abdul-Al &
+scoreboards, the DLPNO caveats): Bauschlicher et al. 2018; Chen, Li & Li 2026; Hudgins & Sandford 1998; Käser, Boittier, Upadhyay & Meuwly 2021; Lam, Abdul-Al &
 Allouche 2020; Mattioda et al. 2020; Sylvetsky et al. 2020; Tang et al. 2025; NIST CCCBDB; Zapata
 Trujillo & McKemmish 2022.

@@ -103,7 +103,7 @@ eerdere module, en de vergelijkingen op R0–R3 zijn nieuwe metingen.
 - **Nieuw werk.** Het artefact moet aantoonbaar meer zijn dan de som van de notebooks: de
   CLI, het certificaat, de weigeringen.
 - **Woordenaantal en bronnen.** 1500–2000 woorden; minstens twee bronnen waarvan één
-  wetenschappelijk — bij dit plan is dat geen probleem, de bibliografie telt zestig items.
+  wetenschappelijk — bij dit plan is dat geen probleem, de bibliografie telt vijfenzestig items.
 - **Eerlijk verliezen.** De rubriek beloont een evaluatie met mislukkingen. Het plan heeft
   vooraf geschreven zinnen voor elke mislukking; controleer dat het paper ze gebruikt in
   plaats van verliezen te verzachten.

@@ -69,8 +69,8 @@ pilotnotitie-item 6.
 5. Evalueren met **RMSE en MAE in cm⁻¹ per familie** op de weggelaten moleculen; een
    figuur van voorspelde tegen werkelijke fout; een figuur van de restfout per familie.
 6. Interpretatie: welke families laten zich goed kalibreren, welke niet. De verwachting
-   uit de literatuur: de kalibratie vangt het *gemiddelde* van een ongeveer 5 cm⁻¹ groot
-   CC−DFT-verschil per familie op; de pijplijn met Δ₂ moet dan de *spreiding* binnen de
+   uit de literatuur: de kalibratie vangt het *gemiddelde* van het CC−DFT-verschil per familie
+   op (het enige literatuurgetal is 5,45 cm⁻¹ voor benzeen, item 45; voor naftaleen bestaat er geen); de pijplijn met Δ₂ moet dan de *spreiding* binnen de
    familie winnen.
 
 ## 5. Uitvoer — de datastructuur in detail

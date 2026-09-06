@@ -81,7 +81,7 @@ bestanden verwijzen ernaar.
 
 1. **Mapping Pass 6**: de aftekening module voor module (hoofdstuk 16 bereidt die voor). De
    gebruiker heeft gevraagd ermee te wachten.
-2. **De eerste literatuurschulden**: items 52–53 (hot-band-hellingen per familie), 56–57 en
+2. **De eerste literatuurschulden** (items 52, 56, 57, 61, 62, 64 betaald op 6 september 2026; 53, 59, 63 nog van de begeleider): items 52–53 (hot-band-hellingen per familie), 56–57 en
    59 (de meetcondities van de benzeen- en naftaleenbronnen), 60 — lezen vóórdat module 03
    u_band print.
 3. **Probe M1**: kan de gekozen code ruimtes bevriezen? Zo nee: stop 1.

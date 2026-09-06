@@ -67,9 +67,11 @@ document must agree with this file; if they drift, this file wins and the other 
   unit, a complete ring shell around the pair or region served; **pending (b′)** = the fragment
   licence's state when (b) failed at one shell at coronene and only (b′) can test two shells;
   **u_T** = u_band's temperature term, with **T_source** the source's stated temperature, **u_296**
-  the per-molecule 0 → 296 K term (1 / 3 / 5 cm⁻¹ at benzene / naphthalene / R2, recalled),
-  **χ_max** = 0.03 cm⁻¹ K⁻¹ (recalled) its unpinned slope and **χ_F** a pinned per-family slope
-  (items 52–53).
+  the 0 → 296 K term per family, computed by probe 2a from item 52's Eqs. (4)–(6) and Table 1
+  (Ladder dated note 2026-09-06; the recalled 1 / 3 / 5 cm⁻¹ per molecule are retired), **χ_F** the
+  measured per-family slope from item 52's Table 1 (item 53 for naphthalene once read) and
+  **χ_max** = 0.044 cm⁻¹ K⁻¹ the floor for a 6–15 µm family without a measured slope (the recalled
+  0.03 is retired; glossary updated 2026-09-06).
 - **AD / FD** = automatic differentiation / finite differences; **GC-IRD** = gas-chromatography
   infrared detection, the vapour-phase instrument behind the NIST/EPA library; **IRMPD** =
   infrared multiple-photon dissociation; **SRD 35** = NIST Standard Reference Database 35, the
@@ -151,8 +153,8 @@ The accuracy/reach split ([Frozen_Ladder_and_Tolerances.md](Frozen_Ladder_and_To
 > promised**: in mode E it is at least 2M = 2,580 local-CC energies of a 432-atom molecule.
 
 **Where CC is spent, and why only there.** The promised correction is harmonic (Δ₂). The
-hybrid quartic-force-field literature (items 14, 27, and the Esposito 2024 naphthalene work,
-item 45) puts the coupled-cluster pay-off in the quadratic constants and leaves cubic and
+hybrid quartic-force-field literature (items 14 and 27, small molecules; item 45 is **not** a
+precedent — its force field is DFT throughout, struck 2026-09-06) puts the coupled-cluster pay-off in the quadratic constants and leaves cubic and
 quartic constants at DFT level; and the energy-only probes of mode E cannot produce the
 three-index cubic constants φ_ijk that PAH combination-band resonances need (Round-7 Pass B
 issue 3). Plan 05 therefore promises **no CC correction to anharmonic constants**. A
@@ -229,8 +231,8 @@ the near-degenerate manifold (Q8c); mode G may not materialise (the side project
 criterion); the local-approximation error itself grows with acene length (item 44; the
 TightPNO/NormalPNO and CPS columns of Q6); the CC correction may not improve on DFT-level
 anharmonicity on some families (P4's Δ=0 null row) or may lose to calibrated harmonics, whose
-fitted factors already absorb the mean of a ~5 cm⁻¹ harmonic difference (item 45, snippet
-grade; a P2 outcome) — both publishable.
+fitted factors already absorb the mean of the harmonic difference — whose only literature figure
+is benzene's 5.45 cm⁻¹ MAD (item 45, read in full 2026-09-06; none exists at R1) — (a P2 outcome) — both publishable.
 
 ## Temperature and emission (the 0 K question) — carried from plan 04
 
