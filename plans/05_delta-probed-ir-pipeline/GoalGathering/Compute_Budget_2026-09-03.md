@@ -128,7 +128,14 @@ integrals, frozen core):** one canonical **CCSD(T) analytic gradient of benzene 
 1,399 s (23.3 min) and peaks at 13.9 GB resident**, against 27 s for the canonical CCSD(T) energy in the
 same basis — a gradient-to-energy factor of ≈ 50 in this implementation. The cc-pVTZ gradient was attempted twice: the first attempt (15:08) reached the gradient
 stage after CCSD (472 s, 20.1 GB) and was lost when Windows tore the WSL VM down (below); the second
-attempt runs alone under the new 22 GB ceiling, and its outcome is appended to the log. **72-gradient
+attempt (21:37) died at once on ENOSPC — the scratch variables had not reached the non-interactive
+shell and pyscf wrote to the 14 GB /tmp tmpfs (now fixed in `~/.profile`); the **third attempt**
+(2026-09-06 02:07, alone, 22 GB ceiling, scratch on the WSL disk, max_memory 16 GB) passed CCSD in
+430 s at 13.8 GB and had been in the gradient stage for three hours when **the laptop powered off
+abruptly at 05:15:47** (Kernel-Power 41 and EventLog 6008 at the 06:39 restart; no bugcheck, no
+minidump, no WHEA and no Resource-Exhaustion event — not a Windows crash and not a memory event that
+Windows saw). Cause unknown from the logs (power or thermal cut-off are the candidates). **No fourth
+attempt on this laptop**: the cc-pVDZ measurement already settles the branch. **72-gradient
 branch at the anchor basis on this laptop: B3** — by memory before time (the cc-pVDZ gradient alone needs
 13.9 GB of the 22 GB WSL can have; the cc-pVTZ one exceeded 20 GB before the gradient stage began) and by
 time anyway (72 × ≥ 50 × 755 s ≈ 32 days). The Ladder's rule is unchanged; this only records that on
@@ -143,7 +150,10 @@ the saved frozen spaces — reload test +0.0000 µE_h). Rules from this: the WSL
 (Windows keeps ~9 GB); jobs that need more than 22 GB do not fit this laptop; anchor-level jobs run
 **one at a time, chained in a single WSL session**; the harness reports a VM kill as a clean exit, so
 completion is read from the result files, never from the exit code; and a WSL session's processes die
-with the session leader, so a chain shell is never killed while a wanted child runs.
+with the session leader, so a chain shell is never killed while a wanted child runs. **Added
+2026-09-06:** the host itself went down once during a sustained 8-thread job (05:15:47, above); before
+the multi-day cc-pVTZ scan the laptop's power and thermal situation is checked (mains power, fan,
+no sleep timer), and every long chain writes per-point results so a power loss costs one point.
 
 ## 4. Order of timed probes (each prints machine, date, settings, wall-clock; gradient probes also peak memory)
 
