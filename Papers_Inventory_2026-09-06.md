@@ -62,8 +62,8 @@ History rewritten with `git filter-repo --invert-paths --path-glob '*.pdf' --pat
 (two passes: the files had also lived under `GoalGathering/Papers/` in earlier commits), then a forced
 push of `master`. Result: no PDF in any commit (`git rev-list --objects --all | grep -i '\.pdf$'` is
 empty); pack size 89.5 → 10.2 MB. Every commit hash after 25 August 2026 changed; the three hashes
-the documents cited were updated from the commit subjects (21d937a → see M1 note; 4872efb → see M1
-note; 800f3aa → see plan-02 history note). A full pre-rewrite bundle is kept outside the repository
+the documents cited were updated from the commit subjects (21d937a → b1e97a6, 4872efb → 5c0f6ea,
+800f3aa → 57a7910; twelve files touched). A full pre-rewrite bundle is kept outside the repository
 (`../CapstonePlan_backup/pre-filter-2026-09-06.bundle`). Still to do: ask GitHub support to run
 garbage collection so that the old commits stop resolving by hash; until then the old objects may
 remain fetchable by anyone who already knows a hash.
