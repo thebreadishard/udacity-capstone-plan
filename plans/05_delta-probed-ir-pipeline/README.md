@@ -285,7 +285,8 @@ corpus carries no module-02 reuse exposure (Goal, decision 7). **No decision is 
   the same 27 geometries. The frozen-space object exists, round-trips (0.0000 µE_h) and **reloads**
   from file (+0.0000 µE_h). **Arm A is smooth to 0.002–0.06 µE_h where the re-selecting arms B and C
   carry 7–11 µE_h of LNO discontinuity**; its bias is a clean q² term — 5–28 cm⁻¹ on the bare
-  LNO-CCSD(T) energy, **0.5–2.6 cm⁻¹ on the composite with the MP2 correction**. One implementation
+  LNO-CCSD(T) energy, **0.5–2.6 cm⁻¹ on the composite with the MP2 correction** (at tight thresholds,
+  finished 2026-09-06 02:07: 0.35–1.9 bare, **0.03–0.36 cm⁻¹ composite**). One implementation
   fact cost a run: the transported blocks must be semicanonicalised at the displaced geometry.
   **Proposals P7–P9 await the user; no frozen rule changed.** Also measured: a canonical CCSD(T)
   gradient costs ≈ 50 energies and 13.9 GB at cc-pVDZ (72-gradient branch B3 on this laptop); and the
@@ -308,7 +309,7 @@ corpus carries no module-02 reuse exposure (Goal, decision 7). **No decision is 
   source conditions), 60 — read before M03 prints u_band.
 - Capstone mapping Pass 6 (module-by-module sign-off).
 - ~~Probe M1~~ — ran 2026-09-05 at cc-pVDZ (see the dated note above); owed still: **decide P7–P9**,
-  the tight-threshold scan (running), the cc-pVTZ scan and truth line (≈ 2.5 days), and the
+  the cc-pVTZ scan and truth line (≈ 2.5 days), and the
   off-diagonal bias read from the R0 probe batch.
 - **The pilot note** (after the R0 pilot, the two-mode zero-CC dry run with its
   noise-injection column, M03's u_band table, the canonical feasibility probe, the gradient

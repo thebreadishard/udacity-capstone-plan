@@ -41,7 +41,8 @@ Conventions, carried from plans 01–04:
   and, per mode and arm, σ about a degree-4 fit and the curvature bias 2·a₂ in cm⁻¹, for the bare and
   the composite (MP2-corrected) energy. Results: `results_m1/benzene_cc-pvdz_normal_semican/` (the
   numbers of the dated note), `..._normal/` (first run, arm A not yet semicanonicalised — kept as the
-  record of §2.5 of the note), `..._tight/` (running). See
+  record of §2.5 of the note), `..._tight/` (tight thresholds, 2026-09-06: arm A composite bias
+  0.03–0.36 cm⁻¹). See
   [Research_Note_2026-09-05_Probe_M1.md](../GoalGathering/Research_Note_2026-09-05_Probe_M1.md).
 
 Otherwise none under plan 05 yet. Plan 04's NIST gas-phase coverage probe and its raw cache exist in

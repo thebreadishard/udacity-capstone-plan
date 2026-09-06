@@ -16,7 +16,7 @@ differences between local-CC arms and canonical CCSD(T), never a CC−DFT curvat
 | First full run (arm A **without** semicanonicalisation) | cc-pVDZ / normal | 27 | 15:40–18:15 (killed with the WSL VM at 22 points), resumed 18:22–18:48 | `benzene_cc-pvdz_normal/` |
 | Canonical CCSD(T) truth line, same 27 geometries | cc-pVDZ, frozen core, same DF-RHF reference | 27 | 20 min (44–48 s per point) | `canonical_truth_sealed.json` (copied into every M1 directory) |
 | **Rerun, arm A semicanonicalised** (the numbers of §2) | cc-pVDZ / normal | 27 | 19:11–21:37 (≈ 5.5 min per point, three arms) | `benzene_cc-pvdz_normal_semican/` |
-| Tight thresholds [10⁻⁶, 10⁻⁷] | cc-pVDZ / tight | 27 | started 2026-09-05 night, after the cc-pVTZ gradient attempt | `benzene_cc-pvdz_tight/` |
+| **Tight thresholds** [10⁻⁶, 10⁻⁷] (§2.2b) | cc-pVDZ / tight | 27 | 21:45–02:07 (≈ 9.5 min per point, three arms; 1.4 GB) | `benzene_cc-pvdz_tight/` |
 
 Modes (chosen by the script from the dry run's Hessian): **12** (1020 cm⁻¹, the totally symmetric
 mode; dry-run family label CH-ip-bend), **18** (1357 cm⁻¹, a CC-stretch member of a degenerate pair),
@@ -65,6 +65,28 @@ q²-proportional piece of correlation as the geometry moves, and the full-space 
 The bias is largest where the transported virtual space loses most (mode 6: s_min vir 0.82 at |q| = 1,
 pre-Löwdin off-diagonal 0.16).
 
+**2.2b The same scan at tight thresholds [10⁻⁶, 10⁻⁷]** (finished 2026-09-06 02:07; same truth line, same
+estimator; the thresholds probe 4 timed):
+
+| mode | arm | σ, bare (µE_h) | bias 2·a₂, bare (cm⁻¹) | σ, composite (µE_h) | bias 2·a₂, composite (cm⁻¹) | a₄ |
+|---|---|---|---|---|---|---|
+| 6 (865, CH-oop) | **A** | **0.002** | +1.9 | **0.003** | **+0.14** | ≈ 0 |
+| | B | 0.05 | −0.1 | 0.05 | −0.2 | small |
+| | C | 2.1 | +6.3 | 1.7 | +4.9 | large |
+| 12 (1020, tot. sym.) | **A** | **0.003** | +0.35 | **0.003** | **+0.03** | ≈ 0 |
+| | B | 1.2 | +3.5 | 0.6 | +2.2 | large |
+| | C | 2.7 | +9.1 | 2.1 | +8.2 | large |
+| 18 (1357, CC-stretch) | **A** | **0.056** | +1.05 | **0.056** | **+0.36** | ≈ 0 |
+| | B | 0.9 | +4.2 | 0.4 | +2.4 | large |
+| | C | 0.9 | +2.8 | 0.5 | +1.5 | large |
+
+Reading: tightening the thresholds shrinks arm A's bias by an order of magnitude (bare 5–28 → 0.35–1.9
+cm⁻¹; **composite 0.5–2.6 → 0.03–0.36 cm⁻¹**) at unchanged smoothness, and it also quietens the
+re-selecting arms (B 0.05–1.2, C 0.9–2.7 µE_h, against 7–11 at normal thresholds) — the larger the
+active space, the less there is to re-select. Arm A's σ is the same 0.002–0.06 µE_h at both threshold
+settings, so it is not an LNO-size effect but the floor of the impurity solves themselves (the SCF's
+σ is 0.002–0.015 µE_h on the same grid). Cost: 9.5 against 5.5 min per three-arm point.
+
 **2.3 Continuity diagnostics** (all runs agree): s_min of the occupied overlap ≥ 0.986 at |q| = 1 on
 every mode; s_min of the virtual (LNO) overlap 0.81–0.89 at |q| = 1, 0.95–0.97 at |q| = 0.25; largest
 pre-Löwdin off-diagonal ≤ 0.018 (occupied), ≤ 0.16 (virtual). The map is nonsingular throughout
@@ -103,8 +125,8 @@ scan is ≈ 2 days and the cc-pVTZ truth line 27 × 755 s ≈ 6 h — both fit t
   effect: the diagonal curvature bias of arm A falls from 5–28 to 0.5–2.6 cm⁻¹ at no cost to
   smoothness and at seconds (cc-pVDZ) to minutes (cc-pVTZ) per point. The Q6 bias line then judges the
   composite, and Q6's arm B is compared on the same footing.
-- **P9 (next measurements, already scheduled or cheap):** (i) tight thresholds at cc-pVDZ against the
-  same truth line (running tonight; the bias should shrink with the larger active space); (ii) the
+- **P9 (next measurements, already scheduled or cheap):** (i) ~~tight thresholds at cc-pVDZ~~ — done
+  (§2.2b: composite bias 0.03–0.36 cm⁻¹); (ii) the
   three-arm scan and the truth line at cc-pVTZ (≈ 2.5 days); (iii) the off-diagonal bias of arm A is
   unmeasured — single-mode scans see only Δ₂,ii — and is read from the R0 probe batch's two-mode pairs
   against canonical two-mode points, which the R0 pilot should include (a small deck number).
