@@ -13,24 +13,17 @@
 > capstone sequence (Modules 02–09), so that every module both advances the science *and* satisfies the
 > school's rubric.
 
-> **All five plan folders are in the tree (user decision, 2026-09-04).** Plans 01, 02 and 03 were
-> removed from the tree on 2026-09-01/02 and were **restored on 2026-09-04** from the commits
-> just before their deletion, so that a reader of the repository can open them without git.
-> They are superseded, read-only records: nothing in them is current, and they are not edited.
-> Plan 04 is superseded and kept; **plan 05 is current.** Sentences below that say a plan was
-> "removed from the tree" describe history and are left as written.
+> **Plan 05 is current.** Plans 01–04 are superseded and kept in the tree as read-only records:
+> nothing in them is current, and they are not edited.
 >
 > **Current: plan 05.** Plan 05 — [Δ-Probed IR Pipeline](plans/05_delta-probed-ir-pipeline/) —
 > was created on 2026-09-03 and supersedes plan 04, keeping plan 04's product, criterion,
 > ladder, opponents and gates and changing one thing: the coupled-cluster anchor is a
-> **probed correction to the force constants** (probe count measured per rung) instead of a learned per-molecule surface. All plan folders
-> stay in the tree (user decision, 2026-09-04). The paragraphs below describing plan 04 are
-> kept as written on 2026-09-02/03; where they say "current", read plan 05.
+> **probed correction to the force constants** (probe count measured per rung) instead of a learned per-molecule surface.
 >
 > **Plan 04** — [CC-Anchored IR Pipeline](plans/04_cc-anchored-ir-pipeline/) —
-> was created on 2026-09-02 and supersedes plan 03 (kept in the tree as a read-only record). Plan 03 was **removed from the tree on
-> 2026-09-02**; git history keeps it. Round-5 Pass B gave **no green light** for plan
-> 03's frozen scope, and that verdict binds plan 04's architecture (one scope, one clock).
+> was created on 2026-09-02 and superseded plan 03. Round-5 Pass B gave **no green light** for plan
+> 03's frozen scope, and that verdict binds the architecture of plans 04 and 05 (one scope, one clock).
 >
 > **Plan 04 product.** Module 08 ships a pipeline: any individual aromatic molecule in, an
 > infrared spectrum out — scored against frozen state-of-the-art lines
@@ -46,12 +39,11 @@
 
 ## Plan versions
 
-The project was planned five times. Plans 01 (voxel field PES) and 02 (coupled-cluster anharmonic IR)
-were **removed from the tree on 2026-09-01** — documents from version control, and plan 02's leftover run
-artifacts from disk. They remain in git history. Plan 02's raw frequency arrays (ten `.npz` Hessians and
-geometries, ~10 h of psi4) had never been committed, so they were force-added in `57a7910` before the
-deletion; retrieve one with `git show 57a7910:<path>`. Plan 03 (presence-update rule) is superseded and
-was **removed from the tree on 2026-09-02**; git history keeps it.
+The project was planned five times. All five plans are in the tree: plan 05 is current, plans 01
+(voxel field PES), 02 (coupled-cluster anharmonic IR), 03 (presence-update rule) and 04 (CC-anchored
+IR pipeline) are superseded, read-only records. One thing lives in git history only: plan 02's raw
+frequency arrays (ten `.npz` Hessians and geometries, ~10 h of psi4), committed in `57a7910` —
+retrieve one with `git show 57a7910:<path>`.
 
 Plan **05 is the current plan** (created 2026-09-03). It keeps plan 04's product and criterion —
 a per-molecule IR pipeline whose success criterion is **relative, measured and gated**: agree with
@@ -62,10 +54,10 @@ constants, at a probe count measured per rung.
 
 | | Plan | Status |
 |---|---|---|
-| **03** | [Presence-Update-Rule](plans/03_presence-update-rule/) | Superseded by 04 (2026-09-02); removed from the tree the same day and **restored 2026-09-04** as a read-only record. Draft; never complete as a plan; never executed. |
-| **01** | [Voxel-Field-PES](plans/01_voxel-field-pes/) | Superseded 2026-08-23; restored to the tree 2026-09-04 as a read-only record. |
-| **02** | [Coupled-Cluster-Anharmonic-IR](plans/02_coupled-cluster-anharmonic-ir/) | Superseded 2026-08-29; restored 2026-09-04 as a read-only record. |
-| **04** | [CC-Anchored-IR-Pipeline](plans/04_cc-anchored-ir-pipeline/) | Superseded by 05 on 2026-09-03; kept as a read-only record. Draft; Round-6 reviews run and addressed; never executed. |
+| **03** | [Presence-Update-Rule](plans/03_presence-update-rule/) | Superseded by 04 (2026-09-02); read-only record. Draft; never complete as a plan; never executed. |
+| **01** | [Voxel-Field-PES](plans/01_voxel-field-pes/) | Superseded 2026-08-23; read-only record. |
+| **02** | [Coupled-Cluster-Anharmonic-IR](plans/02_coupled-cluster-anharmonic-ir/) | Superseded 2026-08-29; read-only record. |
+| **04** | [CC-Anchored-IR-Pipeline](plans/04_cc-anchored-ir-pipeline/) | Superseded by 05 (2026-09-03); read-only record. Draft; Round-6 reviews run and addressed; never executed. |
 | **05** | [Δ-Probed-IR-Pipeline](plans/05_delta-probed-ir-pipeline/) | **Current.** Created 2026-09-03; Rounds 7–10 (A, B) run and addressed; **plan text frozen 2026-09-04** (changes only by dated notes naming a measurement or decision); the nineteen open decisions closed 2026-09-05/06; **probe M1 measured** (frozen spaces smooth to 0.002–0.06 µE_h and, with tight thresholds and the composite energy, biased by 0.03–0.36 cm⁻¹ against canonical CCSD(T) at cc-pVDZ — [research note](plans/05_delta-probed-ir-pipeline/GoalGathering/Research_Note_2026-09-05_Probe_M1.md)); the laboratory sources for module 03 read and recorded 2026-09-06; the [supervisor proposal](plans/05_delta-probed-ir-pipeline/GoalGathering/Project_Proposal_2026-09-06.md) rewritten as one document 2026-09-06 and awaiting her reading. Same product and criterion as 04; CC anchor by probing the CC−DFT harmonic force-constant correction. No rung has run. |
 
 Start at [`plans/README.md`](plans/README.md) for why the earlier plans were dropped and what 05
@@ -102,10 +94,10 @@ not actually run and been scored. Nothing here is a result.
 CapstonePlan/
 ├── plans/
 │   ├── README.md                          why 01/02/03 were dropped; 05 is current, 01–04 superseded
-│   ├── 01_voxel-field-pes/                superseded 2026-08-23 — restored to the tree 2026-09-04, read-only
-│   ├── 02_coupled-cluster-anharmonic-ir/  superseded 2026-08-29 — restored 2026-09-04, read-only
-│   ├── 03_presence-update-rule/           superseded 2026-09-02 — restored 2026-09-04, read-only
-│   ├── 04_cc-anchored-ir-pipeline/        superseded 2026-09-03 — kept, read-only
+│   ├── 01_voxel-field-pes/                superseded 2026-08-23, read-only
+│   ├── 02_coupled-cluster-anharmonic-ir/  superseded 2026-08-29, read-only
+│   ├── 03_presence-update-rule/           superseded 2026-09-02, read-only
+│   ├── 04_cc-anchored-ir-pipeline/        superseded 2026-09-03, read-only
 │   │   ├── GoalGathering/                 prime directive, frozen lines, Round-6 reviews, proposal
 │   │   └── probes/                        the NIST gas-coverage probe (evidence in-tree)
 │   └── 05_delta-probed-ir-pipeline/       current — created 2026-09-03, text frozen 2026-09-04
@@ -136,12 +128,11 @@ predate the splits and belong to no plan folder.
 Plan 03's review record — the Round-5 Pass A cold read (2026-09-01, findings addressed in spec
 the same day), the Round-5 Pass B adversarial domain review (2026-09-01, **findings not
 addressed**: no green light for the scope as frozen), and an inheritance map of thirty source
-findings from the deleted plans — was removed from the tree with the plan-03 folder on
-2026-09-02 and remains in **git history**. Pass B's architectural verdict (one scope, one
-clock) binds plan 04 and is restated in its prime directive.
+findings from plans 01 and 02 — is in the plan-03 folder. Pass B's architectural verdict (one
+scope, one clock) binds plans 04 and 05 and is restated in their prime directives.
 
-Documents 10–12 are **not** rubrics — they were plan 03's horizon and went with the plan-03
-folder on 2026-09-02 (git history). Plans 04 and 05 have no horizon documents.
+Documents 10–12 in plan 03's `Horizon/` folder are **not** rubrics — they were plan 03's horizon.
+Plans 04 and 05 have no horizon documents.
 
 ## Conventions this repository tries to keep
 

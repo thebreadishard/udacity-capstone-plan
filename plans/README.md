@@ -1,25 +1,17 @@
 # Project plan versions
 
-> **All five plan folders are in the tree (user decision, 2026-09-04).** Plans 01, 02 and 03 were
-> removed from the tree on 2026-09-01/02 and were **restored on 2026-09-04** from the commits
-> just before their deletion, so that a reader of the repository can open them without git.
-> They are superseded, read-only records: nothing in them is current, and they are not edited.
-> Plan 04 is superseded and kept; **plan 05 is current.** Sentences below that say a plan was
-> "removed from the tree" describe history and are left as written.
+> **Plan 05 is current.** Plans 01–04 are superseded, read-only records: nothing in them is
+> current, and they are not edited.
 >
 > **Plan 05 is the current plan** (created 2026-09-03): [`05_delta-probed-ir-pipeline/`](05_delta-probed-ir-pipeline/)
 > — the same criterion, ladder, opponents and gates as plan 04, with the coupled-cluster anchor
 > obtained by **probing the CC−DFT force-constant correction** at a measured, size-saturating
-> probe count instead of learning a per-molecule surface. Plan 04 is **superseded and kept in
-> the tree** as a read-only record (user decision 2, 2026-09-04); see
+> probe count instead of learning a per-molecule surface. Plan 04 is superseded and kept as a
+> read-only record; see
 > [`05_delta-probed-ir-pipeline/GoalGathering/Why_05_Supersedes_04.md`](05_delta-probed-ir-pipeline/GoalGathering/Why_05_Supersedes_04.md).
-> The paragraphs below this banner describe the state up to plan 04 and are unedited.
 
-This project has been planned five times (01–05). Folders for plans 01 (voxel field PES) and 02
-(coupled-cluster anharmonic IR) were **removed from the tree on 2026-09-01**: the documents from
-version control, and plan 02's leftover psi4 run artifacts from disk. They remain in git history.
-Plan 02's ten raw `.npz` frequency arrays were never committed, so they were force-added in `57a7910`
-immediately before the deletion — `git show 57a7910:<path>` retrieves one.
+This project has been planned five times (01–05); all five folders are here. Plan 02's ten raw
+`.npz` frequency arrays live in git history only — `git show 57a7910:<path>` retrieves one.
 
 None of plans 01–05 has been executed as a plan: no rung has run and there is no pipeline result.
 Plan 05 has **probe results** (measurements about the method — the DFT dry run, the anchor timings,
@@ -27,21 +19,19 @@ probe M1 — dated 2026-09-05/06 in its `probes/` and research notes); these are
 against the plan's assumptions, not spectra. **Do not call plan 04 or plan 05 complete as a
 plan.** Plan 05's completeness waits on the mapping's Pass 6 and on the pilot note.
 
-**Plan 04 was the current plan from 2026-09-02 to 2026-09-03** (it replaced plan 03, which was
-**removed from the tree on 2026-09-02**; git history keeps it). **Plan 05 is current** as of
-2026-09-03; all plan folders are in the tree since 2026-09-04 (user decision 2).
+**Plan 05 is current** since 2026-09-03; plan 04 was current for the one day before it.
 
 | | Plan | Status |
 |---|---|---|
-| **03** | [Presence-Update-Rule](03_presence-update-rule/) | Superseded by 04. Removed from the tree on 2026-09-02, **restored 2026-09-04** as a read-only record. Draft; never complete as a plan; never executed. |
-| **04** | [CC-Anchored-IR-Pipeline](04_cc-anchored-ir-pipeline/) | Superseded by 05 (2026-09-03); kept as a read-only record (decision 2). Draft; Round-6 Pass A and B run and addressed; never executed. |
+| **03** | [Presence-Update-Rule](03_presence-update-rule/) | Superseded by 04 (2026-09-02); read-only record. Draft; never complete as a plan; never executed. |
+| **04** | [CC-Anchored-IR-Pipeline](04_cc-anchored-ir-pipeline/) | Superseded by 05 (2026-09-03); read-only record. Draft; Round-6 Pass A and B run and addressed; never executed. |
 | **05** | [Δ-Probed-IR-Pipeline](05_delta-probed-ir-pipeline/) | **Current.** Created 2026-09-03; text frozen 2026-09-04 (dated notes only); decisions closed 2026-09-05/06; probe M1 measured at cc-pVDZ; proposal of 2026-09-06 awaiting the supervisor. Same product and criterion as 04; CC anchor obtained by probing the CC−DFT harmonic force-constant correction (probe count measured per rung). Round 7 (A, B) and Rounds 8, 9 and 10 (A, B) run and addressed. |
 
-Historic comparison (the 01, 02 and 03 folders were restored on 2026-09-04: [01](01_voxel-field-pes/), [02](02_coupled-cluster-anharmonic-ir/), [03](03_presence-update-rule/); their documents are read-only records):
+Historic comparison ([01](01_voxel-field-pes/), [02](02_coupled-cluster-anharmonic-ir/), [03](03_presence-update-rule/); read-only records):
 
 | | 01 — Voxel Field PES | 02 — Coupled-Cluster Anharmonic IR | 03 — Presence-Update-Rule |
 |---|---|---|---|
-| **Status** | Superseded 2026-08-23. Removed from the tree 2026-09-01. | Superseded 2026-08-29. Removed from the tree 2026-09-01. | Superseded by 04 on 2026-09-02 and removed from the tree the same day. Draft; never complete as a plan; never executed. |
+| **Status** | Superseded 2026-08-23. | Superseded 2026-08-29. | Superseded by 04 on 2026-09-02. Draft; never complete as a plan; never executed. |
 | **Deliverable** | Vibrational band positions / IR envelopes, H₂O–benzene | Anharmonic IR families, benzene and naphthalene, four-term error budget | A shared local presence-update rule with P0–P4 gates on H₂ and H₂O |
 | **Where precision comes from** | Own CCSD(T)/cc-pVTZ labels | A measured CC rung | Named Octopus RT-TDDFT (ALDA) on a **frozen** grid |
 | **The model** | Hybrid FNO-NCA, \(E=\mathcal{E}[\rho,R]\) | Fine-tuned equivariant MLIP as cheap QFF half | 3-D conv stencil on \((\rho_\pm,\mathbf{j},\mathbf{E},\mathbf{B})\) |
@@ -79,9 +69,11 @@ physical timescales in play, and the IR product — the reason for the work — 
 modules entirely. Plan 04 returns the IR product to Module 08 and drops the co-owned light–matter
 solver.
 
-The argument of record for the 02→03 pivot was `Why_03_Supersedes_02.md` (git history, in the
-removed plan-03 folder).
-The deleted plan-02 restructure proposal (git history only) is the argument for why 01 died.
+The argument of record for the 02→03 pivot is
+[`03_presence-update-rule/GoalGathering/Why_03_Supersedes_02.md`](03_presence-update-rule/GoalGathering/Why_03_Supersedes_02.md);
+the plan-02 restructure proposal
+([`02_coupled-cluster-anharmonic-ir/GoalGathering/Restructure_Proposal_2026-08-23_Project12_in_Module08.md`](02_coupled-cluster-anharmonic-ir/GoalGathering/Restructure_Proposal_2026-08-23_Project12_in_Module08.md))
+is the argument for why 01 died.
 
 ## What survives into 04 (and, through it, into 05)
 
@@ -96,13 +88,12 @@ From plan 02 specifically: the measured lab-comparison machinery (PAHdb experime
 with recorded uids, NIST JCAMP parsing) — git history, recomputable, and the quantitative floor
 under plan 04's frozen lines. From plan 03: nothing method-specific survives; its Maxwell–TDDFT
 scope is dropped, its governance was already shared. Itemised fates of the thirty plan-01/02
-review findings: `Inheritance_of_Reviews.md` in the removed plan-03 folder (git history).
+review findings: [`03_presence-update-rule/GoalGathering/Inheritance_of_Reviews.md`](03_presence-update-rule/GoalGathering/Inheritance_of_Reviews.md).
 
 ## Layout
 
-All five plans are in this tree since 2026-09-04: 01–04 superseded and read-only, 05 current
-(01–03 restored from the commits just before their deletion; their own READMEs still describe
-the tree as it was when they were written):
+All five plans are in this tree: 01–04 superseded and read-only, 05 current (the READMEs of
+01–03 describe the tree as it was when they were written):
 
 ```
 plans/04_cc-anchored-ir-pipeline/     superseded 2026-09-03
@@ -111,7 +102,7 @@ plans/04_cc-anchored-ir-pipeline/     superseded 2026-09-03
                      Round-6 briefs and reviews, project proposal of 2026-09-03
   probes/            the NIST gas-coverage probe and its raw cache
 
-plans/05_delta-probed-ir-pipeline/    current — draft, created 2026-09-03
+plans/05_delta-probed-ir-pipeline/    current — created 2026-09-03, text frozen 2026-09-04
   README.md          orientation and reading order; Round-7 to Round-10 review record
   GoalGathering/     goal, why-05-supersedes-04, research note (source), frozen lines (carried),
                      ladder + tolerances, compute budget, distilled plan + gates, bibliography
@@ -125,10 +116,9 @@ Two tracked folders and one local folder sit at the repository root, because no 
 - `Papers/` — local only, **git-ignored since 2026-09-06**: the PDFs were removed from the repository and from its history (`Papers_Inventory_2026-09-06.md` at the root records how); the current plan's bibliography is the index of what is held and read.
 - `AI_Chats/` — the planning conversations. They predate the splits.
 
-The **professor reviews of plans 01–03 are back in this tree** since the 2026-09-04 restore (inside
-their own folders); they are records of dead plans, not of plan 05.
-Plan 03's review record (Round 5 Pass A, addressed; Round 5 Pass B, no green light, not
-addressed) went with its folder. Plan 04's review record is in its own README: Round-6 Pass A
+The professor reviews of plans 01–03 sit inside their own folders; they are records of
+superseded plans, not of plan 05. Plan 03's review record (Round 5 Pass A, addressed; Round 5
+Pass B, no green light, not addressed) is in its folder. Plan 04's review record is in its own README: Round-6 Pass A
 and Pass B (both 2026-09-02) are in the tree and addressed. Plan 05's review record is in its
 own README: Rounds 7, 8, 9 and 10 (both passes each) run and addressed.
 Copying old reviews into a new plan folder would imply the new plan had survived them.
@@ -136,7 +126,7 @@ Copying old reviews into a new plan folder would imply the new plan had survived
 ## Version 05 (created 2026-09-03)
 
 Plan 05 exists: [`05_delta-probed-ir-pipeline/`](05_delta-probed-ir-pipeline/). Plan 04 was **not**
-edited in place and stays in the tree as a read-only record (decision 2, 2026-09-04). Plan 05
+edited in place and stays in the tree as a read-only record. Plan 05
 keeps plan 04's product, criterion, ladder, opponents, scoreboards, gates and Round-6 closures,
 and changes how the coupled-cluster anchor is obtained — a probed correction to the force
 constants at a measured probe count K, instead of a learned per-molecule surface. The argument
@@ -147,8 +137,7 @@ Nothing in plan 05 is a result; its Round-7 to Round-10 reviews have run and bee
 ## Version 04 (created 2026-09-02; superseded 2026-09-03)
 
 Plan 04 exists: [`04_cc-anchored-ir-pipeline/`](04_cc-anchored-ir-pipeline/). Plan 03 was **not**
-edited in place; it was removed from the tree on 2026-09-02 and remains readable in git history.
-Do not resurrect the deleted 01 or 02 folders.
+edited in place; it is kept as a read-only record.
 
 **Product.** Module 08 is a pipeline: any individual aromatic molecule in, an infrared spectrum
 out, scored against the frozen lines in
