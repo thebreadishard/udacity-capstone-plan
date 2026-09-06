@@ -98,6 +98,10 @@ molecules (README item 1 asks for "the largest molecules the laptop affords") ha
   off-diagonal unknowns: the sparsity saving at R0 is small. The size sentence is a measurement
   at R1–R3, not R0, and R0 is 12 atoms; but the plan should expect K_off of order M² /2 in mode E
   unless P4 or the M05 prior bites.
+  **Accepted by the user 2026-09-06 (decision 13): Budget §3 dated note (mode E budgeted at
+  M(M−1)/2 without a prior, at the free-element count with the symmetry prior; R1 mode E without a
+  prior is B3); Ladder §1 size-sentence bullet amended. All six proposals of this note are now
+  decided (decisions 8–13).**
 
 ## 4. Two answers for the mapping checklist (Uitleg hoofdstuk 16, §16.4)
 

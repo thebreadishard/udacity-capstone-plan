@@ -74,6 +74,21 @@ O1NumHess gradients (one gradient = 3N responses), CMA-2 selected off-diagonal *
 costing four energies). Every off-diagonal response costs two energies by design; the dry run
 measures K_off, and the plan claims no number for it in advance.
 
+**Dated note 2026-09-06 (P6 of the dry-run note, accepted; decision 13) — the planning expectation
+for mode E.** The benzene dry run measured K_off = 388 energies for 435 off-diagonal unknowns at
+ρ_off ≤ 0.3 (0.9 × the unknown count): the sparsity saving of the banded prior at R0 is nil. The plan
+therefore **budgets mode E with K_off ≈ M(M−1)/2 energies where no prior demonstrably bites** —
+naphthalene 1,128, pyrene 2,556, coronene 5,151 — and, where the symmetry prior of decision 11
+applies, with the **free-element count it leaves** (same-representation pairs only; printed per rung
+beside the deck's off-diagonal count). Arithmetic on measured times, not a claim: at R1 a local-CC
+energy costs ≥ 2,087 s (benzene cc-pVTZ, probe 4; naphthalene more), so mode E **without a prior is
+B3 at R1** (1,128 × ≥ 35 min ≈ 27 days); with the symmetry prior naphthalene's D₂h leaves of order
+8 × C(6,2) ≈ 120 same-representation pairs, a few days. The symmetry prior is thus what puts mode E
+on R1–R3 inside the 168 h rule, not sparsity as such; the naphthalene dry run prints the first real
+count. The size sentence (Ladder §1) remains a measurement at R1–R3; it is now **expected to be
+earned, if at all, through the prior**, and the Module 05 learned prior is measured against the same
+free-element count.
+
 **Dated note 2026-09-05 (machine and software facts; permitted change under the freeze — names its
 findings).** (1) The plan-02 timings quoted in §3 were measured on **this** laptop (the plan-02
 batch status names the machine Asus18 with 16 logical cores, 2026-08-28), not on an older

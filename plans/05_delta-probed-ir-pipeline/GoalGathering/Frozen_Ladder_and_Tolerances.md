@@ -40,7 +40,11 @@ Goal file wins on drift. Costs live in [Compute_Budget_2026-09-03.md](Compute_Bu
     M4, M5 with both checks each — expected B3-conditional, since M4 and M5 are B3 by the side
     project's own sizing): the same for K. The adjectives "size-independent", "O(1)",
     "saturates", "does not grow", with or without "-class", are forbidden everywhere, including
-    the Module 08 paper.
+    the Module 08 paper. **Dated amendment 2026-09-06 (P6, decision 13):** the planning expectation
+    behind the sentence is K_off ≈ M(M−1)/2 in mode E where no prior bites (benzene measured
+    388 of 435), so any favourable size sentence is expected to come from the symmetry prior
+    (decision 11) or the Module 05 prior, and is worded against the rung's free-element count
+    (Budget §3 dated note).
   - **"Beat" and noise.** A rung carries "beat" language only if the Q6 noise line **of the
     mode that produced its scored Δ₂** (σ_E line for mode E, σ_g line for mode G; §3) passed at
     that rung's size class; otherwise it carries a cost record and no "beat".
