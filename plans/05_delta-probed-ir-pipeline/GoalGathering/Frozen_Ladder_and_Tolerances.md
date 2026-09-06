@@ -508,6 +508,21 @@ for fragment probing, before the R3 fragment-vs-whole comparison has printed.
   line**: |Δ₂(frozen) − Δ₂(canonical)| ≤ τ per R0 mode in the same basis and, diagonal-only, per
   pyrene family mode. The **threshold line**: TightPNO−NormalPNO frequency delta ≤ τ, else CPS
   extrapolation is mandatory and every probe counts double in the classification rule.
+  **Dated amendment 2026-09-06 (P3 of the dry-run note, accepted by the user; measurement behind
+  it: dry-run note §2 items 7 and 9).** The mode-E noise line above is the diagonal requirement.
+  The off-diagonal Δ₂ is a weaker signal, and its requirement is **measured per rung, not typed**:
+  the Q6 report prints, beside the noise line, **RMS_off** — the RMS of the off-diagonal part of the
+  rung's held-out responses (the dry run's R_s,off of the P1 amendment) — and the implied
+  **off-diagonal σ_E ceiling**, the σ_E at which ρ_noise,off = (σ_E/√2)/RMS_off reaches the
+  stopping threshold's guard (ρ_noise,off·c ≥ ρ_max = 0.5 is "at noise"; the ceiling is quoted at
+  the pilot-note c). On benzene RMS_off = 5.2 µE_h and the ceiling is ≈ 2 µE_h (σ_E = 2 µE_h gives
+  ρ_noise,off = 0.27, 5 µE_h gives 0.69), ten times below the 18.7 µE_h diagonal line at τ = 5 cm⁻¹,
+  q_s = 1. **Consequence:** if the local-CC σ_E measured at R1 (arm A of the §3 object, pooled) exceeds
+  that rung's ceiling, mode E cannot recover the off-diagonals at that size; the pilot note then
+  writes the mode-G side project as **load-bearing for the off-diagonal Δ₂**, not additional, and
+  mode E's promise at that size is the diagonal alone. Measured so far (probe M1, benzene, cc-pVDZ):
+  arm A σ = 0.002–0.06 µE_h, far under the ceiling; the re-selecting arms 7–11 µE_h at normal and
+  0.05–2.7 µE_h at tight thresholds would not, or barely, pass it.
 - **[05] The cost-sentence rule of §1** binds every document.
 
 ## 4. Frozen at the pilot note (form fixed now, numbers then)

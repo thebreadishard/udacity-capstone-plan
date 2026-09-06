@@ -81,6 +81,8 @@ molecules (README item 1 asks for "the largest molecules the laptop affords") ha
   second difference). Proposal: the Q6 report prints RMS_off and the implied σ_E ceiling beside
   the line; if the local-CC σ_E measured at R1 exceeds that ceiling, mode E cannot recover the
   off-diagonals at that size and the mode-G side project is load-bearing, not additional.
+  **Accepted by the user 2026-09-06; written into Ladder §3 (Q6 thresholds bullet) as a dated
+  amendment (decision 10). Probe M1 has since measured arm A at 0.002–0.06 µE_h, under the ceiling.**
 - **P4 — the structural prior's band hypothesis.** The large couplings are same-symmetry pairs far
   apart in frequency. Candidate replacement, parameter-free and exact for symmetric molecules:
   penalise only elements between modes of **different irreducible representations** (they are

@@ -24,7 +24,7 @@ where licensed) — produces IR **band positions** that, on the gas-phase rungs 
 the known truth within the stated margin (primary) and beat the frozen lines under the
 pre-registered paired comparison (secondary)**; on R2–R3 the beat comparison runs per family
 under the Ladder §2 decidability rule (measured band-centre uncertainty against the beat
-margin), and only where the Q6 noise line of the mode used passed at that size class, all
+margin), and only where the Q6 noise line of the mode used passed at that size class (for the off-diagonal Δ₂ in mode E also the per-rung σ_E ceiling from RMS_off — dated amendment 2026-09-06, P3 accepted, Ladder §3), all
 others pre-declared inconclusive — **the R2 C–C families are expected inconclusive by
 construction on the NIST gas scoreboard, and the plan says so before the pilot note**. On reach
 rung R6 — as fragment-probed Δ₂ under the Ladder §3 fragment licence, conditional on B3 — it
