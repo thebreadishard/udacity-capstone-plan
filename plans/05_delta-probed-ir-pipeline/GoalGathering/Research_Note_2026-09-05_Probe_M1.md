@@ -20,8 +20,13 @@ differences between local-CC arms and canonical CCSD(T), never a CC−DFT curvat
 | Anchor basis, tight thresholds (P9 ii; decision 16) | cc-pVTZ / tight | 27 + 27 canonical | started 2026-09-06 07:31; ≈ 2.5 days | `benzene_cc-pvtz_tight/` |
 
 Modes (chosen by the script from the dry run's Hessian): **12** (1020 cm⁻¹, the totally symmetric
-mode; dry-run family label CH-ip-bend), **18** (1357 cm⁻¹, a CC-stretch member of a degenerate pair),
-**6** (865 cm⁻¹, CH out-of-plane, non-symmetric). Nine points q ∈ [−1, 1] per mode, the Q6 estimator's
+mode; dry-run family label CH-ip-bend), **18** (1357 cm⁻¹, a CC-stretch), **6** (865 cm⁻¹, CH
+out-of-plane). *Correction 2026-09-06 (found by the proposal's cold read):* the script's labels were
+wrong — mode 18 is **non-degenerate** (its neighbours are 1187 and 1387 cm⁻¹; it shares its
+representation with the 1186 cm⁻¹ mode it couples to), and mode **6 is one component of a degenerate
+pair** (modes 6 and 7 both at 864.7 cm⁻¹). The Ladder's requirement — one totally symmetric, one
+degenerate, one non-symmetric mode — is therefore met, with the roles of 18 and 6 exchanged relative
+to the log's wording; no number changes. Nine points q ∈ [−1, 1] per mode, the Q6 estimator's
 grid. Arms as the Ladder §3 writes them: **A** frozen–frozen (transported occupied set and transported
 LNO spaces, impurity solves only), **B** transported occupied set with fresh LNO spaces, **C** fresh
 localiser and fresh LNO spaces.
