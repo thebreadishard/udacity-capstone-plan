@@ -8,7 +8,8 @@ major decisions were taken; the binding technical documents (goal, ladder, toler
 opponents, gates, budget, mapping) live in the same folder and take precedence where they are
 more specific. Eight external review passes of this plan (four cold reads and four adversarial domain reviews
 on 3 and 4 September 2026) are in the folder with every finding and its closure; the domain reviews'
-verdicts were conditional, and §9 says on what.
+verdicts were conditional, and §9 says on what. **Status addendum:** §15 (6 September 2026) records
+what has been measured and decided since; where the body below is older than §15, §15 governs.
 
 ---
 
@@ -88,7 +89,8 @@ diagnostic. It is cited as prior art throughout the plan, and its own result —
 diagonal-only recovery fails on aromatic ring modes by up to ±28 cm⁻¹, because DFT and
 coupled-cluster mode compositions differ there — is the strongest evidence for the plan's
 design choices. What plan 05 proposes beyond CMA: local coupled cluster with frozen correlation
-domains at PAH sizes; the off-diagonal block recovered by a **frequency-banded** sparse solve
+domains at PAH sizes; the off-diagonal block recovered by a **frequency-banded** sparse solve *(since 6 September: a
+symmetry-blocked solve, §15 item 4)*
 from multi-mode patterns rather than one element at a time; the recovery licensed against
 directly computed references; and the locality of the correction, and the number of
 off-diagonal probes it needs, measured as a function of size.
@@ -142,8 +144,8 @@ fragment-probed form.
    band families and every mode the resonance search couples to them.
 2. **Δ₂-probing.** A hashed, ordered set of displacement patterns; at each, local coupled
    cluster and DFT with frozen domains; sparse recovery of the correction in the DFT
-   normal-mode basis with a frequency-banded structural prior; the probe count K is the number
-   at which a held-out residual first falls to a frozen multiple of the rung's own noise floor,
+   normal-mode basis with a frequency-banded structural prior *(§15 item 4: the symmetry prior)*; the probe count K is the number
+   at which a held-out residual first falls to a frozen multiple of the rung's own noise floor *(§15 item 5: on the off-diagonal residual, with a model floor)*,
    the multiple fixed before any coupled-cluster response exists. Three licences gate it: an anchor licence against frozen noise, bias and threshold
    formulas; a probing licence at benzene and naphthalene against directly computed reference
    corrections (including a canonical coupled-cluster reference, the only one independent of
@@ -304,8 +306,10 @@ gradients at the anchor level, with memory; the laboratory scoreboard re-read wi
 band uncertainties; one timed coupled-cluster point; and the naphthalene noise-floor measurement
 (72 energies). After the note: the benzene probe batch and its references
 (the rung where the canonical bias line is expected to fit the laptop and the full canonical
-reference Hessian is expected not to — the feasibility probe decides, and the only prior datum
-is a 2026-08 single-point timing on an older machine, labelled provenance); naphthalene;
+reference Hessian is expected not to — the feasibility probe decides *[decided 5 September 2026: the
+bias line fits, the full reference does not; §15 item 1]*, and the only prior datum
+is a 2026-08 single-point timing *[correction 5 September 2026: measured on this same laptop, not an
+older machine]*, labelled provenance); naphthalene;
 an anthracene direct-coupling probe (four energies per pair and family, count printed) as a
 dated bonus, because anthracene is the
 first acene where DFT's delocalisation error is visible; then classification of the pyrene- and
@@ -395,7 +399,8 @@ All closed; listed here because a supervisor's objection to any of them would re
    no accuracy claim where it fails; gradient-based and extrapolated routes as labelled
    fallbacks.
 2. **The correction is not near-diagonal in the DFT mode basis on aromatic ring modes.** The
-   Concordant Mode Approach's own result says it is not. Response: the banded prior, the
+   Concordant Mode Approach's own result says it is not. Response: the banded prior *(measured 5
+   September and replaced by the symmetry prior, §15 items 2 and 4)*, the
    dry-run calibration on a functional pair that brackets exact exchange, the diagonal-only and
    full recoveries printed side by side at benzene and naphthalene.
 3. **The correction is not local, or is local for C–H modes and not for the delocalised C–C
@@ -452,6 +457,79 @@ module may ship an honest fail-closed state to meet its date, and the science co
 4. When the naphthalene measurements justify it: sponsorship of a cluster-time request sized
    by the timed probes, and, at the large-rung stage, serving as or nominating the named expert
    whose pre-registered judgment is the honest datum where no laboratory truth exists.
+
+## 15. Status addendum — what has been measured and decided since 3 September (written 6 September 2026)
+
+The body of this proposal is frozen text of 3–4 September. The plan's rule since then is that
+nothing changes except by a dated note naming a measurement or a decision; the Ladder in this
+folder carries every such note, and this section summarises them for the supervisor. Numbers
+here are printed by scripts in `probes/` and recorded in dated notes in this folder.
+
+**Measured (5–6 September 2026, on the student's laptop):**
+
+1. **Feasibility of the canonical reference (§5.1, §8).** One canonical CCSD(T) energy of benzene
+   at cc-pVTZ takes 755 s and 7.3 GB; a local LNO-CCSD(T) energy 2,087 s. The Q6 bias line (61
+   energies, ≈ 13 h) fits the laptop; the full canonical reference Hessian by energies (1,801
+   energies, ≈ 378 h) does not, and by gradients neither: a canonical CCSD(T) gradient costs ≈ 50
+   energies and 13.9 GB already at cc-pVDZ, so the 72-gradient branch is cluster work (B3). The
+   timings quoted as provenance in §8 were, on inspection, measured on this same laptop.
+2. **The DFT-only dry run at benzene (§5.1, §7).** Δ between two functionals stands in for the
+   correction. Energy mode recovers the full off-diagonal block (family errors ≤ 0.43 cm⁻¹
+   against 7 cm⁻¹ for the diagonal-only recovery); gradient mode from 60 gradients. Three things
+   the design had not foreseen: the raw held-out residual is blind to the off-diagonal block
+   (2.4 % of the response); a quadratic model has a floor the stopping rule could not reach at low
+   noise; and the large couplings sit between modes 170–450 cm⁻¹ apart within one symmetry class,
+   not between neighbours in frequency. Off-diagonal recovery at benzene needs ≈ 390 energies for
+   435 unknowns, so sparsity as such saves nothing at that size.
+3. **Probe M1 — the frozen correlation spaces (§5.3).** The object exists, reproduces the
+   reference energy exactly and reloads from file exactly. Against canonical CCSD(T) on the same
+   27 displaced geometries (three benzene modes, nine points each, cc-pVDZ), the frozen-space
+   energy is smooth to 0.002–0.06 µE_h where the released code's re-selecting energies scatter by
+   7–11 µE_h (normal thresholds) or 0.05–2.7 µE_h (tight); its bias on a mode's curvature is a
+   clean q² term — 0.5–2.6 cm⁻¹ with the standard MP2 correction at normal thresholds, 0.03–0.36
+   cm⁻¹ at tight. The same scan at the anchor basis cc-pVTZ started on 6 September (≈ 2.5 days).
+   One implementation fact: the transported orbital blocks must be semicanonicalised at each
+   geometry; a first run without that step read a spurious bias of up to 147 cm⁻¹.
+4. **Laboratory sources for the pyrene-size rung (§13 item 3).** An exhaustive search on 5
+   September found no room-temperature gas-phase spectrum of pyrene, chrysene or triphenylene in
+   the 6–15 µm region; it found jet-cooled band lists for tetracene and coronene, now scored as
+   labelled cold columns. The student decided (option 1) to sign off Module 03 with the
+   undecidability of the R2 C–C families as the expected result; the request to the supervisor
+   in §13 stands, but the search has been done.
+
+**Decided by the student (decisions 8–17, 5–6 September 2026; all closed):**
+
+5. The stopping rule reads the **off-diagonal residual** (the diagonal part, known after the
+   first block, subtracted first) and its threshold carries the **model floor**: ρ\* =
+   max(1.1·ρ_dry, c·ρ_noise), ρ_dry printed by the noiseless dry run per rung and mode; the
+   former fixed "declared ρ" is retired (decisions 8, 9, 12).
+6. The energy route's noise requirement for the off-diagonal block is **measured per rung** as a
+   σ_E ceiling from the off-diagonal signal (≈ 2 µE_h at benzene, ten times below the diagonal
+   line); if the local-CC noise at naphthalene exceeds it, the gradient side project becomes
+   load-bearing for the couplings, not additional (decision 10).
+7. The structural prior becomes the **symmetry prior**: couplings between modes of different
+   irreducible representations are zero by symmetry, same-representation couplings are free, the
+   ℓ₁ penalty remains only where the point group leaves too many free elements. Parameter-free;
+   it enters the deck after the naphthalene dry run reproduces the direct correction with it
+   (decision 11). The cost expectation follows: without a prior, off-diagonal probing costs
+   ≈ M(M−1)/2 energies and the naphthalene rung would be cluster work; with the symmetry prior
+   naphthalene has of order 120 free couplings, a few laptop days (decision 13). The Module-05
+   learned prior is measured against that free-element count (§12).
+8. The frozen-space object is defined with its transported blocks **semicanonicalised** at each
+   geometry, and the energy it reports is the **composite** local-CCSD(T) + [MP2(full) −
+   MP2(local)], the local-correlation literature's standard; the bias line judges that quantity
+   (decisions 14, 15). The off-diagonal bias of the frozen spaces is read from canonical
+   two-mode points in the benzene probe batch, a deck number (decision 16).
+9. Module 07's agent is built on **LangGraph** (admissible through the programme's
+   LangChain/LangGraph elective) with the Anthropic API as model endpoint, model id logged
+   (decision 17).
+
+**Process.** The review loop closed on 4 September after a seam check of the last patch (19
+seams, all mechanical); no further review round is planned, and the remaining risk is retired
+by measurements, not by further reading. The plan's README lists decisions 1–17 and the dated
+notes; the next owed measurements are the cc-pVTZ scan (running), the naphthalene dry run
+(which also admits or refuses the symmetry prior), and the laboratory-source readings before
+the scoreboard prints its band uncertainties.
 
 ## 14. References
 
