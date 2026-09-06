@@ -44,14 +44,26 @@ breed. De reden is praktisch: van de kleine PAK's is de positie in het lab tot o
 1 cm⁻¹ bekend, en dat is precies het soort getal waarop een voorspelling kan worden
 afgerekend.
 
-> **Aanvulling 6 september 2026 (besluit 18).** Voor benzeen en naftaleen bestaan wél
-> gekalibreerde gasfase-intensiteiten (NIST Quantitative, PNNL). Daar wordt de **intensiteit**
-> als tweede, apart gerapporteerde grootheid gescoord: de geïntegreerde bandsterkte uit de
-> anharmonische (GVPT2) berekening met DFT-dipoolafgeleiden. Posities blijven de hoofdbelofte
-> en de enige die naar de grotere moleculen meegaat. Een CC-correctie op de intensiteit wordt
-> niet beloofd; of de bevroren ruimte van hoofdstuk 5 die mogelijk maakt, wordt gemeten
-> (probe M1-μ). Breedtes worden niet voorspeld, alleen getekend bij de resolutie en temperatuur
-> van de bron, en zo gelabeld.
+> **Aanvulling 6 september 2026 (besluit 18) — drie woorden uit elkaar houden: tonen,
+> scoren, beloven.**
+>
+> *Tonen* doet de pijplijn alles, voor elk molecuul: een compleet spectrum met de positie van
+> elke band, hoe sterk hij is (de intensiteit) en hoe breed hij getekend wordt. Bij elk van die
+> drie staat waar het vandaan komt. De positie is het dure getal: DFT plus de coupled-cluster-
+> correctie waar dit hele plan om draait. De intensiteit komt uit DFT alleen (uit hoe de
+> dipool van het molecuul verandert als het trilt), zonder coupled-cluster-correctie. De
+> breedte wordt niet berekend maar gekozen: we tekenen de band zo breed als het laboratorium
+> hem bij zijn resolutie en temperatuur zou zien, en schrijven erbij dat dit een tekenkeuze is.
+>
+> *Scoren* (afrekenen tegen het lab) doen we met de positie bij elk molecuul waar een goede
+> labmeting bestaat. Met de intensiteit kan dat maar bij twee moleculen, benzeen en naftaleen:
+> alleen daar heeft het lab de sterkte van de banden echt gekalibreerd (de NIST Quantitative-
+> reeks en het PNNL-record). Bij de grotere moleculen staat de intensiteit dus wel in het
+> spectrum, maar zonder oordeel, want er is niets om tegen af te rekenen.
+>
+> *Beloven* doen we alleen de positie. Dat is het getal waar het project zijn eigen bijdrage
+> aan levert. Of de bevroren ruimte van hoofdstuk 5 ooit ook een coupled-cluster-correctie op
+> de intensiteit toelaat, wordt gemeten (probe M1-μ) en pas daarna eventueel voorgesteld.
 
 > **Definitie 1.1 — De maatstaf**
 > De pijplijn is geslaagd voor een molecuul als haar bandposities aantoonbaar dichter bij de
