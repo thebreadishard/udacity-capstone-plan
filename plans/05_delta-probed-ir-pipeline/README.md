@@ -251,7 +251,11 @@ guaranteed, mode G built in the side project; 6 the B2 laptop named.
 **Decision 7 (closed 2026-09-04):** nothing has been submitted to the school; the draft
 Foundations project on QM9 in the user's GitHub account was never submitted and will be renamed
 or archived to make room for the plan's Module 02. M02 is a plan, not a record; M05's Hessian-QM9
-corpus carries no module-02 reuse exposure (Goal, decision 7). **No decision is open.**
+corpus carries no module-02 reuse exposure (Goal, decision 7).
+
+**Decision 8 (closed 2026-09-06):** P1 of the dry-run note accepted — in mode E, ρ, ρ_noise and the
+stopping rule are computed on the off-diagonal residual R_s,off (Ladder §3 dated amendment;
+Distilled §3 row updated). **Open:** P2–P6 (dry-run note) and P7–P9 (probe M1 note).
 
 ## Dated notes after the freeze
 
@@ -295,9 +299,10 @@ corpus carries no module-02 reuse exposure (Goal, decision 7). **No decision is 
 
 ## Not yet done (owed, in order)
 
-- **Decide P1–P6 of the 2026-09-05 dry-run note** (ρ on the off-diagonal residual; the model
-  floor; the mode-E noise ceiling; the symmetry prior; the declared ρ; the mode-E cost picture),
-  then amend the Ladder by dated note.
+- **Decide P2–P6 of the 2026-09-05 dry-run note** (the model floor; the mode-E noise ceiling; the
+  symmetry prior; the declared ρ; the mode-E cost picture) and **P7–P9 of the probe M1 note**, then
+  amend the Ladder by dated note. P1 (ρ on the off-diagonal residual) was accepted 2026-09-06
+  (decision 8).
 
 - ~~Round 11~~ — not planned. The review loop was closed on 2026-09-04 after a seam check of the
   Round-10 Pass B patch ([Seam_Check_2026-09-04_Round10B_patch.md](GoalGathering/Seam_Check_2026-09-04_Round10B_patch.md),

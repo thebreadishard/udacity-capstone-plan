@@ -69,6 +69,7 @@ molecules (README item 1 asks for "the largest molecules the laptop affords") ha
 - **P1 — ρ on the off-diagonal residual.** Define ρ, ρ_noise and the stopping rule on R_s minus
   the single-block diagonal prediction (ρ_off), not on raw R_s. Zero extra cost; the diagonal is
   known after the first block anyway. Without it the frozen rule reads K_off = 2 on benzene.
+  **Accepted by the user 2026-09-06; written into Ladder §3 as a dated amendment (decision 8).**
 - **P2 — restore the model floor.** ρ\* = max(1.1·ρ_dry(rung, mode), c·ρ_noise), with ρ_dry printed
   by the dry run per rung and mode. The Round-9 reviewer proposed this floor; the plan dropped
   it; the measurement says it is needed.

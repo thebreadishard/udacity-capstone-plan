@@ -275,6 +275,21 @@ for fragment probing, before the R3 fragment-vs-whole comparison has printed.
   the rung's Δ₂ is "not recovered at cap" (§5.4), and the cap is never raised to rescue it. The
   cost record carries σ, RMS_resp, ρ_noise, c and ρ(K) beside K, so a small K on a rung with
   small responses reads as what it is.
+  **Dated amendment 2026-09-06 (P1 of the dry-run note, accepted by the user; measurement behind
+  it: `Research_Note_2026-09-05_DryRun_Benzene.md` §2 item 7).** In mode E, **ρ, RMS_resp and
+  ρ_noise are defined on the off-diagonal residual**, not on the raw symmetric response: after
+  the first block (the 2M single-mode pairs, which fix the diagonal Δ₂,ii), each held-out response
+  is reduced to R_s,off = R_s − R_s^diag, where R_s^diag is the response predicted by the
+  diagonal-only Δ₂ of that first block; **ρ_off(n)** = RMS over held-out patterns of (R_s,off
+  predicted by the recovered Δ₂ − computed R_s,off) ÷ RMS of the computed R_s,off;
+  **ρ_noise,off** = σ(R_s)/RMS_resp,off with the same σ(R_s) = σ_E/√2 (subtracting a fitted
+  constant per pattern adds no scatter); the stopping rule, its two guards (ρ_max = 0.5; n > 2M),
+  K_cap and the χ² clause read ρ_off and ρ_noise,off wherever they read ρ and ρ_noise. Zero extra
+  cost. Reason: on benzene the off-diagonal part is 2.4 % of the held-out response (RMS 5.2 against
+  215 µE_h), so raw ρ is 0.024 after the first block and the rule as written stops at K_off = 2
+  with the 7 cm⁻¹ diagonal-only errors in place; on ρ_off the same deck needs K_off = 388 energies
+  for ρ_off ≤ 0.3. Mode G has no diagonal block and is unchanged. The dry run's printed ρ_off column
+  is the reference implementation (`probes/dryrun_dft_delta_recovery.py`, stage C).
 - **[05] Hold-out membership is decided before any response exists:** by a seeded rule in the
   Q0 deck (deck seed + pair index: **one deck index per pair ±p, and the pair is the hold-out
   unit** — a pair is never split between hold-out and training), fraction f_h (item 10).
