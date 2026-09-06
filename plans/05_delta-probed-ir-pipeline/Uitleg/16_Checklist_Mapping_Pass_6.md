@@ -111,7 +111,7 @@ voorwaarde; ✘ open vraag voor de gebruiker.
 | logging, veiligheidsmaatregelen, diagram | elke weigering gelogd met verwijzing; diagram persona→lus→geheugen→tools→log | ✔ | H12 §4–§5 |
 | ≥ 1 geobserveerde mislukking uit eigen runs | vergiftigde hash; verboden woord | ◐ moeten echte runs worden | mapping §3 M07 |
 | ethiek specifiek | ten onrechte weigeren; autonomie bij B3-indiening | ✔ | H12 §7 |
-| cursus-tools | LangGraph (via de Udacity-elective "Agentic AI Engineer with LangChain and LangGraph"); endpoint Anthropic-API met gelogd model-id (voorgesteld) | ✔ raamwerk gekozen door de gebruiker op 5 sept. 2026; endpoint nog te bevestigen | mapping §3 M07 |
+| cursus-tools | LangGraph (via de Udacity-elective "Agentic AI Engineer with LangChain and LangGraph"); endpoint Anthropic-API met gelogd model-id | ✔ raamwerk gekozen 5 sept. 2026, endpoint bevestigd 6 sept. 2026 (besluit 17) | mapping §3 M07 |
 | niet hergebruikt | plan-04-officier is nooit gebouwd; dit is nieuw | ✔ | mapping |
 
 ### Module 08 — synthese
@@ -158,7 +158,7 @@ beantwoord (hieronder bij elke vraag); vraag 2 blijft bewust open.
    **Antwoord (5 sept. 2026):** LangGraph, verdedigbaar via de Udacity-elective "Agentic AI
    Engineer with LangChain and LangGraph"; de kerncursus gebruikte Pydantic, smolagents en
    CrewAI op OpenAI-endpoints, maar OpenAI is niet verplicht. Endpoint: Anthropic-API met
-   gelogd model-id (voorgesteld, nog niet bevestigd).
+   gelogd model-id (bevestigd door de gebruiker op 6 sept. 2026, besluit 17).
 
 ## §16.5 Wat Pass 6 niet is
 

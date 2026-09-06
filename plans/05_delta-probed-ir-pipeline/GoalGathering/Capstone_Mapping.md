@@ -270,8 +270,8 @@ later, B3 machines. The agent is the governance made executable: persona = conse
 officer. *Framework and endpoint (user, 2026-09-05):* **LangGraph** (defensible under the
 rubric's "tools from the course" through Udacity's LangChain/LangGraph elective; the core course
 used Pydantic, smolagents and CrewAI on OpenAI endpoints, none of which is required); the model
-endpoint is the Anthropic API with the model id logged in every run (proposed; the user has not
-yet confirmed the endpoint). Tools: `queue_submit` (wraps the batch runner; refuses a batch whose deck hash does not
+endpoint is the **Anthropic API** with the model id logged in every run (confirmed by the user
+2026-09-06, decision 17). Tools: `queue_submit` (wraps the batch runner; refuses a batch whose deck hash does not
 match Q0), `check_deck_hash`, `check_budget` (reads the classification rule with K_cap and
 c_CPS; refuses B3 submission unless the budget file's preconditions are met), `run_probe`,
 `print_cost_record` (emits Ladder §1's record form and nothing else), `write_certificate_or_refuse`.

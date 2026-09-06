@@ -292,7 +292,11 @@ beside it; the Q6 bias line judges the composite (Ladder §3 object bullet and b
 **Decision 16 (closed 2026-09-06):** P9 accepted — the cc-pVTZ tight scan with its canonical truth line
 runs (started 2026-09-06 07:31, ≈ 2.5 days); the R0 pilot's deck gains a number of canonical two-mode
 points from which arm A's off-diagonal bias is read before the pilot note. **All nine proposals of
-2026-09-05 are decided (decisions 8–16). No decision is open.**
+2026-09-05 are decided (decisions 8–16).**
+
+**Decision 17 (closed 2026-09-06):** module 07's agent runs on **LangGraph** (user, 2026-09-05) with the
+**Anthropic API** as model endpoint, model id logged in every run (confirmed by the user 2026-09-06).
+**No decision is open.**
 
 ## Dated notes after the freeze
 
