@@ -64,7 +64,7 @@ voorwaarde; ✘ open vraag voor de gebruiker.
 | ≥ 1 hypothesetoets, vooraf vastgelegd | matrix–gas-verschuiving = 0 per familie, tweezijdig, α vooraf | ◐ de toetsvorm moet in een gedateerd document staan vóór het samenvoegen | mapping §3 M03 |
 | bronnen buiten de voorbeeldlijst | DOI's + de zin over de lijst | ✔ | Rubrics/README |
 | u_band vóór de pilotnotitie | probe 2a | ◐ items 52–53, 56–57, 59 eerst lezen | probes/README 2a |
-| de begeleidersvraag (R2, 6–15 µm) | Proposal §13.3 | ✘ hangt van de begeleider af | Proposal |
+| de begeleidersvraag (R2, 6–15 µm) | Proposal §13.3; na de uitputtende zoektocht van 5 sept. 2026 (geen kamertemperatuur-gasbron gevonden; jet-gekoelde lijsten als gelabelde kolommen) koos de gebruiker optie 1: aftekenen mét de onbeslisbaarheid van de R2 C–C-families als verwacht resultaat | ✔ beslist door de gebruiker | Research_Note_2026-09-05_R2_GasPhase_MidIR_Sources |
 
 ### Module 04 — de goedkope tegenstander
 
@@ -111,7 +111,7 @@ voorwaarde; ✘ open vraag voor de gebruiker.
 | logging, veiligheidsmaatregelen, diagram | elke weigering gelogd met verwijzing; diagram persona→lus→geheugen→tools→log | ✔ | H12 §4–§5 |
 | ≥ 1 geobserveerde mislukking uit eigen runs | vergiftigde hash; verboden woord | ◐ moeten echte runs worden | mapping §3 M07 |
 | ethiek specifiek | ten onrechte weigeren; autonomie bij B3-indiening | ✔ | H12 §7 |
-| cursus-tools | "tools you already know" | ◐ controleer welk agent-raamwerk de cursus toestaat | rubriek |
+| cursus-tools | LangGraph (via de Udacity-elective "Agentic AI Engineer with LangChain and LangGraph"); endpoint Anthropic-API met gelogd model-id (voorgesteld) | ✔ raamwerk gekozen door de gebruiker op 5 sept. 2026; endpoint nog te bevestigen | mapping §3 M07 |
 | niet hergebruikt | plan-04-officier is nooit gebouwd; dit is nieuw | ✔ | mapping |
 
 ### Module 08 — synthese
@@ -136,20 +136,29 @@ voorwaarde; ✘ open vraag voor de gebruiker.
 ## §16.4 De vragen die alleen jij kunt beantwoorden
 
 Pass 6 kan drie dingen niet zelf beslissen; ze staan hier zodat je ze niet in het
-document tegenkomt zonder antwoord.
+document tegenkomt zonder antwoord. **Stand op 6 september 2026:** vraag 1 en 3 zijn
+beantwoord (hieronder bij elke vraag); vraag 2 blijft bewust open.
 
 1. **Module 03, de begeleidersvraag.** Zonder een gasfase- of jet-gekoelde bron voor
    pyreen, chryseen en trifenyleen in het 6–15 µm-gebied blijven de C–C-families van R2
    onbeslisbaar door constructie. Dat is geen fout van het plan, maar het beperkt wat R2 kan
    bewijzen. Wil je de aftekening van module 03 laten afhangen van het antwoord van de
    begeleider, of tekent je af mét de onbeslisbaarheid als verwacht resultaat?
+   **Antwoord (5 sept. 2026):** eerst een uitputtende zoektocht; die vond niets bij
+   kamertemperatuur, dus optie 1: aftekenen mét de onbeslisbaarheid als verwacht resultaat.
 2. **Module 05, de deelverzamelingsgrootte.** Die wordt pas bepaald na de dry-run-timing.
    Als de laptop traag blijkt, kan het corpus klein worden. Is er een ondergrens waaronder
    je liever de lezing-2-terugval (een andere openbare Hessiaanbron) inzet dan een
    minicorpus?
+   **Stand (6 sept. 2026):** bewust open gelaten. Gemeten: 3–7 minuten per QM9-Hessiaan op
+   deze laptop, dus ongeveer 1000 moleculen in drie dagen; geen ondergrens uitgesproken.
 3. **Module 07, het agent-raamwerk.** De rubriek eist "tools uit de cursus". Welk raamwerk
    dat is, staat niet in de repo. Dat moet je uit het cursusmateriaal halen voordat de
    officier wordt gebouwd.
+   **Antwoord (5 sept. 2026):** LangGraph, verdedigbaar via de Udacity-elective "Agentic AI
+   Engineer with LangChain and LangGraph"; de kerncursus gebruikte Pydantic, smolagents en
+   CrewAI op OpenAI-endpoints, maar OpenAI is niet verplicht. Endpoint: Anthropic-API met
+   gelogd model-id (voorgesteld, nog niet bevestigd).
 
 ## §16.5 Wat Pass 6 niet is
 

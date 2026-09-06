@@ -65,7 +65,10 @@ benzeen ligt buiten de trainingsverdeling.
 3. **De gecontroleerde vergelijking, bevroren in het plan:** *geleerde prior tegen
    structurele prior bij gelijk K*, op het dry-run-corpus. Zelfde patronen, zelfde
    achtergehouden set, zelfde solver, minstens drie zaadjes. Wat veranderde: de prior. Wat
-   gelijk bleef: al het andere. Metriek: ρ bij vast K, en K om ρ* te bereiken. Dit
+   gelijk bleef: al het andere. Metriek: ρ bij vast K, en K om ρ* te bereiken (sinds 6 september
+   2026: ρ_off en de drempel met modelvloer, besluiten 8, 9, 12; en de baseline waartegen de
+   geleerde prior moet winnen is het aantal vrije elementen dat de symmetrieprior overlaat,
+   besluiten 11 en 13). Dit
    vergelijkt geen twee netwerken maar een netwerk-als-prior tegen een prior zonder netwerk;
    dat is de vergelijking die de pijplijn nodig heeft, en hij voldoet aan de rubriekvorm.
 4. De effectgrootte (P3) rapporteren op het corpus én, informatief, op de weggehouden

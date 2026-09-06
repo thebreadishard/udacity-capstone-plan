@@ -77,7 +77,7 @@ Het vooraf vastgelegde plan van één rung.
 | patronen | lijst van records | elk: index, de vector p (3N), het paar ±, soort (enkelvoudig / meervoudig / tweemodes / q₂), hold-out ja/nee |
 | q_s | getal | de patroonamplitude (uit de Q6-grid; verwacht 1,0) |
 | hold-out zaadje en f_h | getal, getal | de regel die de achtergehouden paren aanwijst |
-| prior | record | bandbreedte w en strafgewichten (structureel) of "geleerd" met modelhash |
+| prior | record | structureel: sinds besluit 11 (6 sept. 2026) de **symmetrieprior** — per trilling het symmetrielabel, koppelingen tussen verschillende labels op nul; ℓ₁-gewichten alleen waar de puntgroep te veel vrije elementen laat (tot de naftaleen-dry-run hem toelaat: bandbreedte w en strafgewichten) — of "geleerd" met modelhash |
 | paarlijst voor directe koppelingen | lijst | atoomparen per afstandsklasse, met stap h |
 | K_cap, n_min(G) | getallen | de plafonds uit de pilotnotitie |
 

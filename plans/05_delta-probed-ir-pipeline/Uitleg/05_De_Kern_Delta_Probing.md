@@ -45,7 +45,10 @@ nadat er ook maar één antwoord bekend is.
 
 > **Definitie 5.1 — K en K_off**
 > K is het aantal CC-energieën (mode E; een ±paar telt voor twee) dat is verwerkt op het
-> moment dat de achtergehouden fout ρ voor het eerst onder ρ* = c·ρ_noise komt. Het eerste
+> moment dat de achtergehouden fout ρ voor het eerst onder ρ* komt. Sinds 6 september 2026
+> (besluiten 8, 9 en 12) is ρ de fout op de **buitendiagonale rest** ρ_off (het diagonale deel,
+> dat na het eerste blok bekend is, wordt eerst afgetrokken) en is de drempel
+> ρ* = max(1,1·ρ_dry, c·ρ_noise), met ρ_dry de modelvloer uit de ruisvrije dry run. Het eerste
 > blok van 2M enkelvoudige energieën zit er altijd in; K_off = K − 2M is het aantal daarna.
 > Beide worden geprint, nooit vooraf opgeschreven. Er is een plafond K_cap (uit de dry run,
 > vastgelegd in de pilotnotitie); wordt ρ* niet gehaald vóór K_cap, dan luidt het resultaat

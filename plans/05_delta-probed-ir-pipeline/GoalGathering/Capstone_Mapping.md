@@ -62,7 +62,7 @@ What the end goal requires, independent of any rubric:
 | A machine-readable **opponent table** (line A's predictions, queryable) | M02 | no |
 | A **lab scoreboard** with measured tolerances (matrix vs gas shifts; **the measured band-centre uncertainty u_band per band** that the decidability rule consumes) | M03 | extended |
 | The strongest **fair cheap baseline** + a per-band error model of scaled-harmonic DFT (the M04 calibrated harmonic, the opponent column and the reach-rung uncertainty layer) | M04 | no |
-| The **Δ₂ recovery solver** (banded structural prior; classical convex optimisation) — the promised object on R0–R3 | pipeline infrastructure, exercised by the R0 dry run; **not a module's ML artifact** | new |
+| The **Δ₂ recovery solver** (structural prior — the symmetry prior since decision 11 of 2026-09-06, banded until the naphthalene dry run admits it; classical convex optimisation) — the promised object on R0–R3 | pipeline infrastructure, exercised by the R0 dry run; **not a module's ML artifact** | new |
 | A **frozen-space local-CC code** (probe M1) | pipeline infrastructure, main project, under Ladder stop 1 | new |
 | A learned **Δ₂-support predictor** that earns a licence on R2–R3 and is spent on R4–R6 (the P3 arm) | M05 | replaces the learned surface |
 | **Pattern-proposal efficiency** for the probe batches (K_off is the scarce quantity) | M06 | replaces geometry sampling |
@@ -162,8 +162,11 @@ depends on it (Ladder §3) — user directive 2026-09-04: inheritance is not aut
 
 **Why it is load-bearing, and for which rungs.** K_off is the guaranteed route's open cost
 quantity. A predictor that names the large off-diagonal blocks before any local-CC response
-exists lets the deck place explicit two-mode patterns where they matter — the one lever on
-K_off that costs no CC energies. On **R0–R3 the scored spectra are always the structural
+exists lets the deck place explicit two-mode patterns where they matter — a lever on K_off that
+costs no CC energies. *Dated note 2026-09-06 (decisions 11 and 13):* the symmetry prior is the
+other such lever, parameter-free and exact where the point group applies; the learned prior is
+therefore measured against the **free-element count the symmetry prior leaves** on that rung, not
+against M(M−1)/2, and it can only earn its licence where it beats that count. On **R0–R3 the scored spectra are always the structural
 recovery**; there the prior is measured (P3 on the dry-run corpus; the licence-earning
 comparison on real responses at R2 and R3) and never load-bearing. On **R4–R6**, once the
 licence is earned at both R2 and R3, the prior-assisted recovery may be the only full recovery:
@@ -194,7 +197,8 @@ user before training.
 **Controlled comparison (rubric; frozen in Distilled §5).** **Learned prior vs structural
 prior at matched K**, on the dry-run corpus: same patterns, same held-out set, same solver, ≥3
 seeds; what changed = the prior; what stayed the same = everything else. Metric: ρ at fixed K,
-and K to reach ρ\*. Effect size: pilot-note item 5. **The success criterion is the licence, not
+and K to reach ρ\* — *since 2026-09-06 (decisions 8, 9, 12): ρ_off, the off-diagonal residual, and
+ρ\* = max(1.1·ρ_dry, c·ρ_noise)*. Effect size: pilot-note item 5. **The success criterion is the licence, not
 accuracy**: does the prior save patterns on the corpus, and does the prior-assisted recovery on
 a real rung agree with the prior-free check? "High accuracy is not required" — the outcome is
 publishable either way.
@@ -263,7 +267,11 @@ measurement; the energy cost of proposal versus the node-hours it saves.
 
 **Contribution.** R1+ probe batches are multi-day unattended queues across the laptop and,
 later, B3 machines. The agent is the governance made executable: persona = conservative lab
-officer. Tools: `queue_submit` (wraps the batch runner; refuses a batch whose deck hash does not
+officer. *Framework and endpoint (user, 2026-09-05):* **LangGraph** (defensible under the
+rubric's "tools from the course" through Udacity's LangChain/LangGraph elective; the core course
+used Pydantic, smolagents and CrewAI on OpenAI endpoints, none of which is required); the model
+endpoint is the Anthropic API with the model id logged in every run (proposed; the user has not
+yet confirmed the endpoint). Tools: `queue_submit` (wraps the batch runner; refuses a batch whose deck hash does not
 match Q0), `check_deck_hash`, `check_budget` (reads the classification rule with K_cap and
 c_CPS; refuses B3 submission unless the budget file's preconditions are met), `run_probe`,
 `print_cost_record` (emits Ladder §1's record form and nothing else), `write_certificate_or_refuse`.

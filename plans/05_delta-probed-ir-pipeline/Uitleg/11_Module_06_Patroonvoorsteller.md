@@ -54,7 +54,8 @@ frequenties en samenstellingen", stel een patroon p voor. Bevroren keuze: een **
    terug naar een patroon; verliescurves loggen.
 3. Genereren: voor een molecuul kandidaatpatronen trekken uit de latente ruimte.
 4. **Acquisitieregel** (vooraf vastgelegd): elk kandidaatpatroon krijgt een score gelijk
-   aan de verwachte daling van ρ onder de structurele prior; de beste kandidaten worden
+   aan de verwachte daling van ρ (sinds 6 september 2026: ρ_off) onder de structurele prior
+   (sinds besluit 11 de symmetrieprior); de beste kandidaten worden
    voorgesteld.
 5. **Weergave en kwalitatieve beoordeling** (rubriek-taak 4). Een patroon is geen plaatje en
    geen zin; het notebook tekent gegenereerde patronen als verplaatsingspijlen op het
