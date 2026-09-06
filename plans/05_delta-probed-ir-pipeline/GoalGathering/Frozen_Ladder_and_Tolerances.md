@@ -356,6 +356,24 @@ for fragment probing, before the R3 fragment-vs-whole comparison has printed.
   weights by the dry run's held-out ρ minimum on the noise-injected column — printed, not chosen.
   The dry-run pair is **B3LYP against a functional with markedly more exact exchange**
   (BHLYP-class or Hartree–Fock), never two functionals of one family.
+  **Dated amendment 2026-09-06 (P4 of the dry-run note, accepted by the user; measurement behind
+  it: dry-run note §2 items 4 and 10).** The benzene dry run showed the large off-diagonal Δ₂
+  elements between modes 170–450 cm⁻¹ apart and all within one irreducible representation; the
+  band did not select them (the recovery worked because the two-mode patterns isolated them and
+  the fitted penalty was weak: w = 25 cm⁻¹, λ = 10⁻⁶). **The structural prior becomes the symmetry
+  prior:** off-diagonal Δ₂ elements between DFT modes of **different irreducible representations**
+  are fixed at zero (exact by symmetry, not an assumption); elements between modes of the **same**
+  representation are free, whatever their frequency distance; the ℓ₁ penalty and the low-rank term
+  remain only for rungs whose point group leaves the same-representation block too large to
+  determine at K_cap (printed per rung: number of free elements against the deck's off-diagonal
+  count). Parameter-free where it applies: no w, no λ from the dry run. The representation of each
+  DFT mode is read from the DFT code's symmetry labels (degenerate pairs share one label); a mode
+  the code cannot label is treated as coupling to all — never guessed. **Condition:** the symmetry
+  prior enters the Q0 deck only after the **naphthalene dry run** (D₂h, eight representations, no
+  degeneracy) reproduces the direct DFT−DFT Δ₂ within τ₇ on every family with it, the same
+  criterion the w rule used; until that test has printed, the banded prior above stands as the
+  deck's rule and the w rule with it. The novelty sentence (Distilled §2, bib 24 row) is then read
+  as "a symmetry-blocked recovery of a **difference** Hessian with a frozen local-CC anchor".
 - **[05] Pattern amplitudes come from the Q6 step grid**: the largest step at which the
   smoothness probe's σ is under the noise line of the mode used; never chosen to make a recovery
   converge. Stated plainly: with **one pooled σ per arm** (Q6 bullet) and a line that rises with

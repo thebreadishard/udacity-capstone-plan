@@ -88,6 +88,8 @@ molecules (README item 1 asks for "the largest molecules the laptop affords") ha
   penalise only elements between modes of **different irreducible representations** (they are
   zero by symmetry), leave same-symmetry elements free, keep the ℓ₁ only for the low-symmetry
   rungs. To be tested in the naphthalene dry run before it enters the deck.
+  **Accepted by the user 2026-09-06; written into Ladder §3 as a dated amendment (decision 11),
+  conditional on the naphthalene dry-run test; the banded rule stands until that test prints.**
 - **P5 — the declared ρ.** 0.1 is far too loose; whatever c is read into pilot-note item 8 must be
   read on ρ_off (P1).
 - **P6 — the mode-E cost picture.** K_off ≈ 390 energies at benzene is ≈ 0.9 × the number of

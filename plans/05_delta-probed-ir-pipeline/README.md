@@ -264,7 +264,13 @@ Distilled §3 K row).
 **Decision 10 (closed 2026-09-06):** P3 accepted — the Q6 report prints RMS_off and the implied
 off-diagonal σ_E ceiling per rung beside the mode-E noise line; a local-CC σ_E above the ceiling at
 R1 makes the mode-G side project load-bearing for the off-diagonal Δ₂ (Ladder §3 dated amendment;
-Distilled pointer). **Open:** P4–P6 (dry-run note) and P7–P9 (probe M1 note).
+Distilled pointer).
+
+**Decision 11 (closed 2026-09-06):** P4 accepted — the structural prior becomes the symmetry prior
+(different-representation elements zero, same-representation elements free, ℓ₁/low-rank only where
+the point group leaves too many free elements), entering the deck after the naphthalene dry run
+reproduces the direct Δ₂ within τ₇ with it; the banded rule stands until then (Ladder §3 dated
+amendment; Distilled rows). **Open:** P5–P6 (dry-run note) and P7–P9 (probe M1 note).
 
 ## Dated notes after the freeze
 
@@ -308,10 +314,9 @@ Distilled pointer). **Open:** P4–P6 (dry-run note) and P7–P9 (probe M1 note)
 
 ## Not yet done (owed, in order)
 
-- **Decide P4–P6 of the 2026-09-05 dry-run note** (the symmetry prior; the declared ρ; the mode-E
-  cost picture) and **P7–P9 of the probe M1 note**, then amend the Ladder by dated note. P1 (ρ on
-  the off-diagonal residual), P2 (the model floor) and P3 (the off-diagonal σ_E ceiling) were
-  accepted 2026-09-06 (decisions 8–10).
+- **Decide P5–P6 of the 2026-09-05 dry-run note** (the declared ρ; the mode-E cost picture) and
+  **P7–P9 of the probe M1 note**, then amend the Ladder by dated note. P1–P4 were accepted
+  2026-09-06 (decisions 8–11); P4 waits for the naphthalene dry run before it enters the deck.
 
 - ~~Round 11~~ — not planned. The review loop was closed on 2026-09-04 after a seam check of the
   Round-10 Pass B patch ([Seam_Check_2026-09-04_Round10B_patch.md](GoalGathering/Seam_Check_2026-09-04_Round10B_patch.md),
