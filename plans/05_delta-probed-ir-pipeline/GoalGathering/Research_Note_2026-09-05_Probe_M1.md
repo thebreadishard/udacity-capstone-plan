@@ -120,6 +120,7 @@ scan is ≈ 2 days and the cc-pVTZ truth line 27 × 755 s ≈ 6 h — both fit t
 - **P7 (definition, no new rule):** the Ladder §3 object bullet gains the words "the transported
   active blocks are semicanonicalised at the displaced geometry (a rotation within the frozen space)".
   Without them the stated object cannot be evaluated by pyscf-forge's solver.
+  **Accepted by the user 2026-09-06 (decision 14); the words are in the Ladder §3 object bullet.**
 - **P8 (energy definition for arm A):** the local-CC energy the pipeline probes is the **composite**
   E_LNO-CCSD(T) + [E_MP2(full) − E_MP2(LNO)], MP2(full) computed canonically at every point. Measured
   effect: the diagonal curvature bias of arm A falls from 5–28 to 0.5–2.6 cm⁻¹ at no cost to

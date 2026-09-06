@@ -279,7 +279,11 @@ item 8 dated amendment; probes README item 1; script prints the P1+P2 reading).
 **Decision 13 (closed 2026-09-06):** P6 accepted — mode E is budgeted at K_off ≈ M(M−1)/2 energies
 where no prior bites and at the symmetry prior's free-element count where it applies; R1 mode E
 without a prior is B3; the size sentence is expected, if at all, through the prior (Budget §3 dated
-note; Ladder §1 amendment). **All six dry-run proposals are decided. Open:** P7–P9 (probe M1 note).
+note; Ladder §1 amendment). **All six dry-run proposals are decided.**
+
+**Decision 14 (closed 2026-09-06):** P7 accepted — the frozen-space object's transported active
+blocks are semicanonicalised at the displaced geometry (a rotation inside the frozen space; the
+words are in the Ladder §3 object bullet). **Open:** P8–P9 (probe M1 note).
 
 ## Dated notes after the freeze
 
@@ -323,9 +327,9 @@ note; Ladder §1 amendment). **All six dry-run proposals are decided. Open:** P7
 
 ## Not yet done (owed, in order)
 
-- **Decide P7–P9 of the probe M1 note**, then amend the Ladder by dated note. P1–P6 of the dry-run
-  note were accepted 2026-09-06 (decisions 8–13); P4 waits for the naphthalene dry run before it
-  enters the deck.
+- **Decide P8–P9 of the probe M1 note**, then amend the Ladder by dated note. P1–P6 of the dry-run
+  note and P7 of the M1 note were accepted 2026-09-06 (decisions 8–14); P4 waits for the naphthalene
+  dry run before it enters the deck.
 
 - ~~Round 11~~ — not planned. The review loop was closed on 2026-09-04 after a seam check of the
   Round-10 Pass B patch ([Seam_Check_2026-09-04_Round10B_patch.md](GoalGathering/Seam_Check_2026-09-04_Round10B_patch.md),

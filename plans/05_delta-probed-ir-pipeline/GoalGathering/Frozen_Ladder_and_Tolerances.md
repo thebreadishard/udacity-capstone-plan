@@ -319,7 +319,11 @@ for fragment probing, before the R3 fragment-vs-whole comparison has printed.
   π localisation on the D₆h rungs is soft, and re-localise-and-assign would mix, not switch); the
   stored virtual-space vectors are likewise **projected onto the new geometry's virtual space and
   Löwdin-orthonormalised**; that projected, orthonormalised pair of sets is "the frozen space",
-  and the correlation energy is evaluated in it. The map is analytic while the overlaps are
+  and the correlation energy is evaluated in it — **with the transported active blocks
+  semicanonicalised at the displaced geometry** (the Fock matrix diagonalised within the occupied-
+  active and within the virtual-active block: a rotation inside the frozen space that leaves the
+  space, and so the object, unchanged; the impurity solvers assume diagonal orbital energies for
+  their MP2 start amplitudes and their (T)) *[words added 2026-09-06, P7, decision 14]*. The map is analytic while the overlaps are
   nonsingular (for |q| ≤ 1 the smallest singular value is 1 − O(q²)); for mode G the projection is
   **inside the differentiated graph** for both halves. **The three arms, written once:** **A** =
   frozen–frozen (the probe object: transported occupied set and transported LNO spaces); **B** =
@@ -350,8 +354,8 @@ for fragment probing, before the R3 fragment-vs-whole comparison has printed.
   energy and 0.5–2.6 cm⁻¹ on the MP2-corrected composite. Two things the object text does not yet
   say and the run needed: the transported active blocks must be **semicanonicalised at x** (a rotation
   within the frozen space; pyscf-forge's impurity solver assumes diagonal orbital energies for its MP2
-  start and its (T) — proposal P7), and the energy the arms report should be the **composite**
-  (proposal P8). Both await the user's decision; until then this bullet stands as written.
+  start and its (T) — proposal P7, **accepted 2026-09-06 as decision 14 and written into the bullet
+  above**), and the energy the arms report should be the **composite** (proposal P8, open).
 - **[05] The structural prior is frequency-banded** (Distilled §3): off-diagonal Δ₂ elements
   between DFT modes closer than w are unpenalised; outside the band they carry the ℓ₁ penalty;
   plus a low-rank term. **w and the weights are fixed from the dry run by a stated rule** (item
