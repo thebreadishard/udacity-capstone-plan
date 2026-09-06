@@ -323,7 +323,15 @@ for fragment probing, before the R3 fragment-vs-whole comparison has printed.
   semicanonicalised at the displaced geometry** (the Fock matrix diagonalised within the occupied-
   active and within the virtual-active block: a rotation inside the frozen space that leaves the
   space, and so the object, unchanged; the impurity solvers assume diagonal orbital energies for
-  their MP2 start amplitudes and their (T)) *[words added 2026-09-06, P7, decision 14]*. The map is analytic while the overlaps are
+  their MP2 start amplitudes and their (T)) *[words added 2026-09-06, P7, decision 14]*. **The
+  correlation energy so evaluated is the composite** E_LNO-CCSD(T) + [E_MP2(full) − E_MP2(LNO)]: the
+  canonical MP2 correlation energy in the full space at that geometry minus the MP2 energy in the
+  same frozen fragment spaces, added to the local CCSD(T) energy — the LNO literature's standard
+  correction for the truncated space; MP2(full) is canonical and adds no roughness. Every arm (A,
+  B, C) reports the composite, and the bare LNO-CCSD(T) energy is kept beside it in the sealed
+  file, never discarded *[words added 2026-09-06, P8, decision 15; measured: the diagonal curvature
+  bias of arm A against canonical CCSD(T) at benzene falls from 5–28 to 0.5–2.6 cm⁻¹ (normal LNO
+  thresholds) and from 0.35–1.9 to 0.03–0.36 cm⁻¹ (tight), σ unchanged at 0.002–0.06 µE_h]*. The map is analytic while the overlaps are
   nonsingular (for |q| ≤ 1 the smallest singular value is 1 − O(q²)); for mode G the projection is
   **inside the differentiated graph** for both halves. **The three arms, written once:** **A** =
   frozen–frozen (the probe object: transported occupied set and transported LNO spaces); **B** =
@@ -355,7 +363,8 @@ for fragment probing, before the R3 fragment-vs-whole comparison has printed.
   say and the run needed: the transported active blocks must be **semicanonicalised at x** (a rotation
   within the frozen space; pyscf-forge's impurity solver assumes diagonal orbital energies for its MP2
   start and its (T) — proposal P7, **accepted 2026-09-06 as decision 14 and written into the bullet
-  above**), and the energy the arms report should be the **composite** (proposal P8, open).
+  above**), and the energy the arms report is the **composite** (proposal P8, **accepted 2026-09-06
+  as decision 15 and written into the bullet above**).
 - **[05] The structural prior is frequency-banded** (Distilled §3): off-diagonal Δ₂ elements
   between DFT modes closer than w are unpenalised; outside the band they carry the ℓ₁ penalty;
   plus a low-rank term. **w and the weights are fixed from the dry run by a stated rule** (item
@@ -532,7 +541,8 @@ for fragment probing, before the R3 fragment-vs-whole comparison has printed.
   beat margin of item 2, all in one energy unit; measured along a C–C stretch, a C–H stretch, a
   CH-oop mode **and one totally symmetric mode** at R1 and at the R2-size family. The **bias
   line**: |Δ₂(frozen) − Δ₂(canonical)| ≤ τ per R0 mode in the same basis and, diagonal-only, per
-  pyrene family mode. The **threshold line**: TightPNO−NormalPNO frequency delta ≤ τ, else CPS
+  pyrene family mode (Δ₂(frozen) from the composite energy of the §3 object, decision 15; arm B
+  compared on the same composite footing). The **threshold line**: TightPNO−NormalPNO frequency delta ≤ τ, else CPS
   extrapolation is mandatory and every probe counts double in the classification rule.
   **Dated amendment 2026-09-06 (P3 of the dry-run note, accepted by the user; measurement behind
   it: dry-run note §2 items 7 and 9).** The mode-E noise line above is the diagonal requirement.

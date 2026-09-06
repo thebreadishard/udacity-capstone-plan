@@ -126,6 +126,8 @@ scan is ≈ 2 days and the cc-pVTZ truth line 27 × 755 s ≈ 6 h — both fit t
   effect: the diagonal curvature bias of arm A falls from 5–28 to 0.5–2.6 cm⁻¹ at no cost to
   smoothness and at seconds (cc-pVDZ) to minutes (cc-pVTZ) per point. The Q6 bias line then judges the
   composite, and Q6's arm B is compared on the same footing.
+  **Accepted by the user 2026-09-06 (decision 15); written into the Ladder §3 object bullet and the
+  bias-line sentence.**
 - **P9 (next measurements, already scheduled or cheap):** (i) ~~tight thresholds at cc-pVDZ~~ — done
   (§2.2b: composite bias 0.03–0.36 cm⁻¹); (ii) the
   three-arm scan and the truth line at cc-pVTZ (≈ 2.5 days); (iii) the off-diagonal bias of arm A is

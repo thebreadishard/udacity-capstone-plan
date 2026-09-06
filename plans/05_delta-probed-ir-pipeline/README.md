@@ -283,7 +283,12 @@ note; Ladder §1 amendment). **All six dry-run proposals are decided.**
 
 **Decision 14 (closed 2026-09-06):** P7 accepted — the frozen-space object's transported active
 blocks are semicanonicalised at the displaced geometry (a rotation inside the frozen space; the
-words are in the Ladder §3 object bullet). **Open:** P8–P9 (probe M1 note).
+words are in the Ladder §3 object bullet).
+
+**Decision 15 (closed 2026-09-06):** P8 accepted — the energy the object evaluates is the composite
+E_LNO-CCSD(T) + [E_MP2(full) − E_MP2(LNO)], every arm on that footing, the bare energy kept sealed
+beside it; the Q6 bias line judges the composite (Ladder §3 object bullet and bias line). **Open:**
+P9 (probe M1 note: cc-pVTZ scan and truth line; off-diagonal bias from the R0 batch).
 
 ## Dated notes after the freeze
 
@@ -327,9 +332,9 @@ words are in the Ladder §3 object bullet). **Open:** P8–P9 (probe M1 note).
 
 ## Not yet done (owed, in order)
 
-- **Decide P8–P9 of the probe M1 note**, then amend the Ladder by dated note. P1–P6 of the dry-run
-  note and P7 of the M1 note were accepted 2026-09-06 (decisions 8–14); P4 waits for the naphthalene
-  dry run before it enters the deck.
+- **Decide P9 of the probe M1 note** (cc-pVTZ scan + truth line ≈ 2.5 days; off-diagonal bias read
+  from the R0 batch). P1–P6 of the dry-run note and P7–P8 of the M1 note were accepted 2026-09-06
+  (decisions 8–15); P4 waits for the naphthalene dry run before it enters the deck.
 
 - ~~Round 11~~ — not planned. The review loop was closed on 2026-09-04 after a seam check of the
   Round-10 Pass B patch ([Seam_Check_2026-09-04_Round10B_patch.md](GoalGathering/Seam_Check_2026-09-04_Round10B_patch.md),
