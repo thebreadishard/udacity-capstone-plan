@@ -418,6 +418,21 @@ checked prior-free at that rung. The student ruled more generally that a rule in
 earlier plan carries no authority of its own — knowledge transfer is allowed wherever a gate shows
 it makes the pipeline succeed.
 
+**What would follow from success (outlook, not a promise).** Plan 05 builds no transferable model,
+for the measured reason above. But it produces the two things such a model would need. It measures
+the *range* of the correction — whether a block of Δ₂ between two atoms is fixed by their local
+environment or by the whole molecule — at the pyrene and coronene rungs, and that measurement
+decides in advance whether a transferable model of Δ₂ can exist at all. And every rung delivers Δ₂
+itself, hundreds of atom-pair blocks per molecule, thousands more from the fragment probing at the
+top of the ladder: training data for a model that would predict the correction from local
+structure, the classical Δ-learning target — a small, smooth difference, not the potential-energy
+surface plan 04 tried to learn. If the range measured at R3 is short, a dated follow-up proposal
+would put such a model through the same licence as the Module-05 prior — checked against the probed
+Δ₂ on a middle rung before it is trusted on a higher one — and a new PAH would then need only its
+DFT steps and a sampled coupled-cluster check instead of the full probe count. If the range is long,
+no such model exists, and the pipeline remains a per-molecule measurement. Either outcome is a
+result; neither is claimed here.
+
 **No promised coupled-cluster anharmonic correction** (§2; the diagonal cubic by-product is
 reported, not applied). **No coupled-cluster correction to intensities** (§7). **No predicted band
 widths** (§7). **No full coupled-cluster surface or global quartic force field.** **No new
@@ -713,6 +728,8 @@ date, and the science continues past it.
    the timed probes, and, at the large-rung stage, serving as or nominating the named expert whose
    pre-registered judgment is the datum where no laboratory truth exists (the "expert-judgment
    datum" of §5.2).
+6. Whether the supervisor sees the outlook of §6 as a reason to widen the corpus of measured
+   molecules beyond the ladder, at cluster cost, once R3 has printed the range of the correction.
 
 ## 14. References
 
