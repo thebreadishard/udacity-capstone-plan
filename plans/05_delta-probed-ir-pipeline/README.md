@@ -1,6 +1,10 @@
 # Plan 05 — Δ-Probed IR Pipeline
 
-**Status: draft, folder created 2026-09-03. Not complete as a plan. Nothing here is a result.**
+**Status: folder created 2026-09-03; plan text frozen 2026-09-04 (changes only by dated notes
+naming a measurement or a decision); not complete as a plan until mapping Pass 6 and the pilot
+note. No rung has run: nothing here is a pipeline result. What has run are probes — the DFT dry
+run, the anchor timings and probe M1 (`probes/`, research notes of 2026-09-05) — whose numbers
+are measurements about the method, not spectra.**
 Supersedes plan 04 (CC-Anchored IR Pipeline). All five plan folders are in the tree
 (decision 2, 2026-09-04): 01–04 are superseded, read-only records; 05 is current.
 

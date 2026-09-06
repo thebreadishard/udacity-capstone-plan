@@ -1,9 +1,14 @@
 # Udacity AI Mastery — Capstone Project Plan
 
-> **This repository is a planning and coordination artifact.** It contains no pipeline results
-> for the current plan: no rung of plan 04 or plan 05 has run. What has run is one **coverage probe**
-> (which laboratory data exists where — a measurement about data availability, committed with
-> its raw evidence). It also contains tooling — probe scripts, a scraper.
+> **This repository is a planning and coordination artifact.** It contains no pipeline results:
+> no rung of plan 04 or plan 05 has run. What has run (state 2026-09-06) are **probes** —
+> measurements about data and about the method, each committed with its raw evidence: plan 04's
+> laboratory-coverage probe; plan 05's DFT dry run (benzene), the anchor timing probes (single
+> points and one canonical CCSD(T) gradient at cc-pVDZ), and **probe M1** (frozen local-CC spaces
+> against a canonical truth line, benzene, four runs at cc-pVDZ; the cc-pVTZ run is in progress).
+> It also contains tooling — probe scripts, a scraper — and a Dutch lay explanation of plan 05.
+> A public lay-level lab notebook in English lives at <https://thebreadishard.github.io/>
+> (separate repository; same evidence rules).
 > Its purpose is to design a coherent research project and distribute it across the Udacity Master in AI
 > capstone sequence (Modules 02–09), so that every module both advances the science *and* satisfies the
 > school's rubric.
@@ -61,7 +66,7 @@ constants, at a probe count measured per rung.
 | **01** | [Voxel-Field-PES](plans/01_voxel-field-pes/) | Superseded 2026-08-23; restored to the tree 2026-09-04 as a read-only record. |
 | **02** | [Coupled-Cluster-Anharmonic-IR](plans/02_coupled-cluster-anharmonic-ir/) | Superseded 2026-08-29; restored 2026-09-04 as a read-only record. |
 | **04** | [CC-Anchored-IR-Pipeline](plans/04_cc-anchored-ir-pipeline/) | Superseded by 05 on 2026-09-03; kept as a read-only record. Draft; Round-6 reviews run and addressed; never executed. |
-| **05** | [Δ-Probed-IR-Pipeline](plans/05_delta-probed-ir-pipeline/) | **Current.** Draft as of 2026-09-03, amended 2026-09-04. Same product and criterion as 04; CC anchor by probing the CC−DFT harmonic force-constant correction. Round 7 (A, B) run and addressed; Rounds 8, 9 and 10 (A, B) run and addressed. |
+| **05** | [Δ-Probed-IR-Pipeline](plans/05_delta-probed-ir-pipeline/) | **Current.** Created 2026-09-03; Rounds 7–10 (A, B) run and addressed; **plan text frozen 2026-09-04** (changes only by dated notes naming a measurement or decision); the nineteen open decisions closed 2026-09-05/06; **probe M1 measured** (frozen spaces smooth to 0.002–0.06 µE_h and, with tight thresholds and the composite energy, biased by 0.03–0.36 cm⁻¹ against canonical CCSD(T) at cc-pVDZ — [research note](plans/05_delta-probed-ir-pipeline/GoalGathering/Research_Note_2026-09-05_Probe_M1.md)); the laboratory sources for module 03 read and recorded 2026-09-06; the [supervisor proposal](plans/05_delta-probed-ir-pipeline/GoalGathering/Project_Proposal_2026-09-06.md) rewritten as one document 2026-09-06 and awaiting her reading. Same product and criterion as 04; CC anchor by probing the CC−DFT harmonic force-constant correction. No rung has run. |
 
 Start at [`plans/README.md`](plans/README.md) for why the earlier plans were dropped and what 05
 inherits.
@@ -103,12 +108,18 @@ CapstonePlan/
 │   ├── 04_cc-anchored-ir-pipeline/        superseded 2026-09-03 — kept, read-only
 │   │   ├── GoalGathering/                 prime directive, frozen lines, Round-6 reviews, proposal
 │   │   └── probes/                        the NIST gas-coverage probe (evidence in-tree)
-│   └── 05_delta-probed-ir-pipeline/       current — draft, created 2026-09-03
-│       ├── GoalGathering/                 goal, research note, ladder, budget, gates, bibliography
-│       └── probes/                        conventions; probes owed (none run yet)
+│   └── 05_delta-probed-ir-pipeline/       current — created 2026-09-03, text frozen 2026-09-04
+│       ├── GoalGathering/                 goal, ladder, budget, gates, bibliography, research notes,
+│       │                                  review rounds 7–10, the supervisor proposal (2026-09-06)
+│       ├── Uitleg/                        Dutch lay explanation, 18 chapters (not binding)
+│       └── probes/                        conventions, the probes owed, and the probes that ran:
+│           ├── results_dryrun/            DFT Δ-recovery dry run (benzene)
+│           ├── results_timing/            anchor single points and the cc-pVDZ canonical gradient
+│           └── results_m1/                probe M1 runs and the sealed canonical truth line
 │
 ├── Rubrics/                               Udacity module rubrics 01–09, treated as fixed
-├── Papers/                                reference PDFs (dump; plan bibliographies are the index)
+├── Papers/                                local only, git-ignored since 2026-09-06 — see Papers_Inventory
+├── Papers_Inventory_2026-09-06.md         why the PDFs left the repository and how the history was rewritten
 ├── AI_Chats/                              planning conversations (primary sources, not a plan)
 │                                          — grok_chat_4.md is plan 04's source conversation
 ├── scraper/                               tooling, and the raw scrapes it produced
@@ -116,8 +127,11 @@ CapstonePlan/
 └── README.md                              ← you are here
 ```
 
-The Udacity rubrics are the constraint. Literature PDFs are a dump, not a second plan. Planning
-conversations predate the splits and belong to no plan folder.
+The Udacity rubrics are the constraint. Literature PDFs are no longer in the repository: 37 of
+them had been committed, were untracked on 2026-09-06 and removed from the history the same day
+(git-filter-repo; record in `Papers_Inventory_2026-09-06.md`); the plan bibliographies hold the
+references and the folder `Papers/` is a local, git-ignored working copy. Planning conversations
+predate the splits and belong to no plan folder.
 
 Plan 03's review record — the Round-5 Pass A cold read (2026-09-01, findings addressed in spec
 the same day), the Round-5 Pass B adversarial domain review (2026-09-01, **findings not

@@ -21,9 +21,11 @@ version control, and plan 02's leftover psi4 run artifacts from disk. They remai
 Plan 02's ten raw `.npz` frequency arrays were never committed, so they were force-added in `57a7910`
 immediately before the deletion — `git show 57a7910:<path>` retrieves one.
 
-None of plans 01–05 has been executed as a plan. Nothing in plans 03, 04 or 05 is a result.
-**Do not call plan 04 or plan 05 complete as a plan.** Plan 05's completeness waits on the
-mapping's Pass 6 and on its first probes.
+None of plans 01–05 has been executed as a plan: no rung has run and there is no pipeline result.
+Plan 05 has **probe results** (measurements about the method — the DFT dry run, the anchor timings,
+probe M1 — dated 2026-09-05/06 in its `probes/` and research notes); these are evidence for or
+against the plan's assumptions, not spectra. **Do not call plan 04 or plan 05 complete as a
+plan.** Plan 05's completeness waits on the mapping's Pass 6 and on the pilot note.
 
 **Plan 04 was the current plan from 2026-09-02 to 2026-09-03** (it replaced plan 03, which was
 **removed from the tree on 2026-09-02**; git history keeps it). **Plan 05 is current** as of
@@ -33,7 +35,7 @@ mapping's Pass 6 and on its first probes.
 |---|---|---|
 | **03** | [Presence-Update-Rule](03_presence-update-rule/) | Superseded by 04. Removed from the tree on 2026-09-02, **restored 2026-09-04** as a read-only record. Draft; never complete as a plan; never executed. |
 | **04** | [CC-Anchored-IR-Pipeline](04_cc-anchored-ir-pipeline/) | Superseded by 05 (2026-09-03); kept as a read-only record (decision 2). Draft; Round-6 Pass A and B run and addressed; never executed. |
-| **05** | [Δ-Probed-IR-Pipeline](05_delta-probed-ir-pipeline/) | **Current.** Draft as of 2026-09-03, amended 2026-09-04. Same product and criterion as 04; CC anchor obtained by probing the CC−DFT harmonic force-constant correction (probe count measured per rung). Round 7 (A, B) and Rounds 8, 9 and 10 (A, B) run and addressed. |
+| **05** | [Δ-Probed-IR-Pipeline](05_delta-probed-ir-pipeline/) | **Current.** Created 2026-09-03; text frozen 2026-09-04 (dated notes only); decisions closed 2026-09-05/06; probe M1 measured at cc-pVDZ; proposal of 2026-09-06 awaiting the supervisor. Same product and criterion as 04; CC anchor obtained by probing the CC−DFT harmonic force-constant correction (probe count measured per rung). Round 7 (A, B) and Rounds 8, 9 and 10 (A, B) run and addressed. |
 
 Historic comparison (the 01, 02 and 03 folders were restored on 2026-09-04: [01](01_voxel-field-pes/), [02](02_coupled-cluster-anharmonic-ir/), [03](03_presence-update-rule/); their documents are read-only records):
 
