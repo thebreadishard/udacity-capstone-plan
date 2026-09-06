@@ -136,3 +136,18 @@ after Round-7 Pass B (issues 2, 4, 7, 8, 9) and verified via Crossref/arXiv.
 
 **Status.** Working bibliography after the 2026-09-03 search pass and the same-day Crossref
 upgrade. Not a claim that plan 05 is complete.
+
+## Novelty search 2026-09-06 (author, web search; recorded so the proposal's "what is new" table is a measurement, not an assertion)
+
+Eight queries, each read from the result list and, where open, the abstract or full text:
+
+1. "coupled cluster correction to DFT Hessian normal mode displacements off-diagonal force constants sparse recovery 2025 2026" — nearest: Sanders et al. 2015 (bib 24); CMA-2 (bib 43); a 2025 JCTC paper on coupling force constants of metal carbonyls (compliance matrices from full Hessians, DFT benchmarked against CCSD(T); no correction of one level by another — read on PMC).
+2. "concordant mode approach CCSD(T) 2025 OR 2026 new paper off-diagonal aromatic" — new: Lahm/Allen/Schaefer group, J. Phys. Chem. A 130, 3249 (2026): CMA extended to 17 intermolecular complexes with MP2 normal modes and CCSD(T)/aug-cc-pVTZ targets (abstract via search snippet; paywalled). No multi-mode probing, no symmetry blocking, no local CC.
+3. "delta-learning Hessian force constants coupled cluster minus DFT machine learning transferable correction vibrational frequencies" — nearest: Δ-ML of DFT-based potentials to CCSD(T) (Bowman group, JCTC 20, 8807 (2024); ethanol); ML Hessians for metastable structures (arXiv 1803.09827); transfer learning to CCSD(T) anharmonic frequencies (Käser & Meuwly, bib). All learn a surface or a Hessian per system or class; none probes a difference Hessian.
+4. "frozen PNO OR LNO domains numerical Hessian displaced geometries local coupled cluster discontinuities" — nearest: Madriaga & Crawford 2025 (bib 30, the problem); Psi4 DLPNO manual (no domain freezing); ORCA fixed domains for DLPNO-MP2 (bib 29). Nothing on transported, semicanonicalised frozen fragment spaces measured against canonical CC.
+5. "Hessian reconstruction symmetry irreducible representations block sparse recovery vibrational normal modes compressed sensing point group" — nearest: Sanders 2015; symmetry-adapted finite-difference Hessians in AMS (irreps chosen by IR/Raman activity — a full-Hessian shortcut, not a recovery prior).
+6. "local coupled cluster harmonic frequencies polycyclic aromatic hydrocarbons CCSD(T) corrected DFT anharmonic infrared 2025 2026" — nearest: Ethereal AI (bib 7); anharmonic PAH spectroscopy reviews; no local-CC harmonic corrections for PAHs found.
+7. "Concordant Mode Approach intermolecular benchmarks 2026" — confirms item 2.
+8. "normal mode displacements high-level correction low-level Hessian difference CCSD(T) DFT ... multi-mode displacements energies only" — nearest: normal-mode sampling for ML training sets; iGVPT2; Δ-ML as in 3.
+
+**Result.** Every ingredient exists in print; the combination — a symmetry-blocked recovery of the CC−DFT difference Hessian from multi-mode energy patterns, computed in frozen local-correlation spaces transported across geometries, with the probe count and the locality measured per size — was not found. Re-run before the Module-08 paper is written; the 2026 CMA paper is added to the reading list (not yet fetched: paywalled).

@@ -139,6 +139,22 @@ off-diagonal block recovered from multi-mode patterns by a **symmetry-blocked** 
 computed references; and the locality of the correction, and the number of off-diagonal probes it
 needs, measured as a function of size.
 
+**What is new, and what is not — stated plainly.** A literature search on 6 September 2026 (eight
+queries; recorded in the working bibliography) found each ingredient of the plan in print and no
+work that combines them:
+
+| Ingredient | Nearest published work | What plan 05 does differently |
+|---|---|---|
+| coupled-cluster force constants along DFT normal modes from energies; selected off-diagonals | Concordant Mode Approach (Lahm et al. 2022; Kitzmiller et al. 2024; extended to intermolecular complexes in 2026) | the target is the *difference* Δ₂, not the CC force constants; the off-diagonal block is recovered as a whole from multi-mode patterns, not element by element; local rather than canonical coupled cluster, at PAH sizes |
+| recovering a Hessian from few measurements by exploiting its structure | compressed sensing in a cheap method's eigenbasis (Sanders et al. 2015); O1NumHess (Wang et al. 2025) | applied to a difference Hessian rather than a full one; the prior is the molecule's symmetry, parameter-free, instead of generic sparsity; the probe count is a measured, pre-registered quantity |
+| correcting DFT towards CCSD(T) by learning the difference | Δ-machine learning of potential-energy surfaces (e.g. Bowman and co-workers, 2024; transfer learning to CCSD(T), Käser & Meuwly 2021) | nothing is learned per molecule; the difference is measured; a learned model is a possible follow-up gated by the measured range (§6) |
+| local-correlation spaces held fixed for numerical derivatives | fixed domains for DLPNO-MP2 numerical derivatives (ORCA); the discontinuity problem itself (Madriaga & Crawford 2025) | frozen LNO-CCSD(T) fragment spaces transported by projection across displaced geometries, semicanonicalised, with the smoothness and bias measured against canonical CCSD(T) — no publication found that does this or measures it |
+| scaled or ML-corrected harmonic DFT for PAH spectra | PAHdb (Ricca et al. 2026); Ethereal AI (Bos et al. 2025) | these are the opponents; the plan adds a measured coupled-cluster correction and an error budget per band |
+
+The claim of novelty is therefore the combination and its measurement discipline, not any single
+ingredient; the plan's own name for the object is "a symmetry-blocked recovery of a difference
+Hessian with a frozen local-CC anchor".
+
 ### 3.2 The prior: symmetry, not a frequency band
 
 The plan's first draft regularised the recovery with a frequency band: couplings between modes
