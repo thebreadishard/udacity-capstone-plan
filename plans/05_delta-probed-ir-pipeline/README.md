@@ -52,7 +52,7 @@ before anything else.
     structures of modules 04–08 and a checklist for mapping Pass 6 (not binding; the Ladder wins)
 11. [GoalGathering/Capstone_Mapping.md](GoalGathering/Capstone_Mapping.md) — modules 02–09
     against Rubrics v1.5.1; Pass 6 (sign-off) not done
-12. [GoalGathering/Project_Proposal_2026-09-03.md](GoalGathering/Project_Proposal_2026-09-03.md)
+12. [GoalGathering/Project_Proposal_2026-09-06.md](GoalGathering/Project_Proposal_2026-09-06.md) — rewritten as one document on 6 September 2026 (measurements and decisions 8–19 integrated); the 3–4 September text, which the review records cite as `Project_Proposal_2026-09-03.md`, is in the git history
     — the supervisor proposal: the *why* of the major decisions, the review status, and what
     was decided by whom
 13. [GoalGathering/Side_Project_2026-09-04_ModeG_Gradients.md](GoalGathering/Side_Project_2026-09-04_ModeG_Gradients.md)
