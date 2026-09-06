@@ -396,8 +396,11 @@ for fragment probing, before the R3 fragment-vs-whole comparison has printed.
   remain only for rungs whose point group leaves the same-representation block too large to
   determine at K_cap (printed per rung: number of free elements against the deck's off-diagonal
   count). Parameter-free where it applies: no w, no λ from the dry run. The representation of each
-  DFT mode is read from the DFT code's symmetry labels (degenerate pairs share one label); a mode
-  the code cannot label is treated as coupling to all — never guessed. **Condition:** the symmetry
+  DFT mode is determined by the deck's own symmetry analysis in the molecule's **full** point group
+  (DFT codes run in Abelian subgroups — benzene in D₂h — and their labels would leave many
+  symmetry-forbidden couplings free; reading of Esposito et al. 2024 and of the 2026 CMA paper,
+  2026-09-06); degenerate pairs share one representation; a mode the analysis cannot assign is
+  treated as coupling to all — never guessed. **Condition:** the symmetry
   prior enters the Q0 deck only after the **naphthalene dry run** (D₂h, eight representations, no
   degeneracy) reproduces the direct DFT−DFT Δ₂ within τ₇ on every family with it, the same
   criterion the w rule used; until that test has printed, the banded prior above stands as the
@@ -405,7 +408,7 @@ for fragment probing, before the R3 fragment-vs-whole comparison has printed.
   as "a symmetry-blocked recovery of a **difference** Hessian with a frozen local-CC anchor".
   **Dated note 2026-09-06 (decision 19, user) — silent-only coupling blocks, measured per rung.**
   Modes that are IR-inactive **by symmetry** (their representation carries no dipole component; the
-  label from the DFT code, never a numeric intensity threshold) couple to IR-active modes only
+  representation from the deck's full-point-group analysis, never a numeric intensity threshold) couple to IR-active modes only
   within their own representation, and their fundamentals reach the spectrum only through
   anharmonic resonances. Per rung the deck therefore **prints** the number of same-representation
   pairs made of inactive modes only, and the rung's DFT dry run runs the recovery **with and without

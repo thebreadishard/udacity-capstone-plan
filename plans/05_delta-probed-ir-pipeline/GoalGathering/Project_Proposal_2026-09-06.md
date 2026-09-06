@@ -145,7 +145,7 @@ work that combines them:
 
 | Ingredient | Nearest published work | What plan 05 does differently |
 |---|---|---|
-| coupled-cluster force constants along DFT normal modes from energies; selected off-diagonals | Concordant Mode Approach (Lahm et al. 2022; Kitzmiller et al. 2024; extended to intermolecular complexes in 2026) | the target is the *difference* Δ₂, not the CC force constants; the off-diagonal block is recovered as a whole from multi-mode patterns, not element by element; local rather than canonical coupled cluster, at PAH sizes |
+| coupled-cluster force constants along DFT normal modes from energies; selected off-diagonals; symmetry-forbidden couplings zeroed in the full matrix | Concordant Mode Approach (Lahm et al. 2022; Kitzmiller et al. 2024; Olive Dornshuld et al. 2026, read in full: 17 intermolecular complexes, MP2/haTZ modes, CMA-2A converges with 3 % of the off-diagonals; its persistent benzene outlier is one same-representation ring-deformation coupling, the same phenomenon our rehearsal found) | the target is the *difference* Δ₂, not the CC force constants; the off-diagonal block is recovered as a whole from multi-mode patterns, not element by element; symmetry used as the recovery prior rather than as a clean-up; local rather than canonical coupled cluster, at PAH sizes |
 | recovering a Hessian from few measurements by exploiting its structure | compressed sensing in a cheap method's eigenbasis (Sanders et al. 2015); O1NumHess (Wang et al. 2025) | applied to a difference Hessian rather than a full one; the prior is the molecule's symmetry, parameter-free, instead of generic sparsity; the probe count is a measured, pre-registered quantity |
 | correcting DFT towards CCSD(T) by learning the difference | Δ-machine learning of potential-energy surfaces (e.g. Bowman and co-workers, 2024; transfer learning to CCSD(T), Käser & Meuwly 2021) | nothing is learned per molecule; the difference is measured; a learned model is a possible follow-up gated by the measured range (§6) |
 | local-correlation spaces held fixed for numerical derivatives | fixed domains for DLPNO-MP2 numerical derivatives (ORCA); the discontinuity problem itself (Madriaga & Crawford 2025) | frozen LNO-CCSD(T) fragment spaces transported by projection across displaced geometries, semicanonicalised, with the smoothness and bias measured against canonical CCSD(T) — no publication found that does this or measures it |
@@ -179,8 +179,13 @@ without a prior the off-diagonal block costs about M(M−1)/2 energies for M mod
 rehearsal needed 388 off-diagonal energies for 435 unknowns (§8), so sparsity as such saved
 nothing — and with the symmetry prior naphthalene has **141** same-representation couplings
 instead of 1,128 (from the textbook D₂h assignment of its 48 modes, 9a_g + 3b_1g + 4b_2g + 8b_3g +
-4a_u + 8b_1u + 8b_2u + 4b_3u; the deck prints the count from the DFT program's own symmetry
-labels). The arithmetic, at benzene's measured per-energy time of 35 minutes in the anchor basis
+4a_u + 8b_1u + 8b_2u + 4b_3u). The representation of each mode is determined by the deck's own
+symmetry analysis in the molecule's **full** point group: DFT programs run in Abelian subgroups
+(benzene in D₂h, where its degenerate modes split artificially — Esposito et al. 2024 note the
+same), and their labels would leave far more couplings free than symmetry does. Zeroing
+symmetry-forbidden couplings is itself standard practice — the Concordant Mode Approach does it
+as a clean-up of its full high-level matrix — what is new here is using it as the prior of a
+recovery from few measurements. The arithmetic, at benzene's measured per-energy time of 35 minutes in the anchor basis
 (naphthalene's will be longer and is measured before the note): 48 modes × 4 diagonal energies
 plus about 0.9 energies per allowed coupling plus the held-out fraction is of order 350–400
 energies, i.e. 200–250 hours — a few weeks of unattended laptop time, classified by the 168-hour
@@ -303,7 +308,10 @@ sense: a fragment-probed spectrum, or the measured reason none could be produced
    families and every mode the resonance search couples to them. **The production DFT level
    (functional, dispersion correction, basis set, integration grid) is a pre-registered constant
    that is not yet chosen**: it is fixed, from the opponents' levels and the anharmonic
-   literature, before the naphthalene rehearsal runs, so that the rehearsal constants the stopping
+   literature (the PAHdb-anharmonic standard is B3LYP/N07D with a 200 × 974 integration grid,
+   Esposito et al. 2024; the CMA studies find basis quality to matter more than correlation level
+   for the normal-mode basis; aug-cc-pVTZ is excluded for benzene-type rings by a documented
+   linear-dependence artefact), before the naphthalene rehearsal runs, so that the rehearsal constants the stopping
    rule uses (§3.4) and the noise-injected column of the pilot note are read at the production
    level; the benzene rehearsal so far used B3LYP/6-31G* against BHHLYP/6-31G*, and the Module-05
    corpus uses B3LYP. The choice is recorded in the pilot note with its reasons.
@@ -322,7 +330,10 @@ sense: a fragment-probed spectrum, or the measured reason none could be produced
    19). (Each mode's diagonal costs four energies: a ± pair at each of two amplitudes, §3.4.)
 3. **Spectra** by second-order vibrational perturbation theory with explicit resonance
    treatment (GVPT2; the implementation is pinned in the pilot note as a pre-registered constant,
-   with named resonance thresholds and a polyad cap, on the DFT anharmonic
+   with named resonance thresholds and a polyad cap; from the pyrene-size rung upward the
+   anharmonic constants are built in reduced dimensionality — Hessians differentiated only along
+   the scored modes and the partners a dimensionless coupling indicator and the Darling–Dennison
+   test select, after Fusè et al. 2024, whose thresholds are pilot-note candidates — on the DFT anharmonic
    constants and the Δ₂-corrected harmonic part, plus a first-order geometry term: the corrected
    surface's own minimum shifts slightly from the DFT one, and that shift is applied and printed
    on every scored band); **no scale factor** on anharmonic output. Every spectrum carries
@@ -520,7 +531,8 @@ the pilot note: a noise line, a bias line against the canonical reference (judge
 energy of §3.3), and a threshold-sensitivity line — the frequency change between the program's
 tight and default truncation thresholds — that, if breached, makes extrapolation in the LNO
 truncation thresholds (the analogue, for this program, of the complete-PNO-space extrapolation of
-Altun et al. 2021) mandatory at double cost. The probing licence and the locality
+Altun et al. 2021, who measured the local error on acenes growing linearly with ring count and
+reduced it four- to five-fold by extrapolation) mandatory at double cost. The probing licence and the locality
 test have their own tolerances, all bounded by the smallest beat margin.
 
 **Leakage control.** Laboratory values never enter training, validation, stopping, sampling or
@@ -681,11 +693,10 @@ own; knowledge transfer is allowed wherever a gate shows it makes the pipeline s
    family, the anthracene probe, and a pre-registered per-family losing condition that withdraws
    the reach story for exactly those families.
 4. **The coupled-cluster harmonic correction does not beat calibrated harmonics.** The opponents'
-   fitted scale factors already absorb the mean of a harmonic difference that a second paper by
-   Esposito, Fortenberry, Boersma and Allamandola — on benzene's C–H overtone spectrum, not the
-   naphthalene paper of §2 — puts near 5 cm⁻¹ for CCSD(T)-F12b against B3LYP harmonics (from its
-   abstract; full text not yet read; listed in the working bibliography); what remains to buy is
-   the per-family scatter. Response: the expected-effect line is
+   fitted scale factors already absorb the mean of a harmonic difference that Esposito et al. 2024
+   (§14) measured for benzene: B3LYP/N07D against CCSD(T)-F12b/cc-pVTZ-F12 harmonic frequencies,
+   mean absolute difference 5.45 cm⁻¹ (their Table S1; benzene only, read in full 6 September);
+   what remains to buy is the per-family scatter. Response: the expected-effect line is
    written into the pilot note before any result, and losing is publishable.
 5. **Laboratory decidability.** The per-family rule pre-declares undecidable families
    inconclusive. The pyrene-size rung's C–C families are in that class on every source the search
@@ -771,7 +782,12 @@ marked otherwise; author initials are given only where the working bibliography 
   Technol. 104, 59. DOI 10.6028/jres.104.004. (The NIST Quantitative Infrared Database; Crossref
   record; read by the scoreboard module before any uncertainty is printed.)
 - Esposito, V. J., Fortenberry, R. C., Boersma, C., Allamandola, L. J. 2024, J. Chem. Phys. 160,
-  211101. DOI 10.1063/5.0208597. (CCSD(T)-F12b harmonics with a DFT QFF on naphthalene.)
+  211101. DOI 10.1063/5.0208597. (C–H overtone spectra of benzene and naphthalene; the
+  PAHdb-anharmonic protocol; B3LYP/N07D vs CCSD(T)-F12b benzene harmonics, MAD 5.45 cm⁻¹.)
+- Fusè, M., Mazzeo, G., Longhi, G., Abbate, S., Yang, Q., Bloino, J. 2024, Spectrochim. Acta A
+  311, 123969. DOI 10.1016/j.saa.2024.123969. (Reduced-dimensionality VPT2 for large molecules.)
+- Olive Dornshuld, L. N., Lahm, M. E., Kitzmiller, N. L., Allen, W. D., Schaefer, H. F. 2026,
+  J. Phys. Chem. A 130, 3249. DOI 10.1021/acs.jpca.6c00689. (CMA for intermolecular vibrations.)
 - Joblin, Boissel, Léger, d'Hendecourt & Défourneau 1995, Astron. Astrophys.
   299, 835. (PAH band shifts with temperature; reference known, not yet opened.)
 - Kitzmiller, N. L., Lahm, M. E., Olive Dornshuld, L. N., Jin, J., Allen, W. D., Schaefer, H. F.
