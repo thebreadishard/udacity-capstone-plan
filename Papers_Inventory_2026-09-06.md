@@ -55,3 +55,15 @@ would be updated from the commit map the tool writes); anyone holding a clone mu
 until its support is asked to run garbage collection, so a request to GitHub support is part of the
 step. Cost: about an hour, once. Alternative without rewrite: none that removes the files from the
 public history.
+
+## Step 2 — done on 6 September 2026
+
+History rewritten with `git filter-repo --invert-paths --path-glob '*.pdf' --path-glob '*/Papers/*' --path Papers/`
+(two passes: the files had also lived under `GoalGathering/Papers/` in earlier commits), then a forced
+push of `master`. Result: no PDF in any commit (`git rev-list --objects --all | grep -i '\.pdf$'` is
+empty); pack size 89.5 → 10.2 MB. Every commit hash after 25 August 2026 changed; the three hashes
+the documents cited were updated from the commit subjects (21d937a → see M1 note; 4872efb → see M1
+note; 800f3aa → see plan-02 history note). A full pre-rewrite bundle is kept outside the repository
+(`../CapstonePlan_backup/pre-filter-2026-09-06.bundle`). Still to do: ask GitHub support to run
+garbage collection so that the old commits stop resolving by hash; until then the old objects may
+remain fetchable by anyone who already knows a hash.

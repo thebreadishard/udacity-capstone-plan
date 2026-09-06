@@ -44,8 +44,8 @@
 The project was planned five times. Plans 01 (voxel field PES) and 02 (coupled-cluster anharmonic IR)
 were **removed from the tree on 2026-09-01** — documents from version control, and plan 02's leftover run
 artifacts from disk. They remain in git history. Plan 02's raw frequency arrays (ten `.npz` Hessians and
-geometries, ~10 h of psi4) had never been committed, so they were force-added in `800f3aa` before the
-deletion; retrieve one with `git show 800f3aa:<path>`. Plan 03 (presence-update rule) is superseded and
+geometries, ~10 h of psi4) had never been committed, so they were force-added in `57a7910` before the
+deletion; retrieve one with `git show 57a7910:<path>`. Plan 03 (presence-update rule) is superseded and
 was **removed from the tree on 2026-09-02**; git history keeps it.
 
 Plan **05 is the current plan** (created 2026-09-03). It keeps plan 04's product and criterion —

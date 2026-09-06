@@ -4,7 +4,7 @@
 Do **not** treat this as the destination of new work, and do not edit this folder in place to become
 04. Supersedes plan 02 (Coupled-Cluster Anharmonic IR). Plans 01 and 02 were **removed from the tree** on
 2026-09-01 — documents and, for plan 02, its leftover psi4 run artifacts. They remain in git history;
-plan 02's raw `.npz` frequency arrays were force-added in `800f3aa` first.
+plan 02's raw `.npz` frequency arrays were force-added in `57a7910` first.
 
 Contradiction pass 2026-09-01 and the Round-5 Pass A pass are recorded in
 [GoalGathering/Frozen_Ladder_and_Tolerances.md](GoalGathering/Frozen_Ladder_and_Tolerances.md).

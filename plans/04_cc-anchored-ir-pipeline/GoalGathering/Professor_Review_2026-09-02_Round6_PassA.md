@@ -211,7 +211,7 @@ under-described in the dump that is supposed to be the primary source.
 **Where:** plan 04 README Provenance (DLPNO on first use); Overarching method skeleton (DLPNO,
 VPT2); bib item 15 (TightPNO); Frozen_Lines §5–§6 and Mapping M03 (uids, NIST parser).
 **What:** DLPNO, VPT2, and PNO are never expanded in this tree. Frozen_Lines does name
-`pahdb_experimental_2026-08-28.py` and commit `800f3aa` — that is checkable. Mapping M03 only
+`pahdb_experimental_2026-08-28.py` and commit `57a7910` — that is checkable. Mapping M03 only
 says “parser exists in plan-02 probes, git history” with no filename. Distilled §3 still says
 canonical is “measured, plan 02” without a probe path in *this* folder (probes/README: no
 probes exist yet).
@@ -277,7 +277,7 @@ against NIST without the chat’s bind.
   “record”; Mackie/Esposito NOT FETCHED. Frozen_Lines table “Verified how” matches those marks
   except for the C₃₈₄H₄₈ assertion (issue 6).
 - **Plan-02 measured floor** (quartet mean |err| 7.1 cm⁻¹, solo −36, duo −49) is labelled
-  plan-02 / git `800f3aa` / script name, not a plan-04 probe. That is the right provenance
+  plan-02 / git `57a7910` / script name, not a plan-04 probe. That is the right provenance
   label; probes/README correctly says the scoreboard must be regenerated under this plan’s hash.
 - **Rule 0 (load-bearing modules)** is stated; the Pass-2 needs table is a pipeline, not a
   QM9-style detour. Mapping does not invent a busywork module in this draft. Pass 6 is honestly

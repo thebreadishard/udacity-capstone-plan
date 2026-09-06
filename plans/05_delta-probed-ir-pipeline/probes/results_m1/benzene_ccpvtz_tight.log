@@ -1,0 +1,33 @@
+=== cc-pVTZ tight scan started Sun Sep  6 07:31:12 CEST 2026; expected end of the 27 points ~ Tue 2026-09-08 midday, truth line ~ 6 h after ===
+[07:31:13] M1: benzene cc-pvtz, thresholds [1e-06, 1e-07], modes [12, 18, 6] (1020 cm⁻¹ CH-ip-bend, 1357 cm⁻¹ CC-stretch, 865 cm⁻¹ CH-oop), 9 points, 8 threads
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[08:11:00] reference: arm C 2387 s; 15 fragments; sizes [(15, 172), (15, 172), (15, 172), (15, 152), (15, 172)]…; frozen-space hash f1a1fef203598a96
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[08:47:00] stage 0 round trip: E_A(0) − E_C(0) = 0.0001 µE_h (target |·| ≤ 1e-3 µE_h = 1e-9 E_h); arm A 2160 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[10:36:56] mode 12 q=-1.00: s_min occ 0.9906 vir 0.7134; pre-Löwdin off-diag occ 7.28e-03 vir 1.61e-01; A−B +4.57 A−C -4.59 µE_h (LNO-MP2 piece A−C +3.0); PM fresh 7.0103 transported 7.003; match 0.836; 6596 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[12:34:29] mode 12 q=-0.75: s_min occ 0.9930 vir 0.7735; pre-Löwdin off-diag occ 5.50e-03 vir 1.19e-01; A−B +8.18 A−C -8.45 µE_h (LNO-MP2 piece A−C +0.1); PM fresh 7.0077 transported 7.0023; match 0.837; 7053 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+

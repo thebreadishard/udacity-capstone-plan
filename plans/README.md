@@ -18,8 +18,8 @@
 This project has been planned five times (01–05). Folders for plans 01 (voxel field PES) and 02
 (coupled-cluster anharmonic IR) were **removed from the tree on 2026-09-01**: the documents from
 version control, and plan 02's leftover psi4 run artifacts from disk. They remain in git history.
-Plan 02's ten raw `.npz` frequency arrays were never committed, so they were force-added in `800f3aa`
-immediately before the deletion — `git show 800f3aa:<path>` retrieves one.
+Plan 02's ten raw `.npz` frequency arrays were never committed, so they were force-added in `57a7910`
+immediately before the deletion — `git show 57a7910:<path>` retrieves one.
 
 None of plans 01–05 has been executed as a plan. Nothing in plans 03, 04 or 05 is a result.
 **Do not call plan 04 or plan 05 complete as a plan.** Plan 05's completeness waits on the

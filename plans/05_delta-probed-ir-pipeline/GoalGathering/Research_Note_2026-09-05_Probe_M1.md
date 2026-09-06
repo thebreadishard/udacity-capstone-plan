@@ -154,5 +154,5 @@ The candidate code can freeze spaces (stop 1 is not triggered). No Δ₂ number 
 note or its result files; the canonical truth line is sealed alongside the arm energies.
 
 Printed by `probes/m1_frozen_spaces.py` (REPORT.md per run) and `probes/m1_canonical_truth.py`
-(CANONICAL_COMPARISON.md and its `_composite` twin per run). Commits: 21d937a (smoke test), 4872efb
+(CANONICAL_COMPARISON.md and its `_composite` twin per run). Commits: b1e97a6 (smoke test), 5c0f6ea
 (first run, truth line, resume, semicanonicalisation), this note's commit (rerun).

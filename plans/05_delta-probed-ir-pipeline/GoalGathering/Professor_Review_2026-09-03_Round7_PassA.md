@@ -497,7 +497,7 @@ holds for the margin; the tolerance is new and is bounded by a number chosen at 
   allocation, or a dated spend cap"; Ladder stop 3. Consistent with each other.
 - **Frozen_Lines is carried in substance.** The diff against plan 04's file shows: the same
   opponents, versions, DOIs, scale factors (0.964 / 0.979 / 0.975, one place), scoreboards,
-  measured floor (7.1 / −36 / −49 / 60.2 cm⁻¹, labelled plan-02 / `800f3aa` / script), and six
+  measured floor (7.1 / −36 / −49 / 60.2 cm⁻¹, labelled plan-02 / `57a7910` / script), and six
   debts; the edits are provenance (Mulas arXiv re-verified by the Round-6 Pass B reviewer; the
   NIST coverage probe result; "the only predictions **found**" replacing "on Earth"; the 2026-09-03
   search recorded as "a search result, not a fact"). The Bos MAE stays unquoted (Round 6 issue 9

@@ -60,7 +60,7 @@ sentence is repeated in five files, so it is *load-bearing* for the "draft, noth
 **Status:** closed 2026-09-01, by the *first* branch, after the disposition below was written. The
 leftovers were deleted rather than described: `plans/02_coupled-cluster-anharmonic-ir/` no longer exists.
 Before deleting, the ten raw `.npz` frequency arrays (361 KB, ~10 h of psi4, never committed because
-`.gitignore` excluded them) were force-added in `800f3aa`, so “they remain in git history” is now true of
+`.gitignore` excluded them) were force-added in `57a7910`, so “they remain in git history” is now true of
 **everything** the sentence covers — which is what made the sentence safe to restore. The ~66 MB of psi4
 logs and scratch were not preserved: reproducible noise, not results.
 

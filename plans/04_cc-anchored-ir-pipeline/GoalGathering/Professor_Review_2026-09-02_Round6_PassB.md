@@ -45,7 +45,7 @@ Overarching “What is scored”; Distilled §7 P2 and §9 steps 2–4.
 **What:** Promised accuracy rungs R2 (pyrene/tetracene/chrysene) and R3 (coronene) are typed
 **A** and scored against PAHdb experimental v3.10 (Ar matrix, ~5–15 K). The plan’s own
 measured floor is scaled-harmonic quartet mean |error| **7.1 cm⁻¹** vs that same Ar matrix
-(commit `800f3aa`), with working matrix tolerance **15 cm⁻¹** until Module 03 measures a
+(commit `57a7910`), with working matrix tolerance **15 cm⁻¹** until Module 03 measures a
 binding value. Anharmonic corrections of a few cm⁻¹ cannot beat a 7 cm⁻¹ floor inside a
 15 cm⁻¹ systematic and still be a verdict. Inconclusive is allowed in Ladder §3; it is **not**
 what Distilled §9.4 promises (“P2 at R2–R3 → …and it holds where PAHdb’s anharmonic front

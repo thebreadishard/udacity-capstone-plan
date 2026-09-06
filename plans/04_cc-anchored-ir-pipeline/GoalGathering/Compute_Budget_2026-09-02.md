@@ -76,7 +76,7 @@ Provenance for expectations only; every number is re-measured on the new machine
 - Full plan-02 batch machinery (queue runner, detached execution, STATUS files) exists in git
   history and is the starting point for the pipeline's job control.
 
-Provenance pointers: raw plan-02 `.npz` arrays are preserved in commit `800f3aa`; the timing
+Provenance pointers: raw plan-02 `.npz` arrays are preserved in commit `57a7910`; the timing
 and band-read scripts are plan-02 `probes/` files in git history (e.g.
 `pahdb_experimental_2026-08-28.py`, `verify_oop_bands_2026-08-27.py`).
 

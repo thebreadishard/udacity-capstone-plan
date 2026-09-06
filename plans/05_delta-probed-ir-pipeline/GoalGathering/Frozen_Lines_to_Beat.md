@@ -99,7 +99,7 @@ protocol is pre-registered per rung in the pilot note, not chosen after the numb
 
 ## 6. The measured floor under the lines (plan-02 probes, 2026-08)
 
-Recomputable from git history (raw `.npz` preserved in commit `800f3aa`; band-read script
+Recomputable from git history (raw `.npz` preserved in commit `57a7910`; band-read script
 `pahdb_experimental_2026-08-28.py`): scaled harmonic B3LYP/6-31G* with a benzene-only scale
 factor vs Ar-matrix lab values — quartet CH-oop band mean |error| **7.1 cm⁻¹** (worst
 15.6 cm⁻¹), solo **−36**, duo **−49 cm⁻¹**; lab quartet spread across five 2–4-ring species
