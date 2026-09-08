@@ -354,7 +354,16 @@ result decides is written in the note.
 al. 2009, item 53: sixteen naphthalene bands at 0.005 cm⁻¹ with the hot bands resolved away) is
 scored with u_T = 0 plus a 0.5 cm⁻¹ head-to-origin term (labelled upper bound from the paper's
 figures); other room-temperature sources keep the floor (Ladder dated note 2026-09-08; probes README
-2a). **No decision is open.**
+2a). **Open since the proposal cold read of 2026-09-08** ([Cold_Read_2026-09-08_Proposal.md](GoalGathering/Cold_Read_2026-09-08_Proposal.md)):
+**P12** the anchor's basis-set error in the error budget (finding 4); **P13** R1's energy route as
+B3 work or as a dated multi-week laptop job (finding 6) — **deferred by the user on 2026-09-08 until
+one naphthalene LNO-CCSD(T)/cc-pVTZ energy has been timed** (planned 2026-09-09, after the xtight
+run; needs a quick DFT geometry first, the naphthalene dry run not having run); **P14** the benzene
+rehearsal rerun under the symmetry prior (finding 15); **P15** a null on symmetry-forbidden
+couplings of the frozen-space object (finding 16); **P16** the jet-cooled coronene bands as the
+primary cold truth (finding 27); **P17** the R2 3 µm column not promised until its scoring rule
+exists (finding 21); and the calendar (finding 25). The other findings are addressed in spec once
+the user has decided these.
 
 ## Dated notes after the freeze
 
