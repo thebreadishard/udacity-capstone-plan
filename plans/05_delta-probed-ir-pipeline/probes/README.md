@@ -118,9 +118,11 @@ single-mode scatter with sealed fit coefficients, and timings; no local-CC Δ₂
    resolution term and "cold" as the class — else hot; u_296 **per family from item 52's Eqs. (4)–(6) and Table 1** (Ladder dated note
    2026-09-06; the recalled 1 / 3 / 5 cm⁻¹ are retired), χ_F per family from the same table with
    0.044 cm⁻¹ K⁻¹ as the floor for unmeasured families, T_source for the PNNL naphthalene record
-   from its header (item 57 states 25 °C and 50 °C in different places), the R3 cold column's
-   resolution term as the larger of the FEL bandwidth and the measured cold–hot disagreement
-   (10–19 cm⁻¹ at 7.7 and 8.8 µm), and the R0 intensity rows flagged non-certified inside
+   from its header (item 57 states 25 °C and 50 °C in different places), the R3 cold column as the
+   **primary** cold column with the FEL bandwidth as its resolution term, the hot-extrapolated
+   position (item 64 + item 52's slope) as a second labelled column, the cold–hot disagreement
+   (10–19 cm⁻¹ at 7.7 and 8.8 µm) printed beside both, and "inconclusive" only on opposite verdicts
+   (decision 24), and the R0 intensity rows flagged non-certified inside
    1325–1900 cm⁻¹ (item 56); **added 2026-09-08 from the supervisor's PDFs:** the PNNL naphthalene
    record's temperature from its own metadata PDF (item 59: 5 / 25 / 50 °C offered), the PNNL
    wavenumber term 0.0018 cm⁻¹, the ≤ 1 % uncorrected-emission caveat below 1100 cm⁻¹ on intensity

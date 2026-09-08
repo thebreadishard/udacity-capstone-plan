@@ -390,8 +390,11 @@ benzene excludes the C–C band near 1480 cm⁻¹;
 the hot-band slopes of Joblin et al. 1995 replace the earlier recalled floor (the largest
 measured 6–15 µm slope is 0.044 cm⁻¹ K⁻¹, coronene's 6.2 µm band), and their model gives the
 room-temperature term per family; and the jet-cooled coronene bands at 7.7 and 8.8 µm lie
-10–19 cm⁻¹ from where the hot spectra and the slopes put a cold band, so those two cold families
-are inconclusive by measurement, not by expectation.
+10–19 cm⁻¹ from where the hot spectra of Joblin et al. 1994 and the slopes of Joblin et al. 1995
+put a cold band. The jet-cooled band is the pipeline's most direct 0 K observable, so it is the
+primary cold column with the laser bandwidth as its uncertainty; the hot-extrapolated position is
+a second, labelled column, and a family is called inconclusive only if the two disagree on the
+verdict (decision 24).
 
 A per-family decidability rule replaces plan 04's rung-level gate: a gas-scored family is
 decidable if the scoreboard's **measured band-centre uncertainty** — instrument resolution,

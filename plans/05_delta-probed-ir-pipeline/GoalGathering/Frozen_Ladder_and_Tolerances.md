@@ -169,7 +169,12 @@ values where the model puts them 6–18 cm⁻¹ above — a disagreement of 10�
 of the FEL bandwidth (0.5–1 % of the frequency). The cold column's resolution term per family
 is therefore the larger of the FEL bandwidth and this measured disagreement; the 7.7 and
 8.8 µm families of the R3 cold column are inconclusive by construction by measurement, the
-longer-wavelength families are decided by u_band as before; (iv) item 56 read: the benzene
+longer-wavelength families are decided by u_band as before [**superseded 2026-09-08, decision 24
+(P16, after the proposal cold read's insider objection): the jet-cooled band is the pipeline's
+most direct 0 K observable and is the primary cold column, with the FEL bandwidth as its
+resolution term; the hot-extrapolated position (item 64 at 770 K with item 52's slope) is a
+second, labelled column; a family is marked inconclusive only when the two columns give
+opposite verdicts, and the cold–hot disagreement is printed beside both, not folded into u_band**]; (iv) item 56 read: the benzene
 intensities of the NIST Quantitative IR series are **not certified in 1325–1900 cm⁻¹**, so the
 R0 intensity score of decision 18 carries the ≈ 1480 cm⁻¹ C–C band as a labelled non-certified
 column (positions are unaffected; the wavenumber scale is calibrated to 0.0042 cm⁻¹ RMS);

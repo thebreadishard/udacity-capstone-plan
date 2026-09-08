@@ -377,12 +377,15 @@ prints them.
 
   The out-of-plane and low-frequency families behave as the temperature model says; the
   7.7 and 8.8 µm families do not — the cold value sits 10–19 cm⁻¹ from where the slope table
-  puts a cold band, of the order of the FEL bandwidth there (6–13 cm⁻¹). **Consequence:** the
-  R3 cold column carries, per family, the larger of the FEL bandwidth and this measured
-  cold–hot disagreement as its resolution term; its 7.7 and 8.8 µm families are inconclusive
-  by construction **by measurement now**, not by expectation; its 11.8 µm and longer families
-  are decidable only if u_band (bandwidth 4–9 cm⁻¹) falls under the R3 beat margin, which 2a
-  prints.
+  puts a cold band, of the order of the FEL bandwidth there (6–13 cm⁻¹). **Consequence (as first
+  written 2026-09-06):** the R3 cold column carries the larger of the FEL bandwidth and this
+  disagreement as its resolution term and its 7.7 and 8.8 µm families are inconclusive by
+  measurement. **Superseded 2026-09-08 (decision 24, P16)** after the proposal cold read's
+  objection that a linear hot-band extrapolation over several hundred kelvin is the weaker
+  witness: the jet-cooled band is the primary cold column with the FEL bandwidth as its
+  uncertainty, the hot-extrapolated position a second labelled column, and a family is
+  inconclusive only when the two columns disagree on the verdict; the disagreement itself is
+  printed beside both.
 - 2021 also reports that Gaussian's GVPT2 gave unrealistic C–H out-of-plane shifts for the
   larger PAHs of that paper (their §3): a known failure mode our resonance treatment at R3+
   must not reproduce; the 121 cm⁻¹ drumhead mode is 4 % off anharmonically and 1 % off
