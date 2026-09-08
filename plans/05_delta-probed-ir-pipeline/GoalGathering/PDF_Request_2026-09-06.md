@@ -40,7 +40,7 @@ ACS Omega, PLOS) staan hier niet: die halen we zelf. Gerangschikt naar wanneer w
     - Esposito, Allamandola, Boersma, Bregman, Fortenberry, Maragkoudakis & Temi, *Mol. Phys.* **122**, e2252936 (2024), DOI 10.1080/00268976.2023.2252936
     - Esposito, Ferrari, Buma, Boersma, Mackie, Candian, Fortenberry & Tielens, *Mol. Phys.* **122**, e2261570 (2024), DOI 10.1080/00268976.2023.2261570
     - Esposito, Ferrari, Buma, Fortenberry, Boersma, Candian & Tielens, *J. Chem. Phys.* **160**, 114312 (2024), DOI 10.1063/5.0191404
-    Niet nodig: Esposito et al., *J. Chem. Phys.* **160**, 211101 (2024) (al in bezit en gelezen, item 45) en Esposito et al., *MNRAS Lett.* **531**, L87 (2024), DOI 10.1093/mnrasl/slae037 (CC BY, zelf te halen).
+    Niet nodig: Esposito et al., *J. Chem. Phys.* **160**, 211101 (2024) (al in bezit en gelezen, item 45) en Esposito et al., *MNRAS Lett.* **531**, L87 (2024), DOI 10.1093/mnrasl/slae037 (CC BY; op 8 september door de gebruiker gedownload uit het Chapman-repositorium, in `Papers/`).
 
 ## C. Laboratorium- en scorebordbronnen uit plan 04, nog als "record" gemarkeerd
 
