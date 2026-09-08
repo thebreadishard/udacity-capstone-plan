@@ -1,0 +1,128 @@
+{
+ "mode6": {
+  "total CCSD(T)": {
+   "delta_cm": 133.6947508565619,
+   "n": [
+    9,
+    9
+   ]
+  },
+  "sigma_uEh": [
+   0.018213997526505533,
+   0.02433616583888997
+  ],
+  "SCF (DF-RHF)": {
+   "delta_cm": 88.43594125616376,
+   "n": [
+    9,
+    9
+   ]
+  },
+  "CCSD(T) correlation": {
+   "delta_cm": 45.258809669048226,
+   "n": [
+    9,
+    9
+   ]
+  },
+  "of which (T)": {
+   "delta_cm": -5.154764992915481,
+   "n": [
+    9,
+    9
+   ]
+  },
+  "MP2 correlation (full space, from the arms' files)": {
+   "delta_cm": 29.462410081161856,
+   "n": [
+    9,
+    9
+   ]
+  },
+  "mp2_share_of_corr_change": 0.6509762474224046
+ },
+ "mode12": {
+  "total CCSD(T)": {
+   "delta_cm": -66.52241096825206,
+   "n": [
+    9,
+    9
+   ]
+  },
+  "sigma_uEh": [
+   0.002741022152559486,
+   0.0019197958656415374
+  ],
+  "SCF (DF-RHF)": {
+   "delta_cm": -44.827390194878596,
+   "n": [
+    9,
+    9
+   ]
+  },
+  "CCSD(T) correlation": {
+   "delta_cm": -21.695020670255705,
+   "n": [
+    9,
+    9
+   ]
+  },
+  "of which (T)": {
+   "delta_cm": -0.7694216002031947,
+   "n": [
+    9,
+    9
+   ]
+  },
+  "MP2 correlation (full space, from the arms' files)": {
+   "delta_cm": -23.609486834195923,
+   "n": [
+    9,
+    9
+   ]
+  },
+  "mp2_share_of_corr_change": 1.088244495962384
+ },
+ "mode18": {
+  "total CCSD(T)": {
+   "delta_cm": -145.33172857242906,
+   "n": [
+    9,
+    9
+   ]
+  },
+  "sigma_uEh": [
+   0.0014502890966267127,
+   0.000551367341621622
+  ],
+  "SCF (DF-RHF)": {
+   "delta_cm": -101.18858400615638,
+   "n": [
+    9,
+    9
+   ]
+  },
+  "CCSD(T) correlation": {
+   "delta_cm": -44.143144417737865,
+   "n": [
+    9,
+    9
+   ]
+  },
+  "of which (T)": {
+   "delta_cm": 5.409562671906646,
+   "n": [
+    9,
+    9
+   ]
+  },
+  "MP2 correlation (full space, from the arms' files)": {
+   "delta_cm": -32.215862679293124,
+   "n": [
+    9,
+    9
+   ]
+  },
+  "mp2_share_of_corr_change": 0.7298044374552519
+ }
+}

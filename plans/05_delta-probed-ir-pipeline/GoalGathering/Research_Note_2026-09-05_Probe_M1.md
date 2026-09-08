@@ -129,6 +129,38 @@ against τ and the R0 beat margins, which are not fixed yet. On benzene the NIST
 resolution is 0.12 cm⁻¹ and u_band is expected below 1 cm⁻¹, so a +1.6 cm⁻¹ curvature bias on the
 C–C stretch would be visible in a "beat" claim on that family. §3 adds proposal P10.
 
+**2.2d Basis-set sensitivity of the canonical curvature, cc-pVDZ → cc-pVTZ** (decision 26, input i;
+printed 2026-09-08 by `m1_basis_sensitivity.py` from the two existing truth lines and the arms'
+full-space DF-MP2 energies, no new calculation; `results_m1/BASIS_SENSITIVITY_dz_tz.md`). The even
+part of E(q) is fitted per basis; the table gives the change of the curvature 2·a₂ from DZ to TZ in
+cm⁻¹, split by energy component. Absolute curvatures are not printed.
+
+| mode | total CCSD(T) | SCF | CCSD(T) correlation | of which (T) | MP2 correlation | MP2 share of the correlation change |
+|---|---|---|---|---|---|---|
+| 6 (865, CH-oop) | **+133.7** | +88.4 | +45.3 | −5.2 | +29.5 | 0.65 |
+| 12 (1020, tot. sym.) | **−66.5** | −44.8 | −21.7 | −0.8 | −23.6 | 1.09 |
+| 18 (1357, CC-stretch) | **−145.3** | −101.2 | −44.1 | +5.4 | −32.2 | 0.73 |
+
+Reading. (i) The curvature along the DFT modes at the DFT geometry — the quantity Δ₂ is built
+from — changes by **67–145 cm⁻¹** between cc-pVDZ and cc-pVTZ, one to two orders more than the
+frozen-space bias of §2.2c and more than ten times the only literature figure for the whole
+CC−DFT effect (5.45 cm⁻¹ at benzene, item 45, at a near-limit reference). The DZ → TZ step is the
+first step of a convergent series, so this is a lower bound on the anchor's distance from the
+limit, not the distance; but it says the cold read's finding 4 (the anchor's basis-set error is
+unbudgeted) is not a formality. (ii) **Two thirds of the change is the SCF part** (88 / 45 / 101
+cm⁻¹), which is converged cheaply: DF-RHF at cc-pVQZ or cc-pV5Z along the same 27 points costs
+minutes per point. (iii) Of the correlation part, **full-space MP2 captures 65–109 %**, i.e. an
+MP2-level basis correction — the same device the composite of §2.2 uses for the LNO truncation —
+would carry most of the correlation remainder at DF-MP2 cost. (iv) The (T) part of the change is
+≤ 5 cm⁻¹. (v) σ of the total is 0.001–0.024 µE_h in both bases: the truth lines are smooth.
+Consequence recorded under decision 26 in the plan README: a **basis-set line** exists now as a
+measured number; the cheap next measurement is the same 27 points at DF-RHF and DF-MP2 in
+cc-pVQZ (and DF-RHF in cc-pV5Z), which turns the lower bound into a converging series for the two
+parts that carry ≈ 90 % of it and leaves only the CCSD(T)−MP2 remainder (≈ 10–15 cm⁻¹ DZ → TZ here)
+for a cluster QZ line. Whether the anchor itself is then **redefined as a composite** —
+LNO-CCSD(T)/TZ + [MP2/QZ − MP2/TZ] + [SCF/5Z − SCF/TZ] — is a new proposal (P18) for the user,
+after that measurement, not before.
+
 **2.3 Continuity diagnostics** (all runs agree): s_min of the occupied overlap ≥ 0.986 at |q| = 1 on
 every mode; s_min of the virtual (LNO) overlap 0.81–0.89 at |q| = 1, 0.95–0.97 at |q| = 0.25; largest
 pre-Löwdin off-diagonal ≤ 0.018 (occupied), ≤ 0.16 (virtual). The map is nonsingular throughout
