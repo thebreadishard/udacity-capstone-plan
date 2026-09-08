@@ -238,10 +238,16 @@ subsection):
   molecule of lower symmetry they would not be equivalent. This is the effect the domain review
   asked about and the reason the plan transports rather than re-localises.
 - *Anchor basis.* The same scan at cc-pVTZ, the basis the licence rungs use — the three arms at
-  tight thresholds, 27 geometries, then the canonical truth line — is running as this is written
-  (about two hours per geometry for the three arms; results Tuesday 8 September). The basis is larger and
-  the frozen space a smaller fraction of it; the cc-pVDZ bias is expected to be a lower bound, and
-  the scan will say.
+  tight thresholds, 27 geometries, then its own canonical truth line — finished on 8 September
+  (three arms 1.7–2.0 h per geometry, canonical 14–21 min; 58 h in all). The frozen object stays
+  smooth (0.002–0.021 µE_h), but its composite curvature bias grows with the basis: +0.94, +0.06 and
+  +1.58 cm⁻¹ on the three modes against +0.14, +0.03 and +0.36 at cc-pVDZ, largest where the
+  transported virtual space overlaps the freshly selected one least (smallest singular value 0.36
+  at the out-of-plane endpoint, 0.57 on the C–C stretch). The bias is a pure curvature term (the
+  quartic coefficient is zero on every mode) and enters Δ₂ directly. What to do with it — record it
+  as a measured floor, enlarge the frozen virtual space and re-measure, or calibrate it per mode
+  where a canonical reference exists — is an open decision (research note P10), taken before the
+  naphthalene rehearsal.
 - *A definition fixed by the measurement.* The transported orbital blocks must be
   semicanonicalised at each geometry — a rotation inside the frozen space that the fragment
   solver's MP2 start and (T) step assume; a first run without that step read a spurious bias of
@@ -517,7 +523,7 @@ inputs in hand and **nothing else**:
 2. the opponent side — exists (versions named above);
 3. the DFT-only rehearsal with its noise-injected column — exists for benzene (5 September);
    naphthalene owed;
-4. the frozen-space probe M1 — exists (5–6 September; cc-pVTZ scan running);
+4. the frozen-space probe M1 — exists (5–8 September; cc-pVDZ and cc-pVTZ scans with canonical truth lines);
 5. the canonical feasibility probe — exists (5 September);
 6. a run/no-run check of which local-CC codes produce an analytic gradient at the anchor level
    at the equilibrium geometry, with memory — owed;
@@ -684,8 +690,8 @@ own; knowledge transfer is allowed wherever a gate shows it makes the pipeline s
     prior's free-element count where it applies; the learned prior is measured against that count.
 14. The frozen-space object's transported blocks are semicanonicalised at each geometry.
 15. The energy the object reports is the composite local-CCSD(T) + [MP2(full) − MP2(local)].
-16. The cc-pVTZ frozen-space scan with its canonical truth line runs (started 6 September); the
-    benzene probe batch includes canonical two-mode points for the off-diagonal bias.
+16. The cc-pVTZ frozen-space scan with its canonical truth line ran (6–8 September; result in §3.3);
+    the benzene probe batch includes canonical two-mode points for the off-diagonal bias.
 17. Module 07's campaign officer runs on LangGraph (admissible through the programme's
     LangChain/LangGraph elective) with the Anthropic API as model endpoint, model id logged.
 18. Intensities are scored on benzene and naphthalene as a second quantity; positions remain the

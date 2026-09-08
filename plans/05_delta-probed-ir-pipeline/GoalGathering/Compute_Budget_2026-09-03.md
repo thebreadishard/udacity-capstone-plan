@@ -118,6 +118,7 @@ canonical energies × 755 s ≈ 12.8 h, **fits** (≤ 168 h, ≤ 31.3 GB); the f
 Hessian by energies, 1,801 × 755 s ≈ 378 h, **does not fit**; the 72-gradient branch is settled below. A local-CC energy at the
 anchor basis costs 3× a canonical one at benzene — locality pays only at larger molecules; probe M1
 is therefore developed at cc-pVDZ (3 min per energy) and run once at cc-pVTZ (35 min per energy).
+**Measured 2026-09-06/08 (probe M1 at cc-pVTZ, tight):** one three-arm point 5,944–7,093 s, the 27-point scan 48 h; one canonical CCSD(T) point 850–1,272 s (the laptop in use; 755 s idle), the 27-point truth line 8.1 h; the chain 58 h without failure at the 22 GB ceiling.
 **Availability (user, 2026-09-05):** the B2 laptop is dedicated to the capstone and available 24/7
 (the user works weekdays on a separate client machine); long runs may start on any day and are checked
 asynchronously. This changes scheduling, not the rule: 168 h of compute per batch remains the B2/B3

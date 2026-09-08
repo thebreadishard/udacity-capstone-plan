@@ -17,7 +17,7 @@ differences between local-CC arms and canonical CCSD(T), never a CC−DFT curvat
 | Canonical CCSD(T) truth line, same 27 geometries | cc-pVDZ, frozen core, same DF-RHF reference | 27 | 20 min (44–48 s per point) | `canonical_truth_sealed.json` (copied into every M1 directory) |
 | **Rerun, arm A semicanonicalised** (the numbers of §2) | cc-pVDZ / normal | 27 | 19:11–21:37 (≈ 5.5 min per point, three arms) | `benzene_cc-pvdz_normal_semican/` |
 | **Tight thresholds** [10⁻⁶, 10⁻⁷] (§2.2b) | cc-pVDZ / tight | 27 | 21:45–02:07 (≈ 9.5 min per point, three arms; 1.4 GB) | `benzene_cc-pvdz_tight/` |
-| Anchor basis, tight thresholds (P9 ii; decision 16) | cc-pVTZ / tight | 27 + 27 canonical | started 2026-09-06 07:31; ≈ 2.5 days | `benzene_cc-pvtz_tight/` |
+| **Anchor basis, tight thresholds** (P9 ii; decision 16; §2.2c) | cc-pVTZ / tight | 27 + 27 canonical | 2026-09-06 07:31 → 2026-09-08 09:23 (three arms, 5,944–7,093 s per point, 48 h), then the canonical truth line 09:23 → 17:31 (850–1,272 s per point, 8.1 h); chain 58 h | `benzene_cc-pvtz_tight/` (`CANONICAL_COMPARISON.md`, `_composite.md`) |
 
 Modes (chosen by the script from the dry run's Hessian): **12** (1020 cm⁻¹, the totally symmetric
 mode; dry-run family label CH-ip-bend), **18** (1357 cm⁻¹, a CC-stretch), **6** (865 cm⁻¹, CH
@@ -93,6 +93,42 @@ active space, the less there is to re-select. Arm A's σ is the same 0.002–0.0
 settings, so it is not an LNO-size effect but the floor of the impurity solves themselves (the SCF's
 σ is 0.002–0.015 µE_h on the same grid). Cost: 9.5 against 5.5 min per three-arm point.
 
+**2.2c The anchor basis: cc-pVTZ, tight thresholds** (chain finished 2026-09-08 17:31; its own
+canonical CCSD(T) truth line at cc-pVTZ, same DF-RHF reference, frozen core; same estimator; printed
+by `m1_canonical_truth.py` into `benzene_cc-pvtz_tight/CANONICAL_COMPARISON[_composite].md`):
+
+| mode | arm | σ, bare (µE_h) | bias 2·a₂, bare (cm⁻¹) | σ, composite (µE_h) | bias 2·a₂, composite (cm⁻¹) | a₄ (composite) |
+|---|---|---|---|---|---|---|
+| 6 (865, CH-oop) | **A** | **0.010** | +32.6 | **0.007** | **+0.94** | ≈ 0 |
+| | B | 0.89 | +3.3 | 0.19 | +3.2 | small |
+| | C | 0.94 | +5.6 | 1.47 | +5.2 | large |
+| 12 (1020, tot. sym.) | **A** | **0.002** | +3.6 | **0.002** | **+0.06** | ≈ 0 |
+| | B | 1.00 | −4.3 | 0.17 | −0.7 | small |
+| | C | 3.41 | +11.4 | 3.41 | +9.5 | large |
+| 18 (1357, CC-stretch) | **A** | **0.021** | +10.5 | **0.021** | **+1.58** | ≈ 0 |
+| | B | 2.33 | +11.3 | 0.39 | −1.05 | large |
+| | C | 1.32 | +18.6 | 0.68 | −0.5 | large |
+
+Reading. (i) **Smoothness holds at the anchor basis**: arm A's σ is 0.002–0.021 µE_h, the same
+floor as at cc-pVDZ and two orders under the re-selecting arms (B 0.17–0.39, C 0.68–3.4 µE_h
+composite). (ii) **The composite bias grows with the basis**: cc-pVDZ tight +0.14 / +0.03 / +0.36
+→ cc-pVTZ tight **+0.94 / +0.06 / +1.58 cm⁻¹** (modes 6 / 12 / 18), factors 6.7, 2 and 4.4. The bare
+bias is far larger (+32.6 cm⁻¹ on the out-of-plane bend, +10.5 on the C–C stretch) and the
+LNO-MP2 correction absorbs 85–97 % of it; what remains is a systematic curvature error of the
+frozen object at the anchor, not noise, and it enters Δ₂ directly. (iii) **Where it is largest, the
+transported virtual space overlaps the fresh one least**: s_min of the virtual overlap at |q| = 1 is
+0.66 (mode 12), 0.57 (mode 18) and **0.36** (mode 6), against 0.81–0.87 at cc-pVDZ (§2.3); the
+larger basis has more virtual space to lose. The occupied overlap is unchanged (≥ 0.988). (iv) The
+raw A−C difference reaches +64 µE_h at the ends of mode 6 (bare), of which the LNO-MP2 piece is
++69; the composite A−C there is −5 µE_h. (v) The a₄ of arm A is ≈ 0 on every mode: the bias is a
+pure curvature term, so a degree-2 correction per mode would remove it where a canonical reference
+exists (R0–R1) — and only there.
+
+What this means for the Ladder is a judgement at the pilot note, not here: the bias is judged
+against τ and the R0 beat margins, which are not fixed yet. On benzene the NIST scoreboard's
+resolution is 0.12 cm⁻¹ and u_band is expected below 1 cm⁻¹, so a +1.6 cm⁻¹ curvature bias on the
+C–C stretch would be visible in a "beat" claim on that family. §3 adds proposal P10.
+
 **2.3 Continuity diagnostics** (all runs agree): s_min of the occupied overlap ≥ 0.986 at |q| = 1 on
 every mode; s_min of the virtual (LNO) overlap 0.81–0.89 at |q| = 1, 0.95–0.97 at |q| = 0.25; largest
 pre-Löwdin off-diagonal ≤ 0.018 (occupied), ≤ 0.16 (virtual). The map is nonsingular throughout
@@ -119,7 +155,10 @@ fix. The frozen-space object must be read as "the space, semicanonicalised at x"
 **2.6 Cost.** At cc-pVDZ, normal thresholds, one point with all three arms takes 240–450 s; arm A
 costs the same as arm C (the impurity solves are identical; only the LNO construction is skipped).
 Peak resident memory 1.3 GB. At cc-pVTZ a local-CC energy costs 2,087 s (probe 4), so the three-arm
-scan is ≈ 2 days and the cc-pVTZ truth line 27 × 755 s ≈ 6 h — both fit the 24/7 laptop.
+scan was estimated at ≈ 2 days and the truth line at 27 × 755 s ≈ 6 h. **Measured (§1 table):** the
+three-arm cc-pVTZ point took 5,944–7,093 s (arm C alone at the reference 2,387 s), the scan 48 h; the
+canonical cc-pVTZ point 850–1,272 s (mean ≈ 1,080 s, against 755 s in the timing probe — the laptop
+was in use), the truth line 8.1 h; the whole chain 58 h on the 24/7 laptop, no failure.
 
 ## 3. What it asks (proposals; the Ladder stays as written until the user decides)
 
@@ -146,6 +185,19 @@ scan is ≈ 2 days and the cc-pVTZ truth line 27 × 755 s ≈ 6 h — both fit t
   same-representation coupling pairs (the number frozen in the deck; 30 pairs = 60 points is the
   working figure: 45 min at cc-pVDZ, ≈ 12.6 h at cc-pVTZ), from which the off-diagonal bias of arm A
   is read as 2·a₂ of E_A − E_canonical along the pair, before the pilot note says anything about arm A.
+
+**P10 (new, 2026-09-08, from §2.2c) — what to do with the anchor-basis curvature bias of arm A.**
+The frozen object is smooth at cc-pVTZ but carries a composite curvature bias of +0.06 to +1.58 cm⁻¹
+on benzene, largest where the transported virtual space overlaps the fresh one least. Three
+options, none decided here: (a) **record it** as arm A's measured floor at R0 and print it beside
+every Δ₂ in the pilot note — no change to the object; (b) **measure whether a larger frozen virtual
+space removes it**: one more benzene cc-pVTZ scan with a reference whose LNO virtual space is the
+union of the spaces selected at q = 0 and q = ±1 (or with thresholds one decade tighter), ≈ 2 days
+plus the existing truth line; (c) **correct it per mode where a canonical reference exists**: the
+canonical endpoints already budgeted for the off-diagonal bias (decision 16) give a₂ per mode, and
+arm A's a₄ ≈ 0 means a degree-2 correction is complete — but this exists only at R0–R1 and says
+nothing about R2+. (a) is honest and free; (b) is the only option that could make the object better
+at every rung; (c) is a calibration, not a fix. The user decides; the Ladder stays as written.
 
 ## 4. What did not change
 

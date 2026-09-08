@@ -31,3 +31,296 @@ WARN: Input vhf is not found. Building vhf from SCF MO.
 
 WARN: Input vhf is not found. Building vhf from SCF MO.
 
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[14:32:42] mode 12 q=-0.50: s_min occ 0.9953 vir 0.8411; pre-Löwdin off-diag occ 3.69e-03 vir 7.81e-02; A−B +5.63 A−C -7.90 µE_h (LNO-MP2 piece A−C +0.9); PM fresh 7.0051 transported 7.0015; match 0.837; 7093 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[16:23:43] mode 12 q=-0.25: s_min occ 0.9976 vir 0.9165; pre-Löwdin off-diag occ 1.86e-03 vir 3.85e-02; A−B +0.69 A−C -8.27 µE_h (LNO-MP2 piece A−C +0.9); PM fresh 7.0025 transported 7.0008; match 0.837; 6661 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[18:15:57] mode 12 q=+0.00: s_min occ 1.0000 vir 1.0000; pre-Löwdin off-diag occ 7.97e-15 vir 2.74e-12; A−B +0.00 A−C +0.00 µE_h (LNO-MP2 piece A−C +0.0); PM fresh 6.9999 transported 6.9999; match 1.000; 6734 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[20:10:02] mode 12 q=+0.25: s_min occ 0.9985 vir 0.9002; pre-Löwdin off-diag occ 1.88e-03 vir 3.75e-02; A−B +0.31 A−C -8.71 µE_h (LNO-MP2 piece A−C +0.1); PM fresh 6.9996 transported 6.999; match 0.964; 6845 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[22:00:33] mode 12 q=+0.50: s_min occ 0.9969 vir 0.8110; pre-Löwdin off-diag occ 3.79e-03 vir 7.39e-02; A−B +1.67 A−C -7.26 µE_h (LNO-MP2 piece A−C +1.2); PM fresh 6.9991 transported 6.9981; match 0.964; 6631 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[23:47:54] mode 12 q=+0.75: s_min occ 0.9953 vir 0.7317; pre-Löwdin off-diag occ 5.72e-03 vir 1.09e-01; A−B +4.10 A−C -4.75 µE_h (LNO-MP2 piece A−C +3.4); PM fresh 6.9987 transported 6.9971; match 0.964; 6441 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[01:38:02] mode 12 q=+1.00: s_min occ 0.9937 vir 0.6618; pre-Löwdin off-diag occ 7.67e-03 vir 1.44e-01; A−B +7.66 A−C -3.99 µE_h (LNO-MP2 piece A−C +2.5); PM fresh 6.9982 transported 6.9961; match 0.964; 6608 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[03:35:46] mode 18 q=-1.00: s_min occ 0.9910 vir 0.5682; pre-Löwdin off-diag occ 3.97e-03 vir 3.38e-01; A−B +21.41 A−C +9.59 µE_h (LNO-MP2 piece A−C +14.5); PM fresh 7.0844 transported 6.926; match 0.770; 7064 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[05:30:59] mode 18 q=-0.75: s_min occ 0.9933 vir 0.6482; pre-Löwdin off-diag occ 2.97e-03 vir 2.53e-01; A−B +5.16 A−C -0.02 µE_h (LNO-MP2 piece A−C -0.1); PM fresh 7.0640 transported 6.9444; match 0.770; 6913 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[07:23:24] mode 18 q=-0.50: s_min occ 0.9956 vir 0.7451; pre-Löwdin off-diag occ 1.98e-03 vir 1.68e-01; A−B +3.24 A−C -1.61 µE_h (LNO-MP2 piece A−C -1.3); PM fresh 7.0431 transported 6.9629; match 0.770; 6744 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[09:08:44] mode 18 q=-0.25: s_min occ 0.9978 vir 0.8618; pre-Löwdin off-diag occ 9.86e-04 vir 8.34e-02; A−B -2.84 A−C -2.82 µE_h (LNO-MP2 piece A−C -2.9); PM fresh 7.0217 transported 6.9815; match 0.770; 6321 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[10:47:48] mode 18 q=+0.00: s_min occ 1.0000 vir 1.0000; pre-Löwdin off-diag occ 6.47e-15 vir 7.21e-12; A−B +0.00 A−C +0.00 µE_h (LNO-MP2 piece A−C +0.0); PM fresh 6.9999 transported 6.9999; match 1.000; 5944 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[12:35:00] mode 18 q=+0.25: s_min occ 0.9978 vir 0.8618; pre-Löwdin off-diag occ 9.86e-04 vir 8.26e-02; A−B -2.11 A−C -5.28 µE_h (LNO-MP2 piece A−C -5.2); PM fresh 7.0217 transported 7.0181; match 0.988; 6432 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[14:22:03] mode 18 q=+0.50: s_min occ 0.9956 vir 0.7451; pre-Löwdin off-diag occ 1.98e-03 vir 1.65e-01; A−B +1.61 A−C -6.55 µE_h (LNO-MP2 piece A−C -6.0); PM fresh 7.0431 transported 7.0359; match 0.988; 6423 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[16:11:01] mode 18 q=+0.75: s_min occ 0.9933 vir 0.6482; pre-Löwdin off-diag occ 2.97e-03 vir 2.47e-01; A−B +1.01 A−C -7.42 µE_h (LNO-MP2 piece A−C -7.2); PM fresh 7.0640 transported 7.0532; match 0.988; 6538 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[18:02:11] mode 18 q=+1.00: s_min occ 0.9910 vir 0.5683; pre-Löwdin off-diag occ 3.97e-03 vir 3.30e-01; A−B +12.11 A−C -0.25 µE_h (LNO-MP2 piece A−C +5.1); PM fresh 7.0844 transported 7.0699; match 0.988; 6670 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[19:44:21] mode 6 q=-1.00: s_min occ 0.9882 vir 0.3579; pre-Löwdin off-diag occ 1.44e-02 vir 6.58e-01; A−B +59.21 A−C +64.30 µE_h (LNO-MP2 piece A−C +69.0); PM fresh 6.9993 transported 6.9974; match 0.839; 6130 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[21:27:33] mode 6 q=-0.75: s_min occ 0.9913 vir 0.4372; pre-Löwdin off-diag occ 1.09e-02 vir 4.72e-01; A−B +34.48 A−C +34.91 µE_h (LNO-MP2 piece A−C +39.6); PM fresh 6.9996 transported 6.9985; match 0.864; 6192 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[23:11:09] mode 6 q=-0.50: s_min occ 0.9943 vir 0.5554; pre-Löwdin off-diag occ 7.25e-03 vir 3.15e-01; A−B +17.01 A−C +16.97 µE_h (LNO-MP2 piece A−C +16.9); PM fresh 6.9998 transported 6.9993; match 0.667; 6216 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[00:53:50] mode 6 q=-0.25: s_min occ 0.9972 vir 0.7346; pre-Löwdin off-diag occ 3.63e-03 vir 1.58e-01; A−B +3.35 A−C +4.27 µE_h (LNO-MP2 piece A−C +4.2); PM fresh 6.9999 transported 6.9998; match 0.667; 6161 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[02:36:21] mode 6 q=+0.00: s_min occ 1.0000 vir 1.0000; pre-Löwdin off-diag occ 8.57e-15 vir 2.70e-12; A−B +0.00 A−C +0.00 µE_h (LNO-MP2 piece A−C +0.0); PM fresh 6.9999 transported 6.9999; match 1.000; 6152 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[04:18:27] mode 6 q=+0.25: s_min occ 0.9972 vir 0.7346; pre-Löwdin off-diag occ 3.63e-03 vir 1.58e-01; A−B +3.35 A−C +4.26 µE_h (LNO-MP2 piece A−C +4.2); PM fresh 6.9999 transported 6.9998; match 1.000; 6126 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[06:00:10] mode 6 q=+0.50: s_min occ 0.9943 vir 0.5554; pre-Löwdin off-diag occ 7.25e-03 vir 3.15e-01; A−B +17.01 A−C +16.97 µE_h (LNO-MP2 piece A−C +16.9); PM fresh 6.9998 transported 6.9993; match 1.000; 6103 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[07:41:29] mode 6 q=+0.75: s_min occ 0.9913 vir 0.4372; pre-Löwdin off-diag occ 1.09e-02 vir 4.72e-01; A−B +34.48 A−C +34.92 µE_h (LNO-MP2 piece A−C +39.7); PM fresh 6.9996 transported 6.9985; match 0.948; 6079 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[09:22:57] mode 6 q=+1.00: s_min occ 0.9882 vir 0.3579; pre-Löwdin off-diag occ 1.44e-02 vir 6.58e-01; A−B +59.21 A−C +64.30 µE_h (LNO-MP2 piece A−C +69.0); PM fresh 6.9993 transported 6.9974; match 0.961; 6088 s
+
+# Probe M1 — frozen spaces — benzene cc-pvtz, LNO thresholds [1e-06, 1e-07], 2026-09-08 09:22, Asus18 (WSL), 8 threads
+
+- reference: 15 fragments (one per PM LMO); frozen-space hash `f1a1fef203598a96…`; arm C at the reference 2387 s
+- **stage 0 round trip** E_A(0) − E_C(0) = 0.0001 µE_h (the object reloads; target ≤ 1e-3 µE_h)
+- raw energies sealed: `m1_sealed_energies.json`, sha256 `a96bc3b12c555174…` — not printed
+
+| mode | family | ω (cm⁻¹) | q | s_min occ | off-diag occ | s_min vir | off-diag vir | PM fresh | PM transported | match | A−B (µE_h) | A−C (µE_h) | B−C (µE_h) | s |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 12 | CH-ip-bend | 1020 | -1.00 | 0.9906 | 7.3e-03 | 0.7134 | 1.6e-01 | 7.010 | 7.003 | 0.836 | +4.57 | -4.59 | -9.15 | 6596 |
+| 12 | CH-ip-bend | 1020 | -0.75 | 0.9930 | 5.5e-03 | 0.7735 | 1.2e-01 | 7.008 | 7.002 | 0.837 | +8.18 | -8.45 | -16.64 | 7053 |
+| 12 | CH-ip-bend | 1020 | -0.50 | 0.9953 | 3.7e-03 | 0.8411 | 7.8e-02 | 7.005 | 7.002 | 0.837 | +5.63 | -7.90 | -13.54 | 7093 |
+| 12 | CH-ip-bend | 1020 | -0.25 | 0.9976 | 1.9e-03 | 0.9165 | 3.9e-02 | 7.003 | 7.001 | 0.837 | +0.69 | -8.27 | -8.95 | 6661 |
+| 12 | CH-ip-bend | 1020 | +0.00 | 1.0000 | 8.0e-15 | 1.0000 | 2.7e-12 | 7.000 | 7.000 | 1.000 | +0.00 | +0.00 | -0.00 | 6734 |
+| 12 | CH-ip-bend | 1020 | +0.25 | 0.9985 | 1.9e-03 | 0.9002 | 3.7e-02 | 7.000 | 6.999 | 0.964 | +0.31 | -8.71 | -9.02 | 6845 |
+| 12 | CH-ip-bend | 1020 | +0.50 | 0.9969 | 3.8e-03 | 0.8110 | 7.4e-02 | 6.999 | 6.998 | 0.964 | +1.67 | -7.26 | -8.93 | 6631 |
+| 12 | CH-ip-bend | 1020 | +0.75 | 0.9953 | 5.7e-03 | 0.7317 | 1.1e-01 | 6.999 | 6.997 | 0.964 | +4.10 | -4.75 | -8.85 | 6441 |
+| 12 | CH-ip-bend | 1020 | +1.00 | 0.9937 | 7.7e-03 | 0.6618 | 1.4e-01 | 6.998 | 6.996 | 0.964 | +7.66 | -3.99 | -11.65 | 6608 |
+| 18 | CC-stretch | 1357 | -1.00 | 0.9910 | 4.0e-03 | 0.5682 | 3.4e-01 | 7.084 | 6.926 | 0.770 | +21.41 | +9.59 | -11.82 | 7064 |
+| 18 | CC-stretch | 1357 | -0.75 | 0.9933 | 3.0e-03 | 0.6482 | 2.5e-01 | 7.064 | 6.944 | 0.770 | +5.16 | -0.02 | -5.18 | 6913 |
+| 18 | CC-stretch | 1357 | -0.50 | 0.9956 | 2.0e-03 | 0.7451 | 1.7e-01 | 7.043 | 6.963 | 0.770 | +3.24 | -1.61 | -4.85 | 6744 |
+| 18 | CC-stretch | 1357 | -0.25 | 0.9978 | 9.9e-04 | 0.8618 | 8.3e-02 | 7.022 | 6.981 | 0.770 | -2.84 | -2.82 | +0.02 | 6321 |
+| 18 | CC-stretch | 1357 | +0.00 | 1.0000 | 6.5e-15 | 1.0000 | 7.2e-12 | 7.000 | 7.000 | 1.000 | +0.00 | +0.00 | -0.00 | 5944 |
+| 18 | CC-stretch | 1357 | +0.25 | 0.9978 | 9.9e-04 | 0.8618 | 8.3e-02 | 7.022 | 7.018 | 0.988 | -2.11 | -5.28 | -3.17 | 6432 |
+| 18 | CC-stretch | 1357 | +0.50 | 0.9956 | 2.0e-03 | 0.7451 | 1.7e-01 | 7.043 | 7.036 | 0.988 | +1.61 | -6.55 | -8.16 | 6423 |
+| 18 | CC-stretch | 1357 | +0.75 | 0.9933 | 3.0e-03 | 0.6482 | 2.5e-01 | 7.064 | 7.053 | 0.988 | +1.01 | -7.42 | -8.43 | 6538 |
+| 18 | CC-stretch | 1357 | +1.00 | 0.9910 | 4.0e-03 | 0.5683 | 3.3e-01 | 7.084 | 7.070 | 0.988 | +12.11 | -0.25 | -12.36 | 6670 |
+| 6 | CH-oop | 865 | -1.00 | 0.9882 | 1.4e-02 | 0.3579 | 6.6e-01 | 6.999 | 6.997 | 0.839 | +59.21 | +64.30 | +5.08 | 6130 |
+| 6 | CH-oop | 865 | -0.75 | 0.9913 | 1.1e-02 | 0.4372 | 4.7e-01 | 7.000 | 6.998 | 0.864 | +34.48 | +34.91 | +0.43 | 6192 |
+| 6 | CH-oop | 865 | -0.50 | 0.9943 | 7.2e-03 | 0.5554 | 3.2e-01 | 7.000 | 6.999 | 0.667 | +17.01 | +16.97 | -0.04 | 6216 |
+| 6 | CH-oop | 865 | -0.25 | 0.9972 | 3.6e-03 | 0.7346 | 1.6e-01 | 7.000 | 7.000 | 0.667 | +3.35 | +4.27 | +0.91 | 6161 |
+| 6 | CH-oop | 865 | +0.00 | 1.0000 | 8.6e-15 | 1.0000 | 2.7e-12 | 7.000 | 7.000 | 1.000 | +0.00 | +0.00 | +0.00 | 6152 |
+| 6 | CH-oop | 865 | +0.25 | 0.9972 | 3.6e-03 | 0.7346 | 1.6e-01 | 7.000 | 7.000 | 1.000 | +3.35 | +4.26 | +0.91 | 6126 |
+| 6 | CH-oop | 865 | +0.50 | 0.9943 | 7.2e-03 | 0.5554 | 3.2e-01 | 7.000 | 6.999 | 1.000 | +17.01 | +16.97 | -0.04 | 6103 |
+| 6 | CH-oop | 865 | +0.75 | 0.9913 | 1.1e-02 | 0.4372 | 4.7e-01 | 7.000 | 6.998 | 0.948 | +34.48 | +34.92 | +0.44 | 6079 |
+| 6 | CH-oop | 865 | +1.00 | 0.9882 | 1.4e-02 | 0.3579 | 6.6e-01 | 6.999 | 6.997 | 0.961 | +59.21 | +64.30 | +5.09 | 6088 |
+
+- mode 12 (CH-ip-bend, 1020 cm⁻¹): EA_minus_EC residual about a degree-4 fit σ = 3.412 µE_h (ν = 4); range -8.71 … +0.00 µE_h
+- mode 12 (CH-ip-bend, 1020 cm⁻¹): EA_minus_EB residual about a degree-4 fit σ = 0.999 µE_h (ν = 4); range +0.00 … +8.18 µE_h
+- mode 18 (CC-stretch, 1357 cm⁻¹): EA_minus_EC residual about a degree-4 fit σ = 1.322 µE_h (ν = 4); range -7.42 … +9.59 µE_h
+- mode 18 (CC-stretch, 1357 cm⁻¹): EA_minus_EB residual about a degree-4 fit σ = 2.315 µE_h (ν = 4); range -2.84 … +21.41 µE_h
+- mode 6 (CH-oop, 865 cm⁻¹): EA_minus_EC residual about a degree-4 fit σ = 0.945 µE_h (ν = 4); range +0.00 … +64.30 µE_h
+- mode 6 (CH-oop, 865 cm⁻¹): EA_minus_EB residual about a degree-4 fit σ = 0.895 µE_h (ν = 4); range +0.00 … +59.21 µE_h
+
+No verdict is printed (the τ it would be judged against does not exist yet). Printed by probes/m1_frozen_spaces.py.
+=== M1 cc-pVTZ finished Tue Sep  8 09:22:57 CEST 2026 ===
