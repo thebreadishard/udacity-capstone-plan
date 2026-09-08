@@ -34,6 +34,16 @@ molecule M, define
 Both are printed by the pipeline on every accuracy rung already; P19 adds no coupled-cluster
 energy. Every number is in cm⁻¹ and comes from the same scripts that produce the scored spectrum.
 
+**Revision 2026-09-08 (evening), before the decision — the family definition.** For the C–H
+out-of-plane bands the family must be defined **per hydrogen-adjacency class** (solo, duo, trio,
+quartet), not as "C–H out-of-plane" as a whole: the DFT error of these bends is expected to be a
+constant per class, and a test over the merged family would fail for the wrong reason. The
+other families keep the Ladder §1 definition. Expectations recorded for the record, as
+expectations: transfer likely for the C–H stretch and the out-of-plane classes; doubtful for the
+delocalised C–C stretch families (6.2, 7.7 µm), whose DFT error depends on the conjugated
+network and the exact-exchange fraction — which is why the one-parameter size law is a candidate
+and the losing condition is written first.
+
 ## 3. The size sequence
 
 R0 benzene (1 ring), R1 naphthalene (2), the anthracene locality probe (3, linear), R2 pyrene,

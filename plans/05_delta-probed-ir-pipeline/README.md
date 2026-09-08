@@ -365,6 +365,23 @@ primary cold truth (finding 27) — **accepted by the user 2026-09-08 (decision 
 exists (finding 21) — **accepted by the user 2026-09-08 (decision 25)**: the R2 C–H accuracy claim covers the out-of-plane bands on hot gas; the 3 µm jet-cooled column is shown, not promised, until a polyad scoring rule is agreed with the source's authors (Ladder §2 dated note; proposal §5.2; Frozen Lines §5); and the calendar (finding 25). The other findings are addressed in spec once
 the user has decided these. **P19 (2026-09-08, from the user's statement that the large PAHs are the goal):** a pre-registered test of whether Δ₂ is transferable per band family across size (a per-family constant or one-parameter size law, leave-one-molecule-out over R0–R3 plus anthracene, winning/losing conditions against τ_F), run before any R6 probe; if a family wins, line A's library is corrected by the rule with its error bar and R6 becomes a direct check of the rule — [Research_Note_2026-09-08_P19_Transferability.md](GoalGathering/Research_Note_2026-09-08_P19_Transferability.md); open, the user decides (would be decision 27).
 
+**Decision 28 (closed 2026-09-08, P20 — the criterion per rung, user's statement: benzene is a tool,
+not a goal; "beating" existing benzene values is not what is taken to the supervisor):**
+**R0 (benzene) is an agreement rung**: for every scored band, |predicted − laboratory| must lie
+within the laboratory band uncertainty combined with the pipeline's own error budget (noise,
+freezing bias, basis-set line, locality); the same for the R0 intensities of decision 18 against
+the source's stated intensity uncertainty. Passing licenses the anchor and the recovery; failing
+means the budget is incomplete and nothing moves up the ladder. The comparison with the opponents
+is still printed at R0 but is not a claim. **R1 (naphthalene) does both**: agreement required (the
+local-CC licence rung), and per family a reported answer to whether the coupled-cluster correction
+adds accuracy over DFT, on the PNNL column and Pirali's resolved fundamentals (decision 21).
+**R2–R3**: "beat" per family where the laboratory can decide it, as before. **R4–R6**: P19's
+transferred rule, if it passes, checked on one large PAH. The word "beat" leaves §1 of the proposal
+and every benzene sentence; the proposal opens with the question — can a measured coupled-cluster
+correction, licensed where the truth is known, mean anything for the PAHs where none exists.
+**To be written 2026-09-09** with the cold-read round: Ladder §1 (sentence types) and the R0/R1
+rows, Goal (criterion), proposal §1, §5.2, §7, §13, Mapping (M03/M08 claims), Distilled plan.
+
 ## Dated notes after the freeze
 
 - **2026-09-05 — R2/R3 gas-phase sources.** An exhaustive search
