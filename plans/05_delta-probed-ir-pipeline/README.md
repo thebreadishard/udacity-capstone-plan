@@ -355,7 +355,7 @@ al. 2009, item 53: sixteen naphthalene bands at 0.005 cm⁻¹ with the hot bands
 scored with u_T = 0 plus a 0.5 cm⁻¹ head-to-origin term (labelled upper bound from the paper's
 figures); other room-temperature sources keep the floor (Ladder dated note 2026-09-08; probes README
 2a). **Open since the proposal cold read of 2026-09-08** ([Cold_Read_2026-09-08_Proposal.md](GoalGathering/Cold_Read_2026-09-08_Proposal.md)):
-**P12** the anchor's basis-set error in the error budget (finding 4); **P13** R1's energy route as
+**P12** the anchor's basis-set error in the error budget (finding 4) — **accepted by the user 2026-09-08 (decision 26), form (a) + (c)**: a **basis-set line** enters the anchor licence and the per-band error budget, fed by (i) the measured cc-pVDZ → cc-pVTZ change of the canonical harmonic curvature per benzene mode, printed from the two existing truth lines (no new runs; a lower bound), (ii) the literature distance of CCSD(T)/cc-pVTZ from the basis-set limit for benzene once the reference is read (Esselman et al. 2023 on the reading list), and (iii) a canonical cc-pVQZ diagonal line at benzene (61 energies) in the cluster request, which replaces (i)–(ii) when it prints; the expected-effect line is restated as an upper bound at the anchor's level; no F12 — neither CCSD(T)-F12 nor the in-testing MP2-F12 of PySCF is usable here (checked 2026-09-08); **P13** R1's energy route as
 B3 work or as a dated multi-week laptop job (finding 6) — **deferred by the user on 2026-09-08 until
 one naphthalene LNO-CCSD(T)/cc-pVTZ energy has been timed** (planned 2026-09-09, after the xtight
 run; needs a quick DFT geometry first, the naphthalene dry run not having run); **P14** the benzene
