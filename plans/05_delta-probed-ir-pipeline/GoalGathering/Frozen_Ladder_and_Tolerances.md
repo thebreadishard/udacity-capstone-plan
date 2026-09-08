@@ -200,6 +200,14 @@ read at lower signal-to-noise, and 2a prints it. Every other room-temperature so
 record, the hot WebBook columns) keeps the floor of the paragraph above. Nothing else in this
 section changes.
 
+**Dated note 2026-09-08 (decision 25, P17 — R2 C–H stretch family).** The jet-cooled 3 µm column of
+item 58 (Maltseva et al. 2016; the R2 species' C–H stretches sit in Fermi-resonance polyads, so
+"the fundamental" is not an isolable stick there) is **named but not promised**: the R2 accuracy
+claim for the C–H families covers the C–H out-of-plane bands on the hot gas sources by the margin
+rule; the C–H stretch family enters the scored set only when a scoring rule for that region
+(polyad pattern, intensity-weighted centroid, or the source authors' assignment) has been agreed
+with the source's authors and written into the pilot note. Until then it is a shown column.
+
 **Promised:** R0–R1 scored as accuracy rungs against gas-phase data. R2–R3 scored as accuracy
 rungs per family under the decidability rule above and the "beat and noise" rule of §1. R6 per
 the dated note above. **[05]** The **cost record** (§1) for every rung and mode that ran; **mode E
