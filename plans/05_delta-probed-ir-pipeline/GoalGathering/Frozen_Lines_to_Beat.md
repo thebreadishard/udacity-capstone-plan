@@ -59,6 +59,15 @@ prior art for plan 05's diagonal recovery, not an opponent line (it produces no 
   (Mackie et al. 2015–2022; Esposito et al. 2024a–c) — the label is Ricca et al. 2026's; **specified
   and Crossref-verified 2026-09-08** as ten papers, bibliography item 12 (one held and read, one open
   access, eight asked of the supervisor).
+  **Dated line 2026-09-08 (from the two held method papers, items 45 and 12(10)):** the protocol as
+  the group states it is B3LYP/N07D in Gaussian16 on a 200 × 974 grid, QFF → VPT2 in a modified
+  SPECTRO with symmetry-based resonance polyad matrices, resonance window 200 cm⁻¹, and **modes below
+  300 cm⁻¹ excluded from the VPT2** — so line B omits, by construction, the low-mode anharmonic
+  couplings that carry hot bands (Pirali 2009, Joblin 1995). The line profile is per paper (1 cm⁻¹
+  Gaussian in the 2024 letter, 20 cm⁻¹ Lorentzian in the 2024 JCP paper); the library's own profile
+  is not documented on the PAHdb pages, and positions and integrated intensities do not depend on it.
+  Line B is scored on its stick positions; the difference between our anharmonic treatment and this
+  protocol is isolated by P4's Δ₂ = 0 null row, not by this line.
 - **Mulas, Falvo, Cassam-Chenaï, Joblin**, JCP **149**, 144102 (2018). DOI `10.1063/1.5050087`,
   arXiv:1809.05669. Identifiers from the plan-02 bibliography; re-verified by plan 04's Pass B
   reviewer on 2026-09-02 (arXiv); full text read by plan 05's Pass B reviewer on 2026-09-03.
