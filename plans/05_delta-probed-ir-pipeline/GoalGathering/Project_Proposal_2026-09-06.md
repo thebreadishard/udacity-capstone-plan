@@ -248,7 +248,7 @@ subsection):
   as a measured floor, enlarge the frozen virtual space and re-measure, or calibrate it per mode
   where a canonical reference exists — was decided on 8 September: measure first. The same scan with
   the local-correlation thresholds one decade tighter (the frozen arm only; the other two arms and
-  the truth line stand) started that evening and ends around 10 September; if the bias falls by the
+  the truth line stand) started that evening and ends on 9 September; if the bias falls by the
   factor the smaller basis showed, the anchor runs at those thresholds and the cost record carries
   the factor, otherwise recording or per-mode calibration is chosen before the naphthalene rehearsal
   (research note P10, decision 20).

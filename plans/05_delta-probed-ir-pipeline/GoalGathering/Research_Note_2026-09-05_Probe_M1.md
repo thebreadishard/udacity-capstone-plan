@@ -212,7 +212,8 @@ truth script skips done points). Smoke test of the new code path at cc-pVDZ tigh
 points (`benzene_cc-pvdz_tight_smokeA/`, 17:42–17:56): round trip 0.0000 µE_h, arm A alone 168 s per
 point against 570 s for three arms, the comparison tolerates the missing arms. **Started 2026-09-08
 17:56** (`results_m1/benzene_cc-pvtz_xtight/`, log `benzene_ccpvtz_xtight.log`); expected ≈ 1.5–2
-days (arm A per point ≈ 2–2.5× the tight arm-A cost of ≈ 2,200 s), end Wednesday 10 September.
+days (arm A per point ≈ 2–2.5× the tight arm-A cost of ≈ 2,200 s); measured after the start: reference 4,300 s
+with 219 of 243 virtuals active per fragment, so ≈ 32 h for 27 points — end Wednesday 9 September, early morning.
 What it decides: if the composite bias drops by about the cc-pVDZ factor (to ≲ 0.2 cm⁻¹) the anchor
 object is run at xtight and the cost record carries the factor; if it does not, the bias is a
 property of transport, not of space size, and (a) or (c) is the remaining choice.
