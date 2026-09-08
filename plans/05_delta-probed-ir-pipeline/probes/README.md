@@ -43,8 +43,11 @@ Conventions, carried from plans 01–04:
   the composite (MP2-corrected) energy. Results: `results_m1/benzene_cc-pvdz_normal_semican/` (the
   numbers of the dated note), `..._normal/` (first run, arm A not yet semicanonicalised — kept as the
   record of §2.5 of the note), `..._tight/` (tight thresholds, 2026-09-06: arm A composite bias
-  0.03–0.36 cm⁻¹), `results_m1/benzene_cc-pvtz_tight/` (anchor basis, running since 2026-09-06 07:31,
-  ≈ 2.5 days incl. the truth line — decision 16). See
+  0.03–0.36 cm⁻¹), `results_m1/benzene_cc-pvtz_tight/` (anchor basis, 2026-09-06 07:31 → 09-08 17:31
+  incl. the truth line — decision 16: arm A smooth, composite bias +0.94 / +0.06 / +1.58 cm⁻¹, §2.2c),
+  `results_m1/benzene_cc-pvtz_xtight/` (thresholds [10⁻⁷, 10⁻⁸], **`--arms A`** — the frozen arm only,
+  B and C reused from the tight run, truth line copied in; started 2026-09-08 17:56, ≈ 1.5–2 days —
+  decision 20, P10 b), `benzene_cc-pvdz_tight_smokeA/` (the `--arms A` smoke test). See
   [Research_Note_2026-09-05_Probe_M1.md](../GoalGathering/Research_Note_2026-09-05_Probe_M1.md).
 
 Otherwise none under plan 05 yet. Plan 04's NIST gas-phase coverage probe and its raw cache exist in

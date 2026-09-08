@@ -246,8 +246,12 @@ subsection):
   at the out-of-plane endpoint, 0.57 on the C–C stretch). The bias is a pure curvature term (the
   quartic coefficient is zero on every mode) and enters Δ₂ directly. What to do with it — record it
   as a measured floor, enlarge the frozen virtual space and re-measure, or calibrate it per mode
-  where a canonical reference exists — is an open decision (research note P10), taken before the
-  naphthalene rehearsal.
+  where a canonical reference exists — was decided on 8 September: measure first. The same scan with
+  the local-correlation thresholds one decade tighter (the frozen arm only; the other two arms and
+  the truth line stand) started that evening and ends around 10 September; if the bias falls by the
+  factor the smaller basis showed, the anchor runs at those thresholds and the cost record carries
+  the factor, otherwise recording or per-mode calibration is chosen before the naphthalene rehearsal
+  (research note P10, decision 20).
 - *A definition fixed by the measurement.* The transported orbital blocks must be
   semicanonicalised at each geometry — a rotation inside the frozen space that the fragment
   solver's MP2 start and (T) step assume; a first run without that step read a spurious bias of

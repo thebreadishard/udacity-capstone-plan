@@ -91,7 +91,8 @@ def main():
         pts = [p for p in arms["points"] if p["mode"] == m and (m, round(p["q"], 6)) in tr]
         pts.sort(key=lambda p: p["q"])
         q = np.array([p["q"] for p in pts])
-        for arm in "ABC":
+        arms_present = [a for a in "ABC" if all(a in p for p in pts)]   # an --arms A run has no B/C (2026-09-08)
+        for arm in arms_present:
             d = np.array([p[arm][ekey] - tr[(m, round(p["q"], 6))]["e_corr_ccsd_t"] for p in pts]) * 1e6
             rec = {"n": len(q)}
             if len(q) >= 6:

@@ -26,7 +26,9 @@ Stage 0 is the round trip: at the reference geometry, arm A with reloaded spaces
 arm C to 10⁻⁹ E_h.
 
 Runs in WSL:  wsl ~/qc05/bin/python plans/05_delta-probed-ir-pipeline/probes/m1_frozen_spaces.py
-              [--basis cc-pvdz] [--thresh normal|tight] [--npts 9] [--modes 12,20,6] [--threads 8]
+              [--basis cc-pvdz] [--thresh normal|tight|xtight] [--npts 9] [--modes 12,20,6] [--threads 8]
+              [--arms ABC|A]   (A: only the frozen arm at the displaced points — arms B and C do not depend on
+                               the reference and are reused from the run at the same basis; added 2026-09-08, P10 b)
 """
 from __future__ import annotations
 
@@ -44,7 +46,7 @@ import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
 DRYRUN = os.path.join(HERE, "results_dryrun", "benzene")
 OUT = os.path.join(HERE, "results_m1")
-THRESH = {"normal": [1e-5, 1e-6], "tight": [1e-6, 1e-7]}
+THRESH = {"normal": [1e-5, 1e-6], "tight": [1e-6, 1e-7], "xtight": [1e-7, 1e-8]}   # xtight added 2026-09-08 (P10 b)
 FROZEN_CORE = 6   # benzene: six carbon 1s
 
 
@@ -184,6 +186,8 @@ def main():
     ap.add_argument("--modes", default="auto", help="comma-separated DFT mode indices: totally symmetric, degenerate, non-symmetric")
     ap.add_argument("--threads", type=int, default=8)
     ap.add_argument("--tag", default="")
+    ap.add_argument("--arms", default="ABC", choices=["ABC", "A"],
+                    help="ABC: all three arms at every displaced point (default); A: the frozen arm only")
     ap.add_argument("--resume", action="store_true",
                     help="continue an interrupted run: keep the finished points in the output dir (their rows and sealed "
                          "energies), verify the recomputed frozen-space hash against the saved reference, run only the missing points")
@@ -342,25 +346,35 @@ def main():
                 pass
             match = np.abs(lo_c.T @ S @ lo_x)      # fresh × transported
             best_match_min = float(match.max(axis=1).min())
-            mccC = Recording(mf, lo_c, frag_lolist, frozen=FROZEN_CORE); mccC.lno_thresh = THRESH[args.thresh]; mccC.verbose = 2
-            mccC.kernel(); E_C = energies_of(mccC, mf, emp2)
-            mccB = Recording(mf, lo_x, frag_lolist, frozen=FROZEN_CORE); mccB.lno_thresh = THRESH[args.thresh]; mccB.verbose = 2
-            mccB.kernel(); E_B = energies_of(mccB, mf, emp2)
+            if args.arms == "ABC":
+                mccC = Recording(mf, lo_c, frag_lolist, frozen=FROZEN_CORE); mccC.lno_thresh = THRESH[args.thresh]; mccC.verbose = 2
+                mccC.kernel(); E_C = energies_of(mccC, mf, emp2)
+                mccB = Recording(mf, lo_x, frag_lolist, frozen=FROZEN_CORE); mccB.lno_thresh = THRESH[args.thresh]; mccB.verbose = 2
+                mccB.kernel(); E_B = energies_of(mccB, mf, emp2)
+            else:
+                E_B = E_C = None
             mccA, dA = arm_A(mf, S, lo_x); E_A = energies_of(mccA, mf, emp2)
+            def diff(x, y, key="e_corr_lno_ccsd_t"):
+                return None if (x is None or y is None) else (x[key] - y[key]) * 1e6
             row = {"mode": int(m), "freq_cm": float(freq[m]), "family": fam[m], "q": float(q),
                    "occ_smin": float(sv_occ.min()), "occ_offdiag_max": offdiag_max(O_occ),
                    "vir_smin": dA["vir_smin_min_over_frags"], "vir_offdiag_max": dA["vir_offdiag_max_over_frags"],
                    "pm_fresh": pm_c, "pm_transported": pm_t, "fresh_vs_transported_min_best_match": best_match_min,
-                   "EA_minus_EB_uEh": (E_A["e_corr_lno_ccsd_t"] - E_B["e_corr_lno_ccsd_t"]) * 1e6,
-                   "EA_minus_EC_uEh": (E_A["e_corr_lno_ccsd_t"] - E_C["e_corr_lno_ccsd_t"]) * 1e6,
-                   "EB_minus_EC_uEh": (E_B["e_corr_lno_ccsd_t"] - E_C["e_corr_lno_ccsd_t"]) * 1e6,
-                   "EA_minus_EC_lnomp2_uEh": (E_A["e_corr_lno_mp2"] - E_C["e_corr_lno_mp2"]) * 1e6,
+                   "EA_minus_EB_uEh": diff(E_A, E_B),
+                   "EA_minus_EC_uEh": diff(E_A, E_C),
+                   "EB_minus_EC_uEh": diff(E_B, E_C),
+                   "EA_minus_EC_lnomp2_uEh": diff(E_A, E_C, "e_corr_lno_mp2"),
                    "wall_s": time.time() - t_pt, "peak_rss_gb": rss_gb()}
             rows.append(row)
-            sealed["points"].append({"mode": int(m), "q": float(q), "A": E_A, "B": E_B, "C": E_C})
+            pt = {"mode": int(m), "q": float(q), "A": E_A}
+            if E_B is not None:
+                pt.update(B=E_B, C=E_C)
+            sealed["points"].append(pt)
+            f2 = lambda v: "—" if v is None else f"{v:+.2f}"   # noqa: E731
+            f1 = lambda v: "—" if v is None else f"{v:+.1f}"   # noqa: E731
             log(f"mode {m} q={q:+.2f}: s_min occ {row['occ_smin']:.4f} vir {row['vir_smin']:.4f}; "
                 f"pre-Löwdin off-diag occ {row['occ_offdiag_max']:.2e} vir {row['vir_offdiag_max']:.2e}; "
-                f"A−B {row['EA_minus_EB_uEh']:+.2f} A−C {row['EA_minus_EC_uEh']:+.2f} µE_h (LNO-MP2 piece A−C {row['EA_minus_EC_lnomp2_uEh']:+.1f}); "
+                f"A−B {f2(row['EA_minus_EB_uEh'])} A−C {f2(row['EA_minus_EC_uEh'])} µE_h (LNO-MP2 piece A−C {f1(row['EA_minus_EC_lnomp2_uEh'])}); "
                 f"PM fresh {pm_c:.4f} transported {pm_t if pm_t is None else round(pm_t,4)}; match {best_match_min:.3f}; {row['wall_s']:.0f} s")
             json.dump({"rows": rows}, open(os.path.join(out, "m1_rows.json"), "w"), indent=1)
             blob = json.dumps(sealed, sort_keys=True).encode()
@@ -369,7 +383,8 @@ def main():
 
     # ---------------- report (no verdict)
     seal_hash = open(os.path.join(out, "m1_sealed_energies.sha256")).read()
-    lines = [f"# Probe M1 — frozen spaces — benzene {args.basis}, LNO thresholds {THRESH[args.thresh]}, "
+    f2 = lambda v: "—" if v is None else f"{v:+.2f}"   # noqa: E731
+    lines = [f"# Probe M1 — frozen spaces — benzene {args.basis}, LNO thresholds {THRESH[args.thresh]}, arms {args.arms}, "
              f"{datetime.now():%Y-%m-%d %H:%M}, {platform.node()} (WSL), {args.threads} threads",
              "", f"- reference: {len(stored)} fragments (one per PM LMO); frozen-space hash `{frozen_space_hash[:16]}…`; "
              f"arm C at the reference {t_ref:.0f} s",
@@ -382,7 +397,7 @@ def main():
         lines.append(f"| {r['mode']} | {r['family']} | {r['freq_cm']:.0f} | {r['q']:+.2f} | {r['occ_smin']:.4f} | {r['occ_offdiag_max']:.1e} | "
                      f"{r['vir_smin']:.4f} | {r['vir_offdiag_max']:.1e} | {r['pm_fresh']:.3f} | "
                      f"{'—' if r['pm_transported'] is None else f'{r['pm_transported']:.3f}'} | {r['fresh_vs_transported_min_best_match']:.3f} | "
-                     f"{r['EA_minus_EB_uEh']:+.2f} | {r['EA_minus_EC_uEh']:+.2f} | {r['EB_minus_EC_uEh']:+.2f} | {r['wall_s']:.0f} |")
+                     f"{f2(r['EA_minus_EB_uEh'])} | {f2(r['EA_minus_EC_uEh'])} | {f2(r['EB_minus_EC_uEh'])} | {r['wall_s']:.0f} |")
     # per-mode smoothness of A−C and A−B: residual about a degree-4 fit in q (the Q6 estimator, informational)
     lines.append("")
     for m in modes:
@@ -390,6 +405,8 @@ def main():
         if len(rr) >= 6:
             qq = np.array([r["q"] for r in rr])
             for key in ("EA_minus_EC_uEh", "EA_minus_EB_uEh"):
+                if any(r[key] is None for r in rr):
+                    continue
                 y = np.array([r[key] for r in rr]); res = y - np.polyval(np.polyfit(qq, y, 4), qq)
                 lines.append(f"- mode {m} ({rr[0]['family']}, {rr[0]['freq_cm']:.0f} cm⁻¹): {key.replace('_uEh','')} residual about a degree-4 fit "
                              f"σ = {np.sqrt(np.sum(res**2)/max(len(qq)-5,1)):.3f} µE_h (ν = {len(qq)-5}); range {y.min():+.2f} … {y.max():+.2f} µE_h")

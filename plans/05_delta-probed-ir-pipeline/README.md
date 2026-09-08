@@ -341,7 +341,14 @@ probes README 2b, mapping M03, Uitleg §1.3, proposal §15).
 **Decision 19 (closed 2026-09-06):** silent-only coupling blocks are measured per rung — the deck
 prints their count, the rung's DFT dry run recovers with and without them, and they are dropped only
 where every scored family's position moves by less than τ₇; default keep (Ladder §3 structural-prior
-dated note). **No decision is open.**
+dated note).
+
+**Decision 20 (closed 2026-09-08):** P10 (b) — the anchor-basis curvature bias of the frozen arm
+(+0.94 / +0.06 / +1.58 cm⁻¹ composite at cc-pVTZ tight, research note §2.2c) is **measured against a
+larger frozen space before anything else is decided**: the same benzene scan at thresholds one decade
+tighter, frozen arm only, against the existing cc-pVTZ truth line (started 2026-09-08 17:56; note P10
+records why the threshold form was chosen over the union form). The Ladder is unchanged; what the
+result decides is written in the note. **No decision is open.**
 
 ## Dated notes after the freeze
 

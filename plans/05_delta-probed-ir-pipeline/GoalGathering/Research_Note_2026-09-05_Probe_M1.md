@@ -198,6 +198,24 @@ canonical endpoints already budgeted for the off-diagonal bias (decision 16) giv
 arm A's a₄ ≈ 0 means a degree-2 correction is complete — but this exists only at R0–R1 and says
 nothing about R2+. (a) is honest and free; (b) is the only option that could make the object better
 at every rung; (c) is a calibration, not a fix. The user decides; the Ladder stays as written.
+**Decided 2026-09-08 (user): (b) — measure whether a larger frozen space removes the bias (decision
+20).** Implementation chosen by the author from the two forms named under (b): **thresholds one decade
+tighter** ("xtight", [10⁻⁷, 10⁻⁸]), not the union of the q = ±1 selections — because §2.2c shows arm
+C's *fresh* selections at cc-pVTZ tight are themselves more biased than arm A (composite +5.2 / +9.5 /
+−0.5 cm⁻¹ against A's +0.94 / +0.06 / +1.58), so adding fresh endpoint selections to the reference is
+not the lever; more space is. At tight thresholds the reference already keeps 172 of 243 virtuals
+per fragment active (frozen_spaces_reference.npz: 71 frozen virtuals), so one decade tighter moves
+the object towards the full space, and the cc-pVDZ step normal → tight had cut the composite bias
+tenfold (§2.2b). Only arm A is rerun (`--arms A`, new): arms B and C do not depend on the reference
+and stand from the tight run; the cc-pVTZ truth line is reused (copied into the new directory; the
+truth script skips done points). Smoke test of the new code path at cc-pVDZ tight, mode 12, three
+points (`benzene_cc-pvdz_tight_smokeA/`, 17:42–17:56): round trip 0.0000 µE_h, arm A alone 168 s per
+point against 570 s for three arms, the comparison tolerates the missing arms. **Started 2026-09-08
+17:56** (`results_m1/benzene_cc-pvtz_xtight/`, log `benzene_ccpvtz_xtight.log`); expected ≈ 1.5–2
+days (arm A per point ≈ 2–2.5× the tight arm-A cost of ≈ 2,200 s), end Wednesday 10 September.
+What it decides: if the composite bias drops by about the cc-pVDZ factor (to ≲ 0.2 cm⁻¹) the anchor
+object is run at xtight and the cost record carries the factor; if it does not, the bias is a
+property of transport, not of space size, and (a) or (c) is the remaining choice.
 
 ## 4. What did not change
 
