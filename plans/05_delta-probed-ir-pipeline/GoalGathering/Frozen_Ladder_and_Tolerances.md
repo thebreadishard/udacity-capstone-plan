@@ -185,10 +185,15 @@ prints, as the no-swap rule requires).** Item 53 (Pirali et al. 2009), received 
 and read in full on 2026-09-08, gives **sixteen gas-phase naphthalene fundamentals at 300 K and
 0.005 cm⁻¹ resolution with the fundamental Q-branch head resolved from its hot-band sequences**
 (bibliography, Readings of 2026-09-08). It is named here as a **labelled R1 column** ("gas, 300 K,
-resolved fundamental"; resolution term 0.005 cm⁻¹) beside the PNNL record. Its temperature term is
-**not decided by this note**: until proposal P11 is decided it carries the room-temperature floor
-u_T ≥ u_296 like every other source; P11 asks whether a resolved fundamental should carry u_T = 0
-plus a head-to-origin term instead. Nothing else in this section changes.
+resolved fundamental"; resolution term 0.005 cm⁻¹) beside the PNNL record. Its temperature term:
+**decision 21 (user, 2026-09-08, P11 a)** — a source of class "gas, room temperature, resolved
+fundamental" carries **u_T = 0** (the 0 → 1 transition read directly does not shift with
+temperature; the hot bands are resolved away) plus a **head-to-origin term of 0.5 cm⁻¹**, an upper
+bound read from the Q-branch widths in Pirali's Figs. 3–6 and labelled as such until 2a can
+measure it on a digitised spectrum; the centroid-precision term is larger for the a-/b-type bands
+read at lower signal-to-noise, and 2a prints it. Every other room-temperature source (the PNNL
+record, the hot WebBook columns) keeps the floor of the paragraph above. Nothing else in this
+section changes.
 
 **Promised:** R0–R1 scored as accuracy rungs against gas-phase data. R2–R3 scored as accuracy
 rungs per family under the decidability rule above and the "beat and noise" rule of §1. R6 per

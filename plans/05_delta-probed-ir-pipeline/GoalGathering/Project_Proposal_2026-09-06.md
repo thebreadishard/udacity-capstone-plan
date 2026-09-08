@@ -376,8 +376,8 @@ at 0.112 cm⁻¹ and 25 or 50 °C — the methods state 25 °C, the introduction
 50 °C; the record header decides — (Schneider et al.
 2024, in the database described by Sharpe et al. 2004),
 with calibrated intensities; Pirali et al. 2009's sixteen fundamentals at 0.005 cm⁻¹, read at the
-Q-branch head with the hot bands resolved away, as a second labelled column (its temperature term is
-an open decision, P11); the hot NIST WebBook entries as labelled extra columns; Pirali et al. 2009
+Q-branch head with the hot bands resolved away, as a second labelled column (scored with no temperature
+shift and a 0.5 cm⁻¹ head-to-origin term, since the fundamental is read directly — decision 21); the hot NIST WebBook entries as labelled extra columns; Pirali et al. 2009
 and Joblin et al. 1995 for the temperature term. Pyrene, chrysene, triphenylene: NIST WebBook hot-vapour GC-IR
 spectra at 8 cm⁻¹ without concentration data. Tetracene: matrix isolation, plus a jet-cooled band
 list (Lemmens et al. 2019). Coronene: matrix isolation, plus six jet-cooled 6–15 µm bands

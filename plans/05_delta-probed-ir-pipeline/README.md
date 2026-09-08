@@ -350,10 +350,11 @@ tighter, frozen arm only, against the existing cc-pVTZ truth line (started 2026-
 records why the threshold form was chosen over the union form). The Ladder is unchanged; what the
 result decides is written in the note.
 
-**Open — P11 (2026-09-08):** how a resolved room-temperature fundamental (Pirali et al. 2009, item
-53, sixteen naphthalene bands at 0.005 cm⁻¹) is scored — u_T = 0 plus a head-to-origin term, the
-floor, or check-only (bibliography, Readings of 2026-09-08). The source is named in the Ladder
-(dated note 2026-09-08) and carries the floor until decided. **One decision is open.**
+**Decision 21 (closed 2026-09-08):** P11 (a) — a resolved room-temperature fundamental (Pirali et
+al. 2009, item 53: sixteen naphthalene bands at 0.005 cm⁻¹ with the hot bands resolved away) is
+scored with u_T = 0 plus a 0.5 cm⁻¹ head-to-origin term (labelled upper bound from the paper's
+figures); other room-temperature sources keep the floor (Ladder dated note 2026-09-08; probes README
+2a). **No decision is open.**
 
 ## Dated notes after the freeze
 
