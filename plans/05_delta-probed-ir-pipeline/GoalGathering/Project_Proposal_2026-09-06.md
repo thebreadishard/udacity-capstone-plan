@@ -151,7 +151,7 @@ work that combines them:
 | recovering a Hessian from few measurements by exploiting its structure | compressed sensing in a cheap method's eigenbasis (Sanders et al. 2015); O1NumHess (Wang et al. 2025) | applied to a difference Hessian rather than a full one; the prior is the molecule's symmetry, parameter-free, instead of generic sparsity; the probe count is a measured, pre-registered quantity |
 | correcting DFT towards CCSD(T) by learning the difference | Δ-machine learning of potential-energy surfaces (transfer learning to CCSD(T), Käser, Boittier, Upadhyay & Meuwly 2021) | nothing is learned per molecule; the difference is measured; a learned model is a possible follow-up gated by the measured range (§6) |
 | local-correlation spaces held fixed for numerical derivatives | **domain freezing and domain merging along a potential-energy surface (Mata & Werner 2006, as described by Pinski & Neese 2019) — holding local-correlation domains fixed across geometries is 2006 prior art, found on 8 September after the first search missed it**; the discontinuity problem itself (Russ & Crawford 2004; Madriaga & Crawford 2025); residual smoothing (Subotnik & Head-Gordon 2005); fixed domains for DLPNO-MP2 numerical derivatives (ORCA) | frozen LNO-CCSD(T) fragment spaces transported by projection across displaced geometries, semicanonicalised, with the smoothness and bias measured against canonical CCSD(T) — no publication found that does this or measures it |
-| scaled or ML-corrected harmonic DFT for PAH spectra | PAHdb (Ricca et al. 2026); Ethereal AI (Bos et al. 2025) | these are the opponents; the plan adds a measured coupled-cluster correction and an error budget per band |
+| scaled, ML-corrected or anharmonic DFT for PAH spectra | PAHdb v4.00 (Ricca et al. 2026); the PAHdb Anharmonic library v1.00 (Mackie et al. 2015, 2016; Esposito et al. 2024); Mulas et al. 2018; Ethereal AI (Bos et al. 2025) | these are the opponents; the plan adds a measured coupled-cluster correction to the harmonic constants and an error budget per band, and leaves the anharmonic constants at DFT level as they do |
 | selected high-level vibrations from a cheap guess, without the full Hessian | mode-tracking (Reiher & Neugebauer 2003, read in full: Davidson subspace iteration on gradient derivatives, cheap-method guess, CCSD(T) refinement named as the intended use) | the target is the correction to the whole force-constant matrix from energies, under a symmetry prior, with the probe count measured — not a set of converged eigenvectors |
 
 The claim of novelty is therefore the combination and its measurement discipline, not any single
@@ -379,7 +379,8 @@ with calibrated intensities; Pirali et al. 2009's sixteen fundamentals at 0.005 
 Q-branch head with the hot bands resolved away, as a second labelled column (scored with no temperature
 shift and a 0.5 cm⁻¹ head-to-origin term, since the fundamental is read directly — decision 21); the hot NIST WebBook entries as labelled extra columns; Pirali et al. 2009
 and Joblin et al. 1995 for the temperature term. Pyrene, chrysene, triphenylene: NIST WebBook hot-vapour GC-IR
-spectra at 8 cm⁻¹ without concentration data. Tetracene: matrix isolation, plus a jet-cooled band
+spectra at 8 cm⁻¹ without concentration data, and, for the C–H stretch family only, the jet-cooled
+3 µm IR–UV ion-dip spectra of Maltseva et al. 2016 as a labelled cold column. Tetracene: matrix isolation, plus a jet-cooled band
 list (Lemmens et al. 2019). Coronene: matrix isolation, plus six jet-cooled 6–15 µm bands
 (Lemmens, Rijs & Buma 2021). All of these sources were read in full on 6 September 2026 and their
 conditions transcribed (bibliography, "Readings of 2026-09-06 — laboratory sources"). Three
@@ -518,9 +519,18 @@ resolution and temperature and labelled as presentation.
 | Line | What it is | Version / reference | Where it competes |
 |---|---|---|---|
 | A | PAHdb computed library: scaled-harmonic DFT | v4.00; Ricca et al. 2026 | every rung |
-| B | anharmonic DFT quartic force field for pyrene and coronene | Mulas et al. 2018 | R2, R3 where present |
+| B | anharmonic DFT quartic force fields: the **PAHdb Anharmonic library v1.00** (45 spectra, C₆H₆ to C₁₈H₁₂; B3LYP/N07D quartic force fields, VPT2 with symmetry-based resonance polyads in SPECTRO — the protocol of Mackie et al. 2015, 2016 and Esposito et al. 2024) and, for pyrene and coronene, Mulas et al. 2018 (B97-1) | v1.00 (1 July 2026); Mackie et al. 2015, 2016; Mulas et al. 2018 | every accuracy rung where a species is present (R0–R2 from the library, R2–R3 from Mulas) |
 | C | machine-learning molecular dynamics trained on DFT, temperature-dependent, to C₂₁₆ | Mai et al. 2025 (MNRAS 541, 3073) | where coverage overlaps; theory-vs-theory on reach rungs |
 | in-house | the **calibrated-harmonic baseline** (Module 04): a per-band ML correction to scaled-harmonic DFT, trained leave-molecule-out on laboratory residuals, after the ML-corrected-scaling approach of Bos et al. 2025 | built in this project, frozen before scoring | every accuracy rung |
+
+Line B is compared on **stick positions per band family**, nothing else: its authors' choices —
+the 200 cm⁻¹ resonance window, the exclusion of modes below 300 cm⁻¹ from the VPT2, the line
+profile — are not scored against, and where this pipeline's anharmonic step differs from that
+protocol the difference is separated from the coupled-cluster correction by the Δ₂ = 0 null row
+below, which runs this pipeline's own anharmonic step without the correction. The question put to
+line B is therefore not whether its anharmonic treatment is right, but whether a measured
+coupled-cluster correction to the harmonic constants adds accuracy on top of an anharmonic DFT
+treatment of the same kind.
 
 **Frozen comparisons and the pilot note.** Paired per-band absolute error on identical laboratory
 bands; band lists, windows and margins frozen in the pilot note, which is written with seven
@@ -788,6 +798,54 @@ date, and the science continues past it.
 6. Whether the supervisor sees the outlook of §6 as a reason to widen the corpus of measured
    molecules beyond the ladder, at cluster cost, once R3 has printed the range of the correction.
 
+**Questions the student will bring to the first meeting** (collected 8 September; each is a
+number or a source the plan would use, none changes a rule by itself):
+
+*On the laboratory side.*
+
+7. For the jet-cooled band lists of Lemmens et al. 2019 and 2021, the free-electron-laser bandwidth
+   per measurement rather than the "0.5–1 % of the frequency" of the papers — it is the resolution
+   term of the cold columns — and whether the 10–19 cm⁻¹ disagreement between the cold coronene
+   bands at 7.7 and 8.8 µm and the hot spectra of Joblin et al. 1994 with their temperature slopes
+   has a known cause.
+8. For Maltseva et al. 2016, the band tables and laser bandwidth of the 3 µm spectra of pyrene,
+   chrysene and triphenylene, and whether the assigned features can be scored as fundamentals given
+   the Fermi-resonance polyads in that region.
+9. For Pirali et al. 2009, whether the offset between the Q-branch head and the band origin of the
+   c-type naphthalene bands is known better than the 0.5 cm⁻¹ upper bound adopted here (decision
+   21).
+10. The temperature of the PNNL naphthalene record (25 °C in the methods of Schneider et al. 2024,
+    50 °C in its figure caption) — asked only if the record's own metadata file does not settle it.
+
+*On the PAHdb Anharmonic library (line B).*
+
+11. Whether all 45 spectra of version 1.00 were computed with the protocol of the 2024 papers
+    (B3LYP/N07D, the 200 × 974 grid, SPECTRO with symmetry-based resonance polyads, a 200 cm⁻¹
+    window, modes below 300 cm⁻¹ excluded), or with per-species deviations the plan should record.
+12. Whether stick lists (positions and intensities) of the library are downloadable, and which
+    line profile the library applies — the plan scores positions and integrated intensities, so the
+    profile matters only for the figures.
+13. Whether the comparison of §7 — stick positions per family, with the Δ₂ = 0 null row
+    separating this pipeline's anharmonic treatment from the coupled-cluster correction — is, in her
+    judgment, the fair way to put a coupled-cluster harmonic correction next to her method; and
+    which DFT level she would regard as the "same footing" for the pipeline's production constant
+    (§5.1, not yet chosen).
+14. Whether a coupled-cluster harmonic reference for naphthalene exists in her group's work or
+    elsewhere: the expected-effect line of the evaluation has a literature figure for benzene only
+    (5.45 cm⁻¹, Esposito et al. 2024) and none at R1.
+15. Whether excluding modes below 300 cm⁻¹ from the VPT2 in that protocol drops their couplings
+    to the 6–15 µm fundamentals entirely, or only their own bands — relevant to how the Δ₂ = 0 null
+    row of this pipeline, which keeps them, is read against line B.
+
+*On the ladder and the programme.*
+
+16. Whether the scope of the promise — a coupled-cluster correction to the harmonic constants
+    only, no coupled-cluster anharmonic correction, intensities scored on benzene and naphthalene
+    only — is one she would sign, or whether she wants any of the three measured questions of
+    §6–§7 (M1-μ, the diagonal cubic by-product, the learned prior) promoted before the pilot note.
+17. The two asks of item 5 above in concrete form when the time comes: the size of a cluster-time
+    request she would sponsor, and who serves as the named expert for the reach rungs.
+
 ## 14. References
 
 Verification status is tracked per item in the working bibliography of this folder; every
@@ -838,6 +896,17 @@ marked otherwise; author initials are given only where a held PDF's first page s
   DOI 10.1021/acs.jpca.5c05210. (PNO discontinuities in finite-difference properties.)
 - Mai et al. 2025, Mon. Not. R. Astron. Soc. 541, 3073; arXiv:2503.05120. (Opponent line C:
   DFT-trained machine-learning molecular dynamics of PAHs to C₂₁₆.)
+- Mackie, Candian, Huang, Maltseva, Petrignani, Oomens, Buma, Lee & Tielens 2015, J. Chem. Phys.
+  143, 224314. DOI 10.1063/1.4936779. (Opponent line B: the anharmonic quartic-force-field protocol
+  of the PAHdb Anharmonic library — naphthalene, anthracene, tetracene; Crossref record, 8
+  September; PDF asked of the supervisor.)
+- Mackie, Candian, Huang, Maltseva, Petrignani, Oomens, Mattioda, Buma, Lee & Tielens 2016,
+  J. Chem. Phys. 145, 084313. DOI 10.1063/1.4961438. (Opponent line B: benz[a]anthracene,
+  chrysene, phenanthrene, pyrene, triphenylene; Crossref record, 8 September; PDF asked of the
+  supervisor.)
+- Maltseva, Petrignani, Candian, Mackie, Huang, Lee, Tielens, Oomens & Buma 2016, Astrophys. J.
+  831, 58. DOI 10.3847/0004-637x/831/1/58. (Jet-cooled 3 µm spectra of pyrene, chrysene and
+  triphenylene among others — the C–H stretch cold column at R2; Crossref record; abstract grade.)
 - Mulas, Falvo, Cassam-Chenaï & Joblin 2018, J. Chem. Phys. 149, 144102.
   DOI 10.1063/1.5050087. (Opponent line B: anharmonic DFT quartic force fields of pyrene and
   coronene; the emission cascade model.)
