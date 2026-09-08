@@ -31,7 +31,16 @@ ACS Omega, PLOS) staan hier niet: die halen we zelf. Gerangschikt naar wanneer w
 18. Lam, Abdul-Al & Allouche, *J. Chem. Theory Comput.* (2020), DOI 10.1021/acs.jctc.9b00964 — dichtstbijzijnde ML-anharmonische precedent en zijn waarschuwing.
 19. Pinski & Neese, *J. Chem. Phys.* **148**, 031101 (2018) en **150**, 164102 (2019) — DLPNO-MP2 analytische gradiënt; de PNO-relaxatietermen die het bijproject moet dragen.
 20. De DLPNO-CCSD(T)-methodeartikelen van de Neese-groep (Riplinger & Neese 2013; Riplinger, Sandhoefer, Hansen & Neese 2013; Riplinger, Pinski, Becker, Valeev & Neese 2016; *J. Chem. Phys.*) — de standaardcitaties voor de lokale methode waartegen LNO-CCSD(T) wordt afgezet.
-21. De methodeartikelen van PAHdb Anharmonic v1.00: Mackie et al. 2015–2022 (*J. Chem. Phys.*, *Phys. Chem. Chem. Phys.*) en Esposito et al. 2024a–c — de anharmonische DFT-route die onze opponent voor de anharmoniciteit is.
+21. De methodeartikelen van PAHdb Anharmonic v1.00 — **op 8 september gespecificeerd** (het label "Mackie 2015–2022; Esposito 2024a–c" komt uit de literatuurlijst van Ricca et al. 2026, ApJS 282, 7; identifiers via Crossref geverifieerd). Nodig van de begeleider (acht):
+    - Mackie, Candian, Huang, Maltseva, Petrignani, Oomens, Buma, Lee & Tielens, *J. Chem. Phys.* **143**, 224314 (2015), DOI 10.1063/1.4936779
+    - Mackie, Candian, Huang, Maltseva, Petrignani, Oomens, Mattioda, Buma, Lee & Tielens, *J. Chem. Phys.* **145**, 084313 (2016), DOI 10.1063/1.4961438
+    - Mackie, Chen, Candian, Lee & Tielens, *J. Chem. Phys.* **149**, 134302 (2018), DOI 10.1063/1.5038725
+    - Mackie, Candian, Lee & Tielens, *Theor. Chem. Acc.* **140**, 124 (2021), DOI 10.1007/s00214-021-02807-z
+    - Mackie, Candian, Lee & Tielens, *J. Phys. Chem. A* **126**, 3198 (2022), DOI 10.1021/acs.jpca.2c01849
+    - Esposito, Allamandola, Boersma, Bregman, Fortenberry, Maragkoudakis & Temi, *Mol. Phys.* **122**, e2252936 (2024), DOI 10.1080/00268976.2023.2252936
+    - Esposito, Ferrari, Buma, Boersma, Mackie, Candian, Fortenberry & Tielens, *Mol. Phys.* **122**, e2261570 (2024), DOI 10.1080/00268976.2023.2261570
+    - Esposito, Ferrari, Buma, Fortenberry, Boersma, Candian & Tielens, *J. Chem. Phys.* **160**, 114312 (2024), DOI 10.1063/5.0191404
+    Niet nodig: Esposito et al., *J. Chem. Phys.* **160**, 211101 (2024) (al in bezit en gelezen, item 45) en Esposito et al., *MNRAS Lett.* **531**, L87 (2024), DOI 10.1093/mnrasl/slae037 (CC BY, zelf te halen).
 
 ## C. Laboratorium- en scorebordbronnen uit plan 04, nog als "record" gemarkeerd
 
