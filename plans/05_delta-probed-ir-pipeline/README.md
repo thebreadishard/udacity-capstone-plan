@@ -360,7 +360,7 @@ B3 work or as a dated multi-week laptop job (finding 6) — **deferred by the us
 one naphthalene LNO-CCSD(T)/cc-pVTZ energy has been timed** (planned 2026-09-09, after the xtight
 run; needs a quick DFT geometry first, the naphthalene dry run not having run); **P14** the benzene
 rehearsal rerun under the symmetry prior (finding 15) — **accepted by the user 2026-09-08 (decision 22): to run this week**, after the naphthalene timing; needs the deck's full-point-group irrep assignment of the DFT modes (D₆h; decision 11's wording) added to `dryrun_dft_delta_recovery.py`, then the existing benzene surrogate rerun with the prior and K_off printed against the free-element count; **P15** a null on symmetry-forbidden
-couplings of the frozen-space object (finding 16); **P16** the jet-cooled coronene bands as the
+couplings of the frozen-space object (finding 16) — **accepted by the user 2026-09-08 (decision 23)**: at benzene (and naphthalene when its noise run exists) a few symmetry-forbidden pairs are fitted free from two-mode points and their magnitude is printed in the anchor's smoothness record; the prior keeps them at zero in the recovery, and the wording "exact, not assumed" becomes "exact for the canonical surface; measured for the frozen-space one"; **P16** the jet-cooled coronene bands as the
 primary cold truth (finding 27); **P17** the R2 3 µm column not promised until its scoring rule
 exists (finding 21); and the calendar (finding 25). The other findings are addressed in spec once
 the user has decided these.
