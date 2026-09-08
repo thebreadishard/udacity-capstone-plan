@@ -348,7 +348,12 @@ dated note).
 larger frozen space before anything else is decided**: the same benzene scan at thresholds one decade
 tighter, frozen arm only, against the existing cc-pVTZ truth line (started 2026-09-08 17:56; note P10
 records why the threshold form was chosen over the union form). The Ladder is unchanged; what the
-result decides is written in the note. **No decision is open.**
+result decides is written in the note.
+
+**Open — P11 (2026-09-08):** how a resolved room-temperature fundamental (Pirali et al. 2009, item
+53, sixteen naphthalene bands at 0.005 cm⁻¹) is scored — u_T = 0 plus a head-to-origin term, the
+floor, or check-only (bibliography, Readings of 2026-09-08). The source is named in the Ladder
+(dated note 2026-09-08) and carries the floor until decided. **One decision is open.**
 
 ## Dated notes after the freeze
 

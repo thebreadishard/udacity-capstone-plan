@@ -180,6 +180,16 @@ unconditional" stands either way; (vi) item 4 read: the PAHdb matrix A-values ar
 the computed sum over 500–1550 cm⁻¹, so the matrix column scores relative intensities only —
 consistent with decision 18, recorded so no absolute matrix intensity is ever scored.
 
+**Dated note 2026-09-08 (R1 position source named; permitted change — names its source before M03
+prints, as the no-swap rule requires).** Item 53 (Pirali et al. 2009), received from the supervisor
+and read in full on 2026-09-08, gives **sixteen gas-phase naphthalene fundamentals at 300 K and
+0.005 cm⁻¹ resolution with the fundamental Q-branch head resolved from its hot-band sequences**
+(bibliography, Readings of 2026-09-08). It is named here as a **labelled R1 column** ("gas, 300 K,
+resolved fundamental"; resolution term 0.005 cm⁻¹) beside the PNNL record. Its temperature term is
+**not decided by this note**: until proposal P11 is decided it carries the room-temperature floor
+u_T ≥ u_296 like every other source; P11 asks whether a resolved fundamental should carry u_T = 0
+plus a head-to-origin term instead. Nothing else in this section changes.
+
 **Promised:** R0–R1 scored as accuracy rungs against gas-phase data. R2–R3 scored as accuracy
 rungs per family under the decidability rule above and the "beat and noise" rule of §1. R6 per
 the dated note above. **[05]** The **cost record** (§1) for every rung and mode that ran; **mode E

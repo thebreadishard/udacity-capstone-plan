@@ -1,6 +1,6 @@
 # Verzoek om PDF's aan de begeleider — 6 september 2026
 
-> **Stand later op 6 september:** inmiddels zelf legaal verkregen (open access): 1, 3, 5, 6, 14, 18, 23. Open bij de uitgever, door de gebruiker gedownload: 9, 11, 12, 15. **Nog van de begeleider nodig: 2, 4, 7, 8, 13, 16, 17, 19, 20, 21, 22** (10 vervallen op 6 september: de arXiv-tekst is al gelezen, item 23).
+> **Stand later op 6 september:** inmiddels zelf legaal verkregen (open access): 1, 3, 5, 6, 14, 18, 23. Open bij de uitgever, door de gebruiker gedownload: 9, 11, 12, 15. **Ontvangen van de begeleider op 8 september: 2, 4, 7, 8, 13, 16, 17, 19, 20, 22** (alle dertien PDF's; hernoemd en gelezen, zie de bibliografie "Readings of 2026-09-08"). **Nog open: alleen 21** (de PAHdb-Anharmonic-methodeartikelen, Mackie et al. 2015–2022). 10 verviel op 6 september (arXiv-tekst al gelezen, item 23).
 
 Bronnen die het plan citeert of nodig heeft en waarvan de volledige tekst nog niet gelezen is
 (status per item in `Relevant_Scientific_Papers.md`). Open-access-artikelen (arXiv, PMC, IOP CC BY,

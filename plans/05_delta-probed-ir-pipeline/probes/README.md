@@ -121,7 +121,14 @@ single-mode scatter with sealed fit coefficients, and timings; no local-CC Δ₂
    from its header (item 57 states 25 °C and 50 °C in different places), the R3 cold column's
    resolution term as the larger of the FEL bandwidth and the measured cold–hot disagreement
    (10–19 cm⁻¹ at 7.7 and 8.8 µm), and the R0 intensity rows flagged non-certified inside
-   1325–1900 cm⁻¹ (item 56)), their quadrature sum **u_band**, and the decidability
+   1325–1900 cm⁻¹ (item 56); **added 2026-09-08 from the supervisor's PDFs:** the PNNL naphthalene
+   record's temperature from its own metadata PDF (item 59: 5 / 25 / 50 °C offered), the PNNL
+   wavenumber term 0.0018 cm⁻¹, the ≤ 1 % uncorrected-emission caveat below 1100 cm⁻¹ on intensity
+   rows, Pirali's sixteen resolved naphthalene fundamentals as a labelled R1 column (item 53; u_T
+   per P11 once decided, the floor until then), Brumfield's pyrene ν68 origin 1184.0356 cm⁻¹ as the
+   one-line cold check (item 63), and the matrix resolution term per species from its original
+   paper — 0.9 cm⁻¹ for the eight Hudgins & Sandford 1998 species, 0.5 cm⁻¹ otherwise (items 8,
+   4)), their quadrature sum **u_band**, and the decidability
    verdict per family (feeds pilot-note item 1). Expected: R0 and R1 decidable throughout on their room-temperature
    sources (the hot WebBook naphthalene entries as labelled extra columns); R2 C–C families
    inconclusive by construction unless the correction is pinned.

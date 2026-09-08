@@ -104,8 +104,8 @@ small and smooth. Paying coupled-cluster prices to relearn the DFT part is where
 went.
 
 Third, where the difference pays. The hybrid quartic-force-field literature (Boese, Klopper &
-Martin 2005; Bégué, Carbonnière & Pouchan 2005 — both on small molecules; there is no PAH precedent,
-and Bégué's full text is unread) puts the
+Martin 2005; Bégué, Carbonnière & Pouchan 2005 — both read in full, both on small molecules; there is
+no PAH precedent) puts the
 coupled-cluster level in the **harmonic** constants and leaves cubic and quartic constants at DFT
 level. Plan 04 had it the other way round. Plan 05 corrects the harmonic force constants only —
 Δ₂ — and lets DFT supply the anharmonic constants. The domain review sharpened this further:
@@ -150,8 +150,9 @@ work that combines them:
 | coupled-cluster force constants along DFT normal modes from energies; selected off-diagonals; symmetry-forbidden couplings zeroed in the full matrix | Concordant Mode Approach (Lahm et al. 2022; Kitzmiller et al. 2024; Olive Dornshuld et al. 2026, read in full: 17 intermolecular complexes, MP2/haTZ modes, CMA-2A converges with 3 % of the off-diagonals; its persistent benzene outlier is one same-representation ring-deformation coupling, the same phenomenon our rehearsal found) | the target is the *difference* Δ₂, not the CC force constants; the off-diagonal block is recovered as a whole from multi-mode patterns, not element by element; symmetry used as the recovery prior rather than as a clean-up; local rather than canonical coupled cluster, at PAH sizes |
 | recovering a Hessian from few measurements by exploiting its structure | compressed sensing in a cheap method's eigenbasis (Sanders et al. 2015); O1NumHess (Wang et al. 2025) | applied to a difference Hessian rather than a full one; the prior is the molecule's symmetry, parameter-free, instead of generic sparsity; the probe count is a measured, pre-registered quantity |
 | correcting DFT towards CCSD(T) by learning the difference | Δ-machine learning of potential-energy surfaces (transfer learning to CCSD(T), Käser, Boittier, Upadhyay & Meuwly 2021) | nothing is learned per molecule; the difference is measured; a learned model is a possible follow-up gated by the measured range (§6) |
-| local-correlation spaces held fixed for numerical derivatives | fixed domains for DLPNO-MP2 numerical derivatives (ORCA); the discontinuity problem itself (Madriaga & Crawford 2025) | frozen LNO-CCSD(T) fragment spaces transported by projection across displaced geometries, semicanonicalised, with the smoothness and bias measured against canonical CCSD(T) — no publication found that does this or measures it |
+| local-correlation spaces held fixed for numerical derivatives | **domain freezing and domain merging along a potential-energy surface (Mata & Werner 2006, as described by Pinski & Neese 2019) — holding local-correlation domains fixed across geometries is 2006 prior art, found on 8 September after the first search missed it**; the discontinuity problem itself (Russ & Crawford 2004; Madriaga & Crawford 2025); residual smoothing (Subotnik & Head-Gordon 2005); fixed domains for DLPNO-MP2 numerical derivatives (ORCA) | frozen LNO-CCSD(T) fragment spaces transported by projection across displaced geometries, semicanonicalised, with the smoothness and bias measured against canonical CCSD(T) — no publication found that does this or measures it |
 | scaled or ML-corrected harmonic DFT for PAH spectra | PAHdb (Ricca et al. 2026); Ethereal AI (Bos et al. 2025) | these are the opponents; the plan adds a measured coupled-cluster correction and an error budget per band |
+| selected high-level vibrations from a cheap guess, without the full Hessian | mode-tracking (Reiher & Neugebauer 2003, read in full: Davidson subspace iteration on gradient derivatives, cheap-method guess, CCSD(T) refinement named as the intended use) | the target is the correction to the whole force-constant matrix from energies, under a symmetry prior, with the probe count measured — not a set of converged eigenvectors |
 
 The claim of novelty is therefore the combination and its measurement discipline, not any single
 ingredient; the plan's own name for the object is "a symmetry-blocked recovery of a difference
@@ -374,8 +375,10 @@ et al. 1999), with calibrated intensities. Naphthalene: the PNNL quantitative va
 at 0.112 cm⁻¹ and 25 or 50 °C — the methods state 25 °C, the introduction and the figure caption
 50 °C; the record header decides — (Schneider et al.
 2024, in the database described by Sharpe et al. 2004),
-with calibrated intensities; the hot NIST WebBook entries as labelled extra columns; Pirali et al.
-2009 and Joblin et al. 1995 for the temperature term. Pyrene, chrysene, triphenylene: NIST WebBook hot-vapour GC-IR
+with calibrated intensities; Pirali et al. 2009's sixteen fundamentals at 0.005 cm⁻¹, read at the
+Q-branch head with the hot bands resolved away, as a second labelled column (its temperature term is
+an open decision, P11); the hot NIST WebBook entries as labelled extra columns; Pirali et al. 2009
+and Joblin et al. 1995 for the temperature term. Pyrene, chrysene, triphenylene: NIST WebBook hot-vapour GC-IR
 spectra at 8 cm⁻¹ without concentration data. Tetracene: matrix isolation, plus a jet-cooled band
 list (Lemmens et al. 2019). Coronene: matrix isolation, plus six jet-cooled 6–15 µm bands
 (Lemmens, Rijs & Buma 2021). All of these sources were read in full on 6 September 2026 and their

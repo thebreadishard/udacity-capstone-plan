@@ -173,6 +173,14 @@ milestone table is attached to the Module 08 paper as the measured reason.
    mode-G noise line is part of every milestone.
 4. **(T) under AD on frozen spaces** — the code exists (item 48–49, fetched); its numerical
    behaviour on projected spaces is M2's measurement.
+5. **Continuously degenerate localised orbitals on the D₆h rungs** (added 2026-09-08 from item 51,
+   read): Pinski & Neese 2019 report that benzene's π orbitals under Pipek–Mezey are continuously
+   degenerate, which makes the coupled-perturbed localisation equations singular, and they modify
+   the localisation constraint in the Lagrangian to obtain meaningful gradients. M1 §2.4 measured
+   the same arbitrariness of the PM landing. M2's gradient of the frozen-space energy must either
+   avoid the localiser in the differentiated path (the transported set is a fixed function of the
+   reference, so the reference localisation is a constant of the graph — the design intent) or
+   carry that constraint; M2 prints which, and the benzene test is the check.
 5. **Being overtaken** — if the PySCF or ORCA developers release a frozen-space local-CC(T)
    gradient first, this side project switches to using it and reports the switch; the
    milestones stay the same.
