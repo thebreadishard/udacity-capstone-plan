@@ -25,6 +25,25 @@ on every claimed band. The question behind it is whether a measured coupled-clus
 licensed on the molecules where the truth is known, can mean anything for the PAHs where no truth
 exists; benzene and naphthalene are the instruments of that question, not its goal.
 
+**In two sentences, for a reader who knows the field.** We want to show that the harmonic force
+constants of a PAH can be corrected towards coupled-cluster quality with a handful of energies in a
+frozen local-correlation space — no gradients, no full-molecule coupled-cluster calculation — and
+that this correction can first be calibrated on benzene and naphthalene against the known truth, so
+that every molecule on the ladder gets a complete anharmonic spectrum, positions, intensities and
+shape as PAHdb delivers them, but with band positions that carry a measured coupled-cluster
+correction and an error margin instead of a fitted scale factor, and a tested route to the large
+PAHs for which no prediction above scale-factor level exists today. Every piece of this exists
+already, separately: Reiher and Neugebauer showed in 2003 that selected normal modes can be computed
+without the full Hessian; Mata and Werner froze the local-correlation domains along a reaction path
+in 2006 to keep local coupled cluster smooth; Allen and Schaefer's Concordant Mode Approach extracts
+CCSD(T) force constants from a few energies in a DFT normal-mode basis for small molecules; Käser and Meuwly transfer-learn a cheaper method's surface to coupled-cluster quality from a few hundred coupled-cluster points on molecules of up to nine atoms; the supervisor's own
+group built, with Mackie and later Esposito, the anharmonic-DFT front for PAHs up to eighteen
+carbons; Pirali's naphthalene spectrum is what everyone calibrates on; and PAHdb, Mai and Bos supply
+the scaled, simulated and ML-corrected DFT spectra for thousands of PAHs — what nobody has done is
+to put these pieces together on a PAH: carry a frozen local coupled-cluster space along the modes,
+recover the correction from energies alone, and measure an error margin per band (§3.1 and §14
+carry the references and their reading status).
+
 The previous plan (plan 04, discussed at the last supervision meeting) obtained its
 coupled-cluster anchor by learning a per-molecule potential-energy surface from thousands of local
 coupled-cluster points; its review accepted the criterion and found the cost unaffordable at the
@@ -173,8 +192,8 @@ work that combines them:
 |---|---|---|
 | coupled-cluster force constants along DFT normal modes from energies; selected off-diagonals; symmetry-forbidden couplings zeroed in the full matrix | Concordant Mode Approach (Lahm et al. 2022; Kitzmiller et al. 2024; Olive Dornshuld et al. 2026, read in full: 17 intermolecular complexes, MP2 normal modes in a heavy-augmented triple-zeta basis, CMA-2A converges with 3 % of the off-diagonals; its persistent benzene outlier is one same-representation ring-deformation coupling, the same phenomenon our rehearsal found) | the target is the *difference* Δ₂, not the CC force constants; the off-diagonal block is recovered as a whole from multi-mode patterns, not element by element; symmetry used as the recovery prior rather than as a clean-up; local rather than canonical coupled cluster, at PAH sizes |
 | recovering a Hessian from few measurements by exploiting its structure | compressed sensing in a cheap method's eigenbasis (Sanders et al. 2015); O1NumHess (Wang et al. 2025) | applied to a difference Hessian rather than a full one; the prior is the molecule's symmetry, parameter-free, instead of generic sparsity; the probe count is a measured, pre-registered quantity |
-| correcting DFT towards CCSD(T) by learning the difference | Δ-machine learning of potential-energy surfaces (transfer learning to CCSD(T), Käser, Boittier, Upadhyay & Meuwly 2021) | nothing is learned per molecule; the difference is measured; a learned model is a possible follow-up gated by the measured range (§6) |
-| local-correlation spaces held fixed for numerical derivatives | **domain freezing and domain merging along a potential-energy surface (Mata & Werner 2006, as described by Pinski & Neese 2019) — holding local-correlation domains fixed across geometries is 2006 prior art, found on 8 September after the first search missed it**; the discontinuity problem itself (Russ & Crawford 2004; Madriaga & Crawford 2025); residual smoothing (Subotnik & Head-Gordon 2005); fixed domains for DLPNO-MP2 numerical derivatives (ORCA) | frozen LNO-CCSD(T) fragment spaces transported by projection across displaced geometries, semicanonicalised, with the smoothness and bias measured against canonical CCSD(T) — no publication found that does this or measures it |
+| correcting DFT towards CCSD(T) by learning the difference | Δ-machine learning of potential-energy surfaces (transfer learning to CCSD(T), Käser, Boittier, Upadhyay & Meuwly 2021 — read in full 10 September: 262–632 CCSD(T) geometries with energies, gradients and dipoles, ≈ 5 % of an MP2 set, on 7–9-atom molecules, harmonic MAE 0.1–1.1 cm⁻¹ against explicit CCSD(T), no aromatic; and Lam, Abdul-Al & Allouche 2020 — read in full: B2PLYP harmonic part kept, cubic and quartic constants from a neural network trained on 24N single points, 37 molecules including benzene and naphthalene, RMSD 21 cm⁻¹ against full B2PLYP — the harmonic part stays at DFT level) | nothing is learned per molecule; the difference is measured; a learned model is a possible follow-up gated by the measured range (§6) |
+| local-correlation spaces held fixed for numerical derivatives | **domain freezing and domain merging along a potential-energy surface (Mata & Werner 2006, J. Chem. Phys. 125, 184110, DOI 10.1063/1.2364487 — Crossref-verified 10 September, full text closed and asked of the supervisor; as described by Pinski & Neese 2019) — holding local-correlation domains fixed across geometries is 2006 prior art, found on 8 September after the first search missed it**; the discontinuity problem itself (Russ & Crawford 2004; Madriaga & Crawford 2025); residual smoothing (Subotnik & Head-Gordon 2005); fixed domains for DLPNO-MP2 numerical derivatives (ORCA) | frozen LNO-CCSD(T) fragment spaces transported by projection across displaced geometries, semicanonicalised, with the smoothness and bias measured against canonical CCSD(T) — no publication found that does this or measures it |
 | scaled, ML-corrected or anharmonic DFT for PAH spectra | PAHdb v4.00 (Ricca et al. 2026); the PAHdb Anharmonic library v1.00 (Mackie et al. 2015, 2016; Esposito et al. 2024); Mulas et al. 2018; the ML-corrected scale factors of Bos et al. 2025 (marketed as Ethereal AI) | these are the opponents; the plan adds a measured coupled-cluster correction to the harmonic constants and an error budget per band, and leaves the anharmonic constants at DFT level as they do |
 | selected high-level vibrations from a cheap guess, without the full Hessian | mode-tracking (Reiher & Neugebauer 2003, read in full: Davidson subspace iteration on gradient derivatives, cheap-method guess, CCSD(T) refinement named as the intended use) | the target is the correction to the whole force-constant matrix from energies, under a symmetry prior, with the probe count measured — not a set of converged eigenvectors |
 
@@ -1060,9 +1079,7 @@ marked otherwise; author initials are given only where a held PDF's first page s
 - Joblin, d'Hendecourt, Léger & Défourneau 1994, Astron. Astrophys. 281, 923. (Gas-phase, solid and
   Ne-matrix PAH spectra 3–20 µm, the hot spectra of the coronene cross-check; read in full 2026-09-06
   from the ADS scan.)
-- Käser, Boittier, Upadhyay & Meuwly 2021, J. Chem. Theory Comput. 17, 3687 (per the held arXiv
-  manuscript, arXiv:2103.05491; journal record not verified against the journal). (Transfer learning
-  to CCSD(T) anharmonic frequencies — the Δ-learning precedent of §3.1.)
+- Käser, Boittier, Upadhyay & Meuwly 2021, J. Chem. Theory Comput. 17, 3687 (per the held arXiv manuscript, arXiv:2103.05491, read in full 10 September; journal record not verified against the journal). (Transfer learning to CCSD(T) anharmonic frequencies — the Δ-learning precedent of §3.1.)
 - Kitzmiller, N. L., Lahm, M. E., Olive Dornshuld, L. N., Jin, J., Allen, W. D., Schaefer, H. F.
   2024, J. Chem. Theory Comput. 20, 10886. DOI 10.1021/acs.jctc.4c01240. (CMA-2.)
 - Lahm, Kitzmiller, Mull, Allen & Schaefer 2022, J. Am. Chem.
@@ -1087,9 +1104,7 @@ marked otherwise; author initials are given only where a held PDF's first page s
 - Maltseva, Petrignani, Candian, Mackie, Huang, Lee, Tielens, Oomens & Buma 2016, Astrophys. J.
   831, 58. DOI 10.3847/0004-637x/831/1/58. (Jet-cooled 3 µm spectra of pyrene, chrysene and
   triphenylene among others — the C–H stretch cold column at R2; Crossref record; abstract grade.)
-- Mata & Werner 2006, J. Chem. Phys. 125, 184110. (Domain freezing and merging along a
-  potential-energy surface — the 2006 prior art of §3.1; identifier taken from the reference list of
-  Pinski & Neese 2019, not Crossref-verified, not read.)
+- Mata & Werner 2006, J. Chem. Phys. 125, 184110. DOI 10.1063/1.2364487. ("Calculation of smooth potential energy surfaces using local electron correlation methods" — the 2006 prior art of §3.1; Crossref-verified 10 September; closed access, asked of the supervisor, not read.)
 - Mulas, Falvo, Cassam-Chenaï & Joblin 2018, J. Chem. Phys. 149, 144102.
   DOI 10.1063/1.5050087. (Opponent line B: anharmonic DFT quartic force fields of pyrene and
   coronene; the emission cascade model.)
@@ -1103,8 +1118,7 @@ marked otherwise; author initials are given only where a held PDF's first page s
   full 8 September.)
 - Ricca, Boersma, Maragkoudakis, Roser, Shannon, Allamandola & Bauschlicher 2026, Astrophys. J. Suppl. Ser. 282, 7. DOI 10.3847/1538-4365/ae1c38.
   (PAHdb v4.00, opponent line A; the statement that its systematic uncertainties are unquantified.)
-- Russ & Crawford 2004, J. Chem. Phys. 121, 691. (Discontinuities of local-correlation potential
-  energy surfaces; identifier from the reference list of Pinski & Neese 2019, not verified, not read.)
+- Russ & Crawford 2004, J. Chem. Phys. 121, 691. DOI 10.1063/1.1759322. ("Potential energy surface discontinuities in local correlation methods"; Crossref-verified 10 September; closed access, asked of the supervisor, not read.)
 - Sanders, J. N., Andrade, X., Aspuru-Guzik, A. 2015, ACS Cent. Sci. 1, 24. DOI 10.1021/oc5000404.
   (Compressed-sensing Hessians; polyacenes.)
 - Schneider, Baker, Scharko, Blake, Tonkyn, Forland & Johnson 2024, J. Quant. Spectrosc. Radiat. Transfer 323, 109045.
@@ -1114,9 +1128,7 @@ marked otherwise; author initials are given only where a held PDF's first page s
 - Sharpe, Johnson, Sams, Chu, Rhoderick & Johnson 2004,
   Appl. Spectrosc. 58, 1452. DOI 10.1366/0003702042641281. (The PNNL gas-phase quantitative IR
   database.)
-- Subotnik & Head-Gordon 2005, J. Chem. Phys. 123, 064108. (Smoothing functions against
-  local-correlation discontinuities; identifier from the reference list of Pinski & Neese 2019, not
-  verified, not read.)
+- Subotnik & Head-Gordon 2005, J. Chem. Phys. 123, 064108. DOI 10.1063/1.2000252. ("A local correlation model that yields intrinsically smooth potential-energy surfaces"; Crossref-verified 10 September; closed access, asked of the supervisor, not read.)
 - Wang, Luo, Wang & Liu 2025, J. Chem. Theory Comput. 21, 10893.
   DOI 10.1021/acs.jctc.5c01354. (O1NumHess.)
 - Williams, N. J., Kabalan, L., Stojanovic, L., Zolyomi, V., Pyzer-Knapp, E. O. 2024,

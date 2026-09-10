@@ -394,6 +394,15 @@ and claims nothing (Frozen_Lines §2 dated note; atlas note §2; Module 02 repor
 
 ## Dated notes after the freeze
 
+- **2026-09-10 (evening) — prior art read; the two-sentence statement in the proposal.** §1 of the
+  proposal now carries the two sentences for the supervisor (what is new; on whose shoulders). Read in
+  full: Käser et al. 2021 (transfer learning to CCSD(T): 262–632 CC points with gradients on 7–9-atom
+  molecules, no aromatic) and Lam et al. 2020 (QM//ML anharmonic corrections, 37 molecules incl. benzene
+  and naphthalene, RMSD 21 cm⁻¹, harmonic part at DFT). Crossref-verified but closed (AIP/ACS 403):
+  Mata & Werner 2006, Russ & Crawford 2004, Subotnik & Head-Gordon 2005, Esselman 2023 — asked of the
+  supervisor (PDF request D, items 24–27); Nagy & Kállay 2019 abstract read, PDF for the user (item 28);
+  the three DLPNO method papers' records verified (item 17). Novelty table and reference list updated.
+
 - **2026-09-10 — the R0 scoreboard printed (Module 03 begun early, while the naphthalene timing
   runs).** `probes/m03_band_uncertainty.py` on the NIST QUANT-IR benzene record at 1.929 cm⁻¹:
   peaks 672.86 / 1036.54 / 1481.93 / 3046.39 cm⁻¹, u_band 3.2 cm⁻¹ on every family (of which

@@ -48,3 +48,16 @@ ACS Omega, PLOS) staan hier niet: die halen we zelf. Gerangschikt naar wanneer w
 23. Mattioda et al., *Astrophys. J. Suppl. Ser.* **251**, 22 (2020), DOI 10.3847/1538-4365/abc2c8 — de PAHdb-laboratoriumbibliotheek (open access; alleen ter volledigheid, halen we zelf).
 
 Niet nodig van haar (open access, al gelezen of te halen): Kitzmiller 2024 (PMC), Madriaga & Crawford 2025 (PMC), Sanders 2015, Lemmens 2019 (arXiv) en 2021 (IOP CC BY), Mai 2025 (arXiv), Mulas 2018 (arXiv), Käser & Meuwly 2021 (arXiv), Zhang 2024 PySCFAD (arXiv), Williams 2024 Hessian QM9 (arXiv), Ricca 2026 (ApJS), Bos 2025 (ACS Omega), Huebner 2024 (PLOS ONE), Sylvetsky 2020 (arXiv), Tang 2025 (arXiv), Chen, Li & Li 2026 (arXiv).
+
+
+## D. Toegevoegd 10 september 2026 — prior art en basis-set-bronnen die achter een betaalmuur staan
+
+Alle vier zijn op 10 september via Crossref/OpenAlex geverifieerd; AIP en ACS/JACS weigeren scripts
+(403), Semantic Scholar geeft geen samenvatting. Ze zijn nodig voordat de pilotnotitie het bevroren
+lokale-CC-object als nieuw noemt (24–26) en voor de basis-set-lijn van besluit 26 (27).
+
+24. Mata & Werner, *J. Chem. Phys.* **125**, 184110 (2006), DOI 10.1063/1.2364487 — "Calculation of smooth potential energy surfaces using local electron correlation methods": domeinen bevriezen en samenvoegen langs een pad; de directe prior art van ons bevroren object.
+25. Russ & Crawford, *J. Chem. Phys.* **121**, 691 (2004), DOI 10.1063/1.1759322 — "Potential energy surface discontinuities in local correlation methods": het probleem dat probe M1 meet.
+26. Subotnik & Head-Gordon, *J. Chem. Phys.* **123**, 064108 (2005), DOI 10.1063/1.2000252 — "A local correlation model that yields intrinsically smooth potential-energy surfaces": het alternatief voor bevriezen.
+27. Esselman, Zdanovskaia, Owen, Stanton, Woods & McMahon, *J. Am. Chem. Soc.* **145**, 21785 (2023), DOI 10.1021/jacs.3c03109 — "Precise Equilibrium Structure of Benzene": mogelijke bron voor de afstand van CCSD(T)/cc-pVTZ tot de basis-set-limiet bij benzeen (besluit 26, invoer ii); uit de samenvatting niet te beslissen.
+28. *(open access, maar ACS blokkeert scripts — kun je zelf downloaden)* Nagy & Kállay, *J. Chem. Theory Comput.* **15**, 5275 (2019), DOI 10.1021/acs.jctc.9b00511 — de LNO-drempelhiërarchie (Loose/Normal/Tight) en de nauwkeurigheid tegen CCSD(T); het methodeartikel van onze motor.
