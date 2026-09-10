@@ -18,7 +18,7 @@ figures, and a short report. No training.
 | Anharmonic **v1.00**, 2026-07-01, 45 species — line B | XML | 878 kB | PAHdb download form |
 | Experimental **v3.10**, 84 species (matrix; Module 03's) | XML | 3.88 MB | PAHdb download form |
 | Line C — Mai et al. 2025 MLMD spectra, 1,704 species at 50/300/600 K | `Supplementary.zip` on Zenodo, DOI 10.5281/zenodo.14998197 (version 10.5281/zenodo.15771437) | 102 MB | direct download; data CC BY-NC-SA 4.0, code Apache-2.0 |
-| Cheap line — Bos et al. 2025 ML-scaled spectra and pickled SVR models | ACS Omega Supporting Information | ? | publisher SI (ACS bot-blocks scripted access) |
+| Cheap line — Bos et al. 2025 ML-scaled spectra and pickled SVR models | ACS Omega Supporting Information, seven files (two xlsx, three zips, a 13.5 MB txt of geometries, a PDF), 20.5 MB unpacked | 8.9 MB zip | Europe PMC's public copy (`…/rest/PMC12750190/supplementaryFiles`), placed in `data/` on the user's instruction 2026-09-10, sha256 `3443b354f5a1285e…`; unpacked in `data/bos2025_si/` |
 
 The PAHdb form (`…/pahdb/theoretical/4.00/download/view`) asks for an e-mail address ("to track the
 users of the data"), name and company on first use, and agreement to cite Boersma+ 2014,
