@@ -484,6 +484,13 @@ widened. Reason: for training labels the error bars must be true, not just the e
 
 ## Not yet done (owed, in order)
 
+- **Hardware decision (parked by the user 2026-09-10).** A €5,000 budget exists; a concrete
+  configuration with Alternate.nl prices and URLs is in
+  [Hardware_Note_2026-09-10.md](GoalGathering/Hardware_Note_2026-09-10.md) (AM5 Ryzen 9 9950X,
+  128 GB now → 256 GB later, two NVMe drives, native Linux; €4,069 + options; Threadripper deferred
+  while DDR5 is ≈ €16.5/GB). To be taken up when the user says so; re-check prices then and read the
+  naphthalene timing's peak memory and time per energy first.
+
 - **Read and record the cc-pVTZ M1 scan** (running since 2026-09-06 07:31; decision 16) when it
   finishes; P4 (symmetry prior) waits for the naphthalene dry run before it enters the deck; the R0
   pilot's deck needs the canonical two-mode count (decision 16 iii).
