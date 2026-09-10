@@ -387,6 +387,11 @@ itself as its uncertainty, in place of the 2.55 cm⁻¹ floor the Bose rule with
 at benzene; pre-registered, printed by probe 2a before any CC number; floor printed and labelled until
 the X_ik exist (Ladder §2 dated note 2026-09-10; scoreboard note §3; probes README 2a).
 
+**Decision 30 (closed 2026-09-10, P22 — which scale factors are line A):** the PAHdb theoretical
+library **as served** (its v3.00 factors 0.9794 / 0.9691 / 0.9597, the file every user receives) is
+line A; the column at the v4.00 paper's refit (0.964 / 0.979 / 0.975) is printed beside it, labelled,
+and claims nothing (Frozen_Lines §2 dated note; atlas note §2; Module 02 report §5).
+
 ## Dated notes after the freeze
 
 - **2026-09-10 — the R0 scoreboard printed (Module 03 begun early, while the naphthalene timing
@@ -412,7 +417,7 @@ the X_ik exist (Ladder §2 dated note 2026-09-10; scoreboard note §3; probes RE
   [Research_Note_2026-09-10_Opponent_Atlas.md](GoalGathering/Research_Note_2026-09-10_Opponent_Atlas.md):
   line A has **no benzene**; stored scale factors 0.9794 / 0.9691 / 0.9597 (not the paper's
   0.964 / 0.979 / 0.975 — **re-read the same evening: the file carries the v3.00 factors of
-  Bauschlicher 2018, the v4.00 refit is in the paper only; P22 open**); 4-31G from n_C = 212; **debt 6 paid** (C₃₈₄H₄₈ uid 617
+  Bauschlicher 2018, the v4.00 refit is in the paper only; **P22 decided the same evening = decision 30: line A as served, paper-factor column printed and labelled**); 4-31G from n_C = 212; **debt 6 paid** (C₃₈₄H₄₈ uid 617
   neutral, 4447 dication); line B = 45 species, on the ladder benzene, naphthalene, pyrene, tetracene.
   Dated notes in Frozen_Lines §2/§3/§7 and Ladder §2. **Later the same evening:** line C (Mai 2025,
   1,705 species, positions only) and the cheap line (Bos 2025 SI, 81 species) read in; the EDA

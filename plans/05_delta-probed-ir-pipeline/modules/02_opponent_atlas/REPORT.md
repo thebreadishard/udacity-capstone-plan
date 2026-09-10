@@ -113,7 +113,8 @@ training instances carry no species identifier.
 - The symmetry-unique local-environment count for C₃₈₄H₄₈ (what the fragment-probed R6 needs) is a
   follow-up on the geometry block, not done here.
 - The scale-factor discrepancy between file and paper is explained (v3.00 factors in the file, a refit
-  in the v4.00 text); which of the two is "line A" is a plan decision (P22), not a data question.
+  in the v4.00 text); which of the two is "line A" was a plan decision, taken 2026-09-10 (decision 30): the library as
+  served, with the paper-factor column printed and labelled beside it.
 
 ## 6. Distinctness and the earlier draft (decision 7, 2026-09-04)
 
