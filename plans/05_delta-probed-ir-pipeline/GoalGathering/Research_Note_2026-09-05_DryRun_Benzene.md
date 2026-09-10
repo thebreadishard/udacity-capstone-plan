@@ -127,3 +127,40 @@ reboot) and a Linux Python environment, to be set up afterwards.
 
 *Printed numbers: `probes/results_dryrun/benzene/REPORT.md`, `stageC_recovery.json`,
 `stageB2_floor.json`, `benzene_full.log`. Quick pipeline test (156 pairs): `benzene_quick/`.*
+
+## 6. The symmetry prior on the same responses (decision 22 / P14; the null of decision 23 / P15) — 2026-09-10
+
+Run by `probes/dryrun_symmetry_prior.py` from the cached stage-B responses; no new DFT energy
+(`results_dryrun/benzene/SYMMETRY_PRIOR_REPORT.md`, `stageC_symmetry_prior.json`).
+
+**Irreps in the full point group.** D₆h is built from the geometry (atom-mapping deviation
+10⁻⁴ bohr); each mode or degenerate pair gets a character per class and is matched to the table.
+All 30 modes assign: 2 a1g, a2g, a2u, 2 b1u, 2 b2g, 2 b2u, e1g, 3 e1u, 4 e2g, 2 e2u — the textbook
+count. One subtlety that the naphthalene deck must inherit: at B3LYP/6-31G* the a1g ring breathing
+and a b1u mode sit 0.4 cm⁻¹ apart (1020.0 / 1020.4), the DFT eigenvectors are mixed (single-mode
+characters of ±0.8), and treating them as two pure modes makes the forbidden couplings look like
+54 µE_h; treated as one mixed block carrying both irreps they vanish. The rule: a near-degenerate
+block whose characters are the sum of two 1-dim irreps carries both labels.
+
+**Free elements.** 57 same-irrep off-diagonal pairs of 435 (11 of them the two components of a
+degenerate pair); the dry run's 200 cm⁻¹ deck has a two-mode pattern for only 12 of them, the rest
+are constrained by the 120 random multi-mode patterns. A deck built for the prior would carry
+57 two-mode pairs (114 energies) beside the 60 diagonal ones.
+
+**The null.** Direct Δ₂ from the two Hessians: forbidden pairs max 2.0 µE_h (RMS 0.28), allowed
+max 424 µE_h (RMS 80), diagonal RMS 446. From the two-mode ± responses (92 deck pairs): forbidden
+max 1.6 µE_h, allowed max 420. In the surrogate the prior is exact to the Hessians' noise; the
+frozen-space version of this null (decision 23) is measured with the R0 probe batch.
+
+**Recovery under the prior** (mode E, same deck, same hold-out, no ℓ₁ penalty; RMS Δω error per
+family in cm⁻¹, first-order / full re-diagonalisation; banded prior w = 25 cm⁻¹ from §2 beside it):
+CC-stretch 0.28 / 0.30 (banded 0.29 / 0.36); CH-ip-bend 0.08 / 0.34 (0.08 / 0.43); CH-oop 0.17 / 0.18
+(0.19 / 0.21); CH-stretch 0.04 / 0.04 (0.08 / 0.11); ring-ip 0.07 / 0.07 (0.14 / 0.31). ρ_off with
+all training patterns 0.054 (model floor); **K_off at ρ_off ≤ 0.3 = 210 energies against 388** with
+the banded prior; in the noise column at σ_E = 0.5 µE_h: 352 / 296 / 274 / 266 energies for
+c = 1 / 1.5 / 2 / 3, at 1 µE_h 296 throughout, at 2 µE_h reached only for c = 1.5. Reading: on
+this deck the prior removes about half of the off-diagonal cost and loses nothing in accuracy; the
+noise column says the saving survives at 0.5–1 µE_h and disappears at 2 µE_h, where the recovery is
+at noise regardless of prior — the same σ_E ceiling as §3's P1/P2 reading. What it does not say: the
+frozen-space object's forbidden couplings (decision 23) and the R1 count under the prior (141
+allowed pairs); both are measured, not extrapolated.
