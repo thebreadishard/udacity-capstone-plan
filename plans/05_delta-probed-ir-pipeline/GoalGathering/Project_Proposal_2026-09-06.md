@@ -776,6 +776,39 @@ load-bearing on the reach rungs — the mapping says exactly that rather than pr
 Module deadlines are administrative facts; a module may ship a fail-closed state to meet its
 date, and the science continues past it.
 
+**Calendar (set 10 September 2026, from the first week's measured pace; every date is a Friday and
+means "delivered in full or in its fail-closed state").** The pace-setting quantities are the
+laptop's serial compute (one anchor job at a time; a benzene cc-pVTZ scan is two days, one
+naphthalene LNO-CCSD(T) energy of the order of an hour), the student's evenings and weekends for
+decisions, and the supervisor's reading time around this proposal and around the cluster request
+(one to two weeks each assumed). The first week also showed that each measurement brought one
+correction with it (semicanonicalisation, frozen core, the factor 2, the basis set); one round
+back per module is budgeted, not hoped away.
+
+| Milestone / module | Content | Date | What sets the pace |
+|---|---|---|---|
+| Proposal to the supervisor | after the tighter-threshold scan and the cold-read round | 12 Sep 2026 | the student's work |
+| Module 02 — opponent atlas | PAHdb v4.00 and Anharmonic v1.00, Mai 2025, the Bos-type baseline, read in and version-frozen | 25 Sep 2026 | data engineering, no compute |
+| Module 03 — scoreboard and u_band | probe 2a, the laboratory columns, decidability per family | 2 Oct 2026 | the student's work; the supervisor's answers to §13 items 7–10 |
+| Pilot-note inputs | naphthalene dry run, R0 pilot, naphthalene noise run, canonical two-mode points | 23 Oct 2026 | **laptop: about three weeks of continuous compute** |
+| Pilot note | every frozen number, band lists, margins | 30 Oct 2026 | the student's work after the measurements |
+| Module 04 — calibrated-harmonic baseline | ML correction to scale factors, leave-molecule-out | 30 Oct 2026 | in parallel with the compute |
+| Module 05 — Δ₂-support predictor | the DFT-vs-DFT Hessian corpus and the network | 20 Nov 2026 | the corpus costs DFT compute and competes with R1 |
+| R1 probe batch and scoring | the first real coupled-cluster correction, naphthalene | 4 Dec 2026 | **laptop two to three weeks, or the cluster** (P13) |
+| Cluster request | sponsored by the supervisor, sized by the R1 timings | 11 Dec 2026 | the supervisor and the request's lead time |
+| Module 06 — generative pattern proposer | the efficiency experiment on K_off | 18 Dec 2026 | the student's work |
+| Module 07 — campaign officer | LangGraph, the Anthropic API, the cost record | 15 Jan 2027 | the student's work |
+| R2 and R3 | pyrene class and coronene | 12 Mar 2027 | **cluster access**; without it these rungs lapse |
+| Module 08 — the pipeline assembled and scored | R0–R3, fragment-probed R6 where licensed | 16 Apr 2027 | everything above |
+| Module 09 — defense | | 21 May 2027 | |
+
+Two scenarios follow from the one hinge, cluster access. **With the cluster** the programme ends in
+May 2027, eight months from now. **Without it** R2 and R3 lapse, Module 08 scores R0–R1 and the
+laboratory side, and the defense can be held at the end of March 2027 — thinner, and honest. The
+hinge is December: a cluster request not submitted before the winter break puts the project in the
+second scenario. The critical path is the laptop's compute until the end of October, the student's
+decisions in the evenings, and the supervisor's reading time at the two points named.
+
 ## 13. What is asked of the supervisor
 
 1. A critical reading of §2–§3 (why the coupled-cluster budget moves to the harmonic correction,
