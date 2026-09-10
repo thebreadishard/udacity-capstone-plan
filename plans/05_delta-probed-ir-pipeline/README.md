@@ -344,7 +344,7 @@ where every scored family's position moves by less than τ₇; default keep (Lad
 dated note).
 
 **Decision 20 (closed 2026-09-08):** P10 (b) — the anchor-basis curvature bias of the frozen arm
-(+0.94 / +0.06 / +1.58 cm⁻¹ composite at cc-pVTZ tight, research note §2.2c) is **measured against a
+(+0.47 / +0.03 / +0.79 cm⁻¹ composite frequency bias at cc-pVTZ tight, research note §2.2c; halved 2026-09-10, see the note's erratum) is **measured against a
 larger frozen space before anything else is decided**: the same benzene scan at thresholds one decade
 tighter, frozen arm only, against the existing cc-pVTZ truth line (started 2026-09-08 17:56; note P10
 records why the threshold form was chosen over the union form). The Ladder is unchanged; what the
@@ -355,7 +355,7 @@ al. 2009, item 53: sixteen naphthalene bands at 0.005 cm⁻¹ with the hot bands
 scored with u_T = 0 plus a 0.5 cm⁻¹ head-to-origin term (labelled upper bound from the paper's
 figures); other room-temperature sources keep the floor (Ladder dated note 2026-09-08; probes README
 2a). **Open since the proposal cold read of 2026-09-08** ([Cold_Read_2026-09-08_Proposal.md](GoalGathering/Cold_Read_2026-09-08_Proposal.md)):
-**P12** the anchor's basis-set error in the error budget (finding 4) — **accepted by the user 2026-09-08 (decision 26), form (a) + (c)**: a **basis-set line** enters the anchor licence and the per-band error budget, fed by (i) the measured cc-pVDZ → cc-pVTZ change of the canonical harmonic curvature per benzene mode, printed from the two existing truth lines (no new runs; a lower bound), (ii) the literature distance of CCSD(T)/cc-pVTZ from the basis-set limit for benzene once the reference is read (Esselman et al. 2023 on the reading list), and (iii) a canonical cc-pVQZ diagonal line at benzene (61 energies) in the cluster request, which replaces (i)–(ii) when it prints; the expected-effect line is restated as an upper bound at the anchor's level; no F12 — neither CCSD(T)-F12 nor the in-testing MP2-F12 of PySCF is usable here (checked 2026-09-08); **Input (i) printed the same evening** (note §2.2d): the canonical curvature along the three benzene modes changes by +134 / −67 / −145 cm⁻¹ from cc-pVDZ to cc-pVTZ, two thirds of it SCF, and full-space MP2 captures 65–109 % of the correlation part — so the next measurement is the same 27 points at DF-RHF and DF-MP2 in cc-pVQZ/5Z (cheap, planned 2026-09-09 after the naphthalene timing), and a **P18** (anchor redefined as a composite with SCF and MP2 basis corrections) is drafted for the user once it prints; **P13** R1's energy route as
+**P12** the anchor's basis-set error in the error budget (finding 4) — **accepted by the user 2026-09-08 (decision 26), form (a) + (c)**: a **basis-set line** enters the anchor licence and the per-band error budget, fed by (i) the measured cc-pVDZ → cc-pVTZ change of the canonical harmonic curvature per benzene mode, printed from the two existing truth lines (no new runs; a lower bound), (ii) the literature distance of CCSD(T)/cc-pVTZ from the basis-set limit for benzene once the reference is read (Esselman et al. 2023 on the reading list), and (iii) a canonical cc-pVQZ diagonal line at benzene (61 energies) in the cluster request, which replaces (i)–(ii) when it prints; the expected-effect line is restated as an upper bound at the anchor's level; no F12 — neither CCSD(T)-F12 nor the in-testing MP2-F12 of PySCF is usable here (checked 2026-09-08); **Input (i) printed the same evening** (note §2.2d): the canonical curvature along the three benzene modes changes by +67 / −33 / −73 cm⁻¹ from cc-pVDZ to cc-pVTZ (frequency; the first print gave the curvature change, twice this — corrected 2026-09-10), two thirds of it SCF, and full-space MP2 captures 65–109 % of the correlation part — so the next measurement is the same 27 points at DF-RHF and DF-MP2 in cc-pVQZ/5Z (cheap, planned 2026-09-09 after the naphthalene timing), and a **P18** (anchor redefined as a composite with SCF and MP2 basis corrections) is drafted for the user once it prints; **P13** R1's energy route as
 B3 work or as a dated multi-week laptop job (finding 6) — **deferred by the user on 2026-09-08 until
 one naphthalene LNO-CCSD(T)/cc-pVTZ energy has been timed** (planned 2026-09-09, after the xtight
 run; needs a quick DFT geometry first, the naphthalene dry run not having run); **P14** the benzene
@@ -415,7 +415,7 @@ rows, Goal (criterion), proposal §1, §5.2, §7, §13, Mapping (M03/M08 claims)
   from file (+0.0000 µE_h). **Arm A is smooth to 0.002–0.06 µE_h where the re-selecting arms B and C
   carry 7–11 µE_h of LNO discontinuity**; its bias is a clean q² term — 5–28 cm⁻¹ on the bare
   LNO-CCSD(T) energy, **0.5–2.6 cm⁻¹ on the composite with the MP2 correction** (at tight thresholds,
-  finished 2026-09-06 02:07: 0.35–1.9 bare, **0.03–0.36 cm⁻¹ composite**). One implementation
+  finished 2026-09-06 02:07: 0.18–0.95 bare, **0.015–0.18 cm⁻¹ composite** (halved 2026-09-10)). One implementation
   fact cost a run: the transported blocks must be semicanonicalised at the displaced geometry.
   **Proposals P7–P9 await the user; no frozen rule changed.** Also measured: a canonical CCSD(T)
   gradient costs ≈ 50 energies and 13.9 GB at cc-pVDZ (72-gradient branch B3 on this laptop); and the

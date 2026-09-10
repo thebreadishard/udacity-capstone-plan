@@ -395,8 +395,9 @@ for fragment probing, before the R3 fragment-vs-whole comparison has printed.
   `e_corr_pt2corrected`, item 48); MP2(full) is canonical and adds no roughness. Every arm (A,
   B, C) reports the composite, and the bare LNO-CCSD(T) energy is kept beside it in the sealed
   file, never discarded *[words added 2026-09-06, P8, decision 15; measured: the diagonal curvature
-  bias of arm A against canonical CCSD(T) at benzene falls from 5–28 to 0.5–2.6 cm⁻¹ (normal LNO
-  thresholds) and from 0.35–1.9 to 0.03–0.36 cm⁻¹ (tight), σ unchanged at 0.002–0.06 µE_h]*. The map is analytic while the overlaps are
+  bias of arm A against canonical CCSD(T) at benzene falls from 2.6–14 to 0.25–1.3 cm⁻¹ (normal LNO
+  thresholds) and from 0.18–0.95 to 0.015–0.18 cm⁻¹ (tight), σ unchanged at 0.002–0.06 µE_h — frequency
+  biases, halved 2026-09-10 (the first print gave curvature differences, twice these; note §2 erratum)]*. The map is analytic while the overlaps are
   nonsingular (for |q| ≤ 1 the smallest singular value is 1 − O(q²)); for mode G the projection is
   **inside the differentiated graph** for both halves. **The three arms, written once:** **A** =
   frozen–frozen (the probe object: transported occupied set and transported LNO spaces); **B** =

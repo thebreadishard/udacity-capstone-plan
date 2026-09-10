@@ -59,9 +59,9 @@ def main():
     }
     lines = ["# Probe M1 — basis-set sensitivity of the canonical curvature, cc-pVDZ → cc-pVTZ (decision 26, input i)",
              "", f"Truth lines `{a.dz}` and `{a.tz}` (same 27 geometries, same DF-RHF reference, frozen core); MP2 from the arms' "
-             "files at the same points. Even-part fit a0 + a2 q² + a4 q⁴ per basis; the table gives Δ(2·a2) = TZ − DZ in cm⁻¹. "
-             "Absolute curvatures are not printed.",
-             "", "| mode | family | " + " | ".join(parts) + " | MP2 share of the correlation change | σ(total) DZ / TZ (µE_h) |",
+             "files at the same points. Even-part fit a0 + a2 q² + a4 q⁴ per basis; the table gives the frequency change Δω = ½·Δ(2·a2), TZ − DZ, in cm⁻¹ "
+             "(a curvature difference in the dimensionless coordinate is twice the frequency shift; corrected 2026-09-10 — the first print of 2026-09-08 gave the curvature change). Absolute curvatures are not printed.",
+             "", "| mode | family | Δω (cm⁻¹): " + " | ".join(parts) + " | MP2 share of the correlation change | σ(total) DZ / TZ (µE_h) |",
              "|---|---|" + "---|" * len(parts) + "---|---|"]
     summary = {}
     for m in sorted({p["mode"] for p in truth["tz"]}):
@@ -70,11 +70,11 @@ def main():
             src_d = truth if src == "truth" else arms
             cd, sd, nd = curvature([p for p in src_d["dz"] if p["mode"] == m], key)
             ct, st, nt = curvature([p for p in src_d["tz"] if p["mode"] == m], key)
-            rec[name] = {"delta_cm": (ct - cd) * HARTREE_CM, "n": [nd, nt]}
+            rec[name] = {"delta_omega_cm": 0.5 * (ct - cd) * HARTREE_CM, "delta_curvature_cm": (ct - cd) * HARTREE_CM, "n": [nd, nt]}   # Δω = half the curvature change (E = ½ ω q²; corrected 2026-09-10)
             if name == "total CCSD(T)":
                 rec["sigma_uEh"] = [sd * 1e6, st * 1e6]
-            row.append(f"{(ct - cd) * HARTREE_CM:+.1f}")
-        share = rec["MP2 correlation (full space, from the arms' files)"]["delta_cm"] / rec["CCSD(T) correlation"]["delta_cm"]
+            row.append(f"{0.5 * (ct - cd) * HARTREE_CM:+.1f}")
+        share = rec["MP2 correlation (full space, from the arms' files)"]["delta_omega_cm"] / rec["CCSD(T) correlation"]["delta_omega_cm"]
         rec["mp2_share_of_corr_change"] = share
         summary[f"mode{m}"] = rec
         lines.append(f"| {m} | {FAM.get(m, '?')} | " + " | ".join(row) + f" | {share:.2f} | {rec['sigma_uEh'][0]:.3f} / {rec['sigma_uEh'][1]:.3f} |")

@@ -83,8 +83,10 @@ def main():
              "", "Difference E_arm − E_canonical (same DF-RHF reference, frozen core) at each point; fitted per mode as a degree-4 "
              "polynomial in q. σ = residual about that fit (the arm's roughness against the truth). a2, a4 = even-part coefficients "
              "of the difference (a0 + a2 q² + a4 q⁴ fitted to ½[d(q)+d(−q)]); **2·a2 is the bias the arm puts on the CC curvature** "
-             "of the mode, given also in cm⁻¹ (E = ½ ω q²). Absolute energies sealed (`canonical_truth_sealed.json`), not printed.",
-             "", "| mode | family | ω (cm⁻¹) | arm | n | σ about deg-4 fit (µE_h) | a2 (µE_h) | a4 (µE_h) | curvature bias 2·a2 (µE_h) | ≈ Δω (cm⁻¹) | d(±1) even (µE_h) | d(±0.5) even (µE_h) |",
+             "of the mode; the frequency bias is **a2** in cm⁻¹ (E = ½ ω q²: the curvature is ω and a curvature difference is twice "
+             "the frequency shift — column corrected 2026-09-10, earlier reports gave 2·a2 here). "
+             "Absolute energies sealed (`canonical_truth_sealed.json`), not printed.",
+             "", "| mode | family | ω (cm⁻¹) | arm | n | σ about deg-4 fit (µE_h) | a2 (µE_h) | a4 (µE_h) | curvature bias 2·a2 (µE_h) | frequency bias Δω = a2 (cm⁻¹) | d(±1) even (µE_h) | d(±0.5) even (µE_h) |",
              "|---|---|---|---|---|---|---|---|---|---|---|---|"]
     summary = {}
     for m in sorted({p["mode"] for p in arms["points"]}):
@@ -102,8 +104,12 @@ def main():
                 ev = np.array([0.5 * (d[np.isclose(q, qq)][0] + d[np.isclose(q, -qq)][0]) for qq in qa])
                 A = np.vstack([np.ones_like(qa), qa ** 2, qa ** 4]).T
                 c, *_ = np.linalg.lstsq(A, ev, rcond=None)
+                # In the dimensionless normal coordinate (E = ½ ω q²) the curvature is ω, and a curvature
+                # difference 2·a2 equals TWICE the first-order frequency shift: E_arm − E_can = a2 q² shifts
+                # ω by a2 (checked 2026-09-10 against the dry run's own D2_direct = 2·δω identity). Until
+                # 2026-09-10 this column converted 2·a2 and overstated every frequency bias by a factor 2.
                 rec.update(a2_uEh=float(c[1]), a4_uEh=float(c[2]), curvature_bias_uEh=float(2 * c[1]),
-                           delta_omega_cm=float(2 * c[1] * 1e-6 * HARTREE_CM),
+                           delta_omega_cm=float(c[1] * 1e-6 * HARTREE_CM),
                            even_q1_uEh=float(ev[np.isclose(qa, 1.0)][0] - ev[np.isclose(qa, 0.0)][0]) if np.any(np.isclose(qa, 1.0)) else None,
                            even_q05_uEh=float(ev[np.isclose(qa, 0.5)][0] - ev[np.isclose(qa, 0.0)][0]) if np.any(np.isclose(qa, 0.5)) else None)
                 lines.append(f"| {m} | {fam[m]} | {freq[m]:.0f} | {arm} | {len(q)} | {rec['sigma4_uEh']:.3f} | {c[1]:+.2f} | {c[2]:+.2f} | "

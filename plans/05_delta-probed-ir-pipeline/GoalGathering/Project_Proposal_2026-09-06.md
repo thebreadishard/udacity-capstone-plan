@@ -225,10 +225,10 @@ subsection):
   impose (§3.4) is about 2 µE_h; arm A meets it by a factor of 30 to 1,000 depending on the mode.
 - *Bias.* The frozen space was chosen at equilibrium and fits a displaced geometry slightly less
   well; that bias is a clean quadratic in the displacement, i.e. exactly a curvature bias, and it
-  shrinks with the truncation threshold: 5–28 cm⁻¹ on the bare local energy at default
-  thresholds; **0.5–2.6 cm⁻¹** on the composite energy — the local energy plus the standard
+  shrinks with the truncation threshold: 2.6–14 cm⁻¹ on the bare local energy at default
+  thresholds; **0.25–1.3 cm⁻¹** on the composite energy — the local energy plus the standard
   second-order correction for the truncated space, [MP2(full) − MP2(local)] — at default
-  thresholds; **0.03–0.36 cm⁻¹** on the composite at tight thresholds. The pipeline's anchor runs
+  thresholds; **0.015–0.18 cm⁻¹** on the composite at tight thresholds. The pipeline's anchor runs
   at tight thresholds; the threshold-sensitivity line of §7 decides, per rung, whether that is
   enough or extrapolation in the truncation thresholds is required.
 - *Reload.* Arm A reproduces the equilibrium-geometry energy exactly and reloads its spaces from
@@ -241,8 +241,10 @@ subsection):
 - *Anchor basis.* The same scan at cc-pVTZ, the basis the licence rungs use — the three arms at
   tight thresholds, 27 geometries, then its own canonical truth line — finished on 8 September
   (three arms 1.7–2.0 h per geometry, canonical 14–21 min; 58 h in all). The frozen object stays
-  smooth (0.002–0.021 µE_h), but its composite curvature bias grows with the basis: +0.94, +0.06 and
-  +1.58 cm⁻¹ on the three modes against +0.14, +0.03 and +0.36 at cc-pVDZ, largest where the
+  smooth (0.002–0.021 µE_h), but its composite frequency bias grows with the basis: +0.47, +0.03 and
+  +0.79 cm⁻¹ on the three modes against +0.07, +0.015 and +0.18 at cc-pVDZ (all bias figures in
+  this document were halved on 10 September: a curvature difference in the dimensionless coordinate
+  is twice the frequency shift, and earlier versions reported the curvature), largest where the
   transported virtual space overlaps the freshly selected one least (smallest singular value 0.36
   at the out-of-plane endpoint, 0.57 on the C–C stretch). The bias is a pure curvature term (the
   quartic coefficient is zero on every mode) and enters Δ₂ directly. What to do with it — record it

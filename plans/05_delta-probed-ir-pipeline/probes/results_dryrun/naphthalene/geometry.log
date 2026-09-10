@@ -1,0 +1,3 @@
+Some dependencies such as QCElemental have not yet finished migration to pydantic v2. If issues are encountered please downgrade pydantic or upgrade QCElemental as appropriate
+Optimizer: Optimization complete!
+naphthalene B3LYP/6-31G*: optimised in 47 s; E = -385.892644 E_h; C4a-C8a 1.4342 Å, C1-C2 1.3767 Å, C-H 1.0877 Å; written C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_dryrun\naphthalene/geometry.json

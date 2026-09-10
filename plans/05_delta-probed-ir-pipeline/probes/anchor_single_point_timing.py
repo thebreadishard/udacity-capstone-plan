@@ -73,7 +73,8 @@ def run_one(basis, threads, thresh_name, canonical, out):
     rec["scf_converged"] = bool(mf.converged)
     log(f"{basis}: RHF(DF) {rec['t_scf_s']:.1f} s, E = {mf.e_tot:.8f}")
 
-    frozen = 6  # carbon 1s
+    frozen = sum(1 for x in symbols if x.upper() == "C")   # one frozen 1s per carbon (6 benzene, 10 naphthalene; hard-coded 6 until 2026-09-10)
+    rec["frozen_core"] = frozen
     t0 = time.time()
     nocc = int(np.count_nonzero(mf.mo_occ))
     orbocc = mf.mo_coeff[:, frozen:nocc]
