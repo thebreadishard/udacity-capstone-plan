@@ -1,0 +1,255 @@
+{
+ "molecule": "benzene",
+ "source_file": "C71432_quantir_res1.93_boxcar.jdx",
+ "source_sha256": "4f42f7e1371e794c2333fe8c437ecc1a5bf3d250244c475eb421aa9cdc5254db",
+ "record": {
+  "TITLE": "Benzene",
+  "ORIGIN": "NIST, Analytical Chemistry Division, 301-975-3108",
+  "$NIST SOURCE": "QUANT-IR",
+  "STATE": "gas",
+  "TEMPERATURE": "23 C",
+  "PRESSURE": "101.3 Pa",
+  "RESOLUTION": "1.9290",
+  "DATA PROCESSING": "Boxcar Apodization",
+  "YUNITS": "(micromol/mol)-1m-1 (base 10)",
+  "DELTAX": "0.9645",
+  "NPOINTS": "3526",
+  "FIRSTX": "575.653",
+  "LASTX": "3974.61"
+ },
+ "source_class": "cell (quantitative, flow, N2-broadened; item 56)",
+ "stated_temperature": "23 C",
+ "resolution_used_cm": 1.929,
+ "noise_alpha_units": 9.475302088851445e-07,
+ "noise_window_cm": [
+  2400.0,
+  2500.0
+ ],
+ "temperature_term": {
+  "nu_m_cm": 553.8,
+  "bath_modes_cm": [
+   415.0,
+   415.1,
+   622.0,
+   622.2,
+   694.7
+  ],
+  "theta_K": 796.8,
+  "nbar_296": 0.0727,
+  "u_296_bose_cm": 2.55,
+  "u_296_linear_bound_cm": 13.02
+ },
+ "constants": {
+  "irreps_ir_active_D6h": [
+   "A2u",
+   "E1u"
+  ],
+  "match_window_rel": [
+   0.9,
+   1.0
+  ],
+  "peak_min_snr": 20.0,
+  "band_edge_k_sigma": 3.0,
+  "band_max_halfwidth_cm": 150.0,
+  "noise_window_cm": [
+   2400.0,
+   2500.0
+  ],
+  "position_column": "peak",
+  "centroid_precision_rule": "u_c = FWHM_obs / (2 · SNR_peak)",
+  "calibration_term_cm": 0.0042,
+  "intensity_rel_unc_k2": 0.033,
+  "non_certified_windows_cm": [
+   [
+    1325,
+    1900
+   ],
+   [
+    2050,
+    2225
+   ],
+   [
+    2295,
+    2385
+   ],
+   [
+    3550,
+    3950
+   ]
+  ],
+  "T_ref_K": 296.0,
+  "P_ref_Pa": 101325.0,
+  "chi_floor_cm_per_K": 0.044,
+  "bath_mode_cutoff_cm": 700.0,
+  "u_296_rule": "u_296 = chi_F · (hc nu_m / k_B) · nbar(nu_m, 296 K), nu_m = mean DFT frequency below the cutoff",
+  "candidate_margins_cm": [
+   2.0,
+   5.0,
+   10.0
+  ]
+ },
+ "scored_bands": [
+  {
+   "dft_mode_index": [
+    4
+   ],
+   "irrep": "A2u",
+   "family": "CH-oop",
+   "omega_dft_cm": 694.7,
+   "match_window_cm": [
+    625.2,
+    694.7
+   ],
+   "status": "scored",
+   "peak_cm": 672.86,
+   "centroid_cm": 673.13,
+   "peak_minus_centroid_cm": -0.27,
+   "window_cm": [
+    637.4,
+    707.8
+   ],
+   "fwhm_cm": 1.58,
+   "snr_peak": 4984.0,
+   "resolution_term_cm": 1.929,
+   "centroid_precision_cm": 0.0002,
+   "calibration_term_cm": 0.0042,
+   "u_296_cm": 2.55,
+   "u_band_cm": 3.2,
+   "u_band_without_T_cm": 1.929,
+   "ratio_obs_dft": 0.9686,
+   "intensity_km_per_mol": 104.62,
+   "u_intensity_source_km_per_mol": 1.73,
+   "u_intensity_baseline_km_per_mol": 0.37,
+   "intensity_certified": true,
+   "integrated_alpha": 0.018706423666113803,
+   "decidable_at_candidate_margins": {
+    "2.0": false,
+    "5.0": true,
+    "10.0": true
+   }
+  },
+  {
+   "dft_mode_index": [
+    13,
+    14
+   ],
+   "irrep": "E1u",
+   "family": "CH-ip-bend",
+   "omega_dft_cm": 1069.1,
+   "match_window_cm": [
+    962.2,
+    1069.1
+   ],
+   "status": "scored",
+   "peak_cm": 1036.54,
+   "centroid_cm": 1035.53,
+   "peak_minus_centroid_cm": 1.02,
+   "window_cm": [
+    1005.7,
+    1065.5
+   ],
+   "fwhm_cm": 3.66,
+   "snr_peak": 104.0,
+   "resolution_term_cm": 1.929,
+   "centroid_precision_cm": 0.0175,
+   "calibration_term_cm": 0.0042,
+   "u_296_cm": 2.55,
+   "u_band_cm": 3.2,
+   "u_band_without_T_cm": 1.929,
+   "ratio_obs_dft": 0.9695,
+   "intensity_km_per_mol": 8.24,
+   "u_intensity_source_km_per_mol": 0.14,
+   "u_intensity_baseline_km_per_mol": 0.32,
+   "intensity_certified": true,
+   "integrated_alpha": 0.001473118729243817,
+   "decidable_at_candidate_margins": {
+    "2.0": false,
+    "5.0": true,
+    "10.0": true
+   }
+  },
+  {
+   "dft_mode_index": [
+    20,
+    21
+   ],
+   "irrep": "E1u",
+   "family": "CC-stretch",
+   "omega_dft_cm": 1531.5,
+   "match_window_cm": [
+    1378.3,
+    1531.5
+   ],
+   "status": "scored",
+   "peak_cm": 1481.93,
+   "centroid_cm": 1487.44,
+   "peak_minus_centroid_cm": -5.52,
+   "window_cm": [
+    1455.0,
+    1536.0
+   ],
+   "fwhm_cm": 18.53,
+   "snr_peak": 109.0,
+   "resolution_term_cm": 1.929,
+   "centroid_precision_cm": 0.0849,
+   "calibration_term_cm": 0.0042,
+   "u_296_cm": 2.55,
+   "u_band_cm": 3.2,
+   "u_band_without_T_cm": 1.931,
+   "ratio_obs_dft": 0.9676,
+   "intensity_km_per_mol": 15.68,
+   "u_intensity_source_km_per_mol": 0.26,
+   "u_intensity_baseline_km_per_mol": 0.43,
+   "intensity_certified": false,
+   "integrated_alpha": 0.0028037939284649882,
+   "decidable_at_candidate_margins": {
+    "2.0": false,
+    "5.0": true,
+    "10.0": true
+   }
+  },
+  {
+   "dft_mode_index": [
+    27,
+    28
+   ],
+   "irrep": "E1u",
+   "family": "CH-stretch",
+   "omega_dft_cm": 3199.4,
+   "match_window_cm": [
+    2879.4,
+    3199.4
+   ],
+   "status": "scored",
+   "peak_cm": 3046.39,
+   "centroid_cm": 3067.99,
+   "peak_minus_centroid_cm": -21.59,
+   "window_cm": [
+    3013.3,
+    3127.0
+   ],
+   "fwhm_cm": 33.05,
+   "snr_peak": 241.0,
+   "resolution_term_cm": 1.929,
+   "centroid_precision_cm": 0.0686,
+   "calibration_term_cm": 0.0042,
+   "u_296_cm": 2.55,
+   "u_band_cm": 3.2,
+   "u_band_without_T_cm": 1.93,
+   "ratio_obs_dft": 0.9522,
+   "intensity_km_per_mol": 74.18,
+   "u_intensity_source_km_per_mol": 1.22,
+   "u_intensity_baseline_km_per_mol": 0.6,
+   "intensity_certified": true,
+   "integrated_alpha": 0.013262789597883264,
+   "decidable_at_candidate_margins": {
+    "2.0": false,
+    "5.0": true,
+    "10.0": true
+   }
+  }
+ ],
+ "unassigned_maxima_above_2pct": [],
+ "printed_by": "probes/m03_band_uncertainty.py",
+ "date": "2026-09-10 17:39"
+}

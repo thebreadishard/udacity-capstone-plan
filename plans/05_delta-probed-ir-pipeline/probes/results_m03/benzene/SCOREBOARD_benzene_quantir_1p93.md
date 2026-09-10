@@ -1,0 +1,20 @@
+# Scoreboard — benzene — NIST Quantitative IR record (quantir_1p93) — probe 2a, 2026-09-10 17:39
+
+Source `C71432_quantir_res1.93_boxcar.jdx`, sha256 `4f42f7e1371e794c…`; record: QUANT-IR, NIST, Analytical Chemistry Division, 301-975-3108, state gas, temperature 23 C (record header; Chu 1999 §2.3: coefficients corrected to 296 K and 760 Torr), resolution 1.929 cm⁻¹ (record header; DELTAX 0.9645 not used), Boxcar Apodization, y in (micromol/mol)-1m-1 (base 10), 3526 points 575.653–3974.61 cm⁻¹.
+
+Baseline noise (MAD, linear detrend) in 2400–2500 cm⁻¹: 9.475e-07 (record units). Temperature term (Ladder dated note 2026-09-06; item 52 model): bath modes below 700 cm⁻¹ = 415, 415, 622, 622, 695 → ν_m = 554 cm⁻¹ (θ = 797 K, n̄(296) = 0.073); χ_F = floor 0.044 cm⁻¹ K⁻¹ (no measured benzene slope) → **u_296 = 2.55 cm⁻¹** (linear bound 13.0).
+
+| DFT mode(s) | irrep | family | ω_DFT | match window | peak (cm⁻¹) | centroid | integration window | FWHM | S/N | res | u_c | u_296 | **u_band** | u_band w/o T | obs/DFT | A (km/mol) | u_A src | u_A base | certified | decidable at 2 / 5 / 10 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| [4] | A2u | CH-oop | 694.7 | 625.2–694.7 | **672.86** | 673.13 | 637.4–707.8 | 1.58 | 4984 | 1.929 | 0.0002 | 2.55 | **3.2** | 1.929 | 0.9686 | 104.62 | 1.73 | 0.37 | yes | no / yes / yes |
+| [13, 14] | E1u | CH-ip-bend | 1069.1 | 962.2–1069.1 | **1036.54** | 1035.53 | 1005.7–1065.5 | 3.66 | 104 | 1.929 | 0.0175 | 2.55 | **3.2** | 1.929 | 0.9695 | 8.24 | 0.14 | 0.32 | yes | no / yes / yes |
+| [20, 21] | E1u | CC-stretch | 1531.5 | 1378.3–1531.5 | **1481.93** | 1487.44 | 1455.0–1536.0 | 18.53 | 109 | 1.929 | 0.0849 | 2.55 | **3.2** | 1.931 | 0.9676 | 15.68 | 0.26 | 0.43 | **no (Chu §3.3 window)** | no / yes / yes |
+| [27, 28] | E1u | CH-stretch | 3199.4 | 2879.4–3199.4 | **3046.39** | 3067.99 | 3013.3–3127.0 | 33.05 | 241 | 1.929 | 0.0686 | 2.55 | **3.2** | 1.93 | 0.9522 | 74.18 | 1.22 | 0.6 | yes | no / yes / yes |
+
+Unassigned maxima above 2 % of the strongest band (combination / overtone bands; not scored): none
+
+Columns: peak = parabolic apex of the strongest maximum in the window; centroid = intensity-weighted over the integration window (the contiguous region above 3σ baseline noise, at most ±150 cm⁻¹); u_c = FWHM/(2·S/N); res = the record's stated resolution; calibration term 0.0042 cm⁻¹ (Chu §2.4) inside u_band; u_band = √(res² + u_c² + cal² + u_296²); A = ∫σ dν̃ with σ = α·ln10/n₁ at 296 K, 101325 Pa; u_A src = 1.65 % (Chu Table 3, k = 2 → k = 1); u_A base = noise × window width; 'decidable' compares u_band with **candidate** margins — the pilot note fixes the margin per family.
+
+Constants (all pilot-note candidates): {"irreps_ir_active_D6h": ["A2u", "E1u"], "match_window_rel": [0.9, 1.0], "peak_min_snr": 20.0, "band_edge_k_sigma": 3.0, "band_max_halfwidth_cm": 150.0, "noise_window_cm": [2400.0, 2500.0], "position_column": "peak", "centroid_precision_rule": "u_c = FWHM_obs / (2 · SNR_peak)", "calibration_term_cm": 0.0042, "intensity_rel_unc_k2": 0.033, "non_certified_windows_cm": [[1325, 1900], [2050, 2225], [2295, 2385], [3550, 3950]], "T_ref_K": 296.0, "P_ref_Pa": 101325.0, "chi_floor_cm_per_K": 0.044, "bath_mode_cutoff_cm": 700.0, "u_296_rule": "u_296 = chi_F · (hc nu_m / k_B) · nbar(nu_m, 296 K), nu_m = mean DFT frequency below the cutoff", "candidate_margins_cm": [2.0, 5.0, 10.0]}
+
+Table sha256 `4e4462df69440844…`. Printed by `probes/m03_band_uncertainty.py`; the JSON beside this file has the full precision.

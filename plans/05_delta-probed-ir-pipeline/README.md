@@ -382,6 +382,14 @@ correction, licensed where the truth is known, mean anything for the PAHs where 
 
 ## Dated notes after the freeze
 
+- **2026-09-10 — the R0 scoreboard printed (Module 03 begun early, while the naphthalene timing
+  runs).** `probes/m03_band_uncertainty.py` on the NIST QUANT-IR benzene record at 1.929 cm⁻¹:
+  peaks 672.86 / 1036.54 / 1481.93 / 3046.39 cm⁻¹, u_band 3.2 cm⁻¹ on every family (of which
+  u_296 = 2.55 by the frozen Bose rule with the floor slope — **P21** proposes the pipeline's own
+  computed 296 K correction with ±30 % instead), intensities 104.6 / 8.2 / 15.7 (non-certified) /
+  74.2 km/mol. Note: [Research_Note_2026-09-10_Scoreboard_R0.md](GoalGathering/Research_Note_2026-09-10_Scoreboard_R0.md).
+  Fetch of the 0.125 cm⁻¹ record asked of the user. No frozen rule changed.
+
 - **2026-09-05 — R2/R3 gas-phase sources.** An exhaustive search
   ([Research_Note_2026-09-05_R2_GasPhase_MidIR_Sources.md](GoalGathering/Research_Note_2026-09-05_R2_GasPhase_MidIR_Sources.md))
   found no room-temperature 6–15 µm gas spectrum for any R2/R3 species; it found jet-cooled band

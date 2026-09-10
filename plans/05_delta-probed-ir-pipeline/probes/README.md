@@ -22,6 +22,20 @@ Conventions, carried from plans 01–04:
   O1NumHess. **Still owed for item 1:** the run at the largest laptop-affordable molecules
   (naphthalene next), and the deviations closed.
 
+- **`m03_band_uncertainty.py`** (probe 2a, first version, 2026-09-10): the laboratory scoreboard and
+  u_band — run so far for **R0 benzene on the NIST QUANT-IR record at 1.929 cm⁻¹** (plan-02 cache
+  copy in `scoreboards/benzene/`, sha256 printed): four IR-active fundamentals matched to the
+  dry-run DFT modes by irrep (a₂u, e₁u) inside a 0.90–1.00 observed/harmonic window; peak and
+  centroid, integration window (contiguous region above 3σ baseline noise), FWHM, S/N, the record's
+  stated resolution, u_c = FWHM/(2·S/N), Chu's 0.0042 cm⁻¹ calibration term, u_296 by the Ladder's
+  Bose rule with the 0.044 floor slope (2.55 cm⁻¹ at benzene — P21 in the note), **u_band = 3.2 cm⁻¹
+  on every family** (1.93 without the temperature term), integrated intensities in km/mol with
+  Chu's 3.3 % (k = 2) and the non-certified flag (the C–C band at 1482 cm⁻¹). Results in
+  `results_m03/benzene/`; note
+  [Research_Note_2026-09-10_Scoreboard_R0.md](../GoalGathering/Research_Note_2026-09-10_Scoreboard_R0.md).
+  **Owed:** the 0.125 cm⁻¹ record (fetch asked), R1 (PNNL record, Pirali table), R2/R3 sources,
+  and the naphthalene dry-run mode table the family assignment needs.
+
 - **`anchor_single_point_timing.py`** (probe 4, 2026-09-05, WSL `~/qc05`): benzene at the dry-run
   geometry — cc-pVDZ: LNO-CCSD(T) 180 s / canonical CCSD(T) 27 s / difference 16 µE_h / 1.2 GB;
   **cc-pVTZ: LNO-CCSD(T) 2087 s, 5.5 GB / canonical CCSD(T) 755 s, 7.3 GB / difference 124 µE_h.**
