@@ -237,8 +237,9 @@ there). Nothing changes for hot sources or for R2–R3.
 
 **Dated note 2026-09-10 (opponents per rung as the libraries are actually served; Module 02 atlas
 first print).** The R0 row's opponent cell reads "A, B"; the theoretical library v4.00 has **no
-benzene entry**, so at R0 the opponents are line B and the cheap line's method (line A's column is
-empty by construction); line B covers R0, R1 and, at R2, pyrene and tetracene only. No rung, margin
+benzene entry**, so at R0 — an agreement rung under decision 28, where the comparison is printed and
+claims nothing — the printed comparison columns are line B and the cheap line's method (line A's
+column is empty by construction); line B covers R0, R1 and, at R2, pyrene and tetracene only. No rung, margin
 or rule changes; the pilot note's opponent table per rung follows the atlas.
 
 **Promised:** R0–R1 scored as accuracy rungs against gas-phase data. R2–R3 scored as accuracy

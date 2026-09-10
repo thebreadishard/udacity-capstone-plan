@@ -85,12 +85,14 @@ note's null row will be judged against — recorded here, not scored.
 ## 5. Consequences to record elsewhere
 
 1. Frozen_Lines §2: the scale factors as stored; benzene absent from line A; debt 6 paid.
-2. Proposal §7 / Ladder R0 row: at R0 the opponents are line B and the cheap line's method (whose
-   own library, being PAHdb-theoretical-based, also lacks benzene); line A's column at R0 is empty
-   by construction, not by choice.
+2. Proposal §7 / Ladder R0 row: benzene is an agreement rung (decision 28) — nothing is "beaten"
+   there and no line is an opponent at R0; the atlas only says which **printed comparison columns**
+   exist beside the laboratory band: line B, and the cheap line's method (its own table, being
+   PAHdb-theoretical-based, also lacks benzene). Line A's column at R0 is empty by construction.
 3. Line B's R2 coverage is pyrene and tetracene only; chrysene and triphenylene are scored against
    line A and the cheap line.
 4. Line C is a positions-only opponent (normalised spectra); the intensity comparison of decision 18
    has opponents A and B only. The cheap line exists as a *table* for 81 species (R1–R3 all present)
-   and as a *method* (pickled SVR on five computed features) for the rest; at R0 no opponent table
-   of any line contains benzene except line B.
+   and as a *method* (pickled SVR on five computed features) for the rest; at R0 the only table
+   that contains benzene is line B's, printed beside the laboratory band for information (decision
+   28), not as a line to beat.
