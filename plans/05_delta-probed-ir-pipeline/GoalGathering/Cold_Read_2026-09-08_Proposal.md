@@ -247,3 +247,59 @@ She could not sign this text as it stands, but the reasons are almost all fixabl
 ---
 
 **Counts.** BLOCKING 7 (findings 1–7) · MAJOR 22 (findings 8–29) · MINOR 14 (findings 30–43).
+
+
+---
+
+## Closures — 2026-09-10
+
+Applied to `Project_Proposal_2026-09-06.md` by two patch scripts (scratchpad, `patch_coldread_proposal*.py`); every
+change is in the proposal's running text, which is still editable until the supervisor has read it.
+
+| # | closure |
+|---|---|
+| 1 | header now dates the revisions (6 → 10 September) and names both cold reads; §9 sentence corrected |
+| 2 | "read in full" restricted to the nine sources that were; Maltseva at abstract grade, asked for in §13 item 8 |
+| 3 | §10 gained the block "8–10 September" with decisions 20–26 and 28 (27 reserved for the parked P19); §9 "items 8–28" |
+| 4 | P12 / decision 26: basis-set line in the anchor licence and the per-band budget with the measured DZ→TZ figures; expected-effect line declared an upper bound; **inputs (ii) and (iii) pending** |
+| 5 | cubic-constants sentence restated: this probe set cannot produce φ_ijk; three-mode displacements at CC cost could |
+| 6 | naphthalene energy-route arithmetic corrected to K = 2M + K_off (250–300 energies, 150–180 h at benzene's per-energy time, six to eight days); the per-energy time at naphthalene is being measured (P13); **rewritten when it prints** |
+| 7 | 755 s labelled as the idle equilibrium point; displaced points 850–1,270 s; truth line 13–21 h |
+| 8 | references added: Käser 2021, Mata & Werner 2006, Pinski & Neese 2018/2019, Reiher & Neugebauer 2003, Russ & Crawford 2004, Subotnik & Head-Gordon 2005 (reading status and identifier provenance stated per entry); Brumfield 2012 updated to read-in-full |
+| 9 | line-B protocol attributed to the two 2024 papers held and read; library-wide applicability asked in §13 item 11 |
+| 10 | summary now states the cc-pVTZ frequency bias as the least favourable number |
+| 11 | overlap sentence gives the three s_min values and says the bias is not monotonic in them |
+| 12 | risk 1 carries the measured anchor-basis result and the rerun |
+| 13 | sealing paragraph says what the hash protects and why quoting M1 summary statistics shapes nothing |
+| 14 | K defined once (2M + K_off), diagonal cost sentences aligned (33 likewise) |
+| 15 | benzene: 57 same-irrep pairs, K_off 210 vs 388 (run of 10 September, decision 22) |
+| 16 | "exact for the canonical surface, measured for the frozen-space object" (decision 23, with the surrogate null ≤ 2 µE_h) |
+| 17 | naphthalene probing-licence reference = the full deck, every same-irrep pair measured directly |
+| 18 | engines named (psi4 1.11, pyscf-forge LNO-CCSD(T) in PySCF 2.14; VPT2 a pilot-note constant); null-row commensurability tied to §13 item 13 |
+| 19 | Module 06 defined in Terms and stated to propose before hashing |
+| 20 | R2 sentences: "known temperature" instead of "room temperature"; pyrene's hot heat-pipe spectrum (Joblin 1994/1995) named with the coronene recipe |
+| 21 | decision 25 (already applied 2026-09-08) |
+| 22 | M2 at cc-pVDZ first; cc-pVTZ repeat opens M3; memory-only failure recorded, not killing — **side-project rule changed without a user decision; flagged** |
+| 23 | left as written: the gradient-availability claim is a literature statement with its sources in the bibliography; the check named by the finding (a run) is the side project's M2 |
+| 24 | pyrene canonical diagonal: scaled arithmetic in the row (≈ 80 h and ≈ 220 GB per energy, 145 energies) |
+| 25 | calendar in §12 (2026-09-09) |
+| 26 | conflict-of-interest paragraph in §7 |
+| 27 | decision 24 (already applied 2026-09-08) |
+| 28 | Terms: licence rungs, Module 05/06; haTZ and Ethereal AI expanded |
+| 29 | §10 heading "5–8 September"; §9 "5–10 September" |
+| 30 | "two literature searches, with a third literature finding" |
+| 31 | "six to eight days" |
+| 32 | irreps given for the two naphthalene modes named (both b₂u) |
+| 33 | 5,160 energies for the 432-atom molecule under the protocol |
+| 34 | the "seventeen of eighteen" sentence replaced by a pointer to the review files |
+| 35 | new entries inserted alphabetically; the list's form otherwise left |
+| 36 | "the supervisor" throughout §13 |
+| 37 | "the two 2024 papers" with identifiers |
+| 38 | signed mean vs mean absolute difference separated |
+| 39 | coronene hot column sourced (Joblin 1994/1995) in the source list |
+| 40 | "or is arithmetic shown in place on such numbers" |
+| 41 | geometry-term force = odd part of the single-mode ± pairs |
+| 42 | Ricca quotation paraphrased |
+| 43 | M1-μ scheduled after the R1 timings, before the pilot note |
+
+Finding 23 is the only one closed without a text change; findings 4 and 6 remain half-open on measurements, not on wording.

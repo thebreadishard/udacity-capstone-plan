@@ -1,9 +1,12 @@
 # Probed coupled-cluster corrections to the harmonic force constants of polycyclic aromatic hydrocarbons: an infrared pipeline with a measured cost
 
-**Master's capstone project proposal — plan 05.** Prepared for supervision review, 6 September
-2026. Earlier drafts (3 and 4 September) are in the repository's history; this text supersedes
-them and stands on its own. Every number in it that describes this project's own performance was
-printed by a script in the folder `probes/` and can be re-run; numbers from the literature are
+**Master's capstone project proposal — plan 05.** Prepared for supervision review; first version 6
+September 2026 (the file name keeps that date), revised through 10 September 2026: the measurements,
+decisions and questions dated 8–10 September below were added after the 6-September cold read, and a
+second cold read on 8 September — from the supervisor's own position — and its closures of 10
+September are on file. Earlier drafts (3 and 4 September) are in the repository's history; this text
+supersedes them and stands on its own. Every number in it that describes this project's own performance was
+printed by a script in the folder `probes/` and can be re-run, or is arithmetic shown in place on such numbers; numbers from the literature are
 marked as such. A note on provenance and on the terms used follows the summary.
 
 ---
@@ -13,7 +16,7 @@ marked as such. A note on provenance and on the terms used follows the summary.
 Infrared band positions of polycyclic aromatic hydrocarbons (PAHs) underpin the interpretation of
 the aromatic infrared bands JWST now resolves. The reference predictions — most prominently the
 NASA Ames PAH IR Spectroscopic Database (PAHdb) — rest on scaled harmonic DFT, whose systematic
-uncertainties its own current paper calls "currently unquantified" (Ricca et al. 2026). This
+uncertainties the database's own current paper leaves unquantified (Ricca et al. 2026). This
 project builds and tests one pipeline: any individual neutral aromatic molecule in, an infrared
 absorption spectrum out, with the **harmonic force constants corrected by a local coupled-cluster
 anchor, checked against canonical coupled cluster where affordable**, and a measured error budget
@@ -33,17 +36,20 @@ molecular symmetry supplies for free. The number of coupled-cluster energies eac
 is measured and reported beside its spectrum. Whether that number stops growing with molecule
 size is a pre-registered measurement with a stated losing condition, not a claim.
 
-Three measurements and one literature search have been made since the plan was written, all in
+Three measurements and two literature searches, with a third literature finding on 8 September, have been made since the plan was written, all in
 the first week, all on the student's laptop. A DFT-only rehearsal of the probing machinery (a
 difference between two DFT functionals standing in for the coupled-cluster correction) recovered
 a full force-constant correction at benzene and showed where the couplings really are. The frozen
 correlation spaces on which the whole design rests were measured to be smooth: their energy
 scatters by 0.002–0.06 µE_h along a displaced mode, where the same local-CC program re-selecting
 its spaces at every geometry scatters by 7–11 µE_h at its default settings and 0.05–2.7 µE_h at
-tight ones. And the canonical coupled-cluster reference that licenses the anchor was timed: it
+tight ones. At the anchor basis the frozen object stays as smooth but carries a frequency bias of up
+to 0.8 cm⁻¹ on the C–C stretch (§3.3) — the least favourable number in this document — and a
+tighter-threshold rerun is measuring whether more space removes it. And the canonical coupled-cluster reference that licenses the anchor was timed: it
 fits the laptop at benzene for the line that matters, and the full canonical Hessian does not.
-The search found no room-temperature gas-phase spectrum of the pyrene-size molecules in the
-6–15 µm region, which fixes what that rung can and cannot decide.
+The search found no gas-phase spectrum of known temperature for chrysene or triphenylene in the
+6–15 µm region, and for pyrene only a hot heat-pipe spectrum and one cold band, which fixes what that
+rung can and cannot decide.
 
 The pipeline outputs the whole spectral shape for every molecule — position, intensity, drawn
 width — and the plan is explicit about which of those it scores and which it promises: positions
@@ -70,7 +76,9 @@ by a reader who saw only the documents and a brief, and four adversarial domain 
 literature access. **These were performed by an AI assistant (Claude), each pass in a fresh
 session that had not seen the author's reasoning; they are a disciplined self-review with an
 outside vocabulary, not human peer review.** Every finding and its closure is on file in the
-folder. This document itself was cold-read the same way on 6 September before being sent.
+folder. This document itself was cold-read the same way on 6 September and again on 8 September (the second
+time by a reader placed in the supervisor's position); the 8-September findings — 43, four of them
+blocking — were addressed on 10 September.
 
 *What was carried from plan 04.* The success criterion (per-band comparison against the best
 existing prediction, decided by laboratory data); the baseline predictions ("opponents", §7); the
@@ -91,7 +99,10 @@ before the first real coupled-cluster correction is computed, that fixes every t
 and constant the evaluation uses. A **beat margin** is the pre-registered minimum per-band
 improvement over the best opponent that counts as a win (used from naphthalene's families upward; on
 benzene the test is agreement, decision 28). Numbered **decisions** are the student's
-recorded choices (§10). The **campaign officer** (Module 07) is a rule-checking agent that reads
+recorded choices (§10). The **licence rungs** are benzene and naphthalene, the two rungs whose
+measurements license the anchor and the recovery for the rest of the ladder. **Module 05** is the
+deep-learning predictor of where the correction has large couplings and **Module 06** the generative
+proposer of displacement decks — both efficiency experiments on DFT-only corpora (§6, §12). The **campaign officer** (Module 07) is a rule-checking agent that reads
 the deck, the budget file and the pilot note, submits and refuses computational jobs and report
 sentences by those rules, and never produces or edits a scientific number.
 
@@ -117,9 +128,11 @@ no PAH precedent) puts the
 coupled-cluster level in the **harmonic** constants and leaves cubic and quartic constants at DFT
 level. Plan 04 had it the other way round. Plan 05 corrects the harmonic force constants only —
 Δ₂ — and lets DFT supply the anharmonic constants. The domain review sharpened this further:
-energy-only probing cannot produce the three-index cubic constants that PAH combination-band
-resonances need, so a coupled-cluster anharmonic correction was not merely unnecessary but
-unbuildable with the probes specified. It was removed from the promised set. A cheap by-product
+the probe set specified here — single- and paired-mode displacements at two amplitudes — cannot
+produce the three-index cubic constants φ_ijk that PAH combination-band resonances need (quartic
+force fields obtain them from energies at three-mode displacements, at coupled-cluster cost ruled out
+above), so a coupled-cluster anharmonic correction was not merely unnecessary but unbuildable with
+the probes specified. It was removed from the promised set. A cheap by-product
 remains and is reported: the single-mode patterns are run at two amplitudes (§3.4), which yields
 each mode's diagonal cubic correction for free — a number that will show how much was given up,
 not a correction that is applied.
@@ -155,11 +168,11 @@ work that combines them:
 
 | Ingredient | Nearest published work | What plan 05 does differently |
 |---|---|---|
-| coupled-cluster force constants along DFT normal modes from energies; selected off-diagonals; symmetry-forbidden couplings zeroed in the full matrix | Concordant Mode Approach (Lahm et al. 2022; Kitzmiller et al. 2024; Olive Dornshuld et al. 2026, read in full: 17 intermolecular complexes, MP2/haTZ modes, CMA-2A converges with 3 % of the off-diagonals; its persistent benzene outlier is one same-representation ring-deformation coupling, the same phenomenon our rehearsal found) | the target is the *difference* Δ₂, not the CC force constants; the off-diagonal block is recovered as a whole from multi-mode patterns, not element by element; symmetry used as the recovery prior rather than as a clean-up; local rather than canonical coupled cluster, at PAH sizes |
+| coupled-cluster force constants along DFT normal modes from energies; selected off-diagonals; symmetry-forbidden couplings zeroed in the full matrix | Concordant Mode Approach (Lahm et al. 2022; Kitzmiller et al. 2024; Olive Dornshuld et al. 2026, read in full: 17 intermolecular complexes, MP2 normal modes in a heavy-augmented triple-zeta basis, CMA-2A converges with 3 % of the off-diagonals; its persistent benzene outlier is one same-representation ring-deformation coupling, the same phenomenon our rehearsal found) | the target is the *difference* Δ₂, not the CC force constants; the off-diagonal block is recovered as a whole from multi-mode patterns, not element by element; symmetry used as the recovery prior rather than as a clean-up; local rather than canonical coupled cluster, at PAH sizes |
 | recovering a Hessian from few measurements by exploiting its structure | compressed sensing in a cheap method's eigenbasis (Sanders et al. 2015); O1NumHess (Wang et al. 2025) | applied to a difference Hessian rather than a full one; the prior is the molecule's symmetry, parameter-free, instead of generic sparsity; the probe count is a measured, pre-registered quantity |
 | correcting DFT towards CCSD(T) by learning the difference | Δ-machine learning of potential-energy surfaces (transfer learning to CCSD(T), Käser, Boittier, Upadhyay & Meuwly 2021) | nothing is learned per molecule; the difference is measured; a learned model is a possible follow-up gated by the measured range (§6) |
 | local-correlation spaces held fixed for numerical derivatives | **domain freezing and domain merging along a potential-energy surface (Mata & Werner 2006, as described by Pinski & Neese 2019) — holding local-correlation domains fixed across geometries is 2006 prior art, found on 8 September after the first search missed it**; the discontinuity problem itself (Russ & Crawford 2004; Madriaga & Crawford 2025); residual smoothing (Subotnik & Head-Gordon 2005); fixed domains for DLPNO-MP2 numerical derivatives (ORCA) | frozen LNO-CCSD(T) fragment spaces transported by projection across displaced geometries, semicanonicalised, with the smoothness and bias measured against canonical CCSD(T) — no publication found that does this or measures it |
-| scaled, ML-corrected or anharmonic DFT for PAH spectra | PAHdb v4.00 (Ricca et al. 2026); the PAHdb Anharmonic library v1.00 (Mackie et al. 2015, 2016; Esposito et al. 2024); Mulas et al. 2018; Ethereal AI (Bos et al. 2025) | these are the opponents; the plan adds a measured coupled-cluster correction to the harmonic constants and an error budget per band, and leaves the anharmonic constants at DFT level as they do |
+| scaled, ML-corrected or anharmonic DFT for PAH spectra | PAHdb v4.00 (Ricca et al. 2026); the PAHdb Anharmonic library v1.00 (Mackie et al. 2015, 2016; Esposito et al. 2024); Mulas et al. 2018; the ML-corrected scale factors of Bos et al. 2025 (marketed as Ethereal AI) | these are the opponents; the plan adds a measured coupled-cluster correction to the harmonic constants and an error budget per band, and leaves the anharmonic constants at DFT level as they do |
 | selected high-level vibrations from a cheap guess, without the full Hessian | mode-tracking (Reiher & Neugebauer 2003, read in full: Davidson subspace iteration on gradient derivatives, cheap-method guess, CCSD(T) refinement named as the intended use) | the target is the correction to the whole force-constant matrix from energies, under a symmetry prior, with the probe count measured — not a set of converged eigenvectors |
 
 The claim of novelty is therefore the combination and its measurement discipline, not any single
@@ -175,20 +188,27 @@ close in frequency were left free, distant ones were penalised. The DFT-only reh
 6-31G* basis, chosen to bracket the amount of exact exchange; nothing coupled-cluster has been
 computed yet, and every statement in this subsection is about that surrogate. Its large
 off-diagonal elements couple modes 170–450 cm⁻¹ apart — the strongest pair at 1186 and 1357 cm⁻¹
-(B3LYP/6-31G* harmonic values) — and every one of them lies within a single irreducible
+(B3LYP/6-31G* harmonic values; both b₂u — the C–H in-plane bend and the Kekulé-type ring stretch) — and every one of them lies within a single irreducible
 representation of the molecule's point group. The band did not select them; the recovery worked
 because the two-mode patterns in the deck isolated them and the fitted penalty was weak.
 
 The prior is therefore now what symmetry gives for free (decision 11): couplings between modes of
-**different** irreducible representations are fixed at zero — exact, not assumed — and couplings
+**different** irreducible representations are fixed at zero — exact for the canonical surface,
+measured for the frozen-space object (decision 23: a few forbidden pairs are fitted free at benzene
+and naphthalene and their magnitude printed; in the DFT surrogate they sit at the Hessians' noise,
+≤ 2 µE_h against 424 µE_h for the largest allowed coupling) — and couplings
 within one representation are free whatever their frequency distance. A sparsity penalty remains
 only where the free-element count exceeds what the rung's probe cap can determine. This prior has
-no parameters, cannot distort the truth on a symmetric molecule, and enters the deck after the
-naphthalene rehearsal reproduces the direct surrogate correction with it; until that rehearsal has
-printed, the banded rule stands as the fallback. It also sets the cost expectation (decision 13):
+no parameters and cannot distort the canonical truth on a symmetric molecule. It entered the benzene
+rehearsal on 10 September, on the same cached responses: every mode assigned in D₆h, family errors
+equal to or better than the banded rule's, forbidden couplings at the Hessians' noise; the
+naphthalene rehearsal repeats the test at 48 modes before the R1 deck is built, and until then the
+banded rule remains the fallback for that rung. It also sets the cost expectation (decision 13):
 without a prior the off-diagonal block costs about M(M−1)/2 energies for M modes — the benzene
 rehearsal needed 388 off-diagonal energies for 435 unknowns (§8), so sparsity as such saved
-nothing — and with the symmetry prior naphthalene has **141** same-representation couplings
+nothing; under the symmetry prior benzene has **57** same-representation pairs (11 of them the two
+components of a degenerate pair) and the rerun on the same responses reached the same threshold at
+**210** off-diagonal energies (10 September) — and with the symmetry prior naphthalene has **141** same-representation couplings
 instead of 1,128 (the deck's own analysis; the count is reproduced by the standard D₂h assignment of its 48 modes, 9a_g + 3b_1g + 4b_2g + 8b_3g +
 4a_u + 8b_1u + 8b_2u + 4b_3u). The representation of each mode is determined by the deck's own
 symmetry analysis in the molecule's **full** point group: DFT programs run in Abelian subgroups
@@ -197,9 +217,11 @@ same), and their labels would leave far more couplings free than symmetry does. 
 symmetry-forbidden couplings is itself standard practice — the Concordant Mode Approach does it
 as a clean-up of its full high-level matrix — what is new here is using it as the prior of a
 recovery from few measurements. The arithmetic, at benzene's measured per-energy time of 35 minutes in the anchor basis
-(naphthalene's will be longer and is measured before the note): 48 modes × 4 diagonal energies
-plus about 0.9 energies per allowed coupling plus the held-out fraction is of order 350–400
-energies, i.e. 200–250 hours — a few weeks of unattended laptop time, classified by the 168-hour
+(naphthalene's will be longer and is measured before the note): 48 modes × 2 diagonal energies (K = 2M + K_off; the second amplitude sits outside K, as at benzene)
+plus about 0.9 energies per allowed coupling plus the held-out fraction is of order 250–300
+energies, i.e. 150–180 hours at benzene's per-energy time — six to eight days of unattended laptop
+time, longer at naphthalene's own per-energy time, which is being measured as this is written (P13);
+classified by the 168-hour
 rule of §8 once the naphthalene time is known — against about 1,400 energies and 800+ hours
 without the prior. The prior is what brings the energy route at naphthalene within reach of this
 machine at all; it does not make it cheap.
@@ -235,7 +257,8 @@ subsection):
   well; that bias is a clean quadratic in the displacement, i.e. exactly a curvature bias, and it
   shrinks with the truncation threshold: 2.6–14 cm⁻¹ on the bare local energy at default
   thresholds; **0.25–1.3 cm⁻¹** on the composite energy — the local energy plus the standard
-  second-order correction for the truncated space, [MP2(full) − MP2(local)] — at default
+  second-order correction for the truncated space, [MP2(full) − MP2(local)], as pyscf-forge's own
+  corrected energy defines it — at default
   thresholds; **0.015–0.18 cm⁻¹** on the composite at tight thresholds. The pipeline's anchor runs
   at tight thresholds; the threshold-sensitivity line of §7 decides, per rung, whether that is
   enough or extrapolation in the truncation thresholds is required.
@@ -249,20 +272,24 @@ subsection):
 - *Anchor basis.* The same scan at cc-pVTZ, the basis the licence rungs use — the three arms at
   tight thresholds, 27 geometries, then its own canonical truth line — finished on 8 September
   (three arms 1.7–2.0 h per geometry, canonical 14–21 min; 58 h in all). The frozen object stays
-  smooth (0.002–0.021 µE_h), but its composite frequency bias grows with the basis: +0.47, +0.03 and
-  +0.79 cm⁻¹ on the three modes against +0.07, +0.015 and +0.18 at cc-pVDZ (all bias figures in
-  this document were halved on 10 September: a curvature difference in the dimensionless coordinate
-  is twice the frequency shift, and earlier versions reported the curvature), largest where the
-  transported virtual space overlaps the freshly selected one least (smallest singular value 0.36
-  at the out-of-plane endpoint, 0.57 on the C–C stretch). The bias is a pure curvature term (the
-  quartic coefficient is zero on every mode) and enters Δ₂ directly. What to do with it — record it
-  as a measured floor, enlarge the frozen virtual space and re-measure, or calibrate it per mode
-  where a canonical reference exists — was decided on 8 September: measure first. The same scan with
-  the local-correlation thresholds one decade tighter (the frozen arm only; the other two arms and
-  the truth line stand) started that evening and ends on 9 September; if the bias falls by the
-  factor the smaller basis showed, the anchor runs at those thresholds and the cost record carries
-  the factor, otherwise recording or per-mode calibration is chosen before the naphthalene rehearsal
-  (research note P10, decision 20).
+  smooth (0.002–0.021 µE_h), but its composite frequency bias grows with the basis: +0.47, +0.03
+  and +0.79 cm⁻¹ on the three modes against +0.07, +0.015 and +0.18 at cc-pVDZ (all bias figures
+  in this document were halved on 10 September: a curvature difference in the dimensionless
+  coordinate is twice the frequency shift, and earlier versions reported the curvature), with the
+  smallest singular value of the transported virtual space against the fresh one being 0.36 at the
+  out-of- plane endpoint, 0.66 on the ring mode and 0.57 on the C–C stretch — the bias is not a
+  monotonic function of that overlap across the three modes, so the mechanism is not settled by
+  this scan. The bias is a pure curvature term (the quartic coefficient is zero on every mode) and
+  enters Δ₂ directly. What to do with it — record it as a measured floor, enlarge the frozen
+  virtual space and re-measure, or calibrate it per mode where a canonical reference exists — was
+  decided on 8 September: measure first. The same scan with the local-correlation thresholds one
+  decade tighter (the frozen arm only; the other two arms and the truth line stand) started that
+  evening, died with the terminal session after 5 of 27 geometries (which is why long runs now
+  launch detached from the session), and resumes from its saved points after the naphthalene
+  timing, about 28 hours for the remaining 22; if the bias falls by the factor the smaller basis
+  showed, the anchor runs at those thresholds and the cost record carries the factor, otherwise
+  recording or per-mode calibration is chosen before the naphthalene rehearsal (research note P10,
+  decision 20).
 - *A definition fixed by the measurement.* The transported orbital blocks must be
   semicanonicalised at each geometry — a rotation inside the frozen space that the fragment
   solver's MP2 start and (T) step assume; a first run without that step read a spurious bias of
@@ -312,8 +339,9 @@ coronene — measured against the number of couplings the molecule's symmetry le
 **Reach (C₃₈₄H₄₈-class).** Can the same pipeline produce a spectrum with a stated error budget at
 a size where no anharmonic or coupled-cluster-quality prediction — and no laboratory spectrum —
 exists? Here no "beat" is claimed, and the plan is explicit about a hard limit: whole-molecule
-probing of a 432-atom molecule with energies only costs at least two energies per vibrational
-mode — 2,580 coupled-cluster energies of a very large molecule — and is not attempted. The only
+probing of a 432-atom molecule with energies only costs, under this protocol, four energies per
+vibrational mode for the diagonal alone — 5,160 coupled-cluster energies of a very large molecule,
+before a single coupling — and is not attempted. The only
 route by which that cost stops depending on size is to probe the correction on capped fragments
 of the flake, which uses a locality-verified electronic correction obtained on one region for
 another. The student ruled (decision 1) that this is not a scope question but a method: if it
@@ -330,7 +358,12 @@ sense: a fragment-probed spectrum, or the measured reason none could be produced
    work is rented time); DFT cubic and semi-diagonal quartic constants for the scored band
    families and every mode the resonance search couples to them. **The production DFT level
    (functional, dispersion correction, basis set, integration grid) is a pre-registered constant
-   that is not yet chosen**: it is fixed, from the opponents' levels and the anharmonic
+   that is not yet chosen**; the DFT engine is psi4 1.11 (the rehearsal's Hessians ran there), the
+   anchor is pyscf-forge's LNO-CCSD(T) in PySCF 2.14, and the VPT2 implementation is a pilot-note
+   constant with its candidates recorded in the bibliography — the null row of §7 separates this
+   pipeline's anharmonic step from the correction inside the pipeline, and is commensurate with
+   line B only if the production level is B3LYP/N07D with a polyad treatment of the same kind, which
+   is why §13 item 13 asks which level counts as the same footing. The level is fixed, from the opponents' levels and the anharmonic
    literature (the PAHdb-anharmonic standard is B3LYP/N07D with a 200 × 974 integration grid,
    Esposito et al. 2024; the CMA studies find basis quality to matter more than correlation level
    for the normal-mode basis; aug-cc-pVTZ is excluded for benzene-type rings by a documented
@@ -344,14 +377,16 @@ sense: a fragment-probed spectrum, or the measured reason none could be produced
    DFT normal-mode basis under the symmetry prior of §3.2; K read by the stopping rule of §3.4.
    Three licences gate it: an **anchor licence** against the noise, bias and threshold-sensitivity
    formulas fixed in the pilot note (§7); a **probing licence** at benzene and naphthalene against directly computed reference
-   corrections (at benzene including a canonical coupled-cluster reference, the only one
-   independent of the space freezing); and a **locality test** computed on directly measured
+   corrections — at naphthalene the reference is the full deck itself, every same-representation
+   pair measured directly as a ± two-mode point, against which the recovery from the hashed prefix
+   is judged; at benzene it includes a canonical coupled-cluster reference, the only one independent
+   of the space freezing; and a **locality test** computed on directly measured
    Hessian blocks — never on the recovered correction alone, which could certify the locality its
    own prior imposed. Modes that are infrared-inactive by symmetry are not dropped — their
    diagonal is cheap and their fundamentals reach the spectrum through
    resonances — but the coupling blocks made only of inactive modes are tested per rung in the
    DFT rehearsal and left out of the deck only where the scored positions do not move (decision
-   19). (Each mode's diagonal costs four energies: a ± pair at each of two amplitudes, §3.4.)
+   19). (Each mode's diagonal costs two energies inside K — a ± pair — and two more at the second amplitude that sit outside K and yield the cubic by-product, §3.4.)
 3. **Spectra** by second-order vibrational perturbation theory with explicit resonance
    treatment (GVPT2; the implementation is pinned in the pilot note as a pre-registered constant,
    with named resonance thresholds and a polyad cap; from the pyrene-size rung upward the
@@ -359,14 +394,21 @@ sense: a fragment-probed spectrum, or the measured reason none could be produced
    the scored modes and the partners a dimensionless coupling indicator and the Darling–Dennison
    test select, after Fusè et al. 2024, whose thresholds are pilot-note candidates — on the DFT anharmonic
    constants and the Δ₂-corrected harmonic part, plus a first-order geometry term: the corrected
-   surface's own minimum shifts slightly from the DFT one, and that shift is applied and printed
-   on every scored band); **no scale factor** on anharmonic output. Every spectrum carries
+   surface's own minimum shifts slightly from the DFT one, by the coupled-cluster force at the DFT
+   geometry — the odd part of the same single-mode ± pairs whose even part gives the diagonal, so
+   it costs nothing extra — divided by the corrected curvature, and that shift is applied and
+   printed on every scored band); **no scale factor** on anharmonic output. Every spectrum carries
    positions, anharmonic intensities from the DFT dipole derivatives (the same physics PAHdb's
    intensities rest on, computed anharmonically rather than harmonically) and a drawn width at
    the resolution and temperature of the source it is compared with, each labelled with its
    provenance.
 4. **Error budget** per band: DFT level, held-out residual, measured noise and space-freezing
-   bias, the share of the family's correction that comes from couplings beyond the locality
+   bias, the anchor's **basis-set line** (decision 26: the measured cc-pVDZ → cc-pVTZ change of the
+   canonical curvature, +67 / −33 / −73 cm⁻¹ on benzene's three probed modes, two thirds of it at
+   the SCF level; the literature distance of CCSD(T)/cc-pVTZ from the basis-set limit once read; a
+   canonical cc-pVQZ diagonal line in the cluster request — the 5.45 cm⁻¹ expected-effect figure of
+   §11 is at a near-complete basis and is therefore an upper bound on what this anchor can buy),
+   the share of the family's correction that comes from couplings beyond the locality
    test's radius, and the matrix–gas shift where matrix data is used.
 
 ### 5.2 The size ladder (species and claim types unchanged from plan 04)
@@ -375,7 +417,7 @@ sense: a fragment-probed spectrum, or the measured reason none could be produced
 |---|---|---|---|
 | R0 | benzene | agreement (decision 28): within the laboratory uncertainty plus the pipeline's own budget; the opponents are printed, not claimed | probing licence against local and canonical references; the anchor's bias and basis-set lines (canonical reference); intensities scored for agreement |
 | R1 | naphthalene | agreement, plus the per-family question whether the correction adds accuracy over DFT | the noise measurement; the anchor licence closes; first locality read; intensities scored for agreement |
-| R2 | pyrene, chrysene, triphenylene, tetracene | accuracy for the C–H out-of-plane families (hot gas, decidable by margin); the C–H stretch family is scored on the jet-cooled 3 µm column only once a scoring rule for its resonance polyads is agreed (§13 item 8) and is not counted as promised until then (decision 25); C–C families expected undecidable on the existing gas data, see below | first off-diagonal-count ratio; direct-block locality probe; a canonical diagonal check at pyrene (expected cluster work; classified by the rule of §8, and skipped with a printed sentence if no cluster time exists) |
+| R2 | pyrene, chrysene, triphenylene, tetracene | accuracy for the C–H out-of-plane families (hot gas, decidable by margin); the C–H stretch family is scored on the jet-cooled 3 µm column only once a scoring rule for its resonance polyads is agreed (§13 item 8) and is not counted as promised until then (decision 25); C–C families expected undecidable on the existing gas data, see below | first off-diagonal-count ratio; direct-block locality probe; a canonical diagonal check at pyrene (scaled from the measured benzene point: 620 against 264 basis functions at cc-pVTZ, N⁷ time and N⁴ memory give roughly 400 × 755 s ≈ 80 h and 30 × 7.3 GB ≈ 220 GB per energy, for 2 × 72 + 1 = 145 energies — cluster work by two orders of magnitude, classified by the rule of §8, and skipped with a printed sentence if no cluster time exists) |
 | R3 | coronene | accuracy | second ratio; the numeric size sentence is decided here |
 | R4–R5 | C₅₄–C₂₁₆ class | reach; the R4 fragment checks conditional on cluster access | expert-judgment datum (§13.5); the first rungs where the learned prior, if it earned its licence at R2–R3, may carry the recovery; the fragment-vs-whole comparison on a molecule larger than coronene and the fragment-radius convergence test |
 | R6 | C₃₈₄H₄₈-class | reach | fragment-probed only, under a four-part measured licence (locality at R2–R3; coronene probed in fragments reproducing coronene probed whole; the same on a larger molecule where the cluster allows; a fragment-radius convergence test on the flake's own interior); otherwise a per-family or full refusal |
@@ -391,9 +433,11 @@ shift and a 0.5 cm⁻¹ head-to-origin term, since the fundamental is read direc
 and Joblin et al. 1995 for the temperature term. Pyrene, chrysene, triphenylene: NIST WebBook hot-vapour GC-IR
 spectra at 8 cm⁻¹ without concentration data, and, for the C–H stretch family only, the jet-cooled
 3 µm IR–UV ion-dip spectra of Maltseva et al. 2016 as a labelled cold column. Tetracene: matrix isolation, plus a jet-cooled band
-list (Lemmens et al. 2019). Coronene: matrix isolation, plus six jet-cooled 6–15 µm bands
-(Lemmens, Rijs & Buma 2021). All of these sources were read in full on 6 September 2026 and their
-conditions transcribed (bibliography, "Readings of 2026-09-06 — laboratory sources"). Three
+list (Lemmens et al. 2019). Coronene: matrix isolation, six jet-cooled 6–15 µm bands
+(Lemmens, Rijs & Buma 2021) as the primary cold column, and the 770 K heat-pipe spectrum of Joblin
+et al. 1994 with the slopes of Joblin et al. 1995 as the labelled hot column (decision 24). Chu 1999, Schneider 2024, Pirali 2009, Joblin 1994 and 1995, Lemmens 2019 and 2021, Mattioda
+2020 and Brumfield 2012 were read in full (6 and 8 September) and their conditions transcribed;
+Maltseva 2016 is held at abstract grade and its band tables are asked for (§13, item 8) (bibliography, "Readings of 2026-09-06 — laboratory sources"). Three
 readings changed numbers, not rules: the benzene intensities are not certified where water,
 CO and CO₂ absorb (1325–1900, 2050–2225, 2295–2385 and 3550–3950 cm⁻¹), so the intensity score at
 benzene excludes the C–C band near 1480 cm⁻¹;
@@ -413,11 +457,13 @@ family passes through the matrix–gas gate or is pre-declared inconclusive. Ben
 naphthalene are therefore scored unconditionally on room-temperature cell spectra. For the
 pyrene-size rung, a systematic search on 5 September (NIST WebBook, the PNNL database, PAHdb's
 experimental library, and journal searches on jet-cooled and cell spectroscopy of each species)
-found no room-temperature gas-phase spectrum of pyrene, chrysene or triphenylene in the 6–15 µm
-region; it found the two jet-cooled lists above and one rotationally resolved cold pyrene band
-(Brumfield, Stewart & McCall 2012), all now named as labelled cold columns. The C–C stretching
+found no gas-phase spectrum of known temperature for chrysene or triphenylene in the 6–15 µm
+region; for pyrene it found the hot heat-pipe spectrum of Joblin et al. 1994 at 570 K (with the
+8.5 and 12 µm slopes of Joblin et al. 1995 — the same two-column treatment as coronene's applies),
+the two jet-cooled lists above and one rotationally resolved cold band (Brumfield, Stewart & McCall
+2012, read in full: origin 1184.0356 cm⁻¹, T_vib ≤ 111 K), all now named as labelled columns. The C–C stretching
 families at R2 are therefore expected to be undecidable by construction (they carry the largest
-temperature shifts and the smallest beat margins, so the unknown vapour temperature swamps them;
+temperature shifts and the smallest beat margins, so the GC-IR entries' unknown vapour temperature swamps them;
 the strong, isolated C–H out-of-plane bands shift least and keep a usable margin); the plan says so
 before
 any number exists, and the student has decided to sign off the scoreboard module with that
@@ -451,13 +497,18 @@ differentiation scale with the largest fragment rather than the molecule. The si
 terms are frozen now (its milestones are numbered M2–M5 in the technical documents, continuing the
 plan's numbering after probe M1; they are unrelated objects and are named here by molecule):
 
-- **M2** (benzene, cc-pVTZ; laptop): the engine version pinned and printed; the
+- **M2** (benzene; laptop): the engine version pinned and printed; the
   automatic-differentiation gradient with the frozen-space projection inside the differentiated
   graph agrees component-wise with central finite differences of the re-projected frozen-space
   energy; its smoothness along the same modes as probe M1 printed; the projection term of the
-  gradient measured. Passing M2 licenses the gradient route at benzene.
-- **M3** (naphthalene, cc-pVTZ; laptop): the same correctness, smoothness and projection-term
-  printouts, plus wall-clock per gradient
+  gradient measured. M2 runs first at cc-pVDZ, where the canonical analytic gradient fitted the
+  laptop (13.9 GB, §8), because at benzene every fragment spans the whole molecule and the
+  memory argument above gives no relief there; the cc-pVTZ repeat is M3's first item, and a
+  failure at cc-pVTZ that is memory-only (correctness and smoothness passed at cc-pVDZ) is
+  recorded as such and does not by itself trigger the kill criterion (cold read of 8 September,
+  finding 22). Passing M2 licenses the gradient route at benzene.
+- **M3** (benzene at cc-pVTZ, then naphthalene at cc-pVTZ; laptop): the same correctness,
+  smoothness and projection-term printouts, plus wall-clock per gradient
   and peak memory within the laptop's ceiling. Passing M3 licenses the gradient route at
   naphthalene.
 - **M4** (pyrene) and **M5** (coronene), each nine gradients per probed mode: run/no-run,
@@ -526,7 +577,7 @@ beside PAHdb's computed ones as a comparison, not a verdict: both are DFT, and n
 exists. Matrix intensities never score. No coupled-cluster correction to intensities is promised:
 Madriaga & Crawford's objection to local-CC field derivatives stands, and whether the frozen-space
 object removes it is a measured question — a dipole companion to probe M1 (**M1-μ**: the frozen
-spaces' dipole moment along the same modes against canonical CCSD(T)), owed after the cc-pVTZ scan
+spaces' dipole moment along the same modes against canonical CCSD(T)), owed, scheduled after the R1 timings and before the pilot note
 — and only a printed result can turn it into a proposal. Band **widths** are drawn at the source's
 resolution and temperature and labelled as presentation.
 
@@ -540,13 +591,21 @@ resolution and temperature and labelled as presentation.
 | in-house | the **calibrated-harmonic baseline** (Module 04): a per-band ML correction to scaled-harmonic DFT, trained leave-molecule-out on laboratory residuals, after the ML-corrected-scaling approach of Bos et al. 2025 | built in this project, frozen before scoring | every accuracy rung |
 
 Line B is compared on **stick positions per band family**, nothing else: its authors' choices —
-the 200 cm⁻¹ resonance window, the exclusion of modes below 300 cm⁻¹ from the VPT2, the line
-profile — are not scored against, and where this pipeline's anharmonic step differs from that
+as stated in the two 2024 papers held and read (Esposito et al. 2024, J. Chem. Phys. and MNRAS
+Letters): the 200 cm⁻¹ resonance window, the exclusion of modes below 300 cm⁻¹ from the VPT2, the
+line profile — are not scored against (whether every one of the library's 45 spectra follows that
+protocol, and what the 2015/2016 founding papers fixed, is asked in §13, items 11 and 8), and where this pipeline's anharmonic step differs from that
 protocol the difference is separated from the coupled-cluster correction by the Δ₂ = 0 null row
 below, which runs this pipeline's own anharmonic step without the correction. The question put to
 line B is therefore not whether its anharmonic treatment is right, but whether a measured
 coupled-cluster correction to the harmonic constants adds accuracy on top of an anharmonic DFT
 treatment of the same kind.
+
+**A conflict of interest, on record.** The supervisor is a co-author of the 2015 and 2016 papers
+behind line B and of the jet-cooled 3 µm spectra named as an R2 column (Maltseva et al. 2016). The
+protections are the ones already written — the frozen version, the pre-registered margins, the
+Δ₂ = 0 null row, the leakage rules, the fail-closed reporting — and the supervisor's role on line B is
+advisory on protocol facts (§13, items 11–15), never on margins or verdicts.
 
 **Frozen comparisons and the pilot note.** Paired per-band absolute error on identical laboratory
 bands; band lists, windows and margins frozen in the pilot note, which is written with seven
@@ -569,7 +628,12 @@ The first real coupled-cluster correction is computed after the note is committe
 constant, probe cap, tolerance or margin can be shaped by a result; the raw displaced energies of
 probe M1 are hash-committed for the same reason — the files are readable in the repository, the
 SHA-256 sidecar proves they were not altered, and the author has undertaken not to open them before
-the pilot note; "sealed" elsewhere in the plan means exactly this — and this proposal quotes only
+the pilot note; "sealed" elsewhere in the plan means exactly this. What the hash-commitment protects
+is the probing licence's off-diagonal responses and the R1 fit coefficients; the anchor licence's
+noise and bias lines have their *form* fixed in the Ladder (σ_E ≤ 0.82·τ·q_s²; the bias line on
+the composite energy), M1 supplies only the measured σ and bias read against them, and the pilot
+note may not move the form — so quoting M1's summary statistics here shapes nothing. This proposal
+quotes differences between methods and continuity diagnostics, never an absolute energy; it quotes only
 differences between
 methods.
 
@@ -604,7 +668,7 @@ as winning.
 Every cost in the plan is a measured slot reading "not run" until a script prints it. The
 literature figures that motivated the design (a hundred-odd gradients for a full Hessian; 30 % of
 columns on anthracene; a few micro-hartree of local-correlation noise) are recorded as motivation
-and are forbidden in any budget sentence. The following were printed between 5 and 6 September on
+and are forbidden in any budget sentence. The following were printed between 5 and 10 September on
 the student's laptop (an 8-core Ryzen 7 260, 31 GB, no CUDA GPU; the anchor code runs in a Linux
 subsystem given 22 GB; the machine is dedicated to the project and available around the clock).
 
@@ -624,9 +688,10 @@ subsystem given 22 GB; the machine is dedicated to the project and available aro
   CCSD(T) points; 5–10 minutes per geometry at cc-pVDZ. The cc-pVTZ scan takes about two hours per
   geometry and 2.5 days in all.
 - **The canonical reference.** Canonical CCSD(T) energy of benzene: 27 s at cc-pVDZ, **755 s and
-  7.3 GB at cc-pVTZ**. Local LNO-CCSD(T) energy at cc-pVTZ: 2,087 s (locality pays only at larger
+  7.3 GB at cc-pVTZ** on the idle laptop at the equilibrium geometry (850–1,270 s at the displaced
+  geometries of the scan, with the laptop in use). Local LNO-CCSD(T) energy at cc-pVTZ: 2,087 s (locality pays only at larger
   molecules). The anchor's bias line — 61 canonical energies along benzene's 30 modes — is
-  therefore about 13 hours and **fits the laptop**; the full canonical reference Hessian by
+  therefore 13–21 hours and **fits the laptop**; the full canonical reference Hessian by
   energies (1 + 2·30 + 4·435 = 1,801 energies, about 378 hours) **does not**, and neither does the
   gradient branch: a canonical CCSD(T) gradient of benzene costs 1,399 s and 13.9 GB at cc-pVDZ —
   about fifty energies — and at cc-pVTZ it did not complete within the 22 GB ceiling (its memory
@@ -670,8 +735,8 @@ estimator for the noise gate; a noise-aware stopping rule; an absolute agreement
 locality couplings; a feasibility probe for the canonical reference) and withheld it for the
 pyrene and coronene rungs on two points — the fragment licence and the gas-phase decidability of
 the C–C families — both closed in the specification the same day. The third and fourth rounds
-re-read those closures (seventeen of eighteen held; the exception was re-patched and re-read in the
-fourth round; then twelve of twelve) and changed the design in seven
+re-read those closures (the re-checks of the earlier closures held with one exception, re-patched and re-read in the
+fourth round; the counts are in the review files) and changed the design in seven
 places, all in the text: paired displacements so that the coupled-cluster force at the DFT
 geometry cancels; frozen spaces transported by projection rather than re-localised; only benzene
 scored unconditionally until the room-temperature naphthalene source was found; noise injected
@@ -681,7 +746,7 @@ PNNL naphthalene source itself.
 
 The review loop was **closed on 4 September** after a consistency check of the last revision (19
 cross-references, all mechanical). Since then the plan's text changes only by dated notes that
-name a measurement or a decision; the decisions of 5–6 September (§10, items 8–19) are such notes.
+name a measurement or a decision; the decisions of 5–10 September (§10, items 8–28) are such notes.
 Items 8–16 and 19 were made on the DFT-only rehearsal, the frozen-space probe and the timings —
 before any coupled-cluster response of the real correction exists, so none of the rules the
 evaluation depends on was shaped by a result it will judge; items 17 and 18 are tooling and scope
@@ -711,7 +776,7 @@ own; knowledge transfer is allowed wherever a gate shows it makes the pipeline s
 7. No earlier coursework overlaps with this project. An unsubmitted draft that used the QM9 set
    has been renamed so that the Module-05 corpus cannot be mistaken for re-used work.
 
-**5–6 September 2026, after the first measurements.**
+**5–8 September 2026, after the first measurements.**
 8. The stopping rule reads the off-diagonal residual.
 9. Its threshold carries the model floor.
 10. The off-diagonal noise requirement is measured per rung; if exceeded, the couplings are
@@ -733,11 +798,37 @@ own; knowledge transfer is allowed wherever a gate shows it makes the pipeline s
 19. Coupling blocks made only of infrared-inactive modes are tested per rung and dropped only
     where the scored positions do not move.
 
+**8–10 September 2026, after the anchor-basis scan, the laboratory readings and the second cold read.**
+
+20. The anchor-basis curvature bias of the frozen arm (§3.3) is **measured against a larger frozen
+    space before anything else is decided**: the same benzene scan at thresholds one decade tighter,
+    frozen arm only, against the existing cc-pVTZ truth line (started 8 September, resumed 10
+    September after the first run died with its session).
+21. A room-temperature source whose fundamental is resolved from its hot bands (Pirali et al. 2009,
+    sixteen naphthalene bands at 0.005 cm⁻¹) is scored with no temperature shift and a 0.5 cm⁻¹
+    head-to-origin term; other room-temperature sources keep the floor.
+22. The benzene rehearsal is rerun under the symmetry prior (done 10 September; §3.2).
+23. The symmetry-forbidden couplings of the frozen-space object are measured as a null (a few pairs
+    fitted free) rather than assumed zero (§3.2).
+24. The jet-cooled coronene bands are the primary cold column with the laser bandwidth as their
+    uncertainty; the hot-extrapolated position is a second, labelled column; a family is inconclusive
+    only when the two disagree on the verdict (§5.2).
+25. The R2 C–H stretch family on the jet-cooled 3 µm column is shown, not promised, until a scoring
+    rule for its resonance polyads is agreed (§5.2, §13 item 8).
+26. A **basis-set line** enters the anchor licence and the per-band budget: the measured cc-pVDZ →
+    cc-pVTZ change of the canonical curvature (§3.3), the literature distance of CCSD(T)/cc-pVTZ from
+    the basis-set limit for benzene once read, and a canonical cc-pVQZ diagonal line in the cluster
+    request; the expected-effect line is an upper bound at the anchor's level.
+27. *(number reserved: the transferability test of the correction across size is parked, undecided.)*
+28. **The criterion per rung** (§1, §5.2, §7): benzene is an agreement rung, naphthalene agreement
+    plus the per-family question whether the correction adds accuracy, "beat" from there upward.
+
 ## 11. Risks
 
 1. **Frozen-space energies are not smooth enough for energy-only probing.** Measured at benzene in
-   cc-pVDZ: they are, by a factor of 30 to 1,000 (§3.3). Remaining exposure: the anchor basis (scan
-   running) and larger molecules (the naphthalene noise measurement). Response where a measurement
+   cc-pVDZ: they are, by a factor of 30 to 1,000 (§3.3). Remaining exposure: the anchor basis — measured 8 September: smooth (0.002–0.021 µE_h) with a
+   frequency bias of +0.47 / +0.03 / +0.79 cm⁻¹, a tighter-threshold rerun in progress (decision 20)
+   — and larger molecules (the naphthalene noise measurement). Response where a measurement
    fails: no accuracy claim for the couplings at that size; the gradient route where the side
    project has delivered it.
 2. **The correction is not near-diagonal in the DFT mode basis on aromatic ring modes.** Measured
@@ -749,8 +840,8 @@ own; knowledge transfer is allowed wherever a gate shows it makes the pipeline s
    family, the anthracene probe, and a pre-registered per-family losing condition that withdraws
    the reach story for exactly those families.
 4. **The coupled-cluster harmonic correction does not beat calibrated harmonics.** The opponents'
-   fitted scale factors already absorb the mean of a harmonic difference that Esposito et al. 2024
-   (§14) measured for benzene: B3LYP/N07D against CCSD(T)-F12b/cc-pVTZ-F12 harmonic frequencies,
+   fitted scale factors absorb the signed mean of the harmonic difference; the mean absolute
+   difference that Esposito et al. 2024 (§14) measured for benzene bounds what remains to buy per family: B3LYP/N07D against CCSD(T)-F12b/cc-pVTZ-F12 harmonic frequencies,
    mean absolute difference 5.45 cm⁻¹ (their Table S1; benzene only, read in full 6 September);
    what remains to buy is the per-family scatter. Response: the expected-effect line is
    written into the pilot note before any result, and losing is publishable.
@@ -780,7 +871,8 @@ and naphthalene, the calibrated intensities (Module 03); the calibrated-harmonic
 (Module 07; see the terms after §1); and the assembled pipeline with its scored ladder and cost
 records (Module 08). Module 01 (foundations) maps to no pipeline artifact. Two
 modules — the deep-learning support predictor (Module 05) and the generative pattern proposer
-(Module 06) — are efficiency experiments on the off-diagonal probe count, run on DFT-only corpora
+(Module 06; it proposes decks on DFT-only corpora *before* hashing — a proposed deck is hashed like
+any other and never reordered after an energy exists) — are efficiency experiments on the off-diagonal probe count, run on DFT-only corpora
 at zero coupled-cluster cost and measured against the symmetry prior's free-element count; the
 deep-learning model is measured on the accuracy rungs and, if it earns its licence there, becomes
 load-bearing on the reach rungs — the mapping says exactly that rather than pretending otherwise.
@@ -868,7 +960,7 @@ number or a source the plan would use, none changes a rule by itself):
 
 *On the PAHdb Anharmonic library (line B).*
 
-11. Whether all 45 spectra of version 1.00 were computed with the protocol of the 2024 papers
+11. Whether all 45 spectra of version 1.00 were computed with the protocol stated in the two 2024 papers read (J. Chem. Phys. 160, 211101; MNRAS Lett. 531, L87)
     (B3LYP/N07D, the 200 × 974 grid, SPECTRO with symmetry-based resonance polyads, a 200 cm⁻¹
     window, modes below 300 cm⁻¹ excluded), or with per-species deviations the plan should record.
 12. Whether stick lists (positions and intensities) of the library are downloadable, and which
@@ -877,9 +969,9 @@ number or a source the plan would use, none changes a rule by itself):
 13. Whether the comparison of §7 — stick positions per family, with the Δ₂ = 0 null row
     separating this pipeline's anharmonic treatment from the coupled-cluster correction — is, in her
     judgment, the fair way to put a coupled-cluster harmonic correction next to her method; and
-    which DFT level she would regard as the "same footing" for the pipeline's production constant
+    which DFT level the supervisor would regard as the "same footing" for the pipeline's production constant
     (§5.1, not yet chosen).
-14. Whether a coupled-cluster harmonic reference for naphthalene exists in her group's work or
+14. Whether a coupled-cluster harmonic reference for naphthalene exists in the supervisor's group's work or
     elsewhere: the expected-effect line of the evaluation has a literature figure for benzene only
     (5.45 cm⁻¹, Esposito et al. 2024) and none at R1.
 15. Whether excluding modes below 300 cm⁻¹ from the VPT2 in that protocol drops their couplings
@@ -890,10 +982,10 @@ number or a source the plan would use, none changes a rule by itself):
 
 16. Whether the scope of the promise — a coupled-cluster correction to the harmonic constants
     only, no coupled-cluster anharmonic correction, intensities scored on benzene and naphthalene
-    only — is one she would sign, or whether she wants any of the three measured questions of
+    only — is one the supervisor would sign, or whether the supervisor wants any of the three measured questions of
     §6–§7 (M1-μ, the diagonal cubic by-product, the learned prior) promoted before the pilot note.
 17. The two asks of item 5 above in concrete form when the time comes: the size of a cluster-time
-    request she would sponsor, and who serves as the named expert for the reach rungs.
+    request the supervisor would sponsor, and who serves as the named expert for the reach rungs.
 
 ## 14. References
 
@@ -913,8 +1005,8 @@ marked otherwise; author initials are given only where a held PDF's first page s
 - Bos et al. 2025, ACS Omega 10, 62282. DOI 10.1021/acsomega.5c10225. (ML-corrected DFT
   scaling; the approach the in-house calibrated-harmonic baseline reproduces.)
 - Brumfield, Stewart & McCall 2012, J. Phys. Chem. Lett. 3, 1985.
-  DOI 10.1021/jz300769k. (One rotationally resolved cold band of pyrene near 8.5 µm; Crossref
-  record; content at snippet grade; band origin not read.)
+  DOI 10.1021/jz300769k. (One rotationally resolved cold band of pyrene near 8.5 µm; read in full 8
+  September: band origin 1184.035595(20) cm⁻¹, T_rot ≈ 23 K, T_vib ≤ 111 K.)
 - Chu, Guenther, Rhoderick & Lafferty 1999, J. Res. Natl. Inst. Stand.
   Technol. 104, 59. DOI 10.6028/jres.104.004. (The NIST Quantitative Infrared Database; read in full
   2026-09-06 from the NIST PDF: 296 K, 760 Torr N₂, 0.12 cm⁻¹, intensities 3.3 % at k = 2, not
@@ -932,6 +1024,9 @@ marked otherwise; author initials are given only where a held PDF's first page s
 - Joblin, d'Hendecourt, Léger & Défourneau 1994, Astron. Astrophys. 281, 923. (Gas-phase, solid and
   Ne-matrix PAH spectra 3–20 µm, the hot spectra of the coronene cross-check; read in full 2026-09-06
   from the ADS scan.)
+- Käser, Boittier, Upadhyay & Meuwly 2021, J. Chem. Theory Comput. 17, 3687 (per the held arXiv
+  manuscript, arXiv:2103.05491; journal record not verified against the journal). (Transfer learning
+  to CCSD(T) anharmonic frequencies — the Δ-learning precedent of §3.1.)
 - Kitzmiller, N. L., Lahm, M. E., Olive Dornshuld, L. N., Jin, J., Allen, W. D., Schaefer, H. F.
   2024, J. Chem. Theory Comput. 20, 10886. DOI 10.1021/acs.jctc.4c01240. (CMA-2.)
 - Lahm, Kitzmiller, Mull, Allen & Schaefer 2022, J. Am. Chem.
@@ -956,15 +1051,26 @@ marked otherwise; author initials are given only where a held PDF's first page s
 - Maltseva, Petrignani, Candian, Mackie, Huang, Lee, Tielens, Oomens & Buma 2016, Astrophys. J.
   831, 58. DOI 10.3847/0004-637x/831/1/58. (Jet-cooled 3 µm spectra of pyrene, chrysene and
   triphenylene among others — the C–H stretch cold column at R2; Crossref record; abstract grade.)
+- Mata & Werner 2006, J. Chem. Phys. 125, 184110. (Domain freezing and merging along a
+  potential-energy surface — the 2006 prior art of §3.1; identifier taken from the reference list of
+  Pinski & Neese 2019, not Crossref-verified, not read.)
 - Mulas, Falvo, Cassam-Chenaï & Joblin 2018, J. Chem. Phys. 149, 144102.
   DOI 10.1063/1.5050087. (Opponent line B: anharmonic DFT quartic force fields of pyrene and
   coronene; the emission cascade model.)
 - Pirali, Vervloet, Mulas, Malloci & Joblin 2009, Phys. Chem. Chem. Phys. 11,
   3443. DOI 10.1039/b814037e. (Naphthalene hot-band spectroscopy; the temperature term.)
+- Pinski & Neese 2018, J. Chem. Phys. 148, 031101; 2019, J. Chem. Phys. 150, 164102. (The
+  DLPNO-MP2 analytic gradient; PNO-relaxation constraints; the continuous degeneracy of localised
+  orbitals in symmetric molecules; discontinuities of local-correlation surfaces and their known
+  remedies; read 8 September.)
+- Reiher & Neugebauer 2003, J. Chem. Phys. 118, 1634. DOI 10.1063/1.1523908. (Mode-tracking; read in
+  full 8 September.)
 - Ricca, Boersma, Maragkoudakis, Roser, Shannon, Allamandola & Bauschlicher 2026, Astrophys. J. Suppl. Ser. 282, 7. DOI 10.3847/1538-4365/ae1c38.
   (PAHdb v4.00, opponent line A; the "currently unquantified" quotation.)
 - Sanders, J. N., Andrade, X., Aspuru-Guzik, A. 2015, ACS Cent. Sci. 1, 24. DOI 10.1021/oc5000404.
   (Compressed-sensing Hessians; polyacenes.)
+- Russ & Crawford 2004, J. Chem. Phys. 121, 691. (Discontinuities of local-correlation potential
+  energy surfaces; identifier from the reference list of Pinski & Neese 2019, not verified, not read.)
 - Schneider, Baker, Scharko, Blake, Tonkyn, Forland & Johnson 2024, J. Quant. Spectrosc. Radiat. Transfer 323, 109045.
   DOI 10.1016/j.jqsrt.2024.109045. (Quantitative vapour-phase spectra of solids, naphthalene among
   them; 25 °C in the methods, 50 °C in the introduction and the Fig. 6 caption; 0.112 cm⁻¹; ±8 % at
@@ -972,6 +1078,9 @@ marked otherwise; author initials are given only where a held PDF's first page s
 - Sharpe, Johnson, Sams, Chu, Rhoderick & Johnson 2004,
   Appl. Spectrosc. 58, 1452. DOI 10.1366/0003702042641281. (The PNNL gas-phase quantitative IR
   database.)
+- Subotnik & Head-Gordon 2005, J. Chem. Phys. 123, 064108. (Smoothing functions against
+  local-correlation discontinuities; identifier from the reference list of Pinski & Neese 2019, not
+  verified, not read.)
 - Wang, Luo, Wang & Liu 2025, J. Chem. Theory Comput. 21, 10893.
   DOI 10.1021/acs.jctc.5c01354. (O1NumHess.)
 - Williams, N. J., Kabalan, L., Stojanovic, L., Zolyomi, V., Pyzer-Knapp, E. O. 2024,
@@ -980,6 +1089,6 @@ marked otherwise; author initials are given only where a held PDF's first page s
   cluster, PySCFAD.)
 
 Other plan-04 sources carried in the working bibliography and used by the modules (matrix
-scoreboards, the DLPNO caveats): Bauschlicher et al. 2018; Chen, Li & Li 2026; Hudgins & Sandford 1998; Käser, Boittier, Upadhyay & Meuwly 2021; Lam, Abdul-Al &
+scoreboards, the DLPNO caveats): Bauschlicher et al. 2018; Chen, Li & Li 2026; Hudgins & Sandford 1998; Lam, Abdul-Al &
 Allouche 2020; Mattioda et al. 2020; Sylvetsky et al. 2020; Tang et al. 2025; NIST CCCBDB; Zapata
 Trujillo & McKemmish 2022.
