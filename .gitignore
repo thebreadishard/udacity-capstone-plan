@@ -41,3 +41,8 @@ plans/*/probes/results_*/psi4.out
 
 # local literature copies (open-access downloads; the repo holds references only)
 Papers/
+
+# Plan 05 modules: raw downloads (PAHdb XML, Zenodo archives) and the large derived band tables stay out of git; species tables, summaries and reports are committed
+plans/*/modules/*/data/*
+!plans/*/modules/*/data/_synthetic_test.xml
+plans/*/modules/*/out/**/*.csv.gz

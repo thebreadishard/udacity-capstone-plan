@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<pahdatabase xmlns="http://www.astrochemistry.org/pahdb/theoretical" database="theoretical" version="0.00-synthetic" date="2026-09-10" full="false">
+<comment>synthetic two-species file built from the published schema for a parser test; not data</comment>
+<species>
+<specie uid="1"><comments><comment type="generic">#becke3lyp/6-31G* freq</comment></comments><references><reference>Test, 2000, J., 1, 1 doi:10.0000/test</reference></references>
+<formula>C6H6</formula><charge>0</charge><symmetry>1-A1G</symmetry><weight>78.0</weight><total_e>-232.0</total_e><vib_e>60.0</vib_e><method>RB3LYP</method>
+<n_solo>0</n_solo><n_duo>0</n_duo><n_trio>0</n_trio><n_quartet>0</n_quartet><n_quintet>0</n_quintet><n_ch2>0</n_ch2><n_chx>6</n_chx>
+<geometry><atom><position><x>0</x><y>0</y><z>0</z></position><type>6</type></atom></geometry>
+<transitions><mode><frequency scale="0.9750">673.0</frequency><intensity>100.0</intensity><symmetry>A2U</symmetry></mode>
+<mode><frequency scale="0.9640">3047.0</frequency><intensity>70.0</intensity><symmetry>E1U</symmetry></mode></transitions></specie>
+<specie uid="2"><comments><comment type="generic">#becke3lyp/4-31G freq</comment></comments><references></references>
+<formula>C384H48</formula><charge>0</charge><symmetry>1-A1G</symmetry><weight>4661.0</weight><total_e>-1.0</total_e><vib_e>1.0</vib_e><method>RB3LYP</method>
+<n_solo>0</n_solo><n_duo>48</n_duo><n_trio>0</n_trio><n_quartet>0</n_quartet><n_quintet>0</n_quintet><n_ch2>0</n_ch2><n_chx>0</n_chx>
+<geometry></geometry><transitions><mode><frequency scale="0.9750">880.0</frequency><intensity>500.0</intensity><symmetry>A2U</symmetry></mode></transitions></specie>
+</species></pahdatabase>

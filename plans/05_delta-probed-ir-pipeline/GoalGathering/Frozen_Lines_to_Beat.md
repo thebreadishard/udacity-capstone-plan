@@ -78,7 +78,16 @@ prior art for plan 05's diagonal recovery, not an opponent line (it produces no 
   Hydrocarbons with Machine Learning DFT Scaling Factors", ACS Omega **10**(50), 62282–62290
   (2025-12-10). DOI `10.1021/acsomega.5c10225`. Record **verified via Crossref 2026-09-02**;
   the MAE value **not re-read** (ACS 403) — the figure is quoted nowhere in this plan until the
-  re-read. Role fixed: an anharmonic method must beat **ML-corrected** scaling, not merely raw
+  re-read. **Re-read 2026-09-10 from the Europe PMC full text (PMC12750190, CC BY-NC-ND):**
+  B3LYP/4-31G harmonic frequencies (PAHdb's level); support-vector regression on computed
+  frequency, intensity, relative intensity, reduced mass and force constant; 465 band instances
+  from over 80 PAHs of PAHdb's **argon-matrix** experimental library, split 80/20 **by instance,
+  not by molecule** (372/93); test-set **MAE 5.07 cm⁻¹, maximum 13.17**, against **10.41 / 23.49**
+  for PAHdb's conventional scaling; the pickled models and ML-scaled spectra for "almost all of the
+  4000+" theoretical species are in the Supporting Information. Two consequences: the line is a
+  matrix-referenced line (its errors are against Ar-matrix positions, not gas), and its instance-level
+  split lets bands of one molecule sit in both halves, so 5.07 is an optimistic figure for an unseen
+  molecule. Role fixed: an anharmonic method must beat **ML-corrected** scaling, not merely raw
   scaling, or it has not earned its cost.
 - **Role.** The bar for benzene-to-tetracene-size rungs.
 
@@ -90,6 +99,11 @@ prior art for plan 05's diagonal recovery, not an opponent line (it produces no 
 - **What it does.** Anharmonic IR via MLMD for **1,704 PAHdb species up to C₂₁₆, at several
   temperatures**, linear scaling; accuracy "comparable to conventional quantum chemical
   calculations" — its DFT teacher's ceiling.
+- **Data (read 2026-09-10 from the arXiv v3 full text and the Zenodo record).** Teacher
+  **B3LYP/4-31G**; spectra at **50, 300 and 600 K**; code, model and the spectra of the 1,704
+  species (and 49 experimentally tested ones) at Zenodo DOI 10.5281/zenodo.14998197 (version
+  10.5281/zenodo.15771437, `Supplementary.zip`, 102 MB; data CC BY-NC-SA 4.0, code Apache-2.0),
+  "without quantum correction". Module 02 reads it in as line C's table.
 - **Role.** Opponent for large rungs and every tier-2 claim; on accuracy rungs beating it means
   beating its teacher; on reach rungs comparisons are theory-vs-theory and labelled as such.
 
@@ -119,9 +133,9 @@ line" must mean per band class.
 
 ## 7. Open verification debts (before any scored use; identical to the bibliography's "Named debts")
 
-1. Bos 2025 full text → the actual MAE (item 7).
+1. Bos 2025 full text → the actual MAE (item 7) — **paid 2026-09-10** (§3: 5.07 / 13.17 vs 10.41 / 23.49 cm⁻¹, matrix-referenced, instance-level split).
 2. Mackie/Esposito anharmonic method papers (item 12).
-3. MNRAS landing for Mai 2025 (item 5); Mulas 2018 landing re-fetch (item 6).
+3. MNRAS landing for Mai 2025 (item 5) — the arXiv v3 full text and the Zenodo data record read 2026-09-10 (§4); the MNRAS landing itself still not fetched; Mulas 2018 landing re-fetch (item 6).
 4. Joblin-era T-dependence references (item 20) — **paid 2026-09-06**: items 52 and 64 read in full (bibliography, "Readings of 2026-09-06 — laboratory sources").
 5. Local-CC method and software citations — the DLPNO-CCSD(T) method papers (item 17, NOT
    FETCHED) and the Mester et al. 2025 MRCC overview (item 34, second identifier); items 32,

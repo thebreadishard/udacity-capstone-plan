@@ -399,6 +399,15 @@ the X_ik exist (Ladder §2 dated note 2026-09-10; scoreboard note §3; probes RE
   permission and printed too: peaks 673.90 / 1037.73 / 1483.41 / 3047.17, u_band 2.55 (the temperature
   term alone; 0.125 without it), intensities agreeing with the 1.929 record to ≤ 1.3 %. No frozen rule
   changed.
+- **2026-09-10 — Module 02 begun (opponent atlas), while the timing runs.** `modules/02_opponent_atlas/`:
+  parser `build_opponent_atlas.py` for the PAHdb XML libraries (schema read from the AmesPAHdbPythonSuite
+  parser and its cut-down test file; tested on a synthetic two-species fixture), README with the
+  sources and how each is obtained. The PAHdb files (theoretical 4.00, anharmonic 1.00, experimental
+  3.10) come through the site's form — e-mail address plus citation agreement — which the user fills;
+  the Mai 2025 spectra are a 102 MB Zenodo archive (CC BY-NC-SA); Bos 2025's ML-scaled spectra are
+  in ACS Supporting Information. **Bos 2025 re-read** (Europe PMC, debt 1 paid): MAE 5.07 / max
+  13.17 cm⁻¹ against 10.41 / 23.49 for conventional scaling, on Ar-matrix bands with an instance-level
+  80/20 split (Frozen_Lines §3). Mai 2025's data record read (B3LYP/4-31G teacher; 50/300/600 K).
 - **2026-09-10 — engine incident and patch 1.** The naphthalene cc-pVTZ tight timing died after
   4 h 26 min on a pyscf 2.14.0 / pyscf-forge 1.1.1 signature mismatch in the DF vvvv path (taken only
   when a fragment's vvvv block does not fit in memory — benzene never took it); patched locally
