@@ -603,3 +603,21 @@ centroid term, for the others; the PNNL column keeps the Ladder's floor. Options
 the very quantity Pirali shows is absent); (c) score Pirali's column but only as a check, not as a
 scoreboard. **Decided 2026-09-08 (user): (a) — decision 21**; written into the Ladder's dated note of
 2026-09-08 and probes README 2a.
+
+
+### Readings of 2026-09-10 — the PAHdb scale factors (Module 02 atlas)
+
+- **Ricca et al. 2026, ApJS 282, 7 (item 1, v4.00), IOP full text re-read:** "all spectra were computed using
+  the larger basis set 6-31G*"; "harmonic frequencies were scaled using three scaling factors, namely,
+  0.964 for C–H stretches around 3 μm, 0.979 for bands between 4 and 9 μm, and 0.975 for bands beyond
+  9 μm", "obtained by fitting the theoretical data to 25 bands obtained from gas-phase PAH laboratory
+  experiments, which included 17 IR allowed bands and one A_u, one B_1g, two B_2g, and four A_g bands
+  (Behlen & Rice 1981; Cané et al. 1996; Pirali et al. 2009)"; no uncertainties; v3.20 and the clusters
+  at 4-31G with a single 0.958; §6: systematic uncertainties "currently unquantified".
+- **Bauschlicher, Ricca, Boersma & Allamandola 2018, ApJS 234, 32 (v3.00), IOP full text read for
+  Table 2:** regions 0–1111.1 / 1111.1–2500 / > 2500 cm⁻¹; B3LYP/4-31G 0.956 / 0.952 / 0.960;
+  B3LYP/6-31G* 0.979 / 0.969 / 0.960; B3LYP/6-31G** 0.979 / 0.973 / 0.961; fitted to Pirali 2009's 17
+  allowed bands, Behlen 1981's 4 A_g + 2 B_2g and Cané 1998's A_u + B_1g (gas-phase naphthalene).
+- **Finding:** the served v4.00 XML stores the v3.00 factors at four decimals (0.9794 / 0.9691 / 0.9597;
+  4-31G 0.9563 / 0.9523 / 0.9595) with the v3.00 regions — the v4.00 refit is described in the paper
+  but not applied in the file (Frozen_Lines §2 dated note; atlas note §2; **P22**).

@@ -73,7 +73,7 @@ print(sp.basis.value_counts())""")
 
 md("""## 3. The scale factors as stored
 
-`<frequency scale="…">` holds the scaled value. The factors actually stored for the 6-31G* species are 0.9794, 0.9691 and 0.9597, in three frequency regions; the 4-31G species carry 0.9563 / 0.9523 / 0.9595. The v4.00 paper's text, as recorded in `Frozen_Lines_to_Beat.md`, gives 0.964 / 0.979 / 0.975 — no stored transition carries those values. The library is scored as served; the paper is re-read before the pilot note.""")
+`<frequency scale="…">` holds the scaled value. The factors actually stored for the 6-31G* species are 0.9794, 0.9691 and 0.9597, in three frequency regions; the 4-31G species carry 0.9563 / 0.9523 / 0.9595. The v4.00 paper gives 0.964 / 0.979 / 0.975 (fitted to 25 gas-phase bands) — no stored transition carries those values. Re-read on 2026-09-10: the stored factors are the **version 3.00** factors of Bauschlicher et al. 2018 (Table 2: 6-31G* 0.979 / 0.969 / 0.960; 4-31G 0.956 / 0.952 / 0.960; regions 0–1111 / 1111–2500 / > 2500 cm⁻¹), i.e. the served file was not re-scaled with the v4.00 refit. The differences are 4–15 cm⁻¹ at the band positions; the atlas keeps the unscaled frequencies so both can be printed.""")
 
 code("""sc = bands.groupby("scale").frequency_cm.agg(["min", "max", "count"]).sort_values("count", ascending=False)
 print(sc.head(12))
@@ -83,7 +83,7 @@ sub = bands[bands.scale.isin(sc.head(6).index)]
 for s_, g in sub.groupby("scale"):
     ax.scatter(g.frequency_unscaled_cm.sample(min(len(g), 4000), random_state=0), [s_] * min(len(g), 4000), s=2, label=f"{s_} (n={len(g):,})")
 for v in (0.964, 0.979, 0.975): ax.axhline(v, color="grey", ls=":", lw=0.8)
-ax.text(3900, 0.9805, "paper (as quoted in Frozen_Lines): 0.964 / 0.975 / 0.979", fontsize=8, color="grey", ha="right")
+ax.text(3900, 0.9805, "v4.00 paper refit: 0.975 (>9 um) / 0.979 (4-9 um) / 0.964 (3 um) - not in the file", fontsize=8, color="grey", ha="right")
 ax.set_xlabel("unscaled harmonic frequency (cm$^{-1}$)"); ax.set_ylabel("scale factor stored with the band"); ax.set_title("Scale factors as stored in v4.00 (six most frequent; 4,000-band samples)")
 ax.legend(fontsize=7, markerscale=4, loc="lower left"); plt.tight_layout(); fig.savefig(FIG / "fig2_scale_factors_as_stored.png", dpi=140); plt.show()""")
 

@@ -66,8 +66,11 @@ largest 6-31G* species has 294).
 0.9691 between ≈ 1,077 and 1,744, 0.9597 above ≈ 2,590; for the 4-31G species 0.9563 / 0.9523 /
 0.9595; small sets carry 0.9097, 0.9908, 1.0145 and others. **None of the 2,517,399 transitions
 carries the factors 0.964 / 0.979 / 0.975** that the plan's frozen-lines file quotes from the v4.00
-paper. The atlas scores the library as served; the paper is re-read against its text before the
-plan's pilot note.
+paper. Re-read the same evening: the file carries the **version 3.00 factors** of Bauschlicher et al.
+2018 (Table 2: 6-31G* 0.979 / 0.969 / 0.960 and 4-31G 0.956 / 0.952 / 0.960 for 0–1111 / 1111–2500 /
+> 2500 cm⁻¹), while the v4.00 paper describes a refit to 25 gas-phase bands (0.964 / 0.979 / 0.975)
+that is not in the served file — differences of 4–15 cm⁻¹ at the band positions. The atlas keeps the
+unscaled frequencies, so a column at the paper's factors can be printed beside the served one.
 
 **Band positions (fig. 3).** Intensity-weighted, the neutral library shows the PAH pattern: the
 7.7 µm C–C/C–H in-plane region carries the most summed intensity (2.08 × 10⁶ km/mol), then the
@@ -109,7 +112,8 @@ training instances carry no species identifier.
 - The basis set is inferred from a free-text route line; 32 species stay unresolved.
 - The symmetry-unique local-environment count for C₃₈₄H₄₈ (what the fragment-probed R6 needs) is a
   follow-up on the geometry block, not done here.
-- The scale-factor discrepancy between file and paper is recorded, not explained.
+- The scale-factor discrepancy between file and paper is explained (v3.00 factors in the file, a refit
+  in the v4.00 text); which of the two is "line A" is a plan decision (P22), not a data question.
 
 ## 6. Distinctness and the earlier draft (decision 7, 2026-09-04)
 

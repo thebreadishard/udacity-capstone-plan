@@ -36,9 +36,12 @@ parser handles it in a few minutes on the laptop.
   6-31G* species the three factors are **0.9794 (below ≈ 1,088 cm⁻¹), 0.9691 (≈ 1,077–1,744) and
   0.9597 (above ≈ 2,590)**; for the 4-31G species 0.9563 / 0.9523 / 0.9595; smaller sets carry
   0.9097, 0.9908, 1.0145, 1.0051 and others. **Not one of the 2,517,399 bands carries the factors
-  0.964 / 0.979 / 0.975 that Frozen_Lines §2 quotes from the v4.00 paper.** The atlas scores the
-  library as served; the paper's numbers are re-read against its text before the pilot note
-  (dated note in Frozen_Lines).
+  0.964 / 0.979 / 0.975 that Frozen_Lines §2 quotes from the v4.00 paper.** **Resolved the same evening** (Frozen_Lines §2 dated note): the file carries the **v3.00 factors of
+  Bauschlicher et al. 2018, Table 2** (6-31G*: 0.979 / 0.969 / 0.960; 4-31G: 0.956 / 0.952 / 0.960, for
+  0–1111 / 1111–2500 / > 2500 cm⁻¹), while the v4.00 paper describes a refit (0.964 / 0.979 / 0.975 on
+  25 gas-phase bands) that is not in the served file; the differences are 4–15 cm⁻¹ at the band
+  positions. **P22** (for the user): line A = the library as served, with a labelled second column
+  at the paper's factors (both computable from the unscaled frequencies the atlas keeps).
 - **Ladder presence.** **Benzene is absent** from the theoretical library (no C₆H₆ at any charge),
   so line A has no R0 entry; naphthalene uid 330; pyrene 334 and 387 (C₁₆H₁₀ isomers), five
   C₁₈H₁₂ isomers (uids 211, 280, 282, 291, 2355), coronene uid 18 (6-31G* in v4.00); 5,110
