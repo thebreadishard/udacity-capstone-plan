@@ -179,6 +179,8 @@ Scripts under `probes/`. A number not printed by a script is not a result.
 
 | Gate | What | Language allowed |
 |---|---|---|
+| Q9 | **per-family transferability of Δ₂ across size** (decision 27, 2026-09-10): leave-one-molecule-out over R0–R3 + anthracene; wins per family only if e_F(M) ≤ τ_F and s_F(M) ≤ τ_F on every R2/R3 molecule; losing sentence pre-written; runs after R3, before any R6 probe | "transferable at the sizes measured" / "not transferable" per family |
+| Q10 | **calibration of the error budget** (decision 31, P23, 2026-09-10): coverage of \|ω_pipeline − ω_lab\| ≤ k·u_total for k = 1, 2 over all scored bands, per rung / family / overall, against 68 % / 95 %; thresholds fixed in the pilot note; a short budget is declared incomplete, never widened | "calibrated" / "budget incomplete by … at rung …" |
 | P0 | pipeline sanity at the rung (Q5 + end-to-end spectrum produced + cost record(s) printed) | "ran" |
 | P1 | harmonic cross-check at R0: our unscaled DFT harmonic bands vs line A's unscaled values, within a declared convention window | "consistent" |
 | P2 | **the beat comparison** (accuracy rungs): paired per-band \|error\| on positions vs lab, pipeline vs line A, M04 baseline, and line B where present; per family; margins from the pilot note; decidability per Ladder §2 (u_band, never point spacing); only where the Q6 noise line of the mode used passed at the size class. Intensities reported alongside; scored at R0 and R1 (decision 18; the NIST Quantitative and PNNL records carry concentration data), form in the pilot note; reported only elsewhere | "beat / lost / inconclusive" |

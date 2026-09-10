@@ -32,7 +32,7 @@ that this correction can first be calibrated on benzene and naphthalene against 
 that every molecule on the ladder gets a complete anharmonic spectrum, positions, intensities and
 shape as PAHdb delivers them, but with band positions that carry a measured coupled-cluster
 correction and an error margin instead of a fitted scale factor, and a tested route to the large
-PAHs for which no prediction above scale-factor level exists today. Every piece of this exists
+PAHs for which no prediction above scale-factor level exists today (the test is decision 27, §6). Every piece of this exists
 already, separately: Reiher and Neugebauer showed in 2003 that selected normal modes can be computed
 without the full Hessian; Mata and Werner froze the local-correlation domains along a reaction path
 in 2006 to keep local coupled cluster smooth; Allen and Schaefer's Concordant Mode Approach extracts
@@ -587,6 +587,33 @@ checked prior-free at that rung. The student ruled more generally that a rule in
 earlier plan carries no authority of its own — knowledge transfer is allowed wherever a gate shows
 it makes the pipeline succeed.
 
+**The pre-registered route to the large PAHs (decision 27, 10 September).** Between the accuracy
+rungs and the largest sizes stands one test, gate Q9, written before any correction at pyrene size
+exists. For each band family — the C–H out-of-plane bands per hydrogen-adjacency class, the C–H
+in-plane bends, the C–C stretches, the C–H stretches — the per-mode diagonal correction δω_F is
+already printed on every accuracy rung; Q9 asks whether it is a per-family constant c_F, or at most
+a one-parameter size law c_F + d_F/N_C, across benzene, naphthalene, anthracene, the four R2
+species and coronene: eight molecules, five sizes, four topologies, no new coupled-cluster energy.
+The test is leave-one-molecule-out; a family wins only if the transfer error is within its beat
+margin τ_F on every R2 and R3 molecule and the family's members agree among themselves to the same
+margin; a family that loses is never applied above coronene, and that sentence is written now. A
+family that wins gives the large PAHs something the coupled-cluster arm cannot otherwise reach:
+line A's positions for that family shifted by c_F with the held-out error as their error bar, shown
+with provenance because no truth exists there, and one falsifiable prediction per family that the
+fragment-probed C₃₈₄H₄₈ flake then checks. Expectations are recorded as expectations: transfer is
+plausible for the C–H stretch and the out-of-plane classes, doubtful for the delocalised C–C
+families. This is not plan 04's motif transfer — two parameters at most, across sizes, with the
+losing condition first.
+
+**The calibration check (decision 31, 10 September).** Small errors are not enough for a data
+generator; the error bars must be true. For every scored band on R0–R3 the pipeline prints whether
+the laboratory value lies inside k·u_total (k = 1, 2), with u_total the laboratory uncertainty
+combined with the per-band budget, and reports the coverage per rung, per family and overall
+against the nominal 68 % / 95 %; the pass thresholds are fixed in the pilot note before any
+pipeline-vs-lab number exists, and a budget that falls short is declared incomplete and its deficit
+reported — it is never widened afterwards to reach the nominal. That table, not the mean error, is
+what would let a reader trust the pipeline's bands as training labels.
+
 **What would follow from success (outlook, not a promise).** Plan 05 builds no transferable model,
 for the measured reason above. But it produces the two things such a model would need. It measures
 the *range* of the correction — whether a block of Δ₂ between two atoms is fixed by their local
@@ -869,7 +896,11 @@ own; knowledge transfer is allowed wherever a gate shows it makes the pipeline s
     cc-pVTZ change of the canonical curvature (§3.3), the literature distance of CCSD(T)/cc-pVTZ from
     the basis-set limit for benzene once read, and a canonical cc-pVQZ diagonal line in the cluster
     request; the expected-effect line is an upper bound at the anchor's level.
-27. *(number reserved: the transferability test of the correction across size is parked, undecided.)*
+27. **The per-family transferability test Q9** (parked 8 September, unparked 10 September): the
+    route from the accuracy rungs to the large PAHs is a pre-registered leave-one-molecule-out test
+    of the diagonal correction per band family across benzene–coronene plus anthracene, with the
+    losing condition written first (§6; research note of 8 September); it runs after R3 and before
+    any R6 probe; no new coupled-cluster energies.
 28. **The criterion per rung** (§1, §5.2, §7): benzene is an agreement rung, naphthalene agreement
     plus the per-family question whether the correction adds accuracy, "beat" from there upward.
 29. **The temperature term on the room-temperature licence rungs** (10 September, after the first
@@ -877,6 +908,11 @@ own; knowledge transfer is allowed wherever a gate shows it makes the pipeline s
     own DFT anharmonic constants and applied as a correction carrying ±30 % of itself, in place of a
     floor of 2.55 cm⁻¹ that would otherwise be the whole of the laboratory uncertainty on the
     0.125 cm⁻¹ benzene record; pre-registered, printed before any coupled-cluster number exists.
+30. **Line A is the PAHdb library as served** (10 September): its stored v3.00 scale factors; the
+    v4.00 paper's refit is printed beside it as a labelled column and claims nothing (§7).
+31. **The calibration check of the error budget, Q10** (10 September): coverage of the laboratory
+    bands inside k·u_total, per rung, family and overall, thresholds fixed in the pilot note; a short
+    budget is reported as incomplete, never widened (§6).
 
 ## 11. Risks
 
@@ -958,8 +994,9 @@ back per module is budgeted, not hoped away.
 | R1 probe batch and scoring | the first real coupled-cluster correction, naphthalene | 4 Dec 2026 | **laptop two to three weeks, or the cluster** (P13) |
 | Cluster request | sponsored by the supervisor, sized by the R1 timings | 11 Dec 2026 | the supervisor and the request's lead time |
 | Module 06 — generative pattern proposer | the efficiency experiment on K_off | 18 Dec 2026 | the student's work |
+| Q9 pre-registration — families per adjacency class, τ_F, the two rules, the LOMO protocol (decision 27) | written before any R2 correction exists | 15 Jan 2027 | no compute |
 | Module 07 — campaign officer | LangGraph, the Anthropic API, the cost record | 15 Jan 2027 | the student's work |
-| R2 and R3 | pyrene class and coronene | 12 Mar 2027 | **cluster access**; without it these rungs lapse |
+| R2 and R3 | pyrene class and coronene; then Q9 evaluated per family and the Q10 coverage table printed for R0–R3 | 12 Mar 2027 | **cluster access**; without it these rungs lapse |
 | Module 08 — the pipeline assembled and scored | R0–R3, fragment-probed R6 where licensed | 16 Apr 2027 | everything above |
 | Module 09 — defense | | 21 May 2027 | |
 

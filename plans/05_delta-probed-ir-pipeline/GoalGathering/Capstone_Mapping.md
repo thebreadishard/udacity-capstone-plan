@@ -306,7 +306,11 @@ promised path; **M05** appears as the P3 experiment on R0–R3 and, if its licen
 load-bearing prior of the R4–R6 certificates; **M06** as the pattern-efficiency experiment;
 both labelled exactly so. Artifact: a small
 CLI / service — molecule identifier in → spectrum + per-band error budget + **cost record** +
-certificate out, **or a refusal naming the rung/cap/gate that blocked it**. Runs: R0–R1
+certificate out, **or a refusal naming the rung/cap/gate that blocked it**; the certificate carries
+the Q10 coverage table (decision 31), and for the band families that passed Q9 (decision 27) the
+product includes line A's library corrected by the family rule with its LOMO error bar and a
+provenance line naming the rule, the molecules it was fitted on and the size at which the
+evidence stops. Runs: R0–R1
 expected unconditional under the pilot note (room-temperature sources named; R0 scored for agreement
 within the budget, R1 for agreement and the per-family CC-adds question — decision 28); R2–R3 per family
 under the decidability rule and the per-mode Q6 noise gate; the fragment-probed R6 under its

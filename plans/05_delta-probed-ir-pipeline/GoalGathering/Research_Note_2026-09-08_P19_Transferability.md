@@ -128,3 +128,13 @@ The anchor, its licence and its three lines (noise, bias, basis set — decision
 fragment licence; the intensities decision; the module chain; the refusal of learned spectrum
 models. If P18 (composite anchor) is accepted later, Q9 uses whichever anchor the Ladder then
 defines.
+
+
+---
+
+**Decided 2026-09-10 (decision 27) — unparked and accepted by the user.** The document changes of §8
+were applied the same evening (Ladder §6 amendment and §4 item 14; Goal glossary and gate list; Distilled
+Q9 row; Mapping M08 product; proposal §6, §10 item 27, §12 rows: pre-registration by 15 January 2027,
+evaluation with R2/R3 on 12 March 2027). Frozen Lines unchanged, as §8 says. Accepted together with
+**P23 = decision 31**, the calibration (coverage) check of the error budget (gate Q10), which is what
+turns the per-band margins into usable labels.

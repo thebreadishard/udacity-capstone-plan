@@ -242,6 +242,11 @@ claims nothing — the printed comparison columns are line B and the cheap line'
 column is empty by construction); line B covers R0, R1 and, at R2, pyrene and tetracene only. No rung, margin
 or rule changes; the pilot note's opponent table per rung follows the atlas.
 
+**Dated note 2026-09-10 (decisions 27 and 31 — the R6 row and the certificates).** The R6 row's
+licence gains "and, for families that passed Q9, the check of the transferred rule c_F against the
+fragment-probed δω_F of the flake"; every certificate on R0–R3 carries the Q10 coverage table of §4
+item 15 beside the per-band budget.
+
 **Promised:** R0–R1 scored as accuracy rungs against gas-phase data. R2–R3 scored as accuracy
 rungs per family under the decidability rule above and the "beat and noise" rule of §1. R6 per
 the dated note above. **[05]** The **cost record** (§1) for every rung and mode that ran; **mode E
@@ -753,6 +758,19 @@ number exists for any molecule**. The 2026-09-04 decisions are recorded in it by
     threshold formulas of §3 with the §3 estimator; the pattern amplitude q_s (one per rung and per mode E/G) from the pooled verdict on the R1
     smoothness grid; the CPS decision; the band width w and regularisation weights of the
     structural prior by the §3 rule.
+14. **[05] The Q9 inputs (decision 27, 2026-09-10):** the family list with the C–H out-of-plane
+    bands split per hydrogen-adjacency class, τ_F per family (= item 2's margin), the two candidate
+    rules (c_F; c_F + d_F/N_C) and the leave-one-molecule-out protocol over R0–R3 plus anthracene,
+    written before any Δ₂ at R2 exists.
+15. **[05] The calibration (coverage) check of the error budget (decision 31, P23, 2026-09-10):**
+    for every scored band on R0–R3, the indicator |ω_pipeline − ω_lab| ≤ k · u_total, with u_total
+    the quadrature sum of the laboratory u_band and the pipeline's per-band budget, is printed for
+    k = 1 and k = 2; the coverage fraction is reported per rung, per family and overall against the
+    nominal 68 % / 95 %. The pass thresholds (the overall k = 2 coverage and the per-rung floor)
+    are fixed here, before any pipeline-vs-lab number exists; **a budget whose coverage falls
+    below them is declared incomplete and the deficit is reported — the budget is never widened
+    after the fact to reach the nominal.** The check costs no coupled-cluster energy; it is what
+    makes the per-band margins usable as labels (Goal: training data with error bars).
 
 ## 5. Stop conditions and escalation (declared in advance)
 
@@ -792,7 +810,19 @@ number exists for any molecule**. The 2026-09-04 decisions are recorded in it by
 - No whole-molecule "gold rung" language above R1; anchors are "local-CC, R1-checked".
 - No motif-transfer claim: every molecule gets its own probed Δ₂ — or, at R6, a
   fragment-probed Δ₂ under the fragment licence, labelled as such (a method decided by
-  measurement, not a transfer of spectra). **[05]** The learned prior is not a transfer claim:
+  measurement, not a transfer of spectra). **Dated amendment 2026-09-10 (decision 27, P19 —
+  unparked by the user):** this refusal admits one *test*, gate **Q9**, the per-family
+  transferability test of
+  [Research_Note_2026-09-08_P19_Transferability.md](Research_Note_2026-09-08_P19_Transferability.md):
+  for each band family F (the C–H out-of-plane bands per hydrogen-adjacency class), a constant c_F
+  or a one-parameter size law c_F + d_F/N_C, fitted leave-one-molecule-out over the eight ladder
+  molecules plus the anthracene locality probe, wins only if the transfer error e_F(M) ≤ τ_F and
+  the within-family spread s_F(M) ≤ τ_F on every R2 and R3 molecule, with τ_F the family's beat
+  margin of §4 item 2; a family that loses is never applied above R3, and the losing sentence is
+  pre-written. What a winning family passes upward: line A's positions shifted by c_F with the
+  LOMO error bar, shown with provenance (no truth there), and one falsifiable prediction per
+  family that the fragment-probed R6 checks. No spectra, no off-diagonal blocks, no motif terms
+  are transferred. Q9 runs after R3 has printed and before any R6 probe is submitted. **[05]** The learned prior is not a transfer claim:
   it earns a per-rung licence against the structural recovery on the same data, and on spent
   rungs the certificate names it.
 - No CC correction to anharmonic constants as a promise; no "coupled-cluster anharmonic"

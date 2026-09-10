@@ -38,7 +38,11 @@ document must agree with this file; if they drift, this file wins and the other 
   recovery (band width **w**); **learned prior** = the Module-05 Transformer's predicted
   support; **the licence** = the conditions under which the learned prior may enter a rung
   (Ladder §3).
-- **τ** = the smallest beat margin (pilot-note item 2); **τ₇** = the Q7 agreement tolerance in
+- **τ** = the smallest beat margin (pilot-note item 2); **τ_F** = the beat margin of family F;
+  **δω_F(M)** = the mean diagonal correction Δ₂,ii over the modes of family F in molecule M,
+  **s_F(M)** its spread, **c_F** (and d_F) the per-family transfer rule, **e_F(M)** the
+  leave-one-molecule-out transfer error (Q9, decision 27); **coverage** = the fraction of scored
+  bands inside k·u_total (Q10, decision 31); **τ₇** = the Q7 agreement tolerance in
   cm⁻¹ per family; **d₇** = the Q7 discriminability factor; **r_c** = fitted locality length
   (measured); **r_f** = the smallest passing fragment radius (measured); **r_max**, **ε₈**
   (long-range share), **η₈** (coupling disagreement, absolute form: a fraction of the pair's
@@ -77,7 +81,7 @@ document must agree with this file; if they drift, this file wins and the other 
   infrared multiple-photon dissociation; **SRD 35** = NIST Standard Reference Database 35, the
   NIST/EPA gas-phase infrared database; **BHLYP** = Becke half-and-half exchange with LYP
   correlation (50 % exact exchange), the dry run's high-exchange partner.
-- **Gates**: **Q0–Q8** integrity gates, **P0–P5** science gates (Distilled §7). **Rungs
+- **Gates**: **Q0–Q10** integrity gates (Q9 transferability, Q10 budget calibration — 2026-09-10), **P0–P5** science gates (Distilled §7). **Rungs
   R0–R6**; **A** = accuracy rung, **R** = reach rung. **Budgets B1** (human hours), **B2** (own
   machine), **B3** (cluster or rented time). **M1–M5** = the frozen-space probe (main project)
   and the side project's milestones. **Reading 1 / reading 2** = the two readings of the
