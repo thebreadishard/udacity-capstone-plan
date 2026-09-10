@@ -156,7 +156,15 @@ with the session leader, so a chain shell is never killed while a wanted child r
 2026-09-06:** the laptop was switched off by hand once while a job ran (05:15:47, above); a long run
 is therefore announced to the user with its expected end time, the user checks for running jobs with
 `wsl -e bash -c 'ps -eo etime,rss,cmd | grep "[p]ython"'` before switching off, and every long chain
-writes per-point results so an interruption costs one point (M1 already does; `--resume` reloads).
+writes per-point results so an interruption costs one point (M1 already does; `--resume` reloads). **Added
+2026-09-10:** the cc-pVTZ tighter-threshold chain died with its terminal session on 2026-09-09 (5 of 27
+points); long runs are therefore launched through `probes/launch_detached.sh` (setsid + nohup, own
+session, log names the start time). **Added 2026-09-10, on the user's instruction:** every run
+expected to last more than an hour must leave a line in its log at least once an hour — the
+launcher writes a heartbeat (elapsed, CPU, resident memory, tmp size; `HEARTBEAT_MIN`, default 60)
+and the python step prints its own progress (per point in the scans; the LNO fragment loop at
+verbose 4 in the timing probe), because the naphthalene timing of 2026-09-10 ran for hours with
+nothing in its log after the localisation line.
 
 ## 4. Order of timed probes (each prints machine, date, settings, wall-clock; gradient probes also peak memory)
 

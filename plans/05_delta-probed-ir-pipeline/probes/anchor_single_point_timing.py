@@ -95,7 +95,7 @@ def run_one(basis, threads, thresh_name, canonical, out):
     t0 = time.time()
     mcc = LNOCCSD_T(mf, lo_coeff, frag_lolist, frozen=frozen)
     mcc.lno_thresh = THRESH[thresh_name]
-    mcc.verbose = 3
+    mcc.verbose = 4  # 2026-09-10: INFO level, so the LNO fragment loop reports progress into the log
     mcc.kernel()
     rec["t_lno_ccsd_t_s"] = time.time() - t0
     rec["e_corr_pt2"] = float(mcc.e_corr_pt2)
