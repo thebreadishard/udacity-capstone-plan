@@ -413,7 +413,10 @@ the X_ik exist (Ladder §2 dated note 2026-09-10; scoreboard note §3; probes RE
   line A has **no benzene**; stored scale factors 0.9794 / 0.9691 / 0.9597 (not the paper's
   0.964 / 0.979 / 0.975 — to be re-read); 4-31G from n_C = 212; **debt 6 paid** (C₃₈₄H₄₈ uid 617
   neutral, 4447 dication); line B = 45 species, on the ladder benzene, naphthalene, pyrene, tetracene.
-  Dated notes in Frozen_Lines §2/§3/§7 and Ladder §2.
+  Dated notes in Frozen_Lines §2/§3/§7 and Ladder §2. **Later the same evening:** line C (Mai 2025,
+  1,705 species, positions only) and the cheap line (Bos 2025 SI, 81 species) read in; the EDA
+  notebook (five figures) and `modules/02_opponent_atlas/REPORT.md` written — Module 02 is a
+  complete first version fifteen days before its calendar date, pending the student's own pass.
 - **2026-09-10 — engine incident and patch 1.** The naphthalene cc-pVTZ tight timing died after
   4 h 26 min on a pyscf 2.14.0 / pyscf-forge 1.1.1 signature mismatch in the DF vvvv path (taken only
   when a fragment's vvvv block does not fit in memory — benzene never took it); patched locally
