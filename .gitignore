@@ -48,3 +48,4 @@ plans/*/modules/*/data/*
 plans/*/modules/*/out/**/*.csv.gz
 !plans/*/modules/*/out/anharmonic_*/bands.csv.gz
 !plans/*/modules/*/out/experimental_*/bands.csv.gz
+!plans/*/modules/*/out/lineC_*/peaks.csv.gz

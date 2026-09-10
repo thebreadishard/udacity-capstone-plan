@@ -34,8 +34,9 @@ the Mai 2025 Zenodo archive fetched with permission. First findings in
 [Research_Note_2026-09-10_Opponent_Atlas.md](../../GoalGathering/Research_Note_2026-09-10_Opponent_Atlas.md):
 benzene absent from the theoretical library; scale factors as stored 0.9794 / 0.9691 / 0.9597;
 4-31G from n_C = 212; C₃₈₄H₄₈ present (uid 617, 4447); line B covers benzene, naphthalene, pyrene,
-tetracene. Owed: line C's table from the Mai spectra zips, the Bos SI, the EDA notebook with
-figures, the report.
+tetracene. Line C (`build_line_c_table.py`): 1,705 species, positions only. Cheap line
+(`build_cheap_line_table.py`): 81 species, 6,591 bands. Owed: the EDA notebook with figures and
+the report (due 25 September); the re-read of the v4.00 paper's scale factors.
 
 ## Files
 
@@ -44,7 +45,9 @@ figures, the report.
   `species.csv`, `bands.csv.gz`, `c384_class.csv`, `SUMMARY.md`. Tested on a two-species synthetic file
   built from the schema (`data/_synthetic_test.xml`, kept as the parser's fixture) until the real files
   arrive.
-- `notebook/` — the EDA notebook and figures (to be written once the real files are parsed).
+- `build_line_c_table.py` — line C: peak lists from the Mai 2025 spectra (three temperatures + EXP set).
+- `build_cheap_line_table.py` — the cheap line: the Bos 2025 SI table joined to PAHdb uids.
+- `notebook/` — the EDA notebook and figures (to be written).
 - `REPORT.md` — the module report (to be written).
 
 ## Schema notes that matter for the comparison

@@ -98,7 +98,9 @@ prior art for plan 05's diagonal recovery, not an opponent line (it produces no 
   4000+" theoretical species are in the Supporting Information. Two consequences: the line is a
   matrix-referenced line (its errors are against Ar-matrix positions, not gas), and its instance-level
   split lets bands of one molecule sit in both halves, so 5.07 is an optimistic figure for an unseen
-  molecule. Role fixed: an anharmonic method must beat **ML-corrected** scaling, not merely raw
+  molecule. **SI read into the atlas 2026-09-10:** 81 species with ML-scaled bands (6,591), the
+  authors' own B3LYP/4-31G frequencies with a uniform 0.962 conventional factor; naphthalene,
+  pyrene (2), C₁₈H₁₂ (3) and coronene present, benzene absent. Role fixed: an anharmonic method must beat **ML-corrected** scaling, not merely raw
   scaling, or it has not earned its cost.
 - **Dated note 2026-09-10 — the library as served (atlas first print).** 45 species, 95,189 VPT2
   transitions (overtones and combinations included; benzene 464, naphthalene 1,222), no symmetry
@@ -119,7 +121,10 @@ prior art for plan 05's diagonal recovery, not an opponent line (it produces no 
   **B3LYP/4-31G**; spectra at **50, 300 and 600 K**; code, model and the spectra of the 1,704
   species (and 49 experimentally tested ones) at Zenodo DOI 10.5281/zenodo.14998197 (version
   10.5281/zenodo.15771437, `Supplementary.zip`, 102 MB; data CC BY-NC-SA 4.0, code Apache-2.0),
-  "without quantum correction". Module 02 reads it in as line C's table.
+  "without quantum correction". **Read into the atlas 2026-09-10:** 1,705 species, spectra on a
+  1 cm⁻¹ grid with intensities normalised per spectrum — line C is a **positions-only** opponent
+  (no intensity comparison against it); benzene absent, naphthalene, pyrene, seven C₁₈H₁₂ isomers
+  and coronene present.
 - **Role.** Opponent for large rungs and every tier-2 claim; on accuracy rungs beating it means
   beating its teacher; on reach rungs comparisons are theory-vs-theory and labelled as such.
 

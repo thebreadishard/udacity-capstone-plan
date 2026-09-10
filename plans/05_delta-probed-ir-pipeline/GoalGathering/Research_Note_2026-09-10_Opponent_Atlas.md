@@ -64,11 +64,23 @@ note's null row will be judged against — recorded here, not scored.
 - **Line C (Mai et al. 2025).** The Zenodo archive (`Supplementary.zip`, 102,343,899 bytes, sha256
   `8c3688f9f18e0f6a…`) holds the code, the two model pickles, the 1,704 PAHdb geometries, and the
   spectra as text files per species in three zips — **50 K, 300 K and 600 K**, "qm0" = without
-  quantum correction — plus the 49 experimentally tested species. Module 02 reads the three zips
-  into line C's table next.
+  quantum correction — plus the 49 experimentally tested species. **Read in the same evening**
+  (`build_line_c_table.py`, `out/lineC_mai2025/`): **1,705 species** (1,704 PAHdb uids at all three
+  temperatures + the EXP set), spectra on a 1 cm⁻¹ grid 300–3800 cm⁻¹ with intensities *normalised
+  per spectrum* — so **line C carries positions only**, no absolute intensities and no stick list;
+  412,938 maxima extracted (≥ 5 % of each spectrum's maximum, ≥ 3 cm⁻¹ apart, parabolic apex).
+  Ladder: benzene absent; naphthalene 330; pyrene 334 and 387; seven C₁₈H₁₂ isomers; coronene 18;
+  largest species C₂₁₆H₃₆ (uid 615).
 - **Cheap line (Bos et al. 2025).** The Supporting Information (seven files, 20.5 MB: two
   spreadsheets, three zips, a 13.5 MB text file and a PDF) is served by Europe PMC's supplementary
-  endpoint for PMC12750190 as well as by ACS; the user decides which copy enters `data/`.
+  endpoint for PMC12750190 as well as by ACS; the Europe PMC copy entered `data/` on the user's
+  instruction. **Read the same evening** (`build_cheap_line_table.py`, `out/cheapline_bos2025/`):
+  the SI's ML-scaled table covers **81 species** (all PAHdb theoretical uids, n_C 10–50; the paper's
+  "almost all of the 4000+ compounds" is not what the SI holds), **6,591 bands**, the authors' own
+  B3LYP/4-31G harmonic frequencies with a *uniform* conventional factor 0.962 and the SVR prediction
+  beside them (SVR − conventional: mean −0.4 cm⁻¹, mean absolute 3.9, range −18 to +21); the 465
+  training instances carry no species identifier. Ladder: benzene absent; naphthalene 330; pyrene
+  334, 387; C₁₈H₁₂ 280, 282, 291; coronene 18.
 
 ## 5. Consequences to record elsewhere
 
@@ -78,3 +90,7 @@ note's null row will be judged against — recorded here, not scored.
    by construction, not by choice.
 3. Line B's R2 coverage is pyrene and tetracene only; chrysene and triphenylene are scored against
    line A and the cheap line.
+4. Line C is a positions-only opponent (normalised spectra); the intensity comparison of decision 18
+   has opponents A and B only. The cheap line exists as a *table* for 81 species (R1–R3 all present)
+   and as a *method* (pickled SVR on five computed features) for the rest; at R0 no opponent table
+   of any line contains benzene except line B.
