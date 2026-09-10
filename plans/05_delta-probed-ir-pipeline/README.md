@@ -488,8 +488,7 @@ widened. Reason: for training labels the error bars must be true, not just the e
   configuration with Alternate.nl prices and URLs is in
   [Hardware_Note_2026-09-10.md](GoalGathering/Hardware_Note_2026-09-10.md) (AM5 Ryzen 9 9950X,
   128 GB now → 256 GB later, two NVMe drives, native Linux; €4,069 + options; Threadripper deferred
-  while DDR5 is ≈ €16.5/GB). To be taken up when the user says so; re-check prices then and read the
-  naphthalene timing's peak memory and time per energy first.
+  while DDR5 is ≈ €16.5/GB). Configured in Alternate's PC-Builder and **in the user's cart (€4,655.75 with UPS and assembly), not ordered**: the user reconsiders once the first steps (naphthalene timing / P13, the R0 licence) show it is worth it; the memory kit is on the ASUS QVL for Ryzen 9000. Re-check prices then.
 
 - **Read and record the cc-pVTZ M1 scan** (running since 2026-09-06 07:31; decision 16) when it
   finishes; P4 (symmetry prior) waits for the naphthalene dry run before it enters the deck; the R0

@@ -120,3 +120,7 @@ Fragment 6/24  Sol: E_corr(MP2) = -0.0654560658812059  E_corr(CCSD) = -0.0665886
 LO occ proj: 1 active | 0 standby | 23 orthogonal
 LO vir proj: 0 active | 0 standby | 378 orthogonal
 Fragment 7/24  LAS: 23/34 Occ | 192/378 Vir | 215/412 MOs
+Fragment 7/24  Sol: E_corr(MP2) = -0.0634972194767054  E_corr(CCSD) = -0.0648621029967098  E_corr(CCSD(T)) = -0.00341335479633374
+LO occ proj: 1 active | 0 standby | 23 orthogonal
+LO vir proj: 0 active | 0 standby | 378 orthogonal
+Fragment 8/24  LAS: 24/34 Occ | 234/378 Vir | 258/412 MOs
