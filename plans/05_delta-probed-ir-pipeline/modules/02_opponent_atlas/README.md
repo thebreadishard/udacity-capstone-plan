@@ -27,6 +27,16 @@ e-mailed. **The user fills that form; this repository never enters personal data
 Downloaded files go into `data/` (git-ignored); every output records the file's sha256 and the XML
 root attributes, so the version is pinned by hash, not by the file name.
 
+## Status 2026-09-10
+
+All three PAHdb libraries parsed (files obtained by the user through the form the same evening);
+the Mai 2025 Zenodo archive fetched with permission. First findings in
+[Research_Note_2026-09-10_Opponent_Atlas.md](../../GoalGathering/Research_Note_2026-09-10_Opponent_Atlas.md):
+benzene absent from the theoretical library; scale factors as stored 0.9794 / 0.9691 / 0.9597;
+4-31G from n_C = 212; C₃₈₄H₄₈ present (uid 617, 4447); line B covers benzene, naphthalene, pyrene,
+tetracene. Owed: line C's table from the Mai spectra zips, the Bos SI, the EDA notebook with
+figures, the report.
+
 ## Files
 
 - `build_opponent_atlas.py` — the parser (streaming `iterparse`, schema from the AmesPAHdbPythonSuite

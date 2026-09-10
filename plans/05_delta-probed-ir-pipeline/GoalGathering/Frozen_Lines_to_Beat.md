@@ -51,6 +51,17 @@ prior art for plan 05's diagonal recovery, not an opponent line (it produces no 
   "are currently unquantified." Plan-02 probes measured the class of error (§6).
 - **Role.** The default opponent for every molecule; the *only* opponent at C₃₈₄H₄₈-class
   sizes.
+- **Dated note 2026-09-10 — the library as served (Module 02 atlas, first print;
+  [Research_Note_2026-09-10_Opponent_Atlas.md](Research_Note_2026-09-10_Opponent_Atlas.md)).**
+  10,749 species, 2,517,399 transitions; the stored frequencies are the *scaled* values and the
+  factors actually stored for the 10,703 6-31G* species are **0.9794 / 0.9691 / 0.9597** (below
+  ≈ 1,088, ≈ 1,077–1,744, above ≈ 2,590 cm⁻¹) and 0.9563 / 0.9523 / 0.9595 for the 14 4-31G species —
+  **not one transition carries 0.964 / 0.979 / 0.975** as quoted above from the paper; the library
+  is scored as served and the paper's text is re-read against this before the pilot note. The
+  4-31G regime starts at n_C = 212 (largest 6-31G* species 294); 774 species in the 101–386 bin.
+  **Benzene is absent from the theoretical library** (no C₆H₆ at any charge): line A has no R0
+  column, by construction. **Debt 6 paid: C₃₈₄H₄₈ is present, uid 617 (neutral, 4-31G, 1,290
+  modes) and uid 4447 (dication).**
 
 ## 3. Line B — anharmonic small-molecule front (the accuracy line)
 
@@ -89,6 +100,11 @@ prior art for plan 05's diagonal recovery, not an opponent line (it produces no 
   split lets bands of one molecule sit in both halves, so 5.07 is an optimistic figure for an unseen
   molecule. Role fixed: an anharmonic method must beat **ML-corrected** scaling, not merely raw
   scaling, or it has not earned its cost.
+- **Dated note 2026-09-10 — the library as served (atlas first print).** 45 species, 95,189 VPT2
+  transitions (overtones and combinations included; benzene 464, naphthalene 1,222), no symmetry
+  labels, the route field holding only the species name. On the ladder: **benzene (uid 100000),
+  naphthalene (330), pyrene (334), tetracene (282)**; chrysene, triphenylene and coronene absent —
+  line B exists at R0, R1 and two of the four R2 species, not at R3.
 - **Role.** The bar for benzene-to-tetracene-size rungs.
 
 ## 4. Line C — Mai 2025 MLMD (the scale + temperature line)
@@ -140,7 +156,7 @@ line" must mean per band class.
 5. Local-CC method and software citations — the DLPNO-CCSD(T) method papers (item 17, NOT
    FETCHED) and the Mester et al. 2025 MRCC overview (item 34, second identifier); items 32,
    33 and 34's Nagy & Kállay are OK; Sylvetsky pinned.
-6. C₃₈₄H₄₈ per-species presence in PAHdb v4.00 — an M02 task.
+6. C₃₈₄H₄₈ per-species presence in PAHdb v4.00 — an M02 task — **paid 2026-09-10**: uid 617 (neutral) and 4447 (dication), the only species between 300 and 400 carbons.
 
 Debts that concern plan 05's *method* rather than its opponents (full texts, code pins, the
 hot-band references, the M05 fallback and the rest, as listed there) are listed only in the

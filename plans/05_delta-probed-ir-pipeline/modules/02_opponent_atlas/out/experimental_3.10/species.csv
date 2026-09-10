@@ -1,0 +1,85 @@
+uid,formula,charge,n_c,n_h,n_n,n_o,n_atoms,symmetry,method,basis,scales_seen,n_modes,weight,total_e,vib_e,n_solo,n_duo,n_trio,n_quartet,n_quintet,n_ch2,n_chx,dois,route
+330,C10H8,0,10,8,0,0,18,,,?,,19,,,,,,,,,,,10.1021/jp9834816,naphthalene
+269,C12H8N2-,-1,12,8,2,0,22,,,?,,14,,,,,,,,,,,10.1016/j.asr.2005.03.127,phenazine
+267,C12H8N2,0,12,8,2,0,22,,,?,,27,,,,,,,,,,,10.1016/j.asr.2005.03.127,phenazine
+268,C12H8N2+,1,12,8,2,0,22,,,?,,33,,,,,,,,,,,10.1016/j.asr.2005.03.127,phenazine
+274,C13H9N,0,13,9,1,0,23,,,?,,81,,,,,,,,,,,10.1021/jp021938c,"7,8-benzoquinoline"
+487,C13H9N,0,13,9,1,0,23,,,?,,63,,,,,,,,,,,10.1016/j.saa.2017.03.044,acridine
+275,C13H9N+,1,13,9,1,0,23,,,?,,26,,,,,,,,,,,10.1021/jp021938c,"7,8-benzoquinoline"
+265,C14H10,0,14,10,0,0,24,,,?,,29,,,,,,,,,,,10.1021/j100022a007,anthracene
+273,C14H10,0,14,10,0,0,24,,,?,,31,,,,,,,,,,,10.1021/jp9834816,phenanthrene
+365,C14H10+,1,14,10,0,0,24,,,?,,16,,,,,,,,,,,10.1021/j100010a011,phenanthrene
+266,C14H10+,1,14,10,0,0,24,,,?,,16,,,,,,,,,,,10.1021/j100022a007,anthracene
+271,C15H9N,0,15,9,1,0,25,,,?,,21,,,,,,,,,,,10.1021/jp021938c,2-azapyrene
+272,C15H9N+,1,15,9,1,0,25,,,?,,18,,,,,,,,,,,10.1021/jp021938c,2-azapyrene
+334,C16H10,0,16,10,0,0,26,,,?,,22,,,,,,,,,,,10.1021/jp9834816,pyrene
+387,C16H10,0,16,10,0,0,26,,,?,,30,,,,,,,,,,,10.1086/311989,fluoranthene
+360,C16H10+,1,16,10,0,0,26,,,?,,15,,,,,,,,,,,10.1021/j100010a011,pyrene
+831,C17H11N,0,17,11,1,0,29,,,?,,57,,,,,,,,,,,10.1016/j.saa.2017.03.044,benz[a]acridine
+295,C17H11N,0,17,11,1,0,29,,,?,,62,,,,,,,,,,,10.1021/jp021938c,2-azachrysene
+285,C17H11N,0,17,11,1,0,29,,,?,,53,,,,,,,,,,,10.1021/jp021938c,1-azabenz[a]anthracene
+297,C17H11N,0,17,11,1,0,29,,,?,,70,,,,,,,,,,,10.1021/jp021938c,4-azachrysene
+293,C17H11N,0,17,11,1,0,29,,,?,,73,,,,,,,,,,,10.1021/jp021938c,1-azachrysene
+830,C17H11N,0,17,11,1,0,29,,,?,,56,,,,,,,,,,,10.1016/j.saa.2017.03.044,benz[c]acridine
+287,C17H11N,0,17,11,1,0,29,,,?,,78,,,,,,,,,,,10.1021/jp021938c,2-azabenz[a]anthracene
+286,C17H11N+,1,17,11,1,0,29,,,?,,28,,,,,,,,,,,10.1021/jp021938c,1-azabenz[a]anthracene
+298,C17H11N+,1,17,11,1,0,29,,,?,,13,,,,,,,,,,,10.1021/jp021938c,4-azachrysene
+294,C17H11N+,1,17,11,1,0,29,,,?,,26,,,,,,,,,,,10.1021/jp021938c,1-azachrysene
+288,C17H11N+,1,17,11,1,0,29,,,?,,16,,,,,,,,,,,10.1021/jp021938c,2-azabenz[a]anthracene
+296,C17H11N+,1,17,11,1,0,29,,,?,,16,,,,,,,,,,,10.1021/jp021938c,2-azachrysene
+282,C18H12,0,18,12,0,0,30,,,?,,38,,,,,,,,,,,10.1021/jp9834816,tetracene
+291,C18H12,0,18,12,0,0,30,,,?,,23,,,,,,,,,,,10.1021/jp9834816,chrysene
+280,C18H12,0,18,12,0,0,30,,,?,,51,,,,,,,,,,,10.1021/jp9834816,"1,2-benz[a]anthracene"
+283,C18H12+,1,18,12,0,0,30,,,?,,17,,,,,,,,,,,10.1021/j100022a007,tetracene
+292,C18H12+,1,18,12,0,0,30,,,?,,30,,,,,,,,,,,10.1021/jp9609794,chrysene
+281,C18H12+,1,18,12,0,0,30,,,?,,15,,,,,,,,,,,10.1021/jp9609794,benzaanthracene
+393,C20H12,0,20,12,0,0,32,,,?,,48,,,,,,,,,,,10.1086/311989,benzo[k]fluoranthene
+395,C20H12,0,20,12,0,0,32,,,?,,55,,,,,,,,,,,10.1021/jp983483q,benzo[j]fluoranthene
+391,C20H12,0,20,12,0,0,32,,,?,,61,,,,,,,,,,,10.1086/311989,benzo[b]fluoranthene
+343,C20H12,0,20,12,0,0,32,,,?,,33,,,,,,,,,,,10.1021/jp983482y,benzo[e]pyrene
+389,C20H12,0,20,12,0,0,32,,,?,,57,,,,,,,,,,,10.1086/311989,benzo[a]fluoranthene
+396,C20H12+,1,20,12,0,0,32,,,?,,25,,,,,,,,,,,10.1021/jp993940i,benzo[j]fluoranthene
+394,C20H12+,1,20,12,0,0,32,,,?,,37,,,,,,,,,,,10.1021/jp993940i,benzo[k]fluoranthene
+367,C20H12+,1,20,12,0,0,32,,,?,,17,,,,,,,,,,,10.1021/j100010a011,benzo[e]pyrene
+392,C20H12+,1,20,12,0,0,32,,,?,,23,,,,,,,,,,,10.1021/jp993940i,benzo[b]fluoranthene
+390,C20H12+,1,20,12,0,0,32,,,?,,30,,,,,,,,,,,10.1021/jp993940i,benzo[a]fluoranthene
+309,C21H13N,0,21,13,1,0,35,,,?,,63,,,,,,,,,,,10.1016/j.saa.2017.03.044,dibenz[c.h]acridine
+833,C21H13N,0,21,13,1,0,35,,,?,,77,,,,,,,,,,,10.1016/j.saa.2017.03.044,"dibenz[a,c]acridine"
+311,C21H13N,0,21,13,1,0,35,,,?,,55,,,,,,,,,,,10.1016/j.saa.2017.03.044,"dibenz[a,j]acridine"""
+303,C21H13N,0,21,13,1,0,35,,,?,,73,,,,,,,,,,,10.1016/j.saa.2017.03.044,"dibenz[a,h]acridine"""
+284,C22H12,0,22,12,0,0,34,,,?,,41,,,,,,,,,,,10.1021/jp983482y,"benzo[g,h,i]perylene"
+307,C22H14,0,22,14,0,0,36,,,?,,37,,,,,,,,,,,10.1021/jp983482y,pentacene
+305,C22H14,0,22,14,0,0,36,,,?,,60,,,,,,,,,,,10.1016/j.saa.2017.03.044,"dibenz[a,j]anthracene"""
+308,C22H14+,1,22,14,0,0,36,,,?,,23,,,,,,,,,,,10.1021/j100022a007,pentacene
+550,C24H14-,-1,24,14,0,0,38,,,?,,19,,,,,,,,,,,10.1016/j.saa.2014.04.017,"dibenzo[fg,op]naphthacene or dbenzo-pyrene | This species has known electronic transitions in the IR, see referenced work for details"
+18,C24H12,0,24,12,0,0,36,,,?,,21,,,,,,,,,,,10.1021/jp983482y,coronene
+538,C24H14,0,24,14,0,0,38,,,?,,60,,,,,,,,,,,10.1016/j.saa.2014.04.017,"dibenzopyrene or dibenzo[fg,op]naphthacene"
+19,C24H12+,1,24,12,0,0,36,,,?,,3,,,,,,,,,,,10.1021/j100010a011,coronene
+549,C24H14+,1,24,14,0,0,38,,,?,,38,,,,,,,,,,,10.1016/j.saa.2014.04.017,"dibenzo[fg,op]naphthacene or dbenzo-pyrene | This species has known electronic transitions in the IR, see referenced work for details"
+813,C28H16-,-1,28,16,0,0,44,,,?,,18,,,,,,,,,,,10.1016/j.saa.2014.04.017,"dibenzo[fg,st]pentacene or benzo-naptho-pyrene | This species has known electronic transitions in the IR, see referenced work for details"
+537,C28H16,0,28,16,0,0,44,,,?,,67,,,,,,,,,,,10.1016/j.saa.2014.04.017,"naptho-benzo-pyrene or dibenzopentacene | This species has known electronic transitions in the IR, see referenced work for details"
+548,C28H16+,1,28,16,0,0,44,,,?,,23,,,,,,,,,,,10.1016/j.saa.2014.04.017,"dibenzo[fg,st]pentacene or benzo-naptho-pyrene | This species has known electronic transitions in the IR, see referenced work for details"
+547,C32H18-,-1,32,18,0,0,50,,,?,,137,,,,,,,,,,,10.1016/j.saa.2014.04.017,"dibenzo[hi,uv]hexacene or dinaptho-pyrene | This species has known electronic transitions in the IR, see referenced work for details"
+536,C32H18,0,32,18,0,0,50,,,?,,60,,,,,,,,,,,10.1016/j.saa.2014.04.017,"dinaptho-pyrene or dibenzo-hexane | This species has known electronic transitions in the IR, see referenced work for details"
+546,C32H18+,1,32,18,0,0,50,,,?,,50,,,,,,,,,,,10.1016/j.saa.2014.04.017,"dibenzo[hi,uv]hexacene or dinaptho-pyrene | This species has known electronic transitions in the IR, see referenced work for details"
+125,C34H16,0,34,16,0,0,50,,,?,,83,,,,,,,,,,,,"3,4;5,6;7,8-tribenzoperopyrene"
+543,C36H20-,-1,36,20,0,0,56,,,?,,44,,,,,,,,,,,10.1016/j.saa.2014.04.017,"dibenzo[hi,wx]heptacene or naptho-anthraceno-pyrene | This species has known electronic transitions in the IR, see referenced work for details"
+154,C36H16,0,36,16,0,0,52,,,?,,93,,,,,,,,,,,,"3,4;5,6;10,11;12,13-tetrabenzoperopyrene"
+128,C36H16,0,36,16,0,0,52,,,?,,78,,,,,,,,,,,,"3,4;5,6;7,8;12,13-tetrabenzoperopyrene"
+534,C36H20,0,36,20,0,0,56,,,?,,84,,,,,,,,,,,10.1016/j.saa.2014.04.017,"naptho-anthraceno-pyrene or dibenzoheptacene | This species has known electronic transitions in the IR, see referenced work for details"
+542,C36H20+,1,36,20,0,0,56,,,?,,42,,,,,,,,,,,10.1016/j.saa.2014.04.017,"dibenzo[hi,wx]heptacene or naptho-anthraceno-pyrene | This species has known electronic transitions in the IR, see referenced work for details"
+541,C40H22-,-1,40,22,0,0,62,,,?,,80,,,,,,,,,,,10.1016/j.saa.2014.04.017,"dibenzo[jk, a1b1]octacene or dianthraceno-pyrene or 6,7:15,16-di[1,3]butadienodibenzo[hi,uv]hexacene | This species has known electronic transitions in the IR, see referenced work for details"
+555,C40H18,0,40,18,0,0,58,,,?,,53,,,,,,,,,,,,"dipyreno-(1\',3\';10,2),(1"""",3"""",5,7)-pyrene"
+131,C40H18,0,40,18,0,0,58,,,?,,105,,,,,,,,,,,,"12,13-o-phenylene-3,4;5,6;7,8-tribenzoterrylene"
+533,C40H22,0,40,22,0,0,62,,,?,,63,,,,,,,,,,,10.1016/j.saa.2014.04.017,"dianthraceno-pyrene or dibenzo-octacene | This species has known electronic transitions in the IR, see referenced work for details"
+540,C40H22+,1,40,22,0,0,62,,,?,,82,,,,,,,,,,,10.1016/j.saa.2014.04.017,"dibenzo[jk, a1b1]octacene or dianthraceno-pyrene | This species has known electronic transitions in the IR, see referenced work for details"
+134,C42H18,0,42,18,0,0,60,,,?,,97,,,,,,,,,,,,"1,14-benzodinaptho-(1"""",7"""";2,4),(7\'"""",1\'"""";11,13)-bisanthene"
+105,C42H18,0,42,18,0,0,60,,,?,,25,,,,,,,,,,,10.1021/jp983482y,hexbenzcoronene
+137,C42H22,0,42,22,0,0,64,,,?,,96,,,,,,,,,,,,"2,3;12,13;15,16-tribenzoterrylene"
+106,C42H18+,1,42,18,0,0,60,,,?,,14,,,,,,,,,,,,hexbenzcoronene
+140,C44H20,0,44,20,0,0,64,,,?,,74,,,,,,,,,,,,"1,2;3,4;5,6;7,8;9,10;12,13-hexabenzoperopyrene"""
+146,C48H20,0,48,20,0,0,68,,,?,,78,,,,,,,,,,,,"difluoranthen-(3\',5\';4,6),(4"""",6"""";9,11)-coronene"
+100,C48H20,0,48,20,0,0,68,,,?,,39,,,,,,,,,,,10.1021/jp983482y,dicoronylene
+143,C48H22,0,48,22,0,0,70,,,?,,70,,,,,,,,,,,,"12,13-o-phenylene-1,2;3,4;5,6;7,8;9,10-pentabenzoperopyrene"
+101,C48H20+,1,48,20,0,0,68,,,?,,20,,,,,,,,,,,,dicoronylene
+149,C50H22,0,50,22,0,0,72,,,?,,82,,,,,,,,,,,,"1,14-benzodiphenanthreno-(1"""",9"""";2,4),(9\'"""", 1\'"""";11,13)-bisanthene"

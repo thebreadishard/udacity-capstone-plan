@@ -235,6 +235,12 @@ Printed by probe 2a before any coupled-cluster number exists; until the X_ik pri
 floor and labels it so. Pirali's resolved fundamentals (decision 21) are unaffected (u_T = 0
 there). Nothing changes for hot sources or for R2–R3.
 
+**Dated note 2026-09-10 (opponents per rung as the libraries are actually served; Module 02 atlas
+first print).** The R0 row's opponent cell reads "A, B"; the theoretical library v4.00 has **no
+benzene entry**, so at R0 the opponents are line B and the cheap line's method (line A's column is
+empty by construction); line B covers R0, R1 and, at R2, pyrene and tetracene only. No rung, margin
+or rule changes; the pilot note's opponent table per rung follows the atlas.
+
 **Promised:** R0–R1 scored as accuracy rungs against gas-phase data. R2–R3 scored as accuracy
 rungs per family under the decidability rule above and the "beat and noise" rule of §1. R6 per
 the dated note above. **[05]** The **cost record** (§1) for every rung and mode that ran; **mode E

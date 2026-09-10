@@ -46,3 +46,5 @@ Papers/
 plans/*/modules/*/data/*
 !plans/*/modules/*/data/_synthetic_test.xml
 plans/*/modules/*/out/**/*.csv.gz
+!plans/*/modules/*/out/anharmonic_*/bands.csv.gz
+!plans/*/modules/*/out/experimental_*/bands.csv.gz

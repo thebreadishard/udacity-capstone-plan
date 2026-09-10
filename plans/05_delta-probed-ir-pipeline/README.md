@@ -408,6 +408,12 @@ the X_ik exist (Ladder §2 dated note 2026-09-10; scoreboard note §3; probes RE
   in ACS Supporting Information. **Bos 2025 re-read** (Europe PMC, debt 1 paid): MAE 5.07 / max
   13.17 cm⁻¹ against 10.41 / 23.49 for conventional scaling, on Ar-matrix bands with an instance-level
   80/20 split (Frozen_Lines §3). Mai 2025's data record read (B3LYP/4-31G teacher; 50/300/600 K).
+  **Same evening, files in hand:** all three libraries parsed —
+  [Research_Note_2026-09-10_Opponent_Atlas.md](GoalGathering/Research_Note_2026-09-10_Opponent_Atlas.md):
+  line A has **no benzene**; stored scale factors 0.9794 / 0.9691 / 0.9597 (not the paper's
+  0.964 / 0.979 / 0.975 — to be re-read); 4-31G from n_C = 212; **debt 6 paid** (C₃₈₄H₄₈ uid 617
+  neutral, 4447 dication); line B = 45 species, on the ladder benzene, naphthalene, pyrene, tetracene.
+  Dated notes in Frozen_Lines §2/§3/§7 and Ladder §2.
 - **2026-09-10 — engine incident and patch 1.** The naphthalene cc-pVTZ tight timing died after
   4 h 26 min on a pyscf 2.14.0 / pyscf-forge 1.1.1 signature mismatch in the DF vvvv path (taken only
   when a fragment's vvvv block does not fit in memory — benzene never took it); patched locally
