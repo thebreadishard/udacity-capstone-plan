@@ -52,7 +52,12 @@ prices normalise.
   QVL for Ryzen 7000 and 9000 (slots 1–2).
 - ECC: the board supports ECC and non-ECC unbuffered DIMMs (ASUS tech specs); no ECC DDR5 UDIMM was
   listed at Alternate → a non-ECC build for now, ECC possible later.
-- Ubuntu 24.04 LTS or newer for the 10 GbE / 2.5 GbE controllers.
+- **Operating system decided 2026-09-10: Ubuntu 24.04 LTS (or newer LTS), headless, driven over SSH from
+  the laptop** (Tailscale for access from elsewhere). Omarchy/Arch was weighed and set aside for the
+  compute node: rolling updates would move kernel, glibc and BLAS under a pinned engine on a machine
+  that runs unattended for weeks, and its desktop layer is unused headless. Day-one list: Ubuntu,
+  the `qc05` venv with engine patch 1, SSH key from the laptop, Tailscale, NUT for the UPS, the repo
+  clone, then the naphthalene timing as the first run (laptop vs desktop number).
 - Whether pyscf-forge's LNO-CCSD(T) can use a GPU at all (expected: no); if the M05 DFT corpus or the
   M2 autodiff work needs one, it is a separate, later purchase.
 - Expected gain, to be measured on day one with `probes/anchor_single_point_timing.py`: one
