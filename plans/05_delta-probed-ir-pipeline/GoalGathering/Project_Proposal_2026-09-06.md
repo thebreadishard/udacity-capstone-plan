@@ -42,7 +42,16 @@ carbons; Pirali's naphthalene spectrum is what everyone calibrates on; and PAHdb
 the scaled, simulated and ML-corrected DFT spectra for thousands of PAHs — what nobody has done is
 to put these pieces together on a PAH: carry a frozen local coupled-cluster space along the modes,
 recover the correction from energies alone, and measure an error margin per band (§3.1 and §14
-carry the references and their reading status).
+carry the references and their reading status). And why the harmonic part rather than the
+anharmonic one that PAH spectra are known for: because the only figure that exists on this ladder
+— benzene, from the supervisor's own group (Esposito et al. 2024, Table S1) — puts the B3LYP/N07D
+harmonic frequencies 5.45 cm⁻¹ from CCSD(T)-F12b on average, an error that passes one-to-one through
+VPT2 into every fundamental, is systematic per band family rather than random, and is absorbed only
+in its mean by a fitted scale factor; the anharmonic constants stay at DFT level exactly as in that
+protocol, the Δ₂ = 0 null row of §7 separates what the coupled-cluster correction adds from what the
+anharmonic step does, and whether the same is true at naphthalene, where no such figure exists, is
+precisely what R1 measures per family (decision 28) — if the correction adds nothing there, the
+answer is reported as such.
 
 The previous plan (plan 04, discussed at the last supervision meeting) obtained its
 coupled-cluster anchor by learning a per-molecule potential-energy surface from thousands of local
