@@ -39,9 +39,18 @@ def peak_rss_gb():
     return resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024 ** 2   # kB → GB on Linux
 
 
+MOLECULE = "benzene"          # set from --molecule; the geometry file is results_dryrun/<molecule>/stageA.json
+                              # (or geometry.json with the same two keys) — added 2026-09-10 for the naphthalene timing (P13)
+
+
 def load_geometry():
-    a = json.load(open(STAGEA))
-    return a["symbols"], np.array(a["coords_bohr"])
+    d = os.path.join(HERE, "results_dryrun", MOLECULE)
+    for name in ("stageA.json", "geometry.json"):
+        p = os.path.join(d, name)
+        if os.path.exists(p):
+            a = json.load(open(p))
+            return a["symbols"], np.array(a["coords_bohr"])
+    raise FileNotFoundError(f"no stageA.json or geometry.json under {d}")
 
 
 def run_one(basis, threads, thresh_name, canonical, out):
@@ -127,12 +136,15 @@ def main():
     ap.add_argument("--thresh", default="tight", choices=list(THRESH))
     ap.add_argument("--no-canonical", action="store_true")
     ap.add_argument("--canonical-basis", default="cc-pvdz", help="run the canonical CCSD(T) reference only in this basis")
+    ap.add_argument("--molecule", default="benzene", help="geometry from results_dryrun/<molecule>/ (stageA.json or geometry.json)")
     args = ap.parse_args()
-    log(f"anchor single-point timing on {platform.node()}, {args.threads} threads, thresholds {args.thresh} = {THRESH[args.thresh]}")
+    global MOLECULE
+    MOLECULE = args.molecule
+    log(f"anchor single-point timing on {platform.node()}, molecule {MOLECULE}, {args.threads} threads, thresholds {args.thresh} = {THRESH[args.thresh]}")
     results = []
     for b in args.basis:
         results.append(run_one(b, args.threads, args.thresh, canonical=(not args.no_canonical and b == args.canonical_basis), out=OUT))
-    print("\n# Anchor single-point timing — benzene at the dry-run B3LYP/6-31G* geometry — "
+    print(f"\n# Anchor single-point timing — {MOLECULE} at the dry-run B3LYP/6-31G* geometry — "
           f"{datetime.now():%Y-%m-%d %H:%M}, {platform.node()} (WSL), {args.threads} threads, LNO thresholds {THRESH[args.thresh]}")
     print("| basis | nbf | RHF(DF) s | PM s | LNO-CCSD(T) s | peak RSS GB | E_corr LNO-CCSD(T) | canonical CCSD(T) s | LNO − canonical µE_h |")
     print("|---|---|---|---|---|---|---|---|---|")
