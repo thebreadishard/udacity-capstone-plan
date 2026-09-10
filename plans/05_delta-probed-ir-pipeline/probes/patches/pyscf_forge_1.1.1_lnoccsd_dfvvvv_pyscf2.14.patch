@@ -1,0 +1,14 @@
+--- lnoccsd.py (pyscf-forge 1.1.1)
++++ lnoccsd.py (plan-05 patch 1)
+@@ -396,6 +396,11 @@
+ class _DFChemistsERIs(_ChemistsERIs):
+     def _contract_vvvv_t2(self, mycc, t2, direct=False, out=None, verbose=None):
+         assert(not direct)
++        # Plan-05 engine patch 1 (2026-09-10): pyscf >= 2.14 signature (mycc, mol, vvL, VVL, t2, out,
++        # verbose); pyscf-forge 1.1.1 passed six arguments, so t2 arrived as None on the DF vvvv path.
++        import inspect as _inspect
++        if len(_inspect.signature(dfccsd._contract_vvvv_t2).parameters) >= 7:
++            return dfccsd._contract_vvvv_t2(mycc, self.mol, self.vvL, self.vvL, t2, out, verbose)
+         return dfccsd._contract_vvvv_t2(mycc, self.mol, self.vvL, t2, out, verbose)
+ def _make_df_eris(cc, mo_coeff=None):
+     from pyscf.ao2mo import _ao2mo

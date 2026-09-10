@@ -164,7 +164,16 @@ expected to last more than an hour must leave a line in its log at least once an
 launcher writes a heartbeat (elapsed, CPU, resident memory, tmp size; `HEARTBEAT_MIN`, default 60)
 and the python step prints its own progress (per point in the scans; the LNO fragment loop at
 verbose 4 in the timing probe), because the naphthalene timing of 2026-09-10 ran for hours with
-nothing in its log after the localisation line.
+nothing in its log after the localisation line. **Incident 2026-09-10 (engine):** that timing died after
+4 h 26 min in the first naphthalene LNO-CCSD(T) energy with `AttributeError: 'NoneType' object has
+no attribute 'shape'` in `dfccsd._contract_vvvv_t2` — pyscf 2.14.0 gives that function a seventh
+parameter (`VVL`) and pyscf-forge 1.1.1 (and its master of 2026-09-10) still passes six, so `t2`
+arrives as `None`. The path is taken only when a fragment's vvvv block does not fit in memory, which
+is why every benzene run passed and the first naphthalene fragment of that size did not. Fixed by a
+local compatibility patch mirroring pyscf's own DF class (vvL passed twice for real orbitals), kept
+as `probes/patches/pyscf_forge_1.1.1_lnoccsd_dfvvvv_pyscf2.14.patch`; the engine line in every
+record is therefore "pyscf 2.14.0 + pyscf-forge 1.1.1 + plan-05 patch 1". Consequence for the
+timing: the 4.4 h before the crash are a lower bound on one naphthalene energy at cc-pVTZ tight.
 
 ## 4. Order of timed probes (each prints machine, date, settings, wall-clock; gradient probes also peak memory)
 

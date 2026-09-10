@@ -15,8 +15,10 @@ resolution, boxcar apodisation** (header: NIST Analytical Chemistry Division, ga
 primary gas standard, 1 L/min flow, 3,526 points 575.65–3974.61 cm⁻¹, y in (µmol/mol)⁻¹ m⁻¹ base 10);
 copied to `probes/scoreboards/benzene/C71432_quantir_res1.93_boxcar.jdx`, sha256 printed in the
 scoreboard. It is one of the twenty QUANT-IR entries the WebBook lists for benzene (item 54,
-0.125–1.93 cm⁻¹, five apodisations); the 0.125 cm⁻¹ entry is the one the Ladder's R0 paragraph
-expects and is **not held** — fetching it is asked of the user below. Contrary to item 54's note,
+0.125–1.93 cm⁻¹, five apodisations: Index 3–22 on the WebBook page, read 2026-09-10); the 0.125 cm⁻¹
+boxcar entry (Index 7) is the one the Ladder's R0 paragraph expects and was **fetched the same
+evening with the user's permission** (`C71432_quantir_res0.125_boxcar.jdx`, 415 kB, 56,417 points,
+header: 23 °C, resolution 0.1250, boxcar); both records are held and both prints stay on file. Contrary to item 54's note,
 the record header does state a temperature (23 °C), consistent with Chu §2.3's 296 K correction.
 
 ## 2. What the print says (benzene, four IR-active fundamentals)
@@ -28,7 +30,20 @@ the record header does state a temperature (23 °C), consistent with Chu §2.3's
 | C–C stretch | 20–21, e₁u | 1481.93 | 1487.44 | 3.2 | 15.7 ± 0.3 ± 0.4 | **no** (H₂O window 1325–1900) |
 | C–H stretch | 27–28, e₁u | 3046.39 | 3067.99 | 3.2 | 74.2 ± 1.2 ± 0.6 | yes |
 
-u_band = √(res² + u_c² + cal² + u_296²) with res = 1.929 (the record's stated resolution), u_c ≤
+**The same on the 0.125 cm⁻¹ record** (`SCOREBOARD_benzene_quantir_0p125.md`):
+
+| family | peak (cm⁻¹) | centroid | u_band | u_band without T | A (km/mol) |
+|---|---|---|---|---|---|
+| C–H out-of-plane | 673.90 | 674.03 | 2.55 | 0.125 | 105.3 |
+| C–H in-plane bend | 1037.73 | 1036.29 | 2.55 | 0.125 | 8.4 |
+| C–C stretch | 1483.41 | 1488.43 | 2.55 | 0.127 | 15.8 (non-certified) |
+| C–H stretch | 3047.17 | 3068.88 | 2.55 | 0.127 | 74.3 |
+
+The peaks move by +0.8 to +1.5 cm⁻¹ against the 1.929 cm⁻¹ record (a resolution effect of the size
+that record's own term allowed), the integrated intensities agree between the two records to
+0.1–1.3 %, i.e. within the source's 1.65 % (k = 1), and u_band is now the temperature term alone.
+
+On the 1.929 cm⁻¹ record: u_band = √(res² + u_c² + cal² + u_296²) with res = 1.929 (the record's stated resolution), u_c ≤
 0.085 (FWHM/(2·S/N); S/N 104–4,984), cal = 0.0042 (Chu §2.4), **u_296 = 2.55 cm⁻¹** for every
 family (§3). Without the temperature term u_band is 1.93 cm⁻¹, i.e. the resolution. Against the
 candidate margins printed with the table, every family is decidable at 5 and 10 cm⁻¹ and none at
@@ -62,11 +77,9 @@ Options: (a) keep the floor as printed; (b) pre-register the computed correction
 R0 and R1 (both room-temperature sources), printed by 2a from the pipeline's own X_ik before any
 CC number exists. The note proposes (b); it is a change to a scoreboard constant, not to the rule.
 
-**Fetch request.** The 0.125 cm⁻¹ boxcar QUANT-IR benzene record from the WebBook (item 54's list;
-`cbook.cgi?ID=C71432&Type=IR-SPEC&Index=<n>` in JCAMP form), ≈ 400 kB; with it the resolution term
-drops from 1.93 to 0.12 cm⁻¹ and the peak positions gain a decimal. The script takes it with
-`--jdx` and `--tag quantir_0p125`, and both prints stay on file (the pilot note names the entry
-scored; no swap after a comparison exists).
+**Fetch — done.** The 0.125 cm⁻¹ boxcar record (WebBook Index 7) was fetched with the user's
+permission on 2026-09-10 and printed as `quantir_0p125` (table above); the pilot note names the
+entry scored, and no swap happens after a comparison exists.
 
 ## 4. Owed next in Module 03
 

@@ -388,7 +388,15 @@ correction, licensed where the truth is known, mean anything for the PAHs where 
   u_296 = 2.55 by the frozen Bose rule with the floor slope — **P21** proposes the pipeline's own
   computed 296 K correction with ±30 % instead), intensities 104.6 / 8.2 / 15.7 (non-certified) /
   74.2 km/mol. Note: [Research_Note_2026-09-10_Scoreboard_R0.md](GoalGathering/Research_Note_2026-09-10_Scoreboard_R0.md).
-  Fetch of the 0.125 cm⁻¹ record asked of the user. No frozen rule changed.
+  The 0.125 cm⁻¹ boxcar record (WebBook Index 7) was fetched the same evening with the user's
+  permission and printed too: peaks 673.90 / 1037.73 / 1483.41 / 3047.17, u_band 2.55 (the temperature
+  term alone; 0.125 without it), intensities agreeing with the 1.929 record to ≤ 1.3 %. No frozen rule
+  changed.
+- **2026-09-10 — engine incident and patch 1.** The naphthalene cc-pVTZ tight timing died after
+  4 h 26 min on a pyscf 2.14.0 / pyscf-forge 1.1.1 signature mismatch in the DF vvvv path (taken only
+  when a fragment's vvvv block does not fit in memory — benzene never took it); patched locally
+  (`probes/patches/`, Compute_Budget §3), relaunched 17:45 with the LNO fragment loop logging and the
+  hourly heartbeat. The 4.4 h are a lower bound on one naphthalene energy (P13 input).
 
 - **2026-09-05 — R2/R3 gas-phase sources.** An exhaustive search
   ([Research_Note_2026-09-05_R2_GasPhase_MidIR_Sources.md](GoalGathering/Research_Note_2026-09-05_R2_GasPhase_MidIR_Sources.md))

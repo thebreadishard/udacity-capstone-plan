@@ -1,0 +1,97 @@
+=== naphthalene cc-pVTZ tight LNO-CCSD(T) single point RESTARTED (frozen core = 10) Thu Sep 10 13:08:41 CEST 2026
+[13:08:41] anchor single-point timing on Asus18, molecule naphthalene, 8 threads, thresholds tight = [1e-06, 1e-07]
+[13:08:42] cc-pvtz: 412 basis functions
+[13:08:49] cc-pvtz: RHF(DF) 7.4 s, E = -383.47407578
+[13:08:50] cc-pvtz: PM localisation 1.0 s, 28 LMOs
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+=== detached start Thu Sep 10 13:11:25 CEST 2026: python anchor_single_point_timing.py --molecule naphthalene --basis cc-pvtz --thresh tight --no-canonical --threads 8
+[13:11:25] anchor single-point timing on Asus18, molecule naphthalene, 8 threads, thresholds tight = [1e-06, 1e-07]
+[13:11:26] cc-pvtz: 412 basis functions
+[13:11:32] cc-pvtz: RHF(DF) 6.5 s, E = -383.47407578
+[13:11:33] cc-pvtz: PM localisation 1.0 s, 24 LMOs
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+--- heartbeat 2026-09-10 17:37:54: pid 445 alive, elapsed 04:26:29, cpu 748 %, rss 2445 MB, tmp 18G
+Traceback (most recent call last):
+  File "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/anchor_single_point_timing.py", line 160, in <module>
+    main()
+  File "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/anchor_single_point_timing.py", line 147, in main
+    results.append(run_one(b, args.threads, args.thresh, canonical=(not args.no_canonical and b == args.canonical_basis), out=OUT))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/anchor_single_point_timing.py", line 99, in run_one
+    mcc.kernel()
+  File "/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/lno/lno.py", line 498, in kernel
+    frag_res = kernel(self, self.lo_coeff, self.frag_lolist,
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/lno/lno.py", line 147, in kernel
+    frag_res[ifrag], frag_msg = mlno.impurity_solve(mf_frag, lnofrag, uocc_loc, eris, frozen=frozen)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/lno/lnoccsd.py", line 679, in impurity_solve
+    return impurity_solve(mcc, mo_coeff, uocc_loc, mo_occ, maskact, eris, log=log,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/lno/lnoccsd.py", line 547, in impurity_solve
+    t1, t2 = mcc.kernel(eris=imp_eris, t1=t1, t2=t2)[1:]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/cc/ccsd.py", line 1088, in kernel
+    return self.ccsd(t1, t2, eris)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/cc/ccsd.py", line 1103, in ccsd
+    kernel(self, eris, t1, t2, max_cycle=self.max_cycle,
+  File "/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/cc/ccsd.py", line 71, in kernel
+    t1new, t2new = mycc.update_amps(t1, t2, eris)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/cc/ccsd.py", line 117, in update_amps
+    t2new = mycc._add_vvvv(t1, t2, eris, t2sym='jiba')
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/cc/dfccsd.py", line 49, in _add_vvvv
+    return ccsd.CCSD._add_vvvv(self, t1, t2, eris, out, with_ovvv, t2sym)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/cc/ccsd.py", line 378, in _add_vvvv
+    Ht2tril = _add_vvvv_tril(mycc, t1, t2, eris, with_ovvv=with_ovvv)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/cc/ccsd.py", line 435, in _add_vvvv_tril
+    Ht2tril = eris._contract_vvvv_t2(mycc, tau, mycc.direct, out, log)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/lno/lnoccsd.py", line 399, in _contract_vvvv_t2
+    return dfccsd._contract_vvvv_t2(mycc, self.mol, self.vvL, t2, out, verbose)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/cc/dfccsd.py", line 69, in _contract_vvvv_t2
+    nvira, nvirb = t2.shape[-2:]
+                   ^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'shape'
+=== detached start Thu Sep 10 17:45:21 CEST 2026: python anchor_single_point_timing.py --molecule naphthalene --basis cc-pvtz --thresh tight --no-canonical --threads 8
+[17:45:21] anchor single-point timing on Asus18, molecule naphthalene, 8 threads, thresholds tight = [1e-06, 1e-07]
+[17:45:22] cc-pvtz: 412 basis functions
+[17:45:28] cc-pvtz: RHF(DF) 6.7 s, E = -383.47407578
+[17:45:29] cc-pvtz: PM localisation 1.0 s, 24 LMOs
+
+******** <class 'pyscf.lno.lnoccsd.LNOCCSD_T'> ********
+nocc = 24, nmo = 402
+frozen orbitals 10
+max_memory 24000 MB (current use 893 MB)
+nfrag = 24  nlo = 24
+frag_lolist = [[0], [1], [2], [3], [4], [5], [6], [7], [8], [9], [10], [11], [12], [13], [14], [15], [16], [17], [18], [19], [20], [21], [22], [23]]
+frag_wghtlist = None
+lno_type = ['1h', '1h']
+lno_thresh = [1e-06, 1e-07]
+lno_pct_occ = None
+lno_norb = None
+lo_proj_thresh = 1e-10
+lo_proj_thresh_active = 0.1
+verbose_imp = 2
+_ovL = None
+_ovL_to_save = None
+force_outcore_ao2mo = False
+_match_oldcode = False
+_max_las_size_ccsd = 1000
+_max_las_size_ccsd_t = 1000
+Regularized frag_wghtlist = [1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1. 1.]
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+LO occ proj: 1 active | 0 standby | 23 orthogonal
+LO vir proj: 0 active | 0 standby | 378 orthogonal
+Fragment 1/24  LAS: 24/34 Occ | 220/378 Vir | 244/412 MOs
