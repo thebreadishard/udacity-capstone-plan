@@ -122,7 +122,11 @@ cost record is promised for every rung and mode that ran.
 or any other.
 
 The success criterion is **relative and measured**, not absolute. "Chemical precision" is not
-the promise; *beating the frozen lines where the data can decide it* is. The opponents are
+the promise; *beating the frozen lines where the data can decide it* is. **Dated 2026-09-08
+(decision 28):** on R0 the claim is *agreement* with the laboratory bands within the pipeline's
+own budget — benzene licenses, it is not beaten; on R1 agreement plus the per-family question
+whether the correction adds accuracy over DFT; "beat" begins there and holds on R2–R3 (Ladder §1
+amendment). The opponents are
 named and versioned in [Frozen_Lines_to_Beat.md](Frozen_Lines_to_Beat.md) and may not be
 swapped after a comparison has been scored. The scoreboard is laboratory data, never another
 calculation.

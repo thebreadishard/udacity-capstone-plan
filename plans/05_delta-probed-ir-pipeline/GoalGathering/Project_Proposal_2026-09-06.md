@@ -17,7 +17,9 @@ uncertainties its own current paper calls "currently unquantified" (Ricca et al.
 project builds and tests one pipeline: any individual neutral aromatic molecule in, an infrared
 absorption spectrum out, with the **harmonic force constants corrected by a local coupled-cluster
 anchor, checked against canonical coupled cluster where affordable**, and a measured error budget
-on every claimed band.
+on every claimed band. The question behind it is whether a measured coupled-cluster correction,
+licensed on the molecules where the truth is known, can mean anything for the PAHs where no truth
+exists; benzene and naphthalene are the instruments of that question, not its goal.
 
 The previous plan (plan 04, discussed at the last supervision meeting) obtained its
 coupled-cluster anchor by learning a per-molecule potential-energy surface from thousands of local
@@ -49,10 +51,15 @@ are promised and scored wherever a laboratory band can decide the comparison; in
 scored on the two molecules where a calibrated gas-phase intensity exists (benzene, naphthalene)
 and reported with their provenance everywhere else; widths are drawn, not predicted.
 
-The success criterion is relative and measured: on small and medium PAHs the pipeline's band
-positions are compared per band against named, version-frozen state-of-the-art predictions under
-a pre-registered protocol; on the largest species the deliverable is a spectrum with a labelled
-error budget and no accuracy claim. The project is as much about the evaluation discipline —
+The success criterion is measured and staged. On benzene the pipeline must **agree** with the
+laboratory bands within the laboratory uncertainty combined with its own error budget — benzene
+licenses the anchor and the recovery; nothing is "beaten" there, and the comparison with existing
+predictions is printed without a claim (decision 28). On naphthalene agreement is required again
+and, family by family, the question is put whether the coupled-cluster correction adds accuracy
+over DFT. On the pyrene-size and coronene rungs the pipeline's positions are compared per band
+family against named, version-frozen state-of-the-art predictions under a pre-registered protocol,
+wherever the laboratory can decide; on the largest species the deliverable is a spectrum with a
+labelled error budget and no accuracy claim. The project is as much about the evaluation discipline —
 pre-registration, frozen baselines, mandatory null tests, fail-closed reporting — as about the
 spectra themselves.
 
@@ -82,7 +89,8 @@ after seeing a result. **K** is the number of coupled-cluster energies a molecul
 the part of it spent on the off-diagonal block. The **pilot note** is a dated document, written
 before the first real coupled-cluster correction is computed, that fixes every tolerance, margin
 and constant the evaluation uses. A **beat margin** is the pre-registered minimum per-band
-improvement over the best opponent that counts as a win. Numbered **decisions** are the student's
+improvement over the best opponent that counts as a win (used from naphthalene's families upward; on
+benzene the test is agreement, decision 28). Numbered **decisions** are the student's
 recorded choices (§10). The **campaign officer** (Module 07) is a rule-checking agent that reads
 the deck, the budget file and the pilot note, submits and refuses computational jobs and report
 sentences by those rules, and never produces or edits a scientific number.
@@ -365,8 +373,8 @@ sense: a fragment-probed spectrum, or the measured reason none could be produced
 
 | Rung | Species | Type | What it licenses in plan 05 |
 |---|---|---|---|
-| R0 | benzene | accuracy | probing licence against local and canonical references; the anchor's bias line (canonical reference); intensity scored |
-| R1 | naphthalene | accuracy | the noise measurement; the anchor licence closes; first locality read; intensity scored |
+| R0 | benzene | agreement (decision 28): within the laboratory uncertainty plus the pipeline's own budget; the opponents are printed, not claimed | probing licence against local and canonical references; the anchor's bias and basis-set lines (canonical reference); intensities scored for agreement |
+| R1 | naphthalene | agreement, plus the per-family question whether the correction adds accuracy over DFT | the noise measurement; the anchor licence closes; first locality read; intensities scored for agreement |
 | R2 | pyrene, chrysene, triphenylene, tetracene | accuracy for the C–H out-of-plane families (hot gas, decidable by margin); the C–H stretch family is scored on the jet-cooled 3 µm column only once a scoring rule for its resonance polyads is agreed (§13 item 8) and is not counted as promised until then (decision 25); C–C families expected undecidable on the existing gas data, see below | first off-diagonal-count ratio; direct-block locality probe; a canonical diagonal check at pyrene (expected cluster work; classified by the rule of §8, and skipped with a printed sentence if no cluster time exists) |
 | R3 | coronene | accuracy | second ratio; the numeric size sentence is decided here |
 | R4–R5 | C₅₄–C₂₁₆ class | reach; the R4 fragment checks conditional on cluster access | expert-judgment datum (§13.5); the first rungs where the learned prior, if it earned its licence at R2–R3, may carry the recovery; the fragment-vs-whole comparison on a molecule larger than coronene and the fragment-radius convergence test |
@@ -505,7 +513,10 @@ probing at C₃₈₄H₄₈** (§4).
 ## 7. Evaluation design
 
 **What is scored, what is shown.** Band **positions** are the promised quantity and are scored
-on every rung where a laboratory band passes the decidability rule. **Intensities** are shown for
+on every rung where a laboratory band passes the decidability rule. On benzene the score is
+**agreement**: |predicted − laboratory| within the laboratory uncertainty combined with the
+pipeline's own budget, per band; the paired comparison with the opponents is printed there and
+claims nothing (decision 28). From naphthalene upward the paired comparison carries the claim. **Intensities** are shown for
 every molecule with their provenance and are **scored on benzene and naphthalene** — the two rungs
 with calibrated gas-phase intensities — as a second, separately reported quantity: the integrated
 band intensity of each scored band, the pipeline's anharmonic value against the

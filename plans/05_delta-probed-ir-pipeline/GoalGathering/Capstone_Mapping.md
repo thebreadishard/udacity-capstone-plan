@@ -307,7 +307,8 @@ load-bearing prior of the R4–R6 certificates; **M06** as the pattern-efficienc
 both labelled exactly so. Artifact: a small
 CLI / service — molecule identifier in → spectrum + per-band error budget + **cost record** +
 certificate out, **or a refusal naming the rung/cap/gate that blocked it**. Runs: R0–R1
-expected unconditional under the pilot note (room-temperature sources named); R2–R3 per family
+expected unconditional under the pilot note (room-temperature sources named; R0 scored for agreement
+within the budget, R1 for agreement and the per-family CC-adds question — decision 28); R2–R3 per family
 under the decidability rule and the per-mode Q6 noise gate; the fragment-probed R6 under its
 four-part licence, or its measured refusal;
 tier-1 emission post-processing via the published cascade model, labelled inherited. Paper:

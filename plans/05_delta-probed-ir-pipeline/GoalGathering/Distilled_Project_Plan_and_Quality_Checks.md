@@ -22,7 +22,7 @@ coupled-cluster correction Δ₂ to the harmonic force constants**, recovered wi
 prior from K local-CC responses with frozen spaces (mode E on every rung; mode G in addition
 where licensed) — produces IR **band positions** that, on the gas-phase rungs — R0 and R1 expected unconditional on their room-temperature sources (Ladder §2), the hot WebBook naphthalene entries as labelled hot columns — **agree with
 the known truth within the stated margin (primary) and beat the frozen lines under the
-pre-registered paired comparison (secondary)**; on R2–R3 the beat comparison runs per family
+pre-registered paired comparison (secondary — on R0 the paired comparison is printed and claims nothing; decision 28)**; on R2–R3 the beat comparison runs per family
 under the Ladder §2 decidability rule (measured band-centre uncertainty against the beat
 margin), and only where the Q6 noise line of the mode used passed at that size class (for the off-diagonal Δ₂ in mode E also the per-rung σ_E ceiling from RMS_off — dated amendment 2026-09-06, P3 accepted, Ladder §3), all
 others pre-declared inconclusive — **the R2 C–C families are expected inconclusive by
