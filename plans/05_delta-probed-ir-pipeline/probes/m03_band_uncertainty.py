@@ -45,6 +45,8 @@ CONSTANTS = {  # every one a pilot-note candidate; printed with the table
     "bath_mode_cutoff_cm": 700.0,                     # item 52 §4.1: the shift is dominated by modes << 700 cm⁻¹
     "u_296_rule": "u_296 = chi_F · (hc nu_m / k_B) · nbar(nu_m, 296 K), nu_m = mean DFT frequency below the cutoff",
     "candidate_margins_cm": [2.0, 5.0, 10.0],         # candidates only; the pilot note fixes the margin per family
+    "u_T_decision_29": "R0/R1 room-temperature sources: u_T = the pipeline's computed 0→T shift per band from the DFT X_ik, "
+                       "applied as a correction with ±30 % of itself; NOT_RUN until the X_ik exist — the floor below is printed and labelled",
 }
 
 def sha256(path): return hashlib.sha256(Path(path).read_bytes()).hexdigest()
@@ -192,7 +194,9 @@ def main():
          f"Baseline noise (MAD, linear detrend) in {w0:.0f}–{w1:.0f} cm⁻¹: {noise:.3e} (record units). "
          f"Temperature term (Ladder dated note 2026-09-06; item 52 model): bath modes below {C_['bath_mode_cutoff_cm']:.0f} cm⁻¹ = "
          f"{', '.join(f'{v:.0f}' for v in bath)} → ν_m = {nu_m:.0f} cm⁻¹ (θ = {theta:.0f} K, n̄(296) = {nbar:.3f}); "
-         f"χ_F = floor {C_['chi_floor_cm_per_K']} cm⁻¹ K⁻¹ (no measured benzene slope) → **u_296 = {u296:.2f} cm⁻¹** (linear bound {u296_linear:.1f}).", "",
+         f"χ_F = floor {C_['chi_floor_cm_per_K']} cm⁻¹ K⁻¹ (no measured benzene slope) → **u_296 = {u296:.2f} cm⁻¹** (linear bound {u296_linear:.1f}). "
+         f"**Decision 29 (2026-09-10):** on this room-temperature source u_T is the pipeline's computed 0→296 K shift per band ±30 % "
+         f"once the DFT anharmonic constants exist (NOT_RUN); the floor is printed until then and the u_band column carries it.", "",
          "| DFT mode(s) | irrep | family | ω_DFT | match window | peak (cm⁻¹) | centroid | integration window | FWHM | S/N | res | u_c | u_296 | **u_band** | u_band w/o T | obs/DFT | A (km/mol) | u_A src | u_A base | certified | decidable at 2 / 5 / 10 |",
          "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
     for r in rows:

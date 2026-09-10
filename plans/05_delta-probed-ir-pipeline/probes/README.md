@@ -28,7 +28,7 @@ Conventions, carried from plans 01–04:
   dry-run DFT modes by irrep (a₂u, e₁u) inside a 0.90–1.00 observed/harmonic window; peak and
   centroid, integration window (contiguous region above 3σ baseline noise), FWHM, S/N, the record's
   stated resolution, u_c = FWHM/(2·S/N), Chu's 0.0042 cm⁻¹ calibration term, u_296 by the Ladder's
-  Bose rule with the 0.044 floor slope (2.55 cm⁻¹ at benzene — P21 in the note), **u_band = 3.2 cm⁻¹
+  Bose rule with the 0.044 floor slope (2.55 cm⁻¹ at benzene — **decision 29**: replaced on R0/R1 by the pipeline's computed 0 → T shift ±30 % once the DFT X_ik print; floor labelled until then), **u_band = 3.2 cm⁻¹
   on every family** (1.93 without the temperature term), integrated intensities in km/mol with
   Chu's 3.3 % (k = 2) and the non-certified flag (the C–C band at 1482 cm⁻¹). Results in
   `results_m03/benzene/`; note

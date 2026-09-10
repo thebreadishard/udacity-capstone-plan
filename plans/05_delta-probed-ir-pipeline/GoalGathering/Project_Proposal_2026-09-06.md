@@ -470,7 +470,12 @@ A per-family decidability rule replaces plan 04's rung-level gate: a gas-scored 
 decidable if the scoreboard's **measured band-centre uncertainty** — instrument resolution,
 centroid precision and a temperature term — is smaller than its beat margin; a matrix-scored
 family passes through the matrix–gas gate or is pre-declared inconclusive. Benzene and
-naphthalene are therefore scored unconditionally on room-temperature cell spectra. For the
+naphthalene are therefore scored unconditionally on room-temperature cell spectra; the first
+benzene scoreboard was printed on 10 September from the NIST Quantitative IR record at 0.125 cm⁻¹
+(four IR-active fundamentals, integrated intensities agreeing between two records of the series to
+≤ 1.3 %), and on it the temperature term is the pipeline's own computed 296 K shift with ±30 %
+(decision 29), so the laboratory side of the R0 agreement test is a few tenths of a cm⁻¹, not the
+2.6 cm⁻¹ a generic floor would give. For the
 pyrene-size rung, a systematic search on 5 September (NIST WebBook, the PNNL database, PAHdb's
 experimental library, and journal searches on jet-cooled and cell spectroscopy of each species)
 found no gas-phase spectrum of known temperature for chrysene or triphenylene in the 6–15 µm
@@ -839,6 +844,11 @@ own; knowledge transfer is allowed wherever a gate shows it makes the pipeline s
 27. *(number reserved: the transferability test of the correction across size is parked, undecided.)*
 28. **The criterion per rung** (§1, §5.2, §7): benzene is an agreement rung, naphthalene agreement
     plus the per-family question whether the correction adds accuracy, "beat" from there upward.
+29. **The temperature term on the room-temperature licence rungs** (10 September, after the first
+    benzene scoreboard print): the 0 → 296 K shift per scored band is computed from the pipeline's
+    own DFT anharmonic constants and applied as a correction carrying ±30 % of itself, in place of a
+    floor of 2.55 cm⁻¹ that would otherwise be the whole of the laboratory uncertainty on the
+    0.125 cm⁻¹ benzene record; pre-registered, printed before any coupled-cluster number exists.
 
 ## 11. Risks
 

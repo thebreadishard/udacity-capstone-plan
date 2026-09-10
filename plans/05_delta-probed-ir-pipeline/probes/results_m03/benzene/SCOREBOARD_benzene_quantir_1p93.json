@@ -86,7 +86,8 @@
    2.0,
    5.0,
    10.0
-  ]
+  ],
+  "u_T_decision_29": "R0/R1 room-temperature sources: u_T = the pipeline's computed 0→T shift per band from the DFT X_ik, applied as a correction with ±30 % of itself; NOT_RUN until the X_ik exist — the floor below is printed and labelled"
  },
  "scored_bands": [
   {
@@ -251,5 +252,5 @@
  ],
  "unassigned_maxima_above_2pct": [],
  "printed_by": "probes/m03_band_uncertainty.py",
- "date": "2026-09-10 17:39"
+ "date": "2026-09-10 17:52"
 }

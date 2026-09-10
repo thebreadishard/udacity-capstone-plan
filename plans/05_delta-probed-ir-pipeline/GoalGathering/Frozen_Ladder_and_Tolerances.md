@@ -220,6 +220,21 @@ rule; the C–H stretch family enters the scored set only when a scoring rule fo
 (polyad pattern, intensity-weighted centroid, or the source authors' assignment) has been agreed
 with the source's authors and written into the pilot note. Until then it is a shown column.
 
+**Dated note 2026-09-10 (decision 29, P21 — the temperature term on the room-temperature licence
+rungs; a permitted change: the paragraph above already allows "a pinned per-family correction …
+carrying ±30 % of the correction … as u_T").** The first R0 scoreboard print (probe 2a,
+`Research_Note_2026-09-10_Scoreboard_R0.md`) showed that on the 0.125 cm⁻¹ NIST record the floor
+u_296 = 2.55 cm⁻¹ (Bose rule, 0.044 cm⁻¹ K⁻¹ floor slope, ν_m = 554 cm⁻¹ from the DFT modes below
+700 cm⁻¹) is the whole of u_band and makes the R0 agreement test lenient. **For R0 and R1 on their
+room-temperature sources (NIST Quantitative IR benzene at 296 K; PNNL naphthalene at its header
+temperature) u_T is the pipeline's own computed 0 → T_source shift per scored band, δ_i(T) =
+Σ_k X_ik n̄_k(T) with the DFT anharmonic constants X_ik of the pipeline's Module-03 step (item 52's
+model with the molecule's real bath instead of one mean mode), applied as a correction to the
+0 K prediction and carrying ±30 % of itself plus the source's temperature uncertainty as u_T.**
+Printed by probe 2a before any coupled-cluster number exists; until the X_ik print, 2a prints the
+floor and labels it so. Pirali's resolved fundamentals (decision 21) are unaffected (u_T = 0
+there). Nothing changes for hot sources or for R2–R3.
+
 **Promised:** R0–R1 scored as accuracy rungs against gas-phase data. R2–R3 scored as accuracy
 rungs per family under the decidability rule above and the "beat and noise" rule of §1. R6 per
 the dated note above. **[05]** The **cost record** (§1) for every rung and mode that ran; **mode E

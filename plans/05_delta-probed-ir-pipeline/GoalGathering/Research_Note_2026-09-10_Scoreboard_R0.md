@@ -76,6 +76,8 @@ the shifts are of order 1 cm⁻¹, u_T falls to ≈ 0.3 cm⁻¹ and u_band to �
 Options: (a) keep the floor as printed; (b) pre-register the computed correction with ±30 % for
 R0 and R1 (both room-temperature sources), printed by 2a from the pipeline's own X_ik before any
 CC number exists. The note proposes (b); it is a change to a scoreboard constant, not to the rule.
+**Decided 2026-09-10 (b) = decision 29** (Ladder §2 dated note). The prints above keep the floor,
+labelled, until the DFT anharmonic constants exist.
 
 **Fetch — done.** The 0.125 cm⁻¹ boxcar record (WebBook Index 7) was fetched with the user's
 permission on 2026-09-10 and printed as `quantir_0p125` (table above); the pilot note names the

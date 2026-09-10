@@ -380,6 +380,13 @@ and every benzene sentence; the proposal opens with the question — can a measu
 correction, licensed where the truth is known, mean anything for the PAHs where none exists.
 **Written 2026-09-09** (commit 5c1bafb): Ladder §1 amendment and the R0/R1 rows, Goal, proposal §1, §5.2, §7 rows and terms, Mapping M08, Distilled plan.
 
+**Decision 29 (closed 2026-09-10, P21 — the temperature term at R0/R1, user: "advies overgenomen"):**
+on the room-temperature licence rungs u_T is the pipeline's own computed 0 → T_source shift per
+scored band from the DFT anharmonic constants (Σ_k X_ik n̄_k), applied as a correction with ±30 % of
+itself as its uncertainty, in place of the 2.55 cm⁻¹ floor the Bose rule with the floor slope gives
+at benzene; pre-registered, printed by probe 2a before any CC number; floor printed and labelled until
+the X_ik exist (Ladder §2 dated note 2026-09-10; scoreboard note §3; probes README 2a).
+
 ## Dated notes after the freeze
 
 - **2026-09-10 — the R0 scoreboard printed (Module 03 begun early, while the naphthalene timing
