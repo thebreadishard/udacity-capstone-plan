@@ -105,6 +105,11 @@ authors' own B3LYP/4-31G frequencies with a uniform conventional factor 0.962 an
 beside them (SVR − conventional: mean −0.4 cm⁻¹, mean absolute 3.9, range −18 to +21); its 465
 training instances carry no species identifier.
 
+**A correction to the report's own wording (2026-09-11).** The smallest species in the theoretical
+library are not naphthalene: 15 species have fewer than ten carbons (phenol C₆H₆O and its ions,
+indene C₉H₈, C₉H₇ and C₉H₇N with their ions); naphthalene is the smallest *plain* PAH. Benzene itself
+is absent at every charge.
+
 ## 5. Limitations
 
 - The family label is a frequency-range rule; a proper assignment needs the mode vectors, which the
