@@ -173,7 +173,7 @@ is why every benzene run passed and the first naphthalene fragment of that size 
 local compatibility patch mirroring pyscf's own DF class (vvL passed twice for real orbitals), kept
 as `probes/patches/pyscf_forge_1.1.1_lnoccsd_dfvvvv_pyscf2.14.patch`; the engine line in every
 record is therefore "pyscf 2.14.0 + pyscf-forge 1.1.1 + plan-05 patch 1". Consequence for the
-timing: the 4.4 h before the crash are a lower bound on one naphthalene energy at cc-pVTZ tight.
+timing: the 4.4 h before the crash were a lower bound on one naphthalene energy at cc-pVTZ tight. **Naphthalene timing printed 2026-09-11 05:15** (`probes/results_timing/naphthalene_ccpvtz_tight.log`, `naphthalene_cc-pvtz_tight.json`): one LNO-CCSD(T)/cc-pVTZ energy at tight thresholds, 412 basis functions, 24 fragments, 8 threads on the laptop: **41,375 s = 11.5 h, peak resident memory 19.83 GB** (the WSL ceiling is 22 GB). Arithmetic: the R1 deck of 474 energies = 5,450 h ≈ 227 days of the laptop; K alone (220–380) = 2,500–4,400 h; the 168-hour rule is exceeded thirty-fold. Pyrene (620 basis functions) will not fit the laptop's memory at all. **Also found:** the timing probe wrote its JSON under a name without the molecule and overwrote the benzene record; restored from git, the naphthalene record saved under its own name, the script fixed the same morning.
 
 ## 4. Order of timed probes (each prints machine, date, settings, wall-clock; gradient probes also peak memory)
 

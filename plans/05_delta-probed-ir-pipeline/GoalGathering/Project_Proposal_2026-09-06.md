@@ -252,20 +252,16 @@ degenerate modes split artificially — Esposito et al. 2024 note the same), and
 leave far more couplings free than symmetry does. Zeroing symmetry-forbidden couplings is itself
 standard practice — the Concordant Mode Approach does it as a clean-up of its full high-level
 matrix — what is new here is using it as the prior of a recovery from few measurements. The
-arithmetic, at benzene's measured per-energy time of 35 minutes in the anchor basis (naphthalene's
-will be longer and is measured before the note). Two numbers, with different roles. The **deck**
+arithmetic, at benzene's measured per-energy time of 35 minutes in the anchor basis (naphthalene's is longer: **measured 11 September, 11.5 h per energy at 19.8 GB peak memory on the laptop, against 35 minutes for benzene**). Two numbers, with different roles. The **deck**
 at R1 is the probing licence's reference (§5.1): 48 modes × 2 diagonal energies, the 48 second-
 amplitude points, and every one of the 141 same-representation pairs measured directly as a ± two-
-mode point — 96 + 96 + 282 = **474 energies**, about 280 hours at benzene's 35 minutes per energy
-and about 470 at an hour, which is the figure §12 and P13 carry. **K**, what the stopping rule
+mode point — 96 + 96 + 282 = **474 energies**, about 280 hours at benzene's 35 minutes per energy and **5,450 hours — 227 days — at naphthalene's measured 11.5 hours**, which is the figure §12 and P13 carry. **K**, what the stopping rule
 reports (K = 2M + K_off; the second amplitude sits outside it), is smaller: 96 diagonal energies
 plus between 0.9 and 2.0 energies per allowed coupling — 0.9 is the no-prior benzene rate (388 for
 435 unknowns), 2.0 is the cap at which every pair is simply measured; the benzene rerun under the
 prior needed 3.7 per pair, but on a deck built for the banded rule in which only 12 of the 57
 allowed pairs had a two-mode pattern, which is why the R1 deck is built for the prior — so K is of
-order 220–380 energies, against about 1,400 energies and 800+ hours without the prior. By the
-168-hour rule of §8 the R1 deck is cluster work or a laptop job in three to four weekly batches;
-which of the two is P13, decided when the naphthalene per-energy time prints. The prior is what
+order 220–380 energies, against about 1,400 energies and 800+ hours without the prior. By the 168-hour rule of §8 the R1 deck on the laptop would be thirty weekly batches: on the measured number R1 is **cluster work**, or the work of a dedicated many-core machine; the choice is P13, now decidable. The prior is what
 brings the energy route at naphthalene within reach of this machine at all; it does not make it
 cheap.
 
@@ -974,8 +970,7 @@ date, and the science continues past it.
 
 **Calendar (set 10 September 2026, from the first week's measured pace; the first date is the
 Saturday the proposal is sent, every date after it is a Friday, and each means "delivered in full or in its fail-closed state").** The pace-setting quantities are the
-laptop's serial compute (one anchor job at a time; a benzene cc-pVTZ scan is two days, one
-naphthalene LNO-CCSD(T) energy expected of the order of an hour — an expectation, being measured), the student's evenings and weekends for
+laptop's serial compute (one anchor job at a time; a benzene cc-pVTZ scan is two days, one naphthalene LNO-CCSD(T) energy **11.5 hours, measured 11 September, at 19.8 GB peak memory**), the student's evenings and weekends for
 decisions, and the supervisor's reading time around this proposal and around the cluster request
 (one to two weeks each assumed). The first week also showed that each measurement brought one
 correction with it (semicanonicalisation, the frozen-core count in the timing probe, the factor 2,

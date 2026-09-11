@@ -442,7 +442,7 @@ widened. Reason: for training labels the error bars must be true, not just the e
   4 h 26 min on a pyscf 2.14.0 / pyscf-forge 1.1.1 signature mismatch in the DF vvvv path (taken only
   when a fragment's vvvv block does not fit in memory — benzene never took it); patched locally
   (`probes/patches/`, Compute_Budget §3), relaunched 17:45 with the LNO fragment loop logging and the
-  hourly heartbeat. The 4.4 h are a lower bound on one naphthalene energy (P13 input).
+  hourly heartbeat. **Result 2026-09-11 05:15: 41,375 s = 11.5 h per naphthalene energy, 24 fragments, peak RSS 19.83 GB** (P13 input: the R1 deck of 474 energies is 5,450 laptop-hours ≈ 227 days; cluster work on the measured number). The xtight arm-A rescan (decision 20) was resumed detached at 05:16 the same morning, 22 points remaining.
 
 - **2026-09-05 — R2/R3 gas-phase sources.** An exhaustive search
   ([Research_Note_2026-09-05_R2_GasPhase_MidIR_Sources.md](GoalGathering/Research_Note_2026-09-05_R2_GasPhase_MidIR_Sources.md))

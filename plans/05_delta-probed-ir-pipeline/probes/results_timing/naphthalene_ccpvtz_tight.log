@@ -124,3 +124,82 @@ Fragment 7/24  Sol: E_corr(MP2) = -0.0634972194767054  E_corr(CCSD) = -0.0648621
 LO occ proj: 1 active | 0 standby | 23 orthogonal
 LO vir proj: 0 active | 0 standby | 378 orthogonal
 Fragment 8/24  LAS: 24/34 Occ | 234/378 Vir | 258/412 MOs
+Fragment 8/24  Sol: E_corr(MP2) = -0.0676567906605348  E_corr(CCSD) = -0.0680160097376657  E_corr(CCSD(T)) = -0.00395033071063822
+LO occ proj: 1 active | 0 standby | 23 orthogonal
+LO vir proj: 0 active | 0 standby | 378 orthogonal
+Fragment 9/24  LAS: 22/34 Occ | 168/378 Vir | 190/412 MOs
+Fragment 9/24  Sol: E_corr(MP2) = -0.0521452547331211  E_corr(CCSD) = -0.0559813991377093  E_corr(CCSD(T)) = -0.00222302042517781
+LO occ proj: 1 active | 0 standby | 23 orthogonal
+LO vir proj: 0 active | 0 standby | 378 orthogonal
+Fragment 10/24  LAS: 23/34 Occ | 183/378 Vir | 206/412 MOs
+Fragment 10/24  Sol: E_corr(MP2) = -0.0526727850684015  E_corr(CCSD) = -0.0563604755758055  E_corr(CCSD(T)) = -0.0023099801218251
+LO occ proj: 1 active | 0 standby | 23 orthogonal
+LO vir proj: 0 active | 0 standby | 378 orthogonal
+Fragment 11/24  LAS: 23/34 Occ | 192/378 Vir | 215/412 MOs
+Fragment 11/24  Sol: E_corr(MP2) = -0.0634972106829135  E_corr(CCSD) = -0.0648620954536858  E_corr(CCSD(T)) = -0.0034133543187421
+LO occ proj: 1 active | 0 standby | 23 orthogonal
+LO vir proj: 0 active | 0 standby | 378 orthogonal
+Fragment 12/24  LAS: 23/34 Occ | 183/378 Vir | 206/412 MOs
+Fragment 12/24  Sol: E_corr(MP2) = -0.0526727689360283  E_corr(CCSD) = -0.0563604621142193  E_corr(CCSD(T)) = -0.00230997925497643
+LO occ proj: 1 active | 0 standby | 23 orthogonal
+LO vir proj: 0 active | 0 standby | 378 orthogonal
+Fragment 13/24  LAS: 22/34 Occ | 168/378 Vir | 190/412 MOs
+Fragment 13/24  Sol: E_corr(MP2) = -0.0521452551236058  E_corr(CCSD) = -0.0559813988363933  E_corr(CCSD(T)) = -0.00222302008103406
+LO occ proj: 1 active | 0 standby | 23 orthogonal
+LO vir proj: 0 active | 0 standby | 378 orthogonal
+Fragment 14/24  LAS: 23/34 Occ | 192/378 Vir | 215/412 MOs
+Fragment 14/24  Sol: E_corr(MP2) = -0.0634972127160993  E_corr(CCSD) = -0.0648620968274629  E_corr(CCSD(T)) = -0.00341335506003525
+LO occ proj: 1 active | 0 standby | 23 orthogonal
+LO vir proj: 0 active | 0 standby | 378 orthogonal
+Fragment 15/24  LAS: 23/34 Occ | 183/378 Vir | 206/412 MOs
+Fragment 15/24  Sol: E_corr(MP2) = -0.0526727859003471  E_corr(CCSD) = -0.0563604764784184  E_corr(CCSD(T)) = -0.00230998067954532
+LO occ proj: 1 active | 0 standby | 23 orthogonal
+LO vir proj: 0 active | 0 standby | 378 orthogonal
+Fragment 16/24  LAS: 22/34 Occ | 168/378 Vir | 190/412 MOs
+Fragment 16/24  Sol: E_corr(MP2) = -0.0521452418962034  E_corr(CCSD) = -0.0559813879488191  E_corr(CCSD(T)) = -0.00222301947467973
+LO occ proj: 1 active | 0 standby | 23 orthogonal
+LO vir proj: 0 active | 0 standby | 378 orthogonal
+Fragment 17/24  LAS: 24/34 Occ | 316/378 Vir | 340/412 MOs
+Fragment 17/24  Sol: E_corr(MP2) = -0.0931719914431545  E_corr(CCSD) = -0.0868129800267292  E_corr(CCSD(T)) = -0.00728416900925466
+LO occ proj: 1 active | 0 standby | 23 orthogonal
+LO vir proj: 0 active | 0 standby | 378 orthogonal
+Fragment 18/24  LAS: 23/34 Occ | 183/378 Vir | 206/412 MOs
+Fragment 18/24  Sol: E_corr(MP2) = -0.0526727703237207  E_corr(CCSD) = -0.0563604632970285  E_corr(CCSD(T)) = -0.00230997971268711
+LO occ proj: 1 active | 0 standby | 23 orthogonal
+LO vir proj: 0 active | 0 standby | 378 orthogonal
+Fragment 19/24  LAS: 24/34 Occ | 220/378 Vir | 244/412 MOs
+Fragment 19/24  Sol: E_corr(MP2) = -0.0654560659322107  E_corr(CCSD) = -0.066588622081923  E_corr(CCSD(T)) = -0.00369695695591158
+LO occ proj: 1 active | 0 standby | 23 orthogonal
+LO vir proj: 0 active | 0 standby | 378 orthogonal
+Fragment 20/24  LAS: 22/34 Occ | 168/378 Vir | 190/412 MOs
+Fragment 20/24  Sol: E_corr(MP2) = -0.0521452421861655  E_corr(CCSD) = -0.0559813874206087  E_corr(CCSD(T)) = -0.00222301906103082
+LO occ proj: 1 active | 0 standby | 23 orthogonal
+LO vir proj: 0 active | 0 standby | 378 orthogonal
+Fragment 21/24  LAS: 24/34 Occ | 280/378 Vir | 304/412 MOs
+Fragment 21/24  Sol: E_corr(MP2) = -0.086379926289937  E_corr(CCSD) = -0.0837955431540097  E_corr(CCSD(T)) = -0.00634536343967835
+LO occ proj: 1 active | 0 standby | 23 orthogonal
+LO vir proj: 0 active | 0 standby | 378 orthogonal
+Fragment 22/24  LAS: 24/34 Occ | 280/378 Vir | 304/412 MOs
+Fragment 22/24  Sol: E_corr(MP2) = -0.0863799250376332  E_corr(CCSD) = -0.08379554187176  E_corr(CCSD(T)) = -0.00634536335675195
+LO occ proj: 1 active | 0 standby | 23 orthogonal
+LO vir proj: 0 active | 0 standby | 378 orthogonal
+Fragment 23/24  LAS: 24/34 Occ | 280/378 Vir | 304/412 MOs
+Fragment 23/24  Sol: E_corr(MP2) = -0.0863799233492204  E_corr(CCSD) = -0.0837955378081578  E_corr(CCSD(T)) = -0.00634536230216599
+LO occ proj: 1 active | 0 standby | 23 orthogonal
+LO vir proj: 0 active | 0 standby | 378 orthogonal
+Fragment 24/24  LAS: 24/34 Occ | 280/378 Vir | 304/412 MOs
+Fragment 24/24  Sol: E_corr(MP2) = -0.0863799223984774  E_corr(CCSD) = -0.0837955370465118  E_corr(CCSD(T)) = -0.00634536194599295
+E(LNOMP2) = -385.043418016363  E_corr = -1.56934223653955
+E(LNOCCSD) = -385.070541528991  E_corr = -1.59646574916796
+E(LNOCCSD_T) = -385.160676389275  E_corr = -1.68660060945154
+Summary by spin components
+LNOMP2   Ess = -0.405274113223022  Eos = -1.16406812331653  Escs = -1.5318380276831
+LNOCCSD  Ess = -0.359405713494647  Eos = -1.23706003567331  Escs = -1.60415414540169
+[05:15:04] cc-pvtz: LNO-CCSD(T) 41375.2 s, E_corr(T) = -1.68660061, peak RSS 19.83 GB
+
+# Anchor single-point timing — naphthalene at the dry-run B3LYP/6-31G* geometry — 2026-09-11 05:15, Asus18 (WSL), 8 threads, LNO thresholds [1e-06, 1e-07]
+| basis | nbf | RHF(DF) s | PM s | LNO-CCSD(T) s | peak RSS GB | E_corr LNO-CCSD(T) | canonical CCSD(T) s | LNO − canonical µE_h |
+|---|---|---|---|---|---|---|---|---|
+| cc-pvtz | 412 | 7 | 1 | 41375 | 19.83 | -1.686601 | nan | nan |
+
+Printed by probes/anchor_single_point_timing.py. A timing; no Δ, no displaced geometry.

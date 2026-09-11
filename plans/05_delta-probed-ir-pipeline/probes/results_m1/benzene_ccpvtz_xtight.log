@@ -31,3 +31,10 @@ WARN: Input vhf is not found. Building vhf from SCF MO.
 
 WARN: Input vhf is not found. Building vhf from SCF MO.
 
+=== detached start Fri Sep 11 05:16:50 CEST 2026: python m1_frozen_spaces.py --basis cc-pvtz --thresh xtight --arms A --resume --threads 8
+[05:16:51] M1: benzene cc-pvtz, thresholds [1e-07, 1e-08], modes [12, 18, 6] (1020 cm⁻¹ CH-ip-bend, 1357 cm⁻¹ CC-stretch, 865 cm⁻¹ CH-oop), 9 points, 8 threads
+[05:16:53] resumed 2026-09-11 05:16: reference spaces reloaded from `frozen_spaces_reference.npz`, 5 finished points kept from the interrupted run
+[05:16:53] reference: reloaded 2 s; 15 fragments; sizes [(15, 219), (15, 219), (15, 219), (15, 208), (15, 219)]…; frozen-space hash a2960a96b51ea949
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+

@@ -36,7 +36,7 @@ Conventions, carried from plans 01–04:
   **Owed:** the 0.125 cm⁻¹ record (fetch asked), R1 (PNNL record, Pirali table), R2/R3 sources,
   and the naphthalene dry-run mode table the family assignment needs.
 
-- **`anchor_single_point_timing.py`** (probe 4, 2026-09-05, WSL `~/qc05`) — **engine note 2026-09-10:** pyscf-forge 1.1.1's DF vvvv path is incompatible with pyscf 2.14.0 (six vs seven arguments); patched locally, patch in `patches/`, see Compute_Budget §3; the naphthalene cc-pVTZ tight timing crashed there after 4 h 26 min and was relaunched with the patch, LNO verbose 4 and the hourly heartbeat): benzene at the dry-run
+- **`anchor_single_point_timing.py`** (probe 4, 2026-09-05, WSL `~/qc05`) — **engine note 2026-09-10:** pyscf-forge 1.1.1's DF vvvv path is incompatible with pyscf 2.14.0 (six vs seven arguments); patched locally, patch in `patches/`, see Compute_Budget §3; the naphthalene cc-pVTZ tight timing crashed there after 4 h 26 min and was relaunched with the patch, LNO verbose 4 and the hourly heartbeat — **result 2026-09-11: naphthalene cc-pVTZ tight, 24 fragments, LNO-CCSD(T) 41,375 s = 11.5 h, peak RSS 19.83 GB**, in `results_timing/naphthalene_cc-pvtz_tight.json`; the P13 input): benzene at the dry-run
   geometry — cc-pVDZ: LNO-CCSD(T) 180 s / canonical CCSD(T) 27 s / difference 16 µE_h / 1.2 GB;
   **cc-pVTZ: LNO-CCSD(T) 2087 s, 5.5 GB / canonical CCSD(T) 755 s, 7.3 GB / difference 124 µE_h.**
   Results in `results_timing/`. This also answers probe 1b's energy branch: the bias line (61

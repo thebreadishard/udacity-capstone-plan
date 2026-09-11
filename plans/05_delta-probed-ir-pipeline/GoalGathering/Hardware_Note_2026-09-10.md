@@ -15,8 +15,9 @@ will move; **DDR5 cost ≈ €16.5 per GB that day**, which is what shaped the d
 
 **What the measurements say the machine must fix** (Compute_Budget §3; probes): the laptop runs the
 anchor on 8 threads under a 22 GB WSL ceiling; the canonical CCSD(T)/cc-pVTZ gradient of benzene did
-not fit in 22 GB; one naphthalene LNO-CCSD(T)/cc-pVTZ energy takes ≥ 4.4 h and writes 18 GB of
-scratch; the R1 deck is 474 such energies. Priorities: memory, then cores, then NVMe scratch, native
+not fit in 22 GB; one naphthalene LNO-CCSD(T)/cc-pVTZ energy takes **11.5 h at 19.8 GB peak memory (measured 2026-09-11)** and
+writes 18 GB of scratch; the R1 deck is 474 such energies = 5,450 laptop-hours. The laptop is at its memory
+ceiling at naphthalene already; pyrene does not fit it. Priorities: memory, then cores, then NVMe scratch, native
 Linux (no WSL ceiling); a GPU is irrelevant for the anchor (pyscf-forge LNO is CPU-only — to verify).
 
 ## Configuration A (recommended): AM5, 16 cores, 128 GB now → 256 GB later
@@ -61,7 +62,8 @@ prices normalise.
 - Whether pyscf-forge's LNO-CCSD(T) can use a GPU at all (expected: no); if the M05 DFT corpus or the
   M2 autodiff work needs one, it is a separate, later purchase.
 - Expected gain, to be measured on day one with `probes/anchor_single_point_timing.py`: one
-  naphthalene cc-pVTZ energy from ≥ 4.4 h to an expected 1–2 h; that number re-sizes the R1 deck.
+  naphthalene cc-pVTZ energy from the measured 11.5 h to an expected 3–5 h (16 cores at desktop clocks, no
+  memory pressure); that number re-sizes the R1 deck — at 4 h the deck is 1,900 h ≈ 11 weeks of one machine.
 
 ## Alternatives weighed
 

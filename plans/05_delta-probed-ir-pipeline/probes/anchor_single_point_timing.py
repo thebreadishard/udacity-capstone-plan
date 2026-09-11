@@ -126,7 +126,7 @@ def run_one(basis, threads, thresh_name, canonical, out):
             rec["canonical_error"] = f"{type(e).__name__}: {str(e)[:200]}"
             log(f"{basis}: canonical CCSD(T) failed: {rec['canonical_error']}")
     os.makedirs(out, exist_ok=True)
-    json.dump(rec, open(os.path.join(out, f"benzene_{basis}_{thresh_name}.json"), "w"), indent=1)
+    json.dump(rec, open(os.path.join(out, f"{MOLECULE}_{basis}_{thresh_name}.json"  # 2026-09-11: molecule in the name (the naphthalene run had overwritten the benzene record)), "w"), indent=1)
     return rec
 
 
