@@ -94,6 +94,25 @@
    "EA_minus_EC_lnomp2_uEh": null,
    "wall_s": 4339.5387806892395,
    "peak_rss_gb": 7.623912811279297
+  },
+  {
+   "mode": 12,
+   "freq_cm": 1020.4072566061849,
+   "family": "CH-ip-bend",
+   "q": 0.25,
+   "occ_smin": 0.9984639355755391,
+   "occ_offdiag_max": 0.0018811121927139963,
+   "vir_smin": 0.8853699737561219,
+   "vir_offdiag_max": 0.07518123067724351,
+   "pm_fresh": 6.999558351548066,
+   "pm_transported": 6.999039582589638,
+   "fresh_vs_transported_min_best_match": 0.9635489978924664,
+   "EA_minus_EB_uEh": null,
+   "EA_minus_EC_uEh": null,
+   "EB_minus_EC_uEh": null,
+   "EA_minus_EC_lnomp2_uEh": null,
+   "wall_s": 4016.493162870407,
+   "peak_rss_gb": 7.427757263183594
   }
  ]
 }

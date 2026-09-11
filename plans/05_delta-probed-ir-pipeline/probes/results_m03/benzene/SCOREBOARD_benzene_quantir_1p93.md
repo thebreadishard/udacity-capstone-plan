@@ -1,4 +1,4 @@
-# Scoreboard — benzene — NIST Quantitative IR record (quantir_1p93) — probe 2a, 2026-09-10 17:52
+# Scoreboard — benzene — NIST Quantitative IR record (quantir_1p93) — probe 2a, 2026-09-11 07:57
 
 Source `C71432_quantir_res1.93_boxcar.jdx`, sha256 `4f42f7e1371e794c…`; record: QUANT-IR, NIST, Analytical Chemistry Division, 301-975-3108, state gas, temperature 23 C (record header; Chu 1999 §2.3: coefficients corrected to 296 K and 760 Torr), resolution 1.929 cm⁻¹ (record header; DELTAX 0.9645 not used), Boxcar Apodization, y in (micromol/mol)-1m-1 (base 10), 3526 points 575.653–3974.61 cm⁻¹.
 

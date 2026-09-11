@@ -87,7 +87,8 @@ entry scored, and no swap happens after a comparison exists.
 
 R1: the PNNL naphthalene record (Schneider 2024 / Sharpe 2004, items 57, 59 — not held as a
 file; the record must be obtained from PNNL) and Pirali's sixteen resolved fundamentals (item 53,
-held; a table transcription with the 0.5 cm⁻¹ head-to-origin term of decision 21). R2/R3: the
+held) — **the Pirali column was printed on 2026-09-11** (`results_m03/naphthalene/SCOREBOARD_naphthalene_pirali2009_table1.md`):
+u_band 0.50–0.71 cm⁻¹ on all sixteen bands under decision 21, no intensities, DFT matching owed. R2/R3: the
 WebBook GC-IRD entries (plan-02/04 caches: pyrene, chrysene, triphenylene), the jet-cooled lists of
 items 61–62 and the Joblin hot columns (item 64). Each is a run of the same script with a source
 class and its own constants; the families come from each molecule's dry-run mode table, which for

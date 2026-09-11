@@ -400,6 +400,12 @@ widened. Reason: for training labels the error bars must be true, not just the e
 
 ## Dated notes after the freeze
 
+- **2026-09-11 — R1 Pirali column printed (Module 03).** Probe 2a gained a transcribed-table mode; Pirali
+  2009's Table 1 (sixteen naphthalene fundamentals, 300 K, 0.005 cm⁻¹, Q-branch heads) is transcribed in
+  `probes/scoreboards/naphthalene/pirali2009_table1.json` and scored under decision 21: u_band
+  0.50–0.71 cm⁻¹ per band, u_T = 0, no intensities; ν45's table/text discrepancy (959.04 / 959.5) flagged.
+  Cold-read closures 4 and 6 updated with the naphthalene timing.
+
 - **2026-09-10 (evening) — prior art read; the two-sentence statement in the proposal.** §1 of the
   proposal now carries the two sentences for the supervisor (what is new; on whose shoulders). Read in
   full: Käser et al. 2021 (transfer learning to CCSD(T): 262–632 CC points with gradients on 7–9-atom

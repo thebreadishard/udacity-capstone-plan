@@ -1,0 +1,344 @@
+{
+ "molecule": "naphthalene",
+ "source": "Pirali, Vervloet, Mulas, Malloci & Joblin, Phys. Chem. Chem. Phys. 11, 3443-3454 (2009), DOI 10.1039/b814037e — Table 1, column 'Experiment' (gas-phase naphthalene, 300 K, 0.1 mbar, 8 m White cell, Bruker IFS 125, 0.005 cm-1; positions are Q-branch heads, rotational structure not resolved)",
+ "source_file": "pirali2009_table1.json",
+ "source_sha256": "28a6a0c1d7a76ceff8b8e24d6aa626f323c41944fb5d6c96760ed2a142dd4126",
+ "source_class": "gas, room temperature, resolved fundamental (decision 21)",
+ "temperature_K": 300,
+ "notes": [
+  "Values are printed by the paper to differing precision (two decimals, one decimal, or integer); the transcription keeps the paper's digits and the script takes half the last printed digit as the reading precision.",
+  "The running text gives nu45 'observed in the high-resolution spectra at 959.5 cm-1' while Table 1 gives 959.04; the table value is used and the discrepancy is flagged in the row.",
+  "b1u and b2u are in-plane (a-/b-type bands, read at lower signal-to-noise per the paper); b3u are out-of-plane c-type bands with sharp Q branches in which the fundamental is resolved from its hot-band sequences.",
+  "The 'Calculations' column (Cane et al.'s B97-1/TZ2P anharmonic set as re-solved by the authors) is transcribed for reference only and is not a scoreboard value."
+ ],
+ "constants_used": {
+  "resolution_cm": 0.005,
+  "head_to_origin_cm": 0.5,
+  "u_T": "0 (decision 21)",
+  "reading_precision": "half the last printed digit"
+ },
+ "scored_bands": [
+  {
+   "mode": "nu20",
+   "symmetry": "b1u",
+   "position_cm": 1392.5,
+   "printed_as": "1392.5",
+   "family": "CC-stretch/CH-ip",
+   "band_type": "a/b-type, in-plane",
+   "resolution_term_cm": 0.005,
+   "reading_precision_cm": 0.05,
+   "head_to_origin_cm": 0.5,
+   "u_T_cm": 0.0,
+   "u_band_cm": 0.503,
+   "calc_cane_cm": 1388.4,
+   "flag": "",
+   "decidable_at_candidate_margins": {
+    "2.0": true,
+    "5.0": true,
+    "10.0": true
+   }
+  },
+  {
+   "mode": "nu21",
+   "symmetry": "b1u",
+   "position_cm": 1268.0,
+   "printed_as": "1268.0",
+   "family": "CC-stretch/CH-ip",
+   "band_type": "a/b-type, in-plane",
+   "resolution_term_cm": 0.005,
+   "reading_precision_cm": 0.05,
+   "head_to_origin_cm": 0.5,
+   "u_T_cm": 0.0,
+   "u_band_cm": 0.503,
+   "calc_cane_cm": 1265.2,
+   "flag": "",
+   "decidable_at_candidate_margins": {
+    "2.0": true,
+    "5.0": true,
+    "10.0": true
+   }
+  },
+  {
+   "mode": "nu22",
+   "symmetry": "b1u",
+   "position_cm": 1130.0,
+   "printed_as": "1130",
+   "family": "CH-ip-bend",
+   "band_type": "a/b-type, in-plane",
+   "resolution_term_cm": 0.005,
+   "reading_precision_cm": 0.5,
+   "head_to_origin_cm": 0.5,
+   "u_T_cm": 0.0,
+   "u_band_cm": 0.707,
+   "calc_cane_cm": 1130.5,
+   "flag": "",
+   "decidable_at_candidate_margins": {
+    "2.0": true,
+    "5.0": true,
+    "10.0": true
+   }
+  },
+  {
+   "mode": "nu24",
+   "symmetry": "b1u",
+   "position_cm": 358.7,
+   "printed_as": "358.7",
+   "family": "low / skeletal",
+   "band_type": "a/b-type, in-plane",
+   "resolution_term_cm": 0.005,
+   "reading_precision_cm": 0.05,
+   "head_to_origin_cm": 0.5,
+   "u_T_cm": 0.0,
+   "u_band_cm": 0.503,
+   "calc_cane_cm": 358.7,
+   "flag": "",
+   "decidable_at_candidate_margins": {
+    "2.0": true,
+    "5.0": true,
+    "10.0": true
+   }
+  },
+  {
+   "mode": "nu29",
+   "symmetry": "b2u",
+   "position_cm": 3057.0,
+   "printed_as": "3057",
+   "family": "CH-stretch",
+   "band_type": "a/b-type, in-plane",
+   "resolution_term_cm": 0.005,
+   "reading_precision_cm": 0.5,
+   "head_to_origin_cm": 0.5,
+   "u_T_cm": 0.0,
+   "u_band_cm": 0.707,
+   "calc_cane_cm": 3048.1,
+   "flag": "",
+   "decidable_at_candidate_margins": {
+    "2.0": true,
+    "5.0": true,
+    "10.0": true
+   }
+  },
+  {
+   "mode": "nu30",
+   "symmetry": "b2u",
+   "position_cm": 3042.0,
+   "printed_as": "3042",
+   "family": "CH-stretch",
+   "band_type": "a/b-type, in-plane",
+   "resolution_term_cm": 0.005,
+   "reading_precision_cm": 0.5,
+   "head_to_origin_cm": 0.5,
+   "u_T_cm": 0.0,
+   "u_band_cm": 0.707,
+   "calc_cane_cm": 2989.9,
+   "flag": "",
+   "decidable_at_candidate_margins": {
+    "2.0": true,
+    "5.0": true,
+    "10.0": true
+   }
+  },
+  {
+   "mode": "nu31",
+   "symmetry": "b2u",
+   "position_cm": 1514.3,
+   "printed_as": "1514.3",
+   "family": "CC-stretch",
+   "band_type": "a/b-type, in-plane",
+   "resolution_term_cm": 0.005,
+   "reading_precision_cm": 0.05,
+   "head_to_origin_cm": 0.5,
+   "u_T_cm": 0.0,
+   "u_band_cm": 0.503,
+   "calc_cane_cm": 1504.3,
+   "flag": "",
+   "decidable_at_candidate_margins": {
+    "2.0": true,
+    "5.0": true,
+    "10.0": true
+   }
+  },
+  {
+   "mode": "nu32",
+   "symmetry": "b2u",
+   "position_cm": 1361.1,
+   "printed_as": "1361.1",
+   "family": "CC-stretch/CH-ip",
+   "band_type": "a/b-type, in-plane",
+   "resolution_term_cm": 0.005,
+   "reading_precision_cm": 0.05,
+   "head_to_origin_cm": 0.5,
+   "u_T_cm": 0.0,
+   "u_band_cm": 0.503,
+   "calc_cane_cm": 1357.9,
+   "flag": "",
+   "decidable_at_candidate_margins": {
+    "2.0": true,
+    "5.0": true,
+    "10.0": true
+   }
+  },
+  {
+   "mode": "nu33",
+   "symmetry": "b2u",
+   "position_cm": 1210.2,
+   "printed_as": "1210.2",
+   "family": "CH-ip-bend",
+   "band_type": "a/b-type, in-plane",
+   "resolution_term_cm": 0.005,
+   "reading_precision_cm": 0.05,
+   "head_to_origin_cm": 0.5,
+   "u_T_cm": 0.0,
+   "u_band_cm": 0.503,
+   "calc_cane_cm": 1209.8,
+   "flag": "",
+   "decidable_at_candidate_margins": {
+    "2.0": true,
+    "5.0": true,
+    "10.0": true
+   }
+  },
+  {
+   "mode": "nu34",
+   "symmetry": "b2u",
+   "position_cm": 1135.5,
+   "printed_as": "1135.5",
+   "family": "CH-ip-bend",
+   "band_type": "a/b-type, in-plane",
+   "resolution_term_cm": 0.005,
+   "reading_precision_cm": 0.05,
+   "head_to_origin_cm": 0.5,
+   "u_T_cm": 0.0,
+   "u_band_cm": 0.503,
+   "calc_cane_cm": 1144.2,
+   "flag": "",
+   "decidable_at_candidate_margins": {
+    "2.0": true,
+    "5.0": true,
+    "10.0": true
+   }
+  },
+  {
+   "mode": "nu35",
+   "symmetry": "b2u",
+   "position_cm": 1011.89,
+   "printed_as": "1011.89",
+   "family": "ring / CH-ip",
+   "band_type": "a/b-type, in-plane",
+   "resolution_term_cm": 0.005,
+   "reading_precision_cm": 0.005,
+   "head_to_origin_cm": 0.5,
+   "u_T_cm": 0.0,
+   "u_band_cm": 0.5,
+   "calc_cane_cm": 1012.1,
+   "flag": "",
+   "decidable_at_candidate_margins": {
+    "2.0": true,
+    "5.0": true,
+    "10.0": true
+   }
+  },
+  {
+   "mode": "nu36",
+   "symmetry": "b2u",
+   "position_cm": 619.5,
+   "printed_as": "619.5",
+   "family": "low / skeletal",
+   "band_type": "a/b-type, in-plane",
+   "resolution_term_cm": 0.005,
+   "reading_precision_cm": 0.05,
+   "head_to_origin_cm": 0.5,
+   "u_T_cm": 0.0,
+   "u_band_cm": 0.503,
+   "calc_cane_cm": 623.7,
+   "flag": "",
+   "decidable_at_candidate_margins": {
+    "2.0": true,
+    "5.0": true,
+    "10.0": true
+   }
+  },
+  {
+   "mode": "nu45",
+   "symmetry": "b3u",
+   "position_cm": 959.04,
+   "printed_as": "959.04",
+   "family": "CH-oop / out-of-plane (b3u)",
+   "band_type": "c-type, out-of-plane",
+   "resolution_term_cm": 0.005,
+   "reading_precision_cm": 0.005,
+   "head_to_origin_cm": 0.5,
+   "u_T_cm": 0.0,
+   "u_band_cm": 0.5,
+   "calc_cane_cm": 958.9,
+   "flag": "running text: 959.5",
+   "decidable_at_candidate_margins": {
+    "2.0": true,
+    "5.0": true,
+    "10.0": true
+   }
+  },
+  {
+   "mode": "nu46",
+   "symmetry": "b3u",
+   "position_cm": 782.33,
+   "printed_as": "782.33",
+   "family": "CH-oop / out-of-plane (b3u)",
+   "band_type": "c-type, out-of-plane",
+   "resolution_term_cm": 0.005,
+   "reading_precision_cm": 0.005,
+   "head_to_origin_cm": 0.5,
+   "u_T_cm": 0.0,
+   "u_band_cm": 0.5,
+   "calc_cane_cm": 783.4,
+   "flag": "",
+   "decidable_at_candidate_margins": {
+    "2.0": true,
+    "5.0": true,
+    "10.0": true
+   }
+  },
+  {
+   "mode": "nu47",
+   "symmetry": "b3u",
+   "position_cm": 473.33,
+   "printed_as": "473.33",
+   "family": "CH-oop / out-of-plane (b3u)",
+   "band_type": "c-type, out-of-plane",
+   "resolution_term_cm": 0.005,
+   "reading_precision_cm": 0.005,
+   "head_to_origin_cm": 0.5,
+   "u_T_cm": 0.0,
+   "u_band_cm": 0.5,
+   "calc_cane_cm": 473.2,
+   "flag": "",
+   "decidable_at_candidate_margins": {
+    "2.0": true,
+    "5.0": true,
+    "10.0": true
+   }
+  },
+  {
+   "mode": "nu48",
+   "symmetry": "b3u",
+   "position_cm": 166.4,
+   "printed_as": "166.4",
+   "family": "CH-oop / out-of-plane (b3u)",
+   "band_type": "c-type, out-of-plane",
+   "resolution_term_cm": 0.005,
+   "reading_precision_cm": 0.05,
+   "head_to_origin_cm": 0.5,
+   "u_T_cm": 0.0,
+   "u_band_cm": 0.503,
+   "calc_cane_cm": 166.4,
+   "flag": "",
+   "decidable_at_candidate_margins": {
+    "2.0": true,
+    "5.0": true,
+    "10.0": true
+   }
+  }
+ ],
+ "printed_by": "probes/m03_band_uncertainty.py --table",
+ "date": "2026-09-11 07:58"
+}

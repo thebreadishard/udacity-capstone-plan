@@ -104,13 +104,58 @@ def fwhm(x, y, ipk):
     xr = x[j - 1] + (y[j - 1] - half) / (y[j - 1] - y[j]) * (x[j] - x[j - 1]) if y[j - 1] != y[j] else x[j]
     return xr - xl
 
+def table_mode(a):
+    """Scoreboard from a transcribed band table (Pirali 2009 Table 1 for naphthalene): class 'resolved
+    fundamental' (decision 21) — u_T = 0, a head-to-origin term (from the table's metadata), the paper's
+    resolution as the resolution term, and half the last printed digit as the reading precision. No
+    intensities. Families: the Ladder's frequency-range rule plus the paper's symmetry (b3u = out-of-plane);
+    matching to the pipeline's DFT modes waits for the naphthalene dry-run mode table (owed)."""
+    T = json.load(open(a.table, encoding="utf-8"))
+    out_dir = HERE / "results_m03" / a.molecule; out_dir.mkdir(parents=True, exist_ok=True)
+    res = float(T["resolution_cm"]); h2o = float(T["head_to_origin_cm"]); cal = 0.0
+    FAM = [(0, 650, "low / skeletal"), (650, 950, "CH-oop"), (950, 1100, "ring / CH-ip"), (1100, 1250, "CH-ip-bend"),
+           (1250, 1500, "CC-stretch/CH-ip"), (1500, 1650, "CC-stretch"), (1650, 2950, "overtone / combination"), (2950, 3200, "CH-stretch")]
+    rows = []
+    for b in T["bands"]:
+        txt = str(b["experiment_cm"]); nu = float(txt)
+        dec = len(txt.split(".")[1]) if "." in txt else 0
+        u_read = 0.5 * 10 ** (-dec)
+        fam = next((lab for lo, hi, lab in FAM if lo <= nu < hi), "?")
+        if b["symmetry"] == "b3u" and nu < 1000: fam = "CH-oop / out-of-plane (b3u)"
+        u_band = math.sqrt(res ** 2 + u_read ** 2 + h2o ** 2)
+        rows.append({"mode": b["mode"], "symmetry": b["symmetry"], "position_cm": nu, "printed_as": txt, "family": fam,
+                     "band_type": {"b1u": "a/b-type, in-plane", "b2u": "a/b-type, in-plane", "b3u": "c-type, out-of-plane"}[b["symmetry"]],
+                     "resolution_term_cm": res, "reading_precision_cm": u_read, "head_to_origin_cm": h2o, "u_T_cm": 0.0,
+                     "u_band_cm": round(u_band, 3), "calc_cane_cm": b.get("calc_cm"), "flag": b.get("flag", ""),
+                     "decidable_at_candidate_margins": {str(t): bool(u_band < t) for t in CONSTANTS["candidate_margins_cm"]}})
+    tag = Path(a.table).stem
+    result = {"molecule": a.molecule, "source": T["source"], "source_file": Path(a.table).name, "source_sha256": sha256(a.table),
+              "source_class": T["source_class"], "temperature_K": T["temperature_K"], "notes": T["notes"],
+              "constants_used": {"resolution_cm": res, "head_to_origin_cm": h2o, "u_T": "0 (decision 21)", "reading_precision": "half the last printed digit"},
+              "scored_bands": rows, "printed_by": "probes/m03_band_uncertainty.py --table", "date": datetime.now().strftime("%Y-%m-%d %H:%M")}
+    (out_dir / f"SCOREBOARD_{a.molecule}_{tag}.json").write_text(json.dumps(result, indent=1, ensure_ascii=False), encoding="utf-8")
+    L = [f"# Scoreboard — {a.molecule} — {T['source'].split(' — ')[0]} ({tag}) — probe 2a, {result['date']}", "",
+         f"Source class: **{T['source_class']}**, {T['temperature_K']} K; transcription `{Path(a.table).name}`, sha256 `{result['source_sha256'][:16]}…`. "
+         f"u_band = √(res² + reading² + head-to-origin²) with res = {res} cm⁻¹ (the paper's resolution), reading = half the last printed digit, "
+         f"head-to-origin = {h2o} cm⁻¹ (decision 21's labelled upper bound), u_T = 0 (the fundamental is resolved from its hot bands). No intensities in this source.", "",
+         "| mode | irrep | band type | position (cm⁻¹, as printed) | family | reading | **u_band** | Cané calc. | decidable at 2 / 5 / 10 | flag |", "|---|---|---|---|---|---|---|---|---|---|"]
+    for r in rows:
+        d = r["decidable_at_candidate_margins"]
+        L.append(f"| {r['mode']} | {r['symmetry']} | {r['band_type']} | **{r['printed_as']}** | {r['family']} | {r['reading_precision_cm']} | **{r['u_band_cm']}** | {r['calc_cane_cm']} | {' / '.join('yes' if d[str(t)] else 'no' for t in CONSTANTS['candidate_margins_cm'])} | {r['flag']} |")
+    L += ["", "Notes from the transcription: " + " ".join(T["notes"]), "",
+          "Matching to the pipeline's DFT modes (irrep, family by mode vector) waits for the naphthalene dry-run mode table; the family column is the frequency-range rule plus the paper's symmetry. Printed by `probes/m03_band_uncertainty.py --table`."]
+    (out_dir / f"SCOREBOARD_{a.molecule}_{tag}.md").write_text("\n".join(L) + "\n", encoding="utf-8"); print("\n".join(L))
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--molecule", default="benzene")
     ap.add_argument("--jdx", default=str(HERE / "scoreboards/benzene/C71432_quantir_res1.93_boxcar.jdx"))
     ap.add_argument("--tag", default="quantir_1p93")
+    ap.add_argument("--table", default=None, help="a transcribed band table (JSON) instead of a JCAMP record: source class 'resolved fundamental' (decision 21)")
     ap.add_argument("--resolution-cm", type=float, default=None, help="override the record's RESOLUTION (document why)")
     a = ap.parse_args()
+    if a.table:
+        return table_mode(a)
     C_ = CONSTANTS
     out_dir = HERE / "results_m03" / a.molecule; out_dir.mkdir(parents=True, exist_ok=True)
     stageA = json.load(open(HERE / "results_dryrun" / a.molecule / "stageA.json"))

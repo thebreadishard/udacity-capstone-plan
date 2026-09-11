@@ -261,9 +261,9 @@ change is in the proposal's running text, which is still editable until the supe
 | 1 | header now dates the revisions (6 → 10 September) and names both cold reads; §9 sentence corrected |
 | 2 | "read in full" restricted to the nine sources that were; Maltseva at abstract grade, asked for in §13 item 8 |
 | 3 | §10 gained the block "8–10 September" with decisions 20–26 and 28 (27 reserved for the parked P19); §9 "items 8–28" |
-| 4 | P12 / decision 26: basis-set line in the anchor licence and the per-band budget with the measured DZ→TZ figures; expected-effect line declared an upper bound; **inputs (ii) and (iii) pending** |
+| 4 | P12 / decision 26: basis-set line in the anchor licence and the per-band budget with the measured DZ→TZ figures; expected-effect line declared an upper bound; **inputs (ii) (Esselman 2023, closed access, asked of the supervisor) and (iii) (the cc-pVQZ line; the cheap DF-RHF/DF-MP2 version runs after the xtight scan) still pending** |
 | 5 | cubic-constants sentence restated: this probe set cannot produce φ_ijk; three-mode displacements at CC cost could |
-| 6 | naphthalene energy-route arithmetic corrected to K = 2M + K_off (250–300 energies, 150–180 h at benzene's per-energy time, six to eight days); the per-energy time at naphthalene is being measured (P13); **rewritten when it prints** |
+| 6 | naphthalene energy-route arithmetic corrected to K = 2M + K_off (250–300 energies, 150–180 h at benzene's per-energy time, six to eight days); the per-energy time at naphthalene **printed 2026-09-11: 11.5 h, 19.8 GB peak** — §3.2 now carries the deck of 474 energies = 5,450 laptop-hours and names R1 as cluster work or a dedicated machine's; P13 is the user's decision on which |
 | 7 | 755 s labelled as the idle equilibrium point; displaced points 850–1,270 s; truth line 13–21 h |
 | 8 | references added: Käser 2021, Mata & Werner 2006, Pinski & Neese 2018/2019, Reiher & Neugebauer 2003, Russ & Crawford 2004, Subotnik & Head-Gordon 2005 (reading status and identifier provenance stated per entry); Brumfield 2012 updated to read-in-full |
 | 9 | line-B protocol attributed to the two 2024 papers held and read; library-wide applicability asked in §13 item 11 |

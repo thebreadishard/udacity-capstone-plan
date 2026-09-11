@@ -38,3 +38,12 @@ WARN: Input vhf is not found. Building vhf from SCF MO.
 
 WARN: Input vhf is not found. Building vhf from SCF MO.
 
+[06:27:54] reload test: E_A(0) from the reloaded spaces − E_A(0) of the interrupted run = -0.0000 µE_h
+[06:27:54] stage 0 round trip: E_A(0) − E_C(0) = 0.0001 µE_h (target |·| ≤ 1e-3 µE_h = 1e-9 E_h); arm A 4261 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[07:34:50] mode 12 q=+0.25: s_min occ 0.9985 vir 0.8854; pre-Löwdin off-diag occ 1.88e-03 vir 7.52e-02; A−B — A−C — µE_h (LNO-MP2 piece A−C —); PM fresh 6.9996 transported 6.999; match 0.964; 4016 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+

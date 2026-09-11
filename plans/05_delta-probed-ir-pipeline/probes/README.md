@@ -33,8 +33,12 @@ Conventions, carried from plans 01–04:
   Chu's 3.3 % (k = 2) and the non-certified flag (the C–C band at 1482 cm⁻¹). Results in
   `results_m03/benzene/`; note
   [Research_Note_2026-09-10_Scoreboard_R0.md](../GoalGathering/Research_Note_2026-09-10_Scoreboard_R0.md).
-  **Owed:** the 0.125 cm⁻¹ record (fetch asked), R1 (PNNL record, Pirali table), R2/R3 sources,
-  and the naphthalene dry-run mode table the family assignment needs.
+  **0.125 cm⁻¹ record fetched and printed the same evening** (`quantir_0p125`: peaks 673.90 / 1037.73 /
+  1483.41 / 3047.17, u_band = u_296 alone). **R1 Pirali column printed 2026-09-11** (`--table
+  scoreboards/naphthalene/pirali2009_table1.json`, class "resolved fundamental", decision 21): sixteen
+  fundamentals, u_band 0.50–0.71 cm⁻¹ (0.005 resolution ⊕ reading precision ⊕ 0.5 head-to-origin, u_T = 0),
+  no intensities; ν45 flagged (959.04 in Table 1, 959.5 in the text). **Owed:** the PNNL naphthalene record
+  (not held), R2/R3 sources, and the naphthalene dry-run mode table the DFT matching needs.
 
 - **`anchor_single_point_timing.py`** (probe 4, 2026-09-05, WSL `~/qc05`) — **engine note 2026-09-10:** pyscf-forge 1.1.1's DF vvvv path is incompatible with pyscf 2.14.0 (six vs seven arguments); patched locally, patch in `patches/`, see Compute_Budget §3; the naphthalene cc-pVTZ tight timing crashed there after 4 h 26 min and was relaunched with the patch, LNO verbose 4 and the hourly heartbeat — **result 2026-09-11: naphthalene cc-pVTZ tight, 24 fragments, LNO-CCSD(T) 41,375 s = 11.5 h, peak RSS 19.83 GB**, in `results_timing/naphthalene_cc-pvtz_tight.json`; the P13 input): benzene at the dry-run
   geometry — cc-pVDZ: LNO-CCSD(T) 180 s / canonical CCSD(T) 27 s / difference 16 µE_h / 1.2 GB;
