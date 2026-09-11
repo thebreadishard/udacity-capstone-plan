@@ -47,3 +47,43 @@ WARN: Input vhf is not found. Building vhf from SCF MO.
 
 WARN: Input vhf is not found. Building vhf from SCF MO.
 
+[08:41:55] mode 12 q=+0.50: s_min occ 0.9969 vir 0.7848; pre-Löwdin off-diag occ 3.79e-03 vir 1.48e-01; A−B — A−C — µE_h (LNO-MP2 piece A−C —); PM fresh 6.9991 transported 6.9981; match 0.964; 4025 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[09:51:53] mode 12 q=+0.75: s_min occ 0.9953 vir 0.6974; pre-Löwdin off-diag occ 5.72e-03 vir 2.19e-01; A−B — A−C — µE_h (LNO-MP2 piece A−C —); PM fresh 6.9987 transported 6.9971; match 0.964; 4198 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[11:08:09] mode 12 q=+1.00: s_min occ 0.9937 vir 0.6220; pre-Löwdin off-diag occ 7.67e-03 vir 2.88e-01; A−B — A−C — µE_h (LNO-MP2 piece A−C —); PM fresh 6.9982 transported 6.9961; match 0.964; 4576 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[12:39:59] mode 18 q=-1.00: s_min occ 0.9910 vir 0.5044; pre-Löwdin off-diag occ 3.97e-03 vir 4.74e-01; A−B — A−C — µE_h (LNO-MP2 piece A−C —); PM fresh 7.0844 transported 6.926; match 0.770; 5511 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[14:04:22] mode 18 q=-0.75: s_min occ 0.9933 vir 0.5893; pre-Löwdin off-diag occ 2.97e-03 vir 3.55e-01; A−B — A−C — µE_h (LNO-MP2 piece A−C —); PM fresh 7.0640 transported 6.9444; match 0.770; 5063 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[15:33:46] mode 18 q=-0.50: s_min occ 0.9956 vir 0.6970; pre-Löwdin off-diag occ 1.98e-03 vir 2.36e-01; A−B — A−C — µE_h (LNO-MP2 piece A−C —); PM fresh 7.0431 transported 6.9629; match 0.770; 5364 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[16:59:53] mode 18 q=-0.25: s_min occ 0.9978 vir 0.8325; pre-Löwdin off-diag occ 9.86e-04 vir 1.17e-01; A−B — A−C — µE_h (LNO-MP2 piece A−C —); PM fresh 7.0217 transported 6.9815; match 0.770; 5167 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[18:19:45] mode 18 q=+0.00: s_min occ 1.0000 vir 1.0000; pre-Löwdin off-diag occ 5.40e-15 vir 4.72e-12; A−B — A−C — µE_h (LNO-MP2 piece A−C —); PM fresh 6.9999 transported 6.9999; match 1.000; 4792 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[19:48:13] mode 18 q=+0.25: s_min occ 0.9978 vir 0.8327; pre-Löwdin off-diag occ 9.86e-04 vir 1.16e-01; A−B — A−C — µE_h (LNO-MP2 piece A−C —); PM fresh 7.0217 transported 7.0181; match 0.988; 5307 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[21:17:23] mode 18 q=+0.50: s_min occ 0.9956 vir 0.6974; pre-Löwdin off-diag occ 1.98e-03 vir 2.32e-01; A−B — A−C — µE_h (LNO-MP2 piece A−C —); PM fresh 7.0431 transported 7.0359; match 0.988; 5350 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+

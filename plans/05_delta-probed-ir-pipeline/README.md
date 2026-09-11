@@ -444,6 +444,17 @@ widened. Reason: for training labels the error bars must be true, not just the e
   1,705 species, positions only) and the cheap line (Bos 2025 SI, 81 species) read in; the EDA
   notebook (five figures) and `modules/02_opponent_atlas/REPORT.md` written — Module 02 is a
   complete first version fifteen days before its calendar date, pending the student's own pass.
+- **2026-09-11 — Module 02 reshaped to the Udacity rubric (Rubrics/02) after reading module 01's APA
+  pages.** Deliverables now named as the rubric names them: `notebook/data_workflow.ipynb` (Setup,
+  Ingestion, Cleaning with two documented functions, one EDA function, five titled and labelled figures,
+  Summary; the tabular dataset `species_pahdb_theoretical_4.00.csv` beside it), a short `README.md` with
+  run instructions and the four reflection answers, `requirements.txt` by `pip freeze`, and
+  `module_summary.docx` / `.pdf` built into the Udacity APA 7 template (stored as
+  `Rubrics/APA7_template.docx`) with the prescribed sections, author–year citations, the required Danchev
+  (2022) article and a References list of exactly the cited sources (records verified in Crossref).
+  Project notes moved to `PROVENANCE.md`; the long-form `REPORT.md` gained the same References and an
+  AI-assistance statement. Work committed on branch `module-02-opponent-atlas` and merged (the rubric
+  asks for a branch beyond master).
 - **2026-09-10 — engine incident and patch 1.** The naphthalene cc-pVTZ tight timing died after
   4 h 26 min on a pyscf 2.14.0 / pyscf-forge 1.1.1 signature mismatch in the DF vvvv path (taken only
   when a fragment's vvvv block does not fit in memory — benzene never took it); patched locally

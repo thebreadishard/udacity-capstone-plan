@@ -1,66 +1,64 @@
-# Module 02 — the opponent atlas
+# Module 02 — the opponent atlas (Udacity AI Programming Foundations project)
 
-**Required sentence.** This table is parsed from the public NASA Ames PAHdb v4.00 computed library
-(DOI 10.3847/1538-4365/ae1c38). It is computed science data, not AI-generated, and it is the
-*opponent* of this project's pipeline, not its training data.
+## Project description
 
-**What this module delivers** (Capstone_Mapping, Module 02; Uitleg ch. 7): one tidy band table from
-the PAHdb computed library — uid, formula, charge, size, band position, intensity, scale factor,
-basis — with an exploratory analysis (coverage by size, charge and family; where the 4-31G regime
-starts; which ladder rungs have entries; which C₃₈₄H₄₈-class species exist = frozen-lines debt 6),
-figures, and a short report. No training.
+A reproducible data workflow that reads NASA's public library of computed infrared spectra of
+polycyclic aromatic hydrocarbons (PAHs) into tidy tables, cleans them, and explores what the library
+contains: how many molecules of which size and charge, which scale factors were applied, and which of
+the molecules on this project's test ladder have an entry. The result is the "opponent atlas": the
+reference predictions that the project's own pipeline will later be compared against.
 
-## Sources and how they are obtained (read 2026-09-10 from the PAHdb site)
+**What I built:** a streaming XML parser (`build_opponent_atlas.py`), two smaller readers for the
+other comparison lines, a Jupyter notebook with two cleaning functions, one EDA function and five
+labelled figures (`notebook/data_workflow.ipynb`), and a written summary (`module_summary.pdf`).
 
-| library | file | size | obtained how |
-|---|---|---|---|
-| Theoretical (computed) **v4.00**, 2024-06-27, 10,749 species — line A | XML | 46.65 MB | PAHdb download form |
-| Anharmonic **v1.00**, 2026-07-01, 45 species — line B | XML | 878 kB | PAHdb download form |
-| Experimental **v3.10**, 84 species (matrix; Module 03's) | XML | 3.88 MB | PAHdb download form |
-| Line C — Mai et al. 2025 MLMD spectra, 1,704 species at 50/300/600 K | `Supplementary.zip` on Zenodo, DOI 10.5281/zenodo.14998197 (version 10.5281/zenodo.15771437) | 102 MB | direct download; data CC BY-NC-SA 4.0, code Apache-2.0 |
-| Cheap line — Bos et al. 2025 ML-scaled spectra and pickled SVR models | ACS Omega Supporting Information, seven files (two xlsx, three zips, a 13.5 MB txt of geometries, a PDF), 20.5 MB unpacked | 8.9 MB zip | Europe PMC's public copy (`…/rest/PMC12750190/supplementaryFiles`), placed in `data/` on the user's instruction 2026-09-10, sha256 `3443b354f5a1285e…`; unpacked in `data/bos2025_si/` |
+**Dataset:** NASA Ames PAH IR Spectroscopic Database, computed library version 4.00 —
+https://www.astrochemistry.org/pahdb/theoretical/4.00 (download form; the derived tabular file used by
+the notebook is `notebook/species_pahdb_theoretical_4.00.csv`, 10,749 rows × 27 columns). The data are
+computed science data, not AI-generated.
 
-The PAHdb form (`…/pahdb/theoretical/4.00/download/view`) asks for an e-mail address ("to track the
-users of the data"), name and company on first use, and agreement to cite Boersma+ 2014,
-Bauschlicher+ 2018, Mattioda+ 2020 and Ricca+ 2026 plus the per-species references; a link is then
-e-mailed. **The user fills that form; this repository never enters personal data into a form.**
-Downloaded files go into `data/` (git-ignored); every output records the file's sha256 and the XML
-root attributes, so the version is pinned by hash, not by the file name.
+## How to run the project
 
-## Status 2026-09-10
+```bash
+pip install -r requirements.txt
+jupyter notebook notebook/data_workflow.ipynb
+```
 
-All three PAHdb libraries parsed (files obtained by the user through the form the same evening);
-the Mai 2025 Zenodo archive fetched with permission. First findings in
-[Research_Note_2026-09-10_Opponent_Atlas.md](../../GoalGathering/Research_Note_2026-09-10_Opponent_Atlas.md):
-benzene absent from the theoretical library; scale factors as stored 0.9794 / 0.9691 / 0.9597;
-4-31G from n_C = 212; C₃₈₄H₄₈ present (uid 617, 4447); line B covers benzene, naphthalene, pyrene,
-tetracene. Line C (`build_line_c_table.py`): 1,705 species, positions only. Cheap line
-(`build_cheap_line_table.py`): 81 species, 6,591 bands. **Notebook and report written the same
-evening** (`notebook/opponent_atlas_eda.ipynb`, five figures; `REPORT.md`). Owed: the re-read of the
-v4.00 paper's scale factors; the symmetry-unique local-environment count for C₃₈₄H₄₈ (R6 input);
-the student's own pass over notebook and report before submission (due 25 September).
+Run all cells top to bottom (the notebook is also rebuilt and executed by
+`python notebook/make_notebook.py`). To regenerate the tables from the raw XML, place the PAHdb
+download in `data/` and run `python build_opponent_atlas.py data/<file>.xml`.
 
-## Files
+`requirements.txt` was created with `pip freeze > requirements.txt`.
 
-- `build_opponent_atlas.py` — the parser (streaming `iterparse`, schema from the AmesPAHdbPythonSuite
-  parser and its cut-down test file, read 2026-09-10). Outputs per library into `out/<database>_<version>/`:
-  `species.csv`, `bands.csv.gz`, `c384_class.csv`, `SUMMARY.md`. Tested on a two-species synthetic file
-  built from the schema (`data/_synthetic_test.xml`, kept as the parser's fixture) until the real files
-  arrive.
-- `build_line_c_table.py` — line C: peak lists from the Mai 2025 spectra (three temperatures + EXP set).
-- `build_cheap_line_table.py` — the cheap line: the Bos 2025 SI table joined to PAHdb uids.
-- `notebook/make_notebook.py` — writes and executes `opponent_atlas_eda.ipynb` (five figures in `notebook/figures/`).
-- `REPORT.md` — the module report.
+## Reflection questions
 
-## Schema notes that matter for the comparison
+**Where could poor data cleaning introduce bias?** Three places. If the charge suffix in the formula
+string were not separated, the same molecule would be counted several times and neutral species
+would look rarer than they are. If the 32 species whose basis set is unresolved were silently
+assigned to the majority basis, the boundary at which the coarser 4-31G description starts (212
+carbons) would be wrong. And if isomers (same formula and charge, different molecules) were dropped
+as "duplicates", the library would lose thousands of entries and the coverage of the larger molecules
+would be misstated. The notebook checks each of these explicitly and keeps unresolved cases flagged
+rather than guessed.
 
-- `<frequency scale="…">` stores the **scaled** value; the atlas keeps both the stored value and
-  `frequency / scale`. Whether the stored value is scaled or unscaled is verified on the real file
-  against the v4.00 paper's three factors (0.964 / 0.979 / 0.975) before any use — the synthetic
-  test cannot decide that.
-- The route comment (`#becke3lyp/4-31G …`) is the only place the basis is written; the atlas parses
-  it and prints the species whose comment does not name a basis.
-- Intensities are in km/mol (PAHdb convention); the scoreboard's laboratory intensities are in the
-  same unit (Module 03), so the intensity comparison of decision 18 needs no conversion.
-- The anharmonic library's `<mode>` elements are stick positions after VPT2; the line profile is not
-  in the file (Frozen_Lines §3).
+**How would the workflow change for a machine-learning project?** The tables would need a
+train/validation/test split by *molecule*, not by band, because bands of one molecule are strongly
+correlated; feature columns (size, charge, basis, family) would be encoded; and the scale-factor
+column would have to be undone (divided out) before any model sees the frequencies, or the model
+would learn the database's post-processing instead of the physics.
+
+**How would you prepare it for a neural network?** Per-molecule inputs would become fixed-size
+representations (a binned spectrum or a padded stick list), targets would be standardised, and the
+same molecule-level split would be enforced; the 4-31G species would be held out or flagged, since
+they are computed at a different level.
+
+**Where could agentic automation help?** The download and version checks (fetching a new library
+release, verifying its checksum, re-running the parser and diffing the species and scale-factor
+tables against the previous version) are a repeatable pipeline an agent could run on a schedule, with
+a human reviewing the diff. The scale-factor discrepancy this project found is exactly the kind of
+change such a check would surface.
+
+## Repository
+
+Part of the `udacity-capstone-plan` repository (branch `module-02-opponent-atlas`, merged into
+`master`); project notes and provenance in `PROVENANCE.md`, the long-form report in `REPORT.md`.
