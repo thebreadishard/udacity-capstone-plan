@@ -1,0 +1,75 @@
+species,uid,gas_record,gas_role,nu_gas_cm,gas_snr,gas_fwhm_cm,u_c_gas_cm,u_res_gas_cm,nu_matrix_cm,matrix_intensity,delta_cm,family,n_candidates
+anthracene,265,C120127_0.jdx,primary,463.48,391.7,15.35,0.02,8.0,468.0,16.856,4.52,low / skeletal,1
+anthracene,265,C120127_0.jdx,primary,602.73,130.3,26.11,0.1,8.0,602.9,7.826,0.17,low / skeletal,1
+anthracene,265,C120127_0.jdx,primary,725.57,1132.9,16.47,0.007,8.0,725.6,84.28,0.03,CH-oop (10.5-15 um; benzene nu11 at 673 included),1
+anthracene,265,C120127_0.jdx,primary,875.19,694.8,20.64,0.015,8.0,878.3,66.22,3.11,CH-oop (10.5-15 um; benzene nu11 at 673 included),1
+anthracene,265,C120127_0.jdx,primary,952.72,90.5,25.0,0.138,8.0,954.9,5.8996,2.18,ring / CH-ip (9-10.5 um),1
+anthracene,265,C120127_0.jdx,primary,991.93,98.3,29.52,0.15,8.0,1000.9,6.622,8.97,ring / CH-ip (9-10.5 um),1
+anthracene,265,C120127_0.jdx,primary,1146.7,78.2,41.55,0.266,8.0,1149.2,5.8996,2.5,CH-ip-bend (8.6 um),1
+anthracene,265,C120127_0.jdx,primary,1267.54,59.0,26.43,0.224,8.0,1272.5,5.0568,4.96,CC-stretch/CH-ip (7.7 um),1
+anthracene,265,C120127_0.jdx,primary,1317.21,67.0,46.3,0.346,8.0,1318.1,8.428,0.89,CC-stretch/CH-ip (7.7 um),1
+anthracene,265,C120127_0.jdx,primary,1448.82,44.3,49.16,0.555,8.0,1450.5,3.3712,1.68,CC-stretch/CH-ip (7.7 um),2
+anthracene,265,C120127_0.jdx,primary,1537.36,97.2,21.09,0.108,8.0,1542.0,6.622,4.64,CC-stretch (6.2 um),1
+anthracene,265,C120127_0.jdx,primary,1626.04,60.6,35.02,0.289,8.0,1627.8,3.3712,1.76,CC-stretch (6.2 um),2
+anthracene,265,C120127_0.jdx,primary,1670.79,58.1,26.88,0.231,8.0,1675.0,2.5284,4.21,overtone / combination region,1
+anthracene,265,C120127_0.jdx,primary,1701.7,59.4,28.67,0.241,8.0,1707.2,3.3712,5.5,overtone / combination region,1
+anthracene,265,C120127_0.jdx,primary,1732.54,31.5,487.58,7.741,8.0,1738.3,1.6856,5.76,overtone / combination region,1
+anthracene,265,C120127_0.jdx,primary,1765.43,47.0,110.93,1.18,8.0,1765.4,3.3712,-0.03,overtone / combination region,2
+anthracene,265,C120127_0.jdx,primary,1787.02,67.5,69.13,0.512,8.0,1796.7,4.214,9.68,overtone / combination region,2
+anthracene,265,C120127_0.jdx,primary,1904.1,46.6,55.72,0.598,8.0,1918.3,2.5284,14.2,overtone / combination region,2
+anthracene,265,C120127_0.jdx,primary,1933.62,70.4,49.03,0.348,8.0,1938.1,5.0568,4.48,overtone / combination region,2
+anthracene,265,C120127_0.jdx,primary,3065.49,810.0,29.76,0.018,8.0,3064.6,138.46,-0.89,CH-stretch,1
+chrysene,291,C218019_0.jdx,primary,576.39,84.8,31.19,0.184,8.0,578.9,2.2876,2.51,low / skeletal,1
+chrysene,291,C218019_0.jdx,primary,681.38,155.1,16.03,0.052,8.0,682.4,12.642,1.02,CH-oop (10.5-15 um; benzene nu11 at 673 included),1
+chrysene,291,C218019_0.jdx,primary,756.25,883.1,19.66,0.011,8.0,761.0,114.38,4.75,CH-oop (10.5-15 um; benzene nu11 at 673 included),1
+chrysene,291,C218019_0.jdx,primary,807.65,451.4,18.83,0.021,8.0,812.6,55.986,4.95,CH-oop (10.5-15 um; benzene nu11 at 673 included),1
+chrysene,291,C218019_0.jdx,primary,858.16,141.2,38.75,0.137,8.0,861.8,9.03,3.64,CH-oop (10.5-15 um; benzene nu11 at 673 included),2
+chrysene,291,C218019_0.jdx,primary,943.34,59.2,458.44,3.874,8.0,945.9,2.2876,2.56,CH-oop (10.5-15 um; benzene nu11 at 673 included),1
+chrysene,291,C218019_0.jdx,primary,1031.31,128.1,28.59,0.112,8.0,1035.8,7.826,4.49,ring / CH-ip (9-10.5 um),1
+chrysene,291,C218019_0.jdx,primary,1146.12,33.8,36.83,0.544,8.0,1162.8,0.45752,16.68,CH-ip-bend (8.6 um),1
+chrysene,291,C218019_0.jdx,primary,1187.32,32.6,16.17,0.248,8.0,1193.4,4.5752,6.08,CH-ip-bend (8.6 um),1
+chrysene,291,C218019_0.jdx,primary,1230.23,27.9,61.85,1.108,8.0,1235.9,4.5752,5.67,CH-ip-bend (8.6 um),1
+chrysene,291,C218019_0.jdx,primary,1260.28,77.1,24.6,0.16,8.0,1264.0,10.234,3.72,CC-stretch/CH-ip (7.7 um),2
+chrysene,291,C218019_0.jdx,primary,1426.46,103.9,25.64,0.123,8.0,1429.7,18.06,3.24,CC-stretch/CH-ip (7.7 um),1
+chrysene,291,C218019_0.jdx,primary,1483.77,107.9,24.15,0.112,8.0,1490.6,12.642,6.83,CC-stretch/CH-ip (7.7 um),1
+chrysene,291,C218019_0.jdx,primary,1515.02,80.2,71.74,0.447,8.0,1523.2,1.1438,8.18,CC-stretch (6.2 um),1
+chrysene,291,C218019_0.jdx,primary,1594.41,61.5,60.07,0.489,8.0,1601.2,6.622,6.79,CC-stretch (6.2 um),1
+chrysene,291,C218019_0.jdx,primary,1939.23,50.5,72.25,0.715,8.0,1946.1,4.5752,6.87,overtone / combination region,1
+chrysene,291,C218019_0.jdx,primary,3066.08,456.0,51.55,0.057,8.0,3063.9,126.42,-2.18,CH-stretch,1
+naphthalene,330,C91203_0.jdx,primary,472.13,274.1,14.15,0.026,8.0,473.7,18.669,1.57,low / skeletal,1
+naphthalene,330,C91203_0.jdx,primary,624.48,56.1,25.66,0.229,8.0,620.3,4.3359,-4.18,low / skeletal,1
+naphthalene,330,C91203_0.jdx,primary,781.46,1247.5,14.4,0.006,8.0,785.8,108.4,4.34,CH-oop (10.5-15 um; benzene nu11 at 673 included),1
+naphthalene,330,C91203_0.jdx,primary,954.63,61.9,34.28,0.277,8.0,957.6,3.252,2.97,ring / CH-ip (9-10.5 um),1
+naphthalene,330,C91203_0.jdx,primary,1006.86,87.8,24.49,0.139,8.0,1014.4,7.8288,7.54,ring / CH-ip (9-10.5 um),1
+naphthalene,330,C91203_0.jdx,primary,1130.13,52.8,39.62,0.375,8.0,1129.1,5.4199,-1.03,CH-ip-bend (8.6 um),2
+naphthalene,330,C91203_0.jdx,primary,1273.17,56.8,31.62,0.279,8.0,1272.8,7.8288,-0.37,CC-stretch/CH-ip (7.7 um),1
+naphthalene,330,C91203_0.jdx,primary,1385.46,44.2,33.53,0.38,8.0,1391.8,6.6244,6.34,CC-stretch/CH-ip (7.7 um),1
+naphthalene,330,C91203_0.jdx,primary,1509.26,92.9,32.05,0.172,8.0,1513.0,6.6244,3.74,CC-stretch (6.2 um),2
+naphthalene,330,C91203_0.jdx,primary,1602.79,33.1,37.23,0.563,8.0,1604.4,6.6244,1.61,CC-stretch (6.2 um),1
+naphthalene,330,C91203_0.jdx,primary,1719.16,42.8,40.43,0.472,8.0,1722.4,2.168,3.24,overtone / combination region,1
+naphthalene,330,C91203_0.jdx,primary,1937.5,47.7,37.47,0.393,8.0,1945.1,2.168,7.6,overtone / combination region,1
+naphthalene,330,C91203_0.jdx,primary,3066.78,626.8,36.33,0.029,8.0,3071.6,72.266,4.82,CH-stretch,1
+pyrene,334,C129000_0.jdx,primary,708.96,799.5,15.96,0.01,8.0,711.8,46.354,2.84,CH-oop (10.5-15 um; benzene nu11 at 673 included),1
+pyrene,334,C129000_0.jdx,primary,739.47,320.3,17.79,0.028,8.0,743.9,18.662,4.43,CH-oop (10.5-15 um; benzene nu11 at 673 included),1
+pyrene,334,C129000_0.jdx,primary,838.24,1556.9,17.1,0.005,8.0,842.8,108.36,4.56,CH-oop (10.5-15 um; benzene nu11 at 673 included),2
+pyrene,334,C129000_0.jdx,primary,960.52,44.2,28.31,0.32,8.0,964.1,1.0836,3.58,ring / CH-ip (9-10.5 um),1
+pyrene,334,C129000_0.jdx,primary,1094.8,82.0,20.33,0.124,8.0,1097.3,4.3344,2.5,ring / CH-ip (9-10.5 um),1
+pyrene,334,C129000_0.jdx,primary,1181.97,182.2,18.74,0.051,8.0,1183.9,20.468,1.93,CH-ip-bend (8.6 um),2
+pyrene,334,C129000_0.jdx,primary,1239.7,43.3,20.75,0.24,8.0,1243.0,4.3344,3.3,CH-ip-bend (8.6 um),1
+pyrene,334,C129000_0.jdx,primary,1304.0,35.5,20.75,0.292,8.0,1312.1,3.2508,8.1,CC-stretch/CH-ip (7.7 um),1
+pyrene,334,C129000_0.jdx,primary,1431.54,118.3,25.66,0.108,8.0,1434.8,13.244,3.26,CC-stretch/CH-ip (7.7 um),1
+pyrene,334,C129000_0.jdx,primary,1596.63,124.6,27.3,0.11,8.0,1604.0,8.428,7.37,CC-stretch (6.2 um),2
+pyrene,334,C129000_0.jdx,primary,1786.52,110.4,20.43,0.093,8.0,1792.6,7.826,6.08,overtone / combination region,1
+pyrene,334,C129000_0.jdx,primary,1917.86,104.0,33.06,0.159,8.0,1930.6,5.418,12.74,overtone / combination region,3
+pyrene,334,C129000_0.jdx,primary,3050.87,1275.1,27.34,0.011,8.0,3050.2,102.34,-0.67,CH-stretch,1
+naphthalene,330,C91203_1.jdx,secondary,780.44,2034.1,12.62,0.003,4.0,785.8,108.4,5.36,CH-oop (10.5-15 um; benzene nu11 at 673 included),1
+naphthalene,330,C91203_1.jdx,secondary,956.19,71.6,22.48,0.157,4.0,957.6,3.252,1.41,ring / CH-ip (9-10.5 um),1
+naphthalene,330,C91203_1.jdx,secondary,1015.17,109.9,22.56,0.103,4.0,1014.4,7.8288,-0.77,ring / CH-ip (9-10.5 um),1
+naphthalene,330,C91203_1.jdx,secondary,1134.93,54.5,30.64,0.281,4.0,1129.1,5.4199,-5.83,CH-ip-bend (8.6 um),2
+naphthalene,330,C91203_1.jdx,secondary,1277.91,72.6,27.6,0.19,4.0,1272.8,7.8288,-5.11,CC-stretch/CH-ip (7.7 um),1
+naphthalene,330,C91203_1.jdx,secondary,1388.14,47.1,25.35,0.269,4.0,1391.8,6.6244,3.66,CC-stretch/CH-ip (7.7 um),1
+naphthalene,330,C91203_1.jdx,secondary,1513.21,124.5,27.69,0.111,4.0,1513.0,6.6244,-0.21,CC-stretch (6.2 um),2
+naphthalene,330,C91203_1.jdx,secondary,1597.85,37.7,24.44,0.324,4.0,1604.4,6.6244,6.55,CC-stretch (6.2 um),1
+naphthalene,330,C91203_1.jdx,secondary,1719.99,49.2,27.56,0.28,4.0,1722.4,2.168,2.41,overtone / combination region,1
+naphthalene,330,C91203_1.jdx,secondary,1939.84,69.4,28.88,0.208,4.0,1945.1,2.168,5.26,overtone / combination region,1
+naphthalene,330,C91203_1.jdx,secondary,3070.64,927.0,37.27,0.02,4.0,3071.6,72.266,0.96,CH-stretch,1
