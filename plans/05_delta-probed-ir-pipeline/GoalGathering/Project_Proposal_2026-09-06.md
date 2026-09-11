@@ -1,8 +1,7 @@
 # Probed coupled-cluster corrections to the harmonic force constants of polycyclic aromatic hydrocarbons: an infrared pipeline with a measured cost
 
 **Master's capstone project proposal — plan 05.** Prepared for supervision review; first version 6
-September 2026 (the file name keeps that date), revised through 10 September 2026: the
-measurements, decisions and questions dated 8–10 September below were added after the 6-September
+September 2026 (the file name keeps that date), revised through 11 September 2026: the measurements, decisions and questions dated 8–11 September below were added after the 6-September
 cold read, and a second cold read on 8 September — from the supervisor's own position — and its
 closures of 10 September are on file. Earlier drafts (3 and 4 September) are in the repository's
 history; this text supersedes them and stands on its own. Every number in it that describes this
@@ -323,8 +322,7 @@ subsection):
   first. The same scan with the local-correlation thresholds one decade tighter (the frozen arm
   only; the other two arms and the truth line stand) started that evening, died with the terminal
   session after 5 of 27 geometries (which is why long runs now launch detached from the session),
-  and resumes from its saved points after the naphthalene timing, about 28 hours for the remaining
-  22; if the bias falls by the factor the smaller basis showed, the anchor runs at those
+  and was resumed from its saved points on 11 September at 05:16, the remaining 22 points at about 75 minutes each, ending on 12 September; if the bias falls by the factor the smaller basis showed, the anchor runs at those
   thresholds and the cost record carries the factor, otherwise recording or per-mode calibration
   is chosen before the naphthalene rehearsal (research note P10, decision 20). - *A definition
   fixed by the measurement.* The transported orbital blocks must be semicanonicalised at each
@@ -685,7 +683,7 @@ advisory on protocol facts (§13, items 11–15), never on margins or verdicts.
 bands; band lists, windows and margins frozen in the pilot note, which is written with seven
 inputs in hand and **nothing else**:
 
-1. the laboratory side with its measured band uncertainties — owed (the scoreboard re-read);
+1. the laboratory side with its measured band uncertainties — **printed for benzene (10 September, two NIST records) and for naphthalene's resolved fundamentals (11 September, Pirali 2009, u_band 0.50–0.71 cm⁻¹)**; the PNNL naphthalene record and the R2/R3 columns owed;
 2. the opponent side — exists (versions named above);
 3. the DFT-only rehearsal with its noise-injected column — exists for benzene (5 September);
    naphthalene owed;
@@ -741,7 +739,7 @@ as winning.
 Every cost in the plan is a measured slot reading "not run" until a script prints it. The
 literature figures that motivated the design (a hundred-odd gradients for a full Hessian; 30 % of
 columns on anthracene; a few micro-hartree of local-correlation noise) are recorded as motivation
-and are forbidden in any budget sentence. The following were printed between 5 and 10 September on
+and are forbidden in any budget sentence. The following were printed between 5 and 11 September on
 the student's laptop (an 8-core Ryzen 7 260, 31 GB, no CUDA GPU; the anchor code runs in a Linux
 subsystem given 22 GB; the machine is dedicated to the project and available around the clock).
 
@@ -762,8 +760,7 @@ subsystem given 22 GB; the machine is dedicated to the project and available aro
   geometry and 2.5 days in all.
 - **The canonical reference.** Canonical CCSD(T) energy of benzene: 27 s at cc-pVDZ, **755 s and
   7.3 GB at cc-pVTZ** on the idle laptop at the equilibrium geometry (850–1,270 s at the displaced
-  geometries of the scan, with the laptop in use). Local LNO-CCSD(T) energy at cc-pVTZ: 2,087 s (locality pays only at larger
-  molecules). The anchor's bias line — 61 canonical energies along benzene's 30 modes — is
+  geometries of the scan, with the laptop in use). Local LNO-CCSD(T) energy at cc-pVTZ: 2,087 s for benzene (locality pays only at larger molecules) and **41,375 s — 11.5 hours — for naphthalene at tight thresholds, 24 fragments, peak memory 19.8 GB against the laptop's 22 GB ceiling (11 September)**; pyrene will not fit this laptop's memory. The anchor's bias line — 61 canonical energies along benzene's 30 modes — is
   therefore 13–21 hours and **fits the laptop**; the full canonical reference Hessian by
   energies (1 + 2·30 + 4·435 = 1,801 energies, about 378 hours) **does not**, and neither does the
   gradient branch: a canonical CCSD(T) gradient of benzene costs 1,399 s and 13.9 GB at cc-pVDZ —
@@ -819,7 +816,7 @@ PNNL naphthalene source itself.
 
 The review loop was **closed on 4 September** after a consistency check of the last revision (19
 cross-references, all mechanical). Since then the plan's text changes only by dated notes that
-name a measurement or a decision; the decisions of 5–10 September (§10, items 8–28) are such notes.
+name a measurement or a decision; the decisions of 5–10 September (§10, items 8–31) are such notes.
 Items 8–16 and 19 were made on the DFT-only rehearsal, the frozen-space probe and the timings —
 before any coupled-cluster response of the real correction exists, so none of the rules the
 evaluation depends on was shaped by a result it will judge; items 17 and 18 are tooling and scope
@@ -980,7 +977,7 @@ back per module is budgeted, not hoped away.
 | Milestone / module | Content | Date | What sets the pace |
 |---|---|---|---|
 | Proposal to the supervisor | after the tighter-threshold scan and the cold-read round | 12 Sep 2026 | the student's work |
-| Module 02 — opponent atlas | PAHdb v4.00 and Anharmonic v1.00, Mai 2025, the Bos-type baseline, read in and version-frozen | 25 Sep 2026 | data engineering, no compute |
+| Module 02 — opponent atlas | PAHdb v4.00 and Anharmonic v1.00, Mai 2025, the Bos-type baseline, read in and version-frozen — **first version complete 10 September** (parser, tables, notebook, report; the student's own pass before submission) | 25 Sep 2026 | data engineering, no compute |
 | Module 03 — scoreboard and u_band | probe 2a, the laboratory columns, decidability per family | 2 Oct 2026 | the student's work; the supervisor's answers to §13 items 7–10 |
 | Pilot-note inputs | naphthalene dry run, R0 pilot, naphthalene noise run, canonical two-mode points | 23 Oct 2026 | **laptop: about three weeks of continuous compute** |
 | Pilot note | every frozen number, band lists, margins | 30 Oct 2026 | the student's work after the measurements |
@@ -1022,8 +1019,9 @@ decisions in the evenings, and the supervisor's reading time at the two points n
    a calibrated gas-phase measurement exists and reported elsewhere, and a coupled-cluster
    correction to intensities is a measured question rather than a promise. If the supervisor wants
    intensities carried further, the dipole probe M1-μ is the measurement that would license it.
-5. When the naphthalene measurements justify it: sponsorship of a cluster-time request sized by
-   the timed probes, and, at the large-rung stage, serving as or nominating the named expert whose
+5. The naphthalene measurement now justifies it (11.5 hours per energy on the laptop; the R1 deck of
+   474 energies is 5,450 laptop-hours): sponsorship of a cluster-time request sized by the timed
+   probes, including whether a suitable machine exists within the supervisor's own network, and, at the large-rung stage, serving as or nominating the named expert whose
    pre-registered judgment is the datum where no laboratory truth exists (the "expert-judgment
    datum" of §5.2).
 6. Whether the supervisor sees the outlook of §6 as a reason to widen the corpus of measured
