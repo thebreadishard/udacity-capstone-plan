@@ -978,7 +978,7 @@ back per module is budgeted, not hoped away.
 |---|---|---|---|
 | Proposal to the supervisor | after the tighter-threshold scan and the cold-read round | 12 Sep 2026 | the student's work |
 | Module 02 — opponent atlas | PAHdb v4.00 and Anharmonic v1.00, Mai 2025, the Bos-type baseline, read in and version-frozen — **first version complete 10 September** (parser, tables, notebook, report; the student's own pass before submission) | 25 Sep 2026 | data engineering, no compute |
-| Module 03 — scoreboard and u_band | probe 2a, the laboratory columns, decidability per family | 2 Oct 2026 | the student's work; the supervisor's answers to §13 items 7–10 |
+| Module 03 — scoreboard and u_band | probe 2a, the laboratory columns, decidability per family — **scaffolded in the Udacity rubric form on 11 September** (`modules/03_lab_scoreboard/`: a pre-registered matrix–gas test committed before the join, 63 pairs of naphthalene, anthracene, pyrene and chrysene against the WebBook GC-IRD records; six families reject a zero offset, median +3.3 to +5.9 cm⁻¹ matrix above hot gas; the u_band columns on these records, the PNNL and cold columns still owed) | 2 Oct 2026 | the student's work; the supervisor's answers to §13 items 7–10 |
 | Pilot-note inputs | naphthalene dry run, R0 pilot, naphthalene noise run, canonical two-mode points | 23 Oct 2026 | **laptop: about three weeks of continuous compute** |
 | Pilot note | every frozen number, band lists, margins | 30 Oct 2026 | the student's work after the measurements |
 | Module 04 — calibrated-harmonic baseline | ML correction to scale factors, leave-molecule-out | 30 Oct 2026 | in parallel with the compute |

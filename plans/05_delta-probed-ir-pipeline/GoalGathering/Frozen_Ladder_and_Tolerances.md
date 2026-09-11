@@ -247,6 +247,18 @@ licence gains "and, for families that passed Q9, the check of the transferred ru
 fragment-probed δω_F of the flake"; every certificate on R0–R3 carries the Q10 coverage table of §4
 item 15 beside the per-band budget.
 
+**Dated note 2026-09-11 (first matrix–gas offsets measured — Module 03 scaffold; records a
+measurement, changes no rule).** Under a form pre-registered before the join
+(`modules/03_lab_scoreboard/PRE_REGISTRATION.md`, commit 5d946d2), the PAHdb experimental bands of
+neutral naphthalene, anthracene, pyrene and chrysene were paired with the WebBook GC-IRD gas records
+(stated 8 cm⁻¹, hot lightpipe, temperature not stated): 63 primary pairs. In the six families with
+n ≥ 6 the median offset ν_matrix − ν_gas is +3.3 to +5.9 cm⁻¹ and a zero offset is rejected after
+Holm (p 0.006–0.047); the C–H stretch (n = 4) and the low-frequency family (n = 5) are inconclusive
+by construction; naphthalene's 245 °C Coblentz column gives +1.4 cm⁻¹ (n = 11). This is the offset
+between the sources as they exist (10 K matrix against hot vapour), not the equal-temperature matrix
+shift; the matrix gate's margins and verdicts remain the pilot note's, and the u_band columns of the
+rule above on these records are still owed (`modules/03_lab_scoreboard/PROVENANCE.md`).
+
 **Promised:** R0–R1 scored as accuracy rungs against gas-phase data. R2–R3 scored as accuracy
 rungs per family under the decidability rule above and the "beat and noise" rule of §1. R6 per
 the dated note above. **[05]** The **cost record** (§1) for every rung and mode that ran; **mode E
