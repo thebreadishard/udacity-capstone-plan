@@ -271,7 +271,11 @@ expectations section below are numbered separately.
 
 ## Scope boundaries
 
-- The degree **ends at Module 09**. No Horizon documents, no Projects 10–12.
+- The degree **ends at Module 09**. No Horizon documents, no Projects 10–12. *Dated note 2026-09-12
+  (decision 32):* one **named stand-out follow-up outside the sequence** exists on paper — a network
+  trained on the pipeline's own output — gated by the measured range at R2–R3 and the Q10 coverage
+  table, with its losing condition pre-written (proposal §6). It is not a Project 10 and not in the
+  promised set; the rule above stands.
 - Light–matter dynamics is **out** (plan-03 Pass B verdict, one scope, one clock — kept because
   it serves the goal, not by inheritance).
 - JWST spectra motivate the work; **species identification is not a promise**.

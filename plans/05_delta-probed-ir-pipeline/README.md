@@ -19,7 +19,10 @@ with molecule size is a measured question (Q8) with a pre-registered losing cond
 promise. No coupled-cluster correction to anharmonic constants is promised. The largest
 species is reached by fragment probing under a measured licence.
 
-The sequence **ends at Module 09**. There is no `Horizon/` and there are no Projects 10–12.
+The sequence **ends at Module 09**. There is no `Horizon/` and there are no Projects 10–12. (Dated note
+2026-09-12, decision 32: a named stand-out follow-up *outside* the sequence — a network trained on the
+pipeline's own output — exists on paper, gated by measured conditions; proposal §6, mapping §"After
+Module 09".)
 
 ## Glossary
 

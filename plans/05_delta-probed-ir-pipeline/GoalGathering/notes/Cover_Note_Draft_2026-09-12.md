@@ -23,7 +23,10 @@ mogelijk te maken — de correctie zelf, honderden atoompaarblokken per molecuul
 en coroneen die vooraf beslist of zo'n overdraagbaar model überhaupt kan bestaan. De dekkingstabel van
 §7 is de toets die zegt wanneer de banden van de pijplijn goed genoeg zijn om als trainingslabels te
 dienen; is die tabel op orde en is de gemeten reikwijdte kort, dan volgt het netwerk als gedateerd
-vervolgvoorstel onder dezelfde licentie als de rest.
+vervolgvoorstel onder dezelfde licentie als de rest. Ik heb het vandaag met naam in het voorstel gezet
+als het stand-out-werk van dit project, buiten de reeks van negen modules, met die twee voorwaarden
+en de verliesvoorwaarde erbij (§6, beslissing 32) — zodat duidelijk is waar het plan naartoe werkt
+zonder dat het iets belooft wat nog niet gemeten is.
 Onderweg levert het plan dingen op die je eerder hebt, en vier daarvan liggen er al: de bevinding dat
 de PAHdb-bibliotheek zoals ze wordt uitgeleverd de schaalfactoren van versie 3.00 bevat en niet de
 drie die het artikel van versie 4.00 beschrijft, een verschil van 4 tot 15 cm⁻¹ op de bandposities;

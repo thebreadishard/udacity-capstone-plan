@@ -354,6 +354,19 @@ PAH sizes, and the measured locality are the thesis), "why is mode E the guarant
 or reported why not) and "isn't this just Mai 2025 with extra steps?" (answer: Mai's ceiling is
 its DFT teacher).
 
+### After Module 09 — the named stand-out follow-up (dated note 2026-09-12, decision 32; not a module)
+
+The rubrics of version 1.5.1 carry no stand-out criterion; the student names one anyway, outside the
+sequence: **a network trained on the pipeline's own output** (the Δ₂ blocks of every rung and the
+fragment probing, and the band positions that passed the Q10 coverage table) to predict the
+correction for a new PAH from its DFT steps. It is the model the proposal's §6 describes as outlook,
+now with a name, two measured entry conditions (short range at R2–R3; Q10 table in order for the
+families used) and a pre-written losing condition (agreement with the probed Δ₂ per family within τ₇
+on a middle rung before trust on a higher one). It inherits Module 05's dataset discipline (own
+release with DOI, molecule-level splits, no laboratory quantity as a feature) and Module 08's
+certificate language. The sequence still ends at Module 09; this is the reason the corpus factory
+and the Q9 test are worth their care, not a deliverable.
+
 ## 4. Distinctness and DOI-before-claim (Pass 4)
 
 | Module | Dataset | Source class | Published before start? | Reused? |

@@ -623,6 +623,22 @@ DFT steps and a sampled coupled-cluster check instead of the full probe count. I
 no such model exists, and the pipeline remains a per-molecule measurement. Either outcome is a
 result; neither is claimed here.
 
+**Named follow-up, outside the sequence (decision 32, 12 September): the network as stand-out work.**
+The student names the model of the previous paragraph as the project's stand-out ambition — a network
+trained on the pipeline's own output, the Δ₂ blocks and certified band positions, to predict the
+correction for a new PAH from its DFT steps alone — and places it deliberately **outside the module
+sequence**, which still ends at Module 09 (the degree's rubrics carry no stand-out criterion in
+version 1.5.1; the label is the student's). It is not in the promised set and not in §1. It becomes a
+dated follow-up proposal only if two measured conditions hold: (i) the range of the correction
+measured at R2–R3 is short enough that a transferable model can exist at all, and (ii) the Q10 coverage
+table of §7 is in order for the families the model would be trained on, so that the pipeline's bands
+qualify as training labels. Its losing condition is written now: on a middle rung the network's
+prediction must agree with the probed Δ₂ per family within τ₇, as the Module-05 prior must, before it
+is trusted on a higher one; if it does not, the pipeline remains a per-molecule measurement and the
+follow-up is closed with that sentence. The Module-05 corpus factory (§10, item 4; the dated note in
+the mapping) and the Q9 transferability test (decision 27) are the two instruments that would feed
+it; nothing else is built for it before the conditions are met.
+
 **No promised coupled-cluster anharmonic correction** (§2; the diagonal cubic by-product is
 reported, not applied). **No coupled-cluster correction to intensities** (§7). **No predicted band
 widths** (§7). **No full coupled-cluster surface or global quartic force field.** **No new
@@ -906,6 +922,10 @@ own; knowledge transfer is allowed wherever a gate shows it makes the pipeline s
 31. **The calibration check of the error budget, Q10** (10 September): coverage of the laboratory
     bands inside k·u_total, per rung, family and overall, thresholds fixed in the pilot note; a short
     budget is reported as incomplete, never widened (§6).
+32. **The network as named stand-out work, outside the sequence** (12 September): a model trained on
+    the pipeline's own Δ₂ blocks and certified bands is the project's stand-out ambition, gated by the
+    measured range at R2–R3 and the Q10 coverage table, with its losing condition pre-written; not in
+    the promised set, not a Module 10 — the sequence ends at Module 09 (§6).
 
 ## 11. Risks
 
