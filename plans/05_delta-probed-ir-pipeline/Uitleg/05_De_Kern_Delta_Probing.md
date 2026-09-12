@@ -90,6 +90,15 @@ Het plan noemt ze **licenties**, met de nummers uit zijn lijst van poortwachters
   verschillen; anders is extrapolatie verplicht en tellen alle probes dubbel in de
   kostenclassificatie.
 
+  **Gedateerde aanvulling 12 september 2026 (beslissing 20 afgesloten).** De drempellijn is bij
+  benzeen in cc-pVTZ gemeten. Bij de preset "Tight" week de bevroren kromming systematisch af van de
+  volledige CCSD(T)-kromming met +0,47 / +0,03 / +0,79 cm⁻¹ op de drie geteste modes; één decade
+  strengere drempels ("xtight", 10⁻⁷/10⁻⁸) brengen dat terug tot +0,11 / −0,01 / +0,23 cm⁻¹, terwijl de
+  gladheid (σ 0,003–0,044 µE_h) niet verandert. De restafwijking bij Tight wás dus afkapping door de
+  lokale methode, geen eigenschap van het bevriezen. Het anker rekent voortaan bij xtight; bij benzeen
+  kost dat ongeveer tweemaal zoveel per punt (4.576 s tegen ≈ 2.200 s), bij naftaleen wordt de factor
+  op dit moment gemeten. *Bron:* `probes/results_m1/XTIGHT_READIN.md`, README beslissing 20.
+
 **Q7 — de probinglicentie: vindt de methode terug wat er echt is?** Op benzeen en
 naftaleen wordt Δ₂ ook op de klassieke manier berekend (een volledige numerieke Hessiaan,
 duizenden energieën, één keer). De teruggevonden Δ₂ moet daar per familie binnen τ₇ mee

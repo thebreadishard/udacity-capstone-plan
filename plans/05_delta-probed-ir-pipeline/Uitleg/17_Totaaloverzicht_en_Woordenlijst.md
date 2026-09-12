@@ -24,6 +24,29 @@
 | Mode G | bijproject | PySCFAD | gradiënten erbij op gelicentieerde rungs | M2–M5, stopcriterium |
 | Paper en verdediging | M08, M09 | alles | paper; presentatie | geen kostenbijvoeglijknaamwoord |
 
+## §17.1a Gedateerde aanvulling 12 september 2026: na module 09, en twee lessen uit de praktijk
+
+**Het netwerk als "stand-out" (beslissing 32).** De modulereeks eindigt bij module 09. Het neurale
+netwerk dat op de uitvoer van de pijplijn zelf getraind zou worden (Δ₂-correcties als trainingsdata voor
+PAK's zonder laboratoriumspectrum) is met naam in het projectvoorstel gezet als het uitstekende vervolg
+*buiten* de reeks, niet als "module 10": de rubrieken kennen geen stand-outcriterium, en het netwerk mag
+pas beginnen als twee poorten open zijn — een korte gemeten reikwijdte van de correctie op R2–R3 en een
+dekkingstabel die zegt dat de banden van de pijplijn als trainingslabels deugen. De verliesvoorwaarde staat
+er nu al bij.
+
+**Les 1: de laptop rekent niet twee dingen tegelijk.** Op 12 september is een naftaleenberekening van
+3,5 uur verloren gegaan doordat er náást de berekening (in WSL, met 25 van de 31 GB) een Lean-build van
+8 GB op de Windows-kant werd gestart; Windows meldde geheugentekort en beëindigde de hele virtuele
+machine. Regel sindsdien: naast een ankerberekening niets van meer dan ongeveer 1 GB op de Windows-kant.
+
+**Les 2: lange berekeningen moeten kunnen hervatten.** De lokale-CC-code van pyscf-forge bewaart de
+resultaten van haar 24 fragmenten alleen in het geheugen. Er is een laag omheen gebouwd die elk fragment
+direct wegschrijft en bij hervatten overslaat wat al klaar is; getest op benzeen (afgebroken na 2 van 15
+fragmenten, hervat, energieën identiek tot op de laatste cijfers). Een gesneuvelde berekening verliest nu
+hooguit het lopende fragment. De lijst van alle software-ingrepen staat in
+`GoalGathering/notes/Software_Changes_Ledger.md`, met per ingreep of hij als pull request naar de makers
+zou kunnen.
+
 ## §17.2 Woordenlijst
 
 **Anharmonisch** — afwijking van het ideale-veergedrag; verschuift banden meestal omlaag.

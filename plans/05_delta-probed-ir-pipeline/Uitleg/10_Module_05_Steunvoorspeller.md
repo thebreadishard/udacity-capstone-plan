@@ -171,7 +171,7 @@ verder buiten de trainingsverdeling dan §3 aannam.
 van kleine aromaten goedkoop zijn (gemeten op de laptop: benzeen 3 tot 7 minuten per Hessiaan,
 naftaleen 13 minuten, pyreen 54 minuten), is in `modules/05_support_predictor/corpus/` een
 wachtrij klaargezet die molecuul voor molecuul beide Hessianen rekent (B3LYP en ωB97X, 6-31G*), in
-drie lagen en in een vaste volgorde:
+vier lagen en in een vaste volgorde (de laag A′ is later op 12 september toegevoegd, op besluit van de opdrachtgever):
 
 | laag | inhoud | aantal in het manifest |
 |---|---|---|
@@ -187,8 +187,9 @@ volgorde over de lagen heen: eerst A (de vijf timingmoleculen voorop), dan om en
 klasse-as en de grootte-as samen groeien, dan C.
 Hoeveel er uiteindelijk gerekend wordt, staat met opzet nergens: dat wordt een gedateerde notitie na
 een timingtest van vijf moleculen, precies zoals §3 al voorschreef voor de QM9-deelverzameling.
-Er is nog niets gerekend. Of de eigen lagen worden overgenomen, of alleen de geconjugeerde
-QM9-klasse, is een keuze van de opdrachtgever; tot die tijd is de fabriek een kandidaat.
+Er is nog niets gerekend. De vier eigen lagen zijn op 12 september als kandidaat overgenomen (gedateerde
+notitie in de mapping); hoeveel er echt gerekend wordt, beslist de timingtest van vijf moleculen — en die
+kan pas draaien als er geen ankerberekening loopt (regel: één zware berekening tegelijk op de laptop).
 
 *Bron: `modules/05_support_predictor/PROVENANCE.md`, `out/HESSIAN_QM9_SUMMARY.md`,
 `out/HESSIAN_QM9_RINGS.md`, `corpus/DESIGN_2026-09-12.md`; gedateerde notitie van 12 september in

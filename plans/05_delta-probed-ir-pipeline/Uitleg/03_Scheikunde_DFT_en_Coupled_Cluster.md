@@ -143,6 +143,18 @@ volledige CCSD(T)-berekening van benzeen daarin niet op de laptop past, valt het
 het kleinere cc-pVDZ, met een label dat de biasmeting dan een ondergrens is. De regel die
 alles bij elkaar houdt: **beide kanten van elke vergelijking in dezelfde basisset.**
 
+**Gedateerde aanvulling 12 september 2026 (beslissing 33).** De basisset bleek de grootste bekende foutbron
+van het anker: van cc-pVTZ naar cc-pVQZ verschuiven de drie gemeten benzeenmodes bij de goedkope
+methoden (SCF en MP2) samen met +2,8 / −5,2 / −11,1 cm⁻¹, meer dan de hele afwijking van de lokale
+CC-benadering (beslissing 20 hieronder). Daarom draagt het anker nu twee goedkope correctietermen mee:
+het verschil MP2(QZ) − MP2(TZ) en het verschil SCF(5Z) − SCF(TZ), elk een verschil van twee berekende
+energieën op dezelfde geometrie, zonder gefitte parameter en voor minder dan 1 % van de rekentijd van een
+LNO-punt. De regel "beide kanten in dezelfde basisset" blijft gelden voor de *licentievergelijking*
+(de termen zijn daar gemeenschappelijk en vallen weg); de correctie verandert alleen het getal dat
+het anker rapporteert. Wat nog niet gemeten is: hoe het restant CCSD(T) − MP2 zelf van basisset
+verandert; dat wacht op één canonieke QZ-lijn in de clusteraanvraag. *Bron:*
+`probes/results_m1/BASIS_LINE_scf_mp2.md`, Ladder §3 (gedateerd woord van 12 september).
+
 ## In het kort
 
 DFT is goedkoop en bijna goed, met een bekende systematische fout op aromatische
