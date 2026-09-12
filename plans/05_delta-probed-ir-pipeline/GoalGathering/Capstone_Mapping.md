@@ -202,10 +202,14 @@ survey: 66 molecules carry an all-carbon aromatic six-ring (benzene itself once)
 conjugated five- or six-ring of C/N/O.** The "aromatic-heavy QM9 subset" of the paragraph above is
 therefore, as a matter of fact, a *conjugated and heteroaromatic* subset. **Candidate, prepared but not
 computed** (`modules/05_support_predictor/corpus/`, design note of 2026-09-12): an own aromatic corpus
-computed by the plan's deck (B3LYP and ωB97X at 6-31G*, TR-projected) in three layers — a size bridge of
-45 ladder-adjacent aromatics of 12–30 atoms, 4,353 substituted aromatic and heteroaromatic cores up to
-26 atoms, and the 6,055 conjugated QM9 molecules (B3LYP only, at the QM9 geometry) — in a fixed hashed
-order so that any stop is a reproducible subset and the learning-curve points 300/600/1,200 are nested.
+computed by the plan's deck (B3LYP and ωB97X at 6-31G*, TR-projected) in four layers — a size bridge of
+45 ladder-adjacent aromatics of 12–30 atoms, 868 mono-substituted three- and four-ring cores (layer A′,
+added the same day on the user's decision, because 45 parents cannot teach a rule near the ladder's
+size), 4,353 substituted aromatic and heteroaromatic cores up to 26 atoms, and the 6,055 conjugated QM9
+molecules (B3LYP only, at the QM9 geometry) — in a fixed hashed order (A first, then B and A′
+alternating, then C) so that any stop is a reproducible subset and the learning-curve points
+300/600/1,200 are nested. **The user adopted the own layers as the candidate on 2026-09-12**; the
+number computed remains the dated note after the timing test.
 Cost per molecule is measured on this laptop (benzene 3–7 min per Hessian, naphthalene 13 min, pyrene
 54 min); the subset size remains the dated note after the five-molecule timing test, as the paragraph
 above already requires. Reading 1 holds unchanged: computed ab initio data, released with a DOI before

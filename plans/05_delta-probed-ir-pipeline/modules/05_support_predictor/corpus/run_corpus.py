@@ -35,6 +35,21 @@ def read_manifest():
         return list(csv.DictReader(f))
 
 
+def queue_order(rows):
+    """Run order (DESIGN, dated addition 2026-09-12): layer A first (timing-test rows at the front), then layers B and A2
+    alternating by their position inside each layer (class axis and size axis grow together), then layer C.
+    Inside a layer the position is the hashed priority order of the manifest."""
+    pos = {}
+    for L in ("A", "A2", "B", "C"):
+        for i, r in enumerate(sorted([r for r in rows if r["layer"] == L], key=lambda r: (0 if r.get("note") == "timing-test" else 1, r["priority"]))):
+            pos[r["id"]] = i
+    def key(r):
+        if r["layer"] == "A": return (0, pos[r["id"]], 0)
+        if r["layer"] in ("B", "A2"): return (1, pos[r["id"]], 0 if r["layer"] == "B" else 1)
+        return (2, pos[r["id"]], 0)
+    return sorted(rows, key=key)
+
+
 def write_manifest(rows):
     tmp = MANIFEST.with_suffix(".tmp")
     with open(tmp, "w", newline="", encoding="utf-8") as f:
@@ -86,7 +101,7 @@ def main():
     if not QC_PYTHON.exists():
         log(f"psi4 environment not found at {QC_PYTHON}"); return 4
     LOCK.write_text(f"{machine} {datetime.now():%Y-%m-%d %H:%M}")
-    t_start = time.time(); done = 0; last_report = time.time()
+    t_start = time.time(); done = 0; last_report = time.time(); virtually_done = set()
     try:
         while True:
             rows = read_manifest()
@@ -94,7 +109,7 @@ def main():
             for r in rows:
                 if r["status"] == "running" and not (HERE / "molecules" / r["id"] / "result.json").exists():
                     r["status"] = "pending"; r["note"] = (r.get("note", "") + " redone-after-crash").strip()
-            todo = [r for r in rows if r["status"] == "pending" and (a.layer is None or r["layer"] == a.layer)]
+            todo = [r for r in queue_order(rows) if r["status"] == "pending" and r["id"] not in virtually_done and (a.layer is None or r["layer"] == a.layer)]
             if not todo:
                 log("nothing pending; done"); break
             if a.max_molecules is not None and done >= a.max_molecules:
@@ -103,7 +118,7 @@ def main():
                 log(f"reached --max-hours {a.max_hours}"); break
             r = todo[0]
             if a.dry_run:
-                log(f"would run {r['id']} {r['layer']} {r['name']} ({r['n_atoms']} atoms)"); done += 1
+                log(f"would run {r['id']} {r['layer']} {r['name']} ({r['n_atoms']} atoms)"); done += 1; virtually_done.add(r["id"])
                 if a.max_molecules and done >= a.max_molecules: break
                 continue
             r["status"] = "running"; r["machine"] = machine; r["deck"] = deck_hash; write_manifest(rows)

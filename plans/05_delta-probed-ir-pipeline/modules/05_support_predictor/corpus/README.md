@@ -46,5 +46,7 @@ deck hash, so mixed decks are visible at once.
 `STATUS.md` says, per layer, how many are done and how many hours the rest will take at the measured
 rate. Because the priority order inside a layer is fixed (a hash of the SMILES), "the first 300 of
 layer B" is always the same 300 — the learning-curve points 300 / 600 / 1,200 are nested subsets, not
-new runs. A release freezes the manifest rows with status `done` and their result hashes; later releases
+new runs. **Run order** (`run_corpus.queue_order`, dated addition 2026-09-12): layer A first (the five
+timing-test molecules at the very front), then layers B and A′ (`A2` in the files) alternating one by one,
+so the class axis and the size axis grow together, then layer C. A release freezes the manifest rows with status `done` and their result hashes; later releases
 add, never change.

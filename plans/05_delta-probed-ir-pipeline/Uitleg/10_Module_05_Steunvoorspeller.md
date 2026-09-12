@@ -175,13 +175,16 @@ drie lagen en in een vaste volgorde:
 
 | laag | inhoud | aantal in het manifest |
 |---|---|---|
-| A, grootte-brug | aromaten van 12 tot 30 atomen, van benzeen tot pyreen, met aza- en oxa-varianten | 45 |
+| A, grootte-brug (ouders) | aromaten van 12 tot 30 atomen, van benzeen tot pyreen, met aza- en oxa-varianten | 45 |
+| A′, grootte-brug als verdeling | dezelfde grote kernen (antraceen, fenantreen, pyreen, fluorantheen, acridine, carbazool, …) elk met één zijgroep uit vijftien; toegevoegd op 12 september op besluit van de opdrachtgever, omdat 45 ouders geen regel kunnen leren | 868 |
 | B, de klasse | mono- en digesubstitueerde aromatische en heteroaromatische kernen tot 26 atomen | 4.353 |
 | C, QM9 geconjugeerd | de 6.055 uit de ringtelling; alleen de B3LYP-Hessiaan hoeft nog | 6.055 |
 
 De fabriek kan op elk moment gestopt en weer gestart worden (laptop, straks de desktop, ooit een
 cluster); omdat de volgorde binnen een laag vastligt, is elke tussenstand een reproduceerbare
-deelverzameling en zijn "de eerste 300, 600, 1.200" van laag B geneste sets voor een leercurve.
+deelverzameling en zijn "de eerste 300, 600, 1.200" van laag B geneste sets voor een leercurve. De
+volgorde over de lagen heen: eerst A (de vijf timingmoleculen voorop), dan om en om B en A′ zodat de
+klasse-as en de grootte-as samen groeien, dan C.
 Hoeveel er uiteindelijk gerekend wordt, staat met opzet nergens: dat wordt een gedateerde notitie na
 een timingtest van vijf moleculen, precies zoals §3 al voorschreef voor de QM9-deelverzameling.
 Er is nog niets gerekend. Of de eigen lagen worden overgenomen, of alleen de geconjugeerde
