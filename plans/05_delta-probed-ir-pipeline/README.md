@@ -628,7 +628,7 @@ above about 1 GB on the Windows side beside it):
 **The evidence ladder "does plan 06 make plan 05 cheaper?" (the user, 12 September evening; the Monday e-mail is
 held until this is clearer):** step 1 done — item 33 read for the gradient/energy ratio g: **not printed** in the paper
 (`notes/Reading_Note_2026-09-12_Item33_PySCFAD_Gradient_Cost.md`); step 2 — X1c/X1d counts on the naphthalene tensor
-(after the naphthalene DFT dry run): does the products-to-deck ratio improve with size; step 3 — decision 34's item 1 in
+(after the naphthalene DFT dry run): does the products-to-deck ratio improve with size — **model form done the same evening (plan 06 X8):** no connectivity pattern is band-accurate at benzene (dropped blocks move bands 15–32 cm⁻¹; 74 of 78 Cartesian blocks needed for 0.5 cm⁻¹), so the step stays a tensor measurement, with the script and the licence rule (dropped blocks < 0.5 cm⁻¹) ready; step 3 — decision 34's item 1 in
 the real engine at benzene cc-pVDZ tight (one product by energies ≈ 120 energies ≈ 6 h; the six-product reconstruction
 ≈ 36 h against a 22 h deck): exactness and noise in the frozen arm, not yet savings; step 4 — g measured (side project
 M2, in PySCFAD, with frozen spaces at benzene cc-pVDZ, where the paper's symmetry-breaking outlier should vanish): the

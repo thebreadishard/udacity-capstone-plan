@@ -1,0 +1,579 @@
+{
+ "date": "2026-09-12 19:25",
+ "constants": {
+  "bond_cutoff_bohr": {
+   "CC": 3.0,
+   "CH": 2.4
+  },
+  "R_CUT_bohr_ring": 5.6,
+  "lattice_CC_A": 1.4,
+  "lattice_CH_A": 1.08,
+  "retention_levels": [
+   0.9,
+   0.95,
+   0.99,
+   0.999,
+   0.9999
+  ],
+  "energies_per_product_energies_only": "4 * 3N (second order, plan 05 convention)",
+  "VERIFY_MAX_DIM": 250,
+  "random_seed": 0
+ },
+ "unit_check_LtHyL_vs_D2Q_rel": 2.492284065035388e-15,
+ "benzene_calibration": [
+  {
+   "dim": 36,
+   "elements": 144,
+   "maxr": 6,
+   "k": 6,
+   "colouring": "largest-first",
+   "g_star": 12.0,
+   "energies_products_energies_only": 864,
+   "recovery_max_abs_error": 2.220446049250313e-16,
+   "pattern": "real, keep 90 % of \u2016\u0394\u2016\u00b2_F",
+   "blocks_kept_upper": 20,
+   "fro_retained": 0.9037892643223668,
+   "max_band_shift_cm": 41.69431137867787,
+   "bands_moved_gt_0.5_cm": 25,
+   "bands_moved_gt_0.05_cm": 30
+  },
+  {
+   "dim": 36,
+   "elements": 207,
+   "maxr": 12,
+   "k": 15,
+   "colouring": "largest-first",
+   "g_star": 6.9,
+   "energies_products_energies_only": 2160,
+   "recovery_max_abs_error": 1.1102230246251565e-16,
+   "pattern": "real, keep 95 % of \u2016\u0394\u2016\u00b2_F",
+   "blocks_kept_upper": 27,
+   "fro_retained": 0.9534044966753885,
+   "max_band_shift_cm": 21.380105202398454,
+   "bands_moved_gt_0.5_cm": 26,
+   "bands_moved_gt_0.05_cm": 30
+  },
+  {
+   "dim": 36,
+   "elements": 297,
+   "maxr": 18,
+   "k": 18,
+   "colouring": "largest-first",
+   "g_star": 8.25,
+   "energies_products_energies_only": 2592,
+   "recovery_max_abs_error": 1.1102230246251565e-16,
+   "pattern": "real, keep 99 % of \u2016\u0394\u2016\u00b2_F",
+   "blocks_kept_upper": 37,
+   "fro_retained": 0.9903768779649889,
+   "max_band_shift_cm": 14.280114574849677,
+   "bands_moved_gt_0.5_cm": 21,
+   "bands_moved_gt_0.05_cm": 30
+  },
+  {
+   "dim": 36,
+   "elements": 531,
+   "maxr": 24,
+   "k": 26,
+   "colouring": "largest-first",
+   "g_star": 10.211538461538462,
+   "energies_products_energies_only": 3744,
+   "recovery_max_abs_error": 2.220446049250313e-16,
+   "pattern": "real, keep 99 % of \u2016\u0394\u2016\u00b2_F",
+   "blocks_kept_upper": 63,
+   "fro_retained": 0.9991242009576936,
+   "max_band_shift_cm": 5.227745103224208,
+   "bands_moved_gt_0.5_cm": 13,
+   "bands_moved_gt_0.05_cm": 22
+  },
+  {
+   "dim": 36,
+   "elements": 630,
+   "maxr": 30,
+   "k": 33,
+   "colouring": "largest-first",
+   "g_star": 9.545454545454545,
+   "energies_products_energies_only": 4752,
+   "recovery_max_abs_error": 2.220446049250313e-16,
+   "pattern": "real, keep 99 % of \u2016\u0394\u2016\u00b2_F",
+   "blocks_kept_upper": 74,
+   "fro_retained": 0.9999177342052584,
+   "max_band_shift_cm": 0.8132307962221148,
+   "bands_moved_gt_0.5_cm": 3,
+   "bands_moved_gt_0.05_cm": 19
+  },
+  {
+   "dim": 36,
+   "elements": 180,
+   "maxr": 9,
+   "k": 9,
+   "colouring": "largest-first",
+   "g_star": 10.0,
+   "energies_products_energies_only": 1296,
+   "recovery_max_abs_error": 2.220446049250313e-16,
+   "pattern": "model (bonded)",
+   "blocks_kept_upper": 24,
+   "fro_retained": 0.9344006239397908,
+   "max_band_shift_cm": 32.26445736404662,
+   "bands_moved_gt_0.5_cm": 24,
+   "bands_moved_gt_0.05_cm": 30
+  },
+  {
+   "dim": 36,
+   "elements": 261,
+   "maxr": 18,
+   "k": 18,
+   "colouring": "largest-first",
+   "g_star": 7.25,
+   "energies_products_energies_only": 2592,
+   "recovery_max_abs_error": 1.1102230246251565e-16,
+   "pattern": "model (ring)",
+   "blocks_kept_upper": 33,
+   "fro_retained": 0.9882275179839362,
+   "max_band_shift_cm": 14.814354008790247,
+   "bands_moved_gt_0.5_cm": 22,
+   "bands_moved_gt_0.05_cm": 30
+  },
+  {
+   "dim": 36,
+   "elements": 261,
+   "maxr": 18,
+   "k": 18,
+   "colouring": "largest-first",
+   "g_star": 7.25,
+   "energies_products_energies_only": 2592,
+   "recovery_max_abs_error": 1.1102230246251565e-16,
+   "pattern": "model (all-CC)",
+   "blocks_kept_upper": 33,
+   "fro_retained": 0.9882275179839362,
+   "max_band_shift_cm": 14.814354008790247,
+   "bands_moved_gt_0.5_cm": 22,
+   "bands_moved_gt_0.05_cm": 30
+  },
+  {
+   "dim": 36,
+   "elements": 666,
+   "maxr": 36,
+   "k": 36,
+   "colouring": "largest-first",
+   "g_star": 9.25,
+   "energies_products_energies_only": 5184,
+   "recovery_max_abs_error": 0.0,
+   "pattern": "dense (all 78 blocks; X5: all above 3\u00d7 the noise floor)",
+   "blocks_kept_upper": 78,
+   "fro_retained": 1.0,
+   "max_band_shift_cm": 0.0,
+   "bands_moved_gt_0.5_cm": 0,
+   "bands_moved_gt_0.05_cm": 0
+  }
+ ],
+ "generator_validation": {
+  "naphthalene_dryrun": {
+   "nC": 10,
+   "nH": 8,
+   "bonds": 19
+  },
+  "naphthalene_lattice": {
+   "nC": 10,
+   "nH": 8,
+   "bonds": 19
+  }
+ },
+ "table": [
+  {
+   "molecule": "benzene (dry run)",
+   "nC": 6,
+   "nH": 6,
+   "natom": 12,
+   "bonded": {
+    "dim": 36,
+    "elements": 180,
+    "maxr": 9,
+    "k": 9,
+    "colouring": "largest-first",
+    "g_star": 10.0,
+    "energies_products_energies_only": 1296,
+    "recovery_max_abs_error": 1.6653345369377348e-16
+   },
+   "ring": {
+    "dim": 36,
+    "elements": 261,
+    "maxr": 18,
+    "k": 18,
+    "colouring": "largest-first",
+    "g_star": 7.25,
+    "energies_products_energies_only": 2592,
+    "recovery_max_abs_error": 1.1102230246251565e-16
+   },
+   "all-CC": {
+    "dim": 36,
+    "elements": 261,
+    "maxr": 18,
+    "k": 18,
+    "colouring": "largest-first",
+    "g_star": 7.25,
+    "energies_products_energies_only": 2592,
+    "recovery_max_abs_error": 4.163336342344337e-17
+   }
+  },
+  {
+   "molecule": "naphthalene (dry run)",
+   "nC": 10,
+   "nH": 8,
+   "natom": 18,
+   "bonded": {
+    "dim": 54,
+    "elements": 279,
+    "maxr": 9,
+    "k": 9,
+    "colouring": "largest-first",
+    "g_star": 15.5,
+    "energies_products_energies_only": 1944,
+    "recovery_max_abs_error": 4.440892098500626e-16
+   },
+   "ring": {
+    "dim": 54,
+    "elements": 459,
+    "maxr": 18,
+    "k": 18,
+    "colouring": "largest-first",
+    "g_star": 12.75,
+    "energies_products_energies_only": 3888,
+    "recovery_max_abs_error": 2.220446049250313e-16
+   },
+   "all-CC": {
+    "dim": 54,
+    "elements": 585,
+    "maxr": 30,
+    "k": 30,
+    "colouring": "largest-first",
+    "g_star": 9.75,
+    "energies_products_energies_only": 6480,
+    "recovery_max_abs_error": 2.220446049250313e-16
+   }
+  },
+  {
+   "molecule": "anthracene",
+   "nC": 14,
+   "nH": 10,
+   "natom": 24,
+   "bonded": {
+    "dim": 72,
+    "elements": 378,
+    "maxr": 9,
+    "k": 9,
+    "colouring": "smallest-last",
+    "g_star": 21.0,
+    "energies_products_energies_only": 2592,
+    "recovery_max_abs_error": 3.3306690738754696e-16
+   },
+   "ring": {
+    "dim": 72,
+    "elements": 657,
+    "maxr": 18,
+    "k": 18,
+    "colouring": "largest-first",
+    "g_star": 18.25,
+    "energies_products_energies_only": 5184,
+    "recovery_max_abs_error": 2.7755575615628914e-16
+   },
+   "all-CC": {
+    "dim": 72,
+    "elements": 1053,
+    "maxr": 42,
+    "k": 42,
+    "colouring": "largest-first",
+    "g_star": 12.535714285714286,
+    "energies_products_energies_only": 12096,
+    "recovery_max_abs_error": 2.220446049250313e-16
+   }
+  },
+  {
+   "molecule": "phenanthrene",
+   "nC": 14,
+   "nH": 10,
+   "natom": 24,
+   "bonded": {
+    "dim": 72,
+    "elements": 378,
+    "maxr": 9,
+    "k": 9,
+    "colouring": "largest-first",
+    "g_star": 21.0,
+    "energies_products_energies_only": 2592,
+    "recovery_max_abs_error": 2.220446049250313e-16
+   },
+   "ring": {
+    "dim": 72,
+    "elements": 666,
+    "maxr": 18,
+    "k": 18,
+    "colouring": "largest-first",
+    "g_star": 18.5,
+    "energies_products_energies_only": 5184,
+    "recovery_max_abs_error": 4.440892098500626e-16
+   },
+   "all-CC": {
+    "dim": 72,
+    "elements": 1053,
+    "maxr": 42,
+    "k": 42,
+    "colouring": "largest-first",
+    "g_star": 12.535714285714286,
+    "energies_products_energies_only": 12096,
+    "recovery_max_abs_error": 2.220446049250313e-16
+   }
+  },
+  {
+   "molecule": "tetracene",
+   "nC": 18,
+   "nH": 12,
+   "natom": 30,
+   "bonded": {
+    "dim": 90,
+    "elements": 477,
+    "maxr": 9,
+    "k": 9,
+    "colouring": "smallest-last",
+    "g_star": 26.5,
+    "energies_products_energies_only": 3240,
+    "recovery_max_abs_error": 3.3306690738754696e-16
+   },
+   "ring": {
+    "dim": 90,
+    "elements": 855,
+    "maxr": 18,
+    "k": 18,
+    "colouring": "largest-first",
+    "g_star": 23.75,
+    "energies_products_energies_only": 6480,
+    "recovery_max_abs_error": 4.440892098500626e-16
+   },
+   "all-CC": {
+    "dim": 90,
+    "elements": 1665,
+    "maxr": 54,
+    "k": 54,
+    "colouring": "largest-first",
+    "g_star": 15.416666666666666,
+    "energies_products_energies_only": 19440,
+    "recovery_max_abs_error": 2.7755575615628914e-17
+   }
+  },
+  {
+   "molecule": "pyrene",
+   "nC": 16,
+   "nH": 10,
+   "natom": 26,
+   "bonded": {
+    "dim": 78,
+    "elements": 417,
+    "maxr": 9,
+    "k": 9,
+    "colouring": "largest-first",
+    "g_star": 23.166666666666668,
+    "energies_products_energies_only": 2808,
+    "recovery_max_abs_error": 1.1102230246251565e-16
+   },
+   "ring": {
+    "dim": 78,
+    "elements": 777,
+    "maxr": 18,
+    "k": 21,
+    "colouring": "largest-first",
+    "g_star": 18.5,
+    "energies_products_energies_only": 6552,
+    "recovery_max_abs_error": 2.220446049250313e-16
+   },
+   "all-CC": {
+    "dim": 78,
+    "elements": 1326,
+    "maxr": 48,
+    "k": 48,
+    "colouring": "largest-first",
+    "g_star": 13.8125,
+    "energies_products_energies_only": 14976,
+    "recovery_max_abs_error": 1.1102230246251565e-16
+   }
+  },
+  {
+   "molecule": "coronene",
+   "nC": 24,
+   "nH": 12,
+   "natom": 36,
+   "bonded": {
+    "dim": 108,
+    "elements": 594,
+    "maxr": 9,
+    "k": 9,
+    "colouring": "largest-first",
+    "g_star": 33.0,
+    "energies_products_energies_only": 3888,
+    "recovery_max_abs_error": 4.440892098500626e-16
+   },
+   "ring": {
+    "dim": 108,
+    "elements": 1215,
+    "maxr": 21,
+    "k": 21,
+    "colouring": "largest-first",
+    "g_star": 28.928571428571427,
+    "energies_products_energies_only": 9072,
+    "recovery_max_abs_error": 6.661338147750939e-16
+   },
+   "all-CC": {
+    "dim": 108,
+    "elements": 2808,
+    "maxr": 72,
+    "k": 72,
+    "colouring": "largest-first",
+    "g_star": 19.5,
+    "energies_products_energies_only": 31104,
+    "recovery_max_abs_error": 0.0
+   }
+  },
+  {
+   "molecule": "C54H18",
+   "nC": 54,
+   "nH": 18,
+   "natom": 72,
+   "bonded": {
+    "dim": 216,
+    "elements": 1242,
+    "maxr": 9,
+    "k": 9,
+    "colouring": "smallest-last",
+    "g_star": 69.0,
+    "energies_products_energies_only": 7776,
+    "recovery_max_abs_error": 7.216449660063518e-16
+   },
+   "ring": {
+    "dim": 216,
+    "elements": 2889,
+    "maxr": 21,
+    "k": 24,
+    "colouring": "smallest-last",
+    "g_star": 60.1875,
+    "energies_products_energies_only": 20736,
+    "recovery_max_abs_error": 4.440892098500626e-16
+   },
+   "all-CC": {
+    "dim": 216,
+    "elements": 13473,
+    "maxr": 162,
+    "k": 162,
+    "colouring": "largest-first",
+    "g_star": 41.583333333333336,
+    "energies_products_energies_only": 139968,
+    "recovery_max_abs_error": 1.1102230246251565e-16
+   }
+  },
+  {
+   "molecule": "C96H24",
+   "nC": 96,
+   "nH": 24,
+   "natom": 120,
+   "bonded": {
+    "dim": 360,
+    "elements": 2124,
+    "maxr": 9,
+    "k": 9,
+    "colouring": "smallest-last",
+    "g_star": 118.0,
+    "energies_products_energies_only": 12960,
+    "recovery_max_abs_error": null
+   },
+   "ring": {
+    "dim": 360,
+    "elements": 5283,
+    "maxr": 21,
+    "k": 27,
+    "colouring": "largest-first",
+    "g_star": 97.83333333333333,
+    "energies_products_energies_only": 38880,
+    "recovery_max_abs_error": null
+   },
+   "all-CC": {
+    "dim": 360,
+    "elements": 41976,
+    "maxr": 288,
+    "k": 288,
+    "colouring": "largest-first",
+    "g_star": 72.875,
+    "energies_products_energies_only": 414720,
+    "recovery_max_abs_error": null
+   }
+  },
+  {
+   "molecule": "C150H30",
+   "nC": 150,
+   "nH": 30,
+   "natom": 180,
+   "bonded": {
+    "dim": 540,
+    "elements": 3240,
+    "maxr": 9,
+    "k": 9,
+    "colouring": "smallest-last",
+    "g_star": 180.0,
+    "energies_products_energies_only": 19440,
+    "recovery_max_abs_error": null
+   },
+   "ring": {
+    "dim": 540,
+    "elements": 8397,
+    "maxr": 21,
+    "k": 30,
+    "colouring": "smallest-last",
+    "g_star": 139.95,
+    "energies_products_energies_only": 64800,
+    "recovery_max_abs_error": null
+   },
+   "all-CC": {
+    "dim": 540,
+    "elements": 101925,
+    "maxr": 450,
+    "k": 450,
+    "colouring": "largest-first",
+    "g_star": 113.25,
+    "energies_products_energies_only": 972000,
+    "recovery_max_abs_error": null
+   }
+  },
+  {
+   "molecule": "C384H48",
+   "nC": 384,
+   "nH": 48,
+   "natom": 432,
+   "bonded": {
+    "dim": 1296,
+    "elements": 7992,
+    "maxr": 9,
+    "k": 9,
+    "colouring": "smallest-last",
+    "g_star": 444.0,
+    "energies_products_energies_only": 46656,
+    "recovery_max_abs_error": null
+   },
+   "ring": {
+    "dim": 1296,
+    "elements": 22059,
+    "maxr": 21,
+    "k": 30,
+    "colouring": "smallest-last",
+    "g_star": 367.65,
+    "energies_products_energies_only": 155520,
+    "recovery_max_abs_error": null
+   },
+   "all-CC": {
+    "dim": 1296,
+    "elements": 664848,
+    "maxr": 1152,
+    "k": 1152,
+    "colouring": "largest-first",
+    "g_star": 288.5625,
+    "energies_products_energies_only": 5971968,
+    "recovery_max_abs_error": null
+   }
+  }
+ ]
+}
