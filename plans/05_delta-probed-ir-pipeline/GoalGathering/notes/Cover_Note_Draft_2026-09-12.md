@@ -12,23 +12,33 @@ Hierbij het projectvoorstel voor mijn capstone, in de versie van vandaag. Het is
 ongeveer dertig pagina's; §1 vat het plan in drie zinnen samen, en die drie zinnen zijn voor jou
 geschreven. De rest is de onderbouwing en het contract waaraan ik mezelf houd.
 
-Kort wat het is. Ik bouw een pijplijn die van een aromatisch molecuul een infraroodspectrum maakt,
-met een coupled-cluster-correctie op de harmonische krachtconstanten die ik niet uitreken maar
-*opmeet* met zo weinig mogelijk dure energieën, en waarvan ik het aantal per molecuul afdruk naast
-elk spectrum. Die dure energieën komen uit lokale coupled-cluster-berekeningen (LNO-CCSD(T)) waarvan
-ik de orbitaalruimtes bij de evenwichtsgeometrie één keer kies en daarna bij elke vervorming
-bevroren houd, zodat de energieverschillen tussen vervormingen glad zijn en niet door de
-orbitaalselectie worden verstoord. De accuracy wordt gescoord tegen laboratoriumdata en tegen de
-bestaande voorspellingen, waaronder die van jouw eigen groep; de regels daarvoor staan vast voordat
-er één vergelijking is gemaakt (§7).
+Wat je aan het eind krijgt, als het plan doet wat het belooft: een pijplijn die van elk afzonderlijk
+aromatisch molecuul een infraroodspectrum maakt met een coupled-cluster-anker, met bij elk spectrum
+een certificaat per bandfamilie dat zegt of het te vertrouwen is en wat het heeft gekost. Het doel
+daarvan is niet het spectrum van naftaleen. Het doel is een bron van trainingsdata voor een neuraal
+netwerk, beter dan geschaald DFT, voor de PAK's waarvoor geen laboratoriumspectrum bestaat — wat
+sinds Mai et al. (2025) lieten zien dat een netwerk PAK-spectra kan leren, het ontbrekende stuk is.
+Dat netwerk zelf beloof ik in dit plan niet: §6 zegt waarom niet, en wat er wel geleverd wordt om het
+mogelijk te maken — de correctie zelf, honderden atoompaarblokken per molecuul, en de meting op pyreen
+en coroneen die vooraf beslist of zo'n overdraagbaar model überhaupt kan bestaan. De dekkingstabel van
+§7 is de toets die zegt wanneer de banden van de pijplijn goed genoeg zijn om als trainingslabels te
+dienen; is die tabel op orde en is de gemeten reikwijdte kort, dan volgt het netwerk als gedateerd
+vervolgvoorstel onder dezelfde licentie als de rest.
+Onderweg levert het plan dingen op die je eerder hebt, en vier daarvan liggen er al: de bevinding dat
+de PAHdb-bibliotheek zoals ze wordt uitgeleverd de schaalfactoren van versie 3.00 bevat en niet de
+drie die het artikel van versie 4.00 beschrijft, een verschil van 4 tot 15 cm⁻¹ op de bandposities;
+dat een per band gekalibreerde harmonische bibliotheek, getraind op 2.477 gepaarde matrix- en
+rekenbanden van 83 moleculen, niet beter blijkt dan de bibliotheek zelf (6,5 cm⁻¹ gemiddelde
+fout); een laboratoriumscorebord voor benzeen en naftaleen met per band gemeten onzekerheden; en de
+eerste gemeten matrix–gas-verschuiving per bandfamilie voor naftaleen, antraceen, pyreen en chryseen
+(+3 tot +6 cm⁻¹, matrix boven hete damp).
 
-Wat er sinds 6 september is gemeten, en wat het voorstel daardoor anders zegt dan een plan op
-papier: het bevriezen van de orbitaalruimtes werkt bij benzeen — de energie langs een vervorming is
-glad tot 0,002–0,06 µE_h, en de systematische afwijking van de kromming tegenover canoniek
-CCSD(T) is [x] cm⁻¹ na de strengste drempels (§3.3); één lokale-CC-energie van naftaleen kost op mijn
-laptop 11,5 uur, dus het eerste echte molecuul kost 5.450 laptopuren en vraagt om een cluster (§8,
-§13 punt 5); en het laboratoriumscorebord voor benzeen en naftaleen staat, met gemeten
-bandonzekerheden (§7).
+Kort hoe het werkt. De coupled-cluster-correctie op de harmonische krachtconstanten reken ik niet
+uit maar *meet* ik op, met zo weinig mogelijk dure energieën: lokale coupled-cluster-berekeningen
+(LNO-CCSD(T)) waarvan ik de orbitaalruimtes één keer kies en daarna bij elke vervorming bevroren houd,
+zodat de energieverschillen glad zijn. Het aantal energieën per molecuul staat naast elk spectrum, en
+de accuracy wordt gescoord tegen laboratoriumdata en tegen de bestaande voorspellingen, waaronder
+die van jouw eigen groep, volgens regels die vaststaan voordat er één vergelijking is gemaakt (§7).
 
 Vanaf naftaleen kan dit plan niet meer op mijn eigen machine; het vraagt clustertijd, en ik wil je
 kunnen laten zien dat die aanvraag op bewijs rust en niet op hoop. Wat er nu al gemeten is: de kern
