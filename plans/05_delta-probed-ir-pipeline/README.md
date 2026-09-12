@@ -562,7 +562,7 @@ sum of the TZ → 5Z SCF and TZ → QZ MP2 rows of `results_m1/BASIS_LINE_scf_mp
 - **Naphthalene dry run** (DFT, psi4 `qc` env on Windows; not beside an anchor job): P4's entry test for the symmetry
   prior, the mode table that gives Module 03 its family matching and plan-06 X2/S4 its second tensor; the R0 pilot's
   deck still needs the canonical two-mode count (decision 16 iii).
-- **Engine layer 3 (2026-09-12):** per-fragment checkpointing for LNO-CCSD(T) (`probes/lno_checkpoint.py`, tested exact on benzene); the naphthalene xtight timing, killed at 16:14 by a Windows-side Lean build (host memory), relaunched at ≈ 16:52 with it; owed: the same layer in `m1_frozen_spaces.py`; the software-changes ledger (`GoalGathering/notes/Software_Changes_Ledger.md`) opened for possible upstream PRs.
+- **Engine layer 3 (2026-09-12):** per-fragment checkpointing for LNO-CCSD(T) (`probes/lno_checkpoint.py`, tested exact on benzene); the naphthalene xtight timing, killed at 16:14 by a Windows-side Lean build (host memory), relaunched at ≈ 16:52 with it; the same layer is in `m1_frozen_spaces.py` since the same evening (built, untested — smoke test owed after the timing); the software-changes ledger (`GoalGathering/notes/Software_Changes_Ledger.md`) opened for possible upstream PRs.
 - **Module 03 owed:** ~~u_band columns of the Ladder rule on the GC-IRD and Coblentz records~~ (printed 2026-09-12,
   `modules/03_lab_scoreboard/out/U_BAND.md`: 8.6–16.2 cm⁻¹ on the GC-IRD records, none decidable at 2 or 5 cm⁻¹ — the
   Ladder's dated note of 2026-09-12); the GC-IRD lightpipe temperature (item 50) and the ±30 % corrected form; the

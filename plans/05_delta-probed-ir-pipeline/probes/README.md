@@ -273,5 +273,5 @@ the recorded energies exactly (E_SCF, E_corr MP2/CCSD/CCSD(T): differences 0.000
 `results_timing/benzene_cc-pvdz_tight.json`), 13 new + 2 restored fragments; test outputs in
 `results_timing/ckpt_test/`. Wall-time bookkeeping: `t_lno_ccsd_t_s` is the segment's wall time, `t_lno_fragments_sum_s`
 the solve time summed over all segments, `checkpoint` the counts. **Rule:** after any interruption of a timing run,
-relaunch the same command with `--resume`; the JSON is the record. Owed: the same layer in `m1_frozen_spaces.py`.
+relaunch the same command with `--resume`; the JSON is the record. **Same evening: the layer is in `m1_frozen_spaces.py` too** (both arms inherit `CheckpointedLNOCCSD_T`; checkpoints `results_m1/<run>/fragments/<point>_<arm>.json`; the fresh per-point localisations of arm C and the reference `lo0` are cached as `<tag>_lo.npz` so a rerun builds identical fragments; a run that dies inside the reference arm C is rerun *without* `--resume` and reuses its fragments; a run that dies at a displaced point is rerun *with* `--resume`, which keeps finished points as before and now also the finished fragments of the unfinished point). **Built, not yet tested on the chain** — smoke test on `benzene cc-pvdz normal` (minutes) owed after the naphthalene timing; until then the chain is not to be used for a record.
 

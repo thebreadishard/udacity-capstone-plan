@@ -135,9 +135,12 @@ def full_mp2(mf):
 
 
 def lno_classes():
-    from pyscf.lno import LNOCCSD_T
+    # 2026-09-12 (engine layer 3): both arms inherit the per-fragment checkpoint of probes/lno_checkpoint.py; a run
+    # interrupted inside a point loses only the fragment in progress (see ckpt_setup below). BUILT, NOT YET TESTED
+    # on this chain (test owed after the naphthalene timing; the layer itself is tested on the timing probe).
+    from lno_checkpoint import CheckpointedLNOCCSD_T
 
-    class RecordingLNOCCSD_T(LNOCCSD_T):
+    class RecordingLNOCCSD_T(CheckpointedLNOCCSD_T):
         """Arm B/C: the released code, but every fragment's LAS (orbfrag, frzfrag) is recorded."""
         def kernel(self, eris=None):
             self.recorded = []
@@ -148,7 +151,7 @@ def lno_classes():
             self.recorded.append((np.array(orbfrag), np.array(frzfrag, dtype=int).ravel() if np.ndim(frzfrag) else np.array([], dtype=int), msg))
             return orbfrag, frzfrag, uocc_loc, msg
 
-    class FrozenLNOCCSD_T(LNOCCSD_T):
+    class FrozenLNOCCSD_T(CheckpointedLNOCCSD_T):
         """Arm A: make_las returns the stored, transported LAS of each fragment; nothing is rebuilt."""
         def set_transported(self, frags, s1e):
             self._frags = frags      # list of (orbfrag_x, frzfrag, n_occ_act_slice)
@@ -166,6 +169,38 @@ def lno_classes():
             return orbfrag, (frzfrag if len(frzfrag) else 0), uocc_loc, msg + " [transported]"
 
     return RecordingLNOCCSD_T, FrozenLNOCCSD_T
+
+
+def ckpt_setup(mcc, out, tag, meta):
+    """Attach the per-fragment checkpoint `<out>/fragments/<tag>.json` to an LNO object and load what exists.
+    A checkpoint whose metadata does not match is set aside (renamed *.stale), never used."""
+    from lno_checkpoint import FragmentCheckpointError
+    d = os.path.join(out, "fragments")
+    os.makedirs(d, exist_ok=True)
+    mcc.ckpt_path = os.path.join(d, f"{tag}.json")
+    mcc.ckpt_meta = meta
+    try:
+        n = mcc.ckpt_load()
+    except FragmentCheckpointError as e:
+        log(f"checkpoint {tag}: metadata mismatch, set aside ({e})")
+        os.replace(mcc.ckpt_path, mcc.ckpt_path + ".stale")
+        n = mcc.ckpt_load()
+    if n:
+        log(f"checkpoint {tag}: {n} fragment(s) restored, the rest is solved now")
+    return n
+
+
+def cached_localisation(out, tag, mol, C_occ):
+    """Pipek–Mezey once per (point, arm); saved so that a resumed run rebuilds identical fragments."""
+    d = os.path.join(out, "fragments")
+    os.makedirs(d, exist_ok=True)
+    path = os.path.join(d, f"{tag}_lo.npz")
+    if os.path.exists(path):
+        z = np.load(path)
+        return z["lo"], float(z["pm"]), True
+    lo_c, pm_c = pm_localise(mol, C_occ)
+    np.savez(path, lo=lo_c, pm=np.float64(pm_c))
+    return lo_c, pm_c, False
 
 
 def energies_of(mcc, mf, emp2_full):
@@ -273,9 +308,14 @@ def main():
                         f"{len(prior_rows)} finished points kept from the interrupted run")
         log(resumed_note)
     else:
-        lo0, pm0 = pm_localise(mol0, C_occ_act0)
+        # a run that died inside the reference arm C is rerun WITHOUT --resume: lo0 and the solved fragments are reused
+        lo0, pm0, lo0_reused = cached_localisation(out, "ref", mol0, C_occ_act0)
+        if lo0_reused:
+            log("reference: localisation reused from fragments/ref_lo.npz (earlier attempt)")
         mccC0 = Recording(mf0, lo0, [[i] for i in range(lo0.shape[1])], frozen=FROZEN_CORE)
         mccC0.lno_thresh = THRESH[args.thresh]; mccC0.verbose = 2
+        ckpt_setup(mccC0, out, "ref_C", {"basis": args.basis, "thresh": args.thresh, "arm": "C", "point": "ref",
+                                          "e_scf_1e-8": round(float(mf0.e_tot), 8), "n_lmo": int(lo0.shape[1])})
         mccC0.kernel()
         E_C0 = energies_of(mccC0, mf0, emp2_0)
         recorded = mccC0.recorded
@@ -300,8 +340,9 @@ def main():
         f"{[(int(s['occ_act'].stop - s['occ_act'].start), int(s['vir_act'].stop - s['vir_act'].start)) for s in stored][:5]}…; "
         f"frozen-space hash {frozen_space_hash[:16]}")
 
-    def arm_A(mf, S, lo_x):
+    def arm_A(mf, S, lo_x, tag):
         """Arm A at geometry x: transport every fragment's LAS, run the impurity solves only.
+        `tag` names the per-fragment checkpoint (`fragments/<tag>_A.json`, engine layer 3, 2026-09-12).
 
         The transported active blocks are semicanonicalised at x (Fock diagonalised within the occupied-active
         and the virtual-active block, a rotation that leaves the *space* unchanged). pyscf-forge's own make_las
@@ -336,12 +377,14 @@ def main():
             diag_vir_smin.append(float(sv_v.min())); diag_vir_off.append(offdiag_max(O_v))
         mcc = Frozen(mf, lo_x, frag_lolist, frozen=FROZEN_CORE).set_transported(frags, S)
         mcc.lno_thresh = THRESH[args.thresh]; mcc.verbose = 2
+        ckpt_setup(mcc, out, f"{tag}_A", {"basis": args.basis, "thresh": args.thresh, "arm": "A", "point": tag,
+                                          "e_scf_1e-8": round(float(mf.e_tot), 8), "frozen_space_hash": frozen_space_hash[:16]})
         mcc.kernel()
         return mcc, {"vir_smin_min_over_frags": min(diag_vir_smin), "vir_offdiag_max_over_frags": max(diag_vir_off)}
 
     # ---------------- stage 0: round trip at the reference geometry
     t0 = time.time()
-    mccA0, dA0 = arm_A(mf0, S0, lo0)
+    mccA0, dA0 = arm_A(mf0, S0, lo0, "ref")
     E_A0 = energies_of(mccA0, mf0, emp2_0)
     roundtrip = E_A0["e_corr_lno_ccsd_t"] - E_C0["e_corr_lno_ccsd_t"]
     if args.basis_terms != "none":   # decision 33: the two basis terms at the reference geometry
@@ -374,8 +417,9 @@ def main():
             # transported occupied set (arms A and B) and its diagnostics
             lo_x, sv_occ, O_occ = transport(lo0, C_occ, S)
             emp2 = full_mp2(mf)
-            # arm C: fresh localiser
-            lo_c, pm_c = pm_localise(mol, C_occ)
+            ptag = f"m{int(m)}_q{float(q):+.4f}"
+            # arm C: fresh localiser (cached per point so a resumed run rebuilds the same fragments)
+            lo_c, pm_c, _ = cached_localisation(out, f"{ptag}_C", mol, C_occ)
             pm_t = None
             try:
                 from pyscf import lo as _lo
@@ -386,12 +430,16 @@ def main():
             best_match_min = float(match.max(axis=1).min())
             if args.arms == "ABC":
                 mccC = Recording(mf, lo_c, frag_lolist, frozen=FROZEN_CORE); mccC.lno_thresh = THRESH[args.thresh]; mccC.verbose = 2
+                ckpt_setup(mccC, out, f"{ptag}_C", {"basis": args.basis, "thresh": args.thresh, "arm": "C", "point": ptag,
+                                                     "e_scf_1e-8": round(float(mf.e_tot), 8)})
                 mccC.kernel(); E_C = energies_of(mccC, mf, emp2)
                 mccB = Recording(mf, lo_x, frag_lolist, frozen=FROZEN_CORE); mccB.lno_thresh = THRESH[args.thresh]; mccB.verbose = 2
+                ckpt_setup(mccB, out, f"{ptag}_B", {"basis": args.basis, "thresh": args.thresh, "arm": "B", "point": ptag,
+                                                     "e_scf_1e-8": round(float(mf.e_tot), 8), "frozen_space_hash": frozen_space_hash[:16]})
                 mccB.kernel(); E_B = energies_of(mccB, mf, emp2)
             else:
                 E_B = E_C = None
-            mccA, dA = arm_A(mf, S, lo_x); E_A = energies_of(mccA, mf, emp2)
+            mccA, dA = arm_A(mf, S, lo_x, ptag); E_A = energies_of(mccA, mf, emp2)
             bt = None
             if args.basis_terms != "none":   # decision 33: the same two cheap terms at the displaced geometry
                 bt = basis_terms(symbols, x, float(mf.e_tot), emp2, args.basis_terms)
