@@ -91,3 +91,18 @@ first results.
 listed. **Ordered 2026-09-12 (afternoon): 2 × Corsair CMSX32GX5M1A5600C48, €878 + €6.95 shipping = €884.95; expected Tuesday 15 September.** Installation only when no job runs (not during the naphthalene xtight timing); afterwards the WSL ceiling goes to ≈ 50 GB by a dated Budget note and the parked 25 GB lever is superseded. Consequence for the Budget: the WSL ceiling can go to ≈ 50 GB, so a
 naphthalene xtight energy fits without the memory levers and a pyrene energy probably fits too; speed is
 unchanged.
+
+**Correction, same day (2026-09-12, evening):** the two-slot reading above was wrong. ASUS's own spec page for the
+Vivobook 18 (M1807) reads, for the M1807HA, "16GB DDR5 on board, 16GB DDR5 SO-DIMM, Max Total system memory up
+to: 32GB" — **one SO-DIMM slot plus 16 GB soldered**. The SMBIOS table lists two "SODIMM" devices, but the
+channel-A Micron device has serial 00000000 (the soldered memory, described by a module-style part number) and
+only the channel-B Samsung module carries a real serial (the socketed one). The firmware's "64 GB maximum" is
+the controller's array limit, not the board's. Consequences: at most one 32 GB module can be fitted, giving
+16 + 32 = **48 GB, and only if the firmware accepts a 32 GB module in the slot** (ASUS states 32 GB total as the
+maximum; the memory controller of the Ryzen 7 260 supports it, so the risk is a BIOS refusal, not a hardware
+one). Of the two modules ordered, one is superfluous in every case. Options for the user: cancel one module
+before shipping or return it within the return period; on arrival fit one 32 GB module and check that Windows
+reports 48 GB; if the BIOS refuses, return both. The WSL ceiling with 48 GB: ≈ 36–38 GB — enough for the
+naphthalene xtight energy, marginal for pyrene. The mistake was mine (reading "2 memory devices, SO-DIMM form
+factor" as two slots without checking the manufacturer's sheet); the checking rule for hardware from now on:
+the manufacturer's spec page before the firmware table.
