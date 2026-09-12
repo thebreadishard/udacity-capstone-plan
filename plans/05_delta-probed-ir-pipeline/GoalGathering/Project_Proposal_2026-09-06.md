@@ -879,7 +879,7 @@ own; knowledge transfer is allowed wherever a gate shows it makes the pipeline s
    and gated (a jet-cooled band list added since as a cold column). *Addition, 5 September:* the
    R2 C–C families are signed off as expected-undecidable after the source search (§5.2).
 4. The Module-05 target: a Transformer predicting the support of the correction, trained on an
-   aromatic-heavy subset of the public Hessian QM9 set (Williams et al. 2024) with recomputed
+   aromatic-heavy subset of the public Hessian QM9 set (Williams et al. 2025) with recomputed
    B3LYP Hessians; success is the measured saving and the per-rung licence, not accuracy.
 5. The re-worded promised set: the harmonic-only correction; the energy route as the guaranteed
    route but not as a limit, the gradient route built in the side project.
@@ -1227,8 +1227,9 @@ marked otherwise; author initials are given only where a held PDF's first page s
 - Subotnik & Head-Gordon 2005, J. Chem. Phys. 123, 064108. DOI 10.1063/1.2000252. ("A local correlation model that yields intrinsically smooth potential-energy surfaces"; Crossref-verified 10 September; closed access, asked of the supervisor, not read.)
 - Wang, Luo, Wang & Liu 2025, J. Chem. Theory Comput. 21, 10893.
   DOI 10.1021/acs.jctc.5c01354. (O1NumHess.)
-- Williams, N. J., Kabalan, L., Stojanovic, L., Zolyomi, V., Pyzer-Knapp, E. O. 2024,
-  arXiv:2408.08006. (Hessian QM9.)
+- Williams, N. J., Kabalan, L., Stojanovic, L., Zolyomi, V., Pyzer-Knapp, E. O. 2025, Scientific Data 12,
+  DOI 10.1038/s41597-024-04361-2 (arXiv:2408.08006). (Hessian QM9; data: figshare, DOI 10.6084/m9.figshare.26363959,
+  v4, CC0 — downloaded and inventoried 12 September 2026.)
 - Zhang, X., et al. 2024, J. Chem. Phys. 161, 014109; arXiv:2404.03129. (Automatic-differentiation gradients for local coupled
   cluster, PySCFAD.)
 
