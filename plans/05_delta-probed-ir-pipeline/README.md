@@ -621,7 +621,9 @@ above about 1 GB on the Windows side beside it):
    --grid-check`), then the dated note fixing the subset size;
 4. plan 06's X6 and X7 (minutes each);
 5. the naphthalene DFT dry run (two functionals, psi4; hours) — prerequisite (a) of the pilot note and the mode table
-   Module 03 and plan 06 need;
+   Module 03 and plan 06 need; **found 12 September evening:** plan 02's `results_dft_locality/naphthalene.npz` (git `57a7910`) is a
+   B3LYP/6-31G* Hessian at a geometry identical to `results_dryrun/naphthalene/geometry.json` within 5 × 10⁻⁴ bohr, so the
+   B3LYP half exists and only the BHHLYP Hessian must be run (anthracene and pyrene B3LYP Hessians are in the same commit);
 6. `m1_frozen_spaces.py --molecule naphthalene`, then the **R1 smoothness σ run of decision 35** (tight, 9 points, the
    C–C stretch mode; ≈ 4.8 laptop-days) — prerequisite (f) of the pilot note.
 
