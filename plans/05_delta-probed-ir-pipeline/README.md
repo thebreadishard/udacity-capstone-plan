@@ -402,6 +402,29 @@ widened. Reason: for training labels the error bars must be true, not just the e
 
 ## Dated notes after the freeze
 
+- **2026-09-12 — three modules scaffolded in the Udacity rubric form, Hessian QM9 in, plan 06 opened, GoalGathering
+  reorganised.** *Module 03* (`modules/03_lab_scoreboard/`, commits 5d946d2 → efb2c41): a pre-registered
+  matrix–gas test committed before the join; 63 primary pairs of naphthalene, anthracene, pyrene and chrysene against
+  the WebBook GC-IRD records; six families reject a zero offset (median +3.3 to +5.9 cm⁻¹, matrix above hot gas), two
+  inconclusive by construction; Ladder dated note. *Module 04* (`modules/04_calibrated_harmonic/`, 4dfdb50): recipe
+  committed before training; 2,477 matrix↔computed pairs of 83 molecules; leave-one-molecule-out MAE 6.49 cm⁻¹ as
+  served vs 6.40 best, R² ≤ 0.01 — the calibrated baseline is line A on this table. *Module 05*
+  (`modules/05_support_predictor/`, 260dc16 → 0e1e4c7): recipe, PyTorch SupportTransformer, smoke test; **Hessian QM9
+  downloaded with the user's permission and verified** (41,645 molecules; only 66 with an all-carbon aromatic
+  six-ring, 6,055 with a planar conjugated ring — the "aromatic-heavy subset" is really a conjugated one; mapping
+  dated note); **corpus factory** prepared, not run (layers A 45 / A′ 868 / B 4,353 / C 6,055; start-stop queue,
+  refuses to run beside an anchor job; the user adopted the own layers as the candidate). *Plan 06*
+  (`plans/06_equivalent-faster-mathematics/`, idea plan beside 05, not a successor): orientation, X0 reading note
+  (QMA-hardness closes general E1; class-restricted E1/E2 open), X1/X2 on the benzene tensor (6 of 435 off-diagonal
+  pairs move a position > 0.5 cm⁻¹; S4 alive, S5 parked), Uitleg. *Housekeeping:* GoalGathering split into top level /
+  `notes/` / `reviews/` with every link rewritten (b6c89ed); QZ/5Z line and the xtight read-in script prepared;
+  cover-note draft for the supervisor. **Running:** the xtight arm-A rescan, 26 of 27 points at 10:30, chain end
+  ≈ 11:40; then read-in (§3.3), QZ/5Z line, plan-06 X3b, proposal to the supervisor in the afternoon.
+- **2026-09-11 05:15 — naphthalene timing printed** (`probes/results_timing/naphthalene_cc-pvtz_tight.json`): one
+  LNO-CCSD(T)/cc-pVTZ tight energy = 41,375 s (11.5 h), 24 fragments, peak RSS 19.83 GB against the 22 GB ceiling; the
+  R1 deck of 474 energies is 5,450 laptop-hours; P13 (cluster / desktop / both) is now decidable and the proposal's
+  §8 and §13 item 5 say so; pyrene will not fit this laptop. Tight LNO kept 92–100 % of the active occupied and ≈ 56 %
+  of the virtual orbitals per fragment (plan-06 X3a).
 - **2026-09-11 — R1 Pirali column printed (Module 03).** Probe 2a gained a transcribed-table mode; Pirali
   2009's Table 1 (sixteen naphthalene fundamentals, 300 K, 0.005 cm⁻¹, Q-branch heads) is transcribed in
   `probes/scoreboards/naphthalene/pirali2009_table1.json` and scored under decision 21: u_band
@@ -501,38 +524,41 @@ widened. Reason: for training labels the error bars must be true, not just the e
   WSL VM was torn down once by host memory pressure (Budget §3 incident note: 22 GB ceiling, one
   anchor job at a time).
 
-## Not yet done (owed, in order)
+## Not yet done (owed, in order; rewritten 2026-09-12 — the earlier list had been overtaken by the measurements)
 
-- **Hardware decision (parked by the user 2026-09-10).** A €5,000 budget exists; a concrete
-  configuration with Alternate.nl prices and URLs is in
-  [Hardware_Note_2026-09-10.md](GoalGathering/notes/Hardware_Note_2026-09-10.md) (AM5 Ryzen 9 9950X,
-  128 GB now → 256 GB later, two NVMe drives, native Linux; €4,069 + options; Threadripper deferred
-  while DDR5 is ≈ €16.5/GB). Configured in Alternate's PC-Builder and **in the user's cart (€4,655.75 with UPS and assembly), not ordered**: the user reconsiders once the first steps (naphthalene timing / P13, the R0 licence) show it is worth it; the memory kit is on the ASUS QVL for Ryzen 9000. Re-check prices then.
-
-- **Read and record the cc-pVTZ M1 scan** (running since 2026-09-06 07:31; decision 16) when it
-  finishes; P4 (symmetry prior) waits for the naphthalene dry run before it enters the deck; the R0
-  pilot's deck needs the canonical two-mode count (decision 16 iii).
-
-- ~~Round 11~~ — not planned. The review loop was closed on 2026-09-04 after a seam check of the
-  Round-10 Pass B patch ([Seam_Check_2026-09-04_Round10B_patch.md](GoalGathering/reviews/Seam_Check_2026-09-04_Round10B_patch.md),
-  19 seams, all mechanical, all closed). **The plan-05 text is frozen**: changes only by dated
-  note naming the finding or measurement behind them; the Ladder is the single binding statement
-  of every rule and other files cite it. The remaining risk is retired by measurements, not by
-  further reading.
-- **The first paid literature debts**: items 52–53 (hot-band slopes), 56–57 and 59 (the R0 and R1
-  source conditions), 60 — read before M03 prints u_band.
-- Capstone mapping Pass 6 (module-by-module sign-off).
-- ~~Probe M1~~ — ran 2026-09-05 at cc-pVDZ (see the dated note above); owed still: **decide P7–P9**,
-  the cc-pVTZ scan and truth line (≈ 2.5 days), and the
-  off-diagonal bias read from the R0 probe batch.
-- **The pilot note** (after the R0 pilot, the two-mode zero-CC dry run with its
-  noise-injection column, M03's u_band table, the canonical feasibility probe, the gradient
-  run/no-run at equilibrium, probe M1 and the R1 smoothness probe's σ with fits sealed; before
-  any local-CC Δ₂ number is readable): band lists with decidability verdicts, margins and the
-  expected-effect line, P-gate numbers, matrix tolerance, P3 effect size, M04 recipe, resonance
-  route and the depth-one family set, the stopping constant c and K_cap per mode, f_h and seed,
-  τ₇ and d₇, Q8 numbers (r_max, ε₈, η₈, γ, h) and direct-coupling pairs, Q6 numbers and the
-  pattern amplitude.
+- **Today (12 September):** read the xtight arm-A rescan into §3.3, §1 and the M1 note (`probes/m1_xtight_readin.py`;
+  decision 20); run the cheap QZ/5Z DF-RHF + DF-MP2 line on the 27 benzene points (`probes/m1_basis_scf_mp2_line.py`,
+  decision 26 input ii, P18 input); plan-06 X3b (MP2 pair-energy decay, naphthalene); **send the proposal to the
+  supervisor in the afternoon** (cover-note draft in `GoalGathering/notes/`); then a fresh session.
+- **P13 with the user** (cluster / desktop / both) on the measured 11.5 h per naphthalene energy → §12 R1 row and
+  risks; the hardware cart (€4,655.75, not ordered) is reconsidered by the user after the first results
+  ([Hardware_Note_2026-09-10.md](GoalGathering/notes/Hardware_Note_2026-09-10.md)); cluster contact held privately.
+- **P18** (composite anchor: LNO-CCSD(T)/TZ + MP2 and SCF basis corrections) for the user, once the QZ/5Z line is printed.
+- **Naphthalene dry run** (DFT, psi4 `qc` env on Windows; not beside an anchor job): P4's entry test for the symmetry
+  prior, the mode table that gives Module 03 its family matching and plan-06 X2/S4 its second tensor; the R0 pilot's
+  deck still needs the canonical two-mode count (decision 16 iii).
+- **Module 03 owed:** u_band columns of the Ladder rule on the GC-IRD and Coblentz records (decision 29 term); the
+  PNNL naphthalene record (not held); jet-cooled tetracene/coronene cold columns (items 61–62); R2/R3 columns;
+  intensities of decision 18; the student's pass before 2 October.
+- **Module 04 owed:** the Zenodo release of the training table (reading 1; the user); pilot-note item 6 adopts or
+  amends the recipe (stricter join = candidate, decided before its effect on the ranking is seen); the student's pass.
+- **Module 05 owed:** the five-molecule timing test of the corpus factory (after the anchor work; `--grid-check`),
+  then the dated note fixing the subset size; the Zenodo release of the corpus; reading-2 fallback source; the
+  notebook and report in the rubric form; label threshold θ (pilot-note item 5).
+- **Module 02 owed:** the student's pass before 25 September; the C₃₈₄H₄₈ symmetry-unique local-environment count.
+- **PDF request to the supervisor:** items 21 (Mackie/Esposito), 24–28 (Mata & Werner, Russ & Crawford, Subotnik &
+  Head-Gordon, Esselman 2023; Nagy & Kállay for the user to download).
+- **Plan 06 next:** X3b (after WSL is free), X4 (Mathlib survey), S2/S3 verified readings; S5 parked.
+- **Blog post 3** (naphthalene cost and the schedule) when the P13 decision is taken.
+- **Capstone mapping Pass 6** (module-by-module sign-off) — the user asked to wait; Uitleg ch. 16 is the checklist.
+- **The pilot note** (after the R0 pilot, the two-mode zero-CC dry run with its noise-injection column, M03's u_band
+  table, the canonical feasibility probe, the gradient run/no-run at equilibrium, probe M1 and the R1 smoothness
+  probe's σ with fits sealed; before any local-CC Δ₂ number is readable): band lists with decidability verdicts,
+  margins and the expected-effect line, P-gate numbers, matrix tolerance (first measured number: Module 03's
+  +3.3 to +5.9 cm⁻¹ offset against hot vapour), P3 effect size, M04 recipe (candidate on file), resonance route and
+  the depth-one family set, the stopping constant c and K_cap per mode, f_h and seed, τ₇ and d₇, Q8 numbers
+  (r_max, ε₈, η₈, γ, h) and direct-coupling pairs, Q6 numbers and the pattern amplitude.
+- ~~Round 11~~ — not planned; the plan-05 text is frozen (dated notes only; the Ladder is the single binding statement).
 
 ## Provenance
 
