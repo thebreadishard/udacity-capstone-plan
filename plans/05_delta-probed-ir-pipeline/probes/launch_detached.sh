@@ -14,16 +14,20 @@ disown
 # Heartbeat (user's request 2026-09-10): every HEARTBEAT_MIN minutes (default 60) append one line with the
 # elapsed time, CPU %, resident memory and the size of PYSCF_TMPDIR, so an unattended run shows it is alive
 # even when the python step prints nothing for hours. The loop ends by itself when the job exits.
+# 2026-09-12: the loop itself now runs under setsid nohup as well. Before, only the python step did, and the
+# heartbeat subshell died with the launching `wsl -e bash -lc` session (naphthalene xtight timing: no
+# heartbeat at 13:39; the job was fine). Verified the same day by a loop restarted by hand under setsid.
 HB=${HEARTBEAT_MIN:-60}
-(
-  while kill -0 "$PID" 2>/dev/null; do
-    sleep $((HB * 60))
-    kill -0 "$PID" 2>/dev/null || break
-    read -r ET CPU RSS < <(ps -o etime=,%cpu=,rss= -p "$PID" 2>/dev/null)
-    echo "--- heartbeat $(date '+%F %T'): pid $PID alive, elapsed ${ET:-?}, cpu ${CPU:-?} %, rss $(( ${RSS:-0} / 1024 )) MB, tmp $(du -sh "$PYSCF_TMPDIR" 2>/dev/null | cut -f1)" >> "$LOG"
+export HB_PID="$PID" HB_LOG="$LOG" HB_MIN="$HB"
+setsid nohup bash -c '
+  while kill -0 "$HB_PID" 2>/dev/null; do
+    sleep $((HB_MIN * 60))
+    kill -0 "$HB_PID" 2>/dev/null || break
+    read -r ET CPU RSS < <(ps -o etime=,%cpu=,rss= -p "$HB_PID" 2>/dev/null)
+    echo "--- heartbeat $(date "+%F %T"): pid $HB_PID alive, elapsed ${ET:-?}, cpu ${CPU:-?} %, rss $(( ${RSS:-0} / 1024 )) MB, tmp $(du -sh "$PYSCF_TMPDIR" 2>/dev/null | cut -f1)" >> "$HB_LOG"
   done
-  echo "--- heartbeat $(date '+%F %T'): pid $PID has exited" >> "$LOG"
-) > /dev/null 2>&1 &
+  echo "--- heartbeat $(date "+%F %T"): pid $HB_PID has exited" >> "$HB_LOG"
+' > /dev/null 2>&1 < /dev/null &
 disown
 sleep 2
 echo "launched pid $PID -> $LOG (heartbeat every $HB min)"

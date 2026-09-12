@@ -108,3 +108,14 @@ factor" as two slots without checking the manufacturer's sheet); the checking ru
 the manufacturer's spec page before the firmware table.
 
 **Order cancelled by the user the same evening (2026-09-12).** The laptop stays at 32 GB; the memory levers of the Budget's parked note (25 GB ceiling, max_memory, swap) remain the only way to fit larger jobs on it. A single 32 GB module for 48 GB remains a possible later step, subject to the firmware accepting it; not planned.
+
+**Same evening (2026-09-12): the desktop configuration is safe on the Alternate wishlist.** All eight components
+were added one by one to the business-account wishlist (the UPS was already there), from the product numbers in
+the table above; prices as on the wishlist page: Ryzen 9 9950X €499.00, ProArt X870E-Creator WiFi €389.00,
+FURY Beast 128 GB €2,289.00, 990 PRO 2 TB €354.00, NM790 2 TB €259.00, NH-D15 G2 €148.90, Power Zone 2 850 W
+€119.90, Define 7 €169.00 — components €4,227.80 (= the €4,326.80 system minus the €99.00 assembly), with the
+Eaton Ellipse PRO 1200 DIN €329.00 the wishlist total reads €4,556.80. Two expiry rules from the site itself:
+the wishlist is deleted after **six months without a change**; a PC-Builder configuration can also be saved
+("Opties → Configuratie → Opslaan", with load/share/print), but saved configurations are deleted after **60 days**,
+so the wishlist is the durable copy and the PC-Builder was not rebuilt. Assembly (€99) is a service line, not an
+article, and is added by the PC-Builder at order time.
