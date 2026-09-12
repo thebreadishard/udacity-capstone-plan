@@ -420,6 +420,31 @@ open term of decision 26. Ladder §3 words added; measured effect on benzene's t
 frequencies from the two basis terms: +2.8 / −5.2 / −11.1 cm⁻¹ (CH-oop, CH-ip-bend, C–C stretch;
 sum of the TZ → 5Z SCF and TZ → QZ MP2 rows of `results_m1/BASIS_LINE_scf_mp2.md`).
 
+**Decision 34 (2026-09-12, P24 accepted — substitution probing pre-registered as a second measurement layer):**
+plan 06's triangular-substitution scheme (Powell & Toint 1979 as characterised by Coleman & Moré 1984; verified on the
+benzene dry-run tensor: 6 products, exact recovery, noise magnification 1.4–1.5× in band positions) enters plan 05 as
+two pre-registered items of the R0 pilot and nothing else: (1) one Hessian–vector product along one colour-class vector
+of the stored X1c colouring, measured in the frozen-space arm at the reference geometry the cheapest way the engine
+then has (energies, 4 points per component, if M2 has not licensed gradients; two gradients if it has), printing its
+cost in energies and the noise of its components against σ_E; (2) on the R0 pilot deck, Δ₂ reconstructed from the six
+products beside the deck's Δ₂, compared in band positions. **Winning condition:** agreement within the R0 noise budget
+*and* fewer energies than the deck; **losing condition:** either fails. Honest cost table: with energies only a
+second-order product costs ≈ 4M, so 6 products ≈ 720 energies > K = 448 — the layer pays only with gradients (side
+project M2, then 12·g energy-equivalents). Success adds a per-rung licensed second layer beside the deck by a dated
+Ladder note; failure closes S5 for plan 05 at the energies-only level. No change to the deck, the licence tests, the
+tolerances or the calendar (`GoalGathering/notes/Research_Note_2026-09-12_P24_Substitution_Probing.md`).
+
+**Decision 35 (2026-09-12 — how the R1 smoothness σ of pilot prerequisite (f) is measured):** at the anchor's xtight
+thresholds a 27-point M1 scan at naphthalene is ≈ 50 laptop-days (tonight's timing: ≈ 2 days per energy), so the
+prerequisite is met by **σ at tight thresholds, 9 points, one mode** (the mode family with the largest σ at benzene,
+the C–C stretch), launched right after the naphthalene timing on the checkpointed chain, ≈ 4–5 days at 11.5 h per
+energy; σ(tight) stands in for σ(xtight) with a label, justified by benzene, where σ did not change between the two
+(0.003–0.044 µE_h at both) while the bias did — and the bias is not a pilot input. It requires the naphthalene DFT
+dry run first (prerequisite (a); hours of psi4) and `m1_frozen_spaces.py` taking `--molecule`. σ(xtight) at R1 is
+re-measured on the first machine that can afford it (P13) and the pilot note's item 8 is re-read then if it differs.
+Ladder item 8 reads c "at the σ_E the R1 smoothness probe printed"; this note names which probe that is
+(`GoalGathering/notes/Pilot_Note_Skeleton_2026-09-12.md` §D, option 1).
+
 ## Dated notes after the freeze
 
 - **2026-09-12 — three modules scaffolded in the Udacity rubric form, Hessian QM9 in, plan 06 opened, GoalGathering

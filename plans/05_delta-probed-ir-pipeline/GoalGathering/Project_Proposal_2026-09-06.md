@@ -869,12 +869,12 @@ PNNL naphthalene source itself.
 
 The review loop was **closed on 4 September** after a consistency check of the last revision (19
 cross-references, all mechanical). Since then the plan's text changes only by dated notes that
-name a measurement or a decision; the decisions of 5–12 September (§10, items 8–33) are such notes.
+name a measurement or a decision; the decisions of 5–12 September (§10, items 8–34) are such notes.
 Items 8–16 and 19 were made on the DFT-only rehearsal, the frozen-space probe and the timings —
 before any coupled-cluster response of the real correction exists, so none of the rules the
 evaluation depends on was shaped by a result it will judge; items 17 and 18 are tooling and scope
-choices; items 20–33 are readings of measurements (20, 26, 33), laboratory-source rules (21, 24,
-25, 29, 30) and pre-registrations (27, 28, 31, 32), all made before any coupled-cluster response of
+choices; items 20–34 are readings of measurements (20, 26, 33), laboratory-source rules (21, 24,
+25, 29, 30) and pre-registrations (27, 28, 31, 32, 34), all made before any coupled-cluster response of
 the real correction exists. The remaining risk is retired by
 measurements, not by further reading; §8 lists the first of them.
 
@@ -980,6 +980,13 @@ own; knowledge transfer is allowed wherever a gate shows it makes the pipeline s
     one geometry, no fitted parameter, under 1 % of an LNO point in cost; named by the basis line of
     the same day (§3.3); the licence comparison is unaffected; the CCSD(T)−MP2 remainder's basis
     change stays the open term of decision 26 (Ladder §3 words added).
+34. **Substitution probing pre-registered as a second measurement layer** (12 September, P24, from the idea
+    plan 06): the R0 pilot gains one measured Hessian–vector product and one pre-registered comparison of a
+    six-product reconstruction of Δ₂ (Powell & Toint's triangular substitution, verified exact and noise-tolerant
+    on the dry-run tensor) against the deck's Δ₂; winning condition: agreement within the R0 noise budget *and*
+    fewer energies than the deck; losing condition: either fails. Priced honestly: with energies only a product
+    costs ≈ 4M energies, so the layer pays only if the side project delivers gradients; nothing else in the plan
+    changes until the comparison is won.
 
 ## 11. Risks
 

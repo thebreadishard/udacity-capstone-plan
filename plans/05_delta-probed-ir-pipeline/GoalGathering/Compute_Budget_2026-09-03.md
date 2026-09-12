@@ -367,3 +367,10 @@ resume, energies identical to the record to 0.000 nE_h). The naphthalene cc-pVTZ
 fragment in progress. Measured earlier today at xtight: fragment 1 ≈ 1 h 50 (310/378 virtuals), fragment 2 ≈ 70 min.
 The Windows-side rule of the previous note is in force for the whole run.
 
+**Dated note 2026-09-12 (evening) — two accepted items with prices.** *Decision 34 (P24):* the R0 pilot's substitution
+comparison costs, by energies, 6 products × ≈ 4M = 24M ≈ 720 energies at benzene (≈ 1.6 decks; a laptop-week at xtight
+at 76 min per energy), or 12·g energy-equivalents with the side project's gradients; the user accepts the energies-only
+price only if M2 has not licensed gradients by then and says so at the time. *Decision 35:* the R1 smoothness σ by a
+9-point tight scan of one mode at naphthalene: 9 arm-A energies + 1 reference ≈ 10 × 11.5 h ≈ 4.8 laptop-days, after
+the naphthalene DFT dry run (two functionals, hours) — the next anchor job after the running timing; the 27-point
+xtight scan the Ladder implied (≈ 50 days) is not run on the laptop.

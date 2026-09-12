@@ -58,8 +58,7 @@ letter and the intent, for the user to choose between (a proposal, not a decisio
 3. **Use benzene's σ with a labelled size extrapolation** — the weakest option; the Ladder's item 8 reads c "at
    the σ_E the R1 smoothness probe printed", so this would need a dated amendment.
 
-Recommendation: 1, launched right after the naphthalene timing finishes (it uses the same checkpointed machinery),
-so that the pilot note can be committed before the R0 probe batch; 2 as the check when the R1 machine exists.
+**Decided by the user the same evening = decision 35: option 1** (σ at tight, 9 points, one mode — the C–C stretch family, largest σ at benzene), launched right after the naphthalene timing and the naphthalene DFT dry run; option 2 as the check when the R1 machine exists.
 
 ## E. What this skeleton is not
 

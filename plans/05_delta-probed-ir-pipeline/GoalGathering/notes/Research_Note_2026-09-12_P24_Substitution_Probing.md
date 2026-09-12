@@ -1,6 +1,6 @@
 # Research note 2026-09-12 — P24: substitution probing as a second measurement layer (transfer from plan 06, direction S5)
 
-**Status.** A proposal for the user, not a decision. Nothing in the Ladder, the Budget or the deck changes until
+**Status.** **Accepted by the user the same evening (2026-09-12) = decision 34**; bookkeeping of §6 done (README, Ladder dated note, Budget dated note, proposal §10 item 34, plan 06 ledger). Original text follows unchanged. ~~A proposal for the user, not a decision.~~ Nothing in the Ladder, the Budget or the deck changes until
 it is accepted; if accepted it enters as a dated note that adds one measurement to the R0 pilot and one
 pre-registered comparison, and nothing else. Written the day plan 06's X1 series finished (X1b correction,
 X1c count, X1d noise), under plan 06's protocol §6.3: a result of plan 06 reaches plan 05 only through a

@@ -80,7 +80,7 @@ veranderen geen regel, ze leveren een getal of een bron.
 Twee dingen die ik liever nu zeg dan later. In §7 staat een alinea over belangenverstrengeling:
 één tegenstanderslijn (de anharmonische PAHdb-lijn) en één laboratoriumkolom (de jet-gekoelde
 3 µm-spectra) zijn werk waar jij coauteur van bent, en het plan zegt hoe het
-daarmee omgaat. En §10 bevat 33 genummerde beslissingen die ik zelf heb genomen als methodische
+daarmee omgaat. En §10 bevat 34 genummerde beslissingen die ik zelf heb genomen als methodische
 keuzes onder meting; elk daarvan kan door een bezwaar van jou heropend worden, dat is precies
 waarvoor ze genummerd zijn.
 

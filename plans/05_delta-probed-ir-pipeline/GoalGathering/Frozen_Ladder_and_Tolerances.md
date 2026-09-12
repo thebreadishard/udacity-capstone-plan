@@ -277,6 +277,16 @@ labelled hot columns; R1's decidability rests on the PNNL record") is thereby me
 default" stays what the paragraph above already calls it — a floor written now — and is labelled per record origin
 as an assumption, not as an instrument value; the numbers of the note above are unchanged.
 
+**Dated note 2026-09-12 (evening) — decisions 34 and 35 (permitted changes: both add measurements, neither moves a
+rule).** *Decision 34 (P24):* the R0 pilot gains one measured Hessian–vector product (cost and component noise) and one
+pre-registered comparison of a six-product substitution reconstruction of Δ₂ against the deck's Δ₂, with winning and
+losing conditions written before the run; the deck, the licences and the tolerances are untouched; a second, per-rung
+licensed measurement layer enters §3 only by a later dated note if the comparison is won. *Decision 35:* the §4
+prerequisite (f), "the R1 smoothness probe's σ", is met by a 9-point tight-threshold scan of one mode at naphthalene
+(σ(tight) as a labelled stand-in for σ(xtight); at benzene σ was identical at both settings while the bias — not a
+pilot input — was not), because a 27-point xtight scan costs ≈ 50 laptop-days at the price measured today;
+σ(xtight) is re-measured on the R1 machine and item 8 re-read if it differs. Plan README decisions 34–35.
+
 **Promised:** R0–R1 scored as accuracy rungs against gas-phase data. R2–R3 scored as accuracy
 rungs per family under the decidability rule above and the "beat and noise" rule of §1. R6 per
 the dated note above. **[05]** The **cost record** (§1) for every rung and mode that ran; **mode E
