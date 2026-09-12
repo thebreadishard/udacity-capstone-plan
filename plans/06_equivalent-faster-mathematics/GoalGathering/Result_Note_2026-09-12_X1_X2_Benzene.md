@@ -64,7 +64,19 @@ the X1 counts (4–5 products) stay a statement about the algebra, not about a r
 (the ORCA and MRCC literature since 2020) is the only thing that could revive S5; until then it is
 parked, not dead.
 
+**Correction the same evening.** The "no record" statement above was too quick: plan 05's own
+bibliography holds one — Zhang, Li, Ye, Berkelbach & Chan, "Performant automatic differentiation of
+local coupled cluster theories: response properties and ab initio molecular dynamics", *J. Chem. Phys.*
+161, 014109 (2024), DOI 10.1063/5.0212274 (PySCFAD; LNO-CCSD(T) gradients by automatic
+differentiation; item 33 of plan 05's bibliography, PDF held, 29 pp.). It is the engine plan 05's
+pre-registered side project (mode G, milestones M2–M5) builds on. So the condition of S5 is not
+"does a local-CC(T) gradient exist" — it does — but **"what does one cost relative to an energy in
+that engine, with frozen spaces"**, and that number is exactly what the side project's milestone M2
+measures. S5 therefore stays **alive, conditional on the side project's measured gradient cost**;
+plan 06 adds nothing to that measurement and waits for it.
+
 ## Ledger changes
 
-S4 → alive (E3), next test on the naphthalene tensor. S5 → **parked** (no verified local-CC(T)
-analytic gradient; MP2-level gradients exist); revives only on a verified record. X1, X2 done.
+S4 → alive (E3), next test on the naphthalene tensor. S5 → alive, conditional on the measured cost of
+an LNO-CCSD(T) gradient by automatic differentiation (Zhang et al. 2024; plan 05's side project M2) —
+not parked. X1, X2 done.
