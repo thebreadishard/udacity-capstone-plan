@@ -193,6 +193,25 @@ from every rung: the PAH dry-run tensors and the probed tensors from the rungs t
 a **held-out test set only**, and P3's effect size is reported on them as well as on the corpus. Published as its own release (Zenodo DOI, deck hashes) **before
 Module 05 starts**.
 
+*Dated note 2026-09-12 (measurement and a candidate; the dataset text above is unchanged until the user
+decides).* Hessian QM9 was downloaded with the user's permission and verified (md5; 41,645 molecules,
+NWChem ωB97X/6-31G*, numerical Hessians at 0.01 a.u. displacement with a ~15 cm⁻¹ displacement
+sensitivity reported by the authors; translations and rotations unprojected in the stored Hessians).
+The "at most nine heavy atoms" recollection is verified (1–9). **Measured by a geometry-based ring
+survey: 66 molecules carry an all-carbon aromatic six-ring (benzene itself once), 6,055 a planar
+conjugated five- or six-ring of C/N/O.** The "aromatic-heavy QM9 subset" of the paragraph above is
+therefore, as a matter of fact, a *conjugated and heteroaromatic* subset. **Candidate, prepared but not
+computed** (`modules/05_support_predictor/corpus/`, design note of 2026-09-12): an own aromatic corpus
+computed by the plan's deck (B3LYP and ωB97X at 6-31G*, TR-projected) in three layers — a size bridge of
+45 ladder-adjacent aromatics of 12–30 atoms, 4,353 substituted aromatic and heteroaromatic cores up to
+26 atoms, and the 6,055 conjugated QM9 molecules (B3LYP only, at the QM9 geometry) — in a fixed hashed
+order so that any stop is a reproducible subset and the learning-curve points 300/600/1,200 are nested.
+Cost per molecule is measured on this laptop (benzene 3–7 min per Hessian, naphthalene 13 min, pyrene
+54 min); the subset size remains the dated note after the five-molecule timing test, as the paragraph
+above already requires. Reading 1 holds unchanged: computed ab initio data, released with a DOI before
+the module starts, not used in any earlier module. What the user still decides: whether the own layers
+are adopted (the candidate) or only the QM9 conjugated class is used.
+
 **Problem domain and model family (rubric).** Domain: **sequence** (a molecule as a sequence of
 DFT-mode tokens with atomic-environment features; the target a per-token-pair label). Model:
 **Transformer**. Both declared explicitly; anything outside CNN/RNN/Transformer returns to the

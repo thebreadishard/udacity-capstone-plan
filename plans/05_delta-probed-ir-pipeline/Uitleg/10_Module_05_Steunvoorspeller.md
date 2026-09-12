@@ -145,3 +145,48 @@ dragend, en het certificaat zegt dat.
 (de geleerde prior: verdiend en gespendeerd), [Distilled_Project_Plan_and_Quality_Checks.md](../GoalGathering/Distilled_Project_Plan_and_Quality_Checks.md)
 §5–§6, [Overarching_Goal.md](../GoalGathering/Overarching_Goal.md) (beslissingen 4 en 7),
 [Rubrics/05](../../../Rubrics/05_Deep_Learning_Systems.md).*
+
+## 9. Stand van zaken op 12 september 2026 (gedateerde aanvulling)
+
+Dit hoofdstuk beschrijft het plan zoals het is bevroren. Sindsdien is er gemeten, en dat verandert
+één aanname in §3.
+
+**Hessian QM9 is binnen.** Het bestand van 6,3 GB is gedownload en gecontroleerd (md5 klopt); alleen het
+vacuümdeel is uitgepakt: 41.645 moleculen met per molecuul de geometrie, de energie, de krachten, de
+Hessiaan, de frequenties en de normaalmodes. Het artikel is gelezen voor de eenheden (Å, eV, eV/Å²,
+cm⁻¹) en de conventies. Twee dingen die je bij gebruik moet weten: de Hessianen zijn *numeriek*
+(eindige verschillen met een verplaatsing van 0,01 a.u.; de makers melden dat de frequenties daar tot
+15 cm⁻¹ gevoelig voor zijn, dus dat is de ruisvloer van elk label dat we eruit maken), en translaties en
+rotaties zijn er niet uitgeprojecteerd (dat doen wij zelf voordat Δ₂ wordt gevormd).
+
+**De aanname "benzeenderivaten oververtegenwoordigd" klopt niet.** Een ringtelling uit de geometrie
+(bindingen uit covalente stralen, ringen uit de bindingsgraaf, platheid gecontroleerd) geeft: 66 van de
+41.645 moleculen hebben een geheel-koolstof aromatische zesring, benzeen zelf zit er één keer in.
+Wat er wél ruim in zit, 6.055 moleculen, zijn platte geconjugeerde vijf- en zesringen met stikstof of
+zuurstof erin: pyridine-, pyrrool- en furaanachtigen. De "aromaat-zware QM9-deelverzameling" van §3 is
+in werkelijkheid een geconjugeerde, heteroaromatische deelverzameling. De PAK-testset ligt dus nog
+verder buiten de trainingsverdeling dan §3 aannam.
+
+**Het antwoord dat klaarstaat: een eigen corpusfabriek.** Omdat QM9 gewoon DFT is en DFT-Hessianen
+van kleine aromaten goedkoop zijn (gemeten op de laptop: benzeen 3 tot 7 minuten per Hessiaan,
+naftaleen 13 minuten, pyreen 54 minuten), is in `modules/05_support_predictor/corpus/` een
+wachtrij klaargezet die molecuul voor molecuul beide Hessianen rekent (B3LYP en ωB97X, 6-31G*), in
+drie lagen en in een vaste volgorde:
+
+| laag | inhoud | aantal in het manifest |
+|---|---|---|
+| A, grootte-brug | aromaten van 12 tot 30 atomen, van benzeen tot pyreen, met aza- en oxa-varianten | 45 |
+| B, de klasse | mono- en digesubstitueerde aromatische en heteroaromatische kernen tot 26 atomen | 4.353 |
+| C, QM9 geconjugeerd | de 6.055 uit de ringtelling; alleen de B3LYP-Hessiaan hoeft nog | 6.055 |
+
+De fabriek kan op elk moment gestopt en weer gestart worden (laptop, straks de desktop, ooit een
+cluster); omdat de volgorde binnen een laag vastligt, is elke tussenstand een reproduceerbare
+deelverzameling en zijn "de eerste 300, 600, 1.200" van laag B geneste sets voor een leercurve.
+Hoeveel er uiteindelijk gerekend wordt, staat met opzet nergens: dat wordt een gedateerde notitie na
+een timingtest van vijf moleculen, precies zoals §3 al voorschreef voor de QM9-deelverzameling.
+Er is nog niets gerekend. Of de eigen lagen worden overgenomen, of alleen de geconjugeerde
+QM9-klasse, is een keuze van de opdrachtgever; tot die tijd is de fabriek een kandidaat.
+
+*Bron: `modules/05_support_predictor/PROVENANCE.md`, `out/HESSIAN_QM9_SUMMARY.md`,
+`out/HESSIAN_QM9_RINGS.md`, `corpus/DESIGN_2026-09-12.md`; gedateerde notitie van 12 september in
+[Capstone_Mapping.md](../GoalGathering/Capstone_Mapping.md) §Module 05.*
