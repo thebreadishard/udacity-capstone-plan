@@ -172,6 +172,8 @@ without first proving that classical result; T3 in Lean is two theorems away, no
   orthonormal Slater basis; absent: Courant–Fischer, greedy/Δ+1 colouring, Brooks, Fock space, any
   Hamiltonian, Schrödinger operators. T1 (S5 algebra) feasible; T2 statable; T3 out of reach.
 
+**Dated addition 2026-09-12 (evening) — the cost ladder.** The user's goal for plan 06 restated in numbers ([Cost_Ladder_2026-09-12_Network_Data.md](Cost_Ladder_2026-09-12_Network_Data.md)): the R1 deck of 474 energies at 42–54 h each is 1.3–3 laptop-years; the levers that are measured (tight thresholds ÷ 2.1–4.7, X10's pair rule 474 → ≈ 300) bring one naphthalene-size molecule to days–weeks on a desktop or a node; only gradients at small g change the order of magnitude, and g is the one number nobody has printed. X9 and T3's audit set the expectation for decision 32's precondition (the correction's range grows with size).
+
 ## 8. Ledger of directions
 
 | id | level | status (2026-09-12) | first test | result |

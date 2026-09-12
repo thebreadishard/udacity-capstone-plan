@@ -633,7 +633,7 @@ the real engine at benzene cc-pVDZ tight (one product by energies ≈ 120 energi
 ≈ 36 h against a 22 h deck): exactness and noise in the frozen arm, not yet savings; step 4 — g measured (side project
 M2, in PySCFAD, with frozen spaces at benzene cc-pVDZ, where the paper's symmetry-breaking outlier should vanish): the
 only step that can show savings. Steps 2–3 fit in the machine queue below after the naphthalene items; step 4 is
-software work of weeks and the user decides when.
+software work of weeks and the user decides when. **Priced lever by lever the same evening:** plan 06's `GoalGathering/Cost_Ladder_2026-09-12_Network_Data.md` (thresholds, X10's free pair rule, substitution or full Hessians with gradients, engine levers, locality), with the order in which the missing numbers arrive.
 
 **Decisions for the user, when their inputs are in:** P13 in two halves (the cluster request now, the desktop after
 Monday's xtight factor and the corpus timing; memo in `notes/`); the pilot note's choices (skeleton §C); whether to

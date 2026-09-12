@@ -42,7 +42,8 @@ not deleted.
 13. [GoalGathering/Note_2026-09-12_T3_Proof_Plan.md](GoalGathering/Note_2026-09-12_T3_Proof_Plan.md) — Conjecture T3 as a proof plan: hypothesis audit (the gap hypothesis fails asymptotically on plan 05's size sequence), layers L0–L3 with their status, the sharper conjecture T3′ (the correction decays faster than either Hessian) with its test X9, and the buildable Lean lemmas T3a–T3c.
 14. [GoalGathering/Result_Note_2026-09-12_X9_Correction_Longer_Ranged_Than_Hessian.md](GoalGathering/Result_Note_2026-09-12_X9_Correction_Longer_Ranged_Than_Hessian.md) — X9: T3′ falsified at benzene — the correction is longer-ranged than the DFT Hessian (its share rises with bond-graph distance; C–C meta/para 19–26 %).
 15. [GoalGathering/Result_Note_2026-09-12_X10_DFT_Predictable_Pairs.md](GoalGathering/Result_Note_2026-09-12_X10_DFT_Predictable_Pairs.md) — X10: a free DFT-only rule (resonance denominators within an irrep) picks the 19 of 47 off-diagonal pairs that matter at 0.5 cm⁻¹ at benzene; candidate proposal for plan 05 after naphthalene.
-16. [Uitleg/](Uitleg/00_Leeswijzer.md) — the plan explained at vwo-6 level in Dutch: the question, what is proven impossible, why it can still work for this class, the directions and experiments, Lean as referee, glossary.
+16. [GoalGathering/Cost_Ladder_2026-09-12_Network_Data.md](GoalGathering/Cost_Ladder_2026-09-12_Network_Data.md) — the cost ladder: what it would take to run plan 05 many times (the network's data), lever by lever — thresholds, X10's pair rule, substitution or full Hessians with gradients, engine levers, locality — each with its measured or estimated factor and the order in which the missing numbers arrive.
+17. [Uitleg/](Uitleg/00_Leeswijzer.md) — the plan explained at vwo-6 level in Dutch: the question, what is proven impossible, why it can still work for this class, the directions and experiments, Lean as referee, glossary.
 
 ## What this folder will and will not contain
 
