@@ -1,0 +1,70 @@
+=== detached start Sat Sep 12 11:54:30 CEST 2026: python m1_basis_scf_mp2_line.py --bases cc-pvqz --scf-only-bases cc-pv5z --threads 8
+[11:54:31] basis line: 27 points × 2 bases; 0 already done
+[11:54:40] cc-pvqz mode 12 q=-1.00: nbas 510, SCF 8.4 s, MP2 0.9 s
+[11:54:50] cc-pvqz mode 12 q=-0.75: nbas 510, SCF 8.5 s, MP2 0.8 s
+[11:55:00] cc-pvqz mode 12 q=-0.50: nbas 510, SCF 9.7 s, MP2 0.8 s
+[11:55:09] cc-pvqz mode 12 q=-0.25: nbas 510, SCF 8.4 s, MP2 0.8 s
+[11:55:17] cc-pvqz mode 12 q=+0.00: nbas 510, SCF 7.1 s, MP2 0.8 s
+[11:55:27] cc-pvqz mode 12 q=+0.25: nbas 510, SCF 8.9 s, MP2 0.9 s
+[11:55:37] cc-pvqz mode 12 q=+0.50: nbas 510, SCF 8.6 s, MP2 0.8 s
+[11:55:46] cc-pvqz mode 12 q=+0.75: nbas 510, SCF 8.8 s, MP2 0.8 s
+[11:55:55] cc-pvqz mode 12 q=+1.00: nbas 510, SCF 8.2 s, MP2 0.8 s
+[11:56:04] cc-pvqz mode 18 q=-1.00: nbas 510, SCF 8.1 s, MP2 0.8 s
+[11:56:13] cc-pvqz mode 18 q=-0.75: nbas 510, SCF 8.1 s, MP2 0.8 s
+[11:56:22] cc-pvqz mode 18 q=-0.50: nbas 510, SCF 8.3 s, MP2 0.9 s
+[11:56:31] cc-pvqz mode 18 q=-0.25: nbas 510, SCF 8.3 s, MP2 0.9 s
+[11:56:39] cc-pvqz mode 18 q=+0.00: nbas 510, SCF 7.1 s, MP2 0.8 s
+[11:56:49] cc-pvqz mode 18 q=+0.25: nbas 510, SCF 8.3 s, MP2 0.9 s
+[11:56:57] cc-pvqz mode 18 q=+0.50: nbas 510, SCF 8.0 s, MP2 0.8 s
+[11:57:06] cc-pvqz mode 18 q=+0.75: nbas 510, SCF 8.4 s, MP2 0.8 s
+[11:57:14] cc-pvqz mode 18 q=+1.00: nbas 510, SCF 7.1 s, MP2 0.7 s
+[11:57:22] cc-pvqz mode 6 q=-1.00: nbas 510, SCF 7.1 s, MP2 0.8 s
+[11:57:30] cc-pvqz mode 6 q=-0.75: nbas 510, SCF 6.9 s, MP2 0.7 s
+[11:57:37] cc-pvqz mode 6 q=-0.50: nbas 510, SCF 6.5 s, MP2 0.8 s
+[11:57:44] cc-pvqz mode 6 q=-0.25: nbas 510, SCF 6.5 s, MP2 0.8 s
+[11:57:52] cc-pvqz mode 6 q=+0.00: nbas 510, SCF 6.7 s, MP2 0.7 s
+[11:57:59] cc-pvqz mode 6 q=+0.25: nbas 510, SCF 6.6 s, MP2 0.8 s
+[11:58:07] cc-pvqz mode 6 q=+0.50: nbas 510, SCF 6.6 s, MP2 0.8 s
+[11:58:14] cc-pvqz mode 6 q=+0.75: nbas 510, SCF 6.5 s, MP2 0.8 s
+[11:58:21] cc-pvqz mode 6 q=+1.00: nbas 510, SCF 6.9 s, MP2 0.7 s
+[11:58:54] cc-pv5z mode 12 q=-1.00: nbas 876, SCF 32.5 s
+[11:59:27] cc-pv5z mode 12 q=-0.75: nbas 876, SCF 32.6 s
+[12:00:00] cc-pv5z mode 12 q=-0.50: nbas 876, SCF 33.0 s
+[12:00:33] cc-pv5z mode 12 q=-0.25: nbas 876, SCF 33.3 s
+[12:01:02] cc-pv5z mode 12 q=+0.00: nbas 876, SCF 29.0 s
+[12:01:38] cc-pv5z mode 12 q=+0.25: nbas 876, SCF 35.8 s
+[12:02:13] cc-pv5z mode 12 q=+0.50: nbas 876, SCF 35.1 s
+[12:02:50] cc-pv5z mode 12 q=+0.75: nbas 876, SCF 37.2 s
+[12:03:26] cc-pv5z mode 12 q=+1.00: nbas 876, SCF 35.6 s
+[12:03:59] cc-pv5z mode 18 q=-1.00: nbas 876, SCF 33.1 s
+[12:04:32] cc-pv5z mode 18 q=-0.75: nbas 876, SCF 32.9 s
+[12:05:06] cc-pv5z mode 18 q=-0.50: nbas 876, SCF 33.9 s
+[12:05:41] cc-pv5z mode 18 q=-0.25: nbas 876, SCF 35.4 s
+[12:06:12] cc-pv5z mode 18 q=+0.00: nbas 876, SCF 31.3 s
+[12:06:47] cc-pv5z mode 18 q=+0.25: nbas 876, SCF 35.2 s
+[12:07:24] cc-pv5z mode 18 q=+0.50: nbas 876, SCF 36.4 s
+[12:08:04] cc-pv5z mode 18 q=+0.75: nbas 876, SCF 40.4 s
+[12:08:41] cc-pv5z mode 18 q=+1.00: nbas 876, SCF 36.9 s
+[12:09:17] cc-pv5z mode 6 q=-1.00: nbas 876, SCF 35.4 s
+[12:09:52] cc-pv5z mode 6 q=-0.75: nbas 876, SCF 34.9 s
+[12:10:25] cc-pv5z mode 6 q=-0.50: nbas 876, SCF 33.4 s
+[12:10:58] cc-pv5z mode 6 q=-0.25: nbas 876, SCF 33.0 s
+[12:11:32] cc-pv5z mode 6 q=+0.00: nbas 876, SCF 33.5 s
+[12:12:05] cc-pv5z mode 6 q=+0.25: nbas 876, SCF 33.2 s
+[12:12:39] cc-pv5z mode 6 q=+0.50: nbas 876, SCF 34.1 s
+[12:13:17] cc-pv5z mode 6 q=+0.75: nbas 876, SCF 38.3 s
+[12:13:55] cc-pv5z mode 6 q=+1.00: nbas 876, SCF 37.9 s
+# Probe M1 — the cheap basis line: DF-RHF and DF-MP2 at the 27 benzene points, cc-pVTZ → larger bases — 2026-09-12 12:13
+
+Reference points: `benzene_cc-pvtz_tight` (same geometries, same DF-RHF reference, frozen core 6). Δω = ½·Δ(2·a2) per mode in cm⁻¹; even-part fit a0 + a2 q² + a4 q⁴. Absolute energies not printed.
+
+| mode | family | part | DZ → TZ (from m1_basis_sensitivity) | TZ → CC-PVQZ | TZ → CC-PV5Z |
+|---|---|---|---|---|---|
+| 6 | CH-oop 865 | SCF | +44.2 | +1.8 | +3.8 |
+| 6 | CH-oop 865 | MP2 correlation | +14.7 | -1.0 | — |
+| 12 | CH-ip-bend 1020 | SCF | -22.4 | -2.4 | -2.8 |
+| 12 | CH-ip-bend 1020 | MP2 correlation | -11.8 | -2.4 | — |
+| 18 | CC-stretch 1357 | SCF | -50.6 | -4.6 | -3.1 |
+| 18 | CC-stretch 1357 | MP2 correlation | -16.1 | -8.0 | — |
+
+Reading: if the TZ → QZ step is small next to the DZ → TZ step, the SCF and MP2 parts of a composite anchor are near their limits at TZ and the remaining basis error sits in the CC correlation part beyond MP2; if not, the composite (P18) must carry the SCF/MP2 basis correction explicitly. No verdict; decision 26 input (ii). Printed by probes/m1_basis_scf_mp2_line.py.

@@ -1,0 +1,17 @@
+{
+ "mode6": {
+  "SCF TZ->cc-pvqz": 1.8397812846614234,
+  "SCF TZ->cc-pv5z": 3.780255370505084,
+  "MP2 correlation TZ->cc-pvqz": -1.0285184343883216
+ },
+ "mode12": {
+  "SCF TZ->cc-pvqz": -2.408964107841648,
+  "SCF TZ->cc-pv5z": -2.798083810972,
+  "MP2 correlation TZ->cc-pvqz": -2.4462634567312063
+ },
+ "mode18": {
+  "SCF TZ->cc-pvqz": -4.570545071392062,
+  "SCF TZ->cc-pv5z": -3.0962812612878046,
+  "MP2 correlation TZ->cc-pvqz": -8.040304249962364
+ }
+}
