@@ -10,7 +10,13 @@
 > read-only record; see
 > [`05_delta-probed-ir-pipeline/GoalGathering/Why_05_Supersedes_04.md`](05_delta-probed-ir-pipeline/GoalGathering/Why_05_Supersedes_04.md).
 
-This project has been planned five times (01–05); all five folders are here. Plan 02's ten raw
+> **Plan 06 is an idea plan, not a successor** (opened 2026-09-12):
+> [`06_equivalent-faster-mathematics/`](06_equivalent-faster-mathematics/) — an exploration, beside
+> plan 05, of whether an equivalent but faster mathematics exists for the electronic Schrödinger
+> problem plan 05 solves at its anchor. It has no rungs, modules or results; anything it finds enters
+> plan 05 only through plan 05's own dated notes.
+
+This project has been planned five times (01–05); all five folders are here, plus the plan-06 idea folder. Plan 02's ten raw
 `.npz` frequency arrays live in git history only — `git show 57a7910:<path>` retrieves one.
 
 None of plans 01–05 has been executed as a plan: no rung has run and there is no pipeline result.
