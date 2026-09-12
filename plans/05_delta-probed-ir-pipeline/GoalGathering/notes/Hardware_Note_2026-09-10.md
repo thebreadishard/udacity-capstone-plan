@@ -71,3 +71,23 @@ Renting compute instead of buying: the R2/R3 rungs need ≈ 220 GB per canonical
 cluster work whatever is bought; a €5,000 desktop covers R0–R1 and all preparatory DFT permanently.
 The calendar already splits it that way (proposal §12; §13 item 5 asks the supervisor to sponsor the
 cluster request).
+
+**Dated note 2026-09-12 — the cart at the moment of deletion (the user empties the cart to order laptop
+memory; the UPS moved to the Alternate wishlist, the PC configuration could not — it is a PC-Builder bundle,
+art. no. 74807 "ALTERNATE Compleet pc-systeem", not an article).** Components and prices as shown on
+zakelijk.alternate.nl on 12 September, checked against the table above: assembly €99.00; AMD Ryzen 9 9950X
+€499.00; ASUS ProArt X870E-Creator WiFi €389.00; Noctua NH-D15 G2 €148.90; Kingston FURY Beast 128 GB
+(2 × 64 GB) DDR5-5600 €2,289.00; Lexar NM790 2 TB €259.00; Fractal Design Define 7 €169.00; be quiet! Power
+Zone 2 850 W €119.90; **Samsung 990 PRO 2 TB €354.00 (was €347 on 10 September, the only change)**. System
+with assembly **€4,326.80** (10 September: €4,319.80); with the UPS (€329) and shipping (€6.95) it would be
+€4,662.75. Everything needed to rebuild the configuration is in the table above (product numbers and
+URLs); nothing is lost by deleting the cart line. The €5,000 decision itself is unchanged: parked until the
+first results.
+
+*Same day, laptop memory:* the Vivobook 18 M1807HA has two SO-DIMM slots, both holding 16 GB DDR5-5600
+(Micron MTC8C1084S1SC56BD1 and Samsung M425R2GA3EB0-CWM, 1.1 V), firmware maximum 64 GB. Upgrade to 64 GB
+= replace both by 2 × 32 GB DDR5-5600 SO-DIMM: at Alternate either the Kingston FURY Impact kit KF556S40IBK2-64
+(CL40, €999) or two Corsair Vengeance CMSX32GX5M1A5600C48 (CL48, 2 × €439 = €878); no Corsair 2 × 32 kit
+listed. The user chose to order 64 GB. Consequence for the Budget: the WSL ceiling can go to ≈ 50 GB, so a
+naphthalene xtight energy fits without the memory levers and a pyrene energy probably fits too; speed is
+unchanged.
