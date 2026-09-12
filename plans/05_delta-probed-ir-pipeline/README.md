@@ -620,6 +620,7 @@ above about 1 GB on the Windows side beside it):
 3. the corpus factory's five-molecule timing test (`modules/05_support_predictor/corpus/run_corpus.py --max-molecules 5
    --grid-check`), then the dated note fixing the subset size;
 4. plan 06's X6 (script ready since 12 September evening, `experiments/x6_pi_cas_share.py`, cc-pVDZ, minutes; the user put it first) and X7;
+   4a. **M2a — the gradient-to-energy cost ratio g** (pre-registered 13 September, `notes/PreRegistration_2026-09-13_M2a_Gradient_Cost_Ratio.md`; script `probes/m2a_gradient_cost_ratio.py`): install PySCFAD 0.3.3 in `~/qcad` (download — the user's permission first), then cells 0–4 at benzene cc-pVDZ (an evening), cell 5 at cc-pVTZ only if cell 3 gives g ≤ 20;
 5. the naphthalene DFT dry run (two functionals, psi4; hours) — prerequisite (a) of the pilot note and the mode table
    Module 03 and plan 06 need; **found 12 September evening:** plan 02's `results_dft_locality/naphthalene.npz` (git `57a7910`) is a
    B3LYP/6-31G* Hessian at a geometry identical to `results_dryrun/naphthalene/geometry.json` within 5 × 10⁻⁴ bohr, so the
@@ -634,7 +635,7 @@ held until this is clearer):** step 1 done — item 33 read for the gradient/ene
 the real engine at benzene cc-pVDZ tight (one product by energies ≈ 120 energies ≈ 6 h; the six-product reconstruction
 ≈ 36 h against a 22 h deck): exactness and noise in the frozen arm, not yet savings; step 4 — g measured (side project
 M2, in PySCFAD, with frozen spaces at benzene cc-pVDZ, where the paper's symmetry-breaking outlier should vanish): the
-only step that can show savings. Steps 2–3 fit in the machine queue below after the naphthalene items; step 4 is
+only step that can show savings — **pre-registered 13 September as M2a** (the shipped engine first, frozen spaces later; cells, thresholds and reading fixed before any number: `notes/PreRegistration_2026-09-13_M2a_Gradient_Cost_Ratio.md`). Steps 2–3 fit in the machine queue below after the naphthalene items; step 4 is
 software work of weeks and the user decides when. **Priced lever by lever the same evening:** plan 06's `GoalGathering/Cost_Ladder_2026-09-12_Network_Data.md` (thresholds, X10's free pair rule, substitution or full Hessians with gradients, engine levers, locality), with the order in which the missing numbers arrive.
 
 **P25 (plan 06's free DFT ordering of the deck's pairs): the user agreed on 13 September that it is submitted as a plan-05 proposal once the naphthalene repeat of X10 has run** (after machine-queue item 5; the pre-registered licence test is in plan 06's draft). Not a numbered decision until the proposal is made.
