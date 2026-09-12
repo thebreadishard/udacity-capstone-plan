@@ -33,7 +33,8 @@ bandonzekerheden (§7).
 Vanaf naftaleen kan dit plan niet meer op mijn eigen machine; het vraagt clustertijd, en ik wil je
 kunnen laten zien dat die aanvraag op bewijs rust en niet op hoop. Wat er nu al gemeten is: de kern
 van de methode werkt — met bevroren orbitaalruimtes is de lokale-CC-energie langs een vervorming
-glad tot 0,002–0,06 µE_h waar de gangbare aanpak 7–11 µE_h aan sprongen geeft, en de systematische
+glad tot 0,002–0,06 µE_h waar de gangbare aanpak, die de ruimtes bij elk punt opnieuw kiest, bij
+dezelfde instellingen tot 3 µE_h aan sprongen geeft (en 7–11 µE_h in de kleinere basis), en de systematische
 afwijking van de kromming tegenover canoniek CCSD(T) is [x] cm⁻¹, ruim binnen wat de pijplijn
 nodig heeft (§3.3); de proefopstelling op DFT-niveau wint de correctie inderdaad terug uit een
 eindig aantal vervormingen, en dat aantal is geteld (§3.2); een telling van vanochtend laat zien dat
