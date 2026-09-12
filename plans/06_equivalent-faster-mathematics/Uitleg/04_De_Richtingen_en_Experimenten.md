@@ -74,8 +74,36 @@ met een toets, en verlaat het als de toets is gedaan.
 | X3a | wat LNO bij naftaleen bewaarde, uit de bestaande log | **gedaan**: 92–100 % bezet, ~56 % virtueel |
 | X3b | MP2-paarenergieën tegen LMO-afstand, afvalconstante | **gedaan 12 sep**: afvalconstante λ = 0,75 Å bij naftaleen, maar 2,3 % van de correlatie-energie zit voorbij 3 Å — niets weg te laten op deze grootte |
 | X4 | wat Mathlib al heeft voor symmetrische matrices, rang, kleuring, variatieprincipe | **gedaan 12 sep** (zie hoofdstuk 5): alles wat algebra is staat erin, alles wat natuurkunde is ontbreekt |
+| X8 (12 sep avond) | hoe groeit het aantal substitutieproducten met het molecuul, tegen het aantal matrixelementen, voor patronen die je uit de bindingen alleen kunt opschrijven (benzeen tot C₃₈₄H₄₈) | **gedaan**, met een les: op de echte benzeen-correctie bleek dat "99 % van de norm bewaren" nog bandposities 14 cm⁻¹ verschuift; voor 0,5 cm⁻¹ zijn 74 van de 78 blokken nodig. **Norm-dunheid is geen band-dunheid.** Bij benzeen is dus geen enkel bindingspatroon toegestaan, en de groottereeks (9 producten bij elke grootte onder het bindingspatroon; 18–30 onder "één ring diep"; evenredig met het aantal koolstoffen onder "alle C–C-paren") staat als *haakjes* te wachten op de naftaleen-tensor. Met alleen energieën loont substitutie nergens (6–11× de elementen); met gradiënten groeit het voordeel met de grootte |
+| X9 (gedefinieerd 12 sep) | blokprofielen van de DFT-Hessiaan en van de correctie naast elkaar, per grafafstand, op norm- én bandniveau | te doen (minuten); toetst T3′ (§3.4a); verliesvoorwaarde: de verhouding correctie/DFT daalt niet met de afstand |
 | X6 (gedefinieerd 12 sep) | welk deel van de ringmode-correctie bij benzeen de π-ruimte alleen draagt (CAS(6,6) tegen HF, langs de drie gemeten modes) | te doen (minuten rekenwerk, na de ankerjob); verliesvoorwaarde: minder dan de helft op de C–C-strekmode sluit S3 als ankerroute |
 | X7 (gedefinieerd 12 sep) | afvalconstante λ tegen de HOMO–LUMO-gap voor benzeen, naftaleen, pyreen | te doen (rekenwerk); toetst de voorspelling "afvalsnelheid ∝ gap" van de lokaliteitsstellingen |
+
+## §4.3a Toevoeging 12 september 2026 (avond): de vraag van de gebruiker — wordt plan 05 goedkoper door plan 06?
+
+De gebruiker stelde de vraag scherp: bewijs eerst dat de wiskunde van 06 de berekeningen van 05
+goedkoper kan maken, en deel het voorstel daarna pas. Daarvoor staat nu een ladder van vier treden in de
+README van plan 05.
+
+- **Trede 1 (gedaan): staat de prijs van een gradiënt in de literatuur?** Alles hangt aan één getal,
+  g: hoeveel energieën kost één analytische gradiënt? De wiskunde van automatisch differentiëren noemt
+  dat de *kostenverhouding* (cost ratio) en bewijst dat hij door een kleine constante begrensd is
+  (het overzichtsartikel van Baydin en anderen, 2018, zegt: kleiner dan 6, meestal 2 à 3). Maar dat is
+  een bovengrens voor het rekenwerk van één achterwaartse veeg; onze motor herberekent tussenresultaten
+  om geheugen te sparen, dus de echte g ligt erboven, en in geen enkel kwantumchemisch artikel dat we
+  konden lezen staat hij voor een lokale CCSD(T)-gradiënt afgedrukt. Uitkomst: **niet in de literatuur;
+  alleen te meten.**
+- **Trede 2 (modelvorm gedaan = X8, echte vorm wacht):** groeit het voordeel van substitutie met de
+  grootte? Het model zegt ja, mits blokken voorbij één ring onder de ruis vallen — en dat kan benzeen
+  niet laten zien, want in benzeen ligt niets verder dan één ring. De naftaleen-tensor (na de
+  DFT-proefrun) is het eerste molecuul dat het kan.
+- **Trede 3 (in de wachtrij):** één product echt meten in de motor van plan 05, bij benzeen (beslissing
+  34 van plan 05: het voorstel P24 is aanvaard als twee vooraf vastgelegde proefpunten).
+- **Trede 4 (weken werk, de gebruiker beslist):** g zelf meten in PySCFAD met bevroren ruimtes — de
+  enige trede die een besparing kan *laten zien*.
+
+Eerlijk samengevat: de algebra is bewezen (Lean), de ruis is mild (X1d), de telling is gunstig
+(X1c, X8-haakjes), maar de besparing bestaat pas als g klein is, en g kent nog niemand.
 
 ## §4.4 Het grootboek
 
@@ -88,4 +116,6 @@ geprobeerd en waarom ze niet doorgingen — dat is voor een ideeënplan net zo w
 ## §4.5 Eén zin om te onthouden
 
 Zes richtingen, elk met een goedkope toets op data die er al ligt; één (S1) leeft al met een eerste
-getal, de rest wacht op zijn test — en een idee zonder toets wordt geparkeerd.
+getal, de rest wacht op zijn test — en een idee zonder toets wordt geparkeerd. *(Stand 12 september
+avond: S5 is overgedragen aan plan 05 als beslissing 34, voorwaardelijk op gradiënten; S2 onwaarschijnlijk;
+S1, S3, S4 levend; en de les van X8 geldt voor alles: toets dunheid altijd op bandposities, nooit op normen.)*

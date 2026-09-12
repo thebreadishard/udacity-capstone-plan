@@ -88,6 +88,32 @@ bewijzen") meer. Coleman en Moré (1984) is dezelfde avond gelezen: onze voorwaa
 consistente partitie", en hun stelling 2.2 (geen tweekleurig pad van drie zijden) is het volgende Lean-doel.
 Powell en Toint (1979) staat achter een betaalmuur en op de verzoeklijst voor de supervisor.
 
+## §5.4b Toevoeging 12 september 2026 (avond): wat er van T3 in Lean zou kunnen, en wat de muur is
+
+De stelling 2.2 van Coleman en Moré (het volgende doel uit §5.4a) is dezelfde avond als Lean-tekst
+ontworpen, maar nog niet gebouwd: een Lean-bouw kost 8 GB geheugen en heeft eerder die middag de
+naftaleen-run van plan 05 doen sneuvelen; sinds die avond geldt de regel dat naast een ankerjob niets
+zwaars op de Windows-kant draait. Bouwen gebeurt zodra de run klaar is.
+
+Voor de lokaliteitsstelling T3 (§3.4a) is uitgezocht welke stukken wél formaliseerbaar zijn zonder de
+natuurkunde die Mathlib mist. Dat blijken drie zelfstandige lemma's te zijn, in oplopende kosten:
+
+1. **T3a:** een matrix die alleen buren koppelt, tot de macht k, koppelt alleen atomen op grafafstand
+   hooguit k. Puur combinatorisch; Mathlib heeft grafafstand en matrixmachten; uren werk.
+2. **T3b:** in een graaf waarin elk punt hooguit Δ buren heeft, liggen op afstand k hooguit
+   Δ·(Δ−1)^(k−1) punten. Een dag.
+3. **T3c:** het product van twee exponentieel afvallende matrices op zo'n graaf valt zelf exponentieel
+   af (stelling 9.2 van Benzi en anderen, in grafafstand). Dagen.
+
+De muur is de stelling van Bernstein — dat een nette functie op een ellips in het complexe vlak
+geometrisch snel door polynomen te benaderen is. Die staat niet in Mathlib en is complexe analyse van
+weken tot maanden. Er is een sluiproute voor de ene functie die wij nodig hebben: de resolvente
+1/(z − x) heeft een *expliciete* Chebyshev-reeks met geometrisch krimpende coëfficiënten, en daarmee is
+het afval van de resolvente van een dunne matrix te bewijzen zonder Bernsteins algemene stelling. Wat
+daarná komt — van dichtheidsmatrix naar correlatie-energie naar tweede afgeleide — is eerst wiskunde op
+papier, en voor coupled cluster nieuwe wiskunde. Lean kan dus T3a tot en met de resolvente-sluiproute
+certificeren; T3 zelf niet, zolang niemand hem bewezen heeft.
+
 ## §5.5 Eén zin om te onthouden
 
 Lean vindt niets en versnelt niets; hij bewijst dat een voorgestelde kortere weg exact is, en dat is

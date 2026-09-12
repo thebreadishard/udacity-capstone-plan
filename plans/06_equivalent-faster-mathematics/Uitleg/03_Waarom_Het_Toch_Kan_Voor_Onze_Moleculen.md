@@ -71,6 +71,44 @@ correlatie-energie per *paar* gelokaliseerde orbitalen uitzetten tegen hun afsta
 fitten op logaritmische schaal, en de helling aflezen. Het script staat klaar en draait zodra de
 laptop vrij is.
 
+## §3.4a Toevoeging 12 september 2026 (avond): de stellingen achter de bijziendheid, en wat ze over onze ladder zeggen
+
+De bijziendheid van §3.1 is niet alleen een natuurkundig principe; voor matrices is het een bewezen
+stelling. In het overzichtsartikel van Benzi, Boito en Razouk (2013, gelezen in de open versie) staat
+het zo: neem een Hamiltoniaan die alleen buren koppelt (een "dunne" matrix, met een graaf waarin elk
+atoom hooguit een vast aantal buren heeft), met een bandkloof die niet dichtgaat, en neem er een nette
+functie van — bijvoorbeeld de dichtheidsmatrix, die zegt waar de elektronen zitten. Dan vallen de
+elementen van die functie **exponentieel af met de grafafstand**: het aantal bindingen dat je moet
+volgen om van het ene atoom bij het andere te komen. De constanten hangen niet van de grootte van het
+molecuul af, en de afvalsnelheid is in eerste benadering **evenredig met de bandkloof**. Het bewijs is
+verrassend elementair: een nette functie is goed te benaderen door een polynoom (stelling van
+Bernstein), en een polynoom van graad k in een matrix die alleen buren koppelt, koppelt alleen atomen
+die hooguit k bindingen uit elkaar liggen.
+
+Drie dingen volgen daaruit voor plan 06.
+
+1. **Grafafstand, niet ångström.** Experiment X5 vond de benzeenring "vlak": meta- en para-paren even
+   groot als gebonden paren. In bindingen geteld zijn dat afstanden 2 en 3 — kleine getallen, precies
+   waar de stelling nog weinig afval voorspelt. De vlakke ring is geen tegenvoorbeeld voor lokaliteit;
+   het is lokaliteit gemeten in de verkeerde maat. Naftaleen (grafafstand tot 5) is het eerste molecuul
+   dat een helling kan laten zien.
+2. **De kloof krimpt langs onze eigen ladder.** Grote PAK's hebben een kleinere bandkloof dan benzeen;
+   dus wordt de bijziendheid *zwakker* juist richting de grote moleculen waar plan 05 hem het hardst
+   nodig heeft, en de stelling zegt ook hoe snel: evenredig met de kloof. Bij een kloof die naar nul
+   gaat (een metaal) blijft er alleen een machtswet over. Experiment X7 (afvalconstante tegen kloof
+   voor benzeen, naftaleen, pyreen) toetst die voorspelling.
+3. **Het vermoeden T3, en waarom het niet genoeg is.** T3 zegt: onder deze aannames vallen de
+   atoompaar-blokken van onze correctie Δ₂ exponentieel af met de grafafstand. Een bewijsplan is
+   geschreven (notitie van 12 september): welke aannames wij vervullen (buren: ja; een kloof die niet
+   dichtgaat: nee, niet langs de hele ladder), welke stappen stelling zijn en welke nieuw (de stap
+   van de dichtheidsmatrix naar de correlatie-energie, en van de energie naar haar tweede afgeleide,
+   zijn voor coupled cluster door niemand opgeschreven). Maar er is een addertje: T3 zegt alleen dat
+   *beide* Hessianen (CC en DFT) afvallen, en dus ook hun verschil. Waar plan 05 iets aan zou hebben,
+   is de sterkere uitspraak **T3′: de correctie valt sneller af dan elk van de twee**, omdat het
+   langeafstandsdeel (elektrostatisch, gemiddeld-veld) in het verschil wegvalt. Daar is nog geen enkel
+   getal voor; experiment X9 (minuten, op de bestaande benzeen-data) zet de blokprofielen van de
+   DFT-Hessiaan en van de correctie naast elkaar.
+
 ## §3.5 Eén zin om te onthouden
 
 Elektronen zijn bijziend, met een bereik dat door de bandkloof wordt gezet; aromaten hebben een
