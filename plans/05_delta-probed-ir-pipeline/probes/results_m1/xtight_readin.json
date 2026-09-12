@@ -1,0 +1,58 @@
+{
+ "mode6_bare": {
+  "sigma_tight_uEh": 0.009532403170509544,
+  "sigma_xtight_uEh": 0.003457563345697573,
+  "dw_tight_cm": 16.290972495751813,
+  "dw_xtight_cm": 2.0803960140372797,
+  "change_cm": -14.210576481714533,
+  "n_xtight": 9
+ },
+ "mode6_composite": {
+  "sigma_tight_uEh": 0.006689522564153617,
+  "sigma_xtight_uEh": 0.004209291264903461,
+  "dw_tight_cm": 0.4678797472958972,
+  "dw_xtight_cm": 0.11361570483780152,
+  "change_cm": -0.3542640424580957,
+  "n_xtight": 9
+ },
+ "mode12_bare": {
+  "sigma_tight_uEh": 0.0019635025844156554,
+  "sigma_xtight_uEh": 0.0030956870233010874,
+  "dw_tight_cm": 1.7782397751260932,
+  "dw_xtight_cm": 0.23131824627561023,
+  "change_cm": -1.546921528850483,
+  "n_xtight": 9
+ },
+ "mode12_composite": {
+  "sigma_tight_uEh": 0.001702684691102028,
+  "sigma_xtight_uEh": 0.002912205040859737,
+  "dw_tight_cm": 0.029913264816437492,
+  "dw_xtight_cm": -0.013701649349295353,
+  "change_cm": -0.04361491416573285,
+  "n_xtight": 9
+ },
+ "mode18_bare": {
+  "sigma_tight_uEh": 0.020726005732619887,
+  "sigma_xtight_uEh": 0.04400895923228317,
+  "dw_tight_cm": 5.257981980129939,
+  "dw_xtight_cm": 0.7609799889884284,
+  "change_cm": -4.49700199114151,
+  "n_xtight": 9
+ },
+ "mode18_composite": {
+  "sigma_tight_uEh": 0.02057585629992471,
+  "sigma_xtight_uEh": 0.043714347574611366,
+  "dw_tight_cm": 0.7913325786989048,
+  "dw_xtight_cm": 0.23036770312383828,
+  "change_cm": -0.5609648755750666,
+  "n_xtight": 9
+ },
+ "wall_s_median": {
+  "tight": 6440.926104307175,
+  "xtight": 4575.578272342682
+ },
+ "worst_abs_dw_composite_cm": {
+  "tight": 0.7913325786989048,
+  "xtight": 0.23036770312383828
+ }
+}
