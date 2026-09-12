@@ -62,6 +62,23 @@ Het ambitieuze doelwit — een klasse-beperkte lokaliteitsstelling voor correlat
 nieuwe wiskunde zijn, met of zonder Lean. Formalisering zou daar het certificaat zijn, niet de
 ontdekking.
 
+## §5.4a Wat Mathlib al heeft (X4, nagekeken op 12 september 2026)
+
+Experiment X4 is gedaan: we hebben de bibliotheek Mathlib doorzocht op wat er al bewezen is. De uitkomst
+in één regel: **alles wat algebra is, staat erin; alles wat natuurkunde is, ontbreekt.** Aanwezig zijn
+de spectraalstelling voor symmetrische matrices (eigenwaarden, gesorteerd, met een orthonormale basis van
+eigenvectoren), de rang van een matrix met haar rekenregels, positieve operatoren en hun ordening, het
+gelijktijdig diagonaliseren van commuterende symmetrische operatoren (precies de wiskunde achter de
+symmetrie-blokken van plan 05), het variatieprincipe voor de laagste en hoogste eigenwaarde
+(Rayleigh-quotiënt), en — verrassend — uitwendige machten met het inproduct dat chemici de
+Slater-determinant-overlap noemen, inclusief de orthonormale basis van determinanten. Afwezig zijn de
+min-max-stelling van Courant en Fischer voor de k-de eigenwaarde, de gulzige grafenkleuring die de telling
+van experiment X1 nodig heeft, elke Hamiltoniaan, de Fock-ruimte, en de Schrödinger-operator zelf.
+
+Gevolg: het kleine doelwit van §5.4 (het meetdeck van S5 exact bewijzen) is haalbaar met wat er is; een
+E1-uitspraak in een eindige basis kan al *opgeschreven* worden; de lokaliteitsstelling kan nog niet eens
+geformuleerd worden in Lean. Er is nog niets geïnstalleerd; of er een `lean/`-map komt, beslist de student.
+
 ## §5.5 Eén zin om te onthouden
 
 Lean vindt niets en versnelt niets; hij bewijst dat een voorgestelde kortere weg exact is, en dat is

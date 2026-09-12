@@ -30,7 +30,8 @@ not deleted.
    experiments (all on data already in the repository).
 2. The ledger of directions at the end of that file — the only place where a direction's status lives.
 3. [GoalGathering/Reading_Note_2026-09-12_X0_Complexity_and_Locality.md](GoalGathering/Reading_Note_2026-09-12_X0_Complexity_and_Locality.md) — X0 and X3a.
-4. [Uitleg/](Uitleg/00_Leeswijzer.md) — the plan explained at vwo-6 level in Dutch: the question, what is proven impossible, why it can still work for this class, the directions and experiments, Lean as referee, glossary.
+4. [GoalGathering/Reading_Note_2026-09-12_X4_Mathlib_Survey.md](GoalGathering/Reading_Note_2026-09-12_X4_Mathlib_Survey.md) — X4: what Mathlib holds for the Lean route (present / absent, per need; the three formal targets assessed).
+5. [Uitleg/](Uitleg/00_Leeswijzer.md) — the plan explained at vwo-6 level in Dutch: the question, what is proven impossible, why it can still work for this class, the directions and experiments, Lean as referee, glossary.
 
 ## What this folder will and will not contain
 

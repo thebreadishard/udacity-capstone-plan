@@ -142,7 +142,12 @@ is confined to them.
 - **X3 (S1):** per-fragment correlation energies from the naphthalene LNO log against fragment
   separation; the first decay number.
 - **X4 (Lean):** survey what Mathlib holds for symmetric matrices, rank, graph colouring, and the
-  variational principle in finite dimension; reading notes, no proofs.
+  variational principle in finite dimension; reading notes, no proofs. **Done 2026-09-12**
+  ([reading note](Reading_Note_2026-09-12_X4_Mathlib_Survey.md)): spectral theorem, sorted eigenvalues,
+  rank, positivity, Loewner order, commuting families and the Rayleigh-quotient variational principle
+  (lowest/highest eigenvalue) are all present; exterior powers carry the Slater inner product and an
+  orthonormal Slater basis; absent: Courant–Fischer, greedy/Δ+1 colouring, Brooks, Fock space, any
+  Hamiltonian, Schrödinger operators. T1 (S5 algebra) feasible; T2 statable; T3 out of reach.
 
 ## 8. Ledger of directions
 
@@ -154,7 +159,7 @@ is confined to them.
 | S4 reduce the target | E3 | **alive** (2026-09-12, X2 done): on the benzene dry-run tensor only 6 of 435 off-diagonal pairs move any harmonic position by > 0.5 cm⁻¹ (one pair carries 19.6 of the 19.6 cm⁻¹ total); no element moves a band > 0.05 cm⁻¹ at plan 05's per-element noise | X2 done ([result note](Result_Note_2026-09-12_X1_X2_Benzene.md)); next: the same count on the naphthalene dry-run tensor | scored information ≪ matrix; stand-in functional pair, harmonic positions only |
 | S5 query algebra (secondary track) | E1 | **alive, conditional** (2026-09-12, X1 done): 53 of 435 elements above 1 µE_h; exact sparse recovery needs 4–5 Hessian–vector products (greedy colouring bound) = 240–300 energies if a product costs 2M energies, against K = 448; rank is full (30), no low-rank route | X1 done; local-CC(T) gradients do exist by automatic differentiation (Zhang, Li, Ye, Berkelbach & Chan 2024, JCP 161, 014109, PySCFAD — plan 05's side-project engine); the open number is their cost per gradient with frozen spaces, measured by plan 05's milestone M2 | alive, conditional on M2's measured gradient cost; plan 06 waits for it |
 | S6 models as proposers | — | standing rule | — | — |
-| Lean route | referee for E1 | proposed | X4 | — |
+| Lean route | referee for E1 | **assessed** (2026-09-12, X4 done): Mathlib sufficient for the S5 measurement-algebra target T1 and for stating finite-basis E1 claims (T2); no Hamiltonian/Fock/Schrödinger infrastructure, so T3 out of reach; nothing installed | X4 done ([reading note](Reading_Note_2026-09-12_X4_Mathlib_Survey.md)) | next: the user decides whether `lean/` with T1 gets a day |
 
 ## References (all verified in Crossref on 2026-09-12)
 
