@@ -21,11 +21,10 @@ greedy bound; not in Mathlib on 2026-09-12, proved here by induction on a finite
 `Δ` the maximum degree of the column-intersection graph — the count behind X1. No `sorry` in any
 of these.
 
-**What is stated and owed (T1b).** The symmetric direct scheme: a symmetric `A` may be read at
-`(i, j)` *or* `(j, i)`, so a colouring only has to make every pattern entry readable from one side
-(`SymmValid`, defined per entry — the T1b note of 2026-09-12 shows this is *not* a proper colouring
-of any fixed graph on the columns). `recover₂_probe` states the recovery and carries `sorry`; it is
-the next proof.
+**T1b, proved.** The symmetric direct scheme: a symmetric `A` may be read at `(i, j)` *or* `(j, i)`,
+so a colouring only has to make every pattern entry readable from one side (`SymmValid`, defined per
+entry — the T1b note of 2026-09-12 shows this is *not* a proper colouring of any fixed graph on the
+columns). `recover₂_probe` proves the recovery. The file contains no `sorry`.
 
 Conventions: everything is finite-dimensional; the matrix ring is `ℝ` (plan 05's numbers are real);
 `Matrix.mulVec` is `A *ᵥ v`, with `(A *ᵥ v) i = ∑ j, A i j * v j`.
@@ -180,7 +179,7 @@ theorem exists_coloring_recover [DecidableEq n] (P : Pattern n) [DecidableRel (c
   obtain ⟨c⟩ := colorable_maxDegree_succ (colGraph P)
   exact ⟨c, fun _ hA => recover_probe c hA⟩
 
-/-! ## Owed: the symmetric refinement (T1b) -/
+/-! ## The symmetric direct scheme (T1b) -/
 
 /-- The pattern of a symmetric matrix may itself be taken symmetric. -/
 def Pattern.IsSymm (P : Pattern n) : Prop := ∀ i j, (i, j) ∈ P → (j, i) ∈ P
@@ -208,13 +207,37 @@ noncomputable def recover₂ (P : Pattern n) (c : n → α) (probes : α → n �
   fun i j =>
     if (i, j) ∈ P then (if ReadableCol P c i j then probes (c j) i else probes (c i) j) else 0
 
-/-- **T1b (owed; Theorem A of the T1b note, 2026-09-12).** For a symmetric pattern, a symmetric
-matrix respecting it, and a symmetrically valid colouring, the two-sided reconstruction from the
-probes returns the matrix. Proof plan: `probe_eq_entry` generalised to a plain function under
-`ReadableCol`, then the row side by `hAs` and `hP`. -/
-theorem recover₂_probe (P : Pattern n) (hP : P.IsSymm) (c : n → α) (hc : SymmValid P c)
+/-- **Key identity for a plain colouring function.** If `A i j` is readable from column `j`, row `i`
+of the probe of `j`'s colour is `A i j`. (Membership of `(i, j)` in the pattern is not needed: the
+sum always contains the term `j`, and readability kills every other term of that colour.) -/
+theorem probe'_eq_entry (c : n → α) {A : Matrix n n ℝ} (hA : Respects P A) {i j : n}
+    (hr : ReadableCol P c i j) : probe' c A (c j) i = A i j := by
+  unfold probe'
+  simp only [mulVec, dotProduct]
+  rw [Finset.sum_eq_single j]
+  · simp
+  · intro j' _ hne
+    by_cases hcj : c j' = c j
+    · have h0 : A i j' = 0 := hA i j' fun h => hr j' h hne hcj
+      simp [h0]
+    · simp [hcj]
+  · intro h
+    exact absurd (Finset.mem_univ j) h
+
+/-- **T1b (Theorem A of the T1b note, 2026-09-12).** For a symmetric matrix respecting the pattern
+and a symmetrically valid colouring, the two-sided reconstruction from the probes returns the
+matrix. The proof needs no symmetry of the pattern itself (the note assumed it; the row side only
+uses `A j i = A i j`), so the hypothesis `P.IsSymm` is dropped. -/
+theorem recover₂_probe (P : Pattern n) (c : n → α) (hc : SymmValid P c)
     {A : Matrix n n ℝ} (hA : Respects P A) (hAs : A.IsSymm) :
     recover₂ P c (probe' c A) = A := by
-  sorry
+  ext i j
+  unfold recover₂
+  split_ifs with hij hr
+  · exact probe'_eq_entry c hA hr
+  · have hr' : ReadableCol P c j i := (hc i j hij).resolve_left hr
+    rw [probe'_eq_entry c hA hr']
+    exact hAs.apply i j
+  · exact (hA i j hij).symm
 
 end Plan06.T1

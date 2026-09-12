@@ -15,8 +15,9 @@ and the user's decision the same day to install Lean and set up the first formal
   (Curtis–Powell–Reid 1974 / Coleman–Moré 1983). **Proved (no `sorry`):** T1a (`recover_probe`,
   `eq_of_probes_eq`), T1c the greedy `Δ + 1` colouring bound (`exists_proper_on_finset`,
   `colorable_maxDegree_succ`; not in Mathlib on 2026-09-12) and their corollary
-  `exists_coloring_recover` (`Δ + 1` probes determine every matrix respecting the pattern). **Owed:**
-  T1b, the symmetric refinement of Powell & Toint (1979), stated with `sorry`.
+  `exists_coloring_recover` (`Δ + 1` probes determine every matrix respecting the pattern), and **T1b** (`probe'_eq_entry`,
+  `recover₂_probe`: the symmetric direct scheme — one-sided readability `SymmValid` suffices; the symmetry
+  of the pattern turned out unnecessary). **The file contains no `sorry`** (2026-09-12 evening).
 - `Plan06/Basic.lean`, `Plan06.lean` — the template root module, importing T1.
 
 ## How to build

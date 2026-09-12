@@ -149,5 +149,8 @@ untouched.
 - X1 result note: dated correction paragraph pointing here; the ledger row S5 and the Orientation's
   X1 bullet carry the corrected counts; the Lean file header and the corollary's docstring no longer
   quote "4–5".
-- `lean/`: the placeholder T1b statement replaced by Theorem A's statement (still `sorry`).
+- `lean/`: the placeholder T1b statement replaced by Theorem A's statement — **and proved the same evening**
+  (`probe'_eq_entry`, `recover₂_probe`). The proof showed the hypothesis "P symmetric" of Theorem A is not
+  needed: the row side only uses `A j i = A i j`, so it was dropped from the Lean statement. `lean/` has no
+  `sorry` left.
 - Reading list: Coleman & Moré 1984 added (verified record).

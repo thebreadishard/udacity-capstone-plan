@@ -81,9 +81,11 @@ geformuleerd worden in Lean. Dezelfde avond is Lean met Mathlib geïnstalleerd (
 stuk van het kleine doelwit is bewezen: een matrix met bekend nulpatroon wordt exact teruggewonnen uit één
 matrix-vectorproduct per kleur van een geldige kleuring (stelling `recover_probe`, zonder `sorry`). Ook bewezen,
 later dezelfde avond: de gulzige kleuringsgrens — een graaf met maximale graad Δ is met Δ+1 kleuren te
-kleuren (die stelling zat niet in Mathlib) — en het gevolg dat Δ+1 metingen dus altijd genoeg zijn. Wat nog
-open staat: de symmetrische verfijning van Powell en Toint; die staat als stelling in het bestand met
-`sorry`, het Lean-woord voor "nog te bewijzen".
+kleuren (die stelling zat niet in Mathlib) — en het gevolg dat Δ+1 metingen dus altijd genoeg zijn. En nog later
+die avond ook de symmetrische verfijning: als een symmetrische matrix van elke kant gelezen mag worden, is
+één leesbare kant per element genoeg. Het hele bestand bevat nu geen `sorry` (het Lean-woord voor "nog te
+bewijzen") meer. Wat open staat is lezen, geen bewijzen: de artikelen van Powell en Toint (1979) en Coleman
+en Moré (1984), om onze voorwaarde met de hunne te vergelijken.
 
 ## §5.5 Eén zin om te onthouden
 
