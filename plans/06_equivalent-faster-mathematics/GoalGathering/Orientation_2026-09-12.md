@@ -148,7 +148,7 @@ is confined to them.
 
 | id | level | status (2026-09-12) | first test | result |
 |---|---|---|---|---|
-| S1 proven locality / decay rate | E1/E2 | proposed | X0, X3 | — |
+| S1 proven locality / decay rate | E1/E2 | **alive** (2026-09-12): X0 read — general E1 closed by QMA-hardness, class-restricted E1/E2 open; X3a from the naphthalene log: tight LNO keeps 92–100 % of active occupied and ~56 % of virtual orbitals per fragment, locality not yet paying at this size | X0 done ([reading note](Reading_Note_2026-09-12_X0_Complexity_and_Locality.md)), X3a done, X3b (pair decay) queued after the anchor job | decay constant still to measure |
 | S2 low rank of the difference (THC) | E2 | proposed, literature first | verified reading | — |
 | S3 quasi-1D π-systems (DMRG) | E1 at fixed bond dimension | proposed, literature first | reading; later a benzene π-space check | — |
 | S4 reduce the target | E3 | proposed | X2 | — |
