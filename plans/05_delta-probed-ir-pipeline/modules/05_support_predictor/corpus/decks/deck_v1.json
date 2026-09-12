@@ -1,0 +1,22 @@
+{
+  "deck": "v1",
+  "engine": "psi4 1.11 (conda env qc, Windows)",
+  "basis": "6-31G*",
+  "low_functional": "B3LYP",
+  "high_functional": "wB97X",
+  "optimise_at": "B3LYP/6-31G* for layers A and B; layer C uses the Hessian QM9 geometry unchanged",
+  "hessian": "analytic, both functionals at the same geometry",
+  "dft_radial_points": 75,
+  "dft_spherical_points": 302,
+  "scf_type": "df",
+  "e_convergence": 1e-08,
+  "d_convergence": 1e-08,
+  "reference": "rhf",
+  "charge": 0,
+  "multiplicity": 1,
+  "project_translations_rotations": true,
+  "units_in_files": {"geometry": "bohr", "hessian": "hartree/bohr^2", "frequencies": "cm-1"},
+  "threads": 8,
+  "memory_gb": 12,
+  "grid_check_for_timing_test": {"radial": 99, "spherical": 590}
+}
