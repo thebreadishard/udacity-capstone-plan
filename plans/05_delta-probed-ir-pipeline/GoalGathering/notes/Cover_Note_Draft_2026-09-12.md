@@ -30,6 +30,20 @@ laptop 11,5 uur, dus het eerste echte molecuul kost 5.450 laptopuren en vraagt o
 §13 punt 5); en het laboratoriumscorebord voor benzeen en naftaleen staat, met gemeten
 bandonzekerheden (§7).
 
+Die laatste meting maakt één ding expliciet dat ik liever nu zeg: vanaf naftaleen, het eerste echte
+molecuul, kan dit plan niet op mijn eigen machine. Benzeen wel; naftaleen kost 227 dagen laptop of
+twee tot drie maanden op een sterkere desktop; pyreen past niet meer in het geheugen; coroneen en de
+grote vlokken zijn cluster of niets. Ik denk dat een clusteraanvraag zin heeft, en wel hierom: de
+drie dingen die zo'n aanvraag moeten dragen zijn al gemeten in plaats van geschat — de methode werkt
+bij benzeen, de prijs per molecuul is bekend, en het scorebord met de tegenstanders staat vast voordat
+er gerekend wordt. Wat de clustertijd koopt is geen belofte maar een beslissing: na naftaleen, pyreen
+en coroneen weten we per bandfamilie of de correctie de bestaande voorspellingen verslaat, en zo niet,
+dan is gemeten waarom niet, met het aantal energieën ernaast. De echte onzekerheid zit niet in de
+methode maar in de grootteschaling (§4, vraag Q8), en juist daarvoor staan de verliesvoorwaarde en de
+twee hulpmiddelen van §4 en §10 vooraf op papier. Zonder clustertijd valt het project niet om: de
+opleidingsmodules hangen niet aan de rungs, en benzeen en naftaleen blijven haalbaar; wat dan wegvalt
+is de claim over de grote moleculen, en het plan zegt dan gemeten wat het niet heeft kunnen testen.
+
 Wat ik van je vraag staat in §13. De drie belangrijkste: (1) een kritische lezing van §2–§3 en §7,
 de plekken waar de discipline van het plan houdt of niet; (3) of jij gasfase- of jet-gekoelde
 spectra kent van pyreen, chryseen en trifenyleen in het 6–15 µm-gebied die mijn zoektocht van
