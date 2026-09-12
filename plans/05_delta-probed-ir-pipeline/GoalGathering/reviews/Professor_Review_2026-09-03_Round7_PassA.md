@@ -24,11 +24,11 @@ and two gates (the learned-prior rule, the Δ₃/Δ₄ licence) have doors the t
 ## Blocking findings
 
 ### 1. The change list is not the change: Why_05 says the ladder, its claim types and the budgets are unchanged; the ladder adds a claim type and a promised item, the budget adds a currency, and the prime directive gains a sentence
-**Where:** [Why_05_Supersedes_04.md](Why_05_Supersedes_04.md) "What plan 05 changes" / "What plan 05
-does not change"; [Frozen_Ladder_and_Tolerances.md](Frozen_Ladder_and_Tolerances.md) §1, §2
-"Promised", §3, §4, §5.1; [Compute_Budget_2026-09-03.md](Compute_Budget_2026-09-03.md) §1;
-[Overarching_Goal.md](Overarching_Goal.md) "Prime directive";
-[Distilled_Project_Plan_and_Quality_Checks.md](Distilled_Project_Plan_and_Quality_Checks.md) §1, P4(a).
+**Where:** [Why_05_Supersedes_04.md](../Why_05_Supersedes_04.md) "What plan 05 changes" / "What plan 05
+does not change"; [Frozen_Ladder_and_Tolerances.md](../Frozen_Ladder_and_Tolerances.md) §1, §2
+"Promised", §3, §4, §5.1; [Compute_Budget_2026-09-03.md](../Compute_Budget_2026-09-03.md) §1;
+[Overarching_Goal.md](../Overarching_Goal.md) "Prime directive";
+[Distilled_Project_Plan_and_Quality_Checks.md](../Distilled_Project_Plan_and_Quality_Checks.md) §1, P4(a).
 **What:** Why_05 lists four "changes of *frozen intent*", "each recorded here so Pass A cannot
 mistake them for drift", and then: "**What plan 05 does not change.** The ladder, its rungs and
 its claim types; the opponents; the scoreboards; the tolerances; the three budgets and the hours
@@ -65,7 +65,7 @@ one of these may be a good change; none of them is recorded where the plan says 
 
 ### 2. K is frozen in the pilot note *and* measured per rung; the residual that would reconcile the two is in no bin; and the note's own timing rule cannot supply the R1 data items 8–9 require
 **Where:** Ladder §2 (R3 row, "Ordering"), §4 (opening, items 8–9), §5.2; Compute_Budget §2, §4.1;
-Distilled Q0, Q7, Q8; [probes/README.md](../probes/README.md) items 1 and 4; plan-05 README
+Distilled Q0, Q7, Q8; [probes/README.md](../../probes/README.md) items 1 and 4; plan-05 README
 "Promised deliverable" and "Not yet done"; root README banner.
 **What:** Two definitions of K coexist.
 - *K is frozen before the rung runs.* Ladder §4.8: "**[05] K per rung and per mode** (E and G):
@@ -126,7 +126,7 @@ honestly has no pre-registered losing condition.
 
 ### 4. The plan's default recovery mode contradicts the prime directive's new sentence by the plan's own arithmetic, and nothing says the cost claim is conditional on mode G
 **Where:** Goal "Prime directive", "Method skeleton" step 2 and "Known risks";
-[Research_Note_2026-09-03_Delta_Probing.md](Research_Note_2026-09-03_Delta_Probing.md) §1, §4.1;
+[Research_Note_2026-09-03_Delta_Probing.md](../notes/Research_Note_2026-09-03_Delta_Probing.md) §1, §4.1;
 Distilled §3 "Δ-probing"; Compute_Budget §3 table; Ladder §2 "Promised"; bibliography items 31–32.
 **What:** Goal: "**And do it at a coupled-cluster cost that does not grow with the molecule.**"
 Research note §4.1: "Until a timed probe shows a working gradient at the rung's size, the plan's
@@ -213,7 +213,7 @@ no reason and a scoreboard cell that contradicts the file two links away.
 **Status:** open
 
 ### 8. Search-snippet records are used as facts where they justify frozen intent, and the load-bearing premise (Δ is short-ranged) is asserted as fact in the argument of record
-**Where:** [Relevant_Scientific_Papers.md](Relevant_Scientific_Papers.md) status rule and items 25,
+**Where:** [Relevant_Scientific_Papers.md](../Relevant_Scientific_Papers.md) status rule and items 25,
 27, 28, 30, 36–38, 41; Research note §1, §2, §3, §4.3, §4.4; Goal "What is scored" and "Method
 skeleton" step 1; Distilled §3 "DFT anharmonic constants" and "Intensities"; Why_05 "The block
 plan 04 could not lift" and the method table.
@@ -406,7 +406,7 @@ session in its head.
 
 ### 17. Stale status text after the 04→05 patch
 **Where:** root README "Repository layout" paragraph on documents 10–12 and "Conventions";
-[Rubrics/README.md](../../../Rubrics/README.md) "What is not here"; plan-05 README "Review record"
+[Rubrics/README.md](../../../../Rubrics/README.md) "What is not here"; plan-05 README "Review record"
 and "Not yet done"; plans/README "Layout".
 **What:** Root README: documents 10–12 "sit in its `GoalGathering/Horizon/` **until that folder's
 removal**" — the same file says the plan-03 folder was removed on 2026-09-02. Root README

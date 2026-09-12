@@ -26,11 +26,11 @@ repository.
 4. `GoalGathering/Overarching_Goal.md`, `GoalGathering/Frozen_Lines_to_Beat.md`,
    `GoalGathering/Compute_Budget_2026-09-03.md`,
    `GoalGathering/Distilled_Project_Plan_and_Quality_Checks.md`.
-5. `GoalGathering/Research_Note_2026-09-05_Probe_M1.md`,
-   `GoalGathering/Research_Note_2026-09-05_R2_GasPhase_MidIR_Sources.md`,
-   `GoalGathering/Research_Note_2026-09-05_DryRun_Benzene.md`,
-   `GoalGathering/Research_Note_2026-09-03_Delta_Probing.md` (§§8–9 win over §§1–7).
-6. `GoalGathering/PDF_Request_2026-09-06.md` — the list sent to the supervisor.
+5. `GoalGathering/notes/Research_Note_2026-09-05_Probe_M1.md`,
+   `GoalGathering/notes/Research_Note_2026-09-05_R2_GasPhase_MidIR_Sources.md`,
+   `GoalGathering/notes/Research_Note_2026-09-05_DryRun_Benzene.md`,
+   `GoalGathering/notes/Research_Note_2026-09-03_Delta_Probing.md` (§§8–9 win over §§1–7).
+6. `GoalGathering/notes/PDF_Request_2026-09-06.md` — the list sent to the supervisor.
 7. `probes/README.md`, `README.md` (plan), the repository `README.md`, `plans/README.md`,
    `Papers_Inventory_2026-09-06.md` (repository root).
 8. `Uitleg/*.md` — Dutch lay explanation; check only its literature mentions.
@@ -71,7 +71,7 @@ repository.
   them (search for "sealed" and check the surrounding text).
 
 **Format.** Write the report to
-`GoalGathering/Cold_Read_2026-09-06_Literature.md`. Header: reader, scope, files read, checks
+`GoalGathering/reviews/Cold_Read_2026-09-06_Literature.md`. Header: reader, scope, files read, checks
 run. Then numbered findings, each with: file and line, quoted text, what is wrong, a concrete
 fix, and a class — BLOCKING (a false or unverifiable literature claim in a binding document or
 the proposal), MAJOR (inconsistency across files or a status weaker than the claim), MINOR

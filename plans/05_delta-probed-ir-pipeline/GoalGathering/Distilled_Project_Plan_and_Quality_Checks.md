@@ -6,7 +6,7 @@ and Round-10 (A, B). **Frozen text as of 2026-09-04 (after review rounds 7–10 
 Rungs, licences and stop conditions: [Frozen_Ladder_and_Tolerances.md](Frozen_Ladder_and_Tolerances.md).
 Costs: [Compute_Budget_2026-09-03.md](Compute_Budget_2026-09-03.md). Modules:
 [Capstone_Mapping.md](Capstone_Mapping.md) (Pass 6 not done). Side project:
-[Side_Project_2026-09-04_ModeG_Gradients.md](Side_Project_2026-09-04_ModeG_Gradients.md).
+[Side_Project_2026-09-04_ModeG_Gradients.md](notes/Side_Project_2026-09-04_ModeG_Gradients.md).
 
 **Status.** Draft, 2026-09-03; revised the same day after Round-7 Pass A and Pass B; amended
 2026-09-04 by the user's decisions and revised the same day after Round-8, Round-9 and Round-10

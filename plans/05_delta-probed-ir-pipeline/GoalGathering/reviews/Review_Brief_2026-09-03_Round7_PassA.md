@@ -48,25 +48,25 @@ In this order:
 0. [README.md](../../../README.md) and [plans/README.md](../../README.md) — status banners
    (must say plan 05 is **current and draft**, plan 04 superseded and kept, plans 01–03 removed;
    the body text below the banners was patched — check nothing still says 04 is current)
-1. [../README.md](../README.md) — orientation and reading order
-2. [Why_05_Supersedes_04.md](Why_05_Supersedes_04.md) — the one-table change list
-3. [Overarching_Goal.md](Overarching_Goal.md) — prime directive
-4. [Research_Note_2026-09-03_Delta_Probing.md](Research_Note_2026-09-03_Delta_Probing.md) — the
+1. [../README.md](../../README.md) — orientation and reading order
+2. [Why_05_Supersedes_04.md](../Why_05_Supersedes_04.md) — the one-table change list
+3. [Overarching_Goal.md](../Overarching_Goal.md) — prime directive
+4. [Research_Note_2026-09-03_Delta_Probing.md](../notes/Research_Note_2026-09-03_Delta_Probing.md) — the
    source document; its §6 lists what was fetched and what was only seen in search snippets
-5. [Frozen_Lines_to_Beat.md](Frozen_Lines_to_Beat.md) — claims to be plan 04's file unchanged
+5. [Frozen_Lines_to_Beat.md](../Frozen_Lines_to_Beat.md) — claims to be plan 04's file unchanged
    in substance; diff it against `../../04_cc-anchored-ir-pipeline/GoalGathering/Frozen_Lines_to_Beat.md`
-6. [Frozen_Ladder_and_Tolerances.md](Frozen_Ladder_and_Tolerances.md) — rungs, the **[05]**
+6. [Frozen_Ladder_and_Tolerances.md](../Frozen_Ladder_and_Tolerances.md) — rungs, the **[05]**
    additions, pilot-note items 1–11, stop conditions
-7. [Compute_Budget_2026-09-03.md](Compute_Budget_2026-09-03.md) — three budgets, the
+7. [Compute_Budget_2026-09-03.md](../Compute_Budget_2026-09-03.md) — three budgets, the
    classification rule, the NOT_RUN table
-8. [Distilled_Project_Plan_and_Quality_Checks.md](Distilled_Project_Plan_and_Quality_Checks.md)
+8. [Distilled_Project_Plan_and_Quality_Checks.md](../Distilled_Project_Plan_and_Quality_Checks.md)
    — gates Q0–Q8, P0–P5, deviations, claim ladder
-9. [Relevant_Scientific_Papers.md](Relevant_Scientific_Papers.md) — verify statuses; items 23–41
+9. [Relevant_Scientific_Papers.md](../Relevant_Scientific_Papers.md) — verify statuses; items 23–41
    are new; the status vocabulary distinguishes fetched from search-snippet
-10. [../probes/README.md](../probes/README.md) — probes owed
+10. [../probes/README.md](../../probes/README.md) — probes owed
 11. Plan 04's Goal, Ladder, Distilled and both Round-6 reviews
     (`../../04_cc-anchored-ir-pipeline/GoalGathering/`) — the inheritance claim
-12. [../../../Rubrics/README.md](../../../Rubrics/README.md) — the mapping is not yet written
+12. [../../../Rubrics/README.md](../../../../Rubrics/README.md) — the mapping is not yet written
     for plan 05; note anything in the plan-05 documents that pre-commits a module to something
     the rubric reading there would not allow
 

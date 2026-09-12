@@ -117,7 +117,7 @@ which is main-project probe M1 under Ladder stop 1. **The aimed-for route is mod
 analytic local-CC gradients with frozen spaces, where each pattern returns 3N responses instead
 of one. No production code offers it today; plan 05 **builds** it in a pre-registered side
 project with frozen milestones and a kill criterion
-([Side_Project_2026-09-04_ModeG_Gradients.md](Side_Project_2026-09-04_ModeG_Gradients.md);
+([Side_Project_2026-09-04_ModeG_Gradients.md](notes/Side_Project_2026-09-04_ModeG_Gradients.md);
 decision 5). **Mode E runs on every rung R1–R3 that runs**; on every rung where the side project's
 milestone licenses it, mode G runs **in addition** and the rung carries two cost records. The
 cost record is promised for every rung and mode that ran.

@@ -33,19 +33,19 @@ You are not judging the chemistry. Pass B does that.
 ## What to read (in this workspace; do not fetch GitHub), in order
 
 0. [README.md](../../../README.md), [plans/README.md](../../README.md)
-1. [../README.md](../README.md) — review record (Round 9 entries especially); "Not yet done"
-2. [Overarching_Goal.md](Overarching_Goal.md) — the glossary first
-3. [Why_05_Supersedes_04.md](Why_05_Supersedes_04.md)
-4. [Frozen_Ladder_and_Tolerances.md](Frozen_Ladder_and_Tolerances.md)
-5. [Distilled_Project_Plan_and_Quality_Checks.md](Distilled_Project_Plan_and_Quality_Checks.md)
-6. [Compute_Budget_2026-09-03.md](Compute_Budget_2026-09-03.md)
-7. [../probes/README.md](../probes/README.md)
-8. [Side_Project_2026-09-04_ModeG_Gradients.md](Side_Project_2026-09-04_ModeG_Gradients.md)
-9. [Frozen_Lines_to_Beat.md](Frozen_Lines_to_Beat.md)
-10. [Relevant_Scientific_Papers.md](Relevant_Scientific_Papers.md) (items 1–53, statuses)
-11. [Capstone_Mapping.md](Capstone_Mapping.md)
+1. [../README.md](../../README.md) — review record (Round 9 entries especially); "Not yet done"
+2. [Overarching_Goal.md](../Overarching_Goal.md) — the glossary first
+3. [Why_05_Supersedes_04.md](../Why_05_Supersedes_04.md)
+4. [Frozen_Ladder_and_Tolerances.md](../Frozen_Ladder_and_Tolerances.md)
+5. [Distilled_Project_Plan_and_Quality_Checks.md](../Distilled_Project_Plan_and_Quality_Checks.md)
+6. [Compute_Budget_2026-09-03.md](../Compute_Budget_2026-09-03.md)
+7. [../probes/README.md](../../probes/README.md)
+8. [Side_Project_2026-09-04_ModeG_Gradients.md](../notes/Side_Project_2026-09-04_ModeG_Gradients.md)
+9. [Frozen_Lines_to_Beat.md](../Frozen_Lines_to_Beat.md)
+10. [Relevant_Scientific_Papers.md](../Relevant_Scientific_Papers.md) (items 1–53, statuses)
+11. [Capstone_Mapping.md](../Capstone_Mapping.md)
 12. [Project_Proposal_2026-09-03.md](Project_Proposal_2026-09-03.md)
-13. [Research_Note_2026-09-03_Delta_Probing.md](Research_Note_2026-09-03_Delta_Probing.md)
+13. [Research_Note_2026-09-03_Delta_Probing.md](../notes/Research_Note_2026-09-03_Delta_Probing.md)
     (status line: the frozen documents win over the note)
 14. [Professor_Review_2026-09-04_Round9_PassB.md](Professor_Review_2026-09-04_Round9_PassB.md)
     — its 12 findings, so you can check each closure is in the text and consistent across files

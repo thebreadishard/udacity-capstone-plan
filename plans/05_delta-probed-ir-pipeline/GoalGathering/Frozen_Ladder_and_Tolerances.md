@@ -140,7 +140,7 @@ debt because they pin the hot columns and u_296. No matrix gate applies on R0–
 
 **Dated note 2026-09-05 (R2/R3 gas-phase sources; permitted change under the freeze — names its
 finding).** An exhaustive web search on 2026-09-05
-([Research_Note_2026-09-05_R2_GasPhase_MidIR_Sources.md](Research_Note_2026-09-05_R2_GasPhase_MidIR_Sources.md);
+([Research_Note_2026-09-05_R2_GasPhase_MidIR_Sources.md](notes/Research_Note_2026-09-05_R2_GasPhase_MidIR_Sources.md);
 27 queries, 15 DOIs Crossref-verified) found **no room-temperature gas-phase 6–15 µm spectrum for
 pyrene, chrysene, triphenylene, tetracene or coronene**. It did find three cold or partial sources,
 added here as **labelled cold columns** scored under the u_band rule like every other source:
@@ -825,7 +825,7 @@ number exists for any molecule**. The 2026-09-04 decisions are recorded in it by
   measurement, not a transfer of spectra). **Dated amendment 2026-09-10 (decision 27, P19 —
   unparked by the user):** this refusal admits one *test*, gate **Q9**, the per-family
   transferability test of
-  [Research_Note_2026-09-08_P19_Transferability.md](Research_Note_2026-09-08_P19_Transferability.md):
+  [Research_Note_2026-09-08_P19_Transferability.md](notes/Research_Note_2026-09-08_P19_Transferability.md):
   for each band family F (the C–H out-of-plane bands per hydrogen-adjacency class), a constant c_F
   or a one-parameter size law c_F + d_F/N_C, fitted leave-one-molecule-out over the eight ladder
   molecules plus the anthracene locality probe, wins only if the transfer error e_F(M) ≤ τ_F and

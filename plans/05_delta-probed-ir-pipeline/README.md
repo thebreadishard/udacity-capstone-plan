@@ -32,12 +32,14 @@ before anything else.
 
 ## Reading order
 
+*Layout since 2026-09-12:* `GoalGathering/` holds the nine binding and living documents at top level; dated working notes are in `GoalGathering/notes/`, the review record (professor reviews, briefs, seam check, cold reads) in `GoalGathering/reviews/`. See [GoalGathering/README.md](GoalGathering/README.md). Moving the files changed no text; all links were rewritten and checked.
+
 1. This file — orientation. **Draft, not complete.**
 2. [GoalGathering/Why_05_Supersedes_04.md](GoalGathering/Why_05_Supersedes_04.md) — every
    change relative to plan 04, in one table (33 rows)
 3. [GoalGathering/Overarching_Goal.md](GoalGathering/Overarching_Goal.md) — glossary (Δ₂, R_s, R_a, K, ρ\*, ρ\*_common, u_band, the fragment licence and every other
    symbol), prime directive, the two 2026-09-04 directives, the decision record
-4. [GoalGathering/Research_Note_2026-09-03_Delta_Probing.md](GoalGathering/Research_Note_2026-09-03_Delta_Probing.md)
+4. [GoalGathering/notes/Research_Note_2026-09-03_Delta_Probing.md](GoalGathering/notes/Research_Note_2026-09-03_Delta_Probing.md)
    — the source document as written that morning; §8 records what the Round-7 reviews
    corrected and §9 what the 2026-09-04 decisions changed; §§8–9 win over §§1–7
 5. [GoalGathering/Frozen_Lines_to_Beat.md](GoalGathering/Frozen_Lines_to_Beat.md) — opponents
@@ -59,26 +61,26 @@ before anything else.
 12. [GoalGathering/Project_Proposal_2026-09-06.md](GoalGathering/Project_Proposal_2026-09-06.md) — rewritten as one document on 6 September 2026 (measurements and decisions 8–19 integrated); the 3–4 September text, which the review records cite as `Project_Proposal_2026-09-03.md`, is in the git history
     — the supervisor proposal: the *why* of the major decisions, the review status, and what
     was decided by whom
-13. [GoalGathering/Side_Project_2026-09-04_ModeG_Gradients.md](GoalGathering/Side_Project_2026-09-04_ModeG_Gradients.md)
+13. [GoalGathering/notes/Side_Project_2026-09-04_ModeG_Gradients.md](GoalGathering/notes/Side_Project_2026-09-04_ModeG_Gradients.md)
     — the pre-registered side project that builds frozen-space local-CC gradients (mode G):
     milestones M2–M5, kill criterion, budget bucket, what changes on success or failure
 
 ## Review record
 
 - **Round 7, Pass A** (cold read, 2026-09-03, fresh context):
-  [Professor_Review_2026-09-03_Round7_PassA.md](GoalGathering/Professor_Review_2026-09-03_Round7_PassA.md)
+  [Professor_Review_2026-09-03_Round7_PassA.md](GoalGathering/reviews/Professor_Review_2026-09-03_Round7_PassA.md)
   — not sound enough for Pass B until patched; 10 blocking + 11 non-blocking; **all 21
-  addressed in spec the same day**. Brief: [Review_Brief_2026-09-03_Round7_PassA.md](GoalGathering/Review_Brief_2026-09-03_Round7_PassA.md).
+  addressed in spec the same day**. Brief: [Review_Brief_2026-09-03_Round7_PassA.md](GoalGathering/reviews/Review_Brief_2026-09-03_Round7_PassA.md).
 - **Round 7, Pass B** (adversarial domain, 2026-09-03, fresh context, literature verified):
-  [Professor_Review_2026-09-03_Round7_PassB.md](GoalGathering/Professor_Review_2026-09-03_Round7_PassB.md)
+  [Professor_Review_2026-09-03_Round7_PassB.md](GoalGathering/reviews/Professor_Review_2026-09-03_Round7_PassB.md)
   — **conditional**: green light for the R0–R1 measurement programme once six blocking items
   were written in; no green light for the promised set *as then worded*. **All six written in
   the same day** (Q6 thresholds; banded prior; Δ₃/Δ₄ out; CMA cited; cost question re-anchored;
-  Q8 on direct blocks) and non-blocking 7–13. Brief: [Review_Brief_2026-09-03_Round7_PassB.md](GoalGathering/Review_Brief_2026-09-03_Round7_PassB.md).
+  Q8 on direct blocks) and non-blocking 7–13. Brief: [Review_Brief_2026-09-03_Round7_PassB.md](GoalGathering/reviews/Review_Brief_2026-09-03_Round7_PassB.md).
 - **2026-09-04, user decisions 1–6 and two directives** (Goal, "Decisions of 2026-09-04";
   "The goal binds"; "Inheritance is not authority"); the side project opened.
 - **Round 8, Pass A** (cold read of the patched set, 2026-09-04, fresh context):
-  [Professor_Review_2026-09-04_Round8_PassA.md](GoalGathering/Professor_Review_2026-09-04_Round8_PassA.md)
+  [Professor_Review_2026-09-04_Round8_PassA.md](GoalGathering/reviews/Professor_Review_2026-09-04_Round8_PassA.md)
   — "not yet": 11 blocking + 9 non-blocking, almost all seams left by the 2026-09-04
   find-and-replace edits plus three design holes. **All 20 addressed in spec the same day:**
   (1) the learned prior's rule made one rule everywhere — *earned on R2–R3 (both recoveries on
@@ -103,9 +105,9 @@ before anything else.
   labels; kill clock made calendar time with M1 booked to infrastructure; Q8-at-R0 as a Q7
   sub-item; Distilled §1/§2 for both modes; glossary moved into the Goal); (20) the QM9 /
   Foundations-module question raised as **open decision 7**. Brief:
-  [Review_Brief_2026-09-04_Round8_PassA.md](GoalGathering/Review_Brief_2026-09-04_Round8_PassA.md).
+  [Review_Brief_2026-09-04_Round8_PassA.md](GoalGathering/reviews/Review_Brief_2026-09-04_Round8_PassA.md).
 - **Round 8, Pass B** (re-assessment, 2026-09-04, fresh context, literature and code verified):
-  [Professor_Review_2026-09-04_Round8_PassB.md](GoalGathering/Professor_Review_2026-09-04_Round8_PassB.md)
+  [Professor_Review_2026-09-04_Round8_PassB.md](GoalGathering/reviews/Professor_Review_2026-09-04_Round8_PassB.md)
   — verdict: **conditional** — green light for the pre-pilot-note programme and for R0–R1 once
   four in-spec items were written in; no green light yet for R2–R3 on two points; the side
   project may open with its M2 additions. Part 1: of Round 7's six closures, two closed, four
@@ -133,10 +135,10 @@ before anything else.
   staleness swept; engine facts confirmed by the author's own fetch (items 48–49 upgraded; item
   50–51 added); the direct probe re-specified as family-projected couplings at four energies
   per (pair, family) with a step h; M1 given its displaced-geometry columns; the alarm's early
-  quietness stated. Brief: [Review_Brief_2026-09-04_Round8_PassB.md](GoalGathering/Review_Brief_2026-09-04_Round8_PassB.md).
+  quietness stated. Brief: [Review_Brief_2026-09-04_Round8_PassB.md](GoalGathering/reviews/Review_Brief_2026-09-04_Round8_PassB.md).
 
 - **Round 9, Pass A** (2026-09-04; cold read of the Round-8 Pass B patches, no web):
-  [Professor_Review_2026-09-04_Round9_PassA.md](GoalGathering/Professor_Review_2026-09-04_Round9_PassA.md)
+  [Professor_Review_2026-09-04_Round9_PassA.md](GoalGathering/reviews/Professor_Review_2026-09-04_Round9_PassA.md)
   — verdict "not yet"; 5 blocking + 23 non-blocking. **All 28 addressed in spec the same day:**
   (1) mode G's c and K_cap read at σ_g^assumed = 2.8·τ·q_s in the note, labelled, M2 printing its
   σ_g against it; "σ_g where a gradient runs" removed from every pre-note description;
@@ -160,9 +162,9 @@ before anything else.
   (inheritance is not authority), probe numbering aligned; (24) entry-point banners, decision
   count and numbering; (25) note status line and §9 extended; (26) glossary terms and acronyms
   added; (27) Frozen_Lines criterion and §7 trailer; (28) proposal header, §5.3, §11 order.
-  Brief: [Review_Brief_2026-09-04_Round9_PassA.md](GoalGathering/Review_Brief_2026-09-04_Round9_PassA.md).
+  Brief: [Review_Brief_2026-09-04_Round9_PassA.md](GoalGathering/reviews/Review_Brief_2026-09-04_Round9_PassA.md).
 - **Round 9, Pass B** (2026-09-04; hostile domain re-examination, with web):
-  [Professor_Review_2026-09-04_Round9_PassB.md](GoalGathering/Professor_Review_2026-09-04_Round9_PassB.md)
+  [Professor_Review_2026-09-04_Round9_PassB.md](GoalGathering/reviews/Professor_Review_2026-09-04_Round9_PassB.md)
   — verdict **conditional**: R0–R1 green once four in-spec items landed; R2–R3 under those plus
   one; beyond R3 conditional on one in-spec item and on B3. Part 1: 17 of the 18 Round-8 closures
   held, one (M5's σ_g) was a re-wording. 6 blocking + 6 non-blocking. **All 12 addressed in spec
@@ -185,10 +187,10 @@ before anything else.
   (`pyscf/grad/ccsd_t.py` fetched), the expected outcome written, the DZ bias line a lower bound;
   (10) distance classes by bond count with S_class printed; (11) the Goal's item 1 (c) carries
   the r_f rule; (12) the diagonal-cubic bonus counted as two extra energies per mode.
-  Brief: [Review_Brief_2026-09-04_Round9_PassB.md](GoalGathering/Review_Brief_2026-09-04_Round9_PassB.md).
+  Brief: [Review_Brief_2026-09-04_Round9_PassB.md](GoalGathering/reviews/Review_Brief_2026-09-04_Round9_PassB.md).
 
 - **Round 10, Pass A** (2026-09-04; cold read of the Round-9 Pass B patches, no web):
-  [Professor_Review_2026-09-04_Round10_PassA.md](GoalGathering/Professor_Review_2026-09-04_Round10_PassA.md)
+  [Professor_Review_2026-09-04_Round10_PassA.md](GoalGathering/reviews/Professor_Review_2026-09-04_Round10_PassA.md)
   — verdict "not yet"; 7 blocking + 13 non-blocking. **All 20 addressed in spec the same day:**
   (1) ΔE(0) declared one shared reference per rung whose offset the recovery's fitted constant
   absorbs, so σ(R_s) = σ_E/√2 is the response σ and ρ_noise = σ(R_s)/RMS_resp everywhere (the √6
@@ -211,9 +213,9 @@ before anything else.
   u_band re-read in §8; §9 extended); (17) M2's FD check stated as Cartesian, 72 energies; M4
   given run/no-run; (18) item 20 pointed at items 52–53, the note's erratum re-pointed;
   (19) 61 / 72 / 1,801 with their arithmetic; (20) the ρ\*_common column NOT_RUN until Q8(c).
-  Brief: [Review_Brief_2026-09-04_Round10_PassA.md](GoalGathering/Review_Brief_2026-09-04_Round10_PassA.md).
+  Brief: [Review_Brief_2026-09-04_Round10_PassA.md](GoalGathering/reviews/Review_Brief_2026-09-04_Round10_PassA.md).
 - **Round 10, Pass B** (2026-09-04; hostile domain re-examination, with web):
-  [Professor_Review_2026-09-04_Round10_PassB.md](GoalGathering/Professor_Review_2026-09-04_Round10_PassB.md)
+  [Professor_Review_2026-09-04_Round10_PassB.md](GoalGathering/reviews/Professor_Review_2026-09-04_Round10_PassB.md)
   — verdict **conditional, all conditions in-spec**: R0–R1 green once four items landed; R2–R3
   under the same four; beyond R3 green as worded, conditional on B3. Part 1: **all twelve
   Round-9 closures held** (Round-10 Pass A's twenty also checked). 4 blocking + 13 non-blocking.
@@ -241,11 +243,11 @@ before anything else.
   Proposal §7; (15) Δ₁ at equilibrium noted as readable and not a note input; (16) fragment
   part (b) scored per family on the shift-carrying pairs; (17) (c)'s R4 instance may run under
   a pending licence without resolving it.
-  Brief: [Review_Brief_2026-09-04_Round10_PassB.md](GoalGathering/Review_Brief_2026-09-04_Round10_PassB.md).
+  Brief: [Review_Brief_2026-09-04_Round10_PassB.md](GoalGathering/reviews/Review_Brief_2026-09-04_Round10_PassB.md).
 
 **Cold read 2026-09-06, literature focus** (fresh reader, no web; brief
-[Review_Brief_2026-09-06_ColdRead_Literature.md](GoalGathering/Review_Brief_2026-09-06_ColdRead_Literature.md),
-report [Cold_Read_2026-09-06_Literature.md](GoalGathering/Cold_Read_2026-09-06_Literature.md)):
+[Review_Brief_2026-09-06_ColdRead_Literature.md](GoalGathering/reviews/Review_Brief_2026-09-06_ColdRead_Literature.md),
+report [Cold_Read_2026-09-06_Literature.md](GoalGathering/reviews/Cold_Read_2026-09-06_Literature.md)):
 4 blocking, 13 major, 12 minor; 31 spot checks against the texts on disk, 29 exact. **All 31
 addressed the same day:** (1) Esposito 2024 struck as the CC/DFT allocation precedent in the
 proposal, Goal, Distilled plan, bibliography and research note — its force field is DFT
@@ -354,7 +356,7 @@ result decides is written in the note.
 al. 2009, item 53: sixteen naphthalene bands at 0.005 cm⁻¹ with the hot bands resolved away) is
 scored with u_T = 0 plus a 0.5 cm⁻¹ head-to-origin term (labelled upper bound from the paper's
 figures); other room-temperature sources keep the floor (Ladder dated note 2026-09-08; probes README
-2a). **Open since the proposal cold read of 2026-09-08** ([Cold_Read_2026-09-08_Proposal.md](GoalGathering/Cold_Read_2026-09-08_Proposal.md)):
+2a). **Open since the proposal cold read of 2026-09-08** ([Cold_Read_2026-09-08_Proposal.md](GoalGathering/reviews/Cold_Read_2026-09-08_Proposal.md)):
 **P12** the anchor's basis-set error in the error budget (finding 4) — **accepted by the user 2026-09-08 (decision 26), form (a) + (c)**: a **basis-set line** enters the anchor licence and the per-band error budget, fed by (i) the measured cc-pVDZ → cc-pVTZ change of the canonical harmonic curvature per benzene mode, printed from the two existing truth lines (no new runs; a lower bound), (ii) the literature distance of CCSD(T)/cc-pVTZ from the basis-set limit for benzene once the reference is read (Esselman et al. 2023 on the reading list), and (iii) a canonical cc-pVQZ diagonal line at benzene (61 energies) in the cluster request, which replaces (i)–(ii) when it prints; the expected-effect line is restated as an upper bound at the anchor's level; no F12 — neither CCSD(T)-F12 nor the in-testing MP2-F12 of PySCF is usable here (checked 2026-09-08); **Input (i) printed the same evening** (note §2.2d): the canonical curvature along the three benzene modes changes by +67 / −33 / −73 cm⁻¹ from cc-pVDZ to cc-pVTZ (frequency; the first print gave the curvature change, twice this — corrected 2026-09-10), two thirds of it SCF, and full-space MP2 captures 65–109 % of the correlation part — so the next measurement is the same 27 points at DF-RHF and DF-MP2 in cc-pVQZ/5Z (cheap, planned 2026-09-09 after the naphthalene timing), and a **P18** (anchor redefined as a composite with SCF and MP2 basis corrections) is drafted for the user once it prints; **P13** R1's energy route as
 B3 work or as a dated multi-week laptop job (finding 6) — **deferred by the user on 2026-09-08 until
 one naphthalene LNO-CCSD(T)/cc-pVTZ energy has been timed** (planned 2026-09-09, after the xtight
@@ -362,7 +364,7 @@ run; needs a quick DFT geometry first, the naphthalene dry run not having run); 
 rehearsal rerun under the symmetry prior (finding 15) — **accepted by the user 2026-09-08 (decision 22) — run 2026-09-10** (`dryrun_symmetry_prior.py`, from the cached stage-B responses, no new DFT energy): all 30 benzene modes assigned in D₆h (2a1g, a2g, a2u, 2b1u, 2b2g, 2b2u, e1g, 3e1u, 4e2g, 2e2u; the accidental a1g/b1u near-degeneracy at 1020 cm⁻¹ handled as a mixed block), **57 free off-diagonal elements of 435** (11 within degenerate pairs; 12 with a two-mode pattern in the 200 cm⁻¹ deck), **K_off = 210 energies at ρ_off ≤ 0.3 against 388 with the banded prior**, family errors equal or better (dry-run note §6); the P14 wording that follows is the plan as it stood before the run:, after the naphthalene timing; needs the deck's full-point-group irrep assignment of the DFT modes (D₆h; decision 11's wording) added to `dryrun_dft_delta_recovery.py`, then the existing benzene surrogate rerun with the prior and K_off printed against the free-element count; **P15** a null on symmetry-forbidden
 couplings of the frozen-space object (finding 16) — **accepted by the user 2026-09-08 (decision 23)** — **measured 2026-09-10 in the DFT surrogate** (same script): forbidden couplings ≤ 2.0 µE_h in the direct Δ₂ and ≤ 1.6 µE_h from the two-mode responses, against 424 µE_h for the largest allowed one — zero to the Hessians' noise; the frozen-space version at benzene follows with the R0 probe batch; the wording that follows is the plan as it stood: at benzene (and naphthalene when its noise run exists) a few symmetry-forbidden pairs are fitted free from two-mode points and their magnitude is printed in the anchor's smoothness record; the prior keeps them at zero in the recovery, and the wording "exact, not assumed" becomes "exact for the canonical surface; measured for the frozen-space one"; **P16** the jet-cooled coronene bands as the
 primary cold truth (finding 27) — **accepted by the user 2026-09-08 (decision 24)**: jet-cooled band primary with the FEL bandwidth as uncertainty, hot-extrapolated position a second labelled column, inconclusive only on opposite verdicts (Ladder §2 note of 2026-09-06 (iii) superseded in place; proposal §5.2; probes README 2a; bibliography); **P17** the R2 3 µm column not promised until its scoring rule
-exists (finding 21) — **accepted by the user 2026-09-08 (decision 25)**: the R2 C–H accuracy claim covers the out-of-plane bands on hot gas; the 3 µm jet-cooled column is shown, not promised, until a polyad scoring rule is agreed with the source's authors (Ladder §2 dated note; proposal §5.2; Frozen Lines §5); and the calendar (finding 25) — **in the proposal §12 since 2026-09-09 (12 Sep 2026 → 21 May 2027, two scenarios, from the measured first-week pace)**. **Closures 2026-09-10** (proposal patched; closure table appended to the cold-read file): all 43 findings addressed except **P13 / finding 6** (the naphthalene R1 cost sentence now says "being measured" and is rewritten when the timing prints) and the pending inputs of **P12 / finding 4** (the QZ/5Z SCF+MP2 line and the Esselman reading; the budget row already carries the basis-set line with the measured DZ→TZ figures). Finding 22 (side-project M2 memory) was closed by ordering M2 at cc-pVDZ first with the cc-pVTZ repeat as M3's first item and a memory-only failure recorded, not killing — the one closure that changes a side-project rule without a user decision, flagged for the user. **Recheck the same day** ([Cold_Read_2026-09-10_Proposal_Recheck.md](GoalGathering/Cold_Read_2026-09-10_Proposal_Recheck.md)): 29 held, 13 partial, 1 not held, 13 new (6 major, numeric) — all closed in the text the same afternoon; the numeric ones (mode order of the cc-pVTZ bias, the 57 = 54 + 3 benzene pair count, the R1 deck of 474 energies beside K ≈ 220–380, four formulas in the anchor gate, the MNRAS letter in §14) verified against the measurement files first. **P19 (2026-09-08, from the user's statement that the large PAHs are the goal):** a pre-registered test of whether Δ₂ is transferable per band family across size (a per-family constant or one-parameter size law, leave-one-molecule-out over R0–R3 plus anthracene, winning/losing conditions against τ_F), run before any R6 probe; if a family wins, line A's library is corrected by the rule with its error bar and R6 becomes a direct check of the rule — [Research_Note_2026-09-08_P19_Transferability.md](GoalGathering/Research_Note_2026-09-08_P19_Transferability.md); parked by the user on 2026-09-08 ("I am not that far yet"); **unparked and accepted 2026-09-10 = decision 27**, after the question "at which point could a professor trust this pipeline as a training-data generator" — the answer being Module 08 only with the transferability test and a calibration check in the path: Q9 in Ladder §6 (dated amendment) and §4 item 14, Goal glossary and gate list, Distilled gate table, Mapping M08 product, proposal §6/§10/§12 (pre-registration 15 Jan 2027; evaluation with R2/R3). The product sentence for the large PAHs follows the note's §5 (corrected line-A library with LOMO error bars for winning families; the R6 flake as the check).
+exists (finding 21) — **accepted by the user 2026-09-08 (decision 25)**: the R2 C–H accuracy claim covers the out-of-plane bands on hot gas; the 3 µm jet-cooled column is shown, not promised, until a polyad scoring rule is agreed with the source's authors (Ladder §2 dated note; proposal §5.2; Frozen Lines §5); and the calendar (finding 25) — **in the proposal §12 since 2026-09-09 (12 Sep 2026 → 21 May 2027, two scenarios, from the measured first-week pace)**. **Closures 2026-09-10** (proposal patched; closure table appended to the cold-read file): all 43 findings addressed except **P13 / finding 6** (the naphthalene R1 cost sentence now says "being measured" and is rewritten when the timing prints) and the pending inputs of **P12 / finding 4** (the QZ/5Z SCF+MP2 line and the Esselman reading; the budget row already carries the basis-set line with the measured DZ→TZ figures). Finding 22 (side-project M2 memory) was closed by ordering M2 at cc-pVDZ first with the cc-pVTZ repeat as M3's first item and a memory-only failure recorded, not killing — the one closure that changes a side-project rule without a user decision, flagged for the user. **Recheck the same day** ([Cold_Read_2026-09-10_Proposal_Recheck.md](GoalGathering/reviews/Cold_Read_2026-09-10_Proposal_Recheck.md)): 29 held, 13 partial, 1 not held, 13 new (6 major, numeric) — all closed in the text the same afternoon; the numeric ones (mode order of the cc-pVTZ bias, the 57 = 54 + 3 benzene pair count, the R1 deck of 474 energies beside K ≈ 220–380, four formulas in the anchor gate, the MNRAS letter in §14) verified against the measurement files first. **P19 (2026-09-08, from the user's statement that the large PAHs are the goal):** a pre-registered test of whether Δ₂ is transferable per band family across size (a per-family constant or one-parameter size law, leave-one-molecule-out over R0–R3 plus anthracene, winning/losing conditions against τ_F), run before any R6 probe; if a family wins, line A's library is corrected by the rule with its error bar and R6 becomes a direct check of the rule — [Research_Note_2026-09-08_P19_Transferability.md](GoalGathering/notes/Research_Note_2026-09-08_P19_Transferability.md); parked by the user on 2026-09-08 ("I am not that far yet"); **unparked and accepted 2026-09-10 = decision 27**, after the question "at which point could a professor trust this pipeline as a training-data generator" — the answer being Module 08 only with the transferability test and a calibration check in the path: Q9 in Ladder §6 (dated amendment) and §4 item 14, Goal glossary and gate list, Distilled gate table, Mapping M08 product, proposal §6/§10/§12 (pre-registration 15 Jan 2027; evaluation with R2/R3). The product sentence for the large PAHs follows the note's §5 (corrected line-A library with LOMO error bars for winning families; the R6 flake as the check).
 
 **Decision 28 (closed 2026-09-08, P20 — the criterion per rung, user's statement: benzene is a tool,
 not a goal; "beating" existing benzene values is not what is taken to the supervisor):**
@@ -420,7 +422,7 @@ widened. Reason: for training labels the error bars must be true, not just the e
   peaks 672.86 / 1036.54 / 1481.93 / 3046.39 cm⁻¹, u_band 3.2 cm⁻¹ on every family (of which
   u_296 = 2.55 by the frozen Bose rule with the floor slope — **P21** proposes the pipeline's own
   computed 296 K correction with ±30 % instead), intensities 104.6 / 8.2 / 15.7 (non-certified) /
-  74.2 km/mol. Note: [Research_Note_2026-09-10_Scoreboard_R0.md](GoalGathering/Research_Note_2026-09-10_Scoreboard_R0.md).
+  74.2 km/mol. Note: [Research_Note_2026-09-10_Scoreboard_R0.md](GoalGathering/notes/Research_Note_2026-09-10_Scoreboard_R0.md).
   The 0.125 cm⁻¹ boxcar record (WebBook Index 7) was fetched the same evening with the user's
   permission and printed too: peaks 673.90 / 1037.73 / 1483.41 / 3047.17, u_band 2.55 (the temperature
   term alone; 0.125 without it), intensities agreeing with the 1.929 record to ≤ 1.3 %. No frozen rule
@@ -435,7 +437,7 @@ widened. Reason: for training labels the error bars must be true, not just the e
   13.17 cm⁻¹ against 10.41 / 23.49 for conventional scaling, on Ar-matrix bands with an instance-level
   80/20 split (Frozen_Lines §3). Mai 2025's data record read (B3LYP/4-31G teacher; 50/300/600 K).
   **Same evening, files in hand:** all three libraries parsed —
-  [Research_Note_2026-09-10_Opponent_Atlas.md](GoalGathering/Research_Note_2026-09-10_Opponent_Atlas.md):
+  [Research_Note_2026-09-10_Opponent_Atlas.md](GoalGathering/notes/Research_Note_2026-09-10_Opponent_Atlas.md):
   line A has **no benzene**; stored scale factors 0.9794 / 0.9691 / 0.9597 (not the paper's
   0.964 / 0.979 / 0.975 — **re-read the same evening: the file carries the v3.00 factors of
   Bauschlicher 2018, the v4.00 refit is in the paper only; **P22 decided the same evening = decision 30: line A as served, paper-factor column printed and labelled**); 4-31G from n_C = 212; **debt 6 paid** (C₃₈₄H₄₈ uid 617
@@ -462,7 +464,7 @@ widened. Reason: for training labels the error bars must be true, not just the e
   hourly heartbeat. **Result 2026-09-11 05:15: 41,375 s = 11.5 h per naphthalene energy, 24 fragments, peak RSS 19.83 GB** (P13 input: the R1 deck of 474 energies is 5,450 laptop-hours ≈ 227 days; cluster work on the measured number). The xtight arm-A rescan (decision 20) was resumed detached at 05:16 the same morning, 22 points remaining.
 
 - **2026-09-05 — R2/R3 gas-phase sources.** An exhaustive search
-  ([Research_Note_2026-09-05_R2_GasPhase_MidIR_Sources.md](GoalGathering/Research_Note_2026-09-05_R2_GasPhase_MidIR_Sources.md))
+  ([Research_Note_2026-09-05_R2_GasPhase_MidIR_Sources.md](GoalGathering/notes/Research_Note_2026-09-05_R2_GasPhase_MidIR_Sources.md))
   found no room-temperature 6–15 µm gas spectrum for any R2/R3 species; it found jet-cooled band
   lists for tetracene (item 61) and coronene (item 62) and one cold pyrene band (item 63), added
   as labelled cold columns by the dated note in Ladder §2. The expected R2 C–C verdict is
@@ -474,7 +476,7 @@ widened. Reason: for training labels the error bars must be true, not just the e
   the laptop has psi4 1.11 in the conda environment `qc` but no pyscf, no PyTorch and no WSL, so
   probe M1 and every local-CC probe need WSL or the cluster. DFT-only work runs now.
 
-- **2026-09-05 — the R0 dry run ran** ([Research_Note_2026-09-05_DryRun_Benzene.md](GoalGathering/Research_Note_2026-09-05_DryRun_Benzene.md)):
+- **2026-09-05 — the R0 dry run ran** ([Research_Note_2026-09-05_DryRun_Benzene.md](GoalGathering/notes/Research_Note_2026-09-05_DryRun_Benzene.md)):
   mode E recovers benzene's off-diagonal Δ₂ with the full deck (family errors ≤ 0.43 cm⁻¹ vs
   7 cm⁻¹ diagonal-only), mode G from 60 gradients; but the raw held-out ρ is blind to the
   off-diagonals (2.4 % of the response), the frozen stopping rule is unreachable below a model
@@ -486,7 +488,7 @@ widened. Reason: for training labels the error bars must be true, not just the e
   26.04 under WSL 2 with `~/qc05` (Python 3.12: pyscf 2.14.0, pyscf-forge 1.1.1, pyscfad 0.3.3, jax
   0.10.2); the LNO modules import; 28 GB given to WSL. Probe M1 is unblocked.
 
-- **2026-09-05 — probe M1 ran** ([Research_Note_2026-09-05_Probe_M1.md](GoalGathering/Research_Note_2026-09-05_Probe_M1.md)):
+- **2026-09-05 — probe M1 ran** ([Research_Note_2026-09-05_Probe_M1.md](GoalGathering/notes/Research_Note_2026-09-05_Probe_M1.md)):
   benzene, cc-pVDZ, three modes × nine points, three arms, against a canonical CCSD(T) truth line on
   the same 27 geometries. The frozen-space object exists, round-trips (0.0000 µE_h) and **reloads**
   from file (+0.0000 µE_h). **Arm A is smooth to 0.002–0.06 µE_h where the re-selecting arms B and C
@@ -503,7 +505,7 @@ widened. Reason: for training labels the error bars must be true, not just the e
 
 - **Hardware decision (parked by the user 2026-09-10).** A €5,000 budget exists; a concrete
   configuration with Alternate.nl prices and URLs is in
-  [Hardware_Note_2026-09-10.md](GoalGathering/Hardware_Note_2026-09-10.md) (AM5 Ryzen 9 9950X,
+  [Hardware_Note_2026-09-10.md](GoalGathering/notes/Hardware_Note_2026-09-10.md) (AM5 Ryzen 9 9950X,
   128 GB now → 256 GB later, two NVMe drives, native Linux; €4,069 + options; Threadripper deferred
   while DDR5 is ≈ €16.5/GB). Configured in Alternate's PC-Builder and **in the user's cart (€4,655.75 with UPS and assembly), not ordered**: the user reconsiders once the first steps (naphthalene timing / P13, the R0 licence) show it is worth it; the memory kit is on the ASUS QVL for Ryzen 9000. Re-check prices then.
 
@@ -512,7 +514,7 @@ widened. Reason: for training labels the error bars must be true, not just the e
   pilot's deck needs the canonical two-mode count (decision 16 iii).
 
 - ~~Round 11~~ — not planned. The review loop was closed on 2026-09-04 after a seam check of the
-  Round-10 Pass B patch ([Seam_Check_2026-09-04_Round10B_patch.md](GoalGathering/Seam_Check_2026-09-04_Round10B_patch.md),
+  Round-10 Pass B patch ([Seam_Check_2026-09-04_Round10B_patch.md](GoalGathering/reviews/Seam_Check_2026-09-04_Round10B_patch.md),
   19 seams, all mechanical, all closed). **The plan-05 text is frozen**: changes only by dated
   note naming the finding or measurement behind them; the Ladder is the single binding statement
   of every rule and other files cite it. The remaining risk is retired by measurements, not by

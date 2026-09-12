@@ -17,7 +17,7 @@ Conventions, carried from plans 01–04:
   **R0 (benzene) only** — both modes, hashed deck with ± pairs and pair-wise hold-out, banded
   recovery, the q₂ block, the DFT-arm floor, the noise-injection column. Results in
   `results_dryrun/benzene/` (`REPORT.md`); findings and proposals in
-  [Research_Note_2026-09-05_DryRun_Benzene.md](../GoalGathering/Research_Note_2026-09-05_DryRun_Benzene.md).
+  [Research_Note_2026-09-05_DryRun_Benzene.md](../GoalGathering/notes/Research_Note_2026-09-05_DryRun_Benzene.md).
   Deviations printed by the script: no low-rank term; random completion patterns instead of
   O1NumHess. **Still owed for item 1:** the run at the largest laptop-affordable molecules
   (naphthalene next), and the deviations closed.
@@ -32,7 +32,7 @@ Conventions, carried from plans 01–04:
   on every family** (1.93 without the temperature term), integrated intensities in km/mol with
   Chu's 3.3 % (k = 2) and the non-certified flag (the C–C band at 1482 cm⁻¹). Results in
   `results_m03/benzene/`; note
-  [Research_Note_2026-09-10_Scoreboard_R0.md](../GoalGathering/Research_Note_2026-09-10_Scoreboard_R0.md).
+  [Research_Note_2026-09-10_Scoreboard_R0.md](../GoalGathering/notes/Research_Note_2026-09-10_Scoreboard_R0.md).
   **0.125 cm⁻¹ record fetched and printed the same evening** (`quantir_0p125`: peaks 673.90 / 1037.73 /
   1483.41 / 3047.17, u_band = u_296 alone). **R1 Pirali column printed 2026-09-11** (`--table
   scoreboards/naphthalene/pirali2009_table1.json`, class "resolved fundamental", decision 21): sixteen
@@ -66,7 +66,7 @@ Conventions, carried from plans 01–04:
   `results_m1/benzene_cc-pvtz_xtight/` (thresholds [10⁻⁷, 10⁻⁸], **`--arms A`** — the frozen arm only,
   B and C reused from the tight run, truth line copied in; started 2026-09-08 17:56, ≈ 1.5–2 days —
   decision 20, P10 b), `benzene_cc-pvdz_tight_smokeA/` (the `--arms A` smoke test). See
-  [Research_Note_2026-09-05_Probe_M1.md](../GoalGathering/Research_Note_2026-09-05_Probe_M1.md).
+  [Research_Note_2026-09-05_Probe_M1.md](../GoalGathering/notes/Research_Note_2026-09-05_Probe_M1.md).
 
 Otherwise none under plan 05 yet. Plan 04's NIST gas-phase coverage probe and its raw cache exist in
 `plans/04_cc-anchored-ir-pipeline/probes/` and are re-run under this plan's hash as owed

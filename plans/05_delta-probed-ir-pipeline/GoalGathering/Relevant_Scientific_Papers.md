@@ -10,7 +10,7 @@ venue; it does **not** verify any number quoted from the paper — numbers are m
 separately below where they are used.
 
 Items 1–22 are plan 04's bibliography, carried with their statuses; items 23 onward are new
-to plan 05 (from [Research_Note_2026-09-03_Delta_Probing.md](Research_Note_2026-09-03_Delta_Probing.md)).
+to plan 05 (from [Research_Note_2026-09-03_Delta_Probing.md](notes/Research_Note_2026-09-03_Delta_Probing.md)).
 Statuses of items 25–28, 30, 34, 36–38, 41 were upgraded on 2026-09-03 after Round-7 Pass A
 issue 8 by fetching Crossref records and arXiv abstracts; items 42–47 were added the same day
 after Round-7 Pass B (issues 2, 4, 7, 8, 9) and verified via Crossref/arXiv.
@@ -137,7 +137,7 @@ after Round-7 Pass B (issues 2, 4, 7, 8, 9) and verified via Crossref/arXiv.
   (items 42–43) re-read by the author, not only by the Pass B reviewer, before Q7's
   diagonal-only column is specified in a deck.
 
-**Status.** Working bibliography after the 2026-09-03 search pass; readings of 2026-09-06 recorded below; the literature cold read of 2026-09-06 ([Cold_Read_2026-09-06_Literature.md](Cold_Read_2026-09-06_Literature.md)) addressed the same day; the 2026-09-03 sentence follows: working bibliography after the 2026-09-03 search pass and the same-day Crossref
+**Status.** Working bibliography after the 2026-09-03 search pass; readings of 2026-09-06 recorded below; the literature cold read of 2026-09-06 ([Cold_Read_2026-09-06_Literature.md](reviews/Cold_Read_2026-09-06_Literature.md)) addressed the same day; the 2026-09-03 sentence follows: working bibliography after the 2026-09-03 search pass and the same-day Crossref
 upgrade. Not a claim that plan 05 is complete.
 
 ## Novelty search 2026-09-06 (author, web search; recorded so the proposal's "what is new" table is a measurement, not an assertion)

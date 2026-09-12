@@ -26,7 +26,7 @@ the version is pinned by hash, not by the file name.
 - 2026-09-10: parser written and tested on a synthetic fixture; all three PAHdb libraries parsed
   (files obtained by the student through the form); Mai 2025 archive fetched; line C (1,705 species,
   positions only) and the cheap line (81 species, 6,591 bands) read in; notebook and report written.
-  Findings in [Research_Note_2026-09-10_Opponent_Atlas.md](../../GoalGathering/Research_Note_2026-09-10_Opponent_Atlas.md):
+  Findings in [Research_Note_2026-09-10_Opponent_Atlas.md](../../GoalGathering/notes/Research_Note_2026-09-10_Opponent_Atlas.md):
   benzene absent from the theoretical library; scale factors as stored 0.9794 / 0.9691 / 0.9597 (the
   v3.00 factors of Bauschlicher 2018; the v4.00 paper's refit is not in the file — decision 30: line A
   is the library as served); 4-31G from n_C = 212; C₃₈₄H₄₈ present (uid 617, 4447); line B covers

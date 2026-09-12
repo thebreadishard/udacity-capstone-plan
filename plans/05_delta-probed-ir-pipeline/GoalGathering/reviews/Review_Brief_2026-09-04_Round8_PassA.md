@@ -42,27 +42,27 @@ In this order:
 
 0. [README.md](../../../README.md) and [plans/README.md](../../README.md) — banners and tables
    (five plans in the tree; 05 current; 01–04 read-only)
-1. [../README.md](../README.md) — orientation; the review record; the six decisions
-2. [Why_05_Supersedes_04.md](Why_05_Supersedes_04.md) — the change table (24 rows)
-3. [Overarching_Goal.md](Overarching_Goal.md) — prime directive, the two 2026-09-04 directives,
+1. [../README.md](../../README.md) — orientation; the review record; the six decisions
+2. [Why_05_Supersedes_04.md](../Why_05_Supersedes_04.md) — the change table (24 rows)
+3. [Overarching_Goal.md](../Overarching_Goal.md) — prime directive, the two 2026-09-04 directives,
    the decision list
-4. [Research_Note_2026-09-03_Delta_Probing.md](Research_Note_2026-09-03_Delta_Probing.md) — the
+4. [Research_Note_2026-09-03_Delta_Probing.md](../notes/Research_Note_2026-09-03_Delta_Probing.md) — the
    source, with its §8 errata (§§1–7 are deliberately left as written; §8 wins)
-5. [Frozen_Lines_to_Beat.md](Frozen_Lines_to_Beat.md)
-6. [Frozen_Ladder_and_Tolerances.md](Frozen_Ladder_and_Tolerances.md) — sentence types, rungs,
+5. [Frozen_Lines_to_Beat.md](../Frozen_Lines_to_Beat.md)
+6. [Frozen_Ladder_and_Tolerances.md](../Frozen_Ladder_and_Tolerances.md) — sentence types, rungs,
    the two dated notes, frozen-now vs pilot-note (items 1–13), stop conditions
-7. [Compute_Budget_2026-09-03.md](Compute_Budget_2026-09-03.md)
-8. [Distilled_Project_Plan_and_Quality_Checks.md](Distilled_Project_Plan_and_Quality_Checks.md)
+7. [Compute_Budget_2026-09-03.md](../Compute_Budget_2026-09-03.md)
+8. [Distilled_Project_Plan_and_Quality_Checks.md](../Distilled_Project_Plan_and_Quality_Checks.md)
    — gates Q0–Q8, P0–P5, deviations, fail-closed sentences, claim ladder
-9. [Relevant_Scientific_Papers.md](Relevant_Scientific_Papers.md) — items 1–49 and statuses
-10. [../probes/README.md](../probes/README.md)
-11. [Capstone_Mapping.md](Capstone_Mapping.md)
+9. [Relevant_Scientific_Papers.md](../Relevant_Scientific_Papers.md) — items 1–49 and statuses
+10. [../probes/README.md](../../probes/README.md)
+11. [Capstone_Mapping.md](../Capstone_Mapping.md)
 12. [Project_Proposal_2026-09-03.md](Project_Proposal_2026-09-03.md)
-13. [Side_Project_2026-09-04_ModeG_Gradients.md](Side_Project_2026-09-04_ModeG_Gradients.md)
+13. [Side_Project_2026-09-04_ModeG_Gradients.md](../notes/Side_Project_2026-09-04_ModeG_Gradients.md)
 14. The Round-7 reviews, for what they asked to be closed:
     [Professor_Review_2026-09-03_Round7_PassA.md](Professor_Review_2026-09-03_Round7_PassA.md),
     [Professor_Review_2026-09-03_Round7_PassB.md](Professor_Review_2026-09-03_Round7_PassB.md)
-15. [../../../Rubrics/README.md](../../../Rubrics/README.md) and the Module 05 rubric's dataset
+15. [../../../Rubrics/README.md](../../../../Rubrics/README.md) and the Module 05 rubric's dataset
     clauses (the mapping quotes them)
 
 ## The five questions

@@ -176,5 +176,5 @@ nog niet gelezen mag worden.
 
 *Bron: [Frozen_Ladder_and_Tolerances.md](../GoalGathering/Frozen_Ladder_and_Tolerances.md)
 §3 (stopregel, estimator, ±paren, hashes, verzegeling), [Distilled_Project_Plan_and_Quality_Checks.md](../GoalGathering/Distilled_Project_Plan_and_Quality_Checks.md)
-§3 (patronen, hold-out, priors), [Research_Note_2026-09-03_Delta_Probing.md](../GoalGathering/Research_Note_2026-09-03_Delta_Probing.md)
+§3 (patronen, hold-out, priors), [Research_Note_2026-09-03_Delta_Probing.md](../GoalGathering/notes/Research_Note_2026-09-03_Delta_Probing.md)
 (de compressed-sensing-achtergrond).*

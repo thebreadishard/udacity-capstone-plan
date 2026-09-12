@@ -40,7 +40,7 @@ Frozen_Lines_to_Beat, Frozen_Ladder_and_Tolerances, Compute_Budget_2026-09-03, D
 Relevant_Scientific_Papers, probes/README; plan 04's Round-6 Pass B
 (`../../04_cc-anchored-ir-pipeline/GoalGathering/Professor_Review_2026-09-02_Round6_PassB.md`)
 for what is already settled; and the source conversation
-[../../../AI_Chats/grok_chat_4.md](../../../AI_Chats/grok_chat_4.md).
+[../../../AI_Chats/grok_chat_4.md](../../../../AI_Chats/grok_chat_4.md).
 
 ## The plan in one paragraph
 

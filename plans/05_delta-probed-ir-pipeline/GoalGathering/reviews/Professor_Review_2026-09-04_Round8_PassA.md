@@ -34,12 +34,12 @@ blocking items 1–11, then Pass B.
 ## Blocking findings
 
 ### 1. The learned prior is admitted to promised rungs by the Goal and the Ladder, and still barred from them by the mapping's officer, the Distilled claim ladder, the Distilled §5 architecture sentence, the proposal's fit section and both glossaries
-**Where:** [Overarching_Goal.md](Overarching_Goal.md) "Notation", "Scope boundaries" last bullet,
-decision 4; [Frozen_Ladder_and_Tolerances.md](Frozen_Ladder_and_Tolerances.md) §3 licence
-bullet; [Distilled_Project_Plan_and_Quality_Checks.md](Distilled_Project_Plan_and_Quality_Checks.md)
-§3 "Structural prior", §5 first and third bullets, §9 item 8; [Capstone_Mapping.md](Capstone_Mapping.md)
+**Where:** [Overarching_Goal.md](../Overarching_Goal.md) "Notation", "Scope boundaries" last bullet,
+decision 4; [Frozen_Ladder_and_Tolerances.md](../Frozen_Ladder_and_Tolerances.md) §3 licence
+bullet; [Distilled_Project_Plan_and_Quality_Checks.md](../Distilled_Project_Plan_and_Quality_Checks.md)
+§3 "Structural prior", §5 first and third bullets, §9 item 8; [Capstone_Mapping.md](../Capstone_Mapping.md)
 §0, §2 (last paragraph), §3 M05, M07 (safeguards), M08; [Project_Proposal_2026-09-03.md](Project_Proposal_2026-09-03.md)
-§12; plan-05 [README.md](../README.md) glossary.
+§12; plan-05 [README.md](../../README.md) glossary.
 **What:** The 2026-09-04 rule, stated identically in the Goal and the Ladder: "the learned prior
 may enter a promised rung only under a **licence**: (i) P3 has demonstrated its saving … (ii) at
 that rung the reference check … is computed prior-free and the prior-assisted recovery agrees
@@ -114,7 +114,7 @@ construction on the parts of Δ₂ that matter most.
 
 ### 3. Mode E is "the guaranteed route", but the frozen-domain local-CC code it requires is a side-project deliverable — and the side project says its failure "costs the promised set nothing"
 **Where:** Goal "Prime directive"; Ladder §3 "Frozen domains" bullet and §5 stop 1; Distilled §3
-"Anchor level"; [Side_Project_2026-09-04_ModeG_Gradients.md](Side_Project_2026-09-04_ModeG_Gradients.md)
+"Anchor level"; [Side_Project_2026-09-04_ModeG_Gradients.md](../notes/Side_Project_2026-09-04_ModeG_Gradients.md)
 "Relation to the plan", §1.3, §2 (a), §3 kill criterion, §6, §8; README "Not yet done".
 **What:** Goal: "The **guaranteed route is mode E**: K = 2M + K_off local-CC energies with frozen
 domains". Ladder §3: "every local-CC probe evaluation … uses correlation domains, pair lists and

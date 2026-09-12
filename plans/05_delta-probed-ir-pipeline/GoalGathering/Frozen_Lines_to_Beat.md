@@ -52,7 +52,7 @@ prior art for plan 05's diagonal recovery, not an opponent line (it produces no 
 - **Role.** The default opponent for every molecule; the *only* opponent at C₃₈₄H₄₈-class
   sizes.
 - **Dated note 2026-09-10 — the library as served (Module 02 atlas, first print;
-  [Research_Note_2026-09-10_Opponent_Atlas.md](Research_Note_2026-09-10_Opponent_Atlas.md)).**
+  [Research_Note_2026-09-10_Opponent_Atlas.md](notes/Research_Note_2026-09-10_Opponent_Atlas.md)).**
   10,749 species, 2,517,399 transitions; the stored frequencies are the *scaled* values and the
   factors actually stored for the 10,703 6-31G* species are **0.9794 / 0.9691 / 0.9597** (below
   ≈ 1,088, ≈ 1,077–1,744, above ≈ 2,590 cm⁻¹) and 0.9563 / 0.9523 / 0.9595 for the 14 4-31G species —

@@ -98,6 +98,6 @@ punten (±paren, projectie, de Δ₁-term) en vonden een betere labbron voor naf
 september 2026 is de lus gesloten en de tekst bevroren; wat rest zijn metingen, in een
 vaste volgorde.
 
-*Bron: [Side_Project_2026-09-04_ModeG_Gradients.md](../GoalGathering/Side_Project_2026-09-04_ModeG_Gradients.md),
+*Bron: [Side_Project_2026-09-04_ModeG_Gradients.md](../GoalGathering/notes/Side_Project_2026-09-04_ModeG_Gradients.md),
 [README.md](../README.md) (reviewrecord en "Not yet done"),
-[Seam_Check_2026-09-04_Round10B_patch.md](../GoalGathering/Seam_Check_2026-09-04_Round10B_patch.md).*
+[Seam_Check_2026-09-04_Round10B_patch.md](../GoalGathering/reviews/Seam_Check_2026-09-04_Round10B_patch.md).*
