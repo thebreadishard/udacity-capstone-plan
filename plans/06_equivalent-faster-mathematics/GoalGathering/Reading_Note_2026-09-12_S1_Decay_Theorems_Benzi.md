@@ -89,3 +89,8 @@ bounded-degree system, with rate ∝ gap — and two cheap tests follow: blocks 
 naphthalene) and λ versus gap (X7). T3 stays "new mathematics first"; its Lean prerequisites (Bernstein's
 ellipse theorem in Mathlib?) go on the next X4-type check. Benzi & Rinelli 2022 to be read for the sharper
 constants if T3 is ever attempted.
+
+## 4. Dated addition (2026-09-12, later the same evening) — availability of the two follow-up texts
+
+Checked for open copies before reading: **Benzi (2016)**, "Localization in Matrix Computations: Theory and Applications", Lecture Notes in Mathematics 2173, pp. 211–317, DOI 10.1007/978-3-319-49887-4_4 (Crossref record verified; licence Springer TDM only; the publisher's PDF link redirects to the paid chapter page; no arXiv preprint found), and **Benzi & Rinelli (2022)** (record verified earlier; no arXiv preprint under either author's name). Neither is open, so neither was read; both are on the supervisor's PDF request list as items 30 and 31 (plan 05 `notes/PDF_Request_2026-09-06.md`, section F). The T3 proof plan (`Note_2026-09-12_T3_Proof_Plan.md`) rests on the 2013 text alone.
+

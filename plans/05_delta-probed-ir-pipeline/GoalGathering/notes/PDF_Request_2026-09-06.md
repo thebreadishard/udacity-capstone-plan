@@ -66,3 +66,10 @@ lokale-CC-object als nieuw noemt (24–26) en voor de basis-set-lijn van besluit
 
 29. Powell, M. J. D. & Toint, Ph. L., *SIAM J. Numer. Anal.* **16**(6), 1060–1074 (1979), DOI 10.1137/0716078 — "On the estimation of sparse Hessian matrices": de oorspronkelijke directe en driehoekssubstitutiemethoden om een symmetrische matrix met bekend nulpatroon uit zo weinig mogelijk matrix-vectorproducten terug te winnen, en de stelling over foutversterking bij substitutie. Nergens open (SIAM-only; ook de student kan hem niet downloaden). Het vervolgartikel van Coleman & Moré (1984) is als Cornell-rapport TR 82-535 open en op 12 september gelezen; daarin staat Powell & Toint alleen uit de tweede hand.
 
+## F. Toegevoegd 12 september 2026 (avond) — plan 06, richting S1 (lokaliteitsstellingen; achtergrond bij vermoeden T3)
+
+Beide bronnen zijn op 12 september gecontroleerd: Crossref-records geverifieerd, geen open versie gevonden (geen arXiv-preprint; de Springer-PDF verwijst door naar de betaalde hoofdstukpagina, licentie alleen tekst- en datamining).
+
+30. Benzi, M., "Localization in Matrix Computations: Theory and Applications", in *Exploiting Hidden Structure in Matrix Computations: Algorithms and Applications* (Cetraro 2015), Lecture Notes in Mathematics **2173**, Springer, 2016, pp. 211–317, DOI 10.1007/978-3-319-49887-4_4 — het overzicht van de afvalstellingen voor matrixfuncties (dunne matrices, grafafstand, snelheid tegen kloof) dat het S1-leesverslag van Benzi, Boito & Razouk 2013 zou aanvullen; achtergrond bij het bewijsplan van T3 (stap L1) en bij experiment X7.
+31. Benzi, M. & Rinelli, M., "Refined decay bounds on the entries of spectral projectors associated with sparse Hermitian matrices", *Linear Algebra and its Applications* **647**, 1–30 (2022), DOI 10.1016/j.laa.2022.04.005 — de scherpere constanten voor de afvalgrenzen van spectrale projectoren; alleen nodig als T3 daadwerkelijk wordt aangevat.
+

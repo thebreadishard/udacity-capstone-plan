@@ -188,7 +188,8 @@ without first proving that classical result; T3 in Lean is two theorems away, no
 
 - Bartlett, R. J., & Musiał, M. (2007). Coupled-cluster theory in quantum chemistry. *Reviews of Modern Physics, 79*(1), 291–352. https://doi.org/10.1103/RevModPhys.79.291
 - Benzi, M., Boito, P., & Razouk, N. (2013). Decay properties of spectral projectors with applications to electronic structure. *SIAM Review, 55*(1), 3–64. https://doi.org/10.1137/100814019 (read 2026-09-12, §§8–10, 12, arXiv:1203.3953)
-- Benzi, M., & Rinelli, M. (2022). Refined decay bounds on the entries of spectral projectors associated with sparse Hermitian matrices. *Linear Algebra and its Applications, 647*, 1–30. https://doi.org/10.1016/j.laa.2022.04.005 (record only)
+- Benzi, M., & Rinelli, M. (2022). Refined decay bounds on the entries of spectral projectors associated with sparse Hermitian matrices. *Linear Algebra and its Applications, 647*, 1–30. https://doi.org/10.1016/j.laa.2022.04.005 (record only; not open — PDF request item 31)
+- Benzi, M. (2016). Localization in matrix computations: Theory and applications. In *Exploiting Hidden Structure in Matrix Computations: Algorithms and Applications*, Lecture Notes in Mathematics 2173 (pp. 211–317). Springer. https://doi.org/10.1007/978-3-319-49887-4_4 (record only, verified 2026-09-12; not open — PDF request item 30)
 - Bekas, C., Kokiopoulou, E., & Saad, Y. (2007). An estimator for the diagonal of a matrix. *Applied Numerical Mathematics, 57*(11–12), 1214–1229. https://doi.org/10.1016/j.apnum.2007.01.003
 - Chan, G. K.-L., & Sharma, S. (2011). The density matrix renormalization group in quantum chemistry. *Annual Review of Physical Chemistry, 62*, 465–481. https://doi.org/10.1146/annurev-physchem-032210-103338
 - Coleman, T. F., & Moré, J. J. (1983). Estimation of sparse Jacobian matrices and graph coloring problems. *SIAM Journal on Numerical Analysis, 20*(1), 187–209. https://doi.org/10.1137/0720013
