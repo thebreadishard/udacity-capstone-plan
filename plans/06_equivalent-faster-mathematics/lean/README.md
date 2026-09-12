@@ -41,3 +41,5 @@ Measured footprint on 2026-09-12 (PowerShell `Measure-Object`): `~/.elan` (elan 
   listed in the file header.
 - Nothing here changes plan 05; a proved statement transfers only through a plan-05 dated note.
 - Names from Mathlib are checked against the pinned version, never quoted from memory.
+
+- `Plan06/T1/SymmetricColouring.lean` — **T1d, draft, not built** (2026-09-12 evening): Coleman & Moré's Theorem 2.2, `SymmValid ↔ proper on the pattern graph ∧ no 2-coloured path of length 3`, with the diagonal in the pattern. Not imported by `Plan06.lean` until it compiles; build it after the anchor job (`lake build Plan06.T1.SymmetricColouring`), fix, then add the import.
