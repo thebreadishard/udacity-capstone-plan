@@ -52,7 +52,19 @@ condition is a literature question about local-CC analytic gradients (Nagy & Ká
 published gradient work; to be read, not recalled) and is the first thing to check before any more
 algebra.
 
+## S5's condition, checked the same day (Crossref search 2026-09-12, records only, papers not read)
+
+Analytic gradients for local correlation methods are published at the **MP2** level — DLPNO-MP2:
+Pinski & Neese, *J. Chem. Phys.* 148 (2018), DOI 10.1063/1.5011204 (communication) and *J. Chem.
+Phys.* 150 (2019), DOI 10.1063/1.5086544 (full). For **local CCSD or CCSD(T)** (DLPNO, PNO-LCCSD,
+LNO) the same search returned no analytic-gradient record; a numerical gradient of a local-CC energy
+costs 2 × 3N energies (72 at benzene), more than the 2M = 60 energies a Hessian–vector product by
+energies would cost. So, as far as verified today, **no cheap product exists at the anchor's level**;
+the X1 counts (4–5 products) stay a statement about the algebra, not about a route. A deeper search
+(the ORCA and MRCC literature since 2020) is the only thing that could revive S5; until then it is
+parked, not dead.
+
 ## Ledger changes
 
-S4 → alive (E3), next test on the naphthalene tensor. S5 → alive, conditional on a cheap product;
-next test a verified reading on local-CC gradients. X1, X2 done.
+S4 → alive (E3), next test on the naphthalene tensor. S5 → **parked** (no verified local-CC(T)
+analytic gradient; MP2-level gradients exist); revives only on a verified record. X1, X2 done.
