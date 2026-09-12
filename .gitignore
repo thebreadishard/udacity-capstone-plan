@@ -49,3 +49,7 @@ plans/*/modules/*/out/**/*.csv.gz
 !plans/*/modules/*/out/anharmonic_*/bands.csv.gz
 !plans/*/modules/*/out/experimental_*/bands.csv.gz
 !plans/*/modules/*/out/lineC_*/peaks.csv.gz
+
+# Plan 05 Module 05 corpus factory: per-molecule Hessian folders and the runner lock stay out of git; manifest, ledger, STATUS, decks, scripts are committed
+plans/*/modules/*/corpus/molecules/
+plans/*/modules/*/corpus/corpus.lock
