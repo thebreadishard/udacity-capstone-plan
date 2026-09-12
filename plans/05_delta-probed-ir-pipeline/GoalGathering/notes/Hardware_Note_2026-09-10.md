@@ -88,6 +88,6 @@ first results.
 (Micron MTC8C1084S1SC56BD1 and Samsung M425R2GA3EB0-CWM, 1.1 V), firmware maximum 64 GB. Upgrade to 64 GB
 = replace both by 2 × 32 GB DDR5-5600 SO-DIMM: at Alternate either the Kingston FURY Impact kit KF556S40IBK2-64
 (CL40, €999) or two Corsair Vengeance CMSX32GX5M1A5600C48 (CL48, 2 × €439 = €878); no Corsair 2 × 32 kit
-listed. The user chose to order 64 GB. Consequence for the Budget: the WSL ceiling can go to ≈ 50 GB, so a
+listed. **Ordered 2026-09-12 (afternoon): 2 × Corsair CMSX32GX5M1A5600C48, €878 + €6.95 shipping = €884.95; expected Tuesday 15 September.** Installation only when no job runs (not during the naphthalene xtight timing); afterwards the WSL ceiling goes to ≈ 50 GB by a dated Budget note and the parked 25 GB lever is superseded. Consequence for the Budget: the WSL ceiling can go to ≈ 50 GB, so a
 naphthalene xtight energy fits without the memory levers and a pyrene energy probably fits too; speed is
 unchanged.
