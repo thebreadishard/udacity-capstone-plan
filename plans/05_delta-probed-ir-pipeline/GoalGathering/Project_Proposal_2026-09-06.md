@@ -721,7 +721,7 @@ anharmonic step without the correction. The question put to line B is therefore 
 anharmonic treatment is right, but whether a measured coupled-cluster correction to the harmonic
 constants adds accuracy on top of an anharmonic DFT treatment of the same kind.
 
-**A conflict of interest, on record.** The supervisor is a co-author of the 2015 and 2016 papers
+**The supervisor's dual role, on record.** The supervisor is a co-author of the 2015 and 2016 papers
 behind line B and of the jet-cooled 3 µm spectra named as an R2 column (Maltseva et al. 2016). The
 protections are the ones already written — the frozen version, the pre-registered margins, the
 Δ₂ = 0 null row, the leakage rules, the fail-closed reporting — and the supervisor's role on line B is
