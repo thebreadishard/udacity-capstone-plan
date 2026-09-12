@@ -11,7 +11,7 @@ probes/README; K_cap(G) wording) and Round-9 Pass B (2026-09-04: symmetrised dry
 M1 by projection; one canonical gradient; M4/M5 at 36 gradients; part (c) classified), Round-10 Pass A (2026-09-04: K in energies;
 61 / 72 / 1,801 with arithmetic; anthracene as a direct-coupling probe) and Round-10 Pass B
 (2026-09-04: per-energy noise injection and c₀ in §4.1; the §3 units paragraph; arms A/B in
-§4.2 and §4.5). **Frozen text as of 2026-09-04 (after review rounds 7–10 and the seam check of the Round-10 Pass B patch).** From here on this file changes only by a dated note that names the finding or measurement behind the change; the Ladder is the single binding statement of every rule, and other files cite it rather than restate it. Caps and checkpoints are **not estimates**; measured slots read NOT_RUN until a probe
+§4.2 and §4.5). **Frozen text as of 2026-09-04 (after review rounds 7–10 and the seam check of the Round-10 Pass B patch).** From here on this file changes only by a dated note that names the finding or measurement behind the change; the Ladder is the single binding statement of every rule, and other files cite it rather than restate it. Dated notes since the freeze: 2026-09-05 (machine and software facts), 2026-09-06 (P6 accepted), 2026-09-10 (engine incident and patch 1; detached launcher and the hourly-log rule), 2026-09-11 (naphthalene timing printed), 2026-09-12 (Snellius named as the B3 candidate: an orientation column with SURF facts and stated assumptions, and what the desktop would measure of it). Caps and checkpoints are **not estimates**; measured slots read NOT_RUN until a probe
 prints them. Notation (K, K_off, K_cap, ρ\*, mode E/G) is defined in the Goal and Ladder.
 
 ---
@@ -174,6 +174,45 @@ local compatibility patch mirroring pyscf's own DF class (vvL passed twice for r
 as `probes/patches/pyscf_forge_1.1.1_lnoccsd_dfvvvv_pyscf2.14.patch`; the engine line in every
 record is therefore "pyscf 2.14.0 + pyscf-forge 1.1.1 + plan-05 patch 1". Consequence for the
 timing: the 4.4 h before the crash were a lower bound on one naphthalene energy at cc-pVTZ tight. **Naphthalene timing printed 2026-09-11 05:15** (`probes/results_timing/naphthalene_ccpvtz_tight.log`, `naphthalene_cc-pvtz_tight.json`): one LNO-CCSD(T)/cc-pVTZ energy at tight thresholds, 412 basis functions, 24 fragments, 8 threads on the laptop: **41,375 s = 11.5 h, peak resident memory 19.83 GB** (the WSL ceiling is 22 GB). Arithmetic: the R1 deck of 474 energies = 5,450 h ≈ 227 days of the laptop; K alone (220–380) = 2,500–4,400 h; the 168-hour rule is exceeded thirty-fold. Pyrene (620 basis functions) will not fit the laptop's memory at all. **Also found:** the timing probe wrote its JSON under a name without the molecule and overwrote the benzene record; restored from git, the naphthalene record saved under its own name, the script fixed the same morning.
+
+**Dated note 2026-09-12 (the B3 candidate named: Snellius; an orientation column, not a budget — the
+rule of §1 stands: no B3 number until a timed probe on the actual machine).** Facts read from the
+SURF service-desk wiki and the NWO/SURF Small Compute page on 2026-09-12: Snellius has 525 "thin"
+Rome nodes (2 × AMD 7H12, 128 cores, 256 GiB), 738 "thin" Genoa nodes (2 × AMD 9654, 192 cores,
+384 GiB), 72 + 48 "fat" nodes (1–1.5 TiB) and a few high-memory nodes (4 TiB); usage is charged in
+SBU, in practice one core-hour; a **Small Compute application (NWO)** grants up to **1,000,000 SBU**
+on Snellius with 200 GB storage and four hours of support. Against those facts, the measured laptop
+numbers (benzene 2,087 s and naphthalene 41,375 s per LNO-CCSD(T)/cc-pVTZ tight energy on 8 cores;
+naphthalene ≈ 90 core-hours per energy) give the following **estimates**, with the assumptions
+stated: a Rome core slightly slower per clock than the laptop's; the 24 fragments of a naphthalene
+energy spread over one node; a factor 2 for parallel inefficiency.
+
+| rung | laptop (measured) | Snellius (estimate) |
+|---|---|---|
+| R0 benzene | all of it; largely done | not needed |
+| R1 naphthalene | 11.5 h per energy, 19.8 GB; 474 energies = 5,450 h = 227 days | ≈ 200–300 SBU and 1.5–2.5 h wall per energy on one thin node → **≈ 100,000–150,000 SBU for the R1 deck**; 4–5 days on one node, about a day on four; fits one Small Compute application with room to spare |
+| R2 pyrene | does not fit 22 GB | memory no obstacle (256–384 GiB); per energy an unmeasured 5–10 × naphthalene, and a larger deck (72 modes) → order **1–2 million SBU**: the edge of one Small Compute application, or a second one after the R1 result |
+| R3 coronene | does not fit | thin nodes suffice for memory; per energy a further multiple → **several million SBU**: a Large Compute application, or the family- and mode-selective scoring the Ladder already foresees ("beat and noise", the fragment licence) |
+
+What these numbers mean and do not mean. R1 is *small* on Snellius: one low-threshold application
+covers it. The step to R2 and R3 is, on Snellius, no longer a memory question but an SBU question,
+which is exactly what Q8 measures (does the energy count stop growing with size). **The first job
+on any allocation is therefore one timed naphthalene energy on the actual node**, a few hours,
+which turns this column from estimate into measurement.
+
+*What the desktop of Hardware_Note_2026-09-10 would and would not measure of this column (same
+day, the user's question).* It would: run the whole R1 deck in two to three months of continuous
+use (3–5 h per energy, estimated from the core count), so that R1 becomes a measured rung and the
+cluster application asks for R2–R3 with R1 as evidence; time one pyrene energy (128 GB suffices;
+half a day to a day), replacing the "5–10 ×" above by a number — the largest uncertainty in the
+R2 and R3 rows; and measure the core scaling and the fragment-parallel efficiency, the "factor 2"
+assumed above. It would not: measure the Snellius numbers themselves (different processor, memory
+bandwidth and node size; the extrapolation shrinks from a factor ten to a factor two, but remains an
+extrapolation). The order that follows, if the desktop comes: pyrene timing first (one day), then
+the R1 deck; in parallel the Small Compute application for R2, whose first job is the timed
+naphthalene energy. Caveat: the Module-05 corpus factory and the naphthalene dry run want the same
+desktop; with those, R1 alone becomes nearer four months or moves partly to the cluster — a P13
+question, not settled here.
 
 ## 4. Order of timed probes (each prints machine, date, settings, wall-clock; gradient probes also peak memory)
 
