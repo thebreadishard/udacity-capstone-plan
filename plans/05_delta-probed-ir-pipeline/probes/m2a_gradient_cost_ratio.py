@@ -9,9 +9,10 @@ Reference line: g_FD = 6N (central finite differences), 72 at benzene.
 Usage (WSL):  ~/qcad/bin/python plans/05_delta-probed-ir-pipeline/probes/m2a_gradient_cost_ratio.py --cells 0,1,2,3 [--basis cc-pvdz]
               [--threads 8] [--repeats 3] [--lno-thresh 1e-5,1e-6]
 Self-test (Windows, numpy only):  python m2a_gradient_cost_ratio.py --self-test
-API note: the PySCFAD calls below (Mole.build(trace_coords=True), jax.grad(f)(mol).coords, lno.LNOCCSD_T, the LNO threshold attribute) were
-written before installation and must be checked against PySCFAD 0.3.3 at install; the pre-registered content is the protocol (cells, timing
-rule, reading), not these call signatures. Every number printed comes from the run; constants in CONSTANTS. Results: probes/results_m2a/"""
+API note (checked at install, 2026-09-13, PySCFAD 0.3.3 in ~/qcad): Mole.build takes trace_coords (default True); Mole carries coords/exp/ctr_coeff
+as traced fields; (T) lives on pyscfad.cc.rccsd.RCCSD.ccsd_t (not on pyscfad.cc.RCCSD); LNOCCSD_T(mf, thresh=1e-4) sets thresh_occ = thresh_vir,
+kernel() auto-fragments by atom with lo_type "iao" (plan 05 uses Pipek-Mezey LMOs - a difference to record, not to hide); pyscfad/lno/_checkpointed.py
+uses jax.checkpoint (the paper's recomputation). The pre-registered content is the protocol (cells, timing rule, reading), not these call signatures. Every number printed comes from the run; constants in CONSTANTS. Results: probes/results_m2a/"""
 import argparse
 import json
 import os
@@ -57,7 +58,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--cells", default="0,1,2,3"); ap.add_argument("--basis", default=CONSTANTS["basis_default"])
     ap.add_argument("--threads", type=int, default=CONSTANTS["threads_default"]); ap.add_argument("--repeats", type=int, default=CONSTANTS["repeats_default"])
-    ap.add_argument("--lno-thresh", default="1e-5,1e-6", help="cell 4: (occ, vir) thresholds meant to match plan 05's tight; convention checked at install")
+    ap.add_argument("--lno-thresh", default="1e-6,1e-7", help="cell 4: (thresh_occ, thresh_vir) = plan 05's tight pair (m1_frozen_spaces.THRESH); PySCFAD's single `thresh` (default 1e-4) sets both equal")
     ap.add_argument("--self-test", action="store_true")
     args = ap.parse_args()
     sym, X = geometry()
@@ -112,12 +113,12 @@ def main():
         t_e, ts_e, _ = timed(e_fn, args.repeats); rss_e = peak_rss_mb(); t_g, ts_g, _ = timed(g_fn, args.repeats); rss_g = peak_rss_mb()
         record(1, t_e, ts_e, t_g, ts_g, rss_e, rss_g)
     if 2 in cells:
-        from pyscfad import cc
+        from pyscfad.cc import rccsd   # pyscfad.cc.RCCSD lacks ccsd_t; rccsd.RCCSD has it (checked at install, 2026-09-13)
         def e_fn():
-            mf_ = scf.RHF(mol).run(conv_tol=1e-11); mc = cc.RCCSD(mf_); ecc = mc.kernel()[0]; return ecc + mc.ccsd_t()
+            mf_ = scf.RHF(mol).run(conv_tol=1e-11); mc = rccsd.RCCSD(mf_); ecc = mc.kernel()[0]; return ecc + mc.ccsd_t()
         def g_fn():
             def e_of_mol(m):
-                mf_ = scf.RHF(m).run(conv_tol=1e-11); mc = cc.RCCSD(mf_); ecc = mc.kernel()[0]; return mf_.e_tot + ecc + mc.ccsd_t()
+                mf_ = scf.RHF(m).run(conv_tol=1e-11); mc = rccsd.RCCSD(mf_); ecc = mc.kernel()[0]; return mf_.e_tot + ecc + mc.ccsd_t()
             return jax.grad(e_of_mol)(mol).coords
         t_e, ts_e, _ = timed(e_fn, args.repeats); rss_e = peak_rss_mb(); t_g, ts_g, _ = timed(g_fn, args.repeats); rss_g = peak_rss_mb()
         record(2, t_e, ts_e, t_g, ts_g, rss_e, rss_g)
@@ -127,9 +128,9 @@ def main():
             thr = None if cell == 3 else [float(t) for t in args.lno_thresh.split(",")]
             def make(m):
                 mf_ = scf.RHF(m).run(conv_tol=1e-11)
-                mlno = lno.LNOCCSD_T(mf_)
+                mlno = lno.LNOCCSD_T(mf_)          # defaults: thresh 1e-4 (sets thresh_occ = thresh_vir), lo_type "iao", single-atom fragments (autofrag)
                 if thr is not None:
-                    mlno.lno_thresh = thr   # convention to be confirmed at install (pyscf-forge pair vs the paper's gamma)
+                    mlno.thresh_occ, mlno.thresh_vir = thr   # plan 05's tight pair; PySCFAD's LNO applies (thresh_occ, thresh_vir) as its PNO thresholds
                 return mf_, mlno
             def e_fn():
                 mf_, mlno = make(mol); return mlno.kernel()
