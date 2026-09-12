@@ -1,12 +1,15 @@
 # Plan 05 — Δ-Probed IR Pipeline
 
-**Status: folder created 2026-09-03; plan text frozen 2026-09-04 (changes only by dated notes
-naming a measurement or a decision); not complete as a plan until mapping Pass 6 and the pilot
-note. No rung has run: nothing here is a pipeline result. What has run are probes — the DFT dry
-run, the anchor timings and probe M1 (`probes/`, research notes of 2026-09-05) — whose numbers
-are measurements about the method, not spectra.**
-Supersedes plan 04 (CC-Anchored IR Pipeline). All five plan folders are in the tree
-(decision 2, 2026-09-04): 01–04 are superseded, read-only records; 05 is current.
+**Status (12 September 2026).** Folder created 2026-09-03; plan text frozen 2026-09-04 and changed since only by
+dated notes that name a measurement or a decision (35 numbered decisions so far; the Ladder is the single binding
+statement). Not complete as a plan until the pilot note and the mapping's Pass 6. **No rung has run: nothing here is a
+pipeline result.** What has run are probes and modules: the DFT dry run of the Δ-recovery (benzene), the anchor
+timings (benzene at two basis sets, one canonical gradient, one naphthalene energy at 11.5 h; the tighter-threshold
+naphthalene energy is running), probe M1 on the frozen correlation spaces (cc-pVDZ and cc-pVTZ, tight and xtight),
+the cheap basis line that put two basis terms into the anchor, and the first versions of Modules 02–05 in the
+Udacity rubric form (`modules/`). The project proposal goes to the supervisor on 14 September. Supersedes plan 04;
+all earlier plan folders stay in the tree as read-only records (decision 2). Plan 06, an idea plan beside this one,
+feeds it only through this plan's dated notes (decision 34 is its first transfer).
 
 **Promised deliverable (Module 08).** A pipeline: **any individual aromatic molecule in, an
 infrared spectrum out** — plan 04's criterion, ladder, opponents, scoreboards and gates — with
@@ -37,7 +40,7 @@ before anything else.
 
 *Layout since 2026-09-12:* `GoalGathering/` holds the nine binding and living documents at top level; dated working notes are in `GoalGathering/notes/`, the review record (professor reviews, briefs, seam check, cold reads) in `GoalGathering/reviews/`. See [GoalGathering/README.md](GoalGathering/README.md). Moving the files changed no text; all links were rewritten and checked.
 
-1. This file — orientation. **Draft, not complete.**
+1. This file — orientation: status, reading order, review record, the decisions, the dated notes after the freeze, what is owed.
 2. [GoalGathering/Why_05_Supersedes_04.md](GoalGathering/Why_05_Supersedes_04.md) — every
    change relative to plan 04, in one table (33 rows)
 3. [GoalGathering/Overarching_Goal.md](GoalGathering/Overarching_Goal.md) — glossary (Δ₂, R_s, R_a, K, ρ\*, ρ\*_common, u_band, the fragment licence and every other
@@ -61,12 +64,26 @@ before anything else.
     structures of modules 04–08 and a checklist for mapping Pass 6 (not binding; the Ladder wins)
 11. [GoalGathering/Capstone_Mapping.md](GoalGathering/Capstone_Mapping.md) — modules 02–09
     against Rubrics v1.5.1; Pass 6 (sign-off) not done
-12. [GoalGathering/Project_Proposal_2026-09-06.md](GoalGathering/Project_Proposal_2026-09-06.md) — rewritten as one document on 6 September 2026 (measurements and decisions 8–19 integrated); the 3–4 September text, which the review records cite as `Project_Proposal_2026-09-03.md`, is in the git history
-    — the supervisor proposal: the *why* of the major decisions, the review status, and what
-    was decided by whom
+12. [GoalGathering/Project_Proposal_2026-09-06.md](GoalGathering/Project_Proposal_2026-09-06.md)
+    — the supervisor proposal, one document, revised through 12 September: the *why* of the major decisions,
+    the measurements, the calendar and what is asked of the supervisor; its cover note is in `notes/`; the 3–4 September
+    text the review records cite as `Project_Proposal_2026-09-03.md` is in the git history
 13. [GoalGathering/notes/Side_Project_2026-09-04_ModeG_Gradients.md](GoalGathering/notes/Side_Project_2026-09-04_ModeG_Gradients.md)
     — the pre-registered side project that builds frozen-space local-CC gradients (mode G):
     milestones M2–M5, kill criterion, budget bucket, what changes on success or failure
+14. [modules/](modules/) — the course modules in rubric form: [02 opponent atlas](modules/02_opponent_atlas/README.md),
+    [03 laboratory scoreboard](modules/03_lab_scoreboard/README.md), [04 calibrated-harmonic baseline](modules/04_calibrated_harmonic/README.md),
+    [05 Δ₂-support predictor](modules/05_support_predictor/README.md); each with a recipe or pre-registration committed
+    before its data, a notebook, a report in the APA template, `PROVENANCE.md` and `requirements.txt`
+15. [GoalGathering/notes/](GoalGathering/notes/) — dated working notes: research notes (probe M1, dry run, P19, P24,
+    scoreboard R0, opponent atlas), the decision memo on the compute route (P13), the pilot-note skeleton, the hardware
+    note, the PDF request list, the cover note, and the **software-changes ledger** (every third-party patch and own layer,
+    for possible upstream contributions)
+16. [GoalGathering/reviews/](GoalGathering/reviews/) — the review record: professor reviews and briefs of rounds 7–10,
+    the seam check, four cold reads of the proposal
+17. [../06_equivalent-faster-mathematics/](../06_equivalent-faster-mathematics/README.md) — plan 06, the idea plan
+    beside this one (equivalent-but-faster mathematics for the anchor's problem; experiments on this plan's sealed
+    data; a Lean 4 / Mathlib project); it enters this plan only by dated notes here
 
 ## Review record
 
@@ -447,6 +464,22 @@ Ladder item 8 reads c "at the σ_E the R1 smoothness probe printed"; this note n
 
 ## Dated notes after the freeze
 
+- **2026-09-12 (evening) — decisions 34 and 35, the compute-route memo, the pilot-note skeleton, engine layer 3, the
+  software ledger.** *Decision 34* accepts P24 (`notes/Research_Note_2026-09-12_P24_Substitution_Probing.md`): plan 06's
+  substitution probing enters the R0 pilot as one measured Hessian–vector product and one pre-registered six-products-vs-deck
+  comparison, honestly priced (energies only ≈ 720 > K = 448; pays only with the side project's gradients). *Decision 35*
+  fixes how the R1 smoothness σ is measured (tight thresholds, 9 points, one mode, ≈ 4.8 laptop-days) after tonight's
+  timing put a 27-point xtight scan at ≈ 50 laptop-days. *P13 memo* (`notes/Decision_Memo_2026-09-12_P13_Compute_Route.md`):
+  the routes repriced at xtight — laptop 1.3–3 years, desktop 4–16 months, Snellius weeks and 200,000–660,000 SBU for the
+  474-energy R1 deck; recommendation to split the decision (cluster request in October; desktop after two more facts); not
+  decided. *Pilot-note skeleton* (`notes/Pilot_Note_Skeleton_2026-09-12.md`): the fifteen items of Ladder §4 with the
+  measured inputs filled in and the user's choices collected. *Engine layer 3* (`probes/lno_checkpoint.py`): per-fragment
+  checkpointing for LNO-CCSD(T), tested exact on benzene, after the xtight naphthalene timing was lost at 16:14 to host memory
+  exhaustion caused by a Windows-side Lean build (rule since: nothing above ≈ 1 GB beside an anchor job); the timing was
+  relaunched at 16:50 with it; the same layer is wired into `m1_frozen_spaces.py` (built, untested). *Q10 script*
+  (`probes/q10_coverage.py`) pre-registered with a 47-row readiness table; *item 50* read (SRD 35 documents no measurement
+  temperature; the 250 °C is a labelled assumption). *Software_Changes_Ledger.md* opened in `notes/` on the user's request.
+  Plan 06 the same day: X1b–X1d, X5, T1a–T1c proved in Lean, Coleman & Moré 1984 read, S1/S3 reading notes, conjecture T3.
 - **2026-09-12 — three modules scaffolded in the Udacity rubric form, Hessian QM9 in, plan 06 opened, GoalGathering
   reorganised.** *Module 03* (`modules/03_lab_scoreboard/`, commits 5d946d2 → efb2c41): a pre-registered
   matrix–gas test committed before the join; 63 primary pairs of naphthalene, anthracene, pyrene and chrysene against
@@ -574,47 +607,44 @@ Ladder item 8 reads c "at the σ_E the R1 smoothness probe printed"; this note n
   WSL VM was torn down once by host memory pressure (Budget §3 incident note: 22 GB ceiling, one
   anchor job at a time).
 
-## Not yet done (owed, in order; rewritten 2026-09-12 — the earlier list had been overtaken by the measurements)
+## Not yet done (owed, in order; rewritten 2026-09-12 evening)
 
-- **Today (12 September):** read the xtight arm-A rescan into §3.3, §1 and the M1 note (`probes/m1_xtight_readin.py`;
-  decision 20); run the cheap QZ/5Z DF-RHF + DF-MP2 line on the 27 benzene points (`probes/m1_basis_scf_mp2_line.py`,
-  decision 26 input ii, P18 input); plan-06 X3b (MP2 pair-energy decay, naphthalene); **send the proposal to the
-  supervisor in the afternoon** (cover-note draft in `GoalGathering/notes/`); then a fresh session.
-- **P13 with the user** (cluster / desktop / both) on the measured 11.5 h per naphthalene energy → §12 R1 row and
-  risks; the hardware cart (€4,655.75, not ordered) is reconsidered by the user after the first results
-  ([Hardware_Note_2026-09-10.md](GoalGathering/notes/Hardware_Note_2026-09-10.md)); cluster contact held privately.
-- **P18** (composite anchor: LNO-CCSD(T)/TZ + MP2 and SCF basis corrections) for the user, once the QZ/5Z line is printed.
-- **Naphthalene dry run** (DFT, psi4 `qc` env on Windows; not beside an anchor job): P4's entry test for the symmetry
-  prior, the mode table that gives Module 03 its family matching and plan-06 X2/S4 its second tensor; the R0 pilot's
-  deck still needs the canonical two-mode count (decision 16 iii).
-- **Pilot-note skeleton (2026-09-12 evening, `GoalGathering/notes/Pilot_Note_Skeleton_2026-09-12.md`):** the fifteen items of Ladder §4 with the measured inputs filled in, the user's choices collected, and the blocker named — prerequisite (f), the R1 smoothness σ, costs ≈ 50 laptop-days at xtight; three ways out proposed (σ at tight, 9 points, one mode ≈ 4 days recommended). Q10 script pre-registered (`probes/q10_coverage.py`, readiness table 47 rows). Not the pilot note.
-- **P24 proposed (2026-09-12 evening, `GoalGathering/notes/Research_Note_2026-09-12_P24_Substitution_Probing.md`; user: "voorstel akkoord" to writing it, not yet to its content):** substitution probing (plan 06, S5) as a second measurement layer — one Hessian–vector product measured in the R0 pilot and one pre-registered 6-products-vs-deck comparison; honest cost table: with energies only a second-order product costs ≈ 4M = 120 energies, so 6 products ≈ 720 > K = 448 — the route shortens plan 05 only with gradients (side project M2), then by an order of magnitude. Open for the user.
-- **P13 decision memo (2026-09-12 evening, `GoalGathering/notes/Decision_Memo_2026-09-12_P13_Compute_Route.md`):** the routes priced at the anchor's xtight thresholds (laptop 1.3–3 years, desktop 4–16 months, Snellius weeks and 200,000–660,000 SBU for the R1 deck), a decision rule for Monday's naphthalene factor, the calendar consequence (cluster request October, R1 Q1 2027), and a recommendation: decide the cluster request now, the desktop after Monday's factor and the corpus-factory timing. Not a decision.
-- **Engine layer 3 (2026-09-12):** per-fragment checkpointing for LNO-CCSD(T) (`probes/lno_checkpoint.py`, tested exact on benzene); the naphthalene xtight timing, killed at 16:14 by a Windows-side Lean build (host memory), relaunched at ≈ 16:52 with it; the same layer is in `m1_frozen_spaces.py` since the same evening (built, untested — smoke test owed after the timing); the software-changes ledger (`GoalGathering/notes/Software_Changes_Ledger.md`) opened for possible upstream PRs.
-- **Module 03 owed:** ~~u_band columns of the Ladder rule on the GC-IRD and Coblentz records~~ (printed 2026-09-12,
-  `modules/03_lab_scoreboard/out/U_BAND.md`: 8.6–16.2 cm⁻¹ on the GC-IRD records, none decidable at 2 or 5 cm⁻¹ — the
-  Ladder's dated note of 2026-09-12); the GC-IRD lightpipe temperature (item 50) and the ±30 % corrected form; the
-  PNNL naphthalene record (not held); jet-cooled tetracene/coronene cold columns (items 61–62); R2/R3 columns;
-  intensities of decision 18; the student's pass before 2 October.
-- **Module 04 owed:** the Zenodo release of the training table (reading 1; the user); pilot-note item 6 adopts or
-  amends the recipe (stricter join = candidate, decided before its effect on the ranking is seen); the student's pass.
-- **Module 05 owed:** the five-molecule timing test of the corpus factory (after the anchor work; `--grid-check`),
-  then the dated note fixing the subset size; the Zenodo release of the corpus; reading-2 fallback source; the
-  notebook and report in the rubric form; label threshold θ (pilot-note item 5).
-- **Module 02 owed:** the student's pass before 25 September; the C₃₈₄H₄₈ symmetry-unique local-environment count.
-- **PDF request to the supervisor:** items 21 (Mackie/Esposito), 24–28 (Mata & Werner, Russ & Crawford, Subotnik &
-  Head-Gordon, Esselman 2023; Nagy & Kállay for the user to download).
-- **Plan 06 next:** X3b (after WSL is free), X4 (Mathlib survey), S2/S3 verified readings; S5 parked.
-- **Blog post 3** (naphthalene cost and the schedule) when the P13 decision is taken.
-- **Capstone mapping Pass 6** (module-by-module sign-off) — the user asked to wait; Uitleg ch. 16 is the checklist.
-- **The pilot note** (after the R0 pilot, the two-mode zero-CC dry run with its noise-injection column, M03's u_band
-  table, the canonical feasibility probe, the gradient run/no-run at equilibrium, probe M1 and the R1 smoothness
-  probe's σ with fits sealed; before any local-CC Δ₂ number is readable): band lists with decidability verdicts,
-  margins and the expected-effect line, P-gate numbers, matrix tolerance (first measured number: Module 03's
-  +3.3 to +5.9 cm⁻¹ offset against hot vapour), P3 effect size, M04 recipe (candidate on file), resonance route and
-  the depth-one family set, the stopping constant c and K_cap per mode, f_h and seed, τ₇ and d₇, Q8 numbers
-  (r_max, ε₈, η₈, γ, h) and direct-coupling pairs, Q6 numbers and the pattern amplitude.
-- ~~Round 11~~ — not planned; the plan-05 text is frozen (dated notes only; the Ladder is the single binding statement).
+**Before Monday 14 September 08:00 (the scheduled e-mail):** the user's own read of the cover note, §1, §3.3 and the
+repriced §12 row of the proposal.
+
+**On the machine, in this order, once the naphthalene xtight timing has finished** (one anchor job at a time; nothing
+above about 1 GB on the Windows side beside it):
+1. smoke-test of the checkpointed frozen-space chain (`m1_frozen_spaces.py`, benzene cc-pVDZ normal; minutes) — built
+   2026-09-12, untested;
+2. the Lean build of plan 06's T1d (Windows, 8 GB; a quarter of an hour, no job running);
+3. the corpus factory's five-molecule timing test (`modules/05_support_predictor/corpus/run_corpus.py --max-molecules 5
+   --grid-check`), then the dated note fixing the subset size;
+4. plan 06's X6 and X7 (minutes each);
+5. the naphthalene DFT dry run (two functionals, psi4; hours) — prerequisite (a) of the pilot note and the mode table
+   Module 03 and plan 06 need;
+6. `m1_frozen_spaces.py --molecule naphthalene`, then the **R1 smoothness σ run of decision 35** (tight, 9 points, the
+   C–C stretch mode; ≈ 4.8 laptop-days) — prerequisite (f) of the pilot note.
+
+**Decisions for the user, when their inputs are in:** P13 in two halves (the cluster request now, the desktop after
+Monday's xtight factor and the corpus timing; memo in `notes/`); the pilot note's choices (skeleton §C); whether to
+publish blog post 3 (draft pushed, unrendered).
+
+**Module debts:**
+- Module 02: the student's pass before 25 September; the C₃₈₄H₄₈ symmetry-unique local-environment count.
+- Module 03: the PNNL naphthalene record (R1's room-temperature source; licensed, the user); the jet-cooled tetracene
+  and coronene cold columns (items 61–62); R2/R3 columns; the intensities of decision 18; the ±30 % corrected form of
+  the hot columns (pilot note); family labels by DFT mode vector once the naphthalene dry run exists; the student's
+  pass before 2 October.
+- Module 04: the Zenodo release of the training table (the user); pilot-note item 6 adopts or amends the recipe; the
+  student's pass.
+- Module 05: after the timing test — the corpus run itself (desktop-days), the Zenodo release of the corpus, the
+  reading-2 fallback source, the notebook and report filled from the skeletons, the label threshold θ (pilot-note
+  item 5).
+
+**Other:** the PDF request to the supervisor (items 21, 24–29; 29 = Powell & Toint 1979, added 12 September); the
+capstone mapping's Pass 6 (the user asked to wait; Uitleg ch. 16 is the checklist); the pilot note itself, from the
+skeleton, once prerequisites (a) and (f) are met; the R0 pilot deck (after the pilot note), which now includes
+decision 34's substitution items; blog post 3 when the user releases it.
 
 ## Provenance
 
