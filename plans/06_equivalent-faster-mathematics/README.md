@@ -22,6 +22,15 @@ before it is written. Dated notes. No laptop compute while an anchor job runs. A
 only while it has a stated falsification test; a direction that fails its test is recorded as failed,
 not deleted.
 
+**Where it stands (12 September 2026, evening).** Twelve experiments on plan 05's sealed benzene data and plan 02's stored
+Hessians (X0–X12), five reading notes with verified records, T1a–T1c proved in Lean (no `sorry`), T3 written as a proof plan.
+Closed at benzene by measurement: low rank of the correction (S2), Cartesian sparsity of the correction (X8), and the hope that
+the correction is more local than the mean field (X9, T3′). Alive: S1 in its honest form (the correction's range follows the
+π system and its gap; X6/X7 next), S4 sharpened into a free DFT ordering of the deck's pairs (X10, draft P25), S5 transferred to
+plan 05 as decision 34 and conditional on gradients (X11: the two savings stack). The one number that decides the order of
+magnitude — the gradient-to-energy cost ratio g — is measured nowhere; the cost ladder prices every lever with its status. The
+evening's overview: [GoalGathering/Evening_Overview_2026-09-12.md](GoalGathering/Evening_Overview_2026-09-12.md).
+
 ## Reading order
 
 1. [GoalGathering/Orientation_2026-09-12.md](GoalGathering/Orientation_2026-09-12.md) — what "equivalent"

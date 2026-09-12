@@ -479,7 +479,7 @@ Ladder item 8 reads c "at the σ_E the R1 smoothness probe printed"; this note n
   relaunched at 16:50 with it; the same layer is wired into `m1_frozen_spaces.py` (built, untested). *Q10 script*
   (`probes/q10_coverage.py`) pre-registered with a 47-row readiness table; *item 50* read (SRD 35 documents no measurement
   temperature; the 250 °C is a labelled assumption). *Software_Changes_Ledger.md* opened in `notes/` on the user's request.
-  Plan 06 the same day: X1b–X1d, X5, T1a–T1c proved in Lean, Coleman & Moré 1984 read, S1/S3 reading notes, conjecture T3.
+  Plan 06 the same day: X1b–X1d, X5, T1a–T1c proved in Lean, Coleman & Moré 1984 read, S1/S3 reading notes, conjecture T3. *Later that evening (autonomous block, overview in plan 06's `GoalGathering/Evening_Overview_2026-09-12.md`):* X8–X12 — norm-sparsity is not band-sparsity (no Cartesian pattern licensed at benzene, not even for the DFT Hessian); the correction is longer-ranged than the mean field (T3′ falsified); a free DFT ordering of the deck's pairs selects 19 of 47 at benzene (X10, draft P25 in plan 06, not submitted) and stacks with substitution (X11: 8 gradients); the cost ladder for the network's data; plan 02's stored B3LYP Hessians are the B3LYP half of the naphthalene dry run.
 - **2026-09-12 — three modules scaffolded in the Udacity rubric form, Hessian QM9 in, plan 06 opened, GoalGathering
   reorganised.** *Module 03* (`modules/03_lab_scoreboard/`, commits 5d946d2 → efb2c41): a pre-registered
   matrix–gas test committed before the join; 63 primary pairs of naphthalene, anthracene, pyrene and chrysene against
