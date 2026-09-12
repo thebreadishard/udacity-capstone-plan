@@ -1,0 +1,76 @@
+{
+ "date": "2026-09-12 19:50",
+ "constants": {
+  "theta_reference_uEh": 0.5,
+  "random_seed": 0
+ },
+ "M": 30,
+ "rows": [
+  {
+   "pattern": "X10 P1 DFT-only 1/|w_i^2-w_j^2|: diagonal + top-19 pairs (0.5 cm\u207b\u00b9)",
+   "pairs": 19,
+   "elements_upper": 49,
+   "energies_direct_2M_plus_2n": 98,
+   "maxr": 3,
+   "k": 4,
+   "colouring": "largest-first",
+   "g_star": 12.25,
+   "recovery_max_abs_error": 1.1102230246251565e-16
+  },
+  {
+   "pattern": "X10 P2 oracle |Delta_ij|: diagonal + top-17 pairs (0.5 cm\u207b\u00b9)",
+   "pairs": 17,
+   "elements_upper": 47,
+   "energies_direct_2M_plus_2n": 94,
+   "maxr": 3,
+   "k": 3,
+   "colouring": "largest-first",
+   "g_star": 15.666666666666666,
+   "recovery_max_abs_error": 0.0
+  },
+  {
+   "pattern": "X10 P3 oracle drop-one effect: diagonal + top-6 pairs (0.5 cm\u207b\u00b9)",
+   "pairs": 6,
+   "elements_upper": 36,
+   "energies_direct_2M_plus_2n": 72,
+   "maxr": 2,
+   "k": 2,
+   "colouring": "largest-first",
+   "g_star": 18.0,
+   "recovery_max_abs_error": 0.0
+  },
+  {
+   "pattern": "symmetry prior: diagonal + all 47 eligible pairs",
+   "pairs": 47,
+   "elements_upper": 77,
+   "energies_direct_2M_plus_2n": 154,
+   "maxr": 7,
+   "k": 7,
+   "colouring": "largest-first",
+   "g_star": 11.0,
+   "recovery_max_abs_error": 1.1102230246251565e-16
+  },
+  {
+   "pattern": "X1c noise pattern \u03b8 = 0.5 \u00b5E_h (|\u0394_ij| > \u03b8)",
+   "pairs": 87,
+   "elements_upper": 117,
+   "energies_direct_2M_plus_2n": 234,
+   "maxr": 6,
+   "k": 7,
+   "colouring": "largest-first",
+   "g_star": 16.714285714285715,
+   "recovery_max_abs_error": 2.220446049250313e-16
+  },
+  {
+   "pattern": "dense",
+   "pairs": 435,
+   "elements_upper": 465,
+   "energies_direct_2M_plus_2n": 930,
+   "maxr": 30,
+   "k": 30,
+   "colouring": "largest-first",
+   "g_star": 15.5,
+   "recovery_max_abs_error": 0.0
+  }
+ ]
+}

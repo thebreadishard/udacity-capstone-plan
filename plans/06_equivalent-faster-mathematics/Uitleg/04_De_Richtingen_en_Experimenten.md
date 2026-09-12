@@ -76,6 +76,9 @@ met een toets, en verlaat het als de toets is gedaan.
 | X4 | wat Mathlib al heeft voor symmetrische matrices, rang, kleuring, variatieprincipe | **gedaan 12 sep** (zie hoofdstuk 5): alles wat algebra is staat erin, alles wat natuurkunde is ontbreekt |
 | X8 (12 sep avond) | hoe groeit het aantal substitutieproducten met het molecuul, tegen het aantal matrixelementen, voor patronen die je uit de bindingen alleen kunt opschrijven (benzeen tot C₃₈₄H₄₈) | **gedaan**, met een les: op de echte benzeen-correctie bleek dat "99 % van de norm bewaren" nog bandposities 14 cm⁻¹ verschuift; voor 0,5 cm⁻¹ zijn 74 van de 78 blokken nodig. **Norm-dunheid is geen band-dunheid.** Bij benzeen is dus geen enkel bindingspatroon toegestaan, en de groottereeks (9 producten bij elke grootte onder het bindingspatroon; 18–30 onder "één ring diep"; evenredig met het aantal koolstoffen onder "alle C–C-paren") staat als *haakjes* te wachten op de naftaleen-tensor. Met alleen energieën loont substitutie nergens (6–11× de elementen); met gradiënten groeit het voordeel met de grootte |
 | X9 (gedefinieerd 12 sep) | blokprofielen van de DFT-Hessiaan en van de correctie naast elkaar, per grafafstand, op norm- én bandniveau | te doen (minuten); toetst T3′ (§3.4a); verliesvoorwaarde: de verhouding correctie/DFT daalt niet met de afstand |
+| X9 (12 sep avond) | valt de correctie sneller af dan de DFT-Hessiaan zelf (T3′)? | **gedaan, negatief**: de verhouding correctie/DFT-Hessiaan *stijgt* met de grafafstand (2,7 % op het atoom → 6,5 % op drie bindingen; C–C meta/para 19–26 %). De correctie is het langeafstandsobject, met het bereik van het π-systeem, niet van de bindingen. T3′ vervalt bij benzeen |
+| X10 (12 sep avond) | welke koppelingen moeten gemeten worden voor 0,5 cm⁻¹, en kan DFT alleen ze aanwijzen? | **gedaan, positief**: van 47 toegestane paren zijn er 19 genoeg als je ze rangschikt op de gratis DFT-regel 1/‖ω_i² − ω_j²‖ (een perfect orakel: 17; de beste volgorde: 6); rangcorrelatie 0,75 met het gemeten effect. Naïef 98 energieën tegen K = 448. Kandidaat-voorstel P25 voor plan 05, pas na de herhaling op naftaleen |
+| X11 (12 sep avond) | stapelen de twee besparingen (minder elementen én substitutieproducten)? | **gedaan, ja**: op het X10-patroon zijn 4 producten = 8 gradiënten genoeg (symmetrie-prior alleen: 7 = 14; dicht: 30) |
 | X6 (gedefinieerd 12 sep) | welk deel van de ringmode-correctie bij benzeen de π-ruimte alleen draagt (CAS(6,6) tegen HF, langs de drie gemeten modes) | te doen (minuten rekenwerk, na de ankerjob); verliesvoorwaarde: minder dan de helft op de C–C-strekmode sluit S3 als ankerroute |
 | X7 (gedefinieerd 12 sep) | afvalconstante λ tegen de HOMO–LUMO-gap voor benzeen, naftaleen, pyreen | te doen (rekenwerk); toetst de voorspelling "afvalsnelheid ∝ gap" van de lokaliteitsstellingen |
 
@@ -103,7 +106,10 @@ README van plan 05.
   enige trede die een besparing kan *laten zien*.
 
 Eerlijk samengevat: de algebra is bewezen (Lean), de ruis is mild (X1d), de telling is gunstig
-(X1c, X8-haakjes), maar de besparing bestaat pas als g klein is, en g kent nog niemand.
+(X1c, X8-haakjes), maar de besparing bestaat pas als g klein is, en g kent nog niemand. *Later die avond kwam
+er één besparing bij die géén gradiënten nodig heeft: X10's gratis DFT-regel, die bij benzeen 19 van de 47
+koppelingen aanwijst (naïef 98 energieën tegen 448), en die met de substitutie stapelt (X11: 8 gradiënten).
+De kostenladder in het oriëntatiedocument zet alle hefbomen met hun factor op een rij.*
 
 ## §4.4 Het grootboek
 

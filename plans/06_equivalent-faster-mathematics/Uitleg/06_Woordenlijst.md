@@ -26,6 +26,7 @@ genoemd als plan 06 ze anders gebruikt.*
 | **N-representeerbaarheid** | de voorwaarde dat een twee-elektronen-dichtheidsmatrix bij een echte N-elektronentoestand hoort; het volledige stel voorwaarden is QMA-hard. |
 | **P, NP, QMA** | complexiteitsklassen: snel oplosbaar; snel controleerbaar door een klassieke computer; snel controleerbaar door een kwantumcomputer. QMA-compleet = tot de moeilijkste in QMA. |
 | **QMA-hard** | minstens zo moeilijk als het moeilijkste probleem in QMA. De universele DFT-functionaal is QMA-hard (Schuch en Verstraete 2009). |
+| **resonantienoemer** | 1/‖ω_i² − ω_j²‖: hoe dichter twee trillingsfrequenties bij elkaar liggen, hoe harder een koppeling tussen die twee modes doorwerkt op de bandposities. Gratis uit de DFT-Hessiaan; de regel van X10 om koppelingen te rangschikken. |
 | **rang** (van een matrix) | het aantal onafhankelijke rijen of kolommen; lage rang betekent dat de matrix uit weinig informatie is opgebouwd en dus uit weinig metingen terug te winnen is. |
 | **richting S1–S6** | de zes onderzoeksrichtingen van plan 06 (lokaliteit; lage rang van het verschil; quasi-1D π-systemen; het doelwit verkleinen; bevragingsalgebra; modellen als voorstellers). |
 | **tensorhypercontractie (THC)** | een factorisatie van de vierindex-integralen en amplitudes in producten van kleine matrices, met een gecontroleerde fout; verlaagt de schaling van CC-methoden. Richting S2. |

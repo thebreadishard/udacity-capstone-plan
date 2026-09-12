@@ -30,3 +30,19 @@ Rank correlation of P1 with the measured drop-one effect: Spearman 0.75 (the ora
 - Ledger S4: alive and sharpened; **candidate proposal P25 to plan 05** (a DFT-only pair ranking inside the symmetry prior, with the naphthalene repeat as its licence test) — written as a candidate only; the user decides whether it is drafted.
 - Plan 05's pilot note, item 5 (P3 effect size): X10's P1 line is the baseline any learned prior must beat; noted for the skeleton, not entered in the frozen text.
 - Nothing else moves.
+
+## 5. Addendum the same evening — X11: the two savings stack
+
+`experiments/x11_sparse_pattern_products.py` counts Powell–Toint substitution products (X1c's code) on the patterns X10 selects:
+
+| pattern (mode space, benzene) | pairs | direct energies (2M + 2n) | maxr | products k | gradients 2k |
+|---|---|---|---|---|---|
+| diagonal + X10's P1 top-19 (DFT-only rule) | 19 | 98 | 3 | **4** | 8 |
+| diagonal + P2 top-17 (oracle magnitude) | 17 | 94 | 3 | 3 | 6 |
+| diagonal + P3 top-6 (oracle effect) | 6 | 72 | 2 | 2 | 4 |
+| symmetry prior alone (all 47 eligible pairs) | 47 | 154 | 7 | 7 | 14 |
+| X1c's noise pattern θ = 0.5 µE_h | 87 | 234 | 6 | 7 | 14 |
+| dense | 435 | 930 | 30 | 30 | 60 |
+
+The substitution count falls with the pattern (7 → 4 under the free rule), so lever B (fewer elements) and lever C (products with gradients) of the cost ladder **do stack**: a benzene correction good to 0.5 cm⁻¹ would take 8 gradients under the free DFT rule, 14 under the symmetry prior alone, against the 448 energies of the measured deck — if g is small and the engine has a gradient. Recovery verified exact (≤ 2 × 10⁻¹⁶) on every row. Same caveats as §3: one molecule, one stand-in, naive energy count.
+
