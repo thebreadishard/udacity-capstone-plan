@@ -609,8 +609,8 @@ Ladder item 8 reads c "at the σ_E the R1 smoothness probe printed"; this note n
 
 ## Not yet done (owed, in order; rewritten 2026-09-12 evening)
 
-**Before Monday 14 September 08:00 (the scheduled e-mail):** the user's own read of the cover note, §1, §3.3 and the
-repriced §12 row of the proposal.
+**The proposal e-mail (planned Monday 14 September 08:00) is held by the user** pending the evidence ladder below;
+when it goes: the user's own read of the cover note, §1, §3.3 and the repriced §12 row.
 
 **On the machine, in this order, once the naphthalene xtight timing has finished** (one anchor job at a time; nothing
 above about 1 GB on the Windows side beside it):
@@ -624,6 +624,16 @@ above about 1 GB on the Windows side beside it):
    Module 03 and plan 06 need;
 6. `m1_frozen_spaces.py --molecule naphthalene`, then the **R1 smoothness σ run of decision 35** (tight, 9 points, the
    C–C stretch mode; ≈ 4.8 laptop-days) — prerequisite (f) of the pilot note.
+
+**The evidence ladder "does plan 06 make plan 05 cheaper?" (the user, 12 September evening; the Monday e-mail is
+held until this is clearer):** step 1 done — item 33 read for the gradient/energy ratio g: **not printed** in the paper
+(`notes/Reading_Note_2026-09-12_Item33_PySCFAD_Gradient_Cost.md`); step 2 — X1c/X1d counts on the naphthalene tensor
+(after the naphthalene DFT dry run): does the products-to-deck ratio improve with size; step 3 — decision 34's item 1 in
+the real engine at benzene cc-pVDZ tight (one product by energies ≈ 120 energies ≈ 6 h; the six-product reconstruction
+≈ 36 h against a 22 h deck): exactness and noise in the frozen arm, not yet savings; step 4 — g measured (side project
+M2, in PySCFAD, with frozen spaces at benzene cc-pVDZ, where the paper's symmetry-breaking outlier should vanish): the
+only step that can show savings. Steps 2–3 fit in the machine queue below after the naphthalene items; step 4 is
+software work of weeks and the user decides when.
 
 **Decisions for the user, when their inputs are in:** P13 in two halves (the cluster request now, the desktop after
 Monday's xtight factor and the corpus timing; memo in `notes/`); the pilot note's choices (skeleton §C); whether to
