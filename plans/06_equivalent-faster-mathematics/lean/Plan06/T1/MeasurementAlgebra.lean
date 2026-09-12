@@ -24,7 +24,8 @@ of these.
 **T1b, proved.** The symmetric direct scheme: a symmetric `A` may be read at `(i, j)` *or* `(j, i)`,
 so a colouring only has to make every pattern entry readable from one side (`SymmValid`, defined per
 entry — the T1b note of 2026-09-12 shows this is *not* a proper colouring of any fixed graph on the
-columns). `recover₂_probe` proves the recovery. The file contains no `sorry`.
+columns). `recover₂_probe` proves the recovery. The file contains no `sorry`. Owed next: **T1d**, Coleman &
+Moré's Theorem 2.2 (the path-of-length-3 characterisation of `SymmValid`).
 
 Conventions: everything is finite-dimensional; the matrix ring is `ℝ` (plan 05's numbers are real);
 `Matrix.mulVec` is `A *ᵥ v`, with `(A *ᵥ v) i = ∑ j, A i j * v j`.
@@ -191,7 +192,10 @@ def ReadableCol (P : Pattern n) (c : n → α) (i j : n) : Prop :=
   ∀ j', (i, j') ∈ P → j' ≠ j → c j' ≠ c j
 
 /-- The symmetric direct scheme's requirement: every pattern entry is readable from its column or,
-via symmetry, from its row. -/
+via symmetry, from its row. This is, word for word, the *symmetrically consistent partition* of
+Coleman & Moré (Math. Programming 28, 243 (1984), §2; read as Cornell TR 82-535 on 2026-09-12).
+Their Theorem 2.2 — `SymmValid` ↔ proper on the pattern graph ∧ no 2-coloured path of length 3, when
+the diagonal is in `P` — is the next target here (T1d, not yet stated). -/
 def SymmValid (P : Pattern n) (c : n → α) : Prop :=
   ∀ i j, (i, j) ∈ P → ReadableCol P c i j ∨ ReadableCol P c j i
 

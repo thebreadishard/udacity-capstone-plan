@@ -68,9 +68,12 @@ not. Take the path `a – b – c – d` (pattern: the four diagonal entries and
 So `a` and `c` may share a colour in the second colouring and may not in the first, with the same
 pattern. The constraint on the pair `(a, c)` depends on the colour of `d`. Therefore **there is no
 "symmetric-conflict graph"** whose proper colourings are exactly the symm-valid colourings; the
-condition is a constraint on paths of three edges, not on pairs. (The literature's name for the class
-of colourings that make the symmetric direct method work is to be read from Coleman & Moré 1984
-before it is quoted; this note claims nothing about what that paper calls it.)
+condition is a constraint on paths of three edges, not on pairs. **Confirmed the same evening by reading Coleman & Moré (TR 82-535 / 1984):** their
+*symmetrically consistent partition* (p. 5) is this note's symm-validity word for word; their Theorem 2.2
+says it is exactly a proper colouring with no 2-coloured path of length 3 (a "symmetric colouring"), and
+their Theorem 3.2 says the symmetric chromatic number is the *minimum* of χ over a family of "symmetric
+completions" between `H` and `H²` — precisely "not one graph". See the
+[reading note](Reading_Note_2026-09-12_Coleman_More_1984_Symmetric_Colouring.md).
 
 Two consequences. (i) T1b must be stated with the per-entry predicate of §2, not with a graph.
 (ii) The symmetric scheme's advantage over CPR is real and can be large: on the star `K_{1,m}` with
@@ -108,8 +111,11 @@ does not transfer to the symmetric scheme as a theorem (there is no graph to bou
 - Coleman, T. F., & Moré, J. J. (1984). Estimation of sparse Hessian matrices and graph coloring
   problems. *Mathematical Programming, 28*(3), 243–270. https://doi.org/10.1007/BF02612334 — **new**;
   the Orientation cites their 1983 Jacobian paper (DOI 10.1137/0720013), which is the CPR / T1a side.
-- Reading owed before either is quoted for content: what class of colourings each paper proves
-  sufficient (and necessary) for the symmetric direct method, and whether it coincides with §2.
+- **Coleman & Moré read in full the same evening** (open Cornell report TR 82-535): the class coincides with §2
+  (their symmetrically consistent partition), and their §6–8 show that the *triangular substitution* scheme, not
+  the direct one, is where symmetry pays — X1c prints 6–7 products at benzene against 7–14 (direct symmetric)
+  and 8–18 (CPR), see `experiments/x1c_triangular_substitution.md`. Powell & Toint 1979 remains unread
+  (paywalled; supervisor PDF request item 29).
 
 ## 6. Correction to X1: the "4–5 products" were a colouring of the wrong graph
 

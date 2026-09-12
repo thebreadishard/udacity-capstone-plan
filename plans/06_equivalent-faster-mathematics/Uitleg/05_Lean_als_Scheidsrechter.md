@@ -84,8 +84,9 @@ later dezelfde avond: de gulzige kleuringsgrens — een graaf met maximale graad
 kleuren (die stelling zat niet in Mathlib) — en het gevolg dat Δ+1 metingen dus altijd genoeg zijn. En nog later
 die avond ook de symmetrische verfijning: als een symmetrische matrix van elke kant gelezen mag worden, is
 één leesbare kant per element genoeg. Het hele bestand bevat nu geen `sorry` (het Lean-woord voor "nog te
-bewijzen") meer. Wat open staat is lezen, geen bewijzen: de artikelen van Powell en Toint (1979) en Coleman
-en Moré (1984), om onze voorwaarde met de hunne te vergelijken.
+bewijzen") meer. Coleman en Moré (1984) is dezelfde avond gelezen: onze voorwaarde is woordelijk hun "symmetrisch
+consistente partitie", en hun stelling 2.2 (geen tweekleurig pad van drie zijden) is het volgende Lean-doel.
+Powell en Toint (1979) staat achter een betaalmuur en op de verzoeklijst voor de supervisor.
 
 ## §5.5 Eén zin om te onthouden
 

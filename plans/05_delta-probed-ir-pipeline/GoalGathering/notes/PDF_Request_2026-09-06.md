@@ -61,3 +61,8 @@ lokale-CC-object als nieuw noemt (24–26) en voor de basis-set-lijn van besluit
 26. Subotnik & Head-Gordon, *J. Chem. Phys.* **123**, 064108 (2005), DOI 10.1063/1.2000252 — "A local correlation model that yields intrinsically smooth potential-energy surfaces": het alternatief voor bevriezen.
 27. Esselman, Zdanovskaia, Owen, Stanton, Woods & McMahon, *J. Am. Chem. Soc.* **145**, 21785 (2023), DOI 10.1021/jacs.3c03109 — "Precise Equilibrium Structure of Benzene": mogelijke bron voor de afstand van CCSD(T)/cc-pVTZ tot de basis-set-limiet bij benzeen (besluit 26, invoer ii); uit de samenvatting niet te beslissen.
 28. *(open access, maar ACS blokkeert scripts — kun je zelf downloaden)* Nagy & Kállay, *J. Chem. Theory Comput.* **15**, 5275 (2019), DOI 10.1021/acs.jctc.9b00511 — de LNO-drempelhiërarchie (Loose/Normal/Tight) en de nauwkeurigheid tegen CCSD(T); het methodeartikel van onze motor.
+
+## E. Toegevoegd 12 september 2026 — plan 06 (ideeënplan, richting S5)
+
+29. Powell, M. J. D. & Toint, Ph. L., *SIAM J. Numer. Anal.* **16**(6), 1060–1074 (1979), DOI 10.1137/0716078 — "On the estimation of sparse Hessian matrices": de oorspronkelijke directe en driehoekssubstitutiemethoden om een symmetrische matrix met bekend nulpatroon uit zo weinig mogelijk matrix-vectorproducten terug te winnen, en de stelling over foutversterking bij substitutie. Nergens open (SIAM-only; ook de student kan hem niet downloaden). Het vervolgartikel van Coleman & Moré (1984) is als Cornell-rapport TR 82-535 open en op 12 september gelezen; daarin staat Powell & Toint alleen uit de tweede hand.
+
