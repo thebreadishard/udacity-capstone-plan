@@ -345,3 +345,18 @@ After the pilot note:
 - Time on a quiet machine or twice (plan-02 lesson: load produced a spurious 2× effect).
 - Queue generously; order jobs by what they *decide*; spend human hours on judgement.
 - Edit this file in place with a dated marker; the status line lists every revision.
+
+**Dated note 2026-09-12 (evening) — the naphthalene xtight timing was killed by the host, not by the job.**
+The detached run (pid 518, launched 12:39 with the three memory levers: WSL ceiling 25 GB, `--max-memory 16000`,
+8 GB swap) had finished fragments 1 and 2 of 24 (≈ 1 h 50 and ≈ 70 min; the first is the largest, 310 of 378
+virtuals) and was in fragment 3 when, at 16:14:32, Windows logged a *low virtual memory* condition
+(Resource-Exhaustion-Detector event 2004: vmmemWSL 21.9 GB, lean.exe 8.1 GB, lake.exe 1.3 GB) and Hyper-V tore the
+WSL virtual machine down at 16:14:33 (uptime of the next VM: from 16:31:11). No Linux OOM message, no traceback:
+the VM itself was gone. The 8.1 GB `lean.exe` was a Lean 4 / Mathlib build of plan 06's `lean/` folder, started
+on the Windows side beside the job — assumed "light", measured not light. **Rule sharpened:** while an anchor job
+runs under the 25 GB ceiling, Windows has ≈ 6 GB; no process over about 1 GB may be started on the Windows side
+(no Lean/Mathlib builds, no PDF rendering, no large notebooks); light means editing text and small scripts.
+The log is archived as `probes/results_timing/naphthalene_ccpvtz_xtight_failed_attempt2.log`; the run must
+start from scratch (LNO fragments do not checkpoint). Measured so far at xtight: fragment 1 ≈ 1 h 50, fragment 2
+≈ 70 min, RSS 3–8 GB with the out-of-core path, scratch up to 29 GB in `~/qc_tmp` (22 GB left behind, not deleted).
+

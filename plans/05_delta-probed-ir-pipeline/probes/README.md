@@ -256,3 +256,9 @@ single-mode scatter with sealed fit coefficients, and timings; no local-CC Δ₂
     printed (72 × families; ≈ 360 for five) and classified by Budget §2 — expected B3 at two
     shells; whole-flake direct couplings where
     B3 allows.
+
+**Rule added 2026-09-12 (evening):** while an anchor job runs in WSL under the 25 GB ceiling, start nothing on the
+Windows side that needs more than about 1 GB — a Lean/Mathlib `lake build` (8 GB) killed the naphthalene xtight
+timing together with the whole WSL VM (Budget dated note 2026-09-12 evening). Check with the Windows event log
+(Resource-Exhaustion-Detector 2004) when a WSL job vanishes without a traceback.
+
