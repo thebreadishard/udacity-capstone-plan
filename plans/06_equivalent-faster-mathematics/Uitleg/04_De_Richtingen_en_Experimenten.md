@@ -68,7 +68,7 @@ met een toets, en verlaat het als de toets is gedaan.
 | experiment | wat | stand op 12 september 2026 |
 |---|---|---|
 | X0 | de drie complexiteits- en lokaliteitsartikelen volledig lezen en vastleggen wat ze uitsluiten | **gedaan** (leesnotitie); E1 "in het algemeen" dicht, klasse-beperkt open |
-| X1 | rang en kleuringsgetal van de benzeen-Δ₂ tegen K = 448 | te doen (minuten) |
+| X1 | rang en kleuringsgetal van de benzeen-Δ₂ tegen K = 448 | gedaan 12 sep; **gecorrigeerd dezelfde avond (X1b)**: de eerste telling kleurde de verkeerde graaf; geverifieerd kost exacte terugwinning 8–18 producten (CPR) of 7–14 (symmetrisch) = 420–1080 energieën bij 2M per product, tegen K = 448 — dus niet goedkoper, tenzij een product veel minder dan 2M energieën kost; de rang is vol (30) |
 | X2 | gevoeligheid van bandposities voor elk element van Δ₂ | te doen (minuten) |
 | X3a | wat LNO bij naftaleen bewaarde, uit de bestaande log | **gedaan**: 92–100 % bezet, ~56 % virtueel |
 | X3b | MP2-paarenergieën tegen LMO-afstand, afvalconstante | script klaar; na de ankerjob |

@@ -11,7 +11,7 @@ when some row `i` has both `(i, j)` and `(i, j')` in `P`. Let `c` be a proper co
 graph. Then `A` is determined exactly by the products `A · d_k`, where `d_k` is the 0/1 indicator
 vector of colour class `k` — one matrix–vector product per colour. This is the Curtis–Powell–Reid
 scheme (1974) in the graph language of Coleman & Moré (1983). It is the algebra behind experiment
-X1's count ("4–5 Hessian–vector products recover every element above the noise at benzene").
+X1's product count (corrected by X1b on 2026-09-12: 8–18 CPR products at benzene, not 4–5).
 
 **What is proved here (T1a, T1c, and their corollary).** `recover_probe`: the entries of `A`
 inside `P` are read off the probes, so the reconstruction map returns `A` itself.
@@ -21,9 +21,11 @@ greedy bound; not in Mathlib on 2026-09-12, proved here by induction on a finite
 `Δ` the maximum degree of the column-intersection graph — the count behind X1. No `sorry` in any
 of these.
 
-**What is stated and owed (T1b).** The symmetric refinement of Powell & Toint (1979), where a
-symmetric `A` may be read at `(i, j)` *or* `(j, i)` and fewer colours suffice. It carries `sorry`
-and is the next proof.
+**What is stated and owed (T1b).** The symmetric direct scheme: a symmetric `A` may be read at
+`(i, j)` *or* `(j, i)`, so a colouring only has to make every pattern entry readable from one side
+(`SymmValid`, defined per entry — the T1b note of 2026-09-12 shows this is *not* a proper colouring
+of any fixed graph on the columns). `recover₂_probe` states the recovery and carries `sorry`; it is
+the next proof.
 
 Conventions: everything is finite-dimensional; the matrix ring is `ℝ` (plan 05's numbers are real);
 `Matrix.mulVec` is `A *ᵥ v`, with `(A *ᵥ v) i = ∑ j, A i j * v j`.
@@ -158,9 +160,9 @@ theorem exists_proper_on_finset (G : SimpleGraph n) [DecidableRel G.Adj] (S : Fi
         w ((Finset.mem_insert.1 hw).resolve_left hwa) hvw
 
 /-- **T1c (the greedy bound).** A finite graph with maximum degree `Δ` is `(Δ + 1)`-colourable.
-With `Δ` the maximum number of conflicting columns in the pattern, this is X1's "4–5 products"
-bound. Not in Mathlib on 2026-09-12 (Loogle: no declaration mentions both `SimpleGraph.Colorable`
-and `SimpleGraph.maxDegree`); proved here by the greedy step above. -/
+With `Δ` the maximum number of conflicting columns in the pattern, this bounds the CPR product
+count (8–27 at benzene by X1b). Not in Mathlib on 2026-09-12 (Loogle: no declaration mentions both
+`SimpleGraph.Colorable` and `SimpleGraph.maxDegree`); proved here by the greedy step above. -/
 theorem colorable_maxDegree_succ (G : SimpleGraph n) [DecidableRel G.Adj] :
     G.Colorable (G.maxDegree + 1) := by
   obtain ⟨f, hf⟩ := exists_proper_on_finset G Finset.univ
@@ -170,7 +172,8 @@ theorem colorable_maxDegree_succ (G : SimpleGraph n) [DecidableRel G.Adj] :
 /-- **T1a + T1c, the count.** Let `Δ` be the maximum degree of the column-intersection graph of
 `P` (the largest number of other columns any column conflicts with). Then there is a colouring
 with `Δ + 1` colours whose probes recover every matrix respecting `P`: `Δ + 1` matrix–vector
-products suffice. At benzene (X1) the greedy bound gave 4–5 products against 448 energies. -/
+products suffice. At benzene the verified CPR colourings of X1b use 8–18 products (bound 8–27)
+against plan 05's 448 energies. -/
 theorem exists_coloring_recover [DecidableEq n] (P : Pattern n) [DecidableRel (colGraph P).Adj] :
     ∃ c : (colGraph P).Coloring (Fin ((colGraph P).maxDegree + 1)),
       ∀ A : Matrix n n ℝ, Respects P A → recover c (probe c A) = A := by
@@ -182,20 +185,36 @@ theorem exists_coloring_recover [DecidableEq n] (P : Pattern n) [DecidableRel (c
 /-- The pattern of a symmetric matrix may itself be taken symmetric. -/
 def Pattern.IsSymm (P : Pattern n) : Prop := ∀ i j, (i, j) ∈ P → (j, i) ∈ P
 
-omit [Fintype n] in
-/-- **T1b (owed; Powell & Toint 1979).** For a symmetric `A` with symmetric pattern, an entry
-`A i j` may be read from the probe of `j`'s class at row `i` *or* from the probe of `i`'s class at
-row `j`; a colouring only has to separate columns that would be *unreadable both ways*. The
-statement below fixes only the shape of the claim: some subgraph of the column-intersection graph
-(the symmetric-conflict graph, to be defined when this is proved) already has the recovery
-property for symmetric matrices. -/
-theorem symmetric_recovery_shape [Fintype n] (P : Pattern n) (hP : P.IsSymm) (A : Matrix n n ℝ)
-    (hA : Respects P A) (hAs : A.IsSymm) :
-    ∃ (G : SimpleGraph n), (∀ j j', G.Adj j j' → (colGraph P).Adj j j') ∧
-      ∀ {β : Type} [DecidableEq β] (c : G.Coloring β), ∀ B : Matrix n n ℝ,
-        Respects P B → B.IsSymm →
-        (∀ k, A *ᵥ (fun j => if c j = k then (1 : ℝ) else 0) =
-              B *ᵥ (fun j => if c j = k then (1 : ℝ) else 0)) → A = B := by
+/-- `A i j` is *readable from column `j`* under the colouring `c`: no other column of the same
+colour occurs in row `i` of the pattern. (`c` is a plain function here; properness on the pattern
+graph follows from `SymmValid`, see the T1b note, Theorem B(ii).) -/
+def ReadableCol (P : Pattern n) (c : n → α) (i j : n) : Prop :=
+  ∀ j', (i, j') ∈ P → j' ≠ j → c j' ≠ c j
+
+/-- The symmetric direct scheme's requirement: every pattern entry is readable from its column or,
+via symmetry, from its row. -/
+def SymmValid (P : Pattern n) (c : n → α) : Prop :=
+  ∀ i j, (i, j) ∈ P → ReadableCol P c i j ∨ ReadableCol P c j i
+
+/-- The probes of a plain colouring function. -/
+def probe' (c : n → α) (A : Matrix n n ℝ) (k : α) : n → ℝ :=
+  A *ᵥ fun j => if c j = k then (1 : ℝ) else 0
+
+open Classical in
+/-- Two-sided reconstruction: inside the pattern, read the column side when it is readable, else the
+row side; outside, zero. A function of the pattern, the colouring and the probes only. -/
+noncomputable def recover₂ (P : Pattern n) (c : n → α) (probes : α → n → ℝ) :
+    Matrix n n ℝ :=
+  fun i j =>
+    if (i, j) ∈ P then (if ReadableCol P c i j then probes (c j) i else probes (c i) j) else 0
+
+/-- **T1b (owed; Theorem A of the T1b note, 2026-09-12).** For a symmetric pattern, a symmetric
+matrix respecting it, and a symmetrically valid colouring, the two-sided reconstruction from the
+probes returns the matrix. Proof plan: `probe_eq_entry` generalised to a plain function under
+`ReadableCol`, then the row side by `hAs` and `hP`. -/
+theorem recover₂_probe (P : Pattern n) (hP : P.IsSymm) (c : n → α) (hc : SymmValid P c)
+    {A : Matrix n n ℝ} (hA : Respects P A) (hAs : A.IsSymm) :
+    recover₂ P c (probe' c A) = A := by
   sorry
 
 end Plan06.T1

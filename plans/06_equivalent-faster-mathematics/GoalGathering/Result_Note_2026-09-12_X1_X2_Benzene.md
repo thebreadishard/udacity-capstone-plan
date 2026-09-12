@@ -36,15 +36,15 @@ pair" pattern persist, and is it a resonance-like near-degeneracy or a family co
 | plan 05 mode E, measured | 448 energies |
 | dense symmetric lower bound, mode E (± pairs) | 930 energies |
 | off-diagonal elements above 1 µE_h | 53 of 435 |
-| exact sparse recovery of the pattern above θ (Powell–Toint / Coleman–Moré type), greedy colouring bound | **4–5 Hessian–vector products** (θ from 0.25 to 5 µE_h) |
-| the same expressed in energies if a product costs 2M energies | 240–300 |
+| exact sparse recovery of the pattern above θ (Powell–Toint / Coleman–Moré type), greedy colouring bound | ~~**4–5 Hessian–vector products** (θ from 0.25 to 5 µE_h)~~ **corrected 2026-09-12 evening: 8–18 (CPR) / 7–14 (symmetric direct), verified colourings — X1b** |
+| the same expressed in energies if a product costs 2M energies | ~~240–300~~ **420–1080** |
 | numerical rank at the noise level | 30 of 30 — Δ₂ is **not** low-rank; the randomised low-rank route needs r + p = 35 products |
 
 **Reading.** The sparsity is real (53 elements above 1 µE_h) and the exact-recovery algebra is cheap
 in *products*: four or five Hessian–vector products would recover every element above the noise on
 benzene. The obstacle is the price of a product: plan 05's local-CC engine has no analytic gradient,
 and a canonical CCSD(T) gradient cost about fifty energies at cc-pVDZ, so in energies the scheme is
-240–300 against 448 — better, not transformative, and only if the sparsity pattern is known in
+~~240–300 against 448 — better, not transformative~~ [corrected: 420–1080 against 448 — not better at 2M energies per product], and only if the sparsity pattern is known in
 advance (which is what the symmetry prior and, later, the learned prior of Module 05 provide). Low
 rank is not there: the singular values fall slowly and the rank at the noise level is full.
 **Consequence:** S5 stays alive on the condition "a cheap Hessian–vector product exists"; that
@@ -60,7 +60,7 @@ Phys.* 150 (2019), DOI 10.1063/1.5086544 (full). For **local CCSD or CCSD(T)** (
 LNO) the same search returned no analytic-gradient record; a numerical gradient of a local-CC energy
 costs 2 × 3N energies (72 at benzene), more than the 2M = 60 energies a Hessian–vector product by
 energies would cost. So, as far as verified today, **no cheap product exists at the anchor's level**;
-the X1 counts (4–5 products) stay a statement about the algebra, not about a route. A deeper search
+the X1 counts (~~4–5~~ 8–18 products after the X1b correction) stay a statement about the algebra, not about a route. A deeper search
 (the ORCA and MRCC literature since 2020) is the only thing that could revive S5; until then it is
 parked, not dead.
 
@@ -80,3 +80,17 @@ plan 06 adds nothing to that measurement and waits for it.
 S4 → alive (E3), next test on the naphthalene tensor. S5 → alive, conditional on the measured cost of
 an LNO-CCSD(T) gradient by automatic differentiation (Zhang et al. 2024; plan 05's side project M2) —
 not parked. X1, X2 done.
+
+## Correction, 2026-09-12 evening (X1b)
+
+While fixing the mathematics for T1b it turned out that `x1_x2_benzene.py` coloured the **pattern graph**
+(columns adjacent when |Δ₂,ij| > θ) and reported that as the Curtis–Powell–Reid count. A proper colouring
+of the pattern graph is necessary but not sufficient for recovery (T1b note, Theorem B); under X1's
+colourings 70–122 of the 118–204 pattern entries are unreadable from either side. The verified counts
+(`experiments/x1b_symmetric_colouring.py`) are **8–18 products for CPR and 7–14 for the symmetric direct
+scheme**, i.e. **420–1080 energies at 2M per product against K = 448**. The X1 reading "better, not
+transformative" is withdrawn: at benzene, exact recovery by products is not cheaper than the plan-05 deck
+unless a Hessian–vector product costs well under 2M energies — the M2 gradient-cost condition, unchanged in
+words and sharper in numbers. The rank result and X2 are untouched. Full table and derivation:
+[Note_2026-09-12_T1b_Symmetric_Readability_and_X1_Correction.md](Note_2026-09-12_T1b_Symmetric_Readability_and_X1_Correction.md).
+

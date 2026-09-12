@@ -48,7 +48,7 @@ they share a row with two non-zeros — Coleman & Moré 1983), is determined exa
 A·d_k, d_k the indicator of colour class k. Every ingredient is elementary and present: `Matrix`,
 `Matrix.IsSymm`, `mulVec`, `Finset.sum`, `SimpleGraph.Coloring` and colour classes. Nothing about it is
 in Mathlib as a theorem, and the greedy Δ+1 colouring lemma that turns the statement into the X1 bound
-("4–5 products at benzene") is also missing. Estimate, not a measurement: a few hundred lines of Lean
+(X1's product count; corrected the same evening to 8–18 by X1b) is also missing. Estimate, not a measurement: a few hundred lines of Lean
 for someone who knows Mathlib's `Matrix` API; a first project, not a research one. **Feasible; the
 infrastructure is sufficient.**
 
