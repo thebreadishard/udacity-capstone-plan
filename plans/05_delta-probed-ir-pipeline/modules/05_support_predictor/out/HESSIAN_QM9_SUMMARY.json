@@ -1,0 +1,198 @@
+{
+ "date": "2026-09-12 09:28",
+ "record": {
+  "title": "<b>Hessian QM9 Dataset</b>",
+  "doi": "10.6084/m9.figshare.26363959.v4",
+  "version": 4,
+  "license": "CC0",
+  "published": "2024-12-12T10:12:48Z"
+ },
+ "archive": {
+  "file": "hessian_qm9_DatasetDict.zip",
+  "bytes": 6281831499,
+  "md5": "f3e36130e5cc47021ab403767a19ddf7",
+  "sha256": "ce595041d718b2dff8c5b5a2b4ce7cfcef3c3f98035193d2612db6ea3d17b2c7",
+  "md5_matches_figshare": true
+ },
+ "vacuum_shards": [
+  {
+   "file": "data-00000-of-00005.arrow",
+   "bytes": 474145968,
+   "sha256": "8fb0ae620ddaf83b"
+  },
+  {
+   "file": "data-00001-of-00005.arrow",
+   "bytes": 473971728,
+   "sha256": "4a5435bab3710f71"
+  },
+  {
+   "file": "data-00002-of-00005.arrow",
+   "bytes": 473652472,
+   "sha256": "2df9a6977971f0a2"
+  },
+  {
+   "file": "data-00003-of-00005.arrow",
+   "bytes": 471780960,
+   "sha256": "67cf5c6dbb9e03ab"
+  },
+  {
+   "file": "data-00004-of-00005.arrow",
+   "bytes": 472909072,
+   "sha256": "5cda6cd30270bd9c"
+  }
+ ],
+ "vacuum_rows": 41645,
+ "example": {
+  "label": "dsgdb9nsd_045682",
+  "natoms": 18,
+  "hessian_shape": [
+   18,
+   3,
+   18,
+   3
+  ],
+  "hessian_symmetric": true,
+  "frequencies_shape": [
+   54,
+   2
+  ],
+  "normal_modes_shape": [
+   54,
+   54
+  ],
+  "energy": -10938.331377325192,
+  "schema": [
+   "energy",
+   "positions",
+   "atomic_numbers",
+   "forces",
+   "frequencies",
+   "normal_modes",
+   "hessian",
+   "label"
+  ]
+ },
+ "heavy_atoms_histogram": {
+  "1": 2,
+  "2": 2,
+  "3": 1,
+  "4": 11,
+  "5": 51,
+  "6": 150,
+  "7": 764,
+  "8": 4637,
+  "9": 36027
+ },
+ "natoms_min_max": [
+  3,
+  29
+ ],
+ "aromatic_like_proxy": {
+  "rule": "n_C >= 6 and n_H <= n_C",
+  "count": 2120,
+  "share": 0.0509
+ },
+ "compositions_most_common": [
+  {
+   "C,H,N,O,F": [
+    6,
+    9,
+    1,
+    2,
+    0
+   ],
+   "n": 2415
+  },
+  {
+   "C,H,N,O,F": [
+    7,
+    10,
+    0,
+    2,
+    0
+   ],
+   "n": 2380
+  },
+  {
+   "C,H,N,O,F": [
+    7,
+    11,
+    1,
+    1,
+    0
+   ],
+   "n": 2203
+  },
+  {
+   "C,H,N,O,F": [
+    7,
+    12,
+    0,
+    2,
+    0
+   ],
+   "n": 2108
+  },
+  {
+   "C,H,N,O,F": [
+    8,
+    12,
+    0,
+    1,
+    0
+   ],
+   "n": 2037
+  },
+  {
+   "C,H,N,O,F": [
+    7,
+    9,
+    1,
+    1,
+    0
+   ],
+   "n": 1626
+  },
+  {
+   "C,H,N,O,F": [
+    8,
+    14,
+    0,
+    1,
+    0
+   ],
+   "n": 1392
+  },
+  {
+   "C,H,N,O,F": [
+    6,
+    8,
+    2,
+    1,
+    0
+   ],
+   "n": 1359
+  },
+  {
+   "C,H,N,O,F": [
+    6,
+    7,
+    1,
+    2,
+    0
+   ],
+   "n": 1345
+  },
+  {
+   "C,H,N,O,F": [
+    6,
+    11,
+    1,
+    2,
+    0
+   ],
+   "n": 1341
+  }
+ ],
+ "n_distinct_compositions": 518
+}

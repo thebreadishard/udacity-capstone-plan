@@ -1,0 +1,153 @@
+{
+ "files": [
+  {
+   "id": 49271011,
+   "name": "hessian_qm9_DatasetDict.zip",
+   "size": 6281831499,
+   "is_link_only": false,
+   "download_url": "https://ndownloader.figshare.com/files/49271011",
+   "supplied_md5": "f3e36130e5cc47021ab403767a19ddf7",
+   "computed_md5": "f3e36130e5cc47021ab403767a19ddf7",
+   "mimetype": "undefined"
+  },
+  {
+   "id": 49271251,
+   "name": "params_thf_f128_i5_b16.npz",
+   "size": 3175111,
+   "is_link_only": false,
+   "download_url": "https://ndownloader.figshare.com/files/49271251",
+   "supplied_md5": "56f272ca3ea35774f8ada38c26258e55",
+   "computed_md5": "56f272ca3ea35774f8ada38c26258e55",
+   "mimetype": "application/zip"
+  },
+  {
+   "id": 49271254,
+   "name": "params_vacuum_f128_i5_b16.npz",
+   "size": 3175111,
+   "is_link_only": false,
+   "download_url": "https://ndownloader.figshare.com/files/49271254",
+   "supplied_md5": "1f1dd1a7ce2835e103cd87ae7f09113c",
+   "computed_md5": "1f1dd1a7ce2835e103cd87ae7f09113c",
+   "mimetype": "application/zip"
+  },
+  {
+   "id": 49271257,
+   "name": "params_toluene_f128_i5_b16.npz",
+   "size": 3175111,
+   "is_link_only": false,
+   "download_url": "https://ndownloader.figshare.com/files/49271257",
+   "supplied_md5": "b259769fb181a94a9fb3eedffa1b6943",
+   "computed_md5": "b259769fb181a94a9fb3eedffa1b6943",
+   "mimetype": "application/zip"
+  },
+  {
+   "id": 49271260,
+   "name": "params_water_f128_i5_b16.npz",
+   "size": 3175111,
+   "is_link_only": false,
+   "download_url": "https://ndownloader.figshare.com/files/49271260",
+   "supplied_md5": "76c2cc280bea4aee5d16d860b47ab4ea",
+   "computed_md5": "76c2cc280bea4aee5d16d860b47ab4ea",
+   "mimetype": "application/zip"
+  }
+ ],
+ "folder_structure": {
+  "49271011": "",
+  "49271251": "model_params/thf",
+  "49271254": "model_params/vacuum",
+  "49271257": "model_params/toluene",
+  "49271260": "model_params/water"
+ },
+ "authors": [
+  {
+   "id": 18812254,
+   "full_name": "Nicholas Williams",
+   "first_name": "Nicholas",
+   "last_name": "Williams",
+   "is_active": true,
+   "url_name": "Nicholas_Williams",
+   "orcid_id": "0000-0002-9028-4750"
+  }
+ ],
+ "custom_fields": [],
+ "figshare_url": "https://figshare.com/articles/dataset/_b_Hessian_QM9_Dataset_b_/26363959",
+ "download_disabled": false,
+ "description": "<pre><p><br></p></pre><p dir=\"ltr\"><b>Overview</b></p><p dir=\"ltr\">Hessian QM9 is the first database of equilibrium configurations and numerical Hessian matrices, consisting of 41,645 molecules from the QM9 dataset at the $\\omega$B97x/6-31G* level. Molecular Hessians were calculated in vacuum, as well as in water, tetrahydrofuran, and toluene using an implicit solvation model.</p><p dir=\"ltr\">A pre-print article associated with this dataset is available at <a href=\"https://arxiv.org/abs/2408.08006\" rel=\"noreferrer\" target=\"_blank\">here</a>.</p><p dir=\"ltr\"><b>Data records</b></p><p dir=\"ltr\">The dataset is stored in Hugging Face's <a href=\"https://huggingface.co/docs/datasets/en/index\" rel=\"noreferrer\" target=\"_blank\">dataset format</a>. For each of the four implicit solvent environments (vacuum, THF, toluene, and water), the data is divided into separate datasets containing vibrational analysis of 41,645 optimized geometries. Labels are associated with the QM9 molecule labelling system given by Ramakrishnan <i>et al</i>.</p><p dir=\"ltr\">Please note that only molecules containing H, C, N, O were considered. This exclusion was due to the limited number of molecules containing fluorine in the QM9 dataset, which was not sufficient to build a good description of the chemical environment for fluorine atoms. Including these molecules may have reduced the overall precision of any models trained on our data.</p><p dir=\"ltr\"><b>Load the dataset:</b></p><p dir=\"ltr\">Use the following Python script to load the dataset dictionary: </p><p dir=\"ltr\">```python</p><p dir=\"ltr\">from datasets import load_from_disk</p><p dir=\"ltr\">dataset = load_from_disk(root_directory)</p><p dir=\"ltr\">print(dataset)</p><p>```</p><p><br></p><p dir=\"ltr\">Expected output:</p><p dir=\"ltr\"><br></p><p dir=\"ltr\">```python</p><p dir=\"ltr\">DatasetDict({</p><p dir=\"ltr\">vacuum: Dataset({</p><p dir=\"ltr\">features: ['energy', 'positions', 'atomic_numbers', 'forces', 'frequencies', 'normal_modes', 'hessian', 'label'],</p><p dir=\"ltr\">num_rows: 41645</p><p>}),</p><p dir=\"ltr\">thf: Dataset({</p><p dir=\"ltr\">features: ['energy', 'positions', 'atomic_numbers', 'forces', 'frequencies', 'normal_modes', 'hessian', 'label'],</p><p dir=\"ltr\">num_rows: 41645</p><p>}),</p><p dir=\"ltr\">toluene: Dataset({</p><p dir=\"ltr\">features: ['energy', 'positions', 'atomic_numbers', 'forces', 'frequencies', 'normal_modes', 'hessian', 'label'],</p><p dir=\"ltr\">num_rows: 41645</p><p>}),</p><p dir=\"ltr\">water: Dataset({</p><p dir=\"ltr\">features: ['energy', 'positions', 'atomic_numbers', 'forces', 'frequencies', 'normal_modes', 'hessian', 'label'],</p><p dir=\"ltr\">num_rows: 41645</p><p>})</p><p>})</p><p>```</p><p><br></p><p dir=\"ltr\"><b>DFT Methods</b></p><p dir=\"ltr\">All DFT calculations were carried out using the NWChem software package. The density functional used was $\\omega$B97x with a 6-31G* basis set to create data compatible with the ANI-1/ANI-1x/ANI-2x datasets. The self-consistent field (SCF) cycle was converged when changes in total energy and density were less than 1e-6 eV. All molecules in the set are neutral with a multiplicity of 1. The Mura-Knowles radial quadrature and Lebedev angular quadrature were used in the integration. Structures were optimized in vacuum and three solvents (tetrahydrofuran, toluene, and water) using an implicit solvation model.</p><p dir=\"ltr\">The Hessian matrices, vibrational frequencies, and normal modes were computed for a subset of 41,645 molecular geometries using the finite differences method.</p><p dir=\"ltr\"><b>Example model weights</b></p><p dir=\"ltr\">An example model trained on Hessian data is included in this dataset. Full details of the model will be provided in an upcoming publication. The model is an E(3)-equivariant graph neural network using the `e3x` package with specific architecture details. To load the model weights, use:</p><p><br></p><p dir=\"ltr\">```python</p><p dir=\"ltr\">params = jnp.load('params_train_f128_i5_b16.npz', allow_pickle=True)['params'].item()</p><p>```</p>",
+ "funding": null,
+ "funding_list": [],
+ "version": 4,
+ "status": "public",
+ "size": 6294531943,
+ "created_date": "2024-12-12T10:12:48Z",
+ "modified_date": "2024-12-12T10:12:49Z",
+ "is_public": true,
+ "is_confidential": false,
+ "is_metadata_record": false,
+ "confidential_reason": "",
+ "metadata_reason": "Currently modifying data system.",
+ "license": {
+  "value": 2,
+  "name": "CC0",
+  "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+ },
+ "tags": [
+  "qm9 properties",
+  "quantum chemistry database",
+  "density functional theory",
+  "Hessian vibration analysis"
+ ],
+ "keywords": [
+  "qm9 properties",
+  "quantum chemistry database",
+  "density functional theory",
+  "Hessian vibration analysis"
+ ],
+ "categories": [
+  {
+   "id": 25186,
+   "title": "Cheminformatics and quantitative structure-activity relationships",
+   "parent_id": 25174,
+   "path": "/25066/25174/25186",
+   "source_id": "340404",
+   "taxonomy_id": 100
+  },
+  {
+   "id": 30166,
+   "title": "Condensed matter modelling and density functional theory",
+   "parent_id": 30157,
+   "path": "/30082/30157/30166",
+   "source_id": "510403",
+   "taxonomy_id": 100
+  }
+ ],
+ "references": [],
+ "has_linked_file": false,
+ "citation": "Williams, Nicholas (2024). Hessian QM9 Dataset. figshare. Dataset. https://doi.org/10.6084/m9.figshare.26363959.v4",
+ "related_materials": [],
+ "is_embargoed": false,
+ "embargo_date": null,
+ "embargo_type": null,
+ "embargo_title": "",
+ "embargo_reason": "",
+ "embargo_options": [],
+ "id": 26363959,
+ "title": "<b>Hessian QM9 Dataset</b>",
+ "doi": "10.6084/m9.figshare.26363959.v4",
+ "handle": "",
+ "url": "https://api.figshare.com/v2/articles/26363959",
+ "published_date": "2024-12-12T10:12:48Z",
+ "thumb": "",
+ "defined_type": 3,
+ "defined_type_name": "dataset",
+ "group_id": null,
+ "url_private_api": "https://api.figshare.com/v2/account/articles/26363959",
+ "url_public_api": "https://api.figshare.com/v2/articles/26363959",
+ "url_private_html": "https://figshare.com/account/articles/26363959",
+ "url_public_html": "https://figshare.com/articles/dataset/_b_Hessian_QM9_Dataset_b_/26363959",
+ "timeline": {
+  "posted": "2024-12-12T10:12:48",
+  "firstOnline": "2024-07-30"
+ },
+ "resource_title": null,
+ "resource_doi": null
+}
