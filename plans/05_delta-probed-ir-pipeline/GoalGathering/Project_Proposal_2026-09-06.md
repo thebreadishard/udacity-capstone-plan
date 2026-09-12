@@ -75,7 +75,7 @@ its default settings and 0.05–2.7 µE_h at tight ones. At the anchor basis the
 as smooth; at the tight local-correlation thresholds it carried a frequency bias of up to 0.8 cm⁻¹
 on the C–C stretch, and the same scan with the thresholds one decade tighter, finished on 12
 September, brings that to +0.11 / −0.01 / +0.23 cm⁻¹ on the three modes with the smoothness unchanged
-(§3.3) — the residual was local-correlation truncation, and the anchor runs at those thresholds. And the canonical coupled-cluster reference that
+(§3.3) — the residual was local-correlation truncation, and the anchor runs at those thresholds. The cheap basis line printed the same day (SCF and MP2 at the same 27 points in larger bases, nineteen minutes) showed the anchor's remaining distance from its own basis-set limit to be an order of magnitude larger than that residual, and the anchor was redefined as a composite that carries the SCF and MP2 basis terms at under 1 % of the cost (decision 33). And the canonical coupled-cluster reference that
 licenses the anchor was timed: it fits the laptop at benzene for the line that matters, and the
 full canonical Hessian does not. The search found no gas-phase spectrum of known temperature for
 chrysene or triphenylene in the 6–15 µm region, and for pyrene only a hot heat-pipe spectrum and
@@ -255,7 +255,7 @@ matrix — what is new here is using it as the prior of a recovery from few meas
 arithmetic, at benzene's measured per-energy time of 35 minutes in the anchor basis (naphthalene's is longer: **measured 11 September, 11.5 h per energy at 19.8 GB peak memory on the laptop, against 35 minutes for benzene**). Two numbers, with different roles. The **deck**
 at R1 is the probing licence's reference (§5.1): 48 modes × 2 diagonal energies, the 48 second-
 amplitude points, and every one of the 141 same-representation pairs measured directly as a ± two-
-mode point — 96 + 96 + 282 = **474 energies**, about 280 hours at benzene's 35 minutes per energy and **5,450 hours — 227 days — at naphthalene's measured 11.5 hours**, which is the figure §12 and P13 carry. **K**, what the stopping rule
+mode point — 96 + 96 + 282 = **474 energies**, about 280 hours at benzene's 35 minutes per energy and **5,450 hours — 227 days — at naphthalene's measured 11.5 hours**, which is the figure §12 and P13 carry (measured at the tight local-correlation thresholds; the anchor now runs one decade tighter, decision 20, and the naphthalene energy at those thresholds is being timed on 12 September — expected about twice). **K**, what the stopping rule
 reports (K = 2M + K_off; the second amplitude sits outside it), is smaller: 96 diagonal energies
 plus between 0.9 and 2.0 energies per allowed coupling — 0.9 is the no-prior benzene rate (388 for
 435 unknowns), 2.0 is the cap at which every pair is simply measured; the benzene rerun under the
@@ -809,7 +809,11 @@ subsystem given 22 GB; the machine is dedicated to the project and available aro
   decision 16 for the off-diagonal bias; the probing licence's full-matrix comparison is against
   the directly computed local-CC reference with the same frozen spaces.
 - **The Module-05 corpus.** A B3LYP Hessian of a QM9-size molecule takes 3–7 minutes here, so the
-  aromatic-heavy subset of order a thousand molecules is three days of laptop time.
+  conjugated QM9 subset (6,055 molecules, B3LYP side only) is about three weeks of laptop time; the own
+  aromatic layers prepared on 12 September (45 + 868 + 4,353 candidates, both functionals, up to 34
+  atoms; naphthalene 13 minutes and pyrene 54 minutes per Hessian here) are priced by a five-molecule
+  timing test before any size is committed — the factory runs start-and-stop and never beside an anchor
+  job (§12, Module 05 row; `modules/05_support_predictor/corpus/`).
 
 Still owed before the pilot note (§7's list): the naphthalene rehearsal, which also admits or
 refuses the symmetry prior; the scoreboard re-read with its measured band uncertainties; the
@@ -854,7 +858,7 @@ PNNL naphthalene source itself.
 
 The review loop was **closed on 4 September** after a consistency check of the last revision (19
 cross-references, all mechanical). Since then the plan's text changes only by dated notes that
-name a measurement or a decision; the decisions of 5–10 September (§10, items 8–31) are such notes.
+name a measurement or a decision; the decisions of 5–12 September (§10, items 8–33) are such notes.
 Items 8–16 and 19 were made on the DFT-only rehearsal, the frozen-space probe and the timings —
 before any coupled-cluster response of the real correction exists, so none of the rules the
 evaluation depends on was shaped by a result it will judge; items 17 and 18 are tooling and scope
@@ -1029,14 +1033,14 @@ back per module is budgeted, not hoped away.
 
 | Milestone / module | Content | Date | What sets the pace |
 |---|---|---|---|
-| Proposal to the supervisor | after the tighter-threshold scan and the cold-read round | 12 Sep 2026 | the student's work |
+| Proposal to the supervisor | after the tighter-threshold scan, the basis line and the cold-read round — **sent as a scheduled e-mail for Monday 14 September, 08:00** | 14 Sep 2026 | the student's work |
 | Module 02 — opponent atlas | PAHdb v4.00 and Anharmonic v1.00, Mai 2025, the Bos-type baseline, read in and version-frozen — **first version complete 10 September** (parser, tables, notebook, report; the student's own pass before submission) | 25 Sep 2026 | data engineering, no compute |
 | Module 03 — scoreboard and u_band | probe 2a, the laboratory columns, decidability per family — **scaffolded in the Udacity rubric form on 11 September** (`modules/03_lab_scoreboard/`: a pre-registered matrix–gas test committed before the join, 63 pairs of naphthalene, anthracene, pyrene and chrysene against the WebBook GC-IRD records; six families reject a zero offset, median +3.3 to +5.9 cm⁻¹ matrix above hot gas; the u_band columns on these records, the PNNL and cold columns still owed) | 2 Oct 2026 | the student's work; the supervisor's answers to §13 items 7–10 |
 | Pilot-note inputs | naphthalene dry run, R0 pilot, naphthalene noise run, canonical two-mode points | 23 Oct 2026 | **laptop: about three weeks of continuous compute** |
 | Pilot note | every frozen number, band lists, margins | 30 Oct 2026 | the student's work after the measurements |
 | Module 04 — calibrated-harmonic baseline | ML correction to scale factors, leave-molecule-out — **scaffolded in the rubric form on 12 September** (`modules/04_calibrated_harmonic/`: recipe committed before training; 2,477 matrix↔computed pairs of 83 molecules; leave-one-molecule-out MAE 6.49 cm⁻¹ for the library as served against 6.40 for the best model, R² ≤ 0.01 — on this table the calibrated baseline *is* line A; the Zenodo release of the table and the pilot note's adoption of the recipe still owed) | 30 Oct 2026 | in parallel with the compute |
 | Module 05 — Δ₂-support predictor | the DFT-vs-DFT Hessian corpus and the network — **scaffolded 12 September** (`modules/05_support_predictor/`: recipe, the Transformer in PyTorch, smoke test on the benzene dry-run tensor). **Hessian QM9 downloaded and verified the same day** (41,645 molecules, ωB97X/6-31G* numerical Hessians; paper read for units and conventions). **Measured: it holds only 66 molecules with an all-carbon aromatic six-ring and 6,055 with a planar conjugated five- or six-ring** — the "aromatic-heavy QM9 subset" of the mapping is really a conjugated/heteroaromatic subset. **Prepared in response (no compute yet): a resumable corpus factory** (`modules/05_support_predictor/corpus/`) with four layers — 45 ladder-adjacent aromatics of 12–30 atoms as a size bridge, 868 mono-substituted three- and four-ring cores that turn the bridge into a distribution (added the same day on the student's decision), 4,353 substituted aromatic and heteroaromatic cores as the class, and the 6,055 conjugated QM9 molecules — computed with the plan's two functionals at 6-31G* on this laptop, the desktop or a cluster, start-and-stop, in a fixed order so every stop leaves a reproducible subset. The number actually computed is fixed by a dated note after a five-molecule timing test; the corpus is published with a DOI before the module starts (reading 1). No result | 20 Nov 2026 | the corpus costs DFT compute and competes with R1 (measured per molecule: benzene 3–7 min per Hessian, naphthalene 13 min, pyrene 54 min) |
-| R1 probe batch and scoring | the first real coupled-cluster correction, naphthalene | 4 Dec 2026 | **laptop two to three weeks, or the cluster** (P13) |
+| R1 probe batch and scoring | the first real coupled-cluster correction, naphthalene | 4 Dec 2026 | **not the laptop (227 days at the measured 11.5 h per energy): the desktop of the hardware note in two to three months, or the cluster** (P13, open) |
 | Cluster request | sponsored by the supervisor, sized by the R1 timings | 11 Dec 2026 | the supervisor and the request's lead time |
 | Module 06 — generative pattern proposer | the efficiency experiment on K_off | 18 Dec 2026 | the student's work |
 | Q9 pre-registration — families per adjacency class, τ_F, the two rules, the LOMO protocol (decision 27) | written before any R2 correction exists | 15 Jan 2027 | no compute |
@@ -1072,7 +1076,7 @@ decisions in the evenings, and the supervisor's reading time at the two points n
    a calibrated gas-phase measurement exists and reported elsewhere, and a coupled-cluster
    correction to intensities is a measured question rather than a promise. If the supervisor wants
    intensities carried further, the dipole probe M1-μ is the measurement that would license it.
-5. The naphthalene measurement now justifies it (11.5 hours per energy on the laptop; the R1 deck of
+5. The naphthalene measurement now justifies it (11.5 hours per energy on the laptop at the tight thresholds, more at the anchor's tighter ones; the R1 deck of
    474 energies is 5,450 laptop-hours): sponsorship of a cluster-time request sized by the timed
    probes, including whether a suitable machine exists within the supervisor's own network, and, at the large-rung stage, serving as or nominating the named expert whose
    pre-registered judgment is the datum where no laboratory truth exists (the "expert-judgment
