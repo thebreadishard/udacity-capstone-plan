@@ -1,4 +1,4 @@
-# Draft P25 (2026-09-12, evening; NOT submitted to plan 05) — a free DFT rule inside the symmetry prior: which off-diagonal pairs the deck measures first
+# Draft P25 (2026-09-12, evening; NOT submitted to plan 05 — **the user decided 2026-09-13 00:xx: P25 goes to plan 05 as a proposal once the naphthalene repeat of X10 (§3) has run**; until then it stays here) — a free DFT rule inside the symmetry prior: which off-diagonal pairs the deck measures first
 
 *Written in plan 06 under its protocol §6.3 (a plan-06 result reaches plan 05 only through a plan-05 dated note or decision proposal). This is the draft of such a proposal, kept in plan 06 until two things happen: the user decides it should be made, and the naphthalene repeat of X10 (the licence test below) has run. Until then nothing in plan 05 changes. Form and discipline follow P24 (decision 34).*
 

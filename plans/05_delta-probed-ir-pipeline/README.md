@@ -637,6 +637,8 @@ M2, in PySCFAD, with frozen spaces at benzene cc-pVDZ, where the paper's symmetr
 only step that can show savings. Steps 2–3 fit in the machine queue below after the naphthalene items; step 4 is
 software work of weeks and the user decides when. **Priced lever by lever the same evening:** plan 06's `GoalGathering/Cost_Ladder_2026-09-12_Network_Data.md` (thresholds, X10's free pair rule, substitution or full Hessians with gradients, engine levers, locality), with the order in which the missing numbers arrive.
 
+**P25 (plan 06's free DFT ordering of the deck's pairs): the user agreed on 13 September that it is submitted as a plan-05 proposal once the naphthalene repeat of X10 has run** (after machine-queue item 5; the pre-registered licence test is in plan 06's draft). Not a numbered decision until the proposal is made.
+
 **Decisions for the user, when their inputs are in:** P13 in two halves (the cluster request now, the desktop after
 Monday's xtight factor and the corpus timing; memo in `notes/`); the pilot note's choices (skeleton §C); whether to
 publish blog post 3 (draft pushed, unrendered).
