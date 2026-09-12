@@ -75,3 +75,23 @@ Conclusion of step 1 as a whole: **g is not in any text read or reachable tonigh
 constant that was not read; the two MP2-level gradient papers do not state a ratio in their abstracts (full texts not
 opened). Step 4 — measuring g in our engine — remains the only source of the number.
 
+## Step 1c (same evening): what the literature calls g
+
+Read in full text tonight (open PDF, JMLR): Baydin, Pearlmutter, Radul & Siskind, "Automatic Differentiation in Machine
+Learning: a Survey", *J. Mach. Learn. Res.* 18 (2018) 1–43 (published 4/18). Their statement of the bound, verbatim:
+"if we denote the operation count to evaluate the original function by ops(f), the time it takes to calculate the m × n
+Jacobian by the forward mode is n c ops(f), whereas the same computation can be done via reverse mode in m c ops(f),
+where c is a constant guaranteed to be c < 6 and typically c ∼ [2, 3] (Griewank and Walther, 2008)." For a scalar energy
+(m = 1) this c is our g's theoretical counterpart. The survey gives it no name beyond "a constant"; the naming
+"cost ratio" is attributed to Griewank & Walther 2008 by a secondary source (Li, Thapa, Alpcan & Parampalli,
+arXiv:2607.11095v1, who write "its modern treatment … terms the quantity the *cost ratio*" and call their own
+version the "gradient cost ratio" ρ, "the cost of obtaining the gradient measured in units of one forward inference").
+Griewank & Walther's own text remains unread (paywalled), so "cost ratio" is reported here as attributed, not verified.
+
+Vocabulary for our documents, then: the AD literature's **cost ratio** (Griewank & Walther, as attributed) with the
+**cheap gradient principle** as its bound (c < 6, typically 2–3, per Baydin et al. 2018 citing Griewank & Walther);
+in the quantum-chemistry gradient papers read so far the quantity has no name and is reported, when at all, as a
+gradient-to-energy timing. Plan 05 keeps the symbol g and the words "gradient-to-energy cost ratio". The theoretical
+c bounds the arithmetic of one reverse sweep; PySCFAD's recomputation of the (T) intermediates adds forward work on
+top, so the measured g of step 4 is expected above c, and no number below it is claimed.
+
