@@ -29,6 +29,8 @@ not deleted.
    falsification, the Lean route assessed honestly, the exploration protocol, and the first three
    experiments (all on data already in the repository).
 2. The ledger of directions at the end of that file — the only place where a direction's status lives.
+3. [GoalGathering/Reading_Note_2026-09-12_X0_Complexity_and_Locality.md](GoalGathering/Reading_Note_2026-09-12_X0_Complexity_and_Locality.md) — X0 and X3a.
+4. [Uitleg/](Uitleg/00_Leeswijzer.md) — the plan explained at vwo-6 level in Dutch: the question, what is proven impossible, why it can still work for this class, the directions and experiments, Lean as referee, glossary.
 
 ## What this folder will and will not contain
 
