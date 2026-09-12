@@ -31,10 +31,11 @@ not deleted.
 2. The ledger of directions at the end of that file — the only place where a direction's status lives.
 3. [GoalGathering/Reading_Note_2026-09-12_X0_Complexity_and_Locality.md](GoalGathering/Reading_Note_2026-09-12_X0_Complexity_and_Locality.md) — X0 and X3a.
 4. [GoalGathering/Reading_Note_2026-09-12_X4_Mathlib_Survey.md](GoalGathering/Reading_Note_2026-09-12_X4_Mathlib_Survey.md) — X4: what Mathlib holds for the Lean route (present / absent, per need; the three formal targets assessed).
-5. [Uitleg/](Uitleg/00_Leeswijzer.md) — the plan explained at vwo-6 level in Dutch: the question, what is proven impossible, why it can still work for this class, the directions and experiments, Lean as referee, glossary.
+5. [lean/](lean/README.md) — the formal route: a Lake project on Mathlib `v4.34.0-rc2` (installed 2026-09-12); `Plan06/T1/MeasurementAlgebra.lean` holds T1 — T1a proved, T1b/T1c owed (`sorry`). Build with `lake exe cache get && lake build`; `.lake/` is git-ignored.
+6. [Uitleg/](Uitleg/00_Leeswijzer.md) — the plan explained at vwo-6 level in Dutch: the question, what is proven impossible, why it can still work for this class, the directions and experiments, Lean as referee, glossary.
 
 ## What this folder will and will not contain
 
 - Will: orientation and reading notes, small numerical experiments on plan 05's sealed lines and dry-run
-  tensors (`experiments/`), Lean files if the formal route is taken (`lean/`), and dated decisions.
+  tensors (`experiments/`), Lean files of the formal route (`lean/`, since 2026-09-12), and dated decisions.
 - Will not: pipeline results, modules, rungs, or any claim about spectra. Those belong to plan 05.

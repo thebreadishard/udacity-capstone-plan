@@ -77,7 +77,11 @@ van experiment X1 nodig heeft, elke Hamiltoniaan, de Fock-ruimte, en de Schrödi
 
 Gevolg: het kleine doelwit van §5.4 (het meetdeck van S5 exact bewijzen) is haalbaar met wat er is; een
 E1-uitspraak in een eindige basis kan al *opgeschreven* worden; de lokaliteitsstelling kan nog niet eens
-geformuleerd worden in Lean. Er is nog niets geïnstalleerd; of er een `lean/`-map komt, beslist de student.
+geformuleerd worden in Lean. Dezelfde avond is Lean met Mathlib geïnstalleerd (map `lean/`), en het eerste
+stuk van het kleine doelwit is bewezen: een matrix met bekend nulpatroon wordt exact teruggewonnen uit één
+matrix-vectorproduct per kleur van een geldige kleuring (stelling `recover_probe`, zonder `sorry`). Wat nog
+open staat: de symmetrische verfijning van Powell en Toint en de gulzige kleuringsgrens Δ+1 — allebei staan
+als stelling in het bestand met `sorry`, het Lean-woord voor "nog te bewijzen".
 
 ## §5.5 Eén zin om te onthouden
 

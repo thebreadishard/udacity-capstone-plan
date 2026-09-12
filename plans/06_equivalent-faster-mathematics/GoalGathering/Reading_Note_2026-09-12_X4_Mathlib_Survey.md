@@ -85,8 +85,8 @@ its first proved statement.
 ## 5. Ledger change
 
 Lean route: **proposed → assessed (X4 done)**. Infrastructure sufficient for T1 and for stating T2;
-T3 out of reach. Next step is the user's decision whether a `lean/` folder with T1 gets a day; until
-then nothing is installed.
+T3 out of reach. *Same evening:* the user decided to install; `lean/` exists (Lean v4.34.0-rc2, Mathlib
+`v4.34.0-rc2`), builds, and T1a is proved — see `lean/README.md` and the ledger.
 
 ## Sources fetched 2026-09-12 (Mathlib4 documentation, `master`)
 

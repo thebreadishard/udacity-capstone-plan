@@ -1,0 +1,19 @@
+name = "plan06"
+version = "0.1.0"
+keywords = ["math"]
+defaultTargets = ["Plan06"]
+
+[leanOptions]
+pp.unicode.fun = true # pretty-prints `fun a ↦ b`
+relaxedAutoImplicit = false
+weak.linter.mathlibStandardSet = true
+maxSynthPendingDepth = 3
+weak.linter.style.header = false  # plan 06 files carry their own header; no Mathlib copyright block
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.34.0-rc2"
+
+[[lean_lib]]
+name = "Plan06"
