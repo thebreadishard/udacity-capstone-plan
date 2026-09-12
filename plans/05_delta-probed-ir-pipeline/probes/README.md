@@ -56,6 +56,16 @@ Conventions, carried from plans 01–04:
   modes × nine points; the arm-A override transports each fragment's LNO spaces by projection +
   Löwdin and **semicanonicalises the transported active blocks** (pyscf-forge's solver assumes it);
   `--resume` reloads the saved reference spaces (reload test +0.0000 µE_h). Raw energies sealed.
+  **Decision 33 (2026-09-12) implemented:** `--basis-terms qz5z` (default) computes at the reference and
+  at every displaced geometry the two cheap basis terms [E_MP2(full, cc-pVQZ) − E_MP2(full, anchor basis)]
+  and [E_SCF(cc-pV5Z) − E_SCF(anchor basis)] (`basis_terms()`, ≈ 37 s per benzene point) and seals them
+  with each arm's energies as `basis_terms` and `e_tot_anchor` = composite + both terms; `--basis-terms
+  none` reproduces the pre-decision-33 chain. The licence comparison (`m1_canonical_truth.py`) is
+  unchanged: the terms are common to arm and reference. Points sealed before 2026-09-12 carry no terms
+  (the 27 cc-pVTZ points have them in `results_m1/basis_line_scf_mp2.json`). The same terms, timed,
+  are in `anchor_single_point_timing.py` (`--basis-terms`, default on; `xtight` thresholds added). Helper
+  smoke-tested at the benzene reference (terms −58.7 and −17.8 mE_h); the integrated chain has not yet
+  run since — the R0 pilot's deck is its first run.
   **`m1_canonical_truth.py`**: canonical CCSD(T) at the same geometries (cc-pVDZ: 44–48 s per point)
   and, per mode and arm, σ about a degree-4 fit and the curvature bias 2·a₂ in cm⁻¹, for the bare and
   the composite (MP2-corrected) energy. Results: `results_m1/benzene_cc-pvdz_normal_semican/` (the

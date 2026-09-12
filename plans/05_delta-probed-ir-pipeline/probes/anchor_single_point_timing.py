@@ -28,7 +28,7 @@ import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
 STAGEA = os.path.join(HERE, "results_dryrun", "benzene", "stageA.json")
 OUT = os.path.join(HERE, "results_timing")
-THRESH = {"normal": [1e-5, 1e-6], "tight": [1e-6, 1e-7]}   # [occ, vir] LNO thresholds; γ = 10 as in the code's tests
+THRESH = {"normal": [1e-5, 1e-6], "tight": [1e-6, 1e-7], "xtight": [1e-7, 1e-8]}   # [occ, vir] LNO thresholds; γ = 10 as in the code's tests; xtight added 2026-09-12 (decision 20: the anchor's thresholds)
 
 
 def log(msg):
@@ -53,7 +53,7 @@ def load_geometry():
     raise FileNotFoundError(f"no stageA.json or geometry.json under {d}")
 
 
-def run_one(basis, threads, thresh_name, canonical, out):
+def run_one(basis, threads, thresh_name, canonical, out, basis_terms_scheme="qz5z"):
     from pyscf import gto, scf, lo, lib
     from pyscf.lno import LNOCCSD_T
     lib.num_threads(threads)
@@ -106,6 +106,31 @@ def run_one(basis, threads, thresh_name, canonical, out):
     log(f"{basis}: LNO-CCSD(T) {rec['t_lno_ccsd_t_s']:.1f} s, E_corr(T) = {mcc.e_corr_ccsd_t:.8f}, "
         f"peak RSS {rec['peak_rss_gb_after_lno']:.2f} GB")
 
+    if basis_terms_scheme != "none":   # decision 33 (2026-09-12): the two cheap basis terms, timed like everything else
+        from pyscf import mp
+        t0 = time.time()
+        mp2_basis, scf_basis = {"qz5z": ("cc-pvqz", "cc-pv5z")}[basis_terms_scheme]
+        m_anchor = mp.dfmp2.DFMP2(mf, frozen=frozen) if hasattr(mp, "dfmp2") else mp.MP2(mf, frozen=frozen)
+        m_anchor.verbose = 0; m_anchor.kernel()
+        rec["e_corr_mp2_full_anchor_basis"] = float(m_anchor.e_corr); rec["t_mp2_anchor_basis_s"] = time.time() - t0
+        t1 = time.time()
+        mol_q = gto.M(atom=[(s, tuple(c)) for s, c in zip(symbols, coords)], unit="Bohr", basis=mp2_basis, verbose=0, max_memory=24000, symmetry=False)
+        mf_q = scf.RHF(mol_q).density_fit(); mf_q.conv_tol = 1e-10; mf_q.kernel()
+        m_q = mp.dfmp2.DFMP2(mf_q, frozen=frozen) if hasattr(mp, "dfmp2") else mp.MP2(mf_q, frozen=frozen)
+        m_q.verbose = 0; m_q.kernel()
+        rec["t_mp2_qz_s"] = time.time() - t1
+        t2 = time.time()
+        mol_5 = gto.M(atom=[(s, tuple(c)) for s, c in zip(symbols, coords)], unit="Bohr", basis=scf_basis, verbose=0, max_memory=24000, symmetry=False)
+        mf_5 = scf.RHF(mol_5).density_fit(); mf_5.conv_tol = 1e-10; mf_5.kernel()
+        rec["t_scf_5z_s"] = time.time() - t2
+        rec["basis_terms"] = {"scheme": basis_terms_scheme, "term_mp2": float(m_q.e_corr - m_anchor.e_corr), "term_scf": float(mf_5.e_tot - mf.e_tot),
+                              "nbf_mp2_basis": mol_q.nao_nr(), "nbf_scf_basis": mol_5.nao_nr()}
+        rec["e_tot_anchor_decision33"] = float(mf.e_tot + mcc.e_corr_ccsd_t - mcc.e_corr_pt2 + m_anchor.e_corr) + rec["basis_terms"]["term_mp2"] + rec["basis_terms"]["term_scf"]
+        rec["peak_rss_gb_after_basis_terms"] = peak_rss_gb()
+        log(f"{basis}: basis terms (decision 33) MP2/{mp2_basis} {rec['t_mp2_qz_s']:.1f} s, SCF/{scf_basis} {rec['t_scf_5z_s']:.1f} s "
+            f"(anchor-basis MP2 {rec['t_mp2_anchor_basis_s']:.1f} s); share of the LNO time {(rec['t_mp2_qz_s'] + rec['t_scf_5z_s'] + rec['t_mp2_anchor_basis_s']) / rec['t_lno_ccsd_t_s']:.1%}; "
+            f"peak RSS {rec['peak_rss_gb_after_basis_terms']:.2f} GB")
+
     if canonical:
         from pyscf import cc
         from pyscf.cc.ccsd_t import kernel as CCSD_T
@@ -126,7 +151,9 @@ def run_one(basis, threads, thresh_name, canonical, out):
             rec["canonical_error"] = f"{type(e).__name__}: {str(e)[:200]}"
             log(f"{basis}: canonical CCSD(T) failed: {rec['canonical_error']}")
     os.makedirs(out, exist_ok=True)
-    json.dump(rec, open(os.path.join(out, f"{MOLECULE}_{basis}_{thresh_name}.json"  # 2026-09-11: molecule in the name (the naphthalene run had overwritten the benzene record)), "w"), indent=1)
+    # 2026-09-11: molecule in the file name (the naphthalene run had overwritten the benzene record); the inline comment that
+    # broke this line between 2026-09-11 and 2026-09-12 (the script was not run in between) is now above it
+    json.dump(rec, open(os.path.join(out, f"{MOLECULE}_{basis}_{thresh_name}.json"), "w"), indent=1)
     return rec
 
 
@@ -138,13 +165,16 @@ def main():
     ap.add_argument("--no-canonical", action="store_true")
     ap.add_argument("--canonical-basis", default="cc-pvdz", help="run the canonical CCSD(T) reference only in this basis")
     ap.add_argument("--molecule", default="benzene", help="geometry from results_dryrun/<molecule>/ (stageA.json or geometry.json)")
+    ap.add_argument("--basis-terms", default="qz5z", choices=["qz5z", "none"],
+                    help="decision 33 (2026-09-12): time the two cheap basis terms [MP2/QZ − MP2/anchor] + [SCF/5Z − SCF/anchor] beside the LNO energy (default)")
     args = ap.parse_args()
     global MOLECULE
     MOLECULE = args.molecule
     log(f"anchor single-point timing on {platform.node()}, molecule {MOLECULE}, {args.threads} threads, thresholds {args.thresh} = {THRESH[args.thresh]}")
     results = []
     for b in args.basis:
-        results.append(run_one(b, args.threads, args.thresh, canonical=(not args.no_canonical and b == args.canonical_basis), out=OUT))
+        results.append(run_one(b, args.threads, args.thresh, canonical=(not args.no_canonical and b == args.canonical_basis), out=OUT,
+                               basis_terms_scheme=args.basis_terms))
     print(f"\n# Anchor single-point timing — {MOLECULE} at the dry-run B3LYP/6-31G* geometry — "
           f"{datetime.now():%Y-%m-%d %H:%M}, {platform.node()} (WSL), {args.threads} threads, LNO thresholds {THRESH[args.thresh]}")
     print("| basis | nbf | RHF(DF) s | PM s | LNO-CCSD(T) s | peak RSS GB | E_corr LNO-CCSD(T) | canonical CCSD(T) s | LNO − canonical µE_h |")

@@ -177,6 +177,36 @@ def energies_of(mcc, mf, emp2_full):
             "e_tot_composite": float(mf.e_tot) + ecc_t - ept2 + emp2_full}
 
 
+BASIS_TERMS = {"qz5z": ("cc-pvqz", "cc-pv5z")}   # decision 33 (2026-09-12): MP2 basis in the first, SCF basis in the second
+
+
+def basis_terms(symbols, coords_bohr, e_scf_anchor, emp2_anchor, scheme="qz5z"):
+    """Decision 33 (2026-09-12, P18): the two cheap basis terms of the anchor energy at one geometry —
+    [E_MP2(full, QZ) − E_MP2(full, anchor basis)] and [E_SCF(5Z) − E_SCF(anchor basis)] — each a difference of
+    computed energies at the same geometry, no fitted parameter. DF-RHF and DF-MP2 (frozen core) as everywhere
+    in this probe. Returns the raw energies, the two terms and the wall time; the caller adds the terms to the
+    composite. At benzene: DF-MP2/cc-pVQZ ≈ 9 s, DF-RHF/cc-pV5Z ≈ 35 s per point (basis line, 2026-09-12)."""
+    mp2_basis, scf_basis = BASIS_TERMS[scheme]
+    t0 = time.time()
+    mf_q = run_scf(make_mol(symbols, coords_bohr, mp2_basis))
+    emp2_q = full_mp2(mf_q)
+    mf_5 = run_scf(make_mol(symbols, coords_bohr, scf_basis))
+    return {"scheme": scheme, "mp2_basis": mp2_basis, "scf_basis": scf_basis,
+            "e_scf_mp2_basis": float(mf_q.e_tot), "e_corr_mp2_mp2_basis": float(emp2_q), "e_scf_scf_basis": float(mf_5.e_tot),
+            "term_mp2": float(emp2_q - emp2_anchor), "term_scf": float(mf_5.e_tot - e_scf_anchor),
+            "t_basis_terms_s": round(time.time() - t0, 1)}
+
+
+def add_anchor_energy(E, bt):
+    """Attach decision 33's anchor energy to an arm's energy dict: e_tot_anchor = e_tot_composite + term_mp2 + term_scf."""
+    if E is None or bt is None:
+        return E
+    E = dict(E)
+    E["basis_terms"] = {k: bt[k] for k in ("scheme", "term_mp2", "term_scf")}
+    E["e_tot_anchor"] = E["e_tot_composite"] + bt["term_mp2"] + bt["term_scf"]
+    return E
+
+
 # ----------------------------------------------------------------------------- the probe
 def main():
     ap = argparse.ArgumentParser()
@@ -186,6 +216,9 @@ def main():
     ap.add_argument("--modes", default="auto", help="comma-separated DFT mode indices: totally symmetric, degenerate, non-symmetric")
     ap.add_argument("--threads", type=int, default=8)
     ap.add_argument("--tag", default="")
+    ap.add_argument("--basis-terms", default="qz5z", choices=["qz5z", "none"],
+                    help="decision 33 (2026-09-12): add [MP2/QZ − MP2/anchor] + [SCF/5Z − SCF/anchor] at every point (default); "
+                         "'none' reproduces the pre-decision-33 chain (the terms are diagnostic when the anchor basis is not cc-pVTZ)")
     ap.add_argument("--arms", default="ABC", choices=["ABC", "A"],
                     help="ABC: all three arms at every displaced point (default); A: the frozen arm only")
     ap.add_argument("--resume", action="store_true",
@@ -311,6 +344,11 @@ def main():
     mccA0, dA0 = arm_A(mf0, S0, lo0)
     E_A0 = energies_of(mccA0, mf0, emp2_0)
     roundtrip = E_A0["e_corr_lno_ccsd_t"] - E_C0["e_corr_lno_ccsd_t"]
+    if args.basis_terms != "none":   # decision 33: the two basis terms at the reference geometry
+        bt0 = basis_terms(symbols, coords0, float(mf0.e_tot), emp2_0, args.basis_terms)
+        E_A0, E_C0 = add_anchor_energy(E_A0, bt0), add_anchor_energy(E_C0, bt0)
+        log(f"basis terms (decision 33, {bt0['mp2_basis']}/{bt0['scf_basis']}) at the reference: MP2 term {bt0['term_mp2']*1e3:+.3f} mE_h, "
+            f"SCF term {bt0['term_scf']*1e3:+.3f} mE_h, {bt0['t_basis_terms_s']} s")
     if prior_ref is not None:
         d_ref = (E_A0["e_corr_lno_ccsd_t"] - prior_ref["A"]["e_corr_lno_ccsd_t"]) * 1e6
         log(f"reload test: E_A(0) from the reloaded spaces − E_A(0) of the interrupted run = {d_ref:+.4f} µE_h")
@@ -354,6 +392,10 @@ def main():
             else:
                 E_B = E_C = None
             mccA, dA = arm_A(mf, S, lo_x); E_A = energies_of(mccA, mf, emp2)
+            bt = None
+            if args.basis_terms != "none":   # decision 33: the same two cheap terms at the displaced geometry
+                bt = basis_terms(symbols, x, float(mf.e_tot), emp2, args.basis_terms)
+                E_A, E_B, E_C = add_anchor_energy(E_A, bt), add_anchor_energy(E_B, bt), add_anchor_energy(E_C, bt)
             def diff(x, y, key="e_corr_lno_ccsd_t"):
                 return None if (x is None or y is None) else (x[key] - y[key]) * 1e6
             row = {"mode": int(m), "freq_cm": float(freq[m]), "family": fam[m], "q": float(q),
@@ -364,9 +406,12 @@ def main():
                    "EA_minus_EC_uEh": diff(E_A, E_C),
                    "EB_minus_EC_uEh": diff(E_B, E_C),
                    "EA_minus_EC_lnomp2_uEh": diff(E_A, E_C, "e_corr_lno_mp2"),
-                   "wall_s": time.time() - t_pt, "peak_rss_gb": rss_gb()}
+                   "wall_s": time.time() - t_pt, "peak_rss_gb": rss_gb(),
+                   "t_basis_terms_s": None if bt is None else bt["t_basis_terms_s"]}
             rows.append(row)
             pt = {"mode": int(m), "q": float(q), "A": E_A}
+            if bt is not None:
+                pt["basis_terms"] = bt
             if E_B is not None:
                 pt.update(B=E_B, C=E_C)
             sealed["points"].append(pt)
