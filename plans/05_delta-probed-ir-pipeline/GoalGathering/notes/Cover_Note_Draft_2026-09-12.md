@@ -77,7 +77,7 @@ een clusteraanvraag wilt steunen, gedimensioneerd op de gemeten tijden, en of er
 netwerk een geschikte machine is. De genummerde vragen 7–17 zijn voor ons eerste gesprek; ze
 veranderen geen regel, ze leveren een getal of een bron.
 
-Twee dingen die ik liever nu zeg dan later. In §7 staat een alinea over belangenverstrengeling:
+Twee dingen die ik liever nu zeg dan later. In §7 staat een alinea over jouw dubbele rol:
 één tegenstanderslijn (de anharmonische PAHdb-lijn) en één laboratoriumkolom (de jet-gekoelde
 3 µm-spectra) zijn werk waar jij coauteur van bent, en het plan zegt hoe het
 daarmee omgaat. En §10 bevat 34 genummerde beslissingen die ik zelf heb genomen als methodische
