@@ -31,7 +31,7 @@ Elke richting heeft een niveau (E1/E2/E3 uit hoofdstuk 1) en een goedkope **fals
 proef op data die al in de repository ligt, die de richting kan laten sneuvelen. Geen coupled-cluster-
 rekentijd voor plan 06 totdat een richting zijn eerste test heeft doorstaan.
 
-**S1 — Bewezen lokaliteit: hoe snel valt de correlatie af bij aromaten?** (E1/E2.) Als de bijdrage
+**S1 — Bewezen lokaliteit: hoe snel valt de correlatie af bij aromaten?** (E1/E2.) *Aanvulling 12 september:* de wiskundige kant bestaat al voor dichtheidsmatrices (Benzi, Boito & Razouk 2013): bij een begrensde interactieafstand en een gap valt elke nette functie van de Hamiltoniaan exponentieel af in *graafafstand* (aantal bindingen), met een snelheid die ongeveer gelijk is aan de gap. Twee gevolgen: de "vlakke ring" van X5 is lokaliteit in de verkeerde maat gemeten (meta en para zijn maar 2 en 3 bindingen ver), en lokaliteit wordt zwakker naarmate de gap kleiner wordt — dus juist bij de grote PAK's. Voor de correctie zelf is de stelling nog niet geschreven; dat is het "nieuwe wiskunde"-doelwit T3. Als de bijdrage
 tussen twee fragmenten exponentieel afvalt met hun afstand, groeit het aantal paren dat ertoe doet
 lineair, en de constante is nu al meetbaar. *Test:* X3b, paarenergieën tegen afstand.
 
@@ -41,7 +41,7 @@ energie zelf, zodat de factorisatietrucs uit de literatuur (tensorhypercontracti
 *Test:* eerst geverifieerd lezen; daarna een prototype op benzeen tegen de opgeslagen waarheidslijn,
 niet naast een ankerjob.
 
-**S3 — Bijna-eendimensionale π-systemen.** (E1 bij vaste bonddimensie.) Als de verstrengeling over
+**S3 — Bijna-eendimensionale π-systemen.** (E1 bij vaste bonddimensie.) *Aanvulling 12 september:* na lezing (Hachmann e.a. 2007, DMRG in de volledige π-ruimte tot dodecaceen) en X5 is de eerlijke vorm van S3 niet E1 maar E2: een π-ruimte-berekening kan hoogstens het ring-gebonden deel van de correctie leveren, niet het anker. Experiment X6 meet bij benzeen hoeveel dat deel is. Als de verstrengeling over
 elke snede van een aromatische vlok begrensd is, is DMRG er exact bij vaste bonddimensie en lineair
 in kosten. *Test:* de literatuur over DMRG op polyacenen en PAK's; later een kleine controle op de
 π-ruimte van benzeen.
@@ -70,10 +70,12 @@ met een toets, en verlaat het als de toets is gedaan.
 | X0 | de drie complexiteits- en lokaliteitsartikelen volledig lezen en vastleggen wat ze uitsluiten | **gedaan** (leesnotitie); E1 "in het algemeen" dicht, klasse-beperkt open |
 | X5 (nieuw, 12 sep) | waar de correctie in de ruimte zit: per atoompaar | gedaan: 93,5 % zit op atomen en bindingen, maar geen enkel van de 78 blokken is nul (alle boven 3× de ruis), en de koolstofring is "vlak" (meta en para even groot als gebonden) — de correctie is een ring-eigenschap; lage rang opnieuw afwezig (S2 onwaarschijnlijk) |
 | X1 | rang en kleuringsgetal van de benzeen-Δ₂ tegen K = 448 | gedaan 12 sep; **gecorrigeerd dezelfde avond (X1b)**: de eerste telling kleurde de verkeerde graaf; geverifieerd kost exacte terugwinning 8–18 producten (CPR) of 7–14 (symmetrisch) = 420–1080 energieën bij 2M per product, tegen K = 448 — dus niet goedkoper, tenzij een product veel minder dan 2M energieën kost; de rang is vol (30). **X1c (na het lezen van Coleman & Moré 1984):** met hun substitutiemethode (rijen van achteren naar voren oplossen) zijn 6–7 producten genoeg = 360–420 energieën, voor het eerst ónder de 448. **X1d (dezelfde avond):** de ruisversterking is gemeten en mild — bandposities 0,10 cm⁻¹ tegen 0,07 voor het volledige deck, geen enkele trekking boven de 0,5 cm⁻¹ — **Correctie dezelfde avond:** een tweede-orde product uit energieën kost ≈ 4M = 120 energieën, dus 6 producten ≈ 720 — méér dan de 448 van het deck; de route loont alleen met analytische gradiënten (bijproject M2), en dan met een orde van grootte. Als voorstel P24 aan plan 05 aangeboden |
-| X2 | gevoeligheid van bandposities voor elk element van Δ₂ | te doen (minuten) |
+| X2 | gevoeligheid van bandposities voor elk element van Δ₂ | **gedaan 12 sep**: van de 435 koppelingselementen bewegen er maar 6 een bandpositie meer dan 0,5 cm⁻¹ (één paar draagt bijna alles); ruis op de elementen beweegt geen enkele band meer dan 0,05 cm⁻¹ — S4 leeft (E3) |
 | X3a | wat LNO bij naftaleen bewaarde, uit de bestaande log | **gedaan**: 92–100 % bezet, ~56 % virtueel |
-| X3b | MP2-paarenergieën tegen LMO-afstand, afvalconstante | script klaar; na de ankerjob |
-| X4 | wat Mathlib al heeft voor symmetrische matrices, rang, kleuring, variatieprincipe | te doen (lezen) |
+| X3b | MP2-paarenergieën tegen LMO-afstand, afvalconstante | **gedaan 12 sep**: afvalconstante λ = 0,75 Å bij naftaleen, maar 2,3 % van de correlatie-energie zit voorbij 3 Å — niets weg te laten op deze grootte |
+| X4 | wat Mathlib al heeft voor symmetrische matrices, rang, kleuring, variatieprincipe | **gedaan 12 sep** (zie hoofdstuk 5): alles wat algebra is staat erin, alles wat natuurkunde is ontbreekt |
+| X6 (gedefinieerd 12 sep) | welk deel van de ringmode-correctie bij benzeen de π-ruimte alleen draagt (CAS(6,6) tegen HF, langs de drie gemeten modes) | te doen (minuten rekenwerk, na de ankerjob); verliesvoorwaarde: minder dan de helft op de C–C-strekmode sluit S3 als ankerroute |
+| X7 (gedefinieerd 12 sep) | afvalconstante λ tegen de HOMO–LUMO-gap voor benzeen, naftaleen, pyreen | te doen (rekenwerk); toetst de voorspelling "afvalsnelheid ∝ gap" van de lokaliteitsstellingen |
 
 ## §4.4 Het grootboek
 

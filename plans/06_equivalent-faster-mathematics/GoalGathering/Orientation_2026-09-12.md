@@ -121,6 +121,21 @@ is formalised; formalisation would be the certificate, not the discovery. What t
 give is speed; it gives certainty about which shortcuts cannot be wrong, so that the search for speed
 is confined to them.
 
+**Dated addition 2026-09-12 (evening) — T3 stated as a conjecture, and its Lean prerequisites checked.** After the
+S1 reading note (Benzi, Boito & Razouk 2013) the ambitious target can be written down: *Conjecture T3.* Let (M_n) be a
+family of closed-shell π-conjugated molecules whose bond graphs have maximum degree ≤ 3 (sp²/sp³ carbon and hydrogen),
+whose DFT HOMO–LUMO gaps are bounded below by γ > 0, and whose correlated and DFT energies are computed in a fixed
+local basis. Then the atom-pair blocks of the correction Δ₂ = H_CC − H_DFT satisfy ‖Δ₂[A,B]‖ ≤ C·e^{−α·d(A,B)} with
+d the bond-graph distance and constants C, α (∝ γ to first order) independent of n. *Status:* conjecture; the
+density-matrix analogue is a theorem (their Cor. 8.6, Thm 8.4); the two missing steps are named in the S1 note
+(resolvent decay → correlation-energy decay; energy decay → second-derivative decay). *Lean prerequisites (Loogle,
+2026-09-12):* Mathlib has Bernstein polynomials and the Bernstein–Weierstrass approximation on [0, 1]
+(`Mathlib.Analysis.SpecialFunctions.Bernstein`: `bernsteinApproximation_uniform`) and the Chebyshev minimax
+properties on [−1, 1] (`Polynomial.Chebyshev.leadingCoeff_le_of_forall_abs_le_one` and companions), but **not**
+Bernstein's theorem on geometric convergence of polynomial approximation for functions analytic inside an ellipse —
+the step every decay theorem of the paper rests on. So even the density-matrix theorem is not yet formalisable
+without first proving that classical result; T3 in Lean is two theorems away, not one.
+
 ## 6. Protocol
 
 1. Every direction has a level (E1/E2/E3), a falsification test, and a status in the ledger.
