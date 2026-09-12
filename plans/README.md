@@ -1,19 +1,19 @@
 # Project plan versions
 
-> **Plan 05 is current.** Plans 01–04 are superseded, read-only records: nothing in them is
-> current, and they are not edited.
->
-> **Plan 05 is the current plan** (created 2026-09-03): [`05_delta-probed-ir-pipeline/`](05_delta-probed-ir-pipeline/)
-> — the same criterion, ladder, opponents and gates as plan 04, with the coupled-cluster anchor
-> obtained by **probing the CC−DFT force-constant correction** at a measured, size-saturating
-> probe count instead of learning a per-molecule surface. Plan 04 is superseded and kept as a
-> read-only record; see
-> [`05_delta-probed-ir-pipeline/GoalGathering/Why_05_Supersedes_04.md`](05_delta-probed-ir-pipeline/GoalGathering/Why_05_Supersedes_04.md).
+**Plan 05 is current.** Plans 01–04 are superseded, read-only records: nothing in them is
+current, and they are not edited.
 
-> **Plan 06 is an idea plan, not a successor** (opened 2026-09-12):
-> [`06_equivalent-faster-mathematics/`](06_equivalent-faster-mathematics/) — an exploration, beside
-> plan 05, of whether an equivalent but faster mathematics exists for the electronic Schrödinger
-> problem plan 05 solves at its anchor. It has no rungs, modules or results; anything it finds enters
+**Plan 05 is the current plan** (created 2026-09-03): [`05_delta-probed-ir-pipeline/`](05_delta-probed-ir-pipeline/)
+— the same criterion, ladder, opponents and gates as plan 04, with the coupled-cluster anchor
+obtained by **probing the CC−DFT force-constant correction** at a measured, size-saturating
+probe count instead of learning a per-molecule surface. Plan 04 is superseded and kept as a
+read-only record; see
+[`05_delta-probed-ir-pipeline/GoalGathering/Why_05_Supersedes_04.md`](05_delta-probed-ir-pipeline/GoalGathering/Why_05_Supersedes_04.md).
+
+**Plan 06 is an idea plan, not a successor** (opened 2026-09-12):
+[`06_equivalent-faster-mathematics/`](06_equivalent-faster-mathematics/) — an exploration, beside
+plan 05, of whether an equivalent but faster mathematics exists for the electronic Schrödinger
+problem plan 05 solves at its anchor. It has no rungs, modules or results; anything it finds enters
 > plan 05 only through plan 05's own dated notes.
 
 This project has been planned five times (01–05); all five folders are here, plus the plan-06 idea folder. Plan 02's ten raw
