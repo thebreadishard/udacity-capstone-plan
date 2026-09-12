@@ -22,8 +22,8 @@ before it is written. Dated notes. No laptop compute while an anchor job runs. A
 only while it has a stated falsification test; a direction that fails its test is recorded as failed,
 not deleted.
 
-**Where it stands (12 September 2026, evening).** Twelve experiments on plan 05's sealed benzene data and plan 02's stored
-Hessians (X0–X12), five reading notes with verified records, T1a–T1c proved in Lean (no `sorry`), T3 written as a proof plan.
+**Where it stands (12 September 2026, evening).** Experiments X0–X13 on plan 05's sealed benzene data and plan 02's stored
+Hessians (X6 scripted and X7 defined, both waiting for the machine), five reading notes with verified records, T1a–T1c proved in Lean (no `sorry`), T3 written as a proof plan.
 Closed at benzene by measurement: low rank of the correction (S2), Cartesian sparsity of the correction (X8), and the hope that
 the correction is more local than the mean field (X9, T3′). Alive: S1 in its honest form (the correction's range follows the
 π system and its gap; X6/X7 next), S4 sharpened into a free DFT ordering of the deck's pairs (X10, draft P25), S5 transferred to
@@ -54,7 +54,8 @@ evening's overview: [GoalGathering/Evening_Overview_2026-09-12.md](GoalGathering
 16. [GoalGathering/Cost_Ladder_2026-09-12_Network_Data.md](GoalGathering/Cost_Ladder_2026-09-12_Network_Data.md) — the cost ladder: what it would take to run plan 05 many times (the network's data), lever by lever — thresholds, X10's pair rule, substitution or full Hessians with gradients, engine levers, locality — each with its measured or estimated factor and the order in which the missing numbers arrive.
 17. [GoalGathering/Draft_P25_2026-09-12_DFT_Pair_Rule.md](GoalGathering/Draft_P25_2026-09-12_DFT_Pair_Rule.md) — draft P25 (not submitted): the free DFT ordering of off-diagonal pairs inside plan 05's symmetry prior, as an ordering (never a truncation), with the naphthalene repeat of X10 as its pre-registered licence test; waits for the user's decision and for the tensor.
 18. [GoalGathering/Result_Note_2026-09-12_X12_DFT_Hessian_Decay_Series.md](GoalGathering/Result_Note_2026-09-12_X12_DFT_Hessian_Decay_Series.md) — X12: the DFT Hessian's decay per bond is the same from benzene to chrysene (×0.25–0.29 per bond) and not truncatable at band level either; the reference for the correction's profile at naphthalene.
-19. [Uitleg/](Uitleg/00_Leeswijzer.md) — the plan explained at vwo-6 level in Dutch: the question, what is proven impossible, why it can still work for this class, the directions and experiments, Lean as referee, glossary.
+19. [GoalGathering/Result_Note_2026-09-12_X13_Naphthalene_Mode_Table.md](GoalGathering/Result_Note_2026-09-12_X13_Naphthalene_Mode_Table.md) — X13: naphthalene's 48 DFT modes with D2h irreps and families from plan 02's stored Hessian; 141 eligible pairs = plan 05's 282 R1 off-diagonal energies at 2 per pair; the DFT-only ranking pre-tabulated for P25's licence test.
+20. [Uitleg/](Uitleg/00_Leeswijzer.md) — the plan explained at vwo-6 level in Dutch: the question, what is proven impossible, why it can still work for this class, the directions and experiments, Lean as referee, glossary.
 
 ## What this folder will and will not contain
 

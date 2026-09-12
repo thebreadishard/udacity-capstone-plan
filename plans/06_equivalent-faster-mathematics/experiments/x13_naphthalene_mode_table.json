@@ -1,0 +1,847 @@
+{
+ "date": "2026-09-12 20:04",
+ "constants": {
+  "degenerate_cm": 2.0,
+  "git_commit": "57a7910",
+  "files": {
+   "naphthalene": "plans/02_coupled-cluster-anharmonic-ir/probes/results_dft_locality/naphthalene.npz",
+   "benzene": "plans/02_coupled-cluster-anharmonic-ir/probes/results_dft_locality/benzene.npz"
+  },
+  "n_zero_modes": 6,
+  "character_tolerance": 0.001,
+  "denominator_bands": [
+   10,
+   100
+  ]
+ },
+ "results": {
+  "naphthalene": {
+   "molecule": "naphthalene",
+   "natom": 18,
+   "M": 48,
+   "n_imag": 0,
+   "characters_flagged": 4,
+   "modes": [
+    {
+     "k": 0,
+     "freq_cm": 175.6,
+     "irrep": "B1u",
+     "family": "CH-oop"
+    },
+    {
+     "k": 1,
+     "freq_cm": 189.6,
+     "irrep": "Au",
+     "family": "CH-oop"
+    },
+    {
+     "k": 2,
+     "freq_cm": 363.7,
+     "irrep": "B2u",
+     "family": "ring-ip"
+    },
+    {
+     "k": 3,
+     "freq_cm": 396.6,
+     "irrep": "B2g",
+     "family": "CH-oop"
+    },
+    {
+     "k": 4,
+     "freq_cm": 482.0,
+     "irrep": "B3g",
+     "family": "CH-oop"
+    },
+    {
+     "k": 5,
+     "freq_cm": 491.5,
+     "irrep": "B1u",
+     "family": "CH-oop"
+    },
+    {
+     "k": 6,
+     "freq_cm": 517.4,
+     "irrep": "B1g",
+     "family": "ring-ip"
+    },
+    {
+     "k": 7,
+     "freq_cm": 520.4,
+     "irrep": "Ag",
+     "family": "ring-ip"
+    },
+    {
+     "k": 8,
+     "freq_cm": 633.4,
+     "irrep": "Au",
+     "family": "CH-oop"
+    },
+    {
+     "k": 9,
+     "freq_cm": 635.5,
+     "irrep": "B3u",
+     "family": "ring-ip"
+    },
+    {
+     "k": 10,
+     "freq_cm": 734.5,
+     "irrep": "B2g",
+     "family": "CH-oop"
+    },
+    {
+     "k": 11,
+     "freq_cm": 775.5,
+     "irrep": "Ag",
+     "family": "ring-ip"
+    },
+    {
+     "k": 12,
+     "freq_cm": 785.3,
+     "irrep": "B3g",
+     "family": "CH-oop"
+    },
+    {
+     "k": 13,
+     "freq_cm": 803.9,
+     "irrep": "B1u",
+     "family": "CH-oop"
+    },
+    {
+     "k": 14,
+     "freq_cm": 808.2,
+     "irrep": "B2u",
+     "family": "ring-ip"
+    },
+    {
+     "k": 15,
+     "freq_cm": 852.4,
+     "irrep": "Au",
+     "family": "CH-oop"
+    },
+    {
+     "k": 16,
+     "freq_cm": 900.1,
+     "irrep": "B3g",
+     "family": "CH-oop"
+    },
+    {
+     "k": 17,
+     "freq_cm": 946.9,
+     "irrep": "B2g",
+     "family": "CH-oop"
+    },
+    {
+     "k": 18,
+     "freq_cm": 949.4,
+     "irrep": "B1g",
+     "family": "ring-ip"
+    },
+    {
+     "k": 19,
+     "freq_cm": 963.2,
+     "irrep": "B1u",
+     "family": "CH-oop"
+    },
+    {
+     "k": 20,
+     "freq_cm": 985.1,
+     "irrep": "Au",
+     "family": "CH-oop"
+    },
+    {
+     "k": 21,
+     "freq_cm": 993.8,
+     "irrep": "B3g",
+     "family": "CH-oop"
+    },
+    {
+     "k": 22,
+     "freq_cm": 1045.3,
+     "irrep": "B3u",
+     "family": "CH-ip-bend"
+    },
+    {
+     "k": 23,
+     "freq_cm": 1055.7,
+     "irrep": "Ag",
+     "family": "CH-ip-bend"
+    },
+    {
+     "k": 24,
+     "freq_cm": 1157.1,
+     "irrep": "B2u",
+     "family": "CH-ip-bend"
+    },
+    {
+     "k": 25,
+     "freq_cm": 1181.3,
+     "irrep": "B1g",
+     "family": "CH-ip-bend"
+    },
+    {
+     "k": 26,
+     "freq_cm": 1184.3,
+     "irrep": "B3u",
+     "family": "CH-ip-bend"
+    },
+    {
+     "k": 27,
+     "freq_cm": 1194.0,
+     "irrep": "Ag",
+     "family": "CH-ip-bend"
+    },
+    {
+     "k": 28,
+     "freq_cm": 1244.0,
+     "irrep": "B3u",
+     "family": "CH-ip-bend"
+    },
+    {
+     "k": 29,
+     "freq_cm": 1278.0,
+     "irrep": "B1g",
+     "family": "CH-ip-bend"
+    },
+    {
+     "k": 30,
+     "freq_cm": 1297.4,
+     "irrep": "B2u",
+     "family": "CH-ip-bend"
+    },
+    {
+     "k": 31,
+     "freq_cm": 1409.9,
+     "irrep": "B3u",
+     "family": "CC-stretch"
+    },
+    {
+     "k": 32,
+     "freq_cm": 1416.6,
+     "irrep": "Ag",
+     "family": "CC-stretch"
+    },
+    {
+     "k": 33,
+     "freq_cm": 1431.2,
+     "irrep": "B2u",
+     "family": "CC-stretch"
+    },
+    {
+     "k": 34,
+     "freq_cm": 1505.7,
+     "irrep": "B1g",
+     "family": "CC-stretch"
+    },
+    {
+     "k": 35,
+     "freq_cm": 1509.8,
+     "irrep": "Ag",
+     "family": "CC-stretch"
+    },
+    {
+     "k": 36,
+     "freq_cm": 1567.6,
+     "irrep": "B3u",
+     "family": "CC-stretch"
+    },
+    {
+     "k": 37,
+     "freq_cm": 1630.1,
+     "irrep": "Ag",
+     "family": "CC-stretch"
+    },
+    {
+     "k": 38,
+     "freq_cm": 1658.8,
+     "irrep": "B2u",
+     "family": "CC-stretch"
+    },
+    {
+     "k": 39,
+     "freq_cm": 1688.4,
+     "irrep": "B1g",
+     "family": "CC-stretch"
+    },
+    {
+     "k": 40,
+     "freq_cm": 3174.3,
+     "irrep": "B1g",
+     "family": "CH-stretch"
+    },
+    {
+     "k": 41,
+     "freq_cm": 3176.4,
+     "irrep": "B2u",
+     "family": "CH-stretch"
+    },
+    {
+     "k": 42,
+     "freq_cm": 3177.8,
+     "irrep": "B3u",
+     "family": "CH-stretch"
+    },
+    {
+     "k": 43,
+     "freq_cm": 3181.5,
+     "irrep": "Ag",
+     "family": "CH-stretch"
+    },
+    {
+     "k": 44,
+     "freq_cm": 3193.3,
+     "irrep": "B2u",
+     "family": "CH-stretch"
+    },
+    {
+     "k": 45,
+     "freq_cm": 3194.4,
+     "irrep": "B1g",
+     "family": "CH-stretch"
+    },
+    {
+     "k": 46,
+     "freq_cm": 3206.7,
+     "irrep": "Ag",
+     "family": "CH-stretch"
+    },
+    {
+     "k": 47,
+     "freq_cm": 3208.0,
+     "irrep": "B3u",
+     "family": "CH-stretch"
+    }
+   ],
+   "per_irrep": {
+    "Ag": {
+     "modes": 9,
+     "pairs": 36
+    },
+    "B1g": {
+     "modes": 8,
+     "pairs": 28
+    },
+    "B2g": {
+     "modes": 3,
+     "pairs": 3
+    },
+    "B3g": {
+     "modes": 4,
+     "pairs": 6
+    },
+    "Au": {
+     "modes": 4,
+     "pairs": 6
+    },
+    "B1u": {
+     "modes": 4,
+     "pairs": 6
+    },
+    "B2u": {
+     "modes": 8,
+     "pairs": 28
+    },
+    "B3u": {
+     "modes": 8,
+     "pairs": 28
+    }
+   },
+   "n_pairs": 1128,
+   "n_eligible_pairs": 141,
+   "eligible_fraction": 0.125,
+   "denominator_top_uEh": 446301.7020793685,
+   "pairs_within_factor_of_top": {
+    "10": 62,
+    "100": 141
+   },
+   "top10_by_denominator": [
+    {
+     "pair": [
+      41,
+      44
+     ],
+     "irrep": "B2u",
+     "omega_i": 3176.4,
+     "omega_j": 3193.3,
+     "gap_cm": 16.9,
+     "fam_i": "CH-stretch",
+     "fam_j": "CH-stretch"
+    },
+    {
+     "pair": [
+      40,
+      45
+     ],
+     "irrep": "B1g",
+     "omega_i": 3174.3,
+     "omega_j": 3194.4,
+     "gap_cm": 20.1,
+     "fam_i": "CH-stretch",
+     "fam_j": "CH-stretch"
+    },
+    {
+     "pair": [
+      26,
+      28
+     ],
+     "irrep": "B3u",
+     "omega_i": 1184.3,
+     "omega_j": 1244.0,
+     "gap_cm": 59.7,
+     "fam_i": "CH-ip-bend",
+     "fam_j": "CH-ip-bend"
+    },
+    {
+     "pair": [
+      43,
+      46
+     ],
+     "irrep": "Ag",
+     "omega_i": 3181.5,
+     "omega_j": 3206.7,
+     "gap_cm": 25.1,
+     "fam_i": "CH-stretch",
+     "fam_j": "CH-stretch"
+    },
+    {
+     "pair": [
+      16,
+      21
+     ],
+     "irrep": "B3g",
+     "omega_i": 900.1,
+     "omega_j": 993.8,
+     "gap_cm": 93.7,
+     "fam_i": "CH-oop",
+     "fam_j": "CH-oop"
+    },
+    {
+     "pair": [
+      42,
+      47
+     ],
+     "irrep": "B3u",
+     "omega_i": 3177.8,
+     "omega_j": 3208.0,
+     "gap_cm": 30.2,
+     "fam_i": "CH-stretch",
+     "fam_j": "CH-stretch"
+    },
+    {
+     "pair": [
+      12,
+      16
+     ],
+     "irrep": "B3g",
+     "omega_i": 785.3,
+     "omega_j": 900.1,
+     "gap_cm": 114.7,
+     "fam_i": "CH-oop",
+     "fam_j": "CH-oop"
+    },
+    {
+     "pair": [
+      0,
+      5
+     ],
+     "irrep": "B1u",
+     "omega_i": 175.6,
+     "omega_j": 491.5,
+     "gap_cm": 315.9,
+     "fam_i": "CH-oop",
+     "fam_j": "CH-oop"
+    },
+    {
+     "pair": [
+      25,
+      29
+     ],
+     "irrep": "B1g",
+     "omega_i": 1181.3,
+     "omega_j": 1278.0,
+     "gap_cm": 96.7,
+     "fam_i": "CH-ip-bend",
+     "fam_j": "CH-ip-bend"
+    },
+    {
+     "pair": [
+      15,
+      20
+     ],
+     "irrep": "Au",
+     "omega_i": 852.4,
+     "omega_j": 985.1,
+     "gap_cm": 132.7,
+     "fam_i": "CH-oop",
+     "fam_j": "CH-oop"
+    }
+   ],
+   "family_counts": {
+    "CC-stretch": 9,
+    "CH-ip-bend": 9,
+    "CH-oop": 15,
+    "CH-stretch": 8,
+    "ring-ip": 7
+   }
+  },
+  "benzene": {
+   "molecule": "benzene",
+   "natom": 12,
+   "M": 30,
+   "n_imag": 0,
+   "characters_flagged": 23,
+   "modes": [
+    {
+     "k": 0,
+     "freq_cm": 414.9,
+     "irrep": "Au",
+     "family": "CH-oop"
+    },
+    {
+     "k": 1,
+     "freq_cm": 415.2,
+     "irrep": "B1u",
+     "family": "CH-oop"
+    },
+    {
+     "k": 2,
+     "freq_cm": 620.6,
+     "irrep": "B1g",
+     "family": "ring-ip"
+    },
+    {
+     "k": 3,
+     "freq_cm": 643.2,
+     "irrep": "Ag",
+     "family": "ring-ip"
+    },
+    {
+     "k": 4,
+     "freq_cm": 694.9,
+     "irrep": "B1u",
+     "family": "CH-oop"
+    },
+    {
+     "k": 5,
+     "freq_cm": 718.1,
+     "irrep": "B2g",
+     "family": "CH-oop"
+    },
+    {
+     "k": 6,
+     "freq_cm": 864.5,
+     "irrep": "B3g",
+     "family": "CH-oop"
+    },
+    {
+     "k": 7,
+     "freq_cm": 864.7,
+     "irrep": "B2g",
+     "family": "CH-oop"
+    },
+    {
+     "k": 8,
+     "freq_cm": 969.0,
+     "irrep": "Au",
+     "family": "CH-oop"
+    },
+    {
+     "k": 9,
+     "freq_cm": 969.1,
+     "irrep": "B1u",
+     "family": "CH-oop"
+    },
+    {
+     "k": 10,
+     "freq_cm": 1010.6,
+     "irrep": "B2g",
+     "family": "CH-oop"
+    },
+    {
+     "k": 11,
+     "freq_cm": 1019.7,
+     "irrep": "?",
+     "family": "CH-ip-bend"
+    },
+    {
+     "k": 12,
+     "freq_cm": 1020.6,
+     "irrep": "?",
+     "family": "CH-ip-bend"
+    },
+    {
+     "k": 13,
+     "freq_cm": 1068.7,
+     "irrep": "B2u",
+     "family": "CH-ip-bend"
+    },
+    {
+     "k": 14,
+     "freq_cm": 1069.0,
+     "irrep": "B3u",
+     "family": "CH-ip-bend"
+    },
+    {
+     "k": 15,
+     "freq_cm": 1185.3,
+     "irrep": "B2u",
+     "family": "CH-ip-bend"
+    },
+    {
+     "k": 16,
+     "freq_cm": 1199.1,
+     "irrep": "?",
+     "family": "CH-ip-bend"
+    },
+    {
+     "k": 17,
+     "freq_cm": 1204.9,
+     "irrep": "?",
+     "family": "CH-ip-bend"
+    },
+    {
+     "k": 18,
+     "freq_cm": 1355.5,
+     "irrep": "B2u",
+     "family": "CC-stretch"
+    },
+    {
+     "k": 19,
+     "freq_cm": 1387.2,
+     "irrep": "B1g",
+     "family": "CC-stretch"
+    },
+    {
+     "k": 20,
+     "freq_cm": 1530.7,
+     "irrep": "B2u",
+     "family": "CC-stretch"
+    },
+    {
+     "k": 21,
+     "freq_cm": 1531.2,
+     "irrep": "B3u",
+     "family": "CC-stretch"
+    },
+    {
+     "k": 22,
+     "freq_cm": 1642.7,
+     "irrep": "B1g",
+     "family": "CC-stretch"
+    },
+    {
+     "k": 23,
+     "freq_cm": 1660.9,
+     "irrep": "Ag",
+     "family": "CC-stretch"
+    },
+    {
+     "k": 24,
+     "freq_cm": 3174.1,
+     "irrep": "B3u",
+     "family": "CH-stretch"
+    },
+    {
+     "k": 25,
+     "freq_cm": 3181.1,
+     "irrep": "B1g",
+     "family": "CH-stretch"
+    },
+    {
+     "k": 26,
+     "freq_cm": 3181.9,
+     "irrep": "Ag",
+     "family": "CH-stretch"
+    },
+    {
+     "k": 27,
+     "freq_cm": 3199.4,
+     "irrep": "B2u",
+     "family": "CH-stretch"
+    },
+    {
+     "k": 28,
+     "freq_cm": 3199.5,
+     "irrep": "B3u",
+     "family": "CH-stretch"
+    },
+    {
+     "k": 29,
+     "freq_cm": 3209.9,
+     "irrep": "Ag",
+     "family": "CH-stretch"
+    }
+   ],
+   "per_irrep": {
+    "Ag": {
+     "modes": 4,
+     "pairs": 6
+    },
+    "B1g": {
+     "modes": 4,
+     "pairs": 6
+    },
+    "B2g": {
+     "modes": 3,
+     "pairs": 3
+    },
+    "B3g": {
+     "modes": 1,
+     "pairs": 0
+    },
+    "Au": {
+     "modes": 2,
+     "pairs": 1
+    },
+    "B1u": {
+     "modes": 3,
+     "pairs": 3
+    },
+    "B2u": {
+     "modes": 5,
+     "pairs": 10
+    },
+    "B3u": {
+     "modes": 4,
+     "pairs": 6
+    }
+   },
+   "n_pairs": 435,
+   "n_eligible_pairs": 35,
+   "eligible_fraction": 0.08045977011494253,
+   "denominator_top_uEh": 296639.1641752734,
+   "pairs_within_factor_of_top": {
+    "10": 18,
+    "100": 35
+   },
+   "top10_by_denominator": [
+    {
+     "pair": [
+      24,
+      28
+     ],
+     "irrep": "B3u",
+     "omega_i": 3174.1,
+     "omega_j": 3199.5,
+     "gap_cm": 25.5,
+     "fam_i": "CH-stretch",
+     "fam_j": "CH-stretch"
+    },
+    {
+     "pair": [
+      26,
+      29
+     ],
+     "irrep": "Ag",
+     "omega_i": 3181.9,
+     "omega_j": 3209.9,
+     "gap_cm": 28.1,
+     "fam_i": "CH-stretch",
+     "fam_j": "CH-stretch"
+    },
+    {
+     "pair": [
+      5,
+      7
+     ],
+     "irrep": "B2g",
+     "omega_i": 718.1,
+     "omega_j": 864.7,
+     "gap_cm": 146.6,
+     "fam_i": "CH-oop",
+     "fam_j": "CH-oop"
+    },
+    {
+     "pair": [
+      13,
+      15
+     ],
+     "irrep": "B2u",
+     "omega_i": 1068.7,
+     "omega_j": 1185.3,
+     "gap_cm": 116.6,
+     "fam_i": "CH-ip-bend",
+     "fam_j": "CH-ip-bend"
+    },
+    {
+     "pair": [
+      7,
+      10
+     ],
+     "irrep": "B2g",
+     "omega_i": 864.7,
+     "omega_j": 1010.6,
+     "gap_cm": 145.9,
+     "fam_i": "CH-oop",
+     "fam_j": "CH-oop"
+    },
+    {
+     "pair": [
+      1,
+      4
+     ],
+     "irrep": "B1u",
+     "omega_i": 415.2,
+     "omega_j": 694.9,
+     "gap_cm": 279.8,
+     "fam_i": "CH-oop",
+     "fam_j": "CH-oop"
+    },
+    {
+     "pair": [
+      15,
+      18
+     ],
+     "irrep": "B2u",
+     "omega_i": 1185.3,
+     "omega_j": 1355.5,
+     "gap_cm": 170.2,
+     "fam_i": "CH-ip-bend",
+     "fam_j": "CC-stretch"
+    },
+    {
+     "pair": [
+      4,
+      9
+     ],
+     "irrep": "B1u",
+     "omega_i": 694.9,
+     "omega_j": 969.1,
+     "gap_cm": 274.2,
+     "fam_i": "CH-oop",
+     "fam_j": "CH-oop"
+    },
+    {
+     "pair": [
+      18,
+      20
+     ],
+     "irrep": "B2u",
+     "omega_i": 1355.5,
+     "omega_j": 1530.7,
+     "gap_cm": 175.2,
+     "fam_i": "CC-stretch",
+     "fam_j": "CC-stretch"
+    },
+    {
+     "pair": [
+      5,
+      10
+     ],
+     "irrep": "B2g",
+     "omega_i": 718.1,
+     "omega_j": 1010.6,
+     "gap_cm": 292.5,
+     "fam_i": "CH-oop",
+     "fam_j": "CH-oop"
+    }
+   ],
+   "family_counts": {
+    "CC-stretch": 6,
+    "CH-ip-bend": 7,
+    "CH-oop": 9,
+    "CH-stretch": 6,
+    "ring-ip": 2
+   }
+  }
+ }
+}
