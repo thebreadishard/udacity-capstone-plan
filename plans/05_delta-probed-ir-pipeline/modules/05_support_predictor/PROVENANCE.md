@@ -8,12 +8,26 @@
 | Hessian QM9 data | figshare, DOI 10.6084/m9.figshare.26363959 (v4, **6,294,531,943 bytes ≈ 6.29 GB**); 41,645 molecules, ωB97x/6-31G* Hessians in vacuum, water, THF, toluene | DataCite |
 | Fixture | `probes/results_dryrun/benzene/stageA_hessians.npz` (B3LYP → BHHLYP, 6-31G*, M = 30; `D2_direct_Q`), sha256 `f6e4d4b3…`; `benzene_quick` is the same tensor | local |
 
-The corpus itself does not exist yet. Its two halves are owed as follows.
+## Download done (2026-09-12, user's permission given in chat)
+
+Figshare file 49271011 `hessian_qm9_DatasetDict.zip`, 6,281,831,499 bytes, md5 `f3e36130e5cc47021ab403767a19ddf7`
+(matches the figshare record), sha256 `ce595041d718b2df…`; fetched detached (`data/hessian_qm9/fetch_hessian_qm9.ps1`,
+resumable curl). The archive holds four splits (vacuum, thf, toluene, water; 9.47 GB unpacked); **only `vacuum/`
+is extracted** (2.37 GB, five Arrow stream shards, read with pyarrow). Inventory printed by
+`m05/inspect_hessian_qm9.py` → `out/HESSIAN_QM9_SUMMARY.md/.json`: **41,645 molecules**; fields energy, positions,
+atomic_numbers, forces, frequencies (n×2), normal_modes, hessian (N,3,N,3; symmetric), label (`dsgdb9nsd_…`, the QM9
+index); heavy atoms 1–9 (36,027 molecules with nine); **aromatic-like composition proxy (n_C ≥ 6, n_H ≤ n_C): 2,120
+molecules (5.1 %)**, labels saved — an upper bound for the recomputed B3LYP subset, not its size. Units and
+conventions of the fields are to be taken from the paper before use (not yet read; owed). The record metadata is
+kept in `out/figshare_record_26363959.json`; the archive and shards stay out of git.
+
+The corpus itself does not exist yet. Its remaining halves are owed as follows.
 
 ## Owed, and by whom
 
-1. **The download (6.29 GB)** — needs the user's explicit permission (size, disk); vacuum Hessians only
-   are needed, but figshare serves one archive. Not before the xtight/QZ work is done and disk is checked.
+1. ~~The download~~ — done 2026-09-12 (above). Still owed on this half: reading the paper for units and the
+   frequency/normal-mode conventions; ring detection (QM9 SMILES from the original QM9 release) to replace the
+   composition proxy.
 2. **The recomputed B3LYP subset** — laptop compute with the plan's psi4 deck; benzene took 388 s on the
    laptop (dry run 2026-09-05), QM9 molecules are smaller (≤ 9 heavy atoms), so the ~1,000-molecule
    figure in the memory notes is an order of magnitude, not a plan number. **The subset size is fixed by
