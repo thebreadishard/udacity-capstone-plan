@@ -1,9 +1,11 @@
 # Module 05 — the Δ₂-support predictor (Udacity "Deep Learning Systems") — scaffold
 
-**Status: scaffold only (2026-09-12).** No corpus has been downloaded, no subset recomputed, no model
-trained. What exists: the recipe, the corpus builder in fixture mode, the PyTorch model, and a smoke
-test that proves the code path on the plan's benzene dry-run tensor. See `PROVENANCE.md` for what the
-module still needs and who owes it.
+**Status: scaffold (2026-09-12, evening).** Hessian QM9 downloaded and inventoried; no subset recomputed, no model
+trained. What exists: the recipe, the corpus builder in fixture mode, the PyTorch model, a smoke test that proves the
+code path on the plan's benzene dry-run tensor, the resumable corpus factory (`corpus/`, 11,321 candidates in four
+layers, nothing computed yet), **the notebook skeleton in the rubric's structure** (`notebook/make_notebook.py` →
+`deep_learning.ipynb`; fixture cells and marked stubs, not executed) and **the report outline** (`REPORT_OUTLINE.md`,
+the nine required sections with their number sources). See `PROVENANCE.md` for what the module still needs and who owes it.
 
 ## Project description (as it will read)
 
