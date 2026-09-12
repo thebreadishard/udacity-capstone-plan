@@ -332,7 +332,19 @@ subsection):
   transport, and **the anchor object runs at the tighter thresholds**; the cost record carries the
   factor, which at benzene is about 2 (4,576 s against ≈ 2,200 s per frozen-arm point) and at
   naphthalene is owed as a timed energy before the R1 deck is priced (the 11.5 h of §8 is the tight
-  figure). Per-mode calibration is not needed (research note P10, decision 20). - *A definition
+  figure). Per-mode calibration is not needed (research note P10, decision 20). - *The basis-set line,
+  second input (decision 26 (ii), printed 12 September 12:13; `probes/results_m1/BASIS_LINE_scf_mp2.md`):*
+  DF-RHF and DF-MP2 at the same 27 points in cc-pVQZ, DF-RHF in cc-pV5Z — 19 minutes in all. The
+  SCF part of the curvature moves by +1.8 / −2.4 / −4.6 cm⁻¹ from TZ to QZ and by +3.8 / −2.8 / −3.1
+  to 5Z (against +44 / −22 / −51 from DZ to TZ): nearly converged. The MP2 correlation part still
+  moves by −1.0 / −2.4 / −8.0 cm⁻¹ from TZ to QZ (against +15 / −12 / −16 from DZ to TZ). **The
+  anchor's distance from its own basis-set limit is therefore an order of magnitude larger than the
+  frozen-space bias just measured** — the largest known term in Δ₂'s budget at benzene, and the
+  cheapest to carry. **P18 (open, for the student's decision before the naphthalene rehearsal):**
+  redefine the anchor energy per point as the existing composite plus [MP2/QZ − MP2/TZ] +
+  [SCF/5Z − SCF/TZ], every term a difference of computed energies at one geometry, no fitted
+  parameter, under 1 % of an LNO point in cost; the CCSD(T)−MP2 remainder's basis change stays
+  unmeasured until the canonical QZ line of the cluster request (research note, P18). - *A definition
   fixed by the measurement.* The transported orbital blocks must be semicanonicalised at each
   geometry — a rotation inside the frozen space that the fragment solver's MP2 start and (T) step
   assume; a first run without that step read a spurious bias of up to 147 cm⁻¹ and is kept on file
@@ -914,7 +926,9 @@ own; knowledge transfer is allowed wherever a gate shows it makes the pipeline s
 26. A **basis-set line** enters the anchor licence and the per-band budget: the measured cc-pVDZ →
     cc-pVTZ change of the canonical curvature (§3.3), the literature distance of CCSD(T)/cc-pVTZ from
     the basis-set limit for benzene once read, and a canonical cc-pVQZ diagonal line in the cluster
-    request; the expected-effect line is an upper bound at the anchor's level.
+    request; the expected-effect line is an upper bound at the anchor's level. *Input (ii) printed 12
+    September:* the cheap TZ → QZ/5Z line shows the SCF part nearly converged (2–5 cm⁻¹) and the MP2
+    correlation part still moving by 1–8 cm⁻¹ — see P18 in §3.3.
 27. **The per-family transferability test Q9** (parked 8 September, unparked 10 September): the
     route from the accuracy rungs to the large PAHs is a pre-registered leave-one-molecule-out test
     of the diagonal correction per band family across benzene–coronene plus anthracene, with the

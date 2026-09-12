@@ -1,0 +1,23 @@
+=== detached start Sat Sep 12 12:14:50 CEST 2026: python /mnt/c/Users/thebr/Documents/CapstonePlan/plans/06_equivalent-faster-mathematics/experiments/x3_pair_decay.py --molecule naphthalene --threads 8
+Traceback (most recent call last):
+  File "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/06_equivalent-faster-mathematics/experiments/x3_pair_decay.py", line 102, in <module>
+    main()
+  File "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/06_equivalent-faster-mathematics/experiments/x3_pair_decay.py", line 44, in main
+    symbols, coords = geometry(a.molecule)
+                      ^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/06_equivalent-faster-mathematics/experiments/x3_pair_decay.py", line 29, in geometry
+    g = json.load(open(PLAN05 / f"probes/results_dryrun/{molecule}/geometry.json"))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/mnt/c/Users/thebr/Documents/CapstonePlan/05_delta-probed-ir-pipeline/probes/results_dryrun/naphthalene/geometry.json'
+=== detached start Sat Sep 12 12:15:42 CEST 2026: python /mnt/c/Users/thebr/Documents/CapstonePlan/plans/06_equivalent-faster-mathematics/experiments/x3_pair_decay.py --molecule naphthalene --threads 8
+converged SCF energy = -383.474075779824
+E(DFRMP2) = -385.043961262803  E_corr = -1.56988548297987
+E(SCS-DFRMP2) = -385.006564152099  E_corr = -1.53248837227543
+# X3 — MP2 pair-energy decay with LMO distance — naphthalene, cc-pvtz — 2026-09-12 12:15
+
+Active occupied LMOs 24, pairs 276; E_corr(MP2) = -1.569885 E_h (sum of pair energies -1.569885); SCF 8 s, total 15.1 s.
+
+Exponential fit on pairs with r > 2 Å (201 pairs): decay length λ = 0.75 Å (|e_ij| ∝ exp(−r/λ)).
+
+Share of the correlation energy in pairs beyond a distance: >2.0 A: 8.2%, >3.0 A: 2.3%, >4.0 A: 0.3%, >5.0 A: 0.1%
+

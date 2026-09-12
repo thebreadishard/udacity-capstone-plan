@@ -18,7 +18,7 @@ from pathlib import Path
 import numpy as np
 
 HERE = Path(__file__).resolve().parent
-PLAN05 = HERE.parents[2] / "05_delta-probed-ir-pipeline"
+PLAN05 = HERE.parents[1] / "05_delta-probed-ir-pipeline"
 
 
 def geometry(molecule):

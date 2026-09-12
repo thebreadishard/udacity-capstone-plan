@@ -174,6 +174,42 @@ for a cluster QZ line. Whether the anchor itself is then **redefined as a compos
 LNO-CCSD(T)/TZ + [MP2/QZ − MP2/TZ] + [SCF/5Z − SCF/TZ] — is a new proposal (P18) for the user,
 after that measurement, not before.
 
+**That measurement, 2026-09-12 (`probes/m1_basis_scf_mp2_line.py`, launched 11:54, finished 12:13 —
+54 points, DF-RHF 8 s per point at cc-pVQZ and 35 s at cc-pV5Z, DF-MP2 1 s; `results_m1/BASIS_LINE_scf_mp2.md`).**
+Frequency change Δω = ½·Δ(2·a2) per mode, cm⁻¹, with the DZ → TZ step beside it:
+
+| mode | family | part | DZ → TZ | TZ → QZ | TZ → 5Z |
+|---|---|---|---|---|---|
+| 6 | CH-oop 865 | SCF | +44.2 | +1.8 | +3.8 |
+| 6 | CH-oop 865 | MP2 correlation | +14.7 | −1.0 | — |
+| 12 | CH-ip-bend 1020 | SCF | −22.4 | −2.4 | −2.8 |
+| 12 | CH-ip-bend 1020 | MP2 correlation | −11.8 | −2.4 | — |
+| 18 | CC-stretch 1357 | SCF | −50.6 | −4.6 | −3.1 |
+| 18 | CC-stretch 1357 | MP2 correlation | −16.1 | −8.0 | — |
+
+Reading. (i) The SCF part is nearly converged at TZ: the TZ → QZ step is 2–5 cm⁻¹ and QZ → 5Z adds
+only +2.0 / −0.4 / +1.5, so an SCF/5Z term closes it. (ii) The MP2 correlation part still moves by
+1–8 cm⁻¹ from TZ to QZ, largest on the C–C stretch; with the DZ → TZ ratio of CCSD(T)-to-MP2
+correlation change (1.4–1.5 on modes 6 and 18, 0.9 on mode 12), the CCSD(T) correlation part at TZ
+is plausibly 1–11 cm⁻¹ from its QZ value — **an order of magnitude above the xtight LNO bias of
+0.1–0.2 cm⁻¹ on the same modes.** The anchor's distance from its own basis-set limit is therefore
+now the largest known term in Δ₂'s budget at benzene, and it is cheap to carry: the whole line
+cost 19 minutes.
+
+**P18 (2026-09-12; for the user) — redefine the anchor as a composite with basis corrections.**
+Anchor energy per point := E_LNO-CCSD(T)(xtight, TZ) + [E_MP2(full, TZ) − E_MP2(LNO, TZ)] (the
+existing composite of §2.2) + [E_MP2(QZ) − E_MP2(TZ)] + [E_SCF(5Z) − E_SCF(TZ)]. Cost: DF-RHF/5Z 35 s
+and DF-MP2/QZ 9 s per benzene point, i.e. under 1 % of an LNO point; at naphthalene the QZ/5Z
+SCF and MP2 remain minutes against 11.5 hours. What it does not carry: the CCSD(T)−MP2 correlation
+part's basis change (≈ 0.4–3 cm⁻¹ DZ → TZ on these modes; TZ → QZ unmeasured — that is the canonical
+QZ diagonal line of decision 26 in the cluster request). What it changes in the frozen text: the
+anchor definition in Ladder §3 and the licence's reference (the canonical truth line would be
+compared at the same composite level — the existing truth lines already contain e_scf and the
+arms' files e_corr_mp2_full, so the comparison is a re-print, not a re-run). What it must not do:
+introduce a fitted parameter — every term is a difference of computed energies at one geometry.
+Decision requested before the naphthalene rehearsal; until then Δ₂ is defined at TZ and the
+basis-set line is printed beside it.
+
 **2.3 Continuity diagnostics** (all runs agree): s_min of the occupied overlap ≥ 0.986 at |q| = 1 on
 every mode; s_min of the virtual (LNO) overlap 0.81–0.89 at |q| = 1, 0.95–0.97 at |q| = 0.25; largest
 pre-Löwdin off-diagonal ≤ 0.018 (occupied), ≤ 0.16 (virtual). The map is nonsingular throughout
