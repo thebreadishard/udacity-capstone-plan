@@ -562,7 +562,9 @@ sum of the TZ → 5Z SCF and TZ → QZ MP2 rows of `results_m1/BASIS_LINE_scf_mp
 - **Naphthalene dry run** (DFT, psi4 `qc` env on Windows; not beside an anchor job): P4's entry test for the symmetry
   prior, the mode table that gives Module 03 its family matching and plan-06 X2/S4 its second tensor; the R0 pilot's
   deck still needs the canonical two-mode count (decision 16 iii).
-- **Module 03 owed:** u_band columns of the Ladder rule on the GC-IRD and Coblentz records (decision 29 term); the
+- **Module 03 owed:** ~~u_band columns of the Ladder rule on the GC-IRD and Coblentz records~~ (printed 2026-09-12,
+  `modules/03_lab_scoreboard/out/U_BAND.md`: 8.6–16.2 cm⁻¹ on the GC-IRD records, none decidable at 2 or 5 cm⁻¹ — the
+  Ladder's dated note of 2026-09-12); the GC-IRD lightpipe temperature (item 50) and the ±30 % corrected form; the
   PNNL naphthalene record (not held); jet-cooled tetracene/coronene cold columns (items 61–62); R2/R3 columns;
   intensities of decision 18; the student's pass before 2 October.
 - **Module 04 owed:** the Zenodo release of the training table (reading 1; the user); pilot-note item 6 adopts or

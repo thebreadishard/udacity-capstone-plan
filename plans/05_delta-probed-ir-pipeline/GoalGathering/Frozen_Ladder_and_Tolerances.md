@@ -259,6 +259,20 @@ between the sources as they exist (10 K matrix against hot vapour), not the equa
 shift; the matrix gate's margins and verdicts remain the pilot note's, and the u_band columns of the
 rule above on these records are still owed (`modules/03_lab_scoreboard/PROVENANCE.md`).
 
+**Dated note 2026-09-12 (u_band printed on the hot WebBook records — Module 03; records a measurement,
+changes no rule).** The Module 03 builder now prints, per gas peak, the temperature term in the floor
+form of the rule above (u_T = χ_F·(T_source − 296 K) + u_296; χ_F from item 52's Table 1 — own slope,
+pyrene's as a labelled stand-in, 0.044 cm⁻¹ K⁻¹ where no family value exists; u_296 by the Bose rule with
+ν_m from the PAHdb theoretical v4.00 modes below 700 cm⁻¹, 417–441 cm⁻¹ for the four primary species;
+T_source 250 °C recalled for the GC-IRD lightpipe until item 50's PDF is read, 245 °C stated for the
+Coblentz column) and u_band = √(u_res² + u_c² + u_T²) (`modules/03_lab_scoreboard/out/U_BAND.md`). On the
+four primary GC-IRD records (8 cm⁻¹) u_band is 8.6 cm⁻¹ for the C–H in-plane bend, 9.6 for the C–H
+out-of-plane, 10.2–12.1 for the C–H stretch and 15.9–16.2 cm⁻¹ for every floor-slope family; on the
+Coblentz 245 °C naphthalene column 5.1–14.1 cm⁻¹. None of the 63 primary pairs is decidable at 2 or 5 cm⁻¹,
+seventeen at 10 (C–H bend families). The R1 expectation of the rule above ("the hot WebBook entries are
+labelled hot columns; R1's decidability rests on the PNNL record") is thereby measured, not asserted; the
+±30 % corrected form (δ_T printed beside u_T) and the margin per family remain the pilot note's choice.
+
 **Promised:** R0–R1 scored as accuracy rungs against gas-phase data. R2–R3 scored as accuracy
 rungs per family under the decidability rule above and the "beat and noise" rule of §1. R6 per
 the dated note above. **[05]** The **cost record** (§1) for every rung and mode that ran; **mode E

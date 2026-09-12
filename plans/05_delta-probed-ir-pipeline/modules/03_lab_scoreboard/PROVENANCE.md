@@ -26,7 +26,7 @@ statistics. The builder and notebook implement it without change.
 ## Status
 
 - 2026-09-11: module scaffolded in the Udacity rubric form (Rubrics/03) on branch
-  `module-03-lab-scoreboard`: pre-registration → builder → dataset (4,218 × 21) and 74 pairs (63 primary)
+  `module-03-lab-scoreboard`: pre-registration → builder → dataset (4,218 × 21; × 31 since 2026-09-12) and 74 pairs (63 primary)
   → `notebook/analysis.ipynb` (descriptive statistics, three figures, the test) → `module_summary.pdf`
   in the APA 7 template with Lusa et al. (2024) and a Crossref/DataCite-verified References list.
   **Result (printed by the notebook):** six families tested, all reject a zero matrix−gas offset after
@@ -38,12 +38,31 @@ statistics. The builder and notebook implement it without change.
   hot lightpipe vapour), not the matrix shift at equal temperature. The pilot note, not this module,
   fixes the beat margins and the verdicts.
 
+- **2026-09-12: u_band columns added (Ladder rule; the test is untouched — positions only).** For every gas peak
+  the builder now prints the temperature term and u_band = √(u_res² + u_c² + u_T²) with, for the hot sources, the
+  Ladder's floor form u_T = χ_F·(T_source − 296 K) + u_296: χ_F from Joblin et al. (1995, item 52, Table 1) — the
+  molecule's own slope where measured (naphthalene and pyrene C–H stretch, pyrene 8.5 and 12 µm), pyrene's as a
+  labelled stand-in, the 0.044 cm⁻¹ K⁻¹ floor elsewhere; u_296 by the Bose rule with ν_m = mean PAHdb theoretical
+  v4.00 unscaled mode below 700 cm⁻¹ (417–441 cm⁻¹ for the four primary species; benzene 553.8 from probe 2a);
+  T_source 523.15 K for the GC-IRD lightpipe (250 °C recalled default, item 50 owed), 518.15 K for the Coblentz
+  245 °C column. **Printed result (`out/U_BAND.md`, 75 record × family rows):** on the four primary GC-IRD
+  records u_band is 8.6 cm⁻¹ (C–H in-plane bend), 9.6 (C–H out-of-plane), 10.2–12.1 (C–H stretch) and
+  15.9–16.2 cm⁻¹ (all floor-slope families); none of the 63 primary pairs is decidable at the candidate margins
+  2 or 5 cm⁻¹, 17 at 10 (C–H bend families only); on the Coblentz 245 °C naphthalene column 5.1–14.1 cm⁻¹
+  (3 pairs decidable at 10). The R0 benzene rows keep probe 2a's 2.55 cm⁻¹. This is the Ladder's "inconclusive
+  by construction on the hot WebBook source" expectation, now measured; R1's decidability rests on the PNNL
+  record as the Ladder already says. Not a verdict on any family — the pilot note fixes margins and chooses
+  between the floor form and the ±30 % corrected form (δ_T is printed beside u_T for that).
+
 ## Owed (before submission, due per proposal §12, and for the plan)
 
 - The student's own pass over notebook, README and summary.
-- The u_band columns of the Ladder rule on these gas records (temperature term per decision 29 and the
-  Ladder floor; the probe-2a script extended from benzene to the GC-IRD and Coblentz records) — the
-  dataset carries u_res and u_c only.
+- ~~The u_band columns of the Ladder rule on these gas records~~ — **done 2026-09-12** (see Status): the
+  dataset carries `temperature_K`/`temperature_source`, `chi_F_cm_per_K`/`chi_F_source`, `nu_m_cm`/`nu_m_source`,
+  `u_296_cm`, `delta_T_cm`, `u_T_cm`, `u_band_cm`, `u_band_without_T_cm`; the pairs carry `u_T_gas_cm`,
+  `u_band_gas_cm` and `decidable_at_2/5/10`; per record and family in `out/U_BAND.md`. Still open inside it:
+  the GC-IRD lightpipe temperature (250 °C recalled until item 50's PDF is read) and the ±30 % corrected
+  form, which the pilot note may choose over the floor form.
 - The PNNL/NWIR naphthalene record (items 57, 59; not held), the jet-cooled tetracene and coronene band
   lists (items 61–62) as labelled cold columns, the R2/R3 scoreboard columns, and the intensities of
   decision 18.

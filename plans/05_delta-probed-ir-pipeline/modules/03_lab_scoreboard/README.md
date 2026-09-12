@@ -14,7 +14,7 @@ matrix–gas pairs under the pre-registered rule (`build_lab_tables.py`), a note
 statistics, three visual models and one pre-registered hypothesis test (`notebook/analysis.ipynb`),
 and the Statistical Analysis Report (`module_summary.pdf`).
 
-**Dataset:** `notebook/bands_lab.csv`, 4,218 rows × 21 columns — every band of the PAHdb
+**Dataset:** `notebook/bands_lab.csv`, 4,218 rows × 31 columns (21 at the first build; ten u_band columns added on 12 September, see below) — every band of the PAHdb
 *experimental* library v3.10 (https://www.astrochemistry.org/pahdb/experimental/3.10, 84 species,
 3,896 bands) plus the peaks of eight gas-phase NIST Chemistry WebBook records
 (https://webbook.nist.gov/chemistry/, six PAHs) and the four benzene bands of the project's
