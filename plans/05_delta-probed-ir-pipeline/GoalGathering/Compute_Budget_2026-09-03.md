@@ -185,7 +185,13 @@ energy, 5,450 h for the R1 deck) is the tight figure; the xtight figure is owed 
 energy at [10⁻⁷, 10⁻⁸] before the R1 deck is priced for P13 or for any cluster application** — the
 benzene factor suggests about twice, and the peak memory (19.8 GB at tight, against a 22 GB ceiling)
 may not fit the laptop at all, which would make that timing itself the desktop's or the cluster's
-first job.
+first job. *Parked idea (the user, 2026-09-12, for when squeezing the laptop or desktop for evidence
+comes up again):* three measured levers for that timing on this laptop — the WSL ceiling from 22 to
+at most 25 GB (Windows keeps 6–7 GB; the 28 GB setting failed at 1.5 GB headroom with two jobs), the
+8 GB WSL swap that already exists (a job over the ceiling slows instead of dying; the heartbeat's RSS
+column shows it), and pyscf's `max_memory` (24,000 MB in `make_mol`) lowered to push the large
+integral blocks to disk along the code path patched on 2026-09-10. Not applied; needs `wsl
+--shutdown`, so never while a job runs.
 
 **Dated note 2026-09-12 (the B3 candidate named: Snellius; an orientation column, not a budget — the
 rule of §1 stands: no B3 number until a timed probe on the actual machine).** Facts read from the
