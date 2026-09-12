@@ -619,7 +619,7 @@ above about 1 GB on the Windows side beside it):
 2. the Lean build of plan 06's T1d (Windows, 8 GB; a quarter of an hour, no job running);
 3. the corpus factory's five-molecule timing test (`modules/05_support_predictor/corpus/run_corpus.py --max-molecules 5
    --grid-check`), then the dated note fixing the subset size;
-4. plan 06's X6 and X7 (minutes each);
+4. plan 06's X6 (script ready since 12 September evening, `experiments/x6_pi_cas_share.py`, cc-pVDZ, minutes; the user put it first) and X7;
 5. the naphthalene DFT dry run (two functionals, psi4; hours) — prerequisite (a) of the pilot note and the mode table
    Module 03 and plan 06 need; **found 12 September evening:** plan 02's `results_dft_locality/naphthalene.npz` (git `57a7910`) is a
    B3LYP/6-31G* Hessian at a geometry identical to `results_dryrun/naphthalene/geometry.json` within 5 × 10⁻⁴ bohr, so the
