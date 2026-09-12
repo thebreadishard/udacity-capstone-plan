@@ -208,7 +208,13 @@ compared at the same composite level — the existing truth lines already contai
 arms' files e_corr_mp2_full, so the comparison is a re-print, not a re-run). What it must not do:
 introduce a fitted parameter — every term is a difference of computed energies at one geometry.
 Decision requested before the naphthalene rehearsal; until then Δ₂ is defined at TZ and the
-basis-set line is printed beside it.
+basis-set line is printed beside it. **Accepted the same day = decision 33** (Ladder §3 words added;
+README decision record). Measured effect of the two basis terms on benzene's three probed harmonic
+frequencies, from the table above (SCF TZ → 5Z plus MP2 TZ → QZ): **+2.8 / −5.2 / −11.1 cm⁻¹** on the
+CH-oop, CH-ip-bend and C–C stretch modes — the size of the correction Δ₂ now carries that the TZ
+anchor did not. Implementation owed: the anchor chain computes DF-RHF/5Z and DF-MP2/QZ at every
+probed geometry (the same two calls as `m1_basis_scf_mp2_line.py`) and seals them with the LNO
+energies; the R0 pilot's deck is the first to run with it.
 
 **2.3 Continuity diagnostics** (all runs agree): s_min of the occupied overlap ≥ 0.986 at |q| = 1 on
 every mode; s_min of the virtual (LNO) overlap 0.81–0.89 at |q| = 1, 0.95–0.97 at |q| = 0.25; largest

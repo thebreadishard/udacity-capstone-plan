@@ -403,6 +403,23 @@ reports the coverage per rung, family and overall against 68 % / 95 %; pass thre
 pilot note (Ladder §4 item 15); a short budget is declared incomplete and its deficit reported, never
 widened. Reason: for training labels the error bars must be true, not just the errors small.
 
+**Decision 32 (2026-09-12 — the network as named stand-out work, outside the sequence):** a model
+trained on the pipeline's own Δ₂ blocks and certified bands is named as the project's stand-out
+ambition, placed outside the module sequence (which still ends at Module 09; rubrics v1.5.1 carry no
+stand-out criterion), gated by the measured range at R2–R3 and the Q10 coverage table, with its
+losing condition pre-written (proposal §6; mapping "After Module 09"; Goal dated note).
+
+**Decision 33 (2026-09-12, P18 — the anchor as a composite with basis corrections):** the anchor
+energy per point is E_LNO-CCSD(T)(xtight, TZ) + [MP2(full) − MP2(LNO)] at TZ + [MP2/QZ − MP2/TZ] +
+[SCF/5Z − SCF/TZ], every term a difference of computed energies at one geometry, no fitted parameter,
+under 1 % of an LNO point in cost (DF-MP2/QZ 9 s, DF-RHF/5Z 35 s per benzene point). Named by the
+cheap basis line printed the same day (TZ → QZ/5Z change of 1–8 cm⁻¹ on the probed modes, against a
+frozen-space bias of 0.1–0.2 cm⁻¹ at xtight); the licence comparison is unaffected because the basis
+terms are common to arm and canonical reference; the CCSD(T)−MP2 remainder's basis change stays the
+open term of decision 26. Ladder §3 words added; measured effect on benzene's three probed harmonic
+frequencies from the two basis terms: +2.8 / −5.2 / −11.1 cm⁻¹ (CH-oop, CH-ip-bend, C–C stretch;
+sum of the TZ → 5Z SCF and TZ → QZ MP2 rows of `results_m1/BASIS_LINE_scf_mp2.md`).
+
 ## Dated notes after the freeze
 
 - **2026-09-12 — three modules scaffolded in the Udacity rubric form, Hessian QM9 in, plan 06 opened, GoalGathering

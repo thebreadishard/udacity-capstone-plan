@@ -443,7 +443,18 @@ for fragment probing, before the R3 fragment-vs-whole comparison has printed.
   canonical MP2 correlation energy in the full space at that geometry minus the MP2 energy in the
   same frozen fragment spaces, added to the local CCSD(T) energy — the LNO literature's standard
   correction for the truncated space (item 34, Nagy & Kállay 2019; pyscf-forge's
-  `e_corr_pt2corrected`, item 48); MP2(full) is canonical and adds no roughness. Every arm (A,
+  `e_corr_pt2corrected`, item 48); MP2(full) is canonical and adds no roughness. *[Words added 2026-09-12, P18, decision 33 — a
+  measurement named it: the cheap basis line of that day showed the anchor's TZ → QZ/5Z frequency
+  change to be 1–8 cm⁻¹ on benzene's probed modes, an order of magnitude above the frozen-space bias
+  at xtight thresholds.]* **The anchor energy per point carries two basis terms in addition:**
+  E_anchor = E_LNO-CCSD(T)(xtight, TZ) + [E_MP2(full, TZ) − E_MP2(LNO, TZ)] + [E_MP2(full, QZ) −
+  E_MP2(full, TZ)] + [E_SCF(5Z) − E_SCF(TZ)], every term a difference of computed energies at the
+  same geometry, no fitted parameter; the local-correlation thresholds are [10⁻⁷, 10⁻⁸] (decision
+  20, measured the same day). The licence comparison of this section is unaffected: the two basis
+  terms are common to the arm and to the canonical reference at each geometry and cancel in
+  E_arm − E_canonical, so the smoothness and bias lines stand as printed; what the terms change is
+  Δ₂ itself. The basis change of the CCSD(T)−MP2 remainder is not carried and is printed as the open
+  term of the basis-set line (decision 26) until the canonical QZ line exists. Every arm (A,
   B, C) reports the composite, and the bare LNO-CCSD(T) energy is kept beside it in the sealed
   file, never discarded *[words added 2026-09-06, P8, decision 15; measured: the diagonal curvature
   bias of arm A against canonical CCSD(T) at benzene falls from 2.6–14 to 0.25–1.3 cm⁻¹ (normal LNO

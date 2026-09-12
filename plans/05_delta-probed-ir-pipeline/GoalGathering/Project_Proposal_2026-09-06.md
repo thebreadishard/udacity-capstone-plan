@@ -340,11 +340,13 @@ subsection):
   moves by −1.0 / −2.4 / −8.0 cm⁻¹ from TZ to QZ (against +15 / −12 / −16 from DZ to TZ). **The
   anchor's distance from its own basis-set limit is therefore an order of magnitude larger than the
   frozen-space bias just measured** — the largest known term in Δ₂'s budget at benzene, and the
-  cheapest to carry. **P18 (open, for the student's decision before the naphthalene rehearsal):**
-  redefine the anchor energy per point as the existing composite plus [MP2/QZ − MP2/TZ] +
-  [SCF/5Z − SCF/TZ], every term a difference of computed energies at one geometry, no fitted
-  parameter, under 1 % of an LNO point in cost; the CCSD(T)−MP2 remainder's basis change stays
-  unmeasured until the canonical QZ line of the cluster request (research note, P18). - *A definition
+  cheapest to carry. **P18, decided the same day (decision 33):** the anchor energy per point is the
+  existing composite plus [MP2/QZ − MP2/TZ] + [SCF/5Z − SCF/TZ], every term a difference of computed
+  energies at one geometry, no fitted parameter, under 1 % of an LNO point in cost; the licence
+  comparison is unaffected (the terms are common to arm and reference); the measured effect on
+  benzene's three probed harmonic frequencies is +2.8 / −5.2 / −11.1 cm⁻¹; the CCSD(T)−MP2
+  remainder's basis change stays unmeasured until the canonical QZ line of the cluster request
+  (research note, P18; Ladder §3). - *A definition
   fixed by the measurement.* The transported orbital blocks must be semicanonicalised at each
   geometry — a rotation inside the frozen space that the fragment solver's MP2 start and (T) step
   assume; a first run without that step read a spurious bias of up to 147 cm⁻¹ and is kept on file
@@ -950,6 +952,12 @@ own; knowledge transfer is allowed wherever a gate shows it makes the pipeline s
     the pipeline's own Δ₂ blocks and certified bands is the project's stand-out ambition, gated by the
     measured range at R2–R3 and the Q10 coverage table, with its losing condition pre-written; not in
     the promised set, not a Module 10 — the sequence ends at Module 09 (§6).
+33. **The anchor as a composite with basis corrections** (12 September, P18): the anchor energy per
+    point is the local-CC energy at the tighter thresholds plus the existing [MP2(full) − MP2(LNO)]
+    term plus [MP2/QZ − MP2/TZ] + [SCF/5Z − SCF/TZ], every term a difference of computed energies at
+    one geometry, no fitted parameter, under 1 % of an LNO point in cost; named by the basis line of
+    the same day (§3.3); the licence comparison is unaffected; the CCSD(T)−MP2 remainder's basis
+    change stays the open term of decision 26 (Ladder §3 words added).
 
 ## 11. Risks
 
