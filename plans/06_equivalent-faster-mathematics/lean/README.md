@@ -12,8 +12,11 @@ and the user's decision the same day to install Lean and set up the first formal
 - `Plan06/T1/MeasurementAlgebra.lean` — **T1**, the measurement algebra of plan 05's probing deck
   (direction S5): pattern, column-intersection graph, colour-class probes, and the theorem that a
   matrix respecting a known pattern is recovered exactly from one matrix–vector product per colour
-  (Curtis–Powell–Reid 1974 / Coleman–Moré 1983). T1a is proved; T1b (the symmetric refinement of
-  Powell & Toint 1979) and T1c (the greedy `Δ + 1` colouring bound) are stated with `sorry` and owed.
+  (Curtis–Powell–Reid 1974 / Coleman–Moré 1983). **Proved (no `sorry`):** T1a (`recover_probe`,
+  `eq_of_probes_eq`), T1c the greedy `Δ + 1` colouring bound (`exists_proper_on_finset`,
+  `colorable_maxDegree_succ`; not in Mathlib on 2026-09-12) and their corollary
+  `exists_coloring_recover` (`Δ + 1` probes determine every matrix respecting the pattern). **Owed:**
+  T1b, the symmetric refinement of Powell & Toint (1979), stated with `sorry`.
 - `Plan06/Basic.lean`, `Plan06.lean` — the template root module, importing T1.
 
 ## How to build

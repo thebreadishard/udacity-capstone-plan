@@ -13,15 +13,17 @@ vector of colour class `k` — one matrix–vector product per colour. This is t
 scheme (1974) in the graph language of Coleman & Moré (1983). It is the algebra behind experiment
 X1's count ("4–5 Hessian–vector products recover every element above the noise at benzene").
 
-**What is proved here (T1a).** `recover_probe`: the entries of `A` inside `P` are read off the
-probes, so the reconstruction map returns `A` itself. No `sorry`.
+**What is proved here (T1a, T1c, and their corollary).** `recover_probe`: the entries of `A`
+inside `P` are read off the probes, so the reconstruction map returns `A` itself.
+`colorable_maxDegree_succ`: a finite graph with maximum degree `Δ` is `(Δ + 1)`-colourable (the
+greedy bound; not in Mathlib on 2026-09-12, proved here by induction on a finite vertex set).
+`exists_coloring_recover`: together, `Δ + 1` probes determine every matrix respecting `P`, with
+`Δ` the maximum degree of the column-intersection graph — the count behind X1. No `sorry` in any
+of these.
 
-**What is stated and owed (T1b, T1c).** The symmetric refinement of Powell & Toint (1979), where a
-symmetric `A` may be read at `(i, j)` *or* `(j, i)` and fewer colours suffice, and the greedy bound
-"a graph with maximum degree `Δ` is `(Δ + 1)`-colourable", which turns the theorem into the count of
-X1. Both carry `sorry` and are the next two proofs. Before proving T1c, search Mathlib for it
-(`exact?`); the X4 survey found no such lemma in `Combinatorics/SimpleGraph/Coloring/Vertex.lean`
-on 2026-09-12, but Mathlib moves.
+**What is stated and owed (T1b).** The symmetric refinement of Powell & Toint (1979), where a
+symmetric `A` may be read at `(i, j)` *or* `(j, i)` and fewer colours suffice. It carries `sorry`
+and is the next proof.
 
 Conventions: everything is finite-dimensional; the matrix ring is `ℝ` (plan 05's numbers are real);
 `Matrix.mulVec` is `A *ᵥ v`, with `(A *ᵥ v) i = ∑ j, A i j * v j`.
@@ -108,7 +110,74 @@ theorem eq_of_probes_eq (c : (colGraph P).Coloring α) {A B : Matrix n n ℝ}
   classical
   rw [← recover_probe c hA, ← recover_probe c hB, h]
 
-/-! ## Owed: the symmetric refinement (T1b) and the greedy bound (T1c) -/
+/-! ## The greedy bound (T1c) and the counted corollary -/
+
+/-- **Greedy step.** For every finite set `S` of vertices there is a colouring with `Δ + 1`
+colours that is proper on `S`. Induction on `S`: when `a` is added, its neighbours already in `S`
+use at most `degree a ≤ Δ` colours, so one of the `Δ + 1` colours is free for `a`. -/
+theorem exists_proper_on_finset (G : SimpleGraph n) [DecidableRel G.Adj] (S : Finset n) :
+    ∃ f : n → Fin (G.maxDegree + 1), ∀ v ∈ S, ∀ w ∈ S, G.Adj v w → f v ≠ f w := by
+  classical
+  induction S using Finset.induction_on with
+  | empty => exact ⟨fun _ => 0, by simp⟩
+  | insert a S ha ih =>
+    obtain ⟨f, hf⟩ := ih
+    -- the colours already used by the neighbours of `a` inside `S`
+    have hcard : ((S.filter (G.Adj a)).image f).card <
+        (Finset.univ : Finset (Fin (G.maxDegree + 1))).card := by
+      calc ((S.filter (G.Adj a)).image f).card
+          ≤ (S.filter (G.Adj a)).card := Finset.card_image_le
+        _ ≤ (G.neighborFinset a).card := by
+            apply Finset.card_le_card
+            intro w hw
+            exact (G.mem_neighborFinset a w).2 (Finset.mem_filter.1 hw).2
+        _ = G.degree a := G.card_neighborFinset_eq_degree a
+        _ ≤ G.maxDegree := G.degree_le_maxDegree a
+        _ < G.maxDegree + 1 := Nat.lt_succ_self _
+        _ = (Finset.univ : Finset (Fin (G.maxDegree + 1))).card := by simp
+    obtain ⟨c, -, hc⟩ := Finset.exists_mem_notMem_of_card_lt_card hcard
+    refine ⟨Function.update f a c, ?_⟩
+    intro v hv w hw hvw
+    have hne : v ≠ w := G.ne_of_adj hvw
+    simp only [Function.update_apply]
+    split_ifs with hva hwa hwa
+    · exact absurd (hva.trans hwa.symm) hne
+    · -- `v = a`, `w ∈ S`: the colour of `w` is a used colour, `c` is not
+      have hwS : w ∈ S := (Finset.mem_insert.1 hw).resolve_left hwa
+      intro h
+      apply hc
+      rw [h]
+      exact Finset.mem_image.2 ⟨w, Finset.mem_filter.2 ⟨hwS, hva ▸ hvw⟩, rfl⟩
+    · -- `v ∈ S`, `w = a`
+      have hvS : v ∈ S := (Finset.mem_insert.1 hv).resolve_left hva
+      intro h
+      apply hc
+      rw [← h]
+      exact Finset.mem_image.2 ⟨v, Finset.mem_filter.2 ⟨hvS, hwa ▸ hvw.symm⟩, rfl⟩
+    · exact hf v ((Finset.mem_insert.1 hv).resolve_left hva)
+        w ((Finset.mem_insert.1 hw).resolve_left hwa) hvw
+
+/-- **T1c (the greedy bound).** A finite graph with maximum degree `Δ` is `(Δ + 1)`-colourable.
+With `Δ` the maximum number of conflicting columns in the pattern, this is X1's "4–5 products"
+bound. Not in Mathlib on 2026-09-12 (Loogle: no declaration mentions both `SimpleGraph.Colorable`
+and `SimpleGraph.maxDegree`); proved here by the greedy step above. -/
+theorem colorable_maxDegree_succ (G : SimpleGraph n) [DecidableRel G.Adj] :
+    G.Colorable (G.maxDegree + 1) := by
+  obtain ⟨f, hf⟩ := exists_proper_on_finset G Finset.univ
+  exact ⟨SimpleGraph.Coloring.mk f fun {v w} h =>
+    hf v (Finset.mem_univ v) w (Finset.mem_univ w) h⟩
+
+/-- **T1a + T1c, the count.** Let `Δ` be the maximum degree of the column-intersection graph of
+`P` (the largest number of other columns any column conflicts with). Then there is a colouring
+with `Δ + 1` colours whose probes recover every matrix respecting `P`: `Δ + 1` matrix–vector
+products suffice. At benzene (X1) the greedy bound gave 4–5 products against 448 energies. -/
+theorem exists_coloring_recover [DecidableEq n] (P : Pattern n) [DecidableRel (colGraph P).Adj] :
+    ∃ c : (colGraph P).Coloring (Fin ((colGraph P).maxDegree + 1)),
+      ∀ A : Matrix n n ℝ, Respects P A → recover c (probe c A) = A := by
+  obtain ⟨c⟩ := colorable_maxDegree_succ (colGraph P)
+  exact ⟨c, fun _ hA => recover_probe c hA⟩
+
+/-! ## Owed: the symmetric refinement (T1b) -/
 
 /-- The pattern of a symmetric matrix may itself be taken symmetric. -/
 def Pattern.IsSymm (P : Pattern n) : Prop := ∀ i j, (i, j) ∈ P → (j, i) ∈ P
@@ -127,14 +196,6 @@ theorem symmetric_recovery_shape [Fintype n] (P : Pattern n) (hP : P.IsSymm) (A 
         Respects P B → B.IsSymm →
         (∀ k, A *ᵥ (fun j => if c j = k then (1 : ℝ) else 0) =
               B *ᵥ (fun j => if c j = k then (1 : ℝ) else 0)) → A = B := by
-  sorry
-
-/-- **T1c (owed; the greedy bound).** A finite graph with maximum degree `Δ` is
-`(Δ + 1)`-colourable. With `Δ` the maximum number of conflicting columns in the pattern, this is
-X1's "4–5 products" bound. Search Mathlib first (`exact?`), then prove by induction on the
-vertex list. -/
-theorem colorable_maxDegree_succ (G : SimpleGraph n) [DecidableRel G.Adj] :
-    G.Colorable (G.maxDegree + 1) := by
   sorry
 
 end Plan06.T1
