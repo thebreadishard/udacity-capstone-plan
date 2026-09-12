@@ -15,13 +15,17 @@ geschreven. De rest is de onderbouwing en het contract waaraan ik mezelf houd.
 Kort wat het is. Ik bouw een pijplijn die van een aromatisch molecuul een infraroodspectrum maakt,
 met een coupled-cluster-correctie op de harmonische krachtconstanten die ik niet uitreken maar
 *opmeet* met zo weinig mogelijk dure energieën, en waarvan ik het aantal per molecuul afdruk naast
-elk spectrum. De accuracy wordt gescoord tegen laboratoriumdata en tegen de bestaande voorspellingen,
-waaronder die van jouw eigen groep; de regels daarvoor staan vast voordat er één vergelijking is
-gemaakt (§7).
+elk spectrum. Die dure energieën komen uit lokale coupled-cluster-berekeningen (LNO-CCSD(T)) waarvan
+ik de orbitaalruimtes bij de evenwichtsgeometrie één keer kies en daarna bij elke vervorming
+bevroren houd, zodat de energieverschillen tussen vervormingen glad zijn en niet door de
+orbitaalselectie worden verstoord. De accuracy wordt gescoord tegen laboratoriumdata en tegen de
+bestaande voorspellingen, waaronder die van jouw eigen groep; de regels daarvoor staan vast voordat
+er één vergelijking is gemaakt (§7).
 
 Wat er sinds 6 september is gemeten, en wat het voorstel daardoor anders zegt dan een plan op
-papier: de bevroren-ruimte-truc werkt bij benzeen (arm A glad tot 0,002–0,06 µE_h, systematische
-afwijking [x] cm⁻¹ na de strengste drempels); één lokale-CC-energie van naftaleen kost op mijn
+papier: het bevriezen van de orbitaalruimtes werkt bij benzeen — de energie langs een vervorming is
+glad tot 0,002–0,06 µE_h, en de systematische afwijking van de kromming tegenover canoniek
+CCSD(T) is [x] cm⁻¹ na de strengste drempels (§3.3); één lokale-CC-energie van naftaleen kost op mijn
 laptop 11,5 uur, dus het eerste echte molecuul kost 5.450 laptopuren en vraagt om een cluster (§8,
 §13 punt 5); en het laboratoriumscorebord voor benzeen en naftaleen staat, met gemeten
 bandonzekerheden (§7).
