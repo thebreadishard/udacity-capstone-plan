@@ -48,3 +48,30 @@ implies:
   cc-pVDZ with *frozen* spaces (arm A), where the symmetry-breaking outlier should disappear. That is a stronger and
   cheaper first milestone than the general M2 text, and it is now step 4 of the ladder in the README's owed list.
 - Nothing here changes a rule. Bibliography item 33: status "read in full for g on 2026-09-12; g not printed".
+
+## Step 1b (same evening): is g priced anywhere else? What a verified search found
+
+The user asked whether the ratio is priced "nowhere in the literature". Searched via Crossref (journal articles only)
+and the open texts reachable tonight:
+
+- **The general theorem exists and is citable; its constant was not read tonight.** The "cheap gradient" result of
+  reverse-mode algorithmic differentiation — the gradient of a scalar function costs at most a small constant multiple
+  of the function evaluation — goes back to Baur & Strassen, "The complexity of partial derivatives", *Theoretical
+  Computer Science* 22(3), 317–330 (1983), DOI 10.1016/0304-3975(83)90110-X (record verified), and is the subject of
+  Griewank & Walther, *Evaluating Derivatives*, 2nd ed., SIAM 2008, DOI 10.1137/1.9780898717761 (record verified).
+  Both texts are paywalled; Griewank's open survey in Documenta Mathematica (2012) could not be fetched (three hosts,
+  redirect chain ending in 404). **The constant is therefore not quoted here.** What it would give is an upper bound
+  on g for an AD engine like PySCFAD, not a measurement in our engine — and PySCFAD's own recomputation
+  (`jax.checkpoint`) trades memory for extra forward work, so the practical g sits above the theoretical bound.
+- **Analytic gradients of local correlation methods in the literature:** DLPNO-MP2 (Pinski & Neese, *J. Chem. Phys.*
+  148, 031101 (2018), DOI 10.1063/1.5011204; and 150, 164102 (2019), DOI 10.1063/1.5086544 — abstract read: largest
+  gradient for crambin, 644 atoms, no cost ratio in the abstract); local MP2 with intrinsic bond orbitals (Dornbach &
+  Werner, *Mol. Phys.* 117, 1252 (2019), DOI 10.1080/00268976.2018.1537529, record only). **No analytic-gradient paper
+  for DLPNO-CCSD(T) or PNO-LCCSD(T) surfaced** in three Crossref searches; the Werner-group hits are energy methods
+  (PNO-LCCSD, PNO-LCCSD-F12, 2017–2021). So at the CCSD(T) level the only published local-CC gradients found are the
+  AD ones of item 33, which do not print g.
+
+Conclusion of step 1 as a whole: **g is not in any text read or reachable tonight**; the theorem bounds it by a
+constant that was not read; the two MP2-level gradient papers do not state a ratio in their abstracts (full texts not
+opened). Step 4 — measuring g in our engine — remains the only source of the number.
+
