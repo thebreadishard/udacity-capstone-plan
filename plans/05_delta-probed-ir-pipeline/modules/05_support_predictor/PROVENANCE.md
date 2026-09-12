@@ -25,9 +25,31 @@ The corpus itself does not exist yet. Its remaining halves are owed as follows.
 
 ## Owed, and by whom
 
-1. ~~The download~~ — done 2026-09-12 (above). Still owed on this half: reading the paper for units and the
-   frequency/normal-mode conventions; ring detection (QM9 SMILES from the original QM9 release) to replace the
-   composition proxy.
+1. ~~The download~~ — done 2026-09-12 (above). **Paper read the same day** (arXiv 2408.08006 text, 7 pp.; methods,
+   data records, Table 1): NWChem, ωB97X/6-31G*, geometries optimised in vacuum with NWChem defaults, **numerical
+   Hessians by finite differences with 0.01 a.u. displacement** (their test: 0.005/0.01/0.02 a.u. changed
+   frequencies by < 15 cm⁻¹ on average — the numerical noise floor of these Hessians, to be remembered when Δ₂
+   labels are thresholded); SCF converged to 10⁻⁶ eV; only H, C, N, O (fluorine dropped); 41,645 of the 133,885 QM9
+   molecules chosen by UMAP + farthest-point sampling. **Units (Table 1):** positions Å, energy eV, forces eV/Å,
+   Hessian eV/Å², frequencies cm⁻¹, normal modes dimensionless (3N × 3N). The file's `frequencies` field is 3N × 2,
+   not the paper's 3N × 1 — **checked 2026-09-12 by reconstruction**: mass-weighting the stored Hessian (eV/Å²,
+   isotopic masses) and diagonalising reproduces column 0 to within 0.4 cm⁻¹ (e.g. 3563.6 vs 3563.3) and gives
+   negative eigenvalues exactly where column 1 is non-zero (109.9, 80.0, 67.6 cm⁻¹ imaginary in the example), so
+   **column 0 = real frequency, column 1 = magnitude of an imaginary frequency**. The translations and rotations are
+   *not* projected out: the example's six lowest modes are three imaginary (68–110 cm⁻¹) and three small real
+   (12–117 cm⁻¹), the signature of an unprojected numerical Hessian. Any Δ₂ built from these Hessians must project
+   out translation and rotation first, and the ~15 cm⁻¹ displacement sensitivity the paper reports is the noise
+   floor for its labels. Ring detection is done from geometry (`m05/ring_survey.py`, bonds from covalent radii, cycle
+   basis of the bond graph, planarity 0.1 Å RMS), so no QM9-SMILES download is needed. **Result
+   (`out/HESSIAN_QM9_RINGS.md`, 2026-09-12): 36,760 molecules (88 %) contain a ring, but only 66 (0.2 %) contain an
+   all-carbon aromatic six-ring — benzene itself once — while 6,055 (14.5 %) contain a planar conjugated five- or
+   six-ring of C/N/O (pyridine-, pyrrole-, furan-like included).** Ring sizes in the cycle basis: 3: 18,884; 4: 11,305;
+   5: 17,388; 6: 8,900; 7: 4,222; 8: 2,137; 9: 556. **Consequence for the plan's "aromatic-heavy subset"
+   (Capstone_Mapping §M05):** with at most nine heavy atoms and a UMAP/farthest-point selection, Hessian QM9 holds
+   almost no benzene-ring chemistry; the realistic over-represented class is *conjugated and heteroaromatic rings*,
+   and the PAH held-out set is even further off-distribution than the mapping assumed. This goes to the user as a
+   decision input (subset definition: 66 all-carbon rings + the 6,055 conjugated rings, or the conjugated class alone);
+   it changes no frozen text by itself.
 2. **The recomputed B3LYP subset** — laptop compute with the plan's psi4 deck; benzene took 388 s on the
    laptop (dry run 2026-09-05), QM9 molecules are smaller (≤ 9 heavy atoms), so the ~1,000-molecule
    figure in the memory notes is an order of magnitude, not a plan number. **The subset size is fixed by

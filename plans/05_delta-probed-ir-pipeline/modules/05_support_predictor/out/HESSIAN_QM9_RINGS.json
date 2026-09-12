@@ -1,0 +1,23 @@
+{
+ "date": "2026-09-12 09:35",
+ "positions_unit_detected": "angstrom",
+ "covalent_tolerance_A": 0.45,
+ "planar_rms_A": 0.1,
+ "molecules": 41645,
+ "with_ring": 36760,
+ "with_aromatic_six_ring": 66,
+ "with_conjugated_ring": 6055,
+ "aromatic_rings_per_molecule": {
+  "1": 66
+ },
+ "ring_size_histogram": {
+  "3": 18884,
+  "4": 11305,
+  "5": 17388,
+  "6": 8900,
+  "7": 4222,
+  "8": 2137,
+  "9": 556
+ },
+ "benzene_itself": 1
+}
