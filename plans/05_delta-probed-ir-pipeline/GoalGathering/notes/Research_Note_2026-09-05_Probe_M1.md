@@ -263,6 +263,27 @@ What it decides: if the composite bias drops by about the cc-pVDZ factor (to ≲
 object is run at xtight and the cost record carries the factor; if it does not, the bias is a
 property of transport, not of space size, and (a) or (c) is the remaining choice.
 
+**Result (2026-09-12, 11:48; the run died with its session on 2026-09-09 after 5 points and was
+resumed detached on 2026-09-11 05:16, reference spaces reloaded, reload test −0.0000 µE_h;
+`probes/results_m1/XTIGHT_READIN.md`, printed by `m1_xtight_readin.py` from the chain's comparison
+files against the reused cc-pVTZ truth line).** Arm A at xtight [10⁻⁷, 10⁻⁸], 27 points:
+
+| mode | family | σ tight → xtight (µE_h) | Δω bare tight → xtight (cm⁻¹) | Δω composite tight → xtight (cm⁻¹) |
+|---|---|---|---|---|
+| 6 | CH-oop 865 | 0.007 → 0.004 | +16.29 → +2.08 | **+0.47 → +0.11** |
+| 12 | CH-ip-bend 1020 | 0.002 → 0.003 | +1.78 → +0.23 | **+0.03 → −0.01** |
+| 18 | CC-stretch 1357 | 0.021 → 0.044 | +5.26 → +0.76 | **+0.79 → +0.23** |
+
+The composite bias falls by a factor 3–4 on every mode (the bare bias by 7–8), the quartic
+coefficients stay near zero, and the smoothness is unchanged: **the residual at tight was
+local-correlation truncation, not transport — option (b) of P10 is confirmed and decision 20
+closes.** The anchor object runs at xtight; the cost factor at benzene is ≈ 2 (4,576 s median per
+frozen-arm point against ≈ 2,200 s at tight; the tight run's 6,441 s per point included arms B and
+C), and the naphthalene xtight factor is owed as one timed energy before the R1 deck is priced
+(the 11.5 h of the timing probe is the tight figure). What remains of the anchor's distance from
+the truth is now at or below the 0.1–0.2 cm⁻¹ level on these modes — the basis-set line (§2.2d;
+the QZ/5Z SCF+MP2 line launched 2026-09-12 11:54) is the next term to read.
+
 ## 4. What did not change
 
 The three arms, the Q6 estimator, the sealed-energy rule and stop 1 are as the Ladder writes them.

@@ -175,6 +175,18 @@ as `probes/patches/pyscf_forge_1.1.1_lnoccsd_dfvvvv_pyscf2.14.patch`; the engine
 record is therefore "pyscf 2.14.0 + pyscf-forge 1.1.1 + plan-05 patch 1". Consequence for the
 timing: the 4.4 h before the crash were a lower bound on one naphthalene energy at cc-pVTZ tight. **Naphthalene timing printed 2026-09-11 05:15** (`probes/results_timing/naphthalene_ccpvtz_tight.log`, `naphthalene_cc-pvtz_tight.json`): one LNO-CCSD(T)/cc-pVTZ energy at tight thresholds, 412 basis functions, 24 fragments, 8 threads on the laptop: **41,375 s = 11.5 h, peak resident memory 19.83 GB** (the WSL ceiling is 22 GB). Arithmetic: the R1 deck of 474 energies = 5,450 h ≈ 227 days of the laptop; K alone (220–380) = 2,500–4,400 h; the 168-hour rule is exceeded thirty-fold. Pyrene (620 basis functions) will not fit the laptop's memory at all. **Also found:** the timing probe wrote its JSON under a name without the molecule and overwrote the benzene record; restored from git, the naphthalene record saved under its own name, the script fixed the same morning.
 
+**Dated note 2026-09-12 (decision 20 closed — the anchor's thresholds, and what it does to the
+prices above).** The xtight arm-A rescan of benzene (finished 11:48; `probes/results_m1/XTIGHT_READIN.md`)
+brought the composite frequency bias from +0.47 / +0.03 / +0.79 to +0.11 / −0.01 / +0.23 cm⁻¹ with the
+smoothness unchanged, so **the anchor object runs at the tighter thresholds [10⁻⁷, 10⁻⁸]**. Measured cost
+factor at benzene: ≈ 2 per frozen-arm point (4,576 s median at xtight against ≈ 2,200 s at tight; the
+tight run's 6,441 s per point included arms B and C). **Every naphthalene price in this file (11.5 h per
+energy, 5,450 h for the R1 deck) is the tight figure; the xtight figure is owed as one timed naphthalene
+energy at [10⁻⁷, 10⁻⁸] before the R1 deck is priced for P13 or for any cluster application** — the
+benzene factor suggests about twice, and the peak memory (19.8 GB at tight, against a 22 GB ceiling)
+may not fit the laptop at all, which would make that timing itself the desktop's or the cluster's
+first job.
+
 **Dated note 2026-09-12 (the B3 candidate named: Snellius; an orientation column, not a budget — the
 rule of §1 stands: no B3 number until a timed probe on the actual machine).** Facts read from the
 SURF service-desk wiki and the NWO/SURF Small Compute page on 2026-09-12: Snellius has 525 "thin"

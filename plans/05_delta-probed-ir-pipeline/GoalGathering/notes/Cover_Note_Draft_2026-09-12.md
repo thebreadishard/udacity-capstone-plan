@@ -1,8 +1,7 @@
 # Concept begeleidend bericht bij het voorstel (12 september 2026) — voor de student om te versturen
 
-*Concept, Nederlands; de student past aan en verstuurt zelf. Het getal tussen [ ] komt uit de xtight-run
-van vanmiddag (`probes/m1_xtight_readin.py`). Niets hierin is nieuw ten opzichte van het voorstel; het
-wijst alleen de weg erin.*
+*Concept, Nederlands; de student past aan en verstuurt zelf. Niets hierin is nieuw ten opzichte van het
+voorstel; het wijst alleen de weg erin.*
 
 ---
 
@@ -48,8 +47,9 @@ kunnen laten zien dat die aanvraag op bewijs rust en niet op hoop. Wat er nu al 
 van de methode werkt — met bevroren orbitaalruimtes is de lokale-CC-energie langs een vervorming
 glad tot 0,002–0,06 µE_h waar de gangbare aanpak, die de ruimtes bij elk punt opnieuw kiest, bij
 dezelfde instellingen tot 3 µE_h aan sprongen geeft (en 7–11 µE_h in de kleinere basis), en de systematische
-afwijking van de kromming tegenover canoniek CCSD(T) is [x] cm⁻¹, ruim binnen wat de pijplijn
-nodig heeft (§3.3); de proefopstelling op DFT-niveau wint de correctie inderdaad terug uit een
+afwijking van de kromming tegenover canoniek CCSD(T) is +0,11 / −0,01 / +0,23 cm⁻¹ op de drie
+geteste modes na de strengste drempels (vanochtend geprint; +0,47 / +0,03 / +0,79 bij de gewone
+drempels), ruim binnen wat de pijplijn nodig heeft (§3.3); de proefopstelling op DFT-niveau wint de correctie inderdaad terug uit een
 eindig aantal vervormingen, en dat aantal is geteld (§3.2); een telling van vanochtend laat zien dat
 van de 435 koppelingselementen bij benzeen er maar zes een bandpositie meer dan 0,5 cm⁻¹ bewegen,
 dus dat het deck weinig hoeft te vangen om de posities goed te krijgen; en de lat is bekend en
@@ -85,6 +85,6 @@ Frederic
 
 ---
 
-*Checklist voor het versturen:* [x] invullen uit `results_m1/XTIGHT_READIN.md`; §3.3 en §1 van het
-voorstel dragen hetzelfde getal; de pdf of het md-bestand als bijlage; de repository-link alleen als
-de student dat wil.
+*Checklist voor het versturen:* het xtight-getal is ingevuld (12 september 11:48; `results_m1/XTIGHT_READIN.md`)
+en staat gelijkluidend in §1, §3.3, §10 punt 20 en §11 van het voorstel; de pdf of het md-bestand als
+bijlage; de repository-link alleen als de student dat wil.

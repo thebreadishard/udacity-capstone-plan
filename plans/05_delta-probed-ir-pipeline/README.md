@@ -421,8 +421,13 @@ widened. Reason: for training labels the error bars must be true, not just the e
   (QMA-hardness closes general E1; class-restricted E1/E2 open), X1/X2 on the benzene tensor (6 of 435 off-diagonal
   pairs move a position > 0.5 cm⁻¹; S4 alive, S5 parked), Uitleg. *Housekeeping:* GoalGathering split into top level /
   `notes/` / `reviews/` with every link rewritten (b6c89ed); QZ/5Z line and the xtight read-in script prepared;
-  cover-note draft for the supervisor. **Running:** the xtight arm-A rescan, 26 of 27 points at 10:30, chain end
-  ≈ 11:40; then read-in (§3.3), QZ/5Z line, plan-06 X3b, proposal to the supervisor in the afternoon.
+  cover-note draft for the supervisor. **Decision 20 closed at 11:48:** the xtight arm-A rescan (27 points)
+  brings the composite frequency bias from +0.47 / +0.03 / +0.79 to **+0.11 / −0.01 / +0.23 cm⁻¹** with
+  the smoothness unchanged — the residual at tight was local-correlation truncation; the anchor runs at
+  the tighter thresholds, cost factor ≈ 2 at benzene, the naphthalene xtight timing owed (Budget dated
+  note; proposal §3.3, §10 item 20, §11; M1 note). QZ/5Z SCF+MP2 line launched 11:54. Decision 32 the
+  same day (the network as named stand-out work outside the sequence). Next: plan-06 X3b, proposal to
+  the supervisor in the afternoon.
 - **2026-09-11 05:15 — naphthalene timing printed** (`probes/results_timing/naphthalene_cc-pvtz_tight.json`): one
   LNO-CCSD(T)/cc-pVTZ tight energy = 41,375 s (11.5 h), 24 fragments, peak RSS 19.83 GB against the 22 GB ceiling; the
   R1 deck of 474 energies is 5,450 laptop-hours; P13 (cluster / desktop / both) is now decidable and the proposal's

@@ -1,7 +1,7 @@
 # Probed coupled-cluster corrections to the harmonic force constants of polycyclic aromatic hydrocarbons: an infrared pipeline with a measured cost
 
 **Master's capstone project proposal — plan 05.** Prepared for supervision review; first version 6
-September 2026 (the file name keeps that date), revised through 11 September 2026: the measurements, decisions and questions dated 8–11 September below were added after the 6-September
+September 2026 (the file name keeps that date), revised through 12 September 2026: the measurements, decisions and questions dated 8–12 September below were added after the 6-September
 cold read, and a second cold read on 8 September — from the supervisor's own position — and its
 closures of 10 September are on file. Earlier drafts (3 and 4 September) are in the repository's
 history; this text supersedes them and stands on its own. Every number in it that describes this
@@ -72,9 +72,10 @@ showed where the couplings really are. The frozen correlation spaces on which th
 rests were measured to be smooth: their energy scatters by 0.002–0.06 µE_h along a displaced mode,
 where the same local-CC program re-selecting its spaces at every geometry scatters by 7–11 µE_h at
 its default settings and 0.05–2.7 µE_h at tight ones. At the anchor basis the frozen object stays
-as smooth but carries a frequency bias of up to 0.8 cm⁻¹ on the C–C stretch (§3.3) — the least
-favourable number in this document — and a tighter-threshold rerun, resumed after the naphthalene
-timing, measures whether more space removes it. And the canonical coupled-cluster reference that
+as smooth; at the tight local-correlation thresholds it carried a frequency bias of up to 0.8 cm⁻¹
+on the C–C stretch, and the same scan with the thresholds one decade tighter, finished on 12
+September, brings that to +0.11 / −0.01 / +0.23 cm⁻¹ on the three modes with the smoothness unchanged
+(§3.3) — the residual was local-correlation truncation, and the anchor runs at those thresholds. And the canonical coupled-cluster reference that
 licenses the anchor was timed: it fits the laptop at benzene for the line that matters, and the
 full canonical Hessian does not. The search found no gas-phase spectrum of known temperature for
 chrysene or triphenylene in the 6–15 µm region, and for pyrene only a hot heat-pipe spectrum and
@@ -322,9 +323,16 @@ subsection):
   first. The same scan with the local-correlation thresholds one decade tighter (the frozen arm
   only; the other two arms and the truth line stand) started that evening, died with the terminal
   session after 5 of 27 geometries (which is why long runs now launch detached from the session),
-  and was resumed from its saved points on 11 September at 05:16, the remaining 22 points at about 75 minutes each, ending on 12 September; if the bias falls by the factor the smaller basis showed, the anchor runs at those
-  thresholds and the cost record carries the factor, otherwise recording or per-mode calibration
-  is chosen before the naphthalene rehearsal (research note P10, decision 20). - *A definition
+  was resumed from its saved points on 11 September at 05:16 and **finished on 12 September at 11:48**
+  (27 points, about 75 minutes each for the frozen arm alone). **Result (decision 20, read the same
+  day; `probes/results_m1/XTIGHT_READIN.md`):** the composite frequency bias falls from
+  +0.47 / +0.03 / +0.79 to **+0.11 / −0.01 / +0.23 cm⁻¹** (out-of-plane, ring, C–C stretch), the
+  bare LNO bias from +16.3 / +1.8 / +5.3 to +2.1 / +0.2 / +0.8, and the smoothness stays at
+  0.003–0.044 µE_h — so the residual at the tight thresholds was local-correlation truncation, not
+  transport, and **the anchor object runs at the tighter thresholds**; the cost record carries the
+  factor, which at benzene is about 2 (4,576 s against ≈ 2,200 s per frozen-arm point) and at
+  naphthalene is owed as a timed energy before the R1 deck is priced (the 11.5 h of §8 is the tight
+  figure). Per-mode calibration is not needed (research note P10, decision 20). - *A definition
   fixed by the measurement.* The transported orbital blocks must be semicanonicalised at each
   geometry — a rotation inside the frozen space that the fragment solver's MP2 start and (T) step
   assume; a first run without that step read a spurious bias of up to 147 cm⁻¹ and is kept on file
@@ -889,7 +897,9 @@ own; knowledge transfer is allowed wherever a gate shows it makes the pipeline s
 20. The anchor-basis curvature bias of the frozen arm (§3.3) is **measured against a larger frozen
     space before anything else is decided**: the same benzene scan at thresholds one decade tighter,
     frozen arm only, against the existing cc-pVTZ truth line (started 8 September; died with its
-    session after 5 of 27 points; resumes from the saved points after the naphthalene timing).
+    session after 5 of 27 points; resumed 11 September; **finished 12 September: composite bias
+    +0.11 / −0.01 / +0.23 cm⁻¹ against +0.47 / +0.03 / +0.79 at tight, smoothness unchanged — the
+    anchor runs at the tighter thresholds, cost factor ≈ 2 at benzene, naphthalene factor owed**).
 21. A room-temperature source whose fundamental is resolved from its hot bands (Pirali et al. 2009,
     sixteen naphthalene bands at 0.005 cm⁻¹) is scored with no temperature shift and a 0.5 cm⁻¹
     head-to-origin term; other room-temperature sources keep the floor.
@@ -931,8 +941,9 @@ own; knowledge transfer is allowed wherever a gate shows it makes the pipeline s
 
 1. **Frozen-space energies are not smooth enough for energy-only probing.** Measured at benzene in
    cc-pVDZ: they are, by a factor of 30 to 1,000 (§3.3). Remaining exposure: the anchor basis — measured 8 September: smooth (0.002–0.021 µE_h) with a
-   frequency bias of +0.47 / +0.03 / +0.79 cm⁻¹ (out-of-plane, ring, C–C stretch), a
-   tighter-threshold rerun resuming after the naphthalene timing (decision 20)
+   frequency bias of +0.47 / +0.03 / +0.79 cm⁻¹ (out-of-plane, ring, C–C stretch) at tight
+   thresholds, **+0.11 / −0.01 / +0.23 cm⁻¹ at the thresholds one decade tighter (12 September;
+   decision 20 closed: the anchor runs there, at about twice the per-point cost)**
    — and larger molecules (the naphthalene noise measurement). Response where a measurement
    fails: no accuracy claim for the couplings at that size; the gradient route where the side
    project has delivered it.
