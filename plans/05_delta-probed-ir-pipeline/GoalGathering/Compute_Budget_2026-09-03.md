@@ -190,8 +190,14 @@ comes up again):* three measured levers for that timing on this laptop — the W
 at most 25 GB (Windows keeps 6–7 GB; the 28 GB setting failed at 1.5 GB headroom with two jobs), the
 8 GB WSL swap that already exists (a job over the ceiling slows instead of dying; the heartbeat's RSS
 column shows it), and pyscf's `max_memory` (24,000 MB in `make_mol`) lowered to push the large
-integral blocks to disk along the code path patched on 2026-09-10. Not applied; needs `wsl
---shutdown`, so never while a job runs.
+integral blocks to disk along the code path patched on 2026-09-10. *Applied the same afternoon on the
+user's decision (12 September, ≈ 12:45):* `.wslconfig` memory 22 → 25 GB (WSL reports 24 GB total after
+`wsl --shutdown`; the 8 GB swap in place), `anchor_single_point_timing.py --max-memory 16000` (new
+flag), Edge closed, one job only. **The naphthalene xtight timing was launched detached with the hourly
+heartbeat** (`results_timing/naphthalene_ccpvtz_xtight.log`; cc-pVTZ, [10⁻⁷, 10⁻⁸], the decision-33 basis
+terms timed beside it, no canonical reference); estimate before the run: one to two days and 25–35 GB
+peak, i.e. it may swap or fail — either is a measured fact for P13. The ceiling returns to 22 GB after
+the run unless the log shows 25 GB was harmless.
 
 **Dated note 2026-09-12 (the B3 candidate named: Snellius; an orientation column, not a budget — the
 rule of §1 stands: no B3 number until a timed probe on the actual machine).** Facts read from the

@@ -1,0 +1,13 @@
+--- lnoccsd.py (pyscf-forge 1.1.1)
++++ lnoccsd.py (plan-05 patch 2)
+@@ -472,7 +472,9 @@
+     return eris
+ 
+ def _cp(a):
+-    return np.array(a, copy=False, order='C')
++    # Plan-05 engine patch 2 (2026-09-12): NumPy 2 raises on copy=False when a copy is unavoidable
++    # (h5py slices on the out-of-core path); asarray keeps the NumPy 1.x meaning.
++    return np.asarray(a, order='C')
+ 
+ class MODIFIED_DFCCSD_complex:
+     pass

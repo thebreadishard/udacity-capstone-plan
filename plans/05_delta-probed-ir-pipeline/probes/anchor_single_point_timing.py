@@ -39,6 +39,7 @@ def peak_rss_gb():
     return resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024 ** 2   # kB → GB on Linux
 
 
+MAX_MEMORY = 24000            # set from --max-memory (2026-09-12)
 MOLECULE = "benzene"          # set from --molecule; the geometry file is results_dryrun/<molecule>/stageA.json
                               # (or geometry.json with the same two keys) — added 2026-09-10 for the naphthalene timing (P13)
 
@@ -59,7 +60,7 @@ def run_one(basis, threads, thresh_name, canonical, out, basis_terms_scheme="qz5
     lib.num_threads(threads)
     symbols, coords = load_geometry()
     mol = gto.M(atom=[(s, tuple(c)) for s, c in zip(symbols, coords)], unit="Bohr", basis=basis,
-                verbose=0, max_memory=24000, symmetry=False)
+                verbose=0, max_memory=MAX_MEMORY, symmetry=False)
     rec = {"basis": basis, "nbf": mol.nao_nr(), "natom": mol.natm, "threads": threads,
            "lno_thresh": THRESH[thresh_name], "thresh_name": thresh_name,
            "machine": platform.node(), "python": sys.version.split()[0]}
@@ -114,13 +115,13 @@ def run_one(basis, threads, thresh_name, canonical, out, basis_terms_scheme="qz5
         m_anchor.verbose = 0; m_anchor.kernel()
         rec["e_corr_mp2_full_anchor_basis"] = float(m_anchor.e_corr); rec["t_mp2_anchor_basis_s"] = time.time() - t0
         t1 = time.time()
-        mol_q = gto.M(atom=[(s, tuple(c)) for s, c in zip(symbols, coords)], unit="Bohr", basis=mp2_basis, verbose=0, max_memory=24000, symmetry=False)
+        mol_q = gto.M(atom=[(s, tuple(c)) for s, c in zip(symbols, coords)], unit="Bohr", basis=mp2_basis, verbose=0, max_memory=MAX_MEMORY, symmetry=False)
         mf_q = scf.RHF(mol_q).density_fit(); mf_q.conv_tol = 1e-10; mf_q.kernel()
         m_q = mp.dfmp2.DFMP2(mf_q, frozen=frozen) if hasattr(mp, "dfmp2") else mp.MP2(mf_q, frozen=frozen)
         m_q.verbose = 0; m_q.kernel()
         rec["t_mp2_qz_s"] = time.time() - t1
         t2 = time.time()
-        mol_5 = gto.M(atom=[(s, tuple(c)) for s, c in zip(symbols, coords)], unit="Bohr", basis=scf_basis, verbose=0, max_memory=24000, symmetry=False)
+        mol_5 = gto.M(atom=[(s, tuple(c)) for s, c in zip(symbols, coords)], unit="Bohr", basis=scf_basis, verbose=0, max_memory=MAX_MEMORY, symmetry=False)
         mf_5 = scf.RHF(mol_5).density_fit(); mf_5.conv_tol = 1e-10; mf_5.kernel()
         rec["t_scf_5z_s"] = time.time() - t2
         rec["basis_terms"] = {"scheme": basis_terms_scheme, "term_mp2": float(m_q.e_corr - m_anchor.e_corr), "term_scf": float(mf_5.e_tot - mf.e_tot),
@@ -167,7 +168,12 @@ def main():
     ap.add_argument("--molecule", default="benzene", help="geometry from results_dryrun/<molecule>/ (stageA.json or geometry.json)")
     ap.add_argument("--basis-terms", default="qz5z", choices=["qz5z", "none"],
                     help="decision 33 (2026-09-12): time the two cheap basis terms [MP2/QZ − MP2/anchor] + [SCF/5Z − SCF/anchor] beside the LNO energy (default)")
+    ap.add_argument("--max-memory", type=int, default=24000,
+                    help="pyscf max_memory in MB for every molecule object (default 24000); lower it to push the large integral blocks to disk "
+                         "(the code path patched 2026-09-10) — the memory lever of the Budget's parked note of 2026-09-12")
     args = ap.parse_args()
+    global MAX_MEMORY
+    MAX_MEMORY = args.max_memory
     global MOLECULE
     MOLECULE = args.molecule
     log(f"anchor single-point timing on {platform.node()}, molecule {MOLECULE}, {args.threads} threads, thresholds {args.thresh} = {THRESH[args.thresh]}")

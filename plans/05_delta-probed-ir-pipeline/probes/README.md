@@ -63,7 +63,13 @@ Conventions, carried from plans 01–04:
   none` reproduces the pre-decision-33 chain. The licence comparison (`m1_canonical_truth.py`) is
   unchanged: the terms are common to arm and reference. Points sealed before 2026-09-12 carry no terms
   (the 27 cc-pVTZ points have them in `results_m1/basis_line_scf_mp2.json`). The same terms, timed,
-  are in `anchor_single_point_timing.py` (`--basis-terms`, default on; `xtight` thresholds added). Helper
+  are in `anchor_single_point_timing.py` (`--basis-terms`, default on; `xtight` thresholds added; `--max-memory`
+  for the out-of-core lever). **Engine patch 2 (2026-09-12, `patches/apply_pyscf_forge_numpy2_cp_patch.py`):**
+  pyscf-forge 1.1.1's `_cp()` uses `np.array(a, copy=False)`, which NumPy 2 refuses when a copy is
+  unavoidable — the h5py-backed Lov blocks of the out-of-core DF-ERI path, reached the first time by
+  `--max-memory 16000` (naphthalene xtight timing, first attempt died after the SCF at 12:36); replaced by
+  `np.asarray(a, order='C')`. Engine line from here on: "pyscf 2.14.0 + pyscf-forge 1.1.1 + plan-05 patches
+  1 and 2"; re-apply both after any reinstall. Helper
   smoke-tested at the benzene reference (terms −58.7 and −17.8 mE_h); the integrated chain has not yet
   run since — the R0 pilot's deck is its first run.
   **`m1_canonical_truth.py`**: canonical CCSD(T) at the same geometries (cc-pVDZ: 44–48 s per point)
