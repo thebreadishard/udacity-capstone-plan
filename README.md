@@ -106,7 +106,7 @@ CapstonePlan/
 │       └── Uitleg/                          Dutch lay explanation of plan 06, 7 chapters
 │
 ├── Rubrics/                                 Udacity module rubrics 01–09 and the APA template, treated as fixed
-├── Papers_Inventory_2026-09-06.md           why the PDFs left the repository and how the history was rewritten
+├── docs/                                    repository-level records (the PDF inventory and history rewrite of 6 September)
 ├── Papers/                                  local only, git-ignored: the working copies of the literature
 ├── AI_Chats/                                planning conversations (primary sources, not a plan)
 ├── scraper/                                 tooling, and the raw scrapes it produced
@@ -114,8 +114,9 @@ CapstonePlan/
 └── README.md                                this file
 ```
 
-Literature PDFs are not in the repository (37 were removed from the history on 6 September 2026; the plan
-bibliographies hold the references, `Papers/` is a local working copy). The planning conversations predate the
+Literature PDFs are not in the repository (37 were removed from the history on 6 September 2026 — record in
+[`docs/Papers_Inventory_2026-09-06.md`](docs/Papers_Inventory_2026-09-06.md); the plan bibliographies hold the references,
+`Papers/` is a local working copy). The planning conversations predate the
 plan folders and belong to none of them. Plan 03's review record, whose architectural verdict (one scope, one
 clock) binds plans 04 and 05, is in the plan-03 folder.
 

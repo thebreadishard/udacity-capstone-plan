@@ -119,7 +119,7 @@ Two tracked folders and one local folder sit at the repository root, because no 
 
 - `Rubrics/` — the Udacity module rubrics 01-09, treated as fixed (version 1.5.1). If Udacity ever
   revises them, add a sibling folder rather than overwriting; several decisions turn on exact wording.
-- `Papers/` — local only, **git-ignored since 2026-09-06**: the PDFs were removed from the repository and from its history (`Papers_Inventory_2026-09-06.md` at the root records how); the current plan's bibliography is the index of what is held and read.
+- `Papers/` — local only, **git-ignored since 2026-09-06**: the PDFs were removed from the repository and from its history (`docs/docs/Papers_Inventory_2026-09-06.md` at the root records how); the current plan's bibliography is the index of what is held and read.
 - `AI_Chats/` — the planning conversations. They predate the splits.
 
 The professor reviews of plans 01–03 sit inside their own folders; they are records of

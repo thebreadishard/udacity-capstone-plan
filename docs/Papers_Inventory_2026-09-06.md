@@ -1,5 +1,7 @@
 # Inventory of the PDFs that were committed under `Papers/` — 6 September 2026
 
+*Moved from the repository root to `docs/` on 2026-09-12 (repository-level record, not part of any plan); the review records of 6 September cite it by its old root path.*
+
 **Why this file exists.** On 6 September 2026 it was found that 37 PDFs had been committed to this
 public repository (36 in commit b28644b of 25 August 2026, one in 23c5c74 of 29 August). They were
 removed from version control the same day (commit 8c06bc7; `Papers/` is now git-ignored and the
