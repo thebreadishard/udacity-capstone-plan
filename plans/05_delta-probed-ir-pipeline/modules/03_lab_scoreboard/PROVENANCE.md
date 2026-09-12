@@ -67,7 +67,7 @@ statistics. The builder and notebook implement it without change.
   lists (items 61–62) as labelled cold columns, the R2/R3 scoreboard columns, and the intensities of
   decision 18.
 - Family labels by DFT mode vector (naphthalene dry-run mode table) in place of the frequency-range rule.
-- Item 50's description PDF read in full (the 8.0 cm⁻¹ statement is snippet grade) and the lightpipe
+- ~~Item 50's description PDF read in full~~ — **done 2026-09-12 evening**: the 8.0 cm⁻¹ conversion is now read, not snippet grade; the guide gives **no temperature** for either subset ("analytical conditions are not given" for the EPA/Sadtler spectra), so the 250 °C stays an assumption, now labelled per record origin (EPA/Sadtler: naphthalene, anthracene, benzene GC-IRD; NIST HP 5965: pyrene, chrysene, triphenylene). Still open: the lightpipe
   temperature; the Hudgins & Sandford conditions read for the non-1998 matrix species (Mattioda series).
 
 ## Files

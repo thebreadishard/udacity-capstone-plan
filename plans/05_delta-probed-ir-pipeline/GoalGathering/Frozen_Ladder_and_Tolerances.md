@@ -272,6 +272,10 @@ Coblentz 245 °C naphthalene column 5.1–14.1 cm⁻¹. None of the 63 primary p
 seventeen at 10 (C–H bend families). The R1 expectation of the rule above ("the hot WebBook entries are
 labelled hot columns; R1's decidability rests on the PNNL record") is thereby measured, not asserted; the
 ±30 % corrected form (δ_T printed beside u_T) and the margin per family remain the pilot note's choice.
+*Same evening, item 50 read in full:* the SRD 35 users' guide states no measurement temperature for either subset
+(EPA/Sadtler: "analytical conditions are not given"; NIST: instrument and resolution only), so the rule's "GC-IRD
+default" stays what the paragraph above already calls it — a floor written now — and is labelled per record origin
+as an assumption, not as an instrument value; the numbers of the note above are unchanged.
 
 **Promised:** R0–R1 scored as accuracy rungs against gas-phase data. R2–R3 scored as accuracy
 rungs per family under the decidability rule above and the "beat and noise" rule of §1. R6 per

@@ -47,9 +47,11 @@ CONSTANTS = {  # PRE_REGISTRATION.md, "Definitions (fixed)"
     "u_296_rule": "u_296 = chi_F * (hc nu_m / k_B) * nbar(nu_m, 296 K); nu_m = mean of the PAHdb theoretical v4.00 B3LYP/4-31G unscaled harmonic frequencies "
                   "below 700 cm-1 for the species' uid (benzene: probe 2a's DFT bath, 553.8 cm-1, the library has no benzene)",
     "bath_mode_cutoff_cm": 700.0,
-    "T_source_rule": "245 C where the record states it (Coblentz naphthalene vapour); GC-IRD lightpipe: 250 C, recalled default of the Ladder until item 50's "
-                     "description PDF is read; a record with neither a stated temperature nor series documentation (Coblentz benzene cell) is treated as hot at "
-                     "the GC-IRD default (Ladder rule)",
+    "T_source_rule": "245 C where the record states it (Coblentz naphthalene vapour). GC-IRD records: the SRD 35 users' guide (item 50, read in full "
+                     "2026-09-12) documents NO temperature - for the EPA/Sadtler spectra it says the original header information was not located and "
+                     "'analytical conditions are not given'; for the NIST spectra only the instrument (HP GC-MS-IR, IRD 5965) and 8 cm-1. So T_source = 523.15 K "
+                     "is the Ladder's hot-default ASSUMPTION, labelled per record origin, not a documented or recalled instrument value. A record with neither "
+                     "a stated temperature nor series documentation (Dow benzene cell) is treated the same way (Ladder rule)",
     "T_gcird_default_K": 523.15,
     "T_ref_K": 296.0,
     "candidate_margins_cm": [2.0, 5.0, 10.0],
@@ -81,12 +83,15 @@ def u_296(chi, nu_m):
     return chi * theta / np.expm1(theta / CONSTANTS["T_ref_K"])
 
 
-def source_temperature(tnote):
+def source_temperature(tnote, origin=""):
     if "245" in tnote:
         return 273.15 + 245.0, "stated 245 C (record header)"
     if "Coblentz" in tnote:
-        return CONSTANTS["T_gcird_default_K"], "no temperature in record or series: treated as hot at the GC-IRD default (Ladder rule)"
-    return CONSTANTS["T_gcird_default_K"], "GC-IRD lightpipe, not stated: 250 C recalled default (item 50 owed)"
+        return CONSTANTS["T_gcird_default_K"], "no temperature in record or series: hot-default assumption 250 C (Ladder rule)"
+    o = (origin or "").lower()
+    if "sadtler" in o or "epa" in o:
+        return CONSTANTS["T_gcird_default_K"], "GC-IRD, EPA/Sadtler (Digilab): SRD 35 guide gives no analytical conditions; hot-default assumption 250 C"
+    return CONSTANTS["T_gcird_default_K"], "GC-IRD, NIST MSDC (HP 5965 IRD): SRD 35 guide gives no temperature; hot-default assumption 250 C"
 
 
 def t_terms(species, fam, T_src, nu_m, u_res, u_c):
@@ -220,7 +225,7 @@ def main():
         state = meta.get("STATE", "?")
         gas_meta.append(dict(file=path.name, species=name, source=src, state=state, origin=meta.get("ORIGIN"), resolution=meta.get("RESOLUTION"),
                              deltax=step, n_points=meta.get("NPOINTS"), noise_sigma=sigma, n_peaks=len(rows), role=role))
-        T_src, T_lab = source_temperature(tnote)
+        T_src, T_lab = source_temperature(tnote, meta.get("ORIGIN", ""))
         nu_m = NU_M.get(name, np.nan)
         for r in rows:
             fam = family(r["frequency_cm"])

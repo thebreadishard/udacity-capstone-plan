@@ -1,4 +1,4 @@
-# Module 03 - laboratory band dataset and matrix-gas pairs - 2026-09-12 14:44
+# Module 03 - laboratory band dataset and matrix-gas pairs - 2026-09-12 18:19
 
 Built by `build_lab_tables.py` under PRE_REGISTRATION.md (2026-09-11). These are laboratory measurements from the public PAHdb experimental library and the NIST Chemistry WebBook. Not synthetic, not AI-generated, not the Module 02 dataset.
 
@@ -66,7 +66,7 @@ Constants:
  "chi_floor_cm_per_K": 0.044,
  "u_296_rule": "u_296 = chi_F * (hc nu_m / k_B) * nbar(nu_m, 296 K); nu_m = mean of the PAHdb theoretical v4.00 B3LYP/4-31G unscaled harmonic frequencies below 700 cm-1 for the species' uid (benzene: probe 2a's DFT bath, 553.8 cm-1, the library has no benzene)",
  "bath_mode_cutoff_cm": 700.0,
- "T_source_rule": "245 C where the record states it (Coblentz naphthalene vapour); GC-IRD lightpipe: 250 C, recalled default of the Ladder until item 50's description PDF is read; a record with neither a stated temperature nor series documentation (Coblentz benzene cell) is treated as hot at the GC-IRD default (Ladder rule)",
+ "T_source_rule": "245 C where the record states it (Coblentz naphthalene vapour). GC-IRD records: the SRD 35 users' guide (item 50, read in full 2026-09-12) documents NO temperature - for the EPA/Sadtler spectra it says the original header information was not located and 'analytical conditions are not given'; for the NIST spectra only the instrument (HP GC-MS-IR, IRD 5965) and 8 cm-1. So T_source = 523.15 K is the Ladder's hot-default ASSUMPTION, labelled per record origin, not a documented or recalled instrument value. A record with neither a stated temperature nor series documentation (Dow benzene cell) is treated the same way (Ladder rule)",
  "T_gcird_default_K": 523.15,
  "T_ref_K": 296.0,
  "candidate_margins_cm": [
