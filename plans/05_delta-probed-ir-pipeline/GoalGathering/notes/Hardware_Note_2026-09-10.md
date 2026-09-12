@@ -106,3 +106,5 @@ reports 48 GB; if the BIOS refuses, return both. The WSL ceiling with 48 GB: ≈
 naphthalene xtight energy, marginal for pyrene. The mistake was mine (reading "2 memory devices, SO-DIMM form
 factor" as two slots without checking the manufacturer's sheet); the checking rule for hardware from now on:
 the manufacturer's spec page before the firmware table.
+
+**Order cancelled by the user the same evening (2026-09-12).** The laptop stays at 32 GB; the memory levers of the Budget's parked note (25 GB ceiling, max_memory, swap) remain the only way to fit larger jobs on it. A single 32 GB module for 48 GB remains a possible later step, subject to the firmware accepting it; not planned.
