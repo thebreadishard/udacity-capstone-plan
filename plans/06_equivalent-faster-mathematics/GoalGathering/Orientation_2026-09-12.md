@@ -151,8 +151,8 @@ is confined to them.
 | S1 proven locality / decay rate | E1/E2 | **alive** (2026-09-12): X0 read — general E1 closed by QMA-hardness, class-restricted E1/E2 open; X3a from the naphthalene log: tight LNO keeps 92–100 % of active occupied and ~56 % of virtual orbitals per fragment, locality not yet paying at this size | X0 done ([reading note](Reading_Note_2026-09-12_X0_Complexity_and_Locality.md)), X3a done, X3b (pair decay) queued after the anchor job | decay constant still to measure |
 | S2 low rank of the difference (THC) | E2 | proposed, literature first | verified reading | — |
 | S3 quasi-1D π-systems (DMRG) | E1 at fixed bond dimension | proposed, literature first | reading; later a benzene π-space check | — |
-| S4 reduce the target | E3 | proposed | X2 | — |
-| S5 query algebra (secondary track) | E1 | proposed | X1 | — |
+| S4 reduce the target | E3 | **alive** (2026-09-12, X2 done): on the benzene dry-run tensor only 6 of 435 off-diagonal pairs move any harmonic position by > 0.5 cm⁻¹ (one pair carries 19.6 of the 19.6 cm⁻¹ total); no element moves a band > 0.05 cm⁻¹ at plan 05's per-element noise | X2 done ([result note](Result_Note_2026-09-12_X1_X2_Benzene.md)); next: the same count on the naphthalene dry-run tensor | scored information ≪ matrix; stand-in functional pair, harmonic positions only |
+| S5 query algebra (secondary track) | E1 | **alive, conditional** (2026-09-12, X1 done): 53 of 435 elements above 1 µE_h; exact sparse recovery needs 4–5 Hessian–vector products (greedy colouring bound) = 240–300 energies if a product costs 2M energies, against K = 448; rank is full (30), no low-rank route | X1 done; next: verified reading on local-CC analytic gradients (is a cheap product available?) | dies if no cheap product exists |
 | S6 models as proposers | — | standing rule | — | — |
 | Lean route | referee for E1 | proposed | X4 | — |
 
