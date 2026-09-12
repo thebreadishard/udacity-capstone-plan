@@ -54,9 +54,11 @@ def load_geometry():
     raise FileNotFoundError(f"no stageA.json or geometry.json under {d}")
 
 
-def run_one(basis, threads, thresh_name, canonical, out, basis_terms_scheme="qz5z"):
+def run_one(basis, threads, thresh_name, canonical, out, basis_terms_scheme="qz5z", resume=False, ckpt_abort_after=None):
     from pyscf import gto, scf, lo, lib
-    from pyscf.lno import LNOCCSD_T
+    from lno_checkpoint import CheckpointedLNOCCSD_T, FragmentCheckpointError, save_lo, load_lo   # engine layer 3 (2026-09-12)
+    os.makedirs(out, exist_ok=True)
+    stem = os.path.join(out, f"{MOLECULE}_{basis}_{thresh_name}")
     lib.num_threads(threads)
     symbols, coords = load_geometry()
     mol = gto.M(atom=[(s, tuple(c)) for s, c in zip(symbols, coords)], unit="Bohr", basis=basis,
@@ -77,34 +79,62 @@ def run_one(basis, threads, thresh_name, canonical, out, basis_terms_scheme="qz5
     frozen = sum(1 for x in symbols if x.upper() == "C")   # one frozen 1s per carbon (6 benzene, 10 naphthalene; hard-coded 6 until 2026-09-10)
     rec["frozen_core"] = frozen
     t0 = time.time()
-    nocc = int(np.count_nonzero(mf.mo_occ))
-    orbocc = mf.mo_coeff[:, frozen:nocc]
-    mlo = lo.PipekMezey(mol, orbocc)
-    lo_coeff = mlo.kernel()
-    for _ in range(100):   # Jacobi sweeps until stable (the code's own test recipe)
-        lo1, stable = mlo.stability_jacobi(return_status=True)   # pyscf 2.14: (mo_coeff, stable)
-        if stable:
-            break
-        mlo = lo.PipekMezey(mol, lo1)
-        mlo.init_guess = None
+    lo_path = stem + "_lo.npz"
+    if resume and os.path.exists(lo_path):
+        # 2026-09-12 (engine layer 3): a resumed run must use the SAME localised orbitals, so the LNO fragments are identical
+        lo_coeff, frozen_saved = load_lo(lo_path)
+        if frozen_saved != frozen:
+            raise RuntimeError(f"saved localisation has frozen={frozen_saved}, this run frozen={frozen}")
+        rec["t_localise_s"] = time.time() - t0
+        rec["localisation"] = f"reloaded from {os.path.basename(lo_path)}"
+        log(f"{basis}: PM localisation reloaded from {os.path.basename(lo_path)} ({lo_coeff.shape[1]} LMOs)")
+    else:
+        nocc = int(np.count_nonzero(mf.mo_occ))
+        orbocc = mf.mo_coeff[:, frozen:nocc]
+        mlo = lo.PipekMezey(mol, orbocc)
         lo_coeff = mlo.kernel()
-    rec["t_localise_s"] = time.time() - t0
+        for _ in range(100):   # Jacobi sweeps until stable (the code's own test recipe)
+            lo1, stable = mlo.stability_jacobi(return_status=True)   # pyscf 2.14: (mo_coeff, stable)
+            if stable:
+                break
+            mlo = lo.PipekMezey(mol, lo1)
+            mlo.init_guess = None
+            lo_coeff = mlo.kernel()
+        rec["t_localise_s"] = time.time() - t0
+        rec["localisation"] = "computed"
+        save_lo(lo_path, lo_coeff, frozen, extra={"e_scf": np.float64(mf.e_tot), "basis": basis, "molecule": MOLECULE})
+        log(f"{basis}: PM localisation {rec['t_localise_s']:.1f} s, {lo_coeff.shape[1]} LMOs (saved to {os.path.basename(lo_path)})")
     rec["n_lmo"] = int(lo_coeff.shape[1])
-    log(f"{basis}: PM localisation {rec['t_localise_s']:.1f} s, {lo_coeff.shape[1]} LMOs")
 
     frag_lolist = [[i] for i in range(lo_coeff.shape[1])]
     t0 = time.time()
-    mcc = LNOCCSD_T(mf, lo_coeff, frag_lolist, frozen=frozen)
+    mcc = CheckpointedLNOCCSD_T(mf, lo_coeff, frag_lolist, frozen=frozen)
     mcc.lno_thresh = THRESH[thresh_name]
     mcc.verbose = 4  # 2026-09-10: INFO level, so the LNO fragment loop reports progress into the log
-    mcc.kernel()
-    rec["t_lno_ccsd_t_s"] = time.time() - t0
+    # 2026-09-12 (engine layer 3): per-fragment checkpoint; a resumed run skips the fragments already solved
+    mcc.ckpt_path = stem + "_fragments.json"
+    mcc.ckpt_meta = {"molecule": MOLECULE, "basis": basis, "thresh_name": thresh_name, "lno_thresh": [float(x) for x in THRESH[thresh_name]],
+                     "nbf": int(mol.nao_nr()), "n_lmo": int(lo_coeff.shape[1]), "frozen": int(frozen), "e_scf_1e-8": round(float(mf.e_tot), 8),
+                     "engine": "pyscf 2.14.0 + pyscf-forge 1.1.1 + patches 1,2"}
+    mcc.ckpt_abort_after = ckpt_abort_after
+    n_restored = mcc.ckpt_load()
+    if n_restored:
+        log(f"{basis}: checkpoint {os.path.basename(mcc.ckpt_path)} holds {n_restored} of {len(frag_lolist)} fragments — resuming")
+    try:
+        mcc.kernel()
+    except FragmentCheckpointError as e:
+        log(f"{basis}: {e}")
+        raise
+    rec["t_lno_ccsd_t_s"] = time.time() - t0            # wall time of THIS segment (restored fragments cost only their make_las)
+    rec["checkpoint"] = dict(mcc.ckpt_summary, restored_at_start=n_restored, file=os.path.basename(mcc.ckpt_path))
+    rec["t_lno_fragments_sum_s"] = rec["checkpoint"]["t_fragments_sum_s"]   # solve time summed over all segments
     rec["e_corr_pt2"] = float(mcc.e_corr_pt2)
     rec["e_corr_ccsd"] = float(mcc.e_corr_ccsd)
     rec["e_corr_ccsd_t"] = float(mcc.e_corr_ccsd_t)
     rec["e_tot_lno_ccsd_t"] = float(mf.e_tot + mcc.e_corr_ccsd_t)
     rec["peak_rss_gb_after_lno"] = peak_rss_gb()
-    log(f"{basis}: LNO-CCSD(T) {rec['t_lno_ccsd_t_s']:.1f} s, E_corr(T) = {mcc.e_corr_ccsd_t:.8f}, "
+    log(f"{basis}: LNO-CCSD(T) {rec['t_lno_ccsd_t_s']:.1f} s this segment (fragment solves summed over segments {rec['t_lno_fragments_sum_s']:.1f} s, "
+        f"{rec['checkpoint']['fragments_new_this_run']} new + {n_restored} restored), E_corr(T) = {mcc.e_corr_ccsd_t:.8f}, "
         f"peak RSS {rec['peak_rss_gb_after_lno']:.2f} GB")
 
     if basis_terms_scheme != "none":   # decision 33 (2026-09-12): the two cheap basis terms, timed like everything else
@@ -168,6 +198,11 @@ def main():
     ap.add_argument("--molecule", default="benzene", help="geometry from results_dryrun/<molecule>/ (stageA.json or geometry.json)")
     ap.add_argument("--basis-terms", default="qz5z", choices=["qz5z", "none"],
                     help="decision 33 (2026-09-12): time the two cheap basis terms [MP2/QZ − MP2/anchor] + [SCF/5Z − SCF/anchor] beside the LNO energy (default)")
+    ap.add_argument("--resume", action="store_true",
+                    help="2026-09-12: reload the saved localised orbitals and the per-fragment checkpoint of an interrupted run (engine layer 3)")
+    ap.add_argument("--ckpt-abort-after", type=int, default=None,
+                    help="testing only: raise after this many newly solved fragments (the checkpoint is written first)")
+    ap.add_argument("--out", default=None, help="output directory (default results_timing/ next to this script)")
     ap.add_argument("--max-memory", type=int, default=24000,
                     help="pyscf max_memory in MB for every molecule object (default 24000); lower it to push the large integral blocks to disk "
                          "(the code path patched 2026-09-10) — the memory lever of the Budget's parked note of 2026-09-12")
@@ -178,9 +213,10 @@ def main():
     MOLECULE = args.molecule
     log(f"anchor single-point timing on {platform.node()}, molecule {MOLECULE}, {args.threads} threads, thresholds {args.thresh} = {THRESH[args.thresh]}")
     results = []
+    out_dir = args.out or OUT
     for b in args.basis:
-        results.append(run_one(b, args.threads, args.thresh, canonical=(not args.no_canonical and b == args.canonical_basis), out=OUT,
-                               basis_terms_scheme=args.basis_terms))
+        results.append(run_one(b, args.threads, args.thresh, canonical=(not args.no_canonical and b == args.canonical_basis), out=out_dir,
+                               basis_terms_scheme=args.basis_terms, resume=args.resume, ckpt_abort_after=args.ckpt_abort_after))
     print(f"\n# Anchor single-point timing — {MOLECULE} at the dry-run B3LYP/6-31G* geometry — "
           f"{datetime.now():%Y-%m-%d %H:%M}, {platform.node()} (WSL), {args.threads} threads, LNO thresholds {THRESH[args.thresh]}")
     print("| basis | nbf | RHF(DF) s | PM s | LNO-CCSD(T) s | peak RSS GB | E_corr LNO-CCSD(T) | canonical CCSD(T) s | LNO − canonical µE_h |")

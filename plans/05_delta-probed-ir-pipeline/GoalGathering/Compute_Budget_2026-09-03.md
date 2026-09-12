@@ -360,3 +360,10 @@ The log is archived as `probes/results_timing/naphthalene_ccpvtz_xtight_failed_a
 start from scratch (LNO fragments do not checkpoint). Measured so far at xtight: fragment 1 ≈ 1 h 50, fragment 2
 ≈ 70 min, RSS 3–8 GB with the out-of-core path, scratch up to 29 GB in `~/qc_tmp` (22 GB left behind, not deleted).
 
+**Dated note 2026-09-12 (evening, later) — the timing relaunched with per-fragment checkpointing.** Before the relaunch a
+checkpoint layer was built and tested (`probes/lno_checkpoint.py`; benzene cc-pVDZ: abort after 2 of 15 fragments,
+resume, energies identical to the record to 0.000 nE_h). The naphthalene cc-pVTZ xtight timing was relaunched at
+≈ 16:52 with the same three memory levers; from now on a killed run is resumed with `--resume` and loses at most the
+fragment in progress. Measured earlier today at xtight: fragment 1 ≈ 1 h 50 (310/378 virtuals), fragment 2 ≈ 70 min.
+The Windows-side rule of the previous note is in force for the whole run.
+

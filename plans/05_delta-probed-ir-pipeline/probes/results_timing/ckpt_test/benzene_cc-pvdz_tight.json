@@ -1,0 +1,34 @@
+{
+ "basis": "cc-pvdz",
+ "nbf": 114,
+ "natom": 12,
+ "threads": 8,
+ "lno_thresh": [
+  1e-06,
+  1e-07
+ ],
+ "thresh_name": "tight",
+ "machine": "Asus18",
+ "python": "3.12.14",
+ "t_scf_s": 0.9183852672576904,
+ "e_scf": -230.72142256672052,
+ "scf_converged": true,
+ "frozen_core": 6,
+ "t_localise_s": 0.008300542831420898,
+ "localisation": "reloaded from benzene_cc-pvdz_tight_lo.npz",
+ "n_lmo": 15,
+ "t_lno_ccsd_t_s": 167.48813819885254,
+ "checkpoint": {
+  "fragments_done": 15,
+  "fragments_new_this_run": 13,
+  "t_fragments_sum_s": 191.0,
+  "restored_at_start": 2,
+  "file": "benzene_cc-pvdz_tight_fragments.json"
+ },
+ "t_lno_fragments_sum_s": 191.0,
+ "e_corr_pt2": -0.7835628333368825,
+ "e_corr_ccsd": -0.8235550352081451,
+ "e_corr_ccsd_t": -0.8596053948228793,
+ "e_tot_lno_ccsd_t": -231.5810279615434,
+ "peak_rss_gb_after_lno": 0.9850692749023438
+}

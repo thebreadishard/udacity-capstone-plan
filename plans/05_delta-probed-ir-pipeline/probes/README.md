@@ -262,3 +262,16 @@ Windows side that needs more than about 1 GB — a Lean/Mathlib `lake build` (8 
 timing together with the whole WSL VM (Budget dated note 2026-09-12 evening). Check with the Windows event log
 (Resource-Exhaustion-Detector 2004) when a WSL job vanishes without a traceback.
 
+**Engine layer 3 (2026-09-12 evening): per-fragment checkpointing — `probes/lno_checkpoint.py`.** `CheckpointedLNOCCSD_T`
+writes every LNO fragment's three energies to `<out>/<molecule>_<basis>_<thresh>_fragments.json` the moment the
+fragment is solved, and a run started with `--resume` reloads the saved localised orbitals
+(`…_lo.npz`, so the fragments are identical) and skips the fragments already in the file. Upstream pyscf-forge has
+"[ ] chkfile / restart" on its own TODO list; nothing upstream is modified (see
+`GoalGathering/notes/Software_Changes_Ledger.md`, row 3). **Tested 2026-09-12 16:46–16:49 on benzene cc-pVDZ tight:**
+a run aborted after 2 of 15 fragments (`--ckpt-abort-after 2`, test switch) and resumed with `--resume` reproduced
+the recorded energies exactly (E_SCF, E_corr MP2/CCSD/CCSD(T): differences 0.000 nE_h against
+`results_timing/benzene_cc-pvdz_tight.json`), 13 new + 2 restored fragments; test outputs in
+`results_timing/ckpt_test/`. Wall-time bookkeeping: `t_lno_ccsd_t_s` is the segment's wall time, `t_lno_fragments_sum_s`
+the solve time summed over all segments, `checkpoint` the counts. **Rule:** after any interruption of a timing run,
+relaunch the same command with `--resume`; the JSON is the record. Owed: the same layer in `m1_frozen_spaces.py`.
+
