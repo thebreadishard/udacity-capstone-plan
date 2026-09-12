@@ -83,7 +83,6 @@ def main():
         # LMO centroids
         r_ao = mol.intor("int1e_r"); S = mf.get_ovlp()
         cent = np.array([[float(C_loc[:, i] @ r_ao[k] @ C_loc[:, i]) for k in range(3)] for i in range(C_loc.shape[1])])
-        # MP2 pair energies in the localised occupied basis: rotate occupied block, run MP2 with those orbitals (non-canonical MP2 via iterative solver)
         # canonical MP2 amplitudes, then the pair-energy matrix rotated exactly into the localised occupied basis (E_ij is bilinear in i, j)
         ptc = mp.MP2(mf, frozen=ncore); e_corr, t2 = ptc.kernel()
         eris_ovov = ptc.ao2mo(mf.mo_coeff)  # (ia|jb)
