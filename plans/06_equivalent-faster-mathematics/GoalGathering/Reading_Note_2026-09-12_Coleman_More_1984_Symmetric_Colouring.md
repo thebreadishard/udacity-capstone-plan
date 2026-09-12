@@ -49,9 +49,9 @@ practical recommendation.
    "diagonal in P". Small; all ingredients in the file.
 3. **The scheme that beats the deck is substitution, not direct reading.** X1c (below) applies their
    recipe to the benzene pattern: 6–7 products, against 8–18 (CPR) and 7–14 (direct symmetric), with
-   the lower bound `maxr = 6` met at every θ but the smallest. At 2M energies per product that is
-   **360–420 energies against K = 448** — the first count in plan 06 that undercuts the deck without a
-   cheap-gradient assumption. The price is the one the paper names: substitution propagates errors, and
+   the lower bound `maxr = 6` met at every θ but the smallest. At X1's convention of 2M energies per product that reads as 360–420 energies against K = 448;
+   **corrected the same evening (P24 note):** a second-order product from energies costs ≈ 4M, so 720–840
+   energies — the count undercuts the deck only with gradients (M2), then by an order of magnitude. The price is the one the paper names: substitution propagates errors, and
    plan 05's probes carry noise σ_E. The next test is therefore numerical, on the same tensor: add the
    per-element noise of X2 to the probes and print the recovered-matrix error after substitution against
    the direct schemes' error. Until that is printed, X1c is a count, not a route.

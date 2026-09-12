@@ -65,3 +65,14 @@ Across the whole grid (both σ_E, four θ each): no trial of (b), (d) or (e) eve
 S5: **alive** — condition (a) of the two-sided condition (X1c) is now met at benzene as far as noise is
 concerned; open: the engine-side cost of a product with noise (a plan-05 measurement) and the naphthalene
 repeat. X1d done.
+
+## Correction of the cost convention (same evening, while writing plan 05's P24)
+
+The line "6 products ≈ 360 energies at X1's convention of 2M energies per product" inherits X1's convention,
+and that convention assumes a gradient costs M energies — one-sided first differences, an accuracy plan 05 does
+not accept. A second-order Hessian–vector product from energies alone costs ≈ 4M = 120 energies per product
+(four points per component), so **6 products ≈ 720 energies at benzene, more than the deck's 448**. With two
+analytic gradients per product (the side project's M2) the cost is 2g per product in energy units, i.e. 12g for
+six — an order of magnitude below the deck if g ≲ 10. The reading of this note therefore stands for the
+*algebra and the noise*; the *energy comparison* is: energies only — no gain at benzene; gradients — a large
+gain that grows with size. Plan 05's P24 note carries the full table; the ledger row is corrected.
