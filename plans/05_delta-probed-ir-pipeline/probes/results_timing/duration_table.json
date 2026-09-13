@@ -1,0 +1,331 @@
+{
+ "date": "2026-09-13 10:27",
+ "F": 2.329093413897281,
+ "F_note": "PROVISIONAL: 15 of 24 fragments done, sum 16.7 h; remaining 9 at the observed mean 67 min -> total 26.8 h -> F = 2.33",
+ "measured": {
+  "benzene_TZ_xtight_energy_h": [
+   1.2666666666666666,
+   "results_m1/XTIGHT_READIN.md: 4,576 s per frozen-arm point"
+  ],
+  "naphthalene_TZ_tight_energy_h": [
+   11.493055555555555,
+   "results_timing/naphthalene_cc-pvtz_tight.json"
+  ],
+  "R0_deck_energies": [
+   448,
+   "dry run REPORT, mode E K at sigma_E = 1 uEh, c = 3"
+  ],
+  "R1_deck_energies": [
+   474,
+   "proposal 3.2: 96 + 96 + 282; X13: 141 eligible pairs"
+  ],
+  "sigma_run_energies": [
+   10,
+   "decision 35: 9 points + reference, tight, one mode"
+  ],
+  "corpus_hessians": [
+   11321,
+   "Module 05 corpus factory candidates"
+  ],
+  "corpus_min_per_hessian": [
+   [
+    3,
+    7
+   ],
+   "Module 05 timing (B3LYP/6-31G*), P13 memo 4"
+  ],
+  "benzene_B3LYP_hessian_s": [
+   388,
+   "dry run stageA.json timing (psi4, 8 threads)"
+  ]
+ },
+ "estimates": {
+  "desktop_speedup_vs_laptop": [
+   [
+    2.3,
+    3.8333333333333335
+   ],
+   "P13 memo: 3-5 h per naphthalene tight energy on 16 cores, from the core count; never timed"
+  ],
+  "snellius_node_speedup_vs_laptop": [
+   [
+    4.6,
+    7.666666666666667
+   ],
+   "Budget Snellius note: 1.5-2.5 h wall per naphthalene tight energy on one thin node"
+  ],
+  "snellius_nodes_parallel": [
+   4,
+   "Small Compute application; decks are embarrassingly parallel over energies"
+  ],
+  "R2_energy_factor_vs_naphthalene": [
+   [
+    5,
+    10
+   ],
+   "Budget R2 row: per energy an unmeasured 5-10 x naphthalene"
+  ],
+  "R3_energy_factor_vs_naphthalene": [
+   [
+    25,
+    100
+   ],
+   "extrapolation: the R2 step applied twice (coronene 102 modes, 36 atoms); no measurement of any kind"
+  ],
+  "modes": {
+   "pyrene": 72,
+   "chrysene": 84,
+   "triphenylene": 84,
+   "tetracene": 84,
+   "coronene": 102
+  },
+  "group_order": {
+   "pyrene": 8,
+   "chrysene": 4,
+   "triphenylene": 12,
+   "tetracene": 8,
+   "coronene": 24
+  },
+  "naphthalene_dft_stageA_h": [
+   [
+    2,
+    4
+   ],
+   "two psi4 Hessians of 18 atoms at the dry run's grid; benzene took 388 s per Hessian"
+  ],
+  "m2a_days": [
+   0.3,
+   "pre-registration: cells 0-4 in one evening"
+  ]
+ },
+ "rows": [
+  {
+   "step": "R0 pilot (benzene)",
+   "calc": "448 LNO-CCSD(T)/cc-pVTZ xtight energies at 76 min (m)",
+   "laptop_d": [
+    23.644444444444446,
+    23.644444444444446
+   ],
+   "pc_d": [
+    6.168115942028986,
+    10.280193236714977
+   ],
+   "snellius_d": [
+    0.7710144927536232,
+    1.2850241545893721
+   ],
+   "flag": "m",
+   "note": ""
+  },
+  {
+   "step": "naphthalene DFT dry run, stage A",
+   "calc": "two psi4 Hessians (B3LYP, BHHLYP) at 6-31G*",
+   "laptop_d": [
+    0.08333333333333333,
+    0.16666666666666666
+   ],
+   "pc_d": [
+    0.021739130434782608,
+    0.07246376811594203
+   ],
+   "snellius_d": [
+    0.002717391304347826,
+    0.009057971014492754
+   ],
+   "flag": "e",
+   "note": "B3LYP half exists (plan 02); psi4 runs on Windows, not on Snellius as installed"
+  },
+  {
+   "step": "R1 smoothness sigma run (decision 35)",
+   "calc": "10 naphthalene tight energies at 11.5 h (m)",
+   "laptop_d": [
+    4.788773148148148,
+    4.788773148148148
+   ],
+   "pc_d": [
+    1.2492451690821256,
+    2.082075281803543
+   ],
+   "snellius_d": [
+    0.1561556461352657,
+    0.26025941022544286
+   ],
+   "flag": "m",
+   "note": ""
+  },
+  {
+   "step": "M2a (gradient cost ratio g)",
+   "calc": "PySCFAD cells 0-4, benzene cc-pVDZ",
+   "laptop_d": [
+    0.3,
+    0.3
+   ],
+   "pc_d": [
+    0.07826086956521738,
+    0.13043478260869565
+   ],
+   "snellius_d": [
+    0.009782608695652173,
+    0.016304347826086956
+   ],
+   "flag": "e",
+   "note": "laptop only (installed there); decides whether M2 is built"
+  },
+  {
+   "step": "R1 deck (naphthalene)",
+   "calc": "474 xtight energies at 27 h = 11.5 h x F, F = 2.33 (provisional)",
+   "laptop_d": [
+    528.6759000000001,
+    528.6759000000001
+   ],
+   "pc_d": [
+    137.91545217391305,
+    229.85908695652176
+   ],
+   "snellius_d": [
+    17.23943152173913,
+    28.73238586956522
+   ],
+   "flag": "m/F",
+   "note": ""
+  },
+  {
+   "step": "R2 pyrene",
+   "calc": "deck ~936 energies (4M + 2E, E ~ M^2/2|G| = 324) at 5-10 x the naphthalene energy",
+   "laptop_d": null,
+   "pc_d": [
+    1361.6968695652174,
+    4538.989565217392
+   ],
+   "snellius_d": [
+    170.21210869565218,
+    567.373695652174
+   ],
+   "flag": "e",
+   "note": "does not fit the laptop's 25 GB"
+  },
+  {
+   "step": "R2 chrysene",
+   "calc": "deck ~2100 energies (4M + 2E, E ~ M^2/2|G| = 882) at 5-10 x the naphthalene energy",
+   "laptop_d": null,
+   "pc_d": [
+    3055.0891304347824,
+    10183.63043478261
+   ],
+   "snellius_d": [
+    381.8861413043478,
+    1272.9538043478262
+   ],
+   "flag": "e",
+   "note": "does not fit the laptop's 25 GB"
+  },
+  {
+   "step": "R2 triphenylene",
+   "calc": "deck ~924 energies (4M + 2E, E ~ M^2/2|G| = 294) at 5-10 x the naphthalene energy",
+   "laptop_d": null,
+   "pc_d": [
+    1344.2392173913045,
+    4480.797391304349
+   ],
+   "snellius_d": [
+    168.02990217391306,
+    560.0996739130436
+   ],
+   "flag": "e",
+   "note": "does not fit the laptop's 25 GB"
+  },
+  {
+   "step": "R2 tetracene",
+   "calc": "deck ~1218 energies (4M + 2E, E ~ M^2/2|G| = 441) at 5-10 x the naphthalene energy",
+   "laptop_d": null,
+   "pc_d": [
+    1771.9516956521738,
+    5906.505652173913
+   ],
+   "snellius_d": [
+    221.49396195652173,
+    738.3132065217392
+   ],
+   "flag": "e",
+   "note": "does not fit the laptop's 25 GB"
+  },
+  {
+   "step": "R3 coronene",
+   "calc": "deck ~842 energies at 25-100 x the naphthalene energy (extrapolation)",
+   "laptop_d": null,
+   "pc_d": [
+    6121.089293478261,
+    40807.26195652175
+   ],
+   "snellius_d": [
+    765.1361616847827,
+    5100.907744565218
+   ],
+   "flag": "e (extrapolated)",
+   "note": "no measurement of any kind behind the factor"
+  },
+  {
+   "step": "Module 05 corpus factory",
+   "calc": "11321 B3LYP/6-31G* Hessians at 3-7 min (m, per Hessian)",
+   "laptop_d": [
+    23.585416666666664,
+    55.03263888888889
+   ],
+   "pc_d": [
+    23.585416666666664,
+    55.03263888888889
+   ],
+   "snellius_d": [
+    0.3685221354166666,
+    0.8598849826388889
+   ],
+   "flag": "m/e",
+   "note": "same per-Hessian time on laptop and desktop (8 threads each; the laptop is busy with the anchor); Snellius: 4 nodes x 16 concurrent jobs assumed"
+  },
+  {
+   "step": "Module 05 training",
+   "calc": "the Transformer on the corpus (CPU/GPU)",
+   "laptop_d": null,
+   "pc_d": null,
+   "snellius_d": null,
+   "flag": "not measured",
+   "note": "hours, not days, for training/proposer/officer/assembly; R6 not estimable before R2-R3 fragment timings"
+  },
+  {
+   "step": "Module 06 generative proposer",
+   "calc": "DFT-only corpora, no coupled-cluster cost",
+   "laptop_d": null,
+   "pc_d": null,
+   "snellius_d": null,
+   "flag": "not measured",
+   "note": "hours, not days, for training/proposer/officer/assembly; R6 not estimable before R2-R3 fragment timings"
+  },
+  {
+   "step": "Module 07 campaign officer",
+   "calc": "orchestration and cost record",
+   "laptop_d": null,
+   "pc_d": null,
+   "snellius_d": null,
+   "flag": "not measured",
+   "note": "hours, not days, for training/proposer/officer/assembly; R6 not estimable before R2-R3 fragment timings"
+  },
+  {
+   "step": "Module 08 assembly",
+   "calc": "scoring R0-R3, no new energies",
+   "laptop_d": null,
+   "pc_d": null,
+   "snellius_d": null,
+   "flag": "not measured",
+   "note": "hours, not days, for training/proposer/officer/assembly; R6 not estimable before R2-R3 fragment timings"
+  },
+  {
+   "step": "R6 fragment-probed C384H48 (if licensed)",
+   "calc": "56 symmetry-unique fragments (Module 02) x an unmeasured per-fragment cost at that size",
+   "laptop_d": null,
+   "pc_d": null,
+   "snellius_d": null,
+   "flag": "not measured",
+   "note": "hours, not days, for training/proposer/officer/assembly; R6 not estimable before R2-R3 fragment timings"
+  }
+ ]
+}
