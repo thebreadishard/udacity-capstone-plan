@@ -140,6 +140,8 @@ without first proving that classical result; T3 in Lean is two theorems away, no
 
 ## 6. Protocol
 
+*Since 2026-09-13 the protocol includes the [decision rule](Decision_Rule_2026-09-13_When_Plan06_Closes_or_Transfers.md): dated closing and review tests per branch; closed directions carry "closed (date, test)" in the ledger; every new experiment names the decision it serves.*
+
 1. Every direction has a level (E1/E2/E3), a falsification test, and a status in the ledger.
 2. First tests use existing data and verified reading only; no quantum-chemistry compute for plan 06
    until a direction has passed its first test and plan 05's anchor work has room.
@@ -148,7 +150,7 @@ without first proving that classical result; T3 in Lean is two theorems away, no
 4. References verified before written; no number from recall; complexity claims cited, not asserted.
 5. Human-time budget: exploration in conversation; the user decides when a direction gets a day.
 
-**Dated addition 2026-09-13 — a decision rule proposed** ([Decision_Rule_2026-09-13_When_Plan06_Closes_or_Transfers.md](Decision_Rule_2026-09-13_When_Plan06_Closes_or_Transfers.md), for the user to adopt or amend): dates and tests for closing branch C (cost) and reviewing branch M (mathematics); every experiment after it names the row it serves. The M2 design (frozen-space gradients in JAX) is written in plan 05 (`notes/Design_Note_2026-09-13_M2_Frozen_Space_Gradients_in_JAX.md`) so that M2a's number meets a costed plan.
+**Dated addition 2026-09-13 — the decision rule, adopted by the user the same morning** ([Decision_Rule_2026-09-13_When_Plan06_Closes_or_Transfers.md](Decision_Rule_2026-09-13_When_Plan06_Closes_or_Transfers.md); it binds this plan from here on): dates and tests for closing branch C (cost) and reviewing branch M (mathematics); every experiment after it names the row it serves. The M2 design (frozen-space gradients in JAX) is written in plan 05 (`notes/Design_Note_2026-09-13_M2_Frozen_Space_Gradients_in_JAX.md`) so that M2a's number meets a costed plan.
 
 ## 7. First experiments (all on data or logs in the repository, minutes each)
 

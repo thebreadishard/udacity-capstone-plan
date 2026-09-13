@@ -1,6 +1,6 @@
-# Decision rule 2026-09-13 — when plan 06 closes a branch, transfers a result, or stops (dated, before the numbers)
+# Decision rule 2026-09-13 — when plan 06 closes a branch, transfers a result, or stops (dated, before the numbers) — **adopted by the user on 13 September 2026 ("Akkoord met de beslisregel, neem hem over")**
 
-*Plan 05 has a kill criterion for its side project and a calendar for its rungs; plan 06 so far has only its protocol ("a direction lives while it has a falsification test"). After the evening of 12 September the plan has thirteen experiments, two conjectures, a draft proposal and a pre-registered measurement — enough that "alive" needs a date. This note fixes, before the pending numbers arrive, what each outcome does to plan 06. Written by the assistant; the user decides whether to adopt it (a proposal, not a decision).*
+*Plan 05 has a kill criterion for its side project and a calendar for its rungs; plan 06 so far has only its protocol ("a direction lives while it has a falsification test"). After the evening of 12 September the plan has thirteen experiments, two conjectures, a draft proposal and a pre-registered measurement — enough that "alive" needs a date. This note fixes, before the pending numbers arrive, what each outcome does to plan 06. Written by the assistant on the morning of 13 September; adopted by the user the same morning, unchanged.*
 
 ## 1. The two branches, restated as the user stated them (12 September)
 
