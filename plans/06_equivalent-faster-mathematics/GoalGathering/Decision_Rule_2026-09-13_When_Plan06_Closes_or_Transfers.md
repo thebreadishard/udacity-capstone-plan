@@ -17,6 +17,7 @@
 | λ·gap across benzene, naphthalene, pyrene (X7) | X7 | after the run (minutes) | branch M's S1 rate claim (T3): factor > 2 falsifies "rate ∝ gap" |
 | the correction's profile beyond one ring (X9 on naphthalene) | after the BHHLYP Hessian | days | whether any real-space route survives at all |
 | T1d built | Lean build after the run | this week | the Lean route's second theorem; no branch depends on it |
+| ODLR of far blocks at 0.5 cm⁻¹ (X15) | plan 02's Hessians | **done 13 September: fails** (r\*/dim 0.30–0.83) | branch M: T3's ODLR form is norm-level only; branch C: no lever beyond the symmetry prior from low rank |
 
 ## 3. The rule
 
