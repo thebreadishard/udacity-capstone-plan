@@ -1,6 +1,6 @@
-# T-1 transfer test — source benzene, target naphthalene (2026-09-13 11:21)
+# T-1 transfer test — source benzene, target naphthalene (2026-09-13 11:33)
 
-Rule: relative: delta_nu/nu per family (median); losing condition: RMS error > 2.5 cm⁻¹ for CH-stretch, CC-stretch (Module 03 U_BAND.md: QUANT-IR benzene gas-phase u_band 2.55 cm-1 (R0 floor form)). Stand-in: {'low': 'b3lyp', 'high': 'bhhlyp'}.
+Rule: mode-resolved: each target mode takes delta_nu/nu of the source mode nearest in relative position within the same family (rank position in the family's frequency span); losing condition: RMS error > 2.5 cm⁻¹ for CH-stretch, CC-stretch (Module 03 U_BAND.md: QUANT-IR benzene gas-phase u_band 2.55 cm-1 (R0 floor form)). Stand-in: {'low': 'b3lyp', 'high': 'bhhlyp'}.
 
 ## Source (benzene): per-family relative correction and the within-molecule floor of the rule
 

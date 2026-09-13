@@ -1,6 +1,6 @@
-# T-1 transfer test — source benzene, target benzene (2026-09-13 11:21)
+# T-1 transfer test — source benzene, target benzene (2026-09-13 11:33)
 
-Rule: relative: delta_nu/nu per family (median); losing condition: RMS error > 2.5 cm⁻¹ for CH-stretch, CC-stretch (Module 03 U_BAND.md: QUANT-IR benzene gas-phase u_band 2.55 cm-1 (R0 floor form)). Stand-in: {'low': 'b3lyp', 'high': 'bhhlyp'}.
+Rule: mode-resolved: each target mode takes delta_nu/nu of the source mode nearest in relative position within the same family (rank position in the family's frequency span); losing condition: RMS error > 2.5 cm⁻¹ for CH-stretch, CC-stretch (Module 03 U_BAND.md: QUANT-IR benzene gas-phase u_band 2.55 cm-1 (R0 floor form)). Stand-in: {'low': 'b3lyp', 'high': 'bhhlyp'}.
 
 ## Source (benzene): per-family relative correction and the within-molecule floor of the rule
 
@@ -14,14 +14,14 @@ Rule: relative: delta_nu/nu per family (median); losing condition: RMS error > 2
 
 ## Transfer to benzene
 
-| family | target modes | in source | RMS error, relative rule (cm⁻¹) | max | RMS zero rule | RMS absolute rule | judged | passes 2.5 |
-|---|---|---|---|---|---|---|---|---|
-| CC-stretch | 6 | yes | **32.62** | 75.12 | 48.46 | 34.42 | yes | NO |
-| CH-ip-bend | 7 | yes | **8.14** | 19.08 | 34.69 | 10.17 | — | NO |
-| CH-oop | 9 | yes | **12.62** | 28.52 | 70.35 | 22.52 | — | NO |
-| CH-stretch | 6 | yes | **0.17** | 0.26 | 25.11 | 0.24 | yes | yes |
-| ring-ip | 2 | yes | **0.04** | 0.04 | 23.07 | 0.04 | — | yes |
+| family | target modes | in source | **RMS error, mode-resolved rule (cm⁻¹)** | max | RMS family-scalar floor | RMS zero rule | RMS absolute rule | judged | passes 2.5 |
+|---|---|---|---|---|---|---|---|---|---|
+| CC-stretch | 6 | yes | **0.00** | 0.00 | 32.62 | 48.46 | 34.42 | yes | yes |
+| CH-ip-bend | 7 | yes | **0.00** | 0.00 | 8.14 | 34.69 | 10.17 | — | yes |
+| CH-oop | 9 | yes | **0.00** | 0.00 | 12.62 | 70.35 | 22.52 | — | yes |
+| CH-stretch | 6 | yes | **0.00** | 0.00 | 0.17 | 25.11 | 0.24 | yes | yes |
+| ring-ip | 2 | yes | **0.00** | 0.00 | 0.04 | 23.07 | 0.04 | — | yes |
 
-**Verdict (judged families only): LOSE.** The zero rule is the floor a useful rule must beat; the absolute rule is the secondary comparison.
+**Verdict (judged families only, mode-resolved rule): PASS.** The family-scalar column is the floor the old rule had; the zero rule is what any rule must beat.
 
-Self-test: source = target — the transfer errors equal the within-molecule floors by construction (the rule applied to itself).
+Self-test: source = target — the mode-resolved rule matches every mode to itself (error 0 by construction); the family-scalar column shows the floor the old rule had.

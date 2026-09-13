@@ -1,14 +1,16 @@
 {
- "date": "2026-09-13 11:21",
+ "date": "2026-09-13 11:33",
  "constants": {
+  "rule_version": "mode-resolved (agreed by the user 2026-09-13 after the benzene self-test; the family-scalar rule is kept as the floor)",
   "threshold_cm": 2.5,
   "threshold_source": "Module 03 U_BAND.md: QUANT-IR benzene gas-phase u_band 2.55 cm-1 (R0 floor form)",
   "judged_families": [
    "CH-stretch",
    "CC-stretch"
   ],
-  "primary_rule": "relative: delta_nu/nu per family (median)",
+  "primary_rule": "mode-resolved: each target mode takes delta_nu/nu of the source mode nearest in relative position within the same family (rank position in the family's frequency span)",
   "secondary_rules": [
+   "family-scalar relative rule (median delta_nu/nu per family) = the floor",
    "zero",
    "absolute delta_nu per family (median)"
   ]
@@ -92,41 +94,45 @@
    "family": "CC-stretch",
    "n": 6,
    "in_source": true,
-   "rms_rel": 32.62340386312553,
-   "max_rel": 75.11768869241703,
+   "rms_mode": 0.0,
+   "max_mode": 0.0,
+   "rms_family_floor": 32.62340386312553,
    "rms_zero": 48.45968445683218,
    "rms_abs": 34.42403617544101,
    "judged": true,
-   "passes": false
+   "passes": true
   },
   {
    "family": "CH-ip-bend",
    "n": 7,
    "in_source": true,
-   "rms_rel": 8.139174216166065,
-   "max_rel": 19.076671084350338,
+   "rms_mode": 0.0,
+   "max_mode": 0.0,
+   "rms_family_floor": 8.139174216166065,
    "rms_zero": 34.69210509794626,
    "rms_abs": 10.167709295095074,
    "judged": false,
-   "passes": false
+   "passes": true
   },
   {
    "family": "CH-oop",
    "n": 9,
    "in_source": true,
-   "rms_rel": 12.621782099407937,
-   "max_rel": 28.521048190114932,
+   "rms_mode": 0.0,
+   "max_mode": 0.0,
+   "rms_family_floor": 12.621782099407937,
    "rms_zero": 70.34829348849861,
    "rms_abs": 22.524275799283487,
    "judged": false,
-   "passes": false
+   "passes": true
   },
   {
    "family": "CH-stretch",
    "n": 6,
    "in_source": true,
-   "rms_rel": 0.17126692864784512,
-   "max_rel": 0.2560374458931385,
+   "rms_mode": 2.5121479338940403e-15,
+   "max_mode": 3.552713678800501e-15,
+   "rms_family_floor": 0.17126692864784512,
    "rms_zero": 25.110033880883588,
    "rms_abs": 0.2420215700406094,
    "judged": true,
@@ -136,13 +142,14 @@
    "family": "ring-ip",
    "n": 2,
    "in_source": true,
-   "rms_rel": 0.04327610815535152,
-   "max_rel": 0.043284295632112446,
+   "rms_mode": 0.0,
+   "max_mode": 0.0,
+   "rms_family_floor": 0.04327610815535152,
    "rms_zero": 23.0671755345022,
    "rms_abs": 0.03891158288085528,
    "judged": false,
    "passes": true
   }
  ],
- "verdict": "LOSE"
+ "verdict": "PASS"
 }

@@ -1,14 +1,16 @@
 {
- "date": "2026-09-13 11:21",
+ "date": "2026-09-13 11:33",
  "constants": {
+  "rule_version": "mode-resolved (agreed by the user 2026-09-13 after the benzene self-test; the family-scalar rule is kept as the floor)",
   "threshold_cm": 2.5,
   "threshold_source": "Module 03 U_BAND.md: QUANT-IR benzene gas-phase u_band 2.55 cm-1 (R0 floor form)",
   "judged_families": [
    "CH-stretch",
    "CC-stretch"
   ],
-  "primary_rule": "relative: delta_nu/nu per family (median)",
+  "primary_rule": "mode-resolved: each target mode takes delta_nu/nu of the source mode nearest in relative position within the same family (rank position in the family's frequency span)",
   "secondary_rules": [
+   "family-scalar relative rule (median delta_nu/nu per family) = the floor",
    "zero",
    "absolute delta_nu per family (median)"
   ]
