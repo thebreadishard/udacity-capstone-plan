@@ -630,6 +630,7 @@ above about 1 GB on the Windows side beside it):
    B3LYP/6-31G* Hessian at a geometry identical to `results_dryrun/naphthalene/geometry.json` within 5 × 10⁻⁴ bohr, so the
    B3LYP half exists and only the BHHLYP Hessian must be run (anthracene and pyrene B3LYP Hessians are in the same commit);
 6. `m1_frozen_spaces.py --molecule naphthalene`, then the **R1 smoothness σ run of decision 35** (tight, 9 points, the
+   5a. **lead A's first test (the user, 13 September: "double-hybrid Hessians as lead A's first test, after the run")** — `probes/dh_diagonal_baseline.py --molecule benzene`, then `--molecule naphthalene` (Windows, conda `qc`; B2PLYP/6-31G* energies only in psi4 1.11, 5-point finite differences along the B3LYP modes, BHHLYP and a B3LYP check at the same points; checkpointed; the `--self-test` prints the cost from one timed energy): the per-mode shift the double hybrid already gives, to be joined with R0's probed diagonal under the reading pre-registered in the script header (thresholds proposed, not yet confirmed); literature basis Kesharwani, Brauer & Martin 2015 (plan 06 `GoalGathering/Reading_Note_2026-09-13_Literature_Check_Leads_A-G.md` §1);
    C–C stretch mode; ≈ 4.8 laptop-days) — prerequisite (f) of the pilot note.
 
 **The evidence ladder "does plan 06 make plan 05 cheaper?" (the user, 12 September evening; the Monday e-mail is

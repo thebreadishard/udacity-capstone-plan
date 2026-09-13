@@ -73,6 +73,7 @@ statistics. The builder and notebook implement it without change.
 ## Files
 
 - `build_lab_tables.py` — dataset + pairs + `out/SUMMARY.md`; imports the JCAMP reader of `probes/m03_band_uncertainty.py`.
+- `origin_columns_naphthalene.py` → `out/origin_columns_naphthalene.csv/.md`, `out/origin_sources_abstracts.json` — **built 2026-09-13 (the user asked for it after the leads A–G literature check)**: the band-origin column for naphthalene from two rotationally resolved records missing from the scoreboard, Albert, Albert, Lerch & Quack 2011 (Faraday Discuss. 150, 71; ν46 origin 782.330949 cm⁻¹, room temperature) and Pirali et al. 2013 (PCCP 15, 10141; ν46 jet-cooled, ν47, ν48) — abstract grade (values quoted in the abstracts, asserted verbatim against the cached abstract text; full texts requested as PDF items 32–33). A band origin has u_res = 0, head-to-origin = 0, u_T = 0, so u_band = reading precision + fit uncertainty (unknown) is a **lower bound**: 5 × 10⁻⁷ cm⁻¹ for ν46 (item 72) against 0.5 cm⁻¹ in the Pirali 2009 scoreboard for the same band — for ν46, R1's C–H out-of-plane family is decidable at the pipeline's own budget.
 - `notebook/make_notebook.py` → `notebook/analysis.ipynb`, `notebook/figures/fig1–3`, `notebook/test_results.json`.
 - `make_summary.py` → `module_summary.docx/.pdf` (template `Rubrics/APA7_template.docx`).
 - `README.md` (rubric form), `requirements.txt` (`pip freeze`).

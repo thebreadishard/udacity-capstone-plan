@@ -1,0 +1,10 @@
+{
+ "date": "2026-09-13 12:32",
+ "molecule": "benzene",
+ "modes": 30,
+ "mode_check_max_dev_cm": 1.0677013051463291e-07,
+ "e_target_ref": -231.98379515003288,
+ "t_one_energy_s": 35.457852363586426,
+ "threads": 2,
+ "memory": "800MB"
+}

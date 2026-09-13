@@ -1,0 +1,18 @@
+{
+ "72": {
+  "doi": "10.1039/c0fd00013b",
+  "title": "Synchrotron-based highest resolution Fourier transform infrared spectroscopy of naphthalene (C10H8) and indole (C8H7N) and its application to astrophysical problems",
+  "year": 2011,
+  "abstract": "We report a rotationally resolved analysis of the high resolution FTIR spectrum of naphthalene which can be considered as a prototypical molecule for polycyclic aromatic hydrocarbons (PAHs), and a similar analysis for the prototypical heterocyclic aromatic molecule indole. The spectra have been measured using a resolution of 0.0008 cm(-1) (21 MHz) with the new high resolution FTIR prototype spectrometer of the Molecular Kinetics and Spectroscopy Group at ETH Zürich. The spectrometer is connected to the infrared port available at the Swiss Light Source (SLS) at the Paul-Scherrer-Institute (PSI). Due to the high brightness of the synchrotron radiation in the spectral region of interest, effectively up to 20 times brighter than thermal sources, and the high resolution of the new interferometer, it was possible to record the rotationally resolved infrared spectra of naphthalene and indole at room temperature, and to analyse the ν46 c-type band (ν̃(0) = 782.330949 cm(-1)) of naphthalene as well as the ν35 c-type band (ν̃(0) = 738.483592 cm(-1)) of indole and an a-type band at ν̃(0) = 790.864370 cm(-1) tentatively assigned as the overtone 2ν(40) of indole. The results of the naphthalene band analysis are discussed in relation to the Unidentified Infrared Band (UIB) found in interstellar spectra at 12.8 μm.",
+  "fetched": "2026-09-13 12:25",
+  "from": "OpenAlex abstract_inverted_index"
+ },
+ "73": {
+  "doi": "10.1039/c3cp44305a",
+  "title": "The far infrared spectrum of naphthalene characterized by high resolution synchrotron FTIR spectroscopy and anharmonic DFT calculations",
+  "year": 2013,
+  "abstract": "Using synchrotron radiation, we performed the rotationally resolved Fourier transform infrared absorption spectroscopy of three bands of naphthalene C10H8, namely ν(46)-0 (centered at 782 cm(-1), 12.7 μm), ν(47)-0 (centered at 474 cm(-1), 21 μm), and ν(48)-0 (centered at 167 cm(-1), 60 μm). The intense CH bending out of plane ν(46)-0 band was recorded under supersonic jet-cooled conditions using a molecular beam (the Jet-AILES apparatus) and the low frequency ν(47)-0 and ν(48)-0 bands were measured at room temperature in a long absorption path cell. The simultaneous rotational analysis of these bands permitted us to refine the ground state (GS) and ν(46) rotational spectroscopic constants and to provide the first sets of constants for the ν(47) and ν(48) modes. The experimental rotational constants were then used as reference data to calibrate theoretical models in order to provide new insights into the accuracy of anharmonic calculations. The B97-1 functional associated with the cc-pVTZ and ANO-RCC basis sets gave a consistent set of results, for rotational constants and fundamental frequencies. The data presented here pave the way for the search of naphthalene through its far-infrared spectrum in different objects of the interstellar medium.",
+  "fetched": "2026-09-13 12:25",
+  "from": "OpenAlex abstract_inverted_index"
+ }
+}

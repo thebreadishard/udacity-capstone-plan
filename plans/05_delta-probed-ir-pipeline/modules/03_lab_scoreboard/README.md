@@ -41,6 +41,7 @@ in this repository by `python build_lab_tables.py`; the report is rebuilt by `py
 - `build_lab_tables.py` — dataset and pairs; `out/SUMMARY.md` lists counts, constants and input checksums.
 - `cold_columns_items61_62.py` → `out/cold_columns_items61_62.csv/.md` — the jet-cooled tetracene (34 bands) and coronene (20 bands) columns, transcribed from Lemmens et al. 2019 Table A.2 and Lemmens, Rijs & Buma 2021 Table A1 with a transcription check against the text extracts; u_band lower bounds (2026-09-13).
 - `dft_mode_families.py` → `out/naphthalene_dft_modes.csv/.md` — naphthalene's 48 B3LYP modes with D2h irrep, IR activity (20 active) and family by mode vector (2026-09-13): the table that replaces the frequency-window rule for R1's band assignment once the pilot note fixes the scaling.
+- `origin_columns_naphthalene.py` → `out/origin_columns_naphthalene.csv/.md` — the naphthalene band-origin column from two rotationally resolved records (Albert et al. 2011, ν46 origin 782.330949 cm⁻¹; Pirali et al. 2013, ν46 jet-cooled, ν47, ν48), abstract grade, u_band a lower bound (2026-09-13).
 - `notebook/analysis.ipynb` — Load · Descriptive statistics · Visual models · Hypothesis test · Summary.
 - `notebook/test_results.json` — the test output the report's table is built from.
 - `module_summary.pdf` (`.docx`) — the Statistical Analysis Report in the Udacity APA 7 template; the
