@@ -152,6 +152,8 @@ without first proving that classical result; T3 in Lean is two theorems away, no
 
 **Dated addition 2026-09-13 — the decision rule, adopted by the user the same morning** ([Decision_Rule_2026-09-13_When_Plan06_Closes_or_Transfers.md](Decision_Rule_2026-09-13_When_Plan06_Closes_or_Transfers.md); it binds this plan from here on): dates and tests for closing branch C (cost) and reviewing branch M (mathematics); every experiment after it names the row it serves. The M2 design (frozen-space gradients in JAX) is written in plan 05 (`notes/Design_Note_2026-09-13_M2_Frozen_Space_Gradients_in_JAX.md`) so that M2a's number meets a costed plan.
 
+**Dated addition 2026-09-13 — novelty assessed, and prior art found** ([Novelty_Assessment_2026-09-13.md](Novelty_Assessment_2026-09-13.md)): no new solver on branch M; on branch C the plan's own piece is the symmetry-exact substitution scheme applied to the *correction* with measured counts and the band-level sparsity test; **O1NumHess** (Wang, Luo, Wang & Liu, *JCTC* 21, 10893 (2025), DOI 10.1021/acs.jctc.5c01354, arXiv:2508.07544) reaches "a Hessian from O(1) gradients" by an off-diagonal low-rank assumption and is to be read in full before any plan-06 text claims the gradient route; plan 05 bibliography item 34.
+
 ## 7. First experiments (all on data or logs in the repository, minutes each)
 
 - **X0 (S1):** read the two complexity papers and Prodan & Kohn in full and record what each does and
