@@ -1,0 +1,492 @@
+{
+ "date": "2026-09-13",
+ "mode": "title.search, sorted by citations",
+ "results": {
+  "A: optimally tuned range-separated hybrid (title)": {
+   "query": "optimally tuned range-separated hybrid",
+   "hits": [
+    {
+     "year": 2012,
+     "title": "Excitation Gaps of Finite-Sized Systems from Optimally Tuned Range-Separated Hybrid Functionals",
+     "venue": "Journal of Chemical Theory and Computation",
+     "doi": "10.1021/ct2009363",
+     "cited_by": 977,
+     "oa": true,
+     "abstract": "Excitation gaps are of considerable significance in electronic structure theory. Two different gaps are of particular interest. The fundamental gap is defined by charged excitations, as the difference between the first ionization potential and the first electron affinity. The optical gap is defined by a neutral excitation, as the difference between the energies of the lowest dipole-allowed excited state and the ground state. Within many-body perturbation theory, the fundamental gap is the difference between the corresponding lowest quasi-hole and quasi-electron excitation energies, and the optical gap is addressed by including the interaction between a quasi-electron and a quasi-hole. A long-standing challenge has been the attainment of a similar description within density functional theory (DFT), with much debate on whether this is an achievable goal even in principle. Recently, we have"
+    },
+    {
+     "year": 2011,
+     "title": "Fundamental and excitation gaps in molecules of relevance for organic photovoltaics from an optimally tuned range-separated hybrid functional",
+     "venue": "Physical Review B",
+     "doi": "10.1103/physrevb.84.075144",
+     "cited_by": 335,
+     "oa": false,
+     "abstract": "The fundamental and optical gaps of relevant molecular systems are of primary importance for organic-based photovoltaics. Unfortunately, whereas optical gaps are accessible with time-dependent density functional theory (DFT), the highest-occupied -- lowest-unoccupied eigenvalue gaps resulting from DFT calculations with semi-local or hybrid functionals routinely and severely underestimate the fundamental gaps of gas-phase organic molecules. Here, we show that a range-separated hybrid functional, optimally tuned so as to obey Koopmans' theorem, provides fundamental gaps that are very close to benchmark results obtained from many-body perturbation theory in the GW approximation. We then show that using this functional does not compromise the possibility of obtaining reliable optical gaps from time-dependent DFT. We therefore suggest optimally tuned range-separated hybrid functionals as a pr"
+    },
+    {
+     "year": 2012,
+     "title": "Quasiparticle Spectra from a Nonempirical Optimally Tuned Range-Separated Hybrid Density Functional",
+     "venue": "Physical Review Letters",
+     "doi": "10.1103/physrevlett.109.226405",
+     "cited_by": 304,
+     "oa": true,
+     "abstract": "We present a method for obtaining outer-valence quasiparticle excitation energies from a density-functional-theory-based calculation, with an accuracy that is comparable to that of many-body perturbation theory within the GW approximation. The approach uses a range-separated hybrid density functional, with an asymptotically exact and short-range fractional Fock exchange. The functional contains two parameters, the range separation and the short-range Fock fraction. Both are determined nonempirically, per system, on the basis of the satisfaction of exact physical constraints for the ionization potential and frontier-orbital many-electron self-interaction, respectively. The accuracy of the method is demonstrated on four important benchmark organic molecules: perylene, pentacene, 3,4,9,10-perylene-tetracarboxylic-dianydride (PTCDA), and 1,4,5,8-naphthalene-tetracarboxylic-dianhydride (NTCDA"
+    },
+    {
+     "year": 2015,
+     "title": "Solid-state optical absorption from optimally tuned time-dependent range-separated hybrid density functional theory",
+     "venue": "Physical Review B",
+     "doi": "10.1103/physrevb.92.081204",
+     "cited_by": 255,
+     "oa": true,
+     "abstract": "We present a framework for obtaining reliable solid-state charge and optical excitations and spectra from optimally tuned range-separated hybrid density functional theory. The approach, which is fully couched within the formal framework of generalized Kohn-Sham theory, allows for the accurate prediction of exciton binding energies. We demonstrate our approach through first principles calculations of one- and two-particle excitations in pentacene, a molecular semiconducting crystal, where our work is in excellent agreement with experiments and prior computations. We further show that with one adjustable parameter, set to produce the known band gap, this method accurately predicts band structures and optical spectra of silicon and lithium fluoride, prototypical covalent and ionic solids. Our findings indicate that for a broad range of extended bulk systems, this method may provide a comput"
+    },
+    {
+     "year": 2013,
+     "title": "Using optimally tuned range separated hybrid functionals in ground-state calculations: Consequences and caveats",
+     "venue": "The Journal of Chemical Physics",
+     "doi": "10.1063/1.4807325",
+     "cited_by": 202,
+     "oa": false,
+     "abstract": "Optimally tuned range separated hybrid functionals are a new class of implicitly defined functionals. Their important new aspect is that the range separation parameter in these functionals is determined individually for each system by iteratively tuning it until a fundamental, non-empirical condition is fulfilled. Such functionals have been demonstrated to be extremely successful in predicting electronic excitations. In this paper, we explore the use of the tuning approach for predicting ground state properties. This sheds light on one of its downsides - the violation of size consistency. By analyzing diatomic molecules, we reveal size consistency errors up to several electron volts and find that binding energies cannot be predicted reliably. Further consequences of the consistent ground-state use of the tuning approach are potential energy surfaces that are qualitatively in error and an"
+    },
+    {
+     "year": 2014,
+     "title": "Performance of an Optimally Tuned Range-Separated Hybrid Functional for 0\u20130 Electronic Excitation Energies",
+     "venue": "Journal of Chemical Theory and Computation",
+     "doi": "10.1021/ct5000617",
+     "cited_by": 156,
+     "oa": false,
+     "abstract": "Using a set of 40 conjugated molecules, we assess the performance of an \"optimally tuned\" range-separated hybrid functional in reproducing the experimental 0-0 energies. The selected protocol accounts for the impact of solvation using a corrected linear-response continuum approach and vibrational corrections through calculations of the zero-point energies of both ground and excited-states and provides basis set converged data thanks to the systematic use of diffuse-containing atomic basis sets at all computational steps. It turns out that an optimally tuned long-range corrected hybrid form of the Perdew-Burke-Ernzerhof functional, LC-PBE*, delivers both the smallest mean absolute error (0.20 eV) and standard deviation (0.15 eV) of all tested approaches, while the obtained correlation (0.93) is large but remains slightly smaller than its M06-2X counterpart (0.95). In addition, the efficie"
+    },
+    {
+     "year": 2014,
+     "title": "Outer-valence Electron Spectra of Prototypical Aromatic Heterocycles from an Optimally Tuned Range-Separated Hybrid Functional",
+     "venue": "Journal of Chemical Theory and Computation",
+     "doi": "10.1021/ct400956h",
+     "cited_by": 143,
+     "oa": true,
+     "abstract": ", 226405] as a nonempirical approach to predict the outer-valence electronic structure of molecules with the same accuracy as many-body perturbation theory. Here, we provide a quantitative evaluation of the OT-RSH approach by examining its performance in predicting the outer-valence electron spectra of several prototypical gas-phase molecules, from aromatic rings (benzene, pyridine, and pyrimidine) to more complex organic systems (terpyrimidinethiol and copper phthalocyanine). For a range up to several electronvolts away from the frontier orbital energies, we find that the outer-valence electronic structure obtained from the OT-RSH method agrees very well (typically within \u223c0.1-0.2 eV) with both experimental photoemission and theoretical many-body perturbation theory data in the GW approximation. In particular, we find that with new strategies for an optimal choice of the short-range fra"
+    }
+   ]
+  },
+  "A: tuned range-separated vibrational (title)": {
+   "query": "range-separated hybrid vibrational frequencies",
+   "hits": [
+    {
+     "year": 2008,
+     "title": "Evaluation of range-separated hybrid density functionals for the prediction of vibrational frequencies, infrared intensities, and Raman activities",
+     "venue": "Physical Chemistry Chemical Physics",
+     "doi": "10.1039/b810877c",
+     "cited_by": 101,
+     "oa": true,
+     "abstract": "We present an assessment of different density functionals, with emphasis on range-separated hybrids, for the prediction of fundamental and harmonic vibrational frequencies, infrared intensities, and Raman activities. Additionally, we discuss the basis set convergence of vibrational properties of H2O with long-range corrected hybrids. Our results show that B3LYP is the best functional for predicting vibrational frequencies (both fundamental and harmonic); the screened-PBE hybrid (HSE) density functional works best for infrared intensities, and the long-range corrected PBE (LC-omegaPBE), M06-HF, and M06-L density functionals are almost as good as MP2 for predicting Raman activities. We show the predicted Raman spectrum of adenine as an example of a medium-size molecule where a DFT/Sadlej pVTZ calculation is affordable and compare our results against the experimental spectrum."
+    }
+   ]
+  },
+  "A: functional parameters fitted harmonic frequencies (title)": {
+   "query": "functional harmonic frequencies fitted",
+   "hits": []
+  },
+  "A: delocalization error vibrational frequencies (title)": {
+   "query": "delocalization error vibrational",
+   "hits": []
+  },
+  "A: Kekule mode B2u benzene DFT (title)": {
+   "query": "Kekule mode benzene",
+   "hits": [
+    {
+     "year": 2016,
+     "title": "Resonance-Enhanced Raman Scattering of Ring-Involved Vibrational Modes in the 1B2u Absorption Band of Benzene, Including the Kekule Vibrational Modes \u03bd9 and \u03bd10",
+     "venue": "The Journal of Physical Chemistry A",
+     "doi": "10.1021/acs.jpca.5b08159",
+     "cited_by": 7,
+     "oa": false,
+     "abstract": "Resonance Raman spectroscopy provides much stronger Raman signal levels than its off-resonant counterpart and adds selectivity by excitation tuning. Raman preresonance of benzene has been well studied. On-resonance studies, especially at phonon-allowed absorptions, have received less attention. In this case, we observe resonance of many of the vibration modes associated motion of the carbons in the ring while tuning over the (1)B2u absorption, including the related \u03bd9 (CC stretch Herzberg notation, \u03bd14 Wilson notation) and \u03bd10 (CH-parallel bend Herzberg notation, \u03bd15 Wilson notation) vibrational modes along with the \u03bd2 (CC-stretch or ring-breathing Herzberg notation, \u03bd1 Wilson notation) mode and multiples of the \u03bd18 (CCC-parallel bend Herzberg notation, \u03bd6 Wilson notation) vibrational mode. The ring-breathing mode is found to mix with the b2u modes creating higher frequency composites. T"
+    },
+    {
+     "year": 1995,
+     "title": "THE $\\nu 14(b2u)$ MODE OF BENZENE IN SO AND SI: DO THE II ELECTRONS TEND TO DISTORT THE MOLECULE TO THE KEKULE FORM?",
+     "venue": "",
+     "doi": "",
+     "cited_by": 0,
+     "oa": false,
+     "abstract": ""
+    }
+   ]
+  },
+  "A: learned functional coupled cluster accuracy (title)": {
+   "query": "density functional machine learning coupled cluster accuracy",
+   "hits": []
+  },
+  "A: DM21 pushing frontiers density functionals (title)": {
+   "query": "pushing the frontiers of density functionals",
+   "hits": [
+    {
+     "year": 2021,
+     "title": "Pushing the frontiers of density functionals by solving the fractional electron problem",
+     "venue": "Science",
+     "doi": "10.1126/science.abj6511",
+     "cited_by": 410,
+     "oa": true,
+     "abstract": "Density functional theory describes matter at the quantum level, but all popular approximations suffer from systematic errors that arise from the violation of mathematical properties of the exact functional. We overcame this fundamental limitation by training a neural network on molecular data and on fictitious systems with fractional charge and spin. The resulting functional, DM21 (DeepMind 21), correctly describes typical examples of artificial charge delocalization and strong correlation and performs better than traditional functionals on thorough benchmarks for main-group atoms and molecules. DM21 accurately models complex systems such as hydrogen chains, charged DNA base pairs, and diradical transition states. More crucially for the field, because our methodology relies on data and constraints, which are continually improving, it represents a viable pathway toward the exact universa"
+    },
+    {
+     "year": 2022,
+     "title": "Comment on \u201cPushing the frontiers of density functionals by solving the fractional electron problem\u201d",
+     "venue": "Science",
+     "doi": "10.1126/science.abq3385",
+     "cited_by": 18,
+     "oa": false,
+     "abstract": ". (Reports, 9 December 2021, p. 1385) trained a neural network-based DFT functional, DM21, on fractional-charge (FC) and fractional-spin (FS) systems, and they claim that it has outstanding accuracy for chemical systems exhibiting strong correlation. Here, we show that the ability of DM21 to generalize the behavior of such systems does not follow from the published results and requires revisiting."
+    },
+    {
+     "year": 2022,
+     "title": "Response to Comment on \u201cPushing the frontiers of density functionals by solving the fractional electron problem\u201d",
+     "venue": "Science",
+     "doi": "10.1126/science.abq4282",
+     "cited_by": 8,
+     "oa": true,
+     "abstract": ". claim that the ability of DM21 to respect fractional charge (FC) and fractional spin (FS) conditions outside of the training set has not been demonstrated in our paper. This is based on (i) asserting that the training set has a ~50% overlap with our bond-breaking benchmark (BBB) and (ii) questioning the validity and accuracy of our other generalization examples. We disagree with their analysis and believe that the points raised are either incorrect or not relevant to the main conclusions of the paper and to the assessment of general quality of DM21."
+    }
+   ]
+  },
+  "D: scaled quantum mechanical force field (title)": {
+   "query": "scaled quantum mechanical force field",
+   "hits": [
+    {
+     "year": 1983,
+     "title": "Combination of theoretical ab initio and experimental information to obtain reliable harmonic force constants. Scaled quantum mechanical (QM) force fields for glyoxal, acrolein, butadiene, formaldehyde, and ethylene",
+     "venue": "Journal of the American Chemical Society",
+     "doi": "10.1021/ja00362a005",
+     "cited_by": 1558,
+     "oa": false,
+     "abstract": "Fully optimized geometries, complete in- and out-of-plane force fields, and dipole moment derivatives have been \\ncalculated for the title compounds at the ab initio HartreeFock level using the 4-21 Gaussian basis set. The theoretical information is combined with experimental data by fitting the calculated force constants through a few parameters to the observed frequencies to obtain the final, scaled quantum mechanical (SQM) force fields. Recommendations for a standard procedure of this type are given. The SQM force fields give excellent reproduction of the fundamental frequencies and are considered as approaching the best accuracy which can be achieved in a harmonic treatment. The infrared intensities obtained at this level of theory are only qualitative estimates, but they are still useful for making assignments more reliable. \\n"
+    },
+    {
+     "year": 1998,
+     "title": "Direct Scaling of Primitive Valence Force Constants: An Alternative Approach to Scaled Quantum Mechanical Force Fields",
+     "venue": "The Journal of Physical Chemistry A",
+     "doi": "10.1021/jp980038m",
+     "cited_by": 528,
+     "oa": false,
+     "abstract": "We present an alternative approach to the derivation of scaled quantum mechanical (SQM) force fields involving the direct scaling of individual primitive valence force constants from a full set of redundant valence coordinates. Our approach is completely general and more flexible than previous SQM schemes. Optimal scaling factors for various primitive stretching, bending, and torsional force constants are derived from a training set of 30 molecules containing C, O, N, H, and Cl and used to scale force constants for a further 30 molecules. Calculated vibrational frequencies are compared with experimental values for over 1500 fundamentals. Using the hybrid three-parameter B3-LYP density functional with the split-valence 6-31G* basis set, our scaling procedure gives an average error of less than 8.5 cm -1 in the scaled frequencies. The average percentage error is under 1%."
+    },
+    {
+     "year": 1996,
+     "title": "IR and Raman Spectra, Tautomeric Stabilities, and Scaled Quantum Mechanical Force Fields of Protonated Cytosine",
+     "venue": "The Journal of Physical Chemistry",
+     "doi": "10.1021/jp953284w",
+     "cited_by": 132,
+     "oa": false,
+     "abstract": "We present an experimental and theoretical investigation of the vibrational spectra of cytosine and protonated cytosine. In addition, we study spectra of cytosine and protonated cytosine with the mass of N1\u2212H hydrogen changed to the mass of the methyl group. In this way the spectra of the heterocyclic part of cytidine are simulated. Spectral interpretation is based on the double harmonic approximation and scaled quantum mechanical (SQM) methodology. The scale factors of the ab initio HF/6-31G* and density functional Becke3-LYP/6-31G* force fields are adjusted using the frequencies and intensities measured for crystalline samples of anhydrous cytosine, cytosine monohydrate, and cytosine hydrochloride of known crystal structures. The same sets of scale factors are used for interpretation of vibrational spectra of both the neutral and protonated cytosine. These scale factors are also recomm"
+    },
+    {
+     "year": 1992,
+     "title": "The puckering inversion barrier and vibrational spectrum of cyclopentene. A scaled quantum mechanical force field algorithm",
+     "venue": "Journal of the American Chemical Society",
+     "doi": "10.1021/ja00043a032",
+     "cited_by": 112,
+     "oa": false,
+     "abstract": "ADVERTISEMENT RETURN TO ISSUEPREVArticleNEXTThe puckering inversion barrier and vibrational spectrum of cyclopentene. A scaled quantum mechanical force field algorithmWesley D. Allen, Attila G. Csaszar, and David A. HornerCite this: J. Am. Chem. Soc. 1992, 114, 17, 6834\u20136849Publication Date (Print):August 1, 1992Publication History Published online1 May 2002Published inissue 1 August 1992https://pubs.acs.org/doi/10.1021/ja00043a032https://doi.org/10.1021/ja00043a032research-articleACS PublicationsRequest reuse permissionsArticle Views298Altmetric-Citations105LEARN ABOUT THESE METRICSArticle Views are the COUNTER-compliant sum of full text article downloads since November 2008 (both PDF and HTML) across all institutions and individuals. These metrics are regularly updated to reflect usage leading up to the last few days.Citations are the number of other articles citing this article, calcu"
+    },
+    {
+     "year": 1996,
+     "title": "Vibrational Assignment and Definite Harmonic Force Field for Porphine. 1. Scaled Quantum Mechanical Results and Comparison with Empirical Force Field",
+     "venue": "The Journal of Physical Chemistry",
+     "doi": "10.1021/jp953619+",
+     "cited_by": 99,
+     "oa": false,
+     "abstract": "The ground state geometry, force field, and vibrational intensity data of free-base porphine were determined by the scaled quantum mechanical (SQM) method, using a force field calculated by density functional theory. Calculations were carried out with the Becke\u2212Lee\u2212Yang\u2212Paar composite exchange-correlation functional (B3-LYP) and with the 6-31G* basis set. The resulting force field was transformed to nonredundant internal coordinates and scaled by a set of optimized scaling factors. There is very good agreement between the calculated and experimental frequencies and intensities and between experimental and simulated infrared (IR) spectra. The assignment of the harmonic frequencies is discussed and reassignment of some modes present in the IR spectra is suggested. Comparison between the empirical and scaled quantum mechanical force fields shows that the empirical field is qualitatively cor"
+    },
+    {
+     "year": 1997,
+     "title": "Neutron Inelastic Scattering, Optical Spectroscopies, and Scaled Quantum Mechanical Force Fields for Analyzing the Vibrational Dynamics of Pyrimidine Nucleic Acid Bases. 2. Thymine",
+     "venue": "The Journal of Physical Chemistry A",
+     "doi": "10.1021/jp962318c",
+     "cited_by": 91,
+     "oa": false,
+     "abstract": "As in the case of uracil, a complete set of vibrational spectra of thymine and its N-deuterated species, obtained from several spectroscopic techniques, i.e., neutron inelastic scattering (NIS), Raman scattering, and infrared absorption (IR), has been used in order to assign the vibrational modes on the basis of an ab initio scaled quantum mechanical (SQM) force field. NIS, Raman, and IR spectra of polycrystalline thymine recorded at T = 15 K provide complementary data for analyzing different groups of molecular vibrational modes. Solid-state spectra have been supplemented with FT Raman (\u03bb exc = 1.06 \u03bcm) and IR spectra of aqueous solutions. The spectra from both phases allowed us to analyze the effects of the environment related to strong (crystal) or weak (solution) hydrogen bondings. The molecular fundamental wavenumbers calculated at the SCF+MP2 level, by using different types of mole"
+    },
+    {
+     "year": 1996,
+     "title": "Neutron Inelastic Scattering, Optical Spectroscopies and Scaled Quantum Mechanical Force Fields for Analyzing the Vibrational Dynamics of Pyrimidine Nucleic Acid Bases. 1. Uracil",
+     "venue": "The Journal of Physical Chemistry",
+     "doi": "10.1021/jp952485x",
+     "cited_by": 85,
+     "oa": false,
+     "abstract": "A complete set of vibrational spectra obtained from several spectroscopic techniques, i.e., neutron inelastic scattering (NIS), Raman scattering, and infrared absorption (IR), has been used in order to assign the vibrational modes of uracil on the basis of an ab initio scaled quantum mechanical (SQM) force field. NIS, Raman, and IR spectra of polycrystalline uracil recorded at T = 15 K from native and N-deuterated species provide complementary data for analysing different groups of molecular vibrational modes. Solid-state spectra have been completed with various Raman (\u03bb exc = 257 nm, 514.5 nm, and 1.06 \u03bcm, and IR spectra in aqueous solutions. Both phases allowed effects of the environment on the vibrational modes, related to either strong (crystal) or weak (solution) hydrogen bondings, to be shown. In addition, the various laser excitations allowed the wavelength dependence of the Raman"
+    }
+   ]
+  },
+  "D: transferable scale factors internal coordinates (title)": {
+   "query": "scale factors force field transferable",
+   "hits": [
+    {
+     "year": 1995,
+     "title": "Transferable Scaling Factors for Density Functional Derived Vibrational Force Fields",
+     "venue": "The Journal of Physical Chemistry",
+     "doi": "10.1021/j100010a019",
+     "cited_by": 1891,
+     "oa": false,
+     "abstract": "ADVERTISEMENT RETURN TO ISSUEPREVArticleNEXTTransferable Scaling Factors for Density Functional Derived Vibrational Force FieldsGuntram Rauhut and Peter PulayCite this: J. Phys. Chem. 1995, 99, 10, 3093\u20133100Publication Date (Print):March 1, 1995Publication History Published online1 May 2002Published inissue 1 March 1995https://pubs.acs.org/doi/10.1021/j100010a019https://doi.org/10.1021/j100010a019research-articleACS PublicationsRequest reuse permissionsArticle Views2171Altmetric-Citations1704LEARN ABOUT THESE METRICSArticle Views are the COUNTER-compliant sum of full text article downloads since November 2008 (both PDF and HTML) across all institutions and individuals. These metrics are regularly updated to reflect usage leading up to the last few days.Citations are the number of other articles citing this article, calculated by Crossref and updated daily. Find more information about Cro"
+    },
+    {
+     "year": 1995,
+     "title": "Re-examination of the vibrational force fields of trans- and cis-1,3,5-hexatriene: Effect of electron correlation, transferability of scale factors and correspondence of normal modes between the two isomers",
+     "venue": "Vibrational Spectroscopy",
+     "doi": "10.1016/0924-2031(94)00039-j",
+     "cited_by": 17,
+     "oa": false,
+     "abstract": ""
+    },
+    {
+     "year": 1990,
+     "title": "Transferability of quantum mechanical force field scale factors between conjugated hydrocarbons",
+     "venue": "Journal of Molecular Structure",
+     "doi": "10.1016/0022-2860(90)85049-o",
+     "cited_by": 17,
+     "oa": false,
+     "abstract": ""
+    },
+    {
+     "year": 2002,
+     "title": "Transferable Scaling Factors for Vibrational Force Fields of Halogenated Molecules Based on Energy-Consistent Pseudopotentials",
+     "venue": "The Journal of Physical Chemistry A",
+     "doi": "10.1021/jp014557s",
+     "cited_by": 8,
+     "oa": false,
+     "abstract": "Within the framework of the scaled quantum mechanical procedure (SQM), transferable scaling factors (TSF) have been determined for a set of natural internal coordinates involving bromine and iodine atoms. Thereby, energy-consistent relativistic pseudopotentials adjusted to multiconfiguration Dirac\u2212Hartree\u2212Fock atomic reference data were used for simulating the Br 7+ and I 7+ cores, and a density-functional (DFT) treatment was applied to the valence-electron system. The TSFs were used to compute the vibrational spectra of dibromofuroxan and diiodofuroxan. Excellent agreement with available experimental data has been achieved."
+    },
+    {
+     "year": 1991,
+     "title": "Transferability of quantum mechanical force field scale factors between conjugated hydrocarbon",
+     "venue": "Journal of Molecular Structure",
+     "doi": "10.1016/0022-2860(91)80080-n",
+     "cited_by": 0,
+     "oa": false,
+     "abstract": ""
+    }
+   ]
+  },
+  "E: DMRG embedding density functional (title)": {
+   "query": "density matrix renormalization group embedding",
+   "hits": [
+    {
+     "year": 2015,
+     "title": "Self-consistent embedding of density-matrix renormalization group wavefunctions in a density functional environment",
+     "venue": "The Journal of Chemical Physics",
+     "doi": "10.1063/1.4906152",
+     "cited_by": 42,
+     "oa": true,
+     "abstract": "We present the first implementation of a density matrix renormalization group algorithm embedded in an environment described by density functional theory. The frozen density embedding scheme is used with a freeze-and-thaw strategy for a self-consistent polarization of the orbital-optimized wavefunction and the environmental densities with respect to each other."
+    },
+    {
+     "year": 2016,
+     "title": "Polarizable Embedding Density Matrix Renormalization Group",
+     "venue": "Journal of Chemical Theory and Computation",
+     "doi": "10.1021/acs.jctc.6b00476",
+     "cited_by": 32,
+     "oa": true,
+     "abstract": "The polarizable embedding (PE) approach is a flexible embedding model where a preselected region out of a larger system is described quantum mechanically, while the interaction with the surrounding environment is modeled through an effective operator. This effective operator represents the environment by atom-centered multipoles and polarizabilities derived from quantum mechanical calculations on (fragments of) the environment. Thereby, the polarization of the environment is explicitly accounted for. Here, we present the coupling of the PE approach with the density matrix renormalization group (DMRG). This PE-DMRG method is particularly suitable for embedded subsystems that feature a dense manifold of frontier orbitals which requires large active spaces. Recovering such static electron-correlation effects in multiconfigurational electronic structure problems, while accounting for both el"
+    },
+    {
+     "year": 2023,
+     "title": "Projection-Based Density Matrix Renormalization Group in Density Functional Theory Embedding",
+     "venue": "The Journal of Physical Chemistry Letters",
+     "doi": "10.1021/acs.jpclett.2c03298",
+     "cited_by": 10,
+     "oa": true,
+     "abstract": "The density matrix renormalization group (DMRG) method has already proved itself as a very efficient and accurate computational method, which can treat large active spaces and capture the major part of strong correlation. Its application on larger molecules is, however, limited by its own computational scaling as well as demands of methods for treatment of the missing dynamical electron correlation. In this work, we present the first step in the direction of combining DMRG with density functional theory (DFT), one of the most employed quantum chemical methods with favorable scaling, by means of the projection-based wave function (WF)-in-DFT embedding. On two proof-of-concept but important molecular examples, we demonstrate that the developed DMRG-in-DFT approach provides a very accurate description of molecules with a strongly correlated fragment."
+    },
+    {
+     "year": 2025,
+     "title": "The Embedded Density Matrix Renormalization Group: Size-Extensive and Quasi-Exact for Nonlinear Quantum Chemistry",
+     "venue": "Journal of Chemical Theory and Computation",
+     "doi": "10.1021/acs.jctc.5c00725",
+     "cited_by": 3,
+     "oa": false,
+     "abstract": "Tensor networks (TNs) and the breadth of algorithms acting on them have seen astounding success in simulating quantum many-body systems in the strongly interacting regime with both accuracy and efficiency. In the context of quantum chemistry, Steven White\u2019s density matrix renormalization group (DMRG) continues to take center stage as the TN method of choice, seeing countless theoretical and computational breakthroughs in recent decades yet remaining fettered by a few persistent shortcomings, notably, a lack of size-extensivity and quasi-exactness . Here, we present a simple yet versatile framework for circumventing these issues: the bootstrap embedded density matrix renormalization group (BE-DMRG), and numerically validate its size-extensive and quasi-exact ground-state properties for a test bed of strongly correlated molecular systems (linear H - chains; quasi-linear E - polyacetylene; "
+    },
+    {
+     "year": 2026,
+     "title": "DMRG/FQ: A Polarizable Embedding Approach Combining Density Matrix Renormalization Group and Fluctuating Charges",
+     "venue": "Journal of Chemical Theory and Computation",
+     "doi": "10.1021/acs.jctc.5c02116",
+     "cited_by": 0,
+     "oa": true,
+     "abstract": "We present an integrated multiscale framework that combines the Density Matrix Renormalization Group (DMRG) with a polarizable fluctuating-charge (FQ) force field for the simulation of electronic excited states in solution. The method exploits the capabilities of DMRG to accurately describe systems with strong static correlation, while the FQ model provides a self-consistent and physically grounded representation of solvent polarization within a QM/MM embedding. The DMRG/FQ approach is applied to representative solvated systems, using extensive molecular dynamics sampling. The method yields reliable excitation energies, solvatochromic shifts, and a close agreement with available experimental data. The results highlight the importance of mutual polarization for capturing specific solute-solvent interactions, particularly in systems where hydrogen bonding or directional interactions play a"
+    }
+   ]
+  },
+  "E: DMRG frequencies vibrational (title)": {
+   "query": "density matrix renormalization group vibrational",
+   "hits": [
+    {
+     "year": 2017,
+     "title": "Vibrational Density Matrix Renormalization Group",
+     "venue": "Journal of Chemical Theory and Computation",
+     "doi": "10.1021/acs.jctc.7b00329",
+     "cited_by": 70,
+     "oa": true,
+     "abstract": "Variational approaches for the calculation of vibrational wave functions and energies are a natural route to obtain highly accurate results with controllable errors. Here, we demonstrate how the density matrix renormalization group (DMRG) can be exploited to optimize vibrational wave functions (vDMRG) expressed as matrix product states. We study the convergence of these calculations with respect to the size of the local basis of each mode, the number of renormalized block states, and the number of DMRG sweeps required. We demonstrate the high accuracy achieved by vDMRG for small molecules that were intensively studied in the literature. We then proceed to show that the complete fingerprint region of the sarcosyn-glycin dipeptide can be calculated with vDMRG."
+    },
+    {
+     "year": 2025,
+     "title": "QCMaquis 4.0: Multipurpose Electronic, Vibrational, and Vibronic Structure and Dynamics Calculations with the Density Matrix Renormalization Group",
+     "venue": "The Journal of Physical Chemistry A",
+     "doi": "10.1021/acs.jpca.5c02970",
+     "cited_by": 5,
+     "oa": true,
+     "abstract": "QCMaquis is a quantum chemistry software package for general molecular structure calculations in a matrix product state/matrix product operator formalism of the density matrix renormalization group (DMRG). It supports a wide range of features for electronic structure, multicomponent (pre-Born-Oppenheimer), anharmonic vibrational structure, and vibronic calculations. In addition to the ground and excited state solvers, QCMaquis allows for time propagation of matrix product states based on the tangent-space formulation of time-dependent DMRG. The latest developments include transcorrelated electronic structure calculations, very recent vibrational and vibronic models, and a convenient Python wrapper, facilitating the interface with external libraries. This paper reviews all the new features of QCMaquis and demonstrates them with new results."
+    }
+   ]
+  },
+  "C: infrared intensities coupled cluster benchmark (title)": {
+   "query": "infrared intensities coupled cluster",
+   "hits": [
+    {
+     "year": 1987,
+     "title": "Analytic evaluation of energy gradients for the single and double excitation coupled cluster (CCSD) wave function: A comparison with configuration interaction (CCSD,CISDT, andCISDTQ) results for the harmonic vibrational frequencies, infrared intensities, dipole moment, and inversion barrier of ammonia",
+     "venue": "International Journal of Quantum Chemistry",
+     "doi": "10.1002/qua.560320748",
+     "cited_by": 27,
+     "oa": false,
+     "abstract": "The analytic energy gradient method that we have recently implemented for CCSD wave functions is applied to fully optimize the pyramidal C3v and planar D3h structures of ammonia. Using a double-zeta plus polarization basis set, results for harmonic vibrational frequencies, infrared intensities, and dipole moments have been obtained. Comparison with different levels of truncated configuration interaction suggests that CCSD values are of better than CISD quality and generally closer to CISDTQ results."
+    },
+    {
+     "year": 2010,
+     "title": "Coupled cluster and configuration interaction quantum calculations of infrared fundamental intensities",
+     "venue": "International Journal of Quantum Chemistry",
+     "doi": "10.1002/qua.22707",
+     "cited_by": 17,
+     "oa": false,
+     "abstract": "Abstract The fundamental infrared intensities of HF, H2O, HCN, CH3F, CH4, C2H6, C2H2, and C2H4have been calculated at the quadratic configuration interaction and coupled cluster levels using a wide variety of basis sets. Both these levels contemplated single and double excitations and most of the coupled cluster calculations included triple excitations. The basis sets used included the cc\u2010pVXZ (X = D,T,Q,5) sets, with and without polarization orbitals, the aug\u2010cc\u2010pVTZ set, and the Sadlej Z2PolX, Z3PolX, and pVTZ basis sets The theoretical results depended more on basis set variation rather than changes between the CCSD(T) and QCISD levels, although the results from these electron correlation treatment levels are quite different from those obtained at the second\u2010order Moller\u2010Plesset perturbation level. Principal component and hierarchical clustering analyses confirm the stronger basis set"
+    },
+    {
+     "year": 2011,
+     "title": "Communication: Convergence of anharmonic infrared intensities of hydrogen fluoride in traditional and explicitly correlated coupled cluster calculations",
+     "venue": "The Journal of Chemical Physics",
+     "doi": "10.1063/1.3647566",
+     "cited_by": 7,
+     "oa": false,
+     "abstract": "It is shown that the convergence of anharmonic infrared spectral intensities with respect to the basis set size is much enhanced in explicitly correlated calculations as compared to traditional configuration interaction type wave function expansion. Explicitly correlated coupled cluster (CC) calculations using Slater-type geminal correlation factor (CC-F12) yield well-converged dipole derivatives and vibrational intensities for hydrogen fluoride with basis set involving f functions on the heavy atom. Combination of CC-F12 with singles, doubles, and non-iterative triples (CCSD(T)-F12) with small corrections due to quadruple excitations, core-electron correlation, and relativistic effects yields vibrational line positions, dipole moments, and transition dipole matrix elements in good agreement with the best experimental values."
+    }
+   ]
+  },
+  "B: Bayesian optimization force field parameters (title)": {
+   "query": "Bayesian force field parameterization",
+   "hits": [
+    {
+     "year": 2018,
+     "title": "Model Selection Using BICePs: A Bayesian Approach for Force Field Validation and Parameterization",
+     "venue": "The Journal of Physical Chemistry B",
+     "doi": "10.1021/acs.jpcb.7b11871",
+     "cited_by": 34,
+     "oa": true,
+     "abstract": "The Bayesian Inference of Conformational Populations (BICePs) algorithm reconciles theoretical predictions of conformational state populations with sparse and/or noisy experimental measurements. Among its key advantages is its ability to perform objective model selection through a quantity we call the BICePs score, which reflects the integrated posterior evidence in favor of a given model, computed through free energy estimation methods. Here, we explore how the BICePs score can be used for force field validation and parametrization. Using a 2D lattice protein as a toy model, we demonstrate that BICePs is able to select the correct value of an interaction energy parameter given ensemble-averaged experimental distance measurements. We show that if conformational states are sufficiently fine-grained, the results are robust to experimental noise and measurement sparsity. Using these insight"
+    },
+    {
+     "year": 2018,
+     "title": "Model Selection Using BICePs: A Bayesian Approach for Force Field Validation and Parameterization B",
+     "venue": "The Journal of Physical Chemistry",
+     "doi": "",
+     "cited_by": 0,
+     "oa": false,
+     "abstract": "The Bayesian Inference of Conformational Populations (BICePs) algorithm reconciles theoretical predictions of conformational state populations with sparse and/or noisy experimental measurements. Among its key advantages is its ability to perform objective model selection through a quantity we call the BICePs score, which reflects the integrated posterior evidence in favor of a given model, computed through free energy estimation methods. Here, we explore how the BICePs score can be used for force field validation and parametrization. Using a 2D lattice protein as a toy model, we demonstrate that BICePs is able to select the correct value of an interaction energy parameter given ensemble-averaged experimental distance measurements. We show that if conformational states are sufficiently fine-grained, the results are robust to experimental noise and measurement sparsity. Using these insight"
+    }
+   ]
+  },
+  "B: active learning Hessian / vibrational (title)": {
+   "query": "active learning vibrational spectra",
+   "hits": [
+    {
+     "year": 2026,
+     "title": "Predictive Quantum Vibrational Spectra through Active Learning 4G-NNPs",
+     "venue": "The Journal of Physical Chemistry Letters",
+     "doi": "10.1021/acs.jpclett.5c03765",
+     "cited_by": 0,
+     "oa": true,
+     "abstract": "Predictive simulation of vibrational spectra of complex condensed-phase and interface systems with thousands of degrees of freedom has long been a challenging task of modern condensed matter theory. In this work, fourth-generation high-dimensional committee neural network potentials (4G-HDCNNPs) are developed using active learning and query-by-committee, and introduced to the essential nuclear quantum effects (NQEs) as well as conformational entropy and anharmonicities from path integral (PI) molecular dynamics simulations. Using representative bulk water and air-water interface test cases, we demonstrate the accuracy of the developed framework in infrared spectral simulations. Specifically, by seamlessly integrating nonlocal charge transfer effects from 4G-HDCNNPs with the NQEs from PI methods, our introduced methodology yields accurate infrared spectra using predicted charges from the "
+    }
+   ]
+  },
+  "G: jet-cooled infrared PAH (title)": {
+   "query": "jet-cooled infrared polycyclic aromatic",
+   "hits": [
+    {
+     "year": 2004,
+     "title": "Infrared Cavity Ringdown Spectroscopy of Jet\u2010Cooled Polycyclic Aromatic Hydrocarbons",
+     "venue": "ChemPhysChem",
+     "doi": "10.1002/cphc.200300776",
+     "cited_by": 36,
+     "oa": false,
+     "abstract": "Infrared absorption spectra of the CH stretching region were observed for naphthalene, anthracene, phenanthrene, pyrene, and perylene using a heated, supersonic, slit-jet source and cavity ringdown spectroscopy. Band positions and intensities recorded with 0.2-cm-1 resolution were compared with previous gas-phase and argon matrix isolation experiments, as well as theoretical calculations. The largest matrix shift in the absorption maximum (-7.4 cm-1) was observed for anthracene, with all others shifted by 3.0 cm-1 or less. Spectral features in the supersonic jet spectrum were generally narrower than those observed in the Ar matrix, with the largest matrix broadening found for the perylene (80% increase). Low number densities observed for the larger polycyclic aromatic hydrocarbons (PAHs) suggest that the lower vapor pressure of PAHs with catacondensed four-membered rings and with five-me"
+    }
+   ]
+  },
+  "F: graphene phonon dispersion beyond DFT / GW (title)": {
+   "query": "phonon dispersion graphene beyond density functional",
+   "hits": []
+  },
+  "F: coupled cluster graphene (title)": {
+   "query": "coupled cluster graphene",
+   "hits": [
+    {
+     "year": 2012,
+     "title": "Coupled Cluster and Density Functional Theory Calculations of Atomic Hydrogen Chemisorption on Pyrene and Coronene as Model Systems for Graphene Hydrogenation",
+     "venue": "The Journal of Physical Chemistry A",
+     "doi": "10.1021/jp3023666",
+     "cited_by": 55,
+     "oa": false,
+     "abstract": "Ab initio coupled cluster and density functional theory studies of atomic hydrogen addition to the central region of pyrene and coronene as molecular models for graphene hydrogenation were performed. Fully relaxed potential energy curves (PECs) were computed at the spin-unrestricted B3LYP/cc-pVDZ level of theory for the atomic hydrogen attack of a center carbon atom (site A), the midpoint of a neighboring carbon bond (site B), and the center of a central hexagon (site C). Using the B3LYP/cc-pVDZ PEC geometries, we evaluated energies at the PBE density functional, as well as ab initio restricted open-shell ROMP2, ROCCSD, and ROCCSD(T) levels of theory, employing cc-pVDZ and cc-pVTZ basis sets, and performed a G2MS extrapolation to the ROCCSD(T)/cc-pVTZ level of theory. In agreement with earlier studies, we find that only site A attack leads to chemisorption. The G2MS entrance channel barr"
+    },
+    {
+     "year": 2018,
+     "title": "Modeling the Interaction of Carbon Monoxide with Flexible Graphene: From Coupled Cluster Calculations to Molecular\u2010Dynamics Simulations",
+     "venue": "ChemPhysChem",
+     "doi": "10.1002/cphc.201701387",
+     "cited_by": 27,
+     "oa": false,
+     "abstract": "Abstract The interaction of CO with graphene was studied at different theoretical levels. Quantum\u2010mechanical calculations on finite graphene models with the use of coronene for coupled cluster calculations and circumcoronene for B97D calculations showed that there was no preferential site for adsorption and that the most important factor was the orientation of CO relative to graphene. The parallel orientation was preferred, with binding energies around 9 kJ mol\u22121 at the CCSD(T) and B97D levels, which was in good agreement with experimental findings. From a large number of CO\u2013circumcoronene and CO\u2013CO interactions, computed at different distances and randomly generated orientations, parameters were fit to the improved Lennard\u2013Jones potential. Such potentials, together with others describing the intramolecular dynamics of graphene, were subsequently employed in classical molecular\u2010dynamics "
+    },
+    {
+     "year": 2017,
+     "title": "Coupled Cluster and Density Functional Studies of Atomic Fluorine Chemisorption on Coronene as Model Systems for Graphene Fluorination",
+     "venue": "The Journal of Physical Chemistry C",
+     "doi": "10.1021/acs.jpcc.7b03627",
+     "cited_by": 18,
+     "oa": true,
+     "abstract": "Potential energy curves (PECs) of atomic fluorine adsorption on coronene as a model for graphene or nanocarbon surfaces have been computed. The PECs were obtained by scanning the fluorine atom distance to one of the center carbon atoms of the coronene molecule as model system in a \u201ctop\u201d position from 4.0 to1.0 \u00c5 in intervals of 0.1 \u00c5 using a variety of quantum chemical methods. Various density functional theory (DFT) functionals, such as B3LYP, PBE, PBE0, CAM-B3LYP, and LC-\u03c9PBE; approximate DFT methods such as several levels of the density-functional tight-binding (DFTB) method, as well as ab initio wave function theory methods such as MP2, CCSD, CCSD(T), and G2MS extrapolations, were used to evaluate energies for B3LYP/cc-pVDZ PEC geometries. G2MS is an approximation to the highly accurate CCSD(T)/cc-pVTZ level of theory in our work. We found that fluorine is chemically adsorbed on coro"
+    },
+    {
+     "year": 2019,
+     "title": "ZIF-67-derived edge-oriented graphene clusters coupled with carbon nanotubes containing encapsulated Co nanoparticles for high-frequency electrochemical capacitors",
+     "venue": "Sustainable Energy & Fuels",
+     "doi": "10.1039/c9se00503j",
+     "cited_by": 17,
+     "oa": false,
+     "abstract": "Pyrolized ZIF-67 modified by edge-oriented graphene (EOG) shows great potential to be used as electrode for high frequency electrochemical capacitors (HF-ECs)."
+    },
+    {
+     "year": 2019,
+     "title": "Coupled cluster investigation of the interaction of beryllium, magnesium, and calcium with pyridine: Implications for the adsorption on nitrogen-doped graphene",
+     "venue": "Computational and Theoretical Chemistry",
+     "doi": "10.1016/j.comptc.2019.01.015",
+     "cited_by": 15,
+     "oa": false,
+     "abstract": ""
+    },
+    {
+     "year": 2026,
+     "title": "Extended coupled-cluster approach to twisted graphene layers",
+     "venue": "Academia Nano Science Materials Technology",
+     "doi": "10.20935/acadnano8400",
+     "cited_by": 0,
+     "oa": true,
+     "abstract": "Introduction: A study of correlation effects in graphene and twisted bilayer graphene is presented, using the extended-coupled-cluster method. Materials and methods: The extended coupled-cluster approach contains both self-consistent mean-field and beyond mean-field contributions, and can describe phase transitions in such strongly correlated systems, without further inputs or assumptions. Detailed expressions and a suitable implementation for the method are developed. Combining modern tensor contraction techniques with singular value decomposition, the correlation effects are successfully described in a qualitative manner, including contributions from the short-range and long-range parts of the Coulomb interaction. Results: We demonstrate validity of the method for use in grahene. Within the approximations used, the superconducting gap shows a possible maximum near a twist angle of \u03b8 c "
+    }
+   ]
+  }
+ }
+}

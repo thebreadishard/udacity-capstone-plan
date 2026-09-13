@@ -1,0 +1,971 @@
+{
+ "date": "2026-09-13",
+ "results": {
+  "A-i  OT-RSH / range-separation parameter + vibrational frequencies": {
+   "query": "\"range-separation parameter\" \"vibrational frequencies\"",
+   "count": 80,
+   "hits": [
+    {
+     "year": 2011,
+     "title": "Communication: Orbital instabilities and triplet states from time-dependent density functional theory and long-range corrected functionals",
+     "venue": "The Journal of Chemical Physics",
+     "doi": "10.1063/1.3656734",
+     "cited_by": 150,
+     "oa": true,
+     "abstract": "Long-range corrected hybrids represent an increasingly popular class of functionals for density functional theory (DFT) that have proven to be very successful for a wide range of chemical applications. In this Communication, we examine the performance of these functionals for time-dependent (TD)DFT descriptions of triplet excited states. Our results reveal that the triplet energies are particularly sensitive to the range-separation parameter; this sensitivity can be traced back to triplet instabilities in the ground state coming from the large effective amounts of Hartree-Fock exchange included in these functionals. As such, the use of standard long-range corrected functionals for the description of triplet states at the TDDFT level is not recommended."
+    },
+    {
+     "year": 2019,
+     "title": "Empirical Double\u2010Hybrid Density Functional Theory: A \u2018Third Way\u2019 in Between WFT and DFT",
+     "venue": "Israel Journal of Chemistry",
+     "doi": "10.1002/ijch.201900114",
+     "cited_by": 221,
+     "oa": true,
+     "abstract": "Abstract Double hybrid density functional theory arguably sits on the seamline between wavefunction methods and DFT: it represents a special case of Rung 5 on the \u201cJacob's Ladder\u201d of John P. Perdew. For large and chemically diverse benchmarks such as GMTKN55, empirical double hybrid functionals with dispersion corrections can achieve accuracies approaching wavefunction methods at a cost not greatly dissimilar to hybrid DFT approaches, provided RI\u2010MP2 and/or another MP2 acceleration techniques are available in the electronic structure code. Only a half\u2010dozen or fewer empirical parameters are required. For vibrational frequencies, accuracies intermediate between CCSD and CCSD(T) can be achieved, and performance for other properties is encouraging as well. Organometallic reactions can likewise be treated well, provided static correlation is not too strong. Further prospects are discussed, i"
+    },
+    {
+     "year": 2014,
+     "title": "Simultaneous Determination of Structures, Vibrations, and Frontier Orbital Energies from a Self-Consistent Range-Separated Hybrid Functional",
+     "venue": "The Journal of Physical Chemistry Letters",
+     "doi": "10.1021/jz5010939",
+     "cited_by": 55,
+     "oa": true,
+     "abstract": "A self-consistent optimally tuned range-separated hybrid density functional (scOT-RSH) approach is developed. It can simultaneously predict accurate geometries, vibrational modes, and frontier orbital energies. This is achieved by optimizing the range-separation parameter, \u03b3, to both satisfy the ionization energy theorem and minimize interatomic forces. We benchmark our approach against an established hybrid functional, B3LYP, using the G2 test set. scOT-RSH greatly improves the accuracy of occupied frontier orbital energies, with a mean absolute error (MAE) of only 0.2 eV relative to experimental ionization energies compared to 2.96 eV with B3LYP. Geometries do not change significantly compared to those obtained from B3LYP, with a bond length MAE of 0.012 \u00c5 compared to 0.008 \u00c5 for B3LYP, and a 6.5% MAE for zero-point energies, slightly larger than that of B3LYP (3.1%). scOT-RSH represen"
+    },
+    {
+     "year": 2019,
+     "title": "Evaluating 0\u20130 Energies with Theoretical Tools: A Short Review",
+     "venue": "ChemPhotoChem",
+     "doi": "10.1002/cptc.201900070",
+     "cited_by": 62,
+     "oa": true,
+     "abstract": "Abstract For a given electronic excited state, the 0\u20130 energy (T0 or T00) is the simplest property allowing straightforward and physically\u2010sound comparisons between theory and (accurate) experiment. However, the computation of 0\u20130 energies with ab initio approaches requires determining both the structure and the vibrational frequencies of the excited state, which limits the quality of the theoretical models that can be considered in practice. This explains why only a rather limited, yet constantly increasing, number of works have been devoted to the determination of this property. In this contribution, we review these efforts with a focus on benchmark studies carried out for both gas phase and solvated compounds. Over the years, not only as the size of the molecules increased, but the refinement of the theoretical tools has followed the same trend. Though the results obtained in these be"
+    },
+    {
+     "year": 2022,
+     "title": "Hyperpolarizabilities of Push\u2013Pull Chromophores in Solution: Interplay between Electronic and Vibrational Contributions",
+     "venue": "Molecules",
+     "doi": "10.3390/molecules27248738",
+     "cited_by": 12,
+     "oa": true,
+     "abstract": "Contemporary design of new organic non-linear optical (NLO) materials relies to a large extent on the understanding of molecular and electronic structure-property relationships revealed during the years by available computational approaches. The progress in theory-hand-in-hand with experiment-has enabled us to identify and analyze various physical aspects affecting the NLO responses, such as the environmental effects, molecular vibrations, frequency dispersion, and system dynamics. Although it is nowadays possible to reliably address these effects separately, the studies analyzing their mutual interplay are still very limited. Here, we employ density functional theory (DFT) methods in combination with an implicit solvent model to examine the solvent effects on the electronic and harmonic as well as anharmonic vibrational contributions to the static first hyperpolarizability of a series o"
+    },
+    {
+     "year": 2020,
+     "title": "DFTB+, a software package for efficient approximate density functional theory based atomistic simulations",
+     "venue": "The Journal of Chemical Physics",
+     "doi": "10.1063/1.5143190",
+     "cited_by": 1210,
+     "oa": true,
+     "abstract": "DFTB+ is a versatile community developed open source software package offering fast and efficient methods for carrying out atomistic quantum mechanical simulations. By implementing various methods approximating density functional theory (DFT), such as the density functional based tight binding (DFTB) and the extended tight binding method, it enables simulations of large systems and long timescales with reasonable accuracy while being considerably faster for typical simulations than the respective ab initio methods. Based on the DFTB framework, it additionally offers approximated versions of various DFT extensions including hybrid functionals, time dependent formalism for treating excited systems, electron transport using non-equilibrium Green's functions, and many more. DFTB+ can be used as a user-friendly standalone application in addition to being embedded into other software packages "
+    }
+   ]
+  },
+  "A-ii tuned functional harmonic frequencies polycyclic": {
+   "query": "\"optimally tuned\" \"harmonic frequencies\"",
+   "count": 92,
+   "hits": [
+    {
+     "year": 2002,
+     "title": "Detection and Discrimination of Relative Spatial Phase by V1 Neurons",
+     "venue": "Journal of Neuroscience",
+     "doi": "10.1523/jneurosci.22-14-06129.2002",
+     "cited_by": 65,
+     "oa": true,
+     "abstract": "Edge-like and line-like features result from spatial phase congruence, the local phase agreement between harmonic components of a spatial waveform. Psychophysical observations and models of early visual processing suggest that human visual feature detectors are specialized for edge-like and line-like phase congruence. To test whether primary visual cortex (V1) neurons account for such specificity, we made tetrode recordings in anesthetized macaque monkeys. Stimuli were drifting equal-energy compound gratings composed of four sinusoidal components. Eight congruence phases (one-dimensional features) were tested, including line-like and edge-like waveforms. Many of the 137 single V1 neurons (recorded at 45 sites) could reliably signal phase congruence by any of several response measures. Across neurons, the preferred spatial feature had only a modest bias for line-like waveforms. Informatio"
+    },
+    {
+     "year": 2017,
+     "title": "Chemical Tuning and Absorption Properties of Iridium Photosensitizers for Photocatalytic Applications",
+     "venue": "Inorganics",
+     "doi": "10.3390/inorganics5020023",
+     "cited_by": 14,
+     "oa": true,
+     "abstract": "Cyclometalated Ir(III) complexes are of particular interest due to the wide tunability of their electronic structure via variation of their ligands. Here, a series of heteroleptic Ir-based photosensitizers with the general formula [Ir(C^N)2(N^N)]+ has been studied theoretically by means of an optimally-tuned long-range separated density functional. Focusing on the steady-state absorption spectra, correlations between the chemical modification of both ligand types with the natures of the relevant dark and bright electronic states are revealed. Understanding such correlations builds up a basis for the rational design of efficient photocatalytic systems."
+    },
+    {
+     "year": 2020,
+     "title": "Nonparametric time series summary statistics for high-frequency accelerometry data from individuals with advanced dementia",
+     "venue": "PLoS ONE",
+     "doi": "10.1371/journal.pone.0239368",
+     "cited_by": 14,
+     "oa": true,
+     "abstract": "Accelerometry data has been widely used to measure activity and the circadian rhythm of individuals across the health sciences, in particular with people with advanced dementia. Modern accelerometers can record continuous observations on a single individual for several days at a sampling frequency of the order of one hertz. Such rich and lengthy data sets provide new opportunities for statistical insight, but also pose challenges in selecting from a wide range of possible summary statistics, and how the calculation of such statistics should be optimally tuned and implemented. In this paper, we build on existing approaches, as well as propose new summary statistics, and detail how these should be implemented with high frequency accelerometry data. We test and validate our methods on an observed data set from 26 recordings from individuals with advanced dementia and 14 recordings from indi"
+    },
+    {
+     "year": 2023,
+     "title": "Large- and Small-Signal Modeling Derived Loss Optimal Power Loop Decoupling Mechanism of TAB Converter",
+     "venue": "IEEE Open Journal of Power Electronics",
+     "doi": "10.1109/ojpel.2023.3304279",
+     "cited_by": 15,
+     "oa": true,
+     "abstract": "This paper presents a precisely synthesized full order as well as reduced order continuous time large signal and small signal model of a hybrid phase-duty controlled triple-active bridge (TAB) converter based on higher order harmonic frequency inclusive averaging model. Such model helps to accurately predict the steady state circuit parameters such as inductor current, average output voltage, output voltage ripple etc. that in turn can be used to formulate the loss minimized optimal phase-duty modulation strategy for a TAB. Further, the derived full order small signal model can specifically model the high frequency dynamics of the converter which are neglected in the reduced order modeling. Moreover, in order to facilitate decoupled power flow in a TAB, a decoupler network is formulated based on meticulously modeled converter plant considering higher order harmonics of the bridge voltage"
+    },
+    {
+     "year": 2024,
+     "title": "Thiocarbonyl\u2010Bridged N\u2010Heterotriangulenes for Energy Efficient Triplet Photosensitization: A Theoretical Perspective",
+     "venue": "ChemPhysChem",
+     "doi": "10.1002/cphc.202400371",
+     "cited_by": 2,
+     "oa": true,
+     "abstract": "Abstract Structurally\u2010rigid metal\u2010free organic molecules are of high demand for various triplet harvesting applications. However, inefficient intersystem crossing (ISC) due to large singlet\u2010triplet gap ( ) and small spin\u2010orbit coupling (SOC) between lowest excited singlet and triplet often limits their efficiency. Excited electronic states, fluorescence and ISC rates in several thiocarbonyl\u2010bridged N\u2010heterotriangulene ( S\u2010HTG) with systematically increased thione content ( 0\u20133) are investigated implementing polarization consistent time\u2010dependent optimally\u2010tuned range\u2010separated hybrid. All S\u2010HTGs are dynamically stable and also thermodynamically feasible to synthesize. Relative energies of several low\u2010lying singlets ( ) and triplets ( ), and their excitation nature (i. e., or ) and SOC are determined for these S\u2010HTGs in dichloromethane. Low\u2010energy optical peak displays gradual red\u2010shift w"
+    },
+    {
+     "year": 2018,
+     "title": "An overview of power quality enhancement techniques applied to distributed generation in electrical distribution networks",
+     "venue": "Renewable and Sustainable Energy Reviews",
+     "doi": "10.1016/j.rser.2018.05.013",
+     "cited_by": 165,
+     "oa": true,
+     "abstract": ""
+    }
+   ]
+  },
+  "A-iii Kekule mode benzene density functional failure": {
+   "query": "\"Kekul\u00e9\" benzene \"density functional\" frequency b2u",
+   "count": 3,
+   "hits": [
+    {
+     "year": 2013,
+     "title": "Benzene adsorption on PtCo(111): A DFT study",
+     "venue": "Applied Surface Science",
+     "doi": "10.1016/j.apsusc.2013.04.095",
+     "cited_by": 7,
+     "oa": true,
+     "abstract": ""
+    },
+    {
+     "year": 2021,
+     "title": "The Different Story of \u03c0 Bonds",
+     "venue": "Molecules",
+     "doi": "10.3390/molecules26133805",
+     "cited_by": 3,
+     "oa": true,
+     "abstract": "We revisit \u201cclassical\u201d issues in multiply bonded systems between main groups elements, namely the structural distortions that may occur at the multiple bonds and that lead, e.g., to trans-bent and bond-length alternated structures. The focus is on the role that orbital hybridization and electron correlation play in this context, here analyzed with the help of simple models for \u03c3- and \u03c0-bonds, numerically exact solutions of Hubbard Hamiltonians and first principles (density functional theory) investigations of an extended set of systems."
+    },
+    {
+     "year": 2005,
+     "title": "The Breakdown of the Minimum Polarizability Principle in Vibrational Motions as an Indicator of the Most Aromatic Center",
+     "venue": "Chemistry - A European Journal",
+     "doi": "10.1002/chem.200500223",
+     "cited_by": 15,
+     "oa": true,
+     "abstract": "The vibrational motions that disobey the minimum polarizability principle (MPP) in pi-conjugated molecules are distortions of the equilibrium geometry that produce a reduction in the polarizability due to the localization of pi electrons. For aromatic species, this electronic localization is responsible for the subsequent reduction in the aromaticity of the system. In the present work, we diagonalize the Hessian matrix of the polarizability with respect to the vibrational nontotally symmetric normal coordinates, to calculate the nontotally symmetric distortions that produce the maximum breakdown of the MPP in a series of twenty polycyclic aromatic hydrocarbons. It is shown that the nuclear displacements that break the MPP have larger components in those rings that possess the highest local aromaticity. Thus, these vibrational motions can be used as an indicator of local aromaticity."
+    }
+   ]
+  },
+  "A-iv functional fitted to vibrational frequencies (new functional)": {
+   "query": "\"vibrational frequencies\" \"fitted\" \"exchange-correlation functional\" training",
+   "count": 146,
+   "hits": [
+    {
+     "year": 2016,
+     "title": "Kinetic\u2010energy\u2010density dependent semilocal exchange\u2010correlation functionals",
+     "venue": "International Journal of Quantum Chemistry",
+     "doi": "10.1002/qua.25224",
+     "cited_by": 89,
+     "oa": true,
+     "abstract": "Abstract We present the theory of semilocal exchange\u2010correlation (XC) energy functionals which depend on the Kohn\u2013Sham kinetic energy density (KED), including the relevant class of meta\u2010generalized gradient approximation (meta\u2010GGA) functionals. Thanks to the KED ingredient, meta\u2010GGA functionals can satisfy different exact constraints for XC energy and can be made one\u2010electron self\u2010correlation free. This leads to a better accuracy over a wider range of properties with respect to GGAs, often reaching the accuracy of hybrid functionals, but at much reduced computational cost. An extensive survey of the relevant literature on existing KED dependent XC functionals is provided, considering nonempirical, semi\u2010empirical, and fully empirical ones. A deeper analysis and a wide benchmark are presented for functionals derived considering only exact constraints and parameters obtained from model and/"
+    },
+    {
+     "year": 2020,
+     "title": "Extended tight\u2010binding quantum chemistry methods",
+     "venue": "Wiley Interdisciplinary Reviews Computational Molecular Science",
+     "doi": "10.1002/wcms.1493",
+     "cited_by": 1669,
+     "oa": true,
+     "abstract": "Abstract This review covers a family of atomistic, mostly quantum chemistry (QC) based semiempirical methods for the fast and reasonably accurate description of large molecules in gas and condensed phase. The theory is derived from a density functional (DFT) perturbation expansion of the electron density in fluctuation terms to various orders similar to the original density functional tight binding model. The term \u201ceXtended\u201d in their name (xTB) emphasizes the parameter availability for almost the entire periodic table of elements ( Z \u2264 86) and improvements of the underlying theory regarding, for example, the atomic orbital basis set, the level of multipole approximation and the treatment of the important electrostatic and dispersion interactions. A common feature of most members is their consistent parameterization on accurate gas phase theoretical reference data for geometries, vibratio"
+    },
+    {
+     "year": 2015,
+     "title": "Mapping the genome of meta-generalized gradient approximation density functionals: The search for B97M-V",
+     "venue": "The Journal of Chemical Physics",
+     "doi": "10.1063/1.4907719",
+     "cited_by": 476,
+     "oa": true,
+     "abstract": "A meta-generalized gradient approximation density functional paired with the VV10 nonlocal correlation functional is presented. The functional form is selected from more than 10(10) choices carved out of a functional space of almost 10(40) possibilities. Raw data come from training a vast number of candidate functional forms on a comprehensive training set of 1095 data points and testing the resulting fits on a comprehensive primary test set of 1153 data points. Functional forms are ranked based on their ability to reproduce the data in both the training and primary test sets with minimum empiricism, and filtered based on a set of physical constraints and an often-overlooked condition of satisfactory numerical precision with medium-sized integration grids. The resulting optimal functional form has 4 linear exchange parameters, 4 linear same-spin correlation parameters, and 4 linear oppos"
+    },
+    {
+     "year": 2019,
+     "title": "Empirical Double\u2010Hybrid Density Functional Theory: A \u2018Third Way\u2019 in Between WFT and DFT",
+     "venue": "Israel Journal of Chemistry",
+     "doi": "10.1002/ijch.201900114",
+     "cited_by": 221,
+     "oa": true,
+     "abstract": "Abstract Double hybrid density functional theory arguably sits on the seamline between wavefunction methods and DFT: it represents a special case of Rung 5 on the \u201cJacob's Ladder\u201d of John P. Perdew. For large and chemically diverse benchmarks such as GMTKN55, empirical double hybrid functionals with dispersion corrections can achieve accuracies approaching wavefunction methods at a cost not greatly dissimilar to hybrid DFT approaches, provided RI\u2010MP2 and/or another MP2 acceleration techniques are available in the electronic structure code. Only a half\u2010dozen or fewer empirical parameters are required. For vibrational frequencies, accuracies intermediate between CCSD and CCSD(T) can be achieved, and performance for other properties is encouraging as well. Organometallic reactions can likewise be treated well, provided static correlation is not too strong. Further prospects are discussed, i"
+    },
+    {
+     "year": 2025,
+     "title": "Contemporary DFT: learning from traditional and recent trends for the development and assessment of accurate exchange\u2013correlation functionals",
+     "venue": "Physical Chemistry Chemical Physics",
+     "doi": "10.1039/d5cp03373j",
+     "cited_by": 10,
+     "oa": true,
+     "abstract": "Density functional theory (DFT) is the most widely and accepted model for calculating the electronic structure of physical systems, but practical applications rely on approximations to the (still) unknown exact exchange-correlation functional. We revisit here the main advances, families, and tipping points for the development of accurate expressions for the exchange-correlation functional, focusing on the historical evolution followed by DFT but also on the underlying reasons for that, while emphasizing both the theoretical foundations and the last methodological and technical developments (exemplified by deep-learned models). The latter are built by training a neural network on a very extended collection of molecular data, with the DM21, the aPBE0-ML, and the Skala functionals now available using such a strategy. This degree of development could have not been possible without the knowle"
+    },
+    {
+     "year": 2016,
+     "title": "mBEEF-vdW: Robust fitting of error estimation density functionals",
+     "venue": "Physical review. B./Physical review. B",
+     "doi": "10.1103/physrevb.93.235162",
+     "cited_by": 47,
+     "oa": true,
+     "abstract": "We propose a general-purpose semilocal/nonlocal exchange-correlation functional approximation, named mBEEF-vdW. The exchange is a meta generalized gradient approximation, and the correlation is a semilocal and nonlocal mixture, with the Rutgers-Chalmers approximation for van der Waals (vdW) forces. The functional is fitted within the Bayesian error estimation functional (BEEF) framework [J. Wellendorff et al., Phys. Rev. B 85, 235149 (2012); J. Wellendorff et al., J. Chem. Phys. 140, 144107 (2014)]. We improve the previously used fitting procedures by introducing a robust MM-estimator based loss function, reducing the sensitivity to outliers in the datasets. To more reliably determine the optimal model complexity, we furthermore introduce a generalization of the bootstrap 0.632 estimator with hierarchical bootstrap sampling and geometric mean estimator over the training datasets. Using t"
+    }
+   ]
+  },
+  "A-v ML functional trained on CCSD(T) vibrational": {
+   "query": "\"machine-learned\" functional \"vibrational\" \"CCSD(T)\"",
+   "count": 232,
+   "hits": [
+    {
+     "year": 2018,
+     "title": "Towards exact molecular dynamics simulations with machine-learned force fields",
+     "venue": "Nature Communications",
+     "doi": "10.1038/s41467-018-06169-2",
+     "cited_by": 689,
+     "oa": true,
+     "abstract": "Molecular dynamics (MD) simulations employing classical force fields constitute the cornerstone of contemporary atomistic modeling in chemistry, biology, and materials science. However, the predictive power of these simulations is only as good as the underlying interatomic potential. Classical potentials often fail to faithfully capture key quantum effects in molecules and materials. Here we enable the direct construction of flexible molecular force fields from high-level ab initio calculations by incorporating spatial and temporal physical symmetries into a gradient-domain machine learning (sGDML) model in an automatic data-driven way. The developed sGDML approach faithfully reproduces global force fields at quantum-chemical CCSD(T) level of accuracy and allows converged molecular dynamics simulations with fully quantized electrons and nuclei. We present MD simulations, for flexible mol"
+    },
+    {
+     "year": 2022,
+     "title": "\u0394-Machine Learned Potential Energy Surfaces and Force Fields",
+     "venue": "Journal of Chemical Theory and Computation",
+     "doi": "10.1021/acs.jctc.2c01034",
+     "cited_by": 78,
+     "oa": true,
+     "abstract": "-methylacetamide, acetyl acetone, and ethanol. For 15-atom tropolone, it appears that special approaches (e.g., molecular tailoring, local CCSD(T)) are needed to obtain the CCSD(T) energies. A new aspect of this approach is the extension of \u0394-machine learning to force fields. The approach is based on many-body corrections to polarizable force field potentials. This is examined in detail using the TTM2.1 water potential. The corrections make use of our recent CCSD(T) datasets for 2-b, 3-b, and 4-b interactions for water. These datasets were used to develop a new fully ab initio potential for water, termed q-AQUA."
+    },
+    {
+     "year": 2021,
+     "title": "Breaking the Coupled Cluster Barrier for Machine-Learned Potentials of Large Molecules: The Case of 15-Atom Acetylacetone",
+     "venue": "The Journal of Physical Chemistry Letters",
+     "doi": "10.1021/acs.jpclett.1c01142",
+     "cited_by": 92,
+     "oa": true,
+     "abstract": "Machine-learned potential energy surfaces (PESs) for molecules with more than 10 atoms are typically forced to use lower-level electronic structure methods such as density functional theory (DFT) and second-order M\u00f8ller-Plesset perturbation theory (MP2). While these are efficient and realistic, they fall short of the accuracy of the \"gold standard\" coupled-cluster method, especially with respect to reaction and isomerization barriers. We report a major step forward in applying a \u0394-machine learning method to the challenging case of acetylacetone, whose MP2 barrier height for H-atom transfer is low by roughly 1.1 kcal/mol relative to the benchmark CCSD(T) barrier of 3.2 kcal/mol. From a database of 2151 local CCSD(T) energies and training with as few as 430 energies, we obtain a new PES with a barrier of 3.5 kcal/mol in agreement with the LCCSD(T) barrier of 3.5 kcal/mol and close to the b"
+    },
+    {
+     "year": 2019,
+     "title": "Machine-Learned Fragment-Based Energies for Crystal Structure Prediction",
+     "venue": "Journal of Chemical Theory and Computation",
+     "doi": "10.1021/acs.jctc.9b00038",
+     "cited_by": 56,
+     "oa": true,
+     "abstract": "Crystal structure prediction involves a search of a complex configurational space for local minima corresponding to stable crystal structures, which can be performed efficiently using atom-atom force fields for the assessment of intermolecular interactions. However, for challenging systems, the limitations in the accuracy of force fields prevent a reliable assessment of the relative thermodynamic stability of potential structures, while the cost of fully quantum mechanical approaches can limit applications of the methods. We present a method to rapidly improve force field lattice energies by correcting two-body interactions with a higher level of theory in a fragment-based approach and predicting these corrections with machine learning. Corrected lattice energies with commonly used density functionals and second order perturbation theory (MP2) all significantly improve the ranking of exp"
+    },
+    {
+     "year": 2020,
+     "title": "Quantum chemical accuracy from density functional approximations via machine learning",
+     "venue": "Nature Communications",
+     "doi": "10.1038/s41467-020-19093-1",
+     "cited_by": 372,
+     "oa": true,
+     "abstract": "Abstract Kohn-Sham density functional theory (DFT) is a standard tool in most branches of chemistry, but accuracies for many molecules are limited to 2-3 kcal \u22c5 mol \u22121 with presently-available functionals. Ab initio methods, such as coupled-cluster, routinely produce much higher accuracy, but computational costs limit their application to small molecules. In this paper, we leverage machine learning to calculate coupled-cluster energies from DFT densities, reaching quantum chemical accuracy (errors below 1 kcal \u22c5 mol \u22121 ) on test data. Moreover, density-based \u0394 -learning (learning only the correction to a standard DFT calculation, termed \u0394 -DFT ) significantly reduces the amount of training data required, particularly when molecular symmetries are included. The robustness of \u0394 -DFT is highlighted by correcting \u201con the fly\u201d DFT-based molecular dynamics (MD) simulations of resorcinol (C 6 H"
+    },
+    {
+     "year": 2023,
+     "title": "A Status Report on \u201cGold Standard\u201d Machine-Learned Potentials for Water",
+     "venue": "The Journal of Physical Chemistry Letters",
+     "doi": "10.1021/acs.jpclett.3c01791",
+     "cited_by": 24,
+     "oa": true,
+     "abstract": "Owing to the central importance of water to life as well as its unusual properties, potentials for water have been the subject of extensive research over the past 50 years. Recently, five potentials based on different machine learning approaches have been reported that are at or near the \"gold standard\" CCSD(T) level of theory. The development of such high-level potentials enables efficient and accurate simulations of water systems using classical and quantum dynamical approaches. This Perspective serves as a status report of these potentials, focusing on their methodology and applications to water systems across different phases. Their performances on the energies of gas phase water clusters, as well as condensed phase structural and dynamical properties, are discussed."
+    }
+   ]
+  },
+  "A-vi PAH CCSD(T) harmonic frequencies naphthalene": {
+   "query": "\"CCSD(T)\" \"harmonic frequencies\" naphthalene",
+   "count": 75,
+   "hits": [
+    {
+     "year": 2016,
+     "title": "A computational chemist's guide to accurate thermochemistry for organic molecules",
+     "venue": "Wiley Interdisciplinary Reviews Computational Molecular Science",
+     "doi": "10.1002/wcms.1249",
+     "cited_by": 275,
+     "oa": true,
+     "abstract": "Composite ab initio methods are multistep theoretical procedures specifically designed to obtain highly accurate thermochemical and kinetic data with confident sub\u2010kcal mol \u22121 or sub\u2010 kJ mol \u22121 accuracy. These procedures include all energetic terms that contribute to the molecular binding energies at these levels of accuracy (e.g., CCSD (T), post\u2010 CCSD (T), core\u2013valence, relativistic, spin\u2010orbit, Born\u2013Oppenheimer, and zero\u2010point vibrational energy corrections). Basis\u2010set extrapolations (and other basis\u2010set acceleration techniques) are used for obtaining these terms at sufficiently high levels of accuracy. Major advances in computer hardware and theoretical methodologies over the past two decades have enabled the application of these procedures to medium\u2010sized organic systems (e.g., ranging from benzene and hexane to amino acids and DNA bases). With these advances, there has been a prolif"
+    },
+    {
+     "year": 2015,
+     "title": "The anharmonic quartic force field infrared spectra of three polycyclic aromatic hydrocarbons: Naphthalene, anthracene, and tetracene",
+     "venue": "The Journal of Chemical Physics",
+     "doi": "10.1063/1.4936779",
+     "cited_by": 120,
+     "oa": true,
+     "abstract": "Current efforts to characterize and study interstellar polycyclic aromatic hydrocarbons (PAHs) rely heavily on theoretically predicted infrared (IR) spectra. Generally, such studies use the scaled harmonic frequencies for band positions and double harmonic approximation for intensities of species, and then compare these calculated spectra with experimental spectra obtained under matrix isolation conditions. High-resolution gas-phase experimental spectroscopic studies have recently revealed that the double harmonic approximation is not sufficient for reliable spectra prediction. In this paper, we present the anharmonic theoretical spectra of three PAHs: naphthalene, anthracene, and tetracene, computed with a locally modified version of the SPECTRO program using Cartesian derivatives transformed from Gaussian 09 normal coordinate force constants. Proper treatments of Fermi resonances lead "
+    },
+    {
+     "year": 2012,
+     "title": "Explicitly correlated Wn theory: W1-F12 and W2-F12",
+     "venue": "The Journal of Chemical Physics",
+     "doi": "10.1063/1.3697678",
+     "cited_by": 275,
+     "oa": true,
+     "abstract": "In an attempt to extend the applicability of the W1 and W2 ab initio computational thermochemistry methods, we propose explicitly correlated versions thereof, denoted W1-F12 and W2-F12. In W2-F12, we can \"save\" one cardinal number (viz., angular momentum) in the basis set sequences without loss in accuracy; in W1-F12, we can do so for first-row compounds but not for second-row compounds. At a root mean square deviation (RMSD) = 0.19 kcal/mol for the first-row molecules in the W4-11 benchmark dataset, W1-F12 is in fact superior to ordinary W1 theory. For the entire W4-11 set, W2-F12 yields a RMSD = 0.20 kcal/mol, comparable to 0.19 kcal/mol from ordinary W2 theory. The extended applicability ranges of W1-F12 and W2-F12 are not just due to the lower computational cost but also to greatly reduced memory and especially storage requirements. They are illustrated through applications to nuclei"
+    },
+    {
+     "year": 1998,
+     "title": "The Reaction of Polycyclic Aromatic Hydrocarbon Cations with Hydrogen Atoms: The Astrophysical Implications",
+     "venue": "The Astrophysical Journal",
+     "doi": "10.1086/311782",
+     "cited_by": 106,
+     "oa": true,
+     "abstract": "The reaction of the naphthalene cation, C 10 H + 8 , with H atoms is exothermic by about 60 kcal mol -1 and yields the 1-hydronaphthalene cation C 10 H + 9 . The addition of a second H atom is exothermic by about 45 kcal mol -1 , leading to the 1, 2-dihydronaphthalene cation C 10 H + 10 , which has less aromatic character than the parent naphthalene cation. Such products have been identified from the C\u2014H stretching modes of the unidentified infrared bands. The abstraction of H from the 1-hydronaphthalene cation is found to have little, if any, barrier. This suggests that the polycyclic aromatic hydrocarbon (PAH) cations can catalyze the recombination of H atoms in the gas phase. Since the barrier to abstracting a deuterium is larger than hydrogen, reactions of hydrogen with PAH cations could enhance the degree of deuterium enrichment in PAHs."
+    },
+    {
+     "year": 2022,
+     "title": "VIBFREQ1295: A New Database for Vibrational Frequency Calculations",
+     "venue": "The Journal of Physical Chemistry A",
+     "doi": "10.1021/acs.jpca.2c01438",
+     "cited_by": 27,
+     "oa": true,
+     "abstract": "High-throughput approaches for producing approximate vibrational spectral data for molecules of astrochemistry interest rely on harmonic frequency calculations using computational quantum chemistry. However, model chemistry recommendations (i.e., a level of theory and basis set pair) for these calculations are not yet available and, thus, thorough benchmarking against comprehensive benchmark databases is needed. Here, we present a new database for vibrational frequency calculations (VIBFREQ1295) storing 1295 experimental fundamental frequencies and CCSD(T)(F12*)/cc-pVDZ-F12 ab initio harmonic frequencies from 141 molecules. VIBFREQ1295\u2019s experimental data was complied through a comprehensive review of contemporary experimental data, while the ab initio data was computed here. The chemical space spanned by the molecules chosen is considered in-depth and is shown to have good representatio"
+    },
+    {
+     "year": 2013,
+     "title": "The D alton quantum chemistry program system",
+     "venue": "Wiley Interdisciplinary Reviews Computational Molecular Science",
+     "doi": "10.1002/wcms.1172",
+     "cited_by": 1516,
+     "oa": true,
+     "abstract": "Dalton is a powerful general-purpose program system for the study of molecular electronic structure at the Hartree-Fock, Kohn-Sham, multiconfigurational self-consistent-field, M\u00f8ller-Plesset, configuration-interaction, and coupled-cluster levels of theory. Apart from the total energy, a wide variety of molecular properties may be calculated using these electronic-structure models. Molecular gradients and Hessians are available for geometry optimizations, molecular dynamics, and vibrational studies, whereas magnetic resonance and optical activity can be studied in a gauge-origin-invariant manner. Frequency-dependent molecular properties can be calculated using linear, quadratic, and cubic response theory. A large number of singlet and triplet perturbation operators are available for the study of one-, two-, and three-photon processes. Environmental effects may be included using various di"
+    }
+   ]
+  },
+  "A-vii PAH infrared functional benchmark": {
+   "query": "\"polycyclic aromatic hydrocarbons\" infrared \"functionals\" benchmark harmonic frequencies \"B3LYP\" comparison",
+   "count": 132,
+   "hits": [
+    {
+     "year": 2003,
+     "title": "Laboratory Infrared Spectroscopy of Cationic Polycyclic Aromatic Hydrocarbon Molecules",
+     "venue": "The Astrophysical Journal",
+     "doi": "10.1086/375515",
+     "cited_by": 250,
+     "oa": true,
+     "abstract": "Infrared spectroscopy of a variety of interstellar sources shows strong mid-IR emission bands, which are generally attributed to emission from highly vibrationally excited polycyclic aromatic hydrocarbon molecules (PAHs) in the neutral and, particularly, cationic states. Over the past decade, various experimental methods have been developed to record the infrared spectra of cationic PAHs in the laboratory. In this paper, we discuss available experimental spectra obtained with matrix isolation spectroscopy (MIS), infrared multiple-photon dissociation of trapped ions (MPD), dissociation spectroscopy of ionic PAH van der Waals clusters (VDW), and infrared emission (IRE). Moreover, we compare these experimental spectra to density functional theory (DFT) calculations. The main body of experimental data relies on MIS and MPD spectra, and we present a detailed comparison of results from these m"
+    },
+    {
+     "year": 2006,
+     "title": "Infrared Spectroscopy of Gas\u2010Phase Complexes of Fe+and Polycyclic Aromatic Hydrocarbon Molecules",
+     "venue": "The Astrophysical Journal",
+     "doi": "10.1086/504867",
+     "cited_by": 53,
+     "oa": true,
+     "abstract": "The observed depletion of iron in the interstellar medium has been suggested to result from its efficient complexation with, among others, polycyclic aromatic hydrocarbon molecules (PAHs). We present here the first experimental vibrational spectra of cationic iron-PAH complexes with benzene, naphthalene, and fluorene. The spectra were obtained by infrared multiple-photon dissociation (IRMPD) spectroscopy of the complex ions trapped in a Fourier transform ion cyclotron resonance (FT-ICR) mass spectrometer. A continuously tunable free electron laser provided intense radiation in the astrophysically interesting wavelength range of 6-16 \u03bcm. Supporting calculations of the geometries, relative stabilities, and harmonic vibrational frequencies of the complexes were carried out using density functional theory with the MPW1PW91/6-31+G(d,p) functional/basis set. In all cases, the experimental spec"
+    },
+    {
+     "year": 2017,
+     "title": "The carriers of the unidentified infrared emission features: Clues from polycyclic aromatic hydrocarbons with aliphatic sidegroups",
+     "venue": "New Astronomy Reviews",
+     "doi": "10.1016/j.newar.2017.01.001",
+     "cited_by": 45,
+     "oa": true,
+     "abstract": ""
+    },
+    {
+     "year": 2025,
+     "title": "Discovery of the Seven-ring Polycyclic Aromatic Hydrocarbon Cyanocoronene (C 24 H 11 CN) in GOTHAM Observations of TMC-1",
+     "venue": "The Astrophysical Journal Letters",
+     "doi": "10.3847/2041-8213/adc911",
+     "cited_by": 90,
+     "oa": true,
+     "abstract": "Abstract We present the synthesis and laboratory rotational spectroscopy of the seven-ring polycyclic aromatic hydrocarbon (PAH) cyanocoronene (C 24 H 11 CN) using a laser-ablation-assisted cavity-enhanced Fourier transform microwave spectrometer. A total of 71 transitions were measured and assigned between 6.8 and 10.6 GHz. Using these assignments, we searched for emission from cyanocoronene in the Green Bank Telescope (GBT) Observations of TMC-1: Hunting Aromatic Molecules project observations of the cold dark molecular cloud TMC-1 using the 100 m GBT. We detect a number of individually resolved transitions in ultrasensitive X -band observations and perform a Markov Chain Monte Carlo analysis to derive best-fit parameters, including a total column density of N ( C 24 H 11 CN ) = 2.6 9 \u2212 0.23 + 0.26 \u00d7 1 0 12 cm \u2212 2 at a temperature of 6.0 5 \u2212 0.37 + 0.38 K. A spectral stacking and match"
+    },
+    {
+     "year": 2019,
+     "title": "Synthesis of Polycyclic Aromatic Hydrocarbons by Phenyl Addition\u2013Dehydrocyclization: The Third Way",
+     "venue": "Angewandte Chemie International Edition",
+     "doi": "10.1002/anie.201909876",
+     "cited_by": 51,
+     "oa": true,
+     "abstract": "Polycyclic aromatic hydrocarbons (PAHs) represent the link between resonance-stabilized free radicals and carbonaceous nanoparticles generated in incomplete combustion processes and in circumstellar envelopes of carbon rich asymptotic giant branch (AGB) stars. Although these PAHs resemble building blocks of complex carbonaceous nanostructures, their fundamental formation mechanisms have remained elusive. By exploring these reaction mechanisms of the phenyl radical with biphenyl/naphthalene theoretically and experimentally, we provide compelling evidence on a novel phenyl-addition/dehydrocyclization (PAC) pathway leading to prototype PAHs: triphenylene and fluoranthene. PAC operates efficiently at high temperatures leading through rapid molecular mass growth processes to complex aromatic structures, which are difficult to synthesize by traditional pathways such as hydrogen-abstraction/ace"
+    },
+    {
+     "year": 2017,
+     "title": "High-resolution IR absorption spectroscopy of polycyclic aromatic hydrocarbons in the 3 \u03bcm region: role of hydrogenation and alkylation",
+     "venue": "Astronomy and Astrophysics",
+     "doi": "10.1051/0004-6361/201732102",
+     "cited_by": 59,
+     "oa": true,
+     "abstract": "Aim. We aim to elucidate the spectral changes in the 3 \u03bcm region that result from chemical changes in the molecular periphery of polycyclic aromatic hydrocarbons (PAHs) with extra hydrogens (H-PAHs) and methyl groups (Me-PAHs). Methods. Advanced laser spectroscopic techniques combined with mass spectrometry were applied on supersonically cooled 1,2,3,4-tetrahydronaphthalene, 9,10-dihydroanthracene, 9,10-dihydrophenanthrene, 1,2,3,6,7,8-hexahydropyrene, 9-methylanthracene, and 9,10-dimethylanthracene, allowing us to record mass-selective and conformationally selective absorption spectra of the aromatic, aliphatic, and alkyl CH-stretches in the 3.175 \u2212 3.636 \u00b5m region with laser-limited resolution. We compared the experimental absorption spectra with standard harmonic calculations and with second-order vibrational perturbation theory anharmonic calculations that use the SPECTRO program for"
+    }
+   ]
+  },
+  "A-viii range-separated PAH infrared": {
+   "query": "\"range-separated\" \"polycyclic aromatic\" \"infrared spectra\" functional assessment",
+   "count": 5,
+   "hits": [
+    {
+     "year": 2021,
+     "title": "Computational Infrared Spectroscopy of 958 Phosphorus-Bearing Molecules",
+     "venue": "Frontiers in Astronomy and Space Sciences",
+     "doi": "10.3389/fspas.2021.639068",
+     "cited_by": 19,
+     "oa": true,
+     "abstract": "Phosphine is now well-established as a biosignature, which has risen to prominence with its recent tentative detection on Venus. To follow up this discovery and related future exoplanet biosignature detections, it is important to spectroscopically detect the presence of phosphorus-bearing atmospheric molecules that could be involved in the chemical networks producing, destroying or reacting with phosphine. We start by enumerating phosphorus-bearing molecules (P-molecules) that could potentially be detected spectroscopically in planetary atmospheres and collecting all available spectral data. Gaseous P-molecules are rare, with speciation information scarce. Very few molecules have high accuracy spectral data from experiment or theory; instead, the best current spectral data was obtained using a high-throughput computational algorithm, RASCALL, relying on functional group theory to efficie"
+    },
+    {
+     "year": 2026,
+     "title": "Double Ionization of Polycyclic Aromatic Nitrogen Heterocycles: Simulations on Phenanthridine",
+     "venue": "ACS Earth and Space Chemistry",
+     "doi": "10.1021/acsearthspacechem.5c00240",
+     "cited_by": 0,
+     "oa": true,
+     "abstract": "High Resolution Image Download MS PowerPoint Slide A relevant class of molecules is polycyclic aromatic nitrogen heterocycles (PANHs), which are important for the astrochemistry and biochemistry fields. Recently, three new nitrogen-bearing polycyclic aromatic molecules, cyanopyrene, cyanoacenaphthylene, and cyanocoronene, were detected in Taurus Molecular Cloud 1 (TMC-1) by radio astronomy, reinforcing the current relevance of this type of system. It is well-known that different charge states affect the structure and properties of these systems. Thus, we performed an automated search for structures and relative stabilities of the phenanthridine dication, a PANH molecular prototype. Also, computations were performed for phenanthrene dication for comparison and benchmarking reasons. Infrared spectra simulations were performed for both systems, and the main changes in spectral profile were "
+    },
+    {
+     "year": 2022,
+     "title": "Treatment of PBDEs from Soil-Washing Effluent by Granular-Activated Carbon: Adsorption Behavior, Influencing Factors and Density Functional Theory Calculation",
+     "venue": "Processes",
+     "doi": "10.3390/pr10091815",
+     "cited_by": 6,
+     "oa": true,
+     "abstract": "Soil-washing is a potential technology for the disposal of soil contaminated by e-waste; however, the produced soil-washing effluent will contain polybrominated diphenyl ethers (PBDEs) and a large number of surfactants, which are harmful to the environment, so the treatment of PBDEs and the recycling of surfactants are the key to the application of soil-washing technology. In this study, coconut shell granular-activated carbon (GAC) was applied to remove PBDEs from Triton X-100 (TX-100) surfactant which simulates soil-washing effluent. The adsorption results show that, GAC can simultaneously achieve effective removal of 4,4\u2032-dibromodiphenyl ether (BDE-15) and efficient recovery of TX-100. Under optimal conditions, the maximum adsorption capacity of BDE-15 could reach 623.19 \u03bcmol/g, and the recovery rate of TX-100 was always higher than 83%. The adsorption process of 4,4\u2032-dibromodiphenyl "
+    },
+    {
+     "year": 2024,
+     "title": "Tetracyanoethylene $$\\hbox {Na}^+$$/$$\\hbox {K}^+$$ radical anion coordination sites unveiled via electronic and vibrational fingerprints",
+     "venue": "Theoretical Chemistry Accounts",
+     "doi": "10.1007/s00214-024-03151-8",
+     "cited_by": 3,
+     "oa": true,
+     "abstract": "Abstract Tetracyanoethylene (TCNE) is a very effective electron acceptor and can form stable complexes with various chemical species and is known for its interesting electronic and optical properties. The formation of the monoanion gives TCNE unique electronic and chemical properties, making it a material of interest for several technological applications including solar cells, organic battery electrodes, sodium/potassium-ion batteries and information storage devices. The chemico-physical characterization of $$\\hbox {Na}^+$$ Na + and $$\\hbox {K}^+$$ K + coordination of TCNE in solution is not available so far, although it would be valuable for understanding the molecular mechanisms of charging and discharging processes in innovative battery devices. The present theoretical-computational study characterizes the vibrational and electronic properties of ion-coordinated TCNE in solution. We "
+    },
+    {
+     "year": 2026,
+     "title": "Computational investigation of metal doped coronene for acetophenone adsorption and sensing in wastewater treatment",
+     "venue": "Scientific Reports",
+     "doi": "10.1038/s41598-026-63747-x",
+     "cited_by": 0,
+     "oa": true,
+     "abstract": "Abstract Acetophenone (ACT) is a persistent organic pollutant in industrial wastewaters that poses serious risks to human health and the environment. In this study, we evaluated pristine coronene (CRO) and its aluminum- and zinc-doped forms (Al-CRO and Zn-CRO) as adsorbents and potential colorimetric/electrochemical sensing platforms for ACT using B97D/6-31G(d), B97D/LANL2DZ, and \u03c9B97XD/6-31G(d). Statistical comparisons based on mean absolute deviation, root mean square deviation, and Pearson correlation coefficient confirmed the consistency of the main qualitative results at computational levels. Adsorption energy, electronic properties, optical response, and interaction mechanisms were examined using density functional theory (DFT), time-dependent DFT (TD-DFT), quantum theory of atoms in molecules (QTAIM), and NBO, NCI, and ELF/LOL analyses. QTAIM, NCI/RDG, and ELF/LOL analyses consist"
+    }
+   ]
+  },
+  "A-ix double hybrids harmonic frequencies aromatic": {
+   "query": "\"double-hybrid\" \"harmonic frequencies\" aromatic benzene \"CCSD(T)\"",
+   "count": 26,
+   "hits": [
+    {
+     "year": 2019,
+     "title": "Empirical Double\u2010Hybrid Density Functional Theory: A \u2018Third Way\u2019 in Between WFT and DFT",
+     "venue": "Israel Journal of Chemistry",
+     "doi": "10.1002/ijch.201900114",
+     "cited_by": 221,
+     "oa": true,
+     "abstract": "Abstract Double hybrid density functional theory arguably sits on the seamline between wavefunction methods and DFT: it represents a special case of Rung 5 on the \u201cJacob's Ladder\u201d of John P. Perdew. For large and chemically diverse benchmarks such as GMTKN55, empirical double hybrid functionals with dispersion corrections can achieve accuracies approaching wavefunction methods at a cost not greatly dissimilar to hybrid DFT approaches, provided RI\u2010MP2 and/or another MP2 acceleration techniques are available in the electronic structure code. Only a half\u2010dozen or fewer empirical parameters are required. For vibrational frequencies, accuracies intermediate between CCSD and CCSD(T) can be achieved, and performance for other properties is encouraging as well. Organometallic reactions can likewise be treated well, provided static correlation is not too strong. Further prospects are discussed, i"
+    },
+    {
+     "year": 2016,
+     "title": "A computational chemist's guide to accurate thermochemistry for organic molecules",
+     "venue": "Wiley Interdisciplinary Reviews Computational Molecular Science",
+     "doi": "10.1002/wcms.1249",
+     "cited_by": 275,
+     "oa": true,
+     "abstract": "Composite ab initio methods are multistep theoretical procedures specifically designed to obtain highly accurate thermochemical and kinetic data with confident sub\u2010kcal mol \u22121 or sub\u2010 kJ mol \u22121 accuracy. These procedures include all energetic terms that contribute to the molecular binding energies at these levels of accuracy (e.g., CCSD (T), post\u2010 CCSD (T), core\u2013valence, relativistic, spin\u2010orbit, Born\u2013Oppenheimer, and zero\u2010point vibrational energy corrections). Basis\u2010set extrapolations (and other basis\u2010set acceleration techniques) are used for obtaining these terms at sufficiently high levels of accuracy. Major advances in computer hardware and theoretical methodologies over the past two decades have enabled the application of these procedures to medium\u2010sized organic systems (e.g., ranging from benzene and hexane to amino acids and DNA bases). With these advances, there has been a prolif"
+    },
+    {
+     "year": 2024,
+     "title": "State-of-the-art local correlation methods enable affordable gold standard quantum chemistry for up to hundreds of atoms",
+     "venue": "Chemical Science",
+     "doi": "10.1039/d4sc04755a",
+     "cited_by": 64,
+     "oa": true,
+     "abstract": "which are able to match measurements within the error estimates. These applications demonstrate that modern, open-access, and broadly affordable local methods, such as LNO-CCSD(T), already enable predictive computations and atomistic insight for complicated, real-life molecular processes in realistic environments."
+    },
+    {
+     "year": 2013,
+     "title": "Evaluation of the Heats of Formation of Corannulene and C 60 by Means of High-Level Theoretical Procedures",
+     "venue": "The Journal of Physical Chemistry A",
+     "doi": "10.1021/jp312585r",
+     "cited_by": 63,
+     "oa": true,
+     "abstract": "In this study, we address the issues associated with predicting usefully accurate heats of formation for moderately-sized molecules such as corannulene and C(60). We obtain a high-level theoretical heat of formation for corannulene through the use of reaction schemes that conserve increasingly larger molecular fragments between the reactants and products. The reaction enthalpies are obtained by means of the high-level, ab initio W1h thermochemical protocol, while accurate experimental enthalpies of formation for the other molecules involved in the reactions are obtained from the Active Thermochemical Tables (ATcT) network. Our best theoretical heat of formation for corannulene (\u0394(f)H\u00b0(298)[C(20)H(10)(g)] = 485.2 \u00b1 7.9 kJ mol(-1)) differs significantly from the currently accepted experimental value (\u0394(f)H\u00b0(298)[C(20)H(10)(g)] = 458.5 \u00b1 9.2 kJ mol(-1)), and this suggests that re-examinatio"
+    },
+    {
+     "year": 2020,
+     "title": "Comprehensive Benchmark Study on the Calculation of 29Si NMR Chemical Shifts",
+     "venue": "Inorganic Chemistry",
+     "doi": "10.1021/acs.inorgchem.0c02907",
+     "cited_by": 32,
+     "oa": true,
+     "abstract": "A comprehensive and diverse benchmark set for the calculation of 29 Si NMR chemical shifts is presented. The SiS146 set includes 100 silicon containing compounds with 146 experimentally determined reference 29 Si NMR chemical shifts measured in nine different solvents in a range from \u2212400 to +828 ppm. Silicon atoms bound to main group elements as well as transition metals with coordination numbers of 2\u20136 in various bonding patterns including multiple bonds and coordinative and aromatic bonding are represented. The performance of various common and specialized density functional approximations including (meta-)GGA, hybrid, and double-hybrid functionals in combination with different AO basis sets and for differently optimized geometries is evaluated. The role of scalar-relativistic effects is further investigated by inclusion of the zeroth order regular approximation (ZORA) method into the"
+    },
+    {
+     "year": 2021,
+     "title": "A Computational Journey across Nitroxide Radicals: From Structure to Spectroscopic Properties and Beyond",
+     "venue": "Molecules",
+     "doi": "10.3390/molecules26237404",
+     "cited_by": 9,
+     "oa": true,
+     "abstract": "Nitroxide radicals are characterized by a long-lived open-shell electronic ground state and are strongly sensitive to the chemical environment, thus representing ideal spin probes and spin labels for paramagnetic biomolecules and materials. However, the interpretation of spectroscopic parameters in structural and dynamic terms requires the aid of accurate quantum chemical computations. In this paper we validate a computational model rooted into double-hybrid functionals and second order vibrational perturbation theory. Then, we provide reference quantum chemical results for the structures, vibrational frequencies and other spectroscopic features of a large panel of nitroxides of current biological and/or technological interest."
+    }
+   ]
+  },
+  "D-i internal coordinate force constants transferability CC-DFT difference": {
+   "query": "\"force constants\" \"internal coordinates\" difference \"coupled cluster\" \"density functional\" transferable",
+   "count": 77,
+   "hits": [
+    {
+     "year": 2020,
+     "title": "Extended tight\u2010binding quantum chemistry methods",
+     "venue": "Wiley Interdisciplinary Reviews Computational Molecular Science",
+     "doi": "10.1002/wcms.1493",
+     "cited_by": 1669,
+     "oa": true,
+     "abstract": "Abstract This review covers a family of atomistic, mostly quantum chemistry (QC) based semiempirical methods for the fast and reasonably accurate description of large molecules in gas and condensed phase. The theory is derived from a density functional (DFT) perturbation expansion of the electron density in fluctuation terms to various orders similar to the original density functional tight binding model. The term \u201ceXtended\u201d in their name (xTB) emphasizes the parameter availability for almost the entire periodic table of elements ( Z \u2264 86) and improvements of the underlying theory regarding, for example, the atomic orbital basis set, the level of multipole approximation and the treatment of the important electrostatic and dispersion interactions. A common feature of most members is their consistent parameterization on accurate gas phase theoretical reference data for geometries, vibratio"
+    },
+    {
+     "year": 2020,
+     "title": "Modern quantum chemistry with [Open]Molcas",
+     "venue": "The Journal of Chemical Physics",
+     "doi": "10.1063/5.0004835",
+     "cited_by": 518,
+     "oa": true,
+     "abstract": "MOLCAS/OpenMolcas is an ab initio electronic structure program providing a large set of computational methods from Hartree-Fock and density functional theory to various implementations of multiconfigurational theory. This article provides a comprehensive overview of the main features of the code, specifically reviewing the use of the code in previously reported chemical applications as well as more recent applications including the calculation of magnetic properties from optimized density matrix renormalization group wave functions."
+    },
+    {
+     "year": 2023,
+     "title": "Harnessing the power of curvilinear internal coordinates: from molecular structure prediction to vibrational spectroscopy",
+     "venue": "Theoretical Chemistry Accounts",
+     "doi": "10.1007/s00214-023-03069-7",
+     "cited_by": 19,
+     "oa": true,
+     "abstract": "Abstract Different standard VPT2 codes employ Cartesian coordinates for the computation of rotational and vibrational spectroscopic parameters. However, curvilinear internal coordinates offer a number of advantages provided that a general non-redundant set of coordinates can be built and employed in an unsupervised workflow. In the present paper I summarize the main results and perspectives of a general engine employing curvilinear internal coordinates and perturbation theory for the computation of rotational and vibrational spectroscopic parameters of large molecules beyond the conventional rigid rotor/harmonic oscillator model. Some examples concerning biomolecule building blocks are discussed in some detail in order to better analyze the performance of the proposed strategy."
+    },
+    {
+     "year": 2020,
+     "title": "In Situ Assessment of Intrinsic Strength of X-I\u22efOA-Type Halogen Bonds in Molecular Crystals with Periodic Local Vibrational Mode Theory",
+     "venue": "Molecules",
+     "doi": "10.3390/molecules25071589",
+     "cited_by": 32,
+     "oa": true,
+     "abstract": "-oxide groups) in 32 model systems originating from 20 molecular crystals. We found that the halogen bonding between the donor dihalogen X-I and the wide collection of acceptor molecules OA features considerable variations of the local stretching force constants (0.1-0.8 mdyn/\u00c5) for I\u22efO halogen bonds, demonstrating its powerful tunability in bond strength. Strong correlations between bond length and local stretching force constant were observed in crystals for both the donor X-I bonds and I\u22efO halogen bonds, extending for the first time the generalized Badger's rule to crystals. It is demonstrated that the halogen atom X controlling the electrostatic attraction between the \u03c3 -hole on atom I and the acceptor atom O dominates the intrinsic strength of I\u22efO halogen bonds. Different oxygen-containing acceptor molecules OA and even subtle changes induced by substituents can tweak the n \u2192 \u03c3 \u2217 (X"
+    },
+    {
+     "year": 2019,
+     "title": "Metal\u2013Halogen Bonding Seen through the Eyes of Vibrational Spectroscopy",
+     "venue": "Materials",
+     "doi": "10.3390/ma13010055",
+     "cited_by": 31,
+     "oa": true,
+     "abstract": "Incorporation of a metal center into halogen-bonded materials can efficiently fine-tune the strength of the halogen bonds and introduce new electronic functionalities. The metal atom can adopt two possible roles: serving as halogen acceptor or polarizing the halogen donor and acceptor groups. We investigated both scenarios for 23 metal\u2013halogen dimers trans-M(Y2)(NC5H4X-3)2 with M = Pd(II), Pt(II); Y = F, Cl, Br; X = Cl, Br, I; and NC5H4X-3 = 3-halopyridine. As a new tool for the quantitative assessment of metal\u2013halogen bonding, we introduced our local vibrational mode analysis, complemented by energy and electron density analyses and electrostatic potential studies at the density functional theory (DFT) and coupled-cluster single, double, and perturbative triple excitations (CCSD(T)) levels of theory. We could for the first time quantify the various attractive contacts and their contribu"
+    },
+    {
+     "year": 2018,
+     "title": "The multichannel n-propyl + O2 reaction surface: Definitive theory on a model hydrocarbon oxidation mechanism",
+     "venue": "The Journal of Chemical Physics",
+     "doi": "10.1063/1.5017305",
+     "cited_by": 19,
+     "oa": true,
+     "abstract": "The n-propyl + O2 reaction is an important model of chain branching reactions in larger combustion systems. In this work, focal point analyses (FPAs) extrapolating to the ab initio limit were performed on the n-propyl + O2 system based on explicit quantum chemical computations with electron correlation treatments through coupled cluster single, double, triple, and perturbative quadruple excitations [CCSDT(Q)] and basis sets up to cc-pV5Z. All reaction species and transition states were fully optimized at the rigorous CCSD(T)/cc-pVTZ level of theory, revealing some substantial differences in comparison to the density functional theory geometries existing in the literature. A mixed Hessian methodology was implemented and benchmarked that essentially makes the computations of CCSD(T)/cc-pVTZ vibrational frequencies feasible and thus provides critical improvements to zero-point vibrational e"
+    }
+   ]
+  },
+  "E-i DMRG Hessian / harmonic frequencies electronic": {
+   "query": "DMRG \"harmonic frequencies\" \"analytic\" Hessian",
+   "count": 4,
+   "hits": [
+    {
+     "year": 2023,
+     "title": "Harnessing the power of curvilinear internal coordinates: from molecular structure prediction to vibrational spectroscopy",
+     "venue": "Theoretical Chemistry Accounts",
+     "doi": "10.1007/s00214-023-03069-7",
+     "cited_by": 19,
+     "oa": true,
+     "abstract": "Abstract Different standard VPT2 codes employ Cartesian coordinates for the computation of rotational and vibrational spectroscopic parameters. However, curvilinear internal coordinates offer a number of advantages provided that a general non-redundant set of coordinates can be built and employed in an unsupervised workflow. In the present paper I summarize the main results and perspectives of a general engine employing curvilinear internal coordinates and perturbation theory for the computation of rotational and vibrational spectroscopic parameters of large molecules beyond the conventional rigid rotor/harmonic oscillator model. Some examples concerning biomolecule building blocks are discussed in some detail in order to better analyze the performance of the proposed strategy."
+    },
+    {
+     "year": 2021,
+     "title": "Range\u2010separated multiconfigurational density functional theory methods",
+     "venue": "Wiley Interdisciplinary Reviews Computational Molecular Science",
+     "doi": "10.1002/wcms.1566",
+     "cited_by": 21,
+     "oa": true,
+     "abstract": "Abstract Range\u2010separated multiconfigurational density functional theory (RS MC\u2010DFT) rigorously combines density functional (DFT) and wavefunction (WFT) theories. This is achieved by partitioning of the electron interaction operator into long\u2010 and short\u2010range components and modeling them with WFT and DFT, respectively. In contrast to other methods, mixing wavefunctions with density functionals, RS MC\u2010DFT is free from electron correlation double counting. The general formulation of RS MC\u2010DFT allows for merging any ab initio approximation with density functionals. Implementations of RS MC\u2010DFT aim at increasing both versatility and accuracy of the underlying methods, while reducing the computational cost of the ab initio problem. Variants of the RS MC\u2010DFT approach can be divided into single\u2010determinant\u2010based range\u2010separated methods and range\u2010separated multideterminantal WFT methods. In these"
+    },
+    {
+     "year": 2025,
+     "title": "Neural network matrix product operator: A multi-dimensionally integrable machine learning potential",
+     "venue": "Physical Review Research",
+     "doi": "10.1103/physrevresearch.7.023217",
+     "cited_by": 2,
+     "oa": true,
+     "abstract": "A neural network-based machine learning potential energy surface (PES) expressed in a matrix product operator (NN-MPO) is proposed. The MPO form enables efficient evaluation of high-dimensional integrals that arise in solving the time-dependent and time-independent Schr\u00f6dinger equation, and effectively overcomes the so-called curse of dimensionality. This starkly contrasts with other neural network-based machine learning PES methods, such as multilayer perceptrons (MLPs), where evaluating high-dimensional integrals is not straightforward due to the fully connected topology in their backbone architecture. Nevertheless, the NN-MPO retains the high representational capacity of neural networks. NN-MPO can achieve spectroscopic accuracy with a test mean absolute error (MAE) of 3.03 cm \u2212 1 for a fully coupled six-dimensional PES, using only 625 training points distributed across a 0 to 17 000 "
+    },
+    {
+     "year": 2018,
+     "title": "Analytic Energy Gradients for Variational Two-Electron Reduced-Density Matrix Methods within the Density Fitting Approximation",
+     "venue": "Journal of Chemical Theory and Computation",
+     "doi": "10.1021/acs.jctc.8b00973",
+     "cited_by": 0,
+     "oa": true,
+     "abstract": "Analytic energy gradients are presented for a variational two-electron reduced-density-matrix-driven complete active space self-consistent field (v2RDM-CASSCF) procedure that employs the density fitting (DF) approximation to the two-electron repulsion integrals. The DF approximation significantly reduces the computational cost of v2RDM-CASSCF gradient evaluation, in terms of both the number of floating-point operations and memory requirements, enabling geometry optimizations on much larger chemical systems than could previously be considered at this level of theory [Maradzike et al., J. Chem. Theory Comput., 2017, 13, 4113\u22124122]. The efficacy of v2RDM-CASSCF for computing equilibrium geometries and harmonic vibrational frequencies is assessed using a set of 25 small closed- and open-shell molecules. Equilibrium bond lengths from v2RDM-CASSCF differ from those obtained from configuration-"
+    }
+   ]
+  },
+  "E-ii pi-electron active space embedding acenes vibrational": {
+   "query": "acenes \"active space\" \"vibrational frequencies\" \"multireference\"",
+   "count": 22,
+   "hits": [
+    {
+     "year": 2024,
+     "title": "Multireference Averaged Quadratic Coupled Cluster (MR-AQCC) Study of the Geometries and Energies for ortho-, meta- and para-Benzyne",
+     "venue": "The Journal of Physical Chemistry A",
+     "doi": "10.1021/acs.jpca.4c04099",
+     "cited_by": 9,
+     "oa": true,
+     "abstract": "High Resolution Image Download MS PowerPoint Slide The diradical benzyne isomers are excellent prototypes for evaluating the ability of an electronic structure method to describe static and dynamic correlation. The benzyne isomers are also interesting molecules with which to study the fundamentals of through-space and through-bond diradical coupling that is important in so many electronic device applications. In the current study, we utilize the multireference methods MC-SCF, MR-CISD, MR-CISD+Q, and MR-AQCC with an (8,8) complete active space that includes the \u03c3, \u03c3*, \u03c0 and \u03c0* orbitals, to characterize the electronic structure of ortho-, meta- and para -benzyne. We also determine the adiabatic and vertical singlet\u2013triplet splittings for these isomers. MR-AQCC and MR-CISD+Q produced energy gaps in good agreement with previously obtained experimental values. Geometries, orbital energies and"
+    },
+    {
+     "year": 2023,
+     "title": "Efficient Calculation of the Dispersion Energy for Multireference Systems with Cholesky Decomposition: Application to Excited-State Interactions",
+     "venue": "The Journal of Physical Chemistry Letters",
+     "doi": "10.1021/acs.jpclett.3c01568",
+     "cited_by": 11,
+     "oa": true,
+     "abstract": "Accurate and efficient prediction of dispersion interactions in excited-state complexes poses a challenge due to the complex nature of electron correlation effects that need to be simultaneously considered. We propose an algorithm for computing the dispersion energy in nondegenerate ground- or excited-state complexes with arbitrary spin. The algorithm scales with the fifth power of the system size due to employing Cholesky decomposition of Coulomb integrals and a recently developed recursive formula for density response functions of the monomers. As a numerical illustration, we apply the new algorithm in the framework of multiconfigurational symmetry adapted perturbation theory, SAPT(MC), to study interactions in dimers with localized excitons. The SAPT(MC) analysis reveals that the dispersion energy may be the main force stabilizing excited-state dimers."
+    },
+    {
+     "year": 2020,
+     "title": "P SI4 1.4: Open-source software for high-throughput quantum chemistry",
+     "venue": "The Journal of Chemical Physics",
+     "doi": "10.1063/5.0006002",
+     "cited_by": 1056,
+     "oa": true,
+     "abstract": "PSI4 is a free and open-source ab initio electronic structure program providing implementations of Hartree-Fock, density functional theory, many-body perturbation theory, configuration interaction, density cumulant theory, symmetry-adapted perturbation theory, and coupled-cluster theory. Most of the methods are quite efficient, thanks to density fitting and multi-core parallelism. The program is a hybrid of C++ and Python, and calculations may be run with very simple text files or using the Python API, facilitating post-processing and complex workflows; method developers also have access to most of PSI4's core functionalities via Python. Job specification may be passed using The Molecular Sciences Software Institute (MolSSI) QCSCHEMA data format, facilitating interoperability. A rewrite of our top-level computation driver, and concomitant adoption of the MolSSI QCARCHIVE INFRASTRUCTURE p"
+    },
+    {
+     "year": 2021,
+     "title": "Software for the frontiers of quantum chemistry: An overview of developments in the Q-Chem 5 package",
+     "venue": "The Journal of Chemical Physics",
+     "doi": "10.1063/5.0055522",
+     "cited_by": 1415,
+     "oa": true,
+     "abstract": "This article summarizes technical advances contained in the fifth major release of the Q-Chem quantum chemistry program package, covering developments since 2015. A comprehensive library of exchange-correlation functionals, along with a suite of correlated many-body methods, continues to be a hallmark of the Q-Chem software. The many-body methods include novel variants of both coupled-cluster and configuration-interaction approaches along with methods based on the algebraic diagrammatic construction and variational reduced density-matrix methods. Methods highlighted in Q-Chem 5 include a suite of tools for modeling core-level spectroscopy, methods for describing metastable resonances, methods for computing vibronic spectra, the nuclear-electronic orbital method, and several different energy decomposition analysis techniques. High-performance capabilities including multithreaded paralleli"
+    },
+    {
+     "year": 2023,
+     "title": "TAO-DFT with the Polarizable Continuum Model",
+     "venue": "Nanomaterials",
+     "doi": "10.3390/nano13101593",
+     "cited_by": 16,
+     "oa": true,
+     "abstract": "For the ground-state properties of gas-phase nanomolecules with multi-reference character, thermally assisted occupation (TAO) density functional theory (DFT) has recently been found to outperform the widely used Kohn-Sham DFT when traditional exchange-correlation energy functionals are employed. Aiming to explore solvation effects on the ground-state properties of nanomolecules with multi-reference character at a minimal computational cost, we combined TAO-DFT with the PCM (polarizable continuum model). In order to show its usefulness, TAO-DFT-based PCM (TAO-PCM) was used to predict the electronic properties of linear acenes in three different solvents (toluene, chlorobenzene, and water). According to TAO-PCM, in the presence of these solvents, the smaller acenes should have nonradical character, and the larger ones should have increasing polyradical character, revealing striking simila"
+    },
+    {
+     "year": 2015,
+     "title": "Theoretical analysis of [5.5.6]cyclacenes: electronic properties, strain energies and substituent effects",
+     "venue": "Physical Chemistry Chemical Physics",
+     "doi": "10.1039/c5cp00341e",
+     "cited_by": 34,
+     "oa": true,
+     "abstract": "A novel class of cyclic conjugated molecules, composed of annelated five- and six-membered rings, is proposed and theoretically investigated using density functional theory and multireference methods with regards to their structures, strain energies, aromaticity (NICS values), electronic ground states, band gaps, and the effect of substituents. These [5.5.6]ncyclacenes are predicted to be low band gap materials (below 1 eV) with, depending on their size, closed-shell singlet ground states. The strain energies from n = 4 upwards lie in the range of the synthetically known [n]cycloparaphenylenes. An investigation of the effect of rim-substitution by methyl, alkynyl, thiomethyl or phenyl groups on the electronic ground states showed that thiomethyl-substitution leads to [5.5.6]ncyclacenes with closed-shell singlet ground states for all sizes n investigated."
+    }
+   ]
+  },
+  "C-i infrared intensities naphthalene coupled cluster / MP2 vs DFT": {
+   "query": "\"infrared intensities\" naphthalene \"MP2\" \"density functional\"",
+   "count": 21,
+   "hits": [
+    {
+     "year": 1997,
+     "title": "The calculation of accurate harmonic frequencies of large molecules: the polycyclic aromatic hydrocarbons, a case study",
+     "venue": "Spectrochimica Acta Part A Molecular and Biomolecular Spectroscopy",
+     "doi": "10.1016/s1386-1425(97)00022-x",
+     "cited_by": 197,
+     "oa": false,
+     "abstract": ""
+    },
+    {
+     "year": 2021,
+     "title": "Density Functional Geometries and Zero-Point Energies in Ab Initio Thermochemical Treatments of Compounds with First-Row Atoms (H, C, N, O, F)",
+     "venue": "Journal of Chemical Theory and Computation",
+     "doi": "10.1021/acs.jctc.1c00474",
+     "cited_by": 51,
+     "oa": true,
+     "abstract": "Density functionals are often used in ab initio thermochemistry to provide optimized geometries for single-point evaluations at a high level and to supply estimates of anharmonic zero-point energies (ZPEs).Their use is motivated by relatively high accuracy at a modest computational expense, but a thorough assessment of geometry-related error seems to be lacking.We have benchmarked 53 density functionals, focusing on approximations of the first four rungs and on relatively small basis sets for computational efficiency.Optimized geometries of 279 neutral first-row molecules (H, C, N, O, F) are judged by energy penalties relative to the best available geometries, using the composite model ATOMIC/B 5 as energy probe.Only hybrid functionals provide good accuracy with root-mean-square errors around 0.1 kcal/mol and maximum errors below 1.0 kcal/mol, but not all of them do.Conspicuously, first-"
+    },
+    {
+     "year": 2013,
+     "title": "The D alton quantum chemistry program system",
+     "venue": "Wiley Interdisciplinary Reviews Computational Molecular Science",
+     "doi": "10.1002/wcms.1172",
+     "cited_by": 1516,
+     "oa": true,
+     "abstract": "Dalton is a powerful general-purpose program system for the study of molecular electronic structure at the Hartree-Fock, Kohn-Sham, multiconfigurational self-consistent-field, M\u00f8ller-Plesset, configuration-interaction, and coupled-cluster levels of theory. Apart from the total energy, a wide variety of molecular properties may be calculated using these electronic-structure models. Molecular gradients and Hessians are available for geometry optimizations, molecular dynamics, and vibrational studies, whereas magnetic resonance and optical activity can be studied in a gauge-origin-invariant manner. Frequency-dependent molecular properties can be calculated using linear, quadratic, and cubic response theory. A large number of singlet and triplet perturbation operators are available for the study of one-, two-, and three-photon processes. Environmental effects may be included using various di"
+    },
+    {
+     "year": 2014,
+     "title": "Study of van der Waals bonding and interactions in metal organic framework materials",
+     "venue": "Journal of Physics Condensed Matter",
+     "doi": "10.1088/0953-8984/26/13/133002",
+     "cited_by": 69,
+     "oa": true,
+     "abstract": "Metal organic framework (MOF) materials have attracted a lot of attention due to their numerous applications in fields such as hydrogen storage, carbon capture and gas sequestration. In all these applications, van der Waals forces dominate the interaction between the small guest molecules and the walls of the MOFs. In this review article, we describe how a combined theoretical and experimental approach can successfully be used to study those weak interactions and elucidate the adsorption mechanisms important for various applications. On the theory side, we show that, while standard density functional theory is not capable of correctly describing van der Waals interactions, functionals especially designed to include van der Waals forces exist, yielding results in remarkable agreement with experiment. From the experimental point of view, we show examples in which IR adsorption and Raman sp"
+    },
+    {
+     "year": 2021,
+     "title": "Accuracy and Reliability in the Simulation of Vibrational Spectra: A Comprehensive Benchmark of Energies and Intensities Issuing From Generalized Vibrational Perturbation Theory to Second Order (GVPT2)",
+     "venue": "Frontiers in Astronomy and Space Sciences",
+     "doi": "10.3389/fspas.2021.665232",
+     "cited_by": 79,
+     "oa": true,
+     "abstract": "Vibrational spectroscopy represents an active frontier for the identification and characterization of molecular species in the context of astrochemistry and astrobiology. As new missions will provide more data over broader ranges and at higher resolution, especially in the infrared region, which could be complemented with new spectrometers in the future, support from laboratory experiments and theory is crucial. In particular, computational spectroscopy is playing an increasing role in deepening our understanding of the origin and nature of the observed bands in extreme conditions characterizing the interstellar medium or some planetary atmospheres, not easily reproducible on Earth. In this connection, the best compromise between reliability, feasibility and ease of interpretation is still a matter of concern due to the interplay of several factors in determining the final spectral outco"
+    },
+    {
+     "year": 2016,
+     "title": "Anharmonic interstellar PAH molecules",
+     "venue": "International Journal of Quantum Chemistry",
+     "doi": "10.1002/qua.25292",
+     "cited_by": 19,
+     "oa": true,
+     "abstract": "Abstract Polycyclic aromatic hydrocarbon (PAH) molecules are responsible for a family of features, the aromatic infrared bands, which are observed in many astronomical environments. The photophysics and photochemistry of PAHs in space is strongly influenced by anharmonicity, which has seldom been considered in astrophysical modeling because of the lack of available data or because too computationally demanding. Recent developments of second\u2010order vibrational perturbation theory applied to density functional theory now allow the computation of the anharmonic quartic force field anharmonic spectra of medium\u2010large molecules like PAHs in a time\u2010efficient way. It is now possible to have a better grasp of the effects of anharmonicity on the vibrational spectrum of PAHs also thanks to the comparison with gas\u2010phase, high\u2010resolution experimental data. In this perspective, the quality of these anh"
+    }
+   ]
+  },
+  "B-i Bayesian optimal experimental design quantum chemistry Hessian": {
+   "query": "\"optimal experimental design\" \"quantum chemistry\" \"Bayesian\"",
+   "count": 16,
+   "hits": [
+    {
+     "year": 2021,
+     "title": "Exploration of transferable and uniformly accurate neural network interatomic potentials using optimal experimental design",
+     "venue": "Machine Learning Science and Technology",
+     "doi": "10.1088/2632-2153/abe294",
+     "cited_by": 15,
+     "oa": true,
+     "abstract": "Abstract Machine learning has been proven to have the potential to bridge the gap between the accuracy of ab initio methods and the efficiency of empirical force fields. Neural networks are one of the most frequently used approaches to construct high-dimensional potential energy surfaces. Unfortunately, they lack an inherent uncertainty estimation which is necessary for efficient and automated sampling through the chemical and conformational space to find extrapolative configurations. The identification of the latter is needed for the construction of transferable and uniformly accurate potential energy surfaces. In this paper, we propose an active learning approach that uses the estimated model\u2019s output variance derived in the framework of the optimal experimental design. This method has several advantages compared to the established active learning approaches, e.g. Query-by-Committee, M"
+    },
+    {
+     "year": 2023,
+     "title": "Neural message-passing for objective-based uncertainty quantification and optimal experimental design",
+     "venue": "Engineering Applications of Artificial Intelligence",
+     "doi": "10.1016/j.engappai.2023.106171",
+     "cited_by": 4,
+     "oa": true,
+     "abstract": ""
+    },
+    {
+     "year": 2023,
+     "title": "Computer-aided multi-objective optimization in small molecule discovery",
+     "venue": "Patterns",
+     "doi": "10.1016/j.patter.2023.100678",
+     "cited_by": 134,
+     "oa": true,
+     "abstract": "Molecular discovery is a multi-objective optimization problem that requires identifying a molecule or set of molecules that balance multiple, often competing, properties. Multi-objective molecular design is commonly addressed by combining properties of interest into a single objective function using scalarization, which imposes assumptions about relative importance and uncovers little about the trade-offs between objectives. In contrast to scalarization, Pareto optimization does not require knowledge of relative importance and reveals the trade-offs between objectives. However, it introduces additional considerations in algorithm design. In this review, we describe pool-based and de novo generative approaches to multi-objective molecular discovery with a focus on Pareto optimization algorithms. We show how pool-based molecular discovery is a relatively direct extension of multi-objective"
+    },
+    {
+     "year": 2025,
+     "title": "Active learning accelerates electrolyte solvent screening for anode-free lithium metal batteries",
+     "venue": "Nature Communications",
+     "doi": "10.1038/s41467-025-63303-7",
+     "cited_by": 39,
+     "oa": true,
+     "abstract": "Anode-free or \u2018zero-excess\u2019 lithium metal batteries offer high energy density compared to current lithium-ion batteries but require electrolyte innovation to extend cycle life. Due to the lack of universal design principles, electrolyte development for anode-free lithium metal batteries is slow and incremental and mainly driven by trial-and-error. Here, we demonstrate the use of active learning as an alternative approach to accelerate electrolyte discovery for anode-free lithium metal batteries. Unlike conventional data-intensive frequentist machine learning techniques, our active learning framework employs sequential Bayesian experimental design with Bayesian model averaging to efficiently identify optimal candidates in typical data-scarce and noisy label settings. Using capacity retention in real Cu||LiFePO4 cells as the target property, our approach integrates experimental feedback to"
+    },
+    {
+     "year": 2025,
+     "title": "Earthquake Rupture Dynamics From Graph Neural Networks",
+     "venue": "Journal of Geophysical Research Solid Earth",
+     "doi": "10.1029/2025jb031981",
+     "cited_by": 3,
+     "oa": true,
+     "abstract": "Abstract Earthquakes arise from tectonic loading of complex fault systems consisting of heterogeneous material parameters, geometry, rheology, and prestress. All of those are subject to uncertainties, and their interactions and sensitivities for the dynamic rupture problem are incompletely understood. Here, we apply Graph Neural Networks (GNNs) to approximate the behavior learned from more computationally intensive, physics\u2010based (\u201chigh\u2010fidelity\u201d) computations to build a GNN\u2010based simulator (GNS) for earthquake rupture dynamics. Given only a minimum input \u2013the hypocenter location\u2013 our GNS can reproduce rate\u2010weakening friction governed dynamic rupture behavior, from nucleation to propagation and termination. Outside the training set, the GNS can generalize well to different hypocenter locations, fault sizes, and pre\u2010stress state levels while achieving a factor \u223c20\u201340 per\u2010time\u2010step computa"
+    },
+    {
+     "year": 2023,
+     "title": "Fast uncertainty estimates in deep learning interatomic potentials",
+     "venue": "The Journal of Chemical Physics",
+     "doi": "10.1063/5.0136574",
+     "cited_by": 73,
+     "oa": true,
+     "abstract": "Deep learning has emerged as a promising paradigm to give access to highly accurate predictions of molecular and material properties. A common short-coming shared by current approaches, however, is that neural networks only give point estimates of their predictions and do not come with predictive uncertainties associated with these estimates. Existing uncertainty quantification efforts have primarily leveraged the standard deviation of predictions across an ensemble of independently trained neural networks. This incurs a large computational overhead in both training and prediction, resulting in order-of-magnitude more expensive predictions. Here, we propose a method to estimate the predictive uncertainty based on a single neural network without the need for an ensemble. This allows us to obtain uncertainty estimates with virtually no additional computational overhead over standard traini"
+    }
+   ]
+  },
+  "G-i naphthalene jet-cooled mid-infrared IR-UV": {
+   "query": "naphthalene \"IR-UV\" \"ion dip\" mid-infrared",
+   "count": 15,
+   "hits": [
+    {
+     "year": 2016,
+     "title": "Products of the Propargyl Self-Reaction at High Temperatures Investigated by IR/UV Ion Dip Spectroscopy",
+     "venue": "The Journal of Physical Chemistry A",
+     "doi": "10.1021/acs.jpca.6b08750",
+     "cited_by": 26,
+     "oa": false,
+     "abstract": "The propargyl radical is considered to be of key importance in the formation of the first aromatic ring in combustion processes. Here we study the bimolecular (self-) reactions of propargyl in a high-temperature pyrolysis flow reactor. The aromatic reaction products are identified by IR/UV ion dip spectroscopy, using the free electron laser FELIX as mid-infrared source. This technique combines mass selectivity with structural sensitivity. We identified several aromatic reaction products based on their infrared spectra, among them benzene, naphthalene, phenanthrene, indene, biphenyl, and surprisingly a number of aromatic compounds with acetylenic (ethynyl) side chains. The observation of benzene confirms that propargyl is involved in the formation of the first aromatic ring. The observation of compounds with acetylenic side chains shows that, in addition to a propargyl- and phenyl-based m"
+    },
+    {
+     "year": 2015,
+     "title": "Formation of polycyclic aromatic hydrocarbons from bimolecular reactions of phenyl radicals at high temperatures",
+     "venue": "Physical Chemistry Chemical Physics",
+     "doi": "10.1039/c5cp05354d",
+     "cited_by": 39,
+     "oa": true,
+     "abstract": "The self-reaction of the phenyl radical is one of the key reactions in combustion chemistry. Here we study this reaction in a high-temperature flow reactor by IR/UV ion dip spectroscopy, using free electron laser radiation as mid-infrared source. We identified several major reaction products based on their infrared spectra, among them indene, 1,2-dihydronaphthalene, naphthalene, biphenyl and para-terphenyl. Due to the structural sensitivity of the method, the reaction products were identified isomer-selectively. The work shows that the formation of indene and naphthalene, which was previously considered to be evidence for the HACA (hydrogen abstraction C2H2 addition) mechanism in the formation of polycyclic aromatic hydrocarbons and soot can also be understood in a phenyl addition model."
+    },
+    {
+     "year": 2020,
+     "title": "Polycyclic aromatic hydrocarbon formation chemistry in a plasma jet revealed by IR-UV action spectroscopy",
+     "venue": "Nature Communications",
+     "doi": "10.1038/s41467-019-14092-3",
+     "cited_by": 56,
+     "oa": true,
+     "abstract": "Large polycyclic aromatic hydrocarbons (PAHs) are the most abundant complex molecules in the interstellar medium; however, their possible formation pathways from small molecular species are still elusive. In the present work, we follow and characterize the formation of PAHs in an electrical discharge, specifically the PAH naphthalene in a molecular beam of argon. The fragments, products and reaction intermediates are unambiguously structurally identified by mass-selective IR-UV spectroscopy combined with quantum chemical calculations. This experiment provides evidence of the formation of larger PAHs containing up to four cyclic rings in the gas phase originating from a non-radical PAH molecule as a precursor. In addition to PAH formation, key resonance stabilized radical intermediates and intermediates containing di-acetylenic side groups are unambiguously identified in our experiment. W"
+    },
+    {
+     "year": 2019,
+     "title": "Anharmonicity in the mid-infrared spectra of polycyclic aromatic hydrocarbons: molecular beam spectroscopy and calculations",
+     "venue": "Astronomy and Astrophysics",
+     "doi": "10.1051/0004-6361/201935631",
+     "cited_by": 32,
+     "oa": true,
+     "abstract": "Aims. In this work we determine the effects of anharmonicity on the mid-infrared spectra of the linear polycyclic aromatic hydrocarbons (PAHs) naphthalene, anthracene, tetracene and pentacene recorded using the free electron laser FELIX. Methods. Comparison of experimental spectra obtained under supersonic jet conditions with theoretically predicted spectra was used to show if anharmonicity explicitly needs to be taken into account. Results. Anharmonic spectra obtained using second-order vibrational perturbation theory agree on average within 0.5% of the experimental frequencies. Importantly, they confirm the presence of combination bands with appreciable intensity in the 5\u20136 \u03bcm region. These combination bands contain a significant fraction of the IR absorption, which scales linearly with the size of the PAH. Detection and assignment of the combination bands are a preliminary indication "
+    },
+    {
+     "year": 2024,
+     "title": "The infrared absorption spectrum of phenylacetylene and its deuterated isotopologue in the mid- to far-IR",
+     "venue": "The Journal of Chemical Physics",
+     "doi": "10.1063/5.0191404",
+     "cited_by": 21,
+     "oa": true,
+     "abstract": "Anharmonicity strongly influences the absorption and emission spectra of polycyclic aromatic hydrocarbon (PAH) molecules. Here, IR-UV ion-dip spectroscopy experiments together with detailed anharmonic computations reveal the presence of fundamental, overtone, as well as 2- and 3-quanta combination band transitions in the far- and mid-infrared absorption spectra of phenylacetylene and its singly deuterated isotopologue. Strong absorption features in the 400-900 cm-1 range originate from CH(D) in-plane and out-of-plane wags and bends, as well as bending motions including the C\u2261C and CH bonds of the acetylene substituent and the aromatic ring. For phenylacetylene, every absorption feature is assigned either directly or indirectly to a single or multiple vibrational mode(s). The measured spectrum is dense, broad, and structureless in many regions but well characterized by computations. Upon "
+    },
+    {
+     "year": 2020,
+     "title": "Far-IR Absorption of Neutral Polycyclic Aromatic Hydrocarbons (PAHs): Light on the Mechanism of IR\u2013UV Ion Dip Spectroscopy",
+     "venue": "The Journal of Physical Chemistry Letters",
+     "doi": "10.1021/acs.jpclett.0c02714",
+     "cited_by": 10,
+     "oa": true,
+     "abstract": "Gas-phase IR-UV double-resonance laser spectroscopy is an IR absorption technique that bridges the gap between experimental IR spectroscopy and theory. The IR experiments are used to directly evaluate predicted frequencies and potential energy surfaces as well as to probe the structure of isolated molecules. However, a detailed understanding of the underlying mechanisms is, especially in the far-IR regime, still far from complete, even though this is crucial for properly interpreting the recorded IR absorption spectra. Here, events occurring upon excitation to vibrational levels of polycyclic aromatic hydrocarbons by far-IR radiation from the FELIX free electron laser are followed using resonance-enhanced multiphoton ionization spectroscopy. These studies provide detailed insight into how ladder climbing and anharmonicity influence IR-UV spectroscopy and therefore the resulting IR signat"
+    }
+   ]
+  },
+  "F-i graphene phonon GW correction Kohn anomaly": {
+   "query": "graphene phonon \"GW\" \"Kohn anomaly\"",
+   "count": 60,
+   "hits": [
+    {
+     "year": 2008,
+     "title": "Impact of the electron-electron correlation on phonon dispersion: Failure of LDA and GGA DFT functionals in graphene and graphite",
+     "venue": "Physical Review B",
+     "doi": "10.1103/physrevb.78.081406",
+     "cited_by": 310,
+     "oa": true,
+     "abstract": "We compute the electron-phonon coupling (EPC) of selected phonon modes in graphene and graphite using various ab initio methods. The inclusion of nonlocal exchange-correlation effects within the $GW$ approach strongly renormalizes the square EPC of the ${\\text{A}}_{1}^{\\ensuremath{'}}$ $\\mathbf{K}$ mode by almost 80% with respect to density-functional theory in the LDA and GGA approximations. Within GW, the phonon slope of the ${\\text{A}}_{1}^{\\ensuremath{'}}$ $\\mathbf{K}$ mode is almost two times larger than in GGA and LDA, in agreement with phonon dispersions from inelastic x-ray scattering and Raman spectroscopy. The hybrid B3LYP functional overestimates the EPC at $\\mathbf{K}$ by about 30%. Within the Hartree-Fock approximation, the graphene structure displays an instability under a distortion following the ${\\text{A}}_{1}^{\\ensuremath{'}}$ phonon at $\\mathbf{K}$."
+    },
+    {
+     "year": 2009,
+     "title": "Monolayer honeycomb structures of group-IV elements and III-V binary compounds: First-principles calculations",
+     "venue": "Physical Review B",
+     "doi": "10.1103/physrevb.80.155453",
+     "cited_by": 2217,
+     "oa": true,
+     "abstract": "Using first-principles plane-wave calculations, we investigate two-dimensional (2D) honeycomb structure of group-IV elements and their binary compounds as well as the compounds of group III-V elements. Based on structure optimization and phonon-mode calculations, we determine that 22 different honeycomb materials are stable and correspond to local minima on the Born-Oppenheimer surface. We also find that all the binary compounds containing one of the first row elements, B, C, or N have planar stable structures. On the other hand, in the honeycomb structures of Si, Ge, and other binary compounds the alternating atoms of hexagons are buckled since the stability is maintained by puckering. For those honeycomb materials which were found stable, we calculated optimized structures, cohesive energies, phonon modes, electronic-band structures, effective cation and anion charges, and some elastic"
+    },
+    {
+     "year": 2013,
+     "title": "Dielectric screening of the Kohn anomaly of graphene on hexagonal boron nitride",
+     "venue": "Physical Review B",
+     "doi": "10.1103/physrevb.88.085419",
+     "cited_by": 80,
+     "oa": true,
+     "abstract": "Kohn anomalies in three-dimensional metallic crystals are dips in the phonon dispersion that are caused by abrupt changes in the screening of the ion cores by the surrounding electron gas. These anomalies are also present at the high-symmetry points $\\ensuremath{\\Gamma}$ and $K$ in the phonon dispersion of two-dimensional graphene, where the phonon wave vector connects two points on the Fermi surface. The linear slope around the kinks in the highest optical branch is proportional to the electron-phonon coupling. Here, we present a combined theoretical and experimental study of the influence of the dielectric substrate on the vibrational properties of graphene. We show that screening by the dielectric substrate reduces the electron-phonon coupling at the high-symmetry point $K$ and leads to an upshift of the Raman 2D line. This results in the observation of a Kohn anomaly that can be tune"
+    },
+    {
+     "year": 2009,
+     "title": "Phonon surface mapping of graphite: Disentangling quasi-degenerate phonon dispersions",
+     "venue": "Physical Review B",
+     "doi": "10.1103/physrevb.80.085423",
+     "cited_by": 91,
+     "oa": true,
+     "abstract": "The two-dimensional mapping of the phonon dispersions around the $K$ point of graphite by inelastic x-ray scattering is provided. The present work resolves the longstanding issue related to the correct assignment of transverse and longitudinal phonon branches at $K$. We observe an almost degeneracy of the three TO-, LA-, and LO-derived phonon branches and a strong phonon trigonal warping. Correlation effects renormalize the Kohn anomaly of the TO mode, which exhibits a trigonal warping effect opposite to that of the electronic band structure. We determined the electron-phonon coupling constant to be $166\\text{ }{(\\text{eV}/\\text{\\AA{}})}^{2}$ in excellent agreement to GW calculations. These results are fundamental for understanding angle-resolved photoemission, double-resonance Raman and transport measurements of graphene-based systems."
+    },
+    {
+     "year": 2013,
+     "title": "Screening of electron-phonon coupling in graphene on Ir(111)",
+     "venue": "Physical Review B",
+     "doi": "10.1103/physrevb.88.205403",
+     "cited_by": 44,
+     "oa": true,
+     "abstract": "The phonon dispersion of graphene on Ir(111) has been determined by means of angle-resolved inelastic electron scattering and density functional calculations. Kohn anomalies of the highest optical-phonon branches are observed at the $\\overline{\\ensuremath{\\Gamma}}$ and $\\overline{\\text{K}}$ point of the surface Brillouin zone. At $\\overline{\\text{K}}$ the Kohn anomaly is weaker than observed for pristine graphene and graphite. This observation is rationalized in terms of a decrease of the electron-phonon coupling due to screening of graphene electron correlations by the metal substrate."
+    },
+    {
+     "year": 2016,
+     "title": "Phonon dynamics of graphene on metals",
+     "venue": "Journal of Physics Condensed Matter",
+     "doi": "10.1088/0953-8984/28/10/103005",
+     "cited_by": 86,
+     "oa": true,
+     "abstract": "The study of surface phonon dispersion curves is motivated by the quest for a detailed understanding of the forces between the atoms at the surface and in the bulk. In the case of graphene, additional motivation comes from the fact that thermal conductivity is dominated by contributions from acoustic phonons, while optical phonon properties are essential to understand Raman spectra. In this article, we review recent progress made in the experimental determination of phonon dispersion curves of graphene grown on several single-crystal metal surfaces. The two main experimental techniques usually employed are high-resolution electron energy loss spectroscopy (HREELS) and inelastic helium atom scattering (HAS). The different dispersion branches provide a detailed insight into the graphene-substrate interaction. Softening of optical modes and signatures of the substrate's Rayleigh wave are ob"
+    }
+   ]
+  },
+  "F-ii periodic coupled cluster phonon frequencies": {
+   "query": "\"coupled cluster\" \"phonon\" periodic \"frequencies\" solid",
+   "count": 339,
+   "hits": [
+    {
+     "year": 2015,
+     "title": "Molcas 8: New capabilities for multiconfigurational quantum chemical calculations across the periodic table",
+     "venue": "Journal of Computational Chemistry",
+     "doi": "10.1002/jcc.24221",
+     "cited_by": 1468,
+     "oa": true,
+     "abstract": "In this report, we summarize and describe the recent unique updates and additions to the Molcas quantum chemistry program suite as contained in release version 8. These updates include natural and spin orbitals for studies of magnetic properties, local and linear scaling methods for the Douglas-Kroll-Hess transformation, the generalized active space concept in MCSCF methods, a combination of multiconfigurational wave functions with density functional theory in the MC-PDFT method, additional methods for computation of magnetic properties, methods for diabatization, analytical gradients of state average complete active space SCF in association with density fitting, methods for constrained fragment optimization, large-scale parallel multireference configuration interaction including analytic gradients via the interface to the Columbus package, and approximations of the CASPT2 method to be u"
+    },
+    {
+     "year": 2009,
+     "title": "Coupled\u2010cluster and many\u2010body perturbation study of energies, structures, and phonon dispersions of solid hydrogen fluoride",
+     "venue": "International Journal of Quantum Chemistry",
+     "doi": "10.1002/qua.22022",
+     "cited_by": 40,
+     "oa": false,
+     "abstract": "Abstract A linear\u2010scaling electron\u2010correlation method based on a truncated many\u2010body expansion of the energies of molecular crystals has been applied to solid hydrogen fluoride. The energies, structures, harmonic, and anharmonic frequencies of the infrared\u2010 and/or Raman\u2010active vibrations, phonon dispersions, and inelastic neutron scattering (INS) of the solid have been simulated employing an infinite, periodic, one\u2010dimensional zigzag hydrogen\u2010bonded chain model. The Hartree\u2013Fock, second\u2010order M\u00f8ller\u2013Plesset (MP2), coupled\u2010cluster singles and doubles (CCSD), and CCSD with a noniterative triples correction [CCSD(T)] methods have been combined with the aug\u2010cc\u2010pVDZ and aug\u2010cc\u2010pVTZ basis sets and, in some instances, the counterpoise corrections of the basis\u2010set superposition errors. The computed structural parameters agree with the observed within 0.1\u20130.2 \u00c5 and a few degrees, and the anharmon"
+    },
+    {
+     "year": 2021,
+     "title": "Software for the frontiers of quantum chemistry: An overview of developments in the Q-Chem 5 package",
+     "venue": "The Journal of Chemical Physics",
+     "doi": "10.1063/5.0055522",
+     "cited_by": 1415,
+     "oa": true,
+     "abstract": "This article summarizes technical advances contained in the fifth major release of the Q-Chem quantum chemistry program package, covering developments since 2015. A comprehensive library of exchange-correlation functionals, along with a suite of correlated many-body methods, continues to be a hallmark of the Q-Chem software. The many-body methods include novel variants of both coupled-cluster and configuration-interaction approaches along with methods based on the algebraic diagrammatic construction and variational reduced density-matrix methods. Methods highlighted in Q-Chem 5 include a suite of tools for modeling core-level spectroscopy, methods for describing metastable resonances, methods for computing vibronic spectra, the nuclear-electronic orbital method, and several different energy decomposition analysis techniques. High-performance capabilities including multithreaded paralleli"
+    },
+    {
+     "year": 2020,
+     "title": "A coupled cluster framework for electrons and phonons",
+     "venue": "The Journal of Chemical Physics",
+     "doi": "10.1063/5.0033132",
+     "cited_by": 26,
+     "oa": true,
+     "abstract": "We describe a coupled cluster framework for coupled systems of electrons and harmonic phonons. Neutral and charged excitations are accessed via the equation-of-motion version of the theory. Benchmarks on the Hubbard-Holstein model allow us to assess the strengths and weaknesses of different coupled cluster approximations, which generally perform well for weak to moderate coupling. Finally, we report progress toward an implementation for ab initio calculations on solids and present some preliminary results on finite-size models of diamond with a linear electron-phonon coupling. We also report the implementation of electron-phonon coupling matrix elements from crystalline Gaussian type orbitals within the PySCF program package."
+    },
+    {
+     "year": 2022,
+     "title": "CRYSTAL23: A Program for Computational Solid State Physics and Chemistry",
+     "venue": "Journal of Chemical Theory and Computation",
+     "doi": "10.1021/acs.jctc.2c00958",
+     "cited_by": 353,
+     "oa": true,
+     "abstract": "The Crystal program for quantum-mechanical simulations of materials has been bridging the realm of molecular quantum chemistry to the realm of solid state physics for many years, since its first public version released back in 1988. This peculiarity stems from the use of atom-centered basis functions within a linear combination of atomic orbitals (LCAO) approach and from the corresponding efficiency in the evaluation of the exact Fock exchange series. In particular, this has led to the implementation of a rich variety of hybrid density functional approximations since 1998. Nowadays, it is acknowledged by a broad community of solid state chemists and physicists that the inclusion of a fraction of Fock exchange in the exchange-correlation potential of the density functional theory is key to a better description of many properties of materials (electronic, magnetic, mechanical, spintronic, "
+    },
+    {
+     "year": 2014,
+     "title": "Unified theory of electron\u2013phonon renormalization and phonon-assisted optical absorption",
+     "venue": "Journal of Physics Condensed Matter",
+     "doi": "10.1088/0953-8984/26/36/365503",
+     "cited_by": 62,
+     "oa": true,
+     "abstract": "We present a theory of electronic excitation energies and optical absorption spectra which incorporates energy-level renormalization and phonon-assisted optical absorption within a unified framework. Using time-independent perturbation theory we show how the standard approaches for studying vibronic effects in molecules and those for addressing electron-phonon interactions in solids correspond to slightly different choices for the non-interacting Hamiltonian. Our present approach naturally leads to the Allen-Heine theory of temperature-dependent energy levels, the Franck-Condon principle, the Herzberg-Teller effect and to phonon-assisted optical absorption in indirect band gap materials. In addition, our theory predicts sub-gap phonon-assisted optical absorption in direct gap materials, as well as an exponential edge which we tentatively assign to the Urbach tail. We also consider a semi"
+    }
+   ]
+  }
+ }
+}

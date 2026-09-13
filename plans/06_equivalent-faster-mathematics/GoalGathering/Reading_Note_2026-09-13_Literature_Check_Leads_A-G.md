@@ -1,0 +1,118 @@
+# Reading note 2026-09-13 — literature check for the reflection's leads A–G
+
+*Requested by the user on 13 September ("een uitgebreide literatuurcheck voor (A) en eventuele andere die nuttig zijn") after the reflection `plans/Reflection_2026-09-13_View_From_Above.md`. Method: three passes over OpenAlex and Crossref (`experiments/lit_search_openalex.py` — generic relevance search, mostly noise; `experiments/lit_search_targeted.py` — title-restricted searches, named-record verification, quoted-phrase searches; outputs `experiments/lit_search_*_2026-09-13.json`, `lit_check_crossref_2026-09-13.json`). Every record below was verified by DOI against Crossref; author lists are copied from those records. Unless stated, only the abstract was read — so each entry says what the abstract says, not what the paper shows. "Not found" means not found by these searches, not "does not exist". Nothing here changes plan 05 or plan 06; it sharpens the leads and adds candidates to the bibliographies.*
+
+## 0. The one finding that matters most
+
+The nearest prior art for the *whole project's* central move — correct a cheap surface with **few local coupled-cluster energies** — is not in the PAH literature but in the Δ-machine-learning line:
+
+| record | what the abstract says | distance to plan 05/06 |
+|---|---|---|
+| Käser, S.; Boittier, E.; Upadhyay, M.; Meuwly, M., *J. Chem. Theory Comput.* 17, 3687–3699 (2021), DOI 10.1021/acs.jctc.1c00249 | Neural-network PES learned at MP2 and **transfer-learned to CCSD(T)** for eight molecules up to acetamide size; VPT2 frequencies within 20 cm⁻¹ of experiment for ≈ 90 % of modes, within 10 cm⁻¹ for > 60 % | same spirit (cheap level + few expensive labels → CC-quality frequencies); different object (full anharmonic PES of ≤ 9-atom molecules, thousands of points), no aromatics, no symmetry selection, canonical CCSD(T) |
+| Qu, C.; Houston, P. L.; Conte, R.; Nandi, A.; Bowman, J. M., *J. Phys. Chem. Lett.* 12, 4902–4909 (2021), DOI 10.1021/acs.jpclett.1c01142 | Δ-ML correction of an MP2 PES for 15-atom acetylacetone from a database of **2151 local CCSD(T) energies, trained with as few as 430** | closest in cost logic: local CC energies as the scarce label on a 15-atom molecule; target is a barrier/tunnelling splitting, not a Hessian |
+| Bowman, J. M.; Qu, C.; Conte, R.; Nandi, A.; Houston, P. L.; Yu, Q., *J. Chem. Theory Comput.* 19, 1–17 (2022), DOI 10.1021/acs.jctc.2c01034 | Perspective on Δ-ML PESs and force fields; states that for 15-atom tropolone "special approaches (e.g., molecular tailoring, local CCSD(T)) are needed to obtain the CCSD(T) energies" | names the same bottleneck plan 05 measures (F, g) |
+| Ramakrishnan, R.; Dral, P. O.; Rupp, M.; von Lilienfeld, O. A., *J. Chem. Theory Comput.* 11, 2087–2096 (2015), DOI 10.1021/acs.jctc.5b00099 | the Δ-ML approach itself | the general ancestor |
+
+**Consequence for the novelty assessment (plan 06 GoalGathering, 13 Sep):** the sentence "no work found that corrects a cheaper surface with few local-CC energies" must be narrowed to "…for the *harmonic Hessian* of *aromatic* molecules with *symmetry-selected* probes and *transported frozen spaces*". Käser 2021 and Qu 2021 should be cited in the proposal's prior-art paragraph and in P25/P26 as the methods plan 05 differs from (object: Hessian not PES; selection: symmetry pattern not sampling; label: LNO-CCSD(T) with sealed spaces). Neither treats a PAH; neither reports a per-mode CC−DFT correction.
+
+## 1. Lead A — tune the functional, not the matrix
+
+**Prior art exists for the tool, not for the use.**
+
+| record | abstract content relevant to A | verdict |
+|---|---|---|
+| Baer, R.; Livshits, E.; Salzner, U., *Annu. Rev. Phys. Chem.* 61, 85–109 (2010), DOI 10.1146/annurev.physchem.012809.103321 | review of tuned range-separated hybrids | lineage reference |
+| Kronik, L.; Stein, T.; Refaely-Abramson, S.; Baer, R., *J. Chem. Theory Comput.* 8, 1515–1531 (2012), DOI 10.1021/ct2009363 | optimal tuning (IP theorem) for fundamental and optical gaps | the standard tuning condition — for *gaps*, not vibrations |
+| **Körzdörfer, T.; Sears, J. S.; Sutton, C.; Brédas, J.-L., *J. Chem. Phys.* 135, 204107 (2011), DOI 10.1063/1.3663856** | IP-tuned ω for π-conjugated series: "for highly conjugated chains such as **oligoacenes** and polyenes … **1/ω grows almost linearly with the number of repeat units**"; alkanes saturate after 5–6 units | **the specific risk of lead A, already measured**: a functional tuned on benzene has a different optimum at naphthalene and beyond; transfer across PAH size is exactly where IP-tuning drifts. Any lead-A test must fix ω once and report the drift |
+| **Karolewski, A.; Kronik, L.; Kümmel, S., *J. Chem. Phys.* 138, 204115 (2013), DOI 10.1063/1.4807325** | tuning per system "violat[es] size consistency"; "size consistency errors up to several electron volts"; "potential energy surfaces that are qualitatively in error" in the cases analysed | second warning: per-system tuning and ground-state surfaces do not mix; lead A must use a *fixed* (per-class) ω, not per-molecule tuning |
+| **Tamblyn, I.; Refaely-Abramson, S.; Neaton, J. B.; Kronik, L., *J. Phys. Chem. Lett.* 5, 2734–2741 (2014), DOI 10.1021/jz5010939** | "self-consistent OT-RSH": γ tuned to satisfy the IP theorem **and minimise interatomic forces**; G2 set: bond-length MAE 0.012 Å (B3LYP 0.008), **ZPE MAE 6.5 % vs 3.1 % for B3LYP** | the only record found that tunes a range-separated functional with vibrations in view — and its vibrational quality is *worse* than B3LYP. Nobody found tunes ω to a CC Hessian correction |
+| Jiménez-Hoyos, C. A.; Janesko, B. G.; Scuseria, G. E., *Phys. Chem. Chem. Phys.* 10, 6621 (2008), DOI 10.1039/b810877c | assessment of range-separated hybrids for frequencies, IR intensities, Raman: "B3LYP is the best functional for predicting vibrational frequencies"; HSE best for IR intensities | off-the-shelf range separation does not improve frequencies; confirms that lead A is a *fit*, not a choice |
+| **Kesharwani, M. K.; Brauer, B.; Martin, J. M. L., *J. Phys. Chem. A* 119, 1701–1714 (2015), DOI 10.1021/jp508422u** | harmonic-frequency scale factors: double hybrids B2PLYP, B2GP-PLYP, DSD-PBEP86 reach **RMSD 10–12 cm⁻¹** (def2-TZVP and larger) "compared to 5 cm⁻¹ at the CCSD(T) basis set limit" | the established "better functional for frequencies" is a **double hybrid**, not a tuned RSH. A double-hybrid Hessian of naphthalene is affordable (MP2-gradient class) and is the honest off-the-shelf baseline lead A must beat before any parameter is fitted |
+| Martin, J. M. L.; Taylor, P. R.; Lee, T. J., *Chem. Phys. Lett.* 275, 414–422 (1997), DOI 10.1016/s0009-2614(97)00735-5 | benzene harmonic frequencies, ANO basis sets (abstract not available; title only) | reference CC-quality benzene harmonics; to obtain for R0's opponents table |
+| Shaik, S.; Shurki, A.; Danovich, D.; Hiberty, P. C., *Chem. Rev.* 101, 1501–1540 (2001), DOI 10.1021/cr990363l | π-distortivity of benzene (the physics behind the Kekulé B2u mode) | background for why the 1357 cm⁻¹ B2u correction is the largest; not a DFT-error paper |
+| Moran, D.; Simmonett, A. C.; Leach, F. E.; Allen, W. D.; Schleyer, P. v. R.; Schaefer, H. F., *J. Am. Chem. Soc.* 128, 9342–9343 (2006), DOI 10.1021/ja0630285 | MP2/Pople basis sets give imaginary out-of-plane frequencies for benzene; "RHF, B3LYP, and BLYP methods exhibit no such problems" | a caution for MP2-based stand-ins and for the corpus timing test's basis choices |
+| Zapata Trujillo, J. C.; McKemmish, L. K., *J. Phys. Chem. A* 126, 4100–4122 (2022), DOI 10.1021/acs.jpca.2c01438 (already cited in plan 05) | VIBFREQ1295: 1295 experimental fundamentals + CCSD(T)(F12*)/cc-pVDZ-F12 harmonics for 141 molecules; region-wise scale factors halve the median error (15.9 → 7.5 cm⁻¹) | the scaling baseline plan 05 already uses; no aromatics beyond small ones (to check in the paper) |
+| Kirkpatrick, J.; McMorrow, B.; Turban, D. H. P.; Gaunt, A. L.; Spencer, J. S.; Matthews, A. G. D. G.; Obika, A.; Thiry, L.; Fortunato, M.; Pfau, D.; Castellanos, L. R.; Petersen, S.; Nelson, A. W. R.; Kohli, P.; Mori-Sánchez, P.; Hassabis, D.; Cohen, A. J. (DM21), *Science* 374, 1385–1389 (2021), DOI 10.1126/science.abj6511 (+ Comment/Response 2022) | neural functional trained on fractional-charge/spin constraints | learned functionals exist; none found trained on or tested against vibrational corrections of aromatics |
+
+**Searches that returned nothing relevant** (queries in the JSON): "optimally tuned" + "harmonic frequencies"; "Kekulé" + benzene + "density functional" + b2u (3 hits, none on DFT error); "range-separated" + "polycyclic aromatic" + "infrared spectra" (5 hits, none relevant); "delocalization error" + vibrational (title search, 0).
+
+**What this does to lead A.** (i) The idea is not taken: no record tunes a functional's parameters to a CC Hessian correction, and none applies OT-RSH to PAH vibrational spectra. (ii) The literature *predicts the failure mode*: the optimal ω of acenes drifts ≈ linearly with length (Körzdörfer 2011), and per-system tuning breaks size consistency (Karolewski 2013). So the first test must be exactly the frozen-parameter transfer the reflection proposed — tune on benzene's probed diagonal, freeze, predict naphthalene — and it must report the ω that naphthalene *would* want. (iii) The cheap baseline is not a tuned RSH but a double hybrid (Kesharwani 2015: 10–12 cm⁻¹ vs 5 at CCSD(T)/CBS; B3LYP is already named in plan 05's frozen lines). **Amended first test for A:** one B2PLYP-class Hessian of benzene and naphthalene (hours on the laptop, after the run), compared per mode with R0's probed correction and with X10/X14's stand-in — if the double hybrid already removes most of the per-mode correction, lead A collapses into "use a double hybrid as the DFT half", which is cheaper than any fit; if not, the fit is worth trying.
+
+## 2. Lead D — corrections in internal coordinates
+
+**Prior art exists and is old: the SQM lineage is precisely "transferable corrections in internal coordinates".**
+
+| record | abstract content | relation to D |
+|---|---|---|
+| Pulay, P.; Fogarasi, G.; Pongor, G.; Boggs, J. E.; Vargha, A., *J. Am. Chem. Soc.* 105, 7037–7047 (1983), DOI 10.1021/ja00362a005 | scaled quantum mechanical (SQM) force fields: ab initio force constants in internal coordinates scaled by a few factors fitted to experiment | the origin |
+| Rauhut, G.; Pulay, P., *J. Phys. Chem.* 99, 3093–3100 (1995), DOI 10.1021/j100010a019 | transferable scaling factors for DFT force fields | the DFT version |
+| Baker, J.; Jarzecki, A. A.; Pulay, P., *J. Phys. Chem. A* 102, 1412–1424 (1998), DOI 10.1021/jp980038m | direct scaling of primitive valence force constants over a full redundant set — "completely general" | the redundant-coordinate form lead D would need |
+| Bock, C. W.; McDiarmid, R.; Panchenko, Y. N.; Pupyshev, V. I.; Krasnoshchiokov, S. V., *J. Mol. Struct.* 222, 415–429 (1990), DOI 10.1016/0022-2860(90)85049-o | transferability of scale factors between conjugated hydrocarbons (title; no abstract) | the exact question of D for the σ/π split, thirty-six years ago |
+| Langhoff, S. R., *J. Phys. Chem.* 100, 2819–2841 (1996), DOI 10.1021/jp952074g; Bauschlicher, C. W.; Langhoff, S. R., *Spectrochim. Acta A* 53, 1225–1240 (1997), DOI 10.1016/s1386-1425(97)00022-x | PAH harmonic frequencies and the single-scale-factor practice PAHdb descends from | the one-factor limit of SQM that plan 05's Module 04 already measures against |
+
+**What this does to lead D.** The transform Δ₂ → internal-coordinate force-constant corrections is the SQM idea with a CC−DFT *difference* in place of an experiment−theory ratio. Nobody found does it with a CC difference, but the SQM literature already knows how far internal-coordinate corrections transfer across conjugated hydrocarbons; before the B-matrix test is run on the stand-ins, the transfer residuals reported by Rauhut & Pulay 1995 and Bock et al. 1990 should be read from the papers (PDF requests) so that D's own numbers have a yardstick. Lead D's novelty claim, if any, is the σ/π attribution of the CC correction, not the coordinate system.
+
+## 3. Lead E — the π problem as its own label generator (DMRG in a DFT frame)
+
+| record | abstract content | relation to E |
+|---|---|---|
+| Hachmann, J.; Dorando, J. J.; Avilés, M.; Chan, G. K.-L., *J. Chem. Phys.* 127, 134309 (2007), DOI 10.1063/1.2768362 | DMRG complete-active-space calculations "from naphthalene to dodecacene correlating the full π-valence space"; polyradical ground states for long acenes | the π-space engine exists at the sizes E needs |
+| Hu, W.; Chan, G. K.-L., *J. Chem. Theory Comput.* 11, 3000–3009 (2015), DOI 10.1021/acs.jctc.5b00174 | state-specific analytic DMRG energy gradients (first used by Liu et al. 2013); polyenes to C₂₀H₂₂ | **gradients exist; Hessians were not found** (search "DMRG harmonic frequencies analytic Hessian": 4 hits, none) |
+| Dresselhaus, T.; Neugebauer, J.; Knecht, S.; Keller, S.; Ma, Y.; Reiher, M., *J. Chem. Phys.* 142 (2015), DOI 10.1063/1.4906152 | first DMRG embedded in a DFT environment (frozen-density embedding, freeze-and-thaw) | DMRG-in-DFT exists |
+| Beran, P.; Pernal, K.; Pavošević, F.; Veis, L., *J. Phys. Chem. Lett.* 14, 716–722 (2023), DOI 10.1021/acs.jpclett.2c03298 | projection-based DMRG-in-DFT embedding, two proof-of-concept molecules | the projection form (the one that would take a σ frame) is a 2023 proof of concept |
+
+Note: the many hits for "vibrational DMRG" (Baiardi, Reiher and co-workers; QCMaquis 4.0) solve the *nuclear* problem with DMRG and are not this lead.
+
+**What this does to lead E.** The pieces exist separately (π-space DMRG at acene size; DMRG gradients; DMRG-in-DFT embedding), but no record combines them into vibrational Hessians, and no embedding paper treats a PAH. E remains open ground, and beyond a semester: a Hessian by finite differences of DMRG gradients inside an embedding is a method paper, not a probe. X6 (π share of the correction) stays the cheap gate.
+
+## 4. Lead C — dipoles at every probed point (intensities for free)
+
+Coupled-cluster IR intensities exist for small molecules (Scuseria, G. E.; Scheiner, A. C.; Rice, J. E.; Lee, T. J.; Schaefer, H. F., *Int. J. Quantum Chem.* 32, 495–501 (1987), DOI 10.1002/qua.560320748, CCSD gradients on ammonia; da Silva, J. V.; Vidal, L. N.; Vazquez, P. A. M.; Bruns, R. E., *Int. J. Quantum Chem.* 110, 2029–2036 (2010), DOI 10.1002/qua.22707, eight molecules up to ethylene). For PAHs every intensity record found is DFT: Langhoff 1996, Bauschlicher & Langhoff 1997, Martin, J. M. L.; El-Yazal, J.; François, J.-P., *J. Phys. Chem.* 100, 15358–15367 (1996), DOI 10.1021/jp960598q, Cané, E.; Miani, A.; Trombetti, A., *J. Phys. Chem. A* 111, 8218–8222 (2007), DOI 10.1021/jp071610p (B97-1/TZ2P anharmonic naphthalene, MAD 4 cm⁻¹), Mackie et al. 2015/2016 (already in the bibliography), and the GVPT2 intensity benchmark Yang, Q.; Mendolicchio, M.; Barone, V.; Bloino, J., *Front. Astron. Space Sci.* 8, 665232 (2021), DOI 10.3389/fspas.2021.665232 (already cited in plan 05). **No correlated (MP2 or CC) intensity table for a PAH was found.** Lead C is unclaimed as far as these searches reach; its cost stays one flag in the probe scripts.
+
+## 5. Lead B — adaptive, cross-molecule deck design
+
+| record | abstract content | relation to B |
+|---|---|---|
+| Zaverkin, V.; Kästner, J., *Mach. Learn.: Sci. Technol.* 2, 035009 (2021), DOI 10.1088/2632-2153/abe294 | active learning for NN potentials with the output variance "derived in the framework of the **optimal experimental design**" | the OED machinery for choosing training points exists |
+| Denzel, A.; Kästner, J., *J. Chem. Phys.* 148, 094114 (2018), DOI 10.1063/1.5017103 | GPR geometry optimiser (Matérn kernel) — GP posteriors over surfaces incl. curvature | the GP-over-Hessian tool |
+| Vandermause, J.; Xie, Y.; Lim, J. S.; Owen, C. J.; Kozinsky, B., *Nat. Commun.* 13 (2022), DOI 10.1038/s41467-022-32294-0 | Bayesian active learning of force fields on the fly | the Bayesian force-field line |
+
+Nothing found on designing *Hessian probe decks* across molecules, nor on symmetry-aware GP priors over per-mode corrections. B is unclaimed but is infrastructure; the verdict of the reflection stands (only after T-2).
+
+## 6. Lead G — a cold measurement as a deliverable: what already exists for naphthalene
+
+This is where the check changes something concrete for **plan 05's Module 03**, because two rotationally resolved naphthalene records are not in the repository:
+
+| record | abstract content | use |
+|---|---|---|
+| **Albert, S.; Albert, K. K.; Lerch, P.; Quack, M., *Faraday Discuss.* 150, 71 (2011), DOI 10.1039/c0fd00013b** | synchrotron FTIR at 0.0008 cm⁻¹; rotationally resolved analysis of naphthalene's **ν46 c-type band, ν̃₀ = 782.330949 cm⁻¹** (room temperature); discussed against the 12.8 µm UIB | a band *origin* with negligible u_res and no u_T ambiguity — the CH-out-of-plane band of naphthalene becomes decidable at the pipeline's own budget (not in Module 03 today) |
+| **Pirali, O.; Goubet, M.; Huet, T. R.; Georges, R.; Soulard, P.; Asselin, P.; Courbe, J.; Roy, P.; Vervloet, M., *Phys. Chem. Chem. Phys.* 15, 10141 (2013), DOI 10.1039/c3cp44305a** | rotationally resolved ν46 (782 cm⁻¹) **under supersonic-jet conditions (Jet-AILES)**, ν47 (474) and ν48 (167) at room temperature; B97-1/cc-pVTZ anharmonics calibrated on rotational constants | jet-cooled band origin for the same band; far-IR origins outside the mid-IR window |
+| Pirali, O.; Vervloet, M.; Mulas, G.; Malloci, G.; Joblin, C., *Phys. Chem. Chem. Phys.* 11, 3443 (2009), DOI 10.1039/b814037e | room-temperature 0.005 cm⁻¹ spectrum, 50–6000 cm⁻¹, hot-band sequences modelled | already item 53 (Module 03 naphthalene scoreboard) |
+| Lemmens, A. K.; Rap, D. B.; Thunnissen, J. M. M.; Mackie, C. J.; Candian, A.; Tielens, A. G. G. M.; Rijs, A. M.; Buma, W. J., *A&A* 628, A130 (2019), DOI 10.1051/0004-6361/201935631 | jet-cooled FELIX mid-IR of naphthalene, anthracene, tetracene, pentacene; VPT2 within 0.5 % on average | already item 61; FELIX bandwidth ≈ 1 % (Module 03 cold columns) → u_res ≈ 7–17 cm⁻¹ in 6–15 µm, which cannot decide 2.5 cm⁻¹ |
+| Huneycutt, A. J.; Casaes, R. N.; McCall, B. J.; Chung, C.-Y.; Lee, Y.-P.; Saykally, R. J., *ChemPhysChem* 5, 321–326 (2004), DOI 10.1002/cphc.200300776 | jet-cooled cavity ringdown, CH-stretch region, naphthalene–perylene, 0.2 cm⁻¹ | 3 µm only (already in the R2 sources note) |
+| Maltseva, E.; Petrignani, A.; Candian, A.; Mackie, C. J.; Huang, X.; Lee, T. J.; Tielens, A. G. G. M.; Oomens, J.; Buma, W. J., *ApJ* 814, 23 (2015), DOI 10.1088/0004-637x/814/1/23 | 3 µm IR-UV of small PAHs | already in the bibliography |
+| Piest, H.; von Helden, G.; Meijer, G., *ApJ* 520, L75–L78 (1999), DOI 10.1086/312143 | naphthalene cation, jet-cooled FELIX | cation baseline (phased in P26) |
+
+**What this does to lead G and to Module 03.** The "cold measurement" lever splits in two. (a) *Band origins at rotational resolution exist* for naphthalene's ν46 (two independent laboratories, one jet-cooled) — they should enter Module 03's naphthalene scoreboard as a third column with u_res ≈ 0 and u_T = 0, which makes the C–H out-of-plane family of R1 decidable at the pipeline's own budget for that one band. (b) For the *rest* of the mid-IR the cold data are FELIX-broad (≈ 1 %) and the room-temperature data are hot; a decisive new measurement is therefore not "another FELIX scan" but a synchrotron-FTIR or QCL jet measurement of the other strong bands (the way Jet-AILES did ν46, and Brumfield 2012 did pyrene's ν68). That is the concrete ask for the supervisor: which bands, which instrument, and whether the AILES/SLS groups would take a PAH request. The lever is real but narrower than the reflection stated.
+
+## 7. Lead F — two-endpoint reach (graphene)
+
+| record | abstract content | relation to F |
+|---|---|---|
+| **Lazzeri, M.; Attaccalite, C.; Wirtz, L.; Mauri, F., *Phys. Rev. B* 78, 081406 (2008), DOI 10.1103/physrevb.78.081406** | GW "strongly renormalizes the square EPC of the A₁′ K mode by almost 80 %" vs LDA/GGA; phonon slope at K ≈ 2× GGA, in agreement with IXS and Raman; B3LYP overestimates the EPC at K | correlation corrections to graphene phonons are known and large — but at the **Kohn anomaly** (metallic screening at K), which has no analogue in gapped finite PAHs; the Γ-point in-plane optical modes relevant to R6 interiors are not the headline |
+| Grüneis, A.; Serrano, J.; Bosak, A.; Lazzeri, M.; Molodtsov, S. L.; Wirtz, L.; Attaccalite, C.; Krisch, M.; Rubio, A.; Mauri, F.; Pichler, T., *Phys. Rev. B* 80, 085423 (2009), DOI 10.1103/physrevb.80.085423 | IXS mapping of graphite phonons near K | the experimental endpoint data |
+| Sode, O.; Keçeli, M.; Hirata, S.; Yagi, K., *Int. J. Quantum Chem.* 109, 1928–1939 (2009), DOI 10.1002/qua.22022 | CC/MBPT phonon dispersions of a *molecular crystal* (solid HF) by a many-body expansion | periodic-CC phonons exist for molecular crystals, not for covalent graphene |
+
+No coupled-cluster phonon calculation of graphene was found ("coupled cluster graphene" title search returns adsorption studies on coronene/pyrene models). F's premise — a CC-quality graphene interior correction "once and for all" — has no published basis found; the GW literature is the nearest and it concerns a different physics (the anomaly). F stays a plan-07-sized idea with an unverified premise.
+
+## 8. What goes where (proposed; nothing applied)
+
+1. **Novelty assessment / proposal prior art:** add Käser 2021, Qu 2021, Bowman 2022 as the nearest methods; narrow the "not found" sentence as in §0.
+2. **Plan 05 bibliography (PDF requests):** Körzdörfer 2011, Karolewski 2013, Tamblyn 2014, Kesharwani 2015 (open access), Rauhut & Pulay 1995, Bock et al. 1990, Albert et al. 2011, Pirali et al. 2013, Lazzeri 2008 (open access).
+3. **Module 03:** a third naphthalene column from Albert 2011 / Pirali 2013 (ν46 origin; jet-cooled in the latter), labelled by source and by what it decides (one band, one family).
+4. **Lead A's first test, amended:** double-hybrid Hessians of benzene and naphthalene as the off-the-shelf baseline *before* any ω fit; the ω fit reported with its size drift against Körzdörfer 2011's prediction.
+5. **Lead G's ask, narrowed:** rotationally resolved (synchrotron-FTIR or QCL) jet measurements of the strong mid-IR bands of naphthalene and pyrene beyond ν46/ν68, not a broadband FELIX scan.
+
+## 9. Limits of this check
+
+Abstract-level; no full text read except O1NumHess (reading note of 13 Sep). Searches are English-language, OpenAlex/Crossref only, and biased to titles; a citation chase forward from Tamblyn 2014 and Körzdörfer 2011 (as done for O1NumHess) would catch later OT-RSH vibrational work if it exists. The SQM transfer residuals, the VIBFREQ1295 aromatic content and the Albert/Pirali band-origin uncertainties must be taken from the papers before any number from them is used in a scoreboard.
