@@ -39,6 +39,7 @@ in this repository by `python build_lab_tables.py`; the report is rebuilt by `py
 
 - `PRE_REGISTRATION.md` — the frozen test form (committed alone, before the join was computed).
 - `build_lab_tables.py` — dataset and pairs; `out/SUMMARY.md` lists counts, constants and input checksums.
+- `dft_mode_families.py` → `out/naphthalene_dft_modes.csv/.md` — naphthalene's 48 B3LYP modes with D2h irrep, IR activity (20 active) and family by mode vector (2026-09-13): the table that replaces the frequency-window rule for R1's band assignment once the pilot note fixes the scaling.
 - `notebook/analysis.ipynb` — Load · Descriptive statistics · Visual models · Hypothesis test · Summary.
 - `notebook/test_results.json` — the test output the report's table is built from.
 - `module_summary.pdf` (`.docx`) — the Statistical Analysis Report in the Udacity APA 7 template; the

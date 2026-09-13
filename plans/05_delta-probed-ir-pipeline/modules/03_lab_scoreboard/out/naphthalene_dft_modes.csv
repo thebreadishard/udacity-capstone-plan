@@ -1,0 +1,49 @@
+mode,freq_B3LYP_unscaled_cm,irrep_D2h,ir_active,family_mode_vector,family_window_rule
+0,175.6,B1u,True,CH-oop,low / skeletal
+1,189.6,Au,False,CH-oop,low / skeletal
+2,363.7,B2u,True,ring-ip,low / skeletal
+3,396.6,B2g,False,CH-oop,low / skeletal
+4,482.0,B3g,False,CH-oop,low / skeletal
+5,491.5,B1u,True,CH-oop,low / skeletal
+6,517.4,B1g,False,ring-ip,low / skeletal
+7,520.4,Ag,False,ring-ip,low / skeletal
+8,633.4,Au,False,CH-oop,low / skeletal
+9,635.5,B3u,True,ring-ip,low / skeletal
+10,734.5,B2g,False,CH-oop,CH-oop (10.5-15 um; benzene nu11 at 673 included)
+11,775.5,Ag,False,ring-ip,CH-oop (10.5-15 um; benzene nu11 at 673 included)
+12,785.3,B3g,False,CH-oop,CH-oop (10.5-15 um; benzene nu11 at 673 included)
+13,803.9,B1u,True,CH-oop,CH-oop (10.5-15 um; benzene nu11 at 673 included)
+14,808.2,B2u,True,ring-ip,CH-oop (10.5-15 um; benzene nu11 at 673 included)
+15,852.4,Au,False,CH-oop,CH-oop (10.5-15 um; benzene nu11 at 673 included)
+16,900.1,B3g,False,CH-oop,CH-oop (10.5-15 um; benzene nu11 at 673 included)
+17,946.9,B2g,False,CH-oop,CH-oop (10.5-15 um; benzene nu11 at 673 included)
+18,949.4,B1g,False,ring-ip,CH-oop (10.5-15 um; benzene nu11 at 673 included)
+19,963.2,B1u,True,CH-oop,ring / CH-ip (9-10.5 um)
+20,985.1,Au,False,CH-oop,ring / CH-ip (9-10.5 um)
+21,993.8,B3g,False,CH-oop,ring / CH-ip (9-10.5 um)
+22,1045.3,B3u,True,CH-ip-bend,ring / CH-ip (9-10.5 um)
+23,1055.7,Ag,False,CH-ip-bend,ring / CH-ip (9-10.5 um)
+24,1157.1,B2u,True,CH-ip-bend,CH-ip-bend (8.6 um)
+25,1181.3,B1g,False,CH-ip-bend,CH-ip-bend (8.6 um)
+26,1184.3,B3u,True,CH-ip-bend,CH-ip-bend (8.6 um)
+27,1194.0,Ag,False,CH-ip-bend,CH-ip-bend (8.6 um)
+28,1244.0,B3u,True,CH-ip-bend,CH-ip-bend (8.6 um)
+29,1278.0,B1g,False,CH-ip-bend,CC-stretch/CH-ip (7.7 um)
+30,1297.4,B2u,True,CH-ip-bend,CC-stretch/CH-ip (7.7 um)
+31,1409.9,B3u,True,CC-stretch,CC-stretch/CH-ip (7.7 um)
+32,1416.6,Ag,False,CC-stretch,CC-stretch/CH-ip (7.7 um)
+33,1431.2,B2u,True,CC-stretch,CC-stretch/CH-ip (7.7 um)
+34,1505.7,B1g,False,CC-stretch,CC-stretch (6.2 um)
+35,1509.8,Ag,False,CC-stretch,CC-stretch (6.2 um)
+36,1567.6,B3u,True,CC-stretch,CC-stretch (6.2 um)
+37,1630.1,Ag,False,CC-stretch,CC-stretch (6.2 um)
+38,1658.8,B2u,True,CC-stretch,overtone / combination region
+39,1688.4,B1g,False,CC-stretch,overtone / combination region
+40,3174.3,B1g,False,CH-stretch,CH-stretch
+41,3176.4,B2u,True,CH-stretch,CH-stretch
+42,3177.8,B3u,True,CH-stretch,CH-stretch
+43,3181.5,Ag,False,CH-stretch,CH-stretch
+44,3193.3,B2u,True,CH-stretch,CH-stretch
+45,3194.4,B1g,False,CH-stretch,CH-stretch
+46,3206.7,Ag,False,CH-stretch,above 3200
+47,3208.0,B3u,True,CH-stretch,above 3200
