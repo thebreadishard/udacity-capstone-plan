@@ -1,0 +1,341 @@
+{
+ "date": "2026-09-13 21:55",
+ "constants": {
+  "parameter_set": "S2 = diagonal + shared-atom couplings + one-bond-apart couplings (X17), IN-PLANE BLOCK ONLY",
+  "threshold_cm": 2.5,
+  "inplane_types": [
+   "CC",
+   "CH",
+   "CCC",
+   "CCH"
+  ],
+  "why_in_plane_only": "out-of-plane coordinates (wags, torsions) carry an orientation sign that a type key does not fix across molecules (the first, signed-orbit-free version of X17 failed by 14 cm-1 for the same reason); the type transfer is therefore tested on the in-plane block, which holds both judged families (CH-stretch, CC-stretch); the out-of-plane block waits for a declared, symmetry-covariant sign convention (mandate ledger)",
+  "judged_families": [
+   "CH-stretch",
+   "CC-stretch"
+  ],
+  "type_key": "(type_a, type_b, graph separation, shared atoms) with the pair sorted by type name",
+  "source_model": "type-constrained least squares on the source (one constant per type), so source and target share the parameterisation"
+ },
+ "source": "benzene",
+ "target": "benzene",
+ "source_fit": {
+  "n_types": 29,
+  "rms_first_order_cm": 38.53135147321704,
+  "max_cm": 84.4189553586105,
+  "types": [
+   {
+    "type": [
+     "CC",
+     "CC",
+     "-1",
+     "-1"
+    ],
+    "constant": 0.011064693281938466
+   },
+   {
+    "type": [
+     "CC",
+     "CC",
+     "0",
+     "1"
+    ],
+    "constant": 0.008775101028274009
+   },
+   {
+    "type": [
+     "CC",
+     "CC",
+     "1",
+     "0"
+    ],
+    "constant": -0.009029700491630592
+   },
+   {
+    "type": [
+     "CC",
+     "CCC",
+     "0",
+     "1"
+    ],
+    "constant": 3367313.0604746286
+   },
+   {
+    "type": [
+     "CC",
+     "CCC",
+     "0",
+     "2"
+    ],
+    "constant": 3367311.6062525385
+   },
+   {
+    "type": [
+     "CC",
+     "CCC",
+     "1",
+     "0"
+    ],
+    "constant": 3367314.5146545167
+   },
+   {
+    "type": [
+     "CC",
+     "CCH",
+     "0",
+     "1"
+    ],
+    "constant": 0.3646789206489992
+   },
+   {
+    "type": [
+     "CC",
+     "CCH",
+     "0",
+     "2"
+    ],
+    "constant": 0.4859746405183769
+   },
+   {
+    "type": [
+     "CC",
+     "CCH",
+     "1",
+     "0"
+    ],
+    "constant": 0.12128160317783283
+   },
+   {
+    "type": [
+     "CC",
+     "CH",
+     "0",
+     "1"
+    ],
+    "constant": -0.0001614141626221077
+   },
+   {
+    "type": [
+     "CC",
+     "CH",
+     "1",
+     "0"
+    ],
+    "constant": 6.119906145233697e-05
+   },
+   {
+    "type": [
+     "CCC",
+     "CCC",
+     "-1",
+     "-1"
+    ],
+    "constant": 393.4114409414142
+   },
+   {
+    "type": [
+     "CCC",
+     "CCC",
+     "0",
+     "1"
+    ],
+    "constant": 406.7529490006103
+   },
+   {
+    "type": [
+     "CCC",
+     "CCC",
+     "0",
+     "2"
+    ],
+    "constant": 397.84948433331647
+   },
+   {
+    "type": [
+     "CCC",
+     "CCC",
+     "1",
+     "0"
+    ],
+    "constant": 411.20527725084884
+   },
+   {
+    "type": [
+     "CCC",
+     "CCH",
+     "0",
+     "1"
+    ],
+    "constant": -91.42938377075068
+   },
+   {
+    "type": [
+     "CCC",
+     "CCH",
+     "0",
+     "2"
+    ],
+    "constant": -90.87683250899013
+   },
+   {
+    "type": [
+     "CCC",
+     "CCH",
+     "1",
+     "0"
+    ],
+    "constant": -91.98226258759205
+   },
+   {
+    "type": [
+     "CCC",
+     "CH",
+     "0",
+     "1"
+    ],
+    "constant": 0.00011617952963302187
+   },
+   {
+    "type": [
+     "CCC",
+     "CH",
+     "1",
+     "0"
+    ],
+    "constant": -1.775583224727669e-05
+   },
+   {
+    "type": [
+     "CCH",
+     "CCH",
+     "-1",
+     "-1"
+    ],
+    "constant": 0.012512861744349622
+   },
+   {
+    "type": [
+     "CCH",
+     "CCH",
+     "0",
+     "1"
+    ],
+    "constant": 0.0004997132097851164
+   },
+   {
+    "type": [
+     "CCH",
+     "CCH",
+     "0",
+     "2"
+    ],
+    "constant": 0.0007810607244775371
+   },
+   {
+    "type": [
+     "CCH",
+     "CCH",
+     "1",
+     "0"
+    ],
+    "constant": 6.895845593854647e-05
+   },
+   {
+    "type": [
+     "CCH",
+     "CH",
+     "0",
+     "1"
+    ],
+    "constant": 0.0001311632745720765
+   },
+   {
+    "type": [
+     "CCH",
+     "CH",
+     "0",
+     "2"
+    ],
+    "constant": 4.111918187571085e-05
+   },
+   {
+    "type": [
+     "CCH",
+     "CH",
+     "1",
+     "0"
+    ],
+    "constant": -1.9131583182650842e-05
+   },
+   {
+    "type": [
+     "CH",
+     "CH",
+     "-1",
+     "-1"
+    ],
+    "constant": 0.005469625822072349
+   },
+   {
+    "type": [
+     "CH",
+     "CH",
+     "1",
+     "0"
+    ],
+    "constant": 6.937192613795167e-05
+   }
+  ]
+ },
+ "transfer": {
+  "rows": [
+   {
+    "family": "CC-stretch",
+    "n": 6,
+    "rms_cm": 0.010291091134466121,
+    "max_cm": 0.0169763127113427,
+    "rms_zero_rule_cm": 48.45968445522035,
+    "judged": true,
+    "passes": true
+   },
+   {
+    "family": "CH-ip-bend",
+    "n": 7,
+    "rms_cm": 0.02722989711178685,
+    "max_cm": 0.05454788374292363,
+    "rms_zero_rule_cm": 34.69210509679236,
+    "judged": false,
+    "passes": true
+   },
+   {
+    "family": "CH-oop",
+    "n": 9,
+    "rms_cm": 70.34828358537852,
+    "max_cm": 84.4189553586105,
+    "rms_zero_rule_cm": 70.34829348615875,
+    "judged": false,
+    "passes": false
+   },
+   {
+    "family": "CH-stretch",
+    "n": 6,
+    "rms_cm": 0.050449913536711126,
+    "max_cm": 0.06888433291286233,
+    "rms_zero_rule_cm": 25.1100338800484,
+    "judged": true,
+    "passes": true
+   },
+   {
+    "family": "ring-ip",
+    "n": 2,
+    "rms_cm": 0.025129912017550535,
+    "max_cm": 0.034203327817511564,
+    "rms_zero_rule_cm": 23.06717553373496,
+    "judged": false,
+    "passes": true
+   }
+  ],
+  "types_missing_on_source": [],
+  "verdict": "PASS"
+ }
+}
