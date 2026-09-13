@@ -1,0 +1,186 @@
+{
+ "date": "2026-09-13 09:34",
+ "molecule": "benzene",
+ "M": 30,
+ "constants": {
+  "tolerances_cm": [
+   0.5,
+   0.1
+  ],
+  "bond_cutoff_bohr": {
+   "CC": 3.0,
+   "CH": 2.4
+  },
+  "retention_levels": [
+   0.9,
+   0.99,
+   0.999,
+   0.9999
+  ],
+  "random_seed": 0,
+  "p25_licence": {
+   "win": "DFT-only ranking reaches 0.5 cm-1 with at most half the eligible pairs AND within a factor 1.5 of the oracle-magnitude count",
+   "lose": "more than half the eligible pairs, or a factor above 1.5"
+  },
+  "benzene_expected": {
+   "x10_n_needed": [
+    19,
+    17,
+    6
+   ],
+   "x11_products": [
+    4,
+    3,
+    2
+   ],
+   "x9_ratio_d0_d3": [
+    0.0268,
+    0.0647
+   ],
+   "x8_first_row": [
+    20,
+    41.69
+   ]
+  }
+ },
+ "irreps_source": "stageC_symmetry_prior.json",
+ "x10": {
+  "n_eligible": 47,
+  "max_shift_all_eligible_kept_cm": 0.0018004294818183553,
+  "max_shift_no_offdiag_cm": 19.581996007095313,
+  "P1 DFT-only": {
+   "0.5": 19,
+   "0.1": 19
+  },
+  "P2 oracle magnitude": {
+   "0.5": 17,
+   "0.1": 19
+  },
+  "P3 oracle effect": {
+   "0.5": 6,
+   "0.1": 16
+  },
+  "spearman_P1_vs_P3": 0.7541628122109157,
+  "p25_licence": {
+   "half_eligible": 23.5,
+   "n_P1": 19,
+   "n_P2": 17,
+   "verdict": "WIN"
+  }
+ },
+ "x11": {
+  "P1 DFT-only": {
+   "pairs": 19,
+   "maxr": 3,
+   "k": 4,
+   "gradients": 8,
+   "recovery_err": 1.1102230246251565e-16
+  },
+  "P2 oracle magnitude": {
+   "pairs": 17,
+   "maxr": 3,
+   "k": 3,
+   "gradients": 6,
+   "recovery_err": 0.0
+  },
+  "P3 oracle effect": {
+   "pairs": 6,
+   "maxr": 2,
+   "k": 2,
+   "gradients": 4,
+   "recovery_err": 0.0
+  },
+  "symmetry prior (all eligible)": {
+   "pairs": 47,
+   "maxr": 7,
+   "k": 7,
+   "gradients": 14,
+   "recovery_err": 1.1102230246251565e-16
+  },
+  "dense": {
+   "pairs": 435,
+   "maxr": 30,
+   "k": 30,
+   "gradients": 60,
+   "recovery_err": 0.0
+  }
+ },
+ "x9": {
+  "profile": [
+   {
+    "d": 0,
+    "pairs": 12,
+    "median_ratio_Delta_over_H": 0.026824985155331545
+   },
+   {
+    "d": 1,
+    "pairs": 12,
+    "median_ratio_Delta_over_H": 0.0368650001134758
+   },
+   {
+    "d": 2,
+    "pairs": 18,
+    "median_ratio_Delta_over_H": 0.048193714827901114
+   },
+   {
+    "d": 3,
+    "pairs": 21,
+    "median_ratio_Delta_over_H": 0.06468494763298009
+   },
+   {
+    "d": 4,
+    "pairs": 12,
+    "median_ratio_Delta_over_H": 0.05434960121592019
+   },
+   {
+    "d": 5,
+    "pairs": 3,
+    "median_ratio_Delta_over_H": 0.0558920633197513
+   }
+  ],
+  "band_shift_zeroing_far_blocks": {
+   "2": {
+    "H_low": 164.25165805251498,
+    "Delta": 31.95320228534615
+   },
+   "3": {
+    "H_low": 146.62050994358265,
+    "Delta": 13.061090295054555
+   },
+   "4": {
+    "H_low": 26.133130576727353,
+    "Delta": 2.6827507091061307
+   },
+   "5": {
+    "H_low": 17.894881108788468,
+    "Delta": 0.9011651609760065
+   }
+  }
+ },
+ "x8": [
+  {
+   "retention": 0.9,
+   "blocks_kept_upper": 20,
+   "of": 78,
+   "max_band_shift_cm": 41.6943113786765
+  },
+  {
+   "retention": 0.99,
+   "blocks_kept_upper": 37,
+   "of": 78,
+   "max_band_shift_cm": 14.280114574847175
+  },
+  {
+   "retention": 0.999,
+   "blocks_kept_upper": 63,
+   "of": 78,
+   "max_band_shift_cm": 5.227745103224265
+  },
+  {
+   "retention": 0.9999,
+   "blocks_kept_upper": 74,
+   "of": 78,
+   "max_band_shift_cm": 0.813230796223479
+  }
+ ]
+}

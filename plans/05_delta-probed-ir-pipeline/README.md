@@ -622,8 +622,11 @@ above about 1 GB on the Windows side beside it):
 4. plan 06's X6 (script ready since 12 September evening, `experiments/x6_pi_cas_share.py`, cc-pVDZ, minutes; the user put it first) and X7;
    4a′. the M2 design is written (`notes/Design_Note_2026-09-13_M2_Frozen_Space_Gradients_in_JAX.md`: PySCFAD's differentiable LNO machinery with plan 05's frozen, transported spaces; pieces A–G, two to three weeks estimated; the M2a → M2 decision rule pre-stated: g ≤ 20 build, 20–26 marginal, > 26 no);
    4a. **M2a — the gradient-to-energy cost ratio g** (pre-registered 13 September, `notes/PreRegistration_2026-09-13_M2a_Gradient_Cost_Ratio.md`; script `probes/m2a_gradient_cost_ratio.py`): install PySCFAD 0.3.3 in `~/qcad` (download — the user's permission first), then cells 0–4 at benzene cc-pVDZ (an evening), cell 5 at cc-pVTZ only if cell 3 gives g ≤ 20;
-5. the naphthalene DFT dry run (two functionals, psi4; hours) — prerequisite (a) of the pilot note and the mode table
-   Module 03 and plan 06 need; **found 12 September evening:** plan 02's `results_dft_locality/naphthalene.npz` (git `57a7910`) is a
+5. the naphthalene DFT dry run, stage A only for the tensor (Windows, conda `qc`, after the run; hours):
+   `conda run -n qc python probes/dryrun_dft_delta_recovery.py --molecule naphthalene --stage A --threads 8` — the script takes the
+   optimised `geometry.json` since 13 September; then plan 06's pre-registered battery on the result, `experiments/x16_tensor_tests.py
+   --molecule naphthalene` (X10 = P25's licence test with its verdict printed, X11, X9, X8; self-test on benzene passed 13 September) —
+   prerequisite (a) of the pilot note and the mode table Module 03 and plan 06 need; **found 12 September evening:** plan 02's `results_dft_locality/naphthalene.npz` (git `57a7910`) is a
    B3LYP/6-31G* Hessian at a geometry identical to `results_dryrun/naphthalene/geometry.json` within 5 × 10⁻⁴ bohr, so the
    B3LYP half exists and only the BHHLYP Hessian must be run (anthracene and pyrene B3LYP Hessians are in the same commit);
 6. `m1_frozen_spaces.py --molecule naphthalene`, then the **R1 smoothness σ run of decision 35** (tight, 9 points, the

@@ -122,7 +122,13 @@ def dft_energy_gradient(psi4, mol, functional: str):
 def stage_a(psi4, name: str, out: str, threads: int) -> dict:
     """Geometry, two Hessians (timed), modes, families, direct Δ₂."""
     log("stage A: geometry optimisation at B3LYP/6-31G*")
-    mol = psi4.geometry(GEOMETRIES[name])
+    if name in GEOMETRIES:
+        mol = psi4.geometry(GEOMETRIES[name])
+    else:   # 2026-09-13: molecules without a built-in start geometry take the optimised geometry.json of their results_dryrun folder
+        gpath = os.path.join(os.path.dirname(os.path.abspath(__file__)), "results_dryrun", name, "geometry.json")
+        g = json.load(open(gpath))
+        log(f"stage A: start geometry from {gpath} ({g.get('level')}, {g.get('date')})")
+        mol = make_molecule(psi4, g["symbols"], np.array(g["coords_bohr"]))
     t0 = time.time()
     psi4.optimize(f"{FUNCTIONALS['low']}/{BASIS}", molecule=mol)
     t_opt = time.time() - t0
