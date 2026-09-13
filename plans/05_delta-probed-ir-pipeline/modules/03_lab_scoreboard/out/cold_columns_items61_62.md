@@ -2,7 +2,7 @@
 
 Transcribed from the papers' tables (pages rendered and read on 2026-09-13; every value asserted to occur in the text extract). u_T = 0 (jet-cooled); u_res = stated laser bandwidth (FELIX ≈ 1 % of ν; OPO 0.1 cm⁻¹ at 3 µm); u_c not derivable (no S/N) → **u_band is a lower bound**. Families by the frequency-window rule.
 
-**Flag for the user:** the 2021 Table A1 continues on page 10 with a block headed "Coronene" (770.1 1.00, 819.2, 1035.4, 1098.9 …) directly after the hexa(peri)benzocoronene block ends (746.1) and before peropyrene; it is read as HBC's continuation with a mis-set label and excluded here. Confirm from the PDF before R3 scoring.
+**Resolved (user, 2026-09-13):** the 2021 Table A1 continues on page 10 with a block headed "Coronene" (770.1 1.00, 819.2, 1035.4, 1098.9 …) directly after the hexa(peri)benzocoronene block ends (746.1) and before peropyrene; it is HBC's continuation with a mis-set label and is excluded.
 
 | item | species | ν (cm⁻¹) | rel. int. | laser | u_res (cm⁻¹) | family |
 |---|---|---|---|---|---|---|
