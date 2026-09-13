@@ -1,0 +1,172 @@
+{
+ "date": "2026-09-13 12:38",
+ "molecule": "benzene",
+ "constants": {
+  "thresholds_cm": [
+   0.5,
+   2.5
+  ],
+  "bond_cutoff_bohr": {
+   "CC": 3.2,
+   "CH": 2.3
+  },
+  "fd_step_bohr": 0.0001,
+  "sym_tol_bohr": 0.001,
+  "sigma_types": [
+   "CH",
+   "CCH",
+   "wag"
+  ],
+  "pi_types": [
+   "CC",
+   "CCC",
+   "tors"
+  ],
+  "kekule_hint": "the B2u C–C stretch mode ≈ 1357 cm⁻¹ (largest stand-in correction)"
+ },
+ "n_internal": 42,
+ "internal_types": {
+  "CC": 6,
+  "CCC": 6,
+  "CCH": 12,
+  "CH": 6,
+  "tors": 6,
+  "wag": 6
+ },
+ "n_symmetry_ops": 24,
+ "n_orbits_allowed": 61,
+ "n_orbits_forbidden_by_symmetry": 33,
+ "orbits_by_kind": {
+  "diag": 6,
+  "sep0": 29,
+  "sep1": 16,
+  "sep2": 9,
+  "sep3": 1
+ },
+ "orbits_by_class": {
+  "σ": 24,
+  "π": 15,
+  "σπ": 22
+ },
+ "kekule_mode": {
+  "index": 18,
+  "nu_cm": 1356.5305845964956,
+  "first_order_correction_cm": -35.580821850831605,
+  "family": "CC-stretch"
+ },
+ "measured_first_order_rms_cm": 48.95646186426236,
+ "fits": [
+  {
+   "set": "S0 diagonal",
+   "n_params": 6,
+   "rms_first_order_cm": 18.45888456659433,
+   "max_first_order_cm": 49.272874563685384,
+   "rms_rediag_cm": 17.612659172843212,
+   "kekule_residual_cm": 49.272874563685384,
+   "rel_frobenius_residual": 0.32668420958421013,
+   "per_family_rms_cm": {
+    "CC-stretch": 22.163859423466388,
+    "CH-ip-bend": 10.507954822070937,
+    "CH-oop": 26.807691576095458,
+    "CH-stretch": 0.7552142986179646,
+    "ring-ip": 3.890999463840309
+   }
+  },
+  {
+   "set": "S1 +shared-atom couplings",
+   "n_params": 35,
+   "rms_first_order_cm": 6.319112367118081,
+   "max_first_order_cm": 18.60584020513105,
+   "rms_rediag_cm": 6.17749601175558,
+   "kekule_residual_cm": 11.42154141929505,
+   "rel_frobenius_residual": 0.13759644062759804,
+   "per_family_rms_cm": {
+    "CC-stretch": 5.530670555613888,
+    "CH-ip-bend": 7.970408996639199,
+    "CH-oop": 2.828517056892727,
+    "CH-stretch": 0.47433320322080075,
+    "ring-ip": 15.753714877249118
+   }
+  },
+  {
+   "set": "S2 +one-bond-apart",
+   "n_params": 51,
+   "rms_first_order_cm": 0.02787345383994545,
+   "max_first_order_cm": 0.07023495430543747,
+   "rms_rediag_cm": 0.024623738529172132,
+   "kekule_residual_cm": 5.112537245111071e-06,
+   "rel_frobenius_residual": 0.0024889872248397924,
+   "per_family_rms_cm": {
+    "CC-stretch": 0.012383541720472527,
+    "CH-ip-bend": 0.02780099722185433,
+    "CH-oop": 0.005736983637425506,
+    "CH-stretch": 0.05066357358599996,
+    "ring-ip": 0.025303153437221344
+   }
+  },
+  {
+   "set": "S3 all orbits",
+   "n_params": 61,
+   "rms_first_order_cm": 0.01408633326386013,
+   "max_first_order_cm": 0.03895914351785024,
+   "rms_rediag_cm": 0.008855718070558917,
+   "kekule_residual_cm": 4.654847099061499e-05,
+   "rel_frobenius_residual": 0.0021579916665427196,
+   "per_family_rms_cm": {
+    "CC-stretch": 0.011978531980966553,
+    "CH-ip-bend": 0.022871599083843938,
+    "CH-oop": 0.005737530503510751,
+    "CH-stretch": 0.00393724400705755,
+    "ring-ip": 0.02281202766965262
+   }
+  },
+  {
+   "set": "σ-only (all σ orbits)",
+   "n_params": 24,
+   "rms_first_order_cm": 14.29626171081257,
+   "max_first_order_cm": 50.585425911070125,
+   "rms_rediag_cm": 13.11894605530069,
+   "kekule_residual_cm": 50.585425911070125,
+   "rel_frobenius_residual": 0.3037450698584765,
+   "per_family_rms_cm": {
+    "CC-stretch": 21.74304128991799,
+    "CH-ip-bend": 4.338290292642955,
+    "CH-oop": 18.471906518391613,
+    "CH-stretch": 0.026191248347616394,
+    "ring-ip": 6.792734043133403
+   }
+  },
+  {
+   "set": "π-only (all π orbits)",
+   "n_params": 15,
+   "rms_first_order_cm": 42.03095720703603,
+   "max_first_order_cm": 83.63513770576449,
+   "rms_rediag_cm": 36.832196542974025,
+   "kekule_residual_cm": -13.673996485740105,
+   "rel_frobenius_residual": 0.9173180369442914,
+   "per_family_rms_cm": {
+    "CC-stretch": 35.470677787655646,
+    "CH-ip-bend": 28.35950548333063,
+    "CH-oop": 63.433433760775685,
+    "CH-stretch": 24.369313499677567,
+    "ring-ip": 4.572244867973955
+   }
+  },
+  {
+   "set": "σ + π without σπ couplings",
+   "n_params": 39,
+   "rms_first_order_cm": 13.853769551823417,
+   "max_first_order_cm": 48.560603695778006,
+   "rms_rediag_cm": 13.606518541865876,
+   "kekule_residual_cm": -1.5917210852498513,
+   "rel_frobenius_residual": 0.17482471132016908,
+   "per_family_rms_cm": {
+    "CC-stretch": 0.6533349677760854,
+    "CH-ip-bend": 1.5271719969677318,
+    "CH-oop": 25.25023083977996,
+    "CH-stretch": 0.007240964187641872,
+    "ring-ip": 0.6137314001133989
+   }
+  }
+ ]
+}
