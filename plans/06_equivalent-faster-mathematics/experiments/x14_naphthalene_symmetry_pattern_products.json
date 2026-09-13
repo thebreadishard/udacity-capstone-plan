@@ -1,0 +1,69 @@
+{
+ "date": "2026-09-13 08:40",
+ "constants": {
+  "R1_deck_energies": 474,
+  "R1_deck_source": "plan 05 proposal \u00a73.2: 96 + 96 + 282",
+  "fractions": [
+   0.4,
+   0.5
+  ],
+  "random_seed": 0,
+  "input": "x13_naphthalene_mode_table.json (naphthalene: modes with irreps and frequencies)"
+ },
+ "M": 48,
+ "n_eligible": 141,
+ "rows": [
+  {
+   "pattern": "(a) symmetry prior: diagonal + all eligible pairs",
+   "pairs": 141,
+   "elements_upper": 189,
+   "naive_energies_2M_plus_2n": 378,
+   "maxr": 9,
+   "k": 9,
+   "gradients_2k": 18,
+   "colouring": "largest-first",
+   "g_star_vs_R1_deck": 26.333333333333332,
+   "g_star_vs_naive": 21.0,
+   "recovery_max_abs_error": 0.0
+  },
+  {
+   "pattern": "(b) diagonal + top 40 % of eligible pairs by 1/|\u03c9_i\u00b2\u2212\u03c9_j\u00b2| (56)",
+   "pairs": 56,
+   "elements_upper": 104,
+   "naive_energies_2M_plus_2n": 208,
+   "maxr": 4,
+   "k": 4,
+   "gradients_2k": 8,
+   "colouring": "largest-first",
+   "g_star_vs_R1_deck": 59.25,
+   "g_star_vs_naive": 26.0,
+   "recovery_max_abs_error": 5.551115123125783e-17
+  },
+  {
+   "pattern": "(c) diagonal + top 50 % of eligible pairs by 1/|\u03c9_i\u00b2\u2212\u03c9_j\u00b2| (70)",
+   "pairs": 70,
+   "elements_upper": 118,
+   "naive_energies_2M_plus_2n": 236,
+   "maxr": 5,
+   "k": 5,
+   "gradients_2k": 10,
+   "colouring": "largest-first",
+   "g_star_vs_R1_deck": 47.4,
+   "g_star_vs_naive": 23.6,
+   "recovery_max_abs_error": 2.220446049250313e-16
+  },
+  {
+   "pattern": "(d) dense",
+   "pairs": 1128,
+   "elements_upper": 1176,
+   "naive_energies_2M_plus_2n": 2352,
+   "maxr": 48,
+   "k": 48,
+   "gradients_2k": 96,
+   "colouring": "largest-first",
+   "g_star_vs_R1_deck": 4.9375,
+   "g_star_vs_naive": 24.5,
+   "recovery_max_abs_error": 0.0
+  }
+ ]
+}

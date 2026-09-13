@@ -28,6 +28,7 @@ Cells 0–4 are laptop work of an evening once installed; cell 5 may not fit 25 
 - **g ≤ 6** at cell 3: within the AD literature's constant; substitution and mode G both pay by an order of magnitude (X11: 8 g ≈ 48 energies against 448); M2 proper is worth its weeks.
 - **6 < g ≤ 20**: substitution still pays (8 g ≤ 160 < 448 at benzene; grows in favour with size, X8), mode G marginally (108 g at naphthalene against 474); M2 proper is worth it for the substitution branch alone.
 - **g > 20**: the gradient levers do not change plan 05's order of magnitude at benzene size; decision 34's items stay as pre-registered (energies-only, measured once), M2 proper is deferred, and the cost question returns to the machine (P13) and to the element count (P25). This outcome is recorded, not argued with.
+- *Dated addition, 2026-09-13 morning (informational, thresholds unchanged):* plan 06's X14 counted the substitution products on naphthalene's real symmetry pattern: 9 products = 18 gradients against the 474-energy R1 deck, so **g < 26 is where the gradient route starts to pay at R1 with no prior beyond symmetry**; the reading thresholds above (6 / 20) were fixed before and stay.
 - **Memory** is reported beside every g; a gradient that needs more than the laptop's 25 GB at cc-pVTZ moves the whole gradient branch to the desktop or the cluster regardless of g.
 
 ## 4. What is fixed now and cannot move after the numbers
