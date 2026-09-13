@@ -609,7 +609,7 @@ Ladder item 8 reads c "at the σ_E the R1 smoothness probe printed"; this note n
 
 ## Not yet done (owed, in order; rewritten 2026-09-12 evening)
 
-**The proposal e-mail (planned Monday 14 September 08:00) is held by the user** pending the evidence ladder below;
+**The proposal e-mail (planned Monday 14 September 08:00) is held by the user** pending the evidence ladder below; **the user decided on 13 September (evening) that the cover note is rewritten after F** — its paragraph "Vanaf naftaleen kan dit plan niet meer op mijn eigen machine" implies that pyrene and coronene can be measured in full with cluster time, which the duration table denies (R2 full decks 166–552 Snellius-days, R3 744–4,961); the rewrite goes with P26's adoption (naphthalene full on a cluster in weeks; R2–R3 thin transfer decks in days; the network trained on what is affordably measured; the cluster request sized on those two items) and with §12;
 when it goes: the user's own read of the cover note, §1, §3.3 and the repriced §12 row.
 
 **On the machine, in this order, once the naphthalene xtight timing has finished** (one anchor job at a time; nothing

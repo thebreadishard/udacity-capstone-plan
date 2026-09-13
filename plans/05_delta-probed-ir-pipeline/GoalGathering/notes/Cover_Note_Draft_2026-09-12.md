@@ -18,7 +18,7 @@ spectrum van naftaleen. De ambitie daarachter — bewust niet beloofd, zie §6 �
 trainingsdata voor een neuraal netwerk, beter dan geschaald DFT, voor de PAK's waarvoor geen
 laboratoriumspectrum bestaat. Sinds Mai et al. (2025) met op DFT getrainde ML-dynamica PAK-spectra
 voorspellen, ontbreekt vooral betere trainingsdata dan geschaald DFT. Dat netwerk zelf beloof ik in dit
-plan niet: §6 zegt waarom niet, en wat er wel geleverd wordt om het mogelijk te make: de correctie
+plan niet: §6 zegt waarom niet, en wat er wel geleverd wordt om het mogelijk te maken: de correctie
 zelf, honderden atoompaarblokken (stukjes van de correctie per paar atomen) per molecuul, en de meting
 op pyreen en coroneen die vooraf beslist of zo'n overdraagbaar model überhaupt kan bestaan.
 
