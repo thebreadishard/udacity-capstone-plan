@@ -648,6 +648,8 @@ software work of weeks and the user decides when. **Priced lever by lever the sa
 
 **Duration note (13 September, `notes/Duration_Note_2026-09-13.md`, table printed by `probes/duration_table.py`):** every computation through Module 08 per route (laptop / desktop / Snellius), measured or labelled; provisional xtight factor F = 2.33 from the checkpoint; R0–R1 within reach, **R2–R3 as full decks out of reach on every route** (the decks, not the machines); two open places (F tonight, g from M2a); five questions to the user before it enters proposal §12.
 
+**P26 drafted (13 September, `notes/Decision_Memo_2026-09-13_P26_Pipeline_as_Generator_Network_as_Reach.md`; a proposal, not a decision):** the pipeline as training-data factory, the network as the reach route for R4–R6; output object = per-mode corrections plus resonance-selected couplings, per-family band corrections as the scoreable label; R2–R3 as thin transfer tests; a numbers machine on neutral aromatics with cations phased in (ULNO engine present in pyscf-forge, none in PySCFAD); tight/xtight for training data a measured choice; budget objective = molecules per year on the desktop plus a small Snellius allocation; evidence before buying or sending: F, g, P25's licence, the first transfer test (T-1/T-2 pre-registered with a losing condition). Nothing frozen before the supervisor reads the proposal.
+
 **Decisions for the user, when their inputs are in:** P13 in two halves (the cluster request now, the desktop after
 Monday's xtight factor and the corpus timing; memo in `notes/`); the pilot note's choices (skeleton §C); whether to
 publish blog post 3 (draft pushed, unrendered).
