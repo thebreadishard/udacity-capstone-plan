@@ -24,6 +24,8 @@ genoemd als plan 06 ze anders gebruikt.*
 | **LMO** | gelokaliseerde moleculaire orbitaal: een bezette orbitaal die door een rotatie zo compact mogelijk is gemaakt (hier Pipek–Mezey), zodat "afstand tussen orbitalen" betekenis heeft. |
 | **MP2-paarenergie** | de correlatie-energie die aan één paar bezette orbitalen wordt toegeschreven in tweede-orde storingsrekening; de grootheid waarop lokale-CC-drempels zijn gebouwd. |
 | **N-representeerbaarheid** | de voorwaarde dat een twee-elektronen-dichtheidsmatrix bij een echte N-elektronentoestand hoort; het volledige stel voorwaarden is QMA-hard. |
+| **ODLR** (off-diagonal low rank) | de aanname van O1NumHess (2025): de blokken van een Hessiaan tussen twee ver uit elkaar liggende atoomgroepen hebben lage rang. In de norm klopt dat voor onze PAK's; voor bandposities op 0,5 cm⁻¹ niet (X15). |
+| **citatieketen** | alle artikelen die een bronartikel citeren, en de artikelen die díe weer citeren; het gereedschap om te zien waar een idee terecht is gekomen. Via OpenAlex gratis te bevragen. |
 | **P, NP, QMA** | complexiteitsklassen: snel oplosbaar; snel controleerbaar door een klassieke computer; snel controleerbaar door een kwantumcomputer. QMA-compleet = tot de moeilijkste in QMA. |
 | **QMA-hard** | minstens zo moeilijk als het moeilijkste probleem in QMA. De universele DFT-functionaal is QMA-hard (Schuch en Verstraete 2009). |
 | **resonantienoemer** | 1/‖ω_i² − ω_j²‖: hoe dichter twee trillingsfrequenties bij elkaar liggen, hoe harder een koppeling tussen die twee modes doorwerkt op de bandposities. Gratis uit de DFT-Hessiaan; de regel van X10 om koppelingen te rangschikken. |

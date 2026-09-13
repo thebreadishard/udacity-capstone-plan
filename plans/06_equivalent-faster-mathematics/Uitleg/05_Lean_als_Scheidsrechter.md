@@ -114,6 +114,14 @@ daarná komt — van dichtheidsmatrix naar correlatie-energie naar tweede afgele
 papier, en voor coupled cluster nieuwe wiskunde. Lean kan dus T3a tot en met de resolvente-sluiproute
 certificeren; T3 zelf niet, zolang niemand hem bewezen heeft.
 
+## §5.4c Toevoeging 13 september 2026
+
+Onder de beslisregel heeft de Lean-route een vaste lijst: T1d (de stelling van Coleman en Moré, ontworpen,
+te bouwen zodra de machine vrij is), T3a tot en met T3c (de combinatorische lemma's achter de
+afvalstellingen) en het resolvente-lemma dat de stelling van Bernstein omzeilt. Buiten die lijst wordt
+niets geformaliseerd; de route eindigt niet op een datum, maar kost alleen rekentijd als er geen
+ankerjob loopt.
+
 ## §5.5 Eén zin om te onthouden
 
 Lean vindt niets en versnelt niets; hij bewijst dat een voorgestelde kortere weg exact is, en dat is

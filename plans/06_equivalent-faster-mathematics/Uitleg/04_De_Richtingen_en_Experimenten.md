@@ -123,6 +123,21 @@ test, resultaat. Een richting is *voorgesteld*, *levend* (test gepland of deels 
 notitie naar plan 05). Niets wordt gewist. Zo kan iemand over een jaar zien welke ideeën zijn
 geprobeerd en waarom ze niet doorgingen — dat is voor een ideeënplan net zo waardevol als een treffer.
 
+## §4.4a Toevoeging 13 september 2026: de beslisregel, en de stand van de kostentak
+
+Een ideeënplan kan eindeloos "levend" blijven. Daarom heeft plan 06 sinds 13 september een
+beslisregel, door de gebruiker overgenomen: de **kostentak sluit op 15 oktober 2026** als de
+gradiëntkosten g boven de 26 uitkomen én de DFT-volgorderegel (P25) zijn toets op naftaleen niet haalt;
+de **wiskundetak wordt op 1 december 2026 beoordeeld**; de Lean-route heeft geen einddatum omdat zij
+certificaten levert en geen beweringen. Elk experiment noemt voortaan vooraf welke beslissing eraan hangt.
+
+De stand van de kostentak, eenvoudig: één zekere kleine winst (P25: bij benzeen 19 van de 47
+koppelingen, het deck van naftaleen van 474 naar ongeveer 300 energieën) en één grote onzekere (met
+gradiënten zijn bij naftaleen 18 gradiënten genoeg in plaats van 474 energieën, X14; dat wint zodra één
+gradiënt minder dan 26 energieën kost). Het getal g is vooraf vastgelegd als meting (M2a), de motor
+staat klaar, en het draait zodra de naftaleen-run klaar is. Twee wegen zijn vandaag dichtgegaan: lage
+rang van verre blokken (X15) en, eerder, dunheid in de ruimte (X8).
+
 ## §4.5 Eén zin om te onthouden
 
 Zes richtingen, elk met een goedkope toets op data die er al ligt; één (S1) leeft al met een eerste

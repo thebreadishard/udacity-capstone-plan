@@ -61,6 +61,23 @@ Schrödingervergelijking zelf** — de prijs per energie. De boekhouding blijft 
 de elektronen van een aromatisch molecuul een structuur hebben die de huidige wiskunde nog niet
 uitbuit.
 
+## §1.4a Toevoeging 13 september 2026: is dit al eens eerder gedaan?
+
+De gebruiker vroeg het rechtstreeks, en het eerlijke antwoord staat in een aparte notitie (de
+vernieuwingsanalyse van 13 september). Kort: **elk ingrediënt bestaat al.** Bijziendheid van
+elektronen en de afvalstellingen (Prodan en Kohn 2005; Benzi, Boito en Razouk 2013); dunne matrices
+terugwinnen met kleuringen (Curtis, Powell en Reid 1974; Powell en Toint 1979; Coleman en Moré 1984);
+Hessianen van polyacenen uit weinig metingen met compressed sensing (Sanders, Andrade en Aspuru-Guzik
+2015, mét DFT); een Hessiaan uit ongeveer honderd gradiënten (O1NumHess, 2025); gradiënten van lokale
+coupled cluster met automatisch differentiëren (Zhang e.a. 2024); het resonantiecriterium uit de
+anharmonische storingsrekening. Een citatiezoektocht over 873 artikelen die zeventien van die bronnen
+citeren (OpenAlex, gratis, 13 september) laat zien dat de kleuringsliteratuur de scheikunde nooit heeft
+bereikt, en dat niemand de coupled-cluster-*correctie* op een DFT-Hessiaan van een aromaat uit weinig
+lokale-CC-metingen heeft teruggewonnen. Dat laatste is wat plan 06 doet, met symmetrie, exacte
+substitutie en de toets op bandposities. Het is een meetschema, geen nieuwe theorie; en "niet gevonden"
+is niet hetzelfde als "bestaat niet": een systematische zoektocht via Web of Science en een vraag aan de
+supervisor staan nog open.
+
 ## §1.5 Eén zin om te onthouden
 
 Plan 06 zoekt geen snellere manier om de Schrödingervergelijking *in het algemeen* op te lossen —

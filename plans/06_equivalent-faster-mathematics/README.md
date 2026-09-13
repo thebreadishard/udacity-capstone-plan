@@ -60,7 +60,8 @@ evening's overview: [GoalGathering/Evening_Overview_2026-09-12.md](GoalGathering
 22. [GoalGathering/Novelty_Assessment_2026-09-13.md](GoalGathering/Novelty_Assessment_2026-09-13.md) — what in plan 06 was done before and by whom (verified records), what the plan adds with its limits, and the prior art found on 13 September that must be read before any claim: O1NumHess (Wang, Luo, Wang & Liu 2025), a Hessian from O(1) gradients by off-diagonal low rank.
 23. [GoalGathering/Reading_Note_2026-09-13_O1NumHess.md](GoalGathering/Reading_Note_2026-09-13_O1NumHess.md) — O1NumHess read in full: a DFT Hessian from ≈ 40–120 gradients by off-diagonal low rank, errors 6–12 cm⁻¹ MAD on conjugated chains; against plan 06 point by point; T3 to be restated in ODLR form; X15 defined.
 24. [GoalGathering/Result_Note_2026-09-13_X15_ODLR_Far_Blocks.md](GoalGathering/Result_Note_2026-09-13_X15_ODLR_Far_Blocks.md) — X15: the far blocks of PAH Hessians are low-rank in norm but need 30–83 % of their rank at 0.5 cm⁻¹; O1NumHess's structure is not licensed at plan 05's tolerance.
-25. [Uitleg/](Uitleg/00_Leeswijzer.md) — the plan explained at vwo-6 level in Dutch: the question, what is proven impossible, why it can still work for this class, the directions and experiments, Lean as referee, glossary.
+25. [GoalGathering/Annex_Draft_2026-09-13_Plan06_for_the_Supervisor.md](GoalGathering/Annex_Draft_2026-09-13_Plan06_for_the_Supervisor.md) — one-page annex draft in English for the supervisor (not sent; the user decides whether it accompanies the proposal): what plan 06 is, what is established, what is and is not new, the decision rule.
+26. [Uitleg/](Uitleg/00_Leeswijzer.md) — the plan explained at vwo-6 level in Dutch: the question, what is proven impossible, why it can still work for this class, the directions and experiments, Lean as referee, glossary.
 
 ## What this folder will and will not contain
 
