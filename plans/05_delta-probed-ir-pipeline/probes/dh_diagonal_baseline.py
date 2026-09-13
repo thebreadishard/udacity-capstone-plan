@@ -16,8 +16,8 @@ Five-point stencil, step chosen per mode so that the harmonic energy change at +
 energy noise 1e-9 E_h against 1e-4 E_h of curvature signal -> ~1e-5 relative). Every energy is checkpointed (energies.json) so the
 run resumes after an interruption. Basis 6-31G* = the dry-run's basis (the comparison is per mode against the dry-run tensor).
 
-READING (pre-registered here, before any CC number is read; thresholds proposed by the student on 13 September, to be confirmed by
-the user before R0's probed diagonal is joined): with R0's per-mode correction delta_nu_i^CC available (pilot), the score is
+READING (pre-registered here, before any CC number is read; thresholds proposed by the student on 13 September and CONFIRMED by the
+user the same day, before R0's probed diagonal exists): with R0's per-mode correction delta_nu_i^CC available (pilot), the score is
   r = RMS_i(delta_nu_i^DH - delta_nu_i^CC) / RMS_i(delta_nu_i^CC)   over the IR-active + Raman modes of the deck;
   r <= 1/3 : the double hybrid removes >= 2/3 of the correction -> lead A becomes "double hybrid as the DFT half", no fit;
   r >= 2/3 : the double hybrid does not help -> the omega fit (lead A proper) is worth trying, with the Korzdorfer 2011 drift reported;
@@ -55,7 +55,7 @@ CONSTANTS = {
     "basis": "6-31g*", "functionals": ["b2plyp", "bhhlyp", "b3lyp"], "target": "b2plyp", "reference": "b3lyp", "stand_in": "bhhlyp",
     "E_STEP_hartree": 1e-4, "stencil": "5-point central: k = (-E(2h) + 16E(h) - 30E(0) + 16E(-h) - E(-2h)) / (12 h^2)",
     "FD_CHECK_CM": 1.0, "scf_conv": 1e-10, "d_conv": 1e-10,
-    "reading_thresholds_r": {"collapse_no_fit": 1/3, "fit_worth_trying": 2/3}, "reading_status": "proposed 2026-09-13; confirm before R0's diagonal is joined",
+    "reading_thresholds_r": {"collapse_no_fit": 1/3, "fit_worth_trying": 2/3}, "reading_status": "proposed 2026-09-13 12:30; CONFIRMED by the user 2026-09-13 (\"Akkoord met de drempels\") before any CC number exists",
 }
 AMU_TO_ME = 1822.888486209
 HARTREE_TO_CM = 219474.6313632

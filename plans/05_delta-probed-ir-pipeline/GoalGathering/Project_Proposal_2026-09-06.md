@@ -1091,12 +1091,17 @@ decisions in the evenings, and the supervisor's reading time at the two points n
    (§10, item 4), both decided by the student as methods subject to measurement — a supervisor's
    objection would reopen either — and on the side project of §5.3, whose milestones, kill
    criterion and budget terms are stated there.
-3. **Laboratory sources.** Gas-phase or jet-cooled spectra of pyrene, chrysene and triphenylene
-   **in the 6–15 µm region** at better than 8 cm⁻¹ resolution and known temperature would make the
-   C–C families at the pyrene-size rung decidable. The 5 September search found none of known
-   temperature; a source the supervisor knows of that the search missed would enlarge the
-   decidable set, and the plan is written so that it can be added before, never after, a comparison
-   is scored.
+3. **Laboratory sources — or one measurement** (revised 13 September; the 6 September wording asked only for a source). Module 03 finds no gas-phase
+   source that makes the C–C families at the pyrene rung decidable at the plan's 5 cm⁻¹ promise: the hot
+   records give u_band 8.6–16 cm⁻¹ per family (8 cm⁻¹ resolution plus the temperature term), the jet-cooled
+   free-electron-laser band lists ≥ 5–17 cm⁻¹ from their stated bandwidth alone; only naphthalene (Pirali et al. 2009;
+   ν46 origin to 10⁻⁶ cm⁻¹, Albert et al. 2011, Pirali et al. 2013) and one pyrene band (ν68, Brumfield et al. 2012) are
+   resolved. **One cold, resolved measurement of pyrene — one strong band per family at 6.2, 7.7, 8.6 and 11–13 µm,
+   band centres tabulated to ≤ 1 cm⁻¹ — would make the rung decidable**; a source the supervisor knows of, or an
+   instrument in the supervisor's network that could take such a request, is the cheapest lever the project has,
+   cheaper than any cluster request of §12, because the corrections of §12 could be produced but not scored without
+   it. The student pre-registers the scoreboard rows before any such number arrives; laboratory data are added
+   before, never after, a comparison is scored (`notes/Ask_Note_2026-09-13_Lead_G_Cold_Measurement.md`).
 4. A view on the intensity question (§7): positions are the promise, intensities are scored where
    a calibrated gas-phase measurement exists and reported elsewhere, and a coupled-cluster
    correction to intensities is a measured question rather than a promise. If the supervisor wants
