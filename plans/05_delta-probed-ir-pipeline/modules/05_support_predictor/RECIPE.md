@@ -78,3 +78,28 @@ Now: the corpus builder in fixture mode (reads the dry-run `stageA_hessians.npz`
 labels and a manifest), the Transformer and pair head in PyTorch, and a smoke test that trains on the
 fixture for a few steps to prove the code path. Not now: the download, the recomputed subset, any
 result. No number printed by the smoke test is a result.
+
+## Dated amendment 2026-09-13 (P26, proposed; adopted only with P26) — the target object changes, the discipline does not
+
+Written before any corpus is recomputed or any model is trained, so it is still a recipe change and not a post-hoc one.
+
+- **What is predicted (replaces "the support of Δ₂").** Two heads on the same per-mode sequence: (1) a **regression head** for the per-mode
+  correction — the first-order band shift δν_i = Δ₂,ii/(2ω_i) in cm⁻¹, or equivalently the relative shift δν_i/ν_i — of every DFT mode; (2) the
+  **pair head as before**, now with the resonance-denominator ordering of P25 as its declared baseline (a pair's prior is 1/|ω_i² − ω_j²| within an
+  irrep; plan 06 X10: Spearman 0.75 against the measured effect at benzene, 19 of 47 pairs for 0.5 cm⁻¹), so the learned pair head must beat the free
+  rule, not the zero rule. The support label s_ij of the original recipe stays as the pair head's label.
+- **Why per mode and not per family.** `probes/t1_transfer_test.py` (13 September): within benzene the C–C stretch corrections span −36 to +65 cm⁻¹
+  and the C–H out-of-plane ones 36 to 84, so a family scalar cannot be the label (RMS 33 and 13 cm⁻¹ inside one molecule); C–H stretch is tight (0.17).
+  The per-family band correction remains the *scoreable aggregate* (P19, decision 32's licence), not the model output.
+- **Inputs.** As before (mode descriptors from the low-level Hessian: frequency, family, atom-projected displacement shares, irrep) **plus charge and
+  spin multiplicity as tokens on the molecule**, so that cations can enter the training set later without an architecture change (P26 §4); until
+  cation labels exist the model is licensed for neutrals only.
+- **Corpus and pre-training.** Unchanged: the DFT–DFT corpus (ωB97X − B3LYP on Hessian QM9 subsets, 11,321 candidates) for pre-training; fine-tuning
+  on the coupled-cluster labels pipeline B produces (thin decks: diagonal + P25 couplings, or gradients), per P26 §4; the stand-in is labelled as such.
+- **Metrics.** Regression head: RMS error of δν per family on held-out molecules against (a) the zero rule and (b) the family-median rule of T-1,
+  reported in cm⁻¹ beside the family's laboratory margin (Module 03's u_band). Pair head: as before, plus precision at the P25 count.
+- **Success criterion (the licence).** Unchanged in kind: transfer, not fit — the held-out per-family error within τ_F on a rung the pipeline
+  measured (R1 first, thin R2 hold-outs after); P26 §6's T-2 is the first such test. Both outcomes are publishable; the report is written for either.
+- **What does not change.** The frozen splits, several seeds, tuning parity, the declared effect size, "inconclusive" as an allowed outcome, and the
+  rule that the recipe is committed before the data it judges.
+

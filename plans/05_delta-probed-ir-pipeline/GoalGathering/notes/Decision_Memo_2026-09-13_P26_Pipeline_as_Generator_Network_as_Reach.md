@@ -45,6 +45,8 @@ The proposal is not sent before 1 and 2; 3 is either done before sending or name
 
 *The user agreed on 13 September ("Akkoord met T-1 en de verliesdrempel; wacht op F") to the form of T-1 and to the losing threshold above; the memo itself waits for F before adoption.*
 
+*Dated caveat, 13 September 11:25, before any transfer data exist (`probes/t1_transfer_test.py --source benzene --target benzene`):* the rule as written — one relative correction per family — already fails **inside benzene** for two families: the six C–C stretch modes carry corrections from −35.6 to +64.9 cm⁻¹ (RMS of the family rule 32.6 cm⁻¹; the 1357 cm⁻¹ B2u mode alone is −36), the nine C–H out-of-plane modes 36 to 84 cm⁻¹ (RMS 12.6); C–H stretch (RMS 0.17) and ring in-plane (0.04) are tight. So T-1 in this form would lose on C–C stretch for a reason that has nothing to do with transfer between molecules: the family label is too coarse a descriptor of the correction, which is what §2 already says (the network predicts *per mode*, from mode character). **Proposed amendment, for the user (not applied):** T-1 keeps its threshold and its judged families but uses a mode-resolved rule — each target mode is predicted from the source mode(s) nearest in character within the family (in the first version: nearest in relative position within the family's frequency span; in Module 05's version: the model itself) — and reports the family-scalar rule beside it as the floor. The within-source spread per family is printed by the script and is the number a transfer error must be compared with.
+
 ## 7. What changes in which document, if adopted
 
 | document | change |

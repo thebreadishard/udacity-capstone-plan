@@ -1,0 +1,148 @@
+{
+ "date": "2026-09-13 11:21",
+ "constants": {
+  "threshold_cm": 2.5,
+  "threshold_source": "Module 03 U_BAND.md: QUANT-IR benzene gas-phase u_band 2.55 cm-1 (R0 floor form)",
+  "judged_families": [
+   "CH-stretch",
+   "CC-stretch"
+  ],
+  "primary_rule": "relative: delta_nu/nu per family (median)",
+  "secondary_rules": [
+   "zero",
+   "absolute delta_nu per family (median)"
+  ]
+ },
+ "source": "benzene",
+ "target": "benzene",
+ "source_families": {
+  "CC-stretch": {
+   "n": 6,
+   "median_rel": 0.029145577172638788,
+   "median_abs_cm": 46.21543747732672,
+   "spread_rel_rms_cm": 32.62340386312553,
+   "nu_range": [
+    1356.5305845964956,
+    1656.012659500923
+   ],
+   "dnu_range": [
+    -35.58082185201507,
+    64.89829886890013
+   ]
+  },
+  "CH-ip-bend": {
+   "n": 7,
+   "median_rel": 0.03052666859652357,
+   "median_abs_cm": 31.55906973324768,
+   "spread_rel_rms_cm": 8.139174216166065,
+   "nu_range": [
+    1020.004003001632,
+    1207.902520305765
+   ],
+   "dnu_range": [
+    12.072963071554453,
+    43.571646260676964
+   ]
+  },
+  "CH-oop": {
+   "n": 9,
+   "median_rel": 0.09033463878052841,
+   "median_abs_cm": 78.12173756147081,
+   "spread_rel_rms_cm": 12.621782099407937,
+   "nu_range": [
+    415.00498326853835,
+    1010.72015053838
+   ],
+   "dnu_range": [
+    36.29446376934056,
+    84.41897569171205
+   ]
+  },
+  "CH-stretch": {
+   "n": 6,
+   "median_rel": 0.007853690385702859,
+   "median_abs_cm": 25.107040445760312,
+   "spread_rel_rms_cm": 0.17126692864784512,
+   "nu_range": [
+    3174.0595073356926,
+    3210.0338896514686
+   ],
+   "dnu_range": [
+    24.70775094778836,
+    25.383231391252615
+   ]
+  },
+  "ring-ip": {
+   "n": 2,
+   "median_rel": 0.0370804593431992,
+   "median_abs_cm": 23.067142714871615,
+   "spread_rel_rms_cm": 0.04327610815535152,
+   "nu_range": [
+    621.9660378304629,
+    622.2014461601955
+   ],
+   "dnu_range": [
+    23.02823113199076,
+    23.106054297752472
+   ]
+  }
+ },
+ "transfer": [
+  {
+   "family": "CC-stretch",
+   "n": 6,
+   "in_source": true,
+   "rms_rel": 32.62340386312553,
+   "max_rel": 75.11768869241703,
+   "rms_zero": 48.45968445683218,
+   "rms_abs": 34.42403617544101,
+   "judged": true,
+   "passes": false
+  },
+  {
+   "family": "CH-ip-bend",
+   "n": 7,
+   "in_source": true,
+   "rms_rel": 8.139174216166065,
+   "max_rel": 19.076671084350338,
+   "rms_zero": 34.69210509794626,
+   "rms_abs": 10.167709295095074,
+   "judged": false,
+   "passes": false
+  },
+  {
+   "family": "CH-oop",
+   "n": 9,
+   "in_source": true,
+   "rms_rel": 12.621782099407937,
+   "max_rel": 28.521048190114932,
+   "rms_zero": 70.34829348849861,
+   "rms_abs": 22.524275799283487,
+   "judged": false,
+   "passes": false
+  },
+  {
+   "family": "CH-stretch",
+   "n": 6,
+   "in_source": true,
+   "rms_rel": 0.17126692864784512,
+   "max_rel": 0.2560374458931385,
+   "rms_zero": 25.110033880883588,
+   "rms_abs": 0.2420215700406094,
+   "judged": true,
+   "passes": true
+  },
+  {
+   "family": "ring-ip",
+   "n": 2,
+   "in_source": true,
+   "rms_rel": 0.04327610815535152,
+   "max_rel": 0.043284295632112446,
+   "rms_zero": 23.0671755345022,
+   "rms_abs": 0.03891158288085528,
+   "judged": false,
+   "passes": true
+  }
+ ],
+ "verdict": "LOSE"
+}
