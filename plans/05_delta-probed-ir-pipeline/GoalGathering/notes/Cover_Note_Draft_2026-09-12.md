@@ -60,7 +60,9 @@ netwerk een geschikte machine is. De genummerde vragen 7–17 zijn voor ons eers
 veranderen geen regel, ze leveren een getal of een bron.
 
 Alles wat in het voorstel over mijn eigen resultaten staat, is door een script afgedrukt en staat
-in de repository: https://github.com/thebreadishard/udacity-capstone-plan.
+in de repository: https://github.com/thebreadishard/udacity-capstone-plan. Naast het voorstel staat daar een
+zijstudie (plan 06) naar goedkopere wiskunde voor de dure stap; die belooft niets en heeft een eigen
+sluitdatum.
 
 Groetjes,
 Frederic
