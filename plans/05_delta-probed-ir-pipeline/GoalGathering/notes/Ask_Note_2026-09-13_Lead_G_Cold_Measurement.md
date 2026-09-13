@@ -1,6 +1,6 @@
 # Ask note 2026-09-13 — lead G: one laboratory measurement that would make the pyrene rung decidable (a question for the supervisor)
 
-*Written at the user's request ("doe lead G voor de begeleider") after the reflection of 13 September and its literature check. It sharpens §13 item 3 of the proposal from "a source the search missed" to "a source or a measurement, specified". Every number below is Module 03's own (`modules/03_lab_scoreboard/out/U_BAND.md`, `out/cold_columns_items61_62.md`, `out/origin_columns_naphthalene.md`, `notes/Research_Note_2026-09-05_R2_GasPhase_MidIR_Sources.md`); every record is Crossref-verified in the bibliography. It is a draft the user decides to send or not; nothing in it changes a rule of the plan.*
+*Written at the user's request ("doe lead G voor de begeleider") after the reflection of 13 September and its literature check; the user decided the same evening that the question goes in the letter (§13 item 3), with this note behind it, and that §3's cost offer is limited to the compute side. It sharpens §13 item 3 of the proposal from "a source the search missed" to "a source or a measurement, specified". Every number below is Module 03's own (`modules/03_lab_scoreboard/out/U_BAND.md`, `out/cold_columns_items61_62.md`, `out/origin_columns_naphthalene.md`, `notes/Research_Note_2026-09-05_R2_GasPhase_MidIR_Sources.md`); every record is Crossref-verified in the bibliography. It is a draft the user decides to send or not; nothing in it changes a rule of the plan.*
 
 ## 1. The situation the numbers describe
 
@@ -38,7 +38,7 @@ So the ladder is decidable at R0 and R1 and **not decidable at the C–C familie
 
 - The scoreboard rows for the chosen bands are **pre-registered before the measurement**: family, predicted band, the Δ₂ = 0 null row, the opponents' values (PAHdb v4.00 scaled harmonic; PAHdb Anharmonic where it exists), the beat margin. Laboratory numbers enter before, never after, a comparison is scored (Ladder §2; the R2 dated note of 5 September).
 - The pipeline's own prediction with its error budget is sealed before the centres arrive (the same seal discipline as the benzene CC energies).
-- A one-page cost table: the beamtime or laser time of one such measurement against the cluster hours of §12 for R2 — so the supervisor can weigh the two levers on the same page.
+- The compute side of the comparison, in numbers: the cluster hours of §12 for R2 once F is measured. The measurement side — what a day of synchrotron, free-electron-laser or laser time costs and how it is applied for — is not the student's knowledge; it is asked of the supervisor, so that the two levers can be put on one page afterwards.
 - Authorship and data ownership as the laboratory decides; the plan only needs the table.
 
 ## 4. What is not in the student's hands, said plainly
