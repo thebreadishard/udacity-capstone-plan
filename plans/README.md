@@ -158,3 +158,6 @@ Round-5 Pass B still binds the *architecture*: plan 03 tried to own light–matt
 an IR network on one frozen clock, and that scope has no green light. Plan 04 answers it by doing
 one thing — matter, nuclei, spectra; light enters only as an inherited emission post-processing
 layer, never as a co-owned solver.
+
+**Reflection (13 September 2026):** [Reflection_2026-09-13_View_From_Above.md](Reflection_2026-09-13_View_From_Above.md) — after a full read of the repository, at the user's request: what the six plans have learned about the correction, three observations from above (laboratory truth as the binding constraint; the correction's nonlocality as a symptom of a functional-shaped error; intensities as the astronomical need), seven leads not in any plan (a tuned-functional baseline, adaptive cross-molecule deck design, dipoles at every probe point, corrections in internal coordinates, π-embedding as label generator, a graphene endpoint, a cold measurement as deliverable), and the answer to "would you do exactly this?" Not a plan; nothing changes by it.
+
