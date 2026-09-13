@@ -7,9 +7,8 @@ voorstel; het wijst alleen de weg erin.*
 
 Beste [naam],
 
-Hierbij het projectvoorstel voor mijn capstone, in de versie van 12 september. Het is één document van
-ongeveer dertig pagina's; §1 vat het plan in een paar zinnen samen, en die zinnen zijn voor jou
-geschreven. De rest is de onderbouwing en het contract waaraan ik mezelf houd.
+Hierbij het projectvoorstel voor de Udacity capstone. Het is één document van
+ongeveer dertig pagina's; §1 vat het plan in een paar zinnen samen.
 
 Wat je aan het eind krijgt, als het plan doet wat het belooft: een pijplijn die van elk afzonderlijk
 aromatisch molecuul een infraroodspectrum maakt met een coupled-cluster-anker — een klein aantal dure,
@@ -19,33 +18,16 @@ spectrum van naftaleen. De ambitie daarachter — bewust niet beloofd, zie §6 �
 trainingsdata voor een neuraal netwerk, beter dan geschaald DFT, voor de PAK's waarvoor geen
 laboratoriumspectrum bestaat. Sinds Mai et al. (2025) met op DFT getrainde ML-dynamica PAK-spectra
 voorspellen, ontbreekt vooral betere trainingsdata dan geschaald DFT. Dat netwerk zelf beloof ik in dit
-plan niet: §6 zegt waarom niet, en wat er wel geleverd wordt om het mogelijk te maken — de correctie
+plan niet: §6 zegt waarom niet, en wat er wel geleverd wordt om het mogelijk te make: de correctie
 zelf, honderden atoompaarblokken (stukjes van de correctie per paar atomen) per molecuul, en de meting
-op pyreen en coroneen die vooraf beslist of zo'n overdraagbaar model überhaupt kan bestaan. De
-dekkingstabel van §6 is de toets die zegt wanneer de banden van de pijplijn goed genoeg zijn om als
-trainingslabels te dienen; is die tabel op orde en is de gemeten reikwijdte kort, dan volgt het netwerk
-als gedateerd vervolgvoorstel onder dezelfde licentie als de rest.
-
-Onderweg levert het plan dingen op die je eerder hebt, en vier daarvan liggen er al: de bevinding dat
-de PAHdb-bibliotheek zoals ze wordt uitgeleverd de schaalfactoren van versie 3.00 bevat en niet de
-drie die het artikel van versie 4.00 beschrijft, een verschil van 4 tot 15 cm⁻¹ op de bandposities;
-dat een per band gekalibreerde harmonische bibliotheek, getraind op 2.477 gepaarde matrix- en
-rekenbanden van 83 moleculen, niet beter blijkt dan de bibliotheek zelf (6,5 cm⁻¹ gemiddelde
-fout); een laboratoriumscorebord voor benzeen en naftaleen met per band gemeten onzekerheden; en de
-eerste gemeten matrix–gas-verschuiving per bandfamilie voor naftaleen, antraceen, pyreen en chryseen
-(+3 tot +6 cm⁻¹, matrix boven hete damp).
-
-Dat netwerk heb ik op 12 september met naam in het voorstel gezet als het stand-out-werk van dit
-project, buiten de reeks van negen modules, met die twee voorwaarden en de verliesvoorwaarde erbij
-(§6, beslissing 32) — zodat duidelijk is waar het plan naartoe werkt zonder dat het iets belooft wat
-nog niet gemeten is.
+op pyreen en coroneen die vooraf beslist of zo'n overdraagbaar model überhaupt kan bestaan.
 
 Kort hoe het werkt. De coupled-cluster-correctie op de harmonische krachtconstanten reken ik niet
 uit maar *meet* ik, met zo weinig mogelijk dure energieën: lokale coupled-cluster-berekeningen
 (LNO-CCSD(T)) waarvan ik de orbitaalruimtes één keer kies en daarna bij elke vervorming bevroren houd,
 zodat de energieverschillen glad zijn. Het aantal energieën per molecuul staat naast elk spectrum, en
 de nauwkeurigheid wordt gescoord tegen laboratoriumdata en tegen de bestaande voorspellingen, waaronder
-die van jouw eigen groep, volgens regels die vaststaan voordat er één vergelijking is gemaakt (§7).
+die van jouw eigen groep.
 
 Vanaf naftaleen kan dit plan niet meer op mijn eigen machine; het vraagt clustertijd, en ik wil je
 kunnen laten zien dat die aanvraag op bewijs rust en niet op hoop. Wat er nu al gemeten is: de kern
@@ -77,17 +59,10 @@ een clusteraanvraag wilt steunen, gedimensioneerd op de gemeten tijden, en of er
 netwerk een geschikte machine is. De genummerde vragen 7–17 zijn voor ons eerste gesprek; ze
 veranderen geen regel, ze leveren een getal of een bron.
 
-Twee dingen die ik liever nu zeg dan later. In §7 staat een alinea over jouw dubbele rol:
-één tegenstanderslijn (de anharmonische PAHdb-lijn) en één laboratoriumkolom (de jet-gekoelde
-3 µm-spectra) zijn werk waar jij coauteur van bent, en het plan zegt hoe het
-daarmee omgaat. En §10 bevat 34 genummerde beslissingen die ik zelf heb genomen als methodische
-keuzes onder meting; elk daarvan kan door een bezwaar van jou heropend worden, dat is precies
-waarvoor ze genummerd zijn.
-
 Alles wat in het voorstel over mijn eigen resultaten staat, is door een script afgedrukt en staat
-in de repository; ik stuur je de link graag als je erin wilt kijken.
+in de repository: https://github.com/thebreadishard/udacity-capstone-plan.
 
-Hartelijke groet,
+Groetjes,
 Frederic
 
 ---
