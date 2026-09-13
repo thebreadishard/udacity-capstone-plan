@@ -148,6 +148,8 @@ without first proving that classical result; T3 in Lean is two theorems away, no
 4. References verified before written; no number from recall; complexity claims cited, not asserted.
 5. Human-time budget: exploration in conversation; the user decides when a direction gets a day.
 
+**Dated addition 2026-09-13 — a decision rule proposed** ([Decision_Rule_2026-09-13_When_Plan06_Closes_or_Transfers.md](Decision_Rule_2026-09-13_When_Plan06_Closes_or_Transfers.md), for the user to adopt or amend): dates and tests for closing branch C (cost) and reviewing branch M (mathematics); every experiment after it names the row it serves. The M2 design (frozen-space gradients in JAX) is written in plan 05 (`notes/Design_Note_2026-09-13_M2_Frozen_Space_Gradients_in_JAX.md`) so that M2a's number meets a costed plan.
+
 ## 7. First experiments (all on data or logs in the repository, minutes each)
 
 - **X0 (S1):** read the two complexity papers and Prodan & Kohn in full and record what each does and

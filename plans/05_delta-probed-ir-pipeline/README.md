@@ -620,6 +620,7 @@ above about 1 GB on the Windows side beside it):
 3. the corpus factory's five-molecule timing test (`modules/05_support_predictor/corpus/run_corpus.py --max-molecules 5
    --grid-check`), then the dated note fixing the subset size;
 4. plan 06's X6 (script ready since 12 September evening, `experiments/x6_pi_cas_share.py`, cc-pVDZ, minutes; the user put it first) and X7;
+   4a′. the M2 design is written (`notes/Design_Note_2026-09-13_M2_Frozen_Space_Gradients_in_JAX.md`: PySCFAD's differentiable LNO machinery with plan 05's frozen, transported spaces; pieces A–G, two to three weeks estimated; the M2a → M2 decision rule pre-stated: g ≤ 20 build, 20–26 marginal, > 26 no);
    4a. **M2a — the gradient-to-energy cost ratio g** (pre-registered 13 September, `notes/PreRegistration_2026-09-13_M2a_Gradient_Cost_Ratio.md`; script `probes/m2a_gradient_cost_ratio.py`): install PySCFAD 0.3.3 in `~/qcad` (download — the user's permission first), then cells 0–4 at benzene cc-pVDZ (an evening), cell 5 at cc-pVTZ only if cell 3 gives g ≤ 20;
 5. the naphthalene DFT dry run (two functionals, psi4; hours) — prerequisite (a) of the pilot note and the mode table
    Module 03 and plan 06 need; **found 12 September evening:** plan 02's `results_dft_locality/naphthalene.npz` (git `57a7910`) is a

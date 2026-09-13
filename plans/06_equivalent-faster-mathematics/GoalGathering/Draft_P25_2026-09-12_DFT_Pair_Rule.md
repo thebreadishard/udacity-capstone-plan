@@ -26,11 +26,18 @@ On the naphthalene dry-run tensor (after machine-queue item 5; the B3LYP half al
 - **Value if licensed, at benzene's ratio:** the off-diagonal part of the R1 deck (282 energies, proposal §3.2) shrinks by up to a factor 2.5 → the deck from 474 to ≈ 300 energies (the cost ladder's lever B); with the substitution layer and gradients (decision 34's conditional branch) from 14 to 8 gradients per correction at benzene. The ratio at naphthalene is what the test measures; it may be smaller.
 - **What it does not do:** it does not touch the price per energy, which is where the calendar lives (P13); it reorders what the deck measures, so its saving is bounded by the deck's off-diagonal share.
 
+## 4a. Prior art (checked 2026-09-13, Crossref records verified, abstracts read)
+
+The denominator criterion is not new; its *use* here is. In vibrational perturbation theory the same second-order estimate — a coupling over an energy difference — is the standard test for which anharmonic couplings must be treated by diagonalisation rather than perturbatively (Fermi and Darling–Dennison resonances): Krasnoshchekov, Isayeva & Stepanov, *J. Chem. Phys.* **141**, 234114 (2014), DOI 10.1063/1.4903927, discuss "physically meaningful criteria for selecting both Fermi and Darling–Dennison resonances"; the pilot note's item 7 already lists such thresholds (Fusè et al. 2024, item 28). Selecting *which terms to compute* a priori by a perturbative estimate is likewise established: Yagi, Hirata & Hirao, *J. Chem. Phys.* **127**, 034111 (2007), DOI 10.1063/1.2748774, identify the important VSCF configurations "a priori by assuming that a reference VSCF wave function is approximated well by harmonic oscillator wave functions", cutting the configuration count by more than a hundredfold at an error of a few cm⁻¹. P25 transplants that logic from the anharmonic problem to plan 05's harmonic correction: the quantity ranked is the off-diagonal element of Δ₂ between two DFT modes, the estimate is Δ_ij²/‖ω_i² − ω_j²‖ with the DFT-only denominator as the free part. The proposal should say so and cite both; the contribution is the measured count (X10) and the ordering-not-truncation form, not the criterion.
+
 ## 5. Bookkeeping if the user makes it a proposal and it is accepted
 
 Decision number next in line; Ladder §3 dated note (the ordering rule inside the symmetry prior, licensed per rung like everything else, with the naphthalene test as its first licence); Budget dated note (lever B's factor as measured at naphthalene); the dry-run deck builder gains the ordering (a ledger row in `Software_Changes_Ledger.md`: own layer, no third-party change); pilot-note skeleton item 5 already carries the baseline. The proposal to the supervisor is unchanged.
 
 ## References
+
+- Krasnoshchekov, S. V., Isayeva, E. V., & Stepanov, N. F. (2014). *J. Chem. Phys.* 141, 234114. DOI 10.1063/1.4903927 (record and abstract verified 2026-09-13)
+- Yagi, K., Hirata, S., & Hirao, K. (2007). *J. Chem. Phys.* 127, 034111. DOI 10.1063/1.2748774 (record and abstract verified 2026-09-13)
 
 - Plan 06: `Result_Note_2026-09-12_X10_DFT_Predictable_Pairs.md` (X10, §5 X11), `Result_Note_2026-09-12_X1_X2_Benzene.md` (X2), `Cost_Ladder_2026-09-12_Network_Data.md`; `experiments/x10_dft_predictable_pairs.py`, `x11_sparse_pattern_products.py`.
 - Plan 05: `probes/results_dryrun/benzene/deck.json` (the deck's pattern conventions), `stageC_symmetry_prior.json` (the eligible pairs), decisions 8, 9, 12, 34.
