@@ -135,6 +135,35 @@ def main():
           f"{tp[0] - rows[[r['step'] for r in rows].index('R3 coronene')]['pc_d'][0]:.0f}-{tp[1] - rows[[r['step'] for r in rows].index('R3 coronene')]['pc_d'][1]:.0f} days.", "",
           "Open places: F (final when the xtight run ends; this table re-runs itself), g (M2a; when `results_m2a/` exists a gradient block is printed: R1 by 18 gradients = 18 g energy-equivalents, plan 06 X14). "
           "Levers not in the table: tight thresholds instead of xtight (÷ F, decision 20 reversed), P25 (deck ÷ ~1.6, after its licence test), gradients (M2)."]
+    # ---- P26 block: thin decks and molecules per year (desktop 365 days + a small Snellius allocation)
+    P26 = {"p25_pair_fraction": (19 / 47, "plan 06 X10 at benzene: 19 of 47 eligible pairs; the naphthalene repeat decides"),
+           "g_scenarios": [3, 5, 10, 20], "snellius_small_SBU": (100000, "assumed small allocation; thin node 128 cores = 3,072 SBU per node-day"),
+           "largest_irrep_block_rule": (1.5, "k ~ 1.5 M/|G| (naphthalene: 48/8*1.5 = 9 = X14)")}
+    sbu_days_1node = P26["snellius_small_SBU"][0] / 3072.0
+    classes = [("benzene-class (M=30, |G|=24, E=47 m)", 30, 47, t_ben, True), ("naphthalene-class (M=48, E=141 m)", 48, 141, t_nap, True)]
+    for mol in ("pyrene", "coronene"):
+        Mm = E["modes"][mol]; Ee = Mm * Mm / (2 * E["group_order"][mol]); f = E["R2_energy_factor_vs_naphthalene"][0] if mol == "pyrene" else E["R3_energy_factor_vs_naphthalene"][0]
+        classes.append((f"{mol}-class (M={Mm}, E~{Ee:.0f} e, energy {f[0]}-{f[1]}x naphthalene e)", Mm, Ee, (t_nap * f[0], t_nap * f[1]), False))
+    L += ["", "## P26 block — thin decks and molecules per year", "",
+          f"Decks per molecule: full = 4M + 2E; diagonal = 2M; diagonal + P25 couplings = 2M + 2·{P26['p25_pair_fraction'][0]:.2f}·E ({P26['p25_pair_fraction'][1]}); gradients = 2k with k ≈ {P26['largest_irrep_block_rule'][0]}·M/|G| "
+          f"({P26['largest_irrep_block_rule'][1]}), costing 2k·g energies. Desktop year = 365 days at {dsk[0]:.1f}-{dsk[1]:.1f}× the laptop; Snellius small allocation {P26['snellius_small_SBU'][0]:,} SBU ≈ {sbu_days_1node:.0f} node-days "
+          f"at {sn[0]:.1f}-{sn[1]:.1f}× the laptop per node. Molecules per year = (desktop-days + Snellius node-days converted) / days per molecule.", "",
+          "| class | deck | energies (or energy-equivalents) | days per molecule, desktop | **molecules per year (desktop + small Snellius)** | status |", "|---|---|---|---|---|---|"]
+    for name, Mm, Ee, t_e, measured in classes:
+        lo_e, hi_e = (t_e, t_e) if not isinstance(t_e, tuple) else t_e
+        G = {30: 24, 48: 8, 72: 8, 102: 24}[Mm]; k = max(1, round(P26["largest_irrep_block_rule"][0] * Mm / G))
+        decks = [("full 4M + 2E", 4 * Mm + 2 * Ee), ("diagonal 2M", 2 * Mm), ("diagonal + P25 couplings", 2 * Mm + 2 * P26["p25_pair_fraction"][0] * Ee)]
+        for gg in P26["g_scenarios"]:
+            decks.append((f"gradients 2k = {2*k}, g = {gg}", 2 * k * gg))
+        for dname, n_e in decks:
+            hrs = (n_e * lo_e, n_e * hi_e); pc = (hrs[0] / dsk[1] / DAY, hrs[1] / dsk[0] / DAY)
+            # capacity: 365 desktop-days plus Snellius node-days expressed in desktop-days (node speed / desktop speed)
+            cap_lo = 365 + sbu_days_1node * (sn[0] / dsk[1]); cap_hi = 365 + sbu_days_1node * (sn[1] / dsk[0])
+            per_year = (cap_lo / pc[1], cap_hi / pc[0])
+            L.append(f"| {name} | {dname} | {n_e:.0f} | {pc[0]:.1f}-{pc[1]:.1f} | **{per_year[0]:.1f}-{per_year[1]:.1f}** | {'m/F' if measured else 'e'} |")
+    L += ["", "Reading: a training set of tens of PAHs per year exists only on the gradient rows with small g, or on the diagonal rows for the smallest classes; "
+          "the full-deck rows are the truth-rung cost, not a factory. Pyrene- and coronene-class rows rest on the unmeasured energy factors and are brackets."]
+    out["p26_block"] = {"constants": P26}
     m2a = OUT.parent / "results_m2a"
     if m2a.exists() and any(m2a.glob("m2a_*.json")):
         L.append("\n(gradient block: results_m2a present — extend here)")
