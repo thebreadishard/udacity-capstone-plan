@@ -35,8 +35,14 @@ the version is pinned by hash, not by the file name.
   (Setup / Ingestion / Cleaning with two documented functions / EDA function / five figures / Summary),
   `README.md` in the rubric's short form, `requirements.txt` by `pip freeze`, `module_summary.docx/.pdf`
   in the Udacity APA 7 template (Rubrics/APA7_template.docx) with the required Danchev (2022) citation.
-- Owed: the student's own pass before submission (due 25 September 2026); the symmetry-unique
-  local-environment count for C₃₈₄H₄₈ (R6 input).
+- Owed: the student's own pass before submission (due 25 September 2026). ~~The symmetry-unique
+  local-environment count for C₃₈₄H₄₈ (R6 input)~~ — **done 2026-09-13** (`c384_environments.py` →
+  `out/theoretical_4.00/c384_environments.md/.json`): PAHdb uid 617 is exactly planar and D6h (12 in-plane operations found
+  numerically); **36 unique carbon atoms of 384, 4 unique hydrogens of 48, 52 unique C–C bonds of 552, 4 unique C–H bonds of 48 —
+  56 unique bond fragments of 600, a factor 10.7** on a fragment-per-bond deck; identical to the ideal honeycomb flake (plan 06's
+  generator). Method note: the uid-617 `<specie>` block (lines 18,873,934–18,883,435) is cut from the 503 MB XML with `sed` into
+  `data/_uid617_specie.xml` (254 kB, not committed) and parsed from there — streaming the whole file through ElementTree on the Windows side
+  took 3.8 GB and, beside the running anchor job, exhausted host memory (event 2004, 09:46; the job was resumed from its checkpoint).
 
 ## Files
 

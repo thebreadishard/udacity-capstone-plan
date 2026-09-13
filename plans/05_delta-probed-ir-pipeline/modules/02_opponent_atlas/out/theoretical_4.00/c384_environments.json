@@ -1,0 +1,89 @@
+{
+ "date": "2026-09-13 09:50",
+ "constants": {
+  "uid": "617",
+  "xml": "data/pahdb-complete-theoretical-v4.00_fevj3bdlnookcPYsGjJ.xml (block for uid 617 extracted with sed to data/_uid617_specie.xml, lines 18873934-18883435)",
+  "bond_A": {
+   "CC": 1.7,
+   "CH": 1.2
+  },
+  "TOL_A": 0.05,
+  "candidate_rotations_deg": [
+   0,
+   60,
+   120,
+   180,
+   240,
+   300
+  ],
+  "candidate_reflection_axes_deg": [
+   0,
+   30,
+   60,
+   90,
+   120,
+   150
+  ],
+  "BOHR_TO_A": 0.529177210903
+ },
+ "pahdb": {
+  "label": "PAHdb v4.00 uid 617 (C384H48, symmetry 1-A1G, RB3LYP)",
+  "nC": 384,
+  "nH": 48,
+  "operations_found": [
+   "C0",
+   "C60",
+   "C120",
+   "C180",
+   "C240",
+   "C300",
+   "sigma0",
+   "sigma30",
+   "sigma60",
+   "sigma90",
+   "sigma120",
+   "sigma150"
+  ],
+  "group_order_in_plane": 12,
+  "planarity_max_abs_z_A": 0.0,
+  "bonds_CC": 552,
+  "bonds_CH": 48,
+  "unique_C_atoms": 36,
+  "unique_H_atoms": 4,
+  "unique_CC_bonds": 52,
+  "unique_CH_bonds": 4,
+  "unique_bond_fragments": 56,
+  "total_bond_fragments": 600,
+  "reduction_factor_bonds": 10.714285714285714
+ },
+ "ideal": {
+  "label": "ideal D6h honeycomb flake n = 8 (plan 06 X8 generator)",
+  "nC": 384,
+  "nH": 48,
+  "operations_found": [
+   "C0",
+   "C60",
+   "C120",
+   "C180",
+   "C240",
+   "C300",
+   "sigma0",
+   "sigma30",
+   "sigma60",
+   "sigma90",
+   "sigma120",
+   "sigma150"
+  ],
+  "group_order_in_plane": 12,
+  "planarity_max_abs_z_A": 0.0,
+  "bonds_CC": 552,
+  "bonds_CH": 48,
+  "unique_C_atoms": 36,
+  "unique_H_atoms": 4,
+  "unique_CC_bonds": 52,
+  "unique_CH_bonds": 4,
+  "unique_bond_fragments": 56,
+  "total_bond_fragments": 600,
+  "reduction_factor_bonds": 10.714285714285714
+ }
+}

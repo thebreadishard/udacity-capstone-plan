@@ -62,3 +62,5 @@ change such a check would surface.
 
 Part of the `udacity-capstone-plan` repository (branch `module-02-opponent-atlas`, merged into
 `master`); project notes and provenance in `PROVENANCE.md`, the long-form report in `REPORT.md`.
+
+*Added 2026-09-13:* `c384_environments.py` → `out/theoretical_4.00/c384_environments.md` — the symmetry-unique local-environment count of C₃₈₄H₄₈ (36 unique C, 4 unique H, 56 unique bond fragments of 600; D6h confirmed numerically on PAHdb's geometry), the R6 input the report's limitations listed.

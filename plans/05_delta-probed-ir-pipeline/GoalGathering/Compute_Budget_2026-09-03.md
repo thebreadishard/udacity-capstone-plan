@@ -374,3 +374,13 @@ price only if M2 has not licensed gradients by then and says so at the time. *De
 9-point tight scan of one mode at naphthalene: 9 arm-A energies + 1 reference ≈ 10 × 11.5 h ≈ 4.8 laptop-days, after
 the naphthalene DFT dry run (two functionals, hours) — the next anchor job after the running timing; the 27-point
 xtight scan the Ladder implied (≈ 50 days) is not run on the laptop.
+
+**Dated note 2026-09-13 09:50 — third interruption of the naphthalene xtight timing, resumed from checkpoint.** The WSL VM was
+restarted by the host at 09:47:56 (Windows event 2004 at 09:46:48: vmmemWSL 22.5 GB, a second Hyper-V VM `vmmem` 4.3 GB, and
+`python.exe` 3.8 GB — the last was the author's ElementTree parse of the 503 MB PAHdb XML for Module 02's C₃₈₄H₄₈ count, run on the
+Windows side in breach of the 12 September rule; the second VM's 4.3 GB is unexplained and to be identified). Fragments 1–15 of 24 were
+in the per-fragment checkpoint (engine layer 3); relaunched at 09:49 with `--resume`, fragment 15 restored, fragment 16 restarted; loss
+≈ 15 minutes of fragment 16 plus the restart. Rule tightened: **no file above ≈ 100 MB is parsed on the Windows side while an anchor
+job runs; large inputs are cut with `sed`/`grep` first.** Timing bookkeeping: the wall-clock total of this energy is the sum of
+fragment times from the checkpoint (`t_lno_fragments_sum_s`), not the calendar span, and the note will say so.
+
