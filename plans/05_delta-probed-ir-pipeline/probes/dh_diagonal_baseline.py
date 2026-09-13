@@ -52,7 +52,7 @@ sys.path.insert(0, str(HERE))
 from dryrun_dft_delta_recovery import assign_families  # noqa: E402  (light import; psi4 is passed in, not imported at module level)
 
 CONSTANTS = {
-    "basis": "6-31g*", "functionals": ["b2plyp", "bhhlyp", "b3lyp"], "target": "b2plyp", "reference": "b3lyp", "stand_in": "bhhlyp",
+    "basis": "6-31g*", "functionals": ["b2plyp", "mp2", "bhhlyp", "b3lyp"], "target": "b2plyp", "reference": "b3lyp", "stand_in": "bhhlyp", "middle_rung_idea_I1": "mp2 (added 13 Sep evening; mandate ledger I1: is MP2-B3LYP a better proxy of CC-B3LYP than the double hybrid or BHHLYP?)",
     "E_STEP_hartree": 1e-4, "stencil": "5-point central: k = (-E(2h) + 16E(h) - 30E(0) + 16E(-h) - E(-2h)) / (12 h^2)",
     "FD_CHECK_CM": 1.0, "scf_conv": 1e-10, "d_conv": 1e-10,
     "reading_thresholds_r": {"collapse_no_fit": 1/3, "fit_worth_trying": 2/3}, "reading_status": "proposed 2026-09-13 12:30; CONFIRMED by the user 2026-09-13 (\"Akkoord met de drempels\") before any CC number exists",
@@ -156,9 +156,9 @@ def main():
     res = {"date": f"{datetime.now():%Y-%m-%d %H:%M}", "molecule": args.molecule, "constants": CONSTANTS, "functionals": functionals, "threads": args.threads, "rows": rows, "verdict": "NOT_READ (R0's probed diagonal not joined; reading thresholds proposed, not confirmed)"}
     json.dump(res, open(out / "dh_diagonal_baseline.json", "w"), indent=1)
     Lm = [f"# Double-hybrid diagonal baseline — {args.molecule} ({res['date']})", "", f"Per-mode first-order shifts against B3LYP/{CONSTANTS['basis']}, by 5-point finite differences of energies along the B3LYP modes. {res['verdict']}.", "",
-          "| mode | family | ν B3LYP | FD check | δν B2PLYP−B3LYP | δν BHHLYP−B3LYP (stand-in) |", "|---|---|---|---|---|---|"]
+          "| mode | family | ν B3LYP | FD check | δν B2PLYP−B3LYP | δν MP2−B3LYP (I1) | δν BHHLYP−B3LYP (stand-in) |", "|---|---|---|---|---|---|---|"]
     for r in rows:
-        Lm.append(f"| {r['mode']} | {r['family']} | {r['nu_b3lyp_analytic_cm']:.1f} | {r.get('nu_b3lyp_fd_cm', float('nan')):.2f} | {r.get('dnu_b2plyp_minus_b3lyp_cm', float('nan')):+.2f} | {r.get('dnu_bhhlyp_minus_b3lyp_cm', float('nan')):+.2f} |")
+        Lm.append(f"| {r['mode']} | {r['family']} | {r['nu_b3lyp_analytic_cm']:.1f} | {r.get('nu_b3lyp_fd_cm', float('nan')):.2f} | {r.get('dnu_b2plyp_minus_b3lyp_cm', float('nan')):+.2f} | {r.get('dnu_mp2_minus_b3lyp_cm', float('nan')):+.2f} | {r.get('dnu_bhhlyp_minus_b3lyp_cm', float('nan')):+.2f} |")
     (out / "dh_diagonal_baseline.md").write_text("\n".join(Lm), encoding="utf-8"); log("written " + str(out / "dh_diagonal_baseline.md"))
 
 
