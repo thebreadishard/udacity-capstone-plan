@@ -43,6 +43,8 @@ The user orders the desktop only when there is evidence the plan can succeed and
 
 The proposal is not sent before 1 and 2; 3 is either done before sending or named in it as the first milestone with its losing condition.
 
+*The user agreed on 13 September ("Akkoord met T-1 en de verliesdrempel; wacht op F") to the form of T-1 and to the losing threshold above; the memo itself waits for F before adoption.*
+
 ## 7. What changes in which document, if adopted
 
 | document | change |
