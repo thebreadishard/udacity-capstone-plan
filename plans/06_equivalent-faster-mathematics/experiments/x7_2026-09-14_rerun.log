@@ -1,0 +1,17 @@
+=== detached start Mon Sep 14 08:23:46 CEST 2026: python /mnt/c/Users/thebr/Documents/CapstonePlan/plans/06_equivalent-faster-mathematics/experiments/x7_decay_vs_gap.py --threads 8
+benzene: lambda 0.667 A, DFT gap 6.80 eV, HF gap 12.79 eV, lambda*gap 4.535, beyond 3 A 1.9 %, pair-sum check -2.6e-15 [3 s]
+naphthalene: lambda 0.702 A, DFT gap 4.83 eV, HF gap 10.23 eV, lambda*gap 3.390, beyond 3 A 3.8 %, pair-sum check 1.8e-15 [10 s]
+pyrene: lambda 0.750 A, DFT gap 3.84 eV, HF gap 8.67 eV, lambda*gap 2.882, beyond 3 A 5.5 %, pair-sum check 8.9e-15 [38 s]
+# X7 ? pair-energy decay length ? against the HOMO?LUMO gap (cc-pvdz MP2; B3LYP/6-31G* gap; 2026-09-14 08:23)
+
+| molecule | C | ? (?) | DFT gap (eV) | HF gap (eV) | ??gap_DFT | correlation beyond 3 ? | pair-sum check |
+|---|---|---|---|---|---|---|---|
+| benzene | 6 | **0.667** | 6.80 | 12.79 | **4.535** | 1.9 % | -2.6e-15 |
+| naphthalene | 10 | **0.702** | 4.83 | 10.23 | **3.390** | 3.8 % | 1.8e-15 |
+| pyrene | 16 | **0.750** | 3.84 | 8.67 | **2.882** | 5.5 % | 8.9e-15 |
+
+??gap max/min across the three: **1.57** ? losing condition (> 2) not met.
+
+Losing condition (pre-stated): lambda*gap varies by more than a factor 2 across benzene, naphthalene, pyrene. Rate ? gap predicts ? ? 1/gap, i.e. constant ??gap.
+
+Constants: {"basis_default": "cc-pvdz", "dft_functional": "b3lyp", "dft_basis": "6-31g*", "R_MIN_A": 1.0, "shell_width_A": 0.5, "far_cut_A": 3.0, "git_commit_pyrene": "57a7910", "pyrene_file": "plans/02_coupled-cluster-anharmonic-ir/probes/batch_results/06_freq_pyrene.npz", "losing_condition": "lambda*gap varies by more than a factor 2 across benzene, naphthalene, pyrene"}

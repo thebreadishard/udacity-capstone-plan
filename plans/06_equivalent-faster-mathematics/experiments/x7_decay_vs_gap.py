@@ -89,10 +89,13 @@ def main():
         eris_ovov = ptc.ao2mo(mf.mo_coeff)  # (ia|jb) as .ovov
         nvir = mol.nao - nocc; nact = nocc - ncore
         ovov = np.asarray(eris_ovov.ovov).reshape(nact, nvir, nact, nvir)
-        # pair energy matrix in canonical basis: E_ij = sum_ab t2[i,j,a,b] * (2 (ia|jb) - (ib|ja))
-        Eij = np.einsum("ijab,iajb->ij", t2, 2 * ovov - ovov.transpose(0, 3, 2, 1))
+        # 2026-09-14 (first run printed pair sums 0.6-1.3 E_h off e_corr): pair energies are NOT bilinear in the occupied
+        # rotation — t2 and the integrals each carry two occupied indices — so rotate t2 and (ia|jb) to the localised
+        # occupied basis first and form E_ij there; the sum over all pairs is then exactly e_corr (rotation-invariant).
         U = C_val.T @ S @ C_loc                      # canonical → localised rotation (nact × nact)
-        Eloc = U.T @ Eij @ U                         # bilinear transform of the pair-energy matrix
+        t2_loc = np.einsum("ki,lj,klab->ijab", U, U, t2, optimize=True)
+        ovov_loc = np.einsum("ki,lj,kalb->iajb", U, U, ovov, optimize=True)
+        Eloc = np.einsum("ijab,iajb->ij", t2_loc, 2 * ovov_loc - ovov_loc.transpose(0, 3, 2, 1), optimize=True)
         r = np.array([np.linalg.norm(cent[i] - cent[j]) * BOHR_TO_A for i in range(nact) for j in range(i + 1, nact)])
         e = np.array([Eloc[i, j] + Eloc[j, i] for i in range(nact) for j in range(i + 1, nact)])
         lam, shells = lam_fit(r, e)
@@ -101,7 +104,7 @@ def main():
         mold = gto.M(atom=[(s, tuple(c)) for s, c in zip(sym, X)], unit="Bohr", basis=CONSTANTS["dft_basis"], verbose=0, max_memory=8000)
         mk = dft.RKS(mold).density_fit(); mk.xc = CONSTANTS["dft_functional"]; mk.kernel()
         no = mold.nelectron // 2; gap_dft = float((mk.mo_energy[no] - mk.mo_energy[no - 1]) * HARTREE_TO_EV)
-        out["molecules"].append({"molecule": name, "nC": sym.count("C"), "e_corr_mp2": float(e_corr), "trace_check_pair_sum_vs_e_corr": float(Eloc.sum() - e_corr),
+        out["molecules"].append({"molecule": name, "nC": sym.count("C"), "e_corr_mp2": float(e_corr), "pair_sum_minus_e_corr_hartree": float(Eloc.sum() - e_corr),
                                  "lambda_A": lam, "shells": shells, "frac_corr_beyond_3A": far, "gap_hf_eV": gap_hf, "gap_dft_eV": gap_dft,
                                  "lambda_times_gap_dft": lam * gap_dft, "seconds": time.time() - t0})
         print(f"{name}: lambda {lam:.3f} A, DFT gap {gap_dft:.2f} eV, HF gap {gap_hf:.2f} eV, lambda*gap {lam*gap_dft:.3f}, beyond 3 A {far*100:.1f} %, pair-sum check {Eloc.sum()-e_corr:.1e} [{time.time()-t0:.0f} s]", flush=True)
@@ -111,7 +114,7 @@ def main():
     L = [f"# X7 — pair-energy decay length λ against the HOMO–LUMO gap ({args.basis} MP2; B3LYP/6-31G* gap; {out['date']})", "",
          "| molecule | C | λ (Å) | DFT gap (eV) | HF gap (eV) | λ·gap_DFT | correlation beyond 3 Å | pair-sum check |", "|---|---|---|---|---|---|---|---|"]
     for m in out["molecules"]:
-        L.append(f"| {m['molecule']} | {m['nC']} | **{m['lambda_A']:.3f}** | {m['gap_dft_eV']:.2f} | {m['gap_hf_eV']:.2f} | **{m['lambda_times_gap_dft']:.3f}** | {100*m['frac_corr_beyond_3A']:.1f} % | {m['trace_check_pair_sum_vs_e_corr']:.1e} |")
+        L.append(f"| {m['molecule']} | {m['nC']} | **{m['lambda_A']:.3f}** | {m['gap_dft_eV']:.2f} | {m['gap_hf_eV']:.2f} | **{m['lambda_times_gap_dft']:.3f}** | {100*m['frac_corr_beyond_3A']:.1f} % | {m["pair_sum_minus_e_corr_hartree"]:.1e} |")
     L += ["", f"λ·gap max/min across the three: **{out['lambda_gap_ratio_max_over_min']:.2f}** — losing condition (> 2) {'MET' if out['losing_condition_met'] else 'not met'}.",
           "", f"Losing condition (pre-stated): {CONSTANTS['losing_condition']}. Rate ∝ gap predicts λ ∝ 1/gap, i.e. constant λ·gap.", "", "Constants: " + json.dumps(CONSTANTS)]
     (HERE / "x7_decay_vs_gap.md").write_text("\n".join(L), encoding="utf-8")

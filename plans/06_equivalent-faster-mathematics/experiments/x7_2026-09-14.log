@@ -1,0 +1,25 @@
+=== detached start Mon Sep 14 08:20:30 CEST 2026: python /mnt/c/Users/thebr/Documents/CapstonePlan/plans/06_equivalent-faster-mathematics/experiments/x7_decay_vs_gap.py --threads 8
+Traceback (most recent call last):
+  File "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/06_equivalent-faster-mathematics/experiments/x7_decay_vs_gap.py", line 121, in <module>
+    main()
+  File "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/06_equivalent-faster-mathematics/experiments/x7_decay_vs_gap.py", line 90, in main
+    ovov = np.asarray(eris_ovov.ovov).reshape(nact, nvir, nact, nvir)
+                      ^^^^^^^^^^^^^^
+AttributeError: '_DFINCOREERIS' object has no attribute 'ovov'
+=== detached start Mon Sep 14 08:21:40 CEST 2026: python /mnt/c/Users/thebr/Documents/CapstonePlan/plans/06_equivalent-faster-mathematics/experiments/x7_decay_vs_gap.py --threads 8
+benzene: lambda 5.997 A, DFT gap 6.80 eV, HF gap 12.79 eV, lambda*gap 40.778, beyond 3 A 16.3 %, pair-sum check 6.3e-01 [3 s]
+naphthalene: lambda -11.357 A, DFT gap 4.83 eV, HF gap 10.23 eV, lambda*gap -54.813, beyond 3 A 38.7 %, pair-sum check 1.3e+00 [10 s]
+pyrene: lambda 7.432 A, DFT gap 3.84 eV, HF gap 8.67 eV, lambda*gap 28.571, beyond 3 A 55.9 %, pair-sum check 2.0e+00 [36 s]
+# X7 ? pair-energy decay length ? against the HOMO?LUMO gap (cc-pvdz MP2; B3LYP/6-31G* gap; 2026-09-14 08:21)
+
+| molecule | C | ? (?) | DFT gap (eV) | HF gap (eV) | ??gap_DFT | correlation beyond 3 ? | pair-sum check |
+|---|---|---|---|---|---|---|---|
+| benzene | 6 | **5.997** | 6.80 | 12.79 | **40.778** | 16.3 % | 6.3e-01 |
+| naphthalene | 10 | **-11.357** | 4.83 | 10.23 | **-54.813** | 38.7 % | 1.3e+00 |
+| pyrene | 16 | **7.432** | 3.84 | 8.67 | **28.571** | 55.9 % | 2.0e+00 |
+
+??gap max/min across the three: **-0.74** ? losing condition (> 2) not met.
+
+Losing condition (pre-stated): lambda*gap varies by more than a factor 2 across benzene, naphthalene, pyrene. Rate ? gap predicts ? ? 1/gap, i.e. constant ??gap.
+
+Constants: {"basis_default": "cc-pvdz", "dft_functional": "b3lyp", "dft_basis": "6-31g*", "R_MIN_A": 1.0, "shell_width_A": 0.5, "far_cut_A": 3.0, "git_commit_pyrene": "57a7910", "pyrene_file": "plans/02_coupled-cluster-anharmonic-ir/probes/batch_results/06_freq_pyrene.npz", "losing_condition": "lambda*gap varies by more than a factor 2 across benzene, naphthalene, pyrene"}
