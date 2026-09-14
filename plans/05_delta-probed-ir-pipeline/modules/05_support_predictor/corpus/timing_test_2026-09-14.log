@@ -1,0 +1,60 @@
+[2026-09-14 08:25:11] start A_01f3186607 A naphthalene (18 atoms)
+=== relaunch 2026-09-14 08:35:07 via Bash background (the PowerShell job of 08:25 died with its session)
+[2026-09-14 08:35:08] start A_8448043181 A benzene (12 atoms)
+[2026-09-14 08:38:31] failed A_8448043181 in 202.3 s (opt 6.3, B3LYP -, wB97X -)
+[2026-09-14 08:38:31] progress: 1 this session, 11320 pending in scope, 0.06 h elapsed
+[2026-09-14 08:38:31] start A_d9139359ab A azulene (18 atoms)
+[2026-09-14 08:52:04] failed A_d9139359ab in 812.8 s (opt 44.0, B3LYP -, wB97X -)
+[2026-09-14 08:52:04] progress: 2 this session, 11319 pending in scope, 0.28 h elapsed
+[2026-09-14 08:52:04] start A_fdc27f1bd1 A biphenyl (22 atoms)
+=== relaunch 2026-09-14 08:55:20 after the worker fix (float(wfn.energy())); failed rows reset
+[2026-09-14 08:55:34] start A_8448043181 A benzene (12 atoms)
+[2026-09-14 09:09:37] done A_8448043181 in 842.0 s (opt 6.8, B3LYP 195.4, wB97X 240.7)
+[2026-09-14 09:09:37] progress: 1 this session, 11320 pending in scope, 0.23 h elapsed
+[2026-09-14 09:09:37] start A_d9139359ab A azulene (18 atoms)
+[2026-09-14 10:11:43] done A_d9139359ab in 3725.2 s (opt 45.2, B3LYP 776.7, wB97X 1195.9)
+[2026-09-14 10:11:43] progress: 2 this session, 11319 pending in scope, 1.27 h elapsed
+[2026-09-14 10:11:43] start A_fdc27f1bd1 A biphenyl (22 atoms)
+[2026-09-14 11:51:12] done A_fdc27f1bd1 in 5968.2 s (opt 67.5, B3LYP 1343.2, wB97X 1883.7)
+[2026-09-14 11:51:12] progress: 3 this session, 11318 pending in scope, 2.93 h elapsed
+[2026-09-14 11:51:12] start A_ff98e1160d A quinoline (17 atoms)
+[2026-09-14 12:51:11] done A_ff98e1160d in 3598.2 s (opt 36.3, B3LYP 830.0, wB97X 1060.4)
+[2026-09-14 12:51:11] progress: 4 this session, 11317 pending in scope, 3.93 h elapsed
+[2026-09-14 12:51:11] start A_014f8519af A diphenylacetylene (24 atoms)
+[2026-09-14 15:16:24] done A_014f8519af in 8713.0 s (opt 54.6, B3LYP 1783.2, wB97X 2997.5)
+[2026-09-14 15:16:24] progress: 5 this session, 11316 pending in scope, 6.35 h elapsed
+[2026-09-14 15:16:24] reached --max-molecules 5
+# Corpus status — 2026-09-14 15:16
+
+Manifest rows: 11,321; ledger entries: 7; compute spent so far: 6.6 h (from the ledger).
+
+| layer | pending | running | done | failed | median s/molecule (measured) | hours to go at that rate |
+|---|---|---|---|---|---|---|
+| A | 40 | 0 | 5 | 0 | 3725 | 41.4 |
+| A2 | 868 | 0 | 0 | 0 | — | not yet measured |
+| B | 4,353 | 0 | 0 | 0 | — | not yet measured |
+| C | 6,055 | 0 | 0 | 0 | — | not yet measured |
+
+Last ten ledger entries:
+=== launch 2026-09-14 15:17:00 naphthalene alone (--max-molecules 1 --grid-check; the runner of 08:35 stopped at its 5th molecule, diphenylacetylene, after the ordering bug of 12:51)
+  File "C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\05_support_predictor\corpus\run_corpus.py", line 44
+    for i, r in enumerate(sorted([r for r in rows if r["layer"] == L], key=lambda r: (0 if r.get("note", "").startswith("timing-test") else 1, r["priority"])   # startswith: a crash-recovered timing-test row ("timing-test redone-after-crash") keeps its front position (bug found 2026-09-14 12:5x: naphthalene was skipped for diphenylacetylene))):
+                                ^
+SyntaxError: '(' was never closed
+=== relaunch 2026-09-14 15:17:57 naphthalene alone after repairing the 12:5x syntax error in run_corpus.py (dry run selects naphthalene)
+[2026-09-14 15:17:57] start A_01f3186607 A naphthalene (18 atoms)
+[2026-09-14 16:14:58] done A_01f3186607 in 3419.9 s (opt 32.7, B3LYP 707.4, wB97X 1040.7)
+[2026-09-14 16:14:58] progress: 1 this session, 11315 pending in scope, 0.95 h elapsed
+[2026-09-14 16:14:58] reached --max-molecules 1
+# Corpus status — 2026-09-14 16:14
+
+Manifest rows: 11,321; ledger entries: 8; compute spent so far: 7.6 h (from the ledger).
+
+| layer | pending | running | done | failed | median s/molecule (measured) | hours to go at that rate |
+|---|---|---|---|---|---|---|
+| A | 39 | 0 | 6 | 0 | 3662 | 39.7 |
+| A2 | 868 | 0 | 0 | 0 | — | not yet measured |
+| B | 4,353 | 0 | 0 | 0 | — | not yet measured |
+| C | 6,055 | 0 | 0 | 0 | — | not yet measured |
+
+Last ten ledger entries:
