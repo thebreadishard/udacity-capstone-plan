@@ -3,9 +3,9 @@ import Plan06.T1.MeasurementAlgebra
 /-!
 # T1d — Coleman & Moré's Theorem 2.2: symmetric validity is a path-of-length-3 condition
 
-**DRAFT, NOT YET BUILT** (written 2026-09-12 evening while an anchor job owns the machine; a Lean build takes
-8 GB and is not allowed beside it — probes/README rule of the same day). Not imported by `Plan06.lean` until
-it compiles. Expect small fixes.
+Written 2026-09-12 evening (no build allowed beside the anchor job then); first built 2026-09-14: two argument
+lists in `symmValid_imp` corrected (the readability hypothesis takes the witness column, its membership, its
+inequality and the colour equality — four arguments, not five).
 
 Statement (Coleman & Moré, Math. Programming 28 (1984), Theorem 2.2, read as Cornell TR 82-535 §2): for a
 pattern that contains the diagonal, a colouring `c` is symmetrically valid (`SymmValid`, their "symmetrically
@@ -48,8 +48,8 @@ theorem symmValid_imp (P : Pattern n) (hdiag : ∀ i, (i, i) ∈ P) (hP : P.IsSy
     have hne : i ≠ j := hij.1
     have hijP : (i, j) ∈ P := hij.2.elim id (fun h => hP j i h)
     rcases hc i j hijP with hr | hr
-    · exact hr i (hdiag i) hne.symm hcij.symm rfl   -- column i' = i sits in row i (diagonal), i ≠ j, c i = c j
-    · exact hr j (hdiag j) hne hcij rfl              -- column j' = j sits in row j (diagonal)
+    · exact hr i (hdiag i) hne hcij            -- readable from column j at row i: column i (diagonal) has i ≠ j, c i = c j
+    · exact hr j (hdiag j) hne.symm hcij.symm  -- readable from column i at row j: column j (diagonal) has j ≠ i, c j = c i
   · -- no 2-coloured path a – b – x – y: the entry (b, x) would be unreadable both ways
     intro a b x y hab hbx hxy hax hby hay ⟨hcax, hcby⟩
     have hbxP : (b, x) ∈ P := hbx.2.elim id (fun h => hP x b h)
@@ -74,7 +74,7 @@ theorem symmValid_of (P : Pattern n) (hdiag : ∀ i, (i, i) ∈ P) (hP : P.IsSym
     exact hprop j' i ⟨hne, Or.inl (hP i j' hj')⟩ hcj
   · -- off-diagonal: suppose neither side is readable and build a 2-coloured path
     by_contra hnot
-    push_neg at hnot
+    push Not at hnot
     obtain ⟨hnr1, hnr2⟩ := hnot
     -- not readable from column j at row i: some column a ≠ j in row i with c a = c j
     simp only [ReadableCol, not_forall, not_not] at hnr1 hnr2
