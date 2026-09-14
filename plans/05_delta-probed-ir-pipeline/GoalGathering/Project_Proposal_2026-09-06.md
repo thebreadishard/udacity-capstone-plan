@@ -1074,6 +1074,29 @@ back per module is budgeted, not hoped away.
 | Module 08 — the pipeline assembled and scored | R0–R3, fragment-probed R6 where licensed | 16 Apr 2027 | everything above |
 | Module 09 — defense | | 21 May 2027 | |
 
+**Durations per route, through Module 08 (the table the student was asked for on 13 September; printed by `probes/duration_table.py` into `probes/results_timing/DURATION_TABLE.md`, reprinted 14 September with the measured anchor factor F = 3.34).** Laptop = measured where marked (m); **desktop = an estimate ("schatting") from the core count of the priced but unbought workstation, 2.3–3.8 × the laptop**; Snellius = four thin nodes in parallel, an estimate from the laptop's core-hours with a factor 2 for parallel inefficiency, to be replaced by one timed energy on the actual node. Rows marked (e) rest on unmeasured per-energy factors and are brackets; the R3 row is kept, labelled, because it prices the claim as the Ladder states it.
+
+| step | computation | days on laptop | days on desktop (schatting) | days on Snellius (4 nodes) | status |
+|---|---|---|---|---|---|
+| R0 pilot (benzene) | 448 LNO-CCSD(T)/cc-pVTZ xtight energies at 76 min | 24 | 6–10 | 0.8–1.3 | m |
+| naphthalene DFT dry run (stage A) | two psi4 Hessians at 6-31G* (the B3LYP half exists) | 0.1–0.2 | < 0.1 | — (psi4 not on Snellius) | e |
+| R1 smoothness σ (decision 35) | 10 naphthalene tight energies at 11.5 h | 4.8 | 1.2–2.1 | 0.2–0.3 | m |
+| M2a, the gradient cost ratio g | PySCFAD cells 0–4, benzene cc-pVDZ | 0.3 | 0.1 | — | e |
+| **R1 deck (naphthalene), full** | 474 xtight energies at 38 h (11.5 h × F, F = 3.34 measured) | **759** | **198–330** | **25–41** | m |
+| R1 deck, diagonal-only (thin, P26 if adopted) | 96 energies | 154 | 40–67 | 5–8 | m |
+| R1 deck, diagonal + P25 couplings (if P25 licensed) | 210 energies | 336 | 88–146 | 11–18 | m |
+| R1 by gradients (if g ≤ 5, side project M2) | 18 gradients = 18·g energies | 29–48 | 7–20 | 1–3 | e (g unmeasured) |
+| R2 pyrene, full deck | ≈ 936 energies at 5–10 × the naphthalene energy | does not fit (memory) | 1,950–6,500 | 240–810 | e |
+| R2 pyrene, thin decks (diagonal / gradients) | 144 energies / 28 gradients | does not fit | 300–1,000 / 120–400 | 40–130 / 15–50 | e |
+| R2 chrysene, triphenylene, tetracene, full decks | ≈ 2,100 / 924 / 1,218 energies at 5–10 × naphthalene | does not fit | 1,900–14,600 each | 240–1,830 each | e |
+| R3 coronene, full deck | ≈ 842 energies at 25–100 × the naphthalene energy | does not fit | 8,800–58,600 | 1,100–7,300 | e (extrapolated; no measurement behind the factor) |
+| R3 coronene, thin decks (diagonal / gradients) | 204 energies / 12 gradients | does not fit | 1,400–9,600 / 250–1,700 | 180–1,200 / 30–210 | e |
+| Module 05 corpus factory | 11,321 B3LYP/6-31G* Hessians at 3–7 min | 24–55 | 24–55 | 0.4–0.9 | m/e |
+| Modules 05–08 (training, proposer, officer, assembly) | no new coupled-cluster energies | hours | hours | hours | not measured |
+| R6 fragment-probed C₃₈₄H₄₈ (if licensed) | 56 symmetry-unique fragments × an unmeasured per-fragment cost | — | — | — | not measured |
+
+What the table says: R0 and R1 as full decks are within reach — R0 on the laptop in weeks, R1 on four Snellius nodes in about a month or on the desktop in the better part of a year; **every full deck above naphthalene is out of reach on every route**, by the decks, not the machines; the rows that make R2–R3 affordable are the thin ones (diagonal-only, P25-ordered couplings, or gradients if g is small) — the transfer-test decks of proposal P26, which is written and not yet adopted; and the two levers not in the table are the tight/xtight choice (÷ 3.3, the accuracy side measured at benzene: 0.47 / 0.03 / 0.79 → 0.11 / −0.01 / 0.23 cm⁻¹) and g (M2a, this week).
+
 Two scenarios follow from the one hinge, cluster access. **With the cluster** the programme ends in
 May 2027, eight months from now. **Without it** R2 and R3 lapse, Module 08 scores R0–R1 and the
 laboratory side, and the defense can be held at the end of March 2027 — thinner, and honest. The
