@@ -43,3 +43,6 @@ Measured footprint on 2026-09-12 (PowerShell `Measure-Object`): `~/.elan` (elan 
 - Names from Mathlib are checked against the pinned version, never quoted from memory.
 
 - `Plan06/T1/SymmetricColouring.lean` — **T1d, draft, not built** (2026-09-12 evening): Coleman & Moré's Theorem 2.2, `SymmValid ↔ proper on the pattern graph ∧ no 2-coloured path of length 3`, with the diagonal in the pattern. Not imported by `Plan06.lean` until it compiles; build it after the anchor job (`lake build Plan06.T1.SymmetricColouring`), fix, then add the import.
+
+**Build 2026-09-14 08:0x (Windows, between anchor jobs; host 19.6 GB free):** `lake build` of the root module succeeds (8,766 jobs, 139 s; Mathlib oleans from the cache; one long-line lint warning in `MeasurementAlgebra.lean`). `lake build Plan06.T1.SymmetricColouring` (T1d, the draft not imported by the root) compiles for 445 s and **fails with two type mismatches at lines 51–52** (`exact hr i (hdiag i) hne.symm hcij.symm rfl` and the line below: the arguments handed to the readability hypothesis `hr` do not match its binder types), plus eight long-line warnings and a deprecated `push_neg` at line 77. T1d therefore stays a draft; the fix is a proof-engineering task for the mathematics branch (review 1 December), not a blocker for anything in plan 05.
+
