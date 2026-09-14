@@ -34,7 +34,7 @@ def frequencies_cm(H, masses):
     return w
 
 
-def main(job_path):
+def main(job_path):  # 2026-09-14: psi4.hessian(..., return_wfn=True) returns (Hessian matrix, wfn); the energy is wfn.energy() — the first factory run failed on float(e) after every Hessian had been computed
     job = json.load(open(job_path)); out = job["out_dir"]; os.makedirs(out, exist_ok=True)
     res = {"id": job["id"], "layer": job["layer"], "deck": job["deck"], "status": "failed", "timings_s": {}}
     t0 = time.time()
@@ -56,8 +56,8 @@ def main(job_path):
         for tag, func in (("b3lyp", d["low_functional"]), ("wb97x", d["high_functional"])):
             t = time.time(); e, wfn = psi4.hessian(func, molecule=mol, return_wfn=True)
             H = np.array(wfn.hessian()); Hp = project_tr(H, masses, coords); fr = frequencies_cm(Hp, masses)
-            np.savez_compressed(os.path.join(out, f"hessian_{tag}.npz"), H_raw=H, H_projected=Hp, freq_cm=fr, energy=float(e))
-            res["timings_s"][f"hessian_{tag}"] = round(time.time() - t, 1); res[f"e_{tag}"] = float(e); res[f"freq_{tag}_cm"] = [round(float(x), 2) for x in np.sort(fr)]
+            np.savez_compressed(os.path.join(out, f"hessian_{tag}.npz"), H_raw=H, H_projected=Hp, freq_cm=fr, energy=float(wfn.energy()))
+            res["timings_s"][f"hessian_{tag}"] = round(time.time() - t, 1); res[f"e_{tag}"] = float(wfn.energy()); res[f"freq_{tag}_cm"] = [round(float(x), 2) for x in np.sort(fr)]
             res[f"n_imaginary_{tag}"] = int((fr < -10).sum())
         if job.get("grid_check"):
             g = d["grid_check_for_timing_test"]; psi4.set_options({"dft_radial_points": g["radial"], "dft_spherical_points": g["spherical"]})
