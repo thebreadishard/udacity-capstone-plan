@@ -1,5 +1,5 @@
 {
- "date": "2026-09-14 11:03",
+ "date": "2026-09-14 11:08",
  "constants": {
   "bin_cm": 10.0,
   "window_cm": [
@@ -15,6 +15,11 @@
    "overtone / combination region"
   ],
   "position_term_min_fraction": 0.25,
+  "amendment_2026-09-14": {
+   "convolution": "Gaussian, FWHM = 0.01 * nu (FELIX bandwidth), applied to laboratory peaks and predicted sticks alike before binning; mass outside the family window dropped; both EMDs printed",
+   "fwhm_fraction": 0.01,
+   "empty_prediction_rule": "amended term only: a family the laboratory populates but the prediction leaves without broadened mass scores the family width (worst case) and stays in the weighted mean; the pre-registered term keeps its original exclusion"
+  },
   "line_A": "PAHdb theoretical v4.00 as served (Module 02 bands.csv.gz, frequency_cm = served scaled frequency)",
   "uids": {
    "tetracene": 282,
@@ -46,6 +51,7 @@
        "share_pred_pct": 68.24940730028175,
        "family_weight_error_pp": 41.55814038761262,
        "emd_cm": 6.655328411682037,
+       "emd_conv_cm": 8.76732861153711,
        "strongest_lab_band_cm": 738.7,
        "position_term_cm": 8.890099999999961
       },
@@ -57,6 +63,7 @@
        "share_pred_pct": 2.0834587908091935,
        "family_weight_error_pp": 7.018632230101017,
        "emd_cm": 35.810810810810814,
+       "emd_conv_cm": 29.320920441177854,
        "strongest_lab_band_cm": 996.6,
        "position_term_cm": 12.609699999999975
       },
@@ -68,6 +75,7 @@
        "share_pred_pct": 4.199760418683637,
        "family_weight_error_pp": 2.073302311943671,
        "emd_cm": 3.5660698215953013,
+       "emd_conv_cm": 3.969751199817267,
        "strongest_lab_band_cm": 1123.8,
        "position_term_cm": 2.6364999999998417
       },
@@ -79,6 +87,7 @@
        "share_pred_pct": 13.753598120407675,
        "family_weight_error_pp": 8.878628201855548,
        "emd_cm": 34.99331003426033,
+       "emd_conv_cm": 33.14531924408808,
        "strongest_lab_band_cm": 1289.1,
        "position_term_cm": 5.685699999999997
       },
@@ -90,6 +99,7 @@
        "share_pred_pct": 5.517365013160296,
        "family_weight_error_pp": 3.461724777737614,
        "emd_cm": 40.953300767549756,
+       "emd_conv_cm": 39.758530717548155,
        "strongest_lab_band_cm": 1536.9,
        "position_term_cm": 13.429399999999987
       },
@@ -101,11 +111,13 @@
        "share_pred_pct": 0.0,
        "family_weight_error_pp": 23.86223862238623,
        "emd_cm": null,
+       "emd_conv_cm": 116.04789671064081,
        "strongest_lab_band_cm": 1694.5,
        "position_term_cm": null
       }
      ],
-     "weighted_emd_cm": 22.87885781063672
+     "weighted_emd_cm": 22.87885781063672,
+     "weighted_emd_conv_cm": 45.13129782811971
     },
     "B": {
      "rows": [
@@ -117,6 +129,7 @@
        "share_pred_pct": 52.78917698536139,
        "family_weight_error_pp": 26.097910072692255,
        "emd_cm": 20.289236919010047,
+       "emd_conv_cm": 17.322304915873048,
        "strongest_lab_band_cm": 738.7,
        "position_term_cm": 3.919999999999959
       },
@@ -128,6 +141,7 @@
        "share_pred_pct": 6.352339504474106,
        "family_weight_error_pp": 2.7497515164361053,
        "emd_cm": 21.99341632511054,
+       "emd_conv_cm": 20.272823621998775,
        "strongest_lab_band_cm": 996.6,
        "position_term_cm": 8.610000000000014
       },
@@ -139,6 +153,7 @@
        "share_pred_pct": 5.590742635682351,
        "family_weight_error_pp": 0.6823200949449569,
        "emd_cm": 11.333930569553567,
+       "emd_conv_cm": 7.627955390628759,
        "strongest_lab_band_cm": 1123.8,
        "position_term_cm": 2.7000000000000455
       },
@@ -150,6 +165,7 @@
        "share_pred_pct": 11.01203279207463,
        "family_weight_error_pp": 11.620193530188594,
        "emd_cm": 19.56706704581323,
+       "emd_conv_cm": 10.597906949613144,
        "strongest_lab_band_cm": 1289.1,
        "position_term_cm": 4.2000000000000455
       },
@@ -161,6 +177,7 @@
        "share_pred_pct": 5.9056811165364005,
        "family_weight_error_pp": 3.0734086743615094,
        "emd_cm": 13.164588193194668,
+       "emd_conv_cm": 14.284413459475346,
        "strongest_lab_band_cm": 1536.9,
        "position_term_cm": 8.529999999999973
       },
@@ -172,11 +189,13 @@
        "share_pred_pct": 14.055487982236345,
        "family_weight_error_pp": 9.806750640149883,
        "emd_cm": 35.71484155180128,
+       "emd_conv_cm": 33.37481625088775,
        "strongest_lab_band_cm": 1694.5,
        "position_term_cm": 15.039999999999964
       }
      ],
-     "weighted_emd_cm": 22.82262574289141
+     "weighted_emd_cm": 22.82262574289141,
+     "weighted_emd_conv_cm": 19.061344582140187
     }
    }
   },
@@ -194,6 +213,7 @@
        "share_pred_pct": 58.00707278926937,
        "family_weight_error_pp": 6.735886348591413,
        "emd_cm": 17.24037635976751,
+       "emd_conv_cm": 13.862418960372672,
        "strongest_lab_band_cm": 854.6,
        "position_term_cm": 6.782199999999989
       },
@@ -205,6 +225,7 @@
        "share_pred_pct": 0.0,
        "family_weight_error_pp": 0.0,
        "emd_cm": null,
+       "emd_conv_cm": 0.0,
        "strongest_lab_band_cm": null,
        "position_term_cm": null
       },
@@ -216,6 +237,7 @@
        "share_pred_pct": 5.96302626626494,
        "family_weight_error_pp": 5.477651699836753,
        "emd_cm": 11.726499710841443,
+       "emd_conv_cm": 13.668578389179434,
        "strongest_lab_band_cm": 1132.1,
        "position_term_cm": 1.0700999999999112
       },
@@ -227,6 +249,7 @@
        "share_pred_pct": 17.836771877416407,
        "family_weight_error_pp": 3.0062634028401396,
        "emd_cm": 3.1628150646618347,
+       "emd_conv_cm": 8.210117803388128,
        "strongest_lab_band_cm": 1306.4,
        "position_term_cm": 1.5449000000000979
       },
@@ -238,6 +261,7 @@
        "share_pred_pct": 10.006146528626035,
        "family_weight_error_pp": 0.2603838167616293,
        "emd_cm": 20.222493414492583,
+       "emd_conv_cm": 14.769238344804652,
        "strongest_lab_band_cm": 1607.1,
        "position_term_cm": 10.300700000000006
       },
@@ -249,11 +273,13 @@
        "share_pred_pct": 0.0,
        "family_weight_error_pp": 12.711864406779657,
        "emd_cm": null,
+       "emd_conv_cm": 146.6373408919797,
        "strongest_lab_band_cm": 1902.8,
        "position_term_cm": null
       }
      ],
-     "weighted_emd_cm": 14.458819939422726
+     "weighted_emd_cm": 14.458819939422726,
+     "weighted_emd_conv_cm": 29.968521790345005
     }
    }
   },
@@ -271,6 +297,7 @@
        "share_pred_pct": 66.24239018008528,
        "family_weight_error_pp": 39.987160054562274,
        "emd_cm": 11.71867939143893,
+       "emd_conv_cm": 10.281351862948146,
        "strongest_lab_band_cm": 797.0,
        "position_term_cm": 10.57159999999999
       },
@@ -282,6 +309,7 @@
        "share_pred_pct": 2.7777436677324743,
        "family_weight_error_pp": 4.439829554024848,
        "emd_cm": 6.677371009465853,
+       "emd_conv_cm": 9.880849092172294,
        "strongest_lab_band_cm": 1050.5,
        "position_term_cm": 3.980199999999968
       },
@@ -293,6 +321,7 @@
        "share_pred_pct": 7.036472034748166,
        "family_weight_error_pp": 8.130891981988235,
        "emd_cm": 23.914553341823975,
+       "emd_conv_cm": 18.79375371840053,
        "strongest_lab_band_cm": 1179.1,
        "position_term_cm": 2.033700000000181
       },
@@ -304,6 +333,7 @@
        "share_pred_pct": 14.318441937093725,
        "family_weight_error_pp": 22.29243672399414,
        "emd_cm": 23.481496988475065,
+       "emd_conv_cm": 18.8588585237829,
        "strongest_lab_band_cm": 1326.9,
        "position_term_cm": 16.825399999999945
       },
@@ -315,6 +345,7 @@
        "share_pred_pct": 9.624952180340332,
        "family_weight_error_pp": 5.124001794555061,
        "emd_cm": 16.531332600560038,
+       "emd_conv_cm": 11.844585026961973,
        "strongest_lab_band_cm": 1576.1,
        "position_term_cm": 3.959500000000162
       },
@@ -326,11 +357,13 @@
        "share_pred_pct": 0.0,
        "family_weight_error_pp": 0.0,
        "emd_cm": null,
+       "emd_conv_cm": 0.09777845950358133,
        "strongest_lab_band_cm": null,
        "position_term_cm": null
       }
      ],
-     "weighted_emd_cm": 18.22089874907325
+     "weighted_emd_cm": 18.22089874907325,
+     "weighted_emd_conv_cm": 14.91441335382176
     }
    }
   },
@@ -348,6 +381,7 @@
        "share_pred_pct": 55.75071866209748,
        "family_weight_error_pp": 24.171771293676432,
        "emd_cm": 9.041695079851134,
+       "emd_conv_cm": 9.113339726448991,
        "strongest_lab_band_cm": 884.0,
        "position_term_cm": 2.955799999999954
       },
@@ -359,6 +393,7 @@
        "share_pred_pct": 1.3495955891683762,
        "family_weight_error_pp": 2.56017884692185,
        "emd_cm": 4.857851954099905,
+       "emd_conv_cm": 4.849813861020244,
        "strongest_lab_band_cm": 973.8,
        "position_term_cm": 2.0394000000000005
       },
@@ -370,6 +405,7 @@
        "share_pred_pct": 10.514589887879232,
        "family_weight_error_pp": 9.335034172271142,
        "emd_cm": 14.678124818239988,
+       "emd_conv_cm": 13.92530867309924,
        "strongest_lab_band_cm": 1165.4,
        "position_term_cm": 0.6156999999998334
       },
@@ -381,6 +417,7 @@
        "share_pred_pct": 16.097358265095725,
        "family_weight_error_pp": 1.6470026371599196,
        "emd_cm": 27.83177352603893,
+       "emd_conv_cm": 19.787417252392597,
        "strongest_lab_band_cm": 1315.3,
        "position_term_cm": 0.6290999999998803
       },
@@ -392,6 +429,7 @@
        "share_pred_pct": 11.256934733770132,
        "family_weight_error_pp": 0.02126075495167412,
        "emd_cm": 27.878591937240756,
+       "emd_conv_cm": 19.616130195805432,
        "strongest_lab_band_cm": 1630.5,
        "position_term_cm": 2.623700000000099
       },
@@ -403,11 +441,13 @@
        "share_pred_pct": 0.0,
        "family_weight_error_pp": 11.879699248120303,
        "emd_cm": null,
+       "emd_conv_cm": 131.38158796702373,
        "strongest_lab_band_cm": 1909.9,
        "position_term_cm": null
       }
      ],
-     "weighted_emd_cm": 16.644592272635766
+     "weighted_emd_cm": 16.644592272635766,
+     "weighted_emd_conv_cm": 28.22391827758207
     }
    }
   },
@@ -425,6 +465,7 @@
        "share_pred_pct": 49.45918364129573,
        "family_weight_error_pp": 23.72818948924894,
        "emd_cm": 8.920463045444345,
+       "emd_conv_cm": 8.311755462463044,
        "strongest_lab_band_cm": 770.1,
        "position_term_cm": 0.22039999999992688
       },
@@ -436,6 +477,7 @@
        "share_pred_pct": 5.297597714691704,
        "family_weight_error_pp": 9.322285326243968,
        "emd_cm": 6.3928578514036305,
+       "emd_conv_cm": 9.836592729580854,
        "strongest_lab_band_cm": 1098.9,
        "position_term_cm": 6.937400000000025
       },
@@ -447,6 +489,7 @@
        "share_pred_pct": 3.2001042598340046,
        "family_weight_error_pp": 1.8681218610236958,
        "emd_cm": 13.74297162375197,
+       "emd_conv_cm": 50.35221330348689,
        "strongest_lab_band_cm": 1232.1,
        "position_term_cm": 7.398500000000013
       },
@@ -458,6 +501,7 @@
        "share_pred_pct": 27.40082966444519,
        "family_weight_error_pp": 6.348198085497822,
        "emd_cm": 26.696665611998476,
+       "emd_conv_cm": 16.27642696454656,
        "strongest_lab_band_cm": 1384.0,
        "position_term_cm": 15.760099999999966
       },
@@ -469,6 +513,7 @@
        "share_pred_pct": 12.28435188114379,
        "family_weight_error_pp": 7.793620828407868,
        "emd_cm": 35.105657566891864,
+       "emd_conv_cm": 25.137216455925294,
        "strongest_lab_band_cm": 1582.4,
        "position_term_cm": 8.910699999999906
       },
@@ -480,11 +525,13 @@
        "share_pred_pct": 0.0,
        "family_weight_error_pp": 11.11111111111111,
        "emd_cm": null,
+       "emd_conv_cm": 131.7208874327638,
        "strongest_lab_band_cm": 1772.4,
        "position_term_cm": null
       }
      ],
-     "weighted_emd_cm": 19.174336348101743
+     "weighted_emd_cm": 19.174336348101743,
+     "weighted_emd_conv_cm": 29.938386651603224
     }
    }
   }
