@@ -614,9 +614,8 @@ when it goes: the user's own read of the cover note, §1, §3.3 and the repriced
 
 **On the machine, in this order, once the naphthalene xtight timing has finished** (one anchor job at a time; nothing
 above about 1 GB on the Windows side beside it):
-1. smoke-test of the checkpointed frozen-space chain (`m1_frozen_spaces.py`, benzene cc-pVDZ normal; minutes) — built
-   2026-09-12, untested;
-2. the Lean build of plan 06's T1d (Windows, 8 GB; a quarter of an hour, no job running);
+1. ~~smoke-test of the checkpointed frozen-space chain~~ — **passed 2026-09-14 07:59–08:17** (`results_m1/smoke_checkpoint_chain_2026-09-14.log`; benzene cc-pVDZ normal, arm A, 3 points × 3 modes, `--tag smoke20260914`): the chain runs end to end with the per-fragment checkpoint attached (per-point `fragments/*_A.json` written in its own directory `results_m1/benzene_cc-pvdz_normalsmoke20260914/`, untracked), stage-0 round trip 0.0000 µE_h, ≈ 100 s per arm-A point, raw energies sealed in that directory; the resume path itself was proven by the naphthalene run's three restarts;
+2. ~~the Lean build of plan 06's T1d~~ — **done 2026-09-14 08:0x–08:2x**: root module builds; T1d fixed (two argument lists) and machine-checked, no `sorry`, imported into the root (plan 06 `lean/README.md`);
 3. the corpus factory's five-molecule timing test (`modules/05_support_predictor/corpus/run_corpus.py --max-molecules 5
    --grid-check`), then the dated note fixing the subset size;
 4. plan 06's X6 (script ready since 12 September evening, `experiments/x6_pi_cas_share.py`, cc-pVDZ, minutes; the user put it first) and X7;
