@@ -33,6 +33,8 @@ Two facts to check before sending: the "drie weken" for R0 (448 energies at 76 m
 2. The cover-note paragraph — take it, edit it, or keep the old one.
 3. The tight/xtight choice for the R1 deck now that F = 3.34 is known: xtight (bias 0.11/−0.01/0.23 cm⁻¹ at benzene, 38 h per energy) or tight (0.47/0.03/0.79, 11.5 h) — the P26 memo left it as a measured choice; the measured numbers are now both in hand.
 4. Whether the σ-run of decision 35 (4.8 laptop-days) starts tonight or waits for g.
+5. *(added 11:4x)* After M2a: probe M3 (DZ-anchored decks, ≈ 6 laptop-days, ledger I7) or the σ-run first.
+6. *(added 12:3x)* Ledger I14: adopt the single-sided response for irrep-pure non-totally-symmetric patterns as a dated amendment of the K-counting rule (measured admissible at tight: odd part ≤ 0.55 µE_h in the composite along benzene's b_2u mode), to be confirmed by the naphthalene DFT dry run — yes / after the dry run / no.
 
 ## 5. Added 09:2x — what the shape score's first column says about the reach product (measured this morning)
 
