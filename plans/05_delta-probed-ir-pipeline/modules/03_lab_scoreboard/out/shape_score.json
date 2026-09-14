@@ -1,0 +1,421 @@
+{
+ "date": "2026-09-14 08:33",
+ "constants": {
+  "bin_cm": 10.0,
+  "window_cm": [
+   550.0,
+   2000.0
+  ],
+  "families_scored": [
+   "CH-oop (10.5-15 um; benzene nu11 at 673 included)",
+   "ring / CH-ip (9-10.5 um)",
+   "CH-ip-bend (8.6 um)",
+   "CC-stretch/CH-ip (7.7 um)",
+   "CC-stretch (6.2 um)",
+   "overtone / combination region"
+  ],
+  "position_term_min_fraction": 0.25,
+  "line_A": "PAHdb theoretical v4.00 as served (Module 02 bands.csv.gz, frequency_cm = served scaled frequency)",
+  "uids": {
+   "tetracene": 282,
+   "coronene": 18,
+   "peropyrene": 2294,
+   "ovalene": 4,
+   "hexa(peri)benzocoronene": 105
+  },
+  "lab_files": {
+   "tetracene": "out/cold_columns_items61_62.csv",
+   "coronene": "out/cold_columns_items61_62.csv",
+   "peropyrene": "out/cold_columns_item62_grandpahs.csv",
+   "ovalene": "out/cold_columns_item62_grandpahs.csv",
+   "hexa(peri)benzocoronene": "out/cold_columns_item62_grandpahs.csv"
+  }
+ },
+ "molecules": {
+  "tetracene": {
+   "uid": 282,
+   "n_lab_window": 33,
+   "columns": {
+    "A": {
+     "rows": [
+      {
+       "family": "CH-oop (10.5-15 um; benzene nu11 at 673 included)",
+       "n_lab": 3,
+       "n_sticks": 19,
+       "share_lab_pct": 26.691266912669132,
+       "share_pred_pct": 68.24940730028175,
+       "family_weight_error_pp": 41.55814038761262,
+       "emd_cm": 6.655328411682037,
+       "strongest_lab_band_cm": 738.7,
+       "position_term_cm": 8.890099999999961
+      },
+      {
+       "family": "ring / CH-ip (9-10.5 um)",
+       "n_lab": 5,
+       "n_sticks": 4,
+       "share_lab_pct": 9.10209102091021,
+       "share_pred_pct": 2.0834587908091935,
+       "family_weight_error_pp": 7.018632230101017,
+       "emd_cm": 35.810810810810814,
+       "strongest_lab_band_cm": 996.6,
+       "position_term_cm": 12.609699999999975
+      },
+      {
+       "family": "CH-ip-bend (8.6 um)",
+       "n_lab": 2,
+       "n_sticks": 8,
+       "share_lab_pct": 6.2730627306273075,
+       "share_pred_pct": 4.199760418683637,
+       "family_weight_error_pp": 2.073302311943671,
+       "emd_cm": 3.5660698215953013,
+       "strongest_lab_band_cm": 1123.8,
+       "position_term_cm": 2.6364999999998417
+      },
+      {
+       "family": "CC-stretch/CH-ip (7.7 um)",
+       "n_lab": 6,
+       "n_sticks": 13,
+       "share_lab_pct": 22.632226322263225,
+       "share_pred_pct": 13.753598120407675,
+       "family_weight_error_pp": 8.878628201855548,
+       "emd_cm": 34.99331003426033,
+       "strongest_lab_band_cm": 1289.1,
+       "position_term_cm": 5.685699999999997
+      },
+      {
+       "family": "CC-stretch (6.2 um)",
+       "n_lab": 4,
+       "n_sticks": 7,
+       "share_lab_pct": 8.979089790897909,
+       "share_pred_pct": 5.517365013160296,
+       "family_weight_error_pp": 3.461724777737614,
+       "emd_cm": 40.953300767549756,
+       "strongest_lab_band_cm": 1536.9,
+       "position_term_cm": 13.429399999999987
+      },
+      {
+       "family": "overtone / combination region",
+       "n_lab": 10,
+       "n_sticks": 0,
+       "share_lab_pct": 23.86223862238623,
+       "share_pred_pct": 0.0,
+       "family_weight_error_pp": 23.86223862238623,
+       "emd_cm": null,
+       "strongest_lab_band_cm": 1694.5,
+       "position_term_cm": null
+      }
+     ],
+     "weighted_emd_cm": 22.87885781063672
+    }
+   }
+  },
+  "coronene": {
+   "uid": 18,
+   "n_lab_window": 9,
+   "columns": {
+    "A": {
+     "rows": [
+      {
+       "family": "CH-oop (10.5-15 um; benzene nu11 at 673 included)",
+       "n_lab": 2,
+       "n_sticks": 24,
+       "share_lab_pct": 51.271186440677965,
+       "share_pred_pct": 58.00707278926937,
+       "family_weight_error_pp": 6.735886348591413,
+       "emd_cm": 17.24037635976751,
+       "strongest_lab_band_cm": 854.6,
+       "position_term_cm": 6.782199999999989
+      },
+      {
+       "family": "ring / CH-ip (9-10.5 um)",
+       "n_lab": 0,
+       "n_sticks": 4,
+       "share_lab_pct": 0.0,
+       "share_pred_pct": 0.0,
+       "family_weight_error_pp": 0.0,
+       "emd_cm": null,
+       "strongest_lab_band_cm": null,
+       "position_term_cm": null
+      },
+      {
+       "family": "CH-ip-bend (8.6 um)",
+       "n_lab": 2,
+       "n_sticks": 13,
+       "share_lab_pct": 11.440677966101694,
+       "share_pred_pct": 5.96302626626494,
+       "family_weight_error_pp": 5.477651699836753,
+       "emd_cm": 11.726499710841443,
+       "strongest_lab_band_cm": 1132.1,
+       "position_term_cm": 1.0700999999999112
+      },
+      {
+       "family": "CC-stretch/CH-ip (7.7 um)",
+       "n_lab": 1,
+       "n_sticks": 14,
+       "share_lab_pct": 14.830508474576268,
+       "share_pred_pct": 17.836771877416407,
+       "family_weight_error_pp": 3.0062634028401396,
+       "emd_cm": 3.1628150646618347,
+       "strongest_lab_band_cm": 1306.4,
+       "position_term_cm": 1.5449000000000979
+      },
+      {
+       "family": "CC-stretch (6.2 um)",
+       "n_lab": 1,
+       "n_sticks": 9,
+       "share_lab_pct": 9.745762711864407,
+       "share_pred_pct": 10.006146528626035,
+       "family_weight_error_pp": 0.2603838167616293,
+       "emd_cm": 20.222493414492583,
+       "strongest_lab_band_cm": 1607.1,
+       "position_term_cm": 10.300700000000006
+      },
+      {
+       "family": "overtone / combination region",
+       "n_lab": 3,
+       "n_sticks": 0,
+       "share_lab_pct": 12.711864406779657,
+       "share_pred_pct": 0.0,
+       "family_weight_error_pp": 12.711864406779657,
+       "emd_cm": null,
+       "strongest_lab_band_cm": 1902.8,
+       "position_term_cm": null
+      }
+     ],
+     "weighted_emd_cm": 14.458819939422726
+    }
+   }
+  },
+  "peropyrene": {
+   "uid": 2294,
+   "n_lab_window": 22,
+   "columns": {
+    "A": {
+     "rows": [
+      {
+       "family": "CH-oop (10.5-15 um; benzene nu11 at 673 included)",
+       "n_lab": 6,
+       "n_sticks": 27,
+       "share_lab_pct": 26.25523012552301,
+       "share_pred_pct": 66.24239018008528,
+       "family_weight_error_pp": 39.987160054562274,
+       "emd_cm": 11.71867939143893,
+       "strongest_lab_band_cm": 797.0,
+       "position_term_cm": 10.57159999999999
+      },
+      {
+       "family": "ring / CH-ip (9-10.5 um)",
+       "n_lab": 3,
+       "n_sticks": 6,
+       "share_lab_pct": 7.217573221757322,
+       "share_pred_pct": 2.7777436677324743,
+       "family_weight_error_pp": 4.439829554024848,
+       "emd_cm": 6.677371009465853,
+       "strongest_lab_band_cm": 1050.5,
+       "position_term_cm": 3.980199999999968
+      },
+      {
+       "family": "CH-ip-bend (8.6 um)",
+       "n_lab": 4,
+       "n_sticks": 12,
+       "share_lab_pct": 15.167364016736402,
+       "share_pred_pct": 7.036472034748166,
+       "family_weight_error_pp": 8.130891981988235,
+       "emd_cm": 23.914553341823975,
+       "strongest_lab_band_cm": 1179.1,
+       "position_term_cm": 2.033700000000181
+      },
+      {
+       "family": "CC-stretch/CH-ip (7.7 um)",
+       "n_lab": 6,
+       "n_sticks": 17,
+       "share_lab_pct": 36.61087866108787,
+       "share_pred_pct": 14.318441937093725,
+       "family_weight_error_pp": 22.29243672399414,
+       "emd_cm": 23.481496988475065,
+       "strongest_lab_band_cm": 1326.9,
+       "position_term_cm": 16.825399999999945
+      },
+      {
+       "family": "CC-stretch (6.2 um)",
+       "n_lab": 3,
+       "n_sticks": 9,
+       "share_lab_pct": 14.748953974895393,
+       "share_pred_pct": 9.624952180340332,
+       "family_weight_error_pp": 5.124001794555061,
+       "emd_cm": 16.531332600560038,
+       "strongest_lab_band_cm": 1576.1,
+       "position_term_cm": 3.959500000000162
+      },
+      {
+       "family": "overtone / combination region",
+       "n_lab": 0,
+       "n_sticks": 0,
+       "share_lab_pct": 0.0,
+       "share_pred_pct": 0.0,
+       "family_weight_error_pp": 0.0,
+       "emd_cm": null,
+       "strongest_lab_band_cm": null,
+       "position_term_cm": null
+      }
+     ],
+     "weighted_emd_cm": 18.22089874907325
+    }
+   }
+  },
+  "ovalene": {
+   "uid": 4,
+   "n_lab_window": 21,
+   "columns": {
+    "A": {
+     "rows": [
+      {
+       "family": "CH-oop (10.5-15 um; benzene nu11 at 673 included)",
+       "n_lab": 5,
+       "n_sticks": 28,
+       "share_lab_pct": 31.578947368421055,
+       "share_pred_pct": 55.75071866209748,
+       "family_weight_error_pp": 24.171771293676432,
+       "emd_cm": 9.041695079851134,
+       "strongest_lab_band_cm": 884.0,
+       "position_term_cm": 2.955799999999954
+      },
+      {
+       "family": "ring / CH-ip (9-10.5 um)",
+       "n_lab": 2,
+       "n_sticks": 8,
+       "share_lab_pct": 3.9097744360902262,
+       "share_pred_pct": 1.3495955891683762,
+       "family_weight_error_pp": 2.56017884692185,
+       "emd_cm": 4.857851954099905,
+       "strongest_lab_band_cm": 973.8,
+       "position_term_cm": 2.0394000000000005
+      },
+      {
+       "family": "CH-ip-bend (8.6 um)",
+       "n_lab": 3,
+       "n_sticks": 13,
+       "share_lab_pct": 19.849624060150376,
+       "share_pred_pct": 10.514589887879232,
+       "family_weight_error_pp": 9.335034172271142,
+       "emd_cm": 14.678124818239988,
+       "strongest_lab_band_cm": 1165.4,
+       "position_term_cm": 0.6156999999998334
+      },
+      {
+       "family": "CC-stretch/CH-ip (7.7 um)",
+       "n_lab": 3,
+       "n_sticks": 21,
+       "share_lab_pct": 17.744360902255643,
+       "share_pred_pct": 16.097358265095725,
+       "family_weight_error_pp": 1.6470026371599196,
+       "emd_cm": 27.83177352603893,
+       "strongest_lab_band_cm": 1315.3,
+       "position_term_cm": 0.6290999999998803
+      },
+      {
+       "family": "CC-stretch (6.2 um)",
+       "n_lab": 2,
+       "n_sticks": 11,
+       "share_lab_pct": 11.278195488721805,
+       "share_pred_pct": 11.256934733770132,
+       "family_weight_error_pp": 0.02126075495167412,
+       "emd_cm": 27.878591937240756,
+       "strongest_lab_band_cm": 1630.5,
+       "position_term_cm": 2.623700000000099
+      },
+      {
+       "family": "overtone / combination region",
+       "n_lab": 4,
+       "n_sticks": 0,
+       "share_lab_pct": 11.879699248120303,
+       "share_pred_pct": 0.0,
+       "family_weight_error_pp": 11.879699248120303,
+       "emd_cm": null,
+       "strongest_lab_band_cm": 1909.9,
+       "position_term_cm": null
+      }
+     ],
+     "weighted_emd_cm": 16.644592272635766
+    }
+   }
+  },
+  "hexa(peri)benzocoronene": {
+   "uid": 105,
+   "n_lab_window": 21,
+   "columns": {
+    "A": {
+     "rows": [
+      {
+       "family": "CH-oop (10.5-15 um; benzene nu11 at 673 included)",
+       "n_lab": 4,
+       "n_sticks": 37,
+       "share_lab_pct": 25.730994152046787,
+       "share_pred_pct": 49.45918364129573,
+       "family_weight_error_pp": 23.72818948924894,
+       "emd_cm": 8.920463045444345,
+       "strongest_lab_band_cm": 770.1,
+       "position_term_cm": 0.22039999999992688
+      },
+      {
+       "family": "ring / CH-ip (9-10.5 um)",
+       "n_lab": 2,
+       "n_sticks": 10,
+       "share_lab_pct": 14.619883040935672,
+       "share_pred_pct": 5.297597714691704,
+       "family_weight_error_pp": 9.322285326243968,
+       "emd_cm": 6.3928578514036305,
+       "strongest_lab_band_cm": 1098.9,
+       "position_term_cm": 6.937400000000025
+      },
+      {
+       "family": "CH-ip-bend (8.6 um)",
+       "n_lab": 1,
+       "n_sticks": 15,
+       "share_lab_pct": 5.0682261208577,
+       "share_pred_pct": 3.2001042598340046,
+       "family_weight_error_pp": 1.8681218610236958,
+       "emd_cm": 13.74297162375197,
+       "strongest_lab_band_cm": 1232.1,
+       "position_term_cm": 7.398500000000013
+      },
+      {
+       "family": "CC-stretch/CH-ip (7.7 um)",
+       "n_lab": 3,
+       "n_sticks": 28,
+       "share_lab_pct": 21.05263157894737,
+       "share_pred_pct": 27.40082966444519,
+       "family_weight_error_pp": 6.348198085497822,
+       "emd_cm": 26.696665611998476,
+       "strongest_lab_band_cm": 1384.0,
+       "position_term_cm": 15.760099999999966
+      },
+      {
+       "family": "CC-stretch (6.2 um)",
+       "n_lab": 4,
+       "n_sticks": 14,
+       "share_lab_pct": 20.07797270955166,
+       "share_pred_pct": 12.28435188114379,
+       "family_weight_error_pp": 7.793620828407868,
+       "emd_cm": 35.105657566891864,
+       "strongest_lab_band_cm": 1582.4,
+       "position_term_cm": 8.910699999999906
+      },
+      {
+       "family": "overtone / combination region",
+       "n_lab": 6,
+       "n_sticks": 0,
+       "share_lab_pct": 11.11111111111111,
+       "share_pred_pct": 0.0,
+       "family_weight_error_pp": 11.11111111111111,
+       "emd_cm": null,
+       "strongest_lab_band_cm": 1772.4,
+       "position_term_cm": null
+      }
+     ],
+     "weighted_emd_cm": 19.174336348101743
+    }
+   }
+  }
+ }
+}
