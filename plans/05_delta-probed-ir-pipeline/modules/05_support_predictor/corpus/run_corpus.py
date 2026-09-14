@@ -41,7 +41,7 @@ def queue_order(rows):
     Inside a layer the position is the hashed priority order of the manifest."""
     pos = {}
     for L in ("A", "A2", "B", "C"):
-        for i, r in enumerate(sorted([r for r in rows if r["layer"] == L], key=lambda r: (0 if r.get("note") == "timing-test" else 1, r["priority"]))):
+        for i, r in enumerate(sorted([r for r in rows if r["layer"] == L], key=lambda r: (0 if r.get("note", "").startswith("timing-test") else 1, r["priority"])   # startswith: a crash-recovered timing-test row ("timing-test redone-after-crash") keeps its front position (bug found 2026-09-14 12:5x: naphthalene was skipped for diphenylacetylene))):
             pos[r["id"]] = i
     def key(r):
         if r["layer"] == "A": return (0, pos[r["id"]], 0)
