@@ -1,0 +1,41 @@
+=== detached start Mon Sep 14 08:18:57 CEST 2026: python /mnt/c/Users/thebr/Documents/CapstonePlan/plans/06_equivalent-faster-mathematics/experiments/x6_pi_cas_share.py --threads 8
+mode 12 q -1.000: HF -230.71740898  MP2 corr -803.058 mEh  CAS corr -71.509 mEh  [1 s]
+mode 12 q -0.750: HF -230.71896408  MP2 corr -802.044 mEh  CAS corr -70.951 mEh  [2 s]
+mode 12 q -0.500: HF -230.72022729  MP2 corr -801.042 mEh  CAS corr -70.399 mEh  [3 s]
+mode 12 q -0.250: HF -230.72119140  MP2 corr -800.052 mEh  CAS corr -69.853 mEh  [5 s]
+mode 12 q +0.000: HF -230.72184907  MP2 corr -799.076 mEh  CAS corr -69.312 mEh  [6 s]
+mode 12 q +0.250: HF -230.72219281  MP2 corr -798.111 mEh  CAS corr -68.777 mEh  [7 s]
+mode 12 q +0.500: HF -230.72221500  MP2 corr -797.159 mEh  CAS corr -68.248 mEh  [8 s]
+mode 12 q +0.750: HF -230.72190784  MP2 corr -796.219 mEh  CAS corr -67.725 mEh  [9 s]
+mode 12 q +1.000: HF -230.72126340  MP2 corr -795.292 mEh  CAS corr -67.207 mEh  [10 s]
+mode 18 q -1.000: HF -230.71914314  MP2 corr -797.976 mEh  CAS corr -69.205 mEh  [12 s]
+mode 18 q -0.750: HF -230.72033534  MP2 corr -798.448 mEh  CAS corr -69.253 mEh  [13 s]
+mode 18 q -0.500: HF -230.72117901  MP2 corr -798.794 mEh  CAS corr -69.286 mEh  [14 s]
+mode 18 q -0.250: HF -230.72168199  MP2 corr -799.005 mEh  CAS corr -69.306 mEh  [15 s]
+mode 18 q +0.000: HF -230.72184907  MP2 corr -799.076 mEh  CAS corr -69.312 mEh  [16 s]
+mode 18 q +0.250: HF -230.72168184  MP2 corr -799.005 mEh  CAS corr -69.306 mEh  [18 s]
+mode 18 q +0.500: HF -230.72117872  MP2 corr -798.795 mEh  CAS corr -69.286 mEh  [19 s]
+mode 18 q +0.750: HF -230.72033493  MP2 corr -798.449 mEh  CAS corr -69.253 mEh  [20 s]
+mode 18 q +1.000: HF -230.71914267  MP2 corr -797.977 mEh  CAS corr -69.205 mEh  [22 s]
+mode 6 q -1.000: HF -230.71934831  MP2 corr -799.702 mEh  CAS corr -69.017 mEh  [23 s]
+mode 6 q -0.750: HF -230.72045309  MP2 corr -799.428 mEh  CAS corr -69.145 mEh  [24 s]
+mode 6 q -0.500: HF -230.72123207  MP2 corr -799.232 mEh  CAS corr -69.238 mEh  [25 s]
+mode 6 q -0.250: HF -230.72169533  MP2 corr -799.115 mEh  CAS corr -69.293 mEh  [26 s]
+mode 6 q +0.000: HF -230.72184907  MP2 corr -799.076 mEh  CAS corr -69.312 mEh  [27 s]
+mode 6 q +0.250: HF -230.72169535  MP2 corr -799.115 mEh  CAS corr -69.293 mEh  [28 s]
+mode 6 q +0.500: HF -230.72123209  MP2 corr -799.232 mEh  CAS corr -69.238 mEh  [30 s]
+mode 6 q +0.750: HF -230.72045314  MP2 corr -799.428 mEh  CAS corr -69.145 mEh  [31 s]
+mode 6 q +1.000: HF -230.71934837  MP2 corr -799.701 mEh  CAS corr -69.017 mEh  [32 s]
+# X6 ? ?-CAS(6,6) share of the correlation curvature along the probed benzene modes (cc-pvdz, 2026-09-14 08:18)
+
+Even degree-4 fits in q of E_corr(MP2) and E_corr(CAS(6,6) via AVAS on C 2pz) ? both relative to the same RHF; a2 is the curvature coefficient (?E_h per q?), ?? = a2 in cm?? the frequency shift it implies (M1's convention). Share = a2(CAS)/a2(MP2).
+
+| mode | family | ? (cm??) | a2 MP2 (?E_h) | a2 ?-CAS (?E_h) | **share** | ?? MP2 / ?-CAS (cm??) | rms fit MP2 / CAS (?E_h) |
+|---|---|---|---|---|---|---|---|
+| 12 | CH-ip-bend | 1020 | -99.42 | -46.24 | **0.47** | -21.82 / -10.15 | 2506.317 / 1388.338 |
+| 18 | CC-stretch | 1357 | 1133.77 | 102.14 | **0.09** | 248.83 / 22.42 | 0.389 / 0.194 |
+| 6 | CH-oop | 865 | -627.20 | 298.90 | **-0.48** | -137.65 / 65.60 | 0.037 / 0.020 |
+
+Losing condition (pre-stated): pi-CAS share of the MP2 correlation curvature < 0.5 on the C-C stretch mode. The sealed CC ? DFT comparison waits for the pilot note.
+
+Constants: {"basis_default": "cc-pvdz", "npts_default": 9, "q_range": [-1.0, 1.0], "active_space": [6, 6], "avas_labels": ["C 2pz"], "avas_threshold": 0.2, "fit_degree": 4, "losing_condition": "pi-CAS share of the MP2 correlation curvature < 0.5 on the C-C stretch mode"}

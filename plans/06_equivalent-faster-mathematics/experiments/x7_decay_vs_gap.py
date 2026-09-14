@@ -84,8 +84,9 @@ def main():
         r_ao = mol.intor("int1e_r"); S = mf.get_ovlp()
         cent = np.array([[float(C_loc[:, i] @ r_ao[k] @ C_loc[:, i]) for k in range(3)] for i in range(C_loc.shape[1])])
         # canonical MP2 amplitudes, then the pair-energy matrix rotated exactly into the localised occupied basis (E_ij is bilinear in i, j)
-        ptc = mp.MP2(mf, frozen=ncore); e_corr, t2 = ptc.kernel()
-        eris_ovov = ptc.ao2mo(mf.mo_coeff)  # (ia|jb)
+        from pyscf.mp import mp2 as _mp2  # 2026-09-14: force the conventional RMP2 class — mp.MP2 on a density-fitted mean field returns the DF variant, whose eris carry ovL, not ovov
+        ptc = _mp2.RMP2(mf, frozen=ncore); e_corr, t2 = ptc.kernel()
+        eris_ovov = ptc.ao2mo(mf.mo_coeff)  # (ia|jb) as .ovov
         nvir = mol.nao - nocc; nact = nocc - ncore
         ovov = np.asarray(eris_ovov.ovov).reshape(nact, nvir, nact, nvir)
         # pair energy matrix in canonical basis: E_ij = sum_ab t2[i,j,a,b] * (2 (ia|jb) - (ib|ja))
