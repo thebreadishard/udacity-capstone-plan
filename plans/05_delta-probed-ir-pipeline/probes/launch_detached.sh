@@ -8,7 +8,8 @@ cd /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/p
 export OMP_NUM_THREADS=8 PYSCF_TMPDIR="$HOME/qc_tmp" TMPDIR="$HOME/qc_tmp"
 LOG="$1"; shift
 echo "=== detached start $(date): python $*" >> "$LOG"
-setsid nohup "$HOME/qc05/bin/python" "$@" >> "$LOG" 2>&1 < /dev/null &
+PYBIN="${PYBIN:-$HOME/qc05/bin/python}"   # 2026-09-14: override with PYBIN=~/qcad/bin/python for the PySCFAD environment (M2a)
+setsid nohup "$PYBIN" "$@" >> "$LOG" 2>&1 < /dev/null &
 PID=$!
 disown
 # Heartbeat (user's request 2026-09-10): every HEARTBEAT_MIN minutes (default 60) append one line with the
