@@ -1,0 +1,47 @@
+{
+ "basis": "cc-pvtz",
+ "nbf": 412,
+ "natom": 18,
+ "threads": 8,
+ "lno_thresh": [
+  1e-07,
+  1e-08
+ ],
+ "thresh_name": "xtight",
+ "machine": "Asus18",
+ "python": "3.12.14",
+ "t_scf_s": 6.953775644302368,
+ "e_scf": -383.4740757798239,
+ "scf_converged": true,
+ "frozen_core": 10,
+ "t_localise_s": 0.011971473693847656,
+ "localisation": "reloaded from naphthalene_cc-pvtz_xtight_lo.npz",
+ "n_lmo": 24,
+ "t_lno_ccsd_t_s": 78103.3332695961,
+ "checkpoint": {
+  "fragments_done": 24,
+  "fragments_new_this_run": 9,
+  "t_fragments_sum_s": 138304.9,
+  "restored_at_start": 15,
+  "file": "naphthalene_cc-pvtz_xtight_fragments.json"
+ },
+ "t_lno_fragments_sum_s": 138304.9,
+ "e_corr_pt2": -1.5698421362439574,
+ "e_corr_ccsd": -1.5963512753926015,
+ "e_corr_ccsd_t": -1.6870085184351664,
+ "e_tot_lno_ccsd_t": -385.1610842982591,
+ "peak_rss_gb_after_lno": 15.347248077392578,
+ "e_corr_mp2_full_anchor_basis": -1.569885482979877,
+ "t_mp2_anchor_basis_s": 5.023006200790405,
+ "t_mp2_qz_s": 60.02154803276062,
+ "t_scf_5z_s": 352.91669154167175,
+ "basis_terms": {
+  "scheme": "qz5z",
+  "term_mp2": -0.09649538903231991,
+  "term_scf": -0.028620467424730123,
+  "nbf_mp2_basis": 790,
+  "nbf_scf_basis": 1350
+ },
+ "e_tot_anchor_decision33": -385.2862435014521,
+ "peak_rss_gb_after_basis_terms": 15.347248077392578
+}
