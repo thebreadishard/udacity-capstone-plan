@@ -85,6 +85,7 @@ def main():
     # 2026-09-14 16:5x: PySCFAD's RCCSD.ao2mo raises NotImplementedError unless the ERIs are in core AND (incore estimate + current RSS) < max_memory (4 GB default)
     # or mol.incore_anyway is set; after cells 0-1 the RSS alone was 22 GB, so cell 2 died at 16:37. incore_anyway is what the 114-function benzene case needs (ERIs ~170 MB).
     mol.incore_anyway = True
+    mol.max_memory = 22000   # MB; see the note in make() below (2026-09-14)
     nat = len(sym); g_fd = 6 * nat
     # SCF once, timed separately
     t0 = time.perf_counter(); mf = scf.RHF(mol); mf.conv_tol = 1e-11; e_scf = mf.kernel(); t_scf = time.perf_counter() - t0
@@ -139,8 +140,11 @@ def main():
             thr = None if cell == 3 else [float(t) for t in args.lno_thresh.split(",")]
             from pyscfad.df.df_jk import density_fit   # 2026-09-14 16:5x: PySCFAD's LNO requires a density-fitted mean field (lno_base.LNO.__init__ raises KeyError otherwise; cells 3-4 died 16:46);
             def make(m):                                # plan 05's own anchor is DF-RHF too (m1_frozen_spaces), so this is the like-for-like reference; PySCFAD's RHF has no .density_fit() method, the function is in df_jk
-                mf_ = density_fit(scf.RHF(m)).run(conv_tol=1e-11)
+                m.max_memory = 22000                # 2026-09-14 16:5x: PySCFAD's (T) kernel compares its cache against max_memory − current RSS (pyscf default 4 GB);
+                mf_ = density_fit(scf.RHF(m)).run(conv_tol=1e-11)   # with JAX's RSS that check failed by 5–25 MB at 16:55; 22 GB is the VM's usable ceiling
+                mf_.max_memory = 22000
                 mlno = lno.LNOCCSD_T(mf_)          # defaults: thresh 1e-4 (sets thresh_occ = thresh_vir), lo_type "iao", single-atom fragments (autofrag)
+                mlno.max_memory = 22000
                 if thr is not None:
                     mlno.thresh_occ, mlno.thresh_vir = thr   # plan 05's tight pair; PySCFAD's LNO applies (thresh_occ, thresh_vir) as its PNO thresholds
                 return mf_, mlno

@@ -47,7 +47,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 DRYRUN = os.path.join(HERE, "results_dryrun", "benzene")
 OUT = os.path.join(HERE, "results_m1")
 THRESH = {"normal": [1e-5, 1e-6], "tight": [1e-6, 1e-7], "xtight": [1e-7, 1e-8]}   # xtight added 2026-09-08 (P10 b)
-FROZEN_CORE = 6   # benzene: six carbon 1s
+FROZEN_CORE = 6   # benzene: six carbon 1s — since 2026-09-14 (--molecule) reset in main() to the number of non-hydrogen atoms (one 1s core per C/N/O)
 
 
 def log(msg):
@@ -245,6 +245,7 @@ def add_anchor_energy(E, bt):
 # ----------------------------------------------------------------------------- the probe
 def main():
     ap = argparse.ArgumentParser()
+    ap.add_argument("--molecule", default="benzene", help="results_dryrun/<molecule>/ must hold stageA.json + stageA_hessians.npz (stage A, or factory_to_stageA.py); added 2026-09-14 for probe M3")
     ap.add_argument("--basis", default="cc-pvdz")
     ap.add_argument("--thresh", default="normal", choices=list(THRESH))
     ap.add_argument("--npts", type=int, default=9)
@@ -264,10 +265,13 @@ def main():
     lib.num_threads(args.threads)
     Recording, Frozen = lno_classes()
 
-    a = json.load(open(os.path.join(DRYRUN, "stageA.json")))
-    z = np.load(os.path.join(DRYRUN, "stageA_hessians.npz"))
+    global FROZEN_CORE
+    dryrun = os.path.join(HERE, "results_dryrun", args.molecule)
+    a = json.load(open(os.path.join(dryrun, "stageA.json")))
+    z = np.load(os.path.join(dryrun, "stageA_hessians.npz"))
     L, omega, Minv, coords0 = z["L"], z["omega_au"], z["Minv"], z["coords"]
     symbols, freq, fam = a["symbols"], np.array(a["freq_low_cm"]), a["families"]
+    FROZEN_CORE = sum(1 for sy in symbols if sy != "H")   # frozen 1s cores: 6 at benzene, 10 at naphthalene
     if args.modes == "auto":
         ts = int(a["totally_symmetric_index"])
         # a degenerate mode: the first CC-stretch pair member; a non-symmetric one: the CH-oop scan mode
@@ -277,10 +281,10 @@ def main():
         modes = [ts, deg, nonsym]
     else:
         modes = [int(t) for t in args.modes.split(",")]
-    out = os.path.join(OUT, f"benzene_{args.basis}_{args.thresh}{args.tag}")
+    out = os.path.join(OUT, f"{args.molecule}_{args.basis}_{args.thresh}{args.tag}")
     os.makedirs(out, exist_ok=True)
     qs = np.linspace(-1.0, 1.0, args.npts)
-    log(f"M1: benzene {args.basis}, thresholds {THRESH[args.thresh]}, modes {modes} "
+    log(f"M1: {args.molecule} {args.basis}, thresholds {THRESH[args.thresh]}, frozen core {FROZEN_CORE}, modes {modes} "
         f"({', '.join(f'{freq[m]:.0f} cm⁻¹ {fam[m]}' for m in modes)}), {args.npts} points, {args.threads} threads")
 
     # ---------------- reference geometry: arm C, record the spaces
@@ -477,7 +481,7 @@ def main():
     # ---------------- report (no verdict)
     seal_hash = open(os.path.join(out, "m1_sealed_energies.sha256")).read()
     f2 = lambda v: "—" if v is None else f"{v:+.2f}"   # noqa: E731
-    lines = [f"# Probe M1 — frozen spaces — benzene {args.basis}, LNO thresholds {THRESH[args.thresh]}, arms {args.arms}, "
+    lines = [f"# Probe M1 — frozen spaces — {args.molecule} {args.basis}, LNO thresholds {THRESH[args.thresh]}, arms {args.arms}, "
              f"{datetime.now():%Y-%m-%d %H:%M}, {platform.node()} (WSL), {args.threads} threads",
              "", f"- reference: {len(stored)} fragments (one per PM LMO); frozen-space hash `{frozen_space_hash[:16]}…`; "
              f"arm C at the reference {t_ref:.0f} s",
