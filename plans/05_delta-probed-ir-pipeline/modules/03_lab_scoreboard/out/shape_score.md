@@ -1,4 +1,4 @@
-# Shape score against jet-cooled band lists — 2026-09-14 08:33
+# Shape score against jet-cooled band lists — 2026-09-14 11:03
 
 Pre-registration: `GoalGathering/notes/PreRegistration_2026-09-14_Shape_Score_Cold_Spectra.md`. Window [550.0, 2000.0] cm⁻¹, bins 10.0 cm⁻¹; per family the earth mover's distance (cm⁻¹) between unit-normalised histograms, the family-weight error (percentage points) and the position term for the strongest laboratory band. Column A = PAHdb theoretical v4.00 as served (Module 02 bands.csv.gz, frequency_cm = served scaled frequency).
 
@@ -13,6 +13,13 @@ Pre-registration: `GoalGathering/notes/PreRegistration_2026-09-14_Shape_Score_Co
 | A | CC-stretch | 4 | 7 | 9.0 | 5.5 | 3.5 | 41.0 | 1536.9 | 13.4 |
 | A | overtone / combination region | 10 | 0 | 23.9 | 0.0 | 23.9 | — | 1694.5 | — |
 | **A** | **intensity-weighted EMD over families** | | | | | | **22.9** | | |
+| B | CH-oop | 3 | 163 | 26.7 | 52.8 | 26.1 | 20.3 | 738.7 | 3.9 |
+| B | ring / CH-ip | 5 | 122 | 9.1 | 6.4 | 2.7 | 22.0 | 996.6 | 8.6 |
+| B | CH-ip-bend | 2 | 146 | 6.3 | 5.6 | 0.7 | 11.3 | 1123.8 | 2.7 |
+| B | CC-stretch/CH-ip | 6 | 328 | 22.6 | 11.0 | 11.6 | 19.6 | 1289.1 | 4.2 |
+| B | CC-stretch | 4 | 226 | 9.0 | 5.9 | 3.1 | 13.2 | 1536.9 | 8.5 |
+| B | overtone / combination region | 10 | 550 | 23.9 | 14.1 | 9.8 | 35.7 | 1694.5 | 15.0 |
+| **B** | **intensity-weighted EMD over families** | | | | | | **22.8** | | |
 
 ## coronene — laboratory bands in window: 9; line A uid 18, sticks in window: 68
 

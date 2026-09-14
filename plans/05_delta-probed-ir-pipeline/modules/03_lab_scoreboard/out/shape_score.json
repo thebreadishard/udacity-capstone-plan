@@ -1,5 +1,5 @@
 {
- "date": "2026-09-14 08:33",
+ "date": "2026-09-14 11:03",
  "constants": {
   "bin_cm": 10.0,
   "window_cm": [
@@ -106,6 +106,77 @@
       }
      ],
      "weighted_emd_cm": 22.87885781063672
+    },
+    "B": {
+     "rows": [
+      {
+       "family": "CH-oop (10.5-15 um; benzene nu11 at 673 included)",
+       "n_lab": 3,
+       "n_sticks": 163,
+       "share_lab_pct": 26.691266912669132,
+       "share_pred_pct": 52.78917698536139,
+       "family_weight_error_pp": 26.097910072692255,
+       "emd_cm": 20.289236919010047,
+       "strongest_lab_band_cm": 738.7,
+       "position_term_cm": 3.919999999999959
+      },
+      {
+       "family": "ring / CH-ip (9-10.5 um)",
+       "n_lab": 5,
+       "n_sticks": 122,
+       "share_lab_pct": 9.10209102091021,
+       "share_pred_pct": 6.352339504474106,
+       "family_weight_error_pp": 2.7497515164361053,
+       "emd_cm": 21.99341632511054,
+       "strongest_lab_band_cm": 996.6,
+       "position_term_cm": 8.610000000000014
+      },
+      {
+       "family": "CH-ip-bend (8.6 um)",
+       "n_lab": 2,
+       "n_sticks": 146,
+       "share_lab_pct": 6.2730627306273075,
+       "share_pred_pct": 5.590742635682351,
+       "family_weight_error_pp": 0.6823200949449569,
+       "emd_cm": 11.333930569553567,
+       "strongest_lab_band_cm": 1123.8,
+       "position_term_cm": 2.7000000000000455
+      },
+      {
+       "family": "CC-stretch/CH-ip (7.7 um)",
+       "n_lab": 6,
+       "n_sticks": 328,
+       "share_lab_pct": 22.632226322263225,
+       "share_pred_pct": 11.01203279207463,
+       "family_weight_error_pp": 11.620193530188594,
+       "emd_cm": 19.56706704581323,
+       "strongest_lab_band_cm": 1289.1,
+       "position_term_cm": 4.2000000000000455
+      },
+      {
+       "family": "CC-stretch (6.2 um)",
+       "n_lab": 4,
+       "n_sticks": 226,
+       "share_lab_pct": 8.979089790897909,
+       "share_pred_pct": 5.9056811165364005,
+       "family_weight_error_pp": 3.0734086743615094,
+       "emd_cm": 13.164588193194668,
+       "strongest_lab_band_cm": 1536.9,
+       "position_term_cm": 8.529999999999973
+      },
+      {
+       "family": "overtone / combination region",
+       "n_lab": 10,
+       "n_sticks": 550,
+       "share_lab_pct": 23.86223862238623,
+       "share_pred_pct": 14.055487982236345,
+       "family_weight_error_pp": 9.806750640149883,
+       "emd_cm": 35.71484155180128,
+       "strongest_lab_band_cm": 1694.5,
+       "position_term_cm": 15.039999999999964
+      }
+     ],
+     "weighted_emd_cm": 22.82262574289141
     }
    }
   },
