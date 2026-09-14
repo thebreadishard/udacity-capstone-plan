@@ -8,7 +8,9 @@
 |---|---|---|---|---|
 | tetracene C₁₈H₁₂ | Lemmens et al. 2019, Table A.2 (item 61) | 34 with relative intensities (two without) | FELIX bandwidth ≈ 1 % of ν (u_res 7–17 cm⁻¹) | transcribed (`modules/03_lab_scoreboard/out/cold_columns_items61_62.csv`) |
 | coronene C₂₄H₁₂ | Lemmens, Rijs & Buma 2021, Table A1 p. 9 (item 62) | 12 in 5–18 µm with relative intensities (+ 8 at 3 µm, OPO) | FELIX ≈ 1 %; OPO 0.1 cm⁻¹ | transcribed (same file) |
-| peropyrene C₂₆H₁₄, ovalene C₃₂H₁₄, hexa-peri-benzocoronene C₄₂H₁₈ | Lemmens, Rijs & Buma 2021, Table A1 pp. 9–10 (item 62) | to be counted at transcription | as coronene | **to transcribe from rendered pages, with the HBC/coronene block boundary already resolved on 13 September** (no anchor job running when rendered) |
+| ovalene C₃₂H₁₄ | Lemmens, Rijs & Buma 2021, Table A1 p. 9 (item 62) | 32 (21 in 550–2000 cm⁻¹) | as coronene | transcribed 14 Sep (`out/cold_columns_item62_grandpahs.csv`, verbatim check passed) |
+| hexa-peri-benzocoronene C₄₂H₁₈ | same, pp. 9–10 (the page-10 block headed "Coronene" is HBC's continuation, resolved 13 Sep) | 33 (21) | as coronene | transcribed 14 Sep |
+| peropyrene C₂₆H₁₄ | same, p. 10 (two-decimal frequencies; intensities relative to 797.00 = 1.00, 1576.10 printed as 1.16) | 28 (22) | as coronene | transcribed 14 Sep |
 
 Only bands the source tabulates enter; nothing is read off figures. The 3 µm OPO bands are scored as their own family (the C–H stretch polyad region: intensities only, per decision 25's caution on fundamentals there).
 
@@ -41,7 +43,7 @@ The per-molecule score is the intensity-weighted mean of (1) over families; (2) 
 
 ## 5. Costs and order
 
-Zero coupled-cluster energies. Transcription of the three remaining species: an hour with rendered pages (allowed when no anchor job runs). The scoring script joins Module 03's cold columns to any stick list; it is written when the first column beyond A exists. The D column needs `pip install torch rdkit` into a fresh environment (the user's permission; Software Changes Ledger row on the day).
+Zero coupled-cluster energies. Transcription of the three remaining species: done 14 September from the page renders of 13 September. The scoring script joins Module 03's cold columns to any stick list; it is written when the first column beyond A exists. The D column needs `pip install torch rdkit` into a fresh environment (the user's permission; Software Changes Ledger row on the day).
 
 ## 6. Caveats written now
 

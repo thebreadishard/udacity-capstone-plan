@@ -60,6 +60,7 @@ Whenever the machine is busy or the user is away, the next item is the cheapest 
 
 ## 6. Log
 
+- **14 Sep, 09:0x:** I3's data completed: ovalene (32), HBC (33) and peropyrene (28) cold columns transcribed and verbatim-checked (`modules/03_lab_scoreboard/out/cold_columns_item62_grandpahs.md`); the shape score now has five molecules of R2–R3 size and above with 21–34 tabulated bands each.
 - **14 Sep, 08:5x:** I3's shape score pre-registered (`PreRegistration_2026-09-14_Shape_Score_Cold_Spectra.md`) while the factory timing test runs.
 - **14 Sep, 08:4x:** X7 rerun after two fixes (pair sum now = E_corr to 1e-15): λ 0.67–0.75 Å, λ·gap max/min 1.57 — T3 not lost, not confirmed; correlation beyond 3 Å only 2–6 % (σ-short-ranged, in line with X6). The corpus factory's five-molecule timing test started 08:25 on Windows (quiet machine; WSL idle); M2a follows it.
 - **14 Sep, 08:3x:** **X6 lost** (π-CAS share 0.09 on the C–C stretch): reflection lead E (π-space label generator) is closed at its gate; plan 06's S3 closed. Obstacle 3's proxy question now rests on lead A's test alone (double hybrid and MP2 against the probed CC correction). X7 (decay vs gap) crashed on a pyscf DF-MP2 interface, patched (conventional RMP2), relaunched.
