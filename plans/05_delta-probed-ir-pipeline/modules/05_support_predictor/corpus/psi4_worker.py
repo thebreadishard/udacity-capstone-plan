@@ -64,7 +64,9 @@ def main(job_path):  # 2026-09-14: psi4.hessian(..., return_wfn=True) returns (H
             t = time.time(); e, wfn = psi4.hessian(d["low_functional"], molecule=mol, return_wfn=True); H2 = project_tr(np.array(wfn.hessian()), masses, coords)
             H1 = np.load(os.path.join(out, "hessian_b3lyp.npz"))["H_projected"]
             res["grid_check"] = {"radial": g["radial"], "spherical": g["spherical"], "seconds": round(time.time() - t, 1), "max_abs_dH_hartree_bohr2": float(np.abs(H2 - H1).max()),
-                                 "max_abs_dfreq_cm": float(np.abs(np.sort(frequencies_cm(H2, masses)) - np.sort(frequencies_cm(H1, masses))).max())}
+                                 "max_abs_dfreq_cm": float(np.abs(np.sort(frequencies_cm(H2, masses)) - np.sort(frequencies_cm(H1, masses))).max()),
+                                 "freq_cm": [round(float(x), 2) for x in np.sort(frequencies_cm(H2, masses))]}   # per-mode list kept since 2026-09-14 13:0x (obstacle 16: the mode of the maximum was unknown)
+            np.savez_compressed(os.path.join(out, "hessian_b3lyp_densegrid.npz"), H_projected=H2, radial=g["radial"], spherical=g["spherical"])
         res["status"] = "done"
     except Exception:
         res["error"] = traceback.format_exc()[-3000:]
