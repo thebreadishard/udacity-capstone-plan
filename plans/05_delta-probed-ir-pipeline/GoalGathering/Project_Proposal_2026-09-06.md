@@ -92,10 +92,7 @@ laboratory bands within the laboratory uncertainty combined with its own error b
 licenses the anchor and the recovery; nothing is "beaten" there, and the comparison with existing
 predictions is printed without a claim (decision 28). On naphthalene agreement is required again
 and, family by family, the question is put whether the coupled-cluster correction adds accuracy
-over DFT. On the pyrene-size and coronene rungs the pipeline's positions are compared per band
-family against named, version-frozen state-of-the-art predictions under a pre-registered protocol,
-wherever the laboratory can decide; on the largest species the deliverable is a spectrum with a
-labelled error budget and no accuracy claim. The project is as much about the evaluation discipline —
+over DFT. On the pyrene-size and coronene rungs the pipeline measures **thin decks** — a few modes per band family, tens of coupled-cluster energies per molecule — whose purpose is the pre-registered transfer test T-2: does the per-family correction measured at benzene and naphthalene predict these molecules within the laboratory margin? Full decks above naphthalene are out of reach on every route at the anchor's basis (§12); whether a cheaper basis with a transferred increment changes that is a pre-registered probe (M3), not an assumption, and the laboratory rarely decides there (Module 03: the hot gas records give 8.6–16 cm⁻¹ per family), so the plan says so rather than promising a comparison it cannot score *(dated revision 14 September, decision 36, P26)*; on the largest species the deliverable is the network's prediction with its per-family error budget, licensed or refused per family by the transfer tests, and no accuracy claim beyond that budget. The project is as much about the evaluation discipline —
 pre-registration, frozen baselines, mandatory null tests, fail-closed reporting — as about the
 spectra themselves.
 
@@ -387,6 +384,8 @@ a larger molecule did not, the plan says in advance what happens: the off-diagon
 rung is reported at its noise-limited precision and carries no accuracy claim, and the gradient
 route of §5.3 takes over the couplings if the side project has delivered it by then.
 
+**3.5 The two pipelines** *(dated revision 14 September, decision 36, P26).* Pipeline B is the label factory: for a molecule it produces the measured coupled-cluster correction with its error budget — full decks at R0–R1, thin decks above. Pipeline A is the product: a network trained on pipeline B's labels (pre-trained on the DFT–DFT corpus of Module 05) that takes a PAH's DFT Hessian and returns the per-mode correction and its per-family error budget, licensed per family and charge state by the transfer tests (T-1 benzene → naphthalene on the stand-in; T-2 with the thin decks as hold-outs). Pipeline A's reach is R4–R6; its truth is pipeline B's; where a family fails the transfer test, pipeline A returns DFT with the failure printed. The label budget that sets pipeline B's pace is measured, not asserted: 38 h per naphthalene anchor energy at cc-pVTZ (14 September), with two pre-registered levers that would change it by an order of magnitude without a gradient — the cc-pVDZ deck with a transferred beyond-MP2 increment (probe M3) and one energy per irrep-pure non-totally-symmetric pattern (decision 37) — each licensed by its own test before it enters a deck.
+
 ## 4. Research questions
 
 **Accuracy (benzene to coronene).** Can a per-molecule pipeline — DFT geometry, harmonic Hessian
@@ -655,7 +654,9 @@ DFT steps and a sampled coupled-cluster check instead of the full probe count. I
 no such model exists, and the pipeline remains a per-molecule measurement. Either outcome is a
 result; neither is claimed here.
 
-**Named follow-up, outside the sequence (decision 32, 12 September): the network as stand-out work.**
+**The network as the reach product** *(dated revision 14 September, decision 36, P26; supersedes the paragraph below, kept for the record).* The network is the reach product of this plan, promised as a licensed predictor with a printed error budget and refused per family where the transfer tests fail; its accuracy claim on R4–R6 is the grounded error budget, not a beat. Its losing condition (per family, τ_F, P26 memo §6) is its licence; the two measured conditions of decision 32 below remain the gates of that licence (the range at R2–R3, now read from the thin decks' transfer test T-2; the Q10 coverage table).
+
+**Named follow-up, outside the sequence (decision 32, 12 September; superseded 14 September by decision 36): the network as stand-out work.**
 The student names the model of the previous paragraph as the project's stand-out ambition — a network
 trained on the pipeline's own output, the Δ₂ blocks and certified band positions, to predict the
 correction for a new PAH from its DFT steps alone — and places it deliberately **outside the module
@@ -1095,11 +1096,9 @@ back per module is budgeted, not hoped away.
 | Modules 05–08 (training, proposer, officer, assembly) | no new coupled-cluster energies | hours | hours | hours | not measured |
 | R6 fragment-probed C₃₈₄H₄₈ (if licensed) | 56 symmetry-unique fragments × an unmeasured per-fragment cost | — | — | — | not measured |
 
-What the table says: R0 and R1 as full decks are within reach — R0 on the laptop in weeks, R1 on four Snellius nodes in about a month or on the desktop in the better part of a year; **every full deck above naphthalene is out of reach on every route**, by the decks, not the machines; the rows that make R2–R3 affordable are the thin ones (diagonal-only, P25-ordered couplings, or gradients if g is small) — the transfer-test decks of proposal P26, which is written and not yet adopted; and the two levers not in the table are the tight/xtight choice (÷ 3.3, the accuracy side measured at benzene: 0.47 / 0.03 / 0.79 → 0.11 / −0.01 / 0.23 cm⁻¹) and g (M2a, this week).
+What the table says: R0 and R1 as full decks are within reach — R0 on the laptop in weeks, R1 on four Snellius nodes in about a month or on the desktop in the better part of a year; **every full deck above naphthalene is out of reach on every route at the anchor's basis**, by the decks, not the machines — whether a cc-pVDZ deck with a transferred beyond-MP2 increment changes that is probe M3 (pre-registered 14 September; a measured win would put a full pyrene deck at Snellius-weeks), and until it reads the plan promises thin decks above naphthalene (decision 36); the rows that make R2–R3 affordable are the thin ones (diagonal-only, P25-ordered couplings, or gradients if g is small) — the transfer-test decks of proposal P26, which is written and not yet adopted; and the two levers not in the table are the tight/xtight choice (÷ 3.3, the accuracy side measured at benzene: 0.47 / 0.03 / 0.79 → 0.11 / −0.01 / 0.23 cm⁻¹) and g (M2a, this week).
 
-Two scenarios follow from the one hinge, cluster access. **With the cluster** the programme ends in
-May 2027, eight months from now. **Without it** R2 and R3 lapse, Module 08 scores R0–R1 and the
-laboratory side, and the defense can be held at the end of March 2027 — thinner, and honest. The
+Two scenarios follow from the one hinge, cluster access *(dated revision 14 September, decision 36)*. **With a small cluster allocation** the programme ends in May 2027 with R1 full, R2–R3 thin (the transfer tests), and the network licensed or refused per family. **Without it** R1 runs on the desktop or stops at the pilot, the network is trained on R0–R1 plus the corpus, its reach claim thinner and honest, and the defense can be held at the end of March 2027. The
 hinge is December: a cluster request not submitted before the winter break puts the project in the
 second scenario. The critical path is the laptop's compute until the end of October, the student's
 decisions in the evenings, and the supervisor's reading time at the two points named.
@@ -1130,8 +1129,7 @@ decisions in the evenings, and the supervisor's reading time at the two points n
    correction to intensities is a measured question rather than a promise. If the supervisor wants
    intensities carried further, the dipole probe M1-μ is the measurement that would license it.
 5. The naphthalene measurement now justifies it (38 hours per energy on the laptop at the anchor thresholds, measured 14 September; the R1 deck of
-   474 energies is ≈ 18,000 laptop-hours): sponsorship of a cluster-time request sized by the timed
-   probes, including whether a suitable machine exists within the supervisor's own network, and, at the large-rung stage, serving as or nominating the named expert whose
+   474 energies is ≈ 18,000 laptop-hours): sponsorship of a cluster-time request sized by the measured anchor energy *(dated revision 14 September, decision 36)*: one full naphthalene deck — ≈ 330,000–500,000 SBU at the cc-pVTZ anchor by estimate, ≈ 30,000–45,000 SBU if probe M3 licenses the cc-pVDZ deck — plus the thin decks of R2–R3 (tens of thousands each), inside one Small Compute application whose first job is one timed energy on the node, including whether a suitable machine exists within the supervisor's own network, and, at the large-rung stage, serving as or nominating the named expert whose
    pre-registered judgment is the datum where no laboratory truth exists (the "expert-judgment
    datum" of §5.2).
 6. Whether the supervisor sees the outlook of §6 as a reason to widen the corpus of measured

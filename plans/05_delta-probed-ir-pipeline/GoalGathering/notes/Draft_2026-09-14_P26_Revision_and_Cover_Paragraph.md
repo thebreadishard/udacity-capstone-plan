@@ -27,7 +27,7 @@ Two facts to check before sending: the "drie weken" for R0 (448 energies at 76 m
 - §3: a bullet "**Transfer tests T-1 and T-2** (P26 §6): form, families judged, threshold, losing condition; T-1 on the DFT–DFT stand-in benzene→naphthalene after the naphthalene dry run; T-2 on the first thin deck above naphthalene."
 - Everything else unchanged: the frozen spaces, the K rule, the symmetry prior, Q6/Q7/Q8 on the rungs where full decks run (R0–R1), the seal discipline, the stops.
 
-## 4. What the user decides at 16:30
+## 4. What the user decides at 16:30 — **decided 14 September 17:0x ("Akkoord met al je voorstellen"): 1 yes with the M3 conditional (decision 36); 2 taken with the two corrections (decision 36); 3 xtight, M3 at tight (decision 38a); 4 not tonight (38b); 5 M3 first, then the σ-run (38c); 6 adopted, confirmation by the dry run (decision 37). Applied the same evening; this note is the record of the texts as proposed.**
 
 1. Adopt P26 (dated revisions of the Ladder, the proposal §1/§3/§6/§12/§13, decision 32) — yes / with changes / not yet.
 2. The cover-note paragraph — take it, edit it, or keep the old one.

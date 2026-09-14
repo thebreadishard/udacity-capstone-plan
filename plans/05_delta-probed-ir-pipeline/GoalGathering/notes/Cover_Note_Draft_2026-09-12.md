@@ -29,27 +29,9 @@ zodat de energieverschillen glad zijn. Het aantal energieën per molecuul staat 
 de nauwkeurigheid wordt gescoord tegen laboratoriumdata en tegen de bestaande voorspellingen, waaronder
 die van jouw eigen groep.
 
-Vanaf naftaleen kan dit plan niet meer op mijn eigen machine; het vraagt clustertijd, en ik wil je
-kunnen laten zien dat die aanvraag op bewijs rust en niet op hoop. Wat er nu al gemeten is: de kern
-van de methode werkt — met bevroren orbitaalruimtes is de lokale-CC-energie langs een vervorming
-glad tot 0,002–0,06 µE_h, ruim binnen wat de pijplijn nodig heeft (§3.3), waar de gangbare aanpak,
-die de ruimtes bij elk punt opnieuw kiest, bij dezelfde instellingen tot 3 µE_h aan sprongen geeft (en
-7–11 µE_h bij de standaarddrempels van het programma), en de systematische afwijking van de
-frequenties tegenover canoniek CCSD(T) is +0,11 / −0,01 / +0,23 cm⁻¹ op de drie
-geteste modes na de strengste drempels (geprint op 12 september; +0,47 / +0,03 / +0,79 bij de 'tight'-drempels, één decade minder
-streng) — klein tegenover de basissetterm van 3–11 cm⁻¹ die het anker sinds beslissing 33 zelf
-meedraagt (§3.3); de proefopstelling op DFT-niveau wint de correctie inderdaad terug uit een
-eindig aantal vervormingen, en dat aantal is geteld (§3.2); en de lat is bekend en
-beweegt niet meer — de best mogelijke goedkope tegenstander, een per band gekalibreerde harmonische
-bibliotheek, blijkt op 2.477 gepaarde banden niet beter dan de bibliotheek zelf, 6,5 cm⁻¹
-gemiddelde fout, en het scorebord met laboratoriumonzekerheden en de matrix–gas-verschuiving is
-uitgeprint voordat er één vergelijking is gemaakt (§7). Wat nog niet gemeten is en alleen met
-clustertijd gemeten kán worden: of de correctie bij pyreen en coroneen per bandfamilie onder die lat
-komt, en of het aantal energieën ophoudt te groeien met de molecuulgrootte (§4, de kostenvraag; §5.3). Voor allebei
-staat de verliesvoorwaarde vooraf op papier, zodat de uitkomst ook bij nee een resultaat is. Zonder
-clustertijd valt het project niet om — de opleidingsmodules hangen niet aan de treden van de
-grootteladder; benzeen blijft haalbaar op de laptop en naftaleen op de desktop uit de hardwarenotitie
-(§12, P13) — maar de claim over de grote moleculen blijft dan ongetest.
+Op mijn eigen laptop is het plan haalbaar tot en met benzeen: het proefdek van 448 energieën kost ruim drie weken. Naftaleen is de eerste trede die de laptop niet meer kan: één energie op de instellingen van het anker kost daar 38 uur (gemeten op 14 september), en het volledige dek van 474 energieën dus ruim twee jaar laptoptijd; op vier Snellius-knooppunten is dat naar schatting een maand, op de werkstation-configuratie uit de hardwarenotitie het grootste deel van een jaar. **Boven naftaleen kan geen enkele machine het volledige dek op de basis van het anker betalen**, ook een cluster niet: pyreen zou op vier knooppunten een tot twee jaar kosten, coroneen een veelvoud. Dat is een eigenschap van de dekken, niet van de machines. Of een goedkopere basis met een overgedragen correctie dat verandert, is een vooraf geregistreerde proef en geen aanname; tot die gemeten is, gaat het plan anders om met de grotere moleculen: naftaleen krijgt de volledige, gemeten correctie; pyreen en coroneen krijgen dunne dekken — enkele tientallen energieën per molecuul, genoeg om per bandfamilie te toetsen of de correctie van kleine naar grote moleculen overdraagt, niet genoeg voor het hele spectrum; en het netwerk waar dit alles naartoe werkt wordt getraind op wat betaalbaar gemeten is, met die dunne dekken als toets. De clusteraanvraag waar ik je steun voor vraag is precies op die twee posten gedimensioneerd: één volledig naftaleen-dek en een handvol dunne dekken, samen binnen één kleine Snellius-aanvraag. Wat ik nu al kan laten zien staat in §3.3 en §8: de kern van de methode werkt (bevroren orbitaalruimtes, glad tot 0,002–0,06 µE_h; bias +0,11 / −0,01 / +0,23 cm⁻¹ tegenover canoniek CCSD(T)), de proefopstelling wint de correctie terug uit een geteld aantal vervormingen, en de lat is bekend. Wat nog niet gemeten is en alleen zo gemeten kan worden: of de correctie per bandfamilie overdraagt van naftaleen naar pyreen (de dunne dekken), en wat één gradiënt kost tegenover één energie (deze week, op de laptop) — het getal dat bepaalt of de dunne dekken nog goedkoper kunnen. Voor allebei staat de verliesvoorwaarde vooraf op papier. Zonder clustertijd valt het project niet om — de opleidingsmodules hangen niet aan de treden — maar de claim over de grote moleculen blijft dan ongetest.
+
+*(Alinea vervangen op 14 september 2026, beslissing 36: de oude alinea staat in `Draft_2026-09-14_P26_Revision_and_Cover_Paragraph.md` §1 als "replacement for"; twee correcties bij het overnemen: "ruim drie weken" voor 448 × 76 min = 24 laptopdagen, en de zin over de grotere moleculen voorwaardelijk gemaakt op proef M3.)*
 
 Wat ik van je vraag staat in §13. De drie belangrijkste: (1) een kritische lezing van §2–§3 en §7,
 de plekken waar de discipline van het plan houdt of niet; (3) of jij gasfase- of jet-gekoelde
