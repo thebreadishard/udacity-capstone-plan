@@ -137,8 +137,9 @@ def main():
         if cell in cells:
             from pyscfad import lno
             thr = None if cell == 3 else [float(t) for t in args.lno_thresh.split(",")]
-            def make(m):
-                mf_ = scf.RHF(m).run(conv_tol=1e-11)
+            from pyscfad.df.df_jk import density_fit   # 2026-09-14 16:5x: PySCFAD's LNO requires a density-fitted mean field (lno_base.LNO.__init__ raises KeyError otherwise; cells 3-4 died 16:46);
+            def make(m):                                # plan 05's own anchor is DF-RHF too (m1_frozen_spaces), so this is the like-for-like reference; PySCFAD's RHF has no .density_fit() method, the function is in df_jk
+                mf_ = density_fit(scf.RHF(m)).run(conv_tol=1e-11)
                 mlno = lno.LNOCCSD_T(mf_)          # defaults: thresh 1e-4 (sets thresh_occ = thresh_vir), lo_type "iao", single-atom fragments (autofrag)
                 if thr is not None:
                     mlno.thresh_occ, mlno.thresh_vir = thr   # plan 05's tight pair; PySCFAD's LNO applies (thresh_occ, thresh_vir) as its PNO thresholds
