@@ -67,6 +67,11 @@ def main():
         print("cells:", {k: v for k, v in CONSTANTS["cells"].items()}); print("self-test OK (numpy only; JAX/PySCFAD not touched)")
         return
     os.environ.setdefault("OMP_NUM_THREADS", str(args.threads))
+    # 2026-09-14 17:4x: XLA's default CPU allocator keeps freed buffers, so the RSS of this process grew to 18-24 GB already at the RHF/MP2
+    # cells and PySCFAD's (T) guard ("N MB more memory is needed": cache vs max_memory - current RSS) then failed cell 3 twice even with
+    # max_memory 22 GB. The platform allocator frees eagerly; max_memory is set to 60 GB because the guard measures RSS, not the (T) cache
+    # (5-25 MB here) - it is a guard, not an allocation. Recorded in the M2a note; both settings are printed in the JSON.
+    os.environ.setdefault("XLA_PYTHON_CLIENT_ALLOCATOR", "platform")
     import jax; jax.config.update("jax_enable_x64", True)
     import pyscf, pyscfad
     from pyscfad import gto, scf
@@ -85,7 +90,7 @@ def main():
     # 2026-09-14 16:5x: PySCFAD's RCCSD.ao2mo raises NotImplementedError unless the ERIs are in core AND (incore estimate + current RSS) < max_memory (4 GB default)
     # or mol.incore_anyway is set; after cells 0-1 the RSS alone was 22 GB, so cell 2 died at 16:37. incore_anyway is what the 114-function benzene case needs (ERIs ~170 MB).
     mol.incore_anyway = True
-    mol.max_memory = 22000   # MB; see the note in make() below (2026-09-14)
+    mol.max_memory = 60000   # MB; see the note in make() below (2026-09-14)
     nat = len(sym); g_fd = 6 * nat
     # SCF once, timed separately
     t0 = time.perf_counter(); mf = scf.RHF(mol); mf.conv_tol = 1e-11; e_scf = mf.kernel(); t_scf = time.perf_counter() - t0
@@ -140,11 +145,11 @@ def main():
             thr = None if cell == 3 else [float(t) for t in args.lno_thresh.split(",")]
             from pyscfad.df.df_jk import density_fit   # 2026-09-14 16:5x: PySCFAD's LNO requires a density-fitted mean field (lno_base.LNO.__init__ raises KeyError otherwise; cells 3-4 died 16:46);
             def make(m):                                # plan 05's own anchor is DF-RHF too (m1_frozen_spaces), so this is the like-for-like reference; PySCFAD's RHF has no .density_fit() method, the function is in df_jk
-                m.max_memory = 22000                # 2026-09-14 16:5x: PySCFAD's (T) kernel compares its cache against max_memory − current RSS (pyscf default 4 GB);
+                m.max_memory = 60000                # 2026-09-14 16:5x: PySCFAD's (T) kernel compares its cache against max_memory − current RSS (pyscf default 4 GB);
                 mf_ = density_fit(scf.RHF(m)).run(conv_tol=1e-11)   # with JAX's RSS that check failed by 5–25 MB at 16:55; 22 GB is the VM's usable ceiling
-                mf_.max_memory = 22000
+                mf_.max_memory = 60000
                 mlno = lno.LNOCCSD_T(mf_)          # defaults: thresh 1e-4 (sets thresh_occ = thresh_vir), lo_type "iao", single-atom fragments (autofrag)
-                mlno.max_memory = 22000
+                mlno.max_memory = 60000
                 if thr is not None:
                     mlno.thresh_occ, mlno.thresh_vir = thr   # plan 05's tight pair; PySCFAD's LNO applies (thresh_occ, thresh_vir) as its PNO thresholds
                 return mf_, mlno
