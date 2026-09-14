@@ -43,6 +43,8 @@ the user fills the choices of §C; then it is committed as a dated note and the 
 margins per family (2) · matrix tolerance (4) · P3 effect size (5) · resonance thresholds (7) · c (8) · K_cap factor (9) ·
 f_h and seed (10) · τ₇, d₇ (11) · Q8 numbers (12) · Q10 thresholds (15) · the form of the hot-column temperature term (1).
 
+*Dated addition 2026-09-14 (mandate ledger obstacle 5; the shape score measured that morning):* one more declared choice, **the drawn width**. The pipeline predicts positions and integrated intensities; a *drawn* spectrum needs a line profile that is a declaration, not a prediction. Proposed form, to be fixed in the pilot note: a Lorentzian of fixed full width at half maximum per band, 10 cm⁻¹ by default (the Ladder's astronomical resolution floor; the jet-cooled comparison figures of Tang et al. 2026 use the same width), applied identically to every column of the shape score; the astronomical emission profile (temperature, cascade) is not modelled — a spectrum drawn for astronomical use passes through a cascade model (Mackie 2018 lineage) that is someone else's tool, cited. Since the shape score bins at 10 cm⁻¹ and compares stick lists directly, the drawn width enters no score; it enters figures only.
+
 ## D. The blocker: prerequisite (f) at the anchor's thresholds
 
 The Ladder asks for the R1 smoothness probe's σ before the note, "fits sealed". Written on 2026-09-04, when one
