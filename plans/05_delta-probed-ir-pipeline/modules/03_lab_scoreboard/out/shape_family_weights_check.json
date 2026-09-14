@@ -1,0 +1,102 @@
+{
+ "date": "2026-09-14 08:53",
+ "window_cm": [
+  550.0,
+  2000.0
+ ],
+ "molecules": {
+  "tetracene": {
+   "uid": 282,
+   "n_matrix_bands_window": 37,
+   "felix": {
+    "low / skeletal": 0.024600246002460028,
+    "CH-oop (10.5-15 um; benzene nu11 at 673 included)": 0.2669126691266913,
+    "ring / CH-ip (9-10.5 um)": 0.09102091020910211,
+    "CH-ip-bend (8.6 um)": 0.06273062730627307,
+    "CC-stretch/CH-ip (7.7 um)": 0.22632226322263224,
+    "CC-stretch (6.2 um)": 0.0897908979089791,
+    "overtone / combination region": 0.23862238622386228
+   },
+   "matrix": {
+    "low / skeletal": 0.047070312499999996,
+    "CH-oop (10.5-15 um; benzene nu11 at 673 included)": 0.6154296874999998,
+    "ring / CH-ip (9-10.5 um)": 0.05410156249999999,
+    "CH-ip-bend (8.6 um)": 0.0294921875,
+    "CC-stretch/CH-ip (7.7 um)": 0.10703125,
+    "CC-stretch (6.2 um)": 0.03984375,
+    "overtone / combination region": 0.10703125
+   },
+   "lineA": {
+    "low / skeletal": 0.061964103566574606,
+    "CH-oop (10.5-15 um; benzene nu11 at 673 included)": 0.6824940730028175,
+    "ring / CH-ip (9-10.5 um)": 0.020834587908091937,
+    "CH-ip-bend (8.6 um)": 0.04199760418683637,
+    "CC-stretch/CH-ip (7.7 um)": 0.13753598120407676,
+    "CC-stretch (6.2 um)": 0.055173650131602955,
+    "overtone / combination region": 0.0
+   }
+  },
+  "coronene": {
+   "uid": 18,
+   "n_matrix_bands_window": 20,
+   "felix": {
+    "low / skeletal": 0.0,
+    "CH-oop (10.5-15 um; benzene nu11 at 673 included)": 0.5127118644067796,
+    "ring / CH-ip (9-10.5 um)": 0.0,
+    "CH-ip-bend (8.6 um)": 0.11440677966101694,
+    "CC-stretch/CH-ip (7.7 um)": 0.14830508474576268,
+    "CC-stretch (6.2 um)": 0.09745762711864406,
+    "overtone / combination region": 0.12711864406779658
+   },
+   "matrix": {
+    "low / skeletal": 0.12064965197215781,
+    "CH-oop (10.5-15 um; benzene nu11 at 673 included)": 0.5025522041763343,
+    "ring / CH-ip (9-10.5 um)": 0.0,
+    "CH-ip-bend (8.6 um)": 0.049497293116782685,
+    "CC-stretch/CH-ip (7.7 um)": 0.1483372003093581,
+    "CC-stretch (6.2 um)": 0.04547563805104409,
+    "overtone / combination region": 0.1334880123743233
+   },
+   "lineA": {
+    "low / skeletal": 0.08186982538423251,
+    "CH-oop (10.5-15 um; benzene nu11 at 673 included)": 0.5800707278926938,
+    "ring / CH-ip (9-10.5 um)": 0.0,
+    "CH-ip-bend (8.6 um)": 0.059630262662649404,
+    "CC-stretch/CH-ip (7.7 um)": 0.17836771877416407,
+    "CC-stretch (6.2 um)": 0.10006146528626035,
+    "overtone / combination region": 0.0
+   }
+  },
+  "hexa(peri)benzocoronene": {
+   "uid": 105,
+   "n_matrix_bands_window": 22,
+   "felix": {
+    "low / skeletal": 0.023391812865497075,
+    "CH-oop (10.5-15 um; benzene nu11 at 673 included)": 0.2573099415204679,
+    "ring / CH-ip (9-10.5 um)": 0.14619883040935672,
+    "CH-ip-bend (8.6 um)": 0.050682261208577,
+    "CC-stretch/CH-ip (7.7 um)": 0.2105263157894737,
+    "CC-stretch (6.2 um)": 0.20077972709551659,
+    "overtone / combination region": 0.1111111111111111
+   },
+   "matrix": {
+    "low / skeletal": 0.01969016549509092,
+    "CH-oop (10.5-15 um; benzene nu11 at 673 included)": 0.5083341827658162,
+    "ring / CH-ip (9-10.5 um)": 0.04158032906693848,
+    "CH-ip-bend (8.6 um)": 0.03775826754238347,
+    "CC-stretch/CH-ip (7.7 um)": 0.32349164831571964,
+    "CC-stretch (6.2 um)": 0.0038220615245550095,
+    "overtone / combination region": 0.06532334528949621
+   },
+   "lineA": {
+    "low / skeletal": 0.023579328385895913,
+    "CH-oop (10.5-15 um; benzene nu11 at 673 included)": 0.4945918364129573,
+    "ring / CH-ip (9-10.5 um)": 0.052975977146917035,
+    "CH-ip-bend (8.6 um)": 0.032001042598340045,
+    "CC-stretch/CH-ip (7.7 um)": 0.2740082966444519,
+    "CC-stretch (6.2 um)": 0.1228435188114379,
+    "overtone / combination region": 0.0
+   }
+  }
+ }
+}
