@@ -1,0 +1,15 @@
+# M2a — gradient-to-energy cost ratio g, benzene cc-pvdz (2026-09-14 16:28; {'python': '3.12.14', 'jax': '0.10.2', 'pyscf': '2.14.0', 'pyscfad': '0.3.3', 'platform': 'Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43'})
+
+SCF 25.1 s (excluded from both sides). g_FD = 72. Three repeats; median reported. Written 2026-09-14 17:5x after the chain ended; cells 2-4 did not fit the laptop (see notes).
+
+| cell | t_energy (s) | t_gradient (s) | **g** | peak RSS after gradient (MB) | note |
+|---|---|---|---|---|---|
+| 0: RHF smoke: AD gradient vs PySCF analytic gradient (tol 1e-6 Eh/bohr) + timing pipeline | 21.5 | 61.0 | **2.84** | 18415 | dev vs analytic 3.4e-09 |
+| 1: MP2 canonical | 20.6 | 65.7 | **3.20** | 22102 |  |
+| 2: CCSD(T) canonical | — | — | **does not fit 25 GB** | — | does not fit the laptop's 25 GB WSL VM: the process reached 21.0 GB RSS + 6.8 GB swap (cell 2, 16:45) or drove the Windows host below 1 GB free (cell 3: 17:36 a |
+| 3: LNO-CCSD(T) as shipped (PySCFAD defaults) | — | — | **does not fit 25 GB (host < 1 GB free at ~3 min, energy step)** | — | does not fit the laptop's 25 GB WSL VM: the process reached 21.0 GB RSS + 6.8 GB swap (cell 2, 16:45) or drove the Windows host below 1 GB free (cell 3: 17:36 a |
+| 4: LNO-CCSD(T) at thresholds matching plan 05 tight | — | — | **not run: the chain was stopped with cell 3 (17:50); a superset of cell 3's memory** | — | see cell 3 |
+
+Pre-stated reading: {"g<=6": "within the AD constant; substitution and mode G pay by an order of magnitude", "6<g<=20": "substitution pays, mode G marginal", "g>20": "gradient levers do not change plan 05's order of magnitude at benzene size"}
+
+Reading on 2026-09-14: g is measurable on this laptop only at RHF (2.84) and MP2 (3.20) — both inside the AD literature's constant. At the anchor's level (cells 2–4) the PySCFAD *energy* alone exceeds the 25 GB VM at benzene cc-pVDZ, so g at cell 3 — the number the ladder needs — is **unmeasurable on the laptop**; by the plan-06 decision rule of 13 September that counts, for branch C, as "g unmeasurable on the laptop at cc-pVDZ" unless a memory-lean route exists. Recorded alternatives, not tried: PySCFAD's checkpointed LNO (`pyscfad/lno/_checkpointed.py`, the paper's recomputation) and a 64–128 GB machine (the desktop of the hardware note, or Snellius). Constants: {"basis_default": "cc-pvdz", "repeats_default": 3, "threads_default": 8, "molecule": "benzene (plan 05 dry-run geometry, stageA.json)", "cells": {"0": "RHF smoke: AD gradient vs PySCF analytic gradient (tol 1e-6 Eh/bohr) + timing pipeline", "1": "MP2 canonical", "2": "CCSD(T) canonical", "3": "LNO-CCSD(T) as shipped (PySCFAD defaults)", "4": "LNO-CCSD(T) at thresholds matching plan 05 tight", "5": "LNO-CCSD(T) cc-pVTZ (only if cell 3 gives g <= 20)"}, "reading": {"g<=6": "within the AD constant; substitution and mode G pay by an order of magnitude", "6<g<=20": "substitution pays, mode G marginal", "g>20": "gradient levers do not change plan 05's order of magnitude at benzene size"}, "rhf_gradient_tolerance": 1e-06}

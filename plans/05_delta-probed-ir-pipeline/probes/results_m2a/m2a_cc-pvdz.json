@@ -1,0 +1,102 @@
+{
+ "date": "2026-09-14 16:28",
+ "constants": {
+  "basis_default": "cc-pvdz",
+  "repeats_default": 3,
+  "threads_default": 8,
+  "molecule": "benzene (plan 05 dry-run geometry, stageA.json)",
+  "cells": {
+   "0": "RHF smoke: AD gradient vs PySCF analytic gradient (tol 1e-6 Eh/bohr) + timing pipeline",
+   "1": "MP2 canonical",
+   "2": "CCSD(T) canonical",
+   "3": "LNO-CCSD(T) as shipped (PySCFAD defaults)",
+   "4": "LNO-CCSD(T) at thresholds matching plan 05 tight",
+   "5": "LNO-CCSD(T) cc-pVTZ (only if cell 3 gives g <= 20)"
+  },
+  "reading": {
+   "g<=6": "within the AD constant; substitution and mode G pay by an order of magnitude",
+   "6<g<=20": "substitution pays, mode G marginal",
+   "g>20": "gradient levers do not change plan 05's order of magnitude at benzene size"
+  },
+  "rhf_gradient_tolerance": 1e-06
+ },
+ "versions": {
+  "python": "3.12.14",
+  "jax": "0.10.2",
+  "pyscf": "2.14.0",
+  "pyscfad": "0.3.3",
+  "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43"
+ },
+ "basis": "cc-pvdz",
+ "threads": 8,
+ "repeats": 3,
+ "cells": {
+  "0": {
+   "cell": "RHF smoke: AD gradient vs PySCF analytic gradient (tol 1e-6 Eh/bohr) + timing pipeline",
+   "t_energy_s": 21.451474292000057,
+   "t_energy_repeats_s": [
+    21.451474292000057,
+    19.31656760199985,
+    21.664730340009555
+   ],
+   "t_gradient_s": 60.991100077997544,
+   "t_gradient_repeats_s": [
+    62.25276501198823,
+    56.81779447999725,
+    60.991100077997544
+   ],
+   "g": 2.8432125106078643,
+   "g_FD_reference": 72,
+   "peak_rss_after_energy_MB": 5575.96875,
+   "peak_rss_after_gradient_MB": 18414.94140625,
+   "max_abs_dev_vs_pyscf_analytic_Eh_per_bohr": 3.3744690652870446e-09,
+   "passes": true
+  },
+  "1": {
+   "cell": "MP2 canonical",
+   "t_energy_s": 20.55586214599316,
+   "t_energy_repeats_s": [
+    22.063753184993402,
+    20.0716186369973,
+    20.55586214599316
+   ],
+   "t_gradient_s": 65.67710232100217,
+   "t_gradient_repeats_s": [
+    69.38606765899749,
+    65.67710232100217,
+    60.14072304600268
+   ],
+   "g": 3.1950546201636323,
+   "g_FD_reference": 72,
+   "peak_rss_after_energy_MB": 18414.94140625,
+   "peak_rss_after_gradient_MB": 22102.43359375
+  },
+  "2": {
+   "cell": "CCSD(T) canonical",
+   "outcome": "does not fit 25 GB",
+   "peak_rss_MB_observed": 20975,
+   "swap_MB_observed": 6820,
+   "note": "does not fit the laptop's 25 GB WSL VM: the process reached 21.0 GB RSS + 6.8 GB swap (cell 2, 16:45) or drove the Windows host below 1 GB free (cell 3: 17:36 at 0.3 GB, again 17:50 at 0.4 GB with XLA_PYTHON_CLIENT_ALLOCATOR=platform) during the ENERGY step, before any gradient; stopped by hand / by the host guard; three PySCFAD requirements met on the way (incore ERIs for RCCSD, DF mean field for LNO, max_memory above RSS for the (T) guard)"
+  },
+  "3": {
+   "cell": "LNO-CCSD(T) as shipped (PySCFAD defaults)",
+   "outcome": "does not fit 25 GB (host < 1 GB free at ~3 min, energy step)",
+   "note": "does not fit the laptop's 25 GB WSL VM: the process reached 21.0 GB RSS + 6.8 GB swap (cell 2, 16:45) or drove the Windows host below 1 GB free (cell 3: 17:36 at 0.3 GB, again 17:50 at 0.4 GB with XLA_PYTHON_CLIENT_ALLOCATOR=platform) during the ENERGY step, before any gradient; stopped by hand / by the host guard; three PySCFAD requirements met on the way (incore ERIs for RCCSD, DF mean field for LNO, max_memory above RSS for the (T) guard)"
+  },
+  "4": {
+   "cell": "LNO-CCSD(T) at thresholds matching plan 05 tight",
+   "outcome": "not run: the chain was stopped with cell 3 (17:50); a superset of cell 3's memory",
+   "note": "see cell 3"
+  }
+ },
+ "scf": {
+  "e_tot": -230.7218490655428,
+  "t_scf_s": 25.06669663899811,
+  "converged": true
+ },
+ "environment_notes": [
+  "XLA_PYTHON_CLIENT_ALLOCATOR=platform from 17:4x (cells 3-4 attempts)",
+  "mol.incore_anyway=True; max_memory 60000 MB (guard only)",
+  "cells 0-1 ran in one process (16:28-16:37); cells 2-4 one process each"
+ ]
+}

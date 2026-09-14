@@ -28,7 +28,7 @@ Closed at benzene by measurement: low rank of the correction (S2), Cartesian spa
 the correction is more local than the mean field (X9, T3′). Alive: S1 in its honest form (the correction's range follows the
 π system and its gap; X6/X7 next), S4 sharpened into a free DFT ordering of the deck's pairs (X10, draft P25), S5 transferred to
 plan 05 as decision 34 and conditional on gradients (X11: the two savings stack). The one number that decides the order of
-magnitude — the gradient-to-energy cost ratio g — is measured nowhere; the cost ladder prices every lever with its status. The
+magnitude — the gradient-to-energy cost ratio g — is measured nowhere; the cost ladder prices every lever with its status. **14 September, evening: M2a ran — g = 2.84 (RHF) and 3.20 (MP2) on the laptop, but the anchor-level cells (canonical and local CCSD(T)) do not fit its 25 GB in PySCFAD's eager implementation, so g at the level the ladder needs is unmeasurable on the laptop (decision rule §2 updated; cost ladder §5 has the energy-side levers G and H that do not depend on g).** The
 evening's overview: [GoalGathering/Evening_Overview_2026-09-12.md](GoalGathering/Evening_Overview_2026-09-12.md).
 
 ## Reading order

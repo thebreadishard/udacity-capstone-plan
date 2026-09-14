@@ -11,7 +11,7 @@
 
 | number | from | expected | decides |
 |---|---|---|---|
-| g (gradient-to-energy cost ratio, shipped LNO) | M2a, cells 0–4 | the first free evening after the naphthalene timing (this week) | branch C's gradient route: g ≤ 20 build M2; 20–26 marginal; > 26 no (M2 design note §6, X14's bar) |
+| g (gradient-to-energy cost ratio, shipped LNO) | M2a, cells 0–4 | **run 14 September 2026 (plan 05 `probes/results_m2a/m2a_cc-pvdz.md`): g = 2.84 at RHF and 3.20 at MP2 — inside the AD constant — but cells 2–4 (canonical CCSD(T), LNO-CCSD(T)) do not fit the laptop's 25 GB VM in PySCFAD's eager JAX implementation (the energy step alone: 21 GB RSS + 6.8 GB swap, host below 1 GB free twice); g at the anchor's level is therefore "unmeasurable on the laptop at cc-pVDZ" in the words of §3.1** | branch C's gradient route: g ≤ 20 build M2; 20–26 marginal; > 26 no (M2 design note §6, X14's bar). *Dated reading, 14 September:* the rule's "unmeasurable on the laptop" arm is now the live one; it closes branch C on 15 October together with an unlicensed P25 unless a memory-lean measurement (PySCFAD's checkpointed LNO, `pyscfad/lno/_checkpointed.py`; or a 64–128 GB machine) is run before then — a decision for the user, not scheduled |
 | P25's naphthalene licence | X10 repeated on the naphthalene tensor | after the BHHLYP Hessian (machine queue item 5; days) | branch C's energies-only route: licensed → proposal to plan 05; not → withdrawn |
 | π share of the ring correction (X6) | X6 | after the run (minutes) | branch M's S3: share < ½ on the C–C stretch closes S3 as an anchor route |
 | λ·gap across benzene, naphthalene, pyrene (X7) | X7 | after the run (minutes) | branch M's S1 rate claim (T3): factor > 2 falsifies "rate ∝ gap" |
