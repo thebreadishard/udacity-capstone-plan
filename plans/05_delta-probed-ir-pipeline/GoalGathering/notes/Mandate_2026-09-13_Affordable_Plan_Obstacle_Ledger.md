@@ -8,16 +8,16 @@
 
 Budget: the €5,000 workstation of the hardware note (16 cores, 128 GB, P13, ordered only after evidence and the supervisor's approval) and a small Snellius allocation sponsored by the supervisor. Time: the capstone calendar (defense May 2027, §12).
 
-## 2. What the budget buys, in labels per year (duration table, P26 block; F provisional 2.27, desktop 2.3–3.8× the laptop, plus a small Snellius share)
+## 2. What the budget buys, in labels per year (duration table, P26 block; **F = 3.34 measured 14 September**, desktop 2.3–3.8× the laptop, plus a small Snellius share)
 
 | label class | full deck | diagonal-only deck | gradients (if g ≤ 5) |
 |---|---|---|---|
-| benzene-class (M ≈ 30) | 80–160 molecules/yr | 290–570 | 900–2,900 |
-| naphthalene-class (M ≈ 48) | 2–3 | 9–17 | 10–31 |
-| pyrene-class (M ≈ 72) | 0.1–0.4 | 0.6–2.3 | 1–4 |
-| coronene-class (M ≈ 102) | 0 | 0–0.3 | 0.2–1.9 |
+| benzene-class (M ≈ 30) | 82–161 | 294–573 | 880–2,866 |
+| naphthalene-class (M ≈ 48) | 1.2–2.4 | 6.0–11.8 | 6.5–21.0 |
+| pyrene-class (M ≈ 72) | 0.1–0.2 | 0.4–1.6 | 0.4–2.7 |
+| coronene-class (M ≈ 102) | 0.0–0.1 | 0.0–0.2 | 0.1–1.3 |
 
-Reading: the truth the network can be trained on in one year is **one or two full naphthalene-class corrections, about ten diagonal-only naphthalene-class corrections, a hundred benzene-class corrections, one or two thin pyrene-class checks, and at most one coronene-class check** — more if g is small (gradients) and P25 is licensed. Everything above pyrene size that the network says is *reach*, not truth, and is judged on hold-outs and a grounded error budget. This is the honest content of the goal sentence; the arithmetic is remade the moment F (tonight) and g (this week) are measured.
+Reading (with the measured F): the truth the network can be trained on in one year is **one or two full naphthalene-class corrections, six to twelve diagonal-only naphthalene-class corrections, a hundred benzene-class corrections, at most one or two thin pyrene-class checks, and a coronene-class check only if g is small** — more if P25 is licensed. Everything above pyrene size that the network says is *reach*, not truth, and is judged on hold-outs and a grounded error budget. This is the honest content of the goal sentence; the arithmetic is remade when g (M2a, this week) is measured.
 
 ## 3. The pipeline the sentence describes (what exists, what is missing)
 
@@ -60,6 +60,7 @@ Whenever the machine is busy or the user is away, the next item is the cheapest 
 
 ## 6. Log
 
+- **14 Sep, 07:49–08:3x:** the anchor timing finished; **F = 3.34 measured** (38.4 h of fragment solves against 11.5 h; out-of-core path in the ratio); duration table reprinted; §2 above recomputed (naphthalene-class full 1.2–2.4 per year on the desktop plus a small Snellius share); proposal §3.3/§8/§12/§13, both budget documents, the duration note and the README updated; 20 GB scratch cleared. Obstacle 1's first number is in: the anchor energy at R1 is 3.3 × dearer than the tight one, which makes the tight/xtight choice of P26 a live question (accuracy side: the benzene bias 0.47/0.03/0.79 → 0.11/−0.01/0.23 cm⁻¹; price side: × 3.3) and makes g and P25 the decisive levers.
 - **14 Sep, 07:0x (check run by hand at the user's request; the session cron never fired overnight — 23:41, 01:41, 03:41, 05:41 all silent — and was replaced at 06:5x by Monitor task bj6sc40fd, which emits the same instruction every two hours through the channel the run-monitor uses):** (A) run on fragment 24 of 24 (343 virtuals) since ≈ 04:45, expected done 07:45–08:15; nothing to act on. (B) obstacle 13 measured (corpus ceiling 17 carbons, see above); obstacle 15 read (energy-trained learned functionals, no vibrational test). (C) finding: the size axis above 17 carbons is covered by nobody's Hessian data — a **layer D of bare PAHs from PAHdb v4.00 geometries (24 C upward, neutral first)** is the cheapest way to own it, priced only after obstacle 12's Hessian timing; idea I5 below. No software change, no installation.
 - **13 Sep, 23:0x:** items 77 and 78 read in full (HTML / arXiv), item 79 abstract only (OUP bot check): `notes/Reading_Note_2026-09-13_LineD_ML_PAH_IR_Predictors.md`. Settled: line D predicts *relative intensity histograms at 12–18 cm⁻¹ bins* from scaled B3LYP spectra and is judged against DFT (finer bins make it worse by its own test); its public data are SMILES + binned spectra + charge (7 MB, MIT) — **no Hessians, no geometries, no two-functional differences, so the corpus factory is not replaced** (the user's question); their stated limit is training data above ≈ 100–160 C. Lineage records added (Kovács 2020, item 81; Wang 2026 letter, item 82).
 - **13 Sep, 22:3x:** obstacle 14 resolved to named papers: the Zhao Wang group's three 2026 ML PAH-IR predictors (He, Mai & Wang A&A 708, A335; Tang, He, Wang & Qiu MNRAS 546; Liu, Wang & Qiu MNRAS 549), found through the citing works of Mai 2025 after the user's hand search of arXiv came back empty; bibliography items 77–80; proposal §3.1 opponents row corrected to the verified records; Module 02 line-D candidate noted.

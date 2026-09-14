@@ -255,7 +255,7 @@ matrix — what is new here is using it as the prior of a recovery from few meas
 arithmetic, at benzene's measured per-energy time of 35 minutes in the anchor basis (naphthalene's is longer: **measured 11 September, 11.5 h per energy at 19.8 GB peak memory on the laptop, against 35 minutes for benzene**). Two numbers, with different roles. The **deck**
 at R1 is the probing licence's reference (§5.1): 48 modes × 2 diagonal energies, the 48 second-
 amplitude points, and every one of the 141 same-representation pairs measured directly as a ± two-
-mode point — 96 + 96 + 282 = **474 energies**, about 280 hours at benzene's 35 minutes per energy and **5,450 hours — 227 days — at naphthalene's measured 11.5 hours**, which is the figure §12 and P13 carry (measured at the tight local-correlation thresholds; the anchor now runs one decade tighter, decision 20, and the naphthalene energy at those thresholds was launched for timing on 12 September and is owed; the benzene factor suggests about twice, and its memory may exceed the laptop, in which case that timing is the first job of the machine P13 chooses). **K**, what the stopping rule
+mode point — 96 + 96 + 282 = **474 energies**, about 280 hours at benzene's 35 minutes per energy and **5,450 hours — 227 days — at naphthalene's measured 11.5 hours**, which is the figure §12 and P13 carry (measured at the tight local-correlation thresholds; the anchor now runs one decade tighter, decision 20, and the naphthalene energy at those thresholds was **timed on 14 September: 138,305 s = 38.4 hours of fragment solves, F = 3.34 over tight, peak 15.4 GB with pyscf's out-of-core path** — so the R1 deck at the anchor thresholds is 474 × 38 h ≈ 18,200 laptop-hours ≈ 760 days; by estimate 200–330 days on the priced desktop and 25–41 days on four Snellius nodes, `probes/results_timing/DURATION_TABLE.md`). **K**, what the stopping rule
 reports (K = 2M + K_off; the second amplitude sits outside it), is smaller: 96 diagonal energies
 plus between 0.9 and 2.0 energies per allowed coupling — 0.9 is the no-prior benzene rate (388 for
 435 unknowns), 2.0 is the cap at which every pair is simply measured; the benzene rerun under the
@@ -335,8 +335,8 @@ subsection):
   factor, which at benzene is about 2 (4,576 s against ≈ 2,200 s per frozen-arm point; the result file's
   "×0.7" compares with the tight scan's 6,441 s per point, which ran arms B and C as well — arm A alone
   was 2,160 s at the reference point) and at
-  naphthalene is owed as a timed energy before the R1 deck is priced (the 11.5 h of §8 is the tight
-  figure). Per-mode calibration is not needed (research note P10, decision 20). - *The basis-set line,
+  naphthalene was timed on 14 September: 38.4 h per energy at the anchor thresholds against 11.5 h at
+  tight, F = 3.34 (§8), the ratio carrying the out-of-core memory path as well as the thresholds. Per-mode calibration is not needed (research note P10, decision 20). - *The basis-set line,
   second input (decision 26 (ii), printed 12 September 12:13; `probes/results_m1/BASIS_LINE_scf_mp2.md`):*
   DF-RHF and DF-MP2 at the same 27 points in cc-pVQZ, DF-RHF in cc-pV5Z — 19 minutes in all. The
   SCF part of the curvature moves by +1.8 / −2.4 / −4.6 cm⁻¹ from TZ to QZ and by +3.8 / −2.8 / −3.1
@@ -809,7 +809,7 @@ subsystem given 22 GB; the machine is dedicated to the project and available aro
   (12 September), and the DF-RHF/DF-MP2 cc-pVQZ and DF-RHF cc-pV5Z line 19 minutes for 54 points.
 - **The canonical reference.** Canonical CCSD(T) energy of benzene: 27 s at cc-pVDZ, **755 s and
   7.3 GB at cc-pVTZ** on the idle laptop at the equilibrium geometry (850–1,270 s at the displaced
-  geometries of the scan, with the laptop in use). Local LNO-CCSD(T) energy at cc-pVTZ: 2,087 s for benzene (locality pays only at larger molecules) and **41,375 s — 11.5 hours — for naphthalene at tight thresholds, 24 fragments, peak memory 19.8 GB against the laptop's 22 GB ceiling (11 September)**; pyrene will not fit this laptop's memory. The anchor's bias line — 61 canonical energies along benzene's 30 modes — is
+  geometries of the scan, with the laptop in use). Local LNO-CCSD(T) energy at cc-pVTZ: 2,087 s for benzene (locality pays only at larger molecules) and **41,375 s — 11.5 hours — for naphthalene at tight thresholds, 24 fragments, peak memory 19.8 GB against the laptop's 22 GB ceiling (11 September)**, and **138,305 s — 38.4 hours of fragment solves — at the anchor thresholds [10⁻⁷, 10⁻⁸], peak 15.4 GB with the out-of-core path, finished 14 September (F = 3.34)**; pyrene will not fit this laptop's memory. The anchor's bias line — 61 canonical energies along benzene's 30 modes — is
   therefore 13–21 hours and **fits the laptop**; the full canonical reference Hessian by
   energies (1 + 2·30 + 4·435 = 1,801 energies, about 378 hours) **does not**, and neither does the
   gradient branch: a canonical CCSD(T) gradient of benzene costs 1,399 s and 13.9 GB at cc-pVDZ —
@@ -1049,7 +1049,7 @@ date, and the science continues past it.
 
 **Calendar (set 10 September 2026, from the first week's measured pace; the first date is the
 Monday the proposal is sent, every date after it is a Friday, and each means "delivered in full or in its fail-closed state").** The pace-setting quantities are the
-laptop's serial compute (one anchor job at a time; a benzene cc-pVTZ scan is two days, one naphthalene LNO-CCSD(T) energy **11.5 hours, measured 11 September, at 19.8 GB peak memory**), the student's evenings and weekends for
+laptop's serial compute (one anchor job at a time; a benzene cc-pVTZ scan is two days, one naphthalene LNO-CCSD(T) energy **11.5 hours at tight thresholds (11 September) and 38.4 hours at the anchor thresholds (14 September), 15–20 GB peak memory**), the student's evenings and weekends for
 decisions, and the supervisor's reading time around this proposal and around the cluster request
 (one to two weeks each assumed). The first week also showed that each measurement brought one
 correction with it (semicanonicalisation, the frozen-core count in the timing probe, the factor 2,
@@ -1065,7 +1065,7 @@ back per module is budgeted, not hoped away.
 | Pilot note | every frozen number, band lists, margins | 30 Oct 2026 | the student's work after the measurements |
 | Module 04 — calibrated-harmonic baseline | ML correction to scale factors, leave-molecule-out — **scaffolded in the rubric form on 12 September** (`modules/04_calibrated_harmonic/`: recipe committed before training; 2,477 matrix↔computed pairs of 83 molecules; leave-one-molecule-out MAE 6.49 cm⁻¹ for the library as served against 6.40 for the best model, R² ≤ 0.01 — on this table the calibrated baseline *is* line A; the Zenodo release of the table and the pilot note's adoption of the recipe still owed) | 30 Oct 2026 | in parallel with the compute |
 | Module 05 — Δ₂-support predictor | the DFT-vs-DFT Hessian corpus and the network — **scaffolded 12 September** (`modules/05_support_predictor/`: recipe, the Transformer in PyTorch, smoke test on the benzene dry-run tensor). **Hessian QM9 downloaded and verified the same day** (41,645 molecules, ωB97X/6-31G* numerical Hessians; paper read for units and conventions). **Measured: it holds only 66 molecules with an all-carbon aromatic six-ring and 6,055 with a planar conjugated five- or six-ring** — the "aromatic-heavy QM9 subset" of the mapping is really a conjugated/heteroaromatic subset. **Prepared in response (no compute yet): a resumable corpus factory** (`modules/05_support_predictor/corpus/`) with four layers — 45 ladder-adjacent aromatics of 12–30 atoms as a size bridge, 868 mono-substituted three- and four-ring cores that turn the bridge into a distribution (added the same day on the student's decision), 4,353 substituted aromatic and heteroaromatic cores as the class, and the 6,055 conjugated QM9 molecules — computed with the plan's two functionals at 6-31G* on this laptop, the desktop or a cluster, start-and-stop, in a fixed order so every stop leaves a reproducible subset. The number actually computed is fixed by a dated note after a five-molecule timing test; the corpus is published with a DOI before the module starts (reading 1). No result | 20 Nov 2026 | the corpus costs DFT compute and competes with R1 (measured per molecule: a QM9-size molecule 3–7 min per Hessian, naphthalene 13 min, pyrene 54 min) |
-| R1 probe batch and scoring | the first real coupled-cluster correction, naphthalene | 4 Dec 2026 | **not the laptop (227 days at the measured 11.5 h per energy): the desktop of the hardware note in two to three months — an estimate from the core count, not a timing; nearer four with the corpus factory beside it; the desktop is a priced configuration, not a purchase, and would be the student's own — or the cluster** (P13, open) |
+| R1 probe batch and scoring | the first real coupled-cluster correction, naphthalene | 4 Dec 2026 | **not the laptop (760 days at the measured 38 h per energy at the anchor thresholds): the desktop of the hardware note in seven to eleven months by the core-count estimate — not a timing — or four Snellius nodes in 25–41 days (estimate; §13 item 5); with the corpus factory beside it the desktop figure lengthens further; the desktop is a priced configuration, not a purchase, and would be the student's own — or the cluster** (P13, open) |
 | Cluster request | sponsored by the supervisor, sized by the R1 timings | 11 Dec 2026 | the supervisor and the request's lead time |
 | Module 06 — generative pattern proposer | the efficiency experiment on K_off | 18 Dec 2026 | the student's work |
 | Q9 pre-registration — families per adjacency class, τ_F, the two rules, the LOMO protocol (decision 27) | written before any R2 correction exists | 15 Jan 2027 | no compute |
@@ -1106,8 +1106,8 @@ decisions in the evenings, and the supervisor's reading time at the two points n
    a calibrated gas-phase measurement exists and reported elsewhere, and a coupled-cluster
    correction to intensities is a measured question rather than a promise. If the supervisor wants
    intensities carried further, the dipole probe M1-μ is the measurement that would license it.
-5. The naphthalene measurement now justifies it (11.5 hours per energy on the laptop at the tight thresholds, more at the anchor's tighter ones; the R1 deck of
-   474 energies is 5,450 laptop-hours): sponsorship of a cluster-time request sized by the timed
+5. The naphthalene measurement now justifies it (38 hours per energy on the laptop at the anchor thresholds, measured 14 September; the R1 deck of
+   474 energies is ≈ 18,000 laptop-hours): sponsorship of a cluster-time request sized by the timed
    probes, including whether a suitable machine exists within the supervisor's own network, and, at the large-rung stage, serving as or nominating the named expert whose
    pre-registered judgment is the datum where no laboratory truth exists (the "expert-judgment
    datum" of §5.2).

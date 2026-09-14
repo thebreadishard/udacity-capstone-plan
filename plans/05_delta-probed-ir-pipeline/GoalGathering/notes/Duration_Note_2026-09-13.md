@@ -4,7 +4,7 @@
 
 ## 1. The two open places
 
-- **F, the xtight/tight factor at naphthalene.** Measured tonight when the running xtight energy ends. **Provisional now: F = 2.33** (15 of 24 fragments in the checkpoint sum to 16.7 h, the remaining nine at the observed mean of 67 min give ≈ 26.8 h, against 11.5 h at tight). That is close to benzene's 2.1 and far below the P13 memo's model value of 3.6–4.7 — good news for the calendar if it holds through the large fragments still to come.
+- **F, the xtight/tight factor at naphthalene.** **Measured 14 September 07:49: F = 3.34** — 138,305 s of fragment solves summed over the three segments of the checkpointed run (24 fragments, 35–239 min each; the four largest, one symmetry class of 343 virtuals, 3–4 h each) against the tight energy's 41,375 s. Caveat, like for like: the tight energy ran in-core in one segment (19.8 GB peak); the xtight energy ran with `--max-memory 16000` (out-of-core four-virtual blocks, 15.35 GB peak), so F carries the out-of-core path as well as the tighter thresholds; the benzene factor at equal settings was about 2. The table below and `DURATION_TABLE.md` are reprinted with it. *Written 13 September, before the measurement:* provisional F = 2.33 (15 of 24 fragments in the checkpoint sum to 16.7 h, the remaining nine at the observed mean of 67 min give ≈ 26.8 h, against 11.5 h at tight). That is close to benzene's 2.1 and far below the P13 memo's model value of 3.6–4.7 — good news for the calendar if it holds through the large fragments still to come.
 - **g, the gradient-to-energy cost ratio (M2a).** Not in the baseline table (energies only). When it exists the script prints a gradient block: the R1 deck by 18 gradients (plan 06 X14) = 18·g energy-equivalents.
 
 ## 2. Definitions the table uses (to be confirmed by the user)
@@ -15,7 +15,7 @@
 - **Decks:** 4M + 2E energies (M modes, E same-irrep pairs); E measured at benzene (47) and naphthalene (141); estimated as M²/(2|G|) above (gives 144 at naphthalene). All coupled-cluster energies at the anchor's xtight thresholds (decision 20).
 - **R2 price per energy:** 5–10 × naphthalene (Budget, unmeasured). **R3:** 25–100 × naphthalene — the author's extrapolation, no measurement of any kind behind it; the row is a placeholder for the pyrene timing that the Budget names as the cluster's first job.
 
-## 3. The table (provisional F; from `DURATION_TABLE.md`)
+## 3. The table (as printed 13 September with the provisional F; the current print with the measured F = 3.34 is `probes/results_timing/DURATION_TABLE.md` — R1 deck 759 laptop-days, 198–330 desktop-days, 25–41 days on four Snellius nodes; naphthalene-class labels per year 1.2–2.4 full, 6–12 diagonal-only, 6.5–21 with gradients at g ≤ 5)
 
 | step | computation | days on laptop | days on desktop | days on Snellius (4 nodes) | status |
 |---|---|---|---|---|---|

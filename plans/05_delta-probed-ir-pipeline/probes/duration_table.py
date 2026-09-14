@@ -55,6 +55,13 @@ def provisional_F():
     for k, v in fr.items():
         by_size.setdefault(v["n_mo_frag"], []).append(v["t_s"])
     missing = 24 - len(fr)
+    if missing == 0:
+        F = done / 41375
+        return F, (f"MEASURED 2026-09-14: all 24 fragments in the checkpoint, fragment solves summed over the three segments {done/3600:.1f} h "
+                   f"(per fragment {min(v['t_s'] for v in fr.values())/60:.0f}-{max(v['t_s'] for v in fr.values())/60:.0f} min), against the tight energy's 11.5 h -> F = {F:.2f}. "
+                   "Caveat, like for like: the tight energy ran in one uninterrupted segment with pyscf's default max_memory (in-core, 19.8 GB peak); the xtight energy ran with "
+                   "--max-memory 16000 (out-of-core four-virtual blocks, 15.35 GB peak) over three segments, so F carries the out-of-core path as well as the tighter thresholds; "
+                   "the benzene factor at equal settings was about 2")
     # remaining fragments assumed to follow the observed size distribution: average time per fragment so far
     avg = done / len(fr)
     total = done + missing * avg
