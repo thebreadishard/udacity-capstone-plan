@@ -74,7 +74,17 @@ def main():
     OUT.mkdir(exist_ok=True)
     out = {"date": f"{datetime.now():%Y-%m-%d %H:%M}", "constants": CONSTANTS, "versions": versions, "basis": args.basis, "threads": args.threads, "repeats": args.repeats, "cells": {}}
     cells = [int(c) for c in args.cells.split(",")]
+    # 2026-09-14 16:5x: cells may be run one per process (memory: RSS was 22 GB after cells 0-1 in one process); an existing result file is merged, not overwritten
+    prev = OUT / f"m2a_{args.basis}.json"
+    if prev.exists():
+        try:
+            old = json.load(open(prev)); out["cells"] = old.get("cells", {}); out["previous_runs"] = old.get("previous_runs", []) + [old.get("date")]
+        except Exception:  # noqa: BLE001
+            pass
     mol = gto.Mole(atom=[(s, tuple(c)) for s, c in zip(sym, X)], unit="Bohr", basis=args.basis, verbose=0); mol.build(trace_coords=True, trace_exp=False, trace_ctr_coeff=False)
+    # 2026-09-14 16:5x: PySCFAD's RCCSD.ao2mo raises NotImplementedError unless the ERIs are in core AND (incore estimate + current RSS) < max_memory (4 GB default)
+    # or mol.incore_anyway is set; after cells 0-1 the RSS alone was 22 GB, so cell 2 died at 16:37. incore_anyway is what the 114-function benzene case needs (ERIs ~170 MB).
+    mol.incore_anyway = True
     nat = len(sym); g_fd = 6 * nat
     # SCF once, timed separately
     t0 = time.perf_counter(); mf = scf.RHF(mol); mf.conv_tol = 1e-11; e_scf = mf.kernel(); t_scf = time.perf_counter() - t0
@@ -118,6 +128,7 @@ def main():
             mf_ = scf.RHF(mol).run(conv_tol=1e-11); mc = rccsd.RCCSD(mf_); ecc = mc.kernel()[0]; return ecc + mc.ccsd_t()
         def g_fn():
             def e_of_mol(m):
+                m.incore_anyway = True   # the traced copy inside jax.grad must carry the flag too (2026-09-14)
                 mf_ = scf.RHF(m).run(conv_tol=1e-11); mc = rccsd.RCCSD(mf_); ecc = mc.kernel()[0]; return mf_.e_tot + ecc + mc.ccsd_t()
             return jax.grad(e_of_mol)(mol).coords
         t_e, ts_e, _ = timed(e_fn, args.repeats); rss_e = peak_rss_mb(); t_g, ts_g, _ = timed(g_fn, args.repeats); rss_g = peak_rss_mb()
