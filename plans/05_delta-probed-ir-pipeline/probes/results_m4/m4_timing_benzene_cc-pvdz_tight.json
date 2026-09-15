@@ -1,0 +1,41 @@
+{
+ "stage": "timing",
+ "molecule": "benzene",
+ "basis": "cc-pvdz",
+ "thresh": "tight",
+ "frozen": 6,
+ "date": "2026-09-15 13:58",
+ "node": "Asus18",
+ "threads": 8,
+ "geometry": "stage-A reference geometry of the neutral (the cation point is vertical)",
+ "neutral": {
+  "t_scf_s": 0.9939699172973633,
+  "t_lno_s": 164.16831159591675,
+  "n_frag": 15,
+  "peak_rss_gb": 1.1970291137695312,
+  "energies_not_printed": {
+   "e_corr_lno_ccsd": -0.8235550383956202,
+   "e_corr_lno_ccsd_t": -0.8596053979733799,
+   "e_corr_lno_pt2": -0.7835628383909945,
+   "n_frag": 15
+  }
+ },
+ "cation": {
+  "t_scf_s": 12.908500909805298,
+  "stability_rounds": 1,
+  "s2": 0.8699749104761096,
+  "t_ulno_s": 5096.319760799408,
+  "n_frag_alpha": 15,
+  "n_frag_beta": 14,
+  "peak_rss_gb": 4.189521789550781,
+  "energies_not_printed": {
+   "e_corr_lno_ccsd": -0.7785829705554924,
+   "e_corr_lno_ccsd_t": -0.8119811649183887,
+   "e_corr_lno_pt2": -0.7230850157355415,
+   "n_frag_alpha": 15,
+   "n_frag_beta": 14
+  }
+ },
+ "c_cation_over_neutral": 31.043261097449,
+ "wall_total_s": 5274.404263973236
+}

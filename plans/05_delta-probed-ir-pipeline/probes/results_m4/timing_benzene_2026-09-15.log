@@ -1,0 +1,124 @@
+=== detached start Tue Sep 15 13:58:09 CEST 2026: python m4_cation_timing.py --stage timing --molecule benzene --basis cc-pvdz --thresh tight --threads 8
+[13:58:09] M4 timing: benzene cc-pvdz tight, 8 threads, pyscf 2.14.0
+[14:00:54] benzene neutral RHF 1 s; LNOCCSD_T tight: 15 fragments, 164 s; peak RSS 1.20 GB
+[14:01:07] benzene+ UHF 13 s, stability rounds 1, <S^2> 0.8700 (2S+1 = 2.1166)
+
+WARN: CCSD detected DF being used in the HF object. MO integrals are computed based on the DF 3-index tensors.
+It's recommended to use dfccsd.CCSD for the DF-CCSD calculations
+
+
+WARN: CCSD detected DF being used in the HF object. MO integrals are computed based on the DF 3-index tensors.
+It's recommended to use dfccsd.CCSD for the DF-CCSD calculations
+
+
+WARN: CCSD detected DF being used in the HF object. MO integrals are computed based on the DF 3-index tensors.
+It's recommended to use dfccsd.CCSD for the DF-CCSD calculations
+
+
+WARN: CCSD detected DF being used in the HF object. MO integrals are computed based on the DF 3-index tensors.
+It's recommended to use dfccsd.CCSD for the DF-CCSD calculations
+
+
+WARN: CCSD detected DF being used in the HF object. MO integrals are computed based on the DF 3-index tensors.
+It's recommended to use dfccsd.CCSD for the DF-CCSD calculations
+
+
+WARN: CCSD detected DF being used in the HF object. MO integrals are computed based on the DF 3-index tensors.
+It's recommended to use dfccsd.CCSD for the DF-CCSD calculations
+
+
+WARN: CCSD detected DF being used in the HF object. MO integrals are computed based on the DF 3-index tensors.
+It's recommended to use dfccsd.CCSD for the DF-CCSD calculations
+
+
+WARN: CCSD detected DF being used in the HF object. MO integrals are computed based on the DF 3-index tensors.
+It's recommended to use dfccsd.CCSD for the DF-CCSD calculations
+
+
+WARN: CCSD detected DF being used in the HF object. MO integrals are computed based on the DF 3-index tensors.
+It's recommended to use dfccsd.CCSD for the DF-CCSD calculations
+
+
+WARN: CCSD detected DF being used in the HF object. MO integrals are computed based on the DF 3-index tensors.
+It's recommended to use dfccsd.CCSD for the DF-CCSD calculations
+
+
+WARN: CCSD detected DF being used in the HF object. MO integrals are computed based on the DF 3-index tensors.
+It's recommended to use dfccsd.CCSD for the DF-CCSD calculations
+
+
+WARN: CCSD detected DF being used in the HF object. MO integrals are computed based on the DF 3-index tensors.
+It's recommended to use dfccsd.CCSD for the DF-CCSD calculations
+
+
+WARN: CCSD detected DF being used in the HF object. MO integrals are computed based on the DF 3-index tensors.
+It's recommended to use dfccsd.CCSD for the DF-CCSD calculations
+
+
+WARN: CCSD detected DF being used in the HF object. MO integrals are computed based on the DF 3-index tensors.
+It's recommended to use dfccsd.CCSD for the DF-CCSD calculations
+
+
+WARN: CCSD detected DF being used in the HF object. MO integrals are computed based on the DF 3-index tensors.
+It's recommended to use dfccsd.CCSD for the DF-CCSD calculations
+
+
+WARN: CCSD detected DF being used in the HF object. MO integrals are computed based on the DF 3-index tensors.
+It's recommended to use dfccsd.CCSD for the DF-CCSD calculations
+
+
+WARN: CCSD detected DF being used in the HF object. MO integrals are computed based on the DF 3-index tensors.
+It's recommended to use dfccsd.CCSD for the DF-CCSD calculations
+
+
+WARN: CCSD detected DF being used in the HF object. MO integrals are computed based on the DF 3-index tensors.
+It's recommended to use dfccsd.CCSD for the DF-CCSD calculations
+
+
+WARN: CCSD detected DF being used in the HF object. MO integrals are computed based on the DF 3-index tensors.
+It's recommended to use dfccsd.CCSD for the DF-CCSD calculations
+
+
+WARN: CCSD detected DF being used in the HF object. MO integrals are computed based on the DF 3-index tensors.
+It's recommended to use dfccsd.CCSD for the DF-CCSD calculations
+
+--- heartbeat 2026-09-15 14:58:09: pid 218643 alive, elapsed 01:00:00, cpu 743 %, rss 3608 MB, tmp 462M
+
+WARN: CCSD detected DF being used in the HF object. MO integrals are computed based on the DF 3-index tensors.
+It's recommended to use dfccsd.CCSD for the DF-CCSD calculations
+
+
+WARN: CCSD detected DF being used in the HF object. MO integrals are computed based on the DF 3-index tensors.
+It's recommended to use dfccsd.CCSD for the DF-CCSD calculations
+
+
+WARN: CCSD detected DF being used in the HF object. MO integrals are computed based on the DF 3-index tensors.
+It's recommended to use dfccsd.CCSD for the DF-CCSD calculations
+
+
+WARN: CCSD detected DF being used in the HF object. MO integrals are computed based on the DF 3-index tensors.
+It's recommended to use dfccsd.CCSD for the DF-CCSD calculations
+
+
+WARN: CCSD detected DF being used in the HF object. MO integrals are computed based on the DF 3-index tensors.
+It's recommended to use dfccsd.CCSD for the DF-CCSD calculations
+
+
+WARN: CCSD detected DF being used in the HF object. MO integrals are computed based on the DF 3-index tensors.
+It's recommended to use dfccsd.CCSD for the DF-CCSD calculations
+
+
+WARN: CCSD detected DF being used in the HF object. MO integrals are computed based on the DF 3-index tensors.
+It's recommended to use dfccsd.CCSD for the DF-CCSD calculations
+
+
+WARN: CCSD detected DF being used in the HF object. MO integrals are computed based on the DF 3-index tensors.
+It's recommended to use dfccsd.CCSD for the DF-CCSD calculations
+
+
+WARN: CCSD detected DF being used in the HF object. MO integrals are computed based on the DF 3-index tensors.
+It's recommended to use dfccsd.CCSD for the DF-CCSD calculations
+
+[15:26:03] benzene+ ULNOCCSD_T tight: 15+14 fragments, 5096 s; peak RSS 4.19 GB
+[15:26:03] c = t(cation ULNOCCSD_T) / t(neutral LNOCCSD_T) = 31.04  (same geometry, basis cc-pvdz, thresholds tight)
+[15:26:03] written m4_timing_benzene_cc-pvdz_tight.json
