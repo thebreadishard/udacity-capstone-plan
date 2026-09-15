@@ -91,9 +91,10 @@ def run_rhf(mol, conv_tol=1e-11):
     return mf
 
 
-def ulno_energy(mf, frozen, thresh, verbose_imp=2):
-    """ULNOCCSD_T with one fragment per PM LMO in each spin, as the shipped test does; returns energies and counts."""
-    from pyscf.lno.ulnoccsd import ULNOCCSD_T
+def ulno_energy(mf, frozen, thresh, verbose_imp=2, with_t=True):
+    """ULNOCCSD_T (or ULNOCCSD when with_t=False — the UCCSD/(T) split of 2026-09-15) with one fragment per PM LMO in
+    each spin, as the shipped test does; returns energies and counts."""
+    from pyscf.lno.ulnoccsd import ULNOCCSD, ULNOCCSD_T
     mol = mf.mol
     orbloc, frag = [], []
     for s in range(2):
@@ -101,12 +102,13 @@ def ulno_energy(mf, frozen, thresh, verbose_imp=2):
         occ = mf.mo_coeff[s][:, frozen:nocc_s]
         orbloc.append(pm_localise(mol, occ))
     frag = [[[i], []] for i in range(orbloc[0].shape[1])] + [[[], [i]] for i in range(orbloc[1].shape[1])]
-    mlno = ULNOCCSD_T(mf, orbloc, frag, frozen=frozen)
+    mlno = (ULNOCCSD_T if with_t else ULNOCCSD)(mf, orbloc, frag, frozen=frozen)
     mlno.lno_thresh = list(thresh)
     mlno.verbose_imp = verbose_imp
     mlno.kernel()
-    return {"e_corr_lno_ccsd": float(mlno.e_corr_ccsd), "e_corr_lno_ccsd_t": float(mlno.e_corr_ccsd_t),
-            "e_corr_lno_pt2": float(mlno.e_corr_pt2), "n_frag_alpha": orbloc[0].shape[1], "n_frag_beta": orbloc[1].shape[1]}
+    return {"e_corr_lno_ccsd": float(mlno.e_corr_ccsd), "e_corr_lno_ccsd_t": float(mlno.e_corr_ccsd_t) if with_t else None,
+            "e_corr_lno_pt2": float(mlno.e_corr_pt2), "n_frag_alpha": orbloc[0].shape[1], "n_frag_beta": orbloc[1].shape[1],
+            "with_t": with_t}
 
 
 def rlno_energy(mf, frozen, thresh, verbose_imp=2):
@@ -190,8 +192,9 @@ def stage_timing(args):
     t0 = time.time(); mf, rounds = run_uhf(mol); t_scf = time.time() - t0
     s2, mult = mf.spin_square()
     log(f"{args.molecule}+ UHF {t_scf:.0f} s, stability rounds {rounds}, <S^2> {s2:.4f} (2S+1 = {mult:.4f})")
-    t0 = time.time(); u = ulno_energy(mf, frozen, THRESH[args.thresh]); t_u = time.time() - t0
-    log(f"{args.molecule}+ ULNOCCSD_T {args.thresh}: {u['n_frag_alpha']}+{u['n_frag_beta']} fragments, {t_u:.0f} s; peak RSS {rss_gb():.2f} GB")
+    t0 = time.time(); u = ulno_energy(mf, frozen, THRESH[args.thresh], with_t=not args.no_t); t_u = time.time() - t0
+    log(f"{args.molecule}+ {'ULNOCCSD_T' if not args.no_t else 'ULNOCCSD (no (T))'} {args.thresh}: {u['n_frag_alpha']}+{u['n_frag_beta']} "
+        f"fragments, {t_u:.0f} s; peak RSS {rss_gb():.2f} GB")
     rec["cation"] = {"t_scf_s": t_scf, "stability_rounds": rounds, "s2": float(s2), "t_ulno_s": t_u,
                      "n_frag_alpha": u["n_frag_alpha"], "n_frag_beta": u["n_frag_beta"], "peak_rss_gb": rss_gb(),
                      "energies_not_printed": u}
@@ -211,6 +214,8 @@ def main():
     ap.add_argument("--threads", type=int, default=8)
     ap.add_argument("--max-memory", type=int, default=20000, help="pyscf max_memory in MB (22 GB cap for the laptop's WSL)")
     ap.add_argument("--skip-neutral", action="store_true", help="timing stage: cation only (the neutral's time is known)")
+    ap.add_argument("--no-t", action="store_true", help="timing stage: ULNOCCSD without (T) — splits the cation's time between the "
+                                                        "unrestricted CCSD and the NumPy (T) reference kernel (2026-09-15)")
     args = ap.parse_args()
     from pyscf import lib
     lib.num_threads(args.threads)
@@ -219,7 +224,8 @@ def main():
     t_start = time.time()
     rec = stage_smoke(args) if args.stage == "smoke" else stage_timing(args)
     rec["wall_total_s"] = time.time() - t_start
-    name = "m4_smoke.json" if args.stage == "smoke" else f"m4_timing_{args.molecule}_{args.basis}_{args.thresh}.json"
+    name = ("m4_smoke.json" if args.stage == "smoke"
+            else f"m4_timing_{args.molecule}_{args.basis}_{args.thresh}{'_no_t' if args.no_t else ''}.json")
     json.dump(rec, open(os.path.join(OUT, name), "w"), indent=1)
     log(f"written {name}")
 
