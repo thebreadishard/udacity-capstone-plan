@@ -1,0 +1,43 @@
+{
+ "stage": "smoke",
+ "date": "2026-09-15 13:57",
+ "node": "Asus18",
+ "threads": 8,
+ "shipped_test": {
+  "returncode": 1,
+  "wall_s": 3.9501736164093018,
+  "tail": [
+   "ValueError: too many values to unpack (expected 2)",
+   "",
+   "----------------------------------------------------------------------",
+   "Ran 1 test in 3.609s",
+   "",
+   "FAILED (errors=1)"
+  ]
+ },
+ "ch3": {
+  "basis": "cc-pvdz",
+  "thresh": "tight",
+  "frozen": 1,
+  "t_scf_s": 0.12749862670898438,
+  "stability_rounds": 0,
+  "s2": 0.761208247235305,
+  "e_corr_ump2": -0.12654842037270175,
+  "e_corr_uccsd": -0.1494544640498768,
+  "e_t": -0.0025923883834462484,
+  "t1_diagnostic": null,
+  "t_canonical_s": 1.2592265605926514,
+  "ulno": {
+   "e_corr_lno_ccsd": -0.149455896130569,
+   "e_corr_lno_ccsd_t": -0.152044780972403,
+   "e_corr_lno_pt2": -0.1265480407468216,
+   "n_frag_alpha": 4,
+   "n_frag_beta": 3
+  },
+  "t_ulno_s": 21.928979873657227,
+  "lno_minus_canonical_ccsd_uEh": -1.4320806921985785,
+  "lno_minus_canonical_ccsd_t_uEh": 2.07146092004451,
+  "peak_rss_gb": 0.14963150024414062
+ },
+ "wall_total_s": 27.309301614761353
+}

@@ -51,7 +51,9 @@ def pm_localise(mol, orbocc):
     mlo = lo.PipekMezey(mol, orbocc)
     c = mlo.kernel()
     for _ in range(100):
-        stable, c1 = mlo.stability_jacobi()
+        # pyscf 2.14: stability_jacobi(return_status=True) returns (mo_coeff, stable); the shipped pyscf-forge test still
+        # unpacks the older (stable, mo_coeff) and therefore fails on this pyscf (found 2026-09-15, Software Changes Ledger)
+        c1, stable = mlo.stability_jacobi(return_status=True)
         if stable:
             break
         mlo = lo.PipekMezey(mol, c1)

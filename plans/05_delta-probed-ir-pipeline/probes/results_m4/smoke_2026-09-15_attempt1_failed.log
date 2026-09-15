@@ -1,0 +1,22 @@
+=== detached start Tue Sep 15 13:55:53 CEST 2026: python m4_cation_timing.py --stage smoke --thresh tight --threads 8
+[13:55:54] M4 smoke: benzene cc-pvdz tight, 8 threads, pyscf 2.14.0
+[13:55:54] shipped test: /home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/lno/test/test_ulnoccsd.py
+[13:55:58] shipped test: returncode 1, 4 s; last lines: ValueError: too many values to unpack (expected 2) |  | ---------------------------------------------------------------------- | Ran 1 test in 3.830s |  | FAILED (errors=1)
+[13:55:58] CH3 UHF: 0.1 s, stability rounds 0, <S^2> 0.7612 (2S+1 = 2.0112)
+[13:55:59] CH3 canonical: UMP2 -0.12654842, UCCSD -0.14945446, (T) -0.00259239 E_h; 1.1 s; T1 diag None
+Traceback (most recent call last):
+  File "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/m4_cation_timing.py", line 226, in <module>
+    main()
+  File "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/m4_cation_timing.py", line 218, in main
+    rec = stage_smoke(args) if args.stage == "smoke" else stage_timing(args)
+          ^^^^^^^^^^^^^^^^^
+  File "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/m4_cation_timing.py", line 152, in stage_smoke
+    t0 = time.time(); u = ulno_energy(mf, frozen, THRESH[args.thresh]); t_ulno = time.time() - t0
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/m4_cation_timing.py", line 100, in ulno_energy
+    orbloc.append(pm_localise(mol, occ))
+                  ^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/m4_cation_timing.py", line 54, in pm_localise
+    stable, c1 = mlo.stability_jacobi()
+    ^^^^^^^^^^
+ValueError: too many values to unpack (expected 2)

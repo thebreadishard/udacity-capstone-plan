@@ -1,0 +1,36 @@
+=== detached start Tue Sep 15 13:56:59 CEST 2026: python m4_cation_timing.py --stage smoke --thresh tight --threads 8
+[13:57:00] M4 smoke: benzene cc-pvdz tight, 8 threads, pyscf 2.14.0
+[13:57:00] shipped test: /home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/lno/test/test_ulnoccsd.py
+[13:57:04] shipped test: returncode 1, 4 s; last lines: ValueError: too many values to unpack (expected 2) |  | ---------------------------------------------------------------------- | Ran 1 test in 3.609s |  | FAILED (errors=1)
+[13:57:04] CH3 UHF: 0.1 s, stability rounds 0, <S^2> 0.7612 (2S+1 = 2.0112)
+[13:57:05] CH3 canonical: UMP2 -0.12654842, UCCSD -0.14945446, (T) -0.00259239 E_h; 1.3 s; T1 diag None
+
+WARN: CCSD detected DF being used in the HF object. MO integrals are computed based on the DF 3-index tensors.
+It's recommended to use dfccsd.CCSD for the DF-CCSD calculations
+
+
+WARN: CCSD detected DF being used in the HF object. MO integrals are computed based on the DF 3-index tensors.
+It's recommended to use dfccsd.CCSD for the DF-CCSD calculations
+
+
+WARN: CCSD detected DF being used in the HF object. MO integrals are computed based on the DF 3-index tensors.
+It's recommended to use dfccsd.CCSD for the DF-CCSD calculations
+
+
+WARN: CCSD detected DF being used in the HF object. MO integrals are computed based on the DF 3-index tensors.
+It's recommended to use dfccsd.CCSD for the DF-CCSD calculations
+
+
+WARN: CCSD detected DF being used in the HF object. MO integrals are computed based on the DF 3-index tensors.
+It's recommended to use dfccsd.CCSD for the DF-CCSD calculations
+
+
+WARN: CCSD detected DF being used in the HF object. MO integrals are computed based on the DF 3-index tensors.
+It's recommended to use dfccsd.CCSD for the DF-CCSD calculations
+
+
+WARN: CCSD detected DF being used in the HF object. MO integrals are computed based on the DF 3-index tensors.
+It's recommended to use dfccsd.CCSD for the DF-CCSD calculations
+
+[13:57:27] CH3 ULNOCCSD_T tight: 4+3 fragments, 21.9 s; LNO − canonical: CCSD -1.43 µE_h, CCSD(T) +2.07 µE_h; peak RSS 0.15 GB
+[13:57:27] written m4_smoke.json
