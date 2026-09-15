@@ -364,3 +364,4 @@ LNOCCSD  Ess = -0.359251218117125  Eos = -1.23710005727548  Escs = -1.6041507243
 | cc-pvtz | 412 | 7 | 0 | 78103 | 15.35 | -1.687009 | nan | nan |
 
 Printed by probes/anchor_single_point_timing.py. A timing; no Δ, no displaced geometry.
+--- heartbeat 2026-09-14 08:01:11: pid 436 has exited

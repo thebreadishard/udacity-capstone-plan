@@ -407,9 +407,27 @@ def main():
     # ---------------- displaced points
     rows, sealed = list(prior_rows), {"reference": {"C": E_C0, "A": E_A0}, "points": list(prior_points)}
     done = {(r["mode"], round(r["q"], 6)) for r in prior_rows}
+
+    def dump_state():
+        json.dump({"rows": rows}, open(os.path.join(out, "m1_rows.json"), "w"), indent=1)
+        blob = json.dumps(sealed, sort_keys=True).encode()
+        json.dump(sealed, open(os.path.join(out, "m1_sealed_energies.json"), "w"))
+        open(os.path.join(out, "m1_sealed_energies.sha256"), "w").write(hashlib.sha256(blob).hexdigest())
+
+    # q = 0 is the reference geometry for every mode: it is computed once (first mode that reaches it) and copied
+    # for the other modes with a `copied_from_mode` field (2026-09-15; saves one full energy per extra mode).
+    q0_row = next((r for r in prior_rows if abs(r["q"]) < 1e-9), None)
+    q0_pt = next((pnt for pnt in prior_points if abs(pnt["q"]) < 1e-9), None)
     for m in modes:
         for q in qs:
             if (int(m), round(float(q), 6)) in done:
+                continue
+            if abs(float(q)) < 1e-9 and q0_row is not None and q0_pt is not None:
+                row = dict(q0_row, mode=int(m), freq_cm=float(freq[m]), family=fam[m], wall_s=0.0,
+                           copied_from_mode=int(q0_row["mode"]))
+                pt = dict(q0_pt, mode=int(m), copied_from_mode=int(q0_pt["mode"]))
+                rows.append(row); sealed["points"].append(pt); dump_state()
+                log(f"mode {m} q=+0.00: same geometry as mode {q0_row['mode']} q=0 -- energies copied, not recomputed")
                 continue
             t_pt = time.time()
             v = np.zeros(len(omega)); v[m] = q
@@ -473,10 +491,9 @@ def main():
                 f"pre-Löwdin off-diag occ {row['occ_offdiag_max']:.2e} vir {row['vir_offdiag_max']:.2e}; "
                 f"A−B {f2(row['EA_minus_EB_uEh'])} A−C {f2(row['EA_minus_EC_uEh'])} µE_h (LNO-MP2 piece A−C {f1(row['EA_minus_EC_lnomp2_uEh'])}); "
                 f"PM fresh {pm_c:.4f} transported {pm_t if pm_t is None else round(pm_t,4)}; match {best_match_min:.3f}; {row['wall_s']:.0f} s")
-            json.dump({"rows": rows}, open(os.path.join(out, "m1_rows.json"), "w"), indent=1)
-            blob = json.dumps(sealed, sort_keys=True).encode()
-            json.dump(sealed, open(os.path.join(out, "m1_sealed_energies.json"), "w"))
-            open(os.path.join(out, "m1_sealed_energies.sha256"), "w").write(hashlib.sha256(blob).hexdigest())
+            if abs(float(q)) < 1e-9 and q0_row is None:
+                q0_row, q0_pt = row, pt
+            dump_state()
 
     # ---------------- report (no verdict)
     seal_hash = open(os.path.join(out, "m1_sealed_energies.sha256")).read()

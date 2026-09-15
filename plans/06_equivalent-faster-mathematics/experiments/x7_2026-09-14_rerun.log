@@ -15,3 +15,4 @@ pyrene: lambda 0.750 A, DFT gap 3.84 eV, HF gap 8.67 eV, lambda*gap 2.882, beyon
 Losing condition (pre-stated): lambda*gap varies by more than a factor 2 across benzene, naphthalene, pyrene. Rate ? gap predicts ? ? 1/gap, i.e. constant ??gap.
 
 Constants: {"basis_default": "cc-pvdz", "dft_functional": "b3lyp", "dft_basis": "6-31g*", "R_MIN_A": 1.0, "shell_width_A": 0.5, "far_cut_A": 3.0, "git_commit_pyrene": "57a7910", "pyrene_file": "plans/02_coupled-cluster-anharmonic-ir/probes/batch_results/06_freq_pyrene.npz", "losing_condition": "lambda*gap varies by more than a factor 2 across benzene, naphthalene, pyrene"}
+--- heartbeat 2026-09-14 09:23:46: pid 61542 has exited

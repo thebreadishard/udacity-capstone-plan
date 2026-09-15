@@ -1,7 +1,7 @@
 {
- "date": "2026-09-13 11:23",
- "F": 2.2651939577039273,
- "F_note": "PROVISIONAL: 16 of 24 fragments done, sum 17.4 h; remaining 8 at the observed mean 65 min -> total 26.0 h -> F = 2.27",
+ "date": "2026-09-14 07:55",
+ "F": 3.3427166163141995,
+ "F_note": "MEASURED 2026-09-14: all 24 fragments in the checkpoint, fragment solves summed over the three segments 38.4 h (per fragment 35-239 min), against the tight energy's 11.5 h -> F = 3.34. Caveat, like for like: the tight energy ran in one uninterrupted segment with pyscf's default max_memory (in-core, 19.8 GB peak); the xtight energy ran with --max-memory 16000 (out-of-core four-virtual blocks, 15.35 GB peak) over three segments, so F carries the out-of-core path as well as the tighter thresholds; the benzene factor at equal settings was about 2",
  "measured": {
   "benzene_TZ_xtight_energy_h": [
    1.2666666666666666,
@@ -173,18 +173,18 @@
   },
   {
    "step": "R1 deck (naphthalene)",
-   "calc": "474 xtight energies at 26 h = 11.5 h x F, F = 2.27 (provisional)",
+   "calc": "474 xtight energies at 38 h = 11.5 h x F, F = 3.34 (measured)",
    "laptop_d": [
-    514.1715,
-    514.1715
+    758.7560486111112,
+    758.7560486111112
    ],
    "pc_d": [
-    134.1316956521739,
-    223.55282608695654
+    197.93636050724638,
+    329.893934178744
    ],
    "snellius_d": [
-    16.766461956521738,
-    27.944103260869568
+    24.742045063405797,
+    41.236741772343
    ],
    "flag": "m/F",
    "note": ""
@@ -194,12 +194,12 @@
    "calc": "deck ~936 energies (4M + 2E, E ~ M^2/2|G| = 324) at 5-10 x the naphthalene energy",
    "laptop_d": null,
    "pc_d": [
-    1324.3382608695651,
-    4414.460869565218
+    1954.3083695652176,
+    6514.36123188406
    ],
    "snellius_d": [
-    165.54228260869564,
-    551.8076086956522
+    244.2885461956522,
+    814.2951539855075
    ],
    "flag": "e",
    "note": "does not fit the laptop's 25 GB"
@@ -209,12 +209,12 @@
    "calc": "deck ~2100 energies (4M + 2E, E ~ M^2/2|G| = 882) at 5-10 x the naphthalene energy",
    "laptop_d": null,
    "pc_d": [
-    2971.2717391304345,
-    9904.239130434784
+    4384.666213768116,
+    14615.554045893723
    ],
    "snellius_d": [
-    371.4089673913043,
-    1238.029891304348
+    548.0832767210145,
+    1826.9442557367154
    ],
    "flag": "e",
    "note": "does not fit the laptop's 25 GB"
@@ -224,12 +224,12 @@
    "calc": "deck ~924 energies (4M + 2E, E ~ M^2/2|G| = 294) at 5-10 x the naphthalene energy",
    "laptop_d": null,
    "pc_d": [
-    1307.359565217391,
-    4357.865217391304
+    1929.253134057971,
+    6430.843780193238
    ],
    "snellius_d": [
-    163.41994565217388,
-    544.733152173913
+    241.15664175724638,
+    803.8554725241547
    ],
    "flag": "e",
    "note": "does not fit the laptop's 25 GB"
@@ -239,12 +239,12 @@
    "calc": "deck ~1218 energies (4M + 2E, E ~ M^2/2|G| = 441) at 5-10 x the naphthalene energy",
    "laptop_d": null,
    "pc_d": [
-    1723.337608695652,
-    5744.458695652174
+    2543.1064039855073,
+    8477.021346618358
    ],
    "snellius_d": [
-    215.4172010869565,
-    718.0573369565218
+    317.8883004981884,
+    1059.6276683272947
    ],
    "flag": "e",
    "note": "does not fit the laptop's 25 GB"
@@ -254,12 +254,12 @@
    "calc": "deck ~842 energies at 25-100 x the naphthalene energy (extrapolation)",
    "laptop_d": null,
    "pc_d": [
-    5953.155163043478,
-    39687.70108695653
+    8784.991949728263,
+    58566.61299818842
    ],
    "snellius_d": [
-    744.1443953804347,
-    4960.962635869566
+    1098.1239937160328,
+    7320.826624773553
    ],
    "flag": "e (extrapolated)",
    "note": "no measurement of any kind behind the factor"

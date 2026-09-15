@@ -334,3 +334,4 @@ An NVIDIA GPU may be present on this machine, but a CUDA-enabled jaxlib is not i
     CPU time for make_fpno1:      2.53 sec, wall time      1.22 sec
 python 441 stopped (recorded as does-not-fit; the chain continues)
 --- 2026-09-14 17:50:22 HOST GUARD: host free 0,4 GB < 1.0 GB, M2a python 446 stopped (recorded as does-not-fit; the chain continues)
+--- heartbeat 2026-09-14 18:47:02: pid 441 has exited
