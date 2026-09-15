@@ -1,0 +1,49 @@
+=== detached start Tue Sep 15 13:45:03 CEST 2026: python m1_frozen_spaces.py --molecule benzene_quick --basis cc-pvdz --thresh normal --npts 3 --modes 18,20 --arms A --basis-terms none --threads 8 --tag _smoke_q0
+[13:45:04] M1: benzene_quick cc-pvdz, thresholds [1e-05, 1e-06], frozen core 6, modes [18, 20] (1357 cm⁻¹ CC-stretch, 1531 cm⁻¹ CC-stretch), 3 points, 8 threads
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[13:46:27] reference: arm C 83 s; 15 fragments; sizes [(14, 69), (14, 69), (14, 69), (14, 62), (14, 69)]…; frozen-space hash e678b5a3f2a15a11
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[13:47:51] stage 0 round trip: E_A(0) − E_C(0) = 0.0000 µE_h (target |·| ≤ 1e-3 µE_h = 1e-9 E_h); arm A 84 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[13:49:19] mode 18 q=-1.00: s_min occ 0.9922 vir 0.8915; pre-Löwdin off-diag occ 3.64e-03 vir 1.26e-01; A−B — A−C — µE_h (LNO-MP2 piece A−C —); PM fresh 7.0842 transported 6.926; match 0.771; 89 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[13:50:42] mode 18 q=+0.00: s_min occ 1.0000 vir 1.0000; pre-Löwdin off-diag occ 6.32e-15 vir 1.13e-12; A−B — A−C — µE_h (LNO-MP2 piece A−C —); PM fresh 6.9998 transported 6.9998; match 1.000; 83 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[13:52:09] mode 18 q=+1.00: s_min occ 0.9922 vir 0.8934; pre-Löwdin off-diag occ 3.64e-03 vir 1.28e-01; A−B — A−C — µE_h (LNO-MP2 piece A−C —); PM fresh 7.0842 transported 7.0698; match 0.988; 87 s
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[13:53:32] mode 20 q=-1.00: s_min occ 0.9898 vir 0.8390; pre-Löwdin off-diag occ 1.06e-02 vir 1.00e-01; A−B — A−C — µE_h (LNO-MP2 piece A−C —); PM fresh 6.9994 transported 6.9992; match 0.769; 83 s
+[13:53:32] mode 20 q=+0.00: same geometry as mode 18 q=0 -- energies copied, not recomputed
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+[13:54:56] mode 20 q=+1.00: s_min occ 0.9898 vir 0.8374; pre-Löwdin off-diag occ 1.06e-02 vir 1.02e-01; A−B — A−C — µE_h (LNO-MP2 piece A−C —); PM fresh 6.9995 transported 6.9991; match 0.836; 83 s
+
+# Probe M1 — frozen spaces — benzene_quick cc-pvdz, LNO thresholds [1e-05, 1e-06], arms A, 2026-09-15 13:54, Asus18 (WSL), 8 threads
+
+- reference: 15 fragments (one per PM LMO); frozen-space hash `e678b5a3f2a15a11…`; arm C at the reference 83 s
+- **stage 0 round trip** E_A(0) − E_C(0) = 0.0000 µE_h (the object reloads; target ≤ 1e-3 µE_h)
+- raw energies sealed: `m1_sealed_energies.json`, sha256 `9e9e68a27b6dd264…` — not printed
+
+| mode | family | ω (cm⁻¹) | q | s_min occ | off-diag occ | s_min vir | off-diag vir | PM fresh | PM transported | match | A−B (µE_h) | A−C (µE_h) | B−C (µE_h) | s |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 18 | CC-stretch | 1357 | -1.00 | 0.9922 | 3.6e-03 | 0.8915 | 1.3e-01 | 7.084 | 6.926 | 0.771 | — | — | — | 89 |
+| 18 | CC-stretch | 1357 | +0.00 | 1.0000 | 6.3e-15 | 1.0000 | 1.1e-12 | 7.000 | 7.000 | 1.000 | — | — | — | 83 |
+| 18 | CC-stretch | 1357 | +1.00 | 0.9922 | 3.6e-03 | 0.8934 | 1.3e-01 | 7.084 | 7.070 | 0.988 | — | — | — | 87 |
+| 20 | CC-stretch | 1531 | -1.00 | 0.9898 | 1.1e-02 | 0.8390 | 1.0e-01 | 6.999 | 6.999 | 0.769 | — | — | — | 83 |
+| 20 | CC-stretch | 1531 | +0.00 | 1.0000 | 6.3e-15 | 1.0000 | 1.1e-12 | 7.000 | 7.000 | 1.000 | — | — | — | 0 |
+| 20 | CC-stretch | 1531 | +1.00 | 0.9898 | 1.1e-02 | 0.8374 | 1.0e-01 | 6.999 | 6.999 | 0.836 | — | — | — | 83 |
+
+
+No verdict is printed (the τ it would be judged against does not exist yet). Printed by probes/m1_frozen_spaces.py.
