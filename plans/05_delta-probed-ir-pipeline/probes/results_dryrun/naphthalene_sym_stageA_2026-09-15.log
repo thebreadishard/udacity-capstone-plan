@@ -1,0 +1,8 @@
+[15:27:07] dry run: naphthalene, out = C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_dryrun\naphthalene_sym, quick = False
+[15:27:07] stage A: symmetrised geometry from C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_dryrun\naphthalene\geometry_symmetrised.json (D2h; deviation from symmetry 7.5e-05 bohr before averaging, 4.4e-16 after; largest atom shift 3.7e-05 bohr); no re-optimisation
+[15:27:07] stage A: Hessian b3lyp/6-31g*
+[15:56:37] stage A: Hessian b3lyp took 1769.9 s
+[15:56:37] stage A: Hessian bhhlyp/6-31g*
+[16:25:28] stage A: Hessian bhhlyp took 1730.9 s
+[16:25:28] stage A: irrep projection — D2h ['C2x', 'C2y', 'C2z', 'E', 'i', 's_xy', 's_xz', 's_yz']; 8 irreps; min purity before projection 0.998854 (1 − min = 1.1e-03); orthonormality after projection 5.1e-05 → 6.7e-16 after block re-orthonormalisation; frame: x, y, z as given (planar molecule in the principal frame: z out of plane)
+[16:25:28] stage A done: M=48, Hessian times {'optimize_s': 0.0, 'hessian_b3lyp_s': 1769.8944036960602, 'hessian_bhhlyp_s': 1730.8690791130066}
