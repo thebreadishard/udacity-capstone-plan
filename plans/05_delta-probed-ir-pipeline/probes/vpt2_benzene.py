@@ -65,8 +65,7 @@ def main():
     spec = QCInputSpecification(model={"method": args.functional, "basis": args.basis},
                                 keywords={"scf_type": "df", "d_convergence": 1e-10, "e_convergence": 1e-10,
                                           "dft_spherical_points": 590, "dft_radial_points": 99})
-    inp = VPTInput(molecule=qmol, input_specification=[spec], keywords={"DISP_SIZE": 0.05, "FD": "HESSIAN", "FD_ACC": 2, "FERMI": True,
-                                                                        "RETURN_PLOT": False})
+    inp = VPTInput(molecule=qmol, input_specification=[spec], keywords={"DISP_SIZE": 0.05, "FD": "HESSIAN", "FD_ACC": 2, "FERMI": True})
     t1 = time.time()
     log("VPT2 started")
     res = pyvpt2.vpt2_from_schema(inp)
