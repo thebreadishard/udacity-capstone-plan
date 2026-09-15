@@ -93,6 +93,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--layer", default=None); ap.add_argument("--max-molecules", type=int, default=None); ap.add_argument("--max-hours", type=float, default=None)
     ap.add_argument("--force", action="store_true"); ap.add_argument("--dry-run", action="store_true"); ap.add_argument("--grid-check", action="store_true", help="timing test: repeat the B3LYP Hessian on the finer grid")
+    ap.add_argument("--ids", default=None, help="comma-separated manifest ids to (re)run regardless of status; the result folder is replaced (2026-09-15: benzene grid rerun with per-mode frequencies)")
     a = ap.parse_args()
     deck = json.load(open(DECK)); deck_hash = hashlib.sha256(DECK.read_bytes()).hexdigest()[:12]
     machine = socket.gethostname()
@@ -111,7 +112,11 @@ def main():
             for r in rows:
                 if r["status"] == "running" and not (HERE / "molecules" / r["id"] / "result.json").exists():
                     r["status"] = "pending"; r["note"] = (r.get("note", "") + " redone-after-crash").strip()
-            todo = [r for r in queue_order(rows) if r["status"] == "pending" and r["id"] not in virtually_done and (a.layer is None or r["layer"] == a.layer)]
+            if a.ids:
+                wanted = set(a.ids.split(","))
+                todo = [r for r in rows if r["id"] in wanted and r["id"] not in virtually_done]
+            else:
+                todo = [r for r in queue_order(rows) if r["status"] == "pending" and r["id"] not in virtually_done and (a.layer is None or r["layer"] == a.layer)]
             if not todo:
                 log("nothing pending; done"); break
             if a.max_molecules is not None and done >= a.max_molecules:
