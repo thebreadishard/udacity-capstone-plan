@@ -113,6 +113,8 @@ def main():
                 if r["status"] == "running" and not (HERE / "molecules" / r["id"] / "result.json").exists():
                     r["status"] = "pending"; r["note"] = (r.get("note", "") + " redone-after-crash").strip()
             if a.ids:
+                # every named id runs once: it is added to virtually_done below whether it is dry-run or run
+                # (2026-09-15 17:20: without this the runner restarted benzene as soon as it had finished it)
                 wanted = set(a.ids.split(","))
                 todo = [r for r in rows if r["id"] in wanted and r["id"] not in virtually_done]
             else:
@@ -124,6 +126,8 @@ def main():
             if a.max_hours is not None and (time.time() - t_start) / 3600 >= a.max_hours:
                 log(f"reached --max-hours {a.max_hours}"); break
             r = todo[0]
+            if a.ids:
+                virtually_done.add(r["id"])
             if a.dry_run:
                 log(f"would run {r['id']} {r['layer']} {r['name']} ({r['n_atoms']} atoms)"); done += 1; virtually_done.add(r["id"])
                 if a.max_molecules and done >= a.max_molecules: break

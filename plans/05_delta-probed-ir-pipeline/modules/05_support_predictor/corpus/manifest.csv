@@ -1,6 +1,6 @@
 id,layer,priority,name,smiles,qm9_label,n_heavy,n_atoms,status,machine,deck,note
 A_01f3186607,A,01f3186607fd554cce9385301f7d57d271ca20d1,naphthalene,c1ccc2ccccc2c1,,10,18,done,Asus18,97ed2d67c66b,timing-test redone-after-crash
-A_8448043181,A,8448043181b9a6b0a233076fe50a805a66aa244a,benzene,c1ccccc1,,6,12,done,Asus18,97ed2d67c66b,timing-test
+A_8448043181,A,8448043181b9a6b0a233076fe50a805a66aa244a,benzene,c1ccccc1,,6,12,done,Asus18,97ed2d67c66b,timing-test grid-rerun-2026-09-15
 A_d9139359ab,A,d9139359abf2574e70e0a931e069cc4cbb7cc0bf,azulene,c1ccc2cccc-2cc1,,10,18,done,Asus18,97ed2d67c66b,timing-test
 A_fdc27f1bd1,A,fdc27f1bd18c7119c8979e3556b95c7dfbeec22c,biphenyl,c1ccc(-c2ccccc2)cc1,,12,22,done,Asus18,97ed2d67c66b,timing-test
 A_ff98e1160d,A,ff98e1160d5751db402968f3941505bd191f103d,quinoline,c1ccc2ncccc2c1,,10,17,done,Asus18,97ed2d67c66b,timing-test
