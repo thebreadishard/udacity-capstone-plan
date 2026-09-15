@@ -119,19 +119,31 @@ def dft_energy_gradient(psi4, mol, functional: str):
 
 
 # ----------------------------------------------------------------------------- stage A
-def stage_a(psi4, name: str, out: str, threads: int) -> dict:
+def stage_a(psi4, name: str, out: str, threads: int, symmetrised: bool = False) -> dict:
     """Geometry, two Hessians (timed), modes, families, direct Δ₂."""
-    log("stage A: geometry optimisation at B3LYP/6-31G*")
-    if name in GEOMETRIES:
-        mol = psi4.geometry(GEOMETRIES[name])
-    else:   # 2026-09-13: molecules without a built-in start geometry take the optimised geometry.json of their results_dryrun folder
-        gpath = os.path.join(os.path.dirname(os.path.abspath(__file__)), "results_dryrun", name, "geometry.json")
-        g = json.load(open(gpath))
-        log(f"stage A: start geometry from {gpath} ({g.get('level')}, {g.get('date')})")
-        mol = make_molecule(psi4, g["symbols"], np.array(g["coords_bohr"]))
-    t0 = time.time()
-    psi4.optimize(f"{FUNCTIONALS['low']}/{BASIS}", molecule=mol)
-    t_opt = time.time() - t0
+    sym_geom = None
+    if symmetrised:
+        # 2026-09-15 (decision 37 prerequisite): the point-group-averaged geometry of symmetrise_geometry.py, NOT re-optimised
+        # (an optimiser leaves the frame ~1e-5 bohr off symmetry again; the averaged geometry is ≤ 4e-5 bohr from the optimum).
+        gpath = os.path.join(os.path.dirname(os.path.abspath(__file__)), "results_dryrun", name, "geometry_symmetrised.json")
+        sym_geom = json.load(open(gpath))
+        log(f"stage A: symmetrised geometry from {gpath} ({sym_geom['group']}; deviation from symmetry "
+            f"{sym_geom['max_deviation_before_bohr']:.1e} bohr before averaging, {sym_geom['max_deviation_after_bohr']:.1e} after; "
+            f"largest atom shift {sym_geom['max_atom_shift_bohr']:.1e} bohr); no re-optimisation")
+        mol = make_molecule(psi4, sym_geom["symbols"], np.array(sym_geom["coords_bohr"]))
+        t_opt = 0.0
+    else:
+        log("stage A: geometry optimisation at B3LYP/6-31G*")
+        if name in GEOMETRIES:
+            mol = psi4.geometry(GEOMETRIES[name])
+        else:   # 2026-09-13: molecules without a built-in start geometry take the optimised geometry.json of their results_dryrun folder
+            gpath = os.path.join(os.path.dirname(os.path.abspath(__file__)), "results_dryrun", name, "geometry.json")
+            g = json.load(open(gpath))
+            log(f"stage A: start geometry from {gpath} ({g.get('level')}, {g.get('date')})")
+            mol = make_molecule(psi4, g["symbols"], np.array(g["coords_bohr"]))
+        t0 = time.time()
+        psi4.optimize(f"{FUNCTIONALS['low']}/{BASIS}", molecule=mol)
+        t_opt = time.time() - t0
     symbols = [mol.symbol(i) for i in range(mol.natom())]
     coords = np.array([[mol.x(i), mol.y(i), mol.z(i)] for i in range(mol.natom())])  # bohr
     masses_amu = np.array([mol.mass(i) for i in range(mol.natom())])
@@ -163,6 +175,11 @@ def stage_a(psi4, name: str, out: str, threads: int) -> dict:
     srt = np.argsort(freq_cm)
     omega_au, freq_cm, L_v = omega_au[srt], freq_cm[srt], L_v[:, srt]
     M = len(freq_cm)
+    # 2026-09-15 (decision 37 prerequisite): project every mode vector onto the irrep it mostly belongs to, so that the
+    # non-totally-symmetric patterns of the deck are irrep-pure; applied whenever the geometry has a point group
+    # (on a symmetrised geometry the projection changes the vectors only at the rounding level, and the labels are exact).
+    irreps, irrep_purity, sym_note, L_v = project_modes_on_irreps(L_v, coords, symbols)
+    log(f"stage A: irrep projection — {sym_note}")
 
     # direct Δ₂ in the low arm's mode basis, in mass-weighted normal coordinates (E_h/(bohr²·m_e))
     D2_direct_Q = L_v.T @ (F_high - F_low) @ L_v
@@ -187,6 +204,9 @@ def stage_a(psi4, name: str, out: str, threads: int) -> dict:
         "timing": timing, "freq_low_cm": freq_cm.tolist(), "freq_high_direct_cm": freq_high_cm.tolist(),
         "dfreq_first_order_cm": dfreq_first_order_cm.tolist(),
         "families": families, "totally_symmetric_index": int(ts_index),
+        "irreps": irreps, "irrep_purity_before_projection": irrep_purity, "symmetry_note": sym_note,
+        "geometry_source": ("geometry_symmetrised.json (point-group averaged, not re-optimised)" if symmetrised
+                            else "B3LYP/6-31G* optimisation in this run"),
         "machine": platform.node(), "threads": threads, "psi4": psi4.__version__,
     }
     np.savez(os.path.join(out, "stageA_hessians.npz"),
@@ -195,6 +215,81 @@ def stage_a(psi4, name: str, out: str, threads: int) -> dict:
     json.dump(res, open(os.path.join(out, "stageA.json"), "w"), indent=1)
     log(f"stage A done: M={M}, Hessian times {timing}")
     return res
+
+
+def project_modes_on_irreps(L, coords, symbols, tol=1e-3):
+    """Project mass-weighted mode vectors (columns of L) onto the one-dimensional irreps of the abelian point group that the
+    geometry satisfies within tol (D2h or a subgroup, diagonal ±1 operations in the given frame). Returns
+    (labels, purity_before, note, L_projected). purity = ‖P_Γ v‖² of the dominant irrep before projection (1 = pure).
+    Labels are Mulliken names when the full D2h is present (frame: x, y, z as given; for a planar molecule in the principal
+    frame z is out of plane), otherwise the character string over the operations found. 2026-09-15."""
+    import itertools
+    from symmetrise_geometry import OPS, permutation
+    found = {n: permutation(coords, symbols, g, tol) for n, g in OPS.items()}
+    found = {n: p for n, p in found.items() if p is not None}
+    names = sorted(found)
+    if len(names) < 2:
+        return None, None, "no point-group operation satisfied within tol (C1): modes not projected", L
+    diag = {n: tuple(int(v) for v in np.diag(OPS[n])) for n in names}
+    by_diag = {d: n for n, d in diag.items()}
+    prod = lambda a, b: tuple(x * y for x, y in zip(a, b))   # noqa: E731
+    if any(prod(diag[a], diag[b]) not in by_diag for a in names for b in names):
+        return None, None, f"operations found {names} do not close under tol (partial symmetry): modes not projected", L
+    chars = []
+    for signs in itertools.product((1, -1), repeat=len(names)):
+        chi = dict(zip(names, signs))
+        if chi["E"] == 1 and all(chi[by_diag[prod(diag[a], diag[b])]] == chi[a] * chi[b] for a in names for b in names):
+            chars.append(chi)
+    D2H = {"Ag": dict(E=1, C2z=1, C2y=1, C2x=1, i=1, s_xy=1, s_xz=1, s_yz=1),
+           "B1g": dict(E=1, C2z=1, C2y=-1, C2x=-1, i=1, s_xy=1, s_xz=-1, s_yz=-1),
+           "B2g": dict(E=1, C2z=-1, C2y=1, C2x=-1, i=1, s_xy=-1, s_xz=1, s_yz=-1),
+           "B3g": dict(E=1, C2z=-1, C2y=-1, C2x=1, i=1, s_xy=-1, s_xz=-1, s_yz=1),
+           "Au": dict(E=1, C2z=1, C2y=1, C2x=1, i=-1, s_xy=-1, s_xz=-1, s_yz=-1),
+           "B1u": dict(E=1, C2z=1, C2y=-1, C2x=-1, i=-1, s_xy=-1, s_xz=1, s_yz=1),
+           "B2u": dict(E=1, C2z=-1, C2y=1, C2x=-1, i=-1, s_xy=1, s_xz=-1, s_yz=1),
+           "B3u": dict(E=1, C2z=-1, C2y=-1, C2x=1, i=-1, s_xy=1, s_xz=1, s_yz=-1)}
+
+    def label(chi):
+        if len(names) == 8:
+            for nm, tab in D2H.items():
+                if all(chi[n] == tab[n] for n in names):
+                    return nm
+        return "chi(" + ",".join(f"{n}{'+' if chi[n] > 0 else '-'}" for n in names if n != "E") + ")"
+
+    def act(n, v3):   # (g v)[perm[k]] = g · v[k]
+        w = np.empty_like(v3)
+        w[found[n]] = v3 @ OPS[n].T
+        return w
+
+    labels, purity, Lp = [], [], np.empty_like(L)
+    for i in range(L.shape[1]):
+        v3 = L[:, i].reshape(-1, 3)
+        best = None
+        for chi in chars:
+            pv = sum(chi[n] * act(n, v3) for n in names) / len(names)
+            nrm2 = float(np.sum(pv ** 2))
+            if best is None or nrm2 > best[0]:
+                best = (nrm2, chi, pv)
+        nrm2, chi, pv = best
+        labels.append(label(chi)); purity.append(nrm2)
+        Lp[:, i] = pv.reshape(-1) / np.sqrt(nrm2)
+    G = Lp.T @ Lp
+    dev = float(np.abs(G - np.eye(G.shape[0])).max())
+    if dev > 1e-8:   # re-orthonormalise within each irrep block (an accidental degeneracy between two modes of one irrep)
+        for lab in set(labels):
+            idx = [k for k, l in enumerate(labels) if l == lab]
+            Q, R = np.linalg.qr(Lp[:, idx])
+            Q *= np.sign(np.diag(R))
+            Lp[:, idx] = Q
+        dev2 = float(np.abs(Lp.T @ Lp - np.eye(G.shape[0])).max())
+    else:
+        dev2 = dev
+    grp = {8: "D2h", 4: "four operations", 2: "two operations"}.get(len(names), f"{len(names)} operations")
+    note = (f"{grp} {names}; {len(chars)} irreps; min purity before projection {min(purity):.6f} "
+            f"(1 − min = {1 - min(purity):.1e}); orthonormality after projection {dev:.1e}"
+            + (f" → {dev2:.1e} after block re-orthonormalisation" if dev > 1e-8 else "")
+            + "; frame: x, y, z as given (planar molecule in the principal frame: z out of plane)")
+    return labels, purity, note, Lp
 
 
 def assign_families(freq_cm, L, symbols, Minv, coords):
@@ -869,16 +964,21 @@ def main():
     ap.add_argument("--quick", action="store_true", help="tiny deck, short noise grid (pipeline test)")
     ap.add_argument("--stage", default="all", choices=["A", "B", "B2", "C", "all"])
     ap.add_argument("--out", default=None)
+    ap.add_argument("--symmetrised", action="store_true",
+                    help="stage A starts from results_dryrun/<molecule>/geometry_symmetrised.json without re-optimisation "
+                         "(decision 37 prerequisite, 2026-09-15); output goes to results_dryrun/<molecule>_sym by default so the "
+                         "factory-geometry stageA.json that the M3 cells use stays untouched")
     args = ap.parse_args()
     here = os.path.dirname(os.path.abspath(__file__))
-    out = args.out or os.path.join(here, "results_dryrun", args.molecule + ("_quick" if args.quick else ""))
+    out = args.out or os.path.join(here, "results_dryrun", args.molecule + ("_sym" if args.symmetrised else "")
+                                   + ("_quick" if args.quick else ""))
     os.makedirs(out, exist_ok=True)
     psi4 = psi4_setup(args.threads, os.path.join(out, "psi4.out"))
     log(f"dry run: {args.molecule}, out = {out}, quick = {args.quick}")
 
     a_path = os.path.join(out, "stageA.json")
     if args.stage == "A" or not os.path.exists(a_path):
-        a = stage_a(psi4, args.molecule, out, args.threads)
+        a = stage_a(psi4, args.molecule, out, args.threads, symmetrised=args.symmetrised)
     else:
         a = json.load(open(a_path))
     if args.stage in ("A",):
