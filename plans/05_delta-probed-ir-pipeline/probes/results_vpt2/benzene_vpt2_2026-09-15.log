@@ -1,0 +1,21 @@
+[17:24:37] pyVPT2 0.1.2, psi4 1.10.2, qcelemental 0.30.1; benzene b3lyp/6-31g*, 8 threads
+[17:24:37] optimising in this psi4 build (gau_verytight)
+Some dependencies such as QCElemental have not yet finished migration to pydantic v2. If issues are encountered please downgrade pydantic or upgrade QCElemental as appropriate
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 2.
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 6.53e-07
+
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 3.
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 2.
+	Energy has increased in a minimization.
+	Energy ratio indicates iffy step.
+	Intrafrag trust radius decreased to   0.25.
+Optimizer: Optimization complete!
+[17:25:02] optimised in 25 s
+[17:25:02] largest coordinate change against the dry run's geometry: 1.80e-04 bohr
+[17:25:02] VPT2 started
+Warning: used thermodynamics relations inappropriate for low-frequency modes: ['415.0500' '415.0876' '621.8974' '622.0135']

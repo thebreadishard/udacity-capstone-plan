@@ -1,0 +1,38 @@
+[17:22:03] pyVPT2 0.1.2, psi4 1.10.2, qcelemental 0.30.1; benzene b3lyp/6-31g*, 8 threads
+[17:22:04] optimising in this psi4 build (gau_verytight)
+Some dependencies such as QCElemental have not yet finished migration to pydantic v2. If issues are encountered please downgrade pydantic or upgrade QCElemental as appropriate
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 2.
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 3.
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 2.
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 4.
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 3.
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 2.
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 5.
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 4.
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 3.
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 2.
+Optimizer: Optimization complete!
+[17:22:42] optimised in 38 s
+[17:22:42] largest coordinate change against the dry run's geometry: 1.76e-04 bohr
+[17:22:42] VPT2 started
+Traceback (most recent call last):
+  File "C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\vpt2_benzene.py", line 112, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\vpt2_benzene.py", line 72, in main
+    res = pyvpt2.vpt2_from_schema(inp)
+  File "C:\Users\thebr\.conda\envs\vpt2\Lib\site-packages\pyvpt2\vpt2.py", line 300, in vpt2_from_schema
+    kwargs = process_options_keywords(**inp.keywords)
+  File "C:\Users\thebr\.conda\envs\vpt2\Lib\site-packages\pyvpt2\vpt2.py", line 204, in process_options_keywords
+    raise Warning(f"Ignoring unknown keyword {k}")
+Warning: Ignoring unknown keyword RETURN_PLOT

@@ -34,3 +34,5 @@ It's recommended to use dfccsd.CCSD for the DF-CCSD calculations
 
 [13:57:27] CH3 ULNOCCSD_T tight: 4+3 fragments, 21.9 s; LNO − canonical: CCSD -1.43 µE_h, CCSD(T) +2.07 µE_h; peak RSS 0.15 GB
 [13:57:27] written m4_smoke.json
+--- heartbeat 2026-09-15 14:55:53: pid 217110 has exited
+--- heartbeat 2026-09-15 14:56:59: pid 217351 has exited

@@ -122,3 +122,4 @@ It's recommended to use dfccsd.CCSD for the DF-CCSD calculations
 [15:26:03] benzene+ ULNOCCSD_T tight: 15+14 fragments, 5096 s; peak RSS 4.19 GB
 [15:26:03] c = t(cation ULNOCCSD_T) / t(neutral LNOCCSD_T) = 31.04  (same geometry, basis cc-pvdz, thresholds tight)
 [15:26:03] written m4_timing_benzene_cc-pvdz_tight.json
+--- heartbeat 2026-09-15 15:58:09: pid 218643 has exited
