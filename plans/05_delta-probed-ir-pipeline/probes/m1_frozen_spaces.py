@@ -95,10 +95,16 @@ def offdiag_max(O):
 
 
 # ----------------------------------------------------------------------------- pyscf pieces
+MAX_MEMORY_MB = 24000   # pyscf's own blocking budget. 2026-09-16: the TZ cells took the whole WSL
+                        # allotment and the host guard stopped the run at 0.06 GB free; --max-memory
+                        # lowers it for a resumed run. The default is unchanged so every earlier run
+                        # (all DZ cells, the benzene timings) reproduces with its recorded setting.
+
+
 def make_mol(symbols, coords_bohr, basis):
     from pyscf import gto
     return gto.M(atom=[(s, tuple(c)) for s, c in zip(symbols, coords_bohr)], unit="Bohr", basis=basis,
-                 verbose=0, max_memory=24000, symmetry=False)
+                 verbose=0, max_memory=MAX_MEMORY_MB, symmetry=False)
 
 
 def run_scf(mol):
@@ -251,6 +257,9 @@ def main():
     ap.add_argument("--npts", type=int, default=9)
     ap.add_argument("--modes", default="auto", help="comma-separated DFT mode indices: totally symmetric, degenerate, non-symmetric")
     ap.add_argument("--threads", type=int, default=8)
+    ap.add_argument("--max-memory", type=int, default=24000, dest="max_memory",
+                    help="pyscf max_memory in MB (default 24000 = the whole WSL allotment). "
+                         "Lower it to leave the Windows host room; results are unchanged, only the blocking is.")
     ap.add_argument("--tag", default="")
     ap.add_argument("--basis-terms", default="qz5z", choices=["qz5z", "none"],
                     help="decision 33 (2026-09-12): add [MP2/QZ − MP2/anchor] + [SCF/5Z − SCF/anchor] at every point (default); "
@@ -263,6 +272,8 @@ def main():
     args = ap.parse_args()
     from pyscf import lib
     lib.num_threads(args.threads)
+    global MAX_MEMORY_MB
+    MAX_MEMORY_MB = args.max_memory
     Recording, Frozen = lno_classes()
 
     global FROZEN_CORE
@@ -285,7 +296,7 @@ def main():
     os.makedirs(out, exist_ok=True)
     qs = np.linspace(-1.0, 1.0, args.npts)
     log(f"M1: {args.molecule} {args.basis}, thresholds {THRESH[args.thresh]}, frozen core {FROZEN_CORE}, modes {modes} "
-        f"({', '.join(f'{freq[m]:.0f} cm⁻¹ {fam[m]}' for m in modes)}), {args.npts} points, {args.threads} threads")
+        f"({', '.join(f'{freq[m]:.0f} cm⁻¹ {fam[m]}' for m in modes)}), {args.npts} points, {args.threads} threads, max_memory {args.max_memory} MB")
 
     # ---------------- reference geometry: arm C, record the spaces
     t0 = time.time()

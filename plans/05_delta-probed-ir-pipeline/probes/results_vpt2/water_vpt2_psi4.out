@@ -1,0 +1,106 @@
+  Threads set to 4 by Python driver.
+
+  Memory set to   7.451 GiB by Python driver.
+
+
+  ==> Harmonic Vibrational Analysis <==
+
+  non-mass-weighted Hessian:       Symmetric? True   Hermitian? True   Lin Dep Dim?  3 (0)
+  projection of translations (True) and rotations (True) removed 6 degrees of freedom (6)
+  total projector:                 Symmetric? True   Hermitian? True   Lin Dep Dim?  6 (6)
+  mass-weighted Hessian:           Symmetric? True   Hermitian? True   Lin Dep Dim?  3 (0)
+  pre-proj  low-frequency mode:    0.0000i [cm^-1]
+  pre-proj  low-frequency mode:    0.0000i [cm^-1]
+  pre-proj  low-frequency mode:    0.0000  [cm^-1]
+  pre-proj  low-frequency mode:    0.0000  [cm^-1]
+  pre-proj  low-frequency mode:    5.4392  [cm^-1]
+  pre-proj  low-frequency mode:    5.4501  [cm^-1]
+  pre-proj  all modes:['9.9867i' '0.0000i' '0.0000' '0.0000' '5.4392' '5.4501' '1713.0211'
+ '3726.9526' '3848.9452']
+  projected mass-weighted Hessian: Symmetric? True   Hermitian? True   Lin Dep Dim?  6 (6)
+  post-proj low-frequency mode:    0.0001i [cm^-1] (TR)
+  post-proj low-frequency mode:    0.0000i [cm^-1] (TR)
+  post-proj low-frequency mode:    0.0000i [cm^-1] (TR)
+  post-proj low-frequency mode:    0.0000i [cm^-1] (TR)
+  post-proj low-frequency mode:    0.0000  [cm^-1] (TR)
+  post-proj low-frequency mode:    0.0001  [cm^-1] (TR)
+  post-proj  all modes:['0.0001i' '0.0000i' '0.0000i' '0.0000i' '0.0000' '0.0001' '1713.0211'
+ '3726.9526' '3848.9452']
+
+  Vibration                       7                   8                   9           
+  Freq [cm^-1]                1713.0211           3726.9526           3848.9452       
+  Irrep                           A1                  A1                  B1          
+  Reduced mass [u]              1.0825              1.0453              1.0810        
+  Force const [mDyne/A]         1.8716              8.5548              9.4355        
+  Turning point v=0 [a0]        0.2548              0.1758              0.1701        
+  RMS dev v=0 [a0 u^1/2]        0.1875              0.1271              0.1251        
+  IR activ [km/mol]            75.7808              1.6923             19.3922        
+  Char temp [K]               2464.6560           5362.2550           5537.7752       
+  ----------------------------------------------------------------------------------
+      1   O               -0.00 -0.07  0.00   -0.00  0.05  0.00   -0.07  0.00  0.00   
+      2   H                0.43  0.56 -0.00    0.58 -0.40  0.00    0.55 -0.44  0.00   
+      3   H               -0.43  0.56 -0.00   -0.58 -0.40  0.00    0.55  0.44 -0.00   
+
+  ==> Thermochemistry Components <==
+
+  Entropy, S
+    Electronic S                             0.000 [cal/(mol K)]        0.000 [J/(mol K)]       0.00000000 [mEh/K] (multiplicity = 1)
+    Translational S                         34.608 [cal/(mol K)]      144.801 [J/(mol K)]       0.05515177 [mEh/K] (mol. weight = 18.0106 [u], P = 101325.00 [Pa])
+    Rotational S                            10.524 [cal/(mol K)]       44.032 [J/(mol K)]       0.01677097 [mEh/K] (symmetry no. = 2)
+    Vibrational S                            0.005 [cal/(mol K)]        0.020 [J/(mol K)]       0.00000754 [mEh/K]
+  Total S                                   45.137 [cal/(mol K)]      188.853 [J/(mol K)]       0.07193029 [mEh/K]
+  Correction S                               0.000 [cal/(mol K)]        0.000 [J/(mol K)]       0.00000000 [mEh/K]
+
+  Constant volume heat capacity, Cv
+    Electronic Cv                            0.000 [cal/(mol K)]        0.000 [J/(mol K)]       0.00000000 [mEh/K]
+    Translational Cv                         2.981 [cal/(mol K)]       12.472 [J/(mol K)]       0.00475022 [mEh/K]
+    Rotational Cv                            2.981 [cal/(mol K)]       12.472 [J/(mol K)]       0.00475022 [mEh/K]
+    Vibrational Cv                           0.035 [cal/(mol K)]        0.146 [J/(mol K)]       0.00005567 [mEh/K]
+  Total Cv                                   5.997 [cal/(mol K)]       25.090 [J/(mol K)]       0.00955610 [mEh/K]
+  Correction Cv                              0.000 [cal/(mol K)]        0.000 [J/(mol K)]       0.00000000 [mEh/K]
+
+  Constant pressure heat capacity, Cp
+    Electronic Cp                            0.000 [cal/(mol K)]        0.000 [J/(mol K)]       0.00000000 [mEh/K]
+    Translational Cp                         4.968 [cal/(mol K)]       20.786 [J/(mol K)]       0.00791703 [mEh/K]
+    Rotational Cp                            2.981 [cal/(mol K)]       12.472 [J/(mol K)]       0.00475022 [mEh/K]
+    Vibrational Cp                           0.035 [cal/(mol K)]        0.146 [J/(mol K)]       0.00005567 [mEh/K]
+  Total Cp                                   7.984 [cal/(mol K)]       33.404 [J/(mol K)]       0.01272291 [mEh/K]
+  Correction Cp                              0.000 [cal/(mol K)]        0.000 [J/(mol K)]       0.00000000 [mEh/K]
+
+  ==> Thermochemistry Energy Analysis <==
+
+  Raw electronic energy, E_e
+  Total E_e, Electronic energy at well bottom                                           -76.40895541 [Eh]
+
+  Zero-point vibrational energy, ZPVE = Sum_i omega_i / 2,  E_0 = E_e + ZPVE
+    Vibrational ZPVE                        13.279 [kcal/mol]       55.560 [kJ/mol]       0.02116171 [Eh]        4644.459 [cm^-1]
+  Correction ZPVE to E_e                    13.279 [kcal/mol]       55.560 [kJ/mol]       0.02116171 [Eh]        4644.459 [cm^-1]
+  Total E_0, Enthalpy at 0 [K]                                                          -76.38779370 [Eh]
+  *** Absolute enthalpy, not an enthalpy of formation ***
+
+  Thermal (internal) energy, E (includes ZPVE and finite-temperature corrections)
+    Electronic contrib to E beyond E_e       0.000 [kcal/mol]        0.000 [kJ/mol]       0.00000000 [Eh]
+    Translational contrib to E               0.889 [kcal/mol]        3.718 [kJ/mol]       0.00141628 [Eh]
+    Rotational contrib to E                  0.889 [kcal/mol]        3.718 [kJ/mol]       0.00141628 [Eh]
+    Vibrational contrib to E                13.280 [kcal/mol]       55.565 [kJ/mol]       0.02116372 [Eh]
+  Correction E                              15.058 [kcal/mol]       63.002 [kJ/mol]       0.02399627 [Eh]
+  Total E, Thermal (internal) energy at  298.15 [K]                                     -76.38495914 [Eh]
+
+  Enthalpy, H_trans = E_trans + k_B * T = E_trans + P * V
+    Electronic contrib to H beyond E_e       0.000 [kcal/mol]        0.000 [kJ/mol]       0.00000000 [Eh]
+    Translational contrib to H               1.481 [kcal/mol]        6.197 [kJ/mol]       0.00236046 [Eh]
+    Rotational contrib to H                  0.889 [kcal/mol]        3.718 [kJ/mol]       0.00141628 [Eh]
+    Vibrational contrib to H                13.280 [kcal/mol]       55.565 [kJ/mol]       0.02116372 [Eh]
+  Correction H                              15.650 [kcal/mol]       65.481 [kJ/mol]       0.02494046 [Eh]
+  Total H, Enthalpy at  298.15 [K]                                                      -76.38401495 [Eh]
+  *** Absolute enthalpy, not an enthalpy of formation ***
+
+  Gibbs free energy, G = H - T * S
+    Electronic contrib to G beyond E_e       0.000 [kcal/mol]        0.000 [kJ/mol]       0.00000000 [Eh]
+    Translational contrib to G              -8.837 [kcal/mol]      -36.975 [kJ/mol]      -0.01408304 [Eh]
+    Rotational contrib to G                 -2.249 [kcal/mol]       -9.410 [kJ/mol]      -0.00358399 [Eh]
+    Vibrational contrib to G                13.279 [kcal/mol]       55.559 [kJ/mol]       0.02116147 [Eh]
+  Correction G                               2.193 [kcal/mol]        9.175 [kJ/mol]       0.00349444 [Eh]
+  Total G, Gibbs energy at  298.15 [K]                                                  -76.40546097 [Eh]
+  *** Absolute Gibbs energy, not a free energy of formation ***
+

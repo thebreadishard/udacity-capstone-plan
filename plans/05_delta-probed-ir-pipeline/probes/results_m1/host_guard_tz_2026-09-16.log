@@ -1,0 +1,15 @@
+GUARD armed 2026-09-16 06:22:43: waiting for the M3 TZ python
+GUARD 2026-09-16 14:36:15: M3 TZ python seen (waited 490 min); guarding host memory (kill below 0.8 GB free)
+GUARD 2026-09-16 18:34:39: host free 0.06 GB < 0.8 -> stopping M3 (resumable with --resume)
+GUARD ENDS 2026-09-16 18:35:19: no M3 python running
+GUARD armed 2026-09-16 18:38:03: waiting for 'm1_frozen_spaces.py.*cc-pvtz' (max 30 min), will stop it below 2.0 GB host free
+GUARD 2026-09-16 18:40:04: job seen (pid 26918); guarding host memory (stop below 2.0 GB free)
+GUARD armed 2026-09-16 18:40:15: waiting for 'm1_frozen_spaces.py.*cc-pvtz' (max 30 min), will stop it below 2.0 GB host free
+GUARD 2026-09-16 18:40:15: job seen (pid 26918); guarding host memory (stop below 2.0 GB free)
+GUARD 2026-09-16 19:25:55: host free 0.88 GB < 2.0 -> stopping pid 26918 (resumable with --resume)
+GUARD ENDS 2026-09-16 19:26:36: stopped
+GUARD armed 2026-09-16 19:29:56: waiting for 'm1_frozen_spaces.py.*cc-pvtz' (max 30 min), will stop it below 2.0 GB host free
+GUARD 2026-09-16 19:29:56: job seen (pid 440); guarding host memory (stop below 2.0 GB free)
+GUARD ENDS 2026-09-16 19:33:02: the job exited on its own
+GUARD armed 2026-09-16 19:33:15: waiting for 'm1_frozen_spaces.py.*cc-pvtz' (max 30 min), will stop it below 2.0 GB host free
+GUARD 2026-09-16 19:33:15: job seen (pid 452); guarding host memory (stop below 2.0 GB free)
