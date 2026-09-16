@@ -34,6 +34,8 @@ def main():
     ap.add_argument("--functional", default="b3lyp")
     ap.add_argument("--basis", default="6-31g*")
     ap.add_argument("--no-opt", action="store_true", help="skip the re-optimisation in this psi4 build")
+    ap.add_argument("--cache", default=None, help="checkpoint directory (default results_vpt2/cache_<molecule>_<functional>_631gs_psi4-<version>)")
+    ap.add_argument("--no-cache", action="store_true", help="run without the checkpoint layer")
     args = ap.parse_args()
     os.makedirs(OUT, exist_ok=True)
     import psi4
@@ -45,18 +47,34 @@ def main():
     psi4.set_memory("8 GB")
     log(f"pyVPT2 {pyvpt2.__version__}, psi4 {psi4.__version__}, qcelemental {qcel.__version__}; {args.molecule} {args.functional}/{args.basis}, {args.threads} threads")
 
-    a = json.load(open(os.path.join(HERE, "results_dryrun", args.molecule, "stageA.json")))
-    symbols, x = a["symbols"], np.array(a["coords_bohr"], float).reshape(-1, 3)
+    if args.molecule == "water":   # built-in smoke-test molecule (the 14 September self-test), no stage A needed
+        symbols = ["O", "H", "H"]
+        x = np.array([[0.0, 0.0, 0.1173], [0.0, 0.7572, -0.4692], [0.0, -0.7572, -0.4692]]) / BOHR
+    else:
+        a = json.load(open(os.path.join(HERE, "results_dryrun", args.molecule, "stageA.json")))
+        symbols, x = a["symbols"], np.array(a["coords_bohr"], float).reshape(-1, 3)
     geom = "\n".join(f"{s} {c[0]*BOHR:.10f} {c[1]*BOHR:.10f} {c[2]*BOHR:.10f}" for s, c in zip(symbols, x))
     mol = psi4.geometry(f"0 1\n{geom}\nunits angstrom\nno_com\nno_reorient\n")
     psi4.set_options({"scf_type": "df", "d_convergence": 1e-10, "e_convergence": 1e-10, "g_convergence": "gau_verytight",
                       "dft_spherical_points": 590, "dft_radial_points": 99})
+    cache_dir = None
+    if not args.no_cache:
+        cache_dir = args.cache or os.path.join(OUT, f"cache_{args.molecule}_{args.functional}_631gs_psi4-{psi4.__version__}")
+        os.makedirs(cache_dir, exist_ok=True)
+    gcache = os.path.join(cache_dir, "geometry_opt.json") if cache_dir else None
     t0 = time.time()
-    if not args.no_opt:
-        log("optimising in this psi4 build (gau_verytight)")
-        psi4.optimize(f"{args.functional}/{args.basis}", molecule=mol)
-        log(f"optimised in {time.time()-t0:.0f} s")
-    coords = np.array([[mol.x(i), mol.y(i), mol.z(i)] for i in range(mol.natom())])   # bohr
+    if gcache and os.path.exists(gcache):   # a rerun uses exactly the geometry of the first run (bit-identical task keys)
+        coords = np.array(json.load(open(gcache))["coords_bohr"])
+        log(f"optimised geometry reused from {gcache}")
+    else:
+        if not args.no_opt:
+            log("optimising in this psi4 build (gau_verytight)")
+            psi4.optimize(f"{args.functional}/{args.basis}", molecule=mol)
+            log(f"optimised in {time.time()-t0:.0f} s")
+        coords = np.array([[mol.x(i), mol.y(i), mol.z(i)] for i in range(mol.natom())])   # bohr
+        if gcache:
+            json.dump({"symbols": symbols, "coords_bohr": coords.tolist(), "level": f"{args.functional}/{args.basis} psi4 {psi4.__version__}",
+                       "date": f"{datetime.now():%Y-%m-%d %H:%M}"}, open(gcache, "w"), indent=1)
     shift = float(np.abs(coords - x).max())
     log(f"largest coordinate change against the dry run's geometry: {shift:.2e} bohr")
 
@@ -66,11 +84,18 @@ def main():
                                 keywords={"scf_type": "df", "d_convergence": 1e-10, "e_convergence": 1e-10,
                                           "dft_spherical_points": 590, "dft_radial_points": 99})
     inp = VPTInput(molecule=qmol, input_specification=[spec], keywords={"DISP_SIZE": 0.05, "FD": "HESSIAN", "FD_ACC": 2, "FERMI": True})
+    stats = None
+    if cache_dir:   # 2026-09-16: checkpoint layer (vpt2_checkpoint.py) — a restart costs one task, not the run
+        import sys
+        sys.path.insert(0, HERE)
+        from vpt2_checkpoint import install
+        stats = install(cache_dir)
+        log(f"checkpoint cache: {cache_dir} ({len([f for f in os.listdir(cache_dir) if f.endswith('.json')])} tasks stored already)")
     t1 = time.time()
     log("VPT2 started")
     res = pyvpt2.vpt2_from_schema(inp)
     t_vpt2 = time.time() - t1
-    log(f"VPT2 done in {t_vpt2:.0f} s")
+    log(f"VPT2 done in {t_vpt2:.0f} s" + (f"; cache hits {stats['hits']}, computed {stats['misses']}" if stats else ""))
 
     def arr(name):
         v = getattr(res, name, None)
@@ -90,7 +115,9 @@ def main():
         out["fermi"] = json.loads(json.dumps(getattr(res, "fermi_list", None) or getattr(res, "fermi", None), default=str))
     except Exception:  # noqa: BLE001
         out["fermi"] = None
-    json.dump(out, open(os.path.join(OUT, f"{args.molecule}_{args.functional}_631gs_vpt2.json"), "w"), indent=1)
+    def _default(o):   # numpy scalars/arrays inside the VPTResult fields
+        return o.tolist() if hasattr(o, "tolist") else str(o)
+    json.dump(out, open(os.path.join(OUT, f"{args.molecule}_{args.functional}_631gs_vpt2.json"), "w"), indent=1, default=_default)
 
     om, nu, it = out["omega"], out["nu"], out["harmonic_intensity"]
     lines = [f"# pyVPT2 — {args.molecule}, {args.functional}/{args.basis}, {out['date']} (psi4 {psi4.__version__}, pyVPT2 {pyvpt2.__version__}, "
@@ -100,6 +127,8 @@ def main():
              "| mode | harmonic ω (cm⁻¹) | VPT2 ν (cm⁻¹) | ν − ω | harmonic intensity (km/mol) |", "|---|---|---|---|---|"]
     if om and nu:
         for i, (w, n) in enumerate(zip(om, nu)):
+            if abs(w) < 1.0:   # pyVPT2 returns 3N entries; the six translations/rotations are zero
+                continue
             ii = f"{it[i]:.1f}" if it and i < len(it) else "—"
             lines.append(f"| {i} | {w:.1f} | {n:.1f} | {n-w:+.1f} | {ii} |")
     lines += ["", f"Fermi resonances: {out.get('fermi')}", "", "Intensities are harmonic only (pyVPT2 has no VPT2 intensities; idea I6)."]

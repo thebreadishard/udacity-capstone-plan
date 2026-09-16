@@ -1,0 +1,25 @@
+[07:02:14] pyVPT2 0.1.2, psi4 1.10.2, qcelemental 0.30.1; water b3lyp/6-31g*, 4 threads
+[07:02:14] optimised geometry reused from C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_vpt2\cache_water_b3lyp_631gs_psi4-1.10.2\geometry_opt.json
+[07:02:14] largest coordinate change against the dry run's geometry: 1.54e-02 bohr
+[07:02:14] checkpoint cache: C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_vpt2\cache_water_b3lyp_631gs_psi4-1.10.2 (8 tasks stored already)
+[07:02:14] VPT2 started
+Traceback (most recent call last):
+  File "C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\vpt2_benzene.py", line 140, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\vpt2_benzene.py", line 96, in main
+    res = pyvpt2.vpt2_from_schema(inp)
+  File "C:\Users\thebr\.conda\envs\vpt2\Lib\site-packages\pyvpt2\vpt2.py", line 323, in vpt2_from_schema
+    plan = vpt2_from_harmonic(harmonic_result, qc_specification2, **kwargs)
+  File "C:\Users\thebr\.conda\envs\vpt2\Lib\site-packages\pyvpt2\vpt2.py", line 352, in vpt2_from_harmonic
+    wfn = _findif_schema_to_wfn(harmonic_result)
+  File "C:\Users\thebr\.conda\envs\vpt2\Lib\site-packages\pyvpt2\vpt2.py", line 51, in _findif_schema_to_wfn
+    obj.set_variable("CURRENT DIPOLE GRADIENT", dipder)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\thebr\.conda\envs\vpt2\Lib\site-packages\psi4\driver\p4util\python_helpers.py", line 1380, in _core_set_variable
+    core.set_scalar_variable(key, val)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+TypeError: set_scalar_variable(): incompatible function arguments. The following argument types are supported:
+    1. (key: str, value: typing.SupportsFloat | typing.SupportsIndex) -> None
+
+Invoked with: 'CURRENT DIPOLE GRADIENT', [-0.40983298251244915, 0.0, 0.0, 0.0, -0.33515745231733063, 0.0, 0.0, 0.0, -0.7286041679925741, 0.2049164912562249, 0.09178248630034107, 0.0, 0.1253086617172149, 0.16757872615866556, 0.0, 0.0, 0.0, 0.3643020839962876, 0.2049164912562249, -0.09178248630034107, 0.0, -0.1253086617172149, 0.16757872615866556, 0.0, 0.0, 0.0, 0.3643020839962876]

@@ -1,0 +1,95 @@
+[07:03:25] pyVPT2 0.1.2, psi4 1.10.2, qcelemental 0.30.1; water b3lyp/6-31g*, 4 threads
+[07:03:25] optimised geometry reused from C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_vpt2\cache_water_b3lyp_631gs_psi4-1.10.2\geometry_opt.json
+[07:03:25] largest coordinate change against the dry run's geometry: 1.54e-02 bohr
+[07:03:25] checkpoint cache: C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_vpt2\cache_water_b3lyp_631gs_psi4-1.10.2 (8 tasks stored already)
+[07:03:25] VPT2 started
+Checking for numerical inconsistencies in quartic terms...
+No inconsistencies found
+Checking for numerical inconsistencies in cubic terms...
+No inconsistencies found
+C:\Users\thebr\.conda\envs\vpt2\Lib\site-packages\pyvpt2\vpt2.py:157: ComplexWarning: Casting complex values to real discards the imaginary part
+  zeta[0, :, :] = np.matmul(np.transpose(q), np.matmul(Mx, q))
+C:\Users\thebr\.conda\envs\vpt2\Lib\site-packages\pyvpt2\vpt2.py:158: ComplexWarning: Casting complex values to real discards the imaginary part
+  zeta[1, :, :] = np.matmul(np.transpose(q), np.matmul(My, q))
+C:\Users\thebr\.conda\envs\vpt2\Lib\site-packages\pyvpt2\vpt2.py:159: ComplexWarning: Casting complex values to real discards the imaginary part
+  zeta[2, :, :] = np.matmul(np.transpose(q), np.matmul(Mz, q))
+
+Identifying Fermi resonances... 
+None detected.
+C:\Users\thebr\.conda\envs\vpt2\Lib\site-packages\pyvpt2\vpt2.py:496: ComplexWarning: Casting complex values to real discards the imaginary part
+  chi[i, j] += (4 * (omega[i] ** 2 + omega[j] ** 2) / (omega[i] * omega[j]) * rot)
+
+Anharmonic Constants (cm-1)
+ 7  7   -19.2819
+ 7  8    -4.3890
+ 7  9   -19.4211
+ 8  8   -42.4122
+ 8  9  -166.6480
+ 9  9   -49.6697
+C:\Users\thebr\.conda\envs\vpt2\Lib\site-packages\qcelemental\models\types.py:14: ComplexWarning: Casting complex values to real discards the imaginary part
+  v = np.asarray(v, dtype=cls._dtype)
+
+
+Cubic (cm-1):
+7 7 7      -275.41471412482906
+7 7 8      276.6011808516582
+7 8 7      276.6011808516582
+7 8 8      88.64574530731774
+7 9 9      272.1914820446725
+8 7 7      276.60118085165817
+8 7 8      88.64574530731774
+8 8 7      88.64574530731774
+8 8 8      -1813.982125053726
+8 9 9      -1827.0114743466092
+9 7 9      272.1914820446725
+9 8 9      -1827.011474346609
+9 9 7      272.1914820446725
+9 9 8      -1827.0114743466092
+
+Quartic (cm-1):
+7 7 7 7      -61.17717134891448
+7 7 8 8      -287.10274924929917
+7 7 9 9      -347.1445883704095
+8 8 7 7      -287.10274924929917
+8 8 8 8      801.825484423834
+8 8 9 9      803.1081443415424
+9 9 7 7      -347.1445883704095
+9 9 8 8      803.1081443415424
+9 9 9 9      806.5750467180322
+
+B Rotational Constants (cm-1)
+26.269750876182176    14.420338945269092    9.30985193949163
+
+Coriolis Constants (cm-1):
+3 7 9      -0.9999176015830301
+3 8 9      -0.012837057468174123
+3 9 7      0.9999176015830301
+3 9 8      0.012837057468174096
+
+Fundamentals (cm-1):
+                     Harmonic           Anharmonic           Anharmonic
+    Mode            Frequency           Correction            Frequency
+       7            1713.0211             -50.4689            1662.5522
+       8            3726.9523            -170.3429            3556.6093
+       9            3848.9452            -192.3740            3656.5712
+
+Zero-Point Vibrational Energy:
+                      Harmonic           Anharmonic           Anharmonic
+                          ZPVE           Correction                 ZPVE
+    cm-1:            4644.4593             -72.9412            4571.5181
+kcal/mol:              13.2792              -0.2085              13.0706
+  kJ/mol:              55.5601              -0.8726              54.6875
+[07:03:25] VPT2 done in 0 s; cache hits 7, computed 0
+# pyVPT2 — water, b3lyp/6-31g*, 2026-09-16 07:03 (psi4 1.10.2, pyVPT2 0.1.2, 4 threads; optimisation 0 s, VPT2 0 s)
+
+Geometry: the dry run's optimum re-optimised in this build (largest change 1.5e-02 bohr). ZPVE harmonic 4644.459283369632 / anharmonic 4571.51809203753 cm⁻¹.
+
+| mode | harmonic ω (cm⁻¹) | VPT2 ν (cm⁻¹) | ν − ω | harmonic intensity (km/mol) |
+|---|---|---|---|---|
+| 6 | 1713.0 | 1662.6 | -50.5 | 75.8 |
+| 7 | 3727.0 | 3556.6 | -170.3 | 1.7 |
+| 8 | 3848.9 | 3656.6 | -192.4 | 19.4 |
+
+Fermi resonances: None
+
+Intensities are harmonic only (pyVPT2 has no VPT2 intensities; idea I6).

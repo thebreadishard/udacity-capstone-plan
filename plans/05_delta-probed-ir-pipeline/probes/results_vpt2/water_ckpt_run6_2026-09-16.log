@@ -1,0 +1,25 @@
+[07:02:55] pyVPT2 0.1.2, psi4 1.10.2, qcelemental 0.30.1; water b3lyp/6-31g*, 4 threads
+[07:02:55] optimised geometry reused from C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_vpt2\cache_water_b3lyp_631gs_psi4-1.10.2\geometry_opt.json
+[07:02:55] largest coordinate change against the dry run's geometry: 1.54e-02 bohr
+[07:02:55] checkpoint cache: C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_vpt2\cache_water_b3lyp_631gs_psi4-1.10.2 (8 tasks stored already)
+[07:02:55] VPT2 started
+Traceback (most recent call last):
+  File "C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\vpt2_benzene.py", line 140, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\vpt2_benzene.py", line 96, in main
+    res = pyvpt2.vpt2_from_schema(inp)
+  File "C:\Users\thebr\.conda\envs\vpt2\Lib\site-packages\pyvpt2\vpt2.py", line 323, in vpt2_from_schema
+    plan = vpt2_from_harmonic(harmonic_result, qc_specification2, **kwargs)
+  File "C:\Users\thebr\.conda\envs\vpt2\Lib\site-packages\pyvpt2\vpt2.py", line 352, in vpt2_from_harmonic
+    wfn = _findif_schema_to_wfn(harmonic_result)
+  File "C:\Users\thebr\.conda\envs\vpt2\Lib\site-packages\pyvpt2\vpt2.py", line 51, in _findif_schema_to_wfn
+    obj.set_variable("CURRENT DIPOLE GRADIENT", dipder)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\thebr\.conda\envs\vpt2\Lib\site-packages\psi4\driver\p4util\python_helpers.py", line 1375, in _core_set_variable
+    core.set_array_variable(key, core.Matrix.from_array(_qcvar_reshape_set(key, val)))
+                                 ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\thebr\.conda\envs\vpt2\Lib\site-packages\psi4\driver\p4util\numpy_helper.py", line 206, in array_to_matrix
+    ret = self(name, arr.shape[0], arr.shape[1])
+                                   ~~~~~~~~~^^^
+IndexError: tuple index out of range

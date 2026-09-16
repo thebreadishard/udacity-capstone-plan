@@ -1,0 +1,107 @@
+[06:53:47] pyVPT2 0.1.2, psi4 1.10.2, qcelemental 0.30.1; water b3lyp/6-31g*, 4 threads
+[06:53:48] optimising in this psi4 build (gau_verytight)
+Some dependencies such as QCElemental have not yet finished migration to pydantic v2. If issues are encountered please downgrade pydantic or upgrade QCElemental as appropriate
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 4.
+Optimizer: Optimization complete!
+[06:53:57] optimised in 9 s
+[06:53:57] largest coordinate change against the dry run's geometry: 1.54e-02 bohr
+[06:53:57] checkpoint cache: C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_vpt2\cache_water_b3lyp_631gs_psi4-1.10.2 (0 tasks stored already)
+[06:53:57] VPT2 started
+Checking for numerical inconsistencies in quartic terms...
+No inconsistencies found
+Checking for numerical inconsistencies in cubic terms...
+No inconsistencies found
+C:\Users\thebr\.conda\envs\vpt2\Lib\site-packages\pyvpt2\vpt2.py:157: ComplexWarning: Casting complex values to real discards the imaginary part
+  zeta[0, :, :] = np.matmul(np.transpose(q), np.matmul(Mx, q))
+C:\Users\thebr\.conda\envs\vpt2\Lib\site-packages\pyvpt2\vpt2.py:158: ComplexWarning: Casting complex values to real discards the imaginary part
+  zeta[1, :, :] = np.matmul(np.transpose(q), np.matmul(My, q))
+C:\Users\thebr\.conda\envs\vpt2\Lib\site-packages\pyvpt2\vpt2.py:159: ComplexWarning: Casting complex values to real discards the imaginary part
+  zeta[2, :, :] = np.matmul(np.transpose(q), np.matmul(Mz, q))
+
+Identifying Fermi resonances... 
+None detected.
+C:\Users\thebr\.conda\envs\vpt2\Lib\site-packages\pyvpt2\vpt2.py:496: ComplexWarning: Casting complex values to real discards the imaginary part
+  chi[i, j] += (4 * (omega[i] ** 2 + omega[j] ** 2) / (omega[i] * omega[j]) * rot)
+
+Anharmonic Constants (cm-1)
+ 7  7   -19.2828
+ 7  8    -4.4574
+ 7  9   -19.4151
+ 8  8   -42.5105
+ 8  9  -166.4301
+ 9  9   -49.6713
+C:\Users\thebr\.conda\envs\vpt2\Lib\site-packages\qcelemental\models\types.py:14: ComplexWarning: Casting complex values to real discards the imaginary part
+  v = np.asarray(v, dtype=cls._dtype)
+
+
+Cubic (cm-1):
+7 7 7      -275.4144662970721
+7 7 8      276.5961884683541
+7 8 7      276.5961884683541
+7 8 8      88.64100901601914
+7 9 9      272.19132969811955
+8 7 7      276.59618846835417
+8 7 8      88.64100901601914
+8 8 7      88.64100901601914
+8 8 8      -1813.9652553413769
+8 9 9      -1827.0037111003592
+9 7 9      272.19132969811955
+9 8 9      -1827.0037111003592
+9 9 7      272.19132969811955
+9 9 8      -1827.0037111003587
+
+Quartic (cm-1):
+7 7 7 7      -61.19798646270035
+7 7 8 8      -287.36719606483234
+7 7 9 9      -347.1176153083037
+8 8 7 7      -287.36719606483234
+8 8 8 8      800.2237449135982
+8 8 9 9      803.9620296528475
+9 9 7 7      -347.1176153083037
+9 9 8 8      803.9620296528475
+9 9 9 9      806.5375044683578
+
+B Rotational Constants (cm-1)
+26.26975094200937    14.420338985978901    9.309851964727338
+
+Coriolis Constants (cm-1):
+3 7 9      -0.9999176021830777
+3 8 9      -0.012837010728543458
+3 9 7      0.9999176021830776
+3 9 8      0.012837010728543485
+
+Fundamentals (cm-1):
+                     Harmonic           Anharmonic           Anharmonic
+    Mode            Frequency           Correction            Frequency
+       7            1713.0211             -50.5019            1662.5192
+       8            3726.9525            -170.4648            3556.4877
+       9            3848.9452            -192.2651            3656.6801
+
+Zero-Point Vibrational Energy:
+                      Harmonic           Anharmonic           Anharmonic
+                          ZPVE           Correction                 ZPVE
+    cm-1:            4644.4594             -72.9531            4571.5063
+kcal/mol:              13.2792              -0.2086              13.0706
+  kJ/mol:              55.5601              -0.8727              54.6874
+[06:55:41] VPT2 done in 104 s; cache hits 0, computed 7
+Traceback (most recent call last):
+  File "C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\vpt2_benzene.py", line 125, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\vpt2_benzene.py", line 107, in main
+    json.dump(out, open(os.path.join(OUT, f"{args.molecule}_{args.functional}_631gs_vpt2.json"), "w"), indent=1)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\thebr\.conda\envs\vpt2\Lib\json\__init__.py", line 181, in dump
+    for chunk in iterable:
+                 ^^^^^^^^
+  File "C:\Users\thebr\.conda\envs\vpt2\Lib\json\encoder.py", line 435, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "C:\Users\thebr\.conda\envs\vpt2\Lib\json\encoder.py", line 409, in _iterencode_dict
+    yield from chunks
+  File "C:\Users\thebr\.conda\envs\vpt2\Lib\json\encoder.py", line 442, in _iterencode
+    o = _default(o)
+  File "C:\Users\thebr\.conda\envs\vpt2\Lib\json\encoder.py", line 182, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+                    f'is not JSON serializable')
+TypeError: Object of type ndarray is not JSON serializable
