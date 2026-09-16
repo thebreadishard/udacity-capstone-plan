@@ -20,7 +20,7 @@
   "source_model": "type-constrained least squares on the source (one constant per type), so source and target share the parameterisation"
  },
  "source": "benzene",
- "target": "benzene",
+ "target": "naphthalene_sym",
  "source_design": {
   "singular_values": [
    0.0023749725740865413,
@@ -328,51 +328,51 @@
   "rows": [
    {
     "family": "CC-stretch",
-    "n": 6,
-    "rms_cm": 0.010155949323370803,
-    "max_cm": 0.016978591661022335,
-    "rms_zero_rule_cm": 48.45968445522035,
+    "n": 9,
+    "rms_cm": 17.8179456673285,
+    "max_cm": 38.903482611958644,
+    "rms_zero_rule_cm": 41.2204613005122,
     "judged": true,
-    "passes": true
+    "passes": false
    },
    {
     "family": "CH-ip-bend",
-    "n": 7,
-    "rms_cm": 0.0207896289539264,
-    "max_cm": 0.04126092867359077,
-    "rms_zero_rule_cm": 34.69210509679236,
+    "n": 9,
+    "rms_cm": 5.761655607170498,
+    "max_cm": 14.807712597252468,
+    "rms_zero_rule_cm": 35.82299408784688,
     "judged": false,
-    "passes": true
+    "passes": false
    },
    {
     "family": "CH-oop",
-    "n": 9,
-    "rms_cm": 70.34828281891707,
-    "max_cm": 84.41896325915344,
-    "rms_zero_rule_cm": 70.34829348615875,
+    "n": 15,
+    "rms_cm": 64.47871788144278,
+    "max_cm": 85.14629261997554,
+    "rms_zero_rule_cm": 64.47871788144278,
     "judged": false,
     "passes": false
    },
    {
     "family": "CH-stretch",
-    "n": 6,
-    "rms_cm": 0.05044803729029693,
-    "max_cm": 0.06889245615140638,
-    "rms_zero_rule_cm": 25.1100338800484,
+    "n": 8,
+    "rms_cm": 0.27470000640124237,
+    "max_cm": 0.602119822012849,
+    "rms_zero_rule_cm": 25.105519729013253,
     "judged": true,
     "passes": true
    },
    {
     "family": "ring-ip",
-    "n": 2,
-    "rms_cm": 0.02512574477525605,
-    "max_cm": 0.03419749410388917,
-    "rms_zero_rule_cm": 23.06717553373496,
+    "n": 7,
+    "rms_cm": 6.416832538459282,
+    "max_cm": 11.920035061520055,
+    "rms_zero_rule_cm": 22.019224266655456,
     "judged": false,
-    "passes": true
+    "passes": false
    }
   ],
   "types_missing_on_source": [],
-  "verdict": "PASS"
+  "verdict": "LOSE"
  }
 }

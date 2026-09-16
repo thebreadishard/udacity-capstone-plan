@@ -26,7 +26,13 @@ import sys
 sys.path.insert(0, str(HERE))
 from x17_internal_coordinate_orbits import (load, internal_set, b_matrix, operations_of, coordinate_images, orbits, graph_distance, HARTREE_TO_CM, P05)  # noqa: E402
 
-CONSTANTS = {"parameter_set": "S2 = diagonal + shared-atom couplings + one-bond-apart couplings (X17), IN-PLANE BLOCK ONLY", "threshold_cm": 2.5, "inplane_types": ["CC", "CH", "CCC", "CCH"],
+CONSTANTS = {"parameter_set": "S2 = diagonal + shared-atom couplings + one-bond-apart couplings (X17), IN-PLANE BLOCK ONLY", "threshold_cm": 2.5,
+             "lstsq_rcond": 1e-3,
+             "why_rcond": "2026-09-16: the type design on benzene has 24 real directions and 5 null ones from the redundancy of the internal set "
+                          "(singular values 2.4e-3 … 6.3e-5, then 2e-10, 3e-11, 7e-16, 3e-19, 2e-19); numpy's default cutoff kept the 1e-10 "
+                          "directions and gave three CC-CCC coupling types constants of 2.7e6 that cancel on benzene and not on naphthalene "
+                          "(first run: 1e9 cm-1 'errors'). Truncating at 1e-3 of the largest singular value drops exactly the five null "
+                          "directions: source residual unchanged (0.031 cm-1 in-plane), max|constant| 0.0125.", "inplane_types": ["CC", "CH", "CCC", "CCH"],
              "why_in_plane_only": "out-of-plane coordinates (wags, torsions) carry an orientation sign that a type key does not fix across molecules (the first, signed-orbit-free version of X17 failed by 14 cm-1 for the same reason); the type transfer is therefore tested on the in-plane block, which holds both judged families (CH-stretch, CC-stretch); the out-of-plane block waits for a declared, symmetry-covariant sign convention (mandate ledger)",
              "judged_families": ["CH-stretch", "CC-stretch"], "type_key": "(type_a, type_b, graph separation, shared atoms) with the pair sorted by type name",
              "source_model": "type-constrained least squares on the source (one constant per type), so source and target share the parameterisation"}
@@ -61,7 +67,10 @@ def main():
     out = {"date": f"{datetime.now():%Y-%m-%d %H:%M}", "constants": CONSTANTS, "source": args.source, "target": args.target}
     S, ic_s, T_s, pairs_s, key_s = types_and_design(args.source)
     keys_s, A_s = type_design(T_s, pairs_s, key_s, len(ic_s)); target_s = S["D2Q"].reshape(-1)
-    x_s, *_ = np.linalg.lstsq(A_s, target_s, rcond=None); fit_s = (A_s @ x_s).reshape(len(S["omega"]), -1)
+    sv_s = np.linalg.svd(A_s, compute_uv=False)
+    x_s, *_ = np.linalg.lstsq(A_s, target_s, rcond=CONSTANTS["lstsq_rcond"]); fit_s = (A_s @ x_s).reshape(len(S["omega"]), -1)
+    out["source_design"] = {"singular_values": [float(v) for v in sv_s], "rank_used": int(np.sum(sv_s > CONSTANTS["lstsq_rcond"] * sv_s[0])),
+                            "max_abs_constant": float(np.abs(x_s).max())}
     meas_s = np.diag(S["D2Q"]) / (2 * S["omega"]) * HARTREE_TO_CM; res_s = np.diag(fit_s) / (2 * S["omega"]) * HARTREE_TO_CM - meas_s
     consts = dict(zip(keys_s, x_s))
     out["source_fit"] = {"n_types": len(keys_s), "rms_first_order_cm": float(np.sqrt(np.mean(res_s ** 2))), "max_cm": float(np.abs(res_s).max()),
