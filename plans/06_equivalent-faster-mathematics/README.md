@@ -5,12 +5,12 @@ runs to its end; plan 06 is explored beside it, in conversation, and only what s
 falsification test on data that already exists may later enter plan 05 — and then only through a
 dated note or decision in plan 05's own documents. Nothing here is a promise, a rung, or a module.
 
-**The target (the user, 2026-09-12): solving the Schrödinger equation.** Plan 05 pays for its
+**The target (the user, 2026-09-12): "solving the Schrödinger equation" — read, since 16 September, as the annex reads it: the same coupled-cluster correction at a fraction of its cost, for this class of molecules; not the general problem.** Plan 05 pays for its
 coupled-cluster anchor with local-CC ground-state energies at displaced geometries: measured 2,087 s per
 benzene energy and 41,375 s (11.5 h) per naphthalene energy at cc-pVTZ tight thresholds, times a deck of
 hundreds of energies per molecule. Is there a different mathematics that yields the *same* energies (in
 a sense this plan makes precise: levels E1/E2/E3) at a fraction of that cost? For the general problem
-the answer is known to be no (QMA-hardness; references in the orientation note); for the specific class
+the answer is believed to be no (the local-Hamiltonian problem is QMA-complete — Kempe, Kitaev & Regev 2006 — which rules out a general polynomial method unless complexity theory is wrong, not any particular molecule; references in the orientation note); for the specific class
 of molecules plan 05 treats — gapped, closed-shell, aromatic, near equilibrium — it is an open question
 about the *structure of that class*. The user's premise is that it is worth trying again with today's
 tools: large models as proposers and readers, and a proof assistant (Lean) as the referee for the parts
@@ -22,7 +22,9 @@ before it is written. Dated notes. No laptop compute while an anchor job runs. A
 only while it has a stated falsification test; a direction that fails its test is recorded as failed,
 not deleted.
 
-**Where it stands (12 September 2026, evening).** Experiments X0–X13 on plan 05's sealed benzene data and plan 02's stored
+**Where it stands (16 September 2026, morning; the 12 September paragraph follows as history).** Experiments X0–X18 run; five reading notes with verified records; T1a–T1d proved in Lean (no `sorry`), T3 a proof plan. Closed by measurement: low rank (S2), Cartesian sparsity (X8), "more local than the mean field" (X9, T3′), the π-space anchor (S3, X6), and lead D as a route to the whole correction (X18). Alive: T3 without support (X7; 1 December), the free DFT ordering P25 (its naphthalene test runs 16 September), the substitution layer as plan 05's decision 34 (conditional on a gradient), and lead A's test X19 (after plan 05's TZ cells). Measured: g = 2.84 (RHF) and 3.20 (MP2) on the laptop, unmeasurable there at the coupled-cluster level; the cost levers that matter (G, H) are plan 05's and are priced in the cost ladder §5 with the 15 September numbers. Under the decision rule the cost branch closes on 15 October unless P25 is licensed; the mathematics branch is reviewed on 1 December. The annex for the supervisor carries this in plain words with one question.
+
+**Where it stood (12 September 2026, evening).** Experiments X0–X13 on plan 05's sealed benzene data and plan 02's stored
 Hessians (X6 scripted and X7 defined, both waiting for the machine), five reading notes with verified records, T1a–T1c proved in Lean (no `sorry`), T3 written as a proof plan.
 Closed at benzene by measurement: low rank of the correction (S2), Cartesian sparsity of the correction (X8), and the hope that
 the correction is more local than the mean field (X9, T3′). Alive: S1 in its honest form (the correction's range follows the
