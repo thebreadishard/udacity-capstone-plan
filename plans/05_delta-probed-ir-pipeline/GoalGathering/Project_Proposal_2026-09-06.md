@@ -36,14 +36,14 @@ already, separately: Reiher and Neugebauer showed in 2003 that selected normal m
 without the full Hessian; Mata and Werner froze the local-correlation domains along a reaction path
 in 2006 to keep local coupled cluster smooth; Allen and Schaefer's Concordant Mode Approach extracts
 CCSD(T) force constants from a few energies in a DFT normal-mode basis for small molecules; Käser and Meuwly transfer-learn a cheaper method's surface to coupled-cluster quality from a few hundred coupled-cluster points on molecules of up to nine atoms; the supervisor's own
-group built, with Mackie and later Esposito, the anharmonic-DFT front for PAHs up to eighteen
+group built, with Mackie and later Esposito, the anharmonic-DFT front for PAHs up to eighteen *[dated correction 16 September 2026 (decision 42): Esposito et al. 2024 is the NASA Ames group's work; the supervisor's co-authorship is on Mackie et al. 2015/2016 and Maltseva et al. 2016, as §7 states — read "the Ames group and the supervisor's co-authors built …"]*
 carbons; Pirali's naphthalene spectrum is what everyone calibrates on; and PAHdb, Mai and Bos supply
 the scaled, simulated and ML-corrected DFT spectra for thousands of PAHs — what nobody has done is
 to put these pieces together on a PAH: carry a frozen local coupled-cluster space along the modes,
 recover the correction from energies alone, and measure an error margin per band (§3.1 and §14
 carry the references and their reading status). And why the harmonic part rather than the
 anharmonic one that PAH spectra are known for: because the only figure that exists on this ladder
-— benzene, from the supervisor's own group (Esposito et al. 2024, Table S1) — puts the B3LYP/N07D
+— benzene, from Esposito et al. 2024, Table S1 *[dated correction 16 September 2026: "the supervisor's own group" struck; the paper is the Ames group's]* — puts the B3LYP/N07D
 harmonic frequencies 5.45 cm⁻¹ from CCSD(T)-F12b on average, an error that passes one-to-one through
 VPT2 into every fundamental, is systematic per band family rather than random, and is absorbed only
 in its mean by a fitted scale factor; the anharmonic constants stay at DFT level exactly as in that

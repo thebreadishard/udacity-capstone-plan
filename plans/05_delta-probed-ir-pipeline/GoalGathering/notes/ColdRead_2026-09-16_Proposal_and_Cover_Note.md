@@ -58,6 +58,16 @@ Smaller items not ranked: "the table the student was asked for on 13 September" 
 
 **The ask.** The document asks the supervisor for a critical reading of §2–§3 and §7, a view on the fragment route, Module 05 and the gradient side project, either a laboratory source or a cold resolved pyrene measurement, sponsorship of a Snellius Small Compute request (with a named expert later), and — implicitly at item 16 — agreement to sign the scope. The asks are findable (§13 and C:36–41 both point at items 1, 3, 5), but the decisive one, item 5, is a single unparsed sentence whose SBU figures have no derivation, and the cover note's summary of item 3 describes the superseded wording. The single biggest risk of a "no" is that the reader cannot tell what they are being asked to sponsor: the body promises a per-molecule measured pipeline and disclaims a network in bold, the 14-September insertions make the network the product, the request is sized on a 474-energy deck that decision 37 has already decided to shrink — and the misattribution of Esposito et al. 2024 to the reader's own group on the first page spends credibility before any of that is reached.
 
-## Disposition (student, dated, after the user has read the report)
+## Disposition (student, 16 September 2026, after the user read the report on the train: "Akkoord op al je adviezen" — decision 42)
 
-*Pending.*
+- **Items 1, 5, 7, 8, 9, 11–16, 22–25 and the smaller items:** resolved in the **consolidated reading copy** for 26 September (one voice for §1/§6/title; the Cost question restated as conditional on the DZ probe; the calendar re-ordered; the DZ probe renamed so that "M3" means one thing; the terms paragraph extended; the broken sentences repaired; the status line and the noise-measurement size made single). The dated original of 6 September stays unchanged apart from the notes below.
+- **Item 2 (Esposito 2024):** corrected at once by dated note at both places in §1 (16 September).
+- **Item 3 (the ask):** §13 item 5 split into three numbered asks with the SBU derivation on the decision-37 deck — in the reading copy.
+- **Item 4 (decisions 35–37 missing from §10):** added in the reading copy with their dates; the count and the heading corrected there.
+- **Item 6 (cover note):** rewritten against the 14–16 September state before 26 September (with P27's sentence and the cation rung).
+- **Item 10 (what degree, what role):** one sentence in the header of the reading copy; the wording is the user's to confirm.
+- **Item 17 (the 5.45 cm⁻¹ "upper bound"):** qualified per family in the reading copy, as the reader suggests.
+- **Item 18 (charge state):** the cations enter explicitly as rung R1⁺ with the (T) port as its condition (P27 §5–6, decision 41).
+- **Items 19–21:** the Ricca 2026 sentence softened to what was checked; the reading status of Mata & Werner 2006 marked at §1; the instrument class named in item 3 of §13 — all in the reading copy.
+- **Disputed:** none. The reader's ranking is accepted as the order of work.
+

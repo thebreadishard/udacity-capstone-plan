@@ -46,6 +46,13 @@
 
 **Closing.** The annex asks nothing of the supervisor — no question, no decision, no request to read anything beyond it — so its function (information, reassurance that scope is unchanged, or an invitation to comment) is left to be guessed. A busy reader can tell within one page that four things were "established" but not what the side project has found overall, because the operative conclusions (no cheap route from plan 06 itself, g unmeasurable at the anchor level, the real levers lie in plan 05, cost branch heading for closure) sit on page two in a dated update that contradicts page one. The sentence that most risks trust is A:18, "A citation chase over 873 works … finds the colouring literature never entering chemistry", a universal negative that an insider will test against their own memory and that the search method cannot support.
 
-## Disposition (student, to be added after the user has read the report)
+## Disposition (student, 16 September 2026 — decision 42 of plan 05: "Akkoord op al je adviezen")
 
-*Pending.*
+- **Closing point and items 1, 4, 16, 18:** the annex gets an **opening paragraph** with the four outcomes in plain words (no cheap route from plan 06's own mathematics; g measured at 2.84/3.20 where measurable and the anchor-level cells unmeasurable on the laptop; the real levers are plan 05's G and H; the cost branch heads for its 15 October closing unless P25 is licensed) and **one question to the supervisor** (whether the side project continues as a tests-only line); X18 added as item 8; the meta-status stripped; codes glossed at first use; the verified reference list appended.
+- **Items 2, 3, 5, 6, 7, 10, 11, 15:** one clarifying sentence each in the annex (what the stand-in tensor is; curvature locality vs pair-energy decay; the single operative g threshold 26.3 and the others labelled; the error budget the tests are read against; X14 as a count; the m/e marks carried in and the 15 September numbers quoted; the DZ-tight odd part named as a prerequisite of stacking G and H — now measured on 15 September at DZ tight, ≤ 2.4 µE_h on the b-modes with the factory modes and ≤ 0.001 after projection, to be cited; the X6 share defined).
+- **Item 8 ("never entering chemistry"):** softened to "not found in the 873 works chased" with the search's limits, in the annex and the README.
+- **Item 9 (the decision rule's overwritten expectation):** a §2b "outcomes" block added to the rule with the original expectation restored from git history; rows 15–19 updated.
+- **Items 12, 19, 20 (numbers):** X15's sample size aligned after checking the X15 note; lever A's factor, the cross-reference and the unfinished sentence fixed in the cost ladder; 2,087 s = 34.8 min everywhere.
+- **Items 13, 14, 17:** one sentence on what the Lean certificates protect (or the material moved out of the annex); the X7 threshold called lenient with the observation that would close T3 by 1 December; the README's target and status paragraph rewritten as of 16 September.
+- **Disputed:** none.
+
