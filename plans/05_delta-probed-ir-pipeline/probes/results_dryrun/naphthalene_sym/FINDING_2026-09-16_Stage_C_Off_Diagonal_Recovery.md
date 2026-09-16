@@ -28,16 +28,16 @@ The recovery halves the error on three families, leaves 2.3–3.4 cm⁻¹ on the
 
 **The gradient route, on the same data, succeeds.** Mode G reaches the declared threshold at **96 gradients** with a model floor of 0.0019 and family errors of 0.05–0.21 cm⁻¹.
 
-## A second, separate defect: the band-width rule selects on a quantity that does not track the goal
+## A second, separate defect: the band-width rule reads a quantity a real molecule does not have, and stops at the first width that clears its tolerance
 
-The ℓ1 prior's band width w is chosen by the hold-out residual. Its table here:
+**Correction, 16 September 21:1x.** The first version of this section said the width w is chosen by the hold-out residual and that w = 25 wins because ρ is lowest there. That is wrong, and reading the selector itself (`dryrun_dft_delta_recovery.py`, the `w rule` block) gives a sharper defect than the one I described. ρ selects **λ** at fixed w; **w** is selected as the *smallest* candidate whose worst-family frequency RMS **against the direct Δ₂** clears τ₇ = 5.0 cm⁻¹. The table:
 
 | w (cm⁻¹) | 25 | 50 | 100 | 200 | 400 |
 |---|---|---|---|---|---|
 | hold-out ρ | 0.034 | 0.034 | 0.034 | 0.040 | **0.048** |
 | worst family RMS (cm⁻¹) | 3.37 | 3.36 | 3.36 | 3.36 | **0.82** |
 
-The rule picks w = 25 because ρ is lowest there. At w = 400 the residual is 40 % worse and the worst family is **four times better**. The criterion the rule optimises is flat where the quantity that matters moves. This is the same class of blindness the plan already met once (decisions 8 and 12: a residual on the raw response read "done" while the couplings were unknown), now in the width rule rather than the stopping rule. It cannot be fixed by selecting on the family RMS, because on a real molecule the direct Δ₂ that defines it does not exist — a hold-out scored in cm⁻¹ rather than in µE_h is the direction, and it needs designing before it is used.
+w = 25 gives 3.37 cm⁻¹, which clears 5.0, so the search stops at the narrowest candidate and never reaches w = 400 at **0.82 cm⁻¹** — **four times better, left unclaimed**. Two independent faults, then. (i) The selector reads the direct Δ₂, which exists in this dry run and **does not exist on a real molecule** — the rule as written cannot be run in production at all. (ii) Its *smallest width that clears a tolerance* shape makes it stop at the first acceptable answer rather than the best available one; a tolerance is a floor, and this rule treats it as a target. The ρ column is a bystander: it is flat at 0.034 across w = 25–100 precisely because the off-diagonal part is 3.5 % of the response, so a residual on the full response could not have selected w either. This is the same class of blindness the plan already met once (decisions 8 and 12: a residual on the raw response read "done" while the couplings were unknown), now in the width rule rather than the stopping rule. It cannot be fixed by selecting on the family RMS, because on a real molecule the direct Δ₂ that defines it does not exist — a hold-out scored in cm⁻¹ rather than in µE_h is the direction, and it needs designing before it is used.
 
 ## What this does and does not say
 
