@@ -1,4 +1,4 @@
-# X16 — tensor test battery on benzene (2026-09-13 09:34; irreps from stageC_symmetry_prior.json)
+# X16 — tensor test battery on benzene (2026-09-16 09:03; irreps from stageC_symmetry_prior.json)
 
 ## X10 — eligible pairs 47; all kept → 0.002 cm⁻¹; none → 19.58 cm⁻¹; Spearman P1 vs P3 0.754
 

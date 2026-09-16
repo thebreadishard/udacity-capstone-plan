@@ -643,7 +643,7 @@ above about 1 GB on the Windows side beside it):
 5. the naphthalene DFT dry run, stage A only for the tensor (Windows, conda `qc`, after the run; hours):
    `conda run -n qc python probes/dryrun_dft_delta_recovery.py --molecule naphthalene --stage A --threads 8` — the script takes the
    optimised `geometry.json` since 13 September; then plan 06's pre-registered battery on the result, `experiments/x16_tensor_tests.py
-   --molecule naphthalene` (X10 = P25's licence test with its verdict printed, X11, X9, X8; self-test on benzene passed 13 September) —
+   --molecule naphthalene` (X10 = P25's licence test with its verdict printed, X11, X9, X8; self-test on benzene passed 13 September) — *run 16 September 09:03 on the symmetrised stage A (`naphthalene_sym`): **P25 LOSE** (76 of 141 pairs needed for 0.5 cm⁻¹, rule ≤ 70.5); lever B leaves the affordability tables; plan 06 item 35* —
    prerequisite (a) of the pilot note and the mode table Module 03 and plan 06 need; **found 12 September evening:** plan 02's `results_dft_locality/naphthalene.npz` (git `57a7910`) is a
    B3LYP/6-31G* Hessian at a geometry identical to `results_dryrun/naphthalene/geometry.json` within 5 × 10⁻⁴ bohr, so the
    B3LYP half exists and only the BHHLYP Hessian must be run (anthracene and pyrene B3LYP Hessians are in the same commit);

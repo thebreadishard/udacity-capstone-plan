@@ -1,0 +1,196 @@
+{
+ "date": "2026-09-16 09:03",
+ "molecule": "naphthalene_sym",
+ "M": 48,
+ "constants": {
+  "tolerances_cm": [
+   0.5,
+   0.1
+  ],
+  "bond_cutoff_bohr": {
+   "CC": 3.0,
+   "CH": 2.4
+  },
+  "retention_levels": [
+   0.9,
+   0.99,
+   0.999,
+   0.9999
+  ],
+  "random_seed": 0,
+  "p25_licence": {
+   "win": "DFT-only ranking reaches 0.5 cm-1 with at most half the eligible pairs AND within a factor 1.5 of the oracle-magnitude count",
+   "lose": "more than half the eligible pairs, or a factor above 1.5"
+  },
+  "benzene_expected": {
+   "x10_n_needed": [
+    19,
+    17,
+    6
+   ],
+   "x11_products": [
+    4,
+    3,
+    2
+   ],
+   "x9_ratio_d0_d3": [
+    0.0268,
+    0.0647
+   ],
+   "x8_first_row": [
+    20,
+    41.69
+   ]
+  }
+ },
+ "irreps_source": "D2h character analysis of stage-A modes",
+ "x10": {
+  "n_eligible": 141,
+  "max_shift_all_eligible_kept_cm": 0.003770863048202955,
+  "max_shift_no_offdiag_cm": 13.236936719271853,
+  "P1 DFT-only": {
+   "0.5": 76,
+   "0.1": 82
+  },
+  "P2 oracle magnitude": {
+   "0.5": 33,
+   "0.1": 74
+  },
+  "P3 oracle effect": {
+   "0.5": 22,
+   "0.1": 47
+  },
+  "spearman_P1_vs_P3": 0.6315124791300997,
+  "p25_licence": {
+   "half_eligible": 70.5,
+   "n_P1": 76,
+   "n_P2": 33,
+   "verdict": "LOSE"
+  }
+ },
+ "x11": {
+  "P1 DFT-only": {
+   "pairs": 76,
+   "maxr": 5,
+   "k": 5,
+   "gradients": 10,
+   "recovery_err": 2.220446049250313e-16
+  },
+  "P2 oracle magnitude": {
+   "pairs": 33,
+   "maxr": 4,
+   "k": 4,
+   "gradients": 8,
+   "recovery_err": 1.1102230246251565e-16
+  },
+  "P3 oracle effect": {
+   "pairs": 22,
+   "maxr": 3,
+   "k": 3,
+   "gradients": 6,
+   "recovery_err": 1.1102230246251565e-16
+  },
+  "symmetry prior (all eligible)": {
+   "pairs": 141,
+   "maxr": 9,
+   "k": 9,
+   "gradients": 18,
+   "recovery_err": 0.0
+  },
+  "dense": {
+   "pairs": 1128,
+   "maxr": 48,
+   "k": 48,
+   "gradients": 96,
+   "recovery_err": 0.0
+  }
+ },
+ "x9": {
+  "profile": [
+   {
+    "d": 0,
+    "pairs": 18,
+    "median_ratio_Delta_over_H": 0.03458714817077029
+   },
+   {
+    "d": 1,
+    "pairs": 19,
+    "median_ratio_Delta_over_H": 0.04967914816749643
+   },
+   {
+    "d": 2,
+    "pairs": 30,
+    "median_ratio_Delta_over_H": 0.05124407507554681
+   },
+   {
+    "d": 3,
+    "pairs": 38,
+    "median_ratio_Delta_over_H": 0.07034826442291187
+   },
+   {
+    "d": 4,
+    "pairs": 32,
+    "median_ratio_Delta_over_H": 0.07970824344594901
+   },
+   {
+    "d": 5,
+    "pairs": 22,
+    "median_ratio_Delta_over_H": 0.10075787107174523
+   },
+   {
+    "d": 6,
+    "pairs": 10,
+    "median_ratio_Delta_over_H": 0.1979549307721597
+   },
+   {
+    "d": 7,
+    "pairs": 2,
+    "median_ratio_Delta_over_H": 0.20989755848044828
+   }
+  ],
+  "band_shift_zeroing_far_blocks": {
+   "2": {
+    "H_low": 260.6568599674323,
+    "Delta": 32.36132404526205
+   },
+   "3": {
+    "H_low": 461.53254153402895,
+    "Delta": 18.644679247587703
+   },
+   "4": {
+    "H_low": 28.739647714908926,
+    "Delta": 10.467823606797367
+   },
+   "5": {
+    "H_low": 20.846245098731572,
+    "Delta": 5.409573476499759
+   }
+  }
+ },
+ "x8": [
+  {
+   "retention": 0.9,
+   "blocks_kept_upper": 30,
+   "of": 171,
+   "max_band_shift_cm": 27.877643378288212
+  },
+  {
+   "retention": 0.99,
+   "blocks_kept_upper": 72,
+   "of": 171,
+   "max_band_shift_cm": 10.930315124636195
+  },
+  {
+   "retention": 0.999,
+   "blocks_kept_upper": 105,
+   "of": 171,
+   "max_band_shift_cm": 7.896658930043316
+  },
+  {
+   "retention": 0.9999,
+   "blocks_kept_upper": 152,
+   "of": 171,
+   "max_band_shift_cm": 0.9048053604474262
+  }
+ ]
+}

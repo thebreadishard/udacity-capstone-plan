@@ -1,0 +1,45 @@
+# X16 — tensor test battery on naphthalene_sym (2026-09-16 09:03; irreps from D2h character analysis of stage-A modes)
+
+## X10 — eligible pairs 141; all kept → 0.004 cm⁻¹; none → 13.24 cm⁻¹; Spearman P1 vs P3 0.632
+
+| ranking | pairs for 0.5 cm⁻¹ | for 0.1 cm⁻¹ |
+|---|---|---|
+| P1 DFT-only | **76** | 82 |
+| P2 oracle magnitude | **33** | 74 |
+| P3 oracle effect | **22** | 47 |
+
+**P25 licence:** n(P1) = 76, n(P2) = 33, half of eligible = 70.5 → **LOSE** (win: DFT-only ranking reaches 0.5 cm-1 with at most half the eligible pairs AND within a factor 1.5 of the oracle-magnitude count; lose: more than half the eligible pairs, or a factor above 1.5).
+
+## X11 — substitution products
+
+| pattern | pairs | maxr | k | gradients 2k | recovery error |
+|---|---|---|---|---|---|
+| P1 DFT-only | 76 | 5 | **5** | 10 | 2.2e-16 |
+| P2 oracle magnitude | 33 | 4 | **4** | 8 | 1.1e-16 |
+| P3 oracle effect | 22 | 3 | **3** | 6 | 1.1e-16 |
+| symmetry prior (all eligible) | 141 | 9 | **9** | 18 | 0.0e+00 |
+| dense | 1128 | 48 | **48** | 96 | 0.0e+00 |
+
+## X9 — correction / mean field by bond-graph distance (median block-norm ratio)
+
+| d | pairs | ratio |
+|---|---|---|
+| 0 | 18 | 0.0346 |
+| 1 | 19 | 0.0497 |
+| 2 | 30 | 0.0512 |
+| 3 | 38 | 0.0703 |
+| 4 | 32 | 0.0797 |
+| 5 | 22 | 0.1008 |
+| 6 | 10 | 0.1980 |
+| 7 | 2 | 0.2099 |
+
+Band shift from zeroing blocks at graph distance ≥ d*: d*=2: H_low 260.7, Δ 32.4 cm⁻¹; d*=3: H_low 461.5, Δ 18.6 cm⁻¹; d*=4: H_low 28.7, Δ 10.5 cm⁻¹; d*=5: H_low 20.8, Δ 5.4 cm⁻¹
+
+## X8 — real-pattern rows (Frobenius retention → band shift)
+
+| retention | blocks kept | max band shift (cm⁻¹) |
+|---|---|---|
+| 0.9 | 30 of 171 | 27.88 |
+| 0.99 | 72 of 171 | 10.93 |
+| 0.999 | 105 of 171 | 7.90 |
+| 0.9999 | 152 of 171 | 0.90 |

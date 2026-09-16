@@ -10,7 +10,7 @@ This note adds three things. **(i) The deck sizes are now counted, not guessed**
 
 ## 2. Deck sizes per molecule (counted 15 September)
 
-Rule: the symmetry prior (proposal §3.2) keeps couplings between modes of the same irrep. Full deck = 4M + 2E (M modes, E same-irrep pairs, the convention of `duration_table.py`); **H deck** = decision 37 applied (one energy instead of a ± pair for every pattern confined to a non-totally-symmetric irrep); **diagonal H deck** = the single-mode block only (two amplitudes per mode; ± pairs only for the totally symmetric modes); **H + P25** = the H deck with the couplings thinned to the 40 % that plan 06's free DFT rule keeps at benzene (19 of 47 pairs, X10 — an *e* until the naphthalene repeat).
+Rule: the symmetry prior (proposal §3.2) keeps couplings between modes of the same irrep. Full deck = 4M + 2E (M modes, E same-irrep pairs, the convention of `duration_table.py`); **H deck** = decision 37 applied (one energy instead of a ± pair for every pattern confined to a non-totally-symmetric irrep); **diagonal H deck** = the single-mode block only (two amplitudes per mode; ± pairs only for the totally symmetric modes); **H + P25** = the H deck with the couplings thinned to the 40 % that plan 06's free DFT rule keeps at benzene (19 of 47 pairs, X10). *16 September 09:03: the naphthalene repeat (X16) LOST — 76 of 141 pairs needed against the rule's 70.5 — so the H + P25 column is struck; the decks of this note are the H decks and their diagonal blocks.*
 
 | molecule | rings | group | M | totally symmetric | E | full deck | H deck | diagonal H deck | H + P25 |
 |---|---|---|---|---|---|---|---|---|---|

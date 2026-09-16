@@ -61,8 +61,8 @@ Nothing in this note is a plan-05 change; the levers that are ready for a propos
 | as planned (TZ xtight, pairs) | 474 | 38.4 h **m** | ≈ 760 days | 200–330 days | the row of plan 05's duration table |
 | + G (DZ xtight) | 474 | ≈ 3.3 h *e* | ≈ 65 days | 17–28 days | M3 decides |
 | + G + H | ≈ 293 | ≈ 3.3 h *e* | ≈ 40 days | 11–18 days | M3 and the naphthalene dry run decide |
-| + G + H + B (P25 licensed, off-diagonal × 0.4) | ≈ 190 | ≈ 3.3 h *e* | ≈ 26 days | 7–11 days | three licences |
-| + A as well (tight instead of xtight) | ≈ 190 | ≈ 1 h *e* | ≈ 8 days | 2–3.5 days | the user reversed A for a reason (bias 0.47 against 0.11 cm⁻¹) |
+| ~~+ G + H + B (P25 licensed, off-diagonal × 0.4)~~ | ~~≈ 190~~ | | | | **struck 16 September: P25 lost its naphthalene licence test (X16: 76 of 141 pairs needed, rule ≤ 70.5); lever B is not available** |
+| + A as well (tight instead of xtight), on the G + H deck | ≈ 293 | ≈ 1.15 h **m** | ≈ 14 days | 4–6 days | the user reversed A for a reason (bias 0.47 against 0.11 cm⁻¹); row re-based on 16 September without lever B |
 
 *Measured 15 September 2026 (M3's cc-pVDZ cells, `plans/05_…/probes/results_m1/M3_EVEN_ODD_READING_2026-09-15.md`):* the naphthalene cc-pVDZ tight energy costs **69 min m** in the frozen arm (fifteen points, 4,075–4,606 s; 1.7 GB resident), ratio **9.9–10.0** to the 11.5 h TZ tight energy — the benzene ratio of 11.6 carried over within 15 %. The xtight price at cc-pVDZ is therefore *e* ≈ 3.8 h (69 min × 3.34), not 3.3 h, and the rows above read: + G ≈ 75 laptop-days (20–33 desktop), + G + H ≈ 46 (12–20), + G + H + B ≈ 30 (8–13), + A as well ≈ 9 (2.4–4). The status column is unchanged: **M3's verdict — whether the DZ deck may replace the TZ anchor at all — waits for the TZ cells (≈ 21 September)**; the price is measured, the licence is not. Plan 05's P27 (`notes/Draft_2026-09-15_P27_Slow_Ladder_Priced.md`) prices the ring-by-ring ladder on this number.
 
