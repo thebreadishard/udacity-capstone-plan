@@ -55,3 +55,4 @@ If the user wants a plan 07, it is leads A + D (functional and σ/π split) as o
 
 *Addendum 2026-09-14 (morning):* lead E is closed at its gate — X6 measured the π-valence CAS(6,6) share of benzene's correlation curvature at 9 % on the C–C stretch (pre-stated losing condition ½); the ring-mode correction is whole-valence dynamic correlation, not a π-space object. Lead D's first desk test (X17) and its transfer script (X18) exist; lead A's first test is prepared; lead G is in the letter; F = 3.34 is measured.
 
+*Addendum 2026-09-16 (morning):* F (3.34) and g (2.84 / 3.20) are measured; lead D was tested on 16 September (plan 06 X18: the C–H stretch correction transfers by local type to 0.27 cm⁻¹, the ring families do not — folded into plan 05's per-family design); lead A got its pre-registered test (plan 06 X19, after the TZ cells). **The user's decision: no plan 07 yet; it waits for X19.**
