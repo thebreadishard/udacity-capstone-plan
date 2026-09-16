@@ -1,0 +1,6 @@
+[21:40:53] dry run: naphthalene, out = C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_dryrun\naphthalene_sym, quick = False
+[21:51:08] stage B2: CC-stretch mode 35 (1509 cm⁻¹): σ_E = 0.001 µE_h
+[22:01:36] stage B2: CH-stretch mode 44 (3193 cm⁻¹): σ_E = 0.000 µE_h
+[22:10:38] stage B2: CH-oop mode 12 (785 cm⁻¹): σ_E = 0.012 µE_h
+[22:19:16] stage B2: totally-symmetric mode 11 (776 cm⁻¹): σ_E = 0.000 µE_h
+[22:19:16] stage B2 done: pooled σ_E = 0.006 µE_h (ν = 16)

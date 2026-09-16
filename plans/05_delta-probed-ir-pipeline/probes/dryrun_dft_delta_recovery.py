@@ -94,10 +94,12 @@ def log(msg: str) -> None:
 
 
 # ----------------------------------------------------------------------------- psi4 helpers
-def psi4_setup(threads: int, outfile: str):
+def psi4_setup(threads: int, outfile: str, memory: str = "8 GB"):
     import psi4  # noqa: WPS433
     psi4.core.set_output_file(outfile, False)
-    psi4.set_memory("8 GB")
+    # 2026-09-16: made settable so a small stage (B2) can run beside the M3 anchor run inside the
+    # 20 GB WSL ceiling. The default is unchanged, so every earlier run reproduces as recorded.
+    psi4.set_memory(memory)
     psi4.set_num_threads(threads)
     psi4.set_options({"scf_type": "df", "d_convergence": 1e-8, "e_convergence": 1e-10,
                       "dft_spherical_points": 590, "dft_radial_points": 99})
@@ -961,6 +963,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--molecule", default="benzene")
     ap.add_argument("--threads", type=int, default=8)
+    ap.add_argument("--psi4-memory", default="8 GB", dest="psi4_memory",
+                    help="psi4 memory budget (default '8 GB'); lower it to share the machine with a running anchor job")
     ap.add_argument("--quick", action="store_true", help="tiny deck, short noise grid (pipeline test)")
     ap.add_argument("--stage", default="all", choices=["A", "B", "B2", "C", "all"])
     ap.add_argument("--out", default=None)
@@ -973,7 +977,7 @@ def main():
     out = args.out or os.path.join(here, "results_dryrun", args.molecule + ("_sym" if args.symmetrised else "")
                                    + ("_quick" if args.quick else ""))
     os.makedirs(out, exist_ok=True)
-    psi4 = psi4_setup(args.threads, os.path.join(out, "psi4.out"))
+    psi4 = psi4_setup(args.threads, os.path.join(out, "psi4.out"), args.psi4_memory)
     log(f"dry run: {args.molecule}, out = {out}, quick = {args.quick}")
 
     a_path = os.path.join(out, "stageA.json")
