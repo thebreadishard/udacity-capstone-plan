@@ -52,8 +52,15 @@ def zero_far(H, G, dstar):
 
 
 def main():
-    z = np.load(PLAN05 / "probes/results_dryrun/benzene/stageA_hessians.npz")
-    a = json.load(open(PLAN05 / "probes/results_dryrun/benzene/stageA.json"))
+    import argparse
+    ap = argparse.ArgumentParser(); ap.add_argument("--molecule", default="benzene", help="results_dryrun/<molecule> of plan 05 (2026-09-16: naphthalene_sym)")
+    ap.add_argument("--cuts", default=None, help="comma-separated d* for the band test (default: the pre-stated 1,2,3; 2026-09-16: 1..6 for naphthalene, whose graph distance reaches 7)")
+    args = ap.parse_args(); mol = args.molecule; sfx = "" if mol == "benzene" else f"_{mol}"
+    if args.cuts:
+        CONSTANTS["distance_cuts_for_band_test"] = [int(t) for t in args.cuts.split(",")]
+        CONSTANTS["cuts_note"] = "cuts given on the command line for this run (the pre-stated benzene cuts are 1,2,3)"
+    z = np.load(PLAN05 / f"probes/results_dryrun/{mol}/stageA_hessians.npz")
+    a = json.load(open(PLAN05 / f"probes/results_dryrun/{mol}/stageA.json"))
     sym = a["symbols"]; n = len(sym); X = z["coords"]; Minv = z["Minv"]
     Hlo = Minv[:, None] * z["H_low"] * Minv[None, :]
     Dl = Minv[:, None] * (z["H_high"] - z["H_low"]) * Minv[None, :]
@@ -91,8 +98,8 @@ def main():
                      "max_band_shift_zeroing_far_blocks_of_Delta_cm": s_del, "bands_gt_0.5_Delta": n_del_gt,
                      "ratio_Delta_over_H_low": s_del / s_low if s_low else None})
     out["band_level"] = band
-    json.dump(out, open(HERE / "x9_dft_vs_correction_profiles.json", "w"), indent=1)
-    L = [f"# X9 — the DFT Hessian and the correction side by side, by bond-graph distance (benzene, {out['date']})", "",
+    json.dump(out, open(HERE / f"x9_dft_vs_correction_profiles{sfx}.json", "w"), indent=1)
+    L = [f"# X9 — the DFT Hessian and the correction side by side, by bond-graph distance ({mol}, {out['date']})", "",
          f"Sanity: harmonic frequencies from the mass-weighted H_low against the dry run's own list, max |diff| {sanity:.2e} cm⁻¹. "
          "Blocks are 3×3 atom-pair blocks of the mass-weighted matrices (units E_h per mass-weighted bohr²; only ratios are read).", "",
          "## Norm level: median block norm per bond-graph distance", "",
@@ -109,7 +116,7 @@ def main():
     L += ["", "Reading: T3′ predicts the ratio column to fall with distance (the correction shorter-ranged than the Hessian) and the band-level far-block dependence of Δ "
           "to be a small fraction of H_low's. Losing condition at benzene: neither falls. Benzene's graph-distance range (≤ 3) is short; naphthalene (≤ 5) is the first "
           "informative case, as for X5/X8. Stand-in caveat: Δ here is BHHLYP − B3LYP, not CC − DFT.", "", "Constants: " + json.dumps(CONSTANTS)]
-    (HERE / "x9_dft_vs_correction_profiles.md").write_text("\n".join(L), encoding="utf-8")
+    (HERE / f"x9_dft_vs_correction_profiles{sfx}.md").write_text("\n".join(L), encoding="utf-8")
     print("\n".join(L).encode("ascii", "replace").decode())
 
 

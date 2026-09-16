@@ -28,7 +28,7 @@
 | P25's naphthalene licence | pending: its input (stage B of the symmetrised naphthalene dry run) finishes 16 Sep ≈ 14:50; X10 repeated on it the same day | 16 Sep | — |
 | π share (X6) | 9 % on the C–C stretch, −48 % on the C–H out-of-plane mode → **S3 closed** | 14 Sep | branch M loses its π-space anchor route |
 | λ·gap (X7) | factor 1.57 (under the pre-stated 2), but λ rises 12 % where rate ∝ gap predicts 77 % — the threshold was lenient; T3 alive without support | 14 Sep | T3 to the 1 December review; closing observation named in the annex |
-| X9 on naphthalene | pending; the symmetrised naphthalene stand-in exists since 15 Sep, the desk test can run any day | — | — |
+| X9 on naphthalene | run 16 Sep on the symmetrised stand-in: ratio Δ/H_low rises 0.035 → 0.21 with distance; blocks to d = 5 of 7 needed for 0.5 cm⁻¹; the far correction is in the C–C pair blocks (`X9_2026-09-16_Naphthalene_Range_Profile.md`) | 16 Sep | T3′ stays closed; no real-space truncation route; the ring-skeleton families are the non-local ones (as X18) |
 | T1d built | built 14 Sep, no `sorry` (`symmValid_iff`) | 14 Sep | the Lean route's second theorem |
 | ODLR (X15) | fails at 0.5 cm⁻¹ (r*/dim 0.30–0.83) | 13 Sep | no lever from low rank |
 | X18 (added: type transfer, lead D) | C–H stretch 0.27 cm⁻¹ RMS, C–C stretch 17.8 of 41.2 → LOSE as a whole-correction route, per-family win | 16 Sep | lead D folded into plan 05's per-family design |

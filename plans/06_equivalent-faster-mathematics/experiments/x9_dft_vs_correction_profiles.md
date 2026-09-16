@@ -1,4 +1,4 @@
-# X9 — the DFT Hessian and the correction side by side, by bond-graph distance (benzene, 2026-09-12 19:44)
+# X9 — the DFT Hessian and the correction side by side, by bond-graph distance (benzene, 2026-09-16 08:58)
 
 Sanity: harmonic frequencies from the mass-weighted H_low against the dry run's own list, max |diff| 2.00e-05 cm⁻¹. Blocks are 3×3 atom-pair blocks of the mass-weighted matrices (units E_h per mass-weighted bohr²; only ratios are read).
 
