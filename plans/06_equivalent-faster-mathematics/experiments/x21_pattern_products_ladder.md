@@ -45,21 +45,23 @@ deck's job; they come from DFT, as in the L1//L0 composite schemes plan 06's own
 
 ## What it costs, at the measured g
 
-g for LNO-CCSD(T), M2a cell 3, benzene 6-31G, three repeats each: **5.71 at eight threads** (the setting
-the deck runs at) and **7.19 at four threads** on a machine running three jobs (t_E 14.0 vs 26.0 s, t_grad
-79.9 vs 186.8 s — the gradient parallelises better than the energy). The eight-thread value is the
-headline; the four-thread value is the conservative bound.
+g for LNO-CCSD(T), M2a cell 3, benzene 6-31G, three repeats at eight threads (the setting the deck runs
+at), **on the full LNO-CCSD(T) energy: 6.04** (t_E 12.8 s, t_grad 77.1 s, 22:31). *Correction the same
+evening:* the values quoted earlier today — 5.71 at eight threads, 7.19 at four — were measured on
+PySCFAD's `e_corr_ccsd_t`, which is the (T) increment alone, not the correlation energy (`e_corr`); the
+M2b smoke exposed it. The conservative column below, 7.61, is the four-thread datum scaled by 6.04/5.71 —
+an inference, labelled as such, until a four-thread run on the corrected expression exists.
 
-| molecule | old deck (energies) | gradients 2k+1 | at g = 5.71 | saving | at g = 7.19 | saving |
+| molecule | old deck (energies) | gradients 2k+1 | at g = 6.04 | saving | at g = 7.61 (inferred) | saving |
 |---|---|---|---|---|---|---|
-| benzene | 139 | 13 | 74 | 1.9× | 93 | 1.5× |
-| naphthalene | 291 | 19 | 108 | **2.7×** | 137 | 2.1× |
-| anthracene | 499 | 25 | 143 | 3.5× | 180 | 2.8× |
-| phenanthrene | 1,015 | 47 | 268 | 3.8× | 338 | 3.0× |
-| pyrene | 580 | 27 | 154 | 3.8× | 194 | 3.0× |
-| tetracene | 759 | 31 | 177 | 4.3× | 223 | 3.4× |
-| perylene | 858 | 33 | 188 | 4.6× | 237 | 3.6× |
-| pentacene | 1,075 | 37 | 211 | **5.1×** | 266 | 4.0× |
+| benzene | 139 | 13 | 79 | 1.8× | 99 | 1.4× |
+| naphthalene | 291 | 19 | 115 | **2.5×** | 145 | 2.0× |
+| anthracene | 499 | 25 | 151 | 3.3× | 190 | 2.6× |
+| phenanthrene | 1,015 | 47 | 284 | 3.6× | 358 | 2.8× |
+| pyrene | 580 | 27 | 163 | 3.6× | 205 | 2.8× |
+| tetracene | 759 | 31 | 187 | 4.1× | 236 | 3.2× |
+| perylene | 858 | 33 | 199 | 4.3× | 251 | 3.4× |
+| pentacene | 1,075 | 37 | 223 | **4.8×** | 282 | 3.8× |
 
 ## The day's three readings of one number, for the record
 
@@ -68,7 +70,8 @@ headline; the four-thread value is the conservative bound.
 | 08:0x | ≈ 5× at naphthalene | Δ₂ part only, at the one-repeat g = 4.07 |
 | 11:3x | 1.7× | kept 2M energies for cubic/quartic terms the plan takes from DFT; g still 4.07 |
 | 17:5x | 2.1× | deck is 2k + 1 gradients per the proposal's own text; g = 7.19 from three repeats at four threads |
-| 18:14 | **2.7×** (2.1× conservative) | eight-thread control: g = 5.71 at the production thread count; 7.19 kept as the bound |
+| 18:14 | 2.7× (2.1× conservative) | eight-thread control: g = 5.71 at the production thread count; 7.19 kept as the bound |
+| 22:31 | **2.5×** (2.0× conservative) | both g values were on the (T) increment; on the full energy g = 6.04 at eight threads (+6 %); 7.61 inferred for four |
 
 Two things still move this table: the eight-thread control on g, and the quartic contamination of the
 gradient-difference read at q = 1, which X14/X20 treat as exact and which stage C's mode G measured only

@@ -1,0 +1,71 @@
+An NVIDIA GPU may be present on this machine, but a CUDA-enabled jaxlib is not installed. Falling back to cpu.
+/home/thebreadishard/qcad/lib/python3.12/site-packages/pyscf/gto/mole.py:1291: UserWarning: Function mol.dumps drops attribute coords because it is not JSON-serializable
+  warnings.warn(msg)
+    CPU time for make_fpno1:      3.91 sec, wall time      3.04 sec
+    CPU time for make_fpno1:      0.61 sec, wall time      0.18 sec
+    CPU time for make_fpno1:      0.62 sec, wall time      0.19 sec
+    CPU time for make_fpno1:      0.67 sec, wall time      0.20 sec
+    CPU time for make_fpno1:      0.69 sec, wall time      0.20 sec
+    CPU time for make_fpno1:      0.63 sec, wall time      0.18 sec
+    CPU time for make_fpno1:      0.61 sec, wall time      0.18 sec
+    CPU time for make_fpno1:      0.67 sec, wall time      0.20 sec
+    CPU time for make_fpno1:      0.62 sec, wall time      0.18 sec
+    CPU time for make_fpno1:      0.76 sec, wall time      0.31 sec
+    CPU time for make_fpno1:      0.59 sec, wall time      0.18 sec
+    CPU time for make_fpno1:      0.69 sec, wall time      0.24 sec
+    CPU time for make_fpno1:      0.63 sec, wall time      0.21 sec
+    CPU time for make_fpno1:      0.72 sec, wall time      0.21 sec
+    CPU time for make_fpno1:      0.61 sec, wall time      0.19 sec
+    CPU time for make_fpno1:      0.67 sec, wall time      0.19 sec
+    CPU time for make_fpno1:      0.62 sec, wall time      0.17 sec
+    CPU time for make_fpno1:      0.59 sec, wall time      0.20 sec
+    CPU time for make_fpno1:      4.77 sec, wall time      3.47 sec
+    CPU time for make_fpno1:      0.76 sec, wall time      0.28 sec
+    CPU time for make_fpno1:      0.74 sec, wall time      0.27 sec
+    CPU time for make_fpno1:      0.55 sec, wall time      0.20 sec
+    CPU time for make_fpno1:      0.57 sec, wall time      0.19 sec
+    CPU time for make_fpno1:      0.77 sec, wall time      0.31 sec
+    CPU time for _ccsd_t_energy_bwd:     14.87 sec, wall time      1.92 sec
+    CPU time for _ccsd_t_energy_bwd:     15.80 sec, wall time      2.01 sec
+    CPU time for _ccsd_t_energy_bwd:     15.95 sec, wall time      2.01 sec
+    CPU time for _ccsd_t_energy_bwd:     15.52 sec, wall time      1.97 sec
+    CPU time for _ccsd_t_energy_bwd:     16.19 sec, wall time      2.05 sec
+    CPU time for _ccsd_t_energy_bwd:     15.59 sec, wall time      1.97 sec
+    CPU time for make_fpno1:      0.79 sec, wall time      0.49 sec
+    CPU time for make_fpno1:      0.79 sec, wall time      0.36 sec
+    CPU time for make_fpno1:      0.82 sec, wall time      0.36 sec
+    CPU time for make_fpno1:      0.71 sec, wall time      0.25 sec
+    CPU time for make_fpno1:      0.79 sec, wall time      0.30 sec
+    CPU time for make_fpno1:      0.84 sec, wall time      0.34 sec
+    CPU time for _ccsd_t_energy_bwd:     16.93 sec, wall time      2.47 sec
+    CPU time for _ccsd_t_energy_bwd:     15.65 sec, wall time      1.99 sec
+    CPU time for _ccsd_t_energy_bwd:     15.79 sec, wall time      1.99 sec
+    CPU time for _ccsd_t_energy_bwd:     15.68 sec, wall time      1.98 sec
+    CPU time for _ccsd_t_energy_bwd:     16.26 sec, wall time      2.05 sec
+    CPU time for _ccsd_t_energy_bwd:     16.22 sec, wall time      2.06 sec
+    CPU time for make_fpno1:      0.79 sec, wall time      0.52 sec
+    CPU time for make_fpno1:      0.56 sec, wall time      0.24 sec
+    CPU time for make_fpno1:      0.74 sec, wall time      0.30 sec
+    CPU time for make_fpno1:      0.80 sec, wall time      0.36 sec
+    CPU time for make_fpno1:      0.87 sec, wall time      0.48 sec
+    CPU time for make_fpno1:      0.89 sec, wall time      0.37 sec
+    CPU time for _ccsd_t_energy_bwd:     13.43 sec, wall time      1.74 sec
+    CPU time for _ccsd_t_energy_bwd:     13.57 sec, wall time      1.72 sec
+    CPU time for _ccsd_t_energy_bwd:     15.10 sec, wall time      1.94 sec
+    CPU time for _ccsd_t_energy_bwd:     15.69 sec, wall time      2.09 sec
+    CPU time for _ccsd_t_energy_bwd:     16.11 sec, wall time      2.03 sec
+    CPU time for _ccsd_t_energy_bwd:     14.07 sec, wall time      1.78 sec
+cell 3: t_E 12.8 s, t_grad 77.1 s, g = 6.04 (g_FD = 72), RSS 12395 MB
+# M2a ? gradient-to-energy cost ratio g, benzene 6-31g (2026-09-17 22:24; {'python': '3.12.14', 'jax': '0.10.2', 'pyscf': '2.14.0', 'pyscfad': '0.3.3', 'platform': 'Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43'})
+
+SCF 4.9 s (excluded from both sides). g_FD = 72. Three repeats; median reported.
+
+| cell | t_energy (s) | t_gradient (s) | **g** | peak RSS after gradient (MB) | note |
+|---|---|---|---|---|---|
+| 0: RHF smoke: AD gradient vs PySCF analytic gradient (tol 1e-6 Eh/bohr) + timing pipeline | 4.7 | 16.1 | **3.41** | 2575 | dev vs analytic 2.6e-09 |
+| 1: MP2 canonical | 5.6 | 20.9 | **3.73** | 3629 |  |
+| 3: LNO-CCSD(T) as shipped (PySCFAD defaults) | 12.8 | 77.1 | **6.04** | 12395 | thresh None |
+
+Pre-stated reading: {"g<=6": "within the AD constant; substitution and mode G pay by an order of magnitude", "6<g<=20": "substitution pays, mode G marginal", "g>20": "gradient levers do not change plan 05's order of magnitude at benzene size"}
+
+Constants: {"basis_default": "cc-pvdz", "repeats_default": 3, "threads_default": 8, "molecule": "benzene (plan 05 dry-run geometry, stageA.json)", "cells": {"0": "RHF smoke: AD gradient vs PySCF analytic gradient (tol 1e-6 Eh/bohr) + timing pipeline", "1": "MP2 canonical", "2": "CCSD(T) canonical", "3": "LNO-CCSD(T) as shipped (PySCFAD defaults)", "4": "LNO-CCSD(T) at thresholds matching plan 05 tight", "5": "LNO-CCSD(T) cc-pVTZ (only if cell 3 gives g <= 20)"}, "reading": {"g<=6": "within the AD constant; substitution and mode G pay by an order of magnitude", "6<g<=20": "substitution pays, mode G marginal", "g>20": "gradient levers do not change plan 05's order of magnitude at benzene size"}, "rhf_gradient_tolerance": 1e-06}

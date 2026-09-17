@@ -32,8 +32,8 @@ from x1c_triangular_substitution import (smallest_last_order, lower_pattern, int
                                          sequential_colouring, is_proper, recover_by_substitution)
 import deck_counts_planar as dc  # noqa: E402
 
-G_MEASURED = 5.71   # LNO-CCSD(T) AD ratio, benzene 6-31g, M2a cell 3, 17 Sep 18:1x, three repeats at EIGHT threads (the production setting)
-G_ALT = 7.19        # the same cell at four threads on a loaded machine: the conservative bound
+G_MEASURED = 6.04   # LNO-CCSD(T) AD ratio on the FULL e_corr, benzene 6-31g, M2a cell 3, 17 Sep 22:31, three repeats at EIGHT threads
+G_ALT = 7.61        # conservative bound: the 4-thread 7.19 (measured on SCF + (T)-increment) scaled by 6.04/5.71 - an inference, not a measurement
 
 
 def pattern_from_irreps(modes):
@@ -104,7 +104,7 @@ def main():
     print("  c0                -> not needed for frequencies; Delta_4 only cleaned the ENERGY read")
     print("So the deck becomes 2k + 1 gradients and no energies.\n")
     print("%-22s %10s %10s %11s %8s %11s %8s"
-          % ("molecule", "old deck", "gradients", "at g=5.71", "saving", "at g=7.19", "saving"))
+          % ("molecule", "old deck", "gradients", "at g=6.04", "saving", "at g=7.61", "saving"))
     for r in rows:
         ng = r["gradients"] + 1
         cost, cost_alt = ng * G_MEASURED, ng * G_ALT
@@ -117,7 +117,7 @@ def main():
               % (r["molecule"], r["h_deck"], ng, cost, r["saving_total"], cost_alt, r["saving_total_at_g_alt"]))
 
     out = dict(date=datetime.now().strftime("%Y-%m-%d %H:%M"), g_measured=G_MEASURED,
-               g_source="M2a cell 3, LNO-CCSD(T), benzene 6-31g, 17 Sep 2026, three repeats at 8 threads (5.71) with the 4-thread 7.19 as the conservative bound",
+               g_source="M2a cell 3, LNO-CCSD(T), benzene 6-31g, 17 Sep 2026, full e_corr, three repeats at 8 threads (6.04); conservative 7.61 = the 4-thread 7.19 (measured on the (T)-increment expression) scaled by 6.04/5.71",
                note="counting only; pattern is block-diagonal by irrep so colouring depends on block sizes alone",
                rows=rows)
     json.dump(out, open(HERE / "x21_pattern_products_ladder.json", "w"), indent=1)
