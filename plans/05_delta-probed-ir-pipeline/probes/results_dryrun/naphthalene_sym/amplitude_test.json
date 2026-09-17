@@ -1,0 +1,76 @@
+{
+ "q=1.0": {
+  "n_patterns": 616,
+  "rms_off_uEh": 7.008914946615373,
+  "rho_off": 0.9620302166244213,
+  "worst_family_cm": 3.3661222822538264,
+  "family": {
+   "CC-stretch": {
+    "rms_first_order_cm": 0.042679710586985664,
+    "rms_full_rediag_cm": 2.395312762144735,
+    "n_modes": 9
+   },
+   "CH-ip-bend": {
+    "rms_first_order_cm": 0.0780316517081287,
+    "rms_full_rediag_cm": 3.3661222822538264,
+    "n_modes": 9
+   },
+   "CH-oop": {
+    "rms_first_order_cm": 0.02893162554804645,
+    "rms_full_rediag_cm": 0.3236273249824089,
+    "n_modes": 15
+   },
+   "CH-stretch": {
+    "rms_first_order_cm": 0.0433015996073684,
+    "rms_full_rediag_cm": 2.8573391819826117,
+    "n_modes": 8
+   },
+   "ring-ip": {
+    "rms_first_order_cm": 0.046224578862235,
+    "rms_full_rediag_cm": 0.4212946339762574,
+    "n_modes": 7
+   }
+  }
+ },
+ "q=0.5": {
+  "n_patterns": 277,
+  "rms_off_uEh": 1.4738523575511846,
+  "rho_off": 0.7743083745239332,
+  "worst_family_cm": 5.253363756884432,
+  "family": {
+   "CC-stretch": {
+    "rms_first_order_cm": 0.042679710586985664,
+    "rms_full_rediag_cm": 5.253363756884432,
+    "n_modes": 9
+   },
+   "CH-ip-bend": {
+    "rms_first_order_cm": 0.0780316517081287,
+    "rms_full_rediag_cm": 4.629382908076244,
+    "n_modes": 9
+   },
+   "CH-oop": {
+    "rms_first_order_cm": 0.02893162554804645,
+    "rms_full_rediag_cm": 0.38256688399928557,
+    "n_modes": 15
+   },
+   "CH-stretch": {
+    "rms_first_order_cm": 0.0433015996073684,
+    "rms_full_rediag_cm": 4.386128874742655,
+    "n_modes": 8
+   },
+   "ring-ip": {
+    "rms_first_order_cm": 0.046224578862235,
+    "rms_full_rediag_cm": 0.5755000954549749,
+    "n_modes": 7
+   }
+  }
+ },
+ "verdict": "BETWEEN the pre-registered branches",
+ "prediction": {
+  "contamination_branch": [
+   0.14,
+   0.34
+  ],
+  "noise_branch_at_or_above": 0.8
+ }
+}
