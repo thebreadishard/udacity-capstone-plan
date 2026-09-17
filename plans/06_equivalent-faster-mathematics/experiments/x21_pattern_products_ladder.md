@@ -45,19 +45,21 @@ deck's job; they come from DFT, as in the L1//L0 composite schemes plan 06's own
 
 ## What it costs, at the measured g
 
-g = **7.19** for LNO-CCSD(T): M2a cell 3, benzene 6-31G, three repeats, four threads on a machine running
-three jobs. The eight-thread control is pending; the one-repeat 4.07 is shown only for sensitivity.
+g for LNO-CCSD(T), M2a cell 3, benzene 6-31G, three repeats each: **5.71 at eight threads** (the setting
+the deck runs at) and **7.19 at four threads** on a machine running three jobs (t_E 14.0 vs 26.0 s, t_grad
+79.9 vs 186.8 s — the gradient parallelises better than the energy). The eight-thread value is the
+headline; the four-thread value is the conservative bound.
 
-| molecule | old deck (energies) | gradients 2k+1 | at g = 7.19 | saving | at g = 4.07 | saving |
+| molecule | old deck (energies) | gradients 2k+1 | at g = 5.71 | saving | at g = 7.19 | saving |
 |---|---|---|---|---|---|---|
-| benzene | 139 | 13 | 93 | 1.5× | 53 | 2.6× |
-| naphthalene | 291 | 19 | 137 | **2.1×** | 77 | 3.8× |
-| anthracene | 499 | 25 | 180 | 2.8× | 102 | 4.9× |
-| phenanthrene | 1,015 | 47 | 338 | 3.0× | 191 | 5.3× |
-| pyrene | 580 | 27 | 194 | 3.0× | 110 | 5.3× |
-| tetracene | 759 | 31 | 223 | 3.4× | 126 | 6.0× |
-| perylene | 858 | 33 | 237 | 3.6× | 134 | 6.4× |
-| pentacene | 1,075 | 37 | 266 | **4.0×** | 151 | 7.1× |
+| benzene | 139 | 13 | 74 | 1.9× | 93 | 1.5× |
+| naphthalene | 291 | 19 | 108 | **2.7×** | 137 | 2.1× |
+| anthracene | 499 | 25 | 143 | 3.5× | 180 | 2.8× |
+| phenanthrene | 1,015 | 47 | 268 | 3.8× | 338 | 3.0× |
+| pyrene | 580 | 27 | 154 | 3.8× | 194 | 3.0× |
+| tetracene | 759 | 31 | 177 | 4.3× | 223 | 3.4× |
+| perylene | 858 | 33 | 188 | 4.6× | 237 | 3.6× |
+| pentacene | 1,075 | 37 | 211 | **5.1×** | 266 | 4.0× |
 
 ## The day's three readings of one number, for the record
 
@@ -65,7 +67,8 @@ three jobs. The eight-thread control is pending; the one-repeat 4.07 is shown on
 |---|---|---|
 | 08:0x | ≈ 5× at naphthalene | Δ₂ part only, at the one-repeat g = 4.07 |
 | 11:3x | 1.7× | kept 2M energies for cubic/quartic terms the plan takes from DFT; g still 4.07 |
-| evening | **2.1×** (3.8× if g = 4.07 holds) | deck is 2k + 1 gradients per the proposal's own text; g = 7.19 from three repeats |
+| 17:5x | 2.1× | deck is 2k + 1 gradients per the proposal's own text; g = 7.19 from three repeats at four threads |
+| 18:14 | **2.7×** (2.1× conservative) | eight-thread control: g = 5.71 at the production thread count; 7.19 kept as the bound |
 
 Two things still move this table: the eight-thread control on g, and the quartic contamination of the
 gradient-difference read at q = 1, which X14/X20 treat as exact and which stage C's mode G measured only

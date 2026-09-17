@@ -59,3 +59,20 @@ cell 3: t_E 26.0 s, t_grad 186.8 s, g = 7.19 (g_FD = 72), RSS 12432 MB
     CPU time for make_fpno1:      5.75 sec, wall time      6.46 sec
     CPU time for make_fpno1:      1.27 sec, wall time      0.52 sec
     CPU time for make_fpno1:      0.88 sec, wall time      0.34 sec
+    CPU time for make_fpno1:      1.12 sec, wall time      0.52 sec
+    CPU time for make_fpno1:      1.33 sec, wall time      0.50 sec
+    CPU time for make_fpno1:      1.15 sec, wall time      0.39 sec
+    CPU time for make_fpno1:      1.09 sec, wall time      0.46 sec
+    CPU time for make_fpno1:      1.27 sec, wall time      0.42 sec
+    CPU time for make_fpno1:      1.14 sec, wall time      0.44 sec
+    CPU time for make_fpno1:      1.08 sec, wall time      0.42 sec
+    CPU time for make_fpno1:      0.96 sec, wall time      0.37 sec
+    CPU time for make_fpno1:      1.24 sec, wall time      0.56 sec
+    CPU time for make_fpno1:      1.13 sec, wall time      0.44 sec
+    CPU time for make_fpno1:      1.01 sec, wall time      0.37 sec
+    CPU time for make_fpno1:      1.22 sec, wall time      0.47 sec
+    CPU time for make_fpno1:      1.11 sec, wall time      0.41 sec
+    CPU time for make_fpno1:      1.05 sec, wall time      0.39 sec
+    CPU time for make_fpno1:      1.16 sec, wall time      0.42 sec
+    CPU time for make_fpno1:      3.68 sec, wall time      3.02 sec
+    CPU time for make_fpno1:      1.70 sec, wall time      1.03 sec
