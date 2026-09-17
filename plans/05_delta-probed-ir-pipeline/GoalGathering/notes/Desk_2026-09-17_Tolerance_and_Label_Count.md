@@ -39,6 +39,15 @@ less than the reference can distinguish at 5–13 cm⁻¹, the diagonal-only rou
 for the large molecules and the cost question changes character. If it does not, the couplings are
 needed for shape and this note settles nothing about them.
 
+*Threshold fixed 17 September 18:3x, before any result existed (the dipole run was at 14 of 103
+displacements):* intensities are harmonic, from the B3LYP/6-31G* dipole gradient computed by
+`probes/dipole_derivatives.py`, rotated by the eigenvectors of ω² + Δ^Q (full) and ω² + diag(Δ^Q)
+(diagonal-only); the score is max |S_full − S_diag| as a fraction of S_full's peak, per window
+(2950–3150, 1100–1650, 700–950 cm⁻¹); **PASS if that fraction is below 5 % in every window at both
+5 and 13 cm⁻¹ FWHM**; the 1 cm⁻¹ row is reported, not scored. Script: `probes/shape_test_couplings.py`.
+Caveat stated in advance: the plan's anharmonic intensity step is not applied; this is the harmonic
+intensity redistribution by mode mixing, which is the part the couplings control.
+
 ## 2. How many expensive labels the network needs: still unmeasured, and the literature is weaker than the plan implies
 
 The architecture (ledger, §4 item 3) is the Käser/Bowman form: **pre-train on a cheap proxy of the
