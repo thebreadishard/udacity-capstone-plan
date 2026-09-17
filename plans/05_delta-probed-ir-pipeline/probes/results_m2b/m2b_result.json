@@ -1,0 +1,39 @@
+{
+ "date": "2026-09-17 23:27",
+ "basis": "cc-pvdz",
+ "modes": [
+  12,
+  18,
+  6
+ ],
+ "q": 1.0,
+ "bar_uEh": 6.0,
+ "arm_A": "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/benzene_cc-pvdz_tight",
+ "R_s": {
+  "12": {
+   "A": 2418.098810835545,
+   "B_ii": 2412.644900118721,
+   "B_i": 2421.619604717762,
+   "diff_ii": -5.453910716823884,
+   "diff_i": 3.5207938822168217,
+   "pass_ii": true
+  },
+  "18": {
+   "A": 3346.401557791978,
+   "B_ii": 3338.1778486614166,
+   "B_i": 1669.9904343795424,
+   "diff_ii": -8.223709130561474,
+   "diff_i": -1676.4111234124357,
+   "pass_ii": false
+  },
+  "6": {
+   "A": 1758.1303738154475,
+   "B_ii": 1784.52191542533,
+   "B_i": 1819.9309654391982,
+   "diff_ii": 26.39154160988255,
+   "diff_i": 61.800591623750734,
+   "pass_ii": false
+  }
+ },
+ "verdict": "FAIL: the shipped engine does not compute the plan's quantity; M2 (in-house gradients) goes on the schedule"
+}

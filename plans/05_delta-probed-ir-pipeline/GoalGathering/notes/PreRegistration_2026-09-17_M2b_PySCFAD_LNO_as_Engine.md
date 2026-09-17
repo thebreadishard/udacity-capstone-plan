@@ -66,3 +66,35 @@ About 18 LNO energies at benzene: ≈ 1 h of the `qc05` environment for arm A (o
 values where the geometry is identical) and ≈ 1 h of `qcad` for arm B, each under a cgroup cap, neither
 touching the Windows side. **Not before the user has read this note**; runnable beside the anchor run if
 the cap is 12 GB or less (WSL ceiling 20 GB, anchor 3–7 GB).
+
+## Outcome — 17 September, 23:27: **FAIL**
+
+Run at cc-pVDZ (it fits: peak 5.7 GB at setting ii), eight threads, 14 LNO energies in 55 minutes
+(56–77 s each at PySCFAD's defaults, 386–445 s at arm A's thresholds), `probes/m2b_pyscfad_response.py`,
+`results_m2b/m2b_result.json`. A smoke run beforehand exposed that PySCFAD's `e_corr_ccsd_t` is the
+(T) increment alone; the comparison uses `e_corr` (CCSD + (T)) on both arms, as the pre-registration
+intends ("LNO-CCSD(T) total energies").
+
+| mode | family | R_s arm A (µE_h) | R_s arm B, setting (ii) | \|B − A\| | bar 6 | R_s arm B, defaults (i) | \|B − A\| (i) |
+|---|---|---|---|---|---|---|---|
+| 12 | C–H in-plane bend | 2418.10 | 2412.65 | **5.45** | pass | 2421.62 | 3.52 |
+| 18 | C–C stretch | 3346.40 | 3338.18 | **8.22** | fail | 1669.99 | 1676.41 |
+| 6 | C–H out-of-plane | 1758.13 | 1784.52 | **26.39** | fail | 1819.93 | 61.80 |
+
+One of three modes inside the bar; the C–C stretch 1.4× over it; the out-of-plane mode 4.4× over,
+thirteen times the frozen spaces' own noise. By the rule fixed above this is neither STAND-IN nor
+PARTIAL (PARTIAL required both C–H modes to pass): **the shipped engine does not compute the plan's
+quantity, and M2 — in-house gradients of the frozen-space energies — goes on the schedule with its
+two to three weeks.**
+
+Two readings beyond the verdict. (1) The differences are systematic, not noise: they are the
+re-localised IAO fragments against the transported Pipek–Mezey frozen spaces, which is exactly the
+design choice the plan made and measured earlier (the I-series). The defaults column makes the point
+loudly — at PySCFAD's own thresholds the C–C stretch response comes out at half of arm A's, 1,670
+against 3,346 µE_h — so an engine that re-fragments at every geometry is threshold-sensitive in a way
+the frozen spaces are not. That is corroboration of the plan's construction, obtained for free. (2) What
+this leaves unmeasured about the gradient route: **g = 6.04 is the cost ratio of PySCFAD's engine**; an
+in-house AD gradient of frozen-space energies has no localisation on its tape and may differentiate
+more cheaply, but that is a hope until M2 exists and prints its own g. The counting (X14/X21), the
+noise behaviour (X20) and the closure of the energies-only route stand; what changed tonight is that the
+engine must be built, not borrowed.

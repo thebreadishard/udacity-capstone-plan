@@ -1,0 +1,12 @@
+An NVIDIA GPU may be present on this machine, but a CUDA-enabled jaxlib is not installed. Falling back to cpu.
+/home/thebreadishard/qcad/lib/python3.12/site-packages/pyscf/gto/mole.py:1291: UserWarning: Function mol.dumps drops attribute exp because it is not JSON-serializable
+  warnings.warn(msg)
+/home/thebreadishard/qcad/lib/python3.12/site-packages/pyscf/gto/mole.py:1291: UserWarning: Function mol.dumps drops attribute ctr_coeff because it is not JSON-serializable
+  warnings.warn(msg)
+    CPU time for make_fpno1:      4.80 sec, wall time      3.54 sec
+    CPU time for make_fpno1:      1.13 sec, wall time      0.32 sec
+    CPU time for make_fpno1:      1.01 sec, wall time      0.27 sec
+    CPU time for make_fpno1:      1.10 sec, wall time      0.32 sec
+    CPU time for make_fpno1:      1.02 sec, wall time      0.25 sec
+    CPU time for make_fpno1:      1.09 sec, wall time      0.28 sec
+[22:21:55] ref              ii_armA    E_tot -230.75776863  (591 s, peak 4413 MB)

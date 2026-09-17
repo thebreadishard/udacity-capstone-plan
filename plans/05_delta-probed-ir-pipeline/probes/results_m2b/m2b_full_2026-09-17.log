@@ -1,0 +1,112 @@
+An NVIDIA GPU may be present on this machine, but a CUDA-enabled jaxlib is not installed. Falling back to cpu.
+/home/thebreadishard/qcad/lib/python3.12/site-packages/pyscf/gto/mole.py:1291: UserWarning: Function mol.dumps drops attribute exp because it is not JSON-serializable
+  warnings.warn(msg)
+/home/thebreadishard/qcad/lib/python3.12/site-packages/pyscf/gto/mole.py:1291: UserWarning: Function mol.dumps drops attribute ctr_coeff because it is not JSON-serializable
+  warnings.warn(msg)
+    CPU time for make_fpno1:      4.57 sec, wall time      3.26 sec
+    CPU time for make_fpno1:      1.01 sec, wall time      0.24 sec
+    CPU time for make_fpno1:      0.90 sec, wall time      0.21 sec
+    CPU time for make_fpno1:      1.06 sec, wall time      0.26 sec
+    CPU time for make_fpno1:      0.95 sec, wall time      0.23 sec
+    CPU time for make_fpno1:      0.95 sec, wall time      0.25 sec
+[22:33:17] ref              i_default  E_tot -231.57027180  (77 s, peak 2373 MB)
+    CPU time for make_fpno1:      1.05 sec, wall time      0.24 sec
+    CPU time for make_fpno1:      0.99 sec, wall time      0.23 sec
+    CPU time for make_fpno1:      0.97 sec, wall time      0.24 sec
+    CPU time for make_fpno1:      0.95 sec, wall time      0.30 sec
+    CPU time for make_fpno1:      0.98 sec, wall time      0.24 sec
+    CPU time for make_fpno1:      1.20 sec, wall time      0.32 sec
+[22:34:13] m12_q+1.0        i_default  E_tot -231.56460318  (56 s, peak 2469 MB)
+    CPU time for make_fpno1:      1.32 sec, wall time      0.33 sec
+    CPU time for make_fpno1:      1.05 sec, wall time      0.24 sec
+    CPU time for make_fpno1:      0.81 sec, wall time      0.18 sec
+    CPU time for make_fpno1:      0.99 sec, wall time      0.23 sec
+    CPU time for make_fpno1:      1.09 sec, wall time      0.27 sec
+    CPU time for make_fpno1:      1.00 sec, wall time      0.24 sec
+[22:35:09] m12_q-1.0        i_default  E_tot -231.57109718  (56 s, peak 2569 MB)
+    CPU time for make_fpno1:      0.91 sec, wall time      0.18 sec
+    CPU time for make_fpno1:      1.14 sec, wall time      0.28 sec
+    CPU time for make_fpno1:      0.77 sec, wall time      0.17 sec
+    CPU time for make_fpno1:      1.07 sec, wall time      0.26 sec
+    CPU time for make_fpno1:      1.03 sec, wall time      0.26 sec
+    CPU time for make_fpno1:      1.00 sec, wall time      0.24 sec
+[22:36:06] m18_q+1.0        i_default  E_tot -231.56860233  (58 s, peak 2640 MB)
+    CPU time for make_fpno1:      1.06 sec, wall time      0.25 sec
+    CPU time for make_fpno1:      1.01 sec, wall time      0.25 sec
+    CPU time for make_fpno1:      0.78 sec, wall time      0.16 sec
+    CPU time for make_fpno1:      1.05 sec, wall time      0.24 sec
+    CPU time for make_fpno1:      0.99 sec, wall time      0.25 sec
+    CPU time for make_fpno1:      1.04 sec, wall time      0.26 sec
+[22:37:04] m18_q-1.0        i_default  E_tot -231.56860128  (58 s, peak 2756 MB)
+    CPU time for make_fpno1:      1.12 sec, wall time      0.24 sec
+    CPU time for make_fpno1:      0.98 sec, wall time      0.23 sec
+    CPU time for make_fpno1:      1.04 sec, wall time      0.26 sec
+    CPU time for make_fpno1:      0.97 sec, wall time      0.23 sec
+    CPU time for make_fpno1:      0.96 sec, wall time      0.24 sec
+    CPU time for make_fpno1:      0.91 sec, wall time      0.23 sec
+[22:38:00] m6_q+1.0         i_default  E_tot -231.56845182  (56 s, peak 2792 MB)
+    CPU time for make_fpno1:      1.23 sec, wall time      0.30 sec
+    CPU time for make_fpno1:      0.82 sec, wall time      0.16 sec
+    CPU time for make_fpno1:      1.16 sec, wall time      0.30 sec
+    CPU time for make_fpno1:      1.16 sec, wall time      0.30 sec
+    CPU time for make_fpno1:      1.09 sec, wall time      0.27 sec
+    CPU time for make_fpno1:      1.04 sec, wall time      0.24 sec
+[22:38:58] m6_q-1.0         i_default  E_tot -231.56845191  (58 s, peak 2843 MB)
+    CPU time for make_fpno1:      1.62 sec, wall time      0.89 sec
+    CPU time for make_fpno1:      1.08 sec, wall time      0.30 sec
+    CPU time for make_fpno1:      0.95 sec, wall time      0.23 sec
+    CPU time for make_fpno1:      1.02 sec, wall time      0.30 sec
+    CPU time for make_fpno1:      0.97 sec, wall time      0.27 sec
+    CPU time for make_fpno1:      1.03 sec, wall time      0.25 sec
+[22:46:23] ref              ii_armA    E_tot -231.59521046  (445 s, peak 5114 MB)
+    CPU time for make_fpno1:      1.31 sec, wall time      0.33 sec
+    CPU time for make_fpno1:      1.07 sec, wall time      0.28 sec
+    CPU time for make_fpno1:      1.10 sec, wall time      0.29 sec
+    CPU time for make_fpno1:      1.06 sec, wall time      0.25 sec
+    CPU time for make_fpno1:      1.08 sec, wall time      0.27 sec
+    CPU time for make_fpno1:      0.92 sec, wall time      0.22 sec
+[22:53:42] m12_q+1.0        ii_armA    E_tot -231.58973468  (439 s, peak 5398 MB)
+    CPU time for make_fpno1:      1.24 sec, wall time      0.33 sec
+    CPU time for make_fpno1:      1.04 sec, wall time      0.29 sec
+    CPU time for make_fpno1:      0.95 sec, wall time      0.24 sec
+    CPU time for make_fpno1:      0.96 sec, wall time      0.23 sec
+    CPU time for make_fpno1:      1.12 sec, wall time      0.28 sec
+    CPU time for make_fpno1:      0.73 sec, wall time      0.16 sec
+[23:00:45] m12_q-1.0        ii_armA    E_tot -231.59586094  (423 s, peak 5428 MB)
+    CPU time for make_fpno1:      1.08 sec, wall time      0.28 sec
+    CPU time for make_fpno1:      0.93 sec, wall time      0.25 sec
+    CPU time for make_fpno1:      0.99 sec, wall time      0.27 sec
+    CPU time for make_fpno1:      0.86 sec, wall time      0.22 sec
+    CPU time for make_fpno1:      0.89 sec, wall time      0.24 sec
+    CPU time for make_fpno1:      0.87 sec, wall time      0.23 sec
+[23:07:34] m18_q+1.0        ii_armA    E_tot -231.59187281  (409 s, peak 5468 MB)
+    CPU time for make_fpno1:      0.98 sec, wall time      0.25 sec
+    CPU time for make_fpno1:      0.85 sec, wall time      0.22 sec
+    CPU time for make_fpno1:      0.88 sec, wall time      0.23 sec
+    CPU time for make_fpno1:      0.92 sec, wall time      0.24 sec
+    CPU time for make_fpno1:      0.91 sec, wall time      0.24 sec
+    CPU time for make_fpno1:      0.92 sec, wall time      0.25 sec
+[23:14:16] m18_q-1.0        ii_armA    E_tot -231.59187175  (402 s, peak 5491 MB)
+    CPU time for make_fpno1:      1.03 sec, wall time      0.27 sec
+    CPU time for make_fpno1:      0.90 sec, wall time      0.24 sec
+    CPU time for make_fpno1:      0.88 sec, wall time      0.22 sec
+    CPU time for make_fpno1:      0.89 sec, wall time      0.23 sec
+    CPU time for make_fpno1:      0.90 sec, wall time      0.23 sec
+    CPU time for make_fpno1:      0.89 sec, wall time      0.23 sec
+[23:20:43] m6_q+1.0         ii_armA    E_tot -231.59342589  (387 s, peak 5562 MB)
+    CPU time for make_fpno1:      1.05 sec, wall time      0.28 sec
+    CPU time for make_fpno1:      0.89 sec, wall time      0.25 sec
+    CPU time for make_fpno1:      0.91 sec, wall time      0.27 sec
+    CPU time for make_fpno1:      0.87 sec, wall time      0.24 sec
+    CPU time for make_fpno1:      0.86 sec, wall time      0.22 sec
+    CPU time for make_fpno1:      0.90 sec, wall time      0.24 sec
+[23:27:09] m6_q-1.0         ii_armA    E_tot -231.59342598  (386 s, peak 5656 MB)
+
+R_s = 0.5[E(+1)+E(-1)] - E(0), LNO-CCSD(T) total energies, uE_h
+mode          arm A B (ii) armA thr     |B-A| (ii)    B (i) def    |B-A| (i)
+12         2418.099       2412.645          5.454     2421.620        3.521
+18         3346.402       3338.178          8.224     1669.990     1676.411
+6          1758.130       1784.522         26.392     1819.931       61.801
+
+Pre-registered bar 6 uE_h at setting (ii). FAIL: the shipped engine does not compute the plan's quantity; M2 (in-house gradients) goes on the schedule
+written: results_m2b/m2b_result.json

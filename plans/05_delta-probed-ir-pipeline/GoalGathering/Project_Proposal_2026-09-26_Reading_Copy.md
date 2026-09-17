@@ -445,7 +445,14 @@ note and a deck: whether PySCFAD's shipped LNO (IAO auto-fragments) can stand in
 frozen spaces of §3.3 or an in-house gradient (M2) is needed; the quartic contamination of the
 gradient-difference read at q = 1, measured so far only on the stand-in (mode G, 0.05–0.21 cm⁻¹ per
 family); and probe B1's verdict, which sets the hours per energy that g multiplies. Plan 06's decision
-rule was amended the same day so that branch C stays open on the measured g.
+rule was amended the same day so that branch C stays open on the measured g. *Late the same day, the
+first of the three open items was settled by its pre-registered test (M2b, 23:27): PySCFAD's shipped
+LNO does **not** compute this plan's response — at arm A's thresholds it differs from the frozen-space
+value by 5.5, 8.2 and 26.4 µE_h on benzene's three probe modes against a bar of 6, and at its own
+default thresholds the C–C stretch response comes out at half the frozen-space value. The gradient
+engine must therefore be built on the frozen spaces of §3.3 (M2, two to three weeks), not borrowed; the
+counting, the noise behaviour and the closure of the energies-only route are unaffected, and the g of
+6.04 above is the borrowed engine's — M2's own is unmeasured.*
 
 ### 3.3 Frozen correlation spaces — the object, now measured
 
@@ -630,7 +637,9 @@ licensed by its own test before it enters a deck; their state on 16 September:
   2.5–2.0× — and the saving grows with size (4.8–3.8× at pentacene), because products grow linearly with the mode count
   while pairs grow quadratically. It enters no affordability table of this document yet: the transfer
   gate is M2a's rule, and the open items are named in §3.2 (PySCFAD's IAO-fragmented LNO against the
-  Pipek–Mezey frozen spaces; the quartic contamination of the gradient read at q = 1; probe B1).
+  Pipek–Mezey frozen spaces — settled the same night by M2b: it does not stand in, so the engine is
+  built in-house (M2, two to three weeks); the quartic contamination of the gradient read at q = 1;
+  probe B1).
 
 ## 4. Research questions
 
