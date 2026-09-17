@@ -9,9 +9,13 @@ same colouring code X14 used (x1c) and the same deck sizes the plan quotes.
 Pure counting: the pattern is block-diagonal by irrep, so the colouring depends only on the irrep block
 sizes. No energies, no molecules, milliseconds.
 
-Also reported: what the deck becomes if Delta_2 comes from gradients and only the diagonal anharmonic
-terms (c0, phi_iii, Delta_4) still come from energies - the 2M single-mode pattern block, which the deck
-contains already.
+Also reported: what the deck becomes under the gradient route. A first version of this script kept the
+2M single-mode energy block for c0, phi_iii and Delta_4. The reading copy (S3.2/S3.3) says otherwise:
+the anharmonic constants come from DFT, and the energy deck supplies only the diagonal Delta_2, the
+coupled-cluster force at the DFT geometry (the odd part of the totally symmetric single-mode pairs) and
+c0. Under the gradient route the diagonal is inside the 2k products, the force is one gradient at the
+reference geometry, c0 is not needed for frequencies, and Delta_4 only ever cleaned the energy read.
+So the deck is 2k + 1 gradients and no energies (17 September, evening).
 """
 import json
 import sys
@@ -28,7 +32,8 @@ from x1c_triangular_substitution import (smallest_last_order, lower_pattern, int
                                          sequential_colouring, is_proper, recover_by_substitution)
 import deck_counts_planar as dc  # noqa: E402
 
-G_MEASURED = 4.07   # LNO-CCSD(T) AD ratio, benzene 6-31g, M2a cell 3, 17 September (1 repeat)
+G_MEASURED = 7.19   # LNO-CCSD(T) AD ratio, benzene 6-31g, M2a cell 3, 17 Sep, THREE repeats at 4 threads (8-thread control pending)
+G_ALT = 4.07        # the one-repeat value, kept only to show the sensitivity
 
 
 def pattern_from_irreps(modes):
@@ -71,7 +76,7 @@ def products(P, seed=0):
 def main():
     rows = []
     print("%-22s %4s %6s %7s %7s %9s %9s %11s %9s"
-          % ("molecule", "M", "pairs", "H deck", "k", "gradients", "break-even", "at g=4.07", "vs deck"))
+          % ("molecule", "M", "pairs", "H deck", "k", "gradients", "break-even", "at g=%.2f" % G_MEASURED, "vs deck"))
     for name, grp, n_at, a, b in dc.MOLECULES:
         modes = dc.modes_d2h(n_at, a, b) if grp == "D2h" else dc.modes_c2v(n_at, a)
         M, n, E, full, hdeck, hdiag, hp25 = dc.decks(modes, "Ag" if grp == "D2h" else "A1")
@@ -91,20 +96,28 @@ def main():
     print("\nRecovery error (exactness check, should be ~1e-16): max %.1e over the ladder"
           % max(r["recovery_err"] for r in rows))
 
-    print("\nIf Delta_2 comes from gradients and only the diagonal anharmonic terms stay on energies")
-    print("(the 2M single-mode block the deck already contains):")
-    print("%-22s %10s %14s %12s %10s" % ("molecule", "old deck", "new: 2M + grads", "at g=4.07", "saving"))
+    print("\nWhat the single-mode energy block supplied, and what replaces it under the gradient route")
+    print("(reading copy S3.2/S3.3: the anharmonic constants come from DFT; the deck supplies the diagonal")
+    print(" Delta_2, the CC force at the DFT geometry - odd part of the totally symmetric pairs - and c0):")
+    print("  diagonal Delta_2  -> inside the 2k products (X14 row a covers the diagonal)")
+    print("  geometry term     -> ONE gradient at the reference geometry, all M components at once")
+    print("  c0                -> not needed for frequencies; Delta_4 only cleaned the ENERGY read")
+    print("So the deck becomes 2k + 1 gradients and no energies.\n")
+    print("%-22s %10s %10s %11s %8s %11s %8s"
+          % ("molecule", "old deck", "gradients", "at g=7.19", "saving", "at g=4.07", "saving"))
     for r in rows:
-        new_e = 2 * r["M"]
-        new_cost = new_e + r["gradients"] * G_MEASURED
-        r["new_deck_energies"] = new_e
-        r["new_total_energy_equivalents"] = new_cost
-        r["saving_total"] = r["h_deck"] / new_cost
-        print("%-22s %10d %14s %12.0f %9.1fx"
-              % (r["molecule"], r["h_deck"], "%d + %d" % (new_e, r["gradients"]), new_cost, r["saving_total"]))
+        ng = r["gradients"] + 1
+        cost, cost_alt = ng * G_MEASURED, ng * G_ALT
+        r["new_deck_energies"] = 0
+        r["new_gradients_total"] = ng
+        r["new_total_energy_equivalents"] = cost
+        r["saving_total"] = r["h_deck"] / cost
+        r["saving_total_at_g_alt"] = r["h_deck"] / cost_alt
+        print("%-22s %10d %10d %11.0f %7.1fx %11.0f %7.1fx"
+              % (r["molecule"], r["h_deck"], ng, cost, r["saving_total"], cost_alt, r["saving_total_at_g_alt"]))
 
     out = dict(date=datetime.now().strftime("%Y-%m-%d %H:%M"), g_measured=G_MEASURED,
-               g_source="M2a cell 3, LNO-CCSD(T), benzene 6-31g, 17 Sep 2026, ONE repeat - provisional",
+               g_source="M2a cell 3, LNO-CCSD(T), benzene 6-31g, 17 Sep 2026, three repeats at 4 threads; 8-thread control pending - provisional",
                note="counting only; pattern is block-diagonal by irrep so colouring depends on block sizes alone",
                rows=rows)
     json.dump(out, open(HERE / "x21_pattern_products_ladder.json", "w"), indent=1)

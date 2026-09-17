@@ -3,11 +3,11 @@
 *Run: `x21_pattern_products_ladder.py`. Counting only — the pattern is block-diagonal by irrep, so the
 colouring depends on the irrep block sizes alone. Same colouring code as X14 (x1c), same deck sizes as
 `deck_counts_planar.py`. Recovery error 0.0e+00 at every molecule: exact at every size, not just at
-naphthalene.*
+naphthalene. Rewritten in the evening; the afternoon version is superseded — see the last section.*
 
 ## The count
 
-| molecule | M | same-irrep pairs | H deck (energies) | products k | gradients | break-even g |
+| molecule | M | same-irrep pairs | H deck (energies) | products k | gradients 2k | break-even g |
 |---|---|---|---|---|---|---|
 | benzene | 30 | 52 | 139 | 6 | 12 | 11.6 |
 | naphthalene | 48 | 141 | 291 | 9 | 18 | **16.2** |
@@ -19,43 +19,54 @@ naphthalene.*
 | pentacene | 102 | 682 | 1,075 | 18 | 36 | **29.9** |
 
 **The gradient count grows linearly with the mode count while the pair count grows quadratically.**
-k ≈ M/5.7 across the ladder: 6 products at benzene, 18 at pentacene, while the pairs go 52 → 682. That is
-the whole scaling argument in one line, and it says the advantage **grows** with molecule size — which is
-the direction the project needs, since the goal is large PAHs.
+k ≈ M/5.7 across the ladder: 6 products at benzene, 18 at pentacene, while the pairs go 52 → 682. The
+advantage **grows** with molecule size, which is the direction the project needs. Phenanthrene is the
+stress case: C2v has four irreps, so 584 eligible pairs against anthracene's 277 at the same mode count
+and a product count of 23 — and it still breaks even at 22.1.
 
-Phenanthrene is the useful stress case: C2v has only four irreps, so it carries 584 eligible pairs
-against anthracene's 277 at the same mode count, and its product count doubles to 23. Even there the
-break-even is 22.1. Lower symmetry costs, but does not break the route.
+## What the energy deck supplied, read from the proposal rather than assumed
 
-## What it costs at the measured g
+The afternoon version of this note kept 2M single-mode energies beside the gradients, for c₀, φ_iii and
+Δ₄, and arrived at a whole-deck saving of 1.7× at naphthalene. That kept a block the plan does not use
+that way. The reading copy (§3.2–3.3) states the pipeline: GVPT2 on **the DFT anharmonic constants**,
+the **Δ₂-corrected harmonic part**, and a **first-order geometry term** — "the coupled-cluster force at
+the DFT geometry — the odd part of the totally symmetric single-mode ± pairs whose even part gives the
+diagonal". Intensities come from the DFT dipole derivatives. So the energy deck supplies three things
+and nothing else:
 
-M2a cell 3 (17 September, one repeat, provisional) gives **g = 4.07** for LNO-CCSD(T). Against that:
+| supplied by the single-mode energy block | under the gradient route |
+|---|---|
+| the diagonal of Δ₂ (even part) | inside the 2k products — X14 row (a) covers the diagonal |
+| the CC force at the DFT geometry (odd part, totally symmetric modes) | **one gradient at the reference geometry**, all M components at once |
+| c₀, and Δ₄ to clean the energy read | c₀ is not a frequency input; Δ₄ cleaned a read that no longer happens |
 
-| molecule | Δ₂ from gradients alone | total, keeping the 2M single-mode block for c₀, φ_iii, Δ₄ | saving |
-|---|---|---|---|
-| benzene | 2.8× cheaper | 60 energies + 12 gradients = 109 vs 139 | 1.3× |
-| naphthalene | 4.0× cheaper | 96 + 18 = 169 vs 291 | **1.7×** |
-| anthracene | 5.1× cheaper | 132 + 24 = 230 vs 499 | 2.2× |
-| phenanthrene | 5.4× cheaper | 132 + 46 = 319 vs 1,015 | 3.2× |
-| pyrene | 5.5× cheaper | 144 + 26 = 250 vs 580 | 2.3× |
-| tetracene | 6.2× cheaper | 168 + 30 = 290 vs 759 | 2.6× |
-| perylene | 6.6× cheaper | 180 + 32 = 310 vs 858 | 2.8× |
-| pentacene | 7.3× cheaper | 204 + 36 = 351 vs 1,075 | 3.1× |
+**The deck becomes 2k + 1 gradients and no energies.** The cubic and quartic constants were never the
+deck's job; they come from DFT, as in the L1//L0 composite schemes plan 06's own literature pass found.
 
-## Correction to the note of 17 September 08:0x
+## What it costs, at the measured g
 
-That note said the gradient route is "about 5× cheaper" at naphthalene. That figure is the **Δ₂ part
-alone** (4.0× at the measured g). The 18 gradients give Δ₂ and nothing else; c₀, the cubic φ_iii and the
-diagonal quartic Δ₄ still have to be read from the single-mode ± block, which is 2M = 96 energies at
-naphthalene. Counting those, the honest saving on the whole deck is **1.7×**, not 5×.
+g = **7.19** for LNO-CCSD(T): M2a cell 3, benzene 6-31G, three repeats, four threads on a machine running
+three jobs. The eight-thread control is pending; the one-repeat 4.07 is shown only for sensitivity.
 
-The saving grows with size for the same reason the break-even does: the diagonal block grows linearly
-while the deck it replaces grows quadratically. At pentacene it is 3.1×.
+| molecule | old deck (energies) | gradients 2k+1 | at g = 7.19 | saving | at g = 4.07 | saving |
+|---|---|---|---|---|---|---|
+| benzene | 139 | 13 | 93 | 1.5× | 53 | 2.6× |
+| naphthalene | 291 | 19 | 137 | **2.1×** | 77 | 3.8× |
+| anthracene | 499 | 25 | 180 | 2.8× | 102 | 4.9× |
+| phenanthrene | 1,015 | 47 | 338 | 3.0× | 191 | 5.3× |
+| pyrene | 580 | 27 | 194 | 3.0× | 110 | 5.3× |
+| tetracene | 759 | 31 | 223 | 3.4× | 126 | 6.0× |
+| perylene | 858 | 33 | 237 | 3.6× | 134 | 6.4× |
+| pentacene | 1,075 | 37 | 266 | **4.0×** | 151 | 7.1× |
 
-## What this does and does not settle
+## The day's three readings of one number, for the record
 
-- **Settles:** the route scales. The advantage does not shrink at the sizes the project cares about; it
-  grows. Coronene (D6h, degenerate irreps, not counted here) should be better still and is worth adding.
-- **Does not settle:** g. 4.07 is one repeat at 6-31G on a contended machine; the three-repeat run and
-  the thread-count control are running. Everything in the right-hand columns moves with that number, and
-  the break-even column does not.
+| when | reading | why it changed |
+|---|---|---|
+| 08:0x | ≈ 5× at naphthalene | Δ₂ part only, at the one-repeat g = 4.07 |
+| 11:3x | 1.7× | kept 2M energies for cubic/quartic terms the plan takes from DFT; g still 4.07 |
+| evening | **2.1×** (3.8× if g = 4.07 holds) | deck is 2k + 1 gradients per the proposal's own text; g = 7.19 from three repeats |
+
+Two things still move this table: the eight-thread control on g, and the quartic contamination of the
+gradient-difference read at q = 1, which X14/X20 treat as exact and which stage C's mode G measured only
+on the DFT stand-in (family errors 0.05–0.21 cm⁻¹ at 96 gradients). Neither moves the break-even column.
