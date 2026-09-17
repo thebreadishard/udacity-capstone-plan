@@ -48,6 +48,33 @@ displacements):* intensities are harmonic, from the B3LYP/6-31G* dipole gradient
 Caveat stated in advance: the plan's anharmonic intensity step is not applied; this is the harmonic
 intensity redistribution by mode mixing, which is the part the couplings control.
 
+**Outcome, 17 September 19:1x — FAIL, split by region.** Dipole gradient from `dipole_derivatives.py`
+(103 displacements, 2,705 s; the FINDIF Hessian reproduces stage A's H_low to 7.5e-5 E_h/bohr²). A
+first pass used the experimental 3 µm window (2950–3150), which is empty at unscaled B3LYP/6-31G*
+positions (the C–H stretches sit at 3190–3240); the window was moved to 3150–3300 and an empty-window
+guard added before any verdict was recorded (ledger 19:06). Bands matched by eigenvector overlap, not
+by sorted index, so shifts and intensity changes below are physical, not relabelling.
+
+| window (harmonic positions) | bands | max shift | max intensity change (strong bands) | weakest overlap | 1 cm⁻¹ | **5 cm⁻¹** | **13 cm⁻¹** |
+|---|---|---|---|---|---|---|---|
+| C–H stretch, 3150–3300 | 8 | 0.01 | 11.5 % | 1.00 | 2.6 % | **1.6 %** | **1.4 %** |
+| 6–9 µm, 1100–1650 | 13 | 21.4 cm⁻¹ | 28.1 % | 0.83 (band at 1182) | 95.6 % | **31.6 %** | **18.5 %** |
+| C–H out-of-plane, 700–950 | 6 | 2.0 cm⁻¹ | 4.1 % | 0.99 | 76.7 % | **20.1 %** | **9.5 %** |
+
+**Reading.** In the C–H stretch region the couplings do nothing the references can see (1.6 % and
+1.4 % against the 5 % bar): there the diagonal-only route is licensed on shape, consistent with stage
+C's 0.03 cm⁻¹ diagonal-only error for that family. In the fingerprint region they do a great deal: a
+band at 1182 cm⁻¹ keeps only 83 % of its identity after mixing, positions move by up to 21 cm⁻¹ and
+strong bands change intensity by up to 28 %, so the convolved shapes differ by 32 % of the peak at
+5 cm⁻¹ and still 18.5 % at 13 cm⁻¹ — three to six times the bar, at the resolution of the loosest
+reference on the ladder. The C–H out-of-plane region fails at 5 (20 %) and only just at 13 (9.5 %).
+**Consequence for section 1 above: the looser tolerances above naphthalene do not rescue the
+diagonal-only route.** Mode mixing moves intensity by tens of percent in the 6–9 µm region, and no
+reference resolution hides that. The couplings are needed for spectral shape wherever the fingerprint
+region matters — which for astronomical PAH bands (6.2, 7.7, 8.6, 11.2 µm) is everywhere except the
+3 µm family. The only economy this test licenses is a **diagonal-only C–H stretch family**; the rest
+goes to the gradient route. Caveats as pre-stated: DFT stand-in Δ₂, harmonic intensities, one molecule.
+
 ## 2. How many expensive labels the network needs: still unmeasured, and the literature is weaker than the plan implies
 
 The architecture (ledger, §4 item 3) is the Käser/Bowman form: **pre-train on a cheap proxy of the

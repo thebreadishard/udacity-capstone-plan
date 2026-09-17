@@ -30,7 +30,11 @@ import numpy as np
 
 HARTREE_TO_CM = 219474.63
 FWHMS = [1.0, 5.0, 13.0]
-WINDOWS = {"3 um C-H stretch": (2950, 3150), "6-9 um": (1100, 1650), "11-14 um C-H oop": (700, 950)}
+# Windows in HARMONIC B3LYP/6-31G* positions (unscaled): the C-H stretches sit at 3190-3240 cm-1 here, not
+# at the 2950-3150 of the scaled/experimental 3 um region. First run (17 Sep 19:07) used the experimental
+# window, found it empty, and the empty-window fallback printed nonsense ratios; corrected the same evening,
+# before any verdict was recorded. The 5 %-of-peak reading at 5 and 13 cm-1 is unchanged.
+WINDOWS = {"C-H stretch (harm. 3150-3300)": (3150, 3300), "6-9 um (1100-1650)": (1100, 1650), "C-H oop (700-950)": (700, 950)}
 
 
 def sticks(omega, D_Q, dmu_dQ):
@@ -73,21 +77,55 @@ def main():
     print("sticks: %d modes; strongest full-spectrum bands (cm-1, intensity):" % len(nu_f))
     for k in np.argsort(-I_f)[:6]:
         print("  %8.1f  %8.4f   (diagonal-only: %8.1f  %8.4f)" % (nu_f[k], I_f[k], nu_d[k], I_d[k]))
+    # what the couplings do to the sticks themselves, so a FAIL below is attributable: position or intensity.
+    # Bands are matched by EIGENVECTOR OVERLAP, not by sorted index: when the couplings reorder two close
+    # modes, index matching reports a spurious shift equal to their gap and a spurious 100 % intensity swap.
+    W2f = np.diag(omega ** 2) + D_Q
+    W2d = np.diag(omega ** 2) + np.diag(np.diag(D_Q))
+    _, Uf = np.linalg.eigh(W2f)
+    _, Ud = np.linalg.eigh(W2d)
+    ov = (Uf.T @ Ud) ** 2                       # ov[i, j] = overlap of full mode i with diagonal mode j
+    partner = np.argmax(ov, axis=1)
+    print("\nsticks, per window (bands matched by eigenvector overlap): max |shift|, max relative intensity change")
+    print("on bands carrying >= 5 % of the window's intensity, and the weakest overlap (1.0 = no mixing):")
+    res["sticks_per_window"] = {}
+    for name, (lo, hi) in WINDOWS.items():
+        inw = np.where((nu_f >= lo) & (nu_f <= hi))[0]
+        if inw.size == 0:
+            print("  %-32s no bands" % name)
+            res["sticks_per_window"][name] = {"bands": 0}
+            continue
+        shifts = np.abs(nu_f[inw] - nu_d[partner[inw]])
+        tot = float(I_f[inw].sum())
+        strong = inw[I_f[inw] >= 0.05 * tot] if tot > 0 else inw
+        rel = float(np.max(np.abs(I_f[strong] - I_d[partner[strong]]) / np.maximum(I_f[strong], 1e-30))) if strong.size else 0.0
+        weakest = float(np.min(ov[inw, partner[inw]]))
+        k = inw[np.argmin(ov[inw, partner[inw]])]
+        res["sticks_per_window"][name] = {"bands": int(inw.size), "max_shift_cm": float(shifts.max()),
+                                          "max_rel_intensity_change_strong": rel, "weakest_overlap": weakest,
+                                          "most_mixed_band_cm": float(nu_f[k])}
+        print("  %-32s %2d bands   max shift %5.2f cm-1   max intensity change %5.1f %%   weakest overlap %.2f (band at %.0f)"
+              % (name, inw.size, shifts.max(), 100 * rel, weakest, nu_f[k]))
+
     print("\nconvolved shapes, max |full - diagonal| as a fraction of the full spectrum's peak in the window:")
-    print("%-22s %8s %8s %8s" % ("window", "1 cm-1", "5 cm-1", "13 cm-1"))
+    print("%-32s %8s %8s %8s" % ("window", "1 cm-1", "5 cm-1", "13 cm-1"))
     verdict_ok = True
     for name, (lo, hi) in WINDOWS.items():
         m = (grid >= lo) & (grid <= hi)
         row = []
         for f in FWHMS:
             Sf, Sd = convolve(nu_f, I_f, grid[m], f), convolve(nu_d, I_d, grid[m], f)
-            peak = float(Sf.max()) if Sf.max() > 0 else 1.0
+            peak = float(Sf.max())
+            if peak <= 1e-3 * float(I_f.max()):      # no band in the window: say so, do not divide by a wing
+                row.append(float("nan"))
+                res["fwhm"].setdefault(str(f), {})[name] = None
+                continue
             frac = float(np.max(np.abs(Sf - Sd)) / peak)
             row.append(frac)
             res["fwhm"].setdefault(str(f), {})[name] = frac
             if f >= 5.0 and frac > 0.05:
                 verdict_ok = False
-        print("%-22s %7.1f%% %7.1f%% %7.1f%%" % (name, 100 * row[0], 100 * row[1], 100 * row[2]))
+        print("%-32s %s" % (name, "  ".join(("%6.1f%%" % (100 * v)) if v == v else "  empty" for v in row)))
     print("\nPre-registered reading (5 %% of peak at 5 and 13 cm-1): %s"
           % ("PASS - the couplings do not change the shape the references can see; diagonal-only is a licensed rung for the large molecules"
              if verdict_ok else

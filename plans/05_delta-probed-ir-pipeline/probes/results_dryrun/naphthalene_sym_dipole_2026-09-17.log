@@ -1,0 +1,1 @@
+[19:06:39] dipole derivatives: naphthalene at b3lyp/6-31g*, 2705 s; Hessian reproduces stage A's H_low to 7.52e-05 E_h/bohr^2; dipole gradient (54, 3) saved to stageA_dipole.npz
