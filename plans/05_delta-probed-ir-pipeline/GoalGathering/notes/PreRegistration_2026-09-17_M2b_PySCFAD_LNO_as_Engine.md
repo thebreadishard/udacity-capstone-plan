@@ -16,16 +16,24 @@ That is a measurement, not a preference, and it is cheap.
 
 The quantity the deck uses is the **response**, not the absolute energy:
 R_s(i) = ½[ΔE(+q eᵢ) + ΔE(−q eᵢ)] − ΔE(0), with ΔE = E(LNO-CCSD(T)) − E(low level), at q = 1.0 along
-benzene's three probe modes (the M1/M3 modes 12, 20, 6 in the plan's numbering; frequencies and families
-as `probes/m1_frozen_spaces.py` prints them). Benzene, cc-pVDZ — the basis in which the plan's own
-frozen-space energies are measured (180 s each, 14 September) — if PySCFAD's energy-only LNO fits under
-a 12 GB cgroup cap there; otherwise 6-31G* for both, stated as such.
+benzene's three probe modes — **12 (1020 cm⁻¹, C–H in-plane bend), 18 (1357, C–C stretch), 6 (865, C–H
+out-of-plane)** in the plan's numbering, as `probes/m1_frozen_spaces.py` prints them. *(Correction
+19:3x, before any run: the first draft wrote "12, 20, 6"; the sealed benzene run used 12, 18, 6.)*
+Benzene, cc-pVDZ — the basis in which the plan's own frozen-space energies are measured (180 s each,
+14 September) — if PySCFAD's energy-only LNO fits under a 12 GB cgroup cap there; otherwise 6-31G* for
+both, stated as such.
 
 Two arms, same geometry, same low level, same basis:
-- **A (ours):** `m1_frozen_spaces.py` arm A — frozen spaces from the reference, tight thresholds.
-- **B (PySCFAD):** `pyscfad.lno.LNOCCSD_T` energy only, no gradient, at (i) its defaults and (ii)
-  `thresh_occ, thresh_vir = 1e-6, 1e-7` (the plan's tight pair, as M2a cell 4 sets them), fragments
-  as it auto-builds them.
+- **A (ours):** the sealed run `results_m1/benzene_cc-pvdz_tight/` — arm A, frozen spaces from the
+  reference, thresholds **[1e-5, 1e-6]** as its log header records (the naphthalene tight pair is
+  1e-6/1e-7; benzene's is one decade looser, and (ii) below matches what arm A actually ran). No new
+  arm-A energies: the 27 sealed points already hold q = −1, 0, +1 on all three modes.
+- **B (PySCFAD):** `pyscfad.lno.LNOCCSD_T` energy only, no gradient, at the **same displaced
+  geometries** (reference coordinates and mode vectors read from arm A's `frozen_spaces_reference.npz`),
+  at (i) its defaults and (ii) `thresh_occ, thresh_vir = 1e-5, 1e-6`, fragments as it auto-builds them.
+
+The compared quantity is R_s = ½[E(+q) + E(−q)] − E(0) on the LNO-CCSD(T) **total** energies of each
+arm; the low-level subtraction the deck applies is identical for both arms and cancels in R_s^B − R_s^A.
 
 Three modes × three points (−q, 0, +q) × two arms = 18 LNO energies, plus the shared low-level ones.
 
