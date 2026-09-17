@@ -153,11 +153,14 @@ def main():
                 if thr is not None:
                     mlno.thresh_occ, mlno.thresh_vir = thr   # plan 05's tight pair; PySCFAD's LNO applies (thresh_occ, thresh_vir) as its PNO thresholds
                 return mf_, mlno
+            # 2026-09-17: PySCFAD's LNO kernel() returns None and leaves the energy on the object
+            # (e_corr_ccsd_t for LNOCCSD_T). The 13 September note assumed it returned the energy;
+            # cell 3 died on 'LinearizeTracer + NoneType'. Protocol unchanged, call site corrected.
             def e_fn():
-                mf_, mlno = make(mol); return mlno.kernel()
+                mf_, mlno = make(mol); mlno.kernel(); return mlno.e_corr_ccsd_t
             def g_fn():
                 def e_of_mol(m):
-                    mf_, mlno = make(m); return mf_.e_tot + mlno.kernel()
+                    mf_, mlno = make(m); mlno.kernel(); return mf_.e_tot + mlno.e_corr_ccsd_t
                 return jax.grad(e_of_mol)(mol).coords
             t_e, ts_e, e_val = timed(e_fn, args.repeats); rss_e = peak_rss_mb(); t_g, ts_g, _ = timed(g_fn, args.repeats); rss_g = peak_rss_mb()
             record(cell, t_e, ts_e, t_g, ts_g, rss_e, rss_g, {"lno_thresh": thr, "e_corr": float(np.asarray(e_val))})

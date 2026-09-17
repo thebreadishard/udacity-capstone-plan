@@ -1,0 +1,45 @@
+An NVIDIA GPU may be present on this machine, but a CUDA-enabled jaxlib is not installed. Falling back to cpu.
+/home/thebreadishard/qcad/lib/python3.12/site-packages/pyscf/gto/mole.py:1291: UserWarning: Function mol.dumps drops attribute coords because it is not JSON-serializable
+  warnings.warn(msg)
+    CPU time for make_fpno1:      7.67 sec, wall time      6.16 sec
+    CPU time for make_fpno1:      1.28 sec, wall time      0.42 sec
+    CPU time for make_fpno1:      0.78 sec, wall time      0.26 sec
+    CPU time for make_fpno1:      1.08 sec, wall time      0.36 sec
+    CPU time for make_fpno1:      1.07 sec, wall time      0.32 sec
+    CPU time for make_fpno1:      1.09 sec, wall time      0.35 sec
+    CPU time for make_fpno1:      1.06 sec, wall time      0.34 sec
+    CPU time for make_fpno1:      1.06 sec, wall time      0.35 sec
+    CPU time for make_fpno1:      1.06 sec, wall time      0.35 sec
+    CPU time for make_fpno1:      1.28 sec, wall time      0.53 sec
+    CPU time for make_fpno1:      0.74 sec, wall time      0.25 sec
+    CPU time for make_fpno1:      1.32 sec, wall time      0.42 sec
+    CPU time for make_fpno1:      0.94 sec, wall time      0.31 sec
+    CPU time for make_fpno1:      0.99 sec, wall time      0.32 sec
+    CPU time for make_fpno1:      1.13 sec, wall time      0.34 sec
+    CPU time for make_fpno1:      1.10 sec, wall time      0.36 sec
+    CPU time for make_fpno1:      1.07 sec, wall time      0.36 sec
+    CPU time for make_fpno1:      1.09 sec, wall time      0.32 sec
+    CPU time for make_fpno1:      8.26 sec, wall time      5.83 sec
+    CPU time for make_fpno1:      1.26 sec, wall time      0.54 sec
+    CPU time for make_fpno1:      1.64 sec, wall time      0.67 sec
+    CPU time for make_fpno1:      1.49 sec, wall time      0.62 sec
+    CPU time for make_fpno1:      1.45 sec, wall time      0.60 sec
+    CPU time for make_fpno1:      3.50 sec, wall time      2.85 sec
+Traceback (most recent call last):
+  File "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/m2a_gradient_cost_ratio.py", line 177, in <module>
+    main()
+  File "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/m2a_gradient_cost_ratio.py", line 162, in main
+    t_e, ts_e, e_val = timed(e_fn, args.repeats); rss_e = peak_rss_mb(); t_g, ts_g, _ = timed(g_fn, args.repeats); rss_g = peak_rss_mb()
+                                                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/m2a_gradient_cost_ratio.py", line 48, in timed
+    t0 = time.perf_counter(); vals = fn(); ts.append(time.perf_counter() - t0)
+                                     ^^^^
+  File "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/m2a_gradient_cost_ratio.py", line 161, in g_fn
+    return jax.grad(e_of_mol)(mol).coords
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/m2a_gradient_cost_ratio.py", line 160, in e_of_mol
+    mf_, mlno = make(m); return mf_.e_tot + mlno.kernel()
+                                ~~~~~~~~~~^~~~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for +: 'LinearizeTracer' and 'NoneType'
+--------------------
+For simplicity, JAX has removed its internal frames from the traceback of the following exception. Set JAX_TRACEBACK_FILTERING=off to include these.

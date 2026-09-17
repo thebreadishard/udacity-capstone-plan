@@ -1,0 +1,35 @@
+An NVIDIA GPU may be present on this machine, but a CUDA-enabled jaxlib is not installed. Falling back to cpu.
+/home/thebreadishard/qcad/lib/python3.12/site-packages/pyscf/gto/mole.py:1291: UserWarning: Function mol.dumps drops attribute coords because it is not JSON-serializable
+  warnings.warn(msg)
+    CPU time for make_fpno1:      8.58 sec, wall time      6.87 sec
+    CPU time for make_fpno1:      1.10 sec, wall time      0.38 sec
+    CPU time for make_fpno1:      1.13 sec, wall time      0.34 sec
+    CPU time for make_fpno1:      1.17 sec, wall time      0.39 sec
+    CPU time for make_fpno1:      1.17 sec, wall time      0.36 sec
+    CPU time for make_fpno1:      1.03 sec, wall time      0.36 sec
+    CPU time for make_fpno1:      9.41 sec, wall time      6.83 sec
+    CPU time for make_fpno1:      1.28 sec, wall time      0.60 sec
+    CPU time for make_fpno1:      1.37 sec, wall time      0.63 sec
+    CPU time for make_fpno1:      1.47 sec, wall time      0.56 sec
+    CPU time for make_fpno1:      1.30 sec, wall time      0.54 sec
+    CPU time for make_fpno1:      1.81 sec, wall time      1.38 sec
+    CPU time for _ccsd_t_energy_bwd:     20.37 sec, wall time      5.20 sec
+    CPU time for _ccsd_t_energy_bwd:     16.47 sec, wall time      4.20 sec
+    CPU time for _ccsd_t_energy_bwd:     18.02 sec, wall time      4.52 sec
+    CPU time for _ccsd_t_energy_bwd:     16.96 sec, wall time      4.24 sec
+    CPU time for _ccsd_t_energy_bwd:     15.46 sec, wall time      3.94 sec
+    CPU time for _ccsd_t_energy_bwd:     15.69 sec, wall time      4.14 sec
+cell 3: t_E 57.6 s, t_grad 234.4 s, g = 4.07 (g_FD = 72), RSS 10387 MB
+# M2a ? gradient-to-energy cost ratio g, benzene 6-31g (2026-09-17 11:00; {'python': '3.12.14', 'jax': '0.10.2', 'pyscf': '2.14.0', 'pyscfad': '0.3.3', 'platform': 'Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43'})
+
+SCF 8.8 s (excluded from both sides). g_FD = 72. Three repeats; median reported.
+
+| cell | t_energy (s) | t_gradient (s) | **g** | peak RSS after gradient (MB) | note |
+|---|---|---|---|---|---|
+| 0: RHF smoke: AD gradient vs PySCF analytic gradient (tol 1e-6 Eh/bohr) + timing pipeline | 4.7 | 16.1 | **3.41** | 2575 | dev vs analytic 2.6e-09 |
+| 1: MP2 canonical | 5.6 | 20.9 | **3.73** | 3629 |  |
+| 3: LNO-CCSD(T) as shipped (PySCFAD defaults) | 57.6 | 234.4 | **4.07** | 10387 | thresh None |
+
+Pre-stated reading: {"g<=6": "within the AD constant; substitution and mode G pay by an order of magnitude", "6<g<=20": "substitution pays, mode G marginal", "g>20": "gradient levers do not change plan 05's order of magnitude at benzene size"}
+
+Constants: {"basis_default": "cc-pvdz", "repeats_default": 3, "threads_default": 8, "molecule": "benzene (plan 05 dry-run geometry, stageA.json)", "cells": {"0": "RHF smoke: AD gradient vs PySCF analytic gradient (tol 1e-6 Eh/bohr) + timing pipeline", "1": "MP2 canonical", "2": "CCSD(T) canonical", "3": "LNO-CCSD(T) as shipped (PySCFAD defaults)", "4": "LNO-CCSD(T) at thresholds matching plan 05 tight", "5": "LNO-CCSD(T) cc-pVTZ (only if cell 3 gives g <= 20)"}, "reading": {"g<=6": "within the AD constant; substitution and mode G pay by an order of magnitude", "6<g<=20": "substitution pays, mode G marginal", "g>20": "gradient levers do not change plan 05's order of magnitude at benzene size"}, "rhf_gradient_tolerance": 1e-06}

@@ -1,0 +1,5 @@
+An NVIDIA GPU may be present on this machine, but a CUDA-enabled jaxlib is not installed. Falling back to cpu.
+/home/thebreadishard/qcad/lib/python3.12/site-packages/pyscf/gto/mole.py:1291: UserWarning: Function mol.dumps drops attribute coords because it is not JSON-serializable
+  warnings.warn(msg)
+cell 0: t_E 4.7 s, t_grad 16.1 s, g = 3.41 (g_FD = 72), RSS 2575 MB
+cell 1: t_E 5.6 s, t_grad 20.9 s, g = 3.73 (g_FD = 72), RSS 3629 MB
