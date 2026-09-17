@@ -74,6 +74,39 @@ C. Finite differences as a way to get gradients without new software
 - **or frozen-space gradients built in-house** (M2, estimated 2-3 weeks), which the plan gates on
   g <= 20 - a gate that cannot be evaluated until g exists.
 
+## Correction, 17 September 08:0x: this note priced the wrong construction
+
+Reproducing X14 (`plans/06/experiments/x14_naphthalene_symmetry_pattern_products.py`, rerun today,
+identical output) shows the 96 gradients above are its **row (d), the dense construction** — the note
+says so in its own reading line: "row (d) is mode G's 2*M gradients". Row (a) uses the symmetry prior
+instead: only the **141 same-irrep pairs** of naphthalene's 1,128 can be non-zero, so **9 pattern
+products = 18 gradients** determine all 189 elements — the 48 diagonal ones included — with a recovery
+error of **0.0e+00**, exact linear algebra rather than a fit.
+
+That changes the arithmetic completely. The comparison is not "114 energies + 96 gradients against 291";
+it is **18 gradients against the whole 291-energy deck**:
+
+| | break-even g | at the measured g ~ 3 |
+|---|---|---|
+| this note's row (d) reading | 291 - 114 = 177 over 96 = **1.84** | 1.45x more expensive |
+| X14 row (a), symmetry prior | 291 over 18 = **16.2** | about **5x cheaper** |
+
+The prior that buys this is not a guess: only same-irrep pairs can couple, which is exact for a
+symmetric molecule, and the plan already did the work that makes it usable — the symmetrised geometry
+and irrep-projected modes of decision 37, confirmed at DFT level by I14 on 15 September. X14's rows (b)
+and (c) go further on a frequency-proximity prior, to 8 and 10 gradients, but those are a guess about
+the tensor and P25's loss removed the evidence for that kind of ordering; row (a) needs no such bet.
+
+**Two things this correction does not buy.** X14 recovers with *exact* gradients; how the frozen
+spaces' gradient noise propagates through a 9-product construction is untested, and is the next desk
+item. And g at LNO-CCSD(T) is still unmeasured — but the bar it must clear moves from 1.84 to 16.2,
+and the plan's own pre-registered gate for building in-house gradients was g <= 20, so the two are
+consistent for the first time.
+
+Also note what the 18 gradients do and do not replace: they give Delta_2 exactly. The energy deck also
+supplies c0, the cubic phi_iii and the diagonal quartic used to correct the contamination; those need
+their own accounting before the 291 is written off in full.
+
 ## Consequence for the 26 September documents
 
 The amplitude test is now the cheapest decisive experiment the project owns: if the half-amplitude

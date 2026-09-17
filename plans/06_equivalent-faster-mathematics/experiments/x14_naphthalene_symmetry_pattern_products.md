@@ -1,4 +1,4 @@
-# X14 — substitution products on naphthalene's real symmetry pattern (mode space, M = 48; 2026-09-13 08:40)
+# X14 — substitution products on naphthalene's real symmetry pattern (mode space, M = 48; 2026-09-17 07:59)
 
 Pattern from X13 (B3LYP modes, D2h irreps): 141 eligible pairs of 1128. Counting code: X1c's; recovery verified numerically. g* = 474 / (2k): the gradient-to-energy cost ratio below which 2k gradients cost fewer energy-equivalents than plan 05's R1 deck (plan 05 proposal §3.2: 96 + 96 + 282).
 
