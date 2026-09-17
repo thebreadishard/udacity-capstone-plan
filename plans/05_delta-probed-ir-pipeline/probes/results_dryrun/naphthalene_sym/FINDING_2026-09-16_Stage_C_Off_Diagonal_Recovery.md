@@ -50,4 +50,18 @@ w = 25 gives 3.37 cm⁻¹, which clears 5.0, so the search stops at the narrowes
 1. **Amplitude.** The contamination falls as q⁴ and the signal as q², so halving the amplitude should improve the ratio fourfold: predicted ρ_off ≈ 0.24 at q_s = 0.5, which would pass. Against it stands the noise floor: the off-diagonal signal itself falls to ≈ 1.75 µE_h, and the frozen spaces' own noise is ≈ 2 µE_h at benzene. The test is to repeat stage B's off-diagonal block at q_s = 0.5 (≈ 12 h of stand-in DFT on the laptop, after the anchor run) and read ρ_off. **Pre-registered prediction: ρ_off ≈ 0.24 ± 0.1 if contamination-dominated; ρ_off ≥ 0.8 if the noise floor dominates instead — in which case no amplitude window exists at naphthalene and the couplings need gradients.**
 2. **The width rule.** Design a hold-out score in cm⁻¹ that does not use the direct Δ₂, and re-select w under it on this same data (desk work, no new energies).
 
+## Outcome of test 1, the amplitude test (17 September, 18:06, all 616 off-diagonal patterns at q = 0.5)
+
+**FAIL by the pre-registered rule, and by a mechanism neither branch assumed.** Like-for-like against the q = 1.0 block (identical patterns, identical 493/123 train/hold split, diagonal anchored from the same single block):
+
+| band width w | rho_off at q = 1.0 | rho_off at q = 0.5 | change |
+|---|---|---|---|
+| 25 | 0.962 | **1.029** | 0.94x |
+| 200 | 1.127 | 1.179 | 0.96x |
+| 3200 (no band) | 0.820 | 0.819 | 1.00x |
+
+The off-diagonal signal fell by **3.99x** (q^2 predicts 4.00x): the responses behave exactly as designed. The held-out residual fell by the same factor, so rho_off did not move. The contamination branch predicted a fourfold gain (quartic falls as q^4); the noise branch predicted rho_off rising toward 1 as a constant floor swamps a shrinking signal. **What is observed is a residual proportional to the signal at every amplitude and every band width** - the fit cannot represent a fixed fraction of the coupling structure, however large or small the signal. That is an identifiability statement about the energies-only design at this deck size (1,128 unknowns against 493 training rows, an l1 prior asked to close the gap), not a statement about noise or about q^4 contamination. The run of 16 September that attributed the floor to quartic contamination (6.74 against 7.00 uE_h) is not supported by this scaling; that number was the floor of the *full-response* fit, and the off-diagonal residual does not carry a q^4 component of any size. Stage B2 (16 Sep) independently put the stand-in arm's noise at 0.0059 uE_h, 300x below the q = 0.5 signal, so the noise branch was never live for this arm.
+
+**Consequence.** There is no amplitude window for the energies-only route to the couplings at naphthalene. The couplings need gradients (mode G reached threshold at 96 on the same data; X14/X20/X21 give the exact 2k+1 construction), or a different energy design with many more independent rows per unknown. The diagonal is untouched by this. The width-rule redesign (test 2) returned 'cannot rank widths without the truth' on 16 September and is moot for the energies route now.
+
 Either way the finding belongs in the 26 September documents: it was produced by the plan's own stopping rule, on cheap stand-in data, before a single coupled-cluster energy was spent on couplings — which is what that rule is for.

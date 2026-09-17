@@ -33,39 +33,39 @@
   }
  },
  "q=0.5": {
-  "n_patterns": 277,
-  "rms_off_uEh": 1.4738523575511846,
-  "rho_off": 0.7743083745239332,
-  "worst_family_cm": 5.253363756884432,
+  "n_patterns": 616,
+  "rms_off_uEh": 1.7557417903206836,
+  "rho_off": 1.0286688334384824,
+  "worst_family_cm": 3.408555653435565,
   "family": {
    "CC-stretch": {
     "rms_first_order_cm": 0.042679710586985664,
-    "rms_full_rediag_cm": 5.253363756884432,
+    "rms_full_rediag_cm": 2.379908121624708,
     "n_modes": 9
    },
    "CH-ip-bend": {
     "rms_first_order_cm": 0.0780316517081287,
-    "rms_full_rediag_cm": 4.629382908076244,
+    "rms_full_rediag_cm": 3.3447440187767943,
     "n_modes": 9
    },
    "CH-oop": {
     "rms_first_order_cm": 0.02893162554804645,
-    "rms_full_rediag_cm": 0.38256688399928557,
+    "rms_full_rediag_cm": 0.3203457039643752,
     "n_modes": 15
    },
    "CH-stretch": {
     "rms_first_order_cm": 0.0433015996073684,
-    "rms_full_rediag_cm": 4.386128874742655,
+    "rms_full_rediag_cm": 3.408555653435565,
     "n_modes": 8
    },
    "ring-ip": {
     "rms_first_order_cm": 0.046224578862235,
-    "rms_full_rediag_cm": 0.5755000954549749,
+    "rms_full_rediag_cm": 0.4204145642151195,
     "n_modes": 7
    }
   }
  },
- "verdict": "BETWEEN the pre-registered branches",
+ "verdict": "FAIL: no amplitude window at naphthalene",
  "prediction": {
   "contamination_branch": [
    0.14,
