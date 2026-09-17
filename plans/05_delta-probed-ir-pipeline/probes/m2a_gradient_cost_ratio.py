@@ -153,14 +153,18 @@ def main():
                 if thr is not None:
                     mlno.thresh_occ, mlno.thresh_vir = thr   # plan 05's tight pair; PySCFAD's LNO applies (thresh_occ, thresh_vir) as its PNO thresholds
                 return mf_, mlno
-            # 2026-09-17: PySCFAD's LNO kernel() returns None and leaves the energy on the object
-            # (e_corr_ccsd_t for LNOCCSD_T). The 13 September note assumed it returned the energy;
-            # cell 3 died on 'LinearizeTracer + NoneType'. Protocol unchanged, call site corrected.
+            # 2026-09-17 11:0x: PySCFAD's LNO kernel() returns None and leaves the energy on the object;
+            # cell 3 had died on 'LinearizeTracer + NoneType'. 22:2x, second correction, read from
+            # pyscfad/lno/ccsd.py: e_corr_ccsd_t is the (T) INCREMENT alone (efrag_cc_t); the LNO-CCSD(T)
+            # correlation is e_corr = e_corr_ccsd + e_corr_ccsd_t. Today's g = 5.71 / 7.19 (cells 3 at 8 / 4
+            # threads) was therefore the ratio for SCF + (T)-increment, not for the full LNO-CCSD(T) energy;
+            # the forward pass is the same pipeline, the backward pass differs by the CCSD energy term.
+            # Remeasured with e_corr after this edit. Protocol unchanged; call site corrected twice.
             def e_fn():
-                mf_, mlno = make(mol); mlno.kernel(); return mlno.e_corr_ccsd_t
+                mf_, mlno = make(mol); mlno.kernel(); return mlno.e_corr
             def g_fn():
                 def e_of_mol(m):
-                    mf_, mlno = make(m); mlno.kernel(); return mf_.e_tot + mlno.e_corr_ccsd_t
+                    mf_, mlno = make(m); mlno.kernel(); return mf_.e_tot + mlno.e_corr
                 return jax.grad(e_of_mol)(mol).coords
             t_e, ts_e, e_val = timed(e_fn, args.repeats); rss_e = peak_rss_mb(); t_g, ts_g, _ = timed(g_fn, args.repeats); rss_g = peak_rss_mb()
             record(cell, t_e, ts_e, t_g, ts_g, rss_e, rss_g, {"lno_thresh": thr, "e_corr": float(np.asarray(e_val))})
