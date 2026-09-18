@@ -43,14 +43,23 @@ licensed on the molecules where the truth is known, can mean anything for the PA
 exists; benzene and naphthalene are the instruments of that question, not its goal.
 
 **In a few sentences, for a reader who knows the field.** We want to show that the harmonic force
-constants of a PAH can be corrected towards coupled-cluster quality with a handful of energies in a
-frozen local-correlation space — no gradients, no full-molecule coupled-cluster calculation. That
-correction is calibrated first on benzene and naphthalene against the known truth. Every molecule
-on the ladder then gets a complete anharmonic spectrum — positions, intensities and shape as PAHdb
-delivers them — but with band positions that carry a measured coupled-cluster correction and an
-error margin instead of a fitted scale factor. The route to the large PAHs, for which no prediction
-above scale-factor level exists today, is the network of pipeline A, and it is tested rather than
-assumed: the per-family test Q9 of decision 27 and the transfer tests T-1 and T-2 of §3.5 and §6.
+constants of a PAH can be corrected towards coupled-cluster quality without a canonical
+coupled-cluster calculation of the molecule. A local coupled-cluster correlation space is built once
+at the equilibrium geometry, frozen, and carried along the normal modes; the correction is then read
+from a small number of local coupled-cluster quantities in that space — energies along single modes
+for the diagonal of the correction (what probe B1 measures now), and gradients along symmetry-chosen
+displacement patterns for the couplings between modes: two gradients per pattern plus one at the
+reference geometry, 19 at naphthalene, a count that grows linearly with the number of modes while
+the number of couplings grows with its square (§3.2, dated note of 17 September; §5.3). The
+energies-only reading of the couplings was tested on naphthalene on 17 September and does not reach
+the required accuracy at any push amplitude, which is why the couplings come from gradients and the
+gradient code is built in-house (decision 43). That correction is calibrated first on benzene and
+naphthalene against the known truth. Every molecule on the ladder then gets a complete anharmonic
+spectrum — positions, intensities and shape as PAHdb delivers them — but with band positions that
+carry a measured coupled-cluster correction and an error margin instead of a fitted scale factor.
+The route to the large PAHs, for which no prediction above scale-factor level exists today, is the
+network of pipeline A, and it is tested rather than assumed: the per-family test Q9 of decision 27
+and the transfer tests T-1 and T-2 of §3.5 and §6.
 
 Every piece of this exists already, separately. Reiher and Neugebauer showed in 2003 that selected
 normal modes can be computed without the full Hessian. Mata and Werner froze the local-correlation
@@ -58,14 +67,15 @@ domains along a reaction path in 2006 to keep local coupled cluster smooth (Mata
 Crossref-verified, full text closed and not yet read — known here through Pinski & Neese 2019; §3.1,
 §14). Allen and Schaefer's Concordant Mode Approach extracts CCSD(T) force constants from a few
 energies in a DFT normal-mode basis for small molecules. Käser and Meuwly transfer-learn a cheaper
-method's surface to coupled-cluster quality from a few hundred coupled-cluster points on molecules of
-up to nine atoms. The NASA Ames group and the supervisor's co-authors built the anharmonic-DFT front
-for PAHs up to eighteen carbons — Mackie et al. 2015 and 2016 with the supervisor as co-author,
-Esposito et al. 2024 as the Ames group's work. Pirali's naphthalene spectrum is what everyone
-calibrates on. PAHdb, Mai and Bos supply the scaled, simulated and ML-corrected DFT spectra for
-thousands of PAHs. What nobody has done is to put these pieces together on a PAH: carry a frozen
-local coupled-cluster space along the modes, recover the correction from energies alone, and measure
-an error margin per band (§3.1 and §14 carry the references and their reading status).
+method's surface to coupled-cluster quality from a few hundred coupled-cluster points on molecules
+of up to nine atoms. The NASA Ames group and the supervisor's co-authors built the anharmonic-DFT
+front for PAHs up to eighteen carbons — Mackie et al. 2015 and 2016 with the supervisor as
+co-author, Esposito et al. 2024 as the Ames group's work. Pirali's naphthalene spectrum is what
+everyone calibrates on. PAHdb, Mai and Bos supply the scaled, simulated and ML-corrected DFT spectra
+for thousands of PAHs. What nobody has done is to put these pieces together on a PAH: carry a frozen
+local coupled-cluster space along the modes, recover the diagonal of the correction from energies
+and its couplings from a linearly growing number of gradients in that space, and measure an error
+margin per band (§3.1 and §14 carry the references and their reading status).
 
 Why the harmonic part rather than the anharmonic one that PAH spectra are known for? Because the
 only figure this project's search found on this ladder (the searches of 5–6 September, §3.1 and
@@ -1957,5 +1967,6 @@ Numbers that are arithmetic on the sources are shown in place in the body.
 - **§14.** Esposito et al. 2024 (both entries) marked NASA Ames group; Mackie 2015/2016 and Maltseva 2016 marked as the supervisor's co-authored papers (CR 2); Ricca et al. 2026's annotation softened to "does not report" (CR 19); Mata & Werner 2006's annotation says its content is cited as described by Pinski & Neese 2019 (CR 20); the line-D records listed separately as not yet in the atlas.
 - **Third pass, 17 September (dated notes only; no frozen sentence rewritten).** §3.2: a dated note after the pricing paragraph records the amplitude test's outcome on all 616 patterns (FAIL — the energies-only coupling route has no amplitude window at naphthalene; the diagonal is untouched) and the gradient route as counted, stress-tested and priced this week (X14/X20/X21: 2k + 1 = 19 gradients at naphthalene, exact; g = 6.04 for LNO-CCSD(T) at 6-31G on the full energy, 7.6 inferred; 2.5–2.0× on the H deck, 4.8–3.8× at pentacene — corrected 22:31 from a first reading taken on the (T)-increment attribute), with the three open items named. §7: the lever list gains a dated fourth bullet pointing to that note. Plan 06's decision rule carries the matching dated amendment (branch C stays open on the measured g). The 0.5 cm⁻¹ of decision 21 was traced to its source the same day (the head-to-origin term of Pirali 2009, an upper bound, one molecule; 5–17 cm⁻¹ elsewhere on the ladder) — recorded in `notes/Desk_2026-09-17_Tolerance_and_Label_Count.md`, not yet folded into §4's error budget.
 - **Date change, 18 September (decision 44).** The conversation with the supervisor moves from 26 to 28 September 2026: stage 0 of probe B1's cc-pVTZ cells passed on 18 September 04:28, but one TZ tight energy costs 16.6 h, so the third mode and the report land ≈ 27 September. Header, decision 40 and the §12 calendar row carry the new date; the filename is kept so that the ledger's and the blog's links stay valid.
+- **Fourth pass, 18 September (the user: "Herschrijf alinea 2 en de slotzin van alinea 3"; two frozen passages of §1 rewritten, the first rewrite of frozen text since 6 September).** §1, the "In a few sentences" paragraph: "a handful of energies … no gradients" replaced by the measured route — energies along single modes for the diagonal, gradients along symmetry-chosen patterns for the couplings (2 per pattern + 1, 19 at naphthalene), with the amplitude test of 17 September and decision 43 named as the reason; "no full-molecule coupled-cluster calculation" replaced by "without a canonical coupled-cluster calculation of the molecule", since the LNO energies are whole-molecule calculations. §1, the closing sentence of the prior-art paragraph: "recover the correction from energies alone" replaced by the diagonal-from-energies, couplings-from-gradients statement. Nothing else in §1 touched.
 - **Not changed, on purpose.** The 5,160-energy whole-molecule figure of §4 (four energies per mode × 1,290 modes); the Ladder's ≥ 2,580 counts two per mode (the cold read's smaller item concerns the Ladder, which is not this copy's job). The cover note and the Ladder are not touched.
 - **Markers left in this copy.** (1) Header: "[institution and role: to be confirmed by the student]". (2) §3.5: "[probe B1 verdict on the cc-pVTZ cells: to be filled]" (expected ≈ 21–22 September; decision 40 dated it ≈ 21 September, the brief for this copy ≈ 22 September). (3) §7: "[the two LNO threshold settings that define the threshold-sensitivity line: to be fixed in the pilot note]".
