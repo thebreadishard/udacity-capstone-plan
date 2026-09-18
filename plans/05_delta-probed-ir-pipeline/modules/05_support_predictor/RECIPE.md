@@ -103,3 +103,6 @@ Written before any corpus is recomputed or any model is trained, so it is still 
 - **What does not change.** The frozen splits, several seeds, tuning parity, the declared effect size, "inconclusive" as an allowed outcome, and the
   rule that the recipe is committed before the data it judges.
 
+## Dated pointer 2026-09-18
+
+The architecture above is restated in one paragraph, with the label-count reasoning per family (expectations fixed before any learning curve) and the training practices we hold to, in `GoalGathering/notes/Desk_2026-09-18_Network_Architecture_and_Label_Count.md`. Read the layer-A learning curve of 19 September and the first coupled-cluster labels against that note's §4 table.
