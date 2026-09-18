@@ -4,7 +4,9 @@
 # curve (39 layer-A molecules, ~40 h), and it is the next thing the machine should do.
 #
 # It refuses to start the corpus over a crashed anchor. The completion test is the sealed result:
-# m1_sealed_energies.sha256 in the TZ output directory, which m1_frozen_spaces.py writes only at the end.
+# REPORT.md in the TZ output directory, which m1_frozen_spaces.py writes only at the end.
+# (Corrected 18 Sep 07:3x: the first version watched m1_sealed_energies.sha256, but dump_state() rewrites
+# that file after EVERY point, so the chain would have fired after the first displaced point, ~9 days early.)
 # If the anchor python disappears WITHOUT that file, the anchor was stopped (guard, reboot, crash) and
 # this chain exits without starting anything - resuming the anchor is then the first job, not the corpus.
 #
@@ -12,16 +14,17 @@
 set -u
 P=/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline
 SEAL=$P/probes/results_m1/naphthalene_cc-pvtz_tight_m3/m1_sealed_energies.sha256
+SEAL=$P/probes/results_m1/naphthalene_cc-pvtz_tight_m3/REPORT.md   # the true end marker; the sha256 above is per-point
 CORPUS=$P/modules/05_support_predictor/corpus
 PY=/mnt/c/Users/thebr/.conda/envs/qc/python.exe
 CORPUS_LOG=$CORPUS/run_corpus_layerA_chained.log
 MAX_DAYS=${MAX_DAYS:-12}
 
-echo "CHAIN armed $(date '+%F %T'): waiting for the anchor run to seal its result (max ${MAX_DAYS} days)"
+echo "CHAIN armed $(date '+%F %T'): waiting for the anchor run to write REPORT.md (its last action) (max ${MAX_DAYS} days)"
 end=$(( $(date +%s) + MAX_DAYS * 86400 ))
 while : ; do
   if [ -f "$SEAL" ]; then
-    echo "CHAIN $(date '+%F %T'): the anchor sealed its energies; starting corpus layer A"
+    echo "CHAIN $(date '+%F %T'): the anchor wrote REPORT.md ($(grep -o '"mode":' "${SEAL%REPORT.md}m1_sealed_energies.json" | wc -l) points sealed); starting corpus layer A"
     break
   fi
   if ! pgrep -f 'm1_frozen_spaces.py.*cc-pvtz' > /dev/null 2>&1; then
