@@ -73,7 +73,10 @@ def main(job_path):  # 2026-09-14: psi4.hessian(..., return_wfn=True) returns (H
     try:
         import psutil; res["peak_rss_gb"] = round(psutil.Process().memory_info().peak_wset / 1e9, 2)
     except Exception:
-        pass
+        try:  # 2026-09-18: peak_wset is Windows-only; on Linux ru_maxrss is in kB
+            import resource; res["peak_rss_gb"] = round(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1e6, 2)
+        except Exception:
+            pass
     res["timings_s"]["total"] = round(time.time() - t0, 1)
     json.dump(res, open(os.path.join(out, "result.json"), "w"), indent=1)
     sys.exit(0 if res["status"] == "done" else 1)

@@ -12,7 +12,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 MANIFEST, LEDGER, LOCK = HERE / "manifest.csv", HERE / "ledger.csv", HERE / "corpus.lock"
 DECK = HERE / "decks" / "deck_v1.json"
-QC_PYTHON = Path(r"C:\Users\thebr\.conda\envs\qc\python.exe")
+QC_PYTHON = Path(os.environ.get("CORPUS_QC_PYTHON", r"C:\Users\thebr\.conda\envs\qc\python.exe"))  # 2026-09-18: overridable so the same runner works on a Linux host (Hetzner CPX62)
 QM9_VAC = HERE.parent / "data" / "hessian_qm9" / "hessian_qm9_DatasetDict" / "vacuum"
 FIELDS = ["id", "layer", "priority", "name", "smiles", "qm9_label", "n_heavy", "n_atoms", "status", "machine", "deck", "note"]
 LEDGER_FIELDS = ["id", "layer", "name", "machine", "deck", "start", "end", "seconds_total", "seconds_optimise", "seconds_hessian_b3lyp", "seconds_hessian_wb97x", "peak_rss_gb", "status", "note"]
@@ -93,10 +93,15 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--layer", default=None); ap.add_argument("--max-molecules", type=int, default=None); ap.add_argument("--max-hours", type=float, default=None)
     ap.add_argument("--force", action="store_true"); ap.add_argument("--dry-run", action="store_true"); ap.add_argument("--grid-check", action="store_true", help="timing test: repeat the B3LYP Hessian on the finer grid")
+    ap.add_argument("--threads", type=int, default=None, help="override the deck's thread count for this runner only (2026-09-18; the deck file and its hash are unchanged; noted in the ledger)")
+    ap.add_argument("--memory-gb", type=int, default=None, help="override the deck's psi4 memory for this runner only (2026-09-18; noted in the ledger)")
     ap.add_argument("--ids", default=None, help="comma-separated manifest ids to (re)run regardless of status; the result folder is replaced (2026-09-15: benzene grid rerun with per-mode frequencies)")
     a = ap.parse_args()
     deck = json.load(open(DECK)); deck_hash = hashlib.sha256(DECK.read_bytes()).hexdigest()[:12]
     machine = socket.gethostname()
+    overrides = {k: v for k, v in (("threads", a.threads), ("memory_gb", a.memory_gb)) if v is not None}
+    deck.update(overrides)  # the in-memory job deck; DECK on disk and deck_hash are untouched
+    override_note = " ".join(f"{k}={v}" for k, v in overrides.items())
     if LOCK.exists():
         log(f"another runner holds {LOCK} (started {LOCK.read_text().strip()}); exiting"); return 2
     if anchor_job_running() and not a.force:
@@ -157,7 +162,7 @@ def main():
             tm = res.get("timings_s", {})
             append_ledger(dict(id=r["id"], layer=r["layer"], name=r["name"], machine=machine, deck=deck_hash, start=f"{t0:%Y-%m-%d %H:%M:%S}", end=f"{datetime.now():%Y-%m-%d %H:%M:%S}",
                                seconds_total=tm.get("total", ""), seconds_optimise=tm.get("optimise", ""), seconds_hessian_b3lyp=tm.get("hessian_b3lyp", ""), seconds_hessian_wb97x=tm.get("hessian_wb97x", ""),
-                               peak_rss_gb=res.get("peak_rss_gb", ""), status=status, note="forced" if a.force else ""))
+                               peak_rss_gb=res.get("peak_rss_gb", ""), status=status, note=" ".join(x for x in (("forced" if a.force else ""), override_note) if x)))
             done += 1
             log(f"{status} {r['id']} in {tm.get('total', '?')} s (opt {tm.get('optimise', '-')}, B3LYP {tm.get('hessian_b3lyp', '-')}, wB97X {tm.get('hessian_wb97x', '-')})")
             if time.time() - last_report > 3600 or True:
