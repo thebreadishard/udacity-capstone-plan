@@ -12,6 +12,7 @@ flowchart LR
   SPEC(["Spectrum: sticks + profiel op de resolutie van de bron"]):::data
   SB["Scorebord (module 03): per kolom een eigen marge; geen kolomwissel achteraf"]
   LAB[("NIST/PNNL 296 K · Pirali 2009 · Maltseva 2016 · Lemmens 2019/2021 · Joblin 1994/95")]:::ext
+  CATLAB[("Kationen: gas- en matrixspectra van naftaleen+, kolommen door de supervisor te benoemen vóór het scoren")]:::ext
   PAHDB[("PAHdb v4.00 en ML-lijnen: naast elkaar, geen oordeel")]:::ext
 
   H0 --> SUM
@@ -20,4 +21,5 @@ flowchart LR
   ANH --> SPEC
   SPEC --> SB
   LAB --> SB
+  CATLAB -.-> SB
   PAHDB --> SB

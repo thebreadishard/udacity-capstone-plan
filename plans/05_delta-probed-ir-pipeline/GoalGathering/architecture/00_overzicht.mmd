@@ -14,10 +14,12 @@ flowchart LR
     DECK["Deck: symmetrie-geblokte verplaatsingspatronen (2k+1 gradiënten; energieën voor de diagonaal)"]
     LNO["Bevroren lokale CC-ruimtes: LNO-CCSD(T)-energieën langs de patronen"]
     GRAD["M2: gradiënten van de bevroren-ruimte-energieën (JAX)"]:::planned
+    CAT["Kationen: onbeperkte (T)-port voor open schil (besluit 41); zelfde deck; R1+ = naftaleen+"]:::planned
     REC["Herstel van de correctie ΔH per bandfamilie (diagonaal + koppelingen)"]
     LIC1{"Licentie: exact tegen direct berekende referentie (benzeen, naftaleen)"}:::gate
     DFT --> DECK --> LNO --> REC
     DECK -.-> GRAD -.-> REC
+    LNO -.-> CAT -.-> REC
     REC --> LIC1
   end
 
@@ -27,7 +29,7 @@ flowchart LR
     direction TB
     CORP["Corpus: DFT-paren (B3LYP, wB97X) — 45 gedaan, 868 lopend, 11.321 mogelijk"]
     PRE["Voortraining op de vervanger-ΔH (volledige matrices)"]:::planned
-    NET["Netwerk: modus-tokens → bloktarget per familie (diagonaal + koppelingen)"]:::planned
+    NET["Netwerk: modus-tokens + lading/multipliciteit → bloktarget per familie; neutraal gelicentieerd tot er kationlabels zijn"]:::planned
     ENS["Ensemble over seeds → onzekerheid per familie"]:::planned
     LIC2{"Licentie per bandfamilie tegen de labels; anders weigering met melding"}:::gate
     CORP --> PRE -.-> NET --> ENS --> LIC2
@@ -38,7 +40,7 @@ flowchart LR
     CORR["Gecorrigeerde krachtconstanten H0 + ΔH op gelicentieerde families; DFT elders"]
     DIAG["Diagonalisatie → bandposities; intensiteiten uit DFT-dipoolafgeleiden; anharmoniek uit DFT"]
     SPEC(["Spectrum met foutmarge per band"]):::data
-    SCORE["Scorebord per referentiekolom: Pirali 0,5 · Maltseva ~1 · FEL 5–17 cm-1"]
+    SCORE["Scorebord per referentiekolom: Pirali 0,5 · Maltseva ~1 · FEL 5–17 cm-1; kationkolommen (gas/matrix naftaleen+) nog te benoemen"]
     CORR --> DIAG --> SPEC --> SCORE
   end
 

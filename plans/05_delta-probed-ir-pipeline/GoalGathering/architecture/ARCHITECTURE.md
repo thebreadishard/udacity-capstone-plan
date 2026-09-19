@@ -1,6 +1,6 @@
 # Architectuur plan 05 — stand 19 september 2026 (eerste versie; voor de auteurs, Nederlands)
 
-Bron van waarheid: de `.mmd`-bestanden in deze map (Mermaid; renderen op GitHub en in de blog). Doorgetrokken = gemeten of bestaand; gestippeld = te bouwen; rekenplaats tussen haken; stromen zijn data. Gesloten routes staan er niet in (besluit van de auteurs, 19 september). Wijzigingen gedateerd, zoals alles hier.
+Bron van waarheid: de `.mmd`-bestanden in deze map (Mermaid; renderen op GitHub en in de blog). Doorgetrokken = gemeten of bestaand; gestippeld = te bouwen; rekenplaats tussen haken; stromen zijn data. Gesloten routes staan er niet in (besluit van de auteurs, 19 september). Kationen toegevoegd 19 september, gestippeld (besluit 41: de (T)-port; R1+ naftaleen+; kationkolommen nog te benoemen). Wijzigingen gedateerd, zoals alles hier.
 
 ## 0. Overzicht (niveau 2)
 
@@ -21,10 +21,12 @@ flowchart LR
     DECK["Deck: symmetrie-geblokte verplaatsingspatronen (2k+1 gradiënten; energieën voor de diagonaal)"]
     LNO["Bevroren lokale CC-ruimtes: LNO-CCSD(T)-energieën langs de patronen"]
     GRAD["M2: gradiënten van de bevroren-ruimte-energieën (JAX)"]:::planned
+    CAT["Kationen: onbeperkte (T)-port voor open schil (besluit 41); zelfde deck; R1+ = naftaleen+"]:::planned
     REC["Herstel van de correctie ΔH per bandfamilie (diagonaal + koppelingen)"]
     LIC1{"Licentie: exact tegen direct berekende referentie (benzeen, naftaleen)"}:::gate
     DFT --> DECK --> LNO --> REC
     DECK -.-> GRAD -.-> REC
+    LNO -.-> CAT -.-> REC
     REC --> LIC1
   end
 
@@ -34,7 +36,7 @@ flowchart LR
     direction TB
     CORP["Corpus: DFT-paren (B3LYP, wB97X) — 45 gedaan, 868 lopend, 11.321 mogelijk"]
     PRE["Voortraining op de vervanger-ΔH (volledige matrices)"]:::planned
-    NET["Netwerk: modus-tokens → bloktarget per familie (diagonaal + koppelingen)"]:::planned
+    NET["Netwerk: modus-tokens + lading/multipliciteit → bloktarget per familie; neutraal gelicentieerd tot er kationlabels zijn"]:::planned
     ENS["Ensemble over seeds → onzekerheid per familie"]:::planned
     LIC2{"Licentie per bandfamilie tegen de labels; anders weigering met melding"}:::gate
     CORP --> PRE -.-> NET --> ENS --> LIC2
@@ -45,7 +47,7 @@ flowchart LR
     CORR["Gecorrigeerde krachtconstanten H0 + ΔH op gelicentieerde families; DFT elders"]
     DIAG["Diagonalisatie → bandposities; intensiteiten uit DFT-dipoolafgeleiden; anharmoniek uit DFT"]
     SPEC(["Spectrum met foutmarge per band"]):::data
-    SCORE["Scorebord per referentiekolom: Pirali 0,5 · Maltseva ~1 · FEL 5–17 cm-1"]
+    SCORE["Scorebord per referentiekolom: Pirali 0,5 · Maltseva ~1 · FEL 5–17 cm-1; kationkolommen (gas/matrix naftaleen+) nog te benoemen"]
     CORR --> DIAG --> SPEC --> SCORE
   end
 
@@ -81,6 +83,7 @@ flowchart TB
   TRANS["Transport naar x: projectie + Löwdin (glad: 0,002–0,06 µEh)"]
   EA["E_A(x): LNO-CCSD(T) in de bevroren ruimtes  [12 h per TZ-energie, 70 min per DZ-energie]"]
   G["M2: gradiënt van E_A via JAX/PySCFAD, stop_gradient op C0, transport op de band  [te bouwen; pre-registratie 18 sep]"]:::planned
+  CAT["Kationen: onbeperkte (T)-port in C voor de LNO-energieën van open-schil-systemen (besluit 41, acceptatietests eerst); benzeen+ alleen timingpunt (Jahn-Teller), naftaleen+ = R1+ met de deck van het neutrale  [te bouwen, 1–2 weken]"]:::planned
   ANCH{"Anker M3: draagt DZ de TZ-correctie? (oordeel 24 sep)"}:::gate
   SOLVE["Oplossing per familieblok: diagonaal uit energieën, koppelingen uit gradiënten (exact; ruis gedempt 0,27)"]
   NOISE["Ruisbudget: sigma per energie; quartische term uit twee amplitudes"]
@@ -92,6 +95,7 @@ flowchart TB
   PAT --> EA
   PAT -.-> G
   TRANS -.-> G
+  TRANS -.-> CAT -.-> SOLVE
   EA --> ANCH
   EA --> SOLVE
   G -.-> SOLVE
@@ -114,10 +118,10 @@ flowchart TB
   TOK["Modus-tokens: frequentie, familie, C/H/N/O-aandelen, lokalisatie, uit-vlak-aandeel; omgevingsklassen als diagnostiek"]
   PRE["Voortraining op vervanger-ΔH  [laptop, minuten]"]:::planned
   NET["Transformer over modi (2 lagen, breedte 64) → bloktarget per familie: diagonaal + koppelingen"]:::planned
-  CC[("CC-labels uit pipeline B: benzeen, naftaleen, … (ΔH-blokken)")]:::data
+  CC[("CC-labels uit pipeline B: benzeen, naftaleen, … (ΔH-blokken); kationlabels na de (T)-port")]:::data
   FT["Bijtrainen op CC-projecties: kleine leersnelheid, vroeg stoppen op apart gehouden moleculen"]:::planned
   ENS["Ensemble over seeds → spreiding per familie"]:::planned
-  LIC{"Licentie per familie: fout onder de marge van de scorekolom, en beter dan mediaanregel en type-overdracht (X18)"}:::gate
+  LIC{"Licentie per familie en per ladingstoestand: fout onder de marge van de scorekolom, en beter dan mediaanregel en type-overdracht (X18); neutralen eerst"}:::gate
   ACT["Actieve keuze: volgende deck waar het ensemble het oneens is"]:::planned
   PRED[("Voorspelde ΔH-blokken + onzekerheid; geweigerde families → DFT met melding")]:::data
 
@@ -144,6 +148,7 @@ flowchart LR
   SPEC(["Spectrum: sticks + profiel op de resolutie van de bron"]):::data
   SB["Scorebord (module 03): per kolom een eigen marge; geen kolomwissel achteraf"]
   LAB[("NIST/PNNL 296 K · Pirali 2009 · Maltseva 2016 · Lemmens 2019/2021 · Joblin 1994/95")]:::ext
+  CATLAB[("Kationen: gas- en matrixspectra van naftaleen+, kolommen door de supervisor te benoemen vóór het scoren")]:::ext
   PAHDB[("PAHdb v4.00 en ML-lijnen: naast elkaar, geen oordeel")]:::ext
 
   H0 --> SUM
@@ -152,6 +157,7 @@ flowchart LR
   ANH --> SPEC
   SPEC --> SB
   LAB --> SB
+  CATLAB -.-> SB
   PAHDB --> SB
 ```
 

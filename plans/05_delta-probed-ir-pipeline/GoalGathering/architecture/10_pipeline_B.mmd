@@ -12,6 +12,7 @@ flowchart TB
   TRANS["Transport naar x: projectie + Löwdin (glad: 0,002–0,06 µEh)"]
   EA["E_A(x): LNO-CCSD(T) in de bevroren ruimtes  [12 h per TZ-energie, 70 min per DZ-energie]"]
   G["M2: gradiënt van E_A via JAX/PySCFAD, stop_gradient op C0, transport op de band  [te bouwen; pre-registratie 18 sep]"]:::planned
+  CAT["Kationen: onbeperkte (T)-port in C voor de LNO-energieën van open-schil-systemen (besluit 41, acceptatietests eerst); benzeen+ alleen timingpunt (Jahn-Teller), naftaleen+ = R1+ met de deck van het neutrale  [te bouwen, 1–2 weken]"]:::planned
   ANCH{"Anker M3: draagt DZ de TZ-correctie? (oordeel 24 sep)"}:::gate
   SOLVE["Oplossing per familieblok: diagonaal uit energieën, koppelingen uit gradiënten (exact; ruis gedempt 0,27)"]
   NOISE["Ruisbudget: sigma per energie; quartische term uit twee amplitudes"]
@@ -23,6 +24,7 @@ flowchart TB
   PAT --> EA
   PAT -.-> G
   TRANS -.-> G
+  TRANS -.-> CAT -.-> SOLVE
   EA --> ANCH
   EA --> SOLVE
   G -.-> SOLVE
