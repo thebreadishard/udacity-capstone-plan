@@ -1,0 +1,25 @@
+/root/miniforge3/envs/qcad/lib/python3.12/site-packages/pyscf/gto/mole.py:1291: UserWarning: Function mol.dumps drops attribute coords because it is not JSON-serializable
+  warnings.warn(msg)
+    CPU time for make_fpno1:      4.99 sec, wall time      3.64 sec
+    CPU time for make_fpno1:      1.17 sec, wall time      0.22 sec
+    CPU time for make_fpno1:      1.05 sec, wall time      0.20 sec
+    CPU time for make_fpno1:      1.08 sec, wall time      0.21 sec
+    CPU time for make_fpno1:      1.03 sec, wall time      0.19 sec
+    CPU time for make_fpno1:      1.02 sec, wall time      0.16 sec
+    CPU time for make_fpno1:      1.28 sec, wall time      0.25 sec
+    CPU time for make_fpno1:      1.10 sec, wall time      0.19 sec
+    CPU time for make_fpno1:      1.17 sec, wall time      0.26 sec
+    CPU time for make_fpno1:      0.95 sec, wall time      0.18 sec
+    CPU time for make_fpno1:      1.04 sec, wall time      0.19 sec
+    CPU time for make_fpno1:      1.04 sec, wall time      0.18 sec
+    CPU time for make_fpno1:      1.12 sec, wall time      0.21 sec
+    CPU time for make_fpno1:      1.07 sec, wall time      0.20 sec
+    CPU time for make_fpno1:      1.05 sec, wall time      0.18 sec
+    CPU time for make_fpno1:      1.01 sec, wall time      0.19 sec
+    CPU time for make_fpno1:      1.07 sec, wall time      0.19 sec
+    CPU time for make_fpno1:      1.09 sec, wall time      0.21 sec
+    CPU time for make_fpno1:      5.62 sec, wall time      3.44 sec
+    CPU time for make_fpno1:      1.22 sec, wall time      0.29 sec
+    CPU time for make_fpno1:      1.16 sec, wall time      0.27 sec
+    CPU time for make_fpno1:      1.12 sec, wall time      0.25 sec
+    CPU time for make_fpno1:      1.19 sec, wall time      0.26 sec
