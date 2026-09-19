@@ -1,10 +1,10 @@
-# Corpus status — 2026-09-15 16:43
+# Corpus status — 2026-09-19 12:11
 
-Manifest rows: 11,321; ledger entries: 8; compute spent so far: 7.6 h (from the ledger).
+Manifest rows: 11,321; ledger entries: 48; compute spent so far: 36.0 h (from the ledger).
 
 | layer | pending | running | done | failed | median s/molecule (measured) | hours to go at that rate |
 |---|---|---|---|---|---|---|
-| A | 39 | 0 | 6 | 0 | 3662 | 39.7 |
+| A | 0 | 0 | 45 | 0 | 2641 | 0.0 |
 | A2 | 868 | 0 | 0 | 0 | — | not yet measured |
 | B | 4,353 | 0 | 0 | 0 | — | not yet measured |
 | C | 6,055 | 0 | 0 | 0 | — | not yet measured |
@@ -13,11 +13,13 @@ Last ten ledger entries:
 
 | id | name | machine | start | total s | status |
 |---|---|---|---|---|---|
-| A_8448043181 | benzene | Asus18 | 2026-09-14 08:35:08 | 202.3 | failed |
-| A_d9139359ab | azulene | Asus18 | 2026-09-14 08:38:31 | 812.8 | failed |
-| A_8448043181 | benzene | Asus18 | 2026-09-14 08:55:34 | 842.0 | done |
-| A_d9139359ab | azulene | Asus18 | 2026-09-14 09:09:37 | 3725.2 | done |
-| A_fdc27f1bd1 | biphenyl | Asus18 | 2026-09-14 10:11:43 | 5968.2 | done |
-| A_ff98e1160d | quinoline | Asus18 | 2026-09-14 11:51:12 | 3598.2 | done |
-| A_014f8519af | diphenylacetylene | Asus18 | 2026-09-14 12:51:11 | 8713.0 | done |
-| A_01f3186607 | naphthalene | Asus18 | 2026-09-14 15:17:57 | 3419.9 | done |
+| A_b90527ca2d | 2-phenylpyridine | ubuntu-32gb-hel1-2 | 2026-09-19 02:21:44 | 2291.2 | done |
+| A_bce5bae234 | phenanthridine | ubuntu-32gb-hel1-2 | 2026-09-19 02:59:56 | 3675.4 | done |
+| A_cce0ad25a5 | pyrene | ubuntu-32gb-hel1-2 | 2026-09-19 04:01:12 | 5061.3 | done |
+| A_d037c0ed95 | dibenzothiophene | ubuntu-32gb-hel1-2 | 2026-09-19 05:25:34 | 2787.3 | done |
+| A_d09f8d1ef8 | isoquinoline | ubuntu-32gb-hel1-2 | 2026-09-19 06:12:02 | 1309.1 | done |
+| A_d295f2fa80 | quinazoline | ubuntu-32gb-hel1-2 | 2026-09-19 06:33:52 | 1120.4 | done |
+| A_d551b360c3 | 1-aminoanthracene | ubuntu-32gb-hel1-2 | 2026-09-19 06:52:33 | 5135.4 | done |
+| A_e72997e726 | fluorene | ubuntu-32gb-hel1-2 | 2026-09-19 08:18:09 | 3287.0 | done |
+| A_ea73419366 | 1-methylnaphthalene | ubuntu-32gb-hel1-2 | 2026-09-19 09:12:57 | 2200.8 | done |
+| A_fead28d796 | benzofuran | ubuntu-32gb-hel1-2 | 2026-09-19 09:49:38 | 827.5 | done |

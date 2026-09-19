@@ -8,3 +8,42 @@ A_ff98e1160d,A,quinoline,Asus18,97ed2d67c66b,2026-09-14 11:51:12,2026-09-14 12:5
 A_014f8519af,A,diphenylacetylene,Asus18,97ed2d67c66b,2026-09-14 12:51:11,2026-09-14 15:16:24,8713.0,54.6,1783.2,2997.5,5.7,done,
 A_01f3186607,A,naphthalene,Asus18,97ed2d67c66b,2026-09-14 15:17:57,2026-09-14 16:14:58,3419.9,32.7,707.4,1040.7,4.15,done,
 A_8448043181,A,benzene,Asus18,97ed2d67c66b,2026-09-15 17:02:35,2026-09-15 17:19:59,1041.9,7.4,243.7,298.2,2.15,done,
+A_0674939e7f,A,4-phenylpyridine,ubuntu-32gb-hel1-2,97ed2d67c66b,2026-09-18 05:57:37,2026-09-18 06:35:27,2268.6,34.4,790.4,1443.4,3.74,done,threads=16 memory_gb=24
+A_07cadc7923,A,2-naphthoic_acid,ubuntu-32gb-hel1-2,97ed2d67c66b,2026-09-18 06:35:27,2026-09-18 07:20:09,2681.8,33.8,864.5,1783.0,4.02,done,threads=16 memory_gb=24
+A_08dde334d8,A,benzophenone,ubuntu-32gb-hel1-2,97ed2d67c66b,2026-09-18 07:20:09,2026-09-18 08:20:03,3593.5,54.5,1212.6,2326.0,4.82,done,threads=16 memory_gb=24
+A_20db5837c9,A,dibenzofuran,ubuntu-32gb-hel1-2,97ed2d67c66b,2026-09-18 08:20:03,2026-09-18 09:05:39,2735.3,28.3,892.2,1814.3,4.04,done,threads=16 memory_gb=24
+A_3100da3761,A,benzonitrile,ubuntu-32gb-hel1-2,97ed2d67c66b,2026-09-18 09:05:39,2026-09-18 09:14:39,539.2,8.5,201.8,328.4,1.9,done,threads=16 memory_gb=24
+A_428228e5a5,A,fluoranthene,ubuntu-32gb-hel1-2,97ed2d67c66b,2026-09-18 09:14:39,2026-09-18 10:48:15,5615.0,46.4,1774.4,3793.7,6.19,done,threads=16 memory_gb=24
+A_45187bb7c8,A,acenaphthylene,ubuntu-32gb-hel1-2,97ed2d67c66b,2026-09-18 10:48:15,2026-09-18 11:26:13,2277.5,31.3,755.5,1490.3,3.76,done,threads=16 memory_gb=24
+A_466972291d,A,1-naphthol,ubuntu-32gb-hel1-2,97ed2d67c66b,2026-09-18 11:26:13,2026-09-18 11:56:54,1840.5,39.6,613.8,1186.7,3.34,done,threads=16 memory_gb=24
+A_519351d19c,A,2-naphthylamine,ubuntu-32gb-hel1-2,97ed2d67c66b,2026-09-18 11:56:54,2026-09-18 12:27:47,1853.1,31.6,666.0,1155.1,3.43,done,threads=16 memory_gb=24
+A_541c53d1a5,A,phenanthrene,ubuntu-32gb-hel1-2,97ed2d67c66b,2026-09-18 12:27:48,2026-09-18 13:32:54,3905.4,34.1,1252.0,2619.0,4.95,done,threads=16 memory_gb=24
+A_593ba8280d,A,"1,8-naphthalimide-free_diimide_model_1,8-naphthalic_anhydride",ubuntu-32gb-hel1-2,97ed2d67c66b,2026-09-18 13:32:54,2026-09-18 14:32:58,3604.2,59.4,1114.0,2430.4,4.95,done,threads=16 memory_gb=24
+A_5a75c6c39e,A,diphenyl_ether,ubuntu-32gb-hel1-2,97ed2d67c66b,2026-09-18 14:32:59,2026-09-18 15:25:39,3159.6,43.7,1047.1,2068.3,4.28,done,threads=16 memory_gb=24
+A_69789470db,A,2-methylnaphthalene,ubuntu-32gb-hel1-2,97ed2d67c66b,2026-09-18 15:25:39,2026-09-18 16:03:05,2245.5,54.1,766.2,1424.7,3.6,done,threads=16 memory_gb=24
+A_6aa211768a,A,1-naphthonitrile,ubuntu-32gb-hel1-2,97ed2d67c66b,2026-09-18 16:03:05,2026-09-18 16:36:10,1984.1,35.5,683.8,1264.3,3.59,done,threads=16 memory_gb=24
+A_72b86c2331,A,biphenylene,ubuntu-32gb-hel1-2,97ed2d67c66b,2026-09-18 16:36:10,2026-09-18 17:11:07,2096.5,37.2,706.3,1352.6,3.78,done,threads=16 memory_gb=24
+A_76e053ce6a,A,indole,ubuntu-32gb-hel1-2,97ed2d67c66b,2026-09-18 17:11:07,2026-09-18 17:27:37,989.2,17.4,376.4,594.9,2.61,done,threads=16 memory_gb=24
+A_78896cfe24,A,9-methylanthracene,ubuntu-32gb-hel1-2,97ed2d67c66b,2026-09-18 17:27:37,2026-09-18 19:04:33,5815.2,65.1,1923.8,3825.8,6.12,done,threads=16 memory_gb=24
+A_7a57a52879,A,stilbene_E,ubuntu-32gb-hel1-2,97ed2d67c66b,2026-09-18 19:04:33,2026-09-18 20:12:52,4098.3,25.8,1307.1,2764.9,4.99,done,threads=16 memory_gb=24
+A_7aa232d4e9,A,quinoxaline,ubuntu-32gb-hel1-2,97ed2d67c66b,2026-09-18 20:12:52,2026-09-18 20:32:53,1201.1,26.2,438.6,735.9,2.71,done,threads=16 memory_gb=24
+A_8152ea74fd,A,carbazole,ubuntu-32gb-hel1-2,97ed2d67c66b,2026-09-18 20:32:54,2026-09-18 21:20:02,2827.4,30.5,1011.1,1785.2,4.26,done,threads=16 memory_gb=24
+A_8d1f3c46b0,A,acenaphthene,ubuntu-32gb-hel1-2,97ed2d67c66b,2026-09-18 21:20:02,2026-09-18 22:03:22,2599.3,28.3,899.3,1671.4,4.23,done,threads=16 memory_gb=24
+A_8f6ed7c002,A,styrene,ubuntu-32gb-hel1-2,97ed2d67c66b,2026-09-18 22:03:22,2026-09-18 22:17:09,827.0,10.2,302.9,513.4,2.29,done,threads=16 memory_gb=24
+A_90df3e4aa9,A,indene,ubuntu-32gb-hel1-2,97ed2d67c66b,2026-09-18 22:17:09,2026-09-18 22:35:39,1109.3,16.9,421.6,670.3,2.57,done,threads=16 memory_gb=24
+A_9d7c66d274,A,benzothiophene,ubuntu-32gb-hel1-2,97ed2d67c66b,2026-09-18 22:35:39,2026-09-18 22:52:42,1022.6,20.4,355.1,646.7,2.45,done,threads=16 memory_gb=24
+A_a1e6ec1862,A,anthracene,ubuntu-32gb-hel1-2,97ed2d67c66b,2026-09-18 22:52:42,2026-09-18 23:52:59,3616.5,39.5,1180.2,2396.4,4.87,done,threads=16 memory_gb=24
+A_a6412e1ae4,A,acridine,ubuntu-32gb-hel1-2,97ed2d67c66b,2026-09-18 23:52:59,2026-09-19 00:52:27,3566.8,41.8,1142.0,2382.7,4.67,done,threads=16 memory_gb=24
+A_a848c04a21,A,phenylacetylene,ubuntu-32gb-hel1-2,97ed2d67c66b,2026-09-19 00:52:27,2026-09-19 01:02:49,621.4,11.3,223.9,385.8,2.02,done,threads=16 memory_gb=24
+A_aa22880426,A,quinoline-N-oxide,ubuntu-32gb-hel1-2,97ed2d67c66b,2026-09-19 01:02:49,2026-09-19 01:31:21,1712.1,26.1,578.1,1107.4,3.21,done,threads=16 memory_gb=24
+A_b77821c742,A,phenazine,ubuntu-32gb-hel1-2,97ed2d67c66b,2026-09-19 01:31:22,2026-09-19 02:21:44,3022.3,37.8,1013.4,1970.7,4.43,done,threads=16 memory_gb=24
+A_b90527ca2d,A,2-phenylpyridine,ubuntu-32gb-hel1-2,97ed2d67c66b,2026-09-19 02:21:44,2026-09-19 02:59:56,2291.2,30.8,791.4,1468.6,3.73,done,threads=16 memory_gb=24
+A_bce5bae234,A,phenanthridine,ubuntu-32gb-hel1-2,97ed2d67c66b,2026-09-19 02:59:56,2026-09-19 04:01:12,3675.4,49.2,1217.0,2408.9,4.75,done,threads=16 memory_gb=24
+A_cce0ad25a5,A,pyrene,ubuntu-32gb-hel1-2,97ed2d67c66b,2026-09-19 04:01:12,2026-09-19 05:25:34,5061.3,43.6,1705.4,3311.9,6.24,done,threads=16 memory_gb=24
+A_d037c0ed95,A,dibenzothiophene,ubuntu-32gb-hel1-2,97ed2d67c66b,2026-09-19 05:25:34,2026-09-19 06:12:02,2787.3,29.9,939.8,1817.1,4.21,done,threads=16 memory_gb=24
+A_d09f8d1ef8,A,isoquinoline,ubuntu-32gb-hel1-2,97ed2d67c66b,2026-09-19 06:12:02,2026-09-19 06:33:52,1309.1,23.5,469.7,815.4,2.84,done,threads=16 memory_gb=24
+A_d295f2fa80,A,quinazoline,ubuntu-32gb-hel1-2,97ed2d67c66b,2026-09-19 06:33:52,2026-09-19 06:52:33,1120.4,23.0,441.9,655.2,2.71,done,threads=16 memory_gb=24
+A_d551b360c3,A,1-aminoanthracene,ubuntu-32gb-hel1-2,97ed2d67c66b,2026-09-19 06:52:33,2026-09-19 08:18:09,5135.4,66.6,1596.3,3472.1,5.72,done,threads=16 memory_gb=24
+A_e72997e726,A,fluorene,ubuntu-32gb-hel1-2,97ed2d67c66b,2026-09-19 08:18:09,2026-09-19 09:12:57,3287.0,30.7,1090.5,2165.4,4.49,done,threads=16 memory_gb=24
+A_ea73419366,A,1-methylnaphthalene,ubuntu-32gb-hel1-2,97ed2d67c66b,2026-09-19 09:12:57,2026-09-19 09:49:38,2200.8,25.0,759.3,1416.1,3.6,done,threads=16 memory_gb=24
+A_fead28d796,A,benzofuran,ubuntu-32gb-hel1-2,97ed2d67c66b,2026-09-19 09:49:38,2026-09-19 10:03:26,827.5,14.8,318.5,493.8,2.45,done,threads=16 memory_gb=24

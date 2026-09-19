@@ -1,0 +1,130 @@
+[2026-09-18 05:57:37] start A_0674939e7f A 4-phenylpyridine (21 atoms)
+[2026-09-18 06:35:27] done A_0674939e7f in 2268.6 s (opt 34.4, B3LYP 790.4, wB97X 1443.4)
+[2026-09-18 06:35:27] progress: 1 this session, 38 pending in scope, 0.63 h elapsed
+[2026-09-18 06:35:27] start A_07cadc7923 A 2-naphthoic_acid (21 atoms)
+[2026-09-18 07:20:09] done A_07cadc7923 in 2681.8 s (opt 33.8, B3LYP 864.5, wB97X 1783.0)
+[2026-09-18 07:20:09] progress: 2 this session, 37 pending in scope, 1.38 h elapsed
+[2026-09-18 07:20:09] start A_08dde334d8 A benzophenone (24 atoms)
+[2026-09-18 08:20:03] done A_08dde334d8 in 3593.5 s (opt 54.5, B3LYP 1212.6, wB97X 2326.0)
+[2026-09-18 08:20:03] progress: 3 this session, 36 pending in scope, 2.37 h elapsed
+[2026-09-18 08:20:03] start A_20db5837c9 A dibenzofuran (21 atoms)
+[2026-09-18 09:05:39] done A_20db5837c9 in 2735.3 s (opt 28.3, B3LYP 892.2, wB97X 1814.3)
+[2026-09-18 09:05:39] progress: 4 this session, 35 pending in scope, 3.13 h elapsed
+[2026-09-18 09:05:39] start A_3100da3761 A benzonitrile (13 atoms)
+[2026-09-18 09:14:39] done A_3100da3761 in 539.2 s (opt 8.5, B3LYP 201.8, wB97X 328.4)
+[2026-09-18 09:14:39] progress: 5 this session, 34 pending in scope, 3.28 h elapsed
+[2026-09-18 09:14:39] start A_428228e5a5 A fluoranthene (26 atoms)
+[2026-09-18 10:48:15] done A_428228e5a5 in 5615.0 s (opt 46.4, B3LYP 1774.4, wB97X 3793.7)
+[2026-09-18 10:48:15] progress: 6 this session, 33 pending in scope, 4.84 h elapsed
+[2026-09-18 10:48:15] start A_45187bb7c8 A acenaphthylene (20 atoms)
+[2026-09-18 11:26:13] done A_45187bb7c8 in 2277.5 s (opt 31.3, B3LYP 755.5, wB97X 1490.3)
+[2026-09-18 11:26:13] progress: 7 this session, 32 pending in scope, 5.48 h elapsed
+[2026-09-18 11:26:13] start A_466972291d A 1-naphthol (19 atoms)
+[2026-09-18 11:56:54] done A_466972291d in 1840.5 s (opt 39.6, B3LYP 613.8, wB97X 1186.7)
+[2026-09-18 11:56:54] progress: 8 this session, 31 pending in scope, 5.99 h elapsed
+[2026-09-18 11:56:54] start A_519351d19c A 2-naphthylamine (20 atoms)
+[2026-09-18 12:27:47] done A_519351d19c in 1853.1 s (opt 31.6, B3LYP 666.0, wB97X 1155.1)
+[2026-09-18 12:27:47] progress: 9 this session, 30 pending in scope, 6.50 h elapsed
+[2026-09-18 12:27:48] start A_541c53d1a5 A phenanthrene (24 atoms)
+[2026-09-18 13:32:54] done A_541c53d1a5 in 3905.4 s (opt 34.1, B3LYP 1252.0, wB97X 2619.0)
+[2026-09-18 13:32:54] progress: 10 this session, 29 pending in scope, 7.59 h elapsed
+[2026-09-18 13:32:54] start A_593ba8280d A 1,8-naphthalimide-free_diimide_model_1,8-naphthalic_anhydride (21 atoms)
+[2026-09-18 14:32:58] done A_593ba8280d in 3604.2 s (opt 59.4, B3LYP 1114.0, wB97X 2430.4)
+[2026-09-18 14:32:58] progress: 11 this session, 28 pending in scope, 8.59 h elapsed
+[2026-09-18 14:32:59] start A_5a75c6c39e A diphenyl_ether (23 atoms)
+[2026-09-18 15:25:39] done A_5a75c6c39e in 3159.6 s (opt 43.7, B3LYP 1047.1, wB97X 2068.3)
+[2026-09-18 15:25:39] progress: 12 this session, 27 pending in scope, 9.47 h elapsed
+[2026-09-18 15:25:39] start A_69789470db A 2-methylnaphthalene (21 atoms)
+[2026-09-18 16:03:05] done A_69789470db in 2245.5 s (opt 54.1, B3LYP 766.2, wB97X 1424.7)
+[2026-09-18 16:03:05] progress: 13 this session, 26 pending in scope, 10.09 h elapsed
+[2026-09-18 16:03:05] start A_6aa211768a A 1-naphthonitrile (19 atoms)
+[2026-09-18 16:36:10] done A_6aa211768a in 1984.1 s (opt 35.5, B3LYP 683.8, wB97X 1264.3)
+[2026-09-18 16:36:10] progress: 14 this session, 25 pending in scope, 10.64 h elapsed
+[2026-09-18 16:36:10] start A_72b86c2331 A biphenylene (20 atoms)
+[2026-09-18 17:11:07] done A_72b86c2331 in 2096.5 s (opt 37.2, B3LYP 706.3, wB97X 1352.6)
+[2026-09-18 17:11:07] progress: 15 this session, 24 pending in scope, 11.22 h elapsed
+[2026-09-18 17:11:07] start A_76e053ce6a A indole (16 atoms)
+[2026-09-18 17:27:37] done A_76e053ce6a in 989.2 s (opt 17.4, B3LYP 376.4, wB97X 594.9)
+[2026-09-18 17:27:37] progress: 16 this session, 23 pending in scope, 11.50 h elapsed
+[2026-09-18 17:27:37] start A_78896cfe24 A 9-methylanthracene (27 atoms)
+[2026-09-18 19:04:33] done A_78896cfe24 in 5815.2 s (opt 65.1, B3LYP 1923.8, wB97X 3825.8)
+[2026-09-18 19:04:33] progress: 17 this session, 22 pending in scope, 13.12 h elapsed
+[2026-09-18 19:04:33] start A_7a57a52879 A stilbene_E (26 atoms)
+[2026-09-18 20:12:52] done A_7a57a52879 in 4098.3 s (opt 25.8, B3LYP 1307.1, wB97X 2764.9)
+[2026-09-18 20:12:52] progress: 18 this session, 21 pending in scope, 14.25 h elapsed
+[2026-09-18 20:12:52] start A_7aa232d4e9 A quinoxaline (16 atoms)
+[2026-09-18 20:32:53] done A_7aa232d4e9 in 1201.1 s (opt 26.2, B3LYP 438.6, wB97X 735.9)
+[2026-09-18 20:32:53] progress: 19 this session, 20 pending in scope, 14.59 h elapsed
+[2026-09-18 20:32:54] start A_8152ea74fd A carbazole (22 atoms)
+[2026-09-18 21:20:02] done A_8152ea74fd in 2827.4 s (opt 30.5, B3LYP 1011.1, wB97X 1785.2)
+[2026-09-18 21:20:02] progress: 20 this session, 19 pending in scope, 15.37 h elapsed
+[2026-09-18 21:20:02] start A_8d1f3c46b0 A acenaphthene (22 atoms)
+[2026-09-18 22:03:22] done A_8d1f3c46b0 in 2599.3 s (opt 28.3, B3LYP 899.3, wB97X 1671.4)
+[2026-09-18 22:03:22] progress: 21 this session, 18 pending in scope, 16.10 h elapsed
+[2026-09-18 22:03:22] start A_8f6ed7c002 A styrene (16 atoms)
+[2026-09-18 22:17:09] done A_8f6ed7c002 in 827.0 s (opt 10.2, B3LYP 302.9, wB97X 513.4)
+[2026-09-18 22:17:09] progress: 22 this session, 17 pending in scope, 16.33 h elapsed
+[2026-09-18 22:17:09] start A_90df3e4aa9 A indene (17 atoms)
+[2026-09-18 22:35:39] done A_90df3e4aa9 in 1109.3 s (opt 16.9, B3LYP 421.6, wB97X 670.3)
+[2026-09-18 22:35:39] progress: 23 this session, 16 pending in scope, 16.63 h elapsed
+[2026-09-18 22:35:39] start A_9d7c66d274 A benzothiophene (15 atoms)
+[2026-09-18 22:52:42] done A_9d7c66d274 in 1022.6 s (opt 20.4, B3LYP 355.1, wB97X 646.7)
+[2026-09-18 22:52:42] progress: 24 this session, 15 pending in scope, 16.92 h elapsed
+[2026-09-18 22:52:42] start A_a1e6ec1862 A anthracene (24 atoms)
+[2026-09-18 23:52:59] done A_a1e6ec1862 in 3616.5 s (opt 39.5, B3LYP 1180.2, wB97X 2396.4)
+[2026-09-18 23:52:59] progress: 25 this session, 14 pending in scope, 17.92 h elapsed
+[2026-09-18 23:52:59] start A_a6412e1ae4 A acridine (23 atoms)
+[2026-09-19 00:52:27] done A_a6412e1ae4 in 3566.8 s (opt 41.8, B3LYP 1142.0, wB97X 2382.7)
+[2026-09-19 00:52:27] progress: 26 this session, 13 pending in scope, 18.91 h elapsed
+[2026-09-19 00:52:27] start A_a848c04a21 A phenylacetylene (14 atoms)
+[2026-09-19 01:02:49] done A_a848c04a21 in 621.4 s (opt 11.3, B3LYP 223.9, wB97X 385.8)
+[2026-09-19 01:02:49] progress: 27 this session, 12 pending in scope, 19.09 h elapsed
+[2026-09-19 01:02:49] start A_aa22880426 A quinoline-N-oxide (18 atoms)
+[2026-09-19 01:31:21] done A_aa22880426 in 1712.1 s (opt 26.1, B3LYP 578.1, wB97X 1107.4)
+[2026-09-19 01:31:21] progress: 28 this session, 11 pending in scope, 19.56 h elapsed
+[2026-09-19 01:31:22] start A_b77821c742 A phenazine (22 atoms)
+[2026-09-19 02:21:44] done A_b77821c742 in 3022.3 s (opt 37.8, B3LYP 1013.4, wB97X 1970.7)
+[2026-09-19 02:21:44] progress: 29 this session, 10 pending in scope, 20.40 h elapsed
+[2026-09-19 02:21:44] start A_b90527ca2d A 2-phenylpyridine (21 atoms)
+[2026-09-19 02:59:56] done A_b90527ca2d in 2291.2 s (opt 30.8, B3LYP 791.4, wB97X 1468.6)
+[2026-09-19 02:59:56] progress: 30 this session, 9 pending in scope, 21.04 h elapsed
+[2026-09-19 02:59:56] start A_bce5bae234 A phenanthridine (23 atoms)
+[2026-09-19 04:01:12] done A_bce5bae234 in 3675.4 s (opt 49.2, B3LYP 1217.0, wB97X 2408.9)
+[2026-09-19 04:01:12] progress: 31 this session, 8 pending in scope, 22.06 h elapsed
+[2026-09-19 04:01:12] start A_cce0ad25a5 A pyrene (26 atoms)
+[2026-09-19 05:25:34] done A_cce0ad25a5 in 5061.3 s (opt 43.6, B3LYP 1705.4, wB97X 3311.9)
+[2026-09-19 05:25:34] progress: 32 this session, 7 pending in scope, 23.47 h elapsed
+[2026-09-19 05:25:34] start A_d037c0ed95 A dibenzothiophene (21 atoms)
+[2026-09-19 06:12:02] done A_d037c0ed95 in 2787.3 s (opt 29.9, B3LYP 939.8, wB97X 1817.1)
+[2026-09-19 06:12:02] progress: 33 this session, 6 pending in scope, 24.24 h elapsed
+[2026-09-19 06:12:02] start A_d09f8d1ef8 A isoquinoline (17 atoms)
+[2026-09-19 06:33:52] done A_d09f8d1ef8 in 1309.1 s (opt 23.5, B3LYP 469.7, wB97X 815.4)
+[2026-09-19 06:33:52] progress: 34 this session, 5 pending in scope, 24.60 h elapsed
+[2026-09-19 06:33:52] start A_d295f2fa80 A quinazoline (16 atoms)
+[2026-09-19 06:52:33] done A_d295f2fa80 in 1120.4 s (opt 23.0, B3LYP 441.9, wB97X 655.2)
+[2026-09-19 06:52:33] progress: 35 this session, 4 pending in scope, 24.92 h elapsed
+[2026-09-19 06:52:33] start A_d551b360c3 A 1-aminoanthracene (26 atoms)
+[2026-09-19 08:18:09] done A_d551b360c3 in 5135.4 s (opt 66.6, B3LYP 1596.3, wB97X 3472.1)
+[2026-09-19 08:18:09] progress: 36 this session, 3 pending in scope, 26.34 h elapsed
+[2026-09-19 08:18:09] start A_e72997e726 A fluorene (23 atoms)
+[2026-09-19 09:12:57] done A_e72997e726 in 3287.0 s (opt 30.7, B3LYP 1090.5, wB97X 2165.4)
+[2026-09-19 09:12:57] progress: 37 this session, 2 pending in scope, 27.26 h elapsed
+[2026-09-19 09:12:57] start A_ea73419366 A 1-methylnaphthalene (21 atoms)
+[2026-09-19 09:49:38] done A_ea73419366 in 2200.8 s (opt 25.0, B3LYP 759.3, wB97X 1416.1)
+[2026-09-19 09:49:38] progress: 38 this session, 1 pending in scope, 27.87 h elapsed
+[2026-09-19 09:49:38] start A_fead28d796 A benzofuran (15 atoms)
+[2026-09-19 10:03:26] done A_fead28d796 in 827.5 s (opt 14.8, B3LYP 318.5, wB97X 493.8)
+[2026-09-19 10:03:26] progress: 39 this session, 0 pending in scope, 28.10 h elapsed
+[2026-09-19 10:03:26] nothing pending; done
+# Corpus status — 2026-09-19 10:03
+
+Manifest rows: 11,321; ledger entries: 48; compute spent so far: 36.0 h (from the ledger).
+
+| layer | pending | running | done | failed | median s/molecule (measured) | hours to go at that rate |
+|---|---|---|---|---|---|---|
+| A | 0 | 0 | 45 | 0 | 2641 | 0.0 |
+| A2 | 868 | 0 | 0 | 0 | — | not yet measured |
+| B | 4,353 | 0 | 0 | 0 | — | not yet measured |
+| C | 6,055 | 0 | 0 | 0 | — | not yet measured |
+
+Last ten ledger entries:
