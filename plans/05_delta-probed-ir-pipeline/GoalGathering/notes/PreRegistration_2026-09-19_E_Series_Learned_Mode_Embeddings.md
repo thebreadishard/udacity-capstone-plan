@@ -77,3 +77,12 @@ Word2vec learns a word's vector by predicting its *context*; the trained skip-gr
 
 **Readings, fixed now (held-out molecules).** (a) Diagonal: e_iᵀ W e_i per family — ring-in-plane **win < 10 cm⁻¹**, lose ≥ 11.5 (the E1 rule). (b) Couplings: RMS of predicted K_ij against true K_ij over within-family ring pairs (i ≠ j), as a ratio to the zero rule — **win ≤ 0.7**, lose ≥ 0.9; this is the quantity no model so far was asked for. (c) Family block: the ring family's block trace on held-out molecules against the median rule's 3.6. (d) The frozen embedding probed with ridge to the first-order shift, for comparability with E0–E1b. Script `m05/embedding_skipgram_E5.py`; one thread at nice 19; results `out/embedding_skipgram_E5_2026-09-19.{json,md}`.
 
+### E5 outcome — 19 September, 22:0x: **lose as run, and not a test of the analogy** (`out/embedding_skipgram_E5_2026-09-19.md`)
+
+| encoder | diag C–H stretch | diag C–H oop | diag ring | ring couplings / zero | ring block / median rule | probe ring |
+|---|---|---|---|---|---|---|
+| E5-tok | 35.7 | 20.5 | 20.3 | ratio 1.03 | 11.2 / 4.0 | 16.8 |
+| E5-atoms | 43.1 | 23.1 | 21.7 | ratio 1.00 | 12.4 / 4.0 | 19.9 |
+
+Zero rules: 43.6 / 23.1 / 21.9. Every read-out sits at the zero rule: the models learned the bias and nothing else. The training log says why — the unweighted mean-squared loss over the full M × M matrix starts at 0.007 (in units of (K/50)²) and never moves, because 98 % of the entries are near-zero couplings; the 57 diagonal entries that carry the signal weigh 1/57 of the loss. This is an error in the pre-registered loss, not evidence about the analogy, and it is recorded as such. **E5b, fixed now (22:0x):** identical in everything except the loss, which weighs the diagonal and the off-diagonal parts equally (mean over each, summed) — the word2vec analogue of not letting the abundant non-co-occurrences drown the co-occurrences (negative sampling exists for the same reason). Same readings as E5. `--balanced`, 1,500 steps, three seeds, one thread at nice 19.
+

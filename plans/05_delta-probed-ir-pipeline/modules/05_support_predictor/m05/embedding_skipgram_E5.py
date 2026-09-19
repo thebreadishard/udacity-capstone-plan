@@ -30,6 +30,7 @@ from learning_curve_layerA_v2_descriptors import environment_tokens  # noqa: E40
 from embedding_experiments_E import AtomSetEncoder, atom_sets, probe, rms  # noqa: E402
 
 RING = "ring-ip"
+BALANCED = False   # set by --balanced
 
 
 def coupling_matrix(mol_dir):
@@ -78,7 +79,11 @@ def train_e5(encode_batch, mol_ids, K, steps, seed, scale=50.0, d_in=None, atoms
             E = head_proj(encode_batch(enc, i))
             pred = bil(E)
             tgt = torch.tensor(K[i] / scale)
-            loss = loss + ((pred - tgt) ** 2).mean()
+            if BALANCED:   # E5b (19 Sep, 22:0x): diagonal and off-diagonal weighted equally; the unweighted mean is 98 % near-zero couplings
+                sq = (pred - tgt) ** 2; eye = torch.eye(sq.shape[0], dtype=torch.bool)
+                loss = loss + sq[eye].mean() + sq[~eye].mean()
+            else:
+                loss = loss + ((pred - tgt) ** 2).mean()
         loss = loss / len(ids)
         opt.zero_grad(); loss.backward(); opt.step()
         if step % 500 == 0 or step == steps - 1:
@@ -90,7 +95,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("molecules"); ap.add_argument("out_prefix")
     ap.add_argument("--steps", type=int, default=1500); ap.add_argument("--threads", type=int, default=1)
+    ap.add_argument("--balanced", action="store_true", help="E5b: equal weight for the diagonal and the off-diagonal part of K")
     a = ap.parse_args(); torch.set_num_threads(a.threads)
+    global BALANCED; BALANCED = a.balanced
     mdir = Path(a.molecules)
     mols, K, tok, sets = {}, {}, {}, {}
     for d in sorted(p for p in mdir.iterdir() if (p / "hessian_wb97x.npz").exists()):
