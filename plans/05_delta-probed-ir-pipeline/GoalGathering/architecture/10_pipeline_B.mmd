@@ -1,0 +1,30 @@
+%% Pipeline B: hoe één label ontstaat (niveau 3), stand 19 september 2026.
+flowchart TB
+  classDef planned stroke-dasharray: 6 4,stroke:#7a5c00,fill:#fff8e1
+  classDef data fill:#f3f3f3,stroke:#666
+  classDef gate fill:#e8f5e9,stroke:#2e7d32
+
+  GEO(["Geometrie, geoptimaliseerd B3LYP/6-31G*"]):::data
+  H0["Stage A: DFT-Hessiaan H0 → modi L, frequenties, families, irreps  [psi4, laptop]"]
+  SYM["Symmetrieprior: koppeling alleen binnen een irrep-blok (X14, X22)"]
+  PAT["Patronen: k producten → 2k+1 gradiëntrichtingen; ±q langs enkele modi voor de diagonaal"]
+  REF["Referentie op x0: Pipek-Mezey LMOs + PNO-ruimtes per fragment, één keer gebouwd en verzegeld  [pyscf-forge, WSL]"]
+  TRANS["Transport naar x: projectie + Löwdin (glad: 0,002–0,06 µEh)"]
+  EA["E_A(x): LNO-CCSD(T) in de bevroren ruimtes  [12 h per TZ-energie, 70 min per DZ-energie]"]
+  G["M2: gradiënt van E_A via JAX/PySCFAD, stop_gradient op C0, transport op de band  [te bouwen; pre-registratie 18 sep]"]:::planned
+  ANCH{"Anker M3: draagt DZ de TZ-correctie? (oordeel 24 sep)"}:::gate
+  SOLVE["Oplossing per familieblok: diagonaal uit energieën, koppelingen uit gradiënten (exact; ruis gedempt 0,27)"]
+  NOISE["Ruisbudget: sigma per energie; quartische term uit twee amplitudes"]
+  LIC{"Licentie tegen canonieke CCSD(T): benzeen 27 punten, naftaleen"}:::gate
+  OUT[("Label: ΔH-blokken + foutmarge per familie, verzegeld (sha256)")]:::data
+
+  GEO --> H0 --> SYM --> PAT
+  H0 --> REF --> TRANS --> EA
+  PAT --> EA
+  PAT -.-> G
+  TRANS -.-> G
+  EA --> ANCH
+  EA --> SOLVE
+  G -.-> SOLVE
+  EA --> NOISE --> SOLVE
+  SOLVE --> LIC --> OUT

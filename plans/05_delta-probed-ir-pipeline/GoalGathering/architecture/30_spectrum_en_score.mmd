@@ -1,0 +1,23 @@
+%% Spectrum en score (niveau 3), stand 19 september 2026.
+flowchart LR
+  classDef data fill:#f3f3f3,stroke:#666
+  classDef ext fill:#eef3f8,stroke:#5b7a99
+
+  H0(["H0 (DFT)"]):::data
+  DH(["ΔH-blokken: gemeten (B) of voorspeld (A), per gelicentieerde familie"]):::data
+  SUM["H = H0 + ΔH op de gelicentieerde blokken; elders H0"]
+  EIG["Diagonalisatie → harmonische posities met marge per familie"]
+  INT["Intensiteiten: DFT-dipoolafgeleiden (stage A)"]
+  ANH["Anharmoniek: DFT-VPT2 (geen CC-anharmoniek)"]
+  SPEC(["Spectrum: sticks + profiel op de resolutie van de bron"]):::data
+  SB["Scorebord (module 03): per kolom een eigen marge; geen kolomwissel achteraf"]
+  LAB[("NIST/PNNL 296 K · Pirali 2009 · Maltseva 2016 · Lemmens 2019/2021 · Joblin 1994/95")]:::ext
+  PAHDB[("PAHdb v4.00 en ML-lijnen: naast elkaar, geen oordeel")]:::ext
+
+  H0 --> SUM
+  DH --> SUM --> EIG --> SPEC
+  INT --> SPEC
+  ANH --> SPEC
+  SPEC --> SB
+  LAB --> SB
+  PAHDB --> SB

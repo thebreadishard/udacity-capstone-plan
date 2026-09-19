@@ -1,0 +1,17 @@
+%% Componenten van het netwerk (niveau 4), stand 19 september 2026 — ontwerp, grotendeels te bouwen.
+flowchart LR
+  classDef planned stroke-dasharray: 6 4,stroke:#7a5c00,fill:#fff8e1
+  classDef data fill:#f3f3f3,stroke:#666
+
+  IN(["Per molecuul: M modus-tokens, plus lading en multipliciteit"]):::data
+  EMB["Embedding: lineair → GELU → LayerNorm (64)"]
+  ENC["Self-attention over modi: 2 lagen, 4 koppen, dropout 0,1"]
+  BLK["Blokkop per familie: e_i' W e_j → diagonaal en koppelingen (gebalanceerd verlies)"]:::planned
+  PAIR["Paarkop (steun-label s_ij), baseline P25-rangschikking"]
+  UNC["Ensemble (5 seeds) → spreiding per familie = onzekerheid"]:::planned
+  OUTB(["ΔH-blok per familie + onzekerheid"]):::data
+  ALT["Alternatieve encoders op dezelfde toets: atoom-set-encoder (E1, E5); equivariant paar-blokmodel op atomen (ontwerpnotitie 19 sep)"]:::planned
+
+  IN --> EMB --> ENC --> BLK --> UNC --> OUTB
+  ENC --> PAIR
+  ALT -.-> BLK
