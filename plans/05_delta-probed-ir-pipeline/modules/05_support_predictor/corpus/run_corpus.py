@@ -95,6 +95,7 @@ def main():
     ap.add_argument("--force", action="store_true"); ap.add_argument("--dry-run", action="store_true"); ap.add_argument("--grid-check", action="store_true", help="timing test: repeat the B3LYP Hessian on the finer grid")
     ap.add_argument("--threads", type=int, default=None, help="override the deck's thread count for this runner only (2026-09-18; the deck file and its hash are unchanged; noted in the ledger)")
     ap.add_argument("--memory-gb", type=int, default=None, help="override the deck's psi4 memory for this runner only (2026-09-18; noted in the ledger)")
+    ap.add_argument("--shard", default=None, help="i/K: this runner takes only the pending rows whose id hashes to shard i of K (2026-09-19; several rented machines share one layer without collisions; manifests are merged afterwards by merge_shards.py)")
     ap.add_argument("--ids", default=None, help="comma-separated manifest ids to (re)run regardless of status; the result folder is replaced (2026-09-15: benzene grid rerun with per-mode frequencies)")
     a = ap.parse_args()
     deck = json.load(open(DECK)); deck_hash = hashlib.sha256(DECK.read_bytes()).hexdigest()[:12]
@@ -123,7 +124,7 @@ def main():
                 wanted = set(a.ids.split(","))
                 todo = [r for r in rows if r["id"] in wanted and r["id"] not in virtually_done]
             else:
-                todo = [r for r in queue_order(rows) if r["status"] == "pending" and r["id"] not in virtually_done and (a.layer is None or r["layer"] == a.layer)]
+                todo = [r for r in queue_order(rows) if r["status"] == "pending" and r["id"] not in virtually_done and (a.layer is None or r["layer"] == a.layer) and (a.shard is None or int(hashlib.sha1(r["id"].encode()).hexdigest(), 16) % int(a.shard.split("/")[1]) == int(a.shard.split("/")[0]))]
             if not todo:
                 log("nothing pending; done"); break
             if a.max_molecules is not None and done >= a.max_molecules:
