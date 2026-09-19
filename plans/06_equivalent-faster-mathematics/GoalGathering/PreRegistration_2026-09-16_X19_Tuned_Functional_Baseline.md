@@ -27,3 +27,16 @@ Tune ω on naphthalene the same way; compare with benzene's ω (the literature e
 ## Bookkeeping
 
 Script to write: `experiments/x19_tuned_functional.py` (psi4, prints the ω scan, the three Hessian curvatures and the table above; every number from the files). Runs after the TZ cells (≈ 22 September) or on the desktop; results as `X19_<date>_….md` beside this note; README item 33.
+
+## Outcome — 19 September 2026, 12:41 (run on the Hetzner CPX62, 16 threads, 28 minutes): **X19a LOSE**
+
+`experiments/x19_tuned_functional.py`; results `experiments/x19_tuned_functional.{json,md}`, energies in `x19_tuned_functional_cache.json`, log `x19_tuned_functional_run_2026-09-19.log`. Truth: a2 per mode from the sealed canonical CCSD(T)/cc-pVTZ scan (9 points per mode, fit σ ≤ 0.02 µE_h). Baselines on the same 27 geometries, cc-pVTZ, DF, grid (99, 590). ω tuned by the IP condition: J(ω) crosses zero between 0.20 and 0.25, ω* = 0.24 bohr⁻¹ (|J| = 1.4·10⁻⁴ E_h).
+
+| functional | mode 6 CH-oop | mode 12 CH-ip-bend | mode 18 CC-stretch | RMS (cm⁻¹) |
+|---|---|---|---|---|
+| B3LYP | −12.30 | +5.71 | +26.72 | 17.30 |
+| LRC-ωPBEh, ω = 0.2 (default) | −9.31 | −3.90 | +30.73 | 18.68 |
+| LRC-ωPBEh, ω* = 0.24 (tuned) | −17.37 | −5.77 | +42.41 | 26.67 |
+
+Ratio tuned/B3LYP = 1.54 (LOSE ≥ 0.8) and a sign flip on mode 12: **LOSE** by the rule of 16 September. The tuned functional makes the coupled-cluster correction *larger* on every mode, and even the untuned range-separated hybrid is no better than B3LYP. X19b does not run. Per the rule above: lead A is recorded, **no plan 07**. The B3LYP correction itself — −12.3 / +5.7 / +26.7 cm⁻¹ at cc-pVTZ — is a number pipeline B measures anyway and is consistent in size with M1's DZ readings.
+
