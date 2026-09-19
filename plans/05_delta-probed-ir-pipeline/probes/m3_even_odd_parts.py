@@ -41,6 +41,9 @@ def main():
             f, nu = fam.get(m, ("?", float("nan")))
             print(f"## mode {m} ({f}, {nu:.1f} cm⁻¹): |q| with both signs = {qs}; "
                   f"q = 0 {'visited' if 0.0 in P else 'from the reference arm A'}\n")
+            if not qs:   # 2026-09-19: a mode still running (no ± pair yet) is reported, not a crash
+                print(f"(no ± pair yet: {len(P)} point(s) sealed at q = {sorted(P)})\n")
+                continue
             print("| quantity | " + " | ".join(f"even({q:g})" for q in qs) + " | " + " | ".join(f"odd({q:g})" for q in qs)
                   + " | k (µE_h/q²) | c₄ (µE_h/q⁴) |")
             print("|---|" + "---|" * (2 * len(qs) + 2))
