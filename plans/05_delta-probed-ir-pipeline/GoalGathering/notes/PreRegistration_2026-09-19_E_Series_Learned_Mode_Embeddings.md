@@ -32,3 +32,22 @@ Anything about the coupled-cluster correction (X18 and T-1 remain the only two r
 ## Cost and safety
 
 `modules/05_support_predictor/m05/embedding_experiments_E.py`; one thread, `nice -n 19`, ≈ 20–40 min of laptop CPU in total; the anchor run keeps its eight threads and is not touched. Results to `modules/05_support_predictor/out/embedding_experiments_E_2026-09-19.{json,md}`; outcome section appended here.
+
+## Outcome — 19 September 2026, 20:0x (laptop, one thread at nice 19, 1,500 steps, about 50 min; `out/embedding_experiments_E_2026-09-19.{json,md}`)
+
+Held-out RMS in cm⁻¹ on the same 12 molecules, n_train = 30. Reference: first-pass Transformer 1.78 / 4.31 / 12.41 / 26.6; family-median rule ring-ip 18.5; zero rule 21.9.
+
+| experiment | C–H stretch | C–H oop | ring-ip | other |
+|---|---|---|---|---|
+| E0 ridge, first-pass tokens | 2.28 | 7.98 | 17.62 | 11.40 |
+| E2 ridge, + molecule-level tokens | 2.70 | 8.11 | 17.64 | 11.23 |
+| E2 Transformer, + molecule-level tokens | 1.85 | 3.93 | 12.37 | 24.50 |
+| E1 contrastive embedding, ridge probe (mean of 3 seeds) | 12.21 | 9.18 | 19.30 | 13.30 |
+| E1 embedding + tokens, ridge probe | 4.40 | 7.16 | 17.28 | 11.37 |
+| E1b supervised atom-set encoder, direct (mean of 3 seeds) | 10.35 | 7.21 | 19.04 | 12.82 |
+| E1b embedding, ridge probe | 12.19 | 7.39 | 18.95 | 12.54 |
+
+**Readings by the rule fixed above.** E0: ridge on the tokens gives ring-ip 17.6 against the Transformer's 12.4 — above the 15 threshold: *the nonlinearity is needed*; the Transformer is not merely overfitting the ring family (its overfitting shows in 'other', not here). E2: **lose** — the molecule-level conjugation tokens change nothing (ridge 17.6, Transformer 12.4); the conjugation-length hypothesis in this crude form does not hold. E1: **lose** — the contrastive embedding probes to 19.3 on ring-ip and is worse than the hand tokens on every family (C–H stretch 12.2 against 1.8): the pretext task 'tell modes apart under augmentation' does not force chemistry into the embedding; adding the tokens back (17.3) recovers only the tokens' own information. E1b: **lose** — the same encoder trained on the target reaches 19.0 direct and 18.9 probed; from raw atom sets, 33 molecules are too few for this encoder to learn even what the tokens state outright.
+
+**What was learned tonight, in one sentence each.** (1) The mode-token Transformer is the best model on the proxy and its ring-family plateau is not variance: neither a linear model nor more inputs nor a model on raw fields improves it. (2) A word-embedding analogue lives or dies by its pretext task; 'distinguish augmented views of a mode' is not aligned with vibrational chemistry the way 'predict the context' is aligned with word meaning. The next pretext, stated now and cheap: **predict DFT-only quantities from the raw field** — the mode's B3LYP frequency, its family, the *sign* of its ωB97X shift — supervision that exists for every corpus molecule whose Hessians are computed, so the encoder can be trained at scale before coupled-cluster labels exist (E3, to pre-register). (3) With 45 molecules every raw-input model is data-starved; the design note's Stage 1 (the correction-Hessian object, thousands of full matrices from the corpus) is the version of this idea that has enough data, and it is unchanged by tonight. (4) The proxy's ring correction may simply be non-local; the BHHLYP − B3LYP proxy on benzene and naphthalene (stage A) is the cheap check of that, before any more architecture.
+
