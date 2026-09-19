@@ -1,0 +1,55 @@
+# PI assessment 2026-09-19 — at which moments, past, present and future, a scientific article from this project is permitted and justified; what the authors we cite would want to learn from us (written at the user's request, 19 September 2026, morning; desk work only — the anchor run was not touched)
+
+*Two words are kept apart throughout. A paper is **permitted** when it makes a claim that is new against the literature it cites, rests on evidence a reader could reproduce from the released runs, and carries its negative results and error bars. It is **justified** when at least one identifiable group would act differently after reading it. The first is a matter of honesty; the second of relevance. Both are required.*
+
+## 1. The literature we cite, grouped by what its authors are trying to do
+
+| line | papers (from §14 of the reading copy) | quality and state of the question | what they would want from us |
+|---|---|---|---|
+| **L1 — smooth local-correlation surfaces** | Russ & Crawford 2004; Subotnik & Head-Gordon 2005; Mata & Werner 2006; Pinski & Neese 2018/2019; Madriaga & Crawford 2025; Zhang et al. 2024 (PySCFAD) | Method papers of the first rank; the problem (discontinuities of PNO/domain surfaces in finite-difference properties) is *still open in 2025* — Madriaga & Crawford's paper is a statement of it. **Three of the six are unread here (closed access).** | A measured answer: by how much do correlation spaces built once and *transported* (projection + Löwdin) reduce the finite-difference noise of local CCSD(T) curvatures at PAH size; the recipe; the diagnostics (s_min, pre-Löwdin off-diagonals); the size of the projection term; the price of *not* freezing (M2b: the re-fragmenting engine halves a C–C response at its defaults). |
+| **L2 — few-measurement Hessians** | Lahm et al. 2022, Kitzmiller et al. 2024, Olive Dornshuld et al. 2026 (CMA); Sanders et al. 2015; Wang et al. 2025 (O1NumHess) | Solid, active; CMA is the direct ancestor of the diagonal part. Their own outlier (a same-representation ring coupling) is our problem statement. | Whether the *difference* Hessian's off-diagonal block can be recovered at all from energies (our answer: not at naphthalene — an identifiability limit, 1,128 unknowns against 493 rows, confirmed by the amplitude test) and how it can from gradients (2k+1, exact, noise damped, count linear in size); which band families need the couplings (shape test: fingerprint yes, C–H stretch no). |
+| **L3 — Δ-machine learning** | Käser et al. 2021; Qu et al. 2021; Bowman et al. 2022; Lam et al. 2020 | Strong; all per-molecule surfaces at ≤ 15 atoms; none crosses molecules on harmonic constants. | Cross-molecule learning curves of a CC correction per band family; the label economy (19 gradients per molecule against their 430–2,151 energies); the licence/refusal mechanism as a reporting standard. |
+| **L4 — PAH spectra from theory** | Ricca et al. 2026 (PAHdb v4); Mackie et al. 2015, 2016; Esposito et al. 2024 (×2); Mulas et al. 2018; Bos et al. 2025; Mai et al. 2025; line D 2026 (He, Tang, Liu) | The application field; large, careful, DFT-bound; the systematic uncertainty of the scaled-harmonic part is *not reported* (Ricca 2026), and line D reproduces DFT with its errors. The supervisor co-authors two of these. | The per-family systematic error of B3LYP harmonics against CC, as a function of size; whether it drifts along the acene ladder; a licensed correction they can apply to a database; and the finding that the 6–9 µm bands *mix* under the correction (identity 0.83, shifts to 21 cm⁻¹), which touches assignments. |
+| **L5 — the experiments** | Pirali 2009; Maltseva 2016; Lemmens 2019, 2021; Brumfield 2012; Joblin 1994, 1995; NIST/PNNL/Schneider | The scoring columns; resolutions 0.1–17 cm⁻¹ depending on the source. | Predictions with error bars for bands they measured, and an honest statement of which reference resolution a claimed accuracy is measured against (the 0.5 cm⁻¹ finding of 17 September). |
+
+## 2. Past — was a paper ever permitted before today?
+
+No. Every measured result to 19 September is on benzene and naphthalene at cc-pVDZ, or on DFT stand-ins. The results with publishable weight are:
+
+- the **smoothness measurement** (M1, the I-series): transported frozen spaces scatter by 0.002–0.06 µE_h along a mode where the same program re-selecting its spaces scatters by 7–11 µE_h — a direct, quantitative answer to L1's open question, but at DZ only, and without having read three of the six papers that own the question;
+- the **negative results**: P25's ranking lost its licence at naphthalene (X16); energies-only off-diagonal recovery closed by identifiability (stage C, amplitude test); the borrowed gradient engine does not compute our quantity (M2b). These are valuable as sections, not as papers.
+
+A registered-report-style protocol paper (the pre-registrations exist and are dated) would have been permitted at any time since 13 September, but not justified: no group changes its practice on a protocol without a result.
+
+## 3. Present — 19 September
+
+Not yet, by one measurement and three readings. The nearest paper is L1's (§4, gate A). It needs the cc-pVTZ anchor result (24 September) to show the smoothness holds in the basis the community uses, and it needs Mata & Werner 2006, Russ & Crawford 2004 and Subotnik & Head-Gordon 2005 read in full before any sentence with "new" in it. A PI does not submit against papers the group has not read. Both conditions are calendar items, not obstacles.
+
+## 4. Future — four gates, each with its condition
+
+**Gate A — a communication on transported frozen spaces (L1). October 2026.** Claim: correlation spaces built once and transported by projection make local-CCSD(T) finite-difference force constants smooth to the 10⁻⁸ E_h level at benzene and naphthalene in cc-pVDZ and cc-pVTZ; the projection term is measured (M2's T-M2-3); the re-fragmenting alternative is threshold-sensitive by a factor two on a C–C response. Permitted when: the TZ cells are in (24 Sep) and hold; the three closed papers are read; M2's projection term exists (it needs M2's pieces A–B only, not the full build). Justified because Madriaga & Crawford 2025 asks precisely this and Pinski & Neese 2019 name the remedy without the PAH-size measurement. Venue: J. Chem. Phys. Communication or JCTC Letter. Authors: the student, the supervisor; the developers of the local code acknowledged and asked. Risk: Mata & Werner 2006 may already contain the measurement at small size — then the paper is the size scaling and the transport recipe, or it is a section of gate B.
+
+**Gate B — a methods paper on the difference Hessian from gradient patterns (L2). First quarter 2027.** Claim: the off-diagonal block of the CC−DFT force-constant difference is unrecoverable from energies at naphthalene size (identifiability, amplitude-invariant residual) and exactly recoverable from 2k+1 gradients along symmetry-chosen patterns, k growing linearly where the couplings grow quadratically; noise damped (0.27 amplification); which band families need it (shape test). Permitted when: M2 is done by its pre-registration (T-M2-1..3), the first gradient decks at benzene and naphthalene are licensed against directly computed references on the *real* correction (today's counting is on DFT stand-ins), and X22 has answered whether the linear count survives without D2h symmetry. Justified because the CMA authors' outlier and O1NumHess's plateau are this problem, and because the negative result saves others the energies route. Venue: JCTC.
+
+**Gate C — the main paper: the label factory and the licensed network (L3, L4, L5). Mid to late 2027.** Claim: a per-family coupled-cluster correction to DFT harmonics learned across PAHs, licensed or refused per family against cold gas-phase spectra, with the learning curves, the label count and the systematic error of scaled harmonics per family and size. Permitted when: 20–50 labelled molecules exist (desk note of 18 September, §4), the per-family curves cross or fail to cross the margins, and the comparison to line D and PAHdb is done on the same held-out molecules. Justified because L4 does not report the systematic uncertainty and L3 has never crossed molecules. With the supervisor as co-author; venue by emphasis (A&A / ApJ for the application, JCP for the method). A registered report is the honest form for this one: the licences are pre-stated.
+
+**Gate D — a data paper: the labels themselves. As soon as ~10 molecules carry error bars, in parallel with B.** The CC−DFT per-mode corrections with their noise, the transported-space diagnostics, and the decks, released in the format of Hessian QM9 (Williams et al. 2025). Permitted at ten molecules because the object is the data, not a claim; justified because line D's own abstracts say their predictors weaken at large size for lack of training data — CC labels are what they lack. Venue: Scientific Data or a JCTC data article.
+
+## 5. Conditions the PI imposes on every one of them
+
+1. Every number traces to a run log in the released repository (already the rule); the pre-registrations are cited with their outcomes, wins and losses alike.
+2. No claim of novelty against a paper not read in full. Today that blocks three (L1) and two (Mackie 2015, 2016 — PDFs asked of the supervisor).
+3. The negative results are in the body, not the supplement: the energies route, P25, the borrowed engine, the tolerance finding.
+4. Code, decks and transported-space diagnostics released with the paper; the (T) port (decision 41) under the licence of the code it extends.
+5. The supervisor's co-authorship on L4 comparisons is stated in the paper; the comparison is run by the pre-registered protocol, not by choice of molecule.
+6. No paper before its gate. A blog is not a paper: the lab notebook may say today what a paper may say only after the gate.
+
+## 6. What the cited authors would want to know from us *now*, before any paper
+
+- **L1:** the benzene/naphthalene smoothness numbers and the transport recipe — they could test it in their own codes this month.
+- **L2:** that energies cannot recover the off-diagonal difference block at 18 atoms, and why; the 2k+1 count.
+- **L3:** the label economy and the licence idea.
+- **L4:** that the 6–9 µm bands mix under the correction, and that the "0.5 cm⁻¹" many of us quote is one reference's uncertainty.
+- **L5:** which of their bands we intend to score, named before we print numbers.
+
+All of this is in the public lab notebook already, dated. That is the right place for it until the gates open.
