@@ -1,0 +1,49 @@
+# X22 — pattern count without D2h symmetry (2026-09-19 12:12)
+
+| molecule | N | M | ops found | blocks | k | gradients 2k+1 | gradients, no symmetry | energies deck | recovery err |
+|---|---|---|---|---|---|---|---|---|---|
+| benzene | 12 | 30 | 7 (C2x,C2y,C2z,i,s_xy,s_xz,s_yz) | 8 | 6 | 13 | 61 | 135 | 0.0e+00 |
+| benzonitrile | 13 | 33 | 3 (C2x,s_xy,s_xz) | 4 | 12 | 25 | 67 | 324 | 0.0e+00 |
+| phenylacetylene | 14 | 36 | 3 (C2x,s_xy,s_xz) | 4 | 13 | 27 | 73 | 387 | 0.0e+00 |
+| benzothiophene | 15 | 39 | 1 (s_xy) | 2 | 27 | 55 | 79 | 874 | 0.0e+00 |
+| benzofuran | 15 | 39 | 1 (s_xy) | 2 | 27 | 55 | 79 | 874 | 0.0e+00 |
+| indole | 16 | 42 | 1 (s_xy) | 2 | 29 | 59 | 85 | 1011 | 0.0e+00 |
+| quinoxaline | 16 | 42 | 3 (C2x,s_xy,s_xz) | 4 | 15 | 31 | 85 | 507 | 0.0e+00 |
+| styrene | 16 | 42 | 1 (s_xy) | 2 | 29 | 59 | 85 | 1011 | 0.0e+00 |
+| quinazoline | 16 | 42 | 1 (s_xy) | 2 | 29 | 59 | 85 | 1011 | 0.0e+00 |
+| indene | 17 | 45 | 1 (s_xy) | 2 | 30 | 61 | 91 | 1126 | 0.0e+00 |
+| isoquinoline | 17 | 45 | 1 (s_xy) | 2 | 31 | 63 | 91 | 1158 | 0.0e+00 |
+| quinoline | 17 | 45 | 1 (s_xy) | 2 | 31 | 63 | 91 | 1158 | 0.0e+00 |
+| naphthalene | 18 | 48 | 7 (C2x,C2y,C2z,i,s_xy,s_xz,s_yz) | 8 | 9 | 19 | 97 | 331 | 0.0e+00 |
+| quinoline-N-oxide | 18 | 48 | 1 (s_xy) | 2 | 33 | 67 | 97 | 1315 | 0.0e+00 |
+| azulene | 18 | 48 | 3 (C2x,s_xy,s_xz) | 4 | 17 | 35 | 97 | 663 | 0.0e+00 |
+| 1-naphthol | 19 | 51 | 0 () | 1 | 51 | 103 | 103 | 2602 | 0.0e+00 |
+| 1-naphthonitrile | 19 | 51 | 1 (s_xy) | 2 | 35 | 71 | 103 | 1482 | 0.0e+00 |
+| acenaphthylene | 20 | 54 | 3 (C2y,s_xy,s_yz) | 4 | 19 | 39 | 109 | 831 | 0.0e+00 |
+| 2-naphthylamine | 20 | 54 | 0 () | 1 | 54 | 109 | 109 | 2917 | 0.0e+00 |
+| biphenylene | 20 | 54 | 7 (C2x,C2y,C2z,i,s_xy,s_xz,s_yz) | 8 | 10 | 21 | 109 | 417 | 0.0e+00 |
+| 4-phenylpyridine | 21 | 57 | 1 (C2x) | 2 | 30 | 61 | 115 | 1630 | 0.0e+00 |
+| 2-naphthoic_acid | 21 | 57 | 1 (s_xy) | 2 | 39 | 79 | 115 | 1846 | 0.0e+00 |
+| dibenzofuran | 21 | 57 | 3 (C2y,s_xy,s_yz) | 4 | 20 | 41 | 115 | 924 | 0.0e+00 |
+| 1,8-naphthalimide-free_diimide_model_1,8-naphthalic_anhydride | 21 | 57 | 3 (C2x,s_xy,s_xz) | 4 | 20 | 41 | 115 | 926 | 0.0e+00 |
+| 2-methylnaphthalene | 21 | 57 | 1 (s_xy) | 2 | 38 | 77 | 115 | 1806 | 0.0e+00 |
+| 2-phenylpyridine | 21 | 57 | 1 (s_xy) | 2 | 39 | 79 | 115 | 1846 | 0.0e+00 |
+| dibenzothiophene | 21 | 57 | 3 (C2y,s_xy,s_yz) | 4 | 20 | 41 | 115 | 924 | 0.0e+00 |
+| 1-methylnaphthalene | 21 | 57 | 1 (s_xy) | 2 | 38 | 77 | 115 | 1806 | 0.0e+00 |
+| carbazole | 22 | 60 | 3 (C2y,s_xy,s_yz) | 4 | 21 | 43 | 121 | 1023 | 0.0e+00 |
+| acenaphthene | 22 | 60 | 3 (C2y,s_xy,s_yz) | 4 | 20 | 41 | 121 | 983 | 0.0e+00 |
+| phenazine | 22 | 60 | 7 (C2x,C2y,C2z,i,s_xy,s_xz,s_yz) | 8 | 11 | 23 | 121 | 513 | 0.0e+00 |
+| biphenyl | 22 | 60 | 3 (C2x,C2y,C2z) | 4 | 16 | 33 | 121 | 907 | 0.0e+00 |
+| diphenyl_ether | 23 | 63 | 1 (C2y) | 2 | 32 | 65 | 127 | 1986 | 0.0e+00 |
+| acridine | 23 | 63 | 3 (C2y,s_xy,s_yz) | 4 | 22 | 45 | 127 | 1128 | 0.0e+00 |
+| phenanthridine | 23 | 63 | 1 (s_xy) | 2 | 43 | 87 | 127 | 2250 | 0.0e+00 |
+| fluorene | 23 | 63 | 3 (C2y,s_xy,s_yz) | 4 | 22 | 45 | 127 | 1106 | 0.0e+00 |
+| diphenylacetylene | 24 | 66 | 3 (C2x,C2y,C2z) | 4 | 19 | 39 | 133 | 1291 | 4.4e-16 |
+| benzophenone | 24 | 66 | 1 (C2y) | 2 | 33 | 67 | 133 | 2179 | 0.0e+00 |
+| phenanthrene | 24 | 66 | 3 (C2y,s_xy,s_yz) | 4 | 23 | 47 | 133 | 1235 | 0.0e+00 |
+| anthracene | 24 | 66 | 7 (C2x,C2y,C2z,i,s_xy,s_xz,s_yz) | 8 | 12 | 25 | 133 | 621 | 0.0e+00 |
+| fluoranthene | 26 | 72 | 3 (C2x,s_xy,s_xz) | 4 | 25 | 51 | 145 | 1467 | 0.0e+00 |
+| stilbene_E | 26 | 72 | 3 (C2z,i,s_xy) | 4 | 25 | 51 | 145 | 1467 | 0.0e+00 |
+| pyrene | 26 | 72 | 7 (C2x,C2y,C2z,i,s_xy,s_xz,s_yz) | 8 | 13 | 27 | 145 | 741 | 0.0e+00 |
+| 1-aminoanthracene | 26 | 72 | 0 () | 1 | 72 | 145 | 145 | 5185 | 0.0e+00 |
+| 9-methylanthracene | 27 | 75 | 1 (s_yz) | 2 | 40 | 81 | 151 | 2826 | 0.0e+00 |
