@@ -52,3 +52,17 @@ Overall: **twenty to fifty neutral molecules, chosen to cover the local environm
 ## 6. What would change this note
 
 The first proxy curve (19 September): if the C–H families are not below 5 cm⁻¹ by 20 molecules on the proxy, the descriptors are revisited before any coupled-cluster label is spent. The first three coupled-cluster labels beyond benzene and naphthalene: they replace §4's expectations with measurements. Either event gets a dated addition here, not a rewrite.
+
+### Dated addition, 19 September 2026, 12:4x — the first proxy learning curve (layer A, 45 molecules)
+
+`modules/05_support_predictor/m05/learning_curve_layerA.py`, results in `modules/05_support_predictor/out/learning_curve_layerA_2026-09-19.{json,md}`. Proxy target: the ωB97X − B3LYP first-order shift per B3LYP mode; 12 molecules held out by hash (107 / 71 / 287 / 231 held-out modes in the four families); training sets of 5, 10, 20, 30; three seeds; 600 full-batch AdamW steps; RMS on held-out modes in cm⁻¹.
+
+| family | n = 5 | n = 10 | n = 20 | n = 30 | family-median rule | zero rule | slope of log RMS vs log n | §4 expectation |
+|---|---|---|---|---|---|---|---|---|
+| C–H stretch | 2.44 | 1.89 | 1.79 | 1.78 | 1.73 | 43.8 | −0.17 | 5–10 molecules for 5 cm⁻¹ → **met at 5**; the median rule is already at 1.7 and the network does not beat it |
+| C–H out-of-plane | 5.80 | 5.30 | 4.22 | 4.31 | 8.5 | 23.6 | −0.19 | 15–30 → **met at 20** (4.2); seeds 4.2–4.5 |
+| ring in-plane (C–C) | 14.9 | 13.1 | 12.5 | 12.4 | 18.5 | 21.9 | −0.10 | 30–100 or refused → **not met at 30**; the flattest curve; at this slope 5 cm⁻¹ would need ~10⁴ molecules — a descriptor problem, not a count problem |
+| other (low-frequency, mixed) | 38.5 | 31.3 | 29.3 | 26.6 | 11.2 | 14.9 | −0.19 | not a licensed family; the network is *worse than zero* here: overfitting (train RMS 3.7–8.3 against held-out 27–38) |
+
+Readings. (1) The two C–H families behave as §4 expected on the proxy, and the C–H stretch confirms §5.6: a family-median (local-type) rule is the baseline to beat, and at 1.7 cm⁻¹ it is not beaten by a 10⁵-parameter model on 30 molecules. (2) The C–C family is the hard one, as predicted, and its slope says more labels alone will not fix it: §5.2 applies — descriptors that name the ring-fusion and conjugation environment before any capacity or any coupled-cluster label is spent on it. (3) The model overfits at every size (train 3.7–9.2 vs held-out 10.7–21.6 over all modes; the seed spread of the all-modes RMS at n = 30 is 10.7 / 20.6 / 21.6, driven by the 'other' bin) — early stopping on held-out molecules and a smaller head are the first two changes for the next pass, not more layers. (4) What this does not say: whether the coupled-cluster correction has the same learnability as the ωB97X − B3LYP proxy; X18 and T-1 are still the only two points on the real object. Consequence for the calendar of §4: unchanged for the C–H families; for the C–C stretch the plan is descriptors first, and the per-family refusal remains the honest outcome if they do not help.
+
