@@ -71,6 +71,8 @@ Whenever the machine is busy or the user is away, the next item is the cheapest 
 
 ## 6. Log
 
+- **19 Sep, 16:1x — learning curve, second pass (environment descriptors as the one change; laptop, one thread, nice 19, 25 min): the ring-in-plane family does not move (12.4 → 12.4 cm⁻¹ at 30 molecules) while the training error halves — the descriptor hypothesis is falsified on the proxy; C–H stretch improves to 1.60 (now below the median rule's 1.73), C–H out-of-plane mixed.** Next cheap tests named in the desk note's addition: a molecule-level conjugation token, and a ridge baseline plus early stopping to separate variance from bias. Nothing on the anchor.
+
 - **19 Sep, 14:5x — Hetzner server deleted by the user ("Zo niet, dan uit"): no use case before the M2 build; ≈ 34 h billed. Set-up recipe kept in the session memory; a new server takes ~15 min.**
 
 - **19 Sep, 14:3x — cell 3 at cc-pVDZ (PySCFAD defaults) OOM-killed as well, 31.5 GB RSS, 14:2x. Three kills at the same ceiling: the shipped LNO gradient fits 32 GB only at 6-31G with default thresholds. g therefore stays 6.04 (6-31G, defaults, eight threads); its transfer to the plan's basis and thresholds is unmeasurable below ~64 GB and waits for the dedicated machine or for M2, whose own memory is a pre-registered print-out.** Logs copied to `probes/results_m2a/cell{3,4}_*_2026-09-19.log`. Helsinki's Saturday programme is complete: layer A, learning curve, X22, X19a, three memory measurements. Server idle from 14:2x (≈ 34 h billed, ≈ €7 + VAT); deletion is the user's call.
