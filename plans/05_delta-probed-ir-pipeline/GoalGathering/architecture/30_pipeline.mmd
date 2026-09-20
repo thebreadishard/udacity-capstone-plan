@@ -21,9 +21,9 @@ flowchart LR
   LICF["Licentiefilter (eigen software)"]:::planned
   DHL(["Toegepaste en geweigerde ΔH-blokken, met reden"]):::data
   APPLY["Samenstellen van H (eigen software)"]
-  H(["Krachtconstanten H = H0 + ΔH op gelicentieerde blokken, elders H0"]):::data
+  H(["Krachtconstanten H = H0 + ΔH op gelicentieerde blokken, elders H0; licentiestatus per familie"]):::data
   EIG["Diagonalisatie (eigen software)"]
-  POS(["Bandposities met marge per familie"]):::data
+  POS(["Bandposities met marge en licentiestatus per familie"]):::data
   INT["Intensiteitsberekening (eigen software)"]
   INTS(["Bandintensiteiten"]):::data
   ANH["Anharmonische correctie (eigen software)"]
@@ -36,7 +36,6 @@ flowchart LR
   SK --> MODE --> MODES
   SK --> VPT --> ANHC
   MODES --> TOKS --> TOK --> FWD --> DH --> LICF --> DHL --> APPLY --> H --> EIG --> POS --> SHAPE
-  DHL --> SHAPE
   SK --> APPLY
   SK --> INT
   MODES --> INT --> INTS --> SHAPE
