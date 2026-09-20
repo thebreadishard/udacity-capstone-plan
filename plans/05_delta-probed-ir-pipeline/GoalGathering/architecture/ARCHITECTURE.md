@@ -295,7 +295,6 @@ flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
   classDef data fill:#e9ecef,stroke:#555,color:#111
-  classDef gate fill:#d9f0dc,stroke:#2e7d32,color:#111
 
   MOL(["Molecuul: geometrie, lading, multipliciteit"]):::data
 
@@ -307,13 +306,10 @@ flowchart LR
   MODES(["Normaalmodi: L, frequenties, families, symmetrieblokken"]):::data
   TOKS["Tokenisatie (eigen software)"]
   TOK(["Modus-tokens"]):::data
-  FWD["Forward pass (eigen netwerk, PyTorch)"]:::planned
-  DH(["ΔH-blokken per familie, met onzekerheid"]):::data
-  GATE{"Gelicentieerd voor deze familie en ladingstoestand?"}:::gate
-  DHL(["Gelicentieerde ΔH-blokken"]):::data
-  REF(["Geweigerde families: geen correctie, weigering gemarkeerd"]):::data
-  APPLY["Correctie toepassen (eigen software)"]
-  H(["Gecorrigeerde krachtconstanten H = H0 + ΔH"]):::data
+  FWD["Forward pass met licentiefilter (eigen netwerk, PyTorch): licentietabel per familie en ladingstoestand vooraf, onzekerheid van het ensemble per molecuul"]:::planned
+  DHL(["ΔH-blokken per familie met licentiestatus: toegepast of geweigerd, met reden"]):::data
+  APPLY["Samenstellen van H (eigen software)"]
+  H(["Krachtconstanten H = H0 + ΔH op gelicentieerde blokken, elders H0"]):::data
   EIG["Diagonalisatie (eigen software)"]
   POS(["Bandposities met marge per familie"]):::data
   INT["Intensiteitsberekening (eigen software)"]
@@ -322,14 +318,13 @@ flowchart LR
   ANHS(["Anharmonische verschuivingen per band"]):::data
   SHAPE["Profielvorming (eigen software): temperatuur van de bron, resolutie van het instrument"]
 
-  SPEC(["Spectrum: banden met positie, intensiteit, vorm en foutmarge; weigeringen gemarkeerd"]):::data
+  SPEC(["Spectrum: banden met positie, intensiteit, vorm en foutmarge; per familie de licentiestatus"]):::data
 
   MOL --> DFT --> SK
   SK --> MODE --> MODES
   SK --> VPT --> ANHC
-  MODES --> TOKS --> TOK --> FWD --> DH --> GATE
-  GATE -- ja --> DHL --> APPLY --> H --> EIG --> POS --> SHAPE
-  GATE -- nee --> REF --> APPLY
+  MODES --> TOKS --> TOK --> FWD --> DHL --> APPLY --> H --> EIG --> POS --> SHAPE
+  DHL --> SHAPE
   SK --> APPLY
   SK --> INT
   MODES --> INT --> INTS --> SHAPE
