@@ -11,7 +11,10 @@ flowchart LR
     INP(["Per molecuul: modus-tokens, lading, multipliciteit"]):::data
     CORPUS[("Corpus en labelopslag")]:::store
     CORPUS --> INP
+    SP0[" "]
+    INP ~~~ SP0
   end
+  style SP0 fill:none,stroke:none,color:transparent
   EMB["Embedding van elk modus-token"]
   ENC["Self-attention over de modi van het molecuul"]
   BLK["Blokkop per familie: diagonaal en koppelingen uit de modusvectoren"]:::planned
@@ -22,7 +25,10 @@ flowchart LR
     OUTB(["ΔH-blok per familie met onzekerheid"]):::data
     STORE[("Voorspellingsopslag")]:::store
     OUTB --> STORE
+    SP1[" "]
+    SP1 ~~~ OUTB
   end
+  style SP1 fill:none,stroke:none,color:transparent
   style IN fill:none,stroke:none
   style OUT fill:none,stroke:none
 

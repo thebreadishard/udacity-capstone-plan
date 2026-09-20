@@ -10,7 +10,10 @@ flowchart LR
     MOL(["Molecuul: SMILES of geometrie, lading, multipliciteit"]):::data
     CAT[("Molecuulcatalogus: manifest met lagen")]:::store
     CAT --> MOL
+    SP0[" "]
+    MOL ~~~ SP0
   end
+  style SP0 fill:none,stroke:none,color:transparent
   GEO["Startgeometrie en optimalisatie op laag niveau"]
   HLO["Hessiaan op laag niveau (de schets die de pipeline ook gebruikt)"]
   HHI["Hessiaan op hoog niveau, zelfde geometrie"]
@@ -22,13 +25,19 @@ flowchart LR
     PAIR(["DFT-paar met vervangercorrectie en modus-tokens"]):::data
     CORPUS[("Corpus")]:::store
     PAIR --> CORPUS
+    SP1[" "]
+    SP1 ~~~ PAIR
   end
+  style SP1 fill:none,stroke:none,color:transparent
   subgraph OUT2 [" "]
     direction TB
     SK(["DFT-schets: H0, modi, dipoolafgeleiden, anharmonische constanten"]):::data
     SKETCHES[("DFT-schetsen")]:::store
     SK --> SKETCHES
+    SP2[" "]
+    SP2 ~~~ SK
   end
+  style SP2 fill:none,stroke:none,color:transparent
   style IN fill:none,stroke:none
   style OUT1 fill:none,stroke:none
   style OUT2 fill:none,stroke:none

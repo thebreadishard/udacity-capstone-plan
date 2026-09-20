@@ -13,13 +13,19 @@ flowchart LR
     PROXY(["DFT-paren met vervangercorrectie en modus-tokens"]):::data
     CORPUS[("Corpus")]:::store
     CORPUS --> PROXY
+    SP0[" "]
+    PROXY ~~~ SP0
   end
+  style SP0 fill:none,stroke:none,color:transparent
   subgraph IN2 [" "]
     direction BT
     LAB(["Labels: ΔH-blokken met foutmarge per familie"]):::data
     LABELS[("Labelopslag")]:::store
     LABELS --> LAB
+    SP1[" "]
+    LAB ~~~ SP1
   end
+  style SP1 fill:none,stroke:none,color:transparent
   SPLIT["Splitsing per molecuul en per kern: train, validatie, test — vastgelegd vóór het trainen"]:::planned
   PRE["Voortrainen op de vervangercorrectie: bloktarget per familie, gebalanceerd verlies"]:::planned
   FT["Bijtrainen op de labels: kleine leersnelheid, vroeg stoppen op de validatiemoleculen"]:::planned
@@ -35,13 +41,19 @@ flowchart LR
     MODEL(["Getraind netwerk + licentietabel + kalibratie"]):::data
     MODELS[("Modelopslag")]:::store
     MODEL --> MODELS
+    SP2[" "]
+    SP2 ~~~ MODEL
   end
+  style SP2 fill:none,stroke:none,color:transparent
   subgraph OUT2 [" "]
     direction TB
     RES(["Testscores per band en familie, naast de opponenten"]):::data
     RESS[("Scorearchief")]:::store
     RES --> RESS
+    SP3[" "]
+    SP3 ~~~ RES
   end
+  style SP3 fill:none,stroke:none,color:transparent
   style IN1 fill:none,stroke:none
   style IN2 fill:none,stroke:none
   style OUT fill:none,stroke:none
