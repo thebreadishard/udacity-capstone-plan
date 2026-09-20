@@ -129,3 +129,60 @@ opponents table of the Frozen Ladder with the source lines; one line in the cove
 2. **pyVPT2 polyad check** (pyvpt2 0.1.2 in the `qc` environment, `vpt2.py` and `fermi_solver.py` read): **positions — yes.** It identifies type-1 (2ω_i ≈ ω_j) and type-2 (ω_i + ω_j ≈ ω_k) Fermi resonances with `FERMI_OMEGA_THRESH` 200 cm⁻¹ and a strength threshold `FERMI_K_THRESH` 1 cm⁻¹ (K = φ⁴/(64 Δ³) or φ⁴/(256 Δ³)), deperturbs the affected χ constants, chains the interactions into polyads, builds the effective Hamiltonian (off-diagonal φ/4 or φ/(2√2) by type) and diagonalises it — the same construction as SPECTRO's, with a K-based filter where SPECTRO 2015 used W = 10 and 2016 used W = 0 plus a symmetry filter; pyVPT2 has no symmetry filter. **Intensities — no:** pyVPT2 computes no anharmonic intensities at all (already noted in `probes/vpt2_benzene.py`, idea I6), and `Polyad.solve` returns the polyad frequencies without exposing the eigenvectors, which Mackie's redistribution rule needs. Consequence: the 3 µm column stays 'shown, not promised' (decision 25) until the intensity step exists; the pipeline's 'Intensiteitsberekening (eigen software)' needs the polyad eigenvectors — a ten-line own patch to `fermi_solver.py` (return the eigenvector matrix with the state enumeration), to be entered in the software-changes ledger when built, after 28 September.
 3. **Mackie's numbers** into `Frozen_Lines_to_Beat.md` §3 as a dated line; verification debt 2 paid for Mackie 2015/2016 (Esposito 2024a–c open).
 4. **Cover note**: the freezing sentence made honest (known recipe; the transport and its price are ours) and one line quoting the 2016 hope.
+
+## 6. Addendum, 20 September 21:3x — six more PDFs from the supervisor (the rest of item 12, the PAHdb-Anharmonic method papers)
+
+Filed in `Papers/` as `Mackie_2018_JCP_149_134302_…`, `Mackie_2021_TCA_140_124_…`, `Mackie_2022_JPCA_126_3198_…`, `Esposito_2024_JCP_160_114312_…`,
+`Esposito_2024_MolPhys_e2261570_…`, `Esposito_2024_MolPhys_e2252936_…`. Read: abstracts, methods, conclusions and the passages named below (not
+end to end — these are application papers; the method is the one of §4). What each adds, and whether it changes anything here.
+
+**Mackie, Chen, Candian, Lee & Tielens 2018 (JCP 149, 134302) — fully anharmonic IR cascade spectra.** VPT2 with polyads plus temperature-dependent
+band shifts and broadenings by a Wang–Landau walk, assembled into the emission cascade after a UV photon. The result that matters to our blad 8:
+**cascade peak positions do not shift with the initial UV energy; the bands grow a red (low-frequency) wing and keep a steep blue wall**; the blanket
+15 cm⁻¹ red shift of earlier astronomical models is wrong; 0 K anharmonic positions (or cold gas-phase absorption) give the emission peak positions
+directly; apparent shifts are pseudoshifts from neighbouring features within ≈ 20 cm⁻¹ overlapping through their wings. Consequence: the profile step
+of the target pipeline ("Profielvorming") is *not* a temperature-shift model for emission; it is peak-at-0-K plus an energy-dependent red wing, and the
+"Waarnemingscondities" object should say *internal energy after UV absorption (emission) or temperature (absorption), and resolution*. Sheet 8 caption
+to be reviewed with the user; no change made tonight.
+
+**Mackie, Candian, Lee & Tielens 2021 (Theor. Chem. Acc. 140, 124) — the 11.2 µm profile.** Qualitative: red wing set by cascade energy, density of
+states, anharmonic constants (both shrink the wing with PAH size), the 3.3/11.2 µm intensity ratio; only rotational temperature touches the blue wing.
+Two admissions in the conclusions are worth keeping verbatim in our risk list: *"Anharmonic computations of larger PAH molecules have been found to be
+unsuccessful, due largely to numerical instabilities, including large anharmonic corrections of several hundreds of wavenumbers in out-of-plane bending
+modes … The cause for this is not known"*, and low-temperature gas-phase spectra of large PAHs are lacking to verify the calculations. **For us:** the
+DFT cubic/quartic constants that our pipeline inherits unchanged (H = H₀ + ΔH corrects the quadratic part only) are the part that fails at large PAHs,
+and it fails in the C–H out-of-plane family — the family that carries the 11.2 µm band and the one whose basis-set behaviour bit us tonight. Risk for the
+coronene rung R3: the anharmonic step, not the correction. Different mechanism from tonight's (theirs is DFT QFF numerics; ours MP2's double-ζ
+softening) — record both, conflate neither.
+
+**Mackie, Candian, Lee & Tielens 2022 (JPCA 126, 3198) — anharmonicity and the emission spectrum of neutral PAHs.** B3LYP/N07D anharmonic
+positions within 0.5 % of experiment without scaling; resonances dominate the C–H stretch, much less the out-of-plane bends; **PAHdb's harmonic
+spectra (B3LYP/4-31G) overestimate the C–H-stretch to out-of-plane intensity ratio**, and the recalibrated size of the emitting interstellar PAHs
+drops to 16–30 carbon atoms. **For us:** intensities decide astrophysical conclusions as much as positions do; the intensity step of blad 8 with the
+stored dipole derivatives, and the polyad redistribution rule, are not optional polish. Also a fact for the opponents table: the harmonic PAHdb
+intensities are known to be biased in exactly the ratio the 3.3/11.2 diagnostics use.
+
+**Esposito et al. 2024, JCP 160, 114312 and Mol. Phys. e2261570 — phenylacetylene (and d₁), absorption mid/far-IR and emission.** IR-UV ion-dip spectra
+against B3LYP/N07D VPT2 with 2- and 3-quanta polyads: average position difference 1.2 % (1.0 % for d₁), 2.5–2.7 % for the low-frequency rocks and
+bends below ≈ 500 cm⁻¹, up to 3.8–6.1 % for one mode and its overtone; **3-quanta combination bands are needed** to assign the spectrum; the acetylene
+C–H stretch couples strongly to C≡C stretch + in-plane bend combinations. **For us:** (i) the 58 ethynyl molecules of corpus layer A2 (and tonight's
+failed optimisation) sit in a class the group itself calls harder than bare PAHs, with a 2-quanta VPT2 insufficient for the fine structure — any
+spectral-shape claim on ethynyl-substituted species needs the 3-quanta treatment, which pyVPT2 does not have; positions of the main bands are unaffected.
+(ii) The low-frequency families (< 500 cm⁻¹) carry 2.5 % errors even anharmonically — the "other" family of our learning curves is also the field's weakest.
+
+**Esposito, Allamandola, Boersma, Bregman, Fortenberry, Maragkoudakis & Temi 2024, Mol. Phys. e2252936 — phenanthrene, pyrene, pentacene, neutral
+and cation.** Same method (B3LYP/N07D, Gaussian 16; SPECTRO polyads Δ = 200, W = 10 cm⁻¹; Lorentzian 8 cm⁻¹ neutral / 1 cm⁻¹ cation); no scaling
+except a 10 cm⁻¹ matrix shift for pyrene's C–H stretch. Neutral phenanthrene 500–2000 cm⁻¹: maximum difference 6.3 cm⁻¹ with one outlier at
+14.3 cm⁻¹. **Cations:** ionisation moves the intensity from the C–H stretch and out-of-plane bends to the 1000–1600 cm⁻¹ C=C stretch / C–H in-plane
+region; the cation tables list matrix and gas positions against anharmonic ones (pentacene cation: differences of 0.1–5 cm⁻¹ on the tabulated bands,
+with strong combination-band mixing, e.g. 54 % / 23 % / 19 % for one 1176 cm⁻¹ feature); combination bands of cations are proposed as the carriers of
+the 3.5–5 µm quasi-continuum. **For us:** this is **line B for cations** — the missing opponent row of obstacle 9 (cation gap) now has a source with
+numbers for pyrene⁺ and phenanthrene⁺; the family that matters for cations is C–C stretch / C–H in-plane, not C–H oop; and the cation spectra were
+computed with the same closed-shell machinery run unrestricted (the paper does not discuss spin contamination — a question for the supervisor, since our
+open-shell (T) port and the label licence for cations depend on how good the reference is).
+
+**What changes in the documents tonight:** papers table item 12 marked received and read for eight of ten (Esposito 2024 MNRASL and JCP 211101
+were already held); the cation source recorded against obstacle 9; the risk on large-PAH out-of-plane anharmonics recorded. No number in the reading
+copy changes. Review items for the user: the "Waarnemingscondities"/"Profielvorming" captions on sheet 8 (emission = 0 K peak + red wing), and whether
+the cation opponent row goes into the Ladder now or with the pilot note.
+
