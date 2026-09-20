@@ -1,23 +1,28 @@
-%% Pipeline A: het netwerk dat de correctie overdraagt (niveau 3), stand 19 september 2026.
+%% Doelarchitectuur — Pipeline A: het netwerk dat de correctie overdraagt (niveau 3).
+%% Rechthoek = processtap; ronde uiteinden = data-object; cilinder = opslag; ruit = poort. Gestippeld = nog niet gebouwd.
 flowchart LR
   classDef planned stroke-dasharray: 6 4,stroke:#7a5c00,fill:#fff8e1
   classDef data fill:#f3f3f3,stroke:#666
   classDef gate fill:#e8f5e9,stroke:#2e7d32
 
-  MAN(["Manifest: 11.321 kandidaten (lagen A 45 · A2 868 · B 4.353 · C 6.055)"]):::data
-  RUN["Corpusrunner: B3LYP- en wB97X-Hessiaan per molecuul (deck v1)  [gehuurde machines, shards]"]
-  PROXY[("Vervanger-ΔH per molecuul: volledige matrix, gratis label")]:::data
-  TOK["Modus-tokens: frequentie, familie, C/H/N/O-aandelen, lokalisatie, uit-vlak-aandeel; omgevingsklassen als diagnostiek"]
-  PRE["Voortraining op vervanger-ΔH  [laptop, minuten]"]:::planned
-  NET["Transformer over modi (2 lagen, breedte 64) → bloktarget per familie: diagonaal + koppelingen"]:::planned
-  CC[("CC-labels uit pipeline B: benzeen, naftaleen, … (ΔH-blokken); kationlabels na de (T)-port")]:::data
-  FT["Bijtrainen op CC-projecties: kleine leersnelheid, vroeg stoppen op apart gehouden moleculen"]:::planned
-  ENS["Ensemble over seeds → spreiding per familie"]:::planned
-  LIC{"Licentie per familie en per ladingstoestand: fout onder de marge van de scorekolom, en beter dan mediaanregel en type-overdracht (X18); neutralen eerst"}:::gate
-  ACT["Actieve keuze: volgende deck waar het ensemble het oneens is"]:::planned
-  PRED[("Voorspelde ΔH-blokken + onzekerheid; geweigerde families → DFT met melding")]:::data
+  CAT[("Molecuulcatalogus")]
+  MOL(["Molecuul"]):::data
+  RUN["Corpusstap: twee DFT-Hessianen per molecuul (laag en hoog niveau)"]
+  CORPUS[("Corpus: DFT-paren")]
+  PROXY(["Vervangercorrectie: volledige ΔH per molecuul"]):::data
+  TOK["Modus-tokens uit de laag-niveau-Hessiaan"]
+  PRE["Voortraining op de vervangercorrectie"]:::planned
+  LABELS[("Labelopslag: ΔH-blokken uit pipeline B")]
+  FT["Bijtrainen op de labels: kleine leersnelheid, vroeg stoppen op apart gehouden moleculen"]:::planned
+  NET["Netwerk: modus-tokens → ΔH-blok per familie (diagonaal en koppelingen)"]:::planned
+  ENS["Ensemble → onzekerheid per familie"]:::planned
+  LIC{"Licentie per familie en ladingstoestand: fout onder de marge van de scorekolom, beter dan de eenvoudige regels"}:::gate
+  ACT["Keuze van het volgende te labelen molecuul: grootste onenigheid in het ensemble"]:::planned
+  NEXT(["Verzoek om een label"]):::data
+  PRED(["Voorspelde ΔH-blokken met onzekerheid; geweigerde families gemarkeerd"]):::data
+  STORE[("Voorspellingsopslag")]
 
-  MAN --> RUN --> PROXY --> TOK --> PRE -.-> NET
-  CC --> FT -.-> NET
-  NET --> ENS --> LIC --> PRED
-  ENS -.-> ACT -.-> CC
+  CAT --> MOL --> RUN --> CORPUS --> PROXY --> TOK --> PRE --> NET
+  LABELS --> FT --> NET
+  NET --> ENS --> LIC --> PRED --> STORE
+  ENS --> ACT --> NEXT --> CAT

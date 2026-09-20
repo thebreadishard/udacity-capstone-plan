@@ -1,59 +1,67 @@
-%% Architectuur plan 05 — overzicht (niveau 2), stand 19 september 2026.
-%% Doorgetrokken = gemeten/bestaat; gestippeld = te bouwen. Stromen zijn data. Rekenplaats tussen haken.
+%% Doelarchitectuur plan 05 — overzicht (niveau 2). Het systeem zoals het staat als de toetsen ja zeggen.
+%% Rechthoek = processtap; ronde uiteinden = data-object; cilinder = opslag; ruit = poort (toets met vaste uitkomst).
+%% Doorgetrokken = bestaat; gestippeld = nog niet gebouwd. Pijlen zijn datastromen. Geen rekenplaats, geen besluiten.
 flowchart LR
   classDef planned stroke-dasharray: 6 4,stroke:#7a5c00,fill:#fff8e1
   classDef ext fill:#eef3f8,stroke:#5b7a99
   classDef data fill:#f3f3f3,stroke:#666
   classDef gate fill:#e8f5e9,stroke:#2e7d32
 
-  MOL(["Molecuul: geometrie + lading"]):::data
+  CAT[("Molecuulcatalogus: geometrieën, lading, multipliciteit")]
+  MOL(["Molecuul"]):::data
 
-  subgraph B["Pipeline B: hoe één label ontstaat  [laptop / gehuurde machine]"]
+  subgraph B["Pipeline B: hoe één label ontstaat"]
     direction TB
-    DFT["DFT-schets: B3LYP/6-31G* Hessiaan H0, modi L, frequenties"]
-    DECK["Deck: symmetrie-geblokte verplaatsingspatronen (2k+1 gradiënten; energieën voor de diagonaal)"]
-    LNO["Bevroren lokale CC-ruimtes: LNO-CCSD(T)-energieën langs de patronen"]
-    GRAD["M2: gradiënten van de bevroren-ruimte-energieën (JAX)"]:::planned
-    CAT["Kationen: onbeperkte (T)-port voor open schil (besluit 41); zelfde deck; R1+ = naftaleen+"]:::planned
-    REC["Herstel van de correctie ΔH per bandfamilie (diagonaal + koppelingen)"]
-    LIC1{"Licentie: exact tegen direct berekende referentie (benzeen, naftaleen)"}:::gate
-    DFT --> DECK --> LNO --> REC
-    DECK -.-> GRAD -.-> REC
-    LNO -.-> CAT -.-> REC
-    REC --> LIC1
+    DFT["DFT-schets: Hessiaan H0, modi, frequenties, families"]
+    DECK["Deck: symmetrie-geblokte verplaatsingspatronen"]
+    LNO["Coupled-cluster-energieën en -gradiënten in bevroren lokale ruimtes"]
+    REC["Herstel van de correctie ΔH per bandfamilie: diagonaal en koppelingen"]
+    LIC1{"Licentie van het herstel tegen direct berekende referenties"}:::gate
+    DFT --> DECK --> LNO --> REC --> LIC1
   end
+  LAB1(["Label: ΔH-blokken met foutmarge per familie"]):::data
+  LABELS[("Labelopslag")]
 
-  LABELS[("Labels: ΔH-blokken per molecuul, met ruis en foutmarge")]:::data
-
-  subgraph A["Pipeline A: het netwerk dat de correctie overdraagt  [laptop / gehuurde machine]"]
+  subgraph A["Pipeline A: het netwerk dat de correctie overdraagt"]
     direction TB
-    CORP["Corpus: DFT-paren (B3LYP, wB97X) — 45 gedaan, 868 lopend, 11.321 mogelijk"]
-    PRE["Voortraining op de vervanger-ΔH (volledige matrices)"]:::planned
-    NET["Netwerk: modus-tokens + lading/multipliciteit → bloktarget per familie; neutraal gelicentieerd tot er kationlabels zijn"]:::planned
-    ENS["Ensemble over seeds → onzekerheid per familie"]:::planned
-    LIC2{"Licentie per bandfamilie tegen de labels; anders weigering met melding"}:::gate
-    CORP --> PRE -.-> NET --> ENS --> LIC2
+    CORPUS[("Corpus: DFT-paren per molecuul")]
+    PROXY(["Vervangercorrectie: volledige ΔH per molecuul"]):::data
+    PRE["Voortraining op de vervangercorrectie"]:::planned
+    NET["Netwerk: modus-tokens → ΔH-blok per familie"]:::planned
+    ENS["Ensemble → onzekerheid per familie"]:::planned
+    LIC2{"Licentie per bandfamilie tegen de labels; anders weigering"}:::gate
+    CORPUS --> PROXY --> PRE --> NET --> ENS --> LIC2
   end
+  PRED(["Voorspelde ΔH-blokken met onzekerheid; geweigerde families gemarkeerd"]):::data
+  PREDS[("Voorspellingsopslag")]
 
-  subgraph S["Spectrum en score  [laptop]"]
+  subgraph S["Spectrum en score"]
     direction TB
-    CORR["Gecorrigeerde krachtconstanten H0 + ΔH op gelicentieerde families; DFT elders"]
-    DIAG["Diagonalisatie → bandposities; intensiteiten uit DFT-dipoolafgeleiden; anharmoniek uit DFT"]
-    SPEC(["Spectrum met foutmarge per band"]):::data
-    SCORE["Scorebord per referentiekolom: Pirali 0,5 · Maltseva ~1 · FEL 5–17 cm-1; kationkolommen (gas/matrix naftaleen+) nog te benoemen"]
-    CORR --> DIAG --> SPEC --> SCORE
+    CORR["Gecorrigeerde krachtconstanten: H0 + ΔH op gelicentieerde blokken"]
+    DIAG["Diagonalisatie → bandposities; intensiteiten en anharmoniek uit DFT"]
+    SCORE["Scorebord per referentiekolom met eigen marge"]
+    CORR --> DIAG
   end
+  SPEC(["Spectrum met foutmarge per band"]):::data
+  SPECS[("Spectrumarchief")]
+  RES(["Scores per band en familie"]):::data
+  RESS[("Scorearchief")]
 
-  LAB[("Laboratoriumspectra: NIST/PNNL, Pirali 2009, Maltseva 2016, Lemmens 2019/2021")]:::ext
-  PAHDB[("PAHdb v4.00: geschaalde DFT-spectra (vergelijking, geen oordeel)")]:::ext
-  JWST(["Astronomische banden (JWST): de vraag"]):::ext
+  LABDB[("Laboratoriumspectra")]:::ext
+  PAHDB[("PAHdb en andere voorspellers")]:::ext
 
+  CAT --> MOL
   MOL --> DFT
-  MOL --> CORP
-  LIC1 --> LABELS --> NET
-  LABELS -. "foutmarge per familie" .-> LIC2
-  LIC2 --> CORR
+  MOL --> CORPUS
+  LIC1 --> LAB1 --> LABELS
+  LABELS --> NET
+  LABELS -- "foutmarge per familie" --> LIC2
+  LIC2 --> PRED --> PREDS
+  LABELS --> CORR
+  PREDS --> CORR
   DFT --> CORR
-  LAB --> SCORE
+  DIAG --> SPEC --> SPECS
+  SPEC --> SCORE
+  LABDB --> SCORE
   PAHDB --> SCORE
-  SCORE --> JWST
+  SCORE --> RES --> RESS

@@ -1,25 +1,36 @@
-%% Spectrum en score (niveau 3), stand 19 september 2026.
+%% Doelarchitectuur — Spectrum en score (niveau 3).
+%% Rechthoek = processtap; ronde uiteinden = data-object; cilinder = opslag; ruit = poort.
 flowchart LR
   classDef data fill:#f3f3f3,stroke:#666
   classDef ext fill:#eef3f8,stroke:#5b7a99
+  classDef gate fill:#e8f5e9,stroke:#2e7d32
 
-  H0(["H0 (DFT)"]):::data
-  DH(["ΔH-blokken: gemeten (B) of voorspeld (A), per gelicentieerde familie"]):::data
-  SUM["H = H0 + ΔH op de gelicentieerde blokken; elders H0"]
+  LABELS[("Labelopslag")]
+  PREDS[("Voorspellingsopslag")]
+  SKETCHDB[("DFT-schetsen: H0, dipoolafgeleiden, anharmonische constanten")]
+  DH(["ΔH-blokken: gemeten of voorspeld, per gelicentieerde familie"]):::data
+  H0(["DFT-schets van het molecuul"]):::data
+  SUM["Gecorrigeerde krachtconstanten: H0 + ΔH op de gelicentieerde blokken, elders H0"]
   EIG["Diagonalisatie → harmonische posities met marge per familie"]
-  INT["Intensiteiten: DFT-dipoolafgeleiden (stage A)"]
-  ANH["Anharmoniek: DFT-VPT2 (geen CC-anharmoniek)"]
-  SPEC(["Spectrum: sticks + profiel op de resolutie van de bron"]):::data
-  SB["Scorebord (module 03): per kolom een eigen marge; geen kolomwissel achteraf"]
-  LAB[("NIST/PNNL 296 K · Pirali 2009 · Maltseva 2016 · Lemmens 2019/2021 · Joblin 1994/95")]:::ext
-  CATLAB[("Kationen: gas- en matrixspectra van naftaleen+, kolommen door de supervisor te benoemen vóór het scoren")]:::ext
-  PAHDB[("PAHdb v4.00 en ML-lijnen: naast elkaar, geen oordeel")]:::ext
+  INT["Intensiteiten uit de DFT-dipoolafgeleiden"]
+  ANH["Anharmonische verschuiving uit DFT"]
+  SPEC(["Spectrum: banden met positie, intensiteit, marge; profiel op de resolutie van de bron"]):::data
+  SPECS[("Spectrumarchief")]
+  LABDB[("Laboratoriumspectra")]:::ext
+  PAHDB[("PAHdb en andere voorspellers")]:::ext
+  SB{"Score per referentiekolom: binnen de marge van die kolom of niet"}:::gate
+  RES(["Scores per band en familie, met de vergelijking naast de opponenten"]):::data
+  RESS[("Scorearchief")]
 
-  H0 --> SUM
-  DH --> SUM --> EIG --> SPEC
-  INT --> SPEC
-  ANH --> SPEC
+  LABELS --> DH
+  PREDS --> DH
+  SKETCHDB --> H0
+  DH --> SUM
+  H0 --> SUM --> EIG --> SPEC
+  H0 --> INT --> SPEC
+  H0 --> ANH --> SPEC
+  SPEC --> SPECS
   SPEC --> SB
-  LAB --> SB
-  CATLAB -.-> SB
+  LABDB --> SB
   PAHDB --> SB
+  SB --> RES --> RESS
