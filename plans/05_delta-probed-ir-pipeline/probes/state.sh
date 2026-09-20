@@ -17,9 +17,10 @@ echo "--- guards and watchdogs ---"
 for g in $(find "$R/probes" -name 'host_guard*.log' -mmin -1440 2>/dev/null); do
   echo "  $(basename "$g"): $(tail -1 "$g")"
 done
-[ "$(ps -ef | grep -c "[n]ight_watch.sh")" -gt 0 ] && echo "  night watch: running" || echo "  night watch: NOT RUNNING (re-arm it before an unattended stretch)"
-W=$(ls -t /c/Users/thebr/AppData/Local/Temp/claude/*/*/scratchpad/night_watch.log 2>/dev/null | head -1)
-[ -n "$W" ] && { echo "  night watch log ($(wc -l < "$W") lines), last:"; tail -1 "$W" | sed 's/^/    /'; }
+# 20 Sep 2026: the watchers run detached inside WSL (anchor_watch_wsl.sh, e6_watch_wsl.sh); the old Windows night watch is retired
+NW=$(wsl.exe -e bash -c "pgrep -fc 'watch_wsl.sh'" 2>/dev/null | tr -d '')
+echo "  WSL watchers running: ${NW:-0} (expect 2: anchor + E6; relaunch recipe in memory 'Watchdogs in WSL')"
+for w in anchor_watch e6_watch; do W=$(ls -t /c/Users/thebr/AppData/Local/Temp/claude/*/*/scratchpad/$w.log 2>/dev/null | head -1); [ -n "$W" ] && { printf "  %s last: " "$w"; tail -1 "$W" | cut -c1-120; }; done
 echo "--- memory and disk ---"
 printf "  host free %s GB   C: free %s GB\n" \
   "$(powershell.exe -NoProfile -Command "[math]::Round((Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory/1MB,1)" 2>/dev/null | tr -d '\r')" \
