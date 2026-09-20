@@ -4,19 +4,19 @@
 
 | soort | wat het toont | bladen |
 |---|---|---|
-| **Datacreatie** | processen die data maken: de corpusstap (DFT-paren en vervangercorrectie; blad 1) en de labelfabriek (coupled-cluster-correcties per molecuul; blad 2) | 1, 2 |
-| **Het ΔH-model** | de definitie van het netwerk: de componenten (blad 3) en dezelfde definitie als PyTorch-code (blad 3b) | 3, 3b |
-| **Training en beoordeling** | training: uit corpusrecords en labels komt het getrainde ΔH-model (blad 4); test en licentie: uit dat model en de testset komen de licentietabel en de kalibratie, met de score tegen de laboratoriumkolommen en de opponenten (blad 5); de gewichten veranderen daar niet meer. De target pipeline gebruikt het getrainde model van blad 4 en de tabel en kalibratie van blad 5; op blad 6 zelf staan die niet als invoerobject getekend (afspraak 20 september). Blad 4 draait per modelversie, niet per molecuul, en bevat de validatielus | 4, 5 |
-| **Target pipeline** | het eindproduct: molecuul en waarnemingscondities in, forward pass van het ΔH-model als één stap, spectrum met licentiestatus uit | 6 |
-| **Onderzoeksproces** | de toetsen die beslissen of dit alles er zo komt; het enige soort blad waar data, besluiten en experimentnummers in mogen | 7, 8 |
+| **Datacreatie** | processen die data maken: de corpusstap (DFT-paren en vervangercorrectie; blad 3) en de labelfabriek (coupled-cluster-correcties per molecuul; blad 4) | 3, 4 |
+| **Het ΔH-model** | de definitie van het netwerk: de componenten (blad 5) en dezelfde definitie als PyTorch-code (blad 5b) | 5, 5b |
+| **Training en beoordeling** | training: uit corpusrecords en labels komt het getrainde ΔH-model (blad 6); test en licentie: uit dat model en de testset komen de licentietabel en de kalibratie, met de score tegen de laboratoriumkolommen en de opponenten (blad 7); de gewichten veranderen daar niet meer. De target pipeline gebruikt het getrainde model van blad 6 en de tabel en kalibratie van blad 7; op blad 8 zelf staan die niet als invoerobject getekend (afspraak 20 september). Blad 6 draait per modelversie, niet per molecuul, en bevat de validatielus | 6, 7 |
+| **Target pipeline** | het eindproduct: molecuul en waarnemingscondities in, forward pass van het ΔH-model als één stap, spectrum met licentiestatus uit | 8 |
+| **Onderzoeksproces** | de toetsen die beslissen of dit alles er zo komt; het enige soort blad waar data, besluiten en experimentnummers in mogen | 1, 2 |
 
-Het overzicht (blad 0) toont de soorten proces en de data-objecten die ze verbinden. **Nummering (20 september):** de bestandsnummers volgen de volgorde waarin de stappen worden doorlopen: corpus (1), labels (2), het ΔH-model (3, code 3b), training (4), test en licentie (5), target pipeline (6); daarna het onderzoeksproces (7, 8). Rekenplaats staat er voorlopig niet in; die komt later per blokje.
+Het overzicht (blad 0) toont de soorten proces en de data-objecten die ze verbinden. **Nummering (20 september):** de bestandsnummers volgen de volgorde waarin de stappen worden doorlopen: eerst het onderzoeksproces dat over de rest beslist (1, 2), dan corpus (3), labels (4), het ΔH-model (5, code 5b), training (6), test en licentie (7), target pipeline (8). Rekenplaats staat er voorlopig niet in; die komt later per blokje.
 
 **Tekenregels (afgesproken 19–20 september; op alle bladen toegepast).**
 
 | regel | inhoud |
 |---|---|
-| vormen | rechthoek = processtap; rechthoek met ronde uiteinden (grijs) = data-object; donkerder blauw = extern data-object, niet van ons; licht kader om meerdere figuren = onderdeel van het ΔH-model (backbone, koppen; alleen blad 3) |
+| vormen | rechthoek = processtap; rechthoek met ronde uiteinden (grijs) = data-object; donkerder blauw = extern data-object, niet van ons; licht kader om meerdere figuren = onderdeel van het ΔH-model (backbone, koppen; alleen blad 5) |
 | stap → object | elke processtap levert precies één data-object, dat de volgende stap(pen) voedt; een proces begint en eindigt bij een data-object; splitsingen komen alleen uit data-objecten |
 | naamgeving | een stap heet naar de bewerking met tussen haken het softwarepakket ("DFT (psi4)", "VPT2 (pyVPT2 op psi4)") of "eigen software" / "PyTorch" als wij het maken; een data-object heet naar het ding; geen woordherhaling tussen stap en object; geen uitleg in captions |
 | het model | het netwerk heet **het ΔH-model** (het voorspelt ΔH-blokken per familie); zijn gedeelde deel heet de **backbone** (embedding en self-attention), zijn uitgangen heten **koppen** (blokkop, paarkop); de exemplaren met verschillende seeds vormen het **ensemble** en heten **leden**; de eenvoudige regels zijn de **baseline**. "Netwerk" zonder meer komt op de doelbladen niet voor (afspraak 20 september) |
@@ -24,7 +24,7 @@ Het overzicht (blad 0) toont de soorten proces en de data-objecten die ze verbin
 | geen | geen opslagfiguren (cilinders), geen ruiten op de doelbladen (beslissingen per item zitten in een stap), geen onzichtbare hulpknopen: standaard Mermaid, links naar rechts |
 | controle | vóór een commit lokaal gerenderd (Mermaid 11), daarna de GitHub-weergave |
 
-Op de onderzoeksprocesbladen (7, 8) gelden eigen kleuren: groen = geslaagd, blauw = loopt, gestippeld = nog te doen, rood = verloren en gesloten; daar mogen ruiten en data in. Bron van waarheid: de `.mmd`-bestanden in deze map (Mermaid; renderen op GitHub).
+Op de onderzoeksprocesbladen (1, 2) gelden eigen kleuren: groen = geslaagd, blauw = loopt, gestippeld = nog te doen, rood = verloren en gesloten; daar mogen ruiten en data in. Bron van waarheid: de `.mmd`-bestanden in deze map (Mermaid; renderen op GitHub).
 
 ## 0. Overzicht: de soorten proces en hun data-objecten (`00_overzicht.mmd`)
 
@@ -44,18 +44,18 @@ flowchart LR
   LABDB(["Laboratoriumspectra"]):::ext
   PAHDB(["Opponenten: PAHdb en andere voorspellers"]):::ext
 
-  LABF["Labelfabriek (blad 2)"]:::proc
+  LABF["Labelfabriek (blad 4)"]:::proc
   LABELS(["Labels: ΔH-blokken met foutmarge per familie"]):::data
-  CORPF["Corpusstap (blad 1)"]:::proc
+  CORPF["Corpusstap (blad 3)"]:::proc
   CORPUS(["Corpusrecords: modus-tokens en vervangercorrectie per molecuul"]):::data
-  TRAIN["Training (blad 4)"]:::planned
+  TRAIN["Training (blad 6)"]:::planned
   TRAINED(["Getraind ΔH-model: ensemble van leden"]):::data
   TESTSET(["Testset"]):::data
-  EVAL["Test en licentie (blad 5)"]:::planned
+  EVAL["Test en licentie (blad 7)"]:::planned
   LICCAL(["Licentietabel en kalibratie"]):::data
-  PIPE["Target pipeline (blad 6)"]:::planned
+  PIPE["Target pipeline (blad 8)"]:::planned
   SPEC(["Spectrum: banden met positie, intensiteit, profiel en foutmarge; licentiestatus per familie"]):::data
-  RES["Onderzoeksproces (bladen 7 en 8)"]:::research
+  RES["Onderzoeksproces (bladen 1 en 2)"]:::research
 
   MOL --> LABF --> LABELS
   MOL --> CORPF --> CORPUS
@@ -78,7 +78,100 @@ flowchart LR
   RES -. beslist over .-> PIPE
 ```
 
-## 1. Datacreatie — het corpus (`10_datacreatie_corpus.mmd`)
+# Onderzoeksproces (mag data en besluiten bevatten)
+
+## 1. Onderzoeksproces — de labelfabriek en de decks (`10_onderzoeksproces_pipeline_B.mmd`)
+
+```mermaid
+%% Onderzoeksproces — pipeline B: de toetsen die beslissen of de doelarchitectuur van blad 4 er komt. Stand 20 september 2026.
+%% Dit blad mag data en besluiten bevatten. Groen = geslaagd; blauw = loopt; gestippeld = nog te doen; rood = mislukt en gesloten.
+flowchart LR
+  linkStyle default stroke:#8a9bb0,stroke-width:2.2px
+  classDef done fill:#d9f0dc,stroke:#2e7d32,color:#111
+  classDef running fill:#dbe9ff,stroke:#2a5db0,color:#111
+  classDef todo stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
+  classDef closed fill:#f6d5d5,stroke:#a33,color:#111
+  classDef dec fill:#eee,stroke:#444,color:#111
+
+  M1["M1: bevroren ruimtes zijn glad (benzeen, DZ en TZ; 5–12 sep)"]:::done
+  I14["I14: één energie per niet-totaalsymmetrisch patroon (14 sep)"]:::done
+  X14["X14/X21/X22: koppelingen exact uit 2k+1 gradiënten, lineair bij elke symmetrie (16–19 sep)"]:::done
+  AMP["Amplitudetest: energieroute voor koppelingen gesloten bij naftaleen (17 sep)"]:::closed
+  M2B["M2b: geleende gradiëntmotor rekent onze grootheid niet (17 sep)"]:::closed
+  ST0["Anker stage 0: herladen ruimtes reproduceren de referentie, 0,0002 µEh (18 sep)"]:::done
+  ANCH["Anker M3: naftaleen cc-pVTZ, 13 energieën van 12 h; modus 12 klaar 20 sep 17:30, 22 op 22 sep, rapport 24 sep"]:::running
+  D1{"Draagt DZ de TZ-correctie per familie?"}:::dec
+  CHEAP["Decks in cc-pVDZ (factor 14 goedkoper per energie)"]:::todo
+  TZ["Decks in cc-pVTZ; cluster nodig (Snellius-aanvraag op de agenda van 28 sep)"]:::todo
+  M2["M2-bouw: gradiënt van de bevroren-ruimte-energie in JAX; pre-registratie 18 sep (T-M2-1..3, float64, checkpointing); start na 24 sep op het woord van de auteur"]:::todo
+  D2{"T-M2-1 en T-M2-2 geslaagd; g_M2 gedrukt (voorspeld 2–4)"}:::dec
+  DECK1["Eerste gradiëntdeck benzeen → licentie tegen canoniek"]:::todo
+  DECK2["Naftaleendeck: 19 gradiënten; eerste label buiten benzeen"]:::todo
+  TPORT["(T)-port voor open schil (besluit 41), acceptatietests eerst; daarna naftaleen+"]:::todo
+  MEM["Geheugen: geleende gradiënt past niet op 32 GB bij plandrempels (19 sep, 3× OOM); 128 GB-machine aangevraagd"]:::closed
+
+  M1 --> ST0 --> ANCH --> D1
+  D1 -- ja --> CHEAP
+  D1 -- nee --> TZ
+  I14 --> X14 --> M2
+  AMP --> M2
+  M2B --> M2
+  MEM --> M2
+  M2 --> D2
+  D2 -- ja --> DECK1 --> DECK2
+  D2 -- nee --> M2
+  CHEAP --> DECK2
+  TZ --> DECK2
+  DECK2 --> TPORT
+```
+
+## 2. Onderzoeksproces — het ΔH-model (`20_onderzoeksproces_pipeline_A.mmd`)
+
+```mermaid
+%% Onderzoeksproces — pipeline A: de toetsen die beslissen of en hoe het ΔH-model van de bladen 5 en 6 er komt. Stand 20 september 2026.
+%% Dit blad mag data en besluiten bevatten. Groen = geslaagd of gemeten; blauw = loopt; gestippeld = nog te doen; rood = verloren en gesloten.
+flowchart LR
+  linkStyle default stroke:#8a9bb0,stroke-width:2.2px
+  classDef done fill:#d9f0dc,stroke:#2e7d32,color:#111
+  classDef running fill:#dbe9ff,stroke:#2a5db0,color:#111
+  classDef todo stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
+  classDef closed fill:#f6d5d5,stroke:#a33,color:#111
+  classDef dec fill:#eee,stroke:#444,color:#111
+
+  LA["Laag A van het corpus: 45 moleculen, DFT-paren (18–19 sep, Helsinki)"]:::done
+  LC1["Leercurve 1 en 2: C–H-families onder 5 cm-1 bij 5–20 moleculen; ringfamilie op 12,4, vlak; kenmerken helpen niet (19 sep)"]:::done
+  E4["E4: het label per modus is voor de ringfamilie slecht gesteld (9,2 van de 12,4 is definitie); het familieblok draagt over (19 sep)"]:::done
+  RULE["Regel: het doelobject is het familieblok, diagonaal + koppelingen (recipe-amendement 19 sep)"]:::done
+  E1["E1/E1b/E2/E5/E5b: contrastieve embedding, atoom-encoder, molecuultokens, skip-gram op de koppelingsmatrix — alle verloren op 45 moleculen (19 sep)"]:::closed
+  E6["E6 fase 1: laag A2, 200 moleculen op vier machines (sinds 19 sep 23:30; ~woensdag klaar)"]:::running
+  D1{"Helling van de ringfamilie over 45 → 200 steiler dan −0,25?"}:::dec
+  P2["E6 fase 2: de resterende 668 moleculen (~€160)"]:::todo
+  BHH["Vervangercontrole: BHHLYP − B3LYP op benzeen en naftaleen — is de ringcorrectie van de vervanger niet-lokaal?"]:::todo
+  ST1["Stap 1 van het ontwerp: equivariant paar-blokmodel leert de volledige correctiematrix uit het corpus; Test 1: ringfamilie onder 5 cm-1 op dezelfde 12 moleculen"]:::todo
+  E3["E3: voorwendsel met DFT-grootheden (frequentie, familie, teken) uit ruwe atoomvelden, op het hele corpus"]:::todo
+  CC["Eerste CC-labels uit pipeline B (benzeen, naftaleen; daarna de decks van M2)"]:::todo
+  FT["Bijtrainen op de CC-projecties; licentie per familie tegen X18 en de mediaanregel"]:::todo
+  D2{"Per familie: fout onder de marge van de scorekolom?"}:::dec
+  LICF["Familie gelicentieerd in het netwerk"]:::todo
+  REF["Familie geweigerd: DFT met melding; volgende label gekozen op onenigheid"]:::todo
+
+  LA --> LC1 --> E4 --> RULE
+  LC1 --> E1 --> E6
+  E4 --> E6
+  E6 --> D1
+  D1 -- ja --> P2 --> ST1
+  D1 -- nee --> BHH --> ST1
+  RULE --> ST1
+  E1 --> E3 --> ST1
+  ST1 --> FT
+  CC --> FT --> D2
+  D2 -- ja --> LICF
+  D2 -- nee --> REF --> CC
+```
+
+# Doelarchitectuur (geen data, geen besluiten)
+
+## 3. Datacreatie — het corpus (`30_datacreatie_corpus.mmd`)
 
 ```mermaid
 %% Datacreatie — het corpus: twee DFT-Hessianen per molecuul en de vervangercorrectie (niveau 3). Doelarchitectuur.
@@ -114,7 +207,7 @@ flowchart LR
   REC --> CORP
 ```
 
-## 2. Datacreatie — de labelfabriek: hoe één label ontstaat (`20_datacreatie_labels.mmd`)
+## 4. Datacreatie — de labelfabriek: hoe één label ontstaat (`40_datacreatie_labels.mmd`)
 
 ```mermaid
 %% Datacreatie — de labelfabriek: hoe één label ontstaat (niveau 3). Doelarchitectuur: geen besluiten, geen data.
@@ -165,10 +258,10 @@ flowchart LR
   SEAL --> LABEL
 ```
 
-## 3. Componenten van het ΔH-model (`30_deltaH_model_componenten.mmd`)
+## 5. Componenten van het ΔH-model (`50_deltaH_model_componenten.mmd`)
 
 ```mermaid
-%% Componenten van het ΔH-model (niveau 4): wat er binnen de stap "Forward pass (ΔH-model, PyTorch)" van blad 6 gebeurt. Backbone = embedding en self-attention; koppen = blokkop en paarkop; het ensemble bestaat uit leden met verschillende seeds. Doelarchitectuur; grotendeels nog niet gebouwd.
+%% Componenten van het ΔH-model (niveau 4): wat er binnen de stap "Forward pass (ΔH-model, PyTorch)" van blad 8 gebeurt. Backbone = embedding en self-attention; koppen = blokkop en paarkop; het ensemble bestaat uit leden met verschillende seeds. Doelarchitectuur; grotendeels nog niet gebouwd.
 %% Rechthoek = processtap (bewerking + software); ronde uiteinden = data-object (het ding). Elke stap levert één data-object. Gestippeld = nog niet gebouwd.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
@@ -205,14 +298,14 @@ flowchart LR
   CTX --> PAIR --> PAIRS --> ENSA
 ```
 
-## 3b. Het ΔH-model in code (`31_deltaH_model_pytorch.py`)
+## 5b. Het ΔH-model in code (`51_deltaH_model_pytorch.py`)
 
-Blad 3 als PyTorch-definitie, toegevoegd 20 september: invoerlaag (`TokenEmbedding`: modustokens door een tweelaags MLP, lading en multipliciteit als twee molecuul-tokens ervoor, geen positionele codering omdat modi een verzameling zijn), verborgen lagen (`Backbone`: Transformer-encoder, twee lagen, vier heads, breedte 64, dropout 0.1, pre-LayerNorm, met opvulmasker), uitvoerlagen (`BlockHead`: het ΔH-blok per familie in de modusbasis, diagonaal uit de contextvector en koppelingen uit symmetrische paarkenmerken, nul buiten de familie; `PairHead`: steunlogit per moduspaar), plus wat er standaard omheen hoort: `DeltaHConfig`, initialisatie, `block_loss` (blokregel van 19 september, weging per familie uit het foutbudget), `pair_loss` (klassegewogen, les van E5), `DeltaHEnsemble` met gemiddelde en spreiding per element, parametertelling en een rooktest op willekeurige invoer. Geen trainingslus: die hoort bij blad 4 en komt in `modules/05_support_predictor/` zodra er labels zijn. Getallen volgen de desk-notitie van 18 september §1.
+Blad 5 als PyTorch-definitie, toegevoegd 20 september: invoerlaag (`TokenEmbedding`: modustokens door een tweelaags MLP, lading en multipliciteit als twee molecuul-tokens ervoor, geen positionele codering omdat modi een verzameling zijn), verborgen lagen (`Backbone`: Transformer-encoder, twee lagen, vier heads, breedte 64, dropout 0.1, pre-LayerNorm, met opvulmasker), uitvoerlagen (`BlockHead`: het ΔH-blok per familie in de modusbasis, diagonaal uit de contextvector en koppelingen uit symmetrische paarkenmerken, nul buiten de familie; `PairHead`: steunlogit per moduspaar), plus wat er standaard omheen hoort: `DeltaHConfig`, initialisatie, `block_loss` (blokregel van 19 september, weging per familie uit het foutbudget), `pair_loss` (klassegewogen, les van E5), `DeltaHEnsemble` met gemiddelde en spreiding per element, parametertelling en een rooktest op willekeurige invoer. Geen trainingslus: die hoort bij blad 6 en komt in `modules/05_support_predictor/` zodra er labels zijn. Getallen volgen de desk-notitie van 18 september §1.
 
-## 4. Training (`40_training.mmd`)
+## 6. Training (`60_training.mmd`)
 
 ```mermaid
-%% Training (niveau 3): uit corpusrecords en labels komt het getrainde ΔH-model. Doelarchitectuur; nog niet gebouwd. De beoordeling (test, licentie, kalibratie) staat op blad 5.
+%% Training (niveau 3): uit corpusrecords en labels komt het getrainde ΔH-model. Doelarchitectuur; nog niet gebouwd. De beoordeling (test, licentie, kalibratie) staat op blad 7.
 %% Rechthoek = processtap (bewerking + software); ronde uiteinden = data-object (het ding). Elke stap levert één data-object. Gestippeld = nog niet gebouwd.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
@@ -240,7 +333,7 @@ flowchart LR
   FTNET --> VAL --> VALR --> FT
 ```
 
-## 5. Test en licentie (`50_test_en_licentie.mmd`)
+## 7. Test en licentie (`70_test_en_licentie.mmd`)
 
 ```mermaid
 %% Test en licentie (niveau 3b): uit het getrainde ΔH-model en de testset komen de licentietabel en de kalibratie die de target pipeline naast het getrainde model gebruikt. De gewichten van het model veranderen hier niet. Doelarchitectuur; nog niet gebouwd.
@@ -271,7 +364,7 @@ flowchart LR
   TESTR --> CAL --> CALR
 ```
 
-## 6. Target pipeline (`60_target_pipeline.mmd`)
+## 8. Target pipeline (`80_target_pipeline.mmd`)
 
 ```mermaid
 %% Pipeline (niveau 3): wat er staat als onderzoek en training klaar zijn. Molecuul in, spectrum met foutmarge uit.
@@ -320,95 +413,4 @@ flowchart LR
   MODES --> ANH --> ANHS --> SHAPE
   COND --> SHAPE
   SHAPE --> SPEC
-```
-
-# Onderzoeksproces (mag data en besluiten bevatten)
-
-## 7. Onderzoeksproces — de labelfabriek en de decks (`70_onderzoeksproces_pipeline_B.mmd`)
-
-```mermaid
-%% Onderzoeksproces — pipeline B: de toetsen die beslissen of de doelarchitectuur van blad 2 er komt. Stand 20 september 2026.
-%% Dit blad mag data en besluiten bevatten. Groen = geslaagd; blauw = loopt; gestippeld = nog te doen; rood = mislukt en gesloten.
-flowchart LR
-  linkStyle default stroke:#8a9bb0,stroke-width:2.2px
-  classDef done fill:#d9f0dc,stroke:#2e7d32,color:#111
-  classDef running fill:#dbe9ff,stroke:#2a5db0,color:#111
-  classDef todo stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
-  classDef closed fill:#f6d5d5,stroke:#a33,color:#111
-  classDef dec fill:#eee,stroke:#444,color:#111
-
-  M1["M1: bevroren ruimtes zijn glad (benzeen, DZ en TZ; 5–12 sep)"]:::done
-  I14["I14: één energie per niet-totaalsymmetrisch patroon (14 sep)"]:::done
-  X14["X14/X21/X22: koppelingen exact uit 2k+1 gradiënten, lineair bij elke symmetrie (16–19 sep)"]:::done
-  AMP["Amplitudetest: energieroute voor koppelingen gesloten bij naftaleen (17 sep)"]:::closed
-  M2B["M2b: geleende gradiëntmotor rekent onze grootheid niet (17 sep)"]:::closed
-  ST0["Anker stage 0: herladen ruimtes reproduceren de referentie, 0,0002 µEh (18 sep)"]:::done
-  ANCH["Anker M3: naftaleen cc-pVTZ, 13 energieën van 12 h; modus 12 klaar 20 sep 17:30, 22 op 22 sep, rapport 24 sep"]:::running
-  D1{"Draagt DZ de TZ-correctie per familie?"}:::dec
-  CHEAP["Decks in cc-pVDZ (factor 14 goedkoper per energie)"]:::todo
-  TZ["Decks in cc-pVTZ; cluster nodig (Snellius-aanvraag op de agenda van 28 sep)"]:::todo
-  M2["M2-bouw: gradiënt van de bevroren-ruimte-energie in JAX; pre-registratie 18 sep (T-M2-1..3, float64, checkpointing); start na 24 sep op het woord van de auteur"]:::todo
-  D2{"T-M2-1 en T-M2-2 geslaagd; g_M2 gedrukt (voorspeld 2–4)"}:::dec
-  DECK1["Eerste gradiëntdeck benzeen → licentie tegen canoniek"]:::todo
-  DECK2["Naftaleendeck: 19 gradiënten; eerste label buiten benzeen"]:::todo
-  TPORT["(T)-port voor open schil (besluit 41), acceptatietests eerst; daarna naftaleen+"]:::todo
-  MEM["Geheugen: geleende gradiënt past niet op 32 GB bij plandrempels (19 sep, 3× OOM); 128 GB-machine aangevraagd"]:::closed
-
-  M1 --> ST0 --> ANCH --> D1
-  D1 -- ja --> CHEAP
-  D1 -- nee --> TZ
-  I14 --> X14 --> M2
-  AMP --> M2
-  M2B --> M2
-  MEM --> M2
-  M2 --> D2
-  D2 -- ja --> DECK1 --> DECK2
-  D2 -- nee --> M2
-  CHEAP --> DECK2
-  TZ --> DECK2
-  DECK2 --> TPORT
-```
-
-## 8. Onderzoeksproces — het ΔH-model (`80_onderzoeksproces_pipeline_A.mmd`)
-
-```mermaid
-%% Onderzoeksproces — pipeline A: de toetsen die beslissen of en hoe het ΔH-model van de bladen 3 en 4 er komt. Stand 20 september 2026.
-%% Dit blad mag data en besluiten bevatten. Groen = geslaagd of gemeten; blauw = loopt; gestippeld = nog te doen; rood = verloren en gesloten.
-flowchart LR
-  linkStyle default stroke:#8a9bb0,stroke-width:2.2px
-  classDef done fill:#d9f0dc,stroke:#2e7d32,color:#111
-  classDef running fill:#dbe9ff,stroke:#2a5db0,color:#111
-  classDef todo stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
-  classDef closed fill:#f6d5d5,stroke:#a33,color:#111
-  classDef dec fill:#eee,stroke:#444,color:#111
-
-  LA["Laag A van het corpus: 45 moleculen, DFT-paren (18–19 sep, Helsinki)"]:::done
-  LC1["Leercurve 1 en 2: C–H-families onder 5 cm-1 bij 5–20 moleculen; ringfamilie op 12,4, vlak; kenmerken helpen niet (19 sep)"]:::done
-  E4["E4: het label per modus is voor de ringfamilie slecht gesteld (9,2 van de 12,4 is definitie); het familieblok draagt over (19 sep)"]:::done
-  RULE["Regel: het doelobject is het familieblok, diagonaal + koppelingen (recipe-amendement 19 sep)"]:::done
-  E1["E1/E1b/E2/E5/E5b: contrastieve embedding, atoom-encoder, molecuultokens, skip-gram op de koppelingsmatrix — alle verloren op 45 moleculen (19 sep)"]:::closed
-  E6["E6 fase 1: laag A2, 200 moleculen op vier machines (sinds 19 sep 23:30; ~woensdag klaar)"]:::running
-  D1{"Helling van de ringfamilie over 45 → 200 steiler dan −0,25?"}:::dec
-  P2["E6 fase 2: de resterende 668 moleculen (~€160)"]:::todo
-  BHH["Vervangercontrole: BHHLYP − B3LYP op benzeen en naftaleen — is de ringcorrectie van de vervanger niet-lokaal?"]:::todo
-  ST1["Stap 1 van het ontwerp: equivariant paar-blokmodel leert de volledige correctiematrix uit het corpus; Test 1: ringfamilie onder 5 cm-1 op dezelfde 12 moleculen"]:::todo
-  E3["E3: voorwendsel met DFT-grootheden (frequentie, familie, teken) uit ruwe atoomvelden, op het hele corpus"]:::todo
-  CC["Eerste CC-labels uit pipeline B (benzeen, naftaleen; daarna de decks van M2)"]:::todo
-  FT["Bijtrainen op de CC-projecties; licentie per familie tegen X18 en de mediaanregel"]:::todo
-  D2{"Per familie: fout onder de marge van de scorekolom?"}:::dec
-  LICF["Familie gelicentieerd in het netwerk"]:::todo
-  REF["Familie geweigerd: DFT met melding; volgende label gekozen op onenigheid"]:::todo
-
-  LA --> LC1 --> E4 --> RULE
-  LC1 --> E1 --> E6
-  E4 --> E6
-  E6 --> D1
-  D1 -- ja --> P2 --> ST1
-  D1 -- nee --> BHH --> ST1
-  RULE --> ST1
-  E1 --> E3 --> ST1
-  ST1 --> FT
-  CC --> FT --> D2
-  D2 -- ja --> LICF
-  D2 -- nee --> REF --> CC
 ```

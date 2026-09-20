@@ -13,18 +13,18 @@ flowchart LR
   LABDB(["Laboratoriumspectra"]):::ext
   PAHDB(["Opponenten: PAHdb en andere voorspellers"]):::ext
 
-  LABF["Labelfabriek (blad 2)"]:::proc
+  LABF["Labelfabriek (blad 4)"]:::proc
   LABELS(["Labels: ΔH-blokken met foutmarge per familie"]):::data
-  CORPF["Corpusstap (blad 1)"]:::proc
+  CORPF["Corpusstap (blad 3)"]:::proc
   CORPUS(["Corpusrecords: modus-tokens en vervangercorrectie per molecuul"]):::data
-  TRAIN["Training (blad 4)"]:::planned
+  TRAIN["Training (blad 6)"]:::planned
   TRAINED(["Getraind ΔH-model: ensemble van leden"]):::data
   TESTSET(["Testset"]):::data
-  EVAL["Test en licentie (blad 5)"]:::planned
+  EVAL["Test en licentie (blad 7)"]:::planned
   LICCAL(["Licentietabel en kalibratie"]):::data
-  PIPE["Target pipeline (blad 6)"]:::planned
+  PIPE["Target pipeline (blad 8)"]:::planned
   SPEC(["Spectrum: banden met positie, intensiteit, profiel en foutmarge; licentiestatus per familie"]):::data
-  RES["Onderzoeksproces (bladen 7 en 8)"]:::research
+  RES["Onderzoeksproces (bladen 1 en 2)"]:::research
 
   MOL --> LABF --> LABELS
   MOL --> CORPF --> CORPUS
