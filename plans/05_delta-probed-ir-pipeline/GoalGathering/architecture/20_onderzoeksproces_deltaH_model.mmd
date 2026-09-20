@@ -1,4 +1,4 @@
-%% Onderzoeksproces — het ΔH-model (in het voorstel: pipeline A): de toetsen die beslissen of en hoe het ΔH-model van de bladen 5 en 6 er komt. Stand 20 september 2026.
+%% Onderzoeksproces — het ΔH-model (in het voorstel: pipeline A): de toetsen die beslissen of en hoe het ΔH-model van de bladen 5 en 6 er komt; het eindobject is het gelicentieerde modelontwerp met de eerste licentietabel, niet het getrainde model (dat maakt blad 6) en niet de licentietabel van de volle testset (blad 7). Stand 20 september 2026.
 %% Dit blad mag data en besluiten bevatten. Groen = geslaagd of gemeten; blauw = loopt; gestippeld = nog te doen; rood = verloren en gesloten.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
@@ -7,6 +7,7 @@ flowchart LR
   classDef todo stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
   classDef closed fill:#f6d5d5,stroke:#a33,color:#111
   classDef dec fill:#eee,stroke:#444,color:#111
+  classDef data fill:#e9ecef,stroke:#555,color:#111
 
   LA["Laag A van het corpus: 45 moleculen, DFT-paren (18–19 sep, Helsinki)"]:::done
   LC1["Leercurve 1 en 2: C–H-families onder 5 cm-1 bij 5–20 moleculen; ringfamilie op 12,4, vlak; kenmerken helpen niet (19 sep)"]:::done
@@ -24,6 +25,7 @@ flowchart LR
   D2{"Per familie: fout onder de marge van de scorekolom?"}:::dec
   LICF["Familie gelicentieerd in het netwerk"]:::todo
   REF["Familie geweigerd: DFT met melding; volgende label gekozen op onenigheid"]:::todo
+  OUT(["Gelicentieerd modelontwerp: doelobject (familieblok), representatie waarmee de ringfamilie leert, benodigd aantal labels per familie, voortrainingsrecept op het corpus; eerste licentietabel per familie"]):::data
 
   LA --> LC1 --> E4 --> RULE
   LC1 --> E1 --> E6
@@ -35,5 +37,6 @@ flowchart LR
   E1 --> E3 --> ST1
   ST1 --> FT
   CC --> FT --> D2
-  D2 -- ja --> LICF
+  D2 -- ja --> LICF --> OUT
   D2 -- nee --> REF --> CC
+  REF --> OUT
