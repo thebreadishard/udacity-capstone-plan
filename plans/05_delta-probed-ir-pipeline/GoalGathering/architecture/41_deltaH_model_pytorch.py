@@ -2,7 +2,7 @@
 
 Dit bestand definieert alleen het netwerk: invoerlaag, verborgen lagen, uitvoerlagen en wat er
 standaard omheen hoort (configuratie, maskering, initialisatie, verliesfuncties, ensemble,
-parametertelling, rooktest). Training, validatie en test (blad 3) staan er niet in; die komen in
+parametertelling, rooktest). Training (blad 3) en test en licentie (blad 3b) staan er niet in; die komen in
 `modules/05_support_predictor/` zodra de labels er zijn.
 
 Naamgeving (afspraak 20 september 2026): het geheel is **het ΔH-model**; embedding + self-attention

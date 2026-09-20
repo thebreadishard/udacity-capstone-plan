@@ -1,4 +1,4 @@
-%% Overzicht plan 05 (niveau 1): vier soorten proces en de data-objecten die ze verbinden. Doelarchitectuur; geen besluiten, geen data.
+%% Overzicht plan 05 (niveau 1): de soorten proces en de data-objecten die ze verbinden. Doelarchitectuur; geen besluiten, geen data.
 %% Rechthoek = proces (hier: een heel blad); ronde uiteinden = data-object; pijl = datastroom. Gestippeld = nog niet gebouwd.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
@@ -17,8 +17,10 @@ flowchart LR
   LABELS(["Labels: ΔH-blokken met foutmarge per familie"]):::data
   CORPF["Corpusstap (blad 2)"]:::proc
   CORPUS(["Corpusrecords: modus-tokens en vervangercorrectie per molecuul"]):::data
-  TRAIN["Training, validatie en test (blad 3)"]:::planned
-  MODEL(["Modelpakket: ensemble van ΔH-modellen, licentietabel, kalibratie"]):::data
+  TRAIN["Training (blad 3)"]:::planned
+  TRAINED(["Getraind ΔH-model: ensemble van leden"]):::data
+  EVAL["Test en licentie (blad 3b)"]:::planned
+  MODEL(["Modelpakket: getraind ΔH-model, licentietabel, kalibratie"]):::data
   PIPE["Target pipeline (blad 4)"]:::planned
   SPEC(["Spectrum: banden met positie, intensiteit, profiel en foutmarge; licentiestatus per familie"]):::data
   RES["Onderzoeksproces (bladen 5 en 6)"]:::research
@@ -27,13 +29,17 @@ flowchart LR
   MOL --> CORPF --> CORPUS
   LABELS --> TRAIN
   CORPUS --> TRAIN
-  LABDB --> TRAIN
-  PAHDB --> TRAIN
-  TRAIN --> MODEL
+  TRAIN --> TRAINED
+  TRAINED --> EVAL
+  LABELS --> EVAL
+  LABDB --> EVAL
+  PAHDB --> EVAL
+  EVAL --> MODEL
   MOL --> PIPE
   COND --> PIPE
   MODEL --> PIPE
   PIPE --> SPEC
   RES -. beslist over .-> LABF
   RES -. beslist over .-> TRAIN
+  RES -. beslist over .-> EVAL
   RES -. beslist over .-> PIPE

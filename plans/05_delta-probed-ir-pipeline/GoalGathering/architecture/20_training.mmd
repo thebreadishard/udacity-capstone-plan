@@ -1,0 +1,26 @@
+%% Training (niveau 3): uit corpusrecords en labels komt het getrainde ΔH-model. Doelarchitectuur; nog niet gebouwd. De beoordeling (test, licentie, kalibratie) staat op blad 3b.
+%% Rechthoek = processtap (bewerking + software); ronde uiteinden = data-object (het ding). Elke stap levert één data-object. Gestippeld = nog niet gebouwd.
+flowchart LR
+  linkStyle default stroke:#8a9bb0,stroke-width:2.2px
+  classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
+  classDef data fill:#e9ecef,stroke:#555,color:#111
+
+  CORP(["Corpusrecords: modus-tokens en vervangercorrectie per molecuul"]):::data
+  LAB(["Labels: ΔH-blokken met foutmarge per familie"]):::data
+  SPLIT["Splitsing per molecuul en per kern (eigen software)"]:::planned
+  SETS(["Train-, validatie- en testsets"]):::data
+  PRE["Voortraining op de vervangercorrectie (PyTorch)"]:::planned
+  PRENET(["Voorgetraind ΔH-model"]):::data
+  FT["Bijtraining op de labels (PyTorch)"]:::planned
+  FTNET(["Bijgetraind ΔH-model"]):::data
+  VAL["Validatie tegen de eenvoudige regels (eigen software)"]:::planned
+  VALR(["Validatiefouten per familie"]):::data
+  ENSF["Ensemblevorming over seeds (PyTorch)"]:::planned
+  ENS(["Getraind ΔH-model: ensemble van leden"]):::data
+
+  CORP --> SPLIT
+  LAB --> SPLIT
+  SPLIT --> SETS
+  SETS --> PRE --> PRENET --> FT --> FTNET --> ENSF --> ENS
+  SETS --> FT
+  FTNET --> VAL --> VALR --> FT

@@ -1,4 +1,4 @@
-%% Training, validatie en test (niveau 3): uit corpusrecords en labels komt een modelpakket. Doelarchitectuur; nog niet gebouwd.
+%% Test en licentie (niveau 3b): uit het getrainde ΔH-model en de testset komt het modelpakket dat de target pipeline inlaadt. Doelarchitectuur; nog niet gebouwd.
 %% Rechthoek = processtap (bewerking + software); ronde uiteinden = data-object (het ding). Elke stap levert één data-object. Gestippeld = nog niet gebouwd.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
@@ -6,20 +6,10 @@ flowchart LR
   classDef data fill:#e9ecef,stroke:#555,color:#111
   classDef ext fill:#cfd8e3,stroke:#3d5a80,color:#111
 
-  CORP(["Corpusrecords: modus-tokens en vervangercorrectie per molecuul"]):::data
-  LAB(["Labels: ΔH-blokken met foutmarge per familie"]):::data
+  ENS(["Getraind ΔH-model: ensemble van leden"]):::data
+  TESTSET(["Testset: moleculen met labels, buiten de training gehouden"]):::data
   LABDB(["Laboratoriumspectra met de marge per referentiekolom"]):::ext
   PAHDB(["Opponenten: PAHdb en andere voorspellers"]):::ext
-  SPLIT["Splitsing per molecuul en per kern (eigen software)"]:::planned
-  SETS(["Train-, validatie- en testsets"]):::data
-  PRE["Voortraining op de vervangercorrectie (PyTorch)"]:::planned
-  PRENET(["Voorgetraind ΔH-model"]):::data
-  FT["Bijtraining op de labels (PyTorch)"]:::planned
-  FTNET(["Bijgetraind ΔH-model"]):::data
-  ENSF["Ensemblevorming over seeds (PyTorch)"]:::planned
-  ENS(["Ensemble van ΔH-modellen"]):::data
-  VAL["Validatie tegen de eenvoudige regels (eigen software)"]:::planned
-  VALR(["Validatiefouten per familie"]):::data
   TEST["Test op de testmoleculen (eigen software)"]:::planned
   TESTR(["Testfouten per familie en ladingstoestand, naast de opponenten"]):::data
   LIC["Licentiebepaling (eigen software)"]:::planned
@@ -27,16 +17,10 @@ flowchart LR
   CAL["Onzekerheidskalibratie (eigen software)"]:::planned
   CALR(["Kalibratie van de ensemblespreiding"]):::data
   PACK["Bundeling (eigen software)"]:::planned
-  MODEL(["Modelpakket: ensemble van ΔH-modellen, licentietabel, kalibratie"]):::data
+  MODEL(["Modelpakket: getraind ΔH-model, licentietabel, kalibratie"]):::data
 
-  CORP --> SPLIT
-  LAB --> SPLIT
-  SPLIT --> SETS
-  SETS --> PRE --> PRENET --> FT --> FTNET --> ENSF --> ENS
-  SETS --> FT
-  ENS --> VAL --> VALR --> FT
   ENS --> TEST
-  SETS --> TEST
+  TESTSET --> TEST
   LABDB --> TEST
   PAHDB --> TEST
   TEST --> TESTR

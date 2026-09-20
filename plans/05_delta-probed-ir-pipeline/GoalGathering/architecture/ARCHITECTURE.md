@@ -5,7 +5,7 @@
 | soort | wat het toont | bladen |
 |---|---|---|
 | **Datacreatie** | processen die data maken: de labelfabriek (coupled-cluster-correcties per molecuul) en de corpusstap (DFT-paren en vervangercorrectie) | 1, 2 |
-| **Training, validatie en test** | het proces waar een modelpakket uit komt (ensemble van ΔH-modellen, licentietabel, kalibratie); hier hoort de score tegen de laboratoriumkolommen (de test) | 3 |
+| **Training en beoordeling** | training: uit corpusrecords en labels komt het getrainde ΔH-model (blad 3); test en licentie: uit dat model en de testset komt het modelpakket, met de score tegen de laboratoriumkolommen en de opponenten (blad 3b). Blad 3 draait per modelversie, niet per molecuul, en bevat de validatielus | 3, 3b |
 | **Pipeline** | het eindproduct: molecuul en waarnemingscondities in, forward pass als één stap, spectrum met licentiestatus uit | 4 (en 4a: de componenten van het ΔH-model) |
 | **Onderzoeksproces** | de toetsen die beslissen of dit alles er zo komt; het enige soort blad waar data, besluiten en experimentnummers in mogen | 5, 6 |
 
@@ -28,7 +28,7 @@ Op de onderzoeksprocesbladen (5, 6) gelden eigen kleuren: groen = geslaagd, blau
 ## 0. Overzicht: vier soorten proces en hun data-objecten
 
 ```mermaid
-%% Overzicht plan 05 (niveau 1): vier soorten proces en de data-objecten die ze verbinden. Doelarchitectuur; geen besluiten, geen data.
+%% Overzicht plan 05 (niveau 1): de soorten proces en de data-objecten die ze verbinden. Doelarchitectuur; geen besluiten, geen data.
 %% Rechthoek = proces (hier: een heel blad); ronde uiteinden = data-object; pijl = datastroom. Gestippeld = nog niet gebouwd.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
@@ -47,8 +47,10 @@ flowchart LR
   LABELS(["Labels: ΔH-blokken met foutmarge per familie"]):::data
   CORPF["Corpusstap (blad 2)"]:::proc
   CORPUS(["Corpusrecords: modus-tokens en vervangercorrectie per molecuul"]):::data
-  TRAIN["Training, validatie en test (blad 3)"]:::planned
-  MODEL(["Modelpakket: ensemble van ΔH-modellen, licentietabel, kalibratie"]):::data
+  TRAIN["Training (blad 3)"]:::planned
+  TRAINED(["Getraind ΔH-model: ensemble van leden"]):::data
+  EVAL["Test en licentie (blad 3b)"]:::planned
+  MODEL(["Modelpakket: getraind ΔH-model, licentietabel, kalibratie"]):::data
   PIPE["Target pipeline (blad 4)"]:::planned
   SPEC(["Spectrum: banden met positie, intensiteit, profiel en foutmarge; licentiestatus per familie"]):::data
   RES["Onderzoeksproces (bladen 5 en 6)"]:::research
@@ -57,15 +59,19 @@ flowchart LR
   MOL --> CORPF --> CORPUS
   LABELS --> TRAIN
   CORPUS --> TRAIN
-  LABDB --> TRAIN
-  PAHDB --> TRAIN
-  TRAIN --> MODEL
+  TRAIN --> TRAINED
+  TRAINED --> EVAL
+  LABELS --> EVAL
+  LABDB --> EVAL
+  PAHDB --> EVAL
+  EVAL --> MODEL
   MOL --> PIPE
   COND --> PIPE
   MODEL --> PIPE
   PIPE --> SPEC
   RES -. beslist over .-> LABF
   RES -. beslist over .-> TRAIN
+  RES -. beslist over .-> EVAL
   RES -. beslist over .-> PIPE
 ```
 
@@ -156,10 +162,41 @@ flowchart LR
   REC --> CORP
 ```
 
-## 3. Training, validatie en test
+## 3. Training (`20_training.mmd`)
 
 ```mermaid
-%% Training, validatie en test (niveau 3): uit corpusrecords en labels komt een modelpakket. Doelarchitectuur; nog niet gebouwd.
+%% Training (niveau 3): uit corpusrecords en labels komt het getrainde ΔH-model. Doelarchitectuur; nog niet gebouwd. De beoordeling (test, licentie, kalibratie) staat op blad 3b.
+%% Rechthoek = processtap (bewerking + software); ronde uiteinden = data-object (het ding). Elke stap levert één data-object. Gestippeld = nog niet gebouwd.
+flowchart LR
+  linkStyle default stroke:#8a9bb0,stroke-width:2.2px
+  classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
+  classDef data fill:#e9ecef,stroke:#555,color:#111
+
+  CORP(["Corpusrecords: modus-tokens en vervangercorrectie per molecuul"]):::data
+  LAB(["Labels: ΔH-blokken met foutmarge per familie"]):::data
+  SPLIT["Splitsing per molecuul en per kern (eigen software)"]:::planned
+  SETS(["Train-, validatie- en testsets"]):::data
+  PRE["Voortraining op de vervangercorrectie (PyTorch)"]:::planned
+  PRENET(["Voorgetraind ΔH-model"]):::data
+  FT["Bijtraining op de labels (PyTorch)"]:::planned
+  FTNET(["Bijgetraind ΔH-model"]):::data
+  VAL["Validatie tegen de eenvoudige regels (eigen software)"]:::planned
+  VALR(["Validatiefouten per familie"]):::data
+  ENSF["Ensemblevorming over seeds (PyTorch)"]:::planned
+  ENS(["Getraind ΔH-model: ensemble van leden"]):::data
+
+  CORP --> SPLIT
+  LAB --> SPLIT
+  SPLIT --> SETS
+  SETS --> PRE --> PRENET --> FT --> FTNET --> ENSF --> ENS
+  SETS --> FT
+  FTNET --> VAL --> VALR --> FT
+```
+
+## 3b. Test en licentie (`21_test_en_licentie.mmd`)
+
+```mermaid
+%% Test en licentie (niveau 3b): uit het getrainde ΔH-model en de testset komt het modelpakket dat de target pipeline inlaadt. Doelarchitectuur; nog niet gebouwd.
 %% Rechthoek = processtap (bewerking + software); ronde uiteinden = data-object (het ding). Elke stap levert één data-object. Gestippeld = nog niet gebouwd.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
@@ -167,20 +204,10 @@ flowchart LR
   classDef data fill:#e9ecef,stroke:#555,color:#111
   classDef ext fill:#cfd8e3,stroke:#3d5a80,color:#111
 
-  CORP(["Corpusrecords: modus-tokens en vervangercorrectie per molecuul"]):::data
-  LAB(["Labels: ΔH-blokken met foutmarge per familie"]):::data
+  ENS(["Getraind ΔH-model: ensemble van leden"]):::data
+  TESTSET(["Testset: moleculen met labels, buiten de training gehouden"]):::data
   LABDB(["Laboratoriumspectra met de marge per referentiekolom"]):::ext
   PAHDB(["Opponenten: PAHdb en andere voorspellers"]):::ext
-  SPLIT["Splitsing per molecuul en per kern (eigen software)"]:::planned
-  SETS(["Train-, validatie- en testsets"]):::data
-  PRE["Voortraining op de vervangercorrectie (PyTorch)"]:::planned
-  PRENET(["Voorgetraind ΔH-model"]):::data
-  FT["Bijtraining op de labels (PyTorch)"]:::planned
-  FTNET(["Bijgetraind ΔH-model"]):::data
-  ENSF["Ensemblevorming over seeds (PyTorch)"]:::planned
-  ENS(["Ensemble van ΔH-modellen"]):::data
-  VAL["Validatie tegen de eenvoudige regels (eigen software)"]:::planned
-  VALR(["Validatiefouten per familie"]):::data
   TEST["Test op de testmoleculen (eigen software)"]:::planned
   TESTR(["Testfouten per familie en ladingstoestand, naast de opponenten"]):::data
   LIC["Licentiebepaling (eigen software)"]:::planned
@@ -188,16 +215,10 @@ flowchart LR
   CAL["Onzekerheidskalibratie (eigen software)"]:::planned
   CALR(["Kalibratie van de ensemblespreiding"]):::data
   PACK["Bundeling (eigen software)"]:::planned
-  MODEL(["Modelpakket: ensemble van ΔH-modellen, licentietabel, kalibratie"]):::data
+  MODEL(["Modelpakket: getraind ΔH-model, licentietabel, kalibratie"]):::data
 
-  CORP --> SPLIT
-  LAB --> SPLIT
-  SPLIT --> SETS
-  SETS --> PRE --> PRENET --> FT --> FTNET --> ENSF --> ENS
-  SETS --> FT
-  ENS --> VAL --> VALR --> FT
   ENS --> TEST
-  SETS --> TEST
+  TESTSET --> TEST
   LABDB --> TEST
   PAHDB --> TEST
   TEST --> TESTR
