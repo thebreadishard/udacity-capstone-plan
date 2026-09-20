@@ -7,7 +7,7 @@ flowchart LR
   classDef data fill:#e9ecef,stroke:#555,color:#111
 
   MOL(["Molecuul: geometrie, lading, multipliciteit"]):::data
-  COND(["Waarnemingscondities: temperatuur van de bron, resolutie van het instrument"]):::data
+  COND(["Waarnemingscondities: interne energie na UV-absorptie (emissie) of temperatuur (absorptie); resolutie van het instrument"]):::data
 
   DFT["DFT (psi4)"]
   SK(["Hessiaan H0 en dipoolafgeleiden"]):::data
@@ -26,7 +26,7 @@ flowchart LR
   EIG["Diagonalisatie (eigen software)"]
   POS(["Bandposities met marge en licentiestatus per familie"]):::data
   INT["Intensiteitsberekening (eigen software)"]
-  INTS(["Bandintensiteiten"]):::data
+  INTS(["Bandintensiteiten, herverdeeld over resonantiepolyaden"]):::data
   ANH["Anharmonische correctie (eigen software)"]
   ANHS(["Anharmonische verschuivingen per band"]):::data
   SHAPE["Profielvorming (eigen software)"]
@@ -41,6 +41,7 @@ flowchart LR
   SK --> INT
   MODES --> INT --> INTS --> SHAPE
   ANHC --> ANH
+  ANHC --> INT
   MODES --> ANH --> ANHS --> SHAPE
   COND --> SHAPE
   SHAPE --> SPEC
