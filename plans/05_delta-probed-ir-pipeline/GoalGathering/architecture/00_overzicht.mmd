@@ -1,91 +1,51 @@
-%% Doelarchitectuur plan 05 — overzicht (niveau 2). Het systeem zoals het staat als de toetsen ja zeggen.
-%% Rechthoek = processtap; ronde uiteinden = data-object; cilinder = opslag; ruit = poort. Gestippeld = nog niet gebouwd. Pijlen zijn datastromen.
+%% Overzicht plan 05 (niveau 1): vier soorten proces en de opslagen die ze verbinden. Stand 20 september 2026.
+%% Rechthoek = proces (hier: een heel blad); cilinder = opslag; ronde uiteinden = data-object; pijl = datastroom. Gestippeld = nog niet gebouwd.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
   classDef ext fill:#cfd8e3,stroke:#3d5a80,color:#111
   classDef data fill:#e9ecef,stroke:#555,color:#111
-  classDef gate fill:#d9f0dc,stroke:#2e7d32,color:#111
   classDef store fill:#dfe7f2,stroke:#5b7a99,color:#111
+  classDef proc fill:#f7f7fb,stroke:#333,stroke-width:1.5px,color:#111
+  classDef research fill:#fdf2e3,stroke:#8a5a00,color:#111
 
-  subgraph IN [" "]
-    direction TB
-    MOL(["Molecuul"]):::data
-    CAT[("Molecuulcatalogus: geometrieën, lading, multipliciteit")]:::store
-    CAT --> MOL
-  end
+  CAT[("Molecuulcatalogus: geometrieën, lading, multipliciteit")]:::store
 
-  subgraph B["Pipeline B: hoe één label ontstaat"]
+  subgraph DC["Datacreatie (bladen 1 en 2)"]
     direction TB
-    DFT["DFT-schets: Hessiaan H0, modi, frequenties, families"]
-    DECK["Deck: symmetrie-geblokte verplaatsingspatronen"]
-    LNO["Coupled-cluster-energieën en -gradiënten in bevroren lokale ruimtes"]
-    REC["Herstel van de correctie ΔH per bandfamilie: diagonaal en koppelingen"]
-    LIC1{"Licentie van het herstel tegen direct berekende referenties"}:::gate
-    DFT --> DECK --> LNO --> REC --> LIC1
+    LABF["Labelfabriek: coupled-cluster-correctie per molecuul, gelicentieerd tegen directe referenties"]:::proc
+    CORPF["Corpusstap: twee DFT-Hessianen per molecuul"]:::proc
   end
-  subgraph LB [" "]
-    direction TB
-    LAB1(["Label: ΔH-blokken met foutmarge per familie"]):::data
-    LABELS[("Labelopslag")]:::store
-    LAB1 --> LABELS
-  end
+  LABELS[("Labelopslag: ΔH-blokken met foutmarge")]:::store
+  CORPUS[("Corpus: DFT-paren, vervangercorrectie")]:::store
+  SKETCHES[("DFT-schetsen: H0, dipoolafgeleiden, anharmonische constanten")]:::store
 
-  subgraph A["Pipeline A: het netwerk dat de correctie overdraagt"]
-    direction TB
-    PROXY(["Vervangercorrectie: volledige ΔH per molecuul"]):::data
-    CORPUS[("Corpus: DFT-paren per molecuul")]:::store
-    PRE["Voortraining op de vervangercorrectie"]:::planned
-    NET["Netwerk: modus-tokens → ΔH-blok per familie"]:::planned
-    ENS["Ensemble → onzekerheid per familie"]:::planned
-    LIC2{"Licentie per bandfamilie tegen de labels; anders weigering"}:::gate
-    CORPUS --> PROXY --> PRE --> NET --> ENS --> LIC2
-  end
-  subgraph PB [" "]
-    direction TB
-    PRED(["Voorspelde ΔH-blokken met onzekerheid; geweigerde families gemarkeerd"]):::data
-    PREDS[("Voorspellingsopslag")]:::store
-    PRED --> PREDS
-  end
-
-  subgraph S["Spectrum en score"]
-    direction TB
-    CORR["Gecorrigeerde krachtconstanten: H0 + ΔH op gelicentieerde blokken"]
-    DIAG["Diagonalisatie → bandposities; intensiteiten en anharmoniek uit DFT"]
-    SB{"Score per referentiekolom, binnen de marge van die kolom of niet"}:::gate
-    CORR --> DIAG
-  end
-  subgraph SP [" "]
-    direction TB
-    SPEC(["Spectrum met foutmarge per band"]):::data
-    SPECS[("Spectrumarchief")]:::store
-    SPEC --> SPECS
-  end
-  subgraph RS [" "]
-    direction TB
-    RES(["Scores per band en familie"]):::data
-    RESS[("Scorearchief")]:::store
-    RES --> RESS
-  end
+  TRAIN["Training, validatie en test (blad 3): voortrainen op het corpus, bijtrainen op de labels, valideren per molecuul, testen per familie tegen labels en laboratoriumkolommen"]:::planned
+  MODEL[("Getraind netwerk + licentietabel per familie en ladingstoestand")]:::store
   LABDB[("Laboratoriumspectra")]:::ext
   PAHDB[("PAHdb en andere voorspellers")]:::ext
-  style IN fill:none,stroke:none
-  style LB fill:none,stroke:none
-  style PB fill:none,stroke:none
-  style SP fill:none,stroke:none
-  style RS fill:none,stroke:none
 
-  MOL --> DFT
-  MOL --> CORPUS
-  LIC1 --> LAB1
-  LABELS --> NET
-  LABELS -- "foutmarge per familie" --> LIC2
-  LIC2 --> PRED
-  LABELS --> CORR
-  PREDS --> CORR
-  DFT --> CORR
-  DIAG --> SPEC
-  SPEC --> SB
-  LABDB --> SB
-  PAHDB --> SB
-  SB --> RES
+  PIPE["Pipeline (blad 4): DFT-schets → forward pass → gelicentieerde ΔH-blokken → gecorrigeerde krachtconstanten → spectrale vorm"]:::planned
+  SPEC(["Spectrum met foutmarge per band, voor een molecuul zonder laboratoriumspectrum"]):::data
+  SPECS[("Spectrumarchief")]:::store
+  JWST[("Astronomische waarnemingen (JWST): de vraag die het spectrum beantwoordt")]:::ext
+
+  RES["Onderzoeksproces (bladen 5 en 6): de toetsen die beslissen of dit alles er zo komt"]:::research
+
+  CAT --> LABF --> LABELS
+  CAT --> CORPF --> CORPUS
+  CORPF --> SKETCHES
+  LABF --> SKETCHES
+  CORPUS --> TRAIN
+  LABELS --> TRAIN
+  LABDB --> TRAIN
+  PAHDB --> TRAIN
+  TRAIN --> MODEL
+  CAT --> PIPE
+  SKETCHES --> PIPE
+  MODEL --> PIPE
+  PIPE --> SPEC --> SPECS
+  SPEC --> JWST
+  RES -. beslist over .-> DC
+  RES -. beslist over .-> TRAIN
+  RES -. beslist over .-> PIPE

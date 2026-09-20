@@ -1,121 +1,90 @@
-# Doelarchitectuur plan 05 (voor de auteurs, Nederlands; eerste versie 19 september 2026, herzien 20 september)
+# Architectuur plan 05 (voor de auteurs, Nederlands; eerste versie 19 september 2026, herzien 20 september)
 
-**Wat dit is.** Het systeem zoals het er staat als de lopende toetsen ja zeggen. Het is uitdrukkelijk *niet* het onderzoeksproces: er staan geen beslissingen in die de auteurs de komende dagen of weken nemen, geen ankerrun, geen experimentnummers, geen data. Dat proces krijgt zijn eigen blad. Rekenplaats staat er voorlopig ook niet in; die wordt later per blokje toegevoegd. Het onderzoeksproces — de toetsen die beslissen of de doelarchitectuur er komt, mét data en besluiten — staat apart op de bladen 5 en 6 (groen geslaagd, blauw loopt, gestippeld nog te doen, rood verloren en gesloten).
+**Vier soorten diagram, uit elkaar gehouden (afspraak van 20 september).**
 
-**Legenda (afgesproken 20 september).**
+| soort | wat het toont | bladen |
+|---|---|---|
+| **Datacreatie** | processen die opslagen vullen: de labelfabriek (coupled-cluster-correcties per molecuul) en de corpusstap (DFT-paren) | 1, 2 |
+| **Training, validatie en test** | het proces waar een getraind netwerk met licentietabel uit komt; hier hoort de score tegen de laboratoriumkolommen (de test) | 3 |
+| **Pipeline** | wat er staat als onderzoek en training klaar zijn: molecuul in, forward pass als één figuurtje, spectrale vorm uit, naar de astronoom | 4 (en 4a: de componenten van het netwerk) |
+| **Onderzoeksproces** | de toetsen die beslissen of dit alles er zo komt; het enige soort blad waar data, besluiten en experimentnummers in mogen | 5, 6 |
+
+Het overzicht (blad 0) toont de vier soorten en de opslagen die ze verbinden. Rekenplaats staat er voorlopig niet in; die komt later per blokje.
+
+**Legenda.**
 
 | figuur | betekenis |
 |---|---|
-| rechthoek | processtap: een bewerking die data omzet in andere data |
-| rechthoek met ronde uiteinden (grijs) | data-object: een invoer, tussenproduct of uitkomst die door de pijplijn stroomt |
-| cilinder | opslag: een verzameling die blijft bestaan en door meerdere stappen wordt gelezen of gevuld; getekend onder het data-object dat eruit komt of erin gaat; donkerder blauw = extern, niet van ons |
+| rechthoek | processtap: een bewerking die data omzet in andere data (op blad 0: een heel proces) |
+| rechthoek met ronde uiteinden (grijs) | data-object: een invoer, tussenproduct of uitkomst die door het proces stroomt |
+| cilinder | opslag: een verzameling die blijft bestaan en door meerdere processen wordt gelezen of gevuld; getekend onder het data-object dat eruit komt of erin gaat; donkerder blauw = extern, niet van ons |
 | ruit (groen) | poort: een toets met een vooraf vastgelegde uitkomst — door, of niet door |
 | doorgetrokken rand | bestaat en is gemeten |
 | gestippelde rand, gele vulling | nog niet gebouwd |
 | pijl | datastroom |
 
-Elke pijplijn begint bij een opslag → data-object en eindigt bij data-object → opslag. Bron van waarheid: de `.mmd`-bestanden in deze map (Mermaid; renderen op GitHub).
+Op de onderzoeksprocesbladen: groen = geslaagd, blauw = loopt, gestippeld = nog te doen, rood = verloren en gesloten. Elk proces begint bij een opslag → data-object en eindigt bij data-object → opslag. Bron van waarheid: de `.mmd`-bestanden in deze map (Mermaid; renderen op GitHub).
 
-## 0. Overzicht (niveau 2)
+## 0. Overzicht: vier soorten proces en hun opslagen
 
 ```mermaid
-%% Doelarchitectuur plan 05 — overzicht (niveau 2). Het systeem zoals het staat als de toetsen ja zeggen.
-%% Rechthoek = processtap; ronde uiteinden = data-object; cilinder = opslag; ruit = poort. Gestippeld = nog niet gebouwd. Pijlen zijn datastromen.
+%% Overzicht plan 05 (niveau 1): vier soorten proces en de opslagen die ze verbinden. Stand 20 september 2026.
+%% Rechthoek = proces (hier: een heel blad); cilinder = opslag; ronde uiteinden = data-object; pijl = datastroom. Gestippeld = nog niet gebouwd.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
   classDef ext fill:#cfd8e3,stroke:#3d5a80,color:#111
   classDef data fill:#e9ecef,stroke:#555,color:#111
-  classDef gate fill:#d9f0dc,stroke:#2e7d32,color:#111
   classDef store fill:#dfe7f2,stroke:#5b7a99,color:#111
+  classDef proc fill:#f7f7fb,stroke:#333,stroke-width:1.5px,color:#111
+  classDef research fill:#fdf2e3,stroke:#8a5a00,color:#111
 
-  subgraph IN [" "]
-    direction TB
-    MOL(["Molecuul"]):::data
-    CAT[("Molecuulcatalogus: geometrieën, lading, multipliciteit")]:::store
-    CAT --> MOL
-  end
+  CAT[("Molecuulcatalogus: geometrieën, lading, multipliciteit")]:::store
 
-  subgraph B["Pipeline B: hoe één label ontstaat"]
+  subgraph DC["Datacreatie (bladen 1 en 2)"]
     direction TB
-    DFT["DFT-schets: Hessiaan H0, modi, frequenties, families"]
-    DECK["Deck: symmetrie-geblokte verplaatsingspatronen"]
-    LNO["Coupled-cluster-energieën en -gradiënten in bevroren lokale ruimtes"]
-    REC["Herstel van de correctie ΔH per bandfamilie: diagonaal en koppelingen"]
-    LIC1{"Licentie van het herstel tegen direct berekende referenties"}:::gate
-    DFT --> DECK --> LNO --> REC --> LIC1
+    LABF["Labelfabriek: coupled-cluster-correctie per molecuul, gelicentieerd tegen directe referenties"]:::proc
+    CORPF["Corpusstap: twee DFT-Hessianen per molecuul"]:::proc
   end
-  subgraph LB [" "]
-    direction TB
-    LAB1(["Label: ΔH-blokken met foutmarge per familie"]):::data
-    LABELS[("Labelopslag")]:::store
-    LAB1 --> LABELS
-  end
+  LABELS[("Labelopslag: ΔH-blokken met foutmarge")]:::store
+  CORPUS[("Corpus: DFT-paren, vervangercorrectie")]:::store
+  SKETCHES[("DFT-schetsen: H0, dipoolafgeleiden, anharmonische constanten")]:::store
 
-  subgraph A["Pipeline A: het netwerk dat de correctie overdraagt"]
-    direction TB
-    PROXY(["Vervangercorrectie: volledige ΔH per molecuul"]):::data
-    CORPUS[("Corpus: DFT-paren per molecuul")]:::store
-    PRE["Voortraining op de vervangercorrectie"]:::planned
-    NET["Netwerk: modus-tokens → ΔH-blok per familie"]:::planned
-    ENS["Ensemble → onzekerheid per familie"]:::planned
-    LIC2{"Licentie per bandfamilie tegen de labels; anders weigering"}:::gate
-    CORPUS --> PROXY --> PRE --> NET --> ENS --> LIC2
-  end
-  subgraph PB [" "]
-    direction TB
-    PRED(["Voorspelde ΔH-blokken met onzekerheid; geweigerde families gemarkeerd"]):::data
-    PREDS[("Voorspellingsopslag")]:::store
-    PRED --> PREDS
-  end
-
-  subgraph S["Spectrum en score"]
-    direction TB
-    CORR["Gecorrigeerde krachtconstanten: H0 + ΔH op gelicentieerde blokken"]
-    DIAG["Diagonalisatie → bandposities; intensiteiten en anharmoniek uit DFT"]
-    SB{"Score per referentiekolom, binnen de marge van die kolom of niet"}:::gate
-    CORR --> DIAG
-  end
-  subgraph SP [" "]
-    direction TB
-    SPEC(["Spectrum met foutmarge per band"]):::data
-    SPECS[("Spectrumarchief")]:::store
-    SPEC --> SPECS
-  end
-  subgraph RS [" "]
-    direction TB
-    RES(["Scores per band en familie"]):::data
-    RESS[("Scorearchief")]:::store
-    RES --> RESS
-  end
+  TRAIN["Training, validatie en test (blad 3): voortrainen op het corpus, bijtrainen op de labels, valideren per molecuul, testen per familie tegen labels en laboratoriumkolommen"]:::planned
+  MODEL[("Getraind netwerk + licentietabel per familie en ladingstoestand")]:::store
   LABDB[("Laboratoriumspectra")]:::ext
   PAHDB[("PAHdb en andere voorspellers")]:::ext
-  style IN fill:none,stroke:none
-  style LB fill:none,stroke:none
-  style PB fill:none,stroke:none
-  style SP fill:none,stroke:none
-  style RS fill:none,stroke:none
 
-  MOL --> DFT
-  MOL --> CORPUS
-  LIC1 --> LAB1
-  LABELS --> NET
-  LABELS -- "foutmarge per familie" --> LIC2
-  LIC2 --> PRED
-  LABELS --> CORR
-  PREDS --> CORR
-  DFT --> CORR
-  DIAG --> SPEC
-  SPEC --> SB
-  LABDB --> SB
-  PAHDB --> SB
-  SB --> RES
+  PIPE["Pipeline (blad 4): DFT-schets → forward pass → gelicentieerde ΔH-blokken → gecorrigeerde krachtconstanten → spectrale vorm"]:::planned
+  SPEC(["Spectrum met foutmarge per band, voor een molecuul zonder laboratoriumspectrum"]):::data
+  SPECS[("Spectrumarchief")]:::store
+  JWST[("Astronomische waarnemingen (JWST): de vraag die het spectrum beantwoordt")]:::ext
+
+  RES["Onderzoeksproces (bladen 5 en 6): de toetsen die beslissen of dit alles er zo komt"]:::research
+
+  CAT --> LABF --> LABELS
+  CAT --> CORPF --> CORPUS
+  CORPF --> SKETCHES
+  LABF --> SKETCHES
+  CORPUS --> TRAIN
+  LABELS --> TRAIN
+  LABDB --> TRAIN
+  PAHDB --> TRAIN
+  TRAIN --> MODEL
+  CAT --> PIPE
+  SKETCHES --> PIPE
+  MODEL --> PIPE
+  PIPE --> SPEC --> SPECS
+  SPEC --> JWST
+  RES -. beslist over .-> DC
+  RES -. beslist over .-> TRAIN
+  RES -. beslist over .-> PIPE
 ```
 
-## 1. Pipeline B: hoe één label ontstaat
+## 1. Datacreatie — de labelfabriek: hoe één label ontstaat
 
 ```mermaid
-%% Doelarchitectuur — Pipeline B: hoe één label ontstaat (niveau 3).
+%% Datacreatie — de labelfabriek: hoe één label ontstaat (niveau 3).
 %% Rechthoek = processtap; ronde uiteinden = data-object; cilinder = opslag (onder het data-object); ruit = poort. Gestippeld = nog niet gebouwd.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
@@ -164,10 +133,59 @@ flowchart LR
   LIC --> LABEL
 ```
 
-## 2. Pipeline A: het netwerk dat de correctie overdraagt
+## 2. Datacreatie — het corpus van DFT-paren
 
 ```mermaid
-%% Doelarchitectuur — Pipeline A: het netwerk dat de correctie overdraagt (niveau 3).
+%% Datacreatie — het corpus: twee DFT-Hessianen per molecuul en wat eruit volgt (niveau 3).
+%% Rechthoek = processtap; ronde uiteinden = data-object; cilinder = opslag (onder het data-object). Alles bestaat.
+flowchart LR
+  linkStyle default stroke:#8a9bb0,stroke-width:2.2px
+  classDef data fill:#e9ecef,stroke:#555,color:#111
+  classDef store fill:#dfe7f2,stroke:#5b7a99,color:#111
+
+  subgraph IN [" "]
+    direction TB
+    MOL(["Molecuul: SMILES of geometrie, lading, multipliciteit"]):::data
+    CAT[("Molecuulcatalogus: manifest met lagen")]:::store
+    CAT --> MOL
+  end
+  GEO["Startgeometrie en optimalisatie op laag niveau"]
+  HLO["Hessiaan op laag niveau (de schets die de pipeline ook gebruikt)"]
+  HHI["Hessiaan op hoog niveau, zelfde geometrie"]
+  DIP["Dipoolafgeleiden en anharmonische constanten op laag niveau"]
+  MODES["Modi, frequenties, families, symmetrieblokken uit de laag-niveau-Hessiaan"]
+  PROXY["Vervangercorrectie: ΔH = H_hoog − H_laag, volledig, in de modusbasis per familieblok"]
+  subgraph OUT1 [" "]
+    direction TB
+    PAIR(["DFT-paar met vervangercorrectie en modus-tokens"]):::data
+    CORPUS[("Corpus")]:::store
+    PAIR --> CORPUS
+  end
+  subgraph OUT2 [" "]
+    direction TB
+    SK(["DFT-schets: H0, modi, dipoolafgeleiden, anharmonische constanten"]):::data
+    SKETCHES[("DFT-schetsen")]:::store
+    SK --> SKETCHES
+  end
+  style IN fill:none,stroke:none
+  style OUT1 fill:none,stroke:none
+  style OUT2 fill:none,stroke:none
+
+  MOL --> GEO --> HLO --> MODES
+  GEO --> HHI
+  GEO --> DIP
+  HLO --> PROXY
+  HHI --> PROXY
+  MODES --> PROXY --> PAIR
+  MODES --> SK
+  HLO --> SK
+  DIP --> SK
+```
+
+## 3. Training, validatie en test
+
+```mermaid
+%% Training, validatie en test (niveau 3): uit corpus en labels komt een getraind netwerk met een licentietabel. Nog niet begonnen.
 %% Rechthoek = processtap; ronde uiteinden = data-object; cilinder = opslag (onder het data-object); ruit = poort. Gestippeld = nog niet gebouwd.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
@@ -175,113 +193,114 @@ flowchart LR
   classDef data fill:#e9ecef,stroke:#555,color:#111
   classDef gate fill:#d9f0dc,stroke:#2e7d32,color:#111
   classDef store fill:#dfe7f2,stroke:#5b7a99,color:#111
-
-  subgraph IN [" "]
-    direction TB
-    MOL(["Molecuul"]):::data
-    CAT[("Molecuulcatalogus")]:::store
-    CAT --> MOL
-  end
-  RUN["Corpusstap: twee DFT-Hessianen per molecuul, laag en hoog niveau"]
-  subgraph CP [" "]
-    direction TB
-    PROXY(["Vervangercorrectie: volledige ΔH per molecuul"]):::data
-    CORPUS[("Corpus: DFT-paren")]:::store
-    CORPUS --> PROXY
-  end
-  TOK["Modus-tokens uit de laag-niveau-Hessiaan"]
-  PRE["Voortraining op de vervangercorrectie"]:::planned
-  subgraph LB [" "]
-    direction TB
-    LABIN(["Labels: ΔH-blokken met foutmarge"]):::data
-    LABELS[("Labelopslag")]:::store
-    LABELS --> LABIN
-  end
-  FT["Bijtrainen op de labels: kleine leersnelheid, vroeg stoppen op apart gehouden moleculen"]:::planned
-  NET["Netwerk: modus-tokens → ΔH-blok per familie, diagonaal en koppelingen"]:::planned
-  ENS["Ensemble → onzekerheid per familie"]:::planned
-  LIC{"Licentie per familie en ladingstoestand: fout onder de marge van de scorekolom en beter dan de eenvoudige regels"}:::gate
-  ACT["Keuze van het volgende te labelen molecuul: grootste onenigheid in het ensemble"]:::planned
-  NEXT(["Verzoek om een label"]):::data
-  subgraph OUT [" "]
-    direction TB
-    PRED(["Voorspelde ΔH-blokken met onzekerheid; geweigerde families gemarkeerd"]):::data
-    STORE[("Voorspellingsopslag")]:::store
-    PRED --> STORE
-  end
-  style IN fill:none,stroke:none
-  style CP fill:none,stroke:none
-  style LB fill:none,stroke:none
-  style OUT fill:none,stroke:none
-
-  MOL --> RUN --> CORPUS
-  PROXY --> TOK --> PRE --> NET
-  LABIN --> FT --> NET
-  NET --> ENS --> LIC --> PRED
-  ENS --> ACT --> NEXT --> CAT
-```
-
-## 3. Spectrum en score
-
-```mermaid
-%% Doelarchitectuur — Spectrum en score (niveau 3).
-%% Rechthoek = processtap; ronde uiteinden = data-object; cilinder = opslag (onder het data-object); ruit = poort.
-flowchart LR
-  linkStyle default stroke:#8a9bb0,stroke-width:2.2px
-  classDef data fill:#e9ecef,stroke:#555,color:#111
   classDef ext fill:#cfd8e3,stroke:#3d5a80,color:#111
-  classDef gate fill:#d9f0dc,stroke:#2e7d32,color:#111
-  classDef store fill:#dfe7f2,stroke:#5b7a99,color:#111
 
   subgraph IN1 [" "]
     direction TB
-    DH(["ΔH-blokken: gemeten of voorspeld, per gelicentieerde familie"]):::data
-    LABELS[("Labelopslag")]:::store
-    PREDS[("Voorspellingsopslag")]:::store
-    LABELS --> DH
-    PREDS --> DH
+    PROXY(["DFT-paren met vervangercorrectie en modus-tokens"]):::data
+    CORPUS[("Corpus")]:::store
+    CORPUS --> PROXY
   end
   subgraph IN2 [" "]
     direction TB
-    H0(["DFT-schets van het molecuul"]):::data
-    SKETCHDB[("DFT-schetsen: H0, dipoolafgeleiden, anharmonische constanten")]:::store
-    SKETCHDB --> H0
+    LAB(["Labels: ΔH-blokken met foutmarge per familie"]):::data
+    LABELS[("Labelopslag")]:::store
+    LABELS --> LAB
   end
-  SUM["Gecorrigeerde krachtconstanten: H0 + ΔH op de gelicentieerde blokken, elders H0"]
-  EIG["Diagonalisatie → harmonische posities met marge per familie"]
-  INT["Intensiteiten uit de DFT-dipoolafgeleiden"]
-  ANH["Anharmonische verschuiving uit DFT"]
-  subgraph SP [" "]
-    direction TB
-    SPEC(["Spectrum: banden met positie, intensiteit, marge; profiel op de resolutie van de bron"]):::data
-    SPECS[("Spectrumarchief")]:::store
-    SPEC --> SPECS
-  end
+  SPLIT["Splitsing per molecuul en per kern: train, validatie, test — vastgelegd vóór het trainen"]:::planned
+  PRE["Voortrainen op de vervangercorrectie: bloktarget per familie, gebalanceerd verlies"]:::planned
+  FT["Bijtrainen op de labels: kleine leersnelheid, vroeg stoppen op de validatiemoleculen"]:::planned
+  ENS["Ensemble over seeds"]:::planned
+  VAL["Validatie: fout per familie op de validatiemoleculen, tegen de nulregel, de mediaanregel en de type-overdracht"]:::planned
+  TEST["Test op de testmoleculen: ΔH-blokken en het spectrum dat eruit volgt"]:::planned
   LABDB[("Laboratoriumspectra")]:::ext
   PAHDB[("PAHdb en andere voorspellers")]:::ext
-  SB{"Score per referentiekolom: binnen de marge van die kolom of niet"}:::gate
-  subgraph RS [" "]
+  SCORE{"Licentie per familie en ladingstoestand: fout onder de marge van de scorekolom van die familie"}:::gate
+  CAL["Kalibratie van de onzekerheid: spreiding van het ensemble tegen de gemeten fout"]:::planned
+  subgraph OUT [" "]
     direction TB
-    RES(["Scores per band en familie, met de vergelijking naast de opponenten"]):::data
+    MODEL(["Getraind netwerk + licentietabel + kalibratie"]):::data
+    MODELS[("Modelopslag")]:::store
+    MODEL --> MODELS
+  end
+  subgraph OUT2 [" "]
+    direction TB
+    RES(["Testscores per band en familie, naast de opponenten"]):::data
     RESS[("Scorearchief")]:::store
     RES --> RESS
   end
   style IN1 fill:none,stroke:none
   style IN2 fill:none,stroke:none
-  style SP fill:none,stroke:none
-  style RS fill:none,stroke:none
+  style OUT fill:none,stroke:none
+  style OUT2 fill:none,stroke:none
 
-  DH --> SUM
-  H0 --> SUM --> EIG --> SPEC
-  H0 --> INT --> SPEC
-  H0 --> ANH --> SPEC
-  SPEC --> SB
-  LABDB --> SB
-  PAHDB --> SB
-  SB --> RES
+  PROXY --> SPLIT
+  LAB --> SPLIT
+  SPLIT --> PRE --> FT --> ENS --> VAL --> TEST --> SCORE
+  LABDB --> SCORE
+  PAHDB --> TEST
+  SCORE --> RES
+  SCORE --> CAL --> MODEL
 ```
 
-## 4. Componenten van het netwerk
+## 4. Pipeline
+
+```mermaid
+%% Pipeline (niveau 3): wat er staat als onderzoek en training klaar zijn. Een molecuul zonder laboratoriumspectrum in, een spectrum met foutmarge uit.
+%% Rechthoek = processtap; ronde uiteinden = data-object; cilinder = opslag (onder het data-object); ruit = poort. Gestippeld = nog niet gebouwd. De forward pass is één figuurtje.
+flowchart LR
+  linkStyle default stroke:#8a9bb0,stroke-width:2.2px
+  classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
+  classDef data fill:#e9ecef,stroke:#555,color:#111
+  classDef gate fill:#d9f0dc,stroke:#2e7d32,color:#111
+  classDef store fill:#dfe7f2,stroke:#5b7a99,color:#111
+  classDef ext fill:#cfd8e3,stroke:#3d5a80,color:#111
+
+  subgraph IN [" "]
+    direction TB
+    MOL(["Molecuul: geometrie, lading, multipliciteit"]):::data
+    CAT[("Molecuulcatalogus")]:::store
+    CAT --> MOL
+  end
+  SK["DFT-schets: H0, modi, frequenties, families, dipoolafgeleiden, anharmonische constanten"]
+  TOK["Modus-tokens"]
+  subgraph MD [" "]
+    direction TB
+    NETW(["Getraind netwerk + licentietabel + kalibratie"]):::data
+    MODELS[("Modelopslag")]:::store
+    MODELS --> NETW
+  end
+  FWD["Forward pass: ΔH-blok per familie met onzekerheid"]:::planned
+  GATE{"Licentietabel: familie gelicentieerd voor deze ladingstoestand?"}:::gate
+  APPLY["Gecorrigeerde krachtconstanten: H0 + ΔH op de gelicentieerde blokken, elders H0, met melding"]
+  EIG["Diagonalisatie → bandposities met marge per familie"]
+  INT["Intensiteiten uit de dipoolafgeleiden"]
+  ANH["Anharmonische verschuiving per band"]
+  SHAPE["Spectrale vorm: profiel per band uit positie, intensiteit, marge, temperatuur van de bron en resolutie van het instrument"]
+  subgraph OUT [" "]
+    direction TB
+    SPEC(["Spectrum: posities, intensiteiten, vorm, foutmarge per band, gemarkeerde weigeringen"]):::data
+    SPECS[("Spectrumarchief")]:::store
+    SPEC --> SPECS
+  end
+  JWST[("Astronomische waarnemingen (JWST)")]:::ext
+  style IN fill:none,stroke:none
+  style MD fill:none,stroke:none
+  style OUT fill:none,stroke:none
+
+  MOL --> SK --> TOK --> FWD
+  NETW --> FWD
+  FWD --> GATE
+  NETW --> GATE
+  GATE --> APPLY
+  SK --> APPLY
+  APPLY --> EIG --> SHAPE
+  SK --> INT --> SHAPE
+  SK --> ANH --> SHAPE
+  SHAPE --> SPEC --> JWST
+```
+
+## 4a. Componenten van het netwerk
 
 ```mermaid
 %% Doelarchitectuur — Componenten van het netwerk (niveau 4). Grotendeels nog niet gebouwd.
@@ -316,9 +335,7 @@ flowchart LR
   ENC --> PAIR --> OUTB
 ```
 
-# Onderzoeksproces (mag data en besluiten bevatten)
-
-## 5. Onderzoeksproces — pipeline B
+## 5. Onderzoeksproces — de labelfabriek en de decks
 
 ```mermaid
 %% Onderzoeksproces — pipeline B: de toetsen die beslissen of de doelarchitectuur van blad 1 er komt. Stand 20 september 2026.
@@ -363,7 +380,7 @@ flowchart LR
   DECK2 --> TPORT
 ```
 
-## 6. Onderzoeksproces — pipeline A
+## 6. Onderzoeksproces — het netwerk
 
 ```mermaid
 %% Onderzoeksproces — pipeline A: de toetsen die beslissen of en hoe het netwerk van blad 2 er komt. Stand 20 september 2026.

@@ -1,0 +1,44 @@
+%% Datacreatie — het corpus: twee DFT-Hessianen per molecuul en wat eruit volgt (niveau 3).
+%% Rechthoek = processtap; ronde uiteinden = data-object; cilinder = opslag (onder het data-object). Alles bestaat.
+flowchart LR
+  linkStyle default stroke:#8a9bb0,stroke-width:2.2px
+  classDef data fill:#e9ecef,stroke:#555,color:#111
+  classDef store fill:#dfe7f2,stroke:#5b7a99,color:#111
+
+  subgraph IN [" "]
+    direction TB
+    MOL(["Molecuul: SMILES of geometrie, lading, multipliciteit"]):::data
+    CAT[("Molecuulcatalogus: manifest met lagen")]:::store
+    CAT --> MOL
+  end
+  GEO["Startgeometrie en optimalisatie op laag niveau"]
+  HLO["Hessiaan op laag niveau (de schets die de pipeline ook gebruikt)"]
+  HHI["Hessiaan op hoog niveau, zelfde geometrie"]
+  DIP["Dipoolafgeleiden en anharmonische constanten op laag niveau"]
+  MODES["Modi, frequenties, families, symmetrieblokken uit de laag-niveau-Hessiaan"]
+  PROXY["Vervangercorrectie: ΔH = H_hoog − H_laag, volledig, in de modusbasis per familieblok"]
+  subgraph OUT1 [" "]
+    direction TB
+    PAIR(["DFT-paar met vervangercorrectie en modus-tokens"]):::data
+    CORPUS[("Corpus")]:::store
+    PAIR --> CORPUS
+  end
+  subgraph OUT2 [" "]
+    direction TB
+    SK(["DFT-schets: H0, modi, dipoolafgeleiden, anharmonische constanten"]):::data
+    SKETCHES[("DFT-schetsen")]:::store
+    SK --> SKETCHES
+  end
+  style IN fill:none,stroke:none
+  style OUT1 fill:none,stroke:none
+  style OUT2 fill:none,stroke:none
+
+  MOL --> GEO --> HLO --> MODES
+  GEO --> HHI
+  GEO --> DIP
+  HLO --> PROXY
+  HHI --> PROXY
+  MODES --> PROXY --> PAIR
+  MODES --> SK
+  HLO --> SK
+  DIP --> SK

@@ -1,0 +1,56 @@
+%% Training, validatie en test (niveau 3): uit corpus en labels komt een getraind netwerk met een licentietabel. Nog niet begonnen.
+%% Rechthoek = processtap; ronde uiteinden = data-object; cilinder = opslag (onder het data-object); ruit = poort. Gestippeld = nog niet gebouwd.
+flowchart LR
+  linkStyle default stroke:#8a9bb0,stroke-width:2.2px
+  classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
+  classDef data fill:#e9ecef,stroke:#555,color:#111
+  classDef gate fill:#d9f0dc,stroke:#2e7d32,color:#111
+  classDef store fill:#dfe7f2,stroke:#5b7a99,color:#111
+  classDef ext fill:#cfd8e3,stroke:#3d5a80,color:#111
+
+  subgraph IN1 [" "]
+    direction TB
+    PROXY(["DFT-paren met vervangercorrectie en modus-tokens"]):::data
+    CORPUS[("Corpus")]:::store
+    CORPUS --> PROXY
+  end
+  subgraph IN2 [" "]
+    direction TB
+    LAB(["Labels: ΔH-blokken met foutmarge per familie"]):::data
+    LABELS[("Labelopslag")]:::store
+    LABELS --> LAB
+  end
+  SPLIT["Splitsing per molecuul en per kern: train, validatie, test — vastgelegd vóór het trainen"]:::planned
+  PRE["Voortrainen op de vervangercorrectie: bloktarget per familie, gebalanceerd verlies"]:::planned
+  FT["Bijtrainen op de labels: kleine leersnelheid, vroeg stoppen op de validatiemoleculen"]:::planned
+  ENS["Ensemble over seeds"]:::planned
+  VAL["Validatie: fout per familie op de validatiemoleculen, tegen de nulregel, de mediaanregel en de type-overdracht"]:::planned
+  TEST["Test op de testmoleculen: ΔH-blokken en het spectrum dat eruit volgt"]:::planned
+  LABDB[("Laboratoriumspectra")]:::ext
+  PAHDB[("PAHdb en andere voorspellers")]:::ext
+  SCORE{"Licentie per familie en ladingstoestand: fout onder de marge van de scorekolom van die familie"}:::gate
+  CAL["Kalibratie van de onzekerheid: spreiding van het ensemble tegen de gemeten fout"]:::planned
+  subgraph OUT [" "]
+    direction TB
+    MODEL(["Getraind netwerk + licentietabel + kalibratie"]):::data
+    MODELS[("Modelopslag")]:::store
+    MODEL --> MODELS
+  end
+  subgraph OUT2 [" "]
+    direction TB
+    RES(["Testscores per band en familie, naast de opponenten"]):::data
+    RESS[("Scorearchief")]:::store
+    RES --> RESS
+  end
+  style IN1 fill:none,stroke:none
+  style IN2 fill:none,stroke:none
+  style OUT fill:none,stroke:none
+  style OUT2 fill:none,stroke:none
+
+  PROXY --> SPLIT
+  LAB --> SPLIT
+  SPLIT --> PRE --> FT --> ENS --> VAL --> TEST --> SCORE
+  LABDB --> SCORE
+  PAHDB --> TEST
+  SCORE --> RES
+  SCORE --> CAL --> MODEL
