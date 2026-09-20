@@ -32,3 +32,5 @@ Anything about the coupled-cluster correction (still two real points); the desig
 ## Cost and safety
 
 All DFT on rented machines; all training on the laptop at one thread and nice 19 (minutes per model per size) or on a rented machine; the anchor run is not touched. Results `modules/05_support_predictor/out/E6_learning_curve_in_data_<date>.{json,md}`; outcome sections appended here per phase.
+
+**Added 20 Sep, 11:0x — first failure in phase 1.** Shard 1, acenaphthylene+ethynyl (A2_12c940207d): the B3LYP/6-31G* geometry optimisation did not converge in 50 optking steps (near-linear C≡C–H bend; 375 s). Anthracene+ethynyl on shard 3 converged, so the ethynyl group is not excluded. Failed molecules are not dropped from the curve silently: after phase 1 they get one retry in Cartesian coordinates with 200 steps; a molecule that fails twice is listed in the phase report with its error, and the curve sizes are counted on molecules actually labelled.
