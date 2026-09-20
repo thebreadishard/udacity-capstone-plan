@@ -15,3 +15,5 @@ of this evening (no new local run until they say so) stands.*
 **What the pilot note can therefore state on 28 September:** the rehearsal recovery and the benzene canonical lines exist and are read; the R0 deck and the noise run do not exist and are the first two items for the laptop or a rented machine after the anchor; the anchor itself contributes a partial σ reading per family as it lands (mode 12 tonight, 22 on ≈ 23 Sep, 31 on ≈ 25 Sep).
 
 *Change to the §12 table:* none tonight; the row "Pilot-note inputs" already lists the four with their queue position. This note is its status on the day.
+
+*Decided 20 September, 21:1x (the user): option B — decision 45 in the README. The noise-run row above is superseded by the four-point densification on mode 12 after REPORT.md.*
