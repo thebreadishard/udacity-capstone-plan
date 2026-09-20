@@ -56,7 +56,11 @@ def main(job_path):  # 2026-09-14: psi4.hessian(..., return_wfn=True) returns (H
         for tag, func in (("b3lyp", d["low_functional"]), ("wb97x", d["high_functional"])):
             t = time.time(); e, wfn = psi4.hessian(func, molecule=mol, return_wfn=True)
             H = np.array(wfn.hessian()); Hp = project_tr(H, masses, coords); fr = frequencies_cm(Hp, masses)
-            np.savez_compressed(os.path.join(out, f"hessian_{tag}.npz"), H_raw=H, H_projected=Hp, freq_cm=fr, energy=float(wfn.energy()))
+            # 2026-09-20: the dipole gradient (3N x 3, a.u.) comes free with the Hessian; stored so every corpus molecule
+            # carries what the pipeline needs for intensities. Absent in older folders (before this date).
+            dg = np.asarray(wfn.array_variable("CURRENT DIPOLE GRADIENT")) if wfn.has_array_variable("CURRENT DIPOLE GRADIENT") else np.zeros((0, 3))
+            np.savez_compressed(os.path.join(out, f"hessian_{tag}.npz"), H_raw=H, H_projected=Hp, freq_cm=fr, energy=float(wfn.energy()), dipole_gradient=dg)
+            res[f"dipole_gradient_{tag}"] = bool(dg.size)
             res["timings_s"][f"hessian_{tag}"] = round(time.time() - t, 1); res[f"e_{tag}"] = float(wfn.energy()); res[f"freq_{tag}_cm"] = [round(float(x), 2) for x in np.sort(fr)]
             res[f"n_imaginary_{tag}"] = int((fr < -10).sum())
         if job.get("grid_check"):
