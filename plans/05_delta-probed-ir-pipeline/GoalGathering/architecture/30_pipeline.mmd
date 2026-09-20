@@ -16,31 +16,31 @@ flowchart LR
     SP0["&nbsp;<br/>&nbsp;<br/>&nbsp;"]
   end
 
-  DFT["DFT: Hessiaan en dipoolafgeleiden in één berekening"]
-  SK(["DFT-schets: H0, dipoolafgeleiden"]):::data
-  VPT["VPT2 op DFT: Hessianen op verplaatste geometrieën"]
+  DFT["DFT"]
+  SK(["Hessiaan H0 en dipoolafgeleiden"]):::data
+  VPT["VPT2"]
   ANHC(["Anharmonische constanten"]):::data
-  MODE["Modusanalyse: massaweging, projectie, families, symmetrieblokken"]
-  MODES(["Modi: L, frequenties, families, symmetrieblokken"]):::data
-  TOKS["Tokenisatie per modus"]
+  MODE["Modusanalyse"]
+  MODES(["Normaalmodi: L, frequenties, families, symmetrieblokken"]):::data
+  TOKS["Tokenisatie"]
   TOK(["Modus-tokens"]):::data
-  FWD["Forward pass door het getrainde netwerk"]:::planned
-  DH(["ΔH-blok per familie met onzekerheid"]):::data
-  GATE{"Licentietabel: familie gelicentieerd voor deze ladingstoestand?"}:::gate
-  DHL(["Gelicentieerde ΔH-blokken; geweigerde families gemarkeerd"]):::data
-  APPLY["Gecorrigeerde krachtconstanten: H0 + ΔH op de gelicentieerde blokken, elders H0"]
-  H(["Gecorrigeerde krachtconstanten H"]):::data
+  FWD["Forward pass (getraind netwerk)"]:::planned
+  DH(["ΔH-blokken per familie, met onzekerheid"]):::data
+  GATE{"Gelicentieerd voor deze familie en ladingstoestand?"}:::gate
+  DHL(["Gelicentieerde ΔH-blokken, weigeringen gemarkeerd"]):::data
+  APPLY["Correctie toepassen"]
+  H(["Gecorrigeerde krachtconstanten H = H0 + ΔH"]):::data
   EIG["Diagonalisatie"]
-  POS(["Harmonische bandposities met marge per familie"]):::data
-  INT["Intensiteiten uit de dipoolafgeleiden langs de modi"]
+  POS(["Bandposities met marge per familie"]):::data
+  INT["Intensiteitsberekening"]
   INTS(["Bandintensiteiten"]):::data
-  ANH["Anharmonische verschuiving per band"]
-  ANHS(["Verschuivingen per band"]):::data
-  SHAPE["Spectrale vorm: profiel per band uit positie, intensiteit, marge, temperatuur van de bron en resolutie van het instrument"]
+  ANH["Anharmonische correctie"]
+  ANHS(["Anharmonische verschuivingen per band"]):::data
+  SHAPE["Profielvorming (temperatuur van de bron, resolutie van het instrument)"]
 
   subgraph OUT [" "]
     direction TB
-    SPEC(["Spectrum: posities, intensiteiten, vorm, foutmarge per band, gemarkeerde weigeringen"]):::data
+    SPEC(["Spectrum: banden met positie, intensiteit, vorm en foutmarge; weigeringen gemarkeerd"]):::data
     SPECS[("Spectrumarchief")]:::store
     SPEC --> SPECS
     SP1["&nbsp;<br/>&nbsp;<br/>&nbsp;"]

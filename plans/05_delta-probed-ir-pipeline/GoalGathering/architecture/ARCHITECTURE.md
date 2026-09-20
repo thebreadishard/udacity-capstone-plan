@@ -23,7 +23,7 @@ Het overzicht (blad 0) toont de vier soorten en de opslagen die ze verbinden. Re
 | gestippelde rand, gele vulling | nog niet gebouwd |
 | pijl | datastroom |
 
-**Open punten voor de tekening (20 september, de auteur):** (1) pijlen naar en van een data-object moeten het data-object zelf raken, niet de rand van zijn groepje; (2) het centrum van een data-object op *precies* dezelfde hoogte als het centrum van de aangrenzende pipelinestap (nu bij benadering, via een onzichtbare vulknoop); (3) **regel, 20 september:** elke processtap mondt uit in precies één data-object, dat de volgende stap(pen) voedt; splitsingen komen alleen uit een data-object of een ruit, nooit uit een processtap. Toegepast op blad 4 (de DFT-stap is gesplitst in "DFT: Hessiaan en dipoolafgeleiden" → schets, "Modusanalyse" → modi, "VPT2 op DFT" → anharmonische constanten); **de bladen 1, 2, 3, 4a volgen nog** en worden daarbij op dezelfde manier herschreven.
+**Open punten voor de tekening (20 september, de auteur):** (1) pijlen naar en van een data-object moeten het data-object zelf raken, niet de rand van zijn groepje; (2) het centrum van een data-object op *precies* dezelfde hoogte als het centrum van de aangrenzende pipelinestap (nu bij benadering, via een onzichtbare vulknoop); (3) **regel, 20 september:** elke processtap mondt uit in precies één data-object, dat de volgende stap(pen) voedt; splitsingen komen alleen uit een data-object of een ruit, nooit uit een processtap. **Naamgeving (20 sep):** een processtap heet naar de bewerking of de rekenmethode ("DFT", "VPT2", "Diagonalisatie"), een data-object naar het ding ("Hessiaan H0 en dipoolafgeleiden", "Normaalmodi"); geen dubbele woorden tussen stap en object. Toegepast op blad 4 (de DFT-stap is gesplitst in "DFT: Hessiaan en dipoolafgeleiden" → schets, "Modusanalyse" → modi, "VPT2 op DFT" → anharmonische constanten); **de bladen 1, 2, 3, 4a volgen nog** en worden daarbij op dezelfde manier herschreven.
 
 Op de onderzoeksprocesbladen: groen = geslaagd, blauw = loopt, gestippeld = nog te doen, rood = verloren en gesloten. Elk proces begint bij een opslag → data-object en eindigt bij data-object → opslag. Bron van waarheid: de `.mmd`-bestanden in deze map (Mermaid; renderen op GitHub).
 
@@ -306,31 +306,31 @@ flowchart LR
     SP0["&nbsp;<br/>&nbsp;<br/>&nbsp;"]
   end
 
-  DFT["DFT: Hessiaan en dipoolafgeleiden in één berekening"]
-  SK(["DFT-schets: H0, dipoolafgeleiden"]):::data
-  VPT["VPT2 op DFT: Hessianen op verplaatste geometrieën"]
+  DFT["DFT"]
+  SK(["Hessiaan H0 en dipoolafgeleiden"]):::data
+  VPT["VPT2"]
   ANHC(["Anharmonische constanten"]):::data
-  MODE["Modusanalyse: massaweging, projectie, families, symmetrieblokken"]
-  MODES(["Modi: L, frequenties, families, symmetrieblokken"]):::data
-  TOKS["Tokenisatie per modus"]
+  MODE["Modusanalyse"]
+  MODES(["Normaalmodi: L, frequenties, families, symmetrieblokken"]):::data
+  TOKS["Tokenisatie"]
   TOK(["Modus-tokens"]):::data
-  FWD["Forward pass door het getrainde netwerk"]:::planned
-  DH(["ΔH-blok per familie met onzekerheid"]):::data
-  GATE{"Licentietabel: familie gelicentieerd voor deze ladingstoestand?"}:::gate
-  DHL(["Gelicentieerde ΔH-blokken; geweigerde families gemarkeerd"]):::data
-  APPLY["Gecorrigeerde krachtconstanten: H0 + ΔH op de gelicentieerde blokken, elders H0"]
-  H(["Gecorrigeerde krachtconstanten H"]):::data
+  FWD["Forward pass (getraind netwerk)"]:::planned
+  DH(["ΔH-blokken per familie, met onzekerheid"]):::data
+  GATE{"Gelicentieerd voor deze familie en ladingstoestand?"}:::gate
+  DHL(["Gelicentieerde ΔH-blokken, weigeringen gemarkeerd"]):::data
+  APPLY["Correctie toepassen"]
+  H(["Gecorrigeerde krachtconstanten H = H0 + ΔH"]):::data
   EIG["Diagonalisatie"]
-  POS(["Harmonische bandposities met marge per familie"]):::data
-  INT["Intensiteiten uit de dipoolafgeleiden langs de modi"]
+  POS(["Bandposities met marge per familie"]):::data
+  INT["Intensiteitsberekening"]
   INTS(["Bandintensiteiten"]):::data
-  ANH["Anharmonische verschuiving per band"]
-  ANHS(["Verschuivingen per band"]):::data
-  SHAPE["Spectrale vorm: profiel per band uit positie, intensiteit, marge, temperatuur van de bron en resolutie van het instrument"]
+  ANH["Anharmonische correctie"]
+  ANHS(["Anharmonische verschuivingen per band"]):::data
+  SHAPE["Profielvorming (temperatuur van de bron, resolutie van het instrument)"]
 
   subgraph OUT [" "]
     direction TB
-    SPEC(["Spectrum: posities, intensiteiten, vorm, foutmarge per band, gemarkeerde weigeringen"]):::data
+    SPEC(["Spectrum: banden met positie, intensiteit, vorm en foutmarge; weigeringen gemarkeerd"]):::data
     SPECS[("Spectrumarchief")]:::store
     SPEC --> SPECS
     SP1["&nbsp;<br/>&nbsp;<br/>&nbsp;"]
