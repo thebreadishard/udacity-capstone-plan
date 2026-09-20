@@ -1,4 +1,4 @@
-# Concept begeleidend bericht bij het voorstel (12 september 2026) — voor de student om te versturen
+# Concept begeleidend bericht bij het voorstel (12 september 2026) — voor de student om te versturen — **vervangen door `Cover_Note_Draft_2026-09-20.md` op 20 september; hier bewaard als geschiedenis**
 
 *Concept, Nederlands; de student past aan en verstuurt zelf. Niets hierin is nieuw ten opzichte van het
 voorstel; het wijst alleen de weg erin.*
