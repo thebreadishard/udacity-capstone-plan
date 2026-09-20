@@ -10,8 +10,7 @@ Beste [naam],
 
 Dank voor de elf artikelen van vandaag; ze zijn allemaal gelezen en verwerkt, en twee ervan hebben één zin in het voorstel
 veranderd (zie hieronder). Hierbij, voor ons gesprek van maandag 28 september, het projectvoorstel voor de Udacity capstone.
-Het is één document van ongeveer dertig pagina's, de leeskopie van 28 september; §1 vat het plan in een paar zinnen samen.
-Erbij zit een bijlage van één pagina over een zijstudie (plan 06) die niets belooft en een eigen sluitdatum heeft.
+Het is één document van ongeveer dertig pagina's.
 
 Wat je aan het eind krijgt, als het plan doet wat het belooft: een pijplijn die van elk afzonderlijk aromatisch molecuul een
 infraroodspectrum maakt met een coupled-cluster-anker — een klein aantal dure, nauwkeurige energieën dat de goedkope
