@@ -7,7 +7,7 @@ Bron van waarheid: de `.mmd`-bestanden in deze map (Mermaid; renderen op GitHub 
 ```mermaid
 %% Architectuur plan 05 — overzicht (niveau 2), stand 19 september 2026.
 %% Doorgetrokken = gemeten/bestaat; gestippeld = te bouwen. Stromen zijn data. Rekenplaats tussen haken.
-flowchart TB
+flowchart LR
   classDef planned stroke-dasharray: 6 4,stroke:#7a5c00,fill:#fff8e1
   classDef ext fill:#eef3f8,stroke:#5b7a99
   classDef data fill:#f3f3f3,stroke:#666
@@ -16,7 +16,7 @@ flowchart TB
   MOL(["Molecuul: geometrie + lading"]):::data
 
   subgraph B["Pipeline B: hoe één label ontstaat  [laptop / gehuurde machine]"]
-    direction LR
+    direction TB
     DFT["DFT-schets: B3LYP/6-31G* Hessiaan H0, modi L, frequenties"]
     DECK["Deck: symmetrie-geblokte verplaatsingspatronen (2k+1 gradiënten; energieën voor de diagonaal)"]
     LNO["Bevroren lokale CC-ruimtes: LNO-CCSD(T)-energieën langs de patronen"]
@@ -33,7 +33,7 @@ flowchart TB
   LABELS[("Labels: ΔH-blokken per molecuul, met ruis en foutmarge")]:::data
 
   subgraph A["Pipeline A: het netwerk dat de correctie overdraagt  [laptop / gehuurde machine]"]
-    direction LR
+    direction TB
     CORP["Corpus: DFT-paren (B3LYP, wB97X) — 45 gedaan, 868 lopend, 11.321 mogelijk"]
     PRE["Voortraining op de vervanger-ΔH (volledige matrices)"]:::planned
     NET["Netwerk: modus-tokens + lading/multipliciteit → bloktarget per familie; neutraal gelicentieerd tot er kationlabels zijn"]:::planned
@@ -43,7 +43,7 @@ flowchart TB
   end
 
   subgraph S["Spectrum en score  [laptop]"]
-    direction LR
+    direction TB
     CORR["Gecorrigeerde krachtconstanten H0 + ΔH op gelicentieerde families; DFT elders"]
     DIAG["Diagonalisatie → bandposities; intensiteiten uit DFT-dipoolafgeleiden; anharmoniek uit DFT"]
     SPEC(["Spectrum met foutmarge per band"]):::data
@@ -70,7 +70,7 @@ flowchart TB
 
 ```mermaid
 %% Pipeline B: hoe één label ontstaat (niveau 3), stand 19 september 2026.
-flowchart TB
+flowchart LR
   classDef planned stroke-dasharray: 6 4,stroke:#7a5c00,fill:#fff8e1
   classDef data fill:#f3f3f3,stroke:#666
   classDef gate fill:#e8f5e9,stroke:#2e7d32
@@ -107,7 +107,7 @@ flowchart TB
 
 ```mermaid
 %% Pipeline A: het netwerk dat de correctie overdraagt (niveau 3), stand 19 september 2026.
-flowchart TB
+flowchart LR
   classDef planned stroke-dasharray: 6 4,stroke:#7a5c00,fill:#fff8e1
   classDef data fill:#f3f3f3,stroke:#666
   classDef gate fill:#e8f5e9,stroke:#2e7d32
