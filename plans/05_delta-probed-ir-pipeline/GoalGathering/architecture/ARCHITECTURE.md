@@ -92,7 +92,7 @@ flowchart LR
   classDef store fill:#dfe7f2,stroke:#5b7a99,color:#111
 
   subgraph IN [" "]
-    direction TB
+    direction BT
     GEO(["Molecuul: geoptimaliseerde geometrie, lading, multipliciteit"]):::data
     CAT[("Molecuulcatalogus")]:::store
     CAT --> GEO
@@ -142,7 +142,7 @@ flowchart LR
   classDef store fill:#dfe7f2,stroke:#5b7a99,color:#111
 
   subgraph IN [" "]
-    direction TB
+    direction BT
     MOL(["Molecuul: SMILES of geometrie, lading, multipliciteit"]):::data
     CAT[("Molecuulcatalogus: manifest met lagen")]:::store
     CAT --> MOL
@@ -194,13 +194,13 @@ flowchart LR
   classDef ext fill:#cfd8e3,stroke:#3d5a80,color:#111
 
   subgraph IN1 [" "]
-    direction TB
+    direction BT
     PROXY(["DFT-paren met vervangercorrectie en modus-tokens"]):::data
     CORPUS[("Corpus")]:::store
     CORPUS --> PROXY
   end
   subgraph IN2 [" "]
-    direction TB
+    direction BT
     LAB(["Labels: ΔH-blokken met foutmarge per familie"]):::data
     LABELS[("Labelopslag")]:::store
     LABELS --> LAB
@@ -255,7 +255,7 @@ flowchart LR
   classDef ext fill:#cfd8e3,stroke:#3d5a80,color:#111
 
   subgraph IN [" "]
-    direction TB
+    direction BT
     MOL(["Molecuul: geometrie, lading, multipliciteit"]):::data
     CAT[("Molecuulcatalogus")]:::store
     CAT --> MOL
@@ -263,7 +263,7 @@ flowchart LR
   SK["DFT-schets: H0, modi, frequenties, families, dipoolafgeleiden, anharmonische constanten"]
   TOK["Modus-tokens"]
   subgraph MD [" "]
-    direction TB
+    direction BT
     NETW(["Getraind netwerk + licentietabel + kalibratie"]):::data
     MODELS[("Modelopslag")]:::store
     MODELS --> NETW
@@ -309,7 +309,7 @@ flowchart LR
   classDef store fill:#dfe7f2,stroke:#5b7a99,color:#111
 
   subgraph IN [" "]
-    direction TB
+    direction BT
     INP(["Per molecuul: modus-tokens, lading, multipliciteit"]):::data
     CORPUS[("Corpus en labelopslag")]:::store
     CORPUS --> INP

@@ -9,13 +9,13 @@ flowchart LR
   classDef ext fill:#cfd8e3,stroke:#3d5a80,color:#111
 
   subgraph IN1 [" "]
-    direction TB
+    direction BT
     PROXY(["DFT-paren met vervangercorrectie en modus-tokens"]):::data
     CORPUS[("Corpus")]:::store
     CORPUS --> PROXY
   end
   subgraph IN2 [" "]
-    direction TB
+    direction BT
     LAB(["Labels: ΔH-blokken met foutmarge per familie"]):::data
     LABELS[("Labelopslag")]:::store
     LABELS --> LAB

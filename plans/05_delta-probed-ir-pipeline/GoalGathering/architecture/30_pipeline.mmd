@@ -9,7 +9,7 @@ flowchart LR
   classDef ext fill:#cfd8e3,stroke:#3d5a80,color:#111
 
   subgraph IN [" "]
-    direction TB
+    direction BT
     MOL(["Molecuul: geometrie, lading, multipliciteit"]):::data
     CAT[("Molecuulcatalogus")]:::store
     CAT --> MOL
@@ -17,7 +17,7 @@ flowchart LR
   SK["DFT-schets: H0, modi, frequenties, families, dipoolafgeleiden, anharmonische constanten"]
   TOK["Modus-tokens"]
   subgraph MD [" "]
-    direction TB
+    direction BT
     NETW(["Getraind netwerk + licentietabel + kalibratie"]):::data
     MODELS[("Modelopslag")]:::store
     MODELS --> NETW
