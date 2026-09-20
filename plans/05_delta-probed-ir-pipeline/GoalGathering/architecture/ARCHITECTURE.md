@@ -206,7 +206,7 @@ flowchart LR
   PACK --> MODEL
 ```
 
-## 4. Pipeline
+## 4. Target pipeline (`30_target_pipeline.mmd`; voorlopige naam, 20 september)
 
 ```mermaid
 %% Pipeline (niveau 3): wat er staat als onderzoek en training klaar zijn. Molecuul in, spectrum met foutmarge uit.
