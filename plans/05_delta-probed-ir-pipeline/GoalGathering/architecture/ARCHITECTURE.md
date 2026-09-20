@@ -23,7 +23,7 @@ Het overzicht (blad 0) toont de vier soorten en de opslagen die ze verbinden. Re
 | gestippelde rand, gele vulling | nog niet gebouwd |
 | pijl | datastroom |
 
-**Regel (20 september, de auteur): geen opslagfiguren (cilinders) meer in de diagrammen.** Een proces begint bij zijn eerste data-object en eindigt bij zijn laatste; waar de data vandaan komt of heen gaat staat zo nodig in de naam van het data-object. Daarmee vervallen de onzichtbare groepjes en vulknopen en staat alles weer in standaard Mermaid. Toegepast op blad 4; **de bladen 0, 1, 2, 3, 4a volgen** (samen met de stap→data-object-regel en de naamgeving hieronder). (3) **regel, 20 september:** elke processtap mondt uit in precies één data-object, dat de volgende stap(pen) voedt; splitsingen komen alleen uit een data-object of een ruit, nooit uit een processtap. **Naamgeving (20 sep):** een processtap heet naar de bewerking of de rekenmethode ("DFT", "VPT2", "Diagonalisatie"), een data-object naar het ding ("Hessiaan H0 en dipoolafgeleiden", "Normaalmodi"); geen dubbele woorden tussen stap en object. Toegepast op blad 4 (de DFT-stap is gesplitst in "DFT: Hessiaan en dipoolafgeleiden" → schets, "Modusanalyse" → modi, "VPT2 op DFT" → anharmonische constanten); **de bladen 1, 2, 3, 4a volgen nog** en worden daarbij op dezelfde manier herschreven.
+**Regel (20 september, de auteur): geen opslagfiguren (cilinders) meer in de diagrammen.** Een proces begint bij zijn eerste data-object en eindigt bij zijn laatste; waar de data vandaan komt of heen gaat staat zo nodig in de naam van het data-object. Daarmee vervallen de onzichtbare groepjes en vulknopen en staat alles weer in standaard Mermaid. Toegepast op blad 4; **de bladen 0, 1, 2, 3, 4a volgen** (samen met de stap→data-object-regel en de naamgeving hieronder). (3) **regel, 20 september:** elke processtap mondt uit in precies één data-object, dat de volgende stap(pen) voedt; splitsingen komen alleen uit een data-object of een ruit, nooit uit een processtap. **Naamgeving (20 sep):** een processtap heet naar de bewerking of de rekenmethode ("DFT", "VPT2", "Diagonalisatie"), een data-object naar het ding ("Hessiaan H0 en dipoolafgeleiden", "Normaalmodi"); geen dubbele woorden tussen stap en object; **elke processtap noemt tussen haken het softwarepakket** ("DFT (psi4)", "VPT2 (pyVPT2 op psi4)") of "eigen software" als wij het maken. Toegepast op blad 4 (de DFT-stap is gesplitst in "DFT: Hessiaan en dipoolafgeleiden" → schets, "Modusanalyse" → modi, "VPT2 op DFT" → anharmonische constanten); **de bladen 1, 2, 3, 4a volgen nog** en worden daarbij op dezelfde manier herschreven.
 
 Op de onderzoeksprocesbladen: groen = geslaagd, blauw = loopt, gestippeld = nog te doen, rood = verloren en gesloten. Elk proces begint en eindigt bij een data-object. Bron van waarheid: de `.mmd`-bestanden in deze map (Mermaid; renderen op GitHub).
 
@@ -299,28 +299,28 @@ flowchart LR
 
   MOL(["Molecuul: geometrie, lading, multipliciteit"]):::data
 
-  DFT["DFT"]
+  DFT["DFT (psi4)"]
   SK(["Hessiaan H0 en dipoolafgeleiden"]):::data
-  VPT["VPT2"]
+  VPT["VPT2 (pyVPT2 op psi4)"]
   ANHC(["Anharmonische constanten"]):::data
-  MODE["Modusanalyse"]
+  MODE["Modusanalyse (eigen software)"]
   MODES(["Normaalmodi: L, frequenties, families, symmetrieblokken"]):::data
-  TOKS["Tokenisatie"]
+  TOKS["Tokenisatie (eigen software)"]
   TOK(["Modus-tokens"]):::data
-  FWD["Forward pass (getraind netwerk)"]:::planned
+  FWD["Forward pass (eigen netwerk, PyTorch)"]:::planned
   DH(["ΔH-blokken per familie, met onzekerheid"]):::data
   GATE{"Gelicentieerd voor deze familie en ladingstoestand?"}:::gate
   DHL(["Gelicentieerde ΔH-blokken"]):::data
   REF(["Geweigerde families: geen correctie, weigering gemarkeerd"]):::data
-  APPLY["Correctie toepassen"]
+  APPLY["Correctie toepassen (eigen software)"]
   H(["Gecorrigeerde krachtconstanten H = H0 + ΔH"]):::data
-  EIG["Diagonalisatie"]
+  EIG["Diagonalisatie (eigen software)"]
   POS(["Bandposities met marge per familie"]):::data
-  INT["Intensiteitsberekening"]
+  INT["Intensiteitsberekening (eigen software)"]
   INTS(["Bandintensiteiten"]):::data
-  ANH["Anharmonische correctie"]
+  ANH["Anharmonische correctie (eigen software)"]
   ANHS(["Anharmonische verschuivingen per band"]):::data
-  SHAPE["Profielvorming (temperatuur van de bron, resolutie van het instrument)"]
+  SHAPE["Profielvorming (eigen software): temperatuur van de bron, resolutie van het instrument"]
 
   SPEC(["Spectrum: banden met positie, intensiteit, vorm en foutmarge; weigeringen gemarkeerd"]):::data
 

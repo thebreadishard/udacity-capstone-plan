@@ -9,28 +9,28 @@ flowchart LR
 
   MOL(["Molecuul: geometrie, lading, multipliciteit"]):::data
 
-  DFT["DFT"]
+  DFT["DFT (psi4)"]
   SK(["Hessiaan H0 en dipoolafgeleiden"]):::data
-  VPT["VPT2"]
+  VPT["VPT2 (pyVPT2 op psi4)"]
   ANHC(["Anharmonische constanten"]):::data
-  MODE["Modusanalyse"]
+  MODE["Modusanalyse (eigen software)"]
   MODES(["Normaalmodi: L, frequenties, families, symmetrieblokken"]):::data
-  TOKS["Tokenisatie"]
+  TOKS["Tokenisatie (eigen software)"]
   TOK(["Modus-tokens"]):::data
-  FWD["Forward pass (getraind netwerk)"]:::planned
+  FWD["Forward pass (eigen netwerk, PyTorch)"]:::planned
   DH(["ΔH-blokken per familie, met onzekerheid"]):::data
   GATE{"Gelicentieerd voor deze familie en ladingstoestand?"}:::gate
   DHL(["Gelicentieerde ΔH-blokken"]):::data
   REF(["Geweigerde families: geen correctie, weigering gemarkeerd"]):::data
-  APPLY["Correctie toepassen"]
+  APPLY["Correctie toepassen (eigen software)"]
   H(["Gecorrigeerde krachtconstanten H = H0 + ΔH"]):::data
-  EIG["Diagonalisatie"]
+  EIG["Diagonalisatie (eigen software)"]
   POS(["Bandposities met marge per familie"]):::data
-  INT["Intensiteitsberekening"]
+  INT["Intensiteitsberekening (eigen software)"]
   INTS(["Bandintensiteiten"]):::data
-  ANH["Anharmonische correctie"]
+  ANH["Anharmonische correctie (eigen software)"]
   ANHS(["Anharmonische verschuivingen per band"]):::data
-  SHAPE["Profielvorming (temperatuur van de bron, resolutie van het instrument)"]
+  SHAPE["Profielvorming (eigen software): temperatuur van de bron, resolutie van het instrument"]
 
   SPEC(["Spectrum: banden met positie, intensiteit, vorm en foutmarge; weigeringen gemarkeerd"]):::data
 
