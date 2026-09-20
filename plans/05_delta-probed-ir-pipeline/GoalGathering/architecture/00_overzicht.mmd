@@ -28,7 +28,6 @@ flowchart LR
   PIPE["Pipeline (blad 4): DFT-schets → forward pass → gelicentieerde ΔH-blokken → gecorrigeerde krachtconstanten → spectrale vorm"]:::planned
   SPEC(["Spectrum met foutmarge per band, voor een molecuul zonder laboratoriumspectrum"]):::data
   SPECS[("Spectrumarchief")]:::store
-  JWST[("Astronomische waarnemingen (JWST): de vraag die het spectrum beantwoordt")]:::ext
 
   RES["Onderzoeksproces (bladen 5 en 6): de toetsen die beslissen of dit alles er zo komt"]:::research
 
@@ -45,7 +44,6 @@ flowchart LR
   SKETCHES --> PIPE
   MODEL --> PIPE
   PIPE --> SPEC --> SPECS
-  SPEC --> JWST
   RES -. beslist over .-> DC
   RES -. beslist over .-> TRAIN
   RES -. beslist over .-> PIPE
