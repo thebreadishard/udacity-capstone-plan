@@ -24,10 +24,13 @@ op pyreen en coroneen die vooraf beslist of zo'n overdraagbaar model überhaupt 
 
 Kort hoe het werkt. De coupled-cluster-correctie op de harmonische krachtconstanten reken ik niet
 uit maar *meet* ik, met zo weinig mogelijk dure energieën: lokale coupled-cluster-berekeningen
-(LNO-CCSD(T)) waarvan ik de orbitaalruimtes één keer kies en daarna bij elke vervorming bevroren houd,
-zodat de energieverschillen glad zijn. Het aantal energieën per molecuul staat naast elk spectrum, en
+(LNO-CCSD(T)) waarvan ik de orbitaalruimtes één keer kies en daarna naar elke vervorming meeneem,
+zodat de energieverschillen glad zijn — het bevriezen zelf is een bekend recept (Mata & Werner 2006); nieuw is
+dat ik ruimtes zonder atoomlijst transporteer en de prijs daarvan meet. Het aantal energieën per molecuul staat naast elk spectrum, en
 de nauwkeurigheid wordt gescoord tegen laboratoriumdata en tegen de bestaande voorspellingen, waaronder
-die van jouw eigen groep.
+die van jouw eigen groep. Die groep sloot in 2016 af met de hoop dat de anharmonische effecten zich over de
+PAK-familie laten generaliseren zonder voor elk molecuul een volledig krachtveld te rekenen (Mackie et al.
+2016, slotparagraaf); dit plan is één antwoord op die hoop.
 
 Op mijn eigen laptop is het plan haalbaar tot en met benzeen: het proefdek van 448 energieën kost ruim drie weken. Naftaleen is de eerste trede die de laptop niet meer kan: één energie op de instellingen van het anker kost daar 38 uur (gemeten op 14 september), en het volledige dek van 474 energieën dus ruim twee jaar laptoptijd; op vier Snellius-knooppunten is dat naar schatting een maand, op de werkstation-configuratie uit de hardwarenotitie het grootste deel van een jaar. **Boven naftaleen kan geen enkele machine het volledige dek op de basis van het anker betalen**, ook een cluster niet: pyreen zou op vier knooppunten een tot twee jaar kosten, coroneen een veelvoud. Dat is een eigenschap van de dekken, niet van de machines. Of een goedkopere basis met een overgedragen correctie dat verandert, is een vooraf geregistreerde proef en geen aanname; tot die gemeten is, gaat het plan anders om met de grotere moleculen: naftaleen krijgt de volledige, gemeten correctie; pyreen en coroneen krijgen dunne dekken — enkele tientallen energieën per molecuul, genoeg om per bandfamilie te toetsen of de correctie van kleine naar grote moleculen overdraagt, niet genoeg voor het hele spectrum; en het netwerk waar dit alles naartoe werkt wordt getraind op wat betaalbaar gemeten is, met die dunne dekken als toets. De clusteraanvraag waar ik je steun voor vraag is precies op die twee posten gedimensioneerd: één volledig naftaleen-dek en een handvol dunne dekken, samen binnen één kleine Snellius-aanvraag. Wat ik nu al kan laten zien staat in §3.3 en §8: de kern van de methode werkt (bevroren orbitaalruimtes, glad tot 0,002–0,06 µE_h; bias +0,11 / −0,01 / +0,23 cm⁻¹ tegenover canoniek CCSD(T)), de proefopstelling wint de correctie terug uit een geteld aantal vervormingen, en de lat is bekend. Wat nog niet gemeten is en alleen zo gemeten kan worden: of de correctie per bandfamilie overdraagt van naftaleen naar pyreen (de dunne dekken), en wat één gradiënt kost tegenover één energie (deze week, op de laptop) — het getal dat bepaalt of de dunne dekken nog goedkoper kunnen. Voor allebei staat de verliesvoorwaarde vooraf op papier. Zonder clustertijd valt het project niet om — de opleidingsmodules hangen niet aan de treden — maar de claim over de grote moleculen blijft dan ongetest.
 
@@ -54,3 +57,5 @@ Frederic
 *Checklist voor het versturen:* het xtight-getal is ingevuld (12 september 11:48; `results_m1/XTIGHT_READIN.md`)
 en staat gelijkluidend in §1, §3.3, §10 punt 20 en §11 van het voorstel; de pdf of het md-bestand als
 bijlage; de repository-link alleen als de student dat wil.
+
+*Aanvulling 20 september 2026: de zin over het bevriezen en de zin over de hoop van 2016 toegevoegd na het lezen van de vijf PDF's van de supervisor.*

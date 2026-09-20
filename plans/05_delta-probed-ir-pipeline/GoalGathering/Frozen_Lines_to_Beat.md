@@ -80,6 +80,7 @@ prior art for plan 05's diagonal recovery, not an opponent line (it produces no 
   is not documented on the PAHdb pages, and positions and integrated intensities do not depend on it.
   Line B is scored on its stick positions; the difference between our anharmonic treatment and this
   protocol is isolated by P4's Δ₂ = 0 null row, not by this line.
+- **Dated line 2026-09-20 (Mackie et al. 2015, JCP 143, 224314, and 2016, JCP 145, 084313 — PDFs from the supervisor, read in full; reading note `notes/Reading_Note_2026-09-20_Supervisor_PDFs_L1_Smoothness_and_Mackie.md`):** the 2015/2016 protocol is **B971/T2ZP** in Gaussian 09 (not the B3LYP/N07D of the 2024 papers), QFF → SPECTRO VPT2 with polyads, Δ = 200 cm⁻¹, W = 10 cm⁻¹ in 2015 and W = 0 with a symmetry filter in 2016; intensities double-harmonic for fundamentals and polyad members (redistributed by the squared polyad eigenvectors), Gaussian anharmonic intensities only for non-resonant combination bands; no scaling. **Accuracy, the line's own numbers:** mid-IR vs matrix isolation, average absolute deviation 5.6 cm⁻¹ (max 13) naphthalene, 9.9 (max 18) anthracene, 6.4 (max 20) tetracene, secondary C–H bumps excluded (2015); five non-linear PAHs, 0.41 % ± 0.63 % vs matrix, 0.53 % ± 0.95 % vs hot gas, −0.13 % ± 0.25 % C–H stretch vs jet-cooled gas (2016); C–H stretch region 2015: 19.3 / 10.5 / 11.7 cm⁻¹ average (max 29.8 / 21.0 / 19.9); harmonic 'typically over 4 %'. At 1,000–1,500 cm⁻¹ the 2016 figures are 4–8 cm⁻¹ with a spread of 6–14 cm⁻¹: this is the per-family bar for the corrected harmonic part, read through the same VPT2 (the comparison is harmonic part against harmonic part, P4's Δ₂ = 0 null row isolates the rest). Triphenylene's QFF and intensities are flagged as poor by the authors themselves.
 - **Mulas, Falvo, Cassam-Chenaï, Joblin**, JCP **149**, 144102 (2018). DOI `10.1063/1.5050087`,
   arXiv:1809.05669. Identifiers from the plan-02 bibliography; re-verified by plan 04's Pass B
   reviewer on 2026-09-02 (arXiv); full text read by plan 05's Pass B reviewer on 2026-09-03.
@@ -156,7 +157,7 @@ line" must mean per band class.
 ## 7. Open verification debts (before any scored use; identical to the bibliography's "Named debts")
 
 1. Bos 2025 full text → the actual MAE (item 7) — **paid 2026-09-10** (§3: 5.07 / 13.17 vs 10.41 / 23.49 cm⁻¹, matrix-referenced, instance-level split).
-2. Mackie/Esposito anharmonic method papers (item 12).
+2. Mackie/Esposito anharmonic method papers (item 12) — **paid 2026-09-20 for Mackie 2015 and 2016** (§3, dated line); Esposito 2024a–c still open.
 3. MNRAS landing for Mai 2025 (item 5) — the arXiv v3 full text and the Zenodo data record read 2026-09-10 (§4); the MNRAS landing itself still not fetched; Mulas 2018 landing re-fetch (item 6).
 4. Joblin-era T-dependence references (item 20) — **paid 2026-09-06**: items 52 and 64 read in full (bibliography, "Readings of 2026-09-06 — laboratory sources").
 5. Local-CC method and software citations — the DLPNO-CCSD(T) method papers (item 17, NOT
