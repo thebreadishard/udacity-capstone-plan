@@ -1,4 +1,4 @@
-# The three-band test at benzene (20 September 2026, 22:0x) — does the coupled-cluster curvature correction move B3LYP's bands toward experiment?
+# The three-band test at benzene (20 September 2026, 21:4x) — does the coupled-cluster curvature correction move B3LYP's bands toward experiment?
 
 *Desk reading of existing sealed data; no new compute. Inputs: `results_dryrun/benzene/stageA.json` and `stageA_hessians.npz` (B3LYP/6-31G* harmonic
 frequencies and mode vectors L), `results_m1/benzene_cc-pvtz_tight/` and `benzene_cc-pvdz_tight/` (`canonical_truth_sealed.json`: canonical CCSD(T) at the

@@ -16,4 +16,4 @@ of this evening (no new local run until they say so) stands.*
 
 *Change to the §12 table:* none tonight; the row "Pilot-note inputs" already lists the four with their queue position. This note is its status on the day.
 
-*Decided 20 September, 21:1x (the user): option B — decision 45 in the README. The noise-run row above is superseded by the four-point densification on mode 12 after REPORT.md.*
+*Decided 20 September, 21:0x (the user): option B — decision 45 in the README. The noise-run row above is superseded by the four-point densification on mode 12 after REPORT.md.*
