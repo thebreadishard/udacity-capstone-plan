@@ -283,7 +283,6 @@ flowchart LR
     SPECS[("Spectrumarchief")]:::store
     SPEC --> SPECS
   end
-  JWST[("Astronomische waarnemingen (JWST)")]:::ext
   style IN fill:none,stroke:none
   style MD fill:none,stroke:none
   style OUT fill:none,stroke:none
@@ -297,7 +296,7 @@ flowchart LR
   APPLY --> EIG --> SHAPE
   SK --> INT --> SHAPE
   SK --> ANH --> SHAPE
-  SHAPE --> SPEC --> JWST
+  SHAPE --> SPEC
 ```
 
 ## 4a. Componenten van het netwerk
