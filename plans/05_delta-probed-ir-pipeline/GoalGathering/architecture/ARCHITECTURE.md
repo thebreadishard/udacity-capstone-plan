@@ -317,7 +317,8 @@ flowchart LR
   FWD["Forward pass (getraind netwerk)"]:::planned
   DH(["ΔH-blokken per familie, met onzekerheid"]):::data
   GATE{"Gelicentieerd voor deze familie en ladingstoestand?"}:::gate
-  DHL(["Gelicentieerde ΔH-blokken, weigeringen gemarkeerd"]):::data
+  DHL(["Gelicentieerde ΔH-blokken"]):::data
+  REF(["Geweigerde families: geen correctie, weigering gemarkeerd"]):::data
   APPLY["Correctie toepassen"]
   H(["Gecorrigeerde krachtconstanten H = H0 + ΔH"]):::data
   EIG["Diagonalisatie"]
@@ -341,7 +342,9 @@ flowchart LR
   IN --> DFT --> SK
   SK --> MODE --> MODES
   SK --> VPT --> ANHC
-  MODES --> TOKS --> TOK --> FWD --> DH --> GATE --> DHL --> APPLY --> H --> EIG --> POS --> SHAPE
+  MODES --> TOKS --> TOK --> FWD --> DH --> GATE
+  GATE -- ja --> DHL --> APPLY --> H --> EIG --> POS --> SHAPE
+  GATE -- nee --> REF --> APPLY
   SK --> APPLY
   SK --> INT
   MODES --> INT --> INTS --> SHAPE
@@ -352,8 +355,8 @@ flowchart LR
   %% onzichtbare vulknopen boven de data-objecten (uitlijning met de naaste stap); hun verbindingen zijn weggestyled
   MOL --- SP0
   SP1 --- SPEC
-  linkStyle 29 stroke:none,stroke-width:0px
-  linkStyle 30 stroke:none,stroke-width:0px
+  linkStyle 31 stroke:none,stroke-width:0px
+  linkStyle 32 stroke:none,stroke-width:0px
   style SP0 fill:none,stroke:none,color:transparent
   style SP1 fill:none,stroke:none,color:transparent
 ```
