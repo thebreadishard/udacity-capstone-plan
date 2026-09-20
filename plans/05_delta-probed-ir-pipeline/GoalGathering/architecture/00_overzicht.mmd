@@ -1,49 +1,39 @@
-%% Overzicht plan 05 (niveau 1): vier soorten proces en de opslagen die ze verbinden. Stand 20 september 2026.
-%% Rechthoek = proces (hier: een heel blad); cilinder = opslag; ronde uiteinden = data-object; pijl = datastroom. Gestippeld = nog niet gebouwd.
+%% Overzicht plan 05 (niveau 1): vier soorten proces en de data-objecten die ze verbinden. Doelarchitectuur; geen besluiten, geen data.
+%% Rechthoek = proces (hier: een heel blad); ronde uiteinden = data-object; pijl = datastroom. Gestippeld = nog niet gebouwd.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
   classDef ext fill:#cfd8e3,stroke:#3d5a80,color:#111
   classDef data fill:#e9ecef,stroke:#555,color:#111
-  classDef store fill:#dfe7f2,stroke:#5b7a99,color:#111
   classDef proc fill:#f7f7fb,stroke:#333,stroke-width:1.5px,color:#111
   classDef research fill:#fdf2e3,stroke:#8a5a00,color:#111
 
-  CAT[("Molecuulcatalogus: geometrieën, lading, multipliciteit")]:::store
+  MOL(["Molecuul: geometrie, lading, multipliciteit"]):::data
+  COND(["Waarnemingscondities: temperatuur van de bron, resolutie van het instrument"]):::data
+  LABDB(["Laboratoriumspectra"]):::ext
+  PAHDB(["Opponenten: PAHdb en andere voorspellers"]):::ext
 
-  subgraph DC["Datacreatie (bladen 1 en 2)"]
-    direction TB
-    LABF["Labelfabriek: coupled-cluster-correctie per molecuul, gelicentieerd tegen directe referenties"]:::proc
-    CORPF["Corpusstap: twee DFT-Hessianen per molecuul"]:::proc
-  end
-  LABELS[("Labelopslag: ΔH-blokken met foutmarge")]:::store
-  CORPUS[("Corpus: DFT-paren, vervangercorrectie")]:::store
-  SKETCHES[("DFT-schetsen: H0, dipoolafgeleiden, anharmonische constanten")]:::store
+  LABF["Labelfabriek (blad 1)"]:::proc
+  LABELS(["Labels: ΔH-blokken met foutmarge per familie"]):::data
+  CORPF["Corpusstap (blad 2)"]:::proc
+  CORPUS(["Corpusrecords: modus-tokens en vervangercorrectie per molecuul"]):::data
+  TRAIN["Training, validatie en test (blad 3)"]:::planned
+  MODEL(["Modelpakket: ensemble van netwerken, licentietabel, kalibratie"]):::data
+  PIPE["Pipeline (blad 4)"]:::planned
+  SPEC(["Spectrum: banden met positie, intensiteit, profiel en foutmarge; licentiestatus per familie"]):::data
+  RES["Onderzoeksproces (bladen 5 en 6)"]:::research
 
-  TRAIN["Training, validatie en test (blad 3): voortrainen op het corpus, bijtrainen op de labels, valideren per molecuul, testen per familie tegen labels en laboratoriumkolommen"]:::planned
-  MODEL[("Getraind netwerk + licentietabel per familie en ladingstoestand")]:::store
-  LABDB[("Laboratoriumspectra")]:::ext
-  PAHDB[("PAHdb en andere voorspellers")]:::ext
-
-  PIPE["Pipeline (blad 4): DFT-schets → forward pass → gelicentieerde ΔH-blokken → gecorrigeerde krachtconstanten → spectrale vorm"]:::planned
-  SPEC(["Spectrum met foutmarge per band, voor een molecuul zonder laboratoriumspectrum"]):::data
-  SPECS[("Spectrumarchief")]:::store
-
-  RES["Onderzoeksproces (bladen 5 en 6): de toetsen die beslissen of dit alles er zo komt"]:::research
-
-  CAT --> LABF --> LABELS
-  CAT --> CORPF --> CORPUS
-  CORPF --> SKETCHES
-  LABF --> SKETCHES
-  CORPUS --> TRAIN
+  MOL --> LABF --> LABELS
+  MOL --> CORPF --> CORPUS
   LABELS --> TRAIN
+  CORPUS --> TRAIN
   LABDB --> TRAIN
   PAHDB --> TRAIN
   TRAIN --> MODEL
-  CAT --> PIPE
-  SKETCHES --> PIPE
+  MOL --> PIPE
+  COND --> PIPE
   MODEL --> PIPE
-  PIPE --> SPEC --> SPECS
-  RES -. beslist over .-> DC
+  PIPE --> SPEC
+  RES -. beslist over .-> LABF
   RES -. beslist over .-> TRAIN
   RES -. beslist over .-> PIPE
