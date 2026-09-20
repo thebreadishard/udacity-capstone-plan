@@ -306,7 +306,9 @@ flowchart LR
   MODES(["Normaalmodi: L, frequenties, families, symmetrieblokken"]):::data
   TOKS["Tokenisatie (eigen software)"]
   TOK(["Modus-tokens"]):::data
-  FWD["Forward pass met licentiefilter (eigen netwerk, PyTorch): licentietabel per familie en ladingstoestand vooraf, onzekerheid van het ensemble per molecuul"]:::planned
+  FWD["Forward pass (eigen netwerk, PyTorch)"]:::planned
+  DH(["ΔH-blokken per familie, met onzekerheid van het ensemble"]):::data
+  LICF["Licentiefilter (eigen software): per blok de licentietabel van de testfase en de onzekerheid voor dit molecuul"]:::planned
   DHL(["ΔH-blokken per familie met licentiestatus: toegepast of geweigerd, met reden"]):::data
   APPLY["Samenstellen van H (eigen software)"]
   H(["Krachtconstanten H = H0 + ΔH op gelicentieerde blokken, elders H0"]):::data
@@ -323,7 +325,7 @@ flowchart LR
   MOL --> DFT --> SK
   SK --> MODE --> MODES
   SK --> VPT --> ANHC
-  MODES --> TOKS --> TOK --> FWD --> DHL --> APPLY --> H --> EIG --> POS --> SHAPE
+  MODES --> TOKS --> TOK --> FWD --> DH --> LICF --> DHL --> APPLY --> H --> EIG --> POS --> SHAPE
   DHL --> SHAPE
   SK --> APPLY
   SK --> INT
