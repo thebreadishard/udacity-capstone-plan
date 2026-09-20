@@ -15,6 +15,7 @@ DECK = HERE / "decks" / "deck_v1.json"
 QC_PYTHON = Path(os.environ.get("CORPUS_QC_PYTHON", r"C:\Users\thebr\.conda\envs\qc\python.exe"))  # 2026-09-18: overridable so the same runner works on a Linux host (Hetzner CPX62)
 QM9_VAC = HERE.parent / "data" / "hessian_qm9" / "hessian_qm9_DatasetDict" / "vacuum"
 FIELDS = ["id", "layer", "priority", "name", "smiles", "qm9_label", "n_heavy", "n_atoms", "status", "machine", "deck", "note"]
+RETRY_OPT_OPTIONS = {"opt_coordinates": "cartesian", "geom_maxiter": 200}  # 2026-09-20: --retry-failed; near-linear bends (ethynyl) stall optking's internals
 LEDGER_FIELDS = ["id", "layer", "name", "machine", "deck", "start", "end", "seconds_total", "seconds_optimise", "seconds_hessian_b3lyp", "seconds_hessian_wb97x", "peak_rss_gb", "status", "note"]
 
 
@@ -96,6 +97,7 @@ def main():
     ap.add_argument("--threads", type=int, default=None, help="override the deck's thread count for this runner only (2026-09-18; the deck file and its hash are unchanged; noted in the ledger)")
     ap.add_argument("--memory-gb", type=int, default=None, help="override the deck's psi4 memory for this runner only (2026-09-18; noted in the ledger)")
     ap.add_argument("--shard", default=None, help="i/K: this runner takes only the pending rows whose id hashes to shard i of K (2026-09-19; several rented machines share one layer without collisions; manifests are merged afterwards by merge_shards.py)")
+    ap.add_argument("--retry-failed", action="store_true", help="take the rows with status failed (within --layer/--shard) once more, with opt_coordinates cartesian and geom_maxiter 200; the result folder is replaced (2026-09-20: E6 acenaphthylene+ethynyl, optking 50 steps)")
     ap.add_argument("--ids", default=None, help="comma-separated manifest ids to (re)run regardless of status; the result folder is replaced (2026-09-15: benzene grid rerun with per-mode frequencies)")
     a = ap.parse_args()
     deck = json.load(open(DECK)); deck_hash = hashlib.sha256(DECK.read_bytes()).hexdigest()[:12]
@@ -124,7 +126,8 @@ def main():
                 wanted = set(a.ids.split(","))
                 todo = [r for r in rows if r["id"] in wanted and r["id"] not in virtually_done]
             else:
-                todo = [r for r in queue_order(rows) if r["status"] == "pending" and r["id"] not in virtually_done and (a.layer is None or r["layer"] == a.layer) and (a.shard is None or int(hashlib.sha1(r["id"].encode()).hexdigest(), 16) % int(a.shard.split("/")[1]) == int(a.shard.split("/")[0]))]
+                want_status = "failed" if a.retry_failed else "pending"
+                todo = [r for r in queue_order(rows) if r["status"] == want_status and r["id"] not in virtually_done and (a.layer is None or r["layer"] == a.layer) and (a.shard is None or int(hashlib.sha1(r["id"].encode()).hexdigest(), 16) % int(a.shard.split("/")[1]) == int(a.shard.split("/")[0]))]
             if not todo:
                 log("nothing pending; done"); break
             if a.max_molecules is not None and done >= a.max_molecules:
@@ -132,7 +135,7 @@ def main():
             if a.max_hours is not None and (time.time() - t_start) / 3600 >= a.max_hours:
                 log(f"reached --max-hours {a.max_hours}"); break
             r = todo[0]
-            if a.ids:
+            if a.ids or a.retry_failed:  # a retried molecule that fails again must not be picked up in the next loop
                 virtually_done.add(r["id"])
             if a.dry_run:
                 log(f"would run {r['id']} {r['layer']} {r['name']} ({r['n_atoms']} atoms)"); done += 1; virtually_done.add(r["id"])
@@ -146,6 +149,7 @@ def main():
             try:
                 xyz, optimise = start_geometry(r)
                 job = {"id": r["id"], "layer": r["layer"], "xyz_angstrom": xyz, "deck": deck, "out_dir": str(out_tmp), "optimise": optimise, "grid_check": a.grid_check}
+                if a.retry_failed: job["opt_options"] = RETRY_OPT_OPTIONS
                 jp = out_tmp / "job.json"; json.dump(job, open(jp, "w"))
                 p = subprocess.run([str(QC_PYTHON), str(HERE / "psi4_worker.py"), str(jp)], capture_output=True, text=True)
                 (out_tmp / "worker_stdout.txt").write_text(p.stdout + "\n---stderr---\n" + p.stderr)
@@ -163,7 +167,7 @@ def main():
             tm = res.get("timings_s", {})
             append_ledger(dict(id=r["id"], layer=r["layer"], name=r["name"], machine=machine, deck=deck_hash, start=f"{t0:%Y-%m-%d %H:%M:%S}", end=f"{datetime.now():%Y-%m-%d %H:%M:%S}",
                                seconds_total=tm.get("total", ""), seconds_optimise=tm.get("optimise", ""), seconds_hessian_b3lyp=tm.get("hessian_b3lyp", ""), seconds_hessian_wb97x=tm.get("hessian_wb97x", ""),
-                               peak_rss_gb=res.get("peak_rss_gb", ""), status=status, note=" ".join(x for x in (("forced" if a.force else ""), override_note) if x)))
+                               peak_rss_gb=res.get("peak_rss_gb", ""), status=status, note=" ".join(x for x in (("forced" if a.force else ""), ("retry:" + ",".join(f"{k}={v}" for k, v in RETRY_OPT_OPTIONS.items()) if a.retry_failed else ""), override_note) if x)))
             done += 1
             log(f"{status} {r['id']} in {tm.get('total', '?')} s (opt {tm.get('optimise', '-')}, B3LYP {tm.get('hessian_b3lyp', '-')}, wB97X {tm.get('hessian_wb97x', '-')})")
             if time.time() - last_report > 3600 or True:

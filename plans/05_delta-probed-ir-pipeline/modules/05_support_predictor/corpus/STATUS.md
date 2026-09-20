@@ -1,4 +1,4 @@
-# Corpus status — 2026-09-19 12:11
+# Corpus status — 2026-09-20 11:07
 
 Manifest rows: 11,321; ledger entries: 48; compute spent so far: 36.0 h (from the ledger).
 

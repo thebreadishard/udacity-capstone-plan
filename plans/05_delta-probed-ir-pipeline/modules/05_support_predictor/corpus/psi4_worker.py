@@ -50,6 +50,8 @@ def main(job_path):  # 2026-09-14: psi4.hessian(..., return_wfn=True) returns (H
         psi4.set_options({"basis": d["basis"], "scf_type": d["scf_type"], "e_convergence": d["e_convergence"], "d_convergence": d["d_convergence"],
                           "dft_radial_points": d["dft_radial_points"], "dft_spherical_points": d["dft_spherical_points"], "reference": d["reference"]})
         if job.get("optimise", True):
+            if job.get("opt_options"):  # 2026-09-20: retry pass for optimisations that did not converge (E6, acenaphthylene+ethynyl): e.g. cartesian coordinates, 200 steps
+                psi4.set_options(job["opt_options"]); res["opt_options"] = job["opt_options"]
             t = time.time(); e_opt = psi4.optimize(d["low_functional"], molecule=mol); res["timings_s"]["optimise"] = round(time.time() - t, 1); res["e_opt"] = e_opt
         coords = np.array(mol.geometry()); masses = np.array([mol.mass(i) for i in range(mol.natom())]); syms = [mol.symbol(i) for i in range(mol.natom())]
         json.dump({"symbols": syms, "coords_bohr": coords.tolist(), "masses_amu": masses.tolist(), "optimised_at": d["low_functional"] if job.get("optimise", True) else "input geometry"}, open(os.path.join(out, "geometry.json"), "w"), indent=1)
