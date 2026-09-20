@@ -1,8 +1,8 @@
-"""41 — Het ΔH-model in PyTorch: de definitie van het netwerk (blad 4a in code).
+"""31 — Het ΔH-model in PyTorch: de definitie van het netwerk (blad 3b: blad 3 in code).
 
 Dit bestand definieert alleen het netwerk: invoerlaag, verborgen lagen, uitvoerlagen en wat er
 standaard omheen hoort (configuratie, maskering, initialisatie, verliesfuncties, ensemble,
-parametertelling, rooktest). Training (blad 3) en test en licentie (blad 3b) staan er niet in; die komen in
+parametertelling, rooktest). Training (blad 4) en test en licentie (blad 5) staan er niet in; die komen in
 `modules/05_support_predictor/` zodra de labels er zijn.
 
 Naamgeving (afspraak 20 september 2026): het geheel is **het ΔH-model**; embedding + self-attention
@@ -220,7 +220,7 @@ class DeltaHModel(nn.Module):
 
 
 # ----------------------------------------------------------------------------------------------
-# Verliesfuncties (de vorm ligt vast; de wegingen per familie komen uit het foutbudget van blad 1)
+# Verliesfuncties (de vorm ligt vast; de wegingen per familie komen uit het foutbudget van blad 2)
 # ----------------------------------------------------------------------------------------------
 def block_loss(pred_block, target_block, family, mask, family_weight=None):
     """Gemiddelde kwadratische fout over de gevulde blokelementen (binnen familie, binnen molecuul),
@@ -246,7 +246,7 @@ def pair_loss(pair_logits, support, mask, pos_weight):
 # ----------------------------------------------------------------------------------------------
 class DeltaHEnsemble(nn.Module):
     """Bundel van getrainde leden. Geeft per blokelement het gemiddelde (de voorspelling) en de
-    standaardafwijking over de leden (de ruwe onzekerheid; de kalibratie van blad 3 schaalt die)."""
+    standaardafwijking over de leden (de ruwe onzekerheid; de kalibratie van blad 5 schaalt die)."""
 
     def __init__(self, members: list[DeltaHModel]):
         super().__init__()

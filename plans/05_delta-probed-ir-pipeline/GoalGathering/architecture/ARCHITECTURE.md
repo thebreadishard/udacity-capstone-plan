@@ -4,18 +4,19 @@
 
 | soort | wat het toont | bladen |
 |---|---|---|
-| **Datacreatie** | processen die data maken: de labelfabriek (coupled-cluster-correcties per molecuul) en de corpusstap (DFT-paren en vervangercorrectie) | 1, 2 |
-| **Training en beoordeling** | training: uit corpusrecords en labels komt het getrainde ΔH-model (blad 3); test en licentie: uit dat model en de testset komen de licentietabel en de kalibratie, met de score tegen de laboratoriumkolommen en de opponenten (blad 3b); de gewichten veranderen daar niet meer. De target pipeline gebruikt het getrainde model van blad 3 en de tabel en kalibratie van blad 3b; op blad 4 zelf staan die niet als invoerobject getekend (afspraak 20 september). Blad 3 draait per modelversie, niet per molecuul, en bevat de validatielus | 3, 3b |
-| **Pipeline** | het eindproduct: molecuul en waarnemingscondities in, forward pass als één stap, spectrum met licentiestatus uit | 4 (en 4a: de componenten van het ΔH-model) |
-| **Onderzoeksproces** | de toetsen die beslissen of dit alles er zo komt; het enige soort blad waar data, besluiten en experimentnummers in mogen | 5, 6 |
+| **Datacreatie** | processen die data maken: de corpusstap (DFT-paren en vervangercorrectie; blad 1) en de labelfabriek (coupled-cluster-correcties per molecuul; blad 2) | 1, 2 |
+| **Het ΔH-model** | de definitie van het netwerk: de componenten (blad 3) en dezelfde definitie als PyTorch-code (blad 3b) | 3, 3b |
+| **Training en beoordeling** | training: uit corpusrecords en labels komt het getrainde ΔH-model (blad 4); test en licentie: uit dat model en de testset komen de licentietabel en de kalibratie, met de score tegen de laboratoriumkolommen en de opponenten (blad 5); de gewichten veranderen daar niet meer. De target pipeline gebruikt het getrainde model van blad 4 en de tabel en kalibratie van blad 5; op blad 6 zelf staan die niet als invoerobject getekend (afspraak 20 september). Blad 4 draait per modelversie, niet per molecuul, en bevat de validatielus | 4, 5 |
+| **Target pipeline** | het eindproduct: molecuul en waarnemingscondities in, forward pass van het ΔH-model als één stap, spectrum met licentiestatus uit | 6 |
+| **Onderzoeksproces** | de toetsen die beslissen of dit alles er zo komt; het enige soort blad waar data, besluiten en experimentnummers in mogen | 7, 8 |
 
-Het overzicht (blad 0) toont de vier soorten en de data-objecten die ze verbinden. Rekenplaats staat er voorlopig niet in; die komt later per blokje.
+Het overzicht (blad 0) toont de soorten proces en de data-objecten die ze verbinden. **Nummering (20 september):** de bestandsnummers volgen de volgorde waarin de stappen worden doorlopen: corpus (1), labels (2), het ΔH-model (3, code 3b), training (4), test en licentie (5), target pipeline (6); daarna het onderzoeksproces (7, 8). Rekenplaats staat er voorlopig niet in; die komt later per blokje.
 
 **Tekenregels (afgesproken 19–20 september; op alle bladen toegepast).**
 
 | regel | inhoud |
 |---|---|
-| vormen | rechthoek = processtap; rechthoek met ronde uiteinden (grijs) = data-object; donkerder blauw = extern data-object, niet van ons; licht kader om meerdere figuren = onderdeel van het ΔH-model (backbone, koppen; alleen blad 4a) |
+| vormen | rechthoek = processtap; rechthoek met ronde uiteinden (grijs) = data-object; donkerder blauw = extern data-object, niet van ons; licht kader om meerdere figuren = onderdeel van het ΔH-model (backbone, koppen; alleen blad 3) |
 | stap → object | elke processtap levert precies één data-object, dat de volgende stap(pen) voedt; een proces begint en eindigt bij een data-object; splitsingen komen alleen uit data-objecten |
 | naamgeving | een stap heet naar de bewerking met tussen haken het softwarepakket ("DFT (psi4)", "VPT2 (pyVPT2 op psi4)") of "eigen software" / "PyTorch" als wij het maken; een data-object heet naar het ding; geen woordherhaling tussen stap en object; geen uitleg in captions |
 | het model | het netwerk heet **het ΔH-model** (het voorspelt ΔH-blokken per familie); zijn gedeelde deel heet de **backbone** (embedding en self-attention), zijn uitgangen heten **koppen** (blokkop, paarkop); de exemplaren met verschillende seeds vormen het **ensemble** en heten **leden**; de eenvoudige regels zijn de **baseline**. "Netwerk" zonder meer komt op de doelbladen niet voor (afspraak 20 september) |
@@ -23,9 +24,9 @@ Het overzicht (blad 0) toont de vier soorten en de data-objecten die ze verbinde
 | geen | geen opslagfiguren (cilinders), geen ruiten op de doelbladen (beslissingen per item zitten in een stap), geen onzichtbare hulpknopen: standaard Mermaid, links naar rechts |
 | controle | vóór een commit lokaal gerenderd (Mermaid 11), daarna de GitHub-weergave |
 
-Op de onderzoeksprocesbladen (5, 6) gelden eigen kleuren: groen = geslaagd, blauw = loopt, gestippeld = nog te doen, rood = verloren en gesloten; daar mogen ruiten en data in. Bron van waarheid: de `.mmd`-bestanden in deze map (Mermaid; renderen op GitHub).
+Op de onderzoeksprocesbladen (7, 8) gelden eigen kleuren: groen = geslaagd, blauw = loopt, gestippeld = nog te doen, rood = verloren en gesloten; daar mogen ruiten en data in. Bron van waarheid: de `.mmd`-bestanden in deze map (Mermaid; renderen op GitHub).
 
-## 0. Overzicht: vier soorten proces en hun data-objecten
+## 0. Overzicht: de soorten proces en hun data-objecten (`00_overzicht.mmd`)
 
 ```mermaid
 %% Overzicht plan 05 (niveau 1): de soorten proces en de data-objecten die ze verbinden. Doelarchitectuur; geen besluiten, geen data.
@@ -43,18 +44,18 @@ flowchart LR
   LABDB(["Laboratoriumspectra"]):::ext
   PAHDB(["Opponenten: PAHdb en andere voorspellers"]):::ext
 
-  LABF["Labelfabriek (blad 1)"]:::proc
+  LABF["Labelfabriek (blad 2)"]:::proc
   LABELS(["Labels: ΔH-blokken met foutmarge per familie"]):::data
-  CORPF["Corpusstap (blad 2)"]:::proc
+  CORPF["Corpusstap (blad 1)"]:::proc
   CORPUS(["Corpusrecords: modus-tokens en vervangercorrectie per molecuul"]):::data
-  TRAIN["Training (blad 3)"]:::planned
+  TRAIN["Training (blad 4)"]:::planned
   TRAINED(["Getraind ΔH-model: ensemble van leden"]):::data
   TESTSET(["Testset"]):::data
-  EVAL["Test en licentie (blad 3b)"]:::planned
+  EVAL["Test en licentie (blad 5)"]:::planned
   LICCAL(["Licentietabel en kalibratie"]):::data
-  PIPE["Target pipeline (blad 4)"]:::planned
+  PIPE["Target pipeline (blad 6)"]:::planned
   SPEC(["Spectrum: banden met positie, intensiteit, profiel en foutmarge; licentiestatus per familie"]):::data
-  RES["Onderzoeksproces (bladen 5 en 6)"]:::research
+  RES["Onderzoeksproces (bladen 7 en 8)"]:::research
 
   MOL --> LABF --> LABELS
   MOL --> CORPF --> CORPUS
@@ -77,7 +78,43 @@ flowchart LR
   RES -. beslist over .-> PIPE
 ```
 
-## 1. Datacreatie — de labelfabriek: hoe één label ontstaat
+## 1. Datacreatie — het corpus (`10_datacreatie_corpus.mmd`)
+
+```mermaid
+%% Datacreatie — het corpus: twee DFT-Hessianen per molecuul en de vervangercorrectie (niveau 3). Doelarchitectuur.
+%% Rechthoek = processtap (bewerking + software); ronde uiteinden = data-object (het ding). Elke stap levert één data-object. Alles bestaat.
+flowchart LR
+  linkStyle default stroke:#8a9bb0,stroke-width:2.2px
+  classDef data fill:#e9ecef,stroke:#555,color:#111
+
+  MOL(["Molecuul: SMILES of geometrie, lading, multipliciteit"]):::data
+  OPT["Geometrieoptimalisatie op laag niveau (psi4)"]
+  GEO(["Geoptimaliseerde geometrie"]):::data
+  DFTL["DFT op laag niveau (psi4)"]
+  SK(["Hessiaan H0 en dipoolafgeleiden"]):::data
+  DFTH["DFT op hoog niveau (psi4)"]
+  H1(["Hessiaan H1"]):::data
+  MODE["Modusanalyse (eigen software)"]
+  MODES(["Normaalmodi: L, frequenties, families, symmetrieblokken"]):::data
+  PROXY["Vervangercorrectie (eigen software)"]
+  DHP(["Vervangercorrectie: ΔH = H1 − H0 per familieblok, in de modusbasis"]):::data
+  TOKS["Tokenisatie (eigen software)"]
+  TOK(["Modus-tokens"]):::data
+  REC["Samenstellen van het record (eigen software)"]
+  CORP(["Corpusrecord: modus-tokens, vervangercorrectie, Hessiaan H0 en dipoolafgeleiden"]):::data
+
+  MOL --> OPT --> GEO
+  GEO --> DFTL --> SK --> MODE --> MODES
+  GEO --> DFTH --> H1
+  SK --> PROXY
+  H1 --> PROXY
+  MODES --> PROXY --> DHP --> REC
+  MODES --> TOKS --> TOK --> REC
+  SK --> REC
+  REC --> CORP
+```
+
+## 2. Datacreatie — de labelfabriek: hoe één label ontstaat (`20_datacreatie_labels.mmd`)
 
 ```mermaid
 %% Datacreatie — de labelfabriek: hoe één label ontstaat (niveau 3). Doelarchitectuur: geen besluiten, geen data.
@@ -128,46 +165,54 @@ flowchart LR
   SEAL --> LABEL
 ```
 
-## 2. Datacreatie — het corpus
+## 3. Componenten van het ΔH-model (`30_deltaH_model_componenten.mmd`)
 
 ```mermaid
-%% Datacreatie — het corpus: twee DFT-Hessianen per molecuul en de vervangercorrectie (niveau 3). Doelarchitectuur.
-%% Rechthoek = processtap (bewerking + software); ronde uiteinden = data-object (het ding). Elke stap levert één data-object. Alles bestaat.
+%% Componenten van het ΔH-model (niveau 4): wat er binnen de stap "Forward pass (ΔH-model, PyTorch)" van blad 6 gebeurt. Backbone = embedding en self-attention; koppen = blokkop en paarkop; het ensemble bestaat uit leden met verschillende seeds. Doelarchitectuur; grotendeels nog niet gebouwd.
+%% Rechthoek = processtap (bewerking + software); ronde uiteinden = data-object (het ding). Elke stap levert één data-object. Gestippeld = nog niet gebouwd.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
+  classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
   classDef data fill:#e9ecef,stroke:#555,color:#111
+  classDef part fill:#f7f7fb,stroke:#333,stroke-width:1.5px,color:#111
 
-  MOL(["Molecuul: SMILES of geometrie, lading, multipliciteit"]):::data
-  OPT["Geometrieoptimalisatie op laag niveau (psi4)"]
-  GEO(["Geoptimaliseerde geometrie"]):::data
-  DFTL["DFT op laag niveau (psi4)"]
-  SK(["Hessiaan H0 en dipoolafgeleiden"]):::data
-  DFTH["DFT op hoog niveau (psi4)"]
-  H1(["Hessiaan H1"]):::data
-  MODE["Modusanalyse (eigen software)"]
-  MODES(["Normaalmodi: L, frequenties, families, symmetrieblokken"]):::data
-  PROXY["Vervangercorrectie (eigen software)"]
-  DHP(["Vervangercorrectie: ΔH = H1 − H0 per familieblok, in de modusbasis"]):::data
-  TOKS["Tokenisatie (eigen software)"]
-  TOK(["Modus-tokens"]):::data
-  REC["Samenstellen van het record (eigen software)"]
-  CORP(["Corpusrecord: modus-tokens, vervangercorrectie, Hessiaan H0 en dipoolafgeleiden"]):::data
+  TOK(["Modus-tokens van één molecuul, met lading en multipliciteit"]):::data
+  EMB["Embedding (PyTorch)"]
+  EMBV(["Tokenvectoren"]):::data
+  ATT["Self-attention over de modi (PyTorch)"]
+  CTX(["Contextvectoren per modus"]):::data
+  BLK["Blokkop (PyTorch)"]:::planned
+  BLKS(["ΔH-blokken per familie van één ensemblelid"]):::data
+  PAIR["Paarkop (PyTorch)"]
+  PAIRS(["Steunlabels per moduspaar"]):::data
+  ENSA["Ensemblemiddeling over de leden (eigen software)"]:::planned
+  OUT(["ΔH-blokken per familie, met onzekerheid van het ensemble"]):::data
 
-  MOL --> OPT --> GEO
-  GEO --> DFTL --> SK --> MODE --> MODES
-  GEO --> DFTH --> H1
-  SK --> PROXY
-  H1 --> PROXY
-  MODES --> PROXY --> DHP --> REC
-  MODES --> TOKS --> TOK --> REC
-  SK --> REC
-  REC --> CORP
+  subgraph BB["Backbone van het ΔH-model"]
+    EMB
+    EMBV
+    ATT
+    CTX
+  end
+  subgraph HD["Koppen van het ΔH-model"]
+    BLK
+    PAIR
+  end
+  class BB,HD part
+
+  TOK --> EMB --> EMBV --> ATT --> CTX
+  CTX --> BLK --> BLKS --> ENSA --> OUT
+  CTX --> PAIR --> PAIRS --> ENSA
 ```
 
-## 3. Training (`20_training.mmd`)
+## 3b. Het ΔH-model in code (`31_deltaH_model_pytorch.py`)
+
+Blad 3 als PyTorch-definitie, toegevoegd 20 september: invoerlaag (`TokenEmbedding`: modustokens door een tweelaags MLP, lading en multipliciteit als twee molecuul-tokens ervoor, geen positionele codering omdat modi een verzameling zijn), verborgen lagen (`Backbone`: Transformer-encoder, twee lagen, vier heads, breedte 64, dropout 0.1, pre-LayerNorm, met opvulmasker), uitvoerlagen (`BlockHead`: het ΔH-blok per familie in de modusbasis, diagonaal uit de contextvector en koppelingen uit symmetrische paarkenmerken, nul buiten de familie; `PairHead`: steunlogit per moduspaar), plus wat er standaard omheen hoort: `DeltaHConfig`, initialisatie, `block_loss` (blokregel van 19 september, weging per familie uit het foutbudget), `pair_loss` (klassegewogen, les van E5), `DeltaHEnsemble` met gemiddelde en spreiding per element, parametertelling en een rooktest op willekeurige invoer. Geen trainingslus: die hoort bij blad 4 en komt in `modules/05_support_predictor/` zodra er labels zijn. Getallen volgen de desk-notitie van 18 september §1.
+
+## 4. Training (`40_training.mmd`)
 
 ```mermaid
-%% Training (niveau 3): uit corpusrecords en labels komt het getrainde ΔH-model. Doelarchitectuur; nog niet gebouwd. De beoordeling (test, licentie, kalibratie) staat op blad 3b.
+%% Training (niveau 3): uit corpusrecords en labels komt het getrainde ΔH-model. Doelarchitectuur; nog niet gebouwd. De beoordeling (test, licentie, kalibratie) staat op blad 5.
 %% Rechthoek = processtap (bewerking + software); ronde uiteinden = data-object (het ding). Elke stap levert één data-object. Gestippeld = nog niet gebouwd.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
@@ -195,7 +240,7 @@ flowchart LR
   FTNET --> VAL --> VALR --> FT
 ```
 
-## 3b. Test en licentie (`21_test_en_licentie.mmd`)
+## 5. Test en licentie (`50_test_en_licentie.mmd`)
 
 ```mermaid
 %% Test en licentie (niveau 3b): uit het getrainde ΔH-model en de testset komen de licentietabel en de kalibratie die de target pipeline naast het getrainde model gebruikt. De gewichten van het model veranderen hier niet. Doelarchitectuur; nog niet gebouwd.
@@ -226,7 +271,7 @@ flowchart LR
   TESTR --> CAL --> CALR
 ```
 
-## 4. Target pipeline (`30_target_pipeline.mmd`; voorlopige naam, 20 september)
+## 6. Target pipeline (`60_target_pipeline.mmd`)
 
 ```mermaid
 %% Pipeline (niveau 3): wat er staat als onderzoek en training klaar zijn. Molecuul in, spectrum met foutmarge uit.
@@ -277,56 +322,12 @@ flowchart LR
   SHAPE --> SPEC
 ```
 
-## 4a. Componenten van het ΔH-model (`40_deltaH_model_componenten.mmd`)
-
-```mermaid
-%% Componenten van het ΔH-model (niveau 4): wat er binnen de stap "Forward pass (ΔH-model, PyTorch)" van blad 4 gebeurt. Backbone = embedding en self-attention; koppen = blokkop en paarkop; het ensemble bestaat uit leden met verschillende seeds. Doelarchitectuur; grotendeels nog niet gebouwd.
-%% Rechthoek = processtap (bewerking + software); ronde uiteinden = data-object (het ding). Elke stap levert één data-object. Gestippeld = nog niet gebouwd.
-flowchart LR
-  linkStyle default stroke:#8a9bb0,stroke-width:2.2px
-  classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
-  classDef data fill:#e9ecef,stroke:#555,color:#111
-  classDef part fill:#f7f7fb,stroke:#333,stroke-width:1.5px,color:#111
-
-  TOK(["Modus-tokens van één molecuul, met lading en multipliciteit"]):::data
-  EMB["Embedding (PyTorch)"]
-  EMBV(["Tokenvectoren"]):::data
-  ATT["Self-attention over de modi (PyTorch)"]
-  CTX(["Contextvectoren per modus"]):::data
-  BLK["Blokkop (PyTorch)"]:::planned
-  BLKS(["ΔH-blokken per familie van één ensemblelid"]):::data
-  PAIR["Paarkop (PyTorch)"]
-  PAIRS(["Steunlabels per moduspaar"]):::data
-  ENSA["Ensemblemiddeling over de leden (eigen software)"]:::planned
-  OUT(["ΔH-blokken per familie, met onzekerheid van het ensemble"]):::data
-
-  subgraph BB["Backbone van het ΔH-model"]
-    EMB
-    EMBV
-    ATT
-    CTX
-  end
-  subgraph HD["Koppen van het ΔH-model"]
-    BLK
-    PAIR
-  end
-  class BB,HD part
-
-  TOK --> EMB --> EMBV --> ATT --> CTX
-  CTX --> BLK --> BLKS --> ENSA --> OUT
-  CTX --> PAIR --> PAIRS --> ENSA
-```
-
-## 4b. Het ΔH-model in code (`41_deltaH_model_pytorch.py`)
-
-Blad 4a als PyTorch-definitie, toegevoegd 20 september: invoerlaag (`TokenEmbedding`: modustokens door een tweelaags MLP, lading en multipliciteit als twee molecuul-tokens ervoor, geen positionele codering omdat modi een verzameling zijn), verborgen lagen (`Backbone`: Transformer-encoder, twee lagen, vier heads, breedte 64, dropout 0.1, pre-LayerNorm, met opvulmasker), uitvoerlagen (`BlockHead`: het ΔH-blok per familie in de modusbasis, diagonaal uit de contextvector en koppelingen uit symmetrische paarkenmerken, nul buiten de familie; `PairHead`: steunlogit per moduspaar), plus wat er standaard omheen hoort: `DeltaHConfig`, initialisatie, `block_loss` (blokregel van 19 september, weging per familie uit het foutbudget), `pair_loss` (klassegewogen, les van E5), `DeltaHEnsemble` met gemiddelde en spreiding per element, parametertelling en een rooktest op willekeurige invoer. Geen trainingslus: die hoort bij blad 3 en komt in `modules/05_support_predictor/` zodra er labels zijn. Getallen volgen de desk-notitie van 18 september §1.
-
 # Onderzoeksproces (mag data en besluiten bevatten)
 
-## 5. Onderzoeksproces — de labelfabriek en de decks
+## 7. Onderzoeksproces — de labelfabriek en de decks (`70_onderzoeksproces_pipeline_B.mmd`)
 
 ```mermaid
-%% Onderzoeksproces — pipeline B: de toetsen die beslissen of de doelarchitectuur van blad 1 er komt. Stand 20 september 2026.
+%% Onderzoeksproces — pipeline B: de toetsen die beslissen of de doelarchitectuur van blad 2 er komt. Stand 20 september 2026.
 %% Dit blad mag data en besluiten bevatten. Groen = geslaagd; blauw = loopt; gestippeld = nog te doen; rood = mislukt en gesloten.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
@@ -368,10 +369,10 @@ flowchart LR
   DECK2 --> TPORT
 ```
 
-## 6. Onderzoeksproces — het netwerk
+## 8. Onderzoeksproces — het ΔH-model (`80_onderzoeksproces_pipeline_A.mmd`)
 
 ```mermaid
-%% Onderzoeksproces — pipeline A: de toetsen die beslissen of en hoe het netwerk van blad 2 er komt. Stand 20 september 2026.
+%% Onderzoeksproces — pipeline A: de toetsen die beslissen of en hoe het ΔH-model van de bladen 3 en 4 er komt. Stand 20 september 2026.
 %% Dit blad mag data en besluiten bevatten. Groen = geslaagd of gemeten; blauw = loopt; gestippeld = nog te doen; rood = verloren en gesloten.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
