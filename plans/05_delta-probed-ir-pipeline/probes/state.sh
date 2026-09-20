@@ -29,3 +29,7 @@ echo "  $(git status --porcelain | wc -l) uncommitted paths; HEAD: $(git log --o
 echo "--- three most recent ledger entries (first line each) ---"
 sed -n '/^## 6. Log/,$p' "$LED" | grep -a '^- \*\*' | head -3 | cut -c1-140 | sed 's/^/  /'
 echo "=== grep the ledger only if something above needs explaining ==="
+
+# 20 Sep 2026: the watchers run detached inside WSL and write alarms to files (the app no longer keeps Monitors alive)
+echo "--- alarm files of the detached WSL watchers (empty = healthy) ---"
+for f in /c/Users/thebr/AppData/Local/Temp/claude/*/*/scratchpad/anchor_alarms.log /c/Users/thebr/AppData/Local/Temp/claude/*/*/scratchpad/e6_alarms.log; do [ -f "$f" ] && { printf "  %s: " "$(basename "$f")"; if [ -s "$f" ]; then tail -2 "$f" | cut -c1-140; else echo "(empty)"; fi; }; done
