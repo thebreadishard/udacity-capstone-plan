@@ -58,9 +58,7 @@ kationlabels hangen daaraan. De overige genummerde vragen zijn voor het gesprek;
 of een bron.
 
 Alles wat in het voorstel over mijn eigen resultaten staat, is door een script afgedrukt en staat in de repository:
-https://github.com/thebreadishard/udacity-capstone-plan, met een openbaar labjournaal in blogvorm. Naast het voorstel staat daar
-de zijstudie (plan 06): zij heeft geen goedkopere wiskunde voor de dure stap gevonden, wel gemeten wat een gradiënt kost en
-bewezen wat een symmetriepatroon aan gradiënten bespaart; haar eerste toetsdatum is 15 oktober.
+https://github.com/thebreadishard/udacity-capstone-plan, met een openbaar labjournaal in blogvorm.
 
 Groetjes,
 Frederic
@@ -69,8 +67,8 @@ Frederic
 
 *Checklist voor het versturen:* de datum in de kop van de leeskopie is 28 september; het B1-verdict van vrijdag is ingevuld op de
 plek van de marker in §3.5 (de eerste familie staat er al als gedateerde notitie); instelling en rol in de kop ingevuld; de pdf of
-het md-bestand als bijlage, de annex van plan 06 erbij; de repository-link alleen als de student dat wil.
+het md-bestand als bijlage; de repository-link alleen als de student dat wil.
 
 *Wat dit concept toevoegt ten opzichte van 12 september:* de dank voor de artikelen en de zin over Mata & Werner (§3.1 herschreven
 20 september); de stand van het anker met de eerste familie (20 september 18:43) en van het corpus; de vragen 14 en 18 in concrete
-vorm; het dek van 291 in plaats van 474 energieën (besluit 37); de slotzin over plan 06 volgens de annex van 16 september.
+vorm; het dek van 291 in plaats van 474 energieën (besluit 37). Plan 06 en zijn annex worden in de brief niet genoemd (de gebruiker, 20 september).
