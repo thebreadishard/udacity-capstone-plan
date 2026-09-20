@@ -96,10 +96,8 @@ flowchart LR
     GEO(["Molecuul: geoptimaliseerde geometrie, lading, multipliciteit"]):::data
     CAT[("Molecuulcatalogus")]:::store
     CAT --> GEO
-    SP0[" "]
-    GEO ~~~ SP0
+    SP0["&nbsp;<br/>&nbsp;<br/>&nbsp;"]
   end
-  style SP0 fill:none,stroke:none,color:transparent
   H0["Stage A: DFT-Hessiaan H0 → modi L, frequenties, families, irreps"]
   SKETCH(["DFT-schets"]):::data
   SYM["Symmetrieprior: koppeling alleen binnen een irrep-blok"]
@@ -119,10 +117,8 @@ flowchart LR
     LABEL(["Label: ΔH-blokken met foutmarge per familie"]):::data
     STORE[("Labelopslag")]:::store
     LABEL --> STORE
-    SP1[" "]
-    SP1 ~~~ LABEL
+    SP1["&nbsp;<br/>&nbsp;<br/>&nbsp;"]
   end
-  style SP1 fill:none,stroke:none,color:transparent
   style IN fill:none,stroke:none
   style OUT fill:none,stroke:none
 
@@ -135,6 +131,14 @@ flowchart LR
   RESP --> SOLVE --> LIC
   RESP --> BUDGET --> LIC
   LIC --> OUT
+
+  %% onzichtbare vulknopen boven de data-objecten (uitlijning met de naaste stap); hun verbindingen zijn weggestyled
+  GEO --- SP0
+  SP1 --- LABEL
+  linkStyle 21 stroke:none,stroke-width:0px
+  linkStyle 22 stroke:none,stroke-width:0px
+  style SP0 fill:none,stroke:none,color:transparent
+  style SP1 fill:none,stroke:none,color:transparent
 ```
 
 ## 2. Datacreatie — het corpus van DFT-paren
@@ -152,10 +156,8 @@ flowchart LR
     MOL(["Molecuul: SMILES of geometrie, lading, multipliciteit"]):::data
     CAT[("Molecuulcatalogus: manifest met lagen")]:::store
     CAT --> MOL
-    SP0[" "]
-    MOL ~~~ SP0
+    SP0["&nbsp;<br/>&nbsp;<br/>&nbsp;"]
   end
-  style SP0 fill:none,stroke:none,color:transparent
   GEO["Startgeometrie en optimalisatie op laag niveau"]
   HLO["Hessiaan op laag niveau (de schets die de pipeline ook gebruikt)"]
   HHI["Hessiaan op hoog niveau, zelfde geometrie"]
@@ -167,19 +169,15 @@ flowchart LR
     PAIR(["DFT-paar met vervangercorrectie en modus-tokens"]):::data
     CORPUS[("Corpus")]:::store
     PAIR --> CORPUS
-    SP1[" "]
-    SP1 ~~~ PAIR
+    SP1["&nbsp;<br/>&nbsp;<br/>&nbsp;"]
   end
-  style SP1 fill:none,stroke:none,color:transparent
   subgraph OUT2 [" "]
     direction TB
     SK(["DFT-schets: H0, modi, dipoolafgeleiden, anharmonische constanten"]):::data
     SKETCHES[("DFT-schetsen")]:::store
     SK --> SKETCHES
-    SP2[" "]
-    SP2 ~~~ SK
+    SP2["&nbsp;<br/>&nbsp;<br/>&nbsp;"]
   end
-  style SP2 fill:none,stroke:none,color:transparent
   style IN fill:none,stroke:none
   style OUT1 fill:none,stroke:none
   style OUT2 fill:none,stroke:none
@@ -193,6 +191,17 @@ flowchart LR
   MODES --> OUT2
   HLO --> OUT2
   DIP --> OUT2
+
+  %% onzichtbare vulknopen boven de data-objecten (uitlijning met de naaste stap); hun verbindingen zijn weggestyled
+  MOL --- SP0
+  SP1 --- PAIR
+  SP2 --- SK
+  linkStyle 15 stroke:none,stroke-width:0px
+  linkStyle 16 stroke:none,stroke-width:0px
+  linkStyle 17 stroke:none,stroke-width:0px
+  style SP0 fill:none,stroke:none,color:transparent
+  style SP1 fill:none,stroke:none,color:transparent
+  style SP2 fill:none,stroke:none,color:transparent
 ```
 
 ## 3. Training, validatie en test
@@ -213,19 +222,15 @@ flowchart LR
     PROXY(["DFT-paren met vervangercorrectie en modus-tokens"]):::data
     CORPUS[("Corpus")]:::store
     CORPUS --> PROXY
-    SP0[" "]
-    PROXY ~~~ SP0
+    SP0["&nbsp;<br/>&nbsp;<br/>&nbsp;"]
   end
-  style SP0 fill:none,stroke:none,color:transparent
   subgraph IN2 [" "]
     direction BT
     LAB(["Labels: ΔH-blokken met foutmarge per familie"]):::data
     LABELS[("Labelopslag")]:::store
     LABELS --> LAB
-    SP1[" "]
-    LAB ~~~ SP1
+    SP1["&nbsp;<br/>&nbsp;<br/>&nbsp;"]
   end
-  style SP1 fill:none,stroke:none,color:transparent
   SPLIT["Splitsing per molecuul en per kern: train, validatie, test — vastgelegd vóór het trainen"]:::planned
   PRE["Voortrainen op de vervangercorrectie: bloktarget per familie, gebalanceerd verlies"]:::planned
   FT["Bijtrainen op de labels: kleine leersnelheid, vroeg stoppen op de validatiemoleculen"]:::planned
@@ -241,19 +246,15 @@ flowchart LR
     MODEL(["Getraind netwerk + licentietabel + kalibratie"]):::data
     MODELS[("Modelopslag")]:::store
     MODEL --> MODELS
-    SP2[" "]
-    SP2 ~~~ MODEL
+    SP2["&nbsp;<br/>&nbsp;<br/>&nbsp;"]
   end
-  style SP2 fill:none,stroke:none,color:transparent
   subgraph OUT2 [" "]
     direction TB
     RES(["Testscores per band en familie, naast de opponenten"]):::data
     RESS[("Scorearchief")]:::store
     RES --> RESS
-    SP3[" "]
-    SP3 ~~~ RES
+    SP3["&nbsp;<br/>&nbsp;<br/>&nbsp;"]
   end
-  style SP3 fill:none,stroke:none,color:transparent
   style IN1 fill:none,stroke:none
   style IN2 fill:none,stroke:none
   style OUT fill:none,stroke:none
@@ -266,6 +267,20 @@ flowchart LR
   PAHDB --> TEST
   SCORE --> OUT2
   SCORE --> CAL --> OUT
+
+  %% onzichtbare vulknopen boven de data-objecten (uitlijning met de naaste stap); hun verbindingen zijn weggestyled
+  PROXY --- SP0
+  LAB --- SP1
+  SP2 --- MODEL
+  SP3 --- RES
+  linkStyle 17 stroke:none,stroke-width:0px
+  linkStyle 18 stroke:none,stroke-width:0px
+  linkStyle 19 stroke:none,stroke-width:0px
+  linkStyle 20 stroke:none,stroke-width:0px
+  style SP0 fill:none,stroke:none,color:transparent
+  style SP1 fill:none,stroke:none,color:transparent
+  style SP2 fill:none,stroke:none,color:transparent
+  style SP3 fill:none,stroke:none,color:transparent
 ```
 
 ## 4. Pipeline
@@ -286,10 +301,8 @@ flowchart LR
     MOL(["Molecuul: geometrie, lading, multipliciteit"]):::data
     CAT[("Molecuulcatalogus")]:::store
     CAT --> MOL
-    SP0[" "]
-    MOL ~~~ SP0
+    SP0["&nbsp;<br/>&nbsp;<br/>&nbsp;"]
   end
-  style SP0 fill:none,stroke:none,color:transparent
   SK["DFT-schets: H0, modi, frequenties, families, dipoolafgeleiden, anharmonische constanten"]
   TOK["Modus-tokens"]
   FWD["Forward pass: ΔH-blok per familie met onzekerheid"]:::planned
@@ -304,10 +317,8 @@ flowchart LR
     SPEC(["Spectrum: posities, intensiteiten, vorm, foutmarge per band, gemarkeerde weigeringen"]):::data
     SPECS[("Spectrumarchief")]:::store
     SPEC --> SPECS
-    SP1[" "]
-    SP1 ~~~ SPEC
+    SP1["&nbsp;<br/>&nbsp;<br/>&nbsp;"]
   end
-  style SP1 fill:none,stroke:none,color:transparent
   style IN fill:none,stroke:none
   style OUT fill:none,stroke:none
 
@@ -319,6 +330,14 @@ flowchart LR
   SK --> INT --> SHAPE
   SK --> ANH --> SHAPE
   SHAPE --> OUT
+
+  %% onzichtbare vulknopen boven de data-objecten (uitlijning met de naaste stap); hun verbindingen zijn weggestyled
+  MOL --- SP0
+  SP1 --- SPEC
+  linkStyle 15 stroke:none,stroke-width:0px
+  linkStyle 16 stroke:none,stroke-width:0px
+  style SP0 fill:none,stroke:none,color:transparent
+  style SP1 fill:none,stroke:none,color:transparent
 ```
 
 ## 4a. Componenten van het netwerk
@@ -337,10 +356,8 @@ flowchart LR
     INP(["Per molecuul: modus-tokens, lading, multipliciteit"]):::data
     CORPUS[("Corpus en labelopslag")]:::store
     CORPUS --> INP
-    SP0[" "]
-    INP ~~~ SP0
+    SP0["&nbsp;<br/>&nbsp;<br/>&nbsp;"]
   end
-  style SP0 fill:none,stroke:none,color:transparent
   EMB["Embedding van elk modus-token"]
   ENC["Self-attention over de modi van het molecuul"]
   BLK["Blokkop per familie: diagonaal en koppelingen uit de modusvectoren"]:::planned
@@ -351,15 +368,21 @@ flowchart LR
     OUTB(["ΔH-blok per familie met onzekerheid"]):::data
     STORE[("Voorspellingsopslag")]:::store
     OUTB --> STORE
-    SP1[" "]
-    SP1 ~~~ OUTB
+    SP1["&nbsp;<br/>&nbsp;<br/>&nbsp;"]
   end
-  style SP1 fill:none,stroke:none,color:transparent
   style IN fill:none,stroke:none
   style OUT fill:none,stroke:none
 
   IN --> EMB --> ENC --> BLK --> UNC --> OUT
   ENC --> PAIR --> OUT
+
+  %% onzichtbare vulknopen boven de data-objecten (uitlijning met de naaste stap); hun verbindingen zijn weggestyled
+  INP --- SP0
+  SP1 --- OUTB
+  linkStyle 9 stroke:none,stroke-width:0px
+  linkStyle 10 stroke:none,stroke-width:0px
+  style SP0 fill:none,stroke:none,color:transparent
+  style SP1 fill:none,stroke:none,color:transparent
 ```
 
 ## 5. Onderzoeksproces — de labelfabriek en de decks

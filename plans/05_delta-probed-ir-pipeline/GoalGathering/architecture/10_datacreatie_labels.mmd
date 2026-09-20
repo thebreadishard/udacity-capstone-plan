@@ -12,10 +12,8 @@ flowchart LR
     GEO(["Molecuul: geoptimaliseerde geometrie, lading, multipliciteit"]):::data
     CAT[("Molecuulcatalogus")]:::store
     CAT --> GEO
-    SP0[" "]
-    GEO ~~~ SP0
+    SP0["&nbsp;<br/>&nbsp;<br/>&nbsp;"]
   end
-  style SP0 fill:none,stroke:none,color:transparent
   H0["Stage A: DFT-Hessiaan H0 → modi L, frequenties, families, irreps"]
   SKETCH(["DFT-schets"]):::data
   SYM["Symmetrieprior: koppeling alleen binnen een irrep-blok"]
@@ -35,10 +33,8 @@ flowchart LR
     LABEL(["Label: ΔH-blokken met foutmarge per familie"]):::data
     STORE[("Labelopslag")]:::store
     LABEL --> STORE
-    SP1[" "]
-    SP1 ~~~ LABEL
+    SP1["&nbsp;<br/>&nbsp;<br/>&nbsp;"]
   end
-  style SP1 fill:none,stroke:none,color:transparent
   style IN fill:none,stroke:none
   style OUT fill:none,stroke:none
 
@@ -51,3 +47,11 @@ flowchart LR
   RESP --> SOLVE --> LIC
   RESP --> BUDGET --> LIC
   LIC --> OUT
+
+  %% onzichtbare vulknopen boven de data-objecten (uitlijning met de naaste stap); hun verbindingen zijn weggestyled
+  GEO --- SP0
+  SP1 --- LABEL
+  linkStyle 21 stroke:none,stroke-width:0px
+  linkStyle 22 stroke:none,stroke-width:0px
+  style SP0 fill:none,stroke:none,color:transparent
+  style SP1 fill:none,stroke:none,color:transparent
