@@ -23,6 +23,8 @@ Het overzicht (blad 0) toont de vier soorten en de opslagen die ze verbinden. Re
 | gestippelde rand, gele vulling | nog niet gebouwd |
 | pijl | datastroom |
 
+**Open punten voor de tekening (20 september, de auteur):** (1) pijlen naar en van een data-object moeten het data-object zelf raken, niet de rand van zijn groepje; (2) het centrum van een data-object op *precies* dezelfde hoogte als het centrum van de aangrenzende pipelinestap (nu bij benadering, via een onzichtbare vulknoop); (3) splitsingen horen uit een ruit of uit een data-object te komen, niet uit een processtap — de vier pijlen uit "DFT-schets" op blad 4 worden herzien na bespreking.
+
 Op de onderzoeksprocesbladen: groen = geslaagd, blauw = loopt, gestippeld = nog te doen, rood = verloren en gesloten. Elk proces begint bij een opslag → data-object en eindigt bij data-object → opslag. Bron van waarheid: de `.mmd`-bestanden in deze map (Mermaid; renderen op GitHub).
 
 ## 0. Overzicht: vier soorten proces en hun opslagen
