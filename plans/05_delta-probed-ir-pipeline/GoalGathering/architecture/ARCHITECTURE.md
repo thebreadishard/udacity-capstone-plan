@@ -80,10 +80,10 @@ flowchart LR
 
 # Onderzoeksproces (mag data en besluiten bevatten)
 
-## 1. Onderzoeksproces — de labelfabriek en de decks (`10_onderzoeksproces_pipeline_B.mmd`)
+## 1. Onderzoeksproces — de labelfabriek en de decks (`10_onderzoeksproces_labelfabriek.mmd`; in het voorstel pipeline B)
 
 ```mermaid
-%% Onderzoeksproces — pipeline B: de toetsen die beslissen of de doelarchitectuur van blad 4 er komt. Stand 20 september 2026.
+%% Onderzoeksproces — de labelfabriek (in het voorstel: pipeline B): de toetsen die beslissen of de doelarchitectuur van blad 4 er komt. Stand 20 september 2026.
 %% Dit blad mag data en besluiten bevatten. Groen = geslaagd; blauw = loopt; gestippeld = nog te doen; rood = mislukt en gesloten.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
@@ -125,10 +125,10 @@ flowchart LR
   DECK2 --> TPORT
 ```
 
-## 2. Onderzoeksproces — het ΔH-model (`20_onderzoeksproces_pipeline_A.mmd`)
+## 2. Onderzoeksproces — het ΔH-model (`20_onderzoeksproces_deltaH_model.mmd`; in het voorstel pipeline A)
 
 ```mermaid
-%% Onderzoeksproces — pipeline A: de toetsen die beslissen of en hoe het ΔH-model van de bladen 5 en 6 er komt. Stand 20 september 2026.
+%% Onderzoeksproces — het ΔH-model (in het voorstel: pipeline A): de toetsen die beslissen of en hoe het ΔH-model van de bladen 5 en 6 er komt. Stand 20 september 2026.
 %% Dit blad mag data en besluiten bevatten. Groen = geslaagd of gemeten; blauw = loopt; gestippeld = nog te doen; rood = verloren en gesloten.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
@@ -149,7 +149,7 @@ flowchart LR
   BHH["Vervangercontrole: BHHLYP − B3LYP op benzeen en naftaleen — is de ringcorrectie van de vervanger niet-lokaal?"]:::todo
   ST1["Stap 1 van het ontwerp: equivariant paar-blokmodel leert de volledige correctiematrix uit het corpus; Test 1: ringfamilie onder 5 cm-1 op dezelfde 12 moleculen"]:::todo
   E3["E3: voorwendsel met DFT-grootheden (frequentie, familie, teken) uit ruwe atoomvelden, op het hele corpus"]:::todo
-  CC["Eerste CC-labels uit pipeline B (benzeen, naftaleen; daarna de decks van M2)"]:::todo
+  CC["Eerste CC-labels uit de labelfabriek (benzeen, naftaleen; daarna de decks van M2)"]:::todo
   FT["Bijtrainen op de CC-projecties; licentie per familie tegen X18 en de mediaanregel"]:::todo
   D2{"Per familie: fout onder de marge van de scorekolom?"}:::dec
   LICF["Familie gelicentieerd in het netwerk"]:::todo
