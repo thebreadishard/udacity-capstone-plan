@@ -22,7 +22,7 @@ flowchart LR
   TESTSET(["Testset"]):::data
   EVAL["Test en licentie (blad 7)"]:::planned
   LICCAL(["Licentietabel en kalibratie"]):::data
-  PIPE["Target pipeline (blad 8)"]:::planned
+  PIPE["Spectrumpipeline (blad 8)"]:::planned
   SPEC(["Spectrum: banden met positie, intensiteit, profiel en foutmarge; licentiestatus per familie"]):::data
   RES["Onderzoeksproces (bladen 1 en 2)"]:::research
 
@@ -37,6 +37,7 @@ flowchart LR
   PAHDB --> EVAL
   EVAL --> LICCAL
   MOL --> PIPE
+  LABELS --> PIPE
   COND --> PIPE
   TRAINED --> PIPE
   LICCAL --> PIPE

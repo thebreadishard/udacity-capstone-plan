@@ -6,11 +6,11 @@
 |---|---|---|
 | **Datacreatie** | processen die data maken: de corpusstap (DFT-paren en vervangercorrectie; blad 3) en de labelfabriek (coupled-cluster-correcties per molecuul; blad 4) | 3, 4 |
 | **Het ΔH-model** | de definitie van het netwerk: de componenten (blad 5) en dezelfde definitie als PyTorch-code (blad 5b) | 5, 5b |
-| **Training en beoordeling** | training: uit corpusrecords en labels komt het getrainde ΔH-model (blad 6); test en licentie: uit dat model en de testset komen de licentietabel en de kalibratie, met de score tegen de laboratoriumkolommen en de opponenten (blad 7); de gewichten veranderen daar niet meer. De target pipeline gebruikt het getrainde model van blad 6 en de tabel en kalibratie van blad 7; op blad 8 zelf staan die niet als invoerobject getekend (afspraak 20 september). Blad 6 draait per modelversie, niet per molecuul, en bevat de validatielus | 6, 7 |
-| **Target pipeline** | het eindproduct: molecuul en waarnemingscondities in, forward pass van het ΔH-model als één stap, spectrum met licentiestatus uit | 8 |
+| **Training en beoordeling** | training: uit corpusrecords en labels komt het getrainde ΔH-model (blad 6); test en licentie: uit dat model en de testset komen de licentietabel en de kalibratie, met de score tegen de laboratoriumkolommen en de opponenten (blad 7); de gewichten veranderen daar niet meer. De spectrumpipeline gebruikt het getrainde model van blad 6 en de tabel en kalibratie van blad 7; op blad 8 zelf staan die niet als invoerobject getekend (afspraak 20 september); het gemeten label staat er wel, als tweede bron van ΔH naast het model (afspraak 20 september, avond). Blad 6 draait per modelversie, niet per molecuul, en bevat de validatielus | 6, 7 |
+| **Spectrumpipeline** | molecuul en waarnemingscondities in, spectrum met foutmarge en licentiestatus uit; ΔH uit twee bronnen — het gemeten label van blad 4 (bestaat voor de moleculen met een label) of het ΔH-model (voor alle andere) — en één gedeelde staart (H = H₀ + ΔH, VPT2, intensiteiten, profiel) | 8 |
 | **Onderzoeksproces** | de toetsen die beslissen of dit alles er zo komt; het enige soort blad waar data, besluiten en experimentnummers in mogen | 1, 2 |
 
-Het overzicht (blad 0) toont de soorten proces en de data-objecten die ze verbinden. **Nummering (20 september):** de bestandsnummers volgen de volgorde waarin de stappen worden doorlopen: eerst het onderzoeksproces dat over de rest beslist (1, 2), dan corpus (3), labels (4), het ΔH-model (5, code 5b), training (6), test en licentie (7), target pipeline (8). Rekenplaats staat er voorlopig niet in; die komt later per blokje.
+Het overzicht (blad 0) toont de soorten proces en de data-objecten die ze verbinden. **Nummering (20 september):** de bestandsnummers volgen de volgorde waarin de stappen worden doorlopen: eerst het onderzoeksproces dat over de rest beslist (1, 2), dan corpus (3), labels (4), het ΔH-model (5, code 5b), training (6), test en licentie (7), spectrumpipeline (8). Rekenplaats staat er voorlopig niet in; die komt later per blokje.
 
 **Tekenregels (afgesproken 19–20 september; op alle bladen toegepast).**
 
@@ -53,7 +53,7 @@ flowchart LR
   TESTSET(["Testset"]):::data
   EVAL["Test en licentie (blad 7)"]:::planned
   LICCAL(["Licentietabel en kalibratie"]):::data
-  PIPE["Target pipeline (blad 8)"]:::planned
+  PIPE["Spectrumpipeline (blad 8)"]:::planned
   SPEC(["Spectrum: banden met positie, intensiteit, profiel en foutmarge; licentiestatus per familie"]):::data
   RES["Onderzoeksproces (bladen 1 en 2)"]:::research
 
@@ -68,6 +68,7 @@ flowchart LR
   PAHDB --> EVAL
   EVAL --> LICCAL
   MOL --> PIPE
+  LABELS --> PIPE
   COND --> PIPE
   TRAINED --> PIPE
   LICCAL --> PIPE
@@ -267,7 +268,7 @@ flowchart LR
 ## 5. Componenten van het ΔH-model (`50_deltaH_model_componenten.mmd`)
 
 ```mermaid
-%% Componenten van het ΔH-model (niveau 4): wat er binnen de stap "Forward pass (ΔH-model, PyTorch)" van blad 8 gebeurt. Backbone = embedding en self-attention; koppen = blokkop en paarkop; het ensemble bestaat uit leden met verschillende seeds. Doelarchitectuur; grotendeels nog niet gebouwd.
+%% Componenten van het ΔH-model (niveau 4): wat er binnen de stap "Forward pass (ΔH-model, PyTorch)" van blad 8 (de spectrumpipeline) gebeurt. Backbone = embedding en self-attention; koppen = blokkop en paarkop; het ensemble bestaat uit leden met verschillende seeds. Doelarchitectuur; grotendeels nog niet gebouwd.
 %% Rechthoek = processtap (bewerking + software); ronde uiteinden = data-object (het ding). Elke stap levert één data-object. Gestippeld = nog niet gebouwd.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
@@ -342,7 +343,7 @@ flowchart LR
 ## 7. Test en licentie (`70_test_en_licentie.mmd`)
 
 ```mermaid
-%% Test en licentie (niveau 3b): uit het getrainde ΔH-model en de testset komen de licentietabel en de kalibratie die de target pipeline naast het getrainde model gebruikt. De gewichten van het model veranderen hier niet. Doelarchitectuur; nog niet gebouwd.
+%% Test en licentie (niveau 3b): uit het getrainde ΔH-model en de testset komen de licentietabel en de kalibratie die de spectrumpipeline naast het getrainde model gebruikt. De gewichten van het model veranderen hier niet. Doelarchitectuur; nog niet gebouwd.
 %% Rechthoek = processtap (bewerking + software); ronde uiteinden = data-object (het ding). Elke stap levert één data-object. Gestippeld = nog niet gebouwd.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
@@ -370,12 +371,11 @@ flowchart LR
   TESTR --> CAL --> CALR
 ```
 
-## 8. Target pipeline (`80_target_pipeline.mmd`)
+## 8. Spectrumpipeline (`80_spectrumpipeline.mmd`)
 
 ```mermaid
-%% Pipeline (niveau 3): wat er staat als onderzoek en training klaar zijn. Molecuul in, spectrum met foutmarge uit.
-%% Regel (20 sep): elke processtap (rechthoek) mondt uit in precies één data-object (ronde uiteinden); waaiers komen alleen uit data-objecten of ruiten.
-%% Ruit = poort. Geen opslagfiguren (regel 20 sep). Gestippeld = nog niet gebouwd. De forward pass is één figuurtje.
+%% Spectrumpipeline (niveau 3): molecuul in, spectrum met foutmarge uit. ΔH komt uit twee bronnen: gemeten (het label van blad 4, voor moleculen met een label) of voorspeld (het ΔH-model, voor alle andere); de staart is dezelfde. Doelarchitectuur.
+%% Rechthoek = processtap (bewerking + software); ronde uiteinden = data-object (het ding). Elke stap levert één data-object. Gestippeld = nog niet gebouwd.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
@@ -394,6 +394,7 @@ flowchart LR
   TOK(["Modus-tokens"]):::data
   FWD["Forward pass (ΔH-model, PyTorch)"]:::planned
   DH(["ΔH-blokken per familie, met onzekerheid van het ensemble"]):::data
+  LAB(["Label uit de labelfabriek: ΔH-blokken met foutmarge per familie"]):::data
   LICF["Licentiefilter (eigen software)"]:::planned
   DHL(["Toegepaste en geweigerde ΔH-blokken, met reden"]):::data
   APPLY["Samenstellen van H (eigen software)"]
@@ -412,6 +413,7 @@ flowchart LR
   SK --> MODE --> MODES
   SK --> VPT --> ANHC
   MODES --> TOKS --> TOK --> FWD --> DH --> LICF --> DHL --> APPLY --> H --> EIG --> POS --> SHAPE
+  LAB --> LICF
   SK --> APPLY
   SK --> INT
   MODES --> INT --> INTS --> SHAPE

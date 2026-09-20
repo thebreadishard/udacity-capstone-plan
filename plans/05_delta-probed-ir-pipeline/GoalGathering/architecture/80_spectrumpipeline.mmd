@@ -1,6 +1,5 @@
-%% Pipeline (niveau 3): wat er staat als onderzoek en training klaar zijn. Molecuul in, spectrum met foutmarge uit.
-%% Regel (20 sep): elke processtap (rechthoek) mondt uit in precies één data-object (ronde uiteinden); waaiers komen alleen uit data-objecten of ruiten.
-%% Ruit = poort. Geen opslagfiguren (regel 20 sep). Gestippeld = nog niet gebouwd. De forward pass is één figuurtje.
+%% Spectrumpipeline (niveau 3): molecuul in, spectrum met foutmarge uit. ΔH komt uit twee bronnen: gemeten (het label van blad 4, voor moleculen met een label) of voorspeld (het ΔH-model, voor alle andere); de staart is dezelfde. Doelarchitectuur.
+%% Rechthoek = processtap (bewerking + software); ronde uiteinden = data-object (het ding). Elke stap levert één data-object. Gestippeld = nog niet gebouwd.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
@@ -19,6 +18,7 @@ flowchart LR
   TOK(["Modus-tokens"]):::data
   FWD["Forward pass (ΔH-model, PyTorch)"]:::planned
   DH(["ΔH-blokken per familie, met onzekerheid van het ensemble"]):::data
+  LAB(["Label uit de labelfabriek: ΔH-blokken met foutmarge per familie"]):::data
   LICF["Licentiefilter (eigen software)"]:::planned
   DHL(["Toegepaste en geweigerde ΔH-blokken, met reden"]):::data
   APPLY["Samenstellen van H (eigen software)"]
@@ -37,6 +37,7 @@ flowchart LR
   SK --> MODE --> MODES
   SK --> VPT --> ANHC
   MODES --> TOKS --> TOK --> FWD --> DH --> LICF --> DHL --> APPLY --> H --> EIG --> POS --> SHAPE
+  LAB --> LICF
   SK --> APPLY
   SK --> INT
   MODES --> INT --> INTS --> SHAPE
