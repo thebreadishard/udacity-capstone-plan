@@ -120,7 +120,7 @@ flowchart LR
   style IN fill:none,stroke:none
   style OUT fill:none,stroke:none
 
-  GEO --> H0 --> SKETCH --> SYM --> PAT --> DECK
+  IN --> H0 --> SKETCH --> SYM --> PAT --> DECK
   SKETCH --> REF --> TRANS
   DECK --> TRANS
   TRANS --> EN --> RESP
@@ -128,7 +128,7 @@ flowchart LR
   TRANS --> OPEN --> RESP
   RESP --> SOLVE --> LIC
   RESP --> BUDGET --> LIC
-  LIC --> LABEL
+  LIC --> OUT
 ```
 
 ## 2. Datacreatie — het corpus van DFT-paren
@@ -169,15 +169,15 @@ flowchart LR
   style OUT1 fill:none,stroke:none
   style OUT2 fill:none,stroke:none
 
-  MOL --> GEO --> HLO --> MODES
+  IN --> GEO --> HLO --> MODES
   GEO --> HHI
   GEO --> DIP
   HLO --> PROXY
   HHI --> PROXY
-  MODES --> PROXY --> PAIR
-  MODES --> SK
-  HLO --> SK
-  DIP --> SK
+  MODES --> PROXY --> OUT1
+  MODES --> OUT2
+  HLO --> OUT2
+  DIP --> OUT2
 ```
 
 ## 3. Training, validatie en test
@@ -232,13 +232,13 @@ flowchart LR
   style OUT fill:none,stroke:none
   style OUT2 fill:none,stroke:none
 
-  PROXY --> SPLIT
-  LAB --> SPLIT
+  IN1 --> SPLIT
+  IN2 --> SPLIT
   SPLIT --> PRE --> FT --> ENS --> VAL --> TEST --> SCORE
   LABDB --> SCORE
   PAHDB --> TEST
-  SCORE --> RES
-  SCORE --> CAL --> MODEL
+  SCORE --> OUT2
+  SCORE --> CAL --> OUT
 ```
 
 ## 4. Pipeline
@@ -285,16 +285,16 @@ flowchart LR
   style MD fill:none,stroke:none
   style OUT fill:none,stroke:none
 
-  MOL --> SK --> TOK --> FWD
-  NETW --> FWD
+  IN --> SK --> TOK --> FWD
+  MD --> FWD
   FWD --> GATE
-  NETW --> GATE
+  MD --> GATE
   GATE --> APPLY
   SK --> APPLY
   APPLY --> EIG --> SHAPE
   SK --> INT --> SHAPE
   SK --> ANH --> SHAPE
-  SHAPE --> SPEC
+  SHAPE --> OUT
 ```
 
 ## 4a. Componenten van het netwerk
@@ -328,8 +328,8 @@ flowchart LR
   style IN fill:none,stroke:none
   style OUT fill:none,stroke:none
 
-  INP --> EMB --> ENC --> BLK --> UNC --> OUTB
-  ENC --> PAIR --> OUTB
+  IN --> EMB --> ENC --> BLK --> UNC --> OUT
+  ENC --> PAIR --> OUT
 ```
 
 ## 5. Onderzoeksproces — de labelfabriek en de decks

@@ -39,13 +39,13 @@ flowchart LR
   style MD fill:none,stroke:none
   style OUT fill:none,stroke:none
 
-  MOL --> SK --> TOK --> FWD
-  NETW --> FWD
+  IN --> SK --> TOK --> FWD
+  MD --> FWD
   FWD --> GATE
-  NETW --> GATE
+  MD --> GATE
   GATE --> APPLY
   SK --> APPLY
   APPLY --> EIG --> SHAPE
   SK --> INT --> SHAPE
   SK --> ANH --> SHAPE
-  SHAPE --> SPEC
+  SHAPE --> OUT
