@@ -17,15 +17,15 @@ Het overzicht (blad 0) toont de vier soorten en de opslagen die ze verbinden. Re
 |---|---|
 | rechthoek | processtap: een bewerking die data omzet in andere data (op blad 0: een heel proces) |
 | rechthoek met ronde uiteinden (grijs) | data-object: een invoer, tussenproduct of uitkomst die door het proces stroomt |
-| cilinder | opslag: een verzameling die blijft bestaan en door meerdere processen wordt gelezen of gevuld; getekend onder het data-object dat eruit komt of erin gaat; donkerder blauw = extern, niet van ons |
+| cilinder | (vervallen op 20 september; alleen nog op de bladen die nog niet zijn bijgewerkt) |
 | ruit (groen) | poort: een toets met een vooraf vastgelegde uitkomst — door, of niet door |
 | doorgetrokken rand | bestaat en is gemeten |
 | gestippelde rand, gele vulling | nog niet gebouwd |
 | pijl | datastroom |
 
-**Open punten voor de tekening (20 september, de auteur):** (1) pijlen naar en van een data-object moeten het data-object zelf raken, niet de rand van zijn groepje; (2) het centrum van een data-object op *precies* dezelfde hoogte als het centrum van de aangrenzende pipelinestap (nu bij benadering, via een onzichtbare vulknoop); (3) **regel, 20 september:** elke processtap mondt uit in precies één data-object, dat de volgende stap(pen) voedt; splitsingen komen alleen uit een data-object of een ruit, nooit uit een processtap. **Naamgeving (20 sep):** een processtap heet naar de bewerking of de rekenmethode ("DFT", "VPT2", "Diagonalisatie"), een data-object naar het ding ("Hessiaan H0 en dipoolafgeleiden", "Normaalmodi"); geen dubbele woorden tussen stap en object. Toegepast op blad 4 (de DFT-stap is gesplitst in "DFT: Hessiaan en dipoolafgeleiden" → schets, "Modusanalyse" → modi, "VPT2 op DFT" → anharmonische constanten); **de bladen 1, 2, 3, 4a volgen nog** en worden daarbij op dezelfde manier herschreven.
+**Regel (20 september, de auteur): geen opslagfiguren (cilinders) meer in de diagrammen.** Een proces begint bij zijn eerste data-object en eindigt bij zijn laatste; waar de data vandaan komt of heen gaat staat zo nodig in de naam van het data-object. Daarmee vervallen de onzichtbare groepjes en vulknopen en staat alles weer in standaard Mermaid. Toegepast op blad 4; **de bladen 0, 1, 2, 3, 4a volgen** (samen met de stap→data-object-regel en de naamgeving hieronder). (3) **regel, 20 september:** elke processtap mondt uit in precies één data-object, dat de volgende stap(pen) voedt; splitsingen komen alleen uit een data-object of een ruit, nooit uit een processtap. **Naamgeving (20 sep):** een processtap heet naar de bewerking of de rekenmethode ("DFT", "VPT2", "Diagonalisatie"), een data-object naar het ding ("Hessiaan H0 en dipoolafgeleiden", "Normaalmodi"); geen dubbele woorden tussen stap en object. Toegepast op blad 4 (de DFT-stap is gesplitst in "DFT: Hessiaan en dipoolafgeleiden" → schets, "Modusanalyse" → modi, "VPT2 op DFT" → anharmonische constanten); **de bladen 1, 2, 3, 4a volgen nog** en worden daarbij op dezelfde manier herschreven.
 
-Op de onderzoeksprocesbladen: groen = geslaagd, blauw = loopt, gestippeld = nog te doen, rood = verloren en gesloten. Elk proces begint bij een opslag → data-object en eindigt bij data-object → opslag. Bron van waarheid: de `.mmd`-bestanden in deze map (Mermaid; renderen op GitHub).
+Op de onderzoeksprocesbladen: groen = geslaagd, blauw = loopt, gestippeld = nog te doen, rood = verloren en gesloten. Elk proces begint en eindigt bij een data-object. Bron van waarheid: de `.mmd`-bestanden in deze map (Mermaid; renderen op GitHub).
 
 ## 0. Overzicht: vier soorten proces en hun opslagen
 
@@ -290,21 +290,14 @@ flowchart LR
 ```mermaid
 %% Pipeline (niveau 3): wat er staat als onderzoek en training klaar zijn. Molecuul in, spectrum met foutmarge uit.
 %% Regel (20 sep): elke processtap (rechthoek) mondt uit in precies één data-object (ronde uiteinden); waaiers komen alleen uit data-objecten of ruiten.
-%% Cilinder = opslag (onder het data-object); ruit = poort. Gestippeld = nog niet gebouwd. De forward pass is één figuurtje.
+%% Ruit = poort. Geen opslagfiguren (regel 20 sep). Gestippeld = nog niet gebouwd. De forward pass is één figuurtje.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
   classDef data fill:#e9ecef,stroke:#555,color:#111
   classDef gate fill:#d9f0dc,stroke:#2e7d32,color:#111
-  classDef store fill:#dfe7f2,stroke:#5b7a99,color:#111
 
-  subgraph IN [" "]
-    direction BT
-    MOL(["Molecuul: geometrie, lading, multipliciteit"]):::data
-    CAT[("Molecuulcatalogus")]:::store
-    CAT --> MOL
-    SP0["&nbsp;<br/>&nbsp;<br/>&nbsp;"]
-  end
+  MOL(["Molecuul: geometrie, lading, multipliciteit"]):::data
 
   DFT["DFT"]
   SK(["Hessiaan H0 en dipoolafgeleiden"]):::data
@@ -329,17 +322,9 @@ flowchart LR
   ANHS(["Anharmonische verschuivingen per band"]):::data
   SHAPE["Profielvorming (temperatuur van de bron, resolutie van het instrument)"]
 
-  subgraph OUT [" "]
-    direction TB
-    SPEC(["Spectrum: banden met positie, intensiteit, vorm en foutmarge; weigeringen gemarkeerd"]):::data
-    SPECS[("Spectrumarchief")]:::store
-    SPEC --> SPECS
-    SP1["&nbsp;<br/>&nbsp;<br/>&nbsp;"]
-  end
-  style IN fill:none,stroke:none
-  style OUT fill:none,stroke:none
+  SPEC(["Spectrum: banden met positie, intensiteit, vorm en foutmarge; weigeringen gemarkeerd"]):::data
 
-  IN --> DFT --> SK
+  MOL --> DFT --> SK
   SK --> MODE --> MODES
   SK --> VPT --> ANHC
   MODES --> TOKS --> TOK --> FWD --> DH --> GATE
@@ -350,15 +335,7 @@ flowchart LR
   MODES --> INT --> INTS --> SHAPE
   ANHC --> ANH
   MODES --> ANH --> ANHS --> SHAPE
-  SHAPE --> OUT
-
-  %% onzichtbare vulknopen boven de data-objecten (uitlijning met de naaste stap); hun verbindingen zijn weggestyled
-  MOL --- SP0
-  SP1 --- SPEC
-  linkStyle 31 stroke:none,stroke-width:0px
-  linkStyle 32 stroke:none,stroke-width:0px
-  style SP0 fill:none,stroke:none,color:transparent
-  style SP1 fill:none,stroke:none,color:transparent
+  SHAPE --> SPEC
 ```
 
 ## 4a. Componenten van het netwerk
