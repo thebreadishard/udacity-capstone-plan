@@ -49,6 +49,7 @@ flowchart LR
   CORPUS(["Corpusrecords: modus-tokens en vervangercorrectie per molecuul"]):::data
   TRAIN["Training (blad 3)"]:::planned
   TRAINED(["Getraind ΔH-model: ensemble van leden"]):::data
+  TESTSET(["Testset"]):::data
   EVAL["Test en licentie (blad 3b)"]:::planned
   MODEL(["Modelpakket: getraind ΔH-model, licentietabel, kalibratie"]):::data
   PIPE["Target pipeline (blad 4)"]:::planned
@@ -61,7 +62,7 @@ flowchart LR
   CORPUS --> TRAIN
   TRAIN --> TRAINED
   TRAINED --> EVAL
-  LABELS --> EVAL
+  TRAIN --> TESTSET --> EVAL
   LABDB --> EVAL
   PAHDB --> EVAL
   EVAL --> MODEL
@@ -205,7 +206,7 @@ flowchart LR
   classDef ext fill:#cfd8e3,stroke:#3d5a80,color:#111
 
   ENS(["Getraind ΔH-model: ensemble van leden"]):::data
-  TESTSET(["Testset: moleculen met labels, buiten de training gehouden"]):::data
+  TESTSET(["Testset"]):::data
   LABDB(["Laboratoriumspectra met de marge per referentiekolom"]):::ext
   PAHDB(["Opponenten: PAHdb en andere voorspellers"]):::ext
   TEST["Test op de testmoleculen (eigen software)"]:::planned
