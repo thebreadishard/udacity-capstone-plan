@@ -123,14 +123,14 @@ To take (desk, no compute): rewrite gate A's claim sentence in the PI assessment
 practice named as prior art, the transport of LNO spaces as the contribution); check pyVPT2's polyad handling; add Mackie's per-region numbers to the
 opponents table of the Frozen Ladder with the source lines; one line in the cover note quoting the family-generalisation hope.
 
-### Done the same evening, 21:0x — the four desk points
+### Done the same evening, 19:5x — the four desk points
 
 1. **Reading copy §1 and §3.1** rewritten (prior-art sentence, table row, reading (i)); change-log entry.
 2. **pyVPT2 polyad check** (pyvpt2 0.1.2 in the `qc` environment, `vpt2.py` and `fermi_solver.py` read): **positions — yes.** It identifies type-1 (2ω_i ≈ ω_j) and type-2 (ω_i + ω_j ≈ ω_k) Fermi resonances with `FERMI_OMEGA_THRESH` 200 cm⁻¹ and a strength threshold `FERMI_K_THRESH` 1 cm⁻¹ (K = φ⁴/(64 Δ³) or φ⁴/(256 Δ³)), deperturbs the affected χ constants, chains the interactions into polyads, builds the effective Hamiltonian (off-diagonal φ/4 or φ/(2√2) by type) and diagonalises it — the same construction as SPECTRO's, with a K-based filter where SPECTRO 2015 used W = 10 and 2016 used W = 0 plus a symmetry filter; pyVPT2 has no symmetry filter. **Intensities — no:** pyVPT2 computes no anharmonic intensities at all (already noted in `probes/vpt2_benzene.py`, idea I6), and `Polyad.solve` returns the polyad frequencies without exposing the eigenvectors, which Mackie's redistribution rule needs. Consequence: the 3 µm column stays 'shown, not promised' (decision 25) until the intensity step exists; the pipeline's 'Intensiteitsberekening (eigen software)' needs the polyad eigenvectors — a ten-line own patch to `fermi_solver.py` (return the eigenvector matrix with the state enumeration), to be entered in the software-changes ledger when built, after 28 September.
 3. **Mackie's numbers** into `Frozen_Lines_to_Beat.md` §3 as a dated line; verification debt 2 paid for Mackie 2015/2016 (Esposito 2024a–c open).
 4. **Cover note**: the freezing sentence made honest (known recipe; the transport and its price are ours) and one line quoting the 2016 hope.
 
-## 6. Addendum, 20 September 21:3x — six more PDFs from the supervisor (the rest of item 12, the PAHdb-Anharmonic method papers)
+## 6. Addendum, 20 September 20:0x — six more PDFs from the supervisor (the rest of item 12, the PAHdb-Anharmonic method papers)
 
 Filed in `Papers/` as `Mackie_2018_JCP_149_134302_…`, `Mackie_2021_TCA_140_124_…`, `Mackie_2022_JPCA_126_3198_…`, `Esposito_2024_JCP_160_114312_…`,
 `Esposito_2024_MolPhys_e2261570_…`, `Esposito_2024_MolPhys_e2252936_…`. Read: abstracts, methods, conclusions and the passages named below (not
