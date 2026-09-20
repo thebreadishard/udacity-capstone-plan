@@ -1,9 +1,10 @@
-%% Componenten van de forward pass (niveau 4): wat er binnen de stap "Forward pass (eigen netwerk, PyTorch)" van blad 4 gebeurt. Doelarchitectuur; grotendeels nog niet gebouwd.
+%% Componenten van het ΔH-model (niveau 4): wat er binnen de stap "Forward pass (ΔH-model, PyTorch)" van blad 4 gebeurt. Backbone = embedding en self-attention; koppen = blokkop en paarkop; het ensemble bestaat uit leden met verschillende seeds. Doelarchitectuur; grotendeels nog niet gebouwd.
 %% Rechthoek = processtap (bewerking + software); ronde uiteinden = data-object (het ding). Elke stap levert één data-object. Gestippeld = nog niet gebouwd.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
   classDef data fill:#e9ecef,stroke:#555,color:#111
+  classDef part fill:#f7f7fb,stroke:#333,stroke-width:1.5px,color:#111
 
   TOK(["Modus-tokens van één molecuul, met lading en multipliciteit"]):::data
   EMB["Embedding (PyTorch)"]
@@ -11,11 +12,23 @@ flowchart LR
   ATT["Self-attention over de modi (PyTorch)"]
   CTX(["Contextvectoren per modus"]):::data
   BLK["Blokkop (PyTorch)"]:::planned
-  BLKS(["ΔH-blokken per familie van één netwerk"]):::data
+  BLKS(["ΔH-blokken per familie van één ensemblelid"]):::data
   PAIR["Paarkop (PyTorch)"]
   PAIRS(["Steunlabels per moduspaar"]):::data
-  ENSA["Ensemblemiddeling over de netwerken (eigen software)"]:::planned
+  ENSA["Ensemblemiddeling over de leden (eigen software)"]:::planned
   OUT(["ΔH-blokken per familie, met onzekerheid van het ensemble"]):::data
+
+  subgraph BB["Backbone van het ΔH-model"]
+    EMB
+    EMBV
+    ATT
+    CTX
+  end
+  subgraph HD["Koppen van het ΔH-model"]
+    BLK
+    PAIR
+  end
+  class BB,HD part
 
   TOK --> EMB --> EMBV --> ATT --> CTX
   CTX --> BLK --> BLKS --> ENSA --> OUT

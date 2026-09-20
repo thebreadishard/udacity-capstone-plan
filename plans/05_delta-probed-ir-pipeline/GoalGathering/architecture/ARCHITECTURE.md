@@ -5,8 +5,8 @@
 | soort | wat het toont | bladen |
 |---|---|---|
 | **Datacreatie** | processen die data maken: de labelfabriek (coupled-cluster-correcties per molecuul) en de corpusstap (DFT-paren en vervangercorrectie) | 1, 2 |
-| **Training, validatie en test** | het proces waar een modelpakket uit komt (ensemble van netwerken, licentietabel, kalibratie); hier hoort de score tegen de laboratoriumkolommen (de test) | 3 |
-| **Pipeline** | het eindproduct: molecuul en waarnemingscondities in, forward pass als één stap, spectrum met licentiestatus uit | 4 (en 4a: de componenten van de forward pass) |
+| **Training, validatie en test** | het proces waar een modelpakket uit komt (ensemble van ΔH-modellen, licentietabel, kalibratie); hier hoort de score tegen de laboratoriumkolommen (de test) | 3 |
+| **Pipeline** | het eindproduct: molecuul en waarnemingscondities in, forward pass als één stap, spectrum met licentiestatus uit | 4 (en 4a: de componenten van het ΔH-model) |
 | **Onderzoeksproces** | de toetsen die beslissen of dit alles er zo komt; het enige soort blad waar data, besluiten en experimentnummers in mogen | 5, 6 |
 
 Het overzicht (blad 0) toont de vier soorten en de data-objecten die ze verbinden. Rekenplaats staat er voorlopig niet in; die komt later per blokje.
@@ -15,9 +15,10 @@ Het overzicht (blad 0) toont de vier soorten en de data-objecten die ze verbinde
 
 | regel | inhoud |
 |---|---|
-| vormen | rechthoek = processtap; rechthoek met ronde uiteinden (grijs) = data-object; donkerder blauw = extern data-object, niet van ons |
+| vormen | rechthoek = processtap; rechthoek met ronde uiteinden (grijs) = data-object; donkerder blauw = extern data-object, niet van ons; licht kader om meerdere figuren = onderdeel van het ΔH-model (backbone, koppen; alleen blad 4a) |
 | stap → object | elke processtap levert precies één data-object, dat de volgende stap(pen) voedt; een proces begint en eindigt bij een data-object; splitsingen komen alleen uit data-objecten |
 | naamgeving | een stap heet naar de bewerking met tussen haken het softwarepakket ("DFT (psi4)", "VPT2 (pyVPT2 op psi4)") of "eigen software" / "PyTorch" als wij het maken; een data-object heet naar het ding; geen woordherhaling tussen stap en object; geen uitleg in captions |
+| het model | het netwerk heet **het ΔH-model** (het voorspelt ΔH-blokken per familie); zijn gedeelde deel heet de **backbone** (embedding en self-attention), zijn uitgangen heten **koppen** (blokkop, paarkop); de exemplaren met verschillende seeds vormen het **ensemble** en heten **leden**; de eenvoudige regels zijn de **baseline**. "Netwerk" zonder meer komt op de doelbladen niet voor (afspraak 20 september) |
 | status | doorgetrokken = bestaat en is gemeten; gestippelde rand, gele vulling = nog niet gebouwd |
 | geen | geen opslagfiguren (cilinders), geen ruiten op de doelbladen (beslissingen per item zitten in een stap), geen onzichtbare hulpknopen: standaard Mermaid, links naar rechts |
 | controle | vóór een commit lokaal gerenderd (Mermaid 11), daarna de GitHub-weergave |
@@ -47,8 +48,8 @@ flowchart LR
   CORPF["Corpusstap (blad 2)"]:::proc
   CORPUS(["Corpusrecords: modus-tokens en vervangercorrectie per molecuul"]):::data
   TRAIN["Training, validatie en test (blad 3)"]:::planned
-  MODEL(["Modelpakket: ensemble van netwerken, licentietabel, kalibratie"]):::data
-  PIPE["Pipeline (blad 4)"]:::planned
+  MODEL(["Modelpakket: ensemble van ΔH-modellen, licentietabel, kalibratie"]):::data
+  PIPE["Target pipeline (blad 4)"]:::planned
   SPEC(["Spectrum: banden met positie, intensiteit, profiel en foutmarge; licentiestatus per familie"]):::data
   RES["Onderzoeksproces (bladen 5 en 6)"]:::research
 
@@ -173,11 +174,11 @@ flowchart LR
   SPLIT["Splitsing per molecuul en per kern (eigen software)"]:::planned
   SETS(["Train-, validatie- en testsets"]):::data
   PRE["Voortraining op de vervangercorrectie (PyTorch)"]:::planned
-  PRENET(["Voorgetraind netwerk"]):::data
+  PRENET(["Voorgetraind ΔH-model"]):::data
   FT["Bijtraining op de labels (PyTorch)"]:::planned
-  FTNET(["Bijgetraind netwerk"]):::data
+  FTNET(["Bijgetraind ΔH-model"]):::data
   ENSF["Ensemblevorming over seeds (PyTorch)"]:::planned
-  ENS(["Ensemble van netwerken"]):::data
+  ENS(["Ensemble van ΔH-modellen"]):::data
   VAL["Validatie tegen de eenvoudige regels (eigen software)"]:::planned
   VALR(["Validatiefouten per familie"]):::data
   TEST["Test op de testmoleculen (eigen software)"]:::planned
@@ -187,7 +188,7 @@ flowchart LR
   CAL["Onzekerheidskalibratie (eigen software)"]:::planned
   CALR(["Kalibratie van de ensemblespreiding"]):::data
   PACK["Bundeling (eigen software)"]:::planned
-  MODEL(["Modelpakket: ensemble van netwerken, licentietabel, kalibratie"]):::data
+  MODEL(["Modelpakket: ensemble van ΔH-modellen, licentietabel, kalibratie"]):::data
 
   CORP --> SPLIT
   LAB --> SPLIT
@@ -228,7 +229,7 @@ flowchart LR
   MODES(["Normaalmodi: L, frequenties, families, symmetrieblokken"]):::data
   TOKS["Tokenisatie (eigen software)"]
   TOK(["Modus-tokens"]):::data
-  FWD["Forward pass (eigen netwerk, PyTorch)"]:::planned
+  FWD["Forward pass (ΔH-model, PyTorch)"]:::planned
   DH(["ΔH-blokken per familie, met onzekerheid van het ensemble"]):::data
   LICF["Licentiefilter (eigen software)"]:::planned
   DHL(["Toegepaste en geweigerde ΔH-blokken, met reden"]):::data
@@ -257,15 +258,16 @@ flowchart LR
   SHAPE --> SPEC
 ```
 
-## 4a. Componenten van de forward pass
+## 4a. Componenten van het ΔH-model (`40_deltaH_model_componenten.mmd`)
 
 ```mermaid
-%% Componenten van de forward pass (niveau 4): wat er binnen de stap "Forward pass (eigen netwerk, PyTorch)" van blad 4 gebeurt. Doelarchitectuur; grotendeels nog niet gebouwd.
+%% Componenten van het ΔH-model (niveau 4): wat er binnen de stap "Forward pass (ΔH-model, PyTorch)" van blad 4 gebeurt. Backbone = embedding en self-attention; koppen = blokkop en paarkop; het ensemble bestaat uit leden met verschillende seeds. Doelarchitectuur; grotendeels nog niet gebouwd.
 %% Rechthoek = processtap (bewerking + software); ronde uiteinden = data-object (het ding). Elke stap levert één data-object. Gestippeld = nog niet gebouwd.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
   classDef data fill:#e9ecef,stroke:#555,color:#111
+  classDef part fill:#f7f7fb,stroke:#333,stroke-width:1.5px,color:#111
 
   TOK(["Modus-tokens van één molecuul, met lading en multipliciteit"]):::data
   EMB["Embedding (PyTorch)"]
@@ -273,11 +275,23 @@ flowchart LR
   ATT["Self-attention over de modi (PyTorch)"]
   CTX(["Contextvectoren per modus"]):::data
   BLK["Blokkop (PyTorch)"]:::planned
-  BLKS(["ΔH-blokken per familie van één netwerk"]):::data
+  BLKS(["ΔH-blokken per familie van één ensemblelid"]):::data
   PAIR["Paarkop (PyTorch)"]
   PAIRS(["Steunlabels per moduspaar"]):::data
-  ENSA["Ensemblemiddeling over de netwerken (eigen software)"]:::planned
+  ENSA["Ensemblemiddeling over de leden (eigen software)"]:::planned
   OUT(["ΔH-blokken per familie, met onzekerheid van het ensemble"]):::data
+
+  subgraph BB["Backbone van het ΔH-model"]
+    EMB
+    EMBV
+    ATT
+    CTX
+  end
+  subgraph HD["Koppen van het ΔH-model"]
+    BLK
+    PAIR
+  end
+  class BB,HD part
 
   TOK --> EMB --> EMBV --> ATT --> CTX
   CTX --> BLK --> BLKS --> ENSA --> OUT

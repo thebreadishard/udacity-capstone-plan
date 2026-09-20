@@ -13,11 +13,11 @@ flowchart LR
   SPLIT["Splitsing per molecuul en per kern (eigen software)"]:::planned
   SETS(["Train-, validatie- en testsets"]):::data
   PRE["Voortraining op de vervangercorrectie (PyTorch)"]:::planned
-  PRENET(["Voorgetraind netwerk"]):::data
+  PRENET(["Voorgetraind ΔH-model"]):::data
   FT["Bijtraining op de labels (PyTorch)"]:::planned
-  FTNET(["Bijgetraind netwerk"]):::data
+  FTNET(["Bijgetraind ΔH-model"]):::data
   ENSF["Ensemblevorming over seeds (PyTorch)"]:::planned
-  ENS(["Ensemble van netwerken"]):::data
+  ENS(["Ensemble van ΔH-modellen"]):::data
   VAL["Validatie tegen de eenvoudige regels (eigen software)"]:::planned
   VALR(["Validatiefouten per familie"]):::data
   TEST["Test op de testmoleculen (eigen software)"]:::planned
@@ -27,7 +27,7 @@ flowchart LR
   CAL["Onzekerheidskalibratie (eigen software)"]:::planned
   CALR(["Kalibratie van de ensemblespreiding"]):::data
   PACK["Bundeling (eigen software)"]:::planned
-  MODEL(["Modelpakket: ensemble van netwerken, licentietabel, kalibratie"]):::data
+  MODEL(["Modelpakket: ensemble van ΔH-modellen, licentietabel, kalibratie"]):::data
 
   CORP --> SPLIT
   LAB --> SPLIT
