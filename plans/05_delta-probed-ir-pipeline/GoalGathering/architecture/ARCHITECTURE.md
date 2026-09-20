@@ -23,7 +23,7 @@ Het overzicht (blad 0) toont de vier soorten en de opslagen die ze verbinden. Re
 | gestippelde rand, gele vulling | nog niet gebouwd |
 | pijl | datastroom |
 
-**Open punten voor de tekening (20 september, de auteur):** (1) pijlen naar en van een data-object moeten het data-object zelf raken, niet de rand van zijn groepje; (2) het centrum van een data-object op *precies* dezelfde hoogte als het centrum van de aangrenzende pipelinestap (nu bij benadering, via een onzichtbare vulknoop); (3) splitsingen horen uit een ruit of uit een data-object te komen, niet uit een processtap — de vier pijlen uit "DFT-schets" op blad 4 worden herzien na bespreking.
+**Open punten voor de tekening (20 september, de auteur):** (1) pijlen naar en van een data-object moeten het data-object zelf raken, niet de rand van zijn groepje; (2) het centrum van een data-object op *precies* dezelfde hoogte als het centrum van de aangrenzende pipelinestap (nu bij benadering, via een onzichtbare vulknoop); (3) **regel, 20 september:** elke processtap mondt uit in precies één data-object, dat de volgende stap(pen) voedt; splitsingen komen alleen uit een data-object of een ruit, nooit uit een processtap. Toegepast op blad 4 (de DFT-stap is gesplitst in "DFT: Hessiaan en dipoolafgeleiden" → schets, "Modusanalyse" → modi, "VPT2 op DFT" → anharmonische constanten); **de bladen 1, 2, 3, 4a volgen nog** en worden daarbij op dezelfde manier herschreven.
 
 Op de onderzoeksprocesbladen: groen = geslaagd, blauw = loopt, gestippeld = nog te doen, rood = verloren en gesloten. Elk proces begint bij een opslag → data-object en eindigt bij data-object → opslag. Bron van waarheid: de `.mmd`-bestanden in deze map (Mermaid; renderen op GitHub).
 
@@ -288,15 +288,15 @@ flowchart LR
 ## 4. Pipeline
 
 ```mermaid
-%% Pipeline (niveau 3): wat er staat als onderzoek en training klaar zijn. Een molecuul zonder laboratoriumspectrum in, een spectrum met foutmarge uit.
-%% Rechthoek = processtap; ronde uiteinden = data-object; cilinder = opslag (onder het data-object); ruit = poort. Gestippeld = nog niet gebouwd. De forward pass is één figuurtje.
+%% Pipeline (niveau 3): wat er staat als onderzoek en training klaar zijn. Molecuul in, spectrum met foutmarge uit.
+%% Regel (20 sep): elke processtap (rechthoek) mondt uit in precies één data-object (ronde uiteinden); waaiers komen alleen uit data-objecten of ruiten.
+%% Cilinder = opslag (onder het data-object); ruit = poort. Gestippeld = nog niet gebouwd. De forward pass is één figuurtje.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
   classDef data fill:#e9ecef,stroke:#555,color:#111
   classDef gate fill:#d9f0dc,stroke:#2e7d32,color:#111
   classDef store fill:#dfe7f2,stroke:#5b7a99,color:#111
-  classDef ext fill:#cfd8e3,stroke:#3d5a80,color:#111
 
   subgraph IN [" "]
     direction BT
@@ -305,15 +305,29 @@ flowchart LR
     CAT --> MOL
     SP0["&nbsp;<br/>&nbsp;<br/>&nbsp;"]
   end
-  SK["DFT-schets: H0, modi, frequenties, families, dipoolafgeleiden, anharmonische constanten"]
-  TOK["Modus-tokens"]
-  FWD["Forward pass: ΔH-blok per familie met onzekerheid"]:::planned
+
+  DFT["DFT: Hessiaan en dipoolafgeleiden in één berekening"]
+  SK(["DFT-schets: H0, dipoolafgeleiden"]):::data
+  VPT["VPT2 op DFT: Hessianen op verplaatste geometrieën"]
+  ANHC(["Anharmonische constanten"]):::data
+  MODE["Modusanalyse: massaweging, projectie, families, symmetrieblokken"]
+  MODES(["Modi: L, frequenties, families, symmetrieblokken"]):::data
+  TOKS["Tokenisatie per modus"]
+  TOK(["Modus-tokens"]):::data
+  FWD["Forward pass door het getrainde netwerk"]:::planned
+  DH(["ΔH-blok per familie met onzekerheid"]):::data
   GATE{"Licentietabel: familie gelicentieerd voor deze ladingstoestand?"}:::gate
-  APPLY["Gecorrigeerde krachtconstanten: H0 + ΔH op de gelicentieerde blokken, elders H0, met melding"]
-  EIG["Diagonalisatie → bandposities met marge per familie"]
-  INT["Intensiteiten uit de dipoolafgeleiden"]
+  DHL(["Gelicentieerde ΔH-blokken; geweigerde families gemarkeerd"]):::data
+  APPLY["Gecorrigeerde krachtconstanten: H0 + ΔH op de gelicentieerde blokken, elders H0"]
+  H(["Gecorrigeerde krachtconstanten H"]):::data
+  EIG["Diagonalisatie"]
+  POS(["Harmonische bandposities met marge per familie"]):::data
+  INT["Intensiteiten uit de dipoolafgeleiden langs de modi"]
+  INTS(["Bandintensiteiten"]):::data
   ANH["Anharmonische verschuiving per band"]
+  ANHS(["Verschuivingen per band"]):::data
   SHAPE["Spectrale vorm: profiel per band uit positie, intensiteit, marge, temperatuur van de bron en resolutie van het instrument"]
+
   subgraph OUT [" "]
     direction TB
     SPEC(["Spectrum: posities, intensiteiten, vorm, foutmarge per band, gemarkeerde weigeringen"]):::data
@@ -324,20 +338,22 @@ flowchart LR
   style IN fill:none,stroke:none
   style OUT fill:none,stroke:none
 
-  IN --> SK --> TOK --> FWD
-  FWD --> GATE
-  GATE --> APPLY
+  IN --> DFT --> SK
+  SK --> MODE --> MODES
+  SK --> VPT --> ANHC
+  MODES --> TOKS --> TOK --> FWD --> DH --> GATE --> DHL --> APPLY --> H --> EIG --> POS --> SHAPE
   SK --> APPLY
-  APPLY --> EIG --> SHAPE
-  SK --> INT --> SHAPE
-  SK --> ANH --> SHAPE
+  SK --> INT
+  MODES --> INT --> INTS --> SHAPE
+  ANHC --> ANH
+  MODES --> ANH --> ANHS --> SHAPE
   SHAPE --> OUT
 
   %% onzichtbare vulknopen boven de data-objecten (uitlijning met de naaste stap); hun verbindingen zijn weggestyled
   MOL --- SP0
   SP1 --- SPEC
-  linkStyle 15 stroke:none,stroke-width:0px
-  linkStyle 16 stroke:none,stroke-width:0px
+  linkStyle 29 stroke:none,stroke-width:0px
+  linkStyle 30 stroke:none,stroke-width:0px
   style SP0 fill:none,stroke:none,color:transparent
   style SP1 fill:none,stroke:none,color:transparent
 ```
