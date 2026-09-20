@@ -1,28 +1,52 @@
 %% Doelarchitectuur — Pipeline A: het netwerk dat de correctie overdraagt (niveau 3).
-%% Rechthoek = processtap; ronde uiteinden = data-object; cilinder = opslag; ruit = poort. Gestippeld = nog niet gebouwd.
+%% Rechthoek = processtap; ronde uiteinden = data-object; cilinder = opslag (onder het data-object); ruit = poort. Gestippeld = nog niet gebouwd.
 flowchart LR
-  classDef planned stroke-dasharray: 6 4,stroke:#7a5c00,fill:#fff8e1
-  classDef data fill:#f3f3f3,stroke:#666
-  classDef gate fill:#e8f5e9,stroke:#2e7d32
+  linkStyle default stroke:#8a9bb0,stroke-width:2.2px
+  classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
+  classDef data fill:#e9ecef,stroke:#555,color:#111
+  classDef gate fill:#d9f0dc,stroke:#2e7d32,color:#111
+  classDef store fill:#dfe7f2,stroke:#5b7a99,color:#111
 
-  CAT[("Molecuulcatalogus")]
-  MOL(["Molecuul"]):::data
-  RUN["Corpusstap: twee DFT-Hessianen per molecuul (laag en hoog niveau)"]
-  CORPUS[("Corpus: DFT-paren")]
-  PROXY(["Vervangercorrectie: volledige ΔH per molecuul"]):::data
+  subgraph IN [" "]
+    direction TB
+    MOL(["Molecuul"]):::data
+    CAT[("Molecuulcatalogus")]:::store
+    CAT --> MOL
+  end
+  RUN["Corpusstap: twee DFT-Hessianen per molecuul, laag en hoog niveau"]
+  subgraph CP [" "]
+    direction TB
+    PROXY(["Vervangercorrectie: volledige ΔH per molecuul"]):::data
+    CORPUS[("Corpus: DFT-paren")]:::store
+    CORPUS --> PROXY
+  end
   TOK["Modus-tokens uit de laag-niveau-Hessiaan"]
   PRE["Voortraining op de vervangercorrectie"]:::planned
-  LABELS[("Labelopslag: ΔH-blokken uit pipeline B")]
+  subgraph LB [" "]
+    direction TB
+    LABIN(["Labels: ΔH-blokken met foutmarge"]):::data
+    LABELS[("Labelopslag")]:::store
+    LABELS --> LABIN
+  end
   FT["Bijtrainen op de labels: kleine leersnelheid, vroeg stoppen op apart gehouden moleculen"]:::planned
-  NET["Netwerk: modus-tokens → ΔH-blok per familie (diagonaal en koppelingen)"]:::planned
+  NET["Netwerk: modus-tokens → ΔH-blok per familie, diagonaal en koppelingen"]:::planned
   ENS["Ensemble → onzekerheid per familie"]:::planned
-  LIC{"Licentie per familie en ladingstoestand: fout onder de marge van de scorekolom, beter dan de eenvoudige regels"}:::gate
+  LIC{"Licentie per familie en ladingstoestand: fout onder de marge van de scorekolom en beter dan de eenvoudige regels"}:::gate
   ACT["Keuze van het volgende te labelen molecuul: grootste onenigheid in het ensemble"]:::planned
   NEXT(["Verzoek om een label"]):::data
-  PRED(["Voorspelde ΔH-blokken met onzekerheid; geweigerde families gemarkeerd"]):::data
-  STORE[("Voorspellingsopslag")]
+  subgraph OUT [" "]
+    direction TB
+    PRED(["Voorspelde ΔH-blokken met onzekerheid; geweigerde families gemarkeerd"]):::data
+    STORE[("Voorspellingsopslag")]:::store
+    PRED --> STORE
+  end
+  style IN fill:none,stroke:none
+  style CP fill:none,stroke:none
+  style LB fill:none,stroke:none
+  style OUT fill:none,stroke:none
 
-  CAT --> MOL --> RUN --> CORPUS --> PROXY --> TOK --> PRE --> NET
-  LABELS --> FT --> NET
-  NET --> ENS --> LIC --> PRED --> STORE
+  MOL --> RUN --> CORPUS
+  PROXY --> TOK --> PRE --> NET
+  LABIN --> FT --> NET
+  NET --> ENS --> LIC --> PRED
   ENS --> ACT --> NEXT --> CAT

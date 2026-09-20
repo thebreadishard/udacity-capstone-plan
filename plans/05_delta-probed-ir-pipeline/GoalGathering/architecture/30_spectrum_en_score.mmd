@@ -1,36 +1,55 @@
 %% Doelarchitectuur — Spectrum en score (niveau 3).
-%% Rechthoek = processtap; ronde uiteinden = data-object; cilinder = opslag; ruit = poort.
+%% Rechthoek = processtap; ronde uiteinden = data-object; cilinder = opslag (onder het data-object); ruit = poort.
 flowchart LR
-  classDef data fill:#f3f3f3,stroke:#666
-  classDef ext fill:#eef3f8,stroke:#5b7a99
-  classDef gate fill:#e8f5e9,stroke:#2e7d32
+  linkStyle default stroke:#8a9bb0,stroke-width:2.2px
+  classDef data fill:#e9ecef,stroke:#555,color:#111
+  classDef ext fill:#cfd8e3,stroke:#3d5a80,color:#111
+  classDef gate fill:#d9f0dc,stroke:#2e7d32,color:#111
+  classDef store fill:#dfe7f2,stroke:#5b7a99,color:#111
 
-  LABELS[("Labelopslag")]
-  PREDS[("Voorspellingsopslag")]
-  SKETCHDB[("DFT-schetsen: H0, dipoolafgeleiden, anharmonische constanten")]
-  DH(["ΔH-blokken: gemeten of voorspeld, per gelicentieerde familie"]):::data
-  H0(["DFT-schets van het molecuul"]):::data
+  subgraph IN1 [" "]
+    direction TB
+    DH(["ΔH-blokken: gemeten of voorspeld, per gelicentieerde familie"]):::data
+    LABELS[("Labelopslag")]:::store
+    PREDS[("Voorspellingsopslag")]:::store
+    LABELS --> DH
+    PREDS --> DH
+  end
+  subgraph IN2 [" "]
+    direction TB
+    H0(["DFT-schets van het molecuul"]):::data
+    SKETCHDB[("DFT-schetsen: H0, dipoolafgeleiden, anharmonische constanten")]:::store
+    SKETCHDB --> H0
+  end
   SUM["Gecorrigeerde krachtconstanten: H0 + ΔH op de gelicentieerde blokken, elders H0"]
   EIG["Diagonalisatie → harmonische posities met marge per familie"]
   INT["Intensiteiten uit de DFT-dipoolafgeleiden"]
   ANH["Anharmonische verschuiving uit DFT"]
-  SPEC(["Spectrum: banden met positie, intensiteit, marge; profiel op de resolutie van de bron"]):::data
-  SPECS[("Spectrumarchief")]
+  subgraph SP [" "]
+    direction TB
+    SPEC(["Spectrum: banden met positie, intensiteit, marge; profiel op de resolutie van de bron"]):::data
+    SPECS[("Spectrumarchief")]:::store
+    SPEC --> SPECS
+  end
   LABDB[("Laboratoriumspectra")]:::ext
   PAHDB[("PAHdb en andere voorspellers")]:::ext
   SB{"Score per referentiekolom: binnen de marge van die kolom of niet"}:::gate
-  RES(["Scores per band en familie, met de vergelijking naast de opponenten"]):::data
-  RESS[("Scorearchief")]
+  subgraph RS [" "]
+    direction TB
+    RES(["Scores per band en familie, met de vergelijking naast de opponenten"]):::data
+    RESS[("Scorearchief")]:::store
+    RES --> RESS
+  end
+  style IN1 fill:none,stroke:none
+  style IN2 fill:none,stroke:none
+  style SP fill:none,stroke:none
+  style RS fill:none,stroke:none
 
-  LABELS --> DH
-  PREDS --> DH
-  SKETCHDB --> H0
   DH --> SUM
   H0 --> SUM --> EIG --> SPEC
   H0 --> INT --> SPEC
   H0 --> ANH --> SPEC
-  SPEC --> SPECS
   SPEC --> SB
   LABDB --> SB
   PAHDB --> SB
-  SB --> RES --> RESS
+  SB --> RES

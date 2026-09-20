@@ -1,14 +1,19 @@
 %% Doelarchitectuur plan 05 — overzicht (niveau 2). Het systeem zoals het staat als de toetsen ja zeggen.
-%% Rechthoek = processtap; ronde uiteinden = data-object; cilinder = opslag; ruit = poort (toets met vaste uitkomst).
-%% Doorgetrokken = bestaat; gestippeld = nog niet gebouwd. Pijlen zijn datastromen. Geen rekenplaats, geen besluiten.
+%% Rechthoek = processtap; ronde uiteinden = data-object; cilinder = opslag; ruit = poort. Gestippeld = nog niet gebouwd. Pijlen zijn datastromen.
 flowchart LR
-  classDef planned stroke-dasharray: 6 4,stroke:#7a5c00,fill:#fff8e1
-  classDef ext fill:#eef3f8,stroke:#5b7a99
-  classDef data fill:#f3f3f3,stroke:#666
-  classDef gate fill:#e8f5e9,stroke:#2e7d32
+  linkStyle default stroke:#8a9bb0,stroke-width:2.2px
+  classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
+  classDef ext fill:#cfd8e3,stroke:#3d5a80,color:#111
+  classDef data fill:#e9ecef,stroke:#555,color:#111
+  classDef gate fill:#d9f0dc,stroke:#2e7d32,color:#111
+  classDef store fill:#dfe7f2,stroke:#5b7a99,color:#111
 
-  CAT[("Molecuulcatalogus: geometrieën, lading, multipliciteit")]
-  MOL(["Molecuul"]):::data
+  subgraph IN [" "]
+    direction TB
+    MOL(["Molecuul"]):::data
+    CAT[("Molecuulcatalogus: geometrieën, lading, multipliciteit")]:::store
+    CAT --> MOL
+  end
 
   subgraph B["Pipeline B: hoe één label ontstaat"]
     direction TB
@@ -19,49 +24,68 @@ flowchart LR
     LIC1{"Licentie van het herstel tegen direct berekende referenties"}:::gate
     DFT --> DECK --> LNO --> REC --> LIC1
   end
-  LAB1(["Label: ΔH-blokken met foutmarge per familie"]):::data
-  LABELS[("Labelopslag")]
+  subgraph LB [" "]
+    direction TB
+    LAB1(["Label: ΔH-blokken met foutmarge per familie"]):::data
+    LABELS[("Labelopslag")]:::store
+    LAB1 --> LABELS
+  end
 
   subgraph A["Pipeline A: het netwerk dat de correctie overdraagt"]
     direction TB
-    CORPUS[("Corpus: DFT-paren per molecuul")]
     PROXY(["Vervangercorrectie: volledige ΔH per molecuul"]):::data
+    CORPUS[("Corpus: DFT-paren per molecuul")]:::store
     PRE["Voortraining op de vervangercorrectie"]:::planned
     NET["Netwerk: modus-tokens → ΔH-blok per familie"]:::planned
     ENS["Ensemble → onzekerheid per familie"]:::planned
     LIC2{"Licentie per bandfamilie tegen de labels; anders weigering"}:::gate
     CORPUS --> PROXY --> PRE --> NET --> ENS --> LIC2
   end
-  PRED(["Voorspelde ΔH-blokken met onzekerheid; geweigerde families gemarkeerd"]):::data
-  PREDS[("Voorspellingsopslag")]
+  subgraph PB [" "]
+    direction TB
+    PRED(["Voorspelde ΔH-blokken met onzekerheid; geweigerde families gemarkeerd"]):::data
+    PREDS[("Voorspellingsopslag")]:::store
+    PRED --> PREDS
+  end
 
   subgraph S["Spectrum en score"]
     direction TB
     CORR["Gecorrigeerde krachtconstanten: H0 + ΔH op gelicentieerde blokken"]
     DIAG["Diagonalisatie → bandposities; intensiteiten en anharmoniek uit DFT"]
-    SCORE["Scorebord per referentiekolom met eigen marge"]
+    SB{"Score per referentiekolom, binnen de marge van die kolom of niet"}:::gate
     CORR --> DIAG
   end
-  SPEC(["Spectrum met foutmarge per band"]):::data
-  SPECS[("Spectrumarchief")]
-  RES(["Scores per band en familie"]):::data
-  RESS[("Scorearchief")]
-
+  subgraph SP [" "]
+    direction TB
+    SPEC(["Spectrum met foutmarge per band"]):::data
+    SPECS[("Spectrumarchief")]:::store
+    SPEC --> SPECS
+  end
+  subgraph RS [" "]
+    direction TB
+    RES(["Scores per band en familie"]):::data
+    RESS[("Scorearchief")]:::store
+    RES --> RESS
+  end
   LABDB[("Laboratoriumspectra")]:::ext
   PAHDB[("PAHdb en andere voorspellers")]:::ext
+  style IN fill:none,stroke:none
+  style LB fill:none,stroke:none
+  style PB fill:none,stroke:none
+  style SP fill:none,stroke:none
+  style RS fill:none,stroke:none
 
-  CAT --> MOL
   MOL --> DFT
   MOL --> CORPUS
-  LIC1 --> LAB1 --> LABELS
+  LIC1 --> LAB1
   LABELS --> NET
   LABELS -- "foutmarge per familie" --> LIC2
-  LIC2 --> PRED --> PREDS
+  LIC2 --> PRED
   LABELS --> CORR
   PREDS --> CORR
   DFT --> CORR
-  DIAG --> SPEC --> SPECS
-  SPEC --> SCORE
-  LABDB --> SCORE
-  PAHDB --> SCORE
-  SCORE --> RES --> RESS
+  DIAG --> SPEC
+  SPEC --> SB
+  LABDB --> SB
+  PAHDB --> SB
+  SB --> RES

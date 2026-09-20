@@ -1,18 +1,30 @@
 %% Doelarchitectuur — Componenten van het netwerk (niveau 4). Grotendeels nog niet gebouwd.
-%% Rechthoek = processtap; ronde uiteinden = data-object; cilinder = opslag. Gestippeld = nog niet gebouwd.
+%% Rechthoek = processtap; ronde uiteinden = data-object; cilinder = opslag (onder het data-object). Gestippeld = nog niet gebouwd.
 flowchart LR
-  classDef planned stroke-dasharray: 6 4,stroke:#7a5c00,fill:#fff8e1
-  classDef data fill:#f3f3f3,stroke:#666
+  linkStyle default stroke:#8a9bb0,stroke-width:2.2px
+  classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
+  classDef data fill:#e9ecef,stroke:#555,color:#111
+  classDef store fill:#dfe7f2,stroke:#5b7a99,color:#111
 
-  CORPUS[("Corpus en labelopslag")]
-  IN(["Per molecuul: modus-tokens, lading, multipliciteit"]):::data
+  subgraph IN [" "]
+    direction TB
+    INP(["Per molecuul: modus-tokens, lading, multipliciteit"]):::data
+    CORPUS[("Corpus en labelopslag")]:::store
+    CORPUS --> INP
+  end
   EMB["Embedding van elk modus-token"]
   ENC["Self-attention over de modi van het molecuul"]
   BLK["Blokkop per familie: diagonaal en koppelingen uit de modusvectoren"]:::planned
   PAIR["Paarkop: welke paren dragen een koppeling"]
   UNC["Ensemble over seeds → spreiding per familie"]:::planned
-  OUTB(["ΔH-blok per familie met onzekerheid"]):::data
-  STORE[("Voorspellingsopslag")]
+  subgraph OUT [" "]
+    direction TB
+    OUTB(["ΔH-blok per familie met onzekerheid"]):::data
+    STORE[("Voorspellingsopslag")]:::store
+    OUTB --> STORE
+  end
+  style IN fill:none,stroke:none
+  style OUT fill:none,stroke:none
 
-  CORPUS --> IN --> EMB --> ENC --> BLK --> UNC --> OUTB --> STORE
+  INP --> EMB --> ENC --> BLK --> UNC --> OUTB
   ENC --> PAIR --> OUTB
