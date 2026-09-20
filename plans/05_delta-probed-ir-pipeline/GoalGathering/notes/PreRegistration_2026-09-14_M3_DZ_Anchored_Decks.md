@@ -38,3 +38,8 @@ DZ arm: 3 modes × 5 points, minus the shared reference, = 13 energies × ≈ 1 
 ## 6. What would make it stronger, later
 
 Two more families (ring / C–H in-plane, the low skeletal modes) at 5 points each (+2 × 6.2 days TZ); the local-type form of the increment (X17's types) instead of a per-family constant; and, once benzene's R0 deck exists at TZ, the same deck at DZ (448 × 3 min = 22 laptop-hours) gives the increment for **every** benzene mode and type at negligible cost — the training table for a learned increment.
+
+## Outcome, first family — 20 September 2026, 18:5x (mode 12, C–H out-of-plane): LOSE on this family
+
+TZ cells for mode 12 complete (five points). Beyond-MP2 increment of the curvature, DZ → TZ, at naphthalene: **−8.1 cm⁻¹** as the composite carries it (k(LNO-CC) − k(LNO-MP2)), or +23.0 cm⁻¹ in the mixed form k(LNO-CC) − k(full MP2); benzene's registered value +7.9 cm⁻¹. |Δ_n − Δ_b| = 16.0 (sign flipped) or 15.1 cm⁻¹: beyond the 5 cm⁻¹ lose line under either definition. Under §3 M3 therefore loses at its first family: the anchor stays cc-pVTZ for the C–H out-of-plane family and the measured increments enter the error budget as the basis term. Mechanism (not registered, read from the components): the double-ζ out-of-plane pathology of MP2 for arenes (SCF + MP2 gives 618 cm⁻¹ at DZ for a 785 cm⁻¹ mode, 748 at TZ), inherited in part by the frozen LNO-CC arm at DZ; it grows with the arene and does not touch in-plane modes. Modes 22 and 31 are still read when they land (≈ 22 and 24 September) because the plan licenses per family; the registered rule ("any family") makes M3 as a whole a loss regardless. Full table: `probes/results_m1/M3_TZ_MODE12_READING_2026-09-20.md`.
+

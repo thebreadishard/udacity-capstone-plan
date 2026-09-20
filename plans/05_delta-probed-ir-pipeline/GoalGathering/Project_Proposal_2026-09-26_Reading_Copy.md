@@ -631,6 +631,7 @@ licensed by its own test before it enters a deck; their state on 16 September:
   19.8 GB at cc-pVTZ —
   puts every molecule up to coronene within the laptop's memory by estimate (P27 §3); a loss leaves
   R1 at cc-pVTZ on the cluster route and the thin decks above it.
+- **Dated note, 20 September, 18:5x — probe B1's first family is read and lost.** The cc-pVTZ cells of the C–H out-of-plane mode (naphthalene mode 12, 785 cm⁻¹) completed at 18:43; the beyond-MP2 basis increment of its curvature moves DZ → TZ by −8.1 cm⁻¹ at naphthalene against +7.9 cm⁻¹ at benzene (16 cm⁻¹ apart, sign flipped; 15.1 cm⁻¹ in the alternative definition), beyond the pre-registered lose line of 5 cm⁻¹. For this family the anchor stays cc-pVTZ, the DZ pricing of P27 is not licensed, and the increment becomes the basis term of the error budget (decision 26). The components show why: at cc-pVDZ MP2 softens this out-of-plane mode from 861 (SCF) to 618 cm⁻¹, the known double-ζ out-of-plane pathology of MP2 for arenes, partly inherited by the local coupled-cluster arm; it grows with the arene and does not touch in-plane modes. The in-plane families (modes 22 and 31, ≈ 22 and 24 September) are still read per family. Source: `probes/results_m1/M3_TZ_MODE12_READING_2026-09-20.md`.
 - **P25 (lever B), not licensed.** Plan 06's DFT-only rule for ranking which couplings to measure
   (the resonance denominator 1/|ω_i² − ω_j²|), which at benzene found the pairs that matter with 19
   of 47, was put to its pre-registered test on the naphthalene stand-in on 16 September and lost:

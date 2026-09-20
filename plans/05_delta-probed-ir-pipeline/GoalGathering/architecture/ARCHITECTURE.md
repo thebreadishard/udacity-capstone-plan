@@ -100,7 +100,8 @@ flowchart LR
   AMP["Amplitudetest: energieroute voor koppelingen gesloten bij naftaleen (17 sep)"]:::closed
   M2B["M2b: geleende gradiëntmotor rekent onze grootheid niet (17 sep)"]:::closed
   ST0["Anker stage 0: herladen ruimtes reproduceren de referentie, 0,0002 µEh (18 sep)"]:::done
-  ANCH["Anker M3: naftaleen cc-pVTZ, 13 energieën van 12 h; modus 12 klaar 20 sep 17:30, 22 op 22 sep, rapport 24 sep"]:::running
+  ANCH["Anker M3: naftaleen cc-pVTZ, 13 energieën van 12 h; modus 12 gelezen 20 sep, 22 op 22 sep, rapport 24 sep"]:::running
+  M12["Modus 12 (C–H oop): beyond-MP2-increment DZ→TZ −8 cm⁻¹ tegen benzeen +7,9 — buiten de 5 cm⁻¹, teken gewisseld; MP2-dubbel-ζ-pathologie uit het vlak (20 sep)"]:::done
   D1{"Draagt DZ de TZ-correctie per familie?"}:::dec
   CHEAP["Decks in cc-pVDZ (factor 14 goedkoper per energie)"]:::todo
   TZ["Decks in cc-pVTZ; cluster nodig (Snellius-aanvraag op de agenda van 28 sep)"]:::todo
@@ -112,7 +113,7 @@ flowchart LR
   MEM["Geheugen: geleende gradiënt past niet op 32 GB bij plandrempels (19 sep, 3× OOM); 128 GB-machine aangevraagd"]:::closed
   OUT(["Gelicentieerd fabrieksontwerp: basis per familie, g energieën per label, foutbudget per familie, eerste drie labels (benzeen, naftaleen, één kation)"]):::data
 
-  M1 --> ST0 --> ANCH --> D1
+  M1 --> ST0 --> ANCH --> M12 --> D1
   D1 -- ja --> CHEAP
   D1 -- nee --> TZ
   I14 --> X14 --> M2
