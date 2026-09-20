@@ -7,6 +7,7 @@ flowchart LR
   classDef data fill:#e9ecef,stroke:#555,color:#111
 
   MOL(["Molecuul: geometrie, lading, multipliciteit"]):::data
+  COND(["Waarnemingscondities: temperatuur van de bron, resolutie van het instrument"]):::data
 
   DFT["DFT (psi4)"]
   SK(["Hessiaan H0 en dipoolafgeleiden"]):::data
@@ -28,9 +29,9 @@ flowchart LR
   INTS(["Bandintensiteiten"]):::data
   ANH["Anharmonische correctie (eigen software)"]
   ANHS(["Anharmonische verschuivingen per band"]):::data
-  SHAPE["Profielvorming (eigen software): temperatuur van de bron, resolutie van het instrument"]
+  SHAPE["Profielvorming (eigen software)"]
 
-  SPEC(["Spectrum: banden met positie, intensiteit, vorm en foutmarge; per familie de licentiestatus"]):::data
+  SPEC(["Spectrum: banden met positie, intensiteit, profiel en foutmarge; licentiestatus per familie"]):::data
 
   MOL --> DFT --> SK
   SK --> MODE --> MODES
@@ -41,4 +42,5 @@ flowchart LR
   MODES --> INT --> INTS --> SHAPE
   ANHC --> ANH
   MODES --> ANH --> ANHS --> SHAPE
+  COND --> SHAPE
   SHAPE --> SPEC
