@@ -21,7 +21,7 @@ flowchart LR
   TRAINED(["Getraind ΔH-model: ensemble van leden"]):::data
   TESTSET(["Testset"]):::data
   EVAL["Test en licentie (blad 3b)"]:::planned
-  MODEL(["Modelpakket: getraind ΔH-model, licentietabel, kalibratie"]):::data
+  LICCAL(["Licentietabel en kalibratie"]):::data
   PIPE["Target pipeline (blad 4)"]:::planned
   SPEC(["Spectrum: banden met positie, intensiteit, profiel en foutmarge; licentiestatus per familie"]):::data
   RES["Onderzoeksproces (bladen 5 en 6)"]:::research
@@ -35,10 +35,11 @@ flowchart LR
   TRAIN --> TESTSET --> EVAL
   LABDB --> EVAL
   PAHDB --> EVAL
-  EVAL --> MODEL
+  EVAL --> LICCAL
   MOL --> PIPE
   COND --> PIPE
-  MODEL --> PIPE
+  TRAINED --> PIPE
+  LICCAL --> PIPE
   PIPE --> SPEC
   RES -. beslist over .-> LABF
   RES -. beslist over .-> TRAIN

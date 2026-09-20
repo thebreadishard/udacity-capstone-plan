@@ -5,7 +5,7 @@
 | soort | wat het toont | bladen |
 |---|---|---|
 | **Datacreatie** | processen die data maken: de labelfabriek (coupled-cluster-correcties per molecuul) en de corpusstap (DFT-paren en vervangercorrectie) | 1, 2 |
-| **Training en beoordeling** | training: uit corpusrecords en labels komt het getrainde ΔH-model (blad 3); test en licentie: uit dat model en de testset komt het modelpakket, met de score tegen de laboratoriumkolommen en de opponenten (blad 3b). Blad 3 draait per modelversie, niet per molecuul, en bevat de validatielus | 3, 3b |
+| **Training en beoordeling** | training: uit corpusrecords en labels komt het getrainde ΔH-model (blad 3); test en licentie: uit dat model en de testset komen de licentietabel en de kalibratie, met de score tegen de laboratoriumkolommen en de opponenten (blad 3b); de gewichten veranderen daar niet meer. De target pipeline gebruikt het getrainde model van blad 3 en de tabel en kalibratie van blad 3b; op blad 4 zelf staan die niet als invoerobject getekend (afspraak 20 september). Blad 3 draait per modelversie, niet per molecuul, en bevat de validatielus | 3, 3b |
 | **Pipeline** | het eindproduct: molecuul en waarnemingscondities in, forward pass als één stap, spectrum met licentiestatus uit | 4 (en 4a: de componenten van het ΔH-model) |
 | **Onderzoeksproces** | de toetsen die beslissen of dit alles er zo komt; het enige soort blad waar data, besluiten en experimentnummers in mogen | 5, 6 |
 
@@ -51,7 +51,7 @@ flowchart LR
   TRAINED(["Getraind ΔH-model: ensemble van leden"]):::data
   TESTSET(["Testset"]):::data
   EVAL["Test en licentie (blad 3b)"]:::planned
-  MODEL(["Modelpakket: getraind ΔH-model, licentietabel, kalibratie"]):::data
+  LICCAL(["Licentietabel en kalibratie"]):::data
   PIPE["Target pipeline (blad 4)"]:::planned
   SPEC(["Spectrum: banden met positie, intensiteit, profiel en foutmarge; licentiestatus per familie"]):::data
   RES["Onderzoeksproces (bladen 5 en 6)"]:::research
@@ -65,10 +65,11 @@ flowchart LR
   TRAIN --> TESTSET --> EVAL
   LABDB --> EVAL
   PAHDB --> EVAL
-  EVAL --> MODEL
+  EVAL --> LICCAL
   MOL --> PIPE
   COND --> PIPE
-  MODEL --> PIPE
+  TRAINED --> PIPE
+  LICCAL --> PIPE
   PIPE --> SPEC
   RES -. beslist over .-> LABF
   RES -. beslist over .-> TRAIN
@@ -197,7 +198,7 @@ flowchart LR
 ## 3b. Test en licentie (`21_test_en_licentie.mmd`)
 
 ```mermaid
-%% Test en licentie (niveau 3b): uit het getrainde ΔH-model en de testset komt het modelpakket dat de target pipeline inlaadt. Doelarchitectuur; nog niet gebouwd.
+%% Test en licentie (niveau 3b): uit het getrainde ΔH-model en de testset komen de licentietabel en de kalibratie die de target pipeline naast het getrainde model gebruikt. De gewichten van het model veranderen hier niet. Doelarchitectuur; nog niet gebouwd.
 %% Rechthoek = processtap (bewerking + software); ronde uiteinden = data-object (het ding). Elke stap levert één data-object. Gestippeld = nog niet gebouwd.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
@@ -215,18 +216,14 @@ flowchart LR
   LICT(["Licentietabel per familie en ladingstoestand"]):::data
   CAL["Onzekerheidskalibratie (eigen software)"]:::planned
   CALR(["Kalibratie van de ensemblespreiding"]):::data
-  PACK["Bundeling (eigen software)"]:::planned
-  MODEL(["Modelpakket: getraind ΔH-model, licentietabel, kalibratie"]):::data
 
   ENS --> TEST
   TESTSET --> TEST
   LABDB --> TEST
   PAHDB --> TEST
   TEST --> TESTR
-  TESTR --> LIC --> LICT --> PACK
-  TESTR --> CAL --> CALR --> PACK
-  ENS --> PACK
-  PACK --> MODEL
+  TESTR --> LIC --> LICT
+  TESTR --> CAL --> CALR
 ```
 
 ## 4. Target pipeline (`30_target_pipeline.mmd`; voorlopige naam, 20 september)
