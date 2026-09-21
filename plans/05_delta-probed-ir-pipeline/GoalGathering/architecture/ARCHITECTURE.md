@@ -1,37 +1,37 @@
-# Architectuur plan 05 (voor de auteurs, Nederlands; eerste versie 19 september 2026, herzien 20 september)
+# Architecture of plan 05 (for the authors; first version 19 September 2026, revised 20 September; English since 21 September, translated from the Dutch original without changes of content)
 
-**Vier soorten diagram, uit elkaar gehouden (afspraak van 20 september).**
+**Four kinds of diagram, kept apart (agreement of 20 September).**
 
-| soort | wat het toont | bladen |
+| kind | what it shows | sheets |
 |---|---|---|
-| **Datacreatie** | processen die data maken: de corpusstap (DFT-paren en vervangercorrectie; blad 3) en de labelfabriek (coupled-cluster-correcties per molecuul; blad 4) | 3, 4 |
-| **Het ΔH-model** | de definitie van het netwerk: de componenten (blad 5) en dezelfde definitie als PyTorch-code (blad 5b) | 5, 5b |
-| **Training en beoordeling** | training: uit corpusrecords en labels komt het getrainde ΔH-model (blad 6); test en licentie: uit dat model en de testset komen de licentietabel en de kalibratie, met de score tegen de laboratoriumkolommen en de opponenten (blad 7); de gewichten veranderen daar niet meer. De spectrumpipeline gebruikt het getrainde model van blad 6 en de tabel en kalibratie van blad 7; op blad 8 zelf staan die niet als invoerobject getekend (afspraak 20 september); het gemeten label staat er wel, als tweede bron van ΔH naast het model (afspraak 20 september, avond). Blad 6 draait per modelversie, niet per molecuul, en bevat de validatielus | 6, 7 |
-| **Spectrumpipeline** | molecuul en waarnemingscondities in, spectrum met foutmarge en licentiestatus uit; ΔH uit twee bronnen — het gemeten label van blad 4 (bestaat voor de moleculen met een label) of het ΔH-model (voor alle andere) — en één gedeelde staart (H = H₀ + ΔH, VPT2, intensiteiten, profiel) | 8 |
-| **Onderzoeksproces** | de toetsen die beslissen of dit alles er zo komt; het enige soort blad waar data, besluiten en experimentnummers in mogen | 1, 2 |
+| **Data creation** | processes that make data: the corpus step (DFT pairs and proxy correction; sheet 3) and the label factory (coupled-cluster corrections per molecule; sheet 4) | 3, 4 |
+| **The ΔH model** | the definition of the network: the components (sheet 5) and the same definition as PyTorch code (sheet 5b) | 5, 5b |
+| **Training and assessment** | training: from corpus records and labels comes the trained ΔH model (sheet 6); test and licence: from that model and the test set come the licence table and the calibration, with the score against the laboratory columns and the opponents (sheet 7); the weights no longer change there. The spectrum pipeline uses the trained model of sheet 6 and the table and calibration of sheet 7; on sheet 8 itself those are not drawn as input objects (agreement 20 September); the measured label is drawn there, as the second source of ΔH next to the model (agreement 20 September, evening). Sheet 6 runs per model version, not per molecule, and contains the validation loop | 6, 7 |
+| **Spectrum pipeline** | molecule and observation conditions in, spectrum with error margin and licence status out; ΔH from two sources — the measured label of sheet 4 (exists for the molecules with a label) or the ΔH model (for all others) — and one shared tail (H = H₀ + ΔH, VPT2, intensities, profile) | 8 |
+| **Research process** | the tests that decide whether all of this gets built this way; the only kind of sheet in which data, decisions and experiment numbers are allowed | 1, 2 |
 
-Het overzicht (blad 0) toont de soorten proces en de data-objecten die ze verbinden. **Nummering (20 september):** de bestandsnummers volgen de volgorde waarin de stappen worden doorlopen: eerst het onderzoeksproces dat over de rest beslist (1, 2), dan corpus (3), labels (4), het ΔH-model (5, code 5b), training (6), test en licentie (7), spectrumpipeline (8). Rekenplaats staat er voorlopig niet in; die komt later per blokje.
+The overview (sheet 0) shows the kinds of process and the data objects that connect them. **Numbering (20 September):** the file numbers follow the order in which the steps are traversed: first the research process that decides on the rest (1, 2), then corpus (3), labels (4), the ΔH model (5, code 5b), training (6), test and licence (7), spectrum pipeline (8). Compute location is not in yet; it comes later per box.
 
-**Tekenregels (afgesproken 19–20 september; op alle bladen toegepast).**
+**Drawing rules (agreed 19–20 September; applied on all sheets).**
 
-| regel | inhoud |
+| rule | content |
 |---|---|
-| vormen | rechthoek = processtap; rechthoek met ronde uiteinden (grijs) = data-object; donkerder blauw = extern data-object, niet van ons; licht kader om meerdere figuren = onderdeel van het ΔH-model (backbone, koppen; alleen blad 5) |
-| stap → object | elke processtap levert precies één data-object, dat de volgende stap(pen) voedt; een proces begint en eindigt bij een data-object; splitsingen komen alleen uit data-objecten |
-| naamgeving | een stap heet naar de bewerking met tussen haken het softwarepakket ("DFT (psi4)", "VPT2 (pyVPT2 op psi4)") of "eigen software" / "PyTorch" als wij het maken; een data-object heet naar het ding; geen woordherhaling tussen stap en object; geen uitleg in captions |
-| het model | het netwerk heet **het ΔH-model** (het voorspelt ΔH-blokken per familie); zijn gedeelde deel heet de **backbone** (embedding en self-attention), zijn uitgangen heten **koppen** (blokkop, paarkop); de exemplaren met verschillende seeds vormen het **ensemble** en heten **leden**; de eenvoudige regels zijn de **baseline**. "Netwerk" zonder meer komt op de doelbladen niet voor (afspraak 20 september) |
-| ruisprincipe | elke afgeleide grootheid (kromming, koppeling, anharmonische constante) krijgt een onafhankelijke tweede route of een symmetriecontrole, en het verschil is een term van het foutbudget; op blad 4 als eigen stap ("Consistentiecontrole"), op blad 8 in het data-object van de anharmonische constanten (afspraak 21 september, na de benzeen-VPT2: twee routes naar dezelfde quartische constante verschilden tot 1.265 cm⁻¹ en het pakket zag het niet) |
-| status | doorgetrokken = bestaat en is gemeten; gestippelde rand, gele vulling = nog niet gebouwd |
-| geen | geen opslagfiguren (cilinders), geen ruiten op de doelbladen (beslissingen per item zitten in een stap), geen onzichtbare hulpknopen: standaard Mermaid, links naar rechts |
-| controle | vóór een commit lokaal gerenderd (Mermaid 11), daarna de GitHub-weergave |
+| shapes | rectangle = process step; rectangle with rounded ends (grey) = data object; darker blue = external data object, not ours; light frame around several figures = part of the ΔH model (backbone, heads; sheet 5 only) |
+| step → object | every process step yields exactly one data object, which feeds the next step(s); a process begins and ends at a data object; branches only come out of data objects |
+| naming | a step is named after the operation with the software package in brackets ("DFT (psi4)", "VPT2 (pyVPT2 on psi4)") or "own software" / "PyTorch" when we make it; a data object is named after the thing; no word repetition between step and object; no explanation in captions |
+| the model | the network is called **the ΔH model** (it predicts ΔH blocks per family); its shared part is called the **backbone** (embedding and self-attention), its outputs are called **heads** (block head, pair head); the instances with different seeds form the **ensemble** and are called **members**; the simple rules are the **baseline**. "Network" on its own does not occur on the target sheets (agreement 20 September) |
+| noise principle | every derived quantity (curvature, coupling, anharmonic constant) gets an independent second route or a symmetry check, and the difference is a term of the error budget; on sheet 4 as its own step ("Consistency check"), on sheet 8 in the data object of the anharmonic constants (agreement 21 September, after the benzene VPT2: two routes to the same quartic constant differed by up to 1,265 cm⁻¹ and the package did not see it) |
+| status | solid = exists and has been measured; dashed border, yellow fill = not built yet |
+| none | no storage figures (cylinders), no diamonds on the target sheets (decisions per item sit inside a step), no invisible helper nodes: standard Mermaid, left to right |
+| check | rendered locally before a commit (Mermaid 11), then the GitHub view |
 
-Op de onderzoeksprocesbladen (1, 2) gelden eigen kleuren: groen = geslaagd, blauw = loopt, gestippeld = nog te doen, rood = verloren en gesloten; daar mogen ruiten en data in. Bron van waarheid: de `.mmd`-bestanden in deze map (Mermaid; renderen op GitHub).
+On the research-process sheets (1, 2) their own colours apply: green = passed, blue = running, dashed = still to do, red = lost and closed; diamonds and data are allowed there. Source of truth: the `.mmd` files in this folder (Mermaid; rendered on GitHub).
 
-## 0. Overzicht: de soorten proces en hun data-objecten (`00_overzicht.mmd`)
+## 0. Overview: the kinds of process and their data objects (`00_overview.mmd`)
 
 ```mermaid
-%% Overzicht plan 05 (niveau 1): de soorten proces en de data-objecten die ze verbinden. Doelarchitectuur; geen besluiten, geen data.
-%% Rechthoek = proces (hier: een heel blad); ronde uiteinden = data-object; pijl = datastroom. Gestippeld = nog niet gebouwd.
+%% Overview of plan 05 (level 1): the kinds of process and the data objects that connect them. Target architecture; no decisions, no data.
+%% Rectangle = process (here: a whole sheet); rounded ends = data object; arrow = data flow. Dashed = not built yet.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
@@ -40,23 +40,23 @@ flowchart LR
   classDef proc fill:#f7f7fb,stroke:#333,stroke-width:1.5px,color:#111
   classDef research fill:#fdf2e3,stroke:#8a5a00,color:#111
 
-  MOL(["Molecuul: geometrie, lading, multipliciteit"]):::data
-  COND(["Waarnemingscondities: interne energie na UV-absorptie (emissie) of temperatuur (absorptie); resolutie van het instrument"]):::data
-  LABDB(["Laboratoriumspectra"]):::ext
-  PAHDB(["Opponenten: PAHdb en andere voorspellers"]):::ext
+  MOL(["Molecule: geometry, charge, multiplicity"]):::data
+  COND(["Observation conditions: internal energy after UV absorption (emission) or temperature (absorption); resolution of the instrument"]):::data
+  LABDB(["Laboratory spectra"]):::ext
+  PAHDB(["Opponents: PAHdb and other predictors"]):::ext
 
-  LABF["Labelfabriek (blad 4)"]:::proc
-  LABELS(["Labels: ΔH-blokken met foutmarge per familie"]):::data
-  CORPF["Corpusstap (blad 3)"]:::proc
-  CORPUS(["Corpusrecords: modus-tokens en vervangercorrectie per molecuul"]):::data
-  TRAIN["Training (blad 6)"]:::planned
-  TRAINED(["Getraind ΔH-model: ensemble van leden"]):::data
-  TESTSET(["Testset"]):::data
-  EVAL["Test en licentie (blad 7)"]:::planned
-  LICCAL(["Licentietabel en kalibratie"]):::data
-  PIPE["Spectrumpipeline (blad 8)"]:::planned
-  SPEC(["Spectrum: banden met positie, intensiteit, profiel en foutmarge; licentiestatus per familie"]):::data
-  RES["Onderzoeksproces (bladen 1 en 2)"]:::research
+  LABF["Label factory (sheet 4)"]:::proc
+  LABELS(["Labels: ΔH blocks with error margin per family"]):::data
+  CORPF["Corpus step (sheet 3)"]:::proc
+  CORPUS(["Corpus records: mode tokens and proxy correction per molecule"]):::data
+  TRAIN["Training (sheet 6)"]:::planned
+  TRAINED(["Trained ΔH model: ensemble of members"]):::data
+  TESTSET(["Test set"]):::data
+  EVAL["Test and licence (sheet 7)"]:::planned
+  LICCAL(["Licence table and calibration"]):::data
+  PIPE["Spectrum pipeline (sheet 8)"]:::planned
+  SPEC(["Spectrum: bands with position, intensity, profile and error margin; licence status per family"]):::data
+  RES["Research process (sheets 1 and 2)"]:::research
 
   MOL --> LABF --> LABELS
   MOL --> CORPF --> CORPUS
@@ -74,19 +74,19 @@ flowchart LR
   TRAINED --> PIPE
   LICCAL --> PIPE
   PIPE --> SPEC
-  RES -. beslist over .-> LABF
-  RES -. beslist over .-> TRAIN
-  RES -. beslist over .-> EVAL
-  RES -. beslist over .-> PIPE
+  RES -. decides on .-> LABF
+  RES -. decides on .-> TRAIN
+  RES -. decides on .-> EVAL
+  RES -. decides on .-> PIPE
 ```
 
-# Onderzoeksproces (mag data en besluiten bevatten)
+# Research process (may contain data and decisions)
 
-## 1. Onderzoeksproces — de labelfabriek en de decks (`10_onderzoeksproces_labelfabriek.mmd`; in het voorstel pipeline B)
+## 1. Research process — the label factory and the decks (`10_research_process_label_factory.mmd`; pipeline B in the proposal)
 
 ```mermaid
-%% Onderzoeksproces — de labelfabriek (in het voorstel: pipeline B): de toetsen die beslissen of de doelarchitectuur van blad 4 er komt; het eindobject is het gelicentieerde fabrieksontwerp met de eerste labels als bewijs, niet de labelset (die maakt blad 4). Stand 20 september 2026.
-%% Dit blad mag data en besluiten bevatten. Groen = geslaagd; blauw = loopt; gestippeld = nog te doen; rood = mislukt en gesloten.
+%% Research process — the label factory (in the proposal: pipeline B): the tests that decide whether the target architecture of sheet 4 gets built; the end object is the licensed factory design with the first labels as evidence, not the label set (sheet 4 makes that). Status 20 September 2026.
+%% This sheet may contain data and decisions. Green = passed; blue = running; dashed = still to do; red = failed and closed.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef done fill:#d9f0dc,stroke:#2e7d32,color:#111
@@ -96,45 +96,45 @@ flowchart LR
   classDef dec fill:#eee,stroke:#444,color:#111
   classDef data fill:#e9ecef,stroke:#555,color:#111
 
-  M1["M1: bevroren ruimtes zijn glad (benzeen, DZ en TZ; 5–12 sep)"]:::done
-  I14["I14: één energie per niet-totaalsymmetrisch patroon (14 sep)"]:::done
-  X14["X14/X21/X22: koppelingen exact uit 2k+1 gradiënten, lineair bij elke symmetrie (16–19 sep)"]:::done
-  AMP["Amplitudetest: energieroute voor koppelingen gesloten bij naftaleen (17 sep)"]:::closed
-  M2B["M2b: geleende gradiëntmotor rekent onze grootheid niet (17 sep)"]:::closed
-  ST0["Anker stage 0: herladen ruimtes reproduceren de referentie, 0,0002 µEh (18 sep)"]:::done
-  ANCH["Anker M3: naftaleen cc-pVTZ, 13 energieën van 12 h; modus 12 gelezen 20 sep, 22 op 22 sep, rapport 24 sep"]:::running
-  M12["Modus 12 (C–H oop): beyond-MP2-increment DZ→TZ −8 cm⁻¹ tegen benzeen +7,9 — buiten de 5 cm⁻¹, teken gewisseld; MP2-dubbel-ζ-pathologie uit het vlak (20 sep)"]:::done
-  D1{"Draagt DZ de TZ-correctie per familie?"}:::dec
-  CHEAP["Decks in cc-pVDZ (factor 14 goedkoper per energie)"]:::todo
-  TZ["Decks in cc-pVTZ; cluster nodig (Snellius-aanvraag op de agenda van 28 sep)"]:::todo
-  M2["M2-bouw: gradiënt van de bevroren-ruimte-energie in JAX; pre-registratie 18 sep (T-M2-1..3, float64, checkpointing); start na 24 sep op het woord van de auteur"]:::todo
-  D2{"T-M2-1 en T-M2-2 geslaagd; g_M2 gedrukt (voorspeld 2–4)"}:::dec
-  DECK1["Eerste gradiëntdeck benzeen → licentie tegen canoniek"]:::todo
-  DECK2["Naftaleendeck: 19 gradiënten; eerste label buiten benzeen"]:::todo
-  TPORT["(T)-port voor open schil (besluit 41), acceptatietests eerst; daarna naftaleen+"]:::todo
-  MEM["Geheugen: geleende gradiënt past niet op 32 GB bij plandrempels (19 sep, 3× OOM); 128 GB-machine aangevraagd"]:::closed
-  OUT(["Gelicentieerd fabrieksontwerp: basis per familie, g energieën per label, foutbudget per familie, eerste drie labels (benzeen, naftaleen, één kation)"]):::data
+  M1["M1: frozen spaces are smooth (benzene, DZ and TZ; 5–12 Sep)"]:::done
+  I14["I14: one energy per non-totally-symmetric pattern (14 Sep)"]:::done
+  X14["X14/X21/X22: couplings exact from 2k+1 gradients, linear under every symmetry (16–19 Sep)"]:::done
+  AMP["Amplitude test: energy route to couplings closed at naphthalene (17 Sep)"]:::closed
+  M2B["M2b: borrowed gradient engine does not compute our quantity (17 Sep)"]:::closed
+  ST0["Anchor stage 0: reloaded spaces reproduce the reference, 0.0002 µEh (18 Sep)"]:::done
+  ANCH["Anchor M3: naphthalene cc-pVTZ, 13 energies of 12 h; mode 12 read 20 Sep, 22 on 22 Sep, report 24 Sep"]:::running
+  M12["Mode 12 (C–H oop): beyond-MP2 increment DZ→TZ −8 cm⁻¹ against benzene +7.9 — outside the 5 cm⁻¹, sign flipped; MP2 double-ζ out-of-plane pathology (20 Sep)"]:::done
+  D1{"Does DZ carry the TZ correction per family?"}:::dec
+  CHEAP["Decks in cc-pVDZ (factor 14 cheaper per energy)"]:::todo
+  TZ["Decks in cc-pVTZ; cluster needed (Snellius request on the agenda of 28 Sep)"]:::todo
+  M2["M2 build: gradient of the frozen-space energy in JAX; pre-registration 18 Sep (T-M2-1..3, float64, checkpointing); start after 24 Sep on the author's word"]:::todo
+  D2{"T-M2-1 and T-M2-2 passed; g_M2 printed (predicted 2–4)"}:::dec
+  DECK1["First gradient deck benzene → licence against canonical"]:::todo
+  DECK2["Naphthalene deck: 19 gradients; first label beyond benzene"]:::todo
+  TPORT["(T) port for open shell (decision 41), acceptance tests first; then naphthalene+"]:::todo
+  MEM["Memory: borrowed gradient does not fit in 32 GB at plan thresholds (19 Sep, 3× OOM); 128 GB machine requested"]:::closed
+  OUT(["Licensed factory design: basis per family, g energies per label, error budget per family, first three labels (benzene, naphthalene, one cation)"]):::data
 
   M1 --> ST0 --> ANCH --> M12 --> D1
-  D1 -- ja --> CHEAP
-  D1 -- nee --> TZ
+  D1 -- yes --> CHEAP
+  D1 -- no --> TZ
   I14 --> X14 --> M2
   AMP --> M2
   M2B --> M2
   MEM --> M2
   M2 --> D2
-  D2 -- ja --> DECK1 --> DECK2
-  D2 -- nee --> M2
+  D2 -- yes --> DECK1 --> DECK2
+  D2 -- no --> M2
   CHEAP --> DECK2
   TZ --> DECK2
   DECK2 --> TPORT --> OUT
 ```
 
-## 2. Onderzoeksproces — het ΔH-model (`20_onderzoeksproces_deltaH_model.mmd`; in het voorstel pipeline A)
+## 2. Research process — the ΔH model (`20_research_process_deltaH_model.mmd`; pipeline A in the proposal)
 
 ```mermaid
-%% Onderzoeksproces — het ΔH-model (in het voorstel: pipeline A): de toetsen die beslissen of en hoe het ΔH-model van de bladen 5 en 6 er komt; het eindobject is het gelicentieerde modelontwerp met de eerste licentietabel, niet het getrainde model (dat maakt blad 6) en niet de licentietabel van de volle testset (blad 7). Stand 20 september 2026.
-%% Dit blad mag data en besluiten bevatten. Groen = geslaagd of gemeten; blauw = loopt; gestippeld = nog te doen; rood = verloren en gesloten.
+%% Research process — the ΔH model (in the proposal: pipeline A): the tests that decide whether and how the ΔH model of sheets 5 and 6 gets built; the end object is the licensed model design with the first licence table, not the trained model (sheet 6 makes that) and not the licence table of the full test set (sheet 7). Status 20 September 2026.
+%% This sheet may contain data and decisions. Green = passed or measured; blue = running; dashed = still to do; red = lost and closed.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef done fill:#d9f0dc,stroke:#2e7d32,color:#111
@@ -144,65 +144,65 @@ flowchart LR
   classDef dec fill:#eee,stroke:#444,color:#111
   classDef data fill:#e9ecef,stroke:#555,color:#111
 
-  LA["Laag A van het corpus: 45 moleculen, DFT-paren (18–19 sep, Helsinki)"]:::done
-  LC1["Leercurve 1 en 2: C–H-families onder 5 cm-1 bij 5–20 moleculen; ringfamilie op 12,4, vlak; kenmerken helpen niet (19 sep)"]:::done
-  E4["E4: het label per modus is voor de ringfamilie slecht gesteld (9,2 van de 12,4 is definitie); het familieblok draagt over (19 sep)"]:::done
-  RULE["Regel: het doelobject is het familieblok, diagonaal + koppelingen (recipe-amendement 19 sep)"]:::done
-  E1["E1/E1b/E2/E5/E5b: contrastieve embedding, atoom-encoder, molecuultokens, skip-gram op de koppelingsmatrix — alle verloren op 45 moleculen (19 sep)"]:::closed
-  E6["E6 fase 1: laag A2, 200 moleculen op vier machines (sinds 19 sep 23:30; ~woensdag klaar)"]:::running
-  D1{"Helling van de ringfamilie over 45 → 200 steiler dan −0,25?"}:::dec
-  P2["E6 fase 2: de resterende 668 moleculen (~€160)"]:::todo
-  BHH["Vervangercontrole: BHHLYP − B3LYP op benzeen en naftaleen — is de ringcorrectie van de vervanger niet-lokaal?"]:::todo
-  ST1["Stap 1 van het ontwerp: equivariant paar-blokmodel leert de volledige correctiematrix uit het corpus; Test 1: ringfamilie onder 5 cm-1 op dezelfde 12 moleculen"]:::todo
-  E3["E3: voorwendsel met DFT-grootheden (frequentie, familie, teken) uit ruwe atoomvelden, op het hele corpus"]:::todo
-  CC["Eerste CC-labels uit de labelfabriek (benzeen, naftaleen; daarna de decks van M2)"]:::todo
-  FT["Bijtrainen op de CC-projecties; licentie per familie tegen X18 en de mediaanregel"]:::todo
-  D2{"Per familie: fout onder de marge van de scorekolom?"}:::dec
-  LICF["Familie gelicentieerd in het netwerk"]:::todo
-  REF["Familie geweigerd: DFT met melding; volgende label gekozen op onenigheid"]:::todo
-  OUT(["Gelicentieerd modelontwerp: doelobject (familieblok), representatie waarmee de ringfamilie leert, benodigd aantal labels per familie, voortrainingsrecept op het corpus; eerste licentietabel per familie"]):::data
+  LA["Layer A of the corpus: 45 molecules, DFT pairs (18–19 Sep, Helsinki)"]:::done
+  LC1["Learning curves 1 and 2: C–H families below 5 cm-1 at 5–20 molecules; ring family at 12.4, flat; features do not help (19 Sep)"]:::done
+  E4["E4: the per-mode label is ill-posed for the ring family (9.2 of the 12.4 is definition); the family block transfers (19 Sep)"]:::done
+  RULE["Rule: the target object is the family block, diagonal + couplings (recipe amendment 19 Sep)"]:::done
+  E1["E1/E1b/E2/E5/E5b: contrastive embedding, atom encoder, molecule tokens, skip-gram on the coupling matrix — all lost on 45 molecules (19 Sep)"]:::closed
+  E6["E6 phase 1: layer A2, 200 molecules on four machines (since 19 Sep 23:30; done ~Wednesday)"]:::running
+  D1{"Slope of the ring family over 45 → 200 steeper than −0.25?"}:::dec
+  P2["E6 phase 2: the remaining 668 molecules (~€160)"]:::todo
+  BHH["Proxy check: BHHLYP − B3LYP on benzene and naphthalene — is the proxy's ring correction non-local?"]:::todo
+  ST1["Design step 1: equivariant pair-block model learns the full correction matrix from the corpus; Test 1: ring family below 5 cm-1 on the same 12 molecules"]:::todo
+  E3["E3: pretext task with DFT quantities (frequency, family, sign) from raw atomic fields, on the whole corpus"]:::todo
+  CC["First CC labels from the label factory (benzene, naphthalene; then the decks of M2)"]:::todo
+  FT["Fine-tuning on the CC projections; licence per family against X18 and the median rule"]:::todo
+  D2{"Per family: error below the margin of the score column?"}:::dec
+  LICF["Family licensed in the network"]:::todo
+  REF["Family refused: DFT with notice; next label chosen on disagreement"]:::todo
+  OUT(["Licensed model design: target object (family block), representation with which the ring family learns, number of labels needed per family, pre-training recipe on the corpus; first licence table per family"]):::data
 
   LA --> LC1 --> E4 --> RULE
   LC1 --> E1 --> E6
   E4 --> E6
   E6 --> D1
-  D1 -- ja --> P2 --> ST1
-  D1 -- nee --> BHH --> ST1
+  D1 -- yes --> P2 --> ST1
+  D1 -- no --> BHH --> ST1
   RULE --> ST1
   E1 --> E3 --> ST1
   ST1 --> FT
   CC --> FT --> D2
-  D2 -- ja --> LICF --> OUT
-  D2 -- nee --> REF --> CC
+  D2 -- yes --> LICF --> OUT
+  D2 -- no --> REF --> CC
   REF --> OUT
 ```
 
-# Doelarchitectuur (geen data, geen besluiten)
+# Target architecture (no data, no decisions)
 
-## 3. Datacreatie — het corpus (`30_datacreatie_corpus.mmd`)
+## 3. Data creation — the corpus (`30_data_creation_corpus.mmd`)
 
 ```mermaid
-%% Datacreatie — het corpus: twee DFT-Hessianen per molecuul en de vervangercorrectie (niveau 3). Doelarchitectuur.
-%% Rechthoek = processtap (bewerking + software); ronde uiteinden = data-object (het ding). Elke stap levert één data-object. Alles bestaat.
+%% Data creation — the corpus: two DFT Hessians per molecule and the proxy correction (level 3). Target architecture.
+%% Rectangle = process step (operation + software); rounded ends = data object (the thing). Every step yields one data object. Everything exists.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef data fill:#e9ecef,stroke:#555,color:#111
 
-  MOL(["Molecuul: SMILES of geometrie, lading, multipliciteit"]):::data
-  OPT["Geometrieoptimalisatie op laag niveau (psi4)"]
-  GEO(["Geoptimaliseerde geometrie"]):::data
-  DFTL["DFT op laag niveau (psi4)"]
-  SK(["Hessiaan H0 en dipoolafgeleiden"]):::data
-  DFTH["DFT op hoog niveau (psi4)"]
-  H1(["Hessiaan H1"]):::data
-  MODE["Modusanalyse (eigen software)"]
-  MODES(["Normaalmodi: L, frequenties, families, symmetrieblokken"]):::data
-  PROXY["Vervangercorrectie (eigen software)"]
-  DHP(["Vervangercorrectie: ΔH = H1 − H0 per familieblok, in de modusbasis"]):::data
-  TOKS["Tokenisatie (eigen software)"]
-  TOK(["Modus-tokens"]):::data
-  REC["Samenstellen van het record (eigen software)"]
-  CORP(["Corpusrecord: modus-tokens, vervangercorrectie, Hessiaan H0 en dipoolafgeleiden"]):::data
+  MOL(["Molecule: SMILES or geometry, charge, multiplicity"]):::data
+  OPT["Geometry optimisation at low level (psi4)"]
+  GEO(["Optimised geometry"]):::data
+  DFTL["DFT at low level (psi4)"]
+  SK(["Hessian H0 and dipole derivatives"]):::data
+  DFTH["DFT at high level (psi4)"]
+  H1(["Hessian H1"]):::data
+  MODE["Mode analysis (own software)"]
+  MODES(["Normal modes: L, frequencies, families, symmetry blocks"]):::data
+  PROXY["Proxy correction (own software)"]
+  DHP(["Proxy correction: ΔH = H1 − H0 per family block, in the mode basis"]):::data
+  TOKS["Tokenisation (own software)"]
+  TOK(["Mode tokens"]):::data
+  REC["Record assembly (own software)"]
+  CORP(["Corpus record: mode tokens, proxy correction, Hessian H0 and dipole derivatives"]):::data
 
   MOL --> OPT --> GEO
   GEO --> DFTL --> SK --> MODE --> MODES
@@ -215,41 +215,41 @@ flowchart LR
   REC --> CORP
 ```
 
-## 4. Datacreatie — de labelfabriek: hoe één label ontstaat (`40_datacreatie_labels.mmd`)
+## 4. Data creation — the label factory: how one label comes about (`40_data_creation_labels.mmd`)
 
 ```mermaid
-%% Datacreatie — de labelfabriek: hoe één label ontstaat (niveau 3). Doelarchitectuur: geen besluiten, geen data.
-%% Rechthoek = processtap (bewerking + software); ronde uiteinden = data-object (het ding). Elke stap levert één data-object. Gestippeld = nog niet gebouwd.
+%% Data creation — the label factory: how one label comes about (level 3). Target architecture: no decisions, no data.
+%% Rectangle = process step (operation + software); rounded ends = data object (the thing). Every step yields one data object. Dashed = not built yet.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
   classDef data fill:#e9ecef,stroke:#555,color:#111
 
-  MOL(["Molecuul: geometrie, lading, multipliciteit"]):::data
+  MOL(["Molecule: geometry, charge, multiplicity"]):::data
   DFT["DFT (psi4)"]
-  SK(["Hessiaan H0 en dipoolafgeleiden"]):::data
-  MODE["Modusanalyse (eigen software)"]
-  MODES(["Normaalmodi: L, frequenties, families, symmetrieblokken"]):::data
-  DESIGN["Deckontwerp (eigen software)"]
-  DECK(["Deck: verplaatsingspatronen per familieblok, met energie- en gradiëntrichtingen"]):::data
-  LOC["Lokalisatie en fragmentatie op de rustgeometrie (pyscf-forge)"]
-  REF(["Bevroren referentieruimtes: lokale orbitalen en fragmentruimtes"]):::data
-  TRANS["Transport (eigen software)"]
-  SPACES(["Referentieruimtes op elke deckgeometrie"]):::data
-  EN["LNO-CCSD(T)-energieën (pyscf-forge)"]
-  ENS(["Energieën per patroon"]):::data
-  GR["LNO-CCSD(T)-gradiënten (eigen software, JAX)"]:::planned
-  GRS(["Gradiënten per patroon"]):::data
-  OPEN["LNO-CCSD(T) voor open schil (eigen (T)-port in C)"]:::planned
-  OPENS(["Energieën per patroon voor kationen"]):::data
-  SOLVE["Blokoplossing (eigen software)"]
-  DH(["ΔH-blokken per familie: diagonaal en koppelingen"]):::data
-  CHECK["Consistentiecontrole (eigen software)"]
-  NOISE(["Ruisterm per grootheid: verschil tussen twee routes of tussen symmetriepartners"]):::data
-  BUDGET["Foutbudget (eigen software)"]
-  MARG(["Foutmarge per familie: ruis, quartische term, herstelfout"]):::data
-  SEAL["Verzegeling (eigen software)"]
-  LABEL(["Label: ΔH-blokken met foutmarge per familie, verzegeld"]):::data
+  SK(["Hessian H0 and dipole derivatives"]):::data
+  MODE["Mode analysis (own software)"]
+  MODES(["Normal modes: L, frequencies, families, symmetry blocks"]):::data
+  DESIGN["Deck design (own software)"]
+  DECK(["Deck: displacement patterns per family block, with energy and gradient directions"]):::data
+  LOC["Localisation and fragmentation at the equilibrium geometry (pyscf-forge)"]
+  REF(["Frozen reference spaces: local orbitals and fragment spaces"]):::data
+  TRANS["Transport (own software)"]
+  SPACES(["Reference spaces at every deck geometry"]):::data
+  EN["LNO-CCSD(T) energies (pyscf-forge)"]
+  ENS(["Energies per pattern"]):::data
+  GR["LNO-CCSD(T) gradients (own software, JAX)"]:::planned
+  GRS(["Gradients per pattern"]):::data
+  OPEN["LNO-CCSD(T) for open shell (own (T) port in C)"]:::planned
+  OPENS(["Energies per pattern for cations"]):::data
+  SOLVE["Block solve (own software)"]
+  DH(["ΔH blocks per family: diagonal and couplings"]):::data
+  CHECK["Consistency check (own software)"]
+  NOISE(["Noise term per quantity: difference between two routes or between symmetry partners"]):::data
+  BUDGET["Error budget (own software)"]
+  MARG(["Error margin per family: noise, quartic term, recovery error"]):::data
+  SEAL["Sealing (own software)"]
+  LABEL(["Label: ΔH blocks with error margin per family, sealed"]):::data
 
   MOL --> DFT --> SK --> MODE --> MODES --> DESIGN --> DECK
   SK --> LOC --> REF
@@ -271,36 +271,36 @@ flowchart LR
   SEAL --> LABEL
 ```
 
-## 5. Componenten van het ΔH-model (`50_deltaH_model_componenten.mmd`)
+## 5. Components of the ΔH model (`50_deltaH_model_components.mmd`)
 
 ```mermaid
-%% Componenten van het ΔH-model (niveau 4): wat er binnen de stap "Forward pass (ΔH-model, PyTorch)" van blad 8 (de spectrumpipeline) gebeurt. Backbone = embedding en self-attention; koppen = blokkop en paarkop; het ensemble bestaat uit leden met verschillende seeds. Doelarchitectuur; grotendeels nog niet gebouwd.
-%% Rechthoek = processtap (bewerking + software); ronde uiteinden = data-object (het ding). Elke stap levert één data-object. Gestippeld = nog niet gebouwd.
+%% Components of the ΔH model (level 4): what happens inside the step "Forward pass (ΔH model, PyTorch)" of sheet 8 (the spectrum pipeline). Backbone = embedding and self-attention; heads = block head and pair head; the ensemble consists of members with different seeds. Target architecture; largely not built yet.
+%% Rectangle = process step (operation + software); rounded ends = data object (the thing). Every step yields one data object. Dashed = not built yet.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
   classDef data fill:#e9ecef,stroke:#555,color:#111
   classDef part fill:#f7f7fb,stroke:#333,stroke-width:1.5px,color:#111
 
-  TOK(["Modus-tokens van één molecuul, met lading en multipliciteit"]):::data
+  TOK(["Mode tokens of one molecule, with charge and multiplicity"]):::data
   EMB["Embedding (PyTorch)"]
-  EMBV(["Tokenvectoren"]):::data
-  ATT["Self-attention over de modi (PyTorch)"]
-  CTX(["Contextvectoren per modus"]):::data
-  BLK["Blokkop (PyTorch)"]:::planned
-  BLKS(["ΔH-blokken per familie van één ensemblelid"]):::data
-  PAIR["Paarkop (PyTorch)"]
-  PAIRS(["Steunlabels per moduspaar"]):::data
-  ENSA["Ensemblemiddeling over de leden (eigen software)"]:::planned
-  OUT(["ΔH-blokken per familie, met onzekerheid van het ensemble"]):::data
+  EMBV(["Token vectors"]):::data
+  ATT["Self-attention over the modes (PyTorch)"]
+  CTX(["Context vectors per mode"]):::data
+  BLK["Block head (PyTorch)"]:::planned
+  BLKS(["ΔH blocks per family of one ensemble member"]):::data
+  PAIR["Pair head (PyTorch)"]
+  PAIRS(["Support labels per mode pair"]):::data
+  ENSA["Ensemble averaging over the members (own software)"]:::planned
+  OUT(["ΔH blocks per family, with ensemble uncertainty"]):::data
 
-  subgraph BB["Backbone van het ΔH-model"]
+  subgraph BB["Backbone of the ΔH model"]
     EMB
     EMBV
     ATT
     CTX
   end
-  subgraph HD["Koppen van het ΔH-model"]
+  subgraph HD["Heads of the ΔH model"]
     BLK
     PAIR
   end
@@ -311,32 +311,32 @@ flowchart LR
   CTX --> PAIR --> PAIRS --> ENSA
 ```
 
-## 5b. Het ΔH-model in code (`51_deltaH_model_pytorch.py`)
+## 5b. The ΔH model in code (`51_deltaH_model_pytorch.py`)
 
-Blad 5 als PyTorch-definitie, toegevoegd 20 september: invoerlaag (`TokenEmbedding`: modustokens door een tweelaags MLP, lading en multipliciteit als twee molecuul-tokens ervoor, geen positionele codering omdat modi een verzameling zijn), verborgen lagen (`Backbone`: Transformer-encoder, twee lagen, vier heads, breedte 64, dropout 0.1, pre-LayerNorm, met opvulmasker), uitvoerlagen (`BlockHead`: het ΔH-blok per familie in de modusbasis, diagonaal uit de contextvector en koppelingen uit symmetrische paarkenmerken, nul buiten de familie; `PairHead`: steunlogit per moduspaar), plus wat er standaard omheen hoort: `DeltaHConfig`, initialisatie, `block_loss` (blokregel van 19 september, weging per familie uit het foutbudget), `pair_loss` (klassegewogen, les van E5), `DeltaHEnsemble` met gemiddelde en spreiding per element, parametertelling en een rooktest op willekeurige invoer. Geen trainingslus: die hoort bij blad 6 en komt in `modules/05_support_predictor/` zodra er labels zijn. Getallen volgen de desk-notitie van 18 september §1.
+Sheet 5 as a PyTorch definition, added 20 September: input layer (`TokenEmbedding`: mode tokens through a two-layer MLP, charge and multiplicity as two molecule tokens in front, no positional encoding because modes are a set), hidden layers (`Backbone`: Transformer encoder, two layers, four heads, width 64, dropout 0.1, pre-LayerNorm, with padding mask), output layers (`BlockHead`: the ΔH block per family in the mode basis, diagonal from the context vector and couplings from symmetric pair features, zero outside the family; `PairHead`: support logit per mode pair), plus what standardly belongs around it: `DeltaHConfig`, initialisation, `block_loss` (block rule of 19 September, weighting per family from the error budget), `pair_loss` (class-weighted, lesson of E5), `DeltaHEnsemble` with mean and spread per element, parameter count and a smoke test on random input. No training loop: that belongs to sheet 6 and goes into `modules/05_support_predictor/` as soon as there are labels. Numbers follow the desk note of 18 September §1.
 
 ## 6. Training (`60_training.mmd`)
 
 ```mermaid
-%% Training (niveau 3): uit corpusrecords en labels komt het getrainde ΔH-model. Doelarchitectuur; nog niet gebouwd. De beoordeling (test, licentie, kalibratie) staat op blad 7.
-%% Rechthoek = processtap (bewerking + software); ronde uiteinden = data-object (het ding). Elke stap levert één data-object. Gestippeld = nog niet gebouwd.
+%% Training (level 3): from corpus records and labels comes the trained ΔH model. Target architecture; not built yet. The assessment (test, licence, calibration) is on sheet 7.
+%% Rectangle = process step (operation + software); rounded ends = data object (the thing). Every step yields one data object. Dashed = not built yet.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
   classDef data fill:#e9ecef,stroke:#555,color:#111
 
-  CORP(["Corpusrecords: modus-tokens en vervangercorrectie per molecuul"]):::data
-  LAB(["Labels: ΔH-blokken met foutmarge per familie"]):::data
-  SPLIT["Splitsing per molecuul en per kern (eigen software)"]:::planned
-  SETS(["Train-, validatie- en testsets"]):::data
-  PRE["Voortraining op de vervangercorrectie (PyTorch)"]:::planned
-  PRENET(["Voorgetraind ΔH-model"]):::data
-  FT["Bijtraining op de labels (PyTorch)"]:::planned
-  FTNET(["Bijgetraind ΔH-model"]):::data
-  VAL["Validatie tegen de eenvoudige regels (eigen software)"]:::planned
-  VALR(["Validatiefouten per familie"]):::data
-  ENSF["Ensemblevorming over seeds (PyTorch)"]:::planned
-  ENS(["Getraind ΔH-model: ensemble van leden"]):::data
+  CORP(["Corpus records: mode tokens and proxy correction per molecule"]):::data
+  LAB(["Labels: ΔH blocks with error margin per family"]):::data
+  SPLIT["Split per molecule and per core (own software)"]:::planned
+  SETS(["Training, validation and test sets"]):::data
+  PRE["Pre-training on the proxy correction (PyTorch)"]:::planned
+  PRENET(["Pre-trained ΔH model"]):::data
+  FT["Fine-tuning on the labels (PyTorch)"]:::planned
+  FTNET(["Fine-tuned ΔH model"]):::data
+  VAL["Validation against the simple rules (own software)"]:::planned
+  VALR(["Validation errors per family"]):::data
+  ENSF["Ensemble formation over seeds (PyTorch)"]:::planned
+  ENS(["Trained ΔH model: ensemble of members"]):::data
 
   CORP --> SPLIT
   LAB --> SPLIT
@@ -346,27 +346,27 @@ flowchart LR
   FTNET --> VAL --> VALR --> FT
 ```
 
-## 7. Test en licentie (`70_test_en_licentie.mmd`)
+## 7. Test and licence (`70_test_and_licence.mmd`)
 
 ```mermaid
-%% Test en licentie (niveau 3b): uit het getrainde ΔH-model en de testset komen de licentietabel en de kalibratie die de spectrumpipeline naast het getrainde model gebruikt. De gewichten van het model veranderen hier niet. Doelarchitectuur; nog niet gebouwd.
-%% Rechthoek = processtap (bewerking + software); ronde uiteinden = data-object (het ding). Elke stap levert één data-object. Gestippeld = nog niet gebouwd.
+%% Test and licence (level 3b): from the trained ΔH model and the test set come the licence table and the calibration that the spectrum pipeline uses alongside the trained model. The model's weights do not change here. Target architecture; not built yet.
+%% Rectangle = process step (operation + software); rounded ends = data object (the thing). Every step yields one data object. Dashed = not built yet.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
   classDef data fill:#e9ecef,stroke:#555,color:#111
   classDef ext fill:#cfd8e3,stroke:#3d5a80,color:#111
 
-  ENS(["Getraind ΔH-model: ensemble van leden"]):::data
-  TESTSET(["Testset"]):::data
-  LABDB(["Laboratoriumspectra met de marge per referentiekolom"]):::ext
-  PAHDB(["Opponenten: PAHdb en andere voorspellers"]):::ext
-  TEST["Test op de testmoleculen (eigen software)"]:::planned
-  TESTR(["Testfouten per familie en ladingstoestand, naast de opponenten"]):::data
-  LIC["Licentiebepaling (eigen software)"]:::planned
-  LICT(["Licentietabel per familie en ladingstoestand"]):::data
-  CAL["Onzekerheidskalibratie (eigen software)"]:::planned
-  CALR(["Kalibratie van de ensemblespreiding"]):::data
+  ENS(["Trained ΔH model: ensemble of members"]):::data
+  TESTSET(["Test set"]):::data
+  LABDB(["Laboratory spectra with the margin per reference column"]):::ext
+  PAHDB(["Opponents: PAHdb and other predictors"]):::ext
+  TEST["Test on the test molecules (own software)"]:::planned
+  TESTR(["Test errors per family and charge state, alongside the opponents"]):::data
+  LIC["Licence determination (own software)"]:::planned
+  LICT(["Licence table per family and charge state"]):::data
+  CAL["Uncertainty calibration (own software)"]:::planned
+  CALR(["Calibration of the ensemble spread"]):::data
 
   ENS --> TEST
   TESTSET --> TEST
@@ -377,43 +377,43 @@ flowchart LR
   TESTR --> CAL --> CALR
 ```
 
-## 8. Spectrumpipeline (`80_spectrumpipeline.mmd`)
+## 8. Spectrum pipeline (`80_spectrum_pipeline.mmd`)
 
 ```mermaid
-%% Spectrumpipeline (niveau 3): molecuul in, spectrum met foutmarge uit. ΔH komt uit twee bronnen: gemeten (het label van blad 4, voor moleculen met een label) of voorspeld (het ΔH-model, voor alle andere); de staart is dezelfde. Doelarchitectuur.
-%% Rechthoek = processtap (bewerking + software); ronde uiteinden = data-object (het ding). Elke stap levert één data-object. Gestippeld = nog niet gebouwd.
+%% Spectrum pipeline (level 3): molecule in, spectrum with error margin out. ΔH comes from two sources: measured (the label of sheet 4, for molecules with a label) or predicted (the ΔH model, for all others); the tail is the same. Target architecture.
+%% Rectangle = process step (operation + software); rounded ends = data object (the thing). Every step yields one data object. Dashed = not built yet.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
   classDef data fill:#e9ecef,stroke:#555,color:#111
 
-  MOL(["Molecuul: geometrie, lading, multipliciteit"]):::data
-  COND(["Waarnemingscondities: interne energie na UV-absorptie (emissie) of temperatuur (absorptie); resolutie van het instrument"]):::data
+  MOL(["Molecule: geometry, charge, multiplicity"]):::data
+  COND(["Observation conditions: internal energy after UV absorption (emission) or temperature (absorption); resolution of the instrument"]):::data
 
   DFT["DFT (psi4)"]
-  SK(["Hessiaan H0 en dipoolafgeleiden"]):::data
-  VPT["VPT2 (pyVPT2 op psi4)"]
-  ANHC(["Anharmonische constanten, met routeverschil per constante"]):::data
-  MODE["Modusanalyse (eigen software)"]
-  MODES(["Normaalmodi: L, frequenties, families, symmetrieblokken"]):::data
-  TOKS["Tokenisatie (eigen software)"]
-  TOK(["Modus-tokens"]):::data
-  FWD["Forward pass (ΔH-model, PyTorch)"]:::planned
-  DH(["ΔH-blokken per familie, met onzekerheid van het ensemble"]):::data
-  LAB(["Label uit de labelfabriek: ΔH-blokken met foutmarge per familie"]):::data
-  LICF["Licentiefilter (eigen software)"]:::planned
-  DHL(["Toegepaste en geweigerde ΔH-blokken, met reden"]):::data
-  APPLY["Samenstellen van H (eigen software)"]
-  H(["Krachtconstanten H = H0 + ΔH op gelicentieerde blokken, elders H0; licentiestatus per familie"]):::data
-  EIG["Diagonalisatie (eigen software)"]
-  POS(["Bandposities met marge en licentiestatus per familie"]):::data
-  INT["Intensiteitsberekening (eigen software)"]
-  INTS(["Bandintensiteiten, herverdeeld over resonantiepolyaden"]):::data
-  ANH["Anharmonische correctie (eigen software)"]
-  ANHS(["Anharmonische verschuivingen per band"]):::data
-  SHAPE["Profielvorming (eigen software)"]
+  SK(["Hessian H0 and dipole derivatives"]):::data
+  VPT["VPT2 (pyVPT2 on psi4)"]
+  ANHC(["Anharmonic constants, with route difference per constant"]):::data
+  MODE["Mode analysis (own software)"]
+  MODES(["Normal modes: L, frequencies, families, symmetry blocks"]):::data
+  TOKS["Tokenisation (own software)"]
+  TOK(["Mode tokens"]):::data
+  FWD["Forward pass (ΔH model, PyTorch)"]:::planned
+  DH(["ΔH blocks per family, with ensemble uncertainty"]):::data
+  LAB(["Label from the label factory: ΔH blocks with error margin per family"]):::data
+  LICF["Licence filter (own software)"]:::planned
+  DHL(["Applied and refused ΔH blocks, with reason"]):::data
+  APPLY["Assembly of H (own software)"]
+  H(["Force constants H = H0 + ΔH on licensed blocks, H0 elsewhere; licence status per family"]):::data
+  EIG["Diagonalisation (own software)"]
+  POS(["Band positions with margin and licence status per family"]):::data
+  INT["Intensity calculation (own software)"]
+  INTS(["Band intensities, redistributed over resonance polyads"]):::data
+  ANH["Anharmonic correction (own software)"]
+  ANHS(["Anharmonic shifts per band"]):::data
+  SHAPE["Profile formation (own software)"]
 
-  SPEC(["Spectrum: banden met positie, intensiteit, profiel en foutmarge; licentiestatus per familie"]):::data
+  SPEC(["Spectrum: bands with position, intensity, profile and error margin; licence status per family"]):::data
 
   MOL --> DFT --> SK
   SK --> MODE --> MODES

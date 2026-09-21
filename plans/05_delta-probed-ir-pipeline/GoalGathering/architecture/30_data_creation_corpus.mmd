@@ -1,0 +1,31 @@
+%% Data creation — the corpus: two DFT Hessians per molecule and the proxy correction (level 3). Target architecture.
+%% Rectangle = process step (operation + software); rounded ends = data object (the thing). Every step yields one data object. Everything exists.
+flowchart LR
+  linkStyle default stroke:#8a9bb0,stroke-width:2.2px
+  classDef data fill:#e9ecef,stroke:#555,color:#111
+
+  MOL(["Molecule: SMILES or geometry, charge, multiplicity"]):::data
+  OPT["Geometry optimisation at low level (psi4)"]
+  GEO(["Optimised geometry"]):::data
+  DFTL["DFT at low level (psi4)"]
+  SK(["Hessian H0 and dipole derivatives"]):::data
+  DFTH["DFT at high level (psi4)"]
+  H1(["Hessian H1"]):::data
+  MODE["Mode analysis (own software)"]
+  MODES(["Normal modes: L, frequencies, families, symmetry blocks"]):::data
+  PROXY["Proxy correction (own software)"]
+  DHP(["Proxy correction: ΔH = H1 − H0 per family block, in the mode basis"]):::data
+  TOKS["Tokenisation (own software)"]
+  TOK(["Mode tokens"]):::data
+  REC["Record assembly (own software)"]
+  CORP(["Corpus record: mode tokens, proxy correction, Hessian H0 and dipole derivatives"]):::data
+
+  MOL --> OPT --> GEO
+  GEO --> DFTL --> SK --> MODE --> MODES
+  GEO --> DFTH --> H1
+  SK --> PROXY
+  H1 --> PROXY
+  MODES --> PROXY --> DHP --> REC
+  MODES --> TOKS --> TOK --> REC
+  SK --> REC
+  REC --> CORP

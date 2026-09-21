@@ -1,0 +1,48 @@
+%% Spectrum pipeline (level 3): molecule in, spectrum with error margin out. ΔH comes from two sources: measured (the label of sheet 4, for molecules with a label) or predicted (the ΔH model, for all others); the tail is the same. Target architecture.
+%% Rectangle = process step (operation + software); rounded ends = data object (the thing). Every step yields one data object. Dashed = not built yet.
+flowchart LR
+  linkStyle default stroke:#8a9bb0,stroke-width:2.2px
+  classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
+  classDef data fill:#e9ecef,stroke:#555,color:#111
+
+  MOL(["Molecule: geometry, charge, multiplicity"]):::data
+  COND(["Observation conditions: internal energy after UV absorption (emission) or temperature (absorption); resolution of the instrument"]):::data
+
+  DFT["DFT (psi4)"]
+  SK(["Hessian H0 and dipole derivatives"]):::data
+  VPT["VPT2 (pyVPT2 on psi4)"]
+  ANHC(["Anharmonic constants, with route difference per constant"]):::data
+  MODE["Mode analysis (own software)"]
+  MODES(["Normal modes: L, frequencies, families, symmetry blocks"]):::data
+  TOKS["Tokenisation (own software)"]
+  TOK(["Mode tokens"]):::data
+  FWD["Forward pass (ΔH model, PyTorch)"]:::planned
+  DH(["ΔH blocks per family, with ensemble uncertainty"]):::data
+  LAB(["Label from the label factory: ΔH blocks with error margin per family"]):::data
+  LICF["Licence filter (own software)"]:::planned
+  DHL(["Applied and refused ΔH blocks, with reason"]):::data
+  APPLY["Assembly of H (own software)"]
+  H(["Force constants H = H0 + ΔH on licensed blocks, H0 elsewhere; licence status per family"]):::data
+  EIG["Diagonalisation (own software)"]
+  POS(["Band positions with margin and licence status per family"]):::data
+  INT["Intensity calculation (own software)"]
+  INTS(["Band intensities, redistributed over resonance polyads"]):::data
+  ANH["Anharmonic correction (own software)"]
+  ANHS(["Anharmonic shifts per band"]):::data
+  SHAPE["Profile formation (own software)"]
+
+  SPEC(["Spectrum: bands with position, intensity, profile and error margin; licence status per family"]):::data
+
+  MOL --> DFT --> SK
+  SK --> MODE --> MODES
+  SK --> VPT --> ANHC
+  MODES --> TOKS --> TOK --> FWD --> DH --> LICF --> DHL --> APPLY --> H --> EIG --> POS --> SHAPE
+  LAB --> LICF
+  SK --> APPLY
+  SK --> INT
+  MODES --> INT --> INTS --> SHAPE
+  ANHC --> ANH
+  ANHC --> INT
+  MODES --> ANH --> ANHS --> SHAPE
+  COND --> SHAPE
+  SHAPE --> SPEC

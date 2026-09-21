@@ -1,0 +1,43 @@
+%% Research process — the label factory (in the proposal: pipeline B): the tests that decide whether the target architecture of sheet 4 gets built; the end object is the licensed factory design with the first labels as evidence, not the label set (sheet 4 makes that). Status 20 September 2026.
+%% This sheet may contain data and decisions. Green = passed; blue = running; dashed = still to do; red = failed and closed.
+flowchart LR
+  linkStyle default stroke:#8a9bb0,stroke-width:2.2px
+  classDef done fill:#d9f0dc,stroke:#2e7d32,color:#111
+  classDef running fill:#dbe9ff,stroke:#2a5db0,color:#111
+  classDef todo stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
+  classDef closed fill:#f6d5d5,stroke:#a33,color:#111
+  classDef dec fill:#eee,stroke:#444,color:#111
+  classDef data fill:#e9ecef,stroke:#555,color:#111
+
+  M1["M1: frozen spaces are smooth (benzene, DZ and TZ; 5–12 Sep)"]:::done
+  I14["I14: one energy per non-totally-symmetric pattern (14 Sep)"]:::done
+  X14["X14/X21/X22: couplings exact from 2k+1 gradients, linear under every symmetry (16–19 Sep)"]:::done
+  AMP["Amplitude test: energy route to couplings closed at naphthalene (17 Sep)"]:::closed
+  M2B["M2b: borrowed gradient engine does not compute our quantity (17 Sep)"]:::closed
+  ST0["Anchor stage 0: reloaded spaces reproduce the reference, 0.0002 µEh (18 Sep)"]:::done
+  ANCH["Anchor M3: naphthalene cc-pVTZ, 13 energies of 12 h; mode 12 read 20 Sep, 22 on 22 Sep, report 24 Sep"]:::running
+  M12["Mode 12 (C–H oop): beyond-MP2 increment DZ→TZ −8 cm⁻¹ against benzene +7.9 — outside the 5 cm⁻¹, sign flipped; MP2 double-ζ out-of-plane pathology (20 Sep)"]:::done
+  D1{"Does DZ carry the TZ correction per family?"}:::dec
+  CHEAP["Decks in cc-pVDZ (factor 14 cheaper per energy)"]:::todo
+  TZ["Decks in cc-pVTZ; cluster needed (Snellius request on the agenda of 28 Sep)"]:::todo
+  M2["M2 build: gradient of the frozen-space energy in JAX; pre-registration 18 Sep (T-M2-1..3, float64, checkpointing); start after 24 Sep on the author's word"]:::todo
+  D2{"T-M2-1 and T-M2-2 passed; g_M2 printed (predicted 2–4)"}:::dec
+  DECK1["First gradient deck benzene → licence against canonical"]:::todo
+  DECK2["Naphthalene deck: 19 gradients; first label beyond benzene"]:::todo
+  TPORT["(T) port for open shell (decision 41), acceptance tests first; then naphthalene+"]:::todo
+  MEM["Memory: borrowed gradient does not fit in 32 GB at plan thresholds (19 Sep, 3× OOM); 128 GB machine requested"]:::closed
+  OUT(["Licensed factory design: basis per family, g energies per label, error budget per family, first three labels (benzene, naphthalene, one cation)"]):::data
+
+  M1 --> ST0 --> ANCH --> M12 --> D1
+  D1 -- yes --> CHEAP
+  D1 -- no --> TZ
+  I14 --> X14 --> M2
+  AMP --> M2
+  M2B --> M2
+  MEM --> M2
+  M2 --> D2
+  D2 -- yes --> DECK1 --> DECK2
+  D2 -- no --> M2
+  CHEAP --> DECK2
+  TZ --> DECK2
+  DECK2 --> TPORT --> OUT

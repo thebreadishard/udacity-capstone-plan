@@ -1,22 +1,22 @@
-%% Training (niveau 3): uit corpusrecords en labels komt het getrainde ΔH-model. Doelarchitectuur; nog niet gebouwd. De beoordeling (test, licentie, kalibratie) staat op blad 7.
-%% Rechthoek = processtap (bewerking + software); ronde uiteinden = data-object (het ding). Elke stap levert één data-object. Gestippeld = nog niet gebouwd.
+%% Training (level 3): from corpus records and labels comes the trained ΔH model. Target architecture; not built yet. The assessment (test, licence, calibration) is on sheet 7.
+%% Rectangle = process step (operation + software); rounded ends = data object (the thing). Every step yields one data object. Dashed = not built yet.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
   classDef data fill:#e9ecef,stroke:#555,color:#111
 
-  CORP(["Corpusrecords: modus-tokens en vervangercorrectie per molecuul"]):::data
-  LAB(["Labels: ΔH-blokken met foutmarge per familie"]):::data
-  SPLIT["Splitsing per molecuul en per kern (eigen software)"]:::planned
-  SETS(["Train-, validatie- en testsets"]):::data
-  PRE["Voortraining op de vervangercorrectie (PyTorch)"]:::planned
-  PRENET(["Voorgetraind ΔH-model"]):::data
-  FT["Bijtraining op de labels (PyTorch)"]:::planned
-  FTNET(["Bijgetraind ΔH-model"]):::data
-  VAL["Validatie tegen de eenvoudige regels (eigen software)"]:::planned
-  VALR(["Validatiefouten per familie"]):::data
-  ENSF["Ensemblevorming over seeds (PyTorch)"]:::planned
-  ENS(["Getraind ΔH-model: ensemble van leden"]):::data
+  CORP(["Corpus records: mode tokens and proxy correction per molecule"]):::data
+  LAB(["Labels: ΔH blocks with error margin per family"]):::data
+  SPLIT["Split per molecule and per core (own software)"]:::planned
+  SETS(["Training, validation and test sets"]):::data
+  PRE["Pre-training on the proxy correction (PyTorch)"]:::planned
+  PRENET(["Pre-trained ΔH model"]):::data
+  FT["Fine-tuning on the labels (PyTorch)"]:::planned
+  FTNET(["Fine-tuned ΔH model"]):::data
+  VAL["Validation against the simple rules (own software)"]:::planned
+  VALR(["Validation errors per family"]):::data
+  ENSF["Ensemble formation over seeds (PyTorch)"]:::planned
+  ENS(["Trained ΔH model: ensemble of members"]):::data
 
   CORP --> SPLIT
   LAB --> SPLIT

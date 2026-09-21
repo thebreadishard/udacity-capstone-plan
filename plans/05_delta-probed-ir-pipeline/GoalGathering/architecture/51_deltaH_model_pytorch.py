@@ -1,34 +1,34 @@
-"""51 — Het ΔH-model in PyTorch: de definitie van het netwerk (blad 5b: blad 5 in code).
+"""51 — The ΔH model in PyTorch: the definition of the network (sheet 5b: sheet 5 in code).
 
-Dit bestand definieert alleen het netwerk: invoerlaag, verborgen lagen, uitvoerlagen en wat er
-standaard omheen hoort (configuratie, maskering, initialisatie, verliesfuncties, ensemble,
-parametertelling, rooktest). Training (blad 6) en test en licentie (blad 7) staan er niet in; die komen in
-`modules/05_support_predictor/` zodra de labels er zijn.
+This file defines only the network: input layer, hidden layers, output layers and what standardly
+belongs around it (configuration, masking, initialisation, loss functions, ensemble, parameter count,
+smoke test). Training (sheet 6) and test and licence (sheet 7) are not in it; they go into
+`modules/05_support_predictor/` as soon as the labels are there.
 
-Naamgeving (afspraak 20 september 2026): het geheel is **het ΔH-model**; embedding + self-attention
-vormen de **backbone**; **blokkop** en **paarkop** zijn de koppen; exemplaren met verschillende seeds
-zijn de **leden** van het **ensemble**; de eenvoudige regels (familiemediaan) zijn de **baseline**.
+Naming (agreement of 20 September 2026): the whole is **the ΔH model**; embedding + self-attention
+form the **backbone**; **block head** and **pair head** are the heads; instances with different seeds
+are the **members** of the **ensemble**; the simple rules (family median) are the **baseline**.
 
-Getallen komen uit de desk-notitie van 18 september (§1): twee encoderlagen, vier attention-heads,
-breedte 64, dropout 0.1, orde 10⁵ parameters; AdamW, lr 1e-3, batch 32 moleculen. Het doelobject is
-sinds de RECIPE-wijziging van 19 september het **familieblok** (diagonaal én koppelingen), niet de
-losse verschuiving per modus (E4).
+Numbers come from the desk note of 18 September (§1): two encoder layers, four attention heads,
+width 64, dropout 0.1, order 10⁵ parameters; AdamW, lr 1e-3, batch 32 molecules. Since the RECIPE
+change of 19 September the target object is the **family block** (diagonal and couplings), not the
+separate shift per mode (E4).
 
-Invoer per molecuul (één rij in de batch):
-  tokens   (B, M, d_in)  één token per DFT-normaalmodus: [ω/1000, familie one-hot, irrep one-hot,
-                          massagewogen aandeel C/H/N/O, lokalisatie-index, omgevingsklassen]
-  family   (B, M)        familie-index per modus (voor het blokmasker)
-  charge   (B,)          lading van het molecuul (geheel getal)
-  mult     (B,)          spinmultipliciteit (1 = singlet, 2 = doublet, …)
-  mask     (B, M)        True waar een modus echt is (moleculen hebben 30–100 modi; de rest is opvulling)
-Lading en multipliciteit zijn molecuul-tokens die vóór de modustokens worden gezet, zodat kationen
-later zonder architectuurwijziging kunnen instromen (P26 §4).
+Input per molecule (one row in the batch):
+  tokens   (B, M, d_in)  one token per DFT normal mode: [ω/1000, family one-hot, irrep one-hot,
+                          mass-weighted share of C/H/N/O, localisation index, environment classes]
+  family   (B, M)        family index per mode (for the block mask)
+  charge   (B,)          charge of the molecule (integer)
+  mult     (B,)          spin multiplicity (1 = singlet, 2 = doublet, …)
+  mask     (B, M)        True where a mode is real (molecules have 30–100 modes; the rest is padding)
+Charge and multiplicity are molecule tokens placed in front of the mode tokens, so that cations can
+flow in later without an architecture change (P26 §4).
 
-Uitvoer:
-  block        (B, M, M)  symmetrisch; ΔH-blok in de modusbasis, alleen gevuld binnen een familie:
-                          diagonaal K_ii (verschuiving) en koppelingen K_ij (i ≠ j); eenheid cm⁻¹
-  pair_logits  (B, M, M)  logit dat het paar (i, j) tot de steun van ΔH hoort (steunlabel, RECIPE)
-Het ensemble geeft daarbovenop per element het gemiddelde en de spreiding over de leden.
+Output:
+  block        (B, M, M)  symmetric; ΔH block in the mode basis, filled only within a family:
+                          diagonal K_ii (shift) and couplings K_ij (i ≠ j); unit cm⁻¹
+  pair_logits  (B, M, M)  logit that the pair (i, j) belongs to the support of ΔH (support label, RECIPE)
+On top of that the ensemble gives, per element, the mean and the spread over the members.
 """
 from __future__ import annotations
 
@@ -40,26 +40,26 @@ import torch.nn.functional as F
 
 
 # ----------------------------------------------------------------------------------------------
-# Configuratie
+# Configuration
 # ----------------------------------------------------------------------------------------------
 @dataclass
 class DeltaHConfig:
-    # invoer
-    n_families: int = 5          # C–H strek, C–H oop, C–H in-vlak / ring in-vlak, ring-adem, overig
-    n_irreps: int = 8            # one-hot van de irrep binnen de puntgroep (opgevuld tot 8)
-    n_elements: int = 4          # massagewogen aandeel van C, H, N, O in de beweging
-    n_env: int = 0               # omgevingsklassen (H solo/duo/trio/quartet/substituent; C fused/edge/…); 0 = uit
-    max_charge: int = 2          # |lading| ≤ 2 → 5 klassen (−2 … +2)
-    max_mult: int = 4            # multipliciteit 1 … 4
+    # input
+    n_families: int = 5          # C–H stretch, C–H oop, C–H in-plane / ring in-plane, ring breathing, other
+    n_irreps: int = 8            # one-hot of the irrep within the point group (padded to 8)
+    n_elements: int = 4          # mass-weighted share of C, H, N, O in the motion
+    n_env: int = 0               # environment classes (H solo/duo/trio/quartet/substituent; C fused/edge/…); 0 = off
+    max_charge: int = 2          # |charge| ≤ 2 → 5 classes (−2 … +2)
+    max_mult: int = 4            # multiplicity 1 … 4
     # backbone
     d_model: int = 64
     n_heads: int = 4
     n_layers: int = 2
-    d_ff: int = 256              # 4 × d_model, de gebruikelijke verhouding
+    d_ff: int = 256              # 4 × d_model, the usual ratio
     dropout: float = 0.1
-    # koppen
-    d_pair: int = 64             # breedte van het paarnetwerk
-    # opleiding (hier alleen vastgelegd; de lus staat in modules/05_support_predictor/)
+    # heads
+    d_pair: int = 64             # width of the pair network
+    # training (only recorded here; the loop is in modules/05_support_predictor/)
     lr: float = 1e-3
     weight_decay: float = 1e-2
     batch_molecules: int = 32
@@ -67,20 +67,20 @@ class DeltaHConfig:
 
     @property
     def d_in(self) -> int:
-        # ω/1000 (1) + familie + irrep + elementaandelen + lokalisatie (1) + omgevingsklassen
+        # ω/1000 (1) + family + irrep + element shares + localisation (1) + environment classes
         return 1 + self.n_families + self.n_irreps + self.n_elements + 1 + self.n_env
 
 
 # ----------------------------------------------------------------------------------------------
-# Invoerlaag: embedding van de modustokens en de twee molecuul-tokens
+# Input layer: embedding of the mode tokens and the two molecule tokens
 # ----------------------------------------------------------------------------------------------
 class TokenEmbedding(nn.Module):
-    """Modustoken (d_in scalars) → vector in R^d_model; lading en multipliciteit → elk één vector.
+    """Mode token (d_in scalars) → vector in R^d_model; charge and multiplicity → one vector each.
 
-    Geen positionele codering: de modi van een molecuul zijn een verzameling, geen volgorde; de
-    frequentie zit al in het token. De invoer wordt eerst genormaliseerd met vaste schaal (ω/1000,
-    aandelen in [0, 1]) en dan door een tweelaags MLP gehaald; een lineaire laag alleen bleek in E0
-    te weinig (ridge 17.6 cm⁻¹ op de ringfamilie).
+    No positional encoding: the modes of a molecule are a set, not a sequence; the frequency is
+    already in the token. The input is first normalised with a fixed scale (ω/1000, shares in [0, 1])
+    and then passed through a two-layer MLP; a linear layer alone turned out to be too little in E0
+    (ridge 17.6 cm⁻¹ on the ring family).
     """
 
     def __init__(self, cfg: DeltaHConfig):
@@ -88,9 +88,9 @@ class TokenEmbedding(nn.Module):
         self.mode_mlp = nn.Sequential(
             nn.Linear(cfg.d_in, cfg.d_model), nn.GELU(), nn.Linear(cfg.d_model, cfg.d_model)
         )
-        self.charge_emb = nn.Embedding(2 * cfg.max_charge + 1, cfg.d_model)   # index = lading + max_charge
-        self.mult_emb = nn.Embedding(cfg.max_mult + 1, cfg.d_model)           # index = multipliciteit
-        self.type_emb = nn.Embedding(3, cfg.d_model)                          # 0 = modus, 1 = lading, 2 = multipliciteit
+        self.charge_emb = nn.Embedding(2 * cfg.max_charge + 1, cfg.d_model)   # index = charge + max_charge
+        self.mult_emb = nn.Embedding(cfg.max_mult + 1, cfg.d_model)           # index = multiplicity
+        self.type_emb = nn.Embedding(3, cfg.d_model)                          # 0 = mode, 1 = charge, 2 = multiplicity
         self.max_charge = cfg.max_charge
         self.norm = nn.LayerNorm(cfg.d_model)
         self.drop = nn.Dropout(cfg.dropout)
@@ -106,14 +106,14 @@ class TokenEmbedding(nn.Module):
 
 
 # ----------------------------------------------------------------------------------------------
-# Verborgen lagen: self-attention over de modi (de backbone)
+# Hidden layers: self-attention over the modes (the backbone)
 # ----------------------------------------------------------------------------------------------
 class Backbone(nn.Module):
-    """Transformer-encoder: n_layers × (multi-head self-attention → feed-forward), pre-LayerNorm.
+    """Transformer encoder: n_layers × (multi-head self-attention → feed-forward), pre-LayerNorm.
 
-    Elke modus kijkt naar elke andere modus van hetzelfde molecuul (en naar de twee molecuul-tokens);
-    zo kan een ringmodus 'weten' welke andere ringmodi er zijn en hoe ver ze in frequentie liggen —
-    precies de informatie die de koppelingen in het familieblok bepalen.
+    Every mode looks at every other mode of the same molecule (and at the two molecule tokens);
+    so a ring mode can 'know' which other ring modes there are and how far apart they lie in
+    frequency — exactly the information that determines the couplings in the family block.
     """
 
     def __init__(self, cfg: DeltaHConfig):
@@ -126,27 +126,27 @@ class Backbone(nn.Module):
         self.norm = nn.LayerNorm(cfg.d_model)
 
     def forward(self, h, full_mask):
-        h = self.encoder(h, src_key_padding_mask=~full_mask)  # PyTorch maskeert True = negeren
-        return self.norm(h)                                    # (B, 2 + M, d): contextvectoren
+        h = self.encoder(h, src_key_padding_mask=~full_mask)  # PyTorch masks True = ignore
+        return self.norm(h)                                    # (B, 2 + M, d): context vectors
 
 
 # ----------------------------------------------------------------------------------------------
-# Uitvoerlagen: blokkop en paarkop
+# Output layers: block head and pair head
 # ----------------------------------------------------------------------------------------------
 def pair_features(h, omega):
-    """Symmetrische paarkenmerken [h_i + h_j, |h_i − h_j|, h_i ⊙ h_j, |ω_i − ω_j|/1000] → (B, M, M, 3d + 1)."""
+    """Symmetric pair features [h_i + h_j, |h_i − h_j|, h_i ⊙ h_j, |ω_i − ω_j|/1000] → (B, M, M, 3d + 1)."""
     hi, hj = h[:, :, None, :], h[:, None, :, :]
     d_omega = (omega[:, :, None] - omega[:, None, :]).abs()[..., None]
     return torch.cat([hi + hj, (hi - hj).abs(), hi * hj, d_omega], dim=-1)
 
 
 class BlockHead(nn.Module):
-    """ΔH-blok per familie in de modusbasis: K_ii uit de contextvector van modus i, K_ij (i ≠ j) uit
-    de symmetrische paarkenmerken; buiten de familie en buiten het molecuul nul.
+    """ΔH block per family in the mode basis: K_ii from the context vector of mode i, K_ij (i ≠ j) from
+    the symmetric pair features; zero outside the family and outside the molecule.
 
-    De symmetrische paarkenmerken (h_i + h_j, |h_i − h_j|, h_i ⊙ h_j) maken K_ij = K_ji in eval-modus;
-    met dropout aan verschillen de maskers van (i, j) en (j, i), daarom wordt het blok expliciet gesymmetriseerd. Het blok is het doelobject van de RECIPE-wijziging van 19 september: de loss
-    vergelijkt het hele blok met het label, niet alleen de diagonaal (E4).
+    The symmetric pair features (h_i + h_j, |h_i − h_j|, h_i ⊙ h_j) make K_ij = K_ji in eval mode;
+    with dropout on, the masks of (i, j) and (j, i) differ, so the block is symmetrised explicitly. The block is the target object of the RECIPE change of 19 September: the loss
+    compares the whole block with the label, not only the diagonal (E4).
     """
 
     def __init__(self, cfg: DeltaHConfig):
@@ -158,17 +158,17 @@ class BlockHead(nn.Module):
     def forward(self, h, omega, family, mask):
         diag = self.diag(h).squeeze(-1)                                       # (B, M)
         off = self.offdiag(pair_features(h, omega)).squeeze(-1)               # (B, M, M)
-        off = 0.5 * (off + off.transpose(1, 2))                               # exact symmetrisch, ook met dropout aan
+        off = 0.5 * (off + off.transpose(1, 2))                               # exactly symmetric, also with dropout on
         same_family = family[:, :, None] == family[:, None, :]
         valid = mask[:, :, None] & mask[:, None, :]
         eye = torch.eye(h.shape[1], dtype=torch.bool, device=h.device)[None]
         block = torch.where(eye, torch.diag_embed(diag), off)
-        return block * (same_family & valid)                                  # (B, M, M), symmetrisch
+        return block * (same_family & valid)                                  # (B, M, M), symmetric
 
 
 class PairHead(nn.Module):
-    """Steunlabel per moduspaar: logit dat (i, j) een koppeling draagt die de VPT2-band verplaatst.
-    Verklaarde baseline (RECIPE): de resonantie-noemerregel van P25, 1/|ω_i² − ω_j²| binnen een irrep."""
+    """Support label per mode pair: logit that (i, j) carries a coupling that moves the VPT2 band.
+    Declared baseline (RECIPE): the resonance-denominator rule of P25, 1/|ω_i² − ω_j²| within an irrep."""
 
     def __init__(self, cfg: DeltaHConfig):
         super().__init__()
@@ -182,7 +182,7 @@ class PairHead(nn.Module):
 
 
 # ----------------------------------------------------------------------------------------------
-# Het ΔH-model: invoerlaag → backbone → twee koppen
+# The ΔH model: input layer → backbone → two heads
 # ----------------------------------------------------------------------------------------------
 class DeltaHModel(nn.Module):
     def __init__(self, cfg: DeltaHConfig | None = None):
@@ -196,7 +196,7 @@ class DeltaHModel(nn.Module):
 
     @staticmethod
     def _init(m):
-        # standaard: Xavier voor lineaire lagen, nul-bias; embeddings klein normaal
+        # standard: Xavier for linear layers, zero bias; embeddings small normal
         if isinstance(m, nn.Linear):
             nn.init.xavier_uniform_(m.weight)
             if m.bias is not None:
@@ -205,14 +205,14 @@ class DeltaHModel(nn.Module):
             nn.init.normal_(m.weight, std=0.02)
 
     def forward(self, tokens, family, charge, mult, mask):
-        omega = tokens[..., 0]                                               # ω/1000 staat vooraan in het token
-        h, full_mask = self.embed(tokens, charge, mult, mask)                # invoerlaag
-        ctx = self.backbone(h, full_mask)                                    # verborgen lagen
-        ctx_modes = ctx[:, 2:]                                               # de molecuul-tokens hebben hun werk gedaan
+        omega = tokens[..., 0]                                               # ω/1000 is first in the token
+        h, full_mask = self.embed(tokens, charge, mult, mask)                # input layer
+        ctx = self.backbone(h, full_mask)                                    # hidden layers
+        ctx_modes = ctx[:, 2:]                                               # the molecule tokens have done their work
         return {
-            "block": self.block_head(ctx_modes, omega, family, mask),        # uitvoerlaag 1
-            "pair_logits": self.pair_head(ctx_modes, omega, mask),           # uitvoerlaag 2
-            "context": ctx_modes,                                            # voor diagnose en E-serie-achtige toetsen
+            "block": self.block_head(ctx_modes, omega, family, mask),        # output layer 1
+            "pair_logits": self.pair_head(ctx_modes, omega, mask),           # output layer 2
+            "context": ctx_modes,                                            # for diagnosis and E-series-like tests
         }
 
     def n_parameters(self) -> int:
@@ -220,12 +220,12 @@ class DeltaHModel(nn.Module):
 
 
 # ----------------------------------------------------------------------------------------------
-# Verliesfuncties (de vorm ligt vast; de wegingen per familie komen uit het foutbudget van blad 4)
+# Loss functions (the form is fixed; the weights per family come from the error budget of sheet 4)
 # ----------------------------------------------------------------------------------------------
 def block_loss(pred_block, target_block, family, mask, family_weight=None):
-    """Gemiddelde kwadratische fout over de gevulde blokelementen (binnen familie, binnen molecuul),
-    optioneel gewogen per familie met 1/marge² uit het foutbudget. Diagonaal en koppelingen tellen
-    beide mee: dat is de blokregel van 19 september."""
+    """Mean squared error over the filled block elements (within family, within molecule),
+    optionally weighted per family with 1/margin² from the error budget. Diagonal and couplings
+    both count: that is the block rule of 19 September."""
     same = (family[:, :, None] == family[:, None, :]) & mask[:, :, None] & mask[:, None, :]
     w = same.float()
     if family_weight is not None:                                            # (n_families,) → per element
@@ -234,19 +234,19 @@ def block_loss(pred_block, target_block, family, mask, family_weight=None):
 
 
 def pair_loss(pair_logits, support, mask, pos_weight):
-    """Binaire kruisentropie op de paren, klassegewogen naar de prevalentie in de trainingsset
-    (les van E5: ongewogen leert het netwerk alleen de bias, omdat 98 % van de paren nul is)."""
+    """Binary cross-entropy on the pairs, class-weighted to the prevalence in the training set
+    (lesson of E5: unweighted, the network learns only the bias, because 98 % of the pairs are zero)."""
     valid = mask[:, :, None] & mask[:, None, :]
     loss = F.binary_cross_entropy_with_logits(pair_logits, support.float(), pos_weight=pos_weight, reduction="none")
     return (loss * valid).sum() / valid.sum().clamp_min(1.0)
 
 
 # ----------------------------------------------------------------------------------------------
-# Ensemble: leden met verschillende seeds; gemiddelde en spreiding per element
+# Ensemble: members with different seeds; mean and spread per element
 # ----------------------------------------------------------------------------------------------
 class DeltaHEnsemble(nn.Module):
-    """Bundel van getrainde leden. Geeft per blokelement het gemiddelde (de voorspelling) en de
-    standaardafwijking over de leden (de ruwe onzekerheid; de kalibratie van blad 7 schaalt die)."""
+    """Bundle of trained members. Gives per block element the mean (the prediction) and the
+    standard deviation over the members (the raw uncertainty; the calibration of sheet 7 scales it)."""
 
     def __init__(self, members: list[DeltaHModel]):
         super().__init__()
@@ -273,28 +273,28 @@ def make_ensemble(cfg: DeltaHConfig | None = None) -> DeltaHEnsemble:
 
 
 # ----------------------------------------------------------------------------------------------
-# Rooktest: vormen en parametertelling op willekeurige invoer (geen data, geen training)
+# Smoke test: shapes and parameter count on random input (no data, no training)
 # ----------------------------------------------------------------------------------------------
 if __name__ == "__main__":
     torch.set_num_threads(1)
     cfg = DeltaHConfig()
     model = DeltaHModel(cfg)
-    B, M = 2, 48                                                             # twee moleculen, opgevuld tot 48 modi (naftaleen)
+    B, M = 2, 48                                                             # two molecules, padded to 48 modes (naphthalene)
     tokens = torch.rand(B, M, cfg.d_in); tokens[..., 0] = torch.rand(B, M) * 3.2  # ω/1000 in [0, 3.2]
     family = torch.randint(0, cfg.n_families, (B, M))
-    charge = torch.tensor([0, 1]); mult = torch.tensor([1, 2])                # neutraal singlet, kation doublet
-    mask = torch.ones(B, M, dtype=torch.bool); mask[0, 30:] = False           # molecuul 0 heeft 30 modi (benzeen)
+    charge = torch.tensor([0, 1]); mult = torch.tensor([1, 2])                # neutral singlet, cation doublet
+    mask = torch.ones(B, M, dtype=torch.bool); mask[0, 30:] = False           # molecule 0 has 30 modes (benzene)
     out = model(tokens, family, charge, mult, mask)
     blk = out["block"]
-    assert blk.shape == (B, M, M) and torch.allclose(blk, blk.transpose(1, 2), atol=1e-6), "blok niet symmetrisch"
-    assert blk[0, 30:].abs().sum() == 0 and blk[0, :, 30:].abs().sum() == 0, "opvulling lekt in het blok"
+    assert blk.shape == (B, M, M) and torch.allclose(blk, blk.transpose(1, 2), atol=1e-6), "block not symmetric"
+    assert blk[0, 30:].abs().sum() == 0 and blk[0, :, 30:].abs().sum() == 0, "padding leaks into the block"
     same = family[:, :, None] == family[:, None, :]
-    assert (blk * ~same).abs().sum() == 0, "koppeling buiten de familie"
+    assert (blk * ~same).abs().sum() == 0, "coupling outside the family"
     target = torch.zeros_like(blk); support = torch.zeros(B, M, M, dtype=torch.bool)
     l1 = block_loss(blk, target, family, mask); l2 = pair_loss(out["pair_logits"], support, mask, pos_weight=torch.tensor(50.0))
     (l1 + l2).backward()
     ens = make_ensemble(cfg); eo = ens(tokens, family, charge, mult, mask)
-    print(f"ΔH-model: {model.n_parameters():,} parameters (d_in {cfg.d_in}, d_model {cfg.d_model}, "
-          f"{cfg.n_layers} lagen, {cfg.n_heads} heads); block {tuple(blk.shape)}, pair {tuple(out['pair_logits'].shape)}; "
-          f"ensemble van {len(ens.members)}: block_mean {tuple(eo['block_mean'].shape)}, block_std mean {eo['block_std'].mean():.3f}; "
-          f"loss blok {l1.item():.3f}, paar {l2.item():.3f}; backward ok")
+    print(f"ΔH model: {model.n_parameters():,} parameters (d_in {cfg.d_in}, d_model {cfg.d_model}, "
+          f"{cfg.n_layers} layers, {cfg.n_heads} heads); block {tuple(blk.shape)}, pair {tuple(out['pair_logits'].shape)}; "
+          f"ensemble of {len(ens.members)}: block_mean {tuple(eo['block_mean'].shape)}, block_std mean {eo['block_std'].mean():.3f}; "
+          f"loss block {l1.item():.3f}, pair {l2.item():.3f}; backward ok")

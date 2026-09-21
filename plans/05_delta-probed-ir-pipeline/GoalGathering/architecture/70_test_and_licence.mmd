@@ -1,0 +1,26 @@
+%% Test and licence (level 3b): from the trained ΔH model and the test set come the licence table and the calibration that the spectrum pipeline uses alongside the trained model. The model's weights do not change here. Target architecture; not built yet.
+%% Rectangle = process step (operation + software); rounded ends = data object (the thing). Every step yields one data object. Dashed = not built yet.
+flowchart LR
+  linkStyle default stroke:#8a9bb0,stroke-width:2.2px
+  classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
+  classDef data fill:#e9ecef,stroke:#555,color:#111
+  classDef ext fill:#cfd8e3,stroke:#3d5a80,color:#111
+
+  ENS(["Trained ΔH model: ensemble of members"]):::data
+  TESTSET(["Test set"]):::data
+  LABDB(["Laboratory spectra with the margin per reference column"]):::ext
+  PAHDB(["Opponents: PAHdb and other predictors"]):::ext
+  TEST["Test on the test molecules (own software)"]:::planned
+  TESTR(["Test errors per family and charge state, alongside the opponents"]):::data
+  LIC["Licence determination (own software)"]:::planned
+  LICT(["Licence table per family and charge state"]):::data
+  CAL["Uncertainty calibration (own software)"]:::planned
+  CALR(["Calibration of the ensemble spread"]):::data
+
+  ENS --> TEST
+  TESTSET --> TEST
+  LABDB --> TEST
+  PAHDB --> TEST
+  TEST --> TESTR
+  TESTR --> LIC --> LICT
+  TESTR --> CAL --> CALR

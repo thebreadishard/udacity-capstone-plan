@@ -1,0 +1,42 @@
+%% Research process — the ΔH model (in the proposal: pipeline A): the tests that decide whether and how the ΔH model of sheets 5 and 6 gets built; the end object is the licensed model design with the first licence table, not the trained model (sheet 6 makes that) and not the licence table of the full test set (sheet 7). Status 20 September 2026.
+%% This sheet may contain data and decisions. Green = passed or measured; blue = running; dashed = still to do; red = lost and closed.
+flowchart LR
+  linkStyle default stroke:#8a9bb0,stroke-width:2.2px
+  classDef done fill:#d9f0dc,stroke:#2e7d32,color:#111
+  classDef running fill:#dbe9ff,stroke:#2a5db0,color:#111
+  classDef todo stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
+  classDef closed fill:#f6d5d5,stroke:#a33,color:#111
+  classDef dec fill:#eee,stroke:#444,color:#111
+  classDef data fill:#e9ecef,stroke:#555,color:#111
+
+  LA["Layer A of the corpus: 45 molecules, DFT pairs (18–19 Sep, Helsinki)"]:::done
+  LC1["Learning curves 1 and 2: C–H families below 5 cm-1 at 5–20 molecules; ring family at 12.4, flat; features do not help (19 Sep)"]:::done
+  E4["E4: the per-mode label is ill-posed for the ring family (9.2 of the 12.4 is definition); the family block transfers (19 Sep)"]:::done
+  RULE["Rule: the target object is the family block, diagonal + couplings (recipe amendment 19 Sep)"]:::done
+  E1["E1/E1b/E2/E5/E5b: contrastive embedding, atom encoder, molecule tokens, skip-gram on the coupling matrix — all lost on 45 molecules (19 Sep)"]:::closed
+  E6["E6 phase 1: layer A2, 200 molecules on four machines (since 19 Sep 23:30; done ~Wednesday)"]:::running
+  D1{"Slope of the ring family over 45 → 200 steeper than −0.25?"}:::dec
+  P2["E6 phase 2: the remaining 668 molecules (~€160)"]:::todo
+  BHH["Proxy check: BHHLYP − B3LYP on benzene and naphthalene — is the proxy's ring correction non-local?"]:::todo
+  ST1["Design step 1: equivariant pair-block model learns the full correction matrix from the corpus; Test 1: ring family below 5 cm-1 on the same 12 molecules"]:::todo
+  E3["E3: pretext task with DFT quantities (frequency, family, sign) from raw atomic fields, on the whole corpus"]:::todo
+  CC["First CC labels from the label factory (benzene, naphthalene; then the decks of M2)"]:::todo
+  FT["Fine-tuning on the CC projections; licence per family against X18 and the median rule"]:::todo
+  D2{"Per family: error below the margin of the score column?"}:::dec
+  LICF["Family licensed in the network"]:::todo
+  REF["Family refused: DFT with notice; next label chosen on disagreement"]:::todo
+  OUT(["Licensed model design: target object (family block), representation with which the ring family learns, number of labels needed per family, pre-training recipe on the corpus; first licence table per family"]):::data
+
+  LA --> LC1 --> E4 --> RULE
+  LC1 --> E1 --> E6
+  E4 --> E6
+  E6 --> D1
+  D1 -- yes --> P2 --> ST1
+  D1 -- no --> BHH --> ST1
+  RULE --> ST1
+  E1 --> E3 --> ST1
+  ST1 --> FT
+  CC --> FT --> D2
+  D2 -- yes --> LICF --> OUT
+  D2 -- no --> REF --> CC
+  REF --> OUT

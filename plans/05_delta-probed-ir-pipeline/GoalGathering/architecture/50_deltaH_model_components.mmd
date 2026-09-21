@@ -1,0 +1,35 @@
+%% Components of the ΔH model (level 4): what happens inside the step "Forward pass (ΔH model, PyTorch)" of sheet 8 (the spectrum pipeline). Backbone = embedding and self-attention; heads = block head and pair head; the ensemble consists of members with different seeds. Target architecture; largely not built yet.
+%% Rectangle = process step (operation + software); rounded ends = data object (the thing). Every step yields one data object. Dashed = not built yet.
+flowchart LR
+  linkStyle default stroke:#8a9bb0,stroke-width:2.2px
+  classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
+  classDef data fill:#e9ecef,stroke:#555,color:#111
+  classDef part fill:#f7f7fb,stroke:#333,stroke-width:1.5px,color:#111
+
+  TOK(["Mode tokens of one molecule, with charge and multiplicity"]):::data
+  EMB["Embedding (PyTorch)"]
+  EMBV(["Token vectors"]):::data
+  ATT["Self-attention over the modes (PyTorch)"]
+  CTX(["Context vectors per mode"]):::data
+  BLK["Block head (PyTorch)"]:::planned
+  BLKS(["ΔH blocks per family of one ensemble member"]):::data
+  PAIR["Pair head (PyTorch)"]
+  PAIRS(["Support labels per mode pair"]):::data
+  ENSA["Ensemble averaging over the members (own software)"]:::planned
+  OUT(["ΔH blocks per family, with ensemble uncertainty"]):::data
+
+  subgraph BB["Backbone of the ΔH model"]
+    EMB
+    EMBV
+    ATT
+    CTX
+  end
+  subgraph HD["Heads of the ΔH model"]
+    BLK
+    PAIR
+  end
+  class BB,HD part
+
+  TOK --> EMB --> EMBV --> ATT --> CTX
+  CTX --> BLK --> BLKS --> ENSA --> OUT
+  CTX --> PAIR --> PAIRS --> ENSA

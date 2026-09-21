@@ -1,0 +1,48 @@
+%% Overview of plan 05 (level 1): the kinds of process and the data objects that connect them. Target architecture; no decisions, no data.
+%% Rectangle = process (here: a whole sheet); rounded ends = data object; arrow = data flow. Dashed = not built yet.
+flowchart LR
+  linkStyle default stroke:#8a9bb0,stroke-width:2.2px
+  classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
+  classDef ext fill:#cfd8e3,stroke:#3d5a80,color:#111
+  classDef data fill:#e9ecef,stroke:#555,color:#111
+  classDef proc fill:#f7f7fb,stroke:#333,stroke-width:1.5px,color:#111
+  classDef research fill:#fdf2e3,stroke:#8a5a00,color:#111
+
+  MOL(["Molecule: geometry, charge, multiplicity"]):::data
+  COND(["Observation conditions: internal energy after UV absorption (emission) or temperature (absorption); resolution of the instrument"]):::data
+  LABDB(["Laboratory spectra"]):::ext
+  PAHDB(["Opponents: PAHdb and other predictors"]):::ext
+
+  LABF["Label factory (sheet 4)"]:::proc
+  LABELS(["Labels: ΔH blocks with error margin per family"]):::data
+  CORPF["Corpus step (sheet 3)"]:::proc
+  CORPUS(["Corpus records: mode tokens and proxy correction per molecule"]):::data
+  TRAIN["Training (sheet 6)"]:::planned
+  TRAINED(["Trained ΔH model: ensemble of members"]):::data
+  TESTSET(["Test set"]):::data
+  EVAL["Test and licence (sheet 7)"]:::planned
+  LICCAL(["Licence table and calibration"]):::data
+  PIPE["Spectrum pipeline (sheet 8)"]:::planned
+  SPEC(["Spectrum: bands with position, intensity, profile and error margin; licence status per family"]):::data
+  RES["Research process (sheets 1 and 2)"]:::research
+
+  MOL --> LABF --> LABELS
+  MOL --> CORPF --> CORPUS
+  LABELS --> TRAIN
+  CORPUS --> TRAIN
+  TRAIN --> TRAINED
+  TRAINED --> EVAL
+  TRAIN --> TESTSET --> EVAL
+  LABDB --> EVAL
+  PAHDB --> EVAL
+  EVAL --> LICCAL
+  MOL --> PIPE
+  LABELS --> PIPE
+  COND --> PIPE
+  TRAINED --> PIPE
+  LICCAL --> PIPE
+  PIPE --> SPEC
+  RES -. decides on .-> LABF
+  RES -. decides on .-> TRAIN
+  RES -. decides on .-> EVAL
+  RES -. decides on .-> PIPE
