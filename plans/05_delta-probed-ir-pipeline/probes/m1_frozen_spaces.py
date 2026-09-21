@@ -255,6 +255,8 @@ def main():
     ap.add_argument("--basis", default="cc-pvdz")
     ap.add_argument("--thresh", default="normal", choices=list(THRESH))
     ap.add_argument("--npts", type=int, default=9)
+    ap.add_argument("--qlist", default=None, help="explicit positive q values, e.g. 0.5,1 (I14: one side suffices for modes that are not totally symmetric; the even part is then E(q) - E(0)); q = 0 is always included; default: the symmetric --npts grid (21 Sep 2026, benzene R0 diagonal deck)")
+    ap.add_argument("--full-modes", default="", help="comma-separated modes that get the mirrored list -q as well (the totally symmetric ones); only with --qlist")
     ap.add_argument("--modes", default="auto", help="comma-separated DFT mode indices: totally symmetric, degenerate, non-symmetric")
     ap.add_argument("--threads", type=int, default=8)
     ap.add_argument("--max-memory", type=int, default=24000, dest="max_memory",
@@ -295,6 +297,12 @@ def main():
     out = os.path.join(OUT, f"{args.molecule}_{args.basis}_{args.thresh}{args.tag}")
     os.makedirs(out, exist_ok=True)
     qs = np.linspace(-1.0, 1.0, args.npts)
+    if args.qlist:   # 21 Sep 2026: positive-only grid with q = 0; totally symmetric modes (--full-modes) get the mirrored points too
+        qpos = sorted(float(t) for t in args.qlist.split(","))
+        full_modes = {int(t) for t in args.full_modes.split(",") if t}
+        qs_by_mode = {m: np.array(([-q for q in reversed(qpos)] if m in full_modes else []) + [0.0] + qpos) for m in modes}
+    else:
+        qs_by_mode = {m: qs for m in modes}
     log(f"M1: {args.molecule} {args.basis}, thresholds {THRESH[args.thresh]}, frozen core {FROZEN_CORE}, modes {modes} "
         f"({', '.join(f'{freq[m]:.0f} cm⁻¹ {fam[m]}' for m in modes)}), {args.npts} points, {args.threads} threads, max_memory {args.max_memory} MB")
 
@@ -430,7 +438,7 @@ def main():
     q0_row = next((r for r in prior_rows if abs(r["q"]) < 1e-9), None)
     q0_pt = next((pnt for pnt in prior_points if abs(pnt["q"]) < 1e-9), None)
     for m in modes:
-        for q in qs:
+        for q in qs_by_mode[m]:
             if (int(m), round(float(q), 6)) in done:
                 continue
             if abs(float(q)) < 1e-9 and q0_row is not None and q0_pt is not None:

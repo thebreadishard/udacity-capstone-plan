@@ -20,8 +20,8 @@ done
 # 20 Sep 2026: the watchers run detached inside WSL (anchor_watch_wsl.sh, e6_watch_wsl.sh); the old Windows night watch is retired
 NW=$(wsl.exe -e bash -c "pgrep -fc 'watch_wsl.sh'" 2>/dev/null | tr -d '
 ')
-echo "  WSL watchers running: ${NW:-0} (expect 3 while the benzene VPT2 runs on hel1-14: anchor, E6, vpt2; relaunch recipe in memory 'Watchdogs in WSL')"
-for w in anchor_watch e6_watch vpt2_watch; do W=$(ls -t /c/Users/thebr/AppData/Local/Temp/claude/*/*/scratchpad/$w.log 2>/dev/null | head -1); [ -n "$W" ] && { printf "  %s last: " "$w"; tail -1 "$W" | cut -c1-120; }; done
+echo "  WSL watchers running: ${NW:-0} (anchor, E6, and one per Helsinki job (vpt2, r0); relaunch recipe in memory 'Watchdogs in WSL')"
+for w in anchor_watch e6_watch vpt2_watch r0_watch; do W=$(ls -t /c/Users/thebr/AppData/Local/Temp/claude/*/*/scratchpad/$w.log 2>/dev/null | head -1); [ -n "$W" ] && { printf "  %s last: " "$w"; tail -1 "$W" | cut -c1-120; }; done
 echo "--- memory and disk ---"
 printf "  host free %s GB   C: free %s GB\n" \
   "$(powershell.exe -NoProfile -Command "[math]::Round((Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory/1MB,1)" 2>/dev/null | tr -d '\r')" \
@@ -34,4 +34,4 @@ echo "=== grep the ledger only if something above needs explaining ==="
 
 # 20 Sep 2026: the watchers run detached inside WSL and write alarms to files (the app no longer keeps Monitors alive)
 echo "--- alarm files of the detached WSL watchers (empty = healthy) ---"
-for f in /c/Users/thebr/AppData/Local/Temp/claude/*/*/scratchpad/anchor_alarms.log /c/Users/thebr/AppData/Local/Temp/claude/*/*/scratchpad/e6_alarms.log /c/Users/thebr/AppData/Local/Temp/claude/*/*/scratchpad/vpt2_alarms.log; do [ -f "$f" ] && { printf "  %s: " "$(basename "$f")"; if [ -s "$f" ]; then tail -2 "$f" | cut -c1-140; else echo "(empty)"; fi; }; done
+for f in /c/Users/thebr/AppData/Local/Temp/claude/*/*/scratchpad/anchor_alarms.log /c/Users/thebr/AppData/Local/Temp/claude/*/*/scratchpad/e6_alarms.log /c/Users/thebr/AppData/Local/Temp/claude/*/*/scratchpad/vpt2_alarms.log /c/Users/thebr/AppData/Local/Temp/claude/*/*/scratchpad/r0_alarms.log; do [ -f "$f" ] && { printf "  %s: " "$(basename "$f")"; if [ -s "$f" ]; then tail -2 "$f" | cut -c1-140; else echo "(empty)"; fi; }; done
