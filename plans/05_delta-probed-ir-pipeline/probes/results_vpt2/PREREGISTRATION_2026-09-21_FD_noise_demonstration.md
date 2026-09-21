@@ -100,3 +100,11 @@ removed by analytic input. Which step the analytic route should use is a converg
 
 **Closing verdict 16:3x: claim demonstrated for our case (T1 and T2 as predicted on every noise statistic; fundamentals physical in both).** The pipeline
 recommendation stands: analytic Hessians (pyscf) for the anharmonic step wherever psi4 has none; step size to be set by T3.
+
+**Addendum 18:2x — the degenerate-subspace residual was the diagnostic's, and is gone.** `qff_from_hessians.py` now rotates its analysis basis inside each
+exactly degenerate subspace onto the displacement directions it finds (nearest orthogonal matrix), then assigns. On the T2 set the assignment residual
+drops from 3.5 × 10⁻² to 5.7 × 10⁻³ and the route disagreement to **median 0.1, 90th percentile 0.2, maximum 0.9 cm⁻¹** (was 46.8); the cubic outlier
+falls from 625 to 24 cm⁻¹. T2 therefore meets every pre-registered bound, including the maximum. The fundamentals move slightly with the cleaner
+constants: ring breathing −17.3 (was −16.0), the three bands 850.6 / 1004.4 / 1324.1 against 849 / 992 / 1310 (`qff_benzene_pyscf_analytic_2026-09-21.md`,
+regenerated). The psi4 sets are unchanged by the fix, because their displacements were made in the basis the analysis already finds (assignment residual
+2 × 10⁻¹³ at step 0.05, 8 × 10⁻¹³ at 0.20): 22.4 / 107.0 / 1264.5 and 2.3 / 11.0 / 110.1 as before, so the numbers in the pyVPT2 issue and PR stand.

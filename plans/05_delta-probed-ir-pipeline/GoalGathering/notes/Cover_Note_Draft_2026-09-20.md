@@ -51,7 +51,7 @@ Eén ding uit de afgelopen dagen laat zien hoe het plan werkt als iets misgaat. 
 onafhankelijke routes berekend; het verschil bleek tot 1.265 cm⁻¹ terwijl het pakket "geen inconsistenties" meldde. De oorzaak — een
 eindige differentie bovenop een eindige differentie — heb ik vooraf als voorspelling opgeschreven en daarna met twee tests bevestigd:
 met analytische Hessianen op dezelfde geometrieën zakt het verschil naar 0,1 cm⁻¹ en landen de drie testbanden van benzeen op
-852, 1006 en 1327 cm⁻¹ tegen 849, 992 en 1310 gemeten. De controle is sindsdien een vaste stap in de labelfabriek, en de drie
+851, 1004 en 1324 cm⁻¹ tegen 849, 992 en 1310 gemeten. De controle is sindsdien een vaste stap in de labelfabriek, en de drie
 verbeteringen aan de gebruikte pakketten zijn als pull requests ingediend. De notitie met voorspelling en uitkomst zit als bijlage bij
 dit bericht.
 

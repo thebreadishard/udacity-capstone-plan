@@ -108,3 +108,6 @@ pyscf's analytic ones at the same 61 geometries and the same step. Route disagre
 the a1g breathing mode shifts −16.0 cm⁻¹ (was −217). The three bands: e1g 865.2 → 852.0 (experiment 849), a1g 1021.7 → 1005.7 (992), b2u Kekulé
 1358.5 → 1327.2 (1310). The Kekulé estimate of §6 (1315–1325) was slightly low; the measured VPT2 shift is −31. §6's degeneracy question is closed by
 data; §7's diagnosis stands. Remaining residual in the diagnostic sits in exactly degenerate subspaces (see the pre-registration note).
+
+*Addendum 18:2x:* with the diagnostic's degenerate-subspace alignment (pre-registration note, addendum of the same time) the analytic-Hessian bands read
+850.6 / 1004.4 / 1324.1 (breathing shift −17.3) and the route maximum is 0.9 cm⁻¹; the numbers above are the pre-alignment values.

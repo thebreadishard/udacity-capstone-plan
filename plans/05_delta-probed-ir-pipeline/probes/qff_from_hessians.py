@@ -80,17 +80,43 @@ def main():
     ref = recs[i0]; symbols = ref["symbols"]
     omega, q, A, Minvh = harmonic(ref["H"], symbols, ref["geom"])
     n = len(omega); w = omega * HARTREE_CM
-    # assign displaced files to (mode, sign)
-    pinvA = np.linalg.pinv(A)
+    # assign displaced files to (mode, sign). Inside an exactly degenerate subspace any orthonormal basis is a normal-mode
+    # basis, and the program that made the displacements may have used a different one from the one eigh() returns here
+    # (21 Sep 2026: on the pyVPT2/psi4 geometries with pyscf Hessians this left an assignment residual of 3.5e-2 and a
+    # spurious route disagreement of up to 47 cm⁻¹, identical for both partners). So the displacement directions found in
+    # each degenerate subspace define its basis: A[:, S] is rotated by the nearest orthogonal matrix to the measured
+    # directions, then the assignment is repeated.
+    def assign(A):
+        pinvA = np.linalg.pinv(A); out = {}
+        for k, r in enumerate(recs):
+            if k == i0:
+                continue
+            dQ = pinvA @ (r["geom"] - ref["geom"])
+            i = int(np.argmax(np.abs(dQ))); s = np.sign(dQ[i])
+            out[k] = (i, s, dQ, float(np.linalg.norm(dQ - s * args.disp * np.eye(n)[i])))
+        return out
+    asg = assign(A)
+    groups = []
+    for i in range(n):
+        if groups and abs(w[i] - w[groups[-1][-1]]) < 0.5:
+            groups[-1].append(i)
+        else:
+            groups.append([i])
+    n_aligned = 0
+    for S in [g for g in groups if len(g) > 1]:
+        cand = [v[2][S] for v in asg.values() if v[0] in S and v[1] > 0]   # one '+' file per displacement direction
+        if len(cand) != len(S):
+            continue
+        V = np.array([c / np.linalg.norm(c) for c in cand]).T            # columns: measured directions in the current basis of S
+        U, _, Vt = np.linalg.svd(V); R = U @ Vt                           # nearest orthogonal matrix
+        A[:, S] = A[:, S] @ R; q[:, S] = q[:, S] @ R; n_aligned += 1
+    if n_aligned:
+        asg = assign(A)
     Hp, Hn = {}, {}
     assign_err = []
-    for k, r in enumerate(recs):
-        if k == i0:
-            continue
-        dQ = pinvA @ (r["geom"] - ref["geom"])
-        i = int(np.argmax(np.abs(dQ))); s = np.sign(dQ[i]); resid = np.linalg.norm(dQ - s * args.disp * np.eye(n)[i])
+    for k, (i, s, dQ, resid) in asg.items():
         assign_err.append(resid)
-        (Hp if s > 0 else Hn)[i] = r["H"]
+        (Hp if s > 0 else Hn)[i] = recs[k]["H"]
     missing = [i for i in range(n) if i not in Hp or i not in Hn]
     if missing:
         raise SystemExit(f"modes without a ± pair: {missing}")
