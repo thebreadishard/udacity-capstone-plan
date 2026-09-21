@@ -108,3 +108,10 @@ falls from 625 to 24 cm⁻¹. T2 therefore meets every pre-registered bound, inc
 constants: ring breathing −17.3 (was −16.0), the three bands 850.6 / 1004.4 / 1324.1 against 849 / 992 / 1310 (`qff_benzene_pyscf_analytic_2026-09-21.md`,
 regenerated). The psi4 sets are unchanged by the fix, because their displacements were made in the basis the analysis already finds (assignment residual
 2 × 10⁻¹³ at step 0.05, 8 × 10⁻¹³ at 0.20): 22.4 / 107.0 / 1264.5 and 2.3 / 11.0 / 110.1 as before, so the numbers in the pyVPT2 issue and PR stand.
+
+**Addendum 21:2x — T3 read: the step size does not matter on analytic Hessians; the T1/T2 difference was the psi4 input.** **T3 (analytic pyscf Hessians, step 0.10, 61 geometries from `make_qff_displacements.py`; hel1-14, 210 min; `qff_benzene_pyscf_analytic_d010_2026-09-21.md`):** route disagreement median 0.02, 90th percentile 0.10, maximum 0.44 cm⁻¹ (T2 at 0.05: 0.1 / 0.2 / 0.9); cubic route spread maximum 0.4; assignment residual 5.6 × 10⁻¹⁵ (our own displacements, exactly in the analysis basis); degenerate partners equal to 0.1. Fundamentals: ring breathing −17.4 (T2 −17.3; T1 with psi4 FD Hessians at 0.20: −28.0), the three bands 850.6 / 1004.4 / 1324.0 (T2: 850.6 / 1004.4 / 1324.1). Per-displacement noise model: every s_k = 0 at the print precision; the residual correlation with 1/ω (Spearman +0.40) is on numbers of 0.0–0.4 cm⁻¹ and carries no weight.
+Conclusion: doubling the step on analytic Hessians changes the fundamentals by ≤ 0.1 cm⁻¹ and halves the residual route noise, so the
+−28 versus −17 of T1 against T2 is not a step-size systematic of the quartic differences but the finite-difference psi4 Hessians at step
+0.20 (noise of the input scaled by the larger step). **Pipeline setting (decision 46 B): step 0.10 in reduced coordinates on analytic
+Hessians**, with the two-route disagreement printed as the error bar of every run. Pyscf B3LYP/6-31G* (grid 99/590, SCF 1e-11) is the
+Hessian source for the anharmonic step; psi4 finite-difference Hessians are not used for quartic constants.

@@ -111,3 +111,6 @@ data; §7's diagnosis stands. Remaining residual in the diagnostic sits in exact
 
 *Addendum 18:2x:* with the diagnostic's degenerate-subspace alignment (pre-registration note, addendum of the same time) the analytic-Hessian bands read
 850.6 / 1004.4 / 1324.1 (breathing shift −17.3) and the route maximum is 0.9 cm⁻¹; the numbers above are the pre-alignment values.
+
+*Addendum 21:2x:* T3 (analytic Hessians, step 0.10) reproduces T2 to 0.1 cm⁻¹ on all three bands (850.6 / 1004.4 / 1324.0) with the route
+maximum halved to 0.44 cm⁻¹; the pipeline step is 0.10 (pre-registration note, addendum of the same time).
