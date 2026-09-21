@@ -36,6 +36,9 @@ def main():
     ap.add_argument("--no-opt", action="store_true", help="skip the re-optimisation in this psi4 build")
     ap.add_argument("--cache", default=None, help="checkpoint directory (default results_vpt2/cache_<molecule>_<functional>_631gs_psi4-<version>)")
     ap.add_argument("--no-cache", action="store_true", help="run without the checkpoint layer")
+    ap.add_argument("--fermi-omega-thresh", type=float, default=200.0, help="pyVPT2 FERMI_OMEGA_THRESH (cm-1); default 200 = pyVPT2 default")
+    ap.add_argument("--fermi-k-thresh", type=float, default=1.0, help="pyVPT2 FERMI_K_THRESH (cm-1); 0 = every near-degeneracy within the window goes to a polyad (SPECTRO 2016 recipe, W = 0). Added 21 Sep 2026 after the benzene run of 20 Sep")
+    ap.add_argument("--tag", default="", help="suffix for the output files (a rerun with other thresholds does not overwrite the first)")
     args = ap.parse_args()
     os.makedirs(OUT, exist_ok=True)
     import psi4
@@ -83,7 +86,7 @@ def main():
     spec = QCInputSpecification(model={"method": args.functional, "basis": args.basis},
                                 keywords={"scf_type": "df", "d_convergence": 1e-10, "e_convergence": 1e-10,
                                           "dft_spherical_points": 590, "dft_radial_points": 99})
-    inp = VPTInput(molecule=qmol, input_specification=[spec], keywords={"DISP_SIZE": 0.05, "FD": "HESSIAN", "FD_ACC": 2, "FERMI": True})
+    inp = VPTInput(molecule=qmol, input_specification=[spec], keywords={"DISP_SIZE": 0.05, "FD": "HESSIAN", "FD_ACC": 2, "FERMI": True, "FERMI_OMEGA_THRESH": args.fermi_omega_thresh, "FERMI_K_THRESH": args.fermi_k_thresh})
     stats = None
     if cache_dir:   # 2026-09-16: checkpoint layer (vpt2_checkpoint.py) — a restart costs one task, not the run
         import sys
@@ -117,7 +120,7 @@ def main():
         out["fermi"] = None
     def _default(o):   # numpy scalars/arrays inside the VPTResult fields
         return o.tolist() if hasattr(o, "tolist") else str(o)
-    json.dump(out, open(os.path.join(OUT, f"{args.molecule}_{args.functional}_631gs_vpt2.json"), "w"), indent=1, default=_default)
+    json.dump(out, open(os.path.join(OUT, f"{args.molecule}_{args.functional}_631gs_vpt2{args.tag}.json"), "w"), indent=1, default=_default)
 
     om, nu, it = out["omega"], out["nu"], out["harmonic_intensity"]
     lines = [f"# pyVPT2 — {args.molecule}, {args.functional}/{args.basis}, {out['date']} (psi4 {psi4.__version__}, pyVPT2 {pyvpt2.__version__}, "
@@ -132,7 +135,7 @@ def main():
             ii = f"{it[i]:.1f}" if it and i < len(it) else "—"
             lines.append(f"| {i} | {w:.1f} | {n:.1f} | {n-w:+.1f} | {ii} |")
     lines += ["", f"Fermi resonances: {out.get('fermi')}", "", "Intensities are harmonic only (pyVPT2 has no VPT2 intensities; idea I6)."]
-    open(os.path.join(OUT, f"{args.molecule}_{args.functional}_631gs_vpt2.md"), "w", encoding="utf-8").write("\n".join(lines))
+    open(os.path.join(OUT, f"{args.molecule}_{args.functional}_631gs_vpt2{args.tag}.md"), "w", encoding="utf-8").write("\n".join(lines))
     print("\n".join(lines))
 
 

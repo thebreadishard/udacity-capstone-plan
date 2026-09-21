@@ -65,3 +65,28 @@ out-of-plane skeletal modes is positive and of the order of 10–30 cm⁻¹ (1�
 Couplings within a family (the off-diagonal blocks) are absent — that is what the 448-energy deck measures; the three modes are single, non-resonant
 fundamentals, chosen in September for the smoothness probe, not for spectroscopy; and three modes are three modes. It is the first evidence that the
 correction moves bands in the right direction by the right amount, not a licence.
+
+## 6. Added 21 September, 06:0x — the benzene VPT2 ran, and its numbers are not usable for a D6h molecule
+
+`results_vpt2/benzene_b3lyp_631gs_vpt2.md` (hel1-14, psi4 1.10.2, pyVPT2 0.1.2, 61 analytic Hessians in 4 h 28 min, checkpoint cache complete) and the
+rerun `…_K0.md` from the cache with `FERMI_K_THRESH 0` (every near-degeneracy within 200 cm⁻¹ into a polyad, the SPECTRO-2016 recipe; 1,050 detections,
+94 with K > 0.01 cm⁻¹). Both give the same picture: the exactly degenerate pairs come out split and asymmetric (e1g 864.4 → +11.3 and −9.1; e2g 1531.5 →
+−15 and −71; e1u 1656 → −47 and −183; C–H stretches −75 to −280), and the accidental a1g/b1u pair at 1020.1/1020.8 explodes (+23.7 and −217). The polyad
+treatment does not repair it, so the cause is not missed Fermi resonances but the first-order degeneracies themselves: pyVPT2 is written for asymmetric
+tops and carries Coriolis and resonance denominators that vanish for a symmetric top. This is the failure Mackie et al. 2016 report for triphenylene
+(D3h) and Esposito et al. 2024 avoid by computing benzene in D2h with the caveat that degenerate modes split artificially.
+
+What survives: the **Kekulé mode** (b2u, non-degenerate, no near neighbour) has ν − ω = −10.2 (K = 1) or −20.3 (K = 0; a 2ν10 ≈ ν14 polyad enters).
+Predicted fundamental from the coupled-cluster-corrected harmonic 1335.3: **1315–1325 cm⁻¹ against 1310 measured**; from B3LYP alone 1336–1346. For the
+e1g out-of-plane and the a1g breathing mode no shift can be read from this run.
+
+What this changes: (1) the three-band test keeps its harmonic-gap statement of §3, with one band now within 5–15 cm⁻¹ of experiment after correction and
+anharmonic shift (26–36 before); (2) **the pipeline's VPT2 step needs a degenerate-mode-capable treatment before benzene, coronene or any symmetric top can
+be scored** — pyVPT2 as shipped does not have it; SPECTRO handles symmetric tops with care (Mackie 2016, Appendix), Gaussian treats degenerate modes; this
+goes to the Software Changes Ledger and to the text of blad 8, not to the caption; naphthalene (D2h, no degeneracies) is the safe first spectrum, which is
+another reason the anchor is where it is; (3) the cleanest closing test that needs no VPT2 at all: compare the corrected harmonic frequencies with the
+**experimental harmonic frequencies** of benzene from the anharmonic analyses of Goodman, Ozkabak & Thakur 1991 (JPC 95, 9044) and Miani, Cané,
+Palmieri, Trombetti & Handy 2000 (JCP 112, 248) — two PDFs to ask of the supervisor; with them the test is harmonic against harmonic for all three
+modes, and the basis-set term (TZ → CBS) is the only remaining caveat. The 61 cached Hessians on hel1-14 are a complete B3LYP/6-31G* quartic force field
+of benzene and can be fed to another VPT2 code without recomputation.
+

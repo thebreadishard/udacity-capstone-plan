@@ -45,3 +45,6 @@ candidate" is an assessment, not a decision. Nothing has been submitted anywhere
 - Before proposing any PR: re-check the upstream `master` (the fix may exist), write a minimal test, and
   follow the project's contribution guide. The user decides which to submit and when; nothing here commits
   us to anything.
+
+**Dated note, 21 September 2026 (benzene run on hel1-14, `probes/results_vpt2/benzene_b3lyp_631gs_vpt2*.md`).** pyVPT2 0.1.2 gives unusable fundamentals for a symmetric top: exactly degenerate pairs split asymmetrically and an accidental near-degeneracy (a1g/b1u, 0.7 cm⁻¹) produces shifts of −217 cm⁻¹; a polyad rerun with `FERMI_K_THRESH 0` does not repair it. Required before benzene/coronene are scored: a degenerate-mode treatment (symmetric-top VPT2 formulas, or the Mills/Aliev–Watson degenerate case) or another VPT2 engine on the same quartic force field (the 61 Hessians are cached). Own change or replacement to be decided after 28 September; `vpt2_benzene.py` gained `--fermi-k-thresh`, `--fermi-omega-thresh`, `--tag` (21 Sep, no package change).
+
