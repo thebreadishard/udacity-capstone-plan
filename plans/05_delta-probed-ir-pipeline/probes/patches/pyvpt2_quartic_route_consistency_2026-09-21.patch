@@ -1,0 +1,213 @@
+From 055e8c92408e5a1755e384a052b7140dc77c402e Mon Sep 17 00:00:00 2001
+From: Frederic Petrignani <frederic.petrignani@gmail.com>
+Date: Mon, 21 Sep 2026 07:21:28 +0200
+Subject: [PATCH] quartic: report the disagreement between the two
+ finite-difference routes to phi_iijj (Hessian route)
+
+For i != j the semi-diagonal quartic constant can be formed from the Hessians
+displaced along j (element ii) or along i (element jj). assemble_quartic_from_hessians
+averaged the two, after which check_quartic's phi[i,j] vs phi[j,i] comparison is
+trivially satisfied, so numerical noise in the input Hessians went unnoticed.
+
+- keep both routes, average as before (numerics unchanged), and print a summary of
+  |route a - route b| (median, 90th percentile, max, worst pairs) with a warning above
+  10 cm-1; the statistics are stored in findifrec['quartic_route_report']
+- document in check_quartic what it does and does not check
+- tutorial: DISP_SIZE guidance for programs whose Hessians are themselves finite
+  differences of gradients (psi4 for DFT functionals without analytic Hessians)
+- tests on a synthetic quartic potential: exact Hessians give zero disagreement and
+  reproduce phi_ijk and phi_iijj; 0.05 cm-1 of noise on one displaced Hessian at
+  DISP_SIZE 0.05 is flagged (about 20 cm-1 in phi_iijj)
+
+Motivation: benzene, B3LYP/6-31G*, psi4 1.10.2 Hessians (finite differences of
+gradients), DISP_SIZE 0.05: the two routes disagreed by a median of 22 cm-1 and up to
+1265 cm-1 while the run reported 'No inconsistencies found'.
+---
+ docs/tutorial.md                    |  2 +-
+ pyvpt2/quartic.py                   | 66 ++++++++++++++++++++++++++---
+ pyvpt2/tests/test_quartic_routes.py | 60 ++++++++++++++++++++++++++
+ 3 files changed, 122 insertions(+), 6 deletions(-)
+ create mode 100644 pyvpt2/tests/test_quartic_routes.py
+
+diff --git a/docs/tutorial.md b/docs/tutorial.md
+index ec0b77f..6aad376 100644
+--- a/docs/tutorial.md
++++ b/docs/tutorial.md
+@@ -150,7 +150,7 @@ results = pyvpt2.process_vpt2(ret, **options)
+ 
+ 
+ ### Options list:
+-* `DISP_SIZE` (Default: 0.05) Displacement size used in finite-difference calculations.
++* `DISP_SIZE` (Default: 0.05) Displacement size used in finite-difference calculations, in reduced (dimensionless) normal coordinates. The default suits analytic Hessians with tight convergence. If the underlying program produces the Hessian itself by finite differences (psi4 does so for DFT functionals without analytic Hessians, e.g. B3LYP), a second finite difference with a step this small amplifies that noise into the semi-diagonal quartic constants — on benzene/B3LYP/6-31G* with psi4 Hessians the two independent routes to the same constant disagreed by up to 1,000 cm⁻¹ at 0.05. In that case use a larger step (0.1–0.25), `FD_ACC` 4, or analytic Hessians, and check the route-consistency report that pyVPT2 prints for the `HESSIAN` route ("Semi-diagonal quartic constants: disagreement between the two finite-difference routes").
+ * `FD` (Default: "HESSIAN") Level of finite-difference calculation. Choose highest analytical derivative available for chosen method. Options: "ENERGY", "GRADIENT", or "HESSIAN"   
+ * `FERMI` (Default: True) Deperturb Fermi resonances?
+ * `GVPT2` (Default: False) Diagonalize Fermi resonances? Requires `FERMI` to be enabled.
+diff --git a/pyvpt2/quartic.py b/pyvpt2/quartic.py
+index de54308..004bf1c 100644
+--- a/pyvpt2/quartic.py
++++ b/pyvpt2/quartic.py
+@@ -63,7 +63,12 @@ def check_cubic(phi_ijk: np.ndarray, v_ind: List[int]) -> np.ndarray:
+ def check_quartic(phi_iijj: np.ndarray, v_ind: List) -> np.ndarray:
+     """
+     Checks quartic force constants for any numerical inconsistencies, symmetrizes results,
+-    prints results to output file
++    prints results to output file.
++
++    Note: this compares phi_iijj with phi_jjii. For the Hessian route the two are averaged
++    before they reach this function, so the comparison is trivially satisfied there; the
++    disagreement between the two finite-difference routes is reported by
++    report_quartic_routes instead.
+ 
+     Parameters
+     ----------
+@@ -94,6 +99,52 @@ def check_quartic(phi_iijj: np.ndarray, v_ind: List) -> np.ndarray:
+     phi_iijj = 0.5 * (phi_iijj + phi_iijj.T)
+     return phi_iijj
+ 
++def report_quartic_routes(route_a: np.ndarray, route_b: np.ndarray, v_ind: List, warn_above: float = 10.0) -> Dict:
++    """
++    Compare the two independent finite-difference routes to each off-diagonal semi-diagonal
++    quartic constant and report their disagreement.
++
++    For i != j, phi_iijj can be formed from the Hessians displaced along j (reading element
++    ii) or from the Hessians displaced along i (reading element jj). In exact arithmetic the
++    two agree; their difference measures the numerical noise of that constant (finite-difference
++    error of the input Hessians, SCF/grid noise, too small a DISP_SIZE). check_quartic cannot
++    see this once the two routes have been averaged, so the comparison is done here, before
++    averaging, and printed to the output file.
++
++    Parameters
++    ----------
++    route_a, route_b : np.ndarray
++        The two estimates of phi_iijj (cm-1), same shape; diagonal ignored
++    v_ind : List[int]
++        Vibrational indices
++    warn_above : float
++        Print a warning when the largest disagreement exceeds this value (cm-1)
++
++    Returns
++    -------
++    Dict
++        median, p90 and max of |route_a - route_b| over i < j, the worst pairs, and a flag
++    """
++    pairs = [(i, j) for i in v_ind for j in v_ind if i < j]
++    diff = np.array([abs(route_a[i, j] - route_b[i, j]) for (i, j) in pairs])
++    if diff.size == 0:
++        return {"median": 0.0, "p90": 0.0, "max": 0.0, "worst": [], "noisy": False}
++    order = np.argsort(-diff)[:5]
++    worst = [(pairs[k][0], pairs[k][1], float(route_a[pairs[k]]), float(route_b[pairs[k]])) for k in order]
++    stats = {"median": float(np.median(diff)), "p90": float(np.percentile(diff, 90)), "max": float(diff.max()),
++             "worst": worst, "noisy": bool(diff.max() > warn_above)}
++    print("Semi-diagonal quartic constants: disagreement between the two finite-difference routes (cm-1)")
++    print(f"  median {stats['median']:.2f}   90th percentile {stats['p90']:.2f}   max {stats['max']:.2f}")
++    if stats["noisy"]:
++        print(f"  WARNING: the largest disagreement exceeds {warn_above} cm-1. The quartic constants are dominated by numerical noise.")
++        print("  Typical causes: the input Hessians are themselves finite differences (e.g. psi4 DFT Hessians, which are")
++        print("  finite differences of gradients), a DISP_SIZE that is too small for that input, or loose SCF/grid settings.")
++        print("  Try a larger DISP_SIZE (0.1-0.25), FD_ACC 4, analytic Hessians, or tighter convergence. Worst pairs (i, j, route a, route b):")
++        for (i, j, a, b) in worst:
++            print(f"    ({i}, {j}): {a:+.1f}  {b:+.1f}")
++    return stats
++
++
+ def _displace_cart(geom: np.ndarray, modes: np.ndarray, i_m: Iterator[Tuple], disp_size: float) -> Tuple[np.ndarray, str]:
+     """
+     Generates a displaced geometry along specified normal mode coordinates
+@@ -555,6 +606,8 @@ def assemble_quartic_from_hessians(findifrec: Dict) -> Tuple[np.ndarray, np.ndar
+ 
+     phi_ijk = np.zeros((n_modes, n_modes, n_modes))
+     phi_iijj = np.zeros((n_modes, n_modes))
++    route_a = np.zeros((n_modes, n_modes))
++    route_b = np.zeros((n_modes, n_modes))
+ 
+     def transform_hessian(hess):
+         hessQ = np.matmul(q.transpose(), np.matmul(hess, q))
+@@ -585,12 +638,15 @@ def assemble_quartic_from_hessians(findifrec: Dict) -> Tuple[np.ndarray, np.ndar
+             phi_iijj[i, i] /= disp_size ** 2
+ 
+         else:
+-            phi_iijj[i, j] = hess_p[j][i, i] + hess_n[j][i, i] + hess_p[i][j, j]
+-            phi_iijj[i, j] += hess_n[i][j, j] - 2 * hess0[i, i] - 2 * hess0[j, j]
+-            phi_iijj[i, j] /= 2 * disp_size ** 2
+-
++            # two independent routes to the same constant: displace j and read ii, displace i and read jj
++            route_a[i, j] = (hess_p[j][i, i] + hess_n[j][i, i] - 2 * hess0[i, i]) / disp_size ** 2
++            route_b[i, j] = (hess_p[i][j, j] + hess_n[i][j, j] - 2 * hess0[j, j]) / disp_size ** 2
++            phi_iijj[i, j] = 0.5 * (route_a[i, j] + route_b[i, j])
+ 
+     phi_iijj = phi_iijj / wave_to_hartree
++    route_a = route_a / wave_to_hartree
++    route_b = route_b / wave_to_hartree
++    findifrec["quartic_route_report"] = report_quartic_routes(route_a, route_b, v_ind)
+     phi_iijj = check_quartic(phi_iijj, v_ind)
+     phi_ijk = phi_ijk / wave_to_hartree
+     phi_ijk = check_cubic(phi_ijk, v_ind)
+diff --git a/pyvpt2/tests/test_quartic_routes.py b/pyvpt2/tests/test_quartic_routes.py
+new file mode 100644
+index 0000000..79da5dd
+--- /dev/null
++++ b/pyvpt2/tests/test_quartic_routes.py
+@@ -0,0 +1,60 @@
++"""Route-consistency report of the semi-diagonal quartic constants (Hessian route), on a synthetic quartic potential."""
++import numpy as np
++
++from pyvpt2.constants import wave_to_hartree
++from pyvpt2.quartic import assemble_quartic_from_hessians, report_quartic_routes
++
++
++def _synthetic_findifrec(n=3, disp=0.05, noise=0.0, seed=0):
++    rng = np.random.default_rng(seed)
++    omega = np.array([500.0, 900.0, 1500.0])[:n]
++    phi3 = rng.normal(0, 30, (n, n, n)); phi3 = (phi3 + phi3.transpose(1, 0, 2) + phi3.transpose(0, 2, 1) + phi3.transpose(1, 2, 0)
++                                                  + phi3.transpose(2, 0, 1) + phi3.transpose(2, 1, 0)) / 6
++    phi4 = rng.normal(0, 40, (n, n)); phi4 = 0.5 * (phi4 + phi4.T)
++
++    def hessian(Q):   # second derivatives of V = 1/2 w Q^2 + 1/6 phi3 Q^3 + 1/24 phi_iijj Q_i^2 Q_j^2 (semi-diagonal quartic only)
++        H = np.diag(omega).astype(float)
++        H = H + np.einsum("ijk,k->ij", phi3, Q)
++        for i in range(n):
++            for j in range(n):
++                if i == j:
++                    H[i, i] += 0.5 * phi4[i, i] * Q[i] ** 2
++                else:
++                    H[i, j] += phi4[i, j] * Q[i] * Q[j]
++                    H[i, i] += 0.5 * phi4[i, j] * Q[j] ** 2
++        return H * wave_to_hartree          # the assembly divides by wave_to_hartree
++
++    disps = {}
++    for i in range(n):
++        for s in (1, -1):
++            Q = np.zeros(n); Q[i] = s * disp
++            H = hessian(Q)
++            if noise and (i, s) == (0, 1):
++                H = H + noise * wave_to_hartree * rng.normal(0, 1, (n, n))
++            disps[f"{i}: {s}"] = {"hessian": H}
++    rec = {"harm": {"n_modes": n, "H0": hessian(np.zeros(n)), "modes": np.eye(n), "gamma": np.ones(n), "v_ind": list(range(n))},
++           "reference": {}, "displacements": disps, "disp_size": disp}
++    return rec, phi3, phi4
++
++
++def test_routes_agree_on_exact_hessians():
++    rec, phi3, phi4 = _synthetic_findifrec()
++    got3, got4 = assemble_quartic_from_hessians(rec)
++    assert np.allclose(got4, phi4, atol=1e-6)
++    assert np.allclose(got3, phi3, atol=1e-6)
++    assert rec["quartic_route_report"]["max"] < 1e-6
++    assert rec["quartic_route_report"]["noisy"] is False
++
++
++def test_routes_disagree_when_one_hessian_is_noisy():
++    rec, _, _ = _synthetic_findifrec(noise=0.05)      # 0.05 cm-1 noise on one displaced Hessian -> /disp^2 = 20 cm-1 in phi_iijj
++    assemble_quartic_from_hessians(rec)
++    rep = rec["quartic_route_report"]
++    assert rep["max"] > 5.0
++    assert rep["noisy"] is True
++    assert len(rep["worst"]) >= 1
++
++
++def test_report_function_handles_single_mode():
++    stats = report_quartic_routes(np.zeros((1, 1)), np.zeros((1, 1)), [0])
++    assert stats["max"] == 0.0 and stats["noisy"] is False
+-- 
+2.55.0.windows.5
+

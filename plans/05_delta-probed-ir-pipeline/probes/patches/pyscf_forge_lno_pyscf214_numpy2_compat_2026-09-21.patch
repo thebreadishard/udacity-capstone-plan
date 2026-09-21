@@ -1,0 +1,50 @@
+From e2c14af7f5320950e907279848ee1c1dd6fb6dd3 Mon Sep 17 00:00:00 2001
+From: Frederic Petrignani <frederic.petrignani@gmail.com>
+Date: Mon, 21 Sep 2026 07:15:49 +0200
+Subject: [PATCH] lno: compatibility with pyscf >= 2.14 and NumPy 2 in lnoccsd
+
+- DFLNOCCSD._contract_vvvv_t2: pyscf 2.14 changed dfccsd._contract_vvvv_t2 to a
+  seven-argument signature (mycc, mol, vvL, VVL, t2, out, verbose). The old
+  six-argument call shifted the arguments, so t2 arrived as out and every
+  DF-LNO-CCSD run crashed. The call now adapts to the installed signature.
+- _cp: np.array(a, copy=False, ...) raises under NumPy 2 when a copy is
+  unavoidable, which it is for an h5py slice on the out-of-core path
+  (max_memory below the fragment's Lov block). np.asarray keeps the intended
+  behaviour on both NumPy 1 and 2.
+
+Both fixes have been running in production LNO-CCSD(T) calculations on benzene
+and naphthalene (cc-pVDZ/cc-pVTZ, pyscf 2.14.0, NumPy 2) since 2026-09-10.
+---
+ pyscf/lno/lnoccsd.py | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/pyscf/lno/lnoccsd.py b/pyscf/lno/lnoccsd.py
+index c341fc9..513d450 100644
+--- a/pyscf/lno/lnoccsd.py
++++ b/pyscf/lno/lnoccsd.py
+@@ -396,6 +396,11 @@ class MODIFIED_DFCCSD(dfccsd.RCCSD):
+ class _DFChemistsERIs(_ChemistsERIs):
+     def _contract_vvvv_t2(self, mycc, t2, direct=False, out=None, verbose=None):
+         assert(not direct)
++        # pyscf >= 2.14 changed the signature to (mycc, mol, vvL, VVL, t2, out, verbose);
++        # with the six-argument call t2 arrives as `out` and the DF-LNO path crashes.
++        import inspect
++        if len(inspect.signature(dfccsd._contract_vvvv_t2).parameters) >= 7:
++            return dfccsd._contract_vvvv_t2(mycc, self.mol, self.vvL, self.vvL, t2, out, verbose)
+         return dfccsd._contract_vvvv_t2(mycc, self.mol, self.vvL, t2, out, verbose)
+ def _make_df_eris(cc, mo_coeff=None):
+     from pyscf.ao2mo import _ao2mo
+@@ -467,7 +472,9 @@ def _make_df_eris(cc, mo_coeff=None):
+     return eris
+ 
+ def _cp(a):
+-    return np.array(a, copy=False, order='C')
++    # NumPy 2 raises on copy=False when a copy is unavoidable (e.g. an h5py slice on the
++    # out-of-core path); np.asarray keeps the NumPy 1.x meaning.
++    return np.asarray(a, order='C')
+ 
+ class MODIFIED_DFCCSD_complex:
+     pass
+-- 
+2.55.0.windows.5
+
