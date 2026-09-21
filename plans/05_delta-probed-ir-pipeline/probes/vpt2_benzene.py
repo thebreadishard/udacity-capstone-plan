@@ -87,7 +87,11 @@ def main():
                                 fix_com=True, fix_orientation=True)
     spec = QCInputSpecification(model={"method": args.functional, "basis": args.basis},
                                 keywords={"scf_type": "df", "d_convergence": 1e-10, "e_convergence": 1e-10,
-                                          "dft_spherical_points": 590, "dft_radial_points": 99, "findif__points": args.psi4_points})
+                                          "dft_spherical_points": 590, "dft_radial_points": 99,
+                                          # psi4's default is 3; only a non-default value goes into the keywords, because the
+                                          # checkpoint key hashes the keywords and an explicit 3 would miss every cached task
+                                          # (21 Sep: one rerun recomputed a Hessian for 88 min before this was seen)
+                                          **({"findif__points": args.psi4_points} if args.psi4_points != 3 else {})})
     inp = VPTInput(molecule=qmol, input_specification=[spec], keywords={"DISP_SIZE": args.disp_size, "FD": "HESSIAN", "FD_ACC": 2, "FERMI": True, "FERMI_OMEGA_THRESH": args.fermi_omega_thresh, "FERMI_K_THRESH": args.fermi_k_thresh})
     stats = None
     if cache_dir:   # 2026-09-16: checkpoint layer (vpt2_checkpoint.py) — a restart costs one task, not the run
