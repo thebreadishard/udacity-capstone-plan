@@ -74,3 +74,29 @@ is again absent (Spearman −0.10), as it was for the noisy set.
 same geometries and the same step, removes the disagreement and the unphysical fundamentals. That is the demonstration for our case. T1 will say whether a
 larger step alone is enough with psi4's FD Hessians; the pipeline choice does not wait for it: **the anharmonic step of the spectrum pipeline uses analytic
 Hessians (pyscf) whenever the functional has none in psi4** — for the user to confirm tonight; sheet 8 then says "VPT2 (pyVPT2 on pyscf Hessians)".
+
+**T1, read 16:3x (61 psi4 FD Hessians at `DISP_SIZE` 0.20, 3-point, 10.0 h on hel1-14 at 8 threads under load; `benzene_vpt2_d020_hel1-14.log`; assembled by
+`qff_from_hessians.py --disp 0.20` → `qff_benzene_d020_2026-09-21.md`).**
+
+| quantity | step 0.05 (20–21 Sep) | prediction for T1 | T1 measured | verdict |
+|---|---|---|---|---|
+| route disagreement, median | 22.4 cm⁻¹ | ≈ 1.4 (accept ≤ 3) | **2.3** | as predicted (factor 10, not 16) |
+| route disagreement, 90th percentile | 107 | — | 11.0 | — |
+| route disagreement, maximum | 1,264.5 | ≈ 80 (accept ≤ 150) | **110.1** | as predicted |
+| a1g ring breathing, ν − ω | −216.9 | between −5 and −30 | **−28.0** symmetrised (−31.0 raw) | at the edge of the band |
+| splitting of degenerate partners | tens of cm⁻¹ | < 3 | 1.2–1.5 symmetrised (up to 4.4 raw) | as predicted after symmetrisation |
+| cubic route spread, maximum | 218.6 | — | 40.8 | — |
+
+The noise falls with the step as a second finite difference of noisy input must (factor 10 against the pure-noise factor 16; the remainder is the
+truncation error that a step of 0.20 buys, visible as the flat frequency dependence again, Spearman +0.11). The fundamentals become physical here too:
+e1g 848.5 (experiment 849), a1g 992.5 (992), b2u 1321.9 (1310).
+
+**T1 against T2.** The two clean sets do not give the same anharmonic shifts: the breathing mode moves −28 at step 0.20 with FD input and −16 at step
+0.05 with analytic input; the Kekulé mode −34.7 against −31.4. That difference is the step-size systematic (sextic and higher terms at 0.20) plus
+whatever noise T1 still carries (median 2.3 against 0.1); it is not decided by the experiment, because the B3LYP/6-31G* harmonic error is in the
+same numbers. The pre-registered claim is confirmed by both tests: the 20 September failure was finite-difference noise, cured by a larger step and
+removed by analytic input. Which step the analytic route should use is a convergence question, not a noise question: T3 = analytic Hessians at 0.10
+(61 more pyscf Hessians, ≈ 6 h on hel1-14) would bracket it. On the to-do, after the user's word.
+
+**Closing verdict 16:3x: claim demonstrated for our case (T1 and T2 as predicted on every noise statistic; fundamentals physical in both).** The pipeline
+recommendation stands: analytic Hessians (pyscf) for the anharmonic step wherever psi4 has none; step size to be set by T3.
