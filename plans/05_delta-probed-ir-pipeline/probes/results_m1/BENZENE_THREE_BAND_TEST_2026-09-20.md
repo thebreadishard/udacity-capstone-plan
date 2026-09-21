@@ -101,3 +101,10 @@ judged on clean constants; two reruns with step 0.20 (psi4 3- and 5-point Hessia
 meter. The Kekulé shift of §6 (−10 to −20) is therefore also provisional. The harmonic-gap statement of §3 and the request for the experimental
 harmonic frequencies (Goodman 1991, Miani 2000) are unaffected.
 
+## 8. Added 21 September 13:1x — with analytic Hessians the VPT2 numbers are usable, and the three bands land close to experiment
+
+The pre-registered test T2 (`results_vpt2/PREREGISTRATION_2026-09-21_FD_noise_demonstration.md`) replaced psi4's finite-difference B3LYP Hessians by
+pyscf's analytic ones at the same 61 geometries and the same step. Route disagreement median 0.1 cm⁻¹ (was 22.4); every degenerate pair agrees to 0.1 cm⁻¹;
+the a1g breathing mode shifts −16.0 cm⁻¹ (was −217). The three bands: e1g 865.2 → 852.0 (experiment 849), a1g 1021.7 → 1005.7 (992), b2u Kekulé
+1358.5 → 1327.2 (1310). The Kekulé estimate of §6 (1315–1325) was slightly low; the measured VPT2 shift is −31. §6's degeneracy question is closed by
+data; §7's diagnosis stands. Remaining residual in the diagnostic sits in exactly degenerate subspaces (see the pre-registration note).

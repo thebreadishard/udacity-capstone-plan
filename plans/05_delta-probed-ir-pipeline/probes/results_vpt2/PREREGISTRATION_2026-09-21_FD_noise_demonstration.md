@@ -47,4 +47,30 @@ structure. The outcome is recorded below this line when it is in, with the run s
 
 ## Results
 
-*(pending)*
+**T2, read 13:1x (61 analytic pyscf B3LYP/6-31G* Hessians, grid 99/590, SCF 1e-11, 358 min on hel1-14 at 4 threads under load; `pyscf_hessians_d005.log`; assembled by `qff_from_hessians.py --disp 0.05` → `qff_benzene_pyscf_analytic_2026-09-21.md`).**
+
+| quantity | psi4 FD Hessians, step 0.05 (20–21 Sep) | prediction for T2 | T2 measured | verdict |
+|---|---|---|---|---|
+| route disagreement, median | 22.4 cm⁻¹ | < 1 | **0.1** | as predicted |
+| route disagreement, 90th percentile | 107 | — | 5.9 | — |
+| route disagreement, maximum | 1,264.5 | < 10 | **46.8** | above the bound; see below |
+| a1g ring breathing, ν − ω | −216.9 | between −5 and −30 | **−16.0** (1021.7 → 1005.7) | as predicted |
+| splitting of degenerate partners | tens of cm⁻¹ | < 3 | **≤ 0.1** on every pair | as predicted |
+
+The median falls by a factor 200 and the fundamentals are physical: the three bands of the three-band test come out at 852.0 (e1g, experiment 849), 1005.7 (a1g,
+992) and 1327.2 (b2u Kekulé, 1310) against harmonic 865.2 / 1021.7 / 1358.5 — the anharmonic correction removes most of the harmonic gap and the rest
+is the B3LYP/6-31G* error that ΔH addresses. Every degenerate pair agrees to 0.1 cm⁻¹ (raw and symmetrised columns identical), so the degeneracy question of
+§6 of the three-band note is closed: the earlier splittings were noise.
+
+The maximum (46.8 cm⁻¹) does not meet the < 10 bound, and its structure says why: the per-displacement fit (`route_noise_structure.py`) puts all of the
+residual on the degenerate pairs, with *identical* values for the two partners (25/26 and 27/28: 15 cm⁻¹ each; 16/17: 11; 13/14: 5; every other mode 0).
+Numerical noise would not do that; a rotation of the analysis basis inside a degenerate subspace at the displaced geometries would (the assignment
+residual of the mode matching is 3.5 × 10⁻², all in those subspaces). So the residual is a property of how the diagnostic handles exactly degenerate modes, not of
+the Hessians; the same shows in the cubic spread (median 0.00, one outlier of 625 cm⁻¹ on a degenerate triple). That is a known limitation to fix in
+`qff_from_hessians.py` (a symmetry-adapted or projected treatment of degenerate subspaces), not a counter-example to the claim. Frequency scaling
+is again absent (Spearman −0.10), as it was for the noisy set.
+
+**Verdict on the claim, with T1 still running (30 of 61 at 13:1x):** T2 alone already shows that replacing the finite-difference input Hessians by analytic ones, at the
+same geometries and the same step, removes the disagreement and the unphysical fundamentals. That is the demonstration for our case. T1 will say whether a
+larger step alone is enough with psi4's FD Hessians; the pipeline choice does not wait for it: **the anharmonic step of the spectrum pipeline uses analytic
+Hessians (pyscf) whenever the functional has none in psi4** — for the user to confirm tonight; sheet 8 then says "VPT2 (pyVPT2 on pyscf Hessians)".
