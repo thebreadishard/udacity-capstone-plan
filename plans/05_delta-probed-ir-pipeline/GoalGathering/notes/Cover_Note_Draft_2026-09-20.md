@@ -46,6 +46,15 @@ de eerste trede die de laptop niet meer kan: één energie op de instellingen va
 het dek van 291 energieën dus ruim een jaar laptoptijd; op vier Snellius-knooppunten is dat naar schatting een maand. Daarom
 staat de clusteraanvraag in §12 en §13.
 
+Eén ding uit de afgelopen dagen laat zien hoe het plan werkt als iets misgaat. Een eerste anharmonische berekening van benzeen
+(B3LYP, VPT2) gaf onbruikbare getallen. In plaats van de software te vertrouwen heb ik elke anharmonische constante langs twee
+onafhankelijke routes berekend; het verschil bleek tot 1.265 cm⁻¹ terwijl het pakket "geen inconsistenties" meldde. De oorzaak — een
+eindige differentie bovenop een eindige differentie — heb ik vooraf als voorspelling opgeschreven en daarna met twee tests bevestigd:
+met analytische Hessianen op dezelfde geometrieën zakt het verschil naar 0,1 cm⁻¹ en landen de drie testbanden van benzeen op
+852, 1006 en 1327 cm⁻¹ tegen 849, 992 en 1310 gemeten. De controle is sindsdien een vaste stap in de labelfabriek, en de drie
+verbeteringen aan de gebruikte pakketten zijn als pull requests ingediend. De notitie met voorspelling en uitkomst zit als bijlage bij
+dit bericht.
+
 Wat ik van je vraag staat in §13. De drie belangrijkste: (1) een kritische lezing van §2–§3 en §7, de plekken waar de discipline
 van het plan houdt of niet; (3) of jij gasfase- of jet-gekoelde spectra kent van pyreen, chryseen en trifenyleen in het
 6–15 µm-gebied die mijn zoektocht van 5 september heeft gemist, want die maken de C–C-families op de pyreentrede beslisbaar; en

@@ -18,7 +18,7 @@ The overview (sheet 0) shows the kinds of process and the data objects that conn
 |---|---|
 | shapes | rectangle = process step; rectangle with rounded ends (grey) = data object; darker blue = external data object, not ours; light frame around several figures = part of the ΔH model (backbone, heads; sheet 5 only) |
 | step → object | every process step yields exactly one data object, which feeds the next step(s); a process begins and ends at a data object; branches only come out of data objects |
-| naming | a step is named after the operation with the software package in brackets ("DFT (psi4)", "VPT2 (pyVPT2 on psi4)") or "own software" / "PyTorch" when we make it; a data object is named after the thing; no word repetition between step and object; no explanation in captions |
+| naming | a step is named after the operation with the software package in brackets ("DFT (psi4)", "VPT2 (pyVPT2 on pyscf Hessians)") or "own software" / "PyTorch" when we make it; a data object is named after the thing; no word repetition between step and object; no explanation in captions |
 | the model | the network is called **the ΔH model** (it predicts ΔH blocks per family); its shared part is called the **backbone** (embedding and self-attention), its outputs are called **heads** (block head, pair head); the instances with different seeds form the **ensemble** and are called **members**; the simple rules are the **baseline**. "Network" on its own does not occur on the target sheets (agreement 20 September) |
 | noise principle | every derived quantity (curvature, coupling, anharmonic constant) gets an independent second route or a symmetry check, and the difference is a term of the error budget; on sheet 4 as its own step ("Consistency check"), on sheet 8 in the data object of the anharmonic constants (agreement 21 September, after the benzene VPT2: two routes to the same quartic constant differed by up to 1,265 cm⁻¹ and the package did not see it) |
 | status | solid = exists and has been measured; dashed border, yellow fill = not built yet |
@@ -392,7 +392,7 @@ flowchart LR
 
   DFT["DFT (psi4)"]
   SK(["Hessian H0 and dipole derivatives"]):::data
-  VPT["VPT2 (pyVPT2 on psi4)"]
+  VPT["VPT2 (pyVPT2 on pyscf Hessians)"]
   ANHC(["Anharmonic constants, with route difference per constant"]):::data
   MODE["Mode analysis (own software)"]
   MODES(["Normal modes: L, frequencies, families, symmetry blocks"]):::data
