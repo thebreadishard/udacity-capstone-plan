@@ -90,3 +90,14 @@ Palmieri, Trombetti & Handy 2000 (JCP 112, 248) — two PDFs to ask of the super
 modes, and the basis-set term (TZ → CBS) is the only remaining caveat. The 61 cached Hessians on hel1-14 are a complete B3LYP/6-31G* quartic force field
 of benzene and can be fed to another VPT2 code without recomputation.
 
+## 7. Correction, 21 September 06:3x — the cause is finite-difference noise, not the degeneracies
+
+§6 blamed the symmetric-top degeneracies. The own assembly `probes/qff_from_hessians.py` (same 61 Hessians, independent harmonic analysis, both
+finite-difference routes kept for every φ_iijj; it reproduces pyVPT2's fundamentals to 0.1 cm⁻¹) shows the quartic constants themselves are noise: the
+two routes to the same φ_iijj disagree by a median of 22 cm⁻¹ and up to 1,265 cm⁻¹ (`results_vpt2/qff_benzene_2026-09-21.md`). psi4 has no analytic
+B3LYP Hessian, so each displaced Hessian is a 3-point finite difference of gradients, and pyVPT2's default step of 0.05 in reduced coordinates
+(≈ 0.004 Å) divides that noise by 0.0025. The degenerate-pair asymmetry is a symptom. Whether a symmetric-top treatment is also needed can only be
+judged on clean constants; two reruns with step 0.20 (psi4 3- and 5-point Hessians) are running on hel1-14, and the route-disagreement statistic is the
+meter. The Kekulé shift of §6 (−10 to −20) is therefore also provisional. The harmonic-gap statement of §3 and the request for the experimental
+harmonic frequencies (Goodman 1991, Miani 2000) are unaffected.
+
