@@ -1145,6 +1145,8 @@ leave-molecule-out.
 gate that breaches has a pre-written sentence, and losing is published with the same paired table
 as winning.
 
+**Dated note, 21 September (evaluation follow-up; the user: "Zet het principe in de fabriek").** The error budget gains a measured noise term with a fixed method: every derived quantity — a curvature from displaced energies, a coupling from a pattern, an anharmonic constant from displaced Hessians — is computed by two independent routes or checked against a symmetry partner, and the difference is the noise term of that quantity. The rule comes from a measurement of 20–21 September on benzene: the semi-diagonal quartic constants that a VPT2 package derived from psi4 Hessians differed between their two finite-difference routes by a median of 22 cm⁻¹ and up to 1,265 cm⁻¹ while the package reported no inconsistency (`probes/results_vpt2/qff_benzene_2026-09-21.md`); the cause is that psi4 has no analytic B3LYP Hessian, so those Hessians are themselves finite differences, and the package's default step is too small for that input. In the label factory this is the step "Consistentiecontrole" that feeds the error budget (architecture sheet 4); in the spectrum pipeline the anharmonic constants carry their route difference (sheet 8). Nothing in the coupled-cluster labels is affected: their curvatures come from energies, not from differentiated Hessians; the harmonic DFT Hessians of the corpus and the factory are one finite difference and accurate to ≈ 0.1 cm⁻¹.
+
 ## 8. Feasibility and resources — what has been measured
 
 Every cost in the plan is a measured slot reading "not run" until a script prints it. The

@@ -24,6 +24,8 @@ flowchart LR
   OPENS(["Energieën per patroon voor kationen"]):::data
   SOLVE["Blokoplossing (eigen software)"]
   DH(["ΔH-blokken per familie: diagonaal en koppelingen"]):::data
+  CHECK["Consistentiecontrole (eigen software)"]
+  NOISE(["Ruisterm per grootheid: verschil tussen twee routes of tussen symmetriepartners"]):::data
   BUDGET["Foutbudget (eigen software)"]
   MARG(["Foutmarge per familie: ruis, quartische term, herstelfout"]):::data
   SEAL["Verzegeling (eigen software)"]
@@ -40,6 +42,9 @@ flowchart LR
   GRS --> SOLVE
   OPENS --> SOLVE
   SOLVE --> DH --> SEAL
+  ENS --> CHECK
+  GRS --> CHECK
+  CHECK --> NOISE --> BUDGET
   ENS --> BUDGET
   GRS --> BUDGET
   BUDGET --> MARG --> SEAL

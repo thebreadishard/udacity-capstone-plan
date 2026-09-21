@@ -20,6 +20,7 @@ Het overzicht (blad 0) toont de soorten proces en de data-objecten die ze verbin
 | stap → object | elke processtap levert precies één data-object, dat de volgende stap(pen) voedt; een proces begint en eindigt bij een data-object; splitsingen komen alleen uit data-objecten |
 | naamgeving | een stap heet naar de bewerking met tussen haken het softwarepakket ("DFT (psi4)", "VPT2 (pyVPT2 op psi4)") of "eigen software" / "PyTorch" als wij het maken; een data-object heet naar het ding; geen woordherhaling tussen stap en object; geen uitleg in captions |
 | het model | het netwerk heet **het ΔH-model** (het voorspelt ΔH-blokken per familie); zijn gedeelde deel heet de **backbone** (embedding en self-attention), zijn uitgangen heten **koppen** (blokkop, paarkop); de exemplaren met verschillende seeds vormen het **ensemble** en heten **leden**; de eenvoudige regels zijn de **baseline**. "Netwerk" zonder meer komt op de doelbladen niet voor (afspraak 20 september) |
+| ruisprincipe | elke afgeleide grootheid (kromming, koppeling, anharmonische constante) krijgt een onafhankelijke tweede route of een symmetriecontrole, en het verschil is een term van het foutbudget; op blad 4 als eigen stap ("Consistentiecontrole"), op blad 8 in het data-object van de anharmonische constanten (afspraak 21 september, na de benzeen-VPT2: twee routes naar dezelfde quartische constante verschilden tot 1.265 cm⁻¹ en het pakket zag het niet) |
 | status | doorgetrokken = bestaat en is gemeten; gestippelde rand, gele vulling = nog niet gebouwd |
 | geen | geen opslagfiguren (cilinders), geen ruiten op de doelbladen (beslissingen per item zitten in een stap), geen onzichtbare hulpknopen: standaard Mermaid, links naar rechts |
 | controle | vóór een commit lokaal gerenderd (Mermaid 11), daarna de GitHub-weergave |
@@ -243,6 +244,8 @@ flowchart LR
   OPENS(["Energieën per patroon voor kationen"]):::data
   SOLVE["Blokoplossing (eigen software)"]
   DH(["ΔH-blokken per familie: diagonaal en koppelingen"]):::data
+  CHECK["Consistentiecontrole (eigen software)"]
+  NOISE(["Ruisterm per grootheid: verschil tussen twee routes of tussen symmetriepartners"]):::data
   BUDGET["Foutbudget (eigen software)"]
   MARG(["Foutmarge per familie: ruis, quartische term, herstelfout"]):::data
   SEAL["Verzegeling (eigen software)"]
@@ -259,6 +262,9 @@ flowchart LR
   GRS --> SOLVE
   OPENS --> SOLVE
   SOLVE --> DH --> SEAL
+  ENS --> CHECK
+  GRS --> CHECK
+  CHECK --> NOISE --> BUDGET
   ENS --> BUDGET
   GRS --> BUDGET
   BUDGET --> MARG --> SEAL
@@ -387,7 +393,7 @@ flowchart LR
   DFT["DFT (psi4)"]
   SK(["Hessiaan H0 en dipoolafgeleiden"]):::data
   VPT["VPT2 (pyVPT2 op psi4)"]
-  ANHC(["Anharmonische constanten"]):::data
+  ANHC(["Anharmonische constanten, met routeverschil per constante"]):::data
   MODE["Modusanalyse (eigen software)"]
   MODES(["Normaalmodi: L, frequenties, families, symmetrieblokken"]):::data
   TOKS["Tokenisatie (eigen software)"]
