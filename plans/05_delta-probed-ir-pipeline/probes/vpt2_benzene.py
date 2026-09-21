@@ -38,6 +38,8 @@ def main():
     ap.add_argument("--no-cache", action="store_true", help="run without the checkpoint layer")
     ap.add_argument("--fermi-omega-thresh", type=float, default=200.0, help="pyVPT2 FERMI_OMEGA_THRESH (cm-1); default 200 = pyVPT2 default")
     ap.add_argument("--fermi-k-thresh", type=float, default=1.0, help="pyVPT2 FERMI_K_THRESH (cm-1); 0 = every near-degeneracy within the window goes to a polyad (SPECTRO 2016 recipe, W = 0). Added 21 Sep 2026 after the benzene run of 20 Sep")
+    ap.add_argument("--disp-size", type=float, default=0.05, help="pyVPT2 DISP_SIZE in reduced normal coordinates; 0.05 is the pyVPT2 default and, with psi4 FD-of-gradients B3LYP Hessians, too small (21 Sep 2026: route noise up to 1,000 cm-1 in phi_iijj)")
+    ap.add_argument("--psi4-points", type=int, default=3, help="psi4 findif points for its internal FD-of-gradients Hessian (3 or 5)")
     ap.add_argument("--tag", default="", help="suffix for the output files (a rerun with other thresholds does not overwrite the first)")
     args = ap.parse_args()
     os.makedirs(OUT, exist_ok=True)
@@ -85,8 +87,8 @@ def main():
                                 fix_com=True, fix_orientation=True)
     spec = QCInputSpecification(model={"method": args.functional, "basis": args.basis},
                                 keywords={"scf_type": "df", "d_convergence": 1e-10, "e_convergence": 1e-10,
-                                          "dft_spherical_points": 590, "dft_radial_points": 99})
-    inp = VPTInput(molecule=qmol, input_specification=[spec], keywords={"DISP_SIZE": 0.05, "FD": "HESSIAN", "FD_ACC": 2, "FERMI": True, "FERMI_OMEGA_THRESH": args.fermi_omega_thresh, "FERMI_K_THRESH": args.fermi_k_thresh})
+                                          "dft_spherical_points": 590, "dft_radial_points": 99, "findif__points": args.psi4_points})
+    inp = VPTInput(molecule=qmol, input_specification=[spec], keywords={"DISP_SIZE": args.disp_size, "FD": "HESSIAN", "FD_ACC": 2, "FERMI": True, "FERMI_OMEGA_THRESH": args.fermi_omega_thresh, "FERMI_K_THRESH": args.fermi_k_thresh})
     stats = None
     if cache_dir:   # 2026-09-16: checkpoint layer (vpt2_checkpoint.py) — a restart costs one task, not the run
         import sys
