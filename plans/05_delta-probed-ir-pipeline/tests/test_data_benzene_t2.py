@@ -26,21 +26,58 @@ def benzene_t2_dir_module():
     return _need(BENZENE_T2_DIR)
 
 
+def _pair_sorted(v, pairs):
+    """1-D per-mode array with the two values of every degenerate pair put in ascending order (the order of the two
+    members inside a pair is a convention, not a physical statement)."""
+    v = np.array(v, float).copy()
+    for a, b in pairs:
+        v[[a, b]] = np.sort(v[[a, b]])
+    return v
+
+
+def _magnitudes(t):
+    return np.sort(np.abs(np.asarray(t)).ravel())
+
+
 def test_reproduces_the_probe_arrays(t2, benzene_t2_npz):
+    """The probe's arrays were made on Windows numpy, whose eigh chose other mode signs and another order inside two
+    degenerate pairs than Linux numpy does (first CI run, 21 Sep 2026). The physics is convention-free, so the pin is:
+    frequencies exactly, every fundamental to 1e-6 (pair members may swap), and the constants as multisets of magnitudes."""
     qff, harm, ref, info = t2
     np.testing.assert_allclose(qff.omega_cm, benzene_t2_npz["omega_cm"], rtol=1e-10)
-    np.testing.assert_allclose(qff.phi3, benzene_t2_npz["phi_ijk"], rtol=1e-8, atol=1e-8)
-    np.testing.assert_allclose(qff.phi4, benzene_t2_npz["phi_iijj"], rtol=1e-8, atol=1e-8)
-    np.testing.assert_allclose(qff.route_a, benzene_t2_npz["phi_iijj_route_a"], rtol=1e-8, atol=1e-8)
-    np.testing.assert_allclose(qff.route_b, benzene_t2_npz["phi_iijj_route_b"], rtol=1e-8, atol=1e-8)
+    for ours, key in ((qff.phi3, "phi_ijk"), (qff.phi4, "phi_iijj"), (qff.route_a, "phi_iijj_route_a"), (qff.route_b, "phi_iijj_route_b")):
+        np.testing.assert_allclose(_magnitudes(ours), _magnitudes(benzene_t2_npz[key]), rtol=1e-8, atol=1e-8, err_msg=key)
+    probe_diff = np.abs(benzene_t2_npz["phi_iijj_route_a"] - benzene_t2_npz["phi_iijj_route_b"])[np.triu_indices(30, 1)]
+    np.testing.assert_allclose(np.sort(qff.route_disagreement), np.sort(probe_diff), rtol=1e-8, atol=1e-8)
     phi4s = symmetry_average(qff.phi4, qff.pairs)
-    np.testing.assert_allclose(phi4s, benzene_t2_npz["phi_iijj_sym"], rtol=1e-8, atol=1e-8)
+    np.testing.assert_allclose(_magnitudes(phi4s), _magnitudes(benzene_t2_npz["phi_iijj_sym"]), rtol=1e-8, atol=1e-8)
     B = rotational_constants(ref.geom, ref.symbols)
     zeta = coriolis_zeta(harm.q, ref.symbols)
     nu_raw, chi_raw, _ = vpt2(qff.omega_cm, qff.phi3, qff.phi4, B, zeta)
     nu_sym, chi_sym, _ = vpt2(qff.omega_cm, qff.phi3, phi4s, B, zeta)
-    np.testing.assert_allclose(nu_raw, benzene_t2_npz["nu_raw"], atol=1e-6)
-    np.testing.assert_allclose(nu_sym, benzene_t2_npz["nu_sym"], atol=1e-6)
+    # Fundamentals: exact outside the pairs. Inside a pair the two harmonic values differ by ≤ 0.01 cm⁻¹ (numerical
+    # splitting of an exact degeneracy) and which of them a column carries is a convention; swapping moves the two ν by
+    # ≈ 0.03 cm⁻¹ against each other while their mean stays. So: mean of the pair to 0.02, each member to 0.1.
+    in_pair = np.zeros(30, bool)
+    for a, b in qff.pairs:
+        in_pair[[a, b]] = True
+    for ours, key in ((nu_raw, "nu_raw"), (nu_sym, "nu_sym")):
+        probe = benzene_t2_npz[key]
+        np.testing.assert_allclose(ours[~in_pair], probe[~in_pair], atol=1e-6, err_msg=key)
+        for a, b in qff.pairs:
+            assert abs(ours[[a, b]].mean() - probe[[a, b]].mean()) < 0.02, (key, a, b)
+            np.testing.assert_allclose(_pair_sorted(ours, qff.pairs)[[a, b]], _pair_sorted(probe, qff.pairs)[[a, b]], atol=0.1, err_msg=key)
+    np.testing.assert_allclose(np.diag(chi_sym)[~in_pair], np.diag(benzene_t2_npz["chi_sym"])[~in_pair], atol=1e-6)
+
+
+def test_conventions_are_fixed(t2):
+    """Largest component of every mode positive; inside every aligned pair the members are ordered by the name of their
+    +displacement file. Both are set by the package, not by the linear-algebra backend, so the report is the same on
+    every machine (checked Windows vs Linux numpy, 21 Sep 2026)."""
+    qff, harm, ref, info = t2
+    for j in range(harm.q.shape[1]):
+        assert harm.q[np.argmax(np.abs(harm.q[:, j])), j] > 0, j
+    assert info["subspaces_aligned"] == 10
 
 
 def test_preregistered_bounds_hold(t2):

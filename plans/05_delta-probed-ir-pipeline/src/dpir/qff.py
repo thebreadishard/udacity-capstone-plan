@@ -158,9 +158,20 @@ def harmonic(H: np.ndarray, symbols: list[str], geom: np.ndarray) -> Harmonic:
     if vib.sum() != 3 * len(symbols) - 6:
         raise ValueError(f"{vib.sum()} vibrational modes found, expected {3 * len(symbols) - 6}: a mode below ≈ 22 cm⁻¹ would be dropped silently")
     omega = np.sqrt(lam[vib])
-    q = q[:, vib]
+    q = fix_mode_signs(q[:, vib])
     A = (Minvh[:, None] * q) / np.sqrt(omega)[None, :]
     return Harmonic(omega, q, A, Minvh)
+
+
+def fix_mode_signs(q: np.ndarray) -> np.ndarray:
+    """Sign convention: the largest-magnitude component of every mode is positive. ``eigh`` leaves the sign to the
+    linear-algebra backend (Windows and Linux numpy differed on the T2 set, 21 Sep 2026); cubic constants carry one sign
+    per index, so without a convention the same input gives different φ_ijk on different machines."""
+    q = q.copy()
+    for j in range(q.shape[1]):
+        if q[np.argmax(np.abs(q[:, j])), j] < 0:
+            q[:, j] *= -1
+    return q
 
 
 def degenerate_groups(omega_cm: np.ndarray, tol_cm: float = DEGENERACY_CM) -> list[list[int]]:
@@ -214,6 +225,19 @@ def align_degenerate_subspaces(harm: Harmonic, recs: list[HessianRecord], i0: in
         R = U @ Vt  # nearest orthogonal matrix
         A[:, S] = A[:, S] @ R
         q[:, S] = q[:, S] @ R
+        # conventions inside the subspace, so that the result does not depend on the backend's starting basis:
+        # sign as everywhere (largest component positive), order by the name of the file displaced along +direction
+        sgn = np.array([1.0 if q[np.argmax(np.abs(q[:, i])), i] > 0 else -1.0 for i in S])
+        q[:, S] *= sgn  # exact column operations on q and A alike: A keeps the probe's construction A_S·R
+        A[:, S] *= sgn
+        sub = assign_displacements(recs, i0, A, disp)
+        plus_file = {}
+        for k, (i, s, _dQ, _resid) in sub.items():
+            if i in S and s > 0:
+                plus_file[i] = min(recs[k].file, plus_file.get(i, recs[k].file))
+        order = sorted(S, key=lambda i: plus_file.get(i, ""))
+        A[:, S] = A[:, order]
+        q[:, S] = q[:, order]
         n_aligned += 1
     out = Harmonic(harm.omega, q, A, harm.Minvh)
     if n_aligned:

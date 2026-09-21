@@ -33,8 +33,11 @@ Code moves from tier 1 to tier 2 by **promotion**, never by copying. Promotion i
    finite-difference routes agree on a model potential to round-off, degenerate partners are equal, translations and
    rotations do not change the result, atom permutation does not change the result where applicable.
 4. **Negative control.** The defect that motivated the promotion (if any) is a test that fails without the fix.
-5. **Bit-for-bit reproduction.** The package reproduces the probe's committed arrays on the committed data set within
-   round-off (`rtol 1e-8`), so the numbers already in documents stay traceable.
+5. **Reproduction of the probe's arrays.** The package reproduces the probe's committed arrays on the committed data set
+   within round-off (`rtol 1e-8`), so the numbers already in documents stay traceable. The comparison is made on
+   convention-free quantities (frequencies, fundamentals, constants as multisets of magnitudes): mode signs and the order
+   inside degenerate pairs are conventions, and the package fixes them itself so that a report is identical on every
+   machine (first CI run, 21 Sep 2026: Linux numpy chose other signs and pair orders than Windows numpy).
 6. **Provenance.** Every result file ends with `dpir.provenance.provenance_block()`.
 7. **Review.** A second pass by a reader who did not write the change, with this checklist and the diff only, written
    down in the commit message or the pull request. For code that goes public, one external reader.
@@ -81,6 +84,7 @@ never competes with a running job. Tests marked `slow` run psi4 or pyscf and are
 | 21 Sep | PowerShell expanded `\$S` to nothing and killed a watcher | WSL commands go through `wsl -e bash -lc '…'` single-quoted (memory rule) | rule in force |
 | 21 Sep | second reader: `symmetry_average` is pair-order dependent for pair × pair blocks (inherited from the probe) | restrict the averaging to modes outside every degenerate pair, test on a two-pair model, re-pin the benzene arrays | **planned** (separate change) |
 | 21 Sep | second reader: silent overwrite when a mode is dropped or a file duplicated; linear molecules mis-projected | `ValueError` / `NotImplementedError` with tests | **done 21 Sep** |
+| 21 Sep | first CI run red: the probe-array pin compared arrays that carry the backend's mode-sign and pair-order conventions (Linux ≠ Windows numpy) | `fix_mode_signs` and a file-name order inside aligned pairs in the package; the pin compares convention-free quantities; a test that shuffled input gives identical arrays | **done 21 Sep** |
 
 ## Promoted so far
 

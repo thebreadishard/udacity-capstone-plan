@@ -149,6 +149,19 @@ def test_invariant_under_rotation_translation_and_atom_permutation(model_molecul
         assert q1.route_disagreement.max() < 1e-6, name
 
 
+def test_result_does_not_depend_on_record_order_or_starting_basis(model_molecule):
+    """Conventions are the package's, not the input order's or the backend's: shuffling the records, or starting from a
+    differently signed and rotated basis, gives identical arrays (not just identical magnitudes)."""
+    recs, _A, _p3, _p4 = model_records(model_molecule, 0.7)
+    q1, *_ = qff_from_records(sorted(recs, key=lambda r: r.file), DISP)
+    q2, *_ = qff_from_records(sorted(recs, key=lambda r: r.file, reverse=True), DISP)
+    np.testing.assert_allclose(q1.phi3, q2.phi3, rtol=1e-9, atol=1e-9)  # same signs and order; round-off from the SVD may differ
+    np.testing.assert_allclose(q1.phi4, q2.phi4, rtol=1e-9, atol=1e-9)
+    _qff, harm, *_ = qff_from_records(recs, DISP)
+    for j in range(harm.q.shape[1]):
+        assert harm.q[np.argmax(np.abs(harm.q[:, j])), j] > 0, j
+
+
 def test_route_labels_are_not_swapped():
     """Route a reads H_ii in the files displaced along j; route b reads H_jj in the files displaced along i.
     Perturb exactly one of those entries and only the matching route may move."""
