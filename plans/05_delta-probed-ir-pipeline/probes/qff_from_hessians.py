@@ -1,5 +1,9 @@
 """Quartic force field from displaced Hessians, with noise diagnostics — own software (21 September 2026).
 
+PROMOTED 21 September 2026 (evening) to ``src/dpir/qff.py`` under QUALITY_POLICY.md; this copy is frozen as the script that
+produced the reports of 21 September (``results_vpt2/qff_benzene_*.md``) and is kept for their provenance. New work uses
+``python -m dpir.qff`` (same command line, same numbers: ``tests/test_data_benzene_t2.py`` pins them).
+
 Why this exists: the benzene VPT2 of 20–21 September (pyVPT2 0.1.2 on 61 B3LYP/6-31G* Hessians, hel1-14) gave unusable fundamentals,
 and the cause turned out to be the semi-diagonal quartic constants φ_iijj: symmetry-related constants (the two components of a degenerate
 pair against the same totally symmetric mode) differed by up to a factor three, i.e. finite-difference noise of tens of cm⁻¹, and pyVPT2's

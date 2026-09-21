@@ -1,0 +1,39 @@
+name: plan05
+
+on:
+  push:
+    paths:
+      - "plans/05_delta-probed-ir-pipeline/src/**"
+      - "plans/05_delta-probed-ir-pipeline/tests/**"
+      - "plans/05_delta-probed-ir-pipeline/probes/*.py"
+      - "plans/05_delta-probed-ir-pipeline/probes/results_vpt2/**"
+      - "plans/05_delta-probed-ir-pipeline/pyproject.toml"
+      - ".github/workflows/plan05-ci.yml"
+  pull_request:
+    paths:
+      - "plans/05_delta-probed-ir-pipeline/**"
+      - ".github/workflows/plan05-ci.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: plans/05_delta-probed-ir-pipeline
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install the package with its test tools
+        run: pip install -e ".[dev]"
+      - name: Ruff on tier-2 code
+        run: ruff check src tests
+      - name: Syntax check on the probes (tier 1)
+        run: python -m compileall -q probes
+      - name: Fast test suite (synthetic + committed data; a missing data set fails, never skips)
+        run: pytest -m "not slow" -q
+        env:
+          DPIR_REQUIRE_DATA: "1"

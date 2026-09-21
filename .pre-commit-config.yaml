@@ -1,0 +1,22 @@
+# Local hooks under the plan-05 quality policy (plans/05_delta-probed-ir-pipeline/QUALITY_POLICY.md).
+# Once per clone:  pip install pre-commit && pre-commit install
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.9
+    hooks:
+      - id: ruff
+        files: ^plans/05_delta-probed-ir-pipeline/(src|tests)/
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-ast              # syntax check on every staged Python file (tier 1 included)
+      - id: check-added-large-files
+        args: ["--maxkb=1500"]  # pyVPT2 result json files are just above 1 MB; the 75 MB psi4 .out stays out
+      - id: check-merge-conflict
+  - repo: local
+    hooks:
+      - id: no-run-scratch
+        name: refuse run scratch and live run directories
+        entry: python plans/05_delta-probed-ir-pipeline/tools/check_staged_paths.py
+        language: system
+        pass_filenames: true
