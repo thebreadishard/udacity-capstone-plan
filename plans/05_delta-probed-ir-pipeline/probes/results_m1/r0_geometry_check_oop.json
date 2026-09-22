@@ -1,0 +1,22 @@
+{
+ "4": {
+  "B3LYP geometry": 831.1565019661238,
+  "relaxed a1g point": 766.4246333281077
+ },
+ "5": {
+  "B3LYP geometry": 785.6009671737448,
+  "relaxed a1g point": 777.5563889048688
+ },
+ "10": {
+  "B3LYP geometry": 1162.0047674155753,
+  "relaxed a1g point": 1135.3821935706833
+ },
+ "6": {
+  "B3LYP geometry": 1004.2226715311731,
+  "relaxed a1g point": 961.4640766865272
+ },
+ "18": {
+  "B3LYP geometry": 1205.825140023656,
+  "relaxed a1g point": 1279.9730891193126
+ }
+}

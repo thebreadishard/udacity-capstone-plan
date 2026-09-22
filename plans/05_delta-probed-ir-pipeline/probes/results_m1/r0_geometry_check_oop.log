@@ -1,0 +1,17 @@
+mode  4 (omega_B3LYP   694.7) at the B3LYP geometry: omega'_HF   831.2 (k +4531.2, c4 +201.1)
+mode  5 (omega_B3LYP   717.5) at the B3LYP geometry: omega'_HF   785.6 (k +3919.2, c4 +12.1)
+mode 10 (omega_B3LYP  1010.7) at the B3LYP geometry: omega'_HF  1162.0 (k +6087.0, c4 +37.7)
+mode  6 (omega_B3LYP   864.7) at the B3LYP geometry: omega'_HF  1004.2 (k +5313.9, c4 +163.7)
+mode 18 (omega_B3LYP  1356.5) at the B3LYP geometry: omega'_HF  1205.8 (k +4883.8, c4 +128.5)
+mode  4 (omega_B3LYP   694.7) at the relaxed a1g point: omega'_HF   766.4 (k +3852.9, c4 +224.5)
+mode  5 (omega_B3LYP   717.5) at the relaxed a1g point: omega'_HF   777.6 (k +3839.3, c4 +15.7)
+mode 10 (omega_B3LYP  1010.7) at the relaxed a1g point: omega'_HF  1135.4 (k +5811.2, c4 +41.4)
+mode  6 (omega_B3LYP   864.7) at the relaxed a1g point: omega'_HF   961.5 (k +4871.0, c4 +183.9)
+mode 18 (omega_B3LYP  1356.5) at the relaxed a1g point: omega'_HF  1280.0 (k +5502.9, c4 +129.2)
+--- geometry effect (relaxed - B3LYP geometry), cm-1:
+mode  4: -64.7
+mode  5: -8.0
+mode 10: -26.6
+mode  6: -42.8
+mode 18: +74.1
+done in 55 s
