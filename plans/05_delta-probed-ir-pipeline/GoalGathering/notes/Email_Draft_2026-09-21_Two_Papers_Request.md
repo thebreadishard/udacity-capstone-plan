@@ -19,5 +19,5 @@ Met vriendelijke groet,
 [naam student]
 
 ---
-*Status 22 September 07:4x:* sent by the student on 21 September; both PDFs received on 22 September (morning). Filed in `Papers/`; numbers in
+*Status 22 September 07:2x:* sent by the student on 21 September; both PDFs received on 22 September (morning). Filed in `Papers/`; numbers in
 `probes/data/benzene_benchmark_goodman1991_miani2000.json`.
