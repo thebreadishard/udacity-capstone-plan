@@ -64,3 +64,6 @@ With best regards,
 *For the student before sending: (1) check that Cameron Mackie's name is appropriate to mention or replace with "the authors"; (2) the numbers are
 the T1/T2 results of 21 September and the R0 quartic ratios of 22 September; (3) attach nothing — offer the script; (4) send from the address the
 supervisor has replied to.*
+
+---
+*Status 22 September 17:4x:* **sent by the student via Gmail**, first name in the salutation, signed by the student with a line naming Claude as the drafting and testing help and the responsibility as the student's. Any reply goes to the ledger.
