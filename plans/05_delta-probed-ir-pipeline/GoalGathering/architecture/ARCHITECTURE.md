@@ -248,8 +248,11 @@ flowchart LR
   NOISE(["Noise term per quantity: difference between two routes or between symmetry partners"]):::data
   BUDGET["Error budget (own software)"]
   MARG(["Error margin per family: noise, quartic term, recovery error"]):::data
+  CUB(["Cubic constants of the low level (from the VPT2 step of sheet 8)"]):::data
+  GEO["Geometry term (own software)"]
+  GTERM(["Geometry term per mode: first-order shift towards the high-level minimum, from the ± energies along the totally symmetric modes and the low-level cubic constants, with noise term"]):::data
   SEAL["Sealing (own software)"]
-  LABEL(["Label: ΔH blocks with error margin per family, sealed"]):::data
+  LABEL(["Label: ΔH blocks with error margin per family and geometry term per mode, sealed"]):::data
 
   MOL --> DFT --> SK --> MODE --> MODES --> DESIGN --> DECK
   SK --> LOC --> REF
@@ -262,6 +265,8 @@ flowchart LR
   GRS --> SOLVE
   OPENS --> SOLVE
   SOLVE --> DH --> SEAL
+  ENS --> GEO
+  CUB --> GEO --> GTERM --> SEAL
   ENS --> CHECK
   GRS --> CHECK
   CHECK --> NOISE --> BUDGET
@@ -399,14 +404,16 @@ flowchart LR
   TOKS["Tokenisation (own software)"]
   TOK(["Mode tokens"]):::data
   FWD["Forward pass (ΔH model, PyTorch)"]:::planned
-  DH(["ΔH blocks per family, with ensemble uncertainty"]):::data
-  LAB(["Label from the label factory: ΔH blocks with error margin per family"]):::data
+  DH(["ΔH blocks per family and relaxation along the totally symmetric modes, with ensemble uncertainty"]):::data
+  LAB(["Label from the label factory: ΔH blocks with error margin per family and geometry term per mode"]):::data
   LICF["Licence filter (own software)"]:::planned
   DHL(["Applied and refused ΔH blocks, with reason"]):::data
   APPLY["Assembly of H (own software)"]
   H(["Force constants H = H0 + ΔH on licensed blocks, H0 elsewhere; licence status per family"]):::data
   EIG["Diagonalisation (own software)"]
   POS(["Band positions with margin and licence status per family"]):::data
+  GEOP["Geometry term (own software)"]
+  POSG(["Band positions with geometry term, margin and licence status per family"]):::data
   INT["Intensity calculation (own software)"]
   INTS(["Band intensities, redistributed over resonance polyads"]):::data
   ANH["Anharmonic correction (own software)"]
@@ -418,7 +425,9 @@ flowchart LR
   MOL --> DFT --> SK
   SK --> MODE --> MODES
   SK --> VPT --> ANHC
-  MODES --> TOKS --> TOK --> FWD --> DH --> LICF --> DHL --> APPLY --> H --> EIG --> POS --> SHAPE
+  MODES --> TOKS --> TOK --> FWD --> DH --> LICF --> DHL --> APPLY --> H --> EIG --> POS --> GEOP --> POSG --> SHAPE
+  DHL --> GEOP
+  ANHC --> GEOP
   LAB --> LICF
   SK --> APPLY
   SK --> INT

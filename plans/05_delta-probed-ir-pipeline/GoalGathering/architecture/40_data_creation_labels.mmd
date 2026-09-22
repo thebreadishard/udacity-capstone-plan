@@ -28,8 +28,11 @@ flowchart LR
   NOISE(["Noise term per quantity: difference between two routes or between symmetry partners"]):::data
   BUDGET["Error budget (own software)"]
   MARG(["Error margin per family: noise, quartic term, recovery error"]):::data
+  CUB(["Cubic constants of the low level (from the VPT2 step of sheet 8)"]):::data
+  GEO["Geometry term (own software)"]
+  GTERM(["Geometry term per mode: first-order shift towards the high-level minimum, from the ± energies along the totally symmetric modes and the low-level cubic constants, with noise term"]):::data
   SEAL["Sealing (own software)"]
-  LABEL(["Label: ΔH blocks with error margin per family, sealed"]):::data
+  LABEL(["Label: ΔH blocks with error margin per family and geometry term per mode, sealed"]):::data
 
   MOL --> DFT --> SK --> MODE --> MODES --> DESIGN --> DECK
   SK --> LOC --> REF
@@ -42,6 +45,8 @@ flowchart LR
   GRS --> SOLVE
   OPENS --> SOLVE
   SOLVE --> DH --> SEAL
+  ENS --> GEO
+  CUB --> GEO --> GTERM --> SEAL
   ENS --> CHECK
   GRS --> CHECK
   CHECK --> NOISE --> BUDGET
