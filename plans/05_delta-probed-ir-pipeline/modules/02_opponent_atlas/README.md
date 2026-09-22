@@ -25,8 +25,11 @@ jupyter notebook notebook/data_workflow.ipynb
 ```
 
 Run all cells top to bottom (the notebook is also rebuilt and executed by
-`python notebook/make_notebook.py`). To regenerate the tables from the raw XML, place the PAHdb
-download in `data/` and run `python build_opponent_atlas.py data/<file>.xml`.
+`python notebook/make_notebook.py`). Everything the notebook reads is in the repository: the species
+table beside it, the small comparison tables under `out/`, and `notebook/bands_derived/` — the aggregates and
+samples of the computed library's band table (2,517,399 rows, 51 MB, not shipped) that the band-level cells use,
+written by `python notebook/make_bands_derived.py`. To regenerate everything from the raw XML, place the PAHdb
+download in `data/` and run `python build_opponent_atlas.py data/<file>.xml`, then the derive script.
 
 `requirements.txt` was created with `pip freeze > requirements.txt`.
 

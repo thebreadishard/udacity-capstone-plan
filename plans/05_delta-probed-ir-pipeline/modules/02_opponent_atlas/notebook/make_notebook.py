@@ -22,7 +22,7 @@ Plan 05 (Δ-probed IR pipeline), Module 02 of the Udacity AI Mastery Capstone. T
 Sections: **Setup · Ingestion · Cleaning · EDA · Visualizations · Summary**.""")
 
 md("## Setup")
-code("""import re
+code("""import json, re
 from pathlib import Path
 import numpy as np, pandas as pd
 %matplotlib inline
@@ -37,12 +37,20 @@ code("""sp = pd.read_csv(DATA, dtype={"uid": str, "charge": str})
 print(sp.shape)
 sp.head()""")
 code("""# secondary tables (derived by the same parser from the other two PAHdb libraries and the two other comparison lines)
-bands = pd.read_csv(OUT / "theoretical_4.00/bands.csv.gz", dtype={"uid": str, "charge": str})
+# The full band table of the computed library (2,517,399 rows, 51 MB, out/theoretical_4.00/bands.csv.gz) is not in the repository;
+# notebook/bands_derived/ holds exactly the aggregates and samples the cells below need, written by notebook/make_bands_derived.py.
+DER = Path("bands_derived")
+bands_summary = json.load(open(DER / "summary.json"))
+scale_summary = pd.read_csv(DER / "scale_summary.csv", index_col="scale")
+fig2_samples = pd.read_csv(DER / "fig2_samples.csv")
+neutral_hist = pd.read_csv(DER / "neutral_intensity_hist.csv")
+neutral_family = pd.read_csv(DER / "neutral_family_intensity.csv", index_col="family")["summed_intensity_km_mol"]
+b617 = pd.read_csv(DER / "uid617_bands.csv", dtype={"uid": str, "charge": str})
 an_sp = pd.read_csv(OUT / "anharmonic_1.00/species.csv", dtype={"uid": str, "charge": str})
 ex_sp = pd.read_csv(OUT / "experimental_3.10/species.csv", dtype={"uid": str, "charge": str})
 lc_sp = pd.read_csv(OUT / "lineC_mai2025/species.csv", dtype={"uid": str})
 cheap_sp = pd.read_csv(OUT / "cheapline_bos2025/species.csv", dtype={"uid": str, "charge": str})
-print(f"bands: {len(bands):,} rows; anharmonic: {len(an_sp)} species; experimental: {len(ex_sp)}; line C: {len(lc_sp):,}; cheap line: {len(cheap_sp)}")
+print(f"bands: {bands_summary['n_rows']:,} rows; anharmonic: {len(an_sp)} species; experimental: {len(ex_sp)}; line C: {len(lc_sp):,}; cheap line: {len(cheap_sp)}")
 print("missing values per column (species):"); print(sp.isna().sum()[sp.isna().sum() > 0])""")
 
 md("""## Cleaning
@@ -79,7 +87,7 @@ def flag_unresolved_basis(df: pd.DataFrame) -> pd.DataFrame:
 sp = flag_unresolved_basis(split_charge_suffix(sp))
 print("formula strings with a charge suffix:", (sp["formula"] != sp["formula_core"]).sum(), "of", len(sp))
 print("basis resolved:", sp["basis_resolved"].sum(), "| unresolved:", (~sp["basis_resolved"]).sum())
-print("uid unique:", sp["uid"].is_unique, "| bands with non-positive frequency:", int((bands.frequency_cm <= 0).sum()), "| negative intensities:", int((bands.intensity_km_mol < 0).sum()))
+print("uid unique:", sp["uid"].is_unique, "| bands with non-positive frequency:", bands_summary["n_nonpositive_frequency"], "| negative intensities:", bands_summary["n_negative_intensity"])
 iso = sp.groupby(["formula_core", "charge"]).uid.nunique()
 print("(formula, charge) groups:", len(iso), "| groups with > 1 uid (isomers, kept):", int((iso > 1).sum()), "| largest:", iso.idxmax(), int(iso.max()), "| species that would be lost if isomers were dropped:", int(len(sp) - len(iso)))
 sp[~sp["basis_resolved"]][["uid", "formula", "charge", "n_c", "route"]].head(8)""")
@@ -121,22 +129,20 @@ ax.set_xlabel("carbon atoms per species (bin)"); ax.set_ylabel("number of specie
 ax.set_ylim(0, ct.sum(axis=1).max() * 1.08); ax.axvline(9.5, color="crimson", ls="--", lw=1); ax.text(9.6, ct.values.max() * 0.9, "4-31G from n_C = 212", color="crimson", fontsize=9)
 ax.legend(title="charge", fontsize=8); plt.xticks(rotation=45, ha="right"); plt.tight_layout(); fig.savefig(FIG / "fig1_species_by_size_charge.png", dpi=140); plt.show()""")
 md("*Figure 1 interpretation.* Most of the library sits between 20 and 100 carbon atoms; dications are as common as neutrals in the 20–40 range. The coarser 4-31G basis appears only from 212 carbons upward (14 species); the largest 6-31G* species has 294.")
-code("""sc = bands.groupby("scale").frequency_cm.agg(["min", "max", "count"]).sort_values("count", ascending=False)
+code("""sc = scale_summary  # per stored scale factor: min, max, count of the scaled frequency (from the full band table)
 print(sc.head(8))
 fig, ax = plt.subplots(figsize=(9, 4.2))
-sub = bands[bands.scale.isin(sc.head(6).index)]
-for s_, g in sub.groupby("scale"):
-    ax.scatter(g.frequency_unscaled_cm.sample(min(len(g), 4000), random_state=0), [s_] * min(len(g), 4000), s=2, label=f"{s_} (n={len(g):,})")
+for s_, g in fig2_samples.groupby("scale"):  # 4,000-band samples (random_state 0) of the six most frequent factors
+    ax.scatter(g.frequency_unscaled_cm, [s_] * len(g), s=2, label=f"{s_} (n={int(g.n_bands.iloc[0]):,})")
 for v in (0.964, 0.979, 0.975): ax.axhline(v, color="grey", ls=":", lw=0.8)
 ax.text(3900, 0.9805, "v4.00 paper refit: 0.975 (>9 um) / 0.979 (4-9 um) / 0.964 (3 um) - not in the file", fontsize=8, color="grey", ha="right")
 ax.set_xlabel("unscaled harmonic frequency (cm$^{-1}$)"); ax.set_ylabel("scale factor stored with the band"); ax.set_title("Figure 2. Scale factors as stored in v4.00 (six most frequent; 4,000-band samples)")
 ax.legend(fontsize=7, markerscale=4, loc="lower left"); plt.tight_layout(); fig.savefig(FIG / "fig2_scale_factors_as_stored.png", dpi=140); plt.show()""")
 md("*Figure 2 interpretation.* The stored factors are 0.9794 / 0.9691 / 0.9597 for the 6-31G* species and 0.9563 / 0.9523 / 0.9595 for the 4-31G species, in three frequency regions; these are the version 3.00 factors (Bauschlicher et al., 2018). None of the 2.5 million bands carries the 0.964 / 0.979 / 0.975 that the version 4.00 paper describes (Ricca et al., 2026).")
-code("""neutral = bands[bands.charge == "0"]
-fig, axes = plt.subplots(1, 2, figsize=(11, 3.8))
-axes[0].hist(neutral.frequency_cm, bins=np.arange(0, 3400, 10), weights=neutral.intensity_km_mol, color="steelblue")
+code("""fig, axes = plt.subplots(1, 2, figsize=(11, 3.8))
+axes[0].bar(neutral_hist.bin_left_cm, neutral_hist.summed_intensity_km_mol, width=10, align="edge", color="steelblue")  # neutral species, 10 cm-1 bins
 axes[0].set_xlabel("scaled position (cm$^{-1}$)"); axes[0].set_ylabel("summed intensity (km/mol per 10 cm$^{-1}$)"); axes[0].set_title("Figure 3a. Neutral species: intensity-weighted band positions")
-fam = neutral.groupby("family").intensity_km_mol.sum().sort_values()
+fam = neutral_family.sort_values()
 axes[1].barh(fam.index, fam.values, color="darkorange"); axes[1].set_xlabel("summed intensity (km/mol)"); axes[1].set_ylabel("family label"); axes[1].set_title("Figure 3b. Summed intensity by family label")
 plt.tight_layout(); fig.savefig(FIG / "fig3_positions_by_family.png", dpi=140); plt.show()
 print(fam.round(0))""")
@@ -154,8 +160,7 @@ ax.set_xlabel("ladder rung"); ax.set_ylabel("comparison line"); ax.set_title("Fi
 plt.tight_layout(); fig.savefig(FIG / "fig4_ladder_coverage.png", dpi=140); plt.show()""")
 md("*Figure 4 interpretation.* Benzene (R0) is absent from every library except the anharmonic one; from naphthalene upward all lines have entries; above coronene only lines A and C remain, and above 216 carbons only line A. The competition thins out exactly where the project aims.")
 code("""c384 = sp[(sp.n_c >= 300) & (sp.n_c <= 400)][["uid", "formula", "charge", "symmetry", "basis", "n_modes", "scales_seen"]]; print(c384.to_string(index=False))
-b617 = bands[bands.uid == "617"]
-fig, ax = plt.subplots(figsize=(9, 3.6))
+fig, ax = plt.subplots(figsize=(9, 3.6))  # b617: every band of uid 617, from bands_derived
 ax.vlines(b617.frequency_cm, 0, b617.intensity_km_mol, color="black", lw=0.8)
 ax.set_xlabel("scaled position (cm$^{-1}$)"); ax.set_ylabel("intensity (km/mol)"); ax.set_title("Figure 5. C$_{384}$H$_{48}$ (uid 617): B3LYP/4-31G scaled harmonic sticks — the only prediction at this size")
 plt.tight_layout(); fig.savefig(FIG / "fig5_c384h48_sticks.png", dpi=140); plt.show()

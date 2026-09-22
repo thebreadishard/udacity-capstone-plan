@@ -73,3 +73,12 @@ the version is pinned by hash, not by the file name.
 `draft-qm9-foundations-unsubmitted` (description: unsubmitted draft, not a Udacity submission; the Foundations project is this module). The
 rubric's Task 2 requires a repository named exactly `ai-programming-foundations-project` with at least two branches; the name is now free.
 The user decided 22 September 07:1x: the required submission copies (this one under `ai-programming-foundations-project`, with a development branch) are made at the very end, when all modules are finished; until then the monorepo is the working copy.
+
+*Dated note 2026-09-22 07:5x:* the fresh-environment check of 22 September (new venv on Linux, `pip install -r requirements.txt`, notebook executed
+with nbconvert; hel1-14, Python 3.14.7) found that the notebook failed in a fresh clone: it read `out/theoretical_4.00/bands.csv.gz` (51 MB), which
+`.gitignore` keeps out of the repository. Fix: `notebook/make_bands_derived.py` writes into `notebook/bands_derived/` (855 KB, committed) exactly what
+the band-level cells compute — the row and quality counts, the per-scale-factor summary, the 4,000-band samples of Figure 2 (same seed and grouping),
+the 10 cm⁻¹ intensity histogram and family sums of Figure 3, and the C384H48 bands of Figure 5 — and the notebook reads those. Rebuilt and executed
+locally: the printed outputs are identical to the committed notebook except one series name; the five figures are regenerated from the same numbers.
+The requirements file installed cleanly on Linux and the import heuristic found nothing missing. Module 03 ran top to bottom in 8 s in the same
+check; module 04 hit the 30-minute cell limit while hel1-14 was busy with the R0 deck and is rerun when the machine is free.
