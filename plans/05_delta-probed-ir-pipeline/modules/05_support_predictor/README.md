@@ -27,9 +27,17 @@ not used in any earlier capstone module.
 
 ```bash
 pip install -r requirements.txt
-python m05/build_corpus.py fixture
-python m05/smoke_test.py
+python m05/build_release.py corpus/molecules data/corpus_release/layerA_2026-09-22   # dataset file + manifest (needs the corpus folders)
+python notebook/make_notebook.py        # writes and executes notebook/deep_learning.ipynb (M05_QUICK=1 for a one-minute pipeline check)
+python make_summary.py                  # the nine-section report from notebook/results.json (quick-mode results: banner, no PDF)
 ```
+
+*11:5x, 22 September 2026:* the rubric-form deliverables exist and run end to end on the layer-A release (42 molecules): the notebook in the rubric's
+structure around the ΔH model (`m05/deltah_model.py`, a verbatim copy of the architecture sheet kept identical by `m05/sync_model.py`), the report builder,
+the dataset builder with a checksummed manifest, and `RUBRIC_CHECKLIST_2026-09-22.md` (item by item: done / missing / owner). The numbers come with the
+layer-A2 release and a full execution; today's execution was a quick pipeline check and is labelled so in the notebook and the docx.
+
+Older scaffold pieces (still present, superseded for the submission): `python m05/build_corpus.py fixture`, `python m05/smoke_test.py`.
 
 `build_corpus.py fixture` reads the dry-run archives under `../../probes/results_dryrun/` and writes
 `data/corpus_fixture.npz` with tokens and support labels; `smoke_test.py` trains the baseline

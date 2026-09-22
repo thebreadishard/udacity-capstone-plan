@@ -57,3 +57,7 @@ plans/*/modules/*/corpus/corpus.lock
 # Plan 05 probes: hand-transcribed benchmark tables are sources, so they override the blanket *.json rule
 !plans/*/probes/data/*.json
 !plans/*/modules/*/notebook/bands_derived/*.json
+# Plan 05 Module 05: the dataset release files and the notebook result file are deliverables
+!plans/*/modules/*/data/corpus_release/
+!plans/*/modules/*/data/corpus_release/*
+!plans/*/modules/*/notebook/results.json

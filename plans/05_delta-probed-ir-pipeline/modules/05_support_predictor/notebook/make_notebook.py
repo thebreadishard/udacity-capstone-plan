@@ -1,108 +1,293 @@
 #!/usr/bin/env python
-"""Writes the Module 05 notebook `deep_learning.ipynb` from source cells kept here — SKELETON (2026-09-12 evening).
+"""Writes and executes the Module 05 notebook `deep_learning.ipynb` from source cells kept here (22 September 2026 rebuild in the
+rubric's structure around the ΔH model; replaces the 12 September skeleton whose stub cells raised by design).
 
-Structure follows the Udacity "Deep Learning Systems" rubric (Rubrics/05): load and preprocess · baseline model
-(Transformer, PyTorch) · one controlled comparison · training outputs · evaluation metrics · example behaviour ·
-summary. Nothing here is a result: the corpus does not exist yet (the corpus factory's five-molecule timing test
-waits for the anchor job; the subset size is fixed by a dated note after it), so every code cell either runs on
-the benzene FIXTURE of ../m05/build_corpus.py (proves the code path, as the smoke test does) or is a marked stub
-that raises until the corpus exists. Run:  python make_notebook.py            (writes the notebook, does not execute)
-                                          python make_notebook.py --execute  (executes; fixture cells only, minutes)
-The recipe every choice comes from is ../RECIPE.md (2026-09-12, written before any training)."""
-import argparse
+Rubric (Rubrics/05, Tasks 1–6): task type declared · dataset loaded and inspected with representative samples · baseline Transformer
+in PyTorch with the architecture shown and the design choices explained · training with loss curves · exactly one controlled change ·
+evaluation of both with metrics fit for the task and a direct comparison · a 4–6 sentence summary.
+
+Data: `data/corpus_release/<release>.npz` written by `m05/build_release.py` (default: the layer-A file of 22 September; the E6 layer-A2
+release replaces it when the corpus factory finishes). Model: `m05/deltah_model.py` (copy of the architecture sheet). Results go to
+`notebook/results.json` for `make_summary.py`. Environment knobs for a quick pipeline check (not a result): M05_QUICK=1 → 3 epochs,
+one seed. Run:  python notebook/make_notebook.py
+"""
+import json
+import os
+import sys
 from pathlib import Path
-import nbformat as nbf
+
+import nbformat
+import numpy as np
+from nbclient import NotebookClient
+from nbformat.v4 import new_code_cell, new_markdown_cell, new_notebook
 
 HERE = Path(__file__).resolve().parent
-nb = nbf.v4.new_notebook()
+RELEASE = os.environ.get("M05_RELEASE", "layerA_2026-09-22")
 cells = []
-md = lambda s: cells.append(nbf.v4.new_markdown_cell(s))
-code = lambda s: cells.append(nbf.v4.new_code_cell(s))
 
-md("""# Module 05 — the Δ₂-support predictor: can a Transformer learn *where* a correction matrix has its large elements?
 
-Plan 05 (Δ-probed IR pipeline), Module 05 of the Udacity AI Mastery Capstone. **Task type: sequence modelling with a
-Transformer (PyTorch).** A molecule is a sequence of DFT normal-mode tokens; the network predicts, per pair of modes,
-whether the correction matrix Δ₂ between two levels of theory has a large element there (the *support* of Δ₂). The
-prediction is a learned prior that tells the larger project's recovery where to place its expensive measurements.
-**Success criterion (recipe):** the number of probing patterns the prior implies at recall 0.9 against the prior-free
-count, and agreement with the prior-free check on a held-out molecule — not classification accuracy.
+def md(s):
+    cells.append(new_markdown_cell(s))
 
-**Dataset:** Δ₂ = H(ωB97X) − H(B3LYP) per molecule, from (i) the public Hessian QM9 set (Williams et al., 2025; figshare
-DOI 10.6084/m9.figshare.26363959, 41,645 ωB97X/6-31G* Hessians, CC0) and (ii) B3LYP/6-31G* Hessians recomputed by this
-project's corpus factory (`../corpus/`, four layers, 11,321 candidates; the number actually computed is fixed by a dated
-note after the timing test). Computed ab initio data: not synthetic, not AI-generated, not reused from an earlier module.
 
-> **Status of this notebook: skeleton.** Cells marked `FIXTURE` run on the project's benzene dry-run tensor and prove the
-> code path only. Cells marked `STUB` raise `NotImplementedError` until the corpus exists. No number below is a result.
+def code(s):
+    cells.append(new_code_cell(s))
 
-Sections: **Load and preprocess · Baseline model · Controlled comparison · Training outputs · Evaluation · Example
-behaviour · Summary**.""")
 
-md("## 1. Load and preprocess\n\nThe corpus builder turns each molecule into (a) a token sequence — one token per DFT normal mode: frequency, "
-   "family one-hot, symmetry-block id, mode participation by atom type — and (b) a 0/1 label per mode pair: whether |Δ₂,ij| exceeds "
-   "θ · max_k |Δ₂,kk| (θ = 0.1, recipe). Translation/rotation modes are projected out before Δ₂ is formed (Hessian QM9 stores them).")
-code("""# FIXTURE: the benzene dry-run tensor through the same builder the corpus will use
-import sys, json
+md(f"""# Module 05 — the ΔH model: a Transformer that predicts, per family of vibrations, how a cheap Hessian must be corrected
+
+**Task type (declared for the rubric): sequence modelling with a Transformer.** A molecule enters as a *sequence of normal-mode tokens* —
+one token per vibration of a cheap density-functional Hessian (B3LYP/6-31G*) — and the network predicts the *family block* of the
+correction matrix towards a better level of theory (ωB97X/6-31G* here as the stand-in for coupled cluster): the block's diagonal is the
+per-mode band shift, its off-diagonal elements are the couplings between modes of one family. A second head predicts which
+mode pairs carry a large correction at all (the *support*). This is the learned prior of the Δ-probed IR pipeline (plan 05): it tells the
+expensive measurement where to look.
+
+**Dataset.** The project's own corpus of molecule Hessians, computed by its corpus factory at two levels of theory on the same
+geometries (`data/corpus_release/{RELEASE}.npz` with its manifest of checksums; released on Zenodo with a DOI before submission).
+Computed ab initio data — public, not synthetic in the sense of generated by a model, not AI-generated, not used in Modules 02–04
+(those used the NASA PAHdb and NIST laboratory libraries). Recipe, splits, seeds and the one controlled change were fixed in
+`RECIPE.md` before this notebook existed (dated amendments of 13 and 19 September 2026 restate the target as the family block).
+
+Sections: **Setup · 1 Load and inspect · 2 Baseline model · 3 Training · 4 Controlled comparison · 5 Evaluation · 6 Summary**.""")
+
+md("## Setup")
+code(f"""import json, hashlib, math, os, sys, time
 from pathlib import Path
-import numpy as np
-sys.path.insert(0, str(Path('..').resolve()))
-from m05.build_corpus import build_fixture, THETA
-build_fixture()                 # writes ../data/corpus_fixture.npz and its manifest (prints the manifest)
-z = np.load('../data/corpus_fixture.npz'); names = sorted({k.split('__')[0] for k in z.files})
-fx = {'name': names[0], 'tokens': z[f'{names[0]}__tokens'], 'labels': z[f'{names[0]}__labels']}
-print(fx['name'], 'tokens', fx['tokens'].shape, 'labels', fx['labels'].shape, 'positive pairs', int(fx['labels'].sum() // 2), 'theta', THETA)""")
-code("""# STUB: the real corpus (Hessian QM9 vacuum shards + the corpus factory's results) — enabled when the dated subset-size note exists
-CORPUS_READY = False
-if not CORPUS_READY:
-    raise NotImplementedError('corpus not built yet: run ../corpus/run_corpus.py (after the anchor job) and set CORPUS_READY = True')""")
+import numpy as np, pandas as pd, torch, torch.nn as nn
+%matplotlib inline
+import matplotlib.pyplot as plt
+sys.path.insert(0, str(Path("..") / "m05"))
+from deltah_model import DeltaHModel, DeltaHConfig, block_loss
+torch.set_num_threads(int(os.environ.get("M05_THREADS", "2")))
+QUICK = os.environ.get("M05_QUICK") == "1"          # pipeline check only: fewer epochs, one seed — never a result
+RELEASE = Path("..") / "data" / "corpus_release" / "{RELEASE}.npz"
+FIG = Path("figures"); FIG.mkdir(exist_ok=True)
+FAMILIES = ["CH-stretch", "CH-oop", "ring-ip", "other"]
+THETA = 0.1                                          # pair label: |K_ij| >= THETA * max_k |K_kk| (RECIPE)
+EPOCHS, SEEDS = (3, [0]) if QUICK else (30, [0, 1, 2])
+print("torch", torch.__version__, "| release:", RELEASE.name, RELEASE.exists(), "| quick mode:", QUICK)""")
 
-md("## 2. Baseline model (PyTorch)\n\nA small encoder-only Transformer over the mode tokens with a pair head: for modes i, j the head reads the two "
-   "encoded tokens and outputs the logit of 'large element at (i, j)'. Baseline configuration (recipe): d_model 64, 4 heads, 2 layers, dropout 0.1; "
-   "loss = class-weighted binary cross-entropy over the M(M−1)/2 pairs; optimiser and schedule fixed in the recipe; seeds 0, 1, 2.")
-code("""import torch
-from m05.model import SupportTransformer, implied_pattern_count
-model = SupportTransformer(d_in=fx['tokens'].shape[-1], d_model=64, n_heads=4, n_layers=2, dropout=0.1)
-print('parameters:', sum(p.numel() for p in model.parameters()))""")
+md("""## 1. Load and inspect the dataset
 
-md("## 3. Controlled comparison\n\nOne change at a time (recipe; Distilled §5): **baseline (2 layers) versus 4 layers**, everything else fixed, three seeds "
-   "each. A second comparison is allowed only if the first prints a difference larger than the seed spread.")
-code("""# STUB: training loop over the corpus with a leave-molecule-out split by scaffold family; writes ../out/training_log.json
-raise NotImplementedError('training waits for the corpus')""")
+Each molecule is one sequence. A token holds only cheap-level information: ω/1000, the family one-hot, the mass-weighted shares of C, H,
+N and O in the motion, a localisation number, the out-of-plane share and twelve atom-environment classes (which kinds of hydrogens and
+carbons move). The target `K` is the correction matrix in the cheap-level mode basis, in cm⁻¹; the model never sees it as input.""")
+code("""z = np.load(RELEASE); man = json.load(open(str(RELEASE).replace(".npz", "_manifest.json")))
+ids, mask, tokens, family, omega, K = z["ids"], z["mask"], z["tokens"], z["family"], z["omega_cm"], z["K"]
+N, M, D = tokens.shape
+print(f"{N} molecules, up to {M} modes each, {D} token features; total modes {int(mask.sum()):,}; built {man['built_utc']} UTC from {man['n_molecules']} folders")
+print("token layout:", man["token_layout"]); print("target:", man["target"])
+print("dtypes:", tokens.dtype, family.dtype, K.dtype, "| shapes:", tokens.shape, family.shape, K.shape)
+print("modes per family:", man["mode_counts_per_family"])""")
+code("""# representative samples: three molecules, first six modes each
+rows = []
+for i in [0, N // 2, N - 1]:
+    for j in range(min(6, int(mask[i].sum()))):
+        rows.append(dict(molecule=ids[i], mode=j, omega_cm=round(float(omega[i, j]), 1), family=FAMILIES[family[i, j]],
+                         share_C=round(float(tokens[i, j, 5]), 2), share_H=round(float(tokens[i, j, 6]), 2), K_ii_cm=round(float(K[i, j, j]), 1)))
+pd.DataFrame(rows)""")
+code("""# data quality: padding, symmetry of K, magnitude of the diagonal and couplings, family balance
+diag = np.concatenate([np.diag(K[i])[mask[i]] for i in range(N)])
+off = np.concatenate([K[i][np.ix_(mask[i], mask[i])][~np.eye(int(mask[i].sum()), dtype=bool)] for i in range(N)])
+asym = max(float(np.abs(K[i][np.ix_(mask[i], mask[i])] - K[i][np.ix_(mask[i], mask[i])].T).max()) for i in range(N))
+print(f"padded positions: {int((~mask).sum()):,} of {mask.size:,}; K symmetric to {asym:.1e} cm⁻¹")
+print(f"diagonal (first-order shifts): median {np.median(diag):+.1f}, 5–95 % {np.percentile(diag, 5):+.1f} … {np.percentile(diag, 95):+.1f} cm⁻¹")
+print(f"couplings |K_ij|: median {np.median(np.abs(off)):.2f}, 95 % {np.percentile(np.abs(off), 95):.2f}, max {np.abs(off).max():.1f} cm⁻¹")
+fig, axes = plt.subplots(1, 2, figsize=(10, 3.4))
+axes[0].hist(diag, bins=60, color="steelblue"); axes[0].set_xlabel("K_ii (cm$^{-1}$)"); axes[0].set_title("Figure 1a. Per-mode first-order shifts")
+axes[1].hist(np.log10(np.abs(off) + 1e-3), bins=60, color="darkorange"); axes[1].set_xlabel("log10 |K_ij| (cm$^{-1}$)"); axes[1].set_title("Figure 1b. Couplings")
+plt.tight_layout(); fig.savefig(FIG / "fig1_targets.png", dpi=140); plt.show()""")
+md("""*Preprocessing considerations.* Sequences have different lengths, so molecules are padded to the longest one and a mask keeps padding
+out of attention, loss and metrics. Targets are in cm⁻¹ and are not standardised: the loss is a plain squared error over the filled family-block
+elements, so a 1 cm⁻¹ error means the same thing everywhere. Splits are **by molecule** (a hash of the identifier: 80 % train, 10 %
+validation, 10 % test), never by mode, because the modes of one molecule are strongly correlated.""")
+code("""def split_of(mol_id):
+    h = int(hashlib.sha1(mol_id.encode()).hexdigest(), 16) % 10
+    return "test" if h == 0 else ("val" if h == 1 else "train")
+split = np.array([split_of(s) for s in ids])
+idx = {s: np.where(split == s)[0] for s in ("train", "val", "test")}
+print({s: len(v) for s, v in idx.items()})
+T = dict(tokens=torch.tensor(tokens), family=torch.tensor(family).clamp_min(0), mask=torch.tensor(mask), K=torch.tensor(K),
+         charge=torch.tensor(z["charge"]).long(), mult=torch.tensor(z["mult"]).long(), omega=torch.tensor(omega))""")
 
-md("## 4. Training outputs\n\nLoss curves (train/validation) per configuration and seed; the implied pattern count at recall 0.9 as a function of epoch.")
-code("""# STUB: plots from ../out/training_log.json → figures/loss_curves.png, figures/pattern_count.png
-raise NotImplementedError('no training log yet')""")
+md("""## 2. Baseline model (PyTorch)
 
-md("## 5. Evaluation\n\nMetrics appropriate to the task: per-pair precision and recall at the operating point recall = 0.9; the **implied pattern count** K_prior "
-   "against the prior-free count K (the project's own metric); calibration of the pair probabilities (reliability curve). All on held-out molecules; "
-   "the benzene fixture is never a test molecule.")
-code("""# FIXTURE: the metric itself, on the fixture, to show what it computes (not a result)
-with torch.no_grad():
-    tokens = torch.as_tensor(fx['tokens'], dtype=torch.float32).unsqueeze(0)
-    labels = torch.as_tensor(fx['labels'], dtype=torch.float32)
-    prob = torch.sigmoid(model(tokens))[0]
-print('implied pattern count at recall 0.9 (untrained model, fixture):', implied_pattern_count(prob, labels, recall=0.9))""")
+The ΔH model (design sheet `architecture/50_deltaH_model_components.mmd`, code `m05/deltah_model.py`): a **token embedding** (a linear layer
+with GELU and LayerNorm on the 23 mode features, plus two learned molecule tokens for charge and spin multiplicity, so that cations can join
+later without a change of architecture), an **encoder-only Transformer backbone** (2 layers, 4 heads, width 64, feed-forward 256, dropout 0.1,
+pre-norm), and two output heads on the contextualised mode vectors: the **block head** reads the pair of vectors (i, j) together with their
+frequencies and writes K_ij, applied to every pair inside a family; the **pair head** writes a logit for "this pair carries a large correction".
 
-md("## 6. Example behaviour\n\nOne concrete case each: a molecule where the prior saves patterns; a failure case (a large element the prior misses and what it "
-   "costs the recovery); overfitting or instability if observed.")
-code("""# STUB\nraise NotImplementedError('needs trained models')""")
+*Why a Transformer.* The input is a set of variable length whose elements interact through pairs (a coupling is a statement about two
+modes at once); self-attention is permutation-aware and sees every pair in one layer. A recurrent network would impose an order the
+modes do not have; a convolution would impose locality in frequency that couplings do not respect. *Why small.* The corpus is hundreds of
+molecules, not millions; the design keeps 136 k parameters and relies on the physics in the tokens rather than on capacity.""")
+code("""cfg = DeltaHConfig(n_families=4, n_irreps=0, n_env=13, n_layers=2)    # n_env 13 = 12 environment classes + the out-of-plane share
+model = DeltaHModel(cfg); assert cfg.d_in == D, (cfg.d_in, D)
+print(model); print("parameters:", f"{model.n_parameters():,}")""")
 
-md("## 7. Summary\n\nTo be written from the outputs above: what the comparison showed, whether the learned prior earns a licence (recipe: pattern saving and "
-   "agreement with the prior-free check on a held-out molecule), and what the project does with the answer either way.")
+md("""## 3. Training
 
-nb["cells"] = cells
-nb["metadata"]["kernelspec"] = {"name": "python3", "display_name": "Python 3", "language": "python"}
+Loss = block loss (mean squared error over the filled family-block elements; the block rule of 19 September) + the pair head's binary
+cross-entropy with the positive class weighted by its rarity. AdamW (lr 1e-3, weight decay 1e-2), batches of 8 molecules, early stopping on
+the validation loss, three seeds. Training progress is shown as loss curves.""")
+code("""def batches(ix, bs, rng=None):
+    ix = np.array(ix);
+    if rng is not None: rng.shuffle(ix)
+    for s in range(0, len(ix), bs): yield ix[s:s + bs]
+
+def pair_labels(Kb, maskb):
+    scale = (torch.diagonal(Kb, dim1=1, dim2=2).abs() * maskb).amax(1)                      # max_k |K_kk| per molecule
+    lab = (Kb.abs() >= THETA * scale[:, None, None]).float()
+    eye = torch.eye(Kb.shape[1], dtype=torch.bool)[None]
+    valid = maskb[:, :, None] & maskb[:, None, :] & ~eye
+    return lab, valid
+
+def losses(m, b):
+    out = m(T["tokens"][b], T["family"][b], T["charge"][b], T["mult"][b], T["mask"][b])
+    lb = block_loss(out["block"], T["K"][b], T["family"][b], T["mask"][b])
+    lab, valid = pair_labels(T["K"][b], T["mask"][b])
+    pos = lab[valid].mean().clamp(1e-3, 0.5); w = torch.where(lab > 0, (1 - pos) / pos, torch.ones_like(lab))
+    lp = (nn.functional.binary_cross_entropy_with_logits(out["pair_logits"], lab, weight=w, reduction="none") * valid).sum() / valid.sum().clamp_min(1)
+    return lb, lp, out
+
+def train(cfg, seed, epochs=EPOCHS, bs=8, patience=6):
+    torch.manual_seed(seed); rng = np.random.default_rng(seed)
+    m = DeltaHModel(cfg); opt = torch.optim.AdamW(m.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay)
+    hist = {"train": [], "val": []}; best = (float("inf"), None, 0)
+    for ep in range(epochs):
+        m.train(); tl = []
+        for b in batches(idx["train"], bs, rng):
+            lb, lp, _ = losses(m, torch.tensor(b)); loss = lb + lp
+            opt.zero_grad(); loss.backward(); nn.utils.clip_grad_norm_(m.parameters(), 1.0); opt.step(); tl.append(float(loss))
+        m.eval()
+        with torch.no_grad():
+            lb, lp, _ = losses(m, torch.tensor(idx["val"])); vl = float(lb + lp)
+        hist["train"].append(float(np.mean(tl))); hist["val"].append(vl)
+        if vl < best[0] - 1e-4: best = (vl, {k: v.clone() for k, v in m.state_dict().items()}, ep)
+        elif ep - best[2] >= patience: break
+    m.load_state_dict(best[1]); m.eval()
+    return m, hist, best[2]
+
+t0 = time.time(); runs = {"baseline": [train(cfg, s) for s in SEEDS]}
+print(f"baseline: {len(SEEDS)} seed(s), best epochs {[r[2] for r in runs['baseline']]}, {time.time() - t0:.0f} s")""")
+code("""def plot_curves(runs, name, fname):
+    fig, ax = plt.subplots(figsize=(6, 3.4))
+    for k, (m, h, be) in enumerate(runs):
+        ax.plot(h["train"], color="steelblue", alpha=0.6, label="train" if k == 0 else None); ax.plot(h["val"], color="darkorange", alpha=0.8, label="validation" if k == 0 else None)
+    ax.set_xlabel("epoch"); ax.set_ylabel("loss (block MSE + pair BCE)"); ax.set_title(f"{fname}. {name}: loss per epoch, {len(runs)} seed(s)"); ax.legend(); plt.tight_layout()
+    fig.savefig(FIG / f"{fname.lower().replace(' ', '')}_{name}.png", dpi=140); plt.show()
+plot_curves(runs["baseline"], "baseline", "Figure 2")""")
+
+md("""## 4. Controlled comparison: one change
+
+**What changed:** the depth of the backbone, 2 → 4 encoder layers. **Everything else is identical:** tokens, heads, width, dropout, optimiser,
+learning rate, batch size, epochs, early-stopping rule, splits and seeds. **Why this change:** the block target couples every mode of a family
+with every other; one attention layer sees pairs, two layers see pairs of pairs. If the corrections are governed by longer chains of
+interaction (a substituent changing a ring mode changing a C–H bend), depth should help; if the tokens already carry what matters, the deeper
+model should only overfit on a corpus of this size. Either outcome is informative for the pipeline's design (recipe, controlled change).""")
+code("""cfg4 = DeltaHConfig(n_families=4, n_irreps=0, n_env=13, n_layers=4)
+t0 = time.time(); runs["4 layers"] = [train(cfg4, s) for s in SEEDS]
+print(f"4 layers: parameters {DeltaHModel(cfg4).n_parameters():,} (baseline {model.n_parameters():,}); best epochs {[r[2] for r in runs['4 layers']]}, {time.time() - t0:.0f} s")
+plot_curves(runs["4 layers"], "4layers", "Figure 3")""")
+
+md("""## 5. Evaluation and comparison
+
+Metrics fit for the task, on the held-out test molecules. **Block head:** root-mean-square error of the predicted family-block elements in
+cm⁻¹, per family and separately for the diagonal (band shifts) and the couplings, against two rules that need no learning — the *zero rule*
+(no correction) and the *family-median rule* (each mode gets the training-set median shift of its family, couplings zero). **Pair head:**
+average precision of the support prediction against the *resonance-denominator rule* of the recipe (score 1/|ω_i² − ω_j²| within a family),
+so the learned head has to beat a free physical rule, not chance.""")
+code("""def average_precision(score, label):
+    o = np.argsort(-score); l = label[o];
+    if l.sum() == 0: return float("nan")
+    prec = np.cumsum(l) / (np.arange(len(l)) + 1); return float((prec * l).sum() / l.sum())
+
+def evaluate(models, ix):
+    b = torch.tensor(ix); res = {F: {"diag": [], "coup": []} for F in FAMILIES}; ap_model = []
+    fam = T["family"][b]; mk = T["mask"][b]; Kt = T["K"][b]
+    same = (fam[:, :, None] == fam[:, None, :]) & mk[:, :, None] & mk[:, None, :]
+    eye = torch.eye(Kt.shape[1], dtype=torch.bool)[None]
+    with torch.no_grad():
+        preds = torch.stack([m(T["tokens"][b], fam, T["charge"][b], T["mult"][b], mk)["block"] for m, _, _ in models]).mean(0)
+        logits = torch.stack([m(T["tokens"][b], fam, T["charge"][b], T["mult"][b], mk)["pair_logits"] for m, _, _ in models]).mean(0)
+    err = (preds - Kt)
+    for k, F in enumerate(FAMILIES):
+        inF = same & (fam[:, :, None] == k)
+        d = err[inF & eye]; c = err[inF & ~eye]
+        res[F]["diag"] = float(d.pow(2).mean().sqrt()) if d.numel() else float("nan"); res[F]["coup"] = float(c.pow(2).mean().sqrt()) if c.numel() else float("nan")
+    lab, valid = pair_labels(Kt, mk)
+    ap = average_precision(logits[valid].numpy(), lab[valid].numpy())
+    return res, ap
+
+def rules(ix):
+    b = torch.tensor(ix); fam = T["family"][b]; mk = T["mask"][b]; Kt = T["K"][b]; om = T["omega"][b]
+    same = (fam[:, :, None] == fam[:, None, :]) & mk[:, :, None] & mk[:, None, :]; eye = torch.eye(Kt.shape[1], dtype=torch.bool)[None]
+    tr = torch.tensor(idx["train"]); med = {}
+    for k in range(len(FAMILIES)):
+        dtr = torch.diagonal(T["K"][tr], dim1=1, dim2=2)[(T["family"][tr] == k) & T["mask"][tr]]
+        med[k] = float(dtr.median()) if dtr.numel() else 0.0
+    out = {"zero": {}, "family-median": {}}
+    for k, F in enumerate(FAMILIES):
+        inF = same & (fam[:, :, None] == k)
+        dz = Kt[inF & eye]; cz = Kt[inF & ~eye]
+        out["zero"][F] = {"diag": float(dz.pow(2).mean().sqrt()) if dz.numel() else float("nan"), "coup": float(cz.pow(2).mean().sqrt()) if cz.numel() else float("nan")}
+        dm = Kt[inF & eye] - med[k]
+        out["family-median"][F] = {"diag": float(dm.pow(2).mean().sqrt()) if dm.numel() else float("nan"), "coup": out["zero"][F]["coup"]}
+    lab, valid = pair_labels(Kt, mk)
+    w2 = om.pow(2); score = 1.0 / (w2[:, :, None] - w2[:, None, :]).abs().clamp_min(1.0); score = torch.where(same, score, torch.zeros_like(score))
+    return out, average_precision(score[valid].numpy(), lab[valid].numpy())
+
+rule_rms, ap_rule = rules(idx["test"])
+table = []; aps = {}
+for name, ms in runs.items():
+    r, ap = evaluate(ms, idx["test"])
+    for F in FAMILIES: table.append(dict(model=name, family=F, rms_diag=r[F]["diag"], rms_coup=r[F]["coup"]))
+    print(f"{name}: pair-head average precision {ap:.3f} (resonance rule {ap_rule:.3f})"); aps[name] = ap
+for rule in ("zero", "family-median"):
+    for F in FAMILIES: table.append(dict(model=rule, family=F, rms_diag=rule_rms[rule][F]["diag"], rms_coup=rule_rms[rule][F]["coup"]))
+tab = pd.DataFrame(table).pivot(index="family", columns="model", values=["rms_diag", "rms_coup"]).round(2)
+tab""")
+code("""fig, axes = plt.subplots(1, 2, figsize=(11, 3.6))
+for ax, what, title in ((axes[0], "rms_diag", "Figure 4a. Band shifts (diagonal): RMS error, cm$^{-1}$"), (axes[1], "rms_coup", "Figure 4b. Couplings: RMS error, cm$^{-1}$")):
+    sub = tab[what][["zero", "family-median", "baseline", "4 layers"]]; sub.plot.bar(ax=ax, width=0.8); ax.set_title(title); ax.set_ylabel("cm$^{-1}$"); ax.tick_params(axis="x", rotation=0)
+plt.tight_layout(); fig.savefig(FIG / "fig4_test_errors.png", dpi=140); plt.show()
+results = dict(release=RELEASE.name, n_molecules=int(N), n_modes_total=int(mask.sum()), splits={s: int(len(v)) for s, v in idx.items()}, quick=QUICK, epochs=EPOCHS, seeds=SEEDS,
+               parameters={"baseline": model.n_parameters(), "4 layers": DeltaHModel(cfg4).n_parameters()}, best_epochs={k: [r[2] for r in v] for k, v in runs.items()},
+               test_rms={F: {m_: {"diag": float(tab["rms_diag"].loc[F, m_]), "coup": float(tab["rms_coup"].loc[F, m_])} for m_ in ("zero", "family-median", "baseline", "4 layers")} for F in FAMILIES},
+               pair_ap={"baseline": aps["baseline"], "4 layers": aps["4 layers"], "resonance-rule": ap_rule}, final_val_loss={k: [r[1]["val"][r[2]] for r in v] for k, v in runs.items()})
+json.dump(results, open("results.json", "w"), indent=1); print("results.json written")""")
+
+# ---- summary: from results.json when it exists (a previous execution), else a placeholder that says so
+res_path = HERE / "results.json"
+if res_path.exists():
+    R = json.load(open(res_path, encoding="utf-8"))
+    rip = R["test_rms"]["ring-ip"]; oop = R["test_rms"]["CH-oop"]
+    better = "the deeper model" if np.nanmean([R["test_rms"][F]["4 layers"]["diag"] for F in R["test_rms"]]) < np.nanmean([R["test_rms"][F]["baseline"]["diag"] for F in R["test_rms"]]) else "the baseline"
+    summary = (f"""## 6. Summary
+
+The task was to predict, from cheap-level normal-mode tokens alone, the family blocks of the correction matrix between two levels of
+theory for {R['n_molecules']} molecules ({R['n_modes_total']:,} modes; release `{R['release']}`), split by molecule into
+{R['splits']['train']}/{R['splits']['val']}/{R['splits']['test']}. The baseline was the ΔH model with a two-layer encoder ({R['parameters']['baseline']:,}
+parameters); the one controlled change was depth, four layers ({R['parameters']['4 layers']:,} parameters), everything else fixed, {len(R['seeds'])} seed(s).
+On the test molecules the ring-in-plane band shifts came out at RMS {rip['baseline']['diag']:.1f} cm⁻¹ (baseline) and {rip['4 layers']['diag']:.1f} (four layers) against
+{rip['zero']['diag']:.1f} for the zero rule and {rip['family-median']['diag']:.1f} for the family-median rule; the C–H out-of-plane shifts {oop['baseline']['diag']:.1f} / {oop['4 layers']['diag']:.1f}
+against {oop['zero']['diag']:.1f} / {oop['family-median']['diag']:.1f}; the pair head reached average precision {R['pair_ap']['baseline']:.2f} / {R['pair_ap']['4 layers']:.2f} against
+{R['pair_ap']['resonance-rule']:.2f} for the resonance-denominator rule. The most important difference between the two configurations is therefore
+{('small' if abs(rip['baseline']['diag'] - rip['4 layers']['diag']) < 1.0 else 'in favour of ' + better)} on this corpus. The unexpected part is recorded with the numbers above; """
+               + ("this was a quick pipeline check (fewer epochs, one seed) and not a result." if R.get("quick") else "the comparison stands as pre-registered."))
+else:
+    summary = ("## 6. Summary\n\n*Written from `results.json` after the first full execution (the builder fills this section from the recorded numbers); "
+               "not yet executed.*")
+md(summary)
+
+nb = new_notebook(cells=cells, metadata={"kernelspec": {"name": "python3", "display_name": "Python 3", "language": "python"}})
 path = HERE / "deep_learning.ipynb"
-
-if __name__ == "__main__":
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--execute", action="store_true", help="execute the notebook (fixture cells; stub cells raise and stop it — intended)")
-    args = ap.parse_args()
-    nbf.write(nb, path)
-    print("written:", path)
-    if args.execute:
-        from nbclient import NotebookClient
-        NotebookClient(nb, timeout=900, kernel_name="python3", allow_errors=True, resources={"metadata": {"path": str(HERE)}}).execute()
-        nbf.write(nb, path)
-        print("executed (stub cells recorded their NotImplementedError, by design)")
+nbformat.write(nb, path)
+if "--no-execute" not in sys.argv:
+    NotebookClient(nb, timeout=3600, kernel_name="python3", resources={"metadata": {"path": str(HERE)}}).execute()
+    nbformat.write(nb, path)
+    print("executed and written:", path)
+else:
+    print("written (not executed):", path)

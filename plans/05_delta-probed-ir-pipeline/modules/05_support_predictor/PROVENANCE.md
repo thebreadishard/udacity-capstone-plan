@@ -92,3 +92,18 @@ names the network the ΔH model (block head, pair head) and its PyTorch file sup
 anharmonic step of the spectrum pipeline is settled on analytic pyscf Hessians (decision 46). Still owed as listed above: the subset
 decision on Hessian QM9 (66 all-carbon rings), the Zenodo release of the corpus (the user), the notebook and report in the rubric form.
 Code that ships goes through the promotion gate of `QUALITY_POLICY.md` (decision 47).
+
+## Dated note, 2026-09-22 11:5x — rubric-form deliverables prepared (no results)
+
+The user asked for preparatory desk work on the next module. Built and run end to end on the layer-A corpus (42 of 45 local molecules; three
+skipped for an imaginary frequency at one level): `m05/build_release.py` → `data/corpus_release/layerA_2026-09-22.npz` (492 KB) with a manifest
+that lists every input Hessian's SHA-256, the token layout and the target definition (K_ij in the B3LYP mode basis, RECIPE amendment of 19 Sep);
+`m05/deltah_model.py` = the architecture sheet `GoalGathering/architecture/51_deltaH_model_pytorch.py` verbatim, refreshed and asserted identical by
+`m05/sync_model.py` (forward pass checked: d_in 23, 135,875 parameters at two layers); `notebook/make_notebook.py` rewritten in the rubric's
+structure (task type declared, load/inspect with samples and quality checks, baseline with the architecture shown and the design reasoning,
+training with loss curves, the pre-registered one change 2 → 4 layers, evaluation per family against the zero and family-median rules and the
+pair head against the resonance-denominator rule, a summary the builder fills from `results.json`); executed in quick mode (3 epochs, one seed,
+two threads, ≈ 1 min) — `notebook/results.json` and the figures carry the quick flag and are not results; `make_summary.py` with the nine sections,
+every number read from the result file and the manifest, four verified references, and a banner + no PDF whenever the results are quick.
+`RUBRIC_CHECKLIST_2026-09-22.md` records the status per rubric item and the order of work when E6 lands. Open, unchanged: the Zenodo release
+(the user), the Hessian QM9 subset decision, the full run, requirements from the environment of that run, promotion of the model to `src/dpir`.
