@@ -93,7 +93,7 @@ anharmonic step of the spectrum pipeline is settled on analytic pyscf Hessians (
 decision on Hessian QM9 (66 all-carbon rings), the Zenodo release of the corpus (the user), the notebook and report in the rubric form.
 Code that ships goes through the promotion gate of `QUALITY_POLICY.md` (decision 47).
 
-## Dated note, 2026-09-22 11:5x — rubric-form deliverables prepared (no results)
+## Dated note, 2026-09-22 11:4x — rubric-form deliverables prepared (no results)
 
 The user asked for preparatory desk work on the next module. Built and run end to end on the layer-A corpus (42 of 45 local molecules; three
 skipped for an imaginary frequency at one level): `m05/build_release.py` → `data/corpus_release/layerA_2026-09-22.npz` (492 KB) with a manifest
