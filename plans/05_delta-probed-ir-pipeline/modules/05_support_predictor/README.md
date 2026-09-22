@@ -37,6 +37,8 @@ structure around the ΔH model (`m05/deltah_model.py`, a verbatim copy of the ar
 the dataset builder with a checksummed manifest, and `RUBRIC_CHECKLIST_2026-09-22.md` (item by item: done / missing / owner). The numbers come with the
 layer-A2 release and a full execution; today's execution was a quick pipeline check and is labelled so in the notebook and the docx.
 
+*Dataset, decided 17:2x on 22 September 2026:* the own corpus (layers A + A2) alone for the first full run; Hessian QM9 is not in the dataset (details in `PROVENANCE.md`, dated note of the same time).
+
 Older scaffold pieces (still present, superseded for the submission): `python m05/build_corpus.py fixture`, `python m05/smoke_test.py`.
 
 `build_corpus.py fixture` reads the dry-run archives under `../../probes/results_dryrun/` and writes
