@@ -72,4 +72,4 @@ the version is pinned by hash, not by the file name.
 *Dated note 2026-09-22 07:1x:* the June 2026 draft repository that occupied the name `ai-programming-foundations-project` was renamed
 `draft-qm9-foundations-unsubmitted` (description: unsubmitted draft, not a Udacity submission; the Foundations project is this module). The
 rubric's Task 2 requires a repository named exactly `ai-programming-foundations-project` with at least two branches; the name is now free.
-How module 02 is submitted (a submission copy under that name, or this monorepo) is the user's decision before 25 September (weekend reminder set).
+The user decided 22 September 07:2x: the required submission copies (this one under `ai-programming-foundations-project`, with a development branch) are made at the very end, when all modules are finished; until then the monorepo is the working copy.
