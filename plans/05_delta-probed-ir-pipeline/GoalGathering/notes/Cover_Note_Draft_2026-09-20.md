@@ -55,6 +55,14 @@ met analytische Hessianen op dezelfde geometrieën zakt het verschil naar 0,1 cm
 verbeteringen aan de gebruikte pakketten zijn als pull requests ingediend. De notitie met voorspelling en uitkomst zit als bijlage bij
 dit bericht.
 
+Een tweede les van dezelfde week. Het eerste coupled-cluster dek (44 energieën langs de 20 trillingen van benzeen) gaf voor de in-vlak-trillingen
+gecorrigeerde harmonische frequenties binnen 7 cm⁻¹ van de literatuur-CCSD(T), maar zette de C–H-strekkingen 45 cm⁻¹ te laag. Niet de
+lokale afkap was de oorzaak (tien keer strengere drempels veranderden niets), maar de plek waar je meet: het dek meet elke methode op de
+B3LYP-geometrie, de literatuur op het eigen minimum. Die geometrieterm blijkt voorspelbaar uit één gradiënt op het dure niveau en onze eigen
+kubische constanten (op Hartree–Fock getoetst voor zes trillingen, binnen tien procent); met de term erbij landen de C–H-strekkingen op
+7 tot 23 cm⁻¹ van CCSD(T). Hij zit nu als vaste stap in labelfabriek en pijplijn; de tabel met alle twintig trillingen, inclusief de twee die
+nog open staan, breng ik mee.
+
 Wat ik van je vraag staat in §13. De drie belangrijkste: (1) een kritische lezing van §2–§3 en §7, de plekken waar de discipline
 van het plan houdt of niet; (3) of jij gasfase- of jet-gekoelde spectra kent van pyreen, chryseen en trifenyleen in het
 6–15 µm-gebied die mijn zoektocht van 5 september heeft gemist, want die maken de C–C-families op de pyreentrede beslisbaar; en
