@@ -1,0 +1,11 @@
+[HF/cc-pVTZ] gradient at B3LYP geometry (µE_h/q): breathing -3499.7, CH +3753.8; a1g minimum at q11* +0.733, q29* -0.255 (E drop 1760.6 µE_h); 24 s
+[HF/cc-pVTZ] implied C-H bond change at the relaxed point: -0.0124 Å
+[HF/cc-pVTZ] omega' along mode 29 at the B3LYP geometry: 3224.8 cm-1 (k +14760.7, c4 +133.9 µE_h)
+[HF/cc-pVTZ] omega' along mode 29 at the relaxed a1g point: 3336.2 cm-1 (k +15798.6, c4 +143.4 µE_h)
+[HF/cc-pVTZ] geometry effect on the C-H stretch curvature: +111.4 cm-1; total 49 s
+[B3LYP/6-31G*] gradient at B3LYP geometry (µE_h/q): breathing +199.8, CH -558.3; a1g minimum at q11* -0.043, q29* +0.038 (E drop 14.9 µE_h); 80 s
+[B3LYP/6-31G*] implied C-H bond change at the relaxed point: +0.0017 Å
+[B3LYP/6-31G*] omega' along mode 29 at the B3LYP geometry: 3211.9 cm-1 (k +14643.4, c4 +138.7 µE_h)
+[B3LYP/6-31G*] omega' along mode 29 at the relaxed a1g point: 3196.1 cm-1 (k +14499.0, c4 +137.4 µE_h)
+[B3LYP/6-31G*] geometry effect on the C-H stretch curvature: -15.9 cm-1; total 168 s
+done
