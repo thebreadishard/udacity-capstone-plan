@@ -53,3 +53,6 @@ plans/*/modules/*/out/**/*.csv.gz
 # Plan 05 Module 05 corpus factory: per-molecule Hessian folders and the runner lock stay out of git; manifest, ledger, STATUS, decks, scripts are committed
 plans/*/modules/*/corpus/molecules/
 plans/*/modules/*/corpus/corpus.lock
+
+# Plan 05 probes: hand-transcribed benchmark tables are sources, so they override the blanket *.json rule
+!plans/*/probes/data/*.json

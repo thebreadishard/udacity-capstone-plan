@@ -114,3 +114,13 @@ data; §7's diagnosis stands. Remaining residual in the diagnostic sits in exact
 
 *Addendum 21:2x:* T3 (analytic Hessians, step 0.10) reproduces T2 to 0.1 cm⁻¹ on all three bands (850.6 / 1004.4 / 1324.0) with the route
 maximum halved to 0.44 cm⁻¹; the pipeline step is 0.10 (pre-registration note, addendum of the same time).
+
+## 9. Added 22 September 07:4x — the two papers arrived; independent check of the anharmonic step, and experiment-derived harmonics for the R0 reading
+
+The supervisor sent Goodman, Ozkabak & Thakur 1991 and Miani et al. 2000 (local copies in `Papers/`, not in git). Our two-route QFF on B3LYP/6-31G* against Miani et al. 2000 (B3LYP/TZ2P, their own anharmonic force field, Table VII): the anharmonic shifts ν − ω agree to a **median 4.3 cm⁻¹ over the 20 Wilson modes (maximum 30, or 20 without the C–H stretches)** — breathing −17.4 vs −17, ν10 −14.5 vs −18, Kekulé −34.5 vs −28. Against the gas-phase origins (Goodman 1991 Table I; Miani's list) our fundamentals have MAE 10.6 cm⁻¹, Miani's TZ2P 11.6 (4.4 without the C–H stretches, where their ε = 0 values carry resonance artefacts). So the anharmonic step is right to a few cm⁻¹ and what remains in our bands (+11 on the breathing mode, +15 on Kekulé) is the 6-31G* harmonic — the quantity the ΔH correction addresses. Table and mapping: `results_vpt2/benzene_benchmark_2026-09-22.md` (`benzene_benchmark_map.py`, mapping by class and rank, two near-crossing assignments flagged); transcription with sources: `data/benzene_benchmark_goodman1991_miani2000.json`.
+For the harmonic-against-harmonic closing (§2–3) the experiment-derived harmonic frequencies are now on file: Goodman's Table II estimates (anharmonic
+corrections applied to nine modes only — for the others the "harmonic" equals the observed fundamental) and Miani's Table II ω_exp (experimental
+fundamentals plus their computed anharmonic constants; two columns, e.g. breathing 1003 and 1008, Kekulé 1326 and 1318). The R0 diagonal reading takes
+`results_vpt2/benzene_benchmark_2026-09-22_exp_nu.json` as `--exp` and `…_harmonic_refs.json` for the ω′-against-ω_exp column. The three test bands against
+Goodman's gas-phase origins: 850.6 vs 847.1 (ν10), 1004.4 vs 993.071 (ν1), 1324.0 vs 1309.4 (ν14) — the Shimanouchi values used so far (849 / 992 / 1310)
+differ from these by at most 2 cm⁻¹ and stay in the earlier sections as written.

@@ -1,0 +1,272 @@
+{
+ "0": {
+  "wilson": 16,
+  "sym": "e2u",
+  "goodman_omega": 398,
+  "miani_omega_exp": 406,
+  "miani_omega_exp_ref29": 407,
+  "ccsdt_omega": 406,
+  "exp_nu": 398
+ },
+ "1": {
+  "wilson": 16,
+  "sym": "e2u",
+  "goodman_omega": 398,
+  "miani_omega_exp": 406,
+  "miani_omega_exp_ref29": 407,
+  "ccsdt_omega": 406,
+  "exp_nu": 398
+ },
+ "2": {
+  "wilson": 6,
+  "sym": "e2g",
+  "goodman_omega": 607.8,
+  "miani_omega_exp": 611,
+  "miani_omega_exp_ref29": 613,
+  "ccsdt_omega": 617,
+  "exp_nu": 608.13
+ },
+ "3": {
+  "wilson": 6,
+  "sym": "e2g",
+  "goodman_omega": 607.8,
+  "miani_omega_exp": 611,
+  "miani_omega_exp_ref29": 613,
+  "ccsdt_omega": 617,
+  "exp_nu": 608.13
+ },
+ "4": {
+  "wilson": 11,
+  "sym": "a2u",
+  "goodman_omega": 674.0,
+  "miani_omega_exp": 687,
+  "miani_omega_exp_ref29": 686,
+  "ccsdt_omega": 683,
+  "exp_nu": 673.97465
+ },
+ "5": {
+  "wilson": 4,
+  "sym": "b2g",
+  "goodman_omega": 707,
+  "miani_omega_exp": 709,
+  "miani_omega_exp_ref29": 718,
+  "ccsdt_omega": 717,
+  "exp_nu": 707
+ },
+ "6": {
+  "wilson": 10,
+  "sym": "e1g",
+  "goodman_omega": 847.1,
+  "miani_omega_exp": 865,
+  "miani_omega_exp_ref29": 847,
+  "ccsdt_omega": 861,
+  "exp_nu": 847.1
+ },
+ "7": {
+  "wilson": 10,
+  "sym": "e1g",
+  "goodman_omega": 847.1,
+  "miani_omega_exp": 865,
+  "miani_omega_exp_ref29": 847,
+  "ccsdt_omega": 861,
+  "exp_nu": 847.1
+ },
+ "8": {
+  "wilson": 17,
+  "sym": "e2u",
+  "goodman_omega": 967,
+  "miani_omega_exp": 985,
+  "miani_omega_exp_ref29": 967,
+  "ccsdt_omega": 987,
+  "exp_nu": 967
+ },
+ "9": {
+  "wilson": 17,
+  "sym": "e2u",
+  "goodman_omega": 967,
+  "miani_omega_exp": 985,
+  "miani_omega_exp_ref29": 967,
+  "ccsdt_omega": 987,
+  "exp_nu": 967
+ },
+ "10": {
+  "wilson": 5,
+  "sym": "b2g",
+  "goodman_omega": 990,
+  "miani_omega_exp": 1009,
+  "miani_omega_exp_ref29": 990,
+  "ccsdt_omega": 1012,
+  "exp_nu": 990
+ },
+ "11": {
+  "wilson": 12,
+  "sym": "b1u",
+  "goodman_omega": 1010,
+  "miani_omega_exp": 1020,
+  "miani_omega_exp_ref29": 1024,
+  "ccsdt_omega": 1030,
+  "exp_nu": 1010
+ },
+ "12": {
+  "wilson": 1,
+  "sym": "a1g",
+  "goodman_omega": 994.4,
+  "miani_omega_exp": 1003,
+  "miani_omega_exp_ref29": 1008,
+  "ccsdt_omega": 1010,
+  "exp_nu": 993.071
+ },
+ "13": {
+  "wilson": 18,
+  "sym": "e1u",
+  "goodman_omega": 1038.3,
+  "miani_omega_exp": 1056,
+  "miani_omega_exp_ref29": 1058,
+  "ccsdt_omega": 1057,
+  "exp_nu": 1038.267
+ },
+ "14": {
+  "wilson": 18,
+  "sym": "e1u",
+  "goodman_omega": 1038.3,
+  "miani_omega_exp": 1056,
+  "miani_omega_exp_ref29": 1058,
+  "ccsdt_omega": 1057,
+  "exp_nu": 1038.267
+ },
+ "15": {
+  "wilson": 15,
+  "sym": "b2u",
+  "goodman_omega": 1149.7,
+  "miani_omega_exp": 1163,
+  "miani_omega_exp_ref29": 1167,
+  "ccsdt_omega": 1163,
+  "exp_nu": 1149.7
+ },
+ "16": {
+  "wilson": 9,
+  "sym": "e2g",
+  "goodman_omega": 1177.8,
+  "miani_omega_exp": 1194,
+  "miani_omega_exp_ref29": 1178,
+  "ccsdt_omega": 1197,
+  "exp_nu": 1177.776
+ },
+ "17": {
+  "wilson": 9,
+  "sym": "e2g",
+  "goodman_omega": 1177.8,
+  "miani_omega_exp": 1194,
+  "miani_omega_exp_ref29": 1178,
+  "ccsdt_omega": 1197,
+  "exp_nu": 1177.776
+ },
+ "18": {
+  "wilson": 14,
+  "sym": "b2u",
+  "goodman_omega": 1309.4,
+  "miani_omega_exp": 1326,
+  "miani_omega_exp_ref29": 1318,
+  "ccsdt_omega": 1338,
+  "exp_nu": 1309.4
+ },
+ "19": {
+  "wilson": 3,
+  "sym": "a2g",
+  "goodman_omega": 1367,
+  "miani_omega_exp": 1380,
+  "miani_omega_exp_ref29": 1367,
+  "ccsdt_omega": 1392,
+  "exp_nu": 1350
+ },
+ "20": {
+  "wilson": 19,
+  "sym": "e1u",
+  "goodman_omega": 1494,
+  "miani_omega_exp": 1509,
+  "miani_omega_exp_ref29": 1494,
+  "ccsdt_omega": 1522,
+  "exp_nu": 1483.9854
+ },
+ "21": {
+  "wilson": 19,
+  "sym": "e1u",
+  "goodman_omega": 1494,
+  "miani_omega_exp": 1509,
+  "miani_omega_exp_ref29": 1494,
+  "ccsdt_omega": 1522,
+  "exp_nu": 1483.9854
+ },
+ "22": {
+  "wilson": 8,
+  "sym": "e2g",
+  "goodman_omega": 1607,
+  "miani_omega_exp": 1637,
+  "miani_omega_exp_ref29": 1607,
+  "ccsdt_omega": 1645,
+  "exp_nu": 1600.976
+ },
+ "23": {
+  "wilson": 8,
+  "sym": "e2g",
+  "goodman_omega": 1607,
+  "miani_omega_exp": 1637,
+  "miani_omega_exp_ref29": 1607,
+  "ccsdt_omega": 1645,
+  "exp_nu": 1600.976
+ },
+ "24": {
+  "wilson": 13,
+  "sym": "b1u",
+  "goodman_omega": 3174,
+  "miani_omega_exp": 3173,
+  "miani_omega_exp_ref29": 3174,
+  "ccsdt_omega": null,
+  "exp_nu": 3057
+ },
+ "25": {
+  "wilson": 7,
+  "sym": "e2g",
+  "goodman_omega": 3174,
+  "miani_omega_exp": 3183,
+  "miani_omega_exp_ref29": 3174,
+  "ccsdt_omega": 3210,
+  "exp_nu": 3056.7
+ },
+ "26": {
+  "wilson": 7,
+  "sym": "e2g",
+  "goodman_omega": 3174,
+  "miani_omega_exp": 3183,
+  "miani_omega_exp_ref29": 3174,
+  "ccsdt_omega": 3210,
+  "exp_nu": 3056.7
+ },
+ "27": {
+  "wilson": 20,
+  "sym": "e1u",
+  "goodman_omega": 3181.1,
+  "miani_omega_exp": 3200,
+  "miani_omega_exp_ref29": 3181,
+  "ccsdt_omega": 3212,
+  "exp_nu": 3064.3674
+ },
+ "28": {
+  "wilson": 20,
+  "sym": "e1u",
+  "goodman_omega": 3181.1,
+  "miani_omega_exp": 3200,
+  "miani_omega_exp_ref29": 3181,
+  "ccsdt_omega": 3212,
+  "exp_nu": 3064.3674
+ },
+ "29": {
+  "wilson": 2,
+  "sym": "a1g",
+  "goodman_omega": 3191,
+  "miani_omega_exp": 3210,
+  "miani_omega_exp_ref29": 3191,
+  "ccsdt_omega": 3218,
+  "exp_nu": 3073.942
+ }
+}
