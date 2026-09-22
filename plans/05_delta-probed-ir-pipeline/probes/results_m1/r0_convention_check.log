@@ -1,0 +1,20 @@
+reference: B3LYP/6-31G* -232.243820471  HF/cc-pVTZ -230.778434773  (11 s)
+mode 29 q=-1.0: dE_B3LYP +7936.3 µE_h  dE_HF +3682.7 µE_h
+mode 29 q=-0.5: dE_B3LYP +1892.8 µE_h  dE_HF -241.0 µE_h
+mode 29 q=+0.5: dE_B3LYP +1772.4 µE_h  dE_HF +3935.4 µE_h
+mode 29 q=+1.0: dE_B3LYP +6776.4 µE_h  dE_HF +11145.0 µE_h
+  B3LYP/6-31G*  k +14643.4 c4 +138.7 µE_h -> omega' 3211.9 (omega_B3LYP 3210.0; from |q|=0.5 alone 3213.8)
+  HF/cc-pVTZ    k +14760.7 c4 +133.9 µE_h -> omega' 3224.8 (omega_B3LYP 3210.0; from |q|=0.5 alone 3226.6)
+mode 24 q=+0.5: dE_B3LYP +1811.7 µE_h  dE_HF +1819.6 µE_h
+mode 24 q=+1.0: dE_B3LYP +7273.7 µE_h  dE_HF +7304.0 µE_h
+  B3LYP/6-31G*  k +14475.8 c4 +143.2 µE_h -> omega' 3175.6 (omega_B3LYP 3174.1; from |q|=0.5 alone 3177.5)
+  HF/cc-pVTZ    k +14540.0 c4 +136.1 µE_h -> omega' 3182.6 (omega_B3LYP 3174.1; from |q|=0.5 alone 3184.5)
+mode 0 q=+0.5: dE_B3LYP +236.4 µE_h  dE_HF +318.5 µE_h
+mode 0 q=+1.0: dE_B3LYP +949.8 µE_h  dE_HF +1278.8 µE_h
+  B3LYP/6-31G*  k +1887.9 c4 +23.4 µE_h -> omega' 414.7 (omega_B3LYP 415.0; from |q|=0.5 alone 415.0)
+  HF/cc-pVTZ    k +2545.2 c4 +24.7 µE_h -> omega' 481.5 (omega_B3LYP 415.0; from |q|=0.5 alone 481.8)
+mode 18 q=+0.5: dE_B3LYP +775.7 µE_h  dE_HF +612.5 µE_h
+mode 18 q=+1.0: dE_B3LYP +3114.2 µE_h  dE_HF +2474.0 µE_h
+  B3LYP/6-31G*  k +6197.5 c4 +61.7 µE_h -> omega' 1358.4 (omega_B3LYP 1356.5; from |q|=0.5 alone 1359.2)
+  HF/cc-pVTZ    k +4883.8 c4 +128.5 µE_h -> omega' 1205.8 (omega_B3LYP 1356.5; from |q|=0.5 alone 1207.8)
+done in 129 s
