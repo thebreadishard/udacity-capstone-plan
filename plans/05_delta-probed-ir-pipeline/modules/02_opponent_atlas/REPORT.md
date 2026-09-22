@@ -124,7 +124,7 @@ is absent at every charge.
 ## 6. Distinctness and the earlier draft (decision 7, 2026-09-04)
 
 An earlier, never-submitted draft of this Foundations project on the QM9 dataset exists in the
-student's GitHub account; it is renamed or archived and is not this submission. Module 03 uses
+student's GitHub account; it was renamed `draft-qm9-foundations-unsubmitted` on 22 September 2026, its description says so, and it is not this submission. Module 03 uses
 *measurements* (laboratory scoreboards, own provenance), Module 04 a derived join table with its own
 identifier; this table is not reused as either.
 

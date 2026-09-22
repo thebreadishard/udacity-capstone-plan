@@ -79,3 +79,7 @@ statistics. The builder and notebook implement it without change.
 - `notebook/make_notebook.py` → `notebook/analysis.ipynb`, `notebook/figures/fig1–3`, `notebook/test_results.json`.
 - `make_summary.py` → `module_summary.docx/.pdf` (template `Rubrics/APA7_template.docx`).
 - `README.md` (rubric form), `requirements.txt` (`pip freeze`).
+
+*Dated note 2026-09-22 07:1x:* `module_summary.docx/.pdf` rebuilt with `make_summary.py` because the 11 September build still read
+"4,218 rows and 21 columns" while the dataset has carried 31 columns since 12 September (u_band columns). The only sentence that changed is
+that one (text diff of the two documents); test results, pairs and figures are unchanged.

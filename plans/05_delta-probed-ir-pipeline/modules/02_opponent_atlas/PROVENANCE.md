@@ -68,3 +68,8 @@ the version is pinned by hash, not by the file name.
   included), without symmetry labels; the line profile is not in the file.
 
 **Dated note 2026-09-13 (evening) — line D candidate, not yet in the atlas.** Found by the standing search of the mandate ledger: the line-C group's 2026 machine-learning PAH-IR predictors, all DFT-trained, all open access — He, Mai & Wang, A&A 708, A335 (DOI 10.1051/0004-6361/202659248; charge-aware, 12,599 species, up to 150 C); Tang, He, Wang & Qiu, MNRAS 546, stag283 (DOI 10.1093/mnras/stag283; GNN); Liu, Wang & Qiu, MNRAS 549, stag893 (DOI 10.1093/mnras/stag893; LLM on molecular strings); code `zwAstroChem/ML-DH-PAH-IR` (paper not found). Before any line-D row exists: read the three papers in full (fetch permitted, open access), find whether their predicted spectra or datasets are downloadable and under which licence, and version-freeze what is used. Bibliography items 74, 77–80.
+
+*Dated note 2026-09-22 07:1x:* the June 2026 draft repository that occupied the name `ai-programming-foundations-project` was renamed
+`draft-qm9-foundations-unsubmitted` (description: unsubmitted draft, not a Udacity submission; the Foundations project is this module). The
+rubric's Task 2 requires a repository named exactly `ai-programming-foundations-project` with at least two branches; the name is now free.
+How module 02 is submitted (a submission copy under that name, or this monorepo) is the user's decision before 25 September (weekend reminder set).

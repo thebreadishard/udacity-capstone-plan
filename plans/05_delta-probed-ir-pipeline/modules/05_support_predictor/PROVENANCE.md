@@ -81,3 +81,14 @@ controlled comparison · training outputs · evaluation · example behaviour · 
 dry-run tensor (code path only); cells marked STUB raise until the corpus exists — the submitted notebook must not contain
 them. `REPORT_OUTLINE.md` maps the nine required report sections to their number sources. Neither was executed or
 filled: both wait for the corpus factory's timing test (after the anchor job) and the dated subset-size note.
+
+## Dated status note, 2026-09-22 07:1x
+
+The scaffold of 12 September is overtaken on four points, recorded here so that nobody reads the old status as current: the corpus
+factory runs (layer A 39 molecules done; layer A2 = E6, 4 × 50 on Hetzner since 19 September, phase 1 ≈ 23 September); the E-series of
+19 September moved the target from a per-mode support bit to the family block (diagonal plus couplings) after E4 showed the per-mode label
+ill-posed and E1/E1b/E2/E5/E5b did not survive 45 molecules — the learning-curve rule (no verdict on tiny data) governs E6; the architecture
+names the network the ΔH model (block head, pair head) and its PyTorch file supersedes `m05/model.py` when the module is written; the
+anharmonic step of the spectrum pipeline is settled on analytic pyscf Hessians (decision 46). Still owed as listed above: the subset
+decision on Hessian QM9 (66 all-carbon rings), the Zenodo release of the corpus (the user), the notebook and report in the rubric form.
+Code that ships goes through the promotion gate of `QUALITY_POLICY.md` (decision 47).
