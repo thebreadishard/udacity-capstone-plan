@@ -173,6 +173,26 @@ para("With more time and data: the layer-A2 release of the corpus (200 further m
      "second pre-registered controlled change on the tokens (environment classes on or off); and an uncertainty head so that the prior can say "
      "where it does not know. The architecture's charge and multiplicity tokens are there for the cation rows the plan requires.")
 
+FU = NB / "results_followup.json"
+if FU.exists():
+    U = json.load(open(FU, encoding="utf-8"))
+    heading("Addendum (23 September 2026): a corrupted target and the representation of the couplings")
+    para(f"After the run above, two findings were added to the notebook as follow-up cells (section 7), leaving sections 1–6 unchanged so that "
+         f"the change of understanding is visible. First, an independent analytic calculation of one molecule's Hessians (benzene, pyscf, same "
+         f"geometry) disagreed with the corpus finite-difference Hessian by up to {U['benzene_check']['max_freq_disagreement_cm']:.0f} cm⁻¹; a screen of all "
+         f"{U['screen']['n']} molecules on the sorted-pair functional shift found benzene as the only molecule above 100 cm⁻¹ (median {U['screen']['median_max_shift']:.0f}). "
+         f"The molecule's target was replaced by the second route (release {U['release_followup']}) and the baseline retrained with the identical "
+         f"protocol: ring-in-plane band-shift RMS {U['test_rms_diag_corrected']['ring-ip']['baseline_retrained']:.1f} cm⁻¹ against {U['test_rms_diag_corrected']['ring-ip']['zero']:.1f} for the zero rule "
+         f"(C–H out-of-plane {U['test_rms_diag_corrected']['CH-oop']['baseline_retrained']:.1f} against {U['test_rms_diag_corrected']['CH-oop']['zero']:.1f}); the result of the main run stands."
+         + (f" Second, a pre-registered learning curve on the same corpus showed that the couplings, which the model above predicts as zero, are learned once "
+            f"the target is expressed in local pairwise force-constant terms instead of the normal-mode basis: ring coupling error relative to the zero rule "
+            f"{U['e7']['ratio_a'][-1]:.2f} on the layer-A hold-out and {U['e7']['ratio_b'][-1]:.2f} on molecules of cores never seen in training at {U['e7']['sizes'][-1]} training molecules, "
+            f"with corrected-frequency errors of {U['e7']['corrected_freq_rms_a']:.1f} and {U['e7']['corrected_freq_rms_b']:.1f} cm⁻¹ against {U['e7']['zero_rule_a']:.0f} for no correction. "
+            f"The model of this report is kept as the pre-registered baseline; the pairwise local target is the design of the next version." if "e7" in U else ""))
+    para("What was learned: a target can be wrong and a model will faithfully fail on it, so every derived quantity now gets a second route before "
+         "it is trusted; and the network was not the limit — the representation was. Both findings, their predictions and their outcomes are dated in "
+         "the project's pre-registration notes.")
+
 heading("References")
 refs = [
     "Danchev, V. (2022). Reproducible data science with Python: An open learning resource. Journal of Open Source Education, 5(56), 156. https://doi.org/10.21105/jose.00156",

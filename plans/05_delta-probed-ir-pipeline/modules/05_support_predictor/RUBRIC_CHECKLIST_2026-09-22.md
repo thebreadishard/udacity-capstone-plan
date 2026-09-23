@@ -37,3 +37,11 @@ and the full execution of the notebook.*
 - Report: built by `make_summary.py` from the same `results.json` (docx + PDF, see PROVENANCE) — the user's pass follows.
 - requirements.txt: **regenerated** from the environment of the full run.
 - Open: the user's pass; Zenodo release; the submission copy at the very end.
+
+## Status after the follow-up cells, 2026-09-23 14:4x
+
+- Notebook: **section 7 added** (second route on benzene, corpus screen, retrained baseline on the corrected release, E6/E7 comparison, what we learned);
+  executed top to bottom a third time in the same environment; sections 1–6 unchanged in source. The reviewer sees the original run and the correction.
+- Dataset: original release kept; corrected release `layerA2_2026-09-23b.npz` beside it with its own manifest (which molecule uses the second route).
+- Report: addendum section built from `results_followup.json` (same rule: no number typed by hand).
+- Open: the user's pass; Zenodo; the submission copy at the end.

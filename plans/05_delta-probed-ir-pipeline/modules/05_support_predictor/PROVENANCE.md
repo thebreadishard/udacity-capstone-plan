@@ -137,3 +137,18 @@ no difference beyond seed scatter. Best epochs of 26–29 out of 30 say the mode
 to name in the report, not a result. `requirements.txt` is now the `pip freeze` of the CCX53 environment. The E6 learning curve
 (`m05/e6_learning_curve.py`, pre-registration of 19 September) runs on the same machine and answers whether the couplings are
 data-limited; its outcome goes into the pre-registration file, not into this module's report.
+
+## Dated note, 2026-09-23 14:4x — follow-up cells (section 7) after the user's decision ("pas maar aan... in vervolg-cellen in plaats van in vervangende")
+
+The notebook gained a section 7 and was executed a third time, top to bottom, on the CCX53 (same environment; 16 threads). Sections 1–6 are unchanged in
+source; their numbers moved within seed/thread scatter against the first two executions (ring-in-plane baseline 5.46 against 5.32 before; C–H out-of-plane
+4.05 against 4.20) — this third execution is the deliverable, and `results.json` is its record. Section 7 shows, in this order: (7.1) the second-route check
+of benzene (pyscf analytic vs the corpus psi4 finite-difference ωB97X Hessian: max disagreement 132 cm⁻¹, |ΔH| 2.1e-02 a.u.) and the corpus-wide
+screen (`data/second_route/corpus_screen_2026-09-23.json`: 244 molecules, median max shift 48 cm⁻¹, 1 above 100); (7.2) the baseline retrained with the identical
+protocol on the corrected release `layerA2_2026-09-23b.npz` (built with `m05/build_release.py --prefer-analytic`, benzene's Hessians from `corpus/analytic_hessians.py`;
+benzene is in the **train** split): ring-in-plane 5.58 against 20.3 for the zero rule, C–H out-of-plane 3.98 against 24.1, pair AP
+0.285; (7.3) the pre-registered E6/E7 curves side by side (mode-basis couplings at the zero rule at every size; local pairwise target
+0.43 / 0.47 at 175 molecules, corrected frequencies 4.7 / 5.1 cm⁻¹); (7.4) what was learned. `results_followup.json` is the record of section 7 and feeds the
+report's addendum (`make_summary.py`). The model of sections 2–5 stays the module's pre-registered baseline; the pairwise local target is the design
+of the next version. Files added: `data/second_route/*.json`, `data/corpus_release/layerA2_2026-09-23b.*`, `corpus/analytic_hessians.py`, the screen in
+`corpus/check_results.py`.

@@ -37,6 +37,29 @@ def sha256(p: Path) -> str:
     return h.hexdigest()
 
 
+PREFER_ANALYTIC = "--prefer-analytic" in sys.argv     # 23 Sep 2026: use the pyscf second-route Hessians where both exist (corpus/analytic_hessians.py)
+USED_ANALYTIC: list = []
+_TMP: list = []
+
+
+def effective_dir(mol_dir: Path) -> Path:
+    """The directory every feature builder reads. With --prefer-analytic and both second-route files present, a temporary copy of the
+    molecule directory in which hessian_<tag>.npz ARE the analytic Hessians, so that tokens (mode vectors, shares) and the target K come
+    from the same Hessian — benzene's finite-difference ωB97X Hessian was a 133 cm⁻¹ artefact (23 Sep 2026)."""
+    if not (PREFER_ANALYTIC and (mol_dir / "hessian_b3lyp_analytic.npz").exists() and (mol_dir / "hessian_wb97x_analytic.npz").exists()):
+        return mol_dir
+    import shutil
+    import tempfile
+    tmp = tempfile.TemporaryDirectory(prefix="release_" + mol_dir.name + "_"); _TMP.append(tmp)
+    t = Path(tmp.name) / mol_dir.name; t.mkdir()
+    for f in ("geometry.json", "result.json"):
+        shutil.copy(mol_dir / f, t / f)
+    shutil.copy(mol_dir / "hessian_b3lyp_analytic.npz", t / "hessian_b3lyp.npz")
+    shutil.copy(mol_dir / "hessian_wb97x_analytic.npz", t / "hessian_wb97x.npz")
+    USED_ANALYTIC.append(mol_dir.name)
+    return t
+
+
 def block_matrix(mol_dir: Path):
     """K (M × M, cm⁻¹) in the B3LYP mode basis, and the low-level ω (cm⁻¹)."""
     g = json.load(open(mol_dir / "geometry.json"))
@@ -56,7 +79,10 @@ def main():
     ap.add_argument("molecules")
     ap.add_argument("out_prefix")
     ap.add_argument("--layer", default=None, help="keep only molecules whose result.json layer equals this")
+    ap.add_argument("--prefer-analytic", action="store_true", help="use hessian_<tag>_analytic.npz (pyscf second route) where both exist (23 Sep 2026)")
     a = ap.parse_args()
+    global PREFER_ANALYTIC
+    PREFER_ANALYTIC = a.prefer_analytic
     mdir = Path(a.molecules)
     rows = []
     skipped = []
@@ -70,13 +96,15 @@ def main():
         if r.get("n_imaginary_b3lyp", 0) or r.get("n_imaginary_wb97x", 0):
             skipped.append((d.name, "imaginary", r.get("layer")))
             continue
-        base = molecule_features(d)
-        tokens, cls, n_rings = environment_tokens(d, base)
-        K, freq = block_matrix(d)
+        dd = effective_dir(d)
+        base = molecule_features(dd)
+        tokens, cls, n_rings = environment_tokens(dd, base)
+        K, freq = block_matrix(dd)
         g = json.load(open(d / "geometry.json"))
         rows.append(dict(id=d.name, layer=r.get("layer"), tokens=tokens.astype(np.float32), family=np.array([FAMILIES.index(f) for f in base["family"]]),
                          omega=freq, K=K, charge=int(g.get("charge", 0)), mult=int(g.get("multiplicity", 1)), n_atoms=len(g["symbols"]),
-                         deck=hashlib.sha256(json.dumps(r.get("deck"), sort_keys=True).encode()).hexdigest()[:16], sha=dict(b3lyp=sha256(d / "hessian_b3lyp.npz"), wb97x=sha256(d / "hessian_wb97x.npz"))))
+                         deck=hashlib.sha256(json.dumps(r.get("deck"), sort_keys=True).encode()).hexdigest()[:16],
+                         sha=dict(b3lyp=sha256(dd / "hessian_b3lyp.npz"), wb97x=sha256(dd / "hessian_wb97x.npz"), analytic_second_route=(dd is not d))))
     if not rows:
         raise SystemExit("no complete molecules found")
     N = len(rows)
@@ -105,7 +133,7 @@ def main():
                     target="K_ij = L_i^T dH_mw L_j / (2 sqrt(w_i w_j)) in cm-1, B3LYP mode basis, dH = H(wB97X) - H(B3LYP)",
                     families=FAMILIES, mode_counts_per_family=fam_counts, decks=sorted({r["deck"] for r in rows if r["deck"]}),
                     molecules=[dict(id=r["id"], layer=r["layer"], n_atoms=r["n_atoms"], n_modes=len(r["omega"]), sha256=r["sha"]) for r in rows],
-                    skipped=skipped, npz_sha256=sha256(Path(str(out) + ".npz")))
+                    skipped=skipped, analytic_second_route=sorted(USED_ANALYTIC), npz_sha256=sha256(Path(str(out) + ".npz")))
     json.dump(manifest, open(str(out) + "_manifest.json", "w", encoding="utf-8"), indent=1)
     print(f"{N} molecules, max {M} modes, d_in {d_in}; families {fam_counts}; skipped {len(skipped)} -> {out}.npz ({Path(str(out) + '.npz').stat().st_size // 1024} KB)")
 

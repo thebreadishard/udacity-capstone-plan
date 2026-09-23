@@ -1,0 +1,1958 @@
+{
+ "built": "2026-09-23",
+ "rule": "sorted frequency lists of both functionals (modes > 50 cm-1), max |shift| per molecule; > 80 cm-1 is flagged for the second route",
+ "rows": [
+  {
+   "id": "A2_00b0ff5a24",
+   "name": "fluoranthene+COOH",
+   "layer": "A2",
+   "max_abs_shift": 44.8,
+   "rms_shift": 22.5,
+   "min_shift": -7.3
+  },
+  {
+   "id": "A2_00eeb8e5ed",
+   "name": "quinoxaline+OH",
+   "layer": "A2",
+   "max_abs_shift": 43.9,
+   "rms_shift": 23.4,
+   "min_shift": -15.5
+  },
+  {
+   "id": "A2_0101e57296",
+   "name": "fluoranthene+NH2",
+   "layer": "A2",
+   "max_abs_shift": 49.7,
+   "rms_shift": 23.3,
+   "min_shift": -11.8
+  },
+  {
+   "id": "A2_019964a9ed",
+   "name": "quinoxaline+OH",
+   "layer": "A2",
+   "max_abs_shift": 44.8,
+   "rms_shift": 23.8,
+   "min_shift": -14.4
+  },
+  {
+   "id": "A2_02c8833bd5",
+   "name": "fluoranthene+vinyl",
+   "layer": "A2",
+   "max_abs_shift": 45.8,
+   "rms_shift": 22.6,
+   "min_shift": -6.7
+  },
+  {
+   "id": "A2_02f13355a2",
+   "name": "acridine+CN",
+   "layer": "A2",
+   "max_abs_shift": 43.0,
+   "rms_shift": 22.9,
+   "min_shift": -36.0
+  },
+  {
+   "id": "A2_041da590e8",
+   "name": "fluoranthene+CH3",
+   "layer": "A2",
+   "max_abs_shift": 50.4,
+   "rms_shift": 22.3,
+   "min_shift": -11.0
+  },
+  {
+   "id": "A2_0420908ebe",
+   "name": "phenanthridine+CF3",
+   "layer": "A2",
+   "max_abs_shift": 45.4,
+   "rms_shift": 20.9,
+   "min_shift": -10.1
+  },
+  {
+   "id": "A2_043da5bed2",
+   "name": "fluoranthene+SH",
+   "layer": "A2",
+   "max_abs_shift": 51.2,
+   "rms_shift": 23.6,
+   "min_shift": -13.7
+  },
+  {
+   "id": "A2_04719edc88",
+   "name": "phenanthridine+COOH",
+   "layer": "A2",
+   "max_abs_shift": 45.5,
+   "rms_shift": 22.3,
+   "min_shift": -12.6
+  },
+  {
+   "id": "A2_048ea73dab",
+   "name": "fluoranthene+CH3",
+   "layer": "A2",
+   "max_abs_shift": 51.3,
+   "rms_shift": 22.3,
+   "min_shift": -5.1
+  },
+  {
+   "id": "A2_04af6632de",
+   "name": "anthracene+ethynyl",
+   "layer": "A2",
+   "max_abs_shift": 45.5,
+   "rms_shift": 23.9,
+   "min_shift": -31.6
+  },
+  {
+   "id": "A2_05a9e0e4c8",
+   "name": "phenanthridine+CN",
+   "layer": "A2",
+   "max_abs_shift": 44.8,
+   "rms_shift": 21.9,
+   "min_shift": -6.1
+  },
+  {
+   "id": "A2_05e08111d2",
+   "name": "phenazine+CHO",
+   "layer": "A2",
+   "max_abs_shift": 50.1,
+   "rms_shift": 23.0,
+   "min_shift": -35.7
+  },
+  {
+   "id": "A2_05f5ff045c",
+   "name": "fluorene+NH2",
+   "layer": "A2",
+   "max_abs_shift": 55.3,
+   "rms_shift": 23.9,
+   "min_shift": -10.8
+  },
+  {
+   "id": "A2_06067133dc",
+   "name": "quinoxaline+F",
+   "layer": "A2",
+   "max_abs_shift": 44.5,
+   "rms_shift": 22.6,
+   "min_shift": -19.9
+  },
+  {
+   "id": "A2_06222c33e3",
+   "name": "fluoranthene+NH2",
+   "layer": "A2",
+   "max_abs_shift": 48.8,
+   "rms_shift": 22.5,
+   "min_shift": -12.4
+  },
+  {
+   "id": "A2_066237c4f5",
+   "name": "fluorene+Cl",
+   "layer": "A2",
+   "max_abs_shift": 54.8,
+   "rms_shift": 22.8,
+   "min_shift": -19.4
+  },
+  {
+   "id": "A2_06873ee7ad",
+   "name": "fluorene+NH2",
+   "layer": "A2",
+   "max_abs_shift": 55.1,
+   "rms_shift": 24.1,
+   "min_shift": -18.9
+  },
+  {
+   "id": "A2_074ffaa9fa",
+   "name": "phenanthridine+vinyl",
+   "layer": "A2",
+   "max_abs_shift": 45.5,
+   "rms_shift": 22.8,
+   "min_shift": -7.4
+  },
+  {
+   "id": "A2_07f1fa9135",
+   "name": "phenanthridine+CHO",
+   "layer": "A2",
+   "max_abs_shift": 50.3,
+   "rms_shift": 22.0,
+   "min_shift": -15.0
+  },
+  {
+   "id": "A2_0805297aa2",
+   "name": "dibenzothiophene+CHO",
+   "layer": "A2",
+   "max_abs_shift": 51.2,
+   "rms_shift": 22.8,
+   "min_shift": -23.2
+  },
+  {
+   "id": "A2_0814eb7409",
+   "name": "phenazine+CHO",
+   "layer": "A2",
+   "max_abs_shift": 52.9,
+   "rms_shift": 24.1,
+   "min_shift": -42.9
+  },
+  {
+   "id": "A2_097651503c",
+   "name": "fluoranthene+CONH2",
+   "layer": "A2",
+   "max_abs_shift": 49.0,
+   "rms_shift": 23.1,
+   "min_shift": -5.1
+  },
+  {
+   "id": "A2_099cb8d5d4",
+   "name": "dibenzothiophene+CH3",
+   "layer": "A2",
+   "max_abs_shift": 50.6,
+   "rms_shift": 23.6,
+   "min_shift": -30.3
+  },
+  {
+   "id": "A2_09c1f9ee8a",
+   "name": "dibenzofuran+CHO",
+   "layer": "A2",
+   "max_abs_shift": 50.0,
+   "rms_shift": 23.3,
+   "min_shift": -30.8
+  },
+  {
+   "id": "A2_09d0b3be91",
+   "name": "phenanthrene+CONH2",
+   "layer": "A2",
+   "max_abs_shift": 48.5,
+   "rms_shift": 23.3,
+   "min_shift": -18.5
+  },
+  {
+   "id": "A2_0a158816bd",
+   "name": "quinoxaline+NH2",
+   "layer": "A2",
+   "max_abs_shift": 48.9,
+   "rms_shift": 23.4,
+   "min_shift": -17.0
+  },
+  {
+   "id": "A2_0a2685346d",
+   "name": "acridine+vinyl",
+   "layer": "A2",
+   "max_abs_shift": 49.9,
+   "rms_shift": 22.9,
+   "min_shift": -20.1
+  },
+  {
+   "id": "A2_0a2c2f12b8",
+   "name": "phenanthrene+Cl",
+   "layer": "A2",
+   "max_abs_shift": 45.4,
+   "rms_shift": 22.4,
+   "min_shift": -20.5
+  },
+  {
+   "id": "A2_0a89c174d8",
+   "name": "dibenzofuran+NO2",
+   "layer": "A2",
+   "max_abs_shift": 44.1,
+   "rms_shift": 22.6,
+   "min_shift": -27.8
+  },
+  {
+   "id": "A2_0ae8c5746d",
+   "name": "acridine+CN",
+   "layer": "A2",
+   "max_abs_shift": 51.1,
+   "rms_shift": 22.4,
+   "min_shift": -25.0
+  },
+  {
+   "id": "A2_0b93df3e1a",
+   "name": "acenaphthylene+CHO",
+   "layer": "A2",
+   "max_abs_shift": 50.9,
+   "rms_shift": 22.6,
+   "min_shift": -3.8
+  },
+  {
+   "id": "A2_0beab28c4f",
+   "name": "phenanthridine+Cl",
+   "layer": "A2",
+   "max_abs_shift": 45.2,
+   "rms_shift": 22.0,
+   "min_shift": -10.7
+  },
+  {
+   "id": "A2_0bf85f35e5",
+   "name": "phenanthridine+Cl",
+   "layer": "A2",
+   "max_abs_shift": 47.5,
+   "rms_shift": 22.4,
+   "min_shift": -19.2
+  },
+  {
+   "id": "A2_0c7ac2371d",
+   "name": "acenaphthylene+CONH2",
+   "layer": "A2",
+   "max_abs_shift": 49.2,
+   "rms_shift": 22.8,
+   "min_shift": -9.0
+  },
+  {
+   "id": "A2_0cfc5b5bdb",
+   "name": "acenaphthylene+CF3",
+   "layer": "A2",
+   "max_abs_shift": 43.0,
+   "rms_shift": 20.8,
+   "min_shift": -1.0
+  },
+  {
+   "id": "A2_0dc3aa4eb9",
+   "name": "fluorene+CH3",
+   "layer": "A2",
+   "max_abs_shift": 55.1,
+   "rms_shift": 23.7,
+   "min_shift": -19.2
+  },
+  {
+   "id": "A2_0e07e41776",
+   "name": "dibenzofuran+CF3",
+   "layer": "A2",
+   "max_abs_shift": 46.8,
+   "rms_shift": 20.7,
+   "min_shift": -9.9
+  },
+  {
+   "id": "A2_0e1c741b76",
+   "name": "fluoranthene+CN",
+   "layer": "A2",
+   "max_abs_shift": 43.5,
+   "rms_shift": 22.4,
+   "min_shift": -8.9
+  },
+  {
+   "id": "A2_0e7288334d",
+   "name": "dibenzothiophene+NH2",
+   "layer": "A2",
+   "max_abs_shift": 49.6,
+   "rms_shift": 23.5,
+   "min_shift": -15.7
+  },
+  {
+   "id": "A2_0ed4bfb28a",
+   "name": "carbazole+CONH2",
+   "layer": "A2",
+   "max_abs_shift": 49.4,
+   "rms_shift": 23.5,
+   "min_shift": -13.0
+  },
+  {
+   "id": "A2_0ef0a3a61c",
+   "name": "biphenylene+CN",
+   "layer": "A2",
+   "max_abs_shift": 48.0,
+   "rms_shift": 23.6,
+   "min_shift": -15.1
+  },
+  {
+   "id": "A2_0efbc8f50c",
+   "name": "phenanthrene+CONH2",
+   "layer": "A2",
+   "max_abs_shift": 49.2,
+   "rms_shift": 23.3,
+   "min_shift": -16.3
+  },
+  {
+   "id": "A2_0f1a2bd718",
+   "name": "anthracene+OCH3",
+   "layer": "A2",
+   "max_abs_shift": 47.8,
+   "rms_shift": 22.9,
+   "min_shift": -38.8
+  },
+  {
+   "id": "A2_0f86544b37",
+   "name": "phenanthrene+CN",
+   "layer": "A2",
+   "max_abs_shift": 46.2,
+   "rms_shift": 23.1,
+   "min_shift": -18.2
+  },
+  {
+   "id": "A2_101910c9ef",
+   "name": "phenanthridine+CHO",
+   "layer": "A2",
+   "max_abs_shift": 50.3,
+   "rms_shift": 22.1,
+   "min_shift": -11.4
+  },
+  {
+   "id": "A2_10374ec43c",
+   "name": "acridine+NO2",
+   "layer": "A2",
+   "max_abs_shift": 45.6,
+   "rms_shift": 22.9,
+   "min_shift": -16.1
+  },
+  {
+   "id": "A2_1046eed218",
+   "name": "phenanthridine+CF3",
+   "layer": "A2",
+   "max_abs_shift": 44.7,
+   "rms_shift": 21.0,
+   "min_shift": -4.9
+  },
+  {
+   "id": "A2_10d7d03408",
+   "name": "fluorene+COOH",
+   "layer": "A2",
+   "max_abs_shift": 53.2,
+   "rms_shift": 23.1,
+   "min_shift": -9.5
+  },
+  {
+   "id": "A2_11a9a9ada2",
+   "name": "phenanthridine+OH",
+   "layer": "A2",
+   "max_abs_shift": 62.7,
+   "rms_shift": 23.2,
+   "min_shift": -6.3
+  },
+  {
+   "id": "A2_11c681aefb",
+   "name": "fluorene+CF3",
+   "layer": "A2",
+   "max_abs_shift": 54.6,
+   "rms_shift": 21.6,
+   "min_shift": -7.6
+  },
+  {
+   "id": "A2_11d7cdeab0",
+   "name": "acenaphthylene+OCH3",
+   "layer": "A2",
+   "max_abs_shift": 48.0,
+   "rms_shift": 21.5,
+   "min_shift": -4.3
+  },
+  {
+   "id": "A2_11dec05d1b",
+   "name": "phenanthridine+vinyl",
+   "layer": "A2",
+   "max_abs_shift": 45.5,
+   "rms_shift": 22.3,
+   "min_shift": -9.9
+  },
+  {
+   "id": "A2_1279063d3c",
+   "name": "carbazole+CN",
+   "layer": "A2",
+   "max_abs_shift": 46.2,
+   "rms_shift": 23.0,
+   "min_shift": -25.8
+  },
+  {
+   "id": "A2_12deece5a3",
+   "name": "phenanthridine+ethynyl",
+   "layer": "A2",
+   "max_abs_shift": 48.4,
+   "rms_shift": 23.5,
+   "min_shift": -11.1
+  },
+  {
+   "id": "A2_13327d8d52",
+   "name": "carbazole+SH",
+   "layer": "A2",
+   "max_abs_shift": 68.7,
+   "rms_shift": 26.5,
+   "min_shift": -12.8
+  },
+  {
+   "id": "A2_13a0f8f47e",
+   "name": "phenanthridine+ethynyl",
+   "layer": "A2",
+   "max_abs_shift": 45.5,
+   "rms_shift": 23.7,
+   "min_shift": -16.1
+  },
+  {
+   "id": "A2_13a226a056",
+   "name": "acridine+OCH3",
+   "layer": "A2",
+   "max_abs_shift": 48.3,
+   "rms_shift": 22.4,
+   "min_shift": -19.5
+  },
+  {
+   "id": "A2_13bafae8e0",
+   "name": "carbazole+SH",
+   "layer": "A2",
+   "max_abs_shift": 87.6,
+   "rms_shift": 26.8,
+   "min_shift": -16.0
+  },
+  {
+   "id": "A2_13eea56ee5",
+   "name": "phenanthrene+CH3",
+   "layer": "A2",
+   "max_abs_shift": 71.3,
+   "rms_shift": 24.7,
+   "min_shift": -71.3
+  },
+  {
+   "id": "A2_14a0a0f3c9",
+   "name": "phenanthridine+COOH",
+   "layer": "A2",
+   "max_abs_shift": 45.7,
+   "rms_shift": 22.1,
+   "min_shift": -11.2
+  },
+  {
+   "id": "A2_14dee3bc02",
+   "name": "phenanthridine+CH3",
+   "layer": "A2",
+   "max_abs_shift": 50.3,
+   "rms_shift": 23.2,
+   "min_shift": -6.1
+  },
+  {
+   "id": "A2_1543119d9d",
+   "name": "fluorene+OCH3",
+   "layer": "A2",
+   "max_abs_shift": 54.2,
+   "rms_shift": 23.1,
+   "min_shift": -10.5
+  },
+  {
+   "id": "A2_156fe03a44",
+   "name": "dibenzothiophene+NH2",
+   "layer": "A2",
+   "max_abs_shift": 50.1,
+   "rms_shift": 24.3,
+   "min_shift": -23.2
+  },
+  {
+   "id": "A2_159a501353",
+   "name": "phenanthridine+COOH",
+   "layer": "A2",
+   "max_abs_shift": 45.0,
+   "rms_shift": 22.1,
+   "min_shift": -4.7
+  },
+  {
+   "id": "A2_16521f2764",
+   "name": "fluorene+ethynyl",
+   "layer": "A2",
+   "max_abs_shift": 55.8,
+   "rms_shift": 24.2,
+   "min_shift": -16.4
+  },
+  {
+   "id": "A2_16ec607c96",
+   "name": "phenanthrene+CHO",
+   "layer": "A2",
+   "max_abs_shift": 52.0,
+   "rms_shift": 22.3,
+   "min_shift": -13.6
+  },
+  {
+   "id": "A2_1767c744aa",
+   "name": "acenaphthylene+OCH3",
+   "layer": "A2",
+   "max_abs_shift": 47.8,
+   "rms_shift": 22.4,
+   "min_shift": -4.8
+  },
+  {
+   "id": "A2_177784139f",
+   "name": "phenazine+OH",
+   "layer": "A2",
+   "max_abs_shift": 43.2,
+   "rms_shift": 23.8,
+   "min_shift": -40.2
+  },
+  {
+   "id": "A2_187a20beab",
+   "name": "phenanthrene+CF3",
+   "layer": "A2",
+   "max_abs_shift": 46.2,
+   "rms_shift": 21.5,
+   "min_shift": -15.1
+  },
+  {
+   "id": "A2_18b62c6a42",
+   "name": "dibenzothiophene+COOH",
+   "layer": "A2",
+   "max_abs_shift": 45.4,
+   "rms_shift": 23.7,
+   "min_shift": -26.4
+  },
+  {
+   "id": "A2_192cd5911c",
+   "name": "phenazine+Cl",
+   "layer": "A2",
+   "max_abs_shift": 47.5,
+   "rms_shift": 23.3,
+   "min_shift": -44.5
+  },
+  {
+   "id": "A2_196b4cd166",
+   "name": "acenaphthylene+Cl",
+   "layer": "A2",
+   "max_abs_shift": 42.9,
+   "rms_shift": 22.4,
+   "min_shift": -15.3
+  },
+  {
+   "id": "A2_197913eb9c",
+   "name": "carbazole+vinyl",
+   "layer": "A2",
+   "max_abs_shift": 46.5,
+   "rms_shift": 23.4,
+   "min_shift": -13.1
+  },
+  {
+   "id": "A2_198d828af1",
+   "name": "phenanthridine+SH",
+   "layer": "A2",
+   "max_abs_shift": 49.6,
+   "rms_shift": 23.9,
+   "min_shift": -9.8
+  },
+  {
+   "id": "A2_19eaf39036",
+   "name": "phenanthrene+NO2",
+   "layer": "A2",
+   "max_abs_shift": 46.5,
+   "rms_shift": 22.6,
+   "min_shift": -15.6
+  },
+  {
+   "id": "A2_1a20326972",
+   "name": "acridine+CONH2",
+   "layer": "A2",
+   "max_abs_shift": 48.9,
+   "rms_shift": 22.9,
+   "min_shift": -18.5
+  },
+  {
+   "id": "A2_1a3e9f41ee",
+   "name": "acridine+ethynyl",
+   "layer": "A2",
+   "max_abs_shift": 59.2,
+   "rms_shift": 23.9,
+   "min_shift": -26.2
+  },
+  {
+   "id": "A2_1aa4c0cfbc",
+   "name": "dibenzofuran+vinyl",
+   "layer": "A2",
+   "max_abs_shift": 49.5,
+   "rms_shift": 22.8,
+   "min_shift": -14.9
+  },
+  {
+   "id": "A2_1b0ef60572",
+   "name": "phenanthridine+CN",
+   "layer": "A2",
+   "max_abs_shift": 45.1,
+   "rms_shift": 22.4,
+   "min_shift": -18.5
+  },
+  {
+   "id": "A2_1b2d1b7caf",
+   "name": "phenanthridine+CHO",
+   "layer": "A2",
+   "max_abs_shift": 52.8,
+   "rms_shift": 23.0,
+   "min_shift": -6.1
+  },
+  {
+   "id": "A2_1b3089a9c8",
+   "name": "acridine+NH2",
+   "layer": "A2",
+   "max_abs_shift": 49.3,
+   "rms_shift": 22.9,
+   "min_shift": -19.1
+  },
+  {
+   "id": "A2_1b389dc1d8",
+   "name": "fluorene+Cl",
+   "layer": "A2",
+   "max_abs_shift": 54.9,
+   "rms_shift": 22.9,
+   "min_shift": -18.8
+  },
+  {
+   "id": "A2_1bb2e3fbf1",
+   "name": "fluorene+F",
+   "layer": "A2",
+   "max_abs_shift": 49.2,
+   "rms_shift": 22.6,
+   "min_shift": -12.2
+  },
+  {
+   "id": "A2_1c2781e93a",
+   "name": "fluorene+NH2",
+   "layer": "A2",
+   "max_abs_shift": 55.9,
+   "rms_shift": 23.7,
+   "min_shift": -12.1
+  },
+  {
+   "id": "A2_1c29b66c9d",
+   "name": "phenanthridine+CH3",
+   "layer": "A2",
+   "max_abs_shift": 71.3,
+   "rms_shift": 24.7,
+   "min_shift": -71.3
+  },
+  {
+   "id": "A2_1c7ee11812",
+   "name": "acenaphthylene+OH",
+   "layer": "A2",
+   "max_abs_shift": 63.8,
+   "rms_shift": 24.2,
+   "min_shift": -4.5
+  },
+  {
+   "id": "A2_1c9af68a67",
+   "name": "dibenzofuran+Cl",
+   "layer": "A2",
+   "max_abs_shift": 45.7,
+   "rms_shift": 22.9,
+   "min_shift": -31.1
+  },
+  {
+   "id": "A2_1d6c152813",
+   "name": "anthracene+CH3",
+   "layer": "A2",
+   "max_abs_shift": 51.0,
+   "rms_shift": 23.7,
+   "min_shift": -24.9
+  },
+  {
+   "id": "A2_1e3ee2b3a8",
+   "name": "carbazole+COOH",
+   "layer": "A2",
+   "max_abs_shift": 47.0,
+   "rms_shift": 23.8,
+   "min_shift": -22.3
+  },
+  {
+   "id": "A2_1e5e1afa5c",
+   "name": "phenanthridine+CH3",
+   "layer": "A2",
+   "max_abs_shift": 50.4,
+   "rms_shift": 22.2,
+   "min_shift": -8.9
+  },
+  {
+   "id": "A2_1eeb0a54f6",
+   "name": "phenanthridine+CHO",
+   "layer": "A2",
+   "max_abs_shift": 50.6,
+   "rms_shift": 22.1,
+   "min_shift": -9.1
+  },
+  {
+   "id": "A2_1f52b56b90",
+   "name": "dibenzofuran+CN",
+   "layer": "A2",
+   "max_abs_shift": 43.7,
+   "rms_shift": 22.6,
+   "min_shift": -30.0
+  },
+  {
+   "id": "A2_1fa17eaaa2",
+   "name": "phenanthridine+CN",
+   "layer": "A2",
+   "max_abs_shift": 45.2,
+   "rms_shift": 22.0,
+   "min_shift": -11.9
+  },
+  {
+   "id": "A2_1fa81d01d6",
+   "name": "carbazole+SH",
+   "layer": "A2",
+   "max_abs_shift": 55.1,
+   "rms_shift": 24.9,
+   "min_shift": -25.5
+  },
+  {
+   "id": "A2_1ff7551053",
+   "name": "biphenylene+CF3",
+   "layer": "A2",
+   "max_abs_shift": 43.6,
+   "rms_shift": 21.9,
+   "min_shift": -11.0
+  },
+  {
+   "id": "A2_202963092d",
+   "name": "acenaphthylene+OCH3",
+   "layer": "A2",
+   "max_abs_shift": 48.3,
+   "rms_shift": 22.2,
+   "min_shift": -1.7
+  },
+  {
+   "id": "A2_204c06557b",
+   "name": "acridine+COOH",
+   "layer": "A2",
+   "max_abs_shift": 51.0,
+   "rms_shift": 23.3,
+   "min_shift": -25.1
+  },
+  {
+   "id": "A2_20747fd501",
+   "name": "pyrene+vinyl",
+   "layer": "A2",
+   "max_abs_shift": 47.5,
+   "rms_shift": 23.3,
+   "min_shift": -31.1
+  },
+  {
+   "id": "A2_20d3215ce3",
+   "name": "fluorene+CONH2",
+   "layer": "A2",
+   "max_abs_shift": 70.5,
+   "rms_shift": 24.7,
+   "min_shift": -12.0
+  },
+  {
+   "id": "A2_20e53d754a",
+   "name": "dibenzothiophene+F",
+   "layer": "A2",
+   "max_abs_shift": 44.9,
+   "rms_shift": 22.1,
+   "min_shift": -27.0
+  },
+  {
+   "id": "A2_20e59f3897",
+   "name": "anthracene+NO2",
+   "layer": "A2",
+   "max_abs_shift": 44.9,
+   "rms_shift": 22.6,
+   "min_shift": -34.4
+  },
+  {
+   "id": "A2_210c322595",
+   "name": "fluorene+F",
+   "layer": "A2",
+   "max_abs_shift": 54.8,
+   "rms_shift": 22.7,
+   "min_shift": -17.5
+  },
+  {
+   "id": "A2_215e004a51",
+   "name": "phenazine+COOH",
+   "layer": "A2",
+   "max_abs_shift": 48.0,
+   "rms_shift": 22.7,
+   "min_shift": -43.0
+  },
+  {
+   "id": "A2_21a2401f6c",
+   "name": "carbazole+CHO",
+   "layer": "A2",
+   "max_abs_shift": 52.7,
+   "rms_shift": 24.4,
+   "min_shift": -30.9
+  },
+  {
+   "id": "A2_21b688db0c",
+   "name": "fluorene+CH3",
+   "layer": "A2",
+   "max_abs_shift": 55.0,
+   "rms_shift": 22.9,
+   "min_shift": -16.0
+  },
+  {
+   "id": "A2_220d2c107b",
+   "name": "phenanthrene+NO2",
+   "layer": "A2",
+   "max_abs_shift": 45.6,
+   "rms_shift": 23.0,
+   "min_shift": -17.2
+  },
+  {
+   "id": "A2_221bc30690",
+   "name": "phenazine+Cl",
+   "layer": "A2",
+   "max_abs_shift": 47.3,
+   "rms_shift": 23.9,
+   "min_shift": -42.4
+  },
+  {
+   "id": "A2_224abc958a",
+   "name": "pyrene+COOH",
+   "layer": "A2",
+   "max_abs_shift": 46.2,
+   "rms_shift": 22.6,
+   "min_shift": -30.5
+  },
+  {
+   "id": "A2_22d0e8105c",
+   "name": "carbazole+SH",
+   "layer": "A2",
+   "max_abs_shift": 82.0,
+   "rms_shift": 28.1,
+   "min_shift": -21.2
+  },
+  {
+   "id": "A2_233ec9a78f",
+   "name": "acridine+Cl",
+   "layer": "A2",
+   "max_abs_shift": 51.8,
+   "rms_shift": 22.4,
+   "min_shift": -25.9
+  },
+  {
+   "id": "A2_2354759bfb",
+   "name": "quinoxaline+CONH2",
+   "layer": "A2",
+   "max_abs_shift": 48.6,
+   "rms_shift": 23.8,
+   "min_shift": -23.8
+  },
+  {
+   "id": "A2_238c9ced38",
+   "name": "phenanthrene+CF3",
+   "layer": "A2",
+   "max_abs_shift": 46.1,
+   "rms_shift": 20.9,
+   "min_shift": -18.9
+  },
+  {
+   "id": "A2_23d2ef8efb",
+   "name": "dibenzofuran+NO2",
+   "layer": "A2",
+   "max_abs_shift": 45.9,
+   "rms_shift": 22.9,
+   "min_shift": -25.3
+  },
+  {
+   "id": "A2_24d0139cc4",
+   "name": "dibenzothiophene+CF3",
+   "layer": "A2",
+   "max_abs_shift": 44.8,
+   "rms_shift": 21.7,
+   "min_shift": -9.8
+  },
+  {
+   "id": "A2_253cbb1c94",
+   "name": "carbazole+COOH",
+   "layer": "A2",
+   "max_abs_shift": 47.1,
+   "rms_shift": 23.3,
+   "min_shift": -17.8
+  },
+  {
+   "id": "A2_25e55c7a83",
+   "name": "phenanthrene+vinyl",
+   "layer": "A2",
+   "max_abs_shift": 47.6,
+   "rms_shift": 23.6,
+   "min_shift": -17.5
+  },
+  {
+   "id": "A2_25fe240a5d",
+   "name": "pyrene+OCH3",
+   "layer": "A2",
+   "max_abs_shift": 48.3,
+   "rms_shift": 22.7,
+   "min_shift": -25.8
+  },
+  {
+   "id": "A2_25fed68b27",
+   "name": "anthracene+F",
+   "layer": "A2",
+   "max_abs_shift": 44.9,
+   "rms_shift": 22.4,
+   "min_shift": -30.2
+  },
+  {
+   "id": "A2_2607024fdf",
+   "name": "carbazole+vinyl",
+   "layer": "A2",
+   "max_abs_shift": 47.2,
+   "rms_shift": 23.5,
+   "min_shift": -8.8
+  },
+  {
+   "id": "A2_26664f6a75",
+   "name": "biphenylene+ethynyl",
+   "layer": "A2",
+   "max_abs_shift": 47.8,
+   "rms_shift": 25.0,
+   "min_shift": -15.1
+  },
+  {
+   "id": "A2_26a9174202",
+   "name": "biphenylene+OCH3",
+   "layer": "A2",
+   "max_abs_shift": 48.2,
+   "rms_shift": 22.7,
+   "min_shift": -21.6
+  },
+  {
+   "id": "A2_27130c4c79",
+   "name": "fluorene+vinyl",
+   "layer": "A2",
+   "max_abs_shift": 55.1,
+   "rms_shift": 23.0,
+   "min_shift": -11.9
+  },
+  {
+   "id": "A2_27370742a0",
+   "name": "fluoranthene+CF3",
+   "layer": "A2",
+   "max_abs_shift": 44.2,
+   "rms_shift": 21.2,
+   "min_shift": -5.7
+  },
+  {
+   "id": "A2_2743aef5e8",
+   "name": "phenanthridine+NO2",
+   "layer": "A2",
+   "max_abs_shift": 52.1,
+   "rms_shift": 23.3,
+   "min_shift": -10.9
+  },
+  {
+   "id": "A2_27edf7297c",
+   "name": "fluorene+CH3",
+   "layer": "A2",
+   "max_abs_shift": 55.0,
+   "rms_shift": 24.0,
+   "min_shift": -12.8
+  },
+  {
+   "id": "A2_28eed45ad3",
+   "name": "fluorene+CF3",
+   "layer": "A2",
+   "max_abs_shift": 54.3,
+   "rms_shift": 21.8,
+   "min_shift": -5.6
+  },
+  {
+   "id": "A2_2931e48c62",
+   "name": "fluoranthene+CN",
+   "layer": "A2",
+   "max_abs_shift": 43.4,
+   "rms_shift": 22.2,
+   "min_shift": -8.1
+  },
+  {
+   "id": "A2_29caedd47d",
+   "name": "anthracene+COOH",
+   "layer": "A2",
+   "max_abs_shift": 47.0,
+   "rms_shift": 22.7,
+   "min_shift": -25.6
+  },
+  {
+   "id": "A2_2a0b78bd2b",
+   "name": "carbazole+CF3",
+   "layer": "A2",
+   "max_abs_shift": 46.1,
+   "rms_shift": 21.1,
+   "min_shift": -11.7
+  },
+  {
+   "id": "A2_2a43bd67da",
+   "name": "phenanthridine+Cl",
+   "layer": "A2",
+   "max_abs_shift": 49.0,
+   "rms_shift": 23.0,
+   "min_shift": -14.7
+  },
+  {
+   "id": "A2_2a88c6ce4f",
+   "name": "phenanthridine+CONH2",
+   "layer": "A2",
+   "max_abs_shift": 48.2,
+   "rms_shift": 23.8,
+   "min_shift": -7.9
+  },
+  {
+   "id": "A2_2ade2a9b93",
+   "name": "biphenylene+OH",
+   "layer": "A2",
+   "max_abs_shift": 44.4,
+   "rms_shift": 24.5,
+   "min_shift": -17.0
+  },
+  {
+   "id": "A2_2b693cf6e7",
+   "name": "pyrene+CH3",
+   "layer": "A2",
+   "max_abs_shift": 48.9,
+   "rms_shift": 23.0,
+   "min_shift": -30.7
+  },
+  {
+   "id": "A2_2b7c0323a9",
+   "name": "dibenzofuran+OH",
+   "layer": "A2",
+   "max_abs_shift": 62.8,
+   "rms_shift": 23.9,
+   "min_shift": -19.3
+  },
+  {
+   "id": "A2_2bb0e5721b",
+   "name": "acenaphthylene+COOH",
+   "layer": "A2",
+   "max_abs_shift": 43.0,
+   "rms_shift": 22.6,
+   "min_shift": -9.2
+  },
+  {
+   "id": "A2_2be56a1e2f",
+   "name": "phenanthridine+vinyl",
+   "layer": "A2",
+   "max_abs_shift": 45.4,
+   "rms_shift": 23.2,
+   "min_shift": -9.2
+  },
+  {
+   "id": "A2_2c22216564",
+   "name": "fluorene+NO2",
+   "layer": "A2",
+   "max_abs_shift": 49.6,
+   "rms_shift": 22.9,
+   "min_shift": -14.0
+  },
+  {
+   "id": "A2_2ca281c2d5",
+   "name": "quinoxaline+CN",
+   "layer": "A2",
+   "max_abs_shift": 43.8,
+   "rms_shift": 23.3,
+   "min_shift": -17.1
+  },
+  {
+   "id": "A2_2ce877d5e9",
+   "name": "phenanthridine+F",
+   "layer": "A2",
+   "max_abs_shift": 45.1,
+   "rms_shift": 21.5,
+   "min_shift": -6.0
+  },
+  {
+   "id": "A2_2cf97d4a75",
+   "name": "carbazole+CF3",
+   "layer": "A2",
+   "max_abs_shift": 46.8,
+   "rms_shift": 21.9,
+   "min_shift": -12.3
+  },
+  {
+   "id": "A2_2d6f59a2bf",
+   "name": "pyrene+OH",
+   "layer": "A2",
+   "max_abs_shift": 46.9,
+   "rms_shift": 23.9,
+   "min_shift": -22.4
+  },
+  {
+   "id": "A2_2e154f6054",
+   "name": "fluorene+NO2",
+   "layer": "A2",
+   "max_abs_shift": 54.4,
+   "rms_shift": 23.7,
+   "min_shift": -20.1
+  },
+  {
+   "id": "A2_2e1bd8f645",
+   "name": "phenazine+ethynyl",
+   "layer": "A2",
+   "max_abs_shift": 48.4,
+   "rms_shift": 25.5,
+   "min_shift": -48.4
+  },
+  {
+   "id": "A2_2e2d3e4196",
+   "name": "anthracene+F",
+   "layer": "A2",
+   "max_abs_shift": 52.8,
+   "rms_shift": 22.8,
+   "min_shift": -42.5
+  },
+  {
+   "id": "A2_2ef47ebcc1",
+   "name": "anthracene+ethynyl",
+   "layer": "A2",
+   "max_abs_shift": 48.3,
+   "rms_shift": 23.6,
+   "min_shift": -22.6
+  },
+  {
+   "id": "A2_2f079d63a1",
+   "name": "fluoranthene+CH3",
+   "layer": "A2",
+   "max_abs_shift": 58.6,
+   "rms_shift": 23.2,
+   "min_shift": -58.6
+  },
+  {
+   "id": "A2_2f5e215666",
+   "name": "quinoxaline+Cl",
+   "layer": "A2",
+   "max_abs_shift": 44.0,
+   "rms_shift": 22.5,
+   "min_shift": -11.6
+  },
+  {
+   "id": "A2_3020175511",
+   "name": "quinoxaline+NO2",
+   "layer": "A2",
+   "max_abs_shift": 43.8,
+   "rms_shift": 23.0,
+   "min_shift": -10.6
+  },
+  {
+   "id": "A2_303433ef20",
+   "name": "anthracene+F",
+   "layer": "A2",
+   "max_abs_shift": 46.6,
+   "rms_shift": 22.3,
+   "min_shift": -28.1
+  },
+  {
+   "id": "A2_3058513f57",
+   "name": "fluorene+Cl",
+   "layer": "A2",
+   "max_abs_shift": 54.6,
+   "rms_shift": 22.9,
+   "min_shift": -13.5
+  },
+  {
+   "id": "A2_306152f5f9",
+   "name": "phenanthrene+SH",
+   "layer": "A2",
+   "max_abs_shift": 54.8,
+   "rms_shift": 25.5,
+   "min_shift": -13.4
+  },
+  {
+   "id": "A2_3077af0137",
+   "name": "phenanthrene+F",
+   "layer": "A2",
+   "max_abs_shift": 45.2,
+   "rms_shift": 22.3,
+   "min_shift": -17.8
+  },
+  {
+   "id": "A2_30b024df67",
+   "name": "acridine+OCH3",
+   "layer": "A2",
+   "max_abs_shift": 48.2,
+   "rms_shift": 22.3,
+   "min_shift": -18.1
+  },
+  {
+   "id": "A2_311e979a14",
+   "name": "fluoranthene+Cl",
+   "layer": "A2",
+   "max_abs_shift": 44.5,
+   "rms_shift": 22.6,
+   "min_shift": -15.1
+  },
+  {
+   "id": "A2_3216c45c98",
+   "name": "phenanthridine+CF3",
+   "layer": "A2",
+   "max_abs_shift": 45.3,
+   "rms_shift": 20.5,
+   "min_shift": -4.4
+  },
+  {
+   "id": "A2_3250fa71cc",
+   "name": "phenanthridine+CH3",
+   "layer": "A2",
+   "max_abs_shift": 50.7,
+   "rms_shift": 23.0,
+   "min_shift": -14.7
+  },
+  {
+   "id": "A2_32861fe1de",
+   "name": "quinoxaline+CHO",
+   "layer": "A2",
+   "max_abs_shift": 50.2,
+   "rms_shift": 22.7,
+   "min_shift": -14.6
+  },
+  {
+   "id": "A2_32ab8c6937",
+   "name": "anthracene+CONH2",
+   "layer": "A2",
+   "max_abs_shift": 49.1,
+   "rms_shift": 23.0,
+   "min_shift": -27.4
+  },
+  {
+   "id": "A2_32e53836ea",
+   "name": "biphenylene+CHO",
+   "layer": "A2",
+   "max_abs_shift": 50.0,
+   "rms_shift": 22.9,
+   "min_shift": -14.4
+  },
+  {
+   "id": "A2_330b4d6d8d",
+   "name": "phenazine+vinyl",
+   "layer": "A2",
+   "max_abs_shift": 46.8,
+   "rms_shift": 23.6,
+   "min_shift": -33.5
+  },
+  {
+   "id": "A2_331729cd47",
+   "name": "fluoranthene+CN",
+   "layer": "A2",
+   "max_abs_shift": 43.6,
+   "rms_shift": 21.9,
+   "min_shift": -12.3
+  },
+  {
+   "id": "A2_336097f54c",
+   "name": "dibenzothiophene+CHO",
+   "layer": "A2",
+   "max_abs_shift": 52.0,
+   "rms_shift": 23.2,
+   "min_shift": -30.3
+  },
+  {
+   "id": "A2_33d8ee2f2f",
+   "name": "carbazole+CN",
+   "layer": "A2",
+   "max_abs_shift": 46.5,
+   "rms_shift": 23.0,
+   "min_shift": -16.5
+  },
+  {
+   "id": "A2_3468258fcf",
+   "name": "phenanthridine+CN",
+   "layer": "A2",
+   "max_abs_shift": 45.0,
+   "rms_shift": 22.1,
+   "min_shift": -14.9
+  },
+  {
+   "id": "A2_34bb1210bc",
+   "name": "dibenzofuran+CH3",
+   "layer": "A2",
+   "max_abs_shift": 50.5,
+   "rms_shift": 22.8,
+   "min_shift": -24.1
+  },
+  {
+   "id": "A2_34db2b4f50",
+   "name": "phenanthridine+NH2",
+   "layer": "A2",
+   "max_abs_shift": 49.3,
+   "rms_shift": 22.6,
+   "min_shift": -8.2
+  },
+  {
+   "id": "A2_34decc4ca8",
+   "name": "acenaphthylene+SH",
+   "layer": "A2",
+   "max_abs_shift": 76.1,
+   "rms_shift": 25.9,
+   "min_shift": -14.5
+  },
+  {
+   "id": "A2_356c370f21",
+   "name": "phenanthridine+NO2",
+   "layer": "A2",
+   "max_abs_shift": 45.5,
+   "rms_shift": 23.0,
+   "min_shift": -19.2
+  },
+  {
+   "id": "A2_356dcf6450",
+   "name": "dibenzothiophene+vinyl",
+   "layer": "A2",
+   "max_abs_shift": 45.4,
+   "rms_shift": 23.3,
+   "min_shift": -14.1
+  },
+  {
+   "id": "A2_35c01ca552",
+   "name": "pyrene+NO2",
+   "layer": "A2",
+   "max_abs_shift": 52.1,
+   "rms_shift": 22.8,
+   "min_shift": -26.6
+  },
+  {
+   "id": "A2_35fb26a423",
+   "name": "phenanthridine+CH3",
+   "layer": "A2",
+   "max_abs_shift": 51.9,
+   "rms_shift": 23.3,
+   "min_shift": -15.3
+  },
+  {
+   "id": "A2_360ca4faa6",
+   "name": "dibenzothiophene+F",
+   "layer": "A2",
+   "max_abs_shift": 45.7,
+   "rms_shift": 22.7,
+   "min_shift": -28.6
+  },
+  {
+   "id": "A2_361b2c502b",
+   "name": "pyrene+CHO",
+   "layer": "A2",
+   "max_abs_shift": 52.3,
+   "rms_shift": 22.8,
+   "min_shift": -31.1
+  },
+  {
+   "id": "A2_362fc56435",
+   "name": "acenaphthylene+COOH",
+   "layer": "A2",
+   "max_abs_shift": 43.6,
+   "rms_shift": 22.7,
+   "min_shift": -4.7
+  },
+  {
+   "id": "A2_372920f181",
+   "name": "fluoranthene+OH",
+   "layer": "A2",
+   "max_abs_shift": 46.6,
+   "rms_shift": 22.8,
+   "min_shift": -7.3
+  },
+  {
+   "id": "A2_3740d0ba57",
+   "name": "quinoxaline+SH",
+   "layer": "A2",
+   "max_abs_shift": 44.8,
+   "rms_shift": 25.2,
+   "min_shift": -22.7
+  },
+  {
+   "id": "A2_37cf4a0e50",
+   "name": "dibenzofuran+CHO",
+   "layer": "A2",
+   "max_abs_shift": 51.0,
+   "rms_shift": 22.8,
+   "min_shift": -29.2
+  },
+  {
+   "id": "A2_3802542cb6",
+   "name": "acenaphthylene+vinyl",
+   "layer": "A2",
+   "max_abs_shift": 45.0,
+   "rms_shift": 22.8,
+   "min_shift": -9.1
+  },
+  {
+   "id": "A2_3825e7205b",
+   "name": "fluoranthene+ethynyl",
+   "layer": "A2",
+   "max_abs_shift": 47.6,
+   "rms_shift": 23.6,
+   "min_shift": -18.9
+  },
+  {
+   "id": "A2_3933867951",
+   "name": "acridine+CF3",
+   "layer": "A2",
+   "max_abs_shift": 45.3,
+   "rms_shift": 21.4,
+   "min_shift": -18.8
+  },
+  {
+   "id": "A2_39baaea0dd",
+   "name": "fluoranthene+ethynyl",
+   "layer": "A2",
+   "max_abs_shift": 43.6,
+   "rms_shift": 23.0,
+   "min_shift": -11.6
+  },
+  {
+   "id": "A2_3a06a80d61",
+   "name": "biphenylene+NO2",
+   "layer": "A2",
+   "max_abs_shift": 48.8,
+   "rms_shift": 23.5,
+   "min_shift": -27.7
+  },
+  {
+   "id": "A2_3a2982dd85",
+   "name": "biphenylene+CH3",
+   "layer": "A2",
+   "max_abs_shift": 82.0,
+   "rms_shift": 25.5,
+   "min_shift": -82.0
+  },
+  {
+   "id": "A2_3a4d58eb26",
+   "name": "acenaphthylene+CHO",
+   "layer": "A2",
+   "max_abs_shift": 50.1,
+   "rms_shift": 22.7,
+   "min_shift": -7.9
+  },
+  {
+   "id": "A2_3ac24b6972",
+   "name": "dibenzofuran+NO2",
+   "layer": "A2",
+   "max_abs_shift": 42.9,
+   "rms_shift": 23.1,
+   "min_shift": -26.1
+  },
+  {
+   "id": "A2_3b49468c8c",
+   "name": "phenanthrene+CN",
+   "layer": "A2",
+   "max_abs_shift": 45.9,
+   "rms_shift": 22.9,
+   "min_shift": -17.8
+  },
+  {
+   "id": "A2_3b6ae59b2d",
+   "name": "fluorene+SH",
+   "layer": "A2",
+   "max_abs_shift": 67.4,
+   "rms_shift": 26.8,
+   "min_shift": -14.5
+  },
+  {
+   "id": "A2_3c2cf09504",
+   "name": "phenanthrene+Cl",
+   "layer": "A2",
+   "max_abs_shift": 48.3,
+   "rms_shift": 22.9,
+   "min_shift": -15.0
+  },
+  {
+   "id": "A2_3c35334467",
+   "name": "dibenzothiophene+CN",
+   "layer": "A2",
+   "max_abs_shift": 42.9,
+   "rms_shift": 23.2,
+   "min_shift": -26.8
+  },
+  {
+   "id": "A2_3c758d3b72",
+   "name": "pyrene+CF3",
+   "layer": "A2",
+   "max_abs_shift": 45.8,
+   "rms_shift": 21.2,
+   "min_shift": -18.4
+  },
+  {
+   "id": "A2_3c982d4d3f",
+   "name": "dibenzothiophene+SH",
+   "layer": "A2",
+   "max_abs_shift": 49.1,
+   "rms_shift": 24.7,
+   "min_shift": -23.4
+  },
+  {
+   "id": "A2_3cf20db4ac",
+   "name": "fluorene+CN",
+   "layer": "A2",
+   "max_abs_shift": 54.3,
+   "rms_shift": 22.9,
+   "min_shift": -19.4
+  },
+  {
+   "id": "A2_3e6f108b14",
+   "name": "phenanthridine+CH3",
+   "layer": "A2",
+   "max_abs_shift": 50.3,
+   "rms_shift": 22.1,
+   "min_shift": -6.2
+  },
+  {
+   "id": "A2_3f25a88e27",
+   "name": "fluoranthene+OCH3",
+   "layer": "A2",
+   "max_abs_shift": 48.4,
+   "rms_shift": 22.5,
+   "min_shift": -13.1
+  },
+  {
+   "id": "A2_4282860cee",
+   "name": "phenanthridine+vinyl",
+   "layer": "A2",
+   "max_abs_shift": 47.5,
+   "rms_shift": 22.7,
+   "min_shift": -14.4
+  },
+  {
+   "id": "A2_42ab9eb0a0",
+   "name": "fluoranthene+CF3",
+   "layer": "A2",
+   "max_abs_shift": 44.3,
+   "rms_shift": 20.9,
+   "min_shift": -6.9
+  },
+  {
+   "id": "A2_4435992442",
+   "name": "phenanthridine+CN",
+   "layer": "A2",
+   "max_abs_shift": 44.4,
+   "rms_shift": 22.0,
+   "min_shift": -9.8
+  },
+  {
+   "id": "A_014f8519af",
+   "name": "diphenylacetylene",
+   "layer": "A",
+   "max_abs_shift": 80.2,
+   "rms_shift": 31.4,
+   "min_shift": -56.5
+  },
+  {
+   "id": "A_01f3186607",
+   "name": "naphthalene",
+   "layer": "A",
+   "max_abs_shift": 45.3,
+   "rms_shift": 23.2,
+   "min_shift": -20.5
+  },
+  {
+   "id": "A_0674939e7f",
+   "name": "4-phenylpyridine",
+   "layer": "A",
+   "max_abs_shift": 44.0,
+   "rms_shift": 24.2,
+   "min_shift": -21.6
+  },
+  {
+   "id": "A_07cadc7923",
+   "name": "2-naphthoic_acid",
+   "layer": "A",
+   "max_abs_shift": 47.0,
+   "rms_shift": 23.2,
+   "min_shift": -10.9
+  },
+  {
+   "id": "A_08dde334d8",
+   "name": "benzophenone",
+   "layer": "A",
+   "max_abs_shift": 44.0,
+   "rms_shift": 23.3,
+   "min_shift": -27.1
+  },
+  {
+   "id": "A_20db5837c9",
+   "name": "dibenzofuran",
+   "layer": "A",
+   "max_abs_shift": 44.5,
+   "rms_shift": 23.9,
+   "min_shift": -29.3
+  },
+  {
+   "id": "A_3100da3761",
+   "name": "benzonitrile",
+   "layer": "A",
+   "max_abs_shift": 42.0,
+   "rms_shift": 24.5,
+   "min_shift": -32.0
+  },
+  {
+   "id": "A_428228e5a5",
+   "name": "fluoranthene",
+   "layer": "A",
+   "max_abs_shift": 45.6,
+   "rms_shift": 22.3,
+   "min_shift": -9.5
+  },
+  {
+   "id": "A_45187bb7c8",
+   "name": "acenaphthylene",
+   "layer": "A",
+   "max_abs_shift": 43.4,
+   "rms_shift": 23.2,
+   "min_shift": -11.3
+  },
+  {
+   "id": "A_466972291d",
+   "name": "1-naphthol",
+   "layer": "A",
+   "max_abs_shift": 66.5,
+   "rms_shift": 25.8,
+   "min_shift": -9.5
+  },
+  {
+   "id": "A_519351d19c",
+   "name": "2-naphthylamine",
+   "layer": "A",
+   "max_abs_shift": 49.9,
+   "rms_shift": 23.5,
+   "min_shift": -16.2
+  },
+  {
+   "id": "A_541c53d1a5",
+   "name": "phenanthrene",
+   "layer": "A",
+   "max_abs_shift": 45.8,
+   "rms_shift": 22.9,
+   "min_shift": -21.3
+  },
+  {
+   "id": "A_593ba8280d",
+   "name": "1,8-naphthalimide-free_diimide_model_1,8-naphthalic_anhydride",
+   "layer": "A",
+   "max_abs_shift": 43.4,
+   "rms_shift": 21.8,
+   "min_shift": -22.7
+  },
+  {
+   "id": "A_5a75c6c39e",
+   "name": "diphenyl_ether",
+   "layer": "A",
+   "max_abs_shift": 43.1,
+   "rms_shift": 22.8,
+   "min_shift": -28.3
+  },
+  {
+   "id": "A_69789470db",
+   "name": "2-methylnaphthalene",
+   "layer": "A",
+   "max_abs_shift": 50.7,
+   "rms_shift": 22.9,
+   "min_shift": -20.2
+  },
+  {
+   "id": "A_6aa211768a",
+   "name": "1-naphthonitrile",
+   "layer": "A",
+   "max_abs_shift": 43.3,
+   "rms_shift": 22.7,
+   "min_shift": -15.0
+  },
+  {
+   "id": "A_72b86c2331",
+   "name": "biphenylene",
+   "layer": "A",
+   "max_abs_shift": 43.2,
+   "rms_shift": 23.6,
+   "min_shift": -26.9
+  },
+  {
+   "id": "A_76e053ce6a",
+   "name": "indole",
+   "layer": "A",
+   "max_abs_shift": 47.2,
+   "rms_shift": 24.3,
+   "min_shift": -21.0
+  },
+  {
+   "id": "A_78896cfe24",
+   "name": "9-methylanthracene",
+   "layer": "A",
+   "max_abs_shift": 50.4,
+   "rms_shift": 23.3,
+   "min_shift": -32.3
+  },
+  {
+   "id": "A_7a57a52879",
+   "name": "stilbene_E",
+   "layer": "A",
+   "max_abs_shift": 49.5,
+   "rms_shift": 24.2,
+   "min_shift": -25.5
+  },
+  {
+   "id": "A_7aa232d4e9",
+   "name": "quinoxaline",
+   "layer": "A",
+   "max_abs_shift": 44.6,
+   "rms_shift": 22.8,
+   "min_shift": -14.1
+  },
+  {
+   "id": "A_8152ea74fd",
+   "name": "carbazole",
+   "layer": "A",
+   "max_abs_shift": 47.4,
+   "rms_shift": 24.2,
+   "min_shift": -17.9
+  },
+  {
+   "id": "A_8448043181",
+   "name": "benzene",
+   "layer": "A",
+   "max_abs_shift": 136.6,
+   "rms_shift": 41.6,
+   "min_shift": -67.1
+  },
+  {
+   "id": "A_8d1f3c46b0",
+   "name": "acenaphthene",
+   "layer": "A",
+   "max_abs_shift": 54.3,
+   "rms_shift": 23.0,
+   "min_shift": -4.0
+  },
+  {
+   "id": "A_8f6ed7c002",
+   "name": "styrene",
+   "layer": "A",
+   "max_abs_shift": 44.5,
+   "rms_shift": 24.4,
+   "min_shift": -18.1
+  },
+  {
+   "id": "A_90df3e4aa9",
+   "name": "indene",
+   "layer": "A",
+   "max_abs_shift": 54.9,
+   "rms_shift": 24.3,
+   "min_shift": -5.8
+  },
+  {
+   "id": "A_9d7c66d274",
+   "name": "benzothiophene",
+   "layer": "A",
+   "max_abs_shift": 43.2,
+   "rms_shift": 23.9,
+   "min_shift": -23.8
+  },
+  {
+   "id": "A_a1e6ec1862",
+   "name": "anthracene",
+   "layer": "A",
+   "max_abs_shift": 49.3,
+   "rms_shift": 23.1,
+   "min_shift": -32.5
+  },
+  {
+   "id": "A_a6412e1ae4",
+   "name": "acridine",
+   "layer": "A",
+   "max_abs_shift": 49.4,
+   "rms_shift": 22.8,
+   "min_shift": -25.7
+  },
+  {
+   "id": "A_a848c04a21",
+   "name": "phenylacetylene",
+   "layer": "A",
+   "max_abs_shift": 53.9,
+   "rms_shift": 26.9,
+   "min_shift": -32.2
+  },
+  {
+   "id": "A_aa22880426",
+   "name": "quinoline-N-oxide",
+   "layer": "A",
+   "max_abs_shift": 43.6,
+   "rms_shift": 22.8,
+   "min_shift": -13.7
+  },
+  {
+   "id": "A_b77821c742",
+   "name": "phenazine",
+   "layer": "A",
+   "max_abs_shift": 50.1,
+   "rms_shift": 23.3,
+   "min_shift": -50.1
+  },
+  {
+   "id": "A_b90527ca2d",
+   "name": "2-phenylpyridine",
+   "layer": "A",
+   "max_abs_shift": 45.7,
+   "rms_shift": 23.3,
+   "min_shift": -25.7
+  },
+  {
+   "id": "A_bce5bae234",
+   "name": "phenanthridine",
+   "layer": "A",
+   "max_abs_shift": 45.6,
+   "rms_shift": 22.2,
+   "min_shift": -9.6
+  },
+  {
+   "id": "A_cce0ad25a5",
+   "name": "pyrene",
+   "layer": "A",
+   "max_abs_shift": 46.7,
+   "rms_shift": 23.8,
+   "min_shift": -40.7
+  },
+  {
+   "id": "A_d037c0ed95",
+   "name": "dibenzothiophene",
+   "layer": "A",
+   "max_abs_shift": 46.0,
+   "rms_shift": 23.2,
+   "min_shift": -26.8
+  },
+  {
+   "id": "A_d09f8d1ef8",
+   "name": "isoquinoline",
+   "layer": "A",
+   "max_abs_shift": 46.0,
+   "rms_shift": 22.5,
+   "min_shift": -17.6
+  },
+  {
+   "id": "A_d295f2fa80",
+   "name": "quinazoline",
+   "layer": "A",
+   "max_abs_shift": 44.7,
+   "rms_shift": 22.3,
+   "min_shift": -13.7
+  },
+  {
+   "id": "A_d551b360c3",
+   "name": "1-aminoanthracene",
+   "layer": "A",
+   "max_abs_shift": 51.5,
+   "rms_shift": 23.5,
+   "min_shift": -27.5
+  },
+  {
+   "id": "A_d9139359ab",
+   "name": "azulene",
+   "layer": "A",
+   "max_abs_shift": 54.6,
+   "rms_shift": 25.2,
+   "min_shift": -54.6
+  },
+  {
+   "id": "A_e72997e726",
+   "name": "fluorene",
+   "layer": "A",
+   "max_abs_shift": 54.9,
+   "rms_shift": 23.7,
+   "min_shift": -17.4
+  },
+  {
+   "id": "A_ea73419366",
+   "name": "1-methylnaphthalene",
+   "layer": "A",
+   "max_abs_shift": 51.4,
+   "rms_shift": 23.0,
+   "min_shift": -12.6
+  },
+  {
+   "id": "A_fdc27f1bd1",
+   "name": "biphenyl",
+   "layer": "A",
+   "max_abs_shift": 44.2,
+   "rms_shift": 23.8,
+   "min_shift": -21.6
+  },
+  {
+   "id": "A_fead28d796",
+   "name": "benzofuran",
+   "layer": "A",
+   "max_abs_shift": 43.0,
+   "rms_shift": 22.5,
+   "min_shift": -16.0
+  },
+  {
+   "id": "A_ff98e1160d",
+   "name": "quinoline",
+   "layer": "A",
+   "max_abs_shift": 44.3,
+   "rms_shift": 22.9,
+   "min_shift": -13.7
+  }
+ ]
+}

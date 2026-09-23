@@ -282,6 +282,98 @@ else:
                "not yet executed.*")
 md(summary)
 
+# ---- 7. follow-up cells (23 September 2026): kept *after* the original run so that the change of understanding stays visible
+md("""## 7. Follow-up (23 September 2026): a corrupted target found by a second route, and what the couplings needed
+
+*Added after the first full run; sections 1–6 are unchanged, so a reader can see what was learned and from what. Everything below runs in the
+same environment and with the same split.*
+
+Two things happened after section 6, both outside this notebook and both recorded in the project's pre-registrations (E6 of 19 September, E7 of
+23 September). **First**, a learning curve on the same corpus showed that the couplings — the off-diagonal elements of the family block — were
+not learned by the model above at any data size (their error equals the zero rule to two decimals in Table 1 above), and the cause was traced to
+the target, not to the network: in the normal-mode basis K_ij changes sign when one mode vector is flipped, and every per-mode token is a square of
+that vector, so a least-squares model on these tokens has its optimum at exactly zero. In a local pairwise force-constant representation the same
+corpus does teach the couplings; the numbers are shown in 7.3 for comparison. **Second**, one molecule's target was simply wrong: benzene's ωB97X
+Hessian from finite differences disagreed with an analytic second calculation at the same geometry by up to 133 cm⁻¹. The corpus was screened,
+the one molecule was replaced by its second route, and the baseline is retrained below with nothing else changed.""")
+code("""import os
+SR = Path("..") / "data" / "second_route"
+chk = json.load(open(SR / "benzene_analytic_check.json", encoding="utf-8"))
+screen = json.load(open(SR / "corpus_screen_2026-09-23.json", encoding="utf-8"))
+fa = np.array(chk["wb97x"]["freq_analytic"]); fc = np.array(chk["wb97x"]["freq_corpus"])
+print("benzene, ωB97X at the B3LYP geometry — analytic (pyscf) vs corpus finite differences (psi4), the ten largest disagreements (cm⁻¹):")
+order = np.argsort(-np.abs(fa - fc))[:10]
+display(pd.DataFrame({"analytic": fa[order].round(0), "corpus FD": fc[order].round(0), "difference": (fa - fc)[order].round(0)}).sort_values("analytic").reset_index(drop=True))
+print(f"|H_analytic − H_corpus|: ωB97X max {chk['wb97x']['dH_max']:.1e} a.u., B3LYP max {chk['b3lyp']['dH_max']:.1e} a.u.")
+sc = pd.DataFrame(screen["rows"]).sort_values("max_abs_shift", ascending=False)
+print(f"\\ncorpus screen: max |ω(ωB97X) − ω(B3LYP)| over sorted frequency lists, {len(sc)} molecules — median {sc['max_abs_shift'].median():.0f} cm⁻¹; "
+      f"molecules above 100: {(sc['max_abs_shift'] > 100).sum()}")
+display(sc.head(6).reset_index(drop=True))""")
+md("""*Reading.* At a geometry that is D6h to 10⁻⁴ Å, degenerate pairs must be degenerate; the corpus Hessian splits them (563/605, 1223/1343) and the
+analytic one does not (625/625, 1210/1210). The "+151 cm⁻¹ ring shift" in benzene's target was an artefact of the finite-difference Hessian. The
+screen shows benzene as the only molecule above 100 cm⁻¹; the corpus is sound apart from it. The lesson is the project's noise principle: every
+derived quantity gets a second route before it is trusted.""")
+code("""RELEASE_B = Path("..") / "data" / "corpus_release" / (os.environ.get("M05_RELEASE_FOLLOWUP", "layerA2_2026-09-23b") + ".npz")
+zb = np.load(RELEASE_B); man_b = json.load(open(str(RELEASE_B).replace(".npz", "_manifest.json")))
+print("follow-up release:", RELEASE_B.name, "| molecules:", len(zb["ids"]), "| second-route Hessians for:", man_b.get("analytic_second_route"))
+assert list(zb["ids"]) == list(ids), "the follow-up release must contain the same molecules in the same order"
+split_b = np.array([split_of(s) for s in zb["ids"]]); idx_b = {s: np.where(split_b == s)[0] for s in ("train", "val", "test")}
+bz = [k for k, s in enumerate(ids) if s == "A_8448043181"]
+print("benzene is in the", split_b[bz[0]] if bz else "—", "split")
+T_b = dict(tokens=torch.tensor(zb["tokens"]), family=torch.tensor(zb["family"]).clamp_min(0), mask=torch.tensor(zb["mask"]), K=torch.tensor(zb["K"]),
+           charge=torch.tensor(zb["charge"]).long(), mult=torch.tensor(zb["mult"]).long(), omega=torch.tensor(zb["omega_cm"]))
+# retrain the baseline on the corrected release with the identical protocol; the functions above read the globals T and idx, so swap them for the duration
+T_v1, idx_v1 = T, idx
+T, idx = T_b, idx_b
+t0 = time.time(); runs_b = {"baseline (corrected release)": [train(cfg, s) for s in SEEDS]}
+print(f"retrained: best epochs {[r[2] for r in runs_b['baseline (corrected release)']]}, {time.time() - t0:.0f} s")
+rule_b, ap_rule_b = rules(idx["test"]); r_b, ap_b = evaluate(runs_b["baseline (corrected release)"], idx["test"])
+T, idx = T_v1, idx_v1
+rows = []
+for F in FAMILIES:
+    rows.append(dict(family=F, **{"zero (v1)": tab["rms_diag"].loc[F, "zero"], "baseline v1 (section 3)": tab["rms_diag"].loc[F, "baseline"],
+                                  "zero (corrected)": rule_b["zero"][F]["diag"], "baseline retrained (corrected)": r_b[F]["diag"]}))
+tab_b = pd.DataFrame(rows).set_index("family").round(2)
+print("band shifts (diagonal), test RMS in cm⁻¹ — the original run beside the retrained baseline on the corrected release:"); display(tab_b)
+print(f"pair-head average precision: v1 {aps['baseline']:.3f} → corrected {ap_b:.3f} (resonance rule {ap_rule_b:.3f})")""")
+md("""*Reading.* The retrained numbers move little: benzene is one molecule, and the diagonal was never the problem. The table is here because a reader
+must be able to see that correcting one target did not rewrite the result — and because the same second route would have caught the artefact
+before the first run, had it been in place.""")
+code("""E7 = Path("..") / "out" / "E7_rungB_2026-09-23_analytic.json"
+E6 = Path("..") / "out" / "E6_learning_curve_in_data_2026-09-23_excl_imaginary.json"
+followup = dict(release_followup=RELEASE_B.name, analytic_second_route=man_b.get("analytic_second_route"), benzene_split=(split_b[bz[0]] if bz else None),
+                test_rms_diag_corrected={F: {"zero": float(rule_b["zero"][F]["diag"]), "baseline_retrained": float(r_b[F]["diag"])} for F in FAMILIES},
+                test_rms_coup_corrected={F: {"zero": float(rule_b["zero"][F]["coup"]), "baseline_retrained": float(r_b[F]["coup"])} for F in FAMILIES},
+                pair_ap_corrected=float(ap_b), benzene_check=dict(wb97x_dH_max=chk["wb97x"]["dH_max"], max_freq_disagreement_cm=float(np.abs(fa - fc).max())),
+                screen=dict(n=int(len(sc)), median_max_shift=float(sc["max_abs_shift"].median()), above_100=int((sc["max_abs_shift"] > 100).sum())))
+if E7.exists() and E6.exists():
+    e7 = json.load(open(E7, encoding="utf-8")); e6 = json.load(open(E6, encoding="utf-8")); nf = str(e7["sizes"][-1])
+    cmp = pd.DataFrame({"training molecules": e7["sizes"],
+                        "mode basis, block model (E6, hold-out a)": [e6["curve"][str(n)]["M2"]["mean"]["a"]["coupling_ratio"] for n in e6["sizes"]],
+                        "local pairs, MLP (E7, hold-out a)": e7["readings"]["coupling_ratio_curve_mlp"]["a"],
+                        "local pairs, MLP (E7, hold-out b: unseen cores)": e7["readings"]["coupling_ratio_curve_mlp"]["b"]}).round(2)
+    print("ring coupling RMS / zero-rule RMS (1.00 = predicting no coupling), from the pre-registered curves E6 and E7:"); display(cmp)
+    ma, mb = e7["curve"][nf]["B1_mlp"]["mean"]["a"], e7["curve"][nf]["B1_mlp"]["mean"]["b"]
+    print(f"corrected-frequency RMS with the local pairwise model at {nf} molecules: hold-out (a) {ma['corrected_freq_rms']:.1f} cm⁻¹ (zero rule {ma['corrected_freq_rms_zero_rule']:.1f}), "
+          f"hold-out (b) {mb['corrected_freq_rms']:.1f} ({mb['corrected_freq_rms_zero_rule']:.1f})")
+    followup["e7"] = dict(sizes=e7["sizes"], ratio_a=e7["readings"]["coupling_ratio_curve_mlp"]["a"], ratio_b=e7["readings"]["coupling_ratio_curve_mlp"]["b"],
+                          corrected_freq_rms_a=ma["corrected_freq_rms"], corrected_freq_rms_b=mb["corrected_freq_rms"], zero_rule_a=ma["corrected_freq_rms_zero_rule"], zero_rule_b=mb["corrected_freq_rms_zero_rule"])
+else:
+    print("E6/E7 result files not present in this checkout; the comparison is in the project notes.")
+json.dump(followup, open("results_followup.json", "w"), indent=1); print("results_followup.json written")""")
+md("""### 7.4 What we learned
+
+- **A target can be wrong, and a model will faithfully fail on it.** One finite-difference Hessian out of 244 carried a 133 cm⁻¹ artefact; it sat in
+  a held-out set and looked like a learning failure for a day. A second, independent route for every derived quantity is now part of the corpus
+  check, not a thing done afterwards.
+- **The network was never the limit; the representation was.** Asked for a sign-ambiguous, basis-dependent object, the model above learned the only
+  thing consistent with its inputs — zero couplings — and no amount of data changed that (flat curve, E6). Asked for the local, chemically named object
+  the correction actually is (bond–bond interaction constants inside rings, pairs of internals sharing an atom), the same 175 molecules taught the
+  couplings on molecules of cores never seen in training (E7). The model of sections 2–5 is kept as the pre-registered baseline of this module; the
+  next version of the module would put the pairwise local target in its place.
+- **Pre-registration made both findings legible.** The predictions, the win/lose rules and the outcomes — including the ones that lost — are in the
+  project's notes with dates, so the reader can tell what was expected from what was found.""")
+
 nb = new_notebook(cells=cells, metadata={"kernelspec": {"name": "python3", "display_name": "Python 3", "language": "python"}})
 path = HERE / "deep_learning.ipynb"
 nbformat.write(nb, path)
