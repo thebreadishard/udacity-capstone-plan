@@ -70,3 +70,23 @@ The prerequisite 'read in full before any sentence of novelty' is met for items 
 
 **Gate E (candidate, not scheduled): a short methods note** — 'Two-route consistency of finite-difference quartic force constants: a diagnostic, with PAH examples'. Prerequisites before it is justified: (1) **done 21 September evening, as predicted** — the step-size test (0.05 → 0.20 with psi4 FD Hessians: route disagreement median 22.4 → 2.3 cm⁻¹, maximum 1,265 → 110) and the analytic-Hessian test (pyscf, same 61 geometries, step 0.05: median 0.1, maximum 47 inside degenerate pairs only); pre-registration and results in `probes/results_vpt2/PREREGISTRATION_2026-09-21_FD_noise_demonstration.md`; the 5-point psi4 variant was stopped as redundant; (2) the same diagnostic run on naphthalene and one four-ring PAH at the PAHdb-anharmonic protocol's level as far as we can reproduce it (B3LYP/N07D, 200×974 grid, analytic Hessians via pyscf), with the out-of-plane modes' constants and their route differences tabulated; (3) the numerics literature read in full (Barone 2005 on VPT2 implementation; the Gaussian/SPECTRO step-size conventions; Bloino, Biczysko & Barone 2012 on resonances; any prior two-route check); (4) **done 21 September** — the upstream fixes are offered: pyVPT2 route-consistency report (philipmnel/pyvpt2#58 with issue #57), pyscf-forge #212 and #213; the note would report a repaired tool, not a complaint, once they are merged or answered. Earliest plausible: November 2026, after the 28 September conversation and gate A. The supervisor's group is the natural co-reader, and their own hypotheses in Mackie 2021 §5 are the first thing to test against.
 
+## Dated addition, 2026-09-23 15:3x — a second candidate element, and the odds of the method re-estimated
+
+**What was measured (23 September, CCX53):** E6, pre-registered on 19 September, read the couplings of the correction matrix as flat against data for every
+mode-basis model (ratio to the zero rule 1.00 / 1.9 / 1.3 at 45, 100, 175 molecules; slopes 0.00 to −0.04). E7, pre-registered the same morning, traced it to the
+target (sign-blind descriptors, locality lost in the mode transform), measured where the correction lives (parameter-free projection: three quarters on the
+diagonal + atom-sharing pairs + ring bond–bond pairs of the primitive internals), and showed that a network asked for that local object learns the couplings from
+the same 175 molecules: ring coupling ratio 0.43 / 0.47 on the two hold-outs, corrected frequencies 4.7 / 5.1 cm⁻¹ against 23 for no correction, MLP and trees
+agreeing to two decimals. One hold-out molecule failed until its target was found to be a finite-difference artefact (psi4's default grid), replaced by an
+analytic second route.
+
+**What it could become:** a methods element rather than a paper on its own — "a learned force-field correction is local in internal coordinates and should be
+predicted there" is close to Pulay's SQM argument and would be read as such by an insider; its novelty is the measurement (the projection ceilings) and the
+learning-curve evidence that the mode basis fails for a structural reason. It belongs in the proposal's §6 and, if E8 confirms the same locality for the
+coupled-cluster correction, in the paper on the learned layer. Prerequisites: E8 (benzene running, naphthalene pre-authorised), the gradient term, and a
+CC-trained instance of the pairwise model on the first thin decks.
+
+**Odds of the method (re-estimated for the user at 14:0x):** step 1 (28th) 85 %; the learned layer learns what it needs on the DFT–DFT proxy 80 % (was 45);
+transfer to the CC correction 60 % (was 50) — E8 is the measurement; affordable with desktop + small Snellius 60 % (was 65; the out-of-plane family stays
+on TZ after M3's first-family loss, the in-plane bend family is licensed for DZ after the second); full mandate ≈ 35 % (was 30); a defensible, per-family
+licensed pipeline ≈ 70 % (was 65). The decisive next measurement is E8 (≈ €2, one night).

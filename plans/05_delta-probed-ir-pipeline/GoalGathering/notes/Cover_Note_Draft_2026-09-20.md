@@ -63,6 +63,15 @@ kubische constanten (op Hartree–Fock getoetst voor zes trillingen, binnen tien
 7 tot 23 cm⁻¹ van CCSD(T). Hij zit nu als vaste stap in labelfabriek en pijplijn; de tabel met alle twintig trillingen, inclusief de twee die
 nog open staan, breng ik mee.
 
+Een derde les, van 23 september. De geleerde laag leerde de verschuiving van elke trilling vanaf de eerste dag, maar de koppelingen tussen trillingen
+bij geen enkele datahoeveelheid: een vooraf vastgelegde leercurve (45, 100, 175 moleculen) bleef vlak. De oorzaak zat in wat we vroegen: in de basis van
+normaaltrillingen wisselt een koppeling van teken met een willekeurige tekenkeuze die geen enkel kenmerk per trilling kan zien, en de correctie is daar een
+dichte kluwen. In bindingen en hoeken is dezelfde correctie dun en lokaal: een parametervrije projectie legt driekwart ervan in de interactieconstanten
+tussen bindingen binnen een ring plus paren die een atoom delen. Gevraagd naar dát object leert hetzelfde netwerk de koppelingen uit dezelfde 175 moleculen,
+ook op ringskeletten die het nooit zag (fout 0,43 en 0,47 van de nulregel, gecorrigeerde frequenties binnen 5 cm⁻¹ tegen 23 zonder correctie). Eén molecuul
+bleef achter tot een tweede, analytische berekening liet zien dat zijn opgeslagen Hessiaan fout was; de guard staat nu in het corpus. Of de coupled-cluster-
+correctie in hetzelfde patroon leeft, wordt op het moment van schrijven gemeten (E8, benzeen); de uitslag neem ik mee.
+
 Wat ik van je vraag staat in §13. De drie belangrijkste: (1) een kritische lezing van §2–§3 en §7, de plekken waar de discipline
 van het plan houdt of niet; (3) of jij gasfase- of jet-gekoelde spectra kent van pyreen, chryseen en trifenyleen in het
 6–15 µm-gebied die mijn zoektocht van 5 september heeft gemist, want die maken de C–C-families op de pyreentrede beslisbaar; en

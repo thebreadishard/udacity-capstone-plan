@@ -30,6 +30,16 @@ flowchart LR
   end
   class BB,HD part
 
+  %% Decision 49 (23 September 2026): the couplings are predicted as pairwise local terms in primitive internal coordinates and projected onto the
+  %% mode basis; the mode-basis block head stays as module 05's pre-registered baseline for the diagonal. Pre-registered E7: ring coupling ratio
+  %% 0.43 / 0.47 on the two hold-outs, corrected frequencies 4.7 / 5.1 cm-1 (mode basis: 1.00, i.e. no coupling learned).
+  PRIM(["Primitive internal coordinates of the molecule and their pairs: diagonal, atom-sharing pairs, ring bond–bond pairs (geomeTRIC)"]):::data
+  LOC["Pairwise local head on pair features (MLP or trees, PyTorch / scikit-learn)"]:::planned
+  DFL(["ΔF: force-constant corrections per primitive pair"]):::data
+  PROJ["Projection Bᵀ ΔF B onto the cheap modes (own software)"]
+  KLOC(["ΔH blocks per family from the local terms, couplings included"]):::data
+
   TOK --> EMB --> EMBV --> ATT --> CTX
   CTX --> BLK --> BLKS --> ENSA --> OUT
   CTX --> PAIR --> PAIRS --> ENSA
+  PRIM --> LOC --> DFL --> PROJ --> KLOC --> ENSA
