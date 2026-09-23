@@ -1,0 +1,93 @@
+excluded 20 molecules with an imaginary mode (after the split): ['A2_0420908ebe', 'A2_13eea56ee5', 'A2_197913eb9c', 'A2_1c29b66c9d', 'A2_20747fd501', 'A2_20e59f3897', 'A2_220d2c107b', 'A2_28eed45ad3', 'A2_2a0b78bd2b', 'A2_2b693cf6e7', 'A2_2c22216564', 'A2_3020175511', 'A2_330b4d6d8d', 'A2_356c370f21', 'A2_3802542cb6', 'A2_3a2982dd85', 'A2_3c2cf09504', 'A_014f8519af', 'A_78896cfe24', 'A_b90527ca2d']
+224 molecules {'A': 42, 'A2': 182}; hold-out (a) 10 layer-A molecules; scaffold cores ['fluoranthene', 'fluorene'] -> hold-out (b) 39 molecules; pool 175; sizes [45, 100, 175]; seeds [0, 1, 2]; smoke False
+  ridge probe n=45 [a]                         CH-stretch   4.46 | CH-oop   6.91 | ring-ip  17.80 | other   9.74 | λ=10.0
+  ridge probe n=45 [b]                         CH-stretch   5.42 | CH-oop   5.25 | ring-ip  13.14 | other  14.28 | λ=10.0
+n= 45 M1: (a) diag CH-stretch   1.86 | CH-oop   6.04 | ring-ip  13.88 | other   6.05 |  [143 s]
+n= 45 M2: (a) diag CH-stretch   1.97 | CH-oop   6.41 | ring-ip  14.21 | other   5.89 | ring couplings ratio 1.00 | block 5.30 vs median 4.14 || (b) ring diag 7.98 ratio 1.00 block 1.81 vs median 1.09  [67 s]
+    E5 tok seed 0 step 0 loss 0.2334
+    E5 tok seed 0 step 500 loss 0.0655
+    E5 tok seed 0 step 1000 loss 0.0492
+    E5 tok seed 0 step 1499 loss 0.0409
+    E5 tok seed 1 step 0 loss 0.2810
+    E5 tok seed 1 step 500 loss 0.0471
+    E5 tok seed 1 step 1000 loss 0.0537
+    E5 tok seed 1 step 1499 loss 0.0413
+    E5 tok seed 2 step 0 loss 0.2260
+    E5 tok seed 2 step 500 loss 0.0640
+    E5 tok seed 2 step 1000 loss 0.0653
+    E5 tok seed 2 step 1499 loss 0.0474
+n= 45 M3: (a) diag CH-stretch   3.73 | CH-oop   5.27 | ring-ip  14.28 | other   7.36 | ring couplings ratio 1.89 | block 4.21 vs median 4.14 || (b) ring diag 8.40 ratio 2.66 block 1.90 vs median 1.09  [39 s]
+    E5 atoms seed 0 step 0 loss 0.2235
+    E5 atoms seed 0 step 500 loss 0.0783
+    E5 atoms seed 0 step 1000 loss 0.0297
+    E5 atoms seed 0 step 1499 loss 0.0136
+    E5 atoms seed 1 step 0 loss 0.2944
+    E5 atoms seed 1 step 500 loss 0.0580
+    E5 atoms seed 1 step 1000 loss 0.0215
+    E5 atoms seed 1 step 1499 loss 0.0127
+    E5 atoms seed 2 step 0 loss 0.2138
+    E5 atoms seed 2 step 500 loss 0.0610
+    E5 atoms seed 2 step 1000 loss 0.0284
+    E5 atoms seed 2 step 1499 loss 0.0138
+n= 45 M4: (a) diag CH-stretch  17.92 | CH-oop   7.76 | ring-ip  17.09 | other   8.53 | ring couplings ratio 1.37 | block 4.66 vs median 4.14 || (b) ring diag 13.22 ratio 1.59 block 2.28 vs median 1.09  [480 s]
+  ridge probe n=100 [a]                        CH-stretch   4.29 | CH-oop   6.93 | ring-ip  17.78 | other   9.65 | λ=1.0
+  ridge probe n=100 [b]                        CH-stretch   5.29 | CH-oop   5.36 | ring-ip  13.08 | other  14.23 | λ=1.0
+n=100 M1: (a) diag CH-stretch   1.58 | CH-oop   3.66 | ring-ip  12.56 | other   6.89 |  [270 s]
+n=100 M2: (a) diag CH-stretch   1.74 | CH-oop   4.31 | ring-ip  12.81 | other   5.71 | ring couplings ratio 1.00 | block 5.41 vs median 4.12 || (b) ring diag 6.19 ratio 1.00 block 1.55 vs median 1.16  [150 s]
+    E5 tok seed 0 step 0 loss 0.2391
+    E5 tok seed 0 step 500 loss 0.0760
+    E5 tok seed 0 step 1000 loss 0.0502
+    E5 tok seed 0 step 1499 loss 0.0420
+    E5 tok seed 1 step 0 loss 0.2391
+    E5 tok seed 1 step 500 loss 0.0622
+    E5 tok seed 1 step 1000 loss 0.0428
+    E5 tok seed 1 step 1499 loss 0.0530
+    E5 tok seed 2 step 0 loss 0.2276
+    E5 tok seed 2 step 500 loss 0.0940
+    E5 tok seed 2 step 1000 loss 0.0609
+    E5 tok seed 2 step 1499 loss 0.1253
+n=100 M3: (a) diag CH-stretch   3.90 | CH-oop   6.25 | ring-ip  14.52 | other   7.62 | ring couplings ratio 1.80 | block 4.29 vs median 4.12 || (b) ring diag 8.81 ratio 2.52 block 2.01 vs median 1.16  [40 s]
+    E5 atoms seed 0 step 0 loss 0.2292
+    E5 atoms seed 0 step 500 loss 0.0549
+    E5 atoms seed 0 step 1000 loss 0.0388
+    E5 atoms seed 0 step 1499 loss 0.0217
+    E5 atoms seed 1 step 0 loss 0.2523
+    E5 atoms seed 1 step 500 loss 0.0739
+    E5 atoms seed 1 step 1000 loss 0.0448
+    E5 atoms seed 1 step 1499 loss 0.0463
+    E5 atoms seed 2 step 0 loss 0.2157
+    E5 atoms seed 2 step 500 loss 0.1320
+    E5 atoms seed 2 step 1000 loss 0.0457
+    E5 atoms seed 2 step 1499 loss 0.0333
+n=100 M4: (a) diag CH-stretch  12.59 | CH-oop   7.91 | ring-ip  16.88 | other  14.60 | ring couplings ratio 1.29 | block 5.55 vs median 4.12 || (b) ring diag 12.19 ratio 1.56 block 2.12 vs median 1.16  [479 s]
+  ridge probe n=175 [a]                        CH-stretch   4.38 | CH-oop   6.96 | ring-ip  17.80 | other   9.58 | λ=0.01
+  ridge probe n=175 [b]                        CH-stretch   5.40 | CH-oop   5.36 | ring-ip  13.12 | other  13.87 | λ=0.01
+n=175 M1: (a) diag CH-stretch   1.50 | CH-oop   3.58 | ring-ip  12.23 | other   5.01 |  [486 s]
+n=175 M2: (a) diag CH-stretch   1.85 | CH-oop   4.26 | ring-ip  12.74 | other   5.51 | ring couplings ratio 1.00 | block 5.55 vs median 4.12 || (b) ring diag 6.51 ratio 1.00 block 1.83 vs median 1.14  [294 s]
+    E5 tok seed 0 step 0 loss 0.2773
+    E5 tok seed 0 step 500 loss 0.0550
+    E5 tok seed 0 step 1000 loss 0.0434
+    E5 tok seed 0 step 1499 loss 0.0473
+    E5 tok seed 1 step 0 loss 0.2889
+    E5 tok seed 1 step 500 loss 0.0531
+    E5 tok seed 1 step 1000 loss 0.0529
+    E5 tok seed 1 step 1499 loss 0.0662
+    E5 tok seed 2 step 0 loss 0.2313
+    E5 tok seed 2 step 500 loss 0.0548
+    E5 tok seed 2 step 1000 loss 0.0572
+    E5 tok seed 2 step 1499 loss 0.0459
+n=175 M3: (a) diag CH-stretch   4.81 | CH-oop   5.72 | ring-ip  14.57 | other   6.57 | ring couplings ratio 1.81 | block 4.36 vs median 4.12 || (b) ring diag 8.78 ratio 2.56 block 1.69 vs median 1.14  [42 s]
+    E5 atoms seed 0 step 0 loss 0.2669
+    E5 atoms seed 0 step 500 loss 0.0731
+    E5 atoms seed 0 step 1000 loss 0.0442
+    E5 atoms seed 0 step 1499 loss 0.0446
+    E5 atoms seed 1 step 0 loss 0.3023
+    E5 atoms seed 1 step 500 loss 0.0656
+    E5 atoms seed 1 step 1000 loss 0.0641
+    E5 atoms seed 1 step 1499 loss 0.0540
+    E5 atoms seed 2 step 0 loss 0.2190
+    E5 atoms seed 2 step 500 loss 0.0942
+    E5 atoms seed 2 step 1000 loss 0.0576
+    E5 atoms seed 2 step 1499 loss 0.0529
+n=175 M4: (a) diag CH-stretch  13.93 | CH-oop   7.35 | ring-ip  16.37 | other   6.64 | ring couplings ratio 1.31 | block 5.69 vs median 4.12 || (b) ring diag 11.35 ratio 1.64 block 1.90 vs median 1.14  [1596 s]
+wrote out/E6_learning_curve_in_data_2026-09-23_excl_imaginary.json/.md in 4090 s

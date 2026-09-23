@@ -79,3 +79,9 @@ convention (keep every molecule with two Hessians), not learning; the module-05 
 ring-diagonal, coupling and scaffold read-outs do not involve those modes. For a clean table the curve is re-run with `--exclude-imaginary`
 (split fixed on the full set first, so hold-out (a) stays the 19 September set minus its three imaginary-mode members); results as
 `out/E6_learning_curve_in_data_2026-09-23_excl_imaginary.*`, appended below when in. The verdict above does not depend on it.
+
+**Added 11:1x — the clean curve (imaginary-mode molecules excluded after the split): the verdict stands, the anomaly is gone.**
+`out/E6_learning_curve_in_data_2026-09-23_excl_imaginary.*` (224 molecules; hold-out (a) 10, (b) 39; sizes [45, 100, 175]; 68 min at 32 threads).
+Ring coupling ratio on (a): M2 1.00 → 1.00 (slope +0.00), M3 1.89 → 1.81 (-0.03), M4 1.37 → 1.31 (-0.04); no crossing of 1.0.
+M1 diagonal on (a) at 175: CH-stretch 1.5, CH-oop 3.6 (slope -0.40), ring 12.2 (-0.10), other 6.1 → 5.0 (-0.12) — the "other" column now improves with data, as the diagnosis said it would.
+Scaffold gaps (b) − (a) on the ring block at 175: M2 -3.72, M3 -2.67, M4 -3.79. This table is the one to show on the 28th; the first table remains as the record of the run as pre-registered.
