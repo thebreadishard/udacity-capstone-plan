@@ -51,3 +51,8 @@ report); results `probes/results_m1/e8/benzene_ccpvdz/`; outcome appended here.
 
 The basis dependence of the CC correction (cc-pVDZ here; the anchor's TZ increments per family are M3's business); anharmonic terms; intensities; anything
 about molecules with heteroatoms until naphthalene and one heteroaromatic follow.
+
+**Added 15:2x — naphthalene pre-authorised.** The user: "Als E8 wint, mag naftaleen er op hetzelfde niveau meteen achteraan op hel1-16." The chain on hel1-16
+reads benzene automatically against the win criterion above and, on a win, smoke-tests one naphthalene CCSD(T)/cc-pVDZ gradient (memory is the risk on 32 GB)
+before the 108-gradient run; on "between" or "lose" it stops after the read-out. Naphthalene's read-out is the same table plus the transfer question: does the
+pattern that carries benzene's ΔH_CC carry naphthalene's, and does the E7 model trained on the DFT proxy predict any of ΔH_CC (exploratory).
