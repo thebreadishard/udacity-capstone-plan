@@ -139,4 +139,4 @@ deletes saved configurations after 60 days). Two parts of 10 September are no lo
 | **system incl. assembly** | **€4,319.80** | **€4,315.80** (parts alone €4,216.80) | |
 | UPS | Eaton Ellipse PRO 1200 DIN, €329 | same, €329 (art. 1464124), in stock | not a builder category; separate cart / wishlist item |
 
-Configuration name used in the builder: "Anchor workstation 2026-09-23". Total with UPS and shipping as on 10 September: ≈ €4,651.75.
+Saved by the user under the Alternate business account on 23 September as the configuration "Capstone" (Alternate keeps saved configurations 60 days, so until ≈ 22 November 2026). Total with UPS and shipping as on 10 September: ≈ €4,651.75.
