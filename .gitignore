@@ -61,3 +61,4 @@ plans/*/modules/*/corpus/corpus.lock
 !plans/*/modules/*/data/corpus_release/
 !plans/*/modules/*/data/corpus_release/*
 !plans/*/modules/*/notebook/results.json
+!plans/*/modules/*/out/*.json
