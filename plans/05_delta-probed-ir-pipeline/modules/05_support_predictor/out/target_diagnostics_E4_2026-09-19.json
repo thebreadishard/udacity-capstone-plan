@@ -1,0 +1,89 @@
+{
+ "date": "2026-09-19 18:28",
+ "n_molecules": 45,
+ "n_test": 12,
+ "E4a": {
+  "CH-stretch": {
+   "n": 379,
+   "rms_diff": 1.4336933820109616,
+   "median_best_overlap": 0.997922120505914,
+   "frac_overlap_below_0_9": 0.06068601583113457,
+   "rms_first": 43.752586507956835,
+   "rms_matched": 43.50297746439213,
+   "sd_first": 2.1541950702667236,
+   "sd_matched": 2.4232050775187157
+  },
+  "CH-oop": {
+   "n": 271,
+   "rms_diff": 1.5166506223995464,
+   "median_best_overlap": 0.9972063580855406,
+   "frac_overlap_below_0_9": 0.04059040590405904,
+   "rms_first": 23.830076600439025,
+   "rms_matched": 23.66902575819025,
+   "sd_first": 8.706390380859375,
+   "sd_matched": 8.880979224284381
+  },
+  "ring-ip": {
+   "n": 987,
+   "rms_diff": 9.186054290657367,
+   "median_best_overlap": 0.9891546791727145,
+   "frac_overlap_below_0_9": 0.1661600810536981,
+   "rms_first": 21.12846895157015,
+   "rms_matched": 23.34250964635528,
+   "sd_first": 17.951473236083984,
+   "sd_matched": 20.348922135547486
+  },
+  "other": {
+   "n": 826,
+   "rms_diff": 24.37555340364786,
+   "median_best_overlap": 0.9990621072046639,
+   "frac_overlap_below_0_9": 0.06053268765133172,
+   "rms_first": 20.433186085218058,
+   "rms_matched": 24.375321303685094,
+   "sd_first": 17.21510887145996,
+   "sd_matched": 22.565547991480532
+  }
+ },
+ "E4b": {
+  "CH-stretch": {
+   "n_train": 33,
+   "n_test": 12,
+   "rms_ridge": 0.6100271832797768,
+   "rms_median_rule": 0.7449622120965173,
+   "rms_zero": 43.59711688926743,
+   "sd_family_mean_across_molecules": 0.8592509733445851,
+   "rms_within_molecule_spread": 1.9882517016403798,
+   "lam": 0.01
+  },
+  "CH-oop": {
+   "n_train": 24,
+   "n_test": 8,
+   "rms_ridge": 2.909347205723371,
+   "rms_median_rule": 2.050194313477465,
+   "rms_zero": 23.052671375555672,
+   "sd_family_mean_across_molecules": 2.4015990670841383,
+   "rms_within_molecule_spread": 8.368237305929252,
+   "lam": 0.01
+  },
+  "ring-ip": {
+   "n_train": 33,
+   "n_test": 12,
+   "rms_ridge": 4.577663668787291,
+   "rms_median_rule": 3.563626511863369,
+   "rms_zero": 13.564038902708239,
+   "sd_family_mean_across_molecules": 2.7841235792287504,
+   "rms_within_molecule_spread": 17.73713215532131,
+   "lam": 1.0
+  },
+  "other": {
+   "n_train": 33,
+   "n_test": 12,
+   "rms_ridge": 6.242016519869012,
+   "rms_median_rule": 6.079209950326084,
+   "rms_zero": 11.66345992200879,
+   "sd_family_mean_across_molecules": 4.947201219755385,
+   "rms_within_molecule_spread": 16.574797895915793,
+   "lam": 10.0
+  }
+ }
+}

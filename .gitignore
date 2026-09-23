@@ -65,3 +65,4 @@ plans/*/modules/*/corpus/corpus.lock
 !plans/*/modules/*/data/second_route/
 !plans/*/modules/*/data/second_route/*
 !plans/*/modules/*/notebook/results_followup.json
+plans/*/modules/*/corpus/shards/
