@@ -43,7 +43,8 @@ def main():
             res = thermo.harmonic_analysis(mol, H, exclude_trans=True, exclude_rot=True, imaginary_freq=False); fr = np.sort(res["freq_wavenumber"].real)
             Hp = project_tr(Hc, masses, x)
             np.savez_compressed(f"{d}/hessian_{tag}_analytic.npz", H_raw=Hc, H_projected=Hp, freq_cm=fr, energy=float(e), grid=np.array([rad, ang]))
-            corpus = np.load(f"{d}/hessian_{tag}.npz"); fc = np.sort(corpus["freq_cm"][corpus["freq_cm"] > 10])
+            corpus = np.load(f"{d}/hessian_{tag}.npz")
+            fc = np.sort(corpus["freq_cm"])[-len(fr):]          # the corpus list is 3N long (six ~0 entries); compare the 3N-6 highest, imaginary ones included
             out[tag] = dict(freq_analytic=fr.tolist(), freq_corpus=fc.tolist(), dH_max=float(np.abs(Hc - corpus["H_raw"]).max()),
                             dH_rms=float(np.sqrt(np.mean((Hc - corpus["H_raw"]) ** 2))), energy=float(e), energy_corpus=float(corpus["energy"]), seconds=round(time.time() - t0))
             print(f"{d} {tag}: {out[tag]['seconds']} s; |H_analytic − H_corpus| max {out[tag]['dH_max']:.2e} rms {out[tag]['dH_rms']:.2e}; max |Δfreq| {np.abs(fr - fc).max():.0f} cm-1", flush=True)
