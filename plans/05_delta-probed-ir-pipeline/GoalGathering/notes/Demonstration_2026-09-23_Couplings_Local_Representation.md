@@ -79,12 +79,15 @@ learned nothing. Figure: `figures/E7_couplings_representation_2026-09-23.png`.
 
 ## 5. What is not solved, stated plainly
 
-- **Benzene.** The layer-A hold-out's aggregate (0.81) is one molecule: benzene alone sits at 0.99 (ΔH unexplained 71 %); the other nine — biphenyl,
-  fluorene, phenanthrene, fluoranthene, 2-naphthoic acid, benzophenone, benzonitrile, phenanthridine, biphenylene — are at 0.29–0.58 with
-  corrected frequencies within 5–7 cm⁻¹. Benzene's correction is the largest in the corpus (two ring modes near 1200 cm⁻¹ shift by +151 and +58 cm⁻¹ between
-  the functionals — plausibly the exchange-sensitive bond-alternation motion; the assignment is to be checked before this line is quoted) and no
-  training molecule carries a bare, unsubstituted, unfused ring with that response. Training on layer-A molecules only gives the same picture, so it is not coverage of a population but one extreme molecule
-  (`out/E7_rungB_diag_a_2026-09-23.log`). The registered aggregate is reported as "between"; benzene gets its own row in the next pre-registration.
+- **Benzene — a corrupted target, not a learning failure.** The layer-A hold-out's aggregate (0.81) is one molecule: benzene alone sits at 0.99; the
+  other nine — biphenyl, fluorene, phenanthrene, fluoranthene, 2-naphthoic acid, benzophenone, benzonitrile, phenanthridine, biphenylene — are at
+  0.29–0.58 with corrected frequencies within 5–7 cm⁻¹ (`out/E7_rungB_diag_a_2026-09-23.log`). The two-route check then showed why: benzene's corpus
+  ωB97X Hessian (psi4 finite differences of gradients) is wrong by up to 133 cm⁻¹ at a geometry that is D6h to 10⁻⁴ Å — degenerate pairs split to
+  563/605 and 1223/1343 where the analytic pyscf Hessian at the same geometry gives 625/625 and 1210/1210 (`corpus/analytic_hessians.py`,
+  `corpus/molecules/A_8448043181/analytic_check.json`). The "+151 cm⁻¹ ring shift" that no model could learn was an artefact of the target. A screen of
+  all 244 molecules on the sorted-pair functional shift finds benzene as the only molecule above 100 cm⁻¹ (median 48); the corpus is sound apart from
+  it. The screen is now part of the corpus check; benzene's row is replaced by the analytic route and hold-out (a) re-read (result appended below when
+  in). This is the noise principle of 21 September doing its job a second time: every derived quantity gets a second route.
 - **The curve is flat again**, now at a good level (0.82 → 0.81 on (a), 0.51 → 0.47 on (b)): what remains is not data-limited either. The next
   step is representation once more, not volume: the full local Hessian on atom-pair blocks with an equivariant network (rung C), trained with
   displaced-geometry gradients as cheap extra labels and pre-trained on Hessian QM9 — or, cheaper first, the missing 27 % of ΔH outside the
