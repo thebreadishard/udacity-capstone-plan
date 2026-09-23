@@ -228,3 +228,13 @@ two ring modes near 1200 cm⁻¹ shift by +151 and +58 cm⁻¹ — plausibly the
 carries a bare, unsubstituted, unfused ring with that response. The registered aggregate stays **between**; the per-molecule table says that for
 every polycyclic or substituted molecule of the hold-out the local pairwise representation is at win level, and that the single failure is a
 chemically identifiable extreme, not the representation. Hold-out (a) is not redefined; benzene enters the next pre-registration as its own row.
+
+**Added 12:4x — benzene was not a learning failure but a corrupted target.** The two-route check (`corpus/analytic_hessians.py`: pyscf analytic Hessians at the
+corpus geometry, 6-31G* Cartesian, grid 99/590) against the corpus psi4 finite-difference Hessians: B3LYP agrees to 1 cm⁻¹ except the e2g pair (622/622
+analytic vs 630/645 corpus); **ωB97X disagrees by up to 133 cm⁻¹** (analytic 1210/1210, 1324, 1391 vs corpus 1223/1343, 1409, 1450; the 625/625 pair split to
+563/605), |ΔH| max 2·10⁻² a.u. — at a geometry that is D6h to 10⁻⁴ Å. The "+151 cm⁻¹ ring shift" that defeated every model on hold-out (a) is an artefact of the
+finite-difference Hessian, the same mechanism the noise principle found in the VPT2 quartics on 21 September. A corpus-wide screen on the sorted-pair
+functional shift (`check_results.py`, 244 molecules): median max |Δω| 48 cm⁻¹, benzene 137 — the only molecule above 100; five between 80 and 90 (S–H and
+methyl torsions, mostly imaginary-mode molecules already excluded). So the corpus is sound apart from benzene; benzene's row is being replaced by the analytic
+route (both functionals), after which hold-out (a) is re-read with the same rung-B model. Policy: incident row in `QUALITY_POLICY.md`; the screen is now part of
+`check_results.py`.
