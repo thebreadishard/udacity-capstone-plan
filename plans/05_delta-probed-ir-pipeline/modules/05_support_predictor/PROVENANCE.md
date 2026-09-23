@@ -109,3 +109,31 @@ every number read from the result file and the manifest, four verified reference
 (the user), the Hessian QM9 subset decision, the full run, requirements from the environment of that run, promotion of the model to `src/dpir`.
 
 **Dataset decision (the user, 22 September 17:2x: "begin met eigen corpus, daarna waarschijnlijk PC"):** the first full run of module 05 trains on the project's own corpus alone (layers A and A2, ≈ 240 molecules, both levels of theory on identical geometries). Hessian QM9 is not in that dataset — with at most nine heavy atoms and 66 all-carbon aromatic rings among 41,645 molecules it is off the plan's chemistry, and its labels would need the second level recomputed and carry ≈ 15 cm⁻¹ of numerical noise. It stays available as a pre-training source if the learning curve asks for more data; the first answer to such a demand is a layer A3 of the own corpus (200 more A2 candidates ≈ 3 days on four rented servers, ≈ € 75; the user leans towards buying the desktop PC for that and the M2 build). The E6 learning curve (≈ 23 September) is the arbiter, per the rule of no verdict on tiny data.
+
+## Dated note, 2026-09-23 09:5x — the first full run (CCX53, fresh environment)
+
+Release `data/corpus_release/layerA2_2026-09-23.npz` (224 molecules: 42 of layer A and 182 of layer A2, the 20 with an imaginary mode
+skipped; 14607 modes; split by molecule 186/18/20). Executed on the rented CCX53
+(`ubuntu-128gb-hel1-2`, 32 threads) in a fresh conda environment built from `requirements.txt` as frozen (torch 2.14.0+cpu, numpy 2.5.1) — that
+execution is the fresh-environment check; the notebook ran top to bottom twice (the second pass fills the summary cell from the first pass's
+`results.json`; both passes wrote identical numbers). 30 epochs, seeds [0, 1, 2], early stopping on the validation loss
+(best epochs baseline [26, 29, 29], 4 layers [27, 29, 29]); parameters 135,939 and 235,907.
+
+Test RMS in cm⁻¹, diagonal (band shift) / couplings inside the family block:
+
+| model | CH-stretch | CH-oop | ring-ip | other |
+|---|---|---|---|---|
+| zero | 43.8 / 0.47 | 24.1 / 3.21 | 20.3 / 4.02 | 19.2 / 2.42 |
+| family-median | 2.7 / 0.47 | 8.1 / 3.21 | 15.6 / 4.02 | 14.5 / 2.42 |
+| baseline | 3.0 / 0.47 | 4.2 / 3.23 | 5.3 / 4.02 | 8.4 / 2.38 |
+| 4 layers | 2.9 / 0.47 | 4.3 / 3.22 | 5.4 / 4.02 | 8.3 / 2.39 |
+
+Pair head average precision: baseline 0.286, 4 layers 0.287, resonance rule 0.062.
+
+Reading: the band shifts are learned — the model beats the family-median rule by a factor 2–3 on CH-oop, ring-in-plane and "other";
+on the C–H stretches (shift nearly constant across the corpus) the median rule is as good. The couplings are not learned at this corpus
+size: every family's coupling RMS equals the zero rule to two decimals, for both depths. The one controlled change (2 → 4 layers) makes
+no difference beyond seed scatter. Best epochs of 26–29 out of 30 say the models were still improving; the epoch budget is a limitation
+to name in the report, not a result. `requirements.txt` is now the `pip freeze` of the CCX53 environment. The E6 learning curve
+(`m05/e6_learning_curve.py`, pre-registration of 19 September) runs on the same machine and answers whether the couplings are
+data-limited; its outcome goes into the pre-registration file, not into this module's report.

@@ -28,3 +28,12 @@ and the full execution of the notebook.*
    record it in PROVENANCE.
 4. `pip freeze > requirements.txt` in the environment that ran step 2; fresh-environment check.
 5. The user's pass; the Zenodo release; the submission copy at the very end (the user's decision of 22 September).
+
+## Status after the full run, 2026-09-23 09:5x
+
+- Dataset: **released** — `data/corpus_release/layerA2_2026-09-23.npz` + manifest with SHA-256 (224 molecules, own corpus alone per the decision of 22 September).
+- Notebook runs top to bottom: **done in full mode** on a fresh environment (CCX53, requirements as frozen), twice; `results.json` carries the numbers above (PROVENANCE dated note).
+- Notebook summary: **filled from `results.json`** by the second pass (no quick-mode disclaimer).
+- Report: built by `make_summary.py` from the same `results.json` (docx + PDF, see PROVENANCE) — the user's pass follows.
+- requirements.txt: **regenerated** from the environment of the full run.
+- Open: the user's pass; Zenodo release; the submission copy at the very end.

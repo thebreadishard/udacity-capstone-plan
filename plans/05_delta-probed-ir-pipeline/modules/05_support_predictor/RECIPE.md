@@ -117,3 +117,9 @@ The user decided (22 September, evening) that the first full run trains on the p
 dataset and remains a possible pre-training source only if the learning curve asks for more data (first answer then: a layer A3 of the own corpus).
 Recorded with the reasons in `PROVENANCE.md` (dated note of the same time) and in `RUBRIC_CHECKLIST_2026-09-22.md`. The recipe's rules — split by
 molecule, seeds 0 1 2, one controlled change (2 → 4 layers), the family-block target of the 19 September amendment — are unchanged.
+
+## Dated pointer 2026-09-23 09:5x — first full run done
+
+Result in `PROVENANCE.md` (dated note of the same time) and `notebook/results.json`: band shifts learned (model beats the family median
+2–3× on three families), couplings at the zero rule, depth 2 → 4 without effect, models still improving at epoch 30. The recipe is unchanged;
+the E6 learning curve decides whether the coupling target is data-limited.
