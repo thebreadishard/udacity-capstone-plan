@@ -216,3 +216,15 @@ substituted cores); its flat 0.82 says that what is missing there is not data of
 see it — the per-molecule diagnosis (`out/E7_rungB_diag_a_2026-09-23.log`) says which molecules carry the residual. Rung C (equivariant Δ-Hessian
 on atom-pair blocks, displaced-gradient labels) remains the next representation step; before it, the cheaper lever is coverage: layer-A-type
 molecules in the training pool.
+
+**Added 12:0x — the layer-A hold-out is one molecule: benzene.** `m05/e7_rungB_diag_a.py`, `out/E7_rungB_diag_a_2026-09-23.log` (GBT of rung B, deterministic).
+Per molecule of hold-out (a), trained on the full pool: biphenyl 0.35, fluorene 0.38, phenanthrene 0.50, fluoranthene 0.52, 2-naphthoic acid 0.58,
+benzophenone 0.35, benzonitrile 0.29, phenanthridine 0.54, biphenylene 0.41 — nine of ten between 0.29 and 0.58 (corrected-frequency RMS 5.4–7.2 cm⁻¹
+against 22–24 for the zero rule) — and **benzene 0.99** (ring diagonal 42 cm⁻¹, ΔH residual 0.71, corrected-frequency RMS 34 against 39). The
+aggregate ratio is RMS-weighted and benzene's coupling magnitudes are the largest in the set, so one molecule carries the 0.82. Training on the
+32 layer-A molecules of the pool alone gives the same picture (benzene 0.99, aggregate 0.84), so it is not coverage of the layer-A population
+either: it is benzene. Benzene's ωB97X − B3LYP correction is the largest of the corpus (zero-rule frequency error 39 cm⁻¹ against 23 elsewhere;
+its Kekulé b2u mode shifts by ≈ 150 cm⁻¹ — the exceptional exchange sensitivity of the isolated ring's bond alternation), and no training molecule
+carries a bare, unsubstituted, unfused ring with that response. The registered aggregate stays **between**; the per-molecule table says that for
+every polycyclic or substituted molecule of the hold-out the local pairwise representation is at win level, and that the single failure is a
+chemically identifiable extreme, not the representation. Hold-out (a) is not redefined; benzene enters the next pre-registration as its own row.

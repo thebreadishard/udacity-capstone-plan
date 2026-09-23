@@ -1,0 +1,27 @@
+pool 175 (layer A in pool: 32); hold-out (a): A_fdc27f1bd1=biphenyl, A_8448043181=benzene, A_e72997e726=fluorene, A_541c53d1a5=phenanthrene, A_428228e5a5=fluoranthene, A_07cadc7923=2-naphthoic_acid, A_08dde334d8=benzophenone, A_3100da3761=benzonitrile, A_bce5bae234=phenanthridine, A_72b86c2331=biphenylene
+
+=== trained on the full pool (175 molecules)
+  A_fdc27f1bd1 biphenyl               layer A | ring coupling ratio 0.35 | ring diag   6.51 | corrected ω 6.07 (zero 23.80) | ΔH residual 0.25
+  A_8448043181 benzene                layer A | ring coupling ratio 0.99 | ring diag  42.47 | corrected ω 34.14 (zero 39.26) | ΔH residual 0.71
+  A_e72997e726 fluorene               layer A | ring coupling ratio 0.38 | ring diag   6.05 | corrected ω 6.16 (zero 23.71) | ΔH residual 0.29
+  A_541c53d1a5 phenanthrene           layer A | ring coupling ratio 0.50 | ring diag   6.23 | corrected ω 6.26 (zero 22.91) | ΔH residual 0.38
+  A_428228e5a5 fluoranthene           layer A | ring coupling ratio 0.52 | ring diag   7.18 | corrected ω 6.49 (zero 22.29) | ΔH residual 0.42
+  A_07cadc7923 2-naphthoic_acid       layer A | ring coupling ratio 0.58 | ring diag   5.44 | corrected ω 7.00 (zero 23.23) | ΔH residual 0.39
+  A_08dde334d8 benzophenone           layer A | ring coupling ratio 0.35 | ring diag   5.82 | corrected ω 5.89 (zero 23.27) | ΔH residual 0.25
+  A_3100da3761 benzonitrile           layer A | ring coupling ratio 0.29 | ring diag   4.52 | corrected ω 6.31 (zero 24.48) | ΔH residual 0.28
+  A_bce5bae234 phenanthridine         layer A | ring coupling ratio 0.54 | ring diag   5.38 | corrected ω 5.43 (zero 22.18) | ΔH residual 0.39
+  A_72b86c2331 biphenylene            layer A | ring coupling ratio 0.41 | ring diag   7.65 | corrected ω 7.22 (zero 23.62) | ΔH residual 0.35
+  ALL (a): ratio 0.82 | ring diag 11.76 | corrected ω 9.99 | residual 0.46
+
+=== trained on layer-A pool only (32 molecules)
+  A_fdc27f1bd1 biphenyl               layer A | ring coupling ratio 0.33 | ring diag   6.42 | corrected ω 6.16 (zero 23.80) | ΔH residual 0.27
+  A_8448043181 benzene                layer A | ring coupling ratio 0.99 | ring diag  43.98 | corrected ω 35.32 (zero 39.26) | ΔH residual 0.72
+  A_e72997e726 fluorene               layer A | ring coupling ratio 0.42 | ring diag   6.82 | corrected ω 6.72 (zero 23.71) | ΔH residual 0.34
+  A_541c53d1a5 phenanthrene           layer A | ring coupling ratio 0.58 | ring diag   6.10 | corrected ω 6.69 (zero 22.91) | ΔH residual 0.43
+  A_428228e5a5 fluoranthene           layer A | ring coupling ratio 0.57 | ring diag   7.35 | corrected ω 6.93 (zero 22.29) | ΔH residual 0.45
+  A_07cadc7923 2-naphthoic_acid       layer A | ring coupling ratio 0.61 | ring diag   6.57 | corrected ω 8.88 (zero 23.23) | ΔH residual 0.46
+  A_08dde334d8 benzophenone           layer A | ring coupling ratio 0.37 | ring diag   7.04 | corrected ω 6.88 (zero 23.27) | ΔH residual 0.32
+  A_3100da3761 benzonitrile           layer A | ring coupling ratio 0.23 | ring diag   3.84 | corrected ω 7.15 (zero 24.48) | ΔH residual 0.28
+  A_bce5bae234 phenanthridine         layer A | ring coupling ratio 0.62 | ring diag   5.65 | corrected ω 6.02 (zero 22.18) | ΔH residual 0.44
+  A_72b86c2331 biphenylene            layer A | ring coupling ratio 0.61 | ring diag   9.86 | corrected ω 8.04 (zero 23.62) | ΔH residual 0.49
+  ALL (a): ratio 0.84 | ring diag 12.40 | corrected ω 10.66 | residual 0.49
