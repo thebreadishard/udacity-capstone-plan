@@ -119,3 +119,24 @@ the wishlist is deleted after **six months without a change**; a PC-Builder conf
 ("Opties → Configuratie → Opslaan", with load/share/print), but saved configurations are deleted after **60 days**,
 so the wishlist is the durable copy and the PC-Builder was not rebuilt. Assembly (€99) is a service line, not an
 article, and is added by the PC-Builder at order time.
+
+## Dated addition, 2026-09-23 20:0x — configuration rebuilt in Alternate's PC-Builder (business site), prices of the day
+
+Rebuilt at the user's request in the PC-Builder of zakelijk.alternate.nl, not ordered; saving it under the account needs the user's login (Alternate
+deletes saved configurations after 60 days). Two parts of 10 September are no longer available and were replaced; the rest is in stock.
+
+| part | 10 Sep | 23 Sep | note |
+|---|---|---|---|
+| CPU | Ryzen 9 9950X, €499 | same, €499 (art. 100065780) | |
+| motherboard | ASUS ProArt X870E-Creator WiFi, €389 | **ASRock X870 Taichi Creator, €329 (art. 1946049)** | ProArt "(tijdelijk) niet meer leverbaar". Taichi Creator: 4 × DDR5 up to 256 GB, 4 × M.2 (2 Gen5, 1 Gen4, 1 Gen3), 10 GbE (AQC113) + 5 GbE, Wi-Fi 7. **To verify before ordering:** the memory kit below on ASRock's QVL; ECC UDIMM support (ASRock's spec page, not Alternate's). Alternative in the builder: Gigabyte X870E Aorus Pro Ice, €324.90 |
+| memory | Kingston FURY Beast 128 GB (2 × 64) DDR5-5600 CL40, KF556C40BBK2-128, €2,289 | **Kingston FURY Beast 128 GB (2 × 64) DDR5-5600 CL36, KF556C36BBEK2-128, EXPO + XMP, €2,329 (art. 100140705)** | the CL40 kit is no longer listed; the CL36 successor is the only 2 × 64 GB kit at Alternate on the day |
+| SSD system | Samsung 990 PRO 2 TB, €347 | same, €344 (art. 1864243) | |
+| SSD scratch | Lexar NM790 2 TB, €259 | same, €278 (art. 1916729) | |
+| cooler | Noctua NH-D15 G2, €149 | same, €148.90 (art. 100067139) | |
+| PSU | be quiet! Power Zone 2 850 W, €119.90 | same, €119.90 (art. 100112864) | |
+| case | Fractal Define 7, €169 | same, €169 (art. 1602114) | |
+| assembly | €99 | €99 | the builder asks for an operating system before an assembled order can be placed; we install Ubuntu ourselves — pick "without OS" at ordering time if offered, otherwise the cheapest OS line or order the parts unassembled |
+| **system incl. assembly** | **€4,319.80** | **€4,315.80** (parts alone €4,216.80) | |
+| UPS | Eaton Ellipse PRO 1200 DIN, €329 | same, €329 (art. 1464124), in stock | not a builder category; separate cart / wishlist item |
+
+Configuration name used in the builder: "Anchor workstation 2026-09-23". Total with UPS and shipping as on 10 September: ≈ €4,651.75.
