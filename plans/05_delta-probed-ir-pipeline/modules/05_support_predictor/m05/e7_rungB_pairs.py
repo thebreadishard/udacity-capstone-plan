@@ -180,9 +180,20 @@ def main():
     ap.add_argument("molecules"); ap.add_argument("out_prefix")
     ap.add_argument("--threads", type=int, default=16); ap.add_argument("--sizes", default="45,100,all"); ap.add_argument("--epochs", type=int, default=60)
     ap.add_argument("--smoke", action="store_true")
+    ap.add_argument("--use-analytic", action="store_true",
+                    help="23 Sep: for molecules with hessian_<tag>_analytic.npz (pyscf second route, corpus/analytic_hessians.py) use those Hessians instead of the psi4 "
+                         "finite-difference ones (benzene's FD wB97X Hessian was a 133 cm-1 artefact)")
     a = ap.parse_args(); torch.set_num_threads(a.threads); t0 = time.time()
     mols = T2.load(a.molecules)
     test_a, test_b, cores, pool = E6.splits(mols)
+    substituted = []
+    if a.use_analytic:
+        import e7_rungB_reread_analytic as RR
+        for i, m in mols.items():
+            d = Path(a.molecules) / i
+            if (d / "hessian_b3lyp_analytic.npz").exists() and (d / "hessian_wb97x_analytic.npz").exists():
+                RR.substitute(m, d); substituted.append(i)
+        print(f"analytic second-route Hessians substituted for {len(substituted)} molecules: {substituted}", flush=True)
     mols = {i: m for i, m in mols.items() if not m["imaginary"]}
     test_a = [i for i in test_a if i in mols]; test_b = [i for i in test_b if i in mols]; pool = [i for i in pool if i in mols]
     sizes = sorted({min(int(s) if s != "all" else len(pool), len(pool)) for s in a.sizes.split(",")})
@@ -200,7 +211,7 @@ def main():
           f"pool {len(pool)}; sizes {sizes}; seeds {seeds}; epochs {a.epochs}", flush=True)
     tests = {"a": test_a, "b": test_b}
     res = {"date": datetime.now().strftime("%Y-%m-%d %H:%M"), "smoke": a.smoke, "n_molecules": len(mols), "holdout_a": test_a, "holdout_b": test_b, "scaffold_cores": cores,
-           "pool": len(pool), "sizes": sizes, "seeds": seeds, "epochs": a.epochs, "n_features": int(mols[pool[0]]["X"].shape[1]), "curve": {}}
+           "pool": len(pool), "sizes": sizes, "seeds": seeds, "epochs": a.epochs, "n_features": int(mols[pool[0]]["X"].shape[1]), "substituted_analytic": substituted, "curve": {}}
     zero = {h: readouts(mols, ids, pool, lambda i: np.zeros_like(mols[i]["F_low"])) for h, ids in tests.items()}
     res["zero_rule"] = zero
     for n in sizes:

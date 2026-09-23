@@ -66,10 +66,10 @@ diagonalisation (`out/E7_rungB_2026-09-23.md`).
 | | mode-basis block model | local pairs, MLP (175 molecules) |
 |---|---|---|
 | ring coupling ratio, unseen cores (b) | 1.00 | **0.47** |
-| ring coupling ratio, layer-A set (a) | 1.00 | 0.81 (nine of ten molecules 0.29–0.58; benzene 0.99) |
+| ring coupling ratio, layer-A set (a) | 1.00 | 0.81 as pre-registered (nine of ten molecules 0.29–0.58; benzene 0.99 on its corrupted target) — **0.43** with benzene's second-route target |
 | ring band-shift RMS, (b) | 6.5 cm⁻¹ | 4.8 cm⁻¹ |
 | ring-block mean shift vs the median rule, (b) | 1.83 vs 1.14 | **1.09 vs 1.14** (first model to beat it) |
-| corrected-frequency RMS, (b) / (a) | 23.1 / 24.3 cm⁻¹ (= zero rule) | **5.1 / 9.3 cm⁻¹** |
+| corrected-frequency RMS, (b) / (a) | 23.1 / 24.3 cm⁻¹ (= zero rule) | **5.1 / 9.3 cm⁻¹** (9.3 → **4.8** with benzene's second-route target) |
 | Duschinsky overlap of corrected modes, (b) | — | 0.993 (median) |
 
 The MLP and the trees agree on the coupling ratio to two decimals at every size, so the number is a property of the representation, not of a
@@ -86,9 +86,11 @@ learned nothing. Figure: `figures/E7_couplings_representation_2026-09-23.png`.
   563/605 and 1223/1343 where the analytic pyscf Hessian at the same geometry gives 625/625 and 1210/1210 (`corpus/analytic_hessians.py`,
   `corpus/molecules/A_8448043181/analytic_check.json`). The "+151 cm⁻¹ ring shift" that no model could learn was an artefact of the target. A screen of
   all 244 molecules on the sorted-pair functional shift finds benzene as the only molecule above 100 cm⁻¹ (median 48); the corpus is sound apart from
-  it. The screen is now part of the corpus check; benzene's row is replaced by the analytic route and hold-out (a) re-read (result appended below when
-  in). This is the noise principle of 21 September doing its job a second time: every derived quantity gets a second route.
-- **The curve is flat again**, now at a good level (0.82 → 0.81 on (a), 0.51 → 0.47 on (b)): what remains is not data-limited either. The next
+  it. The screen is now part of the corpus check. Re-read with benzene's analytic target and nothing else changed (`out/E7_rungB_reread_2026-09-23.md`):
+  benzene 0.99 → **0.25**, corrected frequencies 34 → 5.4 cm⁻¹; hold-out (a) as a whole 0.81 → **0.43**, corrected frequencies 9.3 → **4.8 cm⁻¹**.
+  Both hold-outs are then inside the pre-registered win criterion. This is the noise principle of 21 September doing its job a second time: every
+  derived quantity gets a second route.
+- **The curve is nearly flat again**, now at a good level (0.51 → 0.47 on (b); (a) is re-measured with the corrected target): what remains is probably not data-limited either. The next
   step is representation once more, not volume: the full local Hessian on atom-pair blocks with an equivariant network (rung C), trained with
   displaced-geometry gradients as cheap extra labels and pre-trained on Hessian QM9 — or, cheaper first, the missing 27 % of ΔH outside the
   present pattern.

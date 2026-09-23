@@ -1,0 +1,35 @@
+224 molecules; analytic second route available for 1: A_8448043181=benzene
+
+=== before substitution (corpus FD Hessians everywhere)
+  biphenyl               ratio 0.35 | ring diag   6.51 | corrected ω  6.07 (zero 23.80) | ΔH residual 0.25
+  benzene                ratio 0.99 | ring diag  42.47 | corrected ω 34.14 (zero 39.26) | ΔH residual 0.71
+  fluorene               ratio 0.38 | ring diag   6.05 | corrected ω  6.16 (zero 23.71) | ΔH residual 0.29
+  phenanthrene           ratio 0.50 | ring diag   6.23 | corrected ω  6.26 (zero 22.91) | ΔH residual 0.38
+  fluoranthene           ratio 0.52 | ring diag   7.18 | corrected ω  6.49 (zero 22.29) | ΔH residual 0.42
+  2-naphthoic_acid       ratio 0.58 | ring diag   5.44 | corrected ω  7.00 (zero 23.23) | ΔH residual 0.39
+  benzophenone           ratio 0.35 | ring diag   5.82 | corrected ω  5.89 (zero 23.27) | ΔH residual 0.25
+  benzonitrile           ratio 0.29 | ring diag   4.52 | corrected ω  6.31 (zero 24.48) | ΔH residual 0.28
+  phenanthridine         ratio 0.54 | ring diag   5.38 | corrected ω  5.43 (zero 22.18) | ΔH residual 0.39
+  biphenylene            ratio 0.41 | ring diag   7.65 | corrected ω  7.22 (zero 23.62) | ΔH residual 0.35
+  ALL (a) gbt: ratio 0.82 | ring diag 11.76 | corrected ω 9.99 (zero 24.31) | overlap 0.998 | residual 0.46
+  ALL (a) mlp: ratio 0.81 | ring diag 11.27 | corrected ω 9.31 (zero 24.31) | overlap 0.997 | residual 0.41
+  ALL (b) gbt: ratio 0.49 | ring diag 6.44 | corrected ω 6.70 (zero 23.09) | overlap 0.994 | residual 0.37
+  ALL (b) mlp: ratio 0.47 | ring diag 4.59 | corrected ω 5.12 (zero 23.09) | overlap 0.993 | residual 0.31
+
+=== after substitution (analytic Hessians for the molecules above)
+  biphenyl               ratio 0.35 | ring diag   6.51 | corrected ω  6.07 (zero 23.80) | ΔH residual 0.25
+  benzene              * ratio 0.25 | ring diag   4.09 | corrected ω  5.42 (zero 25.01) | ΔH residual 0.20
+  fluorene               ratio 0.38 | ring diag   6.05 | corrected ω  6.16 (zero 23.71) | ΔH residual 0.29
+  phenanthrene           ratio 0.50 | ring diag   6.23 | corrected ω  6.26 (zero 22.91) | ΔH residual 0.38
+  fluoranthene           ratio 0.52 | ring diag   7.18 | corrected ω  6.49 (zero 22.29) | ΔH residual 0.42
+  2-naphthoic_acid       ratio 0.58 | ring diag   5.44 | corrected ω  7.00 (zero 23.23) | ΔH residual 0.39
+  benzophenone           ratio 0.35 | ring diag   5.82 | corrected ω  5.89 (zero 23.27) | ΔH residual 0.25
+  benzonitrile           ratio 0.29 | ring diag   4.52 | corrected ω  6.31 (zero 24.48) | ΔH residual 0.28
+  phenanthridine         ratio 0.54 | ring diag   5.38 | corrected ω  5.43 (zero 22.18) | ΔH residual 0.39
+  biphenylene            ratio 0.41 | ring diag   7.65 | corrected ω  7.22 (zero 23.62) | ΔH residual 0.35
+  ALL (a) gbt: ratio 0.46 | ring diag 6.14 | corrected ω 6.27 (zero 23.29) | overlap 0.998 | residual 0.32
+  ALL (a) mlp: ratio 0.43 | ring diag 4.49 | corrected ω 4.79 (zero 23.29) | overlap 0.998 | residual 0.26
+  ALL (b) gbt: ratio 0.49 | ring diag 6.44 | corrected ω 6.70 (zero 23.09) | overlap 0.994 | residual 0.37
+  ALL (b) mlp: ratio 0.47 | ring diag 4.59 | corrected ω 5.12 (zero 23.09) | overlap 0.993 | residual 0.31
+wrote out/E7_rungB_reread_2026-09-23
+[2026-09-23 10:56:30] reread exit 0

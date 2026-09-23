@@ -1,0 +1,338 @@
+{
+ "substituted": [
+  "A_8448043181"
+ ],
+ "before": {
+  "per_molecule_a": {
+   "A_fdc27f1bd1": {
+    "name": "biphenyl",
+    "coupling_ratio": 0.34560102809419474,
+    "ring_diag": 6.5081017225591635,
+    "corrected_freq_rms": 6.071798859881452,
+    "corrected_freq_rms_zero": 23.795593995250286,
+    "dH_residual_ratio": 0.25468924695280026,
+    "substituted": false
+   },
+   "A_8448043181": {
+    "name": "benzene",
+    "coupling_ratio": 0.9884833794739984,
+    "ring_diag": 42.47222589010875,
+    "corrected_freq_rms": 34.14165794867992,
+    "corrected_freq_rms_zero": 39.25983819194507,
+    "dH_residual_ratio": 0.70872388642226,
+    "substituted": false
+   },
+   "A_e72997e726": {
+    "name": "fluorene",
+    "coupling_ratio": 0.37548153565090114,
+    "ring_diag": 6.045851755360334,
+    "corrected_freq_rms": 6.156853305285285,
+    "corrected_freq_rms_zero": 23.705695376852745,
+    "dH_residual_ratio": 0.2872747312222048,
+    "substituted": false
+   },
+   "A_541c53d1a5": {
+    "name": "phenanthrene",
+    "coupling_ratio": 0.49892551390200174,
+    "ring_diag": 6.2258605782650465,
+    "corrected_freq_rms": 6.261876074167004,
+    "corrected_freq_rms_zero": 22.905589543886318,
+    "dH_residual_ratio": 0.3769366570276357,
+    "substituted": false
+   },
+   "A_428228e5a5": {
+    "name": "fluoranthene",
+    "coupling_ratio": 0.5226842867385487,
+    "ring_diag": 7.180829601512848,
+    "corrected_freq_rms": 6.4893414508174,
+    "corrected_freq_rms_zero": 22.287832038448727,
+    "dH_residual_ratio": 0.4152887571903521,
+    "substituted": false
+   },
+   "A_07cadc7923": {
+    "name": "2-naphthoic_acid",
+    "coupling_ratio": 0.5796449930253939,
+    "ring_diag": 5.444436647891997,
+    "corrected_freq_rms": 7.00170797819258,
+    "corrected_freq_rms_zero": 23.22911677372595,
+    "dH_residual_ratio": 0.3878830528675693,
+    "substituted": false
+   },
+   "A_08dde334d8": {
+    "name": "benzophenone",
+    "coupling_ratio": 0.35090646380878027,
+    "ring_diag": 5.822052137062475,
+    "corrected_freq_rms": 5.894785116808645,
+    "corrected_freq_rms_zero": 23.27003503145984,
+    "dH_residual_ratio": 0.25336916445093055,
+    "substituted": false
+   },
+   "A_3100da3761": {
+    "name": "benzonitrile",
+    "coupling_ratio": 0.2929066482766952,
+    "ring_diag": 4.516594158612202,
+    "corrected_freq_rms": 6.313022063421054,
+    "corrected_freq_rms_zero": 24.480885740854767,
+    "dH_residual_ratio": 0.27771377688891075,
+    "substituted": false
+   },
+   "A_bce5bae234": {
+    "name": "phenanthridine",
+    "coupling_ratio": 0.5420746848845855,
+    "ring_diag": 5.382112811170267,
+    "corrected_freq_rms": 5.426693676637051,
+    "corrected_freq_rms_zero": 22.181999394833767,
+    "dH_residual_ratio": 0.39494563610907635,
+    "substituted": false
+   },
+   "A_72b86c2331": {
+    "name": "biphenylene",
+    "coupling_ratio": 0.4125155095708457,
+    "ring_diag": 7.652062818437946,
+    "corrected_freq_rms": 7.218397159842539,
+    "corrected_freq_rms_zero": 23.619261728672335,
+    "dH_residual_ratio": 0.3496251674444772,
+    "substituted": false
+   }
+  },
+  "a_gbt": {
+   "diag_rms": {
+    "CH-stretch": 5.460855283059343,
+    "CH-oop": 8.74161013092695,
+    "ring-ip": 11.75961224318123,
+    "other": 7.258594962068535
+   },
+   "coupling_rms": 4.846310384950395,
+   "coupling_zero_rms": 5.896879539562929,
+   "block_rms": 5.696847756808719,
+   "block_median_rule_rms": 4.1224615402254825,
+   "coupling_ratio": 0.8218432057897521,
+   "corrected_freq_rms": 9.987723720319918,
+   "corrected_freq_rms_zero_rule": 24.31353241518719,
+   "duschinsky_overlap_median": 0.9979745383626442,
+   "duschinsky_overlap_p10": 0.9182764513721746,
+   "dH_residual_ratio": 0.45643058047403
+  },
+  "a_mlp": {
+   "diag_rms": {
+    "CH-stretch": 0.99288768375621,
+    "CH-oop": 5.607410097353647,
+    "ring-ip": 11.271219410905932,
+    "other": 7.215770734823758
+   },
+   "coupling_rms": 4.793657847807222,
+   "coupling_zero_rms": 5.896879539562929,
+   "block_rms": 5.220626944042787,
+   "block_median_rule_rms": 4.1224615402254825,
+   "coupling_ratio": 0.8129143245416411,
+   "corrected_freq_rms": 9.309915456790494,
+   "corrected_freq_rms_zero_rule": 24.31353241518719,
+   "duschinsky_overlap_median": 0.9974215691604474,
+   "duschinsky_overlap_p10": 0.916052470507619,
+   "dH_residual_ratio": 0.4138982842073648
+  },
+  "b_gbt": {
+   "diag_rms": {
+    "CH-stretch": 6.125002823384795,
+    "CH-oop": 9.645518065640136,
+    "ring-ip": 6.439045384453102,
+    "other": 11.689457467190122
+   },
+   "coupling_rms": 1.8416919365338027,
+   "coupling_zero_rms": 3.7379272786222715,
+   "block_rms": 2.3344318016905747,
+   "block_median_rule_rms": 1.1407200908405606,
+   "coupling_ratio": 0.49270405742420303,
+   "corrected_freq_rms": 6.6951845050131045,
+   "corrected_freq_rms_zero_rule": 23.091644995601886,
+   "duschinsky_overlap_median": 0.9937715929381774,
+   "duschinsky_overlap_p10": 0.9187511132300213,
+   "dH_residual_ratio": 0.36622542333298025
+  },
+  "b_mlp": {
+   "diag_rms": {
+    "CH-stretch": 1.6852741823353374,
+    "CH-oop": 6.568844532273749,
+    "ring-ip": 4.587690418132949,
+    "other": 7.212638023588425
+   },
+   "coupling_rms": 1.7508158288424702,
+   "coupling_zero_rms": 3.7379272786222715,
+   "block_rms": 0.8628953691214734,
+   "block_median_rule_rms": 1.1407200908405606,
+   "coupling_ratio": 0.46839215916682775,
+   "corrected_freq_rms": 5.121340335293732,
+   "corrected_freq_rms_zero_rule": 23.091644995601886,
+   "duschinsky_overlap_median": 0.9934727187949168,
+   "duschinsky_overlap_p10": 0.9062675567120301,
+   "dH_residual_ratio": 0.313692048246995
+  }
+ },
+ "after": {
+  "per_molecule_a": {
+   "A_fdc27f1bd1": {
+    "name": "biphenyl",
+    "coupling_ratio": 0.34560102809419474,
+    "ring_diag": 6.5081017225591635,
+    "corrected_freq_rms": 6.071798859881452,
+    "corrected_freq_rms_zero": 23.795593995250286,
+    "dH_residual_ratio": 0.25468924695280026,
+    "substituted": false
+   },
+   "A_8448043181": {
+    "name": "benzene",
+    "coupling_ratio": 0.2475582469150214,
+    "ring_diag": 4.089813529009829,
+    "corrected_freq_rms": 5.424125492323035,
+    "corrected_freq_rms_zero": 25.010250770735954,
+    "dH_residual_ratio": 0.2044618744409846,
+    "substituted": true
+   },
+   "A_e72997e726": {
+    "name": "fluorene",
+    "coupling_ratio": 0.37548153565090114,
+    "ring_diag": 6.045851755360334,
+    "corrected_freq_rms": 6.156853305285285,
+    "corrected_freq_rms_zero": 23.705695376852745,
+    "dH_residual_ratio": 0.2872747312222048,
+    "substituted": false
+   },
+   "A_541c53d1a5": {
+    "name": "phenanthrene",
+    "coupling_ratio": 0.49892551390200174,
+    "ring_diag": 6.2258605782650465,
+    "corrected_freq_rms": 6.261876074167004,
+    "corrected_freq_rms_zero": 22.905589543886318,
+    "dH_residual_ratio": 0.3769366570276357,
+    "substituted": false
+   },
+   "A_428228e5a5": {
+    "name": "fluoranthene",
+    "coupling_ratio": 0.5226842867385487,
+    "ring_diag": 7.180829601512848,
+    "corrected_freq_rms": 6.4893414508174,
+    "corrected_freq_rms_zero": 22.287832038448727,
+    "dH_residual_ratio": 0.4152887571903521,
+    "substituted": false
+   },
+   "A_07cadc7923": {
+    "name": "2-naphthoic_acid",
+    "coupling_ratio": 0.5796449930253939,
+    "ring_diag": 5.444436647891997,
+    "corrected_freq_rms": 7.00170797819258,
+    "corrected_freq_rms_zero": 23.22911677372595,
+    "dH_residual_ratio": 0.3878830528675693,
+    "substituted": false
+   },
+   "A_08dde334d8": {
+    "name": "benzophenone",
+    "coupling_ratio": 0.35090646380878027,
+    "ring_diag": 5.822052137062475,
+    "corrected_freq_rms": 5.894785116808645,
+    "corrected_freq_rms_zero": 23.27003503145984,
+    "dH_residual_ratio": 0.25336916445093055,
+    "substituted": false
+   },
+   "A_3100da3761": {
+    "name": "benzonitrile",
+    "coupling_ratio": 0.2929066482766952,
+    "ring_diag": 4.516594158612202,
+    "corrected_freq_rms": 6.313022063421054,
+    "corrected_freq_rms_zero": 24.480885740854767,
+    "dH_residual_ratio": 0.27771377688891075,
+    "substituted": false
+   },
+   "A_bce5bae234": {
+    "name": "phenanthridine",
+    "coupling_ratio": 0.5420746848845855,
+    "ring_diag": 5.382112811170267,
+    "corrected_freq_rms": 5.426693676637051,
+    "corrected_freq_rms_zero": 22.181999394833767,
+    "dH_residual_ratio": 0.39494563610907635,
+    "substituted": false
+   },
+   "A_72b86c2331": {
+    "name": "biphenylene",
+    "coupling_ratio": 0.4125155095708457,
+    "ring_diag": 7.652062818437946,
+    "corrected_freq_rms": 7.218397159842539,
+    "corrected_freq_rms_zero": 23.619261728672335,
+    "dH_residual_ratio": 0.3496251674444772,
+    "substituted": false
+   }
+  },
+  "a_gbt": {
+   "diag_rms": {
+    "CH-stretch": 5.452436612628178,
+    "CH-oop": 8.58862093842082,
+    "ring-ip": 6.141024753292145,
+    "other": 6.503599863563678
+   },
+   "coupling_rms": 1.747498920814389,
+   "coupling_zero_rms": 3.7618729536951134,
+   "block_rms": 1.840452063147393,
+   "block_median_rule_rms": 2.893286960274574,
+   "coupling_ratio": 0.46452895733703653,
+   "corrected_freq_rms": 6.27030863031386,
+   "corrected_freq_rms_zero_rule": 23.290210582349335,
+   "duschinsky_overlap_median": 0.9980570558617052,
+   "duschinsky_overlap_p10": 0.9279699425929671,
+   "dH_residual_ratio": 0.321807522455373
+  },
+  "a_mlp": {
+   "diag_rms": {
+    "CH-stretch": 0.7828372179373699,
+    "CH-oop": 5.485720419614661,
+    "ring-ip": 4.493225026782989,
+    "other": 6.419672866298611
+   },
+   "coupling_rms": 1.6142842337962013,
+   "coupling_zero_rms": 3.7618729536951134,
+   "block_rms": 0.9660446046798046,
+   "block_median_rule_rms": 2.893286960274574,
+   "coupling_ratio": 0.4291171588372129,
+   "corrected_freq_rms": 4.78704401431409,
+   "corrected_freq_rms_zero_rule": 23.290210582349335,
+   "duschinsky_overlap_median": 0.997716078316794,
+   "duschinsky_overlap_p10": 0.929509431161172,
+   "dH_residual_ratio": 0.2559492327989463
+  },
+  "b_gbt": {
+   "diag_rms": {
+    "CH-stretch": 6.125002823384795,
+    "CH-oop": 9.645518065640136,
+    "ring-ip": 6.439045384453102,
+    "other": 11.689457467190122
+   },
+   "coupling_rms": 1.8416919365338027,
+   "coupling_zero_rms": 3.7379272786222715,
+   "block_rms": 2.3344318016905747,
+   "block_median_rule_rms": 1.1407200908405606,
+   "coupling_ratio": 0.49270405742420303,
+   "corrected_freq_rms": 6.6951845050131045,
+   "corrected_freq_rms_zero_rule": 23.091644995601886,
+   "duschinsky_overlap_median": 0.9937715929381774,
+   "duschinsky_overlap_p10": 0.9187511132300213,
+   "dH_residual_ratio": 0.36622542333298025
+  },
+  "b_mlp": {
+   "diag_rms": {
+    "CH-stretch": 1.6852741823353374,
+    "CH-oop": 6.568844532273749,
+    "ring-ip": 4.587690418132949,
+    "other": 7.212638023588425
+   },
+   "coupling_rms": 1.7508158288424702,
+   "coupling_zero_rms": 3.7379272786222715,
+   "block_rms": 0.8628953691214734,
+   "block_median_rule_rms": 1.1407200908405606,
+   "coupling_ratio": 0.46839215916682775,
+   "corrected_freq_rms": 5.121340335293732,
+   "corrected_freq_rms_zero_rule": 23.091644995601886,
+   "duschinsky_overlap_median": 0.9934727187949168,
+   "duschinsky_overlap_p10": 0.9062675567120301,
+   "dH_residual_ratio": 0.313692048246995
+  }
+ },
+ "seconds": 562
+}

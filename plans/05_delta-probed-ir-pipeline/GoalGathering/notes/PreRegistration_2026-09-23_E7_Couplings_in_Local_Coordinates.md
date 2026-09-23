@@ -238,3 +238,12 @@ functional shift (`check_results.py`, 244 molecules): median max |Δω| 48 cm⁻
 methyl torsions, mostly imaginary-mode molecules already excluded). So the corpus is sound apart from benzene; benzene's row is being replaced by the analytic
 route (both functionals), after which hold-out (a) is re-read with the same rung-B model. Policy: incident row in `QUALITY_POLICY.md`; the screen is now part of
 `check_results.py`.
+
+**Added 12:5x — hold-out (a) re-read with benzene's second-route target: win level on both hold-outs.** `m05/e7_rungB_reread_analytic.py`,
+`out/E7_rungB_reread_2026-09-23.*`. Same training pool (175 molecules, untouched), same rung-B models; only benzene's *target* replaced by the analytic
+Hessians (pyscf, same geometry). Benzene: ratio 0.99 → **0.25**, ring diagonal 42.5 → 4.1 cm⁻¹, corrected-frequency RMS
+34.1 → 5.4 (zero rule 25.0), ΔH residual 0.71 → 0.20; the other nine molecules unchanged to the last digit.
+Aggregate (a), MLP: ratio 0.81 → **0.43**, ring diagonal 11.3 → 4.5, corrected-frequency RMS 9.3 → 4.8 cm⁻¹ (zero rule 23.3); GBT 0.82 → 0.46.
+Hold-out (b) untouched: 0.47 / 0.49. The registered outcome on the data as pre-registered stands (between on (a), win-level on (b)); with the corrupted
+target corrected — nothing else changed — both hold-outs are inside the win criterion (≤ 0.6). The curve with the corrected target
+(`out/E7_rungB_2026-09-23_analytic.*`, `--use-analytic`) is appended when in; the three A2 molecules flagged by the screen are being checked by the same second route.
