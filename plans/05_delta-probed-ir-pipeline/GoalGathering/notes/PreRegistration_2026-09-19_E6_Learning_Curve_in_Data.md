@@ -68,3 +68,14 @@ the 3 cm⁻¹ criterion; ring diagonal on (b) 7.08 → 6.05 (M1), 8.42 → 5.91 
 not started for that purpose. The transferable object stays the family-block diagonal (the 19 September lesson, now on 244 molecules with a flat coupling
 curve behind it). The couplings need a different representation before more data is bought for them — a question for the 28th, not a run. The rule
 itself held: the verdict rests on a curve, not on a point.
+
+**Added 10:0x — the open point resolved.** Per-molecule diagnosis (`out/E6_m1_other_diag_2026-09-23.log`: M1 retrained at n = 45 and 191, seed 0):
+the "other" RMS of hold-out (a) at 191 is one molecule, A_b90527ca2d, whose imaginary mode at −37 cm⁻¹ carries a first-order target of +31 and a
+prediction of +394 (other RMS 93.6 on that molecule; 1.7–6.5 on the nine molecules without an imaginary mode, all better than at n = 45). The
+first-order target (k_hi − ω²)/(2ω) is ill-defined on an imaginary mode (ω → √|w| ≈ 0), and hold-out (a) holds the three layer-A molecules with
+one (A_b90527ca2d, A_78896cfe24 with a −48 cm⁻¹ mode and target −109, A_8448043181). With 17 such molecules in the A2 pool the per-mode model
+learns extreme values for near-zero frequencies; the block model does not read those pairs. So the anomaly is an artefact of the 19 September
+convention (keep every molecule with two Hessians), not learning; the module-05 release rule (drop imaginary-mode molecules) removes it. The
+ring-diagonal, coupling and scaffold read-outs do not involve those modes. For a clean table the curve is re-run with `--exclude-imaginary`
+(split fixed on the full set first, so hold-out (a) stays the 19 September set minus its three imaginary-mode members); results as
+`out/E6_learning_curve_in_data_2026-09-23_excl_imaginary.*`, appended below when in. The verdict above does not depend on it.

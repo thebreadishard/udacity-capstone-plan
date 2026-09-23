@@ -225,10 +225,18 @@ def main():
     ap.add_argument("--sizes", default="45,100,all")
     ap.add_argument("--m1-epochs", type=int, default=600); ap.add_argument("--e5-steps", type=int, default=1500); ap.add_argument("--m2-epochs", type=int, default=30)
     ap.add_argument("--smoke", action="store_true")
+    ap.add_argument("--exclude-imaginary", action="store_true",
+                    help="drop molecules with an imaginary mode (the module-05 release rule); 23 Sep: the first-order target on an imaginary mode is ill-defined "
+                         "and the per-mode model's 'other' family on hold-out (a) was dominated by one such molecule (A_b90527ca2d, mode -37 cm-1, prediction +394)")
     a = ap.parse_args(); torch.set_num_threads(a.threads)
     t_start = time.time()
     mols = load_corpus(Path(a.molecules))
-    test_a, test_b, scaffold_cores, pool = splits(mols)
+    test_a, test_b, scaffold_cores, pool = splits(mols)     # the split is fixed on the full set, so hold-out (a) stays the 19 Sep set
+    if a.exclude_imaginary:
+        dropped = sorted(i for i, m in mols.items() if m["imaginary"])
+        mols = {i: m for i, m in mols.items() if not m["imaginary"]}
+        test_a = [i for i in test_a if i in mols]; test_b = [i for i in test_b if i in mols]; pool = [i for i in pool if i in mols]
+        print(f"excluded {len(dropped)} molecules with an imaginary mode (after the split): {dropped}", flush=True)
     sizes = [int(s) if s != "all" else len(pool) for s in a.sizes.split(",")]
     sizes = sorted({min(s, len(pool)) for s in sizes})
     seeds = SEEDS
