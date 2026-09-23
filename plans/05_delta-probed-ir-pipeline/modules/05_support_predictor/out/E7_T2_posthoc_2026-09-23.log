@@ -1,0 +1,7 @@
+(a) (i) own-fit, F objective           ring diag  17.47 | ring couplings ratio 0.93 | block 3.30 vs median 2.82 | corrected ω 12.15 (zero 24.87) | ΔH residual 0.71
+(b) (i) own-fit, F objective           ring diag  12.97 | ring couplings ratio 0.94 | block 1.72 vs median 0.87 | corrected ω 9.61 (zero 23.10) | ΔH residual 0.71
+(a) (ii) per-type, K objective         ring diag  17.10 | ring couplings ratio 0.97 | block 5.22 vs median 4.12 | corrected ω 11.37 (zero 24.31) | ΔH residual 0.73
+(b) (ii) per-type, K objective         ring diag  12.55 | ring couplings ratio 0.93 | block 0.90 vs median 1.14 | corrected ω 9.04 (zero 23.09) | ΔH residual 0.70
+(a) (iii) per-type + additive diag, K  ring diag  14.31 | ring couplings ratio 0.93 | block 4.90 vs median 4.12 | corrected ω 10.54 (zero 24.31) | ΔH residual 0.62
+(b) (iii) per-type + additive diag, K  ring diag   9.85 | ring couplings ratio 0.90 | block 0.64 vs median 1.14 | corrected ω 7.36 (zero 23.09) | ΔH residual 0.66
+wrote out/E7_T2_posthoc_2026-09-23.json/.md

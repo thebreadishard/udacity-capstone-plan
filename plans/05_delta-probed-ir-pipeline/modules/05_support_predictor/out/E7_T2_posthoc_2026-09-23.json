@@ -1,0 +1,142 @@
+{
+ "date": "2026-09-23 08:45",
+ "posthoc": true,
+ "n_train": 175,
+ "holdouts": {
+  "a": 10,
+  "b": 39
+ },
+ "own_fit_F_a": {
+  "diag_rms": {
+   "CH-stretch": 2.2002684940534376,
+   "CH-oop": 7.943140729320119,
+   "ring-ip": 17.467868063346074,
+   "other": 9.503126016246071
+  },
+  "coupling_rms": 5.955029132962097,
+  "coupling_zero_rms": 6.261281027651948,
+  "block_rms": 3.303180284220727,
+  "block_median_rule_rms": 2.815054702758789,
+  "coupling_ratio": 0.9263727654445988,
+  "corrected_freq_rms": 12.154245353733724,
+  "corrected_freq_rms_zero_rule": 24.87358478159298,
+  "duschinsky_overlap_median": 0.9882128466724656,
+  "duschinsky_overlap_p10": 0.8971839833120037,
+  "dH_residual_ratio": 0.7078328326250667
+ },
+ "own_fit_F_b": {
+  "diag_rms": {
+   "CH-stretch": 3.631444775793044,
+   "CH-oop": 8.793192720883647,
+   "ring-ip": 12.973825882702183,
+   "other": 11.090234622195181
+  },
+  "coupling_rms": 3.525599014995472,
+  "coupling_zero_rms": 3.7396483938470593,
+  "block_rms": 1.7178379508878094,
+  "block_median_rule_rms": 0.8743792313795823,
+  "coupling_ratio": 0.9413408392679008,
+  "corrected_freq_rms": 9.607835007586369,
+  "corrected_freq_rms_zero_rule": 23.098108347272984,
+  "duschinsky_overlap_median": 0.988724590177919,
+  "duschinsky_overlap_p10": 0.8503634731635671,
+  "dH_residual_ratio": 0.7068195246074657
+ },
+ "types_K_a": {
+  "diag_rms": {
+   "CH-stretch": 1.7787941855068161,
+   "CH-oop": 6.754038208948998,
+   "ring-ip": 17.101347463609816,
+   "other": 7.829311372910583
+  },
+  "coupling_rms": 5.6925347977311525,
+  "coupling_zero_rms": 5.896879539562929,
+  "block_rms": 5.216803378858231,
+  "block_median_rule_rms": 4.1224615402254825,
+  "coupling_ratio": 0.9653469702983076,
+  "corrected_freq_rms": 11.367365022862062,
+  "corrected_freq_rms_zero_rule": 24.31353241518719,
+  "duschinsky_overlap_median": 0.9980753284177858,
+  "duschinsky_overlap_p10": 0.8854842951228991,
+  "dH_residual_ratio": 0.7274226960357734
+ },
+ "types_K_b": {
+  "diag_rms": {
+   "CH-stretch": 3.7148509977823014,
+   "CH-oop": 6.874104518379847,
+   "ring-ip": 12.551626051988713,
+   "other": 13.188511142339388
+  },
+  "coupling_rms": 3.4875873752918425,
+  "coupling_zero_rms": 3.7379272786222715,
+  "block_rms": 0.9036153212206239,
+  "block_median_rule_rms": 1.1407200908405606,
+  "coupling_ratio": 0.9330270803388396,
+  "corrected_freq_rms": 9.038464285870326,
+  "corrected_freq_rms_zero_rule": 23.091644995601886,
+  "duschinsky_overlap_median": 0.9904251014977434,
+  "duschinsky_overlap_p10": 0.8468095725427092,
+  "dH_residual_ratio": 0.7046445981512995
+ },
+ "fit_hist_K": [
+  8.013992319678739,
+  4.806531351923603,
+  4.8042945657863205,
+  4.804294288874833,
+  4.804294287703043,
+  4.8042942876704995,
+  4.8042942876693235,
+  4.804294287669282,
+  4.804294287669281,
+  4.804294287669282
+ ],
+ "types_K_additive_a": {
+  "diag_rms": {
+   "CH-stretch": 1.1471567378567107,
+   "CH-oop": 5.044485566976492,
+   "ring-ip": 14.311186258026568,
+   "other": 7.79435612833461
+  },
+  "coupling_rms": 5.459780636469698,
+  "coupling_zero_rms": 5.896879539562929,
+  "block_rms": 4.896730708751922,
+  "block_median_rule_rms": 4.1224615402254825,
+  "coupling_ratio": 0.9258762367179662,
+  "corrected_freq_rms": 10.544045504393859,
+  "corrected_freq_rms_zero_rule": 24.31353241518719,
+  "duschinsky_overlap_median": 0.9974345149452832,
+  "duschinsky_overlap_p10": 0.9209013918440546,
+  "dH_residual_ratio": 0.6211154614229923
+ },
+ "types_K_additive_b": {
+  "diag_rms": {
+   "CH-stretch": 2.138828704207525,
+   "CH-oop": 5.1698444099400085,
+   "ring-ip": 9.852072946762275,
+   "other": 9.939188267756784
+  },
+  "coupling_rms": 3.363564727522372,
+  "coupling_zero_rms": 3.7379272786222715,
+  "block_rms": 0.6366324609217905,
+  "block_median_rule_rms": 1.1407200908405606,
+  "coupling_ratio": 0.899847556360732,
+  "corrected_freq_rms": 7.359136187839197,
+  "corrected_freq_rms_zero_rule": 23.091644995601886,
+  "duschinsky_overlap_median": 0.9873097146084813,
+  "duschinsky_overlap_p10": 0.8613609547192403,
+  "dH_residual_ratio": 0.657669907731692
+ },
+ "fit_hist_K_additive": [
+  8.013992319678739,
+  4.134259818254208,
+  4.087866502651722,
+  4.087964292166154,
+  4.087966916299568,
+  4.087966988798663,
+  4.0879669869099375,
+  4.0879669865434805,
+  4.08796698649642,
+  4.08796698649178
+ ],
+ "seconds": 67
+}

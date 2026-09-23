@@ -89,3 +89,25 @@ bond force constants (≈ 0.5 a.u.) hundreds of times above bends and torsions, 
 `m05/e7_t2_posthoc.py` measures (i) the upper bound of the SQM form — scale factors fitted on each held-out molecule itself — and (ii) a fit of the
 same 50 factors in K-space (cm⁻¹, all families weighted alike). If (i) is also weak, the multiplicative form is the limit and rung B needs
 additive per-pair terms; if (ii) is much better than T2, the objective was the problem.
+
+**Post-hoc (i)–(iii), 10:5x — not pre-registered; `m05/e7_t2_posthoc.py`, `out/E7_T2_posthoc_2026-09-23.*`.**
+
+| hold-out | variant | ring diag | ring coupling ratio | corrected ω RMS (zero rule) | ΔH residual ratio |
+|---|---|---|---|---|---|
+| (a) | (i) own-fit ceiling of the multiplicative form | 17.47 | **0.93** | 12.15 (24.87) | 0.71 |
+| (a) | (ii) per-type factors, K-space objective | 17.10 | **0.97** | 11.37 (24.31) | 0.73 |
+| (a) | (iii) + additive diagonal per type, K-space | 14.31 | **0.93** | 10.54 (24.31) | 0.62 |
+| (b) | (i) own-fit ceiling of the multiplicative form | 12.97 | **0.94** | 9.61 (23.10) | 0.71 |
+| (b) | (ii) per-type factors, K-space objective | 12.55 | **0.93** | 9.04 (23.09) | 0.70 |
+| (b) | (iii) + additive diagonal per type, K-space | 9.85 | **0.90** | 7.36 (23.09) | 0.66 |
+
+Reading. (i) Even with the scale factors fitted on the held-out molecule itself — no transfer at all — the multiplicative form leaves
+71 % of the Cartesian ΔH RMS and a ring coupling ratio of 0.93: **the SQM form is the limit, not the transfer.** (ii) The K-space
+objective changes nothing (0.97 / 0.93): the a.u. weighting was not the problem. (iii) One additive constant per coordinate type
+on the diagonal helps the diagonal (ring 14.3 / 9.9) and the couplings a little (0.93 / 0.90) but still leaves 62 % of ΔH.
+So the ωB97X − B3LYP correction is not, to first approximation, a change of the *diagonal* force constants of the primitives: a large part
+of it sits in the *interaction* constants between internals — chemically, in how conjugated bonds stiffen each other (bond-alternation /
+Kekulé interaction constants, where B3LYP's delocalisation error lives). That is where the mode-basis couplings come from, and it is
+exactly what a per-coordinate representation, multiplicative or additive, cannot express. The capacity ceilings of local representations
+with pair terms (post-hoc (iv)–(vi): diagonal only; pairs sharing an atom; plus ring bond–bond pairs; each fitted per molecule, no transfer)
+are being measured to size rung B (`m05/e7_t2_ceilings.py`); the result is appended when in.
