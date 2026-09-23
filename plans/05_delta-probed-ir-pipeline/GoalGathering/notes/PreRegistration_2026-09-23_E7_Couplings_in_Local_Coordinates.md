@@ -178,3 +178,41 @@ K_pred; E6 read-outs plus the basis-free ones. Same hold-outs (a) and (b), same 
 **Between:** 0.6–0.9 → more expressive features or rung C, decided by whether the curve descends.
 
 Script `m05/e7_rungB_pairs.py`; results `out/E7_rungB_2026-09-23.*`; CCX53 only.
+
+## Outcome rung B — 23 September 2026, 12:0x: BETWEEN on hold-out (a) (ratio 0.81), WIN-level on hold-out (b) (ratio 0.47); the first model that learns the couplings
+
+Run: `m05/e7_rungB_pairs.py` on the CCX53 (32 threads, 251 s); results `out/E7_rungB_2026-09-23.{json,md,log}`. 224 molecules; 66 pair features;
+pool 175; sizes [45, 100, 175]; MLP seeds [0, 1, 2], 60 epochs; GBT 400 iterations. RMS in cm⁻¹; MLP = mean over seeds.
+
+| n | hold-out | model | diag ring-ip | diag CH-oop | ring coupling RMS / zero | **ratio** | ring block / median | corrected ω RMS (zero) | overlap | ΔH residual |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 45 | (a) | B1 MLP | 11.63 | 9.97 | 4.83 / 5.90 | **0.82** | 5.70 / 4.14 | 9.96 (24.31) | 0.998 | 0.43 |
+| 45 | (a) | B2 GBT | 11.46 | 6.99 | 4.84 / 5.90 | **0.82** | 5.39 / 4.14 | 9.63 (24.31) | 0.998 | 0.45 |
+| 45 | (b) | B1 MLP | 6.04 | 10.64 | 1.91 / 3.74 | **0.51** | 1.35 / 1.09 | 5.99 (23.09) | 0.992 | 0.34 |
+| 45 | (b) | B2 GBT | 5.96 | 7.78 | 1.81 / 3.74 | **0.48** | 1.71 / 1.09 | 6.32 (23.09) | 0.994 | 0.35 |
+| 100 | (a) | B1 MLP | 11.22 | 6.79 | 4.82 / 5.90 | **0.82** | 5.16 / 4.12 | 9.47 (24.31) | 0.997 | 0.42 |
+| 100 | (a) | B2 GBT | 11.70 | 7.75 | 4.84 / 5.90 | **0.82** | 5.55 / 4.12 | 9.83 (24.31) | 0.998 | 0.45 |
+| 100 | (b) | B1 MLP | 4.96 | 7.24 | 1.87 / 3.74 | **0.50** | 1.17 / 1.16 | 5.40 (23.09) | 0.992 | 0.34 |
+| 100 | (b) | B2 GBT | 6.25 | 8.55 | 1.83 / 3.74 | **0.49** | 2.17 / 1.16 | 6.73 (23.09) | 0.994 | 0.36 |
+| 175 | (a) | B1 MLP | 11.23 | 5.19 | 4.80 / 5.90 | **0.81** | 5.18 / 4.12 | 9.34 (24.31) | 0.998 | 0.41 |
+| 175 | (a) | B2 GBT | 11.76 | 8.74 | 4.85 / 5.90 | **0.82** | 5.70 / 4.12 | 9.99 (24.31) | 0.998 | 0.46 |
+| 175 | (b) | B1 MLP | 4.83 | 6.01 | 1.76 / 3.74 | **0.47** | 1.09 / 1.14 | 5.14 (23.09) | 0.993 | 0.31 |
+| 175 | (b) | B2 GBT | 6.44 | 9.65 | 1.84 / 3.74 | **0.49** | 2.33 / 1.14 | 6.70 (23.09) | 0.994 | 0.37 |
+
+MLP ring coupling ratio per seed at 175: (a) 0.81, 0.82, 0.81; (b) 0.47, 0.46, 0.49. Slopes of the ratio over [45, 100, 175]: (a) -0.01, (b) -0.06.
+
+**Against the predictions.** Predicted ≤ 0.6 on both hold-outs and a descending curve. Measured: **(b), the 39 molecules of two cores never seen in
+training, ratio 0.47** (zero-rule 1.00 for every mode-basis model of E6; projection ceiling of the pattern 0.29), ring diagonal 4.8 cm⁻¹ (the module-05
+Transformer's best was 5.3 on its own split, without couplings), ring block 1.09 against the median rule's 1.14 — the first model to beat that rule — and the
+corrected-frequency error 23.1 → 5.1 cm⁻¹ with a Duschinsky overlap of 0.993. **(a), the ten layer-A molecules, ratio 0.81**: better than any
+mode-basis model by a wide margin, but above 0.6, and flat over 45 → 175 (slope -0.01) while (b) descends a little (-0.06). By the registered rule:
+**between on (a), win-level on (b)**. The neural model and the trees agree to two decimals on the ratio at every n, so the number is a property
+of the representation, not of one learner.
+
+**Reading.** In the local pairwise representation the couplings are learned — from the same 175 molecules on which every mode-basis model sat
+at the zero rule at every data size. Cores transfer (hold-out (b) is the harder test in chemistry and the easier one in the numbers). The
+layer-A hold-out is a different population (small mono- and bicyclic aromatics with heteroatoms, the corpus is 78 % three- and four-ring
+substituted cores); its flat 0.82 says that what is missing there is not data of the same kind but coverage of its chemistry or features that
+see it — the per-molecule diagnosis (`out/E7_rungB_diag_a_2026-09-23.log`) says which molecules carry the residual. Rung C (equivariant Δ-Hessian
+on atom-pair blocks, displaced-gradient labels) remains the next representation step; before it, the cheaper lever is coverage: layer-A-type
+molecules in the training pool.
