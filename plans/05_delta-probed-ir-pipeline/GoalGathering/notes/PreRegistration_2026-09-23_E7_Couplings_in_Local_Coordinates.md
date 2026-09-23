@@ -248,6 +248,8 @@ Hold-out (b) untouched: 0.47 / 0.49. The registered outcome on the data as pre-r
 target corrected — nothing else changed — both hold-outs are inside the win criterion (≤ 0.6). The curve with the corrected target
 (`out/E7_rungB_2026-09-23_analytic.*`, `--use-analytic`) is appended when in; the three A2 molecules flagged by the screen are being checked by the same second route.
 
+**Added 16:2x — the three screen suspects.** Carbazole+SH (two entries): analytic and corpus agree to 4 and 10 cm⁻¹ (genuine S–H shifts). Biphenylene+CH3: every mode agrees except the softest — the deck's ωB97X finite differences make the methyl torsion imaginary (−37 cm⁻¹) where the analytic route gives +97. That is a second artefact class of the same mechanism: 20 corpus molecules carry an imaginary soft mode, 16 of them in one functional only; all 20 are on the analytic second route tonight (corpus README, dated note). If they heal, the module-05 release rule was dropping good molecules and E6/E7 gain up to 20 rows; the E6 hold-out (a) pathology of 2-phenylpyridine (imaginary −37 cm⁻¹, first-order target ill-defined) is one of them.
+
 **Added 13:1x — the rung-B curve with benzene's second-route target (`--use-analytic`, everything else as pre-registered): WIN by the registered rule.**
 `out/E7_rungB_2026-09-23_analytic.*` (1187 s). MLP ring coupling ratio vs n: (a) 45: 0.47, 100: 0.45, 175: 0.43 (slope -0.06); (b) 45: 0.51, 100: 0.50, 175: 0.47 (slope -0.06).
 At 175: ring diagonal (a) 4.5 / (b) 4.8 cm⁻¹; ring block (a) 0.86 vs median rule 2.89, (b) 1.09 vs 1.14; corrected-frequency RMS (a) 4.7

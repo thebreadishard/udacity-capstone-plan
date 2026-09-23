@@ -56,7 +56,20 @@ add, never change.
 Benzene's layer-A ωB97X Hessian (psi4 findif of analytic gradients, 3-point, 0.005 bohr, grid 75/302 as in `decks/deck_v1.json`) was wrong by up to 133 cm⁻¹
 at a D6h geometry. `fd_grid_test_benzene.py` reproduces it exactly with the deck and removes it with grid 99/590 (8 cm⁻¹ from the analytic pyscf Hessian);
 B3LYP with the deck is off by 23 cm⁻¹ on one degenerate pair. Mechanism: DFT quadrature noise in the gradients divided by the small step. A corpus-wide screen
-(`check_results.py`: sorted-pair functional shift > 80 cm⁻¹) flags benzene alone above 100; three A2 molecules at 80–88 agree with their analytic second
-route to 2–4 cm⁻¹ (genuine S–H / methyl shifts). Decisions: layers A and A2 stay as computed (screened; benzene's row carries the analytic second route,
+(`check_results.py`: sorted-pair functional shift > 80 cm⁻¹) flags benzene alone above 100; of the three A2 molecules at 80–88, the two carbazole+SH
+entries agree with their analytic second route to 4 and 10 cm⁻¹ (genuine S–H shifts), and biphenylene+CH3 agrees on every mode but its lowest: the deck's
+ωB97X finite differences give an imaginary methyl torsion at −37 cm⁻¹ where the analytic route gives +97 (`analytic_check.json`, corrected 16:2x). Decisions: layers A and A2 stay as computed (screened; benzene's row carries the analytic second route,
 `hessian_<tag>_analytic.npz`, used by `m05/build_release.py --prefer-analytic`); **every new layer uses analytic Hessians (`analytic_hessians.py`, pyscf) or
 grid 99/590 where psi4 finite differences remain**, and every molecule with a point group above C2v gets the second route by default.
+
+## Dated note 2026-09-23 16:2x — a second artefact class: spurious imaginary soft modes
+
+Biphenylene+CH3's screen hit was not a functional shift but a sign flip of its softest mode (see above). The corpus holds 20 molecules with an imaginary
+mode in deck v1's Hessians (17 in layer A2, 3 in A); in 16 of them exactly one soft mode between −21 and −110 cm⁻¹ is imaginary in **one** functional
+only (12 B3LYP-only, 4 ωB97X-only) while the other functional has it at +28 to +88 — the signature of grid noise flipping a torsion (methyl, vinyl,
+CF3, NO2 substituents), not of a saddle point. Four have it in both functionals (pyrene+vinyl, acenaphthylene+vinyl, diphenylacetylene with −592/−453
+in ωB97X, 9-methylanthracene); those may be genuine. All 20 are being recomputed along the analytic second route (both functionals, grid 99/590) on
+the CCX53 (`run_imag_lanes.sh`, four lanes; logs `out/analytic_hessians_imaginary_2026-09-23_lane*.log`). Consequence if the flips are artefacts:
+the release rule "drop imaginary-mode molecules" was dropping good molecules — up to 20 more rows for module 05 and E6/E7, from the second route.
+`analytic_hessians.py` now compares the 3N−6 vibrational entries of both lists by the corpus convention (`vib_only`; pyscf's harmonic analysis had
+dropped one mode of an imaginary-mode molecule and crashed the comparison) and has `--compare-only` to rebuild `analytic_check.json` from saved files.
