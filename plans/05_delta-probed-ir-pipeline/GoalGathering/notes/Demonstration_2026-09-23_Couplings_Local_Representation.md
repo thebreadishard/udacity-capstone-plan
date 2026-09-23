@@ -89,8 +89,10 @@ learned nothing. Figure: `figures/E7_couplings_representation_2026-09-23.png`.
   all 244 molecules on the sorted-pair functional shift finds benzene as the only molecule above 100 cm⁻¹ (median 48); the corpus is sound apart from
   it. The screen is now part of the corpus check. Re-read with benzene's analytic target and nothing else changed (`out/E7_rungB_reread_2026-09-23.md`):
   benzene 0.99 → **0.25**, corrected frequencies 34 → 5.4 cm⁻¹; hold-out (a) as a whole 0.81 → **0.43**, corrected frequencies 9.3 → **4.8 cm⁻¹**.
-  Both hold-outs are then inside the pre-registered win criterion. This is the noise principle of 21 September doing its job a second time: every
-  derived quantity gets a second route.
+  Both hold-outs are then inside the pre-registered win criterion. The mechanism was pinned the same afternoon: the corpus deck's finite differences with
+  psi4's default grid (75/302) reproduce the wrong Hessian exactly, and the same run with a 99/590 grid agrees with the analytic one to 8 cm⁻¹ — grid noise
+  in the gradients divided by a 0.005 bohr step, worst for the range-separated functional on a high-symmetry molecule. Our setting, not the program; new
+  corpus layers use analytic Hessians. This is the noise principle of 21 September doing its job a second time: every derived quantity gets a second route.
 - **The curve is shallow**, now at a good level ((a) 45: 0.47, 100: 0.45, 175: 0.43; (b) 45: 0.51, 100: 0.50, 175: 0.47; slopes -0.06 / -0.06): what remains (ΔH residual 0.25 / 0.31) is the part of the correction outside the pairwise pattern and the missing gradient term, not data volume. The next
   step is representation once more, not volume: the full local Hessian on atom-pair blocks with an equivariant network (rung C), trained with
   displaced-geometry gradients as cheap extra labels and pre-trained on Hessian QM9 — or, cheaper first, the missing 27 % of ΔH outside the

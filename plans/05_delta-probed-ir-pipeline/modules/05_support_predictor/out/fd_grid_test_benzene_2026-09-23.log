@@ -1,0 +1,13 @@
+  Threads set to 16 by Python driver.
+
+  Memory set to  18.626 GiB by Python driver.
+Warning: used thermodynamics relations inappropriate for low-frequency modes: ['422.9310' '426.2096' '563.3365' '604.9972']
+(a) wB97X, corpus deck (grid 75/302): 208 s | max |Δ vs analytic| 132 cm-1 | pairs: 563/605, 1223/1343, 1681/1688
+    [423, 426, 563, 605, 702, 733, 861, 885, 993, 999, 1006, 1030, 1038, 1047, 1064, 1139, 1223, 1343, 1409, 1450, 1544, 1555, 1681, 1688, 3209, 3218, 3232, 3243, 3251, 3255]
+Warning: used thermodynamics relations inappropriate for low-frequency modes: ['424.9472' '425.2861' '620.1049']
+(b) wB97X, grid 99/590: 316 s | max |Δ vs analytic| 8 cm-1 | pairs: 620/633, 1205/1214, 1688/1689
+    [425, 425, 620, 633, 698, 733, 882, 883, 1001, 1001, 1025, 1032, 1036, 1078, 1079, 1175, 1205, 1214, 1324, 1384, 1541, 1541, 1688, 1689, 3217, 3226, 3227, 3242, 3242, 3253]
+Warning: used thermodynamics relations inappropriate for low-frequency modes: ['414.9159' '415.7417']
+(c) B3LYP, corpus deck: 142 s | max |Δ vs analytic| 23 cm-1 | pairs: 630/645, 1199/1206, 1648/1653
+    [415, 416, 630, 645, 695, 718, 865, 865, 969, 969, 1011, 1020, 1020, 1069, 1069, 1185, 1199, 1206, 1356, 1388, 1531, 1531, 1648, 1653, 3174, 3183, 3184, 3199, 3200, 3210]
+[2026-09-23 12:51:01] FD TESTS DONE 0

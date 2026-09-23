@@ -50,3 +50,13 @@ new runs. **Run order** (`run_corpus.queue_order`, dated addition 2026-09-12): l
 timing-test molecules at the very front), then layers B and A′ (`A2` in the files) alternating one by one,
 so the class axis and the size axis grow together, then layer C. A release freezes the manifest rows with status `done` and their result hashes; later releases
 add, never change.
+
+## Dated note 2026-09-23 14:5x — deck v1's finite-difference Hessians and the grid
+
+Benzene's layer-A ωB97X Hessian (psi4 findif of analytic gradients, 3-point, 0.005 bohr, grid 75/302 as in `decks/deck_v1.json`) was wrong by up to 133 cm⁻¹
+at a D6h geometry. `fd_grid_test_benzene.py` reproduces it exactly with the deck and removes it with grid 99/590 (8 cm⁻¹ from the analytic pyscf Hessian);
+B3LYP with the deck is off by 23 cm⁻¹ on one degenerate pair. Mechanism: DFT quadrature noise in the gradients divided by the small step. A corpus-wide screen
+(`check_results.py`: sorted-pair functional shift > 80 cm⁻¹) flags benzene alone above 100; three A2 molecules at 80–88 agree with their analytic second
+route to 2–4 cm⁻¹ (genuine S–H / methyl shifts). Decisions: layers A and A2 stay as computed (screened; benzene's row carries the analytic second route,
+`hessian_<tag>_analytic.npz`, used by `m05/build_release.py --prefer-analytic`); **every new layer uses analytic Hessians (`analytic_hessians.py`, pyscf) or
+grid 99/590 where psi4 finite differences remain**, and every molecule with a point group above C2v gets the second route by default.

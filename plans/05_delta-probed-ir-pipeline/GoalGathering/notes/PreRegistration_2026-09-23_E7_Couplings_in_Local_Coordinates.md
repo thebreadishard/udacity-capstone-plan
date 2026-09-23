@@ -255,3 +255,10 @@ At 175: ring diagonal (a) 4.5 / (b) 4.8 cm⁻¹; ring block (a) 0.86 vs median r
 **win** on the pre-registered criterion, on the data with one corrupted target replaced by its second route. The record therefore reads: as pre-registered
 (corpus FD Hessians) — between on (a) because of benzene's artefact, win-level on (b); with the artefact corrected — win. The curve is shallow
 (−0.06): the remaining error (ΔH residual 0.25 / 0.31) is the part of ΔH outside the pairwise pattern and the missing gradient term, not data.
+
+**Added 14:5x — the mechanism of the benzene artefact.** Three psi4 runs on the CCX53 (`corpus/fd_grid_test_benzene.py`): (a) the corpus deck reproduces the
+wrong ωB97X Hessian to the last digit (563/605, 1223/1343; deterministic, so it is a property of the settings); (b) the same finite-difference run with grid
+99/590 lands within 8 cm⁻¹ of the analytic Hessian (residual pair split 620/633); (c) B3LYP with the deck is off by 23 cm⁻¹ on one pair. So: DFT grid noise
+in the gradients, amplified by the 0.005 bohr step, worst for the range-separated functional and for a molecule whose displaced geometries break a
+high-symmetry grid. It was our deck's grid (psi4's default 75/302), not the program. Guard recorded in the policy and the corpus README: analytic Hessians
+or 99/590 for every new layer; second route for symmetric molecules.
