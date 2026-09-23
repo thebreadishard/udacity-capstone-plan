@@ -1,0 +1,13 @@
+(a) iv_diag                params/cart 110/2067 | ΔH residual 0.70 | ring diag  22.81 | ring couplings ratio 1.17 | corrected ω 15.06 (zero 24.87) | overlap 0.986
+(a) v_share_atom           params/cart 2637/2067 | ΔH residual 0.07 | ring diag   0.85 | ring couplings ratio 0.10 | corrected ω 1.14 (zero 24.87) | overlap 1.000
+(a) vi_share_or_ringbond   params/cart 2656/2067 | ΔH residual 0.07 | ring diag   0.85 | ring couplings ratio 0.10 | corrected ω 1.14 (zero 24.87) | overlap 1.000
+(a) mask_iv_diag           params/cart 110/2067 | ΔH residual 0.77 | ring diag  19.54 | ring couplings ratio 0.98 | corrected ω 13.36 (zero 24.87) | overlap 0.983
+(a) mask_v_share_atom      params/cart 5163/2067 | ΔH residual 0.61 | ring diag  15.60 | ring couplings ratio 0.78 | corrected ω 8.21 (zero 24.87) | overlap 0.993
+(a) mask_vi_share_or_ringbond params/cart 5203/2067 | ΔH residual 0.27 | ring diag   8.30 | ring couplings ratio 0.38 | corrected ω 4.98 (zero 24.87) | overlap 0.992
+(b) iv_diag                params/cart 151/3235 | ΔH residual 0.67 | ring diag  17.73 | ring couplings ratio 1.10 | corrected ω 12.21 (zero 23.10) | overlap 0.988
+(b) v_share_atom           params/cart 4110/3235 | ΔH residual 0.06 | ring diag   0.63 | ring couplings ratio 0.09 | corrected ω 1.20 (zero 23.10) | overlap 0.999
+(b) vi_share_or_ringbond   params/cart 4138/3235 | ΔH residual 0.06 | ring diag   0.63 | ring couplings ratio 0.09 | corrected ω 1.20 (zero 23.10) | overlap 0.999
+(b) mask_iv_diag           params/cart 151/3235 | ΔH residual 0.73 | ring diag  14.89 | ring couplings ratio 0.96 | corrected ω 10.57 (zero 23.10) | overlap 0.989
+(b) mask_v_share_atom      params/cart 8069/3235 | ΔH residual 0.55 | ring diag  10.96 | ring couplings ratio 0.70 | corrected ω 6.48 (zero 23.10) | overlap 0.996
+(b) mask_vi_share_or_ringbond params/cart 8124/3235 | ΔH residual 0.19 | ring diag   2.62 | ring couplings ratio 0.29 | corrected ω 2.11 (zero 23.10) | overlap 0.998
+wrote out/E7_T2_ceilings_2026-09-23 in 647 s

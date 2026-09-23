@@ -132,3 +132,49 @@ amount. Read together with T2 and its post-hoc checks, the two tests point the s
 property at all — they come from the interaction constants between internals, which neither mode tokens nor per-coordinate scale factors
 see. The representation has to carry pairs of local coordinates (rung B with pair terms) or the full local Hessian (rung C). The diagonal is
 unaffected by the target change (12.5 vs 12.7 on ring), as it should be.
+
+**Post-hoc (iv)–(ix), 11:5x — where ΔH lives; `m05/e7_t2_ceilings.py`, `out/E7_T2_ceilings_2026-09-23.*`.** Per held-out molecule, no transfer.
+(iv)–(vi) are least-squares fits of ΔF on a sparsity pattern; (v)/(vi) have more parameters than Cartesian elements and prove nothing (residual 0.07 by
+construction) — they are kept only as the record. (vii)–(ix) are parameter-free: the minimum-norm internal ΔF = B⁺ᵀ ΔH B⁺, zeroed outside the pattern,
+transformed back — the fair measure of how much of ΔH sits on each pattern.
+
+| hold-out | pattern (projection, no fit) | ΔH residual ratio | ring diag | ring coupling ratio | corrected ω RMS (zero rule) |
+|---|---|---|---|---|---|
+| (a) | diagonal of the primitives only | 0.77 | 19.54 | **0.98** | 13.36 (24.87) |
+| (a) | + pairs sharing an atom | 0.61 | 15.60 | **0.78** | 8.21 (24.87) |
+| (a) | + bond–bond pairs in the same ring | 0.27 | 8.30 | **0.38** | 4.98 (24.87) |
+| (b) | diagonal of the primitives only | 0.73 | 14.89 | **0.96** | 10.57 (23.10) |
+| (b) | + pairs sharing an atom | 0.55 | 10.96 | **0.70** | 6.48 (23.10) |
+| (b) | + bond–bond pairs in the same ring | 0.19 | 2.62 | **0.29** | 2.11 (23.10) |
+
+Reading. The diagonal of the primitives carries almost nothing of the couplings (ratio 0.98); pairs of internals sharing an atom carry
+about 40 %; adding the **bond–bond interaction constants inside a ring** (bonds one, two and three bonds apart — the ortho/meta/para
+interaction constants of Pulay's benzene force field) takes the residual to 0.27 / 0.19, the ring coupling ratio to
+0.38 / 0.29 and the corrected-frequency error to 5.0 / 2.1 cm⁻¹ (zero rule 24 / 23). **The ωB97X − B3LYP correction is, to three quarters, a
+change of the ring bond–bond interaction constants plus atom-sharing pair terms — a local, transferable object with a chemical name.** This
+fixes the representation for rung B.
+
+## Rung B, pre-registered 11:5x (written before the run; the user, 11:1x: "Doe wat nodig is om aan de supervisor aan te tonen dat ons idee werkt, dat het netwerk alles kan leren wat het nodig heeft")
+
+**Target.** The minimum-norm internal correction ΔF = B⁺ᵀ ΔH B⁺ on the pattern of post-hoc (ix): diagonal, pairs sharing an atom, bond–bond
+pairs in the same ring. Every element is a rotation-invariant, sign-consistent number in atomic units (geomeTRIC builds the primitives
+deterministically from the geometry), so the sign and basis problems of the mode basis do not exist here; a molecule contributes thousands
+of labelled pairs instead of one matrix.
+
+**Features per element (i, j).** For each primitive: class (bond / angle / dihedral / out-of-plane / linear), elements involved, ring membership,
+its value (length or angle), F_low,kk, the environment classes of its atoms (the 12 atom classes of the second-pass descriptors) and their
+ring counts. For the pair: the two primitives' features in canonical order, the number of shared atoms, same-ring flag, ring-path distance for
+bond–bond pairs (1 = adjacent, 2, 3 = across), F_low,ij and F_low,ii F_low,jj.
+
+**Models.** (B1) a network: MLP 2 × 128 GELU on standardised features, targets scaled per class, AdamW, 3 seeds; (B2) gradient-boosted trees
+(sklearn HistGradientBoosting) as the non-neural check. Prediction: ΔH_pred = Bᵀ ΔF_pred B, mass-weighted, projected onto the B3LYP modes →
+K_pred; E6 read-outs plus the basis-free ones. Same hold-outs (a) and (b), same pool, imaginary-mode molecules excluded; **sizes 45, 100, 175**
+(three seeds) so that the curve itself is an exhibit.
+
+**Predictions.** Ring coupling ratio ≤ 0.6 on (a) and (b) at 175 (the projection ceiling is 0.38 / 0.29); corrected-frequency RMS ≤ 8 cm⁻¹ against
+24 for the zero rule; ring diagonal ≤ 10 cm⁻¹; and — the point for the supervisor — the coupling ratio *descends with data* (slope steeper than
+−0.15 over 45 → 175), where every mode-basis model was flat. **Win:** ratio ≤ 0.6 on both hold-outs at 175 and a negative slope. **Lose:** ratio
+≥ 0.9 at 175 → the pairwise local target is still not learnable from these features and rung C (equivariant Δ-Hessian) is the next test.
+**Between:** 0.6–0.9 → more expressive features or rung C, decided by whether the curve descends.
+
+Script `m05/e7_rungB_pairs.py`; results `out/E7_rungB_2026-09-23.*`; CCX53 only.

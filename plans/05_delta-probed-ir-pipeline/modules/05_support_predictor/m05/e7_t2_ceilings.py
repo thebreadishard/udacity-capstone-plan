@@ -80,6 +80,12 @@ def main():
             pats = patterns(mols[i], (g["symbols"], np.asarray(g["coords_bohr"])))
             for name, pat in pats.items():
                 dF, npar = fit_pattern(mols[i], pat); fits.setdefault(name, {})[i] = (dF, npar)
+            # (vii)-(ix) masked projection, no fitting: the minimum-norm internal dF = B+^T dH B+, zeroed outside the pattern, back to Cartesian.
+            # Says how much of dH lives on the pattern without any free parameter (the fair locality measure when patterns have more
+            # parameters than Cartesian elements).
+            Bp = np.linalg.pinv(mols[i]["B"]); dFmn = Bp.T @ mols[i]["dH_true"] @ Bp
+            for name, pat in pats.items():
+                fits.setdefault("mask_" + name, {})[i] = (dFmn * pat, int(pat.sum()))
         for name in fits:
             recs = [dict(E6.readout({i: PH.k_of(mols[i], fits[name][i][0])}, mols, [i], tr), **T2.basis_free({i: PH.k_of(mols[i], fits[name][i][0])}, mols, [i]),
                          dH_residual_ratio=float(np.sqrt(np.mean((mols[i]["B"].T @ fits[name][i][0] @ mols[i]["B"] - mols[i]["dH_true"]) ** 2) / np.mean(mols[i]["dH_true"] ** 2))),
@@ -91,7 +97,7 @@ def main():
     md = [f"# E7 / T2 post-hoc ceilings ({res['date']}) — NOT pre-registered; per-molecule own fits, no transfer", "",
           "| hold-out | pattern | parameters / Cartesian elements | ΔH residual ratio | ring diag | ring coupling ratio | corrected ω RMS (zero rule) | overlap median |", "|---|---|---|---|---|---|---|---|"]
     for h in ("a", "b"):
-        for name in ("iv_diag", "v_share_atom", "vi_share_or_ringbond"):
+        for name in ("iv_diag", "v_share_atom", "vi_share_or_ringbond", "mask_iv_diag", "mask_v_share_atom", "mask_vi_share_or_ringbond"):
             x = res[f"{name}_{h}"]
             md.append(f"| ({h}) | {name} | {x['n_par']:.0f} / {x['n_cart']:.0f} | {x['dH_residual_ratio']:.2f} | {x['diag_rms'][RING]:.2f} | **{x['coupling_ratio']:.2f}** | {x['corrected_freq_rms']:.2f} ({x['corrected_freq_rms_zero_rule']:.2f}) | {x['duschinsky_overlap_median']:.3f} |")
     open(a.out_prefix + ".md", "w", encoding="utf-8").write("\n".join(md) + "\n"); print("wrote", a.out_prefix, f"in {res['seconds']} s")
