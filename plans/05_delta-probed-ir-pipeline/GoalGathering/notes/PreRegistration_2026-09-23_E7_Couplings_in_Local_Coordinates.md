@@ -247,3 +247,11 @@ Aggregate (a), MLP: ratio 0.81 → **0.43**, ring diagonal 11.3 → 4.5, correct
 Hold-out (b) untouched: 0.47 / 0.49. The registered outcome on the data as pre-registered stands (between on (a), win-level on (b)); with the corrupted
 target corrected — nothing else changed — both hold-outs are inside the win criterion (≤ 0.6). The curve with the corrected target
 (`out/E7_rungB_2026-09-23_analytic.*`, `--use-analytic`) is appended when in; the three A2 molecules flagged by the screen are being checked by the same second route.
+
+**Added 13:1x — the rung-B curve with benzene's second-route target (`--use-analytic`, everything else as pre-registered): WIN by the registered rule.**
+`out/E7_rungB_2026-09-23_analytic.*` (1187 s). MLP ring coupling ratio vs n: (a) 45: 0.47, 100: 0.45, 175: 0.43 (slope -0.06); (b) 45: 0.51, 100: 0.50, 175: 0.47 (slope -0.06).
+At 175: ring diagonal (a) 4.5 / (b) 4.8 cm⁻¹; ring block (a) 0.86 vs median rule 2.89, (b) 1.09 vs 1.14; corrected-frequency RMS (a) 4.7
+(zero rule 23.3), (b) 5.1 (23.1); Duschinsky overlap median 0.998 / 0.993. Both hold-outs ≤ 0.6 at every size and both slopes negative:
+**win** on the pre-registered criterion, on the data with one corrupted target replaced by its second route. The record therefore reads: as pre-registered
+(corpus FD Hessians) — between on (a) because of benzene's artefact, win-level on (b); with the artefact corrected — win. The curve is shallow
+(−0.06): the remaining error (ΔH residual 0.25 / 0.31) is the part of ΔH outside the pairwise pattern and the missing gradient term, not data.

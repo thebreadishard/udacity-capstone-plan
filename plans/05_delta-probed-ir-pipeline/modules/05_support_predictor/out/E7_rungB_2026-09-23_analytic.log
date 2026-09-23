@@ -1,0 +1,15 @@
+analytic second-route Hessians substituted for 1 molecules: ['A_8448043181']
+224 molecules; pattern pairs per molecule 978–4712 (features 66); hold-out (a) 10, (b) 39 (['fluoranthene', 'fluorene']); pool 175; sizes [45, 100, 175]; seeds [0, 1, 2]; epochs 60
+n= 45 (a) B1 MLP: diag CH-stretch   2.11 | CH-oop   9.78 | ring-ip   5.70 | other   6.73 | ring couplings 1.75 vs zero 3.76 (ratio 0.47) | block 1.67 vs median 3.01 | corrected ω 5.94 (zero 23.29) | overlap 0.998 | ΔH residual 0.29
+n= 45 (b) B1 MLP: diag CH-stretch   4.70 | CH-oop  10.64 | ring-ip   6.04 | other   8.64 | ring couplings 1.91 vs zero 3.74 (ratio 0.51) | block 1.35 vs median 1.09 | corrected ω 5.99 (zero 23.09) | overlap 0.992 | ΔH residual 0.34
+n= 45 (a) B2 GBT: diag CH-stretch   5.02 | CH-oop   6.85 | ring-ip   5.54 | other   6.29 | ring couplings 1.71 vs zero 3.76 (ratio 0.46) | block 1.30 vs median 3.01 | corrected ω 5.68 (zero 23.29) | overlap 0.998 | ΔH residual 0.31
+n= 45 (b) B2 GBT: diag CH-stretch   6.11 | CH-oop   7.78 | ring-ip   5.96 | other  11.23 | ring couplings 1.81 vs zero 3.74 (ratio 0.48) | block 1.71 vs median 1.09 | corrected ω 6.32 (zero 23.09) | overlap 0.994 | ΔH residual 0.35
+n=100 (a) B1 MLP: diag CH-stretch   1.74 | CH-oop   6.63 | ring-ip   4.78 | other   6.54 | ring couplings 1.70 vs zero 3.76 (ratio 0.45) | block 1.05 vs median 2.86 | corrected ω 5.10 (zero 23.29) | overlap 0.998 | ΔH residual 0.27
+n=100 (b) B1 MLP: diag CH-stretch   4.19 | CH-oop   7.24 | ring-ip   4.96 | other   7.49 | ring couplings 1.87 vs zero 3.74 (ratio 0.50) | block 1.17 vs median 1.16 | corrected ω 5.40 (zero 23.09) | overlap 0.992 | ΔH residual 0.34
+n=100 (a) B2 GBT: diag CH-stretch   5.41 | CH-oop   7.60 | ring-ip   5.97 | other   6.54 | ring couplings 1.74 vs zero 3.76 (ratio 0.46) | block 1.70 vs median 2.86 | corrected ω 6.06 (zero 23.29) | overlap 0.998 | ΔH residual 0.32
+n=100 (b) B2 GBT: diag CH-stretch   6.19 | CH-oop   8.55 | ring-ip   6.25 | other  11.83 | ring couplings 1.83 vs zero 3.74 (ratio 0.49) | block 2.17 vs median 1.16 | corrected ω 6.73 (zero 23.09) | overlap 0.994 | ΔH residual 0.36
+n=175 (a) B1 MLP: diag CH-stretch   1.33 | CH-oop   5.12 | ring-ip   4.53 | other   6.15 | ring couplings 1.62 vs zero 3.76 (ratio 0.43) | block 0.86 vs median 2.89 | corrected ω 4.71 (zero 23.29) | overlap 0.998 | ΔH residual 0.25
+n=175 (b) B1 MLP: diag CH-stretch   2.75 | CH-oop   6.01 | ring-ip   4.83 | other   6.93 | ring couplings 1.76 vs zero 3.74 (ratio 0.47) | block 1.09 vs median 1.14 | corrected ω 5.14 (zero 23.09) | overlap 0.993 | ΔH residual 0.31
+n=175 (a) B2 GBT: diag CH-stretch   5.45 | CH-oop   8.59 | ring-ip   6.14 | other   6.50 | ring couplings 1.75 vs zero 3.76 (ratio 0.46) | block 1.84 vs median 2.89 | corrected ω 6.27 (zero 23.29) | overlap 0.998 | ΔH residual 0.32
+n=175 (b) B2 GBT: diag CH-stretch   6.13 | CH-oop   9.65 | ring-ip   6.44 | other  11.69 | ring couplings 1.84 vs zero 3.74 (ratio 0.49) | block 2.33 vs median 1.14 | corrected ω 6.70 (zero 23.09) | overlap 0.994 | ΔH residual 0.37
+wrote out/E7_rungB_2026-09-23_analytic.json/.md in 1187 s

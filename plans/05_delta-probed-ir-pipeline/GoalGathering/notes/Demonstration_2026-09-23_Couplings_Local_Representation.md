@@ -73,7 +73,8 @@ diagonalisation (`out/E7_rungB_2026-09-23.md`).
 | Duschinsky overlap of corrected modes, (b) | — | 0.993 (median) |
 
 The MLP and the trees agree on the coupling ratio to two decimals at every size, so the number is a property of the representation, not of a
-learner. On the 39 molecules of two cores never seen in training the couplings are learned to less than half the zero rule, the band shifts are as
+learner. With benzene's second-route target the full curve is (a) 45: 0.47, 100: 0.45, 175: 0.43 and (b) 45: 0.51, 100: 0.50, 175: 0.47 — under the pre-registered win line (0.6) at
+every size, both slopes negative, corrected frequencies (a) 4.7 / (b) 5.1 cm⁻¹ at 175 (`out/E7_rungB_2026-09-23_analytic.md`). On the 39 molecules of two cores never seen in training the couplings are learned to less than half the zero rule, the band shifts are as
 good as the best previous model, and the corrected frequencies land within 5 cm⁻¹ — from the same 175 molecules on which every mode-basis model
 learned nothing. Figure: `figures/E7_couplings_representation_2026-09-23.png`.
 
@@ -90,7 +91,7 @@ learned nothing. Figure: `figures/E7_couplings_representation_2026-09-23.png`.
   benzene 0.99 → **0.25**, corrected frequencies 34 → 5.4 cm⁻¹; hold-out (a) as a whole 0.81 → **0.43**, corrected frequencies 9.3 → **4.8 cm⁻¹**.
   Both hold-outs are then inside the pre-registered win criterion. This is the noise principle of 21 September doing its job a second time: every
   derived quantity gets a second route.
-- **The curve is nearly flat again**, now at a good level (0.51 → 0.47 on (b); (a) is re-measured with the corrected target): what remains is probably not data-limited either. The next
+- **The curve is shallow**, now at a good level ((a) 45: 0.47, 100: 0.45, 175: 0.43; (b) 45: 0.51, 100: 0.50, 175: 0.47; slopes -0.06 / -0.06): what remains (ΔH residual 0.25 / 0.31) is the part of the correction outside the pairwise pattern and the missing gradient term, not data volume. The next
   step is representation once more, not volume: the full local Hessian on atom-pair blocks with an equivariant network (rung C), trained with
   displaced-geometry gradients as cheap extra labels and pre-trained on Hessian QM9 — or, cheaper first, the missing 27 % of ΔH outside the
   present pattern.
