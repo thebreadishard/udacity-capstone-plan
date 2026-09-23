@@ -81,9 +81,9 @@ learned nothing. Figure: `figures/E7_couplings_representation_2026-09-23.png`.
 
 - **Benzene.** The layer-A hold-out's aggregate (0.81) is one molecule: benzene alone sits at 0.99 (ΔH unexplained 71 %); the other nine — biphenyl,
   fluorene, phenanthrene, fluoranthene, 2-naphthoic acid, benzophenone, benzonitrile, phenanthridine, biphenylene — are at 0.29–0.58 with
-  corrected frequencies within 5–7 cm⁻¹. Benzene's correction is the largest in the corpus (its Kekulé b₂ᵤ mode shifts by ≈ 150 cm⁻¹ between
-  the functionals — the exceptional exchange sensitivity of the isolated ring's bond alternation) and no training molecule carries a bare ring
-  with that response. Training on layer-A molecules only gives the same picture, so it is not coverage of a population but one extreme molecule
+  corrected frequencies within 5–7 cm⁻¹. Benzene's correction is the largest in the corpus (two ring modes near 1200 cm⁻¹ shift by +151 and +58 cm⁻¹ between
+  the functionals — plausibly the exchange-sensitive bond-alternation motion; the assignment is to be checked before this line is quoted) and no
+  training molecule carries a bare, unsubstituted, unfused ring with that response. Training on layer-A molecules only gives the same picture, so it is not coverage of a population but one extreme molecule
   (`out/E7_rungB_diag_a_2026-09-23.log`). The registered aggregate is reported as "between"; benzene gets its own row in the next pre-registration.
 - **The curve is flat again**, now at a good level (0.82 → 0.81 on (a), 0.51 → 0.47 on (b)): what remains is not data-limited either. The next
   step is representation once more, not volume: the full local Hessian on atom-pair blocks with an equivariant network (rung C), trained with
