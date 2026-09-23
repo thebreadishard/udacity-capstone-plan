@@ -4,33 +4,52 @@ This repository is the planning and coordination record of one research project:
 individual aromatic molecule into an infrared spectrum with a coupled-cluster-anchored correction, scored
 against laboratory data and against the best existing predictions, and built across the eight modules of the
 Udacity AI Master capstone sequence (Modules 02–09) so that every module both advances the science and
-satisfies the school's rubric. It contains **no pipeline results**: no rung of the plan has run. What has run
-are *probes* (measurements about the data and about the method, each committed with its raw evidence), the
-first versions of four course modules, and a sibling idea plan. A public, lay-level lab notebook in English
+satisfies the school's rubric. It contains **no pipeline results**: no rung of the plan has run and been scored. What
+has run are *probes* (measurements about the data and about the method, each committed with its raw evidence), the
+first versions of four course modules, a corpus of cheap-level Hessians, and a sibling idea plan. A public, lay-level lab notebook in English
 lives at <https://thebreadishard.github.io/> (separate repository, same evidence rules).
 
-## Where things stand (12 September 2026)
+## Where things stand (23 September 2026)
 
-- **Plan 05 is the current plan**, created 3 September 2026; its text has been frozen since 4 September and
-  changes only by dated notes that name a measurement or a decision. Thirty-five numbered decisions have been
-  taken under that rule. The project proposal goes to the academic supervisor on 14 September.
-- **Probes that have run** (plan 05, `probes/`): the DFT dry run of the Δ-recovery at benzene; the anchor
-  timing probes (benzene single points at cc-pVDZ and cc-pVTZ, one canonical CCSD(T) gradient, one naphthalene
-  LNO-CCSD(T)/cc-pVTZ energy at 11.5 h on the laptop; the same at the anchor's tighter thresholds is running);
-  probe M1, the frozen local-correlation spaces against a canonical truth line, at cc-pVDZ and cc-pVTZ and at
-  two threshold settings; the cheap basis-set line (cc-pVQZ and cc-pV5Z) that put two basis terms into the
-  anchor (decision 33); and the laboratory band-uncertainty columns of Module 03.
-- **Course modules in rubric form** (`modules/`): 02 the opponent atlas (first version complete), 03 the
-  laboratory scoreboard with a pre-registered matrix–gas test (six families reject a zero offset), 04 the
-  calibrated-harmonic baseline with a committed-before-training recipe (no model beats the library; that
-  baseline is what the pipeline must beat), 05 the Δ₂-support predictor (Hessian QM9 downloaded and inventoried,
-  a resumable corpus factory prepared, notebook and report skeletons in place; nothing trained).
-- **Plan 06** is an idea plan beside plan 05, not a successor: is there an equivalent but faster mathematics
-  for the electronic problem plan 05 solves at its anchor? It has an orientation with six directions and their
-  falsification tests, seven small experiments on plan 05's sealed data, verified reading notes, and a Lean 4 /
-  Mathlib project in which the algebra of one direction (sparse recovery of the correction from colour-class
-  probes) is proved. Anything it finds enters plan 05 only through plan 05's own dated notes; its first transfer
-  is plan 05 decision 34.
+- **Plan 05 is the current plan**, created 3 September 2026; its text has been frozen since 4 September and changes only
+  by dated notes that name a measurement or a decision. Fifty numbered decisions have been taken under that rule. The
+  conversation with the academic supervisor is on **28 September** (decision 44); the desk package (cover note, reading
+  copy, plan 06 annex) is in `plans/05_delta-probed-ir-pipeline/GoalGathering/`.
+- **The anchor is running on the laptop** since 20 September: probe M3's coupled-cluster-anchored decks for naphthalene at
+  cc-pVTZ, read family by family against pre-registered criteria. Family 1 (out-of-plane, mode 12) lost — that family stays
+  on the expensive basis; family 2 (in-plane C–H bend, mode 22) won on 23 September; family 3 (C–C stretch, mode 31) is
+  running, read-out expected around 26 September. The R0 diagonal deck was read on 22 September (in-plane frequencies
+  improve against CCSD(T), out-of-plane do not, C–H stretches need the geometry term). Nothing else runs locally until
+  the anchor is read.
+- **A corpus exists** (module 05's factory, run on rented Hetzner servers): deck v1 — B3LYP and ωB97X 6-31G* geometries and
+  Hessians — for 244 molecules (layers A and A2 of a 11,321-row manifest), frozen as releases on 22 and 23 September. Its
+  quality is guarded by a second route: benzene's finite-difference Hessian was found wrong by 133 cm⁻¹ (psi4's default
+  grid with a 0.005 bohr step), replaced by an analytic Hessian, and the guard is now policy (decision 50); the twenty
+  molecules with an imaginary mode are on the same second route tonight.
+- **Module 05 has run in full three times** and its two pre-registered experiments changed the design: E6 (a learning curve
+  at 45, 100 and 175 molecules) showed that no mode-basis model learns the couplings of the correction matrix; E7 traced
+  it to the target and showed that the same molecules teach the couplings once the target is written as pairwise local
+  terms in primitive internal coordinates (ring coupling ratio 0.43 / 0.47 on two hold-outs, corrected frequencies within
+  4.7 / 5.1 cm⁻¹ against 23 without correction). Decision 49: the couplings are learned in local coordinates. E8 — does the
+  coupled-cluster correction live in the same local pattern — is running (benzene CCSD(T)/cc-pVDZ Hessian, read-out 24
+  September; naphthalene pre-authorised on a win).
+- **Course modules in rubric form** (`modules/`): 02 the opponent atlas (runs from the repository alone since 22 September),
+  03 the laboratory scoreboard (report rebuilt with the 31-column dataset; a pre-registered matrix–gas test; shape-score
+  columns against PAHdb), 04 the calibrated-harmonic baseline (unchanged since 12 September; no model beats the library),
+  05 the support predictor (executed notebook and report, with the E6/E7 outcome as follow-up cells so the reviewer sees
+  what was learned).
+- **Own software and its policy**: `src/dpir` (quartic force fields and VPT2 from analytic Hessians, provenance) with tests
+  and CI, promoted from probes under a two-tier quality policy with a mechanical gate (decision 47, `QUALITY_POLICY.md`);
+  the noise principle of 21 September — every derived quantity gets a second route or a symmetry check — after the
+  finite-difference quartics turned out to be noise.
+- **Plan 06** stays an idea plan beside plan 05: experiments X1–X22 on plan 05's sealed data (X19, an IP-tuned functional,
+  lost; X22 measured that the gradient count grows linearly at every symmetry of the layer-A molecules), theorems T1a–T1c
+  proved in Lean 4 / Mathlib (no `sorry`). Anything it finds enters plan 05 only through plan 05's own dated notes.
+- **Public face**: eleven lay-level posts on the blog; a public website ("Spectrum Atlas", a status ladder per molecule with
+  provenance on every number) designed on 23 September in `website/`, nothing built.
+- **Mandate (13 September)**: an affordable plan — a desktop plus a small Snellius allocation must suffice to train the
+  network by 2027 — with the standing instruction to keep solving obstacles autonomously; the obstacle ledger is in
+  `GoalGathering/notes/`.
 
 Nothing above is a spectrum, an accuracy claim or a "beat". The plan's own rule: not claimed are absolute
 "chemical precision", JWST species identification, and any rung that has not run and been scored.
@@ -47,8 +66,8 @@ in git history only: `git show 57a7910:<path>` retrieves one.
 | **02** | [Coupled-Cluster-Anharmonic-IR](plans/02_coupled-cluster-anharmonic-ir/) | Superseded 2026-08-29; read-only record. |
 | **03** | [Presence-Update-Rule](plans/03_presence-update-rule/) | Superseded by 04 (2026-09-02); read-only record. Draft; never complete as a plan; never executed. |
 | **04** | [CC-Anchored-IR-Pipeline](plans/04_cc-anchored-ir-pipeline/) | Superseded by 05 (2026-09-03); read-only record. Round-6 reviews run and addressed; never executed. |
-| **05** | [Δ-Probed-IR-Pipeline](plans/05_delta-probed-ir-pipeline/) | **Current.** Created 2026-09-03; review rounds 7–10 addressed; text frozen 2026-09-04; decisions 1–35; probes and four modules run as listed above. |
-| **06** | [Equivalent-Faster-Mathematics](plans/06_equivalent-faster-mathematics/) | **Idea plan beside 05** (opened 2026-09-12): no rungs, no modules, no results of its own; feeds plan 05 by dated notes only. |
+| **05** | [Δ-Probed-IR-Pipeline](plans/05_delta-probed-ir-pipeline/) | **Current.** Created 2026-09-03; review rounds 7–10 addressed; text frozen 2026-09-04; decisions 1–50; the anchor running, a 244-molecule corpus, four modules, own software under a quality policy — as listed above. |
+| **06** | [Equivalent-Faster-Mathematics](plans/06_equivalent-faster-mathematics/) | **Idea plan beside 05** (opened 2026-09-12): experiments X1–X22 on plan 05's sealed data, theorems T1a–T1c in Lean; no rungs, no modules; feeds plan 05 by dated notes only. |
 
 [`plans/README.md`](plans/README.md) explains why the earlier plans were dropped and what plan 05 inherits.
 
@@ -84,20 +103,26 @@ CapstonePlan/
 │   ├── 03_presence-update-rule/             superseded, read-only
 │   ├── 04_cc-anchored-ir-pipeline/          superseded, read-only (its NIST gas-coverage probe is evidence still used)
 │   ├── 05_delta-probed-ir-pipeline/         CURRENT — created 2026-09-03, text frozen 2026-09-04
-│   │   ├── README.md                        status, reading order, review record, decisions 1–35, dated notes, what is owed
+│   │   ├── README.md                        status, reading order, review record, decisions 1–50, dated notes, what is owed
+│   │   ├── QUALITY_POLICY.md                two-tier code policy with its mechanical gate (decision 47)
 │   │   ├── GoalGathering/                   goal, ladder, budget, gates, bibliography, the supervisor proposal;
-│   │   │   ├── notes/                       research notes, decision memos, the software-changes ledger
+│   │   │   ├── notes/                       research notes, decision memos, pre-registrations, the obstacle and software ledgers
+│   │   │   ├── architecture/                the architecture sheets (mermaid) and ARCHITECTURE.md
 │   │   │   └── reviews/                     review rounds 7–10, cold reads, seam checks
 │   │   ├── modules/                         the course modules in rubric form
 │   │   │   ├── 02_opponent_atlas/           PAHdb as served: the opponents (notebook, report, provenance)
 │   │   │   ├── 03_lab_scoreboard/           laboratory bands with u_band; pre-registered matrix–gas test
 │   │   │   ├── 04_calibrated_harmonic/      the calibrated baseline; recipe committed before training
-│   │   │   └── 05_support_predictor/        Δ₂-support Transformer: corpus factory, skeletons (nothing trained)
+│   │   │   └── 05_support_predictor/        the support predictor: corpus factory (244 molecules done), E6/E7 scripts, executed notebook and report
 │   │   ├── probes/                          probe scripts, engine patches, launcher, and the results:
 │   │   │   ├── results_dryrun/              DFT Δ-recovery dry run (benzene; naphthalene geometry)
 │   │   │   ├── results_timing/              anchor single points, canonical gradient, naphthalene timings
-│   │   │   ├── results_m1/                  probe M1 runs, the sealed truth line, the basis line
+│   │   │   ├── results_m1/                  probe M1 and M3 runs, the sealed truth line, the basis line, the R0 deck read
+│   │   │   ├── results_m2a/ results_m2b/ results_m4/   later probe families
+│   │   │   ├── results_vpt2/                the VPT2 runs and the finite-difference noise demonstration
 │   │   │   └── results_m03/                 R0 scoreboard, Q10 readiness
+│   │   ├── src/dpir/                        own software (QFF, VPT2, provenance) — promoted code only
+│   │   ├── tests/  tools/                   its tests; the stamp, staged-path and architecture-sync tools
 │   │   └── Uitleg/                          Dutch lay explanation of plan 05, 18 chapters (not binding)
 │   └── 06_equivalent-faster-mathematics/    IDEA PLAN beside 05 (opened 2026-09-12)
 │       ├── GoalGathering/                   orientation, ledger of directions, reading and result notes
@@ -105,6 +130,7 @@ CapstonePlan/
 │       ├── lean/                            Lean 4 + Mathlib project: the recovery theorems (no `sorry`)
 │       └── Uitleg/                          Dutch lay explanation of plan 06, 7 chapters
 │
+├── website/                                 the public Spectrum Atlas: design and backlog (nothing built)
 ├── Rubrics/                                 Udacity module rubrics 01–09 and the APA template, treated as fixed
 ├── docs/                                    repository-level records (the PDF inventory and history rewrite of 6 September)
 ├── Papers/                                  local only, git-ignored: the working copies of the literature
