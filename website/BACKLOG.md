@@ -5,7 +5,7 @@ no design decision from the user; step 4 onward benefits from the answers to `DE
 
 | # | step | result | depends on |
 |---|---|---|---|
-| 0 | user reads the design; decisions §12 | a name, hosting, licence | — |
+| 0 | ~~user reads the design; decisions §12~~ **done 23 Sep 22:1x** (name, scope, rows shown, GitHub Pages, licences, English, access policy) | a name, hosting, licence | — |
 | 1 | `export/build_catalog.py` (Python, in this repository): manifest + ledger + results + releases + second route → `catalog.json`, per-molecule JSON, rung counts; a check that every exported number exists in a source; unit tests on three molecules | the data contract, mechanical | — |
 | 2 | `export/depict.py`: RDKit SVG depictions for the computed molecules, themed via CSS variables; alt-text strings | 244 SVGs | 1 |
 | 3 | JSON schema for `catalog.json` and `molecule.json` (documented in `export/SCHEMA.md`) | a stable contract for the site | 1 |
