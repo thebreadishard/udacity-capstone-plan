@@ -1,0 +1,6 @@
+[2026-09-23 09:11:22] E6 clean re-run done; T1 starts
+224 molecules; hold-out (a) 10, (b) 39 (['fluoranthene', 'fluorene']); pool 175; sizes [45, 175]; seeds [0, 1, 2]; epochs 30
+n= 45 |K| model: ring coupling RMS 5.30 vs zero 5.90 (ratio 0.90) vs constant 5.46 (ratio 0.97; c = 2.75) | diag ring 13.76 || signed control: ratio 1.00, diag ring 14.21 || (b) |K| ratio to constant 0.88  [141 s]
+n=175 |K| model: ring coupling RMS 5.26 vs zero 5.90 (ratio 0.89) vs constant 5.46 (ratio 0.96; c = 2.75) | diag ring 12.50 || signed control: ratio 1.00, diag ring 12.74 || (b) |K| ratio to constant 0.86  [656 s]
+wrote out/E7_T1_2026-09-23.json/.md
+[2026-09-23 09:22:19] T1 exit 0

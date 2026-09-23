@@ -111,3 +111,24 @@ Kekulé interaction constants, where B3LYP's delocalisation error lives). That i
 exactly what a per-coordinate representation, multiplicative or additive, cannot express. The capacity ceilings of local representations
 with pair terms (post-hoc (iv)–(vi): diagonal only; pairs sharing an atom; plus ring bond–bond pairs; each fitted per molecule, no transfer)
 are being measured to size rung B (`m05/e7_t2_ceilings.py`); the result is appended when in.
+
+## Outcome T1 — 23 September 2026, 11:3x: LOSE on hold-out (a) by the registered threshold (ratio to the constant rule 0.96); 0.86 on hold-out (b)
+
+Run: `m05/e7_t1_sign_test.py` on the CCX53 (32 threads, 656 s); results `out/E7_T1_2026-09-23.{json,md,log}`. 224 molecules, hold-out (a) 10, (b) 39,
+pool 175, seeds [0, 1, 2], 30 epochs; the constant rule is the mean |K| of the training ring pairs (c = 2.75 cm⁻¹).
+
+| n | hold-out | |K| model RMS | zero rule | constant rule | ratio to zero | ratio to constant | signed control (E6 M2) | ring diag |K| / signed |
+|---|---|---|---|---|---|---|---|---|
+| 45 | (a) | 5.30 | 5.90 | 5.46 | 0.90 | **0.97** | 1.00 | 13.76 / 14.21 |
+| 45 | (b) | 2.55 | 3.74 | 2.89 | 0.68 | **0.88** | 1.00 | 7.52 / 7.98 |
+| 175 | (a) | 5.26 | 5.90 | 5.46 | 0.89 | **0.96** | 1.00 | 12.50 / 12.74 |
+| 175 | (b) | 2.49 | 3.74 | 2.89 | 0.67 | **0.86** | 1.00 | 6.14 / 6.51 |
+
+**Against the prediction.** Predicted: ratio to the constant rule ≤ 0.85 on (a). Measured: 0.96 on (a) — **lose** by the registered threshold (≥ 0.95) —
+and 0.86 on (b), which would have counted as a win. The signed control reproduces E6 exactly (1.00 at both n). So the sign is
+*an* obstacle (removing it moves the model off zero everywhere: 0.89 to the zero rule on (a), 0.67 on (b)) but not the whole story: on the
+ten layer-A molecules the magnitudes carry almost no token-predictable structure beyond their mean, on the 39 scaffold molecules a modest
+amount. Read together with T2 and its post-hoc checks, the two tests point the same way: the couplings are not a per-mode or per-coordinate
+property at all — they come from the interaction constants between internals, which neither mode tokens nor per-coordinate scale factors
+see. The representation has to carry pairs of local coordinates (rung B with pair terms) or the full local Hessian (rung C). The diagonal is
+unaffected by the target change (12.5 vs 12.7 on ring), as it should be.
