@@ -43,3 +43,13 @@ Two more families (ring / C–H in-plane, the low skeletal modes) at 5 points ea
 
 TZ cells for mode 12 complete (five points). Beyond-MP2 increment of the curvature, DZ → TZ, at naphthalene: **−8.1 cm⁻¹** as the composite carries it (k(LNO-CC) − k(LNO-MP2)), or +23.0 cm⁻¹ in the mixed form k(LNO-CC) − k(full MP2); benzene's registered value +7.9 cm⁻¹. |Δ_n − Δ_b| = 16.0 (sign flipped) or 15.1 cm⁻¹: beyond the 5 cm⁻¹ lose line under either definition. Under §3 M3 therefore loses at its first family: the anchor stays cc-pVTZ for the C–H out-of-plane family and the measured increments enter the error budget as the basis term. Mechanism (not registered, read from the components): the double-ζ out-of-plane pathology of MP2 for arenes (SCF + MP2 gives 618 cm⁻¹ at DZ for a 785 cm⁻¹ mode, 748 at TZ), inherited in part by the frozen LNO-CC arm at DZ; it grows with the arene and does not touch in-plane modes. Modes 22 and 31 are still read when they land (≈ 22 and 24 September) because the plan licenses per family; the registered rule ("any family") makes M3 as a whole a loss regardless. Full table: `probes/results_m1/M3_TZ_MODE12_READING_2026-09-20.md`.
 
+
+## Outcome, second family — 23 September 2026, 10:0x (mode 22, C–H in-plane bend): WIN on this family
+
+TZ cells for mode 22 complete (five points, the last sealed 22 September 19:21). Beyond-MP2 increment of the curvature, DZ → TZ, at
+naphthalene: **+1.2 cm⁻¹** as the composite carries it (k(LNO-CC) − k(LNO-MP2)); benzene's registered value +1.0 cm⁻¹; |Δ_n − Δ_b| = 0.2 cm⁻¹,
+same sign → **win on this family**. The mixed form k(LNO-CC) − k(full MP2) gives +6.5 cm⁻¹ (5.5 off); it measures the DZ → TZ growth of the
+LNO-MP2 truncation, which the composite removes, so the composite definition carries the verdict (both are printed). Reading and tables:
+`probes/results_m1/M3_TZ_MODE22_READING_2026-09-23.md` (`probes/m3_family_reading.py 22 1.0`, which also reproduces the mode-12 table).
+Per family: DZ-anchored deck licensed for the C–H in-plane bend family, closed for the C–H out-of-plane family; mode 31 (C–C stretch) decides
+the third, ≈ 26 September.
