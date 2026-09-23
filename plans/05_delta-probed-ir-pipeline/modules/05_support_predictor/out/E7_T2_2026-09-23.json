@@ -1,0 +1,694 @@
+{
+ "date": "2026-09-23 08:42",
+ "smoke": false,
+ "n_molecules": 224,
+ "reconstruction_error_median": 3.084603266684283e-15,
+ "reconstruction_error_max": 0.00012730206216737212,
+ "holdout_a": [
+  "A_fdc27f1bd1",
+  "A_8448043181",
+  "A_e72997e726",
+  "A_541c53d1a5",
+  "A_428228e5a5",
+  "A_07cadc7923",
+  "A_08dde334d8",
+  "A_3100da3761",
+  "A_bce5bae234",
+  "A_72b86c2331"
+ ],
+ "holdout_b": [
+  "A2_00b0ff5a24",
+  "A2_0101e57296",
+  "A2_02c8833bd5",
+  "A2_041da590e8",
+  "A2_043da5bed2",
+  "A2_048ea73dab",
+  "A2_05f5ff045c",
+  "A2_06222c33e3",
+  "A2_066237c4f5",
+  "A2_06873ee7ad",
+  "A2_097651503c",
+  "A2_0dc3aa4eb9",
+  "A2_0e1c741b76",
+  "A2_10d7d03408",
+  "A2_11c681aefb",
+  "A2_1543119d9d",
+  "A2_16521f2764",
+  "A2_1b389dc1d8",
+  "A2_1bb2e3fbf1",
+  "A2_1c2781e93a",
+  "A2_20d3215ce3",
+  "A2_210c322595",
+  "A2_21b688db0c",
+  "A2_27130c4c79",
+  "A2_27370742a0",
+  "A2_27edf7297c",
+  "A2_2931e48c62",
+  "A2_2e154f6054",
+  "A2_2f079d63a1",
+  "A2_3058513f57",
+  "A2_311e979a14",
+  "A2_331729cd47",
+  "A2_372920f181",
+  "A2_3825e7205b",
+  "A2_39baaea0dd",
+  "A2_3b6ae59b2d",
+  "A2_3cf20db4ac",
+  "A2_3f25a88e27",
+  "A2_42ab9eb0a0"
+ ],
+ "scaffold_cores": [
+  "fluoranthene",
+  "fluorene"
+ ],
+ "pool": 175,
+ "sizes": [
+  45,
+  175
+ ],
+ "min_count": 5,
+ "curve": {
+  "45": {
+   "n": 45,
+   "n_types_fitted": 43,
+   "n_types_seen": 50,
+   "fit_rms_history_au": [
+    0.0006572771548566174,
+    0.0006549790888511919,
+    0.0006549780125102965,
+    0.0006549780123690932
+   ],
+   "scale_factors": {
+    "angle C C C False": [
+     1.0533440374098928,
+     33
+    ],
+    "angle C C C True": [
+     1.025214417491551,
+     327
+    ],
+    "angle C C Cl False": [
+     1.0727000078572089,
+     5
+    ],
+    "angle C C F False": [
+     1.037952456956413,
+     21
+    ],
+    "angle C C H False": [
+     1.0117840842192627,
+     691
+    ],
+    "angle C C N False": [
+     1.0984032951651095,
+     7
+    ],
+    "angle C C N True": [
+     1.0226637876327667,
+     42
+    ],
+    "angle C C O False": [
+     1.0443742295202518,
+     16
+    ],
+    "angle C C O True": [
+     1.024438889967075,
+     16
+    ],
+    "angle C C S True": [
+     1.0294081674063977,
+     14
+    ],
+    "angle C F F False": [
+     1.0214768850357123,
+     18
+    ],
+    "angle C H H False": [
+     1.0015545405717754,
+     14
+    ],
+    "angle C H N False": [
+     1.0057187258506355,
+     11
+    ],
+    "angle C H O False": [
+     1.0504491007123196,
+     12
+    ],
+    "angle N C C True": [
+     1.0185349584698258,
+     19
+    ],
+    "angle N C H False": [
+     1.0207571474984356,
+     8
+    ],
+    "angle N C O False": [
+     1.0634278605085505,
+     6
+    ],
+    "angle O C C True": [
+     1.0182927692514432,
+     6
+    ],
+    "angle O C H False": [
+     1.042766064928948,
+     7
+    ],
+    "angle S C C True": [
+     1.0286194572169258,
+     6
+    ],
+    "bond C C False": [
+     1.0401828506751296,
+     33
+    ],
+    "bond C C True": [
+     1.0286421447513172,
+     622
+    ],
+    "bond C Cl False": [
+     1.0391301934531179,
+     5
+    ],
+    "bond C F False": [
+     1.0239121172143673,
+     21
+    ],
+    "bond C H False": [
+     1.0260559898677688,
+     367
+    ],
+    "bond C N False": [
+     1.0269270532158778,
+     10
+    ],
+    "bond C N True": [
+     1.0348803170985745,
+     42
+    ],
+    "bond C O False": [
+     1.0288437520512714,
+     24
+    ],
+    "bond C O True": [
+     1.0334932121633986,
+     12
+    ],
+    "bond C S True": [
+     1.0526034410829934,
+     12
+    ],
+    "bond H N False": [
+     1.026179000776077,
+     8
+    ],
+    "bond H O False": [
+     1.0214194758054775,
+     7
+    ],
+    "bond N O False": [
+     1.030263199396375,
+     6
+    ],
+    "dihedral C C False": [
+     1.0477363068598902,
+     124
+    ],
+    "dihedral C C True": [
+     1.0677133222701345,
+     2488
+    ],
+    "dihedral C N False": [
+     1.1215468121758991,
+     24
+    ],
+    "dihedral C N True": [
+     1.093931349671669,
+     92
+    ],
+    "dihedral C O False": [
+     1.0730968841258028,
+     24
+    ],
+    "dihedral C O True": [
+     1.1017184758682088,
+     24
+    ],
+    "dihedral C S True": [
+     1.1643212732897428,
+     24
+    ],
+    "linear C": [
+     1.252378715650281,
+     12
+    ],
+    "oop C": [
+     1.069911973177347,
+     584
+    ],
+    "oop N": [
+     1.1190543232947454,
+     7
+    ]
+   },
+   "a": {
+    "sqm": {
+     "diag_rms": {
+      "CH-stretch": 2.653504542126064,
+      "CH-oop": 10.068302536882745,
+      "ring-ip": 17.548145411499736,
+      "other": 9.182930224673827
+     },
+     "coupling_rms": 5.726869492865584,
+     "coupling_zero_rms": 5.896879539562929,
+     "block_rms": 5.592286866667541,
+     "block_median_rule_rms": 4.140079559139766,
+     "coupling_ratio": 0.9711694896331652,
+     "corrected_freq_rms": 12.284899429355038,
+     "corrected_freq_rms_zero_rule": 24.31353241518719,
+     "duschinsky_overlap_median": 0.997749383236027,
+     "duschinsky_overlap_p10": 0.903845883642416
+    },
+    "sqm_diag_only": {
+     "diag_rms": {
+      "CH-stretch": 2.653504542126064,
+      "CH-oop": 10.068302536882745,
+      "ring-ip": 17.548145411499736,
+      "other": 9.182930224673827
+     },
+     "coupling_rms": 5.896879539562929,
+     "coupling_zero_rms": 5.896879539562929,
+     "block_rms": 5.592286866667541,
+     "block_median_rule_rms": 4.140079559139766,
+     "coupling_ratio": 1.0,
+     "corrected_freq_rms": 12.313390943555113,
+     "corrected_freq_rms_zero_rule": 24.31353241518719,
+     "duschinsky_overlap_median": 0.9974477569348321,
+     "duschinsky_overlap_p10": 0.9053645132552582
+    },
+    "zero": {
+     "diag_rms": {
+      "CH-stretch": 43.57655629098402,
+      "CH-oop": 23.90870718810615,
+      "ring-ip": 22.382637481005453,
+      "other": 13.547699424688906
+     },
+     "coupling_rms": 5.896879539562929,
+     "coupling_zero_rms": 5.896879539562929,
+     "block_rms": 13.081673810310251,
+     "block_median_rule_rms": 4.140079559139766,
+     "coupling_ratio": 1.0,
+     "corrected_freq_rms": 24.31353241518719,
+     "corrected_freq_rms_zero_rule": 24.31353241518719,
+     "duschinsky_overlap_median": 0.9974477569348321,
+     "duschinsky_overlap_p10": 0.9053645132552582
+    },
+    "dH_cartesian_rms_ratio": 0.722665322512844
+   },
+   "b": {
+    "sqm": {
+     "diag_rms": {
+      "CH-stretch": 4.443094872454884,
+      "CH-oop": 8.579763647638668,
+      "ring-ip": 13.482106747815566,
+      "other": 14.97391652363884
+     },
+     "coupling_rms": 3.543400518100286,
+     "coupling_zero_rms": 3.7379272786222715,
+     "block_rms": 3.746254594031413,
+     "block_median_rule_rms": 1.089735513877492,
+     "coupling_ratio": 0.9479586556874685,
+     "corrected_freq_rms": 10.344778700735898,
+     "corrected_freq_rms_zero_rule": 23.091644995601886,
+     "duschinsky_overlap_median": 0.9882064497720088,
+     "duschinsky_overlap_p10": 0.8317245428369809
+    },
+    "sqm_diag_only": {
+     "diag_rms": {
+      "CH-stretch": 4.443094872454884,
+      "CH-oop": 8.579763647638668,
+      "ring-ip": 13.482106747815566,
+      "other": 14.97391652363884
+     },
+     "coupling_rms": 3.7379272786222715,
+     "coupling_zero_rms": 3.7379272786222715,
+     "block_rms": 3.746254594031413,
+     "block_median_rule_rms": 1.089735513877492,
+     "coupling_ratio": 1.0,
+     "corrected_freq_rms": 10.39869548283538,
+     "corrected_freq_rms_zero_rule": 23.091644995601886,
+     "duschinsky_overlap_median": 0.9863974451769072,
+     "duschinsky_overlap_p10": 0.8258681025901702
+    },
+    "zero": {
+     "diag_rms": {
+      "CH-stretch": 44.295617224289884,
+      "CH-oop": 25.318976063684993,
+      "ring-ip": 19.933266210111857,
+      "other": 19.176549964116575
+     },
+     "coupling_rms": 3.7379272786222715,
+     "coupling_zero_rms": 3.7379272786222715,
+     "block_rms": 13.23078962335932,
+     "block_median_rule_rms": 1.089735513877492,
+     "coupling_ratio": 1.0,
+     "corrected_freq_rms": 23.091644995601886,
+     "corrected_freq_rms_zero_rule": 23.091644995601886,
+     "duschinsky_overlap_median": 0.9863974451769072,
+     "duschinsky_overlap_p10": 0.8258681025901702
+    },
+    "dH_cartesian_rms_ratio": 0.7043138782657246
+   }
+  },
+  "175": {
+   "n": 175,
+   "n_types_fitted": 50,
+   "n_types_seen": 53,
+   "fit_rms_history_au": [
+    0.0006617600040383126,
+    0.0006599326714031008,
+    0.0006599315887708088,
+    0.0006599315872650837,
+    0.0006599315872621469,
+    0.0006599315872621408
+   ],
+   "scale_factors": {
+    "angle C C C False": [
+     1.0539213464931347,
+     137
+    ],
+    "angle C C C True": [
+     1.0240899816670033,
+     1153
+    ],
+    "angle C C Cl False": [
+     1.064229974982024,
+     9
+    ],
+    "angle C C F False": [
+     1.034341156427243,
+     41
+    ],
+    "angle C C H False": [
+     1.0122332594455945,
+     2672
+    ],
+    "angle C C N False": [
+     1.0814370743482333,
+     24
+    ],
+    "angle C C N True": [
+     1.0244195977680222,
+     187
+    ],
+    "angle C C O False": [
+     1.0456392288997607,
+     52
+    ],
+    "angle C C O True": [
+     1.0239432438926606,
+     35
+    ],
+    "angle C C S False": [
+     1.0762632302426351,
+     9
+    ],
+    "angle C C S True": [
+     1.0305473217862573,
+     33
+    ],
+    "angle C F F False": [
+     1.021613392009041,
+     33
+    ],
+    "angle C H H False": [
+     0.9980162372451612,
+     67
+    ],
+    "angle C H N False": [
+     1.0067346325720123,
+     59
+    ],
+    "angle C H O False": [
+     1.0513911225140014,
+     42
+    ],
+    "angle N C C True": [
+     1.0182589710227254,
+     89
+    ],
+    "angle N C H False": [
+     1.0184291235227005,
+     53
+    ],
+    "angle N C O False": [
+     1.0623895640502874,
+     17
+    ],
+    "angle N H H False": [
+     1.0198674742122293,
+     15
+    ],
+    "angle O C C False": [
+     1.064542209398314,
+     9
+    ],
+    "angle O C C True": [
+     1.0185060270614108,
+     14
+    ],
+    "angle O C H False": [
+     1.04290546173055,
+     21
+    ],
+    "angle S C C True": [
+     1.0281325911415211,
+     14
+    ],
+    "angle S C H False": [
+     1.0759398781645082,
+     9
+    ],
+    "bond C C False": [
+     1.0376475590306748,
+     128
+    ],
+    "bond C C True": [
+     1.0284575830360168,
+     2303
+    ],
+    "bond C Cl False": [
+     1.04087710753826,
+     10
+    ],
+    "bond C F False": [
+     1.0233024818134442,
+     41
+    ],
+    "bond C H False": [
+     1.0261222159395078,
+     1437
+    ],
+    "bond C N False": [
+     1.0255004039265352,
+     39
+    ],
+    "bond C N True": [
+     1.0343144626713223,
+     206
+    ],
+    "bond C O False": [
+     1.0288222866374475,
+     78
+    ],
+    "bond C O True": [
+     1.03410208629194,
+     28
+    ],
+    "bond C S False": [
+     1.0521018237994697,
+     9
+    ],
+    "bond C S True": [
+     1.052077083394607,
+     28
+    ],
+    "bond H N False": [
+     1.02624227767036,
+     44
+    ],
+    "bond H O False": [
+     1.0215453838841524,
+     21
+    ],
+    "bond H S False": [
+     1.0365898062098649,
+     9
+    ],
+    "bond N O False": [
+     1.0289222121982962,
+     17
+    ],
+    "dihedral C C False": [
+     1.0484726521562222,
+     426
+    ],
+    "dihedral C C True": [
+     1.0658955663967125,
+     9225
+    ],
+    "dihedral C N False": [
+     1.1046805489119704,
+     92
+    ],
+    "dihedral C N True": [
+     1.091106170111356,
+     472
+    ],
+    "dihedral C O False": [
+     1.0563770521671574,
+     86
+    ],
+    "dihedral C O True": [
+     1.1025924858563068,
+     56
+    ],
+    "dihedral C S False": [
+     1.2393862985842725,
+     18
+    ],
+    "dihedral C S True": [
+     1.1628838664391055,
+     56
+    ],
+    "linear C": [
+     1.236282116762507,
+     64
+    ],
+    "oop C": [
+     1.069013773908311,
+     2182
+    ],
+    "oop N": [
+     1.1179255376819752,
+     28
+    ]
+   },
+   "a": {
+    "sqm": {
+     "diag_rms": {
+      "CH-stretch": 2.5764647196666397,
+      "CH-oop": 9.507879292928063,
+      "ring-ip": 17.555967343812092,
+      "other": 9.02046875174208
+     },
+     "coupling_rms": 5.732844556610808,
+     "coupling_zero_rms": 5.896879539562929,
+     "block_rms": 5.541807943514907,
+     "block_median_rule_rms": 4.1224615402254825,
+     "coupling_ratio": 0.9721827482057945,
+     "corrected_freq_rms": 12.206629068996673,
+     "corrected_freq_rms_zero_rule": 24.31353241518719,
+     "duschinsky_overlap_median": 0.9976648018155454,
+     "duschinsky_overlap_p10": 0.9033847496499962
+    },
+    "sqm_diag_only": {
+     "diag_rms": {
+      "CH-stretch": 2.5764647196666397,
+      "CH-oop": 9.507879292928063,
+      "ring-ip": 17.555967343812092,
+      "other": 9.02046875174208
+     },
+     "coupling_rms": 5.896879539562929,
+     "coupling_zero_rms": 5.896879539562929,
+     "block_rms": 5.541807943514907,
+     "block_median_rule_rms": 4.1224615402254825,
+     "coupling_ratio": 1.0,
+     "corrected_freq_rms": 12.231862680982056,
+     "corrected_freq_rms_zero_rule": 24.31353241518719,
+     "duschinsky_overlap_median": 0.9974477569348321,
+     "duschinsky_overlap_p10": 0.9053645132552582
+    },
+    "zero": {
+     "diag_rms": {
+      "CH-stretch": 43.57655629098402,
+      "CH-oop": 23.90870718810615,
+      "ring-ip": 22.382637481005453,
+      "other": 13.547699424688906
+     },
+     "coupling_rms": 5.896879539562929,
+     "coupling_zero_rms": 5.896879539562929,
+     "block_rms": 13.081673810310251,
+     "block_median_rule_rms": 4.1224615402254825,
+     "coupling_ratio": 1.0,
+     "corrected_freq_rms": 24.31353241518719,
+     "corrected_freq_rms_zero_rule": 24.31353241518719,
+     "duschinsky_overlap_median": 0.9974477569348321,
+     "duschinsky_overlap_p10": 0.9053645132552582
+    },
+    "dH_cartesian_rms_ratio": 0.7236977120865368
+   },
+   "b": {
+    "sqm": {
+     "diag_rms": {
+      "CH-stretch": 4.3788966738782715,
+      "CH-oop": 8.14028626052242,
+      "ring-ip": 13.414687783696037,
+      "other": 14.435975660656355
+     },
+     "coupling_rms": 3.549844132471774,
+     "coupling_zero_rms": 3.7379272786222715,
+     "block_rms": 3.6288955360460635,
+     "block_median_rule_rms": 1.1407200908405606,
+     "coupling_ratio": 0.9496825025927682,
+     "corrected_freq_rms": 10.085088913632738,
+     "corrected_freq_rms_zero_rule": 23.091644995601886,
+     "duschinsky_overlap_median": 0.9887543908798471,
+     "duschinsky_overlap_p10": 0.8319334738018356
+    },
+    "sqm_diag_only": {
+     "diag_rms": {
+      "CH-stretch": 4.3788966738782715,
+      "CH-oop": 8.14028626052242,
+      "ring-ip": 13.414687783696037,
+      "other": 14.435975660656355
+     },
+     "coupling_rms": 3.7379272786222715,
+     "coupling_zero_rms": 3.7379272786222715,
+     "block_rms": 3.6288955360460635,
+     "block_median_rule_rms": 1.1407200908405606,
+     "coupling_ratio": 1.0,
+     "corrected_freq_rms": 10.135900516658175,
+     "corrected_freq_rms_zero_rule": 23.091644995601886,
+     "duschinsky_overlap_median": 0.9863974451769072,
+     "duschinsky_overlap_p10": 0.8258681025901702
+    },
+    "zero": {
+     "diag_rms": {
+      "CH-stretch": 44.295617224289884,
+      "CH-oop": 25.318976063684993,
+      "ring-ip": 19.933266210111857,
+      "other": 19.176549964116575
+     },
+     "coupling_rms": 3.7379272786222715,
+     "coupling_zero_rms": 3.7379272786222715,
+     "block_rms": 13.23078962335932,
+     "block_median_rule_rms": 1.1407200908405606,
+     "coupling_ratio": 1.0,
+     "corrected_freq_rms": 23.091644995601886,
+     "corrected_freq_rms_zero_rule": 23.091644995601886,
+     "duschinsky_overlap_median": 0.9863974451769072,
+     "duschinsky_overlap_p10": 0.8258681025901702
+    },
+    "dH_cartesian_rms_ratio": 0.7037595756565725
+   }
+  }
+ },
+ "verdict": {
+  "ring_coupling_ratio_a": 0.9721827482057945,
+  "ring_coupling_ratio_b": 0.9496825025927682,
+  "verdict": "between"
+ },
+ "seconds": 9
+}

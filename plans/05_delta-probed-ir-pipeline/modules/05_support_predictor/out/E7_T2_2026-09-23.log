@@ -1,0 +1,6 @@
+224 molecules; internals per molecule 54–171; Cartesian reconstruction error Bᵀ F B vs H: median 3.08e-15, max 1.27e-04; hold-out (a) 10, (b) 39 (['fluoranthene', 'fluorene']); pool 175; sizes [45, 175]
+n= 45 (a) SQM: diag CH-stretch   2.65 | CH-oop  10.07 | ring-ip  17.55 | other   9.18 | ring couplings 5.73 vs zero 5.90 (ratio 0.97) | block 5.59 vs median 4.14 | corrected ω RMS 12.28 (zero rule 24.31) | overlap median 0.998 | ΔH Cartesian residual ratio 0.72 | types fitted 43
+n= 45 (b) SQM: diag CH-stretch   4.44 | CH-oop   8.58 | ring-ip  13.48 | other  14.97 | ring couplings 3.54 vs zero 3.74 (ratio 0.95) | block 3.75 vs median 1.09 | corrected ω RMS 10.34 (zero rule 23.09) | overlap median 0.988 | ΔH Cartesian residual ratio 0.70 | types fitted 43
+n=175 (a) SQM: diag CH-stretch   2.58 | CH-oop   9.51 | ring-ip  17.56 | other   9.02 | ring couplings 5.73 vs zero 5.90 (ratio 0.97) | block 5.54 vs median 4.12 | corrected ω RMS 12.21 (zero rule 24.31) | overlap median 0.998 | ΔH Cartesian residual ratio 0.72 | types fitted 50
+n=175 (b) SQM: diag CH-stretch   4.38 | CH-oop   8.14 | ring-ip  13.41 | other  14.44 | ring couplings 3.55 vs zero 3.74 (ratio 0.95) | block 3.63 vs median 1.14 | corrected ω RMS 10.09 (zero rule 23.09) | overlap median 0.989 | ΔH Cartesian residual ratio 0.70 | types fitted 50
+wrote out/E7_T2_2026-09-23.json/.md in 9 s

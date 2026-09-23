@@ -59,3 +59,33 @@ nothing on the laptop (the anchor run is not touched). Scripts `m05/e7_t1_sign_t
 
 Rungs B and C of the proposal (neural SQM; equivariant Δ-Hessian with displaced-gradient labels and Hessian-QM9 pretraining); the
 coupled-cluster correction (still two real points); anything about intensities beyond the overlap read-out.
+
+## Outcome T2 — 23 September 2026, 10:4x: BETWEEN, at the lose end (ring coupling ratio 0.97 on (a), 0.95 on (b))
+
+Run: `m05/e7_t2_sqm.py` on the CCX53 (9 s); results `out/E7_T2_2026-09-23.{json,md,log}`. 224 molecules; 50 coordinate types fitted at
+n = 175 (of 53 seen); Bᵀ F B reproduces every Cartesian Hessian to 3e-15 (median). The Gauss–Newton fit of the scale factors
+converged at once (fit RMS 6.62e-04 → 6.60e-04 a.u.; the diagonal-ratio start is already the optimum). Scale factors are all
+close to one and chemically sensible (ring C–C bonds 1.028, C–H 1.026, ring C–C–C angles 1.024, ring dihedrals 1.066,
+out-of-planes 1.069): ωB97X stiffens everything by 1–9 %, torsions and out-of-planes most.
+
+| hold-out | model | diag CH-stretch | CH-oop | ring-ip | other | ring coupling ratio | ring block / median | corrected ω RMS (zero rule) | overlap median |
+|---|---|---|---|---|---|---|---|---|---|
+| (a) | sqm_diag_only | 2.58 | 9.51 | 17.56 | 9.02 | **1.00** | 5.54 / 4.12 | 12.23 (24.31) | 0.997 |
+| (a) | sqm | 2.58 | 9.51 | 17.56 | 9.02 | **0.97** | 5.54 / 4.12 | 12.21 (24.31) | 0.998 |
+| (b) | sqm_diag_only | 4.38 | 8.14 | 13.41 | 14.44 | **1.00** | 3.63 / 1.14 | 10.14 (23.09) | 0.986 |
+| (b) | sqm | 4.38 | 8.14 | 13.41 | 14.44 | **0.95** | 3.63 / 1.14 | 10.09 (23.09) | 0.989 |
+
+**Against the predictions.** Predicted: ring coupling ratio 0.6–0.8 and ring diagonal 8–12 cm⁻¹. Measured: ratio 0.97 / 0.95 — the first
+reading under 1.0 by any method, but by a hair — and ring diagonal 17.6 on (a), barely better than the family-median rule (18.4) and far from
+the Transformer's 11.5 (E6) or 5.3 (module split). The SQM form explains only 28 % of the Cartesian ΔH RMS on (a) (30 % on (b)); it halves the
+corrected-frequency error (24.3 → 12.2 cm⁻¹) mostly through the C–H stretches. By the registered rule this is **between**, close to lose:
+per-type constants in redundant primitives do not carry the couplings of this correction.
+
+**What it does and does not falsify.** It does not settle the diagnosis of the mode-basis failure (that is T1's job); it says that the coarsest local
+representation — one multiplier per coordinate type, fitted on force constants in atomic units — is not enough. Two caveats belong to the method,
+not the idea, and are the first post-hoc checks (labelled as such, not pre-registered): (1) in *redundant* primitives F = B⁺ᵀ H B⁺ is one of many
+internal representations, and scaling the minimum-norm one is not what Pulay's SQM does in non-redundant natural coordinates; (2) the fit weights
+bond force constants (≈ 0.5 a.u.) hundreds of times above bends and torsions, whereas the read-out lives in cm⁻¹ per mode. The post-hoc script
+`m05/e7_t2_posthoc.py` measures (i) the upper bound of the SQM form — scale factors fitted on each held-out molecule itself — and (ii) a fit of the
+same 50 factors in K-space (cm⁻¹, all families weighted alike). If (i) is also weak, the multiplicative form is the limit and rung B needs
+additive per-pair terms; if (ii) is much better than T2, the objective was the problem.
