@@ -1,0 +1,64 @@
+{
+ "release_followup2": "layerA2_2026-09-24.npz",
+ "n_molecules": 229,
+ "new_ids": [
+  "A2_13eea56ee5",
+  "A2_1c29b66c9d",
+  "A2_28eed45ad3",
+  "A2_2b693cf6e7",
+  "A2_3a2982dd85"
+ ],
+ "imaginary_second_route": {
+  "n_read": 23,
+  "healed": 5,
+  "genuine": 15
+ },
+ "test_rms_diag_229": {
+  "CH-stretch": {
+   "zero": 43.78032684326172,
+   "baseline_retrained": 2.6255459785461426
+  },
+  "CH-oop": {
+   "zero": 24.076662063598633,
+   "baseline_retrained": 3.948249340057373
+  },
+  "ring-ip": {
+   "zero": 20.340084075927734,
+   "baseline_retrained": 5.393651008605957
+  },
+  "other": {
+   "zero": 19.228384017944336,
+   "baseline_retrained": 8.503445625305176
+  }
+ },
+ "pair_ap_229": 0.2902287289967151,
+ "splits_229": {
+  "train": 191,
+  "val": 18,
+  "test": 20
+ },
+ "e8": {
+  "verdict": "between",
+  "pattern_c_cc": {
+   "dH_residual_ratio": 0.07895418694098029,
+   "ring_coupling_ratio": 0.8048130482260378,
+   "ring_diag_rms": 8.386058019816112,
+   "corrected_freq_rms": 6.2235600602561725,
+   "corrected_freq_rms_zero_rule": 37.951489952397026
+  },
+  "pattern_d_cc_mask": {
+   "dH_residual_ratio": 0.02383899833820987,
+   "ring_coupling_ratio": 0.3388557479734065,
+   "ring_diag_rms": 5.95017039863854,
+   "corrected_freq_rms": 4.065907187902265,
+   "corrected_freq_rms_zero_rule": 37.95148995227686
+  },
+  "pattern_c_proxy": {
+   "dH_residual_ratio": 0.06303029949100568,
+   "ring_coupling_ratio": 0.15494740876351976,
+   "ring_diag_rms": 2.90655522048271,
+   "corrected_freq_rms": 2.1995970484937897,
+   "corrected_freq_rms_zero_rule": 22.35810535598636
+  }
+ }
+}

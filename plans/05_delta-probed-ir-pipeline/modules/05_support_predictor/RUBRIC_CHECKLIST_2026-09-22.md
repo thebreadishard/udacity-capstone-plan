@@ -51,3 +51,8 @@ and the full execution of the notebook.*
 Section 8 follow-up cells added to the generator (imaginary-mode second route; retrain on the 229-molecule release; E8's coupled-cluster reading);
 report builder gains Addendum 2. Not executed yet — the executed notebook, `results.json`, docx and PDF in this folder are the 23 September run.
 To close: run `python notebook/make_notebook.py` and `python make_summary.py` on a free machine, re-check items on the executed outputs, refresh PROVENANCE.
+
+## Status 2026-09-24 14:4x — section 8 executed
+
+Executed append-only (see PROVENANCE): notebook 39 cells, no errors; `results_followup2.json`; report with Addendum 2 (docx + PDF). The committed
+outputs are current again. Items unchanged otherwise; the reviewer sees sections 7 and 8 as dated follow-ups after an untouched main run.

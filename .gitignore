@@ -79,3 +79,4 @@ plans/*/modules/06_generative_candidates/out/
 *.pt
 !plans/*/modules/06_generative_candidates/data/README.md
 !plans/*/modules/06_generative_candidates/data/*.csv.gz
+!plans/*/modules/*/notebook/results_followup2.json

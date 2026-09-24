@@ -163,3 +163,14 @@ reading of benzene's CCSD(T)/cc-pVDZ correction with the E7 projections (`probes
 scratch build (`--no-execute`) validates: 39 cells, every new code cell compiles. **Execution pending** until a 32-core machine is free of E8
 (the CCX53 runs naphthalene until ≈ 26–27 September); the committed `deep_learning.ipynb`, `results.json`, report and PDF are still the 23 September
 third execution.
+
+## Dated note 2026-09-24 14:4x — section 8 executed append-only (CCX53, m05 env, 4 threads, 12:15–12:27 UTC)
+
+`notebook/execute_section8.py`: a fresh kernel ran the setup cells (2, 4, 8, 10) and the *definitions* of cells 12 and 17, then the four new code
+cells (29, 32, 35, 38); the outputs of cells 0–26 are the ones saved on 23 September (code cells verified identical to the generator; markdown kept as
+run). Method and cell indices are in the notebook metadata (`append_only_execution`). Environment as on 23 September: `M05_RELEASE=layerA2_2026-09-23`,
+plus `M05_RELEASE_FOLLOWUP2=layerA2_2026-09-24` by default. Results: `notebook/results_followup2.json` — 229 molecules, the five healed molecules all fall
+into the training split by the sha rule (test set unchanged: 20 molecules), test RMS of the band shifts (diagonal) ring-in-plane 5.39 cm⁻¹ against 20.34
+for the zero rule (section 3: 5.32; 7.2 on 224: 5.46), C–H out-of-plane 3.95, C–H stretch 2.63, other 8.50; pair-head average precision 0.290 (v1 0.287,
+224: 0.285). E8 table read from `probes/results_m1/e8_benzene_ccpvdz/`. Report rebuilt with Addendum 2 (`make_summary.py`, docx and PDF, Word on the
+laptop as before). No error cells; 39 cells.
