@@ -7,10 +7,10 @@
 cd /root/e8 || exit 1
 PY=/root/miniforge3/envs/qc05/bin/python
 LOG=/root/e8/chain_ccx53.log
-T=32
-echo "[$(date "+%F %T")] chain armed; waiting for the second-route lanes" >> $LOG
-while pgrep -f "corpus/analytic_hessians.py" > /dev/null; do sleep 120; done
-echo "[$(date "+%F %T")] lanes done -> benzene symmetric smoke" >> $LOG
+T=24   # 24 Sep 07:4x: start when at most one second-route lane (8 threads) is left, instead of waiting for the last big molecules (~13:40)
+echo "[$(date "+%F %T")] chain armed; waiting until at most one second-route lane is left" >> $LOG
+while [ "$(pgrep -fc "corpus/analytic_hessians.py")" -gt 1 ]; do sleep 120; done
+echo "[$(date "+%F %T")] at most one lane left -> benzene symmetric smoke at $T threads" >> $LOG
 mkdir -p results/benzene_sym results/naphthalene_ccpvdz
 OMP_NUM_THREADS=$T $PY e8_cc_hessian_fd.py molecules/A_8448043181/geometry.json results/benzene_sym --threads $T --symmetry >> $LOG 2>&1
 rc=$?
