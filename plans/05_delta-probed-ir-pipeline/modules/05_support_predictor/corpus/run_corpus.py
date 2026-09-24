@@ -70,6 +70,9 @@ def append_ledger(rec):
 
 def start_geometry(row):
     """Layers A/B: RDKit ETKDG + MMFF from SMILES. Layer C: the Hessian QM9 geometry (Angstrom) by label."""
+    if row.get("restart_geometry"):  # --restart-from (2026-09-24): twisted geometry from saddle_restarts.py, bohr -> Angstrom, then optimise as usual
+        g = json.load(open(row["restart_geometry"], encoding="utf-8")); b = 0.529177210903
+        return [[s, x * b, y * b, z * b] for s, (x, y, z) in zip(g["symbols"], g["coords_bohr"])], True
     if row["layer"] == "C":
         import pyarrow as pa, pyarrow.ipc as ipc, numpy as np
         for s in sorted(QM9_VAC.glob("data-*.arrow")):
@@ -90,6 +93,21 @@ def start_geometry(row):
     return [[a.GetSymbol(), *conf.GetAtomPosition(a.GetIdx())] for a in m.GetAtoms()], True
 
 
+def restart_rows(path, rows):
+    """--restart-from <restart_jobs_<date>.json> (saddle_restarts.py, 24 September 2026): two pseudo-rows per saddle-point molecule, <id>_r+ and
+    <id>_r-, starting from the geometries displaced along the imaginary mode. The manifest is never touched; the results go to molecules/<id>_r+
+    and molecules/<id>_r- (the original directory stays), and the corpus ledger gets one record per restart with the displacement in the note.
+    build_release.py skips *_r+ / *_r- directories unless asked (the keep-one-of-two rule is a decision after the re-optimisation)."""
+    by_id = {r["id"]: r for r in rows}; out = []
+    for j in json.load(open(path, encoding="utf-8")):
+        base = by_id[j["id"]]
+        for sign, f in zip(("+", "-"), j["files"]):
+            g = json.load(open(HERE / f, encoding="utf-8")); rf = g["restart_from"]; amp = abs(rf["displacement_angstrom"])
+            out.append({**base, "id": f"{j['id']}_r{sign}", "name": f"{base['name']} (restart {sign}{amp} A)", "n_atoms": str(len(g["symbols"])),
+                        "restart_geometry": str(HERE / f), "restart_note": f"restart-from:{Path(path).name} {sign}{amp}A along {rf['functional']} imaginary {rf['imaginary_cm']}cm-1"})
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--layer", default=None); ap.add_argument("--max-molecules", type=int, default=None); ap.add_argument("--max-hours", type=float, default=None)
@@ -98,6 +116,7 @@ def main():
     ap.add_argument("--memory-gb", type=int, default=None, help="override the deck's psi4 memory for this runner only (2026-09-18; noted in the ledger)")
     ap.add_argument("--shard", default=None, help="i/K: this runner takes only the pending rows whose id hashes to shard i of K (2026-09-19; several rented machines share one layer without collisions; manifests are merged afterwards by merge_shards.py)")
     ap.add_argument("--retry-failed", action="store_true", help="take the rows with status failed (within --layer/--shard) once more, with opt_coordinates cartesian and geom_maxiter 200; the result folder is replaced (2026-09-20: E6 acenaphthylene+ethynyl, optking 50 steps)")
+    ap.add_argument("--restart-from", default=None, help="restart_jobs_<date>.json from saddle_restarts.py: run <id>_r+ and <id>_r- from the twisted geometries; manifest untouched (2026-09-24)")
     ap.add_argument("--ids", default=None, help="comma-separated manifest ids to (re)run regardless of status; the result folder is replaced (2026-09-15: benzene grid rerun with per-mode frequencies)")
     a = ap.parse_args()
     deck = json.load(open(DECK)); deck_hash = hashlib.sha256(DECK.read_bytes()).hexdigest()[:12]
@@ -120,7 +139,9 @@ def main():
             for r in rows:
                 if r["status"] == "running" and not (HERE / "molecules" / r["id"] / "result.json").exists():
                     r["status"] = "pending"; r["note"] = (r.get("note", "") + " redone-after-crash").strip()
-            if a.ids:
+            if a.restart_from:
+                todo = [r for r in restart_rows(a.restart_from, rows) if r["id"] not in virtually_done and not (HERE / "molecules" / r["id"] / "result.json").exists()]
+            elif a.ids:
                 # every named id runs once: it is added to virtually_done below whether it is dry-run or run
                 # (2026-09-15 17:20: without this the runner restarted benzene as soon as it had finished it)
                 wanted = set(a.ids.split(","))
@@ -135,13 +156,13 @@ def main():
             if a.max_hours is not None and (time.time() - t_start) / 3600 >= a.max_hours:
                 log(f"reached --max-hours {a.max_hours}"); break
             r = todo[0]
-            if a.ids or a.retry_failed:  # a retried molecule that fails again must not be picked up in the next loop
+            if a.ids or a.retry_failed or a.restart_from:  # a retried molecule that fails again must not be picked up in the next loop
                 virtually_done.add(r["id"])
             if a.dry_run:
                 log(f"would run {r['id']} {r['layer']} {r['name']} ({r['n_atoms']} atoms)"); done += 1; virtually_done.add(r["id"])
                 if a.max_molecules and done >= a.max_molecules: break
                 continue
-            r["status"] = "running"; r["machine"] = machine; r["deck"] = deck_hash; write_manifest(rows)
+            if not a.restart_from: r["status"] = "running"; r["machine"] = machine; r["deck"] = deck_hash; write_manifest(rows)
             out_final = HERE / "molecules" / r["id"]; out_tmp = HERE / "molecules" / (r["id"] + ".tmp")
             shutil.rmtree(out_tmp, ignore_errors=True); out_tmp.mkdir(parents=True)
             t0 = datetime.now(); log(f"start {r['id']} {r['layer']} {r['name']} ({r['n_atoms']} atoms)")
@@ -158,16 +179,17 @@ def main():
             except Exception as e:
                 (out_tmp / "runner_error.txt").write_text(repr(e))
             shutil.rmtree(out_final, ignore_errors=True); os.replace(out_tmp, out_final)
-            rows = read_manifest()
-            for rr in rows:
-                if rr["id"] == r["id"]:
-                    rr["status"] = status; rr["machine"] = machine; rr["deck"] = deck_hash
-                    if a.force: rr["note"] = (rr.get("note", "") + " forced-beside-anchor-job").strip()
-            write_manifest(rows)
+            if not a.restart_from:
+                rows = read_manifest()
+                for rr in rows:
+                    if rr["id"] == r["id"]:
+                        rr["status"] = status; rr["machine"] = machine; rr["deck"] = deck_hash
+                        if a.force: rr["note"] = (rr.get("note", "") + " forced-beside-anchor-job").strip()
+                write_manifest(rows)
             tm = res.get("timings_s", {})
             append_ledger(dict(id=r["id"], layer=r["layer"], name=r["name"], machine=machine, deck=deck_hash, start=f"{t0:%Y-%m-%d %H:%M:%S}", end=f"{datetime.now():%Y-%m-%d %H:%M:%S}",
                                seconds_total=tm.get("total", ""), seconds_optimise=tm.get("optimise", ""), seconds_hessian_b3lyp=tm.get("hessian_b3lyp", ""), seconds_hessian_wb97x=tm.get("hessian_wb97x", ""),
-                               peak_rss_gb=res.get("peak_rss_gb", ""), status=status, note=" ".join(x for x in (("forced" if a.force else ""), ("retry:" + ",".join(f"{k}={v}" for k, v in RETRY_OPT_OPTIONS.items()) if a.retry_failed else ""), override_note) if x)))
+                               peak_rss_gb=res.get("peak_rss_gb", ""), status=status, note=" ".join(x for x in (("forced" if a.force else ""), ("retry:" + ",".join(f"{k}={v}" for k, v in RETRY_OPT_OPTIONS.items()) if a.retry_failed else ""), override_note, r.get("restart_note", "")) if x)))
             done += 1
             log(f"{status} {r['id']} in {tm.get('total', '?')} s (opt {tm.get('optimise', '-')}, B3LYP {tm.get('hessian_b3lyp', '-')}, wB97X {tm.get('hessian_wb97x', '-')})")
             if time.time() - last_report > 3600 or True:

@@ -92,5 +92,9 @@ skipped as genuine, analytic Hessians for the molecules that have them. Noise le
 
 `saddle_restarts.py` reads the analytic Hessian of the functional that shows the imaginary mode (all fifteen: B3LYP, −22 to −110 cm⁻¹), takes the
 eigenvector of the most negative eigenvalue and writes two starting geometries per molecule displaced ±0.25 Å (largest atomic step) along it —
-`molecules/<id>/restart_geometry_plus.json` and `_minus.json` — plus `restart_jobs_2026-09-24.json`. The factory needs a `--restart-from` hook that
-optimises from such a file and writes to `<id>_r+` / `<id>_r-` (never over the original); that run is a desktop or rented-server job after the 28th.
+`molecules/<id>/restart_geometry_plus.json` and `_minus.json` — plus `restart_jobs_2026-09-24.json`. The factory has the hook since 20:3x the same day:
+`python run_corpus.py --restart-from restart_jobs_2026-09-24.json` runs thirty jobs `<id>_r+` / `<id>_r-` from the twisted geometries (never over the
+original; the manifest is not touched; one corpus-ledger record per restart with the displacement in the note). Dry-run tested on the laptop
+(`--dry-run --max-molecules 3`); `m05/build_release.py` skips `*_r+` / `*_r-` directories unless `--include-restarts` is given, because which of the two
+restarts to keep (the lower minimum, or both if they differ) is a decision after the re-optimisation. The run itself is a desktop or rented-server
+job after the 28th.

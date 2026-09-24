@@ -84,6 +84,7 @@ def main():
     ap.add_argument("molecules")
     ap.add_argument("out_prefix")
     ap.add_argument("--layer", default=None, help="keep only molecules whose result.json layer equals this")
+    ap.add_argument("--include-restarts", action="store_true", help="also read the <id>_r+ / <id>_r- directories written by run_corpus.py --restart-from (2026-09-24); off by default until the keep-one-of-two rule is decided")
     ap.add_argument("--prefer-analytic", action="store_true", help="use hessian_<tag>_analytic.npz (pyscf second route) where both exist (23 Sep 2026)")
     a = ap.parse_args()
     global PREFER_ANALYTIC
@@ -92,6 +93,8 @@ def main():
     rows = []
     skipped = []
     for d in sorted(p for p in mdir.iterdir() if p.is_dir()):
+        if d.name.endswith(("_r+", "_r-")) and not a.include_restarts:
+            skipped.append((d.name, "restart-directory", None)); continue
         if not all((d / f).exists() for f in ("geometry.json", "hessian_b3lyp.npz", "hessian_wb97x.npz", "result.json")):
             continue
         r = json.load(open(d / "result.json"))
