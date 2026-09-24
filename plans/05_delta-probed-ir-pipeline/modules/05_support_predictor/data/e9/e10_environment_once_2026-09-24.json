@@ -1,0 +1,1440 @@
+{
+ "date": "2026-09-24 22:25",
+ "n_receivers": 123,
+ "n_hosts": 182,
+ "donors": {
+  "COOH": "acenaphthylene+COOH",
+  "OH": "quinoxaline+OH",
+  "NH2": "quinoxaline+NH2",
+  "vinyl": "dibenzofuran+vinyl",
+  "CN": "quinoxaline+CN",
+  "CH3": "dibenzothiophene+CH3",
+  "SH": "quinoxaline+SH",
+  "ethynyl": "biphenylene+ethynyl",
+  "CHO": "quinoxaline+CHO",
+  "F": "quinoxaline+F",
+  "Cl": "quinoxaline+Cl",
+  "CONH2": "quinoxaline+CONH2",
+  "NO2": "biphenylene+NO2",
+  "CF3": "acenaphthylene+CF3",
+  "OCH3": "acenaphthylene+OCH3"
+ },
+ "skipped": {
+  "A2_1046eed218": "CF3: neighbourhood differs from donor acenaphthylene+CF3",
+  "A2_05e08111d2": "CHO: neighbourhood differs from donor quinoxaline+CHO",
+  "A2_07f1fa9135": "CHO: neighbourhood differs from donor quinoxaline+CHO",
+  "A2_0805297aa2": "CHO: neighbourhood differs from donor quinoxaline+CHO",
+  "A2_0814eb7409": "CHO: neighbourhood differs from donor quinoxaline+CHO",
+  "A2_09c1f9ee8a": "CHO: neighbourhood differs from donor quinoxaline+CHO",
+  "A2_0b93df3e1a": "CHO: neighbourhood differs from donor quinoxaline+CHO",
+  "A2_101910c9ef": "CHO: neighbourhood differs from donor quinoxaline+CHO",
+  "A2_16ec607c96": "CHO: neighbourhood differs from donor quinoxaline+CHO",
+  "A2_1b2d1b7caf": "CHO: neighbourhood differs from donor quinoxaline+CHO",
+  "A2_1eeb0a54f6": "CHO: neighbourhood differs from donor quinoxaline+CHO",
+  "A2_21a2401f6c": "CHO: neighbourhood differs from donor quinoxaline+CHO",
+  "A2_32e53836ea": "CHO: neighbourhood differs from donor quinoxaline+CHO",
+  "A2_336097f54c": "CHO: neighbourhood differs from donor quinoxaline+CHO",
+  "A2_361b2c502b": "CHO: neighbourhood differs from donor quinoxaline+CHO",
+  "A2_37cf4a0e50": "CHO: neighbourhood differs from donor quinoxaline+CHO",
+  "A2_3a4d58eb26": "CHO: neighbourhood differs from donor quinoxaline+CHO",
+  "A2_4435992442": "CN: neighbourhood differs from donor quinoxaline+CN",
+  "A2_20d3215ce3": "CONH2: neighbourhood differs from donor quinoxaline+CONH2",
+  "A2_10d7d03408": "COOH: neighbourhood differs from donor acenaphthylene+COOH",
+  "A2_066237c4f5": "Cl: neighbourhood differs from donor quinoxaline+Cl",
+  "A2_0a2c2f12b8": "Cl: neighbourhood differs from donor quinoxaline+Cl",
+  "A2_0beab28c4f": "Cl: neighbourhood differs from donor quinoxaline+Cl",
+  "A2_0bf85f35e5": "Cl: neighbourhood differs from donor quinoxaline+Cl",
+  "A2_192cd5911c": "Cl: neighbourhood differs from donor quinoxaline+Cl",
+  "A2_196b4cd166": "Cl: neighbourhood differs from donor quinoxaline+Cl",
+  "A2_1b389dc1d8": "Cl: neighbourhood differs from donor quinoxaline+Cl",
+  "A2_1c9af68a67": "Cl: neighbourhood differs from donor quinoxaline+Cl",
+  "A2_221bc30690": "Cl: neighbourhood differs from donor quinoxaline+Cl",
+  "A2_233ec9a78f": "Cl: neighbourhood differs from donor quinoxaline+Cl",
+  "A2_2a43bd67da": "Cl: neighbourhood differs from donor quinoxaline+Cl",
+  "A2_3058513f57": "Cl: neighbourhood differs from donor quinoxaline+Cl",
+  "A2_311e979a14": "Cl: neighbourhood differs from donor quinoxaline+Cl",
+  "A2_1bb2e3fbf1": "F: neighbourhood differs from donor quinoxaline+F",
+  "A2_1543119d9d": "OCH3: neighbourhood differs from donor acenaphthylene+OCH3",
+  "A2_019964a9ed": "OH: neighbourhood differs from donor quinoxaline+OH",
+  "A2_11a9a9ada2": "OH: neighbourhood differs from donor quinoxaline+OH",
+  "A2_177784139f": "OH: neighbourhood differs from donor quinoxaline+OH",
+  "A2_1c7ee11812": "OH: neighbourhood differs from donor quinoxaline+OH",
+  "A2_2ade2a9b93": "OH: neighbourhood differs from donor quinoxaline+OH",
+  "A2_2b7c0323a9": "OH: neighbourhood differs from donor quinoxaline+OH",
+  "A2_2d6f59a2bf": "OH: neighbourhood differs from donor quinoxaline+OH",
+  "A2_372920f181": "OH: neighbourhood differs from donor quinoxaline+OH",
+  "A2_16521f2764": "ethynyl: neighbourhood differs from donor biphenylene+ethynyl"
+ },
+ "cost": {
+  "molecules_in_layer": 182,
+  "measurements_under_claim": 57,
+  "cores": 42,
+  "donors": 15
+ },
+ "variants": {
+  "a_assembled": {
+   "diag_rms": {
+    "CH-stretch": 1.4494963972735941,
+    "CH-oop": 3.3645998464284017,
+    "ring-ip": 2.2996936945685604,
+    "other": 12.74278760395415
+   },
+   "coupling_rms": 0.970366012748466,
+   "coupling_zero_rms": 4.008528694838363,
+   "block_rms": 1.1146108408157438,
+   "block_median_rule_rms": 2.6830045356656123,
+   "coupling_ratio": 0.24207535647629794,
+   "corrected_freq_rms": 3.7483021883142342,
+   "corrected_freq_rms_zero_rule": 23.103718563103826,
+   "duschinsky_overlap_median": 0.9981820430334264,
+   "duschinsky_overlap_p10": 0.9707841711821991,
+   "dH_residual_ratio": 0.1813578526430044
+  },
+  "b_own_block": {
+   "diag_rms": {
+    "CH-stretch": 0.638974924647718,
+    "CH-oop": 3.223657531734881,
+    "ring-ip": 1.5718490255665722,
+    "other": 2.96940989123462
+   },
+   "coupling_rms": 0.6294501133243788,
+   "coupling_zero_rms": 4.008528694838363,
+   "block_rms": 0.8114808472262378,
+   "block_median_rule_rms": 2.6830045356656123,
+   "coupling_ratio": 0.1570277179591851,
+   "corrected_freq_rms": 1.897799199445862,
+   "corrected_freq_rms_zero_rule": 23.103718563103826,
+   "duschinsky_overlap_median": 0.99913175443562,
+   "duschinsky_overlap_p10": 0.9862087980647928,
+   "dH_residual_ratio": 0.08990759390180587
+  },
+  "c_core_only": {
+   "diag_rms": {
+    "CH-stretch": 15.86378904203555,
+    "CH-oop": 6.5066868066713575,
+    "ring-ip": 4.734383568951969,
+    "other": 17.521426089348303
+   },
+   "coupling_rms": 1.2217764530653963,
+   "coupling_zero_rms": 4.008528694838363,
+   "block_rms": 2.0513753540811077,
+   "block_median_rule_rms": 2.6830045356656123,
+   "coupling_ratio": 0.3047942390031119,
+   "corrected_freq_rms": 8.939395599076422,
+   "corrected_freq_rms_zero_rule": 23.103718563103826,
+   "duschinsky_overlap_median": 0.9974913730264936,
+   "duschinsky_overlap_p10": 0.9439838537872688,
+   "dH_residual_ratio": 0.35507798801113405
+  },
+  "zero": {
+   "diag_rms": {
+    "CH-stretch": 43.87362980645138,
+    "CH-oop": 23.46876380331573,
+    "ring-ip": 20.339167001546652,
+    "other": 21.23933767460564
+   },
+   "coupling_rms": 4.008528694838363,
+   "coupling_zero_rms": 4.008528694838363,
+   "block_rms": 13.35239343358788,
+   "block_median_rule_rms": 2.6830045356656123,
+   "coupling_ratio": 1.0,
+   "corrected_freq_rms": 23.103718563103826,
+   "corrected_freq_rms_zero_rule": 23.103718563103826,
+   "duschinsky_overlap_median": 0.9909303198964716,
+   "duschinsky_overlap_p10": 0.8440575994092122,
+   "dH_residual_ratio": 1.0
+  }
+ },
+ "verdict": "BETWEEN",
+ "by_substituent": {
+  "CF3": {
+   "a_assembled": {
+    "n": 12,
+    "corrected_freq_rms": 3.092159347959965,
+    "coupling_ratio": 0.3695295971068486
+   },
+   "b_own_block": {
+    "n": 12,
+    "corrected_freq_rms": 2.035984187747863,
+    "coupling_ratio": 0.17870732659815075
+   }
+  },
+  "CH3": {
+   "a_assembled": {
+    "n": 13,
+    "corrected_freq_rms": 4.2227651232262895,
+    "coupling_ratio": 0.2104245680009516
+   },
+   "b_own_block": {
+    "n": 13,
+    "corrected_freq_rms": 1.8900807217153925,
+    "coupling_ratio": 0.17471765113818602
+   }
+  },
+  "CN": {
+   "a_assembled": {
+    "n": 17,
+    "corrected_freq_rms": 2.3256671743321116,
+    "coupling_ratio": 0.2171074562734723
+   },
+   "b_own_block": {
+    "n": 17,
+    "corrected_freq_rms": 2.0738508278553294,
+    "coupling_ratio": 0.17005835402752423
+   }
+  },
+  "CONH2": {
+   "a_assembled": {
+    "n": 8,
+    "corrected_freq_rms": 6.120102256621387,
+    "coupling_ratio": 0.20341325499291235
+   },
+   "b_own_block": {
+    "n": 8,
+    "corrected_freq_rms": 1.80791480267944,
+    "coupling_ratio": 0.16294449548051032
+   }
+  },
+  "COOH": {
+   "a_assembled": {
+    "n": 12,
+    "corrected_freq_rms": 2.784066072590145,
+    "coupling_ratio": 0.30575537341198933
+   },
+   "b_own_block": {
+    "n": 12,
+    "corrected_freq_rms": 1.9297373569490666,
+    "coupling_ratio": 0.12804812179268493
+   }
+  },
+  "F": {
+   "a_assembled": {
+    "n": 8,
+    "corrected_freq_rms": 1.791691458745222,
+    "coupling_ratio": 0.18627075741162885
+   },
+   "b_own_block": {
+    "n": 8,
+    "corrected_freq_rms": 1.4837696630809012,
+    "coupling_ratio": 0.10989282032577388
+   }
+  },
+  "NH2": {
+   "a_assembled": {
+    "n": 9,
+    "corrected_freq_rms": 2.2685967374954172,
+    "coupling_ratio": 0.2321283351731898
+   },
+   "b_own_block": {
+    "n": 9,
+    "corrected_freq_rms": 1.5695440066442987,
+    "coupling_ratio": 0.1665737349765024
+   }
+  },
+  "NO2": {
+   "a_assembled": {
+    "n": 8,
+    "corrected_freq_rms": 2.36273256678855,
+    "coupling_ratio": 0.20107178804465556
+   },
+   "b_own_block": {
+    "n": 8,
+    "corrected_freq_rms": 2.089753270210065,
+    "coupling_ratio": 0.1473947978881006
+   }
+  },
+  "OCH3": {
+   "a_assembled": {
+    "n": 8,
+    "corrected_freq_rms": 4.283909190842285,
+    "coupling_ratio": 0.26969807071316654
+   },
+   "b_own_block": {
+    "n": 8,
+    "corrected_freq_rms": 2.125927012213803,
+    "coupling_ratio": 0.16136807889772475
+   }
+  },
+  "SH": {
+   "a_assembled": {
+    "n": 10,
+    "corrected_freq_rms": 7.089756548788768,
+    "coupling_ratio": 0.20428633959405906
+   },
+   "b_own_block": {
+    "n": 10,
+    "corrected_freq_rms": 2.1247837246060812,
+    "coupling_ratio": 0.1701796240259772
+   }
+  },
+  "ethynyl": {
+   "a_assembled": {
+    "n": 8,
+    "corrected_freq_rms": 2.178633062867332,
+    "coupling_ratio": 0.17358579871694108
+   },
+   "b_own_block": {
+    "n": 8,
+    "corrected_freq_rms": 1.4451722136627436,
+    "coupling_ratio": 0.11851157598625824
+   }
+  },
+  "vinyl": {
+   "a_assembled": {
+    "n": 10,
+    "corrected_freq_rms": 3.0356032971277234,
+    "coupling_ratio": 0.1824868987506062
+   },
+   "b_own_block": {
+    "n": 10,
+    "corrected_freq_rms": 1.750591937888104,
+    "coupling_ratio": 0.15483903901667948
+   }
+  }
+ },
+ "by_core": {
+  "acenaphthylene": {
+   "a_assembled": {
+    "n": 5,
+    "corrected_freq_rms": 4.438348291046412,
+    "coupling_ratio": 0.26999382202701355
+   },
+   "b_own_block": {
+    "n": 5,
+    "corrected_freq_rms": 2.539896439215572,
+    "coupling_ratio": 0.17150160665312048
+   }
+  },
+  "acridine": {
+   "a_assembled": {
+    "n": 11,
+    "corrected_freq_rms": 2.3674959869200833,
+    "coupling_ratio": 0.20576597199432126
+   },
+   "b_own_block": {
+    "n": 11,
+    "corrected_freq_rms": 1.688442652125466,
+    "coupling_ratio": 0.11351307647772399
+   }
+  },
+  "anthracene": {
+   "a_assembled": {
+    "n": 9,
+    "corrected_freq_rms": 4.4838518881335085,
+    "coupling_ratio": 0.21046979353934936
+   },
+   "b_own_block": {
+    "n": 9,
+    "corrected_freq_rms": 1.4546315744966511,
+    "coupling_ratio": 0.10664601120305572
+   }
+  },
+  "biphenylene": {
+   "a_assembled": {
+    "n": 3,
+    "corrected_freq_rms": 2.856957703981521,
+    "coupling_ratio": 0.27782396072975113
+   },
+   "b_own_block": {
+    "n": 3,
+    "corrected_freq_rms": 1.8679008832850301,
+    "coupling_ratio": 0.09773808477362476
+   }
+  },
+  "carbazole": {
+   "a_assembled": {
+    "n": 11,
+    "corrected_freq_rms": 6.498314882695142,
+    "coupling_ratio": 0.28096694628716334
+   },
+   "b_own_block": {
+    "n": 11,
+    "corrected_freq_rms": 2.7464447602450983,
+    "coupling_ratio": 0.17382708551591922
+   }
+  },
+  "dibenzofuran": {
+   "a_assembled": {
+    "n": 6,
+    "corrected_freq_rms": 3.631423086736098,
+    "coupling_ratio": 0.2667377547706644
+   },
+   "b_own_block": {
+    "n": 6,
+    "corrected_freq_rms": 2.657708531955311,
+    "coupling_ratio": 0.1736059564624235
+   }
+  },
+  "dibenzothiophene": {
+   "a_assembled": {
+    "n": 9,
+    "corrected_freq_rms": 3.4868048029881322,
+    "coupling_ratio": 0.3020610177037399
+   },
+   "b_own_block": {
+    "n": 9,
+    "corrected_freq_rms": 1.6978352524217584,
+    "coupling_ratio": 0.14337239520185965
+   }
+  },
+  "fluoranthene": {
+   "a_assembled": {
+    "n": 17,
+    "corrected_freq_rms": 3.390381396241734,
+    "coupling_ratio": 0.27355399220841825
+   },
+   "b_own_block": {
+    "n": 17,
+    "corrected_freq_rms": 1.7128454190389713,
+    "coupling_ratio": 0.22278625769496288
+   }
+  },
+  "fluorene": {
+   "a_assembled": {
+    "n": 12,
+    "corrected_freq_rms": 3.337522344080197,
+    "coupling_ratio": 0.23731619680341184
+   },
+   "b_own_block": {
+    "n": 12,
+    "corrected_freq_rms": 2.037128797701467,
+    "coupling_ratio": 0.1539227458515576
+   }
+  },
+  "phenanthrene": {
+   "a_assembled": {
+    "n": 10,
+    "corrected_freq_rms": 4.426944255647122,
+    "coupling_ratio": 0.23440868249586902
+   },
+   "b_own_block": {
+    "n": 10,
+    "corrected_freq_rms": 1.659610072663366,
+    "coupling_ratio": 0.1515116109363625
+   }
+  },
+  "phenanthridine": {
+   "a_assembled": {
+    "n": 24,
+    "corrected_freq_rms": 2.56178676419595,
+    "coupling_ratio": 0.20376835712711336
+   },
+   "b_own_block": {
+    "n": 24,
+    "corrected_freq_rms": 1.4996554553219343,
+    "coupling_ratio": 0.12935147850150286
+   }
+  },
+  "phenazine": {
+   "a_assembled": {
+    "n": 2,
+    "corrected_freq_rms": 2.7657392271688477,
+    "coupling_ratio": 0.2024489552116767
+   },
+   "b_own_block": {
+    "n": 2,
+    "corrected_freq_rms": 2.063093874268526,
+    "coupling_ratio": 0.09732022065643903
+   }
+  },
+  "pyrene": {
+   "a_assembled": {
+    "n": 4,
+    "corrected_freq_rms": 2.9142735772134754,
+    "coupling_ratio": 0.2582919381515853
+   },
+   "b_own_block": {
+    "n": 4,
+    "corrected_freq_rms": 2.007624678769101,
+    "coupling_ratio": 0.15496802326957776
+   }
+  }
+ },
+ "rows": [
+  {
+   "id": "A2_0e07e41776",
+   "X": "CF3",
+   "donor": "acenaphthylene+CF3",
+   "receiver": "dibenzofuran+CF3",
+   "rmsd_bohr": 0.336,
+   "n_near": 7
+  },
+  {
+   "id": "A2_11c681aefb",
+   "X": "CF3",
+   "donor": "acenaphthylene+CF3",
+   "receiver": "fluorene+CF3",
+   "rmsd_bohr": 0.446,
+   "n_near": 7
+  },
+  {
+   "id": "A2_187a20beab",
+   "X": "CF3",
+   "donor": "acenaphthylene+CF3",
+   "receiver": "phenanthrene+CF3",
+   "rmsd_bohr": 0.12,
+   "n_near": 7
+  },
+  {
+   "id": "A2_1ff7551053",
+   "X": "CF3",
+   "donor": "acenaphthylene+CF3",
+   "receiver": "biphenylene+CF3",
+   "rmsd_bohr": 0.189,
+   "n_near": 7
+  },
+  {
+   "id": "A2_238c9ced38",
+   "X": "CF3",
+   "donor": "acenaphthylene+CF3",
+   "receiver": "phenanthrene+CF3",
+   "rmsd_bohr": 0.119,
+   "n_near": 7
+  },
+  {
+   "id": "A2_24d0139cc4",
+   "X": "CF3",
+   "donor": "acenaphthylene+CF3",
+   "receiver": "dibenzothiophene+CF3",
+   "rmsd_bohr": 0.12,
+   "n_near": 7
+  },
+  {
+   "id": "A2_27370742a0",
+   "X": "CF3",
+   "donor": "acenaphthylene+CF3",
+   "receiver": "fluoranthene+CF3",
+   "rmsd_bohr": 0.11,
+   "n_near": 7
+  },
+  {
+   "id": "A2_2cf97d4a75",
+   "X": "CF3",
+   "donor": "acenaphthylene+CF3",
+   "receiver": "carbazole+CF3",
+   "rmsd_bohr": 0.412,
+   "n_near": 7
+  },
+  {
+   "id": "A2_3216c45c98",
+   "X": "CF3",
+   "donor": "acenaphthylene+CF3",
+   "receiver": "phenanthridine+CF3",
+   "rmsd_bohr": 0.304,
+   "n_near": 7
+  },
+  {
+   "id": "A2_3933867951",
+   "X": "CF3",
+   "donor": "acenaphthylene+CF3",
+   "receiver": "acridine+CF3",
+   "rmsd_bohr": 0.145,
+   "n_near": 7
+  },
+  {
+   "id": "A2_3c758d3b72",
+   "X": "CF3",
+   "donor": "acenaphthylene+CF3",
+   "receiver": "pyrene+CF3",
+   "rmsd_bohr": 0.118,
+   "n_near": 7
+  },
+  {
+   "id": "A2_42ab9eb0a0",
+   "X": "CF3",
+   "donor": "acenaphthylene+CF3",
+   "receiver": "fluoranthene+CF3",
+   "rmsd_bohr": 0.107,
+   "n_near": 7
+  },
+  {
+   "id": "A2_041da590e8",
+   "X": "CH3",
+   "donor": "dibenzothiophene+CH3",
+   "receiver": "fluoranthene+CH3",
+   "rmsd_bohr": 0.034,
+   "n_near": 7
+  },
+  {
+   "id": "A2_048ea73dab",
+   "X": "CH3",
+   "donor": "dibenzothiophene+CH3",
+   "receiver": "fluoranthene+CH3",
+   "rmsd_bohr": 0.022,
+   "n_near": 7
+  },
+  {
+   "id": "A2_0dc3aa4eb9",
+   "X": "CH3",
+   "donor": "dibenzothiophene+CH3",
+   "receiver": "fluorene+CH3",
+   "rmsd_bohr": 0.039,
+   "n_near": 7
+  },
+  {
+   "id": "A2_14dee3bc02",
+   "X": "CH3",
+   "donor": "dibenzothiophene+CH3",
+   "receiver": "phenanthridine+CH3",
+   "rmsd_bohr": 0.017,
+   "n_near": 7
+  },
+  {
+   "id": "A2_1d6c152813",
+   "X": "CH3",
+   "donor": "dibenzothiophene+CH3",
+   "receiver": "anthracene+CH3",
+   "rmsd_bohr": 0.018,
+   "n_near": 7
+  },
+  {
+   "id": "A2_1e5e1afa5c",
+   "X": "CH3",
+   "donor": "dibenzothiophene+CH3",
+   "receiver": "phenanthridine+CH3",
+   "rmsd_bohr": 0.011,
+   "n_near": 7
+  },
+  {
+   "id": "A2_21b688db0c",
+   "X": "CH3",
+   "donor": "dibenzothiophene+CH3",
+   "receiver": "fluorene+CH3",
+   "rmsd_bohr": 0.448,
+   "n_near": 7
+  },
+  {
+   "id": "A2_27edf7297c",
+   "X": "CH3",
+   "donor": "dibenzothiophene+CH3",
+   "receiver": "fluorene+CH3",
+   "rmsd_bohr": 0.435,
+   "n_near": 7
+  },
+  {
+   "id": "A2_2f079d63a1",
+   "X": "CH3",
+   "donor": "dibenzothiophene+CH3",
+   "receiver": "fluoranthene+CH3",
+   "rmsd_bohr": 0.027,
+   "n_near": 7
+  },
+  {
+   "id": "A2_3250fa71cc",
+   "X": "CH3",
+   "donor": "dibenzothiophene+CH3",
+   "receiver": "phenanthridine+CH3",
+   "rmsd_bohr": 0.035,
+   "n_near": 7
+  },
+  {
+   "id": "A2_34bb1210bc",
+   "X": "CH3",
+   "donor": "dibenzothiophene+CH3",
+   "receiver": "dibenzofuran+CH3",
+   "rmsd_bohr": 0.014,
+   "n_near": 7
+  },
+  {
+   "id": "A2_35fb26a423",
+   "X": "CH3",
+   "donor": "dibenzothiophene+CH3",
+   "receiver": "phenanthridine+CH3",
+   "rmsd_bohr": 0.111,
+   "n_near": 7
+  },
+  {
+   "id": "A2_3e6f108b14",
+   "X": "CH3",
+   "donor": "dibenzothiophene+CH3",
+   "receiver": "phenanthridine+CH3",
+   "rmsd_bohr": 0.013,
+   "n_near": 7
+  },
+  {
+   "id": "A2_02f13355a2",
+   "X": "CN",
+   "donor": "quinoxaline+CN",
+   "receiver": "acridine+CN",
+   "rmsd_bohr": 0.04,
+   "n_near": 5
+  },
+  {
+   "id": "A2_05a9e0e4c8",
+   "X": "CN",
+   "donor": "quinoxaline+CN",
+   "receiver": "phenanthridine+CN",
+   "rmsd_bohr": 0.037,
+   "n_near": 5
+  },
+  {
+   "id": "A2_0ae8c5746d",
+   "X": "CN",
+   "donor": "quinoxaline+CN",
+   "receiver": "acridine+CN",
+   "rmsd_bohr": 0.037,
+   "n_near": 5
+  },
+  {
+   "id": "A2_0e1c741b76",
+   "X": "CN",
+   "donor": "quinoxaline+CN",
+   "receiver": "fluoranthene+CN",
+   "rmsd_bohr": 0.041,
+   "n_near": 5
+  },
+  {
+   "id": "A2_0ef0a3a61c",
+   "X": "CN",
+   "donor": "quinoxaline+CN",
+   "receiver": "biphenylene+CN",
+   "rmsd_bohr": 0.056,
+   "n_near": 5
+  },
+  {
+   "id": "A2_0f86544b37",
+   "X": "CN",
+   "donor": "quinoxaline+CN",
+   "receiver": "phenanthrene+CN",
+   "rmsd_bohr": 0.141,
+   "n_near": 5
+  },
+  {
+   "id": "A2_1279063d3c",
+   "X": "CN",
+   "donor": "quinoxaline+CN",
+   "receiver": "carbazole+CN",
+   "rmsd_bohr": 0.032,
+   "n_near": 5
+  },
+  {
+   "id": "A2_1b0ef60572",
+   "X": "CN",
+   "donor": "quinoxaline+CN",
+   "receiver": "phenanthridine+CN",
+   "rmsd_bohr": 0.02,
+   "n_near": 5
+  },
+  {
+   "id": "A2_1f52b56b90",
+   "X": "CN",
+   "donor": "quinoxaline+CN",
+   "receiver": "dibenzofuran+CN",
+   "rmsd_bohr": 0.036,
+   "n_near": 5
+  },
+  {
+   "id": "A2_1fa17eaaa2",
+   "X": "CN",
+   "donor": "quinoxaline+CN",
+   "receiver": "phenanthridine+CN",
+   "rmsd_bohr": 0.042,
+   "n_near": 5
+  },
+  {
+   "id": "A2_2931e48c62",
+   "X": "CN",
+   "donor": "quinoxaline+CN",
+   "receiver": "fluoranthene+CN",
+   "rmsd_bohr": 0.04,
+   "n_near": 5
+  },
+  {
+   "id": "A2_331729cd47",
+   "X": "CN",
+   "donor": "quinoxaline+CN",
+   "receiver": "fluoranthene+CN",
+   "rmsd_bohr": 0.051,
+   "n_near": 5
+  },
+  {
+   "id": "A2_33d8ee2f2f",
+   "X": "CN",
+   "donor": "quinoxaline+CN",
+   "receiver": "carbazole+CN",
+   "rmsd_bohr": 0.04,
+   "n_near": 5
+  },
+  {
+   "id": "A2_3468258fcf",
+   "X": "CN",
+   "donor": "quinoxaline+CN",
+   "receiver": "phenanthridine+CN",
+   "rmsd_bohr": 0.037,
+   "n_near": 5
+  },
+  {
+   "id": "A2_3b49468c8c",
+   "X": "CN",
+   "donor": "quinoxaline+CN",
+   "receiver": "phenanthrene+CN",
+   "rmsd_bohr": 0.027,
+   "n_near": 5
+  },
+  {
+   "id": "A2_3c35334467",
+   "X": "CN",
+   "donor": "quinoxaline+CN",
+   "receiver": "dibenzothiophene+CN",
+   "rmsd_bohr": 0.027,
+   "n_near": 5
+  },
+  {
+   "id": "A2_3cf20db4ac",
+   "X": "CN",
+   "donor": "quinoxaline+CN",
+   "receiver": "fluorene+CN",
+   "rmsd_bohr": 0.02,
+   "n_near": 5
+  },
+  {
+   "id": "A2_097651503c",
+   "X": "CONH2",
+   "donor": "quinoxaline+CONH2",
+   "receiver": "fluoranthene+CONH2",
+   "rmsd_bohr": 0.304,
+   "n_near": 8
+  },
+  {
+   "id": "A2_09d0b3be91",
+   "X": "CONH2",
+   "donor": "quinoxaline+CONH2",
+   "receiver": "phenanthrene+CONH2",
+   "rmsd_bohr": 1.261,
+   "n_near": 8
+  },
+  {
+   "id": "A2_0c7ac2371d",
+   "X": "CONH2",
+   "donor": "quinoxaline+CONH2",
+   "receiver": "acenaphthylene+CONH2",
+   "rmsd_bohr": 0.049,
+   "n_near": 8
+  },
+  {
+   "id": "A2_0ed4bfb28a",
+   "X": "CONH2",
+   "donor": "quinoxaline+CONH2",
+   "receiver": "carbazole+CONH2",
+   "rmsd_bohr": 0.794,
+   "n_near": 8
+  },
+  {
+   "id": "A2_0efbc8f50c",
+   "X": "CONH2",
+   "donor": "quinoxaline+CONH2",
+   "receiver": "phenanthrene+CONH2",
+   "rmsd_bohr": 0.773,
+   "n_near": 8
+  },
+  {
+   "id": "A2_1a20326972",
+   "X": "CONH2",
+   "donor": "quinoxaline+CONH2",
+   "receiver": "acridine+CONH2",
+   "rmsd_bohr": 0.264,
+   "n_near": 8
+  },
+  {
+   "id": "A2_2a88c6ce4f",
+   "X": "CONH2",
+   "donor": "quinoxaline+CONH2",
+   "receiver": "phenanthridine+CONH2",
+   "rmsd_bohr": 0.6,
+   "n_near": 8
+  },
+  {
+   "id": "A2_32ab8c6937",
+   "X": "CONH2",
+   "donor": "quinoxaline+CONH2",
+   "receiver": "anthracene+CONH2",
+   "rmsd_bohr": 0.827,
+   "n_near": 8
+  },
+  {
+   "id": "A2_00b0ff5a24",
+   "X": "COOH",
+   "donor": "acenaphthylene+COOH",
+   "receiver": "fluoranthene+COOH",
+   "rmsd_bohr": 0.169,
+   "n_near": 7
+  },
+  {
+   "id": "A2_04719edc88",
+   "X": "COOH",
+   "donor": "acenaphthylene+COOH",
+   "receiver": "phenanthridine+COOH",
+   "rmsd_bohr": 0.206,
+   "n_near": 7
+  },
+  {
+   "id": "A2_14a0a0f3c9",
+   "X": "COOH",
+   "donor": "acenaphthylene+COOH",
+   "receiver": "phenanthridine+COOH",
+   "rmsd_bohr": 0.124,
+   "n_near": 7
+  },
+  {
+   "id": "A2_159a501353",
+   "X": "COOH",
+   "donor": "acenaphthylene+COOH",
+   "receiver": "phenanthridine+COOH",
+   "rmsd_bohr": 0.127,
+   "n_near": 7
+  },
+  {
+   "id": "A2_18b62c6a42",
+   "X": "COOH",
+   "donor": "acenaphthylene+COOH",
+   "receiver": "dibenzothiophene+COOH",
+   "rmsd_bohr": 0.59,
+   "n_near": 7
+  },
+  {
+   "id": "A2_1e3ee2b3a8",
+   "X": "COOH",
+   "donor": "acenaphthylene+COOH",
+   "receiver": "carbazole+COOH",
+   "rmsd_bohr": 0.131,
+   "n_near": 7
+  },
+  {
+   "id": "A2_204c06557b",
+   "X": "COOH",
+   "donor": "acenaphthylene+COOH",
+   "receiver": "acridine+COOH",
+   "rmsd_bohr": 0.126,
+   "n_near": 7
+  },
+  {
+   "id": "A2_215e004a51",
+   "X": "COOH",
+   "donor": "acenaphthylene+COOH",
+   "receiver": "phenazine+COOH",
+   "rmsd_bohr": 0.364,
+   "n_near": 7
+  },
+  {
+   "id": "A2_224abc958a",
+   "X": "COOH",
+   "donor": "acenaphthylene+COOH",
+   "receiver": "pyrene+COOH",
+   "rmsd_bohr": 0.178,
+   "n_near": 7
+  },
+  {
+   "id": "A2_253cbb1c94",
+   "X": "COOH",
+   "donor": "acenaphthylene+COOH",
+   "receiver": "carbazole+COOH",
+   "rmsd_bohr": 0.134,
+   "n_near": 7
+  },
+  {
+   "id": "A2_29caedd47d",
+   "X": "COOH",
+   "donor": "acenaphthylene+COOH",
+   "receiver": "anthracene+COOH",
+   "rmsd_bohr": 0.172,
+   "n_near": 7
+  },
+  {
+   "id": "A2_362fc56435",
+   "X": "COOH",
+   "donor": "acenaphthylene+COOH",
+   "receiver": "acenaphthylene+COOH",
+   "rmsd_bohr": 0.155,
+   "n_near": 7
+  },
+  {
+   "id": "A2_20e53d754a",
+   "X": "F",
+   "donor": "quinoxaline+F",
+   "receiver": "dibenzothiophene+F",
+   "rmsd_bohr": 0.02,
+   "n_near": 4
+  },
+  {
+   "id": "A2_210c322595",
+   "X": "F",
+   "donor": "quinoxaline+F",
+   "receiver": "fluorene+F",
+   "rmsd_bohr": 0.024,
+   "n_near": 4
+  },
+  {
+   "id": "A2_25fed68b27",
+   "X": "F",
+   "donor": "quinoxaline+F",
+   "receiver": "anthracene+F",
+   "rmsd_bohr": 0.014,
+   "n_near": 4
+  },
+  {
+   "id": "A2_2ce877d5e9",
+   "X": "F",
+   "donor": "quinoxaline+F",
+   "receiver": "phenanthridine+F",
+   "rmsd_bohr": 0.013,
+   "n_near": 4
+  },
+  {
+   "id": "A2_2e2d3e4196",
+   "X": "F",
+   "donor": "quinoxaline+F",
+   "receiver": "anthracene+F",
+   "rmsd_bohr": 0.033,
+   "n_near": 4
+  },
+  {
+   "id": "A2_303433ef20",
+   "X": "F",
+   "donor": "quinoxaline+F",
+   "receiver": "anthracene+F",
+   "rmsd_bohr": 0.018,
+   "n_near": 4
+  },
+  {
+   "id": "A2_3077af0137",
+   "X": "F",
+   "donor": "quinoxaline+F",
+   "receiver": "phenanthrene+F",
+   "rmsd_bohr": 0.015,
+   "n_near": 4
+  },
+  {
+   "id": "A2_360ca4faa6",
+   "X": "F",
+   "donor": "quinoxaline+F",
+   "receiver": "dibenzothiophene+F",
+   "rmsd_bohr": 0.017,
+   "n_near": 4
+  },
+  {
+   "id": "A2_0101e57296",
+   "X": "NH2",
+   "donor": "quinoxaline+NH2",
+   "receiver": "fluoranthene+NH2",
+   "rmsd_bohr": 0.1,
+   "n_near": 6
+  },
+  {
+   "id": "A2_05f5ff045c",
+   "X": "NH2",
+   "donor": "quinoxaline+NH2",
+   "receiver": "fluorene+NH2",
+   "rmsd_bohr": 0.104,
+   "n_near": 6
+  },
+  {
+   "id": "A2_06222c33e3",
+   "X": "NH2",
+   "donor": "quinoxaline+NH2",
+   "receiver": "fluoranthene+NH2",
+   "rmsd_bohr": 0.044,
+   "n_near": 6
+  },
+  {
+   "id": "A2_06873ee7ad",
+   "X": "NH2",
+   "donor": "quinoxaline+NH2",
+   "receiver": "fluorene+NH2",
+   "rmsd_bohr": 0.118,
+   "n_near": 6
+  },
+  {
+   "id": "A2_0e7288334d",
+   "X": "NH2",
+   "donor": "quinoxaline+NH2",
+   "receiver": "dibenzothiophene+NH2",
+   "rmsd_bohr": 0.11,
+   "n_near": 6
+  },
+  {
+   "id": "A2_156fe03a44",
+   "X": "NH2",
+   "donor": "quinoxaline+NH2",
+   "receiver": "dibenzothiophene+NH2",
+   "rmsd_bohr": 0.084,
+   "n_near": 6
+  },
+  {
+   "id": "A2_1b3089a9c8",
+   "X": "NH2",
+   "donor": "quinoxaline+NH2",
+   "receiver": "acridine+NH2",
+   "rmsd_bohr": 0.148,
+   "n_near": 6
+  },
+  {
+   "id": "A2_1c2781e93a",
+   "X": "NH2",
+   "donor": "quinoxaline+NH2",
+   "receiver": "fluorene+NH2",
+   "rmsd_bohr": 0.104,
+   "n_near": 6
+  },
+  {
+   "id": "A2_34db2b4f50",
+   "X": "NH2",
+   "donor": "quinoxaline+NH2",
+   "receiver": "phenanthridine+NH2",
+   "rmsd_bohr": 0.128,
+   "n_near": 6
+  },
+  {
+   "id": "A2_0a89c174d8",
+   "X": "NO2",
+   "donor": "biphenylene+NO2",
+   "receiver": "dibenzofuran+NO2",
+   "rmsd_bohr": 0.029,
+   "n_near": 6
+  },
+  {
+   "id": "A2_10374ec43c",
+   "X": "NO2",
+   "donor": "biphenylene+NO2",
+   "receiver": "acridine+NO2",
+   "rmsd_bohr": 0.302,
+   "n_near": 6
+  },
+  {
+   "id": "A2_19eaf39036",
+   "X": "NO2",
+   "donor": "biphenylene+NO2",
+   "receiver": "phenanthrene+NO2",
+   "rmsd_bohr": 0.042,
+   "n_near": 6
+  },
+  {
+   "id": "A2_23d2ef8efb",
+   "X": "NO2",
+   "donor": "biphenylene+NO2",
+   "receiver": "dibenzofuran+NO2",
+   "rmsd_bohr": 0.052,
+   "n_near": 6
+  },
+  {
+   "id": "A2_2743aef5e8",
+   "X": "NO2",
+   "donor": "biphenylene+NO2",
+   "receiver": "phenanthridine+NO2",
+   "rmsd_bohr": 0.468,
+   "n_near": 6
+  },
+  {
+   "id": "A2_2e154f6054",
+   "X": "NO2",
+   "donor": "biphenylene+NO2",
+   "receiver": "fluorene+NO2",
+   "rmsd_bohr": 0.048,
+   "n_near": 6
+  },
+  {
+   "id": "A2_35c01ca552",
+   "X": "NO2",
+   "donor": "biphenylene+NO2",
+   "receiver": "pyrene+NO2",
+   "rmsd_bohr": 0.379,
+   "n_near": 6
+  },
+  {
+   "id": "A2_3ac24b6972",
+   "X": "NO2",
+   "donor": "biphenylene+NO2",
+   "receiver": "dibenzofuran+NO2",
+   "rmsd_bohr": 0.157,
+   "n_near": 6
+  },
+  {
+   "id": "A2_0f1a2bd718",
+   "X": "OCH3",
+   "donor": "acenaphthylene+OCH3",
+   "receiver": "anthracene+OCH3",
+   "rmsd_bohr": 1.351,
+   "n_near": 8
+  },
+  {
+   "id": "A2_13a226a056",
+   "X": "OCH3",
+   "donor": "acenaphthylene+OCH3",
+   "receiver": "acridine+OCH3",
+   "rmsd_bohr": 0.014,
+   "n_near": 8
+  },
+  {
+   "id": "A2_1767c744aa",
+   "X": "OCH3",
+   "donor": "acenaphthylene+OCH3",
+   "receiver": "acenaphthylene+OCH3",
+   "rmsd_bohr": 0.031,
+   "n_near": 8
+  },
+  {
+   "id": "A2_202963092d",
+   "X": "OCH3",
+   "donor": "acenaphthylene+OCH3",
+   "receiver": "acenaphthylene+OCH3",
+   "rmsd_bohr": 0.032,
+   "n_near": 8
+  },
+  {
+   "id": "A2_25fe240a5d",
+   "X": "OCH3",
+   "donor": "acenaphthylene+OCH3",
+   "receiver": "pyrene+OCH3",
+   "rmsd_bohr": 0.017,
+   "n_near": 8
+  },
+  {
+   "id": "A2_26a9174202",
+   "X": "OCH3",
+   "donor": "acenaphthylene+OCH3",
+   "receiver": "biphenylene+OCH3",
+   "rmsd_bohr": 0.055,
+   "n_near": 8
+  },
+  {
+   "id": "A2_30b024df67",
+   "X": "OCH3",
+   "donor": "acenaphthylene+OCH3",
+   "receiver": "acridine+OCH3",
+   "rmsd_bohr": 0.01,
+   "n_near": 8
+  },
+  {
+   "id": "A2_3f25a88e27",
+   "X": "OCH3",
+   "donor": "acenaphthylene+OCH3",
+   "receiver": "fluoranthene+OCH3",
+   "rmsd_bohr": 0.018,
+   "n_near": 8
+  },
+  {
+   "id": "A2_043da5bed2",
+   "X": "SH",
+   "donor": "quinoxaline+SH",
+   "receiver": "fluoranthene+SH",
+   "rmsd_bohr": 0.573,
+   "n_near": 5
+  },
+  {
+   "id": "A2_13327d8d52",
+   "X": "SH",
+   "donor": "quinoxaline+SH",
+   "receiver": "carbazole+SH",
+   "rmsd_bohr": 1.004,
+   "n_near": 5
+  },
+  {
+   "id": "A2_13bafae8e0",
+   "X": "SH",
+   "donor": "quinoxaline+SH",
+   "receiver": "carbazole+SH",
+   "rmsd_bohr": 0.208,
+   "n_near": 5
+  },
+  {
+   "id": "A2_198d828af1",
+   "X": "SH",
+   "donor": "quinoxaline+SH",
+   "receiver": "phenanthridine+SH",
+   "rmsd_bohr": 0.083,
+   "n_near": 5
+  },
+  {
+   "id": "A2_1fa81d01d6",
+   "X": "SH",
+   "donor": "quinoxaline+SH",
+   "receiver": "carbazole+SH",
+   "rmsd_bohr": 0.576,
+   "n_near": 5
+  },
+  {
+   "id": "A2_22d0e8105c",
+   "X": "SH",
+   "donor": "quinoxaline+SH",
+   "receiver": "carbazole+SH",
+   "rmsd_bohr": 0.962,
+   "n_near": 5
+  },
+  {
+   "id": "A2_306152f5f9",
+   "X": "SH",
+   "donor": "quinoxaline+SH",
+   "receiver": "phenanthrene+SH",
+   "rmsd_bohr": 0.655,
+   "n_near": 5
+  },
+  {
+   "id": "A2_34decc4ca8",
+   "X": "SH",
+   "donor": "quinoxaline+SH",
+   "receiver": "acenaphthylene+SH",
+   "rmsd_bohr": 0.517,
+   "n_near": 5
+  },
+  {
+   "id": "A2_3b6ae59b2d",
+   "X": "SH",
+   "donor": "quinoxaline+SH",
+   "receiver": "fluorene+SH",
+   "rmsd_bohr": 0.018,
+   "n_near": 5
+  },
+  {
+   "id": "A2_3c982d4d3f",
+   "X": "SH",
+   "donor": "quinoxaline+SH",
+   "receiver": "dibenzothiophene+SH",
+   "rmsd_bohr": 0.662,
+   "n_near": 5
+  },
+  {
+   "id": "A2_04af6632de",
+   "X": "ethynyl",
+   "donor": "biphenylene+ethynyl",
+   "receiver": "anthracene+ethynyl",
+   "rmsd_bohr": 0.071,
+   "n_near": 6
+  },
+  {
+   "id": "A2_12deece5a3",
+   "X": "ethynyl",
+   "donor": "biphenylene+ethynyl",
+   "receiver": "phenanthridine+ethynyl",
+   "rmsd_bohr": 0.043,
+   "n_near": 6
+  },
+  {
+   "id": "A2_13a0f8f47e",
+   "X": "ethynyl",
+   "donor": "biphenylene+ethynyl",
+   "receiver": "phenanthridine+ethynyl",
+   "rmsd_bohr": 0.055,
+   "n_near": 6
+  },
+  {
+   "id": "A2_1a3e9f41ee",
+   "X": "ethynyl",
+   "donor": "biphenylene+ethynyl",
+   "receiver": "acridine+ethynyl",
+   "rmsd_bohr": 0.052,
+   "n_near": 6
+  },
+  {
+   "id": "A2_2e1bd8f645",
+   "X": "ethynyl",
+   "donor": "biphenylene+ethynyl",
+   "receiver": "phenazine+ethynyl",
+   "rmsd_bohr": 0.062,
+   "n_near": 6
+  },
+  {
+   "id": "A2_2ef47ebcc1",
+   "X": "ethynyl",
+   "donor": "biphenylene+ethynyl",
+   "receiver": "anthracene+ethynyl",
+   "rmsd_bohr": 0.052,
+   "n_near": 6
+  },
+  {
+   "id": "A2_3825e7205b",
+   "X": "ethynyl",
+   "donor": "biphenylene+ethynyl",
+   "receiver": "fluoranthene+ethynyl",
+   "rmsd_bohr": 0.057,
+   "n_near": 6
+  },
+  {
+   "id": "A2_39baaea0dd",
+   "X": "ethynyl",
+   "donor": "biphenylene+ethynyl",
+   "receiver": "fluoranthene+ethynyl",
+   "rmsd_bohr": 0.057,
+   "n_near": 6
+  },
+  {
+   "id": "A2_02c8833bd5",
+   "X": "vinyl",
+   "donor": "dibenzofuran+vinyl",
+   "receiver": "fluoranthene+vinyl",
+   "rmsd_bohr": 0.455,
+   "n_near": 8
+  },
+  {
+   "id": "A2_074ffaa9fa",
+   "X": "vinyl",
+   "donor": "dibenzofuran+vinyl",
+   "receiver": "phenanthridine+vinyl",
+   "rmsd_bohr": 0.021,
+   "n_near": 8
+  },
+  {
+   "id": "A2_0a2685346d",
+   "X": "vinyl",
+   "donor": "dibenzofuran+vinyl",
+   "receiver": "acridine+vinyl",
+   "rmsd_bohr": 0.023,
+   "n_near": 8
+  },
+  {
+   "id": "A2_11dec05d1b",
+   "X": "vinyl",
+   "donor": "dibenzofuran+vinyl",
+   "receiver": "phenanthridine+vinyl",
+   "rmsd_bohr": 0.014,
+   "n_near": 8
+  },
+  {
+   "id": "A2_25e55c7a83",
+   "X": "vinyl",
+   "donor": "dibenzofuran+vinyl",
+   "receiver": "phenanthrene+vinyl",
+   "rmsd_bohr": 0.021,
+   "n_near": 8
+  },
+  {
+   "id": "A2_2607024fdf",
+   "X": "vinyl",
+   "donor": "dibenzofuran+vinyl",
+   "receiver": "carbazole+vinyl",
+   "rmsd_bohr": 0.002,
+   "n_near": 8
+  },
+  {
+   "id": "A2_27130c4c79",
+   "X": "vinyl",
+   "donor": "dibenzofuran+vinyl",
+   "receiver": "fluorene+vinyl",
+   "rmsd_bohr": 0.008,
+   "n_near": 8
+  },
+  {
+   "id": "A2_2be56a1e2f",
+   "X": "vinyl",
+   "donor": "dibenzofuran+vinyl",
+   "receiver": "phenanthridine+vinyl",
+   "rmsd_bohr": 0.019,
+   "n_near": 8
+  },
+  {
+   "id": "A2_356dcf6450",
+   "X": "vinyl",
+   "donor": "dibenzofuran+vinyl",
+   "receiver": "dibenzothiophene+vinyl",
+   "rmsd_bohr": 0.688,
+   "n_near": 8
+  },
+  {
+   "id": "A2_4282860cee",
+   "X": "vinyl",
+   "donor": "dibenzofuran+vinyl",
+   "receiver": "phenanthridine+vinyl",
+   "rmsd_bohr": 0.713,
+   "n_near": 8
+  }
+ ],
+ "seconds": 18
+}

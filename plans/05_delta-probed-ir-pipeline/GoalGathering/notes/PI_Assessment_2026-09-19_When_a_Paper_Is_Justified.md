@@ -160,3 +160,13 @@ Lever 2 is now sharply defined: one substituted molecule, LNO-CCSD(T)/cc-pVDZ at
 directions only (≈ 6 atoms × 3 × 2 displacements ≈ 36 energies, or the equivalent gradients), on the CCX53's idle cores after naphthalene E8 or on
 a third server; the anchor's ≈ 9 h per naphthalene TZ point and the CCX53's 20,998 s per CC gradient are the yardsticks. Pass: a full correction
 of a 25-atom molecule under two CCX53-days at DZ.
+
+## Dated addition, 2026-09-24 22:5x — the idea not had before: labels per environment type, not per molecule (E10)
+
+The user asked for the best new idea to raise the odds. Proposed and tested the same evening: if ΔH lives within two bonds, the neighbourhood
+block of a substituent is a property of its environment and can be measured once, on the smallest host, and assembled into every molecule that
+contains it — the label price becomes independent of molecule size (fragment additivity, measured rather than assumed, for a learned CC
+correction). E10 on the proxy: between as registered (3.75 cm⁻¹), 11 of 15 substituent types within the bars under a torsion-matched donor
+(pooled 3.36, ceiling 1.92), the four rotor types not. The odds lines are left where the 22:0x addendum put them until L2 prices the first
+donor at the coupled-cluster level; the cost lever now has three measured parts (E9 neighbourhood 4×, E10 environment-once ≈ 2.7× on the layer,
+symmetry 6× on the cores) and one unmeasured price (L2, running).
