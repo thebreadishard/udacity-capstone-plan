@@ -67,3 +67,6 @@ plans/*/modules/*/corpus/corpus.lock
 !plans/*/modules/*/notebook/results_followup.json
 plans/*/modules/*/corpus/shards/
 .claude/launch.json
+
+# Spectrum Atlas export output (rebuilt by website/export/build_catalog.py; 11k rows)
+website/export/out/
