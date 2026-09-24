@@ -87,3 +87,10 @@ noise" was **right for the ωB97X flips (4 of 4 healed) and wrong for the B3LYP 
 Release `layerA2_2026-09-24` (`build_release.py --prefer-analytic`, imaginary rule now read from the analytic frequencies): 229 molecules (+5), 15
 skipped as genuine, analytic Hessians for the molecules that have them. Noise level of the deck on the real modes of these 23 molecules: max |Δω|
 0.5–5.6 cm⁻¹ for B3LYP, 3–32 (phenazine+vinyl) for ωB97X — the ωB97X finite differences are the noisier route throughout.
+
+## Dated note 2026-09-24 15:0x — restart geometries for the fifteen saddle-point molecules (prepared, not run)
+
+`saddle_restarts.py` reads the analytic Hessian of the functional that shows the imaginary mode (all fifteen: B3LYP, −22 to −110 cm⁻¹), takes the
+eigenvector of the most negative eigenvalue and writes two starting geometries per molecule displaced ±0.25 Å (largest atomic step) along it —
+`molecules/<id>/restart_geometry_plus.json` and `_minus.json` — plus `restart_jobs_2026-09-24.json`. The factory needs a `--restart-from` hook that
+optimises from such a file and writes to `<id>_r+` / `<id>_r-` (never over the original); that run is a desktop or rented-server job after the 28th.

@@ -39,6 +39,23 @@ const { total } = Astro.props as { total: number };
   const params = new URLSearchParams(location.search);
   q.value = params.get('q') ?? ''; rung.value = params.get('rung') ?? ''; layer.value = params.get('layer') ?? '';
   function esc(s: string) { return s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' } as any)[c]); }
+  function parseComposition(s: string): { el: string; op: string; n: number }[] | null {
+    const terms = s.trim().split(/\s+/).filter(Boolean); if (!terms.length) return null;
+    const out: { el: string; op: string; n: number }[] = [];
+    for (const term of terms) {
+      const m = /^([A-Z][a-z]?)(<=|>=|=|<|>)(\d+)$/.exec(term);
+      if (!m) { if (term.toLowerCase() === 'neutral') continue; return null; }
+      out.push({ el: m[1], op: m[2], n: Number(m[3]) });
+    }
+    return out.length ? out : null;
+  }
+  function counts(formula: string): Record<string, number> {
+    const c: Record<string, number> = {}; for (const m of formula.matchAll(/([A-Z][a-z]?)(\d*)/g)) c[m[1]] = (c[m[1]] ?? 0) + (m[2] ? Number(m[2]) : 1); return c;
+  }
+  function matchesComposition(formula: string, comp: { el: string; op: string; n: number }[]) {
+    if (!formula) return false; const c = counts(formula);
+    return comp.every(({ el, op, n }) => { const v = c[el] ?? 0; return op === '=' ? v === n : op === '<' ? v < n : op === '<=' ? v <= n : op === '>' ? v > n : v >= n; });
+  }
   async function run() {
     const text = q.value.trim(); const rv = rung.value; const lv = layer.value;
     const p = new URLSearchParams(); if (text) p.set('q', text); if (rv) p.set('rung', rv); if (lv) p.set('layer', lv);
@@ -46,9 +63,12 @@ const { total } = Astro.props as { total: number };
     if (!text && !rv && !lv) { table.hidden = true; count.textContent = 'Type to search; results appear here.'; return; }
     count.textContent = 'Loading the catalogue…'; await load();
     const t = text.toLowerCase();
+    // PAHdb-style composition syntax: "N=2 C<=20 neutral" — element counts with = < <= > >=, parsed from the formula
+    const comp = parseComposition(text);
     const hits = data!.filter(([id, name, formula, smiles, ly, rg]) =>
       (!rv || String(rg) === rv) && (!lv || ly === lv) &&
-      (!t || name.toLowerCase().includes(t) || formula.toLowerCase() === t || smiles.toLowerCase() === t || id.toLowerCase() === t || formula.toLowerCase().includes(t)));
+      (comp ? matchesComposition(formula, comp)
+            : (!t || name.toLowerCase().includes(t) || formula.toLowerCase() === t || smiles.toLowerCase() === t || id.toLowerCase() === t || formula.toLowerCase().includes(t))));
     hits.sort((a, b) => b[5] - a[5] || (a[6] ?? 99) - (b[6] ?? 99) || a[1].localeCompare(b[1]));
     const shown = hits.slice(0, 300);
     tbody.innerHTML = shown.map(([id, name, formula, , ly, rg, nh]) =>
