@@ -31,6 +31,11 @@ record), `timings_s`, `energies {b3lyp, wb97x}`, `n_imaginary {b3lyp, wb97x}`, `
 values by the corpus convention — six entries nearest zero dropped, imaginary negative}}`, `releases`, `ledger` (the run's ledger row: machine, deck,
 start, end, seconds, peak memory), `second_route` (per functional: `max_abs_dfreq_cm`, `dH_max`; null when no analytic check exists).
 
+## `changelog.json`
+
+A list of `{date, time, title, body}` parsed from the obstacle ledger's dated entries (`- **23 Sep, 14:4x — title.** body…`), sorted newest
+first; `body` is the first 300 characters. Nothing is rewritten; corrections appear as new entries in the ledger.
+
 ## `summary.json`
 
 `built_utc`, `n_molecules`, `rung_counts` (sum = n_molecules — checked), `layer_counts`, `rungs`, `sources` (SHA-256 of manifest and ledger),

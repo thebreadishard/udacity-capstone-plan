@@ -15,7 +15,7 @@ no design decision from the user; step 4 onward benefits from the answers to `DE
 | 7 | 3D island (3Dmol.js, on tap, from corpus geometry) | the public's toy | 4 |
 | 8 | mobile pass on real phones (bottom nav, sheets, scrubber, targets) | the mobile variant | 5–7 |
 | 9 | accessibility pass: axe in CI, keyboard walk, screen-reader session, contrast check of the tokens | WCAG 2.2 AA | 8 |
-| 10 | Status and Methods pages from the ledger and the architecture sheets | the honest pages | 4 |
+| 10 | Status and Methods pages: **Status half done 24 Sep 07:3x** — the export parses the obstacle ledger's dated entries into `changelog.json` (131 entries, sorted newest first) and the Status page lists the latest 40 with date, time, title and the first 300 characters. Still to do: the architecture sheets rendered as SVG on Methods; what-is-running from the run logs | the honest pages | 4 |
 | 11 | deploy (GitHub Pages or Cloudflare Pages), nightly build on the pipeline's release tags, footer freshness stamp | public | 0, 9 |
 | 12 | "Notify me" card (phase 1 of requests) | the reserved space filled | 11 |
 | 13 | phase 2: request queue (FastAPI, OAuth, worker on rented servers, budget cap), ledger writes | requests | the licensed layer |

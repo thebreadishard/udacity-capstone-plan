@@ -59,6 +59,24 @@ def formula_and_key(smiles):
         return None, None, None, None
 
 
+def read_changelog(ledger_md):
+    """The obstacle ledger's dated entries ('- **23 Sep, 14:4x — title.** body…'): date, time, title (the bold head up to its first full stop) and the
+    first 300 characters of the body, newest first as the ledger keeps them. Mechanical; nothing is rewritten."""
+    import re
+    if not os.path.exists(ledger_md):
+        return []
+    months = {"Sep": "09", "Oct": "10", "Nov": "11", "Dec": "12", "Aug": "08"}
+    out = []
+    for line in open(ledger_md, encoding="utf-8"):
+        m = re.match(r"- \*\*(\d{1,2}) (Sep|Oct|Nov|Dec|Aug),? ([0-9:x]+) — (.+?)\*\*\s*(.*)", line.strip())
+        if not m:
+            continue
+        day, mon, hhmm, title, body = m.groups()
+        out.append(dict(date=f"2026-{months[mon]}-{int(day):02d}", time=hhmm, title=title.strip(), body=body.strip()[:300]))
+    out.sort(key=lambda e: (e["date"], e["time"].replace("x", "0")), reverse=True)   # the ledger's day blocks are not strictly ordered; the site is
+    return out
+
+
 def vib_only(freq):
     f = np.asarray(freq, float); keep = np.argsort(np.abs(f))[6:]
     return np.sort(f[keep])
@@ -150,8 +168,11 @@ def build(repo, out, limit=None):
             print("INVARIANT:", p, file=sys.stderr)
         raise SystemExit(1)
     json.dump(catalog, open(os.path.join(out, "catalog.json"), "w", encoding="utf-8"), ensure_ascii=False)
+    changelog = read_changelog(os.path.join(plan, "GoalGathering", "notes", "Mandate_2026-09-13_Affordable_Plan_Obstacle_Ledger.md"))
+    json.dump(changelog, open(os.path.join(out, "changelog.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=0)
     summary = dict(built_utc=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), n_molecules=len(catalog), rung_counts=counts, layer_counts=layer_counts,
-                   rungs=RUNGS, sources=dict(manifest=sha256(manifest_p), ledger=sha256(ledger_p)), releases=sorted({n for v in releases.values() for n in v}))
+                   rungs=RUNGS, sources=dict(manifest=sha256(manifest_p), ledger=sha256(ledger_p)), releases=sorted({n for v in releases.values() for n in v}),
+                   n_changelog=len(changelog))
     json.dump(summary, open(os.path.join(out, "summary.json"), "w", encoding="utf-8"), indent=1)
     return summary
 

@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import summary from '../../../export/out/summary.json';
+import changelog from '../../../export/out/changelog.json';
 const labels = { listed: 'Listed', cheap_level_done: 'Cheap level done', correction_predicted: 'Correction predicted', spectrum_predicted: 'Spectrum predicted', anchored: 'Anchored', validated: 'Validated' };
 ---
 <Base title="Status" description="Data freshness, releases and counts of the Spectrum Atlas.">
@@ -21,6 +22,14 @@ const labels = { listed: 'Listed', cheap_level_done: 'Cheap level done', correct
   <section class="card" style="margin-top: 16px">
     <h2>Releases</h2>
     <ul>{summary.releases.map((r) => <li class="mono">{r}</li>)}</ul>
-    <p class="muted small">The changelog fed by the obstacle ledger arrives with step 10.</p>
+  </section>
+  <section class="card" style="margin-top: 16px">
+    <h2>Changelog <span class="muted small">— the project's obstacle ledger, newest first, {changelog.length} entries</span></h2>
+    <ol class="log">
+      {changelog.slice(0, 40).map((e) => (
+        <li><span class="mono muted">{e.date} {e.time}</span> <strong>{e.title}</strong>{e.body && <span class="muted"> — {e.body}{e.body.length >= 300 ? '…' : ''}</span>}</li>
+      ))}
+    </ol>
+    <p class="muted small">Entries are copied from the ledger at build time and never edited here; corrections appear as new dated entries.</p>
   </section>
 </Base>
