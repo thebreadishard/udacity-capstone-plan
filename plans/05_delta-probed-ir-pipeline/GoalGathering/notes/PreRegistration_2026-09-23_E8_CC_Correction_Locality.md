@@ -133,3 +133,23 @@ distance 2 already exists as a feature; the pattern mask is what changes).
 **Naphthalene.** The user's pre-authorisation was for a win; this is a between whose masked (d) reaches the win numbers. Started on hel1-16 at
 04:3x: the smoke step only (one CCSD(T)/cc-pVDZ reference gradient of naphthalene — memory and time on 32 GB). The 108-gradient run (≈ 4 days at the
 benzene rate scaled, ≈ €10) waits for the user's word in the morning; it would finish around 28 September.
+
+## Symmetry-reduced finite differences — built and validated before naphthalene runs (06:4x)
+
+The naphthalene smoke gradient showed the cost honestly: one CCSD(T)/cc-pVDZ gradient of naphthalene takes hours on the CPX62, not minutes, so 108
+gradients would take weeks, not the "≈ 4 days" written above. The user authorised the run ("Doe maar") and asked whether to add a server; the answer
+is first a cheaper lever. `probes/e8_symmetry.py`: a Hessian obeys H[P(i),P(k)] = R H[i,k] Rᵀ for every point-group operation, so the block rows of one
+atom per orbit determine the whole matrix. The group is detected from the geometry alone (Kabsch maps of atom triples, refit over all atoms, closed
+under products; improper partners through the molecular plane). Displace only the representatives (3 directions, ±), copy their rows onto the
+equivalent atoms, average rows reached by several operations (their spread is a noise measure).
+
+Validation (`probes/results_m1/e8_benzene_ccpvdz/symmetry_validation_2026-09-24.log`):
+- benzene, the 72 CCSD(T) gradients already in hand: D6h found (24 operations, two orbits); 12 gradients reconstruct the full matrix to 2.5e-5 a.u. —
+  below the full run's own FD asymmetry (2.7e-4) — and every frequency to 0.03 cm⁻¹; the e2u split is 1.66 against 1.67.
+- naphthalene, the corpus B3LYP and ωB97X Hessians: D2h found (8 operations, five orbits → 30 gradients instead of 108); the reconstruction from five
+  block rows differs from the group-averaged full matrix by 9e-5 / 7e-5 a.u., i.e. by the corpus Hessians' own asymmetry (3.4e-4 / 3.9e-4, deck v1's
+  grid noise again); frequency differences 2.8 / 0.17 cm⁻¹ sit on the softest modes and are that noise, not the reconstruction.
+
+`e8_cc_hessian_fd.py --symmetry` uses it; the npz records `symmetry_reduced` and the row spread. Plan: an end-to-end smoke of the new code path on
+benzene at cc-pVDZ on the CCX53 when its second-route lanes finish (12 gradients, ≈ 1 h; must match the 72-gradient Hessian), then naphthalene there
+(30 gradients at 32 threads); hel1-16 finishes the smoke gradient for the time-per-gradient number first.

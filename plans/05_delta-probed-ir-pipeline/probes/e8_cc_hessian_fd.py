@@ -56,6 +56,7 @@ def main():
     ap.add_argument("geometry"); ap.add_argument("out")
     ap.add_argument("--threads", type=int, default=16); ap.add_argument("--basis", default="cc-pvdz"); ap.add_argument("--step", type=float, default=0.005)
     ap.add_argument("--frozen", type=int, default=6); ap.add_argument("--only-reference", action="store_true")
+    ap.add_argument("--symmetry", action="store_true", help="displace only one atom per symmetry orbit and reconstruct the Hessian with e8_symmetry (validated 24 Sep 2026)")
     a = ap.parse_args(); lib.num_threads(a.threads); os.makedirs(a.out, exist_ok=True)
     logf = open(os.path.join(a.out, "e8_fd.log"), "a")
 
@@ -73,7 +74,12 @@ def main():
     if a.only_reference:
         return
     G = np.zeros((3 * n, 3 * n))          # row k: gradient (flattened) at +/− displacement of coordinate k, differenced
-    for k in range(3 * n):
+    ks = list(range(3 * n)); ops = None
+    if a.symmetry:
+        import e8_symmetry as SYM
+        ops = SYM.point_group_ops(sym, x0); ks, reps = SYM.unique_displacements(ops, n)
+        log(f"symmetry: {len(ops)} operations, orbits {SYM.orbits(ops, n)}, {len(ks)} displacements ({2 * len(ks)} gradients) instead of {6 * n}")
+    for k in ks:
         gs = {}
         for sign, s in (("p", +1.0), ("m", -1.0)):
             p = os.path.join(a.out, f"grad_{k:02d}_{sign}.npy")
@@ -84,10 +90,15 @@ def main():
             done = len([f for f in os.listdir(a.out) if f.startswith("grad_")])
             log(f"coordinate {k:2d} {sign}: E − E0 = {(e - e0) * 1e6:+9.2f} µE_h, {time.time() - t0:.0f} s  ({done}/{6 * n} gradients)")
         G[k] = (gs["p"].ravel() - gs["m"].ravel()) / (2 * a.step)
-    H = 0.5 * (G + G.T); asym = float(np.abs(G - G.T).max())
+    spread = None
+    if a.symmetry:
+        block_rows = {i: G[3 * i:3 * i + 3] for i in reps}
+        H, spread = SYM.reconstruct(block_rows, ops, n); log(f"symmetry reconstruction: spread of multiply-reached rows {spread:.2e} a.u.; self-check {SYM.self_check(H, ops, n):.1e}")
+    else:
+        H = 0.5 * (G + G.T); asym = float(np.abs(G - G.T).max())
     Hp, Hmw = project_tr(H, masses, x0); fr = frequencies(Hp / np.outer(np.sqrt(np.repeat(masses * AMU2AU, 3)), np.sqrt(np.repeat(masses * AMU2AU, 3))))
     fr_s = np.sort(fr)
-    np.savez(os.path.join(a.out, "hessian_ccsd_t.npz"), H_raw=H, H_projected=Hp, freq_cm=fr_s, energy=e0, gradient=g0, coords_bohr=x0, step=a.step, basis=a.basis, frozen=a.frozen)
+    np.savez(os.path.join(a.out, "hessian_ccsd_t.npz"), H_raw=H, H_projected=Hp, freq_cm=fr_s, energy=e0, gradient=g0, coords_bohr=x0, step=a.step, basis=a.basis, symmetry_reduced=bool(a.symmetry), symmetry_spread=(spread if spread is not None else -1.0), frozen=a.frozen)
     log(f"Hessian written; FD asymmetry max {asym:.2e} a.u.; frequencies (cm-1): {np.round(fr_s[6:], 0).astype(int).tolist()}")
     log(f"two-route checks: six lowest |freq| after projection {np.round(np.abs(fr_s[:6]), 1).tolist()} (translations/rotations → ~0)")
     logf.close()

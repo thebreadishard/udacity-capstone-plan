@@ -1,0 +1,5 @@
+benzene: 24 operations, orbits [[0, 1, 2, 3, 4, 5], [6, 7, 8, 9, 10, 11]], 6 displacements (12 gradients) instead of 72
+  spread of multiply-reached rows 4.38e-05 a.u.; max|H_sym − H_full| 2.53e-05 a.u. (FD asymmetry of the full one 2.7e-4); self-check 6.1e-11
+  frequencies: max |Δ| 0.03 cm-1; degenerate-pair splits sym 1.66 vs full 1.67
+naphthalene: 8 operations, orbits [[0, 1, 5, 6], [2, 4, 7, 9], [3, 8], [10, 11, 14, 15], [12, 13, 16, 17]], 15 displacements (30 gradients) instead of 108
+  spread 3.09e-04; max|H_sym − H_analytic| 1.91e-04 a.u.; freq max |Δ| 2.776 cm-1
