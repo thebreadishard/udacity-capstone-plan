@@ -53,3 +53,16 @@ LNO-MP2 truncation, which the composite removes, so the composite definition car
 `probes/results_m1/M3_TZ_MODE22_READING_2026-09-23.md` (`probes/m3_family_reading.py 22 1.0`, which also reproduces the mode-12 table).
 Per family: DZ-anchored deck licensed for the C–H in-plane bend family, closed for the C–H out-of-plane family; mode 31 (C–C stretch) decides
 the third, ≈ 26 September.
+
+## Outcome, third family — 24 September 2026, 21:2x (mode 31, C–C stretch): BETWEEN on this family
+
+TZ cells for mode 31 complete (five points; the run finished 24 September 21:02, REPORT.md written, sealed energies sha256 `4dc086e7942a9682…`).
+Beyond-MP2 increment of the curvature, DZ → TZ, at naphthalene: **−1.9 cm⁻¹** as the composite carries it (k(LNO-CC) − k(LNO-MP2)); benzene's
+registered value −6.0 cm⁻¹; |Δ_n − Δ_b| = 4.1 cm⁻¹, same sign → neither win (≤ 2.5) nor lose (> 5): **between**. The mixed form gives +8.1 cm⁻¹
+(14.1 off, sign flipped), again the DZ → TZ growth of the LNO-MP2 truncation that the composite removes. Reading and tables:
+`probes/results_m1/M3_TZ_MODE31_READING_2026-09-24.md` (`probes/m3_family_reading.py 31 -6.0`).
+
+**Closing tally:** mode 12 lose, mode 22 win, mode 31 between. Under §4 the probe is lost (the first family decided that on 20 September); per
+family the DZ-anchored deck is licensed for the C–H in-plane bend only; the out-of-plane and C–C stretch families stay TZ-anchored, and their
+measured increments (−8.1 and −1.9 cm⁻¹) enter the error budget as the basis term of decision 26. The naphthalene DZ and TZ energy times are on
+record in the two run logs. Decision 45 (four densification points on mode 12) started 24 September 21:24 in the same output directory.

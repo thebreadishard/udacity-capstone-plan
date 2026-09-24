@@ -9,18 +9,19 @@ has run are *probes* (measurements about the data and about the method, each com
 first versions of four course modules, a corpus of cheap-level Hessians, and a sibling idea plan. A public, lay-level lab notebook in English
 lives at <https://thebreadishard.github.io/> (separate repository, same evidence rules).
 
-## Where things stand (23 September 2026)
+## Where things stand (24 September 2026)
 
 - **Plan 05 is the current plan**, created 3 September 2026; its text has been frozen since 4 September and changes only
   by dated notes that name a measurement or a decision. Fifty numbered decisions have been taken under that rule. The
   conversation with the academic supervisor is on **28 September** (decision 44); the desk package (cover note, reading
   copy, plan 06 annex) is in `plans/05_delta-probed-ir-pipeline/GoalGathering/`.
-- **The anchor is running on the laptop** since 20 September: probe M3's coupled-cluster-anchored decks for naphthalene at
-  cc-pVTZ, read family by family against pre-registered criteria. Family 1 (out-of-plane, mode 12) lost — that family stays
-  on the expensive basis; family 2 (in-plane C–H bend, mode 22) won on 23 September; family 3 (C–C stretch, mode 31) is
-  running, read-out expected around 26 September. The R0 diagonal deck was read on 22 September (in-plane frequencies
-  improve against CCSD(T), out-of-plane do not, C–H stretches need the geometry term). Nothing else runs locally until
-  the anchor is read.
+- **The anchor run finished on 24 September** (21:02, after eight days on the laptop): probe M3's coupled-cluster-anchored decks for
+  naphthalene at cc-pVTZ, read family by family against pre-registered criteria. Family 1 (out-of-plane, mode 12) lost — that
+  family stays on the expensive basis; family 2 (in-plane C–H bend, mode 22) won on 23 September; family 3 (C–C stretch, mode 31)
+  came out between the win and lose lines on 24 September (4.1 cm⁻¹ off the transferred benzene value) and stays on the expensive
+  basis too. The R0 diagonal deck was read on 22 September (in-plane frequencies improve against CCSD(T), out-of-plane do not,
+  C–H stretches need the geometry term). Since 24 September 21:24 the laptop runs the four densification points of decision 45
+  (mode 12, for the error budget's σ), expected to finish around 26 September; nothing else runs locally until then.
 - **A corpus exists** (module 05's factory, run on rented Hetzner servers): deck v1 — B3LYP and ωB97X 6-31G* geometries and
   Hessians — for 244 molecules (layers A and A2 of a 11,321-row manifest), frozen as releases on 22 and 23 September. Its
   quality is guarded by a second route: benzene's finite-difference Hessian was found wrong by 133 cm⁻¹ (psi4's default
