@@ -264,3 +264,7 @@ wrong ωB97X Hessian to the last digit (563/605, 1223/1343; deterministic, so it
 in the gradients, amplified by the 0.005 bohr step, worst for the range-separated functional and for a molecule whose displaced geometries break a
 high-symmetry grid. It was our deck's grid (psi4's default 75/302), not the program. Guard recorded in the policy and the corpus README: analytic Hessians
 or 99/590 for every new layer; second route for symmetric molecules.
+
+**Added 24 September 11:4x — the twenty imaginary-mode molecules.** Second route done: 5 healed (all four ωB97X-only flips plus fluorene+CF3), 15
+genuine (the B3LYP-only flips are torsional saddles of the substituent at the B3LYP geometry, confirmed by the analytic Hessian). The corpus gains five
+rows (release `layerA2_2026-09-24`, 229 molecules); the "drop imaginary-mode molecules" rule was right for 15 and wrong for 5. Corpus README, dated note.

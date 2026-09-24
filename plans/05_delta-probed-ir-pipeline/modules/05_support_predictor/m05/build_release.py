@@ -62,7 +62,6 @@ def effective_dir(mol_dir: Path) -> Path:
         shutil.copy(mol_dir / f, t / f)
     shutil.copy(mol_dir / "hessian_b3lyp_analytic.npz", t / "hessian_b3lyp.npz")
     shutil.copy(mol_dir / "hessian_wb97x_analytic.npz", t / "hessian_wb97x.npz")
-    USED_ANALYTIC.append(mol_dir.name)
     return t
 
 
@@ -113,6 +112,8 @@ def main():
         tokens, cls, n_rings = environment_tokens(dd, base)
         K, freq = block_matrix(dd)
         g = json.load(open(d / "geometry.json"))
+        if dd is not d:
+            USED_ANALYTIC.append(d.name)          # 24 Sep 2026: only molecules that enter the release (skipped ones no longer listed)
         rows.append(dict(id=d.name, layer=r.get("layer"), tokens=tokens.astype(np.float32), family=np.array([FAMILIES.index(f) for f in base["family"]]),
                          omega=freq, K=K, charge=int(g.get("charge", 0)), mult=int(g.get("multiplicity", 1)), n_atoms=len(g["symbols"]),
                          deck=hashlib.sha256(json.dumps(r.get("deck"), sort_keys=True).encode()).hexdigest()[:16],

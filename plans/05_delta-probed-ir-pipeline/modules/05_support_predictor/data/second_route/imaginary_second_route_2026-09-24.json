@@ -1,0 +1,564 @@
+{
+ "date": "2026-09-24",
+ "rows": [
+  {
+   "id": "A2_0420908ebe",
+   "name": "phenanthridine+CF3",
+   "status": "ok",
+   "functionals": {
+    "b3lyp": {
+     "corpus_lowest": -39.4,
+     "analytic_lowest": -33.6,
+     "n_imaginary_corpus": 1,
+     "n_imaginary_analytic": 1,
+     "max_abs_dfreq_real_modes": 4.0,
+     "verdict": "genuine"
+    },
+    "wb97x": {
+     "corpus_lowest": 38.8,
+     "analytic_lowest": 41.0,
+     "n_imaginary_corpus": 0,
+     "n_imaginary_analytic": 0,
+     "max_abs_dfreq_real_modes": 3.5,
+     "verdict": "real in both"
+    }
+   },
+   "molecule_verdict": "genuine imaginary mode(s) — stays excluded"
+  },
+  {
+   "id": "A2_13bafae8e0",
+   "name": "carbazole+SH",
+   "status": "ok",
+   "functionals": {
+    "b3lyp": {
+     "corpus_lowest": 57.3,
+     "analytic_lowest": 58.7,
+     "n_imaginary_corpus": 0,
+     "n_imaginary_analytic": 0,
+     "max_abs_dfreq_real_modes": 1.4,
+     "verdict": "real in both"
+    },
+    "wb97x": {
+     "corpus_lowest": 79.9,
+     "analytic_lowest": 79.1,
+     "n_imaginary_corpus": 0,
+     "n_imaginary_analytic": 0,
+     "max_abs_dfreq_real_modes": 3.6,
+     "verdict": "real in both"
+    }
+   },
+   "molecule_verdict": "no imaginary mode in the corpus"
+  },
+  {
+   "id": "A2_13eea56ee5",
+   "name": "phenanthrene+CH3",
+   "status": "ok",
+   "functionals": {
+    "b3lyp": {
+     "corpus_lowest": 71.3,
+     "analytic_lowest": 71.2,
+     "n_imaginary_corpus": 0,
+     "n_imaginary_analytic": 0,
+     "max_abs_dfreq_real_modes": 1.4,
+     "verdict": "real in both"
+    },
+    "wb97x": {
+     "corpus_lowest": -31.0,
+     "analytic_lowest": 90.6,
+     "n_imaginary_corpus": 1,
+     "n_imaginary_analytic": 0,
+     "max_abs_dfreq_real_modes": 9.4,
+     "verdict": "healed"
+    }
+   },
+   "molecule_verdict": "healed — analytic route replaces the corpus Hessians"
+  },
+  {
+   "id": "A2_197913eb9c",
+   "name": "carbazole+vinyl",
+   "status": "ok",
+   "functionals": {
+    "b3lyp": {
+     "corpus_lowest": -87.3,
+     "analytic_lowest": -86.7,
+     "n_imaginary_corpus": 1,
+     "n_imaginary_analytic": 1,
+     "max_abs_dfreq_real_modes": 1.6,
+     "verdict": "genuine"
+    },
+    "wb97x": {
+     "corpus_lowest": 28.3,
+     "analytic_lowest": -82.0,
+     "n_imaginary_corpus": 0,
+     "n_imaginary_analytic": 1,
+     "max_abs_dfreq_real_modes": 10.9,
+     "verdict": "analytic imaginary, corpus real"
+    }
+   },
+   "molecule_verdict": "genuine imaginary mode(s) — stays excluded"
+  },
+  {
+   "id": "A2_1c29b66c9d",
+   "name": "phenanthridine+CH3",
+   "status": "ok",
+   "functionals": {
+    "b3lyp": {
+     "corpus_lowest": 71.3,
+     "analytic_lowest": 70.7,
+     "n_imaginary_corpus": 0,
+     "n_imaginary_analytic": 0,
+     "max_abs_dfreq_real_modes": 1.3,
+     "verdict": "real in both"
+    },
+    "wb97x": {
+     "corpus_lowest": -51.6,
+     "analytic_lowest": 95.1,
+     "n_imaginary_corpus": 1,
+     "n_imaginary_analytic": 0,
+     "max_abs_dfreq_real_modes": 7.1,
+     "verdict": "healed"
+    }
+   },
+   "molecule_verdict": "healed — analytic route replaces the corpus Hessians"
+  },
+  {
+   "id": "A2_20747fd501",
+   "name": "pyrene+vinyl",
+   "status": "ok",
+   "functionals": {
+    "b3lyp": {
+     "corpus_lowest": -109.7,
+     "analytic_lowest": -110.0,
+     "n_imaginary_corpus": 1,
+     "n_imaginary_analytic": 1,
+     "max_abs_dfreq_real_modes": 1.2,
+     "verdict": "genuine"
+    },
+    "wb97x": {
+     "corpus_lowest": -100.4,
+     "analytic_lowest": -113.1,
+     "n_imaginary_corpus": 1,
+     "n_imaginary_analytic": 1,
+     "max_abs_dfreq_real_modes": 5.0,
+     "verdict": "genuine"
+    }
+   },
+   "molecule_verdict": "genuine imaginary mode(s) — stays excluded"
+  },
+  {
+   "id": "A2_20e59f3897",
+   "name": "anthracene+NO2",
+   "status": "ok",
+   "functionals": {
+    "b3lyp": {
+     "corpus_lowest": -76.4,
+     "analytic_lowest": -73.8,
+     "n_imaginary_corpus": 1,
+     "n_imaginary_analytic": 1,
+     "max_abs_dfreq_real_modes": 1.4,
+     "verdict": "genuine"
+    },
+    "wb97x": {
+     "corpus_lowest": 69.9,
+     "analytic_lowest": 73.3,
+     "n_imaginary_corpus": 0,
+     "n_imaginary_analytic": 0,
+     "max_abs_dfreq_real_modes": 3.7,
+     "verdict": "real in both"
+    }
+   },
+   "molecule_verdict": "genuine imaginary mode(s) — stays excluded"
+  },
+  {
+   "id": "A2_220d2c107b",
+   "name": "phenanthrene+NO2",
+   "status": "ok",
+   "functionals": {
+    "b3lyp": {
+     "corpus_lowest": -52.2,
+     "analytic_lowest": -48.4,
+     "n_imaginary_corpus": 1,
+     "n_imaginary_analytic": 1,
+     "max_abs_dfreq_real_modes": 2.9,
+     "verdict": "genuine"
+    },
+    "wb97x": {
+     "corpus_lowest": 41.4,
+     "analytic_lowest": 47.9,
+     "n_imaginary_corpus": 0,
+     "n_imaginary_analytic": 0,
+     "max_abs_dfreq_real_modes": 6.5,
+     "verdict": "real in both"
+    }
+   },
+   "molecule_verdict": "genuine imaginary mode(s) — stays excluded"
+  },
+  {
+   "id": "A2_22d0e8105c",
+   "name": "carbazole+SH",
+   "status": "ok",
+   "functionals": {
+    "b3lyp": {
+     "corpus_lowest": 78.1,
+     "analytic_lowest": 77.6,
+     "n_imaginary_corpus": 0,
+     "n_imaginary_analytic": 0,
+     "max_abs_dfreq_real_modes": 2.0,
+     "verdict": "real in both"
+    },
+    "wb97x": {
+     "corpus_lowest": 100.2,
+     "analytic_lowest": 98.7,
+     "n_imaginary_corpus": 0,
+     "n_imaginary_analytic": 0,
+     "max_abs_dfreq_real_modes": 10.2,
+     "verdict": "real in both"
+    }
+   },
+   "molecule_verdict": "no imaginary mode in the corpus"
+  },
+  {
+   "id": "A2_28eed45ad3",
+   "name": "fluorene+CF3",
+   "status": "ok",
+   "functionals": {
+    "b3lyp": {
+     "corpus_lowest": -20.5,
+     "analytic_lowest": 32.4,
+     "n_imaginary_corpus": 1,
+     "n_imaginary_analytic": 0,
+     "max_abs_dfreq_real_modes": 3.8,
+     "verdict": "healed"
+    },
+    "wb97x": {
+     "corpus_lowest": 52.0,
+     "analytic_lowest": 63.5,
+     "n_imaginary_corpus": 0,
+     "n_imaginary_analytic": 0,
+     "max_abs_dfreq_real_modes": 11.5,
+     "verdict": "real in both"
+    }
+   },
+   "molecule_verdict": "healed — analytic route replaces the corpus Hessians"
+  },
+  {
+   "id": "A2_2a0b78bd2b",
+   "name": "carbazole+CF3",
+   "status": "ok",
+   "functionals": {
+    "b3lyp": {
+     "corpus_lowest": -46.8,
+     "analytic_lowest": -35.4,
+     "n_imaginary_corpus": 1,
+     "n_imaginary_analytic": 1,
+     "max_abs_dfreq_real_modes": 2.9,
+     "verdict": "genuine"
+    },
+    "wb97x": {
+     "corpus_lowest": 37.6,
+     "analytic_lowest": 44.1,
+     "n_imaginary_corpus": 0,
+     "n_imaginary_analytic": 0,
+     "max_abs_dfreq_real_modes": 15.1,
+     "verdict": "real in both"
+    }
+   },
+   "molecule_verdict": "genuine imaginary mode(s) — stays excluded"
+  },
+  {
+   "id": "A2_2b693cf6e7",
+   "name": "pyrene+CH3",
+   "status": "ok",
+   "functionals": {
+    "b3lyp": {
+     "corpus_lowest": 32.5,
+     "analytic_lowest": 30.5,
+     "n_imaginary_corpus": 0,
+     "n_imaginary_analytic": 0,
+     "max_abs_dfreq_real_modes": 5.6,
+     "verdict": "real in both"
+    },
+    "wb97x": {
+     "corpus_lowest": -41.6,
+     "analytic_lowest": 68.3,
+     "n_imaginary_corpus": 1,
+     "n_imaginary_analytic": 0,
+     "max_abs_dfreq_real_modes": 5.1,
+     "verdict": "healed"
+    }
+   },
+   "molecule_verdict": "healed — analytic route replaces the corpus Hessians"
+  },
+  {
+   "id": "A2_2c22216564",
+   "name": "fluorene+NO2",
+   "status": "ok",
+   "functionals": {
+    "b3lyp": {
+     "corpus_lowest": -42.8,
+     "analytic_lowest": -35.6,
+     "n_imaginary_corpus": 1,
+     "n_imaginary_analytic": 1,
+     "max_abs_dfreq_real_modes": 1.2,
+     "verdict": "genuine"
+    },
+    "wb97x": {
+     "corpus_lowest": 88.2,
+     "analytic_lowest": 92.2,
+     "n_imaginary_corpus": 0,
+     "n_imaginary_analytic": 0,
+     "max_abs_dfreq_real_modes": 4.2,
+     "verdict": "real in both"
+    }
+   },
+   "molecule_verdict": "genuine imaginary mode(s) — stays excluded"
+  },
+  {
+   "id": "A2_3020175511",
+   "name": "quinoxaline+NO2",
+   "status": "ok",
+   "functionals": {
+    "b3lyp": {
+     "corpus_lowest": -59.6,
+     "analytic_lowest": -57.5,
+     "n_imaginary_corpus": 1,
+     "n_imaginary_analytic": 1,
+     "max_abs_dfreq_real_modes": 0.6,
+     "verdict": "genuine"
+    },
+    "wb97x": {
+     "corpus_lowest": 86.7,
+     "analytic_lowest": 88.0,
+     "n_imaginary_corpus": 0,
+     "n_imaginary_analytic": 0,
+     "max_abs_dfreq_real_modes": 4.1,
+     "verdict": "real in both"
+    }
+   },
+   "molecule_verdict": "genuine imaginary mode(s) — stays excluded"
+  },
+  {
+   "id": "A2_330b4d6d8d",
+   "name": "phenazine+vinyl",
+   "status": "ok",
+   "functionals": {
+    "b3lyp": {
+     "corpus_lowest": -34.4,
+     "analytic_lowest": -32.0,
+     "n_imaginary_corpus": 1,
+     "n_imaginary_analytic": 1,
+     "max_abs_dfreq_real_modes": 0.6,
+     "verdict": "genuine"
+    },
+    "wb97x": {
+     "corpus_lowest": 79.1,
+     "analytic_lowest": 46.8,
+     "n_imaginary_corpus": 0,
+     "n_imaginary_analytic": 0,
+     "max_abs_dfreq_real_modes": 32.2,
+     "verdict": "real in both"
+    }
+   },
+   "molecule_verdict": "genuine imaginary mode(s) — stays excluded"
+  },
+  {
+   "id": "A2_356c370f21",
+   "name": "phenanthridine+NO2",
+   "status": "ok",
+   "functionals": {
+    "b3lyp": {
+     "corpus_lowest": -50.1,
+     "analytic_lowest": -45.8,
+     "n_imaginary_corpus": 1,
+     "n_imaginary_analytic": 1,
+     "max_abs_dfreq_real_modes": 2.6,
+     "verdict": "genuine"
+    },
+    "wb97x": {
+     "corpus_lowest": 56.2,
+     "analytic_lowest": 56.1,
+     "n_imaginary_corpus": 0,
+     "n_imaginary_analytic": 0,
+     "max_abs_dfreq_real_modes": 3.5,
+     "verdict": "real in both"
+    }
+   },
+   "molecule_verdict": "genuine imaginary mode(s) — stays excluded"
+  },
+  {
+   "id": "A2_3802542cb6",
+   "name": "acenaphthylene+vinyl",
+   "status": "ok",
+   "functionals": {
+    "b3lyp": {
+     "corpus_lowest": -82.5,
+     "analytic_lowest": -81.2,
+     "n_imaginary_corpus": 1,
+     "n_imaginary_analytic": 1,
+     "max_abs_dfreq_real_modes": 1.4,
+     "verdict": "genuine"
+    },
+    "wb97x": {
+     "corpus_lowest": -86.0,
+     "analytic_lowest": -79.2,
+     "n_imaginary_corpus": 1,
+     "n_imaginary_analytic": 1,
+     "max_abs_dfreq_real_modes": 4.4,
+     "verdict": "genuine"
+    }
+   },
+   "molecule_verdict": "genuine imaginary mode(s) — stays excluded"
+  },
+  {
+   "id": "A2_3a2982dd85",
+   "name": "biphenylene+CH3",
+   "status": "ok",
+   "functionals": {
+    "b3lyp": {
+     "corpus_lowest": 82.0,
+     "analytic_lowest": 83.2,
+     "n_imaginary_corpus": 0,
+     "n_imaginary_analytic": 0,
+     "max_abs_dfreq_real_modes": 1.2,
+     "verdict": "real in both"
+    },
+    "wb97x": {
+     "corpus_lowest": -36.9,
+     "analytic_lowest": 97.2,
+     "n_imaginary_corpus": 1,
+     "n_imaginary_analytic": 0,
+     "max_abs_dfreq_real_modes": 12.1,
+     "verdict": "healed"
+    }
+   },
+   "molecule_verdict": "healed — analytic route replaces the corpus Hessians"
+  },
+  {
+   "id": "A2_3c2cf09504",
+   "name": "phenanthrene+Cl",
+   "status": "ok",
+   "functionals": {
+    "b3lyp": {
+     "corpus_lowest": -23.7,
+     "analytic_lowest": -24.1,
+     "n_imaginary_corpus": 1,
+     "n_imaginary_analytic": 1,
+     "max_abs_dfreq_real_modes": 1.0,
+     "verdict": "genuine"
+    },
+    "wb97x": {
+     "corpus_lowest": 43.1,
+     "analytic_lowest": 35.2,
+     "n_imaginary_corpus": 0,
+     "n_imaginary_analytic": 0,
+     "max_abs_dfreq_real_modes": 7.9,
+     "verdict": "real in both"
+    }
+   },
+   "molecule_verdict": "genuine imaginary mode(s) — stays excluded"
+  },
+  {
+   "id": "A_014f8519af",
+   "name": "diphenylacetylene",
+   "status": "ok",
+   "functionals": {
+    "b3lyp": {
+     "corpus_lowest": -54.7,
+     "analytic_lowest": -22.2,
+     "n_imaginary_corpus": 1,
+     "n_imaginary_analytic": 1,
+     "max_abs_dfreq_real_modes": 5.5,
+     "verdict": "genuine"
+    },
+    "wb97x": {
+     "corpus_lowest": -592.5,
+     "analytic_lowest": 54.5,
+     "n_imaginary_corpus": 2,
+     "n_imaginary_analytic": 0,
+     "max_abs_dfreq_real_modes": 80.2,
+     "verdict": "healed"
+    }
+   },
+   "molecule_verdict": "genuine imaginary mode(s) — stays excluded"
+  },
+  {
+   "id": "A_78896cfe24",
+   "name": "9-methylanthracene",
+   "status": "ok",
+   "functionals": {
+    "b3lyp": {
+     "corpus_lowest": -48.3,
+     "analytic_lowest": -50.8,
+     "n_imaginary_corpus": 1,
+     "n_imaginary_analytic": 1,
+     "max_abs_dfreq_real_modes": 2.0,
+     "verdict": "genuine"
+    },
+    "wb97x": {
+     "corpus_lowest": -114.2,
+     "analytic_lowest": -48.6,
+     "n_imaginary_corpus": 1,
+     "n_imaginary_analytic": 1,
+     "max_abs_dfreq_real_modes": 3.2,
+     "verdict": "genuine"
+    }
+   },
+   "molecule_verdict": "genuine imaginary mode(s) — stays excluded"
+  },
+  {
+   "id": "A_8448043181",
+   "name": "benzene",
+   "status": "ok",
+   "functionals": {
+    "b3lyp": {
+     "corpus_lowest": 414.9,
+     "analytic_lowest": 415.4,
+     "n_imaginary_corpus": 0,
+     "n_imaginary_analytic": 0,
+     "max_abs_dfreq_real_modes": 22.9,
+     "verdict": "real in both"
+    },
+    "wb97x": {
+     "corpus_lowest": 422.9,
+     "analytic_lowest": 425.5,
+     "n_imaginary_corpus": 0,
+     "n_imaginary_analytic": 0,
+     "max_abs_dfreq_real_modes": 132.3,
+     "verdict": "real in both"
+    }
+   },
+   "molecule_verdict": "no imaginary mode in the corpus"
+  },
+  {
+   "id": "A_b90527ca2d",
+   "name": "2-phenylpyridine",
+   "status": "ok",
+   "functionals": {
+    "b3lyp": {
+     "corpus_lowest": -37.4,
+     "analytic_lowest": -37.7,
+     "n_imaginary_corpus": 1,
+     "n_imaginary_analytic": 1,
+     "max_abs_dfreq_real_modes": 0.5,
+     "verdict": "genuine"
+    },
+    "wb97x": {
+     "corpus_lowest": 29.0,
+     "analytic_lowest": 37.3,
+     "n_imaginary_corpus": 0,
+     "n_imaginary_analytic": 0,
+     "max_abs_dfreq_real_modes": 8.3,
+     "verdict": "real in both"
+    }
+   },
+   "molecule_verdict": "genuine imaginary mode(s) — stays excluded"
+  }
+ ],
+ "take_analytic": [
+  "A2_13eea56ee5",
+  "A2_1c29b66c9d",
+  "A2_28eed45ad3",
+  "A2_2b693cf6e7",
+  "A2_3a2982dd85"
+ ]
+}

@@ -73,3 +73,17 @@ the CCX53 (`run_imag_lanes.sh`, four lanes; logs `out/analytic_hessians_imaginar
 the release rule "drop imaginary-mode molecules" was dropping good molecules — up to 20 more rows for module 05 and E6/E7, from the second route.
 `analytic_hessians.py` now compares the 3N−6 vibrational entries of both lists by the corpus convention (`vib_only`; pyscf's harmonic analysis had
 dropped one mode of an imaginary-mode molecule and crashed the comparison) and has `--compare-only` to rebuild `analytic_check.json` from saved files.
+
+## Dated note 2026-09-24 11:4x — the twenty imaginary-mode molecules read along the second route
+
+`corpus/read_imaginary_second_route.py` → `data/second_route/imaginary_second_route_2026-09-24.{md,json}`. **5 healed, 15 genuine.** Healed (the
+deck's finite differences made a soft torsion imaginary, the analytic Hessian has it real at +32 to +97 cm⁻¹): phenanthrene+CH3, phenanthridine+CH3,
+pyrene+CH3, biphenylene+CH3 — all ωB97X-only flips, i.e. the range-separated functional on the default grid, as with benzene — and fluorene+CF3
+(B3LYP, −20.5 → +32.4). Genuine (the analytic route agrees within a few cm⁻¹ that the mode is imaginary): the 12 B3LYP-only cases (NO2, CF3, vinyl,
+Cl substituents; the optimiser stopped at a torsional saddle of the substituent at B3LYP) and the three cases imaginary in both functionals; carbazole+vinyl
+also gains an ωB97X imaginary mode the corpus did not have (+28 → −82). So the 23 September hypothesis "16 single-functional flips are mostly grid
+noise" was **right for the ωB97X flips (4 of 4 healed) and wrong for the B3LYP flips (1 of 12)**: those geometries are saddle points, a corpus
+*geometry* issue, not a Hessian one. Fix for them (later, not before the 28th): re-optimise from a twisted substituent and recompute both Hessians.
+Release `layerA2_2026-09-24` (`build_release.py --prefer-analytic`, imaginary rule now read from the analytic frequencies): 229 molecules (+5), 15
+skipped as genuine, analytic Hessians for the molecules that have them. Noise level of the deck on the real modes of these 23 molecules: max |Δω|
+0.5–5.6 cm⁻¹ for B3LYP, 3–32 (phenazine+vinyl) for ωB97X — the ωB97X finite differences are the noisier route throughout.
