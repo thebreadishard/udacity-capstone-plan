@@ -5,7 +5,8 @@ no design decision from the user; step 4 onward benefits from the answers to `DE
 
 | # | step | result | depends on |
 |---|---|---|---|
-| 0 | ~~user reads the design; decisions §12~~ **done 23 Sep 22:1x** (name, scope, rows shown, GitHub Pages, licences, English, access policy) | a name, hosting, licence | — |
+| 0 | ~~user reads the design; decisions §12~~ **done 23 Sep 22:1x** (name, scope, rows shown, GitHub Pages, licences, English, access policy); *24 Sep 23:2x: the name decision was misread — the user meant the name should say PAHs; scope is PAHs first; rename pending the user's choice* | a name, hosting, licence | — |
+| 0b | **rename** once the user picks (candidates: PAH Spectrum Atlas / Aromatic Spectrum Atlas / PAH Atlas): `<title>`, header, About, README, repo description; the URL path `/spectrum-atlas` may stay or move (a redirect page if it moves); wording "molecules" → PAHs where it describes the goal, "molecules" stays where it describes the training corpus | the user's word | — |
 | 1 | ~~`export/build_catalog.py`~~ **done 24 Sep 07:0x**: manifest + ledger + results + releases + second route → `catalog.json` (11,321 rows), 244 per-molecule JSONs, `summary.json` with rung counts; invariants fail the build; six pytest tests on the real corpus | the data contract, mechanical | — |
 | 2 | ~~`export/depict.py`~~ **done 24 Sep 07:1x**: RDKit SVGs with carbons in `currentColor` and heteroatoms in `var(--accent)`, alt text from name and formula; 244 computed + all 5,266 rows with a SMILES (≈ 10 kB each, 51 MB; layer C has no SMILES yet) | the depictions | 1 |
 | 3 | ~~JSON schema~~ **done 24 Sep 07:0x**: `export/SCHEMA.md` (fields, sources, the ladder, flags, invariants, what is not yet in the contract) | a stable contract for the site | 1 |
