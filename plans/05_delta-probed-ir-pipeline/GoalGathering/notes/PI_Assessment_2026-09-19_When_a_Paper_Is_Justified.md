@@ -134,7 +134,7 @@ fifteen saddle points.
 Levers with tests (in order; none lowers the goal):
 1. **Transfer the core, probe the substituent.** Symmetry cuts the parent's probe count; locality (pattern (d)) says a substituent changes ΔH only in
    its neighbourhood. Test on the existing corpus, no new compute: reconstruct the DFT–DFT ΔH of the mono-substituted layer-A2 molecules from the
-   parent core's block plus the columns within two bonds of the substituent; pass if the ring couplings come back within the E7 ceiling (0.07 / 3.3 cm⁻¹).
+   parent core's block plus the columns within two bonds of the substituent; pass bars in the E9 pre-registration of 22:0x (corrected-frequency RMS ≤ 3.3 cm⁻¹, ring coupling ratio ≤ 0.5). *(Corrected 21:5x: the first wording cited the benzene compact-basis ceiling of the sparse-recovery test as if it were an E7 number.)*
    If it passes, the label cost of a substituted molecule is the cost of its substituent's neighbourhood, not 3N.
 2. **The LNO-CC label price on one substituted molecule**, cc-pVDZ at the anchor thresholds, on the CCX53 after naphthalene E8 (Saturday): energies
    along the neighbourhood directions of lever 1 only; the anchor's ≈ 9 h per TZ point of naphthalene is the yardstick. Pass: a full correction under
@@ -142,3 +142,21 @@ Levers with tests (in order; none lowers the goal):
 3. **Naphthalene E8** (running; Saturday morning): transfer of the local pattern between cores.
 4. **Decision 45 densification** (running; Saturday midday): σ of the out-of-plane family closes the error budget's largest term.
 5. **Cations** (obstacle 9): still no rows; the next corpus run after the 28th adds benzene⁺ / naphthalene⁺.
+
+## Dated addition, 2026-09-24 22:0x — lever 1 tested the same evening: E9 passes on the proxy
+
+E9 (pre-registered 22:0x, read 21:5x — the stamp of the registration was written before the clock was read again; the file order is registration,
+run, outcome): with the parent core's ΔH block carried over and only the Hessian columns within two bonds of the substituent probed (25 % of the
+gradients, no symmetry), the DFT–DFT correction of 182 substituted molecules comes back to 1.72 cm⁻¹ in corrected frequency (zero rule 23.1) and
+0.13 in ring coupling ratio; the substituent's own atoms alone (12 %) give 2.19. Probe only and transfer only both fail (18.7 and 10.0 cm⁻¹).
+
+| question | 21:4x | 22:0x | why |
+|---|---|---|---|
+| affordable with desktop + small Snellius | 50 % | **55 %** | the count lever for substituted molecules exists on the proxy: a label costs its neighbourhood (¼ of the gradients, ⅛ at the substituent alone); still to be confirmed at CC (lever 2) |
+| full mandate | 35 % | **40 %** | follows the cost line |
+| the other four lines | — | unchanged | |
+
+Lever 2 is now sharply defined: one substituted molecule, LNO-CCSD(T)/cc-pVDZ at the anchor thresholds, energies along the neighbourhood
+directions only (≈ 6 atoms × 3 × 2 displacements ≈ 36 energies, or the equivalent gradients), on the CCX53's idle cores after naphthalene E8 or on
+a third server; the anchor's ≈ 9 h per naphthalene TZ point and the CCX53's 20,998 s per CC gradient are the yardsticks. Pass: a full correction
+of a 25-atom molecule under two CCX53-days at DZ.

@@ -80,3 +80,5 @@ plans/*/modules/06_generative_candidates/out/
 !plans/*/modules/06_generative_candidates/data/README.md
 !plans/*/modules/06_generative_candidates/data/*.csv.gz
 !plans/*/modules/*/notebook/results_followup2.json
+!plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/data/e9/
+!plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/data/e9/*

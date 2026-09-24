@@ -1,0 +1,1593 @@
+{
+ "date": "2026-09-24 21:56",
+ "n_admitted": 182,
+ "skipped": {},
+ "radii": [
+  0,
+  1,
+  2,
+  3,
+  4
+ ],
+ "variants": {
+  "exact": {
+   "diag_rms": {
+    "CH-stretch": 1.0659508736669044e-06,
+    "CH-oop": 5.915849132350117e-07,
+    "ring-ip": 5.387016466864375e-07,
+    "other": 5.21425610618198e-07
+   },
+   "coupling_rms": 1.0425238030568415e-07,
+   "coupling_zero_rms": 4.121985236897169,
+   "block_rms": 7.474510167524791e-07,
+   "block_median_rule_rms": 2.6233172377939074,
+   "coupling_ratio": 2.5291788862436656e-08,
+   "corrected_freq_rms": 5.571569184837361e-07,
+   "corrected_freq_rms_zero_rule": 23.09266670231382,
+   "duschinsky_overlap_median": 0.9999999999999999,
+   "duschinsky_overlap_p10": 0.9999999999999989
+  },
+  "zero": {
+   "diag_rms": {
+    "CH-stretch": 43.875023018867466,
+    "CH-oop": 23.41610045397278,
+    "ring-ip": 20.44416534543484,
+    "other": 19.766159685590253
+   },
+   "coupling_rms": 4.121985236897169,
+   "coupling_zero_rms": 4.121985236897169,
+   "block_rms": 13.302454748876167,
+   "block_median_rule_rms": 2.6233172377939074,
+   "coupling_ratio": 1.0,
+   "corrected_freq_rms": 23.09266670231382,
+   "corrected_freq_rms_zero_rule": 23.09266670231382,
+   "duschinsky_overlap_median": 0.9918434485005815,
+   "duschinsky_overlap_p10": 0.8556668146801418
+  },
+  "transfer_probe_r0": {
+   "diag_rms": {
+    "CH-stretch": 2.185452504982983,
+    "CH-oop": 3.4550774544069336,
+    "ring-ip": 2.2855784419968943,
+    "other": 2.227023368271762
+   },
+   "coupling_rms": 0.7976397489726639,
+   "coupling_zero_rms": 4.121985236897169,
+   "block_rms": 0.9451850718264342,
+   "block_median_rule_rms": 2.6233172377939074,
+   "coupling_ratio": 0.19350863798170428,
+   "corrected_freq_rms": 2.1922412852331137,
+   "corrected_freq_rms_zero_rule": 23.09266670231382,
+   "duschinsky_overlap_median": 0.9991098559848136,
+   "duschinsky_overlap_p10": 0.9862725018016946,
+   "dH_residual_ratio": 0.10262174861551045,
+   "column_fraction_mean": 0.12399575106903166,
+   "n_near_mean": 3.0934065934065935
+  },
+  "probe_only_r0": {
+   "diag_rms": {
+    "CH-stretch": 41.027407326660224,
+    "CH-oop": 22.48377757761162,
+    "ring-ip": 19.754815307087213,
+    "other": 10.695072565625717
+   },
+   "coupling_rms": 4.0210208808433965,
+   "coupling_zero_rms": 4.121985236897169,
+   "block_rms": 11.999989382113473,
+   "block_median_rule_rms": 2.6233172377939074,
+   "coupling_ratio": 0.9755058909114935,
+   "corrected_freq_rms": 20.939817465323365,
+   "corrected_freq_rms_zero_rule": 23.09266670231382,
+   "duschinsky_overlap_median": 0.992805370852515,
+   "duschinsky_overlap_p10": 0.8652730437023664,
+   "dH_residual_ratio": 0.9459912152184551,
+   "column_fraction_mean": 0.12399575106903166,
+   "n_near_mean": 3.0934065934065935
+  },
+  "transfer_only_r0": {
+   "diag_rms": {
+    "CH-stretch": 15.638701184453403,
+    "CH-oop": 6.145007059062646,
+    "ring-ip": 4.656778402050189,
+    "other": 15.833437158511387
+   },
+   "coupling_rms": 1.2732884235918207,
+   "coupling_zero_rms": 4.121985236897169,
+   "block_rms": 1.9675745837380287,
+   "block_median_rule_rms": 2.6233172377939074,
+   "coupling_ratio": 0.3089017428287275,
+   "corrected_freq_rms": 8.690126927941161,
+   "corrected_freq_rms_zero_rule": 23.09266670231382,
+   "duschinsky_overlap_median": 0.9978462782523869,
+   "duschinsky_overlap_p10": 0.9519783866820264,
+   "dH_residual_ratio": 0.34004682621429605,
+   "column_fraction_mean": 0.12399575106903166,
+   "n_near_mean": 3.0934065934065935
+  },
+  "transfer_probe_r1": {
+   "diag_rms": {
+    "CH-stretch": 1.8623375599356313,
+    "CH-oop": 3.385024018856365,
+    "ring-ip": 1.9751487199170303,
+    "other": 2.1113965623834643
+   },
+   "coupling_rms": 0.6924884547984234,
+   "coupling_zero_rms": 4.121985236897169,
+   "block_rms": 0.8865527287189611,
+   "block_median_rule_rms": 2.6233172377939074,
+   "coupling_ratio": 0.16799877122308549,
+   "corrected_freq_rms": 2.006562042161587,
+   "corrected_freq_rms_zero_rule": 23.09266670231382,
+   "duschinsky_overlap_median": 0.9993065601847795,
+   "duschinsky_overlap_p10": 0.9876702686745102,
+   "dH_residual_ratio": 0.07475433559932175,
+   "column_fraction_mean": 0.16519921629554918,
+   "n_near_mean": 4.093406593406593
+  },
+  "probe_only_r1": {
+   "diag_rms": {
+    "CH-stretch": 40.986251684720706,
+    "CH-oop": 22.107912937540274,
+    "ring-ip": 17.6724939451004,
+    "other": 10.39917296552315
+   },
+   "coupling_rms": 3.7660951946710535,
+   "coupling_zero_rms": 4.121985236897169,
+   "block_rms": 10.660532270792789,
+   "block_median_rule_rms": 2.6233172377939074,
+   "coupling_ratio": 0.9136605247781012,
+   "corrected_freq_rms": 20.125543715629203,
+   "corrected_freq_rms_zero_rule": 23.09266670231382,
+   "duschinsky_overlap_median": 0.9920609908739537,
+   "duschinsky_overlap_p10": 0.8681617838736087,
+   "dH_residual_ratio": 0.8878994895868946,
+   "column_fraction_mean": 0.16519921629554918,
+   "n_near_mean": 4.093406593406593
+  },
+  "transfer_only_r1": {
+   "diag_rms": {
+    "CH-stretch": 15.65788704500432,
+    "CH-oop": 6.475592031885507,
+    "ring-ip": 5.971584663381471,
+    "other": 15.722044191376385
+   },
+   "coupling_rms": 2.0707894100753856,
+   "coupling_zero_rms": 4.121985236897169,
+   "block_rms": 2.9430777425372123,
+   "block_median_rule_rms": 2.6233172377939074,
+   "coupling_ratio": 0.5023767168157487,
+   "corrected_freq_rms": 8.93287427051597,
+   "corrected_freq_rms_zero_rule": 23.09266670231382,
+   "duschinsky_overlap_median": 0.9955547062026362,
+   "duschinsky_overlap_p10": 0.9281803656553083,
+   "dH_residual_ratio": 0.466071568626781,
+   "column_fraction_mean": 0.16519921629554918,
+   "n_near_mean": 4.093406593406593
+  },
+  "transfer_probe_r2": {
+   "diag_rms": {
+    "CH-stretch": 0.592180688852815,
+    "CH-oop": 3.1996432997373927,
+    "ring-ip": 1.5227188024478377,
+    "other": 2.0335803590591865
+   },
+   "coupling_rms": 0.554590258376381,
+   "coupling_zero_rms": 4.121985236897169,
+   "block_rms": 0.8101580354787599,
+   "block_median_rule_rms": 2.6233172377939074,
+   "coupling_ratio": 0.13454445528141912,
+   "corrected_freq_rms": 1.7233388323052912,
+   "corrected_freq_rms_zero_rule": 23.09266670231382,
+   "duschinsky_overlap_median": 0.9993996713738694,
+   "duschinsky_overlap_p10": 0.9897654189126125,
+   "dH_residual_ratio": 0.060640457082971305,
+   "column_fraction_mean": 0.24868314605300834,
+   "n_near_mean": 6.1208791208791204
+  },
+  "probe_only_r2": {
+   "diag_rms": {
+    "CH-stretch": 39.69505995591058,
+    "CH-oop": 20.365425645001473,
+    "ring-ip": 14.783512733762233,
+    "other": 10.391395398040258
+   },
+   "coupling_rms": 3.4277521156077944,
+   "coupling_zero_rms": 4.121985236897169,
+   "block_rms": 9.194265928291575,
+   "block_median_rule_rms": 2.6233172377939074,
+   "coupling_ratio": 0.8315779699851715,
+   "corrected_freq_rms": 18.723041196111183,
+   "corrected_freq_rms_zero_rule": 23.09266670231382,
+   "duschinsky_overlap_median": 0.9904956684586881,
+   "duschinsky_overlap_p10": 0.8596192097879948,
+   "dH_residual_ratio": 0.7805019794537643,
+   "column_fraction_mean": 0.24868314605300834,
+   "n_near_mean": 6.1208791208791204
+  },
+  "transfer_only_r2": {
+   "diag_rms": {
+    "CH-stretch": 16.037843660967916,
+    "CH-oop": 7.510045750323064,
+    "ring-ip": 9.218664905156533,
+    "other": 15.662009358701516
+   },
+   "coupling_rms": 2.8750534198422737,
+   "coupling_zero_rms": 4.121985236897169,
+   "block_rms": 4.445770232265269,
+   "block_median_rule_rms": 2.6233172377939074,
+   "coupling_ratio": 0.6974924107216053,
+   "corrected_freq_rms": 9.968117412661245,
+   "corrected_freq_rms_zero_rule": 23.09266670231382,
+   "duschinsky_overlap_median": 0.9909692361099524,
+   "duschinsky_overlap_p10": 0.87314914178855,
+   "dH_residual_ratio": 0.6280875138895753,
+   "column_fraction_mean": 0.24868314605300834,
+   "n_near_mean": 6.1208791208791204
+  },
+  "transfer_probe_r3": {
+   "diag_rms": {
+    "CH-stretch": 0.4972818393319356,
+    "CH-oop": 2.692367314769296,
+    "ring-ip": 1.3564233134004449,
+    "other": 1.7172680564720657
+   },
+   "coupling_rms": 0.4666421289844934,
+   "coupling_zero_rms": 4.121985236897169,
+   "block_rms": 0.7014249933542284,
+   "block_median_rule_rms": 2.6233172377939074,
+   "coupling_ratio": 0.11320810293240134,
+   "corrected_freq_rms": 1.4701972433449535,
+   "corrected_freq_rms_zero_rule": 23.09266670231382,
+   "duschinsky_overlap_median": 0.9996370220258715,
+   "duschinsky_overlap_p10": 0.9928010933705838,
+   "dH_residual_ratio": 0.043313511176792656,
+   "column_fraction_mean": 0.41208487899152063,
+   "n_near_mean": 10.093406593406593
+  },
+  "probe_only_r3": {
+   "diag_rms": {
+    "CH-stretch": 35.21724407511931,
+    "CH-oop": 17.583472577390182,
+    "ring-ip": 11.590254475141228,
+    "other": 9.035677980570417
+   },
+   "coupling_rms": 2.822151705856564,
+   "coupling_zero_rms": 4.121985236897169,
+   "block_rms": 6.778753016228289,
+   "block_median_rule_rms": 2.6233172377939074,
+   "coupling_ratio": 0.6846583730078916,
+   "corrected_freq_rms": 15.939657347354546,
+   "corrected_freq_rms_zero_rule": 23.09266670231382,
+   "duschinsky_overlap_median": 0.9922452560581292,
+   "duschinsky_overlap_p10": 0.8608571646822906,
+   "dH_residual_ratio": 0.6458764746493062,
+   "column_fraction_mean": 0.41208487899152063,
+   "n_near_mean": 10.093406593406593
+  },
+  "transfer_only_r3": {
+   "diag_rms": {
+    "CH-stretch": 22.070617141322657,
+    "CH-oop": 11.225605376294036,
+    "ring-ip": 12.612336111728279,
+    "other": 16.174693414478494
+   },
+   "coupling_rms": 3.4776750642061747,
+   "coupling_zero_rms": 4.121985236897169,
+   "block_rms": 6.9685037537601735,
+   "block_median_rule_rms": 2.6233172377939074,
+   "coupling_ratio": 0.8436893546042877,
+   "corrected_freq_rms": 12.479600363479635,
+   "corrected_freq_rms_zero_rule": 23.09266670231382,
+   "duschinsky_overlap_median": 0.9853859859382085,
+   "duschinsky_overlap_p10": 0.8241917068523141,
+   "dH_residual_ratio": 0.7646696278426692,
+   "column_fraction_mean": 0.41208487899152063,
+   "n_near_mean": 10.093406593406593
+  },
+  "transfer_probe_r4": {
+   "diag_rms": {
+    "CH-stretch": 0.40308760769710134,
+    "CH-oop": 2.2721300596178,
+    "ring-ip": 1.2120971963484082,
+    "other": 1.584531492850759
+   },
+   "coupling_rms": 0.39776644364000446,
+   "coupling_zero_rms": 4.121985236897169,
+   "block_rms": 0.6165321705967829,
+   "block_median_rule_rms": 2.6233172377939074,
+   "coupling_ratio": 0.09649875503664437,
+   "corrected_freq_rms": 1.3129642559030728,
+   "corrected_freq_rms_zero_rule": 23.09266670231382,
+   "duschinsky_overlap_median": 0.9997821131677596,
+   "duschinsky_overlap_p10": 0.9943509953798976,
+   "dH_residual_ratio": 0.02661683886132003,
+   "column_fraction_mean": 0.5760273957586681,
+   "n_near_mean": 14.104395604395604
+  },
+  "probe_only_r4": {
+   "diag_rms": {
+    "CH-stretch": 30.93939564033744,
+    "CH-oop": 15.10897848585988,
+    "ring-ip": 8.3243282835636,
+    "other": 7.566867639143976
+   },
+   "coupling_rms": 2.083091451068611,
+   "coupling_zero_rms": 4.121985236897169,
+   "block_rms": 4.407371819154058,
+   "block_median_rule_rms": 2.6233172377939074,
+   "coupling_ratio": 0.5053612110063406,
+   "corrected_freq_rms": 13.160223898041044,
+   "corrected_freq_rms_zero_rule": 23.09266670231382,
+   "duschinsky_overlap_median": 0.9949464020772628,
+   "duschinsky_overlap_p10": 0.8955177519975832,
+   "dH_residual_ratio": 0.48786386237960044,
+   "column_fraction_mean": 0.5760273957586681,
+   "n_near_mean": 14.104395604395604
+  },
+  "transfer_only_r4": {
+   "diag_rms": {
+    "CH-stretch": 26.59717740351938,
+    "CH-oop": 14.101208936822315,
+    "ring-ip": 15.813964994507602,
+    "other": 16.941570211542228
+   },
+   "coupling_rms": 3.886572084804698,
+   "coupling_zero_rms": 4.121985236897169,
+   "block_rms": 9.454886098599035,
+   "block_median_rule_rms": 2.6233172377939074,
+   "coupling_ratio": 0.9428884048430802,
+   "corrected_freq_rms": 15.040957493330522,
+   "corrected_freq_rms_zero_rule": 23.09266670231382,
+   "duschinsky_overlap_median": 0.9827045596722206,
+   "duschinsky_overlap_p10": 0.8099366712910093,
+   "dH_residual_ratio": 0.8733254306929507,
+   "column_fraction_mean": 0.5760273957586681,
+   "n_near_mean": 14.104395604395604
+  }
+ },
+ "by_core_r2": {
+  "acenaphthylene": {
+   "n": 12,
+   "corrected_freq_rms": 2.4494395848756807,
+   "coupling_ratio": 0.15092119431125503
+  },
+  "acridine": {
+   "n": 12,
+   "corrected_freq_rms": 1.4361732173578494,
+   "coupling_ratio": 0.09501064734634326
+  },
+  "anthracene": {
+   "n": 9,
+   "corrected_freq_rms": 1.318630469191706,
+   "coupling_ratio": 0.09685738652960478
+  },
+  "biphenylene": {
+   "n": 7,
+   "corrected_freq_rms": 1.4701629463671861,
+   "coupling_ratio": 0.09017348563534064
+  },
+  "carbazole": {
+   "n": 12,
+   "corrected_freq_rms": 2.5078806157047717,
+   "coupling_ratio": 0.15540584374439345
+  },
+  "dibenzofuran": {
+   "n": 11,
+   "corrected_freq_rms": 2.2370067806852667,
+   "coupling_ratio": 0.15501658202487167
+  },
+  "dibenzothiophene": {
+   "n": 12,
+   "corrected_freq_rms": 1.4903202349449076,
+   "coupling_ratio": 0.12468004166420246
+  },
+  "fluoranthene": {
+   "n": 19,
+   "corrected_freq_rms": 1.5409637967500438,
+   "coupling_ratio": 0.18473274490494634
+  },
+  "fluorene": {
+   "n": 20,
+   "corrected_freq_rms": 1.8291521811568077,
+   "coupling_ratio": 0.14101571311015
+  },
+  "phenanthrene": {
+   "n": 12,
+   "corrected_freq_rms": 1.3382480337544813,
+   "coupling_ratio": 0.13150224214695555
+  },
+  "phenanthridine": {
+   "n": 34,
+   "corrected_freq_rms": 1.3503256829102417,
+   "coupling_ratio": 0.11779108906064278
+  },
+  "phenazine": {
+   "n": 7,
+   "corrected_freq_rms": 1.9205687601822776,
+   "coupling_ratio": 0.10732760531656989
+  },
+  "pyrene": {
+   "n": 6,
+   "corrected_freq_rms": 1.8679941310045578,
+   "coupling_ratio": 0.14440512318998283
+  },
+  "quinoxaline": {
+   "n": 9,
+   "corrected_freq_rms": 1.505457104336102,
+   "coupling_ratio": 0.10212575954212964
+  }
+ },
+ "by_substituent_r2": {
+  "CF3": {
+   "n": 14,
+   "corrected_freq_rms": 1.6959742218715743,
+   "coupling_ratio": 0.14657377056099433
+  },
+  "CH3": {
+   "n": 14,
+   "corrected_freq_rms": 1.8122187748077256,
+   "coupling_ratio": 0.15464001107996603
+  },
+  "CHO": {
+   "n": 17,
+   "corrected_freq_rms": 1.7897498086101433,
+   "coupling_ratio": 0.11510901552624464
+  },
+  "CN": {
+   "n": 19,
+   "corrected_freq_rms": 1.8876728564293024,
+   "coupling_ratio": 0.14386903953509522
+  },
+  "CONH2": {
+   "n": 10,
+   "corrected_freq_rms": 1.4070294981932068,
+   "coupling_ratio": 0.13660866663761684
+  },
+  "COOH": {
+   "n": 14,
+   "corrected_freq_rms": 1.6700505546828115,
+   "coupling_ratio": 0.12076533450924264
+  },
+  "Cl": {
+   "n": 14,
+   "corrected_freq_rms": 2.0745681896104076,
+   "coupling_ratio": 0.13652629320486223
+  },
+  "F": {
+   "n": 10,
+   "corrected_freq_rms": 1.3519212446860576,
+   "coupling_ratio": 0.1034403042933431
+  },
+  "NH2": {
+   "n": 10,
+   "corrected_freq_rms": 1.4837633816258664,
+   "coupling_ratio": 0.13865200689338153
+  },
+  "NO2": {
+   "n": 9,
+   "corrected_freq_rms": 1.7822478881021033,
+   "coupling_ratio": 0.12882582634312303
+  },
+  "OCH3": {
+   "n": 10,
+   "corrected_freq_rms": 1.876741758616944,
+   "coupling_ratio": 0.13425483903912355
+  },
+  "OH": {
+   "n": 9,
+   "corrected_freq_rms": 1.5655853759533924,
+   "coupling_ratio": 0.1403575961636521
+  },
+  "SH": {
+   "n": 11,
+   "corrected_freq_rms": 2.048273253318442,
+   "coupling_ratio": 0.15559060903427455
+  },
+  "ethynyl": {
+   "n": 10,
+   "corrected_freq_rms": 1.3293803948340397,
+   "coupling_ratio": 0.10892691491961252
+  },
+  "vinyl": {
+   "n": 11,
+   "corrected_freq_rms": 1.5422921668521876,
+   "coupling_ratio": 0.13682852349943725
+  }
+ },
+ "per_molecule_r2": {
+  "A2_00b0ff5a24": {
+   "core": "fluoranthene",
+   "substituent": "COOH",
+   "n_atoms": 29,
+   "n_near": 7
+  },
+  "A2_00eeb8e5ed": {
+   "core": "quinoxaline",
+   "substituent": "OH",
+   "n_atoms": 17,
+   "n_near": 5
+  },
+  "A2_0101e57296": {
+   "core": "fluoranthene",
+   "substituent": "NH2",
+   "n_atoms": 28,
+   "n_near": 6
+  },
+  "A2_019964a9ed": {
+   "core": "quinoxaline",
+   "substituent": "OH",
+   "n_atoms": 17,
+   "n_near": 5
+  },
+  "A2_02c8833bd5": {
+   "core": "fluoranthene",
+   "substituent": "vinyl",
+   "n_atoms": 30,
+   "n_near": 8
+  },
+  "A2_02f13355a2": {
+   "core": "acridine",
+   "substituent": "CN",
+   "n_atoms": 24,
+   "n_near": 5
+  },
+  "A2_041da590e8": {
+   "core": "fluoranthene",
+   "substituent": "CH3",
+   "n_atoms": 29,
+   "n_near": 7
+  },
+  "A2_043da5bed2": {
+   "core": "fluoranthene",
+   "substituent": "SH",
+   "n_atoms": 27,
+   "n_near": 5
+  },
+  "A2_04719edc88": {
+   "core": "phenanthridine",
+   "substituent": "COOH",
+   "n_atoms": 26,
+   "n_near": 7
+  },
+  "A2_048ea73dab": {
+   "core": "fluoranthene",
+   "substituent": "CH3",
+   "n_atoms": 29,
+   "n_near": 7
+  },
+  "A2_04af6632de": {
+   "core": "anthracene",
+   "substituent": "ethynyl",
+   "n_atoms": 26,
+   "n_near": 6
+  },
+  "A2_05a9e0e4c8": {
+   "core": "phenanthridine",
+   "substituent": "CN",
+   "n_atoms": 24,
+   "n_near": 5
+  },
+  "A2_05e08111d2": {
+   "core": "phenazine",
+   "substituent": "CHO",
+   "n_atoms": 24,
+   "n_near": 6
+  },
+  "A2_05f5ff045c": {
+   "core": "fluorene",
+   "substituent": "NH2",
+   "n_atoms": 25,
+   "n_near": 6
+  },
+  "A2_06067133dc": {
+   "core": "quinoxaline",
+   "substituent": "F",
+   "n_atoms": 16,
+   "n_near": 4
+  },
+  "A2_06222c33e3": {
+   "core": "fluoranthene",
+   "substituent": "NH2",
+   "n_atoms": 28,
+   "n_near": 6
+  },
+  "A2_066237c4f5": {
+   "core": "fluorene",
+   "substituent": "Cl",
+   "n_atoms": 23,
+   "n_near": 4
+  },
+  "A2_06873ee7ad": {
+   "core": "fluorene",
+   "substituent": "NH2",
+   "n_atoms": 25,
+   "n_near": 6
+  },
+  "A2_074ffaa9fa": {
+   "core": "phenanthridine",
+   "substituent": "vinyl",
+   "n_atoms": 27,
+   "n_near": 8
+  },
+  "A2_07f1fa9135": {
+   "core": "phenanthridine",
+   "substituent": "CHO",
+   "n_atoms": 25,
+   "n_near": 6
+  },
+  "A2_0805297aa2": {
+   "core": "dibenzothiophene",
+   "substituent": "CHO",
+   "n_atoms": 23,
+   "n_near": 6
+  },
+  "A2_0814eb7409": {
+   "core": "phenazine",
+   "substituent": "CHO",
+   "n_atoms": 24,
+   "n_near": 6
+  },
+  "A2_097651503c": {
+   "core": "fluoranthene",
+   "substituent": "CONH2",
+   "n_atoms": 30,
+   "n_near": 8
+  },
+  "A2_099cb8d5d4": {
+   "core": "dibenzothiophene",
+   "substituent": "CH3",
+   "n_atoms": 24,
+   "n_near": 7
+  },
+  "A2_09c1f9ee8a": {
+   "core": "dibenzofuran",
+   "substituent": "CHO",
+   "n_atoms": 23,
+   "n_near": 6
+  },
+  "A2_09d0b3be91": {
+   "core": "phenanthrene",
+   "substituent": "CONH2",
+   "n_atoms": 28,
+   "n_near": 8
+  },
+  "A2_0a158816bd": {
+   "core": "quinoxaline",
+   "substituent": "NH2",
+   "n_atoms": 18,
+   "n_near": 6
+  },
+  "A2_0a2685346d": {
+   "core": "acridine",
+   "substituent": "vinyl",
+   "n_atoms": 27,
+   "n_near": 8
+  },
+  "A2_0a2c2f12b8": {
+   "core": "phenanthrene",
+   "substituent": "Cl",
+   "n_atoms": 24,
+   "n_near": 4
+  },
+  "A2_0a89c174d8": {
+   "core": "dibenzofuran",
+   "substituent": "NO2",
+   "n_atoms": 23,
+   "n_near": 6
+  },
+  "A2_0ae8c5746d": {
+   "core": "acridine",
+   "substituent": "CN",
+   "n_atoms": 24,
+   "n_near": 5
+  },
+  "A2_0b93df3e1a": {
+   "core": "acenaphthylene",
+   "substituent": "CHO",
+   "n_atoms": 22,
+   "n_near": 6
+  },
+  "A2_0beab28c4f": {
+   "core": "phenanthridine",
+   "substituent": "Cl",
+   "n_atoms": 23,
+   "n_near": 4
+  },
+  "A2_0bf85f35e5": {
+   "core": "phenanthridine",
+   "substituent": "Cl",
+   "n_atoms": 23,
+   "n_near": 4
+  },
+  "A2_0c7ac2371d": {
+   "core": "acenaphthylene",
+   "substituent": "CONH2",
+   "n_atoms": 24,
+   "n_near": 8
+  },
+  "A2_0cfc5b5bdb": {
+   "core": "acenaphthylene",
+   "substituent": "CF3",
+   "n_atoms": 23,
+   "n_near": 7
+  },
+  "A2_0dc3aa4eb9": {
+   "core": "fluorene",
+   "substituent": "CH3",
+   "n_atoms": 26,
+   "n_near": 7
+  },
+  "A2_0e07e41776": {
+   "core": "dibenzofuran",
+   "substituent": "CF3",
+   "n_atoms": 24,
+   "n_near": 7
+  },
+  "A2_0e1c741b76": {
+   "core": "fluoranthene",
+   "substituent": "CN",
+   "n_atoms": 27,
+   "n_near": 5
+  },
+  "A2_0e7288334d": {
+   "core": "dibenzothiophene",
+   "substituent": "NH2",
+   "n_atoms": 23,
+   "n_near": 6
+  },
+  "A2_0ed4bfb28a": {
+   "core": "carbazole",
+   "substituent": "CONH2",
+   "n_atoms": 26,
+   "n_near": 8
+  },
+  "A2_0ef0a3a61c": {
+   "core": "biphenylene",
+   "substituent": "CN",
+   "n_atoms": 21,
+   "n_near": 5
+  },
+  "A2_0efbc8f50c": {
+   "core": "phenanthrene",
+   "substituent": "CONH2",
+   "n_atoms": 28,
+   "n_near": 8
+  },
+  "A2_0f1a2bd718": {
+   "core": "anthracene",
+   "substituent": "OCH3",
+   "n_atoms": 28,
+   "n_near": 8
+  },
+  "A2_0f86544b37": {
+   "core": "phenanthrene",
+   "substituent": "CN",
+   "n_atoms": 25,
+   "n_near": 5
+  },
+  "A2_101910c9ef": {
+   "core": "phenanthridine",
+   "substituent": "CHO",
+   "n_atoms": 25,
+   "n_near": 6
+  },
+  "A2_10374ec43c": {
+   "core": "acridine",
+   "substituent": "NO2",
+   "n_atoms": 25,
+   "n_near": 6
+  },
+  "A2_1046eed218": {
+   "core": "phenanthridine",
+   "substituent": "CF3",
+   "n_atoms": 26,
+   "n_near": 7
+  },
+  "A2_10d7d03408": {
+   "core": "fluorene",
+   "substituent": "COOH",
+   "n_atoms": 26,
+   "n_near": 8
+  },
+  "A2_11a9a9ada2": {
+   "core": "phenanthridine",
+   "substituent": "OH",
+   "n_atoms": 24,
+   "n_near": 5
+  },
+  "A2_11c681aefb": {
+   "core": "fluorene",
+   "substituent": "CF3",
+   "n_atoms": 26,
+   "n_near": 7
+  },
+  "A2_11d7cdeab0": {
+   "core": "acenaphthylene",
+   "substituent": "OCH3",
+   "n_atoms": 24,
+   "n_near": 8
+  },
+  "A2_11dec05d1b": {
+   "core": "phenanthridine",
+   "substituent": "vinyl",
+   "n_atoms": 27,
+   "n_near": 8
+  },
+  "A2_1279063d3c": {
+   "core": "carbazole",
+   "substituent": "CN",
+   "n_atoms": 23,
+   "n_near": 5
+  },
+  "A2_12deece5a3": {
+   "core": "phenanthridine",
+   "substituent": "ethynyl",
+   "n_atoms": 25,
+   "n_near": 6
+  },
+  "A2_13327d8d52": {
+   "core": "carbazole",
+   "substituent": "SH",
+   "n_atoms": 23,
+   "n_near": 5
+  },
+  "A2_13a0f8f47e": {
+   "core": "phenanthridine",
+   "substituent": "ethynyl",
+   "n_atoms": 25,
+   "n_near": 6
+  },
+  "A2_13a226a056": {
+   "core": "acridine",
+   "substituent": "OCH3",
+   "n_atoms": 27,
+   "n_near": 8
+  },
+  "A2_13bafae8e0": {
+   "core": "carbazole",
+   "substituent": "SH",
+   "n_atoms": 23,
+   "n_near": 5
+  },
+  "A2_14a0a0f3c9": {
+   "core": "phenanthridine",
+   "substituent": "COOH",
+   "n_atoms": 26,
+   "n_near": 7
+  },
+  "A2_14dee3bc02": {
+   "core": "phenanthridine",
+   "substituent": "CH3",
+   "n_atoms": 26,
+   "n_near": 7
+  },
+  "A2_1543119d9d": {
+   "core": "fluorene",
+   "substituent": "OCH3",
+   "n_atoms": 27,
+   "n_near": 9
+  },
+  "A2_156fe03a44": {
+   "core": "dibenzothiophene",
+   "substituent": "NH2",
+   "n_atoms": 23,
+   "n_near": 6
+  },
+  "A2_159a501353": {
+   "core": "phenanthridine",
+   "substituent": "COOH",
+   "n_atoms": 26,
+   "n_near": 7
+  },
+  "A2_16521f2764": {
+   "core": "fluorene",
+   "substituent": "ethynyl",
+   "n_atoms": 25,
+   "n_near": 7
+  },
+  "A2_16ec607c96": {
+   "core": "phenanthrene",
+   "substituent": "CHO",
+   "n_atoms": 26,
+   "n_near": 6
+  },
+  "A2_1767c744aa": {
+   "core": "acenaphthylene",
+   "substituent": "OCH3",
+   "n_atoms": 24,
+   "n_near": 8
+  },
+  "A2_177784139f": {
+   "core": "phenazine",
+   "substituent": "OH",
+   "n_atoms": 23,
+   "n_near": 5
+  },
+  "A2_187a20beab": {
+   "core": "phenanthrene",
+   "substituent": "CF3",
+   "n_atoms": 27,
+   "n_near": 7
+  },
+  "A2_18b62c6a42": {
+   "core": "dibenzothiophene",
+   "substituent": "COOH",
+   "n_atoms": 24,
+   "n_near": 7
+  },
+  "A2_192cd5911c": {
+   "core": "phenazine",
+   "substituent": "Cl",
+   "n_atoms": 22,
+   "n_near": 4
+  },
+  "A2_196b4cd166": {
+   "core": "acenaphthylene",
+   "substituent": "Cl",
+   "n_atoms": 20,
+   "n_near": 4
+  },
+  "A2_198d828af1": {
+   "core": "phenanthridine",
+   "substituent": "SH",
+   "n_atoms": 24,
+   "n_near": 5
+  },
+  "A2_19eaf39036": {
+   "core": "phenanthrene",
+   "substituent": "NO2",
+   "n_atoms": 26,
+   "n_near": 6
+  },
+  "A2_1a20326972": {
+   "core": "acridine",
+   "substituent": "CONH2",
+   "n_atoms": 27,
+   "n_near": 8
+  },
+  "A2_1a3e9f41ee": {
+   "core": "acridine",
+   "substituent": "ethynyl",
+   "n_atoms": 25,
+   "n_near": 6
+  },
+  "A2_1aa4c0cfbc": {
+   "core": "dibenzofuran",
+   "substituent": "vinyl",
+   "n_atoms": 25,
+   "n_near": 8
+  },
+  "A2_1b0ef60572": {
+   "core": "phenanthridine",
+   "substituent": "CN",
+   "n_atoms": 24,
+   "n_near": 5
+  },
+  "A2_1b2d1b7caf": {
+   "core": "phenanthridine",
+   "substituent": "CHO",
+   "n_atoms": 25,
+   "n_near": 6
+  },
+  "A2_1b3089a9c8": {
+   "core": "acridine",
+   "substituent": "NH2",
+   "n_atoms": 25,
+   "n_near": 6
+  },
+  "A2_1b389dc1d8": {
+   "core": "fluorene",
+   "substituent": "Cl",
+   "n_atoms": 23,
+   "n_near": 4
+  },
+  "A2_1bb2e3fbf1": {
+   "core": "fluorene",
+   "substituent": "F",
+   "n_atoms": 23,
+   "n_near": 5
+  },
+  "A2_1c2781e93a": {
+   "core": "fluorene",
+   "substituent": "NH2",
+   "n_atoms": 25,
+   "n_near": 6
+  },
+  "A2_1c7ee11812": {
+   "core": "acenaphthylene",
+   "substituent": "OH",
+   "n_atoms": 21,
+   "n_near": 5
+  },
+  "A2_1c9af68a67": {
+   "core": "dibenzofuran",
+   "substituent": "Cl",
+   "n_atoms": 21,
+   "n_near": 4
+  },
+  "A2_1d6c152813": {
+   "core": "anthracene",
+   "substituent": "CH3",
+   "n_atoms": 27,
+   "n_near": 7
+  },
+  "A2_1e3ee2b3a8": {
+   "core": "carbazole",
+   "substituent": "COOH",
+   "n_atoms": 25,
+   "n_near": 7
+  },
+  "A2_1e5e1afa5c": {
+   "core": "phenanthridine",
+   "substituent": "CH3",
+   "n_atoms": 26,
+   "n_near": 7
+  },
+  "A2_1eeb0a54f6": {
+   "core": "phenanthridine",
+   "substituent": "CHO",
+   "n_atoms": 25,
+   "n_near": 6
+  },
+  "A2_1f52b56b90": {
+   "core": "dibenzofuran",
+   "substituent": "CN",
+   "n_atoms": 22,
+   "n_near": 5
+  },
+  "A2_1fa17eaaa2": {
+   "core": "phenanthridine",
+   "substituent": "CN",
+   "n_atoms": 24,
+   "n_near": 5
+  },
+  "A2_1fa81d01d6": {
+   "core": "carbazole",
+   "substituent": "SH",
+   "n_atoms": 23,
+   "n_near": 5
+  },
+  "A2_1ff7551053": {
+   "core": "biphenylene",
+   "substituent": "CF3",
+   "n_atoms": 23,
+   "n_near": 7
+  },
+  "A2_202963092d": {
+   "core": "acenaphthylene",
+   "substituent": "OCH3",
+   "n_atoms": 24,
+   "n_near": 8
+  },
+  "A2_204c06557b": {
+   "core": "acridine",
+   "substituent": "COOH",
+   "n_atoms": 26,
+   "n_near": 7
+  },
+  "A2_20d3215ce3": {
+   "core": "fluorene",
+   "substituent": "CONH2",
+   "n_atoms": 27,
+   "n_near": 9
+  },
+  "A2_20e53d754a": {
+   "core": "dibenzothiophene",
+   "substituent": "F",
+   "n_atoms": 21,
+   "n_near": 4
+  },
+  "A2_210c322595": {
+   "core": "fluorene",
+   "substituent": "F",
+   "n_atoms": 23,
+   "n_near": 4
+  },
+  "A2_215e004a51": {
+   "core": "phenazine",
+   "substituent": "COOH",
+   "n_atoms": 25,
+   "n_near": 7
+  },
+  "A2_21a2401f6c": {
+   "core": "carbazole",
+   "substituent": "CHO",
+   "n_atoms": 24,
+   "n_near": 6
+  },
+  "A2_21b688db0c": {
+   "core": "fluorene",
+   "substituent": "CH3",
+   "n_atoms": 26,
+   "n_near": 7
+  },
+  "A2_221bc30690": {
+   "core": "phenazine",
+   "substituent": "Cl",
+   "n_atoms": 22,
+   "n_near": 4
+  },
+  "A2_224abc958a": {
+   "core": "pyrene",
+   "substituent": "COOH",
+   "n_atoms": 29,
+   "n_near": 7
+  },
+  "A2_22d0e8105c": {
+   "core": "carbazole",
+   "substituent": "SH",
+   "n_atoms": 23,
+   "n_near": 5
+  },
+  "A2_233ec9a78f": {
+   "core": "acridine",
+   "substituent": "Cl",
+   "n_atoms": 23,
+   "n_near": 4
+  },
+  "A2_2354759bfb": {
+   "core": "quinoxaline",
+   "substituent": "CONH2",
+   "n_atoms": 20,
+   "n_near": 8
+  },
+  "A2_238c9ced38": {
+   "core": "phenanthrene",
+   "substituent": "CF3",
+   "n_atoms": 27,
+   "n_near": 7
+  },
+  "A2_23d2ef8efb": {
+   "core": "dibenzofuran",
+   "substituent": "NO2",
+   "n_atoms": 23,
+   "n_near": 6
+  },
+  "A2_24d0139cc4": {
+   "core": "dibenzothiophene",
+   "substituent": "CF3",
+   "n_atoms": 24,
+   "n_near": 7
+  },
+  "A2_253cbb1c94": {
+   "core": "carbazole",
+   "substituent": "COOH",
+   "n_atoms": 25,
+   "n_near": 7
+  },
+  "A2_25e55c7a83": {
+   "core": "phenanthrene",
+   "substituent": "vinyl",
+   "n_atoms": 28,
+   "n_near": 8
+  },
+  "A2_25fe240a5d": {
+   "core": "pyrene",
+   "substituent": "OCH3",
+   "n_atoms": 30,
+   "n_near": 8
+  },
+  "A2_25fed68b27": {
+   "core": "anthracene",
+   "substituent": "F",
+   "n_atoms": 24,
+   "n_near": 4
+  },
+  "A2_2607024fdf": {
+   "core": "carbazole",
+   "substituent": "vinyl",
+   "n_atoms": 26,
+   "n_near": 8
+  },
+  "A2_26664f6a75": {
+   "core": "biphenylene",
+   "substituent": "ethynyl",
+   "n_atoms": 22,
+   "n_near": 6
+  },
+  "A2_26a9174202": {
+   "core": "biphenylene",
+   "substituent": "OCH3",
+   "n_atoms": 24,
+   "n_near": 8
+  },
+  "A2_27130c4c79": {
+   "core": "fluorene",
+   "substituent": "vinyl",
+   "n_atoms": 27,
+   "n_near": 8
+  },
+  "A2_27370742a0": {
+   "core": "fluoranthene",
+   "substituent": "CF3",
+   "n_atoms": 29,
+   "n_near": 7
+  },
+  "A2_2743aef5e8": {
+   "core": "phenanthridine",
+   "substituent": "NO2",
+   "n_atoms": 25,
+   "n_near": 6
+  },
+  "A2_27edf7297c": {
+   "core": "fluorene",
+   "substituent": "CH3",
+   "n_atoms": 26,
+   "n_near": 7
+  },
+  "A2_2931e48c62": {
+   "core": "fluoranthene",
+   "substituent": "CN",
+   "n_atoms": 27,
+   "n_near": 5
+  },
+  "A2_29caedd47d": {
+   "core": "anthracene",
+   "substituent": "COOH",
+   "n_atoms": 27,
+   "n_near": 7
+  },
+  "A2_2a43bd67da": {
+   "core": "phenanthridine",
+   "substituent": "Cl",
+   "n_atoms": 23,
+   "n_near": 4
+  },
+  "A2_2a88c6ce4f": {
+   "core": "phenanthridine",
+   "substituent": "CONH2",
+   "n_atoms": 27,
+   "n_near": 8
+  },
+  "A2_2ade2a9b93": {
+   "core": "biphenylene",
+   "substituent": "OH",
+   "n_atoms": 21,
+   "n_near": 5
+  },
+  "A2_2b7c0323a9": {
+   "core": "dibenzofuran",
+   "substituent": "OH",
+   "n_atoms": 22,
+   "n_near": 5
+  },
+  "A2_2bb0e5721b": {
+   "core": "acenaphthylene",
+   "substituent": "COOH",
+   "n_atoms": 23,
+   "n_near": 7
+  },
+  "A2_2be56a1e2f": {
+   "core": "phenanthridine",
+   "substituent": "vinyl",
+   "n_atoms": 27,
+   "n_near": 8
+  },
+  "A2_2ca281c2d5": {
+   "core": "quinoxaline",
+   "substituent": "CN",
+   "n_atoms": 17,
+   "n_near": 5
+  },
+  "A2_2ce877d5e9": {
+   "core": "phenanthridine",
+   "substituent": "F",
+   "n_atoms": 23,
+   "n_near": 4
+  },
+  "A2_2cf97d4a75": {
+   "core": "carbazole",
+   "substituent": "CF3",
+   "n_atoms": 25,
+   "n_near": 7
+  },
+  "A2_2d6f59a2bf": {
+   "core": "pyrene",
+   "substituent": "OH",
+   "n_atoms": 27,
+   "n_near": 5
+  },
+  "A2_2e154f6054": {
+   "core": "fluorene",
+   "substituent": "NO2",
+   "n_atoms": 25,
+   "n_near": 6
+  },
+  "A2_2e1bd8f645": {
+   "core": "phenazine",
+   "substituent": "ethynyl",
+   "n_atoms": 24,
+   "n_near": 6
+  },
+  "A2_2e2d3e4196": {
+   "core": "anthracene",
+   "substituent": "F",
+   "n_atoms": 24,
+   "n_near": 4
+  },
+  "A2_2ef47ebcc1": {
+   "core": "anthracene",
+   "substituent": "ethynyl",
+   "n_atoms": 26,
+   "n_near": 6
+  },
+  "A2_2f079d63a1": {
+   "core": "fluoranthene",
+   "substituent": "CH3",
+   "n_atoms": 29,
+   "n_near": 7
+  },
+  "A2_2f5e215666": {
+   "core": "quinoxaline",
+   "substituent": "Cl",
+   "n_atoms": 16,
+   "n_near": 4
+  },
+  "A2_303433ef20": {
+   "core": "anthracene",
+   "substituent": "F",
+   "n_atoms": 24,
+   "n_near": 4
+  },
+  "A2_3058513f57": {
+   "core": "fluorene",
+   "substituent": "Cl",
+   "n_atoms": 23,
+   "n_near": 4
+  },
+  "A2_306152f5f9": {
+   "core": "phenanthrene",
+   "substituent": "SH",
+   "n_atoms": 25,
+   "n_near": 5
+  },
+  "A2_3077af0137": {
+   "core": "phenanthrene",
+   "substituent": "F",
+   "n_atoms": 24,
+   "n_near": 4
+  },
+  "A2_30b024df67": {
+   "core": "acridine",
+   "substituent": "OCH3",
+   "n_atoms": 27,
+   "n_near": 8
+  },
+  "A2_311e979a14": {
+   "core": "fluoranthene",
+   "substituent": "Cl",
+   "n_atoms": 26,
+   "n_near": 4
+  },
+  "A2_3216c45c98": {
+   "core": "phenanthridine",
+   "substituent": "CF3",
+   "n_atoms": 26,
+   "n_near": 7
+  },
+  "A2_3250fa71cc": {
+   "core": "phenanthridine",
+   "substituent": "CH3",
+   "n_atoms": 26,
+   "n_near": 7
+  },
+  "A2_32861fe1de": {
+   "core": "quinoxaline",
+   "substituent": "CHO",
+   "n_atoms": 18,
+   "n_near": 6
+  },
+  "A2_32ab8c6937": {
+   "core": "anthracene",
+   "substituent": "CONH2",
+   "n_atoms": 28,
+   "n_near": 8
+  },
+  "A2_32e53836ea": {
+   "core": "biphenylene",
+   "substituent": "CHO",
+   "n_atoms": 22,
+   "n_near": 6
+  },
+  "A2_331729cd47": {
+   "core": "fluoranthene",
+   "substituent": "CN",
+   "n_atoms": 27,
+   "n_near": 5
+  },
+  "A2_336097f54c": {
+   "core": "dibenzothiophene",
+   "substituent": "CHO",
+   "n_atoms": 23,
+   "n_near": 6
+  },
+  "A2_33d8ee2f2f": {
+   "core": "carbazole",
+   "substituent": "CN",
+   "n_atoms": 23,
+   "n_near": 5
+  },
+  "A2_3468258fcf": {
+   "core": "phenanthridine",
+   "substituent": "CN",
+   "n_atoms": 24,
+   "n_near": 5
+  },
+  "A2_34bb1210bc": {
+   "core": "dibenzofuran",
+   "substituent": "CH3",
+   "n_atoms": 24,
+   "n_near": 7
+  },
+  "A2_34db2b4f50": {
+   "core": "phenanthridine",
+   "substituent": "NH2",
+   "n_atoms": 25,
+   "n_near": 6
+  },
+  "A2_34decc4ca8": {
+   "core": "acenaphthylene",
+   "substituent": "SH",
+   "n_atoms": 21,
+   "n_near": 5
+  },
+  "A2_356dcf6450": {
+   "core": "dibenzothiophene",
+   "substituent": "vinyl",
+   "n_atoms": 25,
+   "n_near": 8
+  },
+  "A2_35c01ca552": {
+   "core": "pyrene",
+   "substituent": "NO2",
+   "n_atoms": 28,
+   "n_near": 6
+  },
+  "A2_35fb26a423": {
+   "core": "phenanthridine",
+   "substituent": "CH3",
+   "n_atoms": 26,
+   "n_near": 7
+  },
+  "A2_360ca4faa6": {
+   "core": "dibenzothiophene",
+   "substituent": "F",
+   "n_atoms": 21,
+   "n_near": 4
+  },
+  "A2_361b2c502b": {
+   "core": "pyrene",
+   "substituent": "CHO",
+   "n_atoms": 28,
+   "n_near": 6
+  },
+  "A2_362fc56435": {
+   "core": "acenaphthylene",
+   "substituent": "COOH",
+   "n_atoms": 23,
+   "n_near": 7
+  },
+  "A2_372920f181": {
+   "core": "fluoranthene",
+   "substituent": "OH",
+   "n_atoms": 27,
+   "n_near": 5
+  },
+  "A2_3740d0ba57": {
+   "core": "quinoxaline",
+   "substituent": "SH",
+   "n_atoms": 17,
+   "n_near": 5
+  },
+  "A2_37cf4a0e50": {
+   "core": "dibenzofuran",
+   "substituent": "CHO",
+   "n_atoms": 23,
+   "n_near": 6
+  },
+  "A2_3825e7205b": {
+   "core": "fluoranthene",
+   "substituent": "ethynyl",
+   "n_atoms": 28,
+   "n_near": 6
+  },
+  "A2_3933867951": {
+   "core": "acridine",
+   "substituent": "CF3",
+   "n_atoms": 26,
+   "n_near": 7
+  },
+  "A2_39baaea0dd": {
+   "core": "fluoranthene",
+   "substituent": "ethynyl",
+   "n_atoms": 28,
+   "n_near": 6
+  },
+  "A2_3a06a80d61": {
+   "core": "biphenylene",
+   "substituent": "NO2",
+   "n_atoms": 22,
+   "n_near": 6
+  },
+  "A2_3a4d58eb26": {
+   "core": "acenaphthylene",
+   "substituent": "CHO",
+   "n_atoms": 22,
+   "n_near": 6
+  },
+  "A2_3ac24b6972": {
+   "core": "dibenzofuran",
+   "substituent": "NO2",
+   "n_atoms": 23,
+   "n_near": 6
+  },
+  "A2_3b49468c8c": {
+   "core": "phenanthrene",
+   "substituent": "CN",
+   "n_atoms": 25,
+   "n_near": 5
+  },
+  "A2_3b6ae59b2d": {
+   "core": "fluorene",
+   "substituent": "SH",
+   "n_atoms": 24,
+   "n_near": 5
+  },
+  "A2_3c35334467": {
+   "core": "dibenzothiophene",
+   "substituent": "CN",
+   "n_atoms": 22,
+   "n_near": 5
+  },
+  "A2_3c758d3b72": {
+   "core": "pyrene",
+   "substituent": "CF3",
+   "n_atoms": 29,
+   "n_near": 7
+  },
+  "A2_3c982d4d3f": {
+   "core": "dibenzothiophene",
+   "substituent": "SH",
+   "n_atoms": 22,
+   "n_near": 5
+  },
+  "A2_3cf20db4ac": {
+   "core": "fluorene",
+   "substituent": "CN",
+   "n_atoms": 24,
+   "n_near": 5
+  },
+  "A2_3e6f108b14": {
+   "core": "phenanthridine",
+   "substituent": "CH3",
+   "n_atoms": 26,
+   "n_near": 7
+  },
+  "A2_3f25a88e27": {
+   "core": "fluoranthene",
+   "substituent": "OCH3",
+   "n_atoms": 30,
+   "n_near": 8
+  },
+  "A2_4282860cee": {
+   "core": "phenanthridine",
+   "substituent": "vinyl",
+   "n_atoms": 27,
+   "n_near": 8
+  },
+  "A2_42ab9eb0a0": {
+   "core": "fluoranthene",
+   "substituent": "CF3",
+   "n_atoms": 29,
+   "n_near": 7
+  },
+  "A2_4435992442": {
+   "core": "phenanthridine",
+   "substituent": "CN",
+   "n_atoms": 24,
+   "n_near": 5
+  }
+ },
+ "verdict_r2": "PASS",
+ "seconds": 19
+}
