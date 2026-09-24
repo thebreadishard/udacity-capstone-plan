@@ -42,6 +42,12 @@ USED_ANALYTIC: list = []
 _TMP: list = []
 
 
+def vib_only(freq):
+    """3N−6 vibrational entries by the corpus convention: drop the six nearest zero; imaginary stay negative."""
+    f = np.asarray(freq, float); keep = np.argsort(np.abs(f))[6:]
+    return np.sort(f[keep])
+
+
 def effective_dir(mol_dir: Path) -> Path:
     """The directory every feature builder reads. With --prefer-analytic and both second-route files present, a temporary copy of the
     molecule directory in which hessian_<tag>.npz ARE the analytic Hessians, so that tokens (mode vectors, shares) and the target K come
@@ -93,10 +99,16 @@ def main():
         if r.get("status") != "done" or (a.layer and r.get("layer") != a.layer):
             skipped.append((d.name, r.get("status"), r.get("layer")))
             continue
-        if r.get("n_imaginary_b3lyp", 0) or r.get("n_imaginary_wb97x", 0):
-            skipped.append((d.name, "imaginary", r.get("layer")))
-            continue
         dd = effective_dir(d)
+        if dd is not d:
+            # 24 Sep 2026: with the analytic second route the imaginary-mode rule reads the analytic frequencies, not deck v1's finite-difference
+            # counts — sixteen of the corpus's twenty imaginary modes were soft torsions flipped by grid noise (corpus README, 23 Sep)
+            n_im = {tag: int((vib_only(np.load(dd / f"hessian_{tag}.npz")["freq_cm"]) < 0).sum()) for tag in ("b3lyp", "wb97x")}
+        else:
+            n_im = {tag: int(r.get(f"n_imaginary_{tag}", 0)) for tag in ("b3lyp", "wb97x")}
+        if n_im["b3lyp"] or n_im["wb97x"]:
+            skipped.append((d.name, "imaginary" + (" (analytic route agrees)" if dd is not d else ""), r.get("layer")))
+            continue
         base = molecule_features(dd)
         tokens, cls, n_rings = environment_tokens(dd, base)
         K, freq = block_matrix(dd)
