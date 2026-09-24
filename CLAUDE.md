@@ -17,8 +17,9 @@ heartbeats, memory, uncommitted files and the last ledger entries in about 40 li
 reading the ledger. Only grep the ledger when the digest points at something specific.
 
 ## Editing
-One python patch script per edit round, in the scratchpad: exact-string `assert` on every anchor, build
-the whole new text in memory, then `os.replace` a temp file over the original. Never open the target for
+One python patch script per edit round, in the scratchpad, built on `plans/05_delta-probed-ir-pipeline/tools/patch_file.py`
+(`patch`, `append`, `insert_after_line`): exact-string `assert` on every anchor, the whole new text built in memory, then `os.replace` a
+temp file over the original. Never open the target for
 writing before the assertions pass — that emptied a probe script on 14 September.
 
 ## Long runs
