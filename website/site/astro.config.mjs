@@ -4,7 +4,7 @@ import { defineConfig } from 'astro/config';
 // The site URL is a placeholder until the user picks the domain (design §12: GitHub Pages first).
 export default defineConfig({
   site: 'https://thebreadishard.github.io',
-  base: '/',
+  base: '/spectrum-atlas',
   output: 'static',
   trailingSlash: 'ignore',
   build: { format: 'directory' },

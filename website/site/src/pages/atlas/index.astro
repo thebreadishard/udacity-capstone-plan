@@ -5,6 +5,7 @@ import path from 'node:path';
 import Base from '../../layouts/Base.astro';
 import AtlasSearch from '../../components/AtlasSearch.astro';
 import catalog from '../../../../export/out/catalog.json';
+import { withBase } from '../../lib/base';
 const depDir = path.resolve('../export/out/depictions');
 const labels = ['Listed', 'Cheap level done', 'Correction predicted', 'Spectrum predicted', 'Anchored', 'Validated'];
 const computed = catalog.filter((r) => r.rung >= 1).sort((a, b) => b.rung - a.rung || a.n_heavy - b.n_heavy || a.name.localeCompare(b.name));
@@ -22,7 +23,7 @@ function svgOf(id) {
   <ul class="grid cards" aria-label="Computed molecules">
     {computed.map((r) => (
       <li class="card mol">
-        <a href={`/molecule/${r.id}/`} class="link">
+        <a href={withBase(`/molecule/${r.id}/`)} class="link">
           <div class="depiction" set:html={svgOf(r.id)} aria-hidden="true"></div>
           <div class="name">{r.name}</div>
           <div class="mono muted">{r.formula ?? r.smiles}</div>

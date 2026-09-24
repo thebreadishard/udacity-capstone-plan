@@ -27,6 +27,7 @@ const { total } = Astro.props as { total: number };
 </section>
 <script>
   const labels = ['listed', 'cheap level done', 'correction predicted', 'spectrum predicted', 'anchored', 'validated'];
+  const base = document.body.dataset.base ?? '';
   const q = document.getElementById('aq') as HTMLInputElement;
   const rung = document.getElementById('arung') as HTMLSelectElement;
   const layer = document.getElementById('alayer') as HTMLSelectElement;
@@ -34,7 +35,7 @@ const { total } = Astro.props as { total: number };
   const table = document.getElementById('atable') as HTMLTableElement;
   const tbody = table.querySelector('tbody')!;
   let data: any[][] | null = null; let loading: Promise<void> | null = null;
-  const load = () => loading ??= fetch('/data/catalog-lite.json').then((r) => r.json()).then((j) => { data = j.rows; });
+  const load = () => loading ??= fetch(`${base}/data/catalog-lite.json`).then((r) => r.json()).then((j) => { data = j.rows; });
   const params = new URLSearchParams(location.search);
   q.value = params.get('q') ?? ''; rung.value = params.get('rung') ?? ''; layer.value = params.get('layer') ?? '';
   function esc(s: string) { return s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' } as any)[c]); }
@@ -51,7 +52,7 @@ const { total } = Astro.props as { total: number };
     hits.sort((a, b) => b[5] - a[5] || (a[6] ?? 99) - (b[6] ?? 99) || a[1].localeCompare(b[1]));
     const shown = hits.slice(0, 300);
     tbody.innerHTML = shown.map(([id, name, formula, , ly, rg, nh]) =>
-      `<tr><td>${rg >= 1 ? `<a href="/molecule/${id}/">${esc(name)}</a>` : esc(name)}</td><td class="mono">${esc(formula || '—')}</td><td>${esc(ly)}</td><td class="num">${nh ?? '—'}</td><td><span class="chip" data-rung="${rg}"><span class="dot" aria-hidden="true"></span>${labels[rg]}</span></td></tr>`).join('');
+      `<tr><td>${rg >= 1 ? `<a href="${base}/molecule/${id}/">${esc(name)}</a>` : esc(name)}</td><td class="mono">${esc(formula || '—')}</td><td>${esc(ly)}</td><td class="num">${nh ?? '—'}</td><td><span class="chip" data-rung="${rg}"><span class="dot" aria-hidden="true"></span>${labels[rg]}</span></td></tr>`).join('');
     table.hidden = false;
     count.textContent = `${hits.length.toLocaleString('en')} molecule${hits.length === 1 ? '' : 's'} match${shown.length < hits.length ? ` — showing the first ${shown.length}` : ''}.`;
   }

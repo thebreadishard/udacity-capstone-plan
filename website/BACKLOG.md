@@ -16,7 +16,7 @@ no design decision from the user; step 4 onward benefits from the answers to `DE
 | 8 | mobile pass on real phones (bottom nav, sheets, scrubber, targets) | the mobile variant | 5–7 |
 | 9 | accessibility pass: axe in CI, keyboard walk, screen-reader session, contrast check of the tokens | WCAG 2.2 AA | 8 |
 | 10 | ~~Status and Methods pages~~ **done 24 Sep 07:3x**: Status lists the ledger as a changelog (export `changelog.json`, 131 entries newest first); Methods reads six architecture sheets from the repository at build time, shows their sources and renders them on tap with a lazy mermaid island (601 kB on tap, sources stay readable without JavaScript). Still open: what-is-running from the run logs | the honest pages | 4 |
-| 11 | deploy (GitHub Pages or Cloudflare Pages), nightly build on the pipeline's release tags, footer freshness stamp | public | 0, 9 |
+| 11 | deploy: **done 24 Sep 08:1x** — public repository github.com/thebreadishard/spectrum-atlas (the user: "Maak de publieke repo maar aan. De 0 euro opties zijn prima."), GitHub Pages from the `gh-pages` branch at https://thebreadishard.github.io/spectrum-atlas/, base path wired through `src/lib/base.ts`, `website/deploy.sh` builds and force-pushes `dist/` (with `.nojekyll`, README, LICENCE); the source stays in this monorepo. Still to do: a nightly/tag-triggered build; the footer already carries the freshness stamp | public | 0, 9 |
 | 12 | "Notify me" card (phase 1 of requests) | the reserved space filled | 11 |
 | 13 | phase 2: request queue (FastAPI, OAuth, worker on rented servers, budget cap), ledger writes | requests | the licensed layer |
 

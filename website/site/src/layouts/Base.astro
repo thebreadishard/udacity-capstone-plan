@@ -2,12 +2,13 @@
 // Base layout: slim top bar on desktop, bottom navigation on mobile (design §4, §6). Every page passes a title and a one-line description.
 import '../styles/tokens.css';
 import summary from '../../../export/out/summary.json';
+import { withBase, base } from '../lib/base';
 const { title, description = 'Infrared spectra of molecules, corrected by a learned layer trained on coupled-cluster anchors — with the status and the provenance of every number.' } = Astro.props;
 const nav = [
-  { href: '/atlas/', label: 'Atlas' },
-  { href: '/methods/', label: 'Methods' },
-  { href: '/status/', label: 'Status' },
-  { href: '/about/', label: 'About' },
+  { href: withBase('/atlas/'), label: 'Atlas' },
+  { href: withBase('/methods/'), label: 'Methods' },
+  { href: withBase('/status/'), label: 'Status' },
+  { href: withBase('/about/'), label: 'About' },
 ];
 const path = Astro.url.pathname;
 ---
@@ -21,15 +22,15 @@ const path = Astro.url.pathname;
     <meta name="color-scheme" content="light dark" />
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⌬</text></svg>" />
   </head>
-  <body>
+  <body data-base={base}>
     <a class="skip" href="#main">Skip to content</a>
     <header class="top">
       <div class="container bar">
-        <a class="brand" href="/" aria-label="Spectrum Atlas home"><span class="mark" aria-hidden="true">⌬</span> Spectrum Atlas</a>
+        <a class="brand" href={withBase('/')} aria-label="Spectrum Atlas home"><span class="mark" aria-hidden="true">⌬</span> Spectrum Atlas</a>
         <nav class="desktop" aria-label="Primary">
           {nav.map((n) => <a href={n.href} aria-current={path.startsWith(n.href) ? 'page' : undefined}>{n.label}</a>)}
         </nav>
-        <form class="search" action="/atlas/" method="get" role="search">
+        <form class="search" action={withBase('/atlas/')} method="get" role="search">
           <label class="visually-hidden" for="q">Search molecules</label>
           <input id="q" name="q" type="search" placeholder="naphthalene · C14H10 · c1ccc2ccccc2c1" autocomplete="off" />
         </form>

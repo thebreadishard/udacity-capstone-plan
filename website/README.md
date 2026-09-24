@@ -14,6 +14,7 @@ moments.
   `export/out/`, not committed). The only code that lives here. The site itself will be its own repository so that it can never touch the
   pipeline's run directories.
 
-Decisions of 23 September 22:1x (design §12): name Spectrum Atlas, scope "molecules" (broader than PAHs), uncomputed rows shown, GitHub Pages first,
+Published 24 September at <https://thebreadishard.github.io/spectrum-atlas/> from the public repository
+`thebreadishard/spectrum-atlas` (built site only; `website/deploy.sh` publishes; the source stays here). Decisions of 23 September 22:1x (design §12): name Spectrum Atlas, scope "molecules" (broader than PAHs), uncomputed rows shown, GitHub Pages first,
 CC BY 4.0 / MIT, English, sign-in only for feeding the pipeline. Nothing is built yet. Rules that apply here as everywhere in this repository: every number traces to a file; commit named paths only;
 nothing here runs compute.

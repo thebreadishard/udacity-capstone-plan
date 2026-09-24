@@ -2,6 +2,7 @@
 // Home: the question, the search, the ladder with live counts, three doors (design §4.1).
 import Base from '../layouts/Base.astro';
 import summary from '../../../export/out/summary.json';
+import { withBase } from '../lib/base';
 const labels = {
   listed: 'Listed', cheap_level_done: 'Cheap level done', correction_predicted: 'Correction predicted',
   spectrum_predicted: 'Spectrum predicted', anchored: 'Anchored', validated: 'Validated',
@@ -12,7 +13,7 @@ const rungs = summary.rungs.map((r, i) => ({ key: r, i, label: labels[r], n: sum
   <section class="hero">
     <h1>Has this molecule been through the pipeline, and what came out?</h1>
     <p class="lead">Infrared spectra of molecules, corrected by a learned layer trained on coupled-cluster anchors — with the status and the provenance of every number. Polycyclic aromatics first.</p>
-    <p class="examples muted">Try <a href="/atlas/?q=naphthalene">naphthalene</a>, <a href="/atlas/?q=C14H10">C14H10</a> or <a href="/atlas/?q=c1ccc2ccccc2c1">c1ccc2ccccc2c1</a>.</p>
+    <p class="examples muted">Try <a href={withBase('/atlas/?q=naphthalene')}>naphthalene</a>, <a href={withBase('/atlas/?q=C14H10')}>C14H10</a> or <a href={withBase('/atlas/?q=c1ccc2ccccc2c1')}>c1ccc2ccccc2c1</a>.</p>
   </section>
 
   <section aria-labelledby="ladder-h">
@@ -25,12 +26,12 @@ const rungs = summary.rungs.map((r, i) => ({ key: r, i, label: labels[r], n: sum
         </li>
       ))}
     </ol>
-    <p class="muted small">A molecule holds the highest rung it reaches. Counts come from the export, never from the page. <a href="/status/">What changed, and when</a>.</p>
+    <p class="muted small">A molecule holds the highest rung it reaches. Counts come from the export, never from the page. <a href={withBase('/status/')}>What changed, and when</a>.</p>
   </section>
 
   <section class="doors grid">
-    <a class="card door" href="/atlas/"><h3>Browse the atlas</h3><p class="muted">Every molecule the pipeline lists, computes or anchors, with filters by status, size and elements.</p></a>
-    <a class="card door" href="/methods/"><h3>How it works</h3><p class="muted">The pipeline in five pictures, the three lessons, and every pre-registration.</p></a>
+    <a class="card door" href={withBase('/atlas/')}><h3>Browse the atlas</h3><p class="muted">Every molecule the pipeline lists, computes or anchors, with filters by status, size and elements.</p></a>
+    <a class="card door" href={withBase('/methods/')}><h3>How it works</h3><p class="muted">The pipeline in five pictures, the three lessons, and every pre-registration.</p></a>
     <a class="card door" href="https://thebreadishard.github.io/"><h3>The story so far</h3><p class="muted">The lab notebook: what was tried, what failed, what was learned — in plain English.</p></a>
   </section>
 </Base>
