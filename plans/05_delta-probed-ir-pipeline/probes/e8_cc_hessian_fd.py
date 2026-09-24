@@ -104,6 +104,7 @@ def main():
     if a.symmetry:
         block_rows = {i: G[3 * i:3 * i + 3] for i in reps}
         H, spread = SYM.reconstruct(block_rows, ops, n); log(f"symmetry reconstruction: spread of multiply-reached rows {spread:.2e} a.u.; self-check {SYM.self_check(H, ops, n):.1e}")
+        asym = spread     # the consistency measure of the symmetric run (24 Sep: the log line below needs it; it crashed the benzene smoke once)
     else:
         H = 0.5 * (G + G.T); asym = float(np.abs(G - G.T).max())
     Hp, Hmw = project_tr(H, masses, x0); fr = frequencies(Hp / np.outer(np.sqrt(np.repeat(masses * AMU2AU, 3)), np.sqrt(np.repeat(masses * AMU2AU, 3))))
