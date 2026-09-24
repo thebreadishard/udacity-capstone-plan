@@ -401,7 +401,10 @@ torsion (NO2, CF3, vinyl, Cl) is imaginary, so those geometries are saddle point
 one, to be fixed by re-optimising from a twisted start. The release rule of section 1 ("drop imaginary-mode molecules") was therefore right for
 fifteen and wrong for five; the release builder now reads the rule from the analytic frequencies when a second route exists.""")
 md("""### 8.2 The baseline retrained on the 229-molecule release""")
-code("""RELEASE_C = Path("..") / "data" / "corpus_release" / (os.environ.get("M05_RELEASE_FOLLOWUP2", "layerA2_2026-09-24") + ".npz")
+code("""# the v1 numbers come from results.json and results_followup.json (written by sections 5 and 7), so this section can also run append-only
+# in a kernel that did not retrain sections 3–5 (execute_section8.py; the trained models of those sections are not needed here)
+r_v1 = json.load(open("results.json", encoding="utf-8")); followup = json.load(open("results_followup.json", encoding="utf-8"))
+RELEASE_C = Path("..") / "data" / "corpus_release" / (os.environ.get("M05_RELEASE_FOLLOWUP2", "layerA2_2026-09-24") + ".npz")
 zc = np.load(RELEASE_C); man_c = json.load(open(str(RELEASE_C).replace(".npz", "_manifest.json")))
 new_ids = [s for s in zc["ids"] if s not in set(ids)]
 print("release:", RELEASE_C.name, "| molecules:", len(zc["ids"]), "| new since section 7:", len(new_ids), "| analytic second route for:", len(man_c.get("analytic_second_route", [])), "molecules")
@@ -417,12 +420,12 @@ rule_c, ap_rule_c = rules(idx["test"]); r_c, ap_c = evaluate(runs_c["baseline (2
 T, idx = T_v1, idx_v1
 rows = []
 for F in FAMILIES:
-    rows.append(dict(family=F, **{"zero (v1)": tab["rms_diag"].loc[F, "zero"], "baseline v1 (section 3)": tab["rms_diag"].loc[F, "baseline"],
+    rows.append(dict(family=F, **{"zero (v1)": r_v1["test_rms"][F]["zero"]["diag"], "baseline v1 (section 3)": r_v1["test_rms"][F]["baseline"]["diag"],
                                   "baseline retrained (7.2, 224)": followup["test_rms_diag_corrected"][F]["baseline_retrained"],
                                   "zero (229)": rule_c["zero"][F]["diag"], "baseline retrained (229)": r_c[F]["diag"]}))
 tab_c = pd.DataFrame(rows).set_index("family").round(2)
 print("band shifts (diagonal), test RMS in cm⁻¹ — v1, the 224-molecule retrain of 7.2, and the 229-molecule retrain:"); display(tab_c)
-print(f"pair-head average precision: v1 {aps['baseline']:.3f} → 224 {followup['pair_ap_corrected']:.3f} → 229 {ap_c:.3f} (resonance rule {ap_rule_c:.3f})")""")
+print(f"pair-head average precision: v1 {r_v1['pair_ap']['baseline']:.3f} → 224 {followup['pair_ap_corrected']:.3f} → 229 {ap_c:.3f} (resonance rule {ap_rule_c:.3f})")""")
 md("""*Reading.* Five molecules more, all of them with a soft torsion that is now real; the test set changes only by whichever of them the sha rule
 sends there, so the numbers are comparable within the seed scatter of section 3. The point of the cell is the same as 7.2's: the reader sees
 that a data correction did not rewrite the result, and that the rule which drops molecules is now evidence-based per molecule.""")
