@@ -153,3 +153,8 @@ Validation (`probes/results_m1/e8_benzene_ccpvdz/symmetry_validation_2026-09-24.
 `e8_cc_hessian_fd.py --symmetry` uses it; the npz records `symmetry_reduced` and the row spread. Plan: an end-to-end smoke of the new code path on
 benzene at cc-pVDZ on the CCX53 when its second-route lanes finish (12 gradients, ≈ 1 h; must match the 72-gradient Hessian), then naphthalene there
 (30 gradients at 32 threads); hel1-16 finishes the smoke gradient for the time-per-gradient number first.
+
+**Added 09:0x — the naphthalene smoke gradient on the CPX62 hit its 4-hour limit.** One CCSD(T)/cc-pVDZ (frozen-core) gradient of naphthalene did
+not finish in 4 h at 16 threads on hel1-16 (load stayed at 3–4: pyscf's CCSD(T) gradient is largely serial), against 11 min for benzene. So the
+CPX62 cannot help with naphthalene; the 30 symmetry-reduced gradients run on the CCX53 alone (32 dedicated cores; per-gradient time to be read
+from the benzene smoke there). hel1-16's E8 role is over; the reference gradient will be recomputed on the CCX53 as part of the run.
