@@ -7,7 +7,7 @@ no design decision from the user; step 4 onward benefits from the answers to `DE
 |---|---|---|---|
 | 0 | ~~user reads the design; decisions §12~~ **done 23 Sep 22:1x** (name, scope, rows shown, GitHub Pages, licences, English, access policy) | a name, hosting, licence | — |
 | 1 | ~~`export/build_catalog.py`~~ **done 24 Sep 07:0x**: manifest + ledger + results + releases + second route → `catalog.json` (11,321 rows), 244 per-molecule JSONs, `summary.json` with rung counts; invariants fail the build; six pytest tests on the real corpus | the data contract, mechanical | — |
-| 2 | `export/depict.py`: RDKit SVG depictions for the computed molecules, themed via CSS variables; alt-text strings | 244 SVGs | 1 |
+| 2 | ~~`export/depict.py`~~ **done 24 Sep 07:1x**: RDKit SVGs with carbons in `currentColor` and heteroatoms in `var(--accent)`, alt text from name and formula; 244 computed + all 5,266 rows with a SMILES (≈ 10 kB each, 51 MB; layer C has no SMILES yet) | the depictions | 1 |
 | 3 | ~~JSON schema~~ **done 24 Sep 07:0x**: `export/SCHEMA.md` (fields, sources, the ladder, flags, invariants, what is not yet in the contract) | a stable contract for the site | 1 |
 | 4 | the site repository: Astro 5 skeleton, tokens (light/dark), Home · Atlas · Molecule from static JSON; no islands yet | a browsable static site, locally | 0, 3 |
 | 5 | spectrum viewer island (dual axis, sticks/broadened, band for uncertainty, CSV/JSON download, table twin) | the molecule page's centre | 4 |
