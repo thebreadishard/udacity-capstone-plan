@@ -90,3 +90,23 @@ CC-trained instance of the pairwise model on the first thin decks.
 transfer to the CC correction 60 % (was 50) — E8 is the measurement; affordable with desktop + small Snellius 60 % (was 65; the out-of-plane family stays
 on TZ after M3's first-family loss, the in-plane bend family is licensed for DZ after the second); full mandate ≈ 35 % (was 30); a defensible, per-family
 licensed pipeline ≈ 70 % (was 65). The decisive next measurement is E8 (≈ €2, one night).
+
+## Dated addition, 2026-09-24 06:4x — odds re-estimated after E8 (the user asked again)
+
+E8 (benzene, CCSD(T)/cc-pVDZ) read the coupled-cluster correction as pairwise local: 92 % in the pattern of decision 49, 98 % with pairs two bonds
+apart, ring couplings recovered only with the latter (0.34). It also priced the label: one canonical CCSD(T) gradient of naphthalene takes hours on a
+CPX62; symmetry cuts naphthalene from 108 to 30 gradients, but substituted molecules have no symmetry to cut.
+
+| question | 23 Sep | 24 Sep | why |
+|---|---|---|---|
+| step 1 — the conversation of the 28th carries a defensible plan | 85 % | 85 % | unchanged; E8's outcome and the corrected corpus add evidence, the anchor's third family is still running |
+| the learned layer learns what it needs on the DFT–DFT proxy | 80 % | 80 % | E7 stands; the twenty imaginary-mode molecules may add rows |
+| the same holds for the coupled-cluster correction | 60 % | **75 %** | E8: local in the same pattern, one bond further; transfer between cores is naphthalene's read-out (running) |
+| affordable with desktop + small Snellius | 60 % | **55 %** | canonical CC Hessians are far dearer than the "≈ 4 days" I wrote; the label route must be LNO-CC energies plus sparse probing, and that is not yet measured on a real molecule |
+| full mandate (large PAH in, spectral shape out, trained by 2027) | 35 % | **40 %** | the representation risk is largely retired; the cost risk is now the main one |
+| a defensible, per-family licensed pipeline | 70 % | **75 %** | two families read, one won; data quality guarded twice |
+
+Levers with tests (in order): (1) **sparse probing** — ΔF lives on pattern (d), so a Hessian correction needs displacements along far fewer directions
+than 3N; plan 06's recovery theorems say how many; test on benzene's 72 gradients without new compute (reconstruct ΔH_CC from a pattern-chosen
+subset); (2) **naphthalene E8** (running) — transfer between cores; (3) **the LNO-CC label cost on one substituted molecule** at the anchor's
+thresholds, measured before any deck is bought; (4) cations (obstacle 9) — the corpus still has none.
