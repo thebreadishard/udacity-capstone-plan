@@ -1,16 +1,76 @@
 ---
+// Methods: the architecture sheets (mermaid sources read at build time from the repository) rendered on tap by a lazy mermaid island,
+// the three lessons with their pre-registrations. The sheet sources stay visible as text, so the page works without JavaScript.
+import fs from 'node:fs';
+import path from 'node:path';
 import Base from '../layouts/Base.astro';
 const repo = 'https://github.com/thebreadishard/udacity-capstone-plan/blob/master/plans/05_delta-probed-ir-pipeline/';
+const archDir = path.resolve('../../plans/05_delta-probed-ir-pipeline/GoalGathering/architecture');
+const wanted = [
+  ['00_overview.mmd', 'Overview'], ['30_data_creation_corpus.mmd', 'Data creation: the corpus'], ['40_data_creation_labels.mmd', 'Data creation: the labels'],
+  ['50_deltaH_model_components.mmd', 'The correction model'], ['70_test_and_licence.mmd', 'Test and licence'], ['80_spectrum_pipeline.mmd', 'The spectrum pipeline'],
+];
+const sheets = wanted.filter(([f]) => fs.existsSync(path.join(archDir, f))).map(([f, title]) => {
+  const src = fs.readFileSync(path.join(archDir, f), 'utf8');
+  const comment = src.split('\n').filter((l) => l.startsWith('%%')).map((l) => l.replace(/^%%\s?/, '')).join(' ');
+  const body = src.split('\n').filter((l) => !l.startsWith('%%')).join('\n').trim();
+  return { file: f, title, comment, body };
+});
 ---
 <Base title="Methods" description="How the pipeline works, and the lessons it learned in public.">
   <h1>Methods</h1>
   <p>The pipeline computes a cheap harmonic spectrum for a molecule, predicts the correction that a coupled-cluster calculation would make to it, and licenses that prediction per family of vibrations against measured anchors. Everything below links to the pre-registration or the note that carries it.</p>
-  <h2>The five pictures</h2>
-  <p class="muted">The architecture sheets (overview, corpus, labels, the correction model, training, test and licence, the spectrum pipeline) are rendered here in step 10. Until then: <a href={repo + 'GoalGathering/architecture/ARCHITECTURE.md'}>ARCHITECTURE.md</a>.</p>
-  <h2>Three lessons</h2>
-  <ol>
-    <li><strong>Every derived quantity gets a second route.</strong> Finite-difference quartics turned out to be noise; a benzene Hessian in the corpus was wrong by 133 cm⁻¹ because of a quadrature grid, found by an analytic second calculation. <a href={repo + 'QUALITY_POLICY.md'}>Quality policy</a>.</li>
-    <li><strong>The couplings are learned only in local coordinates.</strong> In the basis of normal modes the correction's couplings are unlearnable at any data size; written as pairwise terms in bonds and angles the same data teach them. <a href={repo + 'GoalGathering/notes/PreRegistration_2026-09-23_E7_Couplings_in_Local_Coordinates.md'}>E7</a>.</li>
-    <li><strong>The coupled-cluster correction is local too, one bond further.</strong> Benzene's CCSD(T) correction sits 98 % inside the pairwise pattern once pairs two bonds apart are included. <a href={repo + 'GoalGathering/notes/PreRegistration_2026-09-23_E8_CC_Correction_Locality.md'}>E8</a>.</li>
-  </ol>
+
+  <section class="card">
+    <h2>The pictures <span class="muted small">— the architecture sheets, read from the repository at build time</span></h2>
+    <p class="muted small">Rectangles are steps (operation + software), rounded shapes are data objects, dashed shapes are not built yet. <button type="button" id="render-mermaid" class="btn">Render the diagrams</button> <span class="muted">(loads a diagram library, ≈ 600 kB)</span></p>
+    {sheets.map((s) => (
+      <details class="sheet" open={s.file.startsWith('00')}>
+        <summary><strong>{s.title}</strong> <span class="mono muted small">{s.file}</span></summary>
+        {s.comment && <p class="small">{s.comment}</p>}
+        <pre class="mermaid-src" data-title={s.title}>{s.body}</pre>
+        <div class="mermaid-out" aria-label={`Diagram: ${s.title}`}></div>
+        <p class="muted small"><a href={repo + 'GoalGathering/architecture/' + s.file}>source</a></p>
+      </details>
+    ))}
+  </section>
+
+  <section class="card" style="margin-top: 16px">
+    <h2>Three lessons</h2>
+    <ol>
+      <li><strong>Every derived quantity gets a second route.</strong> Finite-difference quartics turned out to be noise; a benzene Hessian in the corpus was wrong by 133 cm⁻¹ because of a quadrature grid, found by an analytic second calculation. <a href={repo + 'QUALITY_POLICY.md'}>Quality policy</a>.</li>
+      <li><strong>The couplings are learned only in local coordinates.</strong> In the basis of normal modes the correction's couplings are unlearnable at any data size; written as pairwise terms in bonds and angles the same data teach them. <a href={repo + 'GoalGathering/notes/PreRegistration_2026-09-23_E7_Couplings_in_Local_Coordinates.md'}>E7</a>.</li>
+      <li><strong>The coupled-cluster correction is local too, one bond further.</strong> Benzene's CCSD(T) correction sits 98 % inside the pairwise pattern once pairs two bonds apart are included. <a href={repo + 'GoalGathering/notes/PreRegistration_2026-09-23_E8_CC_Correction_Locality.md'}>E8</a>.</li>
+    </ol>
+  </section>
 </Base>
+<script>
+  const btn = document.getElementById('render-mermaid') as HTMLButtonElement | null;
+  btn?.addEventListener('click', async () => {
+    btn.disabled = true; btn.textContent = 'Loading…';
+    try {
+      const mermaid = (await import('mermaid')).default;
+      const dark = matchMedia('(prefers-color-scheme: dark)').matches && document.documentElement.dataset.theme !== 'light';
+      mermaid.initialize({ startOnLoad: false, theme: dark ? 'dark' : 'neutral', securityLevel: 'strict', flowchart: { htmlLabels: false } });
+      const srcs = [...document.querySelectorAll<HTMLPreElement>('.mermaid-src')];
+      for (const [i, pre] of srcs.entries()) {
+        const out = pre.nextElementSibling as HTMLElement; const src = pre.textContent ?? '';
+        try {
+          const { svg } = await mermaid.render(`sheet-${i}`, src);
+          out.innerHTML = svg; pre.hidden = true; (pre.closest('details') as HTMLDetailsElement).open = true;
+        } catch (e) { out.textContent = 'This sheet did not render: ' + (e as Error).message; }
+      }
+      btn.textContent = 'Diagrams rendered';
+    } catch (e) { btn.disabled = false; btn.textContent = 'Diagram library failed to load — the sources stay readable below'; }
+  });
+</script>
+<style>
+  .small { font-size: 0.9rem; }
+  .btn { font: inherit; padding: 6px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--fg); cursor: pointer; min-height: 40px; }
+  .btn:hover { border-color: var(--accent); }
+  .sheet { border-top: 1px solid var(--line); padding: var(--space-3) 0; }
+  .sheet summary { cursor: pointer; }
+  .mermaid-src { font-family: var(--font-mono); font-size: 0.75rem; line-height: 1.4; overflow-x: auto; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: var(--space-3); max-height: 320px; }
+  .mermaid-out { overflow-x: auto; }
+  .mermaid-out :global(svg) { max-width: 100%; height: auto; }
+</style>
