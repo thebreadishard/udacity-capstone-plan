@@ -1,0 +1,18 @@
+[2026-09-23 13:20:16] chain armed; waiting for benzene hessian
+[2026-09-24 02:13:27] benzene hessian present; locality read-out
+b3lyp/cc-pvdz analytic Hessian: 151 s
+wb97x/cc-pvdz analytic Hessian: 206 s
+B3LYP/cc-pvdz frequencies: [406, 406, 616, 616, 656, 721, 842, 842, 969, 969, 1005, 1015, 1025, 1056, 1056, 1152, 1179, 1180, 1355, 1364, 1505, 1505, 1651, 1651, 3216, 3226, 3226, 3242, 3242, 3253]
+families: {'CH-stretch': 6, 'CH-oop': 6, 'ring-ip': 13, 'other': 5}
+CCSD(T) FD frequencies: [378, 378, 606, 606, 632, 633, 826, 826, 940, 940, 943, 1005, 1046, 1066, 1066, 1151, 1187, 1187, 1355, 1387, 1526, 1526, 1699, 1699, 3274, 3285, 3285, 3303, 3303, 3314]
+RMS of ΔH (a.u.): CC − B3LYP 4.98e-03, proxy ωB97X − B3LYP 3.48e-03
+(a) diagonal                 CC − B3LYP             ΔH residual 0.54 | ring coupling ratio 1.08 | ring diag  16.00 | corrected ω 19.22 (zero 37.95)
+(a) diagonal                 proxy ωB97X − B3LYP    ΔH residual 0.78 | ring coupling ratio 0.95 | ring diag  18.78 | corrected ω 11.55 (zero 22.36)
+(b) + atom-sharing pairs     CC − B3LYP             ΔH residual 0.27 | ring coupling ratio 0.93 | ring diag  11.88 | corrected ω 8.37 (zero 37.95)
+(b) + atom-sharing pairs     proxy ωB97X − B3LYP    ΔH residual 0.58 | ring coupling ratio 0.67 | ring diag  14.09 | corrected ω 7.35 (zero 22.36)
+(c) + ring bond-bond pairs   CC − B3LYP             ΔH residual 0.08 | ring coupling ratio 0.80 | ring diag   8.39 | corrected ω 6.22 (zero 37.95)
+(c) + ring bond-bond pairs   proxy ωB97X − B3LYP    ΔH residual 0.06 | ring coupling ratio 0.15 | ring diag   2.91 | corrected ω 2.20 (zero 22.36)
+exploratory: element-wise correlation of ΔF_CC and ΔF_proxy on pattern (c): 0.78 | norm ratio CC/proxy: 1.61
+wrote results/benzene_ccpvdz/E8_locality_benzene verdict between
+[2026-09-24 02:19:25] benzene verdict: between
+[2026-09-24 02:19:25] not a win: chain stops (user decides)
