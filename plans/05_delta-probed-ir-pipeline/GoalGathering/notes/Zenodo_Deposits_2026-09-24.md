@@ -1,0 +1,54 @@
+# Zenodo deposits — prepared 24 September 2026 (the user uploads; everything below is ready to paste)
+
+Three datasets must be public with a DOI before the modules that use them are submitted (rubric: "publicly available before that project
+starts"; the module reports cite the DOI). Uploading is the user's action (Zenodo account, ORCID). This note gives, per deposit, the files,
+the metadata in Zenodo's fields, and the licence. Each deposit gets its own record; later versions of the same dataset go under the same
+concept DOI ("New version").
+
+## 1. Module 04 — the calibrated-harmonic training table
+
+- **Files:** `modules/04_calibrated_harmonic/notebook/training_table.csv` (2,477 rows × 28 columns) and `modules/04_calibrated_harmonic/PROVENANCE.md`.
+- **Title:** Matched laboratory–computed vibrational band table for the calibrated-harmonic baseline (Δ-probed IR pipeline, module 04)
+- **Description:** One row per matched pair of a laboratory PAH band (NASA Ames PAHdb experimental library v3.10) and its computed
+  counterpart (PAHdb theoretical library v4.00), with the matching rule, the band uncertainty columns of module 03 and the family labels
+  used by the pre-registered calibrated-harmonic recipe. Built by `build_training_table.py`; provenance in PROVENANCE.md.
+- **Keywords:** polycyclic aromatic hydrocarbons; infrared spectroscopy; harmonic frequency scaling; PAHdb; benchmark table
+- **Licence:** CC BY 4.0 (derived from PAHdb data — cite Boersma+ 2014, Bauschlicher+ 2018, Mattioda+ 2020, Ricca+ 2026 in the description).
+- **Related identifiers:** is derived from https://www.astrochem.org/pahdb/ ; is supplement to the repository https://github.com/thebreadishard/udacity-capstone-plan
+
+## 2. Module 05 — the corpus release layerA2_2026-09-24
+
+- **Files:** `modules/05_support_predictor/data/corpus_release/layerA2_2026-09-24.npz` (3.9 MB) and `layerA2_2026-09-24_manifest.json`
+  (frozen id list with SHA-256 per Hessian file), `modules/05_support_predictor/corpus/README.md` (deck, layers, the two dated notes on the
+  finite-difference artefacts), `modules/05_support_predictor/corpus/decks/deck_v1.json`. Optional second file set: the 244 molecule directories
+  (`geometry.json`, `hessian_b3lyp.npz`, `hessian_wb97x.npz`, `result.json`, analytic second-route Hessians where present) as one zip (≈ 60 MB).
+- **Title:** Two-functional harmonic Hessian corpus of substituted aromatic molecules (B3LYP and ωB97X, 6-31G*; release layerA2_2026-09-24)
+- **Description:** 229 molecules of layers A and A2 (benzene, naphthalene, three- and four-ring cores, mono-substituted variants): B3LYP/6-31G*
+  geometries, B3LYP and ωB97X Hessians at the same geometry, per-mode tokens and the block target of the support predictor; 8 molecules carry
+  pyscf analytic Hessians (grid 99/590) in place of psi4 finite differences after a second-route check; 15 molecules with genuine imaginary
+  modes are excluded and listed in the manifest. Deck v1 and its known finite-difference noise are documented. Computed ab initio data (not
+  synthetic, not AI-generated).
+- **Keywords:** vibrational Hessians; density functional theory; B3LYP; ωB97X; aromatic molecules; machine-learning corpus
+- **Licence:** CC BY 4.0. Software used: psi4 1.11, pyscf 2.14, geomeTRIC 1.1.1 (name the versions in the description).
+- **Related identifiers:** is supplement to the repository; cites Hessian QM9 (figshare 10.6084/m9.figshare.26363959) as the public set beside it.
+
+## 3. Module 06 — the PubChem fused-aromatic SMILES set
+
+- **Files:** `modules/06_generative_candidates/data/pubchem_aromatics_2026-09-24.part1.csv.gz`, `.part2.csv.gz` (reassembly line in the data
+  README), `modules/06_generative_candidates/data/README.md` (query, filters, counts, SHA-256 of the full CSV).
+- **Title:** Fused-aromatic molecules from PubChem: a frozen SMILES set for generative modelling (160,972 molecules, 24 September 2026)
+- **Description:** Union of PubChem fast-substructure searches for nine fused-aromatic cores (50,000 CIDs each), filtered with RDKit to neutral
+  molecules of C, H, N, O, S, F, Cl with at most 30 heavy atoms, no isotopes and at least two fused aromatic rings; one canonical SMILES per
+  molecule with CID, formula, heavy-atom count, aromatic-ring count and the cores that matched. Retrieval date and counts per filter step are in
+  the README. The sample is biased toward fused aromatics by construction.
+- **Keywords:** PubChem; SMILES; polycyclic aromatic; generative model; dataset
+- **Licence:** CC0 1.0 for the compiled table (PubChem data are public domain; the compilation adds no restriction). Cite PubChem (Kim et al., 2025, NAR).
+- **Related identifiers:** is derived from https://pubchem.ncbi.nlm.nih.gov/ ; is supplement to the repository.
+
+## Common fields
+
+- **Creators:** Petrignani, Frederic (ORCID if available); affiliation: independent / Udacity AI Mastery capstone.
+- **Resource type:** Dataset. **Version:** the date in the file name. **Language:** English.
+- **Funding:** none. **Access:** open.
+- After minting: write each DOI into the module's README and PROVENANCE, the reading copy's data statements and the site's About page
+  (`website/site/src/pages/about.astro`), then re-export and redeploy the atlas so the citation line is live.
