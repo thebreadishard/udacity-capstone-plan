@@ -15,7 +15,7 @@ exits non-zero when an invariant breaks. Numbers in the site's templates never c
 | `n_heavy`, `n_atoms` | int | manifest, else RDKit | pending rows of B/C carry no counts in the manifest |
 | `rung` | 0–5 | derived | see the ladder below |
 | `rung_label` | string | derived | `listed`, `cheap_level_done`, `correction_predicted`, `spectrum_predicted`, `anchored`, `validated` |
-| `flags` | list of strings | derived | `imaginary_mode_under_review`, `screen_flagged`, `second_route_agrees`, `second_route_disagrees`, `replaced_by_second_route` |
+| `flags` | list of strings | derived | `imaginary_mode_under_review` (no second route yet), `second_route_healed`, `imaginary_mode_genuine` (from `data/second_route/imaginary_second_route_*.json`), `screen_flagged`, `second_route_agrees`, `second_route_disagrees`, `replaced_by_second_route` |
 | `releases` | list of strings | `data/corpus_release/*_manifest.json` | release names containing the molecule |
 | `manifest_status` | string | manifest | `pending` / `done` / `failed` |
 | `evidence` | list of paths | the fixed lists in the script | only for rungs 4 and 5; paths relative to plan 05 |

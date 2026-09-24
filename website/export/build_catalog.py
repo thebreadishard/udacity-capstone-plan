@@ -100,6 +100,14 @@ def build(repo, out, limit=None):
         for mid in m.get("analytic_second_route", []):
             replaced.add(mid)
     sr_dir = os.path.join(plan, "modules", "05_support_predictor", "data", "second_route")
+    verdicts = {}                                   # the imaginary-mode read-out of 24 Sep: healed / genuine per molecule
+    for vp in sorted(glob.glob(os.path.join(sr_dir, "imaginary_second_route_*.json"))):
+        for row in json.load(open(vp, encoding="utf-8"))["rows"]:
+            v = row.get("molecule_verdict", "")
+            if v.startswith("healed"):
+                verdicts[row["id"]] = "second_route_healed"
+            elif v.startswith("genuine"):
+                verdicts[row["id"]] = "imaginary_mode_genuine"
     screen = {}
     sp = os.path.join(sr_dir, "corpus_screen_2026-09-23.json")
     if os.path.exists(sp):
@@ -129,7 +137,7 @@ def build(repo, out, limit=None):
             row["rung"] = 1
             n_im = {tag: int(res.get(f"n_imaginary_{tag}", 0)) for tag in ("b3lyp", "wb97x")}
             if any(n_im.values()):
-                row["flags"].append("imaginary_mode_under_review")
+                row["flags"].append(verdicts.get(mid, "imaginary_mode_under_review"))
             if os.path.exists(os.path.join(mdir, "analytic_check.json")):
                 chk = json.load(open(os.path.join(mdir, "analytic_check.json"), encoding="utf-8"))
                 worst = max(float(np.abs(np.array(v["freq_analytic"]) - np.array(v["freq_corpus"])).max()) for v in chk.values())
