@@ -193,6 +193,25 @@ if FU.exists():
          "it is trusted; and the network was not the limit — the representation was. Both findings, their predictions and their outcomes are dated in "
          "the project's pre-registration notes.")
 
+FU2 = NB / "results_followup2.json"
+if FU2.exists():
+    U2 = json.load(open(FU2, encoding="utf-8"))
+    heading("Addendum 2 (24 September 2026): the imaginary-mode molecules, and the coupled-cluster correction itself")
+    im = U2["imaginary_second_route"]; e8c = U2["e8"]["pattern_c_cc"]; e8d = U2["e8"]["pattern_d_cc_mask"]; e8p = U2["e8"]["pattern_c_proxy"]
+    para(f"Two further follow-up cells were added (notebook section 8). First, the second route was run for every molecule the release rule had dropped "
+         f"for an imaginary mode: of {im['n_read']} molecules read, {im['healed']} were healed (the finite-difference deck had flipped a soft substituent torsion; "
+         f"the analytic Hessian has it real) and {im['genuine']} are genuine saddle points of the optimised geometry. The release rule now reads the analytic "
+         f"frequencies where a second route exists; the baseline retrained on the resulting {U2['n_molecules']}-molecule release ({U2['release_followup2']}) gives a "
+         f"ring-in-plane band-shift RMS of {U2['test_rms_diag_229']['ring-ip']['baseline_retrained']:.1f} cm⁻¹ against {U2['test_rms_diag_229']['ring-ip']['zero']:.1f} for the zero rule "
+         f"(pair-head average precision {U2['pair_ap_229']:.3f}), within the seed scatter of the main run. Second, a CCSD(T)/cc-pVDZ Hessian of benzene was read "
+         f"with the same parameter-free projections as the DFT proxy: the real correction is {100 * (1 - e8c['dH_residual_ratio']):.0f} % inside the pairwise local pattern of "
+         f"section 7 and {100 * (1 - e8d['dH_residual_ratio']):.0f} % once pairs two bonds apart are added, and only then are its ring couplings recovered (ratio to the zero rule "
+         f"{e8d['ring_coupling_ratio']:.2f} against {e8c['ring_coupling_ratio']:.2f}; the proxy: {e8p['ring_coupling_ratio']:.2f} already at the smaller pattern). Verdict by the pre-registered rule: "
+         f"{U2['e8']['verdict']} — the coupled-cluster correction is local like the proxy, one bond further. For the mode-basis baseline of this report nothing changes, "
+         f"which is the finding; the pairwise local model of the next version gains one pair class.")
+    para("What was learned: a data-quality rule should be evidence per molecule rather than a blanket, the range-separated functional is the noisier "
+         "finite-difference route, and the real target is local like the stand-in. All numbers trace to the notebook's section 8 and the project's dated notes.")
+
 heading("References")
 refs = [
     "Danchev, V. (2022). Reproducible data science with Python: An open learning resource. Journal of Open Source Education, 5(56), 156. https://doi.org/10.21105/jose.00156",

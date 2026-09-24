@@ -152,3 +152,14 @@ benzene is in the **train** split): ring-in-plane 5.58 against 20.3 for the zero
 report's addendum (`make_summary.py`). The model of sections 2–5 stays the module's pre-registered baseline; the pairwise local target is the design
 of the next version. Files added: `data/second_route/*.json`, `data/corpus_release/layerA2_2026-09-23b.*`, `corpus/analytic_hessians.py`, the screen in
 `corpus/check_results.py`.
+
+## Dated note 2026-09-24 13:2x — section 8 follow-up cells added (not yet executed)
+
+`notebook/make_notebook.py` gained section 8 (five markdown cells, four code cells) after section 7, leaving sections 1–7 as run: 8.1 the twenty
+imaginary-mode molecules read along the analytic second route (`data/second_route/imaginary_second_route_2026-09-24.json`: 5 healed, 15 genuine);
+8.2 the baseline retrained with the identical protocol on release `layerA2_2026-09-24` (229 molecules; env `M05_RELEASE_FOLLOWUP2`); 8.3 E8's
+reading of benzene's CCSD(T)/cc-pVDZ correction with the E7 projections (`probes/results_m1/e8_benzene_ccpvdz/E8_locality_benzene.json`,
+`E8_between_benzene.json`); 8.4 what was learned. `make_summary.py` writes "Addendum 2" from `notebook/results_followup2.json` when it exists. The
+scratch build (`--no-execute`) validates: 39 cells, every new code cell compiles. **Execution pending** until a 32-core machine is free of E8
+(the CCX53 runs naphthalene until ≈ 26–27 September); the committed `deep_learning.ipynb`, `results.json`, report and PDF are still the 23 September
+third execution.

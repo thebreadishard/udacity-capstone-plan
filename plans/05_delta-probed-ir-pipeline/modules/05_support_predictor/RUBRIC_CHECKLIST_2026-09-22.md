@@ -45,3 +45,9 @@ and the full execution of the notebook.*
 - Dataset: original release kept; corrected release `layerA2_2026-09-23b.npz` beside it with its own manifest (which molecule uses the second route).
 - Report: addendum section built from `results_followup.json` (same rule: no number typed by hand).
 - Open: the user's pass; Zenodo; the submission copy at the end.
+
+## Status 2026-09-24 13:2x
+
+Section 8 follow-up cells added to the generator (imaginary-mode second route; retrain on the 229-molecule release; E8's coupled-cluster reading);
+report builder gains Addendum 2. Not executed yet — the executed notebook, `results.json`, docx and PDF in this folder are the 23 September run.
+To close: run `python notebook/make_notebook.py` and `python make_summary.py` on a free machine, re-check items on the executed outputs, refresh PROVENANCE.

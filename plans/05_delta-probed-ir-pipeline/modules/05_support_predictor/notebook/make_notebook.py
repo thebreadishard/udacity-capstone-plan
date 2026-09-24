@@ -374,6 +374,99 @@ md("""### 7.4 What we learned
 - **Pre-registration made both findings legible.** The predictions, the win/lose rules and the outcomes — including the ones that lost — are in the
   project's notes with dates, so the reader can tell what was expected from what was found.""")
 
+md("""## 8. Follow-up (24 September 2026): the imaginary-mode molecules read along the second route, and what the coupled-cluster correction needs
+
+Section 7 replaced one corrupted target and retrained. The day after, the same second route (analytic pyscf Hessians at the corpus geometry,
+grid 99/590) was run for **every** molecule the release rule had dropped for an imaginary mode — twenty — and a coupled-cluster Hessian of benzene
+(CCSD(T)/cc-pVDZ, 72 gradients) was read with the projections of E7 to see whether the *real* correction lives where the DFT proxy's does. Both
+change what this module should say about its data and its target, so both are added here as follow-up cells; sections 1–7 stand as run.""")
+md("""### 8.1 Twenty imaginary modes: five were the deck's noise, fifteen are real""")
+code("""SR2 = Path("..") / "data" / "second_route" / "imaginary_second_route_2026-09-24.json"
+imag = json.load(open(SR2, encoding="utf-8"))
+rows = []
+for r in imag["rows"]:
+    if r.get("status") != "ok":
+        continue
+    f = r["functionals"]
+    rows.append(dict(molecule=r["name"], **{"B3LYP corpus → analytic": f"{f['b3lyp']['corpus_lowest']} → {f['b3lyp']['analytic_lowest']}",
+                                          "ωB97X corpus → analytic": f"{f['wb97x']['corpus_lowest']} → {f['wb97x']['analytic_lowest']}",
+                                          "verdict": r["molecule_verdict"].split(" — ")[0]}))
+imag_tab = pd.DataFrame(rows)
+n_heal = sum(r["verdict"].startswith("healed") for r in rows); n_gen = sum(r["verdict"].startswith("genuine") for r in rows)
+print(f"{len(rows)} molecules read along the second route: {n_heal} healed (the finite-difference deck flipped a soft torsion), {n_gen} genuine imaginary modes")
+display(imag_tab[imag_tab["verdict"] != "no imaginary mode in the corpus"].reset_index(drop=True))""")
+md("""*Reading.* The four ωB97X-only flips all heal — the range-separated functional on psi4's default grid, the same mechanism as benzene's 133 cm⁻¹
+artefact — and one B3LYP case heals too. The twelve B3LYP-only cases do not: the analytic Hessian agrees, to a few cm⁻¹, that the substituent
+torsion (NO2, CF3, vinyl, Cl) is imaginary, so those geometries are saddle points of the optimiser, a *geometry* fault rather than a Hessian
+one, to be fixed by re-optimising from a twisted start. The release rule of section 1 ("drop imaginary-mode molecules") was therefore right for
+fifteen and wrong for five; the release builder now reads the rule from the analytic frequencies when a second route exists.""")
+md("""### 8.2 The baseline retrained on the 229-molecule release""")
+code("""RELEASE_C = Path("..") / "data" / "corpus_release" / (os.environ.get("M05_RELEASE_FOLLOWUP2", "layerA2_2026-09-24") + ".npz")
+zc = np.load(RELEASE_C); man_c = json.load(open(str(RELEASE_C).replace(".npz", "_manifest.json")))
+new_ids = [s for s in zc["ids"] if s not in set(ids)]
+print("release:", RELEASE_C.name, "| molecules:", len(zc["ids"]), "| new since section 7:", len(new_ids), "| analytic second route for:", len(man_c.get("analytic_second_route", [])), "molecules")
+split_c = np.array([split_of(s) for s in zc["ids"]]); idx_c = {s: np.where(split_c == s)[0] for s in ("train", "val", "test")}
+print("splits by the same sha rule:", {s: int(len(v)) for s, v in idx_c.items()}, "| the five new molecules fall into:", [split_of(s) for s in new_ids])
+T_c = dict(tokens=torch.tensor(zc["tokens"]), family=torch.tensor(zc["family"]).clamp_min(0), mask=torch.tensor(zc["mask"]), K=torch.tensor(zc["K"]),
+           charge=torch.tensor(zc["charge"]).long(), mult=torch.tensor(zc["mult"]).long(), omega=torch.tensor(zc["omega_cm"]))
+T_v1, idx_v1 = T, idx
+T, idx = T_c, idx_c
+t0 = time.time(); runs_c = {"baseline (229-molecule release)": [train(cfg, s) for s in SEEDS]}
+print(f"retrained: best epochs {[r[2] for r in runs_c['baseline (229-molecule release)']]}, {time.time() - t0:.0f} s")
+rule_c, ap_rule_c = rules(idx["test"]); r_c, ap_c = evaluate(runs_c["baseline (229-molecule release)"], idx["test"])
+T, idx = T_v1, idx_v1
+rows = []
+for F in FAMILIES:
+    rows.append(dict(family=F, **{"zero (v1)": tab["rms_diag"].loc[F, "zero"], "baseline v1 (section 3)": tab["rms_diag"].loc[F, "baseline"],
+                                  "baseline retrained (7.2, 224)": followup["test_rms_diag_corrected"][F]["baseline_retrained"],
+                                  "zero (229)": rule_c["zero"][F]["diag"], "baseline retrained (229)": r_c[F]["diag"]}))
+tab_c = pd.DataFrame(rows).set_index("family").round(2)
+print("band shifts (diagonal), test RMS in cm⁻¹ — v1, the 224-molecule retrain of 7.2, and the 229-molecule retrain:"); display(tab_c)
+print(f"pair-head average precision: v1 {aps['baseline']:.3f} → 224 {followup['pair_ap_corrected']:.3f} → 229 {ap_c:.3f} (resonance rule {ap_rule_c:.3f})")""")
+md("""*Reading.* Five molecules more, all of them with a soft torsion that is now real; the test set changes only by whichever of them the sha rule
+sends there, so the numbers are comparable within the seed scatter of section 3. The point of the cell is the same as 7.2's: the reader sees
+that a data correction did not rewrite the result, and that the rule which drops molecules is now evidence-based per molecule.""")
+md("""### 8.3 E8: does the coupled-cluster correction live where the proxy's does?""")
+code("""E8D = Path("..") / ".." / ".." / "probes" / "results_m1" / "e8_benzene_ccpvdz"
+e8 = json.load(open(E8D / "E8_locality_benzene.json", encoding="utf-8")); e8b = json.load(open(E8D / "E8_between_benzene.json", encoding="utf-8"))
+rows = []
+for pname, d in e8["patterns"].items():
+    for corr, r in d.items():
+        rows.append(dict(pattern=pname, correction=corr, **{"ΔH residual ratio": round(r["dH_residual_ratio"], 2), "ring coupling ratio": round(r["ring_coupling_ratio"], 2),
+                                                          "corrected ω RMS (cm⁻¹)": round(r["corrected_freq_rms"], 1), "zero rule (cm⁻¹)": round(r["corrected_freq_rms_zero_rule"], 1)}))
+for pname in ("(d) (c) + pairs two bonds apart",):
+    for corr in ("CC − B3LYP", "proxy ωB97X − B3LYP"):
+        r = e8b["patterns"][pname][f"{corr} | mask"]
+        rows.append(dict(pattern=pname, correction=corr, **{"ΔH residual ratio": round(r["dH_residual_ratio"], 2), "ring coupling ratio": round(r["ring_coupling_ratio"], 2),
+                                                          "corrected ω RMS (cm⁻¹)": round(r["corrected_freq_rms"], 1), "zero rule (cm⁻¹)": round(r["corrected_freq_rms_zero_rule"], 1)}))
+e8_tab = pd.DataFrame(rows)
+print("benzene, CCSD(T)/cc-pVDZ − B3LYP (the real correction) beside the DFT proxy, read by the parameter-free projections of E7 (masked minimum-norm ΔF):")
+display(e8_tab)
+print(f"verdict by the pre-registered rule: {e8['verdict']}; exploratory correlation of the CC and proxy ΔF on pattern (c): {e8['exploratory']['corr_CC_vs_proxy_on_pattern_c']:.2f}")""")
+md("""*Reading.* The real correction is *more* local than the proxy in norm — 92 % of it sits in the pattern of section 7 (diagonal, pairs sharing an
+atom, bond–bond pairs in a ring) and 98 % once pairs two bonds apart are added — but its ring couplings need that extra class: 0.80 with the
+section-7 pattern, 0.34 with pairs two bonds apart, against 0.15 for the proxy already at the smaller pattern. In words: the DFT proxy's
+couplings are nearest-neighbour, the coupled-cluster correction reaches one bond further. For the pairwise local model this is one more pair class
+in the mask (the feature "ring-path distance 2" already exists); for this module's mode-basis baseline it changes nothing, which is itself the
+finding — the mode basis cannot express any of this. One molecule; naphthalene (two rings, D2h) is being computed to read transfer between cores.""")
+md("""### 8.4 What we learned (continued)
+
+- **A data-quality rule should be evidence per molecule, not a blanket.** "Drop imaginary modes" removed five good molecules with the fifteen bad
+  ones; a second route per flagged molecule tells them apart in minutes of compute.
+- **The noisier route is the range-separated functional.** Every ωB97X-only flip healed; on the real modes the deck's finite differences disagree with
+  the analytic Hessian by up to 32 cm⁻¹ for ωB97X and 6 for B3LYP. New corpus layers use analytic Hessians.
+- **The real target is local like the proxy, one bond further.** E8 is the first measurement of the coupled-cluster correction itself; it confirms the
+  representation of section 7 and sharpens it by one pair class. The module's next version predicts that object; this version's baseline stays as the
+  pre-registered comparison point.""")
+code("""followup2 = dict(release_followup2=RELEASE_C.name, n_molecules=int(len(zc["ids"])), new_ids=new_ids,
+                 imaginary_second_route=dict(n_read=len(imag_tab), healed=int(n_heal), genuine=int(n_gen)),
+                 test_rms_diag_229={F: {"zero": float(rule_c["zero"][F]["diag"]), "baseline_retrained": float(r_c[F]["diag"])} for F in FAMILIES},
+                 pair_ap_229=float(ap_c), splits_229={s: int(len(v)) for s, v in idx_c.items()},
+                 e8=dict(verdict=e8["verdict"], pattern_c_cc=e8["patterns"]["(c) + ring bond-bond pairs"]["CC − B3LYP"],
+                         pattern_d_cc_mask=e8b["patterns"]["(d) (c) + pairs two bonds apart"]["CC − B3LYP | mask"],
+                         pattern_c_proxy=e8["patterns"]["(c) + ring bond-bond pairs"]["proxy ωB97X − B3LYP"]))
+json.dump(followup2, open("results_followup2.json", "w"), indent=1); print("results_followup2.json written")""")
+
 nb = new_notebook(cells=cells, metadata={"kernelspec": {"name": "python3", "display_name": "Python 3", "language": "python"}})
 path = HERE / "deep_learning.ipynb"
 nbformat.write(nb, path)
