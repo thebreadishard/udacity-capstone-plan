@@ -1,0 +1,12 @@
+benzene: 42 primitives {'bond': 12, 'angle': 18, 'wag': 6, 'torsion': 6}; pattern (d) free entries 822; rank of B 36; 3N = 36; p by count = 23; rcond 0.0001
+ceiling (all 36 probes, pattern (d), compact basis): {'residual': 0.073, 'freq_rms': 3.331, 'freq_rms_inplane': 2.806, 'freq_rms_oop': 4.314}
+p =  6: symmetry order residual 0.82, freq RMS 46.5 (in-plane 50.0, oop 37.2) | random median residual 0.85, freq RMS 43.4
+p =  9: symmetry order residual 0.74, freq RMS 42.1 (in-plane 45.0, oop 34.4) | random median residual 0.77, freq RMS 36.4
+p = 11: symmetry order residual 0.62, freq RMS 37.4 (in-plane 38.6, oop 34.4) | random median residual 0.73, freq RMS 34.5
+p = 12: symmetry order residual 0.62, freq RMS 36.5 (in-plane 38.6, oop 31.4) | random median residual 0.65, freq RMS 33.2
+p = 15: symmetry order residual 0.48, freq RMS 29.8 (in-plane 31.5, oop 25.3) | random median residual 0.61, freq RMS 28.9
+p = 18: symmetry order residual 0.29, freq RMS 22.5 (in-plane 23.4, oop 20.0) | random median residual 0.50, freq RMS 23.0
+p = 24: symmetry order residual 0.08, freq RMS 7.9 (in-plane 5.6, oop 11.7) | random median residual 0.38, freq RMS 13.7
+p = 30: symmetry order residual 0.08, freq RMS 4.2 (in-plane 4.2, oop 4.3) | random median residual 0.10, freq RMS 6.6
+p = 36: symmetry order residual 0.07, freq RMS 3.3 (in-plane 2.8, oop 4.3) | random median residual 0.07, freq RMS 3.3
+wrote C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\e8_benzene_ccpvdz\sparse_recovery_benzene_2026-09-24.json

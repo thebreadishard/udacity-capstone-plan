@@ -1,0 +1,127 @@
+{
+ "n_prims": 42,
+ "kinds": {
+  "bond": 12,
+  "angle": 18,
+  "wag": 6,
+  "torsion": 6
+ },
+ "free_entries": 822,
+ "threeN": 36,
+ "ceiling_all_probes": {
+  "residual": 0.07328889315225799,
+  "freq_rms": 3.3305265926282845,
+  "freq_rms_inplane": 2.80564875413574,
+  "freq_rms_oop": 4.313638036157635
+ },
+ "by_probes": {
+  "6": {
+   "symmetry_order": {
+    "residual": 0.8170811869595881,
+    "freq_rms": 46.53611095542289,
+    "freq_rms_inplane": 50.00059689267012,
+    "freq_rms_oop": 37.218626166617426
+   },
+   "random_median": {
+    "residual": 0.8520004620543831,
+    "freq_rms": 43.36477473237183
+   }
+  },
+  "9": {
+   "symmetry_order": {
+    "residual": 0.7367567417693747,
+    "freq_rms": 42.07977774561337,
+    "freq_rms_inplane": 44.957318869596484,
+    "freq_rms_oop": 34.44296402075057
+   },
+   "random_median": {
+    "residual": 0.7667508119618164,
+    "freq_rms": 36.424245220161836
+   }
+  },
+  "11": {
+   "symmetry_order": {
+    "residual": 0.6202598331220032,
+    "freq_rms": 37.35652883857814,
+    "freq_rms_inplane": 38.553899421817654,
+    "freq_rms_oop": 34.40097064658581
+   },
+   "random_median": {
+    "residual": 0.7263724388065668,
+    "freq_rms": 34.474110002518884
+   }
+  },
+  "12": {
+   "symmetry_order": {
+    "residual": 0.6152159414854328,
+    "freq_rms": 36.54771845209451,
+    "freq_rms_inplane": 38.557912174737694,
+    "freq_rms_oop": 31.360107895287367
+   },
+   "random_median": {
+    "residual": 0.6521211462880272,
+    "freq_rms": 33.23902655756322
+   }
+  },
+  "15": {
+   "symmetry_order": {
+    "residual": 0.48146102493612514,
+    "freq_rms": 29.791584543739283,
+    "freq_rms_inplane": 31.516154661647004,
+    "freq_rms_oop": 25.314745792848836
+   },
+   "random_median": {
+    "residual": 0.6066506754225384,
+    "freq_rms": 28.879743279721257
+   }
+  },
+  "18": {
+   "symmetry_order": {
+    "residual": 0.28894183204191004,
+    "freq_rms": 22.454609935839443,
+    "freq_rms_inplane": 23.424067079375458,
+    "freq_rms_oop": 20.01071916026864
+   },
+   "random_median": {
+    "residual": 0.5004732067145192,
+    "freq_rms": 23.013875333470367
+   }
+  },
+  "24": {
+   "symmetry_order": {
+    "residual": 0.08408292032861552,
+    "freq_rms": 7.945457762093221,
+    "freq_rms_inplane": 5.604223349969854,
+    "freq_rms_oop": 11.711130816416247
+   },
+   "random_median": {
+    "residual": 0.3837138812084507,
+    "freq_rms": 13.735081091338547
+   }
+  },
+  "30": {
+   "symmetry_order": {
+    "residual": 0.07748063252043307,
+    "freq_rms": 4.243074728642934,
+    "freq_rms_inplane": 4.22672895798154,
+    "freq_rms_oop": 4.280972153565319
+   },
+   "random_median": {
+    "residual": 0.09805014143702631,
+    "freq_rms": 6.607066262822274
+   }
+  },
+  "36": {
+   "symmetry_order": {
+    "residual": 0.07328889315225798,
+    "freq_rms": 3.3305265926280727,
+    "freq_rms_inplane": 2.8056487541355746,
+    "freq_rms_oop": 4.313638036157341
+   },
+   "random_median": {
+    "residual": 0.07328889315225799,
+    "freq_rms": 3.3305265926282845
+   }
+  }
+ }
+}

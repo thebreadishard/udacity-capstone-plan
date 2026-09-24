@@ -53,3 +53,45 @@ compact and the recovery is well-conditioned — count only, reconstruction not 
 from a subset of its 72 gradients with ΔF restricted to pattern (d) in a bonds + angles basis (11 probes by count, 36 available) — plan 06's
 recovery formulation on real data; the same test tells whether out-of-plane physics survives without dihedrals (benzene's out-of-plane modes are
 the sharp check). Not today's lane; it goes to the desk list after the naphthalene read-outs.
+
+## Reconstruction test — specified before it runs (07:0x; the user freed the day for desk work)
+
+`probes/e8_sparse_recovery_benzene.py`, no compute: benzene's 36 axis probes (72 gradients of E8) and the corpus B3LYP Hessian at the same geometry
+(deck v1, 6-31G* — a basis term rides along in ΔH; irrelevant for the question, stated). Compact local basis: bonds, angles, one wag per trigonal
+centre, ring torsions (42 primitives for 30 internal degrees of freedom); Wilson B by numerical differentiation; pattern (d) on it. Unknowns: the
+free entries of ΔF on the mask; equations: the measured Hessian columns of the chosen probes; least squares (minimum norm when underdetermined).
+Read-outs against the full-probe ΔH: residual ratio; RMS of the corrected harmonic frequencies, in-plane and out-of-plane separately; for p =
+6 … 36 probes in symmetry order (one atom per orbit first) and for random subsets (10 draws, median).
+
+**Predictions (fixed now).** (1) The ceiling with all 36 probes is not exact (the compact basis with pattern (d) is a real restriction, unlike the
+978-entry fit of this morning): residual 0.1–0.3, frequency RMS 2–6 cm⁻¹, out-of-plane worse than in-plane. (2) In symmetry order the read-outs
+reach the ceiling at p ≈ 12 (two atoms × 3 directions × … the orbit count), i.e. one third of the probes; random subsets need p ≈ 18–24 for the
+same. (3) Below p ≈ 9 the reconstruction is not usable (residual > 0.5). If (2) holds, sparse probing buys ≈ 3× on benzene *with* symmetry
+knowledge and ≈ 1.5–2× without — consistent with the count's bonds + angles column; if the ceiling in (1) is much worse than 0.3, the compact
+basis loses physics (out-of-plane) and the lever needs a better basis before it is claimed.
+
+## Reconstruction test — outcome (07:0x; `probes/results_m1/e8_benzene_ccpvdz/sparse_recovery_benzene_2026-09-24.{log,json}`)
+
+Compact basis for benzene: 12 bonds, 18 angles, 6 wags, 6 ring torsions = 42 primitives (rank of B 36 − 6 = 30 internal degrees); pattern (d) on it has
+822 free entries, so the count says p = 23 probes. The plain least squares with `rcond=None` blew up for every p < 36 (residuals ~10⁸: the
+underdetermined systems have near-null singular directions that amplify the gradient noise) — a singular-value cut-off is part of the method now;
+results at relative cut-off 1e-4 (1e-6 and 1e-3 in the log; the symmetry-order column is insensitive, the random one is not).
+
+| probes p | symmetry order: residual / freq RMS (in-plane, out-of-plane) | random subsets, median: residual / freq RMS |
+|---|---|---|
+| 36 (all) — the ceiling | 0.07 / 3.3 (2.8, 4.3) | 0.07 / 3.3 |
+| 30 | 0.08 / 4.2 (4.2, 4.3) | 0.10 / 6.6 |
+| 24 | 0.08 / 7.9 (5.6, 11.7) | 0.38 / 13.7 |
+| 18 | 0.29 / 22.5 | 0.50 / 23.0 |
+| 12 | 0.62 / 36.5 | 0.65 / 33.2 |
+| 6 | 0.82 / 46.5 | 0.85 / 43.4 |
+
+**Against the predictions.** (1) The ceiling is better than predicted on the residual (0.07 against 0.1–0.3) and as predicted on the frequencies
+(3.3 cm⁻¹ against 2–6), out-of-plane worse than in-plane — the compact basis with pattern (d) keeps 93 % of ΔH and the corrected spectrum to 3 cm⁻¹.
+(2) **Fails**: the ceiling is reached at p ≈ 24–30 in symmetry order, not ≈ 12; random subsets need ≈ 30. (3) Holds: below p ≈ 15 the reconstruction
+is unusable. So on benzene the locality prior buys **≈ 1.2–1.5×** (24–30 probes against 36), exactly the small-molecule end of the count's
+bonds + angles column, and only with a regulariser. The 6× that benzene actually enjoys comes from symmetry (e8_symmetry), not from locality.
+
+**What it decides for the 28th.** The cost table keeps symmetry as the measured lever (6× on benzene, 3.6× on naphthalene) and lists locality-based
+sparse probing as *unmeasured beyond N = 12, count-only for larger N, needing regularisation or plan 06's sparsity prior* — not as a saving. The next
+step on this lever, when there is a large molecule's Hessian to test on, is an L1 / sparsity formulation instead of the L2 minimum norm; not before.
