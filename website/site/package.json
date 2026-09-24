@@ -11,6 +11,7 @@
     "check": "astro check"
   },
   "dependencies": {
+    "3dmol": "^2.5.5",
     "astro": "^5.2.0"
   }
 }

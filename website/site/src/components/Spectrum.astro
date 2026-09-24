@@ -17,7 +17,7 @@ const inRange = (vals: number[]) => vals.filter((v) => v >= min && v <= max);
 const seriesIn = series.map((s) => ({ ...s, shown: inRange(s.values) }));
 ---
 <figure class="spectrum">
-  <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-labelledby="sp-title sp-desc" width="100%" height="auto">
+  <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-labelledby="sp-title sp-desc" width="100%">
     <title id="sp-title">{title}</title>
     <desc id="sp-desc">{seriesIn.map((s) => `${s.label}: ${s.shown.length} modes between ${min} and ${max} per centimetre`).join('. ')}.</desc>
     <g class="axis" font-size="11" fill="currentColor">
