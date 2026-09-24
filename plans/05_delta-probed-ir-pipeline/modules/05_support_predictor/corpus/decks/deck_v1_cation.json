@@ -1,0 +1,23 @@
+{
+  "deck": "v1-cation",
+  "derived_from": "deck_v1.json (identical numerics; only the three open-shell fields differ) — 24 September 2026, obstacle 9 (the user: 'Zet benzeen⁺ en naftaleen⁺ maar op hel1-14 zodra route 2 klaar is')",
+  "engine": "psi4 1.11 (conda env qc, Linux hel1-14)",
+  "basis": "6-31G*",
+  "low_functional": "B3LYP",
+  "high_functional": "wB97X",
+  "optimise_at": "UKS B3LYP/6-31G*, symmetry c1, from the neutral corpus geometry with a seeded 0.01 Å distortion (Jahn–Teller minima must be reachable)",
+  "hessian": "psi4 hessian(): finite difference of analytic UKS gradients (psi4 findif, 3-point, 0.005 bohr); both functionals at the same geometry",
+  "dft_radial_points": 75,
+  "dft_spherical_points": 302,
+  "scf_type": "df",
+  "e_convergence": 1e-08,
+  "d_convergence": 1e-08,
+  "reference": "uks",
+  "charge": 1,
+  "multiplicity": 2,
+  "project_translations_rotations": true,
+  "units_in_files": {"geometry": "bohr", "hessian": "hartree/bohr^2", "frequencies": "cm-1"},
+  "threads": 16,
+  "memory_gb": 24,
+  "grid_check_for_timing_test": {"radial": 99, "spherical": 590}
+}

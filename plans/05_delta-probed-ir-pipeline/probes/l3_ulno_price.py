@@ -45,7 +45,7 @@ def pm_localise(mol, orbocc):
     from pyscf import lo
     mlo = lo.PipekMezey(mol, orbocc); lo_coeff = mlo.kernel()
     for _ in range(100):
-        stable, lo1 = mlo.stability_jacobi()
+        lo1, stable = mlo.stability_jacobi(return_status=True)   # pyscf 2.14 API (the forge test's older order tripped the smoke, 24 Sep 22:4x)
         if stable: break
         mlo = lo.PipekMezey(mol, lo1); mlo.init_guess = None; lo_coeff = mlo.kernel()
     return lo_coeff
