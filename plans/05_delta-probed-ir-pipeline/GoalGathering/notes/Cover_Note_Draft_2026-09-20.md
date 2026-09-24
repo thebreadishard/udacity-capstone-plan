@@ -70,7 +70,12 @@ dichte kluwen. In bindingen en hoeken is dezelfde correctie dun en lokaal: een p
 tussen bindingen binnen een ring plus paren die een atoom delen. Gevraagd naar dát object leert hetzelfde netwerk de koppelingen uit dezelfde 175 moleculen,
 ook op ringskeletten die het nooit zag (fout 0,43 en 0,47 van de nulregel, gecorrigeerde frequenties binnen 5 cm⁻¹ tegen 23 zonder correctie). Eén molecuul
 bleef achter tot een tweede, analytische berekening liet zien dat zijn opgeslagen Hessiaan fout was; de guard staat nu in het corpus. Of de coupled-cluster-
-correctie in hetzelfde patroon leeft, wordt op het moment van schrijven gemeten (E8, benzeen); de uitslag neem ik mee.
+correctie in hetzelfde patroon leeft, is op 24 september gemeten (E8, benzeen, CCSD(T)/cc-pVDZ, 72 gradiënten): ja — 92 % van de correctie
+zit in dat patroon en 98 % zodra paren twee bindingen uit elkaar meetellen; pas dan kloppen ook de ringkoppelingen. De dure correctie is dus
+lokaal zoals de goedkope plaatsvervanger, één binding verder. Het paarmodel krijgt daarmee één paarklasse extra; verder verandert er niets aan
+het idee. Wat de meting ook prijsgaf: één coupled-cluster-gradiënt van naftaleen kost uren, geen minuten; symmetrie brengt naftaleen van 108
+naar 30 gradiënten (op benzeen bewezen: 12 in plaats van 72, tot 0,03 cm⁻¹ gelijk), maar gesubstitueerde moleculen hebben die symmetrie niet.
+Daarom blijft de labelroute LNO-CC-energieën, en staat de kostentabel van deze brief daar eerlijk over.
 
 Wat ik van je vraag staat in §13. De drie belangrijkste: (1) een kritische lezing van §2–§3 en §7, de plekken waar de discipline
 van het plan houdt of niet; (3) of jij gasfase- of jet-gekoelde spectra kent van pyreen, chryseen en trifenyleen in het
