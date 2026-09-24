@@ -1,0 +1,70 @@
+---
+// Client-side search and filters over the whole catalogue (vanilla script, no framework; loads /data/catalog-lite.json on first use).
+// URL carries the state (?q=…&rung=…&layer=…) so a view can be shared. Results: a compact table; computed molecules link to their page.
+const { total } = Astro.props as { total: number };
+---
+<section class="search-island card" aria-labelledby="search-h">
+  <h2 id="search-h">Search all {total.toLocaleString('en')} molecules</h2>
+  <form id="atlas-form" class="row" role="search" onsubmit="return false">
+    <label class="visually-hidden" for="aq">Name, formula or SMILES</label>
+    <input id="aq" name="q" type="search" placeholder="name · formula (C14H10) · SMILES · 'N' for nitrogen" autocomplete="off" />
+    <select id="arung" name="rung" aria-label="Status">
+      <option value="">any status</option>
+      <option value="0">listed</option>
+      <option value="1">cheap level done</option>
+      <option value="4">anchored</option>
+      <option value="5">validated</option>
+    </select>
+    <select id="alayer" name="layer" aria-label="Layer">
+      <option value="">any layer</option><option>A</option><option>A2</option><option>B</option><option>C</option>
+    </select>
+  </form>
+  <p id="acount" class="muted small" aria-live="polite">Type to search; results appear here.</p>
+  <div class="tablewrap"><table id="atable" hidden>
+    <thead><tr><th>molecule</th><th>formula</th><th>layer</th><th class="num">heavy atoms</th><th>status</th></tr></thead>
+    <tbody></tbody>
+  </table></div>
+</section>
+<script>
+  const labels = ['listed', 'cheap level done', 'correction predicted', 'spectrum predicted', 'anchored', 'validated'];
+  const q = document.getElementById('aq') as HTMLInputElement;
+  const rung = document.getElementById('arung') as HTMLSelectElement;
+  const layer = document.getElementById('alayer') as HTMLSelectElement;
+  const count = document.getElementById('acount')!;
+  const table = document.getElementById('atable') as HTMLTableElement;
+  const tbody = table.querySelector('tbody')!;
+  let data: any[][] | null = null; let loading: Promise<void> | null = null;
+  const load = () => loading ??= fetch('/data/catalog-lite.json').then((r) => r.json()).then((j) => { data = j.rows; });
+  const params = new URLSearchParams(location.search);
+  q.value = params.get('q') ?? ''; rung.value = params.get('rung') ?? ''; layer.value = params.get('layer') ?? '';
+  function esc(s: string) { return s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' } as any)[c]); }
+  async function run() {
+    const text = q.value.trim(); const rv = rung.value; const lv = layer.value;
+    const p = new URLSearchParams(); if (text) p.set('q', text); if (rv) p.set('rung', rv); if (lv) p.set('layer', lv);
+    history.replaceState(null, '', p.toString() ? `?${p}` : location.pathname);
+    if (!text && !rv && !lv) { table.hidden = true; count.textContent = 'Type to search; results appear here.'; return; }
+    count.textContent = 'Loading the catalogue…'; await load();
+    const t = text.toLowerCase();
+    const hits = data!.filter(([id, name, formula, smiles, ly, rg]) =>
+      (!rv || String(rg) === rv) && (!lv || ly === lv) &&
+      (!t || name.toLowerCase().includes(t) || formula.toLowerCase() === t || smiles.toLowerCase() === t || id.toLowerCase() === t || formula.toLowerCase().includes(t)));
+    hits.sort((a, b) => b[5] - a[5] || (a[6] ?? 99) - (b[6] ?? 99) || a[1].localeCompare(b[1]));
+    const shown = hits.slice(0, 300);
+    tbody.innerHTML = shown.map(([id, name, formula, , ly, rg, nh]) =>
+      `<tr><td>${rg >= 1 ? `<a href="/molecule/${id}/">${esc(name)}</a>` : esc(name)}</td><td class="mono">${esc(formula || '—')}</td><td>${esc(ly)}</td><td class="num">${nh ?? '—'}</td><td><span class="chip" data-rung="${rg}"><span class="dot" aria-hidden="true"></span>${labels[rg]}</span></td></tr>`).join('');
+    table.hidden = false;
+    count.textContent = `${hits.length.toLocaleString('en')} molecule${hits.length === 1 ? '' : 's'} match${shown.length < hits.length ? ` — showing the first ${shown.length}` : ''}.`;
+  }
+  let timer: number | undefined;
+  q.addEventListener('input', () => { clearTimeout(timer); timer = window.setTimeout(run, 150); });
+  rung.addEventListener('change', run); layer.addEventListener('change', run);
+  if (q.value || rung.value || layer.value) run();
+</script>
+<style>
+  .search-island { margin-top: var(--space-6); }
+  .row { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+  .row input { flex: 1 1 260px; min-width: 0; padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--fg); font: inherit; }
+  .row select { padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--fg); font: inherit; min-height: 40px; }
+  .small { font-size: 0.9rem; }
+  .tablewrap { overflow-x: auto; }
+</style>

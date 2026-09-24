@@ -3,6 +3,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import Base from '../../layouts/Base.astro';
+import AtlasSearch from '../../components/AtlasSearch.astro';
 import catalog from '../../../../export/out/catalog.json';
 const depDir = path.resolve('../export/out/depictions');
 const labels = ['Listed', 'Cheap level done', 'Correction predicted', 'Spectrum predicted', 'Anchored', 'Validated'];
@@ -15,7 +16,9 @@ function svgOf(id) {
 ---
 <Base title="Atlas" description="Browse every molecule the pipeline lists, computes or anchors.">
   <h1>Atlas</h1>
-  <p class="muted">{computed.length} molecules with a computed cheap level, shown first; {listed.toLocaleString('en')} more are listed and not yet computed (the full list with filters and search arrives with the next step).</p>
+  <p class="muted">{computed.length} molecules with a computed cheap level are shown as cards below; {listed.toLocaleString('en')} more are listed and not yet computed — all of them are searchable here.</p>
+  <AtlasSearch total={catalog.length} />
+  <h2 class="cards-h">Computed molecules</h2>
   <ul class="grid cards" aria-label="Computed molecules">
     {computed.map((r) => (
       <li class="card mol">
