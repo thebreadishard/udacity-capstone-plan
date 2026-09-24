@@ -1,0 +1,70 @@
+/* Spectrum Atlas — design tokens (design §5). Colours in OKLCH; light and dark from the same names; status never by colour alone. */
+:root {
+  --bg: oklch(0.99 0.004 260);
+  --bg-elev: oklch(1 0 0);
+  --fg: oklch(0.22 0.02 260);
+  --fg-muted: oklch(0.48 0.02 260);
+  --line: oklch(0.90 0.01 260);
+  --accent: oklch(0.50 0.16 275);
+  --accent-soft: oklch(0.94 0.04 275);
+  --ok: oklch(0.55 0.14 150);
+  --warn: oklch(0.70 0.15 70);
+  --focus: oklch(0.55 0.20 275);
+  --radius: 10px;
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-6: 24px; --space-8: 32px; --space-12: 48px;
+  --font-sans: "Source Sans 3", "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --measure: 68ch;
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: oklch(0.17 0.015 260);
+    --bg-elev: oklch(0.21 0.015 260);
+    --fg: oklch(0.93 0.01 260);
+    --fg-muted: oklch(0.70 0.015 260);
+    --line: oklch(0.30 0.015 260);
+    --accent: oklch(0.78 0.12 275);
+    --accent-soft: oklch(0.30 0.06 275);
+    --ok: oklch(0.75 0.13 150);
+    --warn: oklch(0.80 0.14 70);
+    --focus: oklch(0.80 0.16 275);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: oklch(0.17 0.015 260); --bg-elev: oklch(0.21 0.015 260); --fg: oklch(0.93 0.01 260); --fg-muted: oklch(0.70 0.015 260);
+  --line: oklch(0.30 0.015 260); --accent: oklch(0.78 0.12 275); --accent-soft: oklch(0.30 0.06 275); --ok: oklch(0.75 0.13 150);
+  --warn: oklch(0.80 0.14 70); --focus: oklch(0.80 0.16 275);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { font-family: var(--font-sans); font-size: 15px; line-height: 1.5; -webkit-text-size-adjust: 100%; }
+@media (max-width: 767px) { html { font-size: 14px; } }
+body { margin: 0; background: var(--bg); color: var(--fg); min-height: 100dvh; }
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+code, .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 0.95em; }
+h1, h2, h3 { line-height: 1.2; margin: 0 0 var(--space-3); font-weight: 600; letter-spacing: -0.01em; }
+h1 { font-size: 1.75rem; } h2 { font-size: 1.25rem; } h3 { font-size: 1.05rem; }
+p { margin: 0 0 var(--space-3); max-width: var(--measure); }
+.muted { color: var(--fg-muted); }
+.container { width: min(1100px, 100% - 32px); margin-inline: auto; }
+.card { background: var(--bg-elev); border: 1px solid var(--line); border-radius: var(--radius); padding: var(--space-4); container-type: inline-size; }
+.grid { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 999px; border: 1px solid var(--line); font-size: 0.85rem; background: var(--bg-elev); }
+.chip[data-rung="0"] { color: var(--fg-muted); }
+.chip[data-rung="1"], .chip[data-rung="2"], .chip[data-rung="3"] { border-color: var(--accent); }
+.chip[data-rung="4"], .chip[data-rung="5"] { border-color: var(--ok); }
+.chip .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-weight: 600; color: var(--fg-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.04em; }
+td.num, th.num { text-align: right; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.depiction svg { width: 100%; height: auto; display: block; color: var(--fg); }
+.ladder { display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--space-2); }
+@media (max-width: 767px) { .ladder { grid-template-columns: repeat(2, 1fr); } }
+.ladder .step { padding: var(--space-3); border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg-elev); }
+.ladder .step .n { font-family: var(--font-mono); font-size: 1.4rem; font-weight: 600; }
+.ladder .step .l { font-size: 0.85rem; color: var(--fg-muted); }
+.visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }

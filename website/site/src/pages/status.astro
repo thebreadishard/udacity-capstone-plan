@@ -1,0 +1,26 @@
+---
+import Base from '../layouts/Base.astro';
+import summary from '../../../export/out/summary.json';
+const labels = { listed: 'Listed', cheap_level_done: 'Cheap level done', correction_predicted: 'Correction predicted', spectrum_predicted: 'Spectrum predicted', anchored: 'Anchored', validated: 'Validated' };
+---
+<Base title="Status" description="Data freshness, releases and counts of the Spectrum Atlas.">
+  <h1>Status</h1>
+  <p class="muted">Built {summary.built_utc.replace('T', ' ').replace('Z', ' UTC')} from the pipeline repository. Sources are hashed at build (manifest {summary.sources.manifest.slice(0, 12)}…, ledger {summary.sources.ledger.slice(0, 12)}…).</p>
+  <section class="card">
+    <h2>Counts</h2>
+    <table>
+      <thead><tr><th>rung</th><th class="num">molecules</th></tr></thead>
+      <tbody>{summary.rungs.map((r) => <tr><td>{labels[r]}</td><td class="num">{summary.rung_counts[r].toLocaleString('en')}</td></tr>)}</tbody>
+    </table>
+    <h3 style="margin-top: 16px">By layer</h3>
+    <table>
+      <thead><tr><th>layer</th><th class="num">molecules</th></tr></thead>
+      <tbody>{Object.entries(summary.layer_counts).map(([k, v]) => <tr><td>{k}</td><td class="num">{v.toLocaleString('en')}</td></tr>)}</tbody>
+    </table>
+  </section>
+  <section class="card" style="margin-top: 16px">
+    <h2>Releases</h2>
+    <ul>{summary.releases.map((r) => <li class="mono">{r}</li>)}</ul>
+    <p class="muted small">The changelog fed by the obstacle ledger arrives with step 10.</p>
+  </section>
+</Base>

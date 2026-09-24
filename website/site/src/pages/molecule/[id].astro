@@ -1,0 +1,99 @@
+---
+// Molecule page (design §4.3): header, depiction, status ladder, frequency tables, provenance. Spectrum viewer and 3D come as islands in steps 5 and 7.
+import fs from 'node:fs';
+import path from 'node:path';
+import Base from '../../layouts/Base.astro';
+import catalog from '../../../../export/out/catalog.json';
+
+export async function getStaticPaths() {
+  return catalog.filter((r) => r.rung >= 1).map((r) => ({ params: { id: r.id }, props: { row: r } }));
+}
+const { row } = Astro.props;
+const outDir = path.resolve('../export/out');
+const mol = JSON.parse(fs.readFileSync(path.join(outDir, 'molecules', `${row.id}.json`), 'utf8'));
+const svgPath = path.join(outDir, 'depictions', `${row.id}.svg`);
+const svg = fs.existsSync(svgPath) ? fs.readFileSync(svgPath, 'utf8') : '';
+const labels = ['Listed', 'Cheap level done', 'Correction predicted', 'Spectrum predicted', 'Anchored', 'Validated'];
+const reached = (i) => i <= row.rung && !(i === 2 || i === 3);   // rungs 2–3 are reserved until the layer produces them
+const vib = mol.frequencies_cm;
+const rows = vib.b3lyp.vibrational.map((f, i) => ({ i: i + 1, b3lyp: f, wb97x: vib.wb97x.vibrational[i], shift: vib.wb97x.vibrational[i] - f }));
+const repo = 'https://github.com/thebreadishard/udacity-capstone-plan/blob/master/plans/05_delta-probed-ir-pipeline/';
+---
+<Base title={row.name} description={`${row.name} (${row.formula ?? row.smiles}) in the Spectrum Atlas: status, frequencies, provenance.`}>
+  <nav aria-label="Breadcrumb" class="crumb muted"><a href="/atlas/">Atlas</a> › {row.name}</nav>
+  <header class="head">
+    <h1>{row.name} <span class="mono muted formula">{row.formula}</span></h1>
+    <p class="mono muted ids">{row.id} · SMILES <span>{row.smiles}</span>{row.inchikey && <> · InChIKey <span>{row.inchikey}</span></>}</p>
+    <p><span class="chip" data-rung={row.rung}><span class="dot" aria-hidden="true"></span>{labels[row.rung]}</span>
+      {row.flags.map((f) => <span class="chip">{f.replaceAll('_', ' ')}</span>)}</p>
+  </header>
+
+  <div class="cols">
+    <aside class="side">
+      <section class="card">
+        <h2>Structure</h2>
+        <figure class="depiction" set:html={svg}></figure>
+        <figcaption class="muted small">2D depiction from the SMILES; 3D from the corpus geometry arrives with the 3D island.</figcaption>
+      </section>
+      <section class="card">
+        <h2>Status ladder</h2>
+        <ol class="steps">
+          {labels.map((l, i) => (
+            <li class={reached(i) ? 'on' : 'off'}><span class="mark" aria-hidden="true">{reached(i) ? '●' : '○'}</span> {l}
+              {i === 1 && reached(1) && mol.ledger && <span class="muted small"> — {mol.ledger.end.slice(0, 10)}, {mol.ledger.machine}</span>}
+              {(i === 4 || i === 5) && reached(i) && row.evidence && <span class="muted small"> — <a href={repo + row.evidence[0]}>evidence</a></span>}
+              {(i === 2 || i === 3) && <span class="muted small"> — not yet: the learned layer is training</span>}
+            </li>
+          ))}
+        </ol>
+      </section>
+      <section class="card">
+        <h2>Request a run</h2>
+        <p class="muted small">Not available yet: the learned layer is being trained and licensed per mode family. Sign-in will be needed only to request runs; reading stays open.</p>
+      </section>
+    </aside>
+
+    <div class="mainc">
+      <section class="card">
+        <h2>Harmonic frequencies at the cheap level <span class="muted small">(deck v1: B3LYP and ωB97X, 6-31G*, at the B3LYP geometry)</span></h2>
+        <p class="muted small">{rows.length} vibrational modes; imaginary modes negative. Shift = ωB97X − B3LYP. The corrected spectrum (rung 3) will appear here as a band with its ensemble spread.</p>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>#</th><th class="num">B3LYP (cm⁻¹)</th><th class="num">ωB97X (cm⁻¹)</th><th class="num">shift</th></tr></thead>
+            <tbody>{rows.map((r) => <tr><td class="num">{r.i}</td><td class="num">{r.b3lyp.toFixed(1)}</td><td class="num">{r.wb97x.toFixed(1)}</td><td class="num">{r.shift >= 0 ? '+' : ''}{r.shift.toFixed(1)}</td></tr>)}</tbody>
+          </table>
+        </div>
+      </section>
+      {mol.second_route && (
+        <section class="card">
+          <h2>Second route</h2>
+          <p class="small">Analytic Hessian (pyscf, grid 99/590) against the corpus finite differences: {Object.entries(mol.second_route).map(([k, v]) => `${k} max |Δω| ${v.max_abs_dfreq_cm.toFixed(0)} cm⁻¹`).join('; ')}.</p>
+        </section>
+      )}
+      <section class="card">
+        <h2>Provenance</h2>
+        <ul class="small">
+          <li>Releases: {row.releases.length ? row.releases.join(', ') : 'none yet'}</li>
+          {mol.ledger && <li>Run: {mol.ledger.machine}, {mol.ledger.start} → {mol.ledger.end}, {Number(mol.ledger.seconds_total).toFixed(0)} s, peak {mol.ledger.peak_rss_gb} GB, deck {mol.ledger.deck}</li>}
+          <li>Imaginary modes: B3LYP {mol.n_imaginary.b3lyp}, ωB97X {mol.n_imaginary.wb97x}</li>
+          <li>Source files: <a href={repo + 'modules/05_support_predictor/corpus/'}>corpus factory</a> · <a href={repo + 'modules/05_support_predictor/corpus/manifest.csv'}>manifest</a></li>
+        </ul>
+      </section>
+    </div>
+  </div>
+</Base>
+<style>
+  .crumb { font-size: 0.9rem; margin-bottom: var(--space-3); }
+  .head { margin-bottom: var(--space-6); }
+  .formula { font-size: 0.7em; margin-left: 8px; }
+  .ids span { word-break: break-all; }
+  .small { font-size: 0.9rem; }
+  .cols { display: grid; grid-template-columns: 2fr 3fr; gap: var(--space-4); align-items: start; }
+  .side, .mainc { display: grid; gap: var(--space-4); }
+  .depiction { margin: 0 auto; max-width: 260px; }
+  .steps { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
+  .steps .off { color: var(--fg-muted); }
+  .steps .mark { color: var(--accent); }
+  .tablewrap { overflow-x: auto; }
+  @media (max-width: 900px) { .cols { grid-template-columns: 1fr; } }
+</style>

@@ -70,3 +70,5 @@ plans/*/modules/*/corpus/shards/
 
 # Spectrum Atlas export output (rebuilt by website/export/build_catalog.py; 11k rows)
 website/export/out/
+!website/site/package.json
+!website/site/package-lock.json

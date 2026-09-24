@@ -1,0 +1,16 @@
+---
+import Base from '../layouts/Base.astro';
+const repo = 'https://github.com/thebreadishard/udacity-capstone-plan/blob/master/plans/05_delta-probed-ir-pipeline/';
+---
+<Base title="Methods" description="How the pipeline works, and the lessons it learned in public.">
+  <h1>Methods</h1>
+  <p>The pipeline computes a cheap harmonic spectrum for a molecule, predicts the correction that a coupled-cluster calculation would make to it, and licenses that prediction per family of vibrations against measured anchors. Everything below links to the pre-registration or the note that carries it.</p>
+  <h2>The five pictures</h2>
+  <p class="muted">The architecture sheets (overview, corpus, labels, the correction model, training, test and licence, the spectrum pipeline) are rendered here in step 10. Until then: <a href={repo + 'GoalGathering/architecture/ARCHITECTURE.md'}>ARCHITECTURE.md</a>.</p>
+  <h2>Three lessons</h2>
+  <ol>
+    <li><strong>Every derived quantity gets a second route.</strong> Finite-difference quartics turned out to be noise; a benzene Hessian in the corpus was wrong by 133 cm⁻¹ because of a quadrature grid, found by an analytic second calculation. <a href={repo + 'QUALITY_POLICY.md'}>Quality policy</a>.</li>
+    <li><strong>The couplings are learned only in local coordinates.</strong> In the basis of normal modes the correction's couplings are unlearnable at any data size; written as pairwise terms in bonds and angles the same data teach them. <a href={repo + 'GoalGathering/notes/PreRegistration_2026-09-23_E7_Couplings_in_Local_Coordinates.md'}>E7</a>.</li>
+    <li><strong>The coupled-cluster correction is local too, one bond further.</strong> Benzene's CCSD(T) correction sits 98 % inside the pairwise pattern once pairs two bonds apart are included. <a href={repo + 'GoalGathering/notes/PreRegistration_2026-09-23_E8_CC_Correction_Locality.md'}>E8</a>.</li>
+  </ol>
+</Base>

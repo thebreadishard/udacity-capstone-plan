@@ -8,6 +8,8 @@ moments.
 - `DESIGN_2026-09-23.md` — the design: audiences, the status ladder, information architecture, the molecule page, visual and mobile design,
   accessibility, the request flow, architecture, evidence rules, open decisions, sources.
 - `BACKLOG.md` — the build order; each step fits a quiet hour and leaves something working.
+- `site/` — the Astro site (design §9): `npm install && npm run build` in `website/site/` after the export has run; `npm run preview` serves it on
+  127.0.0.1:4321 (also the `atlas` entry of `.claude/launch.json`). Zero client JavaScript so far; islands come with steps 5–7.
 - `export/` — the mechanical export from the pipeline repository to the site's JSON (`build_catalog.py`, `depict.py`, `SCHEMA.md`, `tests/`; output in
   `export/out/`, not committed). The only code that lives here. The site itself will be its own repository so that it can never touch the
   pipeline's run directories.

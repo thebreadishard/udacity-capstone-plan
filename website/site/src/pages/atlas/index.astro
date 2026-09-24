@@ -1,0 +1,42 @@
+---
+// Atlas: computed molecules first (rung ≥ 1), cards with depiction, name, formula, rung chip; the full 11k list and the search island come in step 6.
+import fs from 'node:fs';
+import path from 'node:path';
+import Base from '../../layouts/Base.astro';
+import catalog from '../../../../export/out/catalog.json';
+const depDir = path.resolve('../export/out/depictions');
+const labels = ['Listed', 'Cheap level done', 'Correction predicted', 'Spectrum predicted', 'Anchored', 'Validated'];
+const computed = catalog.filter((r) => r.rung >= 1).sort((a, b) => b.rung - a.rung || a.n_heavy - b.n_heavy || a.name.localeCompare(b.name));
+const listed = catalog.length - computed.length;
+function svgOf(id) {
+  const p = path.join(depDir, `${id}.svg`);
+  return fs.existsSync(p) ? fs.readFileSync(p, 'utf8') : '';
+}
+---
+<Base title="Atlas" description="Browse every molecule the pipeline lists, computes or anchors.">
+  <h1>Atlas</h1>
+  <p class="muted">{computed.length} molecules with a computed cheap level, shown first; {listed.toLocaleString('en')} more are listed and not yet computed (the full list with filters and search arrives with the next step).</p>
+  <ul class="grid cards" aria-label="Computed molecules">
+    {computed.map((r) => (
+      <li class="card mol">
+        <a href={`/molecule/${r.id}/`} class="link">
+          <div class="depiction" set:html={svgOf(r.id)} aria-hidden="true"></div>
+          <div class="name">{r.name}</div>
+          <div class="mono muted">{r.formula ?? r.smiles}</div>
+          <div><span class="chip" data-rung={r.rung}><span class="dot" aria-hidden="true"></span>{labels[r.rung]}</span></div>
+          {r.flags.length > 0 && <div class="flags muted">{r.flags.map((f) => f.replaceAll('_', ' ')).join(' · ')}</div>}
+        </a>
+      </li>
+    ))}
+  </ul>
+</Base>
+<style>
+  .cards { list-style: none; padding: 0; margin: var(--space-6) 0 0; }
+  .mol { padding: var(--space-3); }
+  .link { color: inherit; text-decoration: none; display: grid; gap: 6px; }
+  .depiction { aspect-ratio: 1; max-width: 160px; margin: 0 auto; }
+  .name { font-weight: 600; }
+  .flags { font-size: 0.8rem; }
+  .mol:hover { border-color: var(--accent); }
+  @container (max-width: 240px) { .depiction { max-width: 120px; } }
+</style>
