@@ -1,27 +1,40 @@
-# Module 06 — Generative AI Applications: candidate molecules for the atlas (design stage, 24 September 2026)
+# Module 06 — Generative AI Applications: candidate molecules for the atlas (prepared 24 September 2026; training after the 28th)
 
-**Status:** designed, nothing run. `DESIGN_2026-09-24.md` holds the task, the dataset choice (PubChem aromatic subset — public domain, not used
-by modules 02–05), the model (character-level Transformer on SMILES, own PyTorch code), the pre-registered evaluation, the ethics section and the
-rubric mapping. Three decisions are the user's (dataset, timing, whether the candidates feed the website's "listed" layer); the build starts after
-the supervisor conversation of 28 September. The data freeze (one script, no compute) can be done on any quiet hour before that.
+**Status.** Designed (`DESIGN_2026-09-24.md`), pre-registered (`PRE_REGISTRATION.md`, fixed before any training), dataset frozen from PubChem
+(`data/README.md` carries the query, the date, the filters, the counts and the SHA-256), code written with tests (`m06/`, six tests, seconds).
+Nothing trained yet: the first training run and the notebook execution happen after the supervisor conversation of 28 September, on a rented
+server or a CPU-day, never on the anchor laptop before the anchor is read. The user's three decisions of the design note were taken as recommended
+on 24 September (PubChem; freeze now; candidates as a separately labelled source for the atlas) — to be confirmed or changed at any time.
 
 ## Project description (as it will read)
 
-**Task type: sequence generation with a Transformer.** A molecule is written as a SMILES string; a small decoder-only Transformer trained on public
-aromatic chemistry generates new substituted and heteroatom PAH candidates, optionally conditioned on ring count and heteroatom set. The candidates
-are ranked by how close they sit to the families the project's learned correction layer is licensed for, and offered to the atlas as *what to
-compute next*. The success criterion is a valid, diverse, novel and on-distribution generator whose candidates the pipeline can actually run — not
-a beautiful sample.
+**Task type: sequence generation with a Transformer.** A molecule is written as a SMILES string; a small decoder-only Transformer (4 layers,
+4 heads, d 256, ≈ 3 M parameters, own PyTorch code) trained on public fused-aromatic chemistry generates new substituted and heteroatom PAH
+candidates, optionally conditioned on ring count and heteroatom set. The candidates are ranked by how close they sit to the families the project's
+learned correction layer is licensed for and offered to the atlas as *what to compute next*. The success criterion is a valid, diverse, novel and
+on-distribution generator whose candidates the pipeline can run — not a beautiful sample.
 
-**Dataset (planned):** PubChem compound records filtered to fused-aromatic frameworks (≥ 2 fused aromatic rings; C, H, N, O, S, F, Cl; ≤ 30 heavy
-atoms; neutral), retrieved through PubChem's public interfaces, filtered with RDKit and frozen as a checksummed CSV with the query and date.
-Public domain, deposited real chemistry — not synthetic, not AI-generated, not the dataset of any earlier module.
+**Dataset.** PubChem compound records with a fused-aromatic core (naphthalene, quinoline, isoquinoline, indole, benzofuran, benzothiophene,
+quinoxaline, benzimidazole, azulene), retrieved through PUG-REST, filtered with RDKit (neutral; C, H, N, O, S, F, Cl; ≤ 30 heavy atoms; no
+isotopes; ≥ 2 fused aromatic rings; one canonical SMILES each) and frozen as `data/pubchem_aromatics_<date>.csv` with a checksum. Public domain,
+deposited real chemistry — not synthetic, not AI-generated, not the dataset of any earlier module.
 
 ## How to run what exists
 
-Nothing yet. The layout will follow module 05: `m06/` scripts with tests, `notebook/make_notebook.py` → `generative_model.ipynb`,
-`make_summary.py` → the report, `PROVENANCE.md`, `PRE_REGISTRATION.md`, a dated `RUBRIC_CHECKLIST`, `requirements.txt` from the environment.
+```bash
+python m06/fetch_pubchem_aromatics.py            # the data freeze (network; cached; idempotent)
+python -m pytest -q m06/tests                    # six tests, seconds
+python m06/train.py data/pubchem_aromatics_<date>.csv out/seed0 --quick   # smoke: 2,000 molecules, 2 epochs (minutes on a CPU)
+python m06/train.py data/pubchem_aromatics_<date>.csv out/seed0           # the pre-registered run (after the 28th)
+```
 
 ## Files
 
-- `DESIGN_2026-09-24.md` — the design note.
+- `DESIGN_2026-09-24.md` — the design note (task, dataset choice, model, evaluation, ethics, rubric mapping).
+- `PRE_REGISTRATION.md` — split, tokenizer, model, metrics and predictions fixed before training.
+- `data/` — `README.md` (query, filters, counts, SHA-256) and the frozen CSV; `cache/` (raw PubChem responses, not committed).
+- `m06/fetch_pubchem_aromatics.py` — the data freeze; `data.py` (CSV, Murcko scaffold split by sha, tokenizer, conditioning prefixes);
+  `model.py` (the Transformer, sampling); `train.py` (protocol, per-epoch log with validity of 200 samples, early stop, `generate`);
+  `evaluate.py` (the pre-registered metrics); `tests/test_m06.py`.
+- To come after the 28th: `notebook/make_notebook.py` → `generative_model.ipynb`, `make_summary.py` → `Generative_AI_Analysis_Report.pdf`,
+  `PROVENANCE.md`, a dated `RUBRIC_CHECKLIST`, `requirements.txt` from the environment that ran it.
