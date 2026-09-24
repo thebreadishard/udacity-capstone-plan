@@ -69,3 +69,18 @@ substituted molecule then costs a quarter of the gradients of the molecule (an e
 symmetry needed. This is proxy evidence; the coupled-cluster confirmation is lever 2 (the LNO-CC label price of one substituted molecule along
 its neighbourhood directions, after naphthalene E8) and, for core-to-core transfer, naphthalene E8 itself. Not tested here: transfer between
 cores (E8), di-substitution, and the geometry term of decision 48 (the probe measures ΔH at the low-level geometry, as the pipeline does).
+
+## Post-hoc (NOT pre-registered), 24 September 2026, 22:2x — the energy-only variant
+
+Coupled-cluster gradients do not exist for LNO methods, so an energy-only label can measure the near × near block of ΔH (directional second
+differences inside the neighbourhood) but not whole columns. `m05/e9_posthoc_block.py`, same 182 molecules and read-outs:
+
+| r | (d) near×near probed + the core's ΔH wherever both atoms are mapped | (e) near×near probed + far×far from the core, near×far zero | (a) registered columns |
+|---|---|---|---|
+| 0 | 2.56 cm⁻¹, ratio 0.25 | 2.56, 0.25 | 2.19, 0.19 |
+| **2** | **1.91 cm⁻¹, ratio 0.15, residual 0.085** | 5.37, 0.53 | 1.72, 0.13 |
+| 4 | 1.48, 0.12 | 5.36, 0.51 | 1.31, 0.10 |
+
+Variant (d) meets the registered bars at r = 2: the near × far couplings can come from the core as well, so an energy-only route keeps the E9
+saving — the label then needs the near × near block (≈ 240 energies for five atoms) and nothing else. Variant (e) shows the near × far couplings
+matter (5.4 cm⁻¹ without them). Read on the proxy; lever 2 (L2, registered 22:2x) prices one such energy at the coupled-cluster level.

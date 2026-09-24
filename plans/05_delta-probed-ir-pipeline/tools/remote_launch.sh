@@ -29,7 +29,10 @@ printf '#!/bin/bash\ncd %q || exit 1\n%s\n%s "$@"\n' "$WORKDIR" "$ENVLINE" "$CMD
 # 2. optional dry run of the same file with extra arguments
 if [ $HAVE_DRY -eq 1 ]; then
   echo "dry run: $CMD $DRY"
-  "${SSH[@]}" "cd '$WORKDIR' && bash '$NAME.cmd.sh' $DRY > '$NAME.dryrun.log' 2>&1; echo \"dry-run exit \$?\"; tail -n 5 '$NAME.dryrun.log'" < /dev/null || true
+  RC=$("${SSH[@]}" "cd '$WORKDIR' && bash '$NAME.cmd.sh' $DRY > '$NAME.dryrun.log' 2>&1; echo \$?; tail -n 5 '$NAME.dryrun.log' >&2" < /dev/null 2>&1 | head -n 1) || RC=255
+  "${SSH[@]}" "tail -n 5 '$WORKDIR/$NAME.dryrun.log'" < /dev/null || true
+  echo "dry-run exit $RC"
+  [ "$RC" = "0" ] || { echo "dry run failed — NOT launching $NAME (24 Sep 2026: a failed smoke no longer falls through to the launch)" >&2; exit 3; }
 fi
 # 3. detached start: setsid + nohup in a subshell, pid and exit code to files; the ssh checks the pid after 2 s and returns
 "${SSH[@]}" "cd '$WORKDIR' && rm -f '$NAME.exit' && ( setsid nohup bash -c \"bash '$NAME.cmd.sh'; echo \\\$? > '$NAME.exit'\" > '$NAME.log' 2>&1 < /dev/null & echo \$! > '$NAME.pid' ); sleep 2; P=\$(cat '$NAME.pid'); if kill -0 \$P 2>/dev/null; then echo \"launched $NAME (pid \$P) on $HOST:$WORKDIR\"; else echo \"NOT RUNNING after 2 s — exit \$(cat '$NAME.exit' 2>/dev/null)\"; tail -n 5 '$NAME.log'; exit 1; fi" < /dev/null

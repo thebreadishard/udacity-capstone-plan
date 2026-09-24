@@ -117,3 +117,5 @@ is committed.
 degenerate pair, so for pair × pair blocks the result depends on pair order (the partner sum, hence the fundamentals, is
 preserved; χ_sym pair × pair entries are not). Kept identical to the probe for this promotion so that the committed numbers
 stay bit-for-bit; the fix is a separate tested change that re-pins the benzene arrays.
+
+| 24 Sep 2026 | `remote_launch.sh` launched a job after its own dry run had failed (`liblno` missing); the `|| true` behind the dry run let it through | the wrapper now exits 3 on a non-zero dry-run exit and prints the tail of the dry-run log; the launch step is never reached | done 24 Sep 22:2x |
