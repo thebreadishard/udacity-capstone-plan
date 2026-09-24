@@ -110,3 +110,35 @@ Levers with tests (in order): (1) **sparse probing** — ΔF lives on pattern (d
 than 3N; plan 06's recovery theorems say how many; test on benzene's 72 gradients without new compute (reconstruct ΔH_CC from a pattern-chosen
 subset); (2) **naphthalene E8** (running) — transfer between cores; (3) **the LNO-CC label cost on one substituted molecule** at the anchor's
 thresholds, measured before any deck is bought; (4) cations (obstacle 9) — the corpus still has none.
+
+## Dated addition, 2026-09-24 21:4x — odds re-estimated after the anchor (the user asked again)
+
+Measured since the morning: the sparse-probe lever on benzene's 72 gradients is worth 1.2–1.5×, not the 3–5× hoped for; symmetry is the real count
+lever (6× on benzene, 3.6× on naphthalene) and substituted molecules do not have it (`PreRegistration_2026-09-24_Sparse_Probe_Count.md`). The (T)
+gradient phase of pyscf is single-threaded, so canonical CC Hessians of anything larger than naphthalene are out as labels (ledger 18:3x, 19:3x).
+The anchor finished (21:02): the third family (C–C stretch) came out between the win and lose lines, so the DZ-anchored deck is licensed for one
+family of three and the anchor stays cc-pVTZ for two thirds of the deck (`M3_TZ_MODE31_READING_2026-09-24.md`). On the other side of the ledger:
+the anchor's fifteen TZ points took eight laptop-days, ≈ 9 h per LNO-CCSD(T)/cc-pVTZ energy of naphthalene — the first measured price of a
+TZ label, and lower than the calendar assumed; the corpus release was corrected twice by the second route; the factory can re-optimise the
+fifteen saddle points.
+
+| question | 24 Sep 06:4x | 24 Sep 21:4x | why |
+|---|---|---|---|
+| step 1 — the conversation of the 28th carries a defensible plan | 85 % | 85 % | the anchor is read in full before the date; nothing new against it |
+| the learned layer learns what it needs on the DFT–DFT proxy | 80 % | 80 % | unchanged (E7 stands; the release is cleaner) |
+| the same holds for the coupled-cluster correction | 75 % | 75 % | naphthalene E8 still running (Saturday) |
+| affordable with desktop + small Snellius | 55 % | **50 %** | sparse probing buys little; symmetry does not carry to substituted molecules; two of three families stay TZ; the LNO-CC label price on a substituted molecule is still unmeasured |
+| full mandate (large PAH in, spectral shape out, trained by 2027) | 40 % | **35 %** | follows the cost line; the representation risk is retired, the cost risk is now the whole risk |
+| a defensible, per-family licensed pipeline | 75 % | **80 %** | three families read against pre-registered criteria, one licensed, two TZ with measured increments in the error budget; the noise principle held twice |
+
+Levers with tests (in order; none lowers the goal):
+1. **Transfer the core, probe the substituent.** Symmetry cuts the parent's probe count; locality (pattern (d)) says a substituent changes ΔH only in
+   its neighbourhood. Test on the existing corpus, no new compute: reconstruct the DFT–DFT ΔH of the mono-substituted layer-A2 molecules from the
+   parent core's block plus the columns within two bonds of the substituent; pass if the ring couplings come back within the E7 ceiling (0.07 / 3.3 cm⁻¹).
+   If it passes, the label cost of a substituted molecule is the cost of its substituent's neighbourhood, not 3N.
+2. **The LNO-CC label price on one substituted molecule**, cc-pVDZ at the anchor thresholds, on the CCX53 after naphthalene E8 (Saturday): energies
+   along the neighbourhood directions of lever 1 only; the anchor's ≈ 9 h per TZ point of naphthalene is the yardstick. Pass: a full correction under
+   two CCX53-days at DZ.
+3. **Naphthalene E8** (running; Saturday morning): transfer of the local pattern between cores.
+4. **Decision 45 densification** (running; Saturday midday): σ of the out-of-plane family closes the error budget's largest term.
+5. **Cations** (obstacle 9): still no rows; the next corpus run after the 28th adds benzene⁺ / naphthalene⁺.
