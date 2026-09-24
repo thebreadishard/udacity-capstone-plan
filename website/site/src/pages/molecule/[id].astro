@@ -3,6 +3,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import Base from '../../layouts/Base.astro';
+import Spectrum from '../../components/Spectrum.astro';
 import catalog from '../../../../export/out/catalog.json';
 
 export async function getStaticPaths() {
@@ -57,6 +58,8 @@ const repo = 'https://github.com/thebreadishard/udacity-capstone-plan/blob/maste
       <section class="card">
         <h2>Harmonic frequencies at the cheap level <span class="muted small">(deck v1: B3LYP and ωB97X, 6-31G*, at the B3LYP geometry)</span></h2>
         <p class="muted small">{rows.length} vibrational modes; imaginary modes negative. Shift = ωB97X − B3LYP. The corrected spectrum (rung 3) will appear here as a band with its ensemble spread.</p>
+        <Spectrum title={`Harmonic stick spectrum of ${row.name} at the cheap level`} series={[{ label: 'B3LYP', values: vib.b3lyp.vibrational }, { label: 'ωB97X', values: vib.wb97x.vibrational }]} />
+        <p class="muted small">Sticks of unit height (intensities are not exported yet); high wavenumbers on the left; the table below is the same data.</p>
         <div class="tablewrap">
           <table>
             <thead><tr><th>#</th><th class="num">B3LYP (cm⁻¹)</th><th class="num">ωB97X (cm⁻¹)</th><th class="num">shift</th></tr></thead>
