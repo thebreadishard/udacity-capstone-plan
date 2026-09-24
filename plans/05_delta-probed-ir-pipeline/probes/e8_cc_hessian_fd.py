@@ -57,6 +57,7 @@ def main():
     ap.add_argument("--threads", type=int, default=16); ap.add_argument("--basis", default="cc-pvdz"); ap.add_argument("--step", type=float, default=0.005)
     ap.add_argument("--frozen", type=int, default=6); ap.add_argument("--only-reference", action="store_true")
     ap.add_argument("--symmetry", action="store_true", help="displace only one atom per symmetry orbit and reconstruct the Hessian with e8_symmetry (validated 24 Sep 2026)")
+    ap.add_argument("--ks", default="", help="compute only these displacement indices (comma list or a:b slice of the displacement list, e.g. 0:15) and stop before the Hessian — for splitting a run over machines; merge the grad_*.npy files and rerun without --ks to assemble")
     a = ap.parse_args(); lib.num_threads(a.threads); os.makedirs(a.out, exist_ok=True)
     logf = open(os.path.join(a.out, "e8_fd.log"), "a")
 
@@ -79,6 +80,13 @@ def main():
         import e8_symmetry as SYM
         ops = SYM.point_group_ops(sym, x0); ks, reps = SYM.unique_displacements(ops, n)
         log(f"symmetry: {len(ops)} operations, orbits {SYM.orbits(ops, n)}, {len(ks)} displacements ({2 * len(ks)} gradients) instead of {6 * n}")
+    partial = False
+    if a.ks:
+        if ":" in a.ks:
+            lo, hi = (int(v) if v else None for v in a.ks.split(":")); ks = ks[lo:hi]
+        else:
+            ks = [int(v) for v in a.ks.split(",")]
+        partial = True; log(f"partial run: displacement indices {ks}")
     for k in ks:
         gs = {}
         for sign, s in (("p", +1.0), ("m", -1.0)):
@@ -90,6 +98,8 @@ def main():
             done = len([f for f in os.listdir(a.out) if f.startswith("grad_")])
             log(f"coordinate {k:2d} {sign}: E − E0 = {(e - e0) * 1e6:+9.2f} µE_h, {time.time() - t0:.0f} s  ({done}/{6 * n} gradients)")
         G[k] = (gs["p"].ravel() - gs["m"].ravel()) / (2 * a.step)
+    if partial:
+        log("partial run done; merge grad_*.npy files and rerun without --ks to assemble the Hessian"); return
     spread = None
     if a.symmetry:
         block_rows = {i: G[3 * i:3 * i + 3] for i in reps}
