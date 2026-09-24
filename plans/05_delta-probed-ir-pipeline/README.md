@@ -500,6 +500,8 @@ Ladder item 8 reads c "at the σ_E the R1 smoothness probe printed"; this note n
 
 ## Dated notes after the freeze
 
+- **Dated note, 24 September, 04:3x — E8 read (benzene, CCSD(T)/cc-pVDZ): between by the pre-registered rule, local in substance.** The coupled-cluster correction of the B3LYP Hessian is 92 % inside decision 49's pairwise pattern and 98 % once pairs two bonds apart are added; the ring couplings need that one-bond-further pattern (ring coupling ratio 0.34 against 0.80; win ≤ 0.5). Provisional target of the CC-trained pairwise model: pattern (d). A lesson on the read-out: the least-squares ceiling is vacuous on a single molecule (more free pair entries than Hessian entries) — compare parameter count with data count before reading a fit. Naphthalene smoke gradient running; the full run waits for the user (`GoalGathering/notes/PreRegistration_2026-09-23_E8_CC_Correction_Locality.md`, outcome sections).
+
 - **2026-09-12 (evening) — decisions 34 and 35, the compute-route memo, the pilot-note skeleton, engine layer 3, the
   software ledger.** *Decision 34* accepts P24 (`notes/Research_Note_2026-09-12_P24_Substitution_Probing.md`): plan 06's
   substitution probing enters the R0 pilot as one measured Hessian–vector product and one pre-registered six-products-vs-deck

@@ -100,3 +100,36 @@ Script `probes/e8_between_extension.py`, on hel1-16, minutes, no new gradients (
 the CC-trained pairwise model; if only (f) reaches it, the CC correction's couplings are not pairwise-local in these primitives and the representation
 question reopens for the real target (E8 pre-registration's lose-branch candidates), before any label is bought. Naphthalene stays pre-authorised only
 if a pattern ≤ (e) reaches the numbers — then it runs at the same level to read transfer; otherwise the user decides.
+
+## Between-branch outcome — 24 September 2026 02:30 UTC, recorded 04:3x
+
+`probes/results_m1/e8_benzene_ccpvdz/E8_between_benzene.{json,md}` (358 s on hel1-16; 54 primitives, 12 bonds; the DFT references recomputed identically —
+the (c)-mask control reproduces 0.08 / 0.80 and 0.06 / 0.15 exactly).
+
+| pattern (pairs) | CC − B3LYP mask: residual / coupling ratio / corrected ω RMS | proxy mask | CC fit | proxy fit |
+|---|---|---|---|---|
+| (c) diagonal + atom-sharing + ring bond–bond (978) | 0.08 / 0.80 / 6.2 | 0.06 / 0.15 / 2.2 | 0.00 / 0.01 / 0.13 | 0.00 / 0.00 / 0.07 |
+| (d) (c) + pairs two bonds apart (1,365) | **0.02 / 0.34 / 4.1** | 0.04 / 0.17 / 1.9 | 0.00 / 0.00 / 0.06 | 0.00 / 0.00 / 0.03 |
+| (e) all pairs inside a ring (984) | 0.08 / 0.80 / 6.2 (= (c) for benzene) | 0.06 / 0.15 / 2.2 | 0.00 / 0.01 / 0.13 | 0.00 / 0.00 / 0.07 |
+| (f) all pairs (1,485) | 0 / 0 / 0 | 0 / 0 / 0 | 0 / 0 / 0 | 0 / 0 / 0 |
+
+**The decision rule as written gives pattern (c) — and is vacuous for one molecule.** A 36 × 36 symmetric ΔH has 666 independent entries; pattern (c)
+already has 978 free pair entries, so an exact least-squares fit is guaranteed for any pattern from (c) up, for any ΔH whatever. The fit ceiling
+separates "pattern too small" from "projection is the limit" only across molecules with a shared model (as E7's ceilings did on the corpus); on a single
+molecule it separates nothing. Recorded as a lesson: *a parameter count must be compared with the data count before a fit ceiling is read* — the rule
+should have said so. The informative read-outs are therefore the masks:
+
+- the masked minimum-norm projection onto (c) leaves the ring couplings at 0.80 for the CC correction (0.15 for the proxy);
+- adding the pairs two bonds apart — pattern (d) — brings the CC correction to residual 0.02 and ring coupling ratio **0.34**, inside the win numbers
+  (≤ 0.35 and ≤ 0.5), with corrected frequencies at 4.1 cm⁻¹ against 38 for no correction; the proxy barely moves (0.15 → 0.17), i.e. the proxy's
+  couplings are nearest-neighbour and the CC correction's reach one bond further.
+
+**Target of the CC-trained pairwise model, provisional: pattern (d)** — diagonal, atom-sharing pairs, ring bond–bond pairs, and pairs of primitives two
+bonds apart. Provisional because it rests on one molecule and on the minimum-norm convention; it is confirmed or corrected by the same read-out on
+naphthalene (two rings, 90 primitives; the pattern-vs-data count is then 4,005 entries against ≈ 2,700 pair entries in (d) — still not a fit ceiling,
+but a second molecule for the masks and the transfer question). For E7's model this means one more pair class in the feature set (ring-path
+distance 2 already exists as a feature; the pattern mask is what changes).
+
+**Naphthalene.** The user's pre-authorisation was for a win; this is a between whose masked (d) reaches the win numbers. Started on hel1-16 at
+04:3x: the smoke step only (one CCSD(T)/cc-pVDZ reference gradient of naphthalene — memory and time on 32 GB). The 108-gradient run (≈ 4 days at the
+benzene rate scaled, ≈ €10) waits for the user's word in the morning; it would finish around 28 September.
