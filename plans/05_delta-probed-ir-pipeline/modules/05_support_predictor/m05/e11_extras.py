@@ -54,6 +54,48 @@ def pair_symmetry_key(prims, ranks, i, j):
     a, b = key(i), key(j); return (a, b) if a <= b else (b, a)
 
 
+ODD_PRIMS = {"Dihedral", "OutOfPlane", "MultiDihedral"}
+
+
+def prim_key(name, t):
+    """Orientation-free key of a geomeTRIC primitive: type, atom set, and the atom(s) that fix it within the set (angle apex, dihedral axis, out-of-plane centre)."""
+    if name in ("Angle", "LinearAngle"): return (name, frozenset(t), t[1])
+    if name == "Dihedral": return (name, frozenset(t), frozenset(t[1:3]))
+    if name == "OutOfPlane": return (name, frozenset(t), t[0])
+    return (name, frozenset(t), None)
+
+
+def automorphisms(smiles, max_matches=20000):
+    """All graph automorphisms of the hydrogen-explicit molecule (RDKit self-matches; AddHs order = corpus geometry order, verified in E9)."""
+    from rdkit import Chem
+    m = Chem.AddHs(Chem.MolFromSmiles(smiles))
+    return m.GetSubstructMatches(m, uniquify=False, useChirality=False, maxMatches=max_matches)
+
+
+def orbit_groups(mol, smiles):
+    """E11.2 as re-registered on 25 Sep 2026 09:3x (the rank-tuple key below lumps ortho/meta/para pairs into one class and is superseded): pattern-pair
+    orbits under the graph automorphisms, same-parity pairs only (both sign-even: distance/angle; or both sign-odd: dihedral/out-of-plane, so an improper
+    operation cannot flip the sign of the element), as arrays of pair indices; only orbits with at least two members. None if SMILES and geometry disagree."""
+    prims = prim_atom_tuples(mol["symbols"], mol["coords"]); autos = automorphisms(smiles)
+    if not autos or len(autos[0]) != len(mol["symbols"]): return None
+    idx = {prim_key(n, t): k for k, (n, t) in enumerate(prims)}
+    maps = [[idx.get(prim_key(n, tuple(s[x] for x in t))) for n, t in prims] for s in autos]
+    groups = {}
+    for p, (i, j) in enumerate(mol["pairs"]):
+        i, j = int(i), int(j)
+        if (prims[i][0] in ODD_PRIMS) != (prims[j][0] in ODD_PRIMS): continue
+        imgs = [(min(mp[i], mp[j]), max(mp[i], mp[j])) for mp in maps if mp[i] is not None and mp[j] is not None]
+        if imgs: groups.setdefault(min(imgs), []).append(p)
+    return [np.array(g) for g in groups.values() if len(g) > 1]
+
+
+def spread_of(groups, vals):
+    """RMS within-orbit spread of vals over the RMS of vals on all orbit members (the statistic of E11.2, applied to predictions, targets and errors alike)."""
+    vals = np.asarray(vals, float); within = np.concatenate([vals[g] - vals[g].mean() for g in groups]); allv = np.concatenate([vals[g] for g in groups])
+    w = float(np.sqrt(np.mean(within ** 2))); t = float(np.sqrt(np.mean(allv ** 2)))
+    return dict(within_rms=w, total_rms=t, spread_ratio=(w / t if t > 0 else None), n_pairs_classed=int(len(allv)))
+
+
 def symmetry_spread(mol, pred_vals, smiles):
     """E11.2: RMS spread of the predictions within symmetry classes of pairs / RMS of predictions over all classed pairs (one molecule)."""
     prims = prim_atom_tuples(mol["symbols"], mol["coords"]); ranks = atom_ranks(smiles)
@@ -86,7 +128,7 @@ def dump(mols, tests, pred_dF, pred_vals, out_prefix, mdir, pair_class_names):
     import e6_learning_curve as E6
     import e7_t2_sqm as T2
     man = {r["id"]: r for r in csv.DictReader(open(Path(mdir).parent / "manifest.csv", newline="", encoding="utf-8"))}
-    res = {"per_molecule": {}, "pair_class_rms": {}, "symmetry": {}, "ring_bond_pairs": {}}
+    res = {"per_molecule": {}, "pair_class_rms": {}, "symmetry": {}, "orbit_symmetry": {}, "ring_bond_pairs": {}}; pairs_dump = {}
     for h, ids in tests.items():
         cls_err = {c: [] for c in range(len(pair_class_names))}; cls_val = {c: [] for c in range(len(pair_class_names))}
         for i in ids:
@@ -100,6 +142,10 @@ def dump(mols, tests, pred_dF, pred_vals, out_prefix, mdir, pair_class_names):
                 if sel.any(): cls_err[c].append(err[sel]); cls_val[c].append(m["y"][sel])
             s = symmetry_spread(m, pred_vals[i], man[i]["smiles"]) if i in man else None
             if s: res["symmetry"][i] = s
+            if i in man:                                     # 25 Sep 09:4x: orbit key, on predictions, target and error alike; per-pair values kept for later desk tests
+                og = orbit_groups(m, man[i]["smiles"])
+                if og: res["orbit_symmetry"][i] = dict(name=man[i]["name"], holdout=h, n_orbits=len(og), pred=spread_of(og, pred_vals[i]), target=spread_of(og, m["y"]), error=spread_of(og, err))
+                pairs_dump[f"{i}__pairs"] = np.asarray(m["pairs"]); pairs_dump[f"{i}__pred"] = np.asarray(pred_vals[i]); pairs_dump[f"{i}__true"] = np.asarray(m["y"]); pairs_dump[f"{i}__pc"] = np.asarray(m["pc"])
             if man.get(i, {}).get("name") in ("benzene", "naphthalene"):
                 res["ring_bond_pairs"][man[i]["name"]] = ring_bond_pairs(m, pred_vals[i], m["y"], m["F_low"])
         res["pair_class_rms"][h] = {pair_class_names[c]: dict(rms_error=float(np.sqrt(np.mean(np.concatenate(cls_err[c]) ** 2))), rms_true=float(np.sqrt(np.mean(np.concatenate(cls_val[c]) ** 2))), n=int(sum(len(e) for e in cls_err[c])))
@@ -114,8 +160,21 @@ def dump(mols, tests, pred_dF, pred_vals, out_prefix, mdir, pair_class_names):
     sp = [v["spread_ratio"] for v in res["symmetry"].values() if v and v["spread_ratio"] is not None]
     res["symmetry_pooled"] = dict(n_molecules=len(sp), median_spread_ratio=float(np.median(sp)) if sp else None, mean_spread_ratio=float(np.mean(sp)) if sp else None,
                                   pooled_ratio=float(np.sqrt(np.sum([v["within_rms"] ** 2 * v["n_pairs_classed"] for v in res["symmetry"].values()]) / np.sum([v["total_rms"] ** 2 * v["n_pairs_classed"] for v in res["symmetry"].values()]))) if sp else None)
+    rig = {i: v for i, v in res["orbit_symmetry"].items() if v["target"]["spread_ratio"] is not None and v["target"]["spread_ratio"] < 0.15}
+    def _pooled(d, key):
+        W = sum(v[key]["within_rms"] ** 2 * v[key]["n_pairs_classed"] for v in d.values()); T = sum(v[key]["total_rms"] ** 2 * v[key]["n_pairs_classed"] for v in d.values())
+        return float(np.sqrt(W / T)) if T else None
+    res["orbit_symmetry_pooled"] = dict(n_all=len(res["orbit_symmetry"]), n_rigid=len(rig), rigid_means_target_ratio_below=0.15,
+                                        rigid=dict(pred_ratio=_pooled(rig, "pred"), target_ratio=_pooled(rig, "target"), error_antisymmetric_fraction=_pooled(rig, "error"),
+                                                   median_pred_ratio=float(np.median([v["pred"]["spread_ratio"] for v in rig.values()])) if rig else None),
+                                        all=dict(pred_ratio=_pooled(res["orbit_symmetry"], "pred"), target_ratio=_pooled(res["orbit_symmetry"], "target"), error_antisymmetric_fraction=_pooled(res["orbit_symmetry"], "error")))
+    np.savez_compressed(out_prefix + "_pairs.npz", **pairs_dump)
     json.dump(res, open(out_prefix + "_dump.json", "w"), indent=1, default=float)
-    md = ["# E11 dump — seed-0 model at the full pool", "", f"**E11.2 symmetry:** {res['symmetry_pooled']}", "", "**E11.6 size slope:** " + json.dumps(res["size_slope"]), "",
+    md = ["# E11 dump — seed-0 model at the full pool", "", f"**E11.2 symmetry (coarse rank-tuple key — superseded 25 Sep 09:3x: the target has the same spread under it):** {res['symmetry_pooled']}", "",
+          f"**E11.2 symmetry (orbit key, same-parity pairs; rigid = target within-orbit ratio < 0.15):** {json.dumps(res['orbit_symmetry_pooled'])}", "",
+          "| molecule | h | orbits | pred ratio | target ratio | error antisym. fraction |", "|---|---|---|---|---|---|"] + [
+          f"| {v['name']} | {v['holdout']} | {v['n_orbits']} | {v['pred']['spread_ratio']:.3f} | {v['target']['spread_ratio']:.3f} | {v['error']['spread_ratio']:.3f} |"
+          for v in sorted(res["orbit_symmetry"].values(), key=lambda v: (v["holdout"], v["name"]))] + ["", "**E11.6 size slope:** " + json.dumps(res["size_slope"]), "",
           "## E11.7 error per pair class (RMS of prediction error / RMS of the true ΔF entries)", "", "| hold-out | class | n | rms error | rms true | ratio |", "|---|---|---|---|---|---|"]
     for h, d in res["pair_class_rms"].items():
         for c, v in d.items():

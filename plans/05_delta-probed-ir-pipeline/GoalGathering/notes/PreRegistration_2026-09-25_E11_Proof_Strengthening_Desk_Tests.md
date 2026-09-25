@@ -140,3 +140,32 @@ point, not a law. Layer B's hold-out (c) will span 27–34 against training at �
 equivariant model is required; 3 Kekulé pattern reproduced on benzene; 4 noise floor 2.1 cm⁻¹ median, plateau bound 6.3; 5 corrected-target
 predictions on record (bare parents 1.14× / 1.49× per decade); 6 error grows sub-linearly with size at this range (0.06); 7 the weakest class is
 the off-diagonal atom-sharing pairs on every hold-out, bare parents included.
+
+### Amendment 09:4x — E11.2 as registered was not a valid test; its reading is withdrawn; re-registered with pair orbits
+
+**What was wrong.** The registered class key (`pair_symmetry_key`: primitive type plus the canonical atom-rank tuples of each member) puts every bond–bond pair of
+the same rank types into one class whatever the two primitives' relative position — benzene's ortho, meta and para bond pairs share a class (28 classes for 978
+pairs, where the same-parity pairs form 56 true orbits). The within-class spread therefore measured real physical differences, not asymmetry. The control that
+should have been run before reading — the same statistic on the **target** — gives pooled **0.575** (median 0.641; `out/E11_target_symmetry_2026-09-25.json`),
+equal to the model's molecule by molecule (benzene 0.750 vs 0.764, biphenyl 0.397 vs 0.396, fluorene 0.294 vs 0.306). **Withdrawn:** the 0.52 reading of 09:0x
+and 09:1x above, and the sentence "the pair MLP does not respect molecular symmetry"; nothing is known from E11.2 in either direction.
+
+**Re-registration (before the rerun).** Pair orbits are the orbits of primitive pairs under the graph automorphisms of the hydrogen-explicit molecule (RDKit
+self-matches), restricted to same-parity pairs (both sign-even: distance/angle; or both sign-odd: dihedral/out-of-plane), so that an improper operation cannot
+flip the sign of a matrix element (`e11_extras.orbit_groups`, `spread_of`). Validation on the target, desk (`out/E11_target_orbit_symmetry_2026-09-25.json`,
+44 hold-out molecules): within-orbit spread ratio benzene **0.026**, rigid planar parents 0.07–0.14, fluorene+Cl/F/SH/NO₂ 0.01–0.02; larger where the 3D
+geometry has less symmetry than the graph (rotors: CF₃ 0.6, benzophenone 0.5) or where the linear-angle primitives of −C≡N / ethynyl come in perpendicular pairs
+the key cannot tell apart (0.6–0.7). Statistics, seed-0 model at the full pool, pooled over the molecules whose *target* within-orbit ratio is below 0.15 ("rigid"):
+(i) within-orbit spread ratio of the predictions; (ii) the same for the target (the floor); (iii) the antisymmetric fraction of the error, within-orbit RMS of
+(pred − true) over its RMS. Reading: (i) ≤ 0.10 and ≤ 2 × (ii) → the model is as symmetric as its target; (i) ≥ 0.30 → it is not; between → reported with (iii).
+
+**Prediction, and why the test cannot say what it was meant to say.** The pair features are invariant scalars — sums and absolute differences of per-primitive
+features, F_low entries, ring distances, shared-atom counts — so two mirror-image pairs present the model with identical inputs up to the geometry's own
+numerical asymmetry. Prediction: (i) ≈ (ii). Symmetry is *built into* this model by its features; E11.2 could never have distinguished "learned" from "built in",
+and a value of (i) clearly above (ii) would point at a non-invariant feature (an ordering artefact), a bug to find rather than a physics finding. The equivariant
+model keeps its design reasons (a Cartesian ΔH is a tensor and needs direction-carrying messages; the pair model's invariance is the right symmetry only for
+scalar internal-coordinate targets) but loses the argument E11.2 was said to give it.
+
+**Run.** `m05/e7_rungB_pairs.py corpus/molecules out/E11_orbit_dump_2026-09-25 --use-analytic --dump --sizes all --seeds 0 --threads 4` on the CCX53 beside
+naphthalene E8 (as this morning's E11 runs), smoke first through the launch wrapper; the dump now also writes every hold-out molecule's per-pair predictions,
+targets and pair classes (`_pairs.npz`) so later desk tests of this kind need no retraining. Cost: one training at the full pool (≈ 1 min) plus the read-outs.

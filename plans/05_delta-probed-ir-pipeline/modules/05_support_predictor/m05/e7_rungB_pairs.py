@@ -180,6 +180,7 @@ def main():
     ap.add_argument("molecules"); ap.add_argument("out_prefix")
     ap.add_argument("--threads", type=int, default=16); ap.add_argument("--sizes", default="45,100,all"); ap.add_argument("--epochs", type=int, default=60)
     ap.add_argument("--smoke", action="store_true")
+    ap.add_argument("--seeds", default="0,1,2", help="25 Sep 2026: seeds to train (the E11.2 orbit rerun uses 0); default unchanged")
     ap.add_argument("--shuffle-labels", action="store_true", help="E11.1 (25 Sep 2026): targets permuted within pair class across the pool — a control that must NOT learn")
     ap.add_argument("--dump", action="store_true", help="E11.2/3/6/7 (25 Sep 2026): per-molecule errors, pair-class breakdown, symmetry consistency, ring bond-bond terms of the seed-0 model at the full pool")
     ap.add_argument("--split", default="e6", help="e6 (default): E6 hold-outs (a) layer-A, (b) scaffolds. size:N (25 Sep 2026, size-extrapolation desk test): (a) := admitted molecules with more than N atoms, (b) := E6 scaffold hold-out with <= N atoms, pool := the rest with <= N atoms")
@@ -205,7 +206,7 @@ def main():
         pool = sorted((i for i in mols if nat[i] <= N and i not in set(test_b)), key=E6.sha)
         print(f"size split at {N} atoms: hold-out (a) = {len(test_a)} molecules > {N} atoms, (b) = {len(test_b)} scaffold molecules <= {N}, pool {len(pool)}", flush=True)
     sizes = sorted({min(int(s) if s != "all" else len(pool), len(pool)) for s in a.sizes.split(",")})
-    seeds = [0, 1, 2]
+    seeds = [int(s) for s in a.seeds.split(",")]
     if a.smoke:
         sizes, seeds, a.epochs = sizes[:1], [0], 2
     # pairs, features, targets (minimum-norm internal ΔF) per molecule

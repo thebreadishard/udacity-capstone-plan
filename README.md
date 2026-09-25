@@ -26,7 +26,10 @@ lives at <https://thebreadishard.github.io/> (separate repository, same evidence
   and additive: a substituted molecule's correction is its parent core's block plus a probed neighbourhood (E9, 24 September), that block
   transplants between hosts for rigid substituents (E10), and a model trained on ≤ 26 atoms carries to 27–34 (25 September). With the corrected
   benzene target the pair model learns the couplings of bare parents and of unseen scaffolds alike (ratio 0.43 / 0.47 to the zero rule at 175
-  molecules), but its predictions ignore molecular symmetry (E11.2), so the equivariant model of the design is the next model. The decisive
+  molecules); the morning's reading that its predictions ignore molecular symmetry (E11.2) was withdrawn the same day — the class key was too
+  coarse and the target showed the same spread; with true pair orbits the pair model is as symmetric as its target, because its features are
+  invariant scalars (symmetry built in, not learned). The equivariant model stays the next model for its design reasons (a Cartesian ΔH is a
+  tensor), not on E11 evidence. The decisive
   curve — layer B of the corpus, 100 → 1,200 small molecules on three hold-outs with the reading rule fixed beforehand — started 25 September on
   rented machines (`plans/05_delta-probed-ir-pipeline/GoalGathering/notes/PreRegistration_2026-09-25_Proof_of_Learning_Layer_B.md`).
   One hard price: an LNO-CCSD(T)/cc-pVDZ energy of a 25-atom molecule at the anchor's thresholds costs more than nine hours; a cheaper

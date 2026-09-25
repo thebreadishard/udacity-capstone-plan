@@ -1,0 +1,473 @@
+{
+ "n_molecules": 44,
+ "median_spread_ratio": 0.6405457825930666,
+ "mean_spread_ratio": 0.6095732052781565,
+ "pooled_ratio": 0.5746615310134975,
+ "substituted_analytic": [
+  "A2_0420908ebe",
+  "A2_13bafae8e0",
+  "A2_13eea56ee5",
+  "A2_197913eb9c",
+  "A2_1c29b66c9d",
+  "A2_20747fd501",
+  "A2_20e59f3897",
+  "A2_220d2c107b",
+  "A2_22d0e8105c",
+  "A2_28eed45ad3",
+  "A2_2a0b78bd2b",
+  "A2_2b693cf6e7",
+  "A2_2c22216564",
+  "A2_3020175511",
+  "A2_330b4d6d8d",
+  "A2_356c370f21",
+  "A2_3802542cb6",
+  "A2_3a2982dd85",
+  "A2_3c2cf09504",
+  "A_014f8519af",
+  "A_78896cfe24",
+  "A_8448043181",
+  "A_b90527ca2d"
+ ],
+ "per_molecule": {
+  "A_fdc27f1bd1": {
+   "holdout": "a",
+   "name": "biphenyl",
+   "analytic": false,
+   "n_classes": 440,
+   "n_pairs_classed": 2398,
+   "within_rms": 0.0007124208438594843,
+   "total_rms": 0.0017955504462005179,
+   "spread_ratio": 0.3967701633596569
+  },
+  "A_8448043181": {
+   "holdout": "a",
+   "name": "benzene",
+   "analytic": true,
+   "n_classes": 28,
+   "n_pairs_classed": 978,
+   "within_rms": 0.0010171030406278768,
+   "total_rms": 0.0013563322932054775,
+   "spread_ratio": 0.7498922245846659
+  },
+  "A_e72997e726": {
+   "holdout": "a",
+   "name": "fluorene",
+   "analytic": false,
+   "n_classes": 1205,
+   "n_pairs_classed": 3133,
+   "within_rms": 0.00032381739729737486,
+   "total_rms": 0.0011008432730541637,
+   "spread_ratio": 0.2941539501794661
+  },
+  "A_541c53d1a5": {
+   "holdout": "a",
+   "name": "phenanthrene",
+   "analytic": false,
+   "n_classes": 1239,
+   "n_pairs_classed": 2792,
+   "within_rms": 0.0003644866997039995,
+   "total_rms": 0.0011991164838024346,
+   "spread_ratio": 0.3039627130703776
+  },
+  "A_428228e5a5": {
+   "holdout": "a",
+   "name": "fluoranthene",
+   "analytic": false,
+   "n_classes": 1483,
+   "n_pairs_classed": 3912,
+   "within_rms": 0.0005235209370479275,
+   "total_rms": 0.0011220202653099498,
+   "spread_ratio": 0.4665877731747641
+  },
+  "A_08dde334d8": {
+   "holdout": "a",
+   "name": "benzophenone",
+   "analytic": false,
+   "n_classes": 505,
+   "n_pairs_classed": 2585,
+   "within_rms": 0.0019435667370324085,
+   "total_rms": 0.0025244936853717325,
+   "spread_ratio": 0.7698837783966244
+  },
+  "A_3100da3761": {
+   "holdout": "a",
+   "name": "benzonitrile",
+   "analytic": false,
+   "n_classes": 365,
+   "n_pairs_classed": 983,
+   "within_rms": 0.0010469610439540658,
+   "total_rms": 0.0017452676741484849,
+   "spread_ratio": 0.5998856562016354
+  },
+  "A_72b86c2331": {
+   "holdout": "a",
+   "name": "biphenylene",
+   "analytic": false,
+   "n_classes": 360,
+   "n_pairs_classed": 2902,
+   "within_rms": 0.0007865199737579527,
+   "total_rms": 0.001182200383072228,
+   "spread_ratio": 0.6653017415829235
+  },
+  "A_20db5837c9": {
+   "holdout": "a",
+   "name": "dibenzofuran",
+   "analytic": false,
+   "n_classes": 1055,
+   "n_pairs_classed": 2418,
+   "within_rms": 0.0002822178298784218,
+   "total_rms": 0.0012293545619766863,
+   "spread_ratio": 0.22956585399141655
+  },
+  "A2_0101e57296": {
+   "holdout": "b",
+   "name": "fluoranthene+NH2",
+   "analytic": false,
+   "n_classes": 107,
+   "n_pairs_classed": 230,
+   "within_rms": 0.000804252872953518,
+   "total_rms": 0.0012775796107954776,
+   "spread_ratio": 0.6295129212752187
+  },
+  "A2_02c8833bd5": {
+   "holdout": "b",
+   "name": "fluoranthene+vinyl",
+   "analytic": false,
+   "n_classes": 69,
+   "n_pairs_classed": 147,
+   "within_rms": 0.0006835267499113339,
+   "total_rms": 0.0011148879648334301,
+   "spread_ratio": 0.6130900785295106
+  },
+  "A2_041da590e8": {
+   "holdout": "b",
+   "name": "fluoranthene+CH3",
+   "analytic": false,
+   "n_classes": 130,
+   "n_pairs_classed": 465,
+   "within_rms": 0.0006171240300291024,
+   "total_rms": 0.0008023122660420112,
+   "spread_ratio": 0.7691818462074816
+  },
+  "A2_048ea73dab": {
+   "holdout": "b",
+   "name": "fluoranthene+CH3",
+   "analytic": false,
+   "n_classes": 128,
+   "n_pairs_classed": 459,
+   "within_rms": 0.0006295508998681957,
+   "total_rms": 0.0008328918732745256,
+   "spread_ratio": 0.7558614990360127
+  },
+  "A2_05f5ff045c": {
+   "holdout": "b",
+   "name": "fluorene+NH2",
+   "analytic": false,
+   "n_classes": 433,
+   "n_pairs_classed": 933,
+   "within_rms": 0.0004983548532254008,
+   "total_rms": 0.0008004920259502467,
+   "spread_ratio": 0.6225606715242599
+  },
+  "A2_06222c33e3": {
+   "holdout": "b",
+   "name": "fluoranthene+NH2",
+   "analytic": false,
+   "n_classes": 122,
+   "n_pairs_classed": 260,
+   "within_rms": 0.000777566866342018,
+   "total_rms": 0.0012031223835829927,
+   "spread_ratio": 0.6462907489314288
+  },
+  "A2_066237c4f5": {
+   "holdout": "b",
+   "name": "fluorene+Cl",
+   "analytic": false,
+   "n_classes": 332,
+   "n_pairs_classed": 713,
+   "within_rms": 0.0003705285035096206,
+   "total_rms": 0.0005802938723583131,
+   "spread_ratio": 0.6385187250104736
+  },
+  "A2_06873ee7ad": {
+   "holdout": "b",
+   "name": "fluorene+NH2",
+   "analytic": false,
+   "n_classes": 453,
+   "n_pairs_classed": 973,
+   "within_rms": 0.0005816663857063071,
+   "total_rms": 0.000864457700962566,
+   "spread_ratio": 0.6728685337161399
+  },
+  "A2_097651503c": {
+   "holdout": "b",
+   "name": "fluoranthene+CONH2",
+   "analytic": false,
+   "n_classes": 69,
+   "n_pairs_classed": 147,
+   "within_rms": 0.000966961152293278,
+   "total_rms": 0.0016057902947870031,
+   "spread_ratio": 0.6021715011184189
+  },
+  "A2_0dc3aa4eb9": {
+   "holdout": "b",
+   "name": "fluorene+CH3",
+   "analytic": false,
+   "n_classes": 461,
+   "n_pairs_classed": 1178,
+   "within_rms": 0.0005072707865897416,
+   "total_rms": 0.0006979696379076775,
+   "spread_ratio": 0.7267805919329112
+  },
+  "A2_0e1c741b76": {
+   "holdout": "b",
+   "name": "fluoranthene+CN",
+   "analytic": false,
+   "n_classes": 26,
+   "n_pairs_classed": 53,
+   "within_rms": 0.004224509257718669,
+   "total_rms": 0.00649424226670333,
+   "spread_ratio": 0.6505007180557733
+  },
+  "A2_10d7d03408": {
+   "holdout": "b",
+   "name": "fluorene+COOH",
+   "analytic": false,
+   "n_classes": 1441,
+   "n_pairs_classed": 3367,
+   "within_rms": 0.0003810486572009658,
+   "total_rms": 0.0011020644166095978,
+   "spread_ratio": 0.34575896967368547
+  },
+  "A2_11c681aefb": {
+   "holdout": "b",
+   "name": "fluorene+CF3",
+   "analytic": false,
+   "n_classes": 446,
+   "n_pairs_classed": 1131,
+   "within_rms": 0.000832073088794575,
+   "total_rms": 0.0010274445817725199,
+   "spread_ratio": 0.8098471718631333
+  },
+  "A2_1543119d9d": {
+   "holdout": "b",
+   "name": "fluorene+OCH3",
+   "analytic": false,
+   "n_classes": 1376,
+   "n_pairs_classed": 3368,
+   "within_rms": 0.00042502903177796643,
+   "total_rms": 0.0011404118148651888,
+   "spread_ratio": 0.3726978502307171
+  },
+  "A2_16521f2764": {
+   "holdout": "b",
+   "name": "fluorene+ethynyl",
+   "analytic": false,
+   "n_classes": 1291,
+   "n_pairs_classed": 3047,
+   "within_rms": 0.00055247658480703,
+   "total_rms": 0.001314174445856637,
+   "spread_ratio": 0.4203982101074119
+  },
+  "A2_1b389dc1d8": {
+   "holdout": "b",
+   "name": "fluorene+Cl",
+   "analytic": false,
+   "n_classes": 331,
+   "n_pairs_classed": 711,
+   "within_rms": 0.00036882577418355584,
+   "total_rms": 0.0005765525593838951,
+   "spread_ratio": 0.6397088490556413
+  },
+  "A2_1bb2e3fbf1": {
+   "holdout": "b",
+   "name": "fluorene+F",
+   "analytic": false,
+   "n_classes": 1255,
+   "n_pairs_classed": 2939,
+   "within_rms": 0.0002956358982729112,
+   "total_rms": 0.001118755926269968,
+   "spread_ratio": 0.26425415171527866
+  },
+  "A2_1c2781e93a": {
+   "holdout": "b",
+   "name": "fluorene+NH2",
+   "analytic": false,
+   "n_classes": 438,
+   "n_pairs_classed": 941,
+   "within_rms": 0.0005442012133678594,
+   "total_rms": 0.0008334211852407391,
+   "spread_ratio": 0.652972618173443
+  },
+  "A2_20d3215ce3": {
+   "holdout": "b",
+   "name": "fluorene+CONH2",
+   "analytic": false,
+   "n_classes": 1490,
+   "n_pairs_classed": 3516,
+   "within_rms": 0.0003675112666113184,
+   "total_rms": 0.0010966301257040127,
+   "spread_ratio": 0.3351278229525057
+  },
+  "A2_210c322595": {
+   "holdout": "b",
+   "name": "fluorene+F",
+   "analytic": false,
+   "n_classes": 326,
+   "n_pairs_classed": 701,
+   "within_rms": 0.00037528921634882086,
+   "total_rms": 0.0005850282075649421,
+   "spread_ratio": 0.6414890965871268
+  },
+  "A2_21b688db0c": {
+   "holdout": "b",
+   "name": "fluorene+CH3",
+   "analytic": false,
+   "n_classes": 446,
+   "n_pairs_classed": 1131,
+   "within_rms": 0.0004906307536787963,
+   "total_rms": 0.000684613543612371,
+   "spread_ratio": 0.7166535898340217
+  },
+  "A2_27130c4c79": {
+   "holdout": "b",
+   "name": "fluorene+vinyl",
+   "analytic": false,
+   "n_classes": 398,
+   "n_pairs_classed": 854,
+   "within_rms": 0.0004436043346772924,
+   "total_rms": 0.0007045059102222698,
+   "spread_ratio": 0.6296673005019027
+  },
+  "A2_27370742a0": {
+   "holdout": "b",
+   "name": "fluoranthene+CF3",
+   "analytic": false,
+   "n_classes": 128,
+   "n_pairs_classed": 459,
+   "within_rms": 0.001438224560716572,
+   "total_rms": 0.0016735415307984087,
+   "spread_ratio": 0.8593898234664231
+  },
+  "A2_27edf7297c": {
+   "holdout": "b",
+   "name": "fluorene+CH3",
+   "analytic": false,
+   "n_classes": 441,
+   "n_pairs_classed": 1124,
+   "within_rms": 0.0005148182746923085,
+   "total_rms": 0.0007089064970148331,
+   "spread_ratio": 0.7262146374171776
+  },
+  "A2_2931e48c62": {
+   "holdout": "b",
+   "name": "fluoranthene+CN",
+   "analytic": false,
+   "n_classes": 26,
+   "n_pairs_classed": 53,
+   "within_rms": 0.004145990026593005,
+   "total_rms": 0.006592275248211214,
+   "spread_ratio": 0.6289164014682188
+  },
+  "A2_2e154f6054": {
+   "holdout": "b",
+   "name": "fluorene+NO2",
+   "analytic": false,
+   "n_classes": 331,
+   "n_pairs_classed": 711,
+   "within_rms": 0.0003666394339810865,
+   "total_rms": 0.000571639092791662,
+   "spread_ratio": 0.6413827161304919
+  },
+  "A2_2f079d63a1": {
+   "holdout": "b",
+   "name": "fluoranthene+CH3",
+   "analytic": false,
+   "n_classes": 118,
+   "n_pairs_classed": 429,
+   "within_rms": 0.0006391705218125374,
+   "total_rms": 0.0008328449856383474,
+   "spread_ratio": 0.7674543676607897
+  },
+  "A2_3058513f57": {
+   "holdout": "b",
+   "name": "fluorene+Cl",
+   "analytic": false,
+   "n_classes": 327,
+   "n_pairs_classed": 703,
+   "within_rms": 0.00036733043590239455,
+   "total_rms": 0.000577226600866919,
+   "spread_ratio": 0.6363712887637406
+  },
+  "A2_331729cd47": {
+   "holdout": "b",
+   "name": "fluoranthene+CN",
+   "analytic": false,
+   "n_classes": 24,
+   "n_pairs_classed": 49,
+   "within_rms": 0.004278273897811602,
+   "total_rms": 0.006487288693446333,
+   "spread_ratio": 0.6594856649641092
+  },
+  "A2_3825e7205b": {
+   "holdout": "b",
+   "name": "fluoranthene+ethynyl",
+   "analytic": false,
+   "n_classes": 36,
+   "n_pairs_classed": 76,
+   "within_rms": 0.002746817632568538,
+   "total_rms": 0.0044002003653288695,
+   "spread_ratio": 0.6242483079206875
+  },
+  "A2_39baaea0dd": {
+   "holdout": "b",
+   "name": "fluoranthene+ethynyl",
+   "analytic": false,
+   "n_classes": 38,
+   "n_pairs_classed": 80,
+   "within_rms": 0.0026961971948423445,
+   "total_rms": 0.0037834448051048807,
+   "spread_ratio": 0.7126302440581271
+  },
+  "A2_3b6ae59b2d": {
+   "holdout": "b",
+   "name": "fluorene+SH",
+   "analytic": false,
+   "n_classes": 327,
+   "n_pairs_classed": 703,
+   "within_rms": 0.000374138006323616,
+   "total_rms": 0.0005860611044040823,
+   "spread_ratio": 0.6383941939024368
+  },
+  "A2_3cf20db4ac": {
+   "holdout": "b",
+   "name": "fluorene+CN",
+   "analytic": false,
+   "n_classes": 358,
+   "n_pairs_classed": 766,
+   "within_rms": 0.0012787015280127387,
+   "total_rms": 0.0019159226743843145,
+   "spread_ratio": 0.6674076908785748
+  },
+  "A2_3f25a88e27": {
+   "holdout": "b",
+   "name": "fluoranthene+OCH3",
+   "analytic": false,
+   "n_classes": 55,
+   "n_pairs_classed": 213,
+   "within_rms": 0.0009205022805486982,
+   "total_rms": 0.0012037379422199911,
+   "spread_ratio": 0.7647032200804968
+  },
+  "A2_42ab9eb0a0": {
+   "holdout": "b",
+   "name": "fluoranthene+CF3",
+   "analytic": false,
+   "n_classes": 129,
+   "n_pairs_classed": 462,
+   "within_rms": 0.0017030246910584577,
+   "total_rms": 0.001974051831358404,
+   "spread_ratio": 0.8627051549535837
+  }
+ }
+}

@@ -101,11 +101,18 @@ molecuul met zijgroep is het blok van zijn moederkern plus de buurt van de zijgr
 frequenties tot 1,7 cm⁻¹ terug. Voor rigide zijgroepen kan dat buurtblok zelfs één keer gemeten en overgezet worden (E10). Hoofdstuk 5 §5.9 zegt
 wat dat voor de telling van dure metingen betekent.
 
-**Wat het huidige model níet kan (E11, 25 september).** Het paarmodel dat de koppelingen leert, respecteert de symmetrie van het molecuul niet:
-voor atomen die elkaars spiegelbeeld zijn geeft het antwoorden die de helft van hun eigen grootte uiteenlopen. Het haalt zijn getallen door te
-passen, niet door de symmetrie van de natuurkunde te vinden. Daarom is de volgende versie van deze module een **equivariant** netwerk: een netwerk
-dat symmetrie ingebouwd heeft in plaats van haar te moeten leren. Dat is geen schoonheidsfout: voor grote PAK's, met veel symmetrie en weinig
-trainingsvoorbeelden van hun maat, is ingebouwde symmetrie het verschil tussen extrapoleren en gokken.
+**Symmetrie: een meting die niets mat, en wat ze ons toch leerde (E11.2, 25 september).** Een eerste lezing, dezelfde ochtend, zei dat het
+paarmodel de symmetrie van het molecuul niet respecteerde: spiegelbeeldparen zouden antwoorden krijgen die de helft van hun eigen grootte
+uiteenliepen. Die lezing was fout, en de fout is leerzaam. De meetlat deelde paren in klassen in op grond van het soort atomen, niet op grond van
+hun onderlinge ligging: in benzeen zaten ortho-, meta- en paraparen in één klasse, en het verschil tussen die drie is echte natuurkunde, geen
+asymmetrie. De controle die vooraf had gemoeten, dezelfde meetlat langs het dóél leggen, gaf hetzelfde getal (0,58 tegen 0,52 voor het model).
+Met echte symmetriebanen, de paren die een spiegeling of draaiing van het molecuul in elkaar overvoert, is het doel wél symmetrisch (benzeen 0,03)
+en blijkt iets anders: het paarmodel krijgt voor spiegelbeeldparen precies dezelfde invoer, want zijn kenmerken zijn atoomsoorten, afstanden
+en ringafstanden, en die veranderen niet onder een spiegeling. Het geeft dus vanzelf hetzelfde antwoord. Symmetrie zit in dit model ingebouwd,
+niet geleerd, en de test kon die twee nooit uit elkaar houden. Wat blijft staan: het paarmodel kent geen richtingen, alleen getallen per paar,
+en voor een correctie op de volledige krachtmatrix in de ruimte, een grootheid mét richtingen, is een **equivariant** netwerk nodig: een netwerk
+waarvan de tussenresultaten meedraaien met het molecuul. Dat is de volgende versie van deze module, om díe reden, en niet omdat E11.2 het zou
+hebben afgedwongen.
 
 ## 7. Waar het kan misgaan — en wat je bij de aftekening controleert
 
@@ -200,7 +207,8 @@ telt als slagen en wat als falen — op papier gezet vóórdat het eerste getal 
 correctie van een ander molecuul te leren krijgt, en train opnieuw. Als het netwerk dan óók een dalende curve laat zien, meet onze meetlat iets
 anders dan leren, en dan mag geen enkele eerdere curve tellen. Andersom: in een symmetrisch molecuul, zoals benzeen, zijn er atomen die
 elkaars spiegelbeeld zijn. Niemand heeft het netwerk verteld welke dat zijn. Als het voor spiegelbeeldparen toch hetzelfde antwoord geeft, heeft
-het de natuurkunde gevonden en niet de tabel onthouden. Een derde controle is de *ruisvloer*: onze correcties komen zelf uit berekeningen met een
+het de natuurkunde gevonden en niet de tabel onthouden. (Deze controle werkt alleen bij een model dat de symmetrie kán schenden. Bij ons
+paarmodel zit ze in de kenmerken ingebouwd, en dan meet de controle niets; dat leerden we op 25 september, zie §8.) Een derde controle is de *ruisvloer*: onze correcties komen zelf uit berekeningen met een
 kleine meetfout, en een netwerk kan niet nauwkeuriger worden dan zijn leerstof. Een curve die tot aan die vloer zakt en daar stopt is het beste
 wat er te halen valt; een curve die ver boven de vloer blijft hangen zegt dat het model, en niet de data, de grens is.
 

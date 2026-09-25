@@ -105,4 +105,5 @@ staat het als gedateerd kader in de tekst.
 |---|---|---|
 | 12 september 2026 | gedateerde aanvullingen bij het bevroren plan: basisset (besluit 33), drempellijn (besluit 20), stand module 05, twee lessen | 3 §3.7, 5 §5.4, 10 §9, 17 §17.1a |
 | 25 september 2026 | hoofdstuk 11 herschreven (module 06 is een kandidatenvoorsteller op een PubChem-set; het oude ontwerp als kader in §9); hoofdstuk 10 §1–§8 herschreven (eigen corpus in lagen, het familieblok als doel, de taal van de correctie, wat het model niet kan) met §9 en §10 als kaders; hoofdstuk 5 §5.9 (symmetrie, buurt, omgeving één keer, de prijs per energie); hoofdstuk 3 kader met de ankeruitkomst; hoofdstuk 6 O11/O12; hoofdstuk 17 tabelrijen en §17.1b met lessen 3–5 | commit van 25 september 2026 |
+| 25 september 2026, 09:4x | hoofdstuk 10: de lezing van E11.2 ("het paarmodel respecteert de symmetrie niet") teruggenomen — de meetlat was te grof en het doel had dezelfde spreiding; de symmetrie zit in het paarmodel ingebouwd; de reden voor het equivariante netwerk opnieuw gesteld; kanttekening bij de spiegelbeeldcontrole in §10 | 10 §8, 10 §10 |
 
