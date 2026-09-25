@@ -218,3 +218,5 @@ that was withdrawn within the hour, with its control now a rule, moves no line. 
 corpus grows; the decade-long asset needs exactly that kind of built-in guarantee, and now it is measured rather than assumed.
 
 *10:0x:* lever 2 of the addendum above (orbit-averaged labels) was run within the hour and **failed** its registered line (−1.6 % against ≥ 8 %): label noise is a tenth of the signal against a model error of a third, and 175 examples already average it away. Dropped; the odds lines do not move. Lever 1 (the equivariant model's gain, measured against the pair MLP before building) and the running layer-B curve remain the levers on the proof line.
+
+*17:1x:* Gate E prerequisite (2) — route 2 at Mackie's level reproduces naphthalene's three rotationally resolved CH-oop origins to 1.2 cm⁻¹ RMS with clean quartics (`probes/results_m1/route2/ROUTE2_NAPHTHALENE_VS_LAB_2026-09-25.md`). The gate's remaining prerequisites are unchanged; no odds line moves on a prerequisite.
