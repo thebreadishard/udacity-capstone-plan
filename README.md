@@ -9,7 +9,7 @@ has run are *probes* (measurements about the data and about the method, each com
 first versions of four course modules, a corpus of cheap-level Hessians, and a sibling idea plan. A public, lay-level lab notebook in English
 lives at <https://thebreadishard.github.io/> (separate repository, same evidence rules).
 
-## Where things stand (24 September 2026)
+## Where things stand (25 September 2026)
 
 - **Plan 05 is the current plan**, created 3 September 2026; its text has been frozen since 4 September and changes only
   by dated notes that name a measurement or a decision. Fifty numbered decisions have been taken under that rule. The
@@ -22,6 +22,16 @@ lives at <https://thebreadishard.github.io/> (separate repository, same evidence
   basis too. The R0 diagonal deck was read on 22 September (in-plane frequencies improve against CCSD(T), out-of-plane do not,
   C–H stretches need the geometry term). Since 24 September 21:24 the laptop runs the four densification points of decision 45
   (mode 12, for the error budget's σ), expected to finish around 26 September; nothing else runs locally until then.
+- **The proof that the network learns is now a pre-registered learning curve, running.** On the proxy corpus the correction turned out local
+  and additive: a substituted molecule's correction is its parent core's block plus a probed neighbourhood (E9, 24 September), that block
+  transplants between hosts for rigid substituents (E10), and a model trained on ≤ 26 atoms carries to 27–34 (25 September). With the corrected
+  benzene target the pair model learns the couplings of bare parents and of unseen scaffolds alike (ratio 0.43 / 0.47 to the zero rule at 175
+  molecules), but its predictions ignore molecular symmetry (E11.2), so the equivariant model of the design is the next model. The decisive
+  curve — layer B of the corpus, 100 → 1,200 small molecules on three hold-outs with the reading rule fixed beforehand — started 25 September on
+  rented machines (`plans/05_delta-probed-ir-pipeline/GoalGathering/notes/PreRegistration_2026-09-25_Proof_of_Learning_Layer_B.md`).
+  One hard price: an LNO-CCSD(T)/cc-pVDZ energy of a 25-atom molecule at the anchor's thresholds costs more than nine hours; a cheaper
+  correlation tier is being licensed on benzene before it labels anything. The two-horizon framing (a growing asset versus the 2027 mandate)
+  is in `Note_2026-09-25_Growing_Asset_and_Proof_of_Learning.md`.
 - **A corpus exists** (module 05's factory, run on rented Hetzner servers): deck v1 — B3LYP and ωB97X 6-31G* geometries and
   Hessians — for 244 molecules (layers A and A2 of a 11,321-row manifest), frozen as releases on 22 and 23 September. Its
   quality is guarded by a second route: benzene's finite-difference Hessian was found wrong by 133 cm⁻¹ (psi4's default
