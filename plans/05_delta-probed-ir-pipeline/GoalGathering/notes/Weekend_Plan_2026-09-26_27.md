@@ -1,0 +1,29 @@
+# Weekend plan, 26–27 September 2026 (written 25 September 16:4x, the user leaving: "werk zelfstandig door richting het doel … de lange termijn kansen willen we naar 90+ procent")
+
+**Standing instruction (the user, 25 Sep 16:4x):** work autonomously towards proving to the supervisor that the network learns the right things, and do
+every task that raises the odds; the long-term line (a versioned ΔH network the field uses, ≈ 2030; 60 % on 25 Sep 07:0x) is to be driven towards 90 %+.
+Contact stays open through remote control; a ping only when Helsinki needs the user's hands.
+
+## Fixed appointments
+| when | what | who |
+|---|---|---|
+| Fri ≈ 18:00 | route 2 naphthalene done on hel1-14 → cation chain starts by itself; fetch the 97 Hessians, QFF + two-route noise read-out locally (`dpir.qff --disp 0.10`, `route_noise_structure.py`); record | me |
+| Fri ≈ 19:00 | tuned protocol stage 2 read (100 / 175); stage 3 (read-out-aligned loss) implemented, smoked, launched | me |
+| Fri ≈ 21:10 | module 06 seed 0: 20 epochs done (or early stop) → `train_log_seed0.json` written; copy weights + log to the laptop | me |
+| Sat morning | naphthalene E8 (CCX53) read-out expected: `E8_locality_naphthalene` / `E8_between_naphthalene`; verdict recorded; L2b benzene tiers launched on the CCX53 while it still exists | me |
+| Sat evening | **the user:** delete the CCX53 (after E8 + L2b are fetched) and create a CPX62 for layer-B shard 3 → I bootstrap it (`bootstrap_shardB.sh <ip> 3 5`) — **ping** | user + me |
+| Sun (after cations) | hel1-14 → layer-B shard 4 (`bootstrap` recipe on the existing machine; cations' results fetched first) | me |
+| Sun 20:00 | interim learning-curve reading on shards 0–2 (pre-declared, labelled interim); the tuned and fixed curves both | me |
+| Sun evening | decision with the user: rang C timing; inputs: stage 1–3 curves, interim reading, E8 naphthalene | user |
+| Mon morning | 100-table if all five shards have their first 20; conversation package final | me |
+
+## Levers for the long-term line (each with its test, in the order I will work them when the machines are quiet)
+1. **Proof of learning, made unassailable:** tuned protocol stages 2–3 on the 175 pool; both curves in every layer-B table; the interim point Sunday; class breakdown per point. Test: registered slopes.
+2. **The label price, measured not estimated:** L2b tiers on benzene (accuracy vs cost) while the CCX53 lives; cation ULNO prices from hel1-14; affordability table lines updated. Test: a tier with |Δω′| ≤ 2.5 cm⁻¹ under 30 min per energy.
+3. **The asset's infrastructure (what makes 2030 plausible):** a versioned corpus release procedure (release notes, hashes, the manifest's deck hashes) exercised on layer B's first 100 (`build_release.py`), and the Zenodo deposit texts ready for the user; a `REPRODUCE.md` that rebuilds every number of the Monday package from the repository on a fresh machine. Test: a dry rebuild on a rented machine reproduces the E7/E11 numbers.
+4. **Rung C readiness without pre-empting Sunday's decision:** the data loader and the equivariant model's tensor head written and unit-tested on water/benzene *without training on the pool* (the pre-registration allows building; the test run waits for the decision). Test: equivariance unit test (rotate input → rotated output to 1e-6).
+5. **Robustness of the machines:** every runner with a heartbeat and a resume; the stale-lock guard deployed to shards 3/4 by bootstrap; monitor re-armed every 30 min; incidents → guards the same day.
+6. **Communication:** the Monday package updated after each reading; blog only on the user's word; PushNotification only for Helsinki actions.
+
+## What I will not do without the user
+Create or delete servers; spend beyond the credit; publish; replace the pair model inside the running layer-B curve; start rang C training before Sunday's decision.
