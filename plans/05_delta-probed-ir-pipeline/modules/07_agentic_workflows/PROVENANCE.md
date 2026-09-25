@@ -18,3 +18,5 @@ Every number in the notebook and the report traces to a file named here. Dated n
 
 **Dated note 17:5x — first build.** Package, gate, replay tools, deterministic policy, LangGraph graph, scenarios and tests written and green on the first
 evening after the user's "bouw maar zodra het rustig is"; the LLM policy is written and untested; notebook, report, diagram and `requirements.txt` follow.
+
+**Dated note 18:1x — deliverables.** `notebook/make_notebook.py` → `agentic_system.ipynb` executed top to bottom in the `.venv` (Tasks 1–5; the replay of S1–S8 inside the notebook: 8/8; `results.json`, `figures/architecture.png` drawn by matplotlib from the graph's structure). `make_summary.py` → `Agentic_AI_System_Design_Report.docx/.pdf` (APA 7 template, seven sections, eight references: Amodei 2016, Greshake 2023, Mitchell 2019, Schick 2023, Shavit 2023, Wang 2024, Xi 2023, Yao 2023). `requirements.txt` = `pip freeze` of the `.venv` (99 lines). `RUBRIC_CHECKLIST_2026-09-25.md`. Not yet: the LLM-policy run (needs the user's key); the report's paragraph for it fills itself from `results.json`.
