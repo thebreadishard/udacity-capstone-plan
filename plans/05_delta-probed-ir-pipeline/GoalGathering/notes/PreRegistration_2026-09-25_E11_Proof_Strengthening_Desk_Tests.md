@@ -116,3 +116,27 @@ model treats those couplings as tensors, the pair MLP as independent scalars), c
 ortho +0.0048 (pred +0.0057; F +0.035), meta −0.0064 (pred −0.0072; F −0.017), para +0.0065 (pred +0.0066; F +0.046). The correction's ring
 interaction pattern is Kekulé-like (+, −, +), the same sign pattern as the force field itself, and the model reproduces it to within 20 %. Descriptive,
 as registered; naphthalene was not in the hold-outs of this run and is read from the size-split dump if present.
+
+### E11.1, E11.2 (size split) and E11.6 read, 09:1x
+
+**E11.1 shuffled labels** (`out/E11_shuffled_2026-09-25.md`, full pool, three seeds, targets permuted within pair class across the pool): ring coupling
+ratio **1.12** on hold-out (a) and **1.09** on (b) — ≥ 0.9 as required: a model trained on shuffled couplings does not learn couplings, so the
+coupling read-out of E6/E7 measures learning. Corrected-frequency RMS **13.6 / 12.5 cm⁻¹** against the zero rule's 23.3 / 23.1 — *better* than the
+registered "no more than 10 %" allowance. Reading, honestly: shuffling within pair class keeps each class's mean, and the diagonal terms have
+strong class means (every C–H stretch bond correction is negative and of similar size), so a model that learns only the class means already
+halves the corrected-frequency error. The corrected-frequency read-out therefore has a **class-mean floor of ≈ 13 cm⁻¹** for this model form; the
+learned models' 4.7–5.2 cm⁻¹ sit far below it, which is the real gain, but any future claim on that read-out is against 13, not 23. The
+registered RMS condition was mis-set (it did not anticipate class means); the coupling condition — the one the E6/E7 verdicts rest on — is met.
+
+**E11.2 on the size split** (`out/E11_size26_dump_2026-09-25_dump.md`, 54 molecules): pooled symmetry spread ratio **0.52**, median 0.59 — the same as
+on the E6 split. Two independent hold-outs agree: the pair MLP does not respect molecular symmetry.
+
+**E11.6 error growth with size** (registered read-out, the size split's dump): on the 45 hold-out molecules of 27–30 atoms the slope of
+log(RMS per molecule) against log(N_atoms) is **0.06**; on the 18 control molecules of 23–26 atoms 0.67. Reading: ≤ 0.6 on the registered hold-out
+→ consistent with additive local blocks; the range is narrow (27–30 atoms — the admitted A2 molecules above 26 stop at 30), so this is a first
+point, not a law. Layer B's hold-out (c) will span 27–34 against training at ≤ 26.
+
+**Tally of E11 (seven tests):** 1 coupling read-out validated, RMS read-out recalibrated (floor 13); 2 symmetry not respected (0.52, twice) — the
+equivariant model is required; 3 Kekulé pattern reproduced on benzene; 4 noise floor 2.1 cm⁻¹ median, plateau bound 6.3; 5 corrected-target
+predictions on record (bare parents 1.14× / 1.49× per decade); 6 error grows sub-linearly with size at this range (0.06); 7 the weakest class is
+the off-diagonal atom-sharing pairs on every hold-out, bare parents included.
