@@ -470,6 +470,91 @@ code("""followup2 = dict(release_followup2=RELEASE_C.name, n_molecules=int(len(z
                          pattern_c_proxy=e8["patterns"]["(c) + ring bond-bond pairs"]["proxy ωB97X − B3LYP"]))
 json.dump(followup2, open("results_followup2.json", "w"), indent=1); print("results_followup2.json written")""")
 
+md("""## 9. Follow-up (25 September 2026): how far the correction carries — across a molecule, across molecules, across size
+
+Section 8 read the coupled-cluster correction as local, one bond further than the proxy. The next day three pre-registered tests asked what that
+locality buys: whether a substituted molecule's correction can be built from its parent core plus a probed neighbourhood (E9), whether that
+neighbourhood block can be measured once, on the smallest host, and transplanted (E10), and whether a model trained on small molecules predicts
+larger ones (a size-extrapolation split of section 7's pair model). None of them retrains this module's baseline; all read files already on disk,
+so they run append-only here. The reading rules were written before the numbers (`GoalGathering/notes/PreRegistration_2026-09-24_E9_*`,
+`..._E10_*`, `..._2026-09-25_Size_Extrapolation_*`).""")
+md("""### 9.1 E9 — transfer the core, probe the substituent""")
+code("""E9D = Path("..") / "data" / "e9"
+e9 = json.load(open(E9D / "e9_core_transfer_2026-09-24.json", encoding="utf-8")); e9p = json.load(open(E9D / "e9_posthoc_block_2026-09-24.json", encoding="utf-8"))
+rows = []
+for r in e9["radii"]:
+    for k, label in (("transfer_probe", "core block + probed columns (the claim)"), ("probe_only", "probed columns only"), ("transfer_only", "core block only")):
+        v = e9["variants"][f"{k}_r{r}"]
+        rows.append(dict(r=r, variant=label, **{"columns probed": round(v["column_fraction_mean"], 2), "ΔH residual ratio": round(v["dH_residual_ratio"], 3),
+                                                 "ring coupling ratio": round(v["coupling_ratio"], 2), "corrected ω RMS (cm⁻¹)": round(v["corrected_freq_rms"], 2)}))
+e9_tab = pd.DataFrame(rows)
+print(f"{e9['n_admitted']} substituted molecules, {len(e9['skipped'])} skipped; zero rule {e9['variants']['zero']['corrected_freq_rms']:.1f} cm⁻¹; registered verdict at r = 2: {e9['verdict_r2']}")
+display(e9_tab[e9_tab.r.isin([0, 2, 4])].reset_index(drop=True))
+d2 = e9p["variants"]["d_block_plus_core_couplings_r2"]; e2 = e9p["variants"]["e_block_only_far_core_r2"]
+print(f"energy-only variant (post-hoc): near×near block probed + the core's couplings → {d2['corrected_freq_rms']:.2f} cm⁻¹ (ratio {d2['coupling_ratio']:.2f}); without the core's near×far couplings {e2['corrected_freq_rms']:.2f}")
+fig, ax = plt.subplots(figsize=(5.5, 3.4))
+for k, label, mk in (("transfer_probe", "core block + probed columns", "o"), ("probe_only", "probed columns only", "s"), ("transfer_only", "core block only", "^")):
+    xs = [e9["variants"][f"{k}_r{r}"]["column_fraction_mean"] for r in e9["radii"]]; ys = [e9["variants"][f"{k}_r{r}"]["corrected_freq_rms"] for r in e9["radii"]]
+    ax.plot(xs, ys, marker=mk, label=label)
+ax.axhline(e9["variants"]["zero"]["corrected_freq_rms"], color="grey", ls=":", label="no correction"); ax.set_xlabel("fraction of Hessian columns probed (r = 0…4 bonds)")
+ax.set_ylabel("corrected ω RMS (cm⁻¹)"); ax.set_yscale("log"); ax.legend(fontsize=8); ax.set_title("E9: a substituted molecule's correction from its core plus a neighbourhood", fontsize=9)
+fig.tight_layout(); fig.savefig("figures/e9_core_transfer.png", dpi=150); plt.show()""")
+md("""*Reading.* With the parent core's block carried over, probing the Hessian columns of the atoms within two bonds of the substituent — a quarter of
+the molecule — reproduces the corrected frequencies to 1.7 cm⁻¹ against 23 for no correction; the substituent's own atoms alone (an eighth) give 2.2.
+Either half alone fails (19 and 10 cm⁻¹). The energy-only variant, which is what a local coupled-cluster method can measure, keeps the saving when
+the near–far couplings come from the core. In the language of this module: the target is not only local in its pattern (section 7) but additive
+across the molecule, which is what makes a label cheap.""")
+md("""### 9.2 E10 — measure each environment once, assemble the correction""")
+code("""e10 = json.load(open(E9D / "e10_environment_once_2026-09-24.json", encoding="utf-8")); e10t = json.load(open(E9D / "e10_environment_once_2026-09-24_nearest-torsion.json", encoding="utf-8"))
+rows = []
+for X, v in e10t["by_substituent"].items():
+    rows.append(dict(substituent=X, receivers=v["a_assembled"]["n"], **{"assembled: corrected ω RMS": round(v["a_assembled"]["corrected_freq_rms"], 2), "assembled: ring coupling ratio": round(v["a_assembled"]["coupling_ratio"], 2),
+                                                                      "own block (ceiling): corrected ω RMS": round(v["b_own_block"]["corrected_freq_rms"], 2)}))
+e10_tab = pd.DataFrame(rows).sort_values("assembled: corrected ω RMS").reset_index(drop=True)
+a_reg = e10["variants"]["a_assembled"]; a_tor = e10t["variants"]["a_assembled"]; ceil = e10t["variants"]["b_own_block"]
+print(f"registered rule (smallest host as donor): {a_reg['corrected_freq_rms']:.2f} cm⁻¹, ratio {a_reg['coupling_ratio']:.2f} on {e10['n_receivers']} receivers → {e10['verdict']}")
+print(f"post-hoc, torsion-matched donor within the environment class: {a_tor['corrected_freq_rms']:.2f} cm⁻¹, ratio {a_tor['coupling_ratio']:.2f} on {e10t['n_receivers']} receivers; ceiling with the receiver's own block {ceil['corrected_freq_rms']:.2f}")
+display(e10_tab)""")
+md("""*Reading.* Between, as registered (3.75 cm⁻¹ against a bar of 3.3), and the per-substituent table says why: the planar and rigid substituents
+transplant to 1.8–3.1 cm⁻¹, within a cm⁻¹ of the ceiling, while the rotors (CH₃, OCH₃, SH, CONH₂) do not — their block depends on the conformation
+more finely than a rotated donor block captures. For eleven of fifteen environment types the label price becomes a property of the environment, not
+of the molecule; for the rotors it stays per molecule or per conformer. This is the data argument for the "environment once" strategy of the
+project's long-term note, and its limit.""")
+md("""### 9.3 Size extrapolation — a pair model trained on ≤ 26 atoms, read on 27–34""")
+code("""SZ = json.load(open(Path("..") / "out" / "E7_rungB_size26_2026-09-25.json", encoding="utf-8"))
+rows = []
+for n in SZ["sizes"]:
+    ma = SZ["curve"][str(n)]["B1_mlp"]["mean"]["a"]; mb = SZ["curve"][str(n)]["B1_mlp"]["mean"]["b"]
+    rows.append({"training molecules (≤ 26 atoms)": n, "> 26 atoms: ring coupling ratio": round(ma["coupling_ratio"], 2), "> 26 atoms: corrected ω RMS": round(ma["corrected_freq_rms"], 2),
+                 "≤ 26 scaffolds (control): ratio": round(mb["coupling_ratio"], 2), "≤ 26 scaffolds: corrected ω RMS": round(mb["corrected_freq_rms"], 2)})
+sz_tab = pd.DataFrame(rows)
+print(f"hold-out: {len(SZ['holdout_a'])} molecules of 27–34 atoms; control: {len(SZ['holdout_b'])} scaffold molecules ≤ 26; pool {SZ['pool']}; zero rule {SZ['zero_rule']['a']['corrected_freq_rms']:.1f} / {SZ['zero_rule']['b']['corrected_freq_rms']:.1f} cm⁻¹")
+display(sz_tab)
+fig, ax = plt.subplots(figsize=(5.0, 3.2))
+ax.plot(SZ["sizes"], [SZ["curve"][str(n)]["B1_mlp"]["mean"]["a"]["coupling_ratio"] for n in SZ["sizes"]], marker="o", label="27–34 atoms (extrapolation)")
+ax.plot(SZ["sizes"], [SZ["curve"][str(n)]["B1_mlp"]["mean"]["b"]["coupling_ratio"] for n in SZ["sizes"]], marker="s", label="≤ 26 atoms, unseen scaffolds (control)")
+ax.set_xscale("log"); ax.set_xlabel("training molecules (≤ 26 atoms)"); ax.set_ylabel("ring coupling ratio to the zero rule"); ax.set_ylim(0, 1.05); ax.legend(fontsize=8)
+ax.set_title("Size extrapolation of the pair model", fontsize=9); fig.tight_layout(); fig.savefig("figures/size_extrapolation.png", dpi=150); plt.show()""")
+md("""*Reading.* Encouraging on the registered bars, at the edge: ratio 0.66 → 0.62 → 0.59 and corrected RMS 6.6 → 6.0 → 5.8 cm⁻¹ on the larger
+molecules for 45 → 100 → 161 small training molecules, against 0.40 → 0.36 and 5.7 → 4.5 within size. Size costs about 0.2 in ratio and a cm⁻¹ at
+this range, and the curve is shallow. This is the first cut of the size hold-out of the proof-of-learning pre-registration; the decisive curve — layer
+B of the corpus, 100 to 1,200 small molecules, three hold-outs, reading rule on record — started the same morning on two rented machines.""")
+md("""### 9.4 What we learned (continued)
+
+- **Locality makes labels additive.** A substituted molecule's correction is its core's block plus a neighbourhood (E9), and for rigid substituents
+  that neighbourhood is a property of the environment, measurable once (E10). The cost of a coupled-cluster label then scales with the
+  environment, not the molecule — the argument that turns the expensive labels into a growing asset rather than a per-molecule price.
+- **Small teaches large, slowly.** Trained on ≤ 26 atoms the pair model carries to 27–34 atoms at 0.59 ratio; within size it reaches 0.36. The gap is
+  the size axis of the mandate, and it is now a number that a longer learning curve can move.
+- **A proof of learning is a pre-registered curve, not a table.** Three follow-up days each moved a number; none of them is the proof. The
+  layer-B run and its reading rule are.""")
+code("""followup3 = dict(e9=dict(verdict_r2=e9["verdict_r2"], n=e9["n_admitted"], r2=e9["variants"]["transfer_probe_r2"], r0=e9["variants"]["transfer_probe_r0"], energy_only_r2=d2),
+                 e10=dict(verdict=e10["verdict"], registered=a_reg, nearest_torsion=a_tor, ceiling=ceil, n_receivers=e10t["n_receivers"],
+                          within_bars=[X for X, v in e10t["by_substituent"].items() if v["a_assembled"]["corrected_freq_rms"] <= 3.3 and v["a_assembled"]["coupling_ratio"] <= 0.5]),
+                 size_extrapolation=dict(sizes=SZ["sizes"], holdout_a=len(SZ["holdout_a"]), holdout_b=len(SZ["holdout_b"]), pool=SZ["pool"],
+                                         a={str(n): SZ["curve"][str(n)]["B1_mlp"]["mean"]["a"] for n in SZ["sizes"]}, b={str(n): SZ["curve"][str(n)]["B1_mlp"]["mean"]["b"] for n in SZ["sizes"]}))
+json.dump(followup3, open("results_followup3.json", "w"), indent=1); print("results_followup3.json written")""")
+
 nb = new_notebook(cells=cells, metadata={"kernelspec": {"name": "python3", "display_name": "Python 3", "language": "python"}})
 path = HERE / "deep_learning.ipynb"
 nbformat.write(nb, path)

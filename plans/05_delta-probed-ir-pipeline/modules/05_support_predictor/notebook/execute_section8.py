@@ -10,6 +10,7 @@ Usage: python execute_section8.py [--from-cell 27] [--setup 2,4,8,10] [--defs 12
 import argparse
 import datetime as dt
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -38,7 +39,9 @@ def main():
     old_path = os.path.join(HERE, "deep_learning.ipynb"); old = nbformat.read(old_path, as_version=4)
     # build the new cell list with the generator, in a scratch copy so the executed notebook is not overwritten
     scratch = tempfile.mkdtemp(prefix="m05_nb_"); shutil.copy(os.path.join(HERE, "make_notebook.py"), scratch)
-    subprocess.run([sys.executable, "make_notebook.py", "--no-execute"], cwd=scratch, check=True, capture_output=True)
+    rel = re.search(r'corpus_release" / "([^"]+)\.npz"', old.cells[2].source)   # the executed run's release, so the regenerated cell 2 matches it
+    env = dict(os.environ, M05_RELEASE=rel.group(1)) if rel else dict(os.environ)
+    subprocess.run([sys.executable, "make_notebook.py", "--no-execute"], cwd=scratch, check=True, capture_output=True, env=env)
     new = nbformat.read(os.path.join(scratch, "deep_learning.ipynb"), as_version=4)
     n_old = len(old.cells); assert len(new.cells) > n_old, "no new cells"
     for i in range(n_old):
@@ -53,9 +56,10 @@ def main():
     t0 = dt.datetime.now(dt.timezone.utc)
     with client.setup_kernel():
         for i in setup:
-            print(f"setup cell {i}", flush=True); client.execute_cell(nbformat.v4.new_code_cell(new.cells[i].source), i, store_history=False)
+            print(f"setup cell {i}", flush=True); keep = new.cells[i]; client.execute_cell(nbformat.v4.new_code_cell(new.cells[i].source), i, store_history=False); new.cells[i] = keep
         for i in defs:
-            print(f"definitions of cell {i}", flush=True); client.execute_cell(nbformat.v4.new_code_cell(defs_only(new.cells[i].source)), i, store_history=False)
+            # 25 Sep 2026: nbclient stores the executed cell object at nb.cells[i]; without `keep` the temporary copy replaced the real cell (sources truncated, outputs lost on 24 Sep)
+            print(f"definitions of cell {i}", flush=True); keep = new.cells[i]; client.execute_cell(nbformat.v4.new_code_cell(defs_only(new.cells[i].source)), i, store_history=False); new.cells[i] = keep
         for i in range(n_old, len(new.cells)):
             if new.cells[i].cell_type == "code":
                 print(f"new cell {i}: {new.cells[i].source.split(chr(10))[0][:60]}", flush=True); client.execute_cell(new.cells[i], i)

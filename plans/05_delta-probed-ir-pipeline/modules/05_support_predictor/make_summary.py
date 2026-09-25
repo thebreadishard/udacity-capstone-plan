@@ -212,6 +212,28 @@ if FU2.exists():
     para("What was learned: a data-quality rule should be evidence per molecule rather than a blanket, the range-separated functional is the noisier "
          "finite-difference route, and the real target is local like the stand-in. All numbers trace to the notebook's section 8 and the project's dated notes.")
 
+FU3 = NB / "results_followup3.json"
+if FU3.exists():
+    U3 = json.load(open(FU3, encoding="utf-8"))
+    heading("Addendum 3 (25 September 2026): how far the correction carries — across a molecule, across molecules, across size")
+    e9r2 = U3["e9"]["r2"]; e9r0 = U3["e9"]["r0"]; e9e = U3["e9"]["energy_only_r2"]; t10 = U3["e10"]; sz = U3["size_extrapolation"]; ns = [str(n) for n in sz["sizes"]]
+    para(f"Three further pre-registered readings were added (notebook section 9), none of which retrains the baseline. E9: with the parent core's correction block "
+         f"carried over and only the Hessian columns of the atoms within two bonds of the substituent probed ({100 * e9r2['column_fraction_mean']:.0f} % of the columns), the "
+         f"DFT–DFT correction of {U3['e9']['n']} substituted molecules comes back to {e9r2['corrected_freq_rms']:.1f} cm⁻¹ in corrected frequency (ring coupling ratio "
+         f"{e9r2['coupling_ratio']:.2f}; the substituent's own atoms alone, {100 * e9r0['column_fraction_mean']:.0f} % of the columns, {e9r0['corrected_freq_rms']:.1f} cm⁻¹); the energy-only "
+         f"variant that a local coupled-cluster method can measure gives {e9e['corrected_freq_rms']:.1f} cm⁻¹ when the near–far couplings come from the core. Verdict by the "
+         f"registered rule: {U3['e9']['verdict_r2']}. E10: the same neighbourhood block taken from the smallest host of the substituent and transplanted onto every other host "
+         f"gives {t10['registered']['corrected_freq_rms']:.2f} cm⁻¹ under the registered donor rule ({t10['verdict']}) and {t10['nearest_torsion']['corrected_freq_rms']:.2f} with a torsion-matched donor, "
+         f"against a ceiling of {t10['ceiling']['corrected_freq_rms']:.2f} with the receiver's own block; {len(t10['within_bars'])} of 15 substituent types are within the bars, the rotors "
+         f"(CH3, OCH3, SH, CONH2) are not. Size extrapolation: section 7's pair model trained on molecules of at most 26 atoms predicts the {sz['holdout_a']} molecules of 27–34 atoms at "
+         f"ring coupling ratio {sz['a'][ns[0]]['coupling_ratio']:.2f} → {sz['a'][ns[-1]]['coupling_ratio']:.2f} and corrected-frequency RMS {sz['a'][ns[0]]['corrected_freq_rms']:.1f} → "
+         f"{sz['a'][ns[-1]]['corrected_freq_rms']:.1f} cm⁻¹ for {sz['sizes'][0]} → {sz['sizes'][-1]} training molecules (within-size control {sz['b'][ns[-1]]['coupling_ratio']:.2f}, "
+         f"{sz['b'][ns[-1]]['corrected_freq_rms']:.1f}) — encouraging on the registered bars, at the edge on the ratio.")
+    para("What was learned: locality makes the labels additive across a molecule and, for rigid substituents, across molecules, so the price of an expensive label "
+         "scales with the environment rather than the molecule; small molecules teach large ones, more slowly than they teach each other; and the proof that the "
+         "network learns is a pre-registered learning curve, which started on the corpus's layer B the same morning. All numbers trace to notebook section 9 and the dated notes.")
+
+
 heading("References")
 refs = [
     "Danchev, V. (2022). Reproducible data science with Python: An open learning resource. Journal of Open Source Education, 5(56), 156. https://doi.org/10.21105/jose.00156",

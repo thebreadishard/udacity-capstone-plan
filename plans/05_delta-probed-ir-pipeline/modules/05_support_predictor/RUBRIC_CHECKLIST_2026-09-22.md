@@ -56,3 +56,5 @@ To close: run `python notebook/make_notebook.py` and `python make_summary.py` on
 
 Executed append-only (see PROVENANCE): notebook 39 cells, no errors; `results_followup2.json`; report with Addendum 2 (docx + PDF). The committed
 outputs are current again. Items unchanged otherwise; the reviewer sees sections 7 and 8 as dated follow-ups after an untouched main run.
+
+**2026-09-25 07:2x:** section 9 appended (E9, E10, size extrapolation; three pre-registered readings, no retraining), notebook 51 cells, no errors; `results_followup3.json`; report with Addendum 3. Cells 12 and 17 restored from the 23 September run after the 24 September executor had overwritten them (PROVENANCE dated note); the executor is fixed. What the reviewer sees: the module's target is local, additive and carries from small to large molecules, and the proof of learning is a pre-registered curve now running (layer B).
