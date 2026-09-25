@@ -15,13 +15,13 @@
 | Probes | batchrunner via M07 | deck | antwoordrecords (O5) | hash-controle, budgetregel |
 | Recovery | solver | O5, prior | Δ₂, ρ-curve, K, K_off, c₀, Δ₁ (O6) | stopregel, K_cap |
 | Licenties | probes | O6, referenties | Q6 / Q7 / Q8-uitslagen | fail-closed zinnen |
-| Spectrum | pijplijn | DFT + Δ₂ + geometrieterm, GVPT2 | bandposities per familie; intensiteiten (DFT-dipolen, anharmonisch), gescoord bij benzeen en naftaleen; breedte als tekenkeuze | resonantieregels |
+| Spectrum | pijplijn | DFT + Δ₂ + geometrieterm, VPT2 (pyVPT2 op analytische pyscf-Hessianen, besluit 46) | bandposities per familie; intensiteiten (DFT-dipolen, anharmonisch), gescoord bij benzeen en naftaleen; breedte als tekenkeuze | resonantieregels |
 | Score | M08 | spectrum, O8, O9, M04-kolom | beat / verloren / onbeslisbaar per familie | u_band, Δ = 0-nulrij |
 | Record en certificaat | M07 | alles | O7, O13 of weigering | de weigeringslijst |
-| Steunvoorspeller | M05 | Δ₂-corpus (O11) | geleerde prior; P3 | licentie verdiend op R2 én R3 |
-| Patroonvoorsteller | M06 | antwoordcorpus (O12) | voorstellen vóór de hash | K_off-vergelijking |
+| ΔH-voorspeller | M05 | ΔH-corpus in lagen (O11) | geleerde prior per familieblok; de leercurve van laag B | licentie verdiend op R2 én R3 |
+| Kandidatenvoorsteller | M06 | PubChem-kandidatenset (O12) | nieuwe moleculen voor de atlas, met projectpassing | vooraf vastgelegde metingen (geldigheid, nieuwheid, passing, gehoorzaamheid) |
 | Fragmenten (R6) | pijplijn | fragmenten uit de DFT-geometrie | Δ₂ per fragment | licentie (a)(b)(b′)(c) |
-| Mode G | bijproject | PySCFAD | gradiënten erbij op gelicentieerde rungs | M2–M5, stopcriterium |
+| Mode G | bijproject | eigen bevroren-ruimte-gradiënten (PySCFAD's lokale-CC-gradiënt bleek niet de gevraagde, 17 september) | gradiënten erbij op gelicentieerde rungs | M2–M5, stopcriterium |
 | Paper en verdediging | M08, M09 | alles | paper; presentatie | geen kostenbijvoeglijknaamwoord |
 
 ## §17.1a Gedateerde aanvulling 12 september 2026: na module 09, en twee lessen uit de praktijk
@@ -46,6 +46,25 @@ fragmenten, hervat, energieën identiek tot op de laatste cijfers). Een gesneuve
 hooguit het lopende fragment. De lijst van alle software-ingrepen staat in
 `GoalGathering/notes/Software_Changes_Ledger.md`, met per ingreep of hij als pull request naar de makers
 zou kunnen.
+
+## §17.1b Gedateerde aanvulling 25 september 2026: wat er in twee weken veranderde, en drie lessen
+
+**Het anker is gelezen** (hoofdstuk 3, kader): per familie verlies / winst / tussenin; de goedkope basis voor één van de drie families vrijgegeven.
+**De correctie is lokaal** en moet in de taal van bindingen en hoeken geleerd worden (hoofdstuk 10 §6); dat maakte van module 06 een
+kandidatenvoorsteller (hoofdstuk 11) en van de telling van dure metingen een telling per buurt en per omgevingstype (hoofdstuk 5 §5.9).
+**Het bewijs dat het netwerk leert** is een vooraf vastgelegde leercurve die op 25 september is gestart (hoofdstuk 10 §10).
+
+**Les 3: een achterhaald resultaatbestand is gevaarlijker dan geen bestand.** Op 25 september werden in zes documenten getallen aangehaald uit
+een run van 23 september die dezelfde dag al was vervangen (het doel van benzeen was daarin nog de rekenfout van 133 cm⁻¹); de curve op de kale
+kernen leek daardoor vlak terwijl ze daalt. Regel sindsdien: een resultaatbestand waarvan de invoer later gecorrigeerd is, krijgt dezelfde dag
+bovenaan het woord VERVANGEN, en elk document dat een curve aanhaalt, noemt het bestand.
+
+**Les 4: een hulpje dat een kopie van een cel uitvoert, kan de echte cel overschrijven.** De append-only-uitvoerder van module 05 verving op 24
+september twee trainingscellen door hun definitie-kopieën; gevonden op 25 september, hersteld uit de commit van 23 september.
+
+**Les 5: een controle met geschudde labels vertelt je wat je meetlat meet.** Een model dat de correcties van *andere* moleculen te leren kreeg,
+leerde de koppelingen niet (goed: die meetlat meet leren) maar halveerde toch de frequentiefout, omdat elke klasse van termen een gemiddelde
+heeft dat je zonder chemie kunt raden. Sindsdien wordt die tweede meetlat tegen 13 cm⁻¹ gelezen, niet tegen 23.
 
 ## §17.2 Woordenlijst
 

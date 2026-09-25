@@ -144,18 +144,20 @@ Tabel: per band een rij die O8 aan O9 koppelt: `molecuul, familie, harmonische
 DFT-positie (geschaald), labpositie, verschil, kenmerken van molecuul en band`. Eigen
 uitgave met DOI vóór module 04 begint.
 
-### O11 — Δ₂-corpus (module 05)
+### O11 — ΔH-corpus (module 05)
 
-Per molecuul uit de QM9-deelverzameling: `tokens (M DFT-modes met kenmerken:
-frequentie, samenstelling, atoomomgeving), label (M × M steunmatrix: welke elementen groot
-zijn), Δ₂ = ωB97x − B3LYP (tensor M × M)`. Gesplitst per molecuul met hash. Eigen uitgave
-met DOI vóór module 05 begint.
+Eigen corpus in lagen (A: de groottebrug-aromaten, A2: dezelfde kernen met vijftien zijgroepen, B: kleine kernen met zijgroepen, C: de
+geconjugeerde deelverzameling van Hessian QM9), gerekend door de corpusfabriek: per molecuul `geometrie (B3LYP/6-31G*), H(B3LYP), H(ωB97X)
+op dezelfde geometrie, frequenties, resultaatrecord`, en waar een tweede route bestaat de analytische Hessianen ernaast. Uit die map worden
+afgeleid: `tokens (M trillingen met kenmerken en familie), K = de correctie in de B3LYP-trillingsbasis (M × M, cm⁻¹), het familieblok (het
+doel), de steun (0/1)`. Gesplitst per molecuul met hash; een *uitgave* is een bevroren id-lijst met een controlesom per Hessiaan en krijgt een
+DOI. Sinds 25 september 2026 ook de leercurve-deelverzamelingen van laag B: de eerste 100, 300, 600 en 1.200 in de gehashte volgorde.
 
-### O12 — Patroon-antwoordcorpus (module 06)
+### O12 — Kandidatenset (module 06)
 
-De antwoordrecords (O5) van de QM9-dry-runs, met per molecuul de modestructuur:
-`molecuul, modes, patroon p, R_s, ρ-winst van dit patroon`. Nieuwe splits-hash; de
-PAK-dry-run-tensoren zitten er niet in (die zijn de testset van module 05).
+Sinds 24 september 2026: de bevroren PubChem-set van 160.972 versmolten-aromatische moleculen (`cid, smiles, formule, zware atomen,
+aromatische ringen, kernen, Murcko-skelet, split`), gesplitst per skelet met hash, met een README (zoekvraag, filters, aantallen, datum,
+SHA-256) en een Zenodo-uitgave (CC0). Het patroon-antwoordcorpus van het ontwerp van 12 september bestaat niet meer (hoofdstuk 11 §9).
 
 ### O13 — Certificaat (module 08)
 
@@ -191,8 +193,8 @@ zijn commit-hash is de sleutel die de verzegelde bestanden opent.
 | O8 atlas | M02 | M04 (koppeltabel), M08 (opponentkolom) |
 | O9 scorebord | M03 | pilotnotitie item 1/2/4, M04, M08 (score), M07 (weigering zonder u_band) |
 | O10 koppeltabel | M04 | M04-model; M08 (gekalibreerde kolom, onzekerheidslaag) |
-| O11 Δ₂-corpus | M05 (uit dry runs) | M05-model; de geleerde prior in O3 |
-| O12 patroon-antwoordcorpus | M06 (uit dry runs) | M06-model; voorstellen gaan het deck in vóór de hash |
+| O11 ΔH-corpus | de corpusfabriek (M05), tweede route | M05-model; de geleerde prior in O3; de leercurve van laag B |
+| O12 kandidatenset | PubChem (bevroren 24 september) | M06-model; kandidaten voor de atlas, gelabeld als modeluitvoer |
 | O13 certificaat | M08 via M07 | de lezer, het paper, module 09 |
 | O14 pilotnotitie | de student, na de voornotitieprobes | M07 (elke weigering verwijst ernaar), alles |
 

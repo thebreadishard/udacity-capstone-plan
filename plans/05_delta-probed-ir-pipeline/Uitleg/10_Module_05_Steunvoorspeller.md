@@ -1,152 +1,131 @@
-# Hoofdstuk 10 — Module 05: de Δ₂-steunvoorspeller
+# Hoofdstuk 10 — Module 05: de ΔH-voorspeller (de "steunvoorspeller")
 
-*Udacity-module "Deep Learning Systems". In de rubriek Project 4.*
+*Udacity-module "Deep Learning Systems". In de rubriek Project 4. Stand van 25 september 2026; §9 bewaart het ontwerp van 12 september als
+gedateerd kader, §10 legt uit hoe je weet dat een netwerk echt leert.*
 
 ---
 
 ## 1. Wat is de vraag?
 
-Kan een neuraal netwerk, alleen uit goedkope DFT-kenmerken, voorspellen *welke* elementen
-van de correctiematrix Δ₂ groot zullen zijn — zodat de dure metingen daar geplaatst
-worden en er minder van nodig zijn?
+Kan een neuraal netwerk, alleen uit goedkope DFT-kenmerken van een molecuul, voorspellen *hoe* de goedkope trillingsberekening gecorrigeerd
+moet worden naar een betere — niet trilling voor trilling, maar als het hele **blok per bandfamilie**: de verschuiving van elke band én de
+koppelingen tussen de banden van één familie — zodat de dure metingen daar geplaatst worden waar het netwerk nog niet zeker is, en er minder
+van nodig zijn?
 
 ## 2. Wat eist de school?
 
-Een deep-learning-experiment in PyTorch: een probleemdomein kiezen (**beeld, tekst of
-reeks**), een model uit de familie **CNN, RNN of Transformer**, een baseline trainen, en
-**precies één** ding veranderen voor een gecontroleerde vergelijking ("zeg wat er
-veranderde en wat gelijk bleef"). Beide modellen evalueren, met leercurves. "Hoge
-nauwkeurigheid is niet vereist." De dataset moet openbaar zijn vóór de module, niet
-synthetisch of AI-gegenereerd, en **niet hergebruikt uit een eerdere capstone-module**;
-standaardbenchmarks en samengestelde echte datasets zijn toegestaan. Het rapport moet een
-ethiek-paragraaf hebben en het notebook een samenvatting van 4–6 zinnen.
+Een deep-learning-experiment in PyTorch: een probleemdomein kiezen (**beeld, tekst of reeks**), een model uit de familie **CNN, RNN of
+Transformer**, een baseline trainen, en **precies één** ding veranderen voor een gecontroleerde vergelijking ("zeg wat er veranderde en wat gelijk
+bleef"). Beide modellen evalueren, met leercurves. "Hoge nauwkeurigheid is niet vereist." De dataset moet openbaar zijn vóór de module, niet
+synthetisch of AI-gegenereerd, en **niet hergebruikt uit een eerdere capstone-module**; samengestelde echte datasets zijn toegestaan. Het rapport
+moet een ethiek-paragraaf hebben en het notebook een samenvatting van 4–6 zinnen.
 
 ## 3. Invoer — de datastructuur in detail
 
-**Het corpus, object O11.** Zeven gemeten PAK-tensoren tegen R3 zijn geen
-deep-learning-dataset. Daarom is het corpus **DFT-tegen-DFT op schaal**:
+**Het corpus, object O11: zelf gemaakt, in lagen.** Zeven gemeten PAK-tensoren zijn geen deep-learning-dataset, en de openbare databank
+Hessian QM9 bevat vrijwel geen aromaten van de maat die het plan nodig heeft. Daarom heeft het project sinds 12 september een eigen **corpusfabriek**:
+voor elk molecuul rekent ze de geometrie met B3LYP/6-31G* uit, en dan twee Hessianen op precies die geometrie, één met B3LYP en één met ωB97X.
+Het verschil ΔH = H(ωB97X) − H(B3LYP) is de *plaatsvervanger* van de echte correctie (coupled cluster min DFT): twee functionalen met een
+sterk verschillend aandeel exacte uitwisseling, zodat het verschil dezelfde soort structuur heeft als het echte verschil. Het corpus bestaat in
+lagen:
 
-- **Hessian QM9** (openbaar; 41.645 kleine organische moleculen met ωB97x/6-31G*-Hessianen).
-- **Zelf herberekende B3LYP/6-31G*-Hessianen** op een aromaat-zware deelverzameling ervan
-  (benzeenderivaten en geconjugeerde ringen oververtegenwoordigd). Hoe groot die
-  deelverzameling is, wordt pas bepaald nadat de dry run de Hessiaan-rekentijd per molecuul
-  op de laptop heeft geprint; er staat met opzet geen getal in het plan.
-- Per molecuul: Δ₂ = Hessiaan(ωB97x) − Hessiaan(B3LYP) in de B3LYP-modebasis. Twee
-  functionalen met sterk verschillend aandeel exacte uitwisseling, zodat het verschil de
-  "moderotaties" bevat die het echte CC−DFT-verschil ook heeft.
+| Laag | Wat | Waarom | Stand 25 september |
+|---|---|---|---|
+| A | de aromaten van 22–30 atomen die op de ladder lijken: benzeen, naftaleen, antraceen, fenantreen, pyreen, fluorantheen, carbazool, acridine … | de "groottebrug" | 45 klaar |
+| A2 | dezelfde veertien kernen, elk met vijftien zijgroepen (CH₃, OH, NH₂, F, Cl, CN, CHO, COOH, OCH₃, NO₂, CF₃, vinyl, ethynyl, CONH₂, SH) | veertien skeletten leren geen regel; honderden omgevingen wel | 199 klaar; 15 zadelpunten worden heropgelost |
+| B | negentien kleine kernen (benzeen, pyridine, thiofeen, indool, chinoline …) met dezelfde zijgroepen, tot 26 atomen | de grote leercurve: 4.353 moleculen in vaste gehashte volgorde | gestart 25 september, vijf gehuurde machines |
+| C | de geconjugeerde deelverzameling van Hessian QM9 (6.055 moleculen, alleen B3LYP erbij) | brede kleine-moleculenbasis | gepland |
 
-De vorm per molecuul:
+Elk molecuul heeft een map met de geometrie, de twee Hessianen, de frequenties en een resultaatrecord; een **uitgave** (release) is een bevroren
+bestand met een lijst van id's en een controlesom per Hessiaan, en krijgt een Zenodo-DOI. De uitgave van 24 september telt 229 moleculen.
+
+**Twee routes, één regel.** Psi4 rekent deze Hessianen als eindige verschillen van gradiënten (hoofdstuk 4 §4.2), en dat maakt ruis: op
+benzeen zat in de ωB97X-Hessiaan een fout van 133 cm⁻¹ die niets met de chemie te maken had. Sindsdien geldt de regel dat elke verdachte
+Hessiaan een **tweede route** krijgt, een analytische Hessiaan uit pyscf, en dat de uitgave de analytische versie gebruikt waar die bestaat.
+Zo zijn vijf moleculen "genezen" en vijftien echte zadelpunten ontmaskerd (hoofdstuk 4 §4.5: ruis en de stopregel).
+
+**De vorm per molecuul:**
 
 | Onderdeel | Type | Betekenis |
 |---|---|---|
-| tokens | reeks van M records | één per DFT-mode: frequentie, samenstelling (welke atomen bewegen), atoomomgevingskenmerken |
-| label | matrix M × M van 0/1 | de **steun**: welke elementen van Δ₂ boven een drempel liggen |
-| Δ₂ | tensor M × M | de volledige correctie, voor het gebruik als prior en voor P3 |
-| splits-hash | tekst | per molecuul: train / validatie / test |
+| tokens | reeks van M records | één per DFT-trilling: frequentie, welke atomen bewegen, atoomomgevingskenmerken, de familie |
+| K | matrix M × M | de correctie in de basis van de B3LYP-trillingen, in cm⁻¹: de diagonaal is de bandverschuiving, de rest de koppelingen |
+| familieblok | per familie een deelmatrix van K | het **doel**: verschuiving én koppelingen van één familie samen (sinds 19 september) |
+| steun | matrix M × M van 0/1 | welke elementen van K groot zijn — de tweede kop van het netwerk |
+| splits-hash | tekst | per molecuul: train / validatie / test, reproduceerbaar |
 
-**Probleemdomein en modelfamilie, expliciet verklaard:** domein **reeks** (een molecuul als
-reeks van M mode-tokens; het doel een label per token-paar), model **Transformer**
-(aandacht tussen tokens, equivariant onder de symmetrie van het molecuul). De aandacht
-tussen token i en token j is precies de plek waar "zijn modes i en j gekoppeld?" leeft;
-dat is waarom een Transformer hier natuurlijk past en een CNN niet.
+**Probleemdomein en modelfamilie, expliciet verklaard:** domein **reeks** (een molecuul als reeks van M trillings-tokens), model **Transformer**
+(aandacht tussen tokens: de plek waar "zijn trillingen i en j gekoppeld?" leeft). Dat is de ingeleverde baseline van deze module. Wat het
+project daarnaast leerde over de *taal* waarin je de correctie moet opschrijven, staat in §6.
 
-**Wat er niet in zit.** Geen labdata (Q4 triviaal schoon). De PAK-dry-run-tensoren en de
-op de rungs gemeten tensoren zijn **alleen testset**: QM9-moleculen hebben hoogstens negen
-zware atomen (herinnerd; wordt gecontroleerd bij het bouwen), dus elk PAK groter dan
-benzeen ligt buiten de trainingsverdeling.
-
-**Publicatie vooraf.** Eigen uitgave met Zenodo-DOI en deck-hashes vóór de module begint.
+**Wat er niet in zit.** Geen labdata. De PAK's van de ladder en alles wat groter is dan het corpus zijn **alleen testset**.
 
 ## 4. Bewerking
 
-1. Corpus bouwen: QM9-deelverzameling kiezen, B3LYP-Hessianen rekenen (DFT-only, de
-   laptop), Δ₂ en steunlabels afleiden, splitsen per molecuul met hash, publiceren.
-2. Baseline-Transformer trainen op de steunvoorspelling; leercurves loggen.
-3. **De gecontroleerde vergelijking, bevroren in het plan:** *geleerde prior tegen
-   structurele prior bij gelijk K*, op het dry-run-corpus. Zelfde patronen, zelfde
-   achtergehouden set, zelfde solver, minstens drie zaadjes. Wat veranderde: de prior. Wat
-   gelijk bleef: al het andere. Metriek: ρ bij vast K, en K om ρ* te bereiken (sinds 6 september
-   2026: ρ_off en de drempel met modelvloer, besluiten 8, 9, 12; en de baseline waartegen de
-   geleerde prior moet winnen is het aantal vrije elementen dat de symmetrieprior overlaat,
-   besluiten 11 en 13). Dit
-   vergelijkt geen twee netwerken maar een netwerk-als-prior tegen een prior zonder netwerk;
-   dat is de vergelijking die de pijplijn nodig heeft, en hij voldoet aan de rubriekvorm.
-4. De effectgrootte (P3) rapporteren op het corpus én, informatief, op de weggehouden
-   PAK-tensoren.
+1. Corpus bouwen met de fabriek (lagen A en A2 op gehuurde machines, september 2026), de tweede route op verdachte moleculen, splitsen per
+   molecuul met hash, uitgeven met DOI.
+2. Baseline-Transformer trainen op het familieblok; leercurves loggen.
+3. **De gecontroleerde vergelijking, bevroren in het recept vóór het trainen:** één ding anders, al het andere gelijk, drie zaadjes. In het
+   ingeleverde notebook is dat de tweede kop (de steun) aan of uit; het recept zegt precies wat veranderde en wat niet.
+4. Evalueren op de weggehouden moleculen: per familie de fout op de diagonaal (bandverschuivingen, in cm⁻¹) en op de koppelingen, tegen twee
+   regels zonder netwerk — "geen correctie" en "de mediaan van de familie" — zodat elk getal een betekenis heeft.
+5. Aanvullingen in dezelfde notebook (secties 7, 8 en 9): de tweede route op benzeen, de heropgeloste zadelpunten, de coupled-cluster-controle E8,
+   en de lokaliteitstoetsen E9, E10 en de grootte-extrapolatie van 24–25 september. Sectie 8 is *append-only* uitgevoerd: de cellen van eerder
+   zijn niet opnieuw gedraaid, hun uitvoer is bewaard, en het notebook vermeldt dat.
 
 ## 5. Uitvoer — de datastructuur in detail
 
-- **Het getrainde model** met versiehash.
-- **De geleerde prior**: voor een nieuw molecuul (gegeven O2) een matrix M × M met per
-  element de voorspelde kans dat het groot is. Die matrix gaat als `prior = geleerd` met
-  modelhash in het deck (O3) van een rung waar het mag.
-- **De P3-effectgrootte**: pilotnotitie-item 5 in vorm; het getal na de meting.
-- Notebook, `requirements.txt`, rapport met de vereiste zinnen: het corpus is openbare
-  Hessian QM9 plus zelf berekende B3LYP-Hessianen (DOI, hashes), berekende data, niet
-  AI-gegenereerd, in geen eerdere module gebruikt (beslissing 7: niets ingeleverd); het lab
-  is nooit trainings-, validatie- of stopinvoer; op R0–R3 is elk gescoord spectrum de
-  structurele recovery.
+- **Het getrainde model** met versiehash, en de uitgave van het corpus met DOI.
+- **Per familie een getal**: de fout van de voorspelde bandverschuiving op de testset (op de uitgave van 229 moleculen: 2,6 / 3,9 / 5,4 / 8,5 cm⁻¹ voor
+  C–H-strek / C–H-uit-het-vlak / ring-in-het-vlak / overig, tegen 44 / 24 / 20 / 19 zonder correctie) en de gemiddelde precisie van de steunkop.
+- **De geleerde prior** voor een nieuw molecuul: een voorspelde K met een onzekerheid, die als `prior = geleerd` met modelhash in het deck (O3) van
+  een rung gaat waar dat mag (hoofdstuk 5 §5.4).
+- Notebook, `requirements.txt`, rapport met de vereiste zinnen: het corpus is eigen berekende ab-initiodata, openbaar met DOI, niet AI-gegenereerd,
+  in geen eerdere module gebruikt; het lab is nooit trainings-, validatie- of stopinvoer.
 
-## 6. Waarom deze module, en voor welke rungs
+## 6. Wat het project onderweg leerde: de taal van de correctie
 
-Dit is de module waar de "regel 0" van de mapping (elk module-artefact draagt de
-pijplijn) het meest is bevochten, en waar de gebruiker op 4 september 2026 heeft beslist.
-De uitkomst:
+Dit is het deel dat op 12 september nog niet bestond en dat de reviewer moet zien, omdat het laat zien dat er *geleerd* is.
 
-- **Op R0–R3 is de geleerde prior nooit dragend.** Het gescoorde spectrum is daar altijd de
-  structurele recovery. De prior wordt er wél gemeten: P3 op het corpus, en op R2 en R3 een
-  vergelijking op *dezelfde echte antwoorden* — de structurele recovery tot haar K, de
-  prior-geholpen recovery tot een **kleiner** K (een prior die niets bespaart, verdient
-  niets), en de twee Δ₂'s moeten per familie binnen τ₇ overeenkomen, met de direct gemeten
-  koppelingen binnen η₈. Slaagt dat op R2 én R3, dan is de **licentie verdiend**.
-- **Op R4–R6 wordt de licentie gespendeerd.** Daar mag de prior-geholpen recovery de enige
-  volledige recovery zijn, en dan is module 05 dragend voor het spectrum én het
-  kostenrecord. Het certificaat zegt dat expliciet en noemt de twee rungs waarop de
-  licentie is verdiend.
+**De koppelingen leerden niet, tot de taal veranderde (E6 → E7, 19–23 september).** In de basis van de trillingen (K per trillingspaar) leerde geen
+enkel model de koppelingen: de leercurve bleef vlak bij 45, 100 en 175 moleculen. De reden is wiskundig: een trilling is een richting in een
+36-dimensionale ruimte, en die richting heeft geen vast teken — draai je hem om, dan wisselt de koppeling van teken zonder dat een kenmerk van de
+trilling dat verraadt. Het label per trillingspaar is dus slecht gedefinieerd. Schrijf dezelfde correctie op in de taal van **bindingen en hoeken**
+(interne coördinaten: rek van een binding, buiging van een hoek), dan is elk element tekenvast en lokaal, en dan leert hetzelfde netwerk op
+dezelfde 175 moleculen de koppelingen wél: de fout op de ringkoppelingen halveert tegenover "geen correctie", ook op skeletten die het nooit zag,
+en ook op de kale kernen zonder zijgroepen (0,43 tegen 0,47 bij 175 moleculen; gecorrigeerde frequenties 4,7 tot 5,2 cm⁻¹ tegen 23 zonder correctie).
 
-Het motief is de directive "erfenis is geen gezag": plan 04 verbood elke overdracht van
-kennis tussen moleculen; plan 05 staat het toe waar het gemeten is en waar het het doel
-dient. De grootte-zin en de Q8(c)-verhouding mengen nooit twee priors.
+**De correctie is lokaal, en dat is drie keer gemeten.** Driekwart van ΔH zit in bindingsparen die een atoom delen of in dezelfde ring liggen (E7);
+de echte coupled-cluster-correctie van benzeen zit voor 98 % in datzelfde patroon, één binding verder (E8, 24 september); en de correctie van een
+molecuul met zijgroep is het blok van zijn moederkern plus de buurt van de zijgroep (E9): een kwart van de Hessiaan-kolommen geeft de gecorrigeerde
+frequenties tot 1,7 cm⁻¹ terug. Voor rigide zijgroepen kan dat buurtblok zelfs één keer gemeten en overgezet worden (E10). Hoofdstuk 5 §5.9 zegt
+wat dat voor de telling van dure metingen betekent.
+
+**Wat het huidige model níet kan (E11, 25 september).** Het paarmodel dat de koppelingen leert, respecteert de symmetrie van het molecuul niet:
+voor atomen die elkaars spiegelbeeld zijn geeft het antwoorden die de helft van hun eigen grootte uiteenlopen. Het haalt zijn getallen door te
+passen, niet door de symmetrie van de natuurkunde te vinden. Daarom is de volgende versie van deze module een **equivariant** netwerk: een netwerk
+dat symmetrie ingebouwd heeft in plaats van haar te moeten leren. Dat is geen schoonheidsfout: voor grote PAK's, met veel symmetrie en weinig
+trainingsvoorbeelden van hun maat, is ingebouwde symmetrie het verschil tussen extrapoleren en gokken.
 
 ## 7. Waar het kan misgaan — en wat je bij de aftekening controleert
 
-- **De herbruikclausule.** "Niet hergebruikt uit een eerdere capstone-module." Er is een
-  niet-ingeleverd concept van module 02 op QM9. Beslissing 7 sluit dit: niets is
-  ingeleverd, het concept wordt hernoemd of gearchiveerd. De terugvaloptie (een andere
-  openbare Hessiaan-bron) blijft een benoemde schuld, nog niet ingevuld. Controleer dat de
-  provenance-paragraaf beide punten noemt.
-- **Domein en familie letterlijk.** Het rapport moet "reeks" en "Transformer" met zoveel
-  woorden noemen; alles buiten CNN/RNN/Transformer gaat terug naar de gebruiker vóór het
-  trainen.
-- **Precies één verandering.** De rubriek wil een tweede configuratie die op één punt
-  verschilt. De bevroren vergelijking (prior wisselen, al het andere gelijk) voldoet;
-  controleer dat er niet stiekem ook een hyperparameter meeverandert.
-- **Succescriterium.** Niet nauwkeurigheid maar de licentie: bespaart de prior patronen, en
-  klopt de prior-geholpen recovery op een echte rung met de prior-vrije controle? Beide
-  uitkomsten zijn publiceerbaar. Controleer dat het rapport dit zo formuleert en niet
-  terugvalt op "accuracy".
-- **Volgorde.** Module 05 wacht op de publicatie van het corpus, die weer wacht op de
-  dry-run-timing. Als de laptop-Hessiaan traag blijkt, wordt de deelverzameling klein; dat
-  is per gedateerde notitie, niet stilzwijgend.
-- **Off-distribution eerlijk gemeld.** QM9 bevat geen PAK groter dan benzeen; het rapport
-  zegt dat en rapporteert de PAK-testset apart.
+- **De herbruikclausule.** Het corpus is eigen berekende data, in geen eerdere module gebruikt; controleer dat het rapport dat zegt en de DOI noemt.
+- **Domein en familie letterlijk.** "Reeks" en "Transformer" met zoveel woorden; de verandering van precies één ding in het recept vóór het trainen.
+- **Ruis in de labels.** Elke uitgave meldt welke Hessianen langs de tweede route zijn vervangen en waarom; een molecuul dat "genezen" is, staat
+  erbij met beide getallen. Controleer dat de uitgave van het notebook overeenkomt met de uitgave in de provenance.
+- **Append-only eerlijk.** Cellen die niet opnieuw gedraaid zijn, mogen niet opnieuw *geschreven* zijn. Op 24 september overschreef het
+  uitvoerhulpje per ongeluk twee zware cellen met hun definitie-kopieën; dat is op 25 september ontdekt, hersteld uit de commit van 23 september en
+  in de provenance opgeschreven. Controleer dat de trainingscellen uitvoer en een uitvoernummer hebben.
+- **Het bewijs is een curve, geen tabel.** Zie §10: niets in dit hoofdstuk is een bewijs dat het netwerk leert wat het voor grote PAK's moet leren;
+  de vooraf vastgelegde leercurve op laag B is dat wel of niet.
 
 ## 8. In het kort
 
-Module 05 traint een Transformer die uit DFT-modekenmerken voorspelt welke elementen van
-Δ₂ groot zijn, op een zelf gepubliceerd corpus van ωB97x−B3LYP-verschillen over een
-aromaat-zware QM9-deelverzameling. De gecontroleerde vergelijking is geleerde tegen
-structurele prior bij gelijk K. Op de nauwkeurigheidsrungs is de prior alleen een gemeten
-experiment; verdient hij zijn licentie op R2 én R3, dan wordt hij op de bereikrungs
-dragend, en het certificaat zegt dat.
+Module 05 traint een Transformer die uit DFT-kenmerken per bandfamilie het correctieblok voorspelt, op een eigen corpus van ωB97X−B3LYP-verschillen
+in lagen, uitgegeven met DOI. Onderweg leerde het project dat de correctie lokaal is en in de taal van bindingen en hoeken geleerd moet worden, dat
+het huidige paarmodel symmetrie niet respecteert, en dat het echte bewijs een vooraf vastgelegde leercurve is die op 25 september is gestart.
 
-*Bron: [Capstone_Mapping.md](../GoalGathering/Capstone_Mapping.md) §0 en §3 (Module 05),
-[Frozen_Ladder_and_Tolerances.md](../GoalGathering/Frozen_Ladder_and_Tolerances.md) §3
-(de geleerde prior: verdiend en gespendeerd), [Distilled_Project_Plan_and_Quality_Checks.md](../GoalGathering/Distilled_Project_Plan_and_Quality_Checks.md)
-§5–§6, [Overarching_Goal.md](../GoalGathering/Overarching_Goal.md) (beslissingen 4 en 7),
-[Rubrics/05](../../../Rubrics/05_Deep_Learning_Systems.md).*
-
-## 9. Stand van zaken op 12 september 2026 (gedateerde aanvulling)
+## 9. Gedateerd kader: stand van zaken op 12 september 2026
 
 Dit hoofdstuk beschrijft het plan zoals het is bevroren. Sindsdien is er gemeten, en dat verandert
 één aanname in §3.

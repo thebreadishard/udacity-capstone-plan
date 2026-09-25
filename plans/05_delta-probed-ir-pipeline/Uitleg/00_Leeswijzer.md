@@ -83,8 +83,8 @@ het lezen.
 | 7 | [Module 02 — de opponent-atlas](07_Module_02_Opponent_Atlas.md) | B |
 | 8 | [Module 03 — het lab-scorebord](08_Module_03_Scorebord.md) | B |
 | 9 | [Module 04 — de goedkope tegenstander](09_Module_04_Baseline.md) | B |
-| 10 | [Module 05 — de steunvoorspeller](10_Module_05_Steunvoorspeller.md) | B |
-| 11 | [Module 06 — de patroonvoorsteller](11_Module_06_Patroonvoorsteller.md) | B |
+| 10 | [Module 05 — de ΔH-voorspeller](10_Module_05_Steunvoorspeller.md) | B |
+| 11 | [Module 06 — de kandidatenvoorsteller](11_Module_06_Patroonvoorsteller.md) | B |
 | 12 | [Module 07 — de campagne-officier](12_Module_07_Campagne_Officier.md) | B |
 | 13 | [Module 08 — de pijplijn als geheel](13_Module_08_Synthese.md) | B |
 | 14 | [Module 09 — de verdediging](14_Module_09_Verdediging.md) | B |
@@ -92,5 +92,17 @@ het lezen.
 | 16 | [Checklist voor mapping Pass 6](16_Checklist_Mapping_Pass_6.md) | C |
 | 17 | [Totaaloverzicht en woordenlijst](17_Totaaloverzicht_en_Woordenlijst.md) | C |
 
-*Geschreven op 4 september 2026 bij de bevroren tekst van plan 05. Bron van elk hoofdstuk:
-de documenten in `../GoalGathering/` en `../probes/README.md`.*
+*Geschreven op 4 september 2026 bij de bevroren tekst van plan 05; bijgewerkt naar de stand van 25 september 2026 (zie het wijzigingslog
+hieronder). Bron van elk hoofdstuk: de documenten in `../GoalGathering/` en `../probes/README.md`.*
+
+## Wijzigingslog
+
+De Uitleg wordt bijgewerkt door herschrijven, niet door stapelen: de leerling leest de stand van nu; de geschiedenis staat hier en in de
+git-geschiedenis van elk bestand. Waar het verloop zelf de les is (het anker per familie, de taal van de correctie, de lessen uit de praktijk)
+staat het als gedateerd kader in de tekst.
+
+| Datum | Wat | Waar |
+|---|---|---|
+| 12 september 2026 | gedateerde aanvullingen bij het bevroren plan: basisset (besluit 33), drempellijn (besluit 20), stand module 05, twee lessen | 3 §3.7, 5 §5.4, 10 §9, 17 §17.1a |
+| 25 september 2026 | hoofdstuk 11 herschreven (module 06 is een kandidatenvoorsteller op een PubChem-set; het oude ontwerp als kader in §9); hoofdstuk 10 §1–§8 herschreven (eigen corpus in lagen, het familieblok als doel, de taal van de correctie, wat het model niet kan) met §9 en §10 als kaders; hoofdstuk 5 §5.9 (symmetrie, buurt, omgeving één keer, de prijs per energie); hoofdstuk 3 kader met de ankeruitkomst; hoofdstuk 6 O11/O12; hoofdstuk 17 tabelrijen en §17.1b met lessen 3–5 | commit van 25 september 2026 |
+

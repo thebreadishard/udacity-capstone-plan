@@ -112,6 +112,15 @@ die op benzeen door de bevroren berekening te vergelijken met een volledige (nie
 CCSD(T)-berekening, de enige referentie die zelf niet van het bevriezen afhangt. Dat is de
 "biaslijn" van hoofdstuk 5.
 
+**Gedateerd kader, 25 september 2026 — wat het anker opleverde.** Probe M1 slaagde (de ruimtes laten zich opslaan, overbrengen en herladen;
+de rondgang van stap 0 klopt tot 0,0002 µE_h) en de grote ankerberekening liep van 16 tot 24 september op de laptop: naftaleen op cc-pVTZ,
+vijftien energieën van negen tot twaalf uur, langs drie trillingen uit drie bandfamilies. De vraag die vooraf vastlag (probe M3) was of de
+goedkopere basisset cc-pVDZ, een factor tien per energie, per familie volstaat met een vaste bijtelling uit benzeen. Het antwoord kwam per familie:
+**verlies** voor C–H uit het vlak (de bijtelling wisselt zelfs van teken, omdat MP2 in een dubbel-zeta-basis juist die bewegingen te slap maakt),
+**winst** voor de C–H-buiging in het vlak (+1,2 tegen +1,0 cm⁻¹), en **tussenin** voor de C–C-strek (−1,9 tegen −6,0 cm⁻¹: goede richting, te ver af).
+De goedkope basis is dus voor één van de drie families vrijgegeven; de andere twee houden het dure anker, met hun gemeten bijtelling in de
+foutbegroting. Zo hoort een vooraf vastgelegde vraag af te lopen: per familie een uitslag, geen oordeel over het geheel dat er niet in zat.
+
 ## §3.6 Δ, Δ₁ en Δ₂
 
 Nu kunnen de symbolen van het plan precies worden gedefinieerd. Neem de DFT-evenwichtsstand

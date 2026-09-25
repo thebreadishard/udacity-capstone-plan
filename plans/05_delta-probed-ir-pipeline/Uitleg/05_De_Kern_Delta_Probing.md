@@ -172,6 +172,28 @@ het gemeten verre aandeel"; "de fragmentlicentie is in afwachting van (b′); R6
 in fragmenten opgemeten". Het plan kan dus op elke rung eerlijk verliezen, en verliezen is
 een resultaat, geen schande.
 
+## §5.9 Wat de telling van dure metingen sindsdien leerde (stand 25 september 2026)
+
+De telling van §5.2 gaat uit van één molecuul, alle richtingen, tot de stopregel. Drie metingen van september maken die telling kleiner, en één
+maakt haar eerlijker.
+
+- **Symmetrie.** In een symmetrisch molecuul zijn veel richtingen elkaars spiegelbeeld; wie er één meet, kent ze allemaal. Voor benzeen zijn
+  12 in plaats van 72 gradiënten genoeg (tot op 0,03 cm⁻¹ gelijk), voor naftaleen 30 in plaats van 108. Dat is een factor zes tot vier, maar
+  alleen voor kale, symmetrische kernen; een molecuul met een zijgroep heeft die symmetrie niet meer.
+- **De buurt (E9).** De correctie van een molecuul met zijgroep is het blok van zijn moederkern plus de omgeving van de zijgroep: meet je alleen de
+  atomen binnen twee bindingen van de zijgroep, een kwart van het molecuul, dan komen de gecorrigeerde frequenties tot 1,7 cm⁻¹ terug. Dat vervangt
+  voor gesubstitueerde moleculen de symmetrie als telhefboom.
+- **De omgeving één keer (E10).** Voor rigide zijgroepen (halogenen, CN, NO₂, CHO, COOH, ethynyl, vinyl, NH₂, OH, CF₃) kan dat buurtblok op de
+  kleinste drager gemeten en naar elke andere drager overgezet worden; voor draaibare groepen (CH₃, OCH₃, SH, CONH₂) niet. Dan hoort de prijs van
+  een meting bij een *omgevingstype*, niet bij een molecuul.
+- **De eerlijke kant.** Eén lokale coupled-cluster-energie van een molecuul van 25 atomen op de instellingen van het anker kost meer dan negen
+  uur op acht rekenkernen (L2, 25 september). Een buurtlabel van een paar honderd energieën is op die trap weken; daarom wordt eerst op benzeen
+  gemeten welke goedkopere trap (zonder de drievoudige excitaties, of met lossere drempels) nog binnen 2,5 cm⁻¹ van de echte CCSD(T)-kromming
+  blijft, vóór zo'n trap ook maar één label levert.
+
+Alles bij elkaar: de telling van §5.2 blijft de *definitie*; wat er gemeten wordt is per molecuul een buurt, per omgevingstype één keer, en per
+symmetrische kern een fractie — en de prijs per energie staat er altijd naast.
+
 ## In het kort
 
 Een probe is een ±paar uitwijkingen met CC en DFT; het deck legt vooraf alle patronen,
