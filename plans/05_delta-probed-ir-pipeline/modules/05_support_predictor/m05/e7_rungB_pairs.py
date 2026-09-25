@@ -174,6 +174,75 @@ TUNE_GRID = [(lr, w) for lr in (3e-4, 1e-3, 3e-3) for w in (128, 256)]   # 25 Se
 STAGE2_GRID = [("mse", "sgd"), ("huber", "adamw"), ("huber", "sgd")]   # 25 Sep 2026 stage 2, at stage 1's lr/width; (mse, adamw) is stage 1's own cell
 
 
+STAGE3_LAMBDAS = (0.1, 1.0)   # 25 Sep 2026 stage 3: weight of the projected-block term; registered before the run
+
+
+def _mol_tensors(m, mu, sd, tscale):
+    """Per-molecule tensors for the read-out-aligned loss: features, scaled targets, pair indices, the linear map ΔF -> K (kmap of e7_t2_posthoc) and the true K."""
+    import e7_t2_posthoc as PH
+    C, scale = PH.kmap(m)
+    return dict(X=torch.tensor((m["X"] - mu) / sd), y=torch.tensor(m["y"] / tscale[m["pc"]], dtype=torch.float32), pairs=torch.tensor(np.asarray(m["pairs"]), dtype=torch.long),
+                ts=torch.tensor(tscale[m["pc"]], dtype=torch.float32), C=torch.tensor(C, dtype=torch.float32), scale=torch.tensor(scale, dtype=torch.float32),
+                Ktrue=torch.tensor(np.asarray(m["K"]), dtype=torch.float32), n=int(m["B"].shape[0]))
+
+
+def _k_pred(model, t):
+    """K_pred (M × M, cm⁻¹) from the model's per-pair predictions of one molecule — the same linear map the read-out applies to the assembled ΔF."""
+    v = model(t["X"]) * t["ts"]
+    dF = torch.zeros(t["n"], t["n"], dtype=v.dtype).index_put((t["pairs"][:, 0], t["pairs"][:, 1]), v)
+    d = torch.diagonal(dF); dF = dF + dF.T - torch.diag_embed(d)
+    return (t["C"] @ dF @ t["C"].T) * t["scale"]
+
+
+def train_stage3(tr_mols, seed, lr, width, lam, epochs, loss_name="mse", opt_name="adamw", val_mols=None, patience=None, kscale=1.0, mols_per_step=2):
+    """Stage 3: loss = pair loss (as stage 2) + λ · mean((K_pred − K_true)²) / kscale², molecules in batches of `mols_per_step`; early stopping on the inner
+    per-pair MSE (the same statistic as stages 1 and 2). Returns (model, epochs_run, best_inner_mse)."""
+    torch.manual_seed(seed); rng = np.random.default_rng(seed)
+    d_in = tr_mols[0]["X"].shape[1]; m = MLP(d_in, d=width)
+    opt = torch.optim.AdamW(m.parameters(), lr=lr, weight_decay=1e-4) if opt_name == "adamw" else torch.optim.SGD(m.parameters(), lr=10 * lr, momentum=0.9, nesterov=True, weight_decay=1e-4)
+    lossf = (lambda p, t: ((p - t) ** 2).mean()) if loss_name == "mse" else (lambda p, t: torch.nn.functional.huber_loss(p, t.to(p.dtype), delta=1.0))
+    sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, epochs)
+    best, best_state, bad, ran = float("inf"), None, 0, 0
+    for ep in range(epochs):
+        m.train(); order = rng.permutation(len(tr_mols))
+        for s in range(0, len(order), mols_per_step):
+            loss = 0.0
+            for k in order[s:s + mols_per_step]:
+                t = tr_mols[k]; loss = loss + lossf(m(t["X"]), t["y"]) + lam * ((_k_pred(m, t) - t["Ktrue"]) ** 2).mean() / (kscale ** 2)
+            opt.zero_grad(); (loss / max(1, len(order[s:s + mols_per_step]))).backward(); opt.step()
+        sched.step(); ran = ep + 1
+        if val_mols is not None:
+            m.eval()
+            with torch.no_grad(): vm = float(np.mean([float(((m(t["X"]) - t["y"]) ** 2).mean()) for t in val_mols]))
+            if vm < best - 1e-6: best, bad, best_state = vm, 0, {k_: v_.detach().clone() for k_, v_ in m.state_dict().items()}
+            else:
+                bad += 1
+                if patience is not None and bad >= patience: break
+    if best_state is not None: m.load_state_dict(best_state)
+    m.eval(); return m, ran, best
+
+
+def train_stage3_tuned(mols, tr, seed, mu, sd, tscale, chosen, log=print):
+    """Stage 3 at stage 2's chosen setting (`chosen`: lr, width, loss, opt, epochs, inner_val_mse): λ ∈ STAGE3_LAMBDAS on the same inner split; the best cell — including
+    stage 2's own (λ = 0, pair-batched) — is retrained on all training molecules. Returns (model, record)."""
+    k = max(1, int(round(0.2 * len(tr)))); inner_val, inner_tr = tr[-k:], tr[:-k]
+    T = {i: _mol_tensors(mols[i], mu, sd, tscale) for i in tr}
+    kscale = float(np.sqrt(np.mean([float((T[i]["Ktrue"] ** 2).mean()) for i in inner_tr])))
+    trials = [dict(chosen, lam=0.0, source="stage 2")]
+    for lam in STAGE3_LAMBDAS:
+        _, ran, vm = train_stage3([T[i] for i in inner_tr], seed, chosen["lr"], chosen["width"], lam, 200, chosen.get("loss", "mse"), chosen.get("opt", "adamw"),
+                                  val_mols=[T[i] for i in inner_val], patience=10, kscale=kscale)
+        trials.append(dict(lr=chosen["lr"], width=chosen["width"], loss=chosen.get("loss", "mse"), opt=chosen.get("opt", "adamw"), lam=lam, epochs=ran, inner_val_mse=vm, source="stage 3"))
+        log(f"  tune3 n={len(tr)} seed {seed}: λ {lam:g} → inner val MSE {vm:.4f} after {ran} epochs (stage 2 cell {chosen['inner_val_mse']:.4f})")
+    bestt = min(trials, key=lambda t: t["inner_val_mse"])
+    if bestt["lam"] == 0.0:
+        X = np.concatenate([mols[i]["X"] for i in tr]); y = np.concatenate([mols[i]["y"] for i in tr]); c = np.concatenate([mols[i]["pc"] for i in tr])
+        m = train_mlp(X, y, c, seed, max(bestt["epochs"], 1), mu, sd, tscale, lr=bestt["lr"], width=bestt["width"], loss_name=bestt.get("loss", "mse"), opt_name=bestt.get("opt", "adamw"))
+    else:
+        m, _, _ = train_stage3([T[i] for i in tr], seed, bestt["lr"], bestt["width"], bestt["lam"], max(bestt["epochs"], 1), bestt.get("loss", "mse"), bestt.get("opt", "adamw"), kscale=kscale)
+    return m, dict(chosen=bestt, trials=trials, inner_val_molecules=len(inner_val), kscale_cm=kscale, stage3=True)
+
+
 def train_tuned(mols, tr, seed, mu, sd, tscale, log=print, stage2=False):
     """25 Sep 2026 (--tune): inner 20 % validation split by molecule (hash order), six settings with early stopping (patience 10, max 200 epochs), selection on the
     inner MSE, retrain on all training molecules with the epochs early stopping chose. Returns (model, record)."""
@@ -223,6 +292,7 @@ def main():
     ap.add_argument("--smoke", action="store_true")
     ap.add_argument("--orbit-average-targets", action="store_true", help="E11.8 (25 Sep 2026): average every per-pair target over its symmetry orbit (graph automorphisms, same-parity pairs) before training, for every molecule with a manifest SMILES; the frequency/coupling read-outs still compare against the original dH_true")
     ap.add_argument("--tune", action="store_true", help="25 Sep 2026: per size and seed, inner validation split + fixed grid + early stopping (train_tuned); the fixed recipe is the default")
+    ap.add_argument("--tune-stage3", default=None, help="25 Sep 2026: path of the stage-2 result json; stage 3 (read-out-aligned loss, λ grid) at its chosen setting per size and seed")
     ap.add_argument("--tune-stage2", action="store_true", help="25 Sep 2026: with --tune, also loss {mse, huber} x optimiser {adamw, sgd-nesterov} at the stage-1 setting")
     ap.add_argument("--seeds", default="0,1,2", help="25 Sep 2026: seeds to train (the E11.2 orbit rerun uses 0); default unchanged")
     ap.add_argument("--shuffle-labels", action="store_true", help="E11.1 (25 Sep 2026): targets permuted within pair class across the pool — a control that must NOT learn")
@@ -290,7 +360,10 @@ def main():
         row = {"n": n, "n_pairs_train": int(len(y)), "target_scale_per_class": {PAIR_CLASS[k]: float(tscale[k]) for k in range(len(PAIR_CLASS))}, "B1_mlp": {"per_seed": []}, "B2_gbt": {}}
         t1 = time.time()
         for seed in seeds:
-            if a.tune:
+            if a.tune_stage3:
+                S2 = json.load(open(a.tune_stage3))
+                m_, tune_rec = train_stage3_tuned(mols, tr, seed, mu, sd, tscale, S2["curve"][str(n)]["tuning"][str(seed)]["chosen"], log=lambda s: print(s, flush=True)); row.setdefault("tuning", {})[str(seed)] = tune_rec
+            elif a.tune:
                 m_, tune_rec = train_tuned(mols, tr, seed, mu, sd, tscale, log=lambda s: print(s, flush=True), stage2=a.tune_stage2); row.setdefault("tuning", {})[str(seed)] = tune_rec
             else:
                 m_ = train_mlp(X, y, c, seed, a.epochs, mu, sd, tscale)
