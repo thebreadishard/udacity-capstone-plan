@@ -19,7 +19,7 @@ RDLogger.DisableLog("rdApp.*")
 HETERO = {"N": "#5b5bd6", "O": "#5b5bd6", "S": "#5b5bd6", "F": "#5b5bd6", "Cl": "#5b5bd6", "Br": "#5b5bd6"}   # one accent; the CSS variable replaces it
 
 
-def depict(smiles, size=240):
+def depict(smiles, size=240, alt=""):
     mol = Chem.MolFromSmiles(smiles)
     if mol is None:
         return None
@@ -31,7 +31,8 @@ def depict(smiles, size=240):
         z = Chem.GetPeriodicTable().GetAtomicNumber(sym); r, g, b = (int(col[i:i + 2], 16) / 255 for i in (1, 3, 5)); o.updateAtomPalette({z: (r, g, b)})
     d.DrawMolecule(mol); d.FinishDrawing(); svg = d.GetDrawingText()
     svg = re.sub(r"#000000", "currentColor", svg, flags=re.I); svg = re.sub(r"#5B5BD6", "var(--accent, #5b5bd6)", svg, flags=re.I)
-    svg = svg.replace("<svg ", "<svg role='img' focusable='false' ", 1)
+    label = alt.replace("&", "&amp;").replace("'", "&#39;").replace("<", "&lt;")
+    svg = svg.replace("<svg ", f"<svg role='img' focusable='false' aria-label='{label}' ", 1)   # 25 Sep 2026: axe 'svg-img-alt' — the alternative text sits on the svg itself
     return svg
 
 
@@ -45,11 +46,12 @@ def main():
             continue
         if not r["smiles"]:
             skipped += 1; continue
-        svg = depict(r["smiles"], a.size)
+        alt = f"Structure of {r['name']}" + (f" ({r['formula']})" if r.get("formula") else "")
+        svg = depict(r["smiles"], a.size, alt)
         if svg is None:
             skipped += 1; continue
         open(os.path.join(a.out, r["id"] + ".svg"), "w", encoding="utf-8").write(svg)
-        index[r["id"]] = dict(alt=f"Structure of {r['name']}" + (f" ({r['formula']})" if r.get("formula") else ""), width=a.size, height=a.size)
+        index[r["id"]] = dict(alt=alt, width=a.size, height=a.size)
     json.dump(index, open(os.path.join(a.out, "index.json"), "w", encoding="utf-8"), ensure_ascii=False)
     print(f"depictions: {len(index)} written, {skipped} skipped (no or unparsable SMILES) → {a.out}")
 

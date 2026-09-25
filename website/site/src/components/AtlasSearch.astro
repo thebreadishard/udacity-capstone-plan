@@ -20,7 +20,7 @@ const { total } = Astro.props as { total: number };
     </select>
   </form>
   <p id="acount" class="muted small" aria-live="polite">Type to search; results appear here.</p>
-  <div class="tablewrap"><table id="atable" hidden>
+  <div class="tablewrap" tabindex="0" role="region" aria-label="Search results; scrolls horizontally"><table id="atable" hidden>
     <thead><tr><th>molecule</th><th>formula</th><th>layer</th><th class="num">heavy atoms</th><th>status</th></tr></thead>
     <tbody></tbody>
   </table></div>

@@ -21,6 +21,11 @@ const reached = (i) => i <= row.rung && !(i === 2 || i === 3);   // rungs 2–3 
 const vib = mol.frequencies_cm;
 const rows = vib.b3lyp.vibrational.map((f, i) => ({ i: i + 1, b3lyp: f, wb97x: vib.wb97x.vibrational[i], shift: vib.wb97x.vibrational[i] - f }));
 const repo = 'https://github.com/thebreadishard/udacity-capstone-plan/blob/master/plans/05_delta-probed-ir-pipeline/';
+const notifyTitle = encodeURIComponent(`Notify me: ${row.name} (${row.id})`);
+const notifyBody = encodeURIComponent(`Please notify me when ${row.name} (${row.id}) has a predicted or anchored spectrum.
+
+Page: https://thebreadishard.github.io/spectrum-atlas/molecule/${row.id}/`);
+const notifyHref = `https://github.com/thebreadishard/spectrum-atlas/issues/new?title=${notifyTitle}&body=${notifyBody}`;   // phase-1 'notify me' (25 Sep 2026): a GitHub issue the visitor is subscribed to; nothing stored here
 ---
 <Base title={row.name} description={`${row.name} (${row.formula ?? row.smiles}) in the Spectrum Atlas: status, frequencies, provenance.`}>
   <nav aria-label="Breadcrumb" class="crumb muted"><a href={withBase('/atlas/')}>Atlas</a> › {row.name}</nav>
@@ -54,6 +59,7 @@ const repo = 'https://github.com/thebreadishard/udacity-capstone-plan/blob/maste
       <section class="card">
         <h2>Request a run</h2>
         <p class="muted small">Not available yet: the learned layer is being trained and licensed per mode family. Sign-in will be needed only to request runs; reading stays open.</p>
+        <p class="small"><strong>Notify me</strong> when this molecule climbs the ladder: <a href={notifyHref}>open a GitHub issue</a> — you are subscribed to it and we close it with a link when the page changes. No e-mail address is stored by this site.</p>
       </section>
     </aside>
 
@@ -63,7 +69,7 @@ const repo = 'https://github.com/thebreadishard/udacity-capstone-plan/blob/maste
         <p class="muted small">{rows.length} vibrational modes; imaginary modes negative. Shift = ωB97X − B3LYP. The corrected spectrum (rung 3) will appear here as a band with its ensemble spread.</p>
         <Spectrum title={`Harmonic stick spectrum of ${row.name} at the cheap level`} series={[{ label: 'B3LYP', values: vib.b3lyp.vibrational }, { label: 'ωB97X', values: vib.wb97x.vibrational }]} />
         <p class="muted small">Sticks of unit height (intensities are not exported yet); high wavenumbers on the left; the table below is the same data.</p>
-        <div class="tablewrap">
+        <div class="tablewrap" tabindex="0" role="region" aria-label="Table of vibrational modes; scrolls horizontally">
           <table>
             <thead><tr><th>#</th><th class="num">B3LYP (cm⁻¹)</th><th class="num">ωB97X (cm⁻¹)</th><th class="num">shift</th></tr></thead>
             <tbody>{rows.map((r) => <tr><td class="num">{r.i}</td><td class="num">{r.b3lyp.toFixed(1)}</td><td class="num">{r.wb97x.toFixed(1)}</td><td class="num">{r.shift >= 0 ? '+' : ''}{r.shift.toFixed(1)}</td></tr>)}</tbody>
