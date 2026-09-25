@@ -555,6 +555,117 @@ code("""followup3 = dict(e9=dict(verdict_r2=e9["verdict_r2"], n=e9["n_admitted"]
                                          a={str(n): SZ["curve"][str(n)]["B1_mlp"]["mean"]["a"] for n in SZ["sizes"]}, b={str(n): SZ["curve"][str(n)]["B1_mlp"]["mean"]["b"] for n in SZ["sizes"]}))
 json.dump(followup3, open("results_followup3.json", "w"), indent=1); print("results_followup3.json written")""")
 
+md("""## 10. Follow-up (25 September 2026, later): controls — what the metrics measure, a noise floor, a test that measured nothing, and predictions on record
+
+A learning curve is only evidence if its metric measures learning, if its floor is known, and if its predictions are written down before the data
+arrive. This section adds the controls that were run for that purpose (pre-registered as E11, `GoalGathering/notes/PreRegistration_2026-09-25_E11_*`),
+including one test whose first reading was wrong and was withdrawn the same hour — kept here because the mistake is the more useful lesson. Nothing
+retrains the baseline; every cell reads result files already on disk.""")
+md("""### 10.1 A control that must not learn: shuffled labels""")
+code("""OUT = Path("..") / "out"
+SH = json.load(open(OUT / "E11_shuffled_2026-09-25.json", encoding="utf-8")); RB = json.load(open(OUT / "E7_rungB_2026-09-23_analytic.json", encoding="utf-8"))
+rows = []
+for h, name in (("a", "(a) bare parents"), ("b", "(b) unseen scaffolds")):
+    real = RB["curve"]["175"]["B1_mlp"]["mean"][h]; ctrl = SH["curve"]["175"]["B1_mlp"]["mean"][h]
+    rows.append({"hold-out": name, "real model: ring coupling ratio": round(real["coupling_ratio"], 2), "shuffled control: ratio": round(ctrl["coupling_ratio"], 2),
+                 "real model: corrected ω RMS": round(real["corrected_freq_rms"], 1), "shuffled control: corrected ω RMS": round(ctrl["corrected_freq_rms"], 1),
+                 "no correction: corrected ω RMS": round(ctrl["corrected_freq_rms_zero_rule"], 1)})
+sh_tab = pd.DataFrame(rows); display(sh_tab)
+print("targets permuted within pair class across the training pool (175 molecules, 3 seeds); the control keeps the class means and loses everything else")""")
+md("""*Reading.* The coupling ratio of the control stays above one (1.12 / 1.09): shuffling destroys it, so that metric measures learning. The
+corrected-frequency RMS does not behave that way — the control reaches 13.6 / 12.4 cm⁻¹ against 23 for no correction, from the class means alone.
+That number is the **floor you reach without chemistry**; the real model's 4.7 / 5.1 cm⁻¹ is therefore read against 13, not against 23. The
+registered condition for this test had been set against 23 and was recalibrated in the open (the pre-registration carries the dated line).""")
+md("""### 10.2 The noise floor, by two routes""")
+code("""NF = json.load(open(OUT / "E11_noise_floor_2026-09-25.json", encoding="utf-8")); TS = json.load(open(OUT / "E11_target_orbit_symmetry_2026-09-25.json", encoding="utf-8"))
+rig = {i: v for i, v in TS["per_molecule"].items() if v["spread_ratio"] is not None and v["spread_ratio"] < 0.15}
+W = sum(v["within_rms"] ** 2 * v["n_pairs_classed"] for v in rig.values()); T = sum(v["total_rms"] ** 2 * v["n_pairs_classed"] for v in rig.values())
+medK = NF["median_per_molecule"]["K_diag_rms"]; pooledK = NF["pooled_rms"]["K_diag_rms"]; plateau = 3 * medK   # the pre-registration's bound is 3 × the median (the pooled value is benzene's artefact)
+print(f"route 1 — repeat spread of the K diagonal on {NF['n_molecules']} molecules with two routes: median {medK:.2f} cm⁻¹ per molecule (pooled {pooledK:.2f}, dominated by benzene's artefact); plateau bound 3× median → {plateau:.1f} cm⁻¹")
+print(f"route 2 — within-orbit spread of the coupling target on the {len(rig)} rigid hold-out molecules (mirror-image pairs must be equal in the truth): {np.sqrt(W / T):.3f} of the target's RMS")""")
+md("""*Reading.* Two independent routes to the same quantity: the labels carry a numerical noise of about 2 cm⁻¹ on the diagonal and about a tenth of
+the signal on the couplings. A curve that reaches that floor and stops is the best that can be had from these labels; a curve that stays far above
+it says the model, not the data, is the limit. The plateau bound written into the proof-of-learning pre-registration (6.3 cm⁻¹) is three times route 1.""")
+md("""### 10.3 A test that measured nothing: symmetry consistency, before and after its control""")
+code("""RD = json.load(open(OUT / "E11_rungB_dump_2026-09-25_dump.json", encoding="utf-8")); TC = json.load(open(OUT / "E11_target_symmetry_2026-09-25.json", encoding="utf-8"))
+OD = json.load(open(OUT / "E11_orbit_dump_2026-09-25_dump.json", encoding="utf-8")); op = OD["orbit_symmetry_pooled"]
+sym_tab = pd.DataFrame([{"statistic": "within-class spread / RMS, coarse key (atom types of the two members)", "model": round(RD["symmetry_pooled"]["pooled_ratio"], 3), "target": round(TC["pooled_ratio"], 3)},
+                        {"statistic": "within-orbit spread / RMS, true pair orbits (graph automorphisms), rigid molecules", "model": round(op["rigid"]["pred_ratio"], 3), "target": round(op["rigid"]["target_ratio"], 3)}])
+display(sym_tab)
+per = {v["name"]: v for v in OD["orbit_symmetry"].values()}
+display(pd.DataFrame([{"molecule": n, "orbits": per[n]["n_orbits"], "model": round(per[n]["pred"]["spread_ratio"], 3), "target": round(per[n]["target"]["spread_ratio"], 3)} for n in ("benzene", "biphenyl", "fluorene", "phenanthrene", "fluoranthene") if n in per]))""")
+md("""*What happened.* The first reading, in the morning, used the coarse key and found 0.52 — far above the registered line of 0.30 — and concluded that
+the pair model does not respect molecular symmetry and that an equivariant model was required. The control that should have come first, the same
+statistic on the *target*, gave 0.575: the coarse classes had lumped benzene's ortho, meta and para pairs together, so the spread was real physics,
+not asymmetry. With true pair orbits the target is symmetric where the geometry is (benzene 0.026), and the model is at least as symmetric as its
+target (0.066 against 0.103). The reason is structural: the pair features are invariant scalars, so mirror-image pairs present identical inputs.
+Symmetry is built into this model, not learned, and the test could never have told the two apart. The conclusion was withdrawn in every document
+within the hour, and the project adopted the rule that any "the model respects X" statistic is read only beside the same statistic on the target.""")
+md("""### 10.4 A lever that failed: training on orbit-averaged labels""")
+code("""OA = json.load(open(OUT / "E11_orbit_avg_2026-09-25.json", encoding="utf-8"))
+rows = []
+for h, name in (("a", "(a) bare parents"), ("b", "(b) unseen scaffolds")):
+    r0 = RB["curve"]["175"]["B1_mlp"]["mean"][h]; r1 = OA["curve"]["175"]["B1_mlp"]["mean"][h]
+    rows.append({"hold-out": name, "original labels: ratio": round(r0["coupling_ratio"], 3), "orbit-averaged labels: ratio": round(r1["coupling_ratio"], 3),
+                 "original: corrected ω RMS": round(r0["corrected_freq_rms"], 2), "orbit-averaged: corrected ω RMS": round(r1["corrected_freq_rms"], 2)})
+display(pd.DataFrame(rows))
+PA = np.load(OUT / "E11_orbit_avg_2026-09-25_pairs.npz"); PO = np.load(OUT / "E11_orbit_dump_2026-09-25_pairs.npz")
+rigid_ids = [i for i, v in OD["orbit_symmetry"].items() if v["target"]["spread_ratio"] is not None and v["target"]["spread_ratio"] < 0.15]
+e_old = np.concatenate([PO[f"{i}__pred"] - PA[f"{i}__true"] for i in rigid_ids]); e_new = np.concatenate([PA[f"{i}__pred"] - PA[f"{i}__true"] for i in rigid_ids])
+pair_gain = 100 * (np.sqrt(np.mean(e_new ** 2)) / np.sqrt(np.mean(e_old ** 2)) - 1)
+print(f"per-pair RMS error on the {len(rigid_ids)} rigid hold-out molecules, both models read against the orbit-averaged targets: {pair_gain:+.1f} % (registered pass: −8 % or better)")""")
+md("""*Reading.* Averaging each label over its symmetry orbit removes the label noise of §10.2 at no cost, so it was registered as a lever with a pass line
+of 8 % on the per-pair error. It failed: the ratios did not move and the per-pair error changed by about a percent. Label noise of a tenth of the signal
+adds in quadrature to a model error of a third, and a model trained on 175 molecules already averages that noise across examples. The orbit average
+stays useful as a *reference* on rigid molecules, not as training data. Recorded as a fail in the pre-registration; the layer-B run is unchanged.""")
+md("""### 10.5 Where the error sits: per pair class""")
+code("""rows = []
+for h, name in (("a", "(a) bare parents"), ("b", "(b) unseen scaffolds")):
+    for c, v in RD["pair_class_rms"][h].items():
+        rows.append({"hold-out": name, "pair class": c, "n": v["n"], "RMS error": round(v["rms_error"], 4), "RMS of the truth": round(v["rms_true"], 4), "error / truth": round(v["rms_error"] / v["rms_true"], 2)})
+pc_tab = pd.DataFrame(rows); display(pc_tab)""")
+md("""*Reading.* The weakest class is the same on both hold-outs: the off-diagonal pairs of two bond primitives (`off_bondbond`), the couplings proper. The
+bare parents — the molecules closest to the large PAHs of the mandate — are learned at least as well as the unseen scaffolds, class by class; the
+morning's reading that their curve was "flat" had come from a superseded result file with benzene's corrupted target and was corrected the same day.""")
+md("""### 10.6 Predictions on record for the layer-B curve""")
+code("""PL = json.load(open(OUT / "E11_power_law_2026-09-25b_analytic.json", encoding="utf-8"))
+rows = []
+for cname, cv in PL["curves"].items():
+    for metric, label in (("ring_coupling_ratio", "ring coupling ratio"), ("corrected_freq_rms", "corrected ω RMS (cm⁻¹)")):
+        f = cv[metric]; p = f["predictions"]
+        rows.append({"curve": cname, "metric": label, "factor per decade": round(f["factor_per_decade"], 2), "fitted on": ", ".join(f"{k}: {v:.2f}" for k, v in f["fitted_on"].items()),
+                     "predicted at 300": f"{p['300']['point']:.2f} [{p['300']['lo68']:.2f}, {p['300']['hi68']:.2f}]", "at 600": f"{p['600']['point']:.2f}", "at 1,200": f"{p['1200']['point']:.2f} [{p['1200']['lo68']:.2f}, {p['1200']['hi68']:.2f}]"})
+pl_tab = pd.DataFrame(rows); display(pl_tab)
+fig, ax = plt.subplots(figsize=(5.5, 3.4))
+for cname, cv in PL["curves"].items():
+    f = cv["ring_coupling_ratio"]; xs = [int(k) for k in f["fitted_on"]]; ys = list(f["fitted_on"].values()); ax.plot(xs, ys, marker="o", label=cname)
+    px = [int(k) for k in f["predictions"]]; py = [f["predictions"][k]["point"] for k in f["predictions"]]; ax.plot([xs[-1]] + px, [ys[-1]] + py, ls="--", color=ax.lines[-1].get_color())
+ax.set_xscale("log"); ax.set_xlabel("training molecules"); ax.set_ylabel("ring coupling ratio to the zero rule"); ax.set_ylim(0, 1.0); ax.legend(fontsize=7)
+ax.set_title("Power-law fits (solid) and their predictions (dashed) — written before the layer-B data", fontsize=9); fig.tight_layout(); fig.savefig("figures/power_law_predictions.png", dpi=150); plt.show()""")
+md("""*Reading.* These are the numbers the layer-B learning curve (100 → 300 → 600 → 1,200 molecules, three hold-outs, started 25 September on rented
+machines) is read against, and they were written down before that data existed. The registered pass asks for a monotone decrease of at least 1.5× per
+decade on the bare parents and on the size hold-out with a plateau no higher than 6.3 cm⁻¹; the fits from the present 45–175 molecules predict 1.14×
+and 1.22× on the ratio — short of the bar. If the curve comes in steeper than these fits, the small-data regime was misleading; if it comes in on them,
+the pair model is the floor the equivariant model (rung C, pre-registered the same day) must beat.""")
+md("""### 10.7 What we learned (continued)
+
+- **Every metric needs a control that must fail.** The coupling ratio passed it; the frequency RMS revealed a floor of 13 cm⁻¹ reachable without
+  chemistry, and is now read against that floor.
+- **A consistency statistic without its target control is not a result.** The symmetry test looked decisive at 0.52 and meant nothing; the target
+  had the same spread. The rule is now part of the project's quality policy, and the withdrawal is part of this notebook.
+- **Predictions before data, or the curve proves nothing.** The power-law fits and the pass lines are on record; whatever layer B shows is read
+  against them, not the other way round.""")
+code("""followup4 = dict(shuffled={h: dict(real=RB["curve"]["175"]["B1_mlp"]["mean"][h]["coupling_ratio"], control=SH["curve"]["175"]["B1_mlp"]["mean"][h]["coupling_ratio"],
+                                  real_rms=RB["curve"]["175"]["B1_mlp"]["mean"][h]["corrected_freq_rms"], control_rms=SH["curve"]["175"]["B1_mlp"]["mean"][h]["corrected_freq_rms"],
+                                  zero_rms=SH["curve"]["175"]["B1_mlp"]["mean"][h]["corrected_freq_rms_zero_rule"]) for h in "ab"},
+                 noise=dict(median_K=medK, pooled_K=pooledK, plateau=plateau, target_orbit_spread_rigid=float(np.sqrt(W / T)), n_rigid=len(rig)),
+                 symmetry=dict(coarse_model=RD["symmetry_pooled"]["pooled_ratio"], coarse_target=TC["pooled_ratio"], orbit_model=op["rigid"]["pred_ratio"], orbit_target=op["rigid"]["target_ratio"],
+                               benzene=dict(model=per["benzene"]["pred"]["spread_ratio"], target=per["benzene"]["target"]["spread_ratio"])),
+                 orbit_avg=dict(pair_gain_pct=float(pair_gain), ratio_a=OA["curve"]["175"]["B1_mlp"]["mean"]["a"]["coupling_ratio"], ratio_b=OA["curve"]["175"]["B1_mlp"]["mean"]["b"]["coupling_ratio"]),
+                 weakest_class={h: max(RD["pair_class_rms"][h].items(), key=lambda kv: kv[1]["rms_error"] / kv[1]["rms_true"])[0] for h in "ab"},
+                 power_law={c: {m: dict(factor=v[m]["factor_per_decade"], at1200=v[m]["predictions"]["1200"]) for m in v} for c, v in PL["curves"].items()})
+json.dump(followup4, open("results_followup4.json", "w"), indent=1); print("results_followup4.json written")""")
+
 nb = new_notebook(cells=cells, metadata={"kernelspec": {"name": "python3", "display_name": "Python 3", "language": "python"}})
 path = HERE / "deep_learning.ipynb"
 nbformat.write(nb, path)

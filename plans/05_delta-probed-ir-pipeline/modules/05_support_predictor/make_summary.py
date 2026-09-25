@@ -234,6 +234,29 @@ if FU3.exists():
          "network learns is a pre-registered learning curve, which started on the corpus's layer B the same morning. All numbers trace to notebook section 9 and the dated notes.")
 
 
+FU4 = NB / "results_followup4.json"
+if FU4.exists():
+    U4 = json.load(open(FU4, encoding="utf-8"))
+    heading("Addendum 4 (25 September 2026, later): controls — what the metrics measure, a floor, a withdrawn reading, and predictions on record")
+    sh = U4["shuffled"]; nz = U4["noise"]; sy = U4["symmetry"]; oa = U4["orbit_avg"]; pl = U4["power_law"]
+    pa = pl["E7 hold-out (a) bare parents"]
+    para(f"Notebook section 10 adds the controls of the proof (pre-registered as E11). A shuffled-label control keeps a ring coupling ratio above one ({sh['a']['control']:.2f} / "
+         f"{sh['b']['control']:.2f} against the real model's {sh['a']['real']:.2f} / {sh['b']['real']:.2f}), so that metric measures learning; the corrected-frequency RMS of the same "
+         f"control is {sh['a']['control_rms']:.1f} / {sh['b']['control_rms']:.1f} cm⁻¹ against {sh['a']['zero_rms']:.0f} for no correction — a floor reachable from class means alone, against "
+         f"which the real model's {sh['a']['real_rms']:.1f} / {sh['b']['real_rms']:.1f} is now read. The label noise was measured by two routes: a repeat spread of {nz['median_K']:.1f} cm⁻¹ "
+         f"on the diagonal (plateau bound {nz['plateau']:.1f}) and a within-orbit spread of {nz['target_orbit_spread_rigid']:.2f} of the coupling signal on {nz['n_rigid']} rigid molecules.")
+    para(f"One test was withdrawn: a symmetry-consistency statistic of {sy['coarse_model']:.2f} had been read as the model ignoring molecular symmetry, until the same statistic on the "
+         f"target gave {sy['coarse_target']:.2f} — the classes were too coarse. With true pair orbits the target is symmetric (benzene {sy['benzene']['target']:.3f}) and the model is at least "
+         f"as symmetric ({sy['orbit_model']:.3f} against {sy['orbit_target']:.3f}): its features are invariant scalars, so symmetry is built in rather than learned. The conclusion was "
+         f"withdrawn the same hour and the control became a project rule. A lever built on the same finding, training on orbit-averaged labels, failed its registered line "
+         f"({oa['pair_gain_pct']:+.1f} % on the per-pair error against −8 %; ratios {oa['ratio_a']:.2f} / {oa['ratio_b']:.2f} unchanged) and was dropped.")
+    para(f"Predictions on record for the layer-B learning curve, fitted on 45–175 molecules before that data existed: bare parents {pa['ring_coupling_ratio']['factor']:.2f}× per decade "
+         f"on the ratio ({pa['ring_coupling_ratio']['at1200']['point']:.2f} at 1,200 molecules) and {pa['corrected_freq_rms']['factor']:.2f}× on the corrected RMS "
+         f"({pa['corrected_freq_rms']['at1200']['point']:.1f} cm⁻¹), against a registered bar of 1.5× per decade. The weakest pair class on both hold-outs is the coupling between two bond "
+         f"primitives. What was learned: every metric needs a control that must fail; a consistency statistic without its target control is not a result; and predictions come before "
+         f"data, or the curve proves nothing. All numbers trace to notebook section 10 and the dated pre-registration.")
+
+
 heading("References")
 refs = [
     "Danchev, V. (2022). Reproducible data science with Python: An open learning resource. Journal of Open Source Education, 5(56), 156. https://doi.org/10.21105/jose.00156",
