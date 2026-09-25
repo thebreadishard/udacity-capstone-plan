@@ -25,7 +25,7 @@ from pathlib import Path
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 PLAN = Path(__file__).resolve().parents[1]
 _VENV = PLAN.parents[1] / ".venv" / "Scripts" / "python.exe"
-PYTHON = str(_VENV) if _VENV.exists() else sys.executable  # the repository .venv (3.13) carries torch/rdkit for the module rows
+VENV_ROWS = ("module 07",)  # LangGraph lives in the repository .venv (3.13); torch and rdkit for modules 05/06 are in the interpreter that runs this script
 DOC = PLAN / "REPRODUCE.md"
 MACHINE = ("hel1-", "CCX53", "/root/", "chain", ".sh` (")
 
@@ -103,7 +103,7 @@ def audit() -> int:
     return 1 if problems else 0
 
 
-VOLATILE_KEYS = {"date", "seconds", "wall_s", "elapsed_s", "time"}  # a rebuild legitimately changes these
+VOLATILE_KEYS = {"date", "seconds", "wall_s", "elapsed_s", "time", "built_utc"}  # a rebuild legitimately changes these
 STAMP = re.compile(r"20\d\d-\d\d-\d\d[ T]\d\d:\d\d")
 
 
@@ -149,7 +149,8 @@ def run(select: str, keep: bool = False) -> int:
             continue
         for c in cmds:
             print(f"$ ({cwd.relative_to(PLAN) if cwd != PLAN else '.'}) {c}")
-            c = re.sub(r"^python ", lambda _m: f'"{PYTHON}" ', c)
+            py = str(_VENV) if name.lower().startswith(VENV_ROWS) and _VENV.exists() else sys.executable
+            c = re.sub(r"^python ", lambda _m, py=py: f'"{py}" ', c)
             r = subprocess.run(c, cwd=cwd, shell=True, env=env)
             if r.returncode:
                 print(f"  exit {r.returncode}")
