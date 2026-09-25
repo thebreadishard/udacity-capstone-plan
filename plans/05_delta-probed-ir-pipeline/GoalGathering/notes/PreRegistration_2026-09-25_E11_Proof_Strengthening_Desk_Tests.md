@@ -94,3 +94,25 @@ pool), not at more of the same. The prediction is on record before the 300-table
 **E11.2 symmetry consistency** (`out/E11_rungB_dump_2026-09-25_dump.md`, seed-0 model at the full pool, 43 hold-out molecules with symmetry classes): pooled spread ratio **0.52** (median per molecule 0.60) — far above the 0.30 line. Reading, as registered: the pair model does **not** respect the molecular symmetry it was never told; the equivariant model of the 23 September decision is not optional. This is the strongest ML-side finding of the day: the current model reaches its numbers by fitting, not by having found the symmetry of the physics.
 
 **E11.6 on the E6 split** (a first look; the registered read-out is the size split's dump, to follow): hold-out (a) slope −0.05 over 12–26 atoms (n = 10), hold-out (b) 1.86 over 23–30 atoms (n = 39, two cores — confounded by core identity, not a size effect).
+
+### E11.7 and E11.3 read, 09:0x (`out/E11_rungB_dump_2026-09-25_dump.md`, seed-0 model, full pool of 175, corrected targets)
+
+**E11.7 — where the error sits** (RMS prediction error / RMS of the true ΔF entries per pair class):
+
+| class | hold-out (a) bare parents | hold-out (b) unseen scaffolds |
+|---|---|---|
+| diagonal, bonds | 0.11 | 0.15 |
+| diagonal, angles | 0.33 | 0.42 |
+| diagonal, dihedrals | 0.31 | 0.34 |
+| off-diagonal, ring bond–bond | 0.20 | 0.33 |
+| off-diagonal, other (pairs sharing an atom) | 0.48 | 0.69 |
+
+Reading: with the corrected targets the bare parents are learned *at least as well* as the unseen scaffolds in every class; the weakest class on both
+is the off-diagonal "other" pairs (bond–angle and angle–angle terms sharing an atom), which are also the most numerous. Diagonal bond terms are
+essentially learned (0.11–0.15). So the gap is not "bare cores are different"; it is the same class everywhere — a model question (the equivariant
+model treats those couplings as tensors, the pair MLP as independent scalars), consistent with E11.2's symmetry finding.
+
+**E11.3 — the ring bond–bond terms of benzene** (a training molecule; mean internal ΔF in hartree/bohr², data vs prediction, with the full B3LYP F for orientation):
+ortho +0.0048 (pred +0.0057; F +0.035), meta −0.0064 (pred −0.0072; F −0.017), para +0.0065 (pred +0.0066; F +0.046). The correction's ring
+interaction pattern is Kekulé-like (+, −, +), the same sign pattern as the force field itself, and the model reproduces it to within 20 %. Descriptive,
+as registered; naphthalene was not in the hold-outs of this run and is read from the size-split dump if present.
