@@ -120,3 +120,4 @@ vorm; het dek van 291 in plaats van 474 energieën (besluit 37). Plan 06 en zijn
 *Bijgewerkt 25 september 08:3x:* het anker uitgelezen (drie families: verlies / winst / tussenin), de alinea over E9, E10, grootte-extrapolatie, L2 en de
 laag-B-leercurve; bronnen `PreRegistration_2026-09-24_E9_*`, `_E10_*`, `_L2_*`, `2026-09-25_Size_Extrapolation_*`, `2026-09-25_Proof_of_Learning_Layer_B.md`
 en `Note_2026-09-25_Growing_Asset_and_Proof_of_Learning.md` (de twee horizonten, voor het gesprek zelf).
+*Bijgewerkt 25 september 12:1x:* de brief zelf verandert niet; voor het gesprek: de lezing over symmetrie van vanochtend is ingetrokken (de meetlat was te grof; het paarmodel draagt zijn symmetrie in zijn kenmerken), het equivariante model is als rang C tegen het paarmodel gepreregistreerd, de laag-B-curve draait op drie van vijf machines en levert haar eerste tabel op zijn vroegst maandagochtend — het gesprek toont de voorspellingen en op zijn best het eerste punt.

@@ -47,7 +47,7 @@ hooguit het lopende fragment. De lijst van alle software-ingrepen staat in
 `GoalGathering/notes/Software_Changes_Ledger.md`, met per ingreep of hij als pull request naar de makers
 zou kunnen.
 
-## §17.1b Gedateerde aanvulling 25 september 2026: wat er in twee weken veranderde, en drie lessen
+## §17.1b Gedateerde aanvulling 25 september 2026: wat er in twee weken veranderde, en vier lessen
 
 **Het anker is gelezen** (hoofdstuk 3, kader): per familie verlies / winst / tussenin; de goedkope basis voor één van de drie families vrijgegeven.
 **De correctie is lokaal** en moet in de taal van bindingen en hoeken geleerd worden (hoofdstuk 10 §6); dat maakte van module 06 een
@@ -65,6 +65,14 @@ september twee trainingscellen door hun definitie-kopieën; gevonden op 25 septe
 **Les 5: een controle met geschudde labels vertelt je wat je meetlat meet.** Een model dat de correcties van *andere* moleculen te leren kreeg,
 leerde de koppelingen niet (goed: die meetlat meet leren) maar halveerde toch de frequentiefout, omdat elke klasse van termen een gemiddelde
 heeft dat je zonder chemie kunt raden. Sindsdien wordt die tweede meetlat tegen 13 cm⁻¹ gelezen, niet tegen 23.
+
+**Les 6: een meting van "het model respecteert X" zegt niets zonder dezelfde meting aan het doel.** Op 25 september leek een
+symmetrietest beslissend: spiegelbeeldparen kregen van het paarmodel antwoorden die de helft van hun grootte uiteenliepen, ver boven de
+vooraf gestelde grens. Het besluit "het model respecteert de symmetrie niet, een equivariant netwerk is vereist" stond binnen een uur in zes
+documenten. Toen dezelfde meetlat langs het dóél werd gelegd, gaf die hetzelfde getal: de klassen waren te grof en het verschil was echte
+natuurkunde. Met echte symmetriebanen bleek het model even symmetrisch als zijn doel, omdat zijn kenmerken onder een spiegeling niet
+veranderen. De les is een regel geworden: zo'n meting wordt eerst aan het doel gedaan en alleen daarnaast gelezen; zonder die controle is
+het geen resultaat. En de tweede helft van de les: de intrekking hoort in dezelfde documenten als de bewering, met datum.
 
 ## §17.2 Woordenlijst
 

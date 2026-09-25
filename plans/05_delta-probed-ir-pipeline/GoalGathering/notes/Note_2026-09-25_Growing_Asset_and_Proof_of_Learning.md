@@ -62,7 +62,9 @@ The user's criterion: the design is a success when it is fully shown that the ne
 3. *Size extrapolation is untested:* train on ≤ 26 atoms, test on 30–34 (layer A2's top) — the form of the mandate's claim. The data exist for
    a first cut (A2 spans 16–30 atoms); the split is not pre-registered yet.
 4. *The design's own network is not the one tested:* rung B used an MLP and trees on hand-made pair features; the equivariant ΔH model of
-   the 23 September decision (SQM → neural SQM → equivariant ΔH) is not built. The pair model is a floor, not the design.
+   the 23 September decision (SQM → neural SQM → equivariant ΔH) is not built. The pair model is a floor, not the design. *(12:1x: the pair model
+   turned out to carry molecular symmetry in its features — E11.2 amendment — so what the equivariant model must add is directions and context; that
+   is now a pre-registered test, rung C, with the pair model's 0.43 / 0.47 as the floor and pass lines fixed before it is built.)*
 5. *Nothing is shown on coupled-cluster labels* beyond E8's locality on benzene (and naphthalene on Saturday): a CC-trained instance needs
    CC labels that do not exist yet. Proxy-to-CC transfer is the second horizon's first task.
 6. *The noise floor is not reached:* the second route puts the label noise well below 1 cm⁻¹ per mode; the best hold-out sits at 5 cm⁻¹. A
