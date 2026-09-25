@@ -24,6 +24,7 @@ the WSL `qc05` or a rented machine's `m05` environment for anything that imports
 | E10 environment once: 3.75 registered, 3.36 torsion-matched | `python m05/e10_environment_once.py --donor smallest` and `--donor nearest-torsion` | `data/e9/e10_environment_once_2026-09-24*.json` |
 | module 05 notebook sections 7–10 and report addenda 1–4 | `python notebook/execute_section8.py --from-cell <n_cells>` then `python make_summary.py` | `notebook/deep_learning.ipynb`, `module_summary.{docx,pdf}` |
 | layer-B interim release, 25 Sep (60 molecules of the 64 local layer-B folders; 4 skipped with an imaginary mode, as `e7_rungB_pairs.py` skips them) | `python m05/build_release.py corpus/molecules data/corpus_release/layerB_interim_2026-09-25 --layer B --prefer-analytic` (in `modules/05_support_predictor/`; the archive stays out of git) | `data/corpus_release/layerB_interim_2026-09-25_manifest.json` |
+| rung C model smoke (equivariance 1.5e-15 relative on water and benzene; 171,554 parameters) | `python m05/rungC_equivariant.py --smoke` (in `modules/05_support_predictor/`); tests: `python -m pytest tests/test_rungC_equivariance.py -q` (plan directory) | stdout |
 | corpus release index (one row per manifest: molecules per layer, deck hashes, skips, archive SHA-256, git status) | `python m05/release_index.py` (`--check` exits 1 when the index is stale) | `data/corpus_release/RELEASES.md` |
 
 ## Route 2 (naphthalene at Mackie's level) and the laboratory comparison
