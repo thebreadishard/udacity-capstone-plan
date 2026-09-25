@@ -147,7 +147,7 @@ def train_mlp(X, y, c, seed, epochs, mu, sd, tscale, bs=4096, lr=1e-3, width=128
     Xt = torch.tensor((X - mu) / sd); yt = torch.tensor(y / tscale[c])
     m = MLP(X.shape[1], d=width)
     opt = torch.optim.AdamW(m.parameters(), lr=lr, weight_decay=1e-4) if opt_name == "adamw" else torch.optim.SGD(m.parameters(), lr=10 * lr, momentum=0.9, nesterov=True, weight_decay=1e-4)   # stage 2 (25 Sep)
-    lossf = (lambda p, t: ((p - t) ** 2).mean()) if loss_name == "mse" else (lambda p, t: torch.nn.functional.huber_loss(p, t, delta=1.0))
+    lossf = (lambda p, t: ((p - t) ** 2).mean()) if loss_name == "mse" else (lambda p, t: torch.nn.functional.huber_loss(p, t.to(p.dtype), delta=1.0))   # targets are float64, the model float32; MSE promotes, Huber does not (smoke of 25 Sep)
     sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, epochs)
     if val is not None: Xv = torch.tensor((val[0] - mu) / sd); yv = torch.tensor(val[1] / tscale[val[2]])
     best, best_state, bad, ran = float("inf"), None, 0, 0
