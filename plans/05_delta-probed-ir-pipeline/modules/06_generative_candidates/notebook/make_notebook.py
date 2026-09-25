@@ -158,6 +158,7 @@ print(f"invalid strings ({len(s) - int(round(results[(SEEDS[0], 1.0)]['validity'
 dups = [x for x in extra["valid_unique"] if x in set(train_smiles)][:6]; print(f"training molecules reproduced verbatim (memorisation): {len([x for x in extra['valid_unique'] if x in set(train_smiles)])}; e.g. {dups}")
 charged = [x for x in extra["novel"] if any(a.GetFormalCharge() for a in Chem.MolFromSmiles(x).GetAtoms())][:6]; print(f"charged outputs among novel: {len([x for x in extra['novel'] if any(a.GetFormalCharge() for a in Chem.MolFromSmiles(x).GetAtoms())])}; e.g. {charged}")
 nonfit = [x for x in extra["novel"] if not project_fit(x)][:8]
+print(f"novel samples outside the project families: {len([x for x in extra['novel'] if not project_fit(x)])} of {len(extra['novel'])}")
 if nonfit: display(Draw.MolsToGridImage([Chem.MolFromSmiles(x) for x in nonfit], molsPerRow=4, subImgSize=(200, 150), legends=["novel but outside the project's families"] * len(nonfit)))""")
 md("""### Five samples and their nearest training neighbours""")
 code("""from rdkit.Chem import rdFingerprintGenerator, DataStructs
@@ -168,7 +169,9 @@ mols, legends = [], []
 for p in picks:
     sims = DataStructs.BulkTanimotoSimilarity(fpg.GetFingerprint(Chem.MolFromSmiles(p)), fps); top = np.argsort(sims)[::-1][:3]
     mols += [Chem.MolFromSmiles(p)] + [Chem.MolFromSmiles(sub[i]) for i in top]; legends += ["sample"] + [f"train, Tanimoto {sims[i]:.2f}" for i in top]
-display(Draw.MolsToGridImage(mols, molsPerRow=4, subImgSize=(200, 150), legends=legends))""")
+print(f"novel project-fit samples available for the neighbour grid: {len(train_fit)}; shown: {len(picks)}")
+if mols: display(Draw.MolsToGridImage(mols, molsPerRow=4, subImgSize=(200, 150), legends=legends))
+else: print("no novel project-fit sample to show (expected in quick mode after two epochs)")""")
 md("""*Reading.* The trio says whether the model writes chemistry (validity), does not copy (memorisation, novelty) and does not collapse
 (uniqueness); the histograms say whether it writes the *same* chemistry as the held-out set; the neighbour grid shows what "novel" means in
 practice — usually a known scaffold with a new decoration, sometimes a new fusion. Project fit is the number the atlas would use: the share of
