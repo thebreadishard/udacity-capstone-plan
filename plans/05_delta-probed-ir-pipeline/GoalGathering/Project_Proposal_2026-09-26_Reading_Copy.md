@@ -819,6 +819,17 @@ probe B1 cells, and nothing is sent upstream without the student's word. R1⁺ r
 after the port passes its tests; if the port fails, R1⁺ falls back to its diagonal deck at tight on
 the desktop or lapses with a printed sentence.
 
+**Dated note, 25 September (obstacle 9; `notes/PreRegistration_2026-09-24_Obstacle9_Cation_Rows.md`).** The cation price was
+re-measured with the unrestricted local code as shipped (`ULNOCCSD_T`, one fragment per localised orbital of either spin, tight
+thresholds, frozen 1s) on a rented 16-core machine, at three points along benzene⁺'s totally symmetric ring-breathing mode (981 cm⁻¹
+at UKS-B3LYP; D₂h minimum with two C–C bonds at 1.372 Å and four at 1.432 Å): 3,608 s per energy (mean of three; 60.1 min, all of it
+in the local CCSD(T)), 29 fragments, UHF ⟨S²⟩ 0.82–0.83, peak 4.9 GB. Against the neutral's 164 s above that is c ≈ 22 — a different
+machine, so indicative; the same-machine neutral price is queued. Decision 41 stands: the shipped unrestricted (T) is the cost, and the
+compiled kernel remains the condition of the cation rung. Sanity line, not judged: the composite curvature along the mode is 1.054 ×
+B3LYP's (ω′ 1007 cm⁻¹ against 981), recomputed from the energies by a second route; the gradient at the UKS geometry is −2.9 mE_h per
+unit of q and cancels in the curvature. Naphthalene⁺'s price runs overnight on the same machine. Source:
+`probes/results_m1/cations/benzene/l3_price.json`, read by `probes/cation_price_readout.py`.
+
 *Laboratory sources per rung.* Benzene: the NIST Quantitative Infrared Database cell spectra (Chu
 et al. 1999), with calibrated intensities. Naphthalene: the PNNL quantitative vapour-phase record
 at 0.112 cm⁻¹ and 25 or 50 °C — the methods state 25 °C, the introduction and the figure caption

@@ -31,3 +31,14 @@ If the ULNO path fails (the forge's (T) for unrestricted references is the `_slo
 **Not registered:** anything about the size of the cation correction (that is what the row is for); the choice of a third cation.
 
 **Cost.** hel1-14 (CPX62) after route 2 (≈ Friday 25 September afternoon): rows ≈ 1–3 h each at the A-layer median, prices ≈ 3 × P each.
+
+## Outcome (running record)
+
+- **25 Sep, 22:5x — benzene⁺ price on record.** `probes/l3_ulno_price.py` on `rows/benzene` (UKS-B3LYP D₂h minimum, two C–C 1.372 Å and four 1.432 Å): three
+  points along mode 16, the totally symmetric ring breathing (981 cm⁻¹; the +q/−q geometries lengthen/shorten every ring bond, checked from the
+  committed Hessian), 3,608 s per energy (mean of three; 60.1 min, all of it in the local CCSD(T)), 29 fragments, UHF ⟨S²⟩ 0.82–0.83, peak RSS 4.9 GB, at 16 threads on hel1-14 (CPX62). Indicative c = 22 against the neutral's 164 s of 15 September (different machines; the same-class neutral price
+  follows from the L2b benzene tiers). Sanity line, not judged: composite curvature 1.054 × B3LYP's (ω′ 1007 cm⁻¹ vs 981), recomputed from the
+  three energies by `probes/cation_price_readout.py` and agreeing with the script's own value; gradient at the UKS geometry −2.9 mE_h per unit q
+  (cancels in the curvature). The point of 19:1x–20:1x with the 15× too large displacement (⟨S²⟩ 1.14) is not part of the record; see the ledger
+  and `probes/reduced_coords.py`. Files: `probes/results_m1/cations/benzene/{l3_price.json,l3.log,geometry.json,hessian_b3lyp.npz}`.
+  Naphthalene⁺'s price started 20:55 UTC on the same machine (mode 25, 1001 cm⁻¹, 47 localised orbitals expected → overnight).

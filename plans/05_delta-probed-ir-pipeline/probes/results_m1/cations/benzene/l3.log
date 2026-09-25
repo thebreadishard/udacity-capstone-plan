@@ -1,0 +1,14 @@
+[16:05:22] L3: benzene cc-pvdz tight, 12 atoms, frozen core 6, 16 threads, max_memory 24000 MB; mode 16 (981 cm⁻¹)
+[17:04:55] q+0.0: UHF 6.8 s (<S²> 0.825), PM 2.8 s, ULNO-CCSD(T) 3563.6 s (29 fragments), UMP2 0.1 s; peak RSS 4.07 GB; E_composite -231.25193316
+[17:15:38] L3: benzene cc-pvdz tight, 12 atoms, frozen core 6, 16 threads, max_memory 24000 MB; mode 16 (981 cm⁻¹)
+[17:15:38] resume: reusing finished points ['q+0.0']
+[18:13:31] q+1.0: UHF 81.9 s (<S²> 1.141), PM 2.6 s, ULNO-CCSD(T) 3381.2 s (29 fragments), UMP2 0.1 s; peak RSS 4.07 GB; E_composite -230.98620166
+[18:54:04] L3: benzene cc-pvdz tight, 12 atoms, frozen core 6, 16 threads, max_memory 24000 MB; mode 16 (981 cm⁻¹)
+[18:54:04] resume: reusing finished points ['q+0.0']
+[18:54:12] q+1.0: harmonic check ½dᵀHd / ½ωq² = 1.0000; max atom displacement 0.045 bohr
+[19:54:23] q+1.0: UHF 8.7 s (<S²> 0.833), PM 2.5 s, ULNO-CCSD(T) 3600.0 s (29 fragments), UMP2 0.1 s; peak RSS 4.17 GB; E_composite -231.25246364
+[19:54:23] q-1.0: harmonic check ½dᵀHd / ½ωq² = 1.0000; max atom displacement 0.045 bohr
+[20:55:04] q-1.0: UHF 9.0 s (<S²> 0.819), PM 3.0 s, ULNO-CCSD(T) 3628.6 s (29 fragments), UMP2 0.0 s; peak RSS 4.92 GB; E_composite -231.24669088
+[20:55:04] sanity: ω′ along mode 16 = 1007 cm⁻¹ vs UKS-B3LYP 981 (curvature ratio 1.054)
+[20:55:04] PRICE: 60.1 min per point (60.0 min of it ULNO-CCSD(T)) at 16 threads
+[20:55:04] L3 finished

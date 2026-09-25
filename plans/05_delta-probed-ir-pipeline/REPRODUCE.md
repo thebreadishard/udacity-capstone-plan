@@ -39,7 +39,7 @@ machine's `m05` environment for anything that imports psi4/pyscf/torch with the 
 |---|---|---|
 | anchor family readings (mode 12 lose, 22 win, 31 between) | `python probes/m3_family_reading.py 31 -6.0` on `probes/results_m1/naphthalene_cc-pvtz_tight_m3/` | `probes/results_m1/M3_TZ_MODE31_READING_2026-09-24.md` |
 | E8 benzene locality one bond further | `probes/e8_*` read-outs on `probes/results_m1/e8_benzene_ccpvdz/` | `E8_locality_benzene*` (see the E8 pre-registration's outcome section) |
-| cation rows (benzene⁺ 683 s, naphthalene⁺ 2,443 s) and prices (benzene⁺ reference 3,564 s) | `corpus/cation_rows.py` with `decks/deck_v1_cation.json`; `probes/l3_ulno_price.py rows/<m> price/<m> --threads 16 --max-memory 24000` (hel1-14) | `/root/cations/rows/*`, `price/*/l3_price.json` (fetched to `probes/results_m1/cations/` when done) |
+| cation rows (benzene⁺ 683 s, naphthalene⁺ 2,443 s) and prices (benzene⁺ reference 3,564 s) | `corpus/cation_rows.py` with `decks/deck_v1_cation.json`; `probes/l3_ulno_price.py rows/<m> price/<m> --threads 16 --max-memory 24000` (hel1-14); read-out: `python probes/cation_price_readout.py probes/results_m1/cations/benzene/l3_price.json` | `/root/cations/rows/*`, `probes/results_m1/cations/*/l3_price.json` (fetched; benzene⁺ complete 25 Sep 20:55 UTC) |
 
 ## Modules 06 and 07
 
