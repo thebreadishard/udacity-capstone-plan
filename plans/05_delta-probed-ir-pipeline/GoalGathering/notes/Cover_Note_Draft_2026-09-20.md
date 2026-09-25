@@ -86,8 +86,9 @@ CONH₂ niet). En een model dat alleen moleculen tot 26 atomen zag, voorspelt de
 tegen 0,36 binnen dezelfde grootte. Daartegenover staat één harde prijs: één LNO-CCSD(T)/cc-pVDZ-energie van een molecuul van 25 atomen op de
 instellingen van het anker kost meer dan negen uur op acht draden (L2, 25 september); voor gesubstitueerde moleculen is een goedkopere
 correlatietrap nodig, waarvan de nauwkeurigheid op benzeen tegen canoniek CCSD(T) gemeten wordt vóór hij labels levert. Het bewijs dat het netwerk
-leert — het criterium van dit ontwerp — is gedeeltelijk: diagonaal ja, koppelingen ja op ongeziene skeletten met een stijgende curve, kale kernen nog
-vlak. De beslissende leercurve is vooraf vastgelegd en draait sinds 25 september: laag B van het corpus, 100 tot 1.200 kleine moleculen, drie
+leert — het criterium van dit ontwerp — is gedeeltelijk: diagonaal ja, koppelingen ja op ongeziene skeletten én op de kale kernen met een dalende
+curve (0,47 → 0,43 bij 45 → 175 moleculen, met benzeens gecorrigeerde doel; gecorrigeerd 09:0x — een eerdere versie van deze alinea zei "kale kernen nog vlak" op grond van een
+achterhaald bestand); wat nog ontbreekt is de helling over een decade aan data. De beslissende leercurve is vooraf vastgelegd en draait sinds 25 september: laag B van het corpus, 100 tot 1.200 kleine moleculen, drie
 hold-outs (kale kernen, ongeziene skeletten, grotere moleculen), leesregel op papier vóór de eerste tabel.
 
 Wat ik van je vraag staat in §13. De drie belangrijkste: (1) een kritische lezing van §2–§3 en §7, de plekken waar de discipline

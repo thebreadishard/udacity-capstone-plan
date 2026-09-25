@@ -226,7 +226,8 @@ kleine meetfout, en een netwerk kan niet nauwkeuriger worden dan zijn leerstof. 
 wat er te halen valt; een curve die ver boven de vloer blijft hangen zegt dat het model, en niet de data, de grens is.
 
 **Waar we staan, eerlijk.** De verschuiving van elke trilling apart leert het netwerk goed. De koppelingen tussen trillingen leert het op
-skeletten die het nooit zag, met een curve die daalt, maar op de kale moederkernen zonder zijgroepen is de curve nog vlak, en juist dat zijn de
-moleculen die het meest op de grote PAK's lijken. Kleine moleculen leren het netwerk iets over grotere, maar langzamer dan ze elkaar leren.
+skeletten die het nooit zag én op de kale moederkernen zonder zijgroepen, met een curve die daalt; die kale kernen zijn juist de moleculen
+die het meest op de grote PAK's lijken, en de curve daalt daar nog te langzaam om al van bewijs te spreken. (Een eerdere versie van deze
+alinea, dezelfde ochtend, noemde die curve vlak; dat kwam uit een achterhaald resultaatbestand en is gecorrigeerd.) Kleine moleculen leren het netwerk iets over grotere, maar langzamer dan ze elkaar leren.
 Dat is geen mislukking en geen succes; het is de stand van een curve die nog kort is. Het bewijs dat dit ontwerp werkt, is een curve die lang
 genoeg is, op de drie moeilijke toetsen, met de leesregel van tevoren. Die curve loopt nu.

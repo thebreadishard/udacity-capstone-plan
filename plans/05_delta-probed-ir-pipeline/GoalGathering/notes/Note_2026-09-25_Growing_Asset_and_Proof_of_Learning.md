@@ -74,8 +74,7 @@ a monotone decrease on all three hold-outs with the slope on a log scale pre-reg
 (a) and (c)), and a plateau, if any, no higher than three times the second-route noise. Fail = flat on (a) or (c). The same table is rerun with
 the equivariant model when it exists; the pair model is the floor it must beat.
 
-**Answer to the question "have we shown it?":** in part. The diagonal, yes. The couplings, yes on unseen scaffolds and with a rising curve, no
-on bare parents. Fully, no — and the experiment that would settle it is defined, pre-registrable this week, and costs about ten machine-days.
+**Answer to the question "have we shown it?":** in part. The diagonal, yes. The couplings, yes on unseen scaffolds and with a rising curve, and — *corrected 09:0x, see below* — yes on the bare parents too once benzene's target is the second-route one; the slopes are the open point. Fully, no — and the experiment that would settle it is defined, pre-registrable this week, and costs about ten machine-days.
 
 ## 5. What this changes in the ordering of work
 
@@ -91,3 +90,9 @@ Desk test (`PreRegistration_2026-09-25_Size_Extrapolation_Desk_Test.md`): traine
 27–34 atoms at ring coupling ratio 0.66 → 0.62 → 0.59 and corrected-frequency RMS 6.6 → 6.0 → 5.8 cm⁻¹ (zero rule 22.8) for 45 → 100 → 161 training
 molecules — encouraging on the registered bars, at the edge on the ratio, shallow in slope. Item 3 of §4 moves from "untested" to "tested at one
 size step, learnable, slower than within-size"; the layer-B curve decides whether the slope holds over a decade of data.
+
+## Dated correction, 2026-09-25 09:0x — hold-out (a) was misquoted this morning
+
+*Correction 09:0x (25 September):* the bare-parent numbers quoted this morning (ratio 0.82 → 0.82 → 0.81, corrected RMS 10.0 → 9.5 → 9.3) are the 23 September run with benzene's corrupted finite-difference target; with the second-route target (E7 rung B `--use-analytic`, recorded in the ledger of 23 September 12:5x) hold-out (a) reads **0.47 → 0.45 → 0.43** and **5.9 → 5.1 → 4.7 cm⁻¹** at 45 → 100 → 175 — learning, not flat. The couplings of the bare parents are learned at the same level as the unseen scaffolds; what remains short is the slope (1.14× per decade on the ratio, 1.49× on the RMS, against the registered 1.5×).
+
+Consequences: item 1 of §4 is withdrawn as written (the gap on bare parents is a slope of 1.14× per decade, not a flat line); the 06:3x and 21:4x odds text and the reading copy's 25 September note carry the same correction by dated line; the E11.5 power-law predictions were refitted on the corrected curve (`out/E11_power_law_2026-09-25b_analytic.md`): bare parents predicted at 1,200 molecules ratio 0.39 [0.38, 0.40], corrected RMS 3.4 [3.2, 3.5] cm⁻¹. Cause: the superseded result file of 23 September 10:0x sat beside the corrected one without a banner; it now has one, and QUALITY_POLICY gains the rule.

@@ -84,3 +84,13 @@ parents** (1.01× per decade against the registered ≥ 1.5×) and to pass it on
 put beside the tables when they arrive: a pass on (a) would mean layer B's small heteroaromatic molecules teach the bare cores something the
 A2 set did not — a real finding; a fail would confirm this extrapolation and point at the model (equivariant) or the data kind (bare cores in the
 pool), not at more of the same. The prediction is on record before the 300-table exists.
+
+### Correction and further outcomes, 09:0x
+
+*Correction 09:0x (25 September):* the bare-parent numbers quoted this morning (ratio 0.82 → 0.82 → 0.81, corrected RMS 10.0 → 9.5 → 9.3) are the 23 September run with benzene's corrupted finite-difference target; with the second-route target (E7 rung B `--use-analytic`, recorded in the ledger of 23 September 12:5x) hold-out (a) reads **0.47 → 0.45 → 0.43** and **5.9 → 5.1 → 4.7 cm⁻¹** at 45 → 100 → 175 — learning, not flat. The couplings of the bare parents are learned at the same level as the unseen scaffolds; what remains short is the slope (1.14× per decade on the ratio, 1.49× on the RMS, against the registered 1.5×).
+
+**E11.5, refitted on the corrected-target curve** (`out/E11_power_law_2026-09-25b_analytic.md`): bare parents 1.14× per decade on the ratio, 1.49× on the RMS (predicted at 1,200: 0.39 [0.38, 0.40]; 3.4 [3.2, 3.5] cm⁻¹); unseen scaffolds unchanged (1.15× / 1.30×). The prediction to read the layer-B tables against is this one; the table of 08:5x above is withdrawn for hold-out (a).
+
+**E11.2 symmetry consistency** (`out/E11_rungB_dump_2026-09-25_dump.md`, seed-0 model at the full pool, 43 hold-out molecules with symmetry classes): pooled spread ratio **0.52** (median per molecule 0.60) — far above the 0.30 line. Reading, as registered: the pair model does **not** respect the molecular symmetry it was never told; the equivariant model of the 23 September decision is not optional. This is the strongest ML-side finding of the day: the current model reaches its numbers by fitting, not by having found the symmetry of the physics.
+
+**E11.6 on the E6 split** (a first look; the registered read-out is the size split's dump, to follow): hold-out (a) slope −0.05 over 12–26 atoms (n = 10), hold-out (b) 1.86 over 23–30 atoms (n = 39, two cores — confounded by core identity, not a size effect).
