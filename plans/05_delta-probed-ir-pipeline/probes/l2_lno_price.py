@@ -56,18 +56,22 @@ def full_mp2(mf, frozen):
     m.verbose = 0; m.kernel(); return float(m.e_corr)
 
 
+TIER = "t0"
+
+
 def point(symbols, coords, basis, thresh, frozen, max_memory, out, tag):
-    from pyscf.lno import LNOCCSD_T
+    from pyscf.lno import LNOCCSD, LNOCCSD_T
+    thresh = {"t0": "tight", "t1": "normal", "t2": "tight", "t3": "normal"}[TIER]; triples = TIER in ("t0", "t1")
     rec = {"tag": tag, "stages_s": {}, "rss_gb": {}}
     t = time.time(); mol = make_mol(symbols, coords, basis, max_memory); mf = run_scf(mol); rec["stages_s"]["scf"] = round(time.time() - t, 1); rec["rss_gb"]["scf"] = round(rss_gb(), 2)
     nocc = int(np.count_nonzero(mf.mo_occ)); C_act = mf.mo_coeff[:, frozen:nocc]
     t = time.time(); lo_c = pm_localise(mol, C_act); rec["stages_s"]["pm"] = round(time.time() - t, 1)
     frag_lolist = [[i] for i in range(lo_c.shape[1])]
-    t = time.time(); mcc = LNOCCSD_T(mf, lo_c, frag_lolist, frozen=frozen); mcc.lno_thresh = THRESH[thresh]; mcc.verbose = 3; mcc.kernel()
+    t = time.time(); mcc = (LNOCCSD_T if triples else LNOCCSD)(mf, lo_c, frag_lolist, frozen=frozen); mcc.lno_thresh = THRESH[thresh]; mcc.verbose = 3; mcc.kernel()
     rec["stages_s"]["lno_ccsd_t"] = round(time.time() - t, 1); rec["rss_gb"]["lno_ccsd_t"] = round(rss_gb(), 2)
     t = time.time(); emp2 = full_mp2(mf, frozen); rec["stages_s"]["mp2"] = round(time.time() - t, 1)
-    ecc, ept2 = float(mcc.e_corr_ccsd_t), float(mcc.e_corr_pt2)
-    rec.update(n_fragments=len(frag_lolist), e_scf=float(mf.e_tot), e_corr_lno_ccsd_t=ecc, e_corr_lno_mp2=ept2, e_corr_mp2_full=emp2,
+    ecc, ept2 = float(mcc.e_corr_ccsd_t if triples else mcc.e_corr_ccsd), float(mcc.e_corr_pt2)
+    rec.update(tier=TIER, thresh=thresh, triples=triples, n_fragments=len(frag_lolist), e_scf=float(mf.e_tot), e_corr_lno_ccsd_t=ecc, e_corr_lno_mp2=ept2, e_corr_mp2_full=emp2,
                e_tot_composite=float(mf.e_tot) + ecc - ept2 + emp2, wall_s=round(sum(rec["stages_s"].values()), 1))
     log(f"{tag}: SCF {rec['stages_s']['scf']} s, PM {rec['stages_s']['pm']} s, LNO-CCSD(T) {rec['stages_s']['lno_ccsd_t']} s ({len(frag_lolist)} fragments), MP2 {rec['stages_s']['mp2']} s; "
         f"peak RSS {rec['rss_gb']['lno_ccsd_t']} GB; E_composite {rec['e_tot_composite']:.8f}", out)
@@ -87,7 +91,10 @@ def neighbourhood_mode(H, masses_amu, near):
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("moldir"); ap.add_argument("out"); ap.add_argument("--near", default="")
     ap.add_argument("--threads", type=int, default=8); ap.add_argument("--max-memory", type=int, default=16000); ap.add_argument("--thresh", default="tight")
-    ap.add_argument("--basis", default="cc-pvdz"); ap.add_argument("--smoke", action="store_true"); a = ap.parse_args()
+    ap.add_argument("--basis", default="cc-pvdz"); ap.add_argument("--smoke", action="store_true")
+    ap.add_argument("--tier", default="t0", choices=["t0", "t1", "t2", "t3"], help="L2b (25 Sep 2026): t0 LNO-CCSD(T) tight (the anchor), t1 LNO-CCSD(T) normal, t2 LNO-CCSD tight, t3 LNO-CCSD normal")
+    a = ap.parse_args()
+    global TIER; TIER = a.tier
     from pyscf import lib
     lib.num_threads(a.threads); os.makedirs(a.out, exist_ok=True)
     if a.smoke:
