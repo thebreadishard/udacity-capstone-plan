@@ -84,3 +84,10 @@ queue for the machines. Concretely, in order: (1) pre-register the proof standar
 B's first 300 in the hashed order, and hel1-16 follows after the thirty restarts; the CCX53 after naphthalene E8; (3) the learning-curve table
 at 300 as soon as it exists, at 600 and 1,200 as they arrive; (4) the size-extrapolation split on today's data as a desk test this week;
 (5) the cheaper correlation tier (L2b) as the lever for the first horizon, pre-registered separately.
+
+## Dated addition, 2026-09-25 07:1x — size extrapolation, first cut
+
+Desk test (`PreRegistration_2026-09-25_Size_Extrapolation_Desk_Test.md`): trained on ≤ 26 atoms only, the pair model predicts the 45 molecules of
+27–34 atoms at ring coupling ratio 0.66 → 0.62 → 0.59 and corrected-frequency RMS 6.6 → 6.0 → 5.8 cm⁻¹ (zero rule 22.8) for 45 → 100 → 161 training
+molecules — encouraging on the registered bars, at the edge on the ratio, shallow in slope. Item 3 of §4 moves from "untested" to "tested at one
+size step, learnable, slower than within-size"; the layer-B curve decides whether the slope holds over a decade of data.

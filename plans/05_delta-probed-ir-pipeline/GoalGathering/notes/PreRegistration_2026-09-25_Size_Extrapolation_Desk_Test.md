@@ -21,3 +21,21 @@ zero rule, and their trend over 45 → 100 → all.
 
 **Cost.** ≈ 30 min on the CCX53 (8 threads; the L2 run is stopped first, its reading being already determined), no new quantum chemistry.
 Output `modules/05_support_predictor/out/E7_rungB_size26_2026-09-25.{json,md}`.
+
+## Outcome — 25 September 2026, 07:1x: ENCOURAGING, at the edge of the bar
+
+Run on the CCX53 (m05 env, eight threads, `--use-analytic`, 318 s): hold-out (a) 45 molecules of 27–34 atoms, (b) 18 scaffold molecules ≤ 26, pool 161.
+MLP (three-seed means; the gradient-boosted check in the .md):
+
+| training molecules (≤ 26 atoms) | (a) > 26 atoms: ring coupling ratio | (a) corrected ω RMS (zero 22.8) | (b) scaffolds ≤ 26: ratio | (b) corrected ω RMS (zero 23.5) |
+|---|---|---|---|---|
+| 45 | 0.66 | 6.61 | 0.40 | 5.68 |
+| 100 | 0.62 | 6.01 | 0.39 | 4.92 |
+| 161 | **0.59** | **5.76** | 0.36 | 4.45 |
+
+Registered bars at the full pool: ratio ≤ 0.6 (met, just), corrected RMS below half the zero rule (5.76 < 11.4, met), decreasing with pool size
+(met on both read-outs). **Encouraging** — with the honest remark that the ratio sits on the line and the curve is shallow (0.66 → 0.59 over a
+factor 3.6 of data). The within-size control learns faster (0.40 → 0.36, 5.7 → 4.5), so size extrapolation costs about 0.2 in ratio and
+1.3 cm⁻¹ at this range. Diagonals carry over well (C–H stretch 3.3, ring in-plane 6.3 cm⁻¹ on the larger molecules). Files
+`modules/05_support_predictor/out/E7_rungB_size26_2026-09-25.json` and `.md`. For the layer-B pre-registration this is the expectation for hold-out
+(c): learnable, slower than within-size; the 1.5×-per-decade bar on (c) is not obviously met from this short curve and stays the test.
