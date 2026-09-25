@@ -44,3 +44,14 @@ minutes on the laptop or a CPX62.
 
 **Consequence of a pass.** The design's central claim is demonstrated on the proxy at the scale the corpus allows; the proposal of 28 September
 cites the 300-table (if it exists by then) as the first point of a curve whose reading rule is on record here.
+
+## Dated amendment 12:1x — one interim reading before the 28th, labelled as such (the registered tables are unchanged)
+
+The registered tables need the first 100 / 300 / … molecules *in hashed order*, which needs all five shards; shards 3 and 4 join only on
+Saturday evening and Sunday, so the 100-table is expected Monday morning at the earliest and may slip past the conversation. To have one honest
+number on Monday, an **interim reading** is declared now: training set = every admitted layer-B molecule finished on shards 0–2 by **Sunday 27
+September 20:00** (shard membership is by id hash, so this is a random sample of layer B, not a curated one; its size is whatever it is, ≈ 150–250),
+same three hold-outs, same read-outs, same model and seeds, read against the same power-law predictions at that size (interpolated on the log axis).
+It is reported under the heading *interim (not the registered prefix)*, it cannot pass or fail the registered rule, and it does not replace the
+100- and 300-tables, which follow as registered. Prediction for the interim point, from the fits of 25 September: bare parents ratio 0.42–0.44,
+unseen scaffolds 0.43–0.45, size hold-out 0.55–0.58; a point clearly below those would say the small-data fits were pessimistic.
