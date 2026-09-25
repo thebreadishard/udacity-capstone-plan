@@ -54,3 +54,15 @@ def test_metrics_on_known_samples():
     assert abs(res["validity"] - 5 / 6) < 1e-9 and res["uniqueness"] == 4 / 5 and 0 < res["novelty"] < 1
     assert project_fit("Fc1ccc2ccccc2c1") and not project_fit("c1ccccc1") and not project_fit("[NH4+]")
     assert hetero_class("c1ccc2ncccc2c1") == "N" and hetero_class("c1ccc2ccccc2c1") == "none"
+
+
+def test_hetero_class_reads_elements_not_letter_pairs():
+    from data import hetero_class
+    assert hetero_class("Cc1ccccc1") == "none"          # toluene: the "Cc" pair is carbon-carbon, not an element
+    assert hetero_class("Cn1cccc1") == "N"              # N-methylpyrrole
+    assert hetero_class("COc1ccccc1") == "O"
+    assert hetero_class("c1ccsc1") == "S"
+    assert hetero_class("Clc1ccccc1") == "none"
+    assert hetero_class("c1ccc2[nH]ccc2c1") == "N"      # indole: the bracket atom [nH] is nitrogen
+    assert hetero_class("Cc1cc2ccccc2s1") == "S"
+    assert hetero_class("O=[N+]([O-])c1ccccc1") == "N" or hetero_class("O=[N+]([O-])c1ccccc1") == "mixed"

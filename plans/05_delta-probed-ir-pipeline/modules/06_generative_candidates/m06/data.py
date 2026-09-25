@@ -44,9 +44,23 @@ def tokenize(smiles):
     return TOKEN_RE.findall(smiles)
 
 
+BRACKET_RE = re.compile(r"\[\d*([A-Z][a-z]?|[a-z]{1,2})")
+
+
 def hetero_class(smiles):
-    s = set(re.findall(r"Cl|Br|[A-Z][a-z]?|[a-z]", smiles))
-    het = {e.lower() for e in s} - {"c", "h", "cl", "br", "f"}
+    """Heteroatom class of a SMILES: none / N / O / S / mixed (F, Cl, Br, H, B and C do not count). 25 Sep 2026: the first version matched
+    "[A-Z][a-z]?" on the raw string and read the aliphatic-aromatic pair "Cc" as an element (class "<hCC>", absent from the vocabulary);
+    elements are now read per token: bracket atoms by their leading symbol (so [nH] is nitrogen), Cl/Br, and single organic-subset letters."""
+    els = set()
+    for tok in tokenize(smiles):
+        if tok.startswith("["):
+            m = BRACKET_RE.match(tok); e = m.group(1) if m else ""
+        elif tok in ("Cl", "Br") or (len(tok) == 1 and tok.isalpha()):
+            e = tok
+        else:
+            continue
+        if e: els.add(e.capitalize())
+    het = {e.lower() for e in els} - {"c", "h", "cl", "br", "f", "b"}
     if not het:
         return "none"
     return sorted(het)[0].upper() if len(het) == 1 else "mixed"
