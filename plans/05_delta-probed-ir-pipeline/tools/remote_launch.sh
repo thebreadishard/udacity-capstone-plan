@@ -22,7 +22,7 @@ while [ $# -gt 0 ]; do
 done
 [ $# -eq 1 ] || { echo "give the command line as ONE quoted string after --" >&2; exit 2; }
 CMD="$1"
-SSH=(ssh -i "$KEY" -o ConnectTimeout=25 -o BatchMode=yes "$HOST")
+SSH=(ssh -i "$KEY" -o ConnectTimeout=25 -o BatchMode=yes -o ServerAliveInterval=30 -o ServerAliveCountMax=6 "$HOST")   # 25 Sep 2026: two dry runs of 5–8 min hung the wrapper after finishing — an idle session dropped on the way; keep-alives every 30 s
 ENVLINE=""; [ -n "$THREADS" ] && ENVLINE="export OMP_NUM_THREADS=$THREADS MKL_NUM_THREADS=$THREADS OPENBLAS_NUM_THREADS=$THREADS"
 # 1. the command file, verbatim (stdin carries it; no quoting through the remote shell)
 printf '#!/bin/bash\ncd %q || exit 1\n%s\n%s "$@"\n' "$WORKDIR" "$ENVLINE" "$CMD" | "${SSH[@]}" "cat > '$WORKDIR/$NAME.cmd.sh' && chmod +x '$WORKDIR/$NAME.cmd.sh' && echo 'command file written'"
