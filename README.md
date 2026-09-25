@@ -32,6 +32,14 @@ lives at <https://thebreadishard.github.io/> (separate repository, same evidence
   tensor), not on E11 evidence. The decisive
   curve — layer B of the corpus, 100 → 1,200 small molecules on three hold-outs with the reading rule fixed beforehand — started 25 September on
   rented machines (`plans/05_delta-probed-ir-pipeline/GoalGathering/notes/PreRegistration_2026-09-25_Proof_of_Learning_Layer_B.md`).
+- **25 September, evening (19:1x).** Two rules were added to how the curve is read: a consistency statistic counts only beside the same statistic on the
+  target, and no negative conclusion about the model before a pre-registered search over optimiser, loss and hyperparameters — that search ran on the 175
+  molecules (stages 1 and 2): it lowers the whole curve (0.41 / 0.44 and 4.1 / 4.5 cm⁻¹ at 175) but does not steepen it (1.08× per decade); stage 3, a loss
+  in the read-out's own metric, is running. Route 2 — the second, analytic-Hessian route at the level of Mackie et al. 2015 — reproduces naphthalene's three
+  rotationally resolved band origins to 1.2 cm⁻¹ RMS with clean quartics (`probes/results_m1/route2/ROUTE2_NAPHTHALENE_VS_LAB_2026-09-25.md`). The cation
+  rows of obstacle 9 are computed (benzene⁺, naphthalene⁺, no imaginary modes) and the first coupled-cluster price of a cation is measured (benzene⁺: 59 min
+  per energy at cc-pVDZ tight on 16 shared vCPU). Module 07 (agentic workflows) was designed and built the same evening: a bounded LangGraph agent whose
+  rule table is the project's own incident list, replayed on eight scenarios from the day's real logs (`plans/05_delta-probed-ir-pipeline/modules/07_agentic_workflows/`).
   One hard price: an LNO-CCSD(T)/cc-pVDZ energy of a 25-atom molecule at the anchor's thresholds costs more than nine hours; a cheaper
   correlation tier is being licensed on benzene before it labels anything. The two-horizon framing (a growing asset versus the 2027 mandate)
   is in `Note_2026-09-25_Growing_Asset_and_Proof_of_Learning.md`.
