@@ -105,13 +105,23 @@ ids = torch.tensor([vocab0.encode(s) for s in df.smiles.head(4)]); print("input 
 
 md("## 3. Training")
 code("""logs = {}
+def train_or_load(out_dir, seed, conditioning=False, label=None):
+    # 25 Sep 2026: M06_REUSE=1 loads weights trained earlier by m06/train.py with the same seed, recipe and dataset (a cache of the identical computation) instead of retraining; never in quick mode
+    import json as _json
+    p = Path(out_dir) / f"model_seed{seed}.pt"; lg = Path(out_dir) / f"train_log_seed{seed}.json"
+    if os.environ.get("M06_REUSE") == "1" and not QUICK and p.exists() and lg.exists():
+        L = _json.load(open(lg)); v = Vocab(L["vocab"]); m = SmilesTransformer(len(v.itos), max_len=L["max_len"]); m.load_state_dict(torch.load(p)); m.eval()
+        print(f"reused: {p} — {len(L['history'])} epochs trained by m06/train.py (seed {seed}, conditioning={L['conditioning']}, n_train {L['n_train']}), best val loss {min(h['val_loss'] for h in L['history']):.3f}")
+        return m, v, L["history"]
+    return train_model(rows, out_dir, seed=seed, epochs=20, conditioning=conditioning, quick=QUICK, log=log_to(label if label is not None else seed))
+
 def log_to(seed):
     def _log(msg):
         print(f"[seed {seed}] {msg}", flush=True); logs.setdefault(seed, []).append(msg)
     return _log
 t0 = time.time(); models = {}
 for seed in SEEDS:
-    models[seed] = train_model(rows, f"out/seed{seed}", seed=seed, epochs=20, quick=QUICK, log=log_to(seed))
+    models[seed] = train_or_load(("out/quick/" if QUICK else "out/") + f"seed{seed}", seed)   # quick mode writes beside, never over, a real run's weights
 print(f"trained {len(SEEDS)} model(s) in {(time.time() - t0) / 60:.1f} min")
 fig, axes = plt.subplots(1, 2, figsize=(9, 3.2))
 for seed, (m, v, hist) in models.items():
@@ -142,6 +152,19 @@ for seed, (m, v, hist) in models.items():
         print(f"seed {seed} T={T}: validity {res['validity']:.3f} uniqueness {res['uniqueness']:.3f} novelty {res['novelty']:.3f} scaffold novelty {res['scaffold_novelty']:.3f} memorisation {res['memorisation']:.3f} project fit {res['project_fit']:.3f} | W1 heavy {res['w1_heavy']:.2f} rings {res['w1_arom_rings']:.2f} hetero {res['w1_hetero']:.2f} ({res['seconds']} s)")
 tab = pd.DataFrame([dict(seed=s, T=T, **{k: r[k] for k in ("validity", "uniqueness", "novelty", "scaffold_novelty", "memorisation", "project_fit", "w1_heavy", "w1_arom_rings", "w1_hetero")}) for (s, T), r in results.items()]).round(3)
 display(tab)
+# 25 Sep 2026 (dated amendment of the pre-registration): the control the model must beat — a 5-gram token Markov baseline on the same train split, same evaluation
+from baseline_ngram import fit as ngram_fit, sample_one as ngram_sample
+import random as _random
+t0 = time.time(); ng = ngram_fit(train_smiles, 5); _rng = _random.Random(0); ng_samples = [ngram_sample(ng, 5, _rng) for _ in range(N_SAMPLES)]
+baseline_res, _ = evaluate_samples(ng_samples, train_smiles, train_scaf, test_rows, murcko); baseline_res["seconds"] = round(time.time() - t0, 1)
+r0 = results[(SEEDS[0], 1.0)]
+baseline_check = dict(validity_margin=r0["validity"] - baseline_res["validity"], project_fit_margin=r0["project_fit"] - baseline_res["project_fit"],
+                      w1_smaller_all=all((r0[k] or 0) < (baseline_res[k] or 0) for k in ("w1_heavy", "w1_arom_rings", "w1_hetero")))
+baseline_check["beats_baseline"] = bool(baseline_check["validity_margin"] >= 0.25 and baseline_check["project_fit_margin"] >= 0.15 and baseline_check["w1_smaller_all"])
+print(f"5-gram baseline (10,000 samples, T = 1.0): validity {baseline_res['validity']:.3f} uniqueness {baseline_res['uniqueness']:.3f} novelty {baseline_res['novelty']:.3f} project fit {baseline_res['project_fit']:.3f} | "
+      f"W1 heavy {baseline_res['w1_heavy']:.2f} rings {baseline_res['w1_arom_rings']:.2f} hetero {baseline_res['w1_hetero']:.2f} ({baseline_res['seconds']:.0f} s)")
+print(f"seed {SEEDS[0]} vs baseline: validity +{baseline_check['validity_margin']:.3f} (rule ≥ 0.25), project fit +{baseline_check['project_fit_margin']:.3f} (rule ≥ 0.15), all W1 smaller: {baseline_check['w1_smaller_all']} → "
+      + ("beats the baseline" if baseline_check["beats_baseline"] else "does NOT beat the baseline — FAIL by the amendment's rule" + (" (expected in quick mode)" if QUICK else "")))
 m10 = tab[tab["T"] == 1.0].mean(numeric_only=True)
 verdict = {"validity": m10.validity >= PRED["validity"], "uniqueness": m10.uniqueness >= PRED["uniqueness"], "novelty": m10.novelty >= PRED["novelty"], "scaffold_novelty": m10.scaffold_novelty >= PRED["scaffold_novelty"],
            "memorisation": m10.memorisation <= PRED["memorisation"], "project_fit": PRED["project_fit"][0] <= m10.project_fit <= PRED["project_fit"][1],
@@ -183,7 +206,7 @@ One controlled change, fixed before training: two prefix tokens — the ring-cou
 (`<hnone>`, `<hN>`, `<hO>`, `<hS>`, `<hmixed>`) — placed after `<bos>` during training, so that the atlas can ask for "three rings, one nitrogen".
 The pre-registered read-out is **obedience**: the fraction of valid samples whose ring and heteroatom class equal the request, predicted ≥ 0.80,
 plus the same trio as above to see what conditioning costs.""")
-code("""t0 = time.time(); mc, vc, hc = train_model(rows, "out/cond_seed0", seed=0, epochs=20, conditioning=True, quick=QUICK, log=log_to("cond"))
+code("""t0 = time.time(); mc, vc, hc = train_or_load(("out/quick/" if QUICK else "out/") + "cond_seed0", 0, conditioning=True, label="cond")
 print(f"conditioned model trained in {(time.time() - t0) / 60:.1f} min; vocabulary {len(vc.itos)}")
 def ring_class_of(smi):
     n = descriptors(smi)[1]; return "<r2>" if n <= 2 else "<r3>" if n == 3 else "<r4+>"
@@ -226,6 +249,7 @@ print(summary)
 out = dict(quick=QUICK, dataset=str(DATASET.name), n_rows=len(rows), splits=split_counts, n_dropped_len96=n_drop, vocab_size=len(vocab0.itos), params=model0.n_params(), seeds=SEEDS, n_samples=N_SAMPLES,
            training={str(s): h for s, (m, v, h) in models.items()}, metrics={f"seed{s}_T{T}": r for (s, T), r in results.items()}, predictions=PRED, verdict={k: (None if v is None else bool(v)) for k, v in verdict.items()},
            conditioning=dict(obedience_all=ob_all, per_request=rows_ob, unconditioned_metrics=res_c, history=hc), summary=summary, date=time.strftime("%Y-%m-%d %H:%M"))
+out["baseline"] = dict(model="5-gram token Markov, stupid back-off, train split only", metrics=baseline_res, check=baseline_check)
 json.dump(out, open("results.json", "w"), indent=1); print("results.json written")""")
 md("""*What the rubric asks for in words.* The task, the model and the reason for it are in the header; the data and their inspection in section 1;
 the architecture, training loop, curves and sampling in sections 2–3; the metrics, the histograms, the failure gallery and the neighbour grid in

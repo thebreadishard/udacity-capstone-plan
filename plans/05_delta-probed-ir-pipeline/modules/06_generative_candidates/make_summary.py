@@ -143,6 +143,15 @@ para(f"At temperature 1.0 the samples are {pct(mean('validity'))} valid, {pct(me
      f"{pct(C['obedience_all'])} of valid samples, with the per-request table showing where PubChem has too few examples for the request to be learned.")
 figure("distribution_match.png", "Figure 3. Sample distributions against the held-out test set.")
 
+if R.get("baseline"):
+    bl = R["baseline"]["metrics"]; bc = R["baseline"]["check"]; m0 = M[f"seed{seeds[0]}_T1.0"]
+    para(f"Baseline control (added to the pre-registration on 25 September 2026, before any full training). A 5-gram token Markov model fitted on the same training split "
+         f"and sampled {bl['n_samples']:,} times reaches validity {bl['validity']:.3f}, uniqueness {bl['uniqueness']:.3f}, novelty {bl['novelty']:.3f} and project fit {bl['project_fit']:.3f}, "
+         f"with Wasserstein-1 distances of {bl['w1_heavy']:.2f} (heavy atoms), {bl['w1_arom_rings']:.2f} (aromatic rings) and {bl['w1_hetero']:.2f} (heteroatoms) to the test split. "
+         f"The registered rule asks the Transformer to beat it by at least 0.25 in validity and 0.15 in project fit with smaller distances on all three descriptors; the primary "
+         f"seed gives margins of {bc['validity_margin']:+.3f} and {bc['project_fit_margin']:+.3f} with all distances smaller: {bc['w1_smaller_all']} — "
+         + ("the model has learned more than token statistics." if bc["beats_baseline"] else "the rule is not met" + (" (quick mode: a pipeline check, not a result)." if R.get("quick") else " and the module's verdict is FAIL by the amendment.")))
+
 heading("Ethical Considerations and Responsible Use")
 para("Three concerns are tied to this system's own data, model and outputs. Misuse: a generator of aromatic structures is a generator of candidates for "
      "spectroscopy, not of syntheses; polycyclic aromatics include carcinogens and persistent pollutants, so the outputs are labelled as spectroscopic targets, "

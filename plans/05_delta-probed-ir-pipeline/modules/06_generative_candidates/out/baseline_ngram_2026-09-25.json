@@ -1,0 +1,54 @@
+{
+ "model": "5-gram token Markov baseline with stupid back-off",
+ "n_train": 125065,
+ "n_contexts": [
+  1,
+  30,
+  339,
+  1962,
+  8498
+ ],
+ "seed": 0,
+ "temperature": 1.0,
+ "metrics": {
+  "n_samples": 10000,
+  "validity": 0.0297,
+  "uniqueness": 0.8552188552188552,
+  "novelty": 0.9960629921259843,
+  "scaffold_novelty": 0.9921259842519685,
+  "memorisation": 0.003367003367003367,
+  "project_fit": 0.023715415019762844,
+  "w1_heavy": 13.367686567164178,
+  "w1_arom_rings": 2.593756218905473,
+  "w1_hetero": 3.322338308457711
+ },
+ "examples_valid_novel": [
+  "C#CC(C)=O",
+  "C1=Cc2[nH]ccc21",
+  "C1=Cc2ccncc2C=CC2=NC=CC2=C1",
+  "C=CC1CCCCCNCC1",
+  "CC(=N)N",
+  "CC(=O)C(=O)O",
+  "CC(=O)C1(C)CC1",
+  "CC(=O)C1=CN=C2C=CC=C12",
+  "CC(=O)C1=CN=CC=C2C(Cl)=CC=C2O1",
+  "CC(=O)C1=Cc2cn(c3ccccccc=3[nH]2)-c2cc[nH]c21"
+ ],
+ "examples_invalid": [
+  "O=C(Nc1ccc(F)c2c(sc3ccnc3ccc4F)[nH]c4cccc3[nH]2)CC1)c1cncccc1-c1cc(C#N)c2ccc(NC3CCCO3",
+  "Oc1ccc(c1)nc(-n3c(nc2cc1C(F)(F)F)c3cccc2nc3nc4cccc3occc2ccc(F)c5cccc(N(c2nc3cccc12",
+  "COc1ccnc12",
+  "CN(CC3)c3ccccccc2ccccc2cccccc2[nH]1)N1CCOc1coc(C4CCCCNc2cccc3c4ccccc1)NCc3c(ccc34)[nH]c3ccc(Cl)ccccccc3",
+  "c1ccc12",
+  "COc1ccc2c1",
+  "CN(C2CC2)c2oc3c2)c1",
+  "C=CC(=O)Nc4ccccc3n12",
+  "COc1ccc2ccc2sc3c(C=C(Cn1cc(F)cc2cc(-c3cc(Cl)cc3)cc1F",
+  "O=C(NC#N"
+ ],
+ "seconds": {
+  "fit": 42.3,
+  "sample": 0.8,
+  "evaluate": 4.1
+ }
+}
