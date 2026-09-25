@@ -1,0 +1,308 @@
+[2026-09-22 16:31:12] route 2 naphthalene: B97-1 / CADPAC-TZ2P, disp 0.10, 16 threads
+geometric-optimize called with the following command line:
+route2_optimise.py route2/stageA.json results_m1/route2/naph_ref_stub --threads 16 --xc B97-1 --basis CADPAC-TZ2P
+
+                                        [91m())))))))))))))))/[0m                     
+                                    [91m())))))))))))))))))))))))),[0m                
+                                [91m*)))))))))))))))))))))))))))))))))[0m             
+                        [94m#,[0m    [91m()))))))))/[0m                [91m.)))))))))),[0m          
+                      [94m#%%%%,[0m  [91m())))))[0m                        [91m.))))))))*[0m        
+                      [94m*%%%%%%,[0m  [91m))[0m              [93m..[0m              [91m,))))))).[0m      
+                        [94m*%%%%%%,[0m         [93m***************/.[0m        [91m.)))))))[0m     
+                [94m#%%/[0m      [94m(%%%%%%,[0m    [93m/*********************.[0m       [91m)))))))[0m    
+              [94m.%%%%%%#[0m      [94m*%%%%%%,[0m  [93m*******/,[0m     [93m**********,[0m      [91m.))))))[0m   
+                [94m.%%%%%%/[0m      [94m*%%%%%%,[0m  [93m**[0m              [93m********[0m      [91m.))))))[0m  
+          [94m##[0m      [94m.%%%%%%/[0m      [94m(%%%%%%,[0m                  [93m,******[0m      [91m/)))))[0m  
+        [94m%%%%%%[0m      [94m.%%%%%%#[0m      [94m*%%%%%%,[0m    [92m,/////.[0m       [93m******[0m      [91m))))))[0m 
+      [94m#%[0m      [94m%%[0m      [94m.%%%%%%/[0m      [94m*%%%%%%,[0m  [92m////////,[0m      [93m*****/[0m     [91m,)))))[0m 
+    [94m#%%[0m  [94m%%%[0m  [94m%%%#[0m      [94m.%%%%%%/[0m      [94m(%%%%%%,[0m  [92m///////.[0m     [93m/*****[0m      [91m))))).[0m
+  [94m#%%%%.[0m      [94m%%%%%#[0m      [94m/%%%%%%*[0m      [94m#%%%%%%[0m   [92m/////)[0m     [93m******[0m      [91m))))),[0m
+    [94m#%%%%##%[0m  [94m%%%#[0m      [94m.%%%%%%/[0m      [94m(%%%%%%,[0m  [92m///////.[0m     [93m/*****[0m      [91m))))).[0m
+      [94m##[0m     [94m%%%[0m      [94m.%%%%%%/[0m      [94m*%%%%%%,[0m  [92m////////.[0m      [93m*****/[0m     [91m,)))))[0m 
+        [94m#%%%%#[0m      [94m/%%%%%%/[0m      [94m(%%%%%%[0m      [92m/)/)//[0m       [93m******[0m      [91m))))))[0m 
+          [94m##[0m      [94m.%%%%%%/[0m      [94m(%%%%%%,[0m                  [93m*******[0m      [91m))))))[0m  
+                [94m.%%%%%%/[0m      [94m*%%%%%%,[0m  [93m**.[0m             [93m/*******[0m      [91m.))))))[0m  
+              [94m*%%%%%%/[0m      [94m(%%%%%%[0m   [93m********/*..,*/*********[0m       [91m*))))))[0m   
+                [94m#%%/[0m      [94m(%%%%%%,[0m    [93m*********************/[0m        [91m)))))))[0m    
+                        [94m*%%%%%%,[0m         [93m,**************/[0m         [91m,))))))/[0m     
+                      [94m(%%%%%%[0m   [91m()[0m                              [91m))))))))[0m       
+                      [94m#%%%%,[0m  [91m())))))[0m                        [91m,)))))))),[0m        
+                        [94m#,[0m    [91m())))))))))[0m                [91m,)))))))))).[0m          
+                                 [91m()))))))))))))))))))))))))))))))/[0m             
+                                    [91m())))))))))))))))))))))))).[0m                
+                                         [91m())))))))))))))),[0m                     
+
+-=# [1;94m geomeTRIC started. Version: 1.1.1 [0m #=-
+Current date and time: 2026-09-22 16:31:13
+#========================================================#
+#| [92m    Arguments passed to driver run_optimizer():     [0m |#
+#========================================================#
+convergence_dmax          0.0002 
+convergence_drms          0.0001 
+convergence_energy        1e-07 
+convergence_gmax          2e-05 
+convergence_grms          1e-05 
+customengine              <pyscf.geomopt.geometric_solver.PySCFEngine object at 0x752c1e481460> 
+input                     /tmp/tmpyr_y2otc/ad57c5f9-f9f3-4cf5-8ae1-d2a1e66cc887 
+logIni                    /root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/geomopt/log.ini 
+maxiter                   100 
+----------------------------------------------------------
+Custom engine selected.
+Bonds will be generated from interatomic distances less than 1.20 times sum of covalent radii
+54 internal coordinates being used (instead of 54 Cartesians)
+Internal coordinate system (atoms numbered from 1):
+Distance 1-2
+Distance 1-10
+Distance 1-11
+Distance 2-3
+Distance 2-12
+Distance 3-4
+Distance 3-13
+Distance 4-5
+Distance 4-9
+Distance 5-6
+Distance 5-14
+Distance 6-7
+Distance 6-15
+Distance 7-8
+Distance 7-16
+Distance 8-9
+Distance 8-17
+Distance 9-10
+Distance 10-18
+Angle 2-1-11
+Angle 10-1-11
+Angle 1-2-12
+Angle 3-2-12
+Angle 2-3-13
+Angle 4-3-13
+Angle 3-4-9
+Angle 5-4-9
+Angle 4-5-14
+Angle 6-5-14
+Angle 5-6-15
+Angle 7-6-15
+Angle 6-7-16
+Angle 8-7-16
+Angle 7-8-17
+Angle 9-8-17
+Angle 4-9-10
+Angle 8-9-10
+Angle 1-10-18
+Angle 9-10-18
+Out-of-Plane 1-2-10-11
+Out-of-Plane 2-1-3-12
+Out-of-Plane 3-2-4-13
+Out-of-Plane 4-3-5-9
+Out-of-Plane 5-4-6-14
+Out-of-Plane 6-5-7-15
+Out-of-Plane 7-6-8-16
+Out-of-Plane 8-7-9-17
+Out-of-Plane 9-4-8-10
+Out-of-Plane 10-1-9-18
+Dihedral 10-1-2-3
+Dihedral 10-1-2-12
+Dihedral 11-1-2-3
+Dihedral 11-1-2-12
+Dihedral 2-1-10-9
+Dihedral 2-1-10-18
+Dihedral 11-1-10-9
+Dihedral 11-1-10-18
+Dihedral 1-2-3-4
+Dihedral 1-2-3-13
+Dihedral 12-2-3-4
+Dihedral 12-2-3-13
+Dihedral 2-3-4-5
+Dihedral 2-3-4-9
+Dihedral 13-3-4-5
+Dihedral 13-3-4-9
+Dihedral 3-4-5-6
+Dihedral 3-4-5-14
+Dihedral 9-4-5-6
+Dihedral 9-4-5-14
+Dihedral 3-4-9-8
+Dihedral 3-4-9-10
+Dihedral 5-4-9-8
+Dihedral 5-4-9-10
+Dihedral 4-5-6-7
+Dihedral 4-5-6-15
+Dihedral 14-5-6-7
+Dihedral 14-5-6-15
+Dihedral 5-6-7-8
+Dihedral 5-6-7-16
+Dihedral 15-6-7-8
+Dihedral 15-6-7-16
+Dihedral 6-7-8-9
+Dihedral 6-7-8-17
+Dihedral 16-7-8-9
+Dihedral 16-7-8-17
+Dihedral 7-8-9-4
+Dihedral 7-8-9-10
+Dihedral 17-8-9-4
+Dihedral 17-8-9-10
+Dihedral 4-9-10-1
+Dihedral 4-9-10-18
+Dihedral 8-9-10-1
+Dihedral 8-9-10-18
+Translation-X 1-18
+Translation-Y 1-18
+Translation-Z 1-18
+Rotation-A 1-18
+Rotation-B 1-18
+Rotation-C 1-18
+<class 'geometric.internal.Distance'> : 19
+<class 'geometric.internal.Angle'> : 20
+<class 'geometric.internal.OutOfPlane'> : 10
+<class 'geometric.internal.Dihedral'> : 44
+<class 'geometric.internal.TranslationX'> : 1
+<class 'geometric.internal.TranslationY'> : 1
+<class 'geometric.internal.TranslationZ'> : 1
+<class 'geometric.internal.RotationA'> : 1
+<class 'geometric.internal.RotationB'> : 1
+<class 'geometric.internal.RotationC'> : 1
+> ===== Optimization Info: ====
+> Job type: Energy minimization
+> Maximum number of optimization cycles: 100
+> Initial / maximum trust radius (Angstrom): 0.100 / 0.300
+> Convergence Criteria:
+> Will converge when all 5 criteria are reached:
+>  |Delta-E| < 1.00e-07
+>  RMS-Grad  < 1.00e-05
+>  Max-Grad  < 2.00e-05
+>  RMS-Disp  < 1.00e-04
+>  Max-Disp  < 2.00e-04
+> === End Optimization Info ===
+Step    0 : Gradient = 1.586e-03/2.085e-03 (rms/max) Energy = -385.9058960413
+Hessian Eigenvalues: 2.30000e-02 2.30000e-02 2.30000e-02 ... 4.87596e-01 4.93348e-01 4.94220e-01
+Step    1 : Displace = [0m5.104e-03[0m/[0m8.603e-03[0m (rms/max) Trust = 1.000e-01 (=) Grad = [0m3.520e-04[0m/[0m6.129e-04[0m (rms/max) E (change) = -385.9059724623 ([0m-7.642e-05[0m) Quality = [0m0.868[0m
+Hessian Eigenvalues: 2.30000e-02 2.30000e-02 2.30000e-02 ... 4.87595e-01 4.94112e-01 5.35666e-01
+Step    2 : Displace = [0m4.205e-03[0m/[0m6.054e-03[0m (rms/max) Trust = 1.414e-01 ([92m+[0m) Grad = [0m7.089e-04[0m/[0m1.434e-03[0m (rms/max) E (change) = -385.9059585687 ([91m+1.389e-05[0m) Quality = [91m-0.904[0m
+Hessian Eigenvalues: 2.30000e-02 2.30000e-02 2.30000e-02 ... 4.88907e-01 4.94111e-01 6.91496e-01
+Step    3 : Displace = [0m2.167e-03[0m/[0m3.368e-03[0m (rms/max) Trust = 2.103e-03 ([91m-[0m) Grad = [0m1.601e-04[0m/[0m3.110e-04[0m (rms/max) E (change) = -385.9059780432 ([0m-1.947e-05[0m) Quality = [0m0.993[0m
+Hessian Eigenvalues: 2.30000e-02 2.30000e-02 2.30000e-02 ... 4.93507e-01 4.94113e-01 6.84676e-01
+Step    4 : Displace = [0m5.704e-04[0m/[0m8.977e-04[0m (rms/max) Trust = 2.973e-03 ([92m+[0m) Grad = [0m5.839e-05[0m/[0m1.196e-04[0m (rms/max) E (change) = -385.9059787150 ([0m-6.717e-07[0m) Quality = [0m0.804[0m
+Hessian Eigenvalues: 2.30000e-02 2.30000e-02 2.30000e-02 ... 4.93846e-01 4.97616e-01 6.75570e-01
+Step    5 : Displace = [0m4.309e-04[0m/[0m6.490e-04[0m (rms/max) Trust = 4.205e-03 ([92m+[0m) Grad = [0m1.044e-04[0m/[0m2.457e-04[0m (rms/max) E (change) = -385.9059784977 ([91m+2.173e-07[0m) Quality = [91m-0.815[0m
+Hessian Eigenvalues: 2.30000e-02 2.30000e-02 2.30000e-02 ... 4.94573e-01 5.94368e-01 6.71093e-01
+Step    6 : Displace = [0m2.175e-04[0m/[0m3.636e-04[0m (rms/max) Trust = 2.154e-04 ([91m-[0m) Grad = [0m2.143e-05[0m/[0m5.137e-05[0m (rms/max) E (change) = -385.9059788102 ([0m-3.125e-07[0m) Quality = [0m1.006[0m
+Hessian Eigenvalues: 2.30000e-02 2.30000e-02 2.30000e-02 ... 4.94350e-01 5.93755e-01 6.72795e-01
+Step    7 : Displace = [0m1.032e-04[0m/[92m1.644e-04[0m (rms/max) Trust = 3.047e-04 ([92m+[0m) Grad = [0m1.634e-05[0m/[0m3.761e-05[0m (rms/max) E (change) = -385.9059788140 ([92m-3.800e-09[0m) Quality = [0m0.213[0m
+Hessian Eigenvalues: 2.30000e-02 2.30000e-02 2.30000e-02 ... 4.99147e-01 5.78226e-01 6.60291e-01
+Step    8 : Displace = [92m5.294e-05[0m/[92m8.005e-05[0m (rms/max) Trust = 5.158e-05 ([91m-[0m) Grad = [92m4.870e-06[0m/[92m1.133e-05[0m (rms/max) E (change) = -385.9059788237 ([92m-9.753e-09[0m) Quality = [0m0.788[0m
+Hessian Eigenvalues: 2.30000e-02 2.30000e-02 2.30000e-02 ... 4.99147e-01 5.78226e-01 6.60291e-01
+Converged! =D
+
+    #==========================================================================#
+    #| If this code has benefited your research, please support us by citing: |#
+    #|                                                                        |#
+    #| Wang, L.-P.; Song, C.C. (2016) "Geometry optimization made simple with |#
+    #| translation and rotation coordinates", J. Chem, Phys. 144, 214108.     |#
+    #| http://dx.doi.org/10.1063/1.4952956                                    |#
+    #==========================================================================#
+    Time elapsed since start of run_optimizer: 860.039 seconds
+optimised in 964 s: E = -385.905978824, max |force| 9.57e-06 E_h/bohr, atoms moved by at most 0.0065 Å from the start; wrote results_m1/route2/naph_ref_stub/reference.json
+[2026-09-22 16:47:17] optimised; reference Hessian
+[17:32:19] 1/1 reference.json E = -385.90597882 in 2701 s
+done: 1 Hessians in 45.0 min
+[2026-09-22 17:32:19] reference Hessian done; displacements
+97 stubs in results_m1/route2/naph_geoms_d010; step 0.1; omega (cm-1): 170.3, 183.8, 362.2, 392.0, 475.1, 482.3, 514.1, 516.7, 629.7, 633.2, 726.7, 770.0, 782.8, 797.6, 804.5, 847.0, 895.4, 948.6, 961.1, 980.3, 992.1, 997.5, 1030.1, 1041.2, 1147.1, 1164.1, 1168.0, 1182.4, 1227.9, 1265.9, 1284.1, 1386.4, 1393.3, 1415.7, 1485.6, 1488.0, 1542.4, 1606.5, 1631.7, 1661.1, 3154.5, 3155.8, 3158.5, 3161.3, 3172.6, 3173.4, 3185.0, 3185.7
+cp: warning: behavior of -n is non-portable and may change in future; use --update=none instead
+[2026-09-22 17:32:19] 97 stubs; Hessians start (expected ≈ 28 min each)
+[18:17:02] 1/97 mode00_m.json E = -385.90597494 in 2682 s
+[19:00:37] 2/97 mode00_p.json E = -385.90597494 in 2616 s
+[19:43:24] 3/97 mode01_m.json E = -385.90597463 in 2566 s
+[20:25:54] 4/97 mode01_p.json E = -385.90597463 in 2550 s
+[21:10:22] 5/97 mode02_m.json E = -385.90597063 in 2668 s
+[21:53:32] 6/97 mode02_p.json E = -385.90597058 in 2590 s
+[22:35:23] 7/97 mode03_m.json E = -385.90596989 in 2510 s
+[23:17:20] 8/97 mode03_p.json E = -385.90596989 in 2518 s
+[23:59:19] 9/97 mode04_m.json E = -385.90596800 in 2519 s
+[00:41:53] 10/97 mode04_p.json E = -385.90596800 in 2554 s
+[01:23:09] 11/97 mode05_m.json E = -385.90596783 in 2476 s
+[02:05:34] 12/97 mode05_p.json E = -385.90596783 in 2545 s
+[02:48:12] 13/97 mode06_m.json E = -385.90596710 in 2558 s
+[03:30:39] 14/97 mode06_p.json E = -385.90596710 in 2547 s
+[04:13:22] 15/97 mode07_m.json E = -385.90596699 in 2563 s
+[04:56:31] 16/97 mode07_p.json E = -385.90596712 in 2589 s
+[05:39:14] 17/97 mode08_m.json E = -385.90596453 in 2563 s
+[06:22:40] 18/97 mode08_p.json E = -385.90596443 in 2606 s
+[07:05:15] 19/97 mode09_m.json E = -385.90596440 in 2556 s
+[07:47:50] 20/97 mode09_p.json E = -385.90596440 in 2555 s
+[08:32:25] 21/97 mode10_m.json E = -385.90596226 in 2675 s
+[09:16:30] 22/97 mode10_p.json E = -385.90596226 in 2645 s
+[10:01:11] 23/97 mode11_m.json E = -385.90596133 in 2681 s
+[10:45:17] 24/97 mode11_p.json E = -385.90596124 in 2645 s
+[11:28:57] 25/97 mode12_m.json E = -385.90596099 in 2621 s
+[12:10:55] 26/97 mode12_p.json E = -385.90596099 in 2518 s
+[12:55:55] 27/97 mode13_m.json E = -385.90596065 in 2699 s
+[13:39:33] 28/97 mode13_p.json E = -385.90596065 in 2618 s
+[14:22:33] 29/97 mode14_m.json E = -385.90596065 in 2580 s
+[15:05:56] 30/97 mode14_p.json E = -385.90596033 in 2603 s
+[15:48:57] 31/97 mode15_m.json E = -385.90595952 in 2582 s
+[16:35:45] 32/97 mode15_p.json E = -385.90595952 in 2808 s
+[17:22:59] 33/97 mode16_m.json E = -385.90595842 in 2834 s
+[18:08:30] 34/97 mode16_p.json E = -385.90595842 in 2731 s
+[18:56:59] 35/97 mode17_m.json E = -385.90595718 in 2909 s
+[19:46:42] 36/97 mode17_p.json E = -385.90595724 in 2983 s
+[20:31:40] 37/97 mode18_m.json E = -385.90595693 in 2698 s
+[21:13:17] 38/97 mode18_p.json E = -385.90595693 in 2497 s
+[21:56:26] 39/97 mode19_m.json E = -385.90595649 in 2589 s
+[22:38:41] 40/97 mode19_p.json E = -385.90595649 in 2535 s
+[23:20:34] 41/97 mode20_m.json E = -385.90595622 in 2513 s
+[00:02:47] 42/97 mode20_p.json E = -385.90595622 in 2532 s
+[00:45:41] 43/97 mode21_m.json E = -385.90595610 in 2575 s
+[01:28:15] 44/97 mode21_p.json E = -385.90595610 in 2554 s
+[02:10:18] 45/97 mode22_m.json E = -385.90595534 in 2524 s
+[02:52:24] 46/97 mode22_p.json E = -385.90595536 in 2525 s
+[03:34:37] 47/97 mode23_m.json E = -385.90595514 in 2533 s
+[04:17:51] 48/97 mode23_p.json E = -385.90595507 in 2594 s
+[05:00:31] 49/97 mode24_m.json E = -385.90595279 in 2559 s
+[05:43:57] 50/97 mode24_p.json E = -385.90595260 in 2606 s
+[06:30:29] 51/97 mode25_m.json E = -385.90595230 in 2792 s
+[07:16:25] 52/97 mode25_p.json E = -385.90595231 in 2756 s
+[08:00:30] 53/97 mode26_m.json E = -385.90595222 in 2645 s
+[08:45:16] 54/97 mode26_p.json E = -385.90595221 in 2686 s
+[09:30:40] 55/97 mode27_m.json E = -385.90595181 in 2723 s
+[10:17:18] 56/97 mode27_p.json E = -385.90595197 in 2798 s
+[11:02:52] 57/97 mode28_m.json E = -385.90595086 in 2734 s
+[11:47:58] 58/97 mode28_p.json E = -385.90595084 in 2706 s
+[12:33:28] 59/97 mode29_m.json E = -385.90594999 in 2730 s
+[13:20:45] 60/97 mode29_p.json E = -385.90594999 in 2838 s
+[14:04:45] 61/97 mode30_m.json E = -385.90594953 in 2640 s
+[14:50:17] 62/97 mode30_p.json E = -385.90594963 in 2732 s
+[15:35:59] 63/97 mode31_m.json E = -385.90594723 in 2742 s
+[16:17:37] 64/97 mode31_p.json E = -385.90594725 in 2498 s
+[16:58:37] 65/97 mode32_m.json E = -385.90594719 in 2460 s
+[17:39:03] 66/97 mode32_p.json E = -385.90594702 in 2426 s
+[18:19:37] 67/97 mode33_m.json E = -385.90594662 in 2434 s
+[19:00:29] 68/97 mode33_p.json E = -385.90594653 in 2452 s
+[19:41:03] 69/97 mode34_m.json E = -385.90594500 in 2434 s
+[20:21:31] 70/97 mode34_p.json E = -385.90594499 in 2428 s
+[21:02:28] 71/97 mode35_m.json E = -385.90594486 in 2457 s
+[21:43:06] 72/97 mode35_p.json E = -385.90594499 in 2438 s
+[22:24:38] 73/97 mode36_m.json E = -385.90594372 in 2492 s
+[23:04:49] 74/97 mode36_p.json E = -385.90594366 in 2411 s
+[23:44:47] 75/97 mode37_m.json E = -385.90594230 in 2399 s
+[00:24:57] 76/97 mode37_p.json E = -385.90594217 in 2410 s
+[01:05:48] 77/97 mode38_m.json E = -385.90594162 in 2450 s
+[01:47:43] 78/97 mode38_p.json E = -385.90594170 in 2515 s
+[02:28:16] 79/97 mode39_m.json E = -385.90594098 in 2433 s
+[03:09:27] 80/97 mode39_p.json E = -385.90594099 in 2471 s
+[03:49:34] 81/97 mode40_m.json E = -385.90590695 in 2407 s
+[04:33:17] 82/97 mode40_p.json E = -385.90590696 in 2623 s
+[05:16:21] 83/97 mode41_m.json E = -385.90590692 in 2584 s
+[06:02:43] 84/97 mode41_p.json E = -385.90590693 in 2783 s
+[06:48:01] 85/97 mode42_m.json E = -385.90590686 in 2717 s
+[07:33:36] 86/97 mode42_p.json E = -385.90590687 in 2736 s
+[08:17:57] 87/97 mode43_m.json E = -385.90590735 in 2661 s
+[09:02:49] 88/97 mode43_p.json E = -385.90590625 in 2692 s
+[09:49:26] 89/97 mode44_m.json E = -385.90590655 in 2797 s
+[10:35:11] 90/97 mode44_p.json E = -385.90590654 in 2745 s
+[11:19:31] 91/97 mode45_m.json E = -385.90590652 in 2660 s
+[12:04:48] 92/97 mode45_p.json E = -385.90590653 in 2717 s
+[12:52:08] 93/97 mode46_m.json E = -385.90590626 in 2840 s
+[13:38:40] 94/97 mode46_p.json E = -385.90590626 in 2792 s
+[14:24:17] 95/97 mode47_m.json E = -385.90590554 in 2738 s
+[15:10:43] 96/97 mode47_p.json E = -385.90590695 in 2786 s
+done: 97 Hessians in 4178.4 min
+[2026-09-25 15:10:44] ROUTE 2 NAPHTHALENE DONE: 97 Hessians in results_m1/route2/naph_hessians_d010
