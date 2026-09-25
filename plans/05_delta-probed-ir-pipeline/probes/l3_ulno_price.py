@@ -34,10 +34,15 @@ def make_mol(symbols, coords_bohr, basis, max_memory):
     return gto.M(atom=[(s, tuple(c)) for s, c in zip(symbols, coords_bohr)], unit="Bohr", basis=basis, charge=1, spin=1, verbose=0, max_memory=max_memory, symmetry=False)
 
 
-def run_uhf(mol):
+def run_uhf(mol, dm0=None):
     from pyscf import scf
-    mf = scf.UHF(mol).density_fit(); mf.conv_tol = 1e-11; mf.max_cycle = 200; mf.kernel()
-    if not mf.converged: raise RuntimeError("UHF did not converge")
+    mf = scf.UHF(mol).density_fit(); mf.conv_tol = 1e-11; mf.max_cycle = 200
+    mf.kernel(dm0) if dm0 is not None else mf.kernel()
+    if not mf.converged:   # 25 Sep 2026: benzene+ at the displaced geometry did not converge from the atom guess — second-order SCF from the best density, then a level shift
+        dm = mf.make_rdm1(); mf = scf.UHF(mol).density_fit().newton(); mf.conv_tol = 1e-11; mf.max_cycle = 100; mf.kernel(dm)
+    if not mf.converged:
+        dm = mf.make_rdm1(); mf = scf.UHF(mol).density_fit(); mf.conv_tol = 1e-11; mf.max_cycle = 400; mf.level_shift = 0.5; mf.damp = 0.3; mf.kernel(dm)
+    if not mf.converged: raise RuntimeError("UHF did not converge (atom guess, newton, level shift)")
     return mf
 
 
@@ -56,10 +61,10 @@ def full_ump2(mf, frozen):
     m = mp.UMP2(mf, frozen=frozen); m.verbose = 0; m.kernel(with_t2=False); return float(m.e_corr)
 
 
-def point(symbols, coords, basis, thresh, frozen, max_memory, out, tag):
+def point(symbols, coords, basis, thresh, frozen, max_memory, out, tag, dm0=None):
     from pyscf.lno import ULNOCCSD_T
     rec = {"tag": tag, "stages_s": {}, "rss_gb": {}}
-    t = time.time(); mol = make_mol(symbols, coords, basis, max_memory); mf = run_uhf(mol); rec["stages_s"]["scf"] = round(time.time() - t, 1)
+    t = time.time(); mol = make_mol(symbols, coords, basis, max_memory); mf = run_uhf(mol, dm0); rec["stages_s"]["scf"] = round(time.time() - t, 1); point.last_dm = mf.make_rdm1()
     rec["s2"] = float(mf.spin_square()[0])
     t = time.time(); lo_coeff = []
     for s in range(2):
@@ -96,10 +101,21 @@ def main():
     log(f"L3: {os.path.basename(a.rowdir.rstrip('/'))} {a.basis} {a.thresh}, {len(symbols)} atoms, frozen core {frozen}, {a.threads} threads, max_memory {a.max_memory} MB; mode {k} ({omega_cm:.0f} cm⁻¹)", a.out)
     recs = []; res = {"date": datetime.now().strftime("%Y-%m-%d %H:%M"), "row": os.path.basename(a.rowdir.rstrip("/")), "basis": a.basis, "thresh": a.thresh, "threads": a.threads,
                       "max_memory_mb": a.max_memory, "frozen": frozen, "mode": int(k), "omega_b3lyp_cm": omega_cm, "points": recs}
+    pj = os.path.join(a.out, "l3_price.json"); prev = {}
+    if os.path.exists(pj):   # 25 Sep 2026: resume — finished points are reused (benzene+ reference: 59 min)
+        try: prev = {r["tag"]: r for r in json.load(open(pj))["points"] if "e_tot_composite" in r}
+        except Exception: prev = {}
+    if prev: log(f"resume: reusing finished points {sorted(prev)}", a.out)
+    ref_dm = None
     for q in (0.0, 1.0, -1.0):
-        x = coords0 + ((L[:, k] * q / np.sqrt(abs(w[k]))) * Minv).reshape(-1, 3)
-        recs.append(dict(point(symbols, x, a.basis, a.thresh, frozen, a.max_memory, a.out, f"q{q:+.1f}"), q=q))
-        json.dump(res, open(os.path.join(a.out, "l3_price.json"), "w"), indent=1)
+        x = coords0 + ((L[:, k] * q / np.sqrt(abs(w[k]))) * Minv).reshape(-1, 3); tag = f"q{q:+.1f}"
+        if tag in prev:
+            recs.append(prev[tag])
+            if q == 0.0: ref_dm = run_uhf(make_mol(symbols, x, a.basis, a.max_memory)).make_rdm1()   # the reference density is the guess for the displaced points
+            continue
+        recs.append(dict(point(symbols, x, a.basis, a.thresh, frozen, a.max_memory, a.out, tag, dm0=ref_dm), q=q))
+        if q == 0.0: ref_dm = point.last_dm
+        json.dump(res, open(pj, "w"), indent=1)
     E = {r["q"]: r["e_tot_composite"] for r in recs}; ratio = (E[1.0] + E[-1.0] - 2 * E[0.0]) / np.sqrt(abs(w[k]))
     res["curvature_ratio_cc_over_b3lyp"] = float(ratio); res["omega_prime_cm"] = float(omega_cm * np.sqrt(abs(ratio)))
     res["price_point_s_mean"] = float(np.mean([r["wall_s"] for r in recs])); res["price_ulno_ccsd_t_s_mean"] = float(np.mean([r["stages_s"]["ulno_ccsd_t"] for r in recs]))
