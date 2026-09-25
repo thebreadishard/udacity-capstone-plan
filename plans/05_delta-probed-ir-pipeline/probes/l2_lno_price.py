@@ -13,6 +13,10 @@ import time
 from datetime import datetime
 
 import numpy as np
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from reduced_coords import harmonic_check, omega_from_eigenvalue, reduced_displacement   # noqa: E402  (25 Sep 2026: one displacement convention, checked)
 
 THRESH = {"normal": [1e-5, 1e-6], "tight": [1e-6, 1e-7], "xtight": [1e-7, 1e-8]}
 AMU2AU = 1822.888486209
@@ -113,7 +117,8 @@ def main():
     recs = []; res = {"date": datetime.now().strftime("%Y-%m-%d %H:%M"), "molecule": os.path.basename(a.moldir.rstrip("/")), "basis": a.basis, "thresh": a.thresh,
                       "threads": a.threads, "max_memory_mb": a.max_memory, "frozen": frozen, "near": near, "mode": int(k), "omega_b3lyp_cm": float(omega_cm), "points": recs}
     for q in (0.0, 1.0, -1.0):
-        x = coords0 + ((L[:, k] * q / np.sqrt(abs(w[k]))) * Minv).reshape(-1, 3)
+        omega_au = omega_from_eigenvalue(w[k]); x = reduced_displacement(coords0, L[:, k], omega_au, Minv, q)   # 25 Sep 2026: ÷sqrt(ω), not ÷ω; checked
+        if q != 0.0: harmonic_check(H, coords0, x, omega_au, q)
         recs.append(dict(point(symbols, x, a.basis, a.thresh, frozen, a.max_memory, a.out, f"q{q:+.1f}"), q=q))
         json.dump(res, open(os.path.join(a.out, "l2_price.json"), "w"), indent=1)
     E = {r["q"]: r["e_tot_composite"] for r in recs}

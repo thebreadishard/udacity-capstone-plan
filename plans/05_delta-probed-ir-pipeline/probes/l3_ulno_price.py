@@ -14,6 +14,10 @@ import time
 from datetime import datetime
 
 import numpy as np
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from reduced_coords import harmonic_check, omega_from_eigenvalue, reduced_displacement   # noqa: E402  (25 Sep 2026: one displacement convention, checked)
 
 THRESH = {"normal": [1e-5, 1e-6], "tight": [1e-6, 1e-7], "xtight": [1e-7, 1e-8]}
 AMU2AU = 1822.888486209
@@ -98,6 +102,7 @@ def main():
     m = np.repeat(np.asarray(g["masses_amu"]) * AMU2AU, 3); Minv = 1 / np.sqrt(m)
     w, L = np.linalg.eigh(H * np.outer(Minv, Minv)); keep = np.argsort(np.abs(w))[6:]
     cm = np.sqrt(np.abs(w[keep])) * HARTREE2CM; k = keep[int(np.argmin(np.abs(cm - a.mode_near)))]; omega_cm = float(np.sqrt(abs(w[k])) * HARTREE2CM)
+    omega_au = omega_from_eigenvalue(w[k])   # 25 Sep 2026: w is ω²; the displacement divides by sqrt(ω), not by ω (the bug that cost benzene+ a 56-min point at +0.27 E_h)
     log(f"L3: {os.path.basename(a.rowdir.rstrip('/'))} {a.basis} {a.thresh}, {len(symbols)} atoms, frozen core {frozen}, {a.threads} threads, max_memory {a.max_memory} MB; mode {k} ({omega_cm:.0f} cm⁻¹)", a.out)
     recs = []; res = {"date": datetime.now().strftime("%Y-%m-%d %H:%M"), "row": os.path.basename(a.rowdir.rstrip("/")), "basis": a.basis, "thresh": a.thresh, "threads": a.threads,
                       "max_memory_mb": a.max_memory, "frozen": frozen, "mode": int(k), "omega_b3lyp_cm": omega_cm, "points": recs}
@@ -108,7 +113,8 @@ def main():
     if prev: log(f"resume: reusing finished points {sorted(prev)}", a.out)
     ref_dm = None
     for q in (0.0, 1.0, -1.0):
-        x = coords0 + ((L[:, k] * q / np.sqrt(abs(w[k]))) * Minv).reshape(-1, 3); tag = f"q{q:+.1f}"
+        x = reduced_displacement(coords0, L[:, k], omega_au, Minv, q); tag = f"q{q:+.1f}"
+        if q != 0.0: log(f"{tag}: harmonic check ½dᵀHd / ½ωq² = {harmonic_check(H, coords0, x, omega_au, q):.4f}; max atom displacement {np.linalg.norm(x - coords0, axis=1).max():.3f} bohr", a.out)
         if tag in prev:
             recs.append(prev[tag])
             if q == 0.0: ref_dm = run_uhf(make_mol(symbols, x, a.basis, a.max_memory)).make_rdm1()   # the reference density is the guess for the displaced points
