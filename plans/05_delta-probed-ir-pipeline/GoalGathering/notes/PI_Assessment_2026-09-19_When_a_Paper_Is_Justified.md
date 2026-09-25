@@ -194,3 +194,25 @@ when it is free; (3) naphthalene E8 (Saturday) for core-to-core transfer; (4) th
 (queued behind route 2); (6) the equivariant model, after the 28th, rerun on the same table.
 
 *Correction 09:0x (25 September):* the bare-parent numbers quoted this morning (ratio 0.82 → 0.82 → 0.81, corrected RMS 10.0 → 9.5 → 9.3) are the 23 September run with benzene's corrupted finite-difference target; with the second-route target (E7 rung B `--use-analytic`, recorded in the ledger of 23 September 12:5x) hold-out (a) reads **0.47 → 0.45 → 0.43** and **5.9 → 5.1 → 4.7 cm⁻¹** at 45 → 100 → 175 — learning, not flat. The couplings of the bare parents are learned at the same level as the unseen scaffolds; what remains short is the slope (1.14× per decade on the ratio, 1.49× on the RMS, against the registered 1.5×). The odds lines do not move on this alone (the proof line already sat at 80 %); the reason for not raising it is the slope, not a flat curve.
+
+### Addendum 25 September 09:5x — what the E11.2 withdrawal does to the odds (the user: "Wat betekent dit voor de kansen?")
+
+**Numbers: unchanged.** The 07:0x table (step 1 85 %, proxy 80 %, CC transfer 75 %, affordability 45 %, mandate 35 %, licensed pipeline 80 %, long term
+60 %) never leaned on E11.2: the proof line sat at 80 % on the slope (1.14× per decade against 1.5×), and the 09:0x correction said so. A wrong reading
+that was withdrawn within the hour, with its control now a rule, moves no line. **What moves is one lever's grade and one new lever.**
+
+1. **Equivariant ΔH model — re-graded from "required by evidence" to "design choice with an unproven gain".** Symmetry was never the pair model's problem
+   (0.066 vs the target's 0.103 within orbits); so symmetry is not the missing ingredient for the slope either. The equivariant model's gain must come
+   from what the pair model lacks — directions and many-body context — and that is unmeasured. Test, before building (after the 28th): on the same
+   175-molecule pool and hold-outs, does it beat the pair MLP's 0.43 / 0.47 and its slope? Pre-registered pass: ratio ≤ 0.35 on both hold-outs at 175
+   and a steeper curve than 1.14× per decade on the bare parents. Until then it is a lever, not a plan.
+2. **New, cheap lever — symmetrise the labels.** The within-orbit spread of the *target* on rigid molecules (0.103 of its RMS; 0.39 of the model's error
+   is antisymmetric, i.e. ≈ 15 % of the error variance) is pure numerical noise: the truth is symmetric there. Averaging every target over its orbit
+   before training removes that noise for free, on every rigid molecule of layers A and B, and gives a second route to the E11.4 noise floor (the noise
+   principle: two routes). Test: rung B rerun with orbit-averaged targets (pool and hold-outs), one minute on the CCX53; pass if the hold-out coupling
+   RMS drops by at least the antisymmetric share (≈ 8 % in RMS) and the ratio curve's slope does not flatten; the orbit-averaged hold-out is then the
+   cleaner reference for the layer-B proof. Pre-register, then run today.
+3. **The proof lever is unchanged and already running:** the layer-B curve against the 09:0x predictions (bare parents 0.39 at 1,200; slope 1.14×).
+
+**Long term (60 %): unchanged, with one small plus.** A model that carries its symmetry in its features cannot drift into asymmetric answers as the
+corpus grows; the decade-long asset needs exactly that kind of built-in guarantee, and now it is measured rather than assumed.
