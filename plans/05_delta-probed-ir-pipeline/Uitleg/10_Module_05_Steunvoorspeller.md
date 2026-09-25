@@ -194,3 +194,39 @@ kan pas draaien als er geen ankerberekening loopt (regel: één zware berekening
 *Bron: `modules/05_support_predictor/PROVENANCE.md`, `out/HESSIAN_QM9_SUMMARY.md`,
 `out/HESSIAN_QM9_RINGS.md`, `corpus/DESIGN_2026-09-12.md`; gedateerde notitie van 12 september in
 [Capstone_Mapping.md](../GoalGathering/Capstone_Mapping.md) §Module 05.*
+
+## 10. Hoe weet je dat een netwerk echt iets geleerd heeft? (gedateerde aanvulling, 25 september 2026)
+
+Een netwerk dat op zijn trainingsvoorbeelden goed scoort, heeft nog niets bewezen. Een leerling die de antwoorden van het oefenexamen uit zijn
+hoofd kent, heeft ook geen wiskunde geleerd. De vraag die in dit hoofdstuk telt is dus niet "hoe klein is de fout?", maar "hoe weet je dat het
+netwerk de *regel* heeft gevonden en niet de *antwoorden*?" Daar zijn drie soorten bewijs voor, en we gebruiken ze alle drie.
+
+**Eerste bewijs: toetsen op wat het netwerk nooit zag, en dat steeds moeilijker maken.** Het makkelijkste is een paar moleculen achterhouden
+uit dezelfde verzameling. Moeilijker is een heel *skelet* achterhouden: alle moleculen die op een bepaalde kern zijn gebouwd, bijvoorbeeld alles
+met een carbazool-kern, zodat het netwerk die kern nooit ziet en er toch over moet oordelen. Het moeilijkst, en voor ons het belangrijkst, is
+*groter*: leer alleen van kleine moleculen en toets op grotere. Dat is precies de richting waarin de pijplijn straks moet werken, want de PAK's
+die in de ruimte tellen zijn groter dan alles wat we kunnen doorrekenen. Als de fout bij elke stap ongeveer gelijk blijft, heeft het netwerk iets
+algemeens geleerd. Als de fout bij "groter" ineens omhoog schiet, kende het alleen de maten die het gezien had.
+
+**Tweede bewijs: de leercurve.** Geef het netwerk 50, 100, 200, 1.000 voorbeelden en zet de fout uit tegen het aantal. Bij echt leren daalt die
+lijn en blijft ze dalen; bij uit het hoofd leren blijft ze vlak, want elk nieuw voorbeeld vertelt dan niets over het volgende. Het sterkste bewijs
+dat wij hebben is een *vergelijking* van twee curves op dezelfde gegevens. Toen we het netwerk vroegen om de correctie per trilling op te
+schrijven, bleef de curve voor de koppelingen tussen trillingen vlak, hoe veel moleculen we ook gaven. Toen we dezelfde correctie opschreven in
+de taal van bindingen en hoeken — lokaal, in de buurt van elk atoom — begon dezelfde curve te dalen. Dezelfde data, dezelfde voorbeelden, een
+andere taal: dat is het verschil tussen "het kan niet" en "het kan, als je het goed vraagt". Omdat een curve pas overtuigt als ze lang genoeg is,
+loopt sinds 25 september een nieuwe: van 100 tot 1.200 kleine moleculen, met de drie toetsen van het eerste bewijs, en met de leesregel — wat
+telt als slagen en wat als falen — op papier gezet vóórdat het eerste getal bestond. Zo kan niemand achteraf de lat verplaatsen, wij ook niet.
+
+**Derde bewijs: controles die moeten mislukken, en controles die moeten kloppen.** Schud de antwoorden door elkaar, zodat elk molecuul de
+correctie van een ander molecuul te leren krijgt, en train opnieuw. Als het netwerk dan óók een dalende curve laat zien, meet onze meetlat iets
+anders dan leren, en dan mag geen enkele eerdere curve tellen. Andersom: in een symmetrisch molecuul, zoals benzeen, zijn er atomen die
+elkaars spiegelbeeld zijn. Niemand heeft het netwerk verteld welke dat zijn. Als het voor spiegelbeeldparen toch hetzelfde antwoord geeft, heeft
+het de natuurkunde gevonden en niet de tabel onthouden. Een derde controle is de *ruisvloer*: onze correcties komen zelf uit berekeningen met een
+kleine meetfout, en een netwerk kan niet nauwkeuriger worden dan zijn leerstof. Een curve die tot aan die vloer zakt en daar stopt is het beste
+wat er te halen valt; een curve die ver boven de vloer blijft hangen zegt dat het model, en niet de data, de grens is.
+
+**Waar we staan, eerlijk.** De verschuiving van elke trilling apart leert het netwerk goed. De koppelingen tussen trillingen leert het op
+skeletten die het nooit zag, met een curve die daalt, maar op de kale moederkernen zonder zijgroepen is de curve nog vlak, en juist dat zijn de
+moleculen die het meest op de grote PAK's lijken. Kleine moleculen leren het netwerk iets over grotere, maar langzamer dan ze elkaar leren.
+Dat is geen mislukking en geen succes; het is de stand van een curve die nog kort is. Het bewijs dat dit ontwerp werkt, is een curve die lang
+genoeg is, op de drie moeilijke toetsen, met de leesregel van tevoren. Die curve loopt nu.

@@ -180,6 +180,8 @@ def main():
     ap.add_argument("molecules"); ap.add_argument("out_prefix")
     ap.add_argument("--threads", type=int, default=16); ap.add_argument("--sizes", default="45,100,all"); ap.add_argument("--epochs", type=int, default=60)
     ap.add_argument("--smoke", action="store_true")
+    ap.add_argument("--shuffle-labels", action="store_true", help="E11.1 (25 Sep 2026): targets permuted within pair class across the pool — a control that must NOT learn")
+    ap.add_argument("--dump", action="store_true", help="E11.2/3/6/7 (25 Sep 2026): per-molecule errors, pair-class breakdown, symmetry consistency, ring bond-bond terms of the seed-0 model at the full pool")
     ap.add_argument("--split", default="e6", help="e6 (default): E6 hold-outs (a) layer-A, (b) scaffolds. size:N (25 Sep 2026, size-extrapolation desk test): (a) := admitted molecules with more than N atoms, (b) := E6 scaffold hold-out with <= N atoms, pool := the rest with <= N atoms")
     ap.add_argument("--use-analytic", action="store_true",
                     help="23 Sep: for molecules with hessian_<tag>_analytic.npz (pyscf second route, corpus/analytic_hessians.py) use those Hessians instead of the psi4 "
@@ -211,7 +213,10 @@ def main():
         g = json.load(open(Path(a.molecules) / i / "geometry.json"))
         pairs, X, c, B = molecule_pairs(g["symbols"], np.asarray(g["coords_bohr"]), m["F_low"])
         Bp = np.linalg.pinv(m["B"]); dFmn = Bp.T @ m["dH_true"] @ Bp
-        m.update(pairs=pairs, X=X, pc=c, y=np.array([dFmn[i_, j_] for i_, j_ in pairs]))
+        m.update(pairs=pairs, X=X, pc=c, y=np.array([dFmn[i_, j_] for i_, j_ in pairs]), symbols=g["symbols"], coords=np.asarray(g["coords_bohr"]))
+    if a.shuffle_labels:
+        import e11_extras as E11
+        print(f"E11.1: targets shuffled within pair class across {E11.shuffle_targets(mols, pool, seed=0)} pool molecules — this run is a CONTROL", flush=True)
     npairs = np.array([len(m["pairs"]) for m in mols.values()])
     print(f"{len(mols)} molecules; pattern pairs per molecule {npairs.min()}–{npairs.max()} (features {mols[pool[0]]['X'].shape[1]}); hold-out (a) {len(test_a)}, (b) {len(test_b)} ({cores}); "
           f"pool {len(pool)}; sizes {sizes}; seeds {seeds}; epochs {a.epochs}", flush=True)
@@ -230,6 +235,10 @@ def main():
         for seed in seeds:
             m_ = train_mlp(X, y, c, seed, a.epochs, mu, sd, tscale)
             pred = {i: assemble(mols[i], mols[i]["pairs"], predict_mlp(m_, mols[i]["X"], mols[i]["pc"], mu, sd, tscale)) for i in test_a + test_b}
+            if a.dump and seed == seeds[0] and n == sizes[-1]:
+                import e11_extras as E11
+                vals0 = {i: predict_mlp(m_, mols[i]["X"], mols[i]["pc"], mu, sd, tscale) for i in test_a + test_b}
+                E11.dump(mols, tests, pred, vals0, a.out_prefix, a.molecules, PAIR_CLASS); print("E11 dump written", flush=True)
             row["B1_mlp"]["per_seed"].append({h: readouts(mols, ids, tr, lambda i, pred=pred: pred[i]) for h, ids in tests.items()})
         row["B1_mlp"]["mean"] = {h: E6.mean_records([p[h] for p in row["B1_mlp"]["per_seed"]]) for h in tests}; row["B1_mlp"]["seconds"] = round(time.time() - t1)
         t2 = time.time()
