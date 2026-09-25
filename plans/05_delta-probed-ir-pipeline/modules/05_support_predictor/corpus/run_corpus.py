@@ -125,12 +125,20 @@ def main():
     deck.update(overrides)  # the in-memory job deck; DECK on disk and deck_hash are untouched
     override_note = " ".join(f"{k}={v}" for k, v in overrides.items())
     if LOCK.exists():
-        log(f"another runner holds {LOCK} (started {LOCK.read_text().strip()}); exiting"); return 2
+        held = LOCK.read_text().strip(); parts = held.split()
+        stale = False
+        if len(parts) >= 4 and parts[-2] == "pid" and parts[0] == machine:          # 25 Sep 2026 (hel1-16 handover): a lock from a dead runner on this host is stale
+            try: os.kill(int(parts[-1]), 0)
+            except OSError: stale = True
+        if stale:
+            log(f"stale {LOCK.name} from a dead runner on this host ({held}); removed"); LOCK.unlink(missing_ok=True)
+        else:
+            log(f"another runner holds {LOCK} (started {held}); exiting"); return 2
     if anchor_job_running() and not a.force:
         log("a plan-05 anchor job is running in WSL; refusing to start (use --force to override, it will be noted in the ledger)"); return 3
     if not QC_PYTHON.exists():
         log(f"psi4 environment not found at {QC_PYTHON}"); return 4
-    LOCK.write_text(f"{machine} {datetime.now():%Y-%m-%d %H:%M}")
+    LOCK.write_text(f"{machine} {datetime.now():%Y-%m-%d %H:%M} pid {os.getpid()}")
     t_start = time.time(); done = 0; last_report = time.time(); virtually_done = set()
     try:
         while True:

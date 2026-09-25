@@ -163,7 +163,7 @@ baseline_check = dict(validity_margin=r0["validity"] - baseline_res["validity"],
 baseline_check["beats_baseline"] = bool(baseline_check["validity_margin"] >= 0.25 and baseline_check["project_fit_margin"] >= 0.15 and baseline_check["w1_smaller_all"])
 print(f"5-gram baseline (10,000 samples, T = 1.0): validity {baseline_res['validity']:.3f} uniqueness {baseline_res['uniqueness']:.3f} novelty {baseline_res['novelty']:.3f} project fit {baseline_res['project_fit']:.3f} | "
       f"W1 heavy {baseline_res['w1_heavy']:.2f} rings {baseline_res['w1_arom_rings']:.2f} hetero {baseline_res['w1_hetero']:.2f} ({baseline_res['seconds']:.0f} s)")
-print(f"seed {SEEDS[0]} vs baseline: validity +{baseline_check['validity_margin']:.3f} (rule ≥ 0.25), project fit +{baseline_check['project_fit_margin']:.3f} (rule ≥ 0.15), all W1 smaller: {baseline_check['w1_smaller_all']} → "
+print(f"seed {SEEDS[0]} vs baseline: validity {baseline_check['validity_margin']:+.3f} (rule ≥ 0.25), project fit {baseline_check['project_fit_margin']:+.3f} (rule ≥ 0.15), all W1 smaller: {baseline_check['w1_smaller_all']} → "
       + ("beats the baseline" if baseline_check["beats_baseline"] else "does NOT beat the baseline — FAIL by the amendment's rule" + (" (expected in quick mode)" if QUICK else "")))
 m10 = tab[tab["T"] == 1.0].mean(numeric_only=True)
 verdict = {"validity": m10.validity >= PRED["validity"], "uniqueness": m10.uniqueness >= PRED["uniqueness"], "novelty": m10.novelty >= PRED["novelty"], "scaffold_novelty": m10.scaffold_novelty >= PRED["scaffold_novelty"],
