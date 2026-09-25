@@ -38,6 +38,8 @@ def tokens(text):
 
 
 def main():
+    if len(sys.argv) < 3:   # 25 Sep 2026: without sources every token is 'missing' and the run looks like a total failure
+        sys.exit("usage: check_reading_copy_numbers.py <reading copy> <source files...>   e.g. README.md GoalGathering/notes/*.md modules/05_support_predictor/out/*.md probes/results_m1/*/REPORT.md")
     copy = open(sys.argv[1], encoding="utf-8").read()
     sources = "\n".join(open(p, encoding="utf-8").read() for p in sys.argv[2:])
     src_norm = re.sub(r"[,  ]", "", sources)
