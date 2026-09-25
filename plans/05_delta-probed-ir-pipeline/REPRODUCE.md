@@ -18,7 +18,7 @@ machine's `m05` environment for anything that imports psi4/pyscf/torch with the 
 | E11.1 shuffled labels: 1.12 / 1.09; frequency floor 13.6 / 12.4 | `… out/E11_shuffled_2026-09-25 --use-analytic --shuffle-labels --sizes all` | `out/E11_shuffled_2026-09-25.{json,md}` |
 | E11.2 symmetry: coarse 0.52 (model) vs 0.575 (target); orbits 0.066 vs 0.103 | `… out/E11_orbit_dump_2026-09-25 --use-analytic --dump --sizes all --seeds 0` and `python probes/route… ` — target-only files: `out/E11_target_symmetry_2026-09-25.json` (scratch script of 25 Sep 09:3x, coarse key) and `out/E11_target_orbit_symmetry_2026-09-25.json` (orbit key; `e11_extras.orbit_groups`) | `out/E11_orbit_dump_2026-09-25_dump.{json,md}` (+ `_pairs.npz`, local) |
 | E11.4 noise floor: median K spread 2.09, plateau bound 6.3 | `python m05/e11_noise_floor.py` | `out/E11_noise_floor_2026-09-25.{json,md}` |
-| E11.5 power-law predictions: 1.14× / 1.15× / 1.22× per decade; 0.39 at 1,200 | `python m05/e11_power_law.py --analytic` (reads the rung-B and size-split JSONs) | `out/E11_power_law_2026-09-25b_analytic.{json,md}` |
+| E11.5 power-law predictions: 1.14× / 1.15× / 1.22× per decade; 0.39 at 1,200 | `python m05/e11_power_law.py out/E7_rungB_2026-09-23_analytic.json out/E7_rungB_size26_2026-09-25.json out/E11_power_law_2026-09-25b_analytic` (the rung-B and size-split JSONs are its inputs) | `out/E11_power_law_2026-09-25b_analytic.{json,md}` |
 | E11.8 orbit-averaged labels: −1.6 % (fail) | `… out/E11_orbit_avg_2026-09-25 --use-analytic --orbit-average-targets --dump --sizes 45,100,all` | `out/E11_orbit_avg_2026-09-25.{json,md}` |
 | E9 core transfer: 1.72 cm⁻¹ at r = 2, 25 % of columns | `python m05/e9_core_transfer.py` (+ `e9_posthoc_block.py`) | `data/e9/e9_core_transfer_2026-09-24.json` |
 | E10 environment once: 3.75 registered, 3.36 torsion-matched | `python m05/e10_environment_once.py --donor smallest` and `--donor nearest-torsion` | `data/e9/e10_environment_once_2026-09-24*.json` |
@@ -56,5 +56,10 @@ machine's `m05` environment for anything that imports psi4/pyscf/torch with the 
 | every number of the reading copy traces to a source | `python probes/check_reading_copy_numbers.py GoalGathering/Project_Proposal_2026-09-26_Reading_Copy.md README.md QUALITY_POLICY.md GoalGathering/*.md GoalGathering/notes/*.md modules/05_support_predictor/out/*.md modules/05_support_predictor/*.md probes/results_m1/*.md probes/results_m1/*/REPORT.md` (25 Sep: 488 tokens, 1 benign miss) |
 | the state of the machines | `bash probes/state.sh` |
 
-*Owed for a full fresh-machine rebuild (quality policy, publication freeze): a script that runs every desk line above in order and diffs the outputs against the
-committed files; the machine runs are reproduced only from their committed logs and raw inputs.*
+## Rebuild and diff
+
+`python tools/rebuild_check.py` audits this file: every output named above must exist, be tracked by git and be clean (25 Sep 22:5x: two open items,
+the cation folder and the module 06 results, both awaiting their runs). `python tools/rebuild_check.py --run <text>` re-runs the desk rows whose first
+column contains the text (`all` for every desk row; machine rows are skipped) with the repository `.venv`, compares each output with HEAD (JSON numbers to
+1 %, text byte-for-byte, time stamps and run times ignored) and restores equivalent rebuilds so the working copy stays clean. First use, 25 Sep 22:5x: the
+E11.5 row rebuilt to the same numbers. The machine runs are reproduced only from their committed logs and raw inputs.
