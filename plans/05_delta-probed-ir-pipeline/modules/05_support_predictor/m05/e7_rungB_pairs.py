@@ -180,6 +180,7 @@ def main():
     ap.add_argument("molecules"); ap.add_argument("out_prefix")
     ap.add_argument("--threads", type=int, default=16); ap.add_argument("--sizes", default="45,100,all"); ap.add_argument("--epochs", type=int, default=60)
     ap.add_argument("--smoke", action="store_true")
+    ap.add_argument("--split", default="e6", help="e6 (default): E6 hold-outs (a) layer-A, (b) scaffolds. size:N (25 Sep 2026, size-extrapolation desk test): (a) := admitted molecules with more than N atoms, (b) := E6 scaffold hold-out with <= N atoms, pool := the rest with <= N atoms")
     ap.add_argument("--use-analytic", action="store_true",
                     help="23 Sep: for molecules with hessian_<tag>_analytic.npz (pyscf second route, corpus/analytic_hessians.py) use those Hessians instead of the psi4 "
                          "finite-difference ones (benzene's FD wB97X Hessian was a 133 cm-1 artefact)")
@@ -196,6 +197,11 @@ def main():
         print(f"analytic second-route Hessians substituted for {len(substituted)} molecules: {substituted}", flush=True)
     mols = {i: m for i, m in mols.items() if not m["imaginary"]}
     test_a = [i for i in test_a if i in mols]; test_b = [i for i in test_b if i in mols]; pool = [i for i in pool if i in mols]
+    if a.split.startswith("size:"):
+        N = int(a.split.split(":")[1]); nat = {i: len(m["masses"]) for i, m in mols.items()}
+        test_a = sorted(i for i in mols if nat[i] > N); test_b = [i for i in test_b if nat[i] <= N]
+        pool = sorted((i for i in mols if nat[i] <= N and i not in set(test_b)), key=E6.sha)
+        print(f"size split at {N} atoms: hold-out (a) = {len(test_a)} molecules > {N} atoms, (b) = {len(test_b)} scaffold molecules <= {N}, pool {len(pool)}", flush=True)
     sizes = sorted({min(int(s) if s != "all" else len(pool), len(pool)) for s in a.sizes.split(",")})
     seeds = [0, 1, 2]
     if a.smoke:

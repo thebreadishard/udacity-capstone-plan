@@ -36,3 +36,13 @@ atoms (whether energies suffice at all is the post-hoc E9 variant (d) of 22:2x, 
 52 GB free).
 
 Script `probes/l2_lno_price.py`; server directory `/root/l2/`; results `probes/results_m1/l2_phenanthrene_CN_ccpvdz/` (log, `l2_price.json`).
+
+## Outcome — 25 September 2026, 07:1x: FAIL by lower bound
+
+The reference point (DF-RHF, PM, LNO-CCSD(T)/cc-pVDZ tight, 25 atoms, 16 frozen cores, 41 + … fragments) had not finished after **9 h 0 min** on eight
+threads beside the five naphthalene E8 processes (load 20–23 on 32 cores; the water smoke ran in 0.9 s). The fail bar was P > 2 h. One point prices
+the molecule, so the run was stopped by hand at 09:00 elapsed (07:1x local) and the eight threads returned to naphthalene E8, which the run had
+slowed (gradients 7.0–7.6 h instead of 5.8). No number for the ±1 points; P ≥ 9 h is the reading. Consequence per the registration: the
+energy-only neighbourhood label at the anchor tier is out for substituted molecules of this size; the next lever is the cheaper tier
+(`PreRegistration_2026-09-25_L2b_Cheaper_Label_Tier.md`). On the asset horizon (note of 06:3x) the same number is a factory rate, not a blocker.
+Log `/root/l2/l2_phen_cn.log` (kept), attempt-1 log with the liblno failure `l2_phen_cn.log` history in the ledger of 22:2x.
