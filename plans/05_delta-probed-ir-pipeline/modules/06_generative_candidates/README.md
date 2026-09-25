@@ -26,6 +26,9 @@ python m06/fetch_pubchem_aromatics.py            # the data freeze (network; cac
 python -m pytest -q m06/tests                    # six tests, seconds
 python m06/train.py data/pubchem_aromatics_<date>.csv out/seed0 --quick   # smoke: 2,000 molecules, 2 epochs (minutes on a CPU)
 python m06/train.py data/pubchem_aromatics_<date>.csv out/seed0           # the pre-registered run (after the 28th)
+M06_QUICK=1 python notebook/make_notebook.py                              # the notebook, quick mode: a pipeline check in minutes, marked as such
+python notebook/make_notebook.py                                          # the notebook, pre-registered run (three seeds + the conditioned model; hours on a CPU)
+python make_summary.py                                                    # Generative_AI_Analysis_Report.docx/.pdf from notebook/results.json
 ```
 
 ## Files
@@ -36,5 +39,8 @@ python m06/train.py data/pubchem_aromatics_<date>.csv out/seed0           # the 
 - `m06/fetch_pubchem_aromatics.py` — the data freeze; `data.py` (CSV, Murcko scaffold split by sha, tokenizer, conditioning prefixes);
   `model.py` (the Transformer, sampling); `train.py` (protocol, per-epoch log with validity of 200 samples, early stop, `generate`);
   `evaluate.py` (the pre-registered metrics); `tests/test_m06.py`.
-- To come after the 28th: `notebook/make_notebook.py` → `generative_model.ipynb`, `make_summary.py` → `Generative_AI_Analysis_Report.pdf`,
-  `PROVENANCE.md`, a dated `RUBRIC_CHECKLIST`, `requirements.txt` from the environment that ran it.
+- `notebook/make_notebook.py` → `generative_model.ipynb` (25 September 2026; 27 cells: task and model choice, load and inspect, the model, training with
+  curves, sampling and the pre-registered metrics with a failure gallery and nearest neighbours, the conditioning change, ethics, summary; `results.json`).
+- `make_summary.py` → `Generative_AI_Analysis_Report.docx/.pdf` in the rubric's section order, every number from `results.json`, banner and no PDF in quick mode.
+- `requirements.txt` (the environment of 25 September), `PROVENANCE.md` (data, code, pre-registration, runs — dated notes appended).
+- To come with the pre-registered run after the 28th: the executed notebook, the report PDF, a dated `RUBRIC_CHECKLIST`.
