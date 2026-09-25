@@ -55,3 +55,29 @@ same three hold-outs, same read-outs, same model and seeds, read against the sam
 It is reported under the heading *interim (not the registered prefix)*, it cannot pass or fail the registered rule, and it does not replace the
 100- and 300-tables, which follow as registered. Prediction for the interim point, from the fits of 25 September: bare parents ratio 0.42–0.44,
 unseen scaffolds 0.43–0.45, size hold-out 0.55–0.58; a point clearly below those would say the small-data fits were pessimistic.
+
+## Dated amendment 12:2x — the optimiser is part of the curve: a tuned curve beside the fixed-recipe curve (the user: "Nemen we mee dat we de optimale moeten vinden?")
+
+**What is fixed today.** The pair model's recipe is one setting at every training size: two hidden layers of 128, AdamW at learning rate 1e-3 with weight decay
+1e-4, cosine schedule over 60 epochs, batch 4,096, no early stopping, no validation split (`m05/e7_rungB_pairs.py: train_mlp`). The number of optimiser steps
+grows with the data (about 1,500 at 45 molecules, 6,000 at 175), so the recipe does scale in that one respect; nothing else was ever tuned. A learning
+curve measured with a single frozen recipe confounds two things: what the model *can* learn from n molecules, and what this one optimiser setting *happens*
+to extract. A flat slope can be either.
+
+**Protocol (pre-registered before it runs; the fixed-recipe curve above stays the primary until the rule below says otherwise).** At every training size n
+and seed: (1) an inner validation split of 20 % of the *training* molecules, split by molecule with the same hash order (never a hold-out molecule);
+(2) a fixed grid of six settings — learning rate {3e-4, 1e-3, 3e-3} × width {128, 256} — each trained with early stopping on the inner split's per-pair
+MSE (patience 10 epochs, at most 200 epochs, cosine schedule over the epochs actually run) instead of the fixed 60; (3) the setting with the lowest
+inner-validation MSE is retrained on all n training molecules with the epoch count early stopping chose; (4) the hold-outs are read exactly as for the fixed
+recipe. The grid, the patience and the selection statistic are fixed here and are not enlarged after a reading. Cost: about seven trainings per point
+instead of one — minutes.
+
+**Predictions.** At 175 molecules the tuned curve lies within 0.03 of the fixed one on both hold-outs (the fixed recipe is not badly off: its steps scale with
+the data and its loss is well conditioned); the slope of the tuned curve on the bare parents is steeper by at most 0.10 in the factor per decade
+(1.14× → ≤ 1.24×). **Rule.** If the tuned slope reaches the registered 1.5× where the fixed one does not, the optimiser was the bottleneck and the tuned
+protocol becomes the primary recipe for every later point (declared now, not after the fact); if both slopes stay below 1.5×, the model and the data are the
+limit and the equivariant model (rung C) is the next lever; if the two curves agree within their seed spread, hyperparameters are not what decides this
+question at these sizes, and the fixed recipe stays for its simplicity with the tuned curve reported beside it.
+
+**First run.** Today on the 175-molecule pool (`--tune`, sizes 45 / 100 / 175, seeds 0–2) on the CCX53 at low priority — the same pool as the fixed curve of
+23 September, so the two curves are compared point by point; the layer-B tables get both curves from the 100-table on.

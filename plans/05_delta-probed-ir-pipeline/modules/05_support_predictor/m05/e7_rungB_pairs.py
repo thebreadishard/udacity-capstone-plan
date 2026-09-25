@@ -140,18 +140,49 @@ class MLP(nn.Module):
         return self.net(x).squeeze(-1)
 
 
-def train_mlp(X, y, c, seed, epochs, mu, sd, tscale, bs=4096):
+def train_mlp(X, y, c, seed, epochs, mu, sd, tscale, bs=4096, lr=1e-3, width=128, val=None, patience=None):
+    """Fixed recipe (E7, 23 Sep 2026): lr 1e-3, width 128, cosine over `epochs`. 25 Sep 2026 (--tune): with `val` = (Xv, yv, cv) and `patience`, early stopping on the
+    inner validation MSE (checked every epoch; the best state is kept; the cosine horizon is `epochs`, the maximum); returns (model, epochs_run)."""
     torch.manual_seed(seed); rng = np.random.default_rng(seed)
     Xt = torch.tensor((X - mu) / sd); yt = torch.tensor(y / tscale[c])
-    m = MLP(X.shape[1]); opt = torch.optim.AdamW(m.parameters(), lr=1e-3, weight_decay=1e-4)
+    m = MLP(X.shape[1], d=width); opt = torch.optim.AdamW(m.parameters(), lr=lr, weight_decay=1e-4)
     sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, epochs)
-    for _ in range(epochs):
+    if val is not None: Xv = torch.tensor((val[0] - mu) / sd); yv = torch.tensor(val[1] / tscale[val[2]])
+    best, best_state, bad, ran = float("inf"), None, 0, 0
+    for ep in range(epochs):
         m.train(); order = rng.permutation(len(y))
         for s in range(0, len(y), bs):
             b = torch.tensor(order[s:s + bs]); loss = ((m(Xt[b]) - yt[b]) ** 2).mean()
             opt.zero_grad(); loss.backward(); opt.step()
-        sched.step()
-    m.eval(); return m
+        sched.step(); ran = ep + 1
+        if val is not None:
+            m.eval()
+            with torch.no_grad(): vm = float(((m(Xv) - yv) ** 2).mean())
+            if vm < best - 1e-6: best, bad, best_state = vm, 0, {k: v.detach().clone() for k, v in m.state_dict().items()}
+            else:
+                bad += 1
+                if patience is not None and bad >= patience: break
+    if best_state is not None: m.load_state_dict(best_state)
+    m.eval(); return (m, ran, best) if val is not None else m
+
+
+TUNE_GRID = [(lr, w) for lr in (3e-4, 1e-3, 3e-3) for w in (128, 256)]   # 25 Sep 2026 pre-registered grid; not enlarged after a reading
+
+
+def train_tuned(mols, tr, seed, mu, sd, tscale, log=print):
+    """25 Sep 2026 (--tune): inner 20 % validation split by molecule (hash order), six settings with early stopping (patience 10, max 200 epochs), selection on the
+    inner MSE, retrain on all training molecules with the epochs early stopping chose. Returns (model, record)."""
+    k = max(1, int(round(0.2 * len(tr)))); inner_val, inner_tr = tr[-k:], tr[:-k]
+    Xa = np.concatenate([mols[i]["X"] for i in inner_tr]); ya = np.concatenate([mols[i]["y"] for i in inner_tr]); ca = np.concatenate([mols[i]["pc"] for i in inner_tr])
+    Xv = np.concatenate([mols[i]["X"] for i in inner_val]); yv = np.concatenate([mols[i]["y"] for i in inner_val]); cv = np.concatenate([mols[i]["pc"] for i in inner_val])
+    trials = []
+    for lr, w in TUNE_GRID:
+        _, ran, vm = train_mlp(Xa, ya, ca, seed, 200, mu, sd, tscale, lr=lr, width=w, val=(Xv, yv, cv), patience=10)
+        trials.append(dict(lr=lr, width=w, epochs=ran, inner_val_mse=vm)); log(f"  tune n={len(tr)} seed {seed}: lr {lr:g} width {w} → inner val MSE {vm:.4f} after {ran} epochs")
+    bestt = min(trials, key=lambda t: t["inner_val_mse"])
+    X = np.concatenate([mols[i]["X"] for i in tr]); y = np.concatenate([mols[i]["y"] for i in tr]); c = np.concatenate([mols[i]["pc"] for i in tr])
+    m = train_mlp(X, y, c, seed, max(bestt["epochs"], 1), mu, sd, tscale, lr=bestt["lr"], width=bestt["width"])
+    return m, dict(chosen=bestt, trials=trials, inner_val_molecules=len(inner_val))
 
 
 def predict_mlp(m, X, c, mu, sd, tscale):
@@ -181,6 +212,7 @@ def main():
     ap.add_argument("--threads", type=int, default=16); ap.add_argument("--sizes", default="45,100,all"); ap.add_argument("--epochs", type=int, default=60)
     ap.add_argument("--smoke", action="store_true")
     ap.add_argument("--orbit-average-targets", action="store_true", help="E11.8 (25 Sep 2026): average every per-pair target over its symmetry orbit (graph automorphisms, same-parity pairs) before training, for every molecule with a manifest SMILES; the frequency/coupling read-outs still compare against the original dH_true")
+    ap.add_argument("--tune", action="store_true", help="25 Sep 2026: per size and seed, inner validation split + fixed grid + early stopping (train_tuned); the fixed recipe is the default")
     ap.add_argument("--seeds", default="0,1,2", help="25 Sep 2026: seeds to train (the E11.2 orbit rerun uses 0); default unchanged")
     ap.add_argument("--shuffle-labels", action="store_true", help="E11.1 (25 Sep 2026): targets permuted within pair class across the pool — a control that must NOT learn")
     ap.add_argument("--dump", action="store_true", help="E11.2/3/6/7 (25 Sep 2026): per-molecule errors, pair-class breakdown, symmetry consistency, ring bond-bond terms of the seed-0 model at the full pool")
@@ -247,7 +279,10 @@ def main():
         row = {"n": n, "n_pairs_train": int(len(y)), "target_scale_per_class": {PAIR_CLASS[k]: float(tscale[k]) for k in range(len(PAIR_CLASS))}, "B1_mlp": {"per_seed": []}, "B2_gbt": {}}
         t1 = time.time()
         for seed in seeds:
-            m_ = train_mlp(X, y, c, seed, a.epochs, mu, sd, tscale)
+            if a.tune:
+                m_, tune_rec = train_tuned(mols, tr, seed, mu, sd, tscale, log=lambda s: print(s, flush=True)); row.setdefault("tuning", {})[str(seed)] = tune_rec
+            else:
+                m_ = train_mlp(X, y, c, seed, a.epochs, mu, sd, tscale)
             pred = {i: assemble(mols[i], mols[i]["pairs"], predict_mlp(m_, mols[i]["X"], mols[i]["pc"], mu, sd, tscale)) for i in test_a + test_b}
             if a.dump and seed == seeds[0] and n == sizes[-1]:
                 import e11_extras as E11
