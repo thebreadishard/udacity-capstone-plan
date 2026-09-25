@@ -319,6 +319,12 @@ def main():
         test_a = sorted(i for i in mols if nat[i] > N); test_b = [i for i in test_b if nat[i] <= N]
         pool = sorted((i for i in mols if nat[i] <= N and i not in set(test_b)), key=E6.sha)
         print(f"size split at {N} atoms: hold-out (a) = {len(test_a)} molecules > {N} atoms, (b) = {len(test_b)} scaffold molecules <= {N}, pool {len(pool)}", flush=True)
+    nat = {i: len(m["masses"]) for i, m in mols.items()}
+    if a.split == "layerB":   # 25 Sep 2026, proof-of-learning pre-registration: pool = admitted layer-B molecules in hashed order; (a) all admitted layer A, (b) E6 scaffolds, (c) A2 larger than the training set (per size)
+        pool = sorted((i for i, m in mols.items() if m["layer"] == "B"), key=E6.sha)
+        test_a = sorted(i for i, m in mols.items() if m["layer"] == "A")
+        print(f"layer-B split: pool {len(pool)} admitted layer-B molecules (hashed order), hold-out (a) {len(test_a)} layer-A parents, (b) {len(test_b)} scaffold molecules ({cores}); (c) per size", flush=True)
+        assert pool, "no admitted layer-B molecules under the molecules directory"
     sizes = sorted({min(int(s) if s != "all" else len(pool), len(pool)) for s in a.sizes.split(",")})
     seeds = [int(s) for s in a.seeds.split(",")]
     if a.smoke:
@@ -354,6 +360,9 @@ def main():
     res["zero_rule"] = zero
     for n in sizes:
         tr = pool[:n]
+        if a.split == "layerB":
+            nmax = max(nat[i] for i in tr); tests["c"] = sorted(i for i, m in mols.items() if m["layer"] == "A2" and nat[i] > nmax and i not in set(test_b))
+            res.setdefault("holdout_c", {})[str(n)] = dict(n_atoms_above=nmax, ids=tests["c"]); res.setdefault("zero_rule_c", {})[str(n)] = readouts(mols, tests["c"], tr, lambda i: np.zeros_like(mols[i]["F_low"])) if tests["c"] else None
         X = np.concatenate([mols[i]["X"] for i in tr]); y = np.concatenate([mols[i]["y"] for i in tr]); c = np.concatenate([mols[i]["pc"] for i in tr])
         mu = X.mean(0); sd = X.std(0) + 1e-6
         tscale = np.array([max(float(np.std(y[c == k])), 1e-6) if (c == k).any() else 1.0 for k in range(len(PAIR_CLASS))], np.float32)
@@ -367,20 +376,20 @@ def main():
                 m_, tune_rec = train_tuned(mols, tr, seed, mu, sd, tscale, log=lambda s: print(s, flush=True), stage2=a.tune_stage2); row.setdefault("tuning", {})[str(seed)] = tune_rec
             else:
                 m_ = train_mlp(X, y, c, seed, a.epochs, mu, sd, tscale)
-            pred = {i: assemble(mols[i], mols[i]["pairs"], predict_mlp(m_, mols[i]["X"], mols[i]["pc"], mu, sd, tscale)) for i in test_a + test_b}
+            pred = {i: assemble(mols[i], mols[i]["pairs"], predict_mlp(m_, mols[i]["X"], mols[i]["pc"], mu, sd, tscale)) for i in sorted(set(sum(tests.values(), [])))}
             if a.dump and seed == seeds[0] and n == sizes[-1]:
                 import e11_extras as E11
-                vals0 = {i: predict_mlp(m_, mols[i]["X"], mols[i]["pc"], mu, sd, tscale) for i in test_a + test_b}
+                vals0 = {i: predict_mlp(m_, mols[i]["X"], mols[i]["pc"], mu, sd, tscale) for i in sorted(set(sum(tests.values(), [])))}
                 E11.dump(mols, tests, pred, vals0, a.out_prefix, a.molecules, PAIR_CLASS); print("E11 dump written", flush=True)
             row["B1_mlp"]["per_seed"].append({h: readouts(mols, ids, tr, lambda i, pred=pred: pred[i]) for h, ids in tests.items()})
         row["B1_mlp"]["mean"] = {h: E6.mean_records([p[h] for p in row["B1_mlp"]["per_seed"]]) for h in tests}; row["B1_mlp"]["seconds"] = round(time.time() - t1)
         t2 = time.time()
         from sklearn.ensemble import HistGradientBoostingRegressor
         gbt = HistGradientBoostingRegressor(max_iter=(20 if a.smoke else 400), learning_rate=0.08, max_leaf_nodes=63, random_state=0).fit(X, y)
-        pred = {i: assemble(mols[i], mols[i]["pairs"], gbt.predict(mols[i]["X"])) for i in test_a + test_b}
+        pred = {i: assemble(mols[i], mols[i]["pairs"], gbt.predict(mols[i]["X"])) for i in sorted(set(sum(tests.values(), [])))}
         row["B2_gbt"] = {h: readouts(mols, ids, tr, lambda i, pred=pred: pred[i]) for h, ids in tests.items()}; row["B2_gbt"]["seconds"] = round(time.time() - t2)
         for label, r_ in (("B1 MLP", row["B1_mlp"]["mean"]), ("B2 GBT", row["B2_gbt"])):
-            for h in ("a", "b"):
+            for h in tests:
                 x = r_[h]
                 print(f"n={n:3d} ({h}) {label}: diag " + " ".join(f"{F} {x['diag_rms'][F]:6.2f} |" for F in FAMILIES)
                       + f" ring couplings {x['coupling_rms']:.2f} vs zero {x['coupling_zero_rms']:.2f} (ratio {x['coupling_ratio']:.2f}) | block {x['block_rms']:.2f} vs median {x['block_median_rule_rms']:.2f}"
@@ -400,8 +409,8 @@ def main():
           "| n | hold-out | model | " + " | ".join(f"diag {F}" for F in FAMILIES) + " | ring coupling RMS / zero | ratio | ring block / median | corrected ω RMS (zero) | overlap | ΔH residual |",
           "|---|---|---|" + "---|" * (len(FAMILIES) + 6)]
     for n in sizes:
-        for h in ("a", "b"):
-            for label, x in (("zero rule", zero[h]), ("B1 MLP", res["curve"][str(n)]["B1_mlp"]["mean"][h]), ("B2 GBT", res["curve"][str(n)]["B2_gbt"][h])):
+        for h in res["curve"][str(n)]["B1_mlp"]["mean"]:
+            for label, x in (("zero rule", zero[h] if h in zero else res["zero_rule_c"][str(n)]), ("B1 MLP", res["curve"][str(n)]["B1_mlp"]["mean"][h]), ("B2 GBT", res["curve"][str(n)]["B2_gbt"][h])):
                 md.append(f"| {n} | ({h}) | {label} | " + " | ".join(f"{x['diag_rms'][F]:.2f}" for F in FAMILIES)
                           + f" | {x['coupling_rms']:.2f} / {x['coupling_zero_rms']:.2f} | **{x['coupling_ratio']:.2f}** | {x['block_rms']:.2f} / {x['block_median_rule_rms']:.2f} | {x['corrected_freq_rms']:.2f} ({x['corrected_freq_rms_zero_rule']:.2f}) | {x['duschinsky_overlap_median']:.3f} | {x['dH_residual_ratio']:.2f} |")
     md += ["", "## Readings (pre-registered)", "",
