@@ -1,0 +1,1842 @@
+{
+ "per_molecule": {
+  "A_fdc27f1bd1": {
+   "holdout": "a",
+   "n_atoms": 22,
+   "corrected_freq_rms": 4.052415420106883,
+   "corrected_freq_rms_zero": 23.795593995250286,
+   "coupling_ratio": 0.2970963688248534,
+   "name": "biphenyl"
+  },
+  "A_8448043181": {
+   "holdout": "a",
+   "n_atoms": 12,
+   "corrected_freq_rms": 3.7371526276626805,
+   "corrected_freq_rms_zero": 25.010250770735954,
+   "coupling_ratio": 0.18246972095732875,
+   "name": "benzene"
+  },
+  "A_e72997e726": {
+   "holdout": "a",
+   "n_atoms": 23,
+   "corrected_freq_rms": 4.677156142678415,
+   "corrected_freq_rms_zero": 23.705695376852745,
+   "coupling_ratio": 0.3256853720222806,
+   "name": "fluorene"
+  },
+  "A_541c53d1a5": {
+   "holdout": "a",
+   "n_atoms": 24,
+   "corrected_freq_rms": 4.465863214226877,
+   "corrected_freq_rms_zero": 22.905589543886318,
+   "coupling_ratio": 0.48423139426611583,
+   "name": "phenanthrene"
+  },
+  "A_428228e5a5": {
+   "holdout": "a",
+   "n_atoms": 26,
+   "corrected_freq_rms": 5.395380945959463,
+   "corrected_freq_rms_zero": 22.287832038448727,
+   "coupling_ratio": 0.5035045653088398,
+   "name": "fluoranthene"
+  },
+  "A_07cadc7923": {
+   "holdout": "a",
+   "n_atoms": 21,
+   "corrected_freq_rms": 4.038904276063236,
+   "corrected_freq_rms_zero": 23.22911677372595,
+   "coupling_ratio": 0.5630741223038515,
+   "name": "2-naphthoic_acid"
+  },
+  "A_08dde334d8": {
+   "holdout": "a",
+   "n_atoms": 24,
+   "corrected_freq_rms": 4.184186815522196,
+   "corrected_freq_rms_zero": 23.27003503145984,
+   "coupling_ratio": 0.3759050793120584,
+   "name": "benzophenone"
+  },
+  "A_3100da3761": {
+   "holdout": "a",
+   "n_atoms": 13,
+   "corrected_freq_rms": 7.012186991477886,
+   "corrected_freq_rms_zero": 24.480885740854767,
+   "coupling_ratio": 0.21678232539086015,
+   "name": "benzonitrile"
+  },
+  "A_bce5bae234": {
+   "holdout": "a",
+   "n_atoms": 23,
+   "corrected_freq_rms": 3.7894606671412143,
+   "corrected_freq_rms_zero": 22.181999394833767,
+   "coupling_ratio": 0.47839871326268285,
+   "name": "phenanthridine"
+  },
+  "A_72b86c2331": {
+   "holdout": "a",
+   "n_atoms": 20,
+   "corrected_freq_rms": 6.802802975737884,
+   "corrected_freq_rms_zero": 23.619261728672335,
+   "coupling_ratio": 0.29498293995801517,
+   "name": "biphenylene"
+  },
+  "A2_00b0ff5a24": {
+   "holdout": "b",
+   "n_atoms": 29,
+   "corrected_freq_rms": 4.947960249526989,
+   "corrected_freq_rms_zero": 23.28755318137121,
+   "coupling_ratio": 0.48692605790435733,
+   "name": "fluoranthene+COOH"
+  },
+  "A2_0101e57296": {
+   "holdout": "b",
+   "n_atoms": 28,
+   "corrected_freq_rms": 5.628922785629882,
+   "corrected_freq_rms_zero": 23.330546221230403,
+   "coupling_ratio": 0.5658055186903105,
+   "name": "fluoranthene+NH2"
+  },
+  "A2_02c8833bd5": {
+   "holdout": "b",
+   "n_atoms": 30,
+   "corrected_freq_rms": 5.0524822256141535,
+   "corrected_freq_rms_zero": 22.627174003210072,
+   "coupling_ratio": 0.5382935909302827,
+   "name": "fluoranthene+vinyl"
+  },
+  "A2_041da590e8": {
+   "holdout": "b",
+   "n_atoms": 29,
+   "corrected_freq_rms": 4.610439070718406,
+   "corrected_freq_rms_zero": 22.33929760738434,
+   "coupling_ratio": 0.4763826561228719,
+   "name": "fluoranthene+CH3"
+  },
+  "A2_043da5bed2": {
+   "holdout": "b",
+   "n_atoms": 27,
+   "corrected_freq_rms": 5.328328720015601,
+   "corrected_freq_rms_zero": 23.649379720440063,
+   "coupling_ratio": 0.5389268573491303,
+   "name": "fluoranthene+SH"
+  },
+  "A2_048ea73dab": {
+   "holdout": "b",
+   "n_atoms": 29,
+   "corrected_freq_rms": 5.627049562599354,
+   "corrected_freq_rms_zero": 22.281965812426122,
+   "coupling_ratio": 0.527027571192652,
+   "name": "fluoranthene+CH3"
+  },
+  "A2_05f5ff045c": {
+   "holdout": "b",
+   "n_atoms": 25,
+   "corrected_freq_rms": 5.05465596691594,
+   "corrected_freq_rms_zero": 23.9216082397937,
+   "coupling_ratio": 0.4064047651722876,
+   "name": "fluorene+NH2"
+  },
+  "A2_06222c33e3": {
+   "holdout": "b",
+   "n_atoms": 28,
+   "corrected_freq_rms": 5.562007797790767,
+   "corrected_freq_rms_zero": 22.520344475732323,
+   "coupling_ratio": 0.5518769028870907,
+   "name": "fluoranthene+NH2"
+  },
+  "A2_066237c4f5": {
+   "holdout": "b",
+   "n_atoms": 23,
+   "corrected_freq_rms": 3.769008682872097,
+   "corrected_freq_rms_zero": 22.84352389847679,
+   "coupling_ratio": 0.319511368861927,
+   "name": "fluorene+Cl"
+  },
+  "A2_06873ee7ad": {
+   "holdout": "b",
+   "n_atoms": 25,
+   "corrected_freq_rms": 4.565227240370537,
+   "corrected_freq_rms_zero": 24.121408144215994,
+   "coupling_ratio": 0.4011244194295543,
+   "name": "fluorene+NH2"
+  },
+  "A2_097651503c": {
+   "holdout": "b",
+   "n_atoms": 30,
+   "corrected_freq_rms": 5.706559148316622,
+   "corrected_freq_rms_zero": 23.16295409594571,
+   "coupling_ratio": 0.537422243173134,
+   "name": "fluoranthene+CONH2"
+  },
+  "A2_0dc3aa4eb9": {
+   "holdout": "b",
+   "n_atoms": 26,
+   "corrected_freq_rms": 4.225484037889104,
+   "corrected_freq_rms_zero": 23.66511551899833,
+   "coupling_ratio": 0.35870567062874414,
+   "name": "fluorene+CH3"
+  },
+  "A2_0e1c741b76": {
+   "holdout": "b",
+   "n_atoms": 27,
+   "corrected_freq_rms": 5.958141843398848,
+   "corrected_freq_rms_zero": 22.41679991980013,
+   "coupling_ratio": 0.5043209496727127,
+   "name": "fluoranthene+CN"
+  },
+  "A2_10d7d03408": {
+   "holdout": "b",
+   "n_atoms": 26,
+   "corrected_freq_rms": 3.700329980646078,
+   "corrected_freq_rms_zero": 23.361938596825247,
+   "coupling_ratio": 0.33670405283307325,
+   "name": "fluorene+COOH"
+  },
+  "A2_11c681aefb": {
+   "holdout": "b",
+   "n_atoms": 26,
+   "corrected_freq_rms": 3.916828684508884,
+   "corrected_freq_rms_zero": 21.664220412903237,
+   "coupling_ratio": 0.32805293844410766,
+   "name": "fluorene+CF3"
+  },
+  "A2_1543119d9d": {
+   "holdout": "b",
+   "n_atoms": 27,
+   "corrected_freq_rms": 4.445441989049804,
+   "corrected_freq_rms_zero": 23.091653526597465,
+   "coupling_ratio": 0.32077865251387383,
+   "name": "fluorene+OCH3"
+  },
+  "A2_16521f2764": {
+   "holdout": "b",
+   "n_atoms": 25,
+   "corrected_freq_rms": 5.9493364203509875,
+   "corrected_freq_rms_zero": 24.214055827631007,
+   "coupling_ratio": 0.3816566455941738,
+   "name": "fluorene+ethynyl"
+  },
+  "A2_1b389dc1d8": {
+   "holdout": "b",
+   "n_atoms": 23,
+   "corrected_freq_rms": 4.137404569383707,
+   "corrected_freq_rms_zero": 22.92298833169362,
+   "coupling_ratio": 0.3363873879257634,
+   "name": "fluorene+Cl"
+  },
+  "A2_1bb2e3fbf1": {
+   "holdout": "b",
+   "n_atoms": 23,
+   "corrected_freq_rms": 3.93006881211249,
+   "corrected_freq_rms_zero": 22.55309337970672,
+   "coupling_ratio": 0.29147670057622993,
+   "name": "fluorene+F"
+  },
+  "A2_1c2781e93a": {
+   "holdout": "b",
+   "n_atoms": 25,
+   "corrected_freq_rms": 3.8901399982737495,
+   "corrected_freq_rms_zero": 23.712898283552235,
+   "coupling_ratio": 0.36920178410398957,
+   "name": "fluorene+NH2"
+  },
+  "A2_20d3215ce3": {
+   "holdout": "b",
+   "n_atoms": 27,
+   "corrected_freq_rms": 9.066373804276617,
+   "corrected_freq_rms_zero": 24.9519542046704,
+   "coupling_ratio": 0.4378159899345326,
+   "name": "fluorene+CONH2"
+  },
+  "A2_210c322595": {
+   "holdout": "b",
+   "n_atoms": 23,
+   "corrected_freq_rms": 4.481070602349843,
+   "corrected_freq_rms_zero": 22.75780589000661,
+   "coupling_ratio": 0.383435917333452,
+   "name": "fluorene+F"
+  },
+  "A2_21b688db0c": {
+   "holdout": "b",
+   "n_atoms": 26,
+   "corrected_freq_rms": 3.3660701516877323,
+   "corrected_freq_rms_zero": 23.199831106453566,
+   "coupling_ratio": 0.31937386003725476,
+   "name": "fluorene+CH3"
+  },
+  "A2_27130c4c79": {
+   "holdout": "b",
+   "n_atoms": 27,
+   "corrected_freq_rms": 5.0365430814588095,
+   "corrected_freq_rms_zero": 23.5093908175898,
+   "coupling_ratio": 0.4380994305887606,
+   "name": "fluorene+vinyl"
+  },
+  "A2_27370742a0": {
+   "holdout": "b",
+   "n_atoms": 29,
+   "corrected_freq_rms": 4.772172704790339,
+   "corrected_freq_rms_zero": 21.194958063468885,
+   "coupling_ratio": 0.5350165907746005,
+   "name": "fluoranthene+CF3"
+  },
+  "A2_27edf7297c": {
+   "holdout": "b",
+   "n_atoms": 26,
+   "corrected_freq_rms": 5.66500394184247,
+   "corrected_freq_rms_zero": 24.451057989840958,
+   "coupling_ratio": 0.34857597575963783,
+   "name": "fluorene+CH3"
+  },
+  "A2_2931e48c62": {
+   "holdout": "b",
+   "n_atoms": 27,
+   "corrected_freq_rms": 5.57098762083955,
+   "corrected_freq_rms_zero": 22.233036094779422,
+   "coupling_ratio": 0.5367041844175101,
+   "name": "fluoranthene+CN"
+  },
+  "A2_2e154f6054": {
+   "holdout": "b",
+   "n_atoms": 25,
+   "corrected_freq_rms": 5.831184448326823,
+   "corrected_freq_rms_zero": 23.77294029691055,
+   "coupling_ratio": 0.39377723170887313,
+   "name": "fluorene+NO2"
+  },
+  "A2_2f079d63a1": {
+   "holdout": "b",
+   "n_atoms": 29,
+   "corrected_freq_rms": 8.437427480547898,
+   "corrected_freq_rms_zero": 23.13511964957719,
+   "coupling_ratio": 0.5216029484613468,
+   "name": "fluoranthene+CH3"
+  },
+  "A2_3058513f57": {
+   "holdout": "b",
+   "n_atoms": 23,
+   "corrected_freq_rms": 4.223836831161876,
+   "corrected_freq_rms_zero": 22.93773178650144,
+   "coupling_ratio": 0.3193827939829634,
+   "name": "fluorene+Cl"
+  },
+  "A2_311e979a14": {
+   "holdout": "b",
+   "n_atoms": 26,
+   "corrected_freq_rms": 5.264192425614482,
+   "corrected_freq_rms_zero": 22.552185084158676,
+   "coupling_ratio": 0.5300499574906009,
+   "name": "fluoranthene+Cl"
+  },
+  "A2_331729cd47": {
+   "holdout": "b",
+   "n_atoms": 27,
+   "corrected_freq_rms": 5.37840482181742,
+   "corrected_freq_rms_zero": 21.898055116823997,
+   "coupling_ratio": 0.49238675145665356,
+   "name": "fluoranthene+CN"
+  },
+  "A2_372920f181": {
+   "holdout": "b",
+   "n_atoms": 27,
+   "corrected_freq_rms": 5.424969331693851,
+   "corrected_freq_rms_zero": 22.76370453484311,
+   "coupling_ratio": 0.4978241351349784,
+   "name": "fluoranthene+OH"
+  },
+  "A2_3825e7205b": {
+   "holdout": "b",
+   "n_atoms": 28,
+   "corrected_freq_rms": 6.114168026099413,
+   "corrected_freq_rms_zero": 23.564905087123318,
+   "coupling_ratio": 0.5059681866816017,
+   "name": "fluoranthene+ethynyl"
+  },
+  "A2_39baaea0dd": {
+   "holdout": "b",
+   "n_atoms": 28,
+   "corrected_freq_rms": 6.170924852222013,
+   "corrected_freq_rms_zero": 23.04033011496792,
+   "coupling_ratio": 0.5166607796681769,
+   "name": "fluoranthene+ethynyl"
+  },
+  "A2_3b6ae59b2d": {
+   "holdout": "b",
+   "n_atoms": 24,
+   "corrected_freq_rms": 5.011537262527396,
+   "corrected_freq_rms_zero": 26.835688219539094,
+   "coupling_ratio": 0.34442411640879245,
+   "name": "fluorene+SH"
+  },
+  "A2_3cf20db4ac": {
+   "holdout": "b",
+   "n_atoms": 24,
+   "corrected_freq_rms": 5.062195977350873,
+   "corrected_freq_rms_zero": 22.897595840184344,
+   "coupling_ratio": 0.3704952460641393,
+   "name": "fluorene+CN"
+  },
+  "A2_3f25a88e27": {
+   "holdout": "b",
+   "n_atoms": 30,
+   "corrected_freq_rms": 5.086758883891461,
+   "corrected_freq_rms_zero": 22.504266954406255,
+   "coupling_ratio": 0.5301011799243471,
+   "name": "fluoranthene+OCH3"
+  },
+  "A2_42ab9eb0a0": {
+   "holdout": "b",
+   "n_atoms": 29,
+   "corrected_freq_rms": 5.247260292973495,
+   "corrected_freq_rms_zero": 20.937149493866322,
+   "coupling_ratio": 0.5223341117232922,
+   "name": "fluoranthene+CF3"
+  }
+ },
+ "pair_class_rms": {
+  "a": {
+   "diag_bond": {
+    "rms_error": 0.0012286085415421574,
+    "rms_true": 0.01096668437575647,
+    "n": 222
+   },
+   "diag_angle": {
+    "rms_error": 0.0028885682537903167,
+    "rms_true": 0.00857453362592775,
+    "n": 238
+   },
+   "diag_dihedral": {
+    "rms_error": 0.00019259211038842085,
+    "rms_true": 0.0006133376270814742,
+    "n": 526
+   },
+   "diag_other": {
+    "rms_error": 0.0003181793722896419,
+    "rms_true": 0.0020246999851186182,
+    "n": 117
+   },
+   "off_bondbond": {
+    "rms_error": 0.0007695000456717151,
+    "rms_true": 0.004269286436399999,
+    "n": 553
+   },
+   "off_other": {
+    "rms_error": 0.000407477558704697,
+    "rms_true": 0.0005877329556376826,
+    "n": 24909
+   }
+  },
+  "b": {
+   "diag_bond": {
+    "rms_error": 0.001825764700693019,
+    "rms_true": 0.011093206180363675,
+    "n": 1133
+   },
+   "diag_angle": {
+    "rms_error": 0.0024476987234825004,
+    "rms_true": 0.006357467776525911,
+    "n": 1318
+   },
+   "diag_dihedral": {
+    "rms_error": 0.00021108019918320193,
+    "rms_true": 0.0006304606566228852,
+    "n": 2867
+   },
+   "diag_other": {
+    "rms_error": 0.0005842887642732535,
+    "rms_true": 0.0025863514010261105,
+    "n": 575
+   },
+   "off_bondbond": {
+    "rms_error": 0.0012905766830444802,
+    "rms_true": 0.004191545807542643,
+    "n": 2951
+   },
+   "off_other": {
+    "rms_error": 0.00037217699085238505,
+    "rms_true": 0.0005445118267161963,
+    "n": 152525
+   }
+  }
+ },
+ "symmetry": {
+  "A_fdc27f1bd1": {
+   "n_classes": 440,
+   "n_pairs_classed": 2398,
+   "within_rms": 0.0007963299915689309,
+   "total_rms": 0.001989233139565763,
+   "spread_ratio": 0.40032009105919314
+  },
+  "A_8448043181": {
+   "n_classes": 28,
+   "n_pairs_classed": 978,
+   "within_rms": 0.0011112773644480615,
+   "total_rms": 0.0014439925878179203,
+   "spread_ratio": 0.7695866127175631
+  },
+  "A_e72997e726": {
+   "n_classes": 1205,
+   "n_pairs_classed": 3133,
+   "within_rms": 0.00030455525969961015,
+   "total_rms": 0.0011488582896063651,
+   "spread_ratio": 0.26509384356182025
+  },
+  "A_541c53d1a5": {
+   "n_classes": 1239,
+   "n_pairs_classed": 2792,
+   "within_rms": 0.0003547920535063417,
+   "total_rms": 0.0012127802033837,
+   "spread_ratio": 0.29254439717638797
+  },
+  "A_428228e5a5": {
+   "n_classes": 1483,
+   "n_pairs_classed": 3912,
+   "within_rms": 0.00047544434718046254,
+   "total_rms": 0.0010954332323962592,
+   "spread_ratio": 0.43402403096757297
+  },
+  "A_08dde334d8": {
+   "n_classes": 505,
+   "n_pairs_classed": 2585,
+   "within_rms": 0.001244649705680746,
+   "total_rms": 0.0018112762837085925,
+   "spread_ratio": 0.6871672294699971
+  },
+  "A_3100da3761": {
+   "n_classes": 365,
+   "n_pairs_classed": 983,
+   "within_rms": 0.0008069116542271171,
+   "total_rms": 0.0016985031120236263,
+   "spread_ratio": 0.47507222595886117
+  },
+  "A_72b86c2331": {
+   "n_classes": 360,
+   "n_pairs_classed": 2902,
+   "within_rms": 0.0008319205253721521,
+   "total_rms": 0.0012384535250913435,
+   "spread_ratio": 0.6717414166274773
+  },
+  "A2_0101e57296": {
+   "n_classes": 107,
+   "n_pairs_classed": 230,
+   "within_rms": 0.0007336819460648792,
+   "total_rms": 0.001260862422586328,
+   "spread_ratio": 0.5818889776728562
+  },
+  "A2_02c8833bd5": {
+   "n_classes": 69,
+   "n_pairs_classed": 147,
+   "within_rms": 0.0007141032512537853,
+   "total_rms": 0.0011799925411037965,
+   "spread_ratio": 0.6051760722027903
+  },
+  "A2_041da590e8": {
+   "n_classes": 130,
+   "n_pairs_classed": 465,
+   "within_rms": 0.0006249914940951205,
+   "total_rms": 0.0007863383694037471,
+   "spread_ratio": 0.7948124095343709
+  },
+  "A2_048ea73dab": {
+   "n_classes": 128,
+   "n_pairs_classed": 459,
+   "within_rms": 0.0006281226423347653,
+   "total_rms": 0.000791230976115251,
+   "spread_ratio": 0.7938549694031098
+  },
+  "A2_05f5ff045c": {
+   "n_classes": 433,
+   "n_pairs_classed": 933,
+   "within_rms": 0.0004425309649373537,
+   "total_rms": 0.0007664164488959393,
+   "spread_ratio": 0.577402749608051
+  },
+  "A2_06222c33e3": {
+   "n_classes": 122,
+   "n_pairs_classed": 260,
+   "within_rms": 0.000686382235923586,
+   "total_rms": 0.0011809202528039358,
+   "spread_ratio": 0.5812265767259593
+  },
+  "A2_066237c4f5": {
+   "n_classes": 332,
+   "n_pairs_classed": 713,
+   "within_rms": 0.00028763630361599364,
+   "total_rms": 0.0005059146224309124,
+   "spread_ratio": 0.5685471240856914
+  },
+  "A2_06873ee7ad": {
+   "n_classes": 453,
+   "n_pairs_classed": 973,
+   "within_rms": 0.00043690472279741134,
+   "total_rms": 0.000755793471694188,
+   "spread_ratio": 0.5780742215436777
+  },
+  "A2_097651503c": {
+   "n_classes": 69,
+   "n_pairs_classed": 147,
+   "within_rms": 0.0007545666710232084,
+   "total_rms": 0.0013728469462121237,
+   "spread_ratio": 0.5496364129338402
+  },
+  "A2_0dc3aa4eb9": {
+   "n_classes": 461,
+   "n_pairs_classed": 1178,
+   "within_rms": 0.0004513931704040238,
+   "total_rms": 0.0006319907089224882,
+   "spread_ratio": 0.7142402001029826
+  },
+  "A2_0e1c741b76": {
+   "n_classes": 26,
+   "n_pairs_classed": 53,
+   "within_rms": 0.00043225970705749463,
+   "total_rms": 0.004313270728466802,
+   "spread_ratio": 0.10021622436186517
+  },
+  "A2_10d7d03408": {
+   "n_classes": 1441,
+   "n_pairs_classed": 3367,
+   "within_rms": 0.00027554188020631286,
+   "total_rms": 0.0011072957582238811,
+   "spread_ratio": 0.24884217081106327
+  },
+  "A2_11c681aefb": {
+   "n_classes": 446,
+   "n_pairs_classed": 1131,
+   "within_rms": 0.0006614649783395497,
+   "total_rms": 0.0008962877261833753,
+   "spread_ratio": 0.7380051729105324
+  },
+  "A2_1543119d9d": {
+   "n_classes": 1376,
+   "n_pairs_classed": 3368,
+   "within_rms": 0.00035929781636147556,
+   "total_rms": 0.0011400999435597936,
+   "spread_ratio": 0.3151458943499473
+  },
+  "A2_16521f2764": {
+   "n_classes": 1291,
+   "n_pairs_classed": 3047,
+   "within_rms": 0.00028422841776863254,
+   "total_rms": 0.0011789642543211043,
+   "spread_ratio": 0.24108315135669897
+  },
+  "A2_1b389dc1d8": {
+   "n_classes": 331,
+   "n_pairs_classed": 711,
+   "within_rms": 0.0002879594998005289,
+   "total_rms": 0.0005059414306222688,
+   "spread_ratio": 0.5691558002007484
+  },
+  "A2_1bb2e3fbf1": {
+   "n_classes": 1255,
+   "n_pairs_classed": 2939,
+   "within_rms": 0.0002905008864800438,
+   "total_rms": 0.0011765492069742882,
+   "spread_ratio": 0.24690925356799995
+  },
+  "A2_1c2781e93a": {
+   "n_classes": 438,
+   "n_pairs_classed": 941,
+   "within_rms": 0.00044170052363496644,
+   "total_rms": 0.0007643847728503175,
+   "spread_ratio": 0.5778510238867103
+  },
+  "A2_20d3215ce3": {
+   "n_classes": 1490,
+   "n_pairs_classed": 3516,
+   "within_rms": 0.00030178512589025715,
+   "total_rms": 0.0011132602536753466,
+   "spread_ratio": 0.2710822782848268
+  },
+  "A2_210c322595": {
+   "n_classes": 326,
+   "n_pairs_classed": 701,
+   "within_rms": 0.00028982546484711686,
+   "total_rms": 0.0005095710586207194,
+   "spread_ratio": 0.568763590364809
+  },
+  "A2_21b688db0c": {
+   "n_classes": 446,
+   "n_pairs_classed": 1131,
+   "within_rms": 0.00046090416585036967,
+   "total_rms": 0.0006435172562170258,
+   "spread_ratio": 0.7162265835104972
+  },
+  "A2_27130c4c79": {
+   "n_classes": 398,
+   "n_pairs_classed": 854,
+   "within_rms": 0.0003962501933486758,
+   "total_rms": 0.0006725168846827396,
+   "spread_ratio": 0.5892048249994603
+  },
+  "A2_27370742a0": {
+   "n_classes": 128,
+   "n_pairs_classed": 459,
+   "within_rms": 0.0009728510728358265,
+   "total_rms": 0.0012581079426271945,
+   "spread_ratio": 0.7732651864547556
+  },
+  "A2_27edf7297c": {
+   "n_classes": 441,
+   "n_pairs_classed": 1124,
+   "within_rms": 0.0004618055238283385,
+   "total_rms": 0.0006454866305436646,
+   "spread_ratio": 0.715437782869926
+  },
+  "A2_2931e48c62": {
+   "n_classes": 26,
+   "n_pairs_classed": 53,
+   "within_rms": 0.00043766211314197036,
+   "total_rms": 0.004327310527364643,
+   "spread_ratio": 0.10113952081190464
+  },
+  "A2_2e154f6054": {
+   "n_classes": 331,
+   "n_pairs_classed": 711,
+   "within_rms": 0.000287906889228724,
+   "total_rms": 0.0005060172215385967,
+   "spread_ratio": 0.568966582507437
+  },
+  "A2_2f079d63a1": {
+   "n_classes": 118,
+   "n_pairs_classed": 429,
+   "within_rms": 0.000650239135225629,
+   "total_rms": 0.0008174485981303177,
+   "spread_ratio": 0.7954495691996623
+  },
+  "A2_3058513f57": {
+   "n_classes": 327,
+   "n_pairs_classed": 703,
+   "within_rms": 0.00028965553398056803,
+   "total_rms": 0.0005144329813419079,
+   "spread_ratio": 0.5630578607635075
+  },
+  "A2_331729cd47": {
+   "n_classes": 24,
+   "n_pairs_classed": 49,
+   "within_rms": 0.0003840175929198872,
+   "total_rms": 0.004419223093941685,
+   "spread_ratio": 0.08689708230533487
+  },
+  "A2_3825e7205b": {
+   "n_classes": 36,
+   "n_pairs_classed": 76,
+   "within_rms": 0.00022088611672311842,
+   "total_rms": 0.0030131397349391917,
+   "spread_ratio": 0.073307624655375
+  },
+  "A2_39baaea0dd": {
+   "n_classes": 38,
+   "n_pairs_classed": 80,
+   "within_rms": 9.828924930149016e-05,
+   "total_rms": 0.0029417346355365393,
+   "spread_ratio": 0.03341200396328858
+  },
+  "A2_3b6ae59b2d": {
+   "n_classes": 327,
+   "n_pairs_classed": 703,
+   "within_rms": 0.00028942774336280266,
+   "total_rms": 0.0005088955805033422,
+   "spread_ratio": 0.5687369952722586
+  },
+  "A2_3cf20db4ac": {
+   "n_classes": 358,
+   "n_pairs_classed": 766,
+   "within_rms": 0.00028473741283199387,
+   "total_rms": 0.0012204956628995775,
+   "spread_ratio": 0.23329653802745393
+  },
+  "A2_3f25a88e27": {
+   "n_classes": 55,
+   "n_pairs_classed": 213,
+   "within_rms": 0.0009341191399428149,
+   "total_rms": 0.0011755089014504078,
+   "spread_ratio": 0.7946508433838715
+  },
+  "A2_42ab9eb0a0": {
+   "n_classes": 129,
+   "n_pairs_classed": 462,
+   "within_rms": 0.0009717683517229131,
+   "total_rms": 0.0012578533620764758,
+   "spread_ratio": 0.7725609208681599
+  }
+ },
+ "orbit_symmetry": {
+  "A_fdc27f1bd1": {
+   "name": "biphenyl",
+   "holdout": "a",
+   "n_orbits": 329,
+   "pred": {
+    "within_rms": 5.9527769651826484e-05,
+    "total_rms": 0.0025198026577056627,
+    "spread_ratio": 0.023623980818413718,
+    "n_pairs_classed": 1366
+   },
+   "target": {
+    "within_rms": 0.0,
+    "total_rms": 0.0022515596998589705,
+    "spread_ratio": 0.0,
+    "n_pairs_classed": 1366
+   },
+   "error": {
+    "within_rms": 5.952776965182649e-05,
+    "total_rms": 0.0005087626667627148,
+    "spread_ratio": 0.11700498786714247,
+    "n_pairs_classed": 1366
+   }
+  },
+  "A_8448043181": {
+   "name": "benzene",
+   "holdout": "a",
+   "n_orbits": 56,
+   "pred": {
+    "within_rms": 3.7101552684255745e-05,
+    "total_rms": 0.0019652123783768026,
+    "spread_ratio": 0.018879156824210697,
+    "n_pairs_classed": 528
+   },
+   "target": {
+    "within_rms": 2.7433515291901026e-19,
+    "total_rms": 0.0018452916614870583,
+    "spread_ratio": 1.4866763810005668e-16,
+    "n_pairs_classed": 528
+   },
+   "error": {
+    "within_rms": 3.7101552684255745e-05,
+    "total_rms": 0.0001846772733990179,
+    "spread_ratio": 0.20089939601876886,
+    "n_pairs_classed": 528
+   }
+  },
+  "A_e72997e726": {
+   "name": "fluorene",
+   "holdout": "a",
+   "n_orbits": 860,
+   "pred": {
+    "within_rms": 0.00011473746262735134,
+    "total_rms": 0.0014714911234145831,
+    "spread_ratio": 0.07797360160834949,
+    "n_pairs_classed": 1896
+   },
+   "target": {
+    "within_rms": 0.0,
+    "total_rms": 0.0014046888803946726,
+    "spread_ratio": 0.0,
+    "n_pairs_classed": 1896
+   },
+   "error": {
+    "within_rms": 0.00011473746262735134,
+    "total_rms": 0.00036122759048751033,
+    "spread_ratio": 0.3176320570433239,
+    "n_pairs_classed": 1896
+   }
+  },
+  "A_541c53d1a5": {
+   "name": "phenanthrene",
+   "holdout": "a",
+   "n_orbits": 903,
+   "pred": {
+    "within_rms": 0.00014926924485930216,
+    "total_rms": 0.001497660712847853,
+    "spread_ratio": 0.0996682650341155,
+    "n_pairs_classed": 1806
+   },
+   "target": {
+    "within_rms": 0.0,
+    "total_rms": 0.0014757561932137292,
+    "spread_ratio": 0.0,
+    "n_pairs_classed": 1806
+   },
+   "error": {
+    "within_rms": 0.00014926924485930216,
+    "total_rms": 0.0002951749930263277,
+    "spread_ratio": 0.5056974621355824,
+    "n_pairs_classed": 1806
+   }
+  },
+  "A_428228e5a5": {
+   "name": "fluoranthene",
+   "holdout": "a",
+   "n_orbits": 1184,
+   "pred": {
+    "within_rms": 4.777927526036956e-05,
+    "total_rms": 0.0013812698319071615,
+    "spread_ratio": 0.03459083385206441,
+    "n_pairs_classed": 2368
+   },
+   "target": {
+    "within_rms": 0.0,
+    "total_rms": 0.0014028427895118457,
+    "spread_ratio": 0.0,
+    "n_pairs_classed": 2368
+   },
+   "error": {
+    "within_rms": 4.777927526036956e-05,
+    "total_rms": 0.0003721392330288842,
+    "spread_ratio": 0.1283908575601893,
+    "n_pairs_classed": 2368
+   }
+  },
+  "A_08dde334d8": {
+   "name": "benzophenone",
+   "holdout": "a",
+   "n_orbits": 369,
+   "pred": {
+    "within_rms": 0.0010376075683171595,
+    "total_rms": 0.0024135742330737824,
+    "spread_ratio": 0.4299049741659386,
+    "n_pairs_classed": 1426
+   },
+   "target": {
+    "within_rms": 0.0,
+    "total_rms": 0.0028299822989554034,
+    "spread_ratio": 0.0,
+    "n_pairs_classed": 1426
+   },
+   "error": {
+    "within_rms": 0.0010376075683171595,
+    "total_rms": 0.00154555898327834,
+    "spread_ratio": 0.6713477644937582,
+    "n_pairs_classed": 1426
+   }
+  },
+  "A_3100da3761": {
+   "name": "benzonitrile",
+   "holdout": "a",
+   "n_orbits": 255,
+   "pred": {
+    "within_rms": 0.00011508000473403516,
+    "total_rms": 0.0022985587404731334,
+    "spread_ratio": 0.050066157852614715,
+    "n_pairs_classed": 515
+   },
+   "target": {
+    "within_rms": 0.0,
+    "total_rms": 0.0021194569275362046,
+    "spread_ratio": 0.0,
+    "n_pairs_classed": 515
+   },
+   "error": {
+    "within_rms": 0.00011508000473403516,
+    "total_rms": 0.0005531479591827551,
+    "spread_ratio": 0.20804561026322754,
+    "n_pairs_classed": 515
+   }
+  },
+  "A_72b86c2331": {
+   "name": "biphenylene",
+   "holdout": "a",
+   "n_orbits": 454,
+   "pred": {
+    "within_rms": 0.00013793620117421765,
+    "total_rms": 0.0016273083692018649,
+    "spread_ratio": 0.08476340673026238,
+    "n_pairs_classed": 1676
+   },
+   "target": {
+    "within_rms": 0.0,
+    "total_rms": 0.0015507960167833817,
+    "spread_ratio": 0.0,
+    "n_pairs_classed": 1676
+   },
+   "error": {
+    "within_rms": 0.00013793620117421765,
+    "total_rms": 0.0003901987813971755,
+    "spread_ratio": 0.3535023883988381,
+    "n_pairs_classed": 1676
+   }
+  },
+  "A2_0101e57296": {
+   "name": "fluoranthene+NH2",
+   "holdout": "b",
+   "n_orbits": 61,
+   "pred": {
+    "within_rms": 0.0001054079563980164,
+    "total_rms": 0.0017200618298943387,
+    "spread_ratio": 0.06128149265686075,
+    "n_pairs_classed": 122
+   },
+   "target": {
+    "within_rms": 0.0,
+    "total_rms": 0.0016779168790761472,
+    "spread_ratio": 0.0,
+    "n_pairs_classed": 122
+   },
+   "error": {
+    "within_rms": 0.0001054079563980164,
+    "total_rms": 0.0006464464724628589,
+    "spread_ratio": 0.16305751657430928,
+    "n_pairs_classed": 122
+   }
+  },
+  "A2_02c8833bd5": {
+   "name": "fluoranthene+vinyl",
+   "holdout": "b",
+   "n_orbits": 42,
+   "pred": {
+    "within_rms": 4.070882373194197e-05,
+    "total_rms": 0.0015580434074066183,
+    "spread_ratio": 0.026128170459449707,
+    "n_pairs_classed": 84
+   },
+   "target": {
+    "within_rms": 0.0,
+    "total_rms": 0.0014424354177297227,
+    "spread_ratio": 0.0,
+    "n_pairs_classed": 84
+   },
+   "error": {
+    "within_rms": 4.070882373194197e-05,
+    "total_rms": 0.0002825037808974153,
+    "spread_ratio": 0.14410010231588524,
+    "n_pairs_classed": 84
+   }
+  },
+  "A2_041da590e8": {
+   "name": "fluoranthene+CH3",
+   "holdout": "b",
+   "n_orbits": 82,
+   "pred": {
+    "within_rms": 3.9739057437949816e-05,
+    "total_rms": 0.0010548411776270155,
+    "spread_ratio": 0.03767302441429839,
+    "n_pairs_classed": 258
+   },
+   "target": {
+    "within_rms": 0.0,
+    "total_rms": 0.0010580701437802797,
+    "spread_ratio": 0.0,
+    "n_pairs_classed": 258
+   },
+   "error": {
+    "within_rms": 3.9739057437949816e-05,
+    "total_rms": 0.00014642983204341786,
+    "spread_ratio": 0.2713863485561248,
+    "n_pairs_classed": 258
+   }
+  },
+  "A2_048ea73dab": {
+   "name": "fluoranthene+CH3",
+   "holdout": "b",
+   "n_orbits": 80,
+   "pred": {
+    "within_rms": 4.360982130852437e-05,
+    "total_rms": 0.001066934300740355,
+    "spread_ratio": 0.040873951918373175,
+    "n_pairs_classed": 252
+   },
+   "target": {
+    "within_rms": 0.0,
+    "total_rms": 0.001096050449635125,
+    "spread_ratio": 0.0,
+    "n_pairs_classed": 252
+   },
+   "error": {
+    "within_rms": 4.360982130852438e-05,
+    "total_rms": 0.000286758369160208,
+    "spread_ratio": 0.15207863483196252,
+    "n_pairs_classed": 252
+   }
+  },
+  "A2_05f5ff045c": {
+   "name": "fluorene+NH2",
+   "holdout": "b",
+   "n_orbits": 252,
+   "pred": {
+    "within_rms": 5.272081987751061e-05,
+    "total_rms": 0.0010330647294544606,
+    "spread_ratio": 0.051033413855249274,
+    "n_pairs_classed": 506
+   },
+   "target": {
+    "within_rms": 0.0,
+    "total_rms": 0.0010628765403905233,
+    "spread_ratio": 0.0,
+    "n_pairs_classed": 506
+   },
+   "error": {
+    "within_rms": 5.272081987751061e-05,
+    "total_rms": 0.0004356010005595619,
+    "spread_ratio": 0.12103007066050536,
+    "n_pairs_classed": 506
+   }
+  },
+  "A2_06222c33e3": {
+   "name": "fluoranthene+NH2",
+   "holdout": "b",
+   "n_orbits": 72,
+   "pred": {
+    "within_rms": 0.00011674834931351845,
+    "total_rms": 0.0015757234882589682,
+    "spread_ratio": 0.07409190139223906,
+    "n_pairs_classed": 144
+   },
+   "target": {
+    "within_rms": 0.0,
+    "total_rms": 0.0015038095571010565,
+    "spread_ratio": 0.0,
+    "n_pairs_classed": 144
+   },
+   "error": {
+    "within_rms": 0.00011674834931351845,
+    "total_rms": 0.000665572982666889,
+    "spread_ratio": 0.17541028911017192,
+    "n_pairs_classed": 144
+   }
+  },
+  "A2_066237c4f5": {
+   "name": "fluorene+Cl",
+   "holdout": "b",
+   "n_orbits": 194,
+   "pred": {
+    "within_rms": 1.4374721201124792e-05,
+    "total_rms": 0.0006786295940328682,
+    "spread_ratio": 0.02118198399763359,
+    "n_pairs_classed": 388
+   },
+   "target": {
+    "within_rms": 0.0,
+    "total_rms": 0.0007687769203336458,
+    "spread_ratio": 0.0,
+    "n_pairs_classed": 388
+   },
+   "error": {
+    "within_rms": 1.4374721201124792e-05,
+    "total_rms": 0.0002966610982154984,
+    "spread_ratio": 0.048455025912035196,
+    "n_pairs_classed": 388
+   }
+  },
+  "A2_06873ee7ad": {
+   "name": "fluorene+NH2",
+   "holdout": "b",
+   "n_orbits": 266,
+   "pred": {
+    "within_rms": 6.929135378429924e-05,
+    "total_rms": 0.001012388665882117,
+    "spread_ratio": 0.06844343098598811,
+    "n_pairs_classed": 534
+   },
+   "target": {
+    "within_rms": 0.0,
+    "total_rms": 0.0010653229857405411,
+    "spread_ratio": 0.0,
+    "n_pairs_classed": 534
+   },
+   "error": {
+    "within_rms": 6.929135378429923e-05,
+    "total_rms": 0.0004114474621389535,
+    "spread_ratio": 0.1684087524178196,
+    "n_pairs_classed": 534
+   }
+  },
+  "A2_097651503c": {
+   "name": "fluoranthene+CONH2",
+   "holdout": "b",
+   "n_orbits": 42,
+   "pred": {
+    "within_rms": 0.00010054817124608613,
+    "total_rms": 0.0017766111049976024,
+    "spread_ratio": 0.056595487309093355,
+    "n_pairs_classed": 84
+   },
+   "target": {
+    "within_rms": 0.0,
+    "total_rms": 0.0019803266619229285,
+    "spread_ratio": 0.0,
+    "n_pairs_classed": 84
+   },
+   "error": {
+    "within_rms": 0.00010054817124608615,
+    "total_rms": 0.00036310397860960913,
+    "spread_ratio": 0.27691288768331124,
+    "n_pairs_classed": 84
+   }
+  },
+  "A2_0dc3aa4eb9": {
+   "name": "fluorene+CH3",
+   "holdout": "b",
+   "n_orbits": 276,
+   "pred": {
+    "within_rms": 2.959012501161146e-05,
+    "total_rms": 0.0008474183275311277,
+    "spread_ratio": 0.03491796678249745,
+    "n_pairs_classed": 649
+   },
+   "target": {
+    "within_rms": 2.6061749050518466e-21,
+    "total_rms": 0.0009108685471876104,
+    "spread_ratio": 2.8611976043070638e-18,
+    "n_pairs_classed": 649
+   },
+   "error": {
+    "within_rms": 2.959012501161146e-05,
+    "total_rms": 0.0002720971349107205,
+    "spread_ratio": 0.10874838877417971,
+    "n_pairs_classed": 649
+   }
+  },
+  "A2_0e1c741b76": {
+   "name": "fluoranthene+CN",
+   "holdout": "b",
+   "n_orbits": 9,
+   "pred": {
+    "within_rms": 0.0007216186881038755,
+    "total_rms": 0.0071947708898822404,
+    "spread_ratio": 0.10029766050211036,
+    "n_pairs_classed": 19
+   },
+   "target": {
+    "within_rms": 0.0,
+    "total_rms": 0.007989386683697959,
+    "spread_ratio": 0.0,
+    "n_pairs_classed": 19
+   },
+   "error": {
+    "within_rms": 0.0007216186881038755,
+    "total_rms": 0.0022152668076030895,
+    "spread_ratio": 0.32574798016527146,
+    "n_pairs_classed": 19
+   }
+  },
+  "A2_10d7d03408": {
+   "name": "fluorene+COOH",
+   "holdout": "b",
+   "n_orbits": 1073,
+   "pred": {
+    "within_rms": 9.388829367809095e-05,
+    "total_rms": 0.0013794218847324213,
+    "spread_ratio": 0.06806350886357244,
+    "n_pairs_classed": 2146
+   },
+   "target": {
+    "within_rms": 0.0,
+    "total_rms": 0.001319568579160938,
+    "spread_ratio": 0.0,
+    "n_pairs_classed": 2146
+   },
+   "error": {
+    "within_rms": 9.388829367809095e-05,
+    "total_rms": 0.00030192328202308794,
+    "spread_ratio": 0.31096738565166815,
+    "n_pairs_classed": 2146
+   }
+  },
+  "A2_11c681aefb": {
+   "name": "fluorene+CF3",
+   "holdout": "b",
+   "n_orbits": 265,
+   "pred": {
+    "within_rms": 4.535416434135323e-05,
+    "total_rms": 0.0012005815380896495,
+    "spread_ratio": 0.03777682972996588,
+    "n_pairs_classed": 613
+   },
+   "target": {
+    "within_rms": 5.363220658114423e-21,
+    "total_rms": 0.0012358708484138845,
+    "spread_ratio": 4.339628744376951e-18,
+    "n_pairs_classed": 613
+   },
+   "error": {
+    "within_rms": 4.535416434135322e-05,
+    "total_rms": 0.000283246172827689,
+    "spread_ratio": 0.16012277902495842,
+    "n_pairs_classed": 613
+   }
+  },
+  "A2_1543119d9d": {
+   "name": "fluorene+OCH3",
+   "holdout": "b",
+   "n_orbits": 1023,
+   "pred": {
+    "within_rms": 0.00010016186651079676,
+    "total_rms": 0.0014266642653635692,
+    "spread_ratio": 0.07020703394801274,
+    "n_pairs_classed": 2130
+   },
+   "target": {
+    "within_rms": 1.8535768112887532e-22,
+    "total_rms": 0.0013907679907584729,
+    "spread_ratio": 1.332772125620954e-19,
+    "n_pairs_classed": 2130
+   },
+   "error": {
+    "within_rms": 0.00010016186651079676,
+    "total_rms": 0.0002959187035290794,
+    "spread_ratio": 0.33847764712497813,
+    "n_pairs_classed": 2130
+   }
+  },
+  "A2_16521f2764": {
+   "name": "fluorene+ethynyl",
+   "holdout": "b",
+   "n_orbits": 956,
+   "pred": {
+    "within_rms": 0.0001040349153347226,
+    "total_rms": 0.0014771607462980543,
+    "spread_ratio": 0.07042897368850806,
+    "n_pairs_classed": 1924
+   },
+   "target": {
+    "within_rms": 0.0,
+    "total_rms": 0.001527037351993399,
+    "spread_ratio": 0.0,
+    "n_pairs_classed": 1924
+   },
+   "error": {
+    "within_rms": 0.0001040349153347226,
+    "total_rms": 0.0005211869965352981,
+    "spread_ratio": 0.19961149458124805,
+    "n_pairs_classed": 1924
+   }
+  },
+  "A2_1b389dc1d8": {
+   "name": "fluorene+Cl",
+   "holdout": "b",
+   "n_orbits": 194,
+   "pred": {
+    "within_rms": 1.2515474194024628e-05,
+    "total_rms": 0.000677877586529575,
+    "spread_ratio": 0.01846273492843769,
+    "n_pairs_classed": 388
+   },
+   "target": {
+    "within_rms": 0.0,
+    "total_rms": 0.0007656268216715223,
+    "spread_ratio": 0.0,
+    "n_pairs_classed": 388
+   },
+   "error": {
+    "within_rms": 1.2515474194024628e-05,
+    "total_rms": 0.00029359142239424616,
+    "spread_ratio": 0.04262888231529583,
+    "n_pairs_classed": 388
+   }
+  },
+  "A2_1bb2e3fbf1": {
+   "name": "fluorene+F",
+   "holdout": "b",
+   "n_orbits": 936,
+   "pred": {
+    "within_rms": 0.00010046551298528447,
+    "total_rms": 0.0014669216248325504,
+    "spread_ratio": 0.06848730790014268,
+    "n_pairs_classed": 1872
+   },
+   "target": {
+    "within_rms": 0.0,
+    "total_rms": 0.001383966434893654,
+    "spread_ratio": 0.0,
+    "n_pairs_classed": 1872
+   },
+   "error": {
+    "within_rms": 0.00010046551298528447,
+    "total_rms": 0.00029929603979058516,
+    "spread_ratio": 0.33567271072340055,
+    "n_pairs_classed": 1872
+   }
+  },
+  "A2_1c2781e93a": {
+   "name": "fluorene+NH2",
+   "holdout": "b",
+   "n_orbits": 255,
+   "pred": {
+    "within_rms": 5.40464961815895e-05,
+    "total_rms": 0.0010304431673923626,
+    "spread_ratio": 0.05244975937718084,
+    "n_pairs_classed": 510
+   },
+   "target": {
+    "within_rms": 0.0,
+    "total_rms": 0.0010749437000697596,
+    "spread_ratio": 0.0,
+    "n_pairs_classed": 510
+   },
+   "error": {
+    "within_rms": 5.40464961815895e-05,
+    "total_rms": 0.00037718389854199207,
+    "spread_ratio": 0.14328951047620733,
+    "n_pairs_classed": 510
+   }
+  },
+  "A2_20d3215ce3": {
+   "name": "fluorene+CONH2",
+   "holdout": "b",
+   "n_orbits": 1093,
+   "pred": {
+    "within_rms": 8.914930807419873e-05,
+    "total_rms": 0.001393782305214114,
+    "spread_ratio": 0.06396214655667015,
+    "n_pairs_classed": 2220
+   },
+   "target": {
+    "within_rms": 0.0,
+    "total_rms": 0.0013457888049534848,
+    "spread_ratio": 0.0,
+    "n_pairs_classed": 2220
+   },
+   "error": {
+    "within_rms": 8.914930807419873e-05,
+    "total_rms": 0.0002999307316052892,
+    "spread_ratio": 0.2972329897541803,
+    "n_pairs_classed": 2220
+   }
+  },
+  "A2_210c322595": {
+   "name": "fluorene+F",
+   "holdout": "b",
+   "n_orbits": 191,
+   "pred": {
+    "within_rms": 1.1622670915954603e-05,
+    "total_rms": 0.000683951473684158,
+    "spread_ratio": 0.01699341453765452,
+    "n_pairs_classed": 382
+   },
+   "target": {
+    "within_rms": 0.0,
+    "total_rms": 0.0007776473264097638,
+    "spread_ratio": 0.0,
+    "n_pairs_classed": 382
+   },
+   "error": {
+    "within_rms": 1.1622670915954603e-05,
+    "total_rms": 0.0003171485463591121,
+    "spread_ratio": 0.03664740403001588,
+    "n_pairs_classed": 382
+   }
+  },
+  "A2_21b688db0c": {
+   "name": "fluorene+CH3",
+   "holdout": "b",
+   "n_orbits": 265,
+   "pred": {
+    "within_rms": 2.8196769588063645e-05,
+    "total_rms": 0.0008703735164194725,
+    "spread_ratio": 0.032396171363369405,
+    "n_pairs_classed": 613
+   },
+   "target": {
+    "within_rms": 0.0,
+    "total_rms": 0.0009123027931170732,
+    "spread_ratio": 0.0,
+    "n_pairs_classed": 613
+   },
+   "error": {
+    "within_rms": 2.8196769588063645e-05,
+    "total_rms": 0.0002462920302250659,
+    "spread_ratio": 0.11448510762730305,
+    "n_pairs_classed": 613
+   }
+  },
+  "A2_27130c4c79": {
+   "name": "fluorene+vinyl",
+   "holdout": "b",
+   "n_orbits": 234,
+   "pred": {
+    "within_rms": 2.1750351029913267e-05,
+    "total_rms": 0.0009032085378786201,
+    "spread_ratio": 0.024081206186335056,
+    "n_pairs_classed": 468
+   },
+   "target": {
+    "within_rms": 0.0,
+    "total_rms": 0.0009351505368370854,
+    "spread_ratio": 0.0,
+    "n_pairs_classed": 468
+   },
+   "error": {
+    "within_rms": 2.1750351029913267e-05,
+    "total_rms": 0.0002931214067548299,
+    "spread_ratio": 0.07420253358740704,
+    "n_pairs_classed": 468
+   }
+  },
+  "A2_27370742a0": {
+   "name": "fluoranthene+CF3",
+   "holdout": "b",
+   "n_orbits": 80,
+   "pred": {
+    "within_rms": 7.258757097013937e-05,
+    "total_rms": 0.0016719393995314287,
+    "spread_ratio": 0.04341519255451633,
+    "n_pairs_classed": 252
+   },
+   "target": {
+    "within_rms": 0.0,
+    "total_rms": 0.0017414450370953594,
+    "spread_ratio": 0.0,
+    "n_pairs_classed": 252
+   },
+   "error": {
+    "within_rms": 7.258757097013936e-05,
+    "total_rms": 0.0005442524972719021,
+    "spread_ratio": 0.1333711307416849,
+    "n_pairs_classed": 252
+   }
+  },
+  "A2_27edf7297c": {
+   "name": "fluorene+CH3",
+   "holdout": "b",
+   "n_orbits": 262,
+   "pred": {
+    "within_rms": 2.8059392764876304e-05,
+    "total_rms": 0.0008728247382647627,
+    "spread_ratio": 0.03214779730081936,
+    "n_pairs_classed": 610
+   },
+   "target": {
+    "within_rms": 0.0,
+    "total_rms": 0.0009292710698397131,
+    "spread_ratio": 0.0,
+    "n_pairs_classed": 610
+   },
+   "error": {
+    "within_rms": 2.8059392764876307e-05,
+    "total_rms": 0.00027085720887461845,
+    "spread_ratio": 0.10359477926195858,
+    "n_pairs_classed": 610
+   }
+  },
+  "A2_2931e48c62": {
+   "name": "fluoranthene+CN",
+   "holdout": "b",
+   "n_orbits": 9,
+   "pred": {
+    "within_rms": 0.0007302524699374092,
+    "total_rms": 0.007216723266254798,
+    "spread_ratio": 0.10118892508350014,
+    "n_pairs_classed": 19
+   },
+   "target": {
+    "within_rms": 0.0,
+    "total_rms": 0.008370500032143464,
+    "spread_ratio": 0.0,
+    "n_pairs_classed": 19
+   },
+   "error": {
+    "within_rms": 0.0007302524699374092,
+    "total_rms": 0.002766451421400094,
+    "spread_ratio": 0.263967212396533,
+    "n_pairs_classed": 19
+   }
+  },
+  "A2_2e154f6054": {
+   "name": "fluorene+NO2",
+   "holdout": "b",
+   "n_orbits": 194,
+   "pred": {
+    "within_rms": 1.2381985936567897e-05,
+    "total_rms": 0.0006779951069871323,
+    "spread_ratio": 0.018262647929113883,
+    "n_pairs_classed": 388
+   },
+   "target": {
+    "within_rms": 0.0,
+    "total_rms": 0.0007587986807951386,
+    "spread_ratio": 0.0,
+    "n_pairs_classed": 388
+   },
+   "error": {
+    "within_rms": 1.23819859365679e-05,
+    "total_rms": 0.00030012835607340615,
+    "spread_ratio": 0.041255635084142074,
+    "n_pairs_classed": 388
+   }
+  },
+  "A2_2f079d63a1": {
+   "name": "fluoranthene+CH3",
+   "holdout": "b",
+   "n_orbits": 73,
+   "pred": {
+    "within_rms": 4.631512864099327e-05,
+    "total_rms": 0.001113327165826858,
+    "spread_ratio": 0.04160064540111661,
+    "n_pairs_classed": 231
+   },
+   "target": {
+    "within_rms": 0.0,
+    "total_rms": 0.0011179037430000124,
+    "spread_ratio": 0.0,
+    "n_pairs_classed": 231
+   },
+   "error": {
+    "within_rms": 4.631512864099327e-05,
+    "total_rms": 0.00016438161662057652,
+    "spread_ratio": 0.28175369967249586,
+    "n_pairs_classed": 231
+   }
+  },
+  "A2_3058513f57": {
+   "name": "fluorene+Cl",
+   "holdout": "b",
+   "n_orbits": 192,
+   "pred": {
+    "within_rms": 1.0958584952332797e-05,
+    "total_rms": 0.0006886503130118671,
+    "spread_ratio": 0.01591313435175038,
+    "n_pairs_classed": 384
+   },
+   "target": {
+    "within_rms": 0.0,
+    "total_rms": 0.0007688770675791614,
+    "spread_ratio": 0.0,
+    "n_pairs_classed": 384
+   },
+   "error": {
+    "within_rms": 1.0958584952332797e-05,
+    "total_rms": 0.0003094126135522688,
+    "spread_ratio": 0.03541738271921346,
+    "n_pairs_classed": 384
+   }
+  },
+  "A2_331729cd47": {
+   "name": "fluoranthene+CN",
+   "holdout": "b",
+   "n_orbits": 9,
+   "pred": {
+    "within_rms": 0.0006164573703210827,
+    "total_rms": 0.007093515416747711,
+    "spread_ratio": 0.08690435335710044,
+    "n_pairs_classed": 19
+   },
+   "target": {
+    "within_rms": 0.0,
+    "total_rms": 0.007638826048194389,
+    "spread_ratio": 0.0,
+    "n_pairs_classed": 19
+   },
+   "error": {
+    "within_rms": 0.0006164573703210827,
+    "total_rms": 0.003057984930278915,
+    "spread_ratio": 0.20158940752688942,
+    "n_pairs_classed": 19
+   }
+  },
+  "A2_3825e7205b": {
+   "name": "fluoranthene+ethynyl",
+   "holdout": "b",
+   "n_orbits": 16,
+   "pred": {
+    "within_rms": 0.0003203569372025307,
+    "total_rms": 0.004374095642253842,
+    "spread_ratio": 0.07323958216822626,
+    "n_pairs_classed": 36
+   },
+   "target": {
+    "within_rms": 0.0,
+    "total_rms": 0.00493923592272971,
+    "spread_ratio": 0.0,
+    "n_pairs_classed": 36
+   },
+   "error": {
+    "within_rms": 0.0003203569372025307,
+    "total_rms": 0.002043062087564406,
+    "spread_ratio": 0.1568023503311334,
+    "n_pairs_classed": 36
+   }
+  },
+  "A2_39baaea0dd": {
+   "name": "fluoranthene+ethynyl",
+   "holdout": "b",
+   "n_orbits": 16,
+   "pred": {
+    "within_rms": 0.00014388795410023094,
+    "total_rms": 0.004367617638560317,
+    "spread_ratio": 0.03294426527402253,
+    "n_pairs_classed": 36
+   },
+   "target": {
+    "within_rms": 0.0,
+    "total_rms": 0.003914431640148967,
+    "spread_ratio": 0.0,
+    "n_pairs_classed": 36
+   },
+   "error": {
+    "within_rms": 0.00014388795410023094,
+    "total_rms": 0.0024942018528030163,
+    "spread_ratio": 0.05768897731293391,
+    "n_pairs_classed": 36
+   }
+  },
+  "A2_3b6ae59b2d": {
+   "name": "fluorene+SH",
+   "holdout": "b",
+   "n_orbits": 192,
+   "pred": {
+    "within_rms": 1.2130318196554086e-05,
+    "total_rms": 0.0006822852849979616,
+    "spread_ratio": 0.017778953266726728,
+    "n_pairs_classed": 384
+   },
+   "target": {
+    "within_rms": 0.0,
+    "total_rms": 0.0007787178895463252,
+    "spread_ratio": 0.0,
+    "n_pairs_classed": 384
+   },
+   "error": {
+    "within_rms": 1.2130318196554086e-05,
+    "total_rms": 0.00031087003812374855,
+    "spread_ratio": 0.039020544629409896,
+    "n_pairs_classed": 384
+   }
+  },
+  "A2_3cf20db4ac": {
+   "name": "fluorene+CN",
+   "holdout": "b",
+   "n_orbits": 203,
+   "pred": {
+    "within_rms": 8.851454431935234e-05,
+    "total_rms": 0.0016687670463468838,
+    "spread_ratio": 0.053041881737250565,
+    "n_pairs_classed": 407
+   },
+   "target": {
+    "within_rms": 0.0,
+    "total_rms": 0.001984774118441374,
+    "spread_ratio": 0.0,
+    "n_pairs_classed": 407
+   },
+   "error": {
+    "within_rms": 8.851454431935234e-05,
+    "total_rms": 0.0011490226112980673,
+    "spread_ratio": 0.0770346409626841,
+    "n_pairs_classed": 407
+   }
+  },
+  "A2_3f25a88e27": {
+   "name": "fluoranthene+OCH3",
+   "holdout": "b",
+   "n_orbits": 39,
+   "pred": {
+    "within_rms": 8.342078187902817e-05,
+    "total_rms": 0.001526521828913466,
+    "spread_ratio": 0.054647618068065666,
+    "n_pairs_classed": 126
+   },
+   "target": {
+    "within_rms": 5.914807766726657e-21,
+    "total_rms": 0.001502666650158097,
+    "spread_ratio": 3.93620751888275e-18,
+    "n_pairs_classed": 126
+   },
+   "error": {
+    "within_rms": 8.342078187902817e-05,
+    "total_rms": 0.00034034092203619106,
+    "spread_ratio": 0.24510946664873112,
+    "n_pairs_classed": 126
+   }
+  },
+  "A2_42ab9eb0a0": {
+   "name": "fluoranthene+CF3",
+   "holdout": "b",
+   "n_orbits": 82,
+   "pred": {
+    "within_rms": 8.77508266147989e-05,
+    "total_rms": 0.0016542786095905637,
+    "spread_ratio": 0.05304476894403982,
+    "n_pairs_classed": 258
+   },
+   "target": {
+    "within_rms": 0.0,
+    "total_rms": 0.0019359994283722256,
+    "spread_ratio": 0.0,
+    "n_pairs_classed": 258
+   },
+   "error": {
+    "within_rms": 8.77508266147989e-05,
+    "total_rms": 0.0008467275240738914,
+    "spread_ratio": 0.10363525941922865,
+    "n_pairs_classed": 258
+   }
+  }
+ },
+ "ring_bond_pairs": {
+  "benzene": {
+   "ortho": {
+    "pred": [
+     0.0057342571672052145,
+     6
+    ],
+    "true": [
+     0.004813364098794924,
+     6
+    ],
+    "F_low": [
+     0.0351548847511677,
+     6
+    ]
+   },
+   "meta": {
+    "pred": [
+     -0.007407493268450101,
+     6
+    ],
+    "true": [
+     -0.006441598965714682,
+     6
+    ],
+    "F_low": [
+     -0.017415642419015172,
+     6
+    ]
+   },
+   "para": {
+    "pred": [
+     0.006514177347222964,
+     3
+    ],
+    "true": [
+     0.006521901135679633,
+     3
+    ],
+    "F_low": [
+     0.046232416411744394,
+     3
+    ]
+   }
+  }
+ },
+ "size_slope": {
+  "a": {
+   "slope": -0.16123384819182449,
+   "n": 10,
+   "n_atoms_range": [
+    12,
+    26
+   ]
+  },
+  "b": {
+   "slope": 1.1257207029036775,
+   "n": 39,
+   "n_atoms_range": [
+    23,
+    30
+   ]
+  }
+ },
+ "symmetry_pooled": {
+  "n_molecules": 43,
+  "median_spread_ratio": 0.568966582507437,
+  "mean_spread_ratio": 0.5023970707218673,
+  "pooled_ratio": 0.46928499644540195
+ },
+ "orbit_symmetry_pooled": {
+  "n_all": 43,
+  "n_rigid": 43,
+  "rigid_means_target_ratio_below": 0.15,
+  "rigid": {
+   "pred_ratio": 0.15563973492605382,
+   "target_ratio": 2.2936315563646572e-17,
+   "error_antisymmetric_fraction": 0.4561924099332921,
+   "median_pred_ratio": 0.051033413855249274
+  },
+  "all": {
+   "pred_ratio": 0.15563973492605382,
+   "target_ratio": 2.2936315563646572e-17,
+   "error_antisymmetric_fraction": 0.4561924099332921
+  }
+ }
+}

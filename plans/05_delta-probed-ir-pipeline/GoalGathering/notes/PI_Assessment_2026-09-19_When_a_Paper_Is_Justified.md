@@ -216,3 +216,5 @@ that was withdrawn within the hour, with its control now a rule, moves no line. 
 
 **Long term (60 %): unchanged, with one small plus.** A model that carries its symmetry in its features cannot drift into asymmetric answers as the
 corpus grows; the decade-long asset needs exactly that kind of built-in guarantee, and now it is measured rather than assumed.
+
+*10:0x:* lever 2 of the addendum above (orbit-averaged labels) was run within the hour and **failed** its registered line (−1.6 % against ≥ 8 %): label noise is a tenth of the signal against a model error of a third, and 175 examples already average it away. Dropped; the odds lines do not move. Lever 1 (the equivariant model's gain, measured against the pair MLP before building) and the running layer-B curve remain the levers on the proof line.

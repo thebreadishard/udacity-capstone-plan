@@ -1,0 +1,786 @@
+{
+ "date": "2026-09-25 07:54",
+ "smoke": false,
+ "n_molecules": 224,
+ "holdout_a": [
+  "A_fdc27f1bd1",
+  "A_8448043181",
+  "A_e72997e726",
+  "A_541c53d1a5",
+  "A_428228e5a5",
+  "A_07cadc7923",
+  "A_08dde334d8",
+  "A_3100da3761",
+  "A_bce5bae234",
+  "A_72b86c2331"
+ ],
+ "holdout_b": [
+  "A2_00b0ff5a24",
+  "A2_0101e57296",
+  "A2_02c8833bd5",
+  "A2_041da590e8",
+  "A2_043da5bed2",
+  "A2_048ea73dab",
+  "A2_05f5ff045c",
+  "A2_06222c33e3",
+  "A2_066237c4f5",
+  "A2_06873ee7ad",
+  "A2_097651503c",
+  "A2_0dc3aa4eb9",
+  "A2_0e1c741b76",
+  "A2_10d7d03408",
+  "A2_11c681aefb",
+  "A2_1543119d9d",
+  "A2_16521f2764",
+  "A2_1b389dc1d8",
+  "A2_1bb2e3fbf1",
+  "A2_1c2781e93a",
+  "A2_20d3215ce3",
+  "A2_210c322595",
+  "A2_21b688db0c",
+  "A2_27130c4c79",
+  "A2_27370742a0",
+  "A2_27edf7297c",
+  "A2_2931e48c62",
+  "A2_2e154f6054",
+  "A2_2f079d63a1",
+  "A2_3058513f57",
+  "A2_311e979a14",
+  "A2_331729cd47",
+  "A2_372920f181",
+  "A2_3825e7205b",
+  "A2_39baaea0dd",
+  "A2_3b6ae59b2d",
+  "A2_3cf20db4ac",
+  "A2_3f25a88e27",
+  "A2_42ab9eb0a0"
+ ],
+ "scaffold_cores": [
+  "fluoranthene",
+  "fluorene"
+ ],
+ "pool": 175,
+ "sizes": [
+  45,
+  100,
+  175
+ ],
+ "seeds": [
+  0,
+  1,
+  2
+ ],
+ "epochs": 60,
+ "n_features": 66,
+ "substituted_analytic": [
+  "A2_0420908ebe",
+  "A2_13bafae8e0",
+  "A2_13eea56ee5",
+  "A2_197913eb9c",
+  "A2_1c29b66c9d",
+  "A2_20747fd501",
+  "A2_20e59f3897",
+  "A2_220d2c107b",
+  "A2_22d0e8105c",
+  "A2_28eed45ad3",
+  "A2_2a0b78bd2b",
+  "A2_2b693cf6e7",
+  "A2_2c22216564",
+  "A2_3020175511",
+  "A2_330b4d6d8d",
+  "A2_356c370f21",
+  "A2_3802542cb6",
+  "A2_3a2982dd85",
+  "A2_3c2cf09504",
+  "A_014f8519af",
+  "A_78896cfe24",
+  "A_8448043181",
+  "A_b90527ca2d"
+ ],
+ "curve": {
+  "45": {
+   "n": 45,
+   "n_pairs_train": 146277,
+   "target_scale_per_class": {
+    "diag_bond": 0.0031959929037839174,
+    "diag_angle": 0.008049588650465012,
+    "diag_dihedral": 0.0005954388179816306,
+    "diag_other": 0.0021967769134789705,
+    "off_bondbond": 0.004131751600652933,
+    "off_other": 0.0007697489927522838
+   },
+   "B1_mlp": {
+    "per_seed": [
+     {
+      "a": {
+       "diag_rms": {
+        "CH-stretch": 2.6628707079671874,
+        "CH-oop": 11.02098832674776,
+        "ring-ip": 5.835650635631435,
+        "other": 6.768553142501751
+       },
+       "coupling_rms": 1.7129580589478524,
+       "coupling_zero_rms": 3.7618729536951134,
+       "block_rms": 1.5621108826037853,
+       "block_median_rule_rms": 3.011383036215643,
+       "coupling_ratio": 0.45534713161041046,
+       "corrected_freq_rms": 6.396577961182459,
+       "corrected_freq_rms_zero_rule": 23.290210582349335,
+       "duschinsky_overlap_median": 0.9976329787802802,
+       "duschinsky_overlap_p10": 0.9446159330399817,
+       "dH_residual_ratio": 0.29856283824931057
+      },
+      "b": {
+       "diag_rms": {
+        "CH-stretch": 5.268977792535372,
+        "CH-oop": 11.646166866265455,
+        "ring-ip": 5.8601853510970745,
+        "other": 8.144121912193683
+       },
+       "coupling_rms": 1.8541292687434672,
+       "coupling_zero_rms": 3.7379272786222715,
+       "block_rms": 1.1295830075133175,
+       "block_median_rule_rms": 1.089735513877492,
+       "coupling_ratio": 0.49603139134019314,
+       "corrected_freq_rms": 6.198301029283526,
+       "corrected_freq_rms_zero_rule": 23.091644995601886,
+       "duschinsky_overlap_median": 0.9928827415524781,
+       "duschinsky_overlap_p10": 0.9107394727360809,
+       "dH_residual_ratio": 0.33832791269802653
+      }
+     },
+     {
+      "a": {
+       "diag_rms": {
+        "CH-stretch": 1.9181214536992912,
+        "CH-oop": 9.836699197405883,
+        "ring-ip": 5.448366016317171,
+        "other": 6.5731376639818935
+       },
+       "coupling_rms": 1.7232306594125695,
+       "coupling_zero_rms": 3.7618729536951134,
+       "block_rms": 1.625662046805178,
+       "block_median_rule_rms": 3.011383036215643,
+       "coupling_ratio": 0.45807784596232043,
+       "corrected_freq_rms": 5.894449094525098,
+       "corrected_freq_rms_zero_rule": 23.290210582349335,
+       "duschinsky_overlap_median": 0.9979120287118148,
+       "duschinsky_overlap_p10": 0.9268913471559019,
+       "dH_residual_ratio": 0.2937274902339444
+      },
+      "b": {
+       "diag_rms": {
+        "CH-stretch": 4.446441205202592,
+        "CH-oop": 10.679674336810603,
+        "ring-ip": 5.5380740507140995,
+        "other": 10.172817935834898
+       },
+       "coupling_rms": 1.8878720413456411,
+       "coupling_zero_rms": 3.7379272786222715,
+       "block_rms": 0.8609303879268823,
+       "block_median_rule_rms": 1.089735513877492,
+       "coupling_ratio": 0.5050585259222792,
+       "corrected_freq_rms": 5.836166474853664,
+       "corrected_freq_rms_zero_rule": 23.091644995601886,
+       "duschinsky_overlap_median": 0.992793757248735,
+       "duschinsky_overlap_p10": 0.8998159669207441,
+       "dH_residual_ratio": 0.3369290381261611
+      }
+     },
+     {
+      "a": {
+       "diag_rms": {
+        "CH-stretch": 2.637471973600227,
+        "CH-oop": 9.659213387068645,
+        "ring-ip": 5.250418025664715,
+        "other": 6.553403704786105
+       },
+       "coupling_rms": 1.7452817692565026,
+       "coupling_zero_rms": 3.7618729536951134,
+       "block_rms": 1.3010323073896033,
+       "block_median_rule_rms": 3.011383036215643,
+       "coupling_ratio": 0.4639395829522082,
+       "corrected_freq_rms": 5.846278431351121,
+       "corrected_freq_rms_zero_rule": 23.290210582349335,
+       "duschinsky_overlap_median": 0.9976814448347975,
+       "duschinsky_overlap_p10": 0.9301189421750394,
+       "dH_residual_ratio": 0.29612327198999394
+      },
+      "b": {
+       "diag_rms": {
+        "CH-stretch": 5.4743534267724785,
+        "CH-oop": 10.827897079312024,
+        "ring-ip": 5.460222774476018,
+        "other": 8.377660584922632
+       },
+       "coupling_rms": 1.9152077977025077,
+       "coupling_zero_rms": 3.7379272786222715,
+       "block_rms": 0.7579304199069641,
+       "block_median_rule_rms": 1.089735513877492,
+       "coupling_ratio": 0.5123716046205202,
+       "corrected_freq_rms": 6.068836694776031,
+       "corrected_freq_rms_zero_rule": 23.091644995601886,
+       "duschinsky_overlap_median": 0.9917616245309735,
+       "duschinsky_overlap_p10": 0.9027280832650926,
+       "dH_residual_ratio": 0.34776522700581464
+      }
+     }
+    ],
+    "mean": {
+     "a": {
+      "diag_rms": {
+       "CH-stretch": 2.4061547117555686,
+       "CH-oop": 10.172300303740762,
+       "ring-ip": 5.511478225871106,
+       "other": 6.63169817042325
+      },
+      "coupling_rms": 1.7271568292056416,
+      "coupling_zero_rms": 3.761872953695113,
+      "block_rms": 1.4962684122661887,
+      "block_median_rule_rms": 3.011383036215643,
+      "coupling_ratio": 0.4591215201749797,
+      "corrected_freq_rms": 6.045768495686225,
+      "corrected_freq_rms_zero_rule": 23.290210582349335,
+      "duschinsky_overlap_median": 0.9977421507756308,
+      "duschinsky_overlap_p10": 0.9338754074569744,
+      "dH_residual_ratio": 0.29613786682441634
+     },
+     "b": {
+      "diag_rms": {
+       "CH-stretch": 5.0632574748368135,
+       "CH-oop": 11.051246094129361,
+       "ring-ip": 5.619494058762398,
+       "other": 8.898200144317071
+      },
+      "coupling_rms": 1.8857363692638718,
+      "coupling_zero_rms": 3.7379272786222715,
+      "block_rms": 0.9161479384490546,
+      "block_median_rule_rms": 1.089735513877492,
+      "coupling_ratio": 0.5044871739609975,
+      "corrected_freq_rms": 6.034434732971074,
+      "corrected_freq_rms_zero_rule": 23.091644995601886,
+      "duschinsky_overlap_median": 0.9924793744440622,
+      "duschinsky_overlap_p10": 0.9044278409739727,
+      "dH_residual_ratio": 0.3410073926100008
+     }
+    },
+    "seconds": 119
+   },
+   "B2_gbt": {
+    "a": {
+     "diag_rms": {
+      "CH-stretch": 4.983756078927284,
+      "CH-oop": 7.018264049556544,
+      "ring-ip": 5.510490549394742,
+      "other": 6.262281551972237
+     },
+     "coupling_rms": 1.7208948316700328,
+     "coupling_zero_rms": 3.7618729536951134,
+     "block_rms": 1.206513176982865,
+     "block_median_rule_rms": 3.011383036215643,
+     "coupling_ratio": 0.457456924476856,
+     "corrected_freq_rms": 5.672619723902796,
+     "corrected_freq_rms_zero_rule": 23.290210582349335,
+     "duschinsky_overlap_median": 0.9981659438199586,
+     "duschinsky_overlap_p10": 0.919397292046636,
+     "dH_residual_ratio": 0.3077144433417673
+    },
+    "b": {
+     "diag_rms": {
+      "CH-stretch": 6.0111847034933295,
+      "CH-oop": 7.891919059866208,
+      "ring-ip": 5.903472407981096,
+      "other": 11.337852510572016
+     },
+     "coupling_rms": 1.8135438340871455,
+     "coupling_zero_rms": 3.7379272786222715,
+     "block_rms": 1.6829070637810795,
+     "block_median_rule_rms": 1.089735513877492,
+     "coupling_ratio": 0.48517365344667246,
+     "corrected_freq_rms": 6.362499650559023,
+     "corrected_freq_rms_zero_rule": 23.091644995601886,
+     "duschinsky_overlap_median": 0.9932756641025324,
+     "duschinsky_overlap_p10": 0.9091362560134789,
+     "dH_residual_ratio": 0.3549958153338764
+    },
+    "seconds": 1
+   }
+  },
+  "100": {
+   "n": 100,
+   "n_pairs_train": 314223,
+   "target_scale_per_class": {
+    "diag_bond": 0.0032554210629314184,
+    "diag_angle": 0.007550310809165239,
+    "diag_dihedral": 0.0005418422515504062,
+    "diag_other": 0.0025712146889418364,
+    "off_bondbond": 0.004121809732168913,
+    "off_other": 0.0007700047572143376
+   },
+   "B1_mlp": {
+    "per_seed": [
+     {
+      "a": {
+       "diag_rms": {
+        "CH-stretch": 4.232754044552738,
+        "CH-oop": 6.806414001861188,
+        "ring-ip": 4.734559394457964,
+        "other": 6.144276925278414
+       },
+       "coupling_rms": 1.6417841308832513,
+       "coupling_zero_rms": 3.7618729536951134,
+       "block_rms": 1.0548718246655475,
+       "block_median_rule_rms": 2.8565957577074466,
+       "coupling_ratio": 0.4364273198728316,
+       "corrected_freq_rms": 5.289083655130081,
+       "corrected_freq_rms_zero_rule": 23.290210582349335,
+       "duschinsky_overlap_median": 0.9974507557907362,
+       "duschinsky_overlap_p10": 0.9081163978454511,
+       "dH_residual_ratio": 0.2659002890495845
+      },
+      "b": {
+       "diag_rms": {
+        "CH-stretch": 7.754247185237301,
+        "CH-oop": 7.2241733042000265,
+        "ring-ip": 4.733439323356385,
+        "other": 7.016113501498049
+       },
+       "coupling_rms": 1.7520758962327847,
+       "coupling_zero_rms": 3.7379272786222715,
+       "block_rms": 0.9914493044569118,
+       "block_median_rule_rms": 1.1617336136621745,
+       "coupling_ratio": 0.4687292624051708,
+       "corrected_freq_rms": 5.762856772256382,
+       "corrected_freq_rms_zero_rule": 23.091644995601886,
+       "duschinsky_overlap_median": 0.9924100032497695,
+       "duschinsky_overlap_p10": 0.8956292709834224,
+       "dH_residual_ratio": 0.3202042573918192
+      }
+     },
+     {
+      "a": {
+       "diag_rms": {
+        "CH-stretch": 1.6620002181919327,
+        "CH-oop": 7.258156908721145,
+        "ring-ip": 5.071484314331163,
+        "other": 6.0821248829014225
+       },
+       "coupling_rms": 1.6589003763453418,
+       "coupling_zero_rms": 3.7618729536951134,
+       "block_rms": 1.1608830383279167,
+       "block_median_rule_rms": 2.8565957577074466,
+       "coupling_ratio": 0.4409772463782651,
+       "corrected_freq_rms": 5.204053436688115,
+       "corrected_freq_rms_zero_rule": 23.290210582349335,
+       "duschinsky_overlap_median": 0.9975730887685283,
+       "duschinsky_overlap_p10": 0.9159786552319427,
+       "dH_residual_ratio": 0.27059212508071556
+      },
+      "b": {
+       "diag_rms": {
+        "CH-stretch": 4.449869784254855,
+        "CH-oop": 6.664786954744197,
+        "ring-ip": 4.60175523960085,
+        "other": 7.130727604374973
+       },
+       "coupling_rms": 1.8048263506190354,
+       "coupling_zero_rms": 3.7379272786222715,
+       "block_rms": 0.9096442753533823,
+       "block_median_rule_rms": 1.1617336136621745,
+       "coupling_ratio": 0.4828414830168285,
+       "corrected_freq_rms": 5.1423948897257485,
+       "corrected_freq_rms_zero_rule": 23.091644995601886,
+       "duschinsky_overlap_median": 0.9922718741992,
+       "duschinsky_overlap_p10": 0.9003458682258444,
+       "dH_residual_ratio": 0.3251326362684275
+      }
+     },
+     {
+      "a": {
+       "diag_rms": {
+        "CH-stretch": 2.283911151431013,
+        "CH-oop": 6.651970810016512,
+        "ring-ip": 4.739799698625079,
+        "other": 5.975389103632662
+       },
+       "coupling_rms": 1.6937018629359317,
+       "coupling_zero_rms": 3.7618729536951134,
+       "block_rms": 1.1084362827424106,
+       "block_median_rule_rms": 2.8565957577074466,
+       "coupling_ratio": 0.45022835268062067,
+       "corrected_freq_rms": 5.046047780350041,
+       "corrected_freq_rms_zero_rule": 23.290210582349335,
+       "duschinsky_overlap_median": 0.9976507868979849,
+       "duschinsky_overlap_p10": 0.924827752664031,
+       "dH_residual_ratio": 0.27062807701813774
+      },
+      "b": {
+       "diag_rms": {
+        "CH-stretch": 4.594571550567377,
+        "CH-oop": 7.325280569339908,
+        "ring-ip": 5.68299078054718,
+        "other": 7.448080735131915
+       },
+       "coupling_rms": 1.9109443950760139,
+       "coupling_zero_rms": 3.7379272786222715,
+       "block_rms": 1.8348036231859453,
+       "block_median_rule_rms": 1.1617336136621745,
+       "coupling_ratio": 0.5112310252810353,
+       "corrected_freq_rms": 5.77214658982662,
+       "corrected_freq_rms_zero_rule": 23.091644995601886,
+       "duschinsky_overlap_median": 0.9916659150516371,
+       "duschinsky_overlap_p10": 0.8839702617279631,
+       "dH_residual_ratio": 0.33958224318121233
+      }
+     }
+    ],
+    "mean": {
+     "a": {
+      "diag_rms": {
+       "CH-stretch": 2.726221804725228,
+       "CH-oop": 6.905513906866282,
+       "ring-ip": 4.848614469138068,
+       "other": 6.067263637270833
+      },
+      "coupling_rms": 1.6647954567215082,
+      "coupling_zero_rms": 3.761872953695113,
+      "block_rms": 1.1080637152452917,
+      "block_median_rule_rms": 2.856595757707447,
+      "coupling_ratio": 0.44254430631057246,
+      "corrected_freq_rms": 5.179728290722745,
+      "corrected_freq_rms_zero_rule": 23.290210582349335,
+      "duschinsky_overlap_median": 0.9975582104857498,
+      "duschinsky_overlap_p10": 0.9163076019138083,
+      "dH_residual_ratio": 0.2690401637161459
+     },
+     "b": {
+      "diag_rms": {
+       "CH-stretch": 5.599562840019845,
+       "CH-oop": 7.071413609428045,
+       "ring-ip": 5.006061781168138,
+       "other": 7.19830728033498
+      },
+      "coupling_rms": 1.8226155473092778,
+      "coupling_zero_rms": 3.7379272786222715,
+      "block_rms": 1.2452990676654132,
+      "block_median_rule_rms": 1.1617336136621745,
+      "coupling_ratio": 0.4876005902343448,
+      "corrected_freq_rms": 5.559132750602917,
+      "corrected_freq_rms_zero_rule": 23.091644995601886,
+      "duschinsky_overlap_median": 0.9921159308335357,
+      "duschinsky_overlap_p10": 0.8933151336457432,
+      "dH_residual_ratio": 0.328306378947153
+     }
+    },
+    "seconds": 163
+   },
+   "B2_gbt": {
+    "a": {
+     "diag_rms": {
+      "CH-stretch": 5.780744919240606,
+      "CH-oop": 8.338497821447922,
+      "ring-ip": 6.056287506007193,
+      "other": 6.6253167626098595
+     },
+     "coupling_rms": 1.741417388389439,
+     "coupling_zero_rms": 3.7618729536951134,
+     "block_rms": 1.7419555517970065,
+     "block_median_rule_rms": 2.8565957577074466,
+     "coupling_ratio": 0.4629123337828104,
+     "corrected_freq_rms": 6.28132951661357,
+     "corrected_freq_rms_zero_rule": 23.290210582349335,
+     "duschinsky_overlap_median": 0.9981507968374564,
+     "duschinsky_overlap_p10": 0.9194017155775229,
+     "dH_residual_ratio": 0.3203984667914588
+    },
+    "b": {
+     "diag_rms": {
+      "CH-stretch": 6.402945815972691,
+      "CH-oop": 9.325042631456096,
+      "ring-ip": 6.387527090612958,
+      "other": 11.748810862418823
+     },
+     "coupling_rms": 1.8362875788470645,
+     "coupling_zero_rms": 3.7379272786222715,
+     "block_rms": 2.2284672655744497,
+     "block_median_rule_rms": 1.1617336136621745,
+     "coupling_ratio": 0.4912582407231542,
+     "corrected_freq_rms": 6.816424722823986,
+     "corrected_freq_rms_zero_rule": 23.091644995601886,
+     "duschinsky_overlap_median": 0.9935064148477211,
+     "duschinsky_overlap_p10": 0.9110326125668086,
+     "dH_residual_ratio": 0.36848597247217757
+    },
+    "seconds": 2
+   }
+  },
+  "175": {
+   "n": 175,
+   "n_pairs_train": 539226,
+   "target_scale_per_class": {
+    "diag_bond": 0.00317700719460845,
+    "diag_angle": 0.007319495547562838,
+    "diag_dihedral": 0.0005334106972441077,
+    "diag_other": 0.002413470996543765,
+    "off_bondbond": 0.004158519674092531,
+    "off_other": 0.0007426180527545512
+   },
+   "B1_mlp": {
+    "per_seed": [
+     {
+      "a": {
+       "diag_rms": {
+        "CH-stretch": 1.4248120719859916,
+        "CH-oop": 5.715674483247966,
+        "ring-ip": 4.584526161369139,
+        "other": 6.068297563547861
+       },
+       "coupling_rms": 1.6091638714933707,
+       "coupling_zero_rms": 3.7618729536951134,
+       "block_rms": 1.1274776900772183,
+       "block_median_rule_rms": 2.893286960274574,
+       "coupling_ratio": 0.42775603836189197,
+       "corrected_freq_rms": 4.857247451725964,
+       "corrected_freq_rms_zero_rule": 23.290210582349335,
+       "duschinsky_overlap_median": 0.997462910154656,
+       "duschinsky_overlap_p10": 0.9263135735766391,
+       "dH_residual_ratio": 0.2582201227456407
+      },
+      "b": {
+       "diag_rms": {
+        "CH-stretch": 3.2775857074225714,
+        "CH-oop": 6.263858195028533,
+        "ring-ip": 4.8826424423981125,
+        "other": 7.2478238866443725
+       },
+       "coupling_rms": 1.7413936515230848,
+       "coupling_zero_rms": 3.7379272786222715,
+       "block_rms": 1.2647559977162748,
+       "block_median_rule_rms": 1.1407200908405606,
+       "coupling_ratio": 0.4658714634397406,
+       "corrected_freq_rms": 5.315259905868294,
+       "corrected_freq_rms_zero_rule": 23.091644995601886,
+       "duschinsky_overlap_median": 0.9932854495641028,
+       "duschinsky_overlap_p10": 0.9086418807967506,
+       "dH_residual_ratio": 0.31115143960294417
+      }
+     },
+     {
+      "a": {
+       "diag_rms": {
+        "CH-stretch": 1.0562603267981217,
+        "CH-oop": 5.2391384093000415,
+        "ring-ip": 5.049553712914816,
+        "other": 5.80913507242187
+       },
+       "coupling_rms": 1.6349590906398752,
+       "coupling_zero_rms": 3.7618729536951134,
+       "block_rms": 1.1358996019720502,
+       "block_median_rule_rms": 2.893286960274574,
+       "coupling_ratio": 0.4346130533286433,
+       "corrected_freq_rms": 4.853821562054986,
+       "corrected_freq_rms_zero_rule": 23.290210582349335,
+       "duschinsky_overlap_median": 0.9977411558805926,
+       "duschinsky_overlap_p10": 0.9262541640076583,
+       "dH_residual_ratio": 0.2603287363970772
+      },
+      "b": {
+       "diag_rms": {
+        "CH-stretch": 2.5758775991350378,
+        "CH-oop": 6.417871344978124,
+        "ring-ip": 5.251864034795324,
+        "other": 6.623905334818938
+       },
+       "coupling_rms": 1.7749619477120786,
+       "coupling_zero_rms": 3.7379272786222715,
+       "block_rms": 1.803184520231966,
+       "block_median_rule_rms": 1.1407200908405606,
+       "coupling_ratio": 0.4748519207057168,
+       "corrected_freq_rms": 5.190975145461564,
+       "corrected_freq_rms_zero_rule": 23.091644995601886,
+       "duschinsky_overlap_median": 0.9923575842869743,
+       "duschinsky_overlap_p10": 0.9036740869102634,
+       "dH_residual_ratio": 0.3116244572842318
+      }
+     },
+     {
+      "a": {
+       "diag_rms": {
+        "CH-stretch": 2.0773943488091082,
+        "CH-oop": 5.207023889867228,
+        "ring-ip": 4.576035045204525,
+        "other": 5.797280511011304
+       },
+       "coupling_rms": 1.5905486375812024,
+       "coupling_zero_rms": 3.7618729536951134,
+       "block_rms": 0.9063003026696109,
+       "block_median_rule_rms": 2.893286960274574,
+       "coupling_ratio": 0.42280764320306996,
+       "corrected_freq_rms": 4.74772700206644,
+       "corrected_freq_rms_zero_rule": 23.290210582349335,
+       "duschinsky_overlap_median": 0.9976263075002408,
+       "duschinsky_overlap_p10": 0.9254486506869262,
+       "dH_residual_ratio": 0.25813925572815244
+      },
+      "b": {
+       "diag_rms": {
+        "CH-stretch": 3.8958821447171563,
+        "CH-oop": 6.72534163691345,
+        "ring-ip": 4.681068031108583,
+        "other": 6.684983147266362
+       },
+       "coupling_rms": 1.7391991255253725,
+       "coupling_zero_rms": 3.7379272786222715,
+       "block_rms": 0.9539547362780203,
+       "block_median_rule_rms": 1.1407200908405606,
+       "coupling_ratio": 0.46528436641132515,
+       "corrected_freq_rms": 5.146643253135354,
+       "corrected_freq_rms_zero_rule": 23.091644995601886,
+       "duschinsky_overlap_median": 0.9929558571931072,
+       "duschinsky_overlap_p10": 0.9051636789754393,
+       "dH_residual_ratio": 0.30757099235054897
+      }
+     }
+    ],
+    "mean": {
+     "a": {
+      "diag_rms": {
+       "CH-stretch": 1.5194889158644074,
+       "CH-oop": 5.387278927471745,
+       "ring-ip": 4.736704973162826,
+       "other": 5.891571048993678
+      },
+      "coupling_rms": 1.611557199904816,
+      "coupling_zero_rms": 3.761872953695113,
+      "block_rms": 1.0565591982396265,
+      "block_median_rule_rms": 2.893286960274574,
+      "coupling_ratio": 0.42839224496453515,
+      "corrected_freq_rms": 4.81959867194913,
+      "corrected_freq_rms_zero_rule": 23.290210582349335,
+      "duschinsky_overlap_median": 0.9976101245118297,
+      "duschinsky_overlap_p10": 0.9260054627570744,
+      "dH_residual_ratio": 0.2588960382902901
+     },
+     "b": {
+      "diag_rms": {
+       "CH-stretch": 3.249781817091588,
+       "CH-oop": 6.469023725640035,
+       "ring-ip": 4.938524836100673,
+       "other": 6.852237456243223
+      },
+      "coupling_rms": 1.7518515749201786,
+      "coupling_zero_rms": 3.7379272786222715,
+      "block_rms": 1.3406317514087538,
+      "block_median_rule_rms": 1.1407200908405606,
+      "coupling_ratio": 0.4686692501855942,
+      "corrected_freq_rms": 5.217626101488404,
+      "corrected_freq_rms_zero_rule": 23.091644995601886,
+      "duschinsky_overlap_median": 0.9928662970147281,
+      "duschinsky_overlap_p10": 0.9058265488941512,
+      "dH_residual_ratio": 0.3101156297459083
+     }
+    },
+    "seconds": 295
+   },
+   "B2_gbt": {
+    "a": {
+     "diag_rms": {
+      "CH-stretch": 5.4457610112416095,
+      "CH-oop": 8.438360323950382,
+      "ring-ip": 6.012942937079815,
+      "other": 6.610837659225056
+     },
+     "coupling_rms": 1.7404161336207984,
+     "coupling_zero_rms": 3.7618729536951134,
+     "block_rms": 1.7000523964551235,
+     "block_median_rule_rms": 2.893286960274574,
+     "coupling_ratio": 0.46264617520144274,
+     "corrected_freq_rms": 6.274051918373532,
+     "corrected_freq_rms_zero_rule": 23.290210582349335,
+     "duschinsky_overlap_median": 0.9980412035459507,
+     "duschinsky_overlap_p10": 0.9205409168577541,
+     "dH_residual_ratio": 0.3218531078159614
+    },
+    "b": {
+     "diag_rms": {
+      "CH-stretch": 6.12262834197378,
+      "CH-oop": 9.546647400018903,
+      "ring-ip": 6.281559304971879,
+      "other": 11.817847945924642
+     },
+     "coupling_rms": 1.8385157345810834,
+     "coupling_zero_rms": 3.7379272786222715,
+     "block_rms": 2.153418491261401,
+     "block_median_rule_rms": 1.1407200908405606,
+     "coupling_ratio": 0.491854334645784,
+     "corrected_freq_rms": 6.702578436827087,
+     "corrected_freq_rms_zero_rule": 23.091644995601886,
+     "duschinsky_overlap_median": 0.9934679575654273,
+     "duschinsky_overlap_p10": 0.9134688709405593,
+     "dH_residual_ratio": 0.3652993353379712
+    },
+    "seconds": 2
+   }
+  }
+ },
+ "zero_rule": {
+  "a": {
+   "diag_rms": {
+    "CH-stretch": 43.59828069032509,
+    "CH-oop": 23.752223512164523,
+    "ring-ip": 19.687355848054008,
+    "other": 13.211698680355275
+   },
+   "coupling_rms": 3.7618729536951134,
+   "coupling_zero_rms": 3.7618729536951134,
+   "block_rms": 10.989213577055686,
+   "block_median_rule_rms": 2.893286960274574,
+   "coupling_ratio": 1.0,
+   "corrected_freq_rms": 23.290210582349335,
+   "corrected_freq_rms_zero_rule": 23.290210582349335,
+   "duschinsky_overlap_median": 0.9975488923522446,
+   "duschinsky_overlap_p10": 0.9119105539342923,
+   "dH_residual_ratio": 1.0
+  },
+  "b": {
+   "diag_rms": {
+    "CH-stretch": 44.295617224289884,
+    "CH-oop": 25.318976063684993,
+    "ring-ip": 19.933266210111857,
+    "other": 19.176549964116575
+   },
+   "coupling_rms": 3.7379272786222715,
+   "coupling_zero_rms": 3.7379272786222715,
+   "block_rms": 13.23078962335932,
+   "block_median_rule_rms": 1.1407200908405606,
+   "coupling_ratio": 1.0,
+   "corrected_freq_rms": 23.091644995601886,
+   "corrected_freq_rms_zero_rule": 23.091644995601886,
+   "duschinsky_overlap_median": 0.9863974451769072,
+   "duschinsky_overlap_p10": 0.8258681025901702,
+   "dH_residual_ratio": 1.0
+  }
+ },
+ "readings": {
+  "coupling_ratio_curve_mlp": {
+   "a": [
+    0.4591215201749797,
+    0.44254430631057246,
+    0.42839224496453515
+   ],
+   "b": [
+    0.5044871739609975,
+    0.4876005902343448,
+    0.4686692501855942
+   ]
+  },
+  "slope_mlp": {
+   "a": -0.05067027624755215,
+   "b": -0.05343479205442779
+  },
+  "verdict": "WIN",
+  "ratio_a_full": 0.42839224496453515,
+  "ratio_b_full": 0.4686692501855942
+ },
+ "seconds": 613
+}
