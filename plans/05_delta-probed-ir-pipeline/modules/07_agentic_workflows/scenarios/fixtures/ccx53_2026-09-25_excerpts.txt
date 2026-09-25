@@ -1,0 +1,15 @@
+### m06_seed0.log (tail, buffered stdout)
+/root/m05run/06_generative_candidates/m06/train.py:46: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0); opt.step(); step += 1; tot += float(loss); nb += 1
+### checkpoint mtimes
+total 12540
+drwxr-xr-x 2 root root     4096 2026-09-25_13:12 .
+drwxr-xr-x 5 root root     4096 2026-09-25_09:09 ..
+-rw-r--r-- 1 root root       11 2026-09-25_15:41 .last_mtime
+-rw-r--r-- 1 root root 12822448 2026-09-25_15:41 model_seed0.pt
+-rw-r--r-- 1 root root      676 2026-09-25_09:06 train_log_seed0.json
+### e7_rungB_tuned2 (first smoke, dtype error) — see local task output
+### e7_rungB_tuned.dryrun.log tail + no pid at the time
+n= 45 (b) B2 GBT: diag CH-stretch   9.05 | CH-oop   9.26 | ring-ip   7.07 | other  11.63 | ring couplings 1.96 vs zero 3.74 (ratio 0.53) | block 2.75 vs median 
+wrote out/E7_rungB_tuned_2026-09-25.json/.md in 328 s

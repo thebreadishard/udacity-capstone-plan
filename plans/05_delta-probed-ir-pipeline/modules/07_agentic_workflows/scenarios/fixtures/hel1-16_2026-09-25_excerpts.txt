@@ -1,0 +1,19 @@
+### handover.log
+[2026-09-25 08:12:26] handover armed; waiting for 'done +0' in restarts.log
+[2026-09-25 08:12:53] handover armed; waiting for 'done A2_20e59f3897_r+' in restarts.log
+[2026-09-25 09:20:02] PAUSED restarts after 7 done (23 remain; resume with restarts.cmd.sh, finished ids are skipped)
+[2026-09-25 09:20:03] HANDOVER FAILED: dry run exit 2 — shard 2 NOT started
+[2026-09-25 09:24:51] HANDOVER DONE (by hand after a stale corpus.lock): layer-B shard 2/5 started (pid 80433)
+### layerB_shard2of5.dryrun.log (head)
+[2026-09-25 09:24:43] would run B_0040149ee1 B indole+CH3 (19 atoms)
+[2026-09-25 09:24:43] would run B_00580f71bc B pyridine+F+NO2 (13 atoms)
+# Corpus status — 2026-09-25 09:24
+### shard2 failed molecule
+[2026-09-25 12:41:41] start B_028a42dd1b B naphthalene+NH2+ethynyl (22 atoms)
+[2026-09-25 12:47:24] failed B_028a42dd1b in 342.4 s (opt -, B3LYP -, wB97X -)
+[2026-09-25 12:47:24] progress: 8 this session, 901 pending in scope, 3.38 h elapsed
+[2026-09-25 12:47:24] start B_02cab2acc2 B naphthalene+OH+OCH3 (23 atoms)
+### restarts.log tail
+[2026-09-25 09:19:54] start A2_20e59f3897_r- A2 anthracene+NO2 (restart -0.25 A) (26 atoms)
+Terminated
+[2026-09-25 09:20:02] PAUSED restarts after 7 done (23 remain; resume with restarts.cmd.sh, finished ids are skipped)
