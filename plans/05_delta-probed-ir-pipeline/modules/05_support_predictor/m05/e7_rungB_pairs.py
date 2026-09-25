@@ -180,6 +180,7 @@ def main():
     ap.add_argument("molecules"); ap.add_argument("out_prefix")
     ap.add_argument("--threads", type=int, default=16); ap.add_argument("--sizes", default="45,100,all"); ap.add_argument("--epochs", type=int, default=60)
     ap.add_argument("--smoke", action="store_true")
+    ap.add_argument("--orbit-average-targets", action="store_true", help="E11.8 (25 Sep 2026): average every per-pair target over its symmetry orbit (graph automorphisms, same-parity pairs) before training, for every molecule with a manifest SMILES; the frequency/coupling read-outs still compare against the original dH_true")
     ap.add_argument("--seeds", default="0,1,2", help="25 Sep 2026: seeds to train (the E11.2 orbit rerun uses 0); default unchanged")
     ap.add_argument("--shuffle-labels", action="store_true", help="E11.1 (25 Sep 2026): targets permuted within pair class across the pool — a control that must NOT learn")
     ap.add_argument("--dump", action="store_true", help="E11.2/3/6/7 (25 Sep 2026): per-molecule errors, pair-class breakdown, symmetry consistency, ring bond-bond terms of the seed-0 model at the full pool")
@@ -215,6 +216,18 @@ def main():
         pairs, X, c, B = molecule_pairs(g["symbols"], np.asarray(g["coords_bohr"]), m["F_low"])
         Bp = np.linalg.pinv(m["B"]); dFmn = Bp.T @ m["dH_true"] @ Bp
         m.update(pairs=pairs, X=X, pc=c, y=np.array([dFmn[i_, j_] for i_, j_ in pairs]), symbols=g["symbols"], coords=np.asarray(g["coords_bohr"]))
+    if a.orbit_average_targets:
+        import csv as _csv, e11_extras as E11
+        man = {r["id"]: r for r in _csv.DictReader(open(Path(a.molecules).parent / "manifest.csv", newline="", encoding="utf-8"))}
+        n_avg = 0; n_pairs_avg = 0; moved = []
+        for i, m in mols.items():
+            if i not in man: continue
+            og = E11.orbit_groups(m, man[i]["smiles"])
+            if not og: continue
+            y0 = m["y"].copy()
+            for g in og: m["y"][g] = m["y"][g].mean()
+            n_avg += 1; n_pairs_avg += int(sum(len(g) for g in og)); moved.append(float(np.sqrt(np.mean((m["y"] - y0) ** 2)) / max(float(np.sqrt(np.mean(y0 ** 2))), 1e-12)))
+        print(f"E11.8: targets averaged over symmetry orbits in {n_avg} molecules ({n_pairs_avg} pairs in orbits); RMS change of the targets, median {np.median(moved):.3f} of their RMS, max {max(moved):.3f}", flush=True)
     if a.shuffle_labels:
         import e11_extras as E11
         print(f"E11.1: targets shuffled within pair class across {E11.shuffle_targets(mols, pool, seed=0)} pool molecules — this run is a CONTROL", flush=True)

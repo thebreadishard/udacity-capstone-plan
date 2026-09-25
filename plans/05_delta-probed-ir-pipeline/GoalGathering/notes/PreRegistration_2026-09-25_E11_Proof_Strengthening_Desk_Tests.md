@@ -171,3 +171,23 @@ naphthalene E8 (as this morning's E11 runs), smoke first through the launch wrap
 targets and pair classes (`_pairs.npz`) so later desk tests of this kind need no retraining. Cost: one training at the full pool (≈ 1 min) plus the read-outs.
 
 **Outcome 09:4x** (`out/E11_orbit_dump_2026-09-25_dump.md`, seed 0, full pool of 175, 60 epochs; 43 hold-out molecules, 22 rigid): (i) predictions **0.066** pooled (median 0.047), (ii) target **0.103**, (iii) antisymmetric fraction of the error 0.39 — the model's mirror pairs agree *better* than the target's, and the error's antisymmetric part is the target's own asymmetry. Benzene 0.025 vs 0.026, biphenyl 0.029 vs 0.083, fluorene+Cl 0.013 vs 0.016. Reading as re-registered: the model is as symmetric as its target — by construction, as predicted. E11.2 therefore says nothing about learning and is closed as a lesson, not a finding. Per-pair predictions and targets for every hold-out molecule are in `_pairs.npz`.
+
+### E11.8 — orbit-averaged labels (pre-registered 09:5x, before the run)
+
+**Idea.** On a rigid molecule the true ΔF is symmetric; the target's within-orbit spread (0.103 of its RMS on the 22 rigid hold-out molecules; 0.39 of the
+model's error is antisymmetric) is numerical noise of the two Hessians. Averaging every per-pair target over its symmetry orbit before training removes that
+noise at no cost and on every molecule with graph symmetry (pool and hold-outs alike; `--orbit-average-targets`, default off, E7's numbers untouched).
+Rotor molecules (CH₃, CF₃, OCH₃) and the −C≡N / ethynyl linear-angle pairs get averaged too, which is a bias there (their 3D symmetry is lower than the
+graph's); the script prints how far the targets moved, and the read-out below separates rigid from the rest.
+
+**Run.** `e7_rungB_pairs.py corpus/molecules out/E11_orbit_avg_2026-09-25 --use-analytic --orbit-average-targets --dump --sizes 45,100,all --seeds 0,1,2`
+on the CCX53 (4 threads); reference = `E7_rungB_2026-09-23_analytic` (same pool, seeds, sizes, epochs; original targets) and, for the per-pair error,
+`E11_orbit_dump_2026-09-25_dump` (seed 0, full pool).
+
+**Read-outs and pass.** (a) Hold-out coupling ratio and corrected-frequency RMS against the *original* dH_true (the read-outs do not change reference):
+must not get worse by more than the three-seed spread; expected: a small gain. (b) Per-pair RMS error on the hold-outs (the dump's pair-class table, now
+against the averaged targets) on the rigid molecules: expected drop ≥ 8 % (the antisymmetric share √0.15 ≈ 0.39 of the error RMS is noise the model
+could never fit; removing it from the target removes at most that share from the *fit* noise, hence ≥ 8 % is the conservative line). (c) Slope of the
+ratio curve on hold-out (a): must not flatten (≤ 1.14× per decade would be a fail of the lever, not of the model). **Pass:** (a) not worse and (b) ≥ 8 %
+and (c) holds → the layer-B proof run adopts orbit-averaged targets for its rigid molecules (the pre-registration of that run gains a dated amendment,
+its predictions unchanged); **fail:** the lever is dropped and recorded.
