@@ -140,19 +140,21 @@ class MLP(nn.Module):
         return self.net(x).squeeze(-1)
 
 
-def train_mlp(X, y, c, seed, epochs, mu, sd, tscale, bs=4096, lr=1e-3, width=128, val=None, patience=None):
+def train_mlp(X, y, c, seed, epochs, mu, sd, tscale, bs=4096, lr=1e-3, width=128, val=None, patience=None, loss_name="mse", opt_name="adamw"):
     """Fixed recipe (E7, 23 Sep 2026): lr 1e-3, width 128, cosine over `epochs`. 25 Sep 2026 (--tune): with `val` = (Xv, yv, cv) and `patience`, early stopping on the
     inner validation MSE (checked every epoch; the best state is kept; the cosine horizon is `epochs`, the maximum); returns (model, epochs_run)."""
     torch.manual_seed(seed); rng = np.random.default_rng(seed)
     Xt = torch.tensor((X - mu) / sd); yt = torch.tensor(y / tscale[c])
-    m = MLP(X.shape[1], d=width); opt = torch.optim.AdamW(m.parameters(), lr=lr, weight_decay=1e-4)
+    m = MLP(X.shape[1], d=width)
+    opt = torch.optim.AdamW(m.parameters(), lr=lr, weight_decay=1e-4) if opt_name == "adamw" else torch.optim.SGD(m.parameters(), lr=10 * lr, momentum=0.9, nesterov=True, weight_decay=1e-4)   # stage 2 (25 Sep)
+    lossf = (lambda p, t: ((p - t) ** 2).mean()) if loss_name == "mse" else (lambda p, t: torch.nn.functional.huber_loss(p, t, delta=1.0))
     sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, epochs)
     if val is not None: Xv = torch.tensor((val[0] - mu) / sd); yv = torch.tensor(val[1] / tscale[val[2]])
     best, best_state, bad, ran = float("inf"), None, 0, 0
     for ep in range(epochs):
         m.train(); order = rng.permutation(len(y))
         for s in range(0, len(y), bs):
-            b = torch.tensor(order[s:s + bs]); loss = ((m(Xt[b]) - yt[b]) ** 2).mean()
+            b = torch.tensor(order[s:s + bs]); loss = lossf(m(Xt[b]), yt[b])
             opt.zero_grad(); loss.backward(); opt.step()
         sched.step(); ran = ep + 1
         if val is not None:
@@ -169,7 +171,10 @@ def train_mlp(X, y, c, seed, epochs, mu, sd, tscale, bs=4096, lr=1e-3, width=128
 TUNE_GRID = [(lr, w) for lr in (3e-4, 1e-3, 3e-3) for w in (128, 256)]   # 25 Sep 2026 pre-registered grid; not enlarged after a reading
 
 
-def train_tuned(mols, tr, seed, mu, sd, tscale, log=print):
+STAGE2_GRID = [("mse", "sgd"), ("huber", "adamw"), ("huber", "sgd")]   # 25 Sep 2026 stage 2, at stage 1's lr/width; (mse, adamw) is stage 1's own cell
+
+
+def train_tuned(mols, tr, seed, mu, sd, tscale, log=print, stage2=False):
     """25 Sep 2026 (--tune): inner 20 % validation split by molecule (hash order), six settings with early stopping (patience 10, max 200 epochs), selection on the
     inner MSE, retrain on all training molecules with the epochs early stopping chose. Returns (model, record)."""
     k = max(1, int(round(0.2 * len(tr)))); inner_val, inner_tr = tr[-k:], tr[:-k]
@@ -179,10 +184,15 @@ def train_tuned(mols, tr, seed, mu, sd, tscale, log=print):
     for lr, w in TUNE_GRID:
         _, ran, vm = train_mlp(Xa, ya, ca, seed, 200, mu, sd, tscale, lr=lr, width=w, val=(Xv, yv, cv), patience=10)
         trials.append(dict(lr=lr, width=w, epochs=ran, inner_val_mse=vm)); log(f"  tune n={len(tr)} seed {seed}: lr {lr:g} width {w} → inner val MSE {vm:.4f} after {ran} epochs")
-    bestt = min(trials, key=lambda t: t["inner_val_mse"])
+    bestt = dict(min(trials, key=lambda t: t["inner_val_mse"]), loss="mse", opt="adamw")
+    if stage2:
+        for ln, on in STAGE2_GRID:
+            _, ran, vm = train_mlp(Xa, ya, ca, seed, 200, mu, sd, tscale, lr=bestt["lr"], width=bestt["width"], val=(Xv, yv, cv), patience=10, loss_name=ln, opt_name=on)
+            trials.append(dict(lr=bestt["lr"], width=bestt["width"], loss=ln, opt=on, epochs=ran, inner_val_mse=vm)); log(f"  tune2 n={len(tr)} seed {seed}: {ln} + {on} → inner val MSE {vm:.4f} after {ran} epochs")
+        bestt = min((t for t in trials), key=lambda t: t["inner_val_mse"]); bestt = dict(bestt, loss=bestt.get("loss", "mse"), opt=bestt.get("opt", "adamw"))
     X = np.concatenate([mols[i]["X"] for i in tr]); y = np.concatenate([mols[i]["y"] for i in tr]); c = np.concatenate([mols[i]["pc"] for i in tr])
-    m = train_mlp(X, y, c, seed, max(bestt["epochs"], 1), mu, sd, tscale, lr=bestt["lr"], width=bestt["width"])
-    return m, dict(chosen=bestt, trials=trials, inner_val_molecules=len(inner_val))
+    m = train_mlp(X, y, c, seed, max(bestt["epochs"], 1), mu, sd, tscale, lr=bestt["lr"], width=bestt["width"], loss_name=bestt["loss"], opt_name=bestt["opt"])
+    return m, dict(chosen=bestt, trials=trials, inner_val_molecules=len(inner_val), stage2=stage2)
 
 
 def predict_mlp(m, X, c, mu, sd, tscale):
@@ -213,6 +223,7 @@ def main():
     ap.add_argument("--smoke", action="store_true")
     ap.add_argument("--orbit-average-targets", action="store_true", help="E11.8 (25 Sep 2026): average every per-pair target over its symmetry orbit (graph automorphisms, same-parity pairs) before training, for every molecule with a manifest SMILES; the frequency/coupling read-outs still compare against the original dH_true")
     ap.add_argument("--tune", action="store_true", help="25 Sep 2026: per size and seed, inner validation split + fixed grid + early stopping (train_tuned); the fixed recipe is the default")
+    ap.add_argument("--tune-stage2", action="store_true", help="25 Sep 2026: with --tune, also loss {mse, huber} x optimiser {adamw, sgd-nesterov} at the stage-1 setting")
     ap.add_argument("--seeds", default="0,1,2", help="25 Sep 2026: seeds to train (the E11.2 orbit rerun uses 0); default unchanged")
     ap.add_argument("--shuffle-labels", action="store_true", help="E11.1 (25 Sep 2026): targets permuted within pair class across the pool — a control that must NOT learn")
     ap.add_argument("--dump", action="store_true", help="E11.2/3/6/7 (25 Sep 2026): per-molecule errors, pair-class breakdown, symmetry consistency, ring bond-bond terms of the seed-0 model at the full pool")
@@ -280,7 +291,7 @@ def main():
         t1 = time.time()
         for seed in seeds:
             if a.tune:
-                m_, tune_rec = train_tuned(mols, tr, seed, mu, sd, tscale, log=lambda s: print(s, flush=True)); row.setdefault("tuning", {})[str(seed)] = tune_rec
+                m_, tune_rec = train_tuned(mols, tr, seed, mu, sd, tscale, log=lambda s: print(s, flush=True), stage2=a.tune_stage2); row.setdefault("tuning", {})[str(seed)] = tune_rec
             else:
                 m_ = train_mlp(X, y, c, seed, a.epochs, mu, sd, tscale)
             pred = {i: assemble(mols[i], mols[i]["pairs"], predict_mlp(m_, mols[i]["X"], mols[i]["pc"], mu, sd, tscale)) for i in test_a + test_b}

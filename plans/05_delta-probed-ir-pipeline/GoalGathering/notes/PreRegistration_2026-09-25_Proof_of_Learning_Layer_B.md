@@ -81,3 +81,28 @@ question at these sizes, and the fixed recipe stays for its simplicity with the 
 
 **First run.** Today on the 175-molecule pool (`--tune`, sizes 45 / 100 / 175, seeds 0–2) on the CCX53 at low priority — the same pool as the fixed curve of
 23 September, so the two curves are compared point by point; the layer-B tables get both curves from the 100-table on.
+
+## Dated amendment 12:4x — stage 2 of the tuned protocol: loss function and optimiser (the user: "loss function, optimizer zijn belangrijke componenten")
+
+**Rule adopted (QUALITY_POLICY):** a negative conclusion about the model — a flat curve, "cannot learn X", "the model is the limit" — is licensed only
+after the pre-registered search over optimiser, loss function and the main hyperparameters has run at that data size. Everything read so far
+(E6, E7 rung B, the E11.5 fits) was one frozen recipe and is now labelled as such where it is quoted.
+
+**Stage 2 (fixed before it runs).** At the learning rate and width stage 1 selects, four settings: loss {MSE, Huber with δ = 1 in the class-scaled
+units} × optimiser {AdamW (as before), SGD with Nesterov momentum 0.9 at ten times the learning rate}; the (MSE, AdamW) cell is stage 1's result and is not
+retrained. Same inner split, same early stopping, same selection statistic; the winner is retrained on all training molecules. Three extra trainings
+per point. Not in the grid, with the reason: batch size (4,096 on 10⁵–10⁶ pairs is not in the way; halving it doubles the steps, which the epoch count
+already supplies), depth (rung C's question), learning-rate warm-up (cosine from a small model's default is stable here; if stage 2's Huber/SGD cells
+win, warm-up is added to a stage 3 and registered first). **Prediction:** the loss function matters more than the optimiser for this target — Huber
+within 0.02 of MSE on the hold-outs, SGD not better than AdamW at any size; stage 2 moves the 175-point by less than 0.02 in ratio. **Reading:** the
+same rule as stage 1 — the tuned protocol (stages 1 + 2) becomes primary if its slope reaches 1.5× where the frozen recipe's does not; a stage-2 winner
+that is not (MSE, AdamW) is reported with its inner-validation margin, and the choice is fixed for all later points.
+
+**Stage 3, registered 12:4x (the user: in one of the referenced papers a quantity whose derivative could not be taken was handled by choosing a different loss
+function).** The same move applies here. The model is trained on the per-pair internal-coordinate ΔF (MSE), but it is *read* on projected quantities — the
+family block K = Lᵀ ΔH_mw L and the corrected frequencies. The projection is linear in ΔF, so a loss in the read-out's own metric is differentiable:
+L = MSE(ΔF pairs) + λ · MSE(K block of the same molecule, frequency-weighted as the read-out weights it), λ ∈ {0.1, 1}, computed per molecule inside the
+batch. Stage 3 runs only if stage 2 has run, at stage 2's setting, with the same inner split and rule; prediction: it lowers the corrected-frequency RMS on
+the hold-outs by 0.2–0.5 cm⁻¹ at 175 and leaves the ring coupling ratio within 0.02, because it re-weights the same information towards what is measured.
+The literature reference is added to the notes when the user names the paper; the principle — choose the loss for the quantity you read out, not for the
+quantity that is convenient to store — is recorded here as the design rule for rung C's loss as well.
