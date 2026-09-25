@@ -170,3 +170,25 @@ correction). E10 on the proxy: between as registered (3.75 cm⁻¹), 11 of 15 su
 (pooled 3.36, ceiling 1.92), the four rotor types not. The odds lines are left where the 22:0x addendum put them until L2 prices the first
 donor at the coupled-cluster level; the cost lever now has three measured parts (E9 neighbourhood 4×, E10 environment-once ≈ 2.7× on the layer,
 symmetry 6× on the cores) and one unmeasured price (L2, running).
+
+## Dated addition, 2026-09-25 07:0x — odds re-estimated with a long-term line (the user: "nu met een regel: lange termijn")
+
+Since 22:0x yesterday: E10 between (11 of 15 substituent types transplant; rotors do not); L2's reference point > 9.5 h for one LNO-CCSD(T)/cc-pVDZ
+energy of a 25-atom molecule at the anchor thresholds (fail bar > 2 h); the layer-B learning-curve run started on two CPX62 with the proof standard
+pre-registered (`PreRegistration_2026-09-25_Proof_of_Learning_Layer_B.md`); the first two saddle-point pairs converge to the same true minimum;
+the two-horizon note of 06:3x.
+
+| question | 24 Sep 22:0x | 25 Sep 07:0x | why |
+|---|---|---|---|
+| step 1 — the conversation of the 28th carries a defensible plan | 85 % | 85 % | the anchor is read, the proof plan is registered and running; nothing new against it |
+| the learned layer learns what it needs on the DFT–DFT proxy | 80 % | 80 % | unchanged until the 300-table; the honest status is in the 06:3x note (diagonal yes, couplings yes on unseen scaffolds, flat on bare parents) |
+| the same holds for the coupled-cluster correction | 75 % | 75 % | naphthalene E8 Saturday; L2 changes the price, not the transferability |
+| affordable with desktop + small Snellius (by 2027) | 55 % | **45 %** | L2: the LNO-CCSD(T) energy route at anchor thresholds is out for substituted molecules of 25 atoms; E10 recovers part (labels per environment type); the cheaper tier is unmeasured |
+| full mandate (large PAH in, spectral shape out, trained by 2027) | 40 % | **35 %** | follows the cost line |
+| a defensible, per-family licensed pipeline | 80 % | 80 % | unchanged |
+| **long term (≈ 2030): a versioned ΔH network on CC labels whose held-out error keeps falling with each release and reaches the per-family noise floor for the mandate's molecules** | — | **60 %** | for: locality and transferability measured four ways, label definitions frozen and versioned, cost is not a blocker on this horizon, the proof standard is registered; against: the equivariant model is unbuilt, hold-out (a) is flat so far, size extrapolation and cations untested, and a decade needs continuity of attention and funding that no measurement can give |
+
+Levers, in the order they now stand: (1) the layer-B curve (running; first table at 300 in days) — the proof itself; (2) the cheaper correlation tier for
+labels (L2b: LNO-CCSD without (T), looser thresholds, MP2-anchored decks per family) — pre-registration this week, one energy each on the CCX53
+when it is free; (3) naphthalene E8 (Saturday) for core-to-core transfer; (4) the size-extrapolation split on today's data (desk); (5) cations
+(queued behind route 2); (6) the equivariant model, after the 28th, rerun on the same table.
