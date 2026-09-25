@@ -31,12 +31,13 @@ Het aantal energieën per molecuul staat naast elk spectrum, en de nauwkeurighei
 tegen de bestaande voorspellingen, waaronder die van jouw eigen groep; de getallen van Mackie 2015 en 2016 staan nu als
 "lijn B" in de meetlat.
 
-Wat er sinds het concept van 12 september gemeten is. Het anker — naftaleen op cc-pVTZ, dertien energieën van twaalf uur op
-mijn laptop — loopt sinds 16 september; vanavond kwam de eerste van drie bandfamilies binnen. De vooraf vastgelegde vraag was
+Wat er sinds het concept van 12 september gemeten is. Het anker — naftaleen op cc-pVTZ, vijftien energieën van negen tot twaalf uur op
+mijn laptop — liep van 16 tot 24 september en is nu voor alle drie de bandfamilies uitgelezen (bijgewerkt 25 september). De vooraf vastgelegde vraag was
 of een goedkopere basis (cc-pVDZ, factor tien per energie) de correctie per familie draagt met een constante uit benzeen. Voor
 de C–H-uit-het-vlak-familie is het antwoord nee: het increment wisselt van teken (−8,1 tegen +7,9 cm⁻¹), omdat MP2 in een
-dubbel-zeta-basis juist die bewegingen te slap maakt. Voor die familie blijft het anker dus cc-pVTZ; de twee families in het
-vlak volgen dinsdag en donderdag, het rapport vrijdag. Daarnaast draait sinds gisteren op vier gehuurde machines een corpus van
+dubbel-zeta-basis juist die bewegingen te slap maakt. Voor die familie blijft het anker dus cc-pVTZ. De C–H-buiging in het vlak
+won (increment +1,2 tegen +1,0 cm⁻¹, 23 september) en de C–C-strek viel ertussenin (−1,9 tegen −6,0, 24 september): de goedkope basis is
+per familie vrijgegeven voor één van de drie, de andere twee blijven op cc-pVTZ met hun gemeten increment in de foutbegroting. Daarnaast draait sinds gisteren op vier gehuurde machines een corpus van
 DFT-paren (45 moleculen klaar, 200 in aanmaak, 868 gepland) waarop de eerste leercurves zijn gemeten: de C–H-families leren
 snel, de ringfamilie niet, en de reden bleek dat een label per modus daar slecht gedefinieerd is — sindsdien is het doelobject
 het hele familieblok. Dat is de stand; niets ervan is een oordeel over het netwerk.
@@ -77,6 +78,18 @@ het idee. Wat de meting ook prijsgaf: één coupled-cluster-gradiënt van naftal
 naar 30 gradiënten (op benzeen bewezen: 12 in plaats van 72, tot 0,03 cm⁻¹ gelijk), maar gesubstitueerde moleculen hebben die symmetrie niet.
 Daarom blijft de labelroute LNO-CC-energieën, en staat de kostentabel van deze brief daar eerlijk over.
 
+*Toegevoegd 25 september.* Drie proxy-toetsen van 24 en 25 september zeggen hoe ver die lokaliteit draagt, elk met een vooraf vastgelegde leesregel.
+De correctie van een gesubstitueerd molecuul is het blok van zijn moederkern plus de Hessiaan-kolommen binnen twee bindingen van de substituent:
+een kwart van de kolommen geeft de gecorrigeerde frequenties tot 1,7 cm⁻¹ terug, tegen 23 zonder correctie (E9, 182 moleculen). Dat buurtblok kan
+voor elf van de vijftien substituenttypen één keer gemeten worden, op de kleinste drager, en overgezet (E10; de draaibare groepen CH₃, OCH₃, SH en
+CONH₂ niet). En een model dat alleen moleculen tot 26 atomen zag, voorspelt de grotere (27–34 atomen) op 0,59 van de nulregel voor de koppelingen,
+tegen 0,36 binnen dezelfde grootte. Daartegenover staat één harde prijs: één LNO-CCSD(T)/cc-pVDZ-energie van een molecuul van 25 atomen op de
+instellingen van het anker kost meer dan negen uur op acht draden (L2, 25 september); voor gesubstitueerde moleculen is een goedkopere
+correlatietrap nodig, waarvan de nauwkeurigheid op benzeen tegen canoniek CCSD(T) gemeten wordt vóór hij labels levert. Het bewijs dat het netwerk
+leert — het criterium van dit ontwerp — is gedeeltelijk: diagonaal ja, koppelingen ja op ongeziene skeletten met een stijgende curve, kale kernen nog
+vlak. De beslissende leercurve is vooraf vastgelegd en draait sinds 25 september: laag B van het corpus, 100 tot 1.200 kleine moleculen, drie
+hold-outs (kale kernen, ongeziene skeletten, grotere moleculen), leesregel op papier vóór de eerste tabel.
+
 Wat ik van je vraag staat in §13. De drie belangrijkste: (1) een kritische lezing van §2–§3 en §7, de plekken waar de discipline
 van het plan houdt of niet; (3) of jij gasfase- of jet-gekoelde spectra kent van pyreen, chryseen en trifenyleen in het
 6–15 µm-gebied die mijn zoektocht van 5 september heeft gemist, want die maken de C–C-families op de pyreentrede beslisbaar; en
@@ -103,3 +116,6 @@ het md-bestand als bijlage; de repository-link alleen als de student dat wil.
 *Wat dit concept toevoegt ten opzichte van 12 september:* de dank voor de artikelen en de zin over Mata & Werner (§3.1 herschreven
 20 september); de stand van het anker met de eerste familie (20 september 18:43) en van het corpus; de vragen 14 en 18 in concrete
 vorm; het dek van 291 in plaats van 474 energieën (besluit 37). Plan 06 en zijn annex worden in de brief niet genoemd (de gebruiker, 20 september).
+*Bijgewerkt 25 september 08:3x:* het anker uitgelezen (drie families: verlies / winst / tussenin), de alinea over E9, E10, grootte-extrapolatie, L2 en de
+laag-B-leercurve; bronnen `PreRegistration_2026-09-24_E9_*`, `_E10_*`, `_L2_*`, `2026-09-25_Size_Extrapolation_*`, `2026-09-25_Proof_of_Learning_Layer_B.md`
+en `Note_2026-09-25_Growing_Asset_and_Proof_of_Learning.md` (de twee horizonten, voor het gesprek zelf).
