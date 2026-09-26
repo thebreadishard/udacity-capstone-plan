@@ -40,7 +40,7 @@ this file only says what is running or waiting and who acts.*
 3. Cation affordability line in the reading copy once naphthalene⁺ is in (three points).
 4. The band-prior finding (≈ 45 % of off-diagonal power in band) — to discuss with the user before the 28th, not to act on.
 5. Standout pattern proposer at CC level: a test on the anchor's real responses (naphthalene deck) — after the 28th.
-6. Standout: adaptive ordering P0+A / P1+A / P2+A (`run_simulation.py --adaptive`; registered 18:4x, the user: "Akkoord") — build after the P2 search is read (stage 3 tonight), planted dry-run, then run on hel1-23 after `chain_p2s1`; answers how much of the oracle gap is feedback.
+6. Standout: adaptive ordering P0+A / P1+A / P2+A — built and dry-run 22:0x (rule corrected: optimism for untouched pairs; 7 tests); queued on hel1-23 as `band_p2s1A` right after `POOL all_p2 DONE` (chain `chain_p2s1c`), then the wide pool with p2s1; read with `readout.py` against S5 and the prediction.
 
 ## Guards on this file
 

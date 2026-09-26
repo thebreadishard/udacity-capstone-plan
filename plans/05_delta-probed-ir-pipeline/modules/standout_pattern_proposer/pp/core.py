@@ -150,12 +150,33 @@ def order_oracle(exp: dict) -> np.ndarray:
     return order_by_scores(exp, np.abs(exp["D2"]))
 
 
+def adaptive_pick(exp: dict, prior: np.ndarray, d: np.ndarray, remaining: np.ndarray, n: int, touched=None) -> np.ndarray:
+    """The adaptive rule registered on 26 Sep 2026 (18:4x): among the patterns not yet measured, rank by z(prior score) + z(feedback score), where the
+    feedback score of a pattern is the mean over its touched pairs of log10|Δ̂_ij| from the current reconstruction d (zero information at the start:
+    a constant feedback column has zero z-score and the prior decides). Returns the next n pattern indices; ties by the hashed order."""
+    S = np.log10(np.abs(unpack(d, exp["pairs"], exp["M"])) + 1e-8)
+    if touched is not None:
+        # optimism for what no measured pattern has touched yet (the planted dry run of 26 Sep 22:xx exposed the exploration hole of the plain
+        # magnitude rule: an untouched pair has Δ̂ = 0 and would never be chosen); untouched pairs take the 90th percentile of the touched ones
+        T = unpack(np.asarray(touched, float), exp["pairs"], exp["M"]) > 0
+        off = ~np.eye(exp["M"], dtype=bool)
+        seen = S[T & off]
+        S = np.where(T, S, float(np.quantile(seen, 0.9)) if seen.size else 0.0)
+    fb = pair_scores_to_pattern_scores(exp, S)[remaining]
+    pr = np.asarray(prior, float)[remaining]
+    z = lambda x: (x - x.mean()) / (x.std() + 1e-12) if x.std() > 0 else np.zeros_like(x)  # noqa: E731
+    score = z(pr) + z(fb)
+    return remaining[np.lexsort((remaining, -score))][:n]
+
+
 def rho_curve(exp: dict, order: np.ndarray, stride: int = 4, lam_grid=LAM_GRID, w_cm: float = W_BAND_CM, noise_sigma: float = 0.0, seed: int = 0,
-              inband_mask=None):
+              inband_mask=None, adapt_prior=None):
     """Consume the single block, then `order`; after every `stride` patterns solve the banded-ℓ₁ recovery (λ chosen on the held-out patterns) and record
     (n_energies, ρ, ρ_off, frob_off, λ, frob_inband). n_energies counts a ± pair as 2 (mode E). Optional Gaussian noise per energy: σ on each of the two
     energies of a pair adds σ/√2 to R_s. `inband_mask` (pairs-length bool) selects the off-diagonal unknowns whose Frobenius error fills the sixth column
-    (the pre-registration's in-band n₁₀); without it that column repeats the all-pairs value."""
+    (the pre-registration's in-band n₁₀); without it that column repeats the all-pairs value. `adapt_prior` (a score per pattern, 26 Sep 2026 18:4x):
+    the order is then built as it goes — `order` only defines the pool — with `adaptive_pick` after every solve; the checkpoints and n_energies are
+    identical to the fixed-order curve, so the read-outs compare directly."""
     pairs, rows, R = exp["pairs"], exp["rows"], exp["R"].copy()
     if noise_sigma > 0:
         R = R + np.random.default_rng(seed).normal(scale=noise_sigma / np.sqrt(2), size=R.shape)
@@ -177,8 +198,15 @@ def rho_curve(exp: dict, order: np.ndarray, stride: int = 4, lam_grid=LAM_GRID, 
     checkpoints = list(range(stride, len(order) + 1, stride))
     if not checkpoints or checkpoints[-1] != len(order):
         checkpoints.append(len(order))
+    adaptive = adapt_prior is not None
+    chosen, remaining, d_last = [], np.array(order, dtype=int), None
     for n_off in [0] + checkpoints:
-        idx = np.array(consumed + list(order[:n_off]))
+        if adaptive and len(chosen) < n_off:
+            touched = np.any(rows[np.array(consumed + chosen)] != 0, axis=0)
+            pick = adaptive_pick(exp, adapt_prior, d_last, remaining, n_off - len(chosen), touched=touched)
+            chosen += [int(p) for p in pick]
+            remaining = remaining[~np.isin(remaining, pick)]
+        idx = np.array(consumed + (chosen[:n_off] if adaptive else list(order[:n_off])))
         A_tr, b_tr = rows[idx], R[idx]
         best = None
         for lam in lam_grid:
@@ -188,6 +216,7 @@ def rho_curve(exp: dict, order: np.ndarray, stride: int = 4, lam_grid=LAM_GRID, 
             if best is None or rho < best[0]:
                 best = (rho, lam, d)
         rho, lam, d = best
+        d_last = d
         rho_off = np.sqrt(np.mean((A_ho @ d - b_ho) ** 2)) / rms_off
         frob = np.linalg.norm(d[~diag_mask] - off_true) / frob_true
         frob_in = np.linalg.norm((d - exp["d_true"])[in_mask]) / in_true

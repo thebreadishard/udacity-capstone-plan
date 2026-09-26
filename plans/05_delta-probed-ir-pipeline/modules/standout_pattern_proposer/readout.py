@@ -83,7 +83,7 @@ def summarise(res: dict, names: list[str]) -> dict:
 def main() -> int:
     src = Path(sys.argv[1])
     res = json.load(open(src, encoding="utf-8"))
-    names = sorted({n for m in res["per_molecule"].values() for n in m if n.startswith(("P1", "P2", "P3"))})
+    names = sorted({n for m in res["per_molecule"].values() for n in m if n.startswith(("P0A", "P1", "P2", "P3"))})
     summary = summarise(res, names)
     lines = [f"# Read-out — {src.name} (pool {res['pool']}, {res.get('date', '')})", ""]
     for split, tab in summary.items():

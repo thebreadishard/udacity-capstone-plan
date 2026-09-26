@@ -70,3 +70,32 @@ def test_split_is_hashed_and_parents_are_evaluation():
     s = [C.split_of(f"B_{i:010d}", "B") for i in range(2000)]
     frac = {k: s.count(k) / len(s) for k in ("train", "val", "eval")}
     assert abs(frac["train"] - 0.7) < 0.05 and abs(frac["val"] - 0.1) < 0.03 and abs(frac["eval"] - 0.2) < 0.04
+
+
+def test_adaptive_p0_prior_is_no_worse_than_p0_on_planted_blocks():
+    """26 Sep 2026 (rule corrected after the first planted dry run, see the pre-registration): P0+A — P0's rank as the prior, the reconstruction as
+    feedback, optimism for untouched pairs — must reach the 10 % line no later than P0 on three planted seeds, on the same n_energies grid; with the
+    oracle's scores as the prior the feedback must not hurt the oracle either."""
+    for seed in (0, 1, 2):
+        e = synthetic_export(seed=seed)
+        pool = C.order_p0(e)
+        p0 = C.rho_curve(e, pool, stride=2)
+        prior0 = np.zeros(len(e["kinds"]))
+        prior0[pool] = -np.arange(len(pool), dtype=float)
+        p0a = C.rho_curve(e, pool, stride=2, adapt_prior=prior0)
+        assert [r[0] for r in p0] == [r[0] for r in p0a]
+        k0, ka = C.k_off_at(p0, 0.10, e["M"], key=3), C.k_off_at(p0a, 0.10, e["M"], key=3)
+        assert k0 is not None and ka is not None and ka <= k0, (seed, k0, ka)
+        orc = C.rho_curve(e, C.order_oracle(e), stride=2)
+        orca = C.rho_curve(e, pool, stride=2, adapt_prior=C.pair_scores_to_pattern_scores(e, np.abs(e["D2"])))
+        ko, koa = C.k_off_at(orc, 0.10, e["M"], key=3), C.k_off_at(orca, 0.10, e["M"], key=3)
+        assert ko is not None and koa is not None and koa <= ko, (seed, ko, koa)
+
+
+def test_adaptive_with_oracle_prior_matches_oracle_pool():
+    """The adaptive order is a permutation of P0's pool whatever the prior (no held-out or single pattern is ever consumed)."""
+    e = synthetic_export()
+    pool = C.order_p0(e)
+    prior = C.pair_scores_to_pattern_scores(e, np.abs(e["D2"]))
+    picked = list(C.adaptive_pick(e, prior, np.zeros(len(e["pairs"])), pool.copy(), len(pool)))
+    assert sorted(picked) == sorted(pool.tolist()) and len(set(picked)) == len(pool)

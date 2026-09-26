@@ -52,7 +52,9 @@ def widen_pool(e: dict) -> dict:
     return out
 
 
-def evaluate(e: dict, orders: dict, checkpoints: int, noise_sigma: float, lam_grid) -> dict:
+def evaluate(e: dict, orders: dict, checkpoints: int, noise_sigma: float, lam_grid, priors: dict | None = None) -> dict:
+    """`orders`: name → fixed pattern order. `priors` (26 Sep 2026 18:4x, the adaptive variants): name → a score per pattern; the pool is P0's set and
+    the order is built checkpoint by checkpoint from the reconstruction (core.adaptive_pick)."""
     res = {}
     f = np.asarray(e["freq_cm"])
     inband_pair = np.array([abs(f[i] - f[j]) <= C.W_BAND_CM and i != j for (i, j) in e["pairs"]])
@@ -61,6 +63,12 @@ def evaluate(e: dict, orders: dict, checkpoints: int, noise_sigma: float, lam_gr
         curve = C.rho_curve(e, order, stride=stride, lam_grid=lam_grid, noise_sigma=noise_sigma, inband_mask=inband_pair)
         res[name] = dict(curve=curve, K_off_0p3=C.k_off_at(curve, 0.3, e["M"]), K_off_0p1=C.k_off_at(curve, 0.1, e["M"]),
                          n10_all=C.k_off_at(curve, 0.1, e["M"], key=3), n10_inband=C.k_off_at(curve, 0.1, e["M"], key=5))
+    pool = C.order_p0(e)
+    for name, prior in (priors or {}).items():
+        stride = max(2, int(np.ceil(len(pool) / checkpoints)))
+        curve = C.rho_curve(e, pool, stride=stride, lam_grid=lam_grid, noise_sigma=noise_sigma, inband_mask=inband_pair, adapt_prior=prior)
+        res[name] = dict(curve=curve, K_off_0p3=C.k_off_at(curve, 0.3, e["M"]), K_off_0p1=C.k_off_at(curve, 0.1, e["M"]),
+                         n10_all=C.k_off_at(curve, 0.1, e["M"], key=3), n10_inband=C.k_off_at(curve, 0.1, e["M"], key=5), adaptive=True)
     return res
 
 
@@ -90,6 +98,7 @@ def main() -> int:
     ap.add_argument("--shard", default=None, help="k/n: this process takes every n-th evaluation molecule starting at k (0-based); merge with merge_shards.py")
     ap.add_argument("--pool", choices=["band", "all"], default="band")
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--adaptive", action="store_true", help="add P0A, P1A_seed*, P2A_seed* (re-rank after every checkpoint; registered 26 Sep 2026 18:4x)")
     a = ap.parse_args()
     seeds = [int(s) for s in a.seeds.split(",")]
     index = json.load(open(Path(a.exports) / "index.json"))["molecules"]
@@ -101,7 +110,7 @@ def main() -> int:
         evals = evals[k::n]
     lam_grid = tuple(float(x) for x in a.lam_grid.split(","))
     print(f"{len(evals)} evaluation molecules ({sum(r['split'] == 'eval_parents' for r in evals)} parents); pool {a.pool}; seeds {seeds}; checkpoints {a.checkpoints}; "
-          f"λ {lam_grid}; noise σ {a.noise_sigma}; P2 {'yes' if a.embed_prefix else 'no'}" + (" (dry run)" if a.dry_run else ""))
+          f"λ {lam_grid}; noise σ {a.noise_sigma}; P2 {'yes' if a.embed_prefix else 'no'}; adaptive {'yes' if a.adaptive else 'no'}" + (" (dry run)" if a.dry_run else ""))
     if a.dry_run:
         return 0
     scorers = {s: S.Scorer.load(Path(a.scorer_prefix), s) for s in seeds}
@@ -113,21 +122,30 @@ def main() -> int:
             e = widen_pool(e)
         X, _, pairs = S.pair_features(e)
         orders = {"P0": C.order_p0(e), "P3_oracle": C.order_oracle(e)}
+        priors = {}
+        if a.adaptive:
+            prior0 = np.zeros(len(e["kinds"]))
+            prior0[orders["P0"]] = -np.arange(len(orders["P0"]), dtype=float)                 # P0's rank as the prior score
+            priors["P0A"] = prior0
         for s, sc in scorers.items():
             p1 = sc.predict(X)
             orders[f"P1_seed{s}"] = C.order_by_scores(e, S.scores_matrix(e, p1, pairs))
+            if a.adaptive:
+                priors[f"P1A_seed{s}"] = C.pair_scores_to_pattern_scores(e, S.scores_matrix(e, p1, pairs))
             if s in embeds:
                 p2 = embeds[s].predict(e)
                 orders[f"P2_seed{s}"] = C.order_by_scores(e, S.scores_matrix(e, p2, pairs))
+                if a.adaptive:
+                    priors[f"P2A_seed{s}"] = C.pair_scores_to_pattern_scores(e, S.scores_matrix(e, p2, pairs))
                 z1, z2 = (p1 - p1.mean()) / (p1.std() + 1e-9), (p2 - p2.mean()) / (p2.std() + 1e-9)
                 orders[f"P12_seed{s}"] = C.order_by_scores(e, S.scores_matrix(e, 0.5 * (z1 + z2) * p1.std() + p1.mean(), pairs))
-        per_mol[r["id"]] = dict(split=r["split"], M=e["M"], **evaluate(e, orders, a.checkpoints, a.noise_sigma, lam_grid))
+        per_mol[r["id"]] = dict(split=r["split"], M=e["M"], **evaluate(e, orders, a.checkpoints, a.noise_sigma, lam_grid, priors))
         print(f"  {k + 1}/{len(evals)} {r['id']} M {e['M']}: K_off(0.3) P0 {per_mol[r['id']]['P0']['K_off_0p3']} P1 {per_mol[r['id']]['P1_seed0']['K_off_0p3']} "
               f"oracle {per_mol[r['id']]['P3_oracle']['K_off_0p3']}; {time.time() - t0:.0f} s", flush=True)
     summary = {}
     for split in ("eval_parents", "eval"):
         sub = {i: m for i, m in per_mol.items() if m["split"] == split}
-        summary[split] = {key: {name: ratio_summary(sub, "P0", name, key) for name in per_mol[next(iter(per_mol))] if name.startswith(("P1", "P2", "P3"))}
+        summary[split] = {key: {name: ratio_summary(sub, "P0", name, key) for name in per_mol[next(iter(per_mol))] if name.startswith(("P0A", "P1", "P2", "P3"))}
                           for key in ("K_off_0p3", "K_off_0p1", "n10_inband", "n10_all")} if sub else {}
         if sub:
             summary[split]["n_molecules"] = len(sub)
