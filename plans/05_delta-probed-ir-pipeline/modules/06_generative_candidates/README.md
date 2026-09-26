@@ -2,8 +2,10 @@
 
 **Status.** Designed (`DESIGN_2026-09-24.md`), pre-registered (`PRE_REGISTRATION.md`, fixed before any training), dataset frozen from PubChem
 (`data/README.md` carries the query, the date, the filters, the counts and the SHA-256), code written with tests (`m06/`, six tests, seconds).
-Nothing trained yet: the first training run and the notebook execution happen after the supervisor conversation of 28 September, on a rented
-server or a CPU-day, never on the anchor laptop before the anchor is read. The user's three decisions of the design note were taken as recommended
+**Run on 26 September 2026** (earlier than planned, on the rented CCX53 while the anchor laptop stayed untouched): three seeds and the conditioned model trained with
+`m06/train.py`, the pre-registered notebook executed with 10,000 samples per model — 6 of 7 registered read-outs met, the miss being a project-fit prediction
+(0.30–0.60) that the model exceeded (0.945); the 5-gram baseline beaten on every line. Numbers in `notebook/results.json`, the outcome section in
+`PRE_REGISTRATION.md`, the report `Generative_AI_Analysis_Report.docx/.pdf` built from the results file by `make_summary.py` (20:0x). The user's three decisions of the design note were taken as recommended
 on 24 September (PubChem; freeze now; candidates as a separately labelled source for the atlas) — to be confirmed or changed at any time.
 
 ## Project description (as it will read)
