@@ -60,7 +60,25 @@ class EmbedScorer:
         x = self.torch.cat([e[i] + e[j], e[i] * e[j], (t["f"][i] - t["f"][j]).abs()[:, None]], -1)
         return self.head(x)[:, 0]
 
-    def fit(self, train: list, val: list, epochs: int = 120, patience: int = 8, lr: float = 1e-3, log=print) -> dict:
+    def loss_fn(self, pred, y, loss: str = "mse"):
+        """Registered stage-2 variants: 'mse' on log₁₀|Δ|; 'huber' (δ = 1 in log units); 'rank' = MSE + a pairwise logistic ranking term on 4,096 random
+        pairs of pairs of the same molecule — the read-out is an ordering, so the loss should care about order, not only magnitude."""
+        torch = self.torch
+        if loss == "huber":
+            return torch.nn.functional.huber_loss(pred, y, delta=1.0)
+        mse = ((pred - y) ** 2).mean()
+        if loss == "mse":
+            return mse
+        n = len(y)
+        g = torch.Generator().manual_seed(int(n))
+        a = torch.randint(0, n, (4096,), generator=g)
+        b = torch.randint(0, n, (4096,), generator=g)
+        sign = torch.sign(y[a] - y[b])
+        keep = sign != 0
+        rank = torch.nn.functional.softplus(-sign[keep] * (pred[a] - pred[b])[keep]).mean()
+        return mse + rank
+
+    def fit(self, train: list, val: list, epochs: int = 120, patience: int = 8, lr: float = 1e-3, log=print, loss: str = "mse") -> dict:
         torch = self.torch
         opt = torch.optim.AdamW(self.params, lr=lr, weight_decay=1e-4)
         g = np.random.default_rng(self.seed)
@@ -72,8 +90,8 @@ class EmbedScorer:
             for k in g.permutation(len(train)):
                 t = train[k]
                 opt.zero_grad()
-                loss = ((self.predict_t(t) - t["y"]) ** 2).mean()
-                loss.backward()
+                loss_value = self.loss_fn(self.predict_t(t), t["y"], loss)
+                loss_value.backward()
                 torch.nn.utils.clip_grad_norm_(self.params, 5.0)
                 opt.step()
             vl = self.evaluate(val)
@@ -126,7 +144,7 @@ class EmbedScorer:
 
 
 def fit_from_exports(export_dir: Path, out_prefix: Path, seed: int = 0, threads: int = 2, log=print, lr: float = 1e-3, n_embed: int = 64,
-                     n_blocks: int = 3, patience: int = 8, epochs: int = 120) -> dict:
+                     n_blocks: int = 3, patience: int = 8, epochs: int = 120, loss: str = "mse") -> dict:
     import torch
     torch.set_num_threads(threads)
     train, val, used = [], [], {"train": [], "val": []}
@@ -141,9 +159,10 @@ def fit_from_exports(export_dir: Path, out_prefix: Path, seed: int = 0, threads:
         used[split].append(mid)
     log(f"embed scorer seed {seed}: {len(train)} training molecules, {len(val)} validation, {threads} threads")
     s = EmbedScorer(seed=seed, n_embed=n_embed, n_blocks=n_blocks)
-    info = s.fit(train, val, epochs=epochs, patience=patience, lr=lr, log=log)
+    info = s.fit(train, val, epochs=epochs, patience=patience, lr=lr, log=log, loss=loss)
     s.save(out_prefix)
-    info.update(molecules=used, seed=seed, n_params=int(sum(p.numel() for p in s.params)), recipe=dict(lr=lr, n_embed=n_embed, n_blocks=n_blocks, patience=patience, epochs=epochs))
+    info.update(molecules=used, seed=seed, n_params=int(sum(p.numel() for p in s.params)),
+                recipe=dict(lr=lr, n_embed=n_embed, n_blocks=n_blocks, patience=patience, epochs=epochs, loss=loss))
     json.dump(info, open(str(out_prefix) + f"_seed{seed}.json", "w"), indent=1)
     return info
 
@@ -161,5 +180,7 @@ if __name__ == "__main__":
     ap.add_argument("--n-blocks", type=int, default=3)
     ap.add_argument("--patience", type=int, default=8)
     ap.add_argument("--epochs", type=int, default=120)
+    ap.add_argument("--loss", choices=["mse", "huber", "rank"], default="mse")
     a = ap.parse_args()
-    fit_from_exports(Path(a.export_dir), Path(a.out_prefix), a.seed, a.threads, lr=a.lr, n_embed=a.n_embed, n_blocks=a.n_blocks, patience=a.patience, epochs=a.epochs)
+    fit_from_exports(Path(a.export_dir), Path(a.out_prefix), a.seed, a.threads, lr=a.lr, n_embed=a.n_embed, n_blocks=a.n_blocks, patience=a.patience,
+                     epochs=a.epochs, loss=a.loss)
