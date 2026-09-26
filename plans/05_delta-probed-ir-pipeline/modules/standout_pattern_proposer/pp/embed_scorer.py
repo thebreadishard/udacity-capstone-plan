@@ -7,7 +7,7 @@ No hand-made overlap or element features enter: if atom sharing matters, the net
 Training: one molecule per step (all its pairs), MSE on log10|Δ_ij|, AdamW 1e-3, early stopping on the validation split (patience 8, max 120 epochs),
 seeds 0–2; the evaluation molecules are never loaded. Own torch code; CPU; the body has 171 k parameters, the heads a few thousand.
 
-    python -m pp.embed_scorer fit <export_dir> <out_prefix> [--seed 0] [--threads 2]"""
+    python -m pp.embed_scorer fit <export_dir> <out_prefix> [--seed 0] [--threads 2] [--lr --n-embed --n-blocks --patience --epochs --loss --use-v]"""
 from __future__ import annotations
 
 import json
@@ -38,14 +38,15 @@ def molecule_tensors(e: dict, torch):
 
 
 class EmbedScorer:
-    def __init__(self, seed: int = 0, n_embed: int = 64, n_blocks: int = 3):
+    def __init__(self, seed: int = 0, n_embed: int = 64, n_blocks: int = 3, use_v: bool = False):
         import torch
         import torch.nn as nn
-        from rungC_equivariant import N_S, DeltaHessianModel
+        from rungC_equivariant import N_S, N_V, DeltaHessianModel
         torch.manual_seed(seed)
-        self.torch, self.seed, self.cfg = torch, seed, dict(n_embed=n_embed, n_blocks=n_blocks)
+        self.torch, self.seed, self.cfg = torch, seed, dict(n_embed=n_embed, n_blocks=n_blocks, use_v=use_v)
+        self.use_v = use_v                                                           # stage 3 (registered 12:1x): the norm of each vector channel joins s
         self.body = DeltaHessianModel(n_blocks=n_blocks)                             # only .encode is used; the tensor head stays untouched
-        self.mode_in = nn.Linear(N_S + 1, n_embed)
+        self.mode_in = nn.Linear(N_S + (N_V if use_v else 0) + 1, n_embed)
         self.head = nn.Sequential(nn.Linear(2 * n_embed + 1, 128), nn.SiLU(), nn.Linear(128, 128), nn.SiLU(), nn.Linear(128, 1))
         self.params = list(self.body.parameters()) + list(self.mode_in.parameters()) + list(self.head.parameters())
 
@@ -53,7 +54,9 @@ class EmbedScorer:
         return (self.body, self.mode_in, self.head)
 
     def predict_t(self, t):
-        s, _v, _i, _j, _rbf, _rhat = self.body.encode(t["Z"], t["pos"], t["H"])   # (N, n_s)
+        s, v, _i, _j, _rbf, _rhat = self.body.encode(t["Z"], t["pos"], t["H"])    # (N, n_s), (N, 3, n_v)
+        if self.use_v:
+            s = self.torch.cat([s, self.torch.linalg.norm(v, dim=1)], -1)            # (N, n_s + n_v): rotation-invariant, so the scorer stays invariant
         emb = t["A"].T @ s                                                           # (M, n_s): participation-weighted atom features per mode
         e = self.mode_in(self.torch.cat([emb, t["f"][:, None]], -1))               # (M, n_embed)
         i, j = t["iu"]
@@ -144,7 +147,7 @@ class EmbedScorer:
 
 
 def fit_from_exports(export_dir: Path, out_prefix: Path, seed: int = 0, threads: int = 2, log=print, lr: float = 1e-3, n_embed: int = 64,
-                     n_blocks: int = 3, patience: int = 8, epochs: int = 120, loss: str = "mse") -> dict:
+                     n_blocks: int = 3, patience: int = 8, epochs: int = 120, loss: str = "mse", use_v: bool = False) -> dict:
     import torch
     torch.set_num_threads(threads)
     train, val, used = [], [], {"train": [], "val": []}
@@ -158,11 +161,11 @@ def fit_from_exports(export_dir: Path, out_prefix: Path, seed: int = 0, threads:
         (train if split == "train" else val).append(t)
         used[split].append(mid)
     log(f"embed scorer seed {seed}: {len(train)} training molecules, {len(val)} validation, {threads} threads")
-    s = EmbedScorer(seed=seed, n_embed=n_embed, n_blocks=n_blocks)
+    s = EmbedScorer(seed=seed, n_embed=n_embed, n_blocks=n_blocks, use_v=use_v)
     info = s.fit(train, val, epochs=epochs, patience=patience, lr=lr, log=log, loss=loss)
     s.save(out_prefix)
     info.update(molecules=used, seed=seed, n_params=int(sum(p.numel() for p in s.params)),
-                recipe=dict(lr=lr, n_embed=n_embed, n_blocks=n_blocks, patience=patience, epochs=epochs, loss=loss))
+                recipe=dict(lr=lr, n_embed=n_embed, n_blocks=n_blocks, patience=patience, epochs=epochs, loss=loss, use_v=use_v))
     json.dump(info, open(str(out_prefix) + f"_seed{seed}.json", "w"), indent=1)
     return info
 
@@ -181,6 +184,7 @@ if __name__ == "__main__":
     ap.add_argument("--patience", type=int, default=8)
     ap.add_argument("--epochs", type=int, default=120)
     ap.add_argument("--loss", choices=["mse", "huber", "rank"], default="mse")
+    ap.add_argument("--use-v", action="store_true", help="stage 3: add the norm of each vector channel to the per-atom features")
     a = ap.parse_args()
     fit_from_exports(Path(a.export_dir), Path(a.out_prefix), a.seed, a.threads, lr=a.lr, n_embed=a.n_embed, n_blocks=a.n_blocks, patience=a.patience,
-                     epochs=a.epochs, loss=a.loss)
+                     epochs=a.epochs, loss=a.loss, use_v=a.use_v)
