@@ -1,6 +1,6 @@
 # Pre-registration 2026-09-26 — standout: the generative pattern proposer, tested as a simulation on the corpus Δ-Hessians
 
-*Written 26 September 2026, 10:2x, before any code of the experiment ran (the user, 10:1x: "Doe het maar zodra je er tijd voor hebt"). The idea is
+*Written 26 September 2026, 10:1x, before any code of the experiment ran (the user, 10:1x: "Doe het maar zodra je er tijd voor hebt"). The idea is
 module 06's original one (Capstone_Mapping.md § Module 06, 6 September; parked note `Standout_2026-09-26_Pattern_Proposal_Generator.md`). Everything
 below is fixed now; deviations get dated amendments. Nothing here runs on the laptop beyond a three-molecule smoke; the simulation runs on a rented
 machine when one is free. Priority: below the Sunday interim reading, the module-06 notebook run and the Monday package.*
