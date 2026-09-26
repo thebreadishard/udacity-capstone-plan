@@ -1,0 +1,35 @@
+[19:19:08] WARNING: not removing hydrogen atom without neighbors
+[19:19:08] WARNING: not removing hydrogen atom without neighbors
+[19:19:10] WARNING: not removing hydrogen atom without neighbors
+[19:19:10] WARNING: not removing hydrogen atom without neighbors
+[19:19:10] WARNING: not removing hydrogen atom without neighbors
+[19:19:10] WARNING: not removing hydrogen atom without neighbors
+[19:19:10] WARNING: not removing hydrogen atom without neighbors
+[19:19:10] WARNING: not removing hydrogen atom without neighbors
+[19:19:10] WARNING: not removing hydrogen atom without neighbors
+[19:19:10] WARNING: not removing hydrogen atom without neighbors
+train 125065 (dropped 0 > 96 tokens), val 15434 (dropped 0); vocab 41; params 3,205,120; seed 0
+/root/m05run/06_generative_candidates/m06/train.py:46: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0); opt.step(); step += 1; tot += float(loss); nb += 1
+epoch 1: train 1.204 val 0.756 validity(200) 0.24 2035 s
+epoch 2: train 0.748 val 0.662 validity(200) 0.56 2024 s
+epoch 3: train 0.679 val 0.624 validity(200) 0.74 2213 s
+epoch 4: train 0.643 val 0.602 validity(200) 0.67 2254 s
+epoch 5: train 0.618 val 0.589 validity(200) 0.82 2269 s
+epoch 6: train 0.600 val 0.579 validity(200) 0.76 2123 s
+epoch 7: train 0.584 val 0.571 validity(200) 0.81 2078 s
+epoch 8: train 0.571 val 0.562 validity(200) 0.80 2119 s
+epoch 9: train 0.560 val 0.555 validity(200) 0.90 2124 s
+epoch 10: train 0.551 val 0.550 validity(200) 0.87 2137 s
+epoch 11: train 0.541 val 0.546 validity(200) 0.86 2018 s
+epoch 12: train 0.533 val 0.541 validity(200) 0.90 2025 s
+epoch 13: train 0.527 val 0.540 validity(200) 0.92 2306 s
+epoch 14: train 0.520 val 0.537 validity(200) 0.91 2008 s
+epoch 15: train 0.515 val 0.535 validity(200) 0.92 2012 s
+epoch 16: train 0.511 val 0.534 validity(200) 0.94 2066 s
+epoch 17: train 0.507 val 0.532 validity(200) 0.92 2074 s
+epoch 18: train 0.505 val 0.532 validity(200) 0.94 1814 s
+epoch 19: train 0.503 val 0.532 validity(200) 0.93 1912 s
+epoch 20: train 0.503 val 0.532 validity(200) 0.93 2077 s
+early stop
