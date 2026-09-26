@@ -38,13 +38,13 @@ def molecule_tensors(e: dict, torch):
 
 
 class EmbedScorer:
-    def __init__(self, seed: int = 0, n_embed: int = 64):
+    def __init__(self, seed: int = 0, n_embed: int = 64, n_blocks: int = 3):
         import torch
         import torch.nn as nn
         from rungC_equivariant import N_S, DeltaHessianModel
         torch.manual_seed(seed)
-        self.torch, self.seed = torch, seed
-        self.body = DeltaHessianModel()                                              # only .encode is used; the tensor head stays untouched
+        self.torch, self.seed, self.cfg = torch, seed, dict(n_embed=n_embed, n_blocks=n_blocks)
+        self.body = DeltaHessianModel(n_blocks=n_blocks)                             # only .encode is used; the tensor head stays untouched
         self.mode_in = nn.Linear(N_S + 1, n_embed)
         self.head = nn.Sequential(nn.Linear(2 * n_embed + 1, 128), nn.SiLU(), nn.Linear(128, 128), nn.SiLU(), nn.Linear(128, 1))
         self.params = list(self.body.parameters()) + list(self.mode_in.parameters()) + list(self.head.parameters())
@@ -112,17 +112,21 @@ class EmbedScorer:
             return self.predict_t(t).numpy()
 
     def save(self, prefix: Path) -> None:
-        self.torch.save([m.state_dict() for m in self.modules()], str(prefix) + f"_seed{self.seed}.pt")
+        self.torch.save(dict(cfg=self.cfg, states=[m.state_dict() for m in self.modules()]), str(prefix) + f"_seed{self.seed}.pt")
 
     @classmethod
     def load(cls, prefix: Path, seed: int) -> EmbedScorer:
-        s = cls(seed=seed)
-        for m, sd in zip(s.modules(), s.torch.load(str(prefix) + f"_seed{seed}.pt"), strict=True):
+        import torch
+        obj = torch.load(str(prefix) + f"_seed{seed}.pt")
+        cfg, states = (obj["cfg"], obj["states"]) if isinstance(obj, dict) else (dict(n_embed=64, n_blocks=3), obj)   # first-run files were a bare list
+        s = cls(seed=seed, **cfg)
+        for m, sd in zip(s.modules(), states, strict=True):
             m.load_state_dict(sd)
         return s
 
 
-def fit_from_exports(export_dir: Path, out_prefix: Path, seed: int = 0, threads: int = 2, log=print) -> dict:
+def fit_from_exports(export_dir: Path, out_prefix: Path, seed: int = 0, threads: int = 2, log=print, lr: float = 1e-3, n_embed: int = 64,
+                     n_blocks: int = 3, patience: int = 8, epochs: int = 120) -> dict:
     import torch
     torch.set_num_threads(threads)
     train, val, used = [], [], {"train": [], "val": []}
@@ -136,10 +140,10 @@ def fit_from_exports(export_dir: Path, out_prefix: Path, seed: int = 0, threads:
         (train if split == "train" else val).append(t)
         used[split].append(mid)
     log(f"embed scorer seed {seed}: {len(train)} training molecules, {len(val)} validation, {threads} threads")
-    s = EmbedScorer(seed=seed)
-    info = s.fit(train, val, log=log)
+    s = EmbedScorer(seed=seed, n_embed=n_embed, n_blocks=n_blocks)
+    info = s.fit(train, val, epochs=epochs, patience=patience, lr=lr, log=log)
     s.save(out_prefix)
-    info.update(molecules=used, seed=seed, n_params=int(sum(p.numel() for p in s.params)))
+    info.update(molecules=used, seed=seed, n_params=int(sum(p.numel() for p in s.params)), recipe=dict(lr=lr, n_embed=n_embed, n_blocks=n_blocks, patience=patience, epochs=epochs))
     json.dump(info, open(str(out_prefix) + f"_seed{seed}.json", "w"), indent=1)
     return info
 
@@ -152,5 +156,10 @@ if __name__ == "__main__":
     ap.add_argument("out_prefix")
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--threads", type=int, default=2)
+    ap.add_argument("--lr", type=float, default=1e-3)
+    ap.add_argument("--n-embed", type=int, default=64)
+    ap.add_argument("--n-blocks", type=int, default=3)
+    ap.add_argument("--patience", type=int, default=8)
+    ap.add_argument("--epochs", type=int, default=120)
     a = ap.parse_args()
-    fit_from_exports(Path(a.export_dir), Path(a.out_prefix), a.seed, a.threads)
+    fit_from_exports(Path(a.export_dir), Path(a.out_prefix), a.seed, a.threads, lr=a.lr, n_embed=a.n_embed, n_blocks=a.n_blocks, patience=a.patience, epochs=a.epochs)
