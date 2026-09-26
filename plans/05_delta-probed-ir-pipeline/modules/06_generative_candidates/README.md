@@ -44,3 +44,5 @@ python make_summary.py                                                    # Gene
 - `make_summary.py` → `Generative_AI_Analysis_Report.docx/.pdf` in the rubric's section order, every number from `results.json`, banner and no PDF in quick mode.
 - `requirements.txt` (the environment of 25 September), `PROVENANCE.md` (data, code, pre-registration, runs — dated notes appended).
 - To come with the pre-registered run after the 28th: the executed notebook, the report PDF, a dated `RUBRIC_CHECKLIST`.
+
+*Parked, not dropped (26 Sep 10:0x): the module's original idea — a generative proposer of coupled-cluster *measurement patterns* scored by pattern efficiency — is kept as a standout candidate in `GoalGathering/notes/Standout_2026-09-26_Pattern_Proposal_Generator.md`, with the reading of when its response data exist.*
