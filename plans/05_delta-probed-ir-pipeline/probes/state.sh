@@ -26,6 +26,8 @@ echo "--- memory and disk ---"
 printf "  host free %s GB   C: free %s GB\n" \
   "$(powershell.exe -NoProfile -Command "[math]::Round((Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory/1MB,1)" 2>/dev/null | tr -d '\r')" \
   "$(powershell.exe -NoProfile -Command "[math]::Round((Get-PSDrive C).Free/1GB,0)" 2>/dev/null | tr -d '\r')"
+echo "--- monitor processes (expect 1 poller + its wrapper; 26 Sep 2026: 93 orphans found) ---"
+echo "  $(ps -ef 2>/dev/null | grep -c "[m]onitor_cmd_") monitor_cmd processes; $(ps -ef 2>/dev/null | grep -c "[s]sh -i") ssh sessions"
 echo "--- git ---"
 echo "  $(git status --porcelain | wc -l) uncommitted paths; HEAD: $(git log --oneline -1)"
 echo "--- three most recent ledger entries (first line each) ---"
