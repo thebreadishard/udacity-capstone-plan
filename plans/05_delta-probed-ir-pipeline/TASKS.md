@@ -20,7 +20,6 @@ this file only says what is running or waiting and who acts.*
 
 | task | why | what is needed | when |
 |---|---|---|---|
-| Extra CPX62 for layer-B shard 3 | five shards for the 300-table; hel1-23 can take it over after the standout pools | the user: keep hel1-23 or create one; I bootstrap with `bootstrap_shardB.sh <ip> 3 5` | this evening |
 | Hetzner credit | usage ≈ €1.60/h against €300 (raised 26 Sep 11:xx) | the user raises when I warn; I warn a day ahead | Monday |
 | Anthropic Console key for module 07's LLM run | the rubric's own-model run; the deterministic policy is the reference until then | the user sets `ANTHROPIC_API_KEY` (never in chat); then `M07_LLM=1 STEWARD_MODEL=claude-sonnet-5 make_notebook.py` | when convenient |
 | Rung C decision | train the equivariant Δ-Hessian model on the pool now or after the 28th (pre-registration 25 Sep; model built and tested 25 Sep 23:1x) | the conversation of Sunday evening | Sun evening |
@@ -29,7 +28,7 @@ this file only says what is running or waiting and who acts.*
 
 | when | what | prepared by |
 |---|---|---|
-| Sat evening | module 06 notebook run done 20:0x (6 of 7 read-outs met); still open: delete/reassign hel1-23 | the user (servers) |
+| Sat evening | module 06 notebook run done 20:0x (6 of 7 read-outs met); hel1-23 stays for the standout chains through Monday (the user, 20:3x) | done |
 | Sun 20:00 | interim layer-B reading (`e7_rungB_pairs.py … --split layerB --sizes all --seeds 0,1,2`, plain and `--tune --tune-stage2`), read against both prediction sets | me |
 | Sun evening | rung C decision; E8 naphthalene read-out if the chain finished | the user + me |
 | Mon 28 Sep | supervisor conversation; the Monday package (reading copy, cover note, two-horizon note) current as of Sunday night | me |
