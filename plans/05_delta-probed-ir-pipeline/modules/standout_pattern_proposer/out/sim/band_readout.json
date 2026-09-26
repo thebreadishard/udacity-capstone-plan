@@ -1,0 +1,142 @@
+{
+ "eval_parents": {
+  "n_molecules": 41,
+  "P0_reaches_K_off_0p3": 1,
+  "P0_reaches_K_off_0p1": 0,
+  "P0_reaches_n10_inband": 6,
+  "rho_off": {
+   "P1_seed0": {
+    "n_half": 41,
+    "median_half_ratio": 0.175,
+    "frac_half_improved": 0.9512195121951219,
+    "median_auc_ratio": 0.8465623741950705,
+    "frac_auc_improved": 0.8536585365853658
+   },
+   "P1_seed1": {
+    "n_half": 41,
+    "median_half_ratio": 0.2,
+    "frac_half_improved": 0.9512195121951219,
+    "median_auc_ratio": 0.8686093290749973,
+    "frac_auc_improved": 0.8536585365853658
+   },
+   "P1_seed2": {
+    "n_half": 41,
+    "median_half_ratio": 0.18518518518518517,
+    "frac_half_improved": 0.9512195121951219,
+    "median_auc_ratio": 0.8603127797763122,
+    "frac_auc_improved": 0.8780487804878049
+   },
+   "P3_oracle": {
+    "n_half": 41,
+    "median_half_ratio": 0.05555555555555555,
+    "frac_half_improved": 1.0,
+    "median_auc_ratio": 0.9013609813509996,
+    "frac_auc_improved": 0.6341463414634146
+   },
+   "P0_start_median": 1.0,
+   "P0_final_median": 0.5303645049024595
+  },
+  "frob_inband": {
+   "P1_seed0": {
+    "n_half": 41,
+    "median_half_ratio": 0.1891891891891892,
+    "frac_half_improved": 0.926829268292683,
+    "median_auc_ratio": 0.8686727123316758,
+    "frac_auc_improved": 0.8048780487804879
+   },
+   "P1_seed1": {
+    "n_half": 41,
+    "median_half_ratio": 0.21212121212121213,
+    "frac_half_improved": 0.926829268292683,
+    "median_auc_ratio": 0.9198231212399408,
+    "frac_auc_improved": 0.7317073170731707
+   },
+   "P1_seed2": {
+    "n_half": 41,
+    "median_half_ratio": 0.23255813953488372,
+    "frac_half_improved": 0.8780487804878049,
+    "median_auc_ratio": 0.9074930138001487,
+    "frac_auc_improved": 0.7317073170731707
+   },
+   "P3_oracle": {
+    "n_half": 41,
+    "median_half_ratio": 0.06451612903225806,
+    "frac_half_improved": 1.0,
+    "median_auc_ratio": 0.9891345398366975,
+    "frac_auc_improved": 0.5853658536585366
+   },
+   "P0_start_median": 1.0,
+   "P0_final_median": 0.18723640746306236
+  }
+ },
+ "eval": {
+  "n_molecules": 56,
+  "P0_reaches_K_off_0p3": 3,
+  "P0_reaches_K_off_0p1": 0,
+  "P0_reaches_n10_inband": 9,
+  "rho_off": {
+   "P1_seed0": {
+    "n_half": 56,
+    "median_half_ratio": 0.2,
+    "frac_half_improved": 0.9821428571428571,
+    "median_auc_ratio": 0.8247955987066071,
+    "frac_auc_improved": 0.9464285714285714
+   },
+   "P1_seed1": {
+    "n_half": 56,
+    "median_half_ratio": 0.16869918699186992,
+    "frac_half_improved": 0.9642857142857143,
+    "median_auc_ratio": 0.8388313711980406,
+    "frac_auc_improved": 0.9285714285714286
+   },
+   "P1_seed2": {
+    "n_half": 56,
+    "median_half_ratio": 0.17445652173913043,
+    "frac_half_improved": 0.9821428571428571,
+    "median_auc_ratio": 0.8295135008247708,
+    "frac_auc_improved": 0.8928571428571429
+   },
+   "P3_oracle": {
+    "n_half": 56,
+    "median_half_ratio": 0.07059800664451826,
+    "frac_half_improved": 1.0,
+    "median_auc_ratio": 0.8366371853519569,
+    "frac_auc_improved": 0.8571428571428571
+   },
+   "P0_start_median": 1.0,
+   "P0_final_median": 0.47071500538073796
+  },
+  "frob_inband": {
+   "P1_seed0": {
+    "n_half": 56,
+    "median_half_ratio": 0.245,
+    "frac_half_improved": 0.9821428571428571,
+    "median_auc_ratio": 0.8329288145204408,
+    "frac_auc_improved": 0.8928571428571429
+   },
+   "P1_seed1": {
+    "n_half": 56,
+    "median_half_ratio": 0.2376470588235294,
+    "frac_half_improved": 0.9107142857142857,
+    "median_auc_ratio": 0.8397751519935666,
+    "frac_auc_improved": 0.875
+   },
+   "P1_seed2": {
+    "n_half": 56,
+    "median_half_ratio": 0.25925925925925924,
+    "frac_half_improved": 0.9464285714285714,
+    "median_auc_ratio": 0.8411715793092673,
+    "frac_auc_improved": 0.875
+   },
+   "P3_oracle": {
+    "n_half": 56,
+    "median_half_ratio": 0.09186535764375876,
+    "frac_half_improved": 0.9821428571428571,
+    "median_auc_ratio": 0.8352116676483254,
+    "frac_auc_improved": 0.7678571428571429
+   },
+   "P0_start_median": 1.0,
+   "P0_final_median": 0.1960209089202189
+  }
+ }
+}
