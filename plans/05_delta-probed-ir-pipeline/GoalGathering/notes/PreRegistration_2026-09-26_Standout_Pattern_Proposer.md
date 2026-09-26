@@ -118,3 +118,11 @@ outcome section.
   a single extra thread does not slow it measurably — checked against its heartbeat), the recovery simulation (hours) on a rented CPX62 the user creates.
   The simulation uses ≈ 60 solves per curve (stride adapts to the pool) and the λ grid {1e-6, 1e-5} (the two values the smoke selected), recorded in
   the results JSON.
+- **12:0x — fallback read-outs registered before any merged result is read.** The band-pool shards report, molecule after molecule, that ρ_off ≤ 0.3 is
+  not reached under P0, P1 or the oracle (the band finding predicted this: half the coupling power is outside the deck's reach). So that the primary
+  read-out does not silently become empty: if P0 reaches ρ_off ≤ 0.3 on fewer than half the evaluation molecules, the primary comparison becomes
+  **n_half** — the energies beyond the single block at which an ordering first reaches the midpoint between ρ_off after the single block and P0's final
+  ρ_off (P0's target for every ordering on that molecule) — with the **AUC ratio** (mean ρ_off over P0's checkpoint grid) as the second line, both as
+  median ratios against P0 with the fraction improved, and the same two on the in-band Frobenius column. Pass line S1 then reads: median n_half ratio
+  ≤ 0.80 with ≥ 70 % improved; S2/S3/S4 likewise on n_half. `readout.py` computes all of it from the stored curves; the registered K_off levels stay in
+  the report wherever they are reached. Prediction unchanged in direction: P1 ≈ 0.5 (band pool, A2/B), ≈ 0.7 on the parents; oracle ≈ 0.3.

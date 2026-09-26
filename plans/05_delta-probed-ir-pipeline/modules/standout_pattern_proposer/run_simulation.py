@@ -87,6 +87,7 @@ def main() -> int:
     ap.add_argument("--lam-grid", default="1e-6,1e-5", help="λ grid of the banded-ℓ₁ prior, chosen per checkpoint on the held-out patterns")
     ap.add_argument("--noise-sigma", type=float, default=0.0)
     ap.add_argument("--limit", type=int, default=None)
+    ap.add_argument("--shard", default=None, help="k/n: this process takes every n-th evaluation molecule starting at k (0-based); merge with merge_shards.py")
     ap.add_argument("--pool", choices=["band", "all"], default="band")
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
@@ -95,6 +96,9 @@ def main() -> int:
     evals = [r for r in index if r["split"] in ("eval_parents", "eval")]
     if a.limit:
         evals = evals[: a.limit]
+    if a.shard:
+        k, n = (int(x) for x in a.shard.split("/"))
+        evals = evals[k::n]
     lam_grid = tuple(float(x) for x in a.lam_grid.split(","))
     print(f"{len(evals)} evaluation molecules ({sum(r['split'] == 'eval_parents' for r in evals)} parents); pool {a.pool}; seeds {seeds}; checkpoints {a.checkpoints}; "
           f"λ {lam_grid}; noise σ {a.noise_sigma}; P2 {'yes' if a.embed_prefix else 'no'}" + (" (dry run)" if a.dry_run else ""))
