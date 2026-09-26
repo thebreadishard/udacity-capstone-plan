@@ -126,3 +126,12 @@ outcome section.
   median ratios against P0 with the fraction improved, and the same two on the in-band Frobenius column. Pass line S1 then reads: median n_half ratio
   ≤ 0.80 with ≥ 70 % improved; S2/S3/S4 likewise on n_half. `readout.py` computes all of it from the stored curves; the registered K_off levels stay in
   the report wherever they are reached. Prediction unchanged in direction: P1 ≈ 0.5 (band pool, A2/B), ≈ 0.7 on the parents; oracle ≈ 0.3.
+- **12:1x — a fair chance for the learned embedding (the user: "waken dat we het leren van de juiste embedding niet te snel afkappen").** No negative
+  statement about P2 is licensed by the first run. Before any "the embedding adds nothing" sentence, the registered search runs, in this order, each
+  stage read on the validation split and only the chosen recipe on the evaluation molecules: (1) optimiser recipe — learning rate {3e-4, 1e-3, 3e-3} ×
+  mode-embedding width {64, 128}, patience 20 instead of 8, up to 300 epochs; (2) target and loss — log₁₀|Δ| (registered) against a rank/Huber
+  variant, because the read-out is an *ordering* and a ranking loss matches it; (3) capacity — 3 vs 5 interaction blocks, mode embedding from both scalar
+  and vector channels (‖v‖ per channel added to s); (4) data — retrain when layer B passes 300 molecules (the simulation costs no quantum chemistry,
+  so this repeats weekly); (5) pretraining — the C2 idea, the body pretrained on the Hessian QM9 set to predict full Hessians, then fine-tuned. The
+  first run's P2 (patience 8, ≈ 60 epochs, val MSE 0.33 vs P1 0.36) is stage 0. The same rule as `feedback-no-negative-conclusion-without-search`:
+  a flat result under one frozen recipe licenses nothing.
