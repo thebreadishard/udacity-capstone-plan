@@ -35,8 +35,10 @@ experiment. The real coupled-cluster responses (anchor, benzene, later the label
 - **Proposers** (each produces an *ordering* of the same off-diagonal pattern pool after the mandatory 2M single-mode block; nothing is added or removed,
   so every variant consumes the same candidates and only the order differs — this is what makes the comparison fair and the deck rule intact):
   - **P1, scorer:** a pair model of the rung-B kind (`m05/e7_rungB_pairs.py` features, MLP, trained on the training split's |Δ_ij|) predicts |Δ_ij|
-    for the new molecule; two-mode patterns are ordered by predicted |Δ_ij| descending, multi-mode patterns by the sum of predicted |Δ| over the
-    pairs they touch; ties by the hashed order.
+    for the new molecule; two-mode patterns are ordered by predicted |Δ_ij| descending, multi-mode patterns by the **mean** of predicted |Δ| over the
+    pairs they touch (amended 10:1x, before any real molecule ran: the registered planted-block test showed that the *sum* ranks broad random
+    patterns above the targeted two-mode pattern of the strongest pair; the mean is the expected information per unknown spent); ties by the hashed order.
+    The same rule scores P2 and the oracle P3.
   - **P2, generative (the frozen intent):** a conditional VAE over two-mode/multi-mode pattern vectors a (M-dimensional, padded, conditioned on the
     molecule's mode-structure tokens), trained on the *useful* patterns of the training molecules (those whose response explains the most held-out
     residual in a greedy pass); at test time it samples 4M candidates, the acquisition rule ranks the pool by the VAE's likelihood times the
@@ -84,3 +86,19 @@ Export: seconds per molecule (desk). Recovery curves: a FISTA solve per n step p
 3 seeds ≈ a few CPU-hours on a CPX62, run when one is free (after the layer-B shards or beside them at nice 15). VAE and scorer training: minutes.
 Build: two to three days of desk work in quiet hours. Artefacts as for module 06: notebook, report, requirements, design note, this pre-registration's
 outcome section.
+
+## Dated amendments before the first real run
+
+- **10:1x — registered export test and three-molecule smoke done** (`tests/test_pp_planted.py`, 5 green; laptop, one thread, seconds). Benzene (M 30,
+  334 patterns): K_off(0.3) is 480 energies in the hashed order and 32 in the oracle order — the ordering matters by a factor 15 on one molecule. Two
+  small layer-B molecules (M 18, 21): ρ_off never reaches 0.3 with the whole deck (ends 0.44 / 0.56, exact responses), i.e. the *deck*, not the order, is
+  the limit there.
+- **10:1x — finding that changes a read-out:** across 289 corpus molecules only **≈ 45 %** of the off-diagonal coupling power (Δ₂ at the proxy level,
+  ωB97X − B3LYP) lies inside the deck's 200 cm⁻¹ band (median in-band share: A 0.43, A2 0.47, B 0.42; `inband_share_2026-09-26.json`). The two-mode
+  block of the deterministic deck cannot see the rest; the random multi-mode patterns can only under the ℓ₁ penalty. Therefore: (a) **n₁₀ is read on the
+  in-band pairs** (primary) and on all pairs (secondary, expected not to be reached); (b) a **second registered experiment E2** is added: the pool is
+  widened to two-mode patterns for *every* pair (P0′ = the same construction without the band filter, hashed) and the same orderings P1′/P2′/P3′ are
+  compared on that pool, with the band kept only as the solver's prior. E2 answers whether the proposer's real value is choosing among out-of-band
+  couplings, which is what the 6 September idea meant by "propose patterns". Pass lines and predictions for E2 as for S1–S4; prediction: the P1′/P0′
+  ratio is smaller than P1/P0 (≈ 0.4) because the pool is larger and the scorer's ranking has more to choose from. This in-band share is also a plan-05
+  finding in its own right (the Ladder's band prior at the proxy level) and goes to the ledger; it is not judged here.
