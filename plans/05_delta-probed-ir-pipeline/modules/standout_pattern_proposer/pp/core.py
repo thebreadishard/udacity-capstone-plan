@@ -149,10 +149,12 @@ def order_oracle(exp: dict) -> np.ndarray:
     return order_by_scores(exp, np.abs(exp["D2"]))
 
 
-def rho_curve(exp: dict, order: np.ndarray, stride: int = 4, lam_grid=LAM_GRID, w_cm: float = W_BAND_CM, noise_sigma: float = 0.0, seed: int = 0):
+def rho_curve(exp: dict, order: np.ndarray, stride: int = 4, lam_grid=LAM_GRID, w_cm: float = W_BAND_CM, noise_sigma: float = 0.0, seed: int = 0,
+              inband_mask=None):
     """Consume the single block, then `order`; after every `stride` patterns solve the banded-ℓ₁ recovery (λ chosen on the held-out patterns) and record
-    (n_energies, ρ, ρ_off, frob_off). n_energies counts a ± pair as 2 (mode E). Optional Gaussian noise per energy: σ on each of the two energies of a
-    pair adds σ/√2 to R_s."""
+    (n_energies, ρ, ρ_off, frob_off, λ, frob_inband). n_energies counts a ± pair as 2 (mode E). Optional Gaussian noise per energy: σ on each of the two
+    energies of a pair adds σ/√2 to R_s. `inband_mask` (pairs-length bool) selects the off-diagonal unknowns whose Frobenius error fills the sixth column
+    (the pre-registration's in-band n₁₀); without it that column repeats the all-pairs value."""
     pairs, rows, R = exp["pairs"], exp["rows"], exp["R"].copy()
     if noise_sigma > 0:
         R = R + np.random.default_rng(seed).normal(scale=noise_sigma / np.sqrt(2), size=R.shape)
@@ -165,6 +167,8 @@ def rho_curve(exp: dict, order: np.ndarray, stride: int = 4, lam_grid=LAM_GRID, 
     rms_off = np.sqrt(np.mean(b_off ** 2)) + 1e-30
     off_true = exp["d_true"][~diag_mask]
     frob_true = np.linalg.norm(off_true) + 1e-30
+    in_mask = ~diag_mask if inband_mask is None else (np.asarray(inband_mask, bool) & ~diag_mask)
+    in_true = np.linalg.norm(exp["d_true"][in_mask]) + 1e-30
     weights = {lam: PROBE.band_weights(pairs, exp["freq_cm"], w_cm, lam) for lam in lam_grid}
     curve = []
     warm = {lam: None for lam in lam_grid}
@@ -185,12 +189,13 @@ def rho_curve(exp: dict, order: np.ndarray, stride: int = 4, lam_grid=LAM_GRID, 
         rho, lam, d = best
         rho_off = np.sqrt(np.mean((A_ho @ d - b_ho) ** 2)) / rms_off
         frob = np.linalg.norm(d[~diag_mask] - off_true) / frob_true
-        curve.append((int(2 * len(idx)), float(rho), float(rho_off), float(frob), float(lam)))
+        frob_in = np.linalg.norm((d - exp["d_true"])[in_mask]) / in_true
+        curve.append((int(2 * len(idx)), float(rho), float(rho_off), float(frob), float(lam), float(frob_in)))
     return curve
 
 
 def k_off_at(curve, level: float, M: int, key: int = 2) -> int | None:
-    """Smallest n_energies − 2M at which the chosen column (2 = ρ_off, 1 = ρ, 3 = frob_off) is ≤ level; None if never."""
+    """Smallest n_energies − 2M at which the chosen column (2 = ρ_off, 1 = ρ, 3 = frob_off all pairs, 5 = frob_off in band) is ≤ level; None if never."""
     for row in curve:
         if row[key] <= level:
             return int(row[0] - 2 * M)

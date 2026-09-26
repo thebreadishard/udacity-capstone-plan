@@ -102,3 +102,14 @@ outcome section.
   couplings, which is what the 6 September idea meant by "propose patterns". Pass lines and predictions for E2 as for S1–S4; prediction: the P1′/P0′
   ratio is smaller than P1/P0 (≈ 0.4) because the pool is larger and the scorer's ranking has more to choose from. This in-band share is also a plan-05
   finding in its own right (the Ladder's band prior at the proxy level) and goes to the ledger; it is not judged here.
+- **10:5x — P2 redefined as the learned-representation scorer (the user: the idea was to learn the embedding, not prescribe it; "Ik wil wat het beste
+  resultaat geeft").** P2 = the rung-C equivariant body (`m05/rungC_equivariant.py`: atomic numbers, coordinates, the registered pair scalars of H_low;
+  nothing prescribed beyond O(3) and permutation equivariance) → per-atom features, projected onto the B3LYP modes by their atom participations into a
+  learned embedding per mode → a pair read-out predicting log₁₀|Δ_ij|; trained on the training split, selected on the validation split, three seeds.
+  **P2b** = the conditional VAE of the original text, optional and only after P2. **P12** = P1 and P2 combined (average of standardised predicted
+  log scores) as a third candidate. The order of work and its logic: P1 first (minutes; it measures the gap to the oracle that any learned model must
+  close), then P2, then P12; every variant runs on both pools (E1 band, E2 all pairs). Selection is by the validation split only; every variant is
+  reported on the evaluation molecules, winners and losers. Predictions added now: P1 closes about half the gap between P0 and the oracle on the
+  band pool; on the all-pairs pool P2 beats P1 (ratio P2/P1 ≤ 0.85) because the out-of-band couplings are where learned atom-sharing features matter
+  most; P12 is at least as good as the better of the two on both pools. If 300 molecules prove too few for P2, C2-style pretraining on the Hessian
+  QM9 set is the registered next lever, not a new architecture.
