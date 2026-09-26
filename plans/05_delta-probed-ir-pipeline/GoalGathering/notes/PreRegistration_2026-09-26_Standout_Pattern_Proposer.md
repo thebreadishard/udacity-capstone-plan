@@ -94,7 +94,7 @@ outcome section.
   small layer-B molecules (M 18, 21): ρ_off never reaches 0.3 with the whole deck (ends 0.44 / 0.56, exact responses), i.e. the *deck*, not the order, is
   the limit there.
 - **10:1x — finding that changes a read-out:** across 289 corpus molecules only **≈ 45 %** of the off-diagonal coupling power (Δ₂ at the proxy level,
-  ωB97X − B3LYP) lies inside the deck's 200 cm⁻¹ band (median in-band share: A 0.43, A2 0.47, B 0.42; `inband_share_2026-09-26.json`). The two-mode
+  ωB97X − B3LYP) lies inside the deck's 200 cm⁻¹ band (median in-band share: A 0.43, A2 0.47, B 0.42; `modules/standout_pattern_proposer/out/inband_share_2026-09-26.json`). The two-mode
   block of the deterministic deck cannot see the rest; the random multi-mode patterns can only under the ℓ₁ penalty. Therefore: (a) **n₁₀ is read on the
   in-band pairs** (primary) and on all pairs (secondary, expected not to be reached); (b) a **second registered experiment E2** is added: the pool is
   widened to two-mode patterns for *every* pair (P0′ = the same construction without the band filter, hashed) and the same orderings P1′/P2′/P3′ are
