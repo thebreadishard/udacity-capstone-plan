@@ -49,7 +49,7 @@ def delta2(mol_dir: Path, use_analytic: bool = False) -> dict:
     D2 = 0.5 * (D2 + D2.T)
     A = (V.reshape(len(masses), 3, -1) ** 2).sum(1)                              # atom participation (N, M)
     return dict(id=d.name, symbols=[s.upper() for s in g["symbols"]], M=int(V.shape[1]), freq_cm=freq, omega_au=om, D2=D2, participation=A,
-                imaginary=bool((freq < 0).any()), analytic=bool(tag))
+                imaginary=bool((freq < 0).any()), analytic=bool(tag), pos=np.asarray(g["coords_bohr"], float), masses=masses, H_low=lo, V=V)
 
 
 def pack(D2: np.ndarray, pairs) -> np.ndarray:
@@ -78,13 +78,14 @@ def export_molecule(mol_dir: Path, use_analytic: bool = False, quick: bool = Fal
     R = rows @ d_true                                                            # exact responses, E_h
     return dict(id=o["id"], M=o["M"], freq_cm=o["freq_cm"], D2=o["D2"], participation=o["participation"], symbols=o["symbols"],
                 deck_hash=deck["deck_hash"], kinds=np.array([p["kind"] for p in pats]), modes=[p["modes"] for p in pats],
-                holdout=np.array([bool(p["holdout"]) for p in pats]), A=Avec, rows=rows, R=R, pairs=pairs, d_true=d_true)
+                holdout=np.array([bool(p["holdout"]) for p in pats]), A=Avec, rows=rows, R=R, pairs=pairs, d_true=d_true,
+                pos=o["pos"], masses=o["masses"], H_low=o["H_low"], V=o["V"])
 
 
 def save_export(exp: dict, path: Path) -> None:
     np.savez_compressed(path, id=exp["id"], M=exp["M"], freq_cm=exp["freq_cm"], D2=exp["D2"], participation=exp["participation"],
                         symbols=np.array(exp["symbols"]), deck_hash=exp["deck_hash"], kinds=exp["kinds"], holdout=exp["holdout"], A=exp["A"], R=exp["R"],
-                        modes=np.array(json.dumps(exp["modes"])))
+                        modes=np.array(json.dumps(exp["modes"])), pos=exp["pos"], masses=exp["masses"], H_low=exp["H_low"], V=exp["V"])
 
 
 def load_export(path: Path) -> dict:
@@ -96,7 +97,7 @@ def load_export(path: Path) -> dict:
     D2 = z["D2"]
     return dict(id=str(z["id"]), M=M, freq_cm=z["freq_cm"], D2=D2, participation=z["participation"], symbols=list(z["symbols"]),
                 deck_hash=str(z["deck_hash"]), kinds=z["kinds"], modes=json.loads(str(z["modes"])), holdout=z["holdout"], A=A, rows=rows, R=z["R"],
-                pairs=pairs, d_true=pack(D2, pairs))
+                pairs=pairs, d_true=pack(D2, pairs), pos=z["pos"], masses=z["masses"], H_low=z["H_low"], V=z["V"])
 
 
 # ------------------------------------------------------------------------------------------------------------------ recovery

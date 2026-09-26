@@ -70,7 +70,7 @@ class Scorer:
         opt = torch.optim.AdamW(self.net.parameters(), lr=lr, weight_decay=1e-4)
         best, bad, hist, state = np.inf, 0, [], None
         g = torch.Generator().manual_seed(self.seed)
-        for ep in range(epochs):
+        for _ep in range(epochs):
             self.net.train()
             perm = torch.randperm(len(Xt), generator=g)
             for k in range(0, len(Xt), 4096):
@@ -104,7 +104,7 @@ class Scorer:
         np.savez(str(prefix) + f"_seed{self.seed}_norm.npz", mu=self.mu, sd=self.sd)
 
     @classmethod
-    def load(cls, prefix: Path, seed: int) -> "Scorer":
+    def load(cls, prefix: Path, seed: int) -> Scorer:
         s = cls(seed=seed)
         s.net.load_state_dict(s.torch.load(str(prefix) + f"_seed{seed}.pt"))
         z = np.load(str(prefix) + f"_seed{seed}_norm.npz")

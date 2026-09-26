@@ -168,7 +168,9 @@ class DeltaHessianModel(nn.Module):
         self.proj = nn.Linear(n_v, n_tensor, bias=False)
         self.cutoff, self.n_v = cutoff, n_v
 
-    def forward(self, Z, pos, H_low):
+    def encode(self, Z, pos, H_low):
+        """The body alone: per-atom scalar features s (N, n_s) and vector features v (N, 3, n_v), plus the edge set and its radial basis. Used by the
+        Δ-Hessian head below and, unchanged, by the standout pattern proposer's learned-embedding scorer (26 Sep 2026)."""
         n = pos.shape[0]
         inv_pair, inv_node = pair_invariants(H_low, pos)
         i, j = edges_within(pos, self.cutoff)
@@ -181,6 +183,11 @@ class DeltaHessianModel(nn.Module):
         v = torch.zeros(n, 3, self.n_v, dtype=pos.dtype, device=pos.device)
         for blk in self.blocks:
             s, v = blk(s, v, i, j, filt, rhat)
+        return s, v, i, j, rbf, rhat
+
+    def forward(self, Z, pos, H_low):
+        n = pos.shape[0]
+        s, v, i, j, rbf, rhat = self.encode(Z, pos, H_low)
         u = self.proj(v)                                                           # (N, 3, n_tensor)
         p = self.head(torch.cat([s[i] + s[j], s[i] * s[j], rbf], -1))              # symmetric in i ↔ j
         a, b, c = p[:, 0], p[:, 1], p[:, 2:]

@@ -19,6 +19,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from pp import core as C  # noqa: E402
+from pp import embed_scorer as E  # noqa: E402
 from pp import scorer as S  # noqa: E402
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -51,12 +52,13 @@ def widen_pool(e: dict) -> dict:
     return out
 
 
-def evaluate(e: dict, orders: dict, stride: int, noise_sigma: float) -> dict:
+def evaluate(e: dict, orders: dict, checkpoints: int, noise_sigma: float, lam_grid) -> dict:
     res = {}
     f = np.asarray(e["freq_cm"])
     inband_pair = np.array([abs(f[i] - f[j]) <= C.W_BAND_CM and i != j for (i, j) in e["pairs"]])
     for name, order in orders.items():
-        curve = C.rho_curve(e, order, stride=stride, noise_sigma=noise_sigma, inband_mask=inband_pair)
+        stride = max(2, int(np.ceil(len(order) / checkpoints)))                  # ≈ `checkpoints` solves per curve whatever the pool size
+        curve = C.rho_curve(e, order, stride=stride, lam_grid=lam_grid, noise_sigma=noise_sigma, inband_mask=inband_pair)
         res[name] = dict(curve=curve, K_off_0p3=C.k_off_at(curve, 0.3, e["M"]), K_off_0p1=C.k_off_at(curve, 0.1, e["M"]),
                          n10_all=C.k_off_at(curve, 0.1, e["M"], key=3), n10_inband=C.k_off_at(curve, 0.1, e["M"], key=5))
     return res
@@ -80,7 +82,9 @@ def main() -> int:
     ap.add_argument("scorer_prefix")
     ap.add_argument("out_prefix")
     ap.add_argument("--seeds", default="0,1,2")
-    ap.add_argument("--stride", type=int, default=8)
+    ap.add_argument("--embed-prefix", default=None, help="P2 weights prefix (pp.embed_scorer); adds P2 and the P12 combination")
+    ap.add_argument("--checkpoints", type=int, default=60, help="solves per curve (stride adapts to the pool size)")
+    ap.add_argument("--lam-grid", default="1e-6,1e-5", help="λ grid of the banded-ℓ₁ prior, chosen per checkpoint on the held-out patterns")
     ap.add_argument("--noise-sigma", type=float, default=0.0)
     ap.add_argument("--limit", type=int, default=None)
     ap.add_argument("--pool", choices=["band", "all"], default="band")
@@ -91,11 +95,13 @@ def main() -> int:
     evals = [r for r in index if r["split"] in ("eval_parents", "eval")]
     if a.limit:
         evals = evals[: a.limit]
-    print(f"{len(evals)} evaluation molecules ({sum(r['split'] == 'eval_parents' for r in evals)} parents); pool {a.pool}; seeds {seeds}; stride {a.stride}; noise σ {a.noise_sigma}"
-          + (" (dry run)" if a.dry_run else ""))
+    lam_grid = tuple(float(x) for x in a.lam_grid.split(","))
+    print(f"{len(evals)} evaluation molecules ({sum(r['split'] == 'eval_parents' for r in evals)} parents); pool {a.pool}; seeds {seeds}; checkpoints {a.checkpoints}; "
+          f"λ {lam_grid}; noise σ {a.noise_sigma}; P2 {'yes' if a.embed_prefix else 'no'}" + (" (dry run)" if a.dry_run else ""))
     if a.dry_run:
         return 0
     scorers = {s: S.Scorer.load(Path(a.scorer_prefix), s) for s in seeds}
+    embeds = {s: E.EmbedScorer.load(Path(a.embed_prefix), s) for s in seeds} if a.embed_prefix else {}
     per_mol, t0 = {}, time.time()
     for k, r in enumerate(evals):
         e = C.load_export(Path(a.exports) / f"{r['id']}.npz")
@@ -104,22 +110,30 @@ def main() -> int:
         X, _, pairs = S.pair_features(e)
         orders = {"P0": C.order_p0(e), "P3_oracle": C.order_oracle(e)}
         for s, sc in scorers.items():
-            orders[f"P1_seed{s}"] = C.order_by_scores(e, S.scores_matrix(e, sc.predict(X), pairs))
-        per_mol[r["id"]] = dict(split=r["split"], M=e["M"], **evaluate(e, orders, a.stride, a.noise_sigma))
+            p1 = sc.predict(X)
+            orders[f"P1_seed{s}"] = C.order_by_scores(e, S.scores_matrix(e, p1, pairs))
+            if s in embeds:
+                p2 = embeds[s].predict(e)
+                orders[f"P2_seed{s}"] = C.order_by_scores(e, S.scores_matrix(e, p2, pairs))
+                z1, z2 = (p1 - p1.mean()) / (p1.std() + 1e-9), (p2 - p2.mean()) / (p2.std() + 1e-9)
+                orders[f"P12_seed{s}"] = C.order_by_scores(e, S.scores_matrix(e, 0.5 * (z1 + z2) * p1.std() + p1.mean(), pairs))
+        per_mol[r["id"]] = dict(split=r["split"], M=e["M"], **evaluate(e, orders, a.checkpoints, a.noise_sigma, lam_grid))
         print(f"  {k + 1}/{len(evals)} {r['id']} M {e['M']}: K_off(0.3) P0 {per_mol[r['id']]['P0']['K_off_0p3']} P1 {per_mol[r['id']]['P1_seed0']['K_off_0p3']} "
               f"oracle {per_mol[r['id']]['P3_oracle']['K_off_0p3']}; {time.time() - t0:.0f} s", flush=True)
     summary = {}
     for split in ("eval_parents", "eval"):
         sub = {i: m for i, m in per_mol.items() if m["split"] == split}
-        summary[split] = {key: {name: ratio_summary(sub, "P0", name, key) for name in per_mol[next(iter(per_mol))] if name.startswith(("P1", "P3"))}
+        summary[split] = {key: {name: ratio_summary(sub, "P0", name, key) for name in per_mol[next(iter(per_mol))] if name.startswith(("P1", "P2", "P3"))}
                           for key in ("K_off_0p3", "K_off_0p1", "n10_inband", "n10_all")} if sub else {}
         if sub:
             summary[split]["n_molecules"] = len(sub)
             summary[split]["P0_reached_0p3"] = sum(m["P0"]["K_off_0p3"] is not None for m in sub.values())
-    out = dict(date=time.strftime("%Y-%m-%d %H:%M"), pool=a.pool, seeds=seeds, stride=a.stride, noise_sigma=a.noise_sigma, exports=str(a.exports),
-               scorer_prefix=str(a.scorer_prefix), summary=summary, per_molecule=per_mol, seconds=round(time.time() - t0, 1))
+    out = dict(date=time.strftime("%Y-%m-%d %H:%M"), pool=a.pool, seeds=seeds, checkpoints=a.checkpoints, lam_grid=lam_grid, noise_sigma=a.noise_sigma,
+               exports=str(a.exports), scorer_prefix=str(a.scorer_prefix), embed_prefix=a.embed_prefix, summary=summary, per_molecule=per_mol,
+               seconds=round(time.time() - t0, 1))
     json.dump(out, open(a.out_prefix + ".json", "w"), indent=1)
-    lines = [f"# Pattern-proposer simulation — pool {a.pool}, {out['date']}", "", f"seeds {seeds}, stride {a.stride}, noise σ {a.noise_sigma}; {len(per_mol)} evaluation molecules.", ""]
+    lines = [f"# Pattern-proposer simulation — pool {a.pool}, {out['date']}", "",
+             f"seeds {seeds}, {a.checkpoints} checkpoints per curve, λ {lam_grid}, noise σ {a.noise_sigma}; {len(per_mol)} evaluation molecules.", ""]
     for split, tab in summary.items():
         if not tab:
             continue

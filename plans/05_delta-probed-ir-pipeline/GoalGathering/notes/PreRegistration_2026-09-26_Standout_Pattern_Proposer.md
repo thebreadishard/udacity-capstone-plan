@@ -113,3 +113,8 @@ outcome section.
   band pool; on the all-pairs pool P2 beats P1 (ratio P2/P1 ≤ 0.85) because the out-of-band couplings are where learned atom-sharing features matter
   most; P12 is at least as good as the better of the two on both pools. If 300 molecules prove too few for P2, C2-style pretraining on the Hessian
   QM9 set is the registered next lever, not a new architecture.
+- **11:0x — compute placement (the user: "Doe het allemaal zo snel als mogelijk zonder een run te schaden").** The export (seconds per molecule) and
+  the scorer fits (P1 minutes, P2 ≈ 40 min per seed) run on the laptop on **one thread at low priority** beside the densification (8 of 16 threads busy;
+  a single extra thread does not slow it measurably — checked against its heartbeat), the recovery simulation (hours) on a rented CPX62 the user creates.
+  The simulation uses ≈ 60 solves per curve (stride adapts to the pool) and the λ grid {1e-6, 1e-5} (the two values the smoke selected), recorded in
+  the results JSON.
