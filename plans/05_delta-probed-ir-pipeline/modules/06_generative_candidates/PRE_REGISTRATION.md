@@ -61,3 +61,20 @@ closures), and the valid samples are short. Recorded as written; the reading rul
 cell (same split, same seed, same evaluation) so the executed notebook remains the record.
 
 **Progress note 2026-09-25 21:1x — seed 0 of the pre-registered run trained (training only; sampling and evaluation follow in the notebook).** CCX53, `m06/train.py`, the notebook's own `train_model`, seed 0, 125,065 training / 15,434 validation molecules, 3,201,024 parameters, 20 epochs of ≈ 30 min (603 min total) at `nice 15` beside naphthalene E8: train loss 1.212 → 0.522, validation loss 0.784 → 0.553 (best 0.5530 at epoch 19), validity of 200 samples per epoch 0.22 → 0.955 (`notebook/out/seed0/train_log_seed0.json`, `m06_seed0.log`; weights `model_seed0.pt`, 12.8 MB, kept on the CCX53 and the laptop, not committed). The per-epoch validity is above the registered 0.85 from epoch 9 on; the registered metrics (10,000 samples, T = 1.0 and 0.7) are computed only in the notebook run with `M06_REUSE=1`. Seed 1 and the conditioned model (seed 0, `--conditioning`, smoke of that branch passed) started 21:1x on the CCX53, six threads each at `nice 15`, unbuffered logs (`m06_seed1.log`, `m06_cond_seed0.log`); expected ≈ 12–14 h each (Saturday midday), seed 2 after the CCX53 read-out on another machine. The predictions above are unchanged.
+
+## Outcome 2026-09-26 20:0x — the pre-registered run (three seeds + the conditioned model, 10,000 samples per model)
+
+CCX53, `M06_REUSE=1` (weights of `m06/train.py`, same recipe, seeds 0–2 and `cond_seed0`), 6 threads at nice 15 beside E8, ≈ 1 h 15 min; executed notebook `notebook/generative_model.ipynb`, numbers `notebook/results.json` (date 18:02 UTC), run log `notebook/out/full_2026-09-26/m06_notebook.log`, training logs `notebook/out/seed*/train_log_seed*.json`. Data: 160,972 rows, scaffold split 125,065 / 15,434 / 20,473 (train / val / test), vocabulary 33, 3,201,024 parameters; 20 epochs per seed, final validation loss 0.551 / 0.551 / 0.552.
+
+Read-outs at T = 1.0, seeds 0 / 1 / 2 against the predictions fixed on 24 September:
+- validity 0.924 / 0.926 / 0.923 (≥ 0.85: met); seed spread 0.003 (≤ 0.03: met)
+- uniqueness 0.992 / 0.992 / 0.992 (≥ 0.95: met)
+- novelty 0.907 / 0.907 / 0.910 (≥ 0.50: met); scaffold novelty 0.534 / 0.535 / 0.538 (≥ 0.30: met)
+- memorisation 0.099 / 0.099 / 0.095 (≤ 0.10: met, at the line)
+- project fit 0.945 / 0.944 / 0.946 against the predicted band 0.30–0.60: **not met — the prediction was wrong, on the low side.** The band was a prediction, so it is scored as a miss; the quantity itself says the model stays inside the corpus families (neutral, C/H/N/O/S/F/Cl, ≤ 30 heavy atoms, ≥ 2 fused aromatic rings) almost always, which is the behaviour the project wants.
+- distribution match, W1 heavy atoms / aromatic rings / heteroatoms: 1.00 / 0.14 / 0.07 (seed 0; seeds 1–2 within 0.07)
+- T = 0.7: validity 0.98, uniqueness 0.94, novelty 0.85, memorisation 0.18–0.19 — the registered low-temperature trade-off (more valid, more copied)
+- conditioning: obedience 0.869 over all requests (≥ 0.80: met); per request 0.625 (`<r2> <hS>`) to 0.979 (`<r2> <hN>`); sulfur requests are the weak ones
+- baseline (5-gram Markov, computed live in the notebook): validity 0.030, project fit 0.024, W1 13.4 / 2.59 / 3.32 → margins 0.894 and 0.922, every W1 smaller: `beats_baseline` true.
+
+**Verdict: 6 of 7 registered read-outs met; the miss is a prediction that was too pessimistic (project fit).** Sampling cost 507–652 s per model and temperature on 6 threads. Reading: the model has learned the grammar and the family distribution of the frozen set and obeys class conditioning; it proposes nothing the project's physics asks for (no response-informed objective) — that role belongs to the standout pattern proposer. Next: the module's report and README status line from these numbers (desk work); no further training.

@@ -13,7 +13,6 @@ this file only says what is running or waiting and who acts.*
 | Layer-B shards 0/1/2 | the layer-B learning curve (proof of learning; interim reading Sun 20:00, 300-table when all five shards have their first 20) | hel1-16 (shard 2, 46.62.227.91), hel1-18 (2.29.40.182), hel1-21 (2.29.45.10); `corpus/layerB_shard*of5.log` | monitor line every 10 molecules; counts 42/43/44 = 129 at 12:3x | run on; merge with `merge_shards.py` for readings |
 | Naphthalene⁺ ULNO-CCSD(T) price (obstacle 9) | the cation cost ratio c at the label level (decision 41's condition) | hel1-14 (89.167.29.36), `/root/cations/price/naphthalene/` | monitor line `PRICE naphthalene DONE`; then `cation_price_readout.py`, pre-registration outcome, reading-copy note | q = 0 done (34,121 s); q+1 running; ≈ Sun 03:00–04:00 |
 | E8 naphthalene CC Hessian (three partial runs) | locality one bond further at CC level, on a two-ring molecule | CCX53 (77.42.67.27), `/root/e8/results/naphthalene_ccpvdz/` | monitor line (verdict/finished/Traceback); 20 of 30 gradient files at 12:3x | ≈ Sun evening; then assembly + `e8_cc_locality.py` + `e8_between_extension.py` (in the chain) |
-| Module 06 notebook run (pre-registered: three seeds + conditioned model, 10,000 samples each) | the module's result at the registered scale; seeds 0–2 trained (seed 2 ended 18:4x, val 0.552, validity 0.94) | CCX53, `/root/m05run/06_generative_candidates/m06_notebook.{log,exit}` (remote_launch, 6 threads, nice 15; `--no-execute` dry run passed) | `m06_notebook.exit`; then fetch `notebook/results.json`, `generative_model.ipynb`, figures; pre-registration outcome; commit | ≈ 1–2 h (sampling and evaluation on CPU) |
 | Standout pattern proposer, round 2 (band pool, all orderings) then E2 (all pairs) | is the meetvolgorde a lever, and does the learned embedding add to the scorer (pre-registration 26 Sep) | hel1-23 (157.180.32.149), `/root/pp/plan/modules/standout_pattern_proposer/out/sim/{band_p2,all_p2}_*`, chain `chain_p2` | monitor line `POOL band_p2 DONE` / `POOL all_p2 DONE`; fetch merged JSON, `readout.py`, outcome section | band_p2 done 14:19 (read 14:3x); all_p2 7 of 97 at 15:4x (the wide pool is ≈ 3× the work per molecule) → ≈ Sun 05:00; left running at the registered settings |
 | P2 search, stages 2–3 (loss; capacity) | the learned embedding gets a fair chance before any sentence about it (the user, 12:1x); each stage read on validation by Spearman with the incumbent's seed spread as margin (rule 18:1x) | laptop, one thread at nice 10; `modules/standout_pattern_proposer/out/p2s3_*`, log `out/p2_stage3_2026-09-26.log` | stage 2 read 18:2x: MSE loss kept (Spearman 0.636 vs 0.640 best, spread 0.021); stage 3 running (9 fits: 5 blocks, +‖v‖, both); on `STAGE3_DONE` run `stage_readout.py … p2s1_lr1e-3_w128 p2s3_b5 p2s3_b3v p2s3_b5v`; a winner replaces `p2s1` in `chain_p2s1` only if it has not started | stage 3 ≈ 21:30 Sat; stage 4 when layer B passes 300; stage 5 (QM9 pretraining) after the 28th |
 
@@ -30,7 +29,7 @@ this file only says what is running or waiting and who acts.*
 
 | when | what | prepared by |
 |---|---|---|
-| Sat evening | module 06 notebook run with three seeds on the CCX53; delete/reassign hel1-23 | me (run), the user (servers) |
+| Sat evening | module 06 notebook run done 20:0x (6 of 7 read-outs met); still open: delete/reassign hel1-23 | the user (servers) |
 | Sun 20:00 | interim layer-B reading (`e7_rungB_pairs.py … --split layerB --sizes all --seeds 0,1,2`, plain and `--tune --tune-stage2`), read against both prediction sets | me |
 | Sun evening | rung C decision; E8 naphthalene read-out if the chain finished | the user + me |
 | Mon 28 Sep | supervisor conversation; the Monday package (reading copy, cover note, two-horizon note) current as of Sunday night | me |
@@ -43,6 +42,7 @@ this file only says what is running or waiting and who acts.*
 4. The band-prior finding (≈ 45 % of off-diagonal power in band) — to discuss with the user before the 28th, not to act on.
 5. Standout pattern proposer at CC level: a test on the anchor's real responses (naphthalene deck) — after the 28th.
 6. Standout: adaptive ordering P0+A / P1+A / P2+A (`run_simulation.py --adaptive`; registered 18:4x, the user: "Akkoord") — build after the P2 search is read (stage 3 tonight), planted dry-run, then run on hel1-23 after `chain_p2s1`; answers how much of the oracle gap is feedback.
+7. Module 06: report (`Generative_AI_Analysis_Report`) and README status line from `notebook/results.json` (run of 26 Sep 20:0x); desk work, no training.
 
 ## Guards on this file
 
