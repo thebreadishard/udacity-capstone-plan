@@ -20,7 +20,7 @@ this file only says what is running or waiting and who acts.*
 | task | why | what is needed | when |
 |---|---|---|---|
 | Hetzner credit | usage ≈ €1.60/h against €300 (raised 26 Sep 11:xx) | the user raises when I warn; I warn a day ahead | Monday |
-| Rung C fair-chance search: start tonight or tomorrow? | the first run converged to a nearly fixed output (read 20:0x); the rule of 12:1x asks for the search before any sentence; stage 1 (four cells, ≈ 25 min at 8 threads) then stage 2 (six cells, ≈ 35 min) on the free laptop; registered in the rung C pre-registration | one word: "vanavond" or "morgen" | tonight |
+| ~~Rung C fair-chance search: start tonight or tomorrow?~~ → tonight (the user, 19:5x); stage 1 read 20:3x (winner: internal term at weight 1.0, ratio 0.88), stage 2 running since 20:36 (`out/E7_rungC_s2_2026-09-27.log`), stage 3 = C2 (`scratchpad/rungC_stage3_0927.sh`: QM9 pretraining 3 epochs + fine-tune) queued after stage 2 | the first run converged to a nearly fixed output (read 20:0x); the rule of 12:1x asks for the search before any sentence; stage 1 (four cells, ≈ 25 min at 8 threads) then stage 2 (six cells, ≈ 35 min) on the free laptop; registered in the rung C pre-registration | one word: "vanavond" or "morgen" | tonight |
 | Anthropic Console key for module 07's LLM run | the rubric's own-model run; the deterministic policy is the reference until then | the user sets `ANTHROPIC_API_KEY` (never in chat); then `M07_LLM=1 STEWARD_MODEL=claude-sonnet-5 make_notebook.py` | when convenient |
 | ~~Rung C decision~~ → decided A (the user, 19:5x: "Trede C nu") | see the running row: rung C training on the laptop since 19:50 | — | — |
 
