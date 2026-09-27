@@ -1,0 +1,6 @@
+# Standout pattern proposer — what the module imports beyond the standard library (27 September 2026).
+# The system Python 3.14 of the laptop carries these; the hel1-23 venv was built from this list (numpy, torch CPU, psi4 is not needed: the exports carry
+# the responses; the deck builder is imported from probes/dryrun_dft_delta_recovery.py, which needs only numpy for build_deck).
+numpy>=1.26
+torch>=2.2           # P2 (pp/embed_scorer.py) and the rung-C body it borrows (../05_support_predictor/m05/rungC_equivariant.py)
+pytest>=8            # tests/test_pp_planted.py

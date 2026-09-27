@@ -33,7 +33,7 @@ this file only says what is running or waiting and who acts.*
 
 ## Desk work queue (quiet hours, in order)
 
-1. Standout: outcome sections as pools finish; module artefacts (design note, notebook, report, requirements) once E2 is read.
+1. Standout module artefacts: README, requirements, DESIGN_2026-09-27 written 08:5x; still to do: `notebook/make_notebook.py` (rebuilds the read-outs from the committed JSONs, one small molecule's curves live), `make_summary.py` report, `PROVENANCE.md`; outcome sections for `all_p2s1` and `all_p2s1A` when they land.
 2. P2 stages 2–5 as registered (ranking loss, capacity, data growth, QM9 pretraining) — only after stage 1 is read; never a negative sentence before stage 5.
 3. Cation affordability line in the reading copy once naphthalene⁺ is in (three points).
 4. The band-prior finding (≈ 45 % of off-diagonal power in band) — to discuss with the user before the 28th, not to act on.
