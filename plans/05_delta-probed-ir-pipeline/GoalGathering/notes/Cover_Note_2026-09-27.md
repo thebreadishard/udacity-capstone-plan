@@ -21,9 +21,10 @@ laboratoriumspectrum bestaat. Jouw groep sloot in 2016 af met de hoop dat de anh
 generaliseren zonder voor elk molecuul een volledig krachtveld te rekenen (Mackie et al. 2016, slotparagraaf); dit plan is één
 antwoord op die hoop.
 
-**Hoe het werkt.** De coupled-cluster-correctie op de harmonische krachtconstanten reken ik niet uit maar *meet* ik, met zo weinig
-mogelijk dure energieën: lokale coupled-cluster-berekeningen waarvan ik de orbitaalruimtes één keer kies en daarna naar elke
-vervorming meeneem, zodat de energieverschillen glad zijn. Het bevriezen van zulke ruimtes is een bekend recept (Mata & Werner
+**Hoe het werkt.** De coupled-cluster-correctie op de harmonische krachtconstanten reken ik niet volledig uit, maar schat ik uit een
+klein aantal gerichte vervormingen van het molecuul, zoals je een curve uit een handvol meetpunten haalt. Bij elke vervorming hoort
+één lokale coupled-cluster-berekening, waarvan ik de orbitaalruimtes één keer kies en daarna naar elke vervorming meeneem, zodat de
+energieverschillen glad zijn. Het bevriezen van zulke ruimtes is een bekend recept (Mata & Werner
 2006, sinds 20 september zo in §3.1); wat van mij is, is het transporteren van LNO-ruimtes, die geen atoomlijst hebben die je kunt
 bevriezen, en het meten van wat dat kost. Het aantal energieën per molecuul staat naast elk spectrum; de nauwkeurigheid wordt
 gescoord tegen laboratoriumdata en tegen de bestaande voorspellingen, waaronder die van jouw groep ("lijn B" in de meetlat).
