@@ -45,6 +45,18 @@ Code moves from tier 1 to tier 2 by **promotion**, never by copying. Promotion i
 
 ## Enforcement
 
+### Early stopping in every learning run (decision 51, 27 September 2026)
+
+Every training run in every module that learns (04, 05 and its E-series, 06, 07 if it ever trains, the standout module, rung C) holds out a validation
+split from its training data, evaluates it every epoch, stops when it has not improved for a fixed patience, restores the best state, and records the
+best epoch beside the cap. The cap is not a recipe parameter but a safety limit: **a best epoch within ten percent of the cap means the cap was binding —
+the run is repeated with a higher cap and is not a result.** Where a learner has no epochs the equivalent applies (gradient boosting: its own early
+stopping on a validation split); closed-form fits (ridge, the power-law fits) are outside the rule. Registered recipes with a fixed epoch count that
+predate this decision keep their meaning as the comparison they were, and every new run uses the rule. Why (27 September): the registered rung C recipe
+stopped at 60 epochs while the inner-validation term was still falling; 200 epochs with patience 20 moved the hold-out ratio from 0.88 to 0.81, the
+largest single step of that evening's search — and the module 05 notebook's own early stopping had chosen epochs 25–29 of a cap of 30, i.e. the cap.
+
+
 - **The gate is mechanical.** Nothing enters `src/dpir/` without the checklist and green CI. If it has to run today,
   it runs as a probe.
 - **Every incident becomes a guard.** Each mistake recorded in the obstacle ledger produces, within a week, one of:
