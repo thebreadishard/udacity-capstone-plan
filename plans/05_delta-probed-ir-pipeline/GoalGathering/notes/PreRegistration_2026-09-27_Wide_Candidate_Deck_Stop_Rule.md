@@ -14,7 +14,7 @@ The proxy corpus (289 molecules, Δ = ωB97X − B3LYP couplings) says two thing
 2. consequently the band deck, measured **in full**, ends at a median ρ_off of 0.53 (parents) / 0.47 (A2/B), while a pool with two-mode patterns for
    every pair, consumed in the hashed order, ends at 0.08 / 0.14 and reaches ρ_off ≤ 0.3 on 38 of 41 parents and 43 of 56 A2/B molecules (band deck: 1 and 3).
 
-Cost, median per molecule (energies): the whole band deck 1,360 (parents) / 1,686 (A2/B); the whole wide pool 6,614 / 8,448 (≈ 5×). Reaching ρ_off 0.3
+Cost, median per molecule (energies; `modules/standout_pattern_proposer/out/sim/deck_cost_2026-09-27.md`): the whole band deck 1,360 (parents) / 1,686 (A2/B); the whole wide pool 6,614 / 8,448 (≈ 5×). Reaching ρ_off 0.3
 on the wide pool costs 2,951 / 3,528 energies in the hashed order, **1,831 / 2,560 with the learned order P12** (≈ 1.35–1.5× the whole band deck),
 608 / 1,120 with the oracle. Ordering on the wide pool pays 1.3–1.4× on K_off(0.3) and 1.8–2.5× on the halfway point; the deck change pays a factor
 that the band deck cannot buy at any budget.
