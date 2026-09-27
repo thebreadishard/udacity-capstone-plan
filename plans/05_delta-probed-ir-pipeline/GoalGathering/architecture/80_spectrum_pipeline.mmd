@@ -14,9 +14,9 @@ flowchart LR
   ANHC(["Anharmonic constants, with route difference per constant"]):::data
   MODE["Mode analysis (own software)"]
   MODES(["Normal modes: L, frequencies, families, symmetry blocks"]):::data
-  TOKS["Tokenisation (own software)"]
-  TOK(["Mode tokens"]):::data
-  FWD["Forward pass (ΔH model, PyTorch)"]:::planned
+  LOCC["Local-coordinate features (own software, geomeTRIC)"]
+  PF(["Primitive pairs with their features; atoms and coordinates"]):::data
+  FWD["Forward pass (ΔH model: pairwise local head or equivariant body, then projection onto the modes; PyTorch)"]:::planned
   DH(["ΔH blocks per family and relaxation along the totally symmetric modes, with ensemble uncertainty"]):::data
   LAB(["Label from the label factory: ΔH blocks with error margin per family and geometry term per mode"]):::data
   LICF["Licence filter (own software)"]:::planned
@@ -38,7 +38,8 @@ flowchart LR
   MOL --> DFT --> SK
   SK --> MODE --> MODES
   SK --> VPT --> ANHC
-  MODES --> TOKS --> TOK --> FWD --> DH --> LICF --> DHL --> APPLY --> H --> EIG --> POS --> GEOP --> POSG --> SHAPE
+  SK --> LOCC --> PF --> FWD --> DH --> LICF
+  MODES --> FWD --> DHL --> APPLY --> H --> EIG --> POS --> GEOP --> POSG --> SHAPE
   DHL --> GEOP
   ANHC --> GEOP
   LAB --> LICF

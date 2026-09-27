@@ -19,7 +19,7 @@ The overview (sheet 0) shows the kinds of process and the data objects that conn
 | shapes | rectangle = process step; rectangle with rounded ends (grey) = data object; darker blue = external data object, not ours; light frame around several figures = part of the ΔH model (backbone, heads; sheet 5 only) |
 | step → object | every process step yields exactly one data object, which feeds the next step(s); a process begins and ends at a data object; branches only come out of data objects |
 | naming | a step is named after the operation with the software package in brackets ("DFT (psi4)", "VPT2 (pyVPT2 on pyscf Hessians)") or "own software" / "PyTorch" when we make it; a data object is named after the thing; no word repetition between step and object; no explanation in captions |
-| the model | the network is called **the ΔH model** (it predicts ΔH blocks per family); its shared part is called the **backbone** (embedding and self-attention), its outputs are called **heads** (block head, pair head); the instances with different seeds form the **ensemble** and are called **members**; the simple rules are the **baseline**. "Network" on its own does not occur on the target sheets (agreement 20 September) |
+| the model | the network is called **the ΔH model** (it predicts ΔH blocks per family); its shared part is called the **backbone** (rung B: the pair-feature map; rung C: the equivariant body — since decision 49 of 23 September; the embedding-and-self-attention backbone over mode tokens of 6 September was dropped), its outputs are called **heads** (pairwise local head, tensor head; the mode-basis block head remains module 05's pre-registered baseline for the diagonal); the instances with different seeds form the **ensemble** and are called **members**; the simple rules are the **baseline**. "Network" on its own does not occur on the target sheets (agreement 20 September) |
 | noise principle | every derived quantity (curvature, coupling, anharmonic constant) gets an independent second route or a symmetry check, and the difference is a term of the error budget; on sheet 4 as its own step ("Consistency check"), on sheet 8 in the data object of the anharmonic constants (agreement 21 September, after the benzene VPT2: two routes to the same quartic constant differed by up to 1,265 cm⁻¹ and the package did not see it) |
 | status | solid = exists and has been measured; dashed border, yellow fill = not built yet |
 | none | no storage figures (cylinders), no diamonds on the target sheets (decisions per item sit inside a step), no invisible helper nodes: standard Mermaid, left to right |
@@ -48,7 +48,7 @@ flowchart LR
   LABF["Label factory (sheet 4)"]:::proc
   LABELS(["Labels: ΔH blocks with error margin per family"]):::data
   CORPF["Corpus step (sheet 3)"]:::proc
-  CORPUS(["Corpus records: mode tokens and proxy correction per molecule"]):::data
+  CORPUS(["Corpus records: two DFT Hessians, proxy correction and local-coordinate features per molecule"]):::data
   TRAIN["Training (sheet 6)"]:::planned
   TRAINED(["Trained ΔH model: ensemble of members"]):::data
   TESTSET(["Test set"]):::data
@@ -184,6 +184,8 @@ flowchart LR
 ```mermaid
 %% Data creation — the corpus: two DFT Hessians per molecule and the proxy correction (level 3). Target architecture.
 %% Rectangle = process step (operation + software); rounded ends = data object (the thing). Every step yields one data object. Everything exists.
+%% 27 September 2026: the mode-token representation of 6 September was dropped on 23 September (decision 49, E7: couplings unlearnable in the mode basis);
+%% the record keeps the Cartesian Hessians, the modes, the local-coordinate features and, since 26 September, the probe deck's pattern responses.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef data fill:#e9ecef,stroke:#555,color:#111
@@ -198,11 +200,13 @@ flowchart LR
   MODE["Mode analysis (own software)"]
   MODES(["Normal modes: L, frequencies, families, symmetry blocks"]):::data
   PROXY["Proxy correction (own software)"]
-  DHP(["Proxy correction: ΔH = H1 − H0 per family block, in the mode basis"]):::data
-  TOKS["Tokenisation (own software)"]
-  TOK(["Mode tokens"]):::data
+  DHP(["Proxy correction: ΔH = H1 − H0 (Cartesian), with its projections on the modes and on the primitive-pair coordinates"]):::data
+  LOCC["Local-coordinate features (own software, geomeTRIC)"]
+  PF(["Primitive internal coordinates and their pairs — diagonal, atom-sharing, ring bond–bond — with pair features from H0"]):::data
+  DECK["Deck responses (own software)"]
+  RESP(["Pattern responses R = ½ aᵀ ΔH a of the probe deck: the measurement planner's records"]):::data
   REC["Record assembly (own software)"]
-  CORP(["Corpus record: mode tokens, proxy correction, Hessian H0 and dipole derivatives"]):::data
+  CORP(["Corpus record: geometry, H0 and dipole derivatives, H1, ΔH, normal modes, local-coordinate features, deck responses"]):::data
 
   MOL --> OPT --> GEO
   GEO --> DFTL --> SK --> MODE --> MODES
@@ -210,7 +214,10 @@ flowchart LR
   SK --> PROXY
   H1 --> PROXY
   MODES --> PROXY --> DHP --> REC
-  MODES --> TOKS --> TOK --> REC
+  GEO --> LOCC
+  SK --> LOCC --> PF --> REC
+  DHP --> DECK
+  MODES --> DECK --> RESP --> REC
   SK --> REC
   REC --> CORP
 ```
@@ -279,7 +286,11 @@ flowchart LR
 ## 5. Components of the ΔH model (`50_deltaH_model_components.mmd`)
 
 ```mermaid
-%% Components of the ΔH model (level 4): what happens inside the step "Forward pass (ΔH model, PyTorch)" of sheet 8 (the spectrum pipeline). Backbone = embedding and self-attention; heads = block head and pair head; the ensemble consists of members with different seeds. Target architecture; largely not built yet.
+%% Components of the ΔH model (level 4): what happens inside the step "Forward pass (ΔH model, PyTorch)" of sheet 8 (the spectrum pipeline). Since decision 49
+%% (23 September 2026) the couplings are learned in local coordinates, by two variants under test: the pairwise local head on primitive-pair features (rung B, built
+%% and measured) and the equivariant Δ-Hessian model with a tensor head (rung C, built and tested 25 September; training waits for the decision of 27 September). Both
+%% are projected onto the cheap modes; the ensemble consists of members with different seeds. The mode-token backbone of 6 September (embedding + self-attention over
+%% mode tokens) was dropped: E7 showed the couplings unlearnable in the mode basis; its block head remains module 05's pre-registered baseline for the diagonal.
 %% Rectangle = process step (operation + software); rounded ends = data object (the thing). Every step yields one data object. Dashed = not built yet.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
@@ -287,43 +298,44 @@ flowchart LR
   classDef data fill:#e9ecef,stroke:#555,color:#111
   classDef part fill:#f7f7fb,stroke:#333,stroke-width:1.5px,color:#111
 
-  TOK(["Mode tokens of one molecule, with charge and multiplicity"]):::data
-  EMB["Embedding (PyTorch)"]
-  EMBV(["Token vectors"]):::data
-  ATT["Self-attention over the modes (PyTorch)"]
-  CTX(["Context vectors per mode"]):::data
-  BLK["Block head (PyTorch)"]:::planned
-  BLKS(["ΔH blocks per family of one ensemble member"]):::data
-  PAIR["Pair head (PyTorch)"]
-  PAIRS(["Support labels per mode pair"]):::data
+  GEO(["Molecule: atomic numbers, coordinates of the cheap minimum, charge, multiplicity"]):::data
+  SK(["Hessian H0 of the cheap level"]):::data
+  PRIMC["Primitive internal coordinates (geomeTRIC)"]
+  PRIM(["Primitive internal coordinates and their pairs: diagonal, atom-sharing pairs, ring bond–bond pairs"]):::data
+  FEAT["Pair features (own software)"]
+  PF(["Pair features: primitive classes, ring relations, projections of H0"]):::data
+  LOC["Pairwise local head on pair features (MLP or trees, PyTorch / scikit-learn)"]
+  DFL(["ΔF: force-constant corrections per primitive pair"]):::data
+  EQB["Equivariant body: message passing over atoms with scalar and vector channels, fed by the rotation invariants of H0 (PyTorch)"]
+  ATOMF(["Per-atom scalar and vector features"]):::data
+  TH["Tensor head: symmetric 3×3 block per atom pair, translation sum rule (PyTorch)"]
+  DHC(["ΔH in Cartesian coordinates of one member"]):::data
+  PROJ["Projection onto the cheap modes: Bᵀ ΔF B or Lᵀ ΔH L (own software)"]
+  KLOC(["ΔH blocks per family of one member, couplings included"]):::data
   ENSA["Ensemble averaging over the members (own software)"]:::planned
   OUT(["ΔH blocks per family, with ensemble uncertainty"]):::data
 
-  subgraph BB["Backbone of the ΔH model"]
-    EMB
-    EMBV
-    ATT
-    CTX
+  subgraph RB["Rung B: the pairwise local head (built, measured on the 175-molecule pool)"]
+    PRIMC
+    PRIM
+    FEAT
+    PF
+    LOC
+    DFL
   end
-  subgraph HD["Heads of the ΔH model"]
-    BLK
-    PAIR
+  subgraph RC["Rung C: the equivariant Δ-Hessian model (built and tested; not yet trained)"]
+    EQB
+    ATOMF
+    TH
+    DHC
   end
-  class BB,HD part
+  class RB,RC part
 
-  %% Decision 49 (23 September 2026): the couplings are predicted as pairwise local terms in primitive internal coordinates and projected onto the
-  %% mode basis; the mode-basis block head stays as module 05's pre-registered baseline for the diagonal. Pre-registered E7: ring coupling ratio
-  %% 0.43 / 0.47 on the two hold-outs, corrected frequencies 4.7 / 5.1 cm-1 (mode basis: 1.00, i.e. no coupling learned).
-  PRIM(["Primitive internal coordinates of the molecule and their pairs: diagonal, atom-sharing pairs, ring bond–bond pairs (geomeTRIC)"]):::data
-  LOC["Pairwise local head on pair features (MLP or trees, PyTorch / scikit-learn)"]:::planned
-  DFL(["ΔF: force-constant corrections per primitive pair"]):::data
-  PROJ["Projection Bᵀ ΔF B onto the cheap modes (own software)"]
-  KLOC(["ΔH blocks per family from the local terms, couplings included"]):::data
-
-  TOK --> EMB --> EMBV --> ATT --> CTX
-  CTX --> BLK --> BLKS --> ENSA --> OUT
-  CTX --> PAIR --> PAIRS --> ENSA
-  PRIM --> LOC --> DFL --> PROJ --> KLOC --> ENSA
+  GEO --> PRIMC --> PRIM --> FEAT --> PF --> LOC --> DFL --> PROJ
+  SK --> FEAT
+  GEO --> EQB
+  SK --> EQB --> ATOMF --> TH --> DHC --> PROJ
+  PROJ --> KLOC --> ENSA --> OUT
 ```
 
 ## 5b. The ΔH model in code (`51_deltaH_model_pytorch.py`)
@@ -411,9 +423,9 @@ flowchart LR
   ANHC(["Anharmonic constants, with route difference per constant"]):::data
   MODE["Mode analysis (own software)"]
   MODES(["Normal modes: L, frequencies, families, symmetry blocks"]):::data
-  TOKS["Tokenisation (own software)"]
-  TOK(["Mode tokens"]):::data
-  FWD["Forward pass (ΔH model, PyTorch)"]:::planned
+  LOCC["Local-coordinate features (own software, geomeTRIC)"]
+  PF(["Primitive pairs with their features; atoms and coordinates"]):::data
+  FWD["Forward pass (ΔH model: pairwise local head or equivariant body, then projection onto the modes; PyTorch)"]:::planned
   DH(["ΔH blocks per family and relaxation along the totally symmetric modes, with ensemble uncertainty"]):::data
   LAB(["Label from the label factory: ΔH blocks with error margin per family and geometry term per mode"]):::data
   LICF["Licence filter (own software)"]:::planned
@@ -435,7 +447,8 @@ flowchart LR
   MOL --> DFT --> SK
   SK --> MODE --> MODES
   SK --> VPT --> ANHC
-  MODES --> TOKS --> TOK --> FWD --> DH --> LICF --> DHL --> APPLY --> H --> EIG --> POS --> GEOP --> POSG --> SHAPE
+  SK --> LOCC --> PF --> FWD --> DH --> LICF
+  MODES --> FWD --> DHL --> APPLY --> H --> EIG --> POS --> GEOP --> POSG --> SHAPE
   DHL --> GEOP
   ANHC --> GEOP
   LAB --> LICF

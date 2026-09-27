@@ -1,5 +1,7 @@
 %% Data creation — the corpus: two DFT Hessians per molecule and the proxy correction (level 3). Target architecture.
 %% Rectangle = process step (operation + software); rounded ends = data object (the thing). Every step yields one data object. Everything exists.
+%% 27 September 2026: the mode-token representation of 6 September was dropped on 23 September (decision 49, E7: couplings unlearnable in the mode basis);
+%% the record keeps the Cartesian Hessians, the modes, the local-coordinate features and, since 26 September, the probe deck's pattern responses.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef data fill:#e9ecef,stroke:#555,color:#111
@@ -14,11 +16,13 @@ flowchart LR
   MODE["Mode analysis (own software)"]
   MODES(["Normal modes: L, frequencies, families, symmetry blocks"]):::data
   PROXY["Proxy correction (own software)"]
-  DHP(["Proxy correction: ΔH = H1 − H0 per family block, in the mode basis"]):::data
-  TOKS["Tokenisation (own software)"]
-  TOK(["Mode tokens"]):::data
+  DHP(["Proxy correction: ΔH = H1 − H0 (Cartesian), with its projections on the modes and on the primitive-pair coordinates"]):::data
+  LOCC["Local-coordinate features (own software, geomeTRIC)"]
+  PF(["Primitive internal coordinates and their pairs — diagonal, atom-sharing, ring bond–bond — with pair features from H0"]):::data
+  DECK["Deck responses (own software)"]
+  RESP(["Pattern responses R = ½ aᵀ ΔH a of the probe deck: the measurement planner's records"]):::data
   REC["Record assembly (own software)"]
-  CORP(["Corpus record: mode tokens, proxy correction, Hessian H0 and dipole derivatives"]):::data
+  CORP(["Corpus record: geometry, H0 and dipole derivatives, H1, ΔH, normal modes, local-coordinate features, deck responses"]):::data
 
   MOL --> OPT --> GEO
   GEO --> DFTL --> SK --> MODE --> MODES
@@ -26,6 +30,9 @@ flowchart LR
   SK --> PROXY
   H1 --> PROXY
   MODES --> PROXY --> DHP --> REC
-  MODES --> TOKS --> TOK --> REC
+  GEO --> LOCC
+  SK --> LOCC --> PF --> REC
+  DHP --> DECK
+  MODES --> DECK --> RESP --> REC
   SK --> REC
   REC --> CORP

@@ -1,4 +1,8 @@
-%% Components of the ΔH model (level 4): what happens inside the step "Forward pass (ΔH model, PyTorch)" of sheet 8 (the spectrum pipeline). Backbone = embedding and self-attention; heads = block head and pair head; the ensemble consists of members with different seeds. Target architecture; largely not built yet.
+%% Components of the ΔH model (level 4): what happens inside the step "Forward pass (ΔH model, PyTorch)" of sheet 8 (the spectrum pipeline). Since decision 49
+%% (23 September 2026) the couplings are learned in local coordinates, by two variants under test: the pairwise local head on primitive-pair features (rung B, built
+%% and measured) and the equivariant Δ-Hessian model with a tensor head (rung C, built and tested 25 September; training waits for the decision of 27 September). Both
+%% are projected onto the cheap modes; the ensemble consists of members with different seeds. The mode-token backbone of 6 September (embedding + self-attention over
+%% mode tokens) was dropped: E7 showed the couplings unlearnable in the mode basis; its block head remains module 05's pre-registered baseline for the diagonal.
 %% Rectangle = process step (operation + software); rounded ends = data object (the thing). Every step yields one data object. Dashed = not built yet.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
@@ -6,40 +10,41 @@ flowchart LR
   classDef data fill:#e9ecef,stroke:#555,color:#111
   classDef part fill:#f7f7fb,stroke:#333,stroke-width:1.5px,color:#111
 
-  TOK(["Mode tokens of one molecule, with charge and multiplicity"]):::data
-  EMB["Embedding (PyTorch)"]
-  EMBV(["Token vectors"]):::data
-  ATT["Self-attention over the modes (PyTorch)"]
-  CTX(["Context vectors per mode"]):::data
-  BLK["Block head (PyTorch)"]:::planned
-  BLKS(["ΔH blocks per family of one ensemble member"]):::data
-  PAIR["Pair head (PyTorch)"]
-  PAIRS(["Support labels per mode pair"]):::data
+  GEO(["Molecule: atomic numbers, coordinates of the cheap minimum, charge, multiplicity"]):::data
+  SK(["Hessian H0 of the cheap level"]):::data
+  PRIMC["Primitive internal coordinates (geomeTRIC)"]
+  PRIM(["Primitive internal coordinates and their pairs: diagonal, atom-sharing pairs, ring bond–bond pairs"]):::data
+  FEAT["Pair features (own software)"]
+  PF(["Pair features: primitive classes, ring relations, projections of H0"]):::data
+  LOC["Pairwise local head on pair features (MLP or trees, PyTorch / scikit-learn)"]
+  DFL(["ΔF: force-constant corrections per primitive pair"]):::data
+  EQB["Equivariant body: message passing over atoms with scalar and vector channels, fed by the rotation invariants of H0 (PyTorch)"]
+  ATOMF(["Per-atom scalar and vector features"]):::data
+  TH["Tensor head: symmetric 3×3 block per atom pair, translation sum rule (PyTorch)"]
+  DHC(["ΔH in Cartesian coordinates of one member"]):::data
+  PROJ["Projection onto the cheap modes: Bᵀ ΔF B or Lᵀ ΔH L (own software)"]
+  KLOC(["ΔH blocks per family of one member, couplings included"]):::data
   ENSA["Ensemble averaging over the members (own software)"]:::planned
   OUT(["ΔH blocks per family, with ensemble uncertainty"]):::data
 
-  subgraph BB["Backbone of the ΔH model"]
-    EMB
-    EMBV
-    ATT
-    CTX
+  subgraph RB["Rung B: the pairwise local head (built, measured on the 175-molecule pool)"]
+    PRIMC
+    PRIM
+    FEAT
+    PF
+    LOC
+    DFL
   end
-  subgraph HD["Heads of the ΔH model"]
-    BLK
-    PAIR
+  subgraph RC["Rung C: the equivariant Δ-Hessian model (built and tested; not yet trained)"]
+    EQB
+    ATOMF
+    TH
+    DHC
   end
-  class BB,HD part
+  class RB,RC part
 
-  %% Decision 49 (23 September 2026): the couplings are predicted as pairwise local terms in primitive internal coordinates and projected onto the
-  %% mode basis; the mode-basis block head stays as module 05's pre-registered baseline for the diagonal. Pre-registered E7: ring coupling ratio
-  %% 0.43 / 0.47 on the two hold-outs, corrected frequencies 4.7 / 5.1 cm-1 (mode basis: 1.00, i.e. no coupling learned).
-  PRIM(["Primitive internal coordinates of the molecule and their pairs: diagonal, atom-sharing pairs, ring bond–bond pairs (geomeTRIC)"]):::data
-  LOC["Pairwise local head on pair features (MLP or trees, PyTorch / scikit-learn)"]:::planned
-  DFL(["ΔF: force-constant corrections per primitive pair"]):::data
-  PROJ["Projection Bᵀ ΔF B onto the cheap modes (own software)"]
-  KLOC(["ΔH blocks per family from the local terms, couplings included"]):::data
-
-  TOK --> EMB --> EMBV --> ATT --> CTX
-  CTX --> BLK --> BLKS --> ENSA --> OUT
-  CTX --> PAIR --> PAIRS --> ENSA
-  PRIM --> LOC --> DFL --> PROJ --> KLOC --> ENSA
+  GEO --> PRIMC --> PRIM --> FEAT --> PF --> LOC --> DFL --> PROJ
+  SK --> FEAT
+  GEO --> EQB
+  SK --> EQB --> ATOMF --> TH --> DHC --> PROJ
+  PROJ --> KLOC --> ENSA --> OUT
