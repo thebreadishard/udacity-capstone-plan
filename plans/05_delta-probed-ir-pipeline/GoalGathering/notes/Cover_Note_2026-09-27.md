@@ -8,28 +8,28 @@ notities, waar elk ervan door een script is afgedrukt. Eerdere versies van dit b
 Beste [naam],
 
 Dank voor de elf artikelen van 20 september; ze zijn gelezen en verwerkt, en twee ervan hebben één zin in het voorstel veranderd.
-Hierbij, voor ons gesprek van maandag 28 september, het projectvoorstel voor de Udacity capstone: één document van ongeveer
-dertig pagina's. Ernaast staan twee openbare vensters op het werk: de Spectrum Atlas (https://thebreadishard.github.io/spectrum-atlas/),
-een catalogus van elk molecuul dat de pijplijn heeft aangeraakt met zijn status en de herkomst van elk getal, en het labjournaal
+Hierbij, voor ons gesprek van maandag 28 september, het projectvoorstel voor de Udacity capstone: één lang document (ruim dertigduizend
+woorden) met bovenaan een leeswijzer van twintig minuten. Ernaast staan twee openbare vensters op het werk: de Spectrum Atlas (https://thebreadishard.github.io/spectrum-atlas/),
+een catalogus van de moleculen die de pijplijn kent, elk met zijn trede op de statusladder en de herkomst van elk getal, en het labjournaal
 in blogvorm (https://thebreadishard.github.io/).
 
-**Wat het plan belooft.** Een pijplijn die van elk afzonderlijk aromatisch molecuul een infraroodspectrum maakt met een
-coupled-cluster-anker — een klein aantal dure, nauwkeurige energieën dat de goedkope DFT-berekening corrigeert — met bij elk
-spectrum een foutenbudget per bandfamilie dat zegt of het te vertrouwen is en wat het heeft gekost. De ambitie daarachter, bewust
-niet beloofd (§6), is een bron van trainingsdata voor een netwerk dat die correctie voorspelt voor de PAK's waarvoor geen
+**Wat het plan belooft.** Een pijplijn die van een afzonderlijk aromatisch molecuul een infraroodspectrum maakt met een
+coupled-cluster-anker — een klein aantal dure, nauwkeurige energieën en gradiënten dat de goedkope DFT-berekening corrigeert — met bij elk
+spectrum een foutenbudget per bandfamilie dat zegt of het te vertrouwen is en wat het heeft gekost. De tweede belofte (§3.5) is een
+netwerk dat op die labels wordt getraind en per bandfamilie wordt vrijgegeven of geweigerd, voor de PAK's waarvoor geen
 laboratoriumspectrum bestaat. Jouw groep sloot in 2016 af met de hoop dat de anharmonische effecten zich over de PAK-familie laten
 generaliseren zonder voor elk molecuul een volledig krachtveld te rekenen (Mackie et al. 2016, slotparagraaf); dit plan is één
-antwoord op die hoop.
+antwoord op die hoop, voor het harmonische deel van het probleem.
 
 **Hoe het werkt.** De coupled-cluster-correctie op de harmonische krachtconstanten reken ik niet volledig uit, maar schat ik uit een
 klein aantal gerichte vervormingen van het molecuul, zoals je een curve uit een handvol meetpunten haalt. Bij elke vervorming hoort
 één lokale coupled-cluster-berekening, waarvan ik de orbitaalruimtes één keer kies en daarna naar elke vervorming meeneem, zodat de
 energieverschillen glad zijn. Het bevriezen van zulke ruimtes is een bekend recept (Mata & Werner
 2006, sinds 20 september zo in §3.1); wat van mij is, is het transporteren van LNO-ruimtes, die geen atoomlijst hebben die je kunt
-bevriezen, en het meten van wat dat kost. Het aantal energieën per molecuul staat naast elk spectrum; de nauwkeurigheid wordt
+bevriezen, en het meten van wat dat kost. Het aantal energieën en gradiënten per molecuul staat naast elk spectrum; de nauwkeurigheid wordt
 gescoord tegen laboratoriumdata en tegen de bestaande voorspellingen, waaronder die van jouw groep ("lijn B" in de meetlat).
 
-**Wat tot nu toe bewezen is.** Vier dingen, elk met een vooraf opgeschreven leesregel; de getallen staan in §3.5 en §5.2.
+**Wat tot nu toe bewezen is.** Vier dingen, elk met een vooraf opgeschreven leesregel; de getallen staan in §3.3, §3.5, §5.2 en §7.
 
 1. *De labels zijn te maken en zijn schoon.* Het anker — naftaleen op cc-pVTZ, negentien energieën op mijn laptop — is voor drie
    bandfamilies uitgelezen: de goedkope basis draagt de correctie voor één van de drie, de andere twee blijven duur, met hun
@@ -37,7 +37,7 @@ gescoord tegen laboratoriumdata en tegen de bestaande voorspellingen, waaronder 
    de twee kationen hebben nu een gemeten prijs.
 2. *Het plan vangt zijn eigen fouten.* Elke afgeleide grootheid krijgt een tweede route. Zo bleek een eerste anharmonische
    berekening ruis (het pakket meldde niets), en zo werd later een foute Hessiaan in het corpus gevonden. Beide zijn een vaste
-   controle geworden; de verbeteringen aan de pakketten zijn als pull requests ingediend.
+   controle geworden; de verbeteringen aan de pakketten liggen als pull requests klaar en gaan pas de deur uit na een kwaliteitscontrole.
 3. *De correctie is lokaal in de taal van bindingen en hoeken, en daar leert het netwerk haar.* In de basis van normaaltrillingen zijn
    de koppelingen onleerbaar; in bindingen en hoeken is dezelfde correctie dun en kort van bereik, tot ongeveer twee bindingen ver, en
    daar leert het netwerk haar uit 175 moleculen, ook op ringskeletten die het nooit zag. De coupled-cluster-correctie van benzeen
@@ -50,7 +50,7 @@ gescoord tegen laboratoriumdata en tegen de bestaande voorspellingen, waaronder 
    stopregel zijn voorgeregistreerd voor na ons gesprek. Het dek in het voorstel staat nog zoals het was.
 
 **Wat nog niet bewezen is.** Of het netwerk *genoeg* leert. Dat beslist de vooraf vastgelegde leercurve op de kleine-moleculenlaag
-van het corpus (100 tot 1.200 moleculen, drie hold-outs), waarvan het derde punt zondagavond is gelezen en in §3.5 staat, en daarna
+van het corpus (100 tot 1.200 moleculen, drie hold-outs), waarvan een eerste tussenstand zondagavond is gelezen en in §3.5 staat, en daarna
 de echte coupled-cluster-labels. Een geleerde molecuulrepresentatie staat naast het paarmodel klaar met een vooraf vastgelegde
 vergelijking; een eerlijke-kans-regel verbiedt een negatieve zin over welk model dan ook voordat de geregistreerde zoektocht is
 doorlopen.

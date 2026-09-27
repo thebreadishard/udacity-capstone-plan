@@ -1773,7 +1773,9 @@ number or a source the plan would use, none changes a rule by itself):
     naphthalene⁺ the supervisor would regard as the scoring columns for R1⁺ (named before Module 03
     prints them, under the no-swap rule), and whether benzene⁺ — Jahn–Teller active, a static deck
     about one D₂h minimum not describing the observable spectrum without a vibronic treatment —
-    should get a deck at all or remain the timing point.
+    should get a deck at all or remain the timing point; and which open-shell reference the supervisor
+    trusts for the cation labels, now that the unrestricted reference measures ⟨S²⟩ 0.82–0.83 at benzene⁺ and
+    0.88 at naphthalene⁺ (§5.2, dated note).
 
 ## 14. References
 
