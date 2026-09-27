@@ -21,7 +21,7 @@ molecules (5.1 %)**, labels saved — an upper bound for the recomputed B3LYP su
 conventions of the fields are to be taken from the paper before use (not yet read; owed). The record metadata is
 kept in `out/figshare_record_26363959.json`; the archive and shards stay out of git.
 
-The corpus itself does not exist yet. Its remaining halves are owed as follows.
+*(Written 12 September.)* The corpus did not exist yet on that date; the list below is the 12 September list of what was owed, and the dated notes from 22 September onwards record what was delivered (the releases in `data/corpus_release/RELEASES.md`).
 
 ## Owed, and by whom
 
@@ -192,3 +192,12 @@ an hour on 25 September (symmetry spread 0.52 read without its target control) a
 cell uses the *median* K-diagonal spread (2.09 cm⁻¹, plateau bound 6.3) as the pre-registration does; the JSON's pooled-based field (27.5) is benzene's
 finite-difference artefact and is printed beside it. `make_summary.py` gained Addendum 4 from `results_followup4.json`; `module_summary.docx/.pdf`
 regenerated 10:5x.
+
+## Dated note 2026-09-27 15:1x — README rewritten as one current text
+
+The README still opened with the 12 September scaffold status and the 22 September note ("not rewritten until the module starts"); the module has
+run since (23 September) with four follow-up sections and a report of 25 September. Rewritten today as a single current text: status, the project
+description as it reads (task, dataset release `layerA2_2026-09-23`, models, the result table copied from `notebook/results.json`, third execution),
+what the project learned (sections 7–10, with the result files named), how to run (including rung B and the rung C smoke), files. The opening
+sentence of "Owed, and by whom" above is dated so nobody reads it as current. Superseded texts live in git. Open, unchanged: the user's pass,
+the Zenodo release, the submission copy, promotion to `src/dpir`; layer B computing and rung C waiting on the user's decision.

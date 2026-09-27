@@ -60,3 +60,12 @@ outputs are current again. Items unchanged otherwise; the reviewer sees sections
 **2026-09-25 07:2x:** section 9 appended (E9, E10, size extrapolation; three pre-registered readings, no retraining), notebook 51 cells, no errors; `results_followup3.json`; report with Addendum 3. Cells 12 and 17 restored from the 23 September run after the 24 September executor had overwritten them (PROVENANCE dated note); the executor is fixed. What the reviewer sees: the module's target is local, additive and carries from small to large molecules, and the proof of learning is a pre-registered curve now running (layer B).
 
 **2026-09-25 10:5x:** section 10 appended (controls and predictions: a shuffled-label control that must fail, the label noise floor by two routes, a symmetry test read wrongly and withdrawn with its target control, a failed label-cleaning lever, the error per pair class, and the power-law predictions the layer-B curve is read against). Rubric items touched: evaluation with controls, honest reporting of a withdrawn result, limitations, and pre-registered predictions. Report Addendum 4; PROVENANCE note.
+
+## Status 2026-09-27 15:1x
+
+- README rewritten as one current text (status, description, result table from `results.json`, lessons, how to run, files); PROVENANCE dated note of the same time.
+- Notebook: sections 1–6 the untouched main run of 23 September (third execution), sections 7–10 dated follow-ups executed append-only (last 25 Sep 10:5x); no errors.
+- Report: `module_summary.docx/.pdf` of 25 Sep 10:5x, four addenda, every number from the result files.
+- requirements.txt: from the environment of the 23 September run (unchanged since).
+- Running or waiting outside the rubric: layer B (six shards; `TASKS.md`), rung C training (the user's decision); neither changes the submitted notebook.
+- Open: the user's pass; Zenodo release; the submission copy at the very end; promotion of `m05/deltah_model.py` to `src/dpir`.
