@@ -18,7 +18,7 @@ const rungs = summary.rungs.map((r, i) => ({ key: r, i, label: labels[r], n: sum
 
   <section aria-labelledby="ladder-h">
     <h2 id="ladder-h">The status ladder <span class="muted">— {summary.n_molecules.toLocaleString('en')} molecules, counted at build</span></h2>
-    <ol class="ladder" aria-label="Status ladder with counts">
+    <ol class="ladder" role="list" aria-label="Status ladder with counts">
       {rungs.map((r) => (
         <li class="step">
           <div class="n">{r.n.toLocaleString('en')}</div>

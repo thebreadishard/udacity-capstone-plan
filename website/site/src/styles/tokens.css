@@ -61,11 +61,14 @@ th, td { text-align: left; padding: 6px 10px; border-bottom: 1px solid var(--lin
 th { font-weight: 600; color: var(--fg-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.04em; }
 td.num, th.num { text-align: right; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
 .depiction svg { width: 100%; height: auto; display: block; color: var(--fg); }
-.ladder { display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--space-2); }
+.ladder { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--space-2); list-style: none; margin: 0 0 var(--space-3); padding: 0; counter-reset: rung; }
 @media (max-width: 767px) { .ladder { grid-template-columns: repeat(2, 1fr); } }
-.ladder .step { padding: var(--space-3); border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg-elev); }
-.ladder .step .n { font-family: var(--font-mono); font-size: 1.4rem; font-weight: 600; }
-.ladder .step .l { font-size: 0.85rem; color: var(--fg-muted); }
+.ladder .step { position: relative; display: flex; flex-direction: column; gap: var(--space-2); min-width: 0; padding: var(--space-3); padding-right: calc(var(--space-3) + 1.25rem); border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg-elev); }
+.ladder .step::before { counter-increment: rung; content: counter(rung); position: absolute; top: var(--space-2); right: var(--space-3); font-family: var(--font-mono); font-size: 0.75rem; line-height: 1; color: var(--fg-muted); }
+.ladder .step .n { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 1.4rem; font-weight: 600; line-height: 1.1; }
+.ladder .step .l { font-size: 0.85rem; color: var(--fg-muted); min-width: 0; }
+.ladder .step .chip { max-width: 100%; white-space: normal; align-items: flex-start; line-height: 1.3; padding-block: 4px; }
+.ladder .step .chip .dot { flex: 0 0 8px; margin-top: 0.45em; }
 .visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 
@@ -79,10 +82,9 @@ td.num, th.num { text-align: right; font-family: var(--font-mono); font-variant-
   .chip { padding: 6px 14px; font-size: 0.9rem; min-height: 32px; }
   table { font-size: 1rem; }
   th, td { padding: 10px 12px; }
-  .ladder { grid-template-columns: repeat(3, 1fr); gap: var(--space-3); }
+  .ladder { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-3); }
   .grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--space-4); }
 }
-@media (min-width: 1024px) and (max-width: 1279px) { .ladder { grid-template-columns: repeat(6, 1fr); } }
 /* Touch: every control reaches 44 CSS px whatever the width (WCAG 2.5.8 target size, the design's mobile rule applied to every coarse pointer). */
 @media (pointer: coarse) {
   button, select, input[type="search"], nav a, .chip a { min-height: 44px; }
