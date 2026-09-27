@@ -58,9 +58,10 @@ def rows():
         for k, d in ROW_DIRS.items():
             if name.lower().startswith(k):
                 cwd = PLAN / d
-        m = re.search(r"\(in `([^`]+)`\)", cmd_cell)
+        m = re.search(r"\(in `([^`]+)`[^)]*\)", cmd_cell)          # 27 Sep: '(in `dir`; a note)' allowed; the dir span is not a command
         if m:
             cwd = PLAN / m.group(1)
+            cmds = [c for c in cmds if c != m.group(1)]
         machine = any(tag in cmd_cell or tag in name for tag in MACHINE)
         outs = [o for span in re.findall(r"`([^`]+)`", out_cell) for o in brace_expand(span) if "/" in o and not o.startswith("/root")]
         yield name, cmds, cwd, outs, machine

@@ -33,7 +33,7 @@ def fit(A, y):
 def main() -> int:
     d = sys.argv[1]
     ref, pts, fam = read(d)
-    L = [f"# Decision 45, option B — noise floor of the tight cc-pVTZ labels from the anchor's points ({d}), µE_h; printed {datetime.now():%Y-%m-%d %H:%M} "
+    L = [f"# Decision 45, option B — noise floor of the tight cc-pVTZ labels from the anchor's points ({os.path.basename(os.path.normpath(d))}), µE_h; printed {datetime.now():%Y-%m-%d %H:%M} "
          f"by probes/m1_noise_option_b.py", ""]
     summary = {}
     for m in sorted(pts):

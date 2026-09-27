@@ -1,4 +1,4 @@
-# Decision 45, option B — noise floor of the tight cc-pVTZ labels from the anchor's points (results_m1/naphthalene_cc-pvtz_tight_m3), µE_h; printed 2026-09-27 02:04 by probes/m1_noise_option_b.py
+# Decision 45, option B — noise floor of the tight cc-pVTZ labels from the anchor's points (naphthalene_cc-pvtz_tight_m3), µE_h; printed 2026-09-27 09:59 by probes/m1_noise_option_b.py
 
 ## mode 12 (CH-oop, 785.3 cm⁻¹): amplitudes [0.25, 0.5, 0.75, 1.0] (9 points)
 

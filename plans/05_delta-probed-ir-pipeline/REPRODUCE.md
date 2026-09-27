@@ -1,5 +1,7 @@
 # Reproducing the numbers of the 25 September 2026 package
 
+*Extended 27 September 09:5x with the weekend's rows (anchor noise floor, naphthalene⁺ price, the standout pattern proposer, module 06's full run).*
+
 *Written 25 September 2026, evening (weekend plan, lever 3: "the asset's infrastructure"). One line per number that the reading copy, the cover note,
 the two-horizon note and the Uitleg quote; each line gives the command that regenerates it from the committed inputs and the file it writes. Desk
 commands run in seconds to minutes on a laptop; the machine runs that produced the raw inputs are named but not repeated (their logs are committed).
@@ -43,15 +45,33 @@ the WSL `qc05` or a rented machine's `m05` environment for anything that imports
 | anchor family readings (mode 12 lose, 22 win, 31 between) | `python probes/m3_family_reading.py 31 -6.0` on `probes/results_m1/naphthalene_cc-pvtz_tight_m3/` | `probes/results_m1/M3_TZ_MODE31_READING_2026-09-24.md` |
 | E8 benzene locality one bond further | `probes/e8_*` read-outs on `probes/results_m1/e8_benzene_ccpvdz/` | `E8_locality_benzene*` (see the E8 pre-registration's outcome section) |
 | cation rows (benzene⁺ 683 s, naphthalene⁺ 2,443 s) and prices (benzene⁺ reference 3,564 s) | `corpus/cation_rows.py` with `decks/deck_v1_cation.json`; `probes/l3_ulno_price.py rows/<m> price/<m> --threads 16 --max-memory 24000` (hel1-14); read-out: `python probes/cation_price_readout.py probes/results_m1/cations/benzene/l3_price.json` | `/root/cations/rows/*`, `probes/results_m1/cations/*/l3_price.json` (fetched; benzene⁺ complete 25 Sep 20:55 UTC) |
+| decision 45 noise floor: mode 12 odd part σ 0.003 µE_h, even part 0.55 (two-term) / 0.03 (with q⁶) µE_h; SCF 0.06, LNO-CCSD(T) 0.03, MP2 0.50 | `python probes/m1_noise_option_b.py probes/results_m1/naphthalene_cc-pvtz_tight_m3 probes/results_m1/NOISE_OPTION_B_2026-09-27.md` (sealed energies of the anchor + densification; differences only) | `probes/results_m1/NOISE_OPTION_B_2026-09-27.md` |
+| naphthalene⁺ price: 34,411 s per energy (3 points, 47 fragments, ⟨S²⟩ 0.88, RSS 12.2 GB), curvature 0.878, c ≈ 8.2 vs the neutral's 4,201 s | `python probes/cation_price_readout.py probes/results_m1/cations/naphthalene/l3_price.json --neutral-s 4201` | stdout; inputs `probes/results_m1/cations/naphthalene/{l3_price.json,l3.log}` (the price itself: `probes/l3_ulno_price.py` on the rented CPX62, 26–27 Sep) |
 
 ## Modules 06 and 07
 
 | number | command | writes |
 |---|---|---|
 | module 06 baseline: validity 0.030, uniqueness 0.855, novelty 0.996 | `python m06/baseline_ngram.py data/pubchem_aromatics_2026-09-24.csv out/baseline_ngram_2026-09-25.json` | `out/baseline_ngram_2026-09-25.json` |
-| module 06 quick check / full run | `M06_QUICK=1 python notebook/make_notebook.py` (check) or `M06_REUSE=1 python notebook/make_notebook.py` (full, weights from `m06/train.py` runs) | `notebook/generative_model.ipynb`, `notebook/results.json` |
+| module 06 full run (26 Sep: validity 0.92, novelty 0.91, memorisation 0.10, project fit 0.945, obedience 0.87; 6 of 7 read-outs) / quick check | `M06_QUICK=1 python notebook/make_notebook.py` (check) or `M06_REUSE=1 python notebook/make_notebook.py` (full, weights from `m06/train.py` runs) | `notebook/generative_model.ipynb`, `notebook/results.json` |
 | module 07: 8/8 scenarios, 11 tests | `.venv/Scripts/python -m pytest modules/07_agentic_workflows/tests -q`; `python run_scenarios.py --policy rules`; `python notebook/make_notebook.py`; `python make_summary.py` | `out/scenario_results_*.json`, `notebook/agentic_system.ipynb`, `Agentic_AI_System_Design_Report.{docx,pdf}` |
 
+## Standout pattern proposer (26–27 September; the module directory is `modules/standout_pattern_proposer`)
+
+| number | command | writes |
+|---|---|---|
+| exports of the corpus Δ₂ response records (289 molecules) | `python run_export.py ../05_support_predictor/corpus/molecules out/exports` (in `modules/standout_pattern_proposer`; ≈ 1 h on the laptop; exports are local, not committed) | `out/exports/index.json` |
+| in-band share of off-diagonal coupling power ≈ 0.45 (A 0.43, A2 0.47, B 0.42) | written by the export step (in `modules/standout_pattern_proposer`) | `out/inband_share_2026-09-26.json` |
+| P1 fits (three seeds) and P2 fits (stage 0; stage 1 grid; stage 2 losses; stage 3 capacity) | `python -m pp.scorer fit out/exports out/p1 --seed 0`; `python -m pp.embed_scorer fit out/exports out/p2s1_lr1e-3_w128 --seed 0 --lr 1e-3 --n-embed 128 --patience 20 --epochs 300` etc. (in `modules/standout_pattern_proposer`; 10–20 min per P2 fit on one thread; weights local) | `out/p1_seed*.json`, `out/p2*_seed*.json` |
+| stage 2 read: Spearman MSE 0.636, Huber 0.638, ranking 0.640 (P1 0.582) | `python stage_readout.py out/exports out/stage2_readout_2026-09-26.md p2 p2s1_lr1e-3_w128 p2s2_huber p2s2_rank --threads 1` (in `modules/standout_pattern_proposer`; needs the local weights) | `out/stage2_readout_2026-09-26.{md,json}` |
+| stage 3 read: 5 blocks 0.643, +‖v‖ 0.642, both 0.648 (incumbent 0.636) | `python stage_readout.py out/exports out/stage3_readout_2026-09-26.md p2s1_lr1e-3_w128 p2s3_b5 p2s3_b3v p2s3_b5v --threads 1` (in `modules/standout_pattern_proposer`) | `out/stage3_readout_2026-09-26.{md,json}` |
+| pools E1 (band), E1 all orderings, E2 (all pairs), adaptive band; the wide pool with p2s1 and its adaptive variants (running) | `TAG=_p2 /root/pp/run_pool.sh band --embed-prefix out/p2` etc. on hel1-23 (8 shards × 2 threads; `run_pool_n.sh`, `run_band_adaptive.sh` for other shard counts); merged JSONs local (4–12 MB) | `out/sim/*_merged.json` (local) |
+| E1 read-out: n_half ratio P1 0.17–0.20, oracle 0.06–0.07 | `python readout.py out/sim/band_p2_merged.json out/sim/band_p2_readout.md` (in `modules/standout_pattern_proposer`) | `out/sim/band_p2_readout.{md,json}` |
+| E2 read-out: K_off(0.3) ratio P12 0.70 / 0.76, oracle 0.25 / 0.38; P0 reaches 0.3 on 38/41 and 43/56 | `python readout.py out/sim/all_p2_merged.json out/sim/all_p2_readout.md` (in `modules/standout_pattern_proposer`) | `out/sim/all_p2_readout.{md,json}` |
+| adaptive band read-out (P0+A 0.82 / 0.79 vs P0; P1+A whole-curve only) | `python readout.py out/sim/band_p2s1A_merged.json out/sim/band_p2s1A_readout.md` (in `modules/standout_pattern_proposer`); paired statistics in the notebook | `out/sim/band_p2s1A_readout.{md,json}`, `out/sim/band_p2s1A_paired.json` |
+| deck cost: band deck 1,360 / 1,686 energies, ends at ρ_off 0.53 / 0.47; all pairs 0.08 / 0.14; to 0.3: P12 1,831 / 2,560 (1.35 / 1.52× the band deck), oracle 608 / 1,120 | `python deck_cost_readout.py out/sim/band_p2_merged.json out/sim/all_p2_merged.json out/sim/deck_cost_2026-09-27.md` (in `modules/standout_pattern_proposer`) | `out/sim/deck_cost_2026-09-27.{md,json}` |
+| standout notebook and report | `python notebook/make_notebook.py` then `python make_summary.py` (in `modules/standout_pattern_proposer`; ≈ 3 min; reads the committed read-outs, one live molecule) | `notebook/pattern_proposer.ipynb`, `notebook/results.json`, `notebook/figures/*.png`, `Pattern_Proposer_Report.{docx,pdf}` |
+| planted-block tests (7) | `python -m pytest tests/test_pp_planted.py -q` | stdout |
 ## Audits
 
 | check | command |
