@@ -827,7 +827,7 @@ in the local CCSD(T)), 29 fragments, UHF ⟨S²⟩ 0.82–0.83, peak 4.9 GB. Aga
 machine, so indicative; the same-machine neutral price is queued. Decision 41 stands: the shipped unrestricted (T) is the cost, and the
 compiled kernel remains the condition of the cation rung. Sanity line, not judged: the composite curvature along the mode is 1.054 ×
 B3LYP's (ω′ 1007 cm⁻¹ against 981), recomputed from the energies by a second route; the gradient at the UKS geometry is −2.9 mE_h per
-unit of q and cancels in the curvature. Naphthalene⁺'s price runs overnight on the same machine. Source:
+unit of q and cancels in the curvature. *Added 27 September, 03:4x:* naphthalene⁺ on the same machine, three points along mode 25 (1001 cm⁻¹ at UKS-B3LYP): **34,411 s per energy** (9.6 h; 47 fragments, ⟨S²⟩ 0.880–0.881, peak 12.2 GB), against the neutral's 4,201 s per tight cc-pVDZ energy of the M3 run on the laptop — c ≈ 8 indicative (different machines and thread counts; the benzene⁺ ratio of 22 was taken against a canonical neutral price, so the two ratios are not the same quantity). Sanity line: composite curvature 0.878 × B3LYP's (ω′ 938 cm⁻¹ against 1001), second route agrees; gradient +0.003 mE_h per unit q. Source:
 `probes/results_m1/cations/benzene/l3_price.json`, read by `probes/cation_price_readout.py`.
 
 *Laboratory sources per rung.* Benzene: the NIST Quantitative Infrared Database cell spectra (Chu

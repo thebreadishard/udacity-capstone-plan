@@ -1,0 +1,9 @@
+[20:55:05] L3: naphthalene cc-pvdz tight, 18 atoms, frozen core 10, 16 threads, max_memory 24000 MB; mode 25 (1001 cm⁻¹)
+[06:23:59] q+0.0: UHF 9.7 s (<S²> 0.880), PM 2.8 s, ULNO-CCSD(T) 34120.8 s (47 fragments), UMP2 0.3 s; peak RSS 11.45 GB; E_composite -384.50582654
+[06:23:59] q+1.0: harmonic check ½dᵀHd / ½ωq² = 1.0000; max atom displacement 0.119 bohr
+[16:04:19] q+1.0: UHF 6.9 s (<S²> 0.881), PM 2.2 s, ULNO-CCSD(T) 34811.0 s (47 fragments), UMP2 0.3 s; peak RSS 11.93 GB; E_composite -384.50382126
+[16:04:19] q-1.0: harmonic check ½dᵀHd / ½ωq² = 1.0000; max atom displacement 0.119 bohr
+[01:35:39] q-1.0: UHF 5.7 s (<S²> 0.881), PM 2.6 s, ULNO-CCSD(T) 34271.5 s (47 fragments), UMP2 0.3 s; peak RSS 12.2 GB; E_composite -384.50382681
+[01:35:39] sanity: ω′ along mode 25 = 938 cm⁻¹ vs UKS-B3LYP 1001 (curvature ratio 0.878)
+[01:35:39] PRICE: 573.5 min per point (573.4 min of it ULNO-CCSD(T)) at 16 threads
+[01:35:39] L3 finished
