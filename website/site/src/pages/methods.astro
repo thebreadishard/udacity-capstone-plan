@@ -19,7 +19,7 @@ const sheets = wanted.filter(([f]) => fs.existsSync(path.join(archDir, f))).map(
 ---
 <Base title="Methods" description="How the pipeline works, and the lessons it learned in public.">
   <h1>Methods</h1>
-  <p>The pipeline computes a cheap harmonic spectrum for a molecule, predicts the correction that a coupled-cluster calculation would make to it, and licenses that prediction per family of vibrations against measured anchors. Everything below links to the pre-registration or the note that carries it.</p>
+  <p>The pipeline computes a cheap harmonic spectrum for a molecule, predicts the correction that a coupled-cluster calculation would make to it, and licenses that prediction per family of vibrations against measured anchors. As of this build the learned layer is being trained on the growing corpus and no prediction is shown for any molecule: the ladder stops at the cheap level except where a coupled-cluster anchor (naphthalene) or a laboratory validation (benzene) exists. Everything below links to the pre-registration or the note that carries it.</p>
 
   <section class="card">
     <h2>The pictures <span class="muted small">— the architecture sheets, read from the repository at build time</span></h2>
