@@ -195,3 +195,25 @@ second-row atom) unless stated, and a stated value that differs refuses to start
 unanswered; the 30 gradients (3.5 days of the CCX53) carry no usable Hessian. Rerunning at `--frozen 10` costs the same again on the CCX53, or ≈ 1.2
 days if the CCX53 does nothing else at 3 × 10 threads — a decision for the user (28 Sep), against layer-B shards 4/5 on the same machine, which
 start tonight as agreed. Files: `probes/results_m1/e8_naphthalene_ccpvdz/` (Hessian, logs, the locality and between outputs marked invalid).
+
+## Dated amendment 27 September 23:5x — naphthalene rerun at the derived frozen count (the user: "Naftaleen opnieuw met correct aantal")
+
+**Decision.** The user chose the rerun. Same measurement, same predictions and rule as registered above; the CCX53 does only this until it is done
+(layer-B shards 4/5 wait; the hand-over script that would have started them was stopped before it did). Launched 21:55 UTC (23:55 local):
+`run_e8_naph_parallel_f10.sh`, three partial symmetric runs (displacement slices 0:5, 5:10, 10:15) at 10 threads into
+`results/naphthalene_ccpvdz_f10/`, frozen 10 derived from the elements (logged in each partial log); ≈ 3.5 days → ≈ Thursday 1 October morning.
+
+**Two guards added before the launch, in code and tested (`probes/e8_cc_hessian_fd.py`, `tests/test_e8_frozen_guard.py`, 4 tests), smoke-tested on
+water on the CCX53 (frozen 1 derived; per-pair drift 3 × 10⁻⁶ – 2.4 × 10⁻⁵; valid Hessian; six zeros after projection):**
+1. *Per-pair consistency.* For every coordinate, mean(g(+k), g(−k)) must equal g₀ to O(h²) (limit 10⁻⁴ a.u.; the invalid run had 2–9 × 10⁻⁴ in
+   plane). Checked for computed and loaded pairs; the run stops on the first failure. Had it existed, the first run would have stopped after its
+   first pair (coordinate 0, drift 6 × 10⁻⁴) at ≈ 13 hours instead of 3.5 days.
+2. *Fail-fast at assembly.* FD asymmetry / symmetry spread above 2 × 10⁻³ a.u. or a projected null-space frequency above 10 cm⁻¹ writes
+   `hessian_ccsd_t_INVALID.npz` and exits 2; the wrapper then stops before `e8_cc_locality.py` and `e8_between_extension.py`.
+Together with the element-derived frozen count (23:4x) these are the three guards of this incident. The poller watches the new directory
+(`monitor_cmd_0927f.sh`: pair-check and self-check lines included).
+
+**Why the existing rules did not catch it (for the incident → guard weekly).** The smoke test on water and the benzene validation tested the
+*mechanics* and one *molecule*; an element-dependent physics default (`--frozen 6`) travelled unchanged to the next molecule because no rule said
+"re-derive every element-dependent setting per molecule", and the self-checks existed only at assembly, after the last gradient, without stopping the
+chain. The rule now reads: element-dependent settings are derived, never defaulted; and every long finite-difference run checks each pair as it lands.
