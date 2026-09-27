@@ -9,7 +9,7 @@ this file only says what is running or waiting and who acts.*
 
 | task | why | where | next check | ends |
 |---|---|---|---|---|
-| Layer-B shards 0/1/2 | the layer-B learning curve (proof of learning; interim reading Sun 20:00, 300-table when all five shards have their first 20) | hel1-16 (shard 2, 46.62.227.91), hel1-18 (2.29.40.182), hel1-21 (2.29.45.10); `corpus/layerB_shard*of5.log` | monitor line every 10 molecules; counts 42/43/44 = 129 at 12:3x | run on; merge with `merge_shards.py` for readings |
+| Layer-B shards 0/1/2/3 | the layer-B learning curve (proof of learning; interim reading Sun 20:00; 300 molecules for stage 4) | hel1-18 (2.29.40.182), hel1-21 (2.29.45.10), hel1-16 (46.62.227.91, shard 2), hel1-14 (89.167.29.36, shard 3 since 27 Sep 08:37); `corpus/layerB_shard*of5.log` | monitor line every 10 molecules; counts 70/74/77/0 = 221 at 06:2x; fetch with `scratchpad/fetch_layerB_shards.sh [merge]` | run on; ≈ 300 in the corpus Mon/Tue |
 | E8 naphthalene CC Hessian (three partial runs) | locality one bond further at CC level, on a two-ring molecule | CCX53 (77.42.67.27), `/root/e8/results/naphthalene_ccpvdz/` | monitor line (verdict/finished/Traceback); 20 of 30 gradient files at 12:3x | ≈ Sun evening; then assembly + `e8_cc_locality.py` + `e8_between_extension.py` (in the chain) |
 | Standout pattern proposer: wide pool with the stage-1 recipe, then the adaptive variants on the wide pool | does the stage-1 recipe transfer (band: no, read 05:2x); does feedback pay where the blind order has more to gain (band: P0+A 0.8×, P1+A curve-only) | hel1-23: `all_p2s1` 5 shards (12/97 at 04:5x), then `chain_p2s1e` → `all_p2s1A` 8 shards | monitor lines `POOL all_p2s1 DONE`, `POOL all_p2s1A DONE`; fetch, `readout.py`, paired S5 statistics, outcome | all_p2s1 ≈ Sun 13:00; all_p2s1A ≈ Mon 07:00 |
 | P2 search, stage 4 (data growth) and 5 (pretraining) | the learned embedding gets a fair chance before any sentence about it (the user, 12:1x); stages 1–3 read 20:3x (recipe helped a little; loss and capacity within the registered margins; largest variant consistently ahead, not decisive) | laptop, one thread, when layer B passes 300 molecules: `run_export.py` → refit incumbent and 5 blocks + ‖v‖, three seeds each → `stage_readout.py`, paired per-molecule test (rule registered 20:3x) | layer-B count (three shards at ≈ 55–57 each on 26 Sep 20:xx; 300 in the corpus ≈ Mon/Tue) | stage 4 early next week; stage 5 (QM9 pretraining) after the 28th |
@@ -18,7 +18,6 @@ this file only says what is running or waiting and who acts.*
 
 | task | why | what is needed | when |
 |---|---|---|---|
-| hel1-14 (89.167.29.36) idle since 27 Sep 01:35 UTC | the cation price chain ended; nothing queued there before the 28th | the user deletes it (or keeps it for E8-style follow-ups after the 28th) | morning |
 | Hetzner credit | usage ≈ €1.60/h against €300 (raised 26 Sep 11:xx) | the user raises when I warn; I warn a day ahead | Monday |
 | Anthropic Console key for module 07's LLM run | the rubric's own-model run; the deterministic policy is the reference until then | the user sets `ANTHROPIC_API_KEY` (never in chat); then `M07_LLM=1 STEWARD_MODEL=claude-sonnet-5 make_notebook.py` | when convenient |
 | Rung C decision | train the equivariant Δ-Hessian model on the pool now or after the 28th (pre-registration 25 Sep; model built and tested 25 Sep 23:1x) | the conversation of Sunday evening | Sun evening |
@@ -41,7 +40,7 @@ this file only says what is running or waiting and who acts.*
 5. Standout pattern proposer at CC level: a test on the anchor's real responses (naphthalene deck) — after the 28th.
 6. Standout: adaptive ordering P0+A / P1+A / P2+A — built and dry-run 22:0x (rule corrected: optimism for untouched pairs; 7 tests); queued on hel1-23 as `band_p2s1A` right after `POOL all_p2 DONE` (chain `chain_p2s1c`), then the wide pool with p2s1; read with `readout.py` against S5 and the prediction.
 7. Anchor: the noise floor is read (decision 45 outcome, 02:0x); left for the Monday package: quote it in the reading copy's error budget and the pilot-note inventory (f). The laptop's 8 threads are free (the user decides Sunday evening what runs there).
-8. After the 28th, on the user's word (27 Sep 08:3x): pre-register and build (a) the wide-candidate deck with the learned order and a stop rule on ρ_off in `probes/dryrun_dft_delta_recovery.py build_deck`; (b) the cheap proxy-of-the-answer input for P2/P1 (small-basis or semi-empirical Δ) and its test on the 300 molecules; (c) stage 5 (QM9 pretraining).
+8. After the 28th, on the user's word (27 Sep 08:3x): pre-register and build (a) the wide-candidate deck with the learned order and a stop rule on ρ_off in `probes/dryrun_dft_delta_recovery.py build_deck`; (b) the cheap proxy-of-the-answer input for P2/P1 (small-basis or semi-empirical Δ) and its test on the 300 molecules; (c) stage 5 (QM9 pretraining). Pre-registrations (a) and (b) written 27 Sep 08:4x (`PreRegistration_2026-09-27_Wide_Candidate_Deck_Stop_Rule.md`, `PreRegistration_2026-09-27_Cheap_Proxy_Input.md`).
 
 ## Guards on this file
 
