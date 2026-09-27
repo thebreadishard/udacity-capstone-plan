@@ -64,10 +64,10 @@ before anything else.
     structures of modules 04–08 and a checklist for mapping Pass 6 (not binding; the Ladder wins)
 11. [GoalGathering/Capstone_Mapping.md](GoalGathering/Capstone_Mapping.md) — modules 02–09
     against Rubrics v1.5.1; Pass 6 (sign-off) not done
-12. [GoalGathering/Project_Proposal_2026-09-06.md](GoalGathering/Project_Proposal_2026-09-06.md)
-    — the supervisor proposal, one document, revised through 12 September: the *why* of the major decisions,
-    the measurements, the calendar and what is asked of the supervisor; its cover note is in `notes/`; the 3–4 September
-    text the review records cite as `Project_Proposal_2026-09-03.md` is in the git history
+12. [GoalGathering/Project_Proposal_2026-09-26_Reading_Copy.md](GoalGathering/Project_Proposal_2026-09-26_Reading_Copy.md)
+    — the supervisor proposal, one consolidated document for the conversation of 28 September: the *why* of the major decisions,
+    the measurements, the calendar and what is asked of the supervisor; its cover note is in `notes/`; the 6 September
+    original with its dated notes and the 3–4 September text the review records cite are in the git history
 13. [GoalGathering/notes/Side_Project_2026-09-04_ModeG_Gradients.md](GoalGathering/notes/Side_Project_2026-09-04_ModeG_Gradients.md)
     — the pre-registered side project that builds frozen-space local-CC gradients (mode G):
     milestones M2–M5, kill criterion, budget bucket, what changes on success or failure

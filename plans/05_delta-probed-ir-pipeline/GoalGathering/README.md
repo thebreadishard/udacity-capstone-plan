@@ -10,12 +10,12 @@ files changed no text; every link in the repository was rewritten and checked th
 | [Why_05_Supersedes_04.md](Why_05_Supersedes_04.md) | why this plan replaced plan 04 |
 | [Overarching_Goal.md](Overarching_Goal.md) | the goal, the glossary, the gates Q0–Q10 |
 | [Frozen_Lines_to_Beat.md](Frozen_Lines_to_Beat.md) | the opponents (lines A, B, C, the cheap line), version-frozen |
-| [Frozen_Ladder_and_Tolerances.md](Frozen_Ladder_and_Tolerances.md) | **the single binding statement**: rungs R0–R6, tolerances, decidability, pilot-note items; dated notes after the freeze |
-| [Compute_Budget_2026-09-03.md](Compute_Budget_2026-09-03.md) | budget classes B1–B3, timings, incident notes |
+| [Frozen_Ladder_and_Tolerances.md](Frozen_Ladder_and_Tolerances.md), [Frozen_Ladder_and_Tolerances_2026-09-14.md](Frozen_Ladder_and_Tolerances_2026-09-14.md) | **the single binding statement**: rungs R0–R6, tolerances, decidability, pilot-note items; dated notes after the freeze — and, since 14 September, the ladder written as one document for the supervisor |
+| [Compute_Budget_2026-09-03.md](Compute_Budget_2026-09-03.md), [Compute_Budget_2026-09-14.md](Compute_Budget_2026-09-14.md) | budget classes B1–B3, timings, incident notes — and, since 14 September, the budget written as one document for the supervisor |
 | [Distilled_Project_Plan_and_Quality_Checks.md](Distilled_Project_Plan_and_Quality_Checks.md) | the plan on one page, gates and probes P1–P5 |
 | [Relevant_Scientific_Papers.md](Relevant_Scientific_Papers.md) | the bibliography with reading records |
 | [Capstone_Mapping.md](Capstone_Mapping.md) | modules 02–09 against the Udacity rubrics |
-| [Project_Proposal_2026-09-06.md](Project_Proposal_2026-09-06.md) | the proposal to the supervisor (the one document that may be edited in running text until she has read it) |
+| [Project_Proposal_2026-09-26_Reading_Copy.md](Project_Proposal_2026-09-26_Reading_Copy.md) | the proposal to the supervisor, one consolidated text for the conversation of 28 September (the 6 September original with its dated notes is in the git history since 27 September) |
 
 ## `notes/` — research notes, side project, requests, hardware
 

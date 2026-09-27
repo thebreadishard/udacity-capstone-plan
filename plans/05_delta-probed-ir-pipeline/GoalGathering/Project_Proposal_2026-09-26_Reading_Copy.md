@@ -1,14 +1,14 @@
 # Probed coupled-cluster corrections to the harmonic force constants of polycyclic aromatic hydrocarbons: a label pipeline with a measured cost and a network licensed per band family
 
 **Master's capstone project proposal — plan 05. Consolidated reading copy, 28 September 2026** (source
-text of 6 September with the dated revisions of 8–16 September worked in; the dated original is kept
-beside it as `Project_Proposal_2026-09-06.md`). This document is a Master's capstone project proposal in
+text of 6 September with the dated revisions of 8–27 September worked in; the dated original of 6
+September lives in the repository's git history since 27 September). This document is a Master's capstone project proposal in
 the Udacity programme (nine modules with administrative deadlines, §12); the supervisor is asked to act
 as the project's scientific supervisor in the sense of §13 — critical reader of the design and the
 evaluation contract, sponsor of the cluster request, and the named expert for the reach rungs or the
 person who nominates one [institution and role: to be confirmed by the student]. Earlier drafts (3 and 4
-September) are in the repository's history; the 6 September text with its dated notes remains the
-record, and the change log at the end of this copy lists, per section, what was merged and by which
+September) and the 6 September text with its dated notes are in the repository's history — the latter is the
+record this copy consolidated — and the change log at the end of this copy lists, per section, what was merged and by which
 dated decision. Every number in it that describes this project's own performance was printed by a
 script in the folder `probes/` and can be re-run, or is arithmetic shown in place on such numbers;
 numbers from the literature are marked as such. A note on provenance and on the terms used follows
@@ -133,6 +133,8 @@ search found no gas-phase spectrum of known temperature for chrysene or tripheny
 region, and for pyrene only a hot heat-pipe spectrum and one cold band, which fixes what that rung
 can and cannot decide.
 
+Between 17 and 27 September the measurements continued, on the laptop and on rented machines, and are recorded as dated notes in §3.2, §3.4, §3.5, §5.2 and §7: the energies-only reading of the couplings closed at naphthalene and the couplings moved to gradients (decision 43); probe B1 was read per family — lose, win, between — so the cc-pVDZ deck is licensed for the C–H in-plane bend family only and the anchor stays cc-pVTZ; the noise floor of the labels was measured (decision 45); the couplings proved learnable once written in local coordinates (decisions 49 and 50), and the coupled-cluster correction of benzene was found to live in the same pattern (E8); the R0 diagonal deck was read with its geometry term (decision 48); the two cations were priced; and the learning curve that decides whether the network learns enough runs on the corpus's layer B.
+
 The pipeline outputs the whole spectral shape for every molecule — position, intensity, drawn
 width — and the plan is explicit about which of those it scores and which it promises: positions
 are promised and scored wherever a laboratory band can decide the comparison; intensities are
@@ -151,16 +153,14 @@ the size axis is read, then the pyrene class and coronene. On those rungs pipeli
 energies per molecule — whose purpose is the pre-registered transfer test T-2: does the per-family
 correction measured at benzene and naphthalene predict these molecules within the laboratory
 margin? Full decks above naphthalene are out of reach on every route at the anchor's basis (§12);
-whether a cheaper basis with a transferred increment changes that is a pre-registered probe (probe
-B1, §3.5), not an assumption, and the laboratory rarely decides there (Module 03: the hot gas
+whether a cheaper basis with a transferred increment changes that was probe B1's question, read per family on 20–24 September (§3.5): licensed for the C–H in-plane bend family only, so full decks above naphthalene stay out of reach — and the laboratory rarely decides there (Module 03: the hot gas
 records give 8.6–16 cm⁻¹ per family), so the plan says so rather than promising a comparison it
 cannot score (decision 36). The thin decks themselves are not cheap at the anchor's basis: by the
 duration table of §12 and its own exchange rate (the R1 H deck, 15–25 Snellius-days ↔
 195,000–290,000 SBU, i.e. ≈ 12,000–13,000 SBU per Snellius-day on four thin nodes), the pyrene thin
 deck (40–130 Snellius-days) is ≈ 0.5–1.7 million SBU and the coronene thin deck (180–1,200
 Snellius-days) ≈ 2–16 million SBU — coronene alone above the 1,000,000 SBU of a Small Compute
-application — so at cc-pVTZ they are beyond that application and enter the request of §13 item 5a
-only if probe B1 wins, at roughly one tenth (the measured cc-pVDZ/cc-pVTZ ratio 9.9–10.0). On the largest species the deliverable is the network's prediction with
+application — so at cc-pVTZ they are beyond that application ; probe B1 (§3.5) licensed the cc-pVDZ deck for the C–H in-plane bend family only — about one tenth of the price, the measured ratio 9.9–10.0 — so only that family's block enters the request of §13 item 5a at the lower price. On the largest species the deliverable is the network's prediction with
 its per-family error budget, licensed or refused per family by the transfer tests, and no accuracy
 claim beyond that budget. The project is as much about the evaluation discipline —
 pre-registration, frozen baselines, mandatory null tests, fail-closed reporting — as about the
@@ -178,7 +178,7 @@ reader placed in the supervisor's position; 43 findings, four blocking, addresse
 and on 16 September (two fresh readers, the proposal with its cover note and the Ladder; 25 ranked
 stumbles, all accepted — decision 42; this reading copy implements the ones that concern the
 proposal, and the change log at the end names them; a second reader the same day checked this copy
-against those 25 and added 15, worked in under the change log's second heading).
+against those 25 and added 15, worked in under the change log's second heading). A fourth cold read on 27 September, the day before the conversation, updated the main text where the record had moved on — probe B1 read per family, the noise floor, the state of the modules, the reading status of the references — and is listed under the change log's last heading.
 
 *What was carried from plan 04.* The success criterion (per-band comparison against the best
 existing prediction, decided by laboratory data); the baseline predictions ("opponents", §7); the
@@ -207,15 +207,13 @@ recovered or predicted Δ₂ must agree with the directly computed one, per fami
 naphthalene, the two rungs whose measurements license the anchor and the recovery for the rest of
 the ladder. **Pipeline B** is the label factory and **pipeline A** the network (§3.5); **T-1** is
 the transfer test benzene → naphthalene on the DFT stand-in correction and **T-2** the test in which
-the thin decks above naphthalene are the hold-outs. **Module 05** is the deep-learning predictor of
-where the correction has large couplings and **Module 06** the generative proposer of displacement
-decks — both efficiency experiments on DFT-only corpora (§6, §12). The **campaign officer** (Module
+the thin decks above naphthalene are the hold-outs. **Module 05** is the deep-learning predictor of the correction: first of where it has large couplings, since decision 49 (23 September) of the correction itself as pairwise local terms in primitive internal coordinates projected onto the modes (§3.5); **Module 06** is the generative proposer of candidate molecules for the corpus and the atlas (a SMILES Transformer on a frozen PubChem set, run 26 September, §12); the proposer of displacement decks that Module 06 first named is kept as stand-out work — the pattern proposer of the dated note in §3.4. Both are experiments on DFT-only corpora (§6, §12). The **campaign officer** (Module
 07) is a rule-checking agent that reads the deck, the budget file and the pilot note, submits and
 refuses computational jobs and report sentences by those rules, and never produces or edits a
 scientific number. **Probe M1** is the frozen-space smoothness measurement of §3.3; **M2–M5** are
 the milestones of the gradient side project of §5.3 and nothing else. **Probe B1** is the
 pre-registered test of whether a cc-pVDZ deck with a transferred beyond-MP2 increment may replace
-the cc-pVTZ deck (§3.5); the dated notes of 14–16 September call it "probe M3", and it is renamed
+the cc-pVTZ deck (§3.5; read per family 20–24 September — lose, win, between); the dated notes of 14–16 September call it "probe M3", and it is renamed
 here, once, so that "M3" means only the gradient milestone. **F** is the measured cost factor of the
 anchor thresholds over the tight thresholds (3.34 at naphthalene, §8); **c** the measured cost ratio
 of a cation energy to the neutral's (§5.2); **g** the gradient-to-energy cost ratio of the side
@@ -419,9 +417,7 @@ the prior — so K is of order 220–380 energies, against about 1,400 energies 
 the prior. By the 168-hour rule of §8 the R1 deck on the laptop would be 18,200 / 168 ≈ 108 weekly
 batches as ± pairs and 11,200 / 168 ≈ 67 as the H deck: on the measured number R1 at the
 anchor's basis is **cluster work**, or the work of a dedicated many-core machine; the choice is
-P13, open and now decidable. If probe B1 licenses the cc-pVDZ deck (§3.5), the same H deck is
-priced at 291 × 3.9 h ≈ 47 laptop-days (proposed, P27, open; the 3.9 h is the measured 69-minute
-cc-pVDZ tight energy times F). A further thinning of the couplings by a DFT-only rule (P25) was
+P13, open and now decidable. Had probe B1 licensed the cc-pVDZ deck, the same H deck would have been priced at 291 × 3.9 h ≈ 47 laptop-days (P27; the 3.9 h is the measured 69-minute cc-pVDZ tight energy times F); read per family on 20–24 September, B1 licensed that basis for the C–H in-plane bend family only (§3.5), so the deck as a whole stays at cc-pVTZ. A further thinning of the couplings by a DFT-only rule (P25) was
 tested on 16 September and is not licensed (§5.3); the hashed order and the stopping rule remain the
 only economy on the couplings. The prior is what brings the energy route at naphthalene within
 reach at all; it does not make it cheap.
@@ -603,7 +599,7 @@ a larger molecule did not, the plan says in advance what happens: the off-diagon
 rung is reported at its noise-limited precision and carries no accuracy claim, and the gradient
 route of §5.3 takes over the couplings if the side project has delivered it by then.
 
-**Dated note, 27 September, 08:5x — the deck's candidate set (proxy result; `notes/PreRegistration_2026-09-26_Standout_Pattern_Proposer.md`, outcomes E1/E2 of 26–27 September; numbers from `modules/standout_pattern_proposer/out/sim/deck_cost_2026-09-27.md`).** On the proxy corpus (289 molecules, ωB97X − B3LYP couplings) about 45 % of the off-diagonal coupling power lies inside the 200 cm⁻¹ band that the deck's two-mode patterns cover; the rest sits between modes of different frequency that move the same atoms. Measured on 97 held-out molecules (41 parents larger than any training molecule, 56 substituted): the band deck consumed in full ends at a median held-out ρ_off of 0.53 (parents) / 0.47 (substituted) and reaches 0.3 on 1 and 3 molecules; a candidate set with a two-mode pattern for *every* pair, consumed in the same hashed order, ends at 0.08 / 0.14 and reaches 0.3 on 38 of 41 and 43 of 56. Cost on that set, energies beyond the single block to ρ_off 0.3 (median): hashed order 2,951 / 3,528; hand-feature scorer 2,232 / 2,928; the combined learned order 1,831 / 2,560 (1.35 / 1.52 × the whole band deck of 1,360 / 1,686); the oracle 608 / 1,120. Re-ranking during measurement with the reconstruction's own magnitudes improves the whole curve by 6–10 % but does not move the stopping point: the remaining factor to the oracle is knowledge the scorer lacks, not feedback. None of this is a coupled-cluster result. The consequence for this section — a candidate set that reaches every pair, a learned order, and the stop rule on the held-out ρ_off — is pre-registered (`notes/PreRegistration_2026-09-27_Wide_Candidate_Deck_Stop_Rule.md`, W1–W3) and will be built after the 28th on the user's decision of 27 September; until then the deck of this document stays as written and its end point on the band (0.5) is the honest number.
+**Dated note, 27 September, 08:5x — the deck's candidate set (proxy result; `notes/PreRegistration_2026-09-26_Standout_Pattern_Proposer.md`, outcomes E1/E2 of 26–27 September; numbers from `modules/standout_pattern_proposer/out/sim/deck_cost_2026-09-27.md`).** On the proxy corpus (289 molecules, ωB97X − B3LYP couplings) about 45 % of the off-diagonal coupling power lies inside the 200 cm⁻¹ band that the deck's two-mode patterns cover; the rest sits between modes of different frequency that move the same atoms. Measured on 97 held-out molecules (41 parents larger than any training molecule, 56 substituted): the band deck consumed in full ends at a median held-out ρ_off of 0.53 (parents) / 0.47 (substituted) and reaches 0.3 on 1 and 3 molecules; a candidate set with a two-mode pattern for *every* pair, consumed in the same hashed order, ends at 0.08 / 0.14 and reaches 0.3 on 38 of 41 and 43 of 56. Cost on that set, energies beyond the single block to ρ_off 0.3 (median): hashed order 2,951 / 3,528; hand-feature scorer 2,232 / 2,928; the combined learned order 1,831 / 2,560 (1.35 / 1.52 × the whole band deck of 1,360 / 1,686); the oracle 608 / 1,120. Re-ranking during measurement with the reconstruction's own magnitudes improves the whole curve by 6–10 % but does not move the stopping point: the remaining factor to the oracle is knowledge the scorer lacks, not feedback. None of this is a coupled-cluster result. The consequence for this section — a candidate set that reaches every pair, a learned order, and the stop rule on the held-out ρ_off — is pre-registered (`notes/PreRegistration_2026-09-27_Wide_Candidate_Deck_Stop_Rule.md`, W1–W3) and will be built after the 28th on the student's decision of 27 September; until then the deck of this document stays as written and its end point on the band (0.5) is the honest number.
 
 ### 3.5 The two pipelines (decision 36, 14 September)
 
@@ -618,29 +614,22 @@ where a family fails the transfer test, pipeline A returns DFT with the failure 
 
 The label budget that sets pipeline B's pace is measured, not asserted: 38.4 h per naphthalene
 anchor energy at cc-pVTZ (14 September). Three pre-registered levers were named against it, each
-licensed by its own test before it enters a deck; their state on 16 September:
+licensed by its own test before it enters a deck; their state on 27 September:
 
 - **Decision 37 (lever H), confirmed.** One energy per irrep-pure non-totally-symmetric pattern
   (§3.4): the naphthalene deck falls from 474 to 291 energies. Measured admissible on benzene (14
   September) and confirmed by the naphthalene DFT dry run on the symmetrised geometry (15
   September).
-- **Probe B1 (lever G), launched 15 September evening; verdict expected ≈ 21–22 September.** Whether a cc-pVDZ deck plus a transferred beyond-MP2 increment
+- **Probe B1 (lever G), launched 15 September evening; read per family 20–24 September — lose, win, between.** Whether a cc-pVDZ deck plus a transferred beyond-MP2 increment
   reproduces the cc-pVTZ anchor's curvatures within the Ladder's tolerance — pre-registered 14
   September (`notes/PreRegistration_2026-09-14_M3_DZ_Anchored_Decks.md`, under its old name). It
   runs at tight thresholds in both bases on three naphthalene modes. Its cc-pVDZ cells finished on
   15 September at 13:43 — 69 minutes per energy at 1.7 GB, a factor 9.9–10.0 below the cc-pVTZ tight
-  energy — and its cc-pVTZ cells were launched that evening (≈ 6 laptop-days); **the verdict is
-  expected around 21–22 September** and this copy carries it as [probe B1 verdict on the cc-pVTZ
-  cells: to be filled by the student on 25 September]. A win prices the naphthalene H deck at
-  291 × 3.9 h ≈ 47 laptop-days (proposed, P27, open), returns full decks above naphthalene to the
-  ladder as desktop or Snellius-weeks items, and — because the cc-pVDZ energy ran in 1.7 GB against
-  19.8 GB at cc-pVTZ —
-  puts every molecule up to coronene within the laptop's memory by estimate (P27 §3); a loss leaves
-  R1 at cc-pVTZ on the cluster route and the thin decks above it.
+  energy — and its cc-pVTZ cells ran from that evening to 24 September 21:02 (fifteen points at 16.6 h, eight laptop-days). Read per family by the registered rule (the three dated notes below): the C–H out-of-plane family lost (20 September), the C–H in-plane bend family won (23 September), the C–C stretch family fell between (24 September). A win for the deck would have priced the naphthalene H deck at 291 × 3.9 h ≈ 47 laptop-days (P27), returned full decks above naphthalene to the ladder as desktop or Snellius-weeks items and — because the cc-pVDZ energy ran in 1.7 GB against 19.8 GB at cc-pVTZ — put every molecule up to coronene within the laptop's memory by estimate (P27 §3). The outcome is per family: the cc-pVDZ-anchored deck is licensed for the C–H in-plane bend family only; the other two families stay cc-pVTZ-anchored with their measured increments in the error budget, R1 stays at cc-pVTZ on the cluster route, and the rungs above it carry thin decks.
 - **Dated note, 20 September, 18:5x — probe B1's first family is read and lost.** The cc-pVTZ cells of the C–H out-of-plane mode (naphthalene mode 12, 785 cm⁻¹) completed at 18:43; the beyond-MP2 basis increment of its curvature moves DZ → TZ by −8.1 cm⁻¹ at naphthalene against +7.9 cm⁻¹ at benzene (16 cm⁻¹ apart, sign flipped; 15.1 cm⁻¹ in the alternative definition), beyond the pre-registered lose line of 5 cm⁻¹. For this family the anchor stays cc-pVTZ, the DZ pricing of P27 is not licensed, and the increment becomes the basis term of the error budget (decision 26). The components show why: at cc-pVDZ MP2 softens this out-of-plane mode from 861 (SCF) to 618 cm⁻¹, the known double-ζ out-of-plane pathology of MP2 for arenes, partly inherited by the local coupled-cluster arm; it grows with the arene and does not touch in-plane modes. The in-plane families (modes 22 and 31, ≈ 22 and 24 September) are still read per family. Source: `probes/results_m1/M3_TZ_MODE12_READING_2026-09-20.md`.
 - **Dated note, 23 September, 10:0x — probe B1's second family is read and won.** The cc-pVTZ cells of the C–H in-plane bend mode (naphthalene mode 22, 1045.1 cm⁻¹) completed on 22 September 19:21; the beyond-MP2 increment of the curvature, DZ → TZ, is +1.2 cm⁻¹ against benzene's registered +1.0 cm⁻¹ (0.2 cm⁻¹ apart, same sign: win on this family by the registered rule; `probes/results_m1/M3_TZ_MODE22_READING_2026-09-23.md`). So the licence is per family, as §3.5 states it: the cc-pVDZ-anchored deck is licensed for the C–H in-plane bend family and closed for the C–H out-of-plane family; the third family (C–C stretch, mode 31, five points ≈ 26 September) fills the placeholder's last entry. The P27 pricing keeps its TZ numbers until then.
-- **Dated note, 23 September, 15:2x — the couplings are learned once the target is local (decisions 49 and 50).** The pre-registered learning curve E6 showed that no mode-basis model learns the couplings of the correction matrix at 45, 100 or 175 corpus molecules (ratio to the zero rule 1.00, slopes 0.00 to −0.04): the target flips sign with an arbitrary mode-vector sign that no per-mode descriptor can see. Written as pairwise local terms in primitive internal coordinates — which a parameter-free projection showed to carry three quarters of the correction, most of it in the bond–bond interaction constants inside rings — the same 175 molecules teach the couplings: ring coupling ratio 0.43 on the layer-A hold-out and 0.47 on 39 molecules of two cores never seen in training, corrected frequencies within 4.7 / 5.1 cm⁻¹ against 23 for no correction (`GoalGathering/notes/PreRegistration_2026-09-23_E7_Couplings_in_Local_Coordinates.md`; demonstration note of the same day). The one failing molecule was a corrupted target: benzene's corpus ωB97X finite-difference Hessian, wrong by 133 cm⁻¹ from psi4's default grid, found by an analytic second route and now guarded (decision 50). For §6's learned layer this fixes the representation: local pairwise force-constant terms, projected; the read-out is the corrected spectrum, not matrix elements. Whether the coupled-cluster correction lives in the same pattern is being measured (E8, benzene CCSD(T)/cc-pVDZ on a rented machine, read-out 24 September).
-- **Dated note, 24 September, 04:3x — E8: the coupled-cluster correction is local in the same pattern, one bond further.** Benzene's CCSD(T)/cc-pVDZ Hessian (72 gradients on a rented machine, two-route checks passed): 92 % of the correction to B3LYP lies in the pairwise pattern of 23 September, 98 % once pairs two bonds apart are added, and only then are the ring couplings recovered (ratio 0.34; the DFT proxy's couplings are nearest-neighbour, 0.15). Verdict by the pre-registered rule: between — the residual criterion met with room, the coupling criterion only with the extended pattern. For §6 this fixes the target of the CC-trained layer: pairwise local terms up to two bonds apart. One molecule; naphthalene follows when authorised (E8 pre-registration, outcome sections).
+- **Dated note, 23 September, 15:2x — the couplings are learned once the target is local (decisions 49 and 50).** The pre-registered learning curve E6 showed that no mode-basis model learns the couplings of the correction matrix at 45, 100 or 175 corpus molecules (ratio to the zero rule 1.00, slopes 0.00 to −0.04): the target flips sign with an arbitrary mode-vector sign that no per-mode descriptor can see. Written as pairwise local terms in primitive internal coordinates — which a parameter-free projection showed to carry three quarters of the correction, most of it in the bond–bond interaction constants inside rings — the same 175 molecules teach the couplings: ring coupling ratio 0.43 on the layer-A hold-out and 0.47 on 39 molecules of two cores never seen in training, corrected frequencies within 4.7 / 5.1 cm⁻¹ against 23 for no correction (`GoalGathering/notes/PreRegistration_2026-09-23_E7_Couplings_in_Local_Coordinates.md`; demonstration note of the same day). The one failing molecule was a corrupted target: benzene's corpus ωB97X finite-difference Hessian, wrong by 133 cm⁻¹ from psi4's default grid, found by an analytic second route and now guarded (decision 50). For §6's learned layer this fixes the representation: local pairwise force-constant terms, projected; the read-out is the corrected spectrum, not matrix elements. Whether the coupled-cluster correction lives in the same pattern was measured next (E8, benzene CCSD(T)/cc-pVDZ on a rented machine, read 24 September; the following note).
+- **Dated note, 24 September, 04:3x — E8: the coupled-cluster correction is local in the same pattern, one bond further.** Benzene's CCSD(T)/cc-pVDZ Hessian (72 gradients on a rented machine, two-route checks passed): 92 % of the correction to B3LYP lies in the pairwise pattern of 23 September, 98 % once pairs two bonds apart are added, and only then are the ring couplings recovered (ratio 0.34; the DFT proxy's couplings are nearest-neighbour, 0.15). Verdict by the pre-registered rule: between — the residual criterion met with room, the coupling criterion only with the extended pattern. For §6 this fixes the target of the CC-trained layer: pairwise local terms up to two bonds apart. One molecule; naphthalene's CCSD(T)/cc-pVDZ Hessian is being computed on a rented machine and is read on 27 September (E8 pre-registration, outcome sections).
 - **Dated note, 24 September, 21:2x — probe B1's third family is read: between.** The anchor finished at 21:02 (fifteen cc-pVTZ points, eight laptop-days). The C–C stretch (naphthalene mode 31, 1410 cm⁻¹) gives a beyond-MP2 increment DZ → TZ of −1.9 cm⁻¹ against benzene's −6.0: 4.1 apart, same sign, between the 2.5 win margin and the 5 lose line. Closing tally lose / win / between: the DZ-anchored deck is licensed for the C–H in-plane bend family only; the other two stay TZ-anchored with their measured increments in the error budget. The basis step on this mode is large (−47.6 cm⁻¹) but almost all SCF and MP2, the terms the deck computes cheaply. (`notes/PreRegistration_2026-09-14_M3_DZ_Anchored_Decks.md`, outcome sections; `probes/results_m1/M3_TZ_MODE31_READING_2026-09-24.md`.)
 - **Dated note, 25 September, 08:3x — how far the locality carries, and the proof-of-learning run.** Three pre-registered proxy tests (DFT–DFT ΔH, the 229-molecule release): E9 — a substituted molecule's correction rebuilt from its parent core's block plus the Hessian columns within two bonds of the substituent (a quarter of the columns) returns the corrected frequencies to 1.7 cm⁻¹ against 23 without correction, on 182 molecules (pass); E10 — that neighbourhood block measured once on the smallest host and transplanted: between (3.4–3.8 cm⁻¹), eleven of fifteen substituent types within the bars, the rotors (CH₃, OCH₃, SH, CONH₂) not; a size split — the pair model trained on ≤ 26 atoms predicts the 27–34-atom molecules at coupling ratio 0.59 against 0.36 within size (encouraging, at the edge). Against this, L2 priced one LNO-CCSD(T)/cc-pVDZ energy of a 25-atom molecule at the anchor's thresholds above nine hours on eight threads: for substituted molecules the label needs a cheaper correlation tier, to be licensed on benzene against canonical CCSD(T) before it labels anything (`notes/PreRegistration_2026-09-25_L2b_Cheaper_Label_Tier.md`). The proof that the network learns — the design's success criterion — is partial (diagonal yes; couplings yes on unseen scaffolds with a rising curve, and on the bare parents at the same level once benzene's second-route target is used — *corrected 09:0x; the first wording of this note said "flat on bare parents" from the superseded 23 September run*; the slopes are the open point); the decisive learning curve is pre-registered and running since 25 September on the corpus's layer B (100 → 1,200 small molecules, hold-outs: bare parents, unseen scaffolds, larger molecules; `notes/PreRegistration_2026-09-25_Proof_of_Learning_Layer_B.md`). The framing for the conversation — labels as a growing asset over two horizons — is `notes/Note_2026-09-25_Growing_Asset_and_Proof_of_Learning.md`.
 - **Dated note, 27 September, 08:5x — the weekend before the conversation (26–27 September).** (i) *The labels' noise floor* (decision 45 read; `probes/results_m1/NOISE_OPTION_B_2026-09-27.md`): mode 12 of the anchor densified to nine points; the odd part of the sealed energies leaves σ = 0.003 µE_h and the even part 0.03 µE_h once its q⁶ truncation is allowed for — per energy ≈ 0.04 µE_h, 2 × 10⁻⁵ of a unit-amplitude response; the noise class the recovery rule was rehearsed against (ρ_noise ≈ 0.05) lies three orders of magnitude above it. (ii) *The fair-chance search for the learned representation* (25 September pre-registration and its amendments; `notes/PreRegistration_2026-09-26_Standout_Pattern_Proposer.md`): stages 1–3 (optimiser recipe, loss, capacity) were read on a validation split of 21 molecules — the recipe helped a little (validation Spearman 0.61 → 0.64 against the truth's 1.00), loss and capacity stayed within the registered margins with the largest model consistently ahead; nothing is licensed either way, and stage 4 repeats at 300 molecules with a paired per-molecule test. Where the missing knowledge comes from is now registered as three tests (data growth, pretraining on the Hessian QM9 set, a cheap estimate of the quantity as an input — `notes/PreRegistration_2026-09-27_Cheap_Proxy_Input.md`). (iii) *The cation rows* (§5.2 dated note): naphthalene⁺ priced at 34,411 s per energy. (iv) *The layer-B interim reading of Sunday 20:00* is added below this note when read.
@@ -674,14 +663,7 @@ published DFT-based machine-learning molecular dynamics of Mai et al. 2025, judg
 laboratory spectra? And, on the two molecules where the laboratory intensity is calibrated, do its
 anharmonic intensities improve on the harmonic ones?
 
-**Cost (every rung that ran), conditional on probe B1 above naphthalene.** How many
-coupled-cluster energies did that correction need per molecule — benzene, naphthalene,
-naphthalene⁺ and the three-ring rung, K and K_off printed beside each spectrum — and, *if probe B1
-licenses the cc-pVDZ deck* so that full decks return to the pyrene-size rung and coronene, how did
-the off-diagonal count grow between naphthalene, the pyrene-size rung and coronene, measured
-against the number of couplings the molecule's symmetry leaves free? If probe B1 loses, the rungs
-above naphthalene carry thin decks, K_off is measured at benzene, naphthalene and naphthalene⁺
-only, no size sentence is earned above R1, and the cost records stand alone (§5.3).
+**Cost (every rung that ran).** How many coupled-cluster energies did that correction need per molecule — benzene, naphthalene, naphthalene⁺ and the three-ring rung, K and K_off printed beside each spectrum? The size question above naphthalene — how the off-diagonal count grows between naphthalene, the pyrene-size rung and coronene against the number of couplings the molecule's symmetry leaves free — needed full decks there, which only a licensed cc-pVDZ deck could have returned to the ladder; probe B1 licensed that basis for one family only (§3.5), so the rungs above naphthalene carry thin decks, K_off is measured at benzene, naphthalene and naphthalene⁺ only, no size sentence is earned above R1, and the cost records stand alone (§5.3).
 
 **Reach (C₃₈₄H₄₈-class).** Can the labels of pipeline B, through the network of pipeline A,
 produce a spectrum with a stated error budget at a size where no anharmonic or
@@ -776,11 +758,11 @@ could be produced.
 |---|---|---|---|---|
 | R0 | benzene | agreement (decision 28): within the laboratory uncertainty plus the pipeline's own budget; the opponents are printed, not claimed | full, cc-pVTZ at the anchor thresholds; priced at the rehearsal's 448 energies (§8) | probing licence against local and canonical references; the anchor's bias and basis-set lines (canonical reference); intensities scored for agreement |
 | R0⁺ | benzene⁺ | timing point, and a deck decision | one cc-pVDZ energy at the D₂h minimum, ⟨S²⟩ and T₁ printed — **measured 15 September: c = 31.0** (below) | the cation cost ratio c; whether benzene⁺ gets a deck at all is a written decision to take with the supervisor, because its D₆h ground state is Jahn–Teller active and a static deck about one D₂h minimum does not describe the observable spectrum without a vibronic treatment this pipeline does not contain (P27 §5, open) |
-| R1 | naphthalene | agreement, plus the per-family question whether the correction adds accuracy over DFT | the H deck of decision 37: 291 energies (114 in the diagonal block); cc-pVTZ at the anchor thresholds on the cluster route, or cc-pVDZ if probe B1 licenses it | the noise measurement (decision 35, §7); the anchor licence closes; first locality read; intensities scored for agreement; the first transfer datum |
+| R1 | naphthalene | agreement, plus the per-family question whether the correction adds accuracy over DFT | the H deck of decision 37: 291 energies (114 in the diagonal block); cc-pVTZ at the anchor thresholds on the cluster route (probe B1 licensed cc-pVDZ for the C–H in-plane bend family only, §3.5) | the noise measurement (decision 35, §7); the anchor licence closes; first locality read; intensities scored for agreement; the first transfer datum |
 | R1⁺ | naphthalene⁺ | agreement (its gas-phase and matrix columns are named before Module 03 prints them, under the no-swap rule; none is named here from memory), plus the charge-state transfer datum | the neutral's H deck (291 energies; the diagonal block of 114 as the fallback), the same point group and frozen-space machinery; **condition: the unrestricted (T) port of decision 41** | whether the network may be licensed per charge state; the first cation label of pipeline B |
-| three-ring rung (decision 39) | anthracene and phenanthrene — the isomer test at equal size | transfer: the per-family go/no-go for the size axis, read as the transfer 2 → 3 within 2.5 cm⁻¹ for both isomers, together with the price curve over three sizes | full decks in cc-pVDZ if probe B1 licenses the basis, thin decks otherwise (decision 39); P27 proposes diagonal-first H decks at the tight thresholds, 156 + 178 = 334 energies, with one xtight energy per isomer as the printed bias check, and counts the full decks at 818 and 1,432 energies — phenanthrene, C₂v rather than D₂h, allows 584 same-representation pairs against anthracene's 277 (proposed, P27, open) | the go/no-go per band family; the exponent that prices the rungs above; the anchor diagnostics per molecule (T₁, the (T) share, the largest LNO domain; for cations ⟨S²⟩) printed from here on (decision 39) |
-| R2 | pyrene, chrysene, triphenylene, tetracene | accuracy for the C–H out-of-plane families (hot gas, decidable by margin); the C–H stretch family is scored on the jet-cooled 3 µm column only once a scoring rule for its resonance polyads is agreed (§13 item 8) and is not counted as promised until then (decision 25); C–C families expected undecidable on the existing gas data, see below | thin decks (the diagonal blocks, ≈ 170 energies for pyrene as an H diagonal deck, P27) unless probe B1 returns full decks; P27 proposes that chrysene and triphenylene leave the coupled-cluster ladder and serve as network hold-outs at DFT level, their gas-phase columns being undecidable by construction (proposed, P27, open) | the first off-diagonal-count ratio *if probe B1 licensed full decks*; direct-block locality probe; a canonical diagonal check at pyrene (scaled from the measured benzene point: 620 against 264 basis functions at cc-pVTZ, N⁷ time and N⁴ memory give roughly 400 × 755 s ≈ 80 h and 30 × 7.3 GB ≈ 220 GB per energy, for 2 × 72 + 1 = 145 energies — cluster work by two orders of magnitude, classified by the rule of §8, and skipped with a printed sentence if no cluster time exists) |
-| R3 | coronene | accuracy on the cold column (decision 24), transfer | thin deck (204 energies as the diagonal block, `DURATION_TABLE.md`) unless probe B1 returns the full deck | the second ratio and the numeric size sentence *only if probe B1 licensed full decks*; otherwise the cost record stands alone |
+| three-ring rung (decision 39) | anthracene and phenanthrene — the isomer test at equal size | transfer: the per-family go/no-go for the size axis, read as the transfer 2 → 3 within 2.5 cm⁻¹ for both isomers, together with the price curve over three sizes | thin decks (decision 39 allowed full decks in cc-pVDZ only had probe B1 licensed the basis, which it did for one family only, §3.5); P27 proposes diagonal-first H decks at the tight thresholds, 156 + 178 = 334 energies, with one xtight energy per isomer as the printed bias check, and counts the full decks at 818 and 1,432 energies — phenanthrene, C₂v rather than D₂h, allows 584 same-representation pairs against anthracene's 277 (proposed, P27, open) | the go/no-go per band family; the exponent that prices the rungs above; the anchor diagnostics per molecule (T₁, the (T) share, the largest LNO domain; for cations ⟨S²⟩) printed from here on (decision 39) |
+| R2 | pyrene, chrysene, triphenylene, tetracene | accuracy for the C–H out-of-plane families (hot gas, decidable by margin); the C–H stretch family is scored on the jet-cooled 3 µm column only once a scoring rule for its resonance polyads is agreed (§13 item 8) and is not counted as promised until then (decision 25); C–C families expected undecidable on the existing gas data, see below | thin decks (the diagonal blocks, ≈ 170 energies for pyrene as an H diagonal deck, P27; probe B1 did not return full decks, §3.5); P27 proposes that chrysene and triphenylene leave the coupled-cluster ladder and serve as network hold-outs at DFT level, their gas-phase columns being undecidable by construction (proposed, P27, open) | no off-diagonal-count ratio (probe B1 did not license full decks); direct-block locality probe; a canonical diagonal check at pyrene (scaled from the measured benzene point: 620 against 264 basis functions at cc-pVTZ, N⁷ time and N⁴ memory give roughly 400 × 755 s ≈ 80 h and 30 × 7.3 GB ≈ 220 GB per energy, for 2 × 72 + 1 = 145 energies — cluster work by two orders of magnitude, classified by the rule of §8, and skipped with a printed sentence if no cluster time exists) |
+| R3 | coronene | accuracy on the cold column (decision 24), transfer | thin deck (204 energies as the diagonal block, `DURATION_TABLE.md`; probe B1 did not return the full deck) | the cost record stands alone — no size sentence without full decks (§5.3) |
 | R4–R5 | C₅₄–C₂₁₆ class | reach; the R4 fragment checks conditional on cluster access | none (network rungs) | expert-judgment datum (§13, item 5c); the first rungs where the learned prior, if it earned its licence at the accuracy rungs, may carry the recovery; the fragment-vs-whole comparison on a molecule larger than coronene and the fragment-radius convergence test |
 | R6 | C₃₈₄H₄₈-class | reach | fragment-probed only | under a four-part measured licence (locality at the accuracy rungs; coronene probed in fragments reproducing coronene probed whole; the same on a larger molecule where the cluster allows; a fragment-radius convergence test on the flake's own interior); otherwise a per-family or full refusal |
 
@@ -830,8 +812,8 @@ in the local CCSD(T)), 29 fragments, UHF ⟨S²⟩ 0.82–0.83, peak 4.9 GB. Aga
 machine, so indicative; the same-machine neutral price is queued. Decision 41 stands: the shipped unrestricted (T) is the cost, and the
 compiled kernel remains the condition of the cation rung. Sanity line, not judged: the composite curvature along the mode is 1.054 ×
 B3LYP's (ω′ 1007 cm⁻¹ against 981), recomputed from the energies by a second route; the gradient at the UKS geometry is −2.9 mE_h per
-unit of q and cancels in the curvature. *Added 27 September, 03:4x:* naphthalene⁺ on the same machine, three points along mode 25 (1001 cm⁻¹ at UKS-B3LYP): **34,411 s per energy** (9.6 h; 47 fragments, ⟨S²⟩ 0.880–0.881, peak 12.2 GB), against the neutral's 4,201 s per tight cc-pVDZ energy of the M3 run on the laptop — c ≈ 8 indicative (different machines and thread counts; the benzene⁺ ratio of 22 was taken against a canonical neutral price, so the two ratios are not the same quantity). Sanity line: composite curvature 0.878 × B3LYP's (ω′ 938 cm⁻¹ against 1001), second route agrees; gradient +0.003 mE_h per unit q. Source:
-`probes/results_m1/cations/benzene/l3_price.json`, read by `probes/cation_price_readout.py`.
+unit of q and cancels in the curvature. *Added 27 September, 03:4x:* naphthalene⁺ on the same machine, three points along mode 25 (1001 cm⁻¹ at UKS-B3LYP): **34,411 s per energy** (9.6 h; 47 fragments, ⟨S²⟩ 0.880–0.881, peak 12.2 GB), against the neutral's 4,201 s per tight cc-pVDZ energy of the M3 run on the laptop — c ≈ 8 indicative (different machines and thread counts; the benzene⁺ ratio of 22 was taken against a canonical neutral price, so the two ratios are not the same quantity). Sanity line: composite curvature 0.878 × B3LYP's (ω′ 938 cm⁻¹ against 1001), second route agrees; gradient +0.003 mE_h per unit q. Sources:
+`probes/results_m1/cations/benzene/l3_price.json` and `probes/results_m1/cations/naphthalene/l3_price.json`, read by `probes/cation_price_readout.py`.
 
 *Laboratory sources per rung.* Benzene: the NIST Quantitative Infrared Database cell spectra (Chu
 et al. 1999), with calibrated intensities. Naphthalene: the PNNL quantitative vapour-phase record
@@ -896,10 +878,7 @@ naphthalene to coronene against how the mode count went and against the free-ele
 symmetry leaves. The adjectives "size-independent", "O(1)" and "saturates" are forbidden in any
 sentence about this project's own cost. **The losing condition of the size question:** if K_off
 grows from naphthalene to coronene at least as fast as the count of symmetry-allowed couplings,
-no size sentence is earned and the cost records stand alone. **The size question is now
-conditional on probe B1 (§3.5):** only if the cc-pVDZ deck is licensed do full decks — and with
-them K_off — exist above naphthalene; with thin decks there the size sentence is not attempted, and
-what the ladder measures instead is the per-family transfer of the diagonal correction (T-2 and
+no size sentence is earned and the cost records stand alone. **The size question fell with probe B1 (§3.5):** only a licensed cc-pVDZ deck would have put full decks — and with them K_off — above naphthalene; B1 licensed that basis for one family only, so the rungs there carry thin decks, the size sentence is not attempted, and what the ladder measures instead is the per-family transfer of the diagonal correction (T-2 and
 the go/no-go of §5.2). Any favourable size sentence is expected, if at all, to come from the prior
 — symmetry or learned — and not from sparsity as such.
 
@@ -977,8 +956,8 @@ its losing condition per family (τ_F, P26 memo §6) is its licence; and the two
 that gated it when it was still a follow-up (decision 32, 12 September; superseded by decision 36,
 see the change log) remain the gates of that licence: the range of the correction at the accuracy
 rungs, now read from the thin decks' transfer test T-2, and the Q10 coverage table below. The
-Module-05 deep-learning component predicts only *where* the correction is likely to have large
-off-diagonal elements, is trained on a public-plus-own DFT-vs-DFT Hessian corpus (§8, §10 item 4),
+Module-05 deep-learning component began as a predictor of *where* the correction has large
+off-diagonal elements and since decision 49 (23 September) predicts the correction itself, as pairwise local terms in primitive internal coordinates projected onto the modes (§3.5); it is trained on a public-plus-own DFT-vs-DFT Hessian corpus (§8, §10 item 4),
 and enters a promised rung only after a licence: its saving demonstrated on that corpus against
 the symmetry prior's free-element count, and its result checked prior-free at that rung. The
 student ruled more generally that a rule inherited from an earlier plan carries no authority of
@@ -1106,7 +1085,7 @@ inputs in hand and **nothing else**:
    §3.4) and the recovery from the hashed deck is owed;
 4. the frozen-space probe M1 — exists (5–8 September; cc-pVDZ and cc-pVTZ scans with canonical
    truth lines; the xtight frozen arm, 27 points, and the DF-RHF/DF-MP2 QZ/5Z line on 12 September);
-   probe B1's cc-pVDZ cells exist (15 September) and its cc-pVTZ cells decide (§3.5);
+   probe B1's cells exist and are read per family (15–24 September, §3.5);
 5. the canonical feasibility probe — exists (5 September);
 6. a run/no-run check of which local-CC codes produce an analytic gradient at the anchor level
    at the equilibrium geometry, with memory — owed; the side project's own first cells (M2a, 14
@@ -1118,9 +1097,7 @@ inputs in hand and **nothing else**:
    coefficients sealed. σ(tight) stands in for σ(xtight) with a label, justified at benzene, where σ
    did not change between the two settings (0.003–0.044 µE_h at both) while the bias did — and the
    bias is not a pilot input; σ(xtight) at R1 is re-measured on the first machine that can afford
-   it (P13), and the pilot note's item 8 is re-read then if it differs. The run is queued after
-   probe B1's cells (decision 38) and is cited in this copy as running, with its pre-registration
-   (decision 40).
+   it (P13), and the pilot note's item 8 is re-read then if it differs. Decision 45 (20 September) replaced that run by a cheaper reading of the same quantity: σ from the anchor's own fifteen tight cc-pVTZ points plus four more on mode 12 (nine points on that mode), read on 27 September — the odd part of the sealed energies leaves σ = 0.003 µE_h and the even part 0.03 µE_h once its q⁶ truncation is allowed for, about 0.04 µE_h per energy (§3.5, dated note of 27 September; `probes/results_m1/NOISE_OPTION_B_2026-09-27.md`). This input exists.
 
 The first real coupled-cluster correction is computed after the note is committed, so no stopping
 constant, probe cap, tolerance or margin can be shaped by a result; the raw displaced energies of
@@ -1164,7 +1141,7 @@ leave-molecule-out.
 gate that breaches has a pre-written sentence, and losing is published with the same paired table
 as winning.
 
-**Dated note, 21 September (evaluation follow-up; the user: "Zet het principe in de fabriek").** The error budget gains a measured noise term with a fixed method: every derived quantity — a curvature from displaced energies, a coupling from a pattern, an anharmonic constant from displaced Hessians — is computed by two independent routes or checked against a symmetry partner, and the difference is the noise term of that quantity. The rule comes from a measurement of 20–21 September on benzene: the semi-diagonal quartic constants that a VPT2 package derived from psi4 Hessians differed between their two finite-difference routes by a median of 22 cm⁻¹ and up to 1,265 cm⁻¹ while the package reported no inconsistency (`probes/results_vpt2/qff_benzene_2026-09-21.md`); the cause is that psi4 has no analytic B3LYP Hessian, so those Hessians are themselves finite differences, and the package's default step is too small for that input. In the label factory this is the step "Consistentiecontrole" that feeds the error budget (architecture sheet 4); in the spectrum pipeline the anharmonic constants carry their route difference (sheet 8). Nothing in the coupled-cluster labels is affected: their curvatures come from energies, not from differentiated Hessians; the harmonic DFT Hessians of the corpus and the factory are one finite difference and accurate to ≈ 0.1 cm⁻¹. *Follow-up the same evening:* the diagnosis was tested as two pre-registered predictions (`probes/results_vpt2/PREREGISTRATION_2026-09-21_FD_noise_demonstration.md`): with the same psi4 Hessians at step 0.20 the route disagreement fell to a median of 2.3 cm⁻¹ (maximum 110.1), and with analytic pyscf Hessians at the same 61 geometries and step 0.05 to 0.1 cm⁻¹ (maximum 0.9 once the analysis basis inside exactly degenerate pairs is aligned with the displacements; 46.8 before that fix of the diagnostic); the benzene fundamentals became physical in both (ring breathing −17.3 and −28.0 cm⁻¹ against −216.9 before; the three test bands 850.6, 1004.4, 1324.1 cm⁻¹ with analytic Hessians against the gas-phase origins 847.1, 993.1, 1309.4 of Goodman, Ozkabak & Thakur 1991 (the Shimanouchi values 849, 992, 1310 were used until 22 September; the two papers arrived that morning)). Decision 46: the anharmonic step of the spectrum pipeline runs on analytic Hessians wherever psi4 has none (sheet 8: "VPT2 (pyVPT2 on pyscf Hessians)"); the step size follows from a third run at 0.10. *22 September:* the third run (step 0.10) reproduced the bands to 0.1 cm⁻¹, so the step is 0.10; and against Miani et al. 2000 (B3LYP/TZ2P, own anharmonic force field) our anharmonic shifts agree to a median of 4.3 cm⁻¹ over the 20 modes (`probes/results_vpt2/benzene_benchmark_2026-09-22.md`), so the residual +11 cm⁻¹ on the breathing mode is the 6-31G* harmonic, which the ΔH correction addresses. *22 September, evening (decision 48):* the R0 diagonal deck (44 coupled-cluster energies along the 20 benzene modes, `probes/results_m1/R0_TABLE_2026-09-28.md`) showed that a corrected harmonic frequency is the curvature at the cheap geometry *plus* a geometry term — the first-order shift towards the high-level minimum, predictable from one high-level gradient and the cheap cubic constants (validated on Hartree–Fock for six modes to about 10 %; C–H stretches against CCSD(T): MAE 52 → 14 cm⁻¹). The term is now a fixed step of the label factory and the spectrum pipeline (sheets 4 and 8); the table for the 28th shows all twenty modes with curvature, geometry term, sum and literature CCSD(T), two out-of-plane rows still open.
+**Dated note, 21 September (evaluation follow-up; the student: "Zet het principe in de fabriek").** The error budget gains a measured noise term with a fixed method: every derived quantity — a curvature from displaced energies, a coupling from a pattern, an anharmonic constant from displaced Hessians — is computed by two independent routes or checked against a symmetry partner, and the difference is the noise term of that quantity. The rule comes from a measurement of 20–21 September on benzene: the semi-diagonal quartic constants that a VPT2 package derived from psi4 Hessians differed between their two finite-difference routes by a median of 22 cm⁻¹ and up to 1,265 cm⁻¹ while the package reported no inconsistency (`probes/results_vpt2/qff_benzene_2026-09-21.md`); the cause is that psi4 has no analytic B3LYP Hessian, so those Hessians are themselves finite differences, and the package's default step is too small for that input. In the label factory this is the step "Consistentiecontrole" that feeds the error budget (architecture sheet 4); in the spectrum pipeline the anharmonic constants carry their route difference (sheet 8). Nothing in the coupled-cluster labels is affected: their curvatures come from energies, not from differentiated Hessians; the harmonic DFT Hessians of the corpus and the factory are one finite difference and accurate to ≈ 0.1 cm⁻¹. *Follow-up the same evening:* the diagnosis was tested as two pre-registered predictions (`probes/results_vpt2/PREREGISTRATION_2026-09-21_FD_noise_demonstration.md`): with the same psi4 Hessians at step 0.20 the route disagreement fell to a median of 2.3 cm⁻¹ (maximum 110.1), and with analytic pyscf Hessians at the same 61 geometries and step 0.05 to 0.1 cm⁻¹ (maximum 0.9 once the analysis basis inside exactly degenerate pairs is aligned with the displacements; 46.8 before that fix of the diagnostic); the benzene fundamentals became physical in both (ring breathing −17.3 and −28.0 cm⁻¹ against −216.9 before; the three test bands 850.6, 1004.4, 1324.1 cm⁻¹ with analytic Hessians against the gas-phase origins 847.1, 993.1, 1309.4 of Goodman, Ozkabak & Thakur 1991 (the Shimanouchi values 849, 992, 1310 were used until 22 September; the two papers arrived that morning)). Decision 46: the anharmonic step of the spectrum pipeline runs on analytic Hessians wherever psi4 has none (sheet 8: "VPT2 (pyVPT2 on pyscf Hessians)"); the step size follows from a third run at 0.10. *22 September:* the third run (step 0.10) reproduced the bands to 0.1 cm⁻¹, so the step is 0.10; and against Miani et al. 2000 (B3LYP/TZ2P, own anharmonic force field) our anharmonic shifts agree to a median of 4.3 cm⁻¹ over the 20 modes (`probes/results_vpt2/benzene_benchmark_2026-09-22.md`), so the residual +11 cm⁻¹ on the breathing mode is the 6-31G* harmonic, which the ΔH correction addresses. *22 September, evening (decision 48):* the R0 diagonal deck (44 coupled-cluster energies along the 20 benzene modes, `probes/results_m1/R0_TABLE_2026-09-28.md`) showed that a corrected harmonic frequency is the curvature at the cheap geometry *plus* a geometry term — the first-order shift towards the high-level minimum, predictable from one high-level gradient and the cheap cubic constants (validated on Hartree–Fock for six modes to about 10 %; C–H stretches against CCSD(T): MAE 52 → 14 cm⁻¹). The term is now a fixed step of the label factory and the spectrum pipeline (sheets 4 and 8); the table for the 28th shows all twenty modes with curvature, geometry term, sum and literature CCSD(T), two out-of-plane rows still open.
 
 ## 8. Feasibility and resources — what has been measured
 
@@ -1223,7 +1200,7 @@ records the re-reading.
 - **Probe B1** (§3.5): the naphthalene frozen arm at tight thresholds along three modes in cc-pVDZ
   — fifteen geometries, 14 September 17:51 to 15 September 13:43, **69 minutes per energy at 1.7 GB,
   a factor 9.9–10.0 below the cc-pVTZ tight energy** — and the same cells in cc-pVTZ, launched 15
-  September evening, ≈ 6 laptop-days.
+  September evening and finished 24 September 21:02 — 16.6 h per energy, fifteen points, eight laptop-days (read per family, §3.5).
 - **The canonical reference.** Canonical CCSD(T) energy of benzene: 27 s at cc-pVDZ, **755 s and
   7.3 GB at cc-pVTZ** on the idle laptop at the equilibrium geometry (850–1,270 s at the displaced
   geometries of the scan, with the laptop in use). Local LNO-CCSD(T) energy at cc-pVTZ: 2,087 s for
@@ -1255,8 +1232,7 @@ records the re-reading.
 
 Still owed before the pilot note (§7's list): the naphthalene rehearsal's recovery from the hashed
 deck, which also admits or refuses the symmetry prior at 48 modes; the scoreboard re-read with its
-measured band uncertainties; the gradient run/no-run check; and the naphthalene noise measurement
-of decision 35 (running, §7). After the note: the benzene probe batch and its references,
+measured band uncertainties; the gradient run/no-run check (the noise input of decision 35 was read on 27 September under decision 45, §7 item 7). After the note: the benzene probe batch and its references,
 including canonical two-mode points from which the frozen spaces' off-diagonal bias is read
 (decision 16); naphthalene; the three-ring rung, whose anthracene deck is also the direct-coupling
 probe the 6 September text carried as a dated bonus (the plan's own reason: anthracene is the
@@ -1297,7 +1273,7 @@ PNNL naphthalene source itself.
 
 The review loop was **closed on 4 September** after a consistency check of the last revision (19
 cross-references, all mechanical). Since then the plan's text changes only by dated notes that
-name a measurement or a decision; the decisions of 5–16 September (§10, items 8–42) are such notes.
+name a measurement or a decision; the decisions of 5–23 September (§10, items 8–50) are such notes.
 Items 8–16 and 19 were made on the DFT-only rehearsal, the frozen-space probe and the timings —
 before any coupled-cluster response of the real correction exists, so none of the rules the
 evaluation depends on was shaped by a result it will judge; items 17 and 18 are tooling and scope
@@ -1306,11 +1282,11 @@ choices; items 20–34 are readings of measurements (20, 26, 33), laboratory-sou
 of the noise run (35), the adoption of the two pipelines (36), the single-sided K rule (37), the
 anchor's thresholds and the machine order (38), the slow ladder with ions (39), the proposal date
 (40), the (T) port (41) and the cold reads of 16 September with this reading copy (42) — all made
-before any coupled-cluster response of the real correction exists. The three cold reads of this
-document (6, 8 and 16 September) are described after §1. The remaining risk is retired by
+before any coupled-cluster response of the real correction exists. The four cold reads of this
+document (6, 8, 16 and 27 September) are described after §1. The remaining risk is retired by
 measurements, not by further reading; §8 lists the first of them.
 
-## 10. Decisions the student made (items 1–42; all closed unless marked open; a supervisor's objection would reopen any of them)
+## 10. Decisions the student made (items 1–50; all closed unless marked open; a supervisor's objection would reopen any of them)
 
 **Principle, 4 September 2026.** A rule inherited from an earlier plan carries no authority of its
 own; knowledge transfer is allowed wherever a gate shows it makes the pipeline succeed.
@@ -1319,7 +1295,7 @@ own; knowledge transfer is allowed wherever a gate shows it makes the pipeline s
 1. Fragment probing at the largest sizes is a permitted method, used if the locality measurement
    at the middle rungs licenses it; the C₃₈₄H₄₈-class deliverable is a fragment-probed spectrum,
    or the measured reason it could not be produced.
-2. Every plan version stays in the repository as a read-only record.
+2. Every plan version stays in the repository as a read-only record. *Amended 27 September (the student):* superseded versions live in the git history; the tree carries the current text of each document.
 3. The R2 scored set: triphenylene is scored on its gas-phase families; tetracene is matrix-only
    and gated (a jet-cooled band list added since as a cold column). *Addition, 5 September:* the
    R2 C–C families are signed off as expected-undecidable after the source search (§5.2).
@@ -1490,6 +1466,17 @@ own; knowledge transfer is allowed wherever a gate shows it makes the pipeline s
     of both reports worked into the copy and the annex without further questions. Dispositions are
     written under each report.
 
+**17–23 September 2026, after the amplitude test, the supervisor's PDFs and the learning curves.**
+
+43. **The gradient engine is built in-house** (18 September): PySCFAD's shipped LNO does not compute the plan's response (M2b), so M2 — the gradient of the frozen-space energies — is written on JAX/PySCFAD around the frozen spaces of §3.3 (§3.2, dated note).
+44. **The conversation moves to 28 September** (18 September): one cc-pVTZ tight energy costs 16.6 h, so probe B1's third family lands ≈ 24 September (change log).
+45. **The noise run of decision 35 is replaced** (20 September): σ is read from the anchor's own fifteen tight cc-pVTZ points plus four more on mode 12; read 27 September (§7 item 7; §3.5).
+46. **The anharmonic step runs on analytic Hessians** wherever psi4 has none, at step 0.10 (21–22 September; §7, dated note).
+47. **Code quality in two tiers** (21 September): probes fast, with compile-check, one dry run and provenance on every result file; `src/dpir/` only through a promotion checklist with tests and CI.
+48. **The geometry term is a fixed step** of the label factory and the spectrum pipeline (22 September; §7, dated note; the R0 diagonal deck).
+49. **The couplings are learned in local coordinates** — pairwise terms in primitive internal coordinates, projected onto the modes — not in the mode basis (23 September; §3.5, dated note).
+50. **Every corpus Hessian gets a second route when flagged** (23 September), after benzene's ωB97X finite-difference Hessian was found wrong by 133 cm⁻¹ from psi4's default grid (§3.5).
+
 ## 11. Risks
 
 1. **Frozen-space energies are not smooth enough for energy-only probing.** Measured at benzene in
@@ -1497,8 +1484,7 @@ own; knowledge transfer is allowed wherever a gate shows it makes the pipeline s
    measured 8 September: smooth (0.002–0.021 µE_h) with a frequency bias of +0.47 / +0.03 / +0.79
    cm⁻¹ (out-of-plane, ring, C–C stretch) at tight thresholds, **+0.11 / −0.01 / +0.23 cm⁻¹ at the
    thresholds one decade tighter (12 September; decision 20 closed: the anchor runs there, at about
-   twice the per-point cost at benzene and 3.34 times at naphthalene)** — and larger molecules (the
-   naphthalene noise measurement of decision 35, running). Response where a measurement fails: no
+   twice the per-point cost at benzene and 3.34 times at naphthalene)** — and larger molecules (the naphthalene noise term read on 27 September under decision 45: about 0.04 µE_h per energy, §7 item 7). Response where a measurement fails: no
    accuracy claim for the couplings at that size; the gradient route where the side project has
    delivered it.
 2. **The correction is not near-diagonal in the DFT mode basis on aromatic ring modes.** Measured
@@ -1537,7 +1523,7 @@ own; knowledge transfer is allowed wherever a gate shows it makes the pipeline s
    machine switched off with a job running). Both are now rules in the budget document: a memory
    ceiling with headroom for the host, one anchor job at a time, every long run announced with
    its end time and written out point by point so an interruption costs one point.
-9. **Probe B1 loses.** Then the naphthalene deck stays at cc-pVTZ — 291 energies at 38.4 h, cluster
+9. **Probe B1 loses — read 20–24 September: lost for the deck, won for the C–H in-plane bend family only (§3.5).** Then the naphthalene deck stays at cc-pVTZ — 291 energies at 38.4 h, cluster
    work by the rule of §8 — full decks above naphthalene stay out of reach on every route, the
    size question of §4 is not attempted, and the rungs above naphthalene carry thin decks only.
    Response: written in advance (§3.5, §4, §5.3, §12); the cluster request is sized for the
@@ -1554,14 +1540,7 @@ Each module of the programme is mapped onto a load-bearing pipeline artifact: th
 and naphthalene, the calibrated intensities (Module 03); the calibrated-harmonic baseline (Module
 04); the campaign officer that enforces the budget rules and the two permitted cost sentences
 (Module 07; see the terms after §1); and the assembled pipeline with its scored ladder and cost
-records (Module 08). Module 01 (foundations) maps to no pipeline artifact. Two modules — the
-deep-learning support predictor (Module 05) and the generative pattern proposer (Module 06; it
-proposes decks on DFT-only corpora *before* hashing — a proposed deck is hashed like any other and
-never reordered after an energy exists) — are efficiency experiments on the off-diagonal probe
-count, run on DFT-only corpora at zero coupled-cluster cost and measured against the symmetry
-prior's free-element count; the deep-learning model is measured on the accuracy rungs and, if it
-earns its licence there, becomes load-bearing on the reach rungs as the network of pipeline A —
-the mapping says exactly that rather than pretending otherwise. Module deadlines are administrative
+records (Module 08). Module 01 (foundations) maps to no pipeline artifact. Two modules run on DFT-only corpora at zero coupled-cluster cost: the deep-learning predictor of the correction (Module 05; since decision 49 in local coordinates, §3.5), which is measured on the accuracy rungs and, if it earns its licence there, becomes load-bearing on the reach rungs as the network of pipeline A — the mapping says exactly that rather than pretending otherwise — and the generative proposer of candidate molecules (Module 06: a SMILES Transformer on a frozen PubChem set of fused aromatics, whose candidates enter the corpus and the atlas as a separately labelled source; run 26 September). The proposer of displacement decks that Module 06 first named — a deck proposed *before* hashing, hashed like any other and never reordered after an energy exists — is kept as stand-out work, the pattern proposer of §3.4's dated note, measured against the symmetry prior's free-element count. Module deadlines are administrative
 facts; a module may ship a fail-closed state to meet its date, and the science continues past it.
 
 **Calendar (set 10 September 2026 from the first week's measured pace; re-read on 14–16 September
@@ -1579,20 +1558,20 @@ is budgeted, not hoped away.
 | Milestone / module | Content | Date | What sets the pace |
 |---|---|---|---|
 | Module 02 — opponent atlas | PAHdb v4.00 and Anharmonic v1.00, Mai 2025, the Bos-type baseline, read in and version-frozen — **first version complete 10 September** (parser, tables, notebook, report; the student's own pass before submission); line D added once read in full | 25 Sep 2026 | data engineering, no compute |
-| Proposal to the supervisor | this reading copy with its cover note, after probe B1's cc-pVTZ cells (verdict ≈ 27 September, measured 18 September at 16.6 h per energy; the 14 September calendar had ≈ 21–22 September) and the third cold read (decision 40; moved by decision 44; the 10 September calendar had Monday 14 September) | 28 Sep 2026 | the student's work |
+| Proposal to the supervisor | this reading copy with its cover note, after probe B1's cc-pVTZ cells (read per family 20–24 September at 16.6 h per energy; the 14 September calendar had ≈ 21–22 September) and the third cold read (decision 40; moved by decision 44; the 10 September calendar had Monday 14 September) | 28 Sep 2026 | the student's work |
 | Module 03 — scoreboard and u_band | probe 2a, the laboratory columns, decidability per family — **scaffolded in the Udacity rubric form on 11 September** (`modules/03_lab_scoreboard/`: a pre-registered matrix–gas test committed before the join, 63 pairs of naphthalene, anthracene, pyrene and chrysene against the WebBook GC-IRD records; six families reject a zero offset, median +3.3 to +5.9 cm⁻¹ matrix above hot gas; the u_band columns on these records, the PNNL and cold columns and the naphthalene⁺ columns still owed) | 2 Oct 2026 | the student's work; the supervisor's answers to §13 items 7–10 |
-| Pilot-note inputs | the naphthalene rehearsal's recovery (stage A done 15 September), the R0 pilot, the canonical two-mode points, and the naphthalene noise run of decision 35 (≈ 10 tight energies, 4.8 laptop-days, queued after probe B1's cells — decision 38 — and running on 26 September) | 23 Oct 2026 | laptop, one anchor job at a time: the R0 pilot (benzene, 448 energies at ≈ 76 min per xtight energy, 24 days), the canonical two-mode points (14–21 min each), the σ-run |
+| Pilot-note inputs | the naphthalene rehearsal's recovery (stage A done 15 September), the R0 pilot, the canonical two-mode points, and the noise term of the labels (decision 45 in place of the noise run of decision 35; read 27 September, §7 item 7) | 23 Oct 2026 | laptop, one anchor job at a time: the R0 pilot (benzene, 448 energies at ≈ 76 min per xtight energy, 24 days), the canonical two-mode points (14–21 min each) |
 | Pilot note | every frozen number, band lists, margins; the threshold-sensitivity pair (§7) | 30 Oct 2026 | the student's work after the measurements |
 | Module 04 — calibrated-harmonic baseline | ML correction to scale factors, leave-molecule-out — **scaffolded in the rubric form on 12 September** (`modules/04_calibrated_harmonic/`: recipe committed before training; 2,477 matrix↔computed pairs of 83 molecules; leave-one-molecule-out MAE 6.49 cm⁻¹ for the library as served against 6.40 for the best model, R² ≤ 0.01 — on this table the calibrated baseline *is* line A; the Zenodo release of the table and the pilot note's adoption of the recipe still owed) | 30 Oct 2026 | in parallel with the compute |
-| Module 05 — Δ₂-support predictor | the DFT-vs-DFT Hessian corpus and the network — **scaffolded 12 September** (`modules/05_support_predictor/`: recipe, the Transformer in PyTorch, smoke test on the benzene dry-run tensor). **Hessian QM9 downloaded and verified the same day** (41,645 molecules, ωB97X/6-31G* numerical Hessians; paper read for units and conventions). **Measured: it holds only 66 molecules with an all-carbon aromatic six-ring and 6,055 with a planar conjugated five- or six-ring** — the "aromatic-heavy QM9 subset" of the mapping is really a conjugated/heteroaromatic subset. **Prepared in response: a resumable corpus factory** (`modules/05_support_predictor/corpus/`) with four layers — 45 ladder-adjacent aromatics of 12–30 atoms as a size bridge, 868 mono-substituted three- and four-ring cores that turn the bridge into a distribution, 4,353 substituted aromatic and heteroaromatic cores as the class, and the 6,055 conjugated QM9 molecules — computed with the plan's two functionals at 6-31G*, start-and-stop, in a fixed order so every stop leaves a reproducible subset. The five-molecule timing test of 14 September priced layers A + A′ + B at 177 laptop-days (§8); the number actually computed is fixed by a dated note; the corpus is published with a DOI before the module starts (reading 1). No result | 20 Nov 2026 | the corpus costs DFT compute and competes with the anchor day for day on one machine (measured per molecule: a QM9-size molecule 3–7 min per Hessian, naphthalene 13 min, pyrene 54 min) |
-| Cluster request | sponsored by the supervisor, sized by the measured anchor energy on the 291-energy deck (§13, item 5a: ≈ 195,000–290,000 SBU, estimate); its first job one timed energy on the node; re-sized before submission if probe B1 licenses cc-pVDZ | 4 Dec 2026 | the supervisor and the request's lead time; the hinge of the two scenarios below |
-| R1 probe batch and scoring | the first real coupled-cluster correction, naphthalene: the 291-energy H deck | 11 Dec 2026 is the start on the machine P13 chooses; on the cluster route the batch itself follows the allocation's lead time; on the cc-pVDZ route P27 puts its end at mid-December on the laptop alone or late November with the desktop (proposed, open) | **not the laptop at cc-pVTZ (466 days for the H deck at 38.4 h; §3.2): four Snellius nodes in 15–25 days or the desktop of the hardware note in 123–203 days, both estimates from the 474-energy figures of the duration table scaled by 291/474; the desktop is a priced configuration, not a purchase, and would be the student's own; at cc-pVDZ, if probe B1 wins, the laptop in ≈ 47 days (P27, open)** — P13 open |
+| Module 05 — Δ₂-support predictor | the DFT-vs-DFT Hessian corpus and the network — **scaffolded 12 September** (`modules/05_support_predictor/`: recipe, the Transformer in PyTorch, smoke test on the benzene dry-run tensor). **Hessian QM9 downloaded and verified the same day** (41,645 molecules, ωB97X/6-31G* numerical Hessians; paper read for units and conventions). **Measured: it holds only 66 molecules with an all-carbon aromatic six-ring and 6,055 with a planar conjugated five- or six-ring** — the "aromatic-heavy QM9 subset" of the mapping is really a conjugated/heteroaromatic subset. **Prepared in response: a resumable corpus factory** (`modules/05_support_predictor/corpus/`) with four layers — 45 ladder-adjacent aromatics of 12–30 atoms as a size bridge, 868 mono-substituted three- and four-ring cores that turn the bridge into a distribution, 4,353 substituted aromatic and heteroaromatic cores as the class, and the 6,055 conjugated QM9 molecules — computed with the plan's two functionals at 6-31G*, start-and-stop, in a fixed order so every stop leaves a reproducible subset. The five-molecule timing test of 14 September priced layers A + A′ + B at 177 laptop-days (§8); the number actually computed is fixed by a dated note; the corpus is published with a DOI before the module starts (reading 1). **State on 27 September:** layers A and A2 computed with both functionals (the 175-molecule pool) and layer B running on rented machines in six shards; the learning curves E6 and E7 read (§3.5: nothing learnable in the mode basis, the couplings learned in local coordinates from 175 molecules — decision 49); the equivariant Δ-Hessian model (rung C) built and pre-registered against the pair model; the layer-B proof-of-learning curve is the module's decisive read-out | 20 Nov 2026 | the corpus costs DFT compute and competes with the anchor day for day on one machine (measured per molecule: a QM9-size molecule 3–7 min per Hessian, naphthalene 13 min, pyrene 54 min) |
+| Cluster request | sponsored by the supervisor, sized by the measured anchor energy on the 291-energy deck (§13, item 5a: ≈ 195,000–290,000 SBU, estimate); its first job one timed energy on the node; sized at cc-pVTZ, probe B1 having licensed cc-pVDZ for one family only | 4 Dec 2026 | the supervisor and the request's lead time; the hinge of the two scenarios below |
+| R1 probe batch and scoring | the first real coupled-cluster correction, naphthalene: the 291-energy H deck | 11 Dec 2026 is the start on the machine P13 chooses; on the cluster route the batch itself follows the allocation's lead time; the cc-pVDZ route of P27 (end mid-December on the laptop alone) is not licensed for the deck (§3.5) | **not the laptop at cc-pVTZ (466 days for the H deck at 38.4 h; §3.2): four Snellius nodes in 15–25 days or the desktop of the hardware note in 123–203 days, both estimates from the 474-energy figures of the duration table scaled by 291/474; the desktop is a priced configuration, not a purchase, and would be the student's own; at cc-pVDZ the laptop in ≈ 47 days would have needed probe B1's licence for the deck, which it did not give (P27)** — P13 open |
 | R0⁺ / R1⁺ | the (T) port (decision 41: one to two weeks of desk work after 26 September, acceptance tests first), then naphthalene⁺'s H deck after R1 | after R1; the date follows the port's tests and P13 | c-dependent: with the port ≈ 45 laptop-days for the diagonal H deck at tight and ≈ 115 for the full H deck (desktop 30–50), P27 §5 with decision 41 (estimates until the port is timed) |
-| Module 06 — generative pattern proposer | the efficiency experiment on K_off | 18 Dec 2026 | the student's work |
+| Module 06 — generative candidate molecules | a SMILES Transformer on a frozen PubChem set of fused aromatics, pre-registered 24 September and run 26 September on a rented machine: 6 of 7 registered read-outs met (validity 0.92, novelty 0.91, scaffold novelty 0.53, memorisation 0.10; project fit 0.945 against a predicted 0.30–0.60 — the miss), the 5-gram baseline beaten on every line (`modules/06_generative_candidates/`); the pattern proposer that this module first named is stand-out work (§3.4, dated note) | 18 Dec 2026 | the student's work |
 | Q9 pre-registration — families per adjacency class, τ_F, the two rules, the LOMO protocol (decision 27) | written before any correction above naphthalene exists | 15 Jan 2027 | no compute |
-| Module 07 — campaign officer | LangGraph, the Anthropic API, the cost record | 15 Jan 2027 | the student's work |
+| Module 07 — campaign officer | LangGraph, the Anthropic API, the cost record — **first build 25 September** (`modules/07_agentic_workflows/`: a closed allow-list, a deterministic gate whose rule table is the project's own incident list, eight replay scenarios on real logs passing; the LLM-policy run waits for an API key) | 15 Jan 2027 | the student's work |
 | Three-ring rung and the go/no-go | anthracene and phenanthrene, diagonal-first decks; the per-family go/no-go read from both diagonal blocks (decision 39) | by P27's calendar February–April 2027 on the laptop alone, December 2026–January 2027 with the desktop (proposed, open); in both cases before Module 08 | the machine of P13; 334 energies at 2.5–5 h each (estimate) |
-| R2 and R3 | pyrene class and coronene, thin decks (full only if probe B1 licensed them); then Q9 evaluated per family and the Q10 coverage table printed for R0–R3 | after the three-ring go/no-go: February–April 2027 on the laptop alone, December 2026–January 2027 with a desktop (P27, open) | **cluster access**; without it these rungs lapse |
+| R2 and R3 | pyrene class and coronene, thin decks (probe B1 did not license full decks); then Q9 evaluated per family and the Q10 coverage table printed for R0–R3 | after the three-ring go/no-go: February–April 2027 on the laptop alone, December 2026–January 2027 with a desktop (P27, open) | **cluster access**; without it these rungs lapse |
 | Module 08 — the pipeline assembled and scored | R0–R1 and R1⁺, the thin decks, the network licensed or refused per family, fragment-probed R6 where licensed | 16 Apr 2027 | everything above |
 | Module 09 — defence | | 21 May 2027 | |
 
@@ -1610,16 +1589,16 @@ the claim as the Ladder states it.
 |---|---|---|---|---|---|
 | R0 pilot (benzene) | 448 LNO-CCSD(T)/cc-pVTZ xtight energies at 76 min | 24 | 6–10 | 0.8–1.3 | m |
 | naphthalene DFT dry run (stage A) | two psi4 Hessians at 6-31G* on the symmetrised geometry | done 15 September | — | — (psi4 not on Snellius) | m |
-| R1 smoothness σ (decision 35) | 10 naphthalene tight energies at 11.5 h | 4.8 | 1.2–2.1 | 0.2–0.3 | m per energy; **not started** — queued behind probe B1's cc-pVTZ cells (decision 38) |
-| probe B1 (basis probe) | 15 cc-pVDZ + 15 cc-pVTZ tight energies on three modes | 0.6 (cc-pVDZ, done) + ≈ 6 (cc-pVTZ) | — | — | m; verdict ≈ 21–22 Sep |
+| R1 noise term (decision 35, replaced by decision 45) | four extra tight cc-pVTZ points on mode 12 beside the anchor's fifteen, 44,590–49,120 s each | 2.2 | — | — | m; read 27 Sep (§7 item 7) |
+| probe B1 (basis probe) | 15 cc-pVDZ + 15 cc-pVTZ tight energies on three modes | 0.6 (cc-pVDZ) + 8 (cc-pVTZ, 16.6 h per energy) | — | — | m; read 20–24 Sep: lose / win / between (§3.5) |
 | M2a, the gradient cost ratio g | PySCFAD cells 0–4, benzene cc-pVDZ | ran 14 September | — | — | g unmeasurable on the laptop at the coupled-cluster level |
 | R1 deck (naphthalene), 474 energies as ± pairs | 474 xtight energies at 38 h (11.5 h × F, F = 3.34 measured) | 759 | 198–330 | 25–41 | m |
 | **R1 H deck (decision 37)** | 291 xtight energies at 38.4 h = 11,174 h | **466** | **123–203** | **15–25** | m; this copy (291/474 of the row above) |
 | R1 diagonal H deck only (thin) | 114 energies × 38.4 h = 4,378 h | 182 | 48–79 | 6–10 | m; this copy (the 6 September table had 96 energies, 154 days) |
 | R1 deck, couplings thinned by P25 | 210 energies | — | — | — | **not licensed (16 September)**; row struck |
-| R1 H deck at cc-pVDZ xtight | 291 energies at 3.9 h (69 min × F) | 47 | 12–20 | — | e; conditional on probe B1 (proposed, P27, open) |
+| R1 H deck at cc-pVDZ xtight | 291 energies at 3.9 h (69 min × F) | 47 | 12–20 | — | e; **not licensed for the deck** (probe B1, 20–24 Sep: the C–H in-plane bend family only) |
 | R1 by gradients (side project M2) | 18 gradients = 18·g energies | — | — | — | g unmeasurable on the laptop at the coupled-cluster level; a larger machine |
-| three-ring rung, diagonal-first H decks at tight cc-pVDZ | 156 + 178 = 334 energies at 2.5–5 h | 35–70 | 9–30 | ≈ 3–10 (6,000–20,000 SBU) | e; conditional on probe B1 (proposed, P27, open) |
+| three-ring rung, diagonal-first H decks at tight cc-pVDZ | 156 + 178 = 334 energies at 2.5–5 h | 35–70 | 9–30 | ≈ 3–10 (6,000–20,000 SBU) | e; conditional on probe B1, which licensed cc-pVDZ for one family only (P27, open for that family's block) |
 | anharmonic step, benzene — finite-difference DFT Hessians (psi4 1.10.2) | pyVPT2 at B3LYP/6-31G*: ≈ 4,100 gradient evaluations | 0.4–0.5 (10–11 h at 8 threads) | 0.1–0.2 | — (psi4 not on Snellius) | **m** 15–16 September (the run was interrupted at 68 % by a system restart; a checkpoint layer now exists, so a restart costs one task) |
 | anharmonic step with analytic Hessians (psi4 1.11) — benzene / naphthalene | 2M + 1 Hessians: 61 / 97, at the factory's measured 195 s (benzene) and 707 s (naphthalene) per B3LYP/6-31G* Hessian | 0.14 (3 h) / 0.8 (19 h) | < 0.1 / 0.2–0.3 | — | **m** per-Hessian time; the counts are arithmetic |
 | anharmonic step with analytic Hessians — pyrene / coronene | 145 / 205 Hessians at the timing note's fitted t ∝ N_atoms^3.33 (six molecules, 14 September) | ≈ 4 / ≈ 17 | 1–2 / 4–7 | — | e (the fit, not a run) |
@@ -1636,23 +1615,23 @@ the claim as the Ladder states it.
 
 What the table says: R0 and R1 are within reach — R0 on the laptop in weeks, R1 as the 291-energy
 H deck on four Snellius nodes in two to four weeks or on the desktop in four to seven months at the
-anchor's basis, or on the laptop in about seven weeks at cc-pVDZ if probe B1 licenses it; **every
+anchor's basis (the laptop route at cc-pVDZ, about seven weeks, is not licensed: probe B1 won for one family only, §3.5); **every
 full deck above naphthalene is out of reach on every route at the anchor's basis**, by the decks,
-not the machines — probe B1 is the measurement that could return them (a win would put a full
+not the machines — probe B1 was the measurement that could have returned them (a win would have put a full
 pyrene deck at Snellius-weeks and, by P27's estimate, the three-ring rung's diagonal-first decks at
-35–70 laptop-days), and until it reads the plan promises thin decks above naphthalene (decision
+35–70 laptop-days); read per family on 20–24 September it did not, so the plan promises thin decks above naphthalene (decision
 36). The levers the table carries are the tight/xtight choice (÷ 3.3; the accuracy side measured
 at benzene: 0.47 / 0.03 / 0.79 → 0.11 / −0.01 / 0.23 cm⁻¹ — decision 38 keeps the anchor at xtight
 for R1's agreement claim, and P27 proposes tight for the transfer rungs, whose threshold is 2.5
 cm⁻¹, open), the single-sided patterns of decision 37 (474 → 291, confirmed) and the cc-pVDZ deck of
-probe B1 (÷ 10 per energy, verdict pending); the DFT-only thinning of the couplings (P25) is not a
+probe B1 (÷ 10 per energy; licensed for the C–H in-plane bend family only); the DFT-only thinning of the couplings (P25) is not a
 lever (§3.5), and g is not measurable on the laptop.
 
 **Two scenarios follow from the one hinge, cluster access (decision 36; re-read against decision
 39).** **With a small cluster allocation** the programme ends at the defence of 21 May 2027 with R1
 full, R1⁺ under the (T) port, the three-ring go/no-go read, the rungs above it thin (the transfer
 tests) or full where probe B1 licensed them, and the network licensed or refused per family.
-**Without it** R1 runs on the desktop (or on the laptop at cc-pVDZ, if probe B1 wins) or stops at
+**Without it** R1 runs on the desktop or stops at
 the pilot, the network is trained on R0–R1 (and R1⁺) plus the corpus, its reach claim thinner and
 honest; the defence date stays 21 May 2027, and the end of March 2027 is the date by which this
 scenario's compute must have finished for Module 08 on 16 April (the 6 September text wrote that
@@ -1666,12 +1645,12 @@ reading time at the two points named.
 
 **The serial sum, one anchor job at a time (arithmetic on the table above; the machine runs one
 job, so the days add).** Between 26 September 2026 and Module 08 on 16 April 2027 there are about
-200 laptop-days. *Without a cluster and with probe B1 winning:* the R0 pilot 24, the smoothness run
+200 laptop-days. *Without a cluster, had probe B1 won (it licensed one family only, §3.5):* the R0 pilot 24, the smoothness run
 4.8, probe B1's cc-pVTZ cells 6, the R1 H deck at cc-pVDZ 47, and the three-ring diagonal decks
 35–70 — together **117–152 days**, which fits, but leaves 48–83 days for everything else. R1⁺ (the
 cation deck, only with the (T) port of item 41) and the corpus factory of Module 05 do not both fit
 in what remains: one of the two moves to a second machine or lapses, and the plan says which at the
-three-ring go/no-go rather than promising both here. *Without a cluster and with probe B1 losing:*
+three-ring go/no-go rather than promising both here. *Without a cluster, with probe B1 read as it was:*
 the R1 H deck is 466 laptop-days on its own, so R1 moves to the desktop or the deck stops at the
 pilot, as the scenario above states. *With a small allocation:* R1 runs on the nodes (15–25
 node-days), the laptop keeps 24 + 4.8 + 6 + 35–70 = **70–105 days** and has room for R1⁺ or the
@@ -1721,10 +1700,10 @@ at naphthalene, 4 and 17 days at pyrene and coronene) is counted inside the rung
      (measured); the deck is 291 energies; so 291 × 3.34 × 200–300 ≈ **195,000–290,000 SBU** for the
      naphthalene deck at cc-pVTZ — an estimate until one energy is timed on the node, which is the
      application's first job — inside a Small Compute application (up to 1,000,000 SBU). The 6
-     September figure of 330,000–500,000 SBU was the same arithmetic on the 474-energy deck. If
-     probe B1 licenses the cc-pVDZ deck the figure falls by about an order of magnitude (the 14
+     September figure of 330,000–500,000 SBU was the same arithmetic on the 474-energy deck. Had
+     probe B1 licensed the cc-pVDZ deck the figure would have fallen by about an order of magnitude (the 14
      September estimate for the 474-energy cc-pVDZ deck was ≈ 30,000–45,000 SBU; × 291/474 ≈
-     18,000–28,000) and the request is re-sized before submission. To it come the thin decks of the
+     18,000–28,000); read per family on 20–24 September it licensed that basis for the C–H in-plane bend family only (§3.5), so the request stays sized at cc-pVTZ and only that family's block may run at the lower price. To it come the thin decks of the
      rungs above naphthalene (tens of thousands of SBU each), the canonical cc-pVQZ diagonal line of
      decision 26, and, if the three-ring go/no-go is a go, the four-ring decks (pyrene and
      tetracene, ≈ 170 + 200 diagonal energies at 3.5–10 h each, estimate) as the allocation's second
@@ -1852,11 +1831,11 @@ marked otherwise; author initials are given only where a held PDF's first page s
 - Mackie, Candian, Huang, Maltseva, Petrignani, Oomens, Buma, Lee & Tielens 2015, J. Chem. Phys.
   143, 224314. DOI 10.1063/1.4936779. (Opponent line B: the anharmonic quartic-force-field protocol
   of the PAHdb Anharmonic library — naphthalene, anthracene, tetracene; the supervisor is a
-  co-author; Crossref record, 8 September; PDF asked of the supervisor.)
+  co-author; PDF from the supervisor, read 20 September — its accuracy numbers are line B's in `Frozen_Lines_to_Beat.md` §3.)
 - Mackie, Candian, Huang, Maltseva, Petrignani, Oomens, Mattioda, Buma, Lee & Tielens 2016,
   J. Chem. Phys. 145, 084313. DOI 10.1063/1.4961438. (Opponent line B: benz[a]anthracene,
-  chrysene, phenanthrene, pyrene, triphenylene; the supervisor is a co-author; Crossref record, 8
-  September; PDF asked of the supervisor.)
+  chrysene, phenanthrene, pyrene, triphenylene; the supervisor is a co-author; PDF from the supervisor, read 20
+  September.)
 - Madriaga, J. P., Crawford, T. D. 2025, J. Phys. Chem. A 129, 10014.
   DOI 10.1021/acs.jpca.5c05210. (PNO discontinuities in finite-difference properties.)
 - Mai et al. 2025, Mon. Not. R. Astron. Soc. 541, 3073; arXiv:2503.05120. (Opponent line C:
@@ -1865,7 +1844,7 @@ marked otherwise; author initials are given only where a held PDF's first page s
   831, 58. DOI 10.3847/0004-637x/831/1/58. (Jet-cooled 3 µm spectra of pyrene, chrysene and
   triphenylene among others — the C–H stretch cold column at R2; the supervisor is a co-author;
   Crossref record; abstract grade.)
-- Mata & Werner 2006, J. Chem. Phys. 125, 184110. DOI 10.1063/1.2364487. ("Calculation of smooth potential energy surfaces using local electron correlation methods" — the 2006 prior art of §3.1; Crossref-verified 10 September; closed access, asked of the supervisor, not read; its content is cited here as described by Pinski & Neese 2019.)
+- Mata & Werner 2006, J. Chem. Phys. 125, 184110. DOI 10.1063/1.2364487. ("Calculation of smooth potential energy surfaces using local electron correlation methods" — the 2006 prior art of §3.1; Crossref-verified 10 September; PDF from the supervisor, read in full 20 September — §3.1, reading (i).)
 - Mulas, Falvo, Cassam-Chenaï & Joblin 2018, J. Chem. Phys. 149, 144102.
   DOI 10.1063/1.5050087. (Opponent line B: anharmonic DFT quartic force fields of pyrene and
   coronene; the emission cascade model.)
@@ -1880,7 +1859,7 @@ marked otherwise; author initials are given only where a held PDF's first page s
 - Ricca, Boersma, Maragkoudakis, Roser, Shannon, Allamandola & Bauschlicher 2026, Astrophys. J. Suppl. Ser. 282, 7. DOI 10.3847/1538-4365/ae1c38.
   (PAHdb v4.00, opponent line A; the paper does not report the systematic uncertainties of the
   scaled-harmonic library — the reading behind §1.)
-- Russ & Crawford 2004, J. Chem. Phys. 121, 691. DOI 10.1063/1.1759322. ("Potential energy surface discontinuities in local correlation methods"; Crossref-verified 10 September; closed access, asked of the supervisor, not read.)
+- Russ & Crawford 2004, J. Chem. Phys. 121, 691. DOI 10.1063/1.1759322. ("Potential energy surface discontinuities in local correlation methods"; Crossref-verified 10 September; PDF from the supervisor, read in full 20 September.)
 - Sanders, J. N., Andrade, X., Aspuru-Guzik, A. 2015, ACS Cent. Sci. 1, 24. DOI 10.1021/oc5000404.
   (Compressed-sensing Hessians; polyacenes.)
 - Schneider, Baker, Scharko, Blake, Tonkyn, Forland & Johnson 2024, J. Quant. Spectrosc. Radiat. Transfer 323, 109045.
@@ -1890,7 +1869,7 @@ marked otherwise; author initials are given only where a held PDF's first page s
 - Sharpe, Johnson, Sams, Chu, Rhoderick & Johnson 2004,
   Appl. Spectrosc. 58, 1452. DOI 10.1366/0003702042641281. (The PNNL gas-phase quantitative IR
   database.)
-- Subotnik & Head-Gordon 2005, J. Chem. Phys. 123, 064108. DOI 10.1063/1.2000252. ("A local correlation model that yields intrinsically smooth potential-energy surfaces"; Crossref-verified 10 September; closed access, asked of the supervisor, not read.)
+- Subotnik & Head-Gordon 2005, J. Chem. Phys. 123, 064108. DOI 10.1063/1.2000252. ("A local correlation model that yields intrinsically smooth potential-energy surfaces"; Crossref-verified 10 September; PDF from the supervisor, read in full 20 September.)
 - Wang, Luo, Wang & Liu 2025, J. Chem. Theory Comput. 21, 10893.
   DOI 10.1021/acs.jctc.5c01354. (O1NumHess.)
 - Williams, N. J., Kabalan, L., Stojanovic, L., Zolyomi, V., Pyzer-Knapp, E. O. 2025, Scientific Data 12,
@@ -1995,10 +1974,10 @@ Numbers that are arithmetic on the sources are shown in place in the body.
 - **§14.** Esposito et al. 2024 (both entries) marked NASA Ames group; Mackie 2015/2016 and Maltseva 2016 marked as the supervisor's co-authored papers (CR 2); Ricca et al. 2026's annotation softened to "does not report" (CR 19); Mata & Werner 2006's annotation says its content is cited as described by Pinski & Neese 2019 (CR 20); the line-D records listed separately as not yet in the atlas.
 - **Third pass, 17 September (dated notes only; no frozen sentence rewritten).** §3.2: a dated note after the pricing paragraph records the amplitude test's outcome on all 616 patterns (FAIL — the energies-only coupling route has no amplitude window at naphthalene; the diagonal is untouched) and the gradient route as counted, stress-tested and priced this week (X14/X20/X21: 2k + 1 = 19 gradients at naphthalene, exact; g = 6.04 for LNO-CCSD(T) at 6-31G on the full energy, 7.6 inferred; 2.5–2.0× on the H deck, 4.8–3.8× at pentacene — corrected 22:31 from a first reading taken on the (T)-increment attribute), with the three open items named. §7: the lever list gains a dated fourth bullet pointing to that note. Plan 06's decision rule carries the matching dated amendment (branch C stays open on the measured g). The 0.5 cm⁻¹ of decision 21 was traced to its source the same day (the head-to-origin term of Pirali 2009, an upper bound, one molecule; 5–17 cm⁻¹ elsewhere on the ladder) — recorded in `notes/Desk_2026-09-17_Tolerance_and_Label_Count.md`, not yet folded into §4's error budget.
 - **Date change, 18 September (decision 44).** The conversation with the supervisor moves from 26 to 28 September 2026: stage 0 of probe B1's cc-pVTZ cells passed on 18 September 04:28, but one TZ tight energy costs 16.6 h, so the third mode and the report land ≈ 27 September. Header, decision 40 and the §12 calendar row carry the new date; the filename is kept so that the ledger's and the blog's links stay valid.
-- **Fourth pass, 18 September (the user: "Herschrijf alinea 2 en de slotzin van alinea 3"; two frozen passages of §1 rewritten, the first rewrite of frozen text since 6 September).** §1, the "In a few sentences" paragraph: "a handful of energies … no gradients" replaced by the measured route — energies along single modes for the diagonal, gradients along symmetry-chosen patterns for the couplings (2 per pattern + 1, 19 at naphthalene), with the amplitude test of 17 September and decision 43 named as the reason; "no full-molecule coupled-cluster calculation" replaced by "without a canonical coupled-cluster calculation of the molecule", since the LNO energies are whole-molecule calculations. §1, the closing sentence of the prior-art paragraph: "recover the correction from energies alone" replaced by the diagonal-from-energies, couplings-from-gradients statement. Nothing else in §1 touched.
+- **Fourth pass, 18 September (the student: "Herschrijf alinea 2 en de slotzin van alinea 3"; two frozen passages of §1 rewritten, the first rewrite of frozen text since 6 September).** §1, the "In a few sentences" paragraph: "a handful of energies … no gradients" replaced by the measured route — energies along single modes for the diagonal, gradients along symmetry-chosen patterns for the couplings (2 per pattern + 1, 19 at naphthalene), with the amplitude test of 17 September and decision 43 named as the reason; "no full-molecule coupled-cluster calculation" replaced by "without a canonical coupled-cluster calculation of the molecule", since the LNO energies are whole-molecule calculations. §1, the closing sentence of the prior-art paragraph: "recover the correction from energies alone" replaced by the diagonal-from-energies, couplings-from-gradients statement. Nothing else in §1 touched.
 - **19 September (dated note only).** §7, after the opening paragraph: the tolerance is the scoring column's, per family (0.5 cm⁻¹ is Pirali's naphthalene term; 1 cm⁻¹ Maltseva, C–H stretch; 5–17 cm⁻¹ FEL), and the shape test of 17 September fixes where the couplings are needed (fingerprint and out-of-plane windows) and where the diagonal suffices (C–H stretch). No frozen sentence rewritten.
 - **Not changed, on purpose.** The 5,160-energy whole-molecule figure of §4 (four energies per mode × 1,290 modes); the Ladder's ≥ 2,580 counts two per mode (the cold read's smaller item concerns the Ladder, which is not this copy's job). The cover note and the Ladder are not touched.
-- **Markers left in this copy.** (1) Header: "[institution and role: to be confirmed by the student]". (2) §3.5: "[probe B1 verdict: read family by family — lose (C–H out-of-plane, 20 September), win (C–H in-plane bend, 23 September), between (C–C stretch, 24 September); the dated notes below]" (expected ≈ 21–22 September; decision 40 dated it ≈ 21 September, the brief for this copy ≈ 22 September). (3) §7: "[the two LNO threshold settings that define the threshold-sensitivity line: to be fixed in the pilot note]".
+- **Markers left in this copy.** (1) Header: "[institution and role: to be confirmed by the student]". The §3.5 marker was replaced on 27 September by probe B1's per-family verdict in the main text, and the §7 marker by the two settings the threshold-sensitivity line compares (xtight against tight, with the measured biases).
 
 ### Follow-up, 20 September evening (the supervisor's PDFs)
 
@@ -2009,3 +1988,19 @@ Numbers that are arithmetic on the sources are shown in place in the body.
 - **25 September 12:1x (dated note only; nothing frozen rewritten).** For the conversation of the 28th: (i) the E11.2 symmetry reading of the morning ("the pair model ignores molecular symmetry") was withdrawn at 09:4x — the same statistic on the target had the same spread; with true pair orbits the pair model is as symmetric as its target because its features are invariant scalars (`PreRegistration_2026-09-25_E11_*`, amendment); the equivariant model keeps its design reasons and is pre-registered against the pair model as rung C (`PreRegistration_2026-09-25_RungC_Equivariant_vs_Pair_Model.md`, build after the 28th). (ii) The layer-B proof-of-learning curve runs on three of five shards (hel1-18/21 since 07:05, hel1-16 since 11:24; shards 3 and 4 join Saturday evening and Sunday); its first table (100 molecules in hashed order) is expected Monday morning at the earliest, so the conversation shows the registered predictions (bare parents 1.14× per decade on the ratio, 0.39 at 1,200) and at best the first point. (iii) The cation rows of obstacle 9 start on hel1-14 after route 2 (≈ 18:00 today).
 - **25 September 17:1x (dated note only).** Route 2 — the Mackie diagnostic at their level — read for naphthalene: 97 B97-1/TZ2P analytic Hessians (pyscf, hel1-14), quartic force field at step 0.10 with a two-route disagreement of median 0.0 / 90th percentile 0.2 / max 3.6 cm⁻¹ over 1,128 constants (the finite-difference noise of benzene's route 1 is absent), and VPT2 fundamentals within **1.2 cm⁻¹ RMS** of the rotationally resolved band origins of module 03 (ν48 −0.7, ν47 +1.9, ν46 +0.2 against Pirali 2009/2013 and Albert 2011), where the harmonic frequencies miss by 3–15. Gate E prerequisite (2) of the PI assessment is met; the Mackie 2021 question itself waits for the four-ring PAH (after the 28th). Files: `probes/results_m1/route2/ROUTE2_NAPHTHALENE_VS_LAB_2026-09-25.md`, `qff_naphthalene_d010`, `probes/route2_vs_lab.py`.
 - **27 September 08:5x (dated notes only; nothing frozen rewritten).** §3.4: the deck's candidate set on the proxy corpus (E1/E2; the band deck ends at ρ_off 0.5, the all-pairs set at 0.08–0.14; learned order 1.35–1.5× the band deck to reach 0.3; feedback is not the gap); the change is pre-registered for after the 28th. §3.5: the weekend note (labels' noise floor 0.04 µE_h per energy; the learned-representation search, stages 1–3; naphthalene⁺ priced; placeholder for the 20:00 layer-B reading). §5.2 (03:4x): naphthalene⁺ added to the cation note.
+
+### Fourth cold read, 27 September (main text updated; the older wording lives in git)
+
+The reading copy was read whole on 27 September, the day before the conversation, and every statement that the record had overtaken was rewritten in place — no bracketed markers, no "see note below" — while the dated notes that carry the measurements stay. What changed, by section:
+
+- **Header, provenance.** Revisions through 27 September; this fourth cold read named beside the three earlier ones.
+- **§1.** A paragraph on the measurements of 17–27 September (decisions 43–50, probe B1's per-family verdict, E8, the noise floor, the cations, the layer-B curve); the two sentences that still treated probe B1 as pending now state its outcome; the Terms entry for Modules 05 and 06 follows decisions 49 and the module-06 pivot of 24 September.
+- **§3.2, §3.5, §4, §5.2, §5.3, §8, §11, §12, §13.** Every "if probe B1 licenses / wins / loses" resolved to what was read on 20–24 September: the cc-pVDZ deck licensed for the C–H in-plane bend family only; R1 at cc-pVTZ on the cluster route; thin decks above naphthalene; no size sentence; the cluster request sized at cc-pVTZ. The §3.5 lever bullet carries the outcome instead of the placeholder; the E8 note points to naphthalene's Hessian, running.
+- **§7 item 7, §8, §11 risk 1, §12 (calendar and duration table).** The noise run of decision 35 replaced by decision 45's reading of 27 September (σ ≈ 0.04 µE_h per energy); the σ-run rows and "running" mentions retired.
+- **§6, §12.** Module 05 described as the predictor of the correction in local coordinates (decision 49), with its state on 27 September; Module 06 as the generative candidate-molecule module, run 26 September, with its registered read-outs; Module 07's first build of 25 September; the pattern proposer named as stand-out work.
+- **§9, §10.** Decisions 43–50 added as items; the counts updated.
+- **§5.2.** The naphthalene⁺ price file added to the cation sources.
+- **§14.** Mackie 2015/2016, Mata & Werner 2006, Russ & Crawford 2004 and Subotnik & Head-Gordon 2005 marked as received from the supervisor and read on 20 September.
+- **Change log.** "The user" → "the student" in two dated entries; the list of markers left reduced to the header's institution-and-role marker.
+- **The 6 September original** leaves the tree (git history); the header and decision 2 say so. A number-coverage check (scratch script, 27 September) found 7 of its 377 number tokens absent from this copy, all superseded: the naphthalene pricing at 11.5 h, the 72-energy noise run, the struck P25 row.
+- **Left as is, on purpose.** The 25 September §3.5 note's placeholder (iv) for the layer-B reading of Sunday 20:00 (filled when read); the serial-sum arithmetic of §12, kept as the record of the scenario it priced, relabelled; the R0 pilot's energy-route pricing, kept as the record the 17 September note names.
