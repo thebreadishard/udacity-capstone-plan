@@ -26,6 +26,16 @@ CORE_ORBITALS = {"H": 0, "He": 0, "Li": 1, "Be": 1, "B": 1, "C": 1, "N": 1, "O":
                  "Na": 5, "Mg": 5, "Al": 5, "Si": 5, "P": 5, "S": 5, "Cl": 5, "Ar": 5}
 
 
+FIRST_PAIR_LIMIT = 1e-4      # a.u.; |mean(g+, g−) − g0| is O(h²) ≈ 1e-5 for h = 0.005 bohr; the frozen-6-of-10 run gave 2–9e-4 in plane
+ASYM_LIMIT = 2e-3            # a.u.; benzene 2.7e-4 (full) / 4.4e-5 (symmetric); the invalid naphthalene 2.2e-2
+NULL_SPACE_LIMIT_CM = 10.0   # cm⁻¹; the six projected translations/rotations must be ~0
+
+
+def pair_consistency(gp, gm, g0) -> float:
+    """max |mean(g(+k), g(−k)) − g0|: zero to O(h²) when both displaced calculations sit on the same surface as the reference."""
+    return float(np.abs(0.5 * (np.asarray(gp).ravel() + np.asarray(gm).ravel()) - np.asarray(g0).ravel()).max())
+
+
 def core_orbital_count(symbols) -> int:
     """Number of core orbitals to freeze for a frozen-core CCSD(T): one 1s per first-row atom, five per second-row atom (incident of 27 Sep 2026:
     naphthalene ran with benzene's 6 instead of its 10; six of ten quasi-degenerate carbon 1s orbitals gave inconsistent in-plane gradients)."""
@@ -117,6 +127,13 @@ def main():
             done = len([f for f in os.listdir(a.out) if f.startswith("grad_")])
             log(f"coordinate {k:2d} {sign}: E − E0 = {(e - e0) * 1e6:+9.2f} µE_h, {time.time() - t0:.0f} s  ({done}/{6 * n} gradients)")
         G[k] = (gs["p"].ravel() - gs["m"].ravel()) / (2 * a.step)
+        drift = pair_consistency(gs["p"], gs["m"], g0)
+        log(f"pair check coordinate {k:2d}: max |mean(g+, g−) − g0| = {drift:.1e} a.u. (limit {FIRST_PAIR_LIMIT:.0e})")
+        if drift > FIRST_PAIR_LIMIT:
+            log(f"PAIR CHECK FAILED at coordinate {k}: the displaced calculations are not on the reference's surface (27 Sep 2026: six of ten cores "
+                "frozen gave 2–9e-4) — stopping before more gradients are bought")
+            logf.close()
+            raise SystemExit(3)
     if partial:
         log("partial run done; merge grad_*.npy files and rerun without --ks to assemble the Hessian"); return
     spread = None
@@ -128,9 +145,17 @@ def main():
         H = 0.5 * (G + G.T); asym = float(np.abs(G - G.T).max())
     Hp, Hmw = project_tr(H, masses, x0); fr = frequencies(Hp / np.outer(np.sqrt(np.repeat(masses * AMU2AU, 3)), np.sqrt(np.repeat(masses * AMU2AU, 3))))
     fr_s = np.sort(fr)
-    np.savez(os.path.join(a.out, "hessian_ccsd_t.npz"), H_raw=H, H_projected=Hp, freq_cm=fr_s, energy=e0, gradient=g0, coords_bohr=x0, step=a.step, basis=a.basis, symmetry_reduced=bool(a.symmetry), symmetry_spread=(spread if spread is not None else -1.0), frozen=a.frozen)
+    null_space = float(np.abs(fr_s[:6]).max())
+    valid = asym <= ASYM_LIMIT and null_space <= NULL_SPACE_LIMIT_CM
+    out_name = "hessian_ccsd_t.npz" if valid else "hessian_ccsd_t_INVALID.npz"
+    np.savez(os.path.join(a.out, out_name), H_raw=H, H_projected=Hp, freq_cm=fr_s, energy=e0, gradient=g0, coords_bohr=x0, step=a.step, basis=a.basis, symmetry_reduced=bool(a.symmetry), symmetry_spread=(spread if spread is not None else -1.0), frozen=a.frozen)
     log(f"Hessian written; FD asymmetry max {asym:.2e} a.u.; frequencies (cm-1): {np.round(fr_s[6:], 0).astype(int).tolist()}")
     log(f"two-route checks: six lowest |freq| after projection {np.round(np.abs(fr_s[:6]), 1).tolist()} (translations/rotations → ~0)")
+    if not valid:
+        log(f"SELF-CHECK FAILED: asymmetry {asym:.2e} (limit {ASYM_LIMIT:.0e}) / null space {null_space:.1f} cm⁻¹ (limit {NULL_SPACE_LIMIT_CM:.0f}) — "
+            f"written as {out_name}; no read-out may run on it (guard of 27 Sep 2026)")
+        logf.close()
+        raise SystemExit(2)
     logf.close()
 
 
