@@ -49,7 +49,7 @@ def main(argv: list[str]) -> int:
         table[label] = dict(flags=flags, **cell_summary(record))
     if not table:
         return 1
-    winner = min(table, key=lambda k: table[k]["inner_mean"])
+    winner = min(table, key=lambda k: table[k]["inner_mean"] if np.isfinite(table[k]["inner_mean"]) else float("inf"))   # a diverged cell (NaN) never wins
     lines = [f"# Stage pick — {prefix}", "", "| cell | flags | n | inner term (seed mean) | per seed | (a) ratio | (a) ω | (b) ratio | (b) ω |",
              "|---|---|---|---|---|---|---|---|---|"]
     for label, t in table.items():
