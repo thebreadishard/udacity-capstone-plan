@@ -31,3 +31,12 @@ The rubric vak is the same; the pattern proposer would be a second, project-spec
 3. The VAE (or, honestly cheaper, a conditional scorer) and the acquisition rule; a pre-registration before the first run; the same rubric artefacts as
    module 06 (notebook, report, requirements).
 Estimated desk work: two to three days. Owner of the decision: the user.
+
+## Status, 27 September 2026, 03:5x (picked up on the user's word of 26 Sep 10:1x; everything below is in `PreRegistration_2026-09-26_Standout_Pattern_Proposer.md` and the ledger)
+
+- Built as `modules/standout_pattern_proposer/` (export of the corpus Δ₂ response records, banded-ℓ₁ recovery, orderings P0/P1/P2/P12/P3, `readout.py`, 7 planted tests).
+- E1 (band pool, 97 evaluation molecules): the learned order reaches the halfway point with ≈ one fifth of the fixed order's energies (S1 pass); oracle ≈ one sixteenth.
+- E2 (all pairs): the pool matters more than the order — a deck that reaches every pair ends at ρ_off 0.08/0.14 where the band deck ends at 0.53/0.47; ordering still 1.3–1.4× on K_off(0.3), P12 best, oracle ×2.6–4.
+- P2 (learned embedding on the rung-C body): stages 1–3 of the registered fair-chance search read on validation; nothing licensed either way; stage 4 at 300 molecules, stage 5 after the 28th.
+- Adaptive ordering (P0+A/P1+A/P2+A, the user: "Akkoord", 26 Sep 18:4x): built, rule corrected on the planted dry run, running on hel1-23 (band pool, ≈ Sun 11:00).
+- Still to do for the rubric: design note, notebook, report, requirements of the module; the CC-level test on the anchor's real responses after the 28th.
