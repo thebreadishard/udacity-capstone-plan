@@ -197,3 +197,23 @@ The corpus factory's hashed order for layer B put small heteroaromatic molecules
 takes the all-carbon and larger cores first, with the hash inside each class; the 290 finished molecules stay admitted; the shards are restarted at
 their next natural pause with the new manifest; the registered curve's "first 100 / 300 / 600 / 1,200 in hashed order" is then read in the new order
 and says so. Nothing changes tonight while E8 runs on the CCX53 and the four Hetzner shards continue.
+
+## Outcome of the A + A2 + B amendment — 27 September, 20:1x: points 0 and k (laptop, four threads each, 212 s and 351 s)
+
+`--split e6 --sizes all --seeds 0,1,2 --use-analytic`, records `out/E7_rungB_A2B_point0_2026-09-27.md/.json` (`--pool-layers A,A2`: pool 175 — exactly the
+registered floor's pool) and `out/E7_rungB_A2B_pointk_2026-09-27.md/.json` (`--pool-layers A,A2,B`: pool 449 = 175 + 274 layer-B molecules); hold-outs
+(a) 10 layer-A molecules, (b) 39 scaffold molecules.
+
+| point | pool | (a) ratio, seeds 0/1/2 | (a) corrected ω | (b) ratio | (b) corrected ω |
+|---|---|---|---|---|---|
+| 0: A + A2 | 175 | 0.429 / 0.435 / 0.428 | 4.79 / 4.68 / 4.68 | 0.467 / 0.458 / 0.487 | 5.13 / 4.89 / 5.46 |
+| k: A + A2 + B (274) | 449 | 0.426 / 0.428 / 0.434 | 4.60 / 4.87 / 4.62 | 0.465 / 0.466 / 0.459 | 4.86 / 5.64 / 5.17 |
+
+Point 0 reproduces the 23 September floor (0.43 / 0.47; 4.7 / 5.1). Point k differs from it by less than the three-seed spread on every read-out:
+(a) 0.431 → 0.429 and 4.72 → 4.70 cm⁻¹; (b) 0.471 → 0.463 and 5.16 → 5.22 cm⁻¹. B2 GBT: (a) 0.48, (b) 0.53 at point k.
+
+**Reading by the amendment's lines: "B adds nothing" — within the spread on both hold-outs.** The prediction (within the spread on (a), slightly
+below on (b)) is met on (a) and, for the ratio only, marginally on (b). 274 small, mostly heteroaromatic molecules added to the 175 PAH-like ones
+neither help nor hurt the ladder-like hold-outs: the pair model's local target lets the extra chemistry sit beside the PAH-like class without
+disturbing it, and it brings nothing the ladder needs. That is the second reason, after tonight's interim point, for the re-hash of layer B towards
+the PAH-like cores (decision 3, tomorrow); the next point of this curve is read after the re-hash, at +300 layer-B molecules in the new order.

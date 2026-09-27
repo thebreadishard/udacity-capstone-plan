@@ -29,7 +29,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import e6_learning_curve as E6  # noqa: E402
 import e7_t2_sqm as T2  # noqa: E402
 from e7_rungB_pairs import readouts  # noqa: E402
-from rungC_equivariant import DeltaHessianModel, load_molecule, loss_terms, to_torch  # noqa: E402
+from rungC_equivariant import BOHR2ANG, LOSS_SCALE, DeltaHessianModel, load_molecule, loss_terms, to_torch  # noqa: E402
 
 AUX_WEIGHT = 0.1
 
@@ -38,38 +38,103 @@ class Scaled(torch.nn.Module):
     """The equivariant model with a fixed output scale: the training set's RMS ΔH (build note of 27 Sep — the pair model scales its targets per class the
     same way; without it the head starts four orders of magnitude above the targets and spends its epochs shrinking). Equivariance is untouched."""
 
-    def __init__(self, model: DeltaHessianModel, scale: float):
+    def __init__(self, model: DeltaHessianModel, scale: float, class_scale=None):
         super().__init__()
         self.model, self.scale = model, float(scale)
+        self.class_scale = None if class_scale is None else [float(x) for x in class_scale]   # search stage 1 (27 Sep): per entry class (diagonal block, bonded, non-bonded)
 
-    def forward(self, Z, pos, H_low):
-        return self.model(Z, pos, H_low) * self.scale
+    def scale_tensor(self, t):
+        if self.class_scale is None:
+            return self.scale
+        s = torch.as_tensor(self.class_scale, dtype=torch.float32)[t["cls"]]      # n × n
+        return s.repeat_interleave(3, 0).repeat_interleave(3, 1)                     # 3n × 3n
+
+    def forward(self, Z, pos, H_low, t=None):
+        return self.model(Z, pos, H_low) * (self.scale if t is None else self.scale_tensor(t))
 
 
-def train_one(train_ids: list, tensors: dict, seed: int, epochs: int, lr: float = 1e-3, log=print) -> tuple[torch.nn.Module, list]:
+COV_RADIUS_ANG = {1: 0.31, 6: 0.76, 7: 0.71, 8: 0.66, 9: 0.57, 16: 1.05, 17: 1.02}
+
+
+def entry_classes(m: dict) -> torch.Tensor:
+    """n × n long tensor: 0 = the atom's own 3×3 block, 1 = a bonded pair (distance < 1.25 × the sum of covalent radii), 2 = any other pair."""
+    pos = np.asarray(m["pos"], float); Z = np.asarray(m["Z"])
+    r = np.array([COV_RADIUS_ANG.get(int(z), 0.8) for z in Z]) / BOHR2ANG
+    d = np.linalg.norm(pos[:, None, :] - pos[None, :, :], axis=-1)
+    cls = np.full(d.shape, 2, dtype=np.int64)
+    cls[d < 1.25 * (r[:, None] + r[None, :])] = 1
+    np.fill_diagonal(cls, 0)
+    return torch.as_tensor(cls)
+
+
+def _terms(model, t):
+    """Registered main term (mass-weighted Cartesian MSE) and the relative internal-ΔF term, with the per-molecule scale tensor when the model has one."""
+    pred = model(t["Z"], t["pos"], t["H_low"], t)
+    main = ((pred - t["dH_true"]) * t["mw"] * LOSS_SCALE).pow(2).mean()
+    dF_p = t["Bp"].T @ pred @ t["Bp"]
+    aux = ((dF_p - t["dF_true"]) ** 2).mean() / t["dF_norm"]        # relative internal-ΔF term (build note of 27 Sep: the raw term is ~1e9 in a.u.)
+    return main, aux, pred
+
+
+def inner_val_aux(model, tensors: dict, ids: list) -> float:
+    model.eval()
+    with torch.no_grad():
+        return float(np.mean([float(_terms(model, tensors[i])[1]) for i in ids])) if ids else float("nan")
+
+
+def train_one(train_ids: list, tensors: dict, seed: int, epochs: int, lr: float = 1e-3, log=print, aux_weight: float = AUX_WEIGHT, loss_mode: str = "registered",
+              scale_mode: str = "rms", val_ids: list | None = None, patience: int = 0) -> tuple[torch.nn.Module, list]:
+    """Defaults = the registered recipe C1 of 19:50 (27 Sep). The other values are the cells of the fair-chance search registered at 20:0x:
+    aux_weight 1.0; loss_mode 'internal' (the relative internal-ΔF term alone); scale_mode 'class' (one output scale per entry class: diagonal
+    3×3 block, bonded pair, non-bonded pair — the pair model's per-class standardisation); val_ids = inner validation molecules held out of the
+    training ids (the stage read-out), patience > 0 = early stopping on their internal term with the best state restored."""
     torch.manual_seed(seed)
     scale = float(np.sqrt(np.mean([float((tensors[i]["dH_true"] ** 2).mean()) for i in train_ids])))
-    model = Scaled(DeltaHessianModel(), scale)
+    class_scale = None
+    if scale_mode == "class":
+        sq = np.zeros(3); cnt = np.zeros(3)
+        for i in train_ids:
+            t = tensors[i]
+            c = t["cls"].repeat_interleave(3, 0).repeat_interleave(3, 1).numpy()
+            d2 = (t["dH_true"] ** 2).numpy()
+            for k in range(3):
+                sq[k] += d2[c == k].sum(); cnt[k] += (c == k).sum()
+        class_scale = np.sqrt(sq / np.maximum(cnt, 1))
+    model = Scaled(DeltaHessianModel(), scale, class_scale)
     opt = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=1e-4)
     rng = np.random.default_rng(seed)
     hist, t0 = [], time.time()
+    best, best_state, best_ep, since = float("inf"), None, 0, 0
     for ep in range(epochs):
         model.train()
         tot_main = tot_aux = 0.0
         for k in rng.permutation(len(train_ids)):
             t = tensors[train_ids[k]]
             opt.zero_grad()
-            main, _zero, pred = loss_terms(model, t)
-            dF_p = t["Bp"].T @ pred @ t["Bp"]
-            aux = ((dF_p - t["dF_true"]) ** 2).mean() / t["dF_norm"]        # relative internal-ΔF term (build note of 27 Sep: the raw term is ~1e9 in a.u.)
-            (main + AUX_WEIGHT * aux).backward()
+            main, aux, _pred = _terms(model, t)
+            (aux if loss_mode == "internal" else main + aux_weight * aux).backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), 5.0)
             opt.step()
             tot_main += float(main.detach())
             tot_aux += float(aux.detach())
-        hist.append(dict(epoch=ep + 1, main=tot_main / len(train_ids), aux=tot_aux / len(train_ids)))
+        rec = dict(epoch=ep + 1, main=tot_main / len(train_ids), aux=tot_aux / len(train_ids))
+        if val_ids:
+            rec["val_aux"] = inner_val_aux(model, tensors, val_ids)
+            if rec["val_aux"] < best - 1e-9:
+                best, best_ep, since = rec["val_aux"], ep + 1, 0
+                best_state = {k: v.detach().clone() for k, v in model.state_dict().items()}
+            else:
+                since += 1
+        hist.append(rec)
         if (ep + 1) % 10 == 0 or ep == 0 or ep + 1 == epochs:
-            log(f"    seed {seed} epoch {ep + 1}/{epochs}: loss main {hist[-1]['main']:.4g} aux {hist[-1]['aux']:.4g} ({time.time() - t0:.0f} s)")
+            log(f"    seed {seed} epoch {ep + 1}/{epochs}: loss main {rec['main']:.4g} aux {rec['aux']:.4g}" + (f" val {rec['val_aux']:.4g}" if val_ids else "") + f" ({time.time() - t0:.0f} s)")
+        if patience and val_ids and since >= patience:
+            log(f"    seed {seed}: early stop at epoch {ep + 1}, best inner val {best:.4g} at epoch {best_ep}")
+            break
+    if best_state is not None and patience:
+        model.load_state_dict(best_state)
+    model.best_epoch = best_ep if val_ids else None
+    model.class_scale_values = None if class_scale is None else [float(x) for x in class_scale]
     return model, hist
 
 
@@ -82,7 +147,7 @@ def predictor(model: torch.nn.Module, tensors: dict, mols: dict):
             t = tensors[i]
             model.eval()
             with torch.no_grad():
-                dH = model(t["Z"], t["pos"], t["H_low"]).numpy().astype(float)
+                dH = model(t["Z"], t["pos"], t["H_low"], t).numpy().astype(float)
             Bp = np.linalg.pinv(mols[i]["B"])
             cache[i] = Bp.T @ dH @ Bp
         return cache[i]
@@ -102,6 +167,11 @@ def main() -> int:
     ap.add_argument("--split", default="e6", help="e6 (default) or layerB, as in e7_rungB_pairs.py")
     ap.add_argument("--use-analytic", action="store_true")
     ap.add_argument("--smoke", action="store_true", help="5 pool molecules, 2 epochs, seed 0, hold-outs cut to 3 each: mechanics only, never a result")
+    ap.add_argument("--aux-weight", type=float, default=AUX_WEIGHT, help="search stage 1 (27 Sep 20:0x): weight of the internal term beside the Cartesian one (registered 0.1)")
+    ap.add_argument("--loss", default="registered", choices=["registered", "internal"], help="search stage 1: 'internal' = the relative internal-ΔF term alone")
+    ap.add_argument("--scale", default="rms", choices=["rms", "class"], help="search stage 1: output scale = training RMS ΔH (registered) or one per entry class")
+    ap.add_argument("--inner-val", type=float, default=0.0, help="search: fraction of the training ids held out per seed as inner validation (the stage read-out)")
+    ap.add_argument("--patience", type=int, default=0, help="search stage 2: early stopping on the inner validation term, best state restored (0 = off)")
     a = ap.parse_args()
     torch.set_num_threads(a.threads)
     t_start = time.time()
@@ -148,16 +218,18 @@ def main() -> int:
         t["Bp"] = torch.as_tensor(np.linalg.pinv(mols[i]["B"]), dtype=torch.float32)
         t["dF_true"] = t["Bp"].T @ t["dH_true"] @ t["Bp"]
         t["dF_norm"] = (t["dF_true"] ** 2).mean().clamp_min(1e-30)
+        t["cls"] = entry_classes(m)
         tensors[i] = t
     log(f"{len(mols)} molecules; pool {len(pool)}; hold-out (a) {len(test_a)}, (b) {len(test_b)} ({cores}); sizes {sizes}; seeds {seeds}; epochs {a.epochs}; "
         f"threads {a.threads}; model {sum(p.numel() for p in DeltaHessianModel().parameters()):,} parameters" + (" — SMOKE" if a.smoke else ""))
 
     tests = {"a": test_a, "b": test_b}
     res = dict(date=datetime.now().strftime("%Y-%m-%d %H:%M"), smoke=a.smoke, model="rungC_equivariant C1 (from scratch; output scaled by the training set's RMS ΔH)", n_molecules=len(mols), holdout_a=test_a,
-               holdout_b=test_b, scaffold_cores=cores, pool=len(pool), pool_ids=pool, pool_layers=a.pool_layers, sizes=sizes, seeds=seeds, epochs=a.epochs, lr=a.lr, aux_weight=AUX_WEIGHT,
+               holdout_b=test_b, scaffold_cores=cores, pool=len(pool), pool_ids=pool, pool_layers=a.pool_layers, sizes=sizes, seeds=seeds, epochs=a.epochs, lr=a.lr, aux_weight=a.aux_weight, loss=a.loss, scale=a.scale, inner_val=a.inner_val, patience=a.patience,
                substituted_analytic=substituted, curve={})
     res["zero_rule"] = {h: readouts(mols, ids, pool, lambda i: np.zeros_like(mols[i]["F_low"])) for h, ids in tests.items() if ids}
     lines = [f"# Rung C (equivariant ΔH, C1 from scratch) — {a.out_prefix} ({res['date']}){' — SMOKE, not a result' if a.smoke else ''}", "",
+             f"recipe: lr {a.lr}, epochs {a.epochs}, loss {a.loss}, aux weight {a.aux_weight}, output scale {a.scale}, inner validation {a.inner_val}, patience {a.patience}; pool layers {a.pool_layers}", "",
              "| n | seed | hold-out | ring couplings | zero | ratio | corrected ω | zero ω | ΔH residual ratio | s |", "|---|---|---|---|---|---|---|---|---|---|"]
     for n in sizes:
         tr = pool[:n]
@@ -170,9 +242,17 @@ def main() -> int:
         row = {"n": n, "per_seed": []}
         for seed in seeds:
             t1 = time.time()
-            model, hist = train_one(tr, tensors, seed, a.epochs, a.lr, log)
+            val_ids, fit_ids = [], list(tr)
+            if a.inner_val > 0:
+                perm = np.random.default_rng(1000 + seed).permutation(len(tr))
+                n_val = max(1, int(round(a.inner_val * len(tr))))
+                val_ids = [tr[k] for k in sorted(perm[:n_val])]; fit_ids = [tr[k] for k in sorted(perm[n_val:])]
+            model, hist = train_one(fit_ids, tensors, seed, a.epochs, a.lr, log, a.aux_weight, a.loss, a.scale, val_ids, a.patience)
             dF_of = predictor(model, tensors, mols)
-            out = {"seed": seed, "train_history": hist, "output_scale": model.scale, "seconds": round(time.time() - t1, 1)}
+            out = {"seed": seed, "train_history": hist, "output_scale": model.scale, "class_scale": model.class_scale_values, "seconds": round(time.time() - t1, 1),
+                   "inner_val_ids": val_ids, "inner_val_aux": (inner_val_aux(model, tensors, val_ids) if val_ids else None), "best_epoch": model.best_epoch}
+            if val_ids:
+                log(f"  n={n} seed {seed}: inner validation internal term {out['inner_val_aux']:.4g} on {len(val_ids)} molecules (fit on {len(fit_ids)})")
             for h, ids in tests.items():
                 if not ids:
                     continue
