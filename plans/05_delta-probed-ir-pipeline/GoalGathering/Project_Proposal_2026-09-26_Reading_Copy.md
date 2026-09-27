@@ -1686,7 +1686,18 @@ at naphthalene, 4 and 17 days at pyrene and coronene) is counted inside the rung
    measurement settles it for the bands it covers. Without such a number the corrections of §12 can
    be produced at this rung but not scored. The student pre-registers the scoreboard rows before any such number arrives; laboratory
    data are added before, never after, a comparison is scored
-   (`notes/Ask_Note_2026-09-13_Lead_G_Cold_Measurement.md`).
+   (`notes/Ask_Note_2026-09-13_Lead_G_Cold_Measurement.md`). *27 September, after the supervisor's
+   remark that gas-phase spectra of these molecules exist and are to be looked up:* the inventory by
+   technique is in `Relevant_Scientific_Papers.md` (section of 27 September; items 8, 50, 52, 58, 61–64,
+   94–101). For pyrene, chrysene and triphenylene between 6 and 15 µm there are argon-matrix spectra
+   (Hudgins & Sandford 1998), hot gas absorption (NIST/EPA at 8 cm⁻¹; Joblin et al. 1994 at 1 cm⁻¹ and
+   570 K for pyrene), hot emission (Cook et al. 1996, 1998; Zhang et al. 1996 in the far-IR), one
+   rotationally resolved cold band of pyrene (Brumfield et al. 2012), cold spectra at 3 µm only
+   (Maltseva et al. 2016; Huneycutt et al. 2004), and for the cations IRMPD (Oomens et al. 2000, 2003;
+   Wiersma et al. 2022) and Ne-tagged trap spectra of pyrene⁺ (Panchagnula et al. 2020); the FELIX
+   molecular-beam line has measured the acenes and the GrandPAHs, not these three. The item therefore
+   stands as a question of precision, not existence: the held sources give u_band 8.6–16 cm⁻¹ per
+   family. To ask: which source is meant, and whether that beam line could take these three molecules.
 4. A view on the intensity question (§7): positions are the promise, intensities are scored where
    a calibrated gas-phase measurement exists and reported elsewhere, and a coupled-cluster
    correction to intensities is a measured question rather than a promise. If the supervisor wants
@@ -2013,6 +2024,7 @@ The reading copy was read whole on 27 September, the day before the conversation
 - **§5.2.** The naphthalene⁺ price file added to the cation sources.
 - **§14.** Mackie 2015/2016, Mata & Werner 2006, Russ & Crawford 2004 and Subotnik & Head-Gordon 2005 marked as received from the supervisor and read on 20 September.
 - **§13 item 15 (17:1x).** The 300 cm⁻¹ exclusion traced to the three 2024 Ames papers, not to Mackie 2015/2016 (thresholds Δ = 200 cm⁻¹, W = 0; the 184 cm⁻¹ torsion in the naphthalene table); its size on the 782 cm⁻¹ band estimated from Pirali 2009's constants (≈ −0.4 cm⁻¹); the question narrowed to "since when, and bands or force constants".
+- **§13 item 3 (17:5x).** After the supervisor's remark that gas-phase spectra of pyrene, chrysene and triphenylene exist: the inventory by technique (matrix, hot cell, hot emission, cold beam, cold 3 µm, cation IRMPD and tagging) added as a dated paragraph; the item restated as a question of precision, not existence.
 - **Change log.** "The user" → "the student" in two dated entries; the list of markers left reduced to the header's institution-and-role marker.
 - **The 6 September original** leaves the tree (git history); the header and decision 2 say so. A number-coverage check (scratch script, 27 September) found 7 of its 377 number tokens absent from this copy, all superseded: the naphthalene pricing at 11.5 h, the 72-energy noise run, the struck P25 row.
 - **Left as is, on purpose.** The 25 September §3.5 note's placeholder (iv) for the layer-B reading of Sunday 20:00 (filled when read); the serial-sum arithmetic of §12, kept as the record of the scenario it priced, relabelled; the R0 pilot's energy-route pricing, kept as the record the 17 September note names.
