@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import Base from '../../layouts/Base.astro';
 import AtlasSearch from '../../components/AtlasSearch.astro';
+import { describeFlags } from '../../lib/flags';
 import catalog from '../../../../export/out/catalog.json';
 import { withBase } from '../../lib/base';
 const depDir = path.resolve('../export/out/depictions');
@@ -28,7 +29,7 @@ function svgOf(id) {
           <div class="name">{r.name}</div>
           <div class="mono muted">{r.formula ?? r.smiles}</div>
           <div><span class="chip" data-rung={r.rung}><span class="dot" aria-hidden="true"></span>{labels[r.rung]}</span></div>
-          {r.flags.length > 0 && <div class="flags muted">{r.flags.map((f) => f.replaceAll('_', ' ')).join(' · ')}</div>}
+          {r.flags.length > 0 && <div class="flags muted">{describeFlags(r.flags).map((f, i) => <>{i > 0 && ' · '}<span title={f.title}>{f.text}</span></>)}</div>}
         </a>
       </li>
     ))}
@@ -81,7 +82,8 @@ function svgOf(id) {
   mq.addEventListener('change', () => { if (!mq.matches && !peek.hidden) { peek.hidden = true; document.body.classList.remove('peek-open'); } });
 </script>
 <style>
-  .cards { list-style: none; padding: 0; margin: var(--space-6) 0 0; }
+  .cards-h { margin: var(--space-8) 0 var(--space-4); }   /* the heading sat on the search card (h2 has no top margin) — 27 Sep 2026 */
+  .cards { list-style: none; padding: 0; margin: 0; }
   .mol { padding: var(--space-3); }
   .link { color: inherit; text-decoration: none; display: grid; gap: 6px; }
   .depiction { aspect-ratio: 1; max-width: 160px; margin: 0 auto; }
