@@ -118,3 +118,34 @@ quantity that is convenient to store — is recorded here as the design rule for
 **Second, labelled prediction set — the tuned protocol (20:5x; `modules/05_support_predictor/out/E11_power_law_2026-09-25c_tuned.md`, fitted on the stage-3 curve, 45 / 100 / 175, size split unchanged from the fixed recipe).** Bare parents: ratio 1.10× per decade → **0.37 [0.35, 0.39] at 1,200** (fixed recipe's set: 1.14×, 0.39); corrected RMS 1.38× → **2.94 [2.71, 3.18] cm⁻¹** (fixed: 1.49×, 3.4). Unseen scaffolds: 1.09× → 0.42 [0.38, 0.46]; RMS 1.27× → 3.7 cm⁻¹. Size hold-out (fixed recipe only): 1.22× → 0.49. Reading of the layer-B tables: each table is read against *both* sets, each with its own recipe; the registered pass rule (≥ 1.5× per decade on the bare parents and the size hold-out, plateau ≤ 6.3 cm⁻¹) applies to the fixed recipe as written and is reported for the tuned one beside it. Neither set is changed after this line.
 
 **Reading machinery in place (21:3x).** `m05/e7_rungB_pairs.py --split layerB`: pool = admitted layer-B molecules in hashed order (`E6.sha`), hold-out (a) = all admitted layer-A molecules (42), (b) = the E6 scaffold molecules (39), (c) = admitted A2 molecules with more atoms than the largest molecule of the training set at hand (recomputed per size; its zero rule stored per size). Smoke on the 64 layer-B molecules fetched from shards 0–2 at 21:3x (60 admitted; 2 epochs, one seed — `out/E7_rungB_layerB_smoke.md`, marked SMOKE, not a number to read). The commands of the interim reading (Sunday 20:00) and of every registered table, fixed now: fixed recipe `… out/E7_rungB_layerB_<date> --use-analytic --split layerB --sizes <prefixes or all> --seeds 0,1,2`; tuned protocol the same with `--tune --tune-stage2` (stage 3 via `--tune-stage3 <stage-2 json>`); both read against both prediction sets. Data path: shards' finished molecule directories (without psi4 scratch) are fetched into `corpus/shards_layerB/s<i>/` and copied beside layers A/A2 under `corpus/molecules/`; the manifest merge (`merge_shards.py`) happens when a shard ends.
+
+## Interim (not the registered prefix) — 27 September, 18:3x: the fixed recipe on every admitted layer-B molecule finished by Sunday evening
+
+Run on the laptop at 18:33 (four threads, 231 s), after `fetch_layerB_shards.sh merge` had brought 290 finished layer-B molecules from shards 0–3
+(hel1-18, hel1-21, hel1-16, hel1-14) into the local corpus; the CCX53 shards 4 and 5 had not started (E8 still running). `m05/e7_rungB_pairs.py
+corpus/molecules out/E7_rungB_layerB_2026-09-27 --use-analytic --split layerB --sizes all --seeds 0,1,2` → **pool 274 admitted layer-B molecules**
+(16 of the 290 not admitted), hold-outs (a) 42 layer-A parents, (b) 39 scaffold molecules (fluoranthene, fluorene cores), (c) A2 molecules with more
+atoms than the largest training molecule (26); 498 molecules in all; 60 epochs, seeds 0–2. Record: `out/E7_rungB_layerB_2026-09-27.json/.md`.
+
+| hold-out | ring coupling ratio (B1 MLP, seed mean) | corrected ω RMS, cm⁻¹ (zero rule) | prediction set 1 at ≈ 300 (fixed recipe, `E11_power_law_2026-09-25b_analytic.md`) | B2 GBT ratio / ω |
+|---|---|---|---|---|
+| (a) bare parents | **0.61** | **6.18** (23.45) | 0.42 [0.42, 0.42] / 4.26 [4.20, 4.33] | 0.63 / 6.83 |
+| (b) unseen scaffolds | **0.64** | **5.60** (23.09) | 0.46 [0.45, 0.47] / 4.82 [4.64, 4.99] | 0.56 / 6.16 |
+| (c) A2 larger than the training maximum | **0.70** | **5.59** (22.85) | 0.56 [0.54, 0.57] / 5.36 [5.27, 5.46] (size split > 26 atoms) | 0.70 / 6.75 |
+
+Diagonal RMS per family on (a): C–H stretch 1.75, C–H oop 6.77, ring in-plane 7.69, other 14.16 (the A2-trained model of 23 September at 175
+molecules: 2.6 / 4.0 / 5.4 / 8.5); block RMS 1.88 against the median rule's 4.05; Duschinsky overlap 0.998; ΔH residual ratio 0.42.
+
+**Reading (interim; no verdict by the rule of 12:1x).** The point lies *above* both prediction sets on every hold-out — ratio 0.61 against 0.42 on
+the parents, 0.64 against 0.46 on the scaffolds, 0.70 against 0.56 on the size hold-out; corrected frequencies 6.2 / 5.6 / 5.6 cm⁻¹ against 4.3 /
+4.8 / 5.4 — and above the 175-molecule A2-trained model it was compared with (0.43 / 0.47; 4.7 / 5.1 cm⁻¹). The non-neural check (B2) gives the same
+picture (0.63 / 0.56 / 0.70), so it is the training set, not the optimiser. What the training set is: the 290 finished layer-B molecules have a
+median of 18 atoms (maximum 26) and 80 % carry a heteroatom, against a median of 25 atoms (maximum 30) and 57 % for the 199 finished A2 molecules
+and 21 atoms and 22 % for the parents (`corpus/manifest.csv`, read tonight) — layer B as computed so far is smaller and more heteroaromatic than
+the molecules the hold-outs score, and the corpus factory's hashed order does not put the PAH-like part of B first. The prediction sets were fitted
+on pools of A + A2 molecules that resemble the parents; the registered layer-B curve was never a prediction of the *level* at 300 but of the
+*slope* over 100 → 300 → 600 → 1,200 within layer B, and that slope is not readable from one point. What this point does say: a network trained on
+274 small, mostly heteroaromatic molecules still halves the ring-coupling error on unseen scaffolds and cuts the corrected-frequency error from 23
+to 5.6–6.2 cm⁻¹ (zero rule 23), i.e. the local-coordinate target transfers across chemistry, at a lower level than within the PAH-like class. Open
+and not decided here: whether the registered curve should be read on layer B alone (as written) or on A2 + B (a new registration), and whether
+the factory's order for layer B should be re-hashed towards the PAH-like cores — both for the user, with the tuned point beside this one.
