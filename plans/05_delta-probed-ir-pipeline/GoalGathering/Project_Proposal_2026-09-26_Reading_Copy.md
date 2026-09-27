@@ -739,7 +739,7 @@ could be produced.
    physics PAHdb's intensities rest on, computed anharmonically rather than harmonically) and a
    drawn width at the resolution and temperature of the source it is compared with, each labelled
    with its provenance.
-4. **Error budget** per band: DFT level, held-out residual, measured noise and space-freezing
+4. **Error budget** per band: DFT level, held-out residual, measured noise (at naphthalene ≈ 0.04 µE_h per energy, read 27 September under decision 45, §7 item 7) and space-freezing
    bias, the anchor's **basis-set line** (decision 26: the measured cc-pVDZ → cc-pVTZ change of
    the canonical curvature, +67 / −33 / −73 cm⁻¹ on benzene's three probed modes, two thirds of it
    at the SCF level; the literature distance of CCSD(T)/cc-pVTZ from the basis-set limit once
