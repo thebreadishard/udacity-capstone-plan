@@ -111,7 +111,7 @@ en blijkt iets anders: het paarmodel krijgt voor spiegelbeeldparen precies dezel
 en ringafstanden, en die veranderen niet onder een spiegeling. Het geeft dus vanzelf hetzelfde antwoord. Symmetrie zit in dit model ingebouwd,
 niet geleerd, en de test kon die twee nooit uit elkaar houden. Wat blijft staan: het paarmodel kent geen richtingen, alleen getallen per paar,
 en voor een correctie op de volledige krachtmatrix in de ruimte, een grootheid mét richtingen, is een **equivariant** netwerk nodig: een netwerk
-waarvan de tussenresultaten meedraaien met het molecuul. Dat netwerk ("rung C") is op 25 september gebouwd en vooraf tegen het paarmodel vastgelegd; of het vóór of na de 28ste getraind wordt, beslist de opdrachtgever. Het is de volgende versie van deze module om díe reden, en niet omdat E11.2 het zou
+waarvan de tussenresultaten meedraaien met het molecuul. Dat netwerk ("rung C") is op 25 september gebouwd en vooraf tegen het paarmodel vastgelegd, en op 27 september 's avonds voor het eerst getraind (C1, vast recept): bij 175 moleculen geen winst boven het paarmodel (ratio 0,96–1,00 tegen 0,43; het netwerk convergeert naar een bijna vaste uitvoer). Volgens de regel van 12:1x zegt dat niets over de architectuur voordat de eerlijke-kanszoektocht is gelopen (uitvoerschaling en plaats van de verliesfunctie eerst, dan leersnelheid, dan de voortraining C2); die staat geregistreerd. Het is de volgende versie van deze module om díe reden, en niet omdat E11.2 het zou
 hebben afgedwongen.
 
 ## 7. Waar het kan misgaan — en wat je bij de aftekening controleert

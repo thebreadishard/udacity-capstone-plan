@@ -56,3 +56,8 @@ The model, loader and loss exist and are tested; **the training-and-read-out dri
 
 One word: "A" or "B". With "A" I launch after the 20:00 reading with `launch_detached.sh` (hourly heartbeat, alarm file), read R1–R5 in the morning, and
 put the outcome in the pre-registration and the reading copy's §3.5 note before the conversation.
+
+*Outcome, 20:0x:* the user chose A at 19:4x; C1 ran 19:50–20:02 on the laptop (682 s). Ratio 0.96–1.00 on both hold-outs at 175, corrected ω 10.7–12.0
+cm⁻¹ — the fail side of R1–R3 under the fixed recipe; the ΔH residual ratio 0.70–0.75 says the network converges to a nearly fixed output. By the
+rule of 12:1x no sentence follows; the fair-chance search (output scaling and loss placement first) is registered in the pre-registration and waits
+for the user's word on timing. The conversation itself moved to November (18:2x), so nothing here is needed by Monday.
