@@ -11,7 +11,7 @@ repos:
     hooks:
       - id: check-ast              # syntax check on every staged Python file (tier 1 included)
       - id: check-added-large-files
-        args: ["--maxkb=1500"]  # pyVPT2 result json files are just above 1 MB; the 75 MB psi4 .out stays out
+        args: ["--maxkb=5000"]  # release sets (data/corpus_release/*.npz) are up to 4 MB (the user, 27 Sep 2026: back them up in git); the 75 MB psi4 .out stays out
       - id: check-merge-conflict
   - repo: local
     hooks:
