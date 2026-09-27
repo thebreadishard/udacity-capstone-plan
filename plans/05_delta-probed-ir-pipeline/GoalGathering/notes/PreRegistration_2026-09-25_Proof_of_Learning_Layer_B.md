@@ -149,3 +149,24 @@ on pools of A + A2 molecules that resemble the parents; the registered layer-B c
 to 5.6–6.2 cm⁻¹ (zero rule 23), i.e. the local-coordinate target transfers across chemistry, at a lower level than within the PAH-like class. Open
 and not decided here: whether the registered curve should be read on layer B alone (as written) or on A2 + B (a new registration), and whether
 the factory's order for layer B should be re-hashed towards the PAH-like cores — both for the user, with the tuned point beside this one.
+
+## Interim (not the registered prefix) — 27 September, 19:2x: the tuned protocol (stages 1 + 2) on the same 274 molecules
+
+Same pool, hold-outs, seeds and read-outs as the fixed-recipe point above; `--tune --tune-stage2` (inner validation split per seed: learning rate
+× width, then loss × optimiser); 2,817 s on four laptop threads beside the fixed run. Record: `out/E7_rungB_layerB_tuned_2026-09-27.json/.md`.
+
+| hold-out | ratio, tuned (fixed) | corrected ω RMS, tuned (fixed) | prediction set 2 at ≈ 300 (tuned protocol, `E11_power_law_2026-09-25c_tuned.md`) |
+|---|---|---|---|
+| (a) bare parents | **0.59** (0.61) | **5.85** (6.18) | 0.39 [0.38, 0.40] / 3.57 [3.43, 3.73] |
+| (b) unseen scaffolds | **0.65** (0.64) | **5.18** (5.60) | 0.44 [0.42, 0.47] / 4.29 [3.99, 4.58] |
+| (c) A2 larger than the training maximum | **0.65** (0.70) | **5.01** (5.59) | 0.56 / 5.36 (size split, fixed recipe only) |
+
+Diagonal RMS on (a), tuned: C–H stretch 1.58, C–H oop 4.86, ring in-plane 7.36, other 13.57 (fixed: 1.75 / 6.77 / 7.69 / 14.16). B2 GBT unchanged
+(it is not tuned): 0.63 / 0.56 / 0.70.
+
+**Reading (interim; no verdict).** The tuned protocol moves the level a little and in the expected direction — corrected frequencies 0.3–0.6 cm⁻¹
+lower on all three hold-outs, the size hold-out's ratio 0.70 → 0.65, the C–H out-of-plane diagonal 6.8 → 4.9 on the parents — and leaves the
+picture of the fixed-recipe point unchanged: both points lie above both prediction sets by 0.17–0.21 in the coupling ratio, for the reason given
+above (the layer-B molecules computed so far are smaller and more heteroaromatic than the hold-outs). This is the 25 September finding again: the
+recipe moves the level, not the distance to the prediction. Nothing here passes or fails the registered rule; the registered 100- and 300-tables
+follow when the hashed order is complete, and the two questions above (B alone or A2 + B; re-hash B's order) are for the user.
