@@ -9,7 +9,6 @@ this file only says what is running or waiting and who acts.*
 
 | task | why | where | next check | ends |
 |---|---|---|---|---|
-| Densification, mode 12 (4 points, decision 45) | the anchor's family reading on mode 12 needs the points between the sealed ones | laptop WSL, `probes/results_m1/naphthalene_cc-pvtz_tight_m3/`, `anchor_watch` | heartbeat in `state.sh`; commit `m1_rows.json` when the 4 points are in | point 2 of 4 on 26 Sep 11:0x; ≈ 2 more days |
 | Layer-B shards 0/1/2 | the layer-B learning curve (proof of learning; interim reading Sun 20:00, 300-table when all five shards have their first 20) | hel1-16 (shard 2, 46.62.227.91), hel1-18 (2.29.40.182), hel1-21 (2.29.45.10); `corpus/layerB_shard*of5.log` | monitor line every 10 molecules; counts 42/43/44 = 129 at 12:3x | run on; merge with `merge_shards.py` for readings |
 | Naphthalene⁺ ULNO-CCSD(T) price (obstacle 9) | the cation cost ratio c at the label level (decision 41's condition) | hel1-14 (89.167.29.36), `/root/cations/price/naphthalene/` | monitor line `PRICE naphthalene DONE`; then `cation_price_readout.py`, pre-registration outcome, reading-copy note | q = 0 done (34,121 s); q+1 running; ≈ Sun 03:00–04:00 |
 | E8 naphthalene CC Hessian (three partial runs) | locality one bond further at CC level, on a two-ring molecule | CCX53 (77.42.67.27), `/root/e8/results/naphthalene_ccpvdz/` | monitor line (verdict/finished/Traceback); 20 of 30 gradient files at 12:3x | ≈ Sun evening; then assembly + `e8_cc_locality.py` + `e8_between_extension.py` (in the chain) |
@@ -41,6 +40,7 @@ this file only says what is running or waiting and who acts.*
 4. The band-prior finding (≈ 45 % of off-diagonal power in band) — to discuss with the user before the 28th, not to act on.
 5. Standout pattern proposer at CC level: a test on the anchor's real responses (naphthalene deck) — after the 28th.
 6. Standout: adaptive ordering P0+A / P1+A / P2+A — built and dry-run 22:0x (rule corrected: optimism for untouched pairs; 7 tests); queued on hel1-23 as `band_p2s1A` right after `POOL all_p2 DONE` (chain `chain_p2s1c`), then the wide pool with p2s1; read with `readout.py` against S5 and the prediction.
+7. Anchor: the nine-point family reading on mode 12 from the sealed energies (densification done 27 Sep 01:51; `m1_rows.json` 19 rows) — desk work, before the Monday package; the laptop's 8 threads are free again (the user decides Sunday evening what runs there: rung C or nothing).
 
 ## Guards on this file
 

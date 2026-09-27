@@ -1,9 +1,9 @@
-# Probe M1 — frozen spaces — naphthalene cc-pvtz, LNO thresholds [1e-06, 1e-07], arms A, 2026-09-24 21:02, Asus18 (WSL), 8 threads
+# Probe M1 — frozen spaces — naphthalene cc-pvtz, LNO thresholds [1e-06, 1e-07], arms A, 2026-09-27 01:51, Asus18 (WSL), 8 threads
 
-- reference: 24 fragments (one per PM LMO); frozen-space hash `a4fdb8fed0989c11…`; arm C at the reference 10 s
+- reference: 24 fragments (one per PM LMO); frozen-space hash `a4fdb8fed0989c11…`; arm C at the reference 8 s
 - **stage 0 round trip** E_A(0) − E_C(0) = 0.0002 µE_h (the object reloads; target ≤ 1e-3 µE_h)
-- raw energies sealed: `m1_sealed_energies.json`, sha256 `4dc086e7942a9682…` — not printed
-- resumed 2026-09-20 19:34: reference spaces reloaded from `frozen_spaces_reference.npz`, 5 finished points kept from the interrupted run; reload test +0.0000 µE_h
+- raw energies sealed: `m1_sealed_energies.json`, sha256 `35c7884eaa3fc5d5…` — not printed
+- resumed 2026-09-24 21:24: reference spaces reloaded from `frozen_spaces_reference.npz`, 15 finished points kept from the interrupted run; reload test +0.0000 µE_h
 
 | mode | family | ω (cm⁻¹) | q | s_min occ | off-diag occ | s_min vir | off-diag vir | PM fresh | PM transported | match | A−B (µE_h) | A−C (µE_h) | B−C (µE_h) | s |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -22,6 +22,10 @@
 | 31 | CC-stretch | 1410 | +0.00 | 1.0000 | 9.7e-14 | 1.0000 | 6.8e-12 | 11.256 | 11.256 | 1.000 | — | — | — | 0 |
 | 31 | CC-stretch | 1410 | +0.50 | 0.9966 | 2.1e-03 | 0.7322 | 1.9e-01 | 11.254 | 11.254 | 1.000 | — | — | — | 43465 |
 | 31 | CC-stretch | 1410 | +1.00 | 0.9932 | 4.1e-03 | 0.5515 | 3.9e-01 | 11.249 | 11.248 | 1.000 | — | — | — | 44574 |
+| 12 | CH-oop | 785 | -0.75 | 0.9926 | 7.9e-03 | 0.4575 | 5.6e-01 | 11.256 | 11.255 | 1.000 | — | — | — | 44590 |
+| 12 | CH-oop | 785 | -0.25 | 0.9976 | 2.6e-03 | 0.7408 | 1.7e-01 | 11.256 | 11.256 | 1.000 | — | — | — | 47128 |
+| 12 | CH-oop | 785 | +0.25 | 0.9976 | 2.6e-03 | 0.7411 | 1.7e-01 | 11.256 | 11.256 | 1.000 | — | — | — | 47987 |
+| 12 | CH-oop | 785 | +0.75 | 0.9927 | 7.9e-03 | 0.4581 | 5.6e-01 | 11.256 | 11.255 | 1.000 | — | — | — | 49120 |
 
 
 No verdict is printed (the τ it would be judged against does not exist yet). Printed by probes/m1_frozen_spaces.py.
