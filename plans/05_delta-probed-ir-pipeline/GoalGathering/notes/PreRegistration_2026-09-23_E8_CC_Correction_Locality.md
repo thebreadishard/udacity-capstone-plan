@@ -158,3 +158,40 @@ benzene at cc-pVDZ on the CCX53 when its second-route lanes finish (12 gradients
 not finish in 4 h at 16 threads on hel1-16 (load stayed at 3–4: pyscf's CCSD(T) gradient is largely serial), against 11 min for benzene. So the
 CPX62 cannot help with naphthalene; the 30 symmetry-reduced gradients run on the CCX53 alone (32 dedicated cores; per-gradient time to be read
 from the benzene smoke there). hel1-16's E8 role is over; the reference gradient will be recomputed on the CCX53 as part of the run.
+
+## Outcome — naphthalene, assembled 27 September 2026 21:32 UTC (23:32 local): the Hessian is invalid, no verdict (recorded 23:4x)
+
+**Run.** 30 symmetry-unique CCSD(T)/cc-pVDZ gradients on the CCX53 in three partial runs of 10 threads (24–27 Sep, ≈ 6.7 h per gradient), plus
+two "extra" partial runs that, through a `--ks` comma-list bug (a comma list was read as coordinate indices, a slice as displacement indices),
+computed four coordinates outside the displacement list and were wasted; the main runs completed the 30. Assembly 21:32 UTC, then
+`e8_cc_locality.py` and `e8_between_extension.py` ran as armed. **Their outputs are not read**: the Hessian fails the checks that benzene passed.
+
+| check | benzene (24 Sep) | naphthalene (27 Sep) |
+|---|---|---|
+| spread of multiply-reached rows (symmetry reconstruction) | 4.4 × 10⁻⁵ a.u. | 2.2 × 10⁻² a.u. |
+| FD asymmetry max | 2.7 × 10⁻⁴ a.u. | 2.2 × 10⁻² a.u. |
+| six lowest \|ω\| after projection | 0, 0, 0, 0, 0, 0 | 7796 i, 7610 i, 5648 i, 5574 i, 0, 0 |
+
+**Diagnosis from the gradient files (23:3x, on the CCX53; two scripts, seconds each).** Per computed coordinate k the finite-difference row
+R_k = (g(+k) − g(−k)) / 2h against its symmetric partner: every in-plane row disagrees with every other by 1–4 × 10⁻² a.u.; the out-of-plane rows
+(2, 8, 11, 32, 38) agree to 5 × 10⁻³ or better. The diagonal curvatures R_k[k] are **negative** for five in-plane coordinates (−0.10, −0.41,
+−0.11, −0.21, −0.62 E_h/bohr² for coordinates 0, 9, 30, 31, 37) — impossible near a minimum — and the logged energies confirm it independently:
+(E₊ + E₋ − 2E₀)/h² gives the same negative numbers, so the energies and the gradients agree with each other and the *displaced calculations
+themselves* are inconsistent with the reference: E₊ − E₋ differs from 2h·g₀,k by 7–25 µE_h in plane (≤ 2.5 µE_h out of plane), and the mean of
+g(+k) and g(−k) differs from g₀ by 2–9 × 10⁻⁴ in plane (≤ 1 × 10⁻⁶ out of plane). Convergence thresholds are tight (SCF 10⁻¹¹, CCSD 10⁻⁹,
+no "not converged" line in any log), so this is not loose convergence. Duplicated files: none.
+
+**Probable cause: the frozen-core count.** The chain launched naphthalene with the script's default `--frozen 6` — benzene's six carbon 1s
+orbitals. Naphthalene has ten; an RHF at the reference geometry (23:4x) puts all ten within 7 mE_h (−11.2477 … −11.2404 E_h, neighbouring gaps
+down to 4 × 10⁻⁵). Freezing six of ten quasi-degenerate delocalised core orbitals is ill-defined: in-plane displacements re-mix the 1s combinations
+(all σ_h-even; out-of-plane ones couple them far less), the frozen set rotates from one displaced geometry to the next, and energies and gradients
+jump by the amounts measured. Benzene (six of six) never met this. This is the probable cause, not a proven one: the proof is one in-plane ±
+pair recomputed with `--frozen 10` (2 × ≈ 6.7 h at 10 threads) reproducing symmetric, positive curvature. **Guard (code + test, `probes/
+e8_cc_hessian_fd.py`, `tests/test_e8_frozen_guard.py`):** the frozen count is derived from the elements (one 1s per first-row atom, five per
+second-row atom) unless stated, and a stated value that differs refuses to start. The `--ks` comma-list bug is recorded here and left as is
+(the option is not used again without the fix).
+
+**What this means for E8.** The benzene verdict ("between", masked (d) reaches the win numbers) stands. Naphthalene's transfer question is
+unanswered; the 30 gradients (3.5 days of the CCX53) carry no usable Hessian. Rerunning at `--frozen 10` costs the same again on the CCX53, or ≈ 1.2
+days if the CCX53 does nothing else at 3 × 10 threads — a decision for the user (28 Sep), against layer-B shards 4/5 on the same machine, which
+start tonight as agreed. Files: `probes/results_m1/e8_naphthalene_ccpvdz/` (Hessian, logs, the locality and between outputs marked invalid).

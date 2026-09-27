@@ -22,6 +22,16 @@ AMU2AU = 1822.888486209
 HARTREE2CM = 219474.6313705
 
 
+CORE_ORBITALS = {"H": 0, "He": 0, "Li": 1, "Be": 1, "B": 1, "C": 1, "N": 1, "O": 1, "F": 1, "Ne": 1,
+                 "Na": 5, "Mg": 5, "Al": 5, "Si": 5, "P": 5, "S": 5, "Cl": 5, "Ar": 5}
+
+
+def core_orbital_count(symbols) -> int:
+    """Number of core orbitals to freeze for a frozen-core CCSD(T): one 1s per first-row atom, five per second-row atom (incident of 27 Sep 2026:
+    naphthalene ran with benzene's 6 instead of its 10; six of ten quasi-degenerate carbon 1s orbitals gave inconsistent in-plane gradients)."""
+    return sum(CORE_ORBITALS[s.capitalize()] for s in symbols)
+
+
 def gradient(symbols, coords_bohr, basis, frozen, log):
     mol = gto.M(atom=[(s.capitalize(), tuple(c)) for s, c in zip(symbols, coords_bohr)], unit="Bohr", basis=basis, symmetry=False, verbose=0, max_memory=26000)
     mf = scf.RHF(mol); mf.conv_tol = 1e-11; e_hf = mf.kernel()
@@ -55,7 +65,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("geometry"); ap.add_argument("out")
     ap.add_argument("--threads", type=int, default=16); ap.add_argument("--basis", default="cc-pvdz"); ap.add_argument("--step", type=float, default=0.005)
-    ap.add_argument("--frozen", type=int, default=6); ap.add_argument("--only-reference", action="store_true")
+    ap.add_argument("--frozen", type=int, default=None, help="core orbitals to freeze; default: derived from the elements (all 1s of first-row atoms); "
+                    "a stated value that differs from the derived one refuses to start unless --allow-frozen-mismatch")
+    ap.add_argument("--allow-frozen-mismatch", action="store_true"); ap.add_argument("--only-reference", action="store_true")
     ap.add_argument("--symmetry", action="store_true", help="displace only one atom per symmetry orbit and reconstruct the Hessian with e8_symmetry (validated 24 Sep 2026)")
     ap.add_argument("--ks", default="", help="compute only these displacement indices (comma list or a:b slice of the displacement list, e.g. 0:15) and stop before the Hessian — for splitting a run over machines; merge the grad_*.npy files and rerun without --ks to assemble")
     a = ap.parse_args(); lib.num_threads(a.threads); os.makedirs(a.out, exist_ok=True)
@@ -65,7 +77,14 @@ def main():
         line = f"[{time.strftime('%F %T')}] {s}"; print(line, flush=True); logf.write(line + "\n"); logf.flush()
 
     g = json.load(open(a.geometry)); sym = g["symbols"]; x0 = np.array(g["coords_bohr"], float); masses = np.array(g["masses_amu"]); n = len(sym)
-    log(f"E8 FD Hessian: {n} atoms, {a.basis}, frozen {a.frozen}, step {a.step} bohr, {2 * 3 * n} displacements, {a.threads} threads")
+    derived = core_orbital_count(sym)
+    if a.frozen is None:
+        a.frozen = derived
+    elif a.frozen != derived and not a.allow_frozen_mismatch:
+        raise SystemExit(f"--frozen {a.frozen} but the elements give {derived} core orbitals — refusing (guard of 27 Sep 2026: naphthalene ran with "
+                         "benzene's 6 of its 10 carbon cores and produced an invalid Hessian); pass --allow-frozen-mismatch to override on purpose")
+    log(f"E8 FD Hessian: {n} atoms, {a.basis}, frozen {a.frozen} (derived from the elements: {derived}), step {a.step} bohr, {2 * 3 * n} displacements, "
+        f"{a.threads} threads")
     ref_p = os.path.join(a.out, "reference.npz")
     if os.path.exists(ref_p):
         ref = np.load(ref_p); e0, g0 = float(ref["energy"]), ref["gradient"]

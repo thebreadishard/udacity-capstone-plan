@@ -41,7 +41,7 @@ gescoord tegen laboratoriumdata en tegen de bestaande voorspellingen, waaronder 
 3. *De correctie is lokaal in de taal van bindingen en hoeken, en daar leert het netwerk haar.* In de basis van normaaltrillingen zijn
    de koppelingen onleerbaar; in bindingen en hoeken is dezelfde correctie dun en kort van bereik, tot ongeveer twee bindingen ver, en
    daar leert het netwerk haar uit 175 moleculen, ook op ringskeletten die het nooit zag. De coupled-cluster-correctie van benzeen
-   leeft in datzelfde patroon, één binding verder dan de DFT-plaatsvervanger; de meting voor naftaleen loopt dit weekend af. In de
+   leeft in datzelfde patroon, één binding verder dan de DFT-plaatsvervanger; de meting voor naftaleen is zondagnacht geëindigd in een Hessiaan die zijn eigen controles niet doorstaat (vermoedelijk een verkeerd overgenomen frozen-core-instelling; wordt overgedaan), dus die trede blijft open. In de
    taal van frequenties is de correctie juist níét lokaal (punt 4), en of "twee bindingen" bij grote moleculen klein is, meten de
    overdrachtstoetsen van het plan; van drie proxy-toetsen op gesubstitueerde en grotere moleculen slaagden er twee en bleef één
    halverwege steken, bij draaibare zijgroepen.
