@@ -156,3 +156,21 @@ inherited from the pair model, was the second thing the recipe got wrong (the fi
 1 + 2: 0.81 against 0.43. Stage 3 (C2: QM9 pretraining, 3 passes at 0.01 s per molecule, then the fine-tune at the stage-2 flags, sizes 45 / 100 / 175)
 started 21:34; the read-out of R1–R3 on the stage-1 + 2 winner and on C2 follows it, as the amendment's rule says. Note for that read-out: the search
 cells fit on 149 molecules (26 held for the inner term), so "175" in these tables means the 175-molecule pool with the inner split, not 175 fitted.
+
+## Dated amendment 27 September 22:0x — C2's pretraining input channel (an incident, its cause, and the fix; registered before the second attempt's read-out)
+
+**Incident (21:58–22:00).** The first C2 attempt pretrained the body on the 41,645 QM9 Hessians with the H_low input channel set to zero
+("from geometry", read literally; 3 passes, 24 min, validation loss 1.8 × 10⁻⁴ = training loss). At fine-tune time, with the corpus's real B3LYP
+Hessians in that channel, the body's raw output was 10²⁰–10³⁷ (measured on three corpus molecules; 3–6 with the channel zeroed; 12–17 for a
+fresh, untrained body) and every fine-tune step was NaN from epoch 1. Cause: the invariant channel's weights (`inv`, `node_in`) were never
+constrained during pretraining and amplify real inputs. The fine-tune ran through NaN for two sizes before it was stopped by pid; its records
+were deleted, the zero-channel checkpoint is kept as `out/rungC_pretrained_2026-09-27_zerochannel.pt/.json` with its log.
+
+**Fix (two parts, both in code and tested — `tests/test_rungC_c2_channel.py`).** (1) During pretraining the H_low channel carries a geometry-only
+surrogate: a valence bond-stretch Hessian over the covalent bonds (`rungC_pretrain.bond_surrogate_hessian`, k = 0.5 E_h/bohr² heavy–heavy, 0.35
+X–H; symmetric, translationally invariant), so the channel is exercised at realistic magnitudes; the letter of C2 ("the full Hessian from geometry")
+holds — the surrogate is a function of the geometry alone — and the fine-tune input is the B3LYP Hessian as for C1. A smoke body pretrained this way
+gives 4–7 on the same three molecules. (2) Both training loops abort on the first non-finite loss (`RuntimeError`) instead of training through NaN
+— the guard the quality policy asks for after an incident. **Prediction for the second attempt** stays the registered one for C2 (0.34 / 0.37 at 175
+under the design's recipe); under tonight's stage-1 + 2 flags the honest expectation is "below the C1 winner's 0.81 / 0.84 by more than the seed
+spread if the pretraining carries, else within it". Second attempt started 22:0x (pretraining 3 passes, then the fine-tune at the stage-2 flags).

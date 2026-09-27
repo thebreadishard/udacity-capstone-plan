@@ -30,8 +30,8 @@ import torch
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-from rungC_equivariant import AMU2AU, BOHR2ANG, LOSS_SCALE, DeltaHessianModel  # noqa: E402
-from rungC_train import Scaled, entry_classes, load_pretrained_body  # noqa: E402, F401
+from rungC_equivariant import AMU2AU, BOHR2ANG, LOSS_SCALE, DeltaHessianModel, synthetic_bond_hessian  # noqa: E402
+from rungC_train import COV_RADIUS_ANG, Scaled, entry_classes, load_pretrained_body  # noqa: E402, F401
 
 HARTREE_EV = 27.211386245988
 EV_PER_ANG2_TO_AU = BOHR2ANG**2 / HARTREE_EV          # (eV/Å²) × (Å/bohr)² / (eV/hartree) = hartree/bohr²
@@ -39,14 +39,30 @@ MASS_AMU = {1: 1.00782503, 6: 12.0, 7: 14.00307401, 8: 15.99491462, 9: 18.998403
 QM9_DIR = HERE.parent / "data" / "hessian_qm9" / "hessian_qm9_DatasetDict" / "vacuum"
 
 
-def record_to_molecule(row: dict) -> dict:
-    """One Arrow row (positions Å, atomic_numbers, hessian [n,3,n,3] eV/Å²) → the loader's molecule dict in atomic units, with H_low = 0."""
+K_BOND_AU = {"heavy": 0.5, "hydrogen": 0.35}     # crude valence stretch constants (E_h/bohr²), the surrogate's only physics
+
+
+def bond_surrogate_hessian(Z: np.ndarray, pos: np.ndarray) -> np.ndarray:
+    """A geometry-only stand-in for the H_low input channel during pretraining (dated amendment of 27 Sep 22:0x): a valence bond-stretch
+    Hessian over the covalent bonds (distance < 1.25 × the sum of covalent radii), so the invariants the body reads from H_low have realistic
+    magnitudes. Without it the body learns on an all-zero channel and diverges on real B3LYP Hessians at fine-tune time (incident of 22:0x)."""
+    r = np.array([COV_RADIUS_ANG.get(int(z), 0.8) for z in Z]) / BOHR2ANG
+    d = np.linalg.norm(pos[:, None, :] - pos[None, :, :], axis=-1)
+    bonds = [(a, b, K_BOND_AU["hydrogen"] if 1 in (Z[a], Z[b]) else K_BOND_AU["heavy"])
+             for a in range(len(Z)) for b in range(a + 1, len(Z)) if d[a, b] < 1.25 * (r[a] + r[b])]
+    return synthetic_bond_hessian(pos, bonds) if bonds else np.zeros((3 * len(Z), 3 * len(Z)))
+
+
+def record_to_molecule(row: dict, hlow_channel: str = "bond") -> dict:
+    """One Arrow row (positions Å, atomic_numbers, hessian [n,3,n,3] eV/Å²) → the loader's molecule dict in atomic units. The H_low channel is the
+    bond surrogate ("bond", default since the incident of 27 Sep 22:0x) or zero ("zero", the first attempt)."""
     Z = np.asarray(row["atomic_numbers"], dtype=int)
     n = len(Z)
     pos = np.asarray(row["positions"], dtype=float) / BOHR2ANG
     H = np.asarray(row["hessian"], dtype=float).reshape(3 * n, 3 * n) * EV_PER_ANG2_TO_AU
     H = 0.5 * (H + H.T)
-    return dict(id=str(row["label"]), Z=Z, pos=pos, masses=np.array([MASS_AMU[int(z)] for z in Z]), H_low=np.zeros_like(H), dH_true=H)
+    H_low = bond_surrogate_hessian(Z, pos) if hlow_channel == "bond" else np.zeros_like(H)
+    return dict(id=str(row["label"]), Z=Z, pos=pos, masses=np.array([MASS_AMU[int(z)] for z in Z]), H_low=H_low, dH_true=H)
 
 
 def molecule_to_tensors(m: dict) -> dict:
@@ -60,7 +76,7 @@ def molecule_to_tensors(m: dict) -> dict:
     return t
 
 
-def iter_qm9(shards: list[Path], max_molecules: int | None = None, batch_rows: int = 256):
+def iter_qm9(shards: list[Path], max_molecules: int | None = None, batch_rows: int = 256, hlow_channel: str = "bond"):
     """Yield molecule dicts shard by shard without loading a whole shard's Python objects at once."""
     import pyarrow as pa
     import pyarrow.ipc as ipc
@@ -70,7 +86,7 @@ def iter_qm9(shards: list[Path], max_molecules: int | None = None, batch_rows: i
         table = ipc.open_stream(pa.memory_map(str(shard))).read_all()
         for start in range(0, table.num_rows, batch_rows):
             for row in table.slice(start, batch_rows).to_pylist():
-                yield record_to_molecule(row)
+                yield record_to_molecule(row, hlow_channel)
                 count += 1
                 if max_molecules is not None and count >= max_molecules:
                     return
@@ -117,6 +133,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--threads", type=int, default=8)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--checkpoint-every", type=int, default=5000)
+    ap.add_argument("--hlow-channel", default="bond", choices=["bond", "zero"],
+                    help="what the H_low input channel carries during pretraining: the bond surrogate (default since 27 Sep 22:0x) or zero")
     ap.add_argument("--smoke", action="store_true", help="40 molecules, 1 epoch, 2 threads: mechanics only, never a result")
     a = ap.parse_args(argv)
     if a.smoke:
@@ -134,19 +152,19 @@ def main(argv: list[str] | None = None) -> int:
     log(f"{len(shards)} shards ({', '.join(f'{k} {v}' for k, v in hashes.items())}); epochs {a.epochs}; threads {a.threads}" + (" — SMOKE" if a.smoke else ""))
 
     # pass 0: the per-class output scale from the first molecules
-    sample = [molecule_to_tensors(m) for m in iter_qm9(shards, a.scale_sample)]
+    sample = [molecule_to_tensors(m) for m in iter_qm9(shards, a.scale_sample, hlow_channel=a.hlow_channel)]
     scales = class_scales(sample)
     log(f"class scales (own block, bonded, non-bonded) from {len(sample)} molecules: {scales}")
     model = Scaled(DeltaHessianModel(), 1.0, scales)
     opt = torch.optim.AdamW(model.parameters(), lr=a.lr, weight_decay=1e-4)
     every = int(round(1.0 / a.val_fraction)) if a.val_fraction > 0 else 0
     meta = dict(date=datetime.now().strftime("%Y-%m-%d %H:%M"), command=" ".join(sys.argv), shards=hashes, epochs=a.epochs, lr=a.lr,
-                class_scale=scales, val_every=every, smoke=a.smoke, history=[])
+                class_scale=scales, val_every=every, smoke=a.smoke, hlow_channel=a.hlow_channel, history=[])
     ck_path = Path(a.out_prefix + ".pt")
     n_seen = 0
     for ep in range(a.epochs):
         tot, n_tr, val_tot, n_val, t0 = 0.0, 0, 0.0, 0, time.time()
-        for k, m in enumerate(iter_qm9(shards, a.max_molecules)):
+        for k, m in enumerate(iter_qm9(shards, a.max_molecules, hlow_channel=a.hlow_channel)):
             t = molecule_to_tensors(m)
             if every and k % every == 0:
                 model.eval()
@@ -157,6 +175,8 @@ def main(argv: list[str] | None = None) -> int:
             model.train()
             opt.zero_grad()
             loss = mw_loss(model, t)
+            if not torch.isfinite(loss):
+                raise RuntimeError(f"non-finite loss at epoch {ep + 1}, molecule {t['id']} — aborting instead of training through NaN (guard of 27 Sep)")
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), 5.0)
             opt.step()

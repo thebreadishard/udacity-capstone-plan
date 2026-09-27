@@ -27,7 +27,7 @@ def _fake_row(seed: int = 0) -> dict:
 
 def test_record_to_molecule_converts_units():
     row = _fake_row()
-    m = PT.record_to_molecule(row)
+    m = PT.record_to_molecule(row, hlow_channel="zero")                             # the unit check on the zero channel; the bond channel has its own test
     assert np.allclose(m["pos"], RC.water()["pos"])                                 # Å → bohr round trip
     H_ev = np.asarray(row["hessian"]).reshape(9, 9)
     assert np.allclose(m["dH_true"], H_ev * RC.BOHR2ANG**2 / PT.HARTREE_EV)          # eV/Å² → hartree/bohr²

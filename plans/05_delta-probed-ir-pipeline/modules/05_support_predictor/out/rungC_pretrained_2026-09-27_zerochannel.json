@@ -1,0 +1,48 @@
+{
+ "date": "2026-09-27 21:34",
+ "command": "m05/rungC_pretrain.py out/rungC_pretrained_2026-09-27 --epochs 3 --threads 8",
+ "shards": {
+  "data-00000-of-00005.arrow": "8fb0ae620ddaf83b",
+  "data-00001-of-00005.arrow": "4a5435bab3710f71",
+  "data-00002-of-00005.arrow": "2df9a6977971f0a2",
+  "data-00003-of-00005.arrow": "67cf5c6dbb9e03ab",
+  "data-00004-of-00005.arrow": "5cda6cd30270bd9c"
+ },
+ "epochs": 3,
+ "lr": 0.001,
+ "class_scale": [
+  0.2534851655553568,
+  0.12724846613361318,
+  0.006810434799983741
+ ],
+ "val_every": 50,
+ "smoke": false,
+ "history": [
+  {
+   "epoch": 1,
+   "train_loss": 0.0007221515451661528,
+   "val_loss": 0.00043179223583723306,
+   "n_train": 40812,
+   "n_val": 833,
+   "seconds": 481.2
+  },
+  {
+   "epoch": 2,
+   "train_loss": 0.00019306060849352965,
+   "val_loss": 0.00018923519022211025,
+   "n_train": 40812,
+   "n_val": 833,
+   "seconds": 480.6
+  },
+  {
+   "epoch": 3,
+   "train_loss": 0.0001779121700801288,
+   "val_loss": 0.00017594128805650108,
+   "n_train": 40812,
+   "n_val": 833,
+   "seconds": 478.7
+  }
+ ],
+ "molecules_seen": 122436,
+ "seconds": 1444.4
+}

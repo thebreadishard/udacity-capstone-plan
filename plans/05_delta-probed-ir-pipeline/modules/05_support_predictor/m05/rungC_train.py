@@ -141,7 +141,11 @@ def train_one(train_ids: list, tensors: dict, seed: int, epochs: int, lr: float 
             t = tensors[train_ids[k]]
             opt.zero_grad()
             main, aux, _pred = _terms(model, t)
-            (aux if loss_mode == "internal" else main + aux_weight * aux).backward()
+            loss = aux if loss_mode == "internal" else main + aux_weight * aux
+            if not torch.isfinite(loss):
+                raise RuntimeError(f"non-finite loss at epoch {ep + 1}, molecule {train_ids[k]} — aborting instead of training through NaN "
+                                   "(guard of 27 Sep; a diverged run is an incident, not a result)")
+            loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), 5.0)
             opt.step()
             tot_main += float(main.detach())
