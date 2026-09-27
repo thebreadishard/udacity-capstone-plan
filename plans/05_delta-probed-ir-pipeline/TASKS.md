@@ -29,7 +29,7 @@ this file only says what is running or waiting and who acts.*
 | Sat evening | module 06 notebook run done 20:0x (6 of 7 read-outs met); hel1-23 stays for the standout chains through Monday (the user, 20:3x) | done |
 | Sun 20:00 | interim layer-B reading (`e7_rungB_pairs.py … --split layerB --sizes all --seeds 0,1,2`, plain and `--tune --tune-stage2`), read against both prediction sets | me |
 | Sun evening | rung C decision; E8 naphthalene read-out if the chain finished | the user + me |
-| Mon 28 Sep | supervisor conversation; the Monday package (reading copy, cover note, two-horizon note) current as of Sunday night | me |
+| ~~Mon 28 Sep~~ → November | the supervisor has no time on Monday and moves the conversation to November (the user, 27 Sep 18:3x); the package stays current as background, and every message to her is short and plain from now on (memory rule of 18:3x); Snellius is not asked before R1 on cc-pVTZ is read; the three questions for the corridor: pyrene lab truth (which source, can the FELIX beam line take the three), the 2015 CCSD(T)/cc-pVTZ naphthalene reference, the open-shell reference for the cations | the user |
 
 ## Desk work queue (quiet hours, in order)
 
