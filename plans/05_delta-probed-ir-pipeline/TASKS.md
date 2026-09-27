@@ -41,6 +41,7 @@ this file only says what is running or waiting and who acts.*
 5. Standout pattern proposer at CC level: a test on the anchor's real responses (naphthalene deck) — after the 28th.
 6. Standout: adaptive ordering P0+A / P1+A / P2+A — built and dry-run 22:0x (rule corrected: optimism for untouched pairs; 7 tests); queued on hel1-23 as `band_p2s1A` right after `POOL all_p2 DONE` (chain `chain_p2s1c`), then the wide pool with p2s1; read with `readout.py` against S5 and the prediction.
 7. Anchor: the noise floor is read (decision 45 outcome, 02:0x); left for the Monday package: quote it in the reading copy's error budget and the pilot-note inventory (f). The laptop's 8 threads are free (the user decides Sunday evening what runs there).
+8. After the 28th, on the user's word (27 Sep 08:3x): pre-register and build (a) the wide-candidate deck with the learned order and a stop rule on ρ_off in `probes/dryrun_dft_delta_recovery.py build_deck`; (b) the cheap proxy-of-the-answer input for P2/P1 (small-basis or semi-empirical Δ) and its test on the 300 molecules; (c) stage 5 (QM9 pretraining).
 
 ## Guards on this file
 
