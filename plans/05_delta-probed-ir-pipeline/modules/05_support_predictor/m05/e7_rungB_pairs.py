@@ -298,6 +298,7 @@ def main():
     ap.add_argument("--shuffle-labels", action="store_true", help="E11.1 (25 Sep 2026): targets permuted within pair class across the pool — a control that must NOT learn")
     ap.add_argument("--dump", action="store_true", help="E11.2/3/6/7 (25 Sep 2026): per-molecule errors, pair-class breakdown, symmetry consistency, ring bond-bond terms of the seed-0 model at the full pool")
     ap.add_argument("--split", default="e6", help="e6 (default): E6 hold-outs (a) layer-A, (b) scaffolds. size:N (25 Sep 2026, size-extrapolation desk test): (a) := admitted molecules with more than N atoms, (b) := E6 scaffold hold-out with <= N atoms, pool := the rest with <= N atoms")
+    ap.add_argument("--pool-layers", default=None, help="27 Sep 2026 (rung C comparison): with split e6, keep only these layers in the pool, e.g. A,A2; default unchanged (all admitted)")
     ap.add_argument("--use-analytic", action="store_true",
                     help="23 Sep: for molecules with hessian_<tag>_analytic.npz (pyscf second route, corpus/analytic_hessians.py) use those Hessians instead of the psi4 "
                          "finite-difference ones (benzene's FD wB97X Hessian was a 133 cm-1 artefact)")
@@ -320,6 +321,9 @@ def main():
         pool = sorted((i for i in mols if nat[i] <= N and i not in set(test_b)), key=E6.sha)
         print(f"size split at {N} atoms: hold-out (a) = {len(test_a)} molecules > {N} atoms, (b) = {len(test_b)} scaffold molecules <= {N}, pool {len(pool)}", flush=True)
     nat = {i: len(m["masses"]) for i, m in mols.items()}
+    if a.split == "e6" and a.pool_layers:
+        keep = set(a.pool_layers.split(",")); pool = [i for i in pool if mols[i]["layer"] in keep]
+        print(f"pool restricted to layers {sorted(keep)}: {len(pool)} molecules", flush=True)
     if a.split == "layerB":   # 25 Sep 2026, proof-of-learning pre-registration: pool = admitted layer-B molecules in hashed order; (a) all admitted layer A, (b) E6 scaffolds, (c) A2 larger than the training set (per size)
         pool = sorted((i for i, m in mols.items() if m["layer"] == "B"), key=E6.sha)
         test_a = sorted(i for i, m in mols.items() if m["layer"] == "A")

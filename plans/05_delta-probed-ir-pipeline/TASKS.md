@@ -20,7 +20,7 @@ this file only says what is running or waiting and who acts.*
 |---|---|---|---|
 | Hetzner credit | usage ≈ €1.60/h against €300 (raised 26 Sep 11:xx) | the user raises when I warn; I warn a day ahead | Monday |
 | Anthropic Console key for module 07's LLM run | the rubric's own-model run; the deterministic policy is the reference until then | the user sets `ANTHROPIC_API_KEY` (never in chat); then `M07_LLM=1 STEWARD_MODEL=claude-sonnet-5 make_notebook.py` | when convenient |
-| Rung C decision | train the equivariant Δ-Hessian model on the pool now or after the 28th (pre-registration 25 Sep; model built and tested 25 Sep 23:1x) | the conversation of Sunday evening | Sun evening |
+| Rung C decision | train the equivariant Δ-Hessian model on the pool now or after the 28th (pre-registration 25 Sep; model built 25 Sep; driver `m05/rungC_train.py` built and smoked 27 Sep 10:0x) | the conversation of Sunday evening: memo `Decision_Memo_2026-09-27_RungC_Tonight.md` (A: C1 tonight on the laptop after the 20:00 reading, ≈ 20–30 min; B: after the 28th) | Sun evening |
 
 ## Fixed appointments
 
