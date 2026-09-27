@@ -38,10 +38,13 @@ gescoord tegen laboratoriumdata en tegen de bestaande voorspellingen, waaronder 
 2. *Het plan vangt zijn eigen fouten.* Elke afgeleide grootheid krijgt een tweede route. Zo bleek een eerste anharmonische
    berekening ruis (het pakket meldde niets), en zo werd later een foute Hessiaan in het corpus gevonden. Beide zijn een vaste
    controle geworden; de verbeteringen aan de pakketten zijn als pull requests ingediend.
-3. *De correctie is lokaal, en het netwerk leert haar.* In de basis van normaaltrillingen zijn de koppelingen onleerbaar; in
-   bindingen en hoeken is dezelfde correctie dun en lokaal, en daar leert het netwerk haar uit 175 moleculen, ook op ringskeletten
-   die het nooit zag. De coupled-cluster-correctie van benzeen leeft in datzelfde patroon, één binding verder; de meting voor
-   naftaleen is dit weekend afgerond. De lokaliteit draagt over naar gesubstitueerde en naar grotere moleculen (drie proxy-toetsen).
+3. *De correctie is lokaal in de taal van bindingen en hoeken, en daar leert het netwerk haar.* In de basis van normaaltrillingen zijn
+   de koppelingen onleerbaar; in bindingen en hoeken is dezelfde correctie dun en kort van bereik, tot ongeveer twee bindingen ver, en
+   daar leert het netwerk haar uit 175 moleculen, ook op ringskeletten die het nooit zag. De coupled-cluster-correctie van benzeen
+   leeft in datzelfde patroon, één binding verder dan de DFT-plaatsvervanger; de meting voor naftaleen loopt dit weekend af. In de
+   taal van frequenties is de correctie juist níét lokaal (punt 4), en of "twee bindingen" bij grote moleculen klein is, meten de
+   overdrachtstoetsen van het plan; van drie proxy-toetsen op gesubstitueerde en grotere moleculen slaagden er twee en bleef één
+   halverwege steken, bij draaibare zijgroepen.
 4. *Het meetplan is toetsbaar zonder nieuwe kwantumchemie.* Op het corpus, waar de volledige koppelingstabel bekend is, blijkt dat
    het dek van het voorstel buiten de band moet kijken en dat een geleerde meetvolgorde metingen bespaart; de verbreding en een
    stopregel zijn voorgeregistreerd voor na ons gesprek. Het dek in het voorstel staat nog zoals het was.
