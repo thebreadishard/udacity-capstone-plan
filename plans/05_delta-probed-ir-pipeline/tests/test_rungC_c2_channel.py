@@ -46,3 +46,16 @@ def test_non_finite_loss_aborts():
     tensors["w"]["dH_true"] = t["dH_true"] * float("nan")                        # a NaN target makes the first loss NaN
     with pytest.raises(RuntimeError, match="non-finite loss"):
         RT.train_one(["w"], tensors, seed=0, epochs=1, log=lambda s: None)
+
+
+def test_pretrained_transfer_preflight():
+    """Second incident of 27 Sep (22:4x): a body that explodes on a training molecule must be refused before fine-tuning."""
+    w = RC.water()
+    t = RC.to_torch(w)
+    tensors = {"w": t}
+    torch.manual_seed(0)
+    body = RC.DeltaHessianModel().eval()
+    worst = RT.check_pretrained_transfer(body, tensors, ["w"], limit=1e3)          # a fresh body is finite and small
+    assert 0 < worst < 1e3
+    with pytest.raises(RuntimeError, match="does not transfer"):
+        RT.check_pretrained_transfer(body, tensors, ["w"], limit=worst / 2)        # the same body against a limit below its output

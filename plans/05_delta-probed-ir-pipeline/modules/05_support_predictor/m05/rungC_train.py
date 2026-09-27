@@ -102,6 +102,24 @@ def load_pretrained_body(path: str | Path, reinit_head: bool = True, seed: int =
     return model
 
 
+def check_pretrained_transfer(body: torch.nn.Module, tensors: dict, ids: list, limit: float = 1e3) -> float:
+    """Pre-flight before fine-tuning a pretrained body (incident of 27 Sep 22:4x: a body pretrained on QM9 was finite on 12–18-atom molecules and
+    1e15–1e18 on 23-atom fused rings). Runs the body on every training molecule; raises if any raw output is non-finite or above `limit` (a fresh
+    body gives 15–35 on the corpus). Returns the worst |output|."""
+    worst, worst_id = 0.0, None
+    with torch.no_grad():
+        for mid in ids:
+            t = tensors[mid]
+            out = body(t["Z"], t["pos"], t["H_low"])
+            m = float(out.abs().max()) if torch.isfinite(out).all() else float("inf")
+            if m > worst:
+                worst, worst_id = m, mid
+    if worst > limit:
+        raise RuntimeError(f"pretrained body output {worst:.3g} on {worst_id} exceeds {limit:g} before fine-tuning — the body does not transfer to "
+                           "this molecule size/density (pre-flight of 27 Sep; fine-tuning it would diverge)")
+    return worst
+
+
 def inner_val_aux(model, tensors: dict, ids: list) -> float:
     model.eval()
     with torch.no_grad():
@@ -129,6 +147,8 @@ def train_one(train_ids: list, tensors: dict, seed: int, epochs: int, lr: float 
                 cnt[k] += (c == k).sum()
         class_scale = np.sqrt(sq / np.maximum(cnt, 1))
     body = load_pretrained_body(pretrained, reinit_head=True, seed=seed) if pretrained else DeltaHessianModel()
+    if pretrained:
+        log(f"  pretrained body pre-flight: worst |output| {check_pretrained_transfer(body, tensors, train_ids):.3g} on the training molecules")
     model = Scaled(body, scale, class_scale)
     opt = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=1e-4)
     rng = np.random.default_rng(seed)

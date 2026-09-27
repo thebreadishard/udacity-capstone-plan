@@ -174,3 +174,46 @@ gives 4–7 on the same three molecules. (2) Both training loops abort on the fi
 — the guard the quality policy asks for after an incident. **Prediction for the second attempt** stays the registered one for C2 (0.34 / 0.37 at 175
 under the design's recipe); under tonight's stage-1 + 2 flags the honest expectation is "below the C1 winner's 0.81 / 0.84 by more than the seed
 spread if the pretraining carries, else within it". Second attempt started 22:0x (pretraining 3 passes, then the fine-tune at the stage-2 flags).
+
+## Dated amendment 27 September 22:4x — second C2 incident: the pretrained body does not transfer across molecule size; C2 as registered stops here tonight
+
+**What happened.** The second attempt (bond-surrogate channel) pretrained cleanly (3 passes, validation loss 7.7e-4 → 1.9e-4 → 1.8e-4, 1716 s) and the
+fine-tune ran at 45 and at 100 for seeds 0–1; the non-finite guard of 22:0x fired at n = 100 seed 2, epoch 1, on A2_1fa81d01d6 (carbazole+SH, 23
+atoms), and the chain ended without a read at 175. Every fine-tune's first epoch had a main loss of order 10²⁶ before Adam pulled it down.
+
+**Measured cause (22:4x, four corpus molecules, pretrained body with a fresh head; the fresh body for comparison).** Max |raw output|:
+
+| molecule | atoms | mean / max neighbours within the 5 Å cutoff | body on the real H_low | body on the bond surrogate | fresh body |
+|---|---|---|---|---|---|
+| benzene | 12 | 11 / 11 | 0.85 | 0.84 | 16 |
+| naphthalene | 18 | – | 1.07 | 1.07 | 28 |
+| carbazole+SH (A2_1fa81d01d6) | 23 | 15 / 21 | 1.3 × 10¹⁸ | 2.2 × 10¹⁵ | 35 |
+| A2_13bafae8e0 | 23 | – | 6.5 × 10¹⁷ | 1.2 × 10¹⁵ | 36 |
+
+The pair invariants of the real and surrogate channels have the same magnitude (max 1.5–1.6 either way), so the 22:0x diagnosis ("the channel") was
+only half the story: the body's interaction blocks aggregate neighbour messages by **sum** (`index_add`, residual, no normalisation) and its weights,
+tuned on QM9's neighbourhoods, amplify the denser neighbourhoods of 23-atom fused rings by fifteen orders of magnitude. A fresh body has no such
+weights. This is a size/density transfer failure of the pretraining, not of the fine-tune recipe.
+
+**Partial C2 read-outs before the abort (recorded, not a stage-3 result; the rule needs 175):**
+- `n=45 seed 0 (a): ring couplings 3.24 vs zero 3.76 (ratio 0.86) | corrected ω 9.66 (zero 23.29) | ΔH residual ratio 0.656`
+- `n=45 seed 0 (b): ring couplings 3.29 vs zero 3.74 (ratio 0.88) | corrected ω 9.57 (zero 23.09) | ΔH residual ratio 0.646`
+- `n=45 seed 1 (a): ring couplings 3.62 vs zero 3.76 (ratio 0.96) | corrected ω 10.52 (zero 23.29) | ΔH residual ratio 0.715`
+- `n=45 seed 1 (b): ring couplings 3.62 vs zero 3.74 (ratio 0.97) | corrected ω 10.49 (zero 23.09) | ΔH residual ratio 0.730`
+- `n=45 seed 2 (a): ring couplings 3.67 vs zero 3.76 (ratio 0.98) | corrected ω 10.33 (zero 23.29) | ΔH residual ratio 0.724`
+- `n=45 seed 2 (b): ring couplings 3.68 vs zero 3.74 (ratio 0.98) | corrected ω 10.30 (zero 23.09) | ΔH residual ratio 0.740`
+- `n=100 seed 0 (a): ring couplings 3.04 vs zero 3.76 (ratio 0.81) | corrected ω 9.51 (zero 23.29) | ΔH residual ratio 0.617`
+- `n=100 seed 0 (b): ring couplings 3.16 vs zero 3.74 (ratio 0.85) | corrected ω 9.08 (zero 23.09) | ΔH residual ratio 0.610`
+- `n=100 seed 1 (a): ring couplings 3.12 vs zero 3.76 (ratio 0.83) | corrected ω 9.67 (zero 23.29) | ΔH residual ratio 0.626`
+- `n=100 seed 1 (b): ring couplings 3.20 vs zero 3.74 (ratio 0.86) | corrected ω 9.25 (zero 23.09) | ΔH residual ratio 0.627`
+
+At 100 molecules C2 sits where the stage-1 + 2 winner sits at 175 (0.81 / 0.84) — suggestive, not readable under the rule.
+
+**Guard added (code + test, `check_pretrained_transfer`, `tests/test_rungC_c2_channel.py`).** Before any fine-tune from a pretrained body the driver
+runs the body on every training molecule and refuses if a raw output is non-finite or above 10³; the pre-flight result is logged.
+
+**What follows is a decision, not a run.** To give C2 its fair chance the body needs neighbour-count normalisation (mean aggregation or a norm in the
+interaction blocks) — a change to the registered architecture that C1 must then share for the comparison to hold: re-run the stage-1 + 2 winner and
+C2 under the same body (≈ 40 min + 27 min pretraining + 40 min fine-tune). Until that is decided, the rule of the 20:0x amendment is not reached:
+no sentence about directions and context at 175 may be written, in either direction. Records: `out/E7_rungC_s3_2026-09-27.log`,
+`out/rungC_pretrained_2026-09-27.json` (checkpoint kept, ignored by git as `*.pt`).
