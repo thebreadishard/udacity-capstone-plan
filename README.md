@@ -182,3 +182,8 @@ These outlived every pivot and are the most portable thing here:
   decision behind the change; corrections are appended, never rewritten.
 - **Stopping is a result.** A ladder that halts at a measured limit is reported as that limit, not quietly
   extended; long runs log their progress hourly and can be resumed.
+
+## Licence
+
+Code (Python, shell, web sources, tests): MIT, see `LICENSE`. Documents, notes, plans, figures and computed data (geometries, Hessians,
+frequencies, run records, release sets): CC BY 4.0, see `LICENSE-DATA.md`. Decided 27 September 2026.
