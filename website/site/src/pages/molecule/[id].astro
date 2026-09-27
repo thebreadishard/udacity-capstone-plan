@@ -108,4 +108,21 @@ const notifyHref = `https://github.com/thebreadishard/spectrum-atlas/issues/new?
   .steps .mark { color: var(--accent); }
   .tablewrap { overflow-x: auto; }
   @media (max-width: 900px) { .cols { grid-template-columns: 1fr; } }
+  /* tablets (addendum 27 Sep 2026) */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .cols { grid-template-columns: 1fr; gap: var(--space-6); }
+    .side { grid-template-columns: 1fr 1fr; gap: var(--space-6); align-items: start; }      /* Structure beside the ladder; the request card spans */
+    .side > section:nth-child(3) { grid-column: 1 / -1; }
+    .depiction { max-width: 300px; }
+    .head h1 { font-size: 2rem; }
+  }
+  @media (min-width: 1024px) and (max-width: 1279px) {
+    .cols { grid-template-columns: minmax(300px, 2fr) 3fr; gap: var(--space-6); }
+    .side { position: sticky; top: 76px; max-height: calc(100dvh - 92px); overflow: auto; }   /* the ladder stays in view while the modes scroll */
+  }
+  @media (min-width: 768px) and (max-width: 1279px) {
+    .steps { gap: 10px; }
+    .steps li { min-height: 32px; }
+    .tablewrap { -webkit-overflow-scrolling: touch; }
+  }
 </style>

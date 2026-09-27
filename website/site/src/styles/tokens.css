@@ -68,3 +68,24 @@ td.num, th.num { text-align: right; font-family: var(--font-mono); font-variant-
 .ladder .step .l { font-size: 0.85rem; color: var(--fg-muted); }
 .visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+/* Tablet variant (design addendum 27 Sep 2026, §6a): 768–1279 px, touch first. Portrait tablets (768–1023) keep the desktop navigation but get
+   roomier type, taller rows and full-row search; landscape tablets (1024–1279) get the desktop columns with a sticky side column and, on the
+   atlas, a master–detail peek panel. Nothing here changes phones (< 768) or desktops (≥ 1280). */
+@media (min-width: 768px) and (max-width: 1279px) {
+  html { font-size: 16px; }
+  .container { width: min(1180px, 100% - 48px); }
+  .card { padding: var(--space-6); }
+  .chip { padding: 6px 14px; font-size: 0.9rem; min-height: 32px; }
+  table { font-size: 1rem; }
+  th, td { padding: 10px 12px; }
+  .ladder { grid-template-columns: repeat(3, 1fr); gap: var(--space-3); }
+  .grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--space-4); }
+}
+@media (min-width: 1024px) and (max-width: 1279px) { .ladder { grid-template-columns: repeat(6, 1fr); } }
+/* Touch: every control reaches 44 CSS px whatever the width (WCAG 2.5.8 target size, the design's mobile rule applied to every coarse pointer). */
+@media (pointer: coarse) {
+  button, select, input[type="search"], nav a, .chip a { min-height: 44px; }
+  nav a { display: inline-flex; align-items: center; }
+  a { text-underline-offset: 3px; }
+}

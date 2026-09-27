@@ -33,7 +33,53 @@ function svgOf(id) {
       </li>
     ))}
   </ul>
+  <aside id="peek" class="peek" hidden aria-label="Molecule preview">
+    <div class="peek-bar">
+      <button type="button" id="peek-close" aria-label="Close the preview">✕ Close</button>
+      <a id="peek-open" href="#">Open the full page →</a>
+    </div>
+    <div id="peek-body" class="peek-body" tabindex="0" aria-live="polite"></div>
+  </aside>
 </Base>
+<script>
+  // Tablet master–detail (addendum 27 Sep 2026): on landscape tablets a tap on a molecule opens its page beside the list; Back or Close returns.
+  const mq = window.matchMedia('(min-width: 1024px) and (max-width: 1279px)');
+  const peek = document.getElementById('peek') as HTMLElement;
+  const body = document.getElementById('peek-body') as HTMLElement;
+  const open = document.getElementById('peek-open') as HTMLAnchorElement;
+  const close = document.getElementById('peek-close') as HTMLButtonElement;
+  const cache = new Map<string, { html: string; styles: string }>();
+  async function show(href: string, push: boolean) {
+    let got = cache.get(href);
+    if (!got) {
+      body.innerHTML = '<p class="muted">Loading…</p>';
+      const doc = new DOMParser().parseFromString(await (await fetch(href)).text(), 'text/html');
+      const main = doc.getElementById('main');
+      got = { html: main ? main.innerHTML : '<p>Could not load this page.</p>', styles: Array.from(doc.querySelectorAll('style, link[rel="stylesheet"]')).map((s) => s.outerHTML).join('') };   // production builds link their CSS; scoped by Astro, safe to add
+      cache.set(href, got);
+    }
+    body.innerHTML = got.styles + got.html;
+    body.querySelectorAll('script').forEach((s) => s.remove());       // islands (3D) run on the full page, not in the preview
+    open.href = href;
+    peek.hidden = false; document.body.classList.add('peek-open');
+    body.scrollTop = 0; body.focus({ preventScroll: true });
+    if (push) history.pushState({ peek: href }, '', href);
+  }
+  function hide(pop: boolean) {
+    peek.hidden = true; document.body.classList.remove('peek-open');
+    if (!pop && history.state && history.state.peek) history.back();
+  }
+  document.addEventListener('click', (e) => {
+    if (!mq.matches) return;
+    const a = (e.target as HTMLElement).closest('a[href*="/molecule/"]') as HTMLAnchorElement | null;
+    if (!a || a === open || peek.contains(a) || e.metaKey || e.ctrlKey || e.button !== 0) return;
+    e.preventDefault(); show(a.href, true);
+  });
+  close.addEventListener('click', () => hide(false));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !peek.hidden) hide(false); });
+  window.addEventListener('popstate', (e) => { if (e.state && e.state.peek && mq.matches) show(e.state.peek, false); else if (!peek.hidden) hide(true); });
+  mq.addEventListener('change', () => { if (!mq.matches && !peek.hidden) { peek.hidden = true; document.body.classList.remove('peek-open'); } });
+</script>
 <style>
   .cards { list-style: none; padding: 0; margin: var(--space-6) 0 0; }
   .mol { padding: var(--space-3); }
@@ -43,4 +89,23 @@ function svgOf(id) {
   .flags { font-size: 0.8rem; }
   .mol:hover { border-color: var(--accent); }
   @container (max-width: 240px) { .depiction { max-width: 120px; } }
+  /* tablets (addendum 27 Sep 2026): three cards across on portrait, four on landscape, whole-card tap targets */
+  @media (min-width: 768px) and (max-width: 1023px) { .cards { grid-template-columns: repeat(3, 1fr); } }
+  @media (min-width: 1024px) and (max-width: 1279px) { .cards { grid-template-columns: repeat(4, 1fr); } }
+  .peek { display: none; }
+  @media (min-width: 1024px) and (max-width: 1279px) {
+    .peek { display: grid; grid-template-rows: auto 1fr; position: fixed; top: 60px; right: 0; bottom: 0; width: min(58vw, 720px); background: var(--bg-elev);
+            border-left: 1px solid var(--line); box-shadow: -12px 0 32px oklch(0 0 0 / 0.12); z-index: 6; }
+    .peek[hidden] { display: none; }
+    .peek-bar { display: flex; align-items: center; gap: var(--space-4); padding: var(--space-2) var(--space-4); border-bottom: 1px solid var(--line); }
+    .peek-bar button { font: inherit; min-height: 44px; padding: 8px 14px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--fg); cursor: pointer; }
+    .peek-bar a { margin-left: auto; min-height: 44px; display: inline-flex; align-items: center; }
+    .peek-body { overflow: auto; padding: var(--space-4) var(--space-6) var(--space-12); overscroll-behavior: contain; }
+    :global(body.peek-open main) { padding-right: min(58vw, 720px); transition: padding-right 160ms ease; }
+    :global(body.peek-open) .cards { grid-template-columns: repeat(2, 1fr); }
+    :global(#peek-body .cols) { grid-template-columns: 1fr; }                 /* the molecule page stacks inside the panel */
+    :global(#peek-body .side) { position: static; max-height: none; grid-template-columns: 1fr 1fr; align-items: start; }
+    :global(#peek-body .side > section:nth-child(3)) { grid-column: 1 / -1; }
+    :global(#peek-body .crumb) { display: none; }
+  }
 </style>
