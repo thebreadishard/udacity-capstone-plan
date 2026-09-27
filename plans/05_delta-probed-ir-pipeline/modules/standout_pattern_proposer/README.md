@@ -3,7 +3,7 @@
 **Status (27 September 2026).** Built 26 September on the user's word, pre-registered before the first run
 (`../../GoalGathering/notes/PreRegistration_2026-09-26_Standout_Pattern_Proposer.md`, with dated amendments and a running outcome record). Two
 registered experiments read (E1 band pool, E2 all pairs), the fair-chance search for the learned representation read through stage 3, the adaptive
-ordering read on the band pool; the wide pool with the stage-1 recipe and the adaptive variants on the wide pool are running on hel1-23. Design note:
+ordering read on the band pool; the wide pool with the stage-1 recipe read 27 September 15:2x (P2 a little better than the scorer; S2 met on the parents only; `paired_readout.py`); the adaptive variants on the wide pool are running on hel1-23 (≈ Monday morning). Design note:
 `DESIGN_2026-09-27.md`. Notebook and report: to follow (desk work after the Monday package).
 
 ## The question
