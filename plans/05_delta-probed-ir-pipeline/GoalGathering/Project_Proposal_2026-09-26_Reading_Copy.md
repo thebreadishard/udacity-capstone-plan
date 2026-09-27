@@ -1757,7 +1757,16 @@ number or a source the plan would use, none changes a rule by itself):
     (5.45 cm⁻¹, Esposito et al. 2024, a mean over the modes) and none at R1.
 15. Whether excluding modes below 300 cm⁻¹ from the VPT2 in that protocol drops their couplings
     to the 6–15 µm fundamentals entirely, or only their own bands — relevant to how the Δ₂ = 0 null
-    row of this pipeline, which keeps them, is read against line B.
+    row of this pipeline, which keeps them, is read against line B. *Read 27 September (local PDFs):*
+    the rule is stated in the three 2024 Ames papers held (J. Chem. Phys. 160, 211101 and 114312;
+    MNRAS Lett. 531, L87: modes below 300 cm⁻¹ "excluded from the VPT2 treatment due to known issues
+    in accurately describing their potential energy surfaces"), not in Mackie 2015/2016, whose
+    SPECTRO thresholds are Δ = 200 cm⁻¹ and W = 0 and whose naphthalene table carries the 184 cm⁻¹
+    torsion. If the exclusion removes those modes' cubic constants, every fundamental loses
+    ½ Σ_j x_ij over them: for naphthalene's 782 cm⁻¹ band about −0.4 cm⁻¹ by the constants of
+    Pirali et al. 2009 (x₄₆,₄₈ ≈ −0.35, x₄₆,₁₃ ≈ −0.5; ν₄₈ = 166 and ν₁₃ = 195 cm⁻¹ are the two modes
+    below 300). Left to ask: since when, and whether the removal is of the modes' own bands or of
+    their force constants.
 
 *On the ladder and the programme.*
 
@@ -2003,6 +2012,7 @@ The reading copy was read whole on 27 September, the day before the conversation
 - **§9, §10.** Decisions 43–50 added as items; the counts updated.
 - **§5.2.** The naphthalene⁺ price file added to the cation sources.
 - **§14.** Mackie 2015/2016, Mata & Werner 2006, Russ & Crawford 2004 and Subotnik & Head-Gordon 2005 marked as received from the supervisor and read on 20 September.
+- **§13 item 15 (17:1x).** The 300 cm⁻¹ exclusion traced to the three 2024 Ames papers, not to Mackie 2015/2016 (thresholds Δ = 200 cm⁻¹, W = 0; the 184 cm⁻¹ torsion in the naphthalene table); its size on the 782 cm⁻¹ band estimated from Pirali 2009's constants (≈ −0.4 cm⁻¹); the question narrowed to "since when, and bands or force constants".
 - **Change log.** "The user" → "the student" in two dated entries; the list of markers left reduced to the header's institution-and-role marker.
 - **The 6 September original** leaves the tree (git history); the header and decision 2 say so. A number-coverage check (scratch script, 27 September) found 7 of its 377 number tokens absent from this copy, all superseded: the naphthalene pricing at 11.5 h, the 72-energy noise run, the struck P25 row.
 - **Left as is, on purpose.** The 25 September §3.5 note's placeholder (iv) for the layer-B reading of Sunday 20:00 (filled when read); the serial-sum arithmetic of §12, kept as the record of the scenario it priced, relabelled; the R0 pilot's energy-route pricing, kept as the record the 17 September note names.

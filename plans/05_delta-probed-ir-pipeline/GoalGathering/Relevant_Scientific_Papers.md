@@ -684,3 +684,22 @@ resolved laboratory lines. What was found, and what each source gives:
 
 Consequence: TASKS row 11 no longer says "the reference is to be found first"; the pre-registration can name items 53 and 89. Question for the
 supervisor on Monday, if wanted: whether she holds the Hollenstein 1990 full text (ETH group) or prefers another benzene hot-band source.
+
+## 27 September 2026, 17:1x — §13 item 15, the 300 cm⁻¹ exclusion (author; the local PDFs of items 12 and the 2024 Ames papers)
+
+- **Where the rule is stated.** Esposito et al. 2024, J. Chem. Phys. 160, 211101 (C–H overtones of benzene and naphthalene): "Due to known trouble in
+  accurately computing vibrational modes with frequencies below 300 cm⁻¹, these modes are removed from the SPECTRO VPT2 treatment." Esposito et al.
+  2024, J. Chem. Phys. 160, 114312 (phenylacetylene): "Vibrational modes with frequencies below 300 cm⁻¹ are excluded from the SPECTRO VPT2
+  calculation. This method has been described previously in greater detail" (refs 15–19, 21, 25 = Esposito 2023–2024 and Mackie 2015–2021).
+  Esposito et al. 2024, MNRAS Lett. 531, L87 (cyano-PAHs): the 200 cm⁻¹ window "(Mackie et al. 2015b)"; modes below 300 cm⁻¹ "excluded from the
+  VPT2 treatment due to known issues in accurately describing their potential energy surfaces."
+- **Where it is not.** Mackie et al. 2015 (JCP 143, 224314) and 2016 (JCP 145, 084313) state the SPECTRO thresholds — energy separation Δ = 200 cm⁻¹,
+  interaction strength W set to zero after missed resonances were found at W = 10 cm⁻¹, symmetry enforced by a separate subroutine — and no
+  low-frequency cut; the 2015 naphthalene table lists mode 47 (a_u, two-ring torsion) at 183.92 cm⁻¹ among the anharmonic fundamentals. Mackie et al.
+  2018 (JCP 149, 134302, the cascade paper) treats hindered methyl rotations at the harmonic level and lowers Δ to 25 cm⁻¹ below 2000 cm⁻¹ for the
+  cascade; no 300 cm⁻¹ rule. Mulas et al. 2018 (AnharmoniCaOs) has no such cut.
+- **What it can cost.** A fundamental's anharmonic shift is 2x_ii + ½ Σ_j x_ij; removing modes below 300 cm⁻¹ from the treatment removes their
+  x_ij from every scored band if their cubic constants go with them. Naphthalene has two such modes, ν₄₈ (166 cm⁻¹) and ν₁₃ (195 cm⁻¹); Pirali et al.
+  2009 (item 53) give x₄₆,₄₈ ≈ −0.3 to −0.4 (measured spacing / model) and x₄₆,₁₃ = −0.5 (model, before the ν₄₃ resonance), so the 782 cm⁻¹ band would
+  lose about −0.4 cm⁻¹ — the same order as the line-B-versus-laboratory residuals the proposal quotes at R1. Whether SPECTRO drops the constants or
+  only the bands is not stated in any of the five papers; that is the question that remains for the supervisor (§13 item 15, sharpened today).
