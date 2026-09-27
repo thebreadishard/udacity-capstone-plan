@@ -40,7 +40,7 @@ this file only says what is running or waiting and who acts.*
 4. The band-prior finding (≈ 45 % of off-diagonal power in band) — to discuss with the user before the 28th, not to act on.
 5. Standout pattern proposer at CC level: a test on the anchor's real responses (naphthalene deck) — after the 28th.
 6. Standout: adaptive ordering P0+A / P1+A / P2+A — built and dry-run 22:0x (rule corrected: optimism for untouched pairs; 7 tests); queued on hel1-23 as `band_p2s1A` right after `POOL all_p2 DONE` (chain `chain_p2s1c`), then the wide pool with p2s1; read with `readout.py` against S5 and the prediction.
-7. Anchor: the nine-point family reading on mode 12 from the sealed energies (densification done 27 Sep 01:51; `m1_rows.json` 19 rows) — desk work, before the Monday package; the laptop's 8 threads are free again (the user decides Sunday evening what runs there: rung C or nothing).
+7. Anchor: the noise floor is read (decision 45 outcome, 02:0x); left for the Monday package: quote it in the reading copy's error budget and the pilot-note inventory (f). The laptop's 8 threads are free (the user decides Sunday evening what runs there).
 
 ## Guards on this file
 
