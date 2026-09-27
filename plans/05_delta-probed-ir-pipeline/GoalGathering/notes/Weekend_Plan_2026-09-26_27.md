@@ -28,3 +28,16 @@ Contact stays open through remote control; a ping only when Helsinki needs the u
 
 ## What I will not do without the user
 Create or delete servers; spend beyond the credit; publish; replace the pair model inside the running layer-B curve; start rang C training before Sunday's decision.
+
+## Status, 27 September 10:0x (dated; the table above is left as planned)
+
+- Fri 18:00 route 2 / cations: done (route 2 read 25 Sep 17:1x; cation chain ran to its end 27 Sep 01:35 — both prices on record).
+- Fri 19:00 tuned stages 2–3: stage 2 read 26 Sep (ledger); stage 3 run on the CCX53 chain.
+- Fri 21:10 module 06 seed 0: done; seeds 1–2 and the full notebook run followed (26 Sep 20:0x; 6 of 7 read-outs).
+- Sat morning E8 naphthalene: **moved** — 29 of 30 gradients at 27 Sep 08:5x, the last one running; read-out when the chain finishes (Sunday).
+- Sat evening CCX53 / shard 3: the CCX53 stays for E8; shard 3 started on hel1-14 instead (27 Sep 08:37) after the cations; hel1-23 (a sixth server) carried the standout pools.
+- Sun shard 4 on hel1-14: superseded by shard 3 on hel1-14; shard 4 is not started before the 28th (the user, 26 Sep).
+- Sun 20:00 interim reading: on schedule; fetch + merge scripted, command rehearsed (233 molecules at 08:5x).
+- Sun evening rung C decision: memo written (`Decision_Memo_2026-09-27_RungC_Tonight.md`); the training driver is being built today so that option A is possible.
+- Levers: 1 (proof of learning) on track for 20:00; 2 (label price) done for the cations, L2b tiers not run (the CCX53 stayed on E8); 3 (infrastructure) REPRODUCE extended and audited clean 27 Sep; 4 (rung C readiness) built, driver in progress; 5 (robustness) two orphan kinds found and guarded, poller rebuilt; 6 (communication) package updated three times, two blog posts on the user's word.
+- Added, not planned: the standout pattern proposer (E1, E2, the fair-chance search stages 1–3, the adaptive variants, module artefacts), decision 45's noise floor, module 06 complete.
