@@ -12,15 +12,23 @@ const LABEL: Record<string, FlagView> = {
   screen_flagged: { text: 'large B3LYP → ωB97X shift, screened', title: 'The two functionals differ by more than 80 cm⁻¹ on some frequency, which sent the molecule to the analytic second route (screen of 23 Sep 2026).' },
 };
 
-/** Turn the catalog's flag list into displayable phrases; 'disagrees' + 'replaced' collapse into one causal phrase. */
+/** Display order = the order in which the checks happen: the functional screen (23 Sep) first, then the analytic check, then the release
+ *  decision. Screen + disagrees + replaced form one chronological story and collapse into one arrowed phrase. */
+const ORDER = ['screen_flagged', 'imaginary_mode_under_review', 'second_route_healed', 'imaginary_mode_genuine', 'second_route_agrees',
+               'second_route_disagrees', 'replaced_by_second_route'];
+
 export function describeFlags(flags: string[]): FlagView[] {
   const set = new Set(flags);
   const out: FlagView[] = [];
   if (set.has('second_route_disagrees') && set.has('replaced_by_second_route')) {
-    out.push({ text: 'finite-difference Hessian was noisy → release uses the analytic Hessian',
-               title: LABEL.second_route_disagrees.title + ' ' + LABEL.replaced_by_second_route.title });
-    set.delete('second_route_disagrees'); set.delete('replaced_by_second_route');
+    const steps = set.has('screen_flagged') ? ['screened (large B3LYP → ωB97X shift)'] : [];
+    const titles = set.has('screen_flagged') ? [LABEL.screen_flagged.title] : [];
+    steps.push('finite-difference Hessian was noisy', 'release uses the analytic Hessian');
+    titles.push(LABEL.second_route_disagrees.title, LABEL.replaced_by_second_route.title);
+    out.push({ text: steps.join(' → '), title: titles.join(' ') });
+    for (const f of ['screen_flagged', 'second_route_disagrees', 'replaced_by_second_route']) set.delete(f);
   }
-  for (const f of flags) if (set.has(f)) out.push(LABEL[f] ?? { text: f.replaceAll('_', ' '), title: f });
+  const rest = [...ORDER.filter((f) => set.has(f)), ...flags.filter((f) => set.has(f) && !ORDER.includes(f))];
+  for (const f of rest) out.push(LABEL[f] ?? { text: f.replaceAll('_', ' '), title: f });
   return out;
 }
