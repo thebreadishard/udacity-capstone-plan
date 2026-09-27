@@ -20,7 +20,8 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+if hasattr(sys.stdout, "reconfigure"):   # not inside a notebook kernel
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 from pp import core as C  # noqa: E402
 from pp import embed_scorer as E  # noqa: E402
 from pp import scorer as S  # noqa: E402

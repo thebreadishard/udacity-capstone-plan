@@ -1,0 +1,737 @@
+{
+ "date": "2026-09-27 08:56",
+ "molecules": 289,
+ "splits": {
+  "eval": {
+   "A": 0,
+   "A2": 40,
+   "B": 16
+  },
+  "eval_parents": {
+   "A": 41,
+   "A2": 0,
+   "B": 0
+  },
+  "train": {
+   "A": 0,
+   "A2": 131,
+   "B": 40
+  },
+  "val": {
+   "A": 0,
+   "A2": 15,
+   "B": 6
+  }
+ },
+ "live_molecule": {
+  "id": "B_056dec31a6",
+  "M": 27,
+  "curves": {
+   "P0 (hashed)": {
+    "final_rho_off": 0.49538511821447295,
+    "k_off_0p3": null
+   },
+   "P1 (hand-feature scorer)": {
+    "final_rho_off": 0.4955490547329071,
+    "k_off_0p3": null
+   },
+   "P3 (oracle)": {
+    "final_rho_off": 0.49548109940381063,
+    "k_off_0p3": null
+   }
+  }
+ },
+ "validation": [
+  {
+   "read": "stage 2",
+   "recipe": "p2",
+   "spearman": 0.611,
+   "spearman_min": 0.6089,
+   "spearman_max": 0.6133,
+   "mse": 0.3461,
+   "p10_out_of_band": 0.426,
+   "p10_in_band": 0.358
+  },
+  {
+   "read": "stage 2",
+   "recipe": "p2s2_huber",
+   "spearman": 0.6382,
+   "spearman_min": 0.6308,
+   "spearman_max": 0.6452,
+   "mse": 0.3226,
+   "p10_out_of_band": 0.472,
+   "p10_in_band": 0.396
+  },
+  {
+   "read": "stage 2",
+   "recipe": "p2s2_rank",
+   "spearman": 0.6397,
+   "spearman_min": 0.6358,
+   "spearman_max": 0.6418,
+   "mse": 0.3338,
+   "p10_out_of_band": 0.468,
+   "p10_in_band": 0.384
+  },
+  {
+   "read": "stage 3",
+   "recipe": "P1",
+   "spearman": 0.5821,
+   "spearman_min": 0.5804,
+   "spearman_max": 0.5844,
+   "mse": 0.3807,
+   "p10_out_of_band": 0.432,
+   "p10_in_band": 0.39
+  },
+  {
+   "read": "stage 3",
+   "recipe": "p2s1_lr1e-3_w128",
+   "spearman": 0.6362,
+   "spearman_min": 0.6237,
+   "spearman_max": 0.6443,
+   "mse": 0.3263,
+   "p10_out_of_band": 0.47,
+   "p10_in_band": 0.377
+  },
+  {
+   "read": "stage 3",
+   "recipe": "p2s3_b5",
+   "spearman": 0.6425,
+   "spearman_min": 0.64,
+   "spearman_max": 0.6441,
+   "mse": 0.3191,
+   "p10_out_of_band": 0.475,
+   "p10_in_band": 0.404
+  },
+  {
+   "read": "stage 3",
+   "recipe": "p2s3_b3v",
+   "spearman": 0.6422,
+   "spearman_min": 0.6368,
+   "spearman_max": 0.6479,
+   "mse": 0.3201,
+   "p10_out_of_band": 0.477,
+   "p10_in_band": 0.396
+  },
+  {
+   "read": "stage 3",
+   "recipe": "p2s3_b5v",
+   "spearman": 0.6478,
+   "spearman_min": 0.6438,
+   "spearman_max": 0.6506,
+   "mse": 0.3154,
+   "p10_out_of_band": 0.479,
+   "p10_in_band": 0.411
+  }
+ ],
+ "n_half_ratios": [
+  {
+   "experiment": "E1 band pool",
+   "split": "eval_parents",
+   "ordering": "P12_seed0",
+   "median_n_half_ratio": 0.171
+  },
+  {
+   "experiment": "E1 band pool",
+   "split": "eval_parents",
+   "ordering": "P12_seed1",
+   "median_n_half_ratio": 0.2
+  },
+  {
+   "experiment": "E1 band pool",
+   "split": "eval_parents",
+   "ordering": "P12_seed2",
+   "median_n_half_ratio": 0.16
+  },
+  {
+   "experiment": "E1 band pool",
+   "split": "eval_parents",
+   "ordering": "P1_seed0",
+   "median_n_half_ratio": 0.175
+  },
+  {
+   "experiment": "E1 band pool",
+   "split": "eval_parents",
+   "ordering": "P1_seed1",
+   "median_n_half_ratio": 0.2
+  },
+  {
+   "experiment": "E1 band pool",
+   "split": "eval_parents",
+   "ordering": "P1_seed2",
+   "median_n_half_ratio": 0.185
+  },
+  {
+   "experiment": "E1 band pool",
+   "split": "eval_parents",
+   "ordering": "P2_seed0",
+   "median_n_half_ratio": 0.2
+  },
+  {
+   "experiment": "E1 band pool",
+   "split": "eval_parents",
+   "ordering": "P2_seed1",
+   "median_n_half_ratio": 0.214
+  },
+  {
+   "experiment": "E1 band pool",
+   "split": "eval_parents",
+   "ordering": "P2_seed2",
+   "median_n_half_ratio": 0.206
+  },
+  {
+   "experiment": "E1 band pool",
+   "split": "eval_parents",
+   "ordering": "P3_oracle",
+   "median_n_half_ratio": 0.056
+  },
+  {
+   "experiment": "E1 band pool",
+   "split": "eval",
+   "ordering": "P12_seed0",
+   "median_n_half_ratio": 0.174
+  },
+  {
+   "experiment": "E1 band pool",
+   "split": "eval",
+   "ordering": "P12_seed1",
+   "median_n_half_ratio": 0.167
+  },
+  {
+   "experiment": "E1 band pool",
+   "split": "eval",
+   "ordering": "P12_seed2",
+   "median_n_half_ratio": 0.167
+  },
+  {
+   "experiment": "E1 band pool",
+   "split": "eval",
+   "ordering": "P1_seed0",
+   "median_n_half_ratio": 0.2
+  },
+  {
+   "experiment": "E1 band pool",
+   "split": "eval",
+   "ordering": "P1_seed1",
+   "median_n_half_ratio": 0.169
+  },
+  {
+   "experiment": "E1 band pool",
+   "split": "eval",
+   "ordering": "P1_seed2",
+   "median_n_half_ratio": 0.174
+  },
+  {
+   "experiment": "E1 band pool",
+   "split": "eval",
+   "ordering": "P2_seed0",
+   "median_n_half_ratio": 0.203
+  },
+  {
+   "experiment": "E1 band pool",
+   "split": "eval",
+   "ordering": "P2_seed1",
+   "median_n_half_ratio": 0.253
+  },
+  {
+   "experiment": "E1 band pool",
+   "split": "eval",
+   "ordering": "P2_seed2",
+   "median_n_half_ratio": 0.203
+  },
+  {
+   "experiment": "E1 band pool",
+   "split": "eval",
+   "ordering": "P3_oracle",
+   "median_n_half_ratio": 0.071
+  },
+  {
+   "experiment": "E2 all pairs",
+   "split": "eval_parents",
+   "ordering": "P12_seed0",
+   "median_n_half_ratio": 0.455
+  },
+  {
+   "experiment": "E2 all pairs",
+   "split": "eval_parents",
+   "ordering": "P12_seed1",
+   "median_n_half_ratio": 0.571
+  },
+  {
+   "experiment": "E2 all pairs",
+   "split": "eval_parents",
+   "ordering": "P12_seed2",
+   "median_n_half_ratio": 0.545
+  },
+  {
+   "experiment": "E2 all pairs",
+   "split": "eval_parents",
+   "ordering": "P1_seed0",
+   "median_n_half_ratio": 0.571
+  },
+  {
+   "experiment": "E2 all pairs",
+   "split": "eval_parents",
+   "ordering": "P1_seed1",
+   "median_n_half_ratio": 0.63
+  },
+  {
+   "experiment": "E2 all pairs",
+   "split": "eval_parents",
+   "ordering": "P1_seed2",
+   "median_n_half_ratio": 0.6
+  },
+  {
+   "experiment": "E2 all pairs",
+   "split": "eval_parents",
+   "ordering": "P2_seed0",
+   "median_n_half_ratio": 0.611
+  },
+  {
+   "experiment": "E2 all pairs",
+   "split": "eval_parents",
+   "ordering": "P2_seed1",
+   "median_n_half_ratio": 0.667
+  },
+  {
+   "experiment": "E2 all pairs",
+   "split": "eval_parents",
+   "ordering": "P2_seed2",
+   "median_n_half_ratio": 0.611
+  },
+  {
+   "experiment": "E2 all pairs",
+   "split": "eval_parents",
+   "ordering": "P3_oracle",
+   "median_n_half_ratio": 0.182
+  },
+  {
+   "experiment": "E2 all pairs",
+   "split": "eval",
+   "ordering": "P12_seed0",
+   "median_n_half_ratio": 0.4
+  },
+  {
+   "experiment": "E2 all pairs",
+   "split": "eval",
+   "ordering": "P12_seed1",
+   "median_n_half_ratio": 0.444
+  },
+  {
+   "experiment": "E2 all pairs",
+   "split": "eval",
+   "ordering": "P12_seed2",
+   "median_n_half_ratio": 0.4
+  },
+  {
+   "experiment": "E2 all pairs",
+   "split": "eval",
+   "ordering": "P1_seed0",
+   "median_n_half_ratio": 0.431
+  },
+  {
+   "experiment": "E2 all pairs",
+   "split": "eval",
+   "ordering": "P1_seed1",
+   "median_n_half_ratio": 0.471
+  },
+  {
+   "experiment": "E2 all pairs",
+   "split": "eval",
+   "ordering": "P1_seed2",
+   "median_n_half_ratio": 0.444
+  },
+  {
+   "experiment": "E2 all pairs",
+   "split": "eval",
+   "ordering": "P2_seed0",
+   "median_n_half_ratio": 0.5
+  },
+  {
+   "experiment": "E2 all pairs",
+   "split": "eval",
+   "ordering": "P2_seed1",
+   "median_n_half_ratio": 0.578
+  },
+  {
+   "experiment": "E2 all pairs",
+   "split": "eval",
+   "ordering": "P2_seed2",
+   "median_n_half_ratio": 0.452
+  },
+  {
+   "experiment": "E2 all pairs",
+   "split": "eval",
+   "ordering": "P3_oracle",
+   "median_n_half_ratio": 0.2
+  },
+  {
+   "experiment": "band pool + adaptive",
+   "split": "eval_parents",
+   "ordering": "P0A",
+   "median_n_half_ratio": 0.824
+  },
+  {
+   "experiment": "band pool + adaptive",
+   "split": "eval_parents",
+   "ordering": "P12_seed0",
+   "median_n_half_ratio": 0.143
+  },
+  {
+   "experiment": "band pool + adaptive",
+   "split": "eval_parents",
+   "ordering": "P12_seed1",
+   "median_n_half_ratio": 0.162
+  },
+  {
+   "experiment": "band pool + adaptive",
+   "split": "eval_parents",
+   "ordering": "P12_seed2",
+   "median_n_half_ratio": 0.174
+  },
+  {
+   "experiment": "band pool + adaptive",
+   "split": "eval_parents",
+   "ordering": "P1A_seed0",
+   "median_n_half_ratio": 0.176
+  },
+  {
+   "experiment": "band pool + adaptive",
+   "split": "eval_parents",
+   "ordering": "P1A_seed1",
+   "median_n_half_ratio": 0.2
+  },
+  {
+   "experiment": "band pool + adaptive",
+   "split": "eval_parents",
+   "ordering": "P1A_seed2",
+   "median_n_half_ratio": 0.174
+  },
+  {
+   "experiment": "band pool + adaptive",
+   "split": "eval_parents",
+   "ordering": "P1_seed0",
+   "median_n_half_ratio": 0.175
+  },
+  {
+   "experiment": "band pool + adaptive",
+   "split": "eval_parents",
+   "ordering": "P1_seed1",
+   "median_n_half_ratio": 0.2
+  },
+  {
+   "experiment": "band pool + adaptive",
+   "split": "eval_parents",
+   "ordering": "P1_seed2",
+   "median_n_half_ratio": 0.185
+  },
+  {
+   "experiment": "band pool + adaptive",
+   "split": "eval_parents",
+   "ordering": "P2A_seed0",
+   "median_n_half_ratio": 0.222
+  },
+  {
+   "experiment": "band pool + adaptive",
+   "split": "eval_parents",
+   "ordering": "P2A_seed1",
+   "median_n_half_ratio": 0.2
+  },
+  {
+   "experiment": "band pool + adaptive",
+   "split": "eval_parents",
+   "ordering": "P2A_seed2",
+   "median_n_half_ratio": 0.239
+  },
+  {
+   "experiment": "band pool + adaptive",
+   "split": "eval_parents",
+   "ordering": "P2_seed0",
+   "median_n_half_ratio": 0.225
+  },
+  {
+   "experiment": "band pool + adaptive",
+   "split": "eval_parents",
+   "ordering": "P2_seed1",
+   "median_n_half_ratio": 0.204
+  },
+  {
+   "experiment": "band pool + adaptive",
+   "split": "eval_parents",
+   "ordering": "P2_seed2",
+   "median_n_half_ratio": 0.261
+  },
+  {
+   "experiment": "band pool + adaptive",
+   "split": "eval_parents",
+   "ordering": "P3_oracle",
+   "median_n_half_ratio": 0.056
+  },
+  {
+   "experiment": "band pool + adaptive",
+   "split": "eval",
+   "ordering": "P0A",
+   "median_n_half_ratio": 0.791
+  },
+  {
+   "experiment": "band pool + adaptive",
+   "split": "eval",
+   "ordering": "P12_seed0",
+   "median_n_half_ratio": 0.172
+  },
+  {
+   "experiment": "band pool + adaptive",
+   "split": "eval",
+   "ordering": "P12_seed1",
+   "median_n_half_ratio": 0.15
+  },
+  {
+   "experiment": "band pool + adaptive",
+   "split": "eval",
+   "ordering": "P12_seed2",
+   "median_n_half_ratio": 0.185
+  },
+  {
+   "experiment": "band pool + adaptive",
+   "split": "eval",
+   "ordering": "P1A_seed0",
+   "median_n_half_ratio": 0.2
+  },
+  {
+   "experiment": "band pool + adaptive",
+   "split": "eval",
+   "ordering": "P1A_seed1",
+   "median_n_half_ratio": 0.161
+  },
+  {
+   "experiment": "band pool + adaptive",
+   "split": "eval",
+   "ordering": "P1A_seed2",
+   "median_n_half_ratio": 0.169
+  },
+  {
+   "experiment": "band pool + adaptive",
+   "split": "eval",
+   "ordering": "P1_seed0",
+   "median_n_half_ratio": 0.2
+  },
+  {
+   "experiment": "band pool + adaptive",
+   "split": "eval",
+   "ordering": "P1_seed1",
+   "median_n_half_ratio": 0.169
+  },
+  {
+   "experiment": "band pool + adaptive",
+   "split": "eval",
+   "ordering": "P1_seed2",
+   "median_n_half_ratio": 0.174
+  },
+  {
+   "experiment": "band pool + adaptive",
+   "split": "eval",
+   "ordering": "P2A_seed0",
+   "median_n_half_ratio": 0.193
+  },
+  {
+   "experiment": "band pool + adaptive",
+   "split": "eval",
+   "ordering": "P2A_seed1",
+   "median_n_half_ratio": 0.18
+  },
+  {
+   "experiment": "band pool + adaptive",
+   "split": "eval",
+   "ordering": "P2A_seed2",
+   "median_n_half_ratio": 0.276
+  },
+  {
+   "experiment": "band pool + adaptive",
+   "split": "eval",
+   "ordering": "P2_seed0",
+   "median_n_half_ratio": 0.206
+  },
+  {
+   "experiment": "band pool + adaptive",
+   "split": "eval",
+   "ordering": "P2_seed1",
+   "median_n_half_ratio": 0.187
+  },
+  {
+   "experiment": "band pool + adaptive",
+   "split": "eval",
+   "ordering": "P2_seed2",
+   "median_n_half_ratio": 0.276
+  },
+  {
+   "experiment": "band pool + adaptive",
+   "split": "eval",
+   "ordering": "P3_oracle",
+   "median_n_half_ratio": 0.071
+  }
+ ],
+ "paired_adaptive": {
+  "eval_parents": {
+   "P0A vs P0": {
+    "n": 41,
+    "n_half_better": 0.7073170731707317,
+    "n_half_equal": 0.07317073170731707,
+    "median_n_half_ratio": 0.8235294117647058,
+    "auc_better": 0.9512195121951219,
+    "median_auc_ratio": 0.9177681083624217
+   },
+   "P1A_seed0 vs P1_seed0": {
+    "n": 41,
+    "n_half_better": 0.24390243902439024,
+    "n_half_equal": 0.6341463414634146,
+    "median_n_half_ratio": 1.0,
+    "auc_better": 1.0,
+    "median_auc_ratio": 0.9094819129798009
+   },
+   "P1A_seed1 vs P1_seed1": {
+    "n": 41,
+    "n_half_better": 0.2926829268292683,
+    "n_half_equal": 0.5609756097560976,
+    "median_n_half_ratio": 1.0,
+    "auc_better": 0.9512195121951219,
+    "median_auc_ratio": 0.9063967065524254
+   },
+   "P1A_seed2 vs P1_seed2": {
+    "n": 41,
+    "n_half_better": 0.3902439024390244,
+    "n_half_equal": 0.5121951219512195,
+    "median_n_half_ratio": 1.0,
+    "auc_better": 0.975609756097561,
+    "median_auc_ratio": 0.8976137086520183
+   },
+   "P2A_seed0 vs P2_seed0": {
+    "n": 41,
+    "n_half_better": 0.2682926829268293,
+    "n_half_equal": 0.6585365853658537,
+    "median_n_half_ratio": 1.0,
+    "auc_better": 1.0,
+    "median_auc_ratio": 0.9206478766007082
+   },
+   "P2A_seed1 vs P2_seed1": {
+    "n": 41,
+    "n_half_better": 0.3170731707317073,
+    "n_half_equal": 0.6585365853658537,
+    "median_n_half_ratio": 1.0,
+    "auc_better": 0.975609756097561,
+    "median_auc_ratio": 0.9240602025457867
+   },
+   "P2A_seed2 vs P2_seed2": {
+    "n": 41,
+    "n_half_better": 0.3170731707317073,
+    "n_half_equal": 0.6585365853658537,
+    "median_n_half_ratio": 1.0,
+    "auc_better": 0.9512195121951219,
+    "median_auc_ratio": 0.9109870818588198
+   }
+  },
+  "eval": {
+   "P0A vs P0": {
+    "n": 56,
+    "n_half_better": 0.8928571428571429,
+    "n_half_equal": 0.017857142857142856,
+    "median_n_half_ratio": 0.7912885662431942,
+    "auc_better": 0.9642857142857143,
+    "median_auc_ratio": 0.9256257799694753
+   },
+   "P1A_seed0 vs P1_seed0": {
+    "n": 56,
+    "n_half_better": 0.125,
+    "n_half_equal": 0.7857142857142857,
+    "median_n_half_ratio": 1.0,
+    "auc_better": 0.9642857142857143,
+    "median_auc_ratio": 0.9357318358667838
+   },
+   "P1A_seed1 vs P1_seed1": {
+    "n": 56,
+    "n_half_better": 0.25,
+    "n_half_equal": 0.6785714285714286,
+    "median_n_half_ratio": 1.0,
+    "auc_better": 0.9821428571428571,
+    "median_auc_ratio": 0.9334404088378816
+   },
+   "P1A_seed2 vs P1_seed2": {
+    "n": 56,
+    "n_half_better": 0.21428571428571427,
+    "n_half_equal": 0.6964285714285714,
+    "median_n_half_ratio": 1.0,
+    "auc_better": 0.9642857142857143,
+    "median_auc_ratio": 0.9309729693995376
+   },
+   "P2A_seed0 vs P2_seed0": {
+    "n": 56,
+    "n_half_better": 0.35714285714285715,
+    "n_half_equal": 0.5892857142857143,
+    "median_n_half_ratio": 1.0,
+    "auc_better": 0.9821428571428571,
+    "median_auc_ratio": 0.9447136797949525
+   },
+   "P2A_seed1 vs P2_seed1": {
+    "n": 56,
+    "n_half_better": 0.2857142857142857,
+    "n_half_equal": 0.6607142857142857,
+    "median_n_half_ratio": 1.0,
+    "auc_better": 0.9821428571428571,
+    "median_auc_ratio": 0.9354724142937811
+   },
+   "P2A_seed2 vs P2_seed2": {
+    "n": 56,
+    "n_half_better": 0.25,
+    "n_half_equal": 0.6964285714285714,
+    "median_n_half_ratio": 1.0,
+    "auc_better": 0.9821428571428571,
+    "median_auc_ratio": 0.9412634570161963
+   }
+  }
+ },
+ "deck_cost": {
+  "eval_parents": {
+   "n_molecules": 41,
+   "median_M": 57.0,
+   "band_deck_energies": 1360.0,
+   "wide_pool_energies": 6614.0,
+   "band_deck_final_rho_off": 0.5303645049024595,
+   "wide_pool_final_rho_off": 0.0756780039672562,
+   "band_P0_reaches_0p3": 1,
+   "wide_P0_reaches_0p3": 38,
+   "wide_K_off_0p3_P0": 2951.0,
+   "wide_K_off_0p3_P0_n": 38,
+   "wide_K_off_0p3_P0_over_band_deck": 2.1698529411764707,
+   "wide_K_off_0p3_P12": 1831.0,
+   "wide_K_off_0p3_P12_n": 38,
+   "wide_K_off_0p3_P12_over_band_deck": 1.3463235294117648,
+   "wide_K_off_0p3_P1": 2232.0,
+   "wide_K_off_0p3_P1_n": 38,
+   "wide_K_off_0p3_P1_over_band_deck": 1.6411764705882352,
+   "wide_K_off_0p3_oracle": 608.0,
+   "wide_K_off_0p3_oracle_n": 38,
+   "wide_K_off_0p3_oracle_over_band_deck": 0.4470588235294118
+  },
+  "eval": {
+   "n_molecules": 56,
+   "median_M": 64.5,
+   "band_deck_energies": 1686.0,
+   "wide_pool_energies": 8448.0,
+   "band_deck_final_rho_off": 0.47071500538073796,
+   "wide_pool_final_rho_off": 0.14236668894019494,
+   "band_P0_reaches_0p3": 3,
+   "wide_P0_reaches_0p3": 43,
+   "wide_K_off_0p3_P0": 3528.0,
+   "wide_K_off_0p3_P0_n": 43,
+   "wide_K_off_0p3_P0_over_band_deck": 2.092526690391459,
+   "wide_K_off_0p3_P12": 2560.0,
+   "wide_K_off_0p3_P12_n": 43,
+   "wide_K_off_0p3_P12_over_band_deck": 1.5183867141162515,
+   "wide_K_off_0p3_P1": 2928.0,
+   "wide_K_off_0p3_P1_n": 43,
+   "wide_K_off_0p3_P1_over_band_deck": 1.7366548042704626,
+   "wide_K_off_0p3_oracle": 1120.0,
+   "wide_K_off_0p3_oracle_n": 43,
+   "wide_K_off_0p3_oracle_over_band_deck": 0.66429418742586
+  }
+ },
+ "summary": "On the band pool the learned order reaches the halfway point with 0.17 (parents) / 0.17 (substituted) of the fixed order's energies (oracle 0.06 / 0.07); on the all-pairs pool the fixed order itself ends at \u03c1_off 0.08 where the band deck ends at 0.53, and the learned order reaches 0.3 at 1.35\u00d7 the whole band deck (oracle 0.45\u00d7). Feedback during measurement helps the blind order and not the scorer's halfway point; the gap to the oracle is knowledge. Stages 1\u20133 of the fair-chance search moved the validation Spearman from 0.611 to 0.648 (P1 0.582); nothing about the learned representation is licensed before stage 5."
+}

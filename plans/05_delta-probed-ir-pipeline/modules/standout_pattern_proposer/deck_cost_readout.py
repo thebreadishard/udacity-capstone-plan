@@ -16,7 +16,8 @@ from pathlib import Path
 
 import numpy as np
 
-sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+if hasattr(sys.stdout, "reconfigure"):   # not inside a notebook kernel
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 
 def main() -> int:
