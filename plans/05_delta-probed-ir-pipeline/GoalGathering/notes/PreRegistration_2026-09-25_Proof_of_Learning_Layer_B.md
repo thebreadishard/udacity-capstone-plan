@@ -170,3 +170,30 @@ picture of the fixed-recipe point unchanged: both points lie above both predicti
 above (the layer-B molecules computed so far are smaller and more heteroaromatic than the hold-outs). This is the 25 September finding again: the
 recipe moves the level, not the distance to the prediction. Nothing here passes or fails the registered rule; the registered 100- and 300-tables
 follow when the hashed order is complete, and the two questions above (B alone or A2 + B; re-hash B's order) are for the user.
+
+## Dated amendment 27 September, 19:5x — a second, labelled curve on A + A2 + B (the user: "2: akkoord"; registered before it runs)
+
+**Why.** The interim point of tonight showed that layer B as computed so far (small, mostly heteroaromatic) trains a model that scores the
+ladder-like hold-outs worse than the A + A2 pool did. The registered curve (layer B alone, slope over 100 → 300 → 600 → 1,200) is unchanged and
+keeps its verdict. Beside it, a second curve answers the mandate's question directly — *does adding layer B to the PAH-like pool help the ladder?*
+
+**Definition.** `m05/e7_rungB_pairs.py corpus/molecules out/E7_rungB_A2B_<date> --use-analytic --split e6 --sizes all --seeds 0,1,2` with
+`--pool-layers A,A2` (point 0: the PAH-like pool alone, every admitted A and A2 molecule outside the E6 hold-outs) and with `--pool-layers A,A2,B`
+(point k: the same plus every admitted layer-B molecule at that date). E6 hold-outs (a) the 10 layer-A molecules of 19 September and (b) the 39
+scaffold molecules; the fixed recipe; three seeds; the same read-outs. The curve is indexed by the number of layer-B molecules in the pool
+(tonight ≈ 274; then at the registered 300 / 600 / 1,200 as they come). Each point is a `--sizes all` run of minutes on the laptop.
+
+**Lines.** *B helps the ladder:* point k lies below point 0 on the ring-coupling ratio and the corrected-frequency RMS on both hold-outs by more
+than the three-seed spread. *B adds nothing:* within the spread. *B hurts:* above the spread — then the order of layer B (decision 3, tomorrow) is
+the first lever, and the registered layer-B curve is read as a transfer curve across chemistry, not as the ladder's curve.
+**Prediction:** tonight's point lies within the spread of point 0 on (a) and slightly below on (b) (the scaffold hold-out is closer to layer B's
+chemistry); after the re-hash, the +300 point lies below point 0 on both. **Order of work:** point 0 and tonight's point k run after the rung C
+training finishes (the laptop is not shared); read against these lines; the result goes below this amendment.
+
+## Dated amendment 27 September, 19:5x — the order of layer B is re-hashed towards the PAH-like cores tomorrow (the user: "3: morgen")
+
+The corpus factory's hashed order for layer B put small heteroaromatic molecules first (median 18 atoms, 80 % with a heteroatom among the first
+290). Tomorrow, 28 September, in a dated amendment of the corpus design and this note: a new order for the *not yet computed* part of layer B that
+takes the all-carbon and larger cores first, with the hash inside each class; the 290 finished molecules stay admitted; the shards are restarted at
+their next natural pause with the new manifest; the registered curve's "first 100 / 300 / 600 / 1,200 in hashed order" is then read in the new order
+and says so. Nothing changes tonight while E8 runs on the CCX53 and the four Hetzner shards continue.
