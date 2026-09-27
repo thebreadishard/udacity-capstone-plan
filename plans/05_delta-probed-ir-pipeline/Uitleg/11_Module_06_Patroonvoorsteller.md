@@ -1,6 +1,6 @@
 # Hoofdstuk 11 — Module 06: de kandidatenvoorsteller
 
-*Udacity-module "Generative AI Applications". In de rubriek Project 5. Stand van 25 september 2026; het ontwerp van 12 september staat als gedateerd kader in §9.*
+*Udacity-module "Generative AI Applications". In de rubriek Project 5. Stand van 27 september 2026 (getraind en gelezen op 26 september); het ontwerp van 12 september staat als gedateerd kader in §9.*
 
 ---
 
@@ -83,6 +83,11 @@ niet, dan is dát het gepubliceerde resultaat.
 Wat er uitdrukkelijk **niet** uitkomt: data. Een voorgesteld molecuul is een suggestie; pas als de pijplijn het heeft doorgerekend, is er een
 spectrum, en dat is dan een gewoon record met provenance, net als elk ander.
 
+## 5a. Uitkomst (26 september 2026)
+
+De volledige run draaide op 26 september op een gehuurde machine (de laptop bleef vrij voor het anker): drie zaadjes en het geconditioneerde model, elk 10.000 voorbeelden, het notebook van boven naar beneden. Tegen de grenzen van §4, in dezelfde volgorde: geldigheid **0,92** (grens 0,85), uniciteit **0,99** (0,95), nieuwheid **0,91** (0,50), nieuw skelet **0,53** (0,30), uit het hoofd **0,10** (hoogstens 0,10), gehoorzaamheid aan de conditie **0,87** (0,80): zes van de zeven gehaald, en de drie zaadjes binnen ±0,03 op geldigheid. De zevende, de **projectpassing**, kwam uit op **0,945** waar 0,30–0,60 was voorspeld: het model bleef veel dichter bij de versmolten-aromatische familie dan wij dachten. Dat is een misvoorspelling van ons en geen zwakte van het model, en zo staat het in de uitkomstsectie van de pre-registratie; de grens wordt niet achteraf verschoven. De eenvoudige tekenreeksbaseline zonder netwerk (een 5-gram-model) verloor op elke regel. Bron: `modules/06_generative_candidates/notebook/results.json`, `PRE_REGISTRATION.md` (uitkomst), het rapport `Generative_AI_Analysis_Report.pdf`.
+
+
 ## 6. Waarom deze module, en wat ze voor de pijplijn doet
 
 De pijplijn heeft na module 05 een geleerde correctie die per familie is vrijgegeven. Een correctie zonder kandidaten is een antwoord zonder vraag:
@@ -117,7 +122,7 @@ gewoon, maar dan kiest een mens de kandidaten; dat is een zwakkere vorm van "dra
 Module 06 traint een tekst-Transformer op 161.000 versmolten-aromatische moleculen uit PubChem, gesplitst per skelet, en laat hem nieuwe
 moleculen schrijven. Vooraf vastgelegde metingen — geldigheid, uniciteit, nieuwheid, uit-het-hoofd, gehoorzaamheid aan conditie-tokens en
 projectpassing — zeggen of de voorstellen deugen en of ze bruikbaar zijn voor de atlas. Kandidaten zijn suggesties, geen data; pas de
-pijplijn maakt er een spectrum van.
+pijplijn maakt er een spectrum van. Op 26 september haalde het model zes van de zeven vooraf vastgelegde grenzen; de zevende, de projectpassing, lag ver bóven de voorspelling (§5a).
 
 ## 9. Gedateerd kader: het ontwerp van 12 september 2026, en waarom het veranderde
 
@@ -131,7 +136,7 @@ symmetrie en buurten, die met vaste regels beter beantwoord wordt dan met een ge
 september is ontworpen — om iets wat het plan nog niet had: een bron van *nieuwe moleculen* binnen de vrijgegeven families. Een generatief
 model over moleculen levert dat, met een openbare dataset die precies aan de eisen van de rubriek voldoet. De oude tekst staat in de
 git-geschiedenis van dit bestand (commit vóór 25 september 2026); de nieuwe module is op 24 september ontworpen en vooraf vastgelegd
-(`modules/06_generative_candidates/DESIGN_2026-09-24.md`, `PRE_REGISTRATION.md`).
+(`modules/06_generative_candidates/DESIGN_2026-09-24.md`, `PRE_REGISTRATION.md`). De patroonvoorsteller zelf is niet weggegooid: op 26 september is hij als *standout*-module gebouwd op de antwoordrecords van het corpus (`modules/standout_pattern_proposer/`), en zijn eerste les staat in het projectvoorstel §3.4: het dek van het plan moet buiten de frequentieband kijken, en een geleerde meetvolgorde bespaart metingen.
 
 *Bron: `modules/06_generative_candidates/` (DESIGN_2026-09-24.md, PRE_REGISTRATION.md, README.md, PROVENANCE.md),
 [Rubrics/06](../../../Rubrics/06_Generative_AI_Applications.md).*

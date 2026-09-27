@@ -31,11 +31,11 @@ Module 08 traint niets nieuws; het **integreert**. De invoer is de uitvoer van d
 | 03 | O9 scorebord met u_band en matrixtolerantie | de waarheid en de beslisbaarheid per familie |
 | 04 | gekalibreerde opponentkolom; onzekerheidslaag | de tweede tegenstander; het foutbudget op R4–R6 |
 | 07 | de campagne-officier | draait de campagnes, print records, schrijft certificaten |
-| 05 | de geleerde prior (als licentie verdiend) | het P3-experiment op R0–R3; dragend op R4–R6 |
-| 06 | voorgestelde patronen | het patroonefficiëntie-experiment |
+| 05 | de geleerde correctie (pijplijn A, besluit 36; per familie vrijgegeven of geweigerd) | het P3-experiment op R0–R3; dragend op R4–R6 |
+| 06 | voorgestelde kandidaatmoleculen (sinds 24 september) | de bron van nieuwe rijen in de atlas, gelabeld als modeluitvoer |
 | infrastructuur | probe M1, de recovery-solver, de batchrunner, het deck | geen module-ML; het rekenhart |
 
-Vier modules (02, 03, 04, 07) zijn op het beloofde pad; 05 en 06 zijn bonusrapporten,
+Vier modules (02, 03, 04, 07) zijn op het beloofde pad; 05 is sinds besluit 36 (14 september) het bereikproduct zelf, per familie vrijgegeven of geweigerd, en 06 levert kandidaten,
 precies zo gelabeld. Dat zijn er dus vier in de zin van de rubriek, met twee extra.
 
 Daarnaast de **bevroren documenten** zelf: de Ladder (de regels), de pilotnotitie (de
@@ -119,13 +119,17 @@ eerdere module, en de vergelijkingen op R0–R3 zijn nieuwe metingen.
 ## 8. In het kort
 
 Module 08 bouwt de pijplijn als één programma dat de atlas, het scorebord, de
-gekalibreerde tegenstander en de campagne-officier integreert (met de steunvoorspeller en
-de patroonvoorsteller als gelabelde experimenten), draait de beloofde vergelijkingen op
+gekalibreerde tegenstander en de campagne-officier integreert (met de ΔH-voorspeller van module 05 als het per familie vrijgegeven bereikproduct en
+de kandidatenvoorsteller van module 06 als gelabelde bron van nieuwe moleculen), draait de beloofde vergelijkingen op
 R0–R3 en de fragmentroute op R6, en levert per molecuul een certificaat met spectrum,
 foutbudget en kostenrecord, of een weigering die de blokkerende poort noemt. Het paper
 verantwoordt de keuzes en meldt verliezen als verliezen.
 
-*Bron: [Capstone_Mapping.md](../GoalGathering/Capstone_Mapping.md) §3 (Module 08) en §6,
+## 9. De ontwerpnotitie van 27 september 2026
+
+Het artefact is op 27 september uitgetekend (`modules/08_industry_synthesis/DESIGN_2026-09-27.md`), bouwen na de 28ste. Drie delen: de **atlas** (hoofdstuk 6, de website, al openbaar) als voorkant; een **aanvraagdienst** waarin de poorttabel van module 07 beslist of een aanvraag voor een molecuul mag lopen, met een budgetplafond; en een **certificaat- of weigeringsgenerator** die per molecuul het certificaat (O13) of de weigering met de blokkerende poort schrijft. Acht scenario's (S1–S8) vormen de evaluatie: van "molecuul al in de atlas" tot "boven het budget" en "familie geweigerd". Vijf keuzes liggen bij de opdrachtgever: herhaalde echte logs of een levende rekenaar achter de dienst, waar het draait, of de standout-lijn (de patroonvoorsteller) meedoet, of module 06 een eigen paneel krijgt, en het moment na de 28ste.
+
+*Bron: [Capstone_Mapping.md](../GoalGathering/Capstone_Mapping.md) §3 (Module 08) en §6, `modules/08_industry_synthesis/DESIGN_2026-09-27.md`,
 [Overarching_Goal.md](../GoalGathering/Overarching_Goal.md) (industrieframe, methode-skelet),
 [Distilled_Project_Plan_and_Quality_Checks.md](../GoalGathering/Distilled_Project_Plan_and_Quality_Checks.md)
 §8–§9, [Rubrics/08](../../../Rubrics/08_Industry_Integrated_AI_Systems_Synthesis.md).*

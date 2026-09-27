@@ -1,6 +1,6 @@
 # Hoofdstuk 10 — Module 05: de ΔH-voorspeller (de "steunvoorspeller")
 
-*Udacity-module "Deep Learning Systems". In de rubriek Project 4. Stand van 25 september 2026; §9 bewaart het ontwerp van 12 september als
+*Udacity-module "Deep Learning Systems". In de rubriek Project 4. Stand van 27 september 2026; §9 bewaart het ontwerp van 12 september als
 gedateerd kader, §10 legt uit hoe je weet dat een netwerk echt leert.*
 
 ---
@@ -29,11 +29,11 @@ Het verschil ΔH = H(ωB97X) − H(B3LYP) is de *plaatsvervanger* van de echte c
 sterk verschillend aandeel exacte uitwisseling, zodat het verschil dezelfde soort structuur heeft als het echte verschil. Het corpus bestaat in
 lagen:
 
-| Laag | Wat | Waarom | Stand 25 september |
+| Laag | Wat | Waarom | Stand 27 september |
 |---|---|---|---|
 | A | de aromaten van 22–30 atomen die op de ladder lijken: benzeen, naftaleen, antraceen, fenantreen, pyreen, fluorantheen, carbazool, acridine … | de "groottebrug" | 45 klaar |
 | A2 | dezelfde veertien kernen, elk met vijftien zijgroepen (CH₃, OH, NH₂, F, Cl, CN, CHO, COOH, OCH₃, NO₂, CF₃, vinyl, ethynyl, CONH₂, SH) | veertien skeletten leren geen regel; honderden omgevingen wel | 199 klaar; 15 zadelpunten worden heropgelost |
-| B | negentien kleine kernen (benzeen, pyridine, thiofeen, indool, chinoline …) met dezelfde zijgroepen, tot 26 atomen | de grote leercurve: 4.353 moleculen in vaste gehashte volgorde | gestart 25 september, vijf gehuurde machines |
+| B | negentien kleine kernen (benzeen, pyridine, thiofeen, indool, chinoline …) met dezelfde zijgroepen, tot 26 atomen | de grote leercurve: 4.353 moleculen in vaste gehashte volgorde | gestart 25 september; op 27 september ruim 250 klaar, in zes delen over gehuurde machines; de eerste tussenlezing zondagavond 27 september |
 | C | de geconjugeerde deelverzameling van Hessian QM9 (6.055 moleculen, alleen B3LYP erbij) | brede kleine-moleculenbasis | gepland |
 
 Elk molecuul heeft een map met de geometrie, de twee Hessianen, de frequenties en een resultaatrecord; een **uitgave** (release) is een bevroren
@@ -111,7 +111,7 @@ en blijkt iets anders: het paarmodel krijgt voor spiegelbeeldparen precies dezel
 en ringafstanden, en die veranderen niet onder een spiegeling. Het geeft dus vanzelf hetzelfde antwoord. Symmetrie zit in dit model ingebouwd,
 niet geleerd, en de test kon die twee nooit uit elkaar houden. Wat blijft staan: het paarmodel kent geen richtingen, alleen getallen per paar,
 en voor een correctie op de volledige krachtmatrix in de ruimte, een grootheid mét richtingen, is een **equivariant** netwerk nodig: een netwerk
-waarvan de tussenresultaten meedraaien met het molecuul. Dat is de volgende versie van deze module, om díe reden, en niet omdat E11.2 het zou
+waarvan de tussenresultaten meedraaien met het molecuul. Dat netwerk ("rung C") is op 25 september gebouwd en vooraf tegen het paarmodel vastgelegd; of het vóór of na de 28ste getraind wordt, beslist de opdrachtgever. Het is de volgende versie van deze module om díe reden, en niet omdat E11.2 het zou
 hebben afgedwongen.
 
 ## 7. Waar het kan misgaan — en wat je bij de aftekening controleert
@@ -130,7 +130,7 @@ hebben afgedwongen.
 
 Module 05 traint een Transformer die uit DFT-kenmerken per bandfamilie het correctieblok voorspelt, op een eigen corpus van ωB97X−B3LYP-verschillen
 in lagen, uitgegeven met DOI. Onderweg leerde het project dat de correctie lokaal is en in de taal van bindingen en hoeken geleerd moet worden, dat
-het huidige paarmodel symmetrie niet respecteert, en dat het echte bewijs een vooraf vastgelegde leercurve is die op 25 september is gestart.
+symmetrie in het paarmodel ingebouwd zit (de test van 25 september mat daardoor niets), en dat het echte bewijs een vooraf vastgelegde leercurve is die op 25 september is gestart en op 27 september haar eerste tussenlezing krijgt.
 
 ## 9. Gedateerd kader: stand van zaken op 12 september 2026
 
@@ -217,4 +217,4 @@ skeletten die het nooit zag én op de kale moederkernen zonder zijgroepen, met e
 die het meest op de grote PAK's lijken, en de curve daalt daar nog te langzaam om al van bewijs te spreken. (Een eerdere versie van deze
 alinea, dezelfde ochtend, noemde die curve vlak; dat kwam uit een achterhaald resultaatbestand en is gecorrigeerd.) Kleine moleculen leren het netwerk iets over grotere, maar langzamer dan ze elkaar leren.
 Dat is geen mislukking en geen succes; het is de stand van een curve die nog kort is. Het bewijs dat dit ontwerp werkt, is een curve die lang
-genoeg is, op de drie moeilijke toetsen, met de leesregel van tevoren. Die curve loopt nu.
+genoeg is, op de drie moeilijke toetsen, met de leesregel van tevoren. Die curve loopt nu. Sinds 26 september krijgt ook de geleerde molecuulrepresentatie haar eerlijke kans naast het paarmodel: een vooraf vastgelegde zoektocht in vijf stappen (optimalisatie, verliesfunctie, capaciteit, datagroei, voortraining), waarvan de eerste drie zonder oordeel zijn gelezen en de vierde op 300 moleculen wacht; geen zin over "leert niet" vóór de vijfde. De eerste tussenlezing van de laag-B-curve is zondagavond 27 september.

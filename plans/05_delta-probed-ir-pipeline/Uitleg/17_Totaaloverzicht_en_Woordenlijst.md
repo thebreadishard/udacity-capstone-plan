@@ -26,13 +26,13 @@
 
 ## §17.1a Gedateerde aanvulling 12 september 2026: na module 09, en twee lessen uit de praktijk
 
-**Het netwerk als "stand-out" (beslissing 32).** De modulereeks eindigt bij module 09. Het neurale
+**Het netwerk: eerst "stand-out" (beslissing 32, 12 september), sinds 14 september het bereikproduct zelf (beslissing 36).** De modulereeks eindigt bij module 09. Het neurale
 netwerk dat op de uitvoer van de pijplijn zelf getraind zou worden (Δ₂-correcties als trainingsdata voor
 PAK's zonder laboratoriumspectrum) is met naam in het projectvoorstel gezet als het uitstekende vervolg
 *buiten* de reeks, niet als "module 10": de rubrieken kennen geen stand-outcriterium, en het netwerk mag
 pas beginnen als twee poorten open zijn — een korte gemeten reikwijdte van de correctie op R2–R3 en een
 dekkingstabel die zegt dat de banden van de pijplijn als trainingslabels deugen. De verliesvoorwaarde staat
-er nu al bij.
+er nu al bij. Twee dagen later maakte beslissing 36 er pijplijn A van: het product voor de grote PAK's, per familie vrijgegeven of geweigerd, met dezelfde twee poorten als licentie (hoofdstuk 10; projectvoorstel §3.5).
 
 **Les 1: de laptop rekent niet twee dingen tegelijk.** Op 12 september is een naftaleenberekening van
 3,5 uur verloren gegaan doordat er náást de berekening (in WSL, met 25 van de 31 GB) een Lean-build van
@@ -73,6 +73,8 @@ documenten. Toen dezelfde meetlat langs het dóél werd gelegd, gaf die hetzelfd
 natuurkunde. Met echte symmetriebanen bleek het model even symmetrisch als zijn doel, omdat zijn kenmerken onder een spiegeling niet
 veranderen. De les is een regel geworden: zo'n meting wordt eerst aan het doel gedaan en alleen daarnaast gelezen; zonder die controle is
 het geen resultaat. En de tweede helft van de les: de intrekking hoort in dezelfde documenten als de bewering, met datum.
+
+**27 september.** De ruisvloer van de labels is gemeten (besluit 45: ≈ 0,04 µE_h per energie, drie ordes onder wat de terugrekenregel verdraagt). De patroonvoorsteller, nu als standout-module op het corpus, leerde iets over het meetplan zelf: ongeveer 45 % van de koppelingskracht ligt binnen de frequentieband die het dek van het plan bestrijkt, een dek met een patroon voor élk paar komt op 97 achtergehouden moleculen wél tot de stopdrempel (0,08 / 0,14 tegen 0,53 / 0,47 aan het eind van het banddek), en een geleerde meetvolgorde bespaart metingen (1,35 / 1,52 × het banddek in plaats van 2,2 / 2,1 ×); herordenen tijdens het meten helpt 6–10 % en verplaatst het stoppunt niet: de rest van de afstand tot het orakel is kennis, geen terugkoppeling. Verbreding en stopregel zijn vooraf vastgelegd voor na de 28ste. De kationen hebben een prijs: benzeen⁺ ≈ 22 × het neutrale molecuul, naftaleen⁺ 34.411 s per energie (9,6 uur). Het projectvoorstel kreeg zijn vierde koude lezing.
 
 ## §17.2 Woordenlijst
 
@@ -160,7 +162,7 @@ daardoor bijna lineair schalen.
 **Matrixisolatie** — labspectrum van een molecuul ingevroren in argon bij ~10 K; verschoven
 ten opzichte van gas; alleen bruikbaar achter de matrix–gas-poort.
 
-**Mode E / mode G** — Δ₂ uit energieën (gegarandeerd) / uit gradiënten (bijproject, erbij).
+**Mode E / mode G** — Δ₂ uit energieën / uit gradiënten. Sinds 17 september (besluit 43) komt de diagonaal uit energieën en komen de koppelingen uit gradiënten (2k + 1 = 19 bij naftaleen), met een eigen gradiëntmotor voor de bevroren ruimtes als bijproject.
 
 **Normale mode** — bewegingspatroon waarbij alle atomen met één frequentie trillen.
 
@@ -177,7 +179,7 @@ eerste lokale-CC-Δ₂.
 hashes en datums.
 
 **Prior (structureel / geleerd)** — de voorkennis die de recovery nodig heeft om uit weinig
-metingen een dunne Δ₂ terug te vinden: een frequentieband met straf buiten de band, of het
+metingen een dunne Δ₂ terug te vinden: sinds besluit 11 de symmetrie van het molecuul (koppelingen tussen verschillende symmetrietypen zijn nul; de frequentieband van het eerste ontwerp bleek niet waar de structuur zit), of het
 door module 05 voorspelde patroon.
 
 **Probe** — één dure meting (een ±paar met CC en DFT); ook: elk vooraf omschreven script in
@@ -204,7 +206,7 @@ Q8(c) twee rungs vergelijkt.
 **σ_E, σ_g** — per-punt-ruis van de energie- of gradiëntverschillen, √(SSR/(n − p)),
 gepoold per arm.
 
-**Steun (support)** — welke elementen van Δ₂ groot zijn; het doel van module 05.
+**Steun (support)** — welke elementen van Δ₂ groot zijn; het eerste doel van module 05, sinds besluit 49 vervangen door de correctie zelf in lokale coördinaten.
 
 **τ, τ₇, η₈, ε₈, γ, d₇, r_c, r_f, h** — de bevroren drempels: kleinste beat-marge;
 Q7-tolerantie; koppelingsafwijking; verre-aandeel; verzadigingsfactor;
@@ -212,8 +214,8 @@ onderscheidbaarheidsfactor; gemeten lokaliteitslengte; kleinste slagende fragmen
 Cartesische probestap.
 
 **u_band, u_T, u_296, χ_max** — gemeten bandonzekerheid van een labband; haar
-temperatuurterm; het 0 → 296 K-aandeel per molecuul; de herinnerde maximale
-hot-band-helling (0,03 cm⁻¹/K).
+temperatuurterm; het 0 → 296 K-aandeel per molecuul; de maximale
+hot-band-helling: gemeten 0,044 cm⁻¹/K (Joblin e.a. 1995, de 6,2 µm-band van coroneen; het eerste ontwerp herinnerde 0,03).
 
 **Verzegeld bestand** — de fitcoëfficiënten van de gladheidsprobe en de ruwe M1-energieën;
 gaan pas open met de commit-hash van de pilotnotitie.
