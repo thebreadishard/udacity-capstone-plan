@@ -89,3 +89,5 @@ plans/*/modules/06_generative_candidates/out/
 website/site/node_modules/
 website/site/dist/
 website/site/.astro/
+# Plan 06 experiments: psi4 scratch output beside a tracked result (json/md/log)
+plans/*/experiments/*_psi4.out
