@@ -1,0 +1,388 @@
+{
+ "date": "2026-09-28 20:18",
+ "catalogue": {
+  "n": 11321,
+  "built_utc": "2026-09-28T18:16:00Z",
+  "rung_counts": {
+   "listed": 10787,
+   "cheap_level_done": 532,
+   "correction_predicted": 0,
+   "spectrum_predicted": 0,
+   "anchored": 1,
+   "validated": 1
+  }
+ },
+ "licence": {
+  "licensed_families": [],
+  "rule": "proof-of-learning pre-registration (25 Sep 2026): the verdict 'the network learns' falls at 1,200 admitted layer-B molecules on three hold-outs; intermediate tables at 300 and 600 are recorded and carry no verdict; no family is licensed before the verdict",
+  "rule_source": "GoalGathering/notes/PreRegistration_2026-09-25_Proof_of_Learning_Layer_B.md",
+  "latest_reading": {
+   "source": "modules/05_support_predictor/out/E7_rungB_layerB_2026-09-27.md",
+   "rows": {
+    "(a)": {
+     "n": 274,
+     "ring_coupling_ratio": 0.61,
+     "corrected_omega_rms": 6.18
+    },
+    "(b)": {
+     "n": 274,
+     "ring_coupling_ratio": 0.64,
+     "corrected_omega_rms": 5.6
+    },
+    "(c)": {
+     "n": 274,
+     "ring_coupling_ratio": 0.7,
+     "corrected_omega_rms": 5.59
+    }
+   },
+   "date": "2026-09-27 18:33"
+  },
+  "statement": "no family licensed: the registered verdict falls at 1,200 admitted layer-B molecules; the latest recorded table (2026-09-27 18:33, pool 274) shows ring coupling ratios (a) 0.61 / (b) 0.64 / (c) 0.70 against the zero rule, read as an interim only"
+ },
+ "scenarios": {
+  "n_pass": 8,
+  "n": 8,
+  "date": "2026-09-28 20:16",
+  "table": [
+   {
+    "id": "S1",
+    "molecule": "naphthalene",
+    "target": 4,
+    "budget €": "—",
+    "decision": "certificate",
+    "gate / cap named": "—",
+    "rules": "—",
+    "price lines": "—",
+    "pass": true
+   },
+   {
+    "id": "S2",
+    "molecule": "azulene",
+    "target": 4,
+    "budget €": "—",
+    "decision": "refusal",
+    "gate / cap named": "no anchor: the learned layer is not licensed for low / skele",
+    "rules": "R14",
+    "price lines": "anchor_e8_cc_hessian_naphthalene €36.34",
+    "pass": true
+   },
+   {
+    "id": "S2b",
+    "molecule": "azulene",
+    "target": 4,
+    "budget €": 100,
+    "decision": "run_order",
+    "gate / cap named": "module 07 gate (R01: dry run first)",
+    "rules": "R01 R06",
+    "price lines": "anchor_e8_cc_hessian_naphthalene €36.34",
+    "pass": true
+   },
+   {
+    "id": "S3",
+    "molecule": "CC(OC(=O)C(F)(F)F)c1ccc(O)c2ncccc1",
+    "target": 4,
+    "budget €": 20,
+    "decision": "refusal",
+    "gate / cap named": "cap: budget €20.00; target rung 4 not reachable",
+    "rules": "R25 R32",
+    "price lines": "cheap_deck_v1 €0.24, anchor_e8_cc_hessian_naphthalene €36.34",
+    "pass": true
+   },
+   {
+    "id": "S4a",
+    "molecule": "c1ccc(cc1",
+    "target": 4,
+    "budget €": "—",
+    "decision": "refusal",
+    "gate / cap named": "invalid input",
+    "rules": "R25",
+    "price lines": "—",
+    "pass": true
+   },
+   {
+    "id": "S4b",
+    "molecule": "naphthalene",
+    "target": 4,
+    "budget €": "—",
+    "decision": "refusal",
+    "gate / cap named": "cation rung closed (obstacle 9)",
+    "rules": "R25",
+    "price lines": "cation_energy_naphthalene_plus €1.99",
+    "pass": true
+   },
+   {
+    "id": "S4c",
+    "molecule": "naphthalene",
+    "target": 4,
+    "budget €": "—",
+    "decision": "refusal",
+    "gate / cap named": "instruction in observed content (R24)",
+    "rules": "R24",
+    "price lines": "—",
+    "pass": true
+   },
+   {
+    "id": "S8",
+    "molecule": "benzene",
+    "target": 5,
+    "budget €": "—",
+    "decision": "certificate",
+    "gate / cap named": "—",
+    "rules": "—",
+    "price lines": "—",
+    "pass": true
+   }
+  ],
+  "mechanical": {
+   "S7": {
+    "lines_checked": 4,
+    "lines_traced": 4,
+    "fraction": 1.0,
+    "misses": []
+   },
+   "S5": {
+    "exit_code": 0,
+    "seconds": 3,
+    "problems": null,
+    "n_molecules": 11321,
+    "stderr_tail": ""
+   },
+   "S6": {
+    "status": "not run in this build: needs the built site and axe (website backlog rows 8–9)"
+   }
+  }
+ },
+ "s1": {
+  "rung": 4,
+  "families": [
+   "CC-stretch (6.2 um)",
+   "CC-stretch/CH-ip (7.7 um)",
+   "CH-ip-bend (8.6 um)",
+   "CH-oop (10.5-15 um; benzene nu11 at 673 included)",
+   "CH-stretch",
+   "above 3200",
+   "low / skeletal",
+   "overtone / combination region",
+   "ring / CH-ip (9-10.5 um)"
+  ],
+  "coverage": [
+   {
+    "family": "CH-oop (10.5-15 um; benzene nu11 at 673 included)",
+    "n_modes": 1,
+    "evidence": [
+     "probes/results_m1/M3_TZ_MODE12_READING_2026-09-20.md"
+    ],
+    "rms_dev_vs_ccsdt": null,
+    "u_band": 9.61,
+    "wider_than_tolerance": false,
+    "reading": "a family reading exists (curvature at DZ and TZ); no per-mode deviation table"
+   },
+   {
+    "family": "ring / CH-ip (9-10.5 um)",
+    "n_modes": 1,
+    "evidence": [
+     "probes/results_m1/M3_TZ_MODE22_READING_2026-09-23.md"
+    ],
+    "rms_dev_vs_ccsdt": null,
+    "u_band": 15.87,
+    "wider_than_tolerance": false,
+    "reading": "a family reading exists (curvature at DZ and TZ); no per-mode deviation table"
+   }
+  ],
+  "cost": [
+   {
+    "step": "cheap rung (deck v1, both functionals)",
+    "machine": "Asus18",
+    "machine_class": "laptop",
+    "seconds": 3419.9,
+    "hours": 0.95,
+    "eur_ex_vat": 0.0,
+    "source": "corpus ledger machine column 'Asus18'",
+    "breakdown_s": {
+     "optimise": 32.7,
+     "hessian_b3lyp": 707.4,
+     "hessian_wb97x": 1040.7
+    },
+    "replayed_from": "corpus ledger row A_01f3186607 (machine Asus18, 2026-09-14 15:17:57 → 2026-09-14 16:14:58)",
+    "replay": true
+   },
+   {
+    "step": "anchor family readings (M3, two families, laptop)",
+    "what": "one family's anchor reading along a mode (M3: cc-pVDZ + cc-pVTZ curvature, LNO-CCSD(T), five points)",
+    "machine": "laptop",
+    "hours": 66.83,
+    "eur_ex_vat": 0.0,
+    "measured_on": "naphthalene, laptop: 4,201 s per cc-pVDZ energy, 12.2 h per cc-pVTZ energy at tight thresholds",
+    "source": "probes/results_m1/M3_TZ_MODE12_READING_2026-09-20.md (12.2 h per TZ energy); REPRODUCE.md row on the neutral price (4,201 s)",
+    "note": "two families read (evidence files); hours per family from the M3 record; the E8 whole-molecule Hessian is computing (frozen 10, 28 Sep) and joins this record when read"
+   }
+  ]
+ },
+ "s8": {
+  "rung": 5,
+  "coverage": [
+   {
+    "family": "CC-stretch (6.2 um)",
+    "n_modes": 4,
+    "evidence": [
+     "probes/results_m1/R0_DIAGONAL_READING_2026-09-22.md"
+    ],
+    "rms_dev_vs_ccsdt": 8.65,
+    "u_band": 21.14,
+    "wider_than_tolerance": false,
+    "reading": "composite vs CCSD(T): RMS 8.7 cm⁻¹ against the laboratory tolerance 21.1 — within"
+   },
+   {
+    "family": "CH-ip-bend (8.6 um)",
+    "n_modes": 3,
+    "evidence": [
+     "probes/results_m1/R0_DIAGONAL_READING_2026-09-22.md"
+    ],
+    "rms_dev_vs_ccsdt": 3.93,
+    "u_band": 32.24,
+    "wider_than_tolerance": false,
+    "reading": "composite vs CCSD(T): RMS 3.9 cm⁻¹ against the laboratory tolerance 32.2 — within"
+   },
+   {
+    "family": "CH-oop (10.5-15 um; benzene nu11 at 673 included)",
+    "n_modes": 6,
+    "evidence": [
+     "probes/results_m1/R0_DIAGONAL_READING_2026-09-22.md"
+    ],
+    "rms_dev_vs_ccsdt": 23.56,
+    "u_band": 5.22,
+    "wider_than_tolerance": true,
+    "reading": "composite vs CCSD(T): RMS 23.6 cm⁻¹ against the laboratory tolerance 5.2 — wider: not decidable at this rung, shown as such"
+   },
+   {
+    "family": "CH-stretch",
+    "n_modes": 3,
+    "evidence": [
+     "probes/results_m1/R0_DIAGONAL_READING_2026-09-22.md"
+    ],
+    "rms_dev_vs_ccsdt": 52.34,
+    "u_band": 8.34,
+    "wider_than_tolerance": true,
+    "reading": "composite vs CCSD(T): RMS 52.3 cm⁻¹ against the laboratory tolerance 8.3 — wider: not decidable at this rung, shown as such"
+   },
+   {
+    "family": "ring / CH-ip (9-10.5 um)",
+    "n_modes": 3,
+    "evidence": [
+     "probes/results_m1/R0_DIAGONAL_READING_2026-09-22.md"
+    ],
+    "rms_dev_vs_ccsdt": 12.44,
+    "u_band": 12.7,
+    "wider_than_tolerance": false,
+    "reading": "composite vs CCSD(T): RMS 12.4 cm⁻¹ against the laboratory tolerance 12.7 — within"
+   }
+  ],
+  "n_lab_bands": 92
+ },
+ "s2": {
+  "kind": "refusal",
+  "gate": "no anchor: the learned layer is not licensed for low / skeletal, CH-oop (10.5-15 um; benzene nu11 at 673 included), ring / CH-ip (9-10.5 um), CH-ip-bend (8.6 um), CC-stretch/CH-ip (7.7 um), CC-stretch (6.2 um), overtone / combination region, CH-stretch, above 3200 and no coupled-cluster reading exists",
+  "needed": "the anchor for a whole molecule: CCSD(T)/cc-pVDZ finite-difference Hessian with symmetry (E8 route) — measured on naphthalene (18 atoms), CCX53: 15 displacements → 30 gradients at ≈ 4.25 h each, three processes of 10 threads in parallel → ≈ 43 machine-hours: ≈ 42.5 h on a CCX53 ≈ €36.34 ex VAT (measured for naphthalene; a larger molecule costs more than this and its price is not measured yet)"
+ },
+ "s2b": {
+  "kind": "run_order",
+  "gate": {
+   "approved": false,
+   "reasons": [
+    "no passed dry run recorded for job 'anchor_e8:A_d9139359ab' (R01)"
+   ],
+   "forced_action": {
+    "action": "dry_run",
+    "args": {
+     "host": "CCX53",
+     "job": "anchor_e8:A_d9139359ab"
+    },
+    "rule_id": "R01",
+    "reason": "gate: dry run first"
+   }
+  }
+ },
+ "s3": {
+  "candidate": {
+   "smiles": "CC(OC(=O)C(F)(F)F)c1ccc(O)c2ncccc12",
+   "heavy_atoms": 20,
+   "aromatic_rings": 2,
+   "draw_index": 0,
+   "n_drawn": 200,
+   "n_valid": 1,
+   "source": "module 06 modules/06_generative_candidates/notebook/out/seed0/model_seed0.pt (run of 25–26 Sep 2026), generate(n=200, T=1.0, seed=0); first valid fused-aromatic string not in the corpus"
+  },
+  "reasons": [
+   "'CC(OC(=O)C(F)(F)F)c1ccc(O)c2ncccc12' is not in the corpus (canonical CC(OC(=O)C(F)(F)F)c1ccc(O)c2ncccc12); nothing exists to certify",
+   "budget €20.00: reachable within it — rung 1 (cheap level) at ≈ €0.24",
+   "no run is started: the officer never spends without a passed gate, and the gate needs a dry run of a named job first (R01)"
+  ]
+ },
+ "prices": {
+  "machines": {
+   "CPX62": {
+    "eur_per_hour": 0.208,
+    "description": "Hetzner CPX62, 16 shared AMD vCPU, 32 GB, Helsinki",
+    "source": "obstacle ledger, 18 Sep 08:0x (layer A on a rented CPX62: €0.208/h)"
+   },
+   "CCX53": {
+    "eur_per_hour": 0.855,
+    "description": "Hetzner CCX53, 32 dedicated vCPU, 128 GB, Helsinki",
+    "source": "obstacle ledger, 27 Sep (CCX53 ubuntu-128gb-hel1-2 at €0.855/h)"
+   },
+   "laptop": {
+    "eur_per_hour": 0.0,
+    "description": "the project laptop (Asus18, 8 threads); owned hardware, electricity not metered",
+    "source": "corpus ledger machine column 'Asus18'"
+   }
+  },
+  "steps": {
+   "cheap_deck_v1": {
+    "step": "cheap_deck_v1",
+    "what": "corpus deck v1: B3LYP/6-31G* optimisation + analytic Hessians at B3LYP and ωB97X (the cheap rung)",
+    "machine": "CPX62",
+    "hours": 1.17,
+    "eur_ex_vat": 0.24,
+    "measured_on": "naphthalene (18 atoms), laptop: 3,419.9 s total (corpus ledger row A_01f3186607, 14 Sep 2026); layer A2 on a CPX62: ≈ 70 min per 3–4-ring mono-substituted molecule",
+    "source": "corpus ledger `corpus/ledger.csv`; obstacle ledger 21 Sep (A2 ≈ 70 min per molecule on a CPX62)",
+    "note": ""
+   },
+   "anchor_e8_cc_hessian_naphthalene": {
+    "step": "anchor_e8_cc_hessian_naphthalene",
+    "what": "the anchor for a whole molecule: CCSD(T)/cc-pVDZ finite-difference Hessian with symmetry (E8 route)",
+    "machine": "CCX53",
+    "hours": 42.5,
+    "eur_ex_vat": 36.34,
+    "measured_on": "naphthalene (18 atoms), CCX53: 15 displacements → 30 gradients at ≈ 4.25 h each, three processes of 10 threads in parallel → ≈ 43 machine-hours",
+    "source": "probes/results_m1 partial logs of the frozen-10 rerun (28 Sep 2026: 15,240–15,295 s per gradient); pre-registration E8 of 23 Sep",
+    "note": "measured for naphthalene; a larger molecule costs more than this and its price is not measured yet"
+   },
+   "anchor_m3_family_reading_naphthalene": {
+    "step": "anchor_m3_family_reading_naphthalene",
+    "what": "one family's anchor reading along a mode (M3: cc-pVDZ + cc-pVTZ curvature, LNO-CCSD(T), five points)",
+    "machine": "laptop",
+    "hours": 66.83,
+    "eur_ex_vat": 0.0,
+    "measured_on": "naphthalene, laptop: 4,201 s per cc-pVDZ energy, 12.2 h per cc-pVTZ energy at tight thresholds",
+    "source": "probes/results_m1/M3_TZ_MODE12_READING_2026-09-20.md (12.2 h per TZ energy); REPRODUCE.md row on the neutral price (4,201 s)",
+    "note": ""
+   },
+   "cation_energy_naphthalene_plus": {
+    "step": "cation_energy_naphthalene_plus",
+    "what": "one LNO-CCSD(T) energy of naphthalene⁺ (the cation rung, closed)",
+    "machine": "CPX62",
+    "hours": 9.56,
+    "eur_ex_vat": 1.99,
+    "measured_on": "naphthalene⁺, rented 16-core machine: 34,411 s per energy",
+    "source": "REPRODUCE.md row 49 (cation_price_readout.py); obstacle 9",
+    "note": ""
+   }
+  }
+ },
+ "n_rules": 32,
+ "versions": {
+  "python": "3.14.6",
+  "pandas": "3.0.3",
+  "numpy": "2.5.1"
+ }
+}

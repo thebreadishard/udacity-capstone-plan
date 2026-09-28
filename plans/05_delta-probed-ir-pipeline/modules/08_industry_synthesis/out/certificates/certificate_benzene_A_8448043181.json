@@ -1,0 +1,392 @@
+{
+ "kind": "certificate",
+ "date": "2026-09-28 20:15",
+ "molecule": {
+  "id": "A_8448043181",
+  "name": "benzene",
+  "smiles": "c1ccccc1",
+  "formula": "C6H6",
+  "layer": "A",
+  "n_atoms": 12,
+  "flags": [
+   "second_route_disagrees",
+   "replaced_by_second_route",
+   "screen_flagged"
+  ]
+ },
+ "rung": {
+  "reached": 5,
+  "label": "validated",
+  "ladder": {
+   "0": {
+    "label": "listed",
+    "reached": true,
+    "note": ""
+   },
+   "1": {
+    "label": "cheap_level_done",
+    "reached": true,
+    "note": ""
+   },
+   "2": {
+    "label": "correction_predicted",
+    "reached": false,
+    "note": "—: no family licensed"
+   },
+   "3": {
+    "label": "spectrum_predicted",
+    "reached": false,
+    "note": "—: no family licensed"
+   },
+   "4": {
+    "label": "anchored",
+    "reached": true,
+    "note": ""
+   },
+   "5": {
+    "label": "validated",
+    "reached": true,
+    "note": ""
+   }
+  }
+ },
+ "spectrum": {
+  "b3lyp": {
+   "n": 30,
+   "values_cm": [
+    414.9,
+    415.7,
+    630.5,
+    644.7,
+    694.6,
+    717.7,
+    864.6,
+    864.8,
+    968.9,
+    969.2,
+    1010.6,
+    1019.9,
+    1020.1,
+    1068.8,
+    1069.1,
+    1185.5,
+    1199.4,
+    1206.2,
+    1355.6,
+    1388.1,
+    1530.8,
+    1531.2,
+    1647.5,
+    1652.8,
+    3174.1,
+    3183.2,
+    3183.7,
+    3199.4,
+    3199.6,
+    3210.4
+   ],
+   "n_imaginary": 0,
+   "source": "website export molecules/A_8448043181.json ← corpus molecules/A_8448043181/ (deck 97ed2d67c66b)"
+  },
+  "wb97x": {
+   "n": 30,
+   "values_cm": [
+    422.9,
+    426.2,
+    563.3,
+    605.0,
+    702.0,
+    733.3,
+    861.0,
+    885.4,
+    992.6,
+    999.2,
+    1005.9,
+    1029.8,
+    1037.9,
+    1046.8,
+    1064.4,
+    1138.8,
+    1223.4,
+    1342.8,
+    1409.4,
+    1449.7,
+    1544.0,
+    1555.4,
+    1680.7,
+    1687.7,
+    3208.8,
+    3218.3,
+    3231.5,
+    3243.1,
+    3250.9,
+    3254.9
+   ],
+   "n_imaginary": 0,
+   "source": "website export molecules/A_8448043181.json ← corpus molecules/A_8448043181/ (deck 97ed2d67c66b)"
+  }
+ },
+ "per_band_budget": {
+  "CC-stretch (6.2 um)": {
+   "n_modes": 3,
+   "omega_range": [
+    1530.8,
+    1647.5
+   ],
+   "u_band_lab": 21.14,
+   "u_band_source": "module 03 u_band_by_record_family.csv, benzene, record(s) C71432_0.jdx, C71432_1.jdx",
+   "ensemble_pm": null,
+   "ensemble_note": "— : no predicted correction is shown; no family licensed: the registered verdict falls at 1,200 admitted layer-B molecules"
+  },
+  "CC-stretch/CH-ip (7.7 um)": {
+   "n_modes": 2,
+   "omega_range": [
+    1355.6,
+    1388.1
+   ],
+   "u_band_lab": 14.61,
+   "u_band_source": "module 03 u_band_by_record_family.csv, benzene, record(s) C71432_0.jdx, C71432_1.jdx, C71432_quantir_res0.125_boxcar.jdx",
+   "ensemble_pm": null,
+   "ensemble_note": "— : no predicted correction is shown; no family licensed: the registered verdict falls at 1,200 admitted layer-B molecules"
+  },
+  "CH-ip-bend (8.6 um)": {
+   "n_modes": 3,
+   "omega_range": [
+    1185.5,
+    1206.2
+   ],
+   "u_band_lab": 32.24,
+   "u_band_source": "module 03 u_band_by_record_family.csv, benzene, record(s) C71432_0.jdx, C71432_1.jdx",
+   "ensemble_pm": null,
+   "ensemble_note": "— : no predicted correction is shown; no family licensed: the registered verdict falls at 1,200 admitted layer-B molecules"
+  },
+  "CH-oop (10.5-15 um; benzene nu11 at 673 included)": {
+   "n_modes": 4,
+   "omega_range": [
+    694.6,
+    864.8
+   ],
+   "u_band_lab": 5.22,
+   "u_band_source": "module 03 u_band_by_record_family.csv, benzene, record(s) C71432_0.jdx, C71432_1.jdx, C71432_quantir_res0.125_boxcar.jdx",
+   "ensemble_pm": null,
+   "ensemble_note": "— : no predicted correction is shown; no family licensed: the registered verdict falls at 1,200 admitted layer-B molecules"
+  },
+  "CH-stretch": {
+   "n_modes": 5,
+   "omega_range": [
+    3174.1,
+    3199.6
+   ],
+   "u_band_lab": 8.34,
+   "u_band_source": "module 03 u_band_by_record_family.csv, benzene, record(s) C71432_0.jdx, C71432_1.jdx, C71432_quantir_res0.125_boxcar.jdx",
+   "ensemble_pm": null,
+   "ensemble_note": "— : no predicted correction is shown; no family licensed: the registered verdict falls at 1,200 admitted layer-B molecules"
+  },
+  "above 3200": {
+   "n_modes": 1,
+   "omega_range": [
+    3210.4,
+    3210.4
+   ],
+   "u_band_lab": 15.59,
+   "u_band_source": "module 03 u_band_by_record_family.csv, benzene, record(s) C71432_0.jdx, C71432_1.jdx",
+   "ensemble_pm": null,
+   "ensemble_note": "— : no predicted correction is shown; no family licensed: the registered verdict falls at 1,200 admitted layer-B molecules"
+  },
+  "low / skeletal": {
+   "n_modes": 4,
+   "omega_range": [
+    414.9,
+    644.7
+   ],
+   "u_band_lab": 16.05,
+   "u_band_source": "module 03 u_band_by_record_family.csv, benzene, record(s) C71432_0.jdx, C71432_1.jdx",
+   "ensemble_pm": null,
+   "ensemble_note": "— : no predicted correction is shown; no family licensed: the registered verdict falls at 1,200 admitted layer-B molecules"
+  },
+  "overtone / combination region": {
+   "n_modes": 1,
+   "omega_range": [
+    1652.8,
+    1652.8
+   ],
+   "u_band_lab": 15.27,
+   "u_band_source": "module 03 u_band_by_record_family.csv, benzene, record(s) C71432_0.jdx, C71432_1.jdx",
+   "ensemble_pm": null,
+   "ensemble_note": "— : no predicted correction is shown; no family licensed: the registered verdict falls at 1,200 admitted layer-B molecules"
+  },
+  "ring / CH-ip (9-10.5 um)": {
+   "n_modes": 7,
+   "omega_range": [
+    968.9,
+    1069.1
+   ],
+   "u_band_lab": 12.7,
+   "u_band_source": "module 03 u_band_by_record_family.csv, benzene, record(s) C71432_0.jdx, C71432_1.jdx, C71432_quantir_res0.125_boxcar.jdx",
+   "ensemble_pm": null,
+   "ensemble_note": "— : no predicted correction is shown; no family licensed: the registered verdict falls at 1,200 admitted layer-B molecules"
+  }
+ },
+ "anchor_coverage": [
+  {
+   "family": "CC-stretch (6.2 um)",
+   "n_modes": 4,
+   "evidence": [
+    "probes/results_m1/R0_DIAGONAL_READING_2026-09-22.md"
+   ],
+   "rms_dev_vs_ccsdt": 8.65,
+   "u_band": 21.14,
+   "wider_than_tolerance": false,
+   "reading": "composite vs CCSD(T): RMS 8.7 cm⁻¹ against the laboratory tolerance 21.1 — within"
+  },
+  {
+   "family": "CH-ip-bend (8.6 um)",
+   "n_modes": 3,
+   "evidence": [
+    "probes/results_m1/R0_DIAGONAL_READING_2026-09-22.md"
+   ],
+   "rms_dev_vs_ccsdt": 3.93,
+   "u_band": 32.24,
+   "wider_than_tolerance": false,
+   "reading": "composite vs CCSD(T): RMS 3.9 cm⁻¹ against the laboratory tolerance 32.2 — within"
+  },
+  {
+   "family": "CH-oop (10.5-15 um; benzene nu11 at 673 included)",
+   "n_modes": 6,
+   "evidence": [
+    "probes/results_m1/R0_DIAGONAL_READING_2026-09-22.md"
+   ],
+   "rms_dev_vs_ccsdt": 23.56,
+   "u_band": 5.22,
+   "wider_than_tolerance": true,
+   "reading": "composite vs CCSD(T): RMS 23.6 cm⁻¹ against the laboratory tolerance 5.2 — wider: not decidable at this rung, shown as such"
+  },
+  {
+   "family": "CH-stretch",
+   "n_modes": 3,
+   "evidence": [
+    "probes/results_m1/R0_DIAGONAL_READING_2026-09-22.md"
+   ],
+   "rms_dev_vs_ccsdt": 52.34,
+   "u_band": 8.34,
+   "wider_than_tolerance": true,
+   "reading": "composite vs CCSD(T): RMS 52.3 cm⁻¹ against the laboratory tolerance 8.3 — wider: not decidable at this rung, shown as such"
+  },
+  {
+   "family": "ring / CH-ip (9-10.5 um)",
+   "n_modes": 3,
+   "evidence": [
+    "probes/results_m1/R0_DIAGONAL_READING_2026-09-22.md"
+   ],
+   "rms_dev_vs_ccsdt": 12.44,
+   "u_band": 12.7,
+   "wider_than_tolerance": false,
+   "reading": "composite vs CCSD(T): RMS 12.4 cm⁻¹ against the laboratory tolerance 12.7 — within"
+  }
+ ],
+ "laboratory": {
+  "n_bands": 92,
+  "records": [
+   "C71432_0.jdx",
+   "C71432_1.jdx",
+   "C71432_quantir_res0.125_boxcar.jdx"
+  ],
+  "per_family": {
+   "low / skeletal": 10,
+   "CH-oop (10.5-15 um; benzene nu11 at 673 included)": 12,
+   "ring / CH-ip (9-10.5 um)": 7,
+   "CH-ip-bend (8.6 um)": 4,
+   "CC-stretch/CH-ip (7.7 um)": 10,
+   "CC-stretch (6.2 um)": 4,
+   "overtone / combination region": 26,
+   "CH-stretch": 14,
+   "above 3200": 5
+  },
+  "source": "module 03 notebook/bands_lab.csv"
+ },
+ "cost_record": [
+  {
+   "step": "cheap rung (deck v1, both functionals)",
+   "machine": "Asus18",
+   "machine_class": "laptop",
+   "seconds": 1041.9,
+   "hours": 0.289,
+   "eur_ex_vat": 0.0,
+   "source": "corpus ledger machine column 'Asus18'",
+   "breakdown_s": {
+    "optimise": 7.4,
+    "hessian_b3lyp": 243.7,
+    "hessian_wb97x": 298.2
+   },
+   "replayed_from": "corpus ledger row A_8448043181 (machine Asus18, 2026-09-15 17:02:35 → 2026-09-15 17:19:59)",
+   "replay": true
+  },
+  {
+   "step": "anchor: E8 CCSD(T)/cc-pVDZ Hessian (72 gradients, rented machine, 24 Sep 2026)",
+   "eur_ex_vat": null,
+   "hours": null,
+   "machine": "CCX53",
+   "source": "probes/results_m1/e8_benzene_ccpvdz/E8_locality_benzene.md; the run's hours are not in a cost record yet — shown as not priced, not as €0"
+  }
+ ],
+ "provenance": {
+  "release": [
+   "layerA2_2026-09-23",
+   "layerA2_2026-09-23b",
+   "layerA2_2026-09-24",
+   "layerA_2026-09-22"
+  ],
+  "deck_hash": "97ed2d67c66b",
+  "commit": "05a95e2",
+  "export_built_utc": "2026-09-28T18:15:10Z",
+  "export_sources_sha256": {
+   "manifest": "72701046f31b901da9292e06da71f1f4929e13819922e6c9c0db375cee341449",
+   "ledger": "c35bb2df7605f28f394e5316d33487d4c8c031a14ef3c86099afb6d3035237a8"
+  },
+  "evidence": [
+   {
+    "path": "probes/results_m1/e8_benzene_ccpvdz/E8_locality_benzene.md",
+    "exists": true
+   },
+   {
+    "path": "probes/results_m1/R0_DIAGONAL_READING_2026-09-22.md",
+    "exists": true
+   },
+   {
+    "path": "probes/results_vpt2/benzene_benchmark_2026-09-22.md",
+    "exists": true
+   }
+  ],
+  "pre_registrations": [
+   "GoalGathering/notes/PreRegistration_2026-09-25_Proof_of_Learning_Layer_B.md",
+   "modules/08_industry_synthesis/PRE_REGISTRATION.md"
+  ],
+  "family_rule": "modules/03_lab_scoreboard/build_lab_tables.py FAMILY_RULE (12 Sep 2026)",
+  "licence": {
+   "rule_source": "GoalGathering/notes/PreRegistration_2026-09-25_Proof_of_Learning_Layer_B.md",
+   "licensed_families": [],
+   "latest_reading": {
+    "source": "modules/05_support_predictor/out/E7_rungB_layerB_2026-09-27.md",
+    "rows": {
+     "(a)": {
+      "n": 274,
+      "ring_coupling_ratio": 0.61,
+      "corrected_omega_rms": 6.18
+     },
+     "(b)": {
+      "n": 274,
+      "ring_coupling_ratio": 0.64,
+      "corrected_omega_rms": 5.6
+     },
+     "(c)": {
+      "n": 274,
+      "ring_coupling_ratio": 0.7,
+      "corrected_omega_rms": 5.59
+     }
+    },
+    "date": "2026-09-27 18:33"
+   }
+  }
+ },
+ "statement": "benzene: rung 5 (validated). The cheap-level spectrum is served with the laboratory tolerance per family; no predicted correction is shown because no family is licensed; the anchor coverage lists what coupled-cluster evidence exists and where it is wider than the tolerance."
+}

@@ -1,0 +1,374 @@
+{
+ "kind": "certificate",
+ "date": "2026-09-28 20:15",
+ "molecule": {
+  "id": "A_01f3186607",
+  "name": "naphthalene",
+  "smiles": "c1ccc2ccccc2c1",
+  "formula": "C10H8",
+  "layer": "A",
+  "n_atoms": 18,
+  "flags": []
+ },
+ "rung": {
+  "reached": 4,
+  "label": "anchored",
+  "ladder": {
+   "0": {
+    "label": "listed",
+    "reached": true,
+    "note": ""
+   },
+   "1": {
+    "label": "cheap_level_done",
+    "reached": true,
+    "note": ""
+   },
+   "2": {
+    "label": "correction_predicted",
+    "reached": false,
+    "note": "—: no family licensed"
+   },
+   "3": {
+    "label": "spectrum_predicted",
+    "reached": false,
+    "note": "—: no family licensed"
+   },
+   "4": {
+    "label": "anchored",
+    "reached": true,
+    "note": ""
+   },
+   "5": {
+    "label": "validated",
+    "reached": false,
+    "note": "— not reached"
+   }
+  }
+ },
+ "spectrum": {
+  "b3lyp": {
+   "n": 48,
+   "values_cm": [
+    175.6,
+    189.8,
+    363.7,
+    396.7,
+    481.9,
+    491.7,
+    517.4,
+    520.3,
+    633.4,
+    635.5,
+    734.4,
+    776.1,
+    785.2,
+    803.8,
+    808.2,
+    852.2,
+    899.9,
+    946.8,
+    949.4,
+    963.1,
+    985.0,
+    993.6,
+    1045.1,
+    1055.8,
+    1157.2,
+    1181.2,
+    1184.2,
+    1194.0,
+    1243.9,
+    1277.7,
+    1297.0,
+    1409.9,
+    1417.2,
+    1431.1,
+    1505.6,
+    1509.6,
+    1567.2,
+    1630.4,
+    1658.8,
+    1688.1,
+    3174.7,
+    3176.7,
+    3178.3,
+    3182.1,
+    3193.5,
+    3194.7,
+    3206.8,
+    3208.1
+   ],
+   "n_imaginary": 0,
+   "source": "website export molecules/A_01f3186607.json ← corpus molecules/A_01f3186607/ (deck 97ed2d67c66b)"
+  },
+  "wb97x": {
+   "n": 48,
+   "values_cm": [
+    189.9,
+    193.2,
+    368.7,
+    407.3,
+    492.6,
+    495.6,
+    521.2,
+    522.6,
+    637.6,
+    648.5,
+    739.7,
+    784.4,
+    798.5,
+    812.0,
+    815.9,
+    866.7,
+    917.1,
+    956.6,
+    976.9,
+    995.2,
+    1014.5,
+    1022.0,
+    1050.8,
+    1065.4,
+    1155.4,
+    1161.2,
+    1182.8,
+    1192.8,
+    1238.8,
+    1283.3,
+    1303.4,
+    1389.4,
+    1424.5,
+    1435.2,
+    1517.2,
+    1520.1,
+    1593.4,
+    1662.6,
+    1683.3,
+    1733.4,
+    3218.8,
+    3219.4,
+    3222.7,
+    3224.9,
+    3236.8,
+    3237.5,
+    3249.6,
+    3250.7
+   ],
+   "n_imaginary": 0,
+   "source": "website export molecules/A_01f3186607.json ← corpus molecules/A_01f3186607/ (deck 97ed2d67c66b)"
+  }
+ },
+ "per_band_budget": {
+  "CC-stretch (6.2 um)": {
+   "n_modes": 4,
+   "omega_range": [
+    1505.6,
+    1630.4
+   ],
+   "u_band_lab": 15.88,
+   "u_band_source": "module 03 u_band_by_record_family.csv, naphthalene, record(s) C91203_0.jdx",
+   "ensemble_pm": null,
+   "ensemble_note": "— : no predicted correction is shown; no family licensed: the registered verdict falls at 1,200 admitted layer-B molecules"
+  },
+  "CC-stretch/CH-ip (7.7 um)": {
+   "n_modes": 5,
+   "omega_range": [
+    1277.7,
+    1431.1
+   ],
+   "u_band_lab": 15.87,
+   "u_band_source": "module 03 u_band_by_record_family.csv, naphthalene, record(s) C91203_0.jdx",
+   "ensemble_pm": null,
+   "ensemble_note": "— : no predicted correction is shown; no family licensed: the registered verdict falls at 1,200 admitted layer-B molecules"
+  },
+  "CH-ip-bend (8.6 um)": {
+   "n_modes": 5,
+   "omega_range": [
+    1157.2,
+    1243.9
+   ],
+   "u_band_lab": 8.59,
+   "u_band_source": "module 03 u_band_by_record_family.csv, naphthalene, record(s) C91203_0.jdx",
+   "ensemble_pm": null,
+   "ensemble_note": "— : no predicted correction is shown; no family licensed: the registered verdict falls at 1,200 admitted layer-B molecules"
+  },
+  "CH-oop (10.5-15 um; benzene nu11 at 673 included)": {
+   "n_modes": 9,
+   "omega_range": [
+    734.4,
+    949.4
+   ],
+   "u_band_lab": 9.61,
+   "u_band_source": "module 03 u_band_by_record_family.csv, naphthalene, record(s) C91203_0.jdx",
+   "ensemble_pm": null,
+   "ensemble_note": "— : no predicted correction is shown; no family licensed: the registered verdict falls at 1,200 admitted layer-B molecules"
+  },
+  "CH-stretch": {
+   "n_modes": 6,
+   "omega_range": [
+    3174.7,
+    3194.7
+   ],
+   "u_band_lab": 10.24,
+   "u_band_source": "module 03 u_band_by_record_family.csv, naphthalene, record(s) C91203_0.jdx",
+   "ensemble_pm": null,
+   "ensemble_note": "— : no predicted correction is shown; no family licensed: the registered verdict falls at 1,200 admitted layer-B molecules"
+  },
+  "above 3200": {
+   "n_modes": 2,
+   "omega_range": [
+    3206.8,
+    3208.1
+   ],
+   "u_band_lab": 15.87,
+   "u_band_source": "module 03 u_band_by_record_family.csv, naphthalene, record(s) C91203_0.jdx",
+   "ensemble_pm": null,
+   "ensemble_note": "— : no predicted correction is shown; no family licensed: the registered verdict falls at 1,200 admitted layer-B molecules"
+  },
+  "low / skeletal": {
+   "n_modes": 10,
+   "omega_range": [
+    175.6,
+    635.5
+   ],
+   "u_band_lab": 15.87,
+   "u_band_source": "module 03 u_band_by_record_family.csv, naphthalene, record(s) C91203_0.jdx",
+   "ensemble_pm": null,
+   "ensemble_note": "— : no predicted correction is shown; no family licensed: the registered verdict falls at 1,200 admitted layer-B molecules"
+  },
+  "overtone / combination region": {
+   "n_modes": 2,
+   "omega_range": [
+    1658.8,
+    1688.1
+   ],
+   "u_band_lab": 15.91,
+   "u_band_source": "module 03 u_band_by_record_family.csv, naphthalene, record(s) C91203_0.jdx",
+   "ensemble_pm": null,
+   "ensemble_note": "— : no predicted correction is shown; no family licensed: the registered verdict falls at 1,200 admitted layer-B molecules"
+  },
+  "ring / CH-ip (9-10.5 um)": {
+   "n_modes": 5,
+   "omega_range": [
+    963.1,
+    1055.8
+   ],
+   "u_band_lab": 15.87,
+   "u_band_source": "module 03 u_band_by_record_family.csv, naphthalene, record(s) C91203_0.jdx",
+   "ensemble_pm": null,
+   "ensemble_note": "— : no predicted correction is shown; no family licensed: the registered verdict falls at 1,200 admitted layer-B molecules"
+  }
+ },
+ "anchor_coverage": [
+  {
+   "family": "CH-oop (10.5-15 um; benzene nu11 at 673 included)",
+   "n_modes": 1,
+   "evidence": [
+    "probes/results_m1/M3_TZ_MODE12_READING_2026-09-20.md"
+   ],
+   "rms_dev_vs_ccsdt": null,
+   "u_band": 9.61,
+   "wider_than_tolerance": false,
+   "reading": "a family reading exists (curvature at DZ and TZ); no per-mode deviation table"
+  },
+  {
+   "family": "ring / CH-ip (9-10.5 um)",
+   "n_modes": 1,
+   "evidence": [
+    "probes/results_m1/M3_TZ_MODE22_READING_2026-09-23.md"
+   ],
+   "rms_dev_vs_ccsdt": null,
+   "u_band": 15.87,
+   "wider_than_tolerance": false,
+   "reading": "a family reading exists (curvature at DZ and TZ); no per-mode deviation table"
+  }
+ ],
+ "laboratory": {
+  "n_bands": 0,
+  "note": "not validated against a laboratory record (rung < 5)"
+ },
+ "cost_record": [
+  {
+   "step": "cheap rung (deck v1, both functionals)",
+   "machine": "Asus18",
+   "machine_class": "laptop",
+   "seconds": 3419.9,
+   "hours": 0.95,
+   "eur_ex_vat": 0.0,
+   "source": "corpus ledger machine column 'Asus18'",
+   "breakdown_s": {
+    "optimise": 32.7,
+    "hessian_b3lyp": 707.4,
+    "hessian_wb97x": 1040.7
+   },
+   "replayed_from": "corpus ledger row A_01f3186607 (machine Asus18, 2026-09-14 15:17:57 → 2026-09-14 16:14:58)",
+   "replay": true
+  },
+  {
+   "step": "anchor family readings (M3, two families, laptop)",
+   "what": "one family's anchor reading along a mode (M3: cc-pVDZ + cc-pVTZ curvature, LNO-CCSD(T), five points)",
+   "machine": "laptop",
+   "hours": 66.83,
+   "eur_ex_vat": 0.0,
+   "measured_on": "naphthalene, laptop: 4,201 s per cc-pVDZ energy, 12.2 h per cc-pVTZ energy at tight thresholds",
+   "source": "probes/results_m1/M3_TZ_MODE12_READING_2026-09-20.md (12.2 h per TZ energy); REPRODUCE.md row on the neutral price (4,201 s)",
+   "note": "two families read (evidence files); hours per family from the M3 record; the E8 whole-molecule Hessian is computing (frozen 10, 28 Sep) and joins this record when read"
+  }
+ ],
+ "provenance": {
+  "release": [
+   "layerA2_2026-09-23",
+   "layerA2_2026-09-23b",
+   "layerA2_2026-09-24",
+   "layerA_2026-09-22"
+  ],
+  "deck_hash": "97ed2d67c66b",
+  "commit": "05a95e2",
+  "export_built_utc": "2026-09-28T18:15:10Z",
+  "export_sources_sha256": {
+   "manifest": "72701046f31b901da9292e06da71f1f4929e13819922e6c9c0db375cee341449",
+   "ledger": "c35bb2df7605f28f394e5316d33487d4c8c031a14ef3c86099afb6d3035237a8"
+  },
+  "evidence": [
+   {
+    "path": "probes/results_m1/M3_TZ_MODE22_READING_2026-09-23.md",
+    "exists": true
+   },
+   {
+    "path": "probes/results_m1/M3_TZ_MODE12_READING_2026-09-20.md",
+    "exists": true
+   }
+  ],
+  "pre_registrations": [
+   "GoalGathering/notes/PreRegistration_2026-09-25_Proof_of_Learning_Layer_B.md",
+   "modules/08_industry_synthesis/PRE_REGISTRATION.md"
+  ],
+  "family_rule": "modules/03_lab_scoreboard/build_lab_tables.py FAMILY_RULE (12 Sep 2026)",
+  "licence": {
+   "rule_source": "GoalGathering/notes/PreRegistration_2026-09-25_Proof_of_Learning_Layer_B.md",
+   "licensed_families": [],
+   "latest_reading": {
+    "source": "modules/05_support_predictor/out/E7_rungB_layerB_2026-09-27.md",
+    "rows": {
+     "(a)": {
+      "n": 274,
+      "ring_coupling_ratio": 0.61,
+      "corrected_omega_rms": 6.18
+     },
+     "(b)": {
+      "n": 274,
+      "ring_coupling_ratio": 0.64,
+      "corrected_omega_rms": 5.6
+     },
+     "(c)": {
+      "n": 274,
+      "ring_coupling_ratio": 0.7,
+      "corrected_omega_rms": 5.59
+     }
+    },
+    "date": "2026-09-27 18:33"
+   }
+  }
+ },
+ "statement": "naphthalene: rung 4 (anchored). The cheap-level spectrum is served with the laboratory tolerance per family; no predicted correction is shown because no family is licensed; the anchor coverage lists what coupled-cluster evidence exists and where it is wider than the tolerance."
+}
