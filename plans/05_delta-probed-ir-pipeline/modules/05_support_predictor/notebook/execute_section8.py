@@ -5,7 +5,11 @@ executes the cheap setup cells (imports, data load, split, config), the *definit
 the new cells (section 8), whose outputs are stored. The generator can still execute everything top to bottom (`make_notebook.py`); this script is the
 economical path when only new cells were added. What it did is written into the notebook's metadata and printed for PROVENANCE.
 
-Usage: python execute_section8.py [--from-cell 27] [--setup 2,4,8,10] [--defs 12,17]
+Usage: python execute_section8.py [--from-cell 27] [--setup 2,4,8,10] [--defs 12,17] [--refresh-new-markdown]
+
+28 Sep 2026 (section 11): `--refresh-new-markdown` rebuilds the cell list once more after the execution, with the result files the new cells
+wrote beside the generator, and copies the *markdown* cells of the new section from that rebuild — so a reading the builder derives from a
+result file (the pattern of section 6) lands in the executed notebook instead of its "not yet executed" placeholder.
 """
 import argparse
 import datetime as dt
@@ -35,6 +39,7 @@ def defs_only(source):
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--from-cell", type=int, default=27); ap.add_argument("--setup", default="2,4,8,10"); ap.add_argument("--defs", default="12,17")
+    ap.add_argument("--refresh-new-markdown", action="store_true")
     a = ap.parse_args()
     old_path = os.path.join(HERE, "deep_learning.ipynb"); old = nbformat.read(old_path, as_version=4)
     # build the new cell list with the generator, in a scratch copy so the executed notebook is not overwritten
@@ -63,8 +68,19 @@ def main():
         for i in range(n_old, len(new.cells)):
             if new.cells[i].cell_type == "code":
                 print(f"new cell {i}: {new.cells[i].source.split(chr(10))[0][:60]}", flush=True); client.execute_cell(new.cells[i], i)
+    if a.refresh_new_markdown:
+        scratch2 = tempfile.mkdtemp(prefix="m05_nb_"); shutil.copy(os.path.join(HERE, "make_notebook.py"), scratch2)
+        for f in os.listdir(HERE):
+            if f.startswith("results") and f.endswith(".json"): shutil.copy(os.path.join(HERE, f), scratch2)
+        subprocess.run([sys.executable, "make_notebook.py", "--no-execute"], cwd=scratch2, check=True, capture_output=True, env=env)
+        rebuilt = nbformat.read(os.path.join(scratch2, "deep_learning.ipynb"), as_version=4); assert len(rebuilt.cells) == len(new.cells)
+        for i in range(n_old, len(new.cells)):
+            if new.cells[i].cell_type == "markdown" and rebuilt.cells[i].source != new.cells[i].source:
+                print(f"markdown cell {i} refreshed from the result files", flush=True); new.cells[i].source = rebuilt.cells[i].source
+        shutil.rmtree(scratch2, ignore_errors=True)
     note = dict(method="append-only", date_utc=t0.strftime("%Y-%m-%dT%H:%M:%SZ"), executed_new_cells=list(range(n_old, len(new.cells))), setup_cells_rerun=setup,
-                definition_cells_rerun=defs, sections_1_to_7_outputs_from=old.metadata.get("executed_utc", "the run of 23 September 2026"))
+                definition_cells_rerun=defs, sections_1_to_7_outputs_from=old.metadata.get("executed_utc", "the run of 23 September 2026"),
+                previous_append_only_execution=old.metadata.get("append_only_execution"))
     new.metadata["append_only_execution"] = note
     nbformat.write(new, old_path); shutil.rmtree(scratch, ignore_errors=True)
     print("written", old_path, note)

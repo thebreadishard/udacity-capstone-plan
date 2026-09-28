@@ -188,8 +188,8 @@ down to 4 × 10⁻⁵). Freezing six of ten quasi-degenerate delocalised core or
 jump by the amounts measured. Benzene (six of six) never met this. This is the probable cause, not a proven one: the proof is one in-plane ±
 pair recomputed with `--frozen 10` (2 × ≈ 6.7 h at 10 threads) reproducing symmetric, positive curvature. **Guard (code + test, `probes/
 e8_cc_hessian_fd.py`, `tests/test_e8_frozen_guard.py`):** the frozen count is derived from the elements (one 1s per first-row atom, five per
-second-row atom) unless stated, and a stated value that differs refuses to start. The `--ks` comma-list bug is recorded here and left as is
-(the option is not used again without the fix).
+second-row atom) unless stated, and a stated value that differs refuses to start. The `--ks` comma-list bug was recorded here and left as is
+(the option is not used again without the fix). **Fixed 28 Sep 18:2x:** `select_displacements()` — the comma list now indexes the displacement list like the slice form; `tests/test_e8_ks_selection.py`. The frozen-10 rerun on the CCX53 uses the server's copy and the slice form and is unaffected.
 
 **What this means for E8.** The benzene verdict ("between", masked (d) reaches the win numbers) stands. Naphthalene's transfer question is
 unanswered; the 30 gradients (3.5 days of the CCX53) carry no usable Hessian. Rerunning at `--frozen 10` costs the same again on the CCX53, or ≈ 1.2

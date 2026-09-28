@@ -666,6 +666,72 @@ code("""followup4 = dict(shuffled={h: dict(real=RB["curve"]["175"]["B1_mlp"]["me
                  power_law={c: {m: dict(factor=v[m]["factor_per_decade"], at1200=v[m]["predictions"]["1200"]) for m in v} for c, v in PL["curves"].items()})
 json.dump(followup4, open("results_followup4.json", "w"), indent=1); print("results_followup4.json written")""")
 
+# ---- 11. follow-up (28 September 2026): decision 51 — the epoch cap; appended after sections 1–10, which stay as run
+md("""## 11. Follow-up (28 September 2026): decision 51 — the epoch cap raised from 30 to 100
+
+On 27 September the project adopted early stopping as a rule for every trained model (decision 51: a validation split, a patience, the best
+epoch recorded — and a best epoch within 10 % of the cap means the cap was binding and the run is repeated). Sections 3 and 4 chose best epochs
+25–29 under a cap of 30 (`results.json`, `best_epochs`), so this notebook is the first audit case. Both configurations are trained again here
+with the cap at 100 and everything else identical (patience 6, the same release, splits, seeds, tokens and optimiser); the read-outs of
+section 5 are repeated beside the numbers of 23 September. Sections 1–10 stand as run; this section is appended, not substituted.""")
+code("""EPOCHS_AUDIT = 3 if QUICK else 100                   # decision 51 (27 Sep 2026): the cap of 30 was binding (best epochs 25–29); QUICK = pipeline check only
+cfg4 = DeltaHConfig(n_families=4, n_irreps=0, n_env=13, n_layers=4)   # as in section 4
+t0 = time.time()
+runs_audit = {"baseline": [train(cfg, s, epochs=EPOCHS_AUDIT) for s in SEEDS], "4 layers": [train(cfg4, s, epochs=EPOCHS_AUDIT) for s in SEEDS]}
+be_audit = {k: [r[2] for r in v] for k, v in runs_audit.items()}
+print(f"cap {EPOCHS_AUDIT}, patience 6: best epochs {be_audit}, {time.time() - t0:.0f} s")
+plot_curves(runs_audit["baseline"], "baseline_cap100", "Figure 11a"); plot_curves(runs_audit["4 layers"], "4layers_cap100", "Figure 11b")""")
+code("""R23 = json.load(open("results.json", encoding="utf-8"))            # the run of 23 September (cap 30)
+ev = {name: evaluate(ms, idx["test"]) for name, ms in runs_audit.items()}
+rows = []
+for name, (r, ap) in ev.items():
+    for F in FAMILIES:
+        rows.append({"model": name, "family": F, "diag, cap 30": R23["test_rms"][F][name]["diag"], "diag, cap 100": r[F]["diag"],
+                     "coup, cap 30": R23["test_rms"][F][name]["coup"], "coup, cap 100": r[F]["coup"]})
+    print(f"{name}: best epochs cap 30 {R23['best_epochs'][name]} → cap 100 {be_audit[name]}; pair-head average precision {R23['pair_ap'][name]:.3f} → {ap:.3f}")
+audit_tab = pd.DataFrame(rows).round(2); display(audit_tab)
+flag = {k: [int(e) >= int(0.9 * EPOCHS_AUDIT) for e in v] for k, v in be_audit.items()}
+print("best epoch within 10 % of the new cap (decision 51 would ask for another repeat):", flag)
+followup5 = dict(date="2026-09-28", rule="decision 51 (27 Sep 2026)", epochs_cap=EPOCHS_AUDIT, epochs_cap_before=R23["epochs"], patience=6, seeds=SEEDS,
+                 best_epochs=be_audit, best_epochs_cap30=R23["best_epochs"], within_10pct_of_new_cap=flag,
+                 test_rms={F: {name: {"diag": ev[name][0][F]["diag"], "coup": ev[name][0][F]["coup"]} for name in runs_audit} for F in FAMILIES},
+                 test_rms_cap30={F: {name: R23["test_rms"][F][name] for name in runs_audit} for F in FAMILIES},
+                 pair_ap={name: ev[name][1] for name in runs_audit}, pair_ap_cap30={name: R23["pair_ap"][name] for name in runs_audit},
+                 final_val_loss={k: [r[1]["val"][r[2]] for r in v] for k, v in runs_audit.items()}, final_val_loss_cap30=R23["final_val_loss"])
+json.dump(followup5, open("results_followup5.json", "w"), indent=1); print("results_followup5.json written")""")
+
+# reading: from results_followup5.json when the section has run (the builder pattern of section 6), else a placeholder that says so
+f5_path = HERE / "results_followup5.json"
+if f5_path.exists():
+    F5 = json.load(open(f5_path, encoding="utf-8"))
+    d_diag = max(abs(F5["test_rms"][F][m]["diag"] - F5["test_rms_cap30"][F][m]["diag"]) for F in F5["test_rms"] for m in F5["test_rms"][F]
+                 if F5["test_rms"][F][m]["diag"] == F5["test_rms"][F][m]["diag"])
+    d_ap = max(abs(F5["pair_ap"][m] - F5["pair_ap_cap30"][m]) for m in F5["pair_ap"])
+    rip = F5["test_rms"]["ring-ip"]; rip0 = F5["test_rms_cap30"]["ring-ip"]
+    any_flag = any(any(v) for v in F5["within_10pct_of_new_cap"].values())
+    small = d_diag < 1.0 and d_ap < 0.05
+    verdict = (f"The largest movement of a test error is {d_diag:.2f} cm⁻¹ and of the pair-head average precision {d_ap:.3f}; the comparison of "
+               "section 5 stands as read on 23 September — the cap was binding on the epoch count, not on the numbers." if small else
+               f"The test errors moved by up to {d_diag:.2f} cm⁻¹ and the pair-head average precision by up to {d_ap:.3f}: the cap of 30 was binding on the "
+               "numbers as well, and the read-out of section 5 is superseded by this table for any later use.")
+    flag_line = ("One or more best epochs sit within 10 % of the new cap as well; under decision 51 that run is repeated with a higher cap before its numbers are quoted."
+                 if any_flag else "No best epoch sits within 10 % of the new cap, so the rule of decision 51 is satisfied and these runs need no further repeat.")
+    reading = (f"""### 11.1 Reading
+
+With the cap at 100 the best epochs were {F5['best_epochs']['baseline']} (baseline) and {F5['best_epochs']['4 layers']} (four layers), against
+{F5['best_epochs_cap30']['baseline']} and {F5['best_epochs_cap30']['4 layers']} under the cap of 30. On the test molecules the ring-in-plane band shifts came out at
+RMS {rip['baseline']['diag']:.1f} / {rip['4 layers']['diag']:.1f} cm⁻¹ (baseline / four layers) against {rip0['baseline']['diag']:.1f} / {rip0['4 layers']['diag']:.1f} on 23 September; the pair head
+reached average precision {F5['pair_ap']['baseline']:.2f} / {F5['pair_ap']['4 layers']:.2f} against {F5['pair_ap_cap30']['baseline']:.2f} / {F5['pair_ap_cap30']['4 layers']:.2f}. {verdict}
+{flag_line}
+
+**What we learned.** A cap chosen before the first run is a guess; the rule that turns the guess into a measurement is cheap — record the best epoch,
+compare it with the cap, repeat when they touch. This section is that rule applied to the module's own first run, and it {'did not change' if small else 'changed'} the numbers;
+either way the earlier sections stay as they were run, because the change of practice is part of what the module shows.""")
+else:
+    reading = ("### 11.1 Reading\n\n*Written from `results_followup5.json` after this section has run (the builder fills it from the recorded numbers); "
+               "not yet executed.*")
+md(reading)
+
 nb = new_notebook(cells=cells, metadata={"kernelspec": {"name": "python3", "display_name": "Python 3", "language": "python"}})
 path = HERE / "deep_learning.ipynb"
 nbformat.write(nb, path)

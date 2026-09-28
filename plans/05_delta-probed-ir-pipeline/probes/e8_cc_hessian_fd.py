@@ -11,7 +11,6 @@ Usage: python e8_cc_hessian_fd.py <geometry.json> <out dir> [--threads 16] [--ba
 import argparse
 import json
 import os
-import sys
 import time
 
 import numpy as np
@@ -40,6 +39,16 @@ def core_orbital_count(symbols) -> int:
     """Number of core orbitals to freeze for a frozen-core CCSD(T): one 1s per first-row atom, five per second-row atom (incident of 27 Sep 2026:
     naphthalene ran with benzene's 6 instead of its 10; six of ten quasi-degenerate carbon 1s orbitals gave inconsistent in-plane gradients)."""
     return sum(CORE_ORBITALS[s.capitalize()] for s in symbols)
+
+
+def select_displacements(ks, spec):
+    """The subset of the displacement list `ks` named by --ks: 'a:b' slices it, 'i,j,k' picks positions in it (both index the displacement list; before
+    28 Sep 2026 the comma form was read as raw coordinate indices — the E8 incident's two 'extra' runs)."""
+    if not spec:
+        return list(ks)
+    if ":" in spec:
+        lo, hi = (int(v) if v else None for v in spec.split(":")); return list(ks[lo:hi])
+    return [ks[int(v)] for v in spec.split(",")]
 
 
 def gradient(symbols, coords_bohr, basis, frozen, log):
@@ -111,10 +120,7 @@ def main():
         log(f"symmetry: {len(ops)} operations, orbits {SYM.orbits(ops, n)}, {len(ks)} displacements ({2 * len(ks)} gradients) instead of {6 * n}")
     partial = False
     if a.ks:
-        if ":" in a.ks:
-            lo, hi = (int(v) if v else None for v in a.ks.split(":")); ks = ks[lo:hi]
-        else:
-            ks = [int(v) for v in a.ks.split(",")]
+        ks = select_displacements(ks, a.ks)
         partial = True; log(f"partial run: displacement indices {ks}")
     for k in ks:
         gs = {}

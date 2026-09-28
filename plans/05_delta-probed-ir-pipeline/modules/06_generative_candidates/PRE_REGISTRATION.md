@@ -78,3 +78,21 @@ Read-outs at T = 1.0, seeds 0 / 1 / 2 against the predictions fixed on 24 Septem
 - baseline (5-gram Markov, computed live in the notebook): validity 0.030, project fit 0.024, W1 13.4 / 2.59 / 3.32 → margins 0.894 and 0.922, every W1 smaller: `beats_baseline` true.
 
 **Verdict: 6 of 7 registered read-outs met; the miss is a prediction that was too pessimistic (project fit).** Sampling cost 507–652 s per model and temperature on 6 threads. Reading: the model has learned the grammar and the family distribution of the frozen set and obeys class conditioning; it proposes nothing the project's physics asks for (no response-informed objective) — that role belongs to the standout pattern proposer. Next: the module's report and README status line from these numbers (desk work); no further training.
+
+## Decision-51 audit 2026-09-28 18:2x — the cap of 20 was binding for every seed
+
+Rule (decision 51, 27 Sep 2026): a best epoch within 10 % of the cap means the cap was binding and the run is repeated with a higher cap as a dated
+follow-up. Read from `notebook/out/*/train_log_seed*.json` (the run of 25–26 September, `m06/train.py`, patience 3, cap 20):
+
+| run | epochs run | best epoch (1-based) | validation loss, last three epochs | seconds per epoch |
+|---|---|---|---|---|
+| seed 0 | 20 | 19 | 0.5532, 0.5530, 0.5531 | 1,810 |
+| seed 1 | 20 | 19 | 0.5513, 0.5512, 0.5513 | 2,087 |
+| seed 2 | 20 | 20 | 0.5524, 0.5525, 0.5523 | 1,680 |
+| cond_seed0 | 20 | 20 | 0.5322, 0.5321, 0.5321 | 2,084 |
+
+The rule triggers for all four. The curves are flat to 1e-4 over the last three epochs, so the expected change of any read-out is below the seed spread
+(validity 0.003); a longer run is still owed under the rule. Cost: ≈ 0.5 h per epoch at six threads → up to 33 h per seed at cap 60, i.e. a server task,
+and no server is free before the CCX53 finishes E8 (after which it becomes layer-B shards 4 and 5). Proposed to the user: seed 0 alone at cap 60 on the
+first free server as the rule's check; the outcome section above stands as run and is quoted as "at the cap" until then. The 26 September numbers are not
+replaced (rule of 28 Sep: module artefacts show the learning).

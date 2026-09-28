@@ -82,3 +82,10 @@ scoreboard value of a ladder molecule is reachable from the fold that predicts t
 Which of models 1–3 is *the* baseline column is decided by the pilot note on these leave-one-molecule-
 out numbers, with the rule fixed now: the model with the lowest overall held-out MAE, ties to the
 simpler model. The margins τ_F are the pilot note's.
+
+## Dated note 2026-09-28 18:2x — early stopping (decision 51)
+
+`HistGradientBoostingRegressor` with library defaults leaves early stopping off below 10,000 rows (`early_stopping="auto"`), so model 3 ran its full
+`max_iter` on this table. Under decision 51 (27 Sep 2026: validation split + patience + best iteration recorded for every trained model) the next labelled
+run sets `early_stopping=True, validation_fraction=0.1, n_iter_no_change=10` and records `n_iter_` per fold; the numbers already recorded stand as run.
+The reason is the rule, not a weakness of the baseline: the change can only lower the baseline's variance, never weaken it.
