@@ -294,3 +294,11 @@ at load → `out/E7_rungC_C2sum_elemreset_2026-09-28`. Design check on that chec
 cleanest reading of "does QM9 pretraining help" against the stage-1 + 2 winner (0.81 / 0.84 at 175). Its read-out and stage 4's (both variants under
 the mean body) and stage 5's (the search repeated under mean) are read together under the rule of the 20:0x amendment; C1 sum at the winner's
 flags is the 27 Sep record `out/E7_rungC_s2_lr1e-3_e200_2026-09-27` (fit on 149 per seed, as here).
+
+## Dated note 28 September 09:0x — stage 5, cell lr 3e-3 / 200 epochs diverged under the mean body
+
+Seed 1 of the sixth stage-2 cell hit a non-finite loss at epoch 37 (molecule A2_34bb1210bc); the driver's guard of 27 Sep 22:0x stopped the run, and
+the stage-5 script ended before the pick (`out/E7_rungC_s5_2026-09-28.log`). Under the sum body the same learning rate had one NaN seed at 60 epochs
+(27 Sep) and survived 200 epochs with early stopping; under the mean body it does not. As registered, a diverged cell never wins: the pick runs over
+the five completed cells (`rungC_stage5b_0928.sh`, the picker lists the sixth as missing), and the stage continues unchanged. No cell is re-run at a
+different setting; lr 3e-3 is recorded as not viable for this body, which is the search's answer for that cell, not an incident of the code.
