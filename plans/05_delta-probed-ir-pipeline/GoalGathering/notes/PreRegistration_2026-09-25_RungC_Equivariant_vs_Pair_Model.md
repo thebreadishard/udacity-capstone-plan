@@ -246,3 +246,39 @@ and the mismatch refusal exercised).**
 **Run (laptop, 8 threads, sequential, `rungC_stage4_0928.sh`, log `out/E7_rungC_s4_2026-09-28.log`; started 06:1x):** (1) C1 on the mean body →
 `out/E7_rungC_C1mean_2026-09-28`; (2) pretraining → `out/rungC_pretrained_mean_2026-09-28` (≈ 27 min); (3) C2 fine-tune → `out/E7_rungC_C2mean_2026-09-28`.
 Estimate ≈ 1 h 20 in total (stage 2 took ≈ 10 min per cell at 175; three sizes ≈ 20 min per variant). Nothing else runs on the laptop.
+
+## Dated correction 28 September 06:3x — the cause of the second C2 incident was the elements, not the neighbour count (found by the new design check)
+
+**What the design check found (`m05/design_check.py`, built this morning at the user's request "kunnen wij ook testen bij ontwerp vanaf nu?";
+records `out/design_check_rungC_*_2026-09-28.{md,json}`).** The 27 Sep sum checkpoint probed on all 534 corpus molecules:
+
+| molecules | n | worst raw \|output\| |
+|---|---|---|
+| without S or Cl (incl. the densest: 30 atoms, mean 17.7 / max 27 neighbours) | 432 | ≤ 7.2 (median 3.4) |
+| with S or Cl | 102 | 7 × 10³ – 1.6 × 10²¹ (median 10¹⁰) |
+| with S or Cl, after resetting only the two embedding rows Z = 16, 17 to the mean of the trained rows | 102 | ≤ 6.3 (median 3.2) |
+
+Hessian QM9 contains H, C, N, O, F only (transfer table of the design check: elements [1, 6, 7, 8, 9] against the target's [1, 6, 7, 8, 9, 16, 17];
+also outside the source range: atoms 8–30 vs 9–25, max Z 17 vs 9). The embedding rows of S and Cl stayed at their random initialisation
+(norms 9.0 and 5.9) while the trained rows shrank (4.9–6.3 with different statistics), and the untrained body amplified that. The 22:4x amendment's
+table happened to contain two sulphur molecules at 23 atoms and read the size; **that diagnosis was wrong.** The neighbour-count effect is real but
+small (fresh sum body: feature scale ratio 1.3 across the corpus extremes; mean body 1.05) and was not the trigger.
+
+**Consequences.**
+1. *The fix that matters:* at fine-tune time the embedding rows of elements the pretraining never saw are set to the mean of the trained rows
+   (standard new-token initialisation). In code and tested: the pretraining checkpoint now records the elements it trained on;
+   `load_pretrained_body` resets the unseen rows from that list (or from `--pretrained-elements` for a checkpoint from before today) and refuses a
+   checkpoint with neither; the reset is logged; `tests/test_rungC_elements.py` (4 tests). The checkpoint patch landed before stage 4 reached its
+   pretraining step, the loader patch before its fine-tune step, so stage 4's C2 runs with the reset.
+2. *Proof on the incident:* the 27 Sep sum checkpoint, probed as the fine-tune now sees it (`--as-finetune`), passes — worst output 3.36, ratio 1.1.
+   So C2 under the **registered** sum body was runnable all along with this one fix; that run (fine-tune from the existing 27 Sep checkpoint at the
+   stage-2 winner's flags, ≈ 20 min) is the cleanest reading of "does QM9 pretraining help" and is proposed to the user.
+3. *The mean body* stays as amended this morning (a sound change, measured, small), but it is no longer the repair of the incident. Stage 4 and the
+   queued stage 5 (the sum-body search repeated under mean, the user's decision of 06:5x: "Herhaal onder mean") continue as registered.
+4. *Design check as a rule:* every body, fresh or pretrained, is probed on the target's extremes (smallest / largest molecule, sparsest / densest
+   neighbourhood, heaviest element) before its run is queued, and every pretraining → fine-tune transfer prints the source-against-target table
+   (atoms, neighbour counts, heaviest element, elements) so the pre-registration names the test that covers each property outside the source
+   range. Stage scripts run it first and stop on failure (`rungC_stage5_0928.sh` does).
+
+**Time lost by the wrong diagnosis:** none in compute (stage 4's changes are all kept), one morning's reasoning; the correction came within the
+first hour of the check existing, which is the argument for the check.

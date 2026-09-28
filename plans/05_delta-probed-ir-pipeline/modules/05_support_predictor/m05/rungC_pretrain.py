@@ -118,7 +118,8 @@ def sha16(path: Path) -> str:
 
 
 def save_checkpoint(path: Path, model: Scaled, meta: dict) -> None:
-    torch.save({"body_state": model.model.state_dict(), "aggregation": model.model.aggregation, "class_scale": model.class_scale,
+    torch.save({"body_state": model.model.state_dict(), "aggregation": model.model.aggregation, "elements": meta.get("elements"),
+                "class_scale": model.class_scale,
                 "scale": model.scale, "meta": meta}, path)
 
 
@@ -165,6 +166,7 @@ def main(argv: list[str] | None = None) -> int:
                 class_scale=scales, val_every=every, smoke=a.smoke, hlow_channel=a.hlow_channel, aggregation=a.aggregation, history=[])
     ck_path = Path(a.out_prefix + ".pt")
     n_seen = 0
+    elements_seen: set[int] = set()      # 28 Sep: the fine-tune must know which element embeddings were never trained (QM9 has no S, Cl)
     for ep in range(a.epochs):
         tot, n_tr, val_tot, n_val, t0 = 0.0, 0, 0.0, 0, time.time()
         for k, m in enumerate(iter_qm9(shards, a.max_molecules, hlow_channel=a.hlow_channel)):
@@ -176,6 +178,7 @@ def main(argv: list[str] | None = None) -> int:
                 n_val += 1
                 continue
             model.train()
+            elements_seen.update(int(z) for z in m["Z"])
             opt.zero_grad()
             loss = mw_loss(model, t)
             if not torch.isfinite(loss):
@@ -190,11 +193,13 @@ def main(argv: list[str] | None = None) -> int:
                 log(f"  epoch {ep + 1} molecule {n_tr}: train loss {tot / n_tr:.4g} ({(time.time() - t0) / n_tr:.2f} s per molecule)")
             if a.checkpoint_every and n_seen % a.checkpoint_every == 0:
                 meta["molecules_seen"] = n_seen
+                meta["elements"] = sorted(elements_seen)
                 save_checkpoint(ck_path, model, meta)
         rec = dict(epoch=ep + 1, train_loss=tot / max(n_tr, 1), val_loss=val_tot / max(n_val, 1), n_train=n_tr, n_val=n_val,
                    seconds=round(time.time() - t0, 1))
         meta["history"].append(rec)
         meta["molecules_seen"] = n_seen
+        meta["elements"] = sorted(elements_seen)
         save_checkpoint(ck_path, model, meta)
         log(f"epoch {ep + 1}/{a.epochs}: train {rec['train_loss']:.4g} val {rec['val_loss']:.4g} on {n_tr} / {n_val} molecules, "
             f"{rec['seconds']:.0f} s; checkpoint {ck_path}")

@@ -65,3 +65,19 @@ te maken. Voor het voorstel (§3.5) verandert er bij A niets tot de uitlezing; b
 
 De volgorde: eerst de hersortering van laag B (uw "3: morgen"), dan A als u dat kiest — beide op verschillende machines (Helsinki resp. de
 laptop), dus ze hinderen elkaar niet.
+
+## 6. Correctie, 28 september 06:3x — de oorzaak was een andere
+
+De ontwerpcontrole die vanochtend is gebouwd, heeft het checkpoint van gisteren op alle 534 moleculen gezet. Uitkomst: de 432 moleculen zonder
+zwavel of chloor blijven allemaal netjes (grootste uitvoer 7,2, ook de dichtste ringen met 30 atomen); de 102 moleculen mét zwavel of chloor
+ontploffen allemaal (7 × 10³ tot 10²¹). Vervang je alleen de twee "elementrijen" van S en Cl door het gemiddelde van de getrainde rijen, dan is
+alles normaal (grootste uitvoer 6,3).
+
+Wat er dus echt gebeurde: QM9 bevat alleen H, C, N, O en F. Het netwerk heeft voor elk element een rij startgetallen; de rijen van S en Cl zijn
+tijdens het voortrainen nooit aangeraakt en bleven willekeurig, terwijl de rest krimpend werd getraind. Op een zwavelmolecuul kwam die
+willekeurige rij het netwerk in en de som-optelling blies hem op. Mijn tabel van paragraaf 3 bevatte toevallig twee zwavelmoleculen van 23 atomen,
+en ik las de grootte af. Dat was fout.
+
+Gevolgen: (1) de echte reparatie is klein — bij het bijleren krijgen ongeziene elementen het gemiddelde van de getrainde rijen; dat zit nu in de
+code, met tests, en stage 4 gebruikt het; (2) het delen door het aantal buren (optie A) blijft een goede keuze, maar was niet dé oorzaak; (3) met
+alleen de elementreparatie had C2 gisteren onder het oorspronkelijke lichaam gewoon kunnen draaien — die run van ≈ 20 min stel ik nu voor.

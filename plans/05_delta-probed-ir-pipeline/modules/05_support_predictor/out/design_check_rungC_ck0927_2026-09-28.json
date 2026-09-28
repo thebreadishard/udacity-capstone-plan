@@ -1,0 +1,180 @@
+{
+ "date": "2026-09-28 06:32",
+ "molecules": "corpus/molecules",
+ "n_target": 534,
+ "body": "checkpoint out/rungC_pretrained_2026-09-27.pt (sum aggregation)",
+ "target_ranges": {
+  "n_atoms": [
+   8,
+   30
+  ],
+  "mean_degree": [
+   6.75,
+   17.714284896850586
+  ],
+  "max_degree": [
+   7,
+   27
+  ],
+  "max_Z": [
+   6,
+   17
+  ],
+  "elements": [
+   1,
+   6,
+   7,
+   8,
+   9,
+   16,
+   17
+  ]
+ },
+ "extremes": {
+  "n_atoms_min": "B_0112c00d02",
+  "n_atoms_max": "A2_02c8833bd5",
+  "mean_degree_min": "B_0112c00d02",
+  "mean_degree_max": "A2_09d0b3be91",
+  "max_degree_max": "A2_2b693cf6e7",
+  "max_Z_max": "A2_066237c4f5"
+ },
+ "probe": {
+  "A2_02c8833bd5": {
+   "feature_scale": 0.0591503344476223,
+   "worst_output": 3.232224225997925,
+   "finite": true
+  },
+  "A2_066237c4f5": {
+   "feature_scale": 1.9274961948394775,
+   "worst_output": 1428921.625,
+   "finite": true
+  },
+  "A2_09d0b3be91": {
+   "feature_scale": 0.05988403409719467,
+   "worst_output": 3.300621509552002,
+   "finite": true
+  },
+  "A2_2b693cf6e7": {
+   "feature_scale": 0.05936019495129585,
+   "worst_output": 3.1466493606567383,
+   "finite": true
+  },
+  "B_0112c00d02": {
+   "feature_scale": 2295.39013671875,
+   "worst_output": 1.6958314369777664e+16,
+   "finite": true
+  }
+ },
+ "verdict": {
+  "finite": true,
+  "worst_output": 1.6958314369777664e+16,
+  "scale_ratio": 38806.038176357586,
+  "pass": false,
+  "limit_abs": 1000.0,
+  "limit_ratio": 3.0
+ },
+ "source": {
+  "dir": "C:\\Users\\thebr\\Documents\\CapstonePlan\\plans\\05_delta-probed-ir-pipeline\\modules\\05_support_predictor\\data\\hessian_qm9\\hessian_qm9_DatasetDict\\vacuum",
+  "n_sample": 500,
+  "ranges": {
+   "n_atoms": [
+    9,
+    25
+   ],
+   "mean_degree": [
+    7.692307472229004,
+    21.5
+   ],
+   "max_degree": [
+    8,
+    24
+   ],
+   "max_Z": [
+    6,
+    9
+   ],
+   "elements": [
+    1,
+    6,
+    7,
+    8,
+    9
+   ]
+  },
+  "table": [
+   {
+    "property": "n_atoms",
+    "source": [
+     9,
+     25
+    ],
+    "target": [
+     8,
+     30
+    ],
+    "inside": false
+   },
+   {
+    "property": "mean_degree",
+    "source": [
+     7.692307472229004,
+     21.5
+    ],
+    "target": [
+     6.75,
+     17.714284896850586
+    ],
+    "inside": false
+   },
+   {
+    "property": "max_degree",
+    "source": [
+     8,
+     24
+    ],
+    "target": [
+     7,
+     27
+    ],
+    "inside": false
+   },
+   {
+    "property": "max_Z",
+    "source": [
+     6,
+     9
+    ],
+    "target": [
+     6,
+     17
+    ],
+    "inside": false
+   },
+   {
+    "property": "elements",
+    "source": [
+     1,
+     6,
+     7,
+     8,
+     9
+    ],
+    "target": [
+     1,
+     6,
+     7,
+     8,
+     9,
+     16,
+     17
+    ],
+    "inside": false,
+    "missing": [
+     16,
+     17
+    ]
+   }
+  ]
+ },
+ "seconds": 1.4
+}

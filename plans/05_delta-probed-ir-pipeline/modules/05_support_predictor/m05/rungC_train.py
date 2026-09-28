@@ -88,10 +88,14 @@ def inner_split(train_ids: list, seed: int, fraction: float) -> tuple[list, list
     return [train_ids[k] for k in sorted(perm[:n_val])], [train_ids[k] for k in sorted(perm[n_val:])]
 
 
-def load_pretrained_body(path: str | Path, reinit_head: bool = True, seed: int = 0, aggregation: str = AGGREGATION) -> DeltaHessianModel:
+def load_pretrained_body(path: str | Path, reinit_head: bool = True, seed: int = 0, aggregation: str = AGGREGATION,
+                         target_elements: list[int] | None = None, pretrained_elements: list[int] | None = None) -> DeltaHessianModel:
     """A fresh DeltaHessianModel carrying the body of a `rungC_pretrain.py` checkpoint; the output head re-initialised (the registered C2 recipe:
     "the output head re-initialised and the whole network fine-tuned on ΔH") unless asked otherwise. The checkpoint's aggregation must equal the
-    requested one (a checkpoint without the key predates 28 Sep 2026 and is a sum body): a setting that travels unexamined is the E8 lesson."""
+    requested one (a checkpoint without the key predates 28 Sep 2026 and is a sum body): a setting that travels unexamined is the E8 lesson.
+    With `target_elements`, the embedding rows of elements the pretraining never saw (QM9: no S, Cl — the cause of the 27 Sep blow-up, found by
+    the design check on 28 Sep) are set to the mean of the trained rows; the checkpoint's own element list is used, or `pretrained_elements` for a
+    checkpoint from before 28 Sep, and a checkpoint without either is refused. The reset list is kept as `model.reset_elements`."""
     ck = torch.load(path, map_location="cpu", weights_only=False)
     ck_agg = ck.get("aggregation", "sum")
     if ck_agg != aggregation:
@@ -99,6 +103,18 @@ def load_pretrained_body(path: str | Path, reinit_head: bool = True, seed: int =
                          "aggregation or pass --aggregation to match")
     model = DeltaHessianModel(aggregation=aggregation)
     model.load_state_dict(ck["body_state"])
+    model.reset_elements = []
+    if target_elements is not None:
+        seen = ck.get("elements") or pretrained_elements
+        if not seen:
+            raise ValueError(f"{path}: the checkpoint carries no element list (pretraining before 28 Sep 2026) — pass --pretrained-elements, "
+                             "e.g. 1,6,7,8,9 for Hessian QM9, so the untrained element embeddings can be reset")
+        seen = sorted({int(z) for z in seen})
+        unseen = sorted({int(z) for z in target_elements} - set(seen))
+        if unseen:
+            with torch.no_grad():
+                model.emb.weight[unseen] = model.emb.weight[seen].mean(0)
+            model.reset_elements = unseen
     if reinit_head:
         torch.manual_seed(seed)
         for layer in model.head:
@@ -133,7 +149,8 @@ def inner_val_aux(model, tensors: dict, ids: list) -> float:
 
 def train_one(train_ids: list, tensors: dict, seed: int, epochs: int, lr: float = 1e-3, log=print, aux_weight: float = AUX_WEIGHT,
               loss_mode: str = "registered", scale_mode: str = "rms", val_ids: list | None = None, patience: int = 0,
-              pretrained: str | None = None, aggregation: str = AGGREGATION) -> tuple[torch.nn.Module, list]:
+              pretrained: str | None = None, aggregation: str = AGGREGATION,
+              pretrained_elements: list[int] | None = None) -> tuple[torch.nn.Module, list]:
     """Defaults = the registered recipe C1 of 19:50 (27 Sep). The other values are the cells of the fair-chance search registered at 20:0x:
     aux_weight 1.0; loss_mode 'internal' (the relative internal-ΔF term alone); scale_mode 'class' (one output scale per entry class: diagonal
     3×3 block, bonded pair, non-bonded pair — the pair model's per-class standardisation); val_ids = inner validation molecules held out of the
@@ -151,8 +168,11 @@ def train_one(train_ids: list, tensors: dict, seed: int, epochs: int, lr: float 
                 sq[k] += d2[c == k].sum()
                 cnt[k] += (c == k).sum()
         class_scale = np.sqrt(sq / np.maximum(cnt, 1))
-    body = (load_pretrained_body(pretrained, reinit_head=True, seed=seed, aggregation=aggregation) if pretrained
-            else DeltaHessianModel(aggregation=aggregation))
+    target_elements = sorted({int(z) for i in train_ids for z in tensors[i]["Z"].tolist()})
+    body = (load_pretrained_body(pretrained, reinit_head=True, seed=seed, aggregation=aggregation, target_elements=target_elements,
+                                 pretrained_elements=pretrained_elements) if pretrained else DeltaHessianModel(aggregation=aggregation))
+    if pretrained and body.reset_elements:
+        log(f"  element embeddings absent from pretraining reset to the trained mean: Z = {body.reset_elements}")
     log(f"  {'pretrained' if pretrained else 'fresh'} {aggregation} body pre-flight: worst |output| "
         f"{check_pretrained_transfer(body, tensors, train_ids):.3g} on the training molecules")
     model = Scaled(body, scale, class_scale)
@@ -240,7 +260,10 @@ def main() -> int:
     ap.add_argument("--pretrained", default=None, help="C2: a `rungC_pretrain.py` checkpoint; its body is loaded, the head re-initialised per seed")
     ap.add_argument("--aggregation", default=AGGREGATION, choices=list(AGGREGATIONS),
                     help="neighbour-message pooling in the body: mean (default since 28 Sep) or sum (the body registered on 25 Sep)")
+    ap.add_argument("--pretrained-elements", default=None,
+                    help="comma list of atomic numbers a pre-28-Sep checkpoint was trained on (Hessian QM9: 1,6,7,8,9); newer checkpoints carry it")
     a = ap.parse_args()
+    a.pretrained_elements = [int(z) for z in a.pretrained_elements.split(",")] if a.pretrained_elements else None
     torch.set_num_threads(a.threads)
     t_start = time.time()
     log = lambda s: print(s, flush=True)  # noqa: E731
@@ -297,7 +320,7 @@ def main() -> int:
                model="rungC_equivariant C1 (from scratch; output scaled by the training set's RMS ΔH, or per entry class)",
                n_molecules=len(mols), holdout_a=test_a, holdout_b=test_b, scaffold_cores=cores, pool=len(pool), pool_ids=pool, pool_layers=a.pool_layers,
                sizes=sizes, seeds=seeds, epochs=a.epochs, lr=a.lr, aux_weight=a.aux_weight, loss=a.loss, scale=a.scale, inner_val=a.inner_val,
-               patience=a.patience, pretrained=a.pretrained, aggregation=a.aggregation,
+               patience=a.patience, pretrained=a.pretrained, aggregation=a.aggregation, pretrained_elements=a.pretrained_elements,
                substituted_analytic=substituted, curve={})
     res["zero_rule"] = {h: readouts(mols, ids, pool, lambda i: np.zeros_like(mols[i]["F_low"])) for h, ids in tests.items() if ids}
     lines = [f"# Rung C (equivariant ΔH, C1 from scratch) — {a.out_prefix} ({res['date']}){' — SMOKE, not a result' if a.smoke else ''}", "",
@@ -318,7 +341,7 @@ def main() -> int:
             t1 = time.time()
             val_ids, fit_ids = inner_split(tr, seed, a.inner_val)
             model, hist = train_one(fit_ids, tensors, seed, a.epochs, a.lr, log, a.aux_weight, a.loss, a.scale, val_ids, a.patience, a.pretrained,
-                                    a.aggregation)
+                                    a.aggregation, a.pretrained_elements)
             dF_of = predictor(model, tensors, mols)
             out = {"seed": seed, "train_history": hist, "output_scale": model.scale, "class_scale": model.class_scale_values,
                    "seconds": round(time.time() - t1, 1), "inner_val_ids": val_ids,

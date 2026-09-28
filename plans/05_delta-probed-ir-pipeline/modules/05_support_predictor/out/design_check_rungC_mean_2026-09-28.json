@@ -1,0 +1,77 @@
+{
+ "date": "2026-09-28 06:31",
+ "molecules": "corpus/molecules",
+ "n_target": 534,
+ "body": "fresh body, mean aggregation, seed 0",
+ "target_ranges": {
+  "n_atoms": [
+   8,
+   30
+  ],
+  "mean_degree": [
+   6.75,
+   17.714284896850586
+  ],
+  "max_degree": [
+   7,
+   27
+  ],
+  "max_Z": [
+   6,
+   17
+  ],
+  "elements": [
+   1,
+   6,
+   7,
+   8,
+   9,
+   16,
+   17
+  ]
+ },
+ "extremes": {
+  "n_atoms_min": "B_0112c00d02",
+  "n_atoms_max": "A2_02c8833bd5",
+  "mean_degree_min": "B_0112c00d02",
+  "mean_degree_max": "A2_09d0b3be91",
+  "max_degree_max": "A2_2b693cf6e7",
+  "max_Z_max": "A2_066237c4f5"
+ },
+ "probe": {
+  "A2_02c8833bd5": {
+   "feature_scale": 1.0137015581130981,
+   "worst_output": 11.07261848449707,
+   "finite": true
+  },
+  "A2_066237c4f5": {
+   "feature_scale": 0.9934031367301941,
+   "worst_output": 9.090173721313477,
+   "finite": true
+  },
+  "A2_09d0b3be91": {
+   "feature_scale": 1.0137165784835815,
+   "worst_output": 10.474339485168457,
+   "finite": true
+  },
+  "A2_2b693cf6e7": {
+   "feature_scale": 1.0104788541793823,
+   "worst_output": 11.256145477294922,
+   "finite": true
+  },
+  "B_0112c00d02": {
+   "feature_scale": 0.9622595310211182,
+   "worst_output": 4.2112016677856445,
+   "finite": true
+  }
+ },
+ "verdict": {
+  "finite": true,
+  "worst_output": 11.256145477294922,
+  "scale_ratio": 1.0534752276320494,
+  "pass": true,
+  "limit_abs": 1000.0,
+  "limit_ratio": 3.0
+ },
+ "seconds": 0.6
+}
