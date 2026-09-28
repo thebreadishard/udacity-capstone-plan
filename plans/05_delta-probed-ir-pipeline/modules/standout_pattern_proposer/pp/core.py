@@ -34,12 +34,20 @@ HOLDOUT_SEED = 20260906    # per the pre-registration (the probe's own is 202609
 
 
 # ------------------------------------------------------------------------------------------------------------------ object
-def delta2(mol_dir: Path, use_analytic: bool = False) -> dict:
+def delta2(mol_dir: Path, use_analytic: bool = False, hi_override: Path | None = None) -> dict:
+    """Δ₂ of a corpus molecule: the high level is ωB97X unless `hi_override` names another projected Hessian at the same geometry — the CC-level test of
+    28 Sep 2026 passes the CCSD(T) Hessian of the anchor (E8) here, so that the proxy and the real response go through one code path."""
     d = Path(mol_dir)
     g = json.load(open(d / "geometry.json", encoding="utf-8"))
     tag = "_analytic" if use_analytic and (d / "hessian_b3lyp_analytic.npz").exists() and (d / "hessian_wb97x_analytic.npz").exists() else ""
     lo = np.load(d / f"hessian_b3lyp{tag}.npz")["H_projected"]
-    hi = np.load(d / f"hessian_wb97x{tag}.npz")["H_projected"]
+    if hi_override is not None:
+        z = np.load(hi_override)
+        if "coords_bohr" in z.files and not np.allclose(z["coords_bohr"], np.asarray(g["coords_bohr"], float), atol=1e-6):
+            raise ValueError(f"{hi_override}: geometry differs from {d / 'geometry.json'}")
+        hi = z["H_projected"]
+    else:
+        hi = np.load(d / f"hessian_wb97x{tag}.npz")["H_projected"]
     masses = np.asarray(g["masses_amu"], float)
     w, freq, V, _ = normal_modes(lo, masses)
     m = np.repeat(masses * AMU2AU, 3)
@@ -64,9 +72,10 @@ def unpack(d: np.ndarray, pairs, M: int) -> np.ndarray:
 
 
 # ------------------------------------------------------------------------------------------------------------------ export
-def export_molecule(mol_dir: Path, use_analytic: bool = False, quick: bool = False) -> dict:
-    """Δ₂, the deterministic deck and every exact response. `quick` narrows the deck as the probe's --quick does (smoke only)."""
-    o = delta2(mol_dir, use_analytic)
+def export_molecule(mol_dir: Path, use_analytic: bool = False, quick: bool = False, hi_override: Path | None = None) -> dict:
+    """Δ₂, the deterministic deck and every exact response. `quick` narrows the deck as the probe's --quick does (smoke only); `hi_override` as in
+    `delta2` (the deck and its hash still come from the B3LYP frequencies, so the CC-level export uses the same deck as the proxy export)."""
+    o = delta2(mol_dir, use_analytic, hi_override)
     a = {"M": o["M"], "freq_low_cm": o["freq_cm"].tolist(), "molecule": o["id"]}
     deck = PROBE.build_deck(a, quick)
     pairs, _ = PROBE.sym_index(o["M"])
