@@ -86,3 +86,6 @@ plans/*/modules/06_generative_candidates/out/
 !plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/data/e9/*
 !plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/corpus/decks/*.json
 !plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/notebook/results_followup3.json
+website/site/node_modules/
+website/site/dist/
+website/site/.astro/

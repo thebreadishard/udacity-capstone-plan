@@ -282,3 +282,15 @@ small (fresh sum body: feature scale ratio 1.3 across the corpus extremes; mean 
 
 **Time lost by the wrong diagnosis:** none in compute (stage 4's changes are all kept), one morning's reasoning; the correction came within the
 first hour of the check existing, which is the argument for the check.
+
+## Dated amendment 28 September 06:4x — C2 under the registered sum body, element reset only (the user: "Ja, zet maar achter stage 5")
+
+**Run (queued behind stage 5, `rungC_c2sum_0928.sh`, log `out/E7_rungC_c2sum_2026-09-28.log`, ≈ 20 min, laptop 8 threads).** The fine-tune from the
+existing 27 Sep QM9 checkpoint (sum body, as registered on 25 Sep; no element list → `--pretrained-elements 1,6,7,8,9`) at the stage-2 winner's
+flags, sizes 45 / 100 / 175, seeds 0–2, inner validation 15 %, head re-initialised per seed, the S and Cl embedding rows reset to the trained mean
+at load → `out/E7_rungC_C2sum_elemreset_2026-09-28`. Design check on that checkpoint as the fine-tune sees it runs first (06:3x: PASS, 3.36, ratio 1.1).
+
+**Why.** It is the C2 of the original pre-registration with the one repair the incident actually needed and no architecture change, so it is the
+cleanest reading of "does QM9 pretraining help" against the stage-1 + 2 winner (0.81 / 0.84 at 175). Its read-out and stage 4's (both variants under
+the mean body) and stage 5's (the search repeated under mean) are read together under the rule of the 20:0x amendment; C1 sum at the winner's
+flags is the 27 Sep record `out/E7_rungC_s2_lr1e-3_e200_2026-09-27` (fit on 149 per seed, as here).
