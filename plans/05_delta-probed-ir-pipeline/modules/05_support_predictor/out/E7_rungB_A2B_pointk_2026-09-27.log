@@ -1,0 +1,8 @@
+analytic second-route Hessians substituted for 23 molecules: ['A2_0420908ebe', 'A2_13bafae8e0', 'A2_13eea56ee5', 'A2_197913eb9c', 'A2_1c29b66c9d', 'A2_20747fd501', 'A2_20e59f3897', 'A2_220d2c107b', 'A2_22d0e8105c', 'A2_28eed45ad3', 'A2_2a0b78bd2b', 'A2_2b693cf6e7', 'A2_2c22216564', 'A2_3020175511', 'A2_330b4d6d8d', 'A2_356c370f21', 'A2_3802542cb6', 'A2_3a2982dd85', 'A2_3c2cf09504', 'A_014f8519af', 'A_78896cfe24', 'A_8448043181', 'A_b90527ca2d']
+pool restricted to layers ['A', 'A2', 'B']: 449 molecules
+498 molecules; pattern pairs per molecule 414–4712 (features 66); hold-out (a) 10, (b) 39 (['fluoranthene', 'fluorene']); pool 449; sizes [449]; seeds [0, 1, 2]; epochs 60
+n=449 (a) B1 MLP: diag CH-stretch   2.42 | CH-oop   4.57 | ring-ip   4.66 | other   6.26 | ring couplings 1.61 vs zero 3.76 (ratio 0.43) | block 0.71 vs median 3.31 | corrected ω 4.70 (zero 23.29) | overlap 0.998 | ΔH residual 0.26
+n=449 (b) B1 MLP: diag CH-stretch   4.70 | CH-oop   5.50 | ring-ip   4.54 | other   7.54 | ring couplings 1.73 vs zero 3.74 (ratio 0.46) | block 0.77 vs median 1.07 | corrected ω 5.22 (zero 23.09) | overlap 0.993 | ΔH residual 0.31
+n=449 (a) B2 GBT: diag CH-stretch   4.35 | CH-oop   7.15 | ring-ip   5.95 | other   6.39 | ring couplings 1.80 vs zero 3.76 (ratio 0.48) | block 1.73 vs median 3.31 | corrected ω 5.85 (zero 23.29) | overlap 0.998 | ΔH residual 0.32
+n=449 (b) B2 GBT: diag CH-stretch   5.37 | CH-oop   8.23 | ring-ip   6.13 | other  11.41 | ring couplings 1.97 vs zero 3.74 (ratio 0.53) | block 1.82 vs median 1.07 | corrected ω 6.34 (zero 23.09) | overlap 0.993 | ΔH residual 0.38
+wrote out/E7_rungB_A2B_pointk_2026-09-27.json/.md in 351 s

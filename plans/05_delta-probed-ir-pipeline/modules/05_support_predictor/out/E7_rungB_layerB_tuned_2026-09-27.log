@@ -1,0 +1,37 @@
+analytic second-route Hessians substituted for 23 molecules: ['A2_0420908ebe', 'A2_13bafae8e0', 'A2_13eea56ee5', 'A2_197913eb9c', 'A2_1c29b66c9d', 'A2_20747fd501', 'A2_20e59f3897', 'A2_220d2c107b', 'A2_22d0e8105c', 'A2_28eed45ad3', 'A2_2a0b78bd2b', 'A2_2b693cf6e7', 'A2_2c22216564', 'A2_3020175511', 'A2_330b4d6d8d', 'A2_356c370f21', 'A2_3802542cb6', 'A2_3a2982dd85', 'A2_3c2cf09504', 'A_014f8519af', 'A_78896cfe24', 'A_8448043181', 'A_b90527ca2d']
+layer-B split: pool 274 admitted layer-B molecules (hashed order), hold-out (a) 42 layer-A parents, (b) 39 scaffold molecules (['fluoranthene', 'fluorene']); (c) per size
+498 molecules; pattern pairs per molecule 414–4712 (features 66); hold-out (a) 42, (b) 39 (['fluoranthene', 'fluorene']); pool 274; sizes [274]; seeds [0, 1, 2]; epochs 60
+  tune n=274 seed 0: lr 0.0003 width 128 → inner val MSE 0.2784 after 120 epochs
+  tune n=274 seed 0: lr 0.0003 width 256 → inner val MSE 0.2563 after 120 epochs
+  tune n=274 seed 0: lr 0.001 width 128 → inner val MSE 0.2387 after 63 epochs
+  tune n=274 seed 0: lr 0.001 width 256 → inner val MSE 0.2223 after 78 epochs
+  tune n=274 seed 0: lr 0.003 width 128 → inner val MSE 0.2268 after 41 epochs
+  tune n=274 seed 0: lr 0.003 width 256 → inner val MSE 0.2161 after 41 epochs
+  tune2 n=274 seed 0: mse + sgd → inner val MSE 0.2470 after 56 epochs
+  tune2 n=274 seed 0: huber + adamw → inner val MSE 0.1908 after 64 epochs
+  tune2 n=274 seed 0: huber + sgd → inner val MSE 0.3447 after 165 epochs
+  tune n=274 seed 1: lr 0.0003 width 128 → inner val MSE 0.2742 after 138 epochs
+  tune n=274 seed 1: lr 0.0003 width 256 → inner val MSE 0.2589 after 117 epochs
+  tune n=274 seed 1: lr 0.001 width 128 → inner val MSE 0.2396 after 90 epochs
+  tune n=274 seed 1: lr 0.001 width 256 → inner val MSE 0.2198 after 74 epochs
+  tune n=274 seed 1: lr 0.003 width 128 → inner val MSE 0.2096 after 73 epochs
+  tune n=274 seed 1: lr 0.003 width 256 → inner val MSE 0.2168 after 43 epochs
+  tune2 n=274 seed 1: mse + sgd → inner val MSE 0.2567 after 51 epochs
+  tune2 n=274 seed 1: huber + adamw → inner val MSE 0.2339 after 37 epochs
+  tune2 n=274 seed 1: huber + sgd → inner val MSE 0.3355 after 184 epochs
+  tune n=274 seed 2: lr 0.0003 width 128 → inner val MSE 0.2733 after 109 epochs
+  tune n=274 seed 2: lr 0.0003 width 256 → inner val MSE 0.2554 after 105 epochs
+  tune n=274 seed 2: lr 0.001 width 128 → inner val MSE 0.2338 after 77 epochs
+  tune n=274 seed 2: lr 0.001 width 256 → inner val MSE 0.2269 after 52 epochs
+  tune n=274 seed 2: lr 0.003 width 128 → inner val MSE 0.2072 after 106 epochs
+  tune n=274 seed 2: lr 0.003 width 256 → inner val MSE 0.2238 after 31 epochs
+  tune2 n=274 seed 2: mse + sgd → inner val MSE 0.2418 after 84 epochs
+  tune2 n=274 seed 2: huber + adamw → inner val MSE 0.2044 after 87 epochs
+  tune2 n=274 seed 2: huber + sgd → inner val MSE 0.3378 after 166 epochs
+n=274 (a) B1 MLP: diag CH-stretch   1.58 | CH-oop   4.86 | ring-ip   7.36 | other  13.57 | ring couplings 2.55 vs zero 4.35 (ratio 0.59) | block 1.78 vs median 4.05 | corrected ω 5.85 (zero 23.45) | overlap 0.998 | ΔH residual 0.39
+n=274 (b) B1 MLP: diag CH-stretch   1.88 | CH-oop   5.14 | ring-ip   6.07 | other   7.65 | ring couplings 2.41 vs zero 3.74 (ratio 0.65) | block 1.39 vs median 1.19 | corrected ω 5.18 (zero 23.09) | overlap 0.990 | ΔH residual 0.43
+n=274 (c) B1 MLP: diag CH-stretch   1.15 | CH-oop   4.74 | ring-ip   6.27 | other   5.34 | ring couplings 2.58 vs zero 3.95 (ratio 0.65) | block 0.82 vs median 1.32 | corrected ω 5.01 (zero 22.85) | overlap 0.993 | ΔH residual 0.45
+n=274 (a) B2 GBT: diag CH-stretch   3.72 | CH-oop   7.88 | ring-ip   8.57 | other  15.23 | ring couplings 2.72 vs zero 4.35 (ratio 0.63) | block 2.05 vs median 4.05 | corrected ω 6.83 (zero 23.45) | overlap 0.998 | ΔH residual 0.45
+n=274 (b) B2 GBT: diag CH-stretch   4.69 | CH-oop   8.32 | ring-ip   6.13 | other  11.26 | ring couplings 2.09 vs zero 3.74 (ratio 0.56) | block 1.36 vs median 1.19 | corrected ω 6.16 (zero 23.09) | overlap 0.993 | ΔH residual 0.39
+n=274 (c) B2 GBT: diag CH-stretch   3.96 | CH-oop   7.75 | ring-ip   8.02 | other  12.05 | ring couplings 2.77 vs zero 3.95 (ratio 0.70) | block 1.70 vs median 1.32 | corrected ω 6.75 (zero 22.85) | overlap 0.993 | ΔH residual 0.50
+wrote out/E7_rungB_layerB_tuned_2026-09-27.json/.md in 2817 s

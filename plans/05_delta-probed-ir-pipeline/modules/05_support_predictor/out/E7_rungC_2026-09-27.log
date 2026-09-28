@@ -1,0 +1,84 @@
+analytic second-route Hessians substituted for 23 molecules
+498 molecules; pool 175; hold-out (a) 10, (b) 39 (['fluoranthene', 'fluorene']); sizes [45, 100, 175]; seeds [0, 1, 2]; epochs 60; threads 8; model 171,554 parameters
+    seed 0 epoch 1/60: loss main 1.806e-05 aux 24.42 (0 s)
+    seed 0 epoch 10/60: loss main 5.325e-06 aux 0.7848 (5 s)
+    seed 0 epoch 20/60: loss main 3.107e-06 aux 0.476 (10 s)
+    seed 0 epoch 30/60: loss main 1.675e-06 aux 0.4893 (15 s)
+    seed 0 epoch 40/60: loss main 1.458e-06 aux 0.3703 (20 s)
+    seed 0 epoch 50/60: loss main 1.4e-06 aux 0.3775 (25 s)
+    seed 0 epoch 60/60: loss main 1.372e-06 aux 0.3766 (30 s)
+  n=45 seed 0 (a): ring couplings 3.74 vs zero 3.76 (ratio 0.99) | corrected ω 10.90 (zero 23.29) | ΔH residual ratio 0.741
+  n=45 seed 0 (b): ring couplings 3.73 vs zero 3.74 (ratio 1.00) | corrected ω 10.35 (zero 23.09) | ΔH residual ratio 0.755
+    seed 1 epoch 1/60: loss main 1.163e-05 aux 17.16 (1 s)
+    seed 1 epoch 10/60: loss main 5.286e-06 aux 0.7015 (5 s)
+    seed 1 epoch 20/60: loss main 2.654e-06 aux 0.511 (10 s)
+    seed 1 epoch 30/60: loss main 1.649e-06 aux 0.3978 (15 s)
+    seed 1 epoch 40/60: loss main 1.413e-06 aux 0.3509 (20 s)
+    seed 1 epoch 50/60: loss main 1.367e-06 aux 0.3548 (25 s)
+    seed 1 epoch 60/60: loss main 1.302e-06 aux 0.3207 (30 s)
+  n=45 seed 1 (a): ring couplings 3.71 vs zero 3.76 (ratio 0.99) | corrected ω 10.95 (zero 23.29) | ΔH residual ratio 0.730
+  n=45 seed 1 (b): ring couplings 3.69 vs zero 3.74 (ratio 0.99) | corrected ω 10.22 (zero 23.09) | ΔH residual ratio 0.744
+    seed 2 epoch 1/60: loss main 1.598e-05 aux 28.53 (1 s)
+    seed 2 epoch 10/60: loss main 4.877e-06 aux 0.6276 (5 s)
+    seed 2 epoch 20/60: loss main 2.106e-06 aux 0.4681 (10 s)
+    seed 2 epoch 30/60: loss main 1.551e-06 aux 0.4092 (15 s)
+    seed 2 epoch 40/60: loss main 1.421e-06 aux 0.3672 (20 s)
+    seed 2 epoch 50/60: loss main 1.382e-06 aux 0.3505 (25 s)
+    seed 2 epoch 60/60: loss main 1.382e-06 aux 0.3676 (30 s)
+  n=45 seed 2 (a): ring couplings 3.79 vs zero 3.76 (ratio 1.01) | corrected ω 10.88 (zero 23.29) | ΔH residual ratio 0.747
+  n=45 seed 2 (b): ring couplings 3.78 vs zero 3.74 (ratio 1.01) | corrected ω 10.52 (zero 23.09) | ΔH residual ratio 0.757
+    seed 0 epoch 1/60: loss main 1.434e-05 aux 15.14 (1 s)
+    seed 0 epoch 10/60: loss main 3.476e-06 aux 0.6183 (11 s)
+    seed 0 epoch 20/60: loss main 1.528e-06 aux 0.4217 (22 s)
+    seed 0 epoch 30/60: loss main 1.392e-06 aux 0.3584 (34 s)
+    seed 0 epoch 40/60: loss main 1.341e-06 aux 0.3602 (46 s)
+    seed 0 epoch 50/60: loss main 1.307e-06 aux 0.3311 (57 s)
+    seed 0 epoch 60/60: loss main 1.309e-06 aux 0.3602 (68 s)
+  n=100 seed 0 (a): ring couplings 3.73 vs zero 3.76 (ratio 0.99) | corrected ω 10.96 (zero 23.29) | ΔH residual ratio 0.733
+  n=100 seed 0 (b): ring couplings 3.71 vs zero 3.74 (ratio 0.99) | corrected ω 10.47 (zero 23.09) | ΔH residual ratio 0.743
+    seed 1 epoch 1/60: loss main 8.965e-06 aux 11.07 (1 s)
+    seed 1 epoch 10/60: loss main 2.873e-06 aux 0.5467 (12 s)
+    seed 1 epoch 20/60: loss main 1.551e-06 aux 0.4983 (23 s)
+    seed 1 epoch 30/60: loss main 1.373e-06 aux 0.3836 (34 s)
+    seed 1 epoch 40/60: loss main 1.344e-06 aux 0.3597 (45 s)
+    seed 1 epoch 50/60: loss main 1.314e-06 aux 0.3408 (56 s)
+    seed 1 epoch 60/60: loss main 1.28e-06 aux 0.354 (67 s)
+  n=100 seed 1 (a): ring couplings 3.72 vs zero 3.76 (ratio 0.99) | corrected ω 10.45 (zero 23.29) | ΔH residual ratio 0.716
+  n=100 seed 1 (b): ring couplings 3.68 vs zero 3.74 (ratio 0.98) | corrected ω 9.80 (zero 23.09) | ΔH residual ratio 0.728
+    seed 2 epoch 1/60: loss main 1.27e-05 aux 20.08 (1 s)
+    seed 2 epoch 10/60: loss main 2.05e-06 aux 0.4684 (12 s)
+    seed 2 epoch 20/60: loss main 1.465e-06 aux 0.39 (23 s)
+    seed 2 epoch 30/60: loss main 1.427e-06 aux 0.3799 (34 s)
+    seed 2 epoch 40/60: loss main 1.394e-06 aux 0.4081 (45 s)
+    seed 2 epoch 50/60: loss main 1.343e-06 aux 0.3417 (56 s)
+    seed 2 epoch 60/60: loss main 1.324e-06 aux 0.3255 (67 s)
+  n=100 seed 2 (a): ring couplings 3.70 vs zero 3.76 (ratio 0.98) | corrected ω 11.07 (zero 23.29) | ΔH residual ratio 0.726
+  n=100 seed 2 (b): ring couplings 3.68 vs zero 3.74 (ratio 0.98) | corrected ω 10.70 (zero 23.09) | ΔH residual ratio 0.738
+    seed 0 epoch 1/60: loss main 1.478e-05 aux 12.32 (2 s)
+    seed 0 epoch 10/60: loss main 1.593e-06 aux 0.4316 (20 s)
+    seed 0 epoch 20/60: loss main 1.469e-06 aux 0.3867 (39 s)
+    seed 0 epoch 30/60: loss main 1.396e-06 aux 0.3567 (58 s)
+    seed 0 epoch 40/60: loss main 1.366e-06 aux 0.3438 (77 s)
+    seed 0 epoch 50/60: loss main 1.33e-06 aux 0.3306 (97 s)
+    seed 0 epoch 60/60: loss main 1.315e-06 aux 0.3395 (116 s)
+  n=175 seed 0 (a): ring couplings 3.63 vs zero 3.76 (ratio 0.96) | corrected ω 10.72 (zero 23.29) | ΔH residual ratio 0.715
+  n=175 seed 0 (b): ring couplings 3.59 vs zero 3.74 (ratio 0.96) | corrected ω 10.22 (zero 23.09) | ΔH residual ratio 0.724
+    seed 1 epoch 1/60: loss main 8.509e-06 aux 5.061 (2 s)
+    seed 1 epoch 10/60: loss main 1.65e-06 aux 0.446 (20 s)
+    seed 1 epoch 20/60: loss main 1.436e-06 aux 0.3861 (39 s)
+    seed 1 epoch 30/60: loss main 1.385e-06 aux 0.3658 (58 s)
+    seed 1 epoch 40/60: loss main 1.352e-06 aux 0.3427 (78 s)
+    seed 1 epoch 50/60: loss main 1.337e-06 aux 0.346 (97 s)
+    seed 1 epoch 60/60: loss main 1.289e-06 aux 0.3308 (116 s)
+  n=175 seed 1 (a): ring couplings 3.75 vs zero 3.76 (ratio 1.00) | corrected ω 12.03 (zero 23.29) | ΔH residual ratio 0.698
+  n=175 seed 1 (b): ring couplings 3.71 vs zero 3.74 (ratio 0.99) | corrected ω 11.64 (zero 23.09) | ΔH residual ratio 0.714
+    seed 2 epoch 1/60: loss main 9.419e-06 aux 15.64 (2 s)
+    seed 2 epoch 10/60: loss main 1.588e-06 aux 0.4335 (20 s)
+    seed 2 epoch 20/60: loss main 1.496e-06 aux 0.3911 (39 s)
+    seed 2 epoch 30/60: loss main 1.42e-06 aux 0.3582 (59 s)
+    seed 2 epoch 40/60: loss main 1.411e-06 aux 0.3624 (78 s)
+    seed 2 epoch 50/60: loss main 1.318e-06 aux 0.3261 (97 s)
+    seed 2 epoch 60/60: loss main 1.289e-06 aux 0.3216 (116 s)
+  n=175 seed 2 (a): ring couplings 3.64 vs zero 3.76 (ratio 0.97) | corrected ω 11.12 (zero 23.29) | ΔH residual ratio 0.718
+  n=175 seed 2 (b): ring couplings 3.60 vs zero 3.74 (ratio 0.96) | corrected ω 10.47 (zero 23.09) | ΔH residual ratio 0.730
+wrote out/E7_rungC_2026-09-27.json/.md in 682 s
