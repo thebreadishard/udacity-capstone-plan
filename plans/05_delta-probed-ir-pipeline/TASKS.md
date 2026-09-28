@@ -28,7 +28,7 @@ this file only says what is running or waiting and who acts.*
 
 | when | what | prepared by |
 |---|---|---|
-| Sat evening | module 06 notebook run done 20:0x (6 of 7 read-outs met); hel1-23 stays for the standout chains through Monday (the user, 20:3x) → last pool done 28 Sep 06:39 UTC, everything fetched 08:4x: **hel1-23 may be deleted (the user)** | done |
+| Sat evening | module 06 notebook run done 20:0x (6 of 7 read-outs met); hel1-23 stays for the standout chains through Monday (the user, 20:3x) → last pool done 28 Sep 06:39 UTC, everything fetched 08:4x: ~~hel1-23 may be deleted (the user)~~ deleted by the user 08:5x | done |
 | Sun 20:00 → started 18:33 | interim layer-B reading: fixed recipe read 18:3x (274 admitted; above both prediction sets on every hold-out, 0.61 / 0.64 / 0.70; outcome in the pre-registration); tuned protocol read 19:2x (0.59 / 0.65 / 0.65; level moves, picture not); §3.5 (iv) filled; left for tonight: the letter checklist after E8, and the user's two questions (B alone or A2 + B; re-hash B's order) with the rung C decision | me |
 | Sun evening | rung C decision; E8 naphthalene read-out if the chain finished | the user + me |
 | ~~Mon 28 Sep~~ → November | the supervisor has no time on Monday and moves the conversation to November (the user, 27 Sep 18:3x); the package stays current as background, and every message to her is short and plain from now on (memory rule of 18:3x); Snellius is not asked before R1 on cc-pVTZ is read; the three questions for the corridor: pyrene lab truth (which source, can the FELIX beam line take the three), the 2015 CCSD(T)/cc-pVTZ naphthalene reference, the open-shell reference for the cations | the user |
