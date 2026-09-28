@@ -96,3 +96,26 @@ The rule triggers for all four. The curves are flat to 1e-4 over the last three 
 and no server is free before the CCX53 finishes E8 (after which it becomes layer-B shards 4 and 5). Proposed to the user: seed 0 alone at cap 60 on the
 first free server as the rule's check; the outcome section above stands as run and is quoted as "at the cap" until then. The 26 September numbers are not
 replaced (rule of 28 Sep: module artefacts show the learning).
+
+## Decision-51 audit, ruling 2026-09-28 19:4x — closed by this note, not by a re-run (the user: "Akkoord")
+
+The note of 18:2x read the rule as written: best epoch at the cap → repeat. Reading the curves and the code more closely changes the finding. The
+early-stopping condition in `m06/train.py` counts an epoch as "no improvement" only below 1e-4 on a validation loss of ≈ 0.55 (0.02 %), and the
+cosine learning-rate schedule (500 warm-up steps, then cosine to zero over exactly the 20-epoch cap) flattens the curve at the cap by construction.
+The last six per-epoch improvements of the validation loss:
+
+| run | last six steps (previous − current) |
+|---|---|
+| seed 0 | +0.00311, +0.00130, +0.00047, +0.00051, +0.00024, −0.00009 |
+| seed 1 | +0.00100, +0.00149, +0.00139, +0.00061, +0.00009, −0.00014 |
+| seed 2 | +0.00110, +0.00225, +0.00066, +0.00061, −0.00011, +0.00022 |
+| cond_seed0 | +0.00217, +0.00073, +0.00177, −0.00010, +0.00014, +0.00003 |
+
+Steps of 1e-4 still reset the patience counter, so the condition could not act within 20 epochs; and "best epoch = last" is what a cosine schedule
+produces regardless. The cap was therefore binding on the *epoch count* by construction, and nothing in these curves says the read-outs (validity
+0.92, seed spread 0.003; novelty 0.91; project fit 0.95) were bound by it — the last steps are two orders below the seed spread. **Ruling (quality
+policy, amendment of 19:4x to decision 51):** the ten-percent test is not applied under a schedule tied to the cap; the audit is closed by this note;
+a repeat at a higher cap is owed only when a read-out of this module comes to carry a decision (none does today: module 06 is parked as the standout
+line's data source and the proposal cites its numbers as a proxy). The threshold flaw and the schedule are recorded as what the module learned about
+its own recipe; the next run of `m06/train.py`, whenever it comes, uses a threshold of 1e-3 (≈ 0.2 % of the loss, stated here) and a schedule that
+does not end at the cap. The 26 September outcome stands as run.

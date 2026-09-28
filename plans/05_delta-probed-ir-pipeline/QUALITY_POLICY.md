@@ -77,6 +77,17 @@ predate this decision keep their meaning as the comparison they were, and every 
 stopped at 60 epochs while the inner-validation term was still falling; 200 epochs with patience 20 moved the hold-out ratio from 0.88 to 0.81, the
 largest single step of that evening's search — and the module 05 notebook's own early stopping had chosen epochs 25–29 of a cap of 30, i.e. the cap.
 
+**Amendment, 28 September 19:4x (the user, after the module 06 audit).** Two conditions the rule assumed and now states. (1) *The stopping threshold*
+*belongs to the read-out scale.* "Not improved" means not improved by at least a threshold that a later read-out could notice — a fraction of the loss
+scale or of the seed spread, stated in the pre-registration — never a loose number: module 06 used 1e-4 on a loss of 0.55 (0.02 %), below its own
+epoch-to-epoch noise (steps of −1e-4 occur), so the patience counter could not reach three and the rule could not act. (2) *A schedule tied to the cap*
+*makes "best epoch at the cap" unreadable.* A cosine (or any) learning-rate schedule that decays to zero at the cap flattens the curve at the cap by
+construction; the best epoch then sits at the cap whether or not the model was still learning. Under such a schedule the ten-percent test is not
+applied; the audit reports the last improvement steps against the threshold instead, and a repeat is owed only when a read-out that carries a decision
+could move by more than the seed spread. Module 05's notebook (no schedule; the repeat at cap 100 stopped at epochs 25–45) is the case the rule fits;
+module 06 (cosine schedule, threshold 1e-4) is the case it does not, and is closed by a dated note, not a re-run. New runs use a schedule that does not
+end at the cap (constant, or plateau-based) or state why not.
+
 
 - **The gate is mechanical.** Nothing enters `src/dpir/` without the checklist and green CI. If it has to run today,
   it runs as a probe.
