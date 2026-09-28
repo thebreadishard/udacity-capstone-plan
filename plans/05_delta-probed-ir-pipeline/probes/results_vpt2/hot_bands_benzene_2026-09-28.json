@@ -1,0 +1,97 @@
+{
+ "date": "2026-09-28 18:34",
+ "record": "qff_benzene_pyscf_analytic_d010_2026-09-21.npz",
+ "fundamental_nu11": {
+  "dft": 685.034,
+  "measured": 673.97465
+ },
+ "measured_source": "Hollenstein, Piccirillo, Quack & Snels, Mol. Phys. 71, 759 (1990), abstract; item 89",
+ "judged": {
+  "rows": [
+   {
+    "band": "nu11+nu6-nu6",
+    "measured": -0.466,
+    "predicted_sym": 0.1275,
+    "predicted_raw": 0.1275,
+    "component_spread": 0.0,
+    "sign_ok": false,
+    "size_ok": false,
+    "noise_ok": true
+   },
+   {
+    "band": "nu11+nu16-nu16",
+    "measured": -1.099,
+    "predicted_sym": 0.1151,
+    "predicted_raw": 0.1151,
+    "component_spread": 0.0002,
+    "sign_ok": false,
+    "size_ok": false,
+    "noise_ok": true
+   },
+   {
+    "band": "2nu11-nu11",
+    "measured": 0.127,
+    "predicted_sym": -0.5976,
+    "predicted_raw": -0.5976,
+    "component_spread": 0.0,
+    "sign_ok": false,
+    "size_ok": false,
+    "noise_ok": true
+   }
+  ],
+  "counts": {
+   "P1": 0,
+   "P2": 0,
+   "P3": 3
+  },
+  "verdict": {
+   "P1_sign": "fail",
+   "P2_size": "fail",
+   "P3_noise": "pass"
+  }
+ },
+ "sequence_table": [
+  {
+   "lower_level": "nu16",
+   "omega_b": 414.5,
+   "degeneracy": 2,
+   "offset": 0.1151,
+   "position": 685.149,
+   "boltzmann_300K": 0.274
+  },
+  {
+   "lower_level": "nu6",
+   "omega_b": 621.6,
+   "degeneracy": 2,
+   "offset": 0.1275,
+   "position": 685.162,
+   "boltzmann_300K": 0.1015
+  },
+  {
+   "lower_level": "nu4",
+   "omega_b": 718.0,
+   "degeneracy": 1,
+   "offset": -0.5704,
+   "position": 684.464,
+   "boltzmann_300K": 0.0319
+  },
+  {
+   "lower_level": "nu11 (overtone sequence)",
+   "omega_b": 695.1,
+   "degeneracy": 1,
+   "offset": -0.5976,
+   "position": 684.437,
+   "boltzmann_300K": 0.0357
+  }
+ ],
+ "label": "DFT-anharmonic offsets (B3LYP/6-31G*, two-route QFF) on the DFT fundamental; the corrected harmonic part is not yet applied to benzene",
+ "provenance": {
+  "timestamp_utc": "2026-09-28 16:34:51",
+  "host": "Asus18",
+  "python": "3.14.6",
+  "numpy": "2.5.1",
+  "command": "hot_band_desk_benzene.py",
+  "commit": "48c8b044d64fd8dab886e527660079b143621269",
+  "dirty": "no"
+ }
+}

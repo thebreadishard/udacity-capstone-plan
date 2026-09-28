@@ -68,3 +68,22 @@ a *PAH* statement rather than a benzene one.
 
 If P1 fails on benzene, the output is still reported (labelled) and the next step is one χ at a higher level, not a search; if the naphthalene
 QFF costs more than a laptop night, it waits for a free server and this note gets a dated amendment with the measured cost.
+
+## Outcome of §2, 28 September 18:3x — benzene desk test (`probes/results_vpt2/hot_bands_benzene_2026-09-28.{md,json}`, run 18:34)
+
+| band | measured (Hollenstein 1990) | ours, two-route QFF (χ_sym = χ_raw) | psi4/pyVPT2 record of 15 Sep (FD quartics; components) |
+|---|---|---|---|
+| ν₁₁+ν₆−ν₆ | −0.466 | +0.128 | +5.02 / +6.25 |
+| ν₁₁+ν₁₆−ν₁₆ | −1.099 | +0.115 | −1.03 / −1.17 |
+| 2ν₁₁−ν₁₁ | +0.127 | −0.598 | −0.37 |
+
+**P1 sign: fail (0/3). P2 size: fail (0/3). P3 as written: pass (3/3) — and P3 was the wrong test.** `chi_sym` and `chi_raw` differ only in the
+symmetrisation of φ_iijj, which the off-diagonal constants barely use; the genuine second route is the psi4/pyVPT2 record of the same molecule, and
+it disagrees with ours by 1–6 cm⁻¹ on these constants (and its degenerate components differ from each other by 0.1–1.2 cm⁻¹, the FD-noise signature
+of 21 Sep). The prediction on record (P1 passes) was wrong. **Reading under the stop rule (§5):** the hot-band *offsets* of ν₁₁ at B3LYP/6-31G* are
+not validated in sign and are not reproducible between two routes at the 1 cm⁻¹ level, while their measured size is 0.1–1.1 cm⁻¹ — the quantity
+sits below this level of theory's noise floor for benzene's stiff out-of-plane mode. The output is still reported per §4, labelled **"sign not
+validated; offsets of order 1 cm⁻¹ are below the route-to-route noise at this level"**, and the next step is one χ at a higher level (a CCSD(T)
+or at least a larger-basis B3LYP cubic field for the ν₁₁ row — the E8 machinery gives the CC gradients), not a search. The naphthalene check (§3)
+keeps its place: Pirali's ν₄₆ offsets are −2.6 and +0.6 cm⁻¹, larger than benzene's, and are the PAH statement; it waits for a DFT QFF of naphthalene.
+The reading copy gets no sentence yet (nothing validated to quote).
