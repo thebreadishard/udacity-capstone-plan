@@ -1,0 +1,4 @@
+# Spectrum Atlas site (Astro): dependencies, build output, generated types (patterns are relative to this directory)
+node_modules/
+dist/
+.astro/
