@@ -43,6 +43,13 @@ Code moves from tier 1 to tier 2 by **promotion**, never by copying. Promotion i
    down in the commit message or the pull request. For code that goes public, one external reader.
 8. **CI green** on the pull request or the commit.
 
+## Module artefacts show the learning (the user, 28 September 2026)
+
+The Udacity module deliverables (notebooks, reports, READMEs, PROVENANCE of modules 02–08 and the standout) show *what we learned*, so a new run is
+added as a dated follow-up section beside the earlier one — earlier runs, their numbers and the reading at the time stay in place. Replacing a run is
+the exception, taken only when the earlier one was invalid (an incident, e.g. E8 naphthalene's Hessian) and then with the invalid record kept and
+labelled, never silently overwritten. The same holds for the pre-registrations: outcomes are appended with a date, corrections are dated sections.
+
 ## Enforcement
 
 ### Early stopping in every learning run (decision 51, 27 September 2026)
