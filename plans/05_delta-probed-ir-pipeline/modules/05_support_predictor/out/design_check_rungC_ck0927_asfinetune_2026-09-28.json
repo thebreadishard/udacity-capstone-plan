@@ -1,5 +1,5 @@
 {
- "date": "2026-09-28 06:37",
+ "date": "2026-09-28 09:05",
  "molecules": "corpus/molecules",
  "n_target": 534,
  "body": "checkpoint out/rungC_pretrained_2026-09-27.pt (sum aggregation) as the fine-tune sees it: element rows reset [16, 17]",

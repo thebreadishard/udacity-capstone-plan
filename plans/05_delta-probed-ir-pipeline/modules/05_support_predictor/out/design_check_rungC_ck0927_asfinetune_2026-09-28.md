@@ -1,4 +1,4 @@
-# Design check — out/design_check_rungC_ck0927_asfinetune_2026-09-28 (2026-09-28 06:37)
+# Design check — out/design_check_rungC_ck0927_asfinetune_2026-09-28 (2026-09-28 09:05)
 
 body: checkpoint out/rungC_pretrained_2026-09-27.pt (sum aggregation) as the fine-tune sees it: element rows reset [16, 17]; target: 534 molecules under `corpus/molecules`
 

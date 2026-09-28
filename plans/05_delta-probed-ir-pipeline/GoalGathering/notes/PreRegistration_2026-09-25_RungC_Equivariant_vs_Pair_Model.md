@@ -302,3 +302,41 @@ the stage-5 script ended before the pick (`out/E7_rungC_s5_2026-09-28.log`). Und
 (27 Sep) and survived 200 epochs with early stopping; under the mean body it does not. As registered, a diverged cell never wins: the pick runs over
 the five completed cells (`rungC_stage5b_0928.sh`, the picker lists the sixth as missing), and the stage continues unchanged. No cell is re-run at a
 different setting; lr 3e-3 is recorded as not viable for this body, which is the search's answer for that cell, not an incident of the code.
+
+## Outcome, 28 September 09:2x — stage 3 read on both bodies; verdict under the rule of the 20:0x amendment
+
+**Runs read together (laptop, 8 threads, three seeds, pool of 175 in hashed order, inner validation 15 %, hold-outs (a) bare parents / (b) fluoranthene–fluorene
+scaffolds; every number is the seed mean of `coupling_ratio` against the zero rule, ω = corrected-frequency RMS in cm⁻¹):**
+
+| variant | body | n = 45 (a) | n = 100 (a) | n = 175 (a) | n = 175 (b) | ω at 175 (a) / (b) | record |
+|---|---|---|---|---|---|---|---|
+| C1, stage-1 + 2 winner | sum (registered 25 Sep) | — | — | 0.811 ± 0.010 | 0.839 ± 0.015 | 9.42 / 8.45 | `out/E7_rungC_s2_lr1e-3_e200_2026-09-27` |
+| C2, QM9 pretraining + element reset | sum | 0.921 ± 0.044 | 0.839 ± 0.010 | 0.811 ± 0.002 | 0.843 ± 0.005 | 9.64 / 8.91 | `out/E7_rungC_C2sum_elemreset_2026-09-28` |
+| C1, same winner | mean (amended 28 Sep) | 1.007 ± 0.001 | 0.898 ± 0.040 | 0.839 ± 0.006 | 0.868 ± 0.001 | 9.77 / 9.01 | `out/E7_rungC_C1mean_2026-09-28` |
+| C2, QM9 pretraining + element reset | mean | 0.966 ± 0.018 | 0.873 ± 0.050 | 0.812 ± 0.008 | 0.851 ± 0.010 | 9.55 / 8.83 | `out/E7_rungC_C2mean_2026-09-28` |
+| pair model (the floor, 23 Sep) | — | 0.96 | 0.68 | **0.43** | **0.47** | **4.7 / 5.1** | `out/E7_rungB_2026-09-23_analytic.json` |
+
+The fixed recipe C1 (25 Sep) stays where it was: 0.98 (sum) / 0.99 (mean) at 175. The search repeated under the mean body (stage 5, `out/E7_rungC_s1m_*`,
+`s2m_*`, picks) chose the same recipe as under the sum body (aux weight 1.0, lr 1e-3, 200 epochs with early stopping; inner term 0.268 vs 0.263), so the
+comparison above uses one recipe throughout; lr 3e-3 / 200 epochs diverged under the mean body (dated note above) and never wins, as registered.
+
+**Pass lines.** R1 — fail on all four cells (≥ 0.81 against a pass at ≤ 0.35 / 0.38 and a fail line at ≥ 0.43 / 0.47). R2 — fail: ratio at 45 over
+ratio at 175 is 1.14 (C2 sum), 1.19 (C2 mean), 1.20 (C1 mean), all under the required 1.25. R3 — fail: ω 9.4–9.8 against ≤ 4.3 / 4.7 and the pair
+model's 4.7 / 5.1. R4 holds by construction (the model is equivariant; tests). R5 — not read: with R1 failing on both variants the class breakdown does
+not change the verdict, and the rule of 25 Sep reads "R1 fails on both variants → …".
+
+**Verdict (the rule of 25 September, reached through the amendment of 27 September 20:0x):** *directions and context do not help at 175 molecules.*
+The pair model stays v1's model; the equivariant model is re-tested when layer B has 600 admitted molecules, not before. Both predictions of 25 Sep
+were wrong by a factor two (C1 predicted 0.40, measured 0.81; C2 predicted 0.34, measured 0.81); the sentence "the pretraining is what carries"
+is not supported: QM9 pretraining moves the ratio at 175 by 0.00 (sum body) to 0.03 (mean body), and by 0.04–0.09 at 45, the direction one expects
+from pretraining but not the size. The learning curve of the equivariant model is still falling (≈ 0.06 per doubling from 100 to 175), so the
+question "how much data would it need" stays open and is exactly what the 600-molecule re-test answers.
+
+**What the fair-chance search bought (for §3.5 and the incident record).** The fixed recipe gave 0.98; the registered search (loss / aux weight,
+learning rate × epochs, pretraining) gave 0.81 — a real gain of 0.17 that the rule of 25 Sep ("no negative conclusion without the search") was right
+to demand, and still a factor two from the floor. Two incidents on the way (input channel; untrained element embeddings, first mis-diagnosed as
+neighbour count) each left a guard in code and tests and one standing rule (the design check); the mean-pooled body, adopted for a wrong reason,
+stays as a measured neutral change (1.3 → 1.05 feature-scale ratio, no effect on the read-out).
+
+**Records committed:** the four cells above, the stage-5 cells and picks, the fixed recipe under mean, the design-check records, the logs
+`out/E7_rungC_s4/s5/c2sum_2026-09-28.log`; the `.pt` checkpoints stay local (ignored) and in the data backup.

@@ -81,3 +81,10 @@ en ik las de grootte af. Dat was fout.
 Gevolgen: (1) de echte reparatie is klein — bij het bijleren krijgen ongeziene elementen het gemiddelde van de getrainde rijen; dat zit nu in de
 code, met tests, en stage 4 gebruikt het; (2) het delen door het aantal buren (optie A) blijft een goede keuze, maar was niet dé oorzaak; (3) met
 alleen de elementreparatie had C2 gisteren onder het oorspronkelijke lichaam gewoon kunnen draaien — die run van ≈ 20 min stel ik nu voor.
+
+## 7. Uitkomst, 28 september 09:2x
+
+Alles is gedraaid: C1 en C2 onder het oude (som) en het nieuwe (mean) lichaam, de zoektocht herhaald onder mean (zelfde winnaar), en C2 onder het
+oude lichaam met alleen de elementreparatie. Bij 175 moleculen: C1 0,81 / 0,84, C2 0,81 / 0,81 (som / mean), paarmodel 0,43. Voortrainen op QM9
+levert bij 175 niets (som) tot 0,03 (mean) op; bij 45 moleculen 0,04–0,09. Volgens de regel van 25 september luidt de zin nu: richting en context
+helpen niet bij 175 moleculen; het paarmodel blijft het model van v1; het netwerk wordt opnieuw getest als laag B 600 moleculen heeft.
