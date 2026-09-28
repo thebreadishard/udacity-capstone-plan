@@ -28,8 +28,7 @@ import numpy as np
 import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from learning_curve_layerA import (AMU2AU, FAMILIES, SEEDS, SIZES, molecule_features, normal_modes,  # noqa: E402
-                                   predict, rms, train)
+from learning_curve_layerA import FAMILIES, SEEDS, SIZES, molecule_features, normal_modes, predict, rms, train  # noqa: E402
 
 BOHR = 0.529177210903
 COV = {"H": 0.31, "C": 0.76, "N": 0.71, "O": 0.66, "S": 1.05, "F": 0.57, "Cl": 1.02}
@@ -124,8 +123,8 @@ def curve(mols, sizes, test, pool, epochs, label):
         for s in SEEDS:
             model, scale = train(tr, s, epochs)
             preds = predict(model, scale, test)
-            err = {F: np.concatenate([(p - m["target"])[np.array(m["family"]) == F] for p, m in zip(preds, test)]) for F in FAMILIES}
-            tr_err = np.concatenate([p - m["target"] for p, m in zip(predict(model, scale, tr), tr)])
+            err = {F: np.concatenate([(p - m["target"])[np.array(m["family"]) == F] for p, m in zip(preds, test, strict=True)]) for F in FAMILIES}
+            tr_err = np.concatenate([p - m["target"] for p, m in zip(predict(model, scale, tr), tr, strict=True)])
             per_seed.append({"seed": s, "rms": {F: rms(err[F]) for F in FAMILIES}, "train_rms_all": rms(tr_err)})
         out["curve"][str(n)] = {"model_rms_mean": {F: float(np.mean([p["rms"][F] for p in per_seed])) for F in FAMILIES},
                                 "train_rms_all_mean": float(np.mean([p["train_rms_all"] for p in per_seed])), "per_seed": per_seed}
@@ -151,7 +150,7 @@ def main():
             tokB, cls, n_rings = environment_tokens(d, base)
             molsA.append(base); molsB.append(dict(base, tokens=tokB))
             for c in cls: cls_counts[c] = cls_counts.get(c, 0) + 1
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 — experiment loop: the failure is recorded in the table and the next cell runs
             print("skip", d.name, repr(e))
     order = sorted(range(len(molsA)), key=lambda i: hashlib.sha1(molsA[i]["id"].encode()).hexdigest())
     molsA = [molsA[i] for i in order]; molsB = [molsB[i] for i in order]

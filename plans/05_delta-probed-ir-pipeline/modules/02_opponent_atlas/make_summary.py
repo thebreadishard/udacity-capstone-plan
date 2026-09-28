@@ -4,11 +4,12 @@ the Module 02 instructions prescribe, then converts it to module_summary.pdf wit
 through PowerShell). Run:  python make_summary.py
 Every number in the text comes from the notebook outputs / SUMMARY files; citations are APA author–year
 and the References list contains exactly the sources cited."""
-import subprocess, shutil
+import subprocess
 from pathlib import Path
+
 from docx import Document
-from docx.shared import Pt, Inches
 from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_BREAK
+from docx.shared import Inches, Pt
 
 HERE = Path(__file__).resolve().parent
 TEMPLATE = HERE.parents[3] / "Rubrics" / "APA7_template.docx"
@@ -194,5 +195,5 @@ doc.save(str(OUT_DOCX)); print("written", OUT_DOCX)
 # ---------------- PDF via Word (COM through PowerShell)
 ps = f'''$w = New-Object -ComObject Word.Application; $w.Visible = $false
 $d = $w.Documents.Open("{OUT_DOCX}"); $d.SaveAs2("{OUT_DOCX.with_suffix('.pdf')}", 17); $d.Close(); $w.Quit()'''
-r = subprocess.run(["powershell", "-NoProfile", "-Command", ps], capture_output=True, text=True)
-print("pdf:", OUT_DOCX.with_suffix(".pdf").exists(), r.stderr[:300])
+r = subprocess.run(["powershell", "-NoProfile", "-Command", ps], capture_output=True, text=True, check=False)   # Word may be absent: reported, not fatal
+print("pdf:", OUT_DOCX.with_suffix(".pdf").exists(), f"(powershell exit {r.returncode})", r.stderr[:300])

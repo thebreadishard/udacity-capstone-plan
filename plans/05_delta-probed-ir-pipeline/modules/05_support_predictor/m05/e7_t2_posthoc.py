@@ -22,7 +22,7 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import e6_learning_curve as E6  # noqa: E402
 import e7_t2_sqm as T2  # noqa: E402
-from learning_curve_layerA import AMU2AU, FAMILIES, HARTREE2CM  # noqa: E402
+from learning_curve_layerA import AMU2AU, HARTREE2CM  # noqa: E402
 
 RING = "ring-ip"
 
@@ -94,7 +94,7 @@ def fit_types(mols, tr, min_count, iters, objective, additive=False):
                         dFa = np.diag(sel); dKa = -(C @ dFa @ C.T) * scale
                         cols.append(np.full(rv.size, P + t)); vals.append(dKa[W > 0])
             sse += float(np.sum(rv ** 2)); nres += rv.size
-            for c_, v_ in zip(cols, vals):
+            for c_, v_ in zip(cols, vals, strict=True):
                 ok = c_ >= 0
                 np.add.at(Jtr, c_[ok], v_[ok] * (rv[ok] if v_.shape == rv.shape else rv))
             # normal matrix: accumulate all pairs of columns

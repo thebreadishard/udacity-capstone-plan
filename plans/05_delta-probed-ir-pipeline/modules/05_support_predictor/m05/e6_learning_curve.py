@@ -122,7 +122,7 @@ def block_trace(m):
 def diag_only(preds, mols, ids):
     """M1 / M5: predictions of the diagonal only -> the same record with the coupling fields absent."""
     diag = {F: [] for F in FAMILIES}
-    for i, p in zip(ids, preds):
+    for i, p in zip(ids, preds, strict=True):
         fam = np.array(mols[i]["family"])
         for F in FAMILIES:
             diag[F].append((p - mols[i]["target"])[fam == F])
@@ -253,10 +253,10 @@ def main():
     tests = {"a": test_a, "b": test_b}
     for n in sizes:
         tr = pool[:n]; row = {"n": n, "baselines": run_baselines(mols, tr, tests)}
-        for label, fn in (("M1", lambda s: run_m1(mols, tr, tests, s, a.m1_epochs)),
-                          ("M2", lambda s: run_m2(mols, tr, tests, s, a.m2_epochs)),
-                          ("M3", lambda s: run_e5(mols, tr, tests, s, a.e5_steps, atoms=False)),
-                          ("M4", lambda s: run_e5(mols, tr, tests, s, a.e5_steps, atoms=True))):
+        for label, fn in (("M1", lambda s, tr=tr: run_m1(mols, tr, tests, s, a.m1_epochs)),
+                          ("M2", lambda s, tr=tr: run_m2(mols, tr, tests, s, a.m2_epochs)),
+                          ("M3", lambda s, tr=tr: run_e5(mols, tr, tests, s, a.e5_steps, atoms=False)),
+                          ("M4", lambda s, tr=tr: run_e5(mols, tr, tests, s, a.e5_steps, atoms=True))):
             t0 = time.time(); per_seed = [fn(s) for s in seeds]
             row[label] = {"per_seed": per_seed, "mean": {h: mean_records([p[h] for p in per_seed]) for h in tests}, "seconds": round(time.time() - t0)}
             ma = row[label]["mean"]["a"]
@@ -277,9 +277,9 @@ def main():
             ratios = [res["curve"][str(n)][label]["mean"]["a"]["coupling_ratio"] for n in sizes]
             blocks = [(res["curve"][str(n)][label]["mean"]["a"]["block_rms"], res["curve"][str(n)][label]["mean"]["a"]["block_median_rule_rms"]) for n in sizes]
             readings["slopes"][label]["coupling_ratio"] = slope(ratios)
-            readings["crossings"][label] = {"ratio<1.0": next((n for n, r in zip(sizes, ratios) if r < 1.0), None),
-                                            "ratio<0.7": next((n for n, r in zip(sizes, ratios) if r < 0.7), None),
-                                            "block<median": next((n for n, (b, m) in zip(sizes, blocks) if b < m), None)}
+            readings["crossings"][label] = {"ratio<1.0": next((n for n, r in zip(sizes, ratios, strict=True) if r < 1.0), None),
+                                            "ratio<0.7": next((n for n, r in zip(sizes, ratios, strict=True) if r < 0.7), None),
+                                            "block<median": next((n for n, (b, m) in zip(sizes, blocks, strict=True) if b < m), None)}
             readings["scaffold_gap_block_b_minus_a"][label] = {str(n): res["curve"][str(n)][label]["mean"]["b"]["block_rms"] - res["curve"][str(n)][label]["mean"]["a"]["block_rms"] for n in sizes}
     res["readings"] = readings; res["seconds_total"] = round(time.time() - t_start)
     json.dump(res, open(a.out_prefix + ".json", "w"), indent=1)

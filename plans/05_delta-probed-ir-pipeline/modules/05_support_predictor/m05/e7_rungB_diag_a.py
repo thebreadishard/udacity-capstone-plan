@@ -2,9 +2,14 @@
 Trains the GBT of rung B (deterministic) on (1) the full pool and (2) the layer-A molecules of the pool only, and prints per molecule of (a):
 ring coupling ratio, ring diagonal RMS, corrected-frequency RMS, ΔH residual ratio, and the molecule's name/core.
 Usage: python e7_rungB_diag_a.py <corpus/molecules dir> [--threads 8]"""
-import argparse, csv, json, sys
+import argparse
+import csv
+import json
+import sys
 from pathlib import Path
+
 import numpy as np
+
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import e6_learning_curve as E6  # noqa: E402
 import e7_rungB_pairs as RB  # noqa: E402

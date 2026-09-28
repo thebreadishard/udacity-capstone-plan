@@ -2,7 +2,8 @@
 """Rewrites corpus/STATUS.md from manifest.csv and ledger.csv: counts per layer and status, hours spent, hours to go at the
 measured rate per layer (median seconds per molecule from the ledger; 'not yet measured' until a layer has a done row).
 Run:  python status.py"""
-import csv, statistics
+import csv
+import statistics
 from collections import Counter, defaultdict
 from datetime import datetime
 from pathlib import Path

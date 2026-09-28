@@ -6,7 +6,6 @@ diagram · the implementation (initialisation, decision logic, state, tool invoc
 observable outputs, notes on the reasoning and at least one limitation or failure · a 4–6 sentence summary. The agent is the *run steward*
 (`../steward/`), evaluated in replay mode on the eight scenarios pre-registered in `../DESIGN_2026-09-25.md` (real log excerpts of 25 September 2026).
 Knobs: M07_LLM=1 also runs the LLM policy (needs ANTHROPIC_API_KEY; model id from STEWARD_MODEL). Run: python notebook/make_notebook.py [--no-execute]"""
-import os
 import sys
 from pathlib import Path
 

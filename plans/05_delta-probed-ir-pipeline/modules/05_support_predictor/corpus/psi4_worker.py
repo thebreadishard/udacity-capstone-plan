@@ -6,7 +6,12 @@ job.json: {"id", "layer", "xyz_angstrom": [[sym, x, y, z], ...], "deck": {...}, 
 Writes into out_dir: geometry.json, hessian_b3lyp.npz, hessian_wb97x.npz, result.json (timings, energies, frequencies,
 peak memory). Hessians are stored raw (hartree/bohr^2, Cartesian) AND translation/rotation-projected; frequencies from the
 projected, mass-weighted Hessian. Exit code 0 on success; the error text goes to result.json on failure."""
-import json, os, sys, time, traceback
+import json
+import os
+import sys
+import time
+import traceback
+
 import numpy as np
 
 
@@ -39,8 +44,9 @@ def main(job_path):  # 2026-09-14: psi4.hessian(..., return_wfn=True) returns (H
     res = {"id": job["id"], "layer": job["layer"], "deck": job["deck"], "status": "failed", "timings_s": {}}
     t0 = time.time()
     try:
-        import psi4, resource_probe  # noqa: F401  (resource_probe optional)
-    except Exception:
+        import psi4
+        import resource_probe  # noqa: F401  (resource_probe optional)
+    except ImportError:
         import psi4
     try:
         d = job["deck"]
@@ -74,15 +80,19 @@ def main(job_path):  # 2026-09-14: psi4.hessian(..., return_wfn=True) returns (H
                                  "freq_cm": [round(float(x), 2) for x in np.sort(frequencies_cm(H2, masses))]}   # per-mode list kept since 2026-09-14 13:0x (obstacle 16: the mode of the maximum was unknown)
             np.savez_compressed(os.path.join(out, "hessian_b3lyp_densegrid.npz"), H_projected=H2, radial=g["radial"], spherical=g["spherical"])
         res["status"] = "done"
-    except Exception:
+    except Exception:  # noqa: BLE001 — the worker records whatever psi4 raised in result.json; the runner reads the status
         res["error"] = traceback.format_exc()[-3000:]
     try:
-        import psutil; res["peak_rss_gb"] = round(psutil.Process().memory_info().peak_wset / 1e9, 2)
-    except Exception:
-        try:  # 2026-09-18: peak_wset is Windows-only; on Linux ru_maxrss is in kB
-            import resource; res["peak_rss_gb"] = round(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1e6, 2)
-        except Exception:
-            pass
+        import psutil
+
+        res["peak_rss_gb"] = round(psutil.Process().memory_info().peak_wset / 1e9, 2)
+    except (ImportError, AttributeError):  # 2026-09-18: peak_wset is Windows-only; on Linux ru_maxrss is in kB
+        try:
+            import resource
+
+            res["peak_rss_gb"] = round(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1e6, 2)
+        except (ImportError, AttributeError, OSError):
+            res["peak_rss_gb"] = None   # neither route available: recorded, not silent (review of 28 Sep 2026)
     res["timings_s"]["total"] = round(time.time() - t0, 1)
     json.dump(res, open(os.path.join(out, "result.json"), "w"), indent=1)
     sys.exit(0 if res["status"] == "done" else 1)

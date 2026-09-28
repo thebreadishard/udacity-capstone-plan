@@ -2,10 +2,11 @@
 """Builds / extends corpus/manifest.csv from the DESIGN lists. Deterministic: canonical SMILES via RDKit, order inside a
 layer = SHA-1 of the canonical SMILES (or QM9 label). Existing rows keep their id, priority and status; new molecules are
 appended. Run:  python build_manifest.py"""
-import csv, hashlib
+import csv
+import hashlib
 from pathlib import Path
+
 from rdkit import Chem
-from rdkit.Chem import Descriptors
 
 HERE = Path(__file__).resolve().parent
 MANIFEST = HERE / "manifest.csv"
@@ -69,7 +70,7 @@ def substituted(core_smi, sub_smi, positions=1):
         rw.AddBond(idx, n0, Chem.BondType.SINGLE)
         try:
             Chem.SanitizeMol(rw); return Chem.MolToSmiles(rw)
-        except Exception:
+        except Exception:  # noqa: BLE001 — rdkit sanitisation raises several C++-backed exception types; any of them means "no valid molecule"
             return None
     for i in hs:
         s = attach(core, i)

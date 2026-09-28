@@ -63,8 +63,8 @@ def readout_abs(P, mols_abs, ids, const):
 
 
 def train_m2(mols, tr, seed, epochs, bs=8):
-    from deltah_model import DeltaHConfig, DeltaHModel, block_loss
     import torch.nn as nn
+    from deltah_model import DeltaHConfig, DeltaHModel, block_loss
     torch.manual_seed(seed); rng = np.random.default_rng(seed)
     cfg = DeltaHConfig(n_families=4, n_irreps=0, n_env=13, n_layers=2)
     m = DeltaHModel(cfg); opt = torch.optim.AdamW(m.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay)

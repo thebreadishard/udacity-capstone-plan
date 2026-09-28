@@ -17,9 +17,9 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from learning_curve_layerA import AMU2AU, FAMILIES, HARTREE2CM, molecule_features, normal_modes  # noqa: E402
-from learning_curve_layerA_v2_descriptors import atom_classes, H_CLASSES  # noqa: E402
 from embedding_experiments_E import molecule_level_tokens, ridge_fit_predict  # noqa: E402
+from learning_curve_layerA import AMU2AU, FAMILIES, HARTREE2CM, molecule_features, normal_modes  # noqa: E402
+from learning_curve_layerA_v2_descriptors import H_CLASSES, atom_classes  # noqa: E402
 
 
 def rms(x):
@@ -79,7 +79,7 @@ def main():
         ok_tr, ok_te = ~np.isnan(ytr), ~np.isnan(yte)
         if ok_tr.sum() < 5 or ok_te.sum() < 2:
             out["E4b"][F] = {"note": "too few molecules with this family"}; continue
-        pred, lam = ridge_fit_predict(Xtr[ok_tr], ytr[ok_tr], Xte[ok_te], [r["id"] for r, o in zip(pool, ok_tr) if o])
+        pred, lam = ridge_fit_predict(Xtr[ok_tr], ytr[ok_tr], Xte[ok_te], [r["id"] for r, o in zip(pool, ok_tr, strict=True) if o])
         med = float(np.median(ytr[ok_tr]))
         # within-molecule spread of per-mode shifts around the family mean (what a per-mode model must additionally explain)
         within = np.concatenate([(r["first"][r["fam"] == F] - r["first"][r["fam"] == F].mean()) for r in mols if (r["fam"] == F).sum() > 1])

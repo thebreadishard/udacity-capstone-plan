@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 """Module 05 smoke test: proves the code path (corpus fixture -> tokens/labels -> SupportTransformer -> loss -> metrics)
 on the dry-run fixture. NOT a result: one molecule, a few steps, no held-out set. Run:  python smoke_test.py"""
-import json, time
+import json
+import time
 from pathlib import Path
-import numpy as np, torch
+
+import numpy as np
+import torch
 from model import SupportTransformer, implied_pattern_count
 
 HERE = Path(__file__).resolve().parent
@@ -20,7 +23,7 @@ crit = torch.nn.BCEWithLogitsLoss(pos_weight=torch.tensor(neg / max(pos, 1.0)))
 opt = torch.optim.AdamW(model.parameters(), lr=1e-3)
 offdiag = ~torch.eye(M, dtype=torch.bool)
 t0 = time.time(); losses = []
-for step in range(20):
+for _step in range(20):
     model.train(); opt.zero_grad()
     logits = model(tok)
     loss = crit(logits[0][offdiag], lab[0][offdiag]); loss.backward(); opt.step(); losses.append(loss.item())

@@ -56,7 +56,7 @@ def main():
         m.update(pairs=pairs, X=X, pc=c, geom=g)
 
     def build_targets(mols):
-        for i, m in mols.items():
+        for _i, m in mols.items():
             Bp = np.linalg.pinv(m["B"]); dFmn = Bp.T @ m["dH_true"] @ Bp
             m["y"] = np.array([dFmn[i_, j_] for i_, j_ in m["pairs"]])
             # F_low enters the pair features (columns with F_low,kk and F_low,ij); rebuild them for substituted molecules
@@ -92,7 +92,7 @@ def main():
     res["after"] = run("after substitution (analytic Hessians for the molecules above)", mols)
     res["seconds"] = round(time.time() - t0)
     json.dump(res, open(a.out_prefix + ".json", "w"), indent=1)
-    md = ["# E7 / rung B re-read with second-route Hessians (post-hoc, 23 September 2026)", "", f"Analytic Hessians substituted for: " + ", ".join(f"{names.get(i, '?')} ({i})" for i in subs), "",
+    md = ["# E7 / rung B re-read with second-route Hessians (post-hoc, 23 September 2026)", "", "Analytic Hessians substituted for: " + ", ".join(f"{names.get(i, '?')} ({i})" for i in subs), "",
           "| molecule of hold-out (a) | ratio before | ratio after | ring diag before / after | corrected ω before / after (zero) | ΔH residual before / after |", "|---|---|---|---|---|---|"]
     for i in test_a:
         b_, a_ = res["before"]["per_molecule_a"][i], res["after"]["per_molecule_a"][i]

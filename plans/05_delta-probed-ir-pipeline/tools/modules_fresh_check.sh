@@ -1,4 +1,5 @@
 #!/bin/bash
+# no-set-e: each module is tried in turn; a failing pip install or notebook is recorded in the log, not fatal for the others (rule of 28 Sep 2026)
 # Fresh-environment check of Udacity modules 02-04 (22 Sep 2026, decision 47 spirit): for each module, a new venv,
 # `pip install -r requirements.txt` exactly as a grader would, then the notebook executed top to bottom with nbconvert.
 # If the frozen requirements do not install on Linux (Windows-only wheels), that is recorded and a fallback set is installed

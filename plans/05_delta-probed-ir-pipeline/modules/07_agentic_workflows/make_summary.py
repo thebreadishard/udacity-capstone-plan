@@ -5,7 +5,6 @@ Responsible Use Considerations · Future Improvements · References — then con
 from notebook/results.json; nothing is typed in by hand. Run:  python make_summary.py"""
 import json
 import subprocess
-import sys
 from pathlib import Path
 
 from docx import Document

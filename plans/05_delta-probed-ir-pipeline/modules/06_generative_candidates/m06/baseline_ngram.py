@@ -38,7 +38,7 @@ def sample_one(counts, order, rng, max_len=96):
             ctx = tuple(toks[len(toks) - k:]) if k else ()
             c = counts[k].get(ctx)
             if c:
-                items, weights = zip(*c.items()); nxt = rng.choices(items, weights=weights)[0]; break
+                items, weights = zip(*c.items(), strict=True); nxt = rng.choices(items, weights=weights)[0]; break
         if nxt is None or nxt == EOS:
             break
         out.append(nxt); toks.append(nxt)

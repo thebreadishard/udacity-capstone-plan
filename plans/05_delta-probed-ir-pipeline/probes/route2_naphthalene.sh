@@ -1,4 +1,5 @@
 #!/bin/bash
+# no-set-e: launch chain written before the fail-fast rule of 28 Sep 2026 and already run on its server; add `set -euo pipefail` before reusing it
 # Route 2 on hel1-14 (22 September 2026): the two-route quartic-force-field diagnostic on naphthalene at Mackie's level
 # (B97-1 / Dunning TZ2P, analytic pyscf Hessians, grid 99/590), step 0.10 in reduced coordinates.
 # Chain: optimise -> reference Hessian -> 2n displacement stubs -> 2n Hessians (runner skips finished files; safe to relaunch).

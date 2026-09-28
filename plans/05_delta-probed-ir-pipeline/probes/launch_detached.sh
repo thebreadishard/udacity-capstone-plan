@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# no-set-e: launch chain written before the fail-fast rule of 28 Sep 2026 and already run on its server; add `set -euo pipefail` before reusing it
 # Launch a long probe detached from the calling session (survives the Claude Code window closing):
 #   wsl -e bash -lc '/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/launch_detached.sh <logfile> <python args...>'
 # Rules of Compute_Budget §3: one anchor job at a time; PYSCF_TMPDIR on the ext4 home (not /tmp); the

@@ -80,8 +80,9 @@ def test_cli_runs_on_a_synthetic_directory(tmp_path):
             np.savez(d / name, H_projected=m["H_low"])
     out = tmp_path / "check"
     r = subprocess.run([sys.executable, str(M05 / "design_check.py"), str(tmp_path), "--out", str(out), "--aggregation", "mean"],
-                       capture_output=True, text=True, timeout=300)
+                       capture_output=True, text=True, timeout=300, check=False)
     assert r.returncode == 0, r.stdout + r.stderr
     assert (out.parent / "check.md").exists() and (out.parent / "check.json").exists() and "PASS" in r.stdout
-    h = subprocess.run([sys.executable, str(M05 / "design_check.py"), "--help"], capture_output=True, text=True, timeout=120).stdout
-    assert all(f in h for f in ("--checkpoint", "--source-qm9", "--limit-ratio", "--limit-abs", "--aggregation {sum,mean}"))
+    h = subprocess.run([sys.executable, str(M05 / "design_check.py"), "--help"], capture_output=True, text=True, timeout=120, check=False)
+    assert h.returncode == 0, h.stderr
+    assert all(f in h.stdout for f in ("--checkpoint", "--source-qm9", "--limit-ratio", "--limit-abs", "--aggregation {sum,mean}"))

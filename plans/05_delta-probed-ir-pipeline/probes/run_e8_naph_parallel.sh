@@ -1,4 +1,5 @@
 #!/bin/bash
+# no-set-e: launch chain written before the fail-fast rule of 28 Sep 2026 and already run on its server; add `set -euo pipefail` before reusing it
 # E8 naphthalene on the CCX53, three partial runs in parallel (24 Sep 2026, 11:xx): pyscf's CCSD(T) gradient does not scale past ~16 threads
 # (benzene: 695 s at 24 threads on the CCX53 against 663–692 s at 16 on a CPX62), so three processes of 10 threads on the 15 symmetry-unique
 # displacements (0:5, 5:10, 10:15) triple the throughput. Each partial run computes the reference gradient itself if reference.npz is missing

@@ -12,10 +12,14 @@ Outputs:
   out/SUMMARY.md                counts, constants, sha256 of every input
 Every constant that is a choice is in CONSTANTS and printed; the family rule is Module 02's, copied verbatim.
 """
-import hashlib, json, sys
+import hashlib
+import json
+import sys
 from datetime import datetime
 from pathlib import Path
-import numpy as np, pandas as pd
+
+import numpy as np
+import pandas as pd
 from scipy.signal import find_peaks, peak_prominences
 
 HERE = Path(__file__).resolve().parent
@@ -23,7 +27,7 @@ PLAN = HERE.parents[1]                       # plans/05_delta-probed-ir-pipeline
 PLANS = HERE.parents[2]                      # plans/
 M02 = HERE.parent / "02_opponent_atlas" / "out" / "experimental_3.10"
 sys.path.insert(0, str(PLAN / "probes"))
-from m03_band_uncertainty import parse_jcamp, fwhm   # the JCAMP reader of probe 2a (regex tokenizer)
+from m03_band_uncertainty import fwhm, parse_jcamp  # noqa: E402  the JCAMP reader of probe 2a (regex tokenizer), after the sys.path line
 
 CONSTANTS = {  # PRE_REGISTRATION.md, "Definitions (fixed)"
     "noise_window_cm": [2400.0, 2500.0],
@@ -157,7 +161,7 @@ def gas_peaks(path):
     rows = []
     src = meta.get("$NIST SOURCE", "?")
     res = CONSTANTS["msdc_ir_resolution_cm"] if src == "MSDC-IR" else float(str(meta.get("RESOLUTION", "nan")).split()[0])
-    for i, pr in zip(idx, prom):
+    for i, pr in zip(idx, prom, strict=True):
         snr = y[i] / sigma
         if snr < CONSTANTS["peak_min_snr"] or i == 0 or i == len(y) - 1:
             continue
@@ -203,7 +207,7 @@ def main():
     inputs[str(T400 / "bands.csv.gz")] = sha256(T400 / "bands.csv.gz")
     cut = CONSTANTS["bath_mode_cutoff_cm"]
     NU_M, NU_M_SRC = {}, {}
-    for _, name, formula, uid, _, _ in GAS_RECORDS:
+    for _, name, _formula, uid, _, _ in GAS_RECORDS:
         if uid is None and name == "triphenylene":   # no experimental uid; the theoretical entry is the neutral C18H12 with twelve quartet hydrogens
             cand = ts[(ts.formula == "C18H12") & (ts.charge.astype(int) == 0) & (ts.n_quartet == 12)]
             uid = cand.uid.iloc[0] if len(cand) else None
@@ -259,7 +263,7 @@ def main():
     # ---- the join (PRE_REGISTRATION.md, Definitions 2-4)
     W = CONSTANTS["match_window_cm"]
     pairs = []
-    for path, name, formula, uid, role, tnote in GAS_RECORDS:
+    for path, name, _formula, uid, role, _tnote in GAS_RECORDS:
         if uid is None:
             continue
         g = gas[(gas.record == path.name)].sort_values("intensity", ascending=False)
@@ -274,7 +278,7 @@ def main():
             if mi in taken and taken[mi][1] <= d:
                 continue          # contested: the closer gas peak keeps it, no second choice
             taken[mi] = (gi, d)
-        for mi, (gi, d) in taken.items():
+        for mi, (gi, _d) in taken.items():
             gr, mr = g.loc[gi], m.loc[mi]
             pairs.append(dict(species=name, uid=uid, gas_record=path.name, gas_role=role, nu_gas_cm=gr.frequency_cm, gas_snr=gr.snr,
                               gas_fwhm_cm=gr.fwhm_cm, u_c_gas_cm=gr.u_c_cm, u_res_gas_cm=gr.u_res_cm, nu_matrix_cm=mr.frequency_cm,
@@ -287,7 +291,7 @@ def main():
     pairs.to_csv(nb / "pairs_matrix_gas.csv", index=False)
     # ---- summary
     unmatched = {}
-    for path, name, formula, uid, role, tnote in GAS_RECORDS:
+    for path, name, _formula, uid, role, _tnote in GAS_RECORDS:
         if uid is None:
             continue
         ng = int((gas.record == path.name).sum())

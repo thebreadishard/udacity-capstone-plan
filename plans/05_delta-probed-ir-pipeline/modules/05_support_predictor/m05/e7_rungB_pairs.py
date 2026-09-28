@@ -271,7 +271,7 @@ def predict_mlp(m, X, c, mu, sd, tscale):
 
 def assemble(m, pairs, vals):
     n = m["B"].shape[0]; dF = np.zeros((n, n))
-    for (i, j), v in zip(pairs, vals):
+    for (i, j), v in zip(pairs, vals, strict=True):
         dF[i, j] = v; dF[j, i] = v
     return dF
 
@@ -340,7 +340,9 @@ def main():
         Bp = np.linalg.pinv(m["B"]); dFmn = Bp.T @ m["dH_true"] @ Bp
         m.update(pairs=pairs, X=X, pc=c, y=np.array([dFmn[i_, j_] for i_, j_ in pairs]), symbols=g["symbols"], coords=np.asarray(g["coords_bohr"]))
     if a.orbit_average_targets:
-        import csv as _csv, e11_extras as E11
+        import csv as _csv
+
+        import e11_extras as E11
         man = {r["id"]: r for r in _csv.DictReader(open(Path(a.molecules).parent / "manifest.csv", newline="", encoding="utf-8"))}
         n_avg = 0; n_pairs_avg = 0; moved = []
         for i, m in mols.items():
@@ -418,7 +420,7 @@ def main():
                 md.append(f"| {n} | ({h}) | {label} | " + " | ".join(f"{x['diag_rms'][F]:.2f}" for F in FAMILIES)
                           + f" | {x['coupling_rms']:.2f} / {x['coupling_zero_rms']:.2f} | **{x['coupling_ratio']:.2f}** | {x['block_rms']:.2f} / {x['block_median_rule_rms']:.2f} | {x['corrected_freq_rms']:.2f} ({x['corrected_freq_rms_zero_rule']:.2f}) | {x['duschinsky_overlap_median']:.3f} | {x['dH_residual_ratio']:.2f} |")
     md += ["", "## Readings (pre-registered)", "",
-           f"- B1 MLP ring coupling ratio vs n: (a) " + ", ".join(f"{n}: {v:.2f}" for n, v in zip(sizes, ratios['a'])) + f" (slope {slope['a']:+.2f}); (b) " + ", ".join(f"{n}: {v:.2f}" for n, v in zip(sizes, ratios['b'])) + f" (slope {slope['b']:+.2f})",
+           "- B1 MLP ring coupling ratio vs n: (a) " + ", ".join(f"{n}: {v:.2f}" for n, v in zip(sizes, ratios['a'], strict=True)) + f" (slope {slope['a']:+.2f}); (b) " + ", ".join(f"{n}: {v:.2f}" for n, v in zip(sizes, ratios['b'], strict=True)) + f" (slope {slope['b']:+.2f})",
            f"- Verdict at n = {nf}: ratio (a) {ra:.2f}, (b) {rb:.2f}, slope (a) {slope['a']:+.2f} → **{verdict}** (win: ≤ 0.6 on both and a negative slope; lose: ≥ 0.9 on (a))",
            "", f"Total {res['seconds']} s."]
     open(a.out_prefix + ".md", "w", encoding="utf-8").write("\n".join(md) + "\n")

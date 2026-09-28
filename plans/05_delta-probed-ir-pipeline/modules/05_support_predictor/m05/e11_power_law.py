@@ -41,7 +41,7 @@ def fit_predict(points, which, rng, nboot=2000):
         p = np.exp(boots[:, 0] + boots[:, 1] * np.log(t))
         pred[str(t)] = dict(point=float(np.exp(a0 + b0 * np.log(t))), lo68=float(np.percentile(p, 16)), hi68=float(np.percentile(p, 84)))
     return dict(slope=float(b0), slope_lo68=float(np.percentile(boots[:, 1], 16)), slope_hi68=float(np.percentile(boots[:, 1], 84)),
-                factor_per_decade=float(10 ** (-b0)), fitted_on={str(int(n)): float(v.mean()) for n, v in zip(ns, vals)}, predictions=pred)
+                factor_per_decade=float(10 ** (-b0)), fitted_on={str(int(n)): float(v.mean()) for n, v in zip(ns, vals, strict=True)}, predictions=pred)
 
 
 def main():

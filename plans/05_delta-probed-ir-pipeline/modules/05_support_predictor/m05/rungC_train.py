@@ -26,10 +26,13 @@ import numpy as np
 import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "src"))
 import e6_learning_curve as E6  # noqa: E402
 import e7_t2_sqm as T2  # noqa: E402
 from e7_rungB_pairs import readouts  # noqa: E402
-from rungC_equivariant import AGGREGATION, AGGREGATIONS, BOHR2ANG, LOSS_SCALE, DeltaHessianModel, load_molecule, to_torch  # noqa: E402
+from rungC_equivariant import AGGREGATION, AGGREGATIONS, BOHR2ANG, LOSS_SCALE, DeltaHessianModel, console_utf8_safe, load_molecule, to_torch  # noqa: E402
+
+from dpir.provenance import provenance  # noqa: E402
 
 AUX_WEIGHT = 0.1
 
@@ -235,6 +238,7 @@ def predictor(model: torch.nn.Module, tensors: dict, mols: dict):
 
 
 def main() -> int:
+    console_utf8_safe()
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("molecules")
     ap.add_argument("out_prefix")
@@ -316,7 +320,7 @@ def main() -> int:
         + (" — SMOKE" if a.smoke else ""))
 
     tests = {"a": test_a, "b": test_b}
-    res = dict(date=datetime.now().strftime("%Y-%m-%d %H:%M"), smoke=a.smoke,
+    res = dict(date=datetime.now().strftime("%Y-%m-%d %H:%M"), smoke=a.smoke, provenance=provenance(),
                model="rungC_equivariant C1 (from scratch; output scaled by the training set's RMS ΔH, or per entry class)",
                n_molecules=len(mols), holdout_a=test_a, holdout_b=test_b, scaffold_cores=cores, pool=len(pool), pool_ids=pool, pool_layers=a.pool_layers,
                sizes=sizes, seeds=seeds, epochs=a.epochs, lr=a.lr, aux_weight=a.aux_weight, loss=a.loss, scale=a.scale, inner_val=a.inner_val,

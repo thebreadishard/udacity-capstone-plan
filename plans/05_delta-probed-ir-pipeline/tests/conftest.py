@@ -60,3 +60,12 @@ def model_molecule():
     symbols = ["C", "H", "H", "O"]
     geom = rng.normal(scale=1.5, size=(4, 3)).ravel()
     return symbols, geom, atomic_masses_me(symbols), rng
+
+
+@pytest.fixture(autouse=True)
+def plain_console_env(monkeypatch):
+    """Subprocesses started by a test see the plain console environment: no PYTHONUTF8 / PYTHONIOENCODING inherited from the caller's shell.
+    28 Sep 2026: three CLI tests passed only under PYTHONUTF8=1 and failed on a cp1252 pipe (UnicodeEncodeError on Δ in --help); the scripts
+    now make their own console safe, and this fixture keeps the tests honest about it."""
+    monkeypatch.delenv("PYTHONUTF8", raising=False)
+    monkeypatch.delenv("PYTHONIOENCODING", raising=False)

@@ -4,11 +4,15 @@ archive size / md5 / sha256, the Arrow shard sizes and sha256, row counts, the s
 the heavy-atom distribution, the composition counts and an 'aromatic-like' proxy count (>= 6 C and H <= C) that
 bounds the size of the recomputed B3LYP subset (RECIPE: the size itself is fixed later by a dated note).
 Run:  python inspect_hessian_qm9.py     (writes ../out/HESSIAN_QM9_SUMMARY.md and .json)"""
-import collections, hashlib, json
+import collections
+import hashlib
+import json
 from datetime import datetime
 from pathlib import Path
+
 import numpy as np
-import pyarrow as pa, pyarrow.ipc as ipc
+import pyarrow as pa
+import pyarrow.ipc as ipc
 
 HERE = Path(__file__).resolve().parent
 D = HERE.parent / "data" / "hessian_qm9"
@@ -43,7 +47,7 @@ def main():
             H = np.array(row["hessian"]); n = len(row["atomic_numbers"])
             example = {"label": row["label"], "natoms": n, "hessian_shape": list(H.shape), "hessian_symmetric": bool(np.allclose(H.reshape(3 * n, 3 * n), H.reshape(3 * n, 3 * n).T, atol=1e-6)),
                        "frequencies_shape": list(np.array(row["frequencies"]).shape), "normal_modes_shape": list(np.array(row["normal_modes"]).shape), "energy": row["energy"], "schema": tab.schema.names}
-        for z, lab in zip(tab.column("atomic_numbers").to_pylist(), tab.column("label").to_pylist()):
+        for z, lab in zip(tab.column("atomic_numbers").to_pylist(), tab.column("label").to_pylist(), strict=True):
             c = collections.Counter(z); nh = sum(1 for a in z if a > 1); heavy[nh] += 1; natoms[len(z)] += 1
             comp[(c[6], c[1], c[7], c[8], c[9])] += 1
             if c[6] >= 6 and c[1] <= c[6]:

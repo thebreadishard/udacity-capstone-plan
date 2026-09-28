@@ -11,9 +11,9 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-from steward.graph import run_scenario            # noqa: E402
-from steward.policy import LLMPolicy, RuleTablePolicy   # noqa: E402
-from steward.rules import load_rules              # noqa: E402
+from steward.graph import run_scenario  # noqa: E402
+from steward.policy import LLMPolicy, RuleTablePolicy  # noqa: E402
+from steward.rules import load_rules  # noqa: E402
 
 
 def main():
@@ -29,8 +29,8 @@ def main():
     n_pass = sum(r["pass"] for r in results)
     print(f"\n{n_pass}/{len(results)} scenario runs pass with policy '{policy.name}'")
     try:
-        commit = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True, cwd=HERE).stdout.strip()
-    except Exception:
+        commit = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True, cwd=HERE, check=False).stdout.strip()
+    except (OSError, subprocess.SubprocessError):
         commit = "?"
     out = Path(a.out) if a.out else HERE / "out" / f"scenario_results_{dt.date.today().isoformat()}_{a.policy}.json"
     out.parent.mkdir(parents=True, exist_ok=True)

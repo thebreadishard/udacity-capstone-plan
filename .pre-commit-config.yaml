@@ -5,7 +5,8 @@ repos:
     rev: v0.6.9
     hooks:
       - id: ruff
-        files: ^plans/05_delta-probed-ir-pipeline/(src|tests)/
+        files: ^plans/05_delta-probed-ir-pipeline/(src|tests|tools|modules)/.*\.py$   # 28 Sep 2026: modules and tools joined (was src|tests)
+        exclude: ^plans/05_delta-probed-ir-pipeline/modules/02_opponent_atlas/data/
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
@@ -15,6 +16,12 @@ repos:
       - id: check-merge-conflict
   - repo: local
     hooks:
+      - id: check-shell
+        name: shell scripts parse and fail fast (bash -n; set -e or a stated reason)
+        entry: python plans/05_delta-probed-ir-pipeline/tools/check_shell.py
+        language: system
+        files: ^plans/05_delta-probed-ir-pipeline/.*\.sh$
+        pass_filenames: true
       - id: no-run-scratch
         name: refuse run scratch and live run directories
         entry: python plans/05_delta-probed-ir-pipeline/tools/check_staged_paths.py

@@ -1,7 +1,7 @@
 """Action allow-list and the proposal schema. Anything not listed here cannot be executed, whatever the reasoning step proposes."""
 from __future__ import annotations
 
-from typing import Literal, Optional
+from typing import Literal
 
 from pydantic import BaseModel, Field
 
@@ -31,11 +31,11 @@ class Proposal(BaseModel):
 
     action: str = Field(description="one of the allow-listed actions, or anything else — which the gate will refuse")
     args: dict = Field(default_factory=dict)
-    rule_id: Optional[str] = Field(default=None, description="the id of the rule in rules_v1.json this step applies, e.g. R01")
+    rule_id: str | None = Field(default=None, description="the id of the rule in rules_v1.json this step applies, e.g. R01")
     reason: str = Field(default="", description="one sentence, quoting the observation it answers")
 
 
 class GateResult(BaseModel):
     approved: bool
     reasons: list[str] = Field(default_factory=list)
-    forced_action: Optional[Proposal] = Field(default=None, description="what the gate substitutes when it refuses (wait or escalate)")
+    forced_action: Proposal | None = Field(default=None, description="what the gate substitutes when it refuses (wait or escalate)")

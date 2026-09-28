@@ -14,7 +14,6 @@ import csv
 import hashlib
 import json
 import os
-import sys
 import time
 import urllib.parse
 import urllib.request
@@ -38,8 +37,9 @@ def get(url, data=None, tries=4):
             req = urllib.request.Request(url, data=data, headers={"User-Agent": "spectrum-atlas-module06/0.1 (academic; frederic.petrignani@gmail.com)"})
             with urllib.request.urlopen(req, timeout=120) as r:
                 _last[0] = time.time(); return r.read()
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 — network retry loop: any failure is retried, the last one re-raised
             _last[0] = time.time()
+            print(f"  attempt {k + 1}/{tries} failed: {e!r}", flush=True)
             if k == tries - 1:
                 raise
             time.sleep(2.0 * (k + 1))

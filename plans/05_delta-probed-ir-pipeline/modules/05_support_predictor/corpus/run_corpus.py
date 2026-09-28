@@ -5,14 +5,23 @@ manifest and appends the ledger. Start and stop at will.
     python run_corpus.py [--layer A|B|C] [--max-molecules N] [--max-hours H] [--force] [--dry-run] [--grid-check]
 Refuses to start while a plan-05 anchor job runs in WSL (unless --force); one runner at a time (corpus.lock); a progress line
 at least hourly; results in molecules/<id>/ (git-ignored)."""
-import argparse, csv, hashlib, json, os, shutil, socket, subprocess, sys, time
+import argparse
+import csv
+import hashlib
+import json
+import os
+import shutil
+import socket
+import subprocess
+import sys
+import time
 from datetime import datetime
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 MANIFEST, LEDGER, LOCK = HERE / "manifest.csv", HERE / "ledger.csv", HERE / "corpus.lock"
 DECK = HERE / "decks" / "deck_v1.json"
-QC_PYTHON = Path(os.environ.get("CORPUS_QC_PYTHON", r"C:\Users\thebr\.conda\envs\qc\python.exe"))  # 2026-09-18: overridable so the same runner works on a Linux host (Hetzner CPX62)
+QC_PYTHON = Path(os.environ["CORPUS_QC_PYTHON"]) if os.environ.get("CORPUS_QC_PYTHON") else None   # 28 Sep 2026: no personal default path  # 2026-09-18: overridable so the same runner works on a Linux host (Hetzner CPX62)
 QM9_VAC = HERE.parent / "data" / "hessian_qm9" / "hessian_qm9_DatasetDict" / "vacuum"
 FIELDS = ["id", "layer", "priority", "name", "smiles", "qm9_label", "n_heavy", "n_atoms", "status", "machine", "deck", "note"]
 RETRY_OPT_OPTIONS = {"opt_coordinates": "cartesian", "geom_maxiter": 200}  # 2026-09-20: --retry-failed; near-linear bends (ethynyl) stall optking's internals
@@ -25,9 +34,9 @@ def log(msg):
 
 def anchor_job_running():
     try:
-        r = subprocess.run(["wsl", "-e", "bash", "-lc", "pgrep -af 'm1_frozen|anchor_single|dryrun_dft|naphthalene_geometry' | grep -v pgrep | wc -l"], capture_output=True, text=True, timeout=30)
+        r = subprocess.run(["wsl", "-e", "bash", "-lc", "pgrep -af 'm1_frozen|anchor_single|dryrun_dft|naphthalene_geometry' | grep -v pgrep | wc -l"], capture_output=True, text=True, check=False, timeout=30)
         return int(r.stdout.strip() or 0) > 0
-    except Exception:
+    except (OSError, subprocess.SubprocessError, ValueError):
         return False
 
 
@@ -72,16 +81,17 @@ def start_geometry(row):
     """Layers A/B: RDKit ETKDG + MMFF from SMILES. Layer C: the Hessian QM9 geometry (Angstrom) by label."""
     if row.get("restart_geometry"):  # --restart-from (2026-09-24): twisted geometry from saddle_restarts.py, bohr -> Angstrom, then optimise as usual
         g = json.load(open(row["restart_geometry"], encoding="utf-8")); b = 0.529177210903
-        return [[s, x * b, y * b, z * b] for s, (x, y, z) in zip(g["symbols"], g["coords_bohr"])], True
+        return [[s, x * b, y * b, z * b] for s, (x, y, z) in zip(g["symbols"], g["coords_bohr"], strict=True)], True
     if row["layer"] == "C":
-        import pyarrow as pa, pyarrow.ipc as ipc, numpy as np
+        import pyarrow as pa
+        import pyarrow.ipc as ipc
         for s in sorted(QM9_VAC.glob("data-*.arrow")):
             tab = ipc.open_stream(pa.memory_map(str(s))).read_all()
             labs = tab.column("label").to_pylist()
             if row["qm9_label"] in labs:
                 i = labs.index(row["qm9_label"]); r = tab.slice(i, 1).to_pylist()[0]
                 sym = {1: "H", 6: "C", 7: "N", 8: "O", 9: "F"}
-                return [[sym[z], *xyz] for z, xyz in zip(r["atomic_numbers"], r["positions"])], False
+                return [[sym[z], *xyz] for z, xyz in zip(r["atomic_numbers"], r["positions"], strict=True)], False
         raise RuntimeError("label not found in Hessian QM9 vacuum split")
     from rdkit import Chem
     from rdkit.Chem import AllChem
@@ -101,7 +111,7 @@ def restart_rows(path, rows):
     by_id = {r["id"]: r for r in rows}; out = []
     for j in json.load(open(path, encoding="utf-8")):
         base = by_id[j["id"]]
-        for sign, f in zip(("+", "-"), j["files"]):
+        for sign, f in zip(("+", "-"), j["files"], strict=True):
             g = json.load(open(HERE / f, encoding="utf-8")); rf = g["restart_from"]; amp = abs(rf["displacement_angstrom"])
             out.append({**base, "id": f"{j['id']}_r{sign}", "name": f"{base['name']} (restart {sign}{amp} A)", "n_atoms": str(len(g["symbols"])),
                         "restart_geometry": str(HERE / f), "restart_note": f"restart-from:{Path(path).name} {sign}{amp}A along {rf['functional']} imaginary {rf['imaginary_cm']}cm-1"})
@@ -136,8 +146,8 @@ def main():
             log(f"another runner holds {LOCK} (started {held}); exiting"); return 2
     if anchor_job_running() and not a.force:
         log("a plan-05 anchor job is running in WSL; refusing to start (use --force to override, it will be noted in the ledger)"); return 3
-    if not QC_PYTHON.exists():
-        log(f"psi4 environment not found at {QC_PYTHON}"); return 4
+    if QC_PYTHON is None or not QC_PYTHON.exists():
+        log(f"psi4 environment not found ({QC_PYTHON}); set CORPUS_QC_PYTHON to the python of the psi4 environment"); return 4
     LOCK.write_text(f"{machine} {datetime.now():%Y-%m-%d %H:%M} pid {os.getpid()}")
     t_start = time.time(); done = 0; last_report = time.time(); virtually_done = set()
     try:
@@ -180,11 +190,11 @@ def main():
                 job = {"id": r["id"], "layer": r["layer"], "xyz_angstrom": xyz, "deck": deck, "out_dir": str(out_tmp), "optimise": optimise, "grid_check": a.grid_check}
                 if a.retry_failed: job["opt_options"] = RETRY_OPT_OPTIONS
                 jp = out_tmp / "job.json"; json.dump(job, open(jp, "w"))
-                p = subprocess.run([str(QC_PYTHON), str(HERE / "psi4_worker.py"), str(jp)], capture_output=True, text=True)
+                p = subprocess.run([str(QC_PYTHON), str(HERE / "psi4_worker.py"), str(jp)], capture_output=True, text=True, check=False)   # result.json decides
                 (out_tmp / "worker_stdout.txt").write_text(p.stdout + "\n---stderr---\n" + p.stderr)
                 if (out_tmp / "result.json").exists():
                     res = json.load(open(out_tmp / "result.json")); status = res.get("status", "failed")
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001 — the corpus runner records any failure of one molecule and continues with the next
                 (out_tmp / "runner_error.txt").write_text(repr(e))
             shutil.rmtree(out_final, ignore_errors=True); os.replace(out_tmp, out_final)
             if not a.restart_from:
@@ -205,7 +215,7 @@ def main():
                 log(f"progress: {done} this session, {left} pending in scope, {(time.time() - t_start) / 3600:.2f} h elapsed")
     finally:
         LOCK.unlink(missing_ok=True)
-    subprocess.run([sys.executable, str(HERE / "status.py")])
+    subprocess.run([sys.executable, str(HERE / "status.py")], check=False)   # the digest is informational
     return 0
 
 

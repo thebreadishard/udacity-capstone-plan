@@ -24,7 +24,7 @@ import torch.nn as nn
 import torch.nn.functional as Fn
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from learning_curve_layerA import AMU2AU, FAMILIES, SEEDS, molecule_features, normal_modes, predict, rms, train  # noqa: E402
+from learning_curve_layerA import FAMILIES, SEEDS, molecule_features, normal_modes, predict, rms, train  # noqa: E402
 from learning_curve_layerA_v2_descriptors import BOHR, bond_graph, rings  # noqa: E402
 
 ELEMENTS = ["C", "H", "N", "O", "S"]
@@ -35,7 +35,7 @@ SIZES = [5, 10, 20, 30]
 # ----------------------------------------------------------------------------------------------- data
 def principal_frame(coords_A, masses):
     com = (coords_A * masses[:, None]).sum(0) / masses.sum(); x = coords_A - com
-    I = sum(m * (np.dot(r, r) * np.eye(3) - np.outer(r, r)) for r, m in zip(x, masses))
+    I = sum(m * (np.dot(r, r) * np.eye(3) - np.outer(r, r)) for r, m in zip(x, masses, strict=True))
     w, R = np.linalg.eigh(I)                     # ascending: z (last) = largest moment = normal of a planar molecule
     return x @ R, R
 
@@ -200,7 +200,7 @@ def main():
         try:
             base = molecule_features(d); mols[d.name] = base
             sets[d.name] = atom_sets(d, base); mtok[d.name] = molecule_level_tokens(d)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 — experiment loop: the failure is recorded in the table and the next cell runs
             print("skip", d.name, repr(e))
     ids = sorted(mols, key=lambda i: hashlib.sha1(i.encode()).hexdigest())
     n_test = max(1, math.ceil(a.test_frac * len(ids))); test_ids, pool = ids[:n_test], ids[n_test:]
@@ -219,7 +219,7 @@ def main():
     per_seed = []
     for s in SEEDS:
         model, scale = train(tr30, s, 600); preds = predict(model, scale, te)
-        err = {F: np.concatenate([(p - m["target"])[np.array(m["family"]) == F] for p, m in zip(preds, te)]) for F in FAMILIES}
+        err = {F: np.concatenate([(p - m["target"])[np.array(m["family"]) == F] for p, m in zip(preds, te, strict=True)]) for F in FAMILIES}
         per_seed.append({F: rms(err[F]) for F in FAMILIES})
     res["E2"]["transformer_n30"] = {F: float(np.mean([p[F] for p in per_seed])) for F in FAMILIES}
     print("  E2 transformer n=30 (mean of seeds): " + " ".join(f"{F} {res['E2']['transformer_n30'][F]:6.2f} |" for F in FAMILIES), flush=True)

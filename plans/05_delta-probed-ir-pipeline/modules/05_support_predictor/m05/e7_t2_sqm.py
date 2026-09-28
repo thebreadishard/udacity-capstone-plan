@@ -98,7 +98,7 @@ def fit_scale_factors(mols, tr, min_count, iters):
     theta = np.log(np.clip(num / np.maximum(den, 1e-30), 0.5, 2.0))
     theta[den == 0] = 0.0
     hist = []
-    for it in range(iters):
+    for _it in range(iters):
         JtJ = np.zeros((len(fitted), len(fitted))); Jtr = np.zeros(len(fitted)); sse = 0.0; nres = 0
         for i in tr:
             m = mols[i]; tt = m["types"]; n = len(tt)
@@ -141,7 +141,7 @@ def basis_free(P, mols, ids):
     for i in ids:
         m = mols[i]; w = np.abs(m["freq"]); S = np.sqrt(np.outer(w, w)); fam = np.array(m["family"])
         same = fam[:, None] == fam[None, :]
-        def corrected(K):
+        def corrected(K, same=same, w=w, S=S):
             Kb = np.where(same, K, 0.0); Kb = 0.5 * (Kb + Kb.T)
             ev, U = np.linalg.eigh(np.diag(w ** 2) + 2 * S * Kb); return np.sqrt(np.abs(ev)), U
         wt, Ut = corrected(m["K"]); wp, Up = corrected(P[i]); w0, U0 = corrected(np.zeros_like(m["K"]))

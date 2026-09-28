@@ -1,5 +1,6 @@
 """Refresh m05/deltah_model.py from the architecture sheet and assert they are identical below the header (22 Sep 2026)."""
 from pathlib import Path
+
 HERE = Path(__file__).resolve().parent
 SRC = HERE.parents[2] / "GoalGathering" / "architecture" / "51_deltaH_model_pytorch.py"
 DST = HERE / "deltah_model.py"

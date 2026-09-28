@@ -30,7 +30,10 @@ import numpy as np
 import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from rungC_equivariant import AGGREGATION, AGGREGATIONS, CUTOFF_BOHR, DeltaHessianModel, edges_within, load_molecules  # noqa: E402
+sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "src"))
+from rungC_equivariant import AGGREGATION, AGGREGATIONS, CUTOFF_BOHR, DeltaHessianModel, console_utf8_safe, edges_within, load_molecules  # noqa: E402
+
+from dpir.provenance import provenance  # noqa: E402
 
 PROPERTIES = ("n_atoms", "mean_degree", "max_degree", "max_Z")
 EXTREMES = (("n_atoms", "min"), ("n_atoms", "max"), ("mean_degree", "min"), ("mean_degree", "max"), ("max_degree", "max"), ("max_Z", "max"))
@@ -128,6 +131,7 @@ def load_source_qm9(qm9_dir: str, sample: int) -> dict:
 
 
 def main(argv: list[str] | None = None) -> int:
+    console_utf8_safe()
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("molecules", help="target corpus directory (every admitted molecule counts as target)")
     ap.add_argument("--out", required=True, help="record prefix (.md and .json)")
@@ -157,7 +161,7 @@ def main(argv: list[str] | None = None) -> int:
     body, body_desc = load_body(a.checkpoint, a.aggregation, a.seed, target_elements, pre)
     probe = probe_body(body, mols, sorted(set(ext.values())))
     v = verdict(probe, a.limit_abs, a.limit_ratio)
-    rec = {"date": time.strftime("%Y-%m-%d %H:%M"), "molecules": a.molecules, "n_target": len(mols), "body": body_desc, "target_ranges": ranges(stats),
+    rec = {"date": time.strftime("%Y-%m-%d %H:%M"), "provenance": provenance(), "molecules": a.molecules, "n_target": len(mols), "body": body_desc, "target_ranges": ranges(stats),
            "extremes": ext, "probe": probe, "verdict": v}
     lines = [f"# Design check — {a.out} ({rec['date']})", "", f"body: {body_desc}; target: {len(mols)} molecules under `{a.molecules}`", "",
              "| extreme | molecule | atoms | mean deg | max deg | max Z | feature scale | worst output |", "|---|---|---|---|---|---|---|---|"]

@@ -98,7 +98,7 @@ def main():
     tr = [i for i in ok if man.get(i, {}).get("layer") == "A"]
     geo = {i: json.load(open(mdir / i / "geometry.json")) for i in ok}
     subs = []; skipped = {}
-    for i, m in ok.items():
+    for i, _m in ok.items():
         if man.get(i, {}).get("layer") != "A2" or "+" not in man[i]["name"]: continue
         core = man[i]["name"].split("+")[0]
         if core not in core_id: skipped[i] = f"core {core} not admitted"; continue

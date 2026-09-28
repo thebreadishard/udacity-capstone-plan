@@ -4,12 +4,14 @@
 module_summary.pdf with Word (COM automation through PowerShell). Run:  python make_summary.py
 Every number in the text is read from notebook/training_table.csv and notebook/model_results.json (written by
 the executed notebook); citations are APA author-year and the References list contains exactly the sources cited."""
-import json, subprocess
+import json
+import subprocess
 from pathlib import Path
+
 import pandas as pd
 from docx import Document
-from docx.shared import Pt, Inches
 from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_BREAK
+from docx.shared import Inches, Pt
 
 HERE = Path(__file__).resolve().parent
 TEMPLATE = HERE.parents[3] / "Rubrics" / "APA7_template.docx"
@@ -79,14 +81,14 @@ page_break()
 para(TITLE, bold=True, center=True, indent_first=False)
 
 heading("Overview")
-para(f"I addressed a supervised regression problem: predicting, per infrared band of a polycyclic aromatic hydrocarbon "
-     f"(PAH), the error that NASA's library of scaled-harmonic computed spectra makes against the laboratory band "
-     f"position, from descriptors of the band and the molecule alone. The dataset is a paired table I derived from two "
-     f"public libraries of the NASA Ames PAH IR Spectroscopic Database: the computed library version 4.00 "
-     f"(https://www.astrochemistry.org/pahdb/theoretical/4.00; Ricca et al., 2026) and the experimental, argon-matrix "
-     f"library version 3.10 (https://www.astrochemistry.org/pahdb/experimental/3.10; Mattioda et al., 2020). I trained "
-     f"and compared a per-family constant, a ridge regression and a gradient-boosted tree ensemble against the "
-     f"uncorrected library, under a recipe fixed before the first run.")
+para("I addressed a supervised regression problem: predicting, per infrared band of a polycyclic aromatic hydrocarbon "
+     "(PAH), the error that NASA's library of scaled-harmonic computed spectra makes against the laboratory band "
+     "position, from descriptors of the band and the molecule alone. The dataset is a paired table I derived from two "
+     "public libraries of the NASA Ames PAH IR Spectroscopic Database: the computed library version 4.00 "
+     "(https://www.astrochemistry.org/pahdb/theoretical/4.00; Ricca et al., 2026) and the experimental, argon-matrix "
+     "library version 3.10 (https://www.astrochemistry.org/pahdb/experimental/3.10; Mattioda et al., 2020). I trained "
+     "and compared a per-family constant, a ridge regression and a gradient-boosted tree ensemble against the "
+     "uncorrected library, under a recipe fixed before the first run.")
 
 heading("Dataset Description")
 para(f"Each row pairs one laboratory band with the computed band of the same molecule that the fixed join rule assigns "
@@ -197,5 +199,5 @@ for ref in REFS:
 doc.save(str(OUT_DOCX)); print("written", OUT_DOCX)
 ps = f'''$w = New-Object -ComObject Word.Application; $w.Visible = $false
 $d = $w.Documents.Open("{OUT_DOCX}"); $d.SaveAs2("{OUT_DOCX.with_suffix('.pdf')}", 17); $d.Close(); $w.Quit()'''
-r = subprocess.run(["powershell", "-NoProfile", "-Command", ps], capture_output=True, text=True)
-print("pdf:", OUT_DOCX.with_suffix(".pdf").exists(), r.stderr[:300])
+r = subprocess.run(["powershell", "-NoProfile", "-Command", ps], capture_output=True, text=True, check=False)   # Word may be absent: reported, not fatal
+print("pdf:", OUT_DOCX.with_suffix(".pdf").exists(), f"(powershell exit {r.returncode})", r.stderr[:300])

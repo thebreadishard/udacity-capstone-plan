@@ -65,7 +65,7 @@ def match_neighbourhoods(gd, gs):
     xd, xs = gd["coords"], gs["coords"]; best = None
     for perm in itertools.permutations(orts):
         if len(perm) != len(ortd): return None
-        fixed = {ipd: ips, attd: atts, **dict(zip(ortd, perm))}
+        fixed = {ipd: ips, attd: atts, **dict(zip(ortd, perm, strict=True))}
         R, t = E9.kabsch(xd[list(fixed)], xs[list(fixed.values())]); xd_al = xd @ R.T + t
         mp = dict(fixed); used = set(fixed.values())
         rest = [a for a in nd if a not in fixed]

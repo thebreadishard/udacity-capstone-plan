@@ -19,7 +19,9 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[3]
 sys.path.insert(0, str(REPO / "plans/06_equivalent-faster-mathematics/experiments"))
-from x13_naphthalene_mode_table import analyse, load_from_git, CONSTANTS as X13C  # noqa: E402
+from x13_naphthalene_mode_table import CONSTANTS as X13C  # noqa: E402  after the sys.path line
+from x13_naphthalene_mode_table import analyse, load_from_git  # noqa: E402
+
 sys.path.insert(0, str(HERE))
 from build_lab_tables import family as window_family  # noqa: E402
 
@@ -49,7 +51,6 @@ def main():
          f"{r['M']} modes, {r['n_imag']} imaginary, {sum(x['ir_active'] for x in rows)} IR-active.", "",
          "| family (mode vector) | modes | IR-active | ν range (cm⁻¹, unscaled) | irreps |", "|---|---|---|---|---|"]
     L += [f"| {s['family']} | {s['modes']} | {s['ir_active']} | {s['nu_min']:.0f}–{s['nu_max']:.0f} | {s['irreps']} |" for s in summ]
-    dis = [x for x in rows if not (x["family_window_rule"].startswith(x["family_mode_vector"].split("-")[0]) or x["family_mode_vector"] in x["family_window_rule"])]
     L += ["", f"Window rule versus mode vector: the Module-03 frequency-window label differs in wording for every mode (different label sets); modes where the *physics* differs "
           f"(an out-of-plane mode inside an in-plane window, or the reverse) are listed in the CSV by comparing the two columns. Modes with imaginary frequency: {r['n_imag']}.", "",
           "| mode | ν (cm⁻¹) | irrep | IR | family (mode vector) | window label |", "|---|---|---|---|---|---|"]

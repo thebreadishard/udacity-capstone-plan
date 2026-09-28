@@ -74,7 +74,7 @@ def main():
         if r["status"] != "ok":
             md.append(f"| {r['name']} ({r['id']}) | — | — | — | {r['status']} |"); continue
         f = r["functionals"]
-        def cell(tag):
+        def cell(tag, f=f):
             e = f.get(tag, {})
             return f"{e.get('corpus_lowest', '?')} → {e.get('analytic_lowest', '?')} ({e.get('verdict', '?')})" if "corpus_lowest" in e else e.get("status", "?")
         noise = ", ".join(f"{t} {f[t].get('max_abs_dfreq_real_modes')}" for t in ("b3lyp", "wb97x") if t in f and "max_abs_dfreq_real_modes" in f[t])

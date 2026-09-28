@@ -8,9 +8,12 @@ Two modes:
               permission and the B3LYP subset has been recomputed; prints what it expects and exits.
 Run:  python build_corpus.py fixture
 """
-import hashlib, json, sys
+import hashlib
+import json
+import sys
 from datetime import datetime
 from pathlib import Path
+
 import numpy as np
 
 HERE = Path(__file__).resolve().parent

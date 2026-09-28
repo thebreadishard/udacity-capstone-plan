@@ -1,4 +1,5 @@
 #!/bin/bash
+# no-set-e: launch chain written before the fail-fast rule of 28 Sep 2026 and already run on its server; add `set -euo pipefail` before reusing it
 # CCX53, 24 Sep 2026: when the running chain reports the benzene symmetric smoke PASS, stop that chain (it would start naphthalene as one
 # slow process) and hand over to run_e8_naph_parallel.sh (three partial runs). On FAIL nothing is started; the user decides.
 cd /root/e8 || exit 1

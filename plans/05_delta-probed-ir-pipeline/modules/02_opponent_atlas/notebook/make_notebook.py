@@ -4,14 +4,17 @@ notebook is reproducible without hand edits. Run:  python make_notebook.py
 Structure follows the Udacity AI Programming Foundations rubric (Rubrics/02): Setup, Ingestion,
 Cleaning (two documented functions), EDA (one documented function), Visualizations (five, titled and
 labelled), Summary. Nothing is trained (EDA without machine learning)."""
+from pathlib import Path
+
 import nbformat as nbf
 from nbclient import NotebookClient
-from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 nb = nbf.v4.new_notebook(); cells = []
-md = lambda s: cells.append(nbf.v4.new_markdown_cell(s))
-code = lambda s: cells.append(nbf.v4.new_code_cell(s))
+def md(s):
+    return cells.append(nbf.v4.new_markdown_cell(s))
+def code(s):
+    return cells.append(nbf.v4.new_code_cell(s))
 
 md("""# Module 02 — the opponent atlas: a data workflow on NASA's PAHdb computed library
 

@@ -36,6 +36,8 @@ def record_path(prefix: str, label: str) -> str:
 
 
 def main(argv: list[str]) -> int:
+    from rungC_equivariant import console_utf8_safe
+    console_utf8_safe()
     if len(argv) < 3:
         print(__doc__)
         return 2

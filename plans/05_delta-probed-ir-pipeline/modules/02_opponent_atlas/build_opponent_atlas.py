@@ -34,11 +34,17 @@ Outputs (./out/<database>_<version>/):
                 have entries, the C384H48-class list (frozen-lines debt 6), the tag inventory, hashes.
 Nothing is trained. Figures are the notebook's job (Module 02 EDA), not this script's.
 """
-import argparse, csv, gzip, hashlib, json, re, sys
+import argparse
+import csv
+import gzip
+import hashlib
+import json
+import re
+import sys
+import xml.etree.ElementTree as ET
 from collections import Counter
 from datetime import datetime
 from pathlib import Path
-import xml.etree.ElementTree as ET
 
 HERE = Path(__file__).resolve().parent
 LADDER = {  # rungs of the frozen Ladder §2 — presence check by formula (all charges listed, charge printed)

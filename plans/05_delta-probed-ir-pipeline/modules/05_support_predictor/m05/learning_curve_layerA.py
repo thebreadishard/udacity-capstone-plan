@@ -58,7 +58,7 @@ def molecule_features(mol_dir):
     ipr = 1.0 / (A ** 2).sum(0) / len(symbols)                  # localisation: 1 = fully delocalised, small = local
     # out-of-plane share: component along the molecular normal (smallest principal axis), meaningful for near-planar
     com = (coords * masses[:, None]).sum(0) / masses.sum(); x = coords - com
-    I = sum(mm * (np.dot(r, r) * np.eye(3) - np.outer(r, r)) for r, mm in zip(x, masses))
+    I = sum(mm * (np.dot(r, r) * np.eye(3) - np.outer(r, r)) for r, mm in zip(x, masses, strict=True))
     ev, R = np.linalg.eigh(I); nrm = R[:, np.argmax(ev)]        # largest moment ⇒ normal of a planar molecule
     planarity = float(np.abs(x @ nrm).max())
     Vn = (V.reshape(len(symbols), 3, -1) * nrm[None, :, None]).sum(1)   # (N, M)
@@ -98,11 +98,11 @@ def pad(mols):
 
 
 def train(train_mols, seed, epochs, scale=50.0):
-    torch.manual_seed(seed); np.random.seed(seed)
+    torch.manual_seed(seed); np.random.seed(seed)  # noqa: NPY002 — the 19 Sep 2026 run is recorded with this seeding; new code uses default_rng
     X, Y, mask = pad(train_mols)
     model = RegTransformer(X.shape[-1])
     opt = torch.optim.AdamW(model.parameters(), lr=1e-3, weight_decay=1e-4)
-    for ep in range(epochs):
+    for _ep in range(epochs):
         model.train(); opt.zero_grad()
         pred = model(X, mask)
         loss = (((pred - Y / scale) ** 2) * (~mask)).sum() / (~mask).sum()
@@ -137,7 +137,7 @@ def main():
     for d in sorted(p for p in mdir.iterdir() if (p / "hessian_wb97x.npz").exists() and (p / "hessian_b3lyp.npz").exists()):
         try:
             mols.append(molecule_features(d))
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 — experiment loop: the failure is recorded in the table and the next cell runs
             print("skip", d.name, repr(e))
     # hash order, fixed once: test set = first ceil(test_frac × n) in hash order; training pools = next n_train
     mols.sort(key=lambda m: hashlib.sha1(m["id"].encode()).hexdigest())
@@ -162,9 +162,9 @@ def main():
         for s in SEEDS:
             model, scale = train(tr, s, a.epochs)
             preds = predict(model, scale, test)
-            err = {F: np.concatenate([(p - m["target"])[np.array(m["family"]) == F] for p, m in zip(preds, test)]) for F in FAMILIES}
+            err = {F: np.concatenate([(p - m["target"])[np.array(m["family"]) == F] for p, m in zip(preds, test, strict=True)]) for F in FAMILIES}
             tr_preds = predict(model, scale, tr)
-            tr_err = np.concatenate([p - m["target"] for p, m in zip(tr_preds, tr)])
+            tr_err = np.concatenate([p - m["target"] for p, m in zip(tr_preds, tr, strict=True)])
             per_seed.append({"seed": s, "rms": {F: rms(err[F]) for F in FAMILIES}, "rms_all": rms(np.concatenate(list(err.values()))),
                              "train_rms_all": rms(tr_err)})
         mean_rms = {F: float(np.mean([p["rms"][F] for p in per_seed])) for F in FAMILIES}

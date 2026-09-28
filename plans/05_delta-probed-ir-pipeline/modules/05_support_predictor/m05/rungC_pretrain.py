@@ -30,8 +30,20 @@ import torch
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-from rungC_equivariant import AGGREGATION, AGGREGATIONS, AMU2AU, BOHR2ANG, LOSS_SCALE, DeltaHessianModel, synthetic_bond_hessian  # noqa: E402
+sys.path.insert(0, str(HERE.parents[2] / "src"))
+from rungC_equivariant import (  # noqa: E402
+    AGGREGATION,
+    AGGREGATIONS,
+    AMU2AU,
+    BOHR2ANG,
+    LOSS_SCALE,
+    DeltaHessianModel,
+    console_utf8_safe,
+    synthetic_bond_hessian,
+)
 from rungC_train import COV_RADIUS_ANG, Scaled, entry_classes, load_pretrained_body  # noqa: E402, F401
+
+from dpir.provenance import provenance  # noqa: E402
 
 HARTREE_EV = 27.211386245988
 EV_PER_ANG2_TO_AU = BOHR2ANG**2 / HARTREE_EV          # (eV/Å²) × (Å/bohr)² / (eV/hartree) = hartree/bohr²
@@ -124,6 +136,7 @@ def save_checkpoint(path: Path, model: Scaled, meta: dict) -> None:
 
 
 def main(argv: list[str] | None = None) -> int:
+    console_utf8_safe()
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("out_prefix")
     ap.add_argument("--qm9-dir", default=str(QM9_DIR))
@@ -162,7 +175,7 @@ def main(argv: list[str] | None = None) -> int:
     model = Scaled(DeltaHessianModel(aggregation=a.aggregation), 1.0, scales)
     opt = torch.optim.AdamW(model.parameters(), lr=a.lr, weight_decay=1e-4)
     every = int(round(1.0 / a.val_fraction)) if a.val_fraction > 0 else 0
-    meta = dict(date=datetime.now().strftime("%Y-%m-%d %H:%M"), command=" ".join(sys.argv), shards=hashes, epochs=a.epochs, lr=a.lr,
+    meta = dict(date=datetime.now().strftime("%Y-%m-%d %H:%M"), provenance=provenance(), command=" ".join(sys.argv), shards=hashes, epochs=a.epochs, lr=a.lr,
                 class_scale=scales, val_every=every, smoke=a.smoke, hlow_channel=a.hlow_channel, aggregation=a.aggregation, history=[])
     ck_path = Path(a.out_prefix + ".pt")
     n_seen = 0

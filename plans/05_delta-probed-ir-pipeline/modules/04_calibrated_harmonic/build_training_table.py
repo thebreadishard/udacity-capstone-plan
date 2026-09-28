@@ -10,10 +10,13 @@ Outputs:
   out/SUMMARY.md                counts, constants, sha256 of every input
 Join rule and constants are RECIPE.md's; every constant is in CONSTANTS and printed.
 """
-import hashlib, json
+import hashlib
+import json
 from datetime import datetime
 from pathlib import Path
-import numpy as np, pandas as pd
+
+import numpy as np
+import pandas as pd
 
 HERE = Path(__file__).resolve().parent
 M02 = HERE.parent / "02_opponent_atlas" / "out"

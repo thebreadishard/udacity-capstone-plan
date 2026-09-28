@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# no-set-e: launch chain written before the fail-fast rule of 28 Sep 2026 and already run on its server; add `set -euo pipefail` before reusing it
 # Chain: start the Module 05 corpus (layer A) when the M3 TZ anchor run has FINISHED, and only then.
 # Written 2026-09-17 after the label-count note: the corpus is the cheapest path to the first learning
 # curve (39 layer-A molecules, ~40 h), and it is the next thing the machine should do.

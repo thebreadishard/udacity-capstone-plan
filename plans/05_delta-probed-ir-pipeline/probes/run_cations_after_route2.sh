@@ -1,4 +1,5 @@
 #!/bin/bash
+# no-set-e: launch chain written before the fail-fast rule of 28 Sep 2026 and already run on its server; add `set -euo pipefail` before reusing it
 # Obstacle 9 chain on hel1-14 (24 September 2026; the user: "Zet benzeen⁺ en naftaleen⁺ maar op hel1-14 zodra route 2 klaar is").
 # 1. waits for the environments (prep_cation_envs.sh: env qc = psi4 1.11, env qclno = qc05 + the laptop's LNO code);
 # 2. smokes both paths on the water cation at once (light, niced) so a broken path shows tonight, not on Friday;

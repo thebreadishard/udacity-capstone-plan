@@ -15,7 +15,7 @@ def shuffle_targets(mols, pool, seed=0):
     rng = np.random.default_rng(seed)
     by_cls = {}
     for i in pool:
-        for c, y in zip(mols[i]["pc"], mols[i]["y"]):
+        for c, y in zip(mols[i]["pc"], mols[i]["y"], strict=True):
             by_cls.setdefault(int(c), []).append(float(y))
     perm = {c: rng.permutation(np.array(v)) for c, v in by_cls.items()}; cursor = {c: 0 for c in perm}
     for i in pool:
@@ -28,9 +28,9 @@ def shuffle_targets(mols, pool, seed=0):
 
 def prim_atom_tuples(symbols_raw, coords_bohr):
     """Atom tuples of the geomeTRIC primitives in the same construction as molecule_pairs (order of primitives identical)."""
+    import e7_t2_sqm as T2
     from geometric.internal import PrimitiveInternalCoordinates
     from geometric.molecule import Molecule
-    import e7_t2_sqm as T2
     symbols = [s.capitalize() for s in symbols_raw]
     M = Molecule(); M.elem = list(symbols); M.xyzs = [np.asarray(coords_bohr) * T2.BOHR2ANG]
     ic = PrimitiveInternalCoordinates(M, build=True, connect=True, addcart=False)
@@ -101,7 +101,7 @@ def symmetry_spread(mol, pred_vals, smiles):
     prims = prim_atom_tuples(mol["symbols"], mol["coords"]); ranks = atom_ranks(smiles)
     if len(ranks) != len(mol["symbols"]): return None
     groups = {}
-    for (i, j), v in zip(mol["pairs"], pred_vals):
+    for (i, j), v in zip(mol["pairs"], pred_vals, strict=True):
         groups.setdefault(pair_symmetry_key(prims, ranks, int(i), int(j)), []).append(float(v))
     multi = [np.array(v) for v in groups.values() if len(v) > 1]
     if not multi: return None
@@ -113,7 +113,7 @@ def ring_bond_pairs(mol, pred_vals, true_vals, F_low):
     """E11.3: predicted and true ΔF (and the B3LYP F_low for orientation) for ring bond–bond pairs at ring-path distance 1, 2, 3 (the features carry rdist one-hot)."""
     X = mol["X"]; nf = X.shape[1]; out = {}
     # the last eight pair features are: shared, same_ring, rdist==1, rdist==2, rdist>=3, F_low_ij, F_ii*F_jj, diag (molecule_pairs)
-    for (i, j), p, t, feat in zip(mol["pairs"], pred_vals, true_vals, X):
+    for (i, j), p, t, feat in zip(mol["pairs"], pred_vals, true_vals, X, strict=True):
         if i == j or feat[nf - 7] != 1.0: continue           # same_ring pairs only
         d = 1 if feat[nf - 6] == 1.0 else 2 if feat[nf - 5] == 1.0 else 3 if feat[nf - 4] == 1.0 else None
         if d is None: continue

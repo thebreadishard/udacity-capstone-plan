@@ -6,12 +6,12 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from steward.gate import check                      # noqa: E402
-from steward.graph import run_scenario              # noqa: E402
-from steward.policy import RuleTablePolicy          # noqa: E402
-from steward.rules import by_id, load_rules         # noqa: E402
-from steward.schema import ACTIONS, Proposal        # noqa: E402
-from steward.tools import scan_for_instructions     # noqa: E402
+from steward.gate import check  # noqa: E402
+from steward.graph import run_scenario  # noqa: E402
+from steward.policy import RuleTablePolicy  # noqa: E402
+from steward.rules import by_id, load_rules  # noqa: E402
+from steward.schema import ACTIONS, Proposal  # noqa: E402
+from steward.tools import scan_for_instructions  # noqa: E402
 
 RULES = load_rules(); RID = by_id(RULES)
 SCEN = json.load(open(Path(__file__).resolve().parents[1] / "scenarios" / "scenarios.json", encoding="utf-8"))["scenarios"]

@@ -5,12 +5,14 @@ module_summary.pdf with Word (COM automation through PowerShell). Run:  python m
 Every number in the text is read from notebook/bands_lab.csv, notebook/pairs_matrix_gas.csv and
 notebook/test_results.json (written by the executed notebook); citations are APA author-year and the
 References list contains exactly the sources cited."""
-import json, subprocess
+import json
+import subprocess
 from pathlib import Path
+
 import pandas as pd
 from docx import Document
-from docx.shared import Pt, Inches
 from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_BREAK
+from docx.shared import Inches, Pt
 
 HERE = Path(__file__).resolve().parent
 TEMPLATE = HERE.parents[3] / "Rubrics" / "APA7_template.docx"
@@ -103,13 +105,13 @@ page_break()
 para(TITLE, bold=True, center=True, indent_first=False)
 
 heading("Overview")
-para(f"I analysed laboratory infrared band positions of polycyclic aromatic hydrocarbons (PAHs) measured in two "
-     f"ways: frozen in an argon matrix at 10 K and as a hot vapour. The dataset combines the NASA Ames PAH IR "
-     f"Spectroscopic Database's experimental library, version 3.10 (https://www.astrochemistry.org/pahdb/experimental/3.10; "
-     f"Mattioda et al., 2020), with gas-phase records of the NIST Chemistry WebBook (https://webbook.nist.gov/chemistry/; "
-     f"Linstrom, 1997). The question, fixed in a pre-registration note before any band was paired, is whether the offset "
-     f"between a band's matrix position and its gas-phase position is zero per band family; the answer matters because my "
-     f"larger capstone project will later be scored against exactly these laboratory numbers.")
+para("I analysed laboratory infrared band positions of polycyclic aromatic hydrocarbons (PAHs) measured in two "
+     "ways: frozen in an argon matrix at 10 K and as a hot vapour. The dataset combines the NASA Ames PAH IR "
+     "Spectroscopic Database's experimental library, version 3.10 (https://www.astrochemistry.org/pahdb/experimental/3.10; "
+     "Mattioda et al., 2020), with gas-phase records of the NIST Chemistry WebBook (https://webbook.nist.gov/chemistry/; "
+     "Linstrom, 1997). The question, fixed in a pre-registration note before any band was paired, is whether the offset "
+     "between a band's matrix position and its gas-phase position is zero per band family; the answer matters because my "
+     "larger capstone project will later be scored against exactly these laboratory numbers.")
 
 heading("Dataset Description")
 para(f"Each row of the dataset is one laboratory band: its position in wavenumbers (cm⁻¹), its intensity, the molecule "
@@ -194,13 +196,13 @@ para("Chemists measure the infrared \"fingerprint\" of a molecule in two very di
      "the heat; that separation needs measurements at the same temperature on both sides.")
 
 heading("Limitations and Potential Bias")
-para(f"Limitations of the dataset. The gas-phase records that could be paired are gas-chromatograph spectra reported at a "
-     f"stated 8 cm⁻¹ resolution on a 4 cm⁻¹ grid, so an individual position is coarse even though the systematic offset "
-     f"is resolved; the quantity measured is the offset between the sources as they exist — a 10 K matrix against a hot "
-     f"vapour whose temperature the records do not state — and not the matrix shift at equal temperature; only four "
-     f"molecules carry the result; and the matrix library reports band lists rather than spectra, so its own centroid "
-     f"precision is not measurable here. Matrix shifts of 0–15 cm⁻¹ relative to the gas phase are the published order of "
-     f"magnitude for these molecules (Hudgins & Sandford, 1998), which is consistent with what was found.")
+para("Limitations of the dataset. The gas-phase records that could be paired are gas-chromatograph spectra reported at a "
+     "stated 8 cm⁻¹ resolution on a 4 cm⁻¹ grid, so an individual position is coarse even though the systematic offset "
+     "is resolved; the quantity measured is the offset between the sources as they exist — a 10 K matrix against a hot "
+     "vapour whose temperature the records do not state — and not the matrix shift at equal temperature; only four "
+     "molecules carry the result; and the matrix library reports band lists rather than spectra, so its own centroid "
+     "precision is not measurable here. Matrix shifts of 0–15 cm⁻¹ relative to the gas phase are the published order of "
+     "magnitude for these molecules (Hudgins & Sandford, 1998), which is consistent with what was found.")
 para(f"Potential sources of bias. The matching rule pairs each gas peak with the most intense matrix band within "
      f"±20 cm⁻¹; where more than one candidate existed ({n_multi} of {n_prim} primary pairs) a different choice would "
      f"change that pair's offset, and the rule was fixed in advance precisely so that this choice could not be made with "
@@ -234,5 +236,5 @@ doc.save(str(OUT_DOCX)); print("written", OUT_DOCX)
 # ---------------- PDF via Word (COM through PowerShell)
 ps = f'''$w = New-Object -ComObject Word.Application; $w.Visible = $false
 $d = $w.Documents.Open("{OUT_DOCX}"); $d.SaveAs2("{OUT_DOCX.with_suffix('.pdf')}", 17); $d.Close(); $w.Quit()'''
-r = subprocess.run(["powershell", "-NoProfile", "-Command", ps], capture_output=True, text=True)
-print("pdf:", OUT_DOCX.with_suffix(".pdf").exists(), r.stderr[:300])
+r = subprocess.run(["powershell", "-NoProfile", "-Command", ps], capture_output=True, text=True, check=False)   # Word may be absent: reported, not fatal
+print("pdf:", OUT_DOCX.with_suffix(".pdf").exists(), f"(powershell exit {r.returncode})", r.stderr[:300])

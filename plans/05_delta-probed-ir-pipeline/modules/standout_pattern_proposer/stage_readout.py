@@ -81,7 +81,7 @@ def read_recipe(name: str, predict, mols, seeds) -> dict:
     for s in seeds:
         model = predict(s)
         rows = []
-        for mid, e in mols:
+        for _mid, e in mols:
             y, inband = targets(e)
             rows.append(metrics(model(e), y, inband))
         per_seed[s] = {k: float(np.mean([r[k] for r in rows if r[k] is not None])) for k in rows[0]}
@@ -116,7 +116,8 @@ def main() -> int:
     lines = [f"# Validation read-out — {len(mols)} molecules, seeds {seeds}", "",
              "| recipe | MSE(log10) | Spearman | P@10 % all | P@10 % in band | P@10 % out of band |", "|---|---|---|---|---|---|"]
     for name, res in results.items():
-        cell = lambda k: f"{res['summary'][k]['mean']:.4f} [{res['summary'][k]['min']:.4f}, {res['summary'][k]['max']:.4f}]"  # noqa: E731
+        def cell(k, res=res):
+            return f"{res['summary'][k]['mean']:.4f} [{res['summary'][k]['min']:.4f}, {res['summary'][k]['max']:.4f}]"
         lines.append(f"| {name} | {cell('mse')} | {cell('spearman')} | {cell('p10_all')} | {cell('p10_in')} | {cell('p10_out')} |")
     lines += ["", "seed mean [min, max] over seeds; every entry is a mean over the validation molecules.", ""]
     text = chr(10).join(lines)

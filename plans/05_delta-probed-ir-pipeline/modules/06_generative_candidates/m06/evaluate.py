@@ -1,6 +1,5 @@
 """Module 06 — the pre-registered metrics (PRE_REGISTRATION.md, "Metrics"): validity, uniqueness, novelty, scaffold novelty, memorisation,
 distribution match (Wasserstein-1 on heavy atoms, aromatic rings, heteroatoms), project fit, conditioning obedience."""
-import re
 
 import numpy as np
 

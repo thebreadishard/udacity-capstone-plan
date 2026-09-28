@@ -17,10 +17,17 @@ threshold and the minimum peak separation are printed as pilot-note candidates. 
 Outputs (./out/lineC_mai2025/): species.csv (uid, formula, n_c, which temperatures exist, ladder
 rung), peaks.csv.gz (uid, T_K, position_cm, relative_height, family), SUMMARY.md.
 """
-import argparse, csv, gzip, hashlib, io, re, zipfile
+import argparse
+import csv
+import gzip
+import hashlib
+import io
+import re
+import zipfile
 from collections import Counter
 from datetime import datetime
 from pathlib import Path
+
 import numpy as np
 
 HERE = Path(__file__).resolve().parent

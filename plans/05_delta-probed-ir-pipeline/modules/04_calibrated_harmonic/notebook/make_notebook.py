@@ -3,15 +3,18 @@
 Structure follows the Udacity "Applied Machine Learning" rubric (Rubrics/04): Load and inspect, Preparation and
 preprocessing, Model selection and training, Evaluation (metrics, tables, figures), Summary. The models, features,
 split and metrics are those of ../RECIPE.md (2026-09-12), written before this notebook first ran."""
+from pathlib import Path
+
 import nbformat as nbf
 from nbclient import NotebookClient
-from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 nb = nbf.v4.new_notebook()
 cells = []
-md = lambda s: cells.append(nbf.v4.new_markdown_cell(s))
-code = lambda s: cells.append(nbf.v4.new_code_cell(s))
+def md(s):
+    return cells.append(nbf.v4.new_markdown_cell(s))
+def code(s):
+    return cells.append(nbf.v4.new_code_cell(s))
 
 md("""# Module 04 — the calibrated-harmonic baseline: can a model learn the error of scaled-harmonic DFT band positions?
 

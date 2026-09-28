@@ -53,7 +53,7 @@ def main():
     assert a.from_cell == n_old, f"--from-cell should be {n_old}"
     setup = [int(x) for x in a.setup.split(",")]; defs = [int(x) for x in a.defs.split(",")]
     client = NotebookClient(new, timeout=7200, kernel_name="python3", resources={"metadata": {"path": HERE}})
-    t0 = dt.datetime.now(dt.timezone.utc)
+    t0 = dt.datetime.now(dt.UTC)
     with client.setup_kernel():
         for i in setup:
             print(f"setup cell {i}", flush=True); keep = new.cells[i]; client.execute_cell(nbformat.v4.new_code_cell(new.cells[i].source), i, store_history=False); new.cells[i] = keep

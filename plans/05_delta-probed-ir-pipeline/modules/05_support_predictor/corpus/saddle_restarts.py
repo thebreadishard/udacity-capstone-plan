@@ -12,7 +12,6 @@ and the new results go to `<id>_r+` / `<id>_r-` so that nothing is overwritten).
 Usage: python saddle_restarts.py [--ids ...] [--amplitude 0.25]
 """
 import argparse
-import glob
 import json
 import os
 import time
@@ -46,7 +45,7 @@ def main():
     ids = a.ids or genuine; jobs = []
     for mid in ids:
         d = os.path.join(HERE, "molecules", mid); g = json.load(open(os.path.join(d, "geometry.json"), encoding="utf-8"))
-        x0 = np.array(g["coords_bohr"], float); masses = np.array(g["masses_amu"], float); sym = g["symbols"]
+        x0 = np.array(g["coords_bohr"], float); masses = np.array(g["masses_amu"], float)
         chosen = None
         for tag in ("b3lyp", "wb97x"):
             p = os.path.join(d, f"hessian_{tag}_analytic.npz")

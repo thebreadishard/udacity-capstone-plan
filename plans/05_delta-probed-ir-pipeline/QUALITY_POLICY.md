@@ -50,6 +50,20 @@ added as a dated follow-up section beside the earlier one — earlier runs, thei
 the exception, taken only when the earlier one was invalid (an incident, e.g. E8 naphthalene's Hessian) and then with the invalid record kept and
 labelled, never silently overwritten. The same holds for the pre-registrations: outcomes are appended with a date, corrections are dated sections.
 
+## After the code-quality review of 28 September 2026 (`CODE_QUALITY_FINDINGS_2026-09-28.md`, response `CODE_QUALITY_RESPONSE_2026-09-28.md`)
+
+Root cause of 200 findings and 4,000 style notes: the ruff hook covered `src/` and `tests/` only. Since 28 September:
+1. The ruff hook covers `src/`, `tests/`, `tools/` and `modules/` (executed notebooks and external code excluded); correctness rules `PLW1510`
+   (subprocess without `check`), `S110` (try/except/pass), `BLE001` (blind except) are selected beside `B905`, `B023`, `B007`, `F841`, `NPY002`;
+   the style rules `E501/E701/E702` stay binding in tier 2 and informative in tier 1 (per-path ignores in `pyproject.toml`). A `# noqa` carries its
+   reason on the line.
+2. Hook `check-shell` (`tools/check_shell.py`): every `.sh` under the plan parses (`bash -n`) and fails fast (`set -e`) or states why on a
+   `# no-set-e: <reason>` line (polling and diagnostic scripts).
+3. A test that starts a subprocess runs it under the plain console environment (`tests/conftest.py` strips `PYTHONUTF8`/`PYTHONIOENCODING`) and
+   asserts the return code; CLIs make their own console safe (`console_utf8_safe`).
+4. Python floor 3.12 (`requires-python`, ruff target) — the interpreters actually in use.
+5. Every new record writer in `modules/` embeds `dpir.provenance.provenance()` (commit, dirty flag, host, versions, command line).
+
 ## Enforcement
 
 ### Early stopping in every learning run (decision 51, 27 September 2026)

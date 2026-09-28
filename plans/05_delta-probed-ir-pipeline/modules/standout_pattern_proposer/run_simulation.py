@@ -28,7 +28,7 @@ sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 def widen_pool(e: dict) -> dict:
     """E2: add two-mode ± patterns for every pair outside the band (same amplitude, same construction as the probe), appended in a seeded shuffle after the
     existing patterns; none of them held out (the held-out set stays the registered one so ρ_off stays comparable). Returns a new export dict."""
-    M, f = e["M"], np.asarray(e["freq_cm"])
+    M = e["M"]
     have = {tuple(m) for m, k in zip(e["modes"], e["kinds"], strict=True) if k == "two-mode"}
     extra = []
     for i in range(M):

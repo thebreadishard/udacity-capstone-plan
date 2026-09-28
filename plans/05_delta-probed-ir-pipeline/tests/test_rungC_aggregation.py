@@ -73,5 +73,6 @@ def test_invalid_aggregation_is_refused():
 
 def test_cli_switch_is_wired_in_both_drivers():
     for script in ("rungC_train.py", "rungC_pretrain.py"):
-        out = subprocess.run([sys.executable, str(M05 / script), "--help"], capture_output=True, text=True, timeout=120).stdout
-        assert "--aggregation {sum,mean}" in out, script
+        r = subprocess.run([sys.executable, str(M05 / script), "--help"], capture_output=True, text=True, timeout=120, check=False)
+        assert r.returncode == 0, (script, r.stderr)
+        assert "--aggregation {sum,mean}" in r.stdout, script

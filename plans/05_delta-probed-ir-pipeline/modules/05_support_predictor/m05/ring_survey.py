@@ -5,11 +5,14 @@ bond graph; an 'aromatic six-ring' is a six-membered ring of carbon atoms each w
 (sp2 proxy) and ring atoms coplanar within 0.1 A (RMS distance to the best plane). Prints, per molecule class, counts
 and writes the label list of molecules with at least one aromatic six-ring (the candidate pool for the recomputed
 B3LYP subset; the RECIPE fixes the size later by dated note). Run:  python ring_survey.py"""
-import collections, json
+import collections
+import json
 from datetime import datetime
 from pathlib import Path
+
 import numpy as np
-import pyarrow as pa, pyarrow.ipc as ipc
+import pyarrow as pa
+import pyarrow.ipc as ipc
 
 HERE = Path(__file__).resolve().parent
 D = HERE.parent / "data" / "hessian_qm9" / "hessian_qm9_DatasetDict" / "vacuum"
@@ -61,7 +64,7 @@ def main():
     for s in shards:
         tab = ipc.open_stream(pa.memory_map(str(s))).read_all()
         cols = {k: tab.column(k).to_pylist() for k in ("atomic_numbers", "positions", "label")}
-        for Z, P, lab in zip(cols["atomic_numbers"], cols["positions"], cols["label"]):
+        for Z, P, lab in zip(cols["atomic_numbers"], cols["positions"], cols["label"], strict=True):
             Z = np.array(Z); P = np.array(P, float)
             if posunit is None:   # decide Angstrom vs Bohr from the shortest C-H / heavy-atom distance
                 dmin = np.min(np.linalg.norm(P[:, None] - P[None], axis=-1) + np.eye(len(Z)) * 99)
@@ -94,7 +97,7 @@ def main():
     json.dump(out, open(OUT / "HESSIAN_QM9_RINGS.json", "w"), indent=1)
     L = [f"# Hessian QM9 vacuum split — ring survey from geometry — {out['date']}", "",
          f"Positions detected as **{posunit}** (shortest interatomic distance rule). Bonds: covalent radii + {TOL} Å; rings: cycle basis of the bond graph; aromatic six-ring: six carbons, each with three neighbours, coplanar within {PLANAR_RMS} Å RMS.", "",
-         f"| molecules | with any ring | with ≥ 1 all-carbon aromatic six-ring | with ≥ 1 planar conjugated 5/6-ring (C/N/O, heteroaromatics included) | benzene itself |", "|---|---|---|---|---|",
+         "| molecules | with any ring | with ≥ 1 all-carbon aromatic six-ring | with ≥ 1 planar conjugated 5/6-ring (C/N/O, heteroaromatics included) | benzene itself |", "|---|---|---|---|---|",
          f"| {stats['molecules']:,} | {stats['with_ring']:,} ({stats['with_ring']/stats['molecules']:.1%}) | **{stats['with_aromatic_six_ring']:,} ({stats['with_aromatic_six_ring']/stats['molecules']:.1%})** | **{stats['with_conjugated_ring']:,} ({stats['with_conjugated_ring']/stats['molecules']:.1%})** | {stats['benzene_itself']} |", "",
          "Labels of the conjugated-ring molecules: `data/hessian_qm9/conjugated_ring_labels.txt`.", "",
          "Aromatic six-rings per molecule: " + ", ".join(f"{k}: {v:,}" for k, v in sorted(arom_n.items())) + ".", "",

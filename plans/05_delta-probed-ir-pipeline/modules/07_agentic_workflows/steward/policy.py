@@ -31,7 +31,6 @@ class RuleTablePolicy:
 
     def propose(self, state: dict) -> Proposal:
         f = _facts(state); obs = state.get("observations", []); last = obs[-1] if obs else {}
-        text = " ".join(o.get("text", "") for o in obs)
         done = [a["action"] for a in state.get("actions_taken", [])]
         # R24 — instructions in observed content: escalate with the quote
         if any(o.get("facts", {}).get("contains_instruction_to_agent") for o in obs):
@@ -87,7 +86,7 @@ class LLMPolicy:
     name = "llm (langchain-anthropic, structured output)"
 
     def __init__(self, model: str | None = None, rules: list[dict] | None = None):
-        from langchain_anthropic import ChatAnthropic   # imported here so replay mode needs no key
+        from langchain_anthropic import ChatAnthropic  # imported here so replay mode needs no key
         self.model_id = model or os.environ.get("STEWARD_MODEL", "claude-sonnet-5")
         self.llm = ChatAnthropic(model=self.model_id, temperature=0, max_tokens=600).with_structured_output(Proposal)
         self.rules_text = rules_as_text(rules or [])

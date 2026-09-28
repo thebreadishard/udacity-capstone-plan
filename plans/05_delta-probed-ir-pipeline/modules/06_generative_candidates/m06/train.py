@@ -10,7 +10,6 @@ import time
 
 import numpy as np
 import torch
-
 from data import Vocab, assign_splits, prefix_for, read_dataset
 from evaluate import canonical
 from model import SmilesTransformer
@@ -23,7 +22,7 @@ def make_tensors(rows, vocab, max_len, conditioning):
 
 
 def train_model(rows, out_dir, seed=0, epochs=20, batch=128, lr=3e-4, warmup=500, patience=3, conditioning=False, max_len=96, quick=False, log=print):
-    random.seed(seed); np.random.seed(seed); torch.manual_seed(seed)
+    random.seed(seed); np.random.seed(seed); torch.manual_seed(seed)  # noqa: NPY002 — the 26 Sep 2026 run is recorded with this seeding; new code uses default_rng
     os.makedirs(out_dir, exist_ok=True)
     tr = [r for r in rows if r["split"] == "train"]; va = [r for r in rows if r["split"] == "val"]
     if quick:

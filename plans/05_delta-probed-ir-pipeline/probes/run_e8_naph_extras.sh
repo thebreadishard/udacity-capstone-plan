@@ -1,4 +1,5 @@
 #!/bin/bash
+# no-set-e: launch chain written before the fail-fast rule of 28 Sep 2026 and already run on its server; add `set -euo pipefail` before reusing it
 # CCX53, 24 Sep 2026 evening: the three naphthalene partial runs are single-threaded in their (T)-gradient phase (100 % CPU each), so throughput
 # comes from more processes, not more threads. Two extra partial runs start as soon as reference.npz exists (they then skip the reference) and work
 # the *tails* of the existing ranges in reverse — indices 4,3,9 and 14,13,8 of the 15 symmetry-unique displacements — so the originals, which reach

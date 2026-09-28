@@ -1,4 +1,5 @@
 #!/bin/bash
+# no-set-e: launch chain written before the fail-fast rule of 28 Sep 2026 and already run on its server; add `set -euo pipefail` before reusing it
 # CCX53, 24 Sep 2026: when the second-route lanes finish, read the twenty imaginary-mode molecules and build the corrected release
 # (layerA2_2026-09-24, --prefer-analytic: healed molecules enter, genuine ones stay out). Seconds to minutes; runs beside the E8 chain.
 cd /root/m05run/05_support_predictor || exit 1

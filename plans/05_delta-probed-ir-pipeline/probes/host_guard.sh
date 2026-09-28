@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# no-set-e: polling / diagnostic script — an empty grep or pgrep is a normal outcome and every step handles its own failure (rule of 28 Sep 2026)
 # Host-memory guard for a detached WSL run (Compute_Budget §3). Polls the WINDOWS host's free memory
 # once a minute and stops the run while the machine is still usable; the run resumes with --resume.
 # Usage: host_guard.sh <logfile> <pattern matching the python job> [threshold_GB] [wait_minutes]

@@ -25,9 +25,9 @@ import torch
 import torch.nn as nn
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+from embedding_experiments_E import AtomSetEncoder, atom_sets, probe, rms  # noqa: E402
 from learning_curve_layerA import AMU2AU, FAMILIES, HARTREE2CM, molecule_features, normal_modes  # noqa: E402
 from learning_curve_layerA_v2_descriptors import environment_tokens  # noqa: E402
-from embedding_experiments_E import AtomSetEncoder, atom_sets, probe, rms  # noqa: E402
 
 RING = "ring-ip"
 BALANCED = False   # set by --balanced
@@ -106,7 +106,7 @@ def main():
             K[d.name] = coupling_matrix(d)
             tokB, _, _ = environment_tokens(d, base); tok[d.name] = tokB.astype(np.float32)
             sets[d.name] = atom_sets(d, base)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 — experiment loop: the failure is recorded in the table and the next cell runs
             print("skip", d.name, repr(e))
     ids = sorted(mols, key=lambda i: hashlib.sha1(i.encode()).hexdigest())
     n_test = max(1, math.ceil(0.25 * len(ids))); test_ids, pool = ids[:n_test], ids[n_test:]

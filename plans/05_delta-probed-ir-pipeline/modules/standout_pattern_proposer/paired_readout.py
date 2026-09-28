@@ -42,7 +42,7 @@ def main():
     args = ap.parse_args()
     pa, pb = load(args.a_json), load(args.b_json)
     seeds = [s for s in args.seeds.split(",") if s]
-    print(f"| readout | split | seed | A | B | n paired | median A/B | A better | equal |")
+    print("| readout | split | seed | A | B | n paired | median A/B | A better | equal |")
     print("|---|---|---|---|---|---|---|---|---|")
     for s in seeds:
         oa, ob = args.a_ordering.format(s=s), args.b_ordering.format(s=s)

@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "dpir"
 version = "0.1.0"
 description = "Δ-probed IR pipeline (plan 05): tier-2 code under QUALITY_POLICY.md"
-requires-python = ">=3.10"
+requires-python = ">=3.12"  # 28 Sep 2026: every interpreter in use is 3.12 or 3.14; two probes use 3.12 f-strings
 dependencies = ["numpy>=1.24"]
 
 [project.optional-dependencies]
@@ -26,9 +26,16 @@ addopts = "-ra"
 
 [tool.ruff]
 line-length = 160
-target-version = "py310"
+target-version = "py312"
 src = ["src", "tests"]
+extend-exclude = ["*.ipynb", "modules/02_opponent_atlas/data"]   # executed notebooks are artefacts; mai2025 is external code
 
 [tool.ruff.lint]
-select = ["E", "F", "W", "I", "B", "UP", "NPY"]
+select = ["E", "F", "W", "I", "B", "UP", "NPY", "PLW1510", "S110", "BLE001"]   # 28 Sep 2026 review: subprocess without check, try/except/pass, blind except
 ignore = ["E741"]  # single-letter names follow the paper's notation (i, j, k, l)
+
+[tool.ruff.lint.per-file-ignores]
+# Tier 1 (QUALITY_POLICY.md): the pure style rules stay informative until promotion; the correctness rules above are binding wherever the hook runs.
+"modules/**" = ["E501", "E701", "E702"]
+"tools/**" = ["E501", "E701", "E702"]
+"probes/**" = ["E501", "E701", "E702", "BLE001", "B905", "PLW1510", "S110"]   # probes: compile + dry run only; fixed at promotion

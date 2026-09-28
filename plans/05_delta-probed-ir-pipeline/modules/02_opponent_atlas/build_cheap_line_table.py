@@ -12,10 +12,10 @@ Outputs (./out/cheapline_bos2025/): bands.csv (uid, formula and charge from the 
 species table, computed, scaled, predicted frequency, intensity, family), species.csv, SUMMARY.md.
 Nothing is trained; the pickled models are not run here.
 """
-import csv, hashlib
-from collections import Counter
+import hashlib
 from datetime import datetime
 from pathlib import Path
+
 import pandas as pd
 
 HERE = Path(__file__).resolve().parent

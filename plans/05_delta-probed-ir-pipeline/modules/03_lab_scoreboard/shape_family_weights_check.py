@@ -9,11 +9,12 @@ Reading, written before the run: if matrix and line A agree on the C-H out-of-pl
 a measurement effect and the shape score's family-weight term must be read against the matrix column as well; if matrix agrees with FELIX,
 the DFT intensities are wrong by the amount printed. Output: out/shape_family_weights_check.md."""
 import json
+import sys
 from datetime import datetime
 from pathlib import Path
+
 import numpy as np
 import pandas as pd
-import sys
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))

@@ -70,7 +70,7 @@ def plan_copies(mirror: Path) -> tuple[list[tuple[Path, Path]], int, int]:
 
 
 def git(mirror: Path, *args: str, check: bool = True) -> str:
-    r = subprocess.run(["git", "-C", str(mirror), *args], capture_output=True, text=True)
+    r = subprocess.run(["git", "-C", str(mirror), *args], capture_output=True, text=True, check=False)   # the return code is handled below
     if check and r.returncode != 0:
         raise SystemExit(f"git {' '.join(args)} failed in {mirror}: {r.stderr.strip()}")
     return r.stdout.strip()

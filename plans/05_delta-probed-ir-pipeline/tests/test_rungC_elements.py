@@ -58,7 +58,7 @@ def test_design_check_probes_the_body_as_the_finetune_sees_it(tmp_path):
 
 
 def test_cli_switches_are_wired():
-    h = subprocess.run([sys.executable, str(M05 / "rungC_train.py"), "--help"], capture_output=True, text=True, timeout=120).stdout
-    assert "--pretrained-elements" in h
-    h = subprocess.run([sys.executable, str(M05 / "design_check.py"), "--help"], capture_output=True, text=True, timeout=120).stdout
-    assert "--as-finetune" in h and "--pretrained-elements" in h
+    r = subprocess.run([sys.executable, str(M05 / "rungC_train.py"), "--help"], capture_output=True, text=True, timeout=120, check=False)
+    assert r.returncode == 0 and "--pretrained-elements" in r.stdout, r.stderr
+    r = subprocess.run([sys.executable, str(M05 / "design_check.py"), "--help"], capture_output=True, text=True, timeout=120, check=False)
+    assert r.returncode == 0 and "--as-finetune" in r.stdout and "--pretrained-elements" in r.stdout, r.stderr

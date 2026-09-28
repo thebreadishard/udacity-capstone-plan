@@ -1,5 +1,4 @@
 """Module 06 — a small decoder-only Transformer over SMILES tokens (PRE_REGISTRATION.md, "Model"). Own PyTorch code, no pretrained weights."""
-import math
 
 import torch
 import torch.nn as nn
@@ -27,7 +26,7 @@ class SmilesTransformer(nn.Module):
 
     @staticmethod
     def _init(m):
-        if isinstance(m, (nn.Linear, nn.Embedding)):
+        if isinstance(m, nn.Linear | nn.Embedding):
             nn.init.normal_(m.weight, std=0.02)
         if isinstance(m, nn.Linear) and m.bias is not None:
             nn.init.zeros_(m.bias)

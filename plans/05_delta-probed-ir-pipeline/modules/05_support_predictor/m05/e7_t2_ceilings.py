@@ -9,15 +9,21 @@ Read-outs as T2: ΔH residual ratio, ring coupling ratio, ring diagonal RMS, cor
 own-fit ceiling (post-hoc (i)) was 0.71 residual, ratio 0.93.
 Usage: python e7_t2_ceilings.py <corpus/molecules dir> <out prefix>
 """
-import argparse, json, sys, time
+import argparse
+import json
+import sys
+import time
 from datetime import datetime
 from pathlib import Path
+
 import numpy as np
+
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import e6_learning_curve as E6  # noqa: E402
-import e7_t2_sqm as T2  # noqa: E402
 import e7_t2_posthoc as PH  # noqa: E402
+import e7_t2_sqm as T2  # noqa: E402
 from learning_curve_layerA_v2_descriptors import bond_graph, rings  # noqa: E402
+
 RING = "ring-ip"
 
 
@@ -61,7 +67,7 @@ def fit_pattern(m, pat):
     A = np.stack(cols, 1); y = m["dH_true"].ravel()
     x, *_ = np.linalg.lstsq(A, y, rcond=None)
     dF = np.zeros((n, n))
-    for (i, j), v in zip(iu, x):
+    for (i, j), v in zip(iu, x, strict=True):
         dF[i, j] = v; dF[j, i] = v
     return dF, len(iu)
 

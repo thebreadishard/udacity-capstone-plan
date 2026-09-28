@@ -15,14 +15,14 @@ Amendment of 2026-09-14 (pre-registration §7, applied at the user's instruction
 integrated per bin, truncated to the family window, then unit-normalised) is printed for every family and as a second weighted number, so
 that a dense stick list is no longer charged for mass in bins a sparse peak table does not list. Both numbers are always printed."""
 import argparse
-import csv
 import json
 import sys
 from datetime import datetime
+from math import erf, sqrt
 from pathlib import Path
+
 import numpy as np
 import pandas as pd
-from math import erf, sqrt
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
@@ -45,7 +45,7 @@ def hist(freqs, ints, lo, hi, w):
 def hist_conv(freqs, ints, lo, hi, w, frac):
     """Histogram of Gaussian-broadened sticks (FWHM = frac * nu): each stick's mass is integrated per bin via the error function."""
     edges = np.arange(lo, hi + w, w); h = np.zeros(len(edges) - 1)
-    for nu, I in zip(freqs, ints):
+    for nu, I in zip(freqs, ints, strict=True):
         if I <= 0:
             continue
         sig = frac * nu / (2 * sqrt(2 * np.log(2)))
@@ -107,7 +107,7 @@ def main():
         for name, (sf, si) in cols.items():
             rows, wm, wmc = score(lab_f, lab_i, sf, si); res[name] = {"rows": rows, "weighted_emd_cm": wm, "weighted_emd_conv_cm": wmc}
             for r in rows:
-                L.append(f"| {name} | {r['family'].split(' (')[0]} | {r['n_lab']} | {r['n_sticks']} | {r['share_lab_pct']:.1f} | {r['share_pred_pct']:.1f} | {r['family_weight_error_pp']:.1f} | {('%.1f' % r['emd_cm']) if r['emd_cm'] is not None else '—'} | {('%.1f' % r['emd_conv_cm']) if r['emd_conv_cm'] is not None else '—'} | {r['strongest_lab_band_cm'] or '—'} | {('%.1f' % r['position_term_cm']) if r['position_term_cm'] is not None else '—'} |")
+                L.append(f"| {name} | {r['family'].split(' (')[0]} | {r['n_lab']} | {r['n_sticks']} | {r['share_lab_pct']:.1f} | {r['share_pred_pct']:.1f} | {r['family_weight_error_pp']:.1f} | {('{:.1f}'.format(r['emd_cm'])) if r['emd_cm'] is not None else '—'} | {('{:.1f}'.format(r['emd_conv_cm'])) if r['emd_conv_cm'] is not None else '—'} | {r['strongest_lab_band_cm'] or '—'} | {('{:.1f}'.format(r['position_term_cm'])) if r['position_term_cm'] is not None else '—'} |")
             L.append(f"| **{name}** | **intensity-weighted EMD over families (pre-registered / amended)** | | | | | | **{wm:.1f}** | **{wmc:.1f}** | | |" if wm is not None else f"| {name} | (no overlap) | | | | | | | | | |")
         L.append(""); out["molecules"][mol] = {"uid": uid, "n_lab_window": int(((lab_f >= 550) & (lab_f < 2000)).sum()), "columns": res}
     L += ["Reading: these are the baselines (column A) the reach product must beat under the pre-registered losing/winning conditions; no verdict is possible until columns 0, P or N exist. Constants: " + json.dumps(CONSTANTS)]

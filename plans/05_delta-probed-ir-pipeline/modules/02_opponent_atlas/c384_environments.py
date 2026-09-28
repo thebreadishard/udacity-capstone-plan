@@ -14,12 +14,13 @@ import sys
 import xml.etree.ElementTree as ET
 from datetime import datetime
 from pathlib import Path
+
 import numpy as np
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[3]
 sys.path.insert(0, str(REPO / "plans/06_equivalent-faster-mathematics/experiments"))
-from x8_size_scaling_substitution import honeycomb, hex_flake  # noqa: E402
+from x8_size_scaling_substitution import hex_flake, honeycomb  # noqa: E402
 
 CONSTANTS = {"uid": "617", "xml": "data/pahdb-complete-theoretical-v4.00_fevj3bdlnookcPYsGjJ.xml (block for uid 617 extracted with sed to data/_uid617_specie.xml, lines 18873934-18883435)", "bond_A": {"CC": 1.7, "CH": 1.2}, "TOL_A": 0.05,
              "candidate_rotations_deg": [60 * k for k in range(6)], "candidate_reflection_axes_deg": [30 * j for j in range(6)], "BOHR_TO_A": 0.529177210903}
@@ -39,7 +40,7 @@ def _text(el, name):
 
 
 def geometry_from_xml(path, uid):
-    for ev, el in ET.iterparse(str(path), events=("end",)):
+    for _ev, el in ET.iterparse(str(path), events=("end",)):
         if _ln(el.tag) == "specie":
             if el.attrib.get("uid") == uid:
                 atoms = []

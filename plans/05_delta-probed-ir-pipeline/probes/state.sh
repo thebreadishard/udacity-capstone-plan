@@ -1,4 +1,5 @@
 #!/bin/bash
+# no-set-e: polling / diagnostic script — an empty grep or pgrep is a normal outcome and every step handles its own failure (rule of 28 Sep 2026)
 # Cheap project digest: answers "where do we stand" in ~30 lines, so nobody reads the ledger for it.
 # Written 16 Sep 2026. Costs one tool call; the ledger alone is ~33k tokens.
 cd "$(dirname "$0")/../../.." || exit 1

@@ -1,7 +1,6 @@
 """Module 06 — data: the frozen PubChem CSV, the scaffold split, the character tokenizer (PRE_REGISTRATION.md, "Data handling")."""
 import csv
 import hashlib
-import os
 import re
 from dataclasses import dataclass
 
@@ -24,7 +23,7 @@ def murcko(smiles):
         return ""
     try:
         return Chem.MolToSmiles(MurckoScaffold.GetScaffoldForMol(mol))
-    except Exception:
+    except Exception:  # noqa: BLE001 — rdkit scaffold extraction raises several C++-backed exception types; any of them means "no scaffold"
         return ""
 
 

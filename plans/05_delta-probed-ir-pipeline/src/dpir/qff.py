@@ -58,6 +58,8 @@ class HessianRecord:
 
 @dataclass
 class Harmonic:
+    """Harmonic analysis of a reference Hessian: frequencies, mass-weighted modes and the Cartesian displacement per unit reduced coordinate."""
+
     omega: np.ndarray  # (n,) E_h
     q: np.ndarray  # (3N, n) mass-weighted normal modes
     A: np.ndarray  # (3N, n) Cartesian displacement per unit reduced coordinate
@@ -65,6 +67,7 @@ class Harmonic:
 
     @property
     def omega_cm(self) -> np.ndarray:
+        """Harmonic frequencies in cm⁻¹."""
         return self.omega * HARTREE_CM
 
 
@@ -117,6 +120,7 @@ def reference_index(recs: list[HessianRecord]) -> int:
 
 
 def atomic_masses_me(symbols: list[str]) -> np.ndarray:
+    """Atomic masses in electron masses, one per symbol."""
     return np.array([MASS[s] for s in symbols]) * AMU_ME
 
 
@@ -369,7 +373,8 @@ def find_fermi_resonances(w: np.ndarray, p3: np.ndarray, window: float, min_k: f
     return fermi
 
 
-def vpt2(w: np.ndarray, p3: np.ndarray, p4: np.ndarray, B: np.ndarray, zeta: np.ndarray, fermi_window: float = 200.0, fermi_min_k: float = 0.0):
+def vpt2(w: np.ndarray, p3: np.ndarray, p4: np.ndarray, B: np.ndarray, zeta: np.ndarray, fermi_window: float = 200.0,
+         fermi_min_k: float = 0.0) -> tuple[np.ndarray, np.ndarray, list]:
     """Anharmonic constants χ_ij and fundamentals ν_i (Mills 1972; the expressions pyVPT2 implements), with the resonant
     denominators deperturbed inside ``fermi_window``. Everything in cm⁻¹; ``B`` (3,) rotational constants, ``zeta`` (3, n, n).
 
@@ -413,8 +418,8 @@ def vpt2(w: np.ndarray, p3: np.ndarray, p4: np.ndarray, B: np.ndarray, zeta: np.
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-def report(cache_dir: str, recs, qff: QFF, harm: Harmonic, ref: HessianRecord, info: dict, disp: float,
-           fermi_window: float, fermi_min_k: float, pyvpt2_json: str | None = None):
+def report(cache_dir: str, recs: list[HessianRecord], qff: QFF, harm: Harmonic, ref: HessianRecord, info: dict, disp: float,
+           fermi_window: float, fermi_min_k: float, pyvpt2_json: str | None = None) -> tuple[str, dict]:
     """Markdown report plus the arrays to save; returns (text, arrays)."""
     n = len(qff.omega_cm)
     if n < 2:
@@ -482,7 +487,8 @@ def report(cache_dir: str, recs, qff: QFF, harm: Harmonic, ref: HessianRecord, i
     return "\n".join(lines) + "\n", arrays
 
 
-def main(argv=None):
+def main(argv: list[str] | None = None) -> int:
+    """Command line: build the QFF from a cache of Hessians, run VPT2 and write the report."""
     import argparse
 
     from dpir.provenance import provenance_block

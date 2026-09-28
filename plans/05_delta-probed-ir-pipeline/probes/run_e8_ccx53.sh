@@ -1,4 +1,5 @@
 #!/bin/bash
+# no-set-e: launch chain written before the fail-fast rule of 28 Sep 2026 and already run on its server; add `set -euo pipefail` before reusing it
 # E8 on the CCX53 (24 Sep 2026): wait for the second-route lanes to finish, then
 #  1. benzene CCSD(T)/cc-pVDZ FD Hessian with --symmetry (12 gradients) — end-to-end smoke of the new code path; must match the 72-gradient Hessian
 #     of hel1-16 (copied here as results/benzene_full/hessian_ccsd_t.npz) to 0.5 cm-1;

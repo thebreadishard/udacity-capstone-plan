@@ -19,7 +19,7 @@ import argparse
 import hashlib
 import json
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import numpy as np
@@ -144,7 +144,7 @@ def main():
                         n_modes=np.array([len(r["omega"]) for r in rows]), mask=mask, tokens=tokens, family=family, omega_cm=omega, K=K,
                         charge=np.array([r["charge"] for r in rows]), mult=np.array([r["mult"] for r in rows]), n_atoms=np.array([r["n_atoms"] for r in rows]))
     fam_counts = {F: int((family == k).sum()) for k, F in enumerate(FAMILIES)}
-    manifest = dict(built_utc=datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S"), source=str(mdir), n_molecules=N, max_modes=M, d_in=d_in,
+    manifest = dict(built_utc=datetime.now(UTC).strftime("%Y-%m-%d %H:%M:%S"), source=str(mdir), n_molecules=N, max_modes=M, d_in=d_in,
                     token_layout="omega/1000 | family one-hot (4: " + ", ".join(FAMILIES) + ") | shares C,H,N,O | localisation | oop share | 12 environment classes",
                     target="K_ij = L_i^T dH_mw L_j / (2 sqrt(w_i w_j)) in cm-1, B3LYP mode basis, dH = H(wB97X) - H(B3LYP)",
                     families=FAMILIES, mode_counts_per_family=fam_counts, decks=sorted({r["deck"] for r in rows if r["deck"]}),

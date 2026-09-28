@@ -11,7 +11,6 @@ import time
 
 import numpy as np
 from pyscf import dft, gto, lib
-from pyscf.hessian import thermo
 
 AMU2AU = 1822.888486209
 
@@ -49,7 +48,7 @@ def main():
     a = ap.parse_args(); lib.num_threads(a.threads); rad, ang = (int(v) for v in a.grid.split(","))
     for d in a.dirs:
         g = json.load(open(d + "/geometry.json")); sym = g["symbols"]; x = np.array(g["coords_bohr"]); masses = np.array(g["masses_amu"])
-        mol = gto.M(atom=[(s.capitalize(), tuple(c)) for s, c in zip(sym, x)], unit="Bohr", basis="6-31g*", cart=True, symmetry=False, verbose=0, max_memory=20000)
+        mol = gto.M(atom=[(s.capitalize(), tuple(c)) for s, c in zip(sym, x, strict=True)], unit="Bohr", basis="6-31g*", cart=True, symmetry=False, verbose=0, max_memory=20000)
         out = {}
         for tag, xc in (("b3lyp", "b3lyp"), ("wb97x", "wb97x")):
             n = len(sym); t0 = time.time()

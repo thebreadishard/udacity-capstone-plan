@@ -43,6 +43,18 @@ MASSES_AMU = {"H": 1.00782503, "C": 12.0, "N": 14.003074, "O": 15.99491462, "F":
 Z_OF = {"H": 1, "C": 6, "N": 7, "O": 8, "F": 9, "S": 16, "CL": 17}
 
 
+def console_utf8_safe() -> None:
+    """Let print() survive a console or pipe that cannot encode Δ, ω, ≤ (Windows cp1252): unencodable characters become '?' instead of a
+    UnicodeEncodeError that kills --help (found by the code-quality review of 28 Sep 2026). Files are written with an explicit encoding."""
+    for stream in (sys.stdout, sys.stderr):
+        if not hasattr(stream, "reconfigure"):
+            continue
+        if stream.isatty():
+            stream.reconfigure(errors="replace")                      # a terminal keeps its own code page; unencodable characters become '?'
+        else:
+            stream.reconfigure(encoding="utf-8", errors="replace")    # a pipe or file gets UTF-8, whatever the caller's locale
+
+
 # ------------------------------------------------------------------------------------------------------------------ data
 def pair_invariants(H: torch.Tensor, pos: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
     """Registered pair scalars of a Cartesian Hessian: (N, N, 3) with trace, r̂ᵀ B r̂ and ‖B‖_F per block (the middle one is 0 on the diagonal),

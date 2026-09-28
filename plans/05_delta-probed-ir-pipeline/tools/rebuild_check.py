@@ -18,6 +18,7 @@ import itertools
 import json
 import os
 import re
+import shlex
 import subprocess
 import sys
 from pathlib import Path
@@ -111,7 +112,7 @@ STAMP = re.compile(r"20\d\d-\d\d-\d\d[ T]\d\d:\d\d")
 def numbers_close(a, b, rel=0.01, abs_=1e-6) -> bool:
     if isinstance(a, bool) or isinstance(b, bool):
         return a == b
-    if isinstance(a, (int, float)) and isinstance(b, (int, float)):
+    if isinstance(a, int | float) and isinstance(b, int | float):
         return abs(a - b) <= max(abs_, rel * max(abs(a), abs(b)))
     if isinstance(a, dict) and isinstance(b, dict):
         return a.keys() == b.keys() and all(numbers_close(a[k], b[k]) for k in a if k not in VOLATILE_KEYS)
@@ -121,7 +122,7 @@ def numbers_close(a, b, rel=0.01, abs_=1e-6) -> bool:
 
 
 def diff_against_head(rel: str) -> str:
-    head = subprocess.run(["git", "show", f"HEAD:./{rel}"], cwd=PLAN, capture_output=True)
+    head = subprocess.run(["git", "show", f"HEAD:./{rel}"], cwd=PLAN, capture_output=True, check=False)   # a file new since HEAD is a normal case
     if head.returncode:
         return "not in HEAD"
     old_text = head.stdout.decode("utf-8").replace("\r\n", "\n")  # bytes, not text=True: the console code page is not UTF-8 and autocrlf adds \r
@@ -151,8 +152,11 @@ def run(select: str, keep: bool = False) -> int:
         for c in cmds:
             print(f"$ ({cwd.relative_to(PLAN) if cwd != PLAN else '.'}) {c}")
             py = str(_VENV) if name.lower().startswith(VENV_ROWS) and _VENV.exists() else sys.executable
-            c = re.sub(r"^python ", lambda _m, py=py: f'"{py}" ', c)
-            r = subprocess.run(c, cwd=cwd, shell=True, env=env)
+            argv = shlex.split(c, posix=False)                                    # the README's own commands, run without a shell (review of 28 Sep 2026)
+            if argv and argv[0] == "python":
+                argv[0] = py
+            argv = [x[1:-1] if len(x) > 1 and x[0] == x[-1] == '"' else x for x in argv]
+            r = subprocess.run(argv, cwd=cwd, env=env, check=False)
             if r.returncode:
                 print(f"  exit {r.returncode}")
                 failures += 1

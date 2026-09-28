@@ -32,12 +32,12 @@ def main():
     else:
         g = json.load(open(a.geometry)); rng = np.random.default_rng(0)
         x = np.asarray(g["coords_bohr"]) * BOHR + rng.normal(0.0, a.distort, (len(g["symbols"]), 3))
-        xyz = [[s, *map(float, r)] for s, r in zip(g["symbols"], x)]; name = a.name
+        xyz = [[s, *map(float, r)] for s, r in zip(g["symbols"], x, strict=True)]; name = a.name
     os.makedirs(a.out, exist_ok=True)
     job = {"id": f"{name}_cation", "layer": "A_cation", "xyz_angstrom": xyz, "deck": deck, "out_dir": os.path.abspath(a.out), "optimise": True, "grid_check": False}
     jp = os.path.join(a.out, "job.json"); json.dump(job, open(jp, "w"), indent=1)
     print(f"[{datetime.now():%H:%M:%S}] {name}+ : {len(xyz)} atoms, deck {deck['deck']} ({deck['reference']}, charge {deck['charge']}, mult {deck['multiplicity']}), {a.threads} threads, {a.memory_gb} GB", flush=True)
-    p = subprocess.run([sys.executable, a.worker, jp], capture_output=True, text=True)
+    p = subprocess.run([sys.executable, a.worker, jp], capture_output=True, text=True, check=False)   # exit code read below
     open(os.path.join(a.out, "worker_stdout.txt"), "w").write(p.stdout + "\n---stderr---\n" + p.stderr)
     rp = os.path.join(a.out, "result.json")
     if not os.path.exists(rp):
