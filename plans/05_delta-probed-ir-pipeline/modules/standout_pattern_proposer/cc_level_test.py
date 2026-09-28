@@ -31,14 +31,14 @@ CORPUS = PLAN / "modules" / "05_support_predictor" / "corpus" / "molecules"
 OUT = HERE / "out"
 
 
-def curves_for(exp: dict, seeds: list[int], stride: int) -> dict:
+def curves_for(exp: dict, seeds: list[int], stride: int, w_cm: float = C.W_BAND_CM) -> dict:
     X, _, pairs = S.pair_features(exp)
     pool = C.order_p0(exp)
-    out = {"P0": C.rho_curve(exp, pool, stride=stride)}
+    out = {"P0": C.rho_curve(exp, pool, stride=stride, w_cm=w_cm)}
     for s in seeds:
         sc = S.Scorer.load(OUT / "p1", s)
-        out[f"P1_seed{s}"] = C.rho_curve(exp, C.order_by_scores(exp, S.scores_matrix(exp, sc.predict(X), pairs)), stride=stride)
-    out["P3_oracle"] = C.rho_curve(exp, C.order_oracle(exp), stride=stride)
+        out[f"P1_seed{s}"] = C.rho_curve(exp, C.order_by_scores(exp, S.scores_matrix(exp, sc.predict(X), pairs)), stride=stride, w_cm=w_cm)
+    out["P3_oracle"] = C.rho_curve(exp, C.order_oracle(exp), stride=stride, w_cm=w_cm)
     return out
 
 
@@ -77,29 +77,39 @@ def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("molecule_id"); ap.add_argument("cc_hessian")
     ap.add_argument("--out", default=str(OUT / "cc")); ap.add_argument("--stride", type=int, default=None); ap.add_argument("--seeds", default="0,1,2")
+    ap.add_argument("--pool", choices=["band", "all"], default="band", help="band = the registered run (E1 deck); all = two-mode patterns for every pair (E2's wide pool) — exploratory")
+    ap.add_argument("--w-cm", type=float, default=C.W_BAND_CM, help="the solver's band prior width; anything but the default is exploratory and labelled so")
+    ap.add_argument("--tag", default="", help="suffix for the output files of an exploratory run")
     a = ap.parse_args(argv)
     seeds = [int(s) for s in a.seeds.split(",")]
+    exploratory = a.pool != "band" or a.w_cm != C.W_BAND_CM
     mol_dir = CORPUS / a.molecule_id
     t0 = time.time()
     cc_exp = C.export_molecule(mol_dir, hi_override=Path(a.cc_hessian))
     proxy_exp = C.load_export(OUT / "exports" / f"{a.molecule_id}.npz")
     assert cc_exp["deck_hash"] == proxy_exp["deck_hash"], "the CC export must use the proxy's deck (same B3LYP frequencies)"
+    if a.pool == "all":
+        from run_simulation import widen_pool
+        cc_exp, proxy_exp = widen_pool(cc_exp), widen_pool(proxy_exp)
     stride = a.stride or max(2, int(np.ceil(len(C.order_p0(cc_exp)) / 30)))
-    cc_curves = curves_for(cc_exp, seeds, stride); px_curves = curves_for(proxy_exp, seeds, stride)
+    cc_curves = curves_for(cc_exp, seeds, stride, a.w_cm); px_curves = curves_for(proxy_exp, seeds, stride, a.w_cm)
     cc, px = readouts(cc_exp, cc_curves, seeds), readouts(proxy_exp, px_curves, seeds)
     J = judge(cc, px)
     z = np.load(a.cc_hessian)
     off_cc = np.triu(cc_exp["D2"], 1); off_px = np.triu(proxy_exp["D2"], 1)
-    rec = dict(date=time.strftime("%Y-%m-%d %H:%M"), molecule=a.molecule_id, cc_hessian=str(Path(a.cc_hessian).relative_to(PLAN)).replace("\\", "/"),
+    rec = dict(date=time.strftime("%Y-%m-%d %H:%M"), molecule=a.molecule_id, cc_hessian=str(Path(a.cc_hessian).resolve().relative_to(PLAN)).replace("\\", "/"),
                cc_meta=dict(basis=str(z["basis"]) if "basis" in z.files else None, frozen=int(z["frozen"]) if "frozen" in z.files else None, step=float(z["step"]) if "step" in z.files else None),
-               deck_hash=cc_exp["deck_hash"], stride=stride, seeds=seeds, seconds=round(time.time() - t0),
+               deck_hash=cc_exp["deck_hash"], stride=stride, seeds=seeds, seconds=round(time.time() - t0), pool=a.pool, w_cm=a.w_cm, exploratory=exploratory,
+               registered_run=(not exploratory),
                delta2=dict(off_frob_cc=float(np.linalg.norm(off_cc)), off_frob_proxy=float(np.linalg.norm(off_px)), ratio=float(np.linalg.norm(off_cc) / np.linalg.norm(off_px)),
                            inband_share_cc=float((np.linalg.norm(off_cc * np.triu(np.abs(cc_exp["freq_cm"][:, None] - cc_exp["freq_cm"][None, :]) <= C.W_BAND_CM, 1)) / np.linalg.norm(off_cc)) ** 2),
                            inband_share_proxy=float((np.linalg.norm(off_px * np.triu(np.abs(proxy_exp["freq_cm"][:, None] - proxy_exp["freq_cm"][None, :]) <= C.W_BAND_CM, 1)) / np.linalg.norm(off_px)) ** 2)),
                cc=cc, proxy=px, curves=dict(cc={k: v for k, v in cc_curves.items()}, proxy={k: v for k, v in px_curves.items()}), judged=J, provenance=provenance())
     out = Path(a.out); out.mkdir(parents=True, exist_ok=True)
-    pj = out / f"{a.molecule_id}_cc_test.json"; json.dump(rec, open(pj, "w", encoding="utf-8"), indent=1)
-    L = [f"# CC-level test — {a.molecule_id} ({rec['date']}; pre-registration 2026-09-28 Standout_CC_Level_Test)", "",
+    stem = f"{a.molecule_id}_cc_test" + (f"_{a.tag}" if a.tag else ("_exploratory" if exploratory else ""))
+    pj = out / f"{stem}.json"; json.dump(rec, open(pj, "w", encoding="utf-8"), indent=1)
+    L = [f"# CC-level test — {a.molecule_id} ({rec['date']}; pre-registration 2026-09-28 Standout_CC_Level_Test)"
+         + (f" — EXPLORATORY, not a registered line: pool {a.pool}, solver band {a.w_cm:g} cm⁻¹" if exploratory else ""), "",
          f"CC Hessian `{rec['cc_hessian']}` ({rec['cc_meta']}); deck {cc_exp['deck_hash'][:12]} (same as the proxy export); M = {cc['M']}, {cc['n_patterns']} patterns, {cc['n_holdout']} held out; "
          f"stride {stride}; Δ₂ off-diagonal Frobenius CC / proxy = {rec['delta2']['ratio']:.2f}; in-band share CC {rec['delta2']['inband_share_cc']:.2f} vs proxy {rec['delta2']['inband_share_proxy']:.2f}.", "",
          "| response | ordering | K_off(0.3) | ratio vs P0 | n_half ratio | AUC ratio |", "|---|---|---|---|---|---|"]
@@ -114,7 +124,7 @@ def main(argv=None) -> int:
     L += ["", f"**C1** (P1 vs P0 on CC: K_off ratio ≤ 0.80 and n_half ratio ≤ 0.80): {'pass' if J['C1_pass'] else 'FAIL'}. **C2** (same direction as the proxy, within a factor 1.5): {'pass' if J['C2_pass'] else 'FAIL'}. "
           f"**C3** oracle K_off(0.3) on CC {J['C3']['oracle_k_off']}, P1 / oracle {J['C3']['p1_over_oracle'] if J['C3']['p1_over_oracle'] is None else format(J['C3']['p1_over_oracle'], '.2f')} "
           f"({'near the ceiling' if J['C3']['near_ceiling'] else 'not near the ceiling'}). **Label for the plan line:** {J['label']}.", ""]
-    pm = out / f"{a.molecule_id}_cc_test.md"; pm.write_text("\n".join(L), encoding="utf-8", newline="\n")
+    pm = out / f"{stem}.md"; pm.write_text("\n".join(L), encoding="utf-8", newline="\n")
     print("\n".join(L)); print("written", pj.relative_to(HERE), pm.relative_to(HERE))
     return 0
 

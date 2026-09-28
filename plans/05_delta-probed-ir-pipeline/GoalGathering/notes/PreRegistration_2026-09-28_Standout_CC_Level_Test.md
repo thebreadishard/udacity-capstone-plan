@@ -38,3 +38,27 @@ the size of the "knowledge gap" the 28 September reading spoke of, measured on a
 
 Two molecules, both bare parents, both in the evaluation split (never in the scorer's training). Nothing here licenses the learned representation (P2) —
 its stages 4 and 5 remain as registered — and nothing changes plan 05's deck before the wide-candidate pre-registration of 27 September is executed.
+
+## Outcome, benzene — 28 September 20:3x (`modules/standout_pattern_proposer/out/cc/A_8448043181_cc_test.{json,md}`, run 20:32)
+
+**Registered run (band deck, band prior 200 cm⁻¹): C1 FAIL, C2 FAIL, C3 — no ceiling.** On the CCSD(T) − B3LYP responses no ordering reaches ρ_off ≤ 0.3,
+the oracle included: P0's held-out ρ_off ends at 0.78 (proxy 0.24); K_off(0.3) is undefined for every ordering on CC. The reason is
+in the response, not in the plan: the CC correction's off-diagonal power lies **4 % inside the 200 cm⁻¹ band against 52 % for the proxy** of the
+same molecule; by frequency gap, 69 % of it sits between modes 300–1,000 cm⁻¹ apart (the largest pairs: 1199/1648, 718/1011, 1206/1653, 1069/1531 cm⁻¹ —
+same-symmetry pairs far apart in frequency) and 0 % within 10 cm⁻¹, where the proxy has 17 % (near-degenerate pairs of different irreps, the DFT
+symmetry noise the E11 controls measured). The CC Δ₂ is also smaller off the diagonal (Frobenius ratio 0.33 to the proxy) and larger on it. The prediction
+on record (C1 passes, ratio 0.6–0.8) was wrong; the P1 order is indeed the same on both responses, but the band the whole deck is built on misses the
+CC couplings. **Label for module 08's plan line: proxy** (decision 3 of 28 September stands).
+
+**Exploratory, labelled, not registered lines** (`…_all_band200`, `…_all_band5000`): with the wide pool (two-mode patterns for every pair, 1,020 patterns) the
+oracle reaches 0.3 at 434 energies under the band prior and 372 with the prior opened to all pairs; P0 needs 1116 / 1054; the E1 scorer P1
+(band-trained; not the E2 recipe) is worse than P0 on K_off (1.17 / 1.18) and better early (n_half ratio 0.44 / 0.23), three times the oracle's
+energies. On the proxy of the same molecule the same scorer is also worse than P0 on the wide pool (1.75 / 2.20) — benzene is one molecule with
+heavy ties, and the E2 reading (P1 0.57–0.63 on the parents) used the stage-1 recipe scorer; nothing here overturns E2, and nothing here confirms it.
+
+**What this changes.** (1) The band-prior finding of 26 September (≈ 45–52 % of off-diagonal power in band) is a proxy statement; on the one real
+correction we have it is 4 %. The wide-candidate deck pre-registered on 27 September (W1–W3) is no longer a refinement but the condition under which
+the plan can reach its target at all; its stop rule must not assume the band. (2) The solver's band prior is a claim about the response, to be checked
+per level of theory; the wide pool with an open prior is the honest default until the naphthalene CC Hessian says otherwise. (3) The naphthalene run of
+this test (§3) is now the decisive one: a second molecule with the same picture makes it a rule of the CC correction, a different picture makes benzene
+the exception. Nothing is retrained; no sentence about the learned representation changes.

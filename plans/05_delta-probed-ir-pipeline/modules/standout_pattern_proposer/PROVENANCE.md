@@ -43,3 +43,4 @@ Every number in the notebook and the report traces to a file named here. Dated n
 - `../../GoalGathering/notes/PreRegistration_2026-09-26_Standout_Pattern_Proposer.md` (question, data, read-outs, pass lines, dated amendments, outcomes).
 - `../../GoalGathering/notes/PreRegistration_2026-09-27_Wide_Candidate_Deck_Stop_Rule.md`, `PreRegistration_2026-09-27_Cheap_Proxy_Input.md` (after the 28th).
 - Tests: `../../tests/test_pp_planted.py` (7). Interpreter: the system Python with torch (`../../REPRODUCE.md`).
+- CC-level test (28 Sep 20:3x, pre-registered 20:2x): `cc_level_test.py` → `out/cc/A_8448043181_cc_test.{json,md}` (registered run) and `…_all_band200`, `…_all_band5000` (exploratory, labelled); `pp.core.hi_override` (tests `tests/test_pp_hi_override.py`); notebook section 4c.

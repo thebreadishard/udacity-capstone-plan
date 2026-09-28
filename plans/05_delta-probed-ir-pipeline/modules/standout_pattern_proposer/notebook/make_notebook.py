@@ -250,6 +250,28 @@ registered K_off(0.3) read-out in `out/sim/all_p2s1A_paired.md`) and the AUC gai
 factor of about 2.5–3 to the oracle is knowledge of the molecule. The lever for the module and for plan 05 is a better scorer (more molecules,
 CC-level responses), not an adaptive campaign; the adaptive variants stay in the code as a measured negative. Section 4a stands as run.""")
 
+# ---- 4c. follow-up (28 September 2026, later): the plan on a real coupled-cluster response — benzene
+md("""### 4c. Follow-up (28 September 2026, later): the plan on a real coupled-cluster response — benzene (pre-registration `PreRegistration_2026-09-28_Standout_CC_Level_Test.md`)
+
+Everything above is proxy-level (ωB97X − B3LYP). Benzene has a CCSD(T)/cc-pVDZ Hessian at the corpus geometry (E8, 24 September). The same export code
+builds the CC response record (`pp.core.export_molecule(..., hi_override=…)`: same B3LYP modes, same deck and hash), the same recovery runs, and the
+registered lines C1–C3 are read: `cc_level_test.py` → `out/cc/A_8448043181_cc_test.json`. Two exploratory runs with the wide pool are read beside it, labelled.""")
+code("""cc_reg = json.load(open(OUT / "cc" / "A_8448043181_cc_test.json")); cc_e1 = json.load(open(OUT / "cc" / "A_8448043181_cc_test_all_band200.json")); cc_e2 = json.load(open(OUT / "cc" / "A_8448043181_cc_test_all_band5000.json"))
+rows = []
+for tag, rr in (("registered: band deck, band prior", cc_reg), ("exploratory: wide pool, band prior", cc_e1), ("exploratory: wide pool, open prior", cc_e2)):
+    for resp in ("cc", "proxy"):
+        d = rr[resp]
+        rows.append({"run": tag, "response": resp, "P0 K_off(0.3)": d["P0"]["k_off_0p3"], "P0 final ρ_off": round(d["P0"]["rho_off_final"], 2), "P1 median K_off ratio": d["P1_median"]["k_off_ratio"],
+                     "P1 median n_half ratio": d["P1_median"]["n_half_ratio"], "oracle K_off(0.3)": d["oracle"]["k_off_0p3"]})
+display(pd.DataFrame(rows))
+print(f"in-band share of the off-diagonal Δ₂ power (200 cm⁻¹): CC {cc_reg['delta2']['inband_share_cc']:.2f} vs proxy {cc_reg['delta2']['inband_share_proxy']:.2f}; "
+      f"registered lines: C1 {'pass' if cc_reg['judged']['C1_pass'] else 'FAIL'}, C2 {'pass' if cc_reg['judged']['C2_pass'] else 'FAIL'}; label for the plan line: {cc_reg['judged']['label']}")""")
+md("""*Reading (28 September 2026).* On the real correction the band the whole deck is built on misses the couplings: 4 % of the off-diagonal power lies within
+200 cm⁻¹ (proxy: 52 %), most of it sits between same-symmetry modes 300–1,000 cm⁻¹ apart, and no ordering — the oracle included — reaches the target on the
+band deck. With the wide pool the oracle reaches it; the band-trained scorer does not beat the hashed order there on this one molecule. The band-prior finding of
+26 September was a proxy statement; the wide-candidate deck pre-registered on 27 September is the condition for reaching the target, not a refinement; the
+prediction on record (C1 passes) was wrong and is kept. Sections 1–4b stand as run; naphthalene's CC Hessian (this week) decides whether benzene is the rule.""")
+
 md("""## 5. The deck itself — the band candidate set against every pair
 
 `deck_cost_readout.py` compares, per evaluation split, what the band deck and the all-pairs candidate set cost and buy. This is the result that changes
