@@ -45,7 +45,8 @@ class EmbedScorer:
         torch.manual_seed(seed)
         self.torch, self.seed, self.cfg = torch, seed, dict(n_embed=n_embed, n_blocks=n_blocks, use_v=use_v)
         self.use_v = use_v                                                           # stage 3 (registered 12:1x): the norm of each vector channel joins s
-        self.body = DeltaHessianModel(n_blocks=n_blocks)                             # only .encode is used; the tensor head stays untouched
+        self.body = DeltaHessianModel(n_blocks=n_blocks, aggregation="sum")          # only .encode is used; sum = the body this scorer was registered
+        #                                                                              with (26 Sep); rung C moved to mean on 28 Sep, this did not
         self.mode_in = nn.Linear(N_S + (N_V if use_v else 0) + 1, n_embed)
         self.head = nn.Sequential(nn.Linear(2 * n_embed + 1, 128), nn.SiLU(), nn.Linear(128, 128), nn.SiLU(), nn.Linear(128, 1))
         self.params = list(self.body.parameters()) + list(self.mode_in.parameters()) + list(self.head.parameters())

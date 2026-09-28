@@ -13,10 +13,10 @@ import rungC_equivariant as RC  # noqa: E402
 torch.set_num_threads(1)
 
 
-@pytest.fixture(scope="module")
-def model():
+@pytest.fixture(scope="module", params=list(RC.AGGREGATIONS))
+def model(request):
     torch.manual_seed(0)
-    return RC.DeltaHessianModel().double()
+    return RC.DeltaHessianModel(aggregation=request.param).double()
 
 
 def test_equivariance_on_water(model):

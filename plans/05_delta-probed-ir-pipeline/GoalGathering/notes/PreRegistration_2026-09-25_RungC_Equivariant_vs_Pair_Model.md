@@ -217,3 +217,32 @@ interaction blocks) — a change to the registered architecture that C1 must the
 C2 under the same body (≈ 40 min + 27 min pretraining + 40 min fine-tune). Until that is decided, the rule of the 20:0x amendment is not reached:
 no sentence about directions and context at 175 may be written, in either direction. Records: `out/E7_rungC_s3_2026-09-27.log`,
 `out/rungC_pretrained_2026-09-27.json` (checkpoint kept, ignored by git as `*.pt`).
+
+## Dated amendment 28 September 06:1x — option A: the mean-pooled body for both variants (registered before the run; the user: "A. Besteed extra aandacht aan code kwaliteit")
+
+**Decision (the user, after the plain explanation `Uitleg_2026-09-28_C2_beslissing.md`).** Option A of the 22:4x amendment: the interaction blocks
+pool the neighbour messages by their **mean** instead of their sum, and both variants are re-run under that body so the C1-against-C2 comparison
+holds. Nothing else changes: same pool (175, hashed order), sizes 45 / 100 / 175, seeds 0–2, inner validation 15 %, hold-outs (a) and (b) untouched
+until the read-out, the stage-2 winner's recipe (`--aux-weight 1.0 --lr 1e-3 --epochs 200 --patience 20`), QM9 pretraining 3 epochs with the bond
+surrogate channel, head re-initialised per seed. Read-outs and the rule of the 20:0x amendment unchanged: after this stage, if the ratio on (a) is
+still ≥ 0.43 for both variants, the sentence "directions and context do not help at 175" may be written; if C2 beats C1, the sentence is that QM9
+pretraining transfers; before the read-out, neither.
+
+**The change, as code (`m05/rungC_equivariant.py`, `rungC_pretrain.py`, `rungC_train.py`; tests `tests/test_rungC_aggregation.py`, 5 tests, and the
+equivariance suite now run for both bodies — 24 rung C tests pass; ruff clean; both drivers smoke-tested with the mean body, the fine-tune path
+and the mismatch refusal exercised).**
+- One pooling helper `aggregate(messages, index, n, inv_degree)` used by both the scalar and the vector message; the inverse neighbour count is
+  computed once per molecule in `encode()`. `DeltaHessianModel(aggregation="sum" | "mean")`; `"sum"` is the body registered on 25 Sep and stays
+  available for the records made with it; `"mean"` is the default from today. The standout pattern proposer's scorer pins `"sum"` (its registered
+  body; hel1-23 runs that code), so this change does not touch it.
+- The setting travels with the data: the pretraining checkpoint carries `aggregation`; `load_pretrained_body` refuses a checkpoint whose body
+  differs from the requested one (a checkpoint without the key predates today and is a sum body). This is the E8 lesson of 27 Sep applied here:
+  an architecture setting must never travel unexamined between a pretraining run and a fine-tune.
+- The body pre-flight (worst raw |output| on the training molecules, limit 10³) now runs for every body, fresh or pretrained, and is logged, so the
+  record of each run holds the number that would have exposed the 27 Sep incident.
+- Test of the mechanism: the same random body on an 8-atom and a 24-atom dense cluster (7 vs 23 neighbours) — feature scale ratio 1.49 under sum,
+  1.0005 under mean. (A fresh sum body grows only 1.5×; the trained QM9 weights amplified that to 10¹⁸.)
+
+**Run (laptop, 8 threads, sequential, `rungC_stage4_0928.sh`, log `out/E7_rungC_s4_2026-09-28.log`; started 06:1x):** (1) C1 on the mean body →
+`out/E7_rungC_C1mean_2026-09-28`; (2) pretraining → `out/rungC_pretrained_mean_2026-09-28` (≈ 27 min); (3) C2 fine-tune → `out/E7_rungC_C2mean_2026-09-28`.
+Estimate ≈ 1 h 20 in total (stage 2 took ≈ 10 min per cell at 175; three sizes ≈ 20 min per variant). Nothing else runs on the laptop.

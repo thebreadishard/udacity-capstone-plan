@@ -30,7 +30,7 @@ import torch
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-from rungC_equivariant import AMU2AU, BOHR2ANG, LOSS_SCALE, DeltaHessianModel, synthetic_bond_hessian  # noqa: E402
+from rungC_equivariant import AGGREGATION, AGGREGATIONS, AMU2AU, BOHR2ANG, LOSS_SCALE, DeltaHessianModel, synthetic_bond_hessian  # noqa: E402
 from rungC_train import COV_RADIUS_ANG, Scaled, entry_classes, load_pretrained_body  # noqa: E402, F401
 
 HARTREE_EV = 27.211386245988
@@ -118,7 +118,8 @@ def sha16(path: Path) -> str:
 
 
 def save_checkpoint(path: Path, model: Scaled, meta: dict) -> None:
-    torch.save({"body_state": model.model.state_dict(), "class_scale": model.class_scale, "scale": model.scale, "meta": meta}, path)
+    torch.save({"body_state": model.model.state_dict(), "aggregation": model.model.aggregation, "class_scale": model.class_scale,
+                "scale": model.scale, "meta": meta}, path)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -135,6 +136,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--checkpoint-every", type=int, default=5000)
     ap.add_argument("--hlow-channel", default="bond", choices=["bond", "zero"],
                     help="what the H_low input channel carries during pretraining: the bond surrogate (default since 27 Sep 22:0x) or zero")
+    ap.add_argument("--aggregation", default=AGGREGATION, choices=list(AGGREGATIONS),
+                    help="neighbour-message pooling in the body: mean (default since 28 Sep) or sum (the body registered on 25 Sep)")
     ap.add_argument("--smoke", action="store_true", help="40 molecules, 1 epoch, 2 threads: mechanics only, never a result")
     a = ap.parse_args(argv)
     if a.smoke:
@@ -155,11 +158,11 @@ def main(argv: list[str] | None = None) -> int:
     sample = [molecule_to_tensors(m) for m in iter_qm9(shards, a.scale_sample, hlow_channel=a.hlow_channel)]
     scales = class_scales(sample)
     log(f"class scales (own block, bonded, non-bonded) from {len(sample)} molecules: {scales}")
-    model = Scaled(DeltaHessianModel(), 1.0, scales)
+    model = Scaled(DeltaHessianModel(aggregation=a.aggregation), 1.0, scales)
     opt = torch.optim.AdamW(model.parameters(), lr=a.lr, weight_decay=1e-4)
     every = int(round(1.0 / a.val_fraction)) if a.val_fraction > 0 else 0
     meta = dict(date=datetime.now().strftime("%Y-%m-%d %H:%M"), command=" ".join(sys.argv), shards=hashes, epochs=a.epochs, lr=a.lr,
-                class_scale=scales, val_every=every, smoke=a.smoke, hlow_channel=a.hlow_channel, history=[])
+                class_scale=scales, val_every=every, smoke=a.smoke, hlow_channel=a.hlow_channel, aggregation=a.aggregation, history=[])
     ck_path = Path(a.out_prefix + ".pt")
     n_seen = 0
     for ep in range(a.epochs):

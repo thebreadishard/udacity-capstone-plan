@@ -29,7 +29,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import e6_learning_curve as E6  # noqa: E402
 import e7_t2_sqm as T2  # noqa: E402
 from e7_rungB_pairs import readouts  # noqa: E402
-from rungC_equivariant import BOHR2ANG, LOSS_SCALE, DeltaHessianModel, load_molecule, to_torch  # noqa: E402
+from rungC_equivariant import AGGREGATION, AGGREGATIONS, BOHR2ANG, LOSS_SCALE, DeltaHessianModel, load_molecule, to_torch  # noqa: E402
 
 AUX_WEIGHT = 0.1
 
@@ -88,11 +88,16 @@ def inner_split(train_ids: list, seed: int, fraction: float) -> tuple[list, list
     return [train_ids[k] for k in sorted(perm[:n_val])], [train_ids[k] for k in sorted(perm[n_val:])]
 
 
-def load_pretrained_body(path: str | Path, reinit_head: bool = True, seed: int = 0) -> DeltaHessianModel:
+def load_pretrained_body(path: str | Path, reinit_head: bool = True, seed: int = 0, aggregation: str = AGGREGATION) -> DeltaHessianModel:
     """A fresh DeltaHessianModel carrying the body of a `rungC_pretrain.py` checkpoint; the output head re-initialised (the registered C2 recipe:
-    "the output head re-initialised and the whole network fine-tuned on ΔH") unless asked otherwise."""
+    "the output head re-initialised and the whole network fine-tuned on ΔH") unless asked otherwise. The checkpoint's aggregation must equal the
+    requested one (a checkpoint without the key predates 28 Sep 2026 and is a sum body): a setting that travels unexamined is the E8 lesson."""
     ck = torch.load(path, map_location="cpu", weights_only=False)
-    model = DeltaHessianModel()
+    ck_agg = ck.get("aggregation", "sum")
+    if ck_agg != aggregation:
+        raise ValueError(f"{path}: checkpoint body uses {ck_agg} aggregation, the run asks for {aggregation} — pretrain again with the requested "
+                         "aggregation or pass --aggregation to match")
+    model = DeltaHessianModel(aggregation=aggregation)
     model.load_state_dict(ck["body_state"])
     if reinit_head:
         torch.manual_seed(seed)
@@ -103,9 +108,9 @@ def load_pretrained_body(path: str | Path, reinit_head: bool = True, seed: int =
 
 
 def check_pretrained_transfer(body: torch.nn.Module, tensors: dict, ids: list, limit: float = 1e3) -> float:
-    """Pre-flight before fine-tuning a pretrained body (incident of 27 Sep 22:4x: a body pretrained on QM9 was finite on 12–18-atom molecules and
-    1e15–1e18 on 23-atom fused rings). Runs the body on every training molecule; raises if any raw output is non-finite or above `limit` (a fresh
-    body gives 15–35 on the corpus). Returns the worst |output|."""
+    """Body pre-flight (incident of 27 Sep 22:4x: a sum-pooled body pretrained on QM9 was finite on 12–18-atom molecules and 1e15–1e18 on
+    23-atom fused rings). Runs the body on every training molecule; raises if any raw output is non-finite or above `limit` (a fresh sum body
+    gives 15–35 on the corpus). Returns the worst |output|; since 28 Sep run for every body, fresh or pretrained, so the record holds it."""
     worst, worst_id = 0.0, None
     with torch.no_grad():
         for mid in ids:
@@ -128,7 +133,7 @@ def inner_val_aux(model, tensors: dict, ids: list) -> float:
 
 def train_one(train_ids: list, tensors: dict, seed: int, epochs: int, lr: float = 1e-3, log=print, aux_weight: float = AUX_WEIGHT,
               loss_mode: str = "registered", scale_mode: str = "rms", val_ids: list | None = None, patience: int = 0,
-              pretrained: str | None = None) -> tuple[torch.nn.Module, list]:
+              pretrained: str | None = None, aggregation: str = AGGREGATION) -> tuple[torch.nn.Module, list]:
     """Defaults = the registered recipe C1 of 19:50 (27 Sep). The other values are the cells of the fair-chance search registered at 20:0x:
     aux_weight 1.0; loss_mode 'internal' (the relative internal-ΔF term alone); scale_mode 'class' (one output scale per entry class: diagonal
     3×3 block, bonded pair, non-bonded pair — the pair model's per-class standardisation); val_ids = inner validation molecules held out of the
@@ -146,9 +151,10 @@ def train_one(train_ids: list, tensors: dict, seed: int, epochs: int, lr: float 
                 sq[k] += d2[c == k].sum()
                 cnt[k] += (c == k).sum()
         class_scale = np.sqrt(sq / np.maximum(cnt, 1))
-    body = load_pretrained_body(pretrained, reinit_head=True, seed=seed) if pretrained else DeltaHessianModel()
-    if pretrained:
-        log(f"  pretrained body pre-flight: worst |output| {check_pretrained_transfer(body, tensors, train_ids):.3g} on the training molecules")
+    body = (load_pretrained_body(pretrained, reinit_head=True, seed=seed, aggregation=aggregation) if pretrained
+            else DeltaHessianModel(aggregation=aggregation))
+    log(f"  {'pretrained' if pretrained else 'fresh'} {aggregation} body pre-flight: worst |output| "
+        f"{check_pretrained_transfer(body, tensors, train_ids):.3g} on the training molecules")
     model = Scaled(body, scale, class_scale)
     opt = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=1e-4)
     rng = np.random.default_rng(seed)
@@ -232,6 +238,8 @@ def main() -> int:
                     help="search: fraction of the training ids held out per seed as inner validation (the stage read-out)")
     ap.add_argument("--patience", type=int, default=0, help="search stage 2: early stopping on the inner validation term, best state restored (0 = off)")
     ap.add_argument("--pretrained", default=None, help="C2: a `rungC_pretrain.py` checkpoint; its body is loaded, the head re-initialised per seed")
+    ap.add_argument("--aggregation", default=AGGREGATION, choices=list(AGGREGATIONS),
+                    help="neighbour-message pooling in the body: mean (default since 28 Sep) or sum (the body registered on 25 Sep)")
     a = ap.parse_args()
     torch.set_num_threads(a.threads)
     t_start = time.time()
@@ -281,19 +289,20 @@ def main() -> int:
         t["cls"] = entry_classes(m)
         tensors[i] = t
     log(f"{len(mols)} molecules; pool {len(pool)}; hold-out (a) {len(test_a)}, (b) {len(test_b)} ({cores}); sizes {sizes}; seeds {seeds}; epochs {a.epochs}; "
-        f"threads {a.threads}; model {sum(p.numel() for p in DeltaHessianModel().parameters()):,} parameters" + (" — SMOKE" if a.smoke else ""))
+        f"threads {a.threads}; model {sum(p.numel() for p in DeltaHessianModel().parameters()):,} parameters, {a.aggregation} aggregation"
+        + (" — SMOKE" if a.smoke else ""))
 
     tests = {"a": test_a, "b": test_b}
     res = dict(date=datetime.now().strftime("%Y-%m-%d %H:%M"), smoke=a.smoke,
                model="rungC_equivariant C1 (from scratch; output scaled by the training set's RMS ΔH, or per entry class)",
                n_molecules=len(mols), holdout_a=test_a, holdout_b=test_b, scaffold_cores=cores, pool=len(pool), pool_ids=pool, pool_layers=a.pool_layers,
                sizes=sizes, seeds=seeds, epochs=a.epochs, lr=a.lr, aux_weight=a.aux_weight, loss=a.loss, scale=a.scale, inner_val=a.inner_val,
-               patience=a.patience, pretrained=a.pretrained,
+               patience=a.patience, pretrained=a.pretrained, aggregation=a.aggregation,
                substituted_analytic=substituted, curve={})
     res["zero_rule"] = {h: readouts(mols, ids, pool, lambda i: np.zeros_like(mols[i]["F_low"])) for h, ids in tests.items() if ids}
     lines = [f"# Rung C (equivariant ΔH, C1 from scratch) — {a.out_prefix} ({res['date']}){' — SMOKE, not a result' if a.smoke else ''}", "",
              f"recipe: lr {a.lr}, epochs {a.epochs}, loss {a.loss}, aux weight {a.aux_weight}, output scale {a.scale}, "
-             f"inner validation {a.inner_val}, patience {a.patience}; pool layers {a.pool_layers}", "",
+             f"inner validation {a.inner_val}, patience {a.patience}; pool layers {a.pool_layers}; {a.aggregation} aggregation", "",
              "| n | seed | hold-out | ring couplings | zero | ratio | corrected ω | zero ω | ΔH residual ratio | s |",
              "|---|---|---|---|---|---|---|---|---|---|"]
     for n in sizes:
@@ -308,7 +317,8 @@ def main() -> int:
         for seed in seeds:
             t1 = time.time()
             val_ids, fit_ids = inner_split(tr, seed, a.inner_val)
-            model, hist = train_one(fit_ids, tensors, seed, a.epochs, a.lr, log, a.aux_weight, a.loss, a.scale, val_ids, a.patience, a.pretrained)
+            model, hist = train_one(fit_ids, tensors, seed, a.epochs, a.lr, log, a.aux_weight, a.loss, a.scale, val_ids, a.patience, a.pretrained,
+                                    a.aggregation)
             dF_of = predictor(model, tensors, mols)
             out = {"seed": seed, "train_history": hist, "output_scale": model.scale, "class_scale": model.class_scale_values,
                    "seconds": round(time.time() - t1, 1), "inner_val_ids": val_ids,

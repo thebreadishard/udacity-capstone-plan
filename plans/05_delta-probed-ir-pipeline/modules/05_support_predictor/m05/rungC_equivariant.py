@@ -4,7 +4,9 @@ the Sunday decision (the pre-registration allows building; the test run waits).
 
 Inputs (registered): atomic numbers, Cartesian coordinates of the B3LYP minimum, and the B3LYP Hessian as pair scalars only — per atom pair the
 three invariants of its 3×3 block (trace, r̂ᵀ B r̂, ‖B‖_F); per atom the trace and norm of its diagonal block. Nothing else.
-Body: three PaiNN-type interaction blocks, 64 scalar + 64 vector channels, 20 Gaussians, cosine cutoff 5 Å. No cross products, so the network is
+Body: three PaiNN-type interaction blocks, 64 scalar + 64 vector channels, 20 Gaussians, cosine cutoff 5 Å; neighbour messages pooled by their
+mean (dated amendment 28 Sep 2026; `aggregation="sum"` is the body registered on 25 Sep, kept for the records made with it).
+No cross products, so the network is
 O(3)-equivariant (rotations and reflections) and permutation-equivariant by construction; no augmentation.
 Output: per atom pair within the cutoff ΔH_ij = a_ij I + b_ij r̂_ij r̂_ijᵀ + Σ_k c_ij^k (u_i^k u_j^kᵀ + u_j^k u_i^kᵀ), a, b, c invariant read-outs of the
 symmetric pair features (s_i + s_j, s_i ⊙ s_j, the radial basis of d_ij), u a linear projection of the vector channels to 16 tensor channels; the
@@ -32,6 +34,9 @@ HARTREE2CM = 219474.6313632
 BOHR2ANG = 0.529177210903
 CUTOFF_BOHR = 5.0 / BOHR2ANG
 N_RBF, N_S, N_V, N_BLOCKS, N_TENSOR = 20, 64, 64, 3, 16
+AGGREGATIONS = ("sum", "mean")
+AGGREGATION = "mean"       # 28 Sep 2026: a sum-pooled body pretrained on QM9 (≈ 11 neighbours per atom) blew up to 1e18 on 23-atom fused rings
+                           # (15–21 neighbours); the mean makes the block's scale independent of the neighbour count
 LOSS_SCALE = 1.0e4          # mass-weighted Hessian corrections are ~1e-5 au; the loss is reported in (1e-4 au)² units
 AUX_WEIGHT = 0.1
 MASSES_AMU = {"H": 1.00782503, "C": 12.0, "N": 14.003074, "O": 15.99491462, "F": 18.99840316, "S": 31.97207117, "CL": 34.96885268}
@@ -128,6 +133,14 @@ class RadialBasis(nn.Module):
         return torch.exp(-self.gamma * (d[:, None] - self.centres[None, :]) ** 2) * env[:, None]
 
 
+def aggregate(messages: torch.Tensor, index: torch.Tensor, n: int, inv_degree: torch.Tensor | None = None) -> torch.Tensor:
+    """Pool the per-edge messages onto their receiving atom: Σ_j m_ij (inv_degree None = sum aggregation) or that sum times 1/deg_i (mean)."""
+    out = torch.zeros((n,) + tuple(messages.shape[1:]), dtype=messages.dtype, device=messages.device).index_add(0, index, messages)
+    if inv_degree is not None:
+        out = out * inv_degree.reshape((n,) + (1,) * (out.dim() - 1))
+    return out
+
+
 class Interaction(nn.Module):
     """One PaiNN interaction: message (scalars and vectors from neighbours, filtered by the radial basis and the pair invariants) + update
     (vector–vector products into scalars, gated vector rescaling)."""
@@ -141,12 +154,12 @@ class Interaction(nn.Module):
         self.a = nn.Sequential(nn.Linear(n_s + n_v, n_s), nn.SiLU(), nn.Linear(n_s, n_s + 2 * n_v))
         self.n_s, self.n_v = n_s, n_v
 
-    def forward(self, s, v, i, j, filt, rhat):
+    def forward(self, s, v, i, j, filt, rhat, inv_degree=None):
         x = self.phi(s)[j] * self.W(filt)                                          # (E, n_s + 2 n_v)
         ds, dvv, dvs = torch.split(x, [self.n_s, self.n_v, self.n_v], dim=-1)
         dv = v[j] * dvv[:, None, :] + rhat[:, :, None] * dvs[:, None, :]          # (E, 3, n_v)
-        s = s + torch.zeros_like(s).index_add(0, i, ds)
-        v = v + torch.zeros_like(v).index_add(0, i, dv)
+        s = s + aggregate(ds, i, s.shape[0], inv_degree)
+        v = v + aggregate(dv, i, v.shape[0], inv_degree)
         Uv, Vv = self.U(v), self.V(v)                                              # (N, 3, n_v)
         vnorm = torch.sqrt((Vv ** 2).sum(1) + 1e-8)
         a = self.a(torch.cat([s, vnorm], -1))
@@ -157,8 +170,11 @@ class Interaction(nn.Module):
 
 
 class DeltaHessianModel(nn.Module):
-    def __init__(self, n_s=N_S, n_v=N_V, n_blocks=N_BLOCKS, n_tensor=N_TENSOR, cutoff=CUTOFF_BOHR):
+    def __init__(self, n_s=N_S, n_v=N_V, n_blocks=N_BLOCKS, n_tensor=N_TENSOR, cutoff=CUTOFF_BOHR, aggregation=AGGREGATION):
         super().__init__()
+        if aggregation not in AGGREGATIONS:
+            raise ValueError(f"aggregation must be one of {AGGREGATIONS}, got {aggregation!r}")
+        self.aggregation = aggregation
         self.emb = nn.Embedding(20, n_s)
         self.node_in = nn.Linear(2, n_s)
         self.rbf = RadialBasis(N_RBF, cutoff)
@@ -181,8 +197,9 @@ class DeltaHessianModel(nn.Module):
         filt = torch.cat([rbf, self.inv(inv_pair[i, j])], -1)
         s = self.emb(Z) + self.node_in(inv_node)
         v = torch.zeros(n, 3, self.n_v, dtype=pos.dtype, device=pos.device)
+        inv_degree = None if self.aggregation == "sum" else 1.0 / torch.bincount(i, minlength=n).clamp_min(1).to(pos.dtype)
         for blk in self.blocks:
-            s, v = blk(s, v, i, j, filt, rhat)
+            s, v = blk(s, v, i, j, filt, rhat, inv_degree)
         return s, v, i, j, rbf, rhat
 
     def forward(self, Z, pos, H_low):
@@ -261,7 +278,8 @@ def smoke(mdir: Path | None) -> int:
     torch.manual_seed(0)
     model = DeltaHessianModel().double()
     n_par = sum(p.numel() for p in model.parameters())
-    print(f"DeltaHessianModel: {n_par} parameters; {N_BLOCKS} blocks × ({N_S} s + {N_V} v), {N_TENSOR} tensor channels, cutoff {CUTOFF_BOHR * BOHR2ANG:.1f} Å")
+    print(f"DeltaHessianModel: {n_par} parameters; {N_BLOCKS} blocks × ({N_S} s + {N_V} v), {N_TENSOR} tensor channels, "
+          f"cutoff {CUTOFF_BOHR * BOHR2ANG:.1f} Å, {model.aggregation} aggregation")
     mols = [water()]
     if mdir is not None and (Path(mdir) / "A_8448043181").exists():
         mols.append(load_molecule(Path(mdir) / "A_8448043181"))
