@@ -93,6 +93,7 @@ website/site/.astro/
 plans/*/experiments/*_psi4.out
 plans/*/modules/05_support_predictor/corpus/shards_layerB/
 plans/*/modules/05_support_predictor/corpus/*.pre_merge_*
+plans/*/modules/05_support_predictor/corpus/manifest.csv.pre_rehash_*
 plans/*/modules/05_support_predictor/notebook/execute_section*.log
 plans/*/modules/05_support_predictor/out/_smoke_*
 plans/*/modules/05_support_predictor/out/*_smoke_*

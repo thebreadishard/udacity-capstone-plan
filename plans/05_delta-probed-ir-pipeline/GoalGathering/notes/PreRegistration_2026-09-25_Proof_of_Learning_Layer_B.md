@@ -217,3 +217,18 @@ below on (b)) is met on (a) and, for the ratio only, marginally on (b). 274 smal
 neither help nor hurt the ladder-like hold-outs: the pair model's local target lets the extra chemistry sit beside the PAH-like class without
 disturbing it, and it brings nothing the ladder needs. That is the second reason, after tonight's interim point, for the re-hash of layer B towards
 the PAH-like cores (decision 3, tomorrow); the next point of this curve is read after the re-hash, at +300 layer-B molecules in the new order.
+
+## Dated amendment 2026-09-28 19:3x — the order of layer B re-hashed towards the PAH-like cores (applied, corpus design amended in `modules/05_support_predictor/corpus/README.md`; the user: "Ja, doe maar")
+
+`corpus/rehash_layerB.py --apply` ran at 19:29 on the laptop's manifest and, with the same script, on each shard server's own manifest (hel1-18, -21,
+-16, -14; server copies `manifest.csv.pre_rehash_2026-09-28_1729`, laptop copy `…_1929`). Only the `priority` column of the *pending* layer-B rows
+changed (4,062 on the laptop; 4,047–4,058 on the servers, whose finished and running rows keep their status); no other column moved; the note column
+carries `rehash-2026-09-28`. New order: class 0 all-carbon cores with two or more rings, then all-carbon one-ring, then heteroaromatic two-ring, then
+heteroaromatic one-ring; inside a class larger first in bands of four atoms, the hash inside a band (proposal `rehash_layerB_proposal_2026-09-28_1929.csv`:
+the first 300 of the new order have a median of 24 atoms and 0 % heteroaromatic cores, against 18 atoms and 80 % among the 290 finished under the old
+order). The runners re-read the manifest before every pick, so each shard follows the new order from its next molecule without a restart; nothing running
+was interrupted. The finished molecules stay admitted. The CCX53 (shards 4 and 5, after E8) receives the same manifest before it starts.
+
+**For the reading of the curve.** The registered points 300 / 600 / 1,200 are now read in the new order and the outcome says so: the point at 300 has a
+different composition (larger, all-carbon) from the points at 100 and 175, so a change of slope there is first a change of population, then a
+learning effect — the two are separated by the class-wise read-out already registered (bare parents / scaffolds / size), not by the pooled number.
