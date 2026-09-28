@@ -1,0 +1,6752 @@
+{
+ "date": "2026-09-28 21:51",
+ "wide": "out/sim/all_p2s1_merged.json",
+ "band": "out/sim/band_p2s1A_merged.json",
+ "wide_w_cm": 200.0,
+ "wide_embed": "out/p2s1",
+ "tau": 0.3,
+ "bmax_factor": 2.0,
+ "false_stop": 0.4,
+ "orders": [
+  "P0",
+  "P12",
+  "P3_oracle"
+ ],
+ "seeds": [
+  0,
+  1,
+  2
+ ],
+ "label": "reading (i): as registered, band prior, P2 = stage-1 recipe",
+ "judged": {
+  "order": "P12",
+  "W1_pass": false,
+  "W2_pass": false,
+  "frac_stopped": 0.5257731958762887,
+  "cost_ratio_of_medians": 1.0576923076923077,
+  "frac_false_stops": 0.29411764705882354
+ },
+ "summary": {
+  "all": {
+   "n_molecules": 97,
+   "median_band_deck": 1560,
+   "median_M": 60,
+   "P0": {
+    "n": 97,
+    "n_stopped": 27,
+    "frac_stopped": 0.27835051546391754,
+    "median_cost": 1750,
+    "cost_ratio_of_medians": 1.1217948717948718,
+    "median_per_molecule_ratio": 1.7164179104477613,
+    "n_false_stops": 24,
+    "frac_false_stops": 0.8888888888888888,
+    "median_hysteresis": 98
+   },
+   "P12": {
+    "n": 97,
+    "n_stopped": 51,
+    "frac_stopped": 0.5257731958762887,
+    "median_cost": 1650,
+    "cost_ratio_of_medians": 1.0576923076923077,
+    "median_per_molecule_ratio": 1.3571428571428572,
+    "n_false_stops": 15,
+    "frac_false_stops": 0.29411764705882354,
+    "median_hysteresis": 110
+   },
+   "P3_oracle": {
+    "n": 97,
+    "n_stopped": 73,
+    "frac_stopped": 0.7525773195876289,
+    "median_cost": 876,
+    "cost_ratio_of_medians": 0.5615384615384615,
+    "median_per_molecule_ratio": 0.7122302158273381,
+    "n_false_stops": 2,
+    "frac_false_stops": 0.0273972602739726,
+    "median_hysteresis": 110
+   }
+  },
+  "eval_parents": {
+   "n_molecules": 41,
+   "median_band_deck": 1360,
+   "median_M": 57,
+   "P0": {
+    "n": 41,
+    "n_stopped": 11,
+    "frac_stopped": 0.2682926829268293,
+    "median_cost": 1750,
+    "cost_ratio_of_medians": 1.286764705882353,
+    "median_per_molecule_ratio": 1.7857142857142858,
+    "n_false_stops": 10,
+    "frac_false_stops": 0.9090909090909091,
+    "median_hysteresis": 70
+   },
+   "P12": {
+    "n": 41,
+    "n_stopped": 26,
+    "frac_stopped": 0.6341463414634146,
+    "median_cost": 1564.0,
+    "cost_ratio_of_medians": 1.15,
+    "median_per_molecule_ratio": 1.3507412398921832,
+    "n_false_stops": 5,
+    "frac_false_stops": 0.19230769230769232,
+    "median_hysteresis": 98.0
+   },
+   "P3_oracle": {
+    "n": 41,
+    "n_stopped": 35,
+    "frac_stopped": 0.8536585365853658,
+    "median_cost": 660,
+    "cost_ratio_of_medians": 0.4852941176470588,
+    "median_per_molecule_ratio": 0.6252220248667851,
+    "n_false_stops": 2,
+    "frac_false_stops": 0.05714285714285714,
+    "median_hysteresis": 98
+   }
+  },
+  "eval": {
+   "n_molecules": 56,
+   "median_band_deck": 1686.0,
+   "median_M": 64.5,
+   "P0": {
+    "n": 56,
+    "n_stopped": 16,
+    "frac_stopped": 0.2857142857142857,
+    "median_cost": 1768.0,
+    "cost_ratio_of_medians": 1.0486358244365361,
+    "median_per_molecule_ratio": 1.5685703185703186,
+    "n_false_stops": 14,
+    "frac_false_stops": 0.875,
+    "median_hysteresis": 115.0
+   },
+   "P12": {
+    "n": 56,
+    "n_stopped": 25,
+    "frac_stopped": 0.44642857142857145,
+    "median_cost": 1898,
+    "cost_ratio_of_medians": 1.1257413997627521,
+    "median_per_molecule_ratio": 1.399098083427283,
+    "n_false_stops": 10,
+    "frac_false_stops": 0.4,
+    "median_hysteresis": 146
+   },
+   "P3_oracle": {
+    "n": 56,
+    "n_stopped": 38,
+    "frac_stopped": 0.6785714285714286,
+    "median_cost": 1227.0,
+    "cost_ratio_of_medians": 0.7277580071174378,
+    "median_per_molecule_ratio": 0.9039033094193603,
+    "n_false_stops": 0,
+    "frac_false_stops": 0.0,
+    "median_hysteresis": 134.0
+   }
+  }
+ },
+ "per_molecule": {
+  "A2_00b0ff5a24": {
+   "split": "eval",
+   "M": 81,
+   "band_deck": 2550,
+   "b_max": 5100,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 5014,
+       "frob_off": 0.5574
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 5014,
+       "frob_off": 0.284
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 5014,
+       "frob_off": 0.2894
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 5014,
+       "frob_off": 0.2986
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 5014,
+       "frob_off": 0.1798
+      }
+     }
+    }
+   }
+  },
+  "A2_00eeb8e5ed": {
+   "split": "eval",
+   "M": 45,
+   "band_deck": 932,
+   "b_max": 1864,
+   "orderings": {
+    "P0": {
+     "stopped": true,
+     "cost": 1610,
+     "cost_over_band_deck": 1.7274678111587982,
+     "frob_off_at_stop": 0.451702955216459,
+     "false_stop": true,
+     "hysteresis": 70,
+     "seeds": {
+      "P0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1610,
+       "frob_off": 0.4517
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 1470,
+     "cost_over_band_deck": 1.5772532188841202,
+     "frob_off_at_stop": 0.2529782174385397,
+     "false_stop": false,
+     "hysteresis": 70,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1470,
+       "frob_off": 0.253
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1610,
+       "frob_off": 0.1963
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1470,
+       "frob_off": 0.3181
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 840,
+     "cost_over_band_deck": 0.9012875536480687,
+     "frob_off_at_stop": 0.22243771315680538,
+     "false_stop": false,
+     "hysteresis": 70,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 840,
+       "frob_off": 0.2224
+      }
+     }
+    }
+   }
+  },
+  "A2_0101e57296": {
+   "split": "eval",
+   "M": 78,
+   "band_deck": 2352,
+   "b_max": 4704,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4646,
+       "frob_off": 0.5786
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4646,
+       "frob_off": 0.3539
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4646,
+       "frob_off": 0.3521
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4646,
+       "frob_off": 0.3548
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4646,
+       "frob_off": 0.2076
+      }
+     }
+    }
+   }
+  },
+  "A2_04719edc88": {
+   "split": "eval",
+   "M": 72,
+   "band_deck": 2020,
+   "b_max": 4040,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4002,
+       "frob_off": 0.5317
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 3306,
+     "cost_over_band_deck": 1.6366336633663365,
+     "frob_off_at_stop": 0.30145845212195804,
+     "false_stop": false,
+     "hysteresis": 174,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 3306,
+       "frob_off": 0.2919
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 3306,
+       "frob_off": 0.3015
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 3306,
+       "frob_off": 0.3167
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 2088,
+     "cost_over_band_deck": 1.0336633663366337,
+     "frob_off_at_stop": 0.2749500722953978,
+     "false_stop": false,
+     "hysteresis": 174,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2088,
+       "frob_off": 0.275
+      }
+     }
+    }
+   }
+  },
+  "A2_05e08111d2": {
+   "split": "eval",
+   "M": 66,
+   "band_deck": 1758,
+   "b_max": 3516,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3504,
+       "frob_off": 0.5245
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 1898,
+     "cost_over_band_deck": 1.0796359499431172,
+     "frob_off_at_stop": 0.4171962713608305,
+     "false_stop": true,
+     "hysteresis": 146,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1898,
+       "frob_off": 0.4172
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1460,
+       "frob_off": 0.4408
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2482,
+       "frob_off": 0.3874
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 876,
+     "cost_over_band_deck": 0.49829351535836175,
+     "frob_off_at_stop": 0.3344429464986262,
+     "false_stop": false,
+     "hysteresis": 146,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 876,
+       "frob_off": 0.3344
+      }
+     }
+    }
+   }
+  },
+  "A2_05f5ff045c": {
+   "split": "eval",
+   "M": 69,
+   "band_deck": 1898,
+   "b_max": 3796,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3680,
+       "frob_off": 0.527
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 1760,
+     "cost_over_band_deck": 0.9272918861959958,
+     "frob_off_at_stop": 0.44146535089394956,
+     "false_stop": true,
+     "hysteresis": 160,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1760,
+       "frob_off": 0.4371
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1760,
+       "frob_off": 0.4454
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1920,
+       "frob_off": 0.4415
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 1280,
+     "cost_over_band_deck": 0.6743940990516333,
+     "frob_off_at_stop": 0.3250395946240187,
+     "false_stop": false,
+     "hysteresis": 160,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1280,
+       "frob_off": 0.325
+      }
+     }
+    }
+   }
+  },
+  "A2_066237c4f5": {
+   "split": "eval",
+   "M": 63,
+   "band_deck": 1678,
+   "b_max": 3356,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3350,
+       "frob_off": 0.4955
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 2010,
+     "cost_over_band_deck": 1.197854588796186,
+     "frob_off_at_stop": 0.40668041893856904,
+     "false_stop": true,
+     "hysteresis": 402,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2010,
+       "frob_off": 0.4041
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2010,
+       "frob_off": 0.4067
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1608,
+       "frob_off": 0.4418
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 1206,
+     "cost_over_band_deck": 0.7187127532777116,
+     "frob_off_at_stop": 0.3120490372923581,
+     "false_stop": false,
+     "hysteresis": 134,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1206,
+       "frob_off": 0.312
+      }
+     }
+    }
+   }
+  },
+  "A2_06873ee7ad": {
+   "split": "eval",
+   "M": 69,
+   "band_deck": 1888,
+   "b_max": 3776,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3680,
+       "frob_off": 0.57
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3680,
+       "frob_off": 0.4179
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3680,
+       "frob_off": 0.4
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3680,
+       "frob_off": 0.4035
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3680,
+       "frob_off": 0.256
+      }
+     }
+    }
+   }
+  },
+  "A2_0a158816bd": {
+   "split": "eval",
+   "M": 48,
+   "band_deck": 1012,
+   "b_max": 2024,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 1950,
+       "frob_off": 0.4843
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 1950,
+       "frob_off": 0.38
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 1950,
+       "frob_off": 0.4078
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 1950,
+       "frob_off": 0.3909
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 1950,
+       "frob_off": 0.2447
+      }
+     }
+    }
+   }
+  },
+  "A2_0a89c174d8": {
+   "split": "eval",
+   "M": 63,
+   "band_deck": 1666,
+   "b_max": 3332,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3216,
+       "frob_off": 0.569
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3216,
+       "frob_off": 0.3872
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3216,
+       "frob_off": 0.3826
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3216,
+       "frob_off": 0.4073
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3216,
+       "frob_off": 0.3584
+      }
+     }
+    }
+   }
+  },
+  "A2_0bf85f35e5": {
+   "split": "eval",
+   "M": 63,
+   "band_deck": 1668,
+   "b_max": 3336,
+   "orderings": {
+    "P0": {
+     "stopped": true,
+     "cost": 1742,
+     "cost_over_band_deck": 1.0443645083932853,
+     "frob_off_at_stop": 0.6623019587545066,
+     "false_stop": true,
+     "hysteresis": 134,
+     "seeds": {
+      "P0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1742,
+       "frob_off": 0.6623
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3216,
+       "frob_off": 0.2134
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3216,
+       "frob_off": 0.2271
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3216,
+       "frob_off": 0.2294
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 2010,
+     "cost_over_band_deck": 1.2050359712230216,
+     "frob_off_at_stop": 0.16770320722119023,
+     "false_stop": false,
+     "hysteresis": 134,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2010,
+       "frob_off": 0.1677
+      }
+     }
+    }
+   }
+  },
+  "A2_0efbc8f50c": {
+   "split": "eval",
+   "M": 78,
+   "band_deck": 2306,
+   "b_max": 4612,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4444,
+       "frob_off": 0.5342
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4444,
+       "frob_off": 0.3433
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4444,
+       "frob_off": 0.3523
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4444,
+       "frob_off": 0.3528
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4444,
+       "frob_off": 0.2247
+      }
+     }
+    }
+   }
+  },
+  "A2_101910c9ef": {
+   "split": "eval",
+   "M": 69,
+   "band_deck": 1898,
+   "b_max": 3796,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3680,
+       "frob_off": 0.5399
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 2400,
+     "cost_over_band_deck": 1.2644889357218125,
+     "frob_off_at_stop": 0.3073052955557665,
+     "false_stop": false,
+     "hysteresis": 160,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2400,
+       "frob_off": 0.3167
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2880,
+       "frob_off": 0.2825
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2400,
+       "frob_off": 0.3073
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 1760,
+     "cost_over_band_deck": 0.9272918861959958,
+     "frob_off_at_stop": 0.2596931417630385,
+     "false_stop": false,
+     "hysteresis": 160,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1760,
+       "frob_off": 0.2597
+      }
+     }
+    }
+   }
+  },
+  "A2_11a9a9ada2": {
+   "split": "eval",
+   "M": 66,
+   "band_deck": 1774,
+   "b_max": 3548,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3504,
+       "frob_off": 0.4645
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 2482,
+     "cost_over_band_deck": 1.399098083427283,
+     "frob_off_at_stop": 0.2988550007466301,
+     "false_stop": false,
+     "hysteresis": 146,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2482,
+       "frob_off": 0.2778
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2482,
+       "frob_off": 0.2989
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2044,
+       "frob_off": 0.3199
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 2336,
+     "cost_over_band_deck": 1.3167981961668547,
+     "frob_off_at_stop": 0.19696805519885294,
+     "false_stop": false,
+     "hysteresis": 438,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2336,
+       "frob_off": 0.197
+      }
+     }
+    }
+   }
+  },
+  "A2_11d7cdeab0": {
+   "split": "eval",
+   "M": 66,
+   "band_deck": 1786,
+   "b_max": 3572,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3504,
+       "frob_off": 0.5589
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3504,
+       "frob_off": 0.3012
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3504,
+       "frob_off": 0.2888
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3504,
+       "frob_off": 0.2896
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3504,
+       "frob_off": 0.1903
+      }
+     }
+    }
+   }
+  },
+  "A2_14dee3bc02": {
+   "split": "eval",
+   "M": 72,
+   "band_deck": 2084,
+   "b_max": 4168,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4128,
+       "frob_off": 0.5316
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4128,
+       "frob_off": 0.2883
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4128,
+       "frob_off": 0.2999
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4128,
+       "frob_off": 0.3074
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4128,
+       "frob_off": 0.1665
+      }
+     }
+    }
+   }
+  },
+  "A2_1767c744aa": {
+   "split": "eval",
+   "M": 66,
+   "band_deck": 1806,
+   "b_max": 3612,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3504,
+       "frob_off": 0.5354
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 3358,
+     "cost_over_band_deck": 1.859357696566999,
+     "frob_off_at_stop": 0.2617828614237699,
+     "false_stop": false,
+     "hysteresis": 146,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2774,
+       "frob_off": 0.2908
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 3358,
+       "frob_off": 0.2398
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 3504,
+       "frob_off": 0.2618
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 1752,
+     "cost_over_band_deck": 0.9700996677740864,
+     "frob_off_at_stop": 0.25942053789016584,
+     "false_stop": false,
+     "hysteresis": 146,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1752,
+       "frob_off": 0.2594
+      }
+     }
+    }
+   }
+  },
+  "A2_177784139f": {
+   "split": "eval",
+   "M": 63,
+   "band_deck": 1662,
+   "b_max": 3324,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3216,
+       "frob_off": 0.4102
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 2412,
+     "cost_over_band_deck": 1.4512635379061372,
+     "frob_off_at_stop": 0.29425279842294105,
+     "false_stop": false,
+     "hysteresis": 134,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2412,
+       "frob_off": 0.2943
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2412,
+       "frob_off": 0.3135
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2680,
+       "frob_off": 0.2748
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 1072,
+     "cost_over_band_deck": 0.6450060168471721,
+     "frob_off_at_stop": 0.2940870366574747,
+     "false_stop": false,
+     "hysteresis": 134,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1072,
+       "frob_off": 0.2941
+      }
+     }
+    }
+   }
+  },
+  "A2_187a20beab": {
+   "split": "eval",
+   "M": 75,
+   "band_deck": 2240,
+   "b_max": 4480,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4324,
+       "frob_off": 0.5374
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4324,
+       "frob_off": 0.2975
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4324,
+       "frob_off": 0.3121
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4324,
+       "frob_off": 0.2917
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4324,
+       "frob_off": 0.1849
+      }
+     }
+    }
+   }
+  },
+  "A2_198d828af1": {
+   "split": "eval",
+   "M": 66,
+   "band_deck": 1780,
+   "b_max": 3560,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3504,
+       "frob_off": 0.5282
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3504,
+       "frob_off": 0.3215
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3504,
+       "frob_off": 0.3057
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3504,
+       "frob_off": 0.3063
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3504,
+       "frob_off": 0.1994
+      }
+     }
+    }
+   }
+  },
+  "A2_215e004a51": {
+   "split": "eval",
+   "M": 69,
+   "band_deck": 1882,
+   "b_max": 3764,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3680,
+       "frob_off": 0.5195
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3680,
+       "frob_off": 0.3507
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3680,
+       "frob_off": 0.3488
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3680,
+       "frob_off": 0.353
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3680,
+       "frob_off": 0.2237
+      }
+     }
+    }
+   }
+  },
+  "A2_221bc30690": {
+   "split": "eval",
+   "M": 60,
+   "band_deck": 1560,
+   "b_max": 3120,
+   "orderings": {
+    "P0": {
+     "stopped": true,
+     "cost": 3120,
+     "cost_over_band_deck": 2.0,
+     "frob_off_at_stop": 0.41974450714481876,
+     "false_stop": true,
+     "hysteresis": 120,
+     "seeds": {
+      "P0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 3120,
+       "frob_off": 0.4197
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 1080,
+     "cost_over_band_deck": 0.6923076923076923,
+     "frob_off_at_stop": 0.45879870396025485,
+     "false_stop": true,
+     "hysteresis": 120,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1080,
+       "frob_off": 0.4588
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1320,
+       "frob_off": 0.4288
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1080,
+       "frob_off": 0.483
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 720,
+     "cost_over_band_deck": 0.46153846153846156,
+     "frob_off_at_stop": 0.3454824113438481,
+     "false_stop": false,
+     "hysteresis": 120,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 720,
+       "frob_off": 0.3455
+      }
+     }
+    }
+   }
+  },
+  "A2_22d0e8105c": {
+   "split": "eval",
+   "M": 63,
+   "band_deck": 1610,
+   "b_max": 3220,
+   "orderings": {
+    "P0": {
+     "stopped": true,
+     "cost": 1608,
+     "cost_over_band_deck": 0.9987577639751553,
+     "frob_off_at_stop": 0.2843166917956289,
+     "false_stop": false,
+     "hysteresis": 134,
+     "seeds": {
+      "P0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1608,
+       "frob_off": 0.2843
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3216,
+       "frob_off": 0.1115
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3216,
+       "frob_off": 0.1473
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3216,
+       "frob_off": 0.1476
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 1474,
+     "cost_over_band_deck": 0.915527950310559,
+     "frob_off_at_stop": 0.12063534077869703,
+     "false_stop": false,
+     "hysteresis": 134,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1474,
+       "frob_off": 0.1206
+      }
+     }
+    }
+   }
+  },
+  "A2_26a9174202": {
+   "split": "eval",
+   "M": 66,
+   "band_deck": 1770,
+   "b_max": 3540,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3504,
+       "frob_off": 0.6575
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3504,
+       "frob_off": 0.325
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3504,
+       "frob_off": 0.3324
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3504,
+       "frob_off": 0.3178
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3504,
+       "frob_off": 0.2309
+      }
+     }
+    }
+   }
+  },
+  "A2_2b693cf6e7": {
+   "split": "eval",
+   "M": 81,
+   "band_deck": 2574,
+   "b_max": 5148,
+   "orderings": {
+    "P0": {
+     "stopped": true,
+     "cost": 4142,
+     "cost_over_band_deck": 1.6091686091686093,
+     "frob_off_at_stop": 0.5820501373688307,
+     "false_stop": true,
+     "hysteresis": 218,
+     "seeds": {
+      "P0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 4142,
+       "frob_off": 0.5821
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 2180,
+     "cost_over_band_deck": 0.846930846930847,
+     "frob_off_at_stop": 0.5094887859916285,
+     "false_stop": true,
+     "hysteresis": 218,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1962,
+       "frob_off": 0.5095
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2398,
+       "frob_off": 0.4838
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2180,
+       "frob_off": 0.5276
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 1308,
+     "cost_over_band_deck": 0.5081585081585082,
+     "frob_off_at_stop": 0.31148874649668673,
+     "false_stop": false,
+     "hysteresis": 218,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1308,
+       "frob_off": 0.3115
+      }
+     }
+    }
+   }
+  },
+  "A2_2ca281c2d5": {
+   "split": "eval",
+   "M": 45,
+   "band_deck": 922,
+   "b_max": 1844,
+   "orderings": {
+    "P0": {
+     "stopped": true,
+     "cost": 1820,
+     "cost_over_band_deck": 1.9739696312364425,
+     "frob_off_at_stop": 0.4968548296138527,
+     "false_stop": true,
+     "hysteresis": 210,
+     "seeds": {
+      "P0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1820,
+       "frob_off": 0.4969
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 980,
+     "cost_over_band_deck": 1.0629067245119306,
+     "frob_off_at_stop": 0.4517871782269685,
+     "false_stop": true,
+     "hysteresis": 70,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1120,
+       "frob_off": 0.3419
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 980,
+       "frob_off": 0.4529
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 980,
+       "frob_off": 0.4518
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 1190,
+     "cost_over_band_deck": 1.2906724511930585,
+     "frob_off_at_stop": 0.15834734890021615,
+     "false_stop": false,
+     "hysteresis": 70,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1190,
+       "frob_off": 0.1583
+      }
+     }
+    }
+   }
+  },
+  "A2_2cf97d4a75": {
+   "split": "eval",
+   "M": 69,
+   "band_deck": 1926,
+   "b_max": 3852,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3840,
+       "frob_off": 0.5666
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 1440,
+     "cost_over_band_deck": 0.7476635514018691,
+     "frob_off_at_stop": 0.4986582326153037,
+     "false_stop": true,
+     "hysteresis": 160,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1280,
+       "frob_off": 0.5149
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1760,
+       "frob_off": 0.4542
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1440,
+       "frob_off": 0.4987
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 1280,
+     "cost_over_band_deck": 0.6645898234683282,
+     "frob_off_at_stop": 0.35831874589994955,
+     "false_stop": false,
+     "hysteresis": 160,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1280,
+       "frob_off": 0.3583
+      }
+     }
+    }
+   }
+  },
+  "A2_2ef47ebcc1": {
+   "split": "eval",
+   "M": 72,
+   "band_deck": 2020,
+   "b_max": 4040,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4002,
+       "frob_off": 0.5529
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4002,
+       "frob_off": 0.2596
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4002,
+       "frob_off": 0.2802
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4002,
+       "frob_off": 0.3048
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4002,
+       "frob_off": 0.1818
+      }
+     }
+    }
+   }
+  },
+  "A2_303433ef20": {
+   "split": "eval",
+   "M": 66,
+   "band_deck": 1812,
+   "b_max": 3624,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3504,
+       "frob_off": 0.6246
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3504,
+       "frob_off": 0.2053
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3504,
+       "frob_off": 0.2181
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3504,
+       "frob_off": 0.2098
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3504,
+       "frob_off": 0.1475
+      }
+     }
+    }
+   }
+  },
+  "A2_3077af0137": {
+   "split": "eval",
+   "M": 66,
+   "band_deck": 1818,
+   "b_max": 3636,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3504,
+       "frob_off": 0.5376
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3504,
+       "frob_off": 0.2571
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3504,
+       "frob_off": 0.2245
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3504,
+       "frob_off": 0.2552
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 2920,
+     "cost_over_band_deck": 1.6061606160616062,
+     "frob_off_at_stop": 0.1719755127587457,
+     "false_stop": false,
+     "hysteresis": 146,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2920,
+       "frob_off": 0.172
+      }
+     }
+    }
+   }
+  },
+  "A2_30b024df67": {
+   "split": "eval",
+   "M": 75,
+   "band_deck": 2234,
+   "b_max": 4468,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4324,
+       "frob_off": 0.4846
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 4136,
+       "frob_off": 0.2303
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4324,
+       "frob_off": 0.2183
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4324,
+       "frob_off": 0.2588
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 3384,
+     "cost_over_band_deck": 1.5147717099373321,
+     "frob_off_at_stop": 0.16967183947435052,
+     "false_stop": false,
+     "hysteresis": 188,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 3384,
+       "frob_off": 0.1697
+      }
+     }
+    }
+   }
+  },
+  "A2_32ab8c6937": {
+   "split": "eval",
+   "M": 78,
+   "band_deck": 2290,
+   "b_max": 4580,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4444,
+       "frob_off": 0.5785
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4444,
+       "frob_off": 0.3533
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4444,
+       "frob_off": 0.338
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4444,
+       "frob_off": 0.3754
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4444,
+       "frob_off": 0.1863
+      }
+     }
+    }
+   }
+  },
+  "A2_336097f54c": {
+   "split": "eval",
+   "M": 63,
+   "band_deck": 1592,
+   "b_max": 3184,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3082,
+       "frob_off": 0.5585
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 2546,
+     "cost_over_band_deck": 1.599246231155779,
+     "frob_off_at_stop": 0.33712491861352334,
+     "false_stop": false,
+     "hysteresis": 268,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2948,
+       "frob_off": 0.304
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2546,
+       "frob_off": 0.3371
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2412,
+       "frob_off": 0.3491
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 1742,
+     "cost_over_band_deck": 1.0942211055276383,
+     "frob_off_at_stop": 0.2700874341455523,
+     "false_stop": false,
+     "hysteresis": 134,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1742,
+       "frob_off": 0.2701
+      }
+     }
+    }
+   }
+  },
+  "A2_34bb1210bc": {
+   "split": "eval",
+   "M": 66,
+   "band_deck": 1806,
+   "b_max": 3612,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3504,
+       "frob_off": 0.6038
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3504,
+       "frob_off": 0.2332
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3504,
+       "frob_off": 0.2409
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 3358,
+       "frob_off": 0.2936
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 2190,
+     "cost_over_band_deck": 1.212624584717608,
+     "frob_off_at_stop": 0.20999391477773635,
+     "false_stop": false,
+     "hysteresis": 146,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2190,
+       "frob_off": 0.21
+      }
+     }
+    }
+   }
+  },
+  "A2_3740d0ba57": {
+   "split": "eval",
+   "M": 45,
+   "band_deck": 938,
+   "b_max": 1876,
+   "orderings": {
+    "P0": {
+     "stopped": true,
+     "cost": 1610,
+     "cost_over_band_deck": 1.7164179104477613,
+     "frob_off_at_stop": 0.46213282823812407,
+     "false_stop": true,
+     "hysteresis": 70,
+     "seeds": {
+      "P0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1610,
+       "frob_off": 0.4621
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 770,
+     "cost_over_band_deck": 0.8208955223880597,
+     "frob_off_at_stop": 0.3835052119698107,
+     "false_stop": false,
+     "hysteresis": 70,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 770,
+       "frob_off": 0.3835
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 770,
+       "frob_off": 0.4031
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 910,
+       "frob_off": 0.3556
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 490,
+     "cost_over_band_deck": 0.5223880597014925,
+     "frob_off_at_stop": 0.3106446034543516,
+     "false_stop": false,
+     "hysteresis": 70,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 490,
+       "frob_off": 0.3106
+      }
+     }
+    }
+   }
+  },
+  "A2_37cf4a0e50": {
+   "split": "eval",
+   "M": 63,
+   "band_deck": 1626,
+   "b_max": 3252,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3216,
+       "frob_off": 0.5434
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3216,
+       "frob_off": 0.3711
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3216,
+       "frob_off": 0.3809
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3216,
+       "frob_off": 0.3769
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 1474,
+     "cost_over_band_deck": 0.906519065190652,
+     "frob_off_at_stop": 0.34178841783029335,
+     "false_stop": false,
+     "hysteresis": 134,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1474,
+       "frob_off": 0.3418
+      }
+     }
+    }
+   }
+  },
+  "A2_3825e7205b": {
+   "split": "eval",
+   "M": 78,
+   "band_deck": 2354,
+   "b_max": 4708,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4646,
+       "frob_off": 0.5527
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4646,
+       "frob_off": 0.3178
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4646,
+       "frob_off": 0.3896
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4646,
+       "frob_off": 0.4142
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4646,
+       "frob_off": 0.1922
+      }
+     }
+    }
+   }
+  },
+  "A2_39baaea0dd": {
+   "split": "eval",
+   "M": 78,
+   "band_deck": 2354,
+   "b_max": 4708,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4646,
+       "frob_off": 0.5674
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4646,
+       "frob_off": 0.3565
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4646,
+       "frob_off": 0.3447
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4646,
+       "frob_off": 0.3402
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4646,
+       "frob_off": 0.1863
+      }
+     }
+    }
+   }
+  },
+  "A2_3c758d3b72": {
+   "split": "eval",
+   "M": 81,
+   "band_deck": 2598,
+   "b_max": 5196,
+   "orderings": {
+    "P0": {
+     "stopped": true,
+     "cost": 2834,
+     "cost_over_band_deck": 1.0908391070053887,
+     "frob_off_at_stop": 0.6369313797449165,
+     "false_stop": true,
+     "hysteresis": 218,
+     "seeds": {
+      "P0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2834,
+       "frob_off": 0.6369
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 4360.0,
+     "cost_over_band_deck": 1.6782140107775212,
+     "frob_off_at_stop": 0.3051357336283843,
+     "false_stop": false,
+     "hysteresis": 218.0,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 5014,
+       "frob_off": 0.275
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 4360,
+       "frob_off": 0.3253
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 4360,
+       "frob_off": 0.2849
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 2834,
+     "cost_over_band_deck": 1.0908391070053887,
+     "frob_off_at_stop": 0.22434479667286067,
+     "false_stop": false,
+     "hysteresis": 218,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2834,
+       "frob_off": 0.2243
+      }
+     }
+    }
+   }
+  },
+  "A2_3c982d4d3f": {
+   "split": "eval",
+   "M": 60,
+   "band_deck": 1502,
+   "b_max": 3004,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2928,
+       "frob_off": 0.4703
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 2440,
+     "cost_over_band_deck": 1.6245006657789614,
+     "frob_off_at_stop": 0.3312400950203579,
+     "false_stop": false,
+     "hysteresis": 366,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2440,
+       "frob_off": 0.3276
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1586,
+       "frob_off": 0.4184
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2684,
+       "frob_off": 0.3312
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 854,
+     "cost_over_band_deck": 0.5685752330226365,
+     "frob_off_at_stop": 0.3715193269688927,
+     "false_stop": false,
+     "hysteresis": 122,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 854,
+       "frob_off": 0.3715
+      }
+     }
+    }
+   }
+  },
+  "A_01f3186607": {
+   "split": "eval_parents",
+   "M": 48,
+   "band_deck": 1082,
+   "b_max": 2164,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2106,
+       "frob_off": 0.3981
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2106,
+       "frob_off": 0.1745
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1404,
+       "frob_off": 0.333
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2106,
+       "frob_off": 0.3128
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 312,
+     "cost_over_band_deck": 0.28835489833641403,
+     "frob_off_at_stop": 0.12700841291267434,
+     "false_stop": false,
+     "hysteresis": 78,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 312,
+       "frob_off": 0.127
+      }
+     }
+    }
+   }
+  },
+  "A_0674939e7f": {
+   "split": "eval_parents",
+   "M": 57,
+   "band_deck": 1420,
+   "b_max": 2840,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2750,
+       "frob_off": 0.5682
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2750,
+       "frob_off": 0.3003
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2750,
+       "frob_off": 0.3001
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2750,
+       "frob_off": 0.3085
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 1430,
+     "cost_over_band_deck": 1.0070422535211268,
+     "frob_off_at_stop": 0.1528488554669957,
+     "false_stop": false,
+     "hysteresis": 110,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1430,
+       "frob_off": 0.1528
+      }
+     }
+    }
+   }
+  },
+  "A_07cadc7923": {
+   "split": "eval_parents",
+   "M": 57,
+   "band_deck": 1352,
+   "b_max": 2704,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2640,
+       "frob_off": 0.5232
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 2310,
+     "cost_over_band_deck": 1.7085798816568047,
+     "frob_off_at_stop": 0.21775121505123016,
+     "false_stop": false,
+     "hysteresis": 110,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2420,
+       "frob_off": 0.1797
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2310,
+       "frob_off": 0.2178
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2090,
+       "frob_off": 0.2617
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 1760,
+     "cost_over_band_deck": 1.301775147928994,
+     "frob_off_at_stop": 0.16490100121606024,
+     "false_stop": false,
+     "hysteresis": 110,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1760,
+       "frob_off": 0.1649
+      }
+     }
+    }
+   }
+  },
+  "A_08dde334d8": {
+   "split": "eval_parents",
+   "M": 66,
+   "band_deck": 1828,
+   "b_max": 3656,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3650,
+       "frob_off": 0.5367
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3650,
+       "frob_off": 0.3364
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3650,
+       "frob_off": 0.4235
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3650,
+       "frob_off": 0.3737
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 1460,
+     "cost_over_band_deck": 0.7986870897155361,
+     "frob_off_at_stop": 0.20967534826137474,
+     "false_stop": false,
+     "hysteresis": 146,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1460,
+       "frob_off": 0.2097
+      }
+     }
+    }
+   }
+  },
+  "A_20db5837c9": {
+   "split": "eval_parents",
+   "M": 57,
+   "band_deck": 1470,
+   "b_max": 2940,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2860,
+       "frob_off": 0.5486
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2860,
+       "frob_off": 0.3097
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2860,
+       "frob_off": 0.3154
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2860,
+       "frob_off": 0.339
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2860,
+       "frob_off": 0.2336
+      }
+     }
+    }
+   }
+  },
+  "A_3100da3761": {
+   "split": "eval_parents",
+   "M": 33,
+   "band_deck": 552,
+   "b_max": 1104,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 1102,
+       "frob_off": 0.4143
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 342,
+     "cost_over_band_deck": 0.6195652173913043,
+     "frob_off_at_stop": 0.4308656730936491,
+     "false_stop": true,
+     "hysteresis": 38,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 342,
+       "frob_off": 0.4309
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 228,
+       "frob_off": 0.4908
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 418,
+       "frob_off": 0.4131
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 152,
+     "cost_over_band_deck": 0.2753623188405797,
+     "frob_off_at_stop": 0.26173599248234847,
+     "false_stop": false,
+     "hysteresis": 38,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 152,
+       "frob_off": 0.2617
+      }
+     }
+    }
+   }
+  },
+  "A_428228e5a5": {
+   "split": "eval_parents",
+   "M": 72,
+   "band_deck": 2176,
+   "b_max": 4352,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4300,
+       "frob_off": 0.7048
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4300,
+       "frob_off": 0.2737
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4300,
+       "frob_off": 0.2737
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4300,
+       "frob_off": 0.2891
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4300,
+       "frob_off": 0.1475
+      }
+     }
+    }
+   }
+  },
+  "A_45187bb7c8": {
+   "split": "eval_parents",
+   "M": 54,
+   "band_deck": 1330,
+   "b_max": 2660,
+   "orderings": {
+    "P0": {
+     "stopped": true,
+     "cost": 2646,
+     "cost_over_band_deck": 1.9894736842105263,
+     "frob_off_at_stop": 0.43130952818768864,
+     "false_stop": true,
+     "hysteresis": 98,
+     "seeds": {
+      "P0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2646,
+       "frob_off": 0.4313
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 1862,
+     "cost_over_band_deck": 1.4,
+     "frob_off_at_stop": 0.3567366222826966,
+     "false_stop": false,
+     "hysteresis": 98,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1862,
+       "frob_off": 0.274
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1960,
+       "frob_off": 0.3567
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1764,
+       "frob_off": 0.4096
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 588,
+     "cost_over_band_deck": 0.4421052631578947,
+     "frob_off_at_stop": 0.2244623062346459,
+     "false_stop": false,
+     "hysteresis": 98,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 588,
+       "frob_off": 0.2245
+      }
+     }
+    }
+   }
+  },
+  "A_466972291d": {
+   "split": "eval_parents",
+   "M": 51,
+   "band_deck": 1126,
+   "b_max": 2252,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2200,
+       "frob_off": 0.3489
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2200,
+       "frob_off": 0.3421
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2200,
+       "frob_off": 0.2813
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2200,
+       "frob_off": 0.2959
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 704,
+     "cost_over_band_deck": 0.6252220248667851,
+     "frob_off_at_stop": 0.26182212877108624,
+     "false_stop": false,
+     "hysteresis": 88,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 704,
+       "frob_off": 0.2618
+      }
+     }
+    }
+   }
+  },
+  "A_519351d19c": {
+   "split": "eval_parents",
+   "M": 54,
+   "band_deck": 1222,
+   "b_max": 2444,
+   "orderings": {
+    "P0": {
+     "stopped": true,
+     "cost": 2352,
+     "cost_over_band_deck": 1.9247135842880523,
+     "frob_off_at_stop": 0.4577670247202697,
+     "false_stop": true,
+     "hysteresis": 98,
+     "seeds": {
+      "P0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2352,
+       "frob_off": 0.4578
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 1960,
+     "cost_over_band_deck": 1.6039279869067102,
+     "frob_off_at_stop": 0.31045450408772757,
+     "false_stop": false,
+     "hysteresis": 196,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1862,
+       "frob_off": 0.3157
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1960,
+       "frob_off": 0.2963
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2058,
+       "frob_off": 0.3105
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 784,
+     "cost_over_band_deck": 0.6415711947626841,
+     "frob_off_at_stop": 0.3340267965342678,
+     "false_stop": false,
+     "hysteresis": 98,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 784,
+       "frob_off": 0.334
+      }
+     }
+    }
+   }
+  },
+  "A_541c53d1a5": {
+   "split": "eval_parents",
+   "M": 66,
+   "band_deck": 1838,
+   "b_max": 3676,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3650,
+       "frob_off": 0.486
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 1752,
+     "cost_over_band_deck": 0.9532100108813928,
+     "frob_off_at_stop": 0.397509255016404,
+     "false_stop": false,
+     "hysteresis": 146,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1606,
+       "frob_off": 0.4285
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1752,
+       "frob_off": 0.3975
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1898,
+       "frob_off": 0.3673
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 730,
+     "cost_over_band_deck": 0.397170837867247,
+     "frob_off_at_stop": 0.24931562827597556,
+     "false_stop": false,
+     "hysteresis": 146,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 730,
+       "frob_off": 0.2493
+      }
+     }
+    }
+   }
+  },
+  "A_593ba8280d": {
+   "split": "eval_parents",
+   "M": 57,
+   "band_deck": 1368,
+   "b_max": 2736,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2640,
+       "frob_off": 0.4952
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2640,
+       "frob_off": 0.2891
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2640,
+       "frob_off": 0.2976
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2530,
+       "frob_off": 0.326
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 1210,
+     "cost_over_band_deck": 0.8845029239766082,
+     "frob_off_at_stop": 0.2143239084521106,
+     "false_stop": false,
+     "hysteresis": 110,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1210,
+       "frob_off": 0.2143
+      }
+     }
+    }
+   }
+  },
+  "A_5a75c6c39e": {
+   "split": "eval_parents",
+   "M": 63,
+   "band_deck": 1700,
+   "b_max": 3400,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3350,
+       "frob_off": 0.5338
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3350,
+       "frob_off": 0.3639
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3350,
+       "frob_off": 0.3718
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3350,
+       "frob_off": 0.3986
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 1340,
+     "cost_over_band_deck": 0.788235294117647,
+     "frob_off_at_stop": 0.18807803472622417,
+     "false_stop": false,
+     "hysteresis": 134,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1340,
+       "frob_off": 0.1881
+      }
+     }
+    }
+   }
+  },
+  "A_69789470db": {
+   "split": "eval_parents",
+   "M": 57,
+   "band_deck": 1390,
+   "b_max": 2780,
+   "orderings": {
+    "P0": {
+     "stopped": true,
+     "cost": 2420,
+     "cost_over_band_deck": 1.7410071942446044,
+     "frob_off_at_stop": 0.5581422190812694,
+     "false_stop": true,
+     "hysteresis": 110,
+     "seeds": {
+      "P0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2420,
+       "frob_off": 0.5581
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 1650,
+     "cost_over_band_deck": 1.1870503597122302,
+     "frob_off_at_stop": 0.3397180770603241,
+     "false_stop": false,
+     "hysteresis": 110,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1650,
+       "frob_off": 0.314
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1210,
+       "frob_off": 0.4272
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1650,
+       "frob_off": 0.3397
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 990,
+     "cost_over_band_deck": 0.7122302158273381,
+     "frob_off_at_stop": 0.2671569625530474,
+     "false_stop": false,
+     "hysteresis": 110,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 990,
+       "frob_off": 0.2672
+      }
+     }
+    }
+   }
+  },
+  "A_6aa211768a": {
+   "split": "eval_parents",
+   "M": 51,
+   "band_deck": 1120,
+   "b_max": 2240,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2200,
+       "frob_off": 0.5298
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 1496,
+     "cost_over_band_deck": 1.3357142857142856,
+     "frob_off_at_stop": 0.28311621441973556,
+     "false_stop": false,
+     "hysteresis": 88,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1056,
+       "frob_off": 0.367
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1496,
+       "frob_off": 0.2831
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1760,
+       "frob_off": 0.2503
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 616,
+     "cost_over_band_deck": 0.55,
+     "frob_off_at_stop": 0.32720149220963135,
+     "false_stop": false,
+     "hysteresis": 88,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 616,
+       "frob_off": 0.3272
+      }
+     }
+    }
+   }
+  },
+  "A_72b86c2331": {
+   "split": "eval_parents",
+   "M": 54,
+   "band_deck": 1360,
+   "b_max": 2720,
+   "orderings": {
+    "P0": {
+     "stopped": true,
+     "cost": 2646,
+     "cost_over_band_deck": 1.9455882352941176,
+     "frob_off_at_stop": 0.37729191091816244,
+     "false_stop": false,
+     "hysteresis": 98,
+     "seeds": {
+      "P0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2646,
+       "frob_off": 0.3773
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 1568,
+     "cost_over_band_deck": 1.1529411764705881,
+     "frob_off_at_stop": 0.39391149142736875,
+     "false_stop": false,
+     "hysteresis": 98,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1568,
+       "frob_off": 0.4123
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1568,
+       "frob_off": 0.3387
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1274,
+       "frob_off": 0.3939
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 294,
+     "cost_over_band_deck": 0.2161764705882353,
+     "frob_off_at_stop": 0.19156709299062719,
+     "false_stop": false,
+     "hysteresis": 98,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 294,
+       "frob_off": 0.1916
+      }
+     }
+    }
+   }
+  },
+  "A_76e053ce6a": {
+   "split": "eval_parents",
+   "M": 42,
+   "band_deck": 874,
+   "b_max": 1748,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 1740,
+       "frob_off": 0.4636
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 1560,
+     "cost_over_band_deck": 1.7848970251716247,
+     "frob_off_at_stop": 0.21220076288031256,
+     "false_stop": false,
+     "hysteresis": 60,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1560,
+       "frob_off": 0.2122
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1560,
+       "frob_off": 0.1812
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1560,
+       "frob_off": 0.2258
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 1320,
+     "cost_over_band_deck": 1.5102974828375286,
+     "frob_off_at_stop": 0.10493446798723359,
+     "false_stop": false,
+     "hysteresis": 60,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1320,
+       "frob_off": 0.1049
+      }
+     }
+    }
+   }
+  },
+  "A_7aa232d4e9": {
+   "split": "eval_parents",
+   "M": 42,
+   "band_deck": 878,
+   "b_max": 1756,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 1740,
+       "frob_off": 0.5991
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 660,
+     "cost_over_band_deck": 0.7517084282460137,
+     "frob_off_at_stop": 0.38921434287628204,
+     "false_stop": false,
+     "hysteresis": 60,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 840,
+       "frob_off": 0.3593
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 660,
+       "frob_off": 0.3892
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 540,
+       "frob_off": 0.433
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 300,
+     "cost_over_band_deck": 0.3416856492027335,
+     "frob_off_at_stop": 0.24318708999775612,
+     "false_stop": false,
+     "hysteresis": 60,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 300,
+       "frob_off": 0.2432
+      }
+     }
+    }
+   }
+  },
+  "A_8152ea74fd": {
+   "split": "eval_parents",
+   "M": 60,
+   "band_deck": 1556,
+   "b_max": 3112,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3000,
+       "frob_off": 0.5537
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3000,
+       "frob_off": 0.2463
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3000,
+       "frob_off": 0.2268
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3000,
+       "frob_off": 0.2634
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3000,
+       "frob_off": 0.1379
+      }
+     }
+    }
+   }
+  },
+  "A_8448043181": {
+   "split": "eval_parents",
+   "M": 30,
+   "band_deck": 546,
+   "b_max": 1092,
+   "orderings": {
+    "P0": {
+     "stopped": true,
+     "cost": 512,
+     "cost_over_band_deck": 0.9377289377289377,
+     "frob_off_at_stop": 0.5843024459592917,
+     "false_stop": true,
+     "hysteresis": 32,
+     "seeds": {
+      "P0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 512,
+       "frob_off": 0.5843
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 928,
+     "cost_over_band_deck": 1.6996336996336996,
+     "frob_off_at_stop": 0.42157976196889924,
+     "false_stop": true,
+     "hysteresis": 32,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 960,
+       "frob_off": 0.4374
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 928,
+       "frob_off": 0.4216
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 928,
+       "frob_off": 0.3917
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 128,
+     "cost_over_band_deck": 0.23443223443223443,
+     "frob_off_at_stop": 0.3276624793785471,
+     "false_stop": false,
+     "hysteresis": 32,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 128,
+       "frob_off": 0.3277
+      }
+     }
+    }
+   }
+  },
+  "A_8d1f3c46b0": {
+   "split": "eval_parents",
+   "M": 60,
+   "band_deck": 1554,
+   "b_max": 3108,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3050,
+       "frob_off": 0.5502
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3050,
+       "frob_off": 0.3642
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3050,
+       "frob_off": 0.3381
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3050,
+       "frob_off": 0.3276
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 1708,
+     "cost_over_band_deck": 1.0990990990990992,
+     "frob_off_at_stop": 0.13089502702909334,
+     "false_stop": false,
+     "hysteresis": 122,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1708,
+       "frob_off": 0.1309
+      }
+     }
+    }
+   }
+  },
+  "A_8f6ed7c002": {
+   "split": "eval_parents",
+   "M": 42,
+   "band_deck": 848,
+   "b_max": 1696,
+   "orderings": {
+    "P0": {
+     "stopped": true,
+     "cost": 1680,
+     "cost_over_band_deck": 1.9811320754716981,
+     "frob_off_at_stop": 0.4095559353165211,
+     "false_stop": true,
+     "hysteresis": 60,
+     "seeds": {
+      "P0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1680,
+       "frob_off": 0.4096
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 1140,
+     "cost_over_band_deck": 1.3443396226415094,
+     "frob_off_at_stop": 0.3374035586909544,
+     "false_stop": false,
+     "hysteresis": 60,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1200,
+       "frob_off": 0.2893
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1140,
+       "frob_off": 0.347
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1080,
+       "frob_off": 0.3374
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 600,
+     "cost_over_band_deck": 0.7075471698113207,
+     "frob_off_at_stop": 0.24004582999644325,
+     "false_stop": false,
+     "hysteresis": 60,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 600,
+       "frob_off": 0.24
+      }
+     }
+    }
+   }
+  },
+  "A_90df3e4aa9": {
+   "split": "eval_parents",
+   "M": 45,
+   "band_deck": 996,
+   "b_max": 1992,
+   "orderings": {
+    "P0": {
+     "stopped": true,
+     "cost": 1680,
+     "cost_over_band_deck": 1.6867469879518073,
+     "frob_off_at_stop": 0.526148879961745,
+     "false_stop": true,
+     "hysteresis": 70,
+     "seeds": {
+      "P0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1680,
+       "frob_off": 0.5261
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 1960,
+       "frob_off": 0.329
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 1960,
+       "frob_off": 0.3193
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1610,
+       "frob_off": 0.3488
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 560,
+     "cost_over_band_deck": 0.5622489959839357,
+     "frob_off_at_stop": 0.32655463851654887,
+     "false_stop": false,
+     "hysteresis": 70,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 560,
+       "frob_off": 0.3266
+      }
+     }
+    }
+   }
+  },
+  "A_9d7c66d274": {
+   "split": "eval_parents",
+   "M": 39,
+   "band_deck": 778,
+   "b_max": 1556,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 1508,
+       "frob_off": 0.4503
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 1300,
+     "cost_over_band_deck": 1.6709511568123394,
+     "frob_off_at_stop": 0.20793360105262632,
+     "false_stop": false,
+     "hysteresis": 52,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1300,
+       "frob_off": 0.2079
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1300,
+       "frob_off": 0.177
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1144,
+       "frob_off": 0.2507
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 676,
+     "cost_over_band_deck": 0.8688946015424165,
+     "frob_off_at_stop": 0.21889887184309334,
+     "false_stop": false,
+     "hysteresis": 52,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 676,
+       "frob_off": 0.2189
+      }
+     }
+    }
+   }
+  },
+  "A_a1e6ec1862": {
+   "split": "eval_parents",
+   "M": 66,
+   "band_deck": 1844,
+   "b_max": 3688,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3650,
+       "frob_off": 0.5052
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 3212,
+     "cost_over_band_deck": 1.7418655097613882,
+     "frob_off_at_stop": 0.30956295523173716,
+     "false_stop": false,
+     "hysteresis": 146,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 3504,
+       "frob_off": 0.1799
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1752,
+       "frob_off": 0.3803
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 3212,
+       "frob_off": 0.3096
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 584,
+     "cost_over_band_deck": 0.31670281995661603,
+     "frob_off_at_stop": 0.16414310638501287,
+     "false_stop": false,
+     "hysteresis": 146,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 584,
+       "frob_off": 0.1641
+      }
+     }
+    }
+   }
+  },
+  "A_a6412e1ae4": {
+   "split": "eval_parents",
+   "M": 63,
+   "band_deck": 1706,
+   "b_max": 3412,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3300,
+       "frob_off": 0.4158
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 2904,
+     "cost_over_band_deck": 1.7022274325908557,
+     "frob_off_at_stop": 0.21856702769847536,
+     "false_stop": false,
+     "hysteresis": 132,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 3036,
+       "frob_off": 0.1921
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2640,
+       "frob_off": 0.2323
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2904,
+       "frob_off": 0.2186
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 792,
+     "cost_over_band_deck": 0.4642438452520516,
+     "frob_off_at_stop": 0.2174892295200962,
+     "false_stop": false,
+     "hysteresis": 132,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 792,
+       "frob_off": 0.2175
+      }
+     }
+    }
+   }
+  },
+  "A_a848c04a21": {
+   "split": "eval_parents",
+   "M": 36,
+   "band_deck": 632,
+   "b_max": 1264,
+   "orderings": {
+    "P0": {
+     "stopped": true,
+     "cost": 828,
+     "cost_over_band_deck": 1.3101265822784811,
+     "frob_off_at_stop": 0.4112609337698022,
+     "false_stop": true,
+     "hysteresis": 46,
+     "seeds": {
+      "P0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 828,
+       "frob_off": 0.4113
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 1242,
+       "frob_off": 0.2509
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 1242,
+       "frob_off": 0.2433
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 1242,
+       "frob_off": 0.2788
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 1242,
+       "frob_off": 0.1684
+      }
+     }
+    }
+   }
+  },
+  "A_aa22880426": {
+   "split": "eval_parents",
+   "M": 48,
+   "band_deck": 1072,
+   "b_max": 2144,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2106,
+       "frob_off": 0.5144
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 1560,
+     "cost_over_band_deck": 1.455223880597015,
+     "frob_off_at_stop": 0.28564006176602813,
+     "false_stop": false,
+     "hysteresis": 78,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1638,
+       "frob_off": 0.2061
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1326,
+       "frob_off": 0.3268
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1560,
+       "frob_off": 0.2856
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 858,
+     "cost_over_band_deck": 0.8003731343283582,
+     "frob_off_at_stop": 0.2560192534608124,
+     "false_stop": false,
+     "hysteresis": 78,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 858,
+       "frob_off": 0.256
+      }
+     }
+    }
+   }
+  },
+  "A_b77821c742": {
+   "split": "eval_parents",
+   "M": 60,
+   "band_deck": 1570,
+   "b_max": 3140,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3120,
+       "frob_off": 0.4001
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3120,
+       "frob_off": 0.2025
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 3120,
+       "frob_off": 0.1612
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3120,
+       "frob_off": 0.1837
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 600,
+     "cost_over_band_deck": 0.3821656050955414,
+     "frob_off_at_stop": 0.09058517514099601,
+     "false_stop": false,
+     "hysteresis": 120,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 600,
+       "frob_off": 0.0906
+      }
+     }
+    }
+   }
+  },
+  "A_bce5bae234": {
+   "split": "eval_parents",
+   "M": 63,
+   "band_deck": 1700,
+   "b_max": 3400,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3350,
+       "frob_off": 0.4816
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 2278,
+     "cost_over_band_deck": 1.34,
+     "frob_off_at_stop": 0.2947538161020599,
+     "false_stop": false,
+     "hysteresis": 402,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1876,
+       "frob_off": 0.3391
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2278,
+       "frob_off": 0.2948
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2546,
+       "frob_off": 0.2674
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 1072,
+     "cost_over_band_deck": 0.6305882352941177,
+     "frob_off_at_stop": 0.2863262785239067,
+     "false_stop": false,
+     "hysteresis": 134,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1072,
+       "frob_off": 0.2863
+      }
+     }
+    }
+   }
+  },
+  "A_cce0ad25a5": {
+   "split": "eval_parents",
+   "M": 72,
+   "band_deck": 2164,
+   "b_max": 4328,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4300,
+       "frob_off": 0.5446
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4300,
+       "frob_off": 0.3435
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4300,
+       "frob_off": 0.3288
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4300,
+       "frob_off": 0.3109
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4300,
+       "frob_off": 0.2218
+      }
+     }
+    }
+   }
+  },
+  "A_d037c0ed95": {
+   "split": "eval_parents",
+   "M": 57,
+   "band_deck": 1410,
+   "b_max": 2820,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2750,
+       "frob_off": 0.4443
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 2750,
+     "cost_over_band_deck": 1.950354609929078,
+     "frob_off_at_stop": 0.22246176521848365,
+     "false_stop": false,
+     "hysteresis": 110,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2750,
+       "frob_off": 0.2025
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2200,
+       "frob_off": 0.2679
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2750,
+       "frob_off": 0.2225
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 660,
+     "cost_over_band_deck": 0.46808510638297873,
+     "frob_off_at_stop": 0.23932661853739845,
+     "false_stop": false,
+     "hysteresis": 110,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 660,
+       "frob_off": 0.2393
+      }
+     }
+    }
+   }
+  },
+  "A_d09f8d1ef8": {
+   "split": "eval_parents",
+   "M": 45,
+   "band_deck": 980,
+   "b_max": 1960,
+   "orderings": {
+    "P0": {
+     "stopped": true,
+     "cost": 1750,
+     "cost_over_band_deck": 1.7857142857142858,
+     "frob_off_at_stop": 0.41072560181263457,
+     "false_stop": true,
+     "hysteresis": 70,
+     "seeds": {
+      "P0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1750,
+       "frob_off": 0.4107
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 1330,
+     "cost_over_band_deck": 1.3571428571428572,
+     "frob_off_at_stop": 0.2948121919600423,
+     "false_stop": false,
+     "hysteresis": 70,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1400,
+       "frob_off": 0.2592
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1330,
+       "frob_off": 0.3044
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1260,
+       "frob_off": 0.2948
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 630,
+     "cost_over_band_deck": 0.6428571428571429,
+     "frob_off_at_stop": 0.26052312124830446,
+     "false_stop": false,
+     "hysteresis": 70,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 630,
+       "frob_off": 0.2605
+      }
+     }
+    }
+   }
+  },
+  "A_d295f2fa80": {
+   "split": "eval_parents",
+   "M": 42,
+   "band_deck": 874,
+   "b_max": 1748,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 1740,
+       "frob_off": 0.4048
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 1380,
+     "cost_over_band_deck": 1.5789473684210527,
+     "frob_off_at_stop": 0.21890685851601116,
+     "false_stop": false,
+     "hysteresis": 60,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1380,
+       "frob_off": 0.2189
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1380,
+       "frob_off": 0.2161
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1140,
+       "frob_off": 0.2709
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 660,
+     "cost_over_band_deck": 0.7551487414187643,
+     "frob_off_at_stop": 0.25427383279300325,
+     "false_stop": false,
+     "hysteresis": 60,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 660,
+       "frob_off": 0.2543
+      }
+     }
+    }
+   }
+  },
+  "A_d551b360c3": {
+   "split": "eval_parents",
+   "M": 72,
+   "band_deck": 2038,
+   "b_max": 4076,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 4002,
+       "frob_off": 0.5875
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 2262,
+     "cost_over_band_deck": 1.1099116781157998,
+     "frob_off_at_stop": 0.40823130642864486,
+     "false_stop": true,
+     "hysteresis": 174,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2262,
+       "frob_off": 0.4179
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2262,
+       "frob_off": 0.4082
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2436,
+       "frob_off": 0.3992
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 1392,
+     "cost_over_band_deck": 0.6830225711481845,
+     "frob_off_at_stop": 0.3421997017999951,
+     "false_stop": false,
+     "hysteresis": 174,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1392,
+       "frob_off": 0.3422
+      }
+     }
+    }
+   }
+  },
+  "A_d9139359ab": {
+   "split": "eval_parents",
+   "M": 48,
+   "band_deck": 1092,
+   "b_max": 2184,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2184,
+       "frob_off": 0.3737
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2184,
+       "frob_off": 0.0646
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2184,
+       "frob_off": 0.0608
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2184,
+       "frob_off": 0.0761
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2184,
+       "frob_off": 0.0525
+      }
+     }
+    }
+   }
+  },
+  "A_e72997e726": {
+   "split": "eval_parents",
+   "M": 63,
+   "band_deck": 1716,
+   "b_max": 3432,
+   "orderings": {
+    "P0": {
+     "stopped": true,
+     "cost": 3432,
+     "cost_over_band_deck": 2.0,
+     "frob_off_at_stop": 0.44377043859293486,
+     "false_stop": true,
+     "hysteresis": 132,
+     "seeds": {
+      "P0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 3432,
+       "frob_off": 0.4438
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 1452,
+     "cost_over_band_deck": 0.8461538461538461,
+     "frob_off_at_stop": 0.47000420562286754,
+     "false_stop": true,
+     "hysteresis": 132,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1188,
+       "frob_off": 0.4867
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1584,
+       "frob_off": 0.4107
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1452,
+       "frob_off": 0.47
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 528,
+     "cost_over_band_deck": 0.3076923076923077,
+     "frob_off_at_stop": 0.3110330046960001,
+     "false_stop": false,
+     "hysteresis": 132,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 528,
+       "frob_off": 0.311
+      }
+     }
+    }
+   }
+  },
+  "A_ea73419366": {
+   "split": "eval_parents",
+   "M": 57,
+   "band_deck": 1410,
+   "b_max": 2820,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2750,
+       "frob_off": 0.4527
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 2310,
+     "cost_over_band_deck": 1.6382978723404256,
+     "frob_off_at_stop": 0.2456423650421698,
+     "false_stop": false,
+     "hysteresis": 110,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2310,
+       "frob_off": 0.2382
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1980,
+       "frob_off": 0.2535
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2530,
+       "frob_off": 0.2456
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 1320,
+     "cost_over_band_deck": 0.9361702127659575,
+     "frob_off_at_stop": 0.221647031849297,
+     "false_stop": false,
+     "hysteresis": 110,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1320,
+       "frob_off": 0.2216
+      }
+     }
+    }
+   }
+  },
+  "A_fdc27f1bd1": {
+   "split": "eval_parents",
+   "M": 60,
+   "band_deck": 1576,
+   "b_max": 3152,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3120,
+       "frob_off": 0.487
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 1920,
+     "cost_over_band_deck": 1.218274111675127,
+     "frob_off_at_stop": 0.3671926580400492,
+     "false_stop": false,
+     "hysteresis": 120,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1920,
+       "frob_off": 0.3652
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2160,
+       "frob_off": 0.3672
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1320,
+       "frob_off": 0.4803
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 360,
+     "cost_over_band_deck": 0.22842639593908629,
+     "frob_off_at_stop": 0.2776243368207079,
+     "false_stop": false,
+     "hysteresis": 120,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 360,
+       "frob_off": 0.2776
+      }
+     }
+    }
+   }
+  },
+  "A_fead28d796": {
+   "split": "eval_parents",
+   "M": 39,
+   "band_deck": 808,
+   "b_max": 1616,
+   "orderings": {
+    "P0": {
+     "stopped": true,
+     "cost": 1248,
+     "cost_over_band_deck": 1.5445544554455446,
+     "frob_off_at_stop": 0.5079493349389558,
+     "false_stop": true,
+     "hysteresis": 52,
+     "seeds": {
+      "P0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1248,
+       "frob_off": 0.5079
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 728,
+     "cost_over_band_deck": 0.900990099009901,
+     "frob_off_at_stop": 0.35701216067398894,
+     "false_stop": false,
+     "hysteresis": 52,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 728,
+       "frob_off": 0.357
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 676,
+       "frob_off": 0.4301
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 884,
+       "frob_off": 0.2961
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 312,
+     "cost_over_band_deck": 0.38613861386138615,
+     "frob_off_at_stop": 0.4118233247212796,
+     "false_stop": true,
+     "hysteresis": 52,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 312,
+       "frob_off": 0.4118
+      }
+     }
+    }
+   }
+  },
+  "A_ff98e1160d": {
+   "split": "eval_parents",
+   "M": 45,
+   "band_deck": 976,
+   "b_max": 1952,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 1890,
+       "frob_off": 0.4037
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 840,
+     "cost_over_band_deck": 0.860655737704918,
+     "frob_off_at_stop": 0.41811177208520284,
+     "false_stop": true,
+     "hysteresis": 70,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 840,
+       "frob_off": 0.4181
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 840,
+       "frob_off": 0.4245
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 910,
+       "frob_off": 0.4085
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 350,
+     "cost_over_band_deck": 0.35860655737704916,
+     "frob_off_at_stop": 0.41695088123972673,
+     "false_stop": true,
+     "hysteresis": 70,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 350,
+       "frob_off": 0.417
+      }
+     }
+    }
+   }
+  },
+  "B_00580f71bc": {
+   "split": "eval",
+   "M": 33,
+   "band_deck": 572,
+   "b_max": 1144,
+   "orderings": {
+    "P0": {
+     "stopped": true,
+     "cost": 874,
+     "cost_over_band_deck": 1.527972027972028,
+     "frob_off_at_stop": 0.43855495488639007,
+     "false_stop": true,
+     "hysteresis": 38,
+     "seeds": {
+      "P0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 874,
+       "frob_off": 0.4386
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 494,
+     "cost_over_band_deck": 0.8636363636363636,
+     "frob_off_at_stop": 0.4574750804574915,
+     "false_stop": true,
+     "hysteresis": 38,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 532,
+       "frob_off": 0.4374
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 494,
+       "frob_off": 0.4575
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 418,
+       "frob_off": 0.4894
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 266,
+     "cost_over_band_deck": 0.46503496503496505,
+     "frob_off_at_stop": 0.39521571811307876,
+     "false_stop": false,
+     "hysteresis": 38,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 266,
+       "frob_off": 0.3952
+      }
+     }
+    }
+   }
+  },
+  "B_00d49961e3": {
+   "split": "eval",
+   "M": 39,
+   "band_deck": 754,
+   "b_max": 1508,
+   "orderings": {
+    "P0": {
+     "stopped": true,
+     "cost": 988,
+     "cost_over_band_deck": 1.3103448275862069,
+     "frob_off_at_stop": 0.5677852552270257,
+     "false_stop": true,
+     "hysteresis": 52,
+     "seeds": {
+      "P0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 988,
+       "frob_off": 0.5678
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 416,
+     "cost_over_band_deck": 0.5517241379310345,
+     "frob_off_at_stop": 0.5028259929387805,
+     "false_stop": true,
+     "hysteresis": 52,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 364,
+       "frob_off": 0.5081
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 416,
+       "frob_off": 0.5028
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 520,
+       "frob_off": 0.4453
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 312,
+     "cost_over_band_deck": 0.41379310344827586,
+     "frob_off_at_stop": 0.34340505230262,
+     "false_stop": false,
+     "hysteresis": 52,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 312,
+       "frob_off": 0.3434
+      }
+     }
+    }
+   }
+  },
+  "B_01564d5064": {
+   "split": "eval",
+   "M": 42,
+   "band_deck": 794,
+   "b_max": 1588,
+   "orderings": {
+    "P0": {
+     "stopped": true,
+     "cost": 1426,
+     "cost_over_band_deck": 1.7959697732997482,
+     "frob_off_at_stop": 0.4922055419066202,
+     "false_stop": true,
+     "hysteresis": 62,
+     "seeds": {
+      "P0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1426,
+       "frob_off": 0.4922
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 1209.0,
+     "cost_over_band_deck": 1.522670025188917,
+     "frob_off_at_stop": 0.24975109960063446,
+     "false_stop": false,
+     "hysteresis": 31.0,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1178,
+       "frob_off": 0.2587
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 1550,
+       "frob_off": 0.276
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1240,
+       "frob_off": 0.2408
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 1054,
+     "cost_over_band_deck": 1.327455919395466,
+     "frob_off_at_stop": 0.1527238479074592,
+     "false_stop": false,
+     "hysteresis": 62,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1054,
+       "frob_off": 0.1527
+      }
+     }
+    }
+   }
+  },
+  "B_019f536250": {
+   "split": "eval",
+   "M": 63,
+   "band_deck": 1586,
+   "b_max": 3172,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3082,
+       "frob_off": 0.5355
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3082,
+       "frob_off": 0.393
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3082,
+       "frob_off": 0.4142
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3082,
+       "frob_off": 0.4214
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 2412,
+     "cost_over_band_deck": 1.5208070617906684,
+     "frob_off_at_stop": 0.2651460454745745,
+     "false_stop": false,
+     "hysteresis": 134,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2412,
+       "frob_off": 0.2651
+      }
+     }
+    }
+   }
+  },
+  "B_02339c1246": {
+   "split": "eval",
+   "M": 54,
+   "band_deck": 1264,
+   "b_max": 2528,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2450,
+       "frob_off": 0.5571
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2450,
+       "frob_off": 0.3696
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2450,
+       "frob_off": 0.3916
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2450,
+       "frob_off": 0.3549
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 1960,
+     "cost_over_band_deck": 1.5506329113924051,
+     "frob_off_at_stop": 0.263698767215022,
+     "false_stop": false,
+     "hysteresis": 98,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1960,
+       "frob_off": 0.2637
+      }
+     }
+    }
+   }
+  },
+  "B_026983edcc": {
+   "split": "eval",
+   "M": 60,
+   "band_deck": 1454,
+   "b_max": 2908,
+   "orderings": {
+    "P0": {
+     "stopped": true,
+     "cost": 1952,
+     "cost_over_band_deck": 1.342503438789546,
+     "frob_off_at_stop": 0.6009427378257864,
+     "false_stop": true,
+     "hysteresis": 122,
+     "seeds": {
+      "P0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1952,
+       "frob_off": 0.6009
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 2684,
+     "cost_over_band_deck": 1.845942228335626,
+     "frob_off_at_stop": 0.33028628726832043,
+     "false_stop": false,
+     "hysteresis": 244,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2684,
+       "frob_off": 0.326
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2684,
+       "frob_off": 0.3303
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2562,
+       "frob_off": 0.3547
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 1098,
+     "cost_over_band_deck": 0.7551581843191196,
+     "frob_off_at_stop": 0.34710203715391935,
+     "false_stop": false,
+     "hysteresis": 122,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1098,
+       "frob_off": 0.3471
+      }
+     }
+    }
+   }
+  },
+  "B_02e7e53a1d": {
+   "split": "eval",
+   "M": 45,
+   "band_deck": 848,
+   "b_max": 1696,
+   "orderings": {
+    "P0": {
+     "stopped": true,
+     "cost": 1540,
+     "cost_over_band_deck": 1.8160377358490567,
+     "frob_off_at_stop": 0.5585122453346638,
+     "false_stop": true,
+     "hysteresis": 70,
+     "seeds": {
+      "P0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1540,
+       "frob_off": 0.5585
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 1365.0,
+     "cost_over_band_deck": 1.6096698113207548,
+     "frob_off_at_stop": 0.4016329734772136,
+     "false_stop": true,
+     "hysteresis": 35.0,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 1680,
+       "frob_off": 0.3465
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1400,
+       "frob_off": 0.3853
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1330,
+       "frob_off": 0.418
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 630,
+     "cost_over_band_deck": 0.7429245283018868,
+     "frob_off_at_stop": 0.35392767232402017,
+     "false_stop": false,
+     "hysteresis": 70,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 630,
+       "frob_off": 0.3539
+      }
+     }
+    }
+   }
+  },
+  "B_031abf30e2": {
+   "split": "eval",
+   "M": 57,
+   "band_deck": 1288,
+   "b_max": 2576,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2530,
+       "frob_off": 0.3162
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2530,
+       "frob_off": 0.2131
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2530,
+       "frob_off": 0.2212
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2530,
+       "frob_off": 0.2199
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2530,
+       "frob_off": 0.1472
+      }
+     }
+    }
+   }
+  },
+  "B_0464551954": {
+   "split": "eval",
+   "M": 60,
+   "band_deck": 1522,
+   "b_max": 3044,
+   "orderings": {
+    "P0": {
+     "stopped": true,
+     "cost": 2196,
+     "cost_over_band_deck": 1.442838370565046,
+     "frob_off_at_stop": 0.5892984766001529,
+     "false_stop": true,
+     "hysteresis": 122,
+     "seeds": {
+      "P0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2196,
+       "frob_off": 0.5893
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2684,
+       "frob_off": 0.4053
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2928,
+       "frob_off": 0.4003
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2928,
+       "frob_off": 0.4299
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 610,
+     "cost_over_band_deck": 0.4007884362680683,
+     "frob_off_at_stop": 0.3728147900126197,
+     "false_stop": false,
+     "hysteresis": 122,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 610,
+       "frob_off": 0.3728
+      }
+     }
+    }
+   }
+  },
+  "B_0492d9fb81": {
+   "split": "eval",
+   "M": 66,
+   "band_deck": 1694,
+   "b_max": 3388,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3358,
+       "frob_off": 0.564
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3358,
+       "frob_off": 0.4116
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 3358,
+       "frob_off": 0.3827
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 3358,
+       "frob_off": 0.4067
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 2628,
+     "cost_over_band_deck": 1.551357733175915,
+     "frob_off_at_stop": 0.25151565393082526,
+     "false_stop": false,
+     "hysteresis": 146,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2628,
+       "frob_off": 0.2515
+      }
+     }
+    }
+   }
+  },
+  "B_04adef2ece": {
+   "split": "eval",
+   "M": 57,
+   "band_deck": 1346,
+   "b_max": 2692,
+   "orderings": {
+    "P0": {
+     "stopped": true,
+     "cost": 1980,
+     "cost_over_band_deck": 1.4710252600297178,
+     "frob_off_at_stop": 0.382874555486251,
+     "false_stop": false,
+     "hysteresis": 110,
+     "seeds": {
+      "P0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1980,
+       "frob_off": 0.3829
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2640,
+       "frob_off": 0.2184
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2640,
+       "frob_off": 0.2547
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2640,
+       "frob_off": 0.2413
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 770,
+     "cost_over_band_deck": 0.5720653789004457,
+     "frob_off_at_stop": 0.27477403851959925,
+     "false_stop": false,
+     "hysteresis": 110,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 770,
+       "frob_off": 0.2748
+      }
+     }
+    }
+   }
+  },
+  "B_04f049ae58": {
+   "split": "eval",
+   "M": 48,
+   "band_deck": 1030,
+   "b_max": 2060,
+   "orderings": {
+    "P0": {
+     "stopped": true,
+     "cost": 1794,
+     "cost_over_band_deck": 1.741747572815534,
+     "frob_off_at_stop": 0.43578940516241255,
+     "false_stop": true,
+     "hysteresis": 78,
+     "seeds": {
+      "P0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1794,
+       "frob_off": 0.4358
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2028,
+       "frob_off": 0.2872
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1872,
+       "frob_off": 0.2191
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2028,
+       "frob_off": 0.215
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 1248,
+     "cost_over_band_deck": 1.2116504854368932,
+     "frob_off_at_stop": 0.13383417941674858,
+     "false_stop": false,
+     "hysteresis": 78,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1248,
+       "frob_off": 0.1338
+      }
+     }
+    }
+   }
+  },
+  "B_056dec31a6": {
+   "split": "eval",
+   "M": 27,
+   "band_deck": 410,
+   "b_max": 820,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 806,
+       "frob_off": 0.4432
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 676,
+     "cost_over_band_deck": 1.648780487804878,
+     "frob_off_at_stop": 0.32445068553509887,
+     "false_stop": false,
+     "hysteresis": 26,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 754,
+       "frob_off": 0.318
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 676,
+       "frob_off": 0.3245
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 468,
+       "frob_off": 0.3954
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 442,
+     "cost_over_band_deck": 1.078048780487805,
+     "frob_off_at_stop": 0.19825696071544835,
+     "false_stop": false,
+     "hysteresis": 26,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 442,
+       "frob_off": 0.1983
+      }
+     }
+    }
+   }
+  },
+  "B_05aa97d0f9": {
+   "split": "eval",
+   "M": 54,
+   "band_deck": 1248,
+   "b_max": 2496,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2450,
+       "frob_off": 0.4989
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 1176,
+     "cost_over_band_deck": 0.9423076923076923,
+     "frob_off_at_stop": 0.33827516781647515,
+     "false_stop": false,
+     "hysteresis": 196,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1176,
+       "frob_off": 0.3383
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1470,
+       "frob_off": 0.2834
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1078,
+       "frob_off": 0.378
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 490,
+     "cost_over_band_deck": 0.3926282051282051,
+     "frob_off_at_stop": 0.3547915256978464,
+     "false_stop": false,
+     "hysteresis": 98,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 490,
+       "frob_off": 0.3548
+      }
+     }
+    }
+   }
+  },
+  "B_05bafac3c6": {
+   "split": "eval",
+   "M": 57,
+   "band_deck": 1374,
+   "b_max": 2748,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 2640,
+       "frob_off": 0.4771
+      }
+     }
+    },
+    "P12": {
+     "stopped": true,
+     "cost": 1980,
+     "cost_over_band_deck": 1.4410480349344978,
+     "frob_off_at_stop": 0.29368017078627295,
+     "false_stop": false,
+     "hysteresis": 110,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1980,
+       "frob_off": 0.2937
+      },
+      "P12_seed1": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1870,
+       "frob_off": 0.2814
+      },
+      "P12_seed2": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 2090,
+       "frob_off": 0.3153
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 1100,
+     "cost_over_band_deck": 0.8005822416302766,
+     "frob_off_at_stop": 0.2672980297051205,
+     "false_stop": false,
+     "hysteresis": 110,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1100,
+       "frob_off": 0.2673
+      }
+     }
+    }
+   }
+  },
+  "B_06d3bff79c": {
+   "split": "eval",
+   "M": 42,
+   "band_deck": 824,
+   "b_max": 1648,
+   "orderings": {
+    "P0": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P0": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 1620,
+       "frob_off": 0.498
+      }
+     }
+    },
+    "P12": {
+     "stopped": false,
+     "cost": null,
+     "cost_over_band_deck": null,
+     "frob_off_at_stop": null,
+     "false_stop": false,
+     "hysteresis": null,
+     "seeds": {
+      "P12_seed0": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 1440,
+       "frob_off": 0.2463
+      },
+      "P12_seed1": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 1620,
+       "frob_off": 0.2456
+      },
+      "P12_seed2": {
+       "stopped": false,
+       "reason": "budget",
+       "cost": 1620,
+       "frob_off": 0.223
+      }
+     }
+    },
+    "P3_oracle": {
+     "stopped": true,
+     "cost": 600,
+     "cost_over_band_deck": 0.7281553398058253,
+     "frob_off_at_stop": 0.2631914293322277,
+     "false_stop": false,
+     "hysteresis": 60,
+     "seeds": {
+      "P3_oracle": {
+       "stopped": true,
+       "reason": "rule",
+       "cost": 600,
+       "frob_off": 0.2632
+      }
+     }
+    }
+   }
+  }
+ },
+ "provenance": {
+  "timestamp_utc": "2026-09-28 19:51:39",
+  "host": "Asus18",
+  "python": "3.14.6",
+  "numpy": "2.5.1",
+  "command": "stop_rule_readout.py out/sim/all_p2s1_merged.json out/sim/band_p2s1A_merged.json out/sim/stop_rule_band_prior_2026-09-28 --label reading (i): as registered, band prior, P2 = stage-1 recipe",
+  "commit": "11e05c34eb197d3a1aece6cc79be1b2c2f9bb9fd",
+  "dirty": "yes"
+ }
+}

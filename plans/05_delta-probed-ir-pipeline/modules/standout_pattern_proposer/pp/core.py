@@ -241,6 +241,26 @@ def k_off_at(curve, level: float, M: int, key: int = 2) -> int | None:
     return None
 
 
+def stop_rule(curve, tau: float = 0.3, b_max: int | None = None, M: int | None = None, consecutive: int = 2, key: int = 2) -> dict:
+    """The Ladder's stop rule (pre-registration 27 Sep 2026, amendment 28 Sep): measurement stops at the last of `consecutive` consecutive checkpoints
+    whose chosen column (2 = held-out ρ_off, truth-free) is ≤ tau — `stopped` True, reason "rule" — or at the last checkpoint within the budget `b_max`
+    (energies beyond the single block, 2M) when the next one would exceed it — `stopped` False, reason "budget"; when the pool ends before either,
+    `stopped` is None. `cost` is the energies beyond the block at the returned checkpoint; `frob_off` (column 3, truth-based) is read there for the
+    false-stop count. The block is 2M, or the curve's first row when M is not given."""
+    block = 2 * M if M is not None else int(curve[0][0])
+    run = 0
+    for c, row in enumerate(curve):
+        spent = int(row[0] - block)
+        if b_max is not None and spent > b_max and c > 0:
+            prev = curve[c - 1]
+            return dict(stopped=False, reason="budget", checkpoint=c - 1, cost=int(prev[0] - block), rho_off=float(prev[key]), frob_off=float(prev[3]))
+        run = run + 1 if row[key] <= tau else 0
+        if run >= consecutive:
+            return dict(stopped=True, reason="rule", checkpoint=c, cost=spent, rho_off=float(row[key]), frob_off=float(row[3]))
+    last = curve[-1]
+    return dict(stopped=None, reason="pool exhausted", checkpoint=len(curve) - 1, cost=int(last[0] - block), rho_off=float(last[key]), frob_off=float(last[3]))
+
+
 def split_of(mol_id: str, layer: str) -> str:
     """Hashed split (sha1 of the id, as E6): layer-A parents are always evaluation; A2/B 70/10/20 train/val/eval."""
     if layer == "A":

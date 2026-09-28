@@ -333,8 +333,11 @@ def pick_totally_symmetric(L, Minv, coords, symbols, freq_cm):
 
 
 # ----------------------------------------------------------------------------- stage B
-def build_deck(a: dict, quick: bool) -> dict:
-    """The hashed, ordered pattern set in dimensionless normal coordinates."""
+def build_deck(a: dict, quick: bool, pool: str = "band") -> dict:
+    """The hashed, ordered pattern set in dimensionless normal coordinates. `pool` (28 Sep 2026, wide-deck pre-registration of 27 Sep): "band" = two-mode
+    patterns for pairs within the candidate band (the deck as registered; its hash is unchanged), "all" = two-mode patterns for every pair — the band is then
+    a solver setting only. The multi-mode block and the hold-out draw use the same seeds either way."""
+    assert pool in ("band", "all"), pool
     M = a["M"]
     freq = np.array(a["freq_low_cm"])
     rng = np.random.default_rng(DECK_SEED)
@@ -350,7 +353,7 @@ def build_deck(a: dict, quick: bool) -> dict:
     # two-mode patterns for pairs within the widest candidate band (DFT frequencies only —
     # no knowledge of the answer enters the deck)
     w_deck = 200.0 if not quick else 60.0
-    pairs = [(i, j) for i in range(M) for j in range(i + 1, M) if abs(freq[i] - freq[j]) <= w_deck]
+    pairs = [(i, j) for i in range(M) for j in range(i + 1, M) if pool == "all" or abs(freq[i] - freq[j]) <= w_deck]
     for (i, j) in pairs:
         for sgn in (+1.0, -1.0):
             v = np.zeros(M); v[i] = Q_S / np.sqrt(2); v[j] = sgn * Q_S / np.sqrt(2)
@@ -387,6 +390,8 @@ def build_deck(a: dict, quick: bool) -> dict:
     deck = {"molecule": a["molecule"], "M": M, "q_s": Q_S, "q_2": Q_2, "f_h": F_H,
             "deck_seed": DECK_SEED, "holdout_seed": HOLDOUT_SEED, "w_deck_cm": w_deck,
             "patterns": ordered + q2s}
+    if pool != "band":
+        deck["deck_pool"] = pool          # absent for the registered deck so that recorded band-deck hashes stay reproducible
     blob = json.dumps(deck, sort_keys=True).encode()
     deck["deck_hash"] = hashlib.sha256(blob).hexdigest()
     return deck
@@ -966,6 +971,8 @@ def main():
     ap.add_argument("--psi4-memory", default="8 GB", dest="psi4_memory",
                     help="psi4 memory budget (default '8 GB'); lower it to share the machine with a running anchor job")
     ap.add_argument("--quick", action="store_true", help="tiny deck, short noise grid (pipeline test)")
+    ap.add_argument("--deck-pool", default="band", choices=["band", "all"],
+                    help="two-mode patterns within the band (registered deck) or for every pair (wide deck, pre-registration 27 Sep 2026)")
     ap.add_argument("--stage", default="all", choices=["A", "B", "B2", "C", "all"])
     ap.add_argument("--out", default=None)
     ap.add_argument("--symmetrised", action="store_true",
@@ -991,7 +998,7 @@ def main():
     if os.path.exists(deck_path):
         deck = json.load(open(deck_path))
     else:
-        deck = build_deck(a, args.quick)
+        deck = build_deck(a, args.quick, pool=args.deck_pool)
         json.dump(deck, open(deck_path, "w"))
         log(f"deck: {len(deck['patterns'])} patterns (incl. q₂ block), hash {deck['deck_hash'][:16]}…")
     if args.stage in ("B", "all"):

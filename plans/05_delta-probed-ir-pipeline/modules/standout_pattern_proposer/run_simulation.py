@@ -4,6 +4,8 @@ ratios against P0 with the fraction of molecules improved, per evaluation set (l
 
     python run_simulation.py <exports> <scorer_prefix> <out_prefix> [--seeds 0,1,2] [--stride 8] [--noise-sigma 0] [--limit N] [--dry-run]
              [--pool band|all]      # E1 (the deck as it is) or E2 (two-mode patterns for every pair; the band stays the solver's prior)
+             [--w-cm W]             # the solver's prior width (28 Sep 2026 amendment: 0 = band-free ℓ₁ on every off-diagonal pair; default = the band)
+             [--only P0,P12,P3_oracle]  # curves only for these orderings (prefix match); the scorers still run
 
 Writes `<out_prefix>.json` (every curve) and `<out_prefix>.md` (the summary table). Nothing is judged here; the pass lines are read against the
 pre-registration by hand."""
@@ -52,21 +54,22 @@ def widen_pool(e: dict) -> dict:
     return out
 
 
-def evaluate(e: dict, orders: dict, checkpoints: int, noise_sigma: float, lam_grid, priors: dict | None = None) -> dict:
+def evaluate(e: dict, orders: dict, checkpoints: int, noise_sigma: float, lam_grid, priors: dict | None = None, w_cm: float = C.W_BAND_CM) -> dict:
     """`orders`: name → fixed pattern order. `priors` (26 Sep 2026 18:4x, the adaptive variants): name → a score per pattern; the pool is P0's set and
-    the order is built checkpoint by checkpoint from the reconstruction (core.adaptive_pick)."""
+    the order is built checkpoint by checkpoint from the reconstruction (core.adaptive_pick). `w_cm` (28 Sep 2026 amendment): the solver's prior width;
+    the in-band read-out column keeps the registered 200 cm⁻¹ whatever the solver uses."""
     res = {}
     f = np.asarray(e["freq_cm"])
     inband_pair = np.array([abs(f[i] - f[j]) <= C.W_BAND_CM and i != j for (i, j) in e["pairs"]])
     for name, order in orders.items():
         stride = max(2, int(np.ceil(len(order) / checkpoints)))                  # ≈ `checkpoints` solves per curve whatever the pool size
-        curve = C.rho_curve(e, order, stride=stride, lam_grid=lam_grid, noise_sigma=noise_sigma, inband_mask=inband_pair)
+        curve = C.rho_curve(e, order, stride=stride, lam_grid=lam_grid, w_cm=w_cm, noise_sigma=noise_sigma, inband_mask=inband_pair)
         res[name] = dict(curve=curve, K_off_0p3=C.k_off_at(curve, 0.3, e["M"]), K_off_0p1=C.k_off_at(curve, 0.1, e["M"]),
                          n10_all=C.k_off_at(curve, 0.1, e["M"], key=3), n10_inband=C.k_off_at(curve, 0.1, e["M"], key=5))
     pool = C.order_p0(e)
     for name, prior in (priors or {}).items():
         stride = max(2, int(np.ceil(len(pool) / checkpoints)))
-        curve = C.rho_curve(e, pool, stride=stride, lam_grid=lam_grid, noise_sigma=noise_sigma, inband_mask=inband_pair, adapt_prior=prior)
+        curve = C.rho_curve(e, pool, stride=stride, lam_grid=lam_grid, w_cm=w_cm, noise_sigma=noise_sigma, inband_mask=inband_pair, adapt_prior=prior)
         res[name] = dict(curve=curve, K_off_0p3=C.k_off_at(curve, 0.3, e["M"]), K_off_0p1=C.k_off_at(curve, 0.1, e["M"]),
                          n10_all=C.k_off_at(curve, 0.1, e["M"], key=3), n10_inband=C.k_off_at(curve, 0.1, e["M"], key=5), adaptive=True)
     return res
@@ -84,6 +87,15 @@ def ratio_summary(per_mol: dict, base: str, other: str, key: str) -> dict:
     return dict(n=n, median_ratio=float(np.median(r)) if r else None, frac_improved=(improved / n) if n else None)
 
 
+def select_orders(named: dict, only: str | None) -> dict:
+    """`--only` (28 Sep 2026): keep the orderings whose name starts with one of the comma-separated prefixes; P0 is always kept (the control column).
+    None keeps everything."""
+    if not only:
+        return named
+    prefixes = tuple(p.strip() for p in only.split(",") if p.strip())
+    return {k: v for k, v in named.items() if k == "P0" or k.startswith(prefixes)}
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("exports")
@@ -99,6 +111,8 @@ def main() -> int:
     ap.add_argument("--pool", choices=["band", "all"], default="band")
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--adaptive", action="store_true", help="add P0A, P1A_seed*, P2A_seed* (re-rank after every checkpoint; registered 26 Sep 2026 18:4x)")
+    ap.add_argument("--w-cm", type=float, default=C.W_BAND_CM, help="the solver's prior width in cm⁻¹; 0 = band-free ℓ₁ on every off-diagonal pair (28 Sep 2026 amendment)")
+    ap.add_argument("--only", default=None, help="comma-separated ordering prefixes whose curves are computed (P0 always); e.g. P0,P12,P3_oracle")
     a = ap.parse_args()
     seeds = [int(s) for s in a.seeds.split(",")]
     index = json.load(open(Path(a.exports) / "index.json"))["molecules"]
@@ -110,7 +124,8 @@ def main() -> int:
         evals = evals[k::n]
     lam_grid = tuple(float(x) for x in a.lam_grid.split(","))
     print(f"{len(evals)} evaluation molecules ({sum(r['split'] == 'eval_parents' for r in evals)} parents); pool {a.pool}; seeds {seeds}; checkpoints {a.checkpoints}; "
-          f"λ {lam_grid}; noise σ {a.noise_sigma}; P2 {'yes' if a.embed_prefix else 'no'}; adaptive {'yes' if a.adaptive else 'no'}" + (" (dry run)" if a.dry_run else ""))
+          f"λ {lam_grid}; noise σ {a.noise_sigma}; P2 {'yes' if a.embed_prefix else 'no'}; adaptive {'yes' if a.adaptive else 'no'}; solver prior w {a.w_cm:g} cm⁻¹; "
+          f"only {a.only or 'all'}" + (" (dry run)" if a.dry_run else ""))
     if a.dry_run:
         return 0
     scorers = {s: S.Scorer.load(Path(a.scorer_prefix), s) for s in seeds}
@@ -139,9 +154,11 @@ def main() -> int:
                     priors[f"P2A_seed{s}"] = C.pair_scores_to_pattern_scores(e, S.scores_matrix(e, p2, pairs))
                 z1, z2 = (p1 - p1.mean()) / (p1.std() + 1e-9), (p2 - p2.mean()) / (p2.std() + 1e-9)
                 orders[f"P12_seed{s}"] = C.order_by_scores(e, S.scores_matrix(e, 0.5 * (z1 + z2) * p1.std() + p1.mean(), pairs))
-        per_mol[r["id"]] = dict(split=r["split"], M=e["M"], **evaluate(e, orders, a.checkpoints, a.noise_sigma, lam_grid, priors))
-        print(f"  {k + 1}/{len(evals)} {r['id']} M {e['M']}: K_off(0.3) P0 {per_mol[r['id']]['P0']['K_off_0p3']} P1 {per_mol[r['id']]['P1_seed0']['K_off_0p3']} "
-              f"oracle {per_mol[r['id']]['P3_oracle']['K_off_0p3']}; {time.time() - t0:.0f} s", flush=True)
+        orders, priors = select_orders(orders, a.only), select_orders(priors, a.only)
+        per_mol[r["id"]] = dict(split=r["split"], M=e["M"], **evaluate(e, orders, a.checkpoints, a.noise_sigma, lam_grid, priors, w_cm=a.w_cm))
+        shown = [n for n in ("P1_seed0", "P12_seed0", "P3_oracle") if n in per_mol[r["id"]]]
+        print(f"  {k + 1}/{len(evals)} {r['id']} M {e['M']}: K_off(0.3) P0 {per_mol[r['id']]['P0']['K_off_0p3']} "
+              + " ".join(f"{n} {per_mol[r['id']][n]['K_off_0p3']}" for n in shown) + f"; {time.time() - t0:.0f} s", flush=True)
     summary = {}
     for split in ("eval_parents", "eval"):
         sub = {i: m for i, m in per_mol.items() if m["split"] == split}
@@ -151,11 +168,11 @@ def main() -> int:
             summary[split]["n_molecules"] = len(sub)
             summary[split]["P0_reached_0p3"] = sum(m["P0"]["K_off_0p3"] is not None for m in sub.values())
     out = dict(date=time.strftime("%Y-%m-%d %H:%M"), pool=a.pool, seeds=seeds, checkpoints=a.checkpoints, lam_grid=lam_grid, noise_sigma=a.noise_sigma,
-               exports=str(a.exports), scorer_prefix=str(a.scorer_prefix), embed_prefix=a.embed_prefix, summary=summary, per_molecule=per_mol,
-               seconds=round(time.time() - t0, 1))
+               w_cm=a.w_cm, only=a.only, exports=str(a.exports), scorer_prefix=str(a.scorer_prefix), embed_prefix=a.embed_prefix, summary=summary,
+               per_molecule=per_mol, seconds=round(time.time() - t0, 1))
     json.dump(out, open(a.out_prefix + ".json", "w"), indent=1)
-    lines = [f"# Pattern-proposer simulation — pool {a.pool}, {out['date']}", "",
-             f"seeds {seeds}, {a.checkpoints} checkpoints per curve, λ {lam_grid}, noise σ {a.noise_sigma}; {len(per_mol)} evaluation molecules.", ""]
+    lines = [f"# Pattern-proposer simulation — pool {a.pool}, solver prior w {a.w_cm:g} cm⁻¹, {out['date']}", "",
+             f"seeds {seeds}, {a.checkpoints} checkpoints per curve, λ {lam_grid}, noise σ {a.noise_sigma}; {len(per_mol)} evaluation molecules; orderings {a.only or 'all'}.", ""]
     for split, tab in summary.items():
         if not tab:
             continue

@@ -49,3 +49,59 @@ that the band deck cannot buy at any budget.
 - The change touches the probe's deck builder (tier 1) first; promotion into `src/dpir` goes through the promotion checklist (decision 47).
 - `readout.py` and the standout simulation are the read-out machinery; nothing new is written for W1/W2 beyond the stop rule itself and a false-stop counter.
 - The run is a simulation on existing exports (`modules/standout_pattern_proposer/out/exports/`): desk-scale on hel1-23 or the laptop, no new corpus work.
+
+## Amendment, 28 September 21:4x — written before any W1/W2 number (the user, 28 Sep: "Akkoord")
+
+**Why.** The CC-level test of 28 September (`PreRegistration_2026-09-28_Standout_CC_Level_Test.md`, outcome 20:3x) found on benzene's real CCSD(T) − B3LYP
+correction 4 % of the off-diagonal power inside the 200 cm⁻¹ band (proxy 52 %). The paragraph "What changes" above still makes the band the solver's prior.
+That is a claim about the response and it failed on the one real response we have; the Ladder's default must not assume it.
+
+1. **Solver prior.** The Ladder's default becomes the **band-free prior**: the same ℓ₁ recovery with the penalty on every off-diagonal pair (the probe's
+   `band_weights` with w = 0: only the diagonal and exactly degenerate pairs are free), λ chosen on the held-out patterns from the registered grid. The band
+   prior (w = 200) is kept as the registered comparison column. The CC test's "open prior" run of 20:3x used w = 5000 (no penalty anywhere, prior-free);
+   it is relabelled so, and the band-free run (w = 0) of the same benzene test is added tonight so both settings stand on record at CC level.
+2. **W1 and W2 are read twice.** (i) *As registered*, from the recorded wide-pool curves (`out/sim/all_p2s1_merged.json`: band prior, P2 = the stage-1
+   recipe that the search kept, order P12 seeds 0–2, 97 evaluation molecules), with the stop rule applied at the recorded checkpoints (stride ≈ pool/60,
+   ≈ 90–220 energies): no new compute, read first. (ii) *Under the band-free prior*, a new simulation on the laptop with the same molecules, checkpoints and
+   orders (P0, P12 seeds 0–2, oracle). Both readings are judged on the registered lines; (ii) is the one that carries the Ladder's default.
+3. **Conventions fixed now** (as in `deck_cost_readout.py`, whose numbers the predictions above were computed from): cost = energies beyond the single
+   block at the stop checkpoint; "whole band deck" = the band curve's total energies per molecule (single block included, `band_p2s1A_merged.json`);
+   B_max = 2 × that number, spent beyond the block; the stop fires at the second of two consecutive checkpoints with held-out ρ_off ≤ τ_stop; a molecule
+   counts as reached under P12 when the seed-median cost is defined (two of three seeds), the cost is the seed median. W2's "truth-based ρ_off" is the
+   recorded relative Frobenius error of the off-diagonal block against the truth (curve column 4, `frob_off`), read at the stop checkpoint.
+4. **W3 (naphthalene).** The primary read uses the frozen-10 CCSD(T) Hessian through `pp.core.hi_override`, as the benzene test did: the response of every
+   pattern the stop rule asks for follows from the Hessian, which is the very object Δ₂ targets. Label-level energies for the asked patterns are a spot check
+   (a handful, ≈ 1.2 h each on the CCX53), on the user's word and budget; they are not needed for the stop decision. W3's pass line is unchanged.
+5. **Prediction for the band-free prior (ii), on record.** The band prior helped the solver on the proxy (half the power in band); without it the early
+   curve is slower and the end point the same. Median cost to the stop under P12: 1.1–1.3× the band-prior reading, W1 still within 1.5× of the whole band deck on
+   the parents and at most 1.7× on A2/B; W2 unchanged (≤ 2 % false stops); the oracle's cost within 1.1× of its band-prior value. If the band-free reading
+   misses W1 while the band-prior reading passes, the honest Ladder default is the band-free one and the line reads "target reached at n× the band deck";
+   the band prior does not come back on proxy evidence.
+6. **Code (tier 1).** `pp.core.stop_rule` (one function, used by the reader now and by the Ladder later), `stop_rule_readout.py` (W1/W2 from a wide-pool
+   record and its band record), `run_simulation.py --w-cm` and `--only` (curves for a subset of orderings), and `probes/dryrun_dft_delta_recovery.py
+   --deck-pool all` (two-mode patterns for every pair; the band remains a solver setting). Tests for each switch before the run.
+
+## Outcome, reading (i) — 28 September 21:5x: as registered, band prior, from the record (`modules/standout_pattern_proposer/out/sim/stop_rule_band_prior_2026-09-28.{json,md}`; `stop_rule_readout.py` on `all_p2s1_merged.json` against `band_p2s1A_merged.json`, 97 molecules)
+
+**W1 FAIL, W2 FAIL.** Under P12 the stop rule fires within B_max on **51 of 97 molecules (53 %)** — the line asked ≥ 90 %.
+Among those that stop, the cost is 1650 energies beyond the block, 1.06× the whole band deck as a ratio of
+medians (flattering, because it is conditional on stopping) and 1.36× as the median per-molecule ratio, which is the registered
+prediction's range (1.35–1.5×); the 90 % line was the wrong part of the prediction: half the molecules need more than twice the band deck. P0 stops on 28 %,
+the oracle on 75 % at 0.56× (parents 63 % / A2-B 45 % for P12).
+**False stops: 15 of 51 (29 %) under P12** — the line allowed 5 %, the prediction said ≤ 2 %; P0 89 %, the oracle 3 %.
+The hysteresis costs one stride (median 110 energies).
+
+**Why the false stops.** The held-out set of the wide pool is the band deck's (benzene: 38 in-band two-mode patterns and 23 multi-mode patterns; it touches
+52 % of the in-band pairs and 34 % of the out-of-band pairs). At the moment the held-out ρ_off crosses 0.3, the truth-based off-diagonal error sits at a
+median 0.34 under P12 (P0 0.46, oracle 0.26) — the two scales meet near the line, and under an order that serves the band first the held-out set reads
+ahead of the truth. It is a threshold relation, not blindness: over all recorded checkpoints, ρ_off ≤ 0.3 with frob_off > 0.4 occurs on 13 % (P0), 2 % (P12),
+0 % (oracle), and at the end of the pool the two agree (0.11 / 0.08). The prediction "the held-out ρ_off tracked the truth on every curve" was true of the
+curves as a whole and false at the crossing.
+
+**Consequence, per the registered fail clause.** The deck stays as it is; the wide deck with *this* stop rule is not licensed on proxy evidence; the band
+deck's end point remains the Ladder's honest number (median ρ_off 0.53 / 0.47 on proxy, 0.78 on benzene at CC). What would be tried next is a new registration,
+not a rescue of this one: τ_stop set with a margin on the scorer's validation split (never on these 97 molecules), the held-out patterns drawn from the whole
+wide pool, B_max reconsidered against the measured distribution of costs — to propose to the user. Reading (ii) (band-free prior, same molecules, P0 / P12 /
+oracle) was launched at 21:57 on the laptop as committed above (8 shards, `out/sim/all_p2s1_w0_shard*`); it is read on the same lines when it lands.
+Benzene at CC with the band-free prior (`out/cc/A_8448043181_cc_test_all_band0.md`): the oracle reaches 0.3 at 372 energies as with no prior, P0 at 558
+(band prior 1,116; no prior 1,054) — on the one real response the band-free ℓ₁ halves the blind order's cost.

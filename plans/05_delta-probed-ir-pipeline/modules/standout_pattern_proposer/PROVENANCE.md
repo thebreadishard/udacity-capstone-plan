@@ -44,3 +44,15 @@ Every number in the notebook and the report traces to a file named here. Dated n
 - `../../GoalGathering/notes/PreRegistration_2026-09-27_Wide_Candidate_Deck_Stop_Rule.md`, `PreRegistration_2026-09-27_Cheap_Proxy_Input.md` (after the 28th).
 - Tests: `../../tests/test_pp_planted.py` (7). Interpreter: the system Python with torch (`../../REPRODUCE.md`).
 - CC-level test (28 Sep 20:3x, pre-registered 20:2x): `cc_level_test.py` → `out/cc/A_8448043181_cc_test.{json,md}` (registered run) and `…_all_band200`, `…_all_band5000` (exploratory, labelled); `pp.core.hi_override` (tests `tests/test_pp_hi_override.py`); notebook section 4c.
+
+## 28 September 2026, 21:4x–21:5x — the wide deck's stop rule (pre-registration 27 Sep, amendment 28 Sep 21:4x)
+
+- `pp/core.py` gains `stop_rule(curve, tau, b_max, M)`; `run_simulation.py` gains `--w-cm` (solver prior width; 0 = band-free l1 on every off-diagonal pair) and `--only`
+  (curves for a subset of orderings, P0 always); `stop_rule_readout.py` reads W1/W2 from a wide-pool record and its band record; the probe's `build_deck` gains `pool="all"`
+  (`--deck-pool all`). Tests: `tests/test_pp_stop_rule.py` (5), `tests/test_probe_deck_pool.py` (2).
+- Reading (i), as registered (band prior, from the record): `python stop_rule_readout.py out/sim/all_p2s1_merged.json out/sim/band_p2s1A_merged.json out/sim/stop_rule_band_prior_2026-09-28`
+  -> W1 FAIL (53 % stop within B_max), W2 FAIL (29 % false stops). Outcome in the pre-registration.
+- Benzene CC test with the band-free prior: `python cc_level_test.py A_8448043181 ../../probes/results_m1/e8_benzene_ccpvdz/hessian_ccsd_t.npz --pool all --w-cm 0 --tag all_band0`
+  -> `out/cc/A_8448043181_cc_test_all_band0.{json,md}` (exploratory, labelled).
+- Reading (ii), launched 21:57 on the laptop (8 shards, OMP 2 threads each): `python run_simulation.py out/exports out/p1 out/sim/all_p2s1_w0_shard$k --embed-prefix out/p2s1
+  --pool all --w-cm 0 --only P12,P3_oracle --checkpoints 60 --shard $k/8` -> `out/sim/all_p2s1_w0_shard*.{json,md,log}`; merge with `merge_shards.py`, read with `stop_rule_readout.py`.
