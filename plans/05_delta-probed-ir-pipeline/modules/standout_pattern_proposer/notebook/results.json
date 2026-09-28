@@ -1,5 +1,5 @@
 {
- "date": "2026-09-27 08:56",
+ "date": "2026-09-28 18:26",
  "molecules": 289,
  "splits": {
   "eval": {
@@ -684,6 +684,140 @@
     "median_n_half_ratio": 1.0,
     "auc_better": 0.9821428571428571,
     "median_auc_ratio": 0.9412634570161963
+   }
+  }
+ },
+ "paired_adaptive_wide": {
+  "eval_parents": {
+   "P0A vs P0": {
+    "n": 41,
+    "n_half_better": 0.7804878048780488,
+    "n_half_equal": 0.04878048780487805,
+    "median_n_half_ratio": 0.7272727272727273,
+    "auc_better": 0.8536585365853658,
+    "median_auc_ratio": 0.9212163389017686
+   },
+   "P1A_seed0 vs P1_seed0": {
+    "n": 41,
+    "n_half_better": 0.2926829268292683,
+    "n_half_equal": 0.5121951219512195,
+    "median_n_half_ratio": 1.0,
+    "auc_better": 0.5853658536585366,
+    "median_auc_ratio": 0.9941233404142552
+   },
+   "P1A_seed1 vs P1_seed1": {
+    "n": 41,
+    "n_half_better": 0.2682926829268293,
+    "n_half_equal": 0.43902439024390244,
+    "median_n_half_ratio": 1.0,
+    "auc_better": 0.5853658536585366,
+    "median_auc_ratio": 0.9895790717330001
+   },
+   "P1A_seed2 vs P1_seed2": {
+    "n": 41,
+    "n_half_better": 0.24390243902439024,
+    "n_half_equal": 0.5609756097560976,
+    "median_n_half_ratio": 1.0,
+    "auc_better": 0.5853658536585366,
+    "median_auc_ratio": 0.9831421184304264
+   },
+   "P2A_seed0 vs P2_seed0": {
+    "n": 41,
+    "n_half_better": 0.2682926829268293,
+    "n_half_equal": 0.5609756097560976,
+    "median_n_half_ratio": 1.0,
+    "auc_better": 0.3902439024390244,
+    "median_auc_ratio": 1.004050257716083
+   },
+   "P2A_seed1 vs P2_seed1": {
+    "n": 41,
+    "n_half_better": 0.2926829268292683,
+    "n_half_equal": 0.5609756097560976,
+    "median_n_half_ratio": 1.0,
+    "auc_better": 0.4634146341463415,
+    "median_auc_ratio": 1.0068749965089006
+   },
+   "P2A_seed2 vs P2_seed2": {
+    "n": 41,
+    "n_half_better": 0.24390243902439024,
+    "n_half_equal": 0.6829268292682927,
+    "median_n_half_ratio": 1.0,
+    "auc_better": 0.6097560975609756,
+    "median_auc_ratio": 0.9958308330194997
+   },
+   "log_gap_closure_seed0": {
+    "median_n_half_ratio_vs_P0": {
+     "P1_seed0": 0.5714285714285714,
+     "P1A_seed0": 0.5,
+     "P3_oracle": 0.18181818181818182
+    },
+    "closure": 0.1166078296130139
+   }
+  },
+  "eval": {
+   "P0A vs P0": {
+    "n": 56,
+    "n_half_better": 0.75,
+    "n_half_equal": 0.07142857142857142,
+    "median_n_half_ratio": 0.7207792207792207,
+    "auc_better": 0.5714285714285714,
+    "median_auc_ratio": 0.9914108757239466
+   },
+   "P1A_seed0 vs P1_seed0": {
+    "n": 56,
+    "n_half_better": 0.125,
+    "n_half_equal": 0.6428571428571429,
+    "median_n_half_ratio": 1.0,
+    "auc_better": 0.25,
+    "median_auc_ratio": 1.0058658499586037
+   },
+   "P1A_seed1 vs P1_seed1": {
+    "n": 56,
+    "n_half_better": 0.10714285714285714,
+    "n_half_equal": 0.6964285714285714,
+    "median_n_half_ratio": 1.0,
+    "auc_better": 0.35714285714285715,
+    "median_auc_ratio": 1.0072171260850333
+   },
+   "P1A_seed2 vs P1_seed2": {
+    "n": 56,
+    "n_half_better": 0.08928571428571429,
+    "n_half_equal": 0.75,
+    "median_n_half_ratio": 1.0,
+    "auc_better": 0.2857142857142857,
+    "median_auc_ratio": 1.0057174527316133
+   },
+   "P2A_seed0 vs P2_seed0": {
+    "n": 56,
+    "n_half_better": 0.07142857142857142,
+    "n_half_equal": 0.7321428571428571,
+    "median_n_half_ratio": 1.0,
+    "auc_better": 0.32142857142857145,
+    "median_auc_ratio": 1.0084475420312882
+   },
+   "P2A_seed1 vs P2_seed1": {
+    "n": 56,
+    "n_half_better": 0.125,
+    "n_half_equal": 0.7321428571428571,
+    "median_n_half_ratio": 1.0,
+    "auc_better": 0.4107142857142857,
+    "median_auc_ratio": 1.001622953858584
+   },
+   "P2A_seed2 vs P2_seed2": {
+    "n": 56,
+    "n_half_better": 0.08928571428571429,
+    "n_half_equal": 0.7142857142857143,
+    "median_n_half_ratio": 1.0,
+    "auc_better": 0.26785714285714285,
+    "median_auc_ratio": 1.007419340361934
+   },
+   "log_gap_closure_seed0": {
+    "median_n_half_ratio_vs_P0": {
+     "P1_seed0": 0.4305555555555556,
+     "P1A_seed0": 0.4444444444444444,
+     "P3_oracle": 0.2
+    },
+    "closure": -0.04140635897511667
    }
   }
  },

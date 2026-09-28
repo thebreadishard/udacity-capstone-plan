@@ -52,6 +52,9 @@ the AUC of ρ_off over P0's checkpoint grid; the in-band Frobenius error beside 
   No sentence about the embedding before stage 5.
 - **Adaptive ordering, band pool:** feedback helps the blind order (P0+A 0.8× P0) and improves the whole curve on top of a scorer (6–10 %) without moving
   the halfway point — the oracle gap is knowledge, not feedback (S5 fails on n_half, passes on AUC).
+- **Adaptive ordering, wide pool (follow-up 28 Sep, section 4b):** on the all-pairs candidate set feedback helps the blind order early in the curve
+  (n_half: P0+A 0.73× P0 on both splits; at K_off(0.3): 0.92× parents, 1.08× substituted) and adds nothing on top of a scorer (P1+A = P1 at the median, strictly better on 37–50 %; the
+  band pool's AUC gain is gone); S5 fails, the prediction "feedback closes a third of the log-gap to the oracle" fails (9–12 %, by read-out). Lever: a better scorer.
 
 ## How to run
 

@@ -25,8 +25,10 @@ Every number in the notebook and the report traces to a file named here. Dated n
 - Adaptive band pool (3 shards × 2 threads, P2 = stage-1 recipe): `band_p2s1A_*` → `out/sim/band_p2s1A_readout.{md,json}` and the paired statistics
   `out/sim/band_p2s1A_paired.json` (written by the notebook from the merged JSON), 27 Sep 03:19 UTC.
 - Deck cost: `out/sim/deck_cost_2026-09-27.{md,json}` from `deck_cost_readout.py` on the band_p2 and all_p2 merged JSONs.
-- Running at the time of writing: `all_p2s1` (wide pool, stage-1 recipe, 5 shards), then `all_p2s1A` (adaptive, wide pool). Their read-outs join this list
-  when they land.
+- Wide pool, stage-1 recipe: `all_p2s1` (hel1-23, 5 shards; read 27 Sep 15:2x): `out/sim/all_p2s1_{merged,readout,paired}.md`, `all_p2s1_readout.json`; the
+  merged JSON is local (data backup).
+- Wide pool, adaptive orderings: `all_p2s1A` (hel1-23, 8 shards, 27 Sep 13:2x → 28 Sep 06:39 UTC; read 28 Sep 08:4x): `out/sim/all_p2s1A_{merged,readout,paired}.md`,
+  `all_p2s1A_readout.json`; `out/sim/all_p2s1A_paired.json` written by notebook section 4b (28 Sep); the 16 MB merged JSON is local (data backup).
 - Pool chain log on the server: `/root/pp/pool_chain.log` (DONE lines with UTC stamps); launcher scripts `run_pool.sh`, `run_pool_n.sh`,
   `run_band_adaptive.sh`, chains `chain_*.sh` (copies in the session scratchpad).
 

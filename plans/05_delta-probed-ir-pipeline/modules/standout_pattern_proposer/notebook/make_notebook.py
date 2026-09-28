@@ -192,6 +192,64 @@ for split, t in paired.items():
     display(pd.DataFrame(t).T.round(3))
 print("S5 (P1+A better than P1 on ≥ 70 % of molecules): fails on n_half (mostly ties at the checkpoint grid), passes on the AUC (95–100 %). The oracle gap is knowledge, not feedback.")""")
 
+# ---- 4b. follow-up (28 September 2026): the same paired test on the wide pool; appended after 4a, which stays as run
+md("""### 4b. Follow-up (28 September 2026): the same paired test on the wide (all-pairs) pool — `all_p2s1A`
+
+Section 4a read the adaptive variants on the band pool. The wide pool of section 5 is the candidate set the plan will use, so the adaptive
+orderings were run there too (hel1-23, 8 shards, 27 Sep 13:2x → 28 Sep 06:39 UTC; the same 97 evaluation molecules; merged record
+`out/sim/all_p2s1A_merged.json`, local). The paired statistics are computed from the merged record when it is present and otherwise loaded from the
+committed `out/sim/all_p2s1A_paired.json` this cell writes. Two lines were fixed before the run: S5 (P1+A better than P1 on ≥ 70 % of the parents)
+and the prediction of 27 Sep 18:4x that feedback closes at least a third of the log-gap from P1 to the oracle on n_half.""")
+code("""paired_path_w = OUT / "sim" / "all_p2s1A_paired.json"
+merged_w = OUT / "sim" / "all_p2s1A_merged.json"
+if merged_w.exists():
+    resw = json.load(open(merged_w))
+    pairs_ab = [("P0A", "P0")] + [(f"P{k}A_seed{s}", f"P{k}_seed{s}") for k in (1, 2) for s in range(3)]
+    paired_w = {}
+    for split in ("eval_parents", "eval"):
+        mols = {i: m for i, m in resw["per_molecule"].items() if m["split"] == split}
+        paired_w[split] = {}
+        for a, b in pairs_ab:
+            nh, au = [], []
+            for m in mols.values():
+                pm = per_molecule(m, [a] if a == "P0A" else [a, b])
+                x = pm[(a, "rho_off")]
+                yh = pm[(a, "rho_off")]["base_half"] if a == "P0A" else pm[(b, "rho_off")]["n_half"]
+                ya = 1.0 if a == "P0A" else pm[(b, "rho_off")]["auc_ratio"]
+                if x["n_half"] is not None and yh is not None: nh.append((x["n_half"], yh))
+                au.append((x["auc_ratio"], ya))
+            paired_w[split][f"{a} vs {b}"] = dict(n=len(mols), n_half_better=float(np.mean([u < v for u, v in nh])), n_half_equal=float(np.mean([u == v for u, v in nh])),
+                                                median_n_half_ratio=float(np.median([u / max(v, 1) for u, v in nh])), auc_better=float(np.mean([u < v for u, v in au])),
+                                                median_auc_ratio=float(np.median([u / v for u, v in au])))
+        med = {}
+        for name in ("P1_seed0", "P1A_seed0", "P3_oracle"):                      # the prediction line: seed-0 medians of the n_half ratio against P0 (as in the read-out of 28 Sep 08:4x)
+            rat = []
+            for m in mols.values():
+                r_ = per_molecule(m, [name])[(name, "rho_off")]
+                if r_["n_half"] is not None and r_["base_half"]: rat.append(r_["n_half"] / r_["base_half"])
+            med[name] = float(np.median(rat))
+        paired_w[split]["log_gap_closure_seed0"] = dict(median_n_half_ratio_vs_P0=med, closure=float((np.log(med["P1_seed0"]) - np.log(med["P1A_seed0"])) /
+                                                                                    (np.log(med["P1_seed0"]) - np.log(med["P3_oracle"]))))
+    json.dump(paired_w, open(paired_path_w, "w"), indent=1)
+else:
+    paired_w = json.load(open(paired_path_w))
+for split, t in paired_w.items():
+    lg = t["log_gap_closure_seed0"]; tt = {k: v for k, v in t.items() if k != "log_gap_closure_seed0"}
+    display(Markdown(f"**{split}**, wide pool — adaptive against fixed, paired per molecule (same seed); median n_half ratio against P0, seed 0: "
+                     f"P1 {lg['median_n_half_ratio_vs_P0']['P1_seed0']:.2f}, P1+A {lg['median_n_half_ratio_vs_P0']['P1A_seed0']:.2f}, oracle {lg['median_n_half_ratio_vs_P0']['P3_oracle']:.2f} → "
+                     f"feedback closes {100 * lg['closure']:.0f} % of the log-gap P1 → oracle"))
+    display(pd.DataFrame(tt).T.round(3))
+p1 = [paired_w["eval_parents"][f"P1A_seed{s} vs P1_seed{s}"]["n_half_better"] for s in range(3)]
+cl = paired_w["eval_parents"]["log_gap_closure_seed0"]["closure"]
+print(f"S5 on the wide pool, n_half of ρ_off (P1+A better than P1 on ≥ 70 % of the parents): {'PASS' if min(p1) >= 0.7 else 'FAIL'} ({100 * min(p1):.0f}–{100 * max(p1):.0f} %; "
+      f"on the K_off(0.3) read-out of `paired_readout.py`, out/sim/all_p2s1A_paired.md: 42–50 %); "
+      f"prediction of 27 Sep 18:4x (feedback closes ≥ a third of the log-gap P1 → oracle): {'PASS' if cl >= 1 / 3 else 'FAIL'} ({100 * cl:.0f} %)")""")
+md("""*Reading (28 September 2026).* Feedback alone helps the blind order: P0+A against P0 0.73 / 0.72 on n_half (parents / substituted), and on the registered
+K_off(0.3) read-out 0.92 on the parents and 1.08 on the substituted molecules — the gain sits early in the curve, not at the tight end. On top of a scorer it adds nothing on the wide pool — P1+A and P2+A tie their fixed counterparts at the median (on n_half here, and on the
+registered K_off(0.3) read-out in `out/sim/all_p2s1A_paired.md`) and the AUC gain of the band pool is gone. What the adaptive loop can learn from the reconstruction, the learned scorer already knows before the first measurement; the remaining
+factor of about 2.5–3 to the oracle is knowledge of the molecule. The lever for the module and for plan 05 is a better scorer (more molecules,
+CC-level responses), not an adaptive campaign; the adaptive variants stay in the code as a measured negative. Section 4a stands as run.""")
+
 md("""## 5. The deck itself — the band candidate set against every pair
 
 `deck_cost_readout.py` compares, per evaluation split, what the band deck and the all-pairs candidate set cost and buy. This is the result that changes
@@ -227,7 +285,8 @@ summary = (f"On the band pool the learned order reaches the halfway point with {
            f"{val.set_index('recipe').loc['p2', 'spearman'] if 'p2' in val.recipe.values else float('nan'):.3f} to {val.spearman.max():.3f} (P1 {val.set_index('recipe').loc['P1', 'spearman']:.3f}); nothing about the learned representation is licensed before stage 5.")
 print(summary)
 out = dict(date=time.strftime("%Y-%m-%d %H:%M"), molecules=len(df), splits=tab.to_dict(), live_molecule=dict(id=mid, M=int(e["M"]), curves={k: dict(final_rho_off=c[-1][2], k_off_0p3=C.k_off_at(c, 0.3, e["M"])) for k, c in curves.items()}),
-           validation=val.to_dict(orient="records"), n_half_ratios=sm.to_dict(orient="records"), paired_adaptive=paired, deck_cost=dc, summary=summary)
+           validation=val.to_dict(orient="records"), n_half_ratios=sm.to_dict(orient="records"), paired_adaptive=paired, paired_adaptive_wide=paired_w,
+           deck_cost=dc, summary=summary)
 json.dump(out, open("results.json", "w"), indent=1); print("results.json written")""")
 
 nb = new_notebook(cells=cells, metadata={"kernelspec": {"name": "python3", "display_name": "Python 3", "language": "python"}})

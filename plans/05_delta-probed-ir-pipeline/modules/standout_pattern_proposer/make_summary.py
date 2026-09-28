@@ -145,6 +145,17 @@ para(f"Adaptive ordering (band pool, paired per molecule). Feedback alone helps 
      f"{f2(pp['P1A_seed0 vs P1_seed0']['median_auc_ratio'])}) but not the halfway point (strictly better on {100 * pp['P1A_seed0 vs P1_seed0']['n_half_better']:.0f} %, "
      f"equal on {100 * pp['P1A_seed0 vs P1_seed0']['n_half_equal']:.0f} %). The registered pass line fails on n_half and passes on the AUC; the prediction that "
      "feedback would close a third of the gap to the oracle fails. The gap is knowledge the scorer lacks, not feedback it is denied.")
+PW = R.get("paired_adaptive_wide")
+if PW:                                                   # follow-up of 28 September 2026 (all_p2s1A); the band-pool paragraph above stays as written
+    pw = PW["eval_parents"]; ps = PW["eval"]; lg = pw["log_gap_closure_seed0"]
+    p1b = [pw[f"P1A_seed{s} vs P1_seed{s}"]["n_half_better"] for s in range(3)]
+    para(f"Adaptive ordering, wide pool (follow-up of 28 September 2026). On the all-pairs candidate set the same paired test gives: P0+A against P0 a median "
+         f"ratio of {f2(pw['P0A vs P0']['median_n_half_ratio'])} on the parents (strictly better on {100 * pw['P0A vs P0']['n_half_better']:.0f} %) and "
+         f"{f2(ps['P0A vs P0']['median_n_half_ratio'])} on the substituted molecules; P1+A against P1 a median of {f2(pw['P1A_seed0 vs P1_seed0']['median_n_half_ratio'])}, "
+         f"strictly better on {100 * min(p1b):.0f}–{100 * max(p1b):.0f} % of the parents (pass line 70 %: fails), and the AUC gain of the band pool is gone "
+         f"(median AUC ratio {f2(pw['P1A_seed0 vs P1_seed0']['median_auc_ratio'])}). Feedback closes {100 * lg['closure']:.0f} % of the log-gap from P1 to the "
+         "oracle on the parents against a predicted third. What the adaptive loop can learn from the reconstruction, the scorer already knows before the first "
+         "measurement; the lever is a better scorer, not an adaptive campaign, and the adaptive variants stay in the code as a measured negative.")
 para(f"The fair-chance search. Validation Spearman of predicted against true log₁₀|Δ| — hand features {VAL['P1']['spearman']:.3f}; learned representation at "
      f"stage 0 {VAL.get('p2', {}).get('spearman', float('nan')):.3f}, after the recipe stage {VAL.get('p2s1_lr1e-3_w128', {}).get('spearman', float('nan')):.3f}, "
      f"largest capacity variant {VAL.get('p2s3_b5v', {}).get('spearman', float('nan')):.3f}. Loss and capacity stayed within the margins fixed before the numbers; "
