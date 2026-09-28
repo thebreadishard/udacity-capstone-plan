@@ -3,7 +3,7 @@
 *Until decision 49 (23 September 2026) this module was named the Δ₂-support predictor; the notebook's pre-registered task is unchanged, the target is the correction itself.*
 
 **Status (2026-09-27 15:1x).** The module has run. The first full run was executed on 23 September on a rented CCX53 in a fresh environment built
-from `requirements.txt`; the notebook `notebook/deep_learning.ipynb` then gained four dated follow-up sections (7–10, 23–25 September), each executed
+from `requirements.txt`; the notebook `notebook/deep_learning.ipynb` then gained five dated follow-up sections (7–11, 23–28 September), each executed
 append-only after the untouched main run, and the report `module_summary.docx/.pdf` was rebuilt from the result files on 25 September 10:5x. Nothing in
 the notebook or the report is typed by hand: `make_notebook.py` fills the summary from `notebook/results.json`, `make_summary.py` reads every number
 from the result files and the release manifest. Still open: the user's pass over notebook and report, the Zenodo release of the corpus (the user), the
@@ -61,6 +61,9 @@ extra layers change nothing outside seed scatter. That reading is the module's h
 - **Controls (section 10).** Shuffled labels lose what the real labels win; the label noise floor by two routes is 2.09 cm⁻¹ median spread
   (plateau bound 6.3; `results_followup4.json`); a symmetry reading of 25 September that was wrong for an hour is kept in the notebook with its
   correction — the pair model has symmetry built in, not learned, which is the reason the next version is an equivariant network (rung C).
+- **The epoch cap audited (section 11, 28 September).** The main run's best epochs (25–29 of 30) sat against the cap; under decision 51 (early stopping
+  as a rule) both configurations were trained again with the cap at 100 (`results_followup5.json`): best epochs 25–45, test errors within 0.9 cm⁻¹ and
+  the pair head within 0.02 of 23 September — the cap bound the epoch count, not the numbers. Sections 1–10 stay as run; the audit is appended.
 
 ## How to run
 

@@ -201,3 +201,23 @@ description as it reads (task, dataset release `layerA2_2026-09-23`, models, the
 what the project learned (sections 7–10, with the result files named), how to run (including rung B and the rung C smoke), files. The opening
 sentence of "Owed, and by whom" above is dated so nobody reads it as current. Superseded texts live in git. Open, unchanged: the user's pass,
 the Zenodo release, the submission copy, promotion to `src/dpir`; layer B computing and rung C waiting on the user's decision.
+
+## Dated note 2026-09-28 18:4x — section 11 (decision-51 audit of the epoch cap) appended and executed append-only
+
+**Why.** Decision 51 (27 Sep 2026): early stopping everywhere, best epoch recorded, a best epoch within 10 % of the cap = re-run. The main run of
+23 September chose best epochs 25–29 under a cap of 30 (`results.json`, `best_epochs`), the first audit case of the rule.
+
+**What.** Cells 72–75 added by `make_notebook.py` (section 11: both configurations, cap 100, patience 6, seeds 0–2, same release, splits and tokens)
+and executed append-only on the laptop (`notebook/execute_section11_2026-09-28.log`; `execute_section8.py --from-cell 72 --setup 2,4,8,10 --defs
+12,13,17 --refresh-new-markdown`, 6 threads, 16:22–16:43 UTC; training 1,276 s). The executor gained `--refresh-new-markdown`: after the run it rebuilds
+the cell list once more with the new result file beside the generator and copies the section's markdown cells from that rebuild, so the reading cell
+(built from `results_followup5.json`, the pattern of section 6) lands in the executed notebook. Outputs: `notebook/results_followup5.json`,
+`figures/figure11a_baseline_cap100.png`, `figures/figure11b_4layers_cap100.png`. The notebook's metadata records this run and the previous
+append-only run of 25 September. The execution counts of the code cells therefore restart per append-only run, by design (code-quality response of
+28 Sep, notebook row); a top-to-bottom re-execution would replace the earlier runs' outputs, which the rule of 28 Sep (module artefacts show the
+learning) forbids.
+
+**Outcome.** Best epochs 39 / 25 / 45 (baseline) and 38 / 33 / 16 (four layers); ring-in-plane RMS 5.4 / 5.3 cm⁻¹ against 5.5 / 5.2 on 23 September;
+pair-head average precision 0.31 / 0.29 against 0.29 / 0.29; largest movement of any test error 0.91 cm⁻¹ (the "other" family, baseline). The cap
+was binding on the epoch count, not on the numbers; no best epoch within 10 % of the new cap; the rule is satisfied. `make_summary.py` gained
+Addendum 5 from `results_followup5.json`; `module_summary.docx/.pdf` rebuilt 18:4x.

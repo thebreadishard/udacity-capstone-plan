@@ -1,0 +1,164 @@
+{
+ "date": "2026-09-28",
+ "rule": "decision 51 (27 Sep 2026)",
+ "epochs_cap": 100,
+ "epochs_cap_before": 30,
+ "patience": 6,
+ "seeds": [
+  0,
+  1,
+  2
+ ],
+ "best_epochs": {
+  "baseline": [
+   39,
+   25,
+   45
+  ],
+  "4 layers": [
+   38,
+   33,
+   16
+  ]
+ },
+ "best_epochs_cap30": {
+  "baseline": [
+   29,
+   25,
+   29
+  ],
+  "4 layers": [
+   29,
+   28,
+   28
+  ]
+ },
+ "within_10pct_of_new_cap": {
+  "baseline": [
+   false,
+   false,
+   false
+  ],
+  "4 layers": [
+   false,
+   false,
+   false
+  ]
+ },
+ "test_rms": {
+  "CH-stretch": {
+   "baseline": {
+    "diag": 2.875422716140747,
+    "coup": 0.4718703627586365
+   },
+   "4 layers": {
+    "diag": 2.6461713314056396,
+    "coup": 0.4688453674316406
+   }
+  },
+  "CH-oop": {
+   "baseline": {
+    "diag": 3.8845651149749756,
+    "coup": 3.234442949295044
+   },
+   "4 layers": {
+    "diag": 4.07853889465332,
+    "coup": 3.221644878387451
+   }
+  },
+  "ring-ip": {
+   "baseline": {
+    "diag": 5.447951316833496,
+    "coup": 4.018322944641113
+   },
+   "4 layers": {
+    "diag": 5.250789165496826,
+    "coup": 4.017726421356201
+   }
+  },
+  "other": {
+   "baseline": {
+    "diag": 7.392745494842529,
+    "coup": 2.3074843883514404
+   },
+   "4 layers": {
+    "diag": 8.422807693481445,
+    "coup": 2.385719060897827
+   }
+  }
+ },
+ "test_rms_cap30": {
+  "CH-stretch": {
+   "baseline": {
+    "diag": 3.18,
+    "coup": 0.47
+   },
+   "4 layers": {
+    "diag": 2.61,
+    "coup": 0.47
+   }
+  },
+  "CH-oop": {
+   "baseline": {
+    "diag": 4.05,
+    "coup": 3.24
+   },
+   "4 layers": {
+    "diag": 4.03,
+    "coup": 3.22
+   }
+  },
+  "ring-ip": {
+   "baseline": {
+    "diag": 5.46,
+    "coup": 4.02
+   },
+   "4 layers": {
+    "diag": 5.22,
+    "coup": 4.02
+   }
+  },
+  "other": {
+   "baseline": {
+    "diag": 8.3,
+    "coup": 2.38
+   },
+   "4 layers": {
+    "diag": 8.58,
+    "coup": 2.39
+   }
+  }
+ },
+ "pair_ap": {
+  "baseline": 0.305835972953686,
+  "4 layers": 0.29261985365373805
+ },
+ "pair_ap_cap30": {
+  "baseline": 0.28684442155081413,
+  "4 layers": 0.28949098171837623
+ },
+ "final_val_loss": {
+  "baseline": [
+   12.468229293823242,
+   12.773646354675293,
+   12.315067291259766
+  ],
+  "4 layers": [
+   12.252593040466309,
+   12.515691757202148,
+   13.04069709777832
+  ]
+ },
+ "final_val_loss_cap30": {
+  "baseline": [
+   12.474811553955078,
+   12.753066062927246,
+   12.623908042907715
+  ],
+  "4 layers": [
+   12.757394790649414,
+   12.706850051879883,
+   12.644134521484375
+  ]
+ }
+}

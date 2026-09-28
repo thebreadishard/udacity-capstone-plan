@@ -255,6 +255,21 @@ if FU4.exists():
          f"({pa['corrected_freq_rms']['at1200']['point']:.1f} cm⁻¹), against a registered bar of 1.5× per decade. The weakest pair class on both hold-outs is the coupling between two bond "
          f"primitives. What was learned: every metric needs a control that must fail; a consistency statistic without its target control is not a result; and predictions come before "
          f"data, or the curve proves nothing. All numbers trace to notebook section 10 and the dated pre-registration.")
+FU5 = NB / "results_followup5.json"
+if FU5.exists():
+    U5 = json.load(open(FU5, encoding="utf-8"))
+    heading("Addendum 5 (28 September 2026): the epoch cap audited — decision 51")
+    rip, rip0 = U5["test_rms"]["ring-ip"], U5["test_rms_cap30"]["ring-ip"]
+    d_diag = max(abs(U5["test_rms"][F][m]["diag"] - U5["test_rms_cap30"][F][m]["diag"]) for F in U5["test_rms"] for m in U5["test_rms"][F]
+                 if U5["test_rms"][F][m]["diag"] == U5["test_rms"][F][m]["diag"])
+    para(f"The runs of 23 September chose their best epochs at {U5['best_epochs_cap30']['baseline']} (baseline) and {U5['best_epochs_cap30']['4 layers']} (four layers) under a cap "
+         f"of {U5['epochs_cap_before']}, i.e. against the cap. On 27 September the project made early stopping a rule for every trained model (a validation split, a patience, "
+         f"the best epoch recorded; a best epoch within 10 % of the cap means the run is repeated). Notebook section 11 applies the rule to this module: both configurations "
+         f"trained again with the cap at {U5['epochs_cap']} and everything else unchanged. Best epochs {U5['best_epochs']['baseline']} and {U5['best_epochs']['4 layers']}; "
+         f"ring-in-plane band shifts {rip['baseline']['diag']:.1f} / {rip['4 layers']['diag']:.1f} cm⁻¹ against {rip0['baseline']['diag']:.1f} / {rip0['4 layers']['diag']:.1f}; pair-head average "
+         f"precision {U5['pair_ap']['baseline']:.2f} / {U5['pair_ap']['4 layers']:.2f} against {U5['pair_ap_cap30']['baseline']:.2f} / {U5['pair_ap_cap30']['4 layers']:.2f}. The largest movement of any "
+         f"test error is {d_diag:.2f} cm⁻¹: the cap was binding on the epoch count, not on the numbers, and the comparison of the main report stands. No best epoch sits within "
+         "10 % of the new cap, so the rule is satisfied. The earlier sections are kept as run; the audit is appended, because the change of practice is part of what the module shows.")
 
 
 heading("References")
