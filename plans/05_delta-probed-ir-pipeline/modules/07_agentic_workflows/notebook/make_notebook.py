@@ -5,7 +5,7 @@ Rubric (Agentic AI module, Tasks 1–5): the agentic task, scope and boundaries 
 diagram · the implementation (initialisation, decision logic, state, tool invocation, safeguards) · execution on representative scenarios with
 observable outputs, notes on the reasoning and at least one limitation or failure · a 4–6 sentence summary. The agent is the *run steward*
 (`../steward/`), evaluated in replay mode on the eight scenarios pre-registered in `../DESIGN_2026-09-25.md` (real log excerpts of 25 September 2026).
-Knobs: M07_LLM=1 also runs the LLM policy (needs ANTHROPIC_API_KEY; model id from STEWARD_MODEL). Run: python notebook/make_notebook.py [--no-execute]"""
+Knobs: M07_LLM=1 also runs the LLM policy (needs ANTHROPIC_API_KEY or OPENAI_API_KEY [+ OPENAI_BASE_URL for Vocareum]; STEWARD_PROVIDER / STEWARD_MODEL override). Run: python notebook/make_notebook.py [--no-execute]"""
 import sys
 from pathlib import Path
 
@@ -44,8 +44,8 @@ Shavit et al., 2023): the reasoning step may be a language model, the gate never
 retry_failed, record_reading, record_ledger, wait, escalate_to_human`; the wording of the ledger line; when to escalate. Decisions it never owns:
 creating or deleting machines, spending money, publishing, changing a pre-registered rule, passing a verdict on a result, deleting data.
 
-**Frameworks.** LangGraph (the course's LangChain/LangGraph elective) for the state graph; `langchain-anthropic` for the reasoning node; the model id is
-logged with every proposal. Replay mode — the mode of this notebook — touches no machine: observations are verbatim excerpts of the real logs of
+**Frameworks.** LangGraph (the course's LangChain/LangGraph elective) for the state graph; a LangChain chat model for the reasoning node — the Anthropic
+API or any OpenAI-compatible endpoint such as the course's Vocareum keys (provider switch of 28 September 2026); provider and model id are logged with every proposal. Replay mode — the mode of this notebook — touches no machine: observations are verbatim excerpts of the real logs of
 25 September 2026 (`scenarios/fixtures/`), and actions produce the effects the scenario declares.""")
 
 md("""## 1. Setup and the rule table (the agent's memory of what went wrong before)""")
@@ -151,15 +151,15 @@ have refused any other action anyway (R24). The important line in the table is *
 proposed anything the gate had to stop — the gate's own tests (`tests/test_gate.py`) show it stopping each forbidden action when asked.""")
 code("""# the LLM policy on the same scenarios (only when a key is present and M07_LLM=1): same graph, same gate, model id logged in every reason
 llm_results = None
-if os.environ.get("M07_LLM") == "1" and os.environ.get("ANTHROPIC_API_KEY"):
+if os.environ.get("M07_LLM") == "1" and (os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("OPENAI_API_KEY")):
     lp = LLMPolicy(rules=RULES); reps = int(os.environ.get("M07_LLM_REPEATS", "3")); llm_results = []
     for rep in range(reps):
         for s in SCEN:
             r = run_scenario(s, lp, RULES); r["repeat"] = rep; llm_results.append(r)
     lt = pd.DataFrame([{"scenario": r["id"], "rep": r["repeat"], "actions": " → ".join(r["actions"]), "rules": " ".join(str(x) for x in r["rules"]), "gate substitutions": ", ".join(r["forced_by_gate"]) or "—", "pass": r["pass"]} for r in llm_results])
-    display(lt); print(f"LLM policy ({lp.model_id}): {sum(r['pass'] for r in llm_results)}/{len(llm_results)} scenario runs pass; gate had to substitute in {sum(bool(r['forced_by_gate']) for r in llm_results)} runs")
+    display(lt); print(f"LLM policy ({lp.name}, {lp.model_id}): {sum(r['pass'] for r in llm_results)}/{len(llm_results)} scenario runs pass; gate had to substitute in {sum(bool(r['forced_by_gate']) for r in llm_results)} runs")
 else:
-    print("LLM policy not run in this execution (set M07_LLM=1 and ANTHROPIC_API_KEY); the deterministic policy above is the reference behaviour, the LLM policy is the same graph with a model in the propose node.")""")
+    print("LLM policy not run in this execution (set M07_LLM=1 and a model key: ANTHROPIC_API_KEY or OPENAI_API_KEY); the deterministic policy above is the reference behaviour, the LLM policy is the same graph with a model in the propose node.")""")
 md("""### 4.1 Limitations, a failure case and unexpected behaviour (observed while building)
 
 - **A real failure, found by the replay and fixed before the first commit:** for scenario S3 the first version of the policy proposed the *same*

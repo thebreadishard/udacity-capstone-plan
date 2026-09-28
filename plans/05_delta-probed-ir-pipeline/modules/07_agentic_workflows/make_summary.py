@@ -75,7 +75,7 @@ para(f"This report describes an agentic workflow built for a real, running resea
      f"whose calculations run on five rented machines and a laptop under written, pre-registered rules. The agent — the run steward — observes machines and result "
      f"files, proposes exactly one next action that cites a rule, passes the proposal through a deterministic gate, acts through {R['n_actions']} allow-listed tools, and records "
      f"every step in an append-only ledger. It is a single agent with one reasoning loop, implemented as a LangGraph state graph with a language-model reasoning node "
-     f"(Anthropic API through langchain-anthropic) and a deterministic reference policy used for testing. An agentic approach fits because the decisions are sequential, "
+     f"(a LangChain chat model: the Anthropic API or an OpenAI-compatible endpoint such as the course's Vocareum keys, chosen per run and logged with every proposal) and a deterministic reference policy used for testing. An agentic approach fits because the decisions are sequential, "
      f"depend on state that changes on its own and require tools; a bounded design fits because the correct behaviour is rule application under uncertainty, and the cost "
      f"of a wrong autonomous action — a deleted server, a duplicate forty-hour run, a false scientific claim — far exceeds the cost of asking a human (Amodei et al., 2016; Shavit et al., 2023).")
 

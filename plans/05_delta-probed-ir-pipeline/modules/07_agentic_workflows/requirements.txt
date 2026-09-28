@@ -1,5 +1,6 @@
 annotated-types==0.8.0
 anthropic==1.8.0
+openai==3.20.0
 anyio==4.15.1
 ase==3.29.0
 asttokens==3.0.2
@@ -38,6 +39,7 @@ jupyter_client==8.9.1
 jupyter_core==5.9.1
 kiwisolver==1.5.0
 langchain-anthropic==1.7.4
+langchain-openai==1.6.6
 langchain-core==1.6.5
 langchain-protocol==0.0.19
 langgraph==1.2.12

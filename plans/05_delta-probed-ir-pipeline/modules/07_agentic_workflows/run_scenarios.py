@@ -1,7 +1,9 @@
 """Replay the eight pre-registered scenarios through the steward and write the results (no machine is touched).
 
 Usage: python run_scenarios.py [--policy rules|llm] [--repeats 1] [--out out/scenario_results_<date>.json]
-`--policy llm` needs ANTHROPIC_API_KEY (and STEWARD_MODEL, default claude-sonnet-5); the model id is written into every proposal's reason."""
+`--policy llm` needs a model key: ANTHROPIC_API_KEY, or OPENAI_API_KEY for any OpenAI-compatible endpoint (the course's Vocareum keys with
+OPENAI_BASE_URL=https://openai.vocareum.com/v1); STEWARD_PROVIDER / STEWARD_MODEL override the choice; provider and model id are written into every
+proposal's reason (28 Sep 2026)."""
 import argparse
 import datetime as dt
 import json
