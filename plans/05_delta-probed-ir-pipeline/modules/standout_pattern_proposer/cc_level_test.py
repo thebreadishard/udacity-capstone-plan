@@ -80,13 +80,19 @@ def main(argv=None) -> int:
     ap.add_argument("--pool", choices=["band", "all"], default="band", help="band = the registered run (E1 deck); all = two-mode patterns for every pair (E2's wide pool) — exploratory")
     ap.add_argument("--w-cm", type=float, default=C.W_BAND_CM, help="the solver's band prior width; anything but the default is exploratory and labelled so")
     ap.add_argument("--tag", default="", help="suffix for the output files of an exploratory run")
+    ap.add_argument("--use-analytic", action="store_true", help="low level = the pyscf analytic B3LYP Hessian (hessian_b3lyp_analytic.npz), as pp.core.delta2's "
+                    "use_analytic; the proxy export must have been built with the same switch (--exports)")
+    ap.add_argument("--exports", default=None, help="directory of the proxy exports (default out/exports; out/exports_analytic with --use-analytic)")
     a = ap.parse_args(argv)
+    exports = Path(a.exports) if a.exports else (OUT / ("exports_analytic" if a.use_analytic else "exports"))
     seeds = [int(s) for s in a.seeds.split(",")]
     exploratory = a.pool != "band" or a.w_cm != C.W_BAND_CM
     mol_dir = CORPUS / a.molecule_id
     t0 = time.time()
-    cc_exp = C.export_molecule(mol_dir, hi_override=Path(a.cc_hessian))
-    proxy_exp = C.load_export(OUT / "exports" / f"{a.molecule_id}.npz")
+    cc_exp = C.export_molecule(mol_dir, use_analytic=a.use_analytic, hi_override=Path(a.cc_hessian))
+    if a.use_analytic and not cc_exp["analytic"]:
+        raise SystemExit(f"{mol_dir.name}: --use-analytic asked but no hessian_b3lyp_analytic.npz / hessian_wb97x_analytic.npz pair in the folder")
+    proxy_exp = C.load_export(exports / f"{a.molecule_id}.npz")
     assert cc_exp["deck_hash"] == proxy_exp["deck_hash"], "the CC export must use the proxy's deck (same B3LYP frequencies)"
     if a.pool == "all":
         from run_simulation import widen_pool
@@ -100,17 +106,19 @@ def main(argv=None) -> int:
     rec = dict(date=time.strftime("%Y-%m-%d %H:%M"), molecule=a.molecule_id, cc_hessian=str(Path(a.cc_hessian).resolve().relative_to(PLAN)).replace("\\", "/"),
                cc_meta=dict(basis=str(z["basis"]) if "basis" in z.files else None, frozen=int(z["frozen"]) if "frozen" in z.files else None, step=float(z["step"]) if "step" in z.files else None),
                deck_hash=cc_exp["deck_hash"], stride=stride, seeds=seeds, seconds=round(time.time() - t0), pool=a.pool, w_cm=a.w_cm, exploratory=exploratory,
-               registered_run=(not exploratory),
+               registered_run=(not exploratory), low_level="pyscf analytic B3LYP (grid 99/590)" if a.use_analytic else "corpus psi4 FD B3LYP (grid 75/302)",
+               proxy_exports=str(exports.relative_to(HERE)) if exports.is_relative_to(HERE) else str(exports),
                delta2=dict(off_frob_cc=float(np.linalg.norm(off_cc)), off_frob_proxy=float(np.linalg.norm(off_px)), ratio=float(np.linalg.norm(off_cc) / np.linalg.norm(off_px)),
                            inband_share_cc=float((np.linalg.norm(off_cc * np.triu(np.abs(cc_exp["freq_cm"][:, None] - cc_exp["freq_cm"][None, :]) <= C.W_BAND_CM, 1)) / np.linalg.norm(off_cc)) ** 2),
                            inband_share_proxy=float((np.linalg.norm(off_px * np.triu(np.abs(proxy_exp["freq_cm"][:, None] - proxy_exp["freq_cm"][None, :]) <= C.W_BAND_CM, 1)) / np.linalg.norm(off_px)) ** 2)),
                cc=cc, proxy=px, curves=dict(cc={k: v for k, v in cc_curves.items()}, proxy={k: v for k, v in px_curves.items()}), judged=J, provenance=provenance())
     out = Path(a.out); out.mkdir(parents=True, exist_ok=True)
-    stem = f"{a.molecule_id}_cc_test" + (f"_{a.tag}" if a.tag else ("_exploratory" if exploratory else ""))
+    stem = f"{a.molecule_id}_cc_test" + ("_analytic" if a.use_analytic else "") + (f"_{a.tag}" if a.tag else ("_exploratory" if exploratory else ""))
     pj = out / f"{stem}.json"; json.dump(rec, open(pj, "w", encoding="utf-8"), indent=1)
     L = [f"# CC-level test — {a.molecule_id} ({rec['date']}; pre-registration 2026-09-28 Standout_CC_Level_Test)"
          + (f" — EXPLORATORY, not a registered line: pool {a.pool}, solver band {a.w_cm:g} cm⁻¹" if exploratory else ""), "",
-         f"CC Hessian `{rec['cc_hessian']}` ({rec['cc_meta']}); deck {cc_exp['deck_hash'][:12]} (same as the proxy export); M = {cc['M']}, {cc['n_patterns']} patterns, {cc['n_holdout']} held out; "
+         f"CC Hessian `{rec['cc_hessian']}` ({rec['cc_meta']}); low level {rec['low_level']}; proxy exports `{rec['proxy_exports']}`; "
+         f"deck {cc_exp['deck_hash'][:12]} (same as the proxy export); M = {cc['M']}, {cc['n_patterns']} patterns, {cc['n_holdout']} held out; "
          f"stride {stride}; Δ₂ off-diagonal Frobenius CC / proxy = {rec['delta2']['ratio']:.2f}; in-band share CC {rec['delta2']['inband_share_cc']:.2f} vs proxy {rec['delta2']['inband_share_proxy']:.2f}.", "",
          "| response | ordering | K_off(0.3) | ratio vs P0 | n_half ratio | AUC ratio |", "|---|---|---|---|---|---|"]
     for tag, d in (("CC", cc), ("proxy", px)):

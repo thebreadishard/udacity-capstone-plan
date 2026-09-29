@@ -41,13 +41,16 @@ def normal_modes(H, masses_amu):
     return w[keep], freq[keep], V[:, keep], Hm
 
 
-def molecule_features(mol_dir):
+def molecule_features(mol_dir, lo=None, hi=None):
+    """Per-mode tokens, first-order shift target and family labels; `lo`/`hi` are projected Cartesian Hessians that replace the psi4 files
+    (29 Sep 2026: the analytic pyscf route as the low level — the mode basis and the families then follow it)."""
     g = json.load(open(mol_dir / "geometry.json"))
-    lo = np.load(mol_dir / "hessian_b3lyp.npz"); hi = np.load(mol_dir / "hessian_wb97x.npz")
+    lo = np.load(mol_dir / "hessian_b3lyp.npz")["H_projected"] if lo is None else lo
+    hi = np.load(mol_dir / "hessian_wb97x.npz")["H_projected"] if hi is None else hi
     masses = np.asarray(g["masses_amu"]); symbols = g["symbols"]; coords = np.asarray(g["coords_bohr"])
-    w, freq, V, _ = normal_modes(lo["H_projected"], masses)
+    w, freq, V, _ = normal_modes(lo, masses)
     m = np.repeat(masses * AMU2AU, 3)
-    Hhi_mw = hi["H_projected"] / np.sqrt(np.outer(m, m))
+    Hhi_mw = hi / np.sqrt(np.outer(m, m))
     k_hi = np.einsum("ij,ij->j", V, Hhi_mw @ V)                 # curvature of the high level along each low mode
     omega = np.sqrt(np.abs(w))
     target = (k_hi - w) / (2 * omega) * HARTREE2CM              # first-order shift, cm⁻¹

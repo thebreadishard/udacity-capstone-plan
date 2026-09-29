@@ -44,7 +44,7 @@ A_d551b360c3,A,d551b360c37f259fef62068adba05321fbcbc3b2,1-aminoanthracene,Nc1ccc
 A_e72997e726,A,e72997e726a45dd7192411a9f0d00dfe1f1c1043,fluorene,c1ccc2c(c1)Cc1ccccc1-2,,13,23,done,ubuntu-32gb-hel1-2,97ed2d67c66b,
 A_ea73419366,A,ea734193665e638a72d97d55f745867efa072c67,1-methylnaphthalene,Cc1cccc2ccccc12,,11,21,done,ubuntu-32gb-hel1-2,97ed2d67c66b,
 A_fead28d796,A,fead28d796a5b1c32cacce2aef128667bf856713,benzofuran,c1ccc2occc2c1,,9,15,done,ubuntu-32gb-hel1-2,97ed2d67c66b,
-A_6e858b26e5,A,6e858b26e563e49b4ceb7db77aebaed8958ff02e,pyridine,c1ccncc1,,6,11,pending,,97ed2d67c66b,anchor-set-two-2026-09-29
+A_6e858b26e5,A,6e858b26e563e49b4ceb7db77aebaed8958ff02e,pyridine,c1ccncc1,,6,11,done,ubuntu-32gb-hel1-23,9e27bf8e9348,anchor-set-two-2026-09-29
 A2_00b0ff5a24,A2,00b0ff5a24b3a066f3f6bca1b0acea0c33282ac7,fluoranthene+COOH,O=C(O)c1ccc2cccc3c2c1-c1ccccc1-3,,19,29,done,ubuntu-32gb-hel1-12,97ed2d67c66b,
 A2_00eeb8e5ed,A2,00eeb8e5edcf98d18f4eccb72a2fb82564ee3d3e,quinoxaline+OH,Oc1cnc2ccccc2n1,,11,17,done,ubuntu-32gb-hel1-11,97ed2d67c66b,
 A2_0101e57296,A2,0101e572964271d2e411be6572fbcb31248e5771,fluoranthene+NH2,Nc1ccc2c(c1)-c1cccc3cccc-2c13,,17,28,done,ubuntu-32gb-hel1-9,97ed2d67c66b,
@@ -3245,7 +3245,7 @@ B_8ae0818256,B,2038ae0818256c3430e343840312bedd3b374fcfc77,benzothiophene+Cl,Clc
 B_8ae0bab712,B,0018ae0bab7122611843ea84cb794b7ae8f6cce8b96,naphthalene+NO2+CF3,O=[N+]([O-])c1cc2ccccc2cc1C(F)(F)F,,17,23,pending,,,rehash-2026-09-28
 B_8aed44251c,B,1038aed44251c32b6489eefc8c4845c745ae5f6bc43,benzene+CN+NO2,N#Cc1ccc([N+](=O)[O-])cc1,,11,15,pending,,,rehash-2026-09-28
 B_8afe45cad0,B,2038afe45cad05f34c8c32ef290c20b3415b0d100f9,benzothiophene+CH3,Cc1cccc2sccc12,,10,18,pending,,,rehash-2026-09-28
-B_8b12a55d3a,B,1048b12a55d3ad6c3a70146c400bb18a5c0f25deaf3,benzene+F,Fc1ccccc1,,7,12,pending,,,rehash-2026-09-28
+B_8b12a55d3a,B,1048b12a55d3ad6c3a70146c400bb18a5c0f25deaf3,benzene+F,Fc1ccccc1,,7,12,done,ubuntu-32gb-hel1-23,9e27bf8e9348,rehash-2026-09-28
 B_8b1e891135,B,0018b1e89113507bd0d191d25cfe63ccf900220a2a2,naphthalene+OCH3+vinyl,C=Cc1ccc2ccc(OC)cc2c1,,14,26,pending,,,rehash-2026-09-28
 B_8b2cf7184c,B,3048b2cf7184c92625c85e8c1e0cc79950ed9a14811,furan+ethynyl,C#Cc1ccoc1,,7,11,pending,,,rehash-2026-09-28
 B_8b2eaac421,B,0018b2eaac42108532f09eb3e36fb0e86267cf87f0f,naphthalene+COOH+COOH,O=C(O)c1ccc2c(C(=O)O)cccc2c1,,16,24,pending,,,rehash-2026-09-28

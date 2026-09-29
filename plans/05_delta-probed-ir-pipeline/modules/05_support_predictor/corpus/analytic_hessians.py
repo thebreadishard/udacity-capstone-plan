@@ -3,10 +3,13 @@ corpus geometry, 6-31G* with Cartesian d (as psi4), grid (99,590), written next 
 hessian_<tag>_analytic.npz (H_raw, H_projected with translations/rotations projected out, freq_cm, energy) plus analytic_check.json with the
 side-by-side frequencies. Found on benzene: the corpus ωB97X FD Hessian was wrong by up to 133 cm⁻¹ (degenerate pairs split 563/605).
 
-Usage: python analytic_hessians.py <molecule dir> [more dirs...] [--threads 16] [--grid 99,590]
+Usage: python analytic_hessians.py <molecule dir> [more dirs...] [--threads 16] [--grid 99,590] [--charge 0 --spin 0]
+       --charge/--spin (29 Sep 2026, anchor set two R4): UKS for an open-shell molecule (spin = 2S, as pyscf); a folder without the corpus psi4 file
+       of a functional (the cation has no corpus row) gets the analytic file and no comparison for it.
 """
 import argparse
 import json
+import os
 import time
 
 import numpy as np
@@ -45,24 +48,35 @@ def vib_only(f):
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("dirs", nargs="+"); ap.add_argument("--threads", type=int, default=16); ap.add_argument("--grid", default="99,590"); ap.add_argument("--compare-only", action="store_true", help="rebuild analytic_check.json from the saved *_analytic.npz files (no DFT)")
+    ap.add_argument("--charge", type=int, default=0); ap.add_argument("--spin", type=int, default=0, help="2S; > 0 selects UKS (the E8 open-shell path uses the same convention)")
     a = ap.parse_args(); lib.num_threads(a.threads); rad, ang = (int(v) for v in a.grid.split(","))
     for d in a.dirs:
         g = json.load(open(d + "/geometry.json")); sym = g["symbols"]; x = np.array(g["coords_bohr"]); masses = np.array(g["masses_amu"])
-        mol = gto.M(atom=[(s.capitalize(), tuple(c)) for s, c in zip(sym, x, strict=True)], unit="Bohr", basis="6-31g*", cart=True, symmetry=False, verbose=0, max_memory=20000)
+        mol = gto.M(atom=[(s.capitalize(), tuple(c)) for s, c in zip(sym, x, strict=True)], unit="Bohr", basis="6-31g*", cart=True, symmetry=False, verbose=0, max_memory=20000,
+                    charge=a.charge, spin=a.spin)
         out = {}
         for tag, xc in (("b3lyp", "b3lyp"), ("wb97x", "wb97x")):
             n = len(sym); t0 = time.time()
             if a.compare_only:
                 z = np.load(f"{d}/hessian_{tag}_analytic.npz"); Hc = z["H_raw"]; Hp = z["H_projected"]; e = float(z["energy"])
             else:
-                mf = dft.RKS(mol); mf.xc = xc; mf.grids.atom_grid = (rad, ang); mf.grids.prune = None; mf.conv_tol = 1e-11; e = mf.kernel()
+                mf = dft.UKS(mol) if a.spin else dft.RKS(mol); mf.xc = xc; mf.grids.atom_grid = (rad, ang); mf.grids.prune = None; mf.conv_tol = 1e-11; e = mf.kernel()
+                if not mf.converged: raise RuntimeError(f"{d} {tag}: SCF not converged")
+                if a.spin:
+                    s2 = float(mf.spin_square()[0]); s = a.spin / 2
+                    if abs(s2 - s * (s + 1)) > 0.05: print(f"{d} {tag}: WARNING <S^2> = {s2:.3f}, expected {s * (s + 1):.3f} (spin contamination)", flush=True)
                 H = mf.Hessian().kernel(); Hc = H.transpose(0, 2, 1, 3).reshape(3 * n, 3 * n); Hc = 0.5 * (Hc + Hc.T)
                 Hp = project_tr(Hc, masses, x)
             # frequencies from the projected Hessian by the corpus's own convention: a 3N-long list, imaginary modes negative, six ~0 entries.
             # (pyscf's harmonic_analysis drops a mode when an imaginary one falls in its trans/rot window — 62 instead of 63 entries on A2_3a2982dd85, 23 Sep.)
             fr = freqs_cm(Hp, masses)
             if not a.compare_only:
-                np.savez_compressed(f"{d}/hessian_{tag}_analytic.npz", H_raw=Hc, H_projected=Hp, freq_cm=fr, energy=float(e), grid=np.array([rad, ang]))
+                np.savez_compressed(f"{d}/hessian_{tag}_analytic.npz", H_raw=Hc, H_projected=Hp, freq_cm=fr, energy=float(e), grid=np.array([rad, ang]),
+                                    charge=a.charge, spin=a.spin, reference="UKS" if a.spin else "RKS")
+            if not os.path.exists(f"{d}/hessian_{tag}.npz"):
+                out[tag] = dict(freq_analytic=vib_only(fr).tolist(), energy=float(e), seconds=round(time.time() - t0), corpus_file="absent")
+                print(f"{d} {tag}: {out[tag]['seconds']} s; no corpus psi4 file to compare with; lowest vib {vib_only(fr)[:3].round(1).tolist()} cm-1", flush=True)
+                continue
             corpus = np.load(f"{d}/hessian_{tag}.npz")
             fr = vib_only(fr); fc = vib_only(corpus["freq_cm"])     # drop the six trans/rot entries (smallest |value|) from both lists; imaginary modes stay, negative
             out[tag] = dict(freq_analytic=fr.tolist(), freq_corpus=fc.tolist(), dH_max=float(np.abs(Hc - corpus["H_raw"]).max()),

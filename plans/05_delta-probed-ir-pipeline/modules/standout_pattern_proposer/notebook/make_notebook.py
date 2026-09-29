@@ -272,6 +272,34 @@ band deck. With the wide pool the oracle reaches it; the band-trained scorer doe
 26 September was a proxy statement; the wide-candidate deck pre-registered on 27 September is the condition for reaching the target, not a refinement; the
 prediction on record (C1 passes) was wrong and is kept. Sections 1–4b stand as run; naphthalene's CC Hessian (this week) decides whether benzene is the rule.""")
 
+# ---- 4d. follow-up (29 September 2026): the low level of 4c was noise — the analytic rerun
+md("""### 4d. Follow-up (29 September 2026): benzene's corpus psi4 pair is noise — the CC test rerun with the analytic B3LYP low level
+
+While building the anchor-set-two read-out it turned out that benzene's corpus row (psi4 finite-difference Hessians, grid 75/302) is off the pyscf
+analytic Hessians of the same geometry by up to 132 cm⁻¹ (ωB97X) and 23 cm⁻¹ (B3LYP): the proxy Δ₂ of that row is noise, and 4c's Δ_CC carried the
+B3LYP file's error. Other rows checked (benzonitrile, fluorobenzene) agree with their analytic pairs to 0–5 cm⁻¹. Section 4c is kept as run; here the
+same test with `--use-analytic` (analytic low level, analytic proxy export, same deck and hash). Correction section in the pre-registration.""")
+code("""an_reg = json.load(open(OUT / "cc" / "A_8448043181_cc_test_analytic.json")); an_e = json.load(open(OUT / "cc" / "A_8448043181_cc_test_analytic_all_band0.json"))
+old_e = json.load(open(OUT / "cc" / "A_8448043181_cc_test_all_band0.json")) if (OUT / "cc" / "A_8448043181_cc_test_all_band0.json").exists() else cc_e2
+rows = []
+for tag, rr in (("28 Sep, psi4 FD low level: registered band deck", cc_reg), ("29 Sep, analytic low level: registered band deck", an_reg),
+                ("28 Sep, psi4 FD low level: wide pool, open prior", old_e), ("29 Sep, analytic low level: wide pool, open prior", an_e)):
+    for resp in ("cc", "proxy"):
+        d = rr[resp]
+        rows.append({"run": tag, "response": resp, "P0 K_off(0.3)": d["P0"]["k_off_0p3"], "P0 final ρ_off": round(d["P0"]["rho_off_final"], 2), "P1 median K_off ratio": d["P1_median"]["k_off_ratio"],
+                     "P1 median n_half ratio": d["P1_median"]["n_half_ratio"], "oracle K_off(0.3)": d["oracle"]["k_off_0p3"]})
+display(pd.DataFrame(rows))
+print(f"in-band share of the off-diagonal Δ₂ power (200 cm⁻¹): CC {an_reg['delta2']['inband_share_cc']:.2f} (4c: {cc_reg['delta2']['inband_share_cc']:.2f}) vs proxy "
+      f"{an_reg['delta2']['inband_share_proxy']:.2f} (4c: {cc_reg['delta2']['inband_share_proxy']:.2f}); Frobenius CC/proxy {an_reg['delta2']['ratio']:.2f} (4c: {cc_reg['delta2']['ratio']:.2f}); "
+      f"registered lines: C1 {'pass' if an_reg['judged']['C1_pass'] else 'FAIL'}, C2 {'pass' if an_reg['judged']['C2_pass'] else 'FAIL'}; "
+      f"wide pool, open prior, analytic: C1 {'pass' if an_e['judged']['C1_pass'] else 'FAIL'}, C2 {'pass' if an_e['judged']['C2_pass'] else 'FAIL'} ({an_e['judged']['label']})")""")
+md("""*Reading (29 September 2026).* What stands from 4c: the CC correction has 4 % of its off-diagonal power in band and no ordering reaches ρ_off 0.3 on the
+band deck; the registered lines fail. What is withdrawn: every proxy number for benzene — the clean proxy has 30 % in band (not 52), is 2.4× smaller off the
+diagonal than the CC correction (not 3× larger), and fails the band deck just as CC does. What is new and exploratory: on the wide pool with the open prior
+the band-trained scorer halves the cost on the real CC response (P1 median 0.46 of P0's 806 energies; oracle 124), where 4c had read "worse than P0" from
+the noisy files. One molecule, one scorer; nothing about the learned representation changes. Rule for every CC-level read from here: the analytic pair as
+the low level, never a corpus psi4 file. Naphthalene decides, read the same way.""")
+
 md("""## 5. The deck itself — the band candidate set against every pair
 
 `deck_cost_readout.py` compares, per evaluation split, what the band deck and the all-pairs candidate set cost and buy. This is the result that changes

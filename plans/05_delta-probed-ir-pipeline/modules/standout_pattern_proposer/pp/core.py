@@ -88,7 +88,7 @@ def export_molecule(mol_dir: Path, use_analytic: bool = False, quick: bool = Fal
     return dict(id=o["id"], M=o["M"], freq_cm=o["freq_cm"], D2=o["D2"], participation=o["participation"], symbols=o["symbols"],
                 deck_hash=deck["deck_hash"], kinds=np.array([p["kind"] for p in pats]), modes=[p["modes"] for p in pats],
                 holdout=np.array([bool(p["holdout"]) for p in pats]), A=Avec, rows=rows, R=R, pairs=pairs, d_true=d_true,
-                pos=o["pos"], masses=o["masses"], H_low=o["H_low"], V=o["V"])
+                pos=o["pos"], masses=o["masses"], H_low=o["H_low"], V=o["V"], analytic=o["analytic"])
 
 
 def save_export(exp: dict, path: Path) -> None:

@@ -135,16 +135,20 @@ def K_from_dH(m, dH):
     return (Km / (2 * np.sqrt(np.outer(om, om))) * HARTREE2CM).astype(np.float64)
 
 
+def corrected_frequencies(m, K):
+    """Frequencies and modes of Ω² + 2√(ω_i ω_j) K_b (cm⁻²), K_b the same-family blocks of K (E9-at-CC reads the per-mode error from this)."""
+    w = np.abs(m["freq"]); S = np.sqrt(np.outer(w, w)); fam = np.array(m["family"])
+    Kb = np.where(fam[:, None] == fam[None, :], K, 0.0); Kb = 0.5 * (Kb + Kb.T)
+    ev, U = np.linalg.eigh(np.diag(w ** 2) + 2 * S * Kb)
+    return np.sqrt(np.abs(ev)), U
+
+
 def basis_free(P, mols, ids):
     """Corrected frequencies from Ω² + 2√(ω_i ω_j) K (cm⁻²) with K_pred against K_true, and the Duschinsky overlap of the corrected modes."""
     dfreq, dfreq_zero, overlap = [], [], []
     for i in ids:
-        m = mols[i]; w = np.abs(m["freq"]); S = np.sqrt(np.outer(w, w)); fam = np.array(m["family"])
-        same = fam[:, None] == fam[None, :]
-        def corrected(K, same=same, w=w, S=S):
-            Kb = np.where(same, K, 0.0); Kb = 0.5 * (Kb + Kb.T)
-            ev, U = np.linalg.eigh(np.diag(w ** 2) + 2 * S * Kb); return np.sqrt(np.abs(ev)), U
-        wt, Ut = corrected(m["K"]); wp, Up = corrected(P[i]); w0, U0 = corrected(np.zeros_like(m["K"]))
+        m = mols[i]
+        wt, Ut = corrected_frequencies(m, m["K"]); wp, Up = corrected_frequencies(m, P[i]); w0, U0 = corrected_frequencies(m, np.zeros_like(m["K"]))
         dfreq.append(wp - wt); dfreq_zero.append(w0 - wt)
         overlap.append(np.max(np.abs(Up.T @ Ut), axis=1))
     return {"corrected_freq_rms": E6.rms(np.concatenate(dfreq)), "corrected_freq_rms_zero_rule": E6.rms(np.concatenate(dfreq_zero)),

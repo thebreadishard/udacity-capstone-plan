@@ -56,3 +56,14 @@ Every number in the notebook and the report traces to a file named here. Dated n
   -> `out/cc/A_8448043181_cc_test_all_band0.{json,md}` (exploratory, labelled).
 - Reading (ii), launched 21:57 on the laptop (8 shards, OMP 2 threads each): `python run_simulation.py out/exports out/p1 out/sim/all_p2s1_w0_shard$k --embed-prefix out/p2s1
   --pool all --w-cm 0 --only P12,P3_oracle --checkpoints 60 --shard $k/8` -> `out/sim/all_p2s1_w0_shard*.{json,md,log}`; merge with `merge_shards.py`, read with `stop_rule_readout.py`.
+
+## 29 September 2026, 05:3x — analytic low level (benzene's corpus psi4 pair is noise)
+
+- Analytic proxy export of benzene: `python run_export.py ../05_support_predictor/corpus/molecules out/exports_analytic --use-analytic --only A_8448043181`
+  -> `out/exports_analytic/{A_8448043181.npz,index.json}` (same deck hash 0932211bc5a8; in-band share 0.30 against 0.52 from the psi4 pair).
+- CC test, registered configuration, analytic B3LYP low level: `python cc_level_test.py A_8448043181 ../../probes/results_m1/e8_benzene_ccpvdz/hessian_ccsd_t.npz --use-analytic`
+  -> `out/cc/A_8448043181_cc_test_analytic.{json,md}`: CC in-band 4.0 %, proxy 30 %, Frobenius CC/proxy 2.36; C1/C2 FAIL; no ordering reaches 0.3 on either response.
+- CC test, exploratory wide pool, band-free prior, analytic: `... --use-analytic --pool all --w-cm 0 --tag all_band0`
+  -> `out/cc/A_8448043181_cc_test_analytic_all_band0.{json,md}`: CC P0 806, P1 median 0.46 (n_half 0.57), oracle 124; proxy P0 620, P1 0.70, oracle 124.
+- `pp.core.export_molecule` now returns `analytic`; `cc_level_test.py --use-analytic/--exports`; `run_export.py --only` (tests in `tests/test_e9_cc_readout.py`).
+- Correction section in `PreRegistration_2026-09-28_Standout_CC_Level_Test.md`; notebook section 4d.

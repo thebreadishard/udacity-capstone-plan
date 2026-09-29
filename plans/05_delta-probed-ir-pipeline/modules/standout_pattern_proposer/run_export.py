@@ -20,6 +20,14 @@ from pp import core as C  # noqa: E402
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 
+def select_dirs(dirs, only):
+    """The complete molecule folders, restricted to the ids in `only` (comma-separated) when given; order kept."""
+    if not only:
+        return list(dirs)
+    keep = {s.strip() for s in only.split(",") if s.strip()}
+    return [d for d in dirs if d.name in keep]
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("molecules")
@@ -27,9 +35,10 @@ def main() -> int:
     ap.add_argument("--use-analytic", action="store_true")
     ap.add_argument("--limit", type=int, default=None)
     ap.add_argument("--dry-run", action="store_true", help="list what would be exported; write nothing")
+    ap.add_argument("--only", default=None, help="comma-separated molecule ids; the others are skipped (29 Sep 2026: one analytic export for the CC test)")
     a = ap.parse_args()
     root, out = Path(a.molecules), Path(a.out)
-    dirs = sorted(d for d in root.iterdir() if (d / "hessian_b3lyp.npz").exists() and (d / "hessian_wb97x.npz").exists())
+    dirs = select_dirs(sorted(d for d in root.iterdir() if (d / "hessian_b3lyp.npz").exists() and (d / "hessian_wb97x.npz").exists()), a.only)
     if a.limit:
         dirs = dirs[: a.limit]
     print(f"{len(dirs)} complete molecule folders under {root}" + (" (dry run)" if a.dry_run else ""))

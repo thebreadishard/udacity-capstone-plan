@@ -62,3 +62,48 @@ the plan can reach its target at all; its stop rule must not assume the band. (2
 per level of theory; the wide pool with an open prior is the honest default until the naphthalene CC Hessian says otherwise. (3) The naphthalene run of
 this test (§3) is now the decisive one: a second molecule with the same picture makes it a rule of the CC correction, a different picture makes benzene
 the exception. Nothing is retrained; no sentence about the learned representation changes.
+
+## Correction, 29 September 05:3x — the low level and the proxy of the outcome above were noise; the analytic rerun
+
+*The outcome section above is kept as written on 28 September. Found on 29 September while building anchor set two's R2 read-out.*
+
+**What was wrong.** Both sides of the 28 September run used benzene's corpus files: Δ_CC = H_CC − H_B3LYP with the corpus psi4 finite-difference
+B3LYP Hessian (grid 75/302, the 15 September grid rerun), and the proxy Δ = H_ωB97X − H_B3LYP from the same folder. Against the pyscf analytic
+Hessians of the same geometry (grid 99/590; `corpus/analytic_hessians.py`, which had recorded the fact on 23 September) that B3LYP Hessian is off by up
+to 23 cm⁻¹ (RMS 5) and the ωB97X one by up to 132 cm⁻¹ (RMS 35; degenerate pairs split by 42 cm⁻¹): the proxy Δ of this row is 106 % noise relative
+to the analytic Δ, and the CC Δ carried the B3LYP file's error (a third of the analytic proxy's norm) spread over every pair. Benzonitrile and
+fluorobenzene's corpus rows agree with their analytic pairs to 0 cm⁻¹ (B3LYP) and 3–5 cm⁻¹ (ωB97X): benzene's row is the exception, not the deck.
+Independent check with the E9 construction (benzene's block carried onto benzonitrile, `m05/e9_cc_readout.py`): the psi4 pair reads FAIL
+(r = 2: 21.9 cm⁻¹, ring coupling ratio 3.7), the analytic pair PASS (0.88 cm⁻¹, 0.06).
+
+**Rerun** (`cc_level_test.py --use-analytic`: analytic B3LYP low level; the proxy export rebuilt with `run_export.py --use-analytic --only A_8448043181`
+into `out/exports_analytic`; same deck and hash 0932211bc5a8; `out/cc/A_8448043181_cc_test_analytic.{json,md}`,
+`…_analytic_all_band0.{json,md}`):
+
+| run | quantity | 28 Sep (psi4 FD low level, noisy proxy) | 29 Sep (analytic low level, clean proxy) |
+|---|---|---|---|
+| registered, band deck | CC off-diagonal power in band (200 cm⁻¹) | 4.4 % | **4.0 %** |
+| registered, band deck | proxy off-diagonal power in band | 52 % | **30 %** |
+| registered, band deck | Frobenius off-diagonal CC / proxy | 0.33 | **2.36** |
+| registered, band deck | K_off(0.3) on CC: P0 / P1 / oracle | — / — / — | — / — / — |
+| registered, band deck | K_off(0.3) on the proxy: P0 / P1 / oracle | 468 / 468 / 36 | **— / — / —** |
+| registered, band deck | C1, C2 | FAIL, FAIL | FAIL, FAIL |
+| exploratory, wide pool, open prior | CC: P0 / P1 median ratio / oracle | 1,054 / 1.18 / 372 | **806 / 0.46 (n_half 0.57) / 124** |
+| exploratory, wide pool, open prior | proxy: P0 / P1 median ratio / oracle | 1,116 / 2.20 / — | **620 / 0.70 (n_half 0.56) / 124** |
+| exploratory, wide pool, open prior | C1 on CC; C2 | FAIL; FAIL | **pass (0.46 ≤ 0.80, 0.57 ≤ 0.80); FAIL by a hair (0.46 vs 0.70 = factor 1.52)** |
+
+**What stands, what is withdrawn, what is new.**
+
+1. *Stands:* the CC correction's off-diagonal power is 4 % in band; on the band deck no ordering, the oracle included, reaches ρ_off 0.3 on CC. The
+   registered lines fail as before; module 08's plan line stays "proxy" on the registered run.
+2. *Withdrawn:* every proxy number of the outcome above for benzene ("52 % in band", "Frobenius ratio 0.33", "P0 reaches 0.3 at 468 on the proxy",
+   "the band-trained scorer is worse than P0 on the wide pool", the 17 % within 10 cm⁻¹ read as DFT symmetry noise). The clean proxy has 30 % in band,
+   is 2.4× smaller off the diagonal than the CC correction, and does **not** reach 0.3 on the band deck either — proxy and CC now tell the same story
+   about the band deck. The band-prior finding of 26 September (pooled over the corpus, other rows clean) is not touched by this row.
+3. *New, exploratory:* on the wide pool with the open prior the E1 band-trained scorer halves the cost on the real CC response of benzene (P1 median
+   0.46 of P0's 806 energies; the oracle at 124 is 3.0× below P1). The prediction on record for the registered run (C1 passes, ratio 0.6–0.8) stays
+   wrong on the band deck; on the wide deck the ratio is 0.46. One molecule; the E2 reading (P1 0.57–0.63 on the parents) is neither overturned nor
+   confirmed by it. The 27 September wide-deck pre-registration (and its 28 September amendment: band-free prior as the default) is the registered
+   route, and this is the first CC-level number under it.
+4. *Rule:* CC-level reads never take a corpus psi4 FD file as the low level — the analytic pair at the same geometry, always (`--use-analytic`;
+   anchor set two's amendment of 29 September). The naphthalene run of this test (§3) is read with the analytic B3LYP; it remains the decisive one.

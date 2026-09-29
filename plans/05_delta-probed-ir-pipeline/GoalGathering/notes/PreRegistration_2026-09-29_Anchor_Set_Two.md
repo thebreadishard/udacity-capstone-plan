@@ -74,3 +74,26 @@ tests' own pre-registrations. Prices are recorded as measured, not as estimated,
 Frozen core derived per molecule (the 27 September rule); every gradient file written as it lands so a broken run resumes; the poller reports every pair
 check and every ANCHOR … DONE/FAILED line; the chain stops on the first failure. Chain: `probes/run_anchors_hel23.sh`; logs `/root/e8/anchors.log`,
 `/root/e8/results/<name>/e8_fd.log`. Server deleted by the user when the results are fetched and verified per file.
+
+## Amendment, 29 September 05:1x — the low level of every read is the analytic route (before any anchor number exists)
+
+Found while building R2's read-out (`m05/e9_cc_readout.py`, the E9 construction with a CC ΔH) and checking it on the proxy: benzene's corpus row
+(A_8448043181, psi4 finite-difference Hessians, grid 75/302, the 15 September grid rerun) is noise-dominated — against the pyscf analytic
+Hessians of the same geometry (grid 99/590, `corpus/analytic_hessians.py`, which recorded the fact on 23 September) its ωB97X frequencies are off by
+up to 132 cm⁻¹ (RMS 35; degenerate pairs split by 42 cm⁻¹) and its B3LYP ones by up to 23 cm⁻¹ (RMS 5), so its proxy correction ΔH is 106 % noise
+relative to the analytic ΔH. Benzonitrile's row is clean (analytic B3LYP within 0 cm⁻¹, ωB97X within 3). The E9 proxy check benzene → benzonitrile
+reads FAIL with the psi4 pair (r = 2: corrected ω RMS 21.9 cm⁻¹, ring coupling ratio 3.7) and PASS with the analytic pair (0.88 cm⁻¹, 0.06;
+residual ratio 0.015) — the same construction, the same molecules, only the noise removed.
+
+Consequences, fixed now:
+
+1. **R1–R5 use ΔH = H_CCSD(T) − H_B3LYP with the pyscf analytic B3LYP Hessian** (6-31G* Cartesian d, grid 99/590, at the corpus geometry), for
+   the anchors and for benzene and naphthalene, never the corpus psi4 FD file. `e9_cc_readout.py --use-analytic`, `cc_level_test.py --use-analytic`
+   (with `run_export.py --use-analytic --only <id>` for the matching proxy export); the E8 locality read already computed its own analytic pair.
+   Analytic pairs exist for benzene (23 Sep) and benzonitrile (29 Sep, hel1-23, niced beside the CC run); fluorobenzene and pyridine follow in the
+   same job; the cation needs the UKS variant of `analytic_hessians.py` before R4.
+2. **R2's proxy prediction is now on record with the clean pair:** transfer + probe at r = 2 gives 0.88 cm⁻¹ / ratio 0.06 on the DFT proxy; the CC
+   lines stay as registered (≤ 3.3 cm⁻¹, ≤ 0.5). The prediction "RMS 2–4 cm⁻¹ at CC" stands.
+3. **The 28 September CC-level test on benzene** (`Standout_CC_Level_Test`) read Δ_CC against the noisy psi4 B3LYP and compared with the noisy proxy
+   (its "proxy 52 % in band" is the noise's share; the analytic proxy export gives 30 %). It is rerun with `--use-analytic` and its outcome section
+   is corrected separately; nothing built on it (band-free prior default, reading (ii)) is judged until that rerun is read.
