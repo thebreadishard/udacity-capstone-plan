@@ -8,6 +8,7 @@ set -euo pipefail
 cd /root/e8
 PY=/root/miniforge3/envs/qc05/bin/python
 QC=/root/miniforge3/envs/qc/bin/python
+export CORPUS_QC_PYTHON=$QC     # run_corpus.py finds the psi4 worker's python through this variable (first launch of 29 Sep stopped here)
 CORPUS=/root/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/corpus
 LOG=/root/e8/anchors.log
 T=16
@@ -30,7 +31,8 @@ anchor water_cation_smoke smoke/water.json results/smoke_water_cation --charge 1
 say "SMOKES OK"
 
 say "corpus steps: fluorobenzene B_8b12a55d3a and pyridine A_6e858b26e5 (psi4 deck v1, B3LYP geometry + both Hessians)"
-( cd "$CORPUS" && OMP_NUM_THREADS=$T "$QC" run_corpus.py --ids B_8b12a55d3a,A_6e858b26e5 --threads $T --memory-gb 24 >> /root/e8/corpus_steps.log 2>&1 )
+( cd "$CORPUS" && OMP_NUM_THREADS=$T "$QC" run_corpus.py --ids B_8b12a55d3a,A_6e858b26e5 --threads $T --memory-gb 24 >> /root/e8/corpus_steps.log 2>&1 ) \
+  || { say "CORPUS STEP FAILED (run_corpus.py exit $?; see corpus_steps.log)"; exit 1; }
 for id in B_8b12a55d3a A_6e858b26e5; do
   [ -f "$CORPUS/molecules/$id/geometry.json" ] || { say "CORPUS STEP FAILED for $id (no geometry.json)"; exit 1; }
 done
