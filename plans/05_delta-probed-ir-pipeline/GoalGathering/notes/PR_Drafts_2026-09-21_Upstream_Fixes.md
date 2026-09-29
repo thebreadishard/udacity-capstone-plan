@@ -67,3 +67,24 @@ serial time: `ccsd_t_lambda` blocks, `ccsd_t_rdm` blocks, the `numpy.einsum` cal
 equations; (2) if one block carries most of the serial time, a patch (lib.einsum / blocked contraction / OpenMP in the C kernel) with the shipped tests
 and a before/after timing on benzene and naphthalene; (3) only then a draft PR to pyscf with the numbers. Until (1) exists this note makes no claim about
 the cause. Cheaper for us either way: several gradients per molecule in parallel with fewer threads each (task board).
+
+**Profile, 29 September 11:2x** (`probes/results_m1/profiles/profile_t_grad_{4,1}.txt`, script `profile_ccsd_t_gradient.py` in the session; benzene,
+corpus geometry, cc-pVDZ, frozen 6, 114 basis functions, hel1-23 niced beside the CC run, cProfile on the gradient stage only):
+
+| threads | SCF | CCSD | (T) energy (C kernel) | (T) gradient: λ + densities + gradient | total |
+|---|---|---|---|---|---|
+| 4 | 1 s | 18 s | 14 s | **979 s** | 1,012 s |
+| 1 | 3 s | 42 s | 49 s | **1,386 s** | 1,479 s |
+
+Inside the gradient stage at 4 threads: `ccsd_t_rdm._gamma1_intermediates` 528 s cumulative of which **295 s own time**, `_gamma2_intermediates` 423 s
+of which **292 s own time** — Python-level numpy work in the blocked triple loops over virtual blocks (the permutation sums, the division by the
+energy denominators, transposes), single-threaded; `lib.einsum` → `_dgemm` 233 s (BLAS, the part that does scale: 667 s at one thread), `numpy.einsum`
+85 s (serial), `reshape` copies 37 s. The own time of the two functions is the same at one thread (267 + 272 s): a serial floor of ≈ 650 s that no
+thread count removes, which is why 16 threads on the CPX62 and 24 on the CCX53 gave the same 663–695 s per benzene gradient (24 Sep). The (T) energy
+does the same t₃ work in the C kernel in 14 s; the (T) densities do it in Python in ≈ 950 s.
+
+**PR candidate, sharpened:** a C kernel for the (T) density intermediates of `ccsd_t_rdm.py` (`_gamma1_intermediates`, `_gamma2_intermediates`), in the
+manner of the (T) energy kernel and `t3_symm_ip` which already exists in `libcc`. Expected: the benzene gradient from ≈ 11 min to 3–4 min at 16 threads
+(the BLAS part alone), the anchor throughput ×3 on every machine. Before a PR: a reference implementation that reproduces the present densities to
+1e-10 on water and benzene, timing on naphthalene, and pyscf's own tests. This is a day or two of work, not an hour; it goes on the board as its
+own task, after the anchors.

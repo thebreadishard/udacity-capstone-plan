@@ -1,0 +1,71 @@
+benzene CCSD(T)/cc-pVDZ gradient, 1 threads, max_memory 8000 MB, 114 basis functions
+scf: 3 s
+ccsd: 42 s
+(T) energy: 49 s
+(T) gradient (lambda + densities + gradient): 1386 s
+total 1479 s; max|grad| 6.55e-03
+
+cumulative time, top 25 (gradient stage):
+         351762 function calls (347457 primitive calls) in 1386.296 seconds
+
+   Ordered by: cumulative time
+   List reduced from 1151 to 25 due to restriction <25>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.001    0.001 1386.295 1386.295 /root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/grad/ccsd.py:421(kernel)
+        1    0.003    0.003 1352.631 1352.631 /root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/grad/ccsd_t.py:24(grad_elec)
+        1  266.554  266.554  775.708  775.708 /root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/cc/ccsd_t_rdm.py:26(_gamma1_intermediates)
+     2650    0.563    0.000  770.643    0.291 /root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/lib/numpy_helper.py:289(einsum)
+     2668    0.109    0.000  770.071    0.289 /root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/lib/numpy_helper.py:134(contract)
+     2207  667.255    0.302  667.300    0.302 /root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/lib/numpy_helper.py:980(_dgemm)
+     2031    0.012    0.000  658.172    0.324 /root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/lib/numpy_helper.py:915(dot)
+     2031    0.011    0.000  658.160    0.324 /root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/lib/numpy_helper.py:825(ddot)
+        1    0.007    0.007  551.804  551.804 /root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/cc/ccsd_t_rdm.py:324(_gamma2_outcore)
+        1  272.332  272.332  551.797  551.797 /root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/cc/ccsd_t_rdm.py:211(_gamma2_intermediates)
+     2445    0.004    0.000   79.772    0.033 /root/miniforge3/envs/qc05/lib/python3.12/site-packages/numpy/_core/einsumfunc.py:1242(einsum)
+     2445   79.768    0.033   79.768    0.033 {built-in method numpy._core._multiarray_umath.c_einsum}
+      637    0.009    0.000   78.514    0.123 /root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/lib/numpy_helper.py:115(_numpy_einsum)
+     7607   33.171    0.004   33.171    0.004 {method 'reshape' of 'numpy.ndarray' objects}
+        1    0.000    0.000   30.156   30.156 /root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/cc/ccsd.py:1277(solve_lambda)
+        1    0.015    0.015   30.128   30.128 /root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/cc/ccsd_lambda.py:35(kernel)
+      108   26.001    0.241   26.003    0.241 /root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/cc/ccsd_t_rdm.py:337(t3_symm_ip_py)
+        1    0.059    0.059   25.013   25.013 /root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/grad/ccsd.py:43(grad_elec)
+       11    0.792    0.072   24.438    2.222 /root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/cc/ccsd_lambda.py:237(update_lambda)
+       42    0.000    0.000   16.207    0.386 /root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/gto/mole.py:3482(intor)
+       42    0.001    0.000   16.206    0.386 /root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/gto/moleintor.py:41(getints)
+       24   16.164    0.673   16.170    0.674 /root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/gto/moleintor.py:603(getints4c)
+       11    0.000    0.000   10.100    0.918 /root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/cc/ccsd.py:362(_add_vvvv)
+       11    0.006    0.001   10.078    0.916 /root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/cc/ccsd.py:385(_add_vvvv_tril)
+       11    0.000    0.000   10.071    0.916 /root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/cc/ccsd.py:1448(_contract_vvvv_t2)
+
+
+
+own time, top 20 (gradient stage):
+         351762 function calls (347457 primitive calls) in 1386.296 seconds
+
+   Ordered by: internal time
+   List reduced from 1151 to 20 due to restriction <20>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+     2207  667.255    0.302  667.300    0.302 /root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/lib/numpy_helper.py:980(_dgemm)
+        1  272.332  272.332  551.797  551.797 /root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/cc/ccsd_t_rdm.py:211(_gamma2_intermediates)
+        1  266.554  266.554  775.708  775.708 /root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/cc/ccsd_t_rdm.py:26(_gamma1_intermediates)
+     2445   79.768    0.033   79.768    0.033 {built-in method numpy._core._multiarray_umath.c_einsum}
+     7607   33.171    0.004   33.171    0.004 {method 'reshape' of 'numpy.ndarray' objects}
+      108   26.001    0.241   26.003    0.241 /root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/cc/ccsd_t_rdm.py:337(t3_symm_ip_py)
+       24   16.164    0.673   16.170    0.674 /root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/gto/moleintor.py:603(getints4c)
+      414    9.460    0.023    9.466    0.023 /root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/lib/numpy_helper.py:1157(direct_sum)
+       10    3.328    0.333    3.329    0.333 /root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/grad/ccsd.py:325(_trans)
+        1    1.831    1.831    1.834    1.834 /root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/ao2mo/incore.py:148(half_e1)
+      135    1.825    0.014    2.013    0.015 /root/miniforge3/envs/qc05/lib/python3.12/site-packages/h5py/_hl/dataset.py:962(__setitem__)
+        1    1.492    1.492    1.492    1.492 /root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/ao2mo/_ao2mo.py:157(nr_e2)
+      238    0.876    0.004    0.879    0.004 /root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/lib/numpy_helper.py:374(unpack_tril)
+       10    0.816    0.082    0.818    0.082 /root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/scf/_vhf.py:283(incore)
+       11    0.792    0.072   24.438    2.222 /root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/cc/ccsd_lambda.py:237(update_lambda)
+     2650    0.563    0.000  770.643    0.291 /root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/lib/numpy_helper.py:289(einsum)
+       11    0.546    0.050    7.331    0.666 /root/miniforge3/envs/qc05/lib/python3.12/threading.py:1155(_wait_for_tstate_lock)
+      823    0.506    0.001    0.543    0.001 /root/miniforge3/envs/qc05/lib/python3.12/site-packages/h5py/_hl/dataset.py:853(__getitem__)
+        7    0.441    0.063    0.441    0.063 {built-in method posix.remove}
+    11931    0.416    0.000    0.420    0.000 {built-in method numpy.asarray}
+
+
