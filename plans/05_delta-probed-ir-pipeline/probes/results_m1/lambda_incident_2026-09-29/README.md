@@ -19,9 +19,9 @@ FD Hessians of both routes (step 0.005 bohr, all 9 coordinates; `water_lambda_ro
 (`pyscf/grad/test/test_ccsd_t.py`, master) calls `ccsd_t_lambda.kernel(mycc, eris, t1, t2)` before `Gradients(mycc).kernel(t1, t2, l1, l2, eris=eris)`
 and compares with finite differences to 5 decimals.
 
-Benzene, E8 of 24 September (CCSD-lambda route) against the empirical harmonic frequencies of Goodman 1991 (`probes/data/benzene_benchmark_…json`):
+**Withdrawn 23:4x — not evidence:** benzene, E8 of 24 September (CCSD-lambda route) against the empirical harmonic frequencies of Goodman 1991 (`probes/data/benzene_benchmark_…json`):
 sorted differences −20, −20, −2, −2, −42, −74, −21, −21, −27, −27, −47, 10, 36, 28, 28, 1, 9, 9, 46, 20, 32, 32, 92, 92, 100, 111, 111, 122, 122, 123 cm⁻¹
-(rms 62). A CCSD(T)/cc-pVDZ harmonic set should sit within ≈ 10–40 cm⁻¹ of these values; the rerun decides how much of the 62 was the lambda.
+(rms 62). The rerun gave rms 65 against the same set: the Hessian stands on the B3LYP corpus geometry (reference gradient 7.7e-3 a.u.), not in the CCSD(T) minimum, and that geometry term, not the lambda, dominates the comparison. The valid check at benzene scale is the curvature check below.
 
 ## Consequences
 
@@ -32,3 +32,15 @@ sorted differences −20, −20, −2, −2, −42, −74, −21, −21, −27, 
   16 threads, symmetry: 12 + 1 gradients) and 21:12 (naphthalene f10, CCX53, 32 threads, symmetry).
 - Upstream candidate: `grad.ccsd_t.Gradients` (and `grad.uccsd_t`) should solve the (T) lambda when l1/l2 are not given, or refuse; see
   `PR_Drafts_2026-09-21_Upstream_Fixes.md`.
+
+## Benzene, 23:4x — the energy route at benzene scale (`benzene_curvature_check.py`, hel1-23, 338 s)
+
+Central differences of E_CCSD(T) along three normal-mode directions of the new Hessian at the corpus geometry (unit Cartesian direction, h = 0.01 and 0.02 bohr, Richardson) against dᵀHd of the new Hessian (explicit (T) lambda, 22:47) and the old one (CCSD lambda, 24 Sep):
+
+| mode | ω_new (cm⁻¹) | curvature FD of E_CCSD(T) (E_h/bohr²) | dᵀH_new d | rel. | dᵀH_old d | rel. | Δω old−FD (cm⁻¹) | Δω new−FD (cm⁻¹) |
+|---|---|---|---|---|---|---|---|---|
+| 6 | 361.9 | 0.01429773 | 0.01429745 | −1.9e-05 | 0.01557411 | +8.9e-02 | +16.2 | −0.0 |
+| 10 | 609.4 | 0.01524684 | 0.01524807 | +8.0e-05 | 0.01638029 | +7.4e-02 | +22.7 | +0.0 |
+| 35 | 3311.2 | 0.45711497 | 0.45711726 | +5.0e-06 | 0.45790455 | +1.7e-03 | +2.9 | +0.0 |
+
+The new Hessian is the second derivative of the CCSD(T) energy to 2e-5 relative; the old one was 7–9 % off on the out-of-plane modes. New against old frequencies over all 30 modes: −3…−27 cm⁻¹, rms 14.

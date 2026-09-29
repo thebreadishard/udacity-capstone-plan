@@ -72,3 +72,5 @@ Every number in the notebook and the report traces to a file named here. Dated n
 was computed with the CCSD lambda instead of the CCSD(T) lambda (pyscf `grad.ccsd_t.Gradients(mycc).kernel()` without l1/l2; evidence
 `results_m1/lambda_incident_2026-09-29/`). The outcome and the correction of 28–29 Sep stay as what that response gave; the test is rerun on the
 corrected benzene Hessian when it lands (hel1-23, rerun since 21:10), as a dated follow-up section, not a replacement.
+
+**29 Sep 2026, 23:4x — follow-up on the corrected benzene Hessian.** `cc_level_test.py A_8448043181 …e8_benzene_ccpvdz_tlambda/hessian_ccsd_t.npz --use-analytic [--tag tlambda | --pool all --w-cm 0 --tag tlambda_all_band0]` → `out/cc/A_8448043181_cc_test_analytic_tlambda*.{json,md}`: band deck C1/C2 FAIL (unchanged); wide pool band-free CC P1 median 0.54, oracle 124, C1 and C2 pass. Notebook section on it when the naphthalene rerun lands.

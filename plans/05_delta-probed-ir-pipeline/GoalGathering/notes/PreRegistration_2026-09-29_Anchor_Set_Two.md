@@ -146,3 +146,7 @@ superset misses nothing; what benzene cannot tell is how much the learned order 
 `e8_cc_hessian_fd.py` before 29 Sep 21:05 are therefore not CCSD(T) numbers, and every line above that was read against them is **unread again**:
 the outcomes stay on record as what the wrong route gave, the predictions and lines stand unchanged, and the re-read happens on the Hessians of
 the corrected probe (explicit `ccsd_t_lambda`/`uccsd_t_lambda`; benzene rerun on hel1-23 since 21:10, naphthalene f10 on the CCX53 since 21:12).
+
+## Dated note, 29 September 23:4x — benzene reference for every read is now the (T)-lambda Hessian
+
+`results_m1/e8_benzene_ccpvdz_tlambda/hessian_ccsd_t.npz` (12 + 1 gradients, explicit `ccsd_t_lambda`, density kernel; energy-route curvature check 2e-5) replaces the 24 Sep Hessian in R1–R5 and in the E9-at-CC reads. R5 on it: 97 % overall, 89 % ring in-plane. The set restarts on the corrected probe after gate 1 and the lambda kernel; per displaced gradient on benzene ≈ 6 min at 16 threads (lambda ≈ 305 s of it).

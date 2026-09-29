@@ -1,0 +1,134 @@
+{
+ "date": "2026-09-29 21:05",
+ "basis": "cc-pvdz",
+ "n_internals": 54,
+ "n_bonds": 12,
+ "patterns": {
+  "(c) control": {
+   "n_pairs": 978,
+   "CC − B3LYP | mask": {
+    "dH_residual_ratio": 0.09250926963742914,
+    "ring_coupling_ratio": 0.7935432814709715,
+    "ring_diag_rms": 11.666163646624511,
+    "corrected_freq_rms": 8.984213349502525,
+    "corrected_freq_rms_zero_rule": 44.51607987682719
+   },
+   "CC − B3LYP | fit": {
+    "dH_residual_ratio": 0.0017835559208691288,
+    "ring_coupling_ratio": 0.006341369331432852,
+    "ring_diag_rms": 0.10116529543365611,
+    "corrected_freq_rms": 0.1244062657161064,
+    "corrected_freq_rms_zero_rule": 44.51607987682719
+   },
+   "proxy ωB97X − B3LYP | mask": {
+    "dH_residual_ratio": 0.06303029949730794,
+    "ring_coupling_ratio": 0.15494740878101562,
+    "ring_diag_rms": 2.9065552205064336,
+    "corrected_freq_rms": 2.1995970485193315,
+    "corrected_freq_rms_zero_rule": 22.358105356129702
+   },
+   "proxy ωB97X − B3LYP | fit": {
+    "dH_residual_ratio": 0.0007897733994720537,
+    "ring_coupling_ratio": 0.0003238154841677894,
+    "ring_diag_rms": 0.022954848394518976,
+    "corrected_freq_rms": 0.06877816643211809,
+    "corrected_freq_rms_zero_rule": 22.358105356129702
+   }
+  },
+  "(d) (c) + pairs two bonds apart": {
+   "n_pairs": 1365,
+   "CC − B3LYP | mask": {
+    "dH_residual_ratio": 0.05183046634184827,
+    "ring_coupling_ratio": 0.47011480293582336,
+    "ring_diag_rms": 9.192418057678859,
+    "corrected_freq_rms": 6.295490927976215,
+    "corrected_freq_rms_zero_rule": 44.51607987682719
+   },
+   "CC − B3LYP | fit": {
+    "dH_residual_ratio": 0.0005042124097714405,
+    "ring_coupling_ratio": 0.0001817617609443035,
+    "ring_diag_rms": 0.02504047818822148,
+    "corrected_freq_rms": 0.06340983537525989,
+    "corrected_freq_rms_zero_rule": 44.51607987682719
+   },
+   "proxy ωB97X − B3LYP | mask": {
+    "dH_residual_ratio": 0.04363295349367455,
+    "ring_coupling_ratio": 0.17499301633583308,
+    "ring_diag_rms": 2.912875596310686,
+    "corrected_freq_rms": 1.9107736680620582,
+    "corrected_freq_rms_zero_rule": 22.358105356129702
+   },
+   "proxy ωB97X − B3LYP | fit": {
+    "dH_residual_ratio": 0.000330512860490354,
+    "ring_coupling_ratio": 0.00010078254106201591,
+    "ring_diag_rms": 0.01115851417661033,
+    "corrected_freq_rms": 0.02831791756533888,
+    "corrected_freq_rms_zero_rule": 22.358105356129702
+   }
+  },
+  "(e) all pairs inside a ring": {
+   "n_pairs": 984,
+   "CC − B3LYP | mask": {
+    "dH_residual_ratio": 0.09250925906106348,
+    "ring_coupling_ratio": 0.7935432820749508,
+    "ring_diag_rms": 11.666163643236603,
+    "corrected_freq_rms": 8.98421335405399,
+    "corrected_freq_rms_zero_rule": 44.51607987682719
+   },
+   "CC − B3LYP | fit": {
+    "dH_residual_ratio": 0.0017835627062744248,
+    "ring_coupling_ratio": 0.0063575652764429605,
+    "ring_diag_rms": 0.10097617044331558,
+    "corrected_freq_rms": 0.12436074750878442,
+    "corrected_freq_rms_zero_rule": 44.51607987682719
+   },
+   "proxy ωB97X − B3LYP | mask": {
+    "dH_residual_ratio": 0.06302995905346064,
+    "ring_coupling_ratio": 0.15494741413335084,
+    "ring_diag_rms": 2.906555163768076,
+    "corrected_freq_rms": 2.199597088139692,
+    "corrected_freq_rms_zero_rule": 22.358105356129702
+   },
+   "proxy ωB97X − B3LYP | fit": {
+    "dH_residual_ratio": 0.0007897734495220096,
+    "ring_coupling_ratio": 0.00032422170305132964,
+    "ring_diag_rms": 0.022953720960749713,
+    "corrected_freq_rms": 0.06877853746465516,
+    "corrected_freq_rms_zero_rule": 22.358105356129702
+   }
+  },
+  "(f) all pairs": {
+   "n_pairs": 1485,
+   "CC − B3LYP | mask": {
+    "dH_residual_ratio": 3.571729257521766e-15,
+    "ring_coupling_ratio": 2.0075988454876305e-14,
+    "ring_diag_rms": 1.1388536527871892e-13,
+    "corrected_freq_rms": 5.149482513575942e-13,
+    "corrected_freq_rms_zero_rule": 44.51607987682719
+   },
+   "CC − B3LYP | fit": {
+    "dH_residual_ratio": 5.192389479680588e-15,
+    "ring_coupling_ratio": 2.4866775181477523e-14,
+    "ring_diag_rms": 1.3607558595925233e-13,
+    "corrected_freq_rms": 5.405606900401786e-13,
+    "corrected_freq_rms_zero_rule": 44.51607987682719
+   },
+   "proxy ωB97X − B3LYP | mask": {
+    "dH_residual_ratio": 6.533399103566658e-15,
+    "ring_coupling_ratio": 2.4248136250522087e-14,
+    "ring_diag_rms": 1.3438723746410495e-13,
+    "corrected_freq_rms": 4.793083458897125e-13,
+    "corrected_freq_rms_zero_rule": 22.358105356129702
+   },
+   "proxy ωB97X − B3LYP | fit": {
+    "dH_residual_ratio": 8.064648580096012e-15,
+    "ring_coupling_ratio": 3.1303983065741666e-14,
+    "ring_diag_rms": 1.420017281036042e-13,
+    "corrected_freq_rms": 2.877946612851408e-13,
+    "corrected_freq_rms_zero_rule": 22.358105356129702
+   }
+  }
+ },
+ "target_pattern_by_rule": "(c) control",
+ "seconds": 451
+}

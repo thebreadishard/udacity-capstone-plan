@@ -1,0 +1,11 @@
+E0 -231.5813026336 (25 s)
+mode 6 (362 cm-1) h 0.01: curvature 0.01429761
+mode 6 (362 cm-1) h 0.02: curvature 0.01429580
+mode 6 (362 cm-1): FD 0.01429773 | new (T)-lambda 0.01429745 (rel -1.95e-05) | old CCSD-lambda 0.01557411 (rel +8.93e-02)
+mode 10 (609 cm-1) h 0.01: curvature 0.01524693
+mode 10 (609 cm-1) h 0.02: curvature 0.01524820
+mode 10 (609 cm-1): FD 0.01524684 | new (T)-lambda 0.01524807 (rel +8.04e-05) | old CCSD-lambda 0.01638029 (rel +7.43e-02)
+mode 35 (3311 cm-1) h 0.01: curvature 0.45711613
+mode 35 (3311 cm-1) h 0.02: curvature 0.45713366
+mode 35 (3311 cm-1): FD 0.45711497 | new (T)-lambda 0.45711726 (rel +5.01e-06) | old CCSD-lambda 0.45790455 (rel +1.73e-03)
+CURVATURE CHECK DONE 338.3652141094208 s

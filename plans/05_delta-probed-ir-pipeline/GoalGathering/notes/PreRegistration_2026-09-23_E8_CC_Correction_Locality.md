@@ -225,3 +225,7 @@ chain. The rule now reads: element-dependent settings are derived, never default
 `e8_cc_hessian_fd.py` before 29 Sep 21:05 are therefore not CCSD(T) numbers, and every line above that was read against them is **unread again**:
 the outcomes stay on record as what the wrong route gave, the predictions and lines stand unchanged, and the re-read happens on the Hessians of
 the corrected probe (explicit `ccsd_t_lambda`/`uccsd_t_lambda`; benzene rerun on hel1-23 since 21:10, naphthalene f10 on the CCX53 since 21:12).
+
+## Outcome on the corrected benzene Hessian — 29 September 23:4x (`results_m1/e8_benzene_ccpvdz_tlambda/E8_locality_benzene.md`, `E8_between_benzene.md`)
+
+Verdict again **between**: pattern (c) ΔH residual ratio 0.09 (line ≤ 0.30, win ≤ 0.35), ring coupling ratio 0.79 (win ≤ 0.5; proxy 0.15); correlation of ΔF_CC with ΔF_proxy on (c) 0.62 (was 0.78), norm ratio CC/proxy 1.63. Between-branch: fit on (c) residual 0.00, ring coupling 0.01; mask on (d) 0.05/0.47 — the minimum-norm projection, not the pattern size, is the limit, as read on 24 Sep. The energy route confirms this Hessian (curvature check, three modes, 2e-5 relative).

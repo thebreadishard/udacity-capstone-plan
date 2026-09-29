@@ -115,3 +115,7 @@ into `out/exports_analytic`; same deck and hash 0932211bc5a8; `out/cc/A_84480431
 `e8_cc_hessian_fd.py` before 29 Sep 21:05 are therefore not CCSD(T) numbers, and every line above that was read against them is **unread again**:
 the outcomes stay on record as what the wrong route gave, the predictions and lines stand unchanged, and the re-read happens on the Hessians of
 the corrected probe (explicit `ccsd_t_lambda`/`uccsd_t_lambda`; benzene rerun on hel1-23 since 21:10, naphthalene f10 on the CCX53 since 21:12).
+
+## Outcome on the corrected benzene Hessian — 29 September 23:4x (`out/cc/A_8448043181_cc_test_analytic_tlambda*.{json,md}`)
+
+Same code path, CC response = the (T)-lambda Hessian of 22:47 (`results_m1/e8_benzene_ccpvdz_tlambda/`), analytic B3LYP low level. Registered band deck: C1 FAIL, C2 FAIL, oracle none — as before. Wide pool, band-free: CC P0 806, P1 median 0.54 (n_half 0.57; was 0.46), oracle 124, P1/oracle 3.5; proxy P1 0.70; C1 pass, C2 pass → 'confirmed on this molecule (CC)' for the wide deck. R5 on the same Hessian: the diagonal removes 97 % of the correction overall, 89 % ring in-plane (was 98/92). The outcome of 28 Sep and the correction of 29 Sep 05:3x stay as what the invalid response gave.
