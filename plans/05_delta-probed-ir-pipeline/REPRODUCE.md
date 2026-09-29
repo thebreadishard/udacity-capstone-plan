@@ -76,7 +76,7 @@ the WSL `qc05` or a rented machine's `m05` environment for anything that imports
 
 | check | command |
 |---|---|
-| every number of the reading copy traces to a source | `python probes/check_reading_copy_numbers.py GoalGathering/Project_Proposal_2026-09-26_Reading_Copy.md README.md QUALITY_POLICY.md GoalGathering/*.md GoalGathering/notes/*.md modules/05_support_predictor/out/*.md modules/05_support_predictor/*.md probes/results_m1/*.md probes/results_m1/*/REPORT.md` (25 Sep: 488 tokens, 1 benign miss) |
+| every number of the proposal traces to a source | `python probes/check_reading_copy_numbers.py GoalGathering/Projectvoorstel_2026-09-30.md README.md QUALITY_POLICY.md GoalGathering/*.md GoalGathering/notes/*.md modules/05_support_predictor/out/*.md modules/05_support_predictor/*.md probes/results_m1/*.md probes/results_m1/*/REPORT.md` (25 Sep: 488 tokens, 1 benign miss) |
 | the state of the machines | `bash probes/state.sh` |
 
 ## Rebuild and diff

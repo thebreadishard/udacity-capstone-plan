@@ -15,7 +15,7 @@ files changed no text; every link in the repository was rewritten and checked th
 | [Distilled_Project_Plan_and_Quality_Checks.md](Distilled_Project_Plan_and_Quality_Checks.md) | the plan on one page, gates and probes P1–P5 |
 | [Relevant_Scientific_Papers.md](Relevant_Scientific_Papers.md) | the bibliography with reading records |
 | [Capstone_Mapping.md](Capstone_Mapping.md) | modules 02–09 against the Udacity rubrics |
-| [Project_Proposal_2026-09-26_Reading_Copy.md](Project_Proposal_2026-09-26_Reading_Copy.md) | the proposal to the supervisor, one consolidated text for the conversation of 28 September (the 6 September original with its dated notes is in the git history since 27 September) |
+| [Projectvoorstel_2026-09-30.md](Projectvoorstel_2026-09-30.md) | the proposal to the supervisor: four pages in Dutch, the decided architecture and the five measurements only (30 Sep 2026; the 38,500-word text of 26 September and its predecessors live in the git history) |
 
 ## `notes/` — research notes, side project, requests, hardware
 

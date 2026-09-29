@@ -229,6 +229,6 @@ gaan pas open met de commit-hash van de pilotnotitie.
 - De modules: de [Capstone_Mapping](../GoalGathering/Capstone_Mapping.md) en de
   rubrieken in `Rubrics/`.
 - De probes in hun volgorde: [probes/README.md](../probes/README.md).
-- Het waarom voor de begeleider: het [Project_Proposal](../GoalGathering/Project_Proposal_2026-09-26_Reading_Copy.md).
+- Het waarom voor de begeleider: het [Project_Proposal](../GoalGathering/Projectvoorstel_2026-09-30.md).
 
 *Einde van de uitleg. Geschreven op 4 september 2026 bij de bevroren tekst van plan 05.*
