@@ -128,3 +128,13 @@ Analytic pairs now exist for every molecule of the set and its references: benze
 against their psi4 rows: B3LYP within 0–0.4 cm⁻¹ except pyridine 12, ωB97X within 3–5 except pyridine 17) and the benzene cation (UKS, no imaginary
 mode at the UKS minimum; lowest vibration 299 cm⁻¹; its psi4 UKS B3LYP row differs by up to 8 cm⁻¹). Analytic proxy exports for naphthalene and
 benzene are in `out/exports_analytic` for tonight's CC test.
+
+## Reading rule added 18:3x — benzene is the symmetric reference, not the representative (the user: "Benzeen is misschien geen goed voorbeeld voor de rest van de PAK's")
+
+From the 289 proxy exports (`out/exports/index.json`, in-band share of the off-diagonal Δ₂ power at 200 cm⁻¹, psi4 pairs): corpus median 0.46 (p10 0.34,
+p90 0.54); by size (30 to 100+ modes) 0.41–0.46 with no trend; benzene 0.30 and naphthalene 0.28 with their analytic pairs — both bare, symmetric parents
+sit in the lowest decile. Size is not what sets benzene apart; symmetry and the absence of substituents are. Therefore: R1 and R5 numbers on benzene
+(and naphthalene) are read as the symmetric reference; the rule "the band prior fails on the CC correction" and any statement about the coupling
+structure of the correction are drawn only after the C2v anchors (benzonitrile, fluorobenzene, pyridine) are read, as R1's reading rule already
+requires (naphthalene plus two of three). On the PC, substituted naphthalenes go early in the October series. The wide deck is unaffected: a
+superset misses nothing; what benzene cannot tell is how much the learned order saves on a substituted PAH.
