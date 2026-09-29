@@ -40,3 +40,12 @@ Never `git add -A`: the run directories are written live and `results_vpt2/benze
 Every number in a document traces to a run log or a source. `probes/check_reading_copy_numbers.py`
 audits the reading copy; write the equivalent script for any check that repeats. Mechanical checks are
 scripts, not model passes.
+
+Two rules since the lambda incident of 29 September 2026 (six days of CCSD(T) Hessians computed with the CCSD
+lambda because `Gradients(mycc).kernel()` looked right and its pair checks passed):
+- **A new library call in a production path cites the upstream test or example that makes the same call**, by
+  file name, in the launch note or the ledger entry. pyscf's own `grad/test/test_ccsd_t.py` showed the correct
+  usage the whole time; five minutes of reading against three lost days.
+- **"Validated" is written only with the number and the counterpart**: not "validated on benzene" but "gradient
+  against finite differences of the energy on water, 1e-7". A validation claim without a number counts as not done,
+  and a later reader (including a later session of me) may not build on it.
