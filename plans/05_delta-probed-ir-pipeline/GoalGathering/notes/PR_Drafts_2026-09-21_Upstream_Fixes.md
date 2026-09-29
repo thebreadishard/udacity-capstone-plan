@@ -51,3 +51,17 @@ printed "No inconsistencies found"). Numerics of φ unchanged.
 - A degenerate-mode (symmetric-top) treatment in pyVPT2: not until clean constants show it is needed (this morning's finding moved the cause to noise).
 - Polyad eigenvector export for intensity redistribution: our own patch after 28 September, then possibly upstream.
 - psi4: nothing to fix; the useful contribution would be a documentation sentence that DFT Hessians are finite differences of gradients — worth an issue, not a PR.
+
+## 4. Candidate (29 September 07:0x, the user: "op de takenlijst") — pyscf `grad/ccsd_t`: thread scaling of the (T) gradient
+
+**What is measured, not yet diagnosed.** pyscf 2.14's CCSD(T) gradient (`pyscf.grad.ccsd_t.Gradients`, `pyscf.grad.uccsd_t`) runs the (T) energy and the
+λ / density contractions through `libcc` (C), yet a benzene gradient takes 695 s at 24 threads against 663–692 s at 16 (CCX53 vs CPX62, 24 September), and
+benzonitrile's gradient keeps ≈ 3.4 of 16 cores busy on average (hel1-23, 29 September; 42 min per gradient, 15 GB). The loss is thread scaling, not
+"Python": `grad/ccsd_t.py` is 149 lines of orchestration. Nothing of ours converts this to Fortran or C; the project's own levers so far are symmetry-unique
+displacements and parallel partial runs.
+
+**Before any PR (quality control, in order):** (1) a profile of one benzene gradient at 1, 4, 8, 16 threads (`cProfile` + `lib.num_threads`) that names the
+serial time: `ccsd_t_lambda` blocks, `ccsd_t_rdm` blocks, the `numpy.einsum` calls (22 and 60 of them) against the `libcc` kernels, and the CCSD λ
+equations; (2) if one block carries most of the serial time, a patch (lib.einsum / blocked contraction / OpenMP in the C kernel) with the shipped tests
+and a before/after timing on benzene and naphthalene; (3) only then a draft PR to pyscf with the numbers. Until (1) exists this note makes no claim about
+the cause. Cheaper for us either way: several gradients per molecule in parallel with fewer threads each (task board).
