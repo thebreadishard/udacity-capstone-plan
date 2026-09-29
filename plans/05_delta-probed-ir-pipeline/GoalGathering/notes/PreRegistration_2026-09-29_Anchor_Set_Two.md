@@ -97,3 +97,19 @@ Consequences, fixed now:
 3. **The 28 September CC-level test on benzene** (`Standout_CC_Level_Test`) read Δ_CC against the noisy psi4 B3LYP and compared with the noisy proxy
    (its "proxy 52 % in band" is the noise's share; the analytic proxy export gives 30 %). It is rerun with `--use-analytic` and its outcome section
    is corrected separately; nothing built on it (band-free prior default, reading (ii)) is judged until that rerun is read.
+
+## Proxy numbers on record with the analytic pairs, 29 September 05:4x (before any CC number of the set)
+
+`m05/e9_cc_readout.py --use-analytic` on the DFT proxy (ωB97X − B3LYP, pyscf analytic pairs at the corpus geometries), outputs in
+`modules/05_support_predictor/out/e9_cc/`:
+
+| read | pair | construction | ΔH residual ratio | ring coupling ratio | corrected ω RMS (zero rule) |
+|---|---|---|---|---|---|
+| R2 | benzene → benzonitrile | transfer + probe, r = 2 (5 of 13 atoms) | 0.015 | 0.06 | 0.88 cm⁻¹ (24.2) |
+| R2 | benzene → fluorobenzene | transfer + probe, r = 2 (4 of 12 atoms) | 0.014 | 0.07 | 0.76 cm⁻¹ (23.2) |
+| R3 | benzene → pyridine | transfer only, element map (11 of 12 core atoms mapped, the lost H unmapped) | 0.128 | 0.18 | 2.03 cm⁻¹ (25.0); N-participating modes (2) 2.83, other (25) 1.95 |
+
+Both R2 pairs pass the registered lines on the proxy at every radius from r = 0. R3 on the proxy reads 2.0 cm⁻¹ — below the 3.3 cm⁻¹ mark that would
+make the element a detail — against the prediction of 6–12 cm⁻¹ written for the CC level above; the CC number decides, the prediction is kept as
+written. Side finding: pyridine's psi4 FD corpus row (computed today) is off its analytic pair by up to 12 cm⁻¹ (B3LYP; the 670 cm⁻¹ mode) and 17 cm⁻¹
+(ωB97X), RMS 2.3 / 5.4 — larger than benzonitrile's (0 / 3) and fluorobenzene's (0 / 5); one more reason the reads take the analytic pair.
