@@ -1,0 +1,46 @@
+{
+ "date": "2026-09-29 09:53",
+ "label": "R5 benzene (analytic low level)",
+ "use_analytic": true,
+ "molecules": {
+  "A_8448043181": {
+   "n_modes": 30,
+   "families": {
+    "CH-stretch": {
+     "n": 6,
+     "rms_zero_rule": 102.1212970581934,
+     "rms_diag_only": 0.007182968466925618,
+     "share_removed_by_diagonal": 0.9999296623850867
+    },
+    "CH-oop": {
+     "n": 6,
+     "rms_zero_rule": 48.12269164589473,
+     "rms_diag_only": 0.00010732177210471378,
+     "share_removed_by_diagonal": 0.9999977698302311
+    },
+    "ring-ip": {
+     "n": 13,
+     "rms_zero_rule": 22.987035094445776,
+     "rms_diag_only": 1.8636053764097573,
+     "share_removed_by_diagonal": 0.9189279796740707
+    },
+    "other": {
+     "n": 5,
+     "rms_zero_rule": 42.931898069855244,
+     "rms_diag_only": 0.004426633294548596,
+     "share_removed_by_diagonal": 0.9998968917403245
+    },
+    "all": {
+     "n": 30,
+     "rms_zero_rule": 55.543467997475254,
+     "rms_diag_only": 1.226780781850327,
+     "share_removed_by_diagonal": 0.9779131403551162
+    }
+   },
+   "offdiag_over_diag_frobenius": 0.4005877890569837,
+   "low_level": "B3LYP pyscf analytic (grid 99/590)",
+   "cc_hessian": "..\\..\\..\\probes\\results_m1\\e8_benzene_ccpvdz\\hessian_ccsd_t.npz"
+  }
+ },
+ "seconds": 0.1
+}

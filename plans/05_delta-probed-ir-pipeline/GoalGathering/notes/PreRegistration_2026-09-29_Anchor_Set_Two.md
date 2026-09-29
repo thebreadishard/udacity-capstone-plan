@@ -113,3 +113,18 @@ Both R2 pairs pass the registered lines on the proxy at every radius from r = 0.
 make the element a detail — against the prediction of 6–12 cm⁻¹ written for the CC level above; the CC number decides, the prediction is kept as
 written. Side finding: pyridine's psi4 FD corpus row (computed today) is off its analytic pair by up to 12 cm⁻¹ (B3LYP; the 670 cm⁻¹ mode) and 17 cm⁻¹
 (ωB97X), RMS 2.3 / 5.4 — larger than benzonitrile's (0 / 3) and fluorobenzene's (0 / 5); one more reason the reads take the analytic pair.
+
+## R5 tool and its first point, 29 September 09:5x
+
+`m05/r5_diag_vs_coupling.py --use-analytic` (tests `tests/test_r5_diag_vs_coupling.py`): per family, the share of the zero rule's RMS frequency error
+(B3LYP against CC, same-family blocks as E7 reads them) that the diagonal of the CC correction alone removes. Benzene (E8 CC Hessian, analytic B3LYP
+low level; `modules/05_support_predictor/out/e9_cc/r5_benzene_analytic.md`): ring-ip **92 %** (23.0 → 1.9 cm⁻¹, 13 modes), CH-stretch 100 % (102.1 → 0.0),
+CH-oop 100 % (48.1 → 0.0), other 100 %, all 98 % (55.5 → 1.2). The prediction "≥ 70 % in plane, less out of plane" holds on benzene for the in-plane
+share; out of plane it removes everything, against the prediction. Caveat written before the anchors land: benzene's symmetry zeroes most same-family
+couplings, so this point says little about couplings; benzonitrile (C2v), pyridine and naphthalene are the informative ones. With the psi4 FD low level
+the numbers are 89 / 100 / 100 / 97 % — the same reading, slightly worse.
+
+Analytic pairs now exist for every molecule of the set and its references: benzene, benzonitrile, fluorobenzene, pyridine, naphthalene (all clean
+against their psi4 rows: B3LYP within 0–0.4 cm⁻¹ except pyridine 12, ωB97X within 3–5 except pyridine 17) and the benzene cation (UKS, no imaginary
+mode at the UKS minimum; lowest vibration 299 cm⁻¹; its psi4 UKS B3LYP row differs by up to 8 cm⁻¹). Analytic proxy exports for naphthalene and
+benzene are in `out/exports_analytic` for tonight's CC test.

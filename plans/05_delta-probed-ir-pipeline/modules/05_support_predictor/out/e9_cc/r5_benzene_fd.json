@@ -1,0 +1,46 @@
+{
+ "date": "2026-09-29 09:54",
+ "label": "R5 benzene (psi4 FD low level)",
+ "use_analytic": false,
+ "molecules": {
+  "A_8448043181": {
+   "n_modes": 30,
+   "families": {
+    "CH-stretch": {
+     "n": 6,
+     "rms_zero_rule": 102.06782009485619,
+     "rms_diag_only": 0.03806508640941925,
+     "share_removed_by_diagonal": 0.9996270608466602
+    },
+    "CH-oop": {
+     "n": 6,
+     "rms_zero_rule": 47.86421859781443,
+     "rms_diag_only": 0.01140228868699693,
+     "share_removed_by_diagonal": 0.9997617784428321
+    },
+    "ring-ip": {
+     "n": 13,
+     "rms_zero_rule": 23.97585897372375,
+     "rms_diag_only": 2.5597925790038256,
+     "share_removed_by_diagonal": 0.893234583094219
+    },
+    "other": {
+     "n": 5,
+     "rms_zero_rule": 46.12666363350837,
+     "rms_diag_only": 0.12920704137540973,
+     "share_removed_by_diagonal": 0.997198864361793
+    },
+    "all": {
+     "n": 30,
+     "rms_zero_rule": 56.08452816687458,
+     "rms_diag_only": 1.6859808292054468,
+     "share_removed_by_diagonal": 0.9699385751416334
+    }
+   },
+   "offdiag_over_diag_frobenius": 0.46703550093318086,
+   "low_level": "B3LYP psi4 FD (grid 75/302)",
+   "cc_hessian": "..\\..\\..\\probes\\results_m1\\e8_benzene_ccpvdz\\hessian_ccsd_t.npz"
+  }
+ },
+ "seconds": 0.1
+}
