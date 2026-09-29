@@ -44,6 +44,7 @@ A_d551b360c3,A,d551b360c37f259fef62068adba05321fbcbc3b2,1-aminoanthracene,Nc1ccc
 A_e72997e726,A,e72997e726a45dd7192411a9f0d00dfe1f1c1043,fluorene,c1ccc2c(c1)Cc1ccccc1-2,,13,23,done,ubuntu-32gb-hel1-2,97ed2d67c66b,
 A_ea73419366,A,ea734193665e638a72d97d55f745867efa072c67,1-methylnaphthalene,Cc1cccc2ccccc12,,11,21,done,ubuntu-32gb-hel1-2,97ed2d67c66b,
 A_fead28d796,A,fead28d796a5b1c32cacce2aef128667bf856713,benzofuran,c1ccc2occc2c1,,9,15,done,ubuntu-32gb-hel1-2,97ed2d67c66b,
+A_6e858b26e5,A,6e858b26e563e49b4ceb7db77aebaed8958ff02e,pyridine,c1ccncc1,,6,11,pending,,97ed2d67c66b,anchor-set-two-2026-09-29
 A2_00b0ff5a24,A2,00b0ff5a24b3a066f3f6bca1b0acea0c33282ac7,fluoranthene+COOH,O=C(O)c1ccc2cccc3c2c1-c1ccccc1-3,,19,29,done,ubuntu-32gb-hel1-12,97ed2d67c66b,
 A2_00eeb8e5ed,A2,00eeb8e5edcf98d18f4eccb72a2fb82564ee3d3e,quinoxaline+OH,Oc1cnc2ccccc2n1,,11,17,done,ubuntu-32gb-hel1-11,97ed2d67c66b,
 A2_0101e57296,A2,0101e572964271d2e411be6572fbcb31248e5771,fluoranthene+NH2,Nc1ccc2c(c1)-c1cccc3cccc-2c13,,17,28,done,ubuntu-32gb-hel1-9,97ed2d67c66b,
