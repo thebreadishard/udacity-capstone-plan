@@ -15,10 +15,11 @@ def test_max_memory_switch_default_and_plumbing():
     tree = ast.parse(text)
     grad = next(n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == "gradient")
     names = [a.arg for a in grad.args.args]
-    assert names[-1] == "max_memory" and grad.args.defaults[-1].value == 26000
+    defaults = dict(zip(names[-len(grad.args.defaults):], [getattr(d, "value", d) for d in grad.args.defaults], strict=True))
+    assert defaults["max_memory"] == 26000
     assert re.search(r'add_argument\("--max-memory", type=int, default=26000', text)
-    assert "max_memory=max_memory" in text and "max_memory=26000," not in text          # the hard-coded value is gone from gto.M
-    assert text.count("a.charge, a.spin, a.max_memory)") == 2                              # reference and displaced gradients
+    assert re.search(r"gto\.M\([^\n]*max_memory=max_memory", text) and "max_memory=26000)" not in text   # the hard-coded value is gone from gto.M
+    assert text.count("a.charge, a.spin, a.max_memory, fast") == 2                        # reference (check_fast=True) and displaced gradients
 
 
 def test_parallel_chain_parses_and_fails_fast():

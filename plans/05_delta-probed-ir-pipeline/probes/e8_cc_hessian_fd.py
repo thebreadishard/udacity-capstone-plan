@@ -11,6 +11,7 @@ Usage: python e8_cc_hessian_fd.py <geometry.json> <out dir> [--threads 16] [--ba
 import argparse
 import json
 import os
+import sys
 import time
 
 import numpy as np
@@ -25,6 +26,8 @@ CORE_ORBITALS = {"H": 0, "He": 0, "Li": 1, "Be": 1, "B": 1, "C": 1, "N": 1, "O":
                  "Na": 5, "Mg": 5, "Al": 5, "Si": 5, "P": 5, "S": 5, "Cl": 5, "Ar": 5}
 
 
+LAMBDA_TOL = 1e-8            # ccsd_t_lambda / uccsd_t_lambda convergence (pyscf's default), solved explicitly since the 29 Sep 2026 incident
+FAST_T_LIMIT = 1e-10         # largest |kernel − pyscf| over the (T) density intermediates on the reference gradient (water: 4e-18, 29 Sep 2026)
 FIRST_PAIR_LIMIT = 1e-4      # a.u.; |mean(g+, g−) − g0| is O(h²) ≈ 1e-5 for h = 0.005 bohr; the frozen-6-of-10 run gave 2–9e-4 in plane
 ASYM_LIMIT = 2e-3            # a.u.; benzene 2.7e-4 (full) / 4.4e-5 (symmetric); the invalid naphthalene 2.2e-2
 NULL_SPACE_LIMIT_CM = 10.0   # cm⁻¹; the six projected translations/rotations must be ~0
@@ -51,7 +54,7 @@ def select_displacements(ks, spec):
     return [ks[int(v)] for v in spec.split(",")]
 
 
-def gradient(symbols, coords_bohr, basis, frozen, log, charge=0, spin=0, max_memory=26000):
+def gradient(symbols, coords_bohr, basis, frozen, log, charge=0, spin=0, max_memory=26000, fast=None, check_fast=False):
     """CCSD(T) energy and gradient. Closed shell (spin 0): RHF-CCSD(T), the path validated on benzene (24 Sep 2026). Open shell (spin > 0, the
     anchor set of 29 Sep 2026: benzene cation): UHF with up to three internal-stability rounds (a cation at a near-degenerate geometry may first
     land on a saddle, as the cation price probe found), <S²> logged, UCCSD(T) and its analytic gradient (pyscf 2.14)."""
@@ -63,7 +66,20 @@ def gradient(symbols, coords_bohr, basis, frozen, log, charge=0, spin=0, max_mem
         if not mycc.converged:
             log("WARNING: CCSD not converged")
         et = mycc.ccsd_t()
-        g = ccsd_t_grad.Gradients(mycc).kernel()
+        # The (T) lambda is solved explicitly (29 Sep 2026 incident): Gradients(mycc).kernel() without l1, l2 falls back to mycc.solve_lambda, the
+        # CCSD lambda, and the result is not dE/dx of the CCSD(T) energy (water: 1.5e-3 a.u.; pyscf's own test passes ccsd_t_lambda's l1, l2).
+        from pyscf.cc import ccsd_t_lambda
+        eris = mycc.ao2mo(); t0 = time.time(); conv, l1, l2 = ccsd_t_lambda.kernel(mycc, eris, mycc.t1, mycc.t2, tol=LAMBDA_TOL)
+        if not conv:
+            log("WARNING: CCSD(T) lambda not converged")
+        if fast is not None and check_fast:
+            # two-route check of the C kernel (29 Sep 2026): pyscf's Python (T) densities versus ours on this run's reference gradient
+            t1 = time.time(); diffs = fast.check_against_pyscf(mycc, mycc.t1, mycc.t2, l1, l2, eris); worst = max(diffs, key=diffs.get)
+            log(f"fast (T) density two-route check: max |kernel − pyscf| = {diffs[worst]:.1e} ({worst}; limit {FAST_T_LIMIT:.0e}; {time.time() - t1:.0f} s)")
+            if diffs[worst] > FAST_T_LIMIT:
+                raise SystemExit("the fast (T) density kernel disagrees with pyscf on the reference gradient — refusing to continue")
+        t1 = time.time(); g = ccsd_t_grad.Gradients(mycc).kernel(mycc.t1, mycc.t2, l1, l2, eris)
+        log(f"(T) lambda {t1 - t0:.0f} s, gradient {time.time() - t1:.0f} s")
         return float(e_hf + e_corr + et), np.asarray(g)
     from pyscf.grad import uccsd_t as uccsd_t_grad
     mf = scf.UHF(mol); mf.conv_tol = 1e-11; e_hf = mf.kernel()
@@ -81,7 +97,12 @@ def gradient(symbols, coords_bohr, basis, frozen, log, charge=0, spin=0, max_mem
     if not mycc.converged:
         log("WARNING: UCCSD not converged")
     et = mycc.ccsd_t()
-    g = uccsd_t_grad.Gradients(mycc).kernel()
+    from pyscf.cc import uccsd_t_lambda
+    eris = mycc.ao2mo(); t0 = time.time(); conv, l1, l2 = uccsd_t_lambda.kernel(mycc, eris, mycc.t1, mycc.t2, tol=LAMBDA_TOL)   # explicit (T) lambda, as above
+    if not conv:
+        log("WARNING: UCCSD(T) lambda not converged")
+    t1 = time.time(); g = uccsd_t_grad.Gradients(mycc).kernel(mycc.t1, mycc.t2, l1, l2, eris)
+    log(f"(T) lambda {t1 - t0:.0f} s, gradient {time.time() - t1:.0f} s")
     return float(e_hf + e_corr + et), np.asarray(g)
 
 
@@ -113,10 +134,21 @@ def main():
     ap.add_argument("--charge", type=int, default=0); ap.add_argument("--spin", type=int, default=0, help="2S (1 = doublet); > 0 selects UHF-UCCSD(T), 29 Sep 2026")
     ap.add_argument("--max-memory", type=int, default=26000, help="pyscf max_memory in MB per process (default the former hard-coded 26000); partial runs "
                     "sharing one box take less (29 Sep 2026: 3 x 8000 on a 31 GB CPX62)")
+    ap.add_argument("--fast-t-density", action="store_true", help="use the C kernel for the (T) density intermediates (probes/t_density_kernel, 29 Sep "
+                    "2026); the reference gradient is also computed through pyscf's Python route and the run refuses to continue if they differ; RHF only")
     ap.add_argument("--symmetry", action="store_true", help="displace only one atom per symmetry orbit and reconstruct the Hessian with e8_symmetry (validated 24 Sep 2026)")
     ap.add_argument("--ks", default="", help="compute only these displacement indices (comma list or a:b slice of the displacement list, e.g. 0:15) and stop before the Hessian — for splitting a run over machines; merge the grad_*.npy files and rerun without --ks to assemble")
     a = ap.parse_args(); lib.num_threads(a.threads); os.makedirs(a.out, exist_ok=True)
     logf = open(os.path.join(a.out, "e8_fd.log"), "a")
+    fast = None
+    if a.fast_t_density:
+        if a.spin:
+            raise SystemExit("--fast-t-density is RHF only (the UHF gradient has its own density code)")
+        sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "t_density_kernel"))
+        import t_density_fast as fast
+        if not fast.available():
+            raise SystemExit("ccsd_t_rdm_kernel.so is not built on this machine: bash probes/t_density_kernel/build.sh <python>")
+        fast.install()
 
     def log(s):
         line = f"[{time.strftime('%F %T')}] {s}"; print(line, flush=True); logf.write(line + "\n"); logf.flush()
@@ -129,12 +161,13 @@ def main():
         raise SystemExit(f"--frozen {a.frozen} but the elements give {derived} core orbitals — refusing (guard of 27 Sep 2026: naphthalene ran with "
                          "benzene's 6 of its 10 carbon cores and produced an invalid Hessian); pass --allow-frozen-mismatch to override on purpose")
     log(f"E8 FD Hessian: {n} atoms, {a.basis}, frozen {a.frozen} (derived from the elements: {derived}), step {a.step} bohr, {2 * 3 * n} displacements, "
-        f"{a.threads} threads, max_memory {a.max_memory} MB" + (f", charge {a.charge}, spin {a.spin} (UHF-UCCSD(T))" if a.spin else ""))
+        f"{a.threads} threads, max_memory {a.max_memory} MB" + (f", charge {a.charge}, spin {a.spin} (UHF-UCCSD(T))" if a.spin else "")
+        + ", explicit (T) lambda" + (", fast (T) density kernel" if fast is not None else ""))
     ref_p = os.path.join(a.out, "reference.npz")
     if os.path.exists(ref_p):
         ref = np.load(ref_p); e0, g0 = float(ref["energy"]), ref["gradient"]
     else:
-        t0 = time.time(); e0, g0 = gradient(sym, x0, a.basis, a.frozen, log, a.charge, a.spin, a.max_memory)
+        t0 = time.time(); e0, g0 = gradient(sym, x0, a.basis, a.frozen, log, a.charge, a.spin, a.max_memory, fast, check_fast=True)
         np.savez(ref_p, energy=e0, gradient=g0, coords_bohr=x0, charge=a.charge, spin=a.spin)
         log(f"reference: E = {e0:.9f}, max|grad| {np.abs(g0).max():.2e}, {time.time() - t0:.0f} s")
     if a.only_reference:
@@ -156,7 +189,7 @@ def main():
             if os.path.exists(p):
                 gs[sign] = np.load(p); continue
             x = x0.copy(); x.flat[k] += s * a.step
-            t0 = time.time(); e, gr = gradient(sym, x, a.basis, a.frozen, log, a.charge, a.spin, a.max_memory); np.save(p, gr); gs[sign] = gr
+            t0 = time.time(); e, gr = gradient(sym, x, a.basis, a.frozen, log, a.charge, a.spin, a.max_memory, fast); np.save(p, gr); gs[sign] = gr
             done = len([f for f in os.listdir(a.out) if f.startswith("grad_")])
             log(f"coordinate {k:2d} {sign}: E − E0 = {(e - e0) * 1e6:+9.2f} µE_h, {time.time() - t0:.0f} s  ({done}/{6 * n} gradients)")
         G[k] = (gs["p"].ravel() - gs["m"].ravel()) / (2 * a.step)

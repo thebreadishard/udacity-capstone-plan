@@ -107,3 +107,11 @@ into `out/exports_analytic`; same deck and hash 0932211bc5a8; `out/cc/A_84480431
    route, and this is the first CC-level number under it.
 4. *Rule:* CC-level reads never take a corpus psi4 FD file as the low level — the analytic pair at the same geometry, always (`--use-analytic`;
    anchor set two's amendment of 29 September). The naphthalene run of this test (§3) is read with the analytic B3LYP; it remains the decisive one.
+
+## Dated note, 29 September 2026 21:1x — lambda incident: the CC response of the outcome and the correction came from the wrong lambda
+
+`pyscf.grad.ccsd_t.Gradients(mycc).kernel()` without l1, l2 solves the CCSD lambda, not the CCSD(T) lambda; the gradient is not dE/dx of E_CCSD(T)
+(water: 1.5e-3 a.u., 2.5–7.7 cm⁻¹ on the frequencies; evidence `probes/results_m1/lambda_incident_2026-09-29/`). All CC Hessians computed by
+`e8_cc_hessian_fd.py` before 29 Sep 21:05 are therefore not CCSD(T) numbers, and every line above that was read against them is **unread again**:
+the outcomes stay on record as what the wrong route gave, the predictions and lines stand unchanged, and the re-read happens on the Hessians of
+the corrected probe (explicit `ccsd_t_lambda`/`uccsd_t_lambda`; benzene rerun on hel1-23 since 21:10, naphthalene f10 on the CCX53 since 21:12).

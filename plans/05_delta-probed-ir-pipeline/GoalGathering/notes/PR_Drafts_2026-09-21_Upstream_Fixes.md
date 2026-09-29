@@ -88,3 +88,21 @@ manner of the (T) energy kernel and `t3_symm_ip` which already exists in `libcc`
 (the BLAS part alone), the anchor throughput ×3 on every machine. Before a PR: a reference implementation that reproduces the present densities to
 1e-10 on water and benzene, timing on naphthalene, and pyscf's own tests. This is a day or two of work, not an hour; it goes on the board as its
 own task, after the anchors.
+
+## 5. Candidate (29 September 21:1x) — pyscf `grad/ccsd_t.py`, `grad/uccsd_t.py`: `Gradients(mycc).kernel()` silently uses the CCSD lambda
+
+**Observation.** `grad.ccsd_t.Gradients` overrides only `grad_elec`. Its inherited `ccsd_grad.Gradients.kernel` fills missing l1, l2 with
+`mycc.solve_lambda(eris=eris)` — the CCSD lambda equations — and passes them to `ccsd_t_rdm`. The returned vector is not the derivative of the
+CCSD(T) energy. Water, RHF/cc-pVDZ, frozen 1, pyscf 2.14.0: against the central finite difference of E_CCSD(T) (h = 1e-3 bohr) the bare call is
+off by 1.5e-3, 6.4e-4 and 7.6e-4 a.u. on three components; with `ccsd_t_lambda.kernel(mycc, eris, t1, t2)`'s l1, l2 the agreement is ≤ 1.5e-7.
+pyscf's own `grad/test/test_ccsd_t.py` avoids the trap by solving the (T) lambda explicitly; the `__main__` block of `grad/ccsd_t.py` does the
+same. Nothing warns a user who writes the natural `Gradients(mycc).kernel()` (we did, from 23 to 29 September; every E8 anchor of this project
+had to be recomputed).
+
+**Proposed change (small).** In `grad/ccsd_t.py` (and the UHF twin) give `Gradients` a `kernel` — or better a `solve_lambda` hook the base
+class calls — that solves `ccsd_t_lambda` when l1/l2 are not supplied, and a test that the bare call equals the explicit one. Alternative if the
+maintainers prefer no behaviour change: raise a clear error when l1/l2 are missing. Reproducer: `probes/results_m1/lambda_incident_2026-09-29/`.
+Status: to be drafted after the benzene rerun confirms the size of the effect at PAH scale; the user's word before submission, as for every PR.
+
+**§4 status (same evening).** The C kernel of the design note exists (`probes/t_density_kernel/ccsd_t_rdm_kernel.c`, `t_density_fast.py`): water
+intermediates equal to pyscf's to 4e-18, gradient to 1e-8, symmetry on and off; timings on benzene and naphthalene from the reruns of 29 Sep.

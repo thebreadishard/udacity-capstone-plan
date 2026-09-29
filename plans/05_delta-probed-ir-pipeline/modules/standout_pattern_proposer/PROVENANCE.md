@@ -67,3 +67,8 @@ Every number in the notebook and the report traces to a file named here. Dated n
   -> `out/cc/A_8448043181_cc_test_analytic_all_band0.{json,md}`: CC P0 806, P1 median 0.46 (n_half 0.57), oracle 124; proxy P0 620, P1 0.70, oracle 124.
 - `pp.core.export_molecule` now returns `analytic`; `cc_level_test.py --use-analytic/--exports`; `run_export.py --only` (tests in `tests/test_e9_cc_readout.py`).
 - Correction section in `PreRegistration_2026-09-28_Standout_CC_Level_Test.md`; notebook section 4d.
+
+**29 Sep 2026, 21:1x — lambda incident.** The CC response of the benzene test (`hi_override` = E8 Hessian of 24 Sep, `results_m1/e8_benzene_ccpvdz/`)
+was computed with the CCSD lambda instead of the CCSD(T) lambda (pyscf `grad.ccsd_t.Gradients(mycc).kernel()` without l1/l2; evidence
+`results_m1/lambda_incident_2026-09-29/`). The outcome and the correction of 28–29 Sep stay as what that response gave; the test is rerun on the
+corrected benzene Hessian when it lands (hel1-23, rerun since 21:10), as a dated follow-up section, not a replacement.

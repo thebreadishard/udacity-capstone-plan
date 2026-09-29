@@ -217,3 +217,11 @@ Together with the element-derived frozen count (23:4x) these are the three guard
 *mechanics* and one *molecule*; an element-dependent physics default (`--frozen 6`) travelled unchanged to the next molecule because no rule said
 "re-derive every element-dependent setting per molecule", and the self-checks existed only at assembly, after the last gradient, without stopping the
 chain. The rule now reads: element-dependent settings are derived, never defaulted; and every long finite-difference run checks each pair as it lands.
+
+## Dated note, 29 September 2026 21:1x — lambda incident: every E8 Hessian above came from the wrong lambda
+
+`pyscf.grad.ccsd_t.Gradients(mycc).kernel()` without l1, l2 solves the CCSD lambda, not the CCSD(T) lambda; the gradient is not dE/dx of E_CCSD(T)
+(water: 1.5e-3 a.u., 2.5–7.7 cm⁻¹ on the frequencies; evidence `probes/results_m1/lambda_incident_2026-09-29/`). All CC Hessians computed by
+`e8_cc_hessian_fd.py` before 29 Sep 21:05 are therefore not CCSD(T) numbers, and every line above that was read against them is **unread again**:
+the outcomes stay on record as what the wrong route gave, the predictions and lines stand unchanged, and the re-read happens on the Hessians of
+the corrected probe (explicit `ccsd_t_lambda`/`uccsd_t_lambda`; benzene rerun on hel1-23 since 21:10, naphthalene f10 on the CCX53 since 21:12).

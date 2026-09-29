@@ -138,3 +138,11 @@ sit in the lowest decile. Size is not what sets benzene apart; symmetry and the 
 structure of the correction are drawn only after the C2v anchors (benzonitrile, fluorobenzene, pyridine) are read, as R1's reading rule already
 requires (naphthalene plus two of three). On the PC, substituted naphthalenes go early in the October series. The wide deck is unaffected: a
 superset misses nothing; what benzene cannot tell is how much the learned order saves on a substituted PAH.
+
+## Dated note, 29 September 2026 21:1x — lambda incident: the benzonitrile run and the benzene reference of every read came from the wrong lambda
+
+`pyscf.grad.ccsd_t.Gradients(mycc).kernel()` without l1, l2 solves the CCSD lambda, not the CCSD(T) lambda; the gradient is not dE/dx of E_CCSD(T)
+(water: 1.5e-3 a.u., 2.5–7.7 cm⁻¹ on the frequencies; evidence `probes/results_m1/lambda_incident_2026-09-29/`). All CC Hessians computed by
+`e8_cc_hessian_fd.py` before 29 Sep 21:05 are therefore not CCSD(T) numbers, and every line above that was read against them is **unread again**:
+the outcomes stay on record as what the wrong route gave, the predictions and lines stand unchanged, and the re-read happens on the Hessians of
+the corrected probe (explicit `ccsd_t_lambda`/`uccsd_t_lambda`; benzene rerun on hel1-23 since 21:10, naphthalene f10 on the CCX53 since 21:12).

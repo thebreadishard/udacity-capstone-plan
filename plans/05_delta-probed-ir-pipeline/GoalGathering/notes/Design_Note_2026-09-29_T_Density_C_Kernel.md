@@ -73,3 +73,19 @@ accumulations. Benzene at 16 threads from ≈ 11 min to 3–4 min per gradient; 
 The same kernel, placed in `pyscf/lib/cc/ccsd_t.c` beside the energy kernel, with `ccsd_t_rdm.py` calling it when the arrays are real and `nirrep == 1`,
 is the PR (§4 of `PR_Drafts_2026-09-21_Upstream_Fixes.md`): a pull request with the before/after timings on benzene and naphthalene and the 1e-10
 agreement, after the user's word.
+
+## 6. Built the same evening (21:0x) — and what the water smoke found
+
+`probes/t_density_kernel/ccsd_t_rdm_kernel.c` (one OpenMP pass over the middle virtual index b, all six (T) contributions at once, thread-private
+nocc³ buffers, `dgemm`/`dgemv` accumulations, the slices with trailing index b private to a job, the rest reduced under a critical section),
+`t_density_fast.py` (ctypes; `install()` swaps the three functions in `pyscf.cc.ccsd_t_rdm`; the result is cached per (t1, t2, eris) so gamma1
+and gamma2 pay once; `check_against_pyscf` is the second route), `build.sh` (links against pyscf's bundled OpenBLAS and libgomp so the process
+never carries two OpenMP runtimes; the WSL build loads unchanged on the CCX53 because the wheel is the same). Water: every intermediate equal to
+pyscf's to 4e-18, gradient to 1e-8, with and without point-group symmetry; `tests/test_t_density_kernel.py` (4) and `tests/test_e8_fast_t_density.py`
+(2, source level). `e8_cc_hessian_fd.py --fast-t-density` installs it and runs the two-route check on the reference gradient of every run
+(`FAST_T_LIMIT` 1e-10; refuses otherwise).
+
+The smoke also exposed that the probe's gradients had never been CCSD(T) gradients (`Gradients(mycc).kernel()` without l1, l2 uses the CCSD
+lambda — §5 of the PR drafts, ledger 21:1x). The probe now solves the (T) lambda explicitly; the reruns of benzene and naphthalene f10 give the
+first timings of lambda + kernel gradient at PAH size. Point §4's "factor conventions" check passed at the first attempt; the (a,b,c)-loop
+accumulation of gvv (§2.1) is exact.

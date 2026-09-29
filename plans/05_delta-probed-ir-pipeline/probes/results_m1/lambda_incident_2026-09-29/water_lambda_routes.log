@@ -1,0 +1,14 @@
+coordinate 0 done 22 s
+coordinate 1 done 40 s
+coordinate 2 done 57 s
+coordinate 3 done 75 s
+coordinate 4 done 92 s
+coordinate 5 done 107 s
+coordinate 6 done 123 s
+coordinate 7 done 139 s
+coordinate 8 done 154 s
+plain (CCSD lambda) freqs cm-1: [1651.32 3930.46 4054.3 ]
+(T)-lambda        freqs cm-1: [1643.64 3925.25 4051.84]
+difference cm-1: [-7.68 -5.21 -2.45]
+max |dH| a.u.: 0.0024639060050013484
+DONE
