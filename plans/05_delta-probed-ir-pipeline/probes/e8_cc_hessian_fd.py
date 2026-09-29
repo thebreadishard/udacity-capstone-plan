@@ -51,11 +51,11 @@ def select_displacements(ks, spec):
     return [ks[int(v)] for v in spec.split(",")]
 
 
-def gradient(symbols, coords_bohr, basis, frozen, log, charge=0, spin=0):
+def gradient(symbols, coords_bohr, basis, frozen, log, charge=0, spin=0, max_memory=26000):
     """CCSD(T) energy and gradient. Closed shell (spin 0): RHF-CCSD(T), the path validated on benzene (24 Sep 2026). Open shell (spin > 0, the
     anchor set of 29 Sep 2026: benzene cation): UHF with up to three internal-stability rounds (a cation at a near-degenerate geometry may first
     land on a saddle, as the cation price probe found), <S²> logged, UCCSD(T) and its analytic gradient (pyscf 2.14)."""
-    mol = gto.M(atom=[(s.capitalize(), tuple(c)) for s, c in zip(symbols, coords_bohr)], unit="Bohr", basis=basis, symmetry=False, verbose=0, max_memory=26000,
+    mol = gto.M(atom=[(s.capitalize(), tuple(c)) for s, c in zip(symbols, coords_bohr)], unit="Bohr", basis=basis, symmetry=False, verbose=0, max_memory=max_memory,
                 charge=charge, spin=spin)
     if spin == 0:
         mf = scf.RHF(mol); mf.conv_tol = 1e-11; e_hf = mf.kernel()
@@ -111,6 +111,8 @@ def main():
                     "a stated value that differs from the derived one refuses to start unless --allow-frozen-mismatch")
     ap.add_argument("--allow-frozen-mismatch", action="store_true"); ap.add_argument("--only-reference", action="store_true")
     ap.add_argument("--charge", type=int, default=0); ap.add_argument("--spin", type=int, default=0, help="2S (1 = doublet); > 0 selects UHF-UCCSD(T), 29 Sep 2026")
+    ap.add_argument("--max-memory", type=int, default=26000, help="pyscf max_memory in MB per process (default the former hard-coded 26000); partial runs "
+                    "sharing one box take less (29 Sep 2026: 3 x 8000 on a 31 GB CPX62)")
     ap.add_argument("--symmetry", action="store_true", help="displace only one atom per symmetry orbit and reconstruct the Hessian with e8_symmetry (validated 24 Sep 2026)")
     ap.add_argument("--ks", default="", help="compute only these displacement indices (comma list or a:b slice of the displacement list, e.g. 0:15) and stop before the Hessian — for splitting a run over machines; merge the grad_*.npy files and rerun without --ks to assemble")
     a = ap.parse_args(); lib.num_threads(a.threads); os.makedirs(a.out, exist_ok=True)
@@ -127,12 +129,13 @@ def main():
         raise SystemExit(f"--frozen {a.frozen} but the elements give {derived} core orbitals — refusing (guard of 27 Sep 2026: naphthalene ran with "
                          "benzene's 6 of its 10 carbon cores and produced an invalid Hessian); pass --allow-frozen-mismatch to override on purpose")
     log(f"E8 FD Hessian: {n} atoms, {a.basis}, frozen {a.frozen} (derived from the elements: {derived}), step {a.step} bohr, {2 * 3 * n} displacements, "
-        f"{a.threads} threads" + (f", charge {a.charge}, spin {a.spin} (UHF-UCCSD(T))" if a.spin else ""))
+        f"{a.threads} threads, max_memory {a.max_memory} MB" + (f", charge {a.charge}, spin {a.spin} (UHF-UCCSD(T))" if a.spin else ""))
     ref_p = os.path.join(a.out, "reference.npz")
     if os.path.exists(ref_p):
         ref = np.load(ref_p); e0, g0 = float(ref["energy"]), ref["gradient"]
     else:
-        t0 = time.time(); e0, g0 = gradient(sym, x0, a.basis, a.frozen, log, a.charge, a.spin); np.savez(ref_p, energy=e0, gradient=g0, coords_bohr=x0, charge=a.charge, spin=a.spin)
+        t0 = time.time(); e0, g0 = gradient(sym, x0, a.basis, a.frozen, log, a.charge, a.spin, a.max_memory)
+        np.savez(ref_p, energy=e0, gradient=g0, coords_bohr=x0, charge=a.charge, spin=a.spin)
         log(f"reference: E = {e0:.9f}, max|grad| {np.abs(g0).max():.2e}, {time.time() - t0:.0f} s")
     if a.only_reference:
         return
@@ -153,7 +156,7 @@ def main():
             if os.path.exists(p):
                 gs[sign] = np.load(p); continue
             x = x0.copy(); x.flat[k] += s * a.step
-            t0 = time.time(); e, gr = gradient(sym, x, a.basis, a.frozen, log, a.charge, a.spin); np.save(p, gr); gs[sign] = gr
+            t0 = time.time(); e, gr = gradient(sym, x, a.basis, a.frozen, log, a.charge, a.spin, a.max_memory); np.save(p, gr); gs[sign] = gr
             done = len([f for f in os.listdir(a.out) if f.startswith("grad_")])
             log(f"coordinate {k:2d} {sign}: E − E0 = {(e - e0) * 1e6:+9.2f} µE_h, {time.time() - t0:.0f} s  ({done}/{6 * n} gradients)")
         G[k] = (gs["p"].ravel() - gs["m"].ravel()) / (2 * a.step)
