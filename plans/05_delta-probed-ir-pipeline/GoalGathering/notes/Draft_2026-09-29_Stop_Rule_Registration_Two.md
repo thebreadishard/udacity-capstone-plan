@@ -52,3 +52,5 @@ Reading on the laptop from the recorded curves where possible (the validation-sp
 the new held-out set need a new run of `run_simulation.py` with a `--holdout wide` switch: ≈ 97 evaluation + ≈ 60 validation molecules, 8 shards, ≈ 2 days
 at the laptop's present load — or 6 h on the PC). Build: the `--holdout wide` switch (deck-building change in `pp.core.export_molecule`, a new export
 set), the τ-fitting reader (`stop_rule_readout.py --fit-tau`), tests for both. Nothing starts before the user's word and before reading (ii) is read.
+
+*Scope note, 18:0x (the user): the wide deck is the only focus; the band deck is dropped as a comparison column, so this registration reports no band-relative numbers — costs are in energies beyond the block and as multiples of the block only.*
