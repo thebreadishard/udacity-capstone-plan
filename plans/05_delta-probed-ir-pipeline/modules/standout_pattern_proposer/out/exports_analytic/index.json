@@ -1,8 +1,18 @@
 {
- "built": "2026-09-29 05:02",
+ "built": "2026-09-29 09:51",
  "source": "..\\05_support_predictor\\corpus\\molecules",
  "use_analytic": true,
  "molecules": [
+  {
+   "id": "A_01f3186607",
+   "layer": "A",
+   "split": "eval_parents",
+   "M": 48,
+   "n_patterns": 666,
+   "n_holdout": 124,
+   "deck_hash": "b7b789e3dfb035e089105a0c28343709f12b2707f1e86ee310bf1f658b57decc",
+   "inband_share": 0.2827494382028312
+  },
   {
    "id": "A_8448043181",
    "layer": "A",
