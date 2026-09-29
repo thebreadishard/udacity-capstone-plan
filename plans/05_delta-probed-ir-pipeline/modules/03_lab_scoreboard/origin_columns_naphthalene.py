@@ -20,7 +20,14 @@ is a LOWER BOUND and labelled so. For nu46 the laboratory therefore no longer li
 
 Every value is asserted to occur verbatim in the cached abstract text (transcription check). Families by Module 03's frequency-window
 rule (build_lab_tables.FAMILY_RULE). The Pirali 2009 scoreboard values (item 53, probes/results_m03/naphthalene) are printed beside
-the new column for the same modes, read from that JSON. Output: out/origin_columns_naphthalene.csv and .md."""
+the new column for the same modes, read from that JSON. Output: out/origin_columns_naphthalene.csv and .md.
+
+Added 2026-09-29 (the user: "Voeg de koude kolommen toe aan module 03"), PDF GRADE: item 105, Chawananon, Pirali, Goubet & Asselin, J. Chem. Phys.
+157, 064301 (2022), DOI 10.1063/5.0096777 (HAL hal-03774849, open; Papers/_txt extract) — Table 1 gives the fitted band centres of naphthalene with
+1 sigma uncertainties in parentheses: nu48 166.65843(2), nu24 359.06177(2), nu47 473.73950(1), nu46 782.33081(1) (far-IR synchrotron FTS, combined
+fit) and, new, the jet-cooled (T_rot ~ 25 K) QCL bands nu35 1012.01379(4) (in-plane C-H bend, a-type) and nu19 1603.28695(5) (C-C ring stretch,
+b-type). For these rows the fit uncertainty is known, so u_band = reading precision + fit uncertainty is no longer a lower bound; every printed value
+is asserted verbatim in the text extract."""
 import csv
 import json
 import sys
@@ -37,7 +44,12 @@ OUT = HERE / "out"
 CACHE = OUT / "origin_sources_abstracts.json"
 SCOREBOARD_2009 = REPO / "plans/05_delta-probed-ir-pipeline/probes/results_m03/naphthalene/SCOREBOARD_naphthalene_pirali2009_table1.json"
 UA = {"User-Agent": "CapstonePlan Module 03 (mailto:frederic.petrignani@gmail.com)"}
+TXT105 = REPO / "Papers/_txt/Chawananon_2022_two-ring_PAHs_jet_QCL_JCP157_064301.txt"
 SOURCES = {
+    "105": {"doi": "10.1063/5.0096777", "cite": "Chawananon, Pirali, Goubet & Asselin 2022, J. Chem. Phys. 157, 064301", "text": TXT105,
+            "conditions": "nu35, nu19 jet-cooled (SPIRALES QCL, T_rot ~ 25 K); nu46, nu47, nu48, nu24 far-IR synchrotron FTS; rotationally resolved, Table 1 fitted centres",
+            "bands": [("nu48", "c-type", "166.65843(2)"), ("nu24", "b-type", "359.06177(2)"), ("nu47", "c-type", "473.73950(1)"), ("nu46", "c-type", "782.33081(1)"),
+                      ("nu35", "a-type (in-plane C-H bend)", "1012.01379(4)"), ("nu19", "b-type (C-C ring stretch)", "1603.28695(5)")]},
     "72": {"doi": "10.1039/c0fd00013b", "cite": "Albert, Albert, Lerch & Quack 2011, Faraday Discuss. 150, 71", "conditions": "room temperature, synchrotron FTIR 0.0008 cm-1, rotationally resolved",
            "bands": [("nu46", "b3u", "782.330949")]},
     "73": {"doi": "10.1039/c3cp44305a", "cite": "Pirali, Goubet, Huet, Georges, Soulard, Asselin, Courbe, Roy & Vervloet 2013, PCCP 15, 10141", "conditions": "nu46 jet-cooled (Jet-AILES); nu47, nu48 room temperature cell; rotationally resolved",
@@ -46,6 +58,19 @@ SOURCES = {
 CONSTANTS = {"u_res": 0.0, "head_to_origin": 0.0, "u_T": 0.0, "reading_precision": "half the last printed digit of the abstract's value",
              "fit_uncertainty": "not stated in the abstracts -> empty; u_band = reading precision is a LOWER BOUND",
              "grade": "abstract (values quoted in the abstracts; full texts requested as PDF items 32-33)"}
+
+
+def parse_printed(printed):
+    """'1603.28695(5)' -> (1603.28695, 5e-05, 5e-06): value, 1 sigma fit uncertainty in units of the last digit, reading precision (half the last digit).
+    Without parentheses the fit uncertainty is None (abstract-grade values)."""
+    if "(" in printed:
+        val, unc = printed[:-1].split("(")
+    else:
+        val, unc = printed, None
+    digits = len(val.split(".")[1]) if "." in val else 0
+    reading = 0.5 * 10 ** (-digits)
+    fit = (int(unc) * 10 ** (-digits)) if unc is not None else None
+    return float(val), fit, reading
 
 
 def abstract_text(inv):
@@ -61,6 +86,8 @@ def load_abstracts():
         return json.load(open(CACHE, encoding="utf-8"))
     cache = {}
     for item, s in SOURCES.items():
+        if "text" in s:
+            continue
         url = "https://api.openalex.org/works/https://doi.org/" + s["doi"] + "?select=title,publication_year,abstract_inverted_index"
         w = json.load(urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=60))
         cache[item] = {"doi": s["doi"], "title": w["title"], "year": w["publication_year"], "abstract": abstract_text(w["abstract_inverted_index"]),
@@ -75,23 +102,25 @@ def main():
     sb = {r["mode"]: r for r in json.load(open(SCOREBOARD_2009))["scored_bands"]} if SCOREBOARD_2009.exists() else {}
     rows = []
     for item, s in SOURCES.items():
-        text = ab[item]["abstract"]
+        pdf_grade = "text" in s
+        text = s["text"].read_text(encoding="utf-8", errors="replace") if pdf_grade else ab[item]["abstract"]
         for mode, irrep, printed in s["bands"]:
-            assert printed in text, f"item {item}: '{printed}' not found verbatim in the cached abstract"
-            nu = float(printed)
-            digits = len(printed.split(".")[1]) if "." in printed else 0
-            reading = 0.5 * 10 ** (-digits)
-            u_band = reading  # lower bound: fit uncertainty unknown
+            assert printed in text, f"item {item}: '{printed}' not found verbatim in the {'text extract' if pdf_grade else 'cached abstract'}"
+            nu, fit, reading = parse_printed(printed)
+            u_band = reading + (fit or 0.0)  # abstract grade: lower bound (fit unknown); PDF grade: reading + 1 sigma fit
             old = sb.get(mode, {})
             rows.append({"item": item, "species": "naphthalene", "mode": mode, "irrep": irrep, "origin_cm_as_printed": printed, "origin_cm": nu,
                          "family": window_family(nu), "conditions": s["conditions"], "u_res_cm": 0.0, "head_to_origin_cm": 0.0, "u_T_cm": 0.0,
-                         "reading_precision_cm": reading, "fit_uncertainty_cm": "", "u_band_cm_lower_bound": u_band,
+                         "reading_precision_cm": reading, "fit_uncertainty_cm": ("" if fit is None else fit), "u_band_cm_lower_bound": u_band,
                          "pirali2009_position_cm": old.get("position_cm", ""), "pirali2009_u_band_cm": old.get("u_band_cm", ""),
-                         "grade": "abstract", "source": s["cite"] + ", DOI " + s["doi"]})
+                         "grade": "pdf (Table 1, 1 sigma fit uncertainty)" if pdf_grade else "abstract", "source": s["cite"] + ", DOI " + s["doi"]})
     OUT.mkdir(exist_ok=True)
     with open(OUT / "origin_columns_naphthalene.csv", "w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, fieldnames=list(rows[0].keys())); w.writeheader(); w.writerows(rows)
-    L = [f"# Band-origin column — naphthalene, rotationally resolved records (items 72–73) ({datetime.now():%Y-%m-%d})", "",
+    L = [f"# Band-origin column — naphthalene, rotationally resolved records (items 72–73, abstract grade; item 105, PDF grade) ({datetime.now():%Y-%m-%d})", "",
+         "**Item 105 (added 2026-09-29, the user's word):** Chawananon, Pirali, Goubet & Asselin 2022 — six fitted origins with 1 σ uncertainties (Table 1, values asserted verbatim in the "
+         "text extract): the far-IR ν48, ν24, ν47, ν46 and, jet-cooled at ≈ 25 K with a QCL, **ν35 = 1012.01379(4) cm⁻¹ (≈ 10 µm, in-plane C–H bend) and ν19 = 1603.28695(5) cm⁻¹ "
+         "(the 6.2 µm family)** — the first cold, resolved origins of naphthalene in those two families. For these rows u_band = reading precision + fit uncertainty (not a lower bound).", "",
          "Abstract-grade: the values are those quoted in the two abstracts (cached in `out/origin_sources_abstracts.json`, each value asserted verbatim); the papers' fitted origins and their uncertainties come with the PDFs (request items 32–33). "
          "A band origin is a molecular constant from a rotational fit: u_res = 0, head-to-origin = 0, u_T = 0; what remains is the reading precision plus the fit uncertainty (unknown) → **u_band is a lower bound**. "
          "Beside it, the same modes from the Pirali 2009 room-temperature scoreboard (item 53), whose u_band is dominated by the 0.5 cm⁻¹ head-to-origin term.", "",
@@ -100,6 +129,9 @@ def main():
         L.append(f"| {r['item']} | {r['mode']} | {r['irrep']} | {r['origin_cm_as_printed']} | {r['family']} | {r['conditions']} | {r['u_band_cm_lower_bound']:g} | {r['pirali2009_position_cm']} | {r['pirali2009_u_band_cm']} |")
     L += ["", "**What it decides.** For ν46 (the strongest CH out-of-plane band, the 12.7 µm carrier) the laboratory side of the decision is now ≈ 10⁻⁶ cm⁻¹ at room temperature (item 72) with a jet-cooled confirmation to come from item 73's full text: "
           "R1's C–H out-of-plane family is decidable at the pipeline's own budget for this band. The 2009 value 782.33 and the 2011 origin 782.330949 agree to the 2009 reading precision. ν47 and ν48 lie below Module 03's 6–15 µm window and are reported, not scored.", "",
+          "**Item 105 changes the decision map of R1:** with ν19 and ν35 the 6.2 µm family and the ≈ 10 µm in-plane bend join the C–H out-of-plane family (ν46) as families where the laboratory "
+          "side is ≤ 10⁻⁴ cm⁻¹ and only the pipeline's own budget limits the decision; the 782.33081(1) fit of item 105 and the 782.330949 origin of item 72 agree to 1.4 × 10⁻⁴ cm⁻¹, "
+          "which is the size of the room-temperature-versus-jet difference the two analyses carry, not a disagreement about the band.", "",
           "Constants: " + json.dumps(CONSTANTS)]
     (OUT / "origin_columns_naphthalene.md").write_text("\n".join(L), encoding="utf-8")
     print("\n".join(L).encode("ascii", "replace").decode())

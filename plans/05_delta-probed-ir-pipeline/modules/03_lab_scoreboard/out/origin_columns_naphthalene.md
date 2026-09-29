@@ -1,14 +1,24 @@
-# Band-origin column — naphthalene, rotationally resolved records (items 72–73) (2026-09-13)
+# Band-origin column — naphthalene, rotationally resolved records (items 72–73, abstract grade; item 105, PDF grade) (2026-09-29)
+
+**Item 105 (added 2026-09-29, the user's word):** Chawananon, Pirali, Goubet & Asselin 2022 — six fitted origins with 1 σ uncertainties (Table 1, values asserted verbatim in the text extract): the far-IR ν48, ν24, ν47, ν46 and, jet-cooled at ≈ 25 K with a QCL, **ν35 = 1012.01379(4) cm⁻¹ (≈ 10 µm, in-plane C–H bend) and ν19 = 1603.28695(5) cm⁻¹ (the 6.2 µm family)** — the first cold, resolved origins of naphthalene in those two families. For these rows u_band = reading precision + fit uncertainty (not a lower bound).
 
 Abstract-grade: the values are those quoted in the two abstracts (cached in `out/origin_sources_abstracts.json`, each value asserted verbatim); the papers' fitted origins and their uncertainties come with the PDFs (request items 32–33). A band origin is a molecular constant from a rotational fit: u_res = 0, head-to-origin = 0, u_T = 0; what remains is the reading precision plus the fit uncertainty (unknown) → **u_band is a lower bound**. Beside it, the same modes from the Pirali 2009 room-temperature scoreboard (item 53), whose u_band is dominated by the 0.5 cm⁻¹ head-to-origin term.
 
 | item | mode | irrep | origin (cm⁻¹, as printed) | family | conditions | u_band lower bound (cm⁻¹) | Pirali 2009 position | Pirali 2009 u_band |
 |---|---|---|---|---|---|---|---|---|
+| 105 | nu48 | c-type | 166.65843(2) | low / skeletal | nu35, nu19 jet-cooled (SPIRALES QCL, T_rot ~ 25 K); nu46, nu47, nu48, nu24 far-IR synchrotron FTS; rotationally resolved, Table 1 fitted centres | 2.5e-05 | 166.4 | 0.503 |
+| 105 | nu24 | b-type | 359.06177(2) | low / skeletal | nu35, nu19 jet-cooled (SPIRALES QCL, T_rot ~ 25 K); nu46, nu47, nu48, nu24 far-IR synchrotron FTS; rotationally resolved, Table 1 fitted centres | 2.5e-05 | 358.7 | 0.503 |
+| 105 | nu47 | c-type | 473.73950(1) | low / skeletal | nu35, nu19 jet-cooled (SPIRALES QCL, T_rot ~ 25 K); nu46, nu47, nu48, nu24 far-IR synchrotron FTS; rotationally resolved, Table 1 fitted centres | 1.5e-05 | 473.33 | 0.5 |
+| 105 | nu46 | c-type | 782.33081(1) | CH-oop (10.5-15 um; benzene nu11 at 673 included) | nu35, nu19 jet-cooled (SPIRALES QCL, T_rot ~ 25 K); nu46, nu47, nu48, nu24 far-IR synchrotron FTS; rotationally resolved, Table 1 fitted centres | 1.5e-05 | 782.33 | 0.5 |
+| 105 | nu35 | a-type (in-plane C-H bend) | 1012.01379(4) | ring / CH-ip (9-10.5 um) | nu35, nu19 jet-cooled (SPIRALES QCL, T_rot ~ 25 K); nu46, nu47, nu48, nu24 far-IR synchrotron FTS; rotationally resolved, Table 1 fitted centres | 4.5e-05 | 1011.89 | 0.5 |
+| 105 | nu19 | b-type (C-C ring stretch) | 1603.28695(5) | CC-stretch (6.2 um) | nu35, nu19 jet-cooled (SPIRALES QCL, T_rot ~ 25 K); nu46, nu47, nu48, nu24 far-IR synchrotron FTS; rotationally resolved, Table 1 fitted centres | 5.5e-05 |  |  |
 | 72 | nu46 | b3u | 782.330949 | CH-oop (10.5-15 um; benzene nu11 at 673 included) | room temperature, synchrotron FTIR 0.0008 cm-1, rotationally resolved | 5e-07 | 782.33 | 0.5 |
 | 73 | nu46 | b3u | 782 | CH-oop (10.5-15 um; benzene nu11 at 673 included) | nu46 jet-cooled (Jet-AILES); nu47, nu48 room temperature cell; rotationally resolved | 0.5 | 782.33 | 0.5 |
 | 73 | nu47 | b3u | 474 | low / skeletal | nu46 jet-cooled (Jet-AILES); nu47, nu48 room temperature cell; rotationally resolved | 0.5 | 473.33 | 0.5 |
 | 73 | nu48 | b3u | 167 | low / skeletal | nu46 jet-cooled (Jet-AILES); nu47, nu48 room temperature cell; rotationally resolved | 0.5 | 166.4 | 0.503 |
 
 **What it decides.** For ν46 (the strongest CH out-of-plane band, the 12.7 µm carrier) the laboratory side of the decision is now ≈ 10⁻⁶ cm⁻¹ at room temperature (item 72) with a jet-cooled confirmation to come from item 73's full text: R1's C–H out-of-plane family is decidable at the pipeline's own budget for this band. The 2009 value 782.33 and the 2011 origin 782.330949 agree to the 2009 reading precision. ν47 and ν48 lie below Module 03's 6–15 µm window and are reported, not scored.
+
+**Item 105 changes the decision map of R1:** with ν19 and ν35 the 6.2 µm family and the ≈ 10 µm in-plane bend join the C–H out-of-plane family (ν46) as families where the laboratory side is ≤ 10⁻⁴ cm⁻¹ and only the pipeline's own budget limits the decision; the 782.33081(1) fit of item 105 and the 782.330949 origin of item 72 agree to 1.4 × 10⁻⁴ cm⁻¹, which is the size of the room-temperature-versus-jet difference the two analyses carry, not a disagreement about the band.
 
 Constants: {"u_res": 0.0, "head_to_origin": 0.0, "u_T": 0.0, "reading_precision": "half the last printed digit of the abstract's value", "fit_uncertainty": "not stated in the abstracts -> empty; u_band = reading precision is a LOWER BOUND", "grade": "abstract (values quoted in the abstracts; full texts requested as PDF items 32-33)"}
