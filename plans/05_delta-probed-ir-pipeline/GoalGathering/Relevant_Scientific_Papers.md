@@ -122,6 +122,10 @@ after Round-7 Pass B (issues 2, 4, 7, 8, 9) and verified via Crossref/arXiv.
 | **99** | FELICE IRMPD of phenanthrene⁺, pyrene⁺ and perylene⁺, 100–1700 cm⁻¹ (mid- to far-IR) — the supervisor is a co-author | Wiersma, S. D.; Candian, A.; Bakker, J. M.; Petrignani, A., MNRAS **516**, 5216 (2022), DOI 10.1093/mnras/stac2627 | **Crossref record verified 2026-09-27 (author)**; not read; cation line, obstacle 9 / §13 item 18 — the natural first reference to ask her about |
 | **100** | Ne-tagged infrared predissociation of pyrene⁺ (and C₁₆H₈⁺) in a cryogenic 22-pole ion trap (FELion) — vibrationally resolved cation positions without the multiphoton shift | Panchagnula, S.; Bouwman, J.; Rap, D. B.; Castellanos, P.; Candian, A.; Mackie, C.; Banhatti, S.; Brünken, S.; Linnartz, H.; Tielens, A. G. G. M., PCCP **22**, 21651 (2020), DOI 10.1039/D0CP02272A; arXiv:2007.16156 | **abstract read 2026-09-27 (author)**; the best position source for pyrene⁺ if the cation line is scored; the tagging technique needs an ion, so it is no route for the neutral rungs |
 | **101** | Cryogenic electrostatic storage ring (DESIREE): photodissociation action spectroscopy of coronene⁺ versus storage time — hot bands quenched with a 200 ms time constant by infrared radiative cooling | Stockett, M. H. et al., Faraday Discuss. **217** (2019), DOI 10.1039/c8fd00161h | **record 2026-09-27 (author; abstract read)**; electronic bands, not infrared positions; context for the emission cascade tier (the cooling rate), nothing for the scoreboard |
+| **102** | Long-wave mid-infrared (6.5–10 µm) cavity-enhanced frequency-comb spectroscopy of buffer-gas-cooled molecules — the instrument class that covers pyrene's 7.7 and 8.6 µm families cold | Baradaran, Charczun, Nambiar, Zou, Lee, Fermann, Weichman, arXiv 2512.04383 (v2, 3 Feb 2026) | **downloaded by the author 2026-09-29 (open access; 24 pp.)**; cold ethane and gauche-ethanol so far; no PAH; candidate for §6 item 2 of the proposal |
+| **103** | Pyrene infrared spectrum from 14 to 723 K in KBr pellets — empirical anharmonic factors for band position and width against temperature | Chakraborty, Mulas, Demyk, Joblin, arXiv 1904.02899 (2019) | **downloaded by the author 2026-09-29 (open access; 42 pp.)**; solid state, not gas; useful for the temperature dependence of band positions, not for cold band centres |
+| **104** | PhD thesis behind item 63: the QCL cavity ring-down slit-jet spectrometer and the pyrene ν68 analysis in full | Brumfield, B. E., PhD thesis, University of Illinois (2011) | **downloaded by the author 2026-09-29 (open access; 244 pp.)**; open at the McCall group site; the instrument description for a request to Stewart's group |
+| **105** | Jet-cooled high-resolution mid-infrared laser spectroscopy of centrosymmetric two-ring PAHs with anharmonic calculations — the same instrument class applied beyond pyrene | HAL hal-03774849 (2022) | **downloaded by the author 2026-09-29 (open access; 33 pp.)**; open; shows the reach of the QCL jet method in the fingerprint region for two-ring PAHs |
 
 ## Named debts (identical to Frozen_Lines §7)
 
@@ -770,3 +774,12 @@ with buffer-gas cooling at Princeton (Baradaran et al., arXiv 2512.04383, 2026; 
 families in one instrument; (3) Jet-AILES at SOLEIL (Bruker IFS125, 10⁻³ cm⁻¹, jet 5–50 K) — demonstrated on naphthalene's far-infrared CH-oop band,
 the natural home for pyrene's 11–13 µm family (844 cm⁻¹). None of the three has published pyrene in the mid-infrared fingerprint region; a request
 would be a first. No action by the student beyond this note; the ask stays with the supervisor's network.
+
+Downloaded by the author on 29 September 2026 (19:4x; the user: "Download"), open-access copies, into `Papers/` (items 102–105 above):
+
+| item | file | pages |
+|---|---|---|
+| 102 | Baradaran_2026_LWIR_comb_buffer_gas_cold_molecules_arXiv2512.04383.pdf | 24 |
+| 103 | Chakraborty_2019_pyrene_anharmonicity_14-723K_arXiv1904.02899.pdf | 42 |
+| 104 | Brumfield_2011_thesis_pyrene_QCL_jet_CRDS.pdf | 244 |
+| 105 | Stewart_2022_two-ring_PAHs_jet_QCL_HAL.pdf | 33 |
