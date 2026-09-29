@@ -754,3 +754,19 @@ means; if the hot cell and matrix spectra, the u_band numbers of module 03 are t
 these three exists that this search cannot find, ask for the reference; and ask whether the FELIX beam line that measured the acenes and the
 GrandPAHs could take pyrene, chrysene and triphenylene — the instrument class the item names. For the cation line, her own FELICE work (item 99)
 and the FELion tagging spectra of pyrene⁺ (item 100) are the references to put beside §13 item 18.
+
+## 29 September 2026, 19:4x — second search for a cold, resolved pyrene measurement (the user's request; §6 item 2 of the short proposal; web search, no local PDF)
+
+**Result: no new cold, resolved band of neutral pyrene beyond item 63.** Brumfield, Stewart & McCall 2012 (ν68 near 1184 cm⁻¹, 8.4 µm, jet 25 K,
+QCL cavity ring-down, ≈ 10 MHz lines) remains the only rotationally resolved infrared band of pyrene. Checked and set aside: Chakraborty, Mulas,
+Demyk & Joblin 2019 (arXiv 1904.02899) — pyrene in KBr pellets from 14 to 723 K, solid, not gas; the 2026 gas-phase study of hydrogenated and
+methylated pyrenes (arXiv 2607.16018) — 373–673 K cells, hot; pyrene in para-H₂ (Bahou et al. 2013) — matrix; FELIX/FELICE work on pyrene — cations,
+IRMPD bandwidth; the Jet-AILES CH-oop band under jet conditions is naphthalene (Pirali et al. 2013), not pyrene.
+
+**Instrument classes that could take the request (for the supervisor's §6 item 2), each with a published reach that covers one or more of the
+scored families:** (1) Stewart's QCL jet spectrometer at Connecticut College (the former McCall student; isoprene 2023, trans-1,3-pentadiene 2026) —
+the same class as item 63, so 8.4–8.6 µm is demonstrated and 7.7 or 11–13 µm is a laser change; (2) Weichman's long-wave mid-infrared frequency comb
+with buffer-gas cooling at Princeton (Baradaran et al., arXiv 2512.04383, 2026; 6.5–10 µm, cold ethane and ethanol so far) — covers the 7.7 and 8.6 µm
+families in one instrument; (3) Jet-AILES at SOLEIL (Bruker IFS125, 10⁻³ cm⁻¹, jet 5–50 K) — demonstrated on naphthalene's far-infrared CH-oop band,
+the natural home for pyrene's 11–13 µm family (844 cm⁻¹). None of the three has published pyrene in the mid-infrared fingerprint region; a request
+would be a first. No action by the student beyond this note; the ask stays with the supervisor's network.
