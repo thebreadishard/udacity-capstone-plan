@@ -68,10 +68,17 @@ def gradient(symbols, coords_bohr, basis, frozen, log, charge=0, spin=0, max_mem
         # The (T) lambda is solved explicitly (29 Sep 2026 incident): Gradients(mycc).kernel() without l1, l2 falls back to mycc.solve_lambda, the
         # CCSD lambda, and the result is not dE/dx of the CCSD(T) energy (water: 1.5e-3 a.u.; pyscf's own test passes ccsd_t_lambda's l1, l2).
         from pyscf.cc import ccsd_t_lambda
-        eris = mycc.ao2mo(); t0 = time.time(); conv, l1, l2 = ccsd_t_lambda.kernel(mycc, eris, mycc.t1, mycc.t2, tol=LAMBDA_TOL)
+        eris = mycc.ao2mo()
+        if fast is not None and check_fast and fast.lambda_installed():
+            # two-route check of the (T)-lambda C kernel (30 Sep 2026): pyscf's Python make_intermediates versus ours on the reference gradient
+            t1 = time.time(); diffs = fast.check_lambda_against_pyscf(mycc, mycc.t1, mycc.t2, eris); worst = max(diffs, key=diffs.get)
+            log(f"fast (T) lambda two-route check: max |kernel − pyscf| = {diffs[worst]:.1e} ({worst}; limit {FAST_T_LIMIT:.0e}; {time.time() - t1:.0f} s)")
+            if diffs[worst] > FAST_T_LIMIT:
+                raise SystemExit("the fast (T) lambda kernel disagrees with pyscf on the reference gradient — refusing to continue")
+        t0 = time.time(); conv, l1, l2 = ccsd_t_lambda.kernel(mycc, eris, mycc.t1, mycc.t2, tol=LAMBDA_TOL)
         if not conv:
             log("WARNING: CCSD(T) lambda not converged")
-        if fast is not None and check_fast:
+        if fast is not None and check_fast and fast.density_installed():
             # two-route check of the C kernel (29 Sep 2026): pyscf's Python (T) densities versus ours on this run's reference gradient
             t1 = time.time(); diffs = fast.check_against_pyscf(mycc, mycc.t1, mycc.t2, l1, l2, eris); worst = max(diffs, key=diffs.get)
             log(f"fast (T) density two-route check: max |kernel − pyscf| = {diffs[worst]:.1e} ({worst}; limit {FAST_T_LIMIT:.0e}; {time.time() - t1:.0f} s)")
@@ -166,7 +173,7 @@ def gate1_fingerprint() -> dict:
     return {os.path.basename(p): (hashlib.sha256(open(p, "rb").read()).hexdigest() if os.path.exists(p) else "absent") for p in GATE1_FILES}
 
 
-def gate1_problem(fast_used: bool, open_shell: bool = False):
+def gate1_problem(fast_used: bool, open_shell: bool = False, fast_lambda_used: bool = False):
     """None when a gate-1 stamp from this host, this pyscf and these exact files exists (and covers the C kernel if it is used), else why not.
     Lambda incident of 29 Sep 2026: six days of CCSD-lambda Hessians passed every pair check; only a second route saw it."""
     import socket
@@ -182,6 +189,8 @@ def gate1_problem(fast_used: bool, open_shell: bool = False):
         return f"changed since the stamp of {s.get('time')}: {', '.join(changed)}"
     if fast_used and not s.get("results", {}).get("fast_kernel"):
         return "the stamp does not cover the (T) density C kernel"
+    if fast_lambda_used and not s.get("results", {}).get("fast_lambda"):
+        return "the stamp does not cover the (T) lambda C kernel"
     if open_shell and not s.get("paths", {}).get("uhf"):
         return "the UHF-CCSD(T) gradient failed gate 1 on this machine (before the dvvVV fix of 30 Sep 2026 it was 4.9e-3 a.u. off on H2O⁺)"
     return None
@@ -199,21 +208,26 @@ def main():
                     "sharing one box take less (29 Sep 2026: 3 x 8000 on a 31 GB CPX62)")
     ap.add_argument("--fast-t-density", action="store_true", help="use the C kernel for the (T) density intermediates (probes/t_density_kernel, 29 Sep "
                     "2026); the reference gradient is also computed through pyscf's Python route and the run refuses to continue if they differ; RHF only")
+    ap.add_argument("--fast-t-lambda", action="store_true", help="use the C kernel for the (T) part of the CCSD(T) lambda intermediates (same "
+                    "library, 30 Sep 2026); two-route check against pyscf's make_intermediates on the reference gradient; RHF only")
     ap.add_argument("--symmetry", action="store_true", help="displace only one atom per symmetry orbit and reconstruct the Hessian with e8_symmetry (validated 24 Sep 2026)")
     ap.add_argument("--ks", default="", help="compute only these displacement indices (comma list or a:b slice of the displacement list, e.g. 0:15) and stop before the Hessian — for splitting a run over machines; merge the grad_*.npy files and rerun without --ks to assemble")
     a = ap.parse_args(); lib.num_threads(a.threads); os.makedirs(a.out, exist_ok=True)
     logf = open(os.path.join(a.out, "e8_fd.log"), "a")
     fast = None
-    if a.fast_t_density:
+    if a.fast_t_density or a.fast_t_lambda:
         if a.spin:
-            raise SystemExit("--fast-t-density is RHF only (the UHF gradient has its own density code)")
+            raise SystemExit("--fast-t-density and --fast-t-lambda are RHF only (the UHF gradient has its own (T) code)")
         sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "t_density_kernel"))
         import t_density_fast as fast
         if not fast.available():
             raise SystemExit("ccsd_t_rdm_kernel.so is not built on this machine: bash probes/t_density_kernel/build.sh <python>")
-        fast.install()
+        if a.fast_t_density:
+            fast.install()
+        if a.fast_t_lambda:
+            fast.install_lambda()
 
-    problem = gate1_problem(fast is not None, a.spin > 0)
+    problem = gate1_problem(a.fast_t_density, a.spin > 0, a.fast_t_lambda)
     if problem:
         raise SystemExit(f"gate 1 not passed on this machine for this code: {problem}. Run: python tests/test_acceptance_water.py "
                          "(≈ 1 min; energy vs psi4, gradient vs FD of the energy, frequencies vs CCCBDB, C kernel vs pyscf)")
@@ -230,7 +244,7 @@ def main():
                          "benzene's 6 of its 10 carbon cores and produced an invalid Hessian); pass --allow-frozen-mismatch to override on purpose")
     log(f"E8 FD Hessian: {n} atoms, {a.basis}, frozen {a.frozen} (derived from the elements: {derived}), step {a.step} bohr, {2 * 3 * n} displacements, "
         f"{a.threads} threads, max_memory {a.max_memory} MB" + (f", charge {a.charge}, spin {a.spin} (UHF-UCCSD(T))" if a.spin else "")
-        + ", explicit (T) lambda" + (", fast (T) density kernel" if fast is not None else ""))
+        + ", explicit (T) lambda" + (", fast (T) density kernel" if a.fast_t_density else "") + (", fast (T) lambda kernel" if a.fast_t_lambda else ""))
     ref_p = os.path.join(a.out, "reference.npz")
     if os.path.exists(ref_p):
         ref = np.load(ref_p); e0, g0 = float(ref["energy"]), ref["gradient"]

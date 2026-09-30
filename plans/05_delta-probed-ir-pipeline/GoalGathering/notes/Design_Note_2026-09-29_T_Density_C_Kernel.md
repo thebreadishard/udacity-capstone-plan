@@ -89,3 +89,14 @@ The smoke also exposed that the probe's gradients had never been CCSD(T) gradien
 lambda — §5 of the PR drafts, ledger 21:1x). The probe now solves the (T) lambda explicitly; the reruns of benzene and naphthalene f10 give the
 first timings of lambda + kernel gradient at PAH size. Point §4's "factor conventions" check passed at the first attempt; the (a,b,c)-loop
 accumulation of gvv (§2.1) is exact.
+
+## Addendum 30 September 2026 — the (T)-lambda kernel
+
+`t_lambda_intermediates` in the same C file computes the (T) part of `ccsd_t_lambda.make_intermediates` (pyscf 2.14): for every ordered virtual
+triple (a,b,c) the same W and V as the density kernel (`wv_term` × 6, divided by D3), then X = Q(V + 2W) with Q(x) = 2x_ijk − x_ikj − x_kji
+(`t3_symm_ip` pattern "2-1000-1", checked in pyscf's `lib/cc/ccsd_t_lambda.c`), P(W)/2 and Q(W)/2, contracted into joovv[i,j,a,e] (ovvv term),
+joovv[i,j,a,b] (ovoo and fock-ov terms) and l1_t[i,a]. Jobs are the first virtual index a, so each job owns joovv[:,:,a,:] and l1_t[:,a]; the
+Python side finishes as pyscf does (l1_t / eia; joovv + its pair transpose, / (eia + ejb)). No triple symmetry is used yet (every ordered triple
+builds its own W — the same count as pyscf's blocked loop); computing W once per unordered triple would cut the dominant cost about six-fold if the
+anchors need it. Verified against pyscf: water ≤ 3e-18, benzene/cc-pVDZ 1e-16 with 44 s against 373 s on the laptop (16 threads)
+(`probes/t_density_kernel/evidence/`).

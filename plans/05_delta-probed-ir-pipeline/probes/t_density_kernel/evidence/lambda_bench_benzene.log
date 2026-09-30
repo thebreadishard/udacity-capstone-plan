@@ -1,0 +1,4 @@
+CCSD 13 s, nocc 15 nvir 93, threads 16
+C kernel: 44.4 s
+pyscf make_intermediates: 373.0 s (includes the CCSD intermediates)
+max |C - pyscf|: l1_t 3.1e-17 (|l1_t| 2.6e-03), l2_t 1.1e-16 (|l2_t| 2.5e-02)

@@ -9,7 +9,8 @@ tests, so each check here compares the production path with an independent count
 3. geometry optimised with that gradient and its FD Hessian frequencies (the probe's own step, projector and pair check) against CCCBDB
    Release 22, CCSD(T)/cc-pVDZ frozen core: r 0.9664 Å, ∠ 101.964°, ω 1690/3820/3926 cm⁻¹ (all-electron: 1691/3824/3930; the
    CCSD-lambda Hessian was 2.5–7.7 cm⁻¹ off);
-4. where the (T) density C kernel is built: its intermediates against pyscf's Python (≤ 1e-10) and the gradient through it (≤ 1e-8).
+4. where the C kernels are built ((T) density; (T) lambda since 30 Sep 2026): their intermediates against pyscf's Python (≤ 1e-10) and the
+   gradient through both (≤ 1e-8).
 
 Script mode (no pytest needed on a server): `python tests/test_acceptance_water.py` runs all of them; when the RHF checks pass it writes the stamp
 ~/.dpir_gate1.json that e8_cc_hessian_fd.py requires (host, pyscf version and the hashes of the probe, the kernel and this file must match)
@@ -174,18 +175,21 @@ def check_geometry_and_frequencies_vs_cccbdb():
 
 
 def check_fast_kernel():
-    """Skipped (recorded as not built) where the C kernel is absent; the probe then refuses --fast-t-density anyway."""
+    """Both C kernels ((T) density, (T) lambda since 30 Sep 2026) through the production gradient with its two-route checks. Skipped (recorded
+    as not built) where the library is absent; the probe then refuses --fast-t-density / --fast-t-lambda anyway."""
     if not F.available():
-        return {"fast_kernel": False}
+        return {"fast_kernel": False, "fast_lambda": False}
     _, g_plain = reference(0, 0)
     F.install()
+    F.install_lambda()
     try:
         _, g_fast = production_gradient(X_REF, fast=F, check_fast=True)   # raises SystemExit above FAST_T_LIMIT
     finally:
         F.uninstall()
+        F.uninstall_lambda()
     d = float(np.abs(np.asarray(g_fast) - np.asarray(g_plain)).max())
     assert d <= KERNEL_GRADIENT_LIMIT, f"gradient through the C kernel differs by {d:.1e} a.u."
-    return {"fast_kernel": True, "dgrad_fast_kernel": d}
+    return {"fast_kernel": True, "fast_lambda": True, "dgrad_fast_kernel": d}
 
 
 # (check, path): 'rhf' checks gate every E8 run, 'uhf' checks gate --spin > 0 runs only

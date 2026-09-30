@@ -213,3 +213,135 @@ int t_density_intermediates(int nocc, int nvir, const double *mo_energy,
         free(eijk); free(t1Th);
         return failed;
 }
+
+/* out = fac * Q(v), Q(x) = 2 x_ijk - x_ikj - x_kji (t3_symm_ip pattern "2-1000-1") */
+static void permute_q_into(double *out, const double *v, int n, double fac)
+{
+        const int nn = n * n;
+        int i, j, k;
+        for (i = 0; i < n; i++) {
+        for (j = 0; j < n; j++) {
+        for (k = 0; k < n; k++) {
+                out[i*nn+j*n+k] = fac * (v[i*nn+j*n+k] * 2
+                                       - v[i*nn+k*n+j]
+                                       - v[k*nn+j*n+i]);
+        } } }
+}
+
+/*
+ * (T) intermediates of pyscf's CCSD(T) lambda equations (pyscf/cc/ccsd_t_lambda.py::make_intermediates, pyscf 2.14.0):
+ * the same W (twelve connected terms) and V (six disconnected terms) per ordered virtual triple (a,b,c), divided by D3, then
+ *   X  = Q(V + 2W):   joovv[i,j,a,e] += sum_{bck} ovvv[k,c,e,b] X(ijk)          ('kceb,abcijk->ijae')
+ *                     joovv[i,j,a,b] -= sum_{cmn} ovoo[n,c,m,j] X(imn)          ('ncmj,abcimn->ijab')
+ *   Wr = P(W)/2:      l1t[i,a]      += sum_{bcjk} ovov[j,b,k,c] Wr(ijk)        ('jbkc,abcijk->ia')
+ *   Wq = Q(W)/2:      joovv[i,j,a,b] += sum_{ck} fock[k,nocc+c] Wq(ijk)        ('kc,abcijk->ijab')
+ * Outputs (accumulated, caller zeroes them): l1t[nocc][nvir], joovv[nocc][nocc][nvir][nvir] — before pyscf's final
+ * l1t /= eia and joovv + joovv.transpose(1,0,3,2), which the Python side applies. Inputs as t_density_intermediates, plus
+ * fov[nocc][nvir] = fock[:nocc, nocc:]. Jobs are the first virtual index a (OpenMP, dynamic): every output element carries
+ * a, so a job owns joovv[:,:,a,:] and l1t[:,a] and there is no reduction.
+ */
+int t_lambda_intermediates(int nocc, int nvir, const double *mo_energy,
+                           const double *t1T, const double *t2T, const double *vooo,
+                           const double *vvop, const double *fvo, const double *fov,
+                           double *l1t, double *joovv)
+{
+        const int nmo = nocc + nvir;
+        const int noo = nocc * nocc;
+        const int nooo = noo * nocc;
+        const size_t nov = (size_t)nvir * nocc;
+        double *eijk = malloc(sizeof(double) * nooo);
+        double *t1Th = malloc(sizeof(double) * nov * 2);
+        double *fvoh = (t1Th == NULL) ? NULL : t1Th + nov;
+        int failed = 0;
+        size_t n;
+        int i, j, k;
+
+        if (eijk == NULL || t1Th == NULL) { free(eijk); free(t1Th); return 1; }
+        for (n = 0, i = 0; i < nocc; i++) {
+        for (j = 0; j < nocc; j++) {
+        for (k = 0; k < nocc; k++, n++) {
+                eijk[n] = mo_energy[i] + mo_energy[j] + mo_energy[k];
+        } } }
+        for (n = 0; n < nov; n++) {
+                t1Th[n] = t1T[n] * .5;
+                fvoh[n] = fvo[n] * .5;
+        }
+
+#pragma omp parallel shared(failed)
+{
+        /* w, v, cache, x (Q(V+2W), later Q(W)/2), wr (P(W)/2), xt (x with the trailing pair swapped) */
+        double *w = malloc(sizeof(double) * (size_t)nooo * 6);
+        double *v = (w == NULL) ? NULL : w + nooo;
+        double *cache = (w == NULL) ? NULL : v + nooo;
+        double *x = (w == NULL) ? NULL : cache + nooo;
+        double *wr = (w == NULL) ? NULL : x + nooo;
+        double *xt = (w == NULL) ? NULL : wr + nooo;
+        double *jo_a = malloc(sizeof(double) * ((size_t)noo * nvir + (size_t)noo + noo + nocc));   /* [i][j][e] */
+        double *rb = (jo_a == NULL) ? NULL : jo_a + (size_t)noo * nvir;                          /* [i][j] for the current b */
+        double *g = (jo_a == NULL) ? NULL : rb + noo;                                            /* ovov[j,b,k,c] as [j][k] */
+        double *l1_a = (jo_a == NULL) ? NULL : g + noo;
+        int a, b, c, e, m;
+        size_t nn;
+
+        if (w == NULL || jo_a == NULL) {
+#pragma omp atomic write
+                failed = 1;
+        }
+#pragma omp barrier
+        if (!failed) {
+#pragma omp for schedule(dynamic, 1)
+        for (a = 0; a < nvir; a++) {
+                memset(jo_a, 0, sizeof(double) * (size_t)noo * nvir);
+                memset(l1_a, 0, sizeof(double) * nocc);
+                for (b = 0; b < nvir; b++) {
+                        memset(rb, 0, sizeof(double) * noo);
+                        for (c = 0; c < nvir; c++) {
+                                const double eabc = mo_energy[nocc+a] + mo_energy[nocc+b] + mo_energy[nocc+c];
+                                memset(w, 0, sizeof(double) * (size_t)nooo * 2);
+                                wv_term(w, v, cache, nocc, nvir, vvop, vooo, t2T, t1Th, fvoh, a, b, c, noo, nocc, 1);
+                                wv_term(w, v, cache, nocc, nvir, vvop, vooo, t2T, t1Th, fvoh, a, c, b, noo, 1, nocc);
+                                wv_term(w, v, cache, nocc, nvir, vvop, vooo, t2T, t1Th, fvoh, b, a, c, nocc, noo, 1);
+                                wv_term(w, v, cache, nocc, nvir, vvop, vooo, t2T, t1Th, fvoh, b, c, a, nocc, 1, noo);
+                                wv_term(w, v, cache, nocc, nvir, vvop, vooo, t2T, t1Th, fvoh, c, a, b, 1, noo, nocc);
+                                wv_term(w, v, cache, nocc, nvir, vvop, vooo, t2T, t1Th, fvoh, c, b, a, 1, nocc, noo);
+                                for (nn = 0; nn < (size_t)nooo; nn++) {
+                                        const double d = 1.0 / (eijk[nn] - eabc);
+                                        w[nn] *= d;
+                                        v[nn] = v[nn] * d + 2.0 * w[nn];            /* v now holds V + 2W */
+                                }
+                                permute_q_into(x, v, nocc, 1.0);
+                                /* jo_a[i][j][e] += sum_k X[i][j][k] ovvv[k,c,e,b],  ovvv[k,c,e,b] = vvop[c][b][k][nocc+e] */
+                                dgemm_(&TN, &TN, &nvir, &noo, &nocc, &D1, vvop + ((size_t)c * nvir + b) * nocc * nmo + nocc, &nmo,
+                                       x, &nocc, &D1, jo_a, &nvir);
+                                /* rb[i][j] -= sum_{mn} X[i][m][n] ovoo[n,c,m,j],  ovoo[n,c,m,j] = vooo[c][n][m][j]; xt[i][n][m] = X[i][m][n] */
+                                for (i = 0; i < nocc; i++)
+                                for (m = 0; m < nocc; m++)
+                                for (k = 0; k < nocc; k++)
+                                        xt[(size_t)i*noo + k*nocc + m] = x[(size_t)i*noo + m*nocc + k];
+                                dgemm_(&TN, &TN, &nocc, &nocc, &noo, &DN1, vooo + (size_t)c * nooo, &nocc, xt, &noo, &D1, rb, &nocc);
+                                /* l1_a[i] += sum_{jk} P(W)/2 [i][j][k] ovov[j,b,k,c],  ovov[j,b,k,c] = vvop[b][c][j][k] */
+                                permute_into(wr, w, nocc, 0.5);
+                                for (j = 0; j < nocc; j++)
+                                for (k = 0; k < nocc; k++)
+                                        g[j*nocc + k] = vvop[(((size_t)b * nvir + c) * nocc + j) * nmo + k];
+                                dgemv_(&TT, &noo, &nocc, &D1, wr, &noo, g, &INC1, &D1, l1_a, &INC1);
+                                /* rb[i][j] += sum_k Q(W)/2 [i][j][k] fov[k][c] */
+                                permute_q_into(x, w, nocc, 0.5);
+                                dgemv_(&TT, &nocc, &noo, &D1, x, &nocc, fov + c, &nvir, &D1, rb, &INC1);
+                        }
+                        for (i = 0; i < noo; i++)
+                                jo_a[(size_t)i * nvir + b] += rb[i];
+                }
+                for (i = 0; i < nocc; i++) {
+                        l1t[(size_t)i * nvir + a] += l1_a[i];
+                        for (j = 0; j < nocc; j++)
+                        for (e = 0; e < nvir; e++)
+                                joovv[(((size_t)i * nocc + j) * nvir + a) * nvir + e] += jo_a[((size_t)i * nocc + j) * nvir + e];
+                }
+        }
+        }
+        free(w); free(jo_a);
+}
+        free(eijk); free(t1Th);
+        return failed;
+}

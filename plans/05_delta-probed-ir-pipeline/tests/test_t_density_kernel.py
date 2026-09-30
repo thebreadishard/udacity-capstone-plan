@@ -67,3 +67,27 @@ def test_gradient_through_installed_replacement_matches_pyscf():
     finally:
         F.uninstall()
     assert np.max(np.abs(g_new - g_ref)) < 1e-8, np.max(np.abs(g_new - g_ref))
+
+
+@pytest.mark.parametrize("symmetry", [False, True])
+def test_lambda_intermediates_match_pyscf_to_1e_10(symmetry):
+    """The (T)-lambda kernel (30 Sep 2026) against pyscf's make_intermediates: water 3e-18 at the first build."""
+    mycc, eris, l1, l2 = _ccsd_t(symmetry)
+    F.uninstall_lambda()
+    d = F.check_lambda_against_pyscf(mycc, mycc.t1, mycc.t2, eris)
+    assert max(d.values()) < 1e-10, d
+
+
+def test_lambda_solution_and_gradient_through_installed_kernel_match_pyscf():
+    from pyscf.cc import ccsd_t_lambda
+    from pyscf.grad import ccsd_t as ccsd_t_grad
+    mycc, eris, l1_ref, l2_ref = _ccsd_t(False)
+    F.install_lambda()
+    try:
+        conv, l1, l2 = ccsd_t_lambda.kernel(mycc, eris, mycc.t1, mycc.t2, tol=1e-10)
+    finally:
+        F.uninstall_lambda()
+    assert conv and np.abs(l1 - l1_ref).max() < 1e-9 and np.abs(l2 - l2_ref).max() < 1e-9
+    g_ref = ccsd_t_grad.Gradients(mycc).kernel(mycc.t1, mycc.t2, l1_ref, l2_ref, eris)
+    g = ccsd_t_grad.Gradients(mycc).kernel(mycc.t1, mycc.t2, l1, l2, eris)
+    assert np.abs(g - g_ref).max() < 1e-8

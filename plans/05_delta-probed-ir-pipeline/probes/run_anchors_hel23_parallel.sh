@@ -5,6 +5,7 @@
 # when available memory drops under GUARD_MB the youngest partial run is stopped by pid (its slice is finished by the assembling run).
 # Sequence (30 Sep 2026 restart on the corrected route: explicit (T) lambda, gate-1 stamp, --fast-t-density on the RHF molecules, UHF dvvVV fix):
 # benzonitrile (2 × 8 threads) → fluorobenzene (3 × 5) → pyridine (3 × 5) → benzene cation (2 × 8, UHF needs twice the memory) → CHAIN FINISHED.
+# 30 Sep 08:3x: FAST also carries --fast-t-lambda (the (T)-lambda C kernel; benzene 44 s vs pyscf 373 s, agreement 1e-16).
 # The 29 Sep benzonitrile gradients (CCSD lambda) were moved to results/benzonitrile_ccpvdz_INVALID_ccsd_lambda. FAST="" drops the C kernel.
 # Every step writes one ANCHOR … line to anchors.log for the poller.
 # Smoke (WSL, water): ROOT=<dir with e8_cc_hessian_fd.py, e8_symmetry.py> PY=<python> LOG=<file> SMOKE=<geometry.json> bash run_anchors_hel23_parallel.sh
@@ -14,7 +15,7 @@ PY=${PY:-/root/miniforge3/envs/qc05/bin/python}
 LOG=${LOG:-/root/e8/anchors.log}
 CORPUS=${CORPUS:-/root/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/corpus}
 GUARD_MB=${GUARD_MB:-1500}
-FAST=${FAST---fast-t-density}
+FAST=${FAST---fast-t-density --fast-t-lambda}
 SMOKE=${SMOKE:-}
 cd "$ROOT"
 say() { echo "[$(date '+%F %T')] $*" >> "$LOG"; }

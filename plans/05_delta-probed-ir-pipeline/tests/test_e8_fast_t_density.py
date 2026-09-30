@@ -17,7 +17,7 @@ def test_switch_plumbing_and_two_route_check():
     names = [a.arg for a in grad.args.args]
     assert names[-2:] == ["fast", "check_fast"]
     assert re.search(r'add_argument\("--fast-t-density", action="store_true"', text)
-    assert 'raise SystemExit("--fast-t-density is RHF only' in text
+    assert 'raise SystemExit("--fast-t-density and --fast-t-lambda are RHF only' in text
     assert text.index("fast.install()") < text.index('log(f"E8 FD Hessian:')                 # installed before the first gradient
     assert "check_fast=True)" in text and text.count("check_fast=True") == 1                 # the reference gradient only
     assert "fast.check_against_pyscf(" in text and "FAST_T_LIMIT = 1e-10" in text

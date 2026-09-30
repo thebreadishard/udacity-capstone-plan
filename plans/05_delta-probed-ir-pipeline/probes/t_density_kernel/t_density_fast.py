@@ -9,6 +9,10 @@ The CCSD parts still come from pyscf's `ccsd_rdm`; only the (T) triples work mov
 element-wise difference over all intermediates (the noise principle applied to our own speed-up; e8_cc_hessian_fd.py runs
 it on the reference gradient of every run when --fast-t-density is given). Design note:
 GoalGathering/notes/Design_Note_2026-09-29_T_Density_C_Kernel.md; build with build.sh; RHF/real only, any point group.
+
+Since 30 Sep 2026 the same library carries `t_lambda_intermediates`, the (T) part of `pyscf.cc.ccsd_t_lambda.make_intermediates`
+(l1_t, l2_t): `install_lambda()` / `uninstall_lambda()` swap that function, `check_lambda_against_pyscf(mycc, t1, t2, eris)` is its
+second route (e8_cc_hessian_fd.py --fast-t-lambda runs it on the reference gradient).
 """
 import ctypes
 import os
@@ -34,6 +38,7 @@ def _load():
         ctypes.CDLL(os.path.join(libdir, "libcc.so"), mode=ctypes.RTLD_GLOBAL)
         _lib = ctypes.CDLL(SO)
         _lib.t_density_intermediates.restype = ctypes.c_int
+        _lib.t_lambda_intermediates.restype = ctypes.c_int
     return _lib
 
 
@@ -57,7 +62,8 @@ def prepare(t1, t2, eris):
                 t2T=np.ascontiguousarray(t2.transpose(2, 3, 1, 0), dtype=float),
                 vooo=np.ascontiguousarray(ovoo.transpose(1, 0, 2, 3), dtype=float),
                 vvop=vvop,
-                fvo=np.ascontiguousarray(eris.fock[nocc:, :nocc], dtype=float))
+                fvo=np.ascontiguousarray(eris.fock[nocc:, :nocc], dtype=float),
+                fov=np.ascontiguousarray(eris.fock[:nocc, nocc:], dtype=float))
 
 
 def kernel(t1, t2, eris):
@@ -138,6 +144,11 @@ def _gamma2_outcore(mycc, t1, t2, l1, l2, eris, h5fobj, compress_vvvv=False):
 _ORIGINALS = {}
 
 
+def density_installed():
+    from pyscf.cc import ccsd_t_rdm as M
+    return M._gamma1_intermediates is _gamma1_intermediates
+
+
 def install():
     from pyscf.cc import ccsd_t_rdm as M
     if not _ORIGINALS:
@@ -172,3 +183,64 @@ def check_against_pyscf(mycc, t1, t2, l1, l2, eris):
     for name, r, n in zip(("dovov", "dvvvv", "doooo", "doovv", "dovvo", "dvvov", "dovvv", "dooov"), ref, new):
         diffs[name] = float(np.max(np.abs(np.asarray(r) - np.asarray(n))))
     return diffs
+
+
+def lambda_kernel(t1, t2, eris):
+    """The (T) parts l1_t, l2_t of pyscf's ccsd_t_lambda.make_intermediates, finished as pyscf finishes them (/ eia, pair-symmetrised)."""
+    if not available():
+        raise RuntimeError(f"{SO} not built: run bash {os.path.join(HERE, 'build.sh')}")
+    p = prepare(t1, t2, eris)
+    nocc, nvir = p["nocc"], p["nvir"]
+    l1t = np.zeros((nocc, nvir))
+    joovv = np.zeros((nocc, nocc, nvir, nvir))
+    rc = _load().t_lambda_intermediates(
+        ctypes.c_int(nocc), ctypes.c_int(nvir), _c(p["mo_energy"]), _c(p["t1T"]), _c(p["t2T"]), _c(p["vooo"]),
+        _c(p["vvop"]), _c(p["fvo"]), _c(p["fov"]), _c(l1t), _c(joovv))
+    if rc != 0:
+        raise MemoryError("t_lambda_intermediates: a thread could not allocate its buffers")
+    mo_e = p["mo_energy"]
+    eia = mo_e[:nocc, None] - mo_e[None, nocc:]
+    l1t /= eia
+    joovv = joovv + joovv.transpose(1, 0, 3, 2)
+    return l1t, joovv / (eia[:, None, :, None] + eia[None, :, None, :])
+
+
+def make_intermediates(mycc, t1, t2, eris):
+    """Drop-in for pyscf.cc.ccsd_t_lambda.make_intermediates: pyscf's CCSD intermediates plus the (T) parts from C."""
+    from pyscf.cc import ccsd_lambda
+    _check_real(t1, t2)
+    imds = ccsd_lambda.make_intermediates(mycc, t1, t2, eris)
+    imds.l1_t, imds.l2_t = lambda_kernel(t1, t2, eris)
+    return imds
+
+
+_LAMBDA_ORIGINAL = {}
+
+
+def lambda_installed():
+    from pyscf.cc import ccsd_t_lambda as M
+    return M.make_intermediates is make_intermediates
+
+
+def install_lambda():
+    from pyscf.cc import ccsd_t_lambda as M
+    if not _LAMBDA_ORIGINAL:
+        _LAMBDA_ORIGINAL["make_intermediates"] = M.make_intermediates
+    M.make_intermediates = make_intermediates
+
+
+def uninstall_lambda():
+    from pyscf.cc import ccsd_t_lambda as M
+    if _LAMBDA_ORIGINAL:
+        M.make_intermediates = _LAMBDA_ORIGINAL["make_intermediates"]
+
+
+def check_lambda_against_pyscf(mycc, t1, t2, eris):
+    """Second route: pyscf's Python make_intermediates versus the C kernel; returns {'l1_t': max |diff|, 'l2_t': max |diff|}."""
+    from pyscf.cc import ccsd_t_lambda
+    ref_fn = _LAMBDA_ORIGINAL.get("make_intermediates", ccsd_t_lambda.make_intermediates)
+    if ref_fn is make_intermediates:
+        raise RuntimeError("check_lambda_against_pyscf: pyscf's make_intermediates is not available")
+    ref = ref_fn(mycc, t1, t2, eris)
+    l1t, l2t = lambda_kernel(t1, t2, eris)
+    return {"l1_t": float(np.max(np.abs(ref.l1_t - l1t))), "l2_t": float(np.max(np.abs(ref.l2_t - l2t)))}
