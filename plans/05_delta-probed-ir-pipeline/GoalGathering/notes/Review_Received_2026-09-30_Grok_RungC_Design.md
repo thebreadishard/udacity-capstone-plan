@@ -59,3 +59,20 @@ Tonight's data-scaling run (449 / 750, C1 and C2) reads first; its result and th
   the order after the diagnostics (rank 1 + 2 then also on the largest pool, same lines). The diagnostics are not skipped because the scaling run moves.
 - Cleanest statement for the record: the model already optimises the internal term almost exclusively, sees the geometry, and still loses by a factor two
   on the couplings — a representation / head problem, not a loss or data-volume problem.
+
+## Second reviewer, 22:4x — Gemini (Flash, extended) on the same prompt; verified and merged
+
+| claim (Gemini) | verified | verdict |
+|---|---|---|
+| Same diagnosis on the input bottleneck (three invariants destroy the block's orientation; rung B is anchored on F_low of the element) | as above | agreed by both reviewers |
+| Ranks the **hybrid head first** (encoder → ΔF on internal primitives, −0.25…−0.35), rank-2 tensor features second (−0.10…−0.15), per-class standardisation third | — | order differs from Grok (tensor injection first); both agree the three are the levers. We keep Grok's order because the diagnostics decide it and the hybrid is the control that separates body from head |
+| **New, cheap:** SQM-style parameterisation ΔF_ij = α_class F_low,ij + ΔF_additive (learned scale per class plus a residual) | not in our code; rung B learns the additive part only | **adopted as a variant of the hybrid head** (one extra scalar per class; a registered ablation) |
+| Cutoff 5 Å misses topological ring couplings | the scored pattern's supporting atoms lie within ≈ 3 Å (see above) | not a cause; topological distance features stay rank 4 |
+| "Acoustic sum truncation bug": ΔH_ii = −Σ_{j in cutoff} ΔH_ij omits far atoms | pairs beyond the cutoff have ΔH_ij = 0 by construction, so the sum over all j equals the sum within the cutoff; translational invariance of the predicted ΔH is exact (unit-tested) | **not a bug** |
+| B-matrix geometry leak (B computed at the high-level geometry) | both Hessians are at the B3LYP geometry by design; B and B⁺ from that geometry everywhere | **not the case** |
+| Loss imbalance: Cartesian and internal terms in different units, diagonal-dominated | both terms carry LOSS_SCALE; the internal term dominates by 1e5 (see Grok's round 2); the real remaining issue is per-class standardisation of the internal term | agreed on the remedy, not on the diagnosis |
+| Data: pure/alkyl-substituted PAHs of varied topology (cata-/peri-condensed), not heteroaromatics; **MMD / coverage pre-test** of candidate molecules against the hold-outs on the 66 pair features before any DFT is computed | — | **adopted**: the coverage ratio and an MMD on the rung-B features go into the data step (cheap, minutes) |
+| Literature table: keep PaiNN body for CPU, give the head ℓ = 2 content; direct matrix regression is right for Δ-learning; enforce the sum rule | consistent with Grok and with our records | agreed |
+
+**Merged plan (unchanged order, two additions):** diagnostics → rank 1 + 2 at 175 → hybrid head, now with the SQM-style scale-plus-residual variant as
+a registered ablation → rung-B data ablations plus the feature-coverage / MMD pre-test of candidate molecules against the hold-outs.
