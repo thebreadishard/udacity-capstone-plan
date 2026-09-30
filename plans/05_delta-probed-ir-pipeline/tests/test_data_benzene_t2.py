@@ -16,7 +16,9 @@ EXPERIMENT = {"ring breathing": 992.0, "CH bend": 1310.0, "ring": 849.0}  # Shim
 def t2(benzene_t2_dir_module):
     recs = load_results(str(benzene_t2_dir_module))
     assert len(recs) == 61
-    return qff_from_records(recs, 0.05)
+    # allow_noisy on purpose (noise guard of 30 Sep 2026): this analytic set at step 0.05 has quartic route disagreement 0.9 but a cubic
+    # route spread of 24.4 cm⁻¹, above the 10 cm⁻¹ limit; the tests below pin its numbers, results use the step-0.10 set (0.4 / 0.4)
+    return qff_from_records(recs, 0.05, allow_noisy=True)
 
 
 @pytest.fixture(scope="module")

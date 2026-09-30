@@ -18,6 +18,17 @@ Noise diagnostic
 Every off-diagonal semi-diagonal quartic constant has two independent finite-difference routes: displace ``j`` and read
 ``H_ii`` (route a), or displace ``i`` and read ``H_jj`` (route b). Their difference is a direct estimate of the numerical
 error of that constant, at no extra cost. The routes are kept separately; the assembled constant is their mean.
+The cubic constants have three routes (displace i, j or k); their spread plays the same role.
+
+Noise guard (30 September 2026, the user: 'make sure that we see it immediately when our code does not do what it needs
+to do'): ``qff_from_records`` raises ``NoisyForceFieldError`` when the largest quartic route disagreement or the largest
+cubic route spread exceeds ``ROUTE_NOISE_LIMIT_CM`` (10 cm⁻¹, an absolute limit — for much larger molecules a relative one may
+be needed) or is not finite, unless the caller passes ``allow_noisy=True`` on purpose. ``assemble_qff`` itself is not
+guarded; the guard sits in the chain every report goes through. Sets in use pass: water psi4 FD 1.5 / 0.1, naphthalene
+route 2 3.6 / 0.5 cm⁻¹ (quartic / cubic).
+Measured on benzene B3LYP/6-31G* (21 Sep): psi4 finite-difference Hessians at step 0.05 give quartic max 1264.5 / cubic
+max 218.6 cm⁻¹ and at step 0.2 give 110.1 / 40.8; pyscf analytic Hessians at step 0.05 give 0.9 / 24.4 and at step 0.10
+0.4 / 0.4. Only the last one passes; analytic Hessians at a large enough step are the remedy, not a larger warning.
 
 Degenerate subspaces
 --------------------
@@ -37,6 +48,12 @@ import os
 from dataclasses import dataclass, field
 
 import numpy as np
+
+ROUTE_NOISE_LIMIT_CM = 10.0   # cm⁻¹; largest allowed quartic route disagreement and cubic route spread (see 'Noise guard')
+
+
+class NoisyForceFieldError(ValueError):
+    """The finite-difference routes to the same force constants disagree by more than ROUTE_NOISE_LIMIT_CM."""
 
 HARTREE_CM = 219474.6313632
 AMU_ME = 1822.888486209
@@ -284,8 +301,11 @@ def assemble_qff(omega_cm: np.ndarray, H0: np.ndarray, Hp: dict[int, np.ndarray]
     return QFF(np.array(omega_cm, float), phi3 * HARTREE_CM, spread * HARTREE_CM, phi4 * HARTREE_CM, route_a * HARTREE_CM, route_b * HARTREE_CM, pairs)
 
 
-def qff_from_records(recs: list[HessianRecord], disp: float) -> tuple[QFF, Harmonic, HessianRecord, dict]:
-    """The whole chain: reference, harmonic analysis, degenerate-subspace alignment, assignment, assembly."""
+def qff_from_records(recs: list[HessianRecord], disp: float, allow_noisy: bool = False) -> tuple[QFF, Harmonic, HessianRecord, dict]:
+    """The whole chain: reference, harmonic analysis, degenerate-subspace alignment, assignment, assembly, noise guard.
+
+    Raises NoisyForceFieldError when the route noise exceeds ROUTE_NOISE_LIMIT_CM, unless allow_noisy is True; the two
+    maxima are in the returned info either way."""
     i0 = reference_index(recs)
     ref = recs[i0]
     harm = harmonic(ref.H, ref.symbols, ref.geom)
@@ -306,7 +326,18 @@ def qff_from_records(recs: list[HessianRecord], disp: float) -> tuple[QFF, Harmo
     A = harm.A
     toQ = lambda H: A.T @ H @ A  # noqa: E731
     qff = assemble_qff(harm.omega_cm, toQ(ref.H), {i: toQ(h) for i, h in Hp.items()}, {i: toQ(h) for i, h in Hn.items()}, disp)
-    info = {"reference_file": ref.file, "assignment_residual_max": max(v[3] for v in asg.values()), "subspaces_aligned": n_aligned}
+    d4 = qff.route_disagreement
+    quartic_max = float(d4.max()) if d4.size else 0.0
+    cubic_max = float(qff.cubic_spread.max()) if qff.cubic_spread.size else 0.0
+    info = {"reference_file": ref.file, "assignment_residual_max": max(v[3] for v in asg.values()), "subspaces_aligned": n_aligned,
+            "quartic_route_disagreement_max": quartic_max, "cubic_route_spread_max": cubic_max}
+    # `not (x <= limit)` so that a NaN anywhere in the Hessians also stops the run (review of 30 Sep: NaN > limit is False)
+    if not allow_noisy and not (quartic_max <= ROUTE_NOISE_LIMIT_CM and cubic_max <= ROUTE_NOISE_LIMIT_CM):
+        raise NoisyForceFieldError(
+            f"force field dominated by finite-difference noise: quartic route disagreement max {quartic_max:.1f} cm⁻¹, cubic route "
+            f"spread max {cubic_max:.1f} cm⁻¹ (limit {ROUTE_NOISE_LIMIT_CM:.0f} cm⁻¹, absolute). Use analytic Hessians and a step "
+            f"(--disp, reduced normal coordinate) of about 0.1 — benzene: quartic 0.4, cubic 0.4 cm⁻¹ — or pass allow_noisy=True "
+            f"(--allow-noisy) to study the noise on purpose.")
     return qff, harm, ref, info
 
 
@@ -500,9 +531,11 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--out", default=None)
     ap.add_argument("--fermi-window", type=float, default=200.0, help="cm-1; resonances with |Δ| below it are deperturbed")
     ap.add_argument("--fermi-min-k", type=float, default=0.0, help="cm-1; strength threshold K = φ⁴/(64Δ³) (type 2) or /(256Δ³) (type 1)")
+    ap.add_argument("--allow-noisy", action="store_true", help=f"assemble even when the route noise exceeds {ROUTE_NOISE_LIMIT_CM:.0f} cm-1 "
+                    "(noise studies only; the report still prints the maxima)")
     args = ap.parse_args(argv)
     recs = load_results(args.cache_dir)
-    qff, harm, ref, info = qff_from_records(recs, args.disp)
+    qff, harm, ref, info = qff_from_records(recs, args.disp, allow_noisy=args.allow_noisy)
     txt, arrays = report(args.cache_dir, recs, qff, harm, ref, info, args.disp, args.fermi_window, args.fermi_min_k, args.pyvpt2_json)
     txt += "\n" + provenance_block()
     out = args.out or os.path.join(os.path.dirname(args.cache_dir.rstrip("/\\")), "qff_report.md")

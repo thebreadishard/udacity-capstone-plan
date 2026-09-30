@@ -181,6 +181,30 @@ def test_route_labels_are_not_swapped():
     assert pert.route_disagreement.max() > 80.0  # and the disagreement shows the inconsistency
 
 
+def test_noise_guard_stops_a_noisy_force_field(model_molecule):
+    """Negative control of the noise guard (30 Sep 2026): one displaced Hessian perturbed in its Cartesian elements makes the
+    routes disagree; qff_from_records must refuse by default, report both maxima in info, and assemble only with allow_noisy."""
+    from dpir.qff import ROUTE_NOISE_LIMIT_CM, NoisyForceFieldError, reference_index
+    recs, _A, _p3, _p4 = model_records(model_molecule, 0.0)
+    _qff, _harm, _ref, clean = qff_from_records(recs, DISP)
+    assert clean["quartic_route_disagreement_max"] < 1e-6 and clean["cubic_route_spread_max"] < 1e-6
+    i0 = next(k for k in range(len(recs)) if k != reference_index(recs))   # a displaced Hessian, not the reference
+    noisy = list(recs)
+    r = noisy[i0]
+    H = r.H.copy()
+    H[0, 0] += 1e-3
+    noisy[i0] = HessianRecord(**{**r.__dict__, "H": H})
+    _qff, _harm, _ref, info = qff_from_records(noisy, DISP, allow_noisy=True)
+    assert max(info["quartic_route_disagreement_max"], info["cubic_route_spread_max"]) > ROUTE_NOISE_LIMIT_CM
+    with pytest.raises(NoisyForceFieldError, match="dominated by finite-difference noise"):
+        qff_from_records(noisy, DISP)
+    H_nan = r.H.copy()
+    H_nan[0, 0] = np.nan
+    noisy[i0] = HessianRecord(**{**r.__dict__, "H": H_nan})
+    with pytest.raises(NoisyForceFieldError):   # NaN > limit is False; the guard must still stop it (review, 30 Sep)
+        qff_from_records(noisy, DISP)
+
+
 def test_missing_partner_and_duplicate_file_are_errors(model_molecule):
     recs, _A, _p3, _p4 = model_records(model_molecule, 0.0)
     without = [r for r in recs if r.file != "mode3_m"]
