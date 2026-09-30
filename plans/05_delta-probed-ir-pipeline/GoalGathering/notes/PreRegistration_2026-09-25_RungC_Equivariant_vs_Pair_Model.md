@@ -340,3 +340,28 @@ stays as a measured neutral change (1.3 → 1.05 feature-scale ratio, no effect 
 
 **Records committed:** the four cells above, the stage-5 cells and picks, the fixed recipe under mean, the design-check records, the logs
 `out/E7_rungC_s4/s5/c2sum_2026-09-28.log`; the `.pt` checkpoints stay local (ignored) and in the data backup.
+
+## Dated amendment 30 September 21:4x — the data-scaling test of the equivariant model without the PC (the user: "Laten we de volgende stap nemen zonder de PC, want die PC wil ik eigenlijk pas kopen als we bewijs hebben dat compute ertegenaan gooien werkt"; registered before the run)
+
+**Question.** The pair model (rung B) is flat from 175 to 750 molecules on the ladder hold-outs (proof-of-learning outcome of 30 Sep 21:1x). The
+equivariant model was still falling at 175 (≈ 0.06 in the ring-coupling ratio per doubling from 100 to 175; stage-3 outcome of 28 Sep). Does it keep
+falling when the pool grows 4.3×? That is the cheapest evidence there is on whether more data and model — the thing a PC buys — move the ladder.
+
+**Runs (laptop, 8 threads, ≈ 2 h; `rungC_scale_0930.sh`).** Pool `--pool-layers A,A2,B` under `--split e6` (every admitted A, A2 and B molecule outside the
+E6 hold-outs, hashed order; 750 tonight), `--sizes 449,750` (the first 449 of that mixed order and the whole pool), seeds 0–2, inner validation 15 %,
+sum body, the stage-2 winner's flags (`out/E7_rungC_s2_pick_2026-09-27.json`), read-outs (a) the 10 layer-A molecules and (b) the 39 scaffolds as
+before. C1 from scratch → `out/E7_rungC_scale_C1_2026-09-30`; C2 from the 27 Sep QM9 checkpoint with the element reset → `out/E7_rungC_scale_C2_2026-09-30`.
+The 175 points are the existing records (`E7_rungC_s2_lr1e-3_e200_2026-09-27`: 0.811 / 0.839; `E7_rungC_C2sum_elemreset_2026-09-28`: 0.811 / 0.843).
+Smoke of both commands (`--smoke`) before the launch. Note: the 449 point is a size point of the mixed pool, not "175 + the first 274 B".
+
+**Predictions (fixed now).** If the 0.06-per-doubling slope holds, C1 at 750 (2.1 doublings) reads ≈ 0.68 on (a) and ≈ 0.71 on (b); at 449 ≈ 0.73 / 0.76.
+C2 within 0.03 of C1 at every size (pretraining moved 0.00–0.03 at 175). Corrected ω falls with the ratio (9.4 → ≈ 8 cm⁻¹ on (a)).
+
+**Lines.** *Scaling works:* (a) ≤ 0.72 at 750 for C1 or C2, with 449 between 175 and 750 (a falling curve, each step beyond the three-seed spread).
+*Scaling stalls:* (a) ≥ 0.78 at 750 (within one spread of 175) — then the equivariant model is as flat as the pair model at this recipe, and the PC
+question is answered with "not by data volume of this kind"; the levers left are data of the target kind (larger all-carbon cores from the anchors and
+layer C) and the model design (stage 4/5 of the search under the mean body). *Between:* 0.72–0.78 — a slope, but half the extrapolated one; the 1,200
+point decides, on the PC or not at all.
+
+**What this does not test.** CC-level labels (the ankers), rung C's capacity (hidden size, depth), and the pretraining recipe itself; those are the
+PC's own questions and are not claimed here.
