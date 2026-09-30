@@ -40,6 +40,7 @@ except ImportError:           # script mode on a server without pytest
     import pyscf
 
 import e8_cc_hessian_fd as E  # noqa: E402
+import e8_hessian_checks as HC  # noqa: E402
 import t_density_fast as F  # noqa: E402
 
 SYMBOLS = ["O", "H", "H"]
@@ -153,22 +154,31 @@ def check_geometry_and_frequencies_vs_cccbdb():
     _, g0 = production_gradient(x)
     G = np.zeros((9, 9))
     worst_pair = 0.0
+    e_opt = production_gradient(x)[0]
+    ediag = {}
     for k in range(9):
         gs = []
+        es = []
         for s in (+1.0, -1.0):
             xd = x.copy()
             xd.flat[k] += s * FD_HESSIAN_STEP
-            gs.append(np.asarray(production_gradient(xd)[1]))
+            e_d, g_d = production_gradient(xd)
+            gs.append(np.asarray(g_d))
+            es.append(e_d)
         G[k] = (gs[0].ravel() - gs[1].ravel()) / (2 * FD_HESSIAN_STEP)
+        ediag[k] = (es[0] + es[1] - 2 * e_opt) / FD_HESSIAN_STEP ** 2
         worst_pair = max(worst_pair, E.pair_consistency(gs[0], gs[1], g0))
     H = 0.5 * (G + G.T)
+    chk = HC.classify_hessian(H, x, MASSES, float(np.abs(G - G.T).max()), ediag)
     Hp, _ = E.project_tr(H, MASSES, x)
     sm = np.sqrt(np.repeat(MASSES * E.AMU2AU, 3))
     fr = np.sort(E.frequencies(Hp / np.outer(sm, sm)))
     omega = sorted(fr[-3:].tolist())
     out.update(pair_check=worst_pair, null_space_cm=float(np.abs(fr[:6]).max()), omega_cm=omega)
     assert worst_pair <= E.FIRST_PAIR_LIMIT, f"pair check {worst_pair:.1e} > {E.FIRST_PAIR_LIMIT:.0e}"
-    assert out["null_space_cm"] <= E.NULL_SPACE_LIMIT_CM, f"null space {out['null_space_cm']:.1f} cm⁻¹"
+    out.update(selfcheck=chk["status"], trans_sum_rule=chk["trans_sum_rule"], energy_route_max=chk["energy_diag_max"])
+    assert chk["status"] == "VALID", f"the probe's self-check calls the water minimum {chk['status']}: {chk['reasons']}"
+    assert out["null_space_cm"] <= HC.NULL_SPACE_LIMIT_CM, f"null space {out['null_space_cm']:.1f} cm⁻¹"
     for w, ref in zip(omega, sorted(CCCBDB["omega_cm"]), strict=True):
         assert abs(w - ref) <= OMEGA_LIMIT, f"ω {w:.1f} vs CCCBDB {ref:.0f} cm⁻¹ (limit {OMEGA_LIMIT}); got {np.round(omega, 1).tolist()}"
     return out

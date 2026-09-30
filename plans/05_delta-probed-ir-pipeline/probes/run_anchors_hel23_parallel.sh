@@ -22,9 +22,11 @@ SMOKE=${SMOKE:-}
 cd "$ROOT"
 say() { echo "[$(date '+%F %T')] $*" >> "$LOG"; }
 
-finish() {   # name out: the DONE/FAILED line of the sequential chain, from the assembled files
-  local name=$1 out=$2
-  if [ -f "$out/hessian_ccsd_t.npz" ]; then
+finish() {   # name out rc: the DONE/IMAGINARY/FAILED line, from the assembling run's exit code (0 / 4 / other) and its file (review, 30 Sep)
+  local name=$1 out=$2 rc=${3:-1}
+  if [ "$rc" -eq 4 ] && [ -f "$out/hessian_ccsd_t_IMAGINARY.npz" ]; then   # computed correctly, not a minimum — excluded, the chain goes on
+    say "ANCHOR $name IMAGINARY (excluded from read-outs; see $out/e8_fd.log)"; return 0
+  elif [ "$rc" -eq 0 ] && [ -f "$out/hessian_ccsd_t.npz" ]; then
     say "ANCHOR $name DONE: $(grep -o 'symmetry: .*' "$out/e8_fd.log" | tail -1); $(grep -o 'FD asymmetry max [^;]*' "$out/e8_fd.log" | tail -1)"
   else
     say "ANCHOR $name FAILED (see $out/e8_fd.log)"; return 1
@@ -73,8 +75,10 @@ anchor_parallel() {   # name geom out workers threads mem_mb [extra e8 args]
   for p in "${pids[@]}"; do wait "$p" 2>/dev/null || true; done
   if grep -q "PAIR CHECK FAILED" "$out/e8_fd.log"; then say "ANCHOR $name FAILED (pair check; see $out/e8_fd.log)"; return 1; fi
   say "ANCHOR $name: partial runs done ($(ls "$out"/grad_*.npy 2>/dev/null | wc -l) gradient files) -> assembling run"
-  OMP_NUM_THREADS=16 "$PY" e8_cc_hessian_fd.py "$geom" "$out" --threads 16 --symmetry "$@" >> "$out/chain.log" 2>&1 || true
-  finish "$name" "$out"
+  rm -f "$out/hessian_ccsd_t.npz" "$out/hessian_ccsd_t_INVALID.npz" "$out/hessian_ccsd_t_IMAGINARY.npz"   # no stale verdict (review, 30 Sep)
+  local rc=0
+  OMP_NUM_THREADS=16 "$PY" e8_cc_hessian_fd.py "$geom" "$out" --threads 16 --symmetry "$@" >> "$out/chain.log" 2>&1 || rc=$?
+  finish "$name" "$out" "$rc"
 }
 
 if [ -n "$SMOKE" ]; then    # water: reference, two partial runs of one thread, assembly — the whole pattern in a few minutes

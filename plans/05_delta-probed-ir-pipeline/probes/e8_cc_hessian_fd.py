@@ -30,8 +30,7 @@ CORE_ORBITALS = {"H": 0, "He": 0, "Li": 1, "Be": 1, "B": 1, "C": 1, "N": 1, "O":
 LAMBDA_TOL = 1e-8            # ccsd_t_lambda / uccsd_t_lambda convergence (pyscf's default), solved explicitly since the 29 Sep 2026 incident
 FAST_T_LIMIT = 1e-10         # largest |kernel − pyscf| over the (T) density intermediates on the reference gradient (water: 4e-18, 29 Sep 2026)
 FIRST_PAIR_LIMIT = 1e-4      # a.u.; |mean(g+, g−) − g0| is O(h²) ≈ 1e-5 for h = 0.005 bohr; the frozen-6-of-10 run gave 2–9e-4 in plane
-ASYM_LIMIT = 2e-3            # a.u.; benzene 2.7e-4 (full) / 4.4e-5 (symmetric); the invalid naphthalene 2.2e-2
-NULL_SPACE_LIMIT_CM = 10.0   # cm⁻¹; the six projected translations/rotations must be ~0
+# the Hessian self-check and its limits live in e8_hessian_checks.py (split into INVALID / IMAGINARY / VALID on 30 Sep 2026)
 def pair_consistency(gp, gm, g0) -> float:
     """max |mean(g(+k), g(−k)) − g0|: zero to O(h²) when both displaced calculations sit on the same surface as the reference."""
     return float(np.abs(0.5 * (np.asarray(gp).ravel() + np.asarray(gm).ravel()) - np.asarray(g0).ravel()).max())
@@ -164,7 +163,7 @@ def frequencies(Hmw_projected):
 
 GATE1_STAMP = os.path.expanduser("~/.dpir_gate1.json")   # written by tests/test_acceptance_water.py when gate 1 passes (30 Sep 2026)
 _HERE = os.path.dirname(os.path.abspath(__file__))
-GATE1_FILES = (os.path.join(_HERE, "e8_cc_hessian_fd.py"), os.path.join(_HERE, "t_density_kernel", "t_density_fast.py"),
+GATE1_FILES = (os.path.join(_HERE, "e8_cc_hessian_fd.py"), os.path.join(_HERE, "e8_hessian_checks.py"), os.path.join(_HERE, "t_density_kernel", "t_density_fast.py"),
                os.path.join(_HERE, "t_density_kernel", "ccsd_t_rdm_kernel.so"), os.path.join(_HERE, "..", "tests", "test_acceptance_water.py"))
 
 
@@ -264,6 +263,7 @@ def main():
     if a.ks:
         ks = select_displacements(ks, a.ks)
         partial = True; log(f"partial run: displacement indices {ks}")
+    ediag = {}   # k -> (E+ + E- - 2 E0)/h², the energy route to H_kk (energies stored since 30 Sep 2026)
     for k in ks:
         gs = {}
         for sign, s in (("p", +1.0), ("m", -1.0)):
@@ -272,9 +272,13 @@ def main():
                 gs[sign] = np.load(p); continue
             x = x0.copy(); x.flat[k] += s * a.step
             t0 = time.time(); e, gr = gradient(sym, x, a.basis, a.frozen, log, a.charge, a.spin, a.max_memory, fast); np.save(p, gr); gs[sign] = gr
+            np.save(os.path.join(a.out, f"ener_{k:02d}_{sign}.npy"), np.array(e))
             done = len([f for f in os.listdir(a.out) if f.startswith("grad_")])
             log(f"coordinate {k:2d} {sign}: E − E0 = {(e - e0) * 1e6:+9.2f} µE_h, {time.time() - t0:.0f} s  ({done}/{6 * n} gradients)")
         G[k] = (gs["p"].ravel() - gs["m"].ravel()) / (2 * a.step)
+        e_files = [os.path.join(a.out, f"ener_{k:02d}_{s_}.npy") for s_ in ("p", "m")]
+        if all(os.path.exists(f_) for f_ in e_files):
+            ediag[k] = (float(np.load(e_files[0])) + float(np.load(e_files[1])) - 2 * e0) / a.step ** 2
         drift = pair_consistency(gs["p"], gs["m"], g0)
         log(f"pair check coordinate {k:2d}: max |mean(g+, g−) − g0| = {drift:.1e} a.u. (limit {FIRST_PAIR_LIMIT:.0e})")
         if drift > FIRST_PAIR_LIMIT:
@@ -291,19 +295,27 @@ def main():
         asym = spread     # the consistency measure of the symmetric run (24 Sep: the log line below needs it; it crashed the benzene smoke once)
     else:
         H = 0.5 * (G + G.T); asym = float(np.abs(G - G.T).max())
-    Hp, Hmw = project_tr(H, masses, x0); fr = frequencies(Hp / np.outer(np.sqrt(np.repeat(masses * AMU2AU, 3)), np.sqrt(np.repeat(masses * AMU2AU, 3))))
-    fr_s = np.sort(fr)
-    null_space = float(np.abs(fr_s[:6]).max())
-    valid = asym <= ASYM_LIMIT and null_space <= NULL_SPACE_LIMIT_CM
-    out_name = "hessian_ccsd_t.npz" if valid else "hessian_ccsd_t_INVALID.npz"
-    np.savez(os.path.join(a.out, out_name), H_raw=H, H_projected=Hp, freq_cm=fr_s, energy=e0, gradient=g0, coords_bohr=x0, step=a.step, basis=a.basis, symmetry_reduced=bool(a.symmetry), symmetry_spread=(spread if spread is not None else -1.0), frozen=a.frozen)
-    log(f"Hessian written; FD asymmetry max {asym:.2e} a.u.; frequencies (cm-1): {np.round(fr_s[6:], 0).astype(int).tolist()}")
-    log(f"two-route checks: six lowest |freq| after projection {np.round(np.abs(fr_s[:6]), 1).tolist()} (translations/rotations → ~0)")
-    if not valid:
-        log(f"SELF-CHECK FAILED: asymmetry {asym:.2e} (limit {ASYM_LIMIT:.0e}) / null space {null_space:.1f} cm⁻¹ (limit {NULL_SPACE_LIMIT_CM:.0f}) — "
-            f"written as {out_name}; no read-out may run on it (guard of 27 Sep 2026)")
+    import e8_hessian_checks as HC
+    chk = HC.classify_hessian(H, x0, masses, asym, ediag)
+    Hp, fr_s = chk["H_projected"], chk["freq_cm"]
+    out_name = {"VALID": "hessian_ccsd_t.npz", "INVALID": "hessian_ccsd_t_INVALID.npz", "IMAGINARY": "hessian_ccsd_t_IMAGINARY.npz"}[chk["status"]]
+    np.savez(os.path.join(a.out, out_name), H_raw=H, H_projected=Hp, freq_cm=fr_s, energy=e0, gradient=g0, coords_bohr=x0, step=a.step, basis=a.basis, symmetry_reduced=bool(a.symmetry), symmetry_spread=(spread if spread is not None else -1.0), frozen=a.frozen,
+             status=chk["status"], vib_cm=chk["vib_cm"], trans_sum_rule=chk["trans_sum_rule"])
+    log(f"Hessian written ({chk['status']}); FD asymmetry max {asym:.2e} a.u.; vibrational frequencies (cm-1): "
+        f"{np.round(chk['vib_cm'], 0).astype(int).tolist()}")
+    log(f"two-route checks: translational sum rule {chk['trans_sum_rule']:.1e} E_h/bohr² (limit {HC.TRANS_SUM_LIMIT:.0e}); "
+        f"translations/rotations after projection max {chk['tr_max_cm']:.1e} cm⁻¹; energy route max |H_kk − d²E/dx_k²| "
+        + (f"{chk['energy_diag_max']:.1e} E_h/bohr² over {chk['energy_diag_n']} coordinates (limit {HC.ENERGY_DIAG_LIMIT:.0e})"
+           if chk["energy_diag_n"] else "not available (energies not stored for these displacements)"))
+    if chk["status"] == "INVALID":
+        log(f"SELF-CHECK FAILED: {'; '.join(chk['reasons'])} — written as {out_name}; no read-out may run on it (guard of 27 Sep 2026)")
         logf.close()
         raise SystemExit(2)
+    if chk["status"] == "IMAGINARY":
+        log(f"SELF-CHECK IMAGINARY: {'; '.join(chk['reasons'])} — computed correctly but not a minimum at this geometry; written as "
+            f"{out_name}; excluded from every read-out (the user, 30 Sep 2026: only results of correct calculations)")
+        logf.close()
+        raise SystemExit(4)
     logf.close()
 
 
