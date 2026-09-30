@@ -1,6 +1,6 @@
 # Gemeten coupled-cluster-correcties op de harmonische krachtconstanten van PAK's, en een netwerk dat ze draagt
 
-*Projectvoorstel, versie 30 september 2026 (twee pagina's). Vervangt de tekst van 26 september; oudere versies staan in de git-geschiedenis.
+*Projectvoorstel, versie 30 september 2026, bijgewerkt 30 september 07:5x (het CC-getal in §4 na de lambda-correctie van 29 september) (twee pagina's). Vervangt de tekst van 26 september; oudere versies staan in de git-geschiedenis.
 Wijzigingen komen in deze tekst zelf, met de datum in de kop. Student: Frederic Petrignani.*
 
 ## 1. Samenvatting
@@ -37,7 +37,7 @@ Boven twee ringen wordt de correctie op afgedekte fragmenten gemeten, met lokaal
 
 | vraag | lijn | stand |
 |---|---|---|
-| Is een label betaalbaar? | ≥ 90 % van de moleculen binnen budget, ≤ 5 % valse stops | benzeen op CC: geleerde volgorde 0,46 van de blinde, orakel 124 energieën |
+| Is een label betaalbaar? | ≥ 90 % van de moleculen binnen budget, ≤ 5 % valse stops | benzeen op CC: geleerde volgorde 0,54 van de blinde, orakel 124 energieën |
 | Reist het label mee? | gecorrigeerde frequenties ≤ 3,3 cm⁻¹, koppelingsratio ≤ 0,5 | proxy: alle paren slagen (0,8–2,0 cm⁻¹); CC deze week |
 | Leert het netwerk het juiste? | verslaat nulregel en geschaald krachtveld op ongeziene moleculen | proxy-curve op 600 (30 sep); CC-curve met 40 ankers in oktober |
 | Kan het groot? | één lokaal-CC-label per dag op de desktop, drie ringen | meting in november op de PC |

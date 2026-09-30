@@ -141,3 +141,12 @@ intermediates equal to pyscf's to 4e-18, gradient to 1e-8, symmetry on and off; 
 carry a version-independent wrapper until a release has it (Software_Changes_Ledger row 20). §5's lambda trap applies to `grad/uccsd_t.py` as well;
 its PR covers both classes, drafted as agreed with the user (30 Sep 07:0x): the CCSD(T) gradient classes solve the (T) lambda themselves when
 l1/l2 are missing.
+
+## 6. Submitted (30 September 07:5x) — psi-rking/optking#116, fixes #115: silent infinite loop on linear-bend cycles
+
+Issue #115 (posted 07:3x) and PR #116 (branch `thebreadishard/optking:linear-bend-cycle-guard`, 5829c0b on master 855aa8d). Two changes: a near-0°
+interior angle in `v3d.linear_torsion_check` resets (`back_transformation=True`) instead of adding terminal-vertex linear bends; the two LINEAR-bend
+walks in `addIntcos.add_tors_from_connectivity` keep a visited set and raise on a cycle. Regression tests: near-0°, near-180°, and a four-atom LINEAR-bend
+cycle that loops forever on the unpatched tree (60 s timeout) and raises on the branch. Our five installations carry the same fix
+(`probes/optking_patches/apply_optking_fix.py`). Status: awaiting review; replies only after consulting the user. Session B opened pyscf#3469 for the
+(T)-lambda default of `grad.ccsd_t.Gradients` (§5) the same morning.

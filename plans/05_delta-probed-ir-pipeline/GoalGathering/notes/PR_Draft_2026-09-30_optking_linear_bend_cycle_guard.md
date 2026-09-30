@@ -1,6 +1,6 @@
 # PR draft, 30 September 2026 — psi-rking/optking, branch `thebreadishard/optking:linear-bend-cycle-guard` (commit 5829c0b on master 855aa8d)
 
-*Prepared on the user's word ("als die werkt, mag je ook een PR voorbereiden"); opened only on the user's word. Fixes #115.*
+*Prepared on the user's word ("als die werkt, mag je ook een PR voorbereiden"); **opened 30 Sep 07:5x as psi-rking/optking#116** on the user's authorisation of 07:4x (no existing fix upstream; tests; explanation). Fixes #115.*
 
 ## Title
 
