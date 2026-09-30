@@ -129,7 +129,8 @@ and pass with it; 28 tests of `grad/test/test_ccsd*.py`, `test_uccsd_t.py`, `cc/
 > without (T) — on water/6-31G the scanner's energy misses E_(T) (9.96e-4 E_h) and its gradient is 9.0e-4 a.u. off the CCSD(T)
 > gradient. A CCSD(T) gradient scanner would need its own `__call__`. Happy to follow up if wanted.
 
-Before submission: only the user's word — on creating the fork `thebreadishard/pyscf`, on this text, and on the attribution line. Scanner
+**07:4x:** fork `thebreadishard/pyscf` created by the user (app); branch `ccsd-t-grad-solve-t-lambda` pushed on the user's word ('Push maar'),
+same commit `3ed3646` on `e47d127`. No PR opened. Before submission: the user's word on this text and on the attribution line. Scanner
 numbers: `pr_patches/pyscf_scanner_check_2026-09-30.py`.
 
 **§4 status (same evening).** The C kernel of the design note exists (`probes/t_density_kernel/ccsd_t_rdm_kernel.c`, `t_density_fast.py`): water
