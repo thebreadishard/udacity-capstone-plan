@@ -15,9 +15,18 @@ PY = sys.executable
 
 def test_stalled_worker_is_terminated(tmp_path):
     cmd = [PY, "-c", "import time; time.sleep(60)"]                      # writes nothing
-    out, err, guard = R.run_worker(cmd, tmp_path, stall_s=1.0, max_s=600.0, poll_s=0.5)
+    out, err, guard = R.run_worker(cmd, tmp_path, stall_s=1.0, max_s=600.0, poll_s=0.5, dump=False)
     assert guard == "stalled"
     assert not list(tmp_path.glob("*.raw"))                              # the raw capture files are removed after reading
+
+
+def test_stall_dumps_a_stack_or_says_why(tmp_path, monkeypatch):
+    monkeypatch.setattr(R.time, "sleep", lambda s: None)                 # the minute between the two dumps is skipped in the test
+    cmd = [PY, "-c", "import time; time.sleep(60)"]
+    out, err, guard = R.run_worker(cmd, tmp_path, stall_s=1.0, max_s=600.0, poll_s=0.5)
+    assert guard == "stalled"
+    txt = (tmp_path / "stall_stack.txt").read_text()
+    assert ("py-spy dump 1" in txt and "py-spy dump 2" in txt) or "py-spy not installed" in txt or "stack dump failed" in txt
 
 
 def test_writing_worker_runs_to_the_end(tmp_path):
@@ -30,7 +39,7 @@ def test_writing_worker_runs_to_the_end(tmp_path):
 def test_wall_clock_cap_reports_timeout(tmp_path):
     code = ("import time, pathlib, sys; p = pathlib.Path(sys.argv[1]) / 'psi4.out'\n"
             "for i in range(100):\n    p.write_text(str(i)); time.sleep(0.2)")
-    out, err, guard = R.run_worker([PY, "-c", code, str(tmp_path)], tmp_path, stall_s=600.0, max_s=1.0, poll_s=0.5)
+    out, err, guard = R.run_worker([PY, "-c", code, str(tmp_path)], tmp_path, stall_s=600.0, max_s=1.0, poll_s=0.5, dump=False)
     assert guard == "timeout"
 
 

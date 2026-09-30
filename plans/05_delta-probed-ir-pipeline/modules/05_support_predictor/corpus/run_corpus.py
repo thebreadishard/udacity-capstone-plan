@@ -40,9 +40,27 @@ def opt_options_for(row, retry_failed=False):
     return None
 
 
-def run_worker(cmd, work_dir, stall_s=5400.0, max_s=8 * 3600.0, poll_s=30.0):
+def dump_stack(pid, path):
+    """Python stack of a running worker through py-spy (`py-spy dump --pid`, twice a minute apart, main process and subprocesses) into `path`; writes
+    a one-line note when py-spy is not installed or cannot attach. Evidence for the upstream report of a stall (30 Sep 2026)."""
+    spy = shutil.which("py-spy") or str(Path(sys.executable).with_name("py-spy"))
+    if not Path(spy).exists():
+        Path(path).write_text("py-spy not installed in this environment; no stack captured\n")
+        return False
+    lines = []
+    for i in range(2):
+        r = subprocess.run([spy, "dump", "--pid", str(pid), "--subprocesses", "--nonblocking"], capture_output=True, text=True, check=False, timeout=120)
+        lines.append(f"=== py-spy dump {i + 1} at {datetime.now():%Y-%m-%d %H:%M:%S} (exit {r.returncode})\n{r.stdout}{r.stderr}")
+        if i == 0:
+            time.sleep(60)
+    Path(path).write_text("\n".join(lines))
+    return True
+
+
+def run_worker(cmd, work_dir, stall_s=5400.0, max_s=8 * 3600.0, poll_s=30.0, dump=True):
     """Run the psi4 worker under a stall guard. Returns (stdout, stderr, guard) with guard None when the worker ended by itself, 'stalled' when no
-    file in work_dir changed for stall_s seconds, 'timeout' when max_s elapsed; in both guard cases the worker is terminated (then killed)."""
+    file in work_dir changed for stall_s seconds, 'timeout' when max_s elapsed; in both guard cases the stack is dumped (dump_stack, unless
+    dump=False) and the worker is terminated (then killed)."""
     work_dir = Path(work_dir)
     out_f, err_f = work_dir / "worker_stdout.raw", work_dir / "worker_stderr.raw"
     with open(out_f, "w") as fo, open(err_f, "w") as fe:
@@ -61,6 +79,11 @@ def run_worker(cmd, work_dir, stall_s=5400.0, max_s=8 * 3600.0, poll_s=30.0):
             elif now - t0 > max_s:
                 guard = "timeout"
             if guard:
+                if dump:
+                    try:
+                        dump_stack(p.pid, work_dir / "stall_stack.txt")
+                    except Exception as e:  # noqa: BLE001 — the dump is evidence, never a reason to keep a stalled worker alive
+                        (work_dir / "stall_stack.txt").write_text(f"stack dump failed: {e!r}\n")
                 p.terminate()
                 try:
                     p.wait(timeout=30)
