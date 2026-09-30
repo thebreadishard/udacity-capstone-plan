@@ -505,3 +505,29 @@ part is fully carried by the b r̂r̂ᵀ + Σ c u uᵀ terms.
 rate: the residual stays above half of the target. The hybrid head fits the same molecule to 2.5e-4 of the internal term with the same encoder. The
 head, not the encoder, is the limit — the reviewers' rank 3 — and the gate for rank 1 on the Cartesian head stays closed by its rule; the repair of
 that head (constraint into the loss, 16 → 32 tensor channels) becomes a later control, not the path.
+
+## Outcome, rank 3 — 1 October 00:4x (`out/E7_rungC_rank3_hybrid{,_sqm,_tensor}_2026-10-01`; pool A + A2 = 175, winner flags, seeds 0–2, inner validation 15 %)
+
+| model | (a) ratio (spread) / ω cm⁻¹ (spread) | (b) ratio / ω | Cartesian ΔH residual ratio | best epochs |
+|---|---|---|---|---|
+| rung B pair MLP (27 Sep) | 0.430 (0.007) / 4.71 (0.11) | 0.471 / 5.16 | — | — |
+| rung C, Cartesian head (registered, after the search) | 0.811 (0.010) / 9.42 | 0.839 / 8.45 | ≈ 0.60 | — |
+| **hybrid head** | **0.470** (0.023) / 5.20 (1.99) | 0.537 / 5.54 | 0.29 | 119, 51, 110 |
+| **hybrid + SQM α per class** | **0.449** (0.031) / **4.77** (0.49) | 0.506 / 5.22 | 0.27 | 100, 67, 55 |
+| **hybrid + rank-2 tensor input** | 0.465 (0.051) / 4.95 (0.81) | 0.531 / 5.45 | 0.28 | 110, 71, 57 |
+
+**Lines.** Claim line (a) ≤ 0.55: **met by all three** — the Cartesian head was the problem; the encoder was not. Pass (a) ≤ 0.65: met. Prediction
+(i) 0.45–0.60: met (0.47); (ii) within 0.03 of (i): met (−0.02, and the best of the three); (iii) ≤ (i): met marginally (0.465, inside the spread).
+Decision 51: best epochs 51–119 of 200, no re-run. The Cartesian ΔH residual ratio falls from ≈ 0.60 to 0.27–0.29, so the gain on the pattern is not
+bought with a loss off it. Diagnostic 2 for the hybrid: benzene alone to ratio 0.15 and ΔH residual 0.079 (the 0.15 is the pattern's own floor — ΔF
+off the pattern is not predicted); the Cartesian head stayed at 0.60.
+
+**Reading.** In one night the equivariant model went from 0.81 to 0.45 on the parents and from 9.4 to 4.8 cm⁻¹, by changing what it predicts (internal
+force-constant corrections on the pair model's pattern, with F_low as an input) and not what it sees. It now stands within 0.02–0.04 of rung B on
+the couplings and equal on ω (4.77 against 4.71), with three seeds. It does not yet beat rung B. The SQM-style scale term helps a little (−0.02,
+inside the spread but consistent on (a), (b) and ω); the rank-2 input adds nothing measurable on top of F_low as an explicit input — which is the
+same lesson as diagnostic 1: the encoder's use of the Hessian is not the lever, the head's object is.
+
+**What this settles for the PC question.** Not yet: the data-scaling test was run on the head that could not learn. The registered next step is the
+same scaling test on the hybrid head (below) — if the hybrid falls with data where rung B was flat, more labels are worth buying; if it is flat too,
+the next levers are the reviewers' rank 4 (topology) and the data of the target kind.
