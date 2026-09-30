@@ -1,0 +1,492 @@
+
+  Memory set to  22.352 GiB by Python driver.
+  Threads set to 16 by Python driver.
+Some dependencies such as QCElemental have not yet finished migration to pydantic v2. If issues are encountered please downgrade pydantic or upgrade QCElemental as appropriate
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 2.11e-03
+
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 1.96e-03
+
+	Energy has increased in a minimization.
+	Energy ratio indicates iffy step.
+	Intrafrag trust radius decreased to   0.25.
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 2.75e-03
+
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 2.34e-03
+
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 1.89e-03
+
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 9.52e-04
+
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 1.398e-10.
+	Change in internal coordinate of 5.27e-01 exceeds limit of 5.00e-01.
+	Skipping Hessian update for step 3.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 2.128e-08.
+AlgError: Exception created. Mesg: Back transformation failed. Cartesian Step size too large. Please restart from the most recent geometry
+ Caught AlgError exception
+
+ Erasing coordinates.
+
+ Erasing history.
+
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 3.56e-02
+
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 8.34e-03
+
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 7.927e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 8.221e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 8.132e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 8.134e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 8.133e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 8.133e-07.
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 2.60e-02
+
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 8.084e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 8.084e-07.
+	Energy has increased in a minimization.
+	Energy ratio indicates iffy step.
+	Intrafrag trust radius decreased to   0.25.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 8.084e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 9.951e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 9.992e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 9.995e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 9.995e-07.
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 6.12e-03
+
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 9.966e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 9.966e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 9.966e-07.
+Interior angle of 179.2 for bend B((2, 0, 15)) can't work in good torsion
+AlgError: Exception created. Mesg: Could not compute T((3, 2, 0, 15)). Problem computing interior bend.
+AlgError: Linear bends detected.
+(2, 0, 15)
+AlgError: Exception created. Mesg: Tors.q: unable to compute torsion value
+AlgError: Linear bends detected.
+ L(3,1,16)
+ l(3,1,16)
+ Caught AlgError exception
+
+Interior angle of   0.5 for bend B([0, 15, 2]) can't work in good torsion
+AlgError: Exception created. Mesg: Could not compute T([0, 15, 2, 3]). Problem computing interior bend.
+AlgError: Linear bends detected.
+[0, 15, 2]
+Interior angle of   0.5 for bend B([0, 15, 2]) can't work in good torsion
+AlgError: Exception created. Mesg: Could not compute T([0, 15, 2, 14]). Problem computing interior bend.
+AlgError: Linear bends detected.
+[0, 15, 2]
+ Erasing history.
+
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 7.79e-04
+
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 6.574e-07.
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 2.75e-03
+
+	Change in internal coordinate of 5.50e-01 exceeds limit of 5.00e-01.
+	Skipping Hessian update for step 2.
+	Energy has increased in a minimization.
+	Energy ratio indicates iffy step.
+	Intrafrag trust radius decreased to   0.25.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 6.669e-08.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 6.481e-08.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 6.479e-08.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 6.479e-08.
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 8.07e-05
+
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 2.549e-09.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 2.556e-08.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 2.773e-08.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 3.402e-08.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 2.706e-08.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 3.409e-08.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 3.043e-08.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 3.407e-08.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 3.365e-08.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 3.405e-08.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 3.665e-08.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 3.403e-08.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 3.944e-08.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 3.401e-08.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 4.202e-08.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 3.399e-08.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 4.441e-08.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 3.396e-08.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 4.662e-08.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 3.394e-08.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 4.867e-08.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 3.392e-08.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 5.056e-08.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 3.390e-08.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 5.230e-08.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 3.388e-08.
+	Unable to completely converge to displaced geometry.
+	RMS(dx):  2.293e-02 	Max(dx):  1.413e-01 	RMS(dq):  2.562e-02
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 2.56e-02
+
+
+	The following linear bends have been detected:
+ L(1,2,3), already present.
+	 l(1,2,3), already present.
+	 L(2,1,16), missing.
+	 l(2,1,16), missing.
+	 L(3,1,16), already present.
+	 l(3,1,16), already present.
+
+AlgError: Exception created. Mesg: New linear angles
+AlgError: Linear bends detected.
+ L(2,1,16)
+ l(2,1,16)
+ Caught AlgError exception
+
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 4.200e-09.
+ Erasing history.
+
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 4.200e-09.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 4.200e-09.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 2.901e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 5.003e-07.
+AlgError: Exception created. Mesg: Back transformation failed. Cartesian Step size too large. Please restart from the most recent geometry
+ Caught AlgError exception
+
+ Erasing coordinates.
+
+ Erasing history.
+
+
+	The following linear bends have been detected:
+ L(1,2,3), missing.
+	 l(1,2,3), missing.
+
+AlgError: Exception created. Mesg: New linear angles
+AlgError: Linear bends detected.
+ L(1,2,3)
+ l(1,2,3)
+ Caught AlgError exception
+
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 3.033e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 3.033e-07.
+ Erasing history.
+
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 3.033e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 3.033e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 3.033e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 3.033e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 3.033e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 6.215e-07.
+	Unable to completely converge to displaced geometry.
+	RMS(dx):  1.336e+02 	Max(dx):  5.116e+02 	RMS(dq):  7.239e+01
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 5.42e-02
+
+	Energy has increased in a minimization.
+	Energy ratio indicates iffy step.
+	Intrafrag trust radius decreased to   0.25.
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 2.35e-04
+
+	Change in internal coordinate of 5.33e-01 exceeds limit of 5.00e-01.
+	Skipping Hessian update for step 1.
+	Energy ratio indicates iffy step.
+	Intrafrag trust radius decreased to 0.0625.
+	Failed to converge alpha. Doing simple step-scaling instead.
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 6.76e-04
+
+	Change in internal coordinate of 5.18e-01 exceeds limit of 5.00e-01.
+	Skipping Hessian update for step 1.
+	Energy has increased in a minimization.
+	Energy ratio indicates iffy step.
+	Intrafrag trust radius decreased to 0.0156.
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 9.75e-05
+
+	Change in internal coordinate of 5.14e-01 exceeds limit of 5.00e-01.
+	Skipping Hessian update for step 1.
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 2.63e-03
+
+	Energy ratio indicates iffy step.
+	Intrafrag trust radius decreased to 0.0352.
+	Failed to converge alpha. Doing simple step-scaling instead.
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 8.48e-04
+
+	Energy ratio indicates iffy step.
+	Intrafrag trust radius decreased to 0.00879.
+	Failed to converge alpha. Doing simple step-scaling instead.
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 1.87e-04
+
+	Failed to converge alpha. Doing simple step-scaling instead.
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 2.22e-04
+
+	Energy ratio indicates iffy step.
+	Intrafrag trust radius decreased to 0.0022.
+	Failed to converge alpha. Doing simple step-scaling instead.
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 1.09e-04
+
+	Energy has increased in a minimization.
+	Energy ratio indicates iffy step.
+	Intrafrag trust radius decreased to  0.001.
+	Failed to converge alpha. Doing simple step-scaling instead.
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 1.22e-05
+
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 11.
+	Failed to converge alpha. Doing simple step-scaling instead.
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 1.60e-06
+
+	Energy has increased in a minimization.
+	Energy ratio indicates iffy step.
+	Intrafrag trust radius decreased to  0.001.
+	Failed to converge alpha. Doing simple step-scaling instead.
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 1.10e-05
+
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 4.70e-05
+
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 4.80e-05
+
+	Failed to converge alpha. Doing simple step-scaling instead.
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 4.34e-05
+
+	Energy has increased in a minimization.
+	Failed to converge alpha. Doing simple step-scaling instead.
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 9.68e-06
+
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 17.
+	Failed to converge alpha. Doing simple step-scaling instead.
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 1.64e-05
+
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 18.
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 16.
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 15.
+	Failed to converge alpha. Doing simple step-scaling instead.
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 4.41e-05
+
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 17.
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 16.
+	Failed to converge alpha. Doing simple step-scaling instead.
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 2.07e-05
+
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 20.
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 18.
+	Failed to converge alpha. Doing simple step-scaling instead.
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 3.20e-05
+
+	Energy has increased in a minimization.
+	Failed to converge alpha. Doing simple step-scaling instead.
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 1.81e-05
+
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 22.
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 20.
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 18.
+	Failed to converge alpha. Doing simple step-scaling instead.
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 1.89e-05
+
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 23.
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 21.
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 19.
+	Failed to converge alpha. Doing simple step-scaling instead.
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 2.90e-05
+
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 24.
+	Failed to converge alpha. Doing simple step-scaling instead.
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 5.23e-05
+
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 25.
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 24.
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 21.
+	Failed to converge alpha. Doing simple step-scaling instead.
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 1.87e-05
+
+	Energy has increased in a minimization.
+	Failed to converge alpha. Doing simple step-scaling instead.
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 6.54e-05
+
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 27.
+	Failed to converge alpha. Doing simple step-scaling instead.
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 6.01e-05
+
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 28.
+	Failed to converge alpha. Doing simple step-scaling instead.
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 1.56e-04
+
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 28.
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 26.
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 25.
+	Energy ratio indicates iffy step.
+	Intrafrag trust radius decreased to  0.001.
+	Failed to converge alpha. Doing simple step-scaling instead.
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 2.11e-05
+
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 30.
+	Denominators (dg)(dq) or (dq)(dq) are very small.
+	Skipping Hessian update for step 29.
+	Failed to converge alpha. Doing simple step-scaling instead.
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 6.07e-05
+

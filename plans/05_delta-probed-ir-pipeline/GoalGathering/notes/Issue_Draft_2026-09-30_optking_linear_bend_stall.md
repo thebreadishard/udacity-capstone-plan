@@ -37,7 +37,7 @@ The same molecule with `opt_coordinates cartesian` optimises without incident (o
 ## Reproduction
 
 `psi4_worker` with the attached `job.json` (identical geometry, options and thread count), run again on a second machine with `py-spy` attached and a
-10-minute no-output detector: **[filled in below when the run ends]**.
+10-minute no-output detector: **the hang did not recur in this attempt, but the same coordinate failed in the open.** The second run took 50 iterations (7.5 min) and ended with `PsiException: Could not converge geometry optimization in 50 iterations`; on the way optking raised, and internally caught, `AlgError: Back transformation failed. Cartesian Step size too large. Please restart from the most recent geometry` and `AlgError: Could not compute T((3, 2, 0, 15)). Problem computing interior bend.` — 19 AlgErrors in all, among them `Linear bends detected`, `New linear angles`, `Tors.q: unable to compute torsion value` and the interior-bend failures on the atoms around the ethynyl carbon (0-based 3-2-0-15, 0-15-2-3, 0-15-2-14 ≈ the `L(3,1,16)` / `L(2,1,16)` pair of the first run). So the two runs of one input show the two faces of the same problem: a back-transformation that fails loudly and repeatedly (run 2) or spins silently (run 1). Logs of both runs attached (`repro_hel1-23_worker.log`, `psi4_out_excerpt.txt`).
 
 ## What we ask
 
@@ -50,3 +50,4 @@ delivers one.
 ### Reproduction status (repo-internal, not part of the issue)
 
 - 30 Sep 07:04 (05:04 UTC) started on hel1-23 (`/root/optking_repro/run_repro.sh`, 16 threads, py-spy 0.4 in env `qc`).
+- 07:11: worker exited by itself after 50 iterations (no stall, so no py-spy dump); 19 AlgErrors on the ethynyl bend in `worker.log` (back transformation failed, linear bends detected, new linear angles), then the 50-iteration PsiException. The hang is therefore not deterministic on this input; the py-spy dump now waits for the next natural stall (the guard in `run_corpus.py` writes `stall_stack.txt`). Decision for the user: post the issue with the two logs now, or wait for a stack trace.
