@@ -32,6 +32,46 @@ def log(msg):
     print(f"[{datetime.now():%Y-%m-%d %H:%M:%S}] {msg}", flush=True)
 
 
+def opt_options_for(row, retry_failed=False):
+    """Cartesian optimisation coordinates (RETRY_OPT_OPTIONS) for a retry and, since 30 Sep 2026, from the start for any molecule with a triple
+    bond: optking's internal coordinates stall on the near-linear bend (B_4a601408a5, naphthalene+COOH+ethynyl, five hours without a line)."""
+    if retry_failed or "#" in (row.get("smiles") or ""):
+        return dict(RETRY_OPT_OPTIONS)
+    return None
+
+
+def run_worker(cmd, work_dir, stall_s=5400.0, max_s=8 * 3600.0, poll_s=30.0):
+    """Run the psi4 worker under a stall guard. Returns (stdout, stderr, guard) with guard None when the worker ended by itself, 'stalled' when no
+    file in work_dir changed for stall_s seconds, 'timeout' when max_s elapsed; in both guard cases the worker is terminated (then killed)."""
+    work_dir = Path(work_dir)
+    out_f, err_f = work_dir / "worker_stdout.raw", work_dir / "worker_stderr.raw"
+    with open(out_f, "w") as fo, open(err_f, "w") as fe:
+        p = subprocess.Popen(cmd, stdout=fo, stderr=fe, text=True)
+        t0 = time.time(); guard = None
+        while True:
+            try:
+                p.wait(timeout=poll_s)
+                break
+            except subprocess.TimeoutExpired:
+                pass
+            now = time.time()
+            newest = max((f.stat().st_mtime for f in work_dir.iterdir() if f.is_file()), default=t0)
+            if now - max(newest, t0) > stall_s:
+                guard = "stalled"
+            elif now - t0 > max_s:
+                guard = "timeout"
+            if guard:
+                p.terminate()
+                try:
+                    p.wait(timeout=30)
+                except subprocess.TimeoutExpired:
+                    p.kill(); p.wait()
+                break
+    stdout, stderr = out_f.read_text(errors="replace"), err_f.read_text(errors="replace")
+    out_f.unlink(missing_ok=True); err_f.unlink(missing_ok=True)
+    return stdout, stderr, guard
+
+
 def anchor_job_running():
     try:
         r = subprocess.run(["wsl", "-e", "bash", "-lc", "pgrep -af 'm1_frozen|anchor_single|dryrun_dft|naphthalene_geometry' | grep -v pgrep | wc -l"], capture_output=True, text=True, check=False, timeout=30)
@@ -126,6 +166,8 @@ def main():
     ap.add_argument("--memory-gb", type=int, default=None, help="override the deck's psi4 memory for this runner only (2026-09-18; noted in the ledger)")
     ap.add_argument("--shard", default=None, help="i/K: this runner takes only the pending rows whose id hashes to shard i of K (2026-09-19; several rented machines share one layer without collisions; manifests are merged afterwards by merge_shards.py)")
     ap.add_argument("--retry-failed", action="store_true", help="take the rows with status failed (within --layer/--shard) once more, with opt_coordinates cartesian and geom_maxiter 200; the result folder is replaced (2026-09-20: E6 acenaphthylene+ethynyl, optking 50 steps)")
+    ap.add_argument("--stall-min", type=float, default=90.0, help="stall guard (30 Sep 2026): terminate the psi4 worker when no file in the molecule's work dir changed for this many minutes (B_4a601408a5 sat five hours in optking)")
+    ap.add_argument("--worker-max-hours", type=float, default=8.0, help="stall guard: terminate the psi4 worker after this many hours regardless (layer B takes ≈ 1.5 h per molecule on a CPX62)")
     ap.add_argument("--restart-from", default=None, help="restart_jobs_<date>.json from saddle_restarts.py: run <id>_r+ and <id>_r- from the twisted geometries; manifest untouched (2026-09-24)")
     ap.add_argument("--ids", default=None, help="comma-separated manifest ids to (re)run regardless of status; the result folder is replaced (2026-09-15: benzene grid rerun with per-mode frequencies)")
     a = ap.parse_args()
@@ -184,14 +226,18 @@ def main():
             out_final = HERE / "molecules" / r["id"]; out_tmp = HERE / "molecules" / (r["id"] + ".tmp")
             shutil.rmtree(out_tmp, ignore_errors=True); out_tmp.mkdir(parents=True)
             t0 = datetime.now(); log(f"start {r['id']} {r['layer']} {r['name']} ({r['n_atoms']} atoms)")
-            status = "failed"; res = {}
+            status = "failed"; res = {}; guard = None; opts = None
             try:
                 xyz, optimise = start_geometry(r)
                 job = {"id": r["id"], "layer": r["layer"], "xyz_angstrom": xyz, "deck": deck, "out_dir": str(out_tmp), "optimise": optimise, "grid_check": a.grid_check}
-                if a.retry_failed: job["opt_options"] = RETRY_OPT_OPTIONS
+                opts = opt_options_for(r, a.retry_failed)
+                if opts: job["opt_options"] = opts
                 jp = out_tmp / "job.json"; json.dump(job, open(jp, "w"))
-                p = subprocess.run([str(QC_PYTHON), str(HERE / "psi4_worker.py"), str(jp)], capture_output=True, text=True, check=False)   # result.json decides
-                (out_tmp / "worker_stdout.txt").write_text(p.stdout + "\n---stderr---\n" + p.stderr)
+                p_out, p_err, guard = run_worker([str(QC_PYTHON), str(HERE / "psi4_worker.py"), str(jp)], out_tmp,
+                                                 stall_s=a.stall_min * 60.0, max_s=a.worker_max_hours * 3600.0)   # result.json decides; the guard only ends a stall
+                (out_tmp / "worker_stdout.txt").write_text(p_out + "\n---stderr---\n" + p_err)
+                if guard:
+                    log(f"GUARD {guard}: {r['id']} terminated after {(datetime.now() - t0).total_seconds():.0f} s (no file change for {a.stall_min} min or beyond {a.worker_max_hours} h)")
                 if (out_tmp / "result.json").exists():
                     res = json.load(open(out_tmp / "result.json")); status = res.get("status", "failed")
             except Exception as e:  # noqa: BLE001 — the corpus runner records any failure of one molecule and continues with the next
@@ -207,7 +253,7 @@ def main():
             tm = res.get("timings_s", {})
             append_ledger(dict(id=r["id"], layer=r["layer"], name=r["name"], machine=machine, deck=deck_hash, start=f"{t0:%Y-%m-%d %H:%M:%S}", end=f"{datetime.now():%Y-%m-%d %H:%M:%S}",
                                seconds_total=tm.get("total", ""), seconds_optimise=tm.get("optimise", ""), seconds_hessian_b3lyp=tm.get("hessian_b3lyp", ""), seconds_hessian_wb97x=tm.get("hessian_wb97x", ""),
-                               peak_rss_gb=res.get("peak_rss_gb", ""), status=status, note=" ".join(x for x in (("forced" if a.force else ""), ("retry:" + ",".join(f"{k}={v}" for k, v in RETRY_OPT_OPTIONS.items()) if a.retry_failed else ""), override_note, r.get("restart_note", "")) if x)))
+                               peak_rss_gb=res.get("peak_rss_gb", ""), status=status, note=" ".join(x for x in (("forced" if a.force else ""), ("retry:" + ",".join(f"{k}={v}" for k, v in RETRY_OPT_OPTIONS.items()) if a.retry_failed else ("linear-bend:cartesian" if opts else "")), (guard or ""), override_note, r.get("restart_note", "")) if x)))
             done += 1
             log(f"{status} {r['id']} in {tm.get('total', '?')} s (opt {tm.get('optimise', '-')}, B3LYP {tm.get('hessian_b3lyp', '-')}, wB97X {tm.get('hessian_wb97x', '-')})")
             if time.time() - last_report > 3600 or True:
