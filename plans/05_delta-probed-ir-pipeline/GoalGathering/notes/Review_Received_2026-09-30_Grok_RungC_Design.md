@@ -37,3 +37,25 @@ what was verified against the code the same evening, and what was adopted. Decis
 5. Not first: cutoff/topology edges (rank 4), head width (rank 5), self-supervised pretraining on our own H_low, cross products.
 
 Tonight's data-scaling run (449 / 750, C1 and C2) reads first; its result and the diagnostics above go into the rung-C pre-registration as dated sections.
+
+## Second round, 22:3x — the reviewer's update after our verification (adopted as written below)
+
+- **Rank 2 is smaller than first stated, not empty:** with the internal term already dominating, "aligning the loss" is only the mask to the scored
+  pattern and the per-class standardisation — a regularisation leak (stretches and cheap angles fill the loss, ring–ring couplings do not). Expected
+  alone −0.03 to −0.10, not −0.15 to −0.25. In the joint registration of rank 1 + 2 the prediction 0.55–0.70 rests almost entirely on rank 1; the
+  registration must say so, so that a 0.72 is not read as "rank 2 failed". Rank 2 in isolation, if run: pass (a) ≤ 0.78 against the present 0.81.
+- **(b) is explained by representation plus the absence of the two scaffolds from the pool**, not by the cutoff; the "39 scaffolds held in" ablation
+  is the right cheap test.
+- **Diagnostic lines (fixed):** (1) H_low channels zeroed → ratio on (a) ≥ 0.95 (collapse to the zero rule). If it stays near 0.81 the body ignores the
+  Hessian input and rank 1 is pointless until that route is forced (e.g. remove the invariants, keep only the tensor block). (2) Benzene alone
+  overfitted → ΔH residual and ring–ring ΔF to numerical noise (ratio ≪ 0.1 on that molecule). If it fails: widen the head or move the diagonal
+  constraint from the forward pass into the loss first; **no 175-molecule rank-1 run before test 2 passes**. Without these two outcomes a failed rank-1
+  run is uninterpretable.
+- **Rank 3** keeps (a) ≤ 0.55 as the claim line; if rank 1 + 2 already reaches it, rank 3 is a control, not a rescue.
+- **Data ablations with rung B carry no architecture claim:** "39 scaffolds in" must lower (b) clearly, else (b) is a feature hole, not a training-set
+  hole; "40 PAH-like vs 200 layer B" must be won by the PAH side, else §3 is revised.
+- **Not to revisit:** QM9 pretraining, sum pooling, predicting H_high and subtracting, opening the cutoff.
+- **Reading rule for tonight's scaling run:** flat around 0.8 at 449/750 is consistent with "not the data volume"; a clear fall per doubling only changes
+  the order after the diagnostics (rank 1 + 2 then also on the largest pool, same lines). The diagnostics are not skipped because the scaling run moves.
+- Cleanest statement for the record: the model already optimises the internal term almost exclusively, sees the geometry, and still loses by a factor two
+  on the couplings — a representation / head problem, not a loss or data-volume problem.
