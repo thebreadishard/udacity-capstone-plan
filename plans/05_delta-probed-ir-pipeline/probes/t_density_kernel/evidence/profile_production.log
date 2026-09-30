@@ -1,0 +1,8 @@
+SCF                                          1.7 s
+ao2mo + CCSD                                14.1 s
+(T) energy                                   7.0 s
+  C lambda kernel alone                     48.0 s
+lambda solve (incl. C kernel)               66.4 s
+  C density kernel alone (one pass)         53.7 s
+gradient (incl. C density kernel)           62.2 s
+total 151 s; C kernels 102 s = 67 %

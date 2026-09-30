@@ -22,7 +22,7 @@ import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
 SO = os.path.join(HERE, "ccsd_t_rdm_kernel.so")
 _lib = None
-_cache = {"key": None, "value": None}
+_cache = {"key": None, "value": None, "lambda": None}   # value: density increments; lambda: (l1_t, l2_t) from the fused pass
 
 
 def available():
@@ -39,6 +39,7 @@ def _load():
         _lib = ctypes.CDLL(SO)
         _lib.t_density_intermediates.restype = ctypes.c_int
         _lib.t_lambda_intermediates.restype = ctypes.c_int
+        _lib.t_fused_intermediates.restype = ctypes.c_int
     return _lib
 
 
@@ -84,10 +85,14 @@ def kernel(t1, t2, eris):
     return out
 
 
+def _key(t1, t2, eris):
+    return (id(t1), id(t2), id(eris), float(np.sum(t1)), float(np.sum(t2)))
+
+
 def _cached(t1, t2, eris):
-    key = (id(t1), id(t2), id(eris), float(np.sum(t1)), float(np.sum(t2)))
+    key = _key(t1, t2, eris)
     if _cache["key"] != key:
-        _cache["key"], _cache["value"] = key, kernel(t1, t2, eris)
+        _cache["key"], _cache["value"], _cache["lambda"] = key, kernel(t1, t2, eris), None
     return _cache["value"]
 
 
@@ -185,7 +190,42 @@ def check_against_pyscf(mycc, t1, t2, l1, l2, eris):
     return diffs
 
 
+def fused_kernel(t1, t2, eris):
+    """One pass for both (30 Sep 2026): the density increments (as kernel()) and l1_t, l2_t (as lambda_kernel_separate()), from the same W/V."""
+    if not available():
+        raise RuntimeError(f"{SO} not built: run bash {os.path.join(HERE, 'build.sh')}")
+    p = prepare(t1, t2, eris)
+    nocc, nvir = p["nocc"], p["nvir"]
+    out = dict(goo=np.zeros((nocc, nocc)), gvv=np.zeros((nvir, nvir)), dvo=np.zeros((nvir, nocc)),
+               dovov=np.zeros((nocc, nvir, nocc, nvir)), dooov=np.zeros((nocc, nocc, nocc, nvir)),
+               dovvv=np.zeros((nocc, nvir, nvir, nvir)))
+    l1t = np.zeros((nocc, nvir))
+    joovv = np.zeros((nocc, nocc, nvir, nvir))
+    rc = _load().t_fused_intermediates(
+        ctypes.c_int(nocc), ctypes.c_int(nvir), _c(p["mo_energy"]), _c(p["t1T"]), _c(p["t2T"]), _c(p["vooo"]),
+        _c(p["vvop"]), _c(p["fvo"]), _c(p["fov"]), _c(out["goo"]), _c(out["gvv"]), _c(out["dvo"]), _c(out["dovov"]),
+        _c(out["dooov"]), _c(out["dovvv"]), _c(l1t), _c(joovv))
+    if rc != 0:
+        raise MemoryError("t_fused_intermediates: a thread could not allocate its buffers")
+    return out, _finish_lambda(p["mo_energy"], nocc, l1t, joovv)
+
+
+def _finish_lambda(mo_e, nocc, l1t, joovv):
+    eia = mo_e[:nocc, None] - mo_e[None, nocc:]
+    joovv = joovv + joovv.transpose(1, 0, 3, 2)
+    return l1t / eia, joovv / (eia[:, None, :, None] + eia[None, :, None, :])
+
+
 def lambda_kernel(t1, t2, eris):
+    """l1_t, l2_t of pyscf's make_intermediates from the fused pass; the density increments of the same pass are cached for the gradient."""
+    key = _key(t1, t2, eris)
+    if _cache["key"] != key or _cache["lambda"] is None:
+        _cache["value"], _cache["lambda"] = fused_kernel(t1, t2, eris)
+        _cache["key"] = key
+    return _cache["lambda"]
+
+
+def lambda_kernel_separate(t1, t2, eris):
     """The (T) parts l1_t, l2_t of pyscf's ccsd_t_lambda.make_intermediates, finished as pyscf finishes them (/ eia, pair-symmetrised)."""
     if not available():
         raise RuntimeError(f"{SO} not built: run bash {os.path.join(HERE, 'build.sh')}")
@@ -198,11 +238,7 @@ def lambda_kernel(t1, t2, eris):
         _c(p["vvop"]), _c(p["fvo"]), _c(p["fov"]), _c(l1t), _c(joovv))
     if rc != 0:
         raise MemoryError("t_lambda_intermediates: a thread could not allocate its buffers")
-    mo_e = p["mo_energy"]
-    eia = mo_e[:nocc, None] - mo_e[None, nocc:]
-    l1t /= eia
-    joovv = joovv + joovv.transpose(1, 0, 3, 2)
-    return l1t, joovv / (eia[:, None, :, None] + eia[None, :, None, :])
+    return _finish_lambda(p["mo_energy"], nocc, l1t, joovv)
 
 
 def make_intermediates(mycc, t1, t2, eris):

@@ -1,0 +1,4 @@
+fused: lambda solve 80.4 s + gradient 9.9 s = 90.3 s (before fusion 128.6 s)
+max |grad fused - grad pyscf| = 3.4e-14 a.u.; max |l1 - l1_pyscf| = 3.1e-13
+
+[exited with code 0]

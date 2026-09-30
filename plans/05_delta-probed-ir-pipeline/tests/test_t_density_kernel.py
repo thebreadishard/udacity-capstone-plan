@@ -91,3 +91,15 @@ def test_lambda_solution_and_gradient_through_installed_kernel_match_pyscf():
     g_ref = ccsd_t_grad.Gradients(mycc).kernel(mycc.t1, mycc.t2, l1_ref, l2_ref, eris)
     g = ccsd_t_grad.Gradients(mycc).kernel(mycc.t1, mycc.t2, l1, l2, eris)
     assert np.abs(g - g_ref).max() < 1e-8
+
+
+@pytest.mark.parametrize("symmetry", [False, True])
+def test_fused_pass_equals_the_two_kernels(symmetry):
+    """t_fused_intermediates (30 Sep 2026) against t_density_intermediates and t_lambda_intermediates on the same amplitudes."""
+    mycc, eris, l1, l2 = _ccsd_t(symmetry)
+    dens, (l1t, l2t) = F.fused_kernel(mycc.t1, mycc.t2, eris)
+    ref = F.kernel(mycc.t1, mycc.t2, eris)
+    for name in ref:
+        assert np.abs(dens[name] - ref[name]).max() < 1e-14, name
+    l1r, l2r = F.lambda_kernel_separate(mycc.t1, mycc.t2, eris)
+    assert np.abs(l1t - l1r).max() < 1e-14 and np.abs(l2t - l2r).max() < 1e-14

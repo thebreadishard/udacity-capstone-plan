@@ -345,3 +345,158 @@ int t_lambda_intermediates(int nocc, int nvir, const double *mo_energy,
         free(eijk); free(t1Th);
         return failed;
 }
+
+/*
+ * Both sets of (T) intermediates in one pass (30 Sep 2026): the response-density parts of t_density_intermediates and the lambda parts
+ * of t_lambda_intermediates depend only on t1, t2 and the integrals, and both are built from the same W and V per ordered triple, so
+ * they are computed together (half the W/V work of calling the two kernels).  Job structure of t_density_intermediates (middle
+ * virtual index b); the lambda accumulators are thread-private (joovv: nocc^2 nvir^2, l1t: nocc nvir) and reduced at the end.
+ * Outputs as the two kernels (all accumulated; the caller zeroes them and finishes l1t / joovv as for t_lambda_intermediates).
+ */
+int t_fused_intermediates(int nocc, int nvir, const double *mo_energy,
+                          const double *t1T, const double *t2T, const double *vooo,
+                          const double *vvop, const double *fvo, const double *fov,
+                          double *goo, double *gvv, double *dvo,
+                          double *dovov, double *dooov, double *dovvv,
+                          double *l1t, double *joovv)
+{
+        const int nmo = nocc + nvir;
+        const int noo = nocc * nocc;
+        const int nooo = noo * nocc;
+        const int nvv = nvir * nvir;
+        const size_t nvoo = (size_t)nvir * noo;
+        const size_t nov = (size_t)nvir * nocc;
+        double *eijk = malloc(sizeof(double) * nooo);
+        double *t1Th = malloc(sizeof(double) * nov * 2);
+        double *fvoh = (t1Th == NULL) ? NULL : t1Th + nov;
+        int failed = 0;
+        size_t n;
+        int i, j, k;
+
+        if (eijk == NULL || t1Th == NULL) { free(eijk); free(t1Th); return 1; }
+        for (n = 0, i = 0; i < nocc; i++) {
+        for (j = 0; j < nocc; j++) {
+        for (k = 0; k < nocc; k++, n++) {
+                eijk[n] = mo_energy[i] + mo_energy[j] + mo_energy[k];
+        } } }
+        for (n = 0; n < nov; n++) {
+                t1Th[n] = t1T[n] * .5;
+                fvoh[n] = fvo[n] * .5;
+        }
+
+#pragma omp parallel shared(failed)
+{
+        /* w, v, cache, vp, v2 (density); x, xt, wq (lambda) */
+        double *w = malloc(sizeof(double) * (size_t)nooo * 8);
+        double *v = (w == NULL) ? NULL : w + nooo;
+        double *cache = (w == NULL) ? NULL : v + nooo;
+        double *vp = (w == NULL) ? NULL : cache + nooo;
+        double *v2 = (w == NULL) ? NULL : vp + nooo;
+        double *x = (w == NULL) ? NULL : v2 + nooo;
+        double *xt = (w == NULL) ? NULL : x + nooo;
+        double *wq = (w == NULL) ? NULL : xt + nooo;
+        double *Umat = malloc(sizeof(double) * (size_t)nvir * nooo * 2);
+        double *Wpmat = (Umat == NULL) ? NULL : Umat + (size_t)nvir * nooo;
+        double *goo_p = calloc((size_t)noo + (size_t)nvir * nvir + nov, sizeof(double));
+        double *gvv_p = (goo_p == NULL) ? NULL : goo_p + noo;
+        double *dvo_p = (goo_p == NULL) ? NULL : gvv_p + (size_t)nvir * nvir;
+        double *dooov_p = calloc((size_t)nvir * nooo, sizeof(double));       /* [a][i][j][m] */
+        double *dovov_b = malloc(sizeof(double) * ((size_t)nvir * noo + (size_t)nvir * nocc * nvir));
+        double *dovvv_b = (dovov_b == NULL) ? NULL : dovov_b + (size_t)nvir * noo;
+        double *jo_t = calloc((size_t)noo * nvv + nov + noo + noo, sizeof(double));   /* joovv [i][j][a][e], then l1t [i][a], rb, g */
+        double *l1_t = (jo_t == NULL) ? NULL : jo_t + (size_t)noo * nvv;
+        double *rb = (jo_t == NULL) ? NULL : l1_t + nov;
+        double *g = (jo_t == NULL) ? NULL : rb + noo;
+        int a, b, c, m, f;
+        size_t nn;
+
+        if (w == NULL || Umat == NULL || goo_p == NULL || dooov_p == NULL || dovov_b == NULL || jo_t == NULL) {
+#pragma omp atomic write
+                failed = 1;
+        }
+#pragma omp barrier
+        if (!failed) {
+#pragma omp for schedule(dynamic, 1)
+        for (b = 0; b < nvir; b++) {
+                memset(dovov_b, 0, sizeof(double) * ((size_t)nvir * noo + (size_t)nvir * nocc * nvir));
+                for (c = 0; c < nvir; c++) {
+                        for (a = 0; a < nvir; a++) {
+                                double *wp = Wpmat + (size_t)a * nooo;
+                                double *u = Umat + (size_t)a * nooo;
+                                const double eabc = mo_energy[nocc+a] + mo_energy[nocc+b] + mo_energy[nocc+c];
+                                memset(w, 0, sizeof(double) * (size_t)nooo * 2);
+                                wv_term(w, v, cache, nocc, nvir, vvop, vooo, t2T, t1Th, fvoh, a, b, c, noo, nocc, 1);
+                                wv_term(w, v, cache, nocc, nvir, vvop, vooo, t2T, t1Th, fvoh, a, c, b, noo, 1, nocc);
+                                wv_term(w, v, cache, nocc, nvir, vvop, vooo, t2T, t1Th, fvoh, b, a, c, nocc, noo, 1);
+                                wv_term(w, v, cache, nocc, nvir, vvop, vooo, t2T, t1Th, fvoh, b, c, a, nocc, 1, noo);
+                                wv_term(w, v, cache, nocc, nvir, vvop, vooo, t2T, t1Th, fvoh, c, a, b, 1, noo, nocc);
+                                wv_term(w, v, cache, nocc, nvir, vvop, vooo, t2T, t1Th, fvoh, c, b, a, 1, nocc, noo);
+                                for (nn = 0; nn < (size_t)nooo; nn++) {
+                                        const double d = 1.0 / (eijk[nn] - eabc);
+                                        w[nn] *= d;
+                                        v[nn] *= d;
+                                        u[nn] = v[nn] + w[nn];
+                                        cache[nn] = v[nn] + 2.0 * w[nn];            /* V + 2W for the lambda part */
+                                }
+                                permute_into(wp, w, nocc, 1.0);
+                                permute_into(vp, v, nocc, 1.0);
+                                for (nn = 0; nn < (size_t)nooo; nn++) v2[nn] = vp[nn] + 2.0 * wp[nn];
+
+                                /* ---- density parts, as t_density_intermediates ---- */
+                                dgemm_(&TT, &TN, &nocc, &nocc, &noo, &D1, wp, &noo, u, &noo, &D1, goo_p, &nocc);
+                                dgemv_(&TN, &nocc, &noo, &DHALF, wp, &nocc, t2T + b * nvoo + a * noo, &INC1, &D1, dvo_p + (size_t)c * nocc, &INC1);
+                                dgemv_(&TT, &nocc, &noo, &DHALF, wp, &nocc, t1T + (size_t)c * nocc, &INC1, &D1, dovov_b + (size_t)a * noo, &INC1);
+                                dgemm_(&TN, &TN, &nocc, &noo, &nocc, &D1, t2T + b * nvoo + c * noo, &nocc, v2, &nocc, &D1, dooov_p + (size_t)a * nooo, &nocc);
+                                dgemm_(&TT, &TN, &nvir, &nocc, &noo, &D1, t2T + c * nvoo, &noo, v2, &noo, &D1, dovvv_b + (size_t)a * nocc * nvir, &nvir);
+
+                                /* ---- lambda parts, as t_lambda_intermediates (triple (a,b,c); outputs indexed by a) ---- */
+                                permute_q_into(x, cache, nocc, 1.0);
+                                /* jo_t[i][j][a][e] += sum_k X[i][j][k] ovvv[k,c,e,b]  (rows ij at stride nvir^2) */
+                                dgemm_(&TN, &TN, &nvir, &noo, &nocc, &D1, vvop + ((size_t)c * nvir + b) * nocc * nmo + nocc, &nmo,
+                                       x, &nocc, &D1, jo_t + (size_t)a * nvir, &nvv);
+                                /* rb[i][j] = -sum_{mn} X[i][m][n] ovoo[n,c,m,j] + sum_k Q(W)/2 [i][j][k] fov[k][c] -> jo_t[i][j][a][b] */
+                                for (i = 0; i < nocc; i++)
+                                for (m = 0; m < nocc; m++)
+                                for (k = 0; k < nocc; k++)
+                                        xt[(size_t)i*noo + k*nocc + m] = x[(size_t)i*noo + m*nocc + k];
+                                dgemm_(&TN, &TN, &nocc, &nocc, &noo, &DN1, vooo + (size_t)c * nooo, &nocc, xt, &noo, &D0, rb, &nocc);
+                                permute_q_into(wq, w, nocc, 0.5);
+                                dgemv_(&TT, &nocc, &noo, &D1, wq, &nocc, fov + c, &nvir, &D1, rb, &INC1);
+                                for (i = 0; i < noo; i++)
+                                        jo_t[(size_t)i * nvv + (size_t)a * nvir + b] += rb[i];
+                                /* l1_t[i][a] += sum_{jk} P(W)/2 [i][j][k] ovov[j,b,k,c]  (P(W) is wp) */
+                                for (j = 0; j < nocc; j++)
+                                for (k = 0; k < nocc; k++)
+                                        g[j*nocc + k] = vvop[(((size_t)b * nvir + c) * nocc + j) * nmo + k];
+                                dgemv_(&TT, &noo, &nocc, &DHALF, wp, &noo, g, &INC1, &D1, l1_t + a, &nvir);
+                        }
+                        dgemm_(&TT, &TN, &nvir, &nvir, &nooo, &D1, Wpmat, &nooo, Umat, &nooo, &D1, gvv_p, &nvir);
+                }
+                for (a = 0; a < nvir; a++) {
+                        for (i = 0; i < nocc; i++) {
+                                for (j = 0; j < nocc; j++)
+                                        dovov[(((size_t)i * nvir + a) * nocc + j) * nvir + b] += dovov_b[((size_t)a * nocc + i) * nocc + j];
+                                for (f = 0; f < nvir; f++)
+                                        dovvv[(((size_t)i * nvir + a) * nvir + f) * nvir + b] += dovvv_b[((size_t)a * nocc + i) * nvir + f];
+                        }
+                }
+        }
+#pragma omp critical
+        {
+                for (nn = 0; nn < (size_t)noo; nn++) goo[nn] += goo_p[nn];
+                for (nn = 0; nn < (size_t)nvir * nvir; nn++) gvv[nn] += gvv_p[nn];
+                for (nn = 0; nn < nov; nn++) dvo[nn] += dvo_p[nn];
+                for (a = 0; a < nvir; a++)
+                for (i = 0; i < nocc; i++)
+                for (j = 0; j < nocc; j++)
+                for (m = 0; m < nocc; m++)
+                        dooov[(((size_t)j * nocc + m) * nocc + i) * nvir + a] -= dooov_p[(((size_t)a * nocc + i) * nocc + j) * nocc + m];
+                for (nn = 0; nn < (size_t)noo * nvv; nn++) joovv[nn] += jo_t[nn];
+                for (nn = 0; nn < nov; nn++) l1t[nn] += l1_t[nn];
+        }
+        }
+        free(w); free(Umat); free(goo_p); free(dooov_p); free(dovov_b); free(jo_t);
+}
+        free(eijk); free(t1Th);
+        return failed;
+}

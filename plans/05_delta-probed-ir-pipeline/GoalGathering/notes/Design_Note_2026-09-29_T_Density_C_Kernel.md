@@ -100,3 +100,8 @@ Python side finishes as pyscf does (l1_t / eia; joovv + its pair transpose, / (e
 builds its own W — the same count as pyscf's blocked loop); computing W once per unordered triple would cut the dominant cost about six-fold if the
 anchors need it. Verified against pyscf: water ≤ 3e-18, benzene/cc-pVDZ 1e-16 with 44 s against 373 s on the laptop (16 threads)
 (`probes/t_density_kernel/evidence/`).
+
+**Addendum 30 September 10:2x — fused pass.** `t_fused_intermediates` computes the density and lambda parts from one W/V per ordered triple (the
+density parts do not depend on l1, l2), with the density kernel's jobs over b and thread-private lambda accumulators (joovv at row stride nvir²,
+l1t at stride nvir); `lambda_kernel()` runs it and caches the density part for the gradient. Benzene/cc-pVDZ production: lambda + gradient 128.6 →
+90.3 s; fused vs separate ≤ 1e-14, vs pyscf 3.4e-14 on the gradient. Not in pyscf/pyscf#3470 (which keeps pyscf's gamma/lambda API).

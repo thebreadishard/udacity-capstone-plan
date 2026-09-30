@@ -1,0 +1,3 @@
+cold: SCF 2.3 s, CCSD 14.2 s, lambda 75.7 s
+warm: SCF 1.7 s, CCSD 11.3 s, lambda 64.0 s
+|E_warm - E_cold| = 3.4e-09 E_h; max |grad_warm - grad_cold| = 8.8e-08 a.u.

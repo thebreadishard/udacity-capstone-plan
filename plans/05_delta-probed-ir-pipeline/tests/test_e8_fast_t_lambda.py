@@ -36,4 +36,5 @@ def test_wrapper_api():
                  "def check_lambda_against_pyscf(", "def lambda_installed()", "def density_installed()"):
         assert name in py, name
     c = (PLAN / "probes" / "t_density_kernel" / "ccsd_t_rdm_kernel.c").read_text(encoding="utf-8")
-    assert "int t_lambda_intermediates(" in c and c.count("#pragma omp for schedule(dynamic, 1)") == 2
+    assert "int t_lambda_intermediates(" in c and "int t_fused_intermediates(" in c and c.count("#pragma omp for schedule(dynamic, 1)") == 3
+    assert "def fused_kernel(" in py and "def lambda_kernel_separate(" in py
