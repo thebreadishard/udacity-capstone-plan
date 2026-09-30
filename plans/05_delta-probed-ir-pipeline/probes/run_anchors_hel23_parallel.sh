@@ -16,6 +16,8 @@ LOG=${LOG:-/root/e8/anchors.log}
 CORPUS=${CORPUS:-/root/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/corpus}
 GUARD_MB=${GUARD_MB:-1500}
 FAST=${FAST---fast-t-density --fast-t-lambda}
+SKIP=${SKIP:-}   # space-separated anchor names to leave out (30 Sep 2026: benzonitrile's Hessian awaits a verdict; the rest goes on)
+skipped() { [[ " $SKIP " == *" $1 "* ]] && say "ANCHOR $1 SKIPPED (SKIP)"; }
 SMOKE=${SMOKE:-}
 cd "$ROOT"
 say() { echo "[$(date '+%F %T')] $*" >> "$LOG"; }
@@ -81,8 +83,8 @@ if [ -n "$SMOKE" ]; then    # water: reference, two partial runs of one thread, 
 fi
 
 say "chain (corrected route) start on $(hostname)"
-anchor_parallel benzonitrile molecules/A_3100da3761/geometry.json results/benzonitrile_ccpvdz 2 8 12000 $FAST
-anchor_parallel fluorobenzene "$CORPUS/molecules/B_8b12a55d3a/geometry.json" results/fluorobenzene_ccpvdz 3 5 8000 $FAST
-anchor_parallel pyridine "$CORPUS/molecules/A_6e858b26e5/geometry.json" results/pyridine_ccpvdz 3 5 8000 $FAST
-anchor_parallel benzene_cation cations/benzene/geometry.json results/benzene_cation_ccpvdz 2 8 11000 --charge 1 --spin 1
+skipped benzonitrile || anchor_parallel benzonitrile molecules/A_3100da3761/geometry.json results/benzonitrile_ccpvdz 2 8 12000 $FAST
+skipped fluorobenzene || anchor_parallel fluorobenzene "$CORPUS/molecules/B_8b12a55d3a/geometry.json" results/fluorobenzene_ccpvdz 3 5 8000 $FAST
+skipped pyridine || anchor_parallel pyridine "$CORPUS/molecules/A_6e858b26e5/geometry.json" results/pyridine_ccpvdz 3 5 8000 $FAST
+skipped benzene_cation || anchor_parallel benzene_cation cations/benzene/geometry.json results/benzene_cation_ccpvdz 2 8 11000 --charge 1 --spin 1
 say "CHAIN FINISHED"
