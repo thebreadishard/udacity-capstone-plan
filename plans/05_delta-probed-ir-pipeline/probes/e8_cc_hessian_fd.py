@@ -81,6 +81,7 @@ def gradient(symbols, coords_bohr, basis, frozen, log, charge=0, spin=0, max_mem
         log(f"(T) lambda {t1 - t0:.0f} s, gradient {time.time() - t1:.0f} s")
         return float(e_hf + e_corr + et), np.asarray(g)
     from pyscf.grad import uccsd_t as uccsd_t_grad
+    install_uccsd_t_dvvvv_fix()   # pyscf#3305 / #3387, not in v2.14.0 (gate 1, 30 Sep 2026)
     mf = scf.UHF(mol); mf.conv_tol = 1e-11; e_hf = mf.kernel()
     for _ in range(3):
         mo_i, _, stable_i, _ = mf.stability(return_status=True)
@@ -103,6 +104,37 @@ def gradient(symbols, coords_bohr, basis, frozen, log, charge=0, spin=0, max_mem
     t1 = time.time(); g = uccsd_t_grad.Gradients(mycc).kernel(mycc.t1, mycc.t2, l1, l2, eris)
     log(f"(T) lambda {t1 - t0:.0f} s, gradient {time.time() - t1:.0f} s")
     return float(e_hf + e_corr + et), np.asarray(g)
+
+
+def install_uccsd_t_dvvvv_fix():
+    """pyscf <= 2.14.0: uccsd_t_rdm._gamma2_intermediates(compress_vvvv=True), the gradient's call, omits the 1/2 on the mixed-spin dvvVV block, so
+    the UCCSD(T) gradient is 4.9e-3 a.u. off dE/dx on H2O+ (gate 1, 30 Sep 2026). Upstream: issue pyscf#3305, fixed by PR #3387 (commit aa2ad208,
+    9 Aug 2026, after v2.14.0), test pyscf/grad/test/test_uccsd_t.py. The wrapper takes the uncompressed blocks and compresses them itself with the
+    1/2, so it is right on fixed and unfixed pyscf alike; idempotent."""
+    from pyscf import lib
+    from pyscf.cc import uccsd_t_rdm
+    if getattr(uccsd_t_rdm._gamma2_intermediates, "_dpir_fixed", False):
+        return
+    orig = uccsd_t_rdm._gamma2_intermediates
+
+    def fixed(mycc, t1, t2, l1, l2, eris=None, compress_vvvv=False):
+        d2 = orig(mycc, t1, t2, l1, l2, eris, False)
+        if not compress_vvvv:
+            return d2
+        nvira, nvirb = t2[1].shape[2:]
+        ia = np.tril_indices(nvira)
+        ia = ia[0] * nvira + ia[1]
+        ib = np.tril_indices(nvirb)
+        ib = ib[0] * nvirb + ib[1]
+
+        def compress(x, na, nb, i1, i2):
+            x = x + x.transpose(1, 0, 2, 3)
+            return lib.take_2d(x.reshape(na**2, nb**2), i1, i2) * .5
+        dvvvv, dvvVV, dVVvv, dVVVV = d2[1]
+        vv = (compress(dvvvv, nvira, nvira, ia, ia), compress(dvvVV, nvira, nvirb, ia, ib), dVVvv, compress(dVVVV, nvirb, nvirb, ib, ib))
+        return (d2[0], vv) + tuple(d2[2:])
+    fixed._dpir_fixed = True
+    uccsd_t_rdm._gamma2_intermediates = fixed
 
 
 def project_tr(H, masses, x):
@@ -151,7 +183,7 @@ def gate1_problem(fast_used: bool, open_shell: bool = False):
     if fast_used and not s.get("results", {}).get("fast_kernel"):
         return "the stamp does not cover the (T) density C kernel"
     if open_shell and not s.get("paths", {}).get("uhf"):
-        return "the UHF-CCSD(T) gradient failed gate 1 (pyscf 2.14: 4.9e-3 a.u. off FD of the energy on H2O⁺, 30 Sep 2026)"
+        return "the UHF-CCSD(T) gradient failed gate 1 on this machine (before the dvvVV fix of 30 Sep 2026 it was 4.9e-3 a.u. off on H2O⁺)"
     return None
 
 

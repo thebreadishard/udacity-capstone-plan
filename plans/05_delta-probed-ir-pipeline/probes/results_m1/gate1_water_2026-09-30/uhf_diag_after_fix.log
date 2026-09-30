@@ -1,0 +1,6 @@
+# uhf_diag.py with the dvvVV fix installed (uccsd_t_fix.py = the probe's install_uccsd_t_dvvvv_fix), laptop WSL, 30 Sep 2026 07:1x
+charge 1 2S 1 frozen 1 (T) True: max|an-fd| = 1.5e-07
+charge 1 2S 1 frozen 0 (T) True: max|an-fd| = 1.6e-07
+charge 1 2S 1 frozen 1 (T) False: max|an-fd| = 1.5e-07
+charge 1 2S 1 frozen 0 (T) False: max|an-fd| = 1.6e-07
+charge 0 2S 2 frozen 1 (T) True: max|an-fd| = 2.3e-07

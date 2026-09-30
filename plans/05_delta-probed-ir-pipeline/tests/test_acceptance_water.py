@@ -121,9 +121,8 @@ def check_rhf_gradient_vs_energy_fd():
 
 
 def check_uhf_gradient_vs_energy_fd():
-    """Fails with pyscf 2.14 (30 Sep 2026): UCCSD(T) analytic gradient 4.9e-3 a.u. off on H2O⁺, frozen or all-electron, while UCCSD alone agrees
-    to 1.5e-7 — pyscf's own example in grad/uccsd_t.py prints −0.148416 against its FD and documented −0.148094. The probe refuses --spin > 0
-    until this passes."""
+    """Failed on pyscf 2.14.0 as shipped (30 Sep 2026): 4.9e-3 a.u. on H2O⁺ — the missing 1/2 on dvvVV (pyscf#3305, fixed upstream after v2.14.0);
+    the probe's install_uccsd_t_dvvvv_fix() brings it to 1.5e-7. The probe refuses --spin > 0 until this passes."""
     return _gradient_vs_energy_fd(1, 1)
 
 

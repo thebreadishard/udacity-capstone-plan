@@ -106,3 +106,9 @@ Status: to be drafted after the benzene rerun confirms the size of the effect at
 
 **§4 status (same evening).** The C kernel of the design note exists (`probes/t_density_kernel/ccsd_t_rdm_kernel.c`, `t_density_fast.py`): water
 intermediates equal to pyscf's to 4e-18, gradient to 1e-8, symmetry on and off; timings on benzene and naphthalene from the reruns of 29 Sep.
+
+**30 September 07:2x — no UHF PR.** Gate 1 found pyscf 2.14.0's UCCSD(T) gradient 4.9e-3 a.u. off dE/dx; the cause (missing ½ on the mixed-spin
+`dvvVV` block in `uccsd_t_rdm`'s `compress_vvvv` branch) is already fixed upstream (pyscf#3305, PR #3387, commit `aa2ad208`, after v2.14.0). We
+carry a version-independent wrapper until a release has it (Software_Changes_Ledger row 20). §5's lambda trap applies to `grad/uccsd_t.py` as well;
+its PR covers both classes, drafted as agreed with the user (30 Sep 07:0x): the CCSD(T) gradient classes solve the (T) lambda themselves when
+l1/l2 are missing.
