@@ -158,3 +158,8 @@ from `probes/t_density_kernel/ccsd_t_rdm_kernel.c` by `make_pyscf_c.py` with pys
 same build: `make_intermediates` 397.1 → 23.9 s, lambda solve 491.6 → 98.3 s, gradient with given lambda 1003.7 → 69.9 s; gradients equal to
 9.3e-14; 20 upstream tests pass (including element-wise comparisons with the `*_slow` implementations). Body and scripts:
 `probes/t_density_kernel/evidence/pr3470_bench/`; #3469's body: `pr_patches/pyscf_3469_body.md`. Remaining drafts: §1 #212 (review answered), §2 pyVPT2.
+
+**30 September 09:4x — correction to §2:** the pyVPT2 change is not local only: issue philipmnel/pyvpt2#57 (21 Sep 06:55 UTC) and PR
+philipmnel/pyvpt2#58 (07:29 UTC, branch `quartic-route-consistency` on the fork, +122/−6) are open, no comments, no checks, upstream `main`
+unchanged since 16 May. The QC items of §2 (pyVPT2's own suite with psi4, the real-data benzene check) would go into a follow-up comment —
+a conversation, so only on the user's word.
