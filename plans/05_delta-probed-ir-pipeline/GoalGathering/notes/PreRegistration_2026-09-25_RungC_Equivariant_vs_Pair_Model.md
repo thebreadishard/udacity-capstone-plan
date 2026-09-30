@@ -492,3 +492,16 @@ and the Cartesian head does not, that is the cleanest statement that the head, n
 (fresh models, before training): the true ΔH has no in-plane/out-of-plane mixing (6.6e-6 against 3.5e-3 in plane) and neither does the head's output,
 so the head is not mis-shaped for planar molecules; its out-of-plane block is the isotropic term a·I alone, which is enough only if the in-plane
 part is fully carried by the b r̂r̂ᵀ + Σ c u uᵀ terms.
+
+## Outcome, diagnostic 2 re-run — 1 October 00:1x (`out/E7_rungC_diag_overfit_benzene_e5000_lr{1e-3,3e-3}_2026-10-01`; hybrid: `…_hybrid_e5000_2026-10-01`)
+
+| head | steps, lr | ratio on benzene | ΔH residual ratio | internal term at the end | line ≪ 0.1 |
+|---|---|---|---|---|---|
+| Cartesian (registered) | 5,000, 1e-3 | 0.60 | 0.58 | 0.28 | **FAIL** |
+| Cartesian (registered) | 5,000, 3e-3 | 0.89 | 0.70 | 0.43 | **FAIL** |
+| hybrid (ΔF on the pattern, Bᵀ ΔF B) | 5,000, 1e-3 | *read-out pending* | — | **2.5e-4** (main 4.5e-8) | passes on the loss; the ratio follows |
+
+**Reading.** The registered Cartesian head cannot represent one molecule's correction even with 5,000 optimiser steps and a free choice of learning
+rate: the residual stays above half of the target. The hybrid head fits the same molecule to 2.5e-4 of the internal term with the same encoder. The
+head, not the encoder, is the limit — the reviewers' rank 3 — and the gate for rank 1 on the Cartesian head stays closed by its rule; the repair of
+that head (constraint into the loss, 16 → 32 tensor channels) becomes a later control, not the path.
