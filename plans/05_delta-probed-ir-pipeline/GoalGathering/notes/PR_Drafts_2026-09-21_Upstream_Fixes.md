@@ -104,6 +104,34 @@ class calls — that solves `ccsd_t_lambda` when l1/l2 are not supplied, and a t
 maintainers prefer no behaviour change: raise a clear error when l1/l2 are missing. Reproducer: `probes/results_m1/lambda_incident_2026-09-29/`.
 Status: to be drafted after the benzene rerun confirms the size of the effect at PAH scale; the user's word before submission, as for every PR.
 
+**§5 draft (30 September, 07:4x; the user agreed the proposal 07:0x).** Local branch `ccsd-t-grad-solve-t-lambda` on pyscf master `e47d127`
+(WSL `~/pyscf-master`; no fork yet — creating one is the user's call). Diff: `grad/ccsd_t.py`, `grad/uccsd_t.py` (+36/−2 each: `_solve_t_lambda`,
+a `kernel` override, `grad_elec` no longer falls back to `mycc.l1/l2`), one regression test per file (+20, +17; own molecule, because
+`test_ccsd_t_grad` leaves the module's `mol` displaced). Local commit `3ed3646`; patch in `pr_patches/pyscf_ccsd_t_grad_solve_t_lambda_2026-09-30.patch`.
+**Checked 07:3x** (pyscf master built from source in WSL `~/pyscf-dev`): the new tests fail without the fix (9.0e-4 a.u. RHF, 6.6e-4 UHF, water/6-31G)
+and pass with it; 28 tests of `grad/test/test_ccsd*.py`, `test_uccsd_t.py`, `cc/test/test_{ccsd,uccsd}_t.py`, `test_rccsd_t_lambda.py`,
+`test_{ccsd,uccsd}_lambda.py` pass; `ruff check --config .ruff.toml` and the NPY check as in their `lint.yml` pass (tests are excluded there).
+
+> **Title:** CCSD(T) gradients: solve the (T) lambda when l1/l2 are not given
+>
+> `grad.ccsd_t.Gradients(mycc).kernel()` and `grad.uccsd_t.Gradients(mycc).kernel()` without `l1`, `l2` inherit
+> `ccsd.Gradients.kernel`, which takes `mycc.l1/l2` or calls `mycc.solve_lambda()` — the CCSD lambda — and passes it to the
+> (T) density code. The result is not the derivative of the CCSD(T) energy. Water, RHF/cc-pVDZ, frozen core: 1.5e-3 a.u. off the
+> central finite difference of E_CCSD(T); with `ccsd_t_lambda.kernel`'s l1, l2 it agrees to 1.5e-7. The existing tests and the
+> `__main__` examples pass the (T) lambda explicitly, so nothing flags the natural call.
+>
+> This PR makes both classes solve the (T) lambda (`ccsd_t_lambda` / `uccsd_t_lambda`) when `l1` or `l2` is missing, in `kernel`
+> and in `grad_elec`. Explicitly passed multipliers are used unchanged. New tests: the bare call equals the explicit one after
+> `mycc.solve_lambda()` has stored the CCSD lambda (RHF and UHF), and matches the finite difference (UHF). Without the change the
+> new tests fail by 9.0e-4 (RHF) and 6.6e-4 a.u. (UHF) on water/6-31G.
+>
+> Related, not changed here: `Gradients.as_scanner()` solves the CCSD lambda and passes it explicitly, and returns `cc.e_tot`
+> without (T) — on water/6-31G the scanner's energy misses E_(T) (9.96e-4 E_h) and its gradient is 9.0e-4 a.u. off the CCSD(T)
+> gradient. A CCSD(T) gradient scanner would need its own `__call__`. Happy to follow up if wanted.
+
+Before submission: only the user's word — on creating the fork `thebreadishard/pyscf`, on this text, and on the attribution line. Scanner
+numbers: `pr_patches/pyscf_scanner_check_2026-09-30.py`.
+
 **§4 status (same evening).** The C kernel of the design note exists (`probes/t_density_kernel/ccsd_t_rdm_kernel.c`, `t_density_fast.py`): water
 intermediates equal to pyscf's to 4e-18, gradient to 1e-8, symmetry on and off; timings on benzene and naphthalene from the reruns of 29 Sep.
 

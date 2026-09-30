@@ -1,0 +1,213 @@
+From 3ed3646782f777cc1b4cb8af4bcbb402b4fb2c44 Mon Sep 17 00:00:00 2001
+From: Frederic Petrignani <frederic.petrignani@gmail.com>
+Date: Wed, 30 Sep 2026 07:38:39 +0200
+Subject: [PATCH] CCSD(T) gradients: solve the (T) lambda when l1/l2 are not
+ given
+
+grad.ccsd_t.Gradients and grad.uccsd_t.Gradients inherited kernel() from
+the CCSD gradient, which fills missing l1/l2 with mycc.l1/l2 or
+mycc.solve_lambda(), i.e. the CCSD lambda. The resulting vector is not the
+derivative of the CCSD(T) energy (water/6-31G: 9.0e-4 a.u. RHF, 6.6e-4 UHF).
+Both classes now solve ccsd_t_lambda / uccsd_t_lambda in kernel() and
+grad_elec() when l1 or l2 is missing; explicit multipliers are unchanged.
+Regression tests for RHF and UHF.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+---
+ pyscf/grad/ccsd_t.py            | 36 +++++++++++++++++++++++++++++++--
+ pyscf/grad/test/test_ccsd_t.py  | 20 ++++++++++++++++++
+ pyscf/grad/test/test_uccsd_t.py | 16 +++++++++++++++
+ pyscf/grad/uccsd_t.py           | 36 +++++++++++++++++++++++++++++++--
+ 4 files changed, 104 insertions(+), 4 deletions(-)
+
+diff --git a/pyscf/grad/ccsd_t.py b/pyscf/grad/ccsd_t.py
+index eecc15a..5da23d1 100644
+--- a/pyscf/grad/ccsd_t.py
++++ b/pyscf/grad/ccsd_t.py
+@@ -18,6 +18,7 @@
+ 
+ from pyscf import lib
+ from pyscf.cc import ccsd_t_rdm
++from pyscf.cc import ccsd_t_lambda
+ from pyscf.grad import ccsd as ccsd_grad
+ 
+ # Only works with canonical orbitals
+@@ -26,9 +27,11 @@ def grad_elec(cc_grad, t1=None, t2=None, l1=None, l2=None, eris=None, atmlst=Non
+     mycc = cc_grad.base
+     if t1 is None: t1 = mycc.t1
+     if t2 is None: t2 = mycc.t2
+-    if l1 is None: l1 = mycc.l1
+-    if l2 is None: l2 = mycc.l2
+     if eris is None: eris = mycc.ao2mo()
++    if l1 is None or l2 is None:
++        # mycc.l1, mycc.l2 hold the CCSD lambda (from mycc.solve_lambda); the
++        # CCSD(T) gradient needs the multipliers of the CCSD(T) Lagrangian.
++        l1, l2 = _solve_t_lambda(mycc, eris, t1, t2, verbose)
+     d1 = ccsd_t_rdm._gamma1_intermediates(mycc, t1, t2, l1, l2, eris,
+                                           for_grad=True)
+     fd2intermediate = lib.H5TmpFile()
+@@ -39,9 +42,38 @@ def grad_elec(cc_grad, t1=None, t2=None, l1=None, l2=None, eris=None, atmlst=Non
+                              d1, d2, verbose)
+     return de
+ 
++def _solve_t_lambda(mycc, eris, t1, t2, verbose=None):
++    log = lib.logger.new_logger(mycc, verbose)
++    conv, l1, l2 = ccsd_t_lambda.kernel(mycc, eris, t1, t2, verbose=log)
++    if not conv:
++        log.warn('CCSD(T) lambda equations not converged')
++    return l1, l2
++
+ class Gradients(ccsd_grad.Gradients):
+     grad_elec = grad_elec
+ 
++    def kernel(self, t1=None, t2=None, l1=None, l2=None, eris=None,
++               atmlst=None, verbose=None):
++        '''CCSD(T) nuclear gradients.
++
++        l1 and l2 are the multipliers of the CCSD(T) Lagrangian. When either is
++        not given, they are solved here with ccsd_t_lambda. The CCSD lambda
++        (mycc.l1, mycc.l2, mycc.solve_lambda) does not give the derivative of
++        the CCSD(T) energy.
++        '''
++        mycc = self.base
++        if l1 is None or l2 is None:
++            if t1 is None:
++                if mycc.t1 is None:
++                    mycc.run()
++                t1 = mycc.t1
++            if t2 is None: t2 = mycc.t2
++            if eris is None:
++                eris = mycc.ao2mo()
++            l1, l2 = _solve_t_lambda(mycc, eris, t1, t2, verbose)
++        return ccsd_grad.Gradients.kernel(self, t1, t2, l1, l2, eris,
++                                           atmlst, verbose)
++
+ 
+ if __name__ == '__main__':
+     from pyscf import gto
+diff --git a/pyscf/grad/test/test_ccsd_t.py b/pyscf/grad/test/test_ccsd_t.py
+index 29a3b99..fac6607 100644
+--- a/pyscf/grad/test/test_ccsd_t.py
++++ b/pyscf/grad/test/test_ccsd_t.py
+@@ -96,6 +96,26 @@ class KnownValues(unittest.TestCase):
+ # [-1.05088506e-16  7.92491838e-02 -6.21200703e-03]]
+         self.assertAlmostEqual(lib.fp(g1), 0.10551841163553637, 9)
+         self.assertTrue(numpy.allclose(g1, g1_slow, rtol=1e-9, atol=1e-12))
++    def test_ccsd_t_grad_solves_t_lambda(self):
++        '''Without l1, l2 the CCSD(T) gradient must solve the CCSD(T) lambda,
++        not reuse the CCSD lambda stored by mycc.solve_lambda.'''
++        # own molecule: test_ccsd_t_grad leaves the module's mol displaced
++        pmol = gto.M(atom=[[8, (0., 0., 0.)], [1, (0., -0.757, 0.587)], [1, (0., 0.757, 0.587)]],
++                     basis='631g', verbose=0)
++        pmf = scf.RHF(pmol).run(conv_tol=1e-12)
++        mycc = cc.ccsd.CCSD(pmf)
++        mycc.conv_tol = 1e-10
++        mycc.conv_tol_normt = 1e-8
++        eris = mycc.ao2mo()
++        ecc, t1, t2 = mycc.kernel(eris=eris)
++        conv, l1, l2 = ccsd_t_lambda.kernel(mycc, eris, t1, t2)
++        g_ref = ccsd_t_grad.Gradients(mycc).kernel(t1, t2, l1, l2, eris=eris)
++        mycc.solve_lambda(eris=eris)
++        g1 = ccsd_t_grad.Gradients(mycc).kernel()
++        self.assertAlmostEqual(abs(g1 - g_ref).max(), 0, 7)
++        g2 = ccsd_t_grad.Gradients(mycc).grad_elec()
++        g2 += ccsd_t_grad.Gradients(mycc).grad_nuc()
++        self.assertAlmostEqual(abs(g2 - g_ref).max(), 0, 7)
+ 
+ if __name__ == "__main__":
+     print("Tests for CCSD(T) gradients")
+diff --git a/pyscf/grad/test/test_uccsd_t.py b/pyscf/grad/test/test_uccsd_t.py
+index 20952b8..07fad39 100644
+--- a/pyscf/grad/test/test_uccsd_t.py
++++ b/pyscf/grad/test/test_uccsd_t.py
+@@ -118,6 +118,22 @@ class KnownValues(unittest.TestCase):
+         gu = uccsd_t_grad.Gradients(ucc).kernel(ucc.t1, ucc.t2, ul1, ul2, eris=ueris)
+ 
+         self.assertAlmostEqual(abs(gu - gr).max(), 0, 7)
++    def test_uccsd_t_grad_solves_t_lambda(self):
++        '''Without l1, l2 the UCCSD(T) gradient must solve the UCCSD(T) lambda,
++        not reuse the UCCSD lambda stored by mycc.solve_lambda.'''
++        pmol = gto.M(atom=mol.atom, basis='631g', spin=2, verbose=0)
++        pmf = scf.UHF(pmol).run(conv_tol=1e-12)
++        mycc = cc.uccsd.UCCSD(pmf)
++        mycc.conv_tol = 1e-10
++        mycc.conv_tol_normt = 1e-8
++        eris = mycc.ao2mo()
++        ecc, t1, t2 = mycc.kernel(eris=eris)
++        conv, l1, l2 = uccsd_t_lambda.kernel(mycc, eris, t1, t2)
++        g_ref = uccsd_t_grad.Gradients(mycc).kernel(t1, t2, l1, l2, eris=eris)
++        mycc.solve_lambda(eris=eris)
++        g1 = uccsd_t_grad.Gradients(mycc).kernel()
++        self.assertAlmostEqual(abs(g1 - g_ref).max(), 0, 7)
++        self.assertAlmostEqual(g1[0,2], _fd_z(mycc), 5)
+ 
+ if __name__ == "__main__":
+     print("Tests for UCCSD(T) gradients")
+diff --git a/pyscf/grad/uccsd_t.py b/pyscf/grad/uccsd_t.py
+index 6700d13..5df84d7 100644
+--- a/pyscf/grad/uccsd_t.py
++++ b/pyscf/grad/uccsd_t.py
+@@ -18,6 +18,7 @@
+ 
+ from pyscf import lib
+ from pyscf.cc import uccsd_t_rdm
++from pyscf.cc import uccsd_t_lambda
+ from pyscf.grad import uccsd as uccsd_grad
+ 
+ # Only works with canonical orbitals
+@@ -26,9 +27,11 @@ def grad_elec(cc_grad, t1=None, t2=None, l1=None, l2=None, eris=None, atmlst=Non
+     mycc = cc_grad.base
+     if t1 is None: t1 = mycc.t1
+     if t2 is None: t2 = mycc.t2
+-    if l1 is None: l1 = mycc.l1
+-    if l2 is None: l2 = mycc.l2
+     if eris is None: eris = mycc.ao2mo()
++    if l1 is None or l2 is None:
++        # mycc.l1, mycc.l2 hold the CCSD lambda (from mycc.solve_lambda); the
++        # CCSD(T) gradient needs the multipliers of the CCSD(T) Lagrangian.
++        l1, l2 = _solve_t_lambda(mycc, eris, t1, t2, verbose)
+     d1 = uccsd_t_rdm._gamma1_intermediates(mycc, t1, t2, l1, l2, eris,
+                                            for_grad=True)
+     fd2intermediate = lib.H5TmpFile()
+@@ -39,9 +42,38 @@ def grad_elec(cc_grad, t1=None, t2=None, l1=None, l2=None, eris=None, atmlst=Non
+                               d1, d2, verbose)
+     return de
+ 
++def _solve_t_lambda(mycc, eris, t1, t2, verbose=None):
++    log = lib.logger.new_logger(mycc, verbose)
++    conv, l1, l2 = uccsd_t_lambda.kernel(mycc, eris, t1, t2, verbose=log)
++    if not conv:
++        log.warn('CCSD(T) lambda equations not converged')
++    return l1, l2
++
+ class Gradients(uccsd_grad.Gradients):
+     grad_elec = grad_elec
+ 
++    def kernel(self, t1=None, t2=None, l1=None, l2=None, eris=None,
++               atmlst=None, verbose=None):
++        '''CCSD(T) nuclear gradients.
++
++        l1 and l2 are the multipliers of the CCSD(T) Lagrangian. When either is
++        not given, they are solved here with uccsd_t_lambda. The CCSD lambda
++        (mycc.l1, mycc.l2, mycc.solve_lambda) does not give the derivative of
++        the CCSD(T) energy.
++        '''
++        mycc = self.base
++        if l1 is None or l2 is None:
++            if t1 is None:
++                if mycc.t1 is None:
++                    mycc.run()
++                t1 = mycc.t1
++            if t2 is None: t2 = mycc.t2
++            if eris is None:
++                eris = mycc.ao2mo()
++            l1, l2 = _solve_t_lambda(mycc, eris, t1, t2, verbose)
++        return uccsd_grad.Gradients.kernel(self, t1, t2, l1, l2, eris,
++                                           atmlst, verbose)
++
+ 
+ if __name__ == '__main__':
+     from pyscf import gto
+-- 
+2.53.0
+
