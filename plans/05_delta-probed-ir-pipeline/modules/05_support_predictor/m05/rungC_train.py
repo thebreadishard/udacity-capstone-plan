@@ -196,7 +196,7 @@ def inner_val_aux(model, tensors: dict, ids: list) -> float:
 def train_one(train_ids: list, tensors: dict, seed: int, epochs: int, lr: float = 1e-3, log=print, aux_weight: float = AUX_WEIGHT,
               loss_mode: str = "registered", scale_mode: str = "rms", val_ids: list | None = None, patience: int = 0,
               pretrained: str | None = None, aggregation: str = AGGREGATION,
-              pretrained_elements: list[int] | None = None, aux_mode: str = "all") -> tuple[torch.nn.Module, list]:
+              pretrained_elements: list[int] | None = None, aux_mode: str = "all", tensor_input: bool = False) -> tuple[torch.nn.Module, list]:
     """Defaults = the registered recipe C1 of 19:50 (27 Sep). The other values are the cells of the fair-chance search registered at 20:0x:
     aux_weight 1.0; loss_mode 'internal' (the relative internal-ΔF term alone); scale_mode 'class' (one output scale per entry class: diagonal
     3×3 block, bonded pair, non-bonded pair — the pair model's per-class standardisation); val_ids = inner validation molecules held out of the
@@ -215,8 +215,11 @@ def train_one(train_ids: list, tensors: dict, seed: int, epochs: int, lr: float 
                 cnt[k] += (c == k).sum()
         class_scale = np.sqrt(sq / np.maximum(cnt, 1))
     target_elements = sorted({int(z) for i in train_ids for z in tensors[i]["Z"].tolist()})
+    if pretrained and tensor_input:
+        raise ValueError("--tensor-input is a fresh-body variant (30 Sep 2026); the pretrained bodies carry no rank-2 input weights")
     body = (load_pretrained_body(pretrained, reinit_head=True, seed=seed, aggregation=aggregation, target_elements=target_elements,
-                                 pretrained_elements=pretrained_elements) if pretrained else DeltaHessianModel(aggregation=aggregation))
+                                 pretrained_elements=pretrained_elements) if pretrained
+            else DeltaHessianModel(aggregation=aggregation, tensor_input=tensor_input))
     if pretrained and body.reset_elements:
         log(f"  element embeddings absent from pretraining reset to the trained mean: Z = {body.reset_elements}")
     log(f"  {'pretrained' if pretrained else 'fresh'} {aggregation} body pre-flight: worst |output| "
@@ -312,6 +315,7 @@ def main() -> int:
                     help="internal term: 'all' (registered) or 'pattern' (30 Sep 2026, rank 2 of the external reviews: the pair model's pattern only, one "
                          "standardisation scale per pair class from the fit molecules)")
     ap.add_argument("--zero-hlow", action="store_true", help="diagnostic 1 (30 Sep 2026): zero the B3LYP Hessian input channels; the ratio must collapse towards the zero rule")
+    ap.add_argument("--tensor-input", action="store_true", help="rank 1 (30 Sep 2026, external reviews): the B3LYP 3×3 pair blocks as rank-2 equivariant edge features (fresh body only)")
     ap.add_argument("--overfit-one", default=None, metavar="ID",
                     help="diagnostic 2 (30 Sep 2026): pool, size and both hold-outs = this one molecule; no inner validation, no early stopping; must reach ratio << 0.1")
     ap.add_argument("--pretrained", default=None, help="C2: a `rungC_pretrain.py` checkpoint; its body is loaded, the head re-initialised per seed")
@@ -378,7 +382,7 @@ def main() -> int:
             t["H_low"] = torch.zeros_like(t["H_low"])
         tensors[i] = t
     log(f"{len(mols)} molecules; pool {len(pool)}; hold-out (a) {len(test_a)}, (b) {len(test_b)} ({cores}); sizes {sizes}; seeds {seeds}; epochs {a.epochs}; "
-        f"threads {a.threads}; model {sum(p.numel() for p in DeltaHessianModel().parameters()):,} parameters, {a.aggregation} aggregation"
+        f"threads {a.threads}; model {sum(p.numel() for p in DeltaHessianModel(tensor_input=a.tensor_input).parameters()):,} parameters, {a.aggregation} aggregation"
         + (" — SMOKE" if a.smoke else ""))
 
     tests = {"a": test_a, "b": test_b}
@@ -387,13 +391,14 @@ def main() -> int:
                n_molecules=len(mols), holdout_a=test_a, holdout_b=test_b, scaffold_cores=cores, pool=len(pool), pool_ids=pool, pool_layers=a.pool_layers,
                sizes=sizes, seeds=seeds, epochs=a.epochs, lr=a.lr, aux_weight=a.aux_weight, loss=a.loss, scale=a.scale, inner_val=a.inner_val,
                patience=a.patience, pretrained=a.pretrained, aggregation=a.aggregation, pretrained_elements=a.pretrained_elements,
-               aux_mode=a.aux, zero_hlow=a.zero_hlow, overfit_one=a.overfit_one, pair_class_names=list(PAIR_CLASS_NAMES),
+               aux_mode=a.aux, zero_hlow=a.zero_hlow, overfit_one=a.overfit_one, tensor_input=a.tensor_input, pair_class_names=list(PAIR_CLASS_NAMES),
                substituted_analytic=substituted, curve={})
     res["zero_rule"] = {h: readouts(mols, ids, pool, lambda i: np.zeros_like(mols[i]["F_low"])) for h, ids in tests.items() if ids}
     lines = [f"# Rung C (equivariant ΔH, C1 from scratch) — {a.out_prefix} ({res['date']}){' — SMOKE, not a result' if a.smoke else ''}", "",
              f"recipe: lr {a.lr}, epochs {a.epochs}, loss {a.loss}, aux weight {a.aux_weight}, internal term {a.aux}, output scale {a.scale}, "
              f"inner validation {a.inner_val}, patience {a.patience}; pool layers {a.pool_layers}; {a.aggregation} aggregation"
-             + ("; H_low input zeroed (diagnostic 1)" if a.zero_hlow else "") + (f"; overfit-one {a.overfit_one} (diagnostic 2)" if a.overfit_one else ""), "",
+             + ("; H_low input zeroed (diagnostic 1)" if a.zero_hlow else "") + (f"; overfit-one {a.overfit_one} (diagnostic 2)" if a.overfit_one else "")
+             + ("; rank-2 tensor input" if a.tensor_input else ""), "",
              "| n | seed | hold-out | ring couplings | zero | ratio | corrected ω | zero ω | ΔH residual ratio | s |",
              "|---|---|---|---|---|---|---|---|---|---|"]
     for n in sizes:
@@ -409,7 +414,7 @@ def main() -> int:
             t1 = time.time()
             val_ids, fit_ids = inner_split(tr, seed, a.inner_val)
             model, hist = train_one(fit_ids, tensors, seed, a.epochs, a.lr, log, a.aux_weight, a.loss, a.scale, val_ids, a.patience, a.pretrained,
-                                    a.aggregation, a.pretrained_elements, aux_mode=a.aux)
+                                    a.aggregation, a.pretrained_elements, aux_mode=a.aux, tensor_input=a.tensor_input)
             dF_of = predictor(model, tensors, mols)
             out = {"seed": seed, "train_history": hist, "output_scale": model.scale, "class_scale": model.class_scale_values,
                    "aux_class_scale": (None if model.aux_class_scale is None else model.aux_class_scale.tolist()),

@@ -13,10 +13,12 @@ import rungC_equivariant as RC  # noqa: E402
 torch.set_num_threads(1)
 
 
-@pytest.fixture(scope="module", params=list(RC.AGGREGATIONS))
+@pytest.fixture(scope="module", params=[(agg, ti) for agg in RC.AGGREGATIONS for ti in (False, True)],
+                ids=lambda p: f"{p[0]}-{'tensor' if p[1] else 'scalars'}")
 def model(request):
     torch.manual_seed(0)
-    return RC.DeltaHessianModel(aggregation=request.param).double()
+    agg, tensor_input = request.param
+    return RC.DeltaHessianModel(aggregation=agg, tensor_input=tensor_input).double()
 
 
 def test_equivariance_on_water(model):
@@ -71,7 +73,11 @@ def test_registered_input_is_only_the_three_pair_scalars(model):
         t = RC.to_torch(dict(m, H_low=H), torch.float64)
         with torch.no_grad():
             preds.append(model(t["Z"], t["pos"], t["H_low"]))
-    assert torch.allclose(preds[0], preds[1], atol=1e-10)
+    if model.tensor_input:
+        # rank 1 (30 Sep 2026): the rank-2 input carries the block's orientation, so the two variants must NOT give the same prediction
+        assert not torch.allclose(preds[0], preds[1], atol=1e-8)
+    else:
+        assert torch.allclose(preds[0], preds[1], atol=1e-10)
 
 
 def test_loss_is_trainable_on_water():
@@ -92,3 +98,25 @@ def test_loss_is_trainable_on_water():
         losses.append(loss.item())
     assert losses[-1] < losses[0]
     assert all(np.isfinite(losses))
+
+
+def test_pair_tensor_transforms_as_a_rank_two_tensor():
+    """pair_tensor (rank-1 input, 30 Sep 2026): under x → R x every block goes to R S Rᵀ, the normalisation is invariant, and permutations permute."""
+    m = RC.water()
+    R = RC.rotation(5, reflect=True)
+    S0 = RC.pair_tensor(torch.tensor(m["H_low"]), torch.tensor(m["pos"]))
+    S1 = RC.pair_tensor(torch.tensor(RC.transform_hessian(m["H_low"], R)), torch.tensor(m["pos"] @ R.T))
+    Rt = torch.tensor(R)
+    assert torch.allclose(S1, torch.einsum("ab,ijbc,dc->ijad", Rt, S0, Rt), atol=1e-12)
+    assert torch.allclose(S0, S0.transpose(-1, -2), atol=1e-14)                                    # symmetrised
+    off = ~torch.eye(3, dtype=torch.bool)
+    assert abs(float(torch.sqrt((S0[off] ** 2).sum((-1, -2)).mean())) - 1.0) < 1e-10             # unit RMS over the off-diagonal blocks
+    perm = np.array([2, 0, 1])
+    Sp = RC.pair_tensor(torch.tensor(RC.transform_hessian(m["H_low"], np.eye(3), perm)), torch.tensor(m["pos"][perm]))
+    assert torch.allclose(Sp, S0[perm][:, perm], atol=1e-14)
+
+
+def test_registered_model_is_unchanged_by_the_tensor_input_flag():
+    """Default tensor_input=False builds the registered architecture: same parameter count as before the 30 Sep change (171,554)."""
+    assert sum(p.numel() for p in RC.DeltaHessianModel().parameters()) == 171_554
+    assert sum(p.numel() for p in RC.DeltaHessianModel(tensor_input=True).parameters()) > 171_554

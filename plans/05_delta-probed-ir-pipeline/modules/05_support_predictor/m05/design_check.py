@@ -104,7 +104,7 @@ def transfer_table(source: dict, target: dict) -> list[dict]:
 
 
 def load_body(checkpoint: str | None, aggregation: str, seed: int, target_elements: list[int] | None = None,
-              pretrained_elements: list[int] | None = None) -> tuple[torch.nn.Module, str]:
+              pretrained_elements: list[int] | None = None, tensor_input: bool = False) -> tuple[torch.nn.Module, str]:
     """A fresh body, the checkpoint's body as stored, or (with `target_elements`) the checkpoint's body as the fine-tune will see it: through
     `rungC_train.load_pretrained_body`, untrained element embeddings reset to the trained mean."""
     if checkpoint:
@@ -119,7 +119,8 @@ def load_body(checkpoint: str | None, aggregation: str, seed: int, target_elemen
         body.load_state_dict(ck["body_state"])
         return body, f"checkpoint {checkpoint} ({agg} aggregation, as stored)"
     torch.manual_seed(seed)
-    return DeltaHessianModel(aggregation=aggregation), f"fresh body, {aggregation} aggregation, seed {seed}"
+    return (DeltaHessianModel(aggregation=aggregation, tensor_input=tensor_input),
+            f"fresh body, {aggregation} aggregation{', rank-2 tensor input' if tensor_input else ''}, seed {seed}")
 
 
 def load_source_qm9(qm9_dir: str, sample: int) -> dict:
@@ -136,6 +137,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("molecules", help="target corpus directory (every admitted molecule counts as target)")
     ap.add_argument("--out", required=True, help="record prefix (.md and .json)")
     ap.add_argument("--aggregation", default=AGGREGATION, choices=list(AGGREGATIONS), help="body to probe when no checkpoint is given")
+    ap.add_argument("--tensor-input", action="store_true", help="probe the fresh body with the rank-2 pair-tensor input (30 Sep 2026)")
     ap.add_argument("--checkpoint", default=None, help="probe the body of a rungC_pretrain.py checkpoint instead of a fresh one")
     ap.add_argument("--as-finetune", action="store_true",
                     help="probe the checkpoint as the fine-tune will see it (element embeddings absent from pretraining reset to the trained mean)")
@@ -158,7 +160,7 @@ def main(argv: list[str] | None = None) -> int:
     ext = extremes(stats)
     target_elements = sorted({z for s in stats.values() for z in s["elements"]}) if a.as_finetune else None
     pre = [int(z) for z in a.pretrained_elements.split(",")] if a.pretrained_elements else None
-    body, body_desc = load_body(a.checkpoint, a.aggregation, a.seed, target_elements, pre)
+    body, body_desc = load_body(a.checkpoint, a.aggregation, a.seed, target_elements, pre, tensor_input=a.tensor_input)
     probe = probe_body(body, mols, sorted(set(ext.values())))
     v = verdict(probe, a.limit_abs, a.limit_ratio)
     rec = {"date": time.strftime("%Y-%m-%d %H:%M"), "provenance": provenance(), "molecules": a.molecules, "n_target": len(mols), "body": body_desc, "target_ranges": ranges(stats),

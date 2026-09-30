@@ -403,3 +403,25 @@ no re-run needed. Read together with the pair model's flat curve (proof-of-learn
 The PC question is answered on that count — not by more of this data — and the reviewers' diagnosis (representation and head; `Review_Received_2026-09-30_…`)
 is the live hypothesis: the night chain (diagnostics, then the pattern internal term) and the rank-2 tensor injection test it next, on 175 molecules,
 where a change of 0.1 is unambiguous.
+
+## Dated amendment 30 September 23:5x — rank 1: the B3LYP 3 × 3 pair blocks as rank-2 equivariant input (registered before it runs)
+
+**The change (`rungC_equivariant.py`, `tensor_input=True`; default False = the registered model bit for bit, parameter count 171,554 unchanged).**
+`pair_tensor`: the symmetrised block S_ij of the low-level Hessian for every pair, divided by the molecule's RMS off-diagonal block norm (an
+invariant). Each interaction block receives, besides the registered messages v_j·g and r̂·g, two more gated vector messages: S_ij v_j and S_ij r̂_ij.
+Under x → R x, S → R S Rᵀ and v, r̂ → R(·), so both are O(3)-equivariant; the head and the read-out are unchanged. This is the poor man's ℓ = 2 input
+the reviewers asked for: the block's orientation reaches the vector channels, not only three scalars.
+**Tests (29 pass):** equivariance to 1e-6 (rotation, reflection, permutation, sum rule, symmetry) for sum/mean × scalars/tensor; `pair_tensor`
+transforms as R S Rᵀ, is symmetric, unit-RMS-normalised and permutes; the registered model ignores a block's orientation and the tensor-input
+model does not (the two Hessians of the 26 Sep test give different predictions); default parameter count unchanged. Design check of the fresh
+tensor-input body on the corpus extremes: see `out/design_check_tensor_2026-09-30.md`. Smoke with `--tensor-input --aux pattern` on the corpus.
+Not combinable with a pretrained body (refused).
+
+**Gate.** Runs only if diagnostic 2 (overfit benzene) reached ratio < 0.1 — read by the launcher from its JSON; otherwise the head is repaired first.
+
+**Runs (`rungC_night2_0930.sh`, laptop, 8 threads, after night chain 1):** pool A + A2 (175), winner flags, seeds 0–2, inner validation 15 %:
+(i) rank 1 + 2 = `--tensor-input --aux pattern` → `out/E7_rungC_rank12_tensor_pattern_2026-09-30`; (ii) rank 1 alone = `--tensor-input` →
+`out/E7_rungC_rank1_tensor_2026-09-30` (attribution).
+**Predictions.** (i) (a) 0.55–0.70, ω 6–8 cm⁻¹, resting on rank 1; (ii) 0.60–0.72. **Lines.** (i) pass (a) ≤ 0.75; (ii) pass (a) ≤ 0.76.
+Miss on both: the input was not the bottleneck at this head → the hybrid head (rank 3, line (a) ≤ 0.55) is next, and the invariants-removed
+variant (tensor block only) is run to force the route. Pass on (i) but not (ii): the two changes need each other — reported as such.

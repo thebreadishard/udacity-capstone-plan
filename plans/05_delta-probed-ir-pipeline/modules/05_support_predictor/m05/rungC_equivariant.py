@@ -71,6 +71,18 @@ def pair_invariants(H: torch.Tensor, pos: torch.Tensor) -> tuple[torch.Tensor, t
     return torch.stack([tr, proj, nrm], -1), node
 
 
+def pair_tensor(H: torch.Tensor, pos: torch.Tensor) -> torch.Tensor:
+    """Rank-2 pair input (30 Sep 2026, rank 1 of the external reviews): the symmetrised 3 × 3 block of the low-level Hessian for every atom pair,
+    (N, N, 3, 3), divided by the molecule's RMS Frobenius norm over the off-diagonal blocks (an O(3) invariant, so the scaling keeps equivariance).
+    Under x → R x the blocks transform as R S Rᵀ; `pos` only fixes the block layout's atom count."""
+    n = pos.shape[0]
+    B = H.reshape(n, 3, n, 3).permute(0, 2, 1, 3)                              # (N, N, 3, 3)
+    S = 0.5 * (B + B.transpose(-1, -2))
+    off = ~torch.eye(n, dtype=torch.bool, device=H.device)
+    scale = torch.sqrt((S[off] ** 2).sum((-1, -2)).mean()) if n > 1 else torch.ones((), dtype=H.dtype, device=H.device)
+    return S / (scale + 1e-30)
+
+
 def edges_within(pos: torch.Tensor, cutoff: float = CUTOFF_BOHR) -> tuple[torch.Tensor, torch.Tensor]:
     """Directed edges i → j (i ≠ j) with d_ij < cutoff."""
     n = pos.shape[0]
@@ -157,19 +169,27 @@ class Interaction(nn.Module):
     """One PaiNN interaction: message (scalars and vectors from neighbours, filtered by the radial basis and the pair invariants) + update
     (vector–vector products into scalars, gated vector rescaling)."""
 
-    def __init__(self, n_s=N_S, n_v=N_V, n_filter_in=N_RBF + 16):
+    def __init__(self, n_s=N_S, n_v=N_V, n_filter_in=N_RBF + 16, tensor_input=False):
         super().__init__()
-        self.phi = nn.Sequential(nn.Linear(n_s, n_s), nn.SiLU(), nn.Linear(n_s, n_s + 2 * n_v))
-        self.W = nn.Linear(n_filter_in, n_s + 2 * n_v)
+        n_msg = n_s + (4 if tensor_input else 2) * n_v
+        self.phi = nn.Sequential(nn.Linear(n_s, n_s), nn.SiLU(), nn.Linear(n_s, n_msg))
+        self.W = nn.Linear(n_filter_in, n_msg)
         self.U = nn.Linear(n_v, n_v, bias=False)
         self.V = nn.Linear(n_v, n_v, bias=False)
         self.a = nn.Sequential(nn.Linear(n_s + n_v, n_s), nn.SiLU(), nn.Linear(n_s, n_s + 2 * n_v))
-        self.n_s, self.n_v = n_s, n_v
+        self.n_s, self.n_v, self.tensor_input = n_s, n_v, tensor_input
 
-    def forward(self, s, v, i, j, filt, rhat, inv_degree=None):
-        x = self.phi(s)[j] * self.W(filt)                                          # (E, n_s + 2 n_v)
-        ds, dvv, dvs = torch.split(x, [self.n_s, self.n_v, self.n_v], dim=-1)
-        dv = v[j] * dvv[:, None, :] + rhat[:, :, None] * dvs[:, None, :]          # (E, 3, n_v)
+    def forward(self, s, v, i, j, filt, rhat, inv_degree=None, S_e=None):
+        x = self.phi(s)[j] * self.W(filt)                                          # (E, n_s + 2 n_v) or (E, n_s + 4 n_v)
+        if self.tensor_input:
+            ds, dvv, dvs, dvt, dvr = torch.split(x, [self.n_s] + [self.n_v] * 4, dim=-1)
+            # rank-2 input (30 Sep 2026): S_ij v_j and S_ij r̂_ij are vectors under O(3); gated like the other messages
+            dv = (v[j] * dvv[:, None, :] + rhat[:, :, None] * dvs[:, None, :]
+                  + torch.einsum("eab,ebk->eak", S_e, v[j]) * dvt[:, None, :]
+                  + torch.einsum("eab,eb->ea", S_e, rhat)[:, :, None] * dvr[:, None, :])
+        else:
+            ds, dvv, dvs = torch.split(x, [self.n_s, self.n_v, self.n_v], dim=-1)
+            dv = v[j] * dvv[:, None, :] + rhat[:, :, None] * dvs[:, None, :]      # (E, 3, n_v)
         s = s + aggregate(ds, i, s.shape[0], inv_degree)
         v = v + aggregate(dv, i, v.shape[0], inv_degree)
         Uv, Vv = self.U(v), self.V(v)                                              # (N, 3, n_v)
@@ -182,16 +202,16 @@ class Interaction(nn.Module):
 
 
 class DeltaHessianModel(nn.Module):
-    def __init__(self, n_s=N_S, n_v=N_V, n_blocks=N_BLOCKS, n_tensor=N_TENSOR, cutoff=CUTOFF_BOHR, aggregation=AGGREGATION):
+    def __init__(self, n_s=N_S, n_v=N_V, n_blocks=N_BLOCKS, n_tensor=N_TENSOR, cutoff=CUTOFF_BOHR, aggregation=AGGREGATION, tensor_input=False):
         super().__init__()
         if aggregation not in AGGREGATIONS:
             raise ValueError(f"aggregation must be one of {AGGREGATIONS}, got {aggregation!r}")
-        self.aggregation = aggregation
+        self.aggregation, self.tensor_input = aggregation, bool(tensor_input)
         self.emb = nn.Embedding(20, n_s)
         self.node_in = nn.Linear(2, n_s)
         self.rbf = RadialBasis(N_RBF, cutoff)
         self.inv = nn.Sequential(nn.Linear(3, 16), nn.SiLU(), nn.Linear(16, 16))
-        self.blocks = nn.ModuleList(Interaction(n_s, n_v, N_RBF + 16) for _ in range(n_blocks))
+        self.blocks = nn.ModuleList(Interaction(n_s, n_v, N_RBF + 16, tensor_input=self.tensor_input) for _ in range(n_blocks))
         self.head = nn.Sequential(nn.Linear(2 * n_s + N_RBF, n_s), nn.SiLU(), nn.Linear(n_s, 2 + n_tensor))
         self.proj = nn.Linear(n_v, n_tensor, bias=False)
         self.cutoff, self.n_v = cutoff, n_v
@@ -210,8 +230,9 @@ class DeltaHessianModel(nn.Module):
         s = self.emb(Z) + self.node_in(inv_node)
         v = torch.zeros(n, 3, self.n_v, dtype=pos.dtype, device=pos.device)
         inv_degree = None if self.aggregation == "sum" else 1.0 / torch.bincount(i, minlength=n).clamp_min(1).to(pos.dtype)
+        S_e = pair_tensor(H_low, pos)[i, j] if self.tensor_input else None       # (E, 3, 3) rank-2 input, or the registered scalars only
         for blk in self.blocks:
-            s, v = blk(s, v, i, j, filt, rhat, inv_degree)
+            s, v = blk(s, v, i, j, filt, rhat, inv_degree, S_e)
         return s, v, i, j, rbf, rhat
 
     def forward(self, Z, pos, H_low):
