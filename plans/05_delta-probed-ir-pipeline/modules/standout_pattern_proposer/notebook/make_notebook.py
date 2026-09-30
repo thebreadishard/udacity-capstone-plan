@@ -321,6 +321,29 @@ band deck that is no longer the plan's reference. The next registration (`Draft_
 wide pool, τ with a margin fitted on the validation split, B_max from the measured cost distribution) waits for the user's word; nothing in it was
 fitted to these numbers.""")
 
+# ---- 4f. follow-up (30 September 2026): the CC response of 4c/4d was not a CCSD(T) Hessian — the test on the corrected one
+md("""### 4f. Follow-up (30 September 2026): the CC response itself was wrong until 29 September — the test on the corrected benzene Hessian
+
+On 29 September the probe that produces the CC response (`e8_cc_hessian_fd.py`) turned out to call pyscf's CCSD(T) gradient without an explicit (T) lambda,
+which silently uses the CCSD lambda: the gradient is not dE/dx of the CCSD(T) energy (water: 1.5e-3 a.u. against finite differences; the corrected route
+1e-7). Sections 4c and 4d therefore read a response that was not a CCSD(T) Hessian; they stay as run. The probe now solves the (T) lambda explicitly, benzene
+was recomputed the same evening (12 + 1 gradients; the curvature of E_CCSD(T) along three normal modes confirms the new Hessian to 2e-5, the old one was
+7–9 % off out of plane), and the same test ran on it (`out/cc/A_8448043181_cc_test_analytic_tlambda*.json`).""")
+code("""tl_reg = json.load(open(OUT / "cc" / "A_8448043181_cc_test_analytic_tlambda.json")); tl_e = json.load(open(OUT / "cc" / "A_8448043181_cc_test_analytic_tlambda_all_band0.json"))
+rows = []
+for tag, rr in (("29 Sep, invalid CC response (CCSD lambda): registered band deck", an_reg), ("30 Sep, corrected CC response ((T) lambda): registered band deck", tl_reg),
+                ("29 Sep, invalid CC response: wide pool, open prior", an_e), ("30 Sep, corrected CC response: wide pool, open prior", tl_e)):
+    d = rr["cc"]
+    rows.append({"run": tag, "P0 K_off(0.3)": d["P0"]["k_off_0p3"], "P1 median K_off ratio": d["P1_median"]["k_off_ratio"], "P1 median n_half ratio": d["P1_median"]["n_half_ratio"],
+                 "oracle K_off(0.3)": d["oracle"]["k_off_0p3"], "in-band share CC": round(rr["delta2"]["inband_share_cc"], 2), "Frobenius CC/proxy": round(rr["delta2"]["ratio"], 2),
+                 "C1": "pass" if rr["judged"]["C1_pass"] else "FAIL", "C2": "pass" if rr["judged"]["C2_pass"] else "FAIL"})
+display(pd.DataFrame(rows).set_index("run"))""")
+md("""*Reading (30 September 2026).* The corrected CC correction has 10 % of its off-diagonal power in band (not 4 %) and is 2.7× the proxy off the diagonal;
+on the registered band deck no ordering reaches ρ_off 0.3, so C1 and C2 fail as before. On the wide pool with the open prior the band-trained scorer
+now costs 0.54 of P0 (not 0.46; oracle 124 unchanged) and passes both C1 and C2 — the label for the plan line becomes "confirmed on this molecule (CC)"
+for the wide deck. Directions unchanged, numbers replaced; the invalid response was systematically too soft out of plane, which is where the band deck
+lives. Every CC-level read of this module from here uses the (T)-lambda Hessians only.""")
+
 md("""## 5. The deck itself — the band candidate set against every pair
 
 `deck_cost_readout.py` compares, per evaluation split, what the band deck and the all-pairs candidate set cost and buy. This is the result that changes

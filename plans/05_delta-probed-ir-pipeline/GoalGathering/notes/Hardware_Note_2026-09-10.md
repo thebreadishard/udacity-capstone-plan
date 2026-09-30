@@ -140,3 +140,9 @@ deletes saved configurations after 60 days). Two parts of 10 September are no lo
 | UPS | Eaton Ellipse PRO 1200 DIN, €329 | same, €329 (art. 1464124), in stock | not a builder category; separate cart / wishlist item |
 
 Saved by the user under the Alternate business account on 23 September as the configuration "Capstone" (Alternate keeps saved configurations 60 days, so until ≈ 22 November 2026). Total with UPS and shipping as on 10 September: ≈ €4,651.75.
+
+## Dated addition, 23 September 2026 (recorded 30 Sep) — the Alternate cart as configured
+
+The configuration in Alternate's PC-Builder on 23 September 2026 (ASRock X870 Taichi Creator, Ryzen 9 9950X, Kingston FURY 128 GB DDR5-5600 as 2 × 64 GB
+at €2,329) totalled **€4,240.80**; that is the "≈ €4.240" of the project proposal. On 29 September the 4 × 32 GB alternative was checked (no DDR5 4 × 32 kit
+at Alternate; two 2 × 32 kits, e.g. Corsair Vengeance RGB DDR5-6000, €941, would save ≈ €447); advice: keep 2 × 64 GB. Not ordered as of 30 September.

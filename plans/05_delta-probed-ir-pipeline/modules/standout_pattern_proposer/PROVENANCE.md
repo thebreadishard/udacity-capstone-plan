@@ -79,3 +79,6 @@ corrected benzene Hessian when it lands (hel1-23, rerun since 21:10), as a dated
 `stop_rule_readout.py out/sim/all_p2s1_w0_merged.json out/sim/band_p2s1A_merged.json out/sim/stop_rule_band_free_prior_2026-09-30 --label "reading (ii): band-free
 solver prior …"` → `out/sim/stop_rule_band_free_prior_2026-09-30.{json,md}`: P12 stops on 39/97 (40 %), 1.15× the band deck (ratio of medians), 11 false stops
 (28 %); oracle 53/97 (55 %), 0.54×, 1 false stop (2 %). W1 FAIL, W2 FAIL. Notebook section 4e (executed 07:2x).
+
+**30 Sep 2026, 08:1x — notebook section 4f.** The CC test on the corrected benzene Hessian (lambda incident of 29 Sep; `results_m1/e8_benzene_ccpvdz_tlambda/`)
+as a dated follow-up: band deck C1/C2 FAIL (unchanged); wide pool P1 0.54, C1 and C2 pass; in-band share 0.10, Frobenius CC/proxy 2.68. Sections 4c/4d kept as run.
