@@ -458,3 +458,29 @@ ratio, so that a gain on the pattern is not bought with a loss off it.
 0.00–0.03 as at 175. Decision 51: best epochs 67–104 of 200, fine. The data-scaling test is closed: neither variant of the equivariant model, nor
 the pair model, moves with 4.3× the molecules of this kind; the PC is not bought for data volume. The night chain (diagnostics → pattern term →
 rank-2 input → hybrid head) tests the reviewers' cause.
+
+## Outcome, night chain 1 — 1 October 00:0x (`out/E7_rungC_diag_zerohlow_2026-09-30`, `E7_rungC_diag_overfit_benzene_2026-09-30`, `E7_rungC_rank2_pattern_2026-09-30`)
+
+| step | line | result | verdict |
+|---|---|---|---|
+| diagnostic 1: H_low input zeroed, 175, seed 0 | (a) ≥ 0.95 | **(a) 0.82 / (b) 0.85, ω 9.0 / 8.4** — identical to the model with H_low (0.81 / 0.84) | **the body ignores the Hessian input**: the 0.81 of every rung-C run so far is a geometry-only prior; the three block invariants contribute nothing |
+| diagnostic 2: benzene alone, 400 epochs, seed 0 | ratio ≪ 0.1 | (a) 0.78, ΔH residual 0.75 | **not reached — but the test was under-powered**: one molecule gives one optimiser step per epoch, so 400 epochs = 400 steps against ≈ 35,000 in a normal 175-molecule run; re-registered below with a proper step budget before any conclusion about the head |
+| rank 2 alone: pattern internal term, class-standardised, 175, 3 seeds | (a) ≤ 0.78 | **(a) 0.99 / 1.03 / 1.03, ω 11–14** | **miss, and worse than the registered term**: dividing each class by its RMS gives the tiny classes (diag_other 4e-4, off_other 9e-4 a.u.) weights 1e2–1e3 above the ring couplings, and the Cartesian head then fits their noise; the standardisation as implemented is harmful for this head (kept for the hybrid, whose output is expressed in the same class units) |
+| gate for chain 2 | overfit ratio < 0.1 | 0.78 | rank 1 not launched (correct by the rule) |
+
+**Reading.** Diagnostic 1 is the finding of the night: the equivariant model never used the low-level Hessian. That reframes rank 1 — the rank-2 input
+is not an upgrade of an existing signal but the first time the Hessian enters — and it means the route has to be forced and verified: the zeroed-H_low
+control is run beside every rank-1 result (the difference must be large, not 0.01). Rank 2's failure is a lesson about standardisation: per-class scales
+must be floored (e.g. at 10 % of the largest class scale) or the loss weighted by the read-out's own weights; that change is registered before it is
+used again.
+
+## Dated amendment 1 October 00:1x — diagnostic 2 re-registered with a proper step budget; rank 1 registration adjusted
+
+*Diagnostic 2, re-run:* benzene alone, seed 0, `--epochs 5000` (5,000 steps), lr 1e-3 and lr 3e-3, registered internal term ('all'), 2 threads beside
+chain 3 → `out/E7_rungC_diag_overfit_benzene_e5000_lr{1e-3,3e-3}_2026-10-01`. **Line unchanged:** ratio ≪ 0.1 and ΔH residual ratio ≪ 0.1 on that
+molecule. Pass → the head can represent the correction and chain 2 is released (by hand, after chain 3). Fail at 5,000 steps with both rates → the
+head or the hard diagonal constraint is too tight: the constraint moves into the loss and the tensor channels double (16 → 32) before rank 1 runs.
+
+*Rank 1, adjusted:* because the pattern term failed on the Cartesian head, the primary rank-1 run uses the **registered** internal term ('all') —
+`--tensor-input` alone, 175, 3 seeds — with the zeroed-H_low control (`--tensor-input --zero-hlow`, seed 0) beside it. Lines: (a) ≤ 0.76 for the run,
+and run − control ≤ −0.10 (the input must be seen to matter). The pattern-term variant follows only once the standardisation is repaired.
