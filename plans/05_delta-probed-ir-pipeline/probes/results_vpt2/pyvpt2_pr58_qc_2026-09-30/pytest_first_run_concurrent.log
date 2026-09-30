@@ -1,0 +1,9 @@
+message = '\ttest_h2o_multi_vpt2: computed value does not match to atol=0.5 (o-e: RMS 3.6e-01, MAX 5.3e-01, RMAX 2.8e-03).\n  Ex...191.149600709166]\n  Difference (passed elements are zeroed):\n    [ 0.              0.             -0.534000
+            core.print_out(f'    {label:.<{width}}FAILED')
+            print(f'    {label:.<{width}}FAILED')
+E           psi4.driver.p4util.exceptions.TestComparisonError: 	test_h2o_multi_vpt2: computed value does not match to atol=0.5 (o-e: RMS 3.6e-01, MAX 5.3e-01, RMAX 2.8e-03).
+E             Difference (passed elements are zeroed):
+  33 energies passed in, including the reference geometry.
+    test_h2o_multi_vpt2...................................................................FAILED    test_h2o_multi_vpt2...................................................................FAILED
+FAILED pyvpt2/tests/test_h2o_multilevel.py::test_h2o_multi_vpt2[ENERGY] - psi4.driver.p4util.exceptions.TestComparisonError: 	test_h2o_multi_vpt2: computed value does not match to atol=0.5 (o-e: RMS 3.6e-01, MAX 5.3e-01, RMAX 2.8e-03).
+1 failed, 26 passed, 10 skipped, 304 warnings in 260.20s (0:04:20)

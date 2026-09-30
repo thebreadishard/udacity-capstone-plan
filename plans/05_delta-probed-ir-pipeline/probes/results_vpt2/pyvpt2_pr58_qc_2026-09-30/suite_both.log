@@ -1,0 +1,9 @@
+== branch 055e8c9 quartic: report the disagreement between the two finite-difference routes to phi_iijj (Hessian route)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+27 passed, 10 skipped, 304 warnings in 257.98s (0:04:17)
+== main 2eae571 Fermi resonance checking for chi0 (#56)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+24 passed, 10 skipped, 304 warnings in 257.00s (0:04:17)
+DONE

@@ -170,3 +170,15 @@ blocks re-imported the lambda module that the change now imports at module level
 integrals, d2 up to ~5e2, the reordered C summation leaves ~1e-14 on elements that cancel to near zero (locally 7e-15 at |ref| 4e-2, margin
 0.18 of the tolerance, `evidence/pr3470_bench/margin_3470.py`); atol → 1e-12 on the three d2 comparisons (`ed66845`), fingerprints unchanged;
 PR text updated to say so. I also had not run flake8 on #3470 before opening it — clean now; add `flake8 --config .flake8` to the pre-PR list.
+
+**30 September 13:1x — §2 QC done on the laptop** (`probes/results_vpt2/pyvpt2_pr58_qc_2026-09-30/README.md`): suite branch 27 passed / main 24
+passed (10 skipped each; the difference = the 3 new tests); real data 61/61 cache hits, report 22.40 / 107.04 / 1264.46 cm⁻¹ = the independent
+implementation; numerics unchanged to 2e-10 cm⁻¹. The follow-up comment is drafted below; posting waits for the user's word.
+
+> Follow-up QC on this branch (psi4 1.10.2, qcelemental 0.30.1, qcengine 0.34.2, Python 3.13):
+>
+> - pyVPT2's test suite: 27 passed, 10 skipped on this branch; 24 passed, 10 skipped on `main` (2eae571). The difference is the three new tests in `test_quartic_routes.py`.
+> - Real case through the normal `vpt2_from_schema` path: benzene, B3LYP/6-31G*, 61 psi4 Hessians (psi4 DFT Hessians are finite differences of gradients) at `DISP_SIZE` 0.05. The new report prints median 22.40, 90th percentile 107.04 and max 1264.46 cm⁻¹ disagreement between the two routes to φ_iijj, which matches an independent implementation of the same comparison (22.4 / 107.0 / 1264.5). `check_quartic` right after it still prints "No inconsistencies found".
+> - Numerics unchanged: against pyVPT2 0.1.2 on the same Hessians, ω and φ_ijk are bitwise equal and φ_iijj, χ and ν agree to 3e-10 cm⁻¹ (the two routes are now averaged explicitly rather than summed in one expression).
+>
+> The gradient route (`assemble_quartic_from_gradients`) has the analogous two routes; happy to add the same report there in a follow-up if that is useful.
