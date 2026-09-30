@@ -36,6 +36,15 @@ def test_pattern_class_scales_are_rms_per_class_over_fit_ids_only():
     s1 = R.pattern_class_scales(T, ["m1"])
     assert torch.allclose(s1[5], torch.tensor(3.))                                          # from m1 alone
     assert s.shape == (len(R.PAIR_CLASS_NAMES),) and (s > 0).all()
+    assert (s >= R.PATTERN_SCALE_FLOOR * s.max() - 1e-7).all()                              # 1 Oct floor: no class far below the largest
+
+
+def test_pattern_class_scale_floor_lifts_tiny_classes():
+    cls = torch.full((2, 2), -1, dtype=torch.long)
+    cls[0, 0], cls[1, 1] = 0, 3
+    T = {"m": dict(dF_true=torch.tensor([[10., 0.], [0., 1e-4]]), pat_cls=cls)}
+    s = R.pattern_class_scales(T, ["m"])
+    assert abs(float(s[0]) - 10.0) < 1e-6 and abs(float(s[3]) - 1.0) < 1e-6              # 1e-4 lifted to 0.1 × 10
 
 
 def test_pattern_term_equals_manual_standardised_mse_and_ignores_off_pattern_entries():

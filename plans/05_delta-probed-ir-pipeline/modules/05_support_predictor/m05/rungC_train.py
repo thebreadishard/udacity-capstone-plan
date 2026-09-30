@@ -74,6 +74,7 @@ def entry_classes(m: dict) -> torch.Tensor:
 
 
 PAIR_CLASS_NAMES = ("diag_bond", "diag_angle", "diag_dihedral", "diag_other", "off_bondbond", "off_other")   # e7_rungB_pairs pair classes 0–5
+PATTERN_SCALE_FLOOR = 0.1   # 1 Oct 2026: no class scale below this fraction of the largest (the unfloored scales let the Cartesian head fit noise)
 
 
 def hybrid_tensors(mol_dir: Path, m: dict) -> dict:
@@ -118,6 +119,7 @@ def pattern_class_scales(tensors: dict, ids: list) -> torch.Tensor:
             cnt[c] += int(mask.sum())
     scale = torch.sqrt(sq / cnt.clamp_min(1))
     scale[cnt == 0] = 1.0
+    scale = torch.maximum(scale, PATTERN_SCALE_FLOOR * scale.max())   # 1 Oct 2026 floor (outcome of 00:0x)
     return scale.float()
 
 

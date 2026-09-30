@@ -484,3 +484,11 @@ head or the hard diagonal constraint is too tight: the constraint moves into the
 *Rank 1, adjusted:* because the pattern term failed on the Cartesian head, the primary rank-1 run uses the **registered** internal term ('all') —
 `--tensor-input` alone, 175, 3 seeds — with the zeroed-H_low control (`--tensor-input --zero-hlow`, seed 0) beside it. Lines: (a) ≤ 0.76 for the run,
 and run − control ≤ −0.10 (the input must be seen to matter). The pattern-term variant follows only once the standardisation is repaired.
+
+*Addendum 00:3x.* (1) The class-scale floor is implemented (`PATTERN_SCALE_FLOOR` = 0.1 of the largest class scale, tests updated); no run uses the
+pattern term on the Cartesian head until it is registered again. (2) Diagnostic 2 is also run for the **hybrid head** (benzene alone, 5,000 steps, lr 1e-3,
+`--head hybrid --aux pattern`, 2 threads) → `out/E7_rungC_diag_overfit_benzene_hybrid_e5000_2026-10-01`; same line (ratio ≪ 0.1). If the hybrid overfits
+and the Cartesian head does not, that is the cleanest statement that the head, not the encoder, is the limit. (3) A planar-molecule check on benzene
+(fresh models, before training): the true ΔH has no in-plane/out-of-plane mixing (6.6e-6 against 3.5e-3 in plane) and neither does the head's output,
+so the head is not mis-shaped for planar molecules; its out-of-plane block is the isotropic term a·I alone, which is enough only if the in-plane
+part is fully carried by the b r̂r̂ᵀ + Σ c u uᵀ terms.
