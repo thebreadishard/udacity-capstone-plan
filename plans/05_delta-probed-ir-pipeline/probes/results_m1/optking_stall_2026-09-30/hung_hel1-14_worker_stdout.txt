@@ -1,0 +1,211 @@
+
+  Memory set to  22.352 GiB by Python driver.
+  Threads set to 16 by Python driver.
+
+---stderr---
+Some dependencies such as QCElemental have not yet finished migration to pydantic v2. If issues are encountered please downgrade pydantic or upgrade QCElemental as appropriate
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 2.11e-03
+
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 1.96e-03
+
+	Energy has increased in a minimization.
+	Energy ratio indicates iffy step.
+	Intrafrag trust radius decreased to   0.25.
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 2.75e-03
+
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 2.35e-03
+
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 1.89e-03
+
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 9.71e-04
+
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 1.404e-10.
+	Change in internal coordinate of 5.26e-01 exceeds limit of 5.00e-01.
+	Skipping Hessian update for step 3.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 2.126e-08.
+AlgError: Exception created. Mesg: Back transformation failed. Cartesian Step size too large. Please restart from the most recent geometry
+ Caught AlgError exception
+
+ Erasing coordinates.
+
+ Erasing history.
+
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 3.54e-02
+
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 8.15e-03
+
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 7.821e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 8.100e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 8.020e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 8.021e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 8.021e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 8.021e-07.
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 2.50e-02
+
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 7.965e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 7.965e-07.
+	Energy has increased in a minimization.
+	Energy ratio indicates iffy step.
+	Intrafrag trust radius decreased to   0.25.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 7.965e-07.
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 6.97e-03
+
+Interior angle of 179.8 for bend B((2, 0, 15)) can't work in good torsion
+AlgError: Exception created. Mesg: Could not compute T((3, 2, 0, 15)). Problem computing interior bend.
+AlgError: Linear bends detected.
+(2, 0, 15)
+AlgError: Exception created. Mesg: Tors.q: unable to compute torsion value
+AlgError: Linear bends detected.
+ L(3,1,16)
+ l(3,1,16)
+ Caught AlgError exception
+
+Interior angle of   0.2 for bend B([0, 15, 2]) can't work in good torsion
+AlgError: Exception created. Mesg: Could not compute T([0, 15, 2, 3]). Problem computing interior bend.
+AlgError: Linear bends detected.
+[0, 15, 2]
+Interior angle of   0.2 for bend B([0, 15, 2]) can't work in good torsion
+AlgError: Exception created. Mesg: Could not compute T([0, 15, 2, 14]). Problem computing interior bend.
+AlgError: Linear bends detected.
+[0, 15, 2]
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 2.522e-10.
+ Erasing history.
+
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 2.522e-10.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 2.522e-10.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 5.424e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 2.600e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 2.717e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 2.624e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 2.704e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 2.634e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 2.695e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 2.642e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 2.688e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 2.648e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 2.682e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 2.653e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 2.678e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 2.656e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 2.675e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 2.659e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 2.673e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 2.661e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 2.672e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 2.662e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 2.670e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 2.663e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 2.669e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 2.664e-07.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 2.669e-07.
+	Unable to completely converge to displaced geometry.
+	RMS(dx):  3.105e-05 	Max(dx):  2.185e-04 	RMS(dq):  9.156e-03
+	Previous geometry is closer to target in internal coordinates, so using that one.
+
+	Best geometry has RMS(Delta(q)) = 9.16e-03
+
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 5.770e-08.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 5.770e-08.
+	Energy has increased in a minimization.
+	Energy ratio indicates iffy step.
+	Intrafrag trust radius decreased to  0.188.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 5.770e-08.
+	Unable to completely converge to displaced geometry.
+	RMS(dx):  2.142e-05 	Max(dx):  1.313e-04 	RMS(dq):  3.588e-03
+
+	The following linear bends have been detected:
+ L(1,2,3), already present.
+	 l(1,2,3), already present.
+	 L(2,1,16), missing.
+	 l(2,1,16), missing.
+	 L(3,1,16), already present.
+	 l(3,1,16), already present.
+	 L(3,1,16), already present.
+	 l(3,1,16), already present.
+
+AlgError: Exception created. Mesg: New linear angles
+AlgError: Linear bends detected.
+ L(2,1,16)
+ l(2,1,16)
+ Caught AlgError exception
+
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 8.567e-09.
+ Erasing history.
+
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 8.567e-09.
+Inverting a small eigenvalue. System may include redundancies
+Smallest inverted value is 8.567e-09.
+Interior angle of   0.7 for bend B((0, 15, 2)) can't work in good torsion
+AlgError: Exception created. Mesg: Could not compute T((0, 15, 2, 3)). Problem computing interior bend.
+AlgError: Linear bends detected.
+(0, 15, 2)
+AlgError: Exception created. Mesg: Tors.q: unable to compute torsion value
+AlgError: Linear bends detected.
+ L(1,16,3)
+ l(1,16,3)
+ Caught AlgError exception
+
