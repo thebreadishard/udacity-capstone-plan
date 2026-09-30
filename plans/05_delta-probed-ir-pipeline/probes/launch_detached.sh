@@ -1,15 +1,26 @@
 #!/usr/bin/env bash
-# no-set-e: launch chain written before the fail-fast rule of 28 Sep 2026 and already run on its server; add `set -euo pipefail` before reusing it
 # Launch a long probe detached from the calling session (survives the Claude Code window closing):
 #   wsl -e bash -lc '/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/launch_detached.sh <logfile> <python args...>'
 # Rules of Compute_Budget §3: one anchor job at a time; PYSCF_TMPDIR on the ext4 home (not /tmp); the
 # log names the start time. Added 2026-09-10 after the xtight chain died with its session on 2026-09-09.
-set -u
+set -euo pipefail   # fail-fast rule of 28 Sep 2026, added with gate 1 (30 Sep 2026)
 cd /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes || exit 1
 export OMP_NUM_THREADS=8 PYSCF_TMPDIR="$HOME/qc_tmp" TMPDIR="$HOME/qc_tmp"
 LOG="$1"; shift
 echo "=== detached start $(date): python $*" >> "$LOG"
 PYBIN="${PYBIN:-$HOME/qc05/bin/python}"   # 2026-09-14: override with PYBIN=~/qcad/bin/python for the PySCFAD environment (M2a)
+# Gate 1 (the user, 29 Sep 2026, after the lambda incident): an E8 CC run starts only after the water acceptance tests pass here and now
+# (energy vs psi4, gradient vs FD of the energy, frequencies vs CCCBDB, C kernel vs pyscf; ≈ 3 min). The probe itself also refuses to
+# start without a matching stamp, which covers servers that launch without this script.
+if [[ "$*" == *e8_cc_hessian_fd* ]]; then
+  echo "=== gate 1 $(date)" >> "$LOG"
+  RC=0; "$PYBIN" ../tests/test_acceptance_water.py >> "$LOG" 2>&1 || RC=$?
+  SPIN_RE='--spin[ =]*[1-9]'
+  if [[ $RC -eq 2 && "$*" =~ $SPIN_RE ]]; then RC=1; fi   # exit 2 = RHF path only; an open-shell run needs the UHF path too
+  if [[ $RC -ne 0 && $RC -ne 2 ]]; then
+    echo "gate 1 FAILED — not launching (details in $LOG)"; exit 1
+  fi
+fi
 setsid nohup "$PYBIN" "$@" >> "$LOG" 2>&1 < /dev/null &
 PID=$!
 disown

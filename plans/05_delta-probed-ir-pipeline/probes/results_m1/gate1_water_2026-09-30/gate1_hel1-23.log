@@ -1,0 +1,6 @@
+gate 1 pass check_energy_vs_psi4 (2 s): {'dE_psi4_charge0': 5.483542508954997e-10, 'dE_psi4_charge1': 2.1917827552897506e-09}
+gate 1 pass check_rhf_gradient_vs_energy_fd (12 s): {'dgrad_fd_charge0': 1.3085690553360507e-07}
+gate 1 pass check_geometry_and_frequencies_vs_cccbdb (17 s): {'dE_cccbdb': 1.2474835386910854e-07, 'max_force_at_cccbdb_geometry': 0.00021603429780880923, 'r_angstrom': 0.9662780433009028, 'angle_deg': 101.91264763934993, 'pair_check': 2.250082459265279e-05, 'null_space_cm': 5.383474823125722e-05, 'omega_cm': [1690.2388032072593, 3821.6294155465653, 3927.6034166345235]}
+gate 1 pass check_fast_kernel (1 s): {'fast_kernel': True, 'dgrad_fast_kernel': 5.648497547294861e-15}
+GATE 1 FAIL (uhf path) check_uhf_gradient_vs_energy_fd: charge 1: max |analytic − FD(energy)| = 4.9e-03 a.u. > 1e-06
+GATE 1 PASS (51 s) — paths {'rhf': True, 'uhf': False} — stamp /root/.dpir_gate1.json

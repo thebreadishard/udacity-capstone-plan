@@ -1,0 +1,25 @@
+# extract of psi4_water_seal.out (39 KB, kept on the laptop; the hook refuses .out files), 30 Sep 2026
+26:                              RHF Reference
+68:  Basis Set: CC-PVDZ
+174:    Total Energy =                        -76.0261074792915679
+243:	Reference            = RHF
+290:	Frozen core energy     =    -61.29530278570409
+305:	Reference energy             =    -76.02610747929168
+324:    Reference energy    (file100) =  -76.026107479291682
+329:    Reference wfn   =     RHF
+402:    Reference energy (file100)                =  -76.026107479291682
+424:    Reference wfn   =      RHF
+428:    Reference energy    (file100)            =  -76.026107479291682
+440:      * CCSD(T) total energy                  =  -76.241304875828178
+467:                              UHF Reference
+509:  Basis Set: CC-PVDZ
+639:    Total Energy =                        -75.6318085365602712
+718:	Reference            = UHF
+789:	Frozen core energy     =    -61.29536808194214
+822:	Reference energy             =    -75.63180853656020
+841:    Reference energy    (file100) =  -75.631808536560200
+846:    Reference wfn   =     UHF
+959:    Reference energy (file100)                =  -75.631808536560200
+981:    Reference wfn   =      UHF
+985:    Reference energy    (file100)            =  -75.631808536560200
+999:      * CCSD(T) total energy                     =  -75.802494520335472

@@ -1,0 +1,6 @@
+gate 1 pass check_energy_vs_psi4 (1 s): {'dE_psi4_charge0': 5.483968834596453e-10, 'dE_psi4_charge1': 2.1917543335803202e-09}
+gate 1 pass check_rhf_gradient_vs_energy_fd (7 s): {'dgrad_fd_charge0': 1.3097769246961377e-07}
+gate 1 pass check_geometry_and_frequencies_vs_cccbdb (11 s): {'dE_cccbdb': 1.247483965016727e-07, 'max_force_at_cccbdb_geometry': 0.00021603429780703287, 'r_angstrom': 0.9662780433009056, 'angle_deg': 101.91264763934952, 'pair_check': 2.25008245882119e-05, 'null_space_cm': 3.762501132819852e-05, 'omega_cm': [1690.2388032041345, 3821.629415546839, 3927.603416634669]}
+gate 1 pass check_fast_kernel (1 s): {'fast_kernel': True, 'dgrad_fast_kernel': 4.440892098500626e-15}
+GATE 1 FAIL (uhf path) check_uhf_gradient_vs_energy_fd: charge 1: max |analytic − FD(energy)| = 4.9e-03 a.u. > 1e-06
+GATE 1 PASS (30 s) — paths {'rhf': True, 'uhf': False} — stamp /home/thebreadishard/.dpir_gate1.json

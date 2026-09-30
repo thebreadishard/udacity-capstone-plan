@@ -1,0 +1,34 @@
+{
+ "paths": {
+  "rhf": true,
+  "uhf": false
+ },
+ "host": "Asus18",
+ "pyscf": "2.14.0",
+ "fingerprint": {
+  "e8_cc_hessian_fd.py": "3d5a8ce25c3913d9b139b5e33f84064800b9e9f8136aec7ee144b31785c3a301",
+  "t_density_fast.py": "63705c50ecb5ee417380a1a175f5b492e426eca158172de5f3d1f0072490a311",
+  "ccsd_t_rdm_kernel.so": "4a41856a915c1d31d58f49104d7a9081f9a5fa85878e30d3ad2b440796b6ee63",
+  "test_acceptance_water.py": "8acd521dcf61081777c23ea6451c0873739fbe8fe5a21dff1168699b50bbc745"
+ },
+ "time": "2026-09-30 06:50:03",
+ "seconds": 30,
+ "results": {
+  "dE_psi4_charge0": 5.483968834596453e-10,
+  "dE_psi4_charge1": 2.1917543335803202e-09,
+  "dgrad_fd_charge0": 1.3097769246961377e-07,
+  "dE_cccbdb": 1.247483965016727e-07,
+  "max_force_at_cccbdb_geometry": 0.00021603429780703287,
+  "r_angstrom": 0.9662780433009056,
+  "angle_deg": 101.91264763934952,
+  "pair_check": 2.25008245882119e-05,
+  "null_space_cm": 3.762501132819852e-05,
+  "omega_cm": [
+   1690.2388032041345,
+   3821.629415546839,
+   3927.603416634669
+  ],
+  "fast_kernel": true,
+  "dgrad_fast_kernel": 4.440892098500626e-15
+ }
+}

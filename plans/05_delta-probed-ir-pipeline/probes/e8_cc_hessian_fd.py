@@ -9,6 +9,7 @@ reference energy and gradient. The two-route checks of the pre-registration (deg
 Usage: python e8_cc_hessian_fd.py <geometry.json> <out dir> [--threads 16] [--basis cc-pvdz] [--step 0.005] [--frozen 6] [--only-reference]
 """
 import argparse
+import hashlib
 import json
 import os
 import sys
@@ -31,8 +32,6 @@ FAST_T_LIMIT = 1e-10         # largest |kernel − pyscf| over the (T) density i
 FIRST_PAIR_LIMIT = 1e-4      # a.u.; |mean(g+, g−) − g0| is O(h²) ≈ 1e-5 for h = 0.005 bohr; the frozen-6-of-10 run gave 2–9e-4 in plane
 ASYM_LIMIT = 2e-3            # a.u.; benzene 2.7e-4 (full) / 4.4e-5 (symmetric); the invalid naphthalene 2.2e-2
 NULL_SPACE_LIMIT_CM = 10.0   # cm⁻¹; the six projected translations/rotations must be ~0
-
-
 def pair_consistency(gp, gm, g0) -> float:
     """max |mean(g(+k), g(−k)) − g0|: zero to O(h²) when both displaced calculations sit on the same surface as the reference."""
     return float(np.abs(0.5 * (np.asarray(gp).ravel() + np.asarray(gm).ravel()) - np.asarray(g0).ravel()).max())
@@ -124,6 +123,38 @@ def frequencies(Hmw_projected):
     return np.sign(w) * np.sqrt(np.abs(w)) * HARTREE2CM
 
 
+GATE1_STAMP = os.path.expanduser("~/.dpir_gate1.json")   # written by tests/test_acceptance_water.py when gate 1 passes (30 Sep 2026)
+_HERE = os.path.dirname(os.path.abspath(__file__))
+GATE1_FILES = (os.path.join(_HERE, "e8_cc_hessian_fd.py"), os.path.join(_HERE, "t_density_kernel", "t_density_fast.py"),
+               os.path.join(_HERE, "t_density_kernel", "ccsd_t_rdm_kernel.so"), os.path.join(_HERE, "..", "tests", "test_acceptance_water.py"))
+
+
+def gate1_fingerprint() -> dict:
+    """sha256 of the files gate 1 vouches for (a file absent on this machine hashes as 'absent'); any edit invalidates the stamp."""
+    return {os.path.basename(p): (hashlib.sha256(open(p, "rb").read()).hexdigest() if os.path.exists(p) else "absent") for p in GATE1_FILES}
+
+
+def gate1_problem(fast_used: bool, open_shell: bool = False):
+    """None when a gate-1 stamp from this host, this pyscf and these exact files exists (and covers the C kernel if it is used), else why not.
+    Lambda incident of 29 Sep 2026: six days of CCSD-lambda Hessians passed every pair check; only a second route saw it."""
+    import socket
+
+    import pyscf
+    if not os.path.exists(GATE1_STAMP):
+        return f"no gate-1 stamp ({GATE1_STAMP})"
+    s = json.load(open(GATE1_STAMP))
+    if s.get("host") != socket.gethostname() or s.get("pyscf") != pyscf.__version__:
+        return f"stamp is from {s.get('host')} / pyscf {s.get('pyscf')}, this is {socket.gethostname()} / pyscf {pyscf.__version__}"
+    changed = sorted(k for k, v in gate1_fingerprint().items() if s.get("fingerprint", {}).get(k) != v)
+    if changed:
+        return f"changed since the stamp of {s.get('time')}: {', '.join(changed)}"
+    if fast_used and not s.get("results", {}).get("fast_kernel"):
+        return "the stamp does not cover the (T) density C kernel"
+    if open_shell and not s.get("paths", {}).get("uhf"):
+        return "the UHF-CCSD(T) gradient failed gate 1 (pyscf 2.14: 4.9e-3 a.u. off FD of the energy on H2O⁺, 30 Sep 2026)"
+    return None
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("geometry"); ap.add_argument("out")
@@ -149,6 +180,11 @@ def main():
         if not fast.available():
             raise SystemExit("ccsd_t_rdm_kernel.so is not built on this machine: bash probes/t_density_kernel/build.sh <python>")
         fast.install()
+
+    problem = gate1_problem(fast is not None, a.spin > 0)
+    if problem:
+        raise SystemExit(f"gate 1 not passed on this machine for this code: {problem}. Run: python tests/test_acceptance_water.py "
+                         "(≈ 1 min; energy vs psi4, gradient vs FD of the energy, frequencies vs CCCBDB, C kernel vs pyscf)")
 
     def log(s):
         line = f"[{time.strftime('%F %T')}] {s}"; print(line, flush=True); logf.write(line + "\n"); logf.flush()

@@ -1,0 +1,6 @@
+# uhf_diag.py on the laptop WSL (pyscf 2.14.0), 30 Sep 2026 06:3x; analytic vs central FD (h 1e-3 bohr) of the energy, components O z, H1 y, H1 z
+charge 1 2S 1 frozen 1 (T) True: max|an-fd| = 4.9e-03  an [-0.040201 -0.039917  0.020101] fd [-0.035291 -0.037162  0.017645]
+charge 1 2S 1 frozen 0 (T) True: max|an-fd| = 4.9e-03  an [-0.039588 -0.039549  0.019794] fd [-0.03468  -0.036795  0.01734 ]
+charge 1 2S 1 frozen 1 (T) False: max|an-fd| = 1.5e-07  an [-0.03393  -0.036683  0.016965] fd [-0.03393  -0.036684  0.016965]
+charge 1 2S 1 frozen 0 (T) False: max|an-fd| = 1.6e-07  an [-0.033317 -0.036316  0.016659] fd [-0.033318 -0.036316  0.016659]
+charge 0 2S 2 frozen 1 (T) True: max|an-fd| = 4.5e-03  an [-0.133678 -0.083866  0.066839] fd [-0.129194 -0.081474  0.064597]
