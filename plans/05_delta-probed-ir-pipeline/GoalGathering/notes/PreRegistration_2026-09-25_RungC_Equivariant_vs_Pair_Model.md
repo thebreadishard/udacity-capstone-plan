@@ -531,3 +531,22 @@ same lesson as diagnostic 1: the encoder's use of the Hessian is not the lever, 
 **What this settles for the PC question.** Not yet: the data-scaling test was run on the head that could not learn. The registered next step is the
 same scaling test on the hybrid head (below) — if the hybrid falls with data where rung B was flat, more labels are worth buying; if it is flat too,
 the next levers are the reviewers' rank 4 (topology) and the data of the target kind.
+
+## Dated amendment 1 October 00:5x — the data-scaling test on the hybrid head, and the hybrid's H_low control (registered before the runs)
+
+**Runs (`rungC_night4_1001.sh`, laptop, 8 threads):**
+1. *Scaling on the working head:* hybrid + SQM α, `--aux pattern` (class scales floored at 0.1 since 00:3x — a change from the 175 runs, which used
+   unfloored scales; the 175 point is therefore re-run in the same command so the curve is one recipe), pool `A,A2,B` under `--split e6`, `--sizes 175,449,750`,
+   winner flags, seeds 0–2, inner validation 15 % → `out/E7_rungC_hybrid_scale_2026-10-01`. Note: 175 here is the first 175 of the *mixed* hashed order,
+   not A + A2; the A + A2 point is the 00:4x record.
+2. *Control:* hybrid + SQM α with the encoder's Hessian input zeroed (`--zero-hlow`; F_low,pq/pp/qq stay), pool A,A2, 175, seed 0 →
+   `out/E7_rungC_hybrid_zerohlow_2026-10-01`.
+
+**Predictions.** (1) Rung B was flat (0.43 → 0.42 from 175 to 750); the hybrid shares its target and its F_low anchor but learns the environment
+from geometry, so its curve is the test of whether the learned encoder buys anything from data that hand-made features did not. Prior: flat to
+slightly falling, (a) 0.45 → 0.40–0.45 at 750. (2) Within 0.02 of the hybrid's 0.45 — the encoder's Hessian input matters little once F_low is
+explicit (diagnostic 1 and the rank-2 result point that way).
+**Lines.** *Scaling works on the working head:* (a) at 750 ≤ 0.40 and below 175 by more than the spread at both 449 and 750. *Flat:* within one
+spread of the 175 point → the PC question is answered "not by data volume, on any head we have"; the levers are topology features (rank 4) and data
+of the target kind, chosen by the coverage/MMD pre-test. *Between:* a fall smaller than 0.05 — reported as such. Control: a difference > 0.05 between
+(2) and the hybrid at 175 means the encoder does use the Hessian and the rank-2 route deserves a second look; ≤ 0.02 closes it.
