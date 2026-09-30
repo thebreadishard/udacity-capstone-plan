@@ -1,0 +1,1 @@
+before_samebuild: pyscf /home/thebreadishard/pyscf-master/pyscf/__init__.py; threads 16; nocc 15 nvir 93; make_intermediates 397.1 s; lambda solve 491.6 s (conv True); gradient with given lambda 1003.7 s

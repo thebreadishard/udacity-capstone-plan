@@ -150,3 +150,11 @@ walks in `addIntcos.add_tors_from_connectivity` keep a visited set and raise on 
 cycle that loops forever on the unpatched tree (60 s timeout) and raises on the branch. Our five installations carry the same fix
 (`probes/optking_patches/apply_optking_fix.py`). Status: awaiting review; replies only after consulting the user. Session B opened pyscf#3469 for the
 (T)-lambda default of `grad.ccsd_t.Gradients` (§5) the same morning.
+
+**30 September 09:3x — §4 submitted as pyscf/pyscf#3470; §5 as pyscf/pyscf#3469 (07:5x).** Both on the user's standing authorisation of 07:4x
+(open a PR when no upstream fix exists and the tests and explanation are right). #3470: `lib/cc/ccsd_t_rdm.c` (the project kernels, generated
+from `probes/t_density_kernel/ccsd_t_rdm_kernel.c` by `make_pyscf_c.py` with pyscf names and gamma1/gamma2 flags), `cc/ccsd_t_rdm.py` and
+`cc/ccsd_t_lambda.py` call it (+433/−337). Upstream check: master identical to 2.14 in those files, no open PR. Benzene/cc-pVDZ, 16 threads,
+same build: `make_intermediates` 397.1 → 23.9 s, lambda solve 491.6 → 98.3 s, gradient with given lambda 1003.7 → 69.9 s; gradients equal to
+9.3e-14; 20 upstream tests pass (including element-wise comparisons with the `*_slow` implementations). Body and scripts:
+`probes/t_density_kernel/evidence/pr3470_bench/`; #3469's body: `pr_patches/pyscf_3469_body.md`. Remaining drafts: §1 #212 (review answered), §2 pyVPT2.

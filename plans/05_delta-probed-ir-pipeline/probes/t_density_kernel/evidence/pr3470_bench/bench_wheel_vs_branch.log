@@ -1,0 +1,2 @@
+after: pyscf /home/thebreadishard/pyscf-master/pyscf/__init__.py; threads 16; nocc 15 nvir 93; make_intermediates 23.9 s; lambda solve 98.3 s (conv True); gradient with given lambda 69.9 s
+before: pyscf /home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/__init__.py; threads 16; nocc 15 nvir 93; make_intermediates 351.6 s; lambda solve 380.9 s (conv True); gradient with given lambda 917.5 s
