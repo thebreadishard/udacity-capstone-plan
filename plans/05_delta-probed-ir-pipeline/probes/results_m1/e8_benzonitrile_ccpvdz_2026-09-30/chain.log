@@ -1,0 +1,87 @@
+[2026-09-30 05:52:51] E8 FD Hessian: 13 atoms, cc-pvdz, frozen 8 (derived from the elements: 8), step 0.005 bohr, 78 displacements, 16 threads, max_memory 26000 MB, explicit (T) lambda, fast (T) density kernel
+cycle = 1  norm(lambda1,lambda2) = 0.0646608
+cycle = 2  norm(lambda1,lambda2) = 0.0176162
+cycle = 3  norm(lambda1,lambda2) = 0.00798242
+cycle = 4  norm(lambda1,lambda2) = 0.00329999
+cycle = 5  norm(lambda1,lambda2) = 0.000880151
+cycle = 6  norm(lambda1,lambda2) = 0.000332957
+cycle = 7  norm(lambda1,lambda2) = 0.0001098
+cycle = 8  norm(lambda1,lambda2) = 5.11202e-05
+cycle = 9  norm(lambda1,lambda2) = 2.06715e-05
+cycle = 10  norm(lambda1,lambda2) = 6.86743e-06
+cycle = 11  norm(lambda1,lambda2) = 2.60898e-06
+cycle = 12  norm(lambda1,lambda2) = 1.12649e-06
+cycle = 13  norm(lambda1,lambda2) = 4.29329e-07
+cycle = 14  norm(lambda1,lambda2) = 2.07443e-07
+cycle = 15  norm(lambda1,lambda2) = 8.70066e-08
+cycle = 16  norm(lambda1,lambda2) = 5.83473e-08
+cycle = 17  norm(lambda1,lambda2) = 3.27781e-08
+cycle = 18  norm(lambda1,lambda2) = 2.37491e-08
+cycle = 19  norm(lambda1,lambda2) = 1.66461e-08
+cycle = 20  norm(lambda1,lambda2) = 1.38172e-08
+cycle = 21  norm(lambda1,lambda2) = 1.90424e-08
+cycle = 22  norm(lambda1,lambda2) = 1.39214e-08
+cycle = 23  norm(lambda1,lambda2) = 1.02111e-08
+cycle = 24  norm(lambda1,lambda2) = 8.42931e-09
+[2026-09-30 06:13:19] E8 FD Hessian: 13 atoms, cc-pvdz, frozen 8 (derived from the elements: 8), step 0.005 bohr, 78 displacements, 16 threads, max_memory 26000 MB, explicit (T) lambda, fast (T) density kernel, fast (T) lambda kernel
+[2026-09-30 06:32:07] fast (T) lambda two-route check: max |kernel − pyscf| = 2.3e-16 (l2_t; limit 1e-10; 1073 s)
+cycle = 1  norm(lambda1,lambda2) = 0.0646608
+cycle = 2  norm(lambda1,lambda2) = 0.0176162
+cycle = 3  norm(lambda1,lambda2) = 0.00798242
+cycle = 4  norm(lambda1,lambda2) = 0.00329999
+cycle = 5  norm(lambda1,lambda2) = 0.000880151
+cycle = 6  norm(lambda1,lambda2) = 0.000332957
+cycle = 7  norm(lambda1,lambda2) = 0.0001098
+cycle = 8  norm(lambda1,lambda2) = 5.11202e-05
+cycle = 9  norm(lambda1,lambda2) = 2.06715e-05
+cycle = 10  norm(lambda1,lambda2) = 6.86743e-06
+cycle = 11  norm(lambda1,lambda2) = 2.60898e-06
+cycle = 12  norm(lambda1,lambda2) = 1.12649e-06
+cycle = 13  norm(lambda1,lambda2) = 4.29329e-07
+cycle = 14  norm(lambda1,lambda2) = 2.07443e-07
+cycle = 15  norm(lambda1,lambda2) = 8.70066e-08
+cycle = 16  norm(lambda1,lambda2) = 5.83473e-08
+cycle = 17  norm(lambda1,lambda2) = 3.27781e-08
+cycle = 18  norm(lambda1,lambda2) = 2.37597e-08
+cycle = 19  norm(lambda1,lambda2) = 1.66576e-08
+cycle = 20  norm(lambda1,lambda2) = 1.38413e-08
+cycle = 21  norm(lambda1,lambda2) = 1.90614e-08
+cycle = 22  norm(lambda1,lambda2) = 1.39393e-08
+cycle = 23  norm(lambda1,lambda2) = 1.02282e-08
+cycle = 24  norm(lambda1,lambda2) = 8.44935e-09
+[2026-09-30 07:40:25] fast (T) density two-route check: max |kernel − pyscf| = 2.8e-17 (dvo[for_grad=True]; limit 1e-10; 3964 s)
+[2026-09-30 07:40:44] (T) lambda 4098 s, gradient 18 s
+[2026-09-30 07:40:44] reference: E = -323.598536697, max|grad| 3.63e-02, 5245 s
+[2026-09-30 11:42:30] E8 FD Hessian: 13 atoms, cc-pvdz, frozen 8 (derived from the elements: 8), step 0.005 bohr, 78 displacements, 16 threads, max_memory 26000 MB, explicit (T) lambda, fast (T) density kernel, fast (T) lambda kernel
+[2026-09-30 11:42:30] symmetry: 4 operations, orbits [[0], [1], [2], [3, 7], [4, 6], [5], [8, 12], [9, 11], [10]], 27 displacements (54 gradients) instead of 78
+[2026-09-30 11:42:30] pair check coordinate  0: max |mean(g+, g−) − g0| = 5.2e-05 a.u. (limit 1e-04)
+[2026-09-30 11:42:30] pair check coordinate  1: max |mean(g+, g−) − g0| = 5.1e-06 a.u. (limit 1e-04)
+[2026-09-30 11:42:30] pair check coordinate  2: max |mean(g+, g−) − g0| = 6.8e-06 a.u. (limit 1e-04)
+[2026-09-30 11:42:30] pair check coordinate  3: max |mean(g+, g−) − g0| = 5.3e-05 a.u. (limit 1e-04)
+[2026-09-30 11:42:30] pair check coordinate  4: max |mean(g+, g−) − g0| = 4.0e-06 a.u. (limit 1e-04)
+[2026-09-30 11:42:30] pair check coordinate  5: max |mean(g+, g−) − g0| = 6.0e-06 a.u. (limit 1e-04)
+[2026-09-30 11:42:30] pair check coordinate  6: max |mean(g+, g−) − g0| = 1.3e-05 a.u. (limit 1e-04)
+[2026-09-30 11:42:30] pair check coordinate  7: max |mean(g+, g−) − g0| = 1.3e-05 a.u. (limit 1e-04)
+[2026-09-30 11:42:30] pair check coordinate  8: max |mean(g+, g−) − g0| = 1.3e-06 a.u. (limit 1e-04)
+[2026-09-30 11:42:30] pair check coordinate  9: max |mean(g+, g−) − g0| = 1.6e-05 a.u. (limit 1e-04)
+[2026-09-30 11:42:30] pair check coordinate 10: max |mean(g+, g−) − g0| = 1.3e-05 a.u. (limit 1e-04)
+[2026-09-30 11:42:30] pair check coordinate 11: max |mean(g+, g−) − g0| = 1.4e-06 a.u. (limit 1e-04)
+[2026-09-30 11:42:30] pair check coordinate 12: max |mean(g+, g−) − g0| = 1.6e-05 a.u. (limit 1e-04)
+[2026-09-30 11:42:30] pair check coordinate 13: max |mean(g+, g−) − g0| = 1.3e-05 a.u. (limit 1e-04)
+[2026-09-30 11:42:30] pair check coordinate 14: max |mean(g+, g−) − g0| = 1.5e-06 a.u. (limit 1e-04)
+[2026-09-30 11:42:30] pair check coordinate 15: max |mean(g+, g−) − g0| = 1.5e-05 a.u. (limit 1e-04)
+[2026-09-30 11:42:30] pair check coordinate 16: max |mean(g+, g−) − g0| = 1.4e-05 a.u. (limit 1e-04)
+[2026-09-30 11:42:30] pair check coordinate 17: max |mean(g+, g−) − g0| = 1.6e-06 a.u. (limit 1e-04)
+[2026-09-30 11:42:30] pair check coordinate 24: max |mean(g+, g−) − g0| = 9.8e-07 a.u. (limit 1e-04)
+[2026-09-30 11:42:30] pair check coordinate 25: max |mean(g+, g−) − g0| = 1.1e-05 a.u. (limit 1e-04)
+[2026-09-30 11:42:30] pair check coordinate 26: max |mean(g+, g−) − g0| = 1.9e-06 a.u. (limit 1e-04)
+[2026-09-30 11:42:30] pair check coordinate 27: max |mean(g+, g−) − g0| = 4.6e-06 a.u. (limit 1e-04)
+[2026-09-30 11:42:30] pair check coordinate 28: max |mean(g+, g−) − g0| = 6.3e-06 a.u. (limit 1e-04)
+[2026-09-30 11:42:30] pair check coordinate 29: max |mean(g+, g−) − g0| = 1.6e-06 a.u. (limit 1e-04)
+[2026-09-30 11:42:30] pair check coordinate 30: max |mean(g+, g−) − g0| = 1.4e-05 a.u. (limit 1e-04)
+[2026-09-30 11:42:30] pair check coordinate 31: max |mean(g+, g−) − g0| = 1.5e-06 a.u. (limit 1e-04)
+[2026-09-30 11:42:30] pair check coordinate 32: max |mean(g+, g−) − g0| = 2.1e-06 a.u. (limit 1e-04)
+[2026-09-30 11:42:30] symmetry reconstruction: spread of multiply-reached rows 4.62e-05 a.u.; self-check 6.4e-12
+[2026-09-30 11:42:30] Hessian written; FD asymmetry max 4.62e-05 a.u.; frequencies (cm-1): [0, 0, 314, 356, 460, 495, 502, 611, 620, 695, 773, 798, 868, 915, 920, 1013, 1055, 1096, 1159, 1180, 1248, 1314, 1400, 1485, 1535, 1667, 1701, 2388, 3288, 3300, 3309, 3319, 3322]
+[2026-09-30 11:42:30] two-route checks: six lowest |freq| after projection [87.0, 81.9, 0.0, 0.0, 0.0, 0.0] (translations/rotations → ~0)
+[2026-09-30 11:42:30] SELF-CHECK FAILED: asymmetry 4.62e-05 (limit 2e-03) / null space 87.0 cm⁻¹ (limit 10) — written as hessian_ccsd_t_INVALID.npz; no read-out may run on it (guard of 27 Sep 2026)

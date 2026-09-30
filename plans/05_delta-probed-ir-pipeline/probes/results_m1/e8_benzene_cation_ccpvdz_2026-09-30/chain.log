@@ -1,0 +1,2 @@
+[2026-09-30 18:27:13] E8 FD Hessian: 12 atoms, cc-pvdz, frozen 6 (derived from the elements: 6), step 0.005 bohr, 72 displacements, 16 threads, max_memory 26000 MB, charge 1, spin 1 (UHF-UCCSD(T)), explicit (T) lambda
+[2026-09-30 18:27:18] WARNING: UHF <S²> = 0.8254 (expected 0.75)
