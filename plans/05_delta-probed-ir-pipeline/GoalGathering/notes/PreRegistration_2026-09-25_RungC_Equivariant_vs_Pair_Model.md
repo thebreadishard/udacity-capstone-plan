@@ -445,3 +445,16 @@ should matter little once F_low is an input; (iii) ≤ (i). **Lines.** Claim "th
 Miss (> 0.75): the encoder's environment features add nothing over rung B's hand-made ones at this data size — reported as such, and the next levers
 are topology features and the data step. Reading rule: the hybrid is compared with rung B on the same hold-outs *and* on the Cartesian ΔH residual
 ratio, so that a gain on the pattern is not bought with a loss off it.
+
+## Outcome, data-scaling test, C2 — 30 September 23:5x (`out/E7_rungC_scale_C2_2026-09-30.{json,md}`; QM9 pretraining, element rows reset)
+
+| pool | (a) ratio (spread) / ω | (b) ratio (spread) / ω | best epochs |
+|---|---|---|---|
+| 175 (28 Sep) | 0.811 (0.002) / 9.64 | 0.843 (0.005) / 8.91 | — |
+| 449 | **0.816** (0.031) / 9.14 | 0.850 (0.026) / 8.49 | 67, 104, 101 |
+| 750 | **0.808** (0.033) / 9.07 | 0.831 (0.023) / 8.32 | 78, 77, 92 |
+
+**Line: "scaling stalls" for C2 as well** ((a) 0.81 at 750, inside one spread of 175). Pretraining moves the 750 point by 0.015 against C1 — the same
+0.00–0.03 as at 175. Decision 51: best epochs 67–104 of 200, fine. The data-scaling test is closed: neither variant of the equivariant model, nor
+the pair model, moves with 4.3× the molecules of this kind; the PC is not bought for data volume. The night chain (diagnostics → pattern term →
+rank-2 input → hybrid head) tests the reviewers' cause.
