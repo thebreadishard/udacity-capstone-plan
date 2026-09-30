@@ -76,3 +76,24 @@ Tonight's data-scaling run (449 / 750, C1 and C2) reads first; its result and th
 
 **Merged plan (unchanged order, two additions):** diagnostics → rank 1 + 2 at 175 → hybrid head, now with the SQM-style scale-plus-residual variant as
 a registered ablation → rung-B data ablations plus the feature-coverage / MMD pre-test of candidate molecules against the hold-outs.
+
+## Third reviewer, 23:0x — ChatGPT on the same prompt (kept for the record; the user: "wees voorzichtig met aanpassingen aan ons plan")
+
+Same diagnosis and the same top three in the same order as ours (rank-2 H_low input → equivariant encoder to ΔF → per-class normalisation; then
+topology, head, self-supervised H_low, curriculum; not H_high). Broad expected ranges, direction and pass line pre-registered rather than a central
+value — consistent with what we did. Its reading rule for the scaling run ("0.81 → 0.78 → 0.77 = representation is the bottleneck") is the case
+that occurred (0.81 → 0.83 → 0.82). Points beyond the other two reviews, verified or filed:
+
+| claim | verified / decision |
+|---|---|
+| §20 the major symmetry ΔH_ij = ΔH_jiᵀ must hold globally, not only block symmetry | holds by construction: the head is symmetric in i ↔ j (s_i + s_j, s_i ⊙ s_j, u_i u_jᵀ + u_j u_iᵀ, a I, b r̂r̂ᵀ) and every block is symmetric, so ΔH_ij = ΔH_ji = ΔH_jiᵀ; `equivariance_errors` reports `symmetry` = max ‖ΔH − ΔHᵀ‖ and the test asks < 1e-6 (passes for all four variants) |
+| §21 test the translational null modes after every prediction, and the rotational ones | translations: `translation_sum_rule` in the same test, and Σ_j ΔH_ij = 0 is exact by construction; rotations: not a null-mode condition for a correction at a non-stationary geometry — the frequency read-out projects the six rigid-body modes with the same masses (E8/probe convention) |
+| §22 log both loss terms and their ratio | logged per epoch since 27 Sep (`main`, `aux`); the ratio is ≈ 1e-5 (the internal term dominates) — recorded in the review note above |
+| §23 leakage list (means/stds, embeddings, class normalisation, early-stopping split inside the training split) | verified for the pattern term (class scales from the fit ids of the seed), the output scale (training pool), the inner split (molecule ids); element embeddings are learned, not fitted statistics |
+| §24 decompose the hold-out error into diagonal / same-ring / ring–ring / non-ring and against pair distance | **adopted as a diagnostic read-out** (cheap; tells whether ring–ring or anisotropic blocks carry the error) — after the night runs |
+| §25 C1: H_low replaced by random matrices with the same marginal statistics, beside the zeroed variant | **adopted as a control for diagnostic 1** (`--shuffle-hlow`, low priority; the zeroed run comes first) |
+| §6 do not judge the hybrid head on the sparse pattern alone | agreed: the read-outs already carry the full-ΔF projection and the Cartesian ΔH residual ratio; both are reported |
+| §16–17 a PAH ladder, chosen by descriptor coverage / novelty before any label is computed | same as Gemini's MMD pre-test and our data step; adopted there |
+| §28 the proxy (ωB97X) → CCSD(T) transfer is a separate question that one anchor cannot settle | agreed; that is the anchor programme (benzene done on the corrected route; naphthalene and the cation are PC jobs) |
+
+No change to the registered sequence: diagnostics → rank 1 + 2 → hybrid head → data ablations.
