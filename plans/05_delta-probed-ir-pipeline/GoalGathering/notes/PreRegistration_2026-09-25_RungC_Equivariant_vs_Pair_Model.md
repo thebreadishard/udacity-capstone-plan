@@ -365,3 +365,25 @@ point decides, on the PC or not at all.
 
 **What this does not test.** CC-level labels (the ankers), rung C's capacity (hidden size, depth), and the pretraining recipe itself; those are the
 PC's own questions and are not claimed here.
+
+## Dated amendment 30 September 23:1x — after the external reviews: two diagnostics and the pattern internal term, registered before they run (the user: "reken op de laptop door totdat we de werkende oplossing hebben gevonden"; `Review_Received_2026-09-30_Grok_RungC_Design.md`)
+
+**Code (tested, 8 tests in `tests/test_rungC_diag_pattern.py` + the existing switch tests; smoke on the corpus):** `rungC_train.py --zero-hlow`,
+`--overfit-one <id>`, `--aux pattern`. The registered recipe is unchanged when none is given. `--aux pattern` puts the internal term on the pair
+model's pattern only (diagonal, shared-atom pairs, same-ring bond–bond pairs; `e7_rungB_pairs.molecule_pairs`, whose B matrix must equal the loader's
+or the run refuses) with one standardisation scale per pair class (the six classes of rung B), the scales taken from the fit molecules of the seed
+and nothing else; the read-out is unchanged.
+
+**Runs (`rungC_night_0930.sh`, laptop, 8 threads, after the scaling run; design check of the fresh sum body first):**
+1. *Diagnostic 1* — H_low input channels zeroed, pool A + A2 (175), winner flags, seed 0 → `out/E7_rungC_diag_zerohlow_2026-09-30`.
+   **Line:** ratio on (a) ≥ 0.95 (the model collapses to the zero rule without the Hessian input). If it stays near 0.81, the body ignores the Hessian
+   input and rank 1 is pointless until that route is forced (invariants removed, only the tensor block kept).
+2. *Diagnostic 2* — benzene alone (pool, size and both hold-outs = A_8448043181), 400 epochs, no inner validation, seed 0 →
+   `out/E7_rungC_diag_overfit_benzene_2026-09-30`. **Line:** ratio ≪ 0.1 and a small ΔH residual on that molecule. If it fails: widen the head or move
+   the diagonal constraint from the forward pass into the loss first; **no 175-molecule rank-1 run before this passes.**
+3. *Rank 2 alone* — `--aux pattern`, pool A + A2 (175), winner flags, seeds 0–2, inner validation 15 % → `out/E7_rungC_rank2_pattern_2026-09-30`.
+   **Line:** (a) ≤ 0.78 against the present 0.81 (the reviewer's rescaled expectation −0.03 to −0.10). Prediction: 0.74–0.78.
+
+**Rank 1** (the B3LYP 3 × 3 blocks as rank-2 equivariant edge features) is built next with its own equivariance test (rotate coordinates and H_low
+together) and registered separately before it runs; the joint line of rank 1 + 2 stays (a) ≤ 0.75, prediction 0.55–0.70 resting on rank 1.
+Every result lands here as a dated outcome section; nothing is read before its line is written.

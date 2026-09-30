@@ -29,7 +29,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "src"))
 import e6_learning_curve as E6  # noqa: E402
 import e7_t2_sqm as T2  # noqa: E402
-from e7_rungB_pairs import readouts  # noqa: E402
+from e7_rungB_pairs import molecule_pairs, readouts  # noqa: E402
 from rungC_equivariant import AGGREGATION, AGGREGATIONS, BOHR2ANG, LOSS_SCALE, DeltaHessianModel, console_utf8_safe, load_molecule, to_torch  # noqa: E402
 
 from dpir.provenance import provenance  # noqa: E402
@@ -72,12 +72,55 @@ def entry_classes(m: dict) -> torch.Tensor:
     return torch.as_tensor(cls)
 
 
+PAIR_CLASS_NAMES = ("diag_bond", "diag_angle", "diag_dihedral", "diag_other", "off_bondbond", "off_other")   # e7_rungB_pairs pair classes 0–5
+
+
+def pattern_classes(mol_dir: Path, m: dict) -> torch.Tensor:
+    """K × K long tensor: the pair model's pattern with its class (0–5) on every entry of the pattern (both triangles) and −1 elsewhere, in the
+    primitive order of `m["B"]`. Built with e7_rungB_pairs.molecule_pairs on the molecule's own geometry; the B matrix it returns must equal the
+    loader's (same geomeTRIC construction) — a mismatch is refused, not tolerated (30 Sep 2026, rank-2 change after the external reviews)."""
+    g = json.load(open(mol_dir / "geometry.json"))
+    pairs, _feat, pcls, B = molecule_pairs(g["symbols"], np.asarray(g["coords_bohr"], float), np.asarray(m["F_low"], float))
+    if B.shape != np.asarray(m["B"]).shape or not np.allclose(B, m["B"], atol=1e-8):
+        raise ValueError(f"{mol_dir.name}: the pattern builder's primitives differ from the loader's B matrix — pattern term refused")
+    K = B.shape[0]
+    cls = torch.full((K, K), -1, dtype=torch.long)
+    for (i, j), c in zip(pairs.tolist(), pcls.tolist(), strict=True):
+        cls[i, j] = c
+        cls[j, i] = c
+    return cls
+
+
+def pattern_class_scales(tensors: dict, ids: list) -> torch.Tensor:
+    """One standardisation scale per pair class: the RMS of the true internal ΔF over the pattern entries of that class across `ids` (the fit molecules
+    of the seed only — nothing from the inner validation or the hold-outs). A class absent from the fit set keeps scale 1."""
+    sq, cnt = torch.zeros(len(PAIR_CLASS_NAMES), dtype=torch.float64), torch.zeros(len(PAIR_CLASS_NAMES), dtype=torch.float64)
+    for i in ids:
+        t = tensors[i]
+        d2 = (t["dF_true"].double() ** 2)
+        for c in range(len(PAIR_CLASS_NAMES)):
+            mask = t["pat_cls"] == c
+            sq[c] += d2[mask].sum()
+            cnt[c] += int(mask.sum())
+    scale = torch.sqrt(sq / cnt.clamp_min(1))
+    scale[cnt == 0] = 1.0
+    return scale.float()
+
+
 def _terms(model, t):
-    """Registered main term (mass-weighted Cartesian MSE) and the relative internal-ΔF term, with the per-molecule scale tensor when the model has one."""
+    """Registered main term (mass-weighted Cartesian MSE) and the internal-ΔF term, with the per-molecule scale tensor when the model has one.
+    Internal term: 'all' (registered) = relative MSE over every entry of B⁺ᵀ ΔH B⁺; 'pattern' (30 Sep 2026) = MSE over the pair model's pattern only,
+    each entry divided by its class scale (`model.aux_class_scale`, fitted on the fit molecules) — the read-out quantity, standardised as rung B does."""
     pred = model(t["Z"], t["pos"], t["H_low"], t)
     main = ((pred - t["dH_true"]) * t["mw"] * LOSS_SCALE).pow(2).mean()
     dF_p = t["Bp"].T @ pred @ t["Bp"]
-    aux = ((dF_p - t["dF_true"]) ** 2).mean() / t["dF_norm"]        # relative internal-ΔF term (build note of 27 Sep: the raw term is ~1e9 in a.u.)
+    if getattr(model, "aux_mode", "all") == "pattern":
+        cls = t["pat_cls"]
+        on = cls >= 0
+        scale = model.aux_class_scale[cls.clamp_min(0)]
+        aux = (((dF_p - t["dF_true"]) / scale) ** 2)[on].mean()
+    else:
+        aux = ((dF_p - t["dF_true"]) ** 2).mean() / t["dF_norm"]        # relative internal-ΔF term (build note of 27 Sep: the raw term is ~1e9 in a.u.)
     return main, aux, pred
 
 
@@ -153,7 +196,7 @@ def inner_val_aux(model, tensors: dict, ids: list) -> float:
 def train_one(train_ids: list, tensors: dict, seed: int, epochs: int, lr: float = 1e-3, log=print, aux_weight: float = AUX_WEIGHT,
               loss_mode: str = "registered", scale_mode: str = "rms", val_ids: list | None = None, patience: int = 0,
               pretrained: str | None = None, aggregation: str = AGGREGATION,
-              pretrained_elements: list[int] | None = None) -> tuple[torch.nn.Module, list]:
+              pretrained_elements: list[int] | None = None, aux_mode: str = "all") -> tuple[torch.nn.Module, list]:
     """Defaults = the registered recipe C1 of 19:50 (27 Sep). The other values are the cells of the fair-chance search registered at 20:0x:
     aux_weight 1.0; loss_mode 'internal' (the relative internal-ΔF term alone); scale_mode 'class' (one output scale per entry class: diagonal
     3×3 block, bonded pair, non-bonded pair — the pair model's per-class standardisation); val_ids = inner validation molecules held out of the
@@ -179,6 +222,10 @@ def train_one(train_ids: list, tensors: dict, seed: int, epochs: int, lr: float 
     log(f"  {'pretrained' if pretrained else 'fresh'} {aggregation} body pre-flight: worst |output| "
         f"{check_pretrained_transfer(body, tensors, train_ids):.3g} on the training molecules")
     model = Scaled(body, scale, class_scale)
+    model.aux_mode = aux_mode
+    model.aux_class_scale = pattern_class_scales(tensors, train_ids) if aux_mode == "pattern" else None
+    if aux_mode == "pattern":
+        log("  internal term on the pair model's pattern; class scales " + ", ".join(f"{n} {s:.3g}" for n, s in zip(PAIR_CLASS_NAMES, model.aux_class_scale.tolist(), strict=True)))
     opt = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=1e-4)
     rng = np.random.default_rng(seed)
     hist, t0 = [], time.time()
@@ -261,6 +308,12 @@ def main() -> int:
     ap.add_argument("--inner-val", type=float, default=0.0,
                     help="search: fraction of the training ids held out per seed as inner validation (the stage read-out)")
     ap.add_argument("--patience", type=int, default=0, help="search stage 2: early stopping on the inner validation term, best state restored (0 = off)")
+    ap.add_argument("--aux", default="all", choices=["all", "pattern"],
+                    help="internal term: 'all' (registered) or 'pattern' (30 Sep 2026, rank 2 of the external reviews: the pair model's pattern only, one "
+                         "standardisation scale per pair class from the fit molecules)")
+    ap.add_argument("--zero-hlow", action="store_true", help="diagnostic 1 (30 Sep 2026): zero the B3LYP Hessian input channels; the ratio must collapse towards the zero rule")
+    ap.add_argument("--overfit-one", default=None, metavar="ID",
+                    help="diagnostic 2 (30 Sep 2026): pool, size and both hold-outs = this one molecule; no inner validation, no early stopping; must reach ratio << 0.1")
     ap.add_argument("--pretrained", default=None, help="C2: a `rungC_pretrain.py` checkpoint; its body is loaded, the head re-initialised per seed")
     ap.add_argument("--aggregation", default=AGGREGATION, choices=list(AGGREGATIONS),
                     help="neighbour-message pooling in the body: mean (default since 28 Sep) or sum (the body registered on 25 Sep)")
@@ -300,6 +353,11 @@ def main() -> int:
     if a.smoke:
         sizes, seeds, a.epochs = [min(5, len(pool))], [0], (a.epochs or 2)
         test_a, test_b = test_a[:3], test_b[:3]
+    if a.overfit_one:
+        if a.overfit_one not in mols:
+            raise SystemExit(f"--overfit-one {a.overfit_one}: not an admitted molecule of this corpus")
+        pool, sizes, test_a, test_b = [a.overfit_one], [1], [a.overfit_one], [a.overfit_one]
+        a.inner_val, a.patience = 0.0, 0
     a.epochs = a.epochs or 60
 
     # tensors for the equivariant model (Cartesian; the registered inputs), plus B⁺ for the auxiliary term and the read-out projection
@@ -314,6 +372,10 @@ def main() -> int:
         t["dF_true"] = t["Bp"].T @ t["dH_true"] @ t["Bp"]
         t["dF_norm"] = (t["dF_true"] ** 2).mean().clamp_min(1e-30)
         t["cls"] = entry_classes(m)
+        if a.aux == "pattern":
+            t["pat_cls"] = pattern_classes(Path(a.molecules) / i, mols[i])
+        if a.zero_hlow:
+            t["H_low"] = torch.zeros_like(t["H_low"])
         tensors[i] = t
     log(f"{len(mols)} molecules; pool {len(pool)}; hold-out (a) {len(test_a)}, (b) {len(test_b)} ({cores}); sizes {sizes}; seeds {seeds}; epochs {a.epochs}; "
         f"threads {a.threads}; model {sum(p.numel() for p in DeltaHessianModel().parameters()):,} parameters, {a.aggregation} aggregation"
@@ -325,11 +387,13 @@ def main() -> int:
                n_molecules=len(mols), holdout_a=test_a, holdout_b=test_b, scaffold_cores=cores, pool=len(pool), pool_ids=pool, pool_layers=a.pool_layers,
                sizes=sizes, seeds=seeds, epochs=a.epochs, lr=a.lr, aux_weight=a.aux_weight, loss=a.loss, scale=a.scale, inner_val=a.inner_val,
                patience=a.patience, pretrained=a.pretrained, aggregation=a.aggregation, pretrained_elements=a.pretrained_elements,
+               aux_mode=a.aux, zero_hlow=a.zero_hlow, overfit_one=a.overfit_one, pair_class_names=list(PAIR_CLASS_NAMES),
                substituted_analytic=substituted, curve={})
     res["zero_rule"] = {h: readouts(mols, ids, pool, lambda i: np.zeros_like(mols[i]["F_low"])) for h, ids in tests.items() if ids}
     lines = [f"# Rung C (equivariant ΔH, C1 from scratch) — {a.out_prefix} ({res['date']}){' — SMOKE, not a result' if a.smoke else ''}", "",
-             f"recipe: lr {a.lr}, epochs {a.epochs}, loss {a.loss}, aux weight {a.aux_weight}, output scale {a.scale}, "
-             f"inner validation {a.inner_val}, patience {a.patience}; pool layers {a.pool_layers}; {a.aggregation} aggregation", "",
+             f"recipe: lr {a.lr}, epochs {a.epochs}, loss {a.loss}, aux weight {a.aux_weight}, internal term {a.aux}, output scale {a.scale}, "
+             f"inner validation {a.inner_val}, patience {a.patience}; pool layers {a.pool_layers}; {a.aggregation} aggregation"
+             + ("; H_low input zeroed (diagnostic 1)" if a.zero_hlow else "") + (f"; overfit-one {a.overfit_one} (diagnostic 2)" if a.overfit_one else ""), "",
              "| n | seed | hold-out | ring couplings | zero | ratio | corrected ω | zero ω | ΔH residual ratio | s |",
              "|---|---|---|---|---|---|---|---|---|---|"]
     for n in sizes:
@@ -345,9 +409,10 @@ def main() -> int:
             t1 = time.time()
             val_ids, fit_ids = inner_split(tr, seed, a.inner_val)
             model, hist = train_one(fit_ids, tensors, seed, a.epochs, a.lr, log, a.aux_weight, a.loss, a.scale, val_ids, a.patience, a.pretrained,
-                                    a.aggregation, a.pretrained_elements)
+                                    a.aggregation, a.pretrained_elements, aux_mode=a.aux)
             dF_of = predictor(model, tensors, mols)
             out = {"seed": seed, "train_history": hist, "output_scale": model.scale, "class_scale": model.class_scale_values,
+                   "aux_class_scale": (None if model.aux_class_scale is None else model.aux_class_scale.tolist()),
                    "seconds": round(time.time() - t1, 1), "inner_val_ids": val_ids,
                    "inner_val_aux": (inner_val_aux(model, tensors, val_ids) if val_ids else None), "best_epoch": model.best_epoch}
             if val_ids:
