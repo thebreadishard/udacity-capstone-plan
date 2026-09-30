@@ -163,3 +163,10 @@ same build: `make_intermediates` 397.1 → 23.9 s, lambda solve 491.6 → 98.3 s
 philipmnel/pyvpt2#58 (07:29 UTC, branch `quartic-route-consistency` on the fork, +122/−6) are open, no comments, no checks, upstream `main`
 unchanged since 16 May. The QC items of §2 (pyVPT2's own suite with psi4, the real-data benzene check) would go into a follow-up comment —
 a conversation, so only on the user's word.
+
+**30 September 11:1x — first CI results, both fixed on our side (no approval needed: our own PR code).** #3469: flake8 F811 — the `__main__`
+blocks re-imported the lambda module that the change now imports at module level; the two lines dropped (`e239879`, flake8/ruff clean, 7 tests).
+#3470: `test_rccsd_t_lambda.py` `allclose(d2, d2_ref, rtol=1e-12, atol=1e-15)` failed on linux-build (passed locally at 1–16 threads): random
+integrals, d2 up to ~5e2, the reordered C summation leaves ~1e-14 on elements that cancel to near zero (locally 7e-15 at |ref| 4e-2, margin
+0.18 of the tolerance, `evidence/pr3470_bench/margin_3470.py`); atol → 1e-12 on the three d2 comparisons (`ed66845`), fingerprints unchanged;
+PR text updated to say so. I also had not run flake8 on #3470 before opening it — clean now; add `flake8 --config .flake8` to the pre-PR list.
