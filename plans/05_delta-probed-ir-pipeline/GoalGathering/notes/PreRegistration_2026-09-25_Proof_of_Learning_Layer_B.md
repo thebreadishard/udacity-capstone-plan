@@ -232,3 +232,40 @@ was interrupted. The finished molecules stay admitted. The CCX53 (shards 4 and 5
 **For the reading of the curve.** The registered points 300 / 600 / 1,200 are now read in the new order and the outcome says so: the point at 300 has a
 different composition (larger, all-carbon) from the points at 100 and 175, so a change of slope there is first a change of population, then a
 learning effect — the two are separated by the class-wise read-out already registered (bare parents / scaffolds / size), not by the pooled number.
+
+## Outcome, the 600 table — 30 September 2026, 21:1x (registered point, read in the re-hashed order; `out/E7_rungB_layerB_2026-09-30.{json,md,log}`)
+
+`fetch_layerB_shards.sh merge` at 21:0x brought the four shards to **602 finished layer-B molecules** (4 failed); the reader admitted **574** (pool, hashed
+order after the 28 Sep re-hash; the first ≈ 300 of that order are the all-carbon, larger cores). Same command as the 274 point: `m05/e7_rungB_pairs.py
+corpus/molecules out/E7_rungB_layerB_2026-09-30 --use-analytic --split layerB --sizes all --seeds 0,1,2` (laptop, four threads, 60 epochs; 27 A2 molecules
+with the analytic second-route Hessians substituted, as on 27 Sep). Intermediate table, **no verdict** (the verdict is the slope at 1,200).
+
+| hold-out | n = 274 (27 Sep): ratio / ω | **n = 574 (30 Sep): ratio / ω** (three-seed spread) | predicted at 600 (E11.5, fixed before 300) | B2 GBT at 574 |
+|---|---|---|---|---|
+| (a) 43 bare parents | 0.61 / 6.18 | **0.63 / 6.12** (0.037 / 0.42) | 0.40 / 3.78 | 0.64 / 6.98 |
+| (b) 39 scaffolds | 0.64 / 5.60 | **0.70 / 5.27** (0.123 / 0.14) | 0.44 / 4.45 | 0.60 / 6.34 |
+| (c) A2 larger than the training set | 0.70 / 5.59 | **0.68 / 5.44** (0.032 / 0.08) | 0.52 / 4.97 | 0.70 / 6.92 |
+
+Reading. From 274 to 574 the curve of layer B alone is flat on all three hold-outs (every change is inside the seed spread), and it sits far above the
+power-law predictions extrapolated from the A + A2 pool. The registered rule asks ≥ 1.5× per decade on (a) and (c) between 100 and 1,200; the segment
+274 → 574 (0.32 decade) contributes nothing to that. What the point says, together with the 28 Sep re-hash: the first ≈ 300 molecules of the new order
+(larger, all-carbon) did not move the ladder hold-outs either — the class-wise read-out (parents / scaffolds / size) shows the same plateau in each
+class, so this is not a population effect hiding a learning effect. Layer B alone, read against the ladder, is a transfer curve across chemistry and
+not the ladder's learning curve; the registered curve keeps its verdict at 1,200, which no longer fits the current credit (the user, 30 Sep 19:4x:
+€34 left) — it is a PC question.
+
+## Outcome, the A + A2 + B curve at k = 574 — 30 September 2026, 21:1x (`out/E7_rungB_A2B_2026-09-30.{json,md}`; `--split e6 --pool-layers A,A2,B`, pool 750)
+
+| hold-out | point 0 (A + A2, 175; 27 Sep): ratio / ω (spread) | point k = 274 (449; 27 Sep) | **point k = 574 (750; 30 Sep)** (spread) |
+|---|---|---|---|
+| (a) 10 layer-A molecules of 19 Sep | 0.430 / 4.71 (0.007 / 0.11) | 0.429 / 4.70 | **0.420 / 4.81** (0.003 / 0.09) |
+| (b) 39 scaffolds | 0.471 / 5.16 (0.029 / 0.58) | 0.463 / 5.22 | **0.454 / 4.74** (0.006 / 0.08) |
+
+Against the lines of the 27 Sep amendment. *B helps* asked for point k below point 0 on the ratio **and** the corrected ω on **both** hold-outs by more
+than the three-seed spread: the ratio is below on both (−0.010 on (a), −0.017 on (b), each beyond the k-point's spread and at the edge of point 0's),
+the corrected ω is not — (a) 4.81 against 4.71 (worse by one spread), (b) 4.74 against 5.16 (better, but inside point 0's spread of 0.58). Outcome:
+**"B adds nothing" on (a), a marginal help on (b)**; not "B hurts". The prediction of the amendment ("after the re-hash, the +300 point lies below
+point 0 on both") holds for the ratio and fails for ω on (a). Read: 574 extra small-to-medium molecules of mixed chemistry leave the ladder's
+coupling error where 175 PAH-like ones put it; the gain from more of the same chemistry is exhausted at this model size and recipe (the fair-chance
+search of 25 Sep stands: stages 4–5, data growth of the *same* kind and pretraining, are the next levers, not more layer B). The next point of this
+curve, if any, is at the PC, together with the 1,200 verdict.
