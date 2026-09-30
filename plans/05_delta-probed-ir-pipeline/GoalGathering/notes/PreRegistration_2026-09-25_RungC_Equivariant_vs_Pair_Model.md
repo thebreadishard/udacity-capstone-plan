@@ -387,3 +387,19 @@ and nothing else; the read-out is unchanged.
 **Rank 1** (the B3LYP 3 × 3 blocks as rank-2 equivariant edge features) is built next with its own equivariance test (rotate coordinates and H_low
 together) and registered separately before it runs; the joint line of rank 1 + 2 stays (a) ≤ 0.75, prediction 0.55–0.70 resting on rank 1.
 Every result lands here as a dated outcome section; nothing is read before its line is written.
+
+## Outcome, data-scaling test, C1 — 30 September 23:2x (`out/E7_rungC_scale_C1_2026-09-30.{json,md}`; C2 is read below when it lands)
+
+| pool | (a) ratio (three-seed spread) / ω cm⁻¹ | (b) ratio / ω | best epochs of 200 | record |
+|---|---|---|---|---|
+| 175 (A + A2; 27 Sep) | 0.811 (0.010) / 9.42 | 0.839 (0.015) / 8.45 | — | `E7_rungC_s2_lr1e-3_e200_2026-09-27` |
+| 449 (mixed order) | **0.833** (0.008) / 9.63 | 0.853 (0.031) / 8.69 | 108, 99, 100 | `E7_rungC_scale_C1_2026-09-30` |
+| 750 (A + A2 + B) | **0.823** (0.016) / 9.29 | 0.839 (0.008) / 8.52 | 73, 62, 120 | same |
+
+**Line: "scaling stalls" ((a) ≥ 0.78 at 750).** With 4.3× the molecules the equivariant model from scratch is where it was at 175 — 0.82 against 0.81,
+inside two spreads; the 449 point is not below 175 either. The prediction (≈ 0.68 at 750 if the 0.06-per-doubling slope of 45 → 175 held) is refuted:
+that slope was the model learning the PAH-like 175, not a curve that continues into mixed chemistry. Decision 51: best epochs 62–120 of the 200 cap,
+no re-run needed. Read together with the pair model's flat curve (proof-of-learning outcome 21:1x): **data volume of this kind moves neither model.**
+The PC question is answered on that count — not by more of this data — and the reviewers' diagnosis (representation and head; `Review_Received_2026-09-30_…`)
+is the live hypothesis: the night chain (diagnostics, then the pattern internal term) and the rank-2 tensor injection test it next, on 175 molecules,
+where a change of 0.1 is unambiguous.
