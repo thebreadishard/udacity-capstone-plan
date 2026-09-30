@@ -31,6 +31,7 @@ import e6_learning_curve as E6  # noqa: E402
 import e7_t2_sqm as T2  # noqa: E402
 from e7_rungB_pairs import molecule_pairs, readouts  # noqa: E402
 from rungC_equivariant import AGGREGATION, AGGREGATIONS, BOHR2ANG, LOSS_SCALE, DeltaHessianModel, console_utf8_safe, load_molecule, to_torch  # noqa: E402
+from rungC_hybrid import HybridDeltaFModel, input_scales, primitive_pool_matrix  # noqa: E402
 
 from dpir.provenance import provenance  # noqa: E402
 
@@ -73,6 +74,19 @@ def entry_classes(m: dict) -> torch.Tensor:
 
 
 PAIR_CLASS_NAMES = ("diag_bond", "diag_angle", "diag_dihedral", "diag_other", "off_bondbond", "off_other")   # e7_rungB_pairs pair classes 0–5
+
+
+def hybrid_tensors(mol_dir: Path, m: dict) -> dict:
+    """The hybrid head's inputs for one molecule (30 Sep 2026): pattern pairs (P, 2) and their classes (P,), the (K, N) primitive mean-pooling
+    matrix, the internal low-level force constants F_int (K, K) and the Wilson B matrix (K, 3N), all in the primitive order of the loader's B
+    (checked, as in pattern_classes)."""
+    g = json.load(open(mol_dir / "geometry.json"))
+    pairs, _feat, pcls, B, atoms = molecule_pairs(g["symbols"], np.asarray(g["coords_bohr"], float), np.asarray(m["F_low"], float), return_atoms=True)
+    if B.shape != np.asarray(m["B"]).shape or not np.allclose(B, m["B"], atol=1e-8):
+        raise ValueError(f"{mol_dir.name}: the pattern builder's primitives differ from the loader's B matrix — hybrid head refused")
+    return dict(pairs=torch.as_tensor(pairs, dtype=torch.long), pcls=torch.as_tensor(pcls, dtype=torch.long),
+                prim_pool=primitive_pool_matrix(atoms, len(g["symbols"])), F_int=torch.as_tensor(np.asarray(m["F_low"], float), dtype=torch.float32),
+                B=torch.as_tensor(B, dtype=torch.float32))
 
 
 def pattern_classes(mol_dir: Path, m: dict) -> torch.Tensor:
@@ -196,7 +210,8 @@ def inner_val_aux(model, tensors: dict, ids: list) -> float:
 def train_one(train_ids: list, tensors: dict, seed: int, epochs: int, lr: float = 1e-3, log=print, aux_weight: float = AUX_WEIGHT,
               loss_mode: str = "registered", scale_mode: str = "rms", val_ids: list | None = None, patience: int = 0,
               pretrained: str | None = None, aggregation: str = AGGREGATION,
-              pretrained_elements: list[int] | None = None, aux_mode: str = "all", tensor_input: bool = False) -> tuple[torch.nn.Module, list]:
+              pretrained_elements: list[int] | None = None, aux_mode: str = "all", tensor_input: bool = False, head: str = "cartesian",
+              sqm_scale: bool = False) -> tuple[torch.nn.Module, list]:
     """Defaults = the registered recipe C1 of 19:50 (27 Sep). The other values are the cells of the fair-chance search registered at 20:0x:
     aux_weight 1.0; loss_mode 'internal' (the relative internal-ΔF term alone); scale_mode 'class' (one output scale per entry class: diagonal
     3×3 block, bonded pair, non-bonded pair — the pair model's per-class standardisation); val_ids = inner validation molecules held out of the
@@ -215,16 +230,27 @@ def train_one(train_ids: list, tensors: dict, seed: int, epochs: int, lr: float 
                 cnt[k] += (c == k).sum()
         class_scale = np.sqrt(sq / np.maximum(cnt, 1))
     target_elements = sorted({int(z) for i in train_ids for z in tensors[i]["Z"].tolist()})
-    if pretrained and tensor_input:
-        raise ValueError("--tensor-input is a fresh-body variant (30 Sep 2026); the pretrained bodies carry no rank-2 input weights")
-    body = (load_pretrained_body(pretrained, reinit_head=True, seed=seed, aggregation=aggregation, target_elements=target_elements,
-                                 pretrained_elements=pretrained_elements) if pretrained
-            else DeltaHessianModel(aggregation=aggregation, tensor_input=tensor_input))
-    if pretrained and body.reset_elements:
-        log(f"  element embeddings absent from pretraining reset to the trained mean: Z = {body.reset_elements}")
-    log(f"  {'pretrained' if pretrained else 'fresh'} {aggregation} body pre-flight: worst |output| "
-        f"{check_pretrained_transfer(body, tensors, train_ids):.3g} on the training molecules")
-    model = Scaled(body, scale, class_scale)
+    if pretrained and (tensor_input or head == "hybrid"):
+        raise ValueError("--tensor-input and --head hybrid are fresh-body variants (30 Sep 2026); the pretrained bodies carry no weights for them")
+    if head == "hybrid":
+        if aux_mode != "pattern":
+            raise ValueError("--head hybrid needs --aux pattern (its output lives on the pattern; the registered rank-3 run uses the pattern term)")
+        model = HybridDeltaFModel(aggregation=aggregation, tensor_input=tensor_input, sqm_scale=sqm_scale,
+                                  class_scale=pattern_class_scales(tensors, train_ids))
+        model.set_input_scales(input_scales(tensors, train_ids))
+        log(f"  hybrid head: {sum(p.numel() for p in model.parameters()):,} parameters; F_low input scales "
+            + ", ".join(f"{x:.3g}" for x in model.flow_scale.tolist()) + ("; SQM α per class on" if sqm_scale else ""))
+        log(f"  fresh {aggregation} body pre-flight: worst |output| {check_pretrained_transfer(model.body, tensors, train_ids):.3g} on the training molecules")
+        model.scale, model.class_scale_values = 1.0, None
+    else:
+        body = (load_pretrained_body(pretrained, reinit_head=True, seed=seed, aggregation=aggregation, target_elements=target_elements,
+                                     pretrained_elements=pretrained_elements) if pretrained
+                else DeltaHessianModel(aggregation=aggregation, tensor_input=tensor_input))
+        if pretrained and body.reset_elements:
+            log(f"  element embeddings absent from pretraining reset to the trained mean: Z = {body.reset_elements}")
+        log(f"  {'pretrained' if pretrained else 'fresh'} {aggregation} body pre-flight: worst |output| "
+            f"{check_pretrained_transfer(body, tensors, train_ids):.3g} on the training molecules")
+        model = Scaled(body, scale, class_scale)
     model.aux_mode = aux_mode
     model.aux_class_scale = pattern_class_scales(tensors, train_ids) if aux_mode == "pattern" else None
     if aux_mode == "pattern":
@@ -316,6 +342,9 @@ def main() -> int:
                          "standardisation scale per pair class from the fit molecules)")
     ap.add_argument("--zero-hlow", action="store_true", help="diagnostic 1 (30 Sep 2026): zero the B3LYP Hessian input channels; the ratio must collapse towards the zero rule")
     ap.add_argument("--tensor-input", action="store_true", help="rank 1 (30 Sep 2026, external reviews): the B3LYP 3×3 pair blocks as rank-2 equivariant edge features (fresh body only)")
+    ap.add_argument("--head", default="cartesian", choices=["cartesian", "hybrid"],
+                    help="rank 3 (30 Sep 2026): 'hybrid' = equivariant encoder → ΔF on the pair model's pattern (with F_low,pq/pp/qq as inputs) → ΔH = Bᵀ ΔF B; needs --aux pattern")
+    ap.add_argument("--sqm-scale", action="store_true", help="hybrid head: add α_class · F_low,pq to the residual (one α per pair class, initialised at 0)")
     ap.add_argument("--overfit-one", default=None, metavar="ID",
                     help="diagnostic 2 (30 Sep 2026): pool, size and both hold-outs = this one molecule; no inner validation, no early stopping; must reach ratio << 0.1")
     ap.add_argument("--pretrained", default=None, help="C2: a `rungC_pretrain.py` checkpoint; its body is loaded, the head re-initialised per seed")
@@ -378,6 +407,8 @@ def main() -> int:
         t["cls"] = entry_classes(m)
         if a.aux == "pattern":
             t["pat_cls"] = pattern_classes(Path(a.molecules) / i, mols[i])
+        if a.head == "hybrid":
+            t.update(hybrid_tensors(Path(a.molecules) / i, mols[i]))
         if a.zero_hlow:
             t["H_low"] = torch.zeros_like(t["H_low"])
         tensors[i] = t
@@ -391,14 +422,15 @@ def main() -> int:
                n_molecules=len(mols), holdout_a=test_a, holdout_b=test_b, scaffold_cores=cores, pool=len(pool), pool_ids=pool, pool_layers=a.pool_layers,
                sizes=sizes, seeds=seeds, epochs=a.epochs, lr=a.lr, aux_weight=a.aux_weight, loss=a.loss, scale=a.scale, inner_val=a.inner_val,
                patience=a.patience, pretrained=a.pretrained, aggregation=a.aggregation, pretrained_elements=a.pretrained_elements,
-               aux_mode=a.aux, zero_hlow=a.zero_hlow, overfit_one=a.overfit_one, tensor_input=a.tensor_input, pair_class_names=list(PAIR_CLASS_NAMES),
+               aux_mode=a.aux, zero_hlow=a.zero_hlow, overfit_one=a.overfit_one, tensor_input=a.tensor_input, head=a.head, sqm_scale=a.sqm_scale,
+               pair_class_names=list(PAIR_CLASS_NAMES),
                substituted_analytic=substituted, curve={})
     res["zero_rule"] = {h: readouts(mols, ids, pool, lambda i: np.zeros_like(mols[i]["F_low"])) for h, ids in tests.items() if ids}
     lines = [f"# Rung C (equivariant ΔH, C1 from scratch) — {a.out_prefix} ({res['date']}){' — SMOKE, not a result' if a.smoke else ''}", "",
              f"recipe: lr {a.lr}, epochs {a.epochs}, loss {a.loss}, aux weight {a.aux_weight}, internal term {a.aux}, output scale {a.scale}, "
              f"inner validation {a.inner_val}, patience {a.patience}; pool layers {a.pool_layers}; {a.aggregation} aggregation"
              + ("; H_low input zeroed (diagnostic 1)" if a.zero_hlow else "") + (f"; overfit-one {a.overfit_one} (diagnostic 2)" if a.overfit_one else "")
-             + ("; rank-2 tensor input" if a.tensor_input else ""), "",
+             + ("; rank-2 tensor input" if a.tensor_input else "") + (f"; hybrid head{' + SQM α' if a.sqm_scale else ''}" if a.head == "hybrid" else ""), "",
              "| n | seed | hold-out | ring couplings | zero | ratio | corrected ω | zero ω | ΔH residual ratio | s |",
              "|---|---|---|---|---|---|---|---|---|---|"]
     for n in sizes:
@@ -414,7 +446,7 @@ def main() -> int:
             t1 = time.time()
             val_ids, fit_ids = inner_split(tr, seed, a.inner_val)
             model, hist = train_one(fit_ids, tensors, seed, a.epochs, a.lr, log, a.aux_weight, a.loss, a.scale, val_ids, a.patience, a.pretrained,
-                                    a.aggregation, a.pretrained_elements, aux_mode=a.aux, tensor_input=a.tensor_input)
+                                    a.aggregation, a.pretrained_elements, aux_mode=a.aux, tensor_input=a.tensor_input, head=a.head, sqm_scale=a.sqm_scale)
             dF_of = predictor(model, tensors, mols)
             out = {"seed": seed, "train_history": hist, "output_scale": model.scale, "class_scale": model.class_scale_values,
                    "aux_class_scale": (None if model.aux_class_scale is None else model.aux_class_scale.tolist()),

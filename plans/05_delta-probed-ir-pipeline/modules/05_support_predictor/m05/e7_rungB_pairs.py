@@ -57,8 +57,9 @@ def ring_cycles(adj, R):
     return cycles
 
 
-def molecule_pairs(symbols_raw, coords_bohr, F_low):
-    """Primitive feature vectors, the pattern pairs with pair features, and metadata."""
+def molecule_pairs(symbols_raw, coords_bohr, F_low, return_atoms=False):
+    """Primitive feature vectors, the pattern pairs with pair features, and metadata. With return_atoms=True (30 Sep 2026, the hybrid head of
+    rung C) a fifth value: the atom set of every primitive, in the primitive order of the B matrix."""
     from geometric.internal import Angle, Dihedral, Distance, LinearAngle, OutOfPlane, PrimitiveInternalCoordinates
     from geometric.molecule import Molecule
     symbols = [s.capitalize() for s in symbols_raw]; coords = np.asarray(coords_bohr, float)
@@ -127,6 +128,8 @@ def molecule_pairs(symbols_raw, coords_bohr, F_low):
                 pc_pair = 4 if (is_bond[i] and is_bond[j]) else 5
             extra = np.array([shared, same_ring, float(rdist == 1), float(rdist == 2), float(rdist >= 3), F_low[i, j], F_low[i, i] * F_low[j, j], float(i == j)], np.float32)
             pairs.append((i, j)); pfeat.append(np.concatenate([feats[i] + feats[j], np.abs(feats[i] - feats[j]), extra])); pcls.append(pc_pair)
+    if return_atoms:
+        return np.array(pairs), np.stack(pfeat).astype(np.float32), np.array(pcls), ic.wilsonB(xyz), atoms
     return np.array(pairs), np.stack(pfeat).astype(np.float32), np.array(pcls), ic.wilsonB(xyz)
 
 
