@@ -425,3 +425,23 @@ Not combinable with a pretrained body (refused).
 **Predictions.** (i) (a) 0.55–0.70, ω 6–8 cm⁻¹, resting on rank 1; (ii) 0.60–0.72. **Lines.** (i) pass (a) ≤ 0.75; (ii) pass (a) ≤ 0.76.
 Miss on both: the input was not the bottleneck at this head → the hybrid head (rank 3, line (a) ≤ 0.55) is next, and the invariants-removed
 variant (tensor block only) is run to force the route. Pass on (i) but not (ii): the two changes need each other — reported as such.
+
+## Dated amendment 30 September 23:0x — rank 3: the hybrid head (equivariant encoder → ΔF on the pattern → ΔH = Bᵀ ΔF B), registered before it runs
+
+**The model (`m05/rungC_hybrid.py`, `rungC_train.py --head hybrid`, fresh body only, needs `--aux pattern`).** The encoder is the registered body
+(optionally with the rank-2 input). Per pattern pair (p, q) the head sees the mean-pooled scalar channels and vector-channel norms of the atoms of p
+and of q (sum and product of the two primitives' features), an embedding of the pair class, and the three low-level force constants F_low,pq, F_low,pp,
+F_low,qq (standardised by their RMS over the fit molecules) — the object rung B is anchored on — and returns ΔF_pq in units of the class scale (RMS of
+the true ΔF per class over the fit molecules). ΔH = Bᵀ ΔF B: symmetric and free of rigid-body components by construction; every read-out (full-ΔF
+projection, ring couplings, corrected ω, Cartesian ΔH residual ratio) is unchanged, so the hybrid is judged on the same quantities as the Cartesian
+head, not on its own sparse target only (the reviewers' warning). Option `--sqm-scale` (Gemini): ΔF_pq = α_c F_low,pq + residual, α initialised at 0.
+**Tests (44 rung-C tests pass):** symmetry, translational and rotational null modes, equivariance with B rebuilt for a reflected-rotated frame
+(1e-6), pooling matrix, input scales from the given ids only, the α term. Corpus smoke (5 molecules, 2 epochs) runs end to end.
+
+**Runs (`rungC_night3_0930.sh`, after night chain 2; pool A + A2 (175), winner flags, seeds 0–2, inner validation 15 %):** (i) hybrid; (ii) hybrid + SQM α;
+(iii) hybrid + rank-2 tensor input. Records `out/E7_rungC_rank3_hybrid{,_sqm,_tensor}_2026-10-01`.
+**Predictions.** (i) (a) 0.45–0.60 (near rung B's 0.43 if the encoder is not harmful; the reviewers: 0.45–0.55); (ii) within 0.03 of (i) — the α term
+should matter little once F_low is an input; (iii) ≤ (i). **Lines.** Claim "the Cartesian head was the problem": (a) ≤ 0.55 on (i) or (iii). Pass: (a) ≤ 0.65.
+Miss (> 0.75): the encoder's environment features add nothing over rung B's hand-made ones at this data size — reported as such, and the next levers
+are topology features and the data step. Reading rule: the hybrid is compared with rung B on the same hold-outs *and* on the Cartesian ΔH residual
+ratio, so that a gain on the pattern is not bought with a loss off it.
