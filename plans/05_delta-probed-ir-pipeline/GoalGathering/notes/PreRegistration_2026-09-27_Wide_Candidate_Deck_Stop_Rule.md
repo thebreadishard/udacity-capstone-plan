@@ -105,3 +105,11 @@ wide pool, B_max reconsidered against the measured distribution of costs — to 
 oracle) was launched at 21:57 on the laptop as committed above (8 shards, `out/sim/all_p2s1_w0_shard*`); it is read on the same lines when it lands.
 Benzene at CC with the band-free prior (`out/cc/A_8448043181_cc_test_all_band0.md`): the oracle reaches 0.3 at 372 energies as with no prior, P0 at 558
 (band prior 1,116; no prior 1,054) — on the one real response the band-free ℓ₁ halves the blind order's cost.
+
+## Outcome, reading (ii) — 30 September 07:1x: as registered in the amendment, band-free solver prior (`out/sim/stop_rule_band_free_prior_2026-09-30.{json,md}`)
+
+**W1 FAIL, W2 FAIL.** Under P12 the rule stops within B_max on **39 of 97 molecules (40 %)** (reading (i): 53 %), at 1.15× the band deck as a ratio of medians
+(1.24× median per-molecule ratio); parents 61 %, the substituted A2 set 25 %. **False stops 11 of 39 (28 %)** (reading (i): 29 %). P0 25 % / 96 % false; the
+oracle 55 % at 0.54× with 2 % false stops. The band-free prior therefore does not move the stop rule; the suspects that remain are the ones of the 28 Sep
+amendment — the held-out set (the band deck's), the threshold (no margin), the budget definition (against the band deck) — exactly what
+`Draft_2026-09-29_Stop_Rule_Registration_Two.md` re-registers. That draft was written on 29 Sep before these numbers existed. Notebook section 4e.

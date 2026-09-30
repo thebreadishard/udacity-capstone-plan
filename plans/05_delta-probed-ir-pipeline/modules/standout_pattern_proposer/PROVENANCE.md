@@ -74,3 +74,8 @@ was computed with the CCSD lambda instead of the CCSD(T) lambda (pyscf `grad.ccs
 corrected benzene Hessian when it lands (hel1-23, rerun since 21:10), as a dated follow-up section, not a replacement.
 
 **29 Sep 2026, 23:4x — follow-up on the corrected benzene Hessian.** `cc_level_test.py A_8448043181 …e8_benzene_ccpvdz_tlambda/hessian_ccsd_t.npz --use-analytic [--tag tlambda | --pool all --w-cm 0 --tag tlambda_all_band0]` → `out/cc/A_8448043181_cc_test_analytic_tlambda*.{json,md}`: band deck C1/C2 FAIL (unchanged); wide pool band-free CC P1 median 0.54, oracle 124, C1 and C2 pass. Notebook section on it when the naphthalene rerun lands.
+
+**30 Sep 2026, 07:1x — reading (ii) read.** `merge_shards.py out/sim/all_p2s1_w0_merged out/sim/all_p2s1_w0_shard{0..7}.json` (97 molecules) and
+`stop_rule_readout.py out/sim/all_p2s1_w0_merged.json out/sim/band_p2s1A_merged.json out/sim/stop_rule_band_free_prior_2026-09-30 --label "reading (ii): band-free
+solver prior …"` → `out/sim/stop_rule_band_free_prior_2026-09-30.{json,md}`: P12 stops on 39/97 (40 %), 1.15× the band deck (ratio of medians), 11 false stops
+(28 %); oracle 53/97 (55 %), 0.54×, 1 false stop (2 %). W1 FAIL, W2 FAIL. Notebook section 4e (executed 07:2x).

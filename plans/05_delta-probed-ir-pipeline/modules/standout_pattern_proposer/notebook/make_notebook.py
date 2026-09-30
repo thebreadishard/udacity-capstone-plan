@@ -300,6 +300,27 @@ the band-trained scorer halves the cost on the real CC response (P1 median 0.46 
 the noisy files. One molecule, one scorer; nothing about the learned representation changes. Rule for every CC-level read from here: the analytic pair as
 the low level, never a corpus psi4 file. Naphthalene decides, read the same way.""")
 
+# ---- 4e. follow-up (30 September 2026): reading (ii) of the stop rule — band-free solver prior
+md("""### 4e. Follow-up (30 September 2026): the stop rule read again with the band-free solver prior (reading (ii))
+
+Reading (i) of 28 September (section 4c's pre-registration amendment) failed both stop-rule lines under the band prior: 53 % of the 97 evaluation
+molecules stopped within twice the band deck (line 90 %) and 29 % of the stops were false (line 5 %). The amendment named the band prior as one suspect
+and registered reading (ii): the same recovery with the band-free solver prior (`--w-cm 0`), P12 and the oracle only, eight laptop shards
+(29 Sep 21:57 → 22:58). Same read-out tool, same lines; the band record is used only for B_max, as registered.""")
+code("""r1 = json.load(open(OUT / "sim" / "stop_rule_band_prior_2026-09-28.json")); r2 = json.load(open(OUT / "sim" / "stop_rule_band_free_prior_2026-09-30.json"))
+rows = []
+for tag, r in (("reading (i), 28 Sep: band prior", r1), ("reading (ii), 30 Sep: band-free prior", r2)):
+    j = r["judged"]
+    rows.append({"reading": tag, "judged on": j["order"], "stopped within B_max": f"{100 * j['frac_stopped']:.0f} %", "cost ratio of medians": round(j["cost_ratio_of_medians"], 2),
+                 "false stops": f"{100 * j['frac_false_stops']:.0f} %", "W1": "pass" if j["W1_pass"] else "FAIL", "W2": "pass" if j["W2_pass"] else "FAIL"})
+display(pd.DataFrame(rows).set_index("reading"))""")
+md("""*Reading (30 September 2026).* The prior was not the problem: with the band-free prior P12 stops on 40 % (was 53 %) with 28 % false stops (was 29 %);
+the oracle stops on 55 % with 2 % false stops at 0.54× the band deck. W1 and W2 fail again. What this settles is the diagnosis of the 28 September
+amendment: the stop quantity reads a held-out set that belongs to the band deck and a threshold with no margin, and the budget is defined against the
+band deck that is no longer the plan's reference. The next registration (`Draft_2026-09-29_Stop_Rule_Registration_Two.md`: held-out set drawn from the
+wide pool, τ with a margin fitted on the validation split, B_max from the measured cost distribution) waits for the user's word; nothing in it was
+fitted to these numbers.""")
+
 md("""## 5. The deck itself — the band candidate set against every pair
 
 `deck_cost_readout.py` compares, per evaluation split, what the band deck and the all-pairs candidate set cost and buy. This is the result that changes
