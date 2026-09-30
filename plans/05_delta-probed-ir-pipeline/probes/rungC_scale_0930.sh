@@ -14,6 +14,10 @@ if [ "${SMOKE:-}" = 1 ]; then
        --pretrained out/rungC_pretrained_2026-09-27.pt --pretrained-elements 1,6,7,8,9 $WIN && echo "=== SMOKE OK" || echo "=== SMOKE FAILED"
   exit 0
 fi
+# Design-check gate (the rule of 28 Sep; the user, 30 Sep 22:1x: highest standards): both bodies on the target's extremes, PASS or no launch.
+python m05/design_check.py corpus/molecules --out out/design_check_scale_C1_$D --aggregation sum > out/design_check_scale_C1_$D.txt 2>&1   && grep -q "verdict: \*\*PASS\*\*" out/design_check_scale_C1_$D.txt || { echo "=== DESIGN CHECK C1 FAILED — not launched $(date)"; exit 1; }
+python m05/design_check.py corpus/molecules --out out/design_check_scale_C2_$D --checkpoint out/rungC_pretrained_2026-09-27.pt --as-finetune   --pretrained-elements 1,6,7,8,9 --aggregation sum > out/design_check_scale_C2_$D.txt 2>&1   && grep -q "verdict: \*\*PASS\*\*" out/design_check_scale_C2_$D.txt || { echo "=== DESIGN CHECK C2 FAILED — not launched $(date)"; exit 1; }
+echo "=== design checks PASS $(date)"
 echo "=== rung C scaling start $(date) flags: $WIN"
 python m05/rungC_train.py corpus/molecules out/E7_rungC_scale_C1_$D --use-analytic --pool-layers A,A2,B --sizes 449,750 --seeds 0,1,2 --inner-val 0.15 --threads 8 --aggregation sum $WIN \
   && echo "=== C1 done $(date)" || echo "=== C1 FAILED $(date)"
