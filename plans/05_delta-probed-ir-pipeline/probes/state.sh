@@ -31,6 +31,8 @@ echo "--- monitor processes (expect 1 poller + its wrapper; 26 Sep 2026: 93 orph
 echo "  $(ps -ef 2>/dev/null | grep -c "[m]onitor_cmd_") monitor_cmd processes; $(ps -ef 2>/dev/null | grep -c "[s]sh -i") ssh sessions"
 echo "--- git ---"
 echo "  $(git status --porcelain | wc -l) uncommitted paths; HEAD: $(git log --oneline -1)"
+# 30 Sep 2026: CI had been red for five days unnoticed — the digest now shows the last CI result on every session start
+echo "  CI (last plan05 run): $(gh run list --repo thebreadishard/udacity-capstone-plan --workflow plan05 --limit 1 --json conclusion,status,headSha,createdAt --jq '.[0] | (.conclusion // .status) + " on " + .headSha[:7] + " " + .createdAt[:16]' 2>/dev/null || echo 'gh unavailable')"
 echo "--- three most recent ledger entries (first line each) ---"
 sed -n '/^## 6. Log/,$p' "$LED" | grep -a '^- \*\*' | head -3 | cut -c1-140 | sed 's/^/  /'
 echo "=== grep the ledger only if something above needs explaining ==="

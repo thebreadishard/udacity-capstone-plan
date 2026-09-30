@@ -29,6 +29,10 @@ jobs:
           cache: pip
       - name: Install the package with its test tools
         run: pip install -e ".[dev]"
+      # 30 Sep 2026: the module tests (test_pp_*, test_m03_origin_columns) import torch and pandas through the modules they test;
+      # without them collection failed and CI stayed red from 26 Sep unnoticed. CPU torch keeps the install small.
+      - name: Test dependencies of the module tests (pandas, CPU torch)
+        run: pip install pandas && pip install torch --index-url https://download.pytorch.org/whl/cpu
       - name: Ruff on tier-2 code
         run: ruff check src tests
       - name: Syntax check on the probes (tier 1)
