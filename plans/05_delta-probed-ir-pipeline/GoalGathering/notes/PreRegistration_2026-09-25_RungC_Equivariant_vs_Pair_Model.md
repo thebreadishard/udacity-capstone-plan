@@ -1040,3 +1040,30 @@ Two cells (`rungC_sherlock15_1001.sh`, lane B after chain 14; 175, pattern f + r
 body's 0.33 on this recipe), pretrained 0.31–0.35. **Lines.** *Works:* pretrained below fresh by both spreads and ≤ 0.31 → pretraining matters on the carried
 recipe; the pretraining is continued overnight to convergence. *Flat:* within spreads → geometry-only pretraining on QM9 does not help this head; the
 pretraining lever is closed until a Hessian-aware pretraining objective exists. Decision 51 as always.
+
+## Outcome, chain 13 — pattern f with the registered projected target, 175 — 1 October 18:0x (`out/E7_rungC_lever1b_f_proj_175_2026-10-01`)
+
+| model, support, target (175) | (a) ratio | (b) ratio | (a) ω | (a) ΔH residual | best epochs |
+|---|---|---|---|---|---|
+| network, hybrid head, **pattern f, projected** | **0.28** (0.29 / 0.28 / 0.27) | 0.41 (0.42 / 0.44 / 0.39) | 4.64 | **0.188** | 82 / 72 / 75 |
+| network, hybrid head, pattern f, ridge (9b) | 0.33 | 0.40 | 4.60 | 0.220 | 73–119 |
+| network, hybrid head, pattern d, projected (lever 1) | 0.40 | 0.50 | 4.70 | 0.23 | 30–140 |
+| rung B, B1 MLP, pattern f, projected | 0.32 | 0.41 | 4.47 | 0.20 | — |
+
+**Against the lines:** *ridge unnecessary* — and more: the projected target on the wide support is the best pattern-term run of the day on (a) (0.28 against
+0.33 for the ridge, prediction 0.33–0.38 beaten), with the lowest Cartesian residual (0.188) and the earliest best epochs. The ridge target is dropped
+for the hybrid head (it stays available; its bound is the lower one, its entries the less learnable ones). **The carried recipe is pattern f with the
+registered projected target.** Against the hand-feature model on the same support the network is 0.04 better at 175 (0.28 vs 0.32); ω is the same (4.6 vs
+4.5) — the ω gap is model-wide. Decision 51: best epochs 72–82 of 200.
+
+## Dated amendment 1 October 18:1x — chain 16: the carried recipe at 750, and the lane-B runs moved to it (registered before they run)
+
+**Chain 16** (lane A, right after chain 10): pattern f, projected target, hybrid head, carried recipe, pool A + A2 + B, seeds 0–2 →
+`out/E7_rungC_lever1b_f_proj_750_2026-10-01`. Controls: rung B f at 750 (0.32 / ω 4.47, flat with data), chain 10 (f + ridge at 750, running: seeds 0–1 read
+0.30 / 0.35), chain 13 at 175 (0.28). **Prediction:** (a) 0.24–0.28, (b) 0.36–0.40, ω 4.0–4.6. **Lines.** *T1 ratio met:* (a) ≤ 0.30 at 750 with the 175 → 750
+step falling (≥ 0.02); the ω criterion of T1 (≤ 3 cm⁻¹) is read beside it and, if unmet, becomes the named next question (the model's ω gap: 4.5 against
+a target bound of 0.4). *Network earns its place:* below rung B f (0.32) by both spreads at 750. Decision 51 as always.
+**Chains 14 and 15 move to the projected target** (14b: kring weight 0.1 / 0.3 inside `--aux both`, pattern f, projected, 300 epochs; 15b: fresh vs
+20-epoch pretrained mean body, pattern f, projected, 300 epochs); chain 14 was stopped by pid one minute after its start (18:06) and chain 15 before
+it started. Predictions and lines as in their amendments, with chain 13 (0.28 / 4.64 / 0.188) as the control instead of chain 9b. **Chains 12 and 8b**
+(λ cells and the 750 read on the d + ridge route) move to the end of lane A (after chain 6): the route is superseded; they stay as the record of it.
