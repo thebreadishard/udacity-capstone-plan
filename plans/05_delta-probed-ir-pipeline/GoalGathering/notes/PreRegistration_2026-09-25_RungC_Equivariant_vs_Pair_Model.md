@@ -1067,3 +1067,12 @@ a target bound of 0.4). *Network earns its place:* below rung B f (0.32) by both
 20-epoch pretrained mean body, pattern f, projected, 300 epochs); chain 14 was stopped by pid one minute after its start (18:06) and chain 15 before
 it started. Predictions and lines as in their amendments, with chain 13 (0.28 / 4.64 / 0.188) as the control instead of chain 9b. **Chains 12 and 8b**
 (λ cells and the 750 read on the d + ridge route) move to the end of lane A (after chain 6): the route is superseded; they stay as the record of it.
+
+## Outcome, chain 10 — pattern f + ridge target at 750 — 1 October 19:3x (`out/E7_rungC_lever1b_f_ls_750_2026-10-01`)
+
+(a) **0.36** (0.30 / 0.35 / **0.44**), (b) 0.42 (0.36 / 0.46 / 0.45), ω **3.91** (4.26 / 3.58 / 3.89 — the best ω of any run), ΔH 0.217; best epochs 71 / 113 / 170.
+**Against the lines:** *flat* against its 175 read (0.33) — and with a seed spread (0.30–0.44) three times wider than any other run of the day: the ridge
+target at 750 is unstable across seeds (seed 2 sits where the projected target's pattern-d run sat). Prediction 0.22–0.30 missed. The ridge route is closed
+for the hybrid head on both counts (175: 0.33 vs 0.28 projected; 750: 0.36 with the spread). The one thing it leaves behind is ω 3.9, the lowest so far,
+which says the ω gap is not fixed by the support alone. The T1 read moves to chain 16 (f + projected at 750, started 19:37; ≈ 1.3 h per seed beside lane
+B → first seed ≈ 20:50, all three ≈ 23:30).
