@@ -40,7 +40,7 @@ RING = "ring-ip"
 ELEMS = ["H", "C", "N", "O", "S", "F", "Cl"]
 CLASSES = H_CLASSES + C_CLASSES + X_CLASSES
 PRIM_CLASSES = ["Distance", "Angle", "Dihedral", "OutOfPlane", "LinearAngle", "other"]
-PAIR_CLASS = ["diag_bond", "diag_angle", "diag_dihedral", "diag_other", "off_bondbond", "off_other"]
+PAIR_CLASS = ["diag_bond", "diag_angle", "diag_dihedral", "diag_other", "off_bondbond", "off_other", "off_twobond", "off_dist2", "off_dist3"]   # classes 0–8 (6–8: patterns d/e/f, 1 Oct 2026)
 
 
 # ------------------------------------------------------------------------------------------------------------- geometry side
