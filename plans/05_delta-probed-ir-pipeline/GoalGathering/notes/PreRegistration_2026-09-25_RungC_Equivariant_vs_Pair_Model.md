@@ -648,3 +648,27 @@ Noise note: the lr 1e-3 / 128 cell here reads 0.45 against 0.438 for the same fl
 
 *Registered the same minute:* the carried recipe is read at 750 (A,A2,B, seeds 0–2) → `out/E7_rungC_hybrid_best_750_2026-10-01`, the number the
 morning table ends with; prediction (a) 0.40–0.43, ω 4.3–4.6; no new line, it is the carried model's record at the larger pool.
+
+## Outcome, the carried recipe at 750 — 1 October 06:1x (`out/E7_rungC_hybrid_best_750_2026-10-01`; hybrid + SQM α + pair features, lr 3e-4, width 256, seeds 0–2)
+
+| model | pool | (a) ratio (spread) / ω (spread) | (b) ratio / ω | ΔH residual | best epochs |
+|---|---|---|---|---|---|
+| rung B pair MLP | 750 | 0.420 (0.003) / 4.81 (0.09) | 0.454 / 4.74 | — | — |
+| **carried hybrid recipe** | 750 | **0.431** (0.011) / **4.30** (0.26) | 0.477 / 4.81 | 0.26 | 112, 63, 89 |
+
+Prediction met ((a) 0.40–0.43, ω 4.3–4.6). Against rung B: equal on the coupling ratio of the parents (0.43 against 0.42), better on their corrected
+frequencies (4.30 against 4.81 cm⁻¹, two spreads), slightly behind on the scaffolds (0.477 against 0.454). Decision 51: best epochs 63–112 of 200.
+
+**The morning table (1 October 06:1x).** On the parents hold-out (a), three seeds each:
+
+| model | 175 (A + A2) | 750 (A + A2 + B) |
+|---|---|---|
+| rung B pair MLP | 0.430 / 4.71 | 0.420 / 4.81 |
+| rung C, Cartesian head (registered) | 0.811 / 9.42 | 0.823 / 9.29 |
+| rung C, hybrid head | 0.470 / 5.20 | — |
+| rung C, hybrid + SQM α | 0.449 / 4.77 | 0.458 / 5.35 (mixed order) |
+| rung C, hybrid + SQM + pair features | 0.438 / 4.72 | 0.418 / 4.49 |
+| **rung C, carried recipe (lr 3e-4, width 256)** | **0.43 / 4.44** | **0.431 / 4.30** |
+
+The equivariant model has caught up with the pair model in one night and now gives the best corrected frequencies on the parents; no model goes
+below ≈ 0.42 on the couplings. That number is the floor of this representation and these data, reached from two sides.
