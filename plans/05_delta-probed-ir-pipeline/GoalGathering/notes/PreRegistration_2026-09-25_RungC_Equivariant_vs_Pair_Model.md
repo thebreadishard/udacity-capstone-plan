@@ -875,3 +875,14 @@ the prediction 0.36–0.40 was too cautious. But the same run is worse on everyt
 its narrow form (the loss was part of the floor on the ring couplings) and refuted as a recipe on its own. **Decision, as the amendment of 08:1x said for
 *works*:** the term is carried only in combination — pattern term (ridge target) + kring term — as lever 3b, registered below. Decision 51: best epochs
 below the cap.
+
+## Dated amendment 1 October 13:2x — lever 3b: pattern term (ridge target) + kring term (registered before it runs)
+
+**Code:** `rungC_train.py --aux both` = the pattern term on the chosen target plus the kring term, equal weights inside the auxiliary term (`_pattern_term`,
+`_kring_term`, test `test_aux_both_is_the_sum_of_pattern_and_kring_terms`; corpus smoke). **Run (`rungC_sherlock11_1001.sh`, a second lane that starts when
+the 20-epoch pretraining has written its checkpoint and freed its six cores):** hybrid + SQM α + pair features, pattern d, `--aux both --aux-target ls
+--ls-lam 1e-3`, sum body, carried recipe, 175, seeds 0–2 → `out/E7_rungC_lever3b_both_175_2026-10-01`. Controls: lever 3 (kring alone: 0.29 / ω 7.3 / ΔH
+0.4–1.0) and chain 7c (pattern term on the ridge target alone, running). **Prediction:** (a) 0.26–0.32 with ω 3.5–5.0 and ΔH residual ≤ 0.30 — the pattern
+term holds the rest of the Hessian while the kring term pulls the couplings. **Lines.** *Works:* (a) ≤ 0.32 **and** ω ≤ 5.0 **and** ΔH residual ≤ 0.30 →
+the combined term is the carried loss; re-read at 750. *Half:* the couplings ≤ 0.32 but ω > 5.0 → the weights between the two terms are searched (one
+decade each way). *Flat:* (a) within spreads of chain 7c → the kring term adds nothing once the target is right. Decision 51 as always.

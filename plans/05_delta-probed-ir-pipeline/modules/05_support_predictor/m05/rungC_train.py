@@ -153,25 +153,36 @@ def kring_tensors(masses: np.ndarray, V: np.ndarray, w: np.ndarray, family: list
                 K_true=torch.as_tensor(K_true, dtype=dtype), K_norm=torch.tensor(max(norm, 1e-30), dtype=dtype))
 
 
+def _pattern_term(model, t, dF_p):
+    cls = t["pat_cls"]
+    on = cls >= 0
+    scale = model.aux_class_scale[cls.clamp_min(0)]
+    return (((dF_p - t["dF_true"]) / scale) ** 2)[on].mean()
+
+
+def _kring_term(t, pred, main):
+    r = t["ring"]
+    if r.numel() == 0:
+        return main * 0.0
+    K = (t["Cm"] @ pred @ t["Cm"].T) * t["kscale"]
+    return ((K - t["K_true"])[r][:, r] ** 2).mean() / t["K_norm"]
+
+
 def _terms(model, t):
-    """Registered main term (mass-weighted Cartesian MSE) and the internal-ΔF term, with the per-molecule scale tensor when the model has one.
-    Internal term: 'all' (registered) = relative MSE over every entry of B⁺ᵀ ΔH B⁺; 'pattern' (30 Sep 2026) = MSE over the pair model's pattern only,
-    each entry divided by its class scale (`model.aux_class_scale`, fitted on the fit molecules) — the read-out quantity, standardised as rung B does."""
+    """Registered main term (mass-weighted Cartesian MSE) and the auxiliary term, with the per-molecule scale tensor when the model has one.
+    Auxiliary term: 'all' (registered) = relative MSE over every entry of B⁺ᵀ ΔH B⁺; 'pattern' (30 Sep 2026) = MSE over the pair model's pattern only,
+    each entry divided by its class scale (`model.aux_class_scale`, fitted on the fit molecules); 'kring' (1 Oct) = the ring-mode block of K;
+    'both' (1 Oct, lever 3b) = pattern + kring, equal weights."""
     pred = model(t["Z"], t["pos"], t["H_low"], t)
     main = ((pred - t["dH_true"]) * t["mw"] * LOSS_SCALE).pow(2).mean()
     dF_p = t["Bp"].T @ pred @ t["Bp"]
-    if getattr(model, "aux_mode", "all") == "pattern":
-        cls = t["pat_cls"]
-        on = cls >= 0
-        scale = model.aux_class_scale[cls.clamp_min(0)]
-        aux = (((dF_p - t["dF_true"]) / scale) ** 2)[on].mean()
-    elif getattr(model, "aux_mode", "all") == "kring":
-        r = t["ring"]
-        if r.numel() == 0:
-            aux = main * 0.0
-        else:
-            K = (t["Cm"] @ pred @ t["Cm"].T) * t["kscale"]
-            aux = ((K - t["K_true"])[r][:, r] ** 2).mean() / t["K_norm"]
+    mode = getattr(model, "aux_mode", "all")
+    if mode == "pattern":
+        aux = _pattern_term(model, t, dF_p)
+    elif mode == "kring":
+        aux = _kring_term(t, pred, main)
+    elif mode == "both":
+        aux = _pattern_term(model, t, dF_p) + _kring_term(t, pred, main)
     else:
         aux = ((dF_p - t["dF_true"]) ** 2).mean() / t["dF_norm"]        # relative internal-ΔF term (build note of 27 Sep: the raw term is ~1e9 in a.u.)
     return main, aux, pred
@@ -286,8 +297,8 @@ def train_one(train_ids: list, tensors: dict, seed: int, epochs: int, lr: float 
     if pretrained and (body_blocks, body_width) != (N_BLOCKS, N_S):
         raise ValueError(f"--body-blocks/--body-width ({body_blocks}, {body_width}) do not fit a pretrained body ({N_BLOCKS}, {N_S})")
     if head == "hybrid":
-        if aux_mode not in ("pattern", "kring"):
-            raise ValueError("--head hybrid needs --aux pattern or kring (its output lives on the pattern; the registered rank-3 run uses the pattern term)")
+        if aux_mode not in ("pattern", "kring", "both"):
+            raise ValueError("--head hybrid needs --aux pattern, kring or both (its output lives on the pattern; the registered rank-3 run uses the pattern term)")
         n_pf = int(tensors[train_ids[0]]["pfeat"].shape[1]) if pair_features else 0
         model = HybridDeltaFModel(aggregation=aggregation, tensor_input=tensor_input, sqm_scale=sqm_scale,
                                   class_scale=pattern_class_scales(tensors, train_ids), n_pair_features=n_pf, hidden=hybrid_hidden,
@@ -315,7 +326,7 @@ def train_one(train_ids: list, tensors: dict, seed: int, epochs: int, lr: float 
             f"{check_pretrained_transfer(body, tensors, train_ids):.3g} on the training molecules")
         model = Scaled(body, scale, class_scale)
     model.aux_mode = aux_mode
-    model.aux_class_scale = pattern_class_scales(tensors, train_ids) if aux_mode == "pattern" else None
+    model.aux_class_scale = pattern_class_scales(tensors, train_ids) if aux_mode in ("pattern", "both") else None
     if aux_mode == "pattern":
         log("  internal term on the pair model's pattern; class scales " + ", ".join(f"{n} {s:.3g}" for n, s in zip(PAIR_CLASS_NAMES, model.aux_class_scale.tolist(), strict=True)))
     opt = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=1e-4)
@@ -413,7 +424,7 @@ def main() -> int:
     ap.add_argument("--inner-val", type=float, default=0.0,
                     help="search: fraction of the training ids held out per seed as inner validation (the stage read-out)")
     ap.add_argument("--patience", type=int, default=0, help="search stage 2: early stopping on the inner validation term, best state restored (0 = off)")
-    ap.add_argument("--aux", default="all", choices=["all", "pattern", "kring"],
+    ap.add_argument("--aux", default="all", choices=["all", "pattern", "kring", "both"],
                     help="internal term: 'all' (registered) or 'pattern' (30 Sep 2026, rank 2 of the external reviews: the pair model's pattern only, one "
                          "standardisation scale per pair class from the fit molecules)")
     ap.add_argument("--zero-hlow", action="store_true", help="diagnostic 1 (30 Sep 2026): zero the B3LYP Hessian input channels; the ratio must collapse towards the zero rule")
@@ -492,9 +503,9 @@ def main() -> int:
         t["dF_true"] = t["Bp"].T @ t["dH_true"] @ t["Bp"]
         t["dF_norm"] = (t["dF_true"] ** 2).mean().clamp_min(1e-30)
         t["cls"] = entry_classes(m)
-        if a.aux == "kring":
+        if a.aux in ("kring", "both"):
             t.update(kring_tensors(mols[i]["masses"], mols[i]["V"], mols[i]["w"], mols[i]["family"], m["dH_true"]))
-        if a.aux == "pattern" or a.head == "hybrid":                      # the hybrid's class scales need the pattern classes under any aux term
+        if a.aux in ("pattern", "both") or a.head == "hybrid":            # the hybrid's class scales need the pattern classes under any aux term
             t["pat_cls"] = pattern_classes(Path(a.molecules) / i, mols[i], a.pattern)
             if a.aux_target == "ls":                                        # lever 4 (1 Oct 2026): the pattern-consistent target
                 mask = (t["pat_cls"] >= 0).numpy()

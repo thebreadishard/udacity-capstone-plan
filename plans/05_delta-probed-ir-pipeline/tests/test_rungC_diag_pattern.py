@@ -88,7 +88,7 @@ def test_pattern_classes_on_benzene_match_the_loader_and_are_symmetric():
 
 def test_cli_switches_present_and_recipe_unchanged_by_default():
     text = (M05 / "rungC_train.py").read_text(encoding="utf-8")
-    assert re.search(r'add_argument\("--aux", default="all", choices=\["all", "pattern", "kring"\]', text)   # kring added 1 Oct (lever 3)
+    assert re.search(r'add_argument\("--aux", default="all", choices=\["all", "pattern", "kring", "both"\]', text)   # kring, both added 1 Oct (levers 3, 3b)
     assert re.search(r'add_argument\("--zero-hlow", action="store_true"', text)
     assert re.search(r'add_argument\("--overfit-one", default=None', text)
     assert 'aux_mode: str = "all"' in text                                            # default keeps the registered internal term
@@ -180,7 +180,7 @@ def test_kring_tensors_reproduce_k_of_and_vanish_on_the_truth():
     main, aux, _pred = RT._terms(Truth(), t)
     assert float(main) == 0.0 and float(aux) < 1e-20
     text = (M05 / "rungC_train.py").read_text(encoding="utf-8")
-    assert re.search(r'add_argument\("--aux", default="all", choices=\["all", "pattern", "kring"\]', text)
+    assert re.search(r'add_argument\("--aux", default="all", choices=\["all", "pattern", "kring", "both"\]', text)
 
 
 def test_body_size_switches_present_and_pretrained_refused():
@@ -224,3 +224,29 @@ def test_patterns_e_and_f_extend_d_by_set_distance():
             assert min(D[a, b] for a in atoms[i] for b in atoms[j]) == dist
     with pytest.raises(ValueError):
         RB.molecule_pairs(g["symbols"], coords, F, pattern="g")
+
+
+def test_aux_both_is_the_sum_of_pattern_and_kring_terms():
+    """Lever 3b (1 Oct 2026): with synthetic tensors the 'both' term equals pattern + kring exactly."""
+    import rungC_train as RT
+    torch.manual_seed(0)
+    K, n, M = 4, 6, 3
+    t = {"Z": None, "pos": None, "H_low": None, "dH_true": torch.zeros(n, n), "mw": torch.ones(n, n), "Bp": torch.randn(n, K),
+         "dF_true": torch.randn(K, K), "dF_norm": torch.tensor(1.0), "pat_cls": torch.tensor([[0, 1, -1, -1], [1, 2, -1, -1], [-1, -1, 3, 4], [-1, -1, 4, 5]]),
+         "Cm": torch.randn(M, n), "kscale": torch.ones(M, M), "ring": torch.tensor([0, 2]), "K_true": torch.randn(M, M), "K_norm": torch.tensor(2.0)}
+    pred = torch.randn(n, n)
+    pred = pred + pred.T
+
+    class Fixed(torch.nn.Module):
+        aux_mode = "pattern"
+        aux_class_scale = torch.full((RT.PAIR_CLASS_NAMES.__len__(),), 0.5)
+
+        def forward(self, Z, pos, H_low, t):
+            return pred
+    m = Fixed()
+    _, pat, _ = RT._terms(m, t)
+    m.aux_mode = "kring"
+    _, kr, _ = RT._terms(m, t)
+    m.aux_mode = "both"
+    _, both, _ = RT._terms(m, t)
+    assert torch.allclose(both, pat + kr) and float(pat) > 0 and float(kr) > 0
