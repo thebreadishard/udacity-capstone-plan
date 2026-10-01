@@ -858,3 +858,20 @@ Same recipe as chain 9b at the full pool (A + A2 + B, seeds 0–2) → `out/E7_r
 and lever 1 (pattern d, projected target, 0.37 / 4.00). **Prediction:** (a) 0.22–0.30, ω 2.8–3.8. **Lines.** *Works:* (a) ≤ 0.30 and below 8b by both
 spreads → T1's ratio criterion met on this route; the ω criterion (≤ 3) and the (b) hold-out are read beside it. *Flat:* within spreads of 8b. *Hurts:*
 above 8b by both spreads. If chain 9b reads *hurts* at 175, chain 10 is stopped by pid before it starts and the stop is recorded. Decision 51 as always.
+
+## Outcome, lever 3 (H8) — the kring term — 1 October 13:1x (`out/E7_rungC_lever3_kring_175_2026-10-01`)
+
+| read-out | kring term, seeds 0 / 1 / 2 | pattern term (lever 1, 175) |
+|---|---|---|
+| (a) ring-coupling ratio | **0.29** (0.32 / 0.29 / 0.27) | 0.40 (0.40 / 0.42 / 0.39) |
+| (b) ring-coupling ratio | **0.41** (0.43 / 0.42 / 0.39) | 0.50 |
+| (a) corrected ω rms | **7.3** (7.3 / 6.5 / 8.2) | 4.7 |
+| (a) ΔH residual ratio | 1.03 / 0.42 / 0.37 | 0.23 |
+| best epochs | 165 / 140 / 100 of 200 | 97 / 30 / 140 |
+
+**Against the lines:** on the registered read-out the term *works* — (a) 0.29 against 0.40, below by far more than both spreads, (b) 0.41 against 0.50 — and
+the prediction 0.36–0.40 was too cautious. But the same run is worse on everything the term does not see: ω 7.3 against 4.7 and a ΔH residual of 0.4–1.0
+(seed 0 leaves more Cartesian power than the zero rule). The read-out-aligned loss buys the ring couplings with the rest of the Hessian. H8 is confirmed in
+its narrow form (the loss was part of the floor on the ring couplings) and refuted as a recipe on its own. **Decision, as the amendment of 08:1x said for
+*works*:** the term is carried only in combination — pattern term (ridge target) + kring term — as lever 3b, registered below. Decision 51: best epochs
+below the cap.
