@@ -15,6 +15,7 @@ frequency rms in cm⁻¹.*
 | hybrid head, pattern (c), carried recipe | 175 / 750 | 0.43 / 0.431 | 4.44 / 4.30 | 1 Oct 05:0x, 06:1x |
 | hybrid head, pattern (d) | 175 / 750 | 0.40 (0.39–0.42) / **0.37 (0.36–0.38)** | 4.7 / **4.00** | 1 Oct 07:3x, 09:0x |
 | hybrid head, pattern (f) + ridge target | 175 | **0.33 (0.32–0.34)**, (b) 0.40 | 4.6 | 1 Oct 15:0x |
+| **rung B (hand features), pattern (f)** | 175 | **0.32**, (b) 0.41 | 4.5 | 1 Oct 15:4x — equals the network |
 
 Three heads with different inductive biases, two data volumes, one recipe search: the same floor. Something shared stops them.
 

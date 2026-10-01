@@ -993,3 +993,25 @@ pattern f, ridge target, hybrid head, carried recipe, 300 epochs because the com
 0.41). **Prediction:** at 0.1 (a) 0.30–0.33 with ω ≤ 5 and ΔH ≤ 0.25; at 0.3 (a) 0.28–0.31 with ω 5–6. **Lines.** *Works:* a cell with (a) ≤ 0.31, ω ≤ 5.0 and
 ΔH residual ≤ 0.25 → the carried loss; re-read at 750. *Half:* couplings down, ω up → the two read-outs trade off under this head; the model, not the
 loss, is the next lever. *Flat:* within spreads of 9b. Decision 51 as always.
+
+## Outcome, rung B with pattern f — 1 October 15:4x (`out/E7_rungB_f_175_2026-10-01`)
+
+| model, support, target | (a) ratio | (b) ratio | (a) ω | (a) ΔH residual |
+|---|---|---|---|---|
+| rung B, B1 MLP, pattern c, projected (27 Sep) | 0.43 | 0.47 | 4.71 | 0.25 |
+| rung B, B1 MLP, **pattern f**, projected | **0.32** | **0.41** | **4.47** | **0.20** |
+| rung B, B2 GBT, pattern f, projected | 0.45 | 0.54 | 7.56 | 0.37 |
+| network, hybrid head, pattern f, ridge (chain 9b) | 0.33 | 0.40 | 4.60 | 0.22 |
+
+**Against the lines:** *helps*, and more than predicted (0.36–0.42): the hand-feature pair model with the wide support equals the network's best (0.32 /
+0.41 / 4.5 against 0.33 / 0.40 / 4.6). Two readings, both to be said plainly: (i) the support is the lever and it is model-independent — the week's
+floor was the pattern's reach plus the target's bound, not any model; (ii) at 175 molecules the learned encoder adds nothing over hand-made pair features.
+The network's case must be made where hand features cannot follow: more data (chain 10 at 750 against rung B f at 750, registered below), and the
+transfer to CC level and to larger molecules (T3). The rung-B baseline for every later comparison is now **0.32 / 4.47** (pattern f).
+
+## Dated amendment 1 October 15:5x — rung B with pattern f at 750 (registered before it runs)
+
+Same recipe, `--pool-layers A,A2,B --sizes all` (750), seeds 0–2, two threads → `out/E7_rungB_f_750_2026-10-01`; read beside chain 10 (network, pattern f +
+ridge, 750). **Prediction:** B1 (a) 0.28–0.33 (hand features gain less from data than the encoder should). **Lines.** The pair of numbers decides the
+sentence for the day: network below rung B by both spreads at 750 → the encoder earns its place with data; equal → the network's case rests on T3 and on the
+learning curve beyond 750 (T2), not on the pool.
