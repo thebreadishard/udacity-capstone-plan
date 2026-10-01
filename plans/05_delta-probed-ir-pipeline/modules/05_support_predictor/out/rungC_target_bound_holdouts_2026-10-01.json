@@ -1,0 +1,60 @@
+{
+ "date": "2026-10-01 13:23",
+ "record": "modules/05_support_predictor/out/E7_rungC_lever1_d_175_2026-10-01.json",
+ "lam_rel": 0.001,
+ "patterns": [
+  "d",
+  "f"
+ ],
+ "bounds": {
+  "d:projected": {
+   "a": {
+    "coupling_ratio": 0.3093881695332803,
+    "corrected_freq_rms": 1.8598954719548066,
+    "dH_residual_ratio": 0.16012992268155232
+   },
+   "b": {
+    "coupling_ratio": 0.2833086897476094,
+    "corrected_freq_rms": 1.603915692951573,
+    "dH_residual_ratio": 0.17519394879259623
+   }
+  },
+  "d:ridge": {
+   "a": {
+    "coupling_ratio": 0.1607297101657694,
+    "corrected_freq_rms": 0.9979037905860448,
+    "dH_residual_ratio": 0.10429892344167624
+   },
+   "b": {
+    "coupling_ratio": 0.14692778579895938,
+    "corrected_freq_rms": 1.0116770095386869,
+    "dH_residual_ratio": 0.1110952533102724
+   }
+  },
+  "f:projected": {
+   "a": {
+    "coupling_ratio": 0.08703705318327878,
+    "corrected_freq_rms": 0.41058392499528346,
+    "dH_residual_ratio": 0.04295353395971663
+   },
+   "b": {
+    "coupling_ratio": 0.09045684593593618,
+    "corrected_freq_rms": 0.34914227108546175,
+    "dH_residual_ratio": 0.0526049365243732
+   }
+  },
+  "f:ridge": {
+   "a": {
+    "coupling_ratio": 0.031052425850650038,
+    "corrected_freq_rms": 0.20786059536417123,
+    "dH_residual_ratio": 0.01981006174866579
+   },
+   "b": {
+    "coupling_ratio": 0.02484340759201308,
+    "corrected_freq_rms": 0.1620313512394398,
+    "dH_residual_ratio": 0.02086171869890867
+   }
+  }
+ },
+ "seconds": 65
+}

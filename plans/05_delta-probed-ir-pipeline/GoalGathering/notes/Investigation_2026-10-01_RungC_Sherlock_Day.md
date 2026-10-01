@@ -31,6 +31,21 @@ Three heads with different inductive biases, two data volumes, one recipe search
 | H7 | the (a) read-out is dominated by one or two of its ten molecules | per-molecule ratio of the best model on hold-out (a) | chain 2, seed 0: 0.28–0.55 (fresh), 0.12–0.48 (pretrained) over the ten | **rejected**: the spread is across scaffolds, no molecule dominates |
 | H8 | the loss is not the read-out quantity | lever 3: `--aux kring`, the term on the ring-mode block of K itself (tested against `k_of`), pattern d, 175, 3 seeds, against lever 1's 0.40 | (a) **0.29** (0.27–0.32) against 0.40, (b) 0.41 against 0.50 — but ω **7.3** against 4.7 and ΔH residual 0.4–1.0 | **confirmed on the ring couplings, refuted as a recipe**: the aligned loss buys the couplings with the rest of the Hessian → lever 3b = pattern term (ridge target) + kring term |
 
+## The target bounds on the hold-outs (13:2x, `probes/rungC_target_bound_holdouts.py`, `out/rungC_target_bound_holdouts_2026-10-01`)
+
+The read-out a model would get if it reproduced its pattern target exactly — the ceiling of each route on the molecules the runs are judged on:
+
+| pattern | target | (a) ratio | (a) ω | (b) ratio | model reached |
+|---|---|---|---|---|---|
+| d | projected (registered) | **0.31** | 1.9 | 0.28 | 0.40 at 175, 0.37 at 750 (lever 1) |
+| d | ridge λ 1e-3 (lever 4) | **0.16** | 1.0 | 0.15 | chain 7c / 8b |
+| f | projected | 0.09 | 0.4 | 0.09 | — |
+| f | ridge λ 1e-3 (lever 1b) | **0.03** | 0.2 | 0.03 | chain 9b / 10 |
+
+Reading: on the registered route the model sits 0.06–0.09 above its own target's bound, so the floor of the week was the target by ≈ 0.3 and the model by
+≈ 0.07. The ridge target on pattern d halves the bound; pattern f takes it to the noise floor. The ω gap (models 4.0–4.7 against a bound of 1.9) is the
+model's, not the target's.
+
 ## Targets — proposal to the user (08:1x; the user asked "Wat spreken we af als de target(s)? Wanneer zijn we tevreden?")
 
 Reference points on hold-out (a), proxy targets (ωB97X − B3LYP): zero rule ratio 1.00 / ω 23 cm⁻¹; hand-made pair model 0.42 / 4.8; measured noise
