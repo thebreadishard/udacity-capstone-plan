@@ -28,10 +28,10 @@ def _init(mdir: str):
 
 
 def _one(args):
-    mdir, out, pattern, i, use_analytic = args
+    mdir, out, pattern, i, use_analytic, lam = args
     import torch
     from rungC_equivariant import load_molecule
-    from rungC_targets import cached_pattern_ls_target, weighted_residual
+    from rungC_targets import cached_pattern_ls_target, projected_target, weighted_residual
     from rungC_train import pattern_classes
     torch.set_num_threads(1)
     t0 = time.time()
@@ -39,11 +39,11 @@ def _one(args):
     cls = pattern_classes(Path(mdir) / i, _MOLS[i], pattern)
     mask = (cls >= 0).numpy()
     B = _MOLS[i]["B"]
-    X, cached = cached_pattern_ls_target(Path(out) / "ls_targets", i, pattern, m["dH_true"], B, m["masses"], mask)
-    Bp = np.linalg.pinv(B)
-    projected = np.where(mask, Bp.T @ m["dH_true"] @ Bp, 0.0)
+    X, cached = cached_pattern_ls_target(Path(out) / "ls_targets", i, pattern, m["dH_true"], B, m["masses"], mask, lam_rel=lam)
+    projected = np.where(mask, projected_target(m["dH_true"], B), 0.0)
     return dict(id=i, n_atoms=len(m["masses"]), n_pairs=int(np.triu(mask).sum()), seconds=round(time.time() - t0, 1), from_cache=cached,
-                residual_projected=weighted_residual(m["dH_true"], B, m["masses"], projected), residual_ls=weighted_residual(m["dH_true"], B, m["masses"], X))
+                residual_projected=weighted_residual(m["dH_true"], B, m["masses"], projected), residual_ls=weighted_residual(m["dH_true"], B, m["masses"], X),
+                scale_ratio=float(np.abs(X).max() / max(np.abs(projected).max(), 1e-30)))
 
 
 def main() -> int:
@@ -54,6 +54,7 @@ def main() -> int:
     ap.add_argument("--layers", default="A,A2,B")
     ap.add_argument("--workers", type=int, default=2)
     ap.add_argument("--use-analytic", action="store_true")
+    ap.add_argument("--lam", type=float, default=None, help="relative ridge toward the projected truth (default rungC_targets.LAM_REL)")
     a = ap.parse_args()
     t0 = time.time()
     import e7_t2_sqm as T2
@@ -61,19 +62,24 @@ def main() -> int:
     layers = set(a.layers.split(","))
     ids = sorted(i for i, m in mols.items() if m["layer"] in layers and not m["imaginary"])
     ids.sort(key=lambda i: len(mols[i]["masses"]))                # small first: the cache fills for the 175 pool early
-    print(f"{len(ids)} molecules of layers {sorted(layers)}, pattern {a.pattern}, {a.workers} workers", flush=True)
+    from rungC_targets import LAM_REL
+    lam = LAM_REL if a.lam is None else a.lam
+    print(f"{len(ids)} molecules of layers {sorted(layers)}, pattern {a.pattern}, lam_rel {lam:g}, {a.workers} workers", flush=True)
     rows = []
     with Pool(a.workers, initializer=_init, initargs=(a.molecules,)) as pool:
-        for k, r in enumerate(pool.imap(_one, [(a.molecules, a.out, a.pattern, i, a.use_analytic) for i in ids]), 1):
+        for k, r in enumerate(pool.imap(_one, [(a.molecules, a.out, a.pattern, i, a.use_analytic, lam) for i in ids]), 1):
             rows.append(r)
             print(f"  {k}/{len(ids)} {r['id']} atoms {r['n_atoms']} pairs {r['n_pairs']} {r['seconds']} s{' (cache)' if r['from_cache'] else ''} "
-                  f"residual projected {r['residual_projected']:.3f} → ls {r['residual_ls']:.3f}", flush=True)
-    res = dict(date=datetime.now().strftime("%Y-%m-%d %H:%M"), pattern=a.pattern, layers=sorted(layers), n=len(rows), rows=rows, seconds=round(time.time() - t0))
-    out = Path(a.out) / f"ls_targets_build_{a.pattern}_{datetime.now():%Y-%m-%d}.json"
+                  f"residual projected {r['residual_projected']:.3f} → ls {r['residual_ls']:.3f}; scale ×{r['scale_ratio']:.1f}", flush=True)
+    res = dict(date=datetime.now().strftime("%Y-%m-%d %H:%M"), pattern=a.pattern, lam_rel=lam, layers=sorted(layers), n=len(rows), rows=rows,
+               seconds=round(time.time() - t0))
+    out = Path(a.out) / f"ls_targets_build_{a.pattern}_lam{lam:g}_{datetime.now():%Y-%m-%d}.json"
     json.dump(res, open(out, "w"), indent=1)
     rp = np.array([r["residual_projected"] for r in rows])
     rl = np.array([r["residual_ls"] for r in rows])
-    print(f"median residual projected {np.median(rp):.3f} → ls {np.median(rl):.3f}; wrote {out} in {res['seconds']} s")
+    sr = np.array([r["scale_ratio"] for r in rows])
+    print(f"median residual projected {np.median(rp):.3f} → ls {np.median(rl):.3f}; scale ratio median {np.median(sr):.1f}, max {sr.max():.1f}; "
+          f"wrote {out} in {res['seconds']} s")
     return 0
 
 

@@ -810,3 +810,19 @@ encoder, and a mean body is slightly worse than the sum body (0.40). Both runs t
 converged body) is re-read on the LS target when chain 5 runs, as the amendment of 09:4x says.
 **H7 (first per-molecule read, hold-out (a), seed 0).** Fresh body: 0.28–0.55 over the ten molecules; pretrained: 0.12–0.48. No single molecule carries the
 ratio; the spread is across scaffolds. The per-molecule field stays in every record.
+
+*Amendment to lever 4, 12:1x — the target is ridge-anchored, λ chosen by a scan, predictions revised before the run.* The first lever-4 run (11:21–11:4x,
+stopped by pid) exploded: ring couplings 1.6e12. Cause, measured: the plain least-squares ΔF has entries of 1e7–1e10 a.u. along the near-null directions
+of the redundant internals (projected target max 0.01–0.02 a.u.), which cancel in Bᵀ X B on the training molecules and not on a hold-out. Fix in
+`rungC_targets.py`: the ridge-anchored solution min ‖D(BᵀXB − ΔH)D‖² + λ‖X − X_proj‖² on the pattern, normal equations by Cholesky (well conditioned with
+the ridge), λ relative to the normal matrix's mean diagonal; `--ls-lam`; a trainer guard refuses a target whose entries exceed 20× the projected target's
+(`TARGET_SCALE_LIMIT`); the cache key carries λ. **λ scan (naphthalene / 2-methylnaphthalene / styrene / a 30-atom A2 molecule; entry scale × the
+projected max; ring-coupling ratio of the reconstruction, projected target in brackets):** λ_rel 1e-2: ×1.0, 0.28 / 0.27 / 0.05 / 0.20 (0.39 / 0.42 / 0.17 /
+0.36); **1e-3: ×1.0–1.2, 0.27 / 0.25 / 0.04 / 0.19**; 1e-4: ×1.5–4.5, 0.25 / 0.23 / 0.04 / 0.18; 1e-5: ×5–9, 0.25 / 0.23 / 0.04 / 0.17. Chosen **λ_rel = 1e-3**:
+the entries stay at the projected scale and the ring-coupling bound falls from 0.38–0.42 to 0.25–0.27 on the naphthalenes; smaller λ buys ≤ 0.02 for a
+4–9× scale. (The scan's read-out used the finite-difference truth K for the two-route molecules, so the naphthalene numbers carry its 0.07 noise; the
+trainer substitutes the analytic truth, `substituted_analytic`.) **Revised predictions:** 175: (a) 0.30–0.36, ω 3.5–4.5; 750: (a) 0.26–0.33. **Revised
+lines:** *works:* (a) ≤ 0.36 at 175, below 0.40 by more than both spreads; *flat:* within spreads of 0.40; *hurts:* > 0.43. The target's own bound on the
+pool is now ≈ 0.2–0.27 rather than 0.03 — T1 (≤ 0.30 at 750) needs the model to reach near that bound, or a further step on the target (a pattern-(e)
+support for the ridge target, whose bound is lower, is the next lever if lever 4 works but stops near 0.3). Cache rebuilt on the server for λ 1e-3
+(`out/ls_targets/d_lam0.001`), chain 7b queued on the copy.

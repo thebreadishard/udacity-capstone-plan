@@ -2,19 +2,19 @@
 
 Finding behind it: the pattern term's target was the projected truth B⁺ᵀ ΔH B⁺ read on the pattern. Reconstructed with zeros off the pattern that
 target leaves 0.38–0.42 of the ring couplings on naphthalene and 2-methylnaphthalene — exactly where the single-molecule overfits (0.41, 0.40)
-and the pool read-outs of every head (0.37–0.43) stopped. The best pattern-supported ΔF is the least-squares fit
+and the pool read-outs of every head (0.37–0.43) stopped. The pattern-supported ΔF that reconstructs best is a least-squares fit, but the plain
+least-squares minimiser is useless as a regression target: the redundant internals give the design matrix near-null directions along which the
+entries run to 1e7–1e10 a.u. while the reconstruction barely changes (the first lever-4 run exploded on them, 11:4x). The target used is therefore the
+ridge solution anchored on the projected truth,
 
-    min over symmetric X supported on the pattern of ‖ D (Bᵀ X B − ΔH) D ‖_F ,   D = diag(m^-1/2)  (the registered mass weighting),
+    min over symmetric X supported on the pattern of  ‖ D (Bᵀ X B − ΔH) D ‖_F²  +  λ ‖ X − X_proj ‖²_pattern ,   D = diag(m^-1/2),
 
-whose ring-coupling ratio on the same molecules is 0.02–0.09 (`probes/rungC_pattern_ceiling.py`). It is solved as the dense linear least-squares
-problem it is: one column per pattern pair p = (i ≤ j), the column being vec(D (b_i b_jᵀ + b_j b_iᵀ) D) (b_i = row i of B), by LAPACK's SVD route
-(`scipy.linalg.lstsq`, driver gelsd, its default rank cutoff; the minimum-norm solution where the redundant internals leave freedom). Three routes that
-looked cheaper were tried first and rejected with numbers: conjugate gradients on the normal equations did not converge in 2,000 iterations; a
-Cholesky of the normal matrix with a 1e-10 ridge lost the small-eigenvalue directions (naphthalene residual 0.088 against 0.036) — the normal
-equations square the condition number of the Wilson matrix; and the pivoted-QR driver with a 1e-10 cutoff left 0.022 on benzene against 0.011 — the
-near-redundant directions carry signal. Seconds to a few minutes per molecule; `cached_pattern_ls_target` keeps the result on disk keyed by a hash of
-(ΔH, B, mask), so a training run pays it once (`probes/rungC_ls_targets_build.py` fills the cache ahead). Counterpart: an independent dense fit in
-`tests/test_rungC_targets.py` (same objective to 1e-6 on benzene, same reconstruction to 1e-7 on a full-rank system).
+the ΔF nearest to the physically scaled projected values among those that reconstruct ΔH well. λ is relative to the mean diagonal of the normal
+matrix (`lam_rel`); the choice is registered in the pre-registration with the numbers of the λ scan. With the ridge the normal equations are well
+conditioned, so they are solved directly: with E_p = e_i e_jᵀ + e_j e_iᵀ (i < j) or e_i e_iᵀ (i = j) and c_p = 1 or 1/√2, N_pq = 2 c_p² c_q² (G_jk G_il +
+G_jl G_ik) with the Wilson matrix G = B M⁻¹ Bᵀ, r_p = 2 c_p² R_ij with R = B M⁻¹ ΔH M⁻¹ Bᵀ, and (N + λI) x = r + λ x_proj by Cholesky — seconds per
+molecule. Counterpart: the same problem as an augmented dense least squares (`tests/test_rungC_targets.py`), equal to 1e-6.
+`cached_pattern_ls_target` keeps the result on disk keyed by a hash of (ΔH, B, mask, λ); `probes/rungC_ls_targets_build.py` fills the cache ahead.
 """
 import hashlib
 from pathlib import Path
@@ -23,33 +23,41 @@ import numpy as np
 import scipy.linalg
 
 AMU2AU = 1822.888486209
+LAM_REL = 1e-3          # default ridge, relative to the mean diagonal of the normal matrix (λ scan of 1 Oct 2026, registered)
+ROW_CHUNK = 1500
 
 
-def _design_matrix(B: np.ndarray, W: np.ndarray, I: np.ndarray, J: np.ndarray, rows: tuple) -> np.ndarray:
-    """(rows, P): column p = the upper triangle of W ⊙ (b_i b_jᵀ + b_j b_iᵀ) — for i = j the single outer product (X_ii enters Bᵀ X B once)."""
-    A = np.empty((len(rows[0]), len(I)))
-    for p, (i, j) in enumerate(zip(I, J, strict=True)):
-        E = np.outer(B[i], B[j])
-        if i != j:
-            E = E + E.T
-        A[:, p] = (E * W)[rows]
-    return A
+def projected_target(dH: np.ndarray, B: np.ndarray) -> np.ndarray:
+    """B⁺ᵀ ΔH B⁺ — the pair model's registered projected truth (full K × K)."""
+    Bp = np.linalg.pinv(B)
+    return Bp.T @ dH @ Bp
 
 
-def pattern_ls_target(dH: np.ndarray, B: np.ndarray, masses_amu: np.ndarray, mask: np.ndarray) -> np.ndarray:
-    """The mass-weighted least-squares ΔF supported on `mask` (K × K boolean, symmetric) such that Bᵀ ΔF B ≈ ΔH. Returns ΔF (K × K).
-    Both sides are symmetric, so the Frobenius objective is taken over the upper triangle with weight √2 off the diagonal — half the rows, the same
-    minimiser."""
+def pattern_ls_target(dH: np.ndarray, B: np.ndarray, masses_amu: np.ndarray, mask: np.ndarray, lam_rel: float = LAM_REL) -> np.ndarray:
+    """The mass-weighted least-squares ΔF supported on `mask` (K × K boolean, symmetric), ridge-anchored on the projected truth with relative
+    strength `lam_rel` (0 = the plain least squares, which explodes on redundant internals). Returns ΔF (K × K)."""
     mask = np.asarray(mask, bool)
     if not np.array_equal(mask, mask.T):
         raise ValueError("the pattern mask must be symmetric")
-    d = 1.0 / np.sqrt(np.repeat(np.asarray(masses_amu, float) * AMU2AU, 3))
-    n = B.shape[1]
-    rows = np.triu_indices(n)
-    W = np.outer(d, d) * np.where(np.eye(n, dtype=bool), 1.0, np.sqrt(2.0))
+    if lam_rel < 0:
+        raise ValueError("lam_rel must be >= 0")
+    minv = 1.0 / np.repeat(np.asarray(masses_amu, float) * AMU2AU, 3)
+    BM = B * minv[None, :]                                  # B M⁻¹
+    G = BM @ B.T                                            # Wilson G = B M⁻¹ Bᵀ
+    R = BM @ dH @ BM.T                                      # B M⁻¹ ΔH M⁻¹ Bᵀ
     I, J = np.where(np.triu(mask))
-    A = _design_matrix(B, W, I, J, rows)
-    x = scipy.linalg.lstsq(A, (dH * W)[rows], lapack_driver="gelsd", check_finite=False, overwrite_a=True)[0]
+    P = len(I)
+    c2 = np.where(I == J, 0.5, 1.0)                         # c_p²
+    N = np.empty((P, P))
+    for s in range(0, P, ROW_CHUNK):
+        e = min(s + ROW_CHUNK, P)
+        N[s:e] = (G[np.ix_(J[s:e], I)] * G[np.ix_(I[s:e], J)] + G[np.ix_(J[s:e], J)] * G[np.ix_(I[s:e], I)])
+        N[s:e] *= 2.0 * c2[s:e, None] * c2[None, :]
+    r = 2.0 * c2 * R[I, J]
+    x0 = projected_target(dH, B)[I, J]
+    lam = lam_rel * float(np.trace(N)) / P
+    N[np.diag_indices(P)] += lam
+    x = scipy.linalg.cho_solve(scipy.linalg.cho_factor(N, lower=True, check_finite=False), r + lam * x0, check_finite=False)
     X = np.zeros((B.shape[0], B.shape[0]))
     X[I, J] = x
     X[J, I] = x
@@ -63,23 +71,24 @@ def weighted_residual(dH: np.ndarray, B: np.ndarray, masses_amu: np.ndarray, X: 
     return float(np.linalg.norm((B.T @ X @ B - dH) * W) / np.linalg.norm(dH * W))
 
 
-def target_key(dH: np.ndarray, B: np.ndarray, mask: np.ndarray) -> str:
+def target_key(dH: np.ndarray, B: np.ndarray, mask: np.ndarray, lam_rel: float) -> str:
     h = hashlib.sha256()
     for arr in (np.ascontiguousarray(dH, dtype=np.float64), np.ascontiguousarray(B, dtype=np.float64), np.ascontiguousarray(mask, dtype=np.uint8)):
         h.update(arr.tobytes())
+    h.update(repr(float(lam_rel)).encode())
     return h.hexdigest()[:24]
 
 
 def cached_pattern_ls_target(cache_dir: Path, mol_id: str, pattern: str, dH: np.ndarray, B: np.ndarray, masses_amu: np.ndarray,
-                             mask: np.ndarray) -> tuple[np.ndarray, bool]:
-    """(ΔF, from_cache): the target from `<cache_dir>/<pattern>/<id>.npz` when its key matches (ΔH, B, mask), else computed and stored."""
-    path = Path(cache_dir) / pattern / f"{mol_id}.npz"
-    key = target_key(dH, B, mask)
+                             mask: np.ndarray, lam_rel: float = LAM_REL) -> tuple[np.ndarray, bool]:
+    """(ΔF, from_cache): the target from `<cache_dir>/<pattern>_lam<λ>/<id>.npz` when its key matches (ΔH, B, mask, λ), else computed and stored."""
+    path = Path(cache_dir) / f"{pattern}_lam{lam_rel:g}" / f"{mol_id}.npz"
+    key = target_key(dH, B, mask, lam_rel)
     if path.exists():
         with np.load(path) as z:
             if str(z["key"]) == key:
                 return np.array(z["X"]), True
-    X = pattern_ls_target(dH, B, masses_amu, mask)
+    X = pattern_ls_target(dH, B, masses_amu, mask, lam_rel)
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(".tmp.npz")
     np.savez(tmp, X=X, key=key)

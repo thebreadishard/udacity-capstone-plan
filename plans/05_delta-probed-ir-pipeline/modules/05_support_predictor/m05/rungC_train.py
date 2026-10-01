@@ -44,7 +44,9 @@ from rungC_equivariant import (  # noqa: E402
     to_torch,
 )
 from rungC_hybrid import HybridDeltaFModel, input_scales, pair_feature_stats, primitive_pool_matrix  # noqa: E402
-from rungC_targets import cached_pattern_ls_target, weighted_residual  # noqa: E402
+from rungC_targets import LAM_REL, cached_pattern_ls_target, weighted_residual  # noqa: E402
+
+TARGET_SCALE_LIMIT = 20.0   # lever 4 (1 Oct 2026 11:4x): an LS target whose entries exceed this multiple of the projected target's is refused
 
 from dpir.provenance import provenance  # noqa: E402
 
@@ -426,6 +428,8 @@ def main() -> int:
     ap.add_argument("--aux-target", default="projected", choices=["projected", "ls"],
                     help="lever 4 (1 Oct 2026): target of the pattern term — 'projected' = B⁺ᵀ ΔH B⁺ on the pattern (registered), 'ls' = the mass-weighted "
                          "least-squares ΔF supported on the pattern (rungC_targets), whose reconstruction is the head's true ceiling")
+    ap.add_argument("--ls-lam", type=float, default=LAM_REL, help="lever 4: ridge of the LS target toward the projected truth, relative to the normal matrix's "
+                    "mean diagonal (0 = plain least squares — explodes on redundant internals, 1 Oct 11:4x)")
     ap.add_argument("--body-blocks", type=int, default=N_BLOCKS, help="lever 2c (1 Oct 2026): interaction blocks of a fresh body (registered: 3)")
     ap.add_argument("--body-width", type=int, default=N_S, help="lever 2c (1 Oct 2026): scalar and vector channels of a fresh body (registered: 64)")
     ap.add_argument("--overfit-one", default=None, metavar="ID",
@@ -494,9 +498,15 @@ def main() -> int:
             t["pat_cls"] = pattern_classes(Path(a.molecules) / i, mols[i], a.pattern)
             if a.aux_target == "ls":                                        # lever 4 (1 Oct 2026): the pattern-consistent target
                 mask = (t["pat_cls"] >= 0).numpy()
-                X, cached = cached_pattern_ls_target(Path(a.out_prefix).parent / "ls_targets", i, a.pattern, m["dH_true"], mols[i]["B"], m["masses"], mask)
-                target_residuals[i] = {"projected": weighted_residual(m["dH_true"], mols[i]["B"], m["masses"], np.where(mask, t["dF_true"].numpy(), 0.0)),
-                                       "ls": weighted_residual(m["dH_true"], mols[i]["B"], m["masses"], X), "from_cache": cached}
+                X, cached = cached_pattern_ls_target(Path(a.out_prefix).parent / "ls_targets", i, a.pattern, m["dH_true"], mols[i]["B"], m["masses"], mask,
+                                                     lam_rel=a.ls_lam)
+                projected = np.where(mask, t["dF_true"].numpy(), 0.0)
+                scale_ratio = float(np.abs(X).max() / max(np.abs(projected).max(), 1e-30))
+                if scale_ratio > TARGET_SCALE_LIMIT:
+                    raise RuntimeError(f"{i}: LS target entries {scale_ratio:.3g}× the projected target's — the unregularised blow-up of 1 Oct 11:4x; "
+                                       f"raise --ls-lam (now {a.ls_lam:g})")
+                target_residuals[i] = {"projected": weighted_residual(m["dH_true"], mols[i]["B"], m["masses"], projected),
+                                       "ls": weighted_residual(m["dH_true"], mols[i]["B"], m["masses"], X), "scale_ratio": scale_ratio, "from_cache": cached}
                 t["dF_true"] = torch.as_tensor(X, dtype=torch.float32)
         if a.head == "hybrid":
             t.update(hybrid_tensors(Path(a.molecules) / i, mols[i], a.pattern))
@@ -516,7 +526,7 @@ def main() -> int:
                patience=a.patience, pretrained=a.pretrained, aggregation=a.aggregation, pretrained_elements=a.pretrained_elements,
                aux_mode=a.aux, zero_hlow=a.zero_hlow, overfit_one=a.overfit_one, tensor_input=a.tensor_input, head=a.head, sqm_scale=a.sqm_scale,
                pair_features=a.pair_features, hybrid_hidden=a.hybrid_hidden, pattern=a.pattern, body_blocks=a.body_blocks, body_width=a.body_width,
-               aux_target=a.aux_target, target_residuals=target_residuals,
+               aux_target=a.aux_target, ls_lam=a.ls_lam, target_residuals=target_residuals,
                pair_class_names=list(PAIR_CLASS_NAMES),
                substituted_analytic=substituted, curve={})
     res["zero_rule"] = {h: readouts(mols, ids, pool, lambda i: np.zeros_like(mols[i]["F_low"])) for h, ids in tests.items() if ids}
@@ -525,7 +535,7 @@ def main() -> int:
              f"inner validation {a.inner_val}, patience {a.patience}; pool layers {a.pool_layers}; {a.aggregation} aggregation"
              + ("; H_low input zeroed (diagnostic 1)" if a.zero_hlow else "") + (f"; overfit-one {a.overfit_one} (diagnostic 2)" if a.overfit_one else "")
              + ("; rank-2 tensor input" if a.tensor_input else "") + (f"; hybrid head{' + SQM α' if a.sqm_scale else ''}{' + rung B pair features' if a.pair_features else ''}" if a.head == "hybrid" else "")
-             + (f"; pattern {a.pattern}" if a.pattern != "c" else "") + ("; LS pattern target" if a.aux_target == "ls" else ""), "",
+             + (f"; pattern {a.pattern}" if a.pattern != "c" else "") + (f"; LS pattern target (λ_rel {a.ls_lam:g})" if a.aux_target == "ls" else ""), "",
              "| n | seed | hold-out | ring couplings | zero | ratio | corrected ω | zero ω | ΔH residual ratio | s |",
              "|---|---|---|---|---|---|---|---|---|---|"]
     for n in sizes:
