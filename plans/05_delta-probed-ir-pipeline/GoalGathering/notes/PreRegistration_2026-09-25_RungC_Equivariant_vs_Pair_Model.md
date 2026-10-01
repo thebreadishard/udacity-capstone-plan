@@ -826,3 +826,18 @@ lines:** *works:* (a) ≤ 0.36 at 175, below 0.40 by more than both spreads; *fl
 pool is now ≈ 0.2–0.27 rather than 0.03 — T1 (≤ 0.30 at 750) needs the model to reach near that bound, or a further step on the target (a pattern-(e)
 support for the ridge target, whose bound is lower, is the next lever if lever 4 works but stops near 0.3). Cache rebuilt on the server for λ 1e-3
 (`out/ls_targets/d_lam0.001`), chain 7b queued on the copy.
+
+## Dated amendment 1 October 12:2x — lever 1b: pattern (f) under the ridge target (registered before it runs)
+
+**Measured first (ridge target, λ_rel 1e-3, finite-difference truth; naphthalene / 2-methylnaphthalene / styrene / a 30-atom A2 molecule; ring-coupling
+ratio of the target's reconstruction, entry scale ×1.0–1.3 throughout):** pattern d **0.26 / 0.25 / 0.04 / 0.19**, pattern e **0.15 / 0.13 / 0.01 / 0.10**,
+pattern f **0.01 / 0.01 / 0.01 / 0.04**. At set distance three the target's bound reaches the noise floor at the projected scale — the pattern lever and the
+target lever together. **Code:** `e7_rungB_pairs.molecule_pairs(pattern="e"|"f")` by the shortest bond-graph distance between disjoint atom sets (classes 7, 8;
+`PATTERN_REACH`, `graph_distances`), nine pair classes in the hybrid and the trainer, tests (`test_patterns_e_and_f_extend_d_by_set_distance`), corpus
+smoke; the ceiling probe now takes its patterns from the builder. Pairs: f has 1.3–1.6× the pairs of d.
+**Run (`rungC_sherlock9_1001.sh`, after chain 7b and the pattern-f cache from the server):** hybrid + SQM α + pair features, **pattern f, `--aux-target ls
+--ls-lam 1e-3`**, sum body, carried recipe, 175, seeds 0–2 → `out/E7_rungC_lever1b_f_ls_175_2026-10-01`. Controls: chain 7b (pattern d, same target) and
+lever 1 (pattern d, projected target, 0.40). **Prediction:** (a) 0.24–0.32, ω 3.0–4.0 — the gain over 7b is smaller than the bounds suggest because 1.5× more
+pairs are learned from the same 175 molecules. **Lines.** *Works:* (a) ≤ 0.32 and below 7b by more than both spreads → pattern f + ridge target is the
+carried recipe; 750 next (T1 ≤ 0.30 in reach). *Flat:* within spreads of 7b → the model, not the target support, limits at 175; the 750 read of 7b decides
+what to carry. *Hurts:* above 7b by both spreads → the extra classes dilute at 175; re-read at 750 before judging. Decision 51 as always.
