@@ -125,7 +125,7 @@ def test_pattern_d_extends_c_with_two_bonds_apart_pairs_of_class_6():
         assert not (atoms[i] & atoms[j])                                                    # disjoint atom sets
         assert any(b in adj[a] for a in atoms[i] for b in atoms[j])                         # joined by one bond
     with pytest.raises(ValueError):
-        RB.molecule_pairs(g["symbols"], coords, F, pattern="e")
+        RB.molecule_pairs(g["symbols"], coords, F, pattern="g")
 
 
 def test_per_molecule_readouts_keep_the_registered_keys_and_nan_as_none(monkeypatch):
@@ -190,3 +190,37 @@ def test_body_size_switches_present_and_pretrained_refused():
     assert re.search(r'add_argument\("--body-width", type=int, default=N_S', text)
     with pytest.raises(ValueError, match="pretrained body"):
         RT.train_one([], {}, 0, 1, pretrained="x.pt", body_blocks=5)
+
+
+@pytest.mark.skipif(not (CORPUS / "A_01f3186607" / "geometry.json").exists(), reason="corpus naphthalene not on this machine")
+def test_patterns_e_and_f_extend_d_by_set_distance():
+    """12:1x (1 Oct 2026): e ⊇ d ⊇ c with the same classes on the shared pairs; the extra pairs of e are at set distance 2 (class 7), those of f at
+    distance 3 (class 8); every pair of f is within three bonds; an unknown pattern is refused."""
+    pytest.importorskip("geometric")
+    import json
+
+    import e7_rungB_pairs as RB
+    import e7_t2_sqm as T2
+    from learning_curve_layerA_v2_descriptors import bond_graph
+    d = CORPUS / "A_01f3186607"
+    g = json.load(open(d / "geometry.json"))
+    coords = np.asarray(g["coords_bohr"], float)
+    K = T2.internals(g["symbols"], coords)[0].shape[0]
+    F = np.eye(K)
+    out = {}
+    for p in ("c", "d", "e", "f"):
+        pairs, _f, cls, _B, atoms = RB.molecule_pairs(g["symbols"], coords, F, return_atoms=True, pattern=p)
+        out[p] = {(int(i), int(j)): int(c) for (i, j), c in zip(pairs, cls, strict=True)}
+    assert set(out["c"]) < set(out["d"]) < set(out["e"]) < set(out["f"])
+    for small, big in (("c", "d"), ("d", "e"), ("e", "f")):
+        assert all(out[big][k] == v for k, v in out[small].items())
+    adj = bond_graph([s.capitalize() for s in g["symbols"]], coords)
+    D = RB.graph_distances(adj, len(g["symbols"]))
+    for big, small, dist, cls in (("e", "d", 2, 7), ("f", "e", 3, 8)):
+        extra = {k: v for k, v in out[big].items() if k not in out[small]}
+        assert extra and set(extra.values()) == {cls}
+        for (i, j) in extra:
+            assert not (atoms[i] & atoms[j])
+            assert min(D[a, b] for a in atoms[i] for b in atoms[j]) == dist
+    with pytest.raises(ValueError):
+        RB.molecule_pairs(g["symbols"], coords, F, pattern="g")

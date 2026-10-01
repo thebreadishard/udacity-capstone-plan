@@ -118,7 +118,7 @@ def test_hybrid_hidden_width_changes_the_head_only():
 
 def test_hybrid_class_count_matches_the_trainer():
     import rungC_train as RT
-    assert RH.N_PAIR_CLASSES == len(RT.PAIR_CLASS_NAMES) == 7 and RT.PAIR_CLASS_NAMES[6] == "off_twobond"
+    assert RH.N_PAIR_CLASSES == len(RT.PAIR_CLASS_NAMES) == 9 and RT.PAIR_CLASS_NAMES[6:] == ("off_twobond", "off_dist2", "off_dist3")
 
 
 def test_body_size_switches_change_the_body_and_the_head_input():

@@ -22,7 +22,7 @@ import torch.nn as nn
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from rungC_equivariant import AGGREGATION, N_BLOCKS, N_S, N_V, DeltaHessianModel  # noqa: E402
 
-N_PAIR_CLASSES = 7          # e7_rungB_pairs: diag bond, diag angle, diag dihedral, diag other, off bond–bond, off other, off two-bonds-apart (pattern d, 1 Oct 2026)
+N_PAIR_CLASSES = 9          # e7_rungB_pairs: diag bond, diag angle, diag dihedral, diag other, off bond–bond, off other, off at set distance 1 / 2 / 3 (patterns d/e/f, 1 Oct 2026)
 N_CLASS_EMB = 8
 N_FLOW = 16
 HIDDEN = 128

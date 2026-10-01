@@ -18,7 +18,6 @@ import argparse
 import json
 import sys
 import time
-from collections import deque
 from datetime import datetime
 from pathlib import Path
 
@@ -29,52 +28,22 @@ M05 = HERE.parent / "modules" / "05_support_predictor" / "m05"
 sys.path.insert(0, str(M05))
 import e7_rungB_pairs as RB  # noqa: E402
 import e7_t2_sqm as T2  # noqa: E402
-from learning_curve_layerA_v2_descriptors import bond_graph  # noqa: E402
 
 PATTERNS = ("c", "d", "e", "f", "all")
 DEFAULT_IDS = ("A_8448043181", "A_01f3186607", "A_69789470db", "A_8f6ed7c002")
 AMU2AU = 1822.888486209
 
 
-def graph_distances(adj: dict, n: int) -> np.ndarray:
-    """All-pairs shortest path lengths on the bond graph (BFS), n×n, -1 when disconnected."""
-    D = -np.ones((n, n), dtype=int)
-    for s in range(n):
-        D[s, s] = 0
-        q = deque([s])
-        while q:
-            u = q.popleft()
-            for v in adj[u]:
-                if D[s, v] < 0:
-                    D[s, v] = D[s, u] + 1
-                    q.append(v)
-    return D
-
-
 def pattern_pairs(symbols, coords, F_low, pattern: str) -> tuple[np.ndarray, np.ndarray, list]:
-    """(pairs (P, 2) with i <= j, B, atom sets) for the pattern: c and d from the pair builder itself, e/f/all by set distance on the bond graph."""
-    if pattern in ("c", "d"):
+    """(pairs (P, 2) with i <= j, B, atom sets) for the pattern: c/d/e/f from the pair builder itself (12:1x: e and f live there now), 'all' = every pair."""
+    if pattern in RB.PATTERN_REACH:
         pairs, _f, _cls, B, atoms = RB.molecule_pairs(symbols, coords, F_low, return_atoms=True, pattern=pattern)
         return np.asarray(pairs), B, atoms
-    pairs_d, _f, _cls, B, atoms = RB.molecule_pairs(symbols, coords, F_low, return_atoms=True, pattern="d")
-    K = B.shape[0]
-    if pattern == "all":
-        iu = np.triu_indices(K)
-        return np.stack(iu, 1), B, atoms
-    adj = bond_graph([s.capitalize() for s in symbols], coords)
-    D = graph_distances(adj, len(symbols))
-    limit = {"e": 2, "f": 3}[pattern]
-    have = {(int(i), int(j)) for i, j in pairs_d}
-    extra = []
-    for i in range(K):
-        for j in range(i, K):
-            if (i, j) in have:
-                continue
-            dist = min(D[a, b] for a in atoms[i] for b in atoms[j])
-            if 0 <= dist <= limit:
-                extra.append((i, j))
-    pairs = np.array(sorted(have | set(extra)))
-    return pairs, B, atoms
+    if pattern != "all":
+        raise ValueError(f"unknown pattern {pattern!r}")
+    _pairs, _f, _cls, B, atoms = RB.molecule_pairs(symbols, coords, F_low, return_atoms=True)
+    iu = np.triu_indices(B.shape[0])
+    return np.stack(iu, 1), B, atoms
 
 
 def ls_pattern_fit(dH: np.ndarray, B: np.ndarray, pairs: np.ndarray, mw: np.ndarray) -> np.ndarray:

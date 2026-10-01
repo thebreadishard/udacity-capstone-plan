@@ -50,7 +50,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("molecules")
     ap.add_argument("out")
-    ap.add_argument("--pattern", default="d", choices=["c", "d"])
+    ap.add_argument("--pattern", default="d", choices=["c", "d", "e", "f"])
     ap.add_argument("--layers", default="A,A2,B")
     ap.add_argument("--workers", type=int, default=2)
     ap.add_argument("--use-analytic", action="store_true")

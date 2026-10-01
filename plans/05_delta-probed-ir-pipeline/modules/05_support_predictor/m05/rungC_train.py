@@ -88,7 +88,8 @@ def entry_classes(m: dict) -> torch.Tensor:
     return torch.as_tensor(cls)
 
 
-PAIR_CLASS_NAMES = ("diag_bond", "diag_angle", "diag_dihedral", "diag_other", "off_bondbond", "off_other", "off_twobond")   # e7_rungB_pairs classes 0–6 (6 = pattern d, 1 Oct 2026)
+PAIR_CLASS_NAMES = ("diag_bond", "diag_angle", "diag_dihedral", "diag_other", "off_bondbond", "off_other", "off_twobond", "off_dist2",
+                    "off_dist3")   # e7_rungB_pairs classes 0–8 (6 = pattern d, 7 = e, 8 = f; 1 Oct 2026)
 PATTERN_SCALE_FLOOR = 0.1   # 1 Oct 2026: no class scale below this fraction of the largest (the unfloored scales let the Cartesian head fit noise)
 
 
@@ -424,7 +425,8 @@ def main() -> int:
     ap.add_argument("--sqm-scale", action="store_true", help="hybrid head: add α_class · F_low,pq to the residual (one α per pair class, initialised at 0)")
     ap.add_argument("--pair-features", action="store_true", help="hybrid head (1 Oct 2026): rung B's 66 pair features beside the encoder's features — does the learned environment add anything to hand-made topology?")
     ap.add_argument("--hybrid-hidden", type=int, default=128, help="hybrid head: width of its MLP (search stage H1, 1 Oct 2026; 128 = the 00:4x model)")
-    ap.add_argument("--pattern", default="c", choices=["c", "d"], help="lever 1 (1 Oct 2026): 'c' = the registered pattern; 'd' = (c) + pairs of primitives two bonds apart (class off_twobond)")
+    ap.add_argument("--pattern", default="c", choices=["c", "d", "e", "f"], help="lever 1 (1 Oct 2026): 'c' = the registered pattern; 'd' = (c) + disjoint pairs one bond apart (off_twobond); "
+                    "'e' / 'f' = up to two / three bonds apart (off_dist2 / off_dist3)")
     ap.add_argument("--aux-target", default="projected", choices=["projected", "ls"],
                     help="lever 4 (1 Oct 2026): target of the pattern term — 'projected' = B⁺ᵀ ΔH B⁺ on the pattern (registered), 'ls' = the mass-weighted "
                          "least-squares ΔF supported on the pattern (rungC_targets), whose reconstruction is the head's true ceiling")
