@@ -104,7 +104,8 @@ def transfer_table(source: dict, target: dict) -> list[dict]:
 
 
 def load_body(checkpoint: str | None, aggregation: str, seed: int, target_elements: list[int] | None = None,
-              pretrained_elements: list[int] | None = None, tensor_input: bool = False) -> tuple[torch.nn.Module, str]:
+              pretrained_elements: list[int] | None = None, tensor_input: bool = False, body_blocks: int | None = None,
+              body_width: int | None = None) -> tuple[torch.nn.Module, str]:
     """A fresh body, the checkpoint's body as stored, or (with `target_elements`) the checkpoint's body as the fine-tune will see it: through
     `rungC_train.load_pretrained_body`, untrained element embeddings reset to the trained mean."""
     if checkpoint:
@@ -119,8 +120,10 @@ def load_body(checkpoint: str | None, aggregation: str, seed: int, target_elemen
         body.load_state_dict(ck["body_state"])
         return body, f"checkpoint {checkpoint} ({agg} aggregation, as stored)"
     torch.manual_seed(seed)
-    return (DeltaHessianModel(aggregation=aggregation, tensor_input=tensor_input),
-            f"fresh body, {aggregation} aggregation{', rank-2 tensor input' if tensor_input else ''}, seed {seed}")
+    kw = {k: v for k, v in (("n_blocks", body_blocks), ("n_s", body_width), ("n_v", body_width)) if v is not None}
+    return (DeltaHessianModel(aggregation=aggregation, tensor_input=tensor_input, **kw),
+            f"fresh body, {aggregation} aggregation{', rank-2 tensor input' if tensor_input else ''}"
+            + (f", {body_blocks or 'default'} blocks × width {body_width or 'default'}" if kw else "") + f", seed {seed}")
 
 
 def load_source_qm9(qm9_dir: str, sample: int) -> dict:
@@ -138,6 +141,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--out", required=True, help="record prefix (.md and .json)")
     ap.add_argument("--aggregation", default=AGGREGATION, choices=list(AGGREGATIONS), help="body to probe when no checkpoint is given")
     ap.add_argument("--tensor-input", action="store_true", help="probe the fresh body with the rank-2 pair-tensor input (30 Sep 2026)")
+    ap.add_argument("--body-blocks", type=int, default=None, help="lever 2c (1 Oct 2026): probe a fresh body with this many interaction blocks")
+    ap.add_argument("--body-width", type=int, default=None, help="lever 2c (1 Oct 2026): probe a fresh body with this many scalar/vector channels")
     ap.add_argument("--checkpoint", default=None, help="probe the body of a rungC_pretrain.py checkpoint instead of a fresh one")
     ap.add_argument("--as-finetune", action="store_true",
                     help="probe the checkpoint as the fine-tune will see it (element embeddings absent from pretraining reset to the trained mean)")
@@ -160,7 +165,8 @@ def main(argv: list[str] | None = None) -> int:
     ext = extremes(stats)
     target_elements = sorted({z for s in stats.values() for z in s["elements"]}) if a.as_finetune else None
     pre = [int(z) for z in a.pretrained_elements.split(",")] if a.pretrained_elements else None
-    body, body_desc = load_body(a.checkpoint, a.aggregation, a.seed, target_elements, pre, tensor_input=a.tensor_input)
+    body, body_desc = load_body(a.checkpoint, a.aggregation, a.seed, target_elements, pre, tensor_input=a.tensor_input,
+                                body_blocks=a.body_blocks, body_width=a.body_width)
     probe = probe_body(body, mols, sorted(set(ext.values())))
     v = verdict(probe, a.limit_abs, a.limit_ratio)
     rec = {"date": time.strftime("%Y-%m-%d %H:%M"), "provenance": provenance(), "molecules": a.molecules, "n_target": len(mols), "body": body_desc, "target_ranges": ranges(stats),

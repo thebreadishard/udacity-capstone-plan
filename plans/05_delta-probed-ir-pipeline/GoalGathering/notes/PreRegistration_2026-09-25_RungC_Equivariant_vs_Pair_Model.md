@@ -735,3 +735,12 @@ seeds 0–2, inner validation 15 %, `--aux kring` → `out/E7_rungC_lever3_kring
 (a) ≤ 0.37 and below the pattern-term record by both spreads → the loss was part of the floor; the term is carried and combined with the pattern term
 next. *Flat:* within spreads → H8 rejected; the loss is not the floor. *Hurts:* > 0.43 → the ring block alone under-constrains the rest of ΔF; a
 combined term (pattern + kring) is the follow-up. Decision 51 as always.
+
+## Dated amendment 1 October 08:2x — lever 2c (H4): encoder capacity (registered before it runs)
+
+**Code (`--body-blocks`, `--body-width` in `rungC_train.py` and `design_check.py`; `HybridDeltaFModel(n_v, n_blocks)`; tests; corpus smoke at 5 × 128 =
+1.0 M body parameters).** **Cells (`rungC_sherlock4_1001.sh`, queued behind chain 3; hybrid + SQM α + pair features, pattern d, sum body, 175, seeds
+0–2, inner validation 15 %):** *deep* 5 blocks × 64 → `out/E7_rungC_lever2c_deep_175_2026-10-01`; *wide* 3 blocks × 128 → `…_wide_175_…`; design-check
+gate per body. Control: lever 1's record at 175 (0.40, 0.39–0.42). **Prediction:** both within spreads of 0.40 (175 molecules do not feed a bigger
+body; the 30 Sep data-scaling result points the same way). **Lines.** *Works:* a cell ≤ 0.37 and below by both spreads → capacity was part of the floor;
+that body is carried and re-read at 750. *Flat:* H4-capacity rejected at this data volume. *Hurts:* > 0.43 → over-parameterised for 175; noted.

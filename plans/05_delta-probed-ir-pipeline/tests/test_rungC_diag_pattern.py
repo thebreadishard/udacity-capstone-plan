@@ -181,3 +181,12 @@ def test_kring_tensors_reproduce_k_of_and_vanish_on_the_truth():
     assert float(main) == 0.0 and float(aux) < 1e-20
     text = (M05 / "rungC_train.py").read_text(encoding="utf-8")
     assert re.search(r'add_argument\("--aux", default="all", choices=\["all", "pattern", "kring"\]', text)
+
+
+def test_body_size_switches_present_and_pretrained_refused():
+    import rungC_train as RT
+    text = (M05 / "rungC_train.py").read_text(encoding="utf-8")
+    assert re.search(r'add_argument\("--body-blocks", type=int, default=N_BLOCKS', text)
+    assert re.search(r'add_argument\("--body-width", type=int, default=N_S', text)
+    with pytest.raises(ValueError, match="pretrained body"):
+        RT.train_one([], {}, 0, 1, pretrained="x.pt", body_blocks=5)

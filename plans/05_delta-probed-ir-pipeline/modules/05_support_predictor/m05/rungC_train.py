@@ -31,7 +31,18 @@ import e6_learning_curve as E6  # noqa: E402
 import e7_t2_posthoc as PH  # noqa: E402
 import e7_t2_sqm as T2  # noqa: E402
 from e7_rungB_pairs import molecule_pairs, readouts  # noqa: E402
-from rungC_equivariant import AGGREGATION, AGGREGATIONS, BOHR2ANG, LOSS_SCALE, DeltaHessianModel, console_utf8_safe, load_molecule, to_torch  # noqa: E402
+from rungC_equivariant import (  # noqa: E402
+    AGGREGATION,
+    AGGREGATIONS,
+    BOHR2ANG,
+    LOSS_SCALE,
+    N_BLOCKS,
+    N_S,
+    DeltaHessianModel,
+    console_utf8_safe,
+    load_molecule,
+    to_torch,
+)
 from rungC_hybrid import HybridDeltaFModel, input_scales, pair_feature_stats, primitive_pool_matrix  # noqa: E402
 
 from dpir.provenance import provenance  # noqa: E402
@@ -248,7 +259,8 @@ def train_one(train_ids: list, tensors: dict, seed: int, epochs: int, lr: float 
               loss_mode: str = "registered", scale_mode: str = "rms", val_ids: list | None = None, patience: int = 0,
               pretrained: str | None = None, aggregation: str = AGGREGATION,
               pretrained_elements: list[int] | None = None, aux_mode: str = "all", tensor_input: bool = False, head: str = "cartesian",
-              sqm_scale: bool = False, pair_features: bool = False, hybrid_hidden: int = 128) -> tuple[torch.nn.Module, list]:
+              sqm_scale: bool = False, pair_features: bool = False, hybrid_hidden: int = 128, body_blocks: int = N_BLOCKS,
+              body_width: int = N_S) -> tuple[torch.nn.Module, list]:
     """Defaults = the registered recipe C1 of 19:50 (27 Sep). The other values are the cells of the fair-chance search registered at 20:0x:
     aux_weight 1.0; loss_mode 'internal' (the relative internal-ΔF term alone); scale_mode 'class' (one output scale per entry class: diagonal
     3×3 block, bonded pair, non-bonded pair — the pair model's per-class standardisation); val_ids = inner validation molecules held out of the
@@ -269,12 +281,15 @@ def train_one(train_ids: list, tensors: dict, seed: int, epochs: int, lr: float 
     target_elements = sorted({int(z) for i in train_ids for z in tensors[i]["Z"].tolist()})
     if pretrained and tensor_input:
         raise ValueError("--tensor-input is a fresh-body variant (30 Sep 2026); the pretrained bodies carry no weights for it")
+    if pretrained and (body_blocks, body_width) != (N_BLOCKS, N_S):
+        raise ValueError(f"--body-blocks/--body-width ({body_blocks}, {body_width}) do not fit a pretrained body ({N_BLOCKS}, {N_S})")
     if head == "hybrid":
         if aux_mode not in ("pattern", "kring"):
             raise ValueError("--head hybrid needs --aux pattern or kring (its output lives on the pattern; the registered rank-3 run uses the pattern term)")
         n_pf = int(tensors[train_ids[0]]["pfeat"].shape[1]) if pair_features else 0
         model = HybridDeltaFModel(aggregation=aggregation, tensor_input=tensor_input, sqm_scale=sqm_scale,
-                                  class_scale=pattern_class_scales(tensors, train_ids), n_pair_features=n_pf, hidden=hybrid_hidden)
+                                  class_scale=pattern_class_scales(tensors, train_ids), n_pair_features=n_pf, hidden=hybrid_hidden,
+                                  n_s=body_width, n_v=body_width, n_blocks=body_blocks)
         model.set_input_scales(input_scales(tensors, train_ids))
         if pretrained:
             reset = attach_pretrained_body(model, pretrained, seed, aggregation, target_elements, pretrained_elements)
@@ -291,7 +306,7 @@ def train_one(train_ids: list, tensors: dict, seed: int, epochs: int, lr: float 
     else:
         body = (load_pretrained_body(pretrained, reinit_head=True, seed=seed, aggregation=aggregation, target_elements=target_elements,
                                      pretrained_elements=pretrained_elements) if pretrained
-                else DeltaHessianModel(aggregation=aggregation, tensor_input=tensor_input))
+                else DeltaHessianModel(n_s=body_width, n_v=body_width, n_blocks=body_blocks, aggregation=aggregation, tensor_input=tensor_input))
         if pretrained and body.reset_elements:
             log(f"  element embeddings absent from pretraining reset to the trained mean: Z = {body.reset_elements}")
         log(f"  {'pretrained' if pretrained else 'fresh'} {aggregation} body pre-flight: worst |output| "
@@ -407,6 +422,8 @@ def main() -> int:
     ap.add_argument("--pair-features", action="store_true", help="hybrid head (1 Oct 2026): rung B's 66 pair features beside the encoder's features — does the learned environment add anything to hand-made topology?")
     ap.add_argument("--hybrid-hidden", type=int, default=128, help="hybrid head: width of its MLP (search stage H1, 1 Oct 2026; 128 = the 00:4x model)")
     ap.add_argument("--pattern", default="c", choices=["c", "d"], help="lever 1 (1 Oct 2026): 'c' = the registered pattern; 'd' = (c) + pairs of primitives two bonds apart (class off_twobond)")
+    ap.add_argument("--body-blocks", type=int, default=N_BLOCKS, help="lever 2c (1 Oct 2026): interaction blocks of a fresh body (registered: 3)")
+    ap.add_argument("--body-width", type=int, default=N_S, help="lever 2c (1 Oct 2026): scalar and vector channels of a fresh body (registered: 64)")
     ap.add_argument("--overfit-one", default=None, metavar="ID",
                     help="diagnostic 2 (30 Sep 2026): pool, size and both hold-outs = this one molecule; no inner validation, no early stopping; must reach ratio << 0.1")
     ap.add_argument("--pretrained", default=None, help="C2: a `rungC_pretrain.py` checkpoint; its body is loaded, the head re-initialised per seed")
@@ -477,7 +494,8 @@ def main() -> int:
             t["H_low"] = torch.zeros_like(t["H_low"])
         tensors[i] = t
     log(f"{len(mols)} molecules; pool {len(pool)}; hold-out (a) {len(test_a)}, (b) {len(test_b)} ({cores}); sizes {sizes}; seeds {seeds}; epochs {a.epochs}; "
-        f"threads {a.threads}; model {sum(p.numel() for p in DeltaHessianModel(tensor_input=a.tensor_input).parameters()):,} parameters, {a.aggregation} aggregation"
+        f"threads {a.threads}; model {sum(p.numel() for p in DeltaHessianModel(n_s=a.body_width, n_v=a.body_width, n_blocks=a.body_blocks, tensor_input=a.tensor_input).parameters()):,} "
+        f"parameters, {a.aggregation} aggregation"
         + (" — SMOKE" if a.smoke else ""))
 
     tests = {"a": test_a, "b": test_b}
@@ -487,7 +505,7 @@ def main() -> int:
                sizes=sizes, seeds=seeds, epochs=a.epochs, lr=a.lr, aux_weight=a.aux_weight, loss=a.loss, scale=a.scale, inner_val=a.inner_val,
                patience=a.patience, pretrained=a.pretrained, aggregation=a.aggregation, pretrained_elements=a.pretrained_elements,
                aux_mode=a.aux, zero_hlow=a.zero_hlow, overfit_one=a.overfit_one, tensor_input=a.tensor_input, head=a.head, sqm_scale=a.sqm_scale,
-               pair_features=a.pair_features, hybrid_hidden=a.hybrid_hidden, pattern=a.pattern,
+               pair_features=a.pair_features, hybrid_hidden=a.hybrid_hidden, pattern=a.pattern, body_blocks=a.body_blocks, body_width=a.body_width,
                pair_class_names=list(PAIR_CLASS_NAMES),
                substituted_analytic=substituted, curve={})
     res["zero_rule"] = {h: readouts(mols, ids, pool, lambda i: np.zeros_like(mols[i]["F_low"])) for h, ids in tests.items() if ids}
@@ -513,7 +531,7 @@ def main() -> int:
             val_ids, fit_ids = inner_split(tr, seed, a.inner_val)
             model, hist = train_one(fit_ids, tensors, seed, a.epochs, a.lr, log, a.aux_weight, a.loss, a.scale, val_ids, a.patience, a.pretrained,
                                     a.aggregation, a.pretrained_elements, aux_mode=a.aux, tensor_input=a.tensor_input, head=a.head, sqm_scale=a.sqm_scale,
-                                    pair_features=a.pair_features, hybrid_hidden=a.hybrid_hidden)
+                                    pair_features=a.pair_features, hybrid_hidden=a.hybrid_hidden, body_blocks=a.body_blocks, body_width=a.body_width)
             dF_of = predictor(model, tensors, mols)
             out = {"seed": seed, "train_history": hist, "output_scale": model.scale, "class_scale": model.class_scale_values,
                    "aux_class_scale": (None if model.aux_class_scale is None else model.aux_class_scale.tolist()),

@@ -20,7 +20,7 @@ import torch
 import torch.nn as nn
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from rungC_equivariant import AGGREGATION, N_S, DeltaHessianModel  # noqa: E402
+from rungC_equivariant import AGGREGATION, N_BLOCKS, N_S, N_V, DeltaHessianModel  # noqa: E402
 
 N_PAIR_CLASSES = 7          # e7_rungB_pairs: diag bond, diag angle, diag dihedral, diag other, off bond–bond, off other, off two-bonds-apart (pattern d, 1 Oct 2026)
 N_CLASS_EMB = 8
@@ -67,9 +67,11 @@ def input_scales(tensors: dict, ids: list) -> torch.Tensor:
 
 class HybridDeltaFModel(nn.Module):
     def __init__(self, aggregation: str = AGGREGATION, tensor_input: bool = False, sqm_scale: bool = False,
-                 class_scale: torch.Tensor | None = None, n_s: int = N_S, hidden: int = HIDDEN, n_pair_features: int = 0):
+                 class_scale: torch.Tensor | None = None, n_s: int = N_S, hidden: int = HIDDEN, n_pair_features: int = 0,
+                 n_v: int = N_V, n_blocks: int = N_BLOCKS):
         super().__init__()
-        self.body = DeltaHessianModel(aggregation=aggregation, tensor_input=tensor_input)      # encode() only; its Cartesian head is unused
+        self.body = DeltaHessianModel(n_s=n_s, n_v=n_v, n_blocks=n_blocks, aggregation=aggregation, tensor_input=tensor_input)   # encode() only
+
         self.cls_emb = nn.Embedding(N_PAIR_CLASSES, N_CLASS_EMB)
         self.flow_in = nn.Linear(3, N_FLOW)
         self.n_pair_features = int(n_pair_features)                                            # 1 Oct 2026: rung B's pair vector, 0 = off

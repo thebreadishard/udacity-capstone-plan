@@ -119,3 +119,14 @@ def test_hybrid_hidden_width_changes_the_head_only():
 def test_hybrid_class_count_matches_the_trainer():
     import rungC_train as RT
     assert RH.N_PAIR_CLASSES == len(RT.PAIR_CLASS_NAMES) == 7 and RT.PAIR_CLASS_NAMES[6] == "off_twobond"
+
+
+def test_body_size_switches_change_the_body_and_the_head_input():
+    """Lever 2c (1 Oct 2026): blocks and width reach the body; the head's first layer follows the width; defaults keep the 171,554-parameter body."""
+    default = RH.HybridDeltaFModel(aggregation="mean")
+    deeper = RH.HybridDeltaFModel(aggregation="mean", n_blocks=5)
+    wider = RH.HybridDeltaFModel(aggregation="mean", n_s=128, n_v=128)
+    assert len(default.body.blocks) == 3 and len(deeper.body.blocks) == 5
+    assert sum(p.numel() for p in default.body.parameters()) == 171_554
+    assert sum(p.numel() for p in deeper.body.parameters()) > sum(p.numel() for p in default.body.parameters())
+    assert wider.head[0].in_features > default.head[0].in_features and wider.body.blocks[0].n_s == 128
