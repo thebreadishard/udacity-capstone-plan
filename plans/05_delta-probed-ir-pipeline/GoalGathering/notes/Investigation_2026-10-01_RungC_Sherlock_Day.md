@@ -16,7 +16,7 @@ frequency rms in cm⁻¹.*
 | hybrid head, pattern (d) | 175 / 750 | 0.40 (0.39–0.42) / **0.37 (0.36–0.38)** | 4.7 / **4.00** | 1 Oct 07:3x, 09:0x |
 | hybrid head, pattern (f) + ridge target | 175 | **0.33 (0.32–0.34)**, (b) 0.40 | 4.6 | 1 Oct 15:0x |
 | **rung B (hand features), pattern (f)** | 175 / 750 | **0.32**, (b) 0.41 / 0.32, (b) 0.43 | 4.5 / 4.5 | 1 Oct 15:4x, 16:3x — flat with data |
-| **hybrid head, pattern (f), projected target** | 175 | **0.28 (0.27–0.29)**, (b) 0.41, ΔH 0.19 | 4.6 | 1 Oct 18:0x — the carried recipe; 750 = chain 16 |
+| **hybrid head, pattern (f), projected target** | 175 / 750 | **0.28 (0.27–0.29)**, (b) 0.41 / **0.26 (0.25–0.28)**, (b) 0.38 | 4.6 / 3.8 | 1 Oct 18:0x, 23:0x — T1 ratio met at 750 |
 | hybrid head, pattern (f), projected, pattern + 0.3 × kring | 175 / **750** | 0.24 (0.22–0.26), (b) 0.37 / **0.22 (0.21–0.22), (b) 0.33**, ΔH 0.14 | 5.0 / **3.5** | 1 Oct 19:5x, 22:3x — **T1's ratio met at 750; ω 3.5 against the ≤ 3 criterion** |
 
 Three heads with different inductive biases, two data volumes, one recipe search: the same floor. Something shared stops them.

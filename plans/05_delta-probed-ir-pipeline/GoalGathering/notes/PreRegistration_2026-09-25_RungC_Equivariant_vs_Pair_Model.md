@@ -1122,3 +1122,11 @@ Pattern f, projected target, pattern + 0.3 × kring, pool A + A2 + B, `--sizes 4
 pretraining cells). With chain 14b (175: 0.24) and chain 17 (750: 0.22) it gives the three points of T2's curve (`probes/rungC_learning_curve_fit.py`).
 **Prediction:** (a) 0.22–0.24, ω 3.8–4.6. **Lines.** *Monotone:* 175 > 449 > 750 beyond the seed spreads → the power law is fitted and its extrapolation to
 5,000 read against T2 (ratio ≤ 0.20, ω ≤ 2). *Flat middle:* the curve is a step; the layer-B composition, not the count, is the suspect. Decision 51 as always.
+
+## Outcome, chain 16 — pattern f, projected target, pattern term alone, 750 — 1 October 23:0x (`out/E7_rungC_lever1b_f_proj_750_2026-10-01`)
+
+(a) **0.26** (0.25 / 0.27 / 0.28), (b) **0.38** (0.35 / 0.39 / 0.38), ω 3.84 (3.61 / 4.08 / 3.82), ΔH 0.166; best epochs 113–119 of 200. **Against the lines:**
+prediction (a) 0.24–0.28 met; *T1 ratio met* (0.26 ≤ 0.30, the step 175 → 750 falls 0.28 → 0.26); *network earns its place* (below rung B f's 0.32 by far
+more than both spreads, and moving with data where rung B is flat). Beside chain 17 (the same with 0.3 × kring: 0.22 / 0.33 / 3.50 / 0.138) the kring term
+keeps its 0.04 on both hold-outs at 750 and costs no ω — the combination is the carried recipe, as decided at 22:3x. The ω criterion of T1 is unmet by
+both (3.84 / 3.50). Decision 51: best epochs below the cap.
