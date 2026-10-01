@@ -44,9 +44,7 @@ from rungC_equivariant import (  # noqa: E402
     to_torch,
 )
 from rungC_hybrid import HybridDeltaFModel, input_scales, pair_feature_stats, primitive_pool_matrix  # noqa: E402
-from rungC_targets import LAM_REL, cached_pattern_ls_target, weighted_residual  # noqa: E402
-
-TARGET_SCALE_LIMIT = 20.0   # lever 4 (1 Oct 2026 11:4x): an LS target whose entries exceed this multiple of the projected target's is refused
+from rungC_targets import LAM_REL, SCALE_LIMIT, cached_pattern_ls_target, scale_ratio, weighted_residual  # noqa: E402
 
 from dpir.provenance import provenance  # noqa: E402
 
@@ -503,12 +501,12 @@ def main() -> int:
                 X, cached = cached_pattern_ls_target(Path(a.out_prefix).parent / "ls_targets", i, a.pattern, m["dH_true"], mols[i]["B"], m["masses"], mask,
                                                      lam_rel=a.ls_lam)
                 projected = np.where(mask, t["dF_true"].numpy(), 0.0)
-                scale_ratio = float(np.abs(X).max() / max(np.abs(projected).max(), 1e-30))
-                if scale_ratio > TARGET_SCALE_LIMIT:
-                    raise RuntimeError(f"{i}: LS target entries {scale_ratio:.3g}× the projected target's — the unregularised blow-up of 1 Oct 11:4x; "
-                                       f"raise --ls-lam (now {a.ls_lam:g})")
+                ratio = scale_ratio(X, projected)                               # the cache refuses to store such a target; a stale file is caught here
+                if ratio > SCALE_LIMIT:
+                    raise RuntimeError(f"{i}: LS target entries {ratio:.3g}× the projected target's (cached: {cached}) — the blow-ups of 1 Oct 11:4x / "
+                                       f"12:2x; delete the cache file or raise --ls-lam (now {a.ls_lam:g})")
                 target_residuals[i] = {"projected": weighted_residual(m["dH_true"], mols[i]["B"], m["masses"], projected),
-                                       "ls": weighted_residual(m["dH_true"], mols[i]["B"], m["masses"], X), "scale_ratio": scale_ratio, "from_cache": cached}
+                                       "ls": weighted_residual(m["dH_true"], mols[i]["B"], m["masses"], X), "scale_ratio": ratio, "from_cache": cached}
                 t["dF_true"] = torch.as_tensor(X, dtype=torch.float32)
         if a.head == "hybrid":
             t.update(hybrid_tensors(Path(a.molecules) / i, mols[i], a.pattern))

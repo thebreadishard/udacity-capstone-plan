@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Re-queued 12:3x behind chain 8b (lever 4 and pattern f first).
 # Sherlock chain 4, 1 Oct 2026 (amendment 08:2x, lever 2c / H4): encoder capacity — 5 blocks × 64 and 3 blocks × 128 — under the hybrid head,
 # pattern d, sum body, 175, seeds 0–2, against lever 1's 0.40. Design-check gate per body. Queued behind chain 3.
 set -uo pipefail
@@ -7,7 +8,7 @@ cd /c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/modul
 export PYTHONUTF8=1 PYTHONUNBUFFERED=1
 D=2026-10-01
 REC="--head hybrid --aux pattern --sqm-scale --pair-features --aux-weight 1.0 --epochs 200 --patience 20 --lr 3e-4 --hybrid-hidden 256 --pattern d"
-until grep -q "=== chain 3 finished\|not started" out/E7_rungC_sherlock3_$D.log 2>/dev/null; do sleep 60; done
+until grep -q "=== chain 8b finished\|not started" out/E7_rungC_sherlock8_$D.log 2>/dev/null; do sleep 60; done   # re-queued 12:3x behind 8b
 echo "=== chain 4 start $(date)"
 for CELL in "deep:--body-blocks 5 --body-width 64" "wide:--body-blocks 3 --body-width 128"; do
   L=${CELL%%:*}; FLAGS=${CELL#*:}

@@ -31,7 +31,7 @@ def _one(args):
     mdir, out, pattern, i, use_analytic, lam = args
     import torch
     from rungC_equivariant import load_molecule
-    from rungC_targets import cached_pattern_ls_target, projected_target, weighted_residual
+    from rungC_targets import cached_pattern_ls_target, projected_target, scale_ratio, weighted_residual
     from rungC_train import pattern_classes
     torch.set_num_threads(1)
     t0 = time.time()
@@ -43,7 +43,7 @@ def _one(args):
     projected = np.where(mask, projected_target(m["dH_true"], B), 0.0)
     return dict(id=i, n_atoms=len(m["masses"]), n_pairs=int(np.triu(mask).sum()), seconds=round(time.time() - t0, 1), from_cache=cached,
                 residual_projected=weighted_residual(m["dH_true"], B, m["masses"], projected), residual_ls=weighted_residual(m["dH_true"], B, m["masses"], X),
-                scale_ratio=float(np.abs(X).max() / max(np.abs(projected).max(), 1e-30)))
+                scale_ratio=scale_ratio(X, projected))
 
 
 def main() -> int:

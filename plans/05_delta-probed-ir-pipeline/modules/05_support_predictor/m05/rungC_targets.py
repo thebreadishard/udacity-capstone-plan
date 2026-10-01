@@ -25,12 +25,20 @@ import scipy.linalg
 AMU2AU = 1822.888486209
 LAM_REL = 1e-3          # default ridge, relative to the mean diagonal of the normal matrix (λ scan of 1 Oct 2026, registered)
 ROW_CHUNK = 1500
+PINV_RCOND = 1e-10      # singular values of B below this × the largest are null directions (redundant internals); numpy's default cutoff let a 2.7e-16
+                        # value through on one machine and not on another (12:2x) — an explicit cutoff makes the prior the same everywhere
+SCALE_LIMIT = 20.0      # a target whose entries exceed this multiple of the prior's is refused (the blow-ups of 11:4x and 12:2x)
 
 
 def projected_target(dH: np.ndarray, B: np.ndarray) -> np.ndarray:
-    """B⁺ᵀ ΔH B⁺ — the pair model's registered projected truth (full K × K)."""
-    Bp = np.linalg.pinv(B)
+    """B⁺ᵀ ΔH B⁺ — the pair model's projected truth (full K × K), with the explicit pseudo-inverse cutoff PINV_RCOND."""
+    Bp = np.linalg.pinv(B, rcond=PINV_RCOND)
     return Bp.T @ dH @ Bp
+
+
+def scale_ratio(X: np.ndarray, prior: np.ndarray) -> float:
+    """max|X| / max|prior| — the guard's number."""
+    return float(np.abs(X).max() / max(np.abs(prior).max(), 1e-30))
 
 
 def pattern_ls_target(dH: np.ndarray, B: np.ndarray, masses_amu: np.ndarray, mask: np.ndarray, lam_rel: float = LAM_REL) -> np.ndarray:
@@ -89,6 +97,10 @@ def cached_pattern_ls_target(cache_dir: Path, mol_id: str, pattern: str, dH: np.
             if str(z["key"]) == key:
                 return np.array(z["X"]), True
     X = pattern_ls_target(dH, B, masses_amu, mask, lam_rel)
+    ratio = scale_ratio(X, np.where(mask, projected_target(dH, B), 0.0))
+    if ratio > SCALE_LIMIT:
+        raise RuntimeError(f"{mol_id}: LS target entries {ratio:.3g}× the projected prior's — not stored (SCALE_LIMIT {SCALE_LIMIT:g}); "
+                           f"raise lam_rel (now {lam_rel:g}) or inspect B")
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(".tmp.npz")
     np.savez(tmp, X=X, key=key)

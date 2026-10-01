@@ -841,3 +841,13 @@ lever 1 (pattern d, projected target, 0.40). **Prediction:** (a) 0.24–0.32, ω
 pairs are learned from the same 175 molecules. **Lines.** *Works:* (a) ≤ 0.32 and below 7b by more than both spreads → pattern f + ridge target is the
 carried recipe; 750 next (T1 ≤ 0.30 in reach). *Flat:* within spreads of 7b → the model, not the target support, limits at 175; the 750 read of 7b decides
 what to carry. *Hurts:* above 7b by both spreads → the extra classes dilute at 175; re-read at 750 before judging. Decision 51 as always.
+
+*Amendment to lever 4, 12:3x — second stop, cause and fix.* Chain 7b (12:18) and chain 8 (12:19) stopped at the new scale guard: 53 cache files built on the
+server carried targets of 1e15–1e18 a.u. Cause, measured: those molecules' internal sets are exactly redundant (smallest singular value of B 2.7e-16);
+numpy's default pseudo-inverse cutoff dropped that direction on the laptop and kept it on the server, so the *projected prior* itself was 7.5e17 there and
+the ridge followed it. Fix: `projected_target` uses an explicit cutoff (`PINV_RCOND` 1e-10 — the null directions of the redundant internals, the same on
+every machine), the cache refuses to store a target above `SCALE_LIMIT` (20×) the prior (the trainer's guard reads the same constant), tests. The 53 files
+were deleted and rebuilt on the laptop: pattern d median residual 0.125 → 0.081, scale max 4.6; pattern f 0.028 → 0.007, scale max 1.7 (`out/
+ls_targets_build_{d,f}_lam0.001_2026-10-01.json`). Queue re-serialised (12:31): chain 3 (kring, running) → 7c (d + ridge, 175) → 9b (f + ridge, 175) →
+8b (d + ridge, 750) → 4 (capacity) → 6 (449); 5 after 4 and the checkpoint. Lesson for the guard list: a numerical cutoff that is a library default is a
+setting that travels unexamined (the E8 lesson again) — pin it.

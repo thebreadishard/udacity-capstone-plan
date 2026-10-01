@@ -111,3 +111,18 @@ def test_trainer_switch_present_with_the_registered_default():
     text = (M05 / "rungC_train.py").read_text(encoding="utf-8")
     assert re.search(r'add_argument\("--aux-target", default="projected", choices=\["projected", "ls"\]', text)
     assert re.search(r'add_argument\("--ls-lam", type=float, default=LAM_REL', text)
+
+
+def test_prior_cutoff_and_store_guard(tmp_path, monkeypatch):
+    """12:2x: an exactly redundant internal set gives the same prior whatever the machine's tiny singular value does (explicit cutoff), and a target that
+    would exceed SCALE_LIMIT × the prior is refused by the cache rather than stored."""
+    B, masses, dH, mask = _random_system(seed=2, n_atoms=5, K=12)
+    B[-1] = B[0]                                                    # an exactly redundant row
+    p1 = RT.projected_target(dH, B)
+    B2 = B.copy()
+    B2[-1] = B[0] * (1 + 1e-14)                                     # the same redundancy up to rounding
+    assert np.allclose(RT.projected_target(dH, B2), p1, rtol=1e-6, atol=1e-9 * np.abs(p1).max())
+    monkeypatch.setattr(RT, "SCALE_LIMIT", 1e-6)                    # make any target "too large"
+    with pytest.raises(RuntimeError, match="not stored"):
+        RT.cached_pattern_ls_target(tmp_path, "mol", "d", dH, B, masses, mask)
+    assert not (tmp_path / f"d_lam{RT.LAM_REL:g}" / "mol.npz").exists()
