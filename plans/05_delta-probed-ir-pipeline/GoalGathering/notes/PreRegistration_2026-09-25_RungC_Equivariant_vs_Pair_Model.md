@@ -711,3 +711,27 @@ spreads → the encoder was the floor; lever 2b (longer pretraining, the hybrid 
 epochs of geometry-only pretraining do not move the encoder; 2b still runs tonight as the stronger version of the same question, with capacity (2c)
 beside it. *Hurts:* (ii) > (i) by more than both spreads → the QM9 body transfers badly to this corpus (the C2 history); 2b runs with the corpus's own
 B3LYP Hessians as the pretraining set instead. Decision 51 as always.
+
+## Dated amendment 1 October 08:0x — lever 2b (H4): the same pretraining, seven times longer (registered before it runs)
+
+The mean body of 28 September saw Hessian QM9 for three epochs (31 min; validation loss 4.3e-4 → 1.9e-4, still falling). Whatever lever 2a reads,
+the stronger version of the same question is a body that has converged on the pretraining task. **Run (on six cores beside the chains):**
+`rungC_pretrain.py out/rungC_pretrained_mean_long_2026-10-01 --epochs 20 --threads 6 --aggregation mean` (≈ 4–5 h). **Read-out:** the validation
+loss per epoch (the best epoch is recorded; decision 51 — if the best epoch is the last, the cap binds and the run is extended), then the body under
+the hybrid head exactly as cell (ii) of lever 2a → `out/E7_rungC_lever2b_pretrained_long_175_2026-10-01`. **Prediction:** validation loss ≤ 1.0e-4;
+(a) below cell (ii) of lever 2a by 0.02 or more if 2a reads *works*, within spreads if 2a reads *flat*. **Line:** (a) ≤ 0.37 and below the fresh mean
+body by both spreads → the encoder was the floor and pretraining depth matters; otherwise the pretraining *objective* (geometry → Cartesian Hessian)
+is the next suspect and the hybrid objective (geometry → F on the pattern) is built for pretraining.
+
+## Dated amendment 1 October 08:1x — lever 3 (H8): the auxiliary term on the read-out quantity itself (registered before it runs)
+
+**Code (`rungC_train.py --aux kring`, `kring_tensors`, test in `tests/test_rungC_diag_pattern.py`, corpus smoke):** K = kscale ⊙ (Vᵀ M^-1/2 ΔH M^-1/2 V)
+in cm⁻¹ is the mode-basis coupling matrix the (a)/(b) read-outs are taken on (identical to `e7_t2_posthoc.k_of` up to the B reconstruction, tested);
+the term is the mean square of (K_pred − K_true) over the ring-mode block (diagonal and couplings), divided by the block's own mean square, with the
+registered mass-weighted Cartesian term beside it as always. The pattern term standardises ΔF per pair class — a proxy whose weights are the class
+scales, not the read-out's. **Run (`rungC_sherlock3_1001.sh`, queued behind chain 2):** hybrid + SQM α + pair features, pattern d, sum body, 175,
+seeds 0–2, inner validation 15 %, `--aux kring` → `out/E7_rungC_lever3_kring_175_2026-10-01`; the control is lever 1's pattern-term record at 175
+(0.40, 0.39–0.42). **Prediction:** (a) 0.36–0.40, ω equal or better (the term weights the ring modes the read-out weights). **Lines.** *Works:*
+(a) ≤ 0.37 and below the pattern-term record by both spreads → the loss was part of the floor; the term is carried and combined with the pattern term
+next. *Flat:* within spreads → H8 rejected; the loss is not the floor. *Hurts:* > 0.43 → the ring block alone under-constrains the rest of ΔF; a
+combined term (pattern + kring) is the follow-up. Decision 51 as always.

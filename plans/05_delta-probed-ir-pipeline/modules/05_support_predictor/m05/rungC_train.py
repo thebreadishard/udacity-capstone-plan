@@ -28,6 +28,7 @@ import torch
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "src"))
 import e6_learning_curve as E6  # noqa: E402
+import e7_t2_posthoc as PH  # noqa: E402
 import e7_t2_sqm as T2  # noqa: E402
 from e7_rungB_pairs import molecule_pairs, readouts  # noqa: E402
 from rungC_equivariant import AGGREGATION, AGGREGATIONS, BOHR2ANG, LOSS_SCALE, DeltaHessianModel, console_utf8_safe, load_molecule, to_torch  # noqa: E402
@@ -124,6 +125,21 @@ def pattern_class_scales(tensors: dict, ids: list) -> torch.Tensor:
     return scale.float()
 
 
+def kring_tensors(masses: np.ndarray, V: np.ndarray, w: np.ndarray, family: list, dH_true: np.ndarray, dtype=torch.float32) -> dict:
+    """Lever 3 / H8 (1 Oct 2026): the read-out map as tensors. K = kscale ⊙ (Cm ΔH Cmᵀ) with Cm = Vᵀ M^-1/2 (M × 3N) is the mode-basis coupling
+    matrix in cm⁻¹ that `e7_t2_posthoc.k_of` computes from ΔF (identical up to the B reconstruction); `ring` = the ring-family modes the (a)/(b)
+    read-outs are taken on; K_true and the block's mean square for the relative term (1 when the molecule has no ring mode)."""
+    mm = np.repeat(np.asarray(masses, float) * PH.AMU2AU, 3)
+    om = np.sqrt(np.abs(np.asarray(w, float)))
+    Cm = np.asarray(V, float).T / np.sqrt(mm)[None, :]
+    kscale = PH.HARTREE2CM / (2 * np.sqrt(np.outer(om, om)))
+    ring = np.where(np.asarray(family) == E6.RING)[0]
+    K_true = kscale * (Cm @ np.asarray(dH_true, float) @ Cm.T)
+    norm = float(np.mean(K_true[np.ix_(ring, ring)] ** 2)) if len(ring) else 1.0
+    return dict(Cm=torch.as_tensor(Cm, dtype=dtype), kscale=torch.as_tensor(kscale, dtype=dtype), ring=torch.as_tensor(ring, dtype=torch.long),
+                K_true=torch.as_tensor(K_true, dtype=dtype), K_norm=torch.tensor(max(norm, 1e-30), dtype=dtype))
+
+
 def _terms(model, t):
     """Registered main term (mass-weighted Cartesian MSE) and the internal-ΔF term, with the per-molecule scale tensor when the model has one.
     Internal term: 'all' (registered) = relative MSE over every entry of B⁺ᵀ ΔH B⁺; 'pattern' (30 Sep 2026) = MSE over the pair model's pattern only,
@@ -136,6 +152,13 @@ def _terms(model, t):
         on = cls >= 0
         scale = model.aux_class_scale[cls.clamp_min(0)]
         aux = (((dF_p - t["dF_true"]) / scale) ** 2)[on].mean()
+    elif getattr(model, "aux_mode", "all") == "kring":
+        r = t["ring"]
+        if r.numel() == 0:
+            aux = main * 0.0
+        else:
+            K = (t["Cm"] @ pred @ t["Cm"].T) * t["kscale"]
+            aux = ((K - t["K_true"])[r][:, r] ** 2).mean() / t["K_norm"]
     else:
         aux = ((dF_p - t["dF_true"]) ** 2).mean() / t["dF_norm"]        # relative internal-ΔF term (build note of 27 Sep: the raw term is ~1e9 in a.u.)
     return main, aux, pred
@@ -247,8 +270,8 @@ def train_one(train_ids: list, tensors: dict, seed: int, epochs: int, lr: float 
     if pretrained and tensor_input:
         raise ValueError("--tensor-input is a fresh-body variant (30 Sep 2026); the pretrained bodies carry no weights for it")
     if head == "hybrid":
-        if aux_mode != "pattern":
-            raise ValueError("--head hybrid needs --aux pattern (its output lives on the pattern; the registered rank-3 run uses the pattern term)")
+        if aux_mode not in ("pattern", "kring"):
+            raise ValueError("--head hybrid needs --aux pattern or kring (its output lives on the pattern; the registered rank-3 run uses the pattern term)")
         n_pf = int(tensors[train_ids[0]]["pfeat"].shape[1]) if pair_features else 0
         model = HybridDeltaFModel(aggregation=aggregation, tensor_input=tensor_input, sqm_scale=sqm_scale,
                                   class_scale=pattern_class_scales(tensors, train_ids), n_pair_features=n_pf, hidden=hybrid_hidden)
@@ -373,7 +396,7 @@ def main() -> int:
     ap.add_argument("--inner-val", type=float, default=0.0,
                     help="search: fraction of the training ids held out per seed as inner validation (the stage read-out)")
     ap.add_argument("--patience", type=int, default=0, help="search stage 2: early stopping on the inner validation term, best state restored (0 = off)")
-    ap.add_argument("--aux", default="all", choices=["all", "pattern"],
+    ap.add_argument("--aux", default="all", choices=["all", "pattern", "kring"],
                     help="internal term: 'all' (registered) or 'pattern' (30 Sep 2026, rank 2 of the external reviews: the pair model's pattern only, one "
                          "standardisation scale per pair class from the fit molecules)")
     ap.add_argument("--zero-hlow", action="store_true", help="diagnostic 1 (30 Sep 2026): zero the B3LYP Hessian input channels; the ratio must collapse towards the zero rule")
@@ -444,7 +467,9 @@ def main() -> int:
         t["dF_true"] = t["Bp"].T @ t["dH_true"] @ t["Bp"]
         t["dF_norm"] = (t["dF_true"] ** 2).mean().clamp_min(1e-30)
         t["cls"] = entry_classes(m)
-        if a.aux == "pattern":
+        if a.aux == "kring":
+            t.update(kring_tensors(mols[i]["masses"], mols[i]["V"], mols[i]["w"], mols[i]["family"], m["dH_true"]))
+        if a.aux == "pattern" or a.head == "hybrid":                      # the hybrid's class scales need the pattern classes under any aux term
             t["pat_cls"] = pattern_classes(Path(a.molecules) / i, mols[i], a.pattern)
         if a.head == "hybrid":
             t.update(hybrid_tensors(Path(a.molecules) / i, mols[i], a.pattern))

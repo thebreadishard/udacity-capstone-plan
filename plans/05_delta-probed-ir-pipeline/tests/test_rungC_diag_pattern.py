@@ -88,7 +88,7 @@ def test_pattern_classes_on_benzene_match_the_loader_and_are_symmetric():
 
 def test_cli_switches_present_and_recipe_unchanged_by_default():
     text = (M05 / "rungC_train.py").read_text(encoding="utf-8")
-    assert re.search(r'add_argument\("--aux", default="all", choices=\["all", "pattern"\]', text)
+    assert re.search(r'add_argument\("--aux", default="all", choices=\["all", "pattern", "kring"\]', text)   # kring added 1 Oct (lever 3)
     assert re.search(r'add_argument\("--zero-hlow", action="store_true"', text)
     assert re.search(r'add_argument\("--overfit-one", default=None', text)
     assert 'aux_mode: str = "all"' in text                                            # default keeps the registered internal term
@@ -142,3 +142,42 @@ def test_per_molecule_readouts_keep_the_registered_keys_and_nan_as_none(monkeypa
     assert calls == [("m1",), ("m2",)]
     assert set(out["m1"]) == set(RT.PER_MOLECULE_KEYS) and "block_rms" not in out["m1"]
     assert out["m1"]["coupling_ratio"] == 0.4 and out["m2"]["coupling_ratio"] is None
+
+
+@pytest.mark.skipif(not (CORPUS / "A_8448043181" / "geometry.json").exists(), reason="corpus benzene not on this machine")
+def test_kring_tensors_reproduce_k_of_and_vanish_on_the_truth():
+    """Lever 3 / H8 (1 Oct 2026): the torch read-out map equals e7_t2_posthoc.k_of on the same ΔH (up to the B reconstruction), and the kring term is
+    zero when the prediction is the truth."""
+    pytest.importorskip("geometric")
+    import json
+
+    import e7_t2_posthoc as PH
+    import e7_t2_sqm as T2
+    import rungC_train as RT
+    d = CORPUS / "A_8448043181"
+    g = json.load(open(d / "geometry.json"))
+    masses, coords = np.asarray(g["masses_amu"]), np.asarray(g["coords_bohr"], float)
+    lo = np.load(d / "hessian_b3lyp.npz")["H_projected"]
+    hi = np.load(d / "hessian_wb97x.npz")["H_projected"]
+    w, _f, V, _ = T2.normal_modes(lo, masses)
+    B, _types = T2.internals(g["symbols"], coords)
+    dH = hi - lo
+    fam = [RT.E6.RING] * V.shape[1]                                                     # every mode 'ring': the block is the whole matrix
+    t = RT.kring_tensors(masses, V, w, fam, dH, dtype=torch.float64)
+    K_t = ((t["Cm"] @ torch.as_tensor(dH) @ t["Cm"].T) * t["kscale"]).numpy()
+    Bp = np.linalg.pinv(B)
+    K_ref = PH.k_of(dict(masses=masses, w=w, V=V, B=B), Bp.T @ dH @ Bp)
+    assert np.abs(K_t - K_ref).max() < 2e-3 * np.abs(K_ref).max()
+    assert torch.allclose(t["K_true"], torch.as_tensor(K_t))
+
+    class Truth(torch.nn.Module):
+        aux_mode = "kring"
+
+        def forward(self, Z, pos, H_low, t):
+            return t["dH_true"]
+    t.update(dH_true=torch.as_tensor(dH), mw=torch.ones_like(torch.as_tensor(dH)), Bp=torch.as_tensor(Bp), dF_true=torch.as_tensor(Bp.T @ dH @ Bp),
+             dF_norm=torch.tensor(1.0, dtype=torch.float64), Z=None, pos=None, H_low=None)
+    main, aux, _pred = RT._terms(Truth(), t)
+    assert float(main) == 0.0 and float(aux) < 1e-20
+    text = (M05 / "rungC_train.py").read_text(encoding="utf-8")
+    assert re.search(r'add_argument\("--aux", default="all", choices=\["all", "pattern", "kring"\]', text)
