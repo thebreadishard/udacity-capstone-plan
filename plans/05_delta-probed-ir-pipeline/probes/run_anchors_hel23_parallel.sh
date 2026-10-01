@@ -8,6 +8,8 @@
 # 30 Sep 08:3x: FAST also carries --fast-t-lambda (the (T)-lambda C kernel; benzene 44 s vs pyscf 373 s, agreement 1e-16).
 # The 29 Sep benzonitrile gradients (CCSD lambda) were moved to results/benzonitrile_ccpvdz_INVALID_ccsd_lambda. FAST="" drops the C kernel.
 # Every step writes one ANCHOR … line to anchors.log for the poller.
+# 1 Oct 2026: ANCHOR_LIST (lines of `name|geometry|out|workers|threads|mem_mb|extra args`) replaces the default four anchors below; the naphthalene
+# run on ubuntu-32gb-hel1-2 uses it with one entry. An entry's extra args come after $FAST; an empty field means none.
 # Smoke (WSL, water): ROOT=<dir with e8_cc_hessian_fd.py, e8_symmetry.py> PY=<python> LOG=<file> SMOKE=<geometry.json> bash run_anchors_hel23_parallel.sh
 set -euo pipefail
 ROOT=${ROOT:-/root/e8}
@@ -86,9 +88,15 @@ if [ -n "$SMOKE" ]; then    # water: reference, two partial runs of one thread, 
   say "SMOKE PARALLEL OK"; exit 0
 fi
 
+DEFAULT_LIST="benzonitrile|molecules/A_3100da3761/geometry.json|results/benzonitrile_ccpvdz|2|8|12000|$FAST
+fluorobenzene|$CORPUS/molecules/B_8b12a55d3a/geometry.json|results/fluorobenzene_ccpvdz|3|5|8000|$FAST
+pyridine|$CORPUS/molecules/A_6e858b26e5/geometry.json|results/pyridine_ccpvdz|3|5|8000|$FAST
+benzene_cation|cations/benzene/geometry.json|results/benzene_cation_ccpvdz|2|8|11000|--charge 1 --spin 1"
+ANCHOR_LIST=${ANCHOR_LIST:-$DEFAULT_LIST}
 say "chain (corrected route) start on $(hostname)"
-skipped benzonitrile || anchor_parallel benzonitrile molecules/A_3100da3761/geometry.json results/benzonitrile_ccpvdz 2 8 12000 $FAST
-skipped fluorobenzene || anchor_parallel fluorobenzene "$CORPUS/molecules/B_8b12a55d3a/geometry.json" results/fluorobenzene_ccpvdz 3 5 8000 $FAST
-skipped pyridine || anchor_parallel pyridine "$CORPUS/molecules/A_6e858b26e5/geometry.json" results/pyridine_ccpvdz 3 5 8000 $FAST
-skipped benzene_cation || anchor_parallel benzene_cation cations/benzene/geometry.json results/benzene_cation_ccpvdz 2 8 11000 --charge 1 --spin 1
+while IFS='|' read -r name geom out W T M extra; do
+  [ -z "$name" ] && continue
+  # shellcheck disable=SC2086   # extra is a list of probe arguments, split on purpose
+  skipped "$name" || anchor_parallel "$name" "$geom" "$out" "$W" "$T" "$M" $extra
+done <<< "$ANCHOR_LIST"
 say "CHAIN FINISHED"
