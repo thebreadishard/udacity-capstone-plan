@@ -1165,3 +1165,27 @@ Lane B after chain 18: pattern f, projected target, pattern + 0.3 × kring, **3 
 `out/E7_rungC_carried_wide_175_2026-10-01`; control chain 14b (3 × 64: 0.24 / 0.37 / ω 5.00). **Prediction:** (a) 0.20–0.23, ω 4.0–4.8. **Lines.** *Works:*
 (a) ≤ 0.22 below 0.24 by both spreads, or ω below 5.0 by more than 0.5 with (a) unchanged → the wide body joins the carried recipe and is re-read at 750.
 *Flat:* within spreads → width helped only the narrow support; the carried body stays 3 × 64. Decision 51 as always.
+
+## Outcome, chain 18 and the first T2 curve — the carried recipe at 175 / 449 / 750 — 2 October 01:4x (`out/E7_rungC_carried_449_2026-10-01`, fit `out/rungC_lc_carried_2026-10-02`)
+
+| pool | (a) ratio, seeds | (b) ratio | (a) ω | (a) ΔH residual | best epochs |
+|---|---|---|---|---|---|
+| 175 (chain 14b) | 0.24 (0.22 / 0.26 / 0.24) | 0.37 | 5.00 | 0.185 | 67–103 |
+| 449 (chain 18) | **0.235** (0.21 / 0.24 / 0.25) | 0.35 | 4.58 | 0.178 | 55 / 90 / 92 |
+| 750 (chain 17) | 0.22 (0.21 / 0.22 / 0.22) | 0.33 | 3.50 | 0.138 | 75–94 |
+
+**Against the lines:** on the ratio the middle is *flat* — 175 and 449 overlap seed for seed (0.22–0.26 against 0.21–0.25); the gain sits in the step
+449 → 750. On ω the curve is monotone beyond the spreads (5.00 → 4.58 → 3.50). **Power-law fit (`rungC_learning_curve_fit.py`, seed bootstrap, 68 % bands):**
+(a) ratio slope −0.07 (factor 1.17 per decade) → **0.19 (0.18–0.21) at 5,000**, 0.18 at 20,000; (a) ω slope −0.23 (factor 1.69 per decade) → **2.4 (2.1–2.8)
+at 5,000**, 1.8 (1.4–2.1) at 20,000; (b) ratio 0.29 at 5,000, (b) ω 3.4. **Against T2 (ratio ≤ 0.20 and ω ≤ 2 at ≈ 5,000):** the ratio extrapolation sits on the
+criterion, ω misses it (2.4; the ω criterion would need ≈ 20,000 molecules at this slope, or a model that steepens it). The registered consequence of the
+flat middle is taken: the composition control (chain 20, below) separates the count from the layer-B content of the 750 pool before the curve is read
+as a law. Decision 51: best epochs below the cap.
+
+## Dated amendment 2 October 01:5x — chain 20: composition control at equal count (registered before it runs)
+
+The 175 point draws from A + A2 only; the 449 and 750 points mix in layer B. **Run (lane B after chain 19):** the carried recipe with `--pool-layers A,A2,B
+--sizes 175` (175 molecules in the hashed order of the mixed pool), seeds 0–2 → `out/E7_rungC_carried_mixed175_2026-10-01`. **Prediction:** (a) 0.22–0.25 (the
+same as A + A2 at 175). **Lines.** *Count:* within spreads of chain 14b → the curve is a count curve with a shallow ratio slope and the T2 numbers above
+stand. *Composition:* ≤ 0.21 or ≥ 0.27 → layer B's substituted molecules move the hold-out by themselves, and the curve must be re-drawn at fixed
+composition before any extrapolation. Decision 51 as always.
