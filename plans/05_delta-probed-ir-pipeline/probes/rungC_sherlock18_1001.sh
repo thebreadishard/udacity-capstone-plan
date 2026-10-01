@@ -7,7 +7,7 @@ cd /c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/modul
 export PYTHONUTF8=1 PYTHONUNBUFFERED=1
 D=2026-10-01
 REC="--head hybrid --aux both --kring-weight 0.3 --sqm-scale --pair-features --aux-weight 1.0 --epochs 200 --patience 20 --lr 3e-4 --hybrid-hidden 256 --pattern f"
-until grep -q "=== chain 15b finished\|15 not started\|chain 15 not started" out/E7_rungC_sherlock15_$D.log 2>/dev/null; do sleep 120; done
+until grep -q "=== chain 15 finished\|15 not started" out/E7_rungC_sherlock15_$D.log 2>/dev/null; do sleep 120; done   # 15c prints the chain-15 marker
 grep -q "verdict: \*\*PASS\*\*" out/design_check_lever1_$D.txt || { echo "=== chain 18 not started: no sum-body PASS $(date)"; exit 1; }
 echo "=== chain 18 start $(date)"
 python m05/rungC_train.py corpus/molecules out/E7_rungC_carried_449_$D --use-analytic --pool-layers A,A2,B --sizes 449 --seeds 0,1,2 --inner-val 0.15 --threads 8 --aggregation sum $REC \
