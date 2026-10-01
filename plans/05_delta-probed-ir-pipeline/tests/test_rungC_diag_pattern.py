@@ -92,4 +92,5 @@ def test_cli_switches_present_and_recipe_unchanged_by_default():
     assert re.search(r'add_argument\("--zero-hlow", action="store_true"', text)
     assert re.search(r'add_argument\("--overfit-one", default=None', text)
     assert 'aux_mode: str = "all"' in text                                            # default keeps the registered internal term
+    assert re.search(r'add_argument\("--hybrid-hidden", type=int, default=128', text)  # search stage H1 (1 Oct): width of the hybrid head
     assert "pattern_class_scales(tensors, train_ids)" in text                          # scales from the fit molecules of the seed, nothing else

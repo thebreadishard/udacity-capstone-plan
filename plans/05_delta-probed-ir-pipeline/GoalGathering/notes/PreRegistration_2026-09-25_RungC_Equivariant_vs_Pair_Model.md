@@ -618,3 +618,14 @@ hand-made topology at this data size, and the hand-made topology adds ≈ 0.01�
    (learning rate, width, epochs) is the fair-chance rule; (ii) the pattern itself — off-pattern ΔF is not predicted, a floor of 0.15 on benzene; the
    between-branch pattern (d) (pairs two bonds apart) is the registered extension; (iii) data of the target kind chosen by coverage, not volume;
    (iv) the proxy → CCSD(T) transfer, which no proxy experiment can settle.
+
+## Dated amendment 1 October 03:5x — search stage H1: the hybrid head's own recipe (registered before it runs)
+
+The hybrid runs of tonight inherited the Cartesian head's winner flags (lr 1e-3, 200 epochs, patience 20, aux weight 1.0) and a head width of 128.
+The fair-chance rule of 25 September applies to the new head as it did to the old one: no sentence about its ceiling before a small search.
+**Cells (`rungC_search_H1_1001.sh`; hybrid + SQM α + pair features, pool A + A2 = 175, seeds 0–2, inner validation 15 %, patience 20, 200 epochs):**
+learning rate {3e-4, 1e-3, 3e-3} × head width {128, 256} — six cells, ≈ 12 min each → `out/E7_rungC_H1_<lr>_<width>_2026-10-01`; pick by the
+seed-mean inner term alone with `rungC_stage_pick.py` (`…_H1_pick_2026-10-01`), hold-outs printed for information. `--hybrid-hidden` added (test).
+**Prediction.** The winner's inner term is within 10 % of the lr 1e-3 / 128 cell; (a) of the winner 0.41–0.44. **Lines.** (a) ≤ 0.40 for the winner →
+the recipe was part of the floor and the next stage (epochs × patience, class-scale floor value) follows; 0.41–0.45 → the floor is the
+representation and the data, not the recipe — the model to carry is the lr 1e-3 / 128 one unless the inner term says otherwise.

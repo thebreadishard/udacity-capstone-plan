@@ -106,3 +106,11 @@ def test_pair_features_path_is_invariant_and_off_by_default():
     t_no = {k: v for k, v in t0.items() if k != "pfeat"}
     with torch.no_grad():
         plain(t_no["Z"], t_no["pos"], t_no["H_low"], t_no)                          # runs without a pfeat tensor
+
+
+def test_hybrid_hidden_width_changes_the_head_only():
+    small = RH.HybridDeltaFModel(aggregation="mean", hidden=128)
+    wide = RH.HybridDeltaFModel(aggregation="mean", hidden=256)
+    n_body = sum(p.numel() for p in small.body.parameters())
+    assert sum(p.numel() for p in wide.body.parameters()) == n_body
+    assert sum(p.numel() for p in wide.parameters()) > sum(p.numel() for p in small.parameters())
