@@ -6,7 +6,7 @@ set -uo pipefail
 cd /c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor || exit 1
 export PYTHONUTF8=1 PYTHONUNBUFFERED=1
 D=2026-10-01
-until grep -q "=== chain 2 finished\|not started" out/E7_rungC_sherlock2_$D.log 2>/dev/null; do sleep 60; done
+until grep -q "=== chain 7 finished\|not started" out/E7_rungC_sherlock7_$D.log 2>/dev/null; do sleep 60; done   # re-queued 09:3x behind lever 4
 grep -q "verdict: \*\*PASS\*\*" out/design_check_lever1_$D.txt || { echo "=== chain 3 not started: no sum-body PASS from lever 1 $(date)"; exit 1; }
 echo "=== chain 3 start $(date)"
 python m05/rungC_train.py corpus/molecules out/E7_rungC_lever3_kring_175_$D --use-analytic --pool-layers A,A2 --sizes 175 --seeds 0,1,2 --inner-val 0.15 --threads 8 --aggregation sum \
