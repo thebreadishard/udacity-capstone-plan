@@ -689,3 +689,25 @@ while a fit on (c) already reaches 0.00 — so (d) adds exactly the pairs the ma
 **Lines.** *Works:* (a) ≤ 0.40 at 175 and at 750, below the pattern-c records (0.43 / 0.431) by more than both spreads. *Flat:* 0.41–0.45 — the pattern
 is not the floor either; the model to carry stays pattern c (fewer parameters, same number). *Hurts:* > 0.45 — the extra pairs add noise the data cannot
 constrain; reported as such. Decision 51 as always.
+
+## Dated amendment 1 October 08:0x — Sherlock chain 2: pattern ceilings on three more molecules (H5) and a pretrained body under the hybrid head (lever 2a, H4); registered before it runs
+
+*Investigation log: `Investigation_2026-10-01_RungC_Sherlock_Day.md`. The user, 07:5x: start without waiting.*
+
+**H5 — is the pattern-(d) ceiling benzene-specific?** `--overfit-one` with pattern d, 5,000 steps, sum body, carried recipe, on naphthalene
+`A_01f3186607`, 2-methylnaphthalene `A_69789470db` (a substituent on the core — the E9 question) and styrene `A_8f6ed7c002` (a conjugated side chain)
+→ `out/E7_rungC_lever1_overfit_{naphthalene,methylnaphthalene,styrene}_2026-10-01`. **Predictions:** ring-coupling ratio ≤ 0.05 / ≤ 0.08 / ≤ 0.08.
+**Line:** a ceiling above 0.15 on any of them → pattern (d) is not enough for that class and a pattern (e) (two bonds between the atom sets) is built
+for it; all three under 0.08 → the pattern question is closed for the corpus and the floor on the pool is a learning floor.
+
+**Lever 2a (H4) — the encoder is the floor.** Two cells, hybrid head + SQM α + pair features, pattern d, lr 3e-4, width 256, patience 20, 200 epochs,
+pool A + A2 (175), seeds 0–2, inner validation 15 %, **mean aggregation** (the pretrained bodies are mean bodies; the sum/mean confound is held by the
+control): (i) control — a fresh mean body → `out/E7_rungC_lever2a_fresh_mean_175_2026-10-01`; (ii) the QM9-pretrained mean body
+`out/rungC_pretrained_mean_2026-09-28.pt` (3 epochs over 40,812 Hessian-QM9 molecules, geometry → full Hessian) under the hybrid head →
+`out/E7_rungC_lever2a_pretrained_mean_175_2026-10-01`. Design-check gate for the mean body (`design_check_sherlock_mean_2026-10-01`) and for the
+checkpoint as fine-tune (`design_check_sherlock_pre_2026-10-01`). Both records carry the new per-molecule read-out (H7).
+**Predictions:** (i) (a) 0.39–0.43 (a mean body equals the sum body); (ii) 0.35–0.40. **Lines.** *Works:* (ii) ≤ 0.37 and below (i) by more than both
+spreads → the encoder was the floor; lever 2b (longer pretraining, the hybrid objective in pretraining) follows at once. *Flat:* within spreads → three
+epochs of geometry-only pretraining do not move the encoder; 2b still runs tonight as the stronger version of the same question, with capacity (2c)
+beside it. *Hurts:* (ii) > (i) by more than both spreads → the QM9 body transfers badly to this corpus (the C2 history); 2b runs with the corpus's own
+B3LYP Hessians as the pretraining set instead. Decision 51 as always.

@@ -320,6 +320,19 @@ def train_one(train_ids: list, tensors: dict, seed: int, epochs: int, lr: float 
     return model, hist
 
 
+PER_MOLECULE_KEYS = ("coupling_ratio", "coupling_rms", "coupling_zero_rms", "corrected_freq_rms", "dH_residual_ratio")
+
+
+def per_molecule_readouts(mols: dict, ids: list, tr: list, dF_of) -> dict:
+    """H7 (1 Oct 2026): the hold-out read-outs molecule by molecule, so a ratio over ten molecules shows what it is made of. A molecule without
+    two ring modes has no coupling ratio (NaN from the read-out), which is kept as such."""
+    out = {}
+    for i in ids:
+        r = readouts(mols, [i], tr, dF_of)
+        out[i] = {k: (None if isinstance(r.get(k), float) and np.isnan(r[k]) else r.get(k)) for k in PER_MOLECULE_KEYS}
+    return out
+
+
 def predictor(model: torch.nn.Module, tensors: dict, mols: dict):
     """dF_of(i): the model's Cartesian ΔH projected to the pair model's internal coordinates (B⁺ᵀ ΔH B⁺), as `readouts` expects."""
     cache = {}
@@ -487,6 +500,7 @@ def main() -> int:
                 if not ids:
                     continue
                 r = readouts(mols, ids, tr, dF_of)
+                r["per_molecule"] = per_molecule_readouts(mols, ids, tr, dF_of)
                 out[h] = r
                 z = res["zero_rule"][h] if h in res["zero_rule"] else res["zero_rule_c"][str(n)]
                 lines.append(f"| {n} | {seed} | ({h}) | {r['coupling_rms']:.2f} | {r['coupling_zero_rms']:.2f} | {r['coupling_ratio']:.2f} | "

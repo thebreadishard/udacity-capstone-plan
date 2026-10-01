@@ -126,3 +126,19 @@ def test_pattern_d_extends_c_with_two_bonds_apart_pairs_of_class_6():
         assert any(b in adj[a] for a in atoms[i] for b in atoms[j])                         # joined by one bond
     with pytest.raises(ValueError):
         RB.molecule_pairs(g["symbols"], coords, F, pattern="e")
+
+
+def test_per_molecule_readouts_keep_the_registered_keys_and_nan_as_none(monkeypatch):
+    """H7 (1 Oct 2026): one read-out call per hold-out molecule; NaN (no two ring modes) becomes None so the record stays JSON."""
+    import rungC_train as RT
+    calls = []
+
+    def fake_readouts(mols, ids, tr, dF_of):
+        calls.append(tuple(ids))
+        return {"coupling_ratio": float("nan") if ids == ["m2"] else 0.4, "coupling_rms": 1.0, "coupling_zero_rms": 2.5, "corrected_freq_rms": 4.0,
+                "dH_residual_ratio": 0.2, "block_rms": 9.0}
+    monkeypatch.setattr(RT, "readouts", fake_readouts)
+    out = RT.per_molecule_readouts({}, ["m1", "m2"], ["m1"], lambda i: None)
+    assert calls == [("m1",), ("m2",)]
+    assert set(out["m1"]) == set(RT.PER_MOLECULE_KEYS) and "block_rms" not in out["m1"]
+    assert out["m1"]["coupling_ratio"] == 0.4 and out["m2"]["coupling_ratio"] is None
