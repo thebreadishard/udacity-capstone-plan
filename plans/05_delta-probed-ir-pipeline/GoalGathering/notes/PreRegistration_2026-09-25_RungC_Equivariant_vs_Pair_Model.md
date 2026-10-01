@@ -1015,3 +1015,10 @@ Same recipe, `--pool-layers A,A2,B --sizes all` (750), seeds 0–2, two threads 
 ridge, 750). **Prediction:** B1 (a) 0.28–0.33 (hand features gain less from data than the encoder should). **Lines.** The pair of numbers decides the
 sentence for the day: network below rung B by both spreads at 750 → the encoder earns its place with data; equal → the network's case rests on T3 and on the
 learning curve beyond 750 (T2), not on the pool.
+
+## Outcome, rung B with pattern f at 750 — 1 October 16:3x (`out/E7_rungB_f_750_2026-10-01`)
+
+B1 MLP (a) **0.32** / (b) **0.43** / ω 4.47 / ΔH 0.20 — identical to its 175 numbers on (a) (0.32 / 4.47 / 0.20) and a little worse on (b) (0.41 → 0.43); B2 GBT
+0.49 / 0.58. Prediction 0.28–0.33 met at its upper edge. **Reading:** the hand-feature model does not gain from the step 175 → 750 — the same flatness the
+pair model showed on pattern c (0.43 → 0.42 on 27 Sep). The network's first seed at 750 (chain 10, running) reads 0.30 / ω 4.26 / ΔH 0.197; the full
+comparison follows when its three seeds are in.
