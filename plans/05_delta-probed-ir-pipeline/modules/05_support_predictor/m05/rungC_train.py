@@ -186,6 +186,17 @@ def load_pretrained_body(path: str | Path, reinit_head: bool = True, seed: int =
     return model
 
 
+def attach_pretrained_body(model: HybridDeltaFModel, pretrained: str | Path, seed: int, aggregation: str,
+                           target_elements: list[int] | None = None, pretrained_elements: list[int] | None = None) -> list[int]:
+    """Lever 2a (1 Oct 2026): the body of a `rungC_pretrain.py` checkpoint under the hybrid head. Same checks as `load_pretrained_body`
+    (aggregation must match, unseen element rows reset to the trained mean); the checkpoint's Cartesian head travels along unused — the hybrid's
+    own head is fresh by construction. Returns the reset element list."""
+    pre = load_pretrained_body(pretrained, reinit_head=False, seed=seed, aggregation=aggregation, target_elements=target_elements,
+                               pretrained_elements=pretrained_elements)
+    model.body.load_state_dict(pre.state_dict())
+    return list(pre.reset_elements)
+
+
 def check_pretrained_transfer(body: torch.nn.Module, tensors: dict, ids: list, limit: float = 1e3) -> float:
     """Body pre-flight (incident of 27 Sep 22:4x: a sum-pooled body pretrained on QM9 was finite on 12–18-atom molecules and 1e15–1e18 on
     23-atom fused rings). Runs the body on every training molecule; raises if any raw output is non-finite or above `limit` (a fresh sum body
@@ -233,8 +244,8 @@ def train_one(train_ids: list, tensors: dict, seed: int, epochs: int, lr: float 
                 cnt[k] += (c == k).sum()
         class_scale = np.sqrt(sq / np.maximum(cnt, 1))
     target_elements = sorted({int(z) for i in train_ids for z in tensors[i]["Z"].tolist()})
-    if pretrained and (tensor_input or head == "hybrid"):
-        raise ValueError("--tensor-input and --head hybrid are fresh-body variants (30 Sep 2026); the pretrained bodies carry no weights for them")
+    if pretrained and tensor_input:
+        raise ValueError("--tensor-input is a fresh-body variant (30 Sep 2026); the pretrained bodies carry no weights for it")
     if head == "hybrid":
         if aux_mode != "pattern":
             raise ValueError("--head hybrid needs --aux pattern (its output lives on the pattern; the registered rank-3 run uses the pattern term)")
@@ -242,12 +253,17 @@ def train_one(train_ids: list, tensors: dict, seed: int, epochs: int, lr: float 
         model = HybridDeltaFModel(aggregation=aggregation, tensor_input=tensor_input, sqm_scale=sqm_scale,
                                   class_scale=pattern_class_scales(tensors, train_ids), n_pair_features=n_pf, hidden=hybrid_hidden)
         model.set_input_scales(input_scales(tensors, train_ids))
+        if pretrained:
+            reset = attach_pretrained_body(model, pretrained, seed, aggregation, target_elements, pretrained_elements)
+            log(f"  pretrained body {Path(pretrained).name} under the hybrid head (lever 2a, 1 Oct 2026)"
+                + (f"; element embeddings absent from pretraining reset to the trained mean: Z = {reset}" if reset else ""))
         if pair_features:
             model.set_pair_feature_stats(*pair_feature_stats(tensors, train_ids))
             log(f"  rung B's {n_pf} pair features added to the hybrid head (standardised on the fit molecules)")
         log(f"  hybrid head: {sum(p.numel() for p in model.parameters()):,} parameters; F_low input scales "
             + ", ".join(f"{x:.3g}" for x in model.flow_scale.tolist()) + ("; SQM α per class on" if sqm_scale else ""))
-        log(f"  fresh {aggregation} body pre-flight: worst |output| {check_pretrained_transfer(model.body, tensors, train_ids):.3g} on the training molecules")
+        log(f"  {'pretrained' if pretrained else 'fresh'} {aggregation} body pre-flight: worst |output| "
+            f"{check_pretrained_transfer(model.body, tensors, train_ids):.3g} on the training molecules")
         model.scale, model.class_scale_values = 1.0, None
     else:
         body = (load_pretrained_body(pretrained, reinit_head=True, seed=seed, aggregation=aggregation, target_elements=target_elements,
