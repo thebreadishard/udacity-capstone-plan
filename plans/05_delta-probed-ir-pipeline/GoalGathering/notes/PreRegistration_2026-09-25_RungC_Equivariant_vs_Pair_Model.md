@@ -1145,3 +1145,23 @@ reaches 4.6 fresh). Against the carried sum body the pretrained mean body is equ
 pretraining repairs a weak body's start and adds nothing beyond a good body at 175 molecules; the pretraining lever is *flat* against the carried
 recipe. The line's consequence — "the pretraining is continued overnight" — is not taken; a Hessian-aware pretraining objective (or a pretrained *sum*
 body) would be the next version of the question, and it is parked behind the ω question. Decision 51: best epochs below the cap.
+
+## Outcome, lever 2c — encoder capacity, pattern d, projected target, 175 — 2 October 01:2x (`out/E7_rungC_lever2c_{deep,wide}_175_2026-10-01`)
+
+| body (pattern d, projected, pattern term, 175) | (a) ratio, seeds | (b) ratio | (a) ω | (a) ΔH residual | best epochs / 200 |
+|---|---|---|---|---|---|
+| 3 blocks × 64 (lever 1) | 0.40 (0.40 / 0.42 / 0.39) | 0.50 | 4.70 | 0.23 | 97 / 30 / 140 |
+| deep, 5 × 64 | 0.39 (0.37 / 0.44 / 0.36) | 0.43 | 4.60 | 0.234 | 155 / 58 / 187 |
+| **wide, 3 × 128** | **0.35** (0.36 / 0.34 / 0.34) | **0.40** | **3.71** | 0.201 | 150 / 165 / **191** |
+
+Design checks PASS (worst outputs 30 and 47). **Against the lines:** the wide body *works* — 0.34–0.36 against 0.39–0.42, below by more than both spreads,
+and ω 3.7 against 4.7; the deep body is flat on (a) with a wide spread. The prediction ("both within spreads of 0.40") was wrong: at 175 molecules width
+does feed this head. Decision 51: two of the wide body's best epochs (165, 191) are within 10 % of the cap — the re-run at a higher cap is folded into
+chain 19 below, on the carried recipe, rather than repeated on pattern d.
+
+## Dated amendment 2 October 01:3x — chain 19: the wide body on the carried recipe (registered before it runs)
+
+Lane B after chain 18: pattern f, projected target, pattern + 0.3 × kring, **3 blocks × 128**, 175, seeds 0–2, **300 epochs** (decision 51) →
+`out/E7_rungC_carried_wide_175_2026-10-01`; control chain 14b (3 × 64: 0.24 / 0.37 / ω 5.00). **Prediction:** (a) 0.20–0.23, ω 4.0–4.8. **Lines.** *Works:*
+(a) ≤ 0.22 below 0.24 by both spreads, or ω below 5.0 by more than 0.5 with (a) unchanged → the wide body joins the carried recipe and is re-read at 750.
+*Flat:* within spreads → width helped only the narrow support; the carried body stays 3 × 64. Decision 51 as always.
