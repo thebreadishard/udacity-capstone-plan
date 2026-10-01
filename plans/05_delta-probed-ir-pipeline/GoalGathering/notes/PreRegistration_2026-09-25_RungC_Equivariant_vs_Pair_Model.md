@@ -1130,3 +1130,18 @@ prediction (a) 0.24–0.28 met; *T1 ratio met* (0.26 ≤ 0.30, the step 175 → 
 more than both spreads, and moving with data where rung B is flat). Beside chain 17 (the same with 0.3 × kring: 0.22 / 0.33 / 3.50 / 0.138) the kring term
 keeps its 0.04 on both hold-outs at 750 and costs no ω — the combination is the carried recipe, as decided at 22:3x. The ω criterion of T1 is unmet by
 both (3.84 / 3.50). Decision 51: best epochs below the cap.
+
+## Outcome, chain 15c — pretraining on the carried support (pattern f, projected target, mean body, 300 epochs, 175) — 2 October 00:0x (`out/E7_rungC_lever2b_fproj_{fresh_mean,pretrained_long}_175_2026-10-01`)
+
+| body (pattern f, projected, pattern term, 175) | (a) ratio, seeds | (b) ratio | (a) ω | (a) ΔH residual | best epochs / 300 |
+|---|---|---|---|---|---|
+| fresh **mean** body | 0.30 (0.28 / 0.34 / 0.27) | 0.39 | **6.98** | 0.265 | 47–100 |
+| 20-epoch QM9-pretrained mean body | **0.26** (0.25 / 0.27 / 0.27) | 0.38 | 4.71 | 0.202 | 64–108 |
+| fresh **sum** body (chain 13, 200 epochs) | 0.28 (0.27 / 0.29 / 0.28) | 0.41 | 4.64 | 0.188 | 72–82 |
+
+**Against the lines:** against its registered control (the fresh mean body) the pretrained body *works* — 0.26 against 0.30 with the spreads touching at
+0.27, and ω 4.7 against 7.0 — but the fresh mean body is a poor control: its ω of 7.0 says mean pooling is the wrong body for this head (the sum body
+reaches 4.6 fresh). Against the carried sum body the pretrained mean body is equal (0.26 / 4.7 against 0.28 / 4.6). **Reading:** geometry-only QM9
+pretraining repairs a weak body's start and adds nothing beyond a good body at 175 molecules; the pretraining lever is *flat* against the carried
+recipe. The line's consequence — "the pretraining is continued overnight" — is not taken; a Hessian-aware pretraining objective (or a pretrained *sum*
+body) would be the next version of the question, and it is parked behind the ω question. Decision 51: best epochs below the cap.
