@@ -851,3 +851,10 @@ were deleted and rebuilt on the laptop: pattern d median residual 0.125 → 0.08
 ls_targets_build_{d,f}_lam0.001_2026-10-01.json`). Queue re-serialised (12:31): chain 3 (kring, running) → 7c (d + ridge, 175) → 9b (f + ridge, 175) →
 8b (d + ridge, 750) → 4 (capacity) → 6 (449); 5 after 4 and the checkpoint. Lesson for the guard list: a numerical cutoff that is a library default is a
 setting that travels unexamined (the E8 lesson again) — pin it.
+
+## Dated amendment 1 October 12:4x — chain 10: pattern f + ridge target at 750 (registered before it runs; queued behind chain 6)
+
+Same recipe as chain 9b at the full pool (A + A2 + B, seeds 0–2) → `out/E7_rungC_lever1b_f_ls_750_2026-10-01`. Controls: chain 8b (pattern d + ridge at 750)
+and lever 1 (pattern d, projected target, 0.37 / 4.00). **Prediction:** (a) 0.22–0.30, ω 2.8–3.8. **Lines.** *Works:* (a) ≤ 0.30 and below 8b by both
+spreads → T1's ratio criterion met on this route; the ω criterion (≤ 3) and the (b) hold-out are read beside it. *Flat:* within spreads of 8b. *Hurts:*
+above 8b by both spreads. If chain 9b reads *hurts* at 175, chain 10 is stopped by pid before it starts and the stop is recorded. Decision 51 as always.
