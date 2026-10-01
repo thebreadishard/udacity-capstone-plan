@@ -44,6 +44,14 @@ def hybrid_inputs(t: dict) -> torch.Tensor:
     return torch.stack([F[p, q], F[p, p], F[q, q]], -1)
 
 
+def pair_feature_stats(tensors: dict, ids: list) -> tuple[torch.Tensor, torch.Tensor]:
+    """Mean and standard deviation of rung B's pair features over the pattern pairs of the fit molecules (never the hold-outs); zero spread → 1."""
+    X = torch.cat([tensors[i]["pfeat"].double() for i in ids], 0)
+    mu, sd = X.mean(0), X.std(0, unbiased=False)
+    sd[sd < 1e-12] = 1.0
+    return mu.float(), sd.float()
+
+
 def input_scales(tensors: dict, ids: list) -> torch.Tensor:
     """RMS of the three F_low inputs over the pattern pairs of the fit molecules (never the hold-outs); a zero RMS becomes 1."""
     sq = torch.zeros(3, dtype=torch.float64)
@@ -59,12 +67,16 @@ def input_scales(tensors: dict, ids: list) -> torch.Tensor:
 
 class HybridDeltaFModel(nn.Module):
     def __init__(self, aggregation: str = AGGREGATION, tensor_input: bool = False, sqm_scale: bool = False,
-                 class_scale: torch.Tensor | None = None, n_s: int = N_S, hidden: int = HIDDEN):
+                 class_scale: torch.Tensor | None = None, n_s: int = N_S, hidden: int = HIDDEN, n_pair_features: int = 0):
         super().__init__()
         self.body = DeltaHessianModel(aggregation=aggregation, tensor_input=tensor_input)      # encode() only; its Cartesian head is unused
         self.cls_emb = nn.Embedding(N_PAIR_CLASSES, N_CLASS_EMB)
         self.flow_in = nn.Linear(3, N_FLOW)
-        n_in = 2 * n_s + self.body.n_v + N_CLASS_EMB + N_FLOW
+        self.n_pair_features = int(n_pair_features)                                            # 1 Oct 2026: rung B's pair vector, 0 = off
+        self.pfeat_in = nn.Linear(self.n_pair_features, 32) if self.n_pair_features else None
+        self.register_buffer("pfeat_mu", torch.zeros(max(self.n_pair_features, 1)))
+        self.register_buffer("pfeat_sd", torch.ones(max(self.n_pair_features, 1)))
+        n_in = 2 * n_s + self.body.n_v + N_CLASS_EMB + N_FLOW + (32 if self.n_pair_features else 0)
         self.head = nn.Sequential(nn.Linear(n_in, hidden), nn.SiLU(), nn.Linear(hidden, hidden), nn.SiLU(), nn.Linear(hidden, 1))
         self.alpha = nn.Parameter(torch.zeros(N_PAIR_CLASSES)) if sqm_scale else None
         self.register_buffer("class_scale", torch.ones(N_PAIR_CLASSES) if class_scale is None else torch.as_tensor(class_scale, dtype=torch.float32))
@@ -74,6 +86,10 @@ class HybridDeltaFModel(nn.Module):
     def set_input_scales(self, s: torch.Tensor) -> None:
         self.flow_scale.copy_(s.to(self.flow_scale.dtype))
 
+    def set_pair_feature_stats(self, mu: torch.Tensor, sd: torch.Tensor) -> None:
+        self.pfeat_mu.copy_(mu.to(self.pfeat_mu.dtype))
+        self.pfeat_sd.copy_(sd.to(self.pfeat_sd.dtype))
+
     def delta_f(self, Z, pos, H_low, t: dict) -> torch.Tensor:
         """(P,) the predicted internal correction on the pattern pairs, in a.u."""
         s, v, *_ = self.body.encode(Z, pos, H_low)
@@ -82,7 +98,11 @@ class HybridDeltaFModel(nn.Module):
         hs, hv = M @ s, M @ vnorm                                                     # (K, n_s), (K, n_v)
         p, q = t["pairs"][:, 0], t["pairs"][:, 1]
         x_low = hybrid_inputs(t).to(s.dtype) / self.flow_scale.to(s.dtype)
-        x = torch.cat([hs[p] + hs[q], hs[p] * hs[q], hv[p] + hv[q], self.cls_emb(t["pcls"]).to(s.dtype), self.flow_in(x_low)], -1)
+        parts = [hs[p] + hs[q], hs[p] * hs[q], hv[p] + hv[q], self.cls_emb(t["pcls"]).to(s.dtype), self.flow_in(x_low)]
+        if self.pfeat_in is not None:
+            z = (t["pfeat"].to(s.dtype) - self.pfeat_mu.to(s.dtype)) / self.pfeat_sd.to(s.dtype)
+            parts.append(self.pfeat_in(z))
+        x = torch.cat(parts, -1)
         r = self.head(x).squeeze(-1) * self.class_scale.to(s.dtype)[t["pcls"]]
         if self.alpha is not None:
             r = r + self.alpha.to(s.dtype)[t["pcls"]] * t["F_int"][p, q].to(s.dtype)

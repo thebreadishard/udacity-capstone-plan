@@ -23,11 +23,11 @@ def _hybrid_tensors(m, R=None):
     pos = m["pos"] if R is None else m["pos"] @ R.T
     H = m["H_low"] if R is None else RC.transform_hessian(m["H_low"], R)
     symbols = m["symbols"]
-    pairs, _f, pcls, B, atoms = RB.molecule_pairs(symbols, pos, np.eye(3), return_atoms=True)
+    pairs, feat, pcls, B, atoms = RB.molecule_pairs(symbols, pos, np.eye(3), return_atoms=True)
     K = B.shape[0]
     F_int = np.diag(np.linspace(0.3, 0.9, K)) + 0.02
     t = RC.to_torch(dict(m, pos=pos, H_low=H), torch.float64)
-    t.update(pairs=torch.as_tensor(pairs, dtype=torch.long), pcls=torch.as_tensor(pcls, dtype=torch.long),
+    t.update(pairs=torch.as_tensor(pairs, dtype=torch.long), pcls=torch.as_tensor(pcls, dtype=torch.long), pfeat=torch.as_tensor(feat, dtype=torch.float64),
              prim_pool=RH.primitive_pool_matrix(atoms, len(symbols), torch.float64), F_int=torch.as_tensor(F_int), B=torch.as_tensor(B))
     return t
 
@@ -83,3 +83,26 @@ def test_sqm_alpha_adds_a_per_class_scale_of_f_low():
     p, q = t["pairs"][:, 0], t["pairs"][:, 1]
     assert torch.allclose(r0, r1)
     assert torch.allclose(r2 - r1, 0.5 * t["F_int"][p, q])
+
+
+def test_pair_features_path_is_invariant_and_off_by_default():
+    """With rung B's pair vector in the head the output stays equivariant (the features are invariants of the geometry), the stats come from the given
+    ids, and n_pair_features=0 keeps the 00:4x model (no pfeat tensor needed)."""
+    m = RC.water()
+    t0 = _hybrid_tensors(m)
+    mu, sd = RH.pair_feature_stats({"w": t0}, ["w"])
+    assert mu.shape == (t0["pfeat"].shape[1],) and (sd > 0).all()
+    torch.manual_seed(2)
+    model = RH.HybridDeltaFModel(aggregation="mean", n_pair_features=int(t0["pfeat"].shape[1])).double()
+    model.set_pair_feature_stats(mu, sd)
+    with torch.no_grad():
+        dH = model(t0["Z"], t0["pos"], t0["H_low"], t0).numpy()
+        R = RC.rotation(7)
+        t1 = _hybrid_tensors(m, R)
+        dH1 = model(t1["Z"], t1["pos"], t1["H_low"], t1).numpy()
+    assert np.abs(dH1 - RC.transform_hessian(dH, R)).max() / (np.abs(dH).max() + 1e-30) < 1e-6
+    plain = RH.HybridDeltaFModel(aggregation="mean").double()
+    assert plain.pfeat_in is None
+    t_no = {k: v for k, v in t0.items() if k != "pfeat"}
+    with torch.no_grad():
+        plain(t_no["Z"], t_no["pos"], t_no["H_low"], t_no)                          # runs without a pfeat tensor

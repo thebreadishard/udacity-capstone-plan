@@ -577,3 +577,16 @@ the two heads' inputs is rung B's hand-made pair vector (ring-path distance, env
 reviewers' rank 4 asks for). The registered next step (below) gives the hybrid head those 66 features beside the encoder's — if the encoder adds
 information the pair vector lacks, the hybrid pulls ahead; if not, the result equals rung B and the environment encoder is, at this data size,
 redundant with hand-made topology.
+
+## Dated amendment 1 October 02:4x — the hybrid head with rung B's pair features (registered before it runs)
+
+**Change (`rungC_hybrid.py`, `--pair-features`; tests, smoke):** rung B's 66-dimensional pair vector (primitive classes, elements, ring flags,
+environment classes, ring-path distance, F_low products) enters the hybrid head beside the encoder's pooled features, standardised with mean and
+standard deviation over the pattern pairs of the fit molecules. Everything else as in the hybrid + SQM run of 00:4x. Default off.
+**Question.** Does the learned environment (the equivariant encoder) add information that rung B's hand-made topology lacks, or the reverse?
+**Runs (`rungC_night5_1001.sh`, 8 threads):** (i) A + A2, 175, seeds 0–2 → `out/E7_rungC_hybrid_pf_2026-10-01`; (ii) A,A2,B, 750, seeds 0–2 →
+`out/E7_rungC_hybrid_pf_750_2026-10-01`.
+**Predictions.** (i) (a) 0.40–0.44 (at or just below rung B's 0.43); (ii) within 0.02 of (i).
+**Lines.** *Encoder adds:* (a) ≤ 0.40 at 175, below rung B by more than both spreads. *Redundant:* 0.41–0.45 — equals rung B; the environment
+encoder is, at this data size, redundant with hand-made topology, and the model to carry forward is the cheapest one that reaches the number.
+*Hurts:* > 0.47. Decision 51 as always.
