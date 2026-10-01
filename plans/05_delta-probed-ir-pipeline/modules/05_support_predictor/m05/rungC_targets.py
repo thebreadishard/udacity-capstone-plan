@@ -25,28 +25,31 @@ import scipy.linalg
 AMU2AU = 1822.888486209
 
 
-def _design_matrix(B: np.ndarray, W: np.ndarray, I: np.ndarray, J: np.ndarray) -> np.ndarray:
-    """(9N², P): column p = vec(W ⊙ (b_i b_jᵀ + b_j b_iᵀ)) — for i = j the single outer product (X_ii enters Bᵀ X B once)."""
-    n2 = B.shape[1] ** 2
-    A = np.empty((n2, len(I)))
+def _design_matrix(B: np.ndarray, W: np.ndarray, I: np.ndarray, J: np.ndarray, rows: tuple) -> np.ndarray:
+    """(rows, P): column p = the upper triangle of W ⊙ (b_i b_jᵀ + b_j b_iᵀ) — for i = j the single outer product (X_ii enters Bᵀ X B once)."""
+    A = np.empty((len(rows[0]), len(I)))
     for p, (i, j) in enumerate(zip(I, J, strict=True)):
         E = np.outer(B[i], B[j])
         if i != j:
             E = E + E.T
-        A[:, p] = (E * W).ravel()
+        A[:, p] = (E * W)[rows]
     return A
 
 
 def pattern_ls_target(dH: np.ndarray, B: np.ndarray, masses_amu: np.ndarray, mask: np.ndarray) -> np.ndarray:
-    """The mass-weighted least-squares ΔF supported on `mask` (K × K boolean, symmetric) such that Bᵀ ΔF B ≈ ΔH. Returns ΔF (K × K)."""
+    """The mass-weighted least-squares ΔF supported on `mask` (K × K boolean, symmetric) such that Bᵀ ΔF B ≈ ΔH. Returns ΔF (K × K).
+    Both sides are symmetric, so the Frobenius objective is taken over the upper triangle with weight √2 off the diagonal — half the rows, the same
+    minimiser."""
     mask = np.asarray(mask, bool)
     if not np.array_equal(mask, mask.T):
         raise ValueError("the pattern mask must be symmetric")
     d = 1.0 / np.sqrt(np.repeat(np.asarray(masses_amu, float) * AMU2AU, 3))
-    W = np.outer(d, d)
+    n = B.shape[1]
+    rows = np.triu_indices(n)
+    W = np.outer(d, d) * np.where(np.eye(n, dtype=bool), 1.0, np.sqrt(2.0))
     I, J = np.where(np.triu(mask))
-    A = _design_matrix(B, W, I, J)
-    x = scipy.linalg.lstsq(A, (dH * W).ravel(), lapack_driver="gelsd", check_finite=False, overwrite_a=True)[0]
+    A = _design_matrix(B, W, I, J, rows)
+    x = scipy.linalg.lstsq(A, (dH * W)[rows], lapack_driver="gelsd", check_finite=False, overwrite_a=True)[0]
     X = np.zeros((B.shape[0], B.shape[0]))
     X[I, J] = x
     X[J, I] = x
