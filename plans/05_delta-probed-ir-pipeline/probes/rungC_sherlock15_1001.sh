@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# 15c (19:5x): behind chain 17.
 # 15b (18:1x): on the projected target (chain 13 read).
 # Sherlock chain 15, 1 Oct 2026 (amendment 17:1x): the 20-epoch QM9-pretrained mean body under the hybrid head on the carried recipe — pattern f + ridge
 # target — against a fresh mean body on the same recipe; 175, seeds 0–2, 300 epochs (decision 51: chain 5b's best epochs touched the cap of 200).
@@ -10,7 +11,7 @@ export PYTHONUTF8=1 PYTHONUNBUFFERED=1
 D=2026-10-01
 PRE=out/rungC_pretrained_mean_long_$D.pt
 REC="--head hybrid --aux pattern --sqm-scale --pair-features --aux-weight 1.0 --epochs 300 --patience 20 --lr 3e-4 --hybrid-hidden 256 --pattern f"
-until grep -q "=== chain 14 finished\|14 not started" out/E7_rungC_sherlock14_$D.log 2>/dev/null; do sleep 120; done
+until grep -q "=== chain 17 finished\|17 not started" out/E7_rungC_sherlock17_$D.log 2>/dev/null; do sleep 120; done   # re-queued 19:5x behind chain 17
 grep -q "verdict: \*\*PASS\*\*" out/design_check_sherlock_mean_$D.txt || { echo "=== chain 15 not started: no mean-body PASS $(date)"; exit 1; }
 grep -q "verdict: \*\*PASS\*\*" out/design_check_sherlock_prelong_$D.txt || { echo "=== chain 15 not started: no checkpoint PASS $(date)"; exit 1; }
 echo "=== chain 15 start $(date)"
