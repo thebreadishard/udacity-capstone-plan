@@ -629,3 +629,22 @@ seed-mean inner term alone with `rungC_stage_pick.py` (`…_H1_pick_2026-10-01`)
 **Prediction.** The winner's inner term is within 10 % of the lr 1e-3 / 128 cell; (a) of the winner 0.41–0.44. **Lines.** (a) ≤ 0.40 for the winner →
 the recipe was part of the floor and the next stage (epochs × patience, class-scale floor value) follows; 0.41–0.45 → the floor is the
 representation and the data, not the recipe — the model to carry is the lr 1e-3 / 128 one unless the inner term says otherwise.
+
+## Outcome, search stage H1 — 1 October 05:0x (`out/E7_rungC_H1_<cell>_2026-10-01`, pick `…_H1_pick_2026-10-01`)
+
+| cell | inner term (seed mean) | (a) ratio / ω | (b) ratio / ω |
+|---|---|---|---|
+| lr 3e-4, width 128 | 0.1102 | 0.46 / 5.06 | 0.51 / 6.08 |
+| **lr 3e-4, width 256 — winner** | **0.0991** | **0.43 / 4.44** | 0.49 / 5.13 |
+| lr 1e-3, width 128 (tonight's recipe) | 0.1023 | 0.45 / 5.18 | 0.50 / 5.62 |
+| lr 1e-3, width 256 | 0.1021 | 0.46 / 5.27 | 0.50 / 5.91 |
+| lr 3e-3, width 128 | — | diverged (non-finite loss at epoch 18, seed 1; the 27 Sep guard aborted it — an incident, not a result) | |
+| lr 3e-3, width 256 | 0.1252 | 0.44 / 6.52 | 0.48 / 6.04 |
+
+**Pick by the inner term:** lr 3e-4 / width 256, 3 % below tonight's recipe — inside the prediction ("within 10 %"). **Line:** the winner's (a) 0.43 lies
+in 0.41–0.45 → *the floor is the representation and the data, not the recipe.* The spread between cells on (a) (0.43–0.46) is the size of the seed
+spread; ω moves more (4.4–5.3), and the winner is the best on ω too. Recipe carried from here: lr 3e-4, width 256 (patience 20, 200 epochs, aux 1.0).
+Noise note: the lr 1e-3 / 128 cell here reads 0.45 against 0.438 for the same flags at 02:4x — thread-level noise of ≈ 0.01–0.02 on the ratio.
+
+*Registered the same minute:* the carried recipe is read at 750 (A,A2,B, seeds 0–2) → `out/E7_rungC_hybrid_best_750_2026-10-01`, the number the
+morning table ends with; prediction (a) 0.40–0.43, ω 4.3–4.6; no new line, it is the carried model's record at the larger pool.
