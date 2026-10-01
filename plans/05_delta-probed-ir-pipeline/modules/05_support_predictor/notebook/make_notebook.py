@@ -810,6 +810,26 @@ to measure is the bound of the target itself. Two blow-ups on the way (a plain l
 differed between two machines) were caught by guards before a number was read — the practice of sections 9–11 doing its job.
 """)
 
+# ---- 12.1 the 750 reads (23:0x the same day)
+_c16 = [_rc("E7_rungC_lever1b_f_proj_750_2026-10-01", 750, h, k) for h, k in (("a", "coupling_ratio"), ("b", "coupling_ratio"), ("a", "corrected_freq_rms"), ("a", "dH_residual_ratio"))]
+_c17 = [_rc("E7_rungC_lever3b_fproj_kw0.3_750_2026-10-01", 750, h, k) for h, k in (("a", "coupling_ratio"), ("b", "coupling_ratio"), ("a", "corrected_freq_rms"), ("a", "dH_residual_ratio"))]
+_c14 = [_rc("E7_rungC_lever3b_fproj_kw0.3_175_2026-10-01", 175, h, k) for h, k in (("a", "coupling_ratio"), ("b", "coupling_ratio"), ("a", "corrected_freq_rms"), ("a", "dH_residual_ratio"))]
+_rb7 = [_rb("E7_rungB_f_750_2026-10-01", 750, h, k) for h, k in (("a", "coupling_ratio"), ("b", "coupling_ratio"), ("a", "corrected_freq_rms"), ("a", "dH_residual_ratio"))]
+md(f"""### 12.1 The 750 reads, the same evening
+
+| model, support, target, loss | n | (a) ratio | (b) ratio | (a) ω | (a) ΔH residual |
+|---|---|---|---|---|---|
+| pair model (rung B), pattern f, projected | 750 | {_f(_rb7[0])} | {_f(_rb7[1])} | {_f(_rb7[2], 1)} | {_f(_rb7[3])} |
+| network, pattern f, projected, pattern term | 750 | {_f(_c16[0])} | {_f(_c16[1])} | {_f(_c16[2], 1)} | {_f(_c16[3])} |
+| network, pattern f, projected, pattern + 0.3 × kring | 175 | {_f(_c14[0])} | {_f(_c14[1])} | {_f(_c14[2], 1)} | {_f(_c14[3])} |
+| **network, pattern f, projected, pattern + 0.3 × kring** | **750** | **{_f(_c17[0])}** | **{_f(_c17[1])}** | **{_f(_c17[2], 1)}** | **{_f(_c17[3])}** |
+
+Three seeds each; the last row's seeds span 0.21–0.22 on (a). Two things the morning table could not show: the network keeps improving from 175 to 750
+molecules where the hand-feature model does not move, and a small weight on the read-out block of K (the term that alone traded ω away in lever 3)
+now buys 0.04 on both hold-outs at no cost in ω. On the target proposal of the day, the ratio criterion of T1 (≤ 0.30 at 750) is met by both network
+rows; the ω criterion (≤ 3 cm⁻¹) is not — {_f(_c17[2], 1)} against a target bound of 0.4 — and that gap, which every model shares, is the next question.
+""")
+
 nb = new_notebook(cells=cells, metadata={"kernelspec": {"name": "python3", "display_name": "Python 3", "language": "python"}})
 path = HERE / "deep_learning.ipynb"
 nbformat.write(nb, path)
