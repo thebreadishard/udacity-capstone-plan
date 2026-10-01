@@ -886,3 +886,14 @@ the 20-epoch pretraining has written its checkpoint and freed its six cores):** 
 term holds the rest of the Hessian while the kring term pulls the couplings. **Lines.** *Works:* (a) ≤ 0.32 **and** ω ≤ 5.0 **and** ΔH residual ≤ 0.30 →
 the combined term is the carried loss; re-read at 750. *Half:* the couplings ≤ 0.32 but ω > 5.0 → the weights between the two terms are searched (one
 decade each way). *Flat:* (a) within spreads of chain 7c → the kring term adds nothing once the target is right. Decision 51 as always.
+
+## Dated amendment 1 October 13:3x — H9 confirmation on rung B: the pair model on the ridge target (registered before it runs)
+
+If the floor was the target, the hand-feature pair model trained on the same projected ΔF must share it and must move when the target moves — with no
+network in between. **Code:** `e7_rungB_pairs.py --target ls [--ls-lam]` (the per-pair targets become the entries of the ridge-anchored ΔF on rung B's own
+pattern c, from the shared cache `out/ls_targets/c_lam0.001`; default projected = unchanged; test `tests/test_rungB_target_switch.py`). **Run:** the 27 Sep
+comparison recipe (`--use-analytic --pool-layers A,A2 --sizes 175 --seeds 0,1,2`, 60 epochs, B1 MLP and B2 GBT), `--target ls`, two threads beside the chains
+→ `out/E7_rungB_lstarget_175_2026-10-01`; reference `E7_rungB_A2B_point0_2026-09-27`: B1 (a) 0.43 / ω 4.71, (b) 0.47. The pattern-c ridge bound on hold-out (a)
+is read from the same probe afterwards. **Prediction:** B1 (a) 0.30–0.38, (b) 0.35–0.43, ω ≤ 4.5. **Lines.** *Confirms:* B1 (a) ≤ 0.38 → H9 holds for the
+simplest model too and the registered rung-B numbers of 23–27 Sep are target-bound, not model-bound. *Does not:* B1 (a) within 0.41–0.45 → the pair model
+cannot use the better target; the network result decides H9 alone.

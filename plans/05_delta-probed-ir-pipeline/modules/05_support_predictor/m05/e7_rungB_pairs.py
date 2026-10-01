@@ -34,6 +34,7 @@ import e7_t2_posthoc as PH  # noqa: E402
 import e7_t2_sqm as T2  # noqa: E402
 from learning_curve_layerA import FAMILIES  # noqa: E402
 from learning_curve_layerA_v2_descriptors import C_CLASSES, H_CLASSES, X_CLASSES, atom_classes, bond_graph, rings  # noqa: E402
+from rungC_targets import LAM_REL, cached_pattern_ls_target  # noqa: E402
 
 RING = "ring-ip"
 ELEMS = ["H", "C", "N", "O", "S", "F", "Cl"]
@@ -333,6 +334,9 @@ def main():
     ap.add_argument("--dump", action="store_true", help="E11.2/3/6/7 (25 Sep 2026): per-molecule errors, pair-class breakdown, symmetry consistency, ring bond-bond terms of the seed-0 model at the full pool")
     ap.add_argument("--split", default="e6", help="e6 (default): E6 hold-outs (a) layer-A, (b) scaffolds. size:N (25 Sep 2026, size-extrapolation desk test): (a) := admitted molecules with more than N atoms, (b) := E6 scaffold hold-out with <= N atoms, pool := the rest with <= N atoms")
     ap.add_argument("--pool-layers", default=None, help="27 Sep 2026 (rung C comparison): with split e6, keep only these layers in the pool, e.g. A,A2; default unchanged (all admitted)")
+    ap.add_argument("--target", default="projected", choices=["projected", "ls"],
+                    help="1 Oct 2026 (H9): per-pair target — 'projected' = the registered minimum-norm internal ΔF; 'ls' = the ridge-anchored least-squares ΔF on this pattern")
+    ap.add_argument("--ls-lam", type=float, default=LAM_REL, help="ridge of the LS target toward the projected truth (rungC_targets.LAM_REL)")
     ap.add_argument("--use-analytic", action="store_true",
                     help="23 Sep: for molecules with hessian_<tag>_analytic.npz (pyscf second route, corpus/analytic_hessians.py) use those Hessians instead of the psi4 "
                          "finite-difference ones (benzene's FD wB97X Hessian was a 133 cm-1 artefact)")
@@ -372,6 +376,9 @@ def main():
         g = json.load(open(Path(a.molecules) / i / "geometry.json"))
         pairs, X, c, B = molecule_pairs(g["symbols"], np.asarray(g["coords_bohr"]), m["F_low"])
         Bp = np.linalg.pinv(m["B"]); dFmn = Bp.T @ m["dH_true"] @ Bp
+        if a.target == "ls":                                   # 1 Oct 2026: the ridge-anchored least-squares ΔF on this pattern (rungC_targets)
+            mask = np.zeros(dFmn.shape, bool); mask[pairs[:, 0], pairs[:, 1]] = True; mask |= mask.T
+            dFmn, _cached = cached_pattern_ls_target(Path(a.out_prefix).parent / "ls_targets", i, "c", m["dH_true"], m["B"], m["masses"], mask, lam_rel=a.ls_lam)
         m.update(pairs=pairs, X=X, pc=c, y=np.array([dFmn[i_, j_] for i_, j_ in pairs]), symbols=g["symbols"], coords=np.asarray(g["coords_bohr"]))
     if a.orbit_average_targets:
         import csv as _csv
