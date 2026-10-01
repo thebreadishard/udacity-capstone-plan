@@ -766,3 +766,12 @@ better; at 175 the separation is at the edge (0.39–0.42 against 0.42–0.44, t
 pattern-c head was flat (0.43 → 0.431) — the first time since 25 September that more data pays. Decision 51: no best epoch near the cap.
 **Decision:** pattern (d) is the carried pattern (every chain of today already runs it); the hybrid head's new reference at 750 is **0.37 / 4.00** against
 rung B's 0.42 / 4.81. Whether (d) is itself the ceiling on fused and substituted rings is the H5 read of chain 2.
+
+## Dated amendment 1 October 09:1x — the middle point of the pattern-d learning curve (registered before it runs)
+
+Lever 1 moved with data (0.40 at 175 → 0.37 at 750). T2 of the target proposal needs three points. **Run (`rungC_sherlock6_1001.sh`, queued behind
+chain 4):** pattern d, carried recipe, pool A + A2 + B, `--sizes 449` (the data-scaling test's middle size of 30 Sep), seeds 0–2 →
+`out/E7_rungC_lever1_d_449_2026-10-01`. **Prediction:** (a) 0.38–0.40, between the two measured points. **Lines.** *Monotone:* 175 > 449 > 750 beyond the
+seed spreads → a power law is fitted to the three points (`e11_power_law.py`'s fit) and its extrapolation to 5,000 molecules is read against T2
+(ratio ≤ 0.20). *Flat middle:* 449 within spreads of 175 or of 750 → the curve is a step, not a law; the 750 point's layer B (substituted molecules)
+rather than the count is the suspect, and the next run splits the pool by layer at equal count. Decision 51 as always.
