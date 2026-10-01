@@ -1022,3 +1022,21 @@ B1 MLP (a) **0.32** / (b) **0.43** / ω 4.47 / ΔH 0.20 — identical to its 175
 0.49 / 0.58. Prediction 0.28–0.33 met at its upper edge. **Reading:** the hand-feature model does not gain from the step 175 → 750 — the same flatness the
 pair model showed on pattern c (0.43 → 0.42 on 27 Sep). The network's first seed at 750 (chain 10, running) reads 0.30 / ω 4.26 / ΔH 0.197; the full
 comparison follows when its three seeds are in.
+
+## Outcome, lever 2b — the 20-epoch pretrained body, pattern d + ridge target, 175 — 1 October 17:1x (`out/E7_rungC_lever2b_pretrained_long_175_2026-10-01`, pretraining `out/rungC_pretrained_mean_long_2026-10-01`)
+
+Pretraining: 20 epochs at lr 3e-4, validation loss 5.5e-4 → 1.40e-4, still falling by ≈ 1 % per epoch at the end — **the best epoch is the last one, so the
+cap binds (decision 51 on the pretraining itself)**; checkpoint design check PASS (worst output 4.4, feature-scale ratio 1.21). Fine-tune on the ridge
+target, pattern d: (a) **0.46** (0.50 / 0.46 / 0.42), (b) 0.49, ω 4.41, ΔH 0.26; best epochs 182 / **200** / 116 — two of three within 10 % of the cap.
+**Against the lines:** no better than the fresh mean body on the projected target (0.42) or than the fresh sum body on the same ridge route (7c, 0.44): *flat*
+on a route that itself hurts. Decision 51 flags this run twice (fine-tune cap and pretraining cap); rather than repeat it as is, the fair test of
+pretraining moves to the carried recipe with a higher cap — chain 15 below. The pretraining is left at 20 epochs for today (its continuation is an
+overnight job if chain 15 says pretraining matters).
+
+## Dated amendment 1 October 17:1x — chain 15: pretraining on the carried recipe (registered before it runs)
+
+Two cells (`rungC_sherlock15_1001.sh`, lane B after chain 14; 175, pattern f + ridge target, mean body, 300 epochs, seeds 0–2): fresh mean body →
+`out/E7_rungC_lever2b_f_fresh_mean_175_2026-10-01`; the 20-epoch pretrained body → `…_f_pretrained_long_175_…`. **Prediction:** fresh mean 0.33–0.36 (the sum
+body's 0.33 on this recipe), pretrained 0.31–0.35. **Lines.** *Works:* pretrained below fresh by both spreads and ≤ 0.31 → pretraining matters on the carried
+recipe; the pretraining is continued overnight to convergence. *Flat:* within spreads → geometry-only pretraining on QM9 does not help this head; the
+pretraining lever is closed until a Hessian-aware pretraining objective exists. Decision 51 as always.
