@@ -946,3 +946,26 @@ Same recipe as chain 9b with `--aux-target projected` (the registered target) �
 Bounds on hold-out (a): projected 0.09, ridge 0.03. **Prediction:** (a) 0.33–0.38 (the projected target is easier to learn, its bound a little higher).
 **Lines.** *Ridge unnecessary:* (a) ≤ 9b's 0.33 within spreads → the projected target is kept (simpler, registered). *Ridge needed:* (a) above 9b by both
 spreads. Decision 51 as always.
+
+## Outcome, H9 confirmation on rung B — 1 October 15:1x (`out/E7_rungB_lstarget_175_2026-10-01`)
+
+| model | target | (a) ratio | (b) ratio | (a) ω |
+|---|---|---|---|---|
+| B1 MLP | projected (27 Sep) | 0.43 | 0.47 | 4.71 |
+| B1 MLP | ridge λ 1e-3 | **0.48** | **0.59** | 5.33 |
+| B2 GBT | projected (27 Sep) | 0.46 | 0.49 | 6.17 |
+| B2 GBT | ridge λ 1e-3 | 0.45 | 0.47 | 6.60 |
+
+**Against the lines:** *does not* — the pair model cannot use the ridge target either (B1 worse on both hold-outs, B2 unchanged), the same picture as the
+network with pattern d (7c: 0.44 against 0.40). Reading, consistent across two very different models: at a fixed support the ridge target's extra content is
+not learnable from the pair's features; H9 stands as a statement about the bound (the projected target leaves 0.31 on hold-out (a)), not as a recipe. The
+lever that moved the network was the support (pattern f: 0.33). The matching question for the pair model — a wider support with the registered target —
+is registered below.
+
+## Dated amendment 1 October 15:2x — rung B with pattern f (registered before it runs)
+
+`e7_rungB_pairs.py --pattern {c,d,e,f}` (the pair builder's own patterns; default c = registered). **Run:** the 27 Sep comparison recipe at 175, `--pattern f`,
+projected target, two threads → `out/E7_rungB_f_175_2026-10-01`. **Prediction:** B1 (a) 0.36–0.42 (more pairs to fit from the same 175 molecules; the
+hand-made features are the limit). **Lines.** *Helps:* B1 (a) ≤ 0.40 below 0.43 by the usual spread → the support lever is model-independent and the
+rung-B baseline for the network comparison becomes this number. *Does not:* ≥ 0.42 → the support helps only a model whose features see the environment
+(the network), which is itself a finding about what the network has learned.
