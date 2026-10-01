@@ -17,7 +17,7 @@ frequency rms in cm⁻¹.*
 | hybrid head, pattern (f) + ridge target | 175 | **0.33 (0.32–0.34)**, (b) 0.40 | 4.6 | 1 Oct 15:0x |
 | **rung B (hand features), pattern (f)** | 175 / 750 | **0.32**, (b) 0.41 / 0.32, (b) 0.43 | 4.5 / 4.5 | 1 Oct 15:4x, 16:3x — flat with data |
 | **hybrid head, pattern (f), projected target** | 175 | **0.28 (0.27–0.29)**, (b) 0.41, ΔH 0.19 | 4.6 | 1 Oct 18:0x — the carried recipe; 750 = chain 16 |
-| hybrid head, pattern (f), projected, pattern + 0.3 × kring | 175 | **0.24 (0.22–0.26)**, (b) **0.37**, ΔH 0.19 | 5.0 | 1 Oct 19:5x — the day's lowest; 750 = chain 17 |
+| hybrid head, pattern (f), projected, pattern + 0.3 × kring | 175 / **750** | 0.24 (0.22–0.26), (b) 0.37 / **0.22 (0.21–0.22), (b) 0.33**, ΔH 0.14 | 5.0 / **3.5** | 1 Oct 19:5x, 22:3x — **T1's ratio met at 750; ω 3.5 against the ≤ 3 criterion** |
 
 Three heads with different inductive biases, two data volumes, one recipe search: the same floor. Something shared stops them.
 
@@ -62,6 +62,8 @@ floor of a typical target (FD vs analytic, 24 molecules) **0.11 / 1.5 cm⁻¹** 
 | T3 — the scientific goal | does the correction transport to CC level on a molecule the network never saw? | trained on the proxy + the other CC anchors, the held-out anchor's corrected harmonic frequencies within 3 cm⁻¹ rms of CCSD(T) (in-plane modes), against ≈ 10 cm⁻¹ for scaled B3LYP | when anchor set two is complete |
 
 Satisfied = T1 met → T2 designed; T2 met → the PC; T3 met → the mandate's deliverable exists in small. Awaiting the user's word.
+
+*Status 22:3x:* T1's ratio criterion is met at 750 by the carried recipe (0.22 / 0.33, step 175 → 750 falling); its ω criterion is not (3.50 against ≤ 3; one seed 2.94). The network moved with data (175 → 750) where the hand-feature model stayed at 0.32.
 
 ## Decisions carried from the day
 

@@ -1097,3 +1097,21 @@ Lane B, at once (chain 15b, the pretraining cells, moves behind it): pool A + A2
 chain 14b → `out/E7_rungC_lever3b_fproj_kw0.3_750_2026-10-01`. **Prediction:** (a) 0.21–0.25, (b) 0.33–0.37, ω 4.5–5.2. **Lines.** *T1 ratio at 750:* (a) ≤ 0.30
 with the 175 → 750 step not rising; the comparison with chain 16 (pattern term alone) says whether the kring term keeps its 0.04 at 750. Decision 51 as
 always.
+
+## Outcome, chain 17 — pattern f, projected target, pattern + 0.3 × kring, 750 — 1 October 22:3x (`out/E7_rungC_lever3b_fproj_kw0.3_750_2026-10-01`)
+
+| read-out | 750, seeds 0 / 1 / 2 | the same recipe at 175 (chain 14b) | pattern term alone at 750 (chain 16, seeds 0–1 so far) | rung B, pattern f, 750 |
+|---|---|---|---|---|
+| (a) ring-coupling ratio | **0.22** (0.21 / 0.22 / 0.22) | 0.24 | 0.25 / 0.27 | 0.32 |
+| (b) ring-coupling ratio | **0.33** (0.32 / 0.33 / 0.35) | 0.37 | 0.35 / — | 0.43 |
+| (a) ω (cm⁻¹) | **3.50** (3.74 / 2.94 / 3.80) | 5.00 | 3.61 / 4.08 | 4.47 |
+| (a) ΔH residual | **0.138** | 0.185 | 0.161 / 0.161 | 0.20 |
+| best epochs | 88 / 75 / 94 of 200 | 67–103 | — | — |
+
+**Against the lines:** prediction (a) 0.21–0.25, (b) 0.33–0.37, ω 4.5–5.2 — met on the ratios, beaten on ω. **T1's ratio criterion is met at 750**
+(0.22 ≤ 0.30, the step 175 → 750 falls 0.24 → 0.22 with a seed spread of 0.01), on both hold-outs ((b) 0.33 against the proposal's T1 that reads (a) and
+(b) together). The kring term keeps its advantage over the pattern term alone at 750 (0.22 against 0.25–0.27) and, unlike at 175, costs no ω here (3.50
+against 3.6–4.1). Against the hand-feature model on the same support the network is 0.10 lower on (a) and 1 cm⁻¹ lower on ω, and it moved with data
+where rung B did not. **T1's ω criterion (≤ 3 cm⁻¹) is not met: 3.50, one seed at 2.94** — the named next question. Decision 51: best epochs 75–94.
+**Decision:** the carried recipe is pattern f, projected target, `--aux both --kring-weight 0.3`; its 449 point (for T2's three-point curve) and the ω
+question are tomorrow's registrations.
