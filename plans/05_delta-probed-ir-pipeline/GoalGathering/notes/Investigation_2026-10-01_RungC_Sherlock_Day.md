@@ -30,6 +30,19 @@ Three heads with different inductive biases, two data volumes, one recipe search
 | H7 | the (a) read-out is dominated by one or two of its ten molecules | per-molecule ratio of the best model on hold-out (a) | — | every record since 07:5x carries `per_molecule` (test); first read from chain 2 |
 | H8 | the loss is not the read-out quantity | lever 3: `--aux kring`, the term on the ring-mode block of K itself (tested against `k_of`), pattern d, 175, 3 seeds, against lever 1's 0.40 | — | built, registered 08:1x, queued behind chain 2 (`rungC_sherlock3_1001.sh`) |
 
+## Targets — proposal to the user (08:1x; the user asked "Wat spreken we af als de target(s)? Wanneer zijn we tevreden?")
+
+Reference points on hold-out (a), proxy targets (ωB97X − B3LYP): zero rule ratio 1.00 / ω 23 cm⁻¹; hand-made pair model 0.42 / 4.8; measured noise
+floor of a typical target (FD vs analytic, 24 molecules) **0.11 / 1.5 cm⁻¹** — nothing can be read below that on these targets.
+
+| tier | question | target (hold-outs (a) and (b), 3 seeds, spreads reported) | when |
+|---|---|---|---|
+| T1 — the network learns the physics | does it beat hand-made features by a margin that is not noise? | ratio ≤ 0.30 and ω ≤ 3 cm⁻¹ at 750, and the 175 → 750 step falls by ≥ 0.05 | this week, laptop |
+| T2 — compute helps (the PC question) | does more data keep paying? | learning curve 175 / 449 / 750 fits a power law whose extrapolation reaches ratio ≤ 0.20 (≈ 2× the noise floor) and ω ≤ 2 cm⁻¹ by ≈ 5,000 molecules | after T1 |
+| T3 — the scientific goal | does the correction transport to CC level on a molecule the network never saw? | trained on the proxy + the other CC anchors, the held-out anchor's corrected harmonic frequencies within 3 cm⁻¹ rms of CCSD(T) (in-plane modes), against ≈ 10 cm⁻¹ for scaled B3LYP | when anchor set two is complete |
+
+Satisfied = T1 met → T2 designed; T2 met → the PC; T3 met → the mandate's deliverable exists in small. Awaiting the user's word.
+
 ## Decisions carried from the day
 
 (filled as they fall)
