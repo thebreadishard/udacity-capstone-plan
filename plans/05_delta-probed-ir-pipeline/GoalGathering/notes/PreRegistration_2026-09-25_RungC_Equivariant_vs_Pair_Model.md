@@ -590,3 +590,31 @@ standard deviation over the pattern pairs of the fit molecules. Everything else 
 **Lines.** *Encoder adds:* (a) ≤ 0.40 at 175, below rung B by more than both spreads. *Redundant:* 0.41–0.45 — equals rung B; the environment
 encoder is, at this data size, redundant with hand-made topology, and the model to carry forward is the cheapest one that reaches the number.
 *Hurts:* > 0.47. Decision 51 as always.
+
+## Outcome, the hybrid head with rung B's pair features — 1 October 03:4x (`out/E7_rungC_hybrid_pf_2026-10-01`, `…_pf_750_2026-10-01`)
+
+| model | pool | (a) ratio (spread) / ω (spread) | (b) ratio / ω | ΔH residual | best epochs |
+|---|---|---|---|---|---|
+| rung B pair MLP | 175 (A + A2) | 0.430 (0.007) / 4.71 (0.11) | 0.471 / 5.16 | — | — |
+| **hybrid + SQM + pair features** | 175 (A + A2) | **0.438** (0.035) / 4.72 (0.73) | 0.477 / 5.15 | 0.28 | 88, 30, 84 |
+| rung B pair MLP | 750 (A + A2 + B) | 0.420 (0.003) / 4.81 (0.09) | 0.454 / 4.74 | — | — |
+| **hybrid + SQM + pair features** | 750 (A + A2 + B) | **0.418** (0.011) / **4.49** (0.29) | 0.454 / 4.65 | 0.26 | 76, 53, 154 |
+
+**Line: *redundant*** (0.41–0.45 at 175): the hybrid with the hand-made pair vector equals rung B to the second decimal on both hold-outs and on ω, at
+175 and at 750 (at 750 it is 0.3 cm⁻¹ better on (a)'s ω, inside two spreads). The learned environment encoder adds nothing measurable to the
+hand-made topology at this data size, and the hand-made topology adds ≈ 0.01–0.03 to the encoder. Decision 51: best epochs 30–154 of 200, fine.
+
+## What the night established (1 October 03:4x) — the record for the morning
+
+1. **The registered Cartesian head was the error, not the encoder and not the data.** It ignored the Hessian input (zeroed → same 0.82) and could not
+   fit one molecule (0.60 after 5,000 steps). Changing *what the model predicts* — internal force-constant corrections on the pair model's pattern,
+   anchored on F_low of the element — took the same encoder from 0.81 to 0.45 in one step (ω 9.4 → 4.8 cm⁻¹).
+2. **Three heads now agree at ≈ 0.42–0.44 on the parents (ω 4.5–4.8):** rung B, the hybrid, the hybrid with rung B's features. That is the present
+   floor of this representation and these data; nothing tried tonight goes below it.
+3. **Data volume of this kind moves no head** (rung B 0.43 → 0.42; Cartesian 0.81 → 0.82; hybrid 0.45 → 0.46; hybrid + pf 0.44 → 0.42 from 175 to 750).
+   The PC is not bought for more layer B.
+4. **The encoder draws nothing from the Cartesian Hessian** once F_low is explicit (zeroed control 0.43, rank-2 input ±0.00). The rank-2 route is closed.
+5. **Open levers, in the order the evidence suggests:** (i) the hybrid's recipe — it inherited the Cartesian head's winner flags, a search of its own
+   (learning rate, width, epochs) is the fair-chance rule; (ii) the pattern itself — off-pattern ΔF is not predicted, a floor of 0.15 on benzene; the
+   between-branch pattern (d) (pairs two bonds apart) is the registered extension; (iii) data of the target kind chosen by coverage, not volume;
+   (iv) the proxy → CCSD(T) transfer, which no proxy experiment can settle.
