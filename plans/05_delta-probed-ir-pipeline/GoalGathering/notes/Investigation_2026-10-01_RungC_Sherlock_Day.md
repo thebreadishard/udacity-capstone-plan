@@ -13,7 +13,7 @@ frequency rms in cm⁻¹.*
 | pair model, rung B (hand-made features) | 175 | 0.43 | 4.8 | 27 Sep |
 | equivariant, Cartesian head (C1, C2) | 175 / 449 / 750 | 0.81 / 0.83 / 0.82 | — | 30 Sep |
 | hybrid head, pattern (c), carried recipe | 175 / 750 | 0.43 / 0.431 | 4.44 / 4.30 | 1 Oct 05:0x, 06:1x |
-| hybrid head, pattern (d) | 175 | 0.40 (0.39–0.42) | 4.7 (4.1–5.8) | 1 Oct 07:3x |
+| hybrid head, pattern (d) | 175 / 750 | 0.40 (0.39–0.42) / **0.37 (0.36–0.38)** | 4.7 / **4.00** | 1 Oct 07:3x, 09:0x |
 
 Three heads with different inductive biases, two data volumes, one recipe search: the same floor. Something shared stops them.
 
@@ -21,7 +21,7 @@ Three heads with different inductive biases, two data volumes, one recipe search
 
 | # | hypothesis | test | number | status |
 |---|---|---|---|---|
-| H1 | the head cannot express the correction (pattern too narrow) | overfit one molecule, 5,000 steps: what remains is expressiveness | benzene: pattern c 0.15 → pattern d **0.02** (ΔH residual 0.079 → 0.007) | **ceiling confirmed and removed on benzene**; at 175 the gain is 0.43 → 0.40; 750 running |
+| H1 | the head cannot express the correction (pattern too narrow) | overfit one molecule, 5,000 steps: what remains is expressiveness | benzene: pattern c 0.15 → pattern d **0.02** (ΔH residual 0.079 → 0.007) | **confirmed**: ceiling removed on benzene; 175: 0.43 → 0.40 (edge), 750: 0.43 → **0.37**, ω 4.30 → 4.00, (b) 0.47 → 0.43 — and the data step 175 → 750 moves this head (0.40 → 0.37) where pattern c was flat. Pattern d carried. |
 | H2 | the targets are noise (finite-difference Hessians of the corpus deck) | 27 two-route molecules: FD ΔH read as a prediction of the analytic ΔH, `probes/rungC_target_noise_floor.py` | typical molecule **0.07–0.16** (ΔH residual 0.02–0.08); benzene 7.98, pyridine 0.50, one suspect 3.00 — all three carry analytic targets in training (`--use-analytic`) | **rejected as the 0.42**: the noise floor of a typical target is ≈ 0.1 |
 | H3 | an input never reaches the network (ablation = dead wire) | sensitivity at initialisation, `tests/test_rungC_input_wiring.py` | H_low → 0 changes the output by 46 % (Cartesian) / 24 % (hybrid); rank-2 rows carry gradient | **rejected**: the ablations are learned indifference |
 | H4 | the encoder is the floor: 171k parameters trained from 175–750 molecules cannot form the environment the head needs | (2a) QM9-pretrained mean body under the hybrid head vs a fresh mean body, pattern d, 175; (2b) the same pretraining for 20 epochs (running since 08:04 on six cores, ≈ 13:00); (2c) capacity: deep 5 × 64, wide 3 × 128 | — | 2a queued behind lever 1; 2b pretraining running; 2c built, registered 08:2x, queued behind chain 3 |

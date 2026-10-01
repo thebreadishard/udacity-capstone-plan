@@ -750,3 +750,19 @@ non-finite-loss guard (molecule `dsgdb9nsd_000003`, water). The record and a fre
 20,700 molecules did not blow up — the divergence is a rare trajectory event at lr 1e-3 (threaded reductions make runs non-identical), not a data
 fault. Relaunched 08:43 with **lr 3e-4**, everything else as registered; the aborted log is kept as `…_ABORTED_lr1e-3.log`. The 28 Sep checkpoint
 (lr 1e-3, 3 epochs) stays the body of lever 2a cell (ii).
+
+## Outcome, lever 1 — pattern (d) — 1 October 09:0x (`out/E7_rungC_lever1_overfit_benzene_2026-10-01`, `…_lever1_d_175_…`, `…_lever1_d_750_…`)
+
+| run | (a) ratio, seeds | (b) ratio, seeds | ω (a) | best epochs / 200 | pattern-c counterpart |
+|---|---|---|---|---|---|
+| benzene overfit, 5,000 steps | **0.02** (ΔH residual 0.007) | — | 0.21 | — | 0.15 (0.079) |
+| 175 (A + A2) | **0.40** (0.40 / 0.42 / 0.39) | 0.50 (0.50 / 0.49 / 0.51) | 4.70 (4.22 / 5.83 / 4.06) | 97 / 30 / 140 | 0.43 (0.43 / 0.44 / 0.42); ω 4.44 |
+| 750 (A + A2 + B) | **0.37** (0.38 / 0.36 / 0.36) | **0.43** (0.43 / 0.43 / 0.42) | **4.00** (4.18 / 4.00 / 3.82) | 42 / 75 / 110 | 0.43 (0.44 / 0.42 / 0.43); ω 4.30 |
+
+**Against the predictions:** (0) met and exceeded (≤ 0.08 predicted, 0.02 found). (1) 0.40 inside 0.38–0.43. (2) 0.37 inside 0.37–0.42; ω 4.00 inside 3.9–4.3.
+**Against the lines:** at 750 *works* — 0.36–0.38 against 0.42–0.44, separated by more than both spreads, on (b) as well (0.42–0.43 against 0.47–0.49), ω
+better; at 175 the separation is at the edge (0.39–0.42 against 0.42–0.44, touching at 0.42). The registered line asked for both; the honest reading is
+**works at 750, at the edge at 175**. The number that matters most is new: **the data step 175 → 750 now moves the head (0.40 → 0.37)**, where the
+pattern-c head was flat (0.43 → 0.431) — the first time since 25 September that more data pays. Decision 51: no best epoch near the cap.
+**Decision:** pattern (d) is the carried pattern (every chain of today already runs it); the hybrid head's new reference at 750 is **0.37 / 4.00** against
+rung B's 0.42 / 4.81. Whether (d) is itself the ceiling on fused and substituted rings is the H5 read of chain 2.
