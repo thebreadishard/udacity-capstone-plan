@@ -969,3 +969,18 @@ projected target, two threads → `out/E7_rungB_f_175_2026-10-01`. **Prediction:
 hand-made features are the limit). **Lines.** *Helps:* B1 (a) ≤ 0.40 below 0.43 by the usual spread → the support lever is model-independent and the
 rung-B baseline for the network comparison becomes this number. *Does not:* ≥ 0.42 → the support helps only a model whose features see the environment
 (the network), which is itself a finding about what the network has learned.
+
+## Outcome, lever 3b — pattern + kring terms on the ridge target, pattern d, 175 — 1 October 15:4x (`out/E7_rungC_lever3b_both_175_2026-10-01`)
+
+| read-out | both terms, seeds 0 / 1 / 2 | kring alone (lever 3) | pattern alone, ridge (7c) |
+|---|---|---|---|
+| (a) ring-coupling ratio | **0.28** (0.28 / 0.29 / 0.28) | 0.29 | 0.44 |
+| (b) ring-coupling ratio | 0.41 | 0.41 | 0.49 |
+| (a) ω | **6.5** (5.8 / 6.3 / 7.5) | 7.3 | 4.4 |
+| (a) ΔH residual | **0.41** (0.38 / 0.50 / 0.34) | 0.4–1.0 | 0.25 |
+| best epochs | 108 / 179 / 99 of 200 | 100–165 | 158–167 |
+
+**Against the lines:** *half* — the couplings ≤ 0.32 (0.28, the best (a) of the day on this hold-out) but ω > 5 and the Cartesian residual 0.41: at equal
+weights the kring term dominates and the pattern term does not hold the rest of the Hessian. Decision 51: seed 1's best epoch 179 is within 10 % of the
+cap — the combined term also converges slowly; a re-run at 300 epochs is folded into the weight cells below rather than repeated as is. **Decision, as the
+line says:** the weights are searched — on the carried support (pattern f) rather than d: chain 14 (lane B, after chain 13), `--kring-weight` 0.1 and 0.3.
