@@ -923,3 +923,26 @@ Cells (`rungC_sherlock12_1001.sh`, after chain 9b; 175, pattern d, carried recip
 *Works:* any cell ≤ 0.38, below the projected 0.40 by both spreads → that λ / weight is carried to 750. *Flat / hurts:* no cell below 0.40 → the ridge
 route is closed at 175; the pattern-f result (chain 9b) and the pretrained body (chain 5b) decide the next step, and chain 8b (ridge at 750) is kept only
 as the data-volume read of this route. Decision 51 as always.
+
+## Outcome, lever 1b — pattern f + ridge target at 175 — 1 October 15:0x (`out/E7_rungC_lever1b_f_ls_175_2026-10-01`)
+
+| read-out | pattern f + ridge, seeds 0 / 1 / 2 | pattern d + ridge (7c) | pattern d + projected (lever 1) |
+|---|---|---|---|
+| (a) ring-coupling ratio | **0.33** (0.34 / 0.32 / 0.32) | 0.44 (0.42–0.45) | 0.40 (0.39–0.42) |
+| (b) ring-coupling ratio | **0.40** (0.41 / 0.40 / 0.40) | 0.49 | 0.50 |
+| (a) ω | 4.60 (4.64 / 4.20 / 4.96) | 4.44 | 4.70 |
+| (a) ΔH residual | 0.220 | 0.247 | 0.23 |
+| best epochs | 83 / 73 / 119 of 200 | 158–167 | 97 / 30 / 140 |
+
+**Against the lines:** prediction 0.24–0.32 missed by 0.01; *works* in substance — 0.32–0.34 against 0.39–0.42 and 0.42–0.45, separated by far more than
+both spreads on (a), and (b) 0.40 against 0.49–0.50. The wider support is the lever that works at 175; with it the ridge target is learned (best epochs
+73–119, not the slow convergence of 7c). ω does not move (4.6 against 4.4–4.7): the model's ω gap stays. **Decision:** pattern f + ridge target is the
+carried recipe; chain 10 (750) is promoted to run at once (T1 read); chain 13 (pattern f with the projected target, lane B) tells whether the ridge is
+needed once the support is wide; chain 12's λ cells follow chain 10. Decision 51: no best epoch near the cap.
+
+## Dated amendment 1 October 15:1x — chain 13: pattern f with the registered projected target (registered before it runs)
+
+Same recipe as chain 9b with `--aux-target projected` (the registered target) → `out/E7_rungC_lever1b_f_proj_175_2026-10-01`, lane B after chain 5b.
+Bounds on hold-out (a): projected 0.09, ridge 0.03. **Prediction:** (a) 0.33–0.38 (the projected target is easier to learn, its bound a little higher).
+**Lines.** *Ridge unnecessary:* (a) ≤ 9b's 0.33 within spreads → the projected target is kept (simpler, registered). *Ridge needed:* (a) above 9b by both
+spreads. Decision 51 as always.
