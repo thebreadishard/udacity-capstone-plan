@@ -1115,3 +1115,10 @@ against 3.6–4.1). Against the hand-feature model on the same support the netwo
 where rung B did not. **T1's ω criterion (≤ 3 cm⁻¹) is not met: 3.50, one seed at 2.94** — the named next question. Decision 51: best epochs 75–94.
 **Decision:** the carried recipe is pattern f, projected target, `--aux both --kring-weight 0.3`; its 449 point (for T2's three-point curve) and the ω
 question are tomorrow's registrations.
+
+## Dated amendment 1 October 22:4x — chain 18: the carried recipe at 449 (registered before it runs)
+
+Pattern f, projected target, pattern + 0.3 × kring, pool A + A2 + B, `--sizes 449`, seeds 0–2 → `out/E7_rungC_carried_449_2026-10-01` (lane B after the
+pretraining cells). With chain 14b (175: 0.24) and chain 17 (750: 0.22) it gives the three points of T2's curve (`probes/rungC_learning_curve_fit.py`).
+**Prediction:** (a) 0.22–0.24, ω 3.8–4.6. **Lines.** *Monotone:* 175 > 449 > 750 beyond the seed spreads → the power law is fitted and its extrapolation to
+5,000 read against T2 (ratio ≤ 0.20, ω ≤ 2). *Flat middle:* the curve is a step; the layer-B composition, not the count, is the suspect. Decision 51 as always.
