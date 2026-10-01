@@ -797,3 +797,16 @@ the target was the floor; the LS target becomes the registered target, the H4 le
 better target either; the model is the floor after all (the overfit on naphthalene with the LS target is the next diagnostic). *Hurts:* > 0.43 → the
 LS target is harder to learn than the projected one (noisier entries); the aux weight is searched. Decision 51 as always. T1 of the target proposal
 (≤ 0.30 at 750) is reachable only on this route.
+
+## Outcome, Sherlock chain 2 — 1 October 11:1x (H5 ceilings `out/E7_rungC_lever1_overfit_{naphthalene,methylnaphthalene,styrene}_2026-10-01`; lever 2a `out/E7_rungC_lever2a_{fresh,pretrained}_mean_175_2026-10-01`)
+
+**H5.** Overfit, pattern d, 5,000 steps: naphthalene **0.41** (ΔH residual 0.276), 2-methylnaphthalene **0.40** (0.256), styrene **0.12** (0.041) against the
+predictions ≤ 0.05 / 0.08 / 0.08 — the line "a ceiling above 0.15 → pattern (e)" would have fired, but the follow-up of 09:1x–09:3x showed the ceiling is
+not the pattern's: the least-squares ΔF on pattern d leaves 0.04 / 0.09 / 0.03, while the pattern term's *target* (projected truth masked on the pattern)
+leaves 0.38 / 0.42 / 0.17 — the overfits sit on the target's bound (H9, lever 4). Pattern (e) is not built; the target is replaced.
+**Lever 2a.** Fresh mean body (a) **0.42** (0.44 / 0.44 / 0.38), (b) 0.46, ω 5.6; QM9-pretrained mean body (a) **0.41** (0.37 / 0.48 / 0.38), (b) 0.47, ω 5.3;
+best epochs 40–102 of 200. Prediction (i) 0.39–0.43 met; (ii) 0.35–0.40 missed; **line: flat** — three epochs of geometry-only pretraining do not move the
+encoder, and a mean body is slightly worse than the sum body (0.40). Both runs trained on the projected target, so they share its bound; lever 2b (the
+converged body) is re-read on the LS target when chain 5 runs, as the amendment of 09:4x says.
+**H7 (first per-molecule read, hold-out (a), seed 0).** Fresh body: 0.28–0.55 over the ten molecules; pretrained: 0.12–0.48. No single molecule carries the
+ratio; the spread is across scaffolds. The per-molecule field stays in every record.
