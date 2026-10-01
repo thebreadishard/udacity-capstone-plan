@@ -744,3 +744,9 @@ combined term (pattern + kring) is the follow-up. Decision 51 as always.
 gate per body. Control: lever 1's record at 175 (0.40, 0.39–0.42). **Prediction:** both within spreads of 0.40 (175 molecules do not feed a bigger
 body; the 30 Sep data-scaling result points the same way). **Lines.** *Works:* a cell ≤ 0.37 and below by both spreads → capacity was part of the floor;
 that body is carried and re-read at 750. *Flat:* H4-capacity rejected at this data volume. *Hurts:* > 0.43 → over-parameterised for 175; noted.
+
+*Amendment to lever 2b, 08:4x:* the first launch (lr 1e-3, as the 28 Sep checkpoint) aborted at ≈ 20,600 molecules of epoch 1 on the 27 Sep
+non-finite-loss guard (molecule `dsgdb9nsd_000003`, water). The record and a fresh body are finite on that molecule and a reproduction over the first
+20,700 molecules did not blow up — the divergence is a rare trajectory event at lr 1e-3 (threaded reductions make runs non-identical), not a data
+fault. Relaunched 08:43 with **lr 3e-4**, everything else as registered; the aborted log is kept as `…_ABORTED_lr1e-3.log`. The 28 Sep checkpoint
+(lr 1e-3, 3 epochs) stays the body of lever 2a cell (ii).
