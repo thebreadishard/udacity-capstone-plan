@@ -17,6 +17,7 @@ frequency rms in cm⁻¹.*
 | hybrid head, pattern (f) + ridge target | 175 | **0.33 (0.32–0.34)**, (b) 0.40 | 4.6 | 1 Oct 15:0x |
 | **rung B (hand features), pattern (f)** | 175 / 750 | **0.32**, (b) 0.41 / 0.32, (b) 0.43 | 4.5 / 4.5 | 1 Oct 15:4x, 16:3x — flat with data |
 | **hybrid head, pattern (f), projected target** | 175 | **0.28 (0.27–0.29)**, (b) 0.41, ΔH 0.19 | 4.6 | 1 Oct 18:0x — the carried recipe; 750 = chain 16 |
+| hybrid head, pattern (f), projected, pattern + 0.3 × kring | 175 | **0.24 (0.22–0.26)**, (b) **0.37**, ΔH 0.19 | 5.0 | 1 Oct 19:5x — the day's lowest; 750 = chain 17 |
 
 Three heads with different inductive biases, two data volumes, one recipe search: the same floor. Something shared stops them.
 

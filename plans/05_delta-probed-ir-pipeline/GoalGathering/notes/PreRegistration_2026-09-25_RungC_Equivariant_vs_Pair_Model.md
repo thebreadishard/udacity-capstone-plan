@@ -1076,3 +1076,24 @@ target at 750 is unstable across seeds (seed 2 sits where the projected target's
 for the hybrid head on both counts (175: 0.33 vs 0.28 projected; 750: 0.36 with the spread). The one thing it leaves behind is ω 3.9, the lowest so far,
 which says the ω gap is not fixed by the support alone. The T1 read moves to chain 16 (f + projected at 750, started 19:37; ≈ 1.3 h per seed beside lane
 B → first seed ≈ 20:50, all three ≈ 23:30).
+
+## Outcome, chain 14b — kring weight inside `--aux both`, pattern f, projected target, 175 — 1 October 19:5x (`out/E7_rungC_lever3b_fproj_kw{0.1,0.3}_175_2026-10-01`)
+
+| recipe (pattern f, projected target, 175) | (a) ratio, seeds | (b) ratio | (a) ω | (a) ΔH residual | best epochs / 300 |
+|---|---|---|---|---|---|
+| pattern term alone (chain 13) | 0.28 (0.29 / 0.28 / 0.27) | 0.41 | 4.64 | 0.188 | 72–82 of 200 |
+| pattern + 0.1 × kring | **0.25** (0.24 / 0.28 / 0.24) | **0.37** | 5.08 | 0.188 | 43–98 |
+| pattern + 0.3 × kring | **0.24** (0.24 / 0.26 / 0.22) | **0.37** | 5.00 | 0.185 | 67–103 |
+
+**Against the lines:** at weight 0.3 *works* — (a) 0.24 ≤ 0.31, ω 5.00 at the limit, ΔH 0.185 ≤ 0.25; at 0.1 the same with ω 5.08 a hair over. Against
+chain 13 the kring term buys 0.04 on both hold-outs for +0.4 cm⁻¹ of ω at an unchanged Cartesian residual — the trade-off of lever 3 is now small
+and controlled. These are the lowest (a) and (b) of the day. **Decision:** both recipes go to 750 — chain 16 (pattern term alone, running) and chain 17
+(pattern + 0.3 × kring, registered below); T1's ratio criterion is met at 175 by both, its ω criterion (≤ 3) by neither, which names the next question.
+Decision 51: best epochs well below the cap.
+
+## Dated amendment 1 October 19:5x — chain 17: pattern f, projected target, pattern + 0.3 × kring at 750 (registered before it runs)
+
+Lane B, at once (chain 15b, the pretraining cells, moves behind it): pool A + A2 + B, seeds 0–2, 200 epochs (best epochs at 175 were ≤ 103), the rest as
+chain 14b → `out/E7_rungC_lever3b_fproj_kw0.3_750_2026-10-01`. **Prediction:** (a) 0.21–0.25, (b) 0.33–0.37, ω 4.5–5.2. **Lines.** *T1 ratio at 750:* (a) ≤ 0.30
+with the 175 → 750 step not rising; the comparison with chain 16 (pattern term alone) says whether the kring term keeps its 0.04 at 750. Decision 51 as
+always.
