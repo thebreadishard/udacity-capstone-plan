@@ -36,7 +36,7 @@ def _hybrid_tensors(m, R=None):
 def test_hybrid_output_is_symmetric_rigid_body_free_and_equivariant(tensor_input):
     m = RC.water()
     torch.manual_seed(0)
-    model = RH.HybridDeltaFModel(aggregation="mean", tensor_input=tensor_input, class_scale=torch.tensor([1e-2] * 6)).double()
+    model = RH.HybridDeltaFModel(aggregation="mean", tensor_input=tensor_input, class_scale=torch.tensor([1e-2] * RH.N_PAIR_CLASSES)).double()
     t0 = _hybrid_tensors(m)
     with torch.no_grad():
         dH = model(t0["Z"], t0["pos"], t0["H_low"], t0).numpy()
@@ -114,3 +114,8 @@ def test_hybrid_hidden_width_changes_the_head_only():
     n_body = sum(p.numel() for p in small.body.parameters())
     assert sum(p.numel() for p in wide.body.parameters()) == n_body
     assert sum(p.numel() for p in wide.parameters()) > sum(p.numel() for p in small.parameters())
+
+
+def test_hybrid_class_count_matches_the_trainer():
+    import rungC_train as RT
+    assert RH.N_PAIR_CLASSES == len(RT.PAIR_CLASS_NAMES) == 7 and RT.PAIR_CLASS_NAMES[6] == "off_twobond"

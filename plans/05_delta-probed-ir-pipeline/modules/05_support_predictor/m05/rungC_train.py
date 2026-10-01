@@ -73,16 +73,17 @@ def entry_classes(m: dict) -> torch.Tensor:
     return torch.as_tensor(cls)
 
 
-PAIR_CLASS_NAMES = ("diag_bond", "diag_angle", "diag_dihedral", "diag_other", "off_bondbond", "off_other")   # e7_rungB_pairs pair classes 0–5
+PAIR_CLASS_NAMES = ("diag_bond", "diag_angle", "diag_dihedral", "diag_other", "off_bondbond", "off_other", "off_twobond")   # e7_rungB_pairs classes 0–6 (6 = pattern d, 1 Oct 2026)
 PATTERN_SCALE_FLOOR = 0.1   # 1 Oct 2026: no class scale below this fraction of the largest (the unfloored scales let the Cartesian head fit noise)
 
 
-def hybrid_tensors(mol_dir: Path, m: dict) -> dict:
+def hybrid_tensors(mol_dir: Path, m: dict, pattern: str = "c") -> dict:
     """The hybrid head's inputs for one molecule (30 Sep 2026): pattern pairs (P, 2) and their classes (P,), the (K, N) primitive mean-pooling
     matrix, the internal low-level force constants F_int (K, K) and the Wilson B matrix (K, 3N), all in the primitive order of the loader's B
     (checked, as in pattern_classes)."""
     g = json.load(open(mol_dir / "geometry.json"))
-    pairs, feat, pcls, B, atoms = molecule_pairs(g["symbols"], np.asarray(g["coords_bohr"], float), np.asarray(m["F_low"], float), return_atoms=True)
+    pairs, feat, pcls, B, atoms = molecule_pairs(g["symbols"], np.asarray(g["coords_bohr"], float), np.asarray(m["F_low"], float), return_atoms=True,
+                                                 pattern=pattern)
     if B.shape != np.asarray(m["B"]).shape or not np.allclose(B, m["B"], atol=1e-8):
         raise ValueError(f"{mol_dir.name}: the pattern builder's primitives differ from the loader's B matrix — hybrid head refused")
     return dict(pairs=torch.as_tensor(pairs, dtype=torch.long), pcls=torch.as_tensor(pcls, dtype=torch.long), pfeat=torch.as_tensor(feat, dtype=torch.float32),
@@ -90,12 +91,12 @@ def hybrid_tensors(mol_dir: Path, m: dict) -> dict:
                 B=torch.as_tensor(B, dtype=torch.float32))
 
 
-def pattern_classes(mol_dir: Path, m: dict) -> torch.Tensor:
+def pattern_classes(mol_dir: Path, m: dict, pattern: str = "c") -> torch.Tensor:
     """K × K long tensor: the pair model's pattern with its class (0–5) on every entry of the pattern (both triangles) and −1 elsewhere, in the
     primitive order of `m["B"]`. Built with e7_rungB_pairs.molecule_pairs on the molecule's own geometry; the B matrix it returns must equal the
     loader's (same geomeTRIC construction) — a mismatch is refused, not tolerated (30 Sep 2026, rank-2 change after the external reviews)."""
     g = json.load(open(mol_dir / "geometry.json"))
-    pairs, _feat, pcls, B = molecule_pairs(g["symbols"], np.asarray(g["coords_bohr"], float), np.asarray(m["F_low"], float))
+    pairs, _feat, pcls, B = molecule_pairs(g["symbols"], np.asarray(g["coords_bohr"], float), np.asarray(m["F_low"], float), pattern=pattern)
     if B.shape != np.asarray(m["B"]).shape or not np.allclose(B, m["B"], atol=1e-8):
         raise ValueError(f"{mol_dir.name}: the pattern builder's primitives differ from the loader's B matrix — pattern term refused")
     K = B.shape[0]
@@ -353,6 +354,7 @@ def main() -> int:
     ap.add_argument("--sqm-scale", action="store_true", help="hybrid head: add α_class · F_low,pq to the residual (one α per pair class, initialised at 0)")
     ap.add_argument("--pair-features", action="store_true", help="hybrid head (1 Oct 2026): rung B's 66 pair features beside the encoder's features — does the learned environment add anything to hand-made topology?")
     ap.add_argument("--hybrid-hidden", type=int, default=128, help="hybrid head: width of its MLP (search stage H1, 1 Oct 2026; 128 = the 00:4x model)")
+    ap.add_argument("--pattern", default="c", choices=["c", "d"], help="lever 1 (1 Oct 2026): 'c' = the registered pattern; 'd' = (c) + pairs of primitives two bonds apart (class off_twobond)")
     ap.add_argument("--overfit-one", default=None, metavar="ID",
                     help="diagnostic 2 (30 Sep 2026): pool, size and both hold-outs = this one molecule; no inner validation, no early stopping; must reach ratio << 0.1")
     ap.add_argument("--pretrained", default=None, help="C2: a `rungC_pretrain.py` checkpoint; its body is loaded, the head re-initialised per seed")
@@ -414,9 +416,9 @@ def main() -> int:
         t["dF_norm"] = (t["dF_true"] ** 2).mean().clamp_min(1e-30)
         t["cls"] = entry_classes(m)
         if a.aux == "pattern":
-            t["pat_cls"] = pattern_classes(Path(a.molecules) / i, mols[i])
+            t["pat_cls"] = pattern_classes(Path(a.molecules) / i, mols[i], a.pattern)
         if a.head == "hybrid":
-            t.update(hybrid_tensors(Path(a.molecules) / i, mols[i]))
+            t.update(hybrid_tensors(Path(a.molecules) / i, mols[i], a.pattern))
         if a.zero_hlow:
             t["H_low"] = torch.zeros_like(t["H_low"])
         tensors[i] = t
@@ -431,7 +433,7 @@ def main() -> int:
                sizes=sizes, seeds=seeds, epochs=a.epochs, lr=a.lr, aux_weight=a.aux_weight, loss=a.loss, scale=a.scale, inner_val=a.inner_val,
                patience=a.patience, pretrained=a.pretrained, aggregation=a.aggregation, pretrained_elements=a.pretrained_elements,
                aux_mode=a.aux, zero_hlow=a.zero_hlow, overfit_one=a.overfit_one, tensor_input=a.tensor_input, head=a.head, sqm_scale=a.sqm_scale,
-               pair_features=a.pair_features, hybrid_hidden=a.hybrid_hidden,
+               pair_features=a.pair_features, hybrid_hidden=a.hybrid_hidden, pattern=a.pattern,
                pair_class_names=list(PAIR_CLASS_NAMES),
                substituted_analytic=substituted, curve={})
     res["zero_rule"] = {h: readouts(mols, ids, pool, lambda i: np.zeros_like(mols[i]["F_low"])) for h, ids in tests.items() if ids}
@@ -439,7 +441,8 @@ def main() -> int:
              f"recipe: lr {a.lr}, epochs {a.epochs}, loss {a.loss}, aux weight {a.aux_weight}, internal term {a.aux}, output scale {a.scale}, "
              f"inner validation {a.inner_val}, patience {a.patience}; pool layers {a.pool_layers}; {a.aggregation} aggregation"
              + ("; H_low input zeroed (diagnostic 1)" if a.zero_hlow else "") + (f"; overfit-one {a.overfit_one} (diagnostic 2)" if a.overfit_one else "")
-             + ("; rank-2 tensor input" if a.tensor_input else "") + (f"; hybrid head{' + SQM α' if a.sqm_scale else ''}{' + rung B pair features' if a.pair_features else ''}" if a.head == "hybrid" else ""), "",
+             + ("; rank-2 tensor input" if a.tensor_input else "") + (f"; hybrid head{' + SQM α' if a.sqm_scale else ''}{' + rung B pair features' if a.pair_features else ''}" if a.head == "hybrid" else "")
+             + (f"; pattern {a.pattern}" if a.pattern != "c" else ""), "",
              "| n | seed | hold-out | ring couplings | zero | ratio | corrected ω | zero ω | ΔH residual ratio | s |",
              "|---|---|---|---|---|---|---|---|---|---|"]
     for n in sizes:

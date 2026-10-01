@@ -94,3 +94,35 @@ def test_cli_switches_present_and_recipe_unchanged_by_default():
     assert 'aux_mode: str = "all"' in text                                            # default keeps the registered internal term
     assert re.search(r'add_argument\("--hybrid-hidden", type=int, default=128', text)  # search stage H1 (1 Oct): width of the hybrid head
     assert "pattern_class_scales(tensors, train_ids)" in text                          # scales from the fit molecules of the seed, nothing else
+
+
+@pytest.mark.skipif(not (CORPUS / "A_8448043181" / "geometry.json").exists(), reason="corpus benzene not on this machine")
+def test_pattern_d_extends_c_with_two_bonds_apart_pairs_of_class_6():
+    """Lever 1 (1 Oct 2026): pattern d contains every pair of c with the same classes, plus pairs of class 6 whose atom sets are disjoint and joined by
+    exactly one bond; the default call is pattern c, unchanged."""
+    pytest.importorskip("geometric")
+    import json
+
+    import e7_rungB_pairs as RB
+    import e7_t2_sqm as T2
+    from learning_curve_layerA_v2_descriptors import bond_graph
+    d = CORPUS / "A_8448043181"
+    g = json.load(open(d / "geometry.json"))
+    coords = np.asarray(g["coords_bohr"], float)
+    K = T2.internals(g["symbols"], coords)[0].shape[0]
+    F = np.eye(K)                                                                    # F_low enters the features only; the identity will do
+    pairs_c, _fc, cls_c, _Bc = RB.molecule_pairs(g["symbols"], coords, F)
+    pairs_default, _fd, cls_default, _Bd = RB.molecule_pairs(g["symbols"], coords, F, pattern="c")
+    pairs_d, _fe, cls_d, _Be, atoms = RB.molecule_pairs(g["symbols"], coords, F, return_atoms=True, pattern="d")
+    assert np.array_equal(pairs_c, pairs_default) and np.array_equal(cls_c, cls_default)   # default = c
+    set_c = {(int(i), int(j)): int(c) for (i, j), c in zip(pairs_c, cls_c, strict=True)}
+    set_d = {(int(i), int(j)): int(c) for (i, j), c in zip(pairs_d, cls_d, strict=True)}
+    assert set(set_c) <= set(set_d) and all(set_d[k] == v for k, v in set_c.items())       # d ⊇ c with the same classes
+    extra = {k: v for k, v in set_d.items() if k not in set_c}
+    assert extra and set(extra.values()) == {6}
+    adj = bond_graph([s.capitalize() for s in g["symbols"]], coords)
+    for (i, j) in extra:
+        assert not (atoms[i] & atoms[j])                                                    # disjoint atom sets
+        assert any(b in adj[a] for a in atoms[i] for b in atoms[j])                         # joined by one bond
+    with pytest.raises(ValueError):
+        RB.molecule_pairs(g["symbols"], coords, F, pattern="e")

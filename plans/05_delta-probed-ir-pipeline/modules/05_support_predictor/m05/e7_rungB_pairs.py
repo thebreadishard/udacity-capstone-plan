@@ -57,9 +57,13 @@ def ring_cycles(adj, R):
     return cycles
 
 
-def molecule_pairs(symbols_raw, coords_bohr, F_low, return_atoms=False):
+def molecule_pairs(symbols_raw, coords_bohr, F_low, return_atoms=False, pattern="c"):
     """Primitive feature vectors, the pattern pairs with pair features, and metadata. With return_atoms=True (30 Sep 2026, the hybrid head of
-    rung C) a fifth value: the atom set of every primitive, in the primitive order of the B matrix."""
+    rung C) a fifth value: the atom set of every primitive, in the primitive order of the B matrix. pattern (1 Oct 2026, lever 1): "c" = the
+    registered pattern (diagonal, shared-atom pairs, same-ring bond–bond pairs); "d" = (c) plus pairs whose atom sets are disjoint but joined by one
+    bond (the between-branch's 'two bonds apart'), pair class 6."""
+    if pattern not in ("c", "d"):
+        raise ValueError(f"pattern must be 'c' or 'd', got {pattern!r}")
     from geometric.internal import Angle, Dihedral, Distance, LinearAngle, OutOfPlane, PrimitiveInternalCoordinates
     from geometric.molecule import Molecule
     symbols = [s.capitalize() for s in symbols_raw]; coords = np.asarray(coords_bohr, float)
@@ -120,10 +124,15 @@ def molecule_pairs(symbols_raw, coords_bohr, F_low, return_atoms=False):
                 if common:
                     same_ring = 1
                     rdist = min(min(abs(ri_[r] - rj_[r]), len(cycles[r]) - abs(ri_[r] - rj_[r])) for r in common)
-            if not (i == j or shared > 0 or same_ring):
+            two_apart = False
+            if pattern == "d" and i != j and shared == 0 and not same_ring:
+                two_apart = any(b in adj[a_] for a_ in atoms[i] for b in atoms[j])
+            if not (i == j or shared > 0 or same_ring or two_apart):
                 continue
             if i == j:
                 pc_pair = {0: 0, 1: 1, 2: 2}.get(pclass[i], 3)
+            elif two_apart:
+                pc_pair = 6
             else:
                 pc_pair = 4 if (is_bond[i] and is_bond[j]) else 5
             extra = np.array([shared, same_ring, float(rdist == 1), float(rdist == 2), float(rdist >= 3), F_low[i, j], F_low[i, i] * F_low[j, j], float(i == j)], np.float32)

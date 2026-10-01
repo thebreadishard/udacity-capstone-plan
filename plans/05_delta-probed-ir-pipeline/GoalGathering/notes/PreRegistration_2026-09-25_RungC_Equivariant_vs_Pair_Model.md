@@ -672,3 +672,20 @@ frequencies (4.30 against 4.81 cm⁻¹, two spreads), slightly behind on the sca
 
 The equivariant model has caught up with the pair model in one night and now gives the best corrected frequencies on the parents; no model goes
 below ≈ 0.42 on the couplings. That number is the floor of this representation and these data, reached from two sides.
+
+## Dated amendment 1 October 06:4x — lever 1: the pattern extended to (d) (the user: "Doe hefboom 1, het patroon uitbreiden"; registered before it runs)
+
+**Change (`e7_rungB_pairs.molecule_pairs(pattern="d")`, `rungC_train --pattern d`; the hybrid carries seven pair classes; tests; corpus smoke).**
+Pattern (d) = the registered pattern (c) plus every pair of primitives whose atom sets are disjoint and joined by exactly one bond — the between-branch's
+"two bonds apart" of 24 September — as pair class 6 `off_twobond` with its own standardisation scale (floored) and SQM α. The read-outs are unchanged
+(the ring-coupling ratio and ω are read on the same quantities), so a gain must show in the same numbers. Default `c` = everything as before.
+**Why this lever first.** The hybrid cannot predict ΔF off its pattern; on benzene that left a floor of 0.15 on the couplings and 0.08 on the Cartesian
+residual with pattern (c). The between-branch found that the minimum-norm mask on (d) halves the ring-coupling ratio of (c) on benzene (0.79 → 0.47)
+while a fit on (c) already reaches 0.00 — so (d) adds exactly the pairs the mask was missing.
+**Runs (`rungC_lever1_1001.sh`, carried recipe hybrid + SQM α + pair features, lr 3e-4, width 256, patience 20, 200 epochs; design-check gate):**
+(0) diagnostic: benzene alone, 5,000 steps, pattern d → `out/E7_rungC_lever1_overfit_benzene_2026-10-01`; (1) A + A2 (175), seeds 0–2 →
+`…_lever1_d_175_…`; (2) A + A2 + B (750), seeds 0–2 → `…_lever1_d_750_…`.
+**Predictions.** (0) the benzene floor falls from 0.15 to ≤ 0.08 (ΔH residual ≤ 0.05). (1) (a) 0.38–0.43, ω 4.0–4.5. (2) (a) 0.37–0.42, ω 3.9–4.3.
+**Lines.** *Works:* (a) ≤ 0.40 at 175 and at 750, below the pattern-c records (0.43 / 0.431) by more than both spreads. *Flat:* 0.41–0.45 — the pattern
+is not the floor either; the model to carry stays pattern c (fewer parameters, same number). *Hurts:* > 0.45 — the extra pairs add noise the data cannot
+constrain; reported as such. Decision 51 as always.
