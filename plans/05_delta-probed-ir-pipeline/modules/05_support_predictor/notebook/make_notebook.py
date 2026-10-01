@@ -732,6 +732,84 @@ else:
                "not yet executed.*")
 md(reading)
 
+# ---- 12. follow-up (1 October 2026): the floor was the target and the support — appended after sections 1–11, which stay as run
+def _rc(name, size, hold="a", key="coupling_ratio"):
+    """Seed-mean read-out of a rung-C record in ../out (None when the record is absent — the cell then says so)."""
+    p = HERE.parent / "out" / f"{name}.json"
+    if not p.exists():
+        return None
+    rec = json.load(open(p, encoding="utf-8"))
+    seeds = rec["curve"][str(size)]["per_seed"]
+    return float(np.mean([s[hold][key] for s in seeds]))
+
+
+def _rb(name, size, hold="a", key="coupling_ratio"):
+    p = HERE.parent / "out" / f"{name}.json"
+    if not p.exists():
+        return None
+    rec = json.load(open(p, encoding="utf-8"))
+    return float(rec["curve"][str(size)]["B1_mlp"]["mean"][hold][key])
+
+
+def _f(x, d=2):
+    return "—" if x is None else f"{x:.{d}f}"
+
+
+_rows = [("pair model (rung B), pattern c, projected target — the 27 Sep baseline", _rb("E7_rungB_A2B_point0_2026-09-27", 175), _rb("E7_rungB_A2B_point0_2026-09-27", 175, "b"), _rb("E7_rungB_A2B_point0_2026-09-27", 175, "a", "corrected_freq_rms"), None),
+         ("equivariant network, hybrid head, pattern d, projected target (lever 1)", _rc("E7_rungC_lever1_d_175_2026-10-01", 175), _rc("E7_rungC_lever1_d_175_2026-10-01", 175, "b"), _rc("E7_rungC_lever1_d_175_2026-10-01", 175, "a", "corrected_freq_rms"), _rc("E7_rungC_lever1_d_750_2026-10-01", 750)),
+         ("network, pattern d, ridge target (lever 4)", _rc("E7_rungC_lever4_ls_175_2026-10-01", 175), _rc("E7_rungC_lever4_ls_175_2026-10-01", 175, "b"), _rc("E7_rungC_lever4_ls_175_2026-10-01", 175, "a", "corrected_freq_rms"), None),
+         ("network, pattern f, ridge target", _rc("E7_rungC_lever1b_f_ls_175_2026-10-01", 175), _rc("E7_rungC_lever1b_f_ls_175_2026-10-01", 175, "b"), _rc("E7_rungC_lever1b_f_ls_175_2026-10-01", 175, "a", "corrected_freq_rms"), _rc("E7_rungC_lever1b_f_ls_750_2026-10-01", 750)),
+         ("pair model (rung B), pattern f, projected target", _rb("E7_rungB_f_175_2026-10-01", 175), _rb("E7_rungB_f_175_2026-10-01", 175, "b"), _rb("E7_rungB_f_175_2026-10-01", 175, "a", "corrected_freq_rms"), _rb("E7_rungB_f_750_2026-10-01", 750)),
+         ("**network, pattern f, projected target — the carried recipe**", _rc("E7_rungC_lever1b_f_proj_175_2026-10-01", 175), _rc("E7_rungC_lever1b_f_proj_175_2026-10-01", 175, "b"), _rc("E7_rungC_lever1b_f_proj_175_2026-10-01", 175, "a", "corrected_freq_rms"), _rc("E7_rungC_lever1b_f_proj_750_2026-10-01", 750))]
+_table = "\n".join(f"| {n} | {_f(a)} | {_f(b)} | {_f(w, 1)} | {_f(a750) if a750 is not None else 'running' if 'carried' in n else '—'} |" for n, a, b, w, a750 in _rows)
+_kring = (_rc("E7_rungC_lever3_kring_175_2026-10-01", 175), _rc("E7_rungC_lever3_kring_175_2026-10-01", 175, "a", "corrected_freq_rms"))
+_both = (_rc("E7_rungC_lever3b_both_175_2026-10-01", 175), _rc("E7_rungC_lever3b_both_175_2026-10-01", 175, "a", "corrected_freq_rms"))
+_pre = (_rc("E7_rungC_lever2a_fresh_mean_175_2026-10-01", 175), _rc("E7_rungC_lever2a_pretrained_mean_175_2026-10-01", 175), _rc("E7_rungC_lever2b_pretrained_long_175_2026-10-01", 175))
+_bounds_p = HERE.parent / "out" / "rungC_target_bound_holdouts_2026-10-01.json"
+_bounds = json.load(open(_bounds_p, encoding="utf-8"))["bounds"] if _bounds_p.exists() else {}
+_bd = {k: v["a"]["coupling_ratio"] for k, v in _bounds.items()}
+
+md(f"""## 12. Follow-up (1 October 2026): the floor was the target and the support, not the model
+
+Sections 7–11 ended with every model at a ring-coupling ratio of about 0.42 on the hold-out of unseen scaffolds, and section 10 asked whether that was
+the data, the metric or the model. On 1 October the question was taken apart by elimination, one registered run per hypothesis (the investigation log
+`GoalGathering/notes/Investigation_2026-10-01_RungC_Sherlock_Day.md` holds the chain of reasoning; every number below is read from the record files in
+`out/` when this cell is built).
+
+**What the floor was.** Two things, neither of them the network. (i) The pattern term trained the head on the projected truth B⁺ᵀ ΔH B⁺ read on the
+pattern pairs; reconstructed with zeros off the pattern that target itself leaves {_f(_bd.get("d:projected"))} of the ring couplings on hold-out (a) — a
+single-molecule overfit landed exactly on that bound (naphthalene 0.41). (ii) The pattern's reach: pairs of internal coordinates further than one bond
+apart carry a share of the CCSD(T) correction that no model restricted to the old pattern could express. The least-squares ceiling per pattern made this
+measurable without training (`probes/rungC_pattern_ceiling.py`, `probes/rungC_target_bound_holdouts.py`): projected target bound on (a) {_f(_bd.get("d:projected"))}
+with pattern d and {_f(_bd.get("f:projected"))} with pattern f (pairs up to three bonds apart).
+
+**What moved.** The same hold-outs, three seeds, the registered read-outs (ring-coupling ratio against the zero rule on hold-outs (a) and (b); corrected
+ω rms in cm⁻¹ on (a)):
+
+| model, support, target (175 molecules) | (a) ratio | (b) ratio | (a) ω | (a) ratio at 750 |
+|---|---|---|---|---|
+{_table}
+
+The support is the lever and it is model-independent: the hand-feature pair model gains as much from pattern f as the network does. With the registered
+target on the wide support the network is the best model of the day ({_f(_rc("E7_rungC_lever1b_f_proj_175_2026-10-01", 175))} against the pair model's
+{_f(_rb("E7_rungB_f_175_2026-10-01", 175))}); the pair model is flat between 175 and 750 molecules, the network's 750 read (chain 16) is running as this
+section is written and gets its own subsection when it lands.
+
+**What did not move, with numbers.** A ridge-anchored least-squares target with a lower bound ({_f(_bd.get("d:ridge"))} on pattern d) was learned worse
+by both models (network 0.44 against 0.40, pair model 0.48 against 0.43): the extra content sits along near-null combinations of the redundant internals,
+determined by the B matrix and not by chemistry the features see. A loss on the read-out block of K alone reached {_f(_kring[0])} on the couplings
+but ω {_f(_kring[1], 1)}; combined with the pattern term {_f(_both[0])} / {_f(_both[1], 1)} — the two read-outs trade off under this head. Pretraining the
+encoder on Hessian QM9 (geometry → Hessian, 3 and 20 epochs) was flat ({_f(_pre[1])} and {_f(_pre[2])} against a fresh body's {_f(_pre[0])}).
+
+**What stays open.** ω: every model sits at 4–5 cm⁻¹ while the target bound allows 0.4 — the next question. And the proof that the encoder earns its
+place over hand-made features must come from data volume (750 and beyond) and from the transfer to coupled-cluster level on molecules the network never
+saw, which is the project's actual goal.
+
+**What we learned about method.** A floor shared by every model is a property of what they are trained *towards*, not of the models; the first thing
+to measure is the bound of the target itself. Two blow-ups on the way (a plain least-squares target with entries of 1e10; a pseudo-inverse cutoff that
+differed between two machines) were caught by guards before a number was read — the practice of sections 9–11 doing its job.
+""")
+
 nb = new_notebook(cells=cells, metadata={"kernelspec": {"name": "python3", "display_name": "Python 3", "language": "python"}})
 path = HERE / "deep_learning.ipynb"
 nbformat.write(nb, path)
