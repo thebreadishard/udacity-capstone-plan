@@ -897,3 +897,29 @@ comparison recipe (`--use-analytic --pool-layers A,A2 --sizes 175 --seeds 0,1,2`
 is read from the same probe afterwards. **Prediction:** B1 (a) 0.30–0.38, (b) 0.35–0.43, ω ≤ 4.5. **Lines.** *Confirms:* B1 (a) ≤ 0.38 → H9 holds for the
 simplest model too and the registered rung-B numbers of 23–27 Sep are target-bound, not model-bound. *Does not:* B1 (a) within 0.41–0.45 → the pair model
 cannot use the better target; the network result decides H9 alone.
+
+## Outcome, lever 4 at 175 — the ridge target, pattern d — 1 October 14:1x (`out/E7_rungC_lever4_ls_175_2026-10-01`)
+
+| read-out | ridge target λ 1e-3, seeds 0 / 1 / 2 | projected target (lever 1, 175) | target bound (hold-out (a)) |
+|---|---|---|---|
+| (a) ring-coupling ratio | **0.44** (0.45 / 0.42 / 0.45) | 0.40 (0.40 / 0.42 / 0.39) | ridge 0.16, projected 0.31 |
+| (b) ring-coupling ratio | 0.49 | 0.50 | 0.15 / 0.28 |
+| (a) ω | 4.44 | 4.70 | 1.0 / 1.9 |
+| (a) ΔH residual | 0.247 | 0.23 | — |
+| best epochs | 167 / 158 / 160 of 200 | 97 / 30 / 140 | — |
+
+**Against the lines:** *hurts* (> 0.43) on the couplings, ω equal. The target with the better bound is learned worse: the model sits 0.28 above the ridge
+bound against 0.09 above the projected bound. Decision 51: best epochs 158–167 are below the 180 threshold but late — the ridge target converges
+slowly. **Reading:** what the ridge adds to the projected target lives in near-null combinations of the redundant internals; those entries are set
+by the molecule's B matrix, not by chemistry the pooled atom features can see, so they act as noise on the aux term. H9 stands as a statement about
+the bound; as a lever it needs a target that is both low-bound and learnable. Three cheap cells decide (chain 12, below): a larger λ (closer to the
+projected entries), and the same target at a smaller aux weight. All targets were served from the cache (224/224), scale max 4.5.
+
+## Dated amendment 1 October 14:1x — chain 12: λ and weight cells for the ridge target (registered before it runs)
+
+Cells (`rungC_sherlock12_1001.sh`, after chain 9b; 175, pattern d, carried recipe): (i) λ_rel 1e-1, aux weight 1.0 → `…_lever4_lam1e-1_175_…`;
+(ii) λ_rel 1e-2, weight 1.0 → `…_lam1e-2_…`; (iii) λ_rel 1e-3, weight 0.3 → `…_w0.3_…`. From the λ scan the bounds barely move between 1e-1 and 1e-3
+(naphthalene 0.28 → 0.27) while the entries approach the projected ones. **Prediction:** (i) 0.38–0.41, (ii) 0.39–0.43, (iii) 0.40–0.44. **Lines.**
+*Works:* any cell ≤ 0.38, below the projected 0.40 by both spreads → that λ / weight is carried to 750. *Flat / hurts:* no cell below 0.40 → the ridge
+route is closed at 175; the pattern-f result (chain 9b) and the pretrained body (chain 5b) decide the next step, and chain 8b (ridge at 750) is kept only
+as the data-volume read of this route. Decision 51 as always.
