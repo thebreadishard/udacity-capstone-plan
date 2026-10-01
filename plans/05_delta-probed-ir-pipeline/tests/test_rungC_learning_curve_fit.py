@@ -28,7 +28,8 @@ def test_exact_power_law_is_recovered(tmp_path):
     assert out["a"]["sizes"] == [175, 449, 750]
     assert abs(a["slope"] + 0.3) < 1e-9
     assert abs(a["predictions"]["5000"]["point"] - 2.0 * 5000 ** -0.3) < 1e-9
-    assert abs(out["b"]["corrected_freq_rms"]["predictions"]["5000"]["point"] - 12 * 1.2 * 2.0 * 5000 ** -0.3) < 1e-6
+    assert abs(out["b"]["corrected_freq_rms"]["predictions"]["5000"]["point"] - 12 * 2.0 * 5000 ** -0.3) < 1e-6
+    assert abs(out["b"]["ring_coupling_ratio"]["predictions"]["5000"]["point"] - 1.2 * 2.0 * 5000 ** -0.3) < 1e-6
 
 
 def test_duplicate_size_refused_and_two_sizes_needed(tmp_path):
