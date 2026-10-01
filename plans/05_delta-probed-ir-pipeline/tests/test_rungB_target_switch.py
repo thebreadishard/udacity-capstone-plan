@@ -10,3 +10,9 @@ def test_rungb_target_switch_present_with_projected_default():
     assert re.search(r'add_argument\("--target", default="projected", choices=\["projected", "ls"\]', text)
     assert re.search(r'add_argument\("--ls-lam", type=float, default=LAM_REL', text)
     assert 'if a.target == "ls":' in text and "cached_pattern_ls_target(" in text
+
+
+def test_rungb_pattern_switch_present_with_c_default():
+    text = (M05 / "e7_rungB_pairs.py").read_text(encoding="utf-8")
+    assert re.search(r'add_argument\("--pattern", default="c", choices=sorted\(PATTERN_REACH\)', text)
+    assert 'molecule_pairs(g["symbols"], np.asarray(g["coords_bohr"]), m["F_low"], pattern=a.pattern)' in text
