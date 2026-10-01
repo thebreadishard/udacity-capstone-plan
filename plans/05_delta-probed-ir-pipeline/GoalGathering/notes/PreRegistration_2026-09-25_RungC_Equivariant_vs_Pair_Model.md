@@ -550,3 +550,30 @@ explicit (diagnostic 1 and the rank-2 result point that way).
 spread of the 175 point → the PC question is answered "not by data volume, on any head we have"; the levers are topology features (rank 4) and data
 of the target kind, chosen by the coverage/MMD pre-test. *Between:* a fall smaller than 0.05 — reported as such. Control: a difference > 0.05 between
 (2) and the hybrid at 175 means the encoder does use the Hessian and the rank-2 route deserves a second look; ≤ 0.02 closes it.
+
+## Outcome, the data-scaling test on the hybrid head, and the hybrid's H_low control — 1 October 02:2x (`out/E7_rungC_hybrid_scale_2026-10-01`, `…_hybrid_zerohlow_2026-10-01`)
+
+| pool (mixed hashed order, A,A2,B) | (a) ratio (spread) / ω (spread) | (b) ratio / ω | ΔH residual | best epochs |
+|---|---|---|---|---|
+| 175 | 0.510 (0.068) / 5.94 (1.06) | 0.549 / 6.09 | 0.32 | 62, 80, 52 |
+| 449 | 0.465 (0.049) / 5.71 (1.25) | 0.531 / 5.99 | 0.30 | 65, 109, 52 |
+| 750 | **0.458** (0.026) / 5.35 (0.68) | 0.499 / 5.29 | 0.29 | 53, 98, 90 |
+| A + A2 only (175, 00:4x record, same recipe but unfloored scales) | 0.449 (0.031) / 4.77 | 0.506 / 5.22 | 0.27 | |
+| **control: hybrid with the encoder's H_low zeroed**, A + A2, seed 0 | **0.432 / 4.65** | 0.478 / 4.74 | 0.27 | 98 |
+
+**Lines.** *Works* ((a) ≤ 0.40 at 750, falling beyond the spread): **not met.** *Flat* (within one spread of the 175 point): met on the letter (0.052
+against a spread of 0.068 at 175). The fall along the mixed prefix (0.51 → 0.46 on (a), 0.55 → 0.50 on (b), ω −0.6 / −0.8 cm⁻¹) is consistent on
+every read-out but is explained by composition, not by volume: the first 175 of the mixed order hold fewer PAH-like molecules than A + A2, and the
+750 point (0.458) is **not** below the A + A2 point (0.449). Adding 575 layer-B molecules to A + A2 moves the hybrid as little as it moved rung B.
+**Verdict: between, read as flat** — the same answer on the working head as on the others: **data volume of this kind does not move the ladder;
+the PC is not bought for it.** Decision 51: best epochs 52–109 of 200.
+
+**Control.** With the encoder's Hessian input zeroed the hybrid is *not worse* (0.432 / 4.65 against 0.449 / 4.77; one seed, inside the spread): the
+encoder draws nothing from the Cartesian Hessian once F_low,pq/pp/qq are explicit inputs, which closes the rank-2 input route (diagnostic 1, the rank-1
+variants and this control agree). And the number itself: the hybrid without that input equals rung B (0.43 / 4.65 against 0.43 / 4.71).
+
+**Where this leaves the model, 02:2x.** The equivariant encoder now matches the pair model and does not yet beat it. The remaining difference between
+the two heads' inputs is rung B's hand-made pair vector (ring-path distance, environment classes, primitive classes, ring flags: the topology the
+reviewers' rank 4 asks for). The registered next step (below) gives the hybrid head those 66 features beside the encoder's — if the encoder adds
+information the pair vector lacks, the hybrid pulls ahead; if not, the result equals rung B and the environment encoder is, at this data size,
+redundant with hand-made topology.
