@@ -250,3 +250,8 @@ def test_aux_both_is_the_sum_of_pattern_and_kring_terms():
     m.aux_mode = "both"
     _, both, _ = RT._terms(m, t)
     assert torch.allclose(both, pat + kr) and float(pat) > 0 and float(kr) > 0
+    m.kring_weight = 0.3                                                       # lever 3b weight search: both = pattern + w · kring
+    _, both_w, _ = RT._terms(m, t)
+    assert torch.allclose(both_w, pat + 0.3 * kr)
+    text = (M05 / "rungC_train.py").read_text(encoding="utf-8")
+    assert re.search(r'add_argument\("--kring-weight", type=float, default=1.0', text)

@@ -984,3 +984,12 @@ rung-B baseline for the network comparison becomes this number. *Does not:* ≥ 
 weights the kring term dominates and the pattern term does not hold the rest of the Hessian. Decision 51: seed 1's best epoch 179 is within 10 % of the
 cap — the combined term also converges slowly; a re-run at 300 epochs is folded into the weight cells below rather than repeated as is. **Decision, as the
 line says:** the weights are searched — on the carried support (pattern f) rather than d: chain 14 (lane B, after chain 13), `--kring-weight` 0.1 and 0.3.
+
+## Dated amendment 1 October 15:5x — chain 14: kring weight on pattern f (registered before it runs)
+
+`rungC_train.py --kring-weight` (default 1.0; scales the kring term inside `--aux both`; test). **Cells (`rungC_sherlock14_1001.sh`, lane B after chain 13; 175,
+pattern f, ridge target, hybrid head, carried recipe, 300 epochs because the combined term converged late):** kring weight 0.1 → `…_lever3b_f_kw0.1_175_…`;
+0.3 → `…_kw0.3_…`. Controls: chain 9b (pattern f, pattern term alone: 0.33 / ω 4.6 / ΔH 0.22) and lever 3b (both at equal weights, pattern d: 0.28 / 6.5 /
+0.41). **Prediction:** at 0.1 (a) 0.30–0.33 with ω ≤ 5 and ΔH ≤ 0.25; at 0.3 (a) 0.28–0.31 with ω 5–6. **Lines.** *Works:* a cell with (a) ≤ 0.31, ω ≤ 5.0 and
+ΔH residual ≤ 0.25 → the carried loss; re-read at 750. *Half:* couplings down, ω up → the two read-outs trade off under this head; the model, not the
+loss, is the next lever. *Flat:* within spreads of 9b. Decision 51 as always.
