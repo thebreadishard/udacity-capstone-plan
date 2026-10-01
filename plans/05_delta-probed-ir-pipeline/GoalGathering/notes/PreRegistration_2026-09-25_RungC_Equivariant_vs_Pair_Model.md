@@ -775,3 +775,25 @@ chain 4):** pattern d, carried recipe, pool A + A2 + B, `--sizes 449` (the data-
 seed spreads → a power law is fitted to the three points (`e11_power_law.py`'s fit) and its extrapolation to 5,000 molecules is read against T2
 (ratio ≤ 0.20). *Flat middle:* 449 within spreads of 175 or of 750 → the curve is a step, not a law; the 750 point's layer B (substituted molecules)
 rather than the count is the suspect, and the next run splits the pool by layer at equal count. Decision 51 as always.
+
+## Dated amendment 1 October 09:4x — lever 4: the pattern term's target was the floor (registered before it runs)
+
+**What was found (H5, 09:1x–09:3x).** Overfitting one molecule under pattern d stops at 0.41 on naphthalene and 0.40 on 2-methylnaphthalene (ΔH
+residual 0.28 / 0.26), while the least-squares ΔF supported on the same pattern leaves 0.04 / 0.09 of the ring couplings (`probes/rungC_pattern_ceiling.py`,
+`out/rungC_pattern_ceiling_4mol_2026-10-01`). The pattern term's target is the projected truth B⁺ᵀ ΔH B⁺ read on the pattern; reconstructed with
+zeros off the pattern that target itself leaves **0.38 / 0.42** of the ring couplings and 0.29 / 0.27 of ΔH on those two molecules — the overfits
+land on it exactly, and the pool read-outs of every head (0.37–0.43, rung B's 0.42 included: it fits the same projected ΔF) sit on the same bound.
+The floor of the week was the target, not the model and not the data.
+**Code.** `m05/rungC_targets.py` (`pattern_ls_target`: mass-weighted least squares of a pattern-supported ΔF to ΔH, LAPACK gelsd; `cached_pattern_ls_target`:
+cache keyed by a hash of ΔH, B, mask; `weighted_residual`), `rungC_train.py --aux-target {projected,ls}` (default projected = registered; the class scales
+follow the target; every record carries both targets' residuals per molecule), `probes/rungC_ls_targets_build.py` (fills the cache; A + A2 first).
+Tests: `tests/test_rungC_targets.py` (independent dense fit, benzene: the fit beats the projected target and matches the independent objective;
+cache round trip and invalidation; trainer switch). Rejected solvers recorded in the module docstring with their numbers.
+**Run (`rungC_sherlock7_1001.sh`, after chain 2 and the A + A2 cache):** hybrid + SQM α + pair features, pattern d, sum body, lr 3e-4, width 256,
+patience 20, 200 epochs, 175, seeds 0–2, `--aux-target ls` → `out/E7_rungC_lever4_ls_175_2026-10-01`; control = lever 1's 175 record (0.40, 0.39–0.42,
+ω 4.7). Then 750 when the B cache is in (`…_lever4_ls_750_…`; control 0.37 / 4.00).
+**Predictions.** 175: (a) 0.25–0.33, ω 3.0–4.0; 750: (a) 0.20–0.28, ω 2.5–3.5. **Lines.** *Works:* (a) ≤ 0.33 at 175, below 0.40 by more than both spreads →
+the target was the floor; the LS target becomes the registered target, the H4 levers are re-read on it. *Flat:* 0.36–0.42 → the model does not use the
+better target either; the model is the floor after all (the overfit on naphthalene with the LS target is the next diagnostic). *Hurts:* > 0.43 → the
+LS target is harder to learn than the projected one (noisier entries); the aux weight is searched. Decision 51 as always. T1 of the target proposal
+(≤ 0.30 at 750) is reachable only on this route.
