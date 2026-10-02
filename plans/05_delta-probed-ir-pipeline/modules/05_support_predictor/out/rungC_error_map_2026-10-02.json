@@ -1,0 +1,2753 @@
+{
+ "date": "2026-10-02 06:54",
+ "records": [
+  "E7_rungC_carried_449_2026-10-01.json",
+  "E7_rungC_carried_AA2_45_100_2026-10-01.json",
+  "E7_rungC_carried_mixed175_2026-10-01.json",
+  "E7_rungC_carried_wide_175_2026-10-01.json",
+  "E7_rungC_lever1b_f_ls_175_2026-10-01.json",
+  "E7_rungC_lever1b_f_ls_750_2026-10-01.json",
+  "E7_rungC_lever1b_f_proj_175_2026-10-01.json",
+  "E7_rungC_lever1b_f_proj_750_2026-10-01.json",
+  "E7_rungC_lever2b_fproj_fresh_mean_175_2026-10-01.json",
+  "E7_rungC_lever2b_fproj_pretrained_long_175_2026-10-01.json",
+  "E7_rungC_lever3b_fproj_kw0.1_175_2026-10-01.json",
+  "E7_rungC_lever3b_fproj_kw0.3_175_2026-10-01.json",
+  "E7_rungC_lever3b_fproj_kw0.3_750_2026-10-01.json",
+  "E7_rungC_lever5_kd0.1_175_2026-10-01.json",
+  "E7_rungC_lever5_kd0.3_175_2026-10-01.json"
+ ],
+ "sizes": [
+  449,
+  100,
+  175,
+  175,
+  175,
+  750,
+  175,
+  750,
+  175,
+  175,
+  175,
+  175,
+  750,
+  175,
+  175
+ ],
+ "n_pool": 750,
+ "median_kind_ratio": 0.32798692588356176,
+ "min_pool": 8,
+ "max_heavy": 19,
+ "layers": [
+  "A2",
+  "B",
+  "C"
+ ],
+ "table": [
+  {
+   "kind": "4ar-fused|carbo|sub:CF",
+   "n_holdout": 2,
+   "sets": "b",
+   "pool_count": 1,
+   "coupling_ratio": 0.43471480279131514,
+   "omega": 4.673450480303508,
+   "dH_ratio": 0.3559573712647506,
+   "worst": [
+    [
+     0.4412367283350662,
+     "A2_27370742a0",
+     "fluoranthene+CF3"
+    ],
+    [
+     0.4281928772475641,
+     "A2_42ab9eb0a0",
+     "fluoranthene+CF3"
+    ]
+   ]
+  },
+  {
+   "kind": "4ar-fused|carbo|sub:CNO",
+   "n_holdout": 1,
+   "sets": "b",
+   "pool_count": 0,
+   "coupling_ratio": 0.4172382205329894,
+   "omega": 4.827872865696253,
+   "dH_ratio": 0.3338567444854463,
+   "worst": [
+    [
+     0.4172382205329894,
+     "A2_097651503c",
+     "fluoranthene+CONH2"
+    ]
+   ]
+  },
+  {
+   "kind": "4ar-fused|carbo|sub:CN",
+   "n_holdout": 3,
+   "sets": "b",
+   "pool_count": 0,
+   "coupling_ratio": 0.40012640956875095,
+   "omega": 4.869607936966151,
+   "dH_ratio": 0.3231497438468456,
+   "worst": [
+    [
+     0.4186588259288178,
+     "A2_2931e48c62",
+     "fluoranthene+CN"
+    ],
+    [
+     0.39642606667831337,
+     "A2_331729cd47",
+     "fluoranthene+CN"
+    ],
+    [
+     0.3852943360991216,
+     "A2_0e1c741b76",
+     "fluoranthene+CN"
+    ]
+   ]
+  },
+  {
+   "kind": "4ar-fused|carbo|sub:C",
+   "n_holdout": 6,
+   "sets": "b",
+   "pool_count": 0,
+   "coupling_ratio": 0.39649199992181144,
+   "omega": 5.417895108178267,
+   "dH_ratio": 0.30220468045271026,
+   "worst": [
+    [
+     0.4288041562632931,
+     "A2_02c8833bd5",
+     "fluoranthene+vinyl"
+    ],
+    [
+     0.428042728805169,
+     "A2_2f079d63a1",
+     "fluoranthene+CH3"
+    ],
+    [
+     0.42326496721462414,
+     "A2_048ea73dab",
+     "fluoranthene+CH3"
+    ]
+   ]
+  },
+  {
+   "kind": "4ar-fused|carbo|sub:S",
+   "n_holdout": 1,
+   "sets": "b",
+   "pool_count": 0,
+   "coupling_ratio": 0.3957865669241834,
+   "omega": 5.001865760506334,
+   "dH_ratio": 0.3219359365037894,
+   "worst": [
+    [
+     0.3957865669241834,
+     "A2_043da5bed2",
+     "fluoranthene+SH"
+    ]
+   ]
+  },
+  {
+   "kind": "4ar-fused|carbo|sub:N",
+   "n_holdout": 2,
+   "sets": "b",
+   "pool_count": 0,
+   "coupling_ratio": 0.39401354806364985,
+   "omega": 4.601004556872807,
+   "dH_ratio": 0.30271521398499246,
+   "worst": [
+    [
+     0.4179234066869876,
+     "A2_06222c33e3",
+     "fluoranthene+NH2"
+    ],
+    [
+     0.3701036894403121,
+     "A2_0101e57296",
+     "fluoranthene+NH2"
+    ]
+   ]
+  },
+  {
+   "kind": "4ar-fused|carbo|sub:CO",
+   "n_holdout": 2,
+   "sets": "b",
+   "pool_count": 3,
+   "coupling_ratio": 0.38862964155950686,
+   "omega": 4.868463256879293,
+   "dH_ratio": 0.3141008794466343,
+   "worst": [
+    [
+     0.40004845515936027,
+     "A2_00b0ff5a24",
+     "fluoranthene+COOH"
+    ],
+    [
+     0.3772108279596534,
+     "A2_3f25a88e27",
+     "fluoranthene+OCH3"
+    ]
+   ]
+  },
+  {
+   "kind": "2ar-fused|carbo|sub:CNO",
+   "n_holdout": 1,
+   "sets": "b",
+   "pool_count": 83,
+   "coupling_ratio": 0.38583124410290515,
+   "omega": 7.5261240441667345,
+   "dH_ratio": 0.2698324187434633,
+   "worst": [
+    [
+     0.38583124410290515,
+     "A2_20d3215ce3",
+     "fluorene+CONH2"
+    ]
+   ]
+  },
+  {
+   "kind": "4ar-fused|carbo|sub:O",
+   "n_holdout": 1,
+   "sets": "b",
+   "pool_count": 1,
+   "coupling_ratio": 0.3801356678369478,
+   "omega": 5.153663271351876,
+   "dH_ratio": 0.3122252292689259,
+   "worst": [
+    [
+     0.3801356678369478,
+     "A2_372920f181",
+     "fluoranthene+OH"
+    ]
+   ]
+  },
+  {
+   "kind": "2ar|carbo|sub:CO",
+   "n_holdout": 1,
+   "sets": "a",
+   "pool_count": 2,
+   "coupling_ratio": 0.37409930939411484,
+   "omega": 5.333253158112468,
+   "dH_ratio": 0.24732187037640027,
+   "worst": [
+    [
+     0.37409930939411484,
+     "A_08dde334d8",
+     "benzophenone"
+    ]
+   ]
+  },
+  {
+   "kind": "2ar-fused|carbo|sub:CN",
+   "n_holdout": 1,
+   "sets": "b",
+   "pool_count": 24,
+   "coupling_ratio": 0.36417115784974413,
+   "omega": 5.190108700089939,
+   "dH_ratio": 0.2602317869853535,
+   "worst": [
+    [
+     0.36417115784974413,
+     "A2_3cf20db4ac",
+     "fluorene+CN"
+    ]
+   ]
+  },
+  {
+   "kind": "4ar-fused|carbo|sub:Cl",
+   "n_holdout": 1,
+   "sets": "b",
+   "pool_count": 0,
+   "coupling_ratio": 0.3416221415332939,
+   "omega": 4.0092967695901836,
+   "dH_ratio": 0.272222979966939,
+   "worst": [
+    [
+     0.3416221415332939,
+     "A2_311e979a14",
+     "fluoranthene+Cl"
+    ]
+   ]
+  },
+  {
+   "kind": "4ar-fused|carbo|sub:none",
+   "n_holdout": 1,
+   "sets": "a",
+   "pool_count": 1,
+   "coupling_ratio": 0.33885029531377114,
+   "omega": 4.030781166843352,
+   "dH_ratio": 0.2620605236655732,
+   "worst": [
+    [
+     0.33885029531377114,
+     "A_428228e5a5",
+     "fluoranthene"
+    ]
+   ]
+  },
+  {
+   "kind": "2ar-fused|carbo|sub:N",
+   "n_holdout": 3,
+   "sets": "b",
+   "pool_count": 1,
+   "coupling_ratio": 0.32798692588356176,
+   "omega": 4.850467322376269,
+   "dH_ratio": 0.21679074507121635,
+   "worst": [
+    [
+     0.36986242710678047,
+     "A2_06873ee7ad",
+     "fluorene+NH2"
+    ],
+    [
+     0.3169967486879462,
+     "A2_1c2781e93a",
+     "fluorene+NH2"
+    ],
+    [
+     0.29710160185595863,
+     "A2_05f5ff045c",
+     "fluorene+NH2"
+    ]
+   ]
+  },
+  {
+   "kind": "2ar-fused|carbo|sub:NO",
+   "n_holdout": 1,
+   "sets": "b",
+   "pool_count": 4,
+   "coupling_ratio": 0.32559261787945154,
+   "omega": 5.918786611063821,
+   "dH_ratio": 0.2392945532714724,
+   "worst": [
+    [
+     0.32559261787945154,
+     "A2_2e154f6054",
+     "fluorene+NO2"
+    ]
+   ]
+  },
+  {
+   "kind": "2ar-fused|carbo|sub:C",
+   "n_holdout": 5,
+   "sets": "b",
+   "pool_count": 25,
+   "coupling_ratio": 0.32256839062998266,
+   "omega": 5.404106978372703,
+   "dH_ratio": 0.2164389346495823,
+   "worst": [
+    [
+     0.36595931796864717,
+     "A2_0dc3aa4eb9",
+     "fluorene+CH3"
+    ],
+    [
+     0.3233423585842978,
+     "A2_16521f2764",
+     "fluorene+ethynyl"
+    ],
+    [
+     0.31630470823858564,
+     "A2_27130c4c79",
+     "fluorene+vinyl"
+    ]
+   ]
+  },
+  {
+   "kind": "2ar-fused|carbo|sub:CO",
+   "n_holdout": 3,
+   "sets": "ab",
+   "pool_count": 85,
+   "coupling_ratio": 0.3163461654116754,
+   "omega": 5.219980391698138,
+   "dH_ratio": 0.2248948951021108,
+   "worst": [
+    [
+     0.37196828703208323,
+     "A2_10d7d03408",
+     "fluorene+COOH"
+    ],
+    [
+     0.3601476199794408,
+     "A2_1543119d9d",
+     "fluorene+OCH3"
+    ],
+    [
+     0.2169225892235021,
+     "A_07cadc7923",
+     "2-naphthoic_acid"
+    ]
+   ]
+  },
+  {
+   "kind": "2ar-fused|carbo|sub:Cl",
+   "n_holdout": 3,
+   "sets": "b",
+   "pool_count": 3,
+   "coupling_ratio": 0.3150428253919844,
+   "omega": 4.908481433895097,
+   "dH_ratio": 0.21525568721273647,
+   "worst": [
+    [
+     0.33383204023853286,
+     "A2_066237c4f5",
+     "fluorene+Cl"
+    ],
+    [
+     0.31585707911081745,
+     "A2_1b389dc1d8",
+     "fluorene+Cl"
+    ],
+    [
+     0.295439356826603,
+     "A2_3058513f57",
+     "fluorene+Cl"
+    ]
+   ]
+  },
+  {
+   "kind": "2ar-fused|carbo|sub:CF",
+   "n_holdout": 1,
+   "sets": "b",
+   "pool_count": 17,
+   "coupling_ratio": 0.30221863356493023,
+   "omega": 4.719896812652405,
+   "dH_ratio": 0.23060826156556222,
+   "worst": [
+    [
+     0.30221863356493023,
+     "A2_11c681aefb",
+     "fluorene+CF3"
+    ]
+   ]
+  },
+  {
+   "kind": "2ar-fused|carbo|sub:F",
+   "n_holdout": 2,
+   "sets": "b",
+   "pool_count": 2,
+   "coupling_ratio": 0.28764776346305354,
+   "omega": 4.257893385199423,
+   "dH_ratio": 0.19609860824113284,
+   "worst": [
+    [
+     0.2989926250332015,
+     "A2_210c322595",
+     "fluorene+F"
+    ],
+    [
+     0.2763029018929056,
+     "A2_1bb2e3fbf1",
+     "fluorene+F"
+    ]
+   ]
+  },
+  {
+   "kind": "2ar-fused|carbo|sub:S",
+   "n_holdout": 1,
+   "sets": "b",
+   "pool_count": 2,
+   "coupling_ratio": 0.2802934629441522,
+   "omega": 6.29313036669332,
+   "dH_ratio": 0.20086991469520166,
+   "worst": [
+    [
+     0.2802934629441522,
+     "A2_3b6ae59b2d",
+     "fluorene+SH"
+    ]
+   ]
+  },
+  {
+   "kind": "2ar-fused|carbo|sub:none",
+   "n_holdout": 1,
+   "sets": "a",
+   "pool_count": 4,
+   "coupling_ratio": 0.2753508374049252,
+   "omega": 4.410241623201471,
+   "dH_ratio": 0.1860240976748924,
+   "worst": [
+    [
+     0.2753508374049252,
+     "A_e72997e726",
+     "fluorene"
+    ]
+   ]
+  },
+  {
+   "kind": "2ar|carbo|sub:none",
+   "n_holdout": 1,
+   "sets": "a",
+   "pool_count": 0,
+   "coupling_ratio": 0.2390245839671005,
+   "omega": 4.143230814212807,
+   "dH_ratio": 0.1582907840795757,
+   "worst": [
+    [
+     0.2390245839671005,
+     "A_fdc27f1bd1",
+     "biphenyl"
+    ]
+   ]
+  },
+  {
+   "kind": "3ar-fused|ring-N|sub:none",
+   "n_holdout": 1,
+   "sets": "a",
+   "pool_count": 3,
+   "coupling_ratio": 0.2025038541001766,
+   "omega": 3.062787652856549,
+   "dH_ratio": 0.15439139009904826,
+   "worst": [
+    [
+     0.2025038541001766,
+     "A_bce5bae234",
+     "phenanthridine"
+    ]
+   ]
+  },
+  {
+   "kind": "3ar-fused|carbo|sub:none",
+   "n_holdout": 2,
+   "sets": "a",
+   "pool_count": 1,
+   "coupling_ratio": 0.19805018810008618,
+   "omega": 4.895087946855444,
+   "dH_ratio": 0.19251496704123378,
+   "worst": [
+    [
+     0.21261065871951146,
+     "A_541c53d1a5",
+     "phenanthrene"
+    ],
+    [
+     0.18348971748066087,
+     "A_72b86c2331",
+     "biphenylene"
+    ]
+   ]
+  },
+  {
+   "kind": "1ar|carbo|sub:CN",
+   "n_holdout": 1,
+   "sets": "a",
+   "pool_count": 0,
+   "coupling_ratio": 0.14019355795372243,
+   "omega": 3.939749949707538,
+   "dH_ratio": 0.13976666394146697,
+   "worst": [
+    [
+     0.14019355795372243,
+     "A_3100da3761",
+     "benzonitrile"
+    ]
+   ]
+  },
+  {
+   "kind": "1ar|carbo|sub:none",
+   "n_holdout": 1,
+   "sets": "a",
+   "pool_count": 0,
+   "coupling_ratio": 0.11063296976006208,
+   "omega": 4.697762002226402,
+   "dH_ratio": 0.12677893199039816,
+   "worst": [
+    [
+     0.11063296976006208,
+     "A_8448043181",
+     "benzene"
+    ]
+   ]
+  }
+ ],
+ "weak": [
+  "2ar-fused|carbo|sub:CN",
+  "2ar-fused|carbo|sub:CNO",
+  "2ar-fused|carbo|sub:N",
+  "2ar|carbo|sub:CO",
+  "4ar-fused|carbo|sub:C",
+  "4ar-fused|carbo|sub:CF",
+  "4ar-fused|carbo|sub:CN",
+  "4ar-fused|carbo|sub:CNO",
+  "4ar-fused|carbo|sub:CO",
+  "4ar-fused|carbo|sub:Cl",
+  "4ar-fused|carbo|sub:N",
+  "4ar-fused|carbo|sub:O",
+  "4ar-fused|carbo|sub:S",
+  "4ar-fused|carbo|sub:none"
+ ],
+ "uncovered": [
+  "1ar|carbo|sub:CN",
+  "1ar|carbo|sub:none",
+  "2ar-fused|carbo|sub:Cl",
+  "2ar-fused|carbo|sub:F",
+  "2ar-fused|carbo|sub:N",
+  "2ar-fused|carbo|sub:NO",
+  "2ar-fused|carbo|sub:S",
+  "2ar-fused|carbo|sub:none",
+  "2ar|carbo|sub:CO",
+  "2ar|carbo|sub:none",
+  "3ar-fused|carbo|sub:none",
+  "3ar-fused|ring-N|sub:none",
+  "4ar-fused|carbo|sub:C",
+  "4ar-fused|carbo|sub:CF",
+  "4ar-fused|carbo|sub:CN",
+  "4ar-fused|carbo|sub:CNO",
+  "4ar-fused|carbo|sub:CO",
+  "4ar-fused|carbo|sub:Cl",
+  "4ar-fused|carbo|sub:N",
+  "4ar-fused|carbo|sub:O",
+  "4ar-fused|carbo|sub:S",
+  "4ar-fused|carbo|sub:none"
+ ],
+ "n_pending_considered": 4410,
+ "chosen": [
+  {
+   "id": "A2_35abf04801",
+   "name": "pyrene+SH",
+   "smiles": "Sc1cc2cccc3ccc4cccc1c4c32",
+   "layer": "A2",
+   "n_heavy": "17",
+   "kind": "4ar-fused|carbo|sub:S",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_5d08d2da6f",
+   "name": "pyrene+SH",
+   "smiles": "Sc1ccc2ccc3cccc4ccc1c2c34",
+   "layer": "A2",
+   "n_heavy": "17",
+   "kind": "4ar-fused|carbo|sub:S",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_7712baf378",
+   "name": "fluoranthene+SH",
+   "smiles": "Sc1ccc2c3c(cccc13)-c1ccccc1-2",
+   "layer": "A2",
+   "n_heavy": "17",
+   "kind": "4ar-fused|carbo|sub:S",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_8b444cb44d",
+   "name": "fluoranthene+SH",
+   "smiles": "Sc1ccc2c(c1)-c1cccc3cccc-2c13",
+   "layer": "A2",
+   "n_heavy": "17",
+   "kind": "4ar-fused|carbo|sub:S",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_bd2f772579",
+   "name": "fluoranthene+SH",
+   "smiles": "Sc1cc2c3c(cccc3c1)-c1ccccc1-2",
+   "layer": "A2",
+   "n_heavy": "17",
+   "kind": "4ar-fused|carbo|sub:S",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_d651801d25",
+   "name": "fluoranthene+SH",
+   "smiles": "Sc1ccc2cccc3c2c1-c1ccccc1-3",
+   "layer": "A2",
+   "n_heavy": "17",
+   "kind": "4ar-fused|carbo|sub:S",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_f050f29a85",
+   "name": "pyrene+SH",
+   "smiles": "Sc1cc2ccc3cccc4ccc(c1)c2c34",
+   "layer": "A2",
+   "n_heavy": "17",
+   "kind": "4ar-fused|carbo|sub:S",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "B_519351d19c",
+   "name": "naphthalene+NH2",
+   "smiles": "Nc1ccc2ccccc2c1",
+   "layer": "B",
+   "n_heavy": "11",
+   "kind": "2ar-fused|carbo|sub:N",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "B_57e3e8e943",
+   "name": "azulene+NH2",
+   "smiles": "Nc1ccccc2cccc1-2",
+   "layer": "B",
+   "n_heavy": "11",
+   "kind": "2ar-fused|carbo|sub:N",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "B_78f8233b4c",
+   "name": "azulene+NH2",
+   "smiles": "Nc1cc2cccccc-2c1",
+   "layer": "B",
+   "n_heavy": "11",
+   "kind": "2ar-fused|carbo|sub:N",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "B_89ae0e3368",
+   "name": "naphthalene+NH2",
+   "smiles": "Nc1cccc2ccccc12",
+   "layer": "B",
+   "n_heavy": "11",
+   "kind": "2ar-fused|carbo|sub:N",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "B_8ce201dfcd",
+   "name": "azulene+NH2",
+   "smiles": "Nc1cccc2cccc-2c1",
+   "layer": "B",
+   "n_heavy": "11",
+   "kind": "2ar-fused|carbo|sub:N",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "B_95f04141fa",
+   "name": "azulene+NH2",
+   "smiles": "Nc1ccc2cccccc1-2",
+   "layer": "B",
+   "n_heavy": "11",
+   "kind": "2ar-fused|carbo|sub:N",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "B_d9962f3d1e",
+   "name": "azulene+NH2",
+   "smiles": "Nc1ccc2cccc-2cc1",
+   "layer": "B",
+   "n_heavy": "11",
+   "kind": "2ar-fused|carbo|sub:N",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "B_28670f0f01",
+   "name": "naphthalene+NH2+NH2",
+   "smiles": "Nc1cccc2cccc(N)c12",
+   "layer": "B",
+   "n_heavy": "12",
+   "kind": "2ar-fused|carbo|sub:N",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_4c2fa122d4",
+   "name": "pyrene+NH2",
+   "smiles": "Nc1ccc2ccc3cccc4ccc1c2c34",
+   "layer": "A2",
+   "n_heavy": "17",
+   "kind": "4ar-fused|carbo|sub:N",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_7c950f1732",
+   "name": "fluoranthene+NH2",
+   "smiles": "Nc1ccc2c3c(cccc13)-c1ccccc1-2",
+   "layer": "A2",
+   "n_heavy": "17",
+   "kind": "4ar-fused|carbo|sub:N",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_a446301566",
+   "name": "pyrene+NH2",
+   "smiles": "Nc1cc2ccc3cccc4ccc(c1)c2c34",
+   "layer": "A2",
+   "n_heavy": "17",
+   "kind": "4ar-fused|carbo|sub:N",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_a44dc7e358",
+   "name": "fluoranthene+NH2",
+   "smiles": "Nc1cc2c3c(cccc3c1)-c1ccccc1-2",
+   "layer": "A2",
+   "n_heavy": "17",
+   "kind": "4ar-fused|carbo|sub:N",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_a7c4ac38b3",
+   "name": "pyrene+NH2",
+   "smiles": "Nc1cc2cccc3ccc4cccc1c4c32",
+   "layer": "A2",
+   "n_heavy": "17",
+   "kind": "4ar-fused|carbo|sub:N",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_c57ef05eac",
+   "name": "fluoranthene+NH2",
+   "smiles": "Nc1cccc2c1-c1cccc3cccc-2c13",
+   "layer": "A2",
+   "n_heavy": "17",
+   "kind": "4ar-fused|carbo|sub:N",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_9ca7d76762",
+   "name": "fluoranthene+CH3",
+   "smiles": "Cc1ccc2c(c1)-c1cccc3cccc-2c13",
+   "layer": "A2",
+   "n_heavy": "17",
+   "kind": "4ar-fused|carbo|sub:C",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_c243a4be67",
+   "name": "pyrene+CH3",
+   "smiles": "Cc1ccc2ccc3cccc4ccc1c2c34",
+   "layer": "A2",
+   "n_heavy": "17",
+   "kind": "4ar-fused|carbo|sub:C",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_c587225988",
+   "name": "fluoranthene+CH3",
+   "smiles": "Cc1cccc2c1-c1cccc3cccc-2c13",
+   "layer": "A2",
+   "n_heavy": "17",
+   "kind": "4ar-fused|carbo|sub:C",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_d132085db5",
+   "name": "pyrene+CH3",
+   "smiles": "Cc1cc2cccc3ccc4cccc1c4c32",
+   "layer": "A2",
+   "n_heavy": "17",
+   "kind": "4ar-fused|carbo|sub:C",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_515a84b67a",
+   "name": "fluoranthene+ethynyl",
+   "smiles": "C#Cc1ccc2cccc3c2c1-c1ccccc1-3",
+   "layer": "A2",
+   "n_heavy": "18",
+   "kind": "4ar-fused|carbo|sub:C",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_60bf45f8a6",
+   "name": "fluoranthene+ethynyl",
+   "smiles": "C#Cc1cc2c3c(cccc3c1)-c1ccccc1-2",
+   "layer": "A2",
+   "n_heavy": "18",
+   "kind": "4ar-fused|carbo|sub:C",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_625017d185",
+   "name": "pyrene+vinyl",
+   "smiles": "C=Cc1cc2cccc3ccc4cccc1c4c32",
+   "layer": "A2",
+   "n_heavy": "18",
+   "kind": "4ar-fused|carbo|sub:C",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_6ad9241b55",
+   "name": "pyrene+vinyl",
+   "smiles": "C=Cc1cc2ccc3cccc4ccc(c1)c2c34",
+   "layer": "A2",
+   "n_heavy": "18",
+   "kind": "4ar-fused|carbo|sub:C",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_53601ae85b",
+   "name": "fluoranthene+OH",
+   "smiles": "Oc1ccc2c3c(cccc13)-c1ccccc1-2",
+   "layer": "A2",
+   "n_heavy": "17",
+   "kind": "4ar-fused|carbo|sub:O",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_6270dd2fca",
+   "name": "fluoranthene+OH",
+   "smiles": "Oc1cccc2c1-c1cccc3cccc-2c13",
+   "layer": "A2",
+   "n_heavy": "17",
+   "kind": "4ar-fused|carbo|sub:O",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_abcb2cfa5c",
+   "name": "fluoranthene+OH",
+   "smiles": "Oc1cc2c3c(cccc3c1)-c1ccccc1-2",
+   "layer": "A2",
+   "n_heavy": "17",
+   "kind": "4ar-fused|carbo|sub:O",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_b1b28842fa",
+   "name": "pyrene+OH",
+   "smiles": "Oc1ccc2ccc3cccc4ccc1c2c34",
+   "layer": "A2",
+   "n_heavy": "17",
+   "kind": "4ar-fused|carbo|sub:O",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_eef0ebf680",
+   "name": "fluoranthene+OH",
+   "smiles": "Oc1ccc2c(c1)-c1cccc3cccc-2c13",
+   "layer": "A2",
+   "n_heavy": "17",
+   "kind": "4ar-fused|carbo|sub:O",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_fe568a45a8",
+   "name": "pyrene+OH",
+   "smiles": "Oc1cc2ccc3cccc4ccc(c1)c2c34",
+   "layer": "A2",
+   "n_heavy": "17",
+   "kind": "4ar-fused|carbo|sub:O",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_54129467f7",
+   "name": "fluoranthene+CHO",
+   "smiles": "O=Cc1ccc2cccc3c2c1-c1ccccc1-3",
+   "layer": "A2",
+   "n_heavy": "18",
+   "kind": "4ar-fused|carbo|sub:CO",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_5a264a248c",
+   "name": "fluoranthene+OCH3",
+   "smiles": "COc1ccc2c3c(cccc13)-c1ccccc1-2",
+   "layer": "A2",
+   "n_heavy": "18",
+   "kind": "4ar-fused|carbo|sub:CO",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_5a9365499b",
+   "name": "fluoranthene+CHO",
+   "smiles": "O=Cc1ccc2c(c1)-c1cccc3cccc-2c13",
+   "layer": "A2",
+   "n_heavy": "18",
+   "kind": "4ar-fused|carbo|sub:CO",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_76e1cd109e",
+   "name": "pyrene+OCH3",
+   "smiles": "COc1cc2ccc3cccc4ccc(c1)c2c34",
+   "layer": "A2",
+   "n_heavy": "18",
+   "kind": "4ar-fused|carbo|sub:CO",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_7f8e85ab0f",
+   "name": "fluoranthene+OCH3",
+   "smiles": "COc1cc2c3c(cccc3c1)-c1ccccc1-2",
+   "layer": "A2",
+   "n_heavy": "18",
+   "kind": "4ar-fused|carbo|sub:CO",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_9d46ea3cb6",
+   "name": "fluoranthene+CHO",
+   "smiles": "O=Cc1cccc2c1-c1cccc3cccc-2c13",
+   "layer": "A2",
+   "n_heavy": "18",
+   "kind": "4ar-fused|carbo|sub:CO",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_a748e707a3",
+   "name": "pyrene+CHO",
+   "smiles": "O=Cc1cc2ccc3cccc4ccc(c1)c2c34",
+   "layer": "A2",
+   "n_heavy": "18",
+   "kind": "4ar-fused|carbo|sub:CO",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_a93989fbcf",
+   "name": "fluoranthene+OCH3",
+   "smiles": "COc1ccc2cccc3c2c1-c1ccccc1-3",
+   "layer": "A2",
+   "n_heavy": "18",
+   "kind": "4ar-fused|carbo|sub:CO",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_5934acbbc2",
+   "name": "pyrene+CONH2",
+   "smiles": "NC(=O)c1cc2ccc3cccc4ccc(c1)c2c34",
+   "layer": "A2",
+   "n_heavy": "19",
+   "kind": "4ar-fused|carbo|sub:CNO",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_75730d770d",
+   "name": "pyrene+CONH2",
+   "smiles": "NC(=O)c1ccc2ccc3cccc4ccc1c2c34",
+   "layer": "A2",
+   "n_heavy": "19",
+   "kind": "4ar-fused|carbo|sub:CNO",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_8c1f3bb424",
+   "name": "fluoranthene+CONH2",
+   "smiles": "NC(=O)c1ccc2cccc3c2c1-c1ccccc1-3",
+   "layer": "A2",
+   "n_heavy": "19",
+   "kind": "4ar-fused|carbo|sub:CNO",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_9af1313ca9",
+   "name": "fluoranthene+CONH2",
+   "smiles": "NC(=O)c1ccc2c(c1)-c1cccc3cccc-2c13",
+   "layer": "A2",
+   "n_heavy": "19",
+   "kind": "4ar-fused|carbo|sub:CNO",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_a7660342b4",
+   "name": "fluoranthene+CONH2",
+   "smiles": "NC(=O)c1cc2c3c(cccc3c1)-c1ccccc1-2",
+   "layer": "A2",
+   "n_heavy": "19",
+   "kind": "4ar-fused|carbo|sub:CNO",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_dd6e27d965",
+   "name": "pyrene+CONH2",
+   "smiles": "NC(=O)c1cc2cccc3ccc4cccc1c4c32",
+   "layer": "A2",
+   "n_heavy": "19",
+   "kind": "4ar-fused|carbo|sub:CNO",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_ff6da56848",
+   "name": "fluoranthene+CONH2",
+   "smiles": "NC(=O)c1ccc2c3c(cccc13)-c1ccccc1-2",
+   "layer": "A2",
+   "n_heavy": "19",
+   "kind": "4ar-fused|carbo|sub:CNO",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_6849063f11",
+   "name": "pyrene+CN",
+   "smiles": "N#Cc1cc2ccc3cccc4ccc(c1)c2c34",
+   "layer": "A2",
+   "n_heavy": "18",
+   "kind": "4ar-fused|carbo|sub:CN",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_7fbfba93fa",
+   "name": "fluoranthene+CN",
+   "smiles": "N#Cc1ccc2c(c1)-c1cccc3cccc-2c13",
+   "layer": "A2",
+   "n_heavy": "18",
+   "kind": "4ar-fused|carbo|sub:CN",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_8fbcbe2d29",
+   "name": "fluoranthene+CN",
+   "smiles": "N#Cc1cccc2c1-c1cccc3cccc-2c13",
+   "layer": "A2",
+   "n_heavy": "18",
+   "kind": "4ar-fused|carbo|sub:CN",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_b8ee4f6fea",
+   "name": "pyrene+CN",
+   "smiles": "N#Cc1cc2cccc3ccc4cccc1c4c32",
+   "layer": "A2",
+   "n_heavy": "18",
+   "kind": "4ar-fused|carbo|sub:CN",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_cca8340b51",
+   "name": "pyrene+CN",
+   "smiles": "N#Cc1ccc2ccc3cccc4ccc1c2c34",
+   "layer": "A2",
+   "n_heavy": "18",
+   "kind": "4ar-fused|carbo|sub:CN",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_76e9c2ae8a",
+   "name": "fluoranthene+Cl",
+   "smiles": "Clc1ccc2cccc3c2c1-c1ccccc1-3",
+   "layer": "A2",
+   "n_heavy": "17",
+   "kind": "4ar-fused|carbo|sub:Cl",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_8cb80a9eb5",
+   "name": "fluoranthene+Cl",
+   "smiles": "Clc1cc2c3c(cccc3c1)-c1ccccc1-2",
+   "layer": "A2",
+   "n_heavy": "17",
+   "kind": "4ar-fused|carbo|sub:Cl",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_93b01a9fe6",
+   "name": "pyrene+Cl",
+   "smiles": "Clc1cc2ccc3cccc4ccc(c1)c2c34",
+   "layer": "A2",
+   "n_heavy": "17",
+   "kind": "4ar-fused|carbo|sub:Cl",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_ae6934f7a9",
+   "name": "fluoranthene+Cl",
+   "smiles": "Clc1ccc2c3c(cccc13)-c1ccccc1-2",
+   "layer": "A2",
+   "n_heavy": "17",
+   "kind": "4ar-fused|carbo|sub:Cl",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_c8e297718b",
+   "name": "pyrene+Cl",
+   "smiles": "Clc1cc2cccc3ccc4cccc1c4c32",
+   "layer": "A2",
+   "n_heavy": "17",
+   "kind": "4ar-fused|carbo|sub:Cl",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_d967af1be9",
+   "name": "pyrene+Cl",
+   "smiles": "Clc1ccc2ccc3cccc4ccc1c2c34",
+   "layer": "A2",
+   "n_heavy": "17",
+   "kind": "4ar-fused|carbo|sub:Cl",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "A2_e9df4561cc",
+   "name": "fluoranthene+Cl",
+   "smiles": "Clc1cccc2c1-c1cccc3cccc-2c13",
+   "layer": "A2",
+   "n_heavy": "17",
+   "kind": "4ar-fused|carbo|sub:Cl",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "B_5526e6db5d",
+   "name": "biphenyl+CHO",
+   "smiles": "O=Cc1ccc(-c2ccccc2)cc1",
+   "layer": "B",
+   "n_heavy": "14",
+   "kind": "2ar|carbo|sub:CO",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "B_9d342d5ce6",
+   "name": "biphenyl+OCH3",
+   "smiles": "COc1cccc(-c2ccccc2)c1",
+   "layer": "B",
+   "n_heavy": "14",
+   "kind": "2ar|carbo|sub:CO",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "B_c63c804e73",
+   "name": "biphenyl+OCH3",
+   "smiles": "COc1ccccc1-c1ccccc1",
+   "layer": "B",
+   "n_heavy": "14",
+   "kind": "2ar|carbo|sub:CO",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "B_b27d511b09",
+   "name": "biphenyl+COOH",
+   "smiles": "O=C(O)c1ccc(-c2ccccc2)cc1",
+   "layer": "B",
+   "n_heavy": "15",
+   "kind": "2ar|carbo|sub:CO",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "B_cf8ebc3ad0",
+   "name": "biphenyl+COOH",
+   "smiles": "O=C(O)c1cccc(-c2ccccc2)c1",
+   "layer": "B",
+   "n_heavy": "15",
+   "kind": "2ar|carbo|sub:CO",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "B_d351592aa1",
+   "name": "biphenyl+COOH",
+   "smiles": "O=C(O)c1ccccc1-c1ccccc1",
+   "layer": "B",
+   "n_heavy": "15",
+   "kind": "2ar|carbo|sub:CO",
+   "reason": "weak+uncovered"
+  },
+  {
+   "id": "B_26455e55e3",
+   "name": "naphthalene+CH3+NH2",
+   "smiles": "Cc1cc2ccccc2cc1N",
+   "layer": "B",
+   "n_heavy": "12",
+   "kind": "2ar-fused|carbo|sub:CN",
+   "reason": "weak"
+  },
+  {
+   "id": "B_3dca7b53a3",
+   "name": "azulene+CN",
+   "smiles": "N#Cc1ccccc2cccc1-2",
+   "layer": "B",
+   "n_heavy": "12",
+   "kind": "2ar-fused|carbo|sub:CN",
+   "reason": "weak"
+  },
+  {
+   "id": "B_6367fde381",
+   "name": "azulene+CN",
+   "smiles": "N#Cc1cc2cccccc-2c1",
+   "layer": "B",
+   "n_heavy": "12",
+   "kind": "2ar-fused|carbo|sub:CN",
+   "reason": "weak"
+  },
+  {
+   "id": "B_6aa211768a",
+   "name": "naphthalene+CN",
+   "smiles": "N#Cc1cccc2ccccc12",
+   "layer": "B",
+   "n_heavy": "12",
+   "kind": "2ar-fused|carbo|sub:CN",
+   "reason": "weak"
+  },
+  {
+   "id": "B_89b6724a77",
+   "name": "naphthalene+CH3+NH2",
+   "smiles": "NCc1cccc2ccccc12",
+   "layer": "B",
+   "n_heavy": "12",
+   "kind": "2ar-fused|carbo|sub:CN",
+   "reason": "weak"
+  },
+  {
+   "id": "B_99513d0f65",
+   "name": "naphthalene+CH3+NH2",
+   "smiles": "Cc1cc(N)c2ccccc2c1",
+   "layer": "B",
+   "n_heavy": "12",
+   "kind": "2ar-fused|carbo|sub:CN",
+   "reason": "weak"
+  },
+  {
+   "id": "B_9b1e3fd97d",
+   "name": "naphthalene+CH3+NH2",
+   "smiles": "Cc1ccc2ccc(N)cc2c1",
+   "layer": "B",
+   "n_heavy": "12",
+   "kind": "2ar-fused|carbo|sub:CN",
+   "reason": "weak"
+  },
+  {
+   "id": "B_a41f4cff9d",
+   "name": "naphthalene+CN",
+   "smiles": "N#Cc1ccc2ccccc2c1",
+   "layer": "B",
+   "n_heavy": "12",
+   "kind": "2ar-fused|carbo|sub:CN",
+   "reason": "weak"
+  },
+  {
+   "id": "B_a533db6c15",
+   "name": "azulene+CN",
+   "smiles": "N#Cc1ccc2cccccc1-2",
+   "layer": "B",
+   "n_heavy": "12",
+   "kind": "2ar-fused|carbo|sub:CN",
+   "reason": "weak"
+  },
+  {
+   "id": "B_a5f0c72b89",
+   "name": "naphthalene+CH3+NH2",
+   "smiles": "Cc1ccc2ccccc2c1N",
+   "layer": "B",
+   "n_heavy": "12",
+   "kind": "2ar-fused|carbo|sub:CN",
+   "reason": "weak"
+  },
+  {
+   "id": "B_ac5798691f",
+   "name": "naphthalene+CH3+NH2",
+   "smiles": "Cc1ccc(N)c2ccccc12",
+   "layer": "B",
+   "n_heavy": "12",
+   "kind": "2ar-fused|carbo|sub:CN",
+   "reason": "weak"
+  },
+  {
+   "id": "B_afb9bece8a",
+   "name": "naphthalene+CH3+NH2",
+   "smiles": "Cc1cc(N)cc2ccccc12",
+   "layer": "B",
+   "n_heavy": "12",
+   "kind": "2ar-fused|carbo|sub:CN",
+   "reason": "weak"
+  },
+  {
+   "id": "B_b2410cd7f9",
+   "name": "naphthalene+CH3+NH2",
+   "smiles": "Cc1cccc2cccc(N)c12",
+   "layer": "B",
+   "n_heavy": "12",
+   "kind": "2ar-fused|carbo|sub:CN",
+   "reason": "weak"
+  },
+  {
+   "id": "B_c2aa85e25e",
+   "name": "azulene+CN",
+   "smiles": "N#Cc1cccc2cccc-2c1",
+   "layer": "B",
+   "n_heavy": "12",
+   "kind": "2ar-fused|carbo|sub:CN",
+   "reason": "weak"
+  },
+  {
+   "id": "B_cc1d5a5b08",
+   "name": "naphthalene+CH3+NH2",
+   "smiles": "Cc1c(N)ccc2ccccc12",
+   "layer": "B",
+   "n_heavy": "12",
+   "kind": "2ar-fused|carbo|sub:CN",
+   "reason": "weak"
+  },
+  {
+   "id": "B_d8161c5fd7",
+   "name": "naphthalene+CH3+NH2",
+   "smiles": "Cc1ccc2cc(N)ccc2c1",
+   "layer": "B",
+   "n_heavy": "12",
+   "kind": "2ar-fused|carbo|sub:CN",
+   "reason": "weak"
+  },
+  {
+   "id": "B_e8d50a50b5",
+   "name": "naphthalene+CH3+NH2",
+   "smiles": "Cc1ccc2cccc(N)c2c1",
+   "layer": "B",
+   "n_heavy": "12",
+   "kind": "2ar-fused|carbo|sub:CN",
+   "reason": "weak"
+  },
+  {
+   "id": "B_f321db77de",
+   "name": "azulene+CN",
+   "smiles": "N#Cc1ccc2cccc-2cc1",
+   "layer": "B",
+   "n_heavy": "12",
+   "kind": "2ar-fused|carbo|sub:CN",
+   "reason": "weak"
+  },
+  {
+   "id": "B_25677bf069",
+   "name": "naphthalene+NH2+CN",
+   "smiles": "N#Cc1cccc2cc(N)ccc12",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CN",
+   "reason": "weak"
+  },
+  {
+   "id": "B_256dabc116",
+   "name": "naphthalene+NH2+CN",
+   "smiles": "N#Cc1cc2ccccc2cc1N",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CN",
+   "reason": "weak"
+  },
+  {
+   "id": "B_2824cc3445",
+   "name": "naphthalene+NH2+ethynyl",
+   "smiles": "C#Cc1ccc2cc(N)ccc2c1",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CN",
+   "reason": "weak"
+  },
+  {
+   "id": "B_30022fd926",
+   "name": "naphthalene+CH3+CN",
+   "smiles": "Cc1ccc2cccc(C#N)c2c1",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CN",
+   "reason": "weak"
+  },
+  {
+   "id": "B_3f1dadff50",
+   "name": "naphthalene+NH2+CN",
+   "smiles": "N#Cc1ccc(N)c2ccccc12",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CN",
+   "reason": "weak"
+  },
+  {
+   "id": "B_3f63ae899a",
+   "name": "naphthalene+CH3+CN",
+   "smiles": "Cc1cc(C#N)cc2ccccc12",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CN",
+   "reason": "weak"
+  },
+  {
+   "id": "B_44c3726875",
+   "name": "naphthalene+CH3+CN",
+   "smiles": "Cc1ccc2ccc(C#N)cc2c1",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CN",
+   "reason": "weak"
+  },
+  {
+   "id": "B_4891e3d7c4",
+   "name": "naphthalene+NH2+ethynyl",
+   "smiles": "C#Cc1cc2ccccc2cc1N",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CN",
+   "reason": "weak"
+  },
+  {
+   "id": "B_5a5ce9e235",
+   "name": "naphthalene+NH2+ethynyl",
+   "smiles": "C#Cc1ccc(N)c2ccccc12",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CN",
+   "reason": "weak"
+  },
+  {
+   "id": "B_5f503c9cfc",
+   "name": "naphthalene+CH3+CN",
+   "smiles": "Cc1ccc2cc(C#N)ccc2c1",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CN",
+   "reason": "weak"
+  },
+  {
+   "id": "B_66d9a51e5c",
+   "name": "naphthalene+CH3+CN",
+   "smiles": "Cc1cccc2cc(C#N)ccc12",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CN",
+   "reason": "weak"
+  },
+  {
+   "id": "B_6c1f2b1966",
+   "name": "naphthalene+NH2+vinyl",
+   "smiles": "C=Cc1cc(N)c2ccccc2c1",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CN",
+   "reason": "weak"
+  },
+  {
+   "id": "B_056f1c70fa",
+   "name": "naphthalene+NH2+CHO",
+   "smiles": "Nc1cccc2cc(C=O)ccc12",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CNO",
+   "reason": "weak"
+  },
+  {
+   "id": "B_2de7227ecb",
+   "name": "azulene+CONH2",
+   "smiles": "NC(=O)c1ccc2cccccc1-2",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CNO",
+   "reason": "weak"
+  },
+  {
+   "id": "B_3647bbc973",
+   "name": "naphthalene+NH2+CHO",
+   "smiles": "Nc1c(C=O)ccc2ccccc12",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CNO",
+   "reason": "weak"
+  },
+  {
+   "id": "B_407ebd9dfc",
+   "name": "naphthalene+NH2+CHO",
+   "smiles": "Nc1ccc2c(C=O)cccc2c1",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CNO",
+   "reason": "weak"
+  },
+  {
+   "id": "B_4a12c8c34c",
+   "name": "naphthalene+NH2+OCH3",
+   "smiles": "COc1ccc2cccc(N)c2c1",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CNO",
+   "reason": "weak"
+  },
+  {
+   "id": "B_520cc9455f",
+   "name": "naphthalene+NH2+CHO",
+   "smiles": "Nc1ccc2ccc(C=O)cc2c1",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CNO",
+   "reason": "weak"
+  },
+  {
+   "id": "B_5972a08ace",
+   "name": "naphthalene+OH+CN",
+   "smiles": "N#Cc1cccc2cccc(O)c12",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CNO",
+   "reason": "weak"
+  },
+  {
+   "id": "B_63e282724f",
+   "name": "naphthalene+OH+CN",
+   "smiles": "N#Cc1cccc2cc(O)ccc12",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CNO",
+   "reason": "weak"
+  },
+  {
+   "id": "B_6a9a26d089",
+   "name": "naphthalene+OH+CN",
+   "smiles": "N#Cc1ccc2cccc(O)c2c1",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CNO",
+   "reason": "weak"
+  },
+  {
+   "id": "B_6d47368e74",
+   "name": "naphthalene+NH2+OCH3",
+   "smiles": "COc1cc(N)c2ccccc2c1",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CNO",
+   "reason": "weak"
+  },
+  {
+   "id": "B_6e1304dc66",
+   "name": "naphthalene+NH2+OCH3",
+   "smiles": "COc1cccc2cccc(N)c12",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CNO",
+   "reason": "weak"
+  },
+  {
+   "id": "B_7ee6ad5290",
+   "name": "naphthalene+NH2+CHO",
+   "smiles": "Nc1ccc2cccc(C=O)c2c1",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CNO",
+   "reason": "weak"
+  },
+  {
+   "id": "B_83267b6b89",
+   "name": "naphthalene+NH2+CHO",
+   "smiles": "Nc1ccc(C=O)c2ccccc12",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CNO",
+   "reason": "weak"
+  },
+  {
+   "id": "B_8393df5514",
+   "name": "naphthalene+OH+CN",
+   "smiles": "N#Cc1c(O)ccc2ccccc12",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CNO",
+   "reason": "weak"
+  },
+  {
+   "id": "B_863cdaad7a",
+   "name": "naphthalene+NH2+OCH3",
+   "smiles": "COc1ccc2ccccc2c1N",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CNO",
+   "reason": "weak"
+  },
+  {
+   "id": "B_8b9f430aef",
+   "name": "naphthalene+OH+CN",
+   "smiles": "N#Cc1ccc2ccccc2c1O",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CNO",
+   "reason": "weak"
+  },
+  {
+   "id": "B_8e68ad97ce",
+   "name": "naphthalene+CONH2",
+   "smiles": "NC(=O)c1cccc2ccccc12",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CNO",
+   "reason": "weak"
+  },
+  {
+   "id": "B_96af4fd613",
+   "name": "naphthalene+OH+CN",
+   "smiles": "N#Cc1cccc2c(O)cccc12",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CNO",
+   "reason": "weak"
+  },
+  {
+   "id": "B_9b8d1fd189",
+   "name": "naphthalene+OH+CN",
+   "smiles": "N#Cc1ccc(O)c2ccccc12",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CNO",
+   "reason": "weak"
+  },
+  {
+   "id": "B_9e023162d4",
+   "name": "azulene+CONH2",
+   "smiles": "NC(=O)c1cccc2cccc-2c1",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CNO",
+   "reason": "weak"
+  },
+  {
+   "id": "B_9ebe6f4920",
+   "name": "naphthalene+NH2+CHO",
+   "smiles": "Nc1cc(C=O)cc2ccccc12",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CNO",
+   "reason": "weak"
+  },
+  {
+   "id": "B_af81556699",
+   "name": "azulene+CONH2",
+   "smiles": "NC(=O)c1ccccc2cccc1-2",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CNO",
+   "reason": "weak"
+  },
+  {
+   "id": "B_b3c1962438",
+   "name": "naphthalene+NH2+OCH3",
+   "smiles": "COc1c(N)ccc2ccccc12",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CNO",
+   "reason": "weak"
+  },
+  {
+   "id": "B_b805d97ce1",
+   "name": "naphthalene+NH2+CHO",
+   "smiles": "Nc1cccc2ccc(C=O)cc12",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CNO",
+   "reason": "weak"
+  },
+  {
+   "id": "B_bec217a9f0",
+   "name": "naphthalene+NH2+CHO",
+   "smiles": "Nc1ccc2ccccc2c1C=O",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CNO",
+   "reason": "weak"
+  },
+  {
+   "id": "B_d434eb4a2f",
+   "name": "naphthalene+NH2+OCH3",
+   "smiles": "COc1ccc2cc(N)ccc2c1",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CNO",
+   "reason": "weak"
+  },
+  {
+   "id": "B_dbafa5e87e",
+   "name": "azulene+CONH2",
+   "smiles": "NC(=O)c1cc2cccccc-2c1",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CNO",
+   "reason": "weak"
+  },
+  {
+   "id": "B_dd57f80d82",
+   "name": "naphthalene+NH2+CHO",
+   "smiles": "Nc1cc(C=O)c2ccccc2c1",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CNO",
+   "reason": "weak"
+  },
+  {
+   "id": "B_df987fb28b",
+   "name": "naphthalene+OH+CN",
+   "smiles": "N#Cc1cccc2ccc(O)cc12",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CNO",
+   "reason": "weak"
+  },
+  {
+   "id": "B_e6d90ea2ef",
+   "name": "naphthalene+NH2+OCH3",
+   "smiles": "COc1cccc2ccc(N)cc12",
+   "layer": "B",
+   "n_heavy": "13",
+   "kind": "2ar-fused|carbo|sub:CNO",
+   "reason": "weak"
+  },
+  {
+   "id": "B_48689688ff",
+   "name": "azulene+Cl",
+   "smiles": "Clc1cc2cccccc-2c1",
+   "layer": "B",
+   "n_heavy": "11",
+   "kind": "2ar-fused|carbo|sub:Cl",
+   "reason": "uncovered"
+  },
+  {
+   "id": "B_51a34f8f4f",
+   "name": "azulene+Cl",
+   "smiles": "Clc1ccc2cccccc1-2",
+   "layer": "B",
+   "n_heavy": "11",
+   "kind": "2ar-fused|carbo|sub:Cl",
+   "reason": "uncovered"
+  },
+  {
+   "id": "B_649f24650b",
+   "name": "azulene+Cl",
+   "smiles": "Clc1ccc2cccc-2cc1",
+   "layer": "B",
+   "n_heavy": "11",
+   "kind": "2ar-fused|carbo|sub:Cl",
+   "reason": "uncovered"
+  },
+  {
+   "id": "B_6742691205",
+   "name": "naphthalene+Cl",
+   "smiles": "Clc1ccc2ccccc2c1",
+   "layer": "B",
+   "n_heavy": "11",
+   "kind": "2ar-fused|carbo|sub:Cl",
+   "reason": "uncovered"
+  },
+  {
+   "id": "B_8ec966eb48",
+   "name": "azulene+Cl",
+   "smiles": "Clc1ccccc2cccc1-2",
+   "layer": "B",
+   "n_heavy": "11",
+   "kind": "2ar-fused|carbo|sub:Cl",
+   "reason": "uncovered"
+  },
+  {
+   "id": "B_bfe673559c",
+   "name": "azulene+Cl",
+   "smiles": "Clc1cccc2cccc-2c1",
+   "layer": "B",
+   "n_heavy": "11",
+   "kind": "2ar-fused|carbo|sub:Cl",
+   "reason": "uncovered"
+  },
+  {
+   "id": "B_31cbf73ed6",
+   "name": "naphthalene+Cl+Cl",
+   "smiles": "Clc1cccc2c(Cl)cccc12",
+   "layer": "B",
+   "n_heavy": "12",
+   "kind": "2ar-fused|carbo|sub:Cl",
+   "reason": "uncovered"
+  },
+  {
+   "id": "B_5629d4b698",
+   "name": "naphthalene+Cl+Cl",
+   "smiles": "Clc1ccc2cc(Cl)ccc2c1",
+   "layer": "B",
+   "n_heavy": "12",
+   "kind": "2ar-fused|carbo|sub:Cl",
+   "reason": "uncovered"
+  },
+  {
+   "id": "B_14ba9f1827",
+   "name": "naphthalene+F",
+   "smiles": "Fc1ccc2ccccc2c1",
+   "layer": "B",
+   "n_heavy": "11",
+   "kind": "2ar-fused|carbo|sub:F",
+   "reason": "uncovered"
+  },
+  {
+   "id": "B_96f5f1990a",
+   "name": "naphthalene+F",
+   "smiles": "Fc1cccc2ccccc12",
+   "layer": "B",
+   "n_heavy": "11",
+   "kind": "2ar-fused|carbo|sub:F",
+   "reason": "uncovered"
+  },
+  {
+   "id": "B_bb5c4d9081",
+   "name": "azulene+F",
+   "smiles": "Fc1ccccc2cccc1-2",
+   "layer": "B",
+   "n_heavy": "11",
+   "kind": "2ar-fused|carbo|sub:F",
+   "reason": "uncovered"
+  },
+  {
+   "id": "B_cf2df97e38",
+   "name": "azulene+F",
+   "smiles": "Fc1ccc2cccccc1-2",
+   "layer": "B",
+   "n_heavy": "11",
+   "kind": "2ar-fused|carbo|sub:F",
+   "reason": "uncovered"
+  },
+  {
+   "id": "B_dffd36faea",
+   "name": "azulene+F",
+   "smiles": "Fc1cc2cccccc-2c1",
+   "layer": "B",
+   "n_heavy": "11",
+   "kind": "2ar-fused|carbo|sub:F",
+   "reason": "uncovered"
+  },
+  {
+   "id": "B_01b90d2c0a",
+   "name": "naphthalene+F+F",
+   "smiles": "Fc1cc(F)c2ccccc2c1",
+   "layer": "B",
+   "n_heavy": "12",
+   "kind": "2ar-fused|carbo|sub:F",
+   "reason": "uncovered"
+  },
+  {
+   "id": "B_359e3d88aa",
+   "name": "naphthalene+F+F",
+   "smiles": "Fc1ccc2c(F)cccc2c1",
+   "layer": "B",
+   "n_heavy": "12",
+   "kind": "2ar-fused|carbo|sub:F",
+   "reason": "uncovered"
+  },
+  {
+   "id": "B_5ce9447468",
+   "name": "naphthalene+F+F",
+   "smiles": "Fc1ccc2ccc(F)cc2c1",
+   "layer": "B",
+   "n_heavy": "12",
+   "kind": "2ar-fused|carbo|sub:F",
+   "reason": "uncovered"
+  },
+  {
+   "id": "B_587a9de76c",
+   "name": "azulene+SH",
+   "smiles": "Sc1cc2cccccc-2c1",
+   "layer": "B",
+   "n_heavy": "11",
+   "kind": "2ar-fused|carbo|sub:S",
+   "reason": "uncovered"
+  },
+  {
+   "id": "B_616944e845",
+   "name": "azulene+SH",
+   "smiles": "Sc1ccc2cccccc1-2",
+   "layer": "B",
+   "n_heavy": "11",
+   "kind": "2ar-fused|carbo|sub:S",
+   "reason": "uncovered"
+  },
+  {
+   "id": "B_b540cb34e9",
+   "name": "naphthalene+SH",
+   "smiles": "Sc1cccc2ccccc12",
+   "layer": "B",
+   "n_heavy": "11",
+   "kind": "2ar-fused|carbo|sub:S",
+   "reason": "uncovered"
+  },
+  {
+   "id": "B_d972298089",
+   "name": "azulene+SH",
+   "smiles": "Sc1ccccc2cccc1-2",
+   "layer": "B",
+   "n_heavy": "11",
+   "kind": "2ar-fused|carbo|sub:S",
+   "reason": "uncovered"
+  },
+  {
+   "id": "B_dea2fe5abb",
+   "name": "azulene+SH",
+   "smiles": "Sc1ccc2cccc-2cc1",
+   "layer": "B",
+   "n_heavy": "11",
+   "kind": "2ar-fused|carbo|sub:S",
+   "reason": "uncovered"
+  },
+  {
+   "id": "B_e126d3ff28",
+   "name": "azulene+SH",
+   "smiles": "Sc1cccc2cccc-2c1",
+   "layer": "B",
+   "n_heavy": "11",
+   "kind": "2ar-fused|carbo|sub:S",
+   "reason": "uncovered"
+  },
+  {
+   "id": "B_ec04732406",
+   "name": "naphthalene+SH",
+   "smiles": "Sc1ccc2ccccc2c1",
+   "layer": "B",
+   "n_heavy": "11",
+   "kind": "2ar-fused|carbo|sub:S",
+   "reason": "uncovered"
+  },
+  {
+   "id": "B_15fb05c549",
+   "name": "naphthalene+SH+SH",
+   "smiles": "Sc1ccc(S)c2ccccc12",
+   "layer": "B",
+   "n_heavy": "12",
+   "kind": "2ar-fused|carbo|sub:S",
+   "reason": "uncovered"
+  },
+  {
+   "id": "B_0496915f30",
+   "name": "naphthalene+OH+NH2",
+   "smiles": "Nc1cccc2c(O)cccc12",
+   "layer": "B",
+   "n_heavy": "12",
+   "kind": "2ar-fused|carbo|sub:NO",
+   "reason": "uncovered"
+  },
+  {
+   "id": "B_1e11627812",
+   "name": "naphthalene+OH+NH2",
+   "smiles": "Nc1ccc2ccccc2c1O",
+   "layer": "B",
+   "n_heavy": "12",
+   "kind": "2ar-fused|carbo|sub:NO",
+   "reason": "uncovered"
+  },
+  {
+   "id": "B_57e6bfe76a",
+   "name": "naphthalene+OH+NH2",
+   "smiles": "Nc1cccc2ccc(O)cc12",
+   "layer": "B",
+   "n_heavy": "12",
+   "kind": "2ar-fused|carbo|sub:NO",
+   "reason": "uncovered"
+  },
+  {
+   "id": "B_5d5f51a3ae",
+   "name": "naphthalene+OH+NH2",
+   "smiles": "Nc1cccc2cc(O)ccc12",
+   "layer": "B",
+   "n_heavy": "12",
+   "kind": "2ar-fused|carbo|sub:NO",
+   "reason": "uncovered"
+  },
+  {
+   "id": "B_5e180d4581",
+   "name": "naphthalene+OH+NH2",
+   "smiles": "Nc1cc(O)cc2ccccc12",
+   "layer": "B",
+   "n_heavy": "12",
+   "kind": "2ar-fused|carbo|sub:NO",
+   "reason": "uncovered"
+  },
+  {
+   "id": "B_60d7e6f2f9",
+   "name": "naphthalene+OH+NH2",
+   "smiles": "Nc1ccc2c(O)cccc2c1",
+   "layer": "B",
+   "n_heavy": "12",
+   "kind": "2ar-fused|carbo|sub:NO",
+   "reason": "uncovered"
+  },
+  {
+   "id": "B_63469c5802",
+   "name": "naphthalene+OH+NH2",
+   "smiles": "Nc1c(O)ccc2ccccc12",
+   "layer": "B",
+   "n_heavy": "12",
+   "kind": "2ar-fused|carbo|sub:NO",
+   "reason": "uncovered"
+  },
+  {
+   "id": "B_777ae0ef51",
+   "name": "naphthalene+OH+NH2",
+   "smiles": "Nc1cccc2cccc(O)c12",
+   "layer": "B",
+   "n_heavy": "12",
+   "kind": "2ar-fused|carbo|sub:NO",
+   "reason": "uncovered"
+  },
+  {
+   "id": "B_3100da3761",
+   "name": "benzene+CN",
+   "smiles": "N#Cc1ccccc1",
+   "layer": "B",
+   "n_heavy": "8",
+   "kind": "1ar|carbo|sub:CN",
+   "reason": "uncovered"
+  },
+  {
+   "id": "B_b3e57b2c2b",
+   "name": "benzene+CH3+NH2",
+   "smiles": "Cc1cccc(N)c1",
+   "layer": "B",
+   "n_heavy": "8",
+   "kind": "1ar|carbo|sub:CN",
+   "reason": "uncovered"
+  },
+  {
+   "id": "B_c66f269f67",
+   "name": "benzene+CH3+NH2",
+   "smiles": "Cc1ccc(N)cc1",
+   "layer": "B",
+   "n_heavy": "8",
+   "kind": "1ar|carbo|sub:CN",
+   "reason": "uncovered"
+  },
+  {
+   "id": "B_d62c8648e6",
+   "name": "benzene+CH3+NH2",
+   "smiles": "NCc1ccccc1",
+   "layer": "B",
+   "n_heavy": "8",
+   "kind": "1ar|carbo|sub:CN",
+   "reason": "uncovered"
+  },
+  {
+   "id": "B_db3788caa6",
+   "name": "benzene+CH3+NH2",
+   "smiles": "Cc1ccccc1N",
+   "layer": "B",
+   "n_heavy": "8",
+   "kind": "1ar|carbo|sub:CN",
+   "reason": "uncovered"
+  },
+  {
+   "id": "B_410ac0fb2f",
+   "name": "benzene+NH2+ethynyl",
+   "smiles": "C#Cc1ccc(N)cc1",
+   "layer": "B",
+   "n_heavy": "9",
+   "kind": "1ar|carbo|sub:CN",
+   "reason": "uncovered"
+  },
+  {
+   "id": "B_73ddb2ccf8",
+   "name": "styrene+NH2",
+   "smiles": "C=C(N)c1ccccc1",
+   "layer": "B",
+   "n_heavy": "9",
+   "kind": "1ar|carbo|sub:CN",
+   "reason": "uncovered"
+  },
+  {
+   "id": "B_74e12973b2",
+   "name": "benzene+NH2+ethynyl",
+   "smiles": "C#Cc1ccccc1N",
+   "layer": "B",
+   "n_heavy": "9",
+   "kind": "1ar|carbo|sub:CN",
+   "reason": "uncovered"
+  },
+  {
+   "id": "A2_3483a22b30",
+   "name": "dibenzothiophene+CONH2",
+   "smiles": "NC(=O)c1ccc2sc3ccccc3c2c1",
+   "layer": "A2",
+   "n_heavy": "16",
+   "kind": "3ar-fused|ring-S|sub:CNO",
+   "reason": "new-kind"
+  },
+  {
+   "id": "A2_3a5def0ce1",
+   "name": "dibenzofuran+NH2",
+   "smiles": "Nc1cccc2oc3ccccc3c12",
+   "layer": "A2",
+   "n_heavy": "14",
+   "kind": "3ar-fused|ring-O|sub:N",
+   "reason": "new-kind"
+  },
+  {
+   "id": "A2_429f6cd63b",
+   "name": "dibenzofuran+CONH2",
+   "smiles": "NC(=O)c1cccc2c1oc1ccccc12",
+   "layer": "A2",
+   "n_heavy": "16",
+   "kind": "3ar-fused|ring-O|sub:CNO",
+   "reason": "new-kind"
+  },
+  {
+   "id": "A2_45d7124294",
+   "name": "dibenzofuran+F",
+   "smiles": "Fc1cccc2c1oc1ccccc12",
+   "layer": "A2",
+   "n_heavy": "14",
+   "kind": "3ar-fused|ring-O|sub:F",
+   "reason": "new-kind"
+  },
+  {
+   "id": "A2_4e8b0a2d6e",
+   "name": "dibenzothiophene+Cl",
+   "smiles": "Clc1cccc2c1sc1ccccc12",
+   "layer": "A2",
+   "n_heavy": "14",
+   "kind": "3ar-fused|ring-S|sub:Cl",
+   "reason": "new-kind"
+  },
+  {
+   "id": "A2_5084813224",
+   "name": "dibenzothiophene+NO2",
+   "smiles": "O=[N+]([O-])c1ccc2sc3ccccc3c2c1",
+   "layer": "A2",
+   "n_heavy": "16",
+   "kind": "3ar-fused|ring-S|sub:NO",
+   "reason": "new-kind"
+  },
+  {
+   "id": "A2_545ba22a6a",
+   "name": "pyrene+F",
+   "smiles": "Fc1cc2cccc3ccc4cccc1c4c32",
+   "layer": "A2",
+   "n_heavy": "17",
+   "kind": "4ar-fused|carbo|sub:F",
+   "reason": "new-kind"
+  },
+  {
+   "id": "A2_606c11e73b",
+   "name": "dibenzothiophene+OH",
+   "smiles": "Oc1ccc2sc3ccccc3c2c1",
+   "layer": "A2",
+   "n_heavy": "14",
+   "kind": "3ar-fused|ring-S|sub:O",
+   "reason": "new-kind"
+  },
+  {
+   "id": "A2_67fde0ce90",
+   "name": "dibenzofuran+SH",
+   "smiles": "Sc1cccc2oc3ccccc3c12",
+   "layer": "A2",
+   "n_heavy": "14",
+   "kind": "3ar-fused|ring-O|sub:S",
+   "reason": "new-kind"
+  },
+  {
+   "id": "B_02eba6e907",
+   "name": "naphthalene+F+SH",
+   "smiles": "Fc1cc(S)c2ccccc2c1",
+   "layer": "B",
+   "n_heavy": "12",
+   "kind": "2ar-fused|carbo|sub:FS",
+   "reason": "new-kind"
+  },
+  {
+   "id": "B_06330dd31f",
+   "name": "oxazole+F",
+   "smiles": "Fc1cnco1",
+   "layer": "B",
+   "n_heavy": "6",
+   "kind": "1ar|ring-NO|sub:F",
+   "reason": "new-kind"
+  },
+  {
+   "id": "B_08ceb5ae9d",
+   "name": "oxazole+NO2",
+   "smiles": "O=[N+]([O-])c1cnco1",
+   "layer": "B",
+   "n_heavy": "8",
+   "kind": "1ar|ring-NO|sub:NO",
+   "reason": "new-kind"
+  },
+  {
+   "id": "B_1090d81b35",
+   "name": "pyridine+CF3+SH",
+   "smiles": "FC(F)(F)c1cc(S)ccn1",
+   "layer": "B",
+   "n_heavy": "11",
+   "kind": "1ar|ring-N|sub:CFS",
+   "reason": "new-kind"
+  },
+  {
+   "id": "B_1d3667a375",
+   "name": "furan+OH",
+   "smiles": "Oc1ccoc1",
+   "layer": "B",
+   "n_heavy": "6",
+   "kind": "1ar|ring-O|sub:O",
+   "reason": "new-kind"
+  },
+  {
+   "id": "B_1ed01fda1b",
+   "name": "benzene+Cl",
+   "smiles": "Clc1ccccc1",
+   "layer": "B",
+   "n_heavy": "7",
+   "kind": "1ar|carbo|sub:Cl",
+   "reason": "new-kind"
+  },
+  {
+   "id": "B_22bfadfa55",
+   "name": "benzene+OH+Cl",
+   "smiles": "Oc1cccc(Cl)c1",
+   "layer": "B",
+   "n_heavy": "8",
+   "kind": "1ar|carbo|sub:ClO",
+   "reason": "new-kind"
+  },
+  {
+   "id": "B_22ec3ecc7c",
+   "name": "thiazole+CONH2",
+   "smiles": "NC(=O)c1nccs1",
+   "layer": "B",
+   "n_heavy": "8",
+   "kind": "1ar|ring-NS|sub:CNO",
+   "reason": "new-kind"
+  },
+  {
+   "id": "B_236ff798a8",
+   "name": "benzothiophene+NH2",
+   "smiles": "Nc1cccc2sccc12",
+   "layer": "B",
+   "n_heavy": "10",
+   "kind": "2ar-fused|ring-S|sub:N",
+   "reason": "new-kind"
+  },
+  {
+   "id": "B_25401903ed",
+   "name": "thiazole+NH2",
+   "smiles": "Nc1nccs1",
+   "layer": "B",
+   "n_heavy": "6",
+   "kind": "1ar|ring-NS|sub:N",
+   "reason": "new-kind"
+  },
+  {
+   "id": "B_25cf0dc229",
+   "name": "benzothiophene+SH",
+   "smiles": "Sc1cc2ccccc2s1",
+   "layer": "B",
+   "n_heavy": "10",
+   "kind": "2ar-fused|ring-S|sub:S",
+   "reason": "new-kind"
+  },
+  {
+   "id": "B_25e5c7e1e6",
+   "name": "benzothiophene+OCH3",
+   "smiles": "COc1cccc2ccsc12",
+   "layer": "B",
+   "n_heavy": "11",
+   "kind": "2ar-fused|ring-S|sub:CO",
+   "reason": "new-kind"
+  },
+  {
+   "id": "B_29ee41c012",
+   "name": "furan+CH3",
+   "smiles": "Cc1ccco1",
+   "layer": "B",
+   "n_heavy": "6",
+   "kind": "1ar|ring-O|sub:C",
+   "reason": "new-kind"
+  },
+  {
+   "id": "B_27a2fd4324",
+   "name": "benzene+Cl+CHO",
+   "smiles": "O=Cc1ccc(Cl)cc1",
+   "layer": "B",
+   "n_heavy": "9",
+   "kind": "1ar|carbo|sub:CClO",
+   "reason": "new-kind"
+  },
+  {
+   "id": "B_2804096c51",
+   "name": "thiophene+CF3",
+   "smiles": "FC(F)(F)c1ccsc1",
+   "layer": "B",
+   "n_heavy": "9",
+   "kind": "1ar|ring-S|sub:CF",
+   "reason": "new-kind"
+  },
+  {
+   "id": "B_2a0d775b59",
+   "name": "oxazole+Cl",
+   "smiles": "Clc1cocn1",
+   "layer": "B",
+   "n_heavy": "6",
+   "kind": "1ar|ring-NO|sub:Cl",
+   "reason": "new-kind"
+  },
+  {
+   "id": "B_2a9deb2e93",
+   "name": "naphthalene+OH+SH",
+   "smiles": "Oc1ccc2cc(S)ccc2c1",
+   "layer": "B",
+   "n_heavy": "12",
+   "kind": "2ar-fused|carbo|sub:OS",
+   "reason": "new-kind"
+  },
+  {
+   "id": "B_2b54e8cd12",
+   "name": "benzene+F+SH",
+   "smiles": "Fc1cccc(S)c1",
+   "layer": "B",
+   "n_heavy": "8",
+   "kind": "1ar|carbo|sub:FS",
+   "reason": "new-kind"
+  },
+  {
+   "id": "B_2d18aa2dde",
+   "name": "thiophene+CN",
+   "smiles": "N#Cc1ccsc1",
+   "layer": "B",
+   "n_heavy": "7",
+   "kind": "1ar|ring-S|sub:CN",
+   "reason": "new-kind"
+  },
+  {
+   "id": "B_2d22a8ad91",
+   "name": "benzothiophene+NO2",
+   "smiles": "O=[N+]([O-])c1ccc2sccc2c1",
+   "layer": "B",
+   "n_heavy": "12",
+   "kind": "2ar-fused|ring-S|sub:NO",
+   "reason": "new-kind"
+  },
+  {
+   "id": "B_3db4fe6829",
+   "name": "benzene+OH",
+   "smiles": "Oc1ccccc1",
+   "layer": "B",
+   "n_heavy": "7",
+   "kind": "1ar|carbo|sub:O",
+   "reason": "new-kind"
+  },
+  {
+   "id": "B_2ef507c033",
+   "name": "oxazole+OH",
+   "smiles": "Oc1cnco1",
+   "layer": "B",
+   "n_heavy": "6",
+   "kind": "1ar|ring-NO|sub:O",
+   "reason": "new-kind"
+  },
+  {
+   "id": "B_2f618c033e",
+   "name": "benzene+CH3+SH",
+   "smiles": "Cc1cccc(S)c1",
+   "layer": "B",
+   "n_heavy": "8",
+   "kind": "1ar|carbo|sub:CS",
+   "reason": "new-kind"
+  }
+ ],
+ "per_molecule": {
+  "a:A_fdc27f1bd1": {
+   "coupling_ratio": 0.2390245839671005,
+   "corrected_freq_rms": 4.143230814212807,
+   "dH_residual_ratio": 0.1582907840795757,
+   "kind": "2ar|carbo|sub:none",
+   "name": "biphenyl"
+  },
+  "a:A_8448043181": {
+   "coupling_ratio": 0.11063296976006208,
+   "corrected_freq_rms": 4.697762002226402,
+   "dH_residual_ratio": 0.12677893199039816,
+   "kind": "1ar|carbo|sub:none",
+   "name": "benzene"
+  },
+  "a:A_e72997e726": {
+   "coupling_ratio": 0.2753508374049252,
+   "corrected_freq_rms": 4.410241623201471,
+   "dH_residual_ratio": 0.1860240976748924,
+   "kind": "2ar-fused|carbo|sub:none",
+   "name": "fluorene"
+  },
+  "a:A_541c53d1a5": {
+   "coupling_ratio": 0.21261065871951146,
+   "corrected_freq_rms": 3.1469978145531687,
+   "dH_residual_ratio": 0.16500509467468544,
+   "kind": "3ar-fused|carbo|sub:none",
+   "name": "phenanthrene"
+  },
+  "a:A_428228e5a5": {
+   "coupling_ratio": 0.33885029531377114,
+   "corrected_freq_rms": 4.030781166843352,
+   "dH_residual_ratio": 0.2620605236655732,
+   "kind": "4ar-fused|carbo|sub:none",
+   "name": "fluoranthene"
+  },
+  "a:A_07cadc7923": {
+   "coupling_ratio": 0.2169225892235021,
+   "corrected_freq_rms": 3.71822674441629,
+   "dH_residual_ratio": 0.16434520009440348,
+   "kind": "2ar-fused|carbo|sub:CO",
+   "name": "2-naphthoic_acid"
+  },
+  "a:A_08dde334d8": {
+   "coupling_ratio": 0.37409930939411484,
+   "corrected_freq_rms": 5.333253158112468,
+   "dH_residual_ratio": 0.24732187037640027,
+   "kind": "2ar|carbo|sub:CO",
+   "name": "benzophenone"
+  },
+  "a:A_3100da3761": {
+   "coupling_ratio": 0.14019355795372243,
+   "corrected_freq_rms": 3.939749949707538,
+   "dH_residual_ratio": 0.13976666394146697,
+   "kind": "1ar|carbo|sub:CN",
+   "name": "benzonitrile"
+  },
+  "a:A_bce5bae234": {
+   "coupling_ratio": 0.2025038541001766,
+   "corrected_freq_rms": 3.062787652856549,
+   "dH_residual_ratio": 0.15439139009904826,
+   "kind": "3ar-fused|ring-N|sub:none",
+   "name": "phenanthridine"
+  },
+  "a:A_72b86c2331": {
+   "coupling_ratio": 0.18348971748066087,
+   "corrected_freq_rms": 6.643178079157719,
+   "dH_residual_ratio": 0.22002483940778214,
+   "kind": "3ar-fused|carbo|sub:none",
+   "name": "biphenylene"
+  },
+  "b:A2_00b0ff5a24": {
+   "coupling_ratio": 0.40004845515936027,
+   "corrected_freq_rms": 5.164447229632596,
+   "dH_residual_ratio": 0.3317707249224041,
+   "kind": "4ar-fused|carbo|sub:CO",
+   "name": "fluoranthene+COOH"
+  },
+  "b:A2_0101e57296": {
+   "coupling_ratio": 0.3701036894403121,
+   "corrected_freq_rms": 4.362436964929448,
+   "dH_residual_ratio": 0.28148348774085,
+   "kind": "4ar-fused|carbo|sub:N",
+   "name": "fluoranthene+NH2"
+  },
+  "b:A2_02c8833bd5": {
+   "coupling_ratio": 0.4288041562632931,
+   "corrected_freq_rms": 4.315511493105553,
+   "dH_residual_ratio": 0.31160193365525296,
+   "kind": "4ar-fused|carbo|sub:C",
+   "name": "fluoranthene+vinyl"
+  },
+  "b:A2_041da590e8": {
+   "coupling_ratio": 0.37644859498931454,
+   "corrected_freq_rms": 4.877852527972169,
+   "dH_residual_ratio": 0.29139475061870895,
+   "kind": "4ar-fused|carbo|sub:C",
+   "name": "fluoranthene+CH3"
+  },
+  "b:A2_043da5bed2": {
+   "coupling_ratio": 0.3957865669241834,
+   "corrected_freq_rms": 5.001865760506334,
+   "dH_residual_ratio": 0.3219359365037894,
+   "kind": "4ar-fused|carbo|sub:S",
+   "name": "fluoranthene+SH"
+  },
+  "b:A2_048ea73dab": {
+   "coupling_ratio": 0.42326496721462414,
+   "corrected_freq_rms": 4.997633609126706,
+   "dH_residual_ratio": 0.32490013478054997,
+   "kind": "4ar-fused|carbo|sub:C",
+   "name": "fluoranthene+CH3"
+  },
+  "b:A2_05f5ff045c": {
+   "coupling_ratio": 0.29710160185595863,
+   "corrected_freq_rms": 4.913466559786049,
+   "dH_residual_ratio": 0.2053810613447982,
+   "kind": "2ar-fused|carbo|sub:N",
+   "name": "fluorene+NH2"
+  },
+  "b:A2_06222c33e3": {
+   "coupling_ratio": 0.4179234066869876,
+   "corrected_freq_rms": 4.839572148816166,
+   "dH_residual_ratio": 0.3239469402291349,
+   "kind": "4ar-fused|carbo|sub:N",
+   "name": "fluoranthene+NH2"
+  },
+  "b:A2_066237c4f5": {
+   "coupling_ratio": 0.33383204023853286,
+   "corrected_freq_rms": 4.983712060902806,
+   "dH_residual_ratio": 0.23118729821376244,
+   "kind": "2ar-fused|carbo|sub:Cl",
+   "name": "fluorene+Cl"
+  },
+  "b:A2_06873ee7ad": {
+   "coupling_ratio": 0.36986242710678047,
+   "corrected_freq_rms": 4.66028788673067,
+   "dH_residual_ratio": 0.2328899411362829,
+   "kind": "2ar-fused|carbo|sub:N",
+   "name": "fluorene+NH2"
+  },
+  "b:A2_097651503c": {
+   "coupling_ratio": 0.4172382205329894,
+   "corrected_freq_rms": 4.827872865696253,
+   "dH_residual_ratio": 0.3338567444854463,
+   "kind": "4ar-fused|carbo|sub:CNO",
+   "name": "fluoranthene+CONH2"
+  },
+  "b:A2_0dc3aa4eb9": {
+   "coupling_ratio": 0.36595931796864717,
+   "corrected_freq_rms": 5.20256892544899,
+   "dH_residual_ratio": 0.2310331986513002,
+   "kind": "2ar-fused|carbo|sub:C",
+   "name": "fluorene+CH3"
+  },
+  "b:A2_0e1c741b76": {
+   "coupling_ratio": 0.3852943360991216,
+   "corrected_freq_rms": 5.3694173040844975,
+   "dH_residual_ratio": 0.3217605566507446,
+   "kind": "4ar-fused|carbo|sub:CN",
+   "name": "fluoranthene+CN"
+  },
+  "b:A2_10d7d03408": {
+   "coupling_ratio": 0.37196828703208323,
+   "corrected_freq_rms": 5.323509302378134,
+   "dH_residual_ratio": 0.25419049161682866,
+   "kind": "2ar-fused|carbo|sub:CO",
+   "name": "fluorene+COOH"
+  },
+  "b:A2_11c681aefb": {
+   "coupling_ratio": 0.30221863356493023,
+   "corrected_freq_rms": 4.719896812652405,
+   "dH_residual_ratio": 0.23060826156556222,
+   "kind": "2ar-fused|carbo|sub:CF",
+   "name": "fluorene+CF3"
+  },
+  "b:A2_1543119d9d": {
+   "coupling_ratio": 0.3601476199794408,
+   "corrected_freq_rms": 6.6182051282999925,
+   "dH_residual_ratio": 0.25614899359510024,
+   "kind": "2ar-fused|carbo|sub:CO",
+   "name": "fluorene+OCH3"
+  },
+  "b:A2_16521f2764": {
+   "coupling_ratio": 0.3233423585842978,
+   "corrected_freq_rms": 5.183048655854666,
+   "dH_residual_ratio": 0.24463128763836492,
+   "kind": "2ar-fused|carbo|sub:C",
+   "name": "fluorene+ethynyl"
+  },
+  "b:A2_1b389dc1d8": {
+   "coupling_ratio": 0.31585707911081745,
+   "corrected_freq_rms": 4.875655785797199,
+   "dH_residual_ratio": 0.20632501860943825,
+   "kind": "2ar-fused|carbo|sub:Cl",
+   "name": "fluorene+Cl"
+  },
+  "b:A2_1bb2e3fbf1": {
+   "coupling_ratio": 0.2763029018929056,
+   "corrected_freq_rms": 3.9559623203502503,
+   "dH_residual_ratio": 0.19549517913022466,
+   "kind": "2ar-fused|carbo|sub:F",
+   "name": "fluorene+F"
+  },
+  "b:A2_1c2781e93a": {
+   "coupling_ratio": 0.3169967486879462,
+   "corrected_freq_rms": 4.977647520612087,
+   "dH_residual_ratio": 0.21210123273256798,
+   "kind": "2ar-fused|carbo|sub:N",
+   "name": "fluorene+NH2"
+  },
+  "b:A2_20d3215ce3": {
+   "coupling_ratio": 0.38583124410290515,
+   "corrected_freq_rms": 7.5261240441667345,
+   "dH_residual_ratio": 0.2698324187434633,
+   "kind": "2ar-fused|carbo|sub:CNO",
+   "name": "fluorene+CONH2"
+  },
+  "b:A2_210c322595": {
+   "coupling_ratio": 0.2989926250332015,
+   "corrected_freq_rms": 4.559824450048595,
+   "dH_residual_ratio": 0.19670203735204106,
+   "kind": "2ar-fused|carbo|sub:F",
+   "name": "fluorene+F"
+  },
+  "b:A2_21b688db0c": {
+   "coupling_ratio": 0.30912243000814915,
+   "corrected_freq_rms": 5.149205582625785,
+   "dH_residual_ratio": 0.20405662691156887,
+   "kind": "2ar-fused|carbo|sub:C",
+   "name": "fluorene+CH3"
+  },
+  "b:A2_27130c4c79": {
+   "coupling_ratio": 0.31630470823858564,
+   "corrected_freq_rms": 5.713807476128796,
+   "dH_residual_ratio": 0.20538092934235314,
+   "kind": "2ar-fused|carbo|sub:C",
+   "name": "fluorene+vinyl"
+  },
+  "b:A2_27370742a0": {
+   "coupling_ratio": 0.4412367283350662,
+   "corrected_freq_rms": 4.582634834619981,
+   "dH_residual_ratio": 0.3607392944571392,
+   "kind": "4ar-fused|carbo|sub:CF",
+   "name": "fluoranthene+CF3"
+  },
+  "b:A2_27edf7297c": {
+   "coupling_ratio": 0.2981131383502334,
+   "corrected_freq_rms": 5.771904251805278,
+   "dH_residual_ratio": 0.19709263070432448,
+   "kind": "2ar-fused|carbo|sub:C",
+   "name": "fluorene+CH3"
+  },
+  "b:A2_2931e48c62": {
+   "coupling_ratio": 0.4186588259288178,
+   "corrected_freq_rms": 4.552644986836325,
+   "dH_residual_ratio": 0.32687530938918763,
+   "kind": "4ar-fused|carbo|sub:CN",
+   "name": "fluoranthene+CN"
+  },
+  "b:A2_2e154f6054": {
+   "coupling_ratio": 0.32559261787945154,
+   "corrected_freq_rms": 5.918786611063821,
+   "dH_residual_ratio": 0.2392945532714724,
+   "kind": "2ar-fused|carbo|sub:NO",
+   "name": "fluorene+NO2"
+  },
+  "b:A2_2f079d63a1": {
+   "coupling_ratio": 0.428042728805169,
+   "corrected_freq_rms": 8.37636062525893,
+   "dH_residual_ratio": 0.3303130845684603,
+   "kind": "4ar-fused|carbo|sub:C",
+   "name": "fluoranthene+CH3"
+  },
+  "b:A2_3058513f57": {
+   "coupling_ratio": 0.295439356826603,
+   "corrected_freq_rms": 4.866076454985286,
+   "dH_residual_ratio": 0.20825474481500866,
+   "kind": "2ar-fused|carbo|sub:Cl",
+   "name": "fluorene+Cl"
+  },
+  "b:A2_311e979a14": {
+   "coupling_ratio": 0.3416221415332939,
+   "corrected_freq_rms": 4.0092967695901836,
+   "dH_residual_ratio": 0.272222979966939,
+   "kind": "4ar-fused|carbo|sub:Cl",
+   "name": "fluoranthene+Cl"
+  },
+  "b:A2_331729cd47": {
+   "coupling_ratio": 0.39642606667831337,
+   "corrected_freq_rms": 4.6867615199776305,
+   "dH_residual_ratio": 0.3208133655006044,
+   "kind": "4ar-fused|carbo|sub:CN",
+   "name": "fluoranthene+CN"
+  },
+  "b:A2_372920f181": {
+   "coupling_ratio": 0.3801356678369478,
+   "corrected_freq_rms": 5.153663271351876,
+   "dH_residual_ratio": 0.3122252292689259,
+   "kind": "4ar-fused|carbo|sub:O",
+   "name": "fluoranthene+OH"
+  },
+  "b:A2_3825e7205b": {
+   "coupling_ratio": 0.33904885775729354,
+   "corrected_freq_rms": 4.554880809840955,
+   "dH_residual_ratio": 0.25857908174316374,
+   "kind": "4ar-fused|carbo|sub:C",
+   "name": "fluoranthene+ethynyl"
+  },
+  "b:A2_39baaea0dd": {
+   "coupling_ratio": 0.3833426945011741,
+   "corrected_freq_rms": 5.385131583765284,
+   "dH_residual_ratio": 0.2964390973501258,
+   "kind": "4ar-fused|carbo|sub:C",
+   "name": "fluoranthene+ethynyl"
+  },
+  "b:A2_3b6ae59b2d": {
+   "coupling_ratio": 0.2802934629441522,
+   "corrected_freq_rms": 6.29313036669332,
+   "dH_residual_ratio": 0.20086991469520166,
+   "kind": "2ar-fused|carbo|sub:S",
+   "name": "fluorene+SH"
+  },
+  "b:A2_3cf20db4ac": {
+   "coupling_ratio": 0.36417115784974413,
+   "corrected_freq_rms": 5.190108700089939,
+   "dH_residual_ratio": 0.2602317869853535,
+   "kind": "2ar-fused|carbo|sub:CN",
+   "name": "fluorene+CN"
+  },
+  "b:A2_3f25a88e27": {
+   "coupling_ratio": 0.3772108279596534,
+   "corrected_freq_rms": 4.57247928412599,
+   "dH_residual_ratio": 0.29643103397086445,
+   "kind": "4ar-fused|carbo|sub:CO",
+   "name": "fluoranthene+OCH3"
+  },
+  "b:A2_42ab9eb0a0": {
+   "coupling_ratio": 0.4281928772475641,
+   "corrected_freq_rms": 4.764266125987036,
+   "dH_residual_ratio": 0.3511754480723619,
+   "kind": "4ar-fused|carbo|sub:CF",
+   "name": "fluoranthene+CF3"
+  }
+ }
+}
