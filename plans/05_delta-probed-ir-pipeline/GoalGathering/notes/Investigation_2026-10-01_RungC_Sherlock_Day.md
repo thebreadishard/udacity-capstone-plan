@@ -65,7 +65,7 @@ Satisfied = T1 met → T2 designed; T2 met → the PC; T3 met → the mandate's 
 
 *Status 22:3x:* T1's ratio criterion is met at 750 by the carried recipe (0.22 / 0.33, step 175 → 750 falling); its ω criterion is not (3.50 against ≤ 3; one seed 2.94). The network moved with data (175 → 750) where the hand-feature model stayed at 0.32.
 
-*Status 2 Oct 01:4x (T2, first curve 175 / 449 / 750 = 0.24 / 0.235 / 0.22, ω 5.0 / 4.6 / 3.5):* ratio factor 1.17 per decade → 0.19 (0.18–0.21) at 5,000 — on the criterion; ω factor 1.69 per decade → 2.4 (2.1–2.8) at 5,000 — misses ≤ 2 (≈ 20,000 at this slope). The ratio's middle point is flat; the composition control (chain 20) runs before the curve is called a law.
+*Status 2 Oct 01:4x (T2, first curve 175 / 449 / 750 = 0.24 / 0.235 / 0.22, ω 5.0 / 4.6 / 3.5):* ratio factor 1.17 per decade → 0.19 (0.18–0.21) at 5,000 — on the criterion; ω factor 1.69 per decade → 2.4 (2.1–2.8) at 5,000 — misses ≤ 2 (≈ 20,000 at this slope). The ratio's middle point is flat; the composition control (chain 20) runs before the curve is called a law. *Pattern d's curve (chain 6, 03:0x): 0.40 / 0.37 / 0.37 — a step then a flat, the mirror of the carried recipe's; same fitted factor 1.17 per decade. Two one-step curves are not a law yet.*
 
 ## Decisions carried from the day
 

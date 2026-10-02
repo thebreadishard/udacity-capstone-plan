@@ -1196,3 +1196,12 @@ composition before any extrapolation. Decision 51 as always.
 (0.22–0.26), 0.37, ω 5.00. **Against the lines:** *flat* — the spreads touch at 0.22 and ω moves by 0.08, not 0.5. Width helped the narrow support (pattern d:
 0.40 → 0.35) and not the wide one: once the pairs it needs are on the pattern, the 64-channel body is enough at 175. **The carried body stays 3 × 64.**
 Decision 51: best epochs far below the cap.
+
+## Outcome, chain 6 — pattern d, projected target, 449 — 2 October 03:0x (`out/E7_rungC_lever1_d_449_2026-10-01`, fit `out/rungC_lc_pattern_d_2026-10-02`)
+
+(a) **0.37** (0.36 / 0.37 / 0.37), (b) 0.42, ω 4.06, ΔH 0.217; best epochs 90–127. The pattern-d curve is 175 / 449 / 750 = 0.40 / 0.37 / 0.37 (ω 4.7 / 4.1 / 4.0):
+a step from 175 to 449 and a flat middle-to-end — the mirror image of the carried recipe's curve (flat 175 → 449, step 449 → 750). Prediction 0.38–0.40
+missed by 0.01 on the low side. **Against the lines:** *flat middle* for this curve as well (449 and 750 equal within seeds). The power-law fit gives the same
+factor as the carried recipe's (1.17 per decade; 0.32 at 5,000) but two curves that each have one step and one flat segment are not yet a law: both read
+as composition or sampling effects of the pool at these counts, and the composition control (chain 20, running) is the next word on T2 for both.
+Decision 51: best epochs below the cap.
