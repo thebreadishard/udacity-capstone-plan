@@ -253,5 +253,15 @@ def test_aux_both_is_the_sum_of_pattern_and_kring_terms():
     m.kring_weight = 0.3                                                       # lever 3b weight search: both = pattern + w · kring
     _, both_w, _ = RT._terms(m, t)
     assert torch.allclose(both_w, pat + 0.3 * kr)
+    m.kdiag_weight = 0.5                                                       # lever 5: + kd · kdiag (diagonal of K over all modes)
+    _, both_wd, _ = RT._terms(m, t)
+    kd_term = RT._kdiag_term(t, pred)
+    assert torch.allclose(both_wd, pat + 0.3 * kr + 0.5 * kd_term) and float(kd_term) > 0
+    t_truth = dict(t)
+    K_true_pred = (t["Cm"] @ pred @ t["Cm"].T) * t["kscale"]
+    t_truth["K_true"] = K_true_pred
+    assert float(RT._kdiag_term(t_truth, pred)) == 0.0                         # vanishes when the prediction is the truth
+    text = (M05 / "rungC_train.py").read_text(encoding="utf-8")
+    assert re.search(r'add_argument\("--kdiag-weight", type=float, default=0.0', text)
     text = (M05 / "rungC_train.py").read_text(encoding="utf-8")
     assert re.search(r'add_argument\("--kring-weight", type=float, default=1.0', text)

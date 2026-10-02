@@ -168,6 +168,13 @@ def _kring_term(t, pred, main):
     return ((K - t["K_true"])[r][:, r] ** 2).mean() / t["K_norm"]
 
 
+def _kdiag_term(t, pred):
+    """Lever 5 (2 Oct 2026): mean square of the diagonal of K_pred − K_true over all modes, relative to the diagonal's own mean square."""
+    K = (t["Cm"] @ pred @ t["Cm"].T) * t["kscale"]
+    d_pred, d_true = torch.diagonal(K), torch.diagonal(t["K_true"])
+    return ((d_pred - d_true) ** 2).mean() / (d_true ** 2).mean().clamp_min(1e-30)
+
+
 def _terms(model, t):
     """Registered main term (mass-weighted Cartesian MSE) and the auxiliary term, with the per-molecule scale tensor when the model has one.
     Auxiliary term: 'all' (registered) = relative MSE over every entry of B⁺ᵀ ΔH B⁺; 'pattern' (30 Sep 2026) = MSE over the pair model's pattern only,
@@ -183,6 +190,9 @@ def _terms(model, t):
         aux = _kring_term(t, pred, main)
     elif mode == "both":
         aux = _pattern_term(model, t, dF_p) + getattr(model, "kring_weight", 1.0) * _kring_term(t, pred, main)
+        kd = getattr(model, "kdiag_weight", 0.0)
+        if kd:
+            aux = aux + kd * _kdiag_term(t, pred)
     else:
         aux = ((dF_p - t["dF_true"]) ** 2).mean() / t["dF_norm"]        # relative internal-ΔF term (build note of 27 Sep: the raw term is ~1e9 in a.u.)
     return main, aux, pred
@@ -273,7 +283,7 @@ def train_one(train_ids: list, tensors: dict, seed: int, epochs: int, lr: float 
               pretrained: str | None = None, aggregation: str = AGGREGATION,
               pretrained_elements: list[int] | None = None, aux_mode: str = "all", tensor_input: bool = False, head: str = "cartesian",
               sqm_scale: bool = False, pair_features: bool = False, hybrid_hidden: int = 128, body_blocks: int = N_BLOCKS,
-              body_width: int = N_S, kring_weight: float = 1.0) -> tuple[torch.nn.Module, list]:
+              body_width: int = N_S, kring_weight: float = 1.0, kdiag_weight: float = 0.0) -> tuple[torch.nn.Module, list]:
     """Defaults = the registered recipe C1 of 19:50 (27 Sep). The other values are the cells of the fair-chance search registered at 20:0x:
     aux_weight 1.0; loss_mode 'internal' (the relative internal-ΔF term alone); scale_mode 'class' (one output scale per entry class: diagonal
     3×3 block, bonded pair, non-bonded pair — the pair model's per-class standardisation); val_ids = inner validation molecules held out of the
@@ -327,6 +337,7 @@ def train_one(train_ids: list, tensors: dict, seed: int, epochs: int, lr: float 
         model = Scaled(body, scale, class_scale)
     model.aux_mode = aux_mode
     model.kring_weight = float(kring_weight)                            # lever 3b weight search (1 Oct 2026): scales the kring term inside 'both'
+    model.kdiag_weight = float(kdiag_weight)                            # lever 5 (2 Oct 2026): the diagonal of K over all modes inside 'both'
     model.aux_class_scale = pattern_class_scales(tensors, train_ids) if aux_mode in ("pattern", "both") else None
     if aux_mode == "pattern":
         log("  internal term on the pair model's pattern; class scales " + ", ".join(f"{n} {s:.3g}" for n, s in zip(PAIR_CLASS_NAMES, model.aux_class_scale.tolist(), strict=True)))
@@ -426,6 +437,7 @@ def main() -> int:
                     help="search: fraction of the training ids held out per seed as inner validation (the stage read-out)")
     ap.add_argument("--patience", type=int, default=0, help="search stage 2: early stopping on the inner validation term, best state restored (0 = off)")
     ap.add_argument("--kring-weight", type=float, default=1.0, help="lever 3b (1 Oct 2026): weight of the kring term inside --aux both (the pattern term keeps weight 1)")
+    ap.add_argument("--kdiag-weight", type=float, default=0.0, help="lever 5 (2 Oct 2026): weight of a term on the diagonal of K over all modes inside --aux both (0 = off)")
     ap.add_argument("--aux", default="all", choices=["all", "pattern", "kring", "both"],
                     help="internal term: 'all' (registered) or 'pattern' (30 Sep 2026, rank 2 of the external reviews: the pair model's pattern only, one "
                          "standardisation scale per pair class from the fit molecules)")
@@ -539,7 +551,7 @@ def main() -> int:
                patience=a.patience, pretrained=a.pretrained, aggregation=a.aggregation, pretrained_elements=a.pretrained_elements,
                aux_mode=a.aux, zero_hlow=a.zero_hlow, overfit_one=a.overfit_one, tensor_input=a.tensor_input, head=a.head, sqm_scale=a.sqm_scale,
                pair_features=a.pair_features, hybrid_hidden=a.hybrid_hidden, pattern=a.pattern, body_blocks=a.body_blocks, body_width=a.body_width,
-               aux_target=a.aux_target, ls_lam=a.ls_lam, kring_weight=a.kring_weight, target_residuals=target_residuals,
+               aux_target=a.aux_target, ls_lam=a.ls_lam, kring_weight=a.kring_weight, kdiag_weight=a.kdiag_weight, target_residuals=target_residuals,
                pair_class_names=list(PAIR_CLASS_NAMES),
                substituted_analytic=substituted, curve={})
     res["zero_rule"] = {h: readouts(mols, ids, pool, lambda i: np.zeros_like(mols[i]["F_low"])) for h, ids in tests.items() if ids}
@@ -566,7 +578,7 @@ def main() -> int:
             model, hist = train_one(fit_ids, tensors, seed, a.epochs, a.lr, log, a.aux_weight, a.loss, a.scale, val_ids, a.patience, a.pretrained,
                                     a.aggregation, a.pretrained_elements, aux_mode=a.aux, tensor_input=a.tensor_input, head=a.head, sqm_scale=a.sqm_scale,
                                     pair_features=a.pair_features, hybrid_hidden=a.hybrid_hidden, body_blocks=a.body_blocks, body_width=a.body_width,
-                                    kring_weight=a.kring_weight)
+                                    kring_weight=a.kring_weight, kdiag_weight=a.kdiag_weight)
             dF_of = predictor(model, tensors, mols)
             out = {"seed": seed, "train_history": hist, "output_scale": model.scale, "class_scale": model.class_scale_values,
                    "aux_class_scale": (None if model.aux_class_scale is None else model.aux_class_scale.tolist()),

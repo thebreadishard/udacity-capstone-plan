@@ -1240,3 +1240,13 @@ through *coverage* (new kinds of molecules) more than through count; a count law
 PC-scale corpus would be. No extrapolation is written; the T2 question is restated as a coverage question (which molecules to compute next), and the
 read-out to design it with is the per-molecule field of the records (H7). Decision 51: one best epoch at 100 (176) within 10 % of the cap — noted, not
 repeated (the point is flat with its neighbours).
+
+## Dated amendment 2 October 04:2x — lever 5: the ω question — a diagonal term over all modes (registered before it runs)
+
+**Framing (investigation log, 04:1x):** on the carried model at 750 the hold-out ω rms is carried by the *other* family (5.0 cm⁻¹ against 2.4 for the ring
+in-plane modes) — the diagonal entries no term weights. **Code:** `rungC_train.py --kdiag-weight` adds, inside `--aux both`, the mean square of the
+diagonal of K_pred − K_true over all modes relative to the diagonal's own mean square (`_kdiag_term`; test). **Run (`rungC_sherlock22_1001.sh`, lane B at
+once):** the carried recipe (pattern f, projected target, pattern + 0.3 × kring) with kdiag 0.1 and 0.3, 175, seeds 0–2 → `out/E7_rungC_lever5_kd{0.1,0.3}_175_2026-10-01`;
+control chain 14b (0.24 / 0.37 / ω 5.00). **Prediction:** ω 4.2–4.8 at 0.3 with (a) 0.23–0.26. **Lines.** *Works:* ω below 5.0 by more than 0.5 with (a) ≤ 0.26
+→ carried, re-read at 750. *Flat:* ω within 0.3 of 5.0 → the diagonal is not what limits ω under this head; the next suspect is the per-class scale floor of
+the diagonal classes. *Hurts:* (a) > 0.27 → the ω gain costs couplings; the weight is lowered or the term dropped. Decision 51 as always.
