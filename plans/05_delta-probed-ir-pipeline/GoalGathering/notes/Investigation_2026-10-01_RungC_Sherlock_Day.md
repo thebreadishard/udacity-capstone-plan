@@ -67,6 +67,19 @@ Satisfied = T1 met → T2 designed; T2 met → the PC; T3 met → the mandate's 
 
 *Status 2 Oct 01:4x (T2, first curve 175 / 449 / 750 = 0.24 / 0.235 / 0.22, ω 5.0 / 4.6 / 3.5):* ratio factor 1.17 per decade → 0.19 (0.18–0.21) at 5,000 — on the criterion; ω factor 1.69 per decade → 2.4 (2.1–2.8) at 5,000 — misses ≤ 2 (≈ 20,000 at this slope). The ratio's middle point is flat; the composition control (chain 20) runs before the curve is called a law. *Pattern d's curve (chain 6, 03:0x): 0.40 / 0.37 / 0.37 — a step then a flat, the mirror of the carried recipe's; same fitted factor 1.17 per decade. Two one-step curves are not a law yet.* **Composition control (chain 20, 03:0x): 175 B-heavy molecules give 0.275 against 0.24 for 175 A + A2 — the mixed-pool curve conflates count and composition; the 0.19-at-5,000 extrapolation is withdrawn; the curve is redrawn within A + A2 at 45 / 100 / 175 (chain 21).** *Chain 21 (04:1x): 0.29 / 0.25 / 0.24, ω 7.0 / 4.9 / 5.0 — a step to 100, then flat at fixed composition; the 750 gain (0.22, (b) 0.33) comes with layer B's different molecules. T2 restated: data pays through coverage more than count on this corpus; no extrapolation written; the next pool must grow in kind.*
 
+## The ω question, framed (2 Oct 04:1x, from the carried model's record at 750, hold-out (a), mean of three seeds)
+
+| mode family | model diag rms (cm⁻¹) | zero rule |
+|---|---|---|
+| ring in-plane | **2.4** | 19.7 |
+| CH stretch | 3.5 | 43.6 |
+| CH out-of-plane | 3.8 | 23.6 |
+| other (substituent, skeletal) | **5.0** | 13.2 |
+
+Per molecule (seed 0): 2.2–6.0 cm⁻¹, two molecules at 5.1 and 6.0. The ring block — the read-out the auxiliary terms aim at — is the best family; the ω
+rms is carried by the *other* family, whose diagonal entries no term weights (the pattern term standardises them with a floored class scale, the kring
+term ignores them). The first registered lever on ω is therefore a diagonal term over all modes beside the ring block (lever 5, `--kdiag-weight`).
+
 ## Decisions carried from the day
 
 (filled as they fall)
