@@ -83,3 +83,40 @@ term ignores them). The first registered lever on ω is therefore a diagonal ter
 ## Decisions carried from the day
 
 (filled as they fall)
+
+## 2 October, 06:3x–06:5x — levers 1, 2 and 5 built; lever 2's first reading
+
+**Lever 1 (T3) built and registered** (amendment 06:4x in the rung-C pre-registration). `rungC_train.py`: the per-molecule tensor build is
+`molecule_tensors(...)`, `--save-model` writes the hybrid model per seed, `load_hybrid_model` / `freeze_for_transfer` rebuild it and leave only the head's
+last layer and the SQM α trainable. `m05/rungC_cc_transfer.py`: the four CCSD(T)/cc-pVDZ anchors become the high level of their corpus entry
+(`substitute_cc`, the analytic B3LYP as the low level), leave-one-anchor-out with five columns (zero rule, per-class α scaling on three anchors, network
+untouched, α tuned, head tuned) and a per-family corrected-ω rms (T3's line reads ring-ip). Six tests; ruff clean; the smoke with a 2-epoch model runs the
+four folds in 67 s. What the smoke already shows about the *data*, independent of the model: the zero rule (B3LYP as is) is 54–64 cm⁻¹ rms against
+CCSD(T)/cc-pVDZ over all modes, 26 cm⁻¹ on naphthalene's ring-ip modes, 76–98 cm⁻¹ on CH-oop and CH-stretch — the cc-pVDZ CC correction is large and
+family-dependent, which is why the line is in-plane. The models for the real folds come from chain 24 (lane A after chain 8b; ≈ 10:00).
+
+**Lever 2 — the error map** (`probes/rungC_error_map.py`; `out/rungC_error_map_2026-10-02.md`, `next_pool_candidates_2026-10-02.csv`). Fifteen
+pattern-f hybrid records, per-molecule hold-out errors averaged over seeds and records, kinds from the manifest SMILES. **The error follows the scaffold
+size, not the substituent:** benzene 0.11, benzonitrile 0.14, three fused rings 0.20 (phenanthrene 0.21, phenanthridine 0.20), biphenyl 0.24, fluorene
+family 0.28–0.39, fluoranthene family 0.34–0.44; within a scaffold the substituent moves the ratio by ≤ 0.1 (fluoranthene bare 0.34, +CF₃ 0.43). ω rms by
+kind 3.1–7.5 cm⁻¹. The fluorene and fluoranthene cores are hold-out (b)'s scaffolds by construction (pool count 0–4 for most of their kinds), so (b)
+measures transfer to an unseen scaffold — and the pool has almost no four-ring scaffolds at all (two bare, 27 substituted done in A2; 93 four-ring and
+441 three-ring A2 rows are *pending*). **Coverage lever named:** the next pool is the pending A2 three- and four-ring rows (pyrene+X, acridine+X,
+dibenzofuran+X) before more B rows. The candidate list (200 ids, ≤ 19 heavy atoms): 55 four-ring and 8 three-ring A2 rows, 106 fused two-ring B rows
+(the weak 2ar-fused kinds: NH₂, CONH₂, CN, NO₂), 25 single-ring B rows (new substituent kinds), 6 biphenyls. Cost: the corpus route (psi4 FD B3LYP +
+ωB97X) ran ≈ 1 h per 12-heavy molecule on the laptop; 200 rows ≈ 10 laptop-days or one CPX62 week — a decision for the user; the list is ready.
+
+**Lever 5 — dipole derivatives, route decided and smoke-tested.** The corpus psi4 outputs carry no dipole derivatives and the installed pyscf-properties
+(0.1.0) has no `infrared` module, so the route is central finite differences of the analytic SCF dipole at the corpus's DFT settings
+(`probes/dipole_derivs_fd.py`; `mf.dip_moment` as in pyscf's `scf/test/test_rhf.py`). Two routes per molecule: the translation sum rule
+Σ_A ∂μ/∂R_A = q·I and two step sizes. **Water, B3LYP/6-31G*:** sum rule 2.5e-6 e (limit 1e-4), |P(h) − P(h/2)| 3.0e-6 e, intensities 79.5 / 2.5 / 23.4
+km/mol at 1679 / 3871 / 4000 cm⁻¹ (B3LYP's known pattern for water; 108 s at 4 threads for 18 SCF pairs) — `probes/results_m1/water_dipole_fd_2026-10-02/`.
+Cost on the hold-outs: 3N × 2 SCF per molecule, ≈ 30–60 min for a 20-atom molecule at 4 threads; the analytic alternative (the CPHF `mo1` of the Hessian
+object, as pyscf-properties' `infrared/rhf.py` does it) is the throughput lever if intensities enter the read-outs for the whole corpus.
+
+**Registered now — the intensity read-out (lever 5, step 2).** For each hold-out molecule with an APT: double-harmonic intensities from the *same*
+low-level APT with (i) the modes of the true corrected Hessian H_low + ΔH_true and (ii) the modes of the predicted H_low + ΔH_pred; read-out = the cosine
+overlap of the two Lorentzian-broadened spectra (FWHM 10 cm⁻¹, 500–3500 cm⁻¹) and the intensity-weighted rms of the per-mode relative intensity error;
+baseline = the zero rule (modes of H_low). Prediction: the carried model's spectra overlap ≥ 0.95 on hold-out (a) where the zero rule sits near 0.85 — the
+intensities move mainly through the mode mixing (Duschinsky) that the ratio already measures; the APT's own level dependence (B3LYP vs CC) is a second
+term, read later when the E8 probe stores dipoles. First data: the ten hold-out (a) parents on the laptop when a lane frees (chain 23's lane, ≈ 09:00).
