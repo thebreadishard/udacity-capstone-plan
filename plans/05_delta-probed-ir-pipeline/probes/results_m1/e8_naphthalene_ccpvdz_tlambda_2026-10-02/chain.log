@@ -1,0 +1,48 @@
+[2026-10-01 11:19:02] E8 FD Hessian: 18 atoms, cc-pvdz, frozen 10 (derived from the elements: 10), step 0.005 bohr, 108 displacements, 16 threads, max_memory 26000 MB, explicit (T) lambda, fast (T) density kernel, fast (T) lambda kernel
+[2026-10-01 12:55:39] fast (T) lambda two-route check: max |kernel − pyscf| = 1.7e-17 (l2_t; limit 1e-10; 5609 s)
+cycle = 1  norm(lambda1,lambda2) = 0.0716867
+cycle = 2  norm(lambda1,lambda2) = 0.0199549
+cycle = 3  norm(lambda1,lambda2) = 0.00904661
+cycle = 4  norm(lambda1,lambda2) = 0.00388042
+cycle = 5  norm(lambda1,lambda2) = 0.00103032
+cycle = 6  norm(lambda1,lambda2) = 0.000429461
+cycle = 7  norm(lambda1,lambda2) = 0.000156172
+cycle = 8  norm(lambda1,lambda2) = 6.60162e-05
+cycle = 9  norm(lambda1,lambda2) = 3.55146e-05
+cycle = 10  norm(lambda1,lambda2) = 9.99511e-06
+cycle = 11  norm(lambda1,lambda2) = 4.01789e-06
+cycle = 12  norm(lambda1,lambda2) = 1.69618e-06
+cycle = 13  norm(lambda1,lambda2) = 5.6842e-07
+cycle = 14  norm(lambda1,lambda2) = 2.12372e-07
+cycle = 15  norm(lambda1,lambda2) = 6.45416e-08
+cycle = 16  norm(lambda1,lambda2) = 3.4739e-08
+cycle = 17  norm(lambda1,lambda2) = 2.06016e-08
+cycle = 18  norm(lambda1,lambda2) = 1.59083e-08
+cycle = 19  norm(lambda1,lambda2) = 1.27374e-08
+cycle = 20  norm(lambda1,lambda2) = 1.07016e-08
+cycle = 21  norm(lambda1,lambda2) = 1.24097e-08
+cycle = 22  norm(lambda1,lambda2) = 1.01157e-08
+cycle = 23  norm(lambda1,lambda2) = 8.31836e-09
+[2026-10-01 18:11:51] fast (T) density two-route check: max |kernel − pyscf| = 3.5e-17 (doo[for_grad=False]; limit 1e-10; 18817 s)
+[2026-10-01 18:12:43] (T) lambda 18973 s, gradient 51 s
+[2026-10-01 18:12:43] reference: E = -384.793306189, max|grad| 7.87e-03, 24821 s
+[2026-10-02 01:39:34] E8 FD Hessian: 18 atoms, cc-pvdz, frozen 10 (derived from the elements: 10), step 0.005 bohr, 108 displacements, 16 threads, max_memory 26000 MB, explicit (T) lambda, fast (T) density kernel, fast (T) lambda kernel
+[2026-10-02 01:39:34] symmetry: 8 operations, orbits [[0, 1, 5, 6], [2, 4, 7, 9], [3, 8], [10, 11, 14, 15], [12, 13, 16, 17]], 15 displacements (30 gradients) instead of 108
+[2026-10-02 01:39:34] pair check coordinate  0: max |mean(g+, g−) − g0| = 1.5e-05 a.u. (limit 1e-04)
+[2026-10-02 01:39:34] pair check coordinate  1: max |mean(g+, g−) − g0| = 1.4e-05 a.u. (limit 1e-04)
+[2026-10-02 01:39:34] pair check coordinate  2: max |mean(g+, g−) − g0| = 1.4e-06 a.u. (limit 1e-04)
+[2026-10-02 01:39:34] pair check coordinate  6: max |mean(g+, g−) − g0| = 1.4e-05 a.u. (limit 1e-04)
+[2026-10-02 01:39:34] pair check coordinate  7: max |mean(g+, g−) − g0| = 1.4e-05 a.u. (limit 1e-04)
+[2026-10-02 01:39:34] pair check coordinate  8: max |mean(g+, g−) − g0| = 1.4e-06 a.u. (limit 1e-04)
+[2026-10-02 01:39:34] pair check coordinate  9: max |mean(g+, g−) − g0| = 1.1e-05 a.u. (limit 1e-04)
+[2026-10-02 01:39:34] pair check coordinate 10: max |mean(g+, g−) − g0| = 1.3e-05 a.u. (limit 1e-04)
+[2026-10-02 01:39:34] pair check coordinate 11: max |mean(g+, g−) − g0| = 1.3e-06 a.u. (limit 1e-04)
+[2026-10-02 01:39:34] pair check coordinate 30: max |mean(g+, g−) − g0| = 6.1e-06 a.u. (limit 1e-04)
+[2026-10-02 01:39:34] pair check coordinate 31: max |mean(g+, g−) − g0| = 4.1e-06 a.u. (limit 1e-04)
+[2026-10-02 01:39:34] pair check coordinate 32: max |mean(g+, g−) − g0| = 1.3e-06 a.u. (limit 1e-04)
+[2026-10-02 01:39:34] pair check coordinate 36: max |mean(g+, g−) − g0| = 1.6e-06 a.u. (limit 1e-04)
+[2026-10-02 01:39:34] pair check coordinate 37: max |mean(g+, g−) − g0| = 1.4e-05 a.u. (limit 1e-04)
+[2026-10-02 01:39:34] pair check coordinate 38: max |mean(g+, g−) − g0| = 1.9e-06 a.u. (limit 1e-04)
+[2026-10-02 01:39:34] symmetry reconstruction: spread of multiply-reached rows 1.61e-05 a.u.; self-check 5.1e-13
+[2026-10-02 01:39:34] Hessian written (VALID); FD asymmetry max 1.61e-05 a.u.; vibrational frequencies (cm-1): [100, 129, 336, 342, 419, 421, 505, 517, 536, 542, 612, 652, 731, 779, 783, 797, 798, 885, 890, 895, 909, 931, 1049, 1055, 1134, 1149, 1153, 1156, 1248, 1250, 1276, 1404, 1443, 1465, 1504, 1505, 1587, 1667, 1685, 1739, 3271, 3272, 3276, 3278, 3292, 3293, 3307, 3308]
+[2026-10-02 01:39:34] two-route checks: translational sum rule 2.5e-06 E_h/bohr² (limit 1e-03); translations/rotations after projection max 4.5e-05 cm⁻¹; energy route max |H_kk − d²E/dx_k²| 4.1e-05 E_h/bohr² over 15 coordinates (limit 1e-03)

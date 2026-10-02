@@ -1,0 +1,9 @@
+[2026-10-01 06:32:39] chain (corrected route) start on ubuntu-32gb-hel1-2
+[2026-10-01 06:32:39] ANCHOR naphthalene START (parallel: 3 partial runs x 5 threads x 8000 MB) (molecules/A_01f3186607/geometry.json)
+[2026-10-01 11:19:01] relaunch after OOM kill of the reference run (pid 57113, 10:18 UTC; cause: target-cache builds beside it); 2 x 8 threads x 9000 MB
+[2026-10-01 11:19:01] chain (corrected route) start on ubuntu-32gb-hel1-2
+[2026-10-01 11:19:01] ANCHOR naphthalene START (parallel: 2 partial runs x 8 threads x 9000 MB) (molecules/A_01f3186607/geometry.json)
+[2026-10-01 18:12:43] ANCHOR naphthalene: 15 symmetry-unique displacements over 2 partial runs
+[2026-10-02 01:39:34] ANCHOR naphthalene: partial runs done (30 gradient files) -> assembling run
+[2026-10-02 01:39:34] ANCHOR naphthalene DONE: symmetry: 8 operations, orbits [[0, 1, 5, 6], [2, 4, 7, 9], [3, 8], [10, 11, 14, 15], [12, 13, 16, 17]], 15 displacements (30 gradients) instead of 108; FD asymmetry max 1.61e-05 a.u.
+[2026-10-02 01:39:34] CHAIN FINISHED

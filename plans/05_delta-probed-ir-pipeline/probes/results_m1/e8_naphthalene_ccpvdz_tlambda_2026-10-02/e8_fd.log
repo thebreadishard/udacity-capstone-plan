@@ -1,0 +1,110 @@
+[2026-10-01 06:32:39] E8 FD Hessian: 18 atoms, cc-pvdz, frozen 10 (derived from the elements: 10), step 0.005 bohr, 108 displacements, 16 threads, max_memory 26000 MB, explicit (T) lambda, fast (T) density kernel, fast (T) lambda kernel
+[2026-10-01 08:09:05] fast (T) lambda two-route check: max |kernel − pyscf| = 2.1e-17 (l2_t; limit 1e-10; 5597 s)
+[2026-10-01 11:19:02] E8 FD Hessian: 18 atoms, cc-pvdz, frozen 10 (derived from the elements: 10), step 0.005 bohr, 108 displacements, 16 threads, max_memory 26000 MB, explicit (T) lambda, fast (T) density kernel, fast (T) lambda kernel
+[2026-10-01 12:55:39] fast (T) lambda two-route check: max |kernel − pyscf| = 1.7e-17 (l2_t; limit 1e-10; 5609 s)
+[2026-10-01 18:11:51] fast (T) density two-route check: max |kernel − pyscf| = 3.5e-17 (doo[for_grad=False]; limit 1e-10; 18817 s)
+[2026-10-01 18:12:43] (T) lambda 18973 s, gradient 51 s
+[2026-10-01 18:12:43] reference: E = -384.793306189, max|grad| 7.87e-03, 24821 s
+[2026-10-01 18:12:43] E8 FD Hessian: 18 atoms, cc-pvdz, frozen 10 (derived from the elements: 10), step 0.005 bohr, 108 displacements, 8 threads, max_memory 9000 MB, explicit (T) lambda, fast (T) density kernel, fast (T) lambda kernel
+[2026-10-01 18:12:43] symmetry: 8 operations, orbits [[0, 1, 5, 6], [2, 4, 7, 9], [3, 8], [10, 11, 14, 15], [12, 13, 16, 17]], 15 displacements (30 gradients) instead of 108
+[2026-10-01 18:12:43] partial run: displacement indices [0, 1, 2, 6, 7, 8, 9]
+[2026-10-01 18:12:48] E8 FD Hessian: 18 atoms, cc-pvdz, frozen 10 (derived from the elements: 10), step 0.005 bohr, 108 displacements, 8 threads, max_memory 9000 MB, explicit (T) lambda, fast (T) density kernel, fast (T) lambda kernel
+[2026-10-01 18:12:48] symmetry: 8 operations, orbits [[0, 1, 5, 6], [2, 4, 7, 9], [3, 8], [10, 11, 14, 15], [12, 13, 16, 17]], 15 displacements (30 gradients) instead of 108
+[2026-10-01 18:12:48] partial run: displacement indices [10, 11, 30, 31, 32, 36, 37, 38]
+[2026-10-01 18:40:53] (T) lambda 1317 s, gradient 65 s
+[2026-10-01 18:40:53] coordinate  0 p: E − E0 =    -18.47 µE_h, 1690 s  (1/108 gradients)
+[2026-10-01 18:40:56] (T) lambda 1315 s, gradient 66 s
+[2026-10-01 18:40:56] coordinate 10 p: E − E0 =    -26.89 µE_h, 1688 s  (2/108 gradients)
+[2026-10-01 19:09:07] (T) lambda 1323 s, gradient 65 s
+[2026-10-01 19:09:07] coordinate  0 m: E − E0 =    +37.98 µE_h, 1694 s  (3/108 gradients)
+[2026-10-01 19:09:07] pair check coordinate  0: max |mean(g+, g−) − g0| = 1.5e-05 a.u. (limit 1e-04)
+[2026-10-01 19:09:15] (T) lambda 1328 s, gradient 66 s
+[2026-10-01 19:09:15] coordinate 10 m: E − E0 =    +43.39 µE_h, 1699 s  (4/108 gradients)
+[2026-10-01 19:09:15] pair check coordinate 10: max |mean(g+, g−) − g0| = 1.3e-05 a.u. (limit 1e-04)
+[2026-10-01 19:37:16] (T) lambda 1314 s, gradient 63 s
+[2026-10-01 19:37:17] coordinate 11 p: E − E0 =     -2.21 µE_h, 1682 s  (5/108 gradients)
+[2026-10-01 19:37:22] (T) lambda 1323 s, gradient 64 s
+[2026-10-01 19:37:22] coordinate  1 p: E − E0 =     -4.10 µE_h, 1695 s  (6/108 gradients)
+[2026-10-01 20:05:15] (T) lambda 1310 s, gradient 65 s
+[2026-10-01 20:05:15] coordinate 11 m: E − E0 =     +5.00 µE_h, 1678 s  (7/108 gradients)
+[2026-10-01 20:05:15] pair check coordinate 11: max |mean(g+, g−) − g0| = 1.3e-06 a.u. (limit 1e-04)
+[2026-10-01 20:05:28] (T) lambda 1319 s, gradient 67 s
+[2026-10-01 20:05:28] coordinate  1 m: E − E0 =    +21.33 µE_h, 1686 s  (8/108 gradients)
+[2026-10-01 20:05:28] pair check coordinate  1: max |mean(g+, g−) − g0| = 1.4e-05 a.u. (limit 1e-04)
+[2026-10-01 20:33:27] (T) lambda 1321 s, gradient 65 s
+[2026-10-01 20:33:27] coordinate 30 p: E − E0 =    -27.69 µE_h, 1692 s  (9/108 gradients)
+[2026-10-01 20:33:38] (T) lambda 1322 s, gradient 65 s
+[2026-10-01 20:33:38] coordinate  2 p: E − E0 =     -3.05 µE_h, 1690 s  (10/108 gradients)
+[2026-10-01 21:01:43] (T) lambda 1324 s, gradient 63 s
+[2026-10-01 21:01:43] coordinate 30 m: E − E0 =    +34.18 µE_h, 1696 s  (11/108 gradients)
+[2026-10-01 21:01:43] pair check coordinate 30: max |mean(g+, g−) − g0| = 6.1e-06 a.u. (limit 1e-04)
+[2026-10-01 21:01:56] (T) lambda 1328 s, gradient 65 s
+[2026-10-01 21:01:56] coordinate  2 m: E − E0 =     +5.87 µE_h, 1698 s  (12/108 gradients)
+[2026-10-01 21:01:56] pair check coordinate  2: max |mean(g+, g−) − g0| = 1.4e-06 a.u. (limit 1e-04)
+[2026-10-01 21:29:59] (T) lambda 1320 s, gradient 63 s
+[2026-10-01 21:29:59] coordinate 31 p: E − E0 =    -21.61 µE_h, 1696 s  (13/108 gradients)
+[2026-10-01 21:30:25] (T) lambda 1332 s, gradient 65 s
+[2026-10-01 21:30:25] coordinate  6 p: E − E0 =    +14.35 µE_h, 1709 s  (14/108 gradients)
+[2026-10-01 21:57:49] (T) lambda 1301 s, gradient 64 s
+[2026-10-01 21:57:49] coordinate 31 m: E − E0 =    +25.84 µE_h, 1670 s  (15/108 gradients)
+[2026-10-01 21:57:49] pair check coordinate 31: max |mean(g+, g−) − g0| = 4.1e-06 a.u. (limit 1e-04)
+[2026-10-01 21:58:24] (T) lambda 1312 s, gradient 63 s
+[2026-10-01 21:58:24] coordinate  6 m: E − E0 =     +3.27 µE_h, 1679 s  (16/108 gradients)
+[2026-10-01 21:58:24] pair check coordinate  6: max |mean(g+, g−) − g0| = 1.4e-05 a.u. (limit 1e-04)
+[2026-10-01 22:25:40] (T) lambda 1304 s, gradient 63 s
+[2026-10-01 22:25:40] coordinate 32 p: E − E0 =     -5.65 µE_h, 1671 s  (17/108 gradients)
+[2026-10-01 22:26:19] (T) lambda 1305 s, gradient 65 s
+[2026-10-01 22:26:20] coordinate  7 p: E − E0 =    +41.46 µE_h, 1675 s  (18/108 gradients)
+[2026-10-01 22:53:24] (T) lambda 1299 s, gradient 64 s
+[2026-10-01 22:53:25] coordinate 32 m: E − E0 =     +6.39 µE_h, 1664 s  (19/108 gradients)
+[2026-10-01 22:53:25] pair check coordinate 32: max |mean(g+, g−) − g0| = 1.3e-06 a.u. (limit 1e-04)
+[2026-10-01 22:54:05] (T) lambda 1298 s, gradient 65 s
+[2026-10-01 22:54:05] coordinate  7 m: E − E0 =    -22.30 µE_h, 1666 s  (20/108 gradients)
+[2026-10-01 22:54:05] pair check coordinate  7: max |mean(g+, g−) − g0| = 1.4e-05 a.u. (limit 1e-04)
+[2026-10-01 23:22:02] (T) lambda 1349 s, gradient 66 s
+[2026-10-01 23:22:03] coordinate 36 p: E − E0 =     -4.62 µE_h, 1718 s  (21/108 gradients)
+[2026-10-01 23:22:55] (T) lambda 1360 s, gradient 66 s
+[2026-10-01 23:22:55] coordinate  8 p: E − E0 =     +5.69 µE_h, 1730 s  (22/108 gradients)
+[2026-10-01 23:49:57] (T) lambda 1301 s, gradient 64 s
+[2026-10-01 23:49:57] coordinate 36 m: E − E0 =     +6.12 µE_h, 1675 s  (23/108 gradients)
+[2026-10-01 23:49:57] pair check coordinate 36: max |mean(g+, g−) − g0| = 1.6e-06 a.u. (limit 1e-04)
+[2026-10-01 23:50:52] (T) lambda 1300 s, gradient 65 s
+[2026-10-01 23:50:52] coordinate  8 m: E − E0 =     -2.90 µE_h, 1676 s  (24/108 gradients)
+[2026-10-01 23:50:52] pair check coordinate  8: max |mean(g+, g−) − g0| = 1.4e-06 a.u. (limit 1e-04)
+[2026-10-02 00:17:56] (T) lambda 1313 s, gradient 65 s
+[2026-10-02 00:17:57] coordinate 37 p: E − E0 =    +44.00 µE_h, 1679 s  (25/108 gradients)
+[2026-10-02 00:19:22] (T) lambda 1345 s, gradient 65 s
+[2026-10-02 00:19:22] coordinate  9 p: E − E0 =    +13.79 µE_h, 1710 s  (26/108 gradients)
+[2026-10-02 00:45:51] (T) lambda 1306 s, gradient 64 s
+[2026-10-02 00:45:52] coordinate 37 m: E − E0 =    -34.75 µE_h, 1675 s  (27/108 gradients)
+[2026-10-02 00:45:52] pair check coordinate 37: max |mean(g+, g−) − g0| = 1.4e-05 a.u. (limit 1e-04)
+[2026-10-02 00:47:50] (T) lambda 1336 s, gradient 65 s
+[2026-10-02 00:47:50] coordinate  9 m: E − E0 =     +4.33 µE_h, 1708 s  (28/108 gradients)
+[2026-10-02 00:47:50] pair check coordinate  9: max |mean(g+, g−) − g0| = 1.1e-05 a.u. (limit 1e-04)
+[2026-10-02 00:47:50] partial run done; merge grad_*.npy files and rerun without --ks to assemble the Hessian
+[2026-10-02 01:12:36] (T) lambda 1253 s, gradient 61 s
+[2026-10-02 01:12:36] coordinate 38 p: E − E0 =     +4.32 µE_h, 1604 s  (29/108 gradients)
+[2026-10-02 01:39:12] (T) lambda 1253 s, gradient 61 s
+[2026-10-02 01:39:12] coordinate 38 m: E − E0 =     -3.71 µE_h, 1596 s  (30/108 gradients)
+[2026-10-02 01:39:12] pair check coordinate 38: max |mean(g+, g−) − g0| = 1.9e-06 a.u. (limit 1e-04)
+[2026-10-02 01:39:12] partial run done; merge grad_*.npy files and rerun without --ks to assemble the Hessian
+[2026-10-02 01:39:34] E8 FD Hessian: 18 atoms, cc-pvdz, frozen 10 (derived from the elements: 10), step 0.005 bohr, 108 displacements, 16 threads, max_memory 26000 MB, explicit (T) lambda, fast (T) density kernel, fast (T) lambda kernel
+[2026-10-02 01:39:34] symmetry: 8 operations, orbits [[0, 1, 5, 6], [2, 4, 7, 9], [3, 8], [10, 11, 14, 15], [12, 13, 16, 17]], 15 displacements (30 gradients) instead of 108
+[2026-10-02 01:39:34] pair check coordinate  0: max |mean(g+, g−) − g0| = 1.5e-05 a.u. (limit 1e-04)
+[2026-10-02 01:39:34] pair check coordinate  1: max |mean(g+, g−) − g0| = 1.4e-05 a.u. (limit 1e-04)
+[2026-10-02 01:39:34] pair check coordinate  2: max |mean(g+, g−) − g0| = 1.4e-06 a.u. (limit 1e-04)
+[2026-10-02 01:39:34] pair check coordinate  6: max |mean(g+, g−) − g0| = 1.4e-05 a.u. (limit 1e-04)
+[2026-10-02 01:39:34] pair check coordinate  7: max |mean(g+, g−) − g0| = 1.4e-05 a.u. (limit 1e-04)
+[2026-10-02 01:39:34] pair check coordinate  8: max |mean(g+, g−) − g0| = 1.4e-06 a.u. (limit 1e-04)
+[2026-10-02 01:39:34] pair check coordinate  9: max |mean(g+, g−) − g0| = 1.1e-05 a.u. (limit 1e-04)
+[2026-10-02 01:39:34] pair check coordinate 10: max |mean(g+, g−) − g0| = 1.3e-05 a.u. (limit 1e-04)
+[2026-10-02 01:39:34] pair check coordinate 11: max |mean(g+, g−) − g0| = 1.3e-06 a.u. (limit 1e-04)
+[2026-10-02 01:39:34] pair check coordinate 30: max |mean(g+, g−) − g0| = 6.1e-06 a.u. (limit 1e-04)
+[2026-10-02 01:39:34] pair check coordinate 31: max |mean(g+, g−) − g0| = 4.1e-06 a.u. (limit 1e-04)
+[2026-10-02 01:39:34] pair check coordinate 32: max |mean(g+, g−) − g0| = 1.3e-06 a.u. (limit 1e-04)
+[2026-10-02 01:39:34] pair check coordinate 36: max |mean(g+, g−) − g0| = 1.6e-06 a.u. (limit 1e-04)
+[2026-10-02 01:39:34] pair check coordinate 37: max |mean(g+, g−) − g0| = 1.4e-05 a.u. (limit 1e-04)
+[2026-10-02 01:39:34] pair check coordinate 38: max |mean(g+, g−) − g0| = 1.9e-06 a.u. (limit 1e-04)
+[2026-10-02 01:39:34] symmetry reconstruction: spread of multiply-reached rows 1.61e-05 a.u.; self-check 5.1e-13
+[2026-10-02 01:39:34] Hessian written (VALID); FD asymmetry max 1.61e-05 a.u.; vibrational frequencies (cm-1): [100, 129, 336, 342, 419, 421, 505, 517, 536, 542, 612, 652, 731, 779, 783, 797, 798, 885, 890, 895, 909, 931, 1049, 1055, 1134, 1149, 1153, 1156, 1248, 1250, 1276, 1404, 1443, 1465, 1504, 1505, 1587, 1667, 1685, 1739, 3271, 3272, 3276, 3278, 3292, 3293, 3307, 3308]
+[2026-10-02 01:39:34] two-route checks: translational sum rule 2.5e-06 E_h/bohr² (limit 1e-03); translations/rotations after projection max 4.5e-05 cm⁻¹; energy route max |H_kk − d²E/dx_k²| 4.1e-05 E_h/bohr² over 15 coordinates (limit 1e-03)
