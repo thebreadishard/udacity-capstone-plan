@@ -220,3 +220,18 @@ gives its lowest ratio (0.23). α-tuning stays the transfer recipe; the next T3 
 lambda stage at 24 atoms is almost the whole gradient, as lever 3's table says). Ten to eleven gradients per lane → Hessian ≈ 5 Oct morning (the check lane
 reniced since 14:13 should shave a little). Rule written: lanes × threads ≤ cores including the check lane; for the next anchor of this size: 3 lanes × 10 + check
 lane at 2 on a CCX53, or the check lane after the lanes.
+
+## 2 October, 17:2x — intensities read on the full set; the lambda stage profiled; coverage ablation running
+
+**Intensities (chain 26, outcome in the pre-registration):** overlap 0.97 against 0.28, weighted relative intensity error 0.14–0.18 against 0.59 on all ten
+(a) parents — the registered line met; the intensity-specific number says the network's correction carries the intensity redistribution. Lever 5 is read.
+
+**The lambda stage, profiled** (`probes/cc_lambda_profile.py`, benzene cc-pVDZ, 4 threads: CCSD 16 s, Λ 13 s): `update_lambda` 9.4 s of 12, of which
+`_dgemm` 7.5 s (739 BLAS calls) and the vvvv contraction 3.5 s (already blocked C/BLAS, `_contract_vvvv_t2`), `make_intermediates` 2.4 s; the Python
+layer itself is under 1 s. The Λ update is already BLAS-bound in blocks — a C kernel for its contractions would buy little; what does not scale is many
+medium dgemm calls on a shared memory bus. **Design conclusion revised:** the throughput lever for the lambda stage is *lanes at 4–8 threads within
+memory*, not code; the code item (b) of 14:2x is withdrawn from the throughput row and replaced by the lane rule. On anthracene the same holds with
+larger blocks (6.65 h per gradient at 8 threads under 40-on-32 contention).
+
+**Coverage ablation (amendment 17:2x) running:** chain 28 — the pool without its 130 three-and-more-ring molecules (620) on lane B since 17:22, the
+620-molecule control on lane A after chain 26; both three seeds; read ≈ 20:30.

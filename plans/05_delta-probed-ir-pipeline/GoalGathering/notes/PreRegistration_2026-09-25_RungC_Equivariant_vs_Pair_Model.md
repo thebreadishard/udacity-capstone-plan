@@ -1423,3 +1423,14 @@ the ordering of future pools is by scaffold coverage. *Within holds, cross does 
 substituted children of the same parent — then the 200 improve (b) only through their fused two-ring B rows, the prediction for (b) is lowered to
 ≤ 0.31, and the four-ring A2 rows are valued for (a)-type parents, not for unseen scaffolds. *Neither holds:* the error map's gradient is about scaffold
 *difficulty*, not coverage, and the data lever is not the data; the model-side levers return. Decision 51 applies (cap 200, patience 20).
+
+## Outcome 2 October 17:2x — chain 26: the intensity read-out on all ten hold-out (a) parents (lever 5 step 2, registered 06:5x)
+
+`out/eval_saved_carried750_seed{0,1,2}_2026-10-02.json` (`probes/rungC_eval_saved.py` on chain 24's three models; atomic polar tensors from the CPHF route for
+all ten (a) parents — benzene's after the sum-rule limit was set by its two-route measurement, 4.4e-4 e against FD; seed 0's read ran with nine).
+**Spectrum overlap** (cosine of the Lorentzian-broadened spectra, FWHM 10 cm⁻¹, predicted against true corrected): **0.968 / 0.966 / 0.974** against
+**0.278** for the zero rule. **Intensity-weighted relative intensity error:** **0.18 / 0.16 / 0.14** against **0.59**. Frequencies on the same molecules
+2.5–2.8 cm⁻¹ as recorded. **Against the line** (overlap ≥ 0.95 for the carried model): **met** by all three models. The baseline guess of 06:5x (≈ 0.85 for
+the zero rule) was wrong by the mechanism noted at 11:0x — at 10 cm⁻¹ FWHM the overlap is a frequency-position metric; the relative intensity error is
+the intensity-specific number, and it falls from 0.59 to 0.14–0.18: the predicted correction reproduces how the lines redistribute intensity, not only
+where they sit. What this does not say: the APT is the low level's own; the CC-level dipole response is a separate term (E8 stores no dipoles yet).
