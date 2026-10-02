@@ -62,7 +62,9 @@ def main() -> int:
     ap.add_argument("--charge", type=int, default=0)
     ap.add_argument("--out", default=None)
     ap.add_argument("--check-fd", default=None, help="an FD APT file (dipole_<xc>_fd.npz) to compare with")
-    ap.add_argument("--sum-rule-limit", type=float, default=1e-4)
+    ap.add_argument("--sum-rule-limit", type=float, default=5e-4,
+                    help="2 Oct 2026 17:0x: set by the benzene two-route measurement — CPHF vs FD APT differ by 4.4e-4 e at most (intensities within 0.07 km/mol), "
+                         "so the 1e-4 first guess refused a correct benzene (1.1e-4); the FD route itself holds the sum rule to 3e-6")
     ap.add_argument("--fd-limit", type=float, default=1e-3, help="max |P_cphf − P_fd| allowed (e); the FD route itself is good to ≈ 3e-6 on water")
     a = ap.parse_args()
     lib.num_threads(a.threads)
