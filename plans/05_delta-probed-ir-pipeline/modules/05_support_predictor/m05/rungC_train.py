@@ -402,6 +402,41 @@ def per_molecule_readouts(mols: dict, ids: list, tr: list, dF_of) -> dict:
     return out
 
 
+def load_corpus(molecules: str, use_analytic: bool, log=print) -> tuple:
+    """The corpus as the trainer sees it: the rung-B loader's entries, E6's splits, the analytic second-route Hessians substituted where both exist
+    (`--use-analytic`), molecules with an imaginary mode dropped, and the atomic polar tensors attached where a passed file exists (CPHF route first).
+    Returns (mols, test_a, test_b, cores, pool, substituted). Factored out of main on 2 Oct 2026 for probes/rungC_eval_saved.py."""
+    mols = T2.load(molecules)
+    test_a, test_b, cores, pool = E6.splits(mols)
+    substituted = []
+    if use_analytic:
+        import e7_rungB_reread_analytic as RR
+        for i, m in mols.items():
+            d = Path(molecules) / i
+            if (d / "hessian_b3lyp_analytic.npz").exists() and (d / "hessian_wb97x_analytic.npz").exists():
+                RR.substitute(m, d)
+                substituted.append(i)
+        log(f"analytic second-route Hessians substituted for {len(substituted)} molecules")
+    mols = {i: m for i, m in mols.items() if not m["imaginary"]}
+    n_apt = 0
+    for i, m in mols.items():                                              # lever 5 step 2: atomic polar tensors where present (CPHF route first, FD second)
+        for name in APT_FILES:
+            p = Path(molecules) / i / name
+            if p.exists():
+                z = np.load(p)
+                if bool(z["passed"]):
+                    m["apt"] = np.asarray(z["apt"], float)
+                    m["apt_file"] = name
+                    n_apt += 1
+                break
+    if n_apt:
+        log(f"atomic polar tensors found for {n_apt} molecules: intensity read-outs on (lever 5, registered 2 Oct 2026 06:5x)")
+    test_a = [i for i in test_a if i in mols]
+    test_b = [i for i in test_b if i in mols]
+    pool = [i for i in pool if i in mols]
+    return mols, test_a, test_b, cores, pool, substituted
+
+
 def molecule_tensors(i: str, m: dict, mol: dict, mol_dir: Path, cfg, cache_dir: Path, target_residuals: dict | None = None) -> dict:
     """The tensors one molecule contributes to training and read-out: the Cartesian inputs and truth (`m`, as `load_molecule` returns it, or a CC-substituted
     equivalent), B⁺ and the projected internal ΔF, the entry classes, the kring tensors, the pattern classes (and the LS target when asked), the hybrid
@@ -548,34 +583,7 @@ def main() -> int:
     t_start = time.time()
     log = lambda s: print(s, flush=True)  # noqa: E731
 
-    mols = T2.load(a.molecules)
-    test_a, test_b, cores, pool = E6.splits(mols)
-    substituted = []
-    if a.use_analytic:
-        import e7_rungB_reread_analytic as RR
-        for i, m in mols.items():
-            d = Path(a.molecules) / i
-            if (d / "hessian_b3lyp_analytic.npz").exists() and (d / "hessian_wb97x_analytic.npz").exists():
-                RR.substitute(m, d)
-                substituted.append(i)
-        log(f"analytic second-route Hessians substituted for {len(substituted)} molecules")
-    mols = {i: m for i, m in mols.items() if not m["imaginary"]}
-    n_apt = 0
-    for i, m in mols.items():                                              # lever 5 step 2: atomic polar tensors where present (CPHF route first, FD second)
-        for name in APT_FILES:
-            p = Path(a.molecules) / i / name
-            if p.exists():
-                z = np.load(p)
-                if bool(z["passed"]):
-                    m["apt"] = np.asarray(z["apt"], float)
-                    m["apt_file"] = name
-                    n_apt += 1
-                break
-    if n_apt:
-        log(f"atomic polar tensors found for {n_apt} molecules: intensity read-outs on (lever 5, registered 2 Oct 2026 06:5x)")
-    test_a = [i for i in test_a if i in mols]
-    test_b = [i for i in test_b if i in mols]
-    pool = [i for i in pool if i in mols]
+    mols, test_a, test_b, cores, pool, substituted = load_corpus(a.molecules, a.use_analytic, log)
     nat = {i: len(m["masses"]) for i, m in mols.items()}
     if a.split == "e6" and a.pool_layers:
         keep = set(a.pool_layers.split(","))

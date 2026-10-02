@@ -49,6 +49,7 @@ def test_trainer_wiring_present():
     text = (PLAN / "modules" / "05_support_predictor" / "m05" / "rungC_train.py").read_text(encoding="utf-8")
     assert "import rungC_intensities as RI" in text and 'if "apt" in mols.get(i, {}):' in text and 'r.update(RI.aggregate(r["per_molecule"]))' in text
     assert 'APT_FILES = ("dipole_b3lyp_cphf.npz", "dipole_b3lyp_fd.npz")' in text
+    assert "mols, test_a, test_b, cores, pool, substituted = load_corpus(a.molecules, a.use_analytic, log)" in text
     assert '"spectrum_overlap"' in text.split("PER_MOLECULE_KEYS = ")[1].split(")")[0]
 
 
