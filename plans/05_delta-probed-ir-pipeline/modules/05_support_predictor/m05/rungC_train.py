@@ -402,6 +402,18 @@ def per_molecule_readouts(mols: dict, ids: list, tr: list, dF_of) -> dict:
     return out
 
 
+def exclude_pool_ids(pool: list, path: str | None) -> tuple[list, list]:
+    """Coverage ablation (2 Oct 2026): drop the ids listed one per line in `path` from the training pool; returns (pool, dropped). Refuses an empty
+    intersection (a wrong file would silently run the full pool)."""
+    if not path:
+        return pool, []
+    wanted = {s.strip() for s in open(path, encoding="utf-8") if s.strip()}
+    dropped = [i for i in pool if i in wanted]
+    if not dropped:
+        raise SystemExit(f"--exclude-ids-file {path}: none of its {len(wanted)} ids is in the pool")
+    return [i for i in pool if i not in wanted], dropped
+
+
 def record_paths(prefix) -> tuple[Path, Path]:
     """(json, md) for an output prefix, by concatenation — `Path.with_suffix` treats everything after the first dot as the suffix (2 Oct 2026 14:4x:
     `T3b_l20.01_seed0_…` became `T3b_l20.json`, and the λ 0.01 and 0.1 records overwrote each other)."""
@@ -557,6 +569,7 @@ def main() -> int:
     ap.add_argument("--kring-weight", type=float, default=1.0, help="lever 3b (1 Oct 2026): weight of the kring term inside --aux both (the pattern term keeps weight 1)")
     ap.add_argument("--kdiag-weight", type=float, default=0.0, help="lever 5 (2 Oct 2026): weight of a term on the diagonal of K over all modes inside --aux both (0 = off)")
     ap.add_argument("--save-model", action="store_true", help="lever 1 / T3 (2 Oct 2026): save the trained hybrid model per size and seed next to the record")
+    ap.add_argument("--exclude-ids-file", default=None, help="coverage ablation (2 Oct 2026): ids (one per line) dropped from the training pool; hold-outs untouched")
     ap.add_argument("--aux", default="all", choices=["all", "pattern", "kring", "both"],
                     help="internal term: 'all' (registered) or 'pattern' (30 Sep 2026, rank 2 of the external reviews: the pair model's pattern only, one "
                          "standardisation scale per pair class from the fit molecules)")
@@ -594,6 +607,9 @@ def main() -> int:
     if a.split == "e6" and a.pool_layers:
         keep = set(a.pool_layers.split(","))
         pool = [i for i in pool if mols[i]["layer"] in keep]
+    pool, excluded = exclude_pool_ids(pool, a.exclude_ids_file)
+    if excluded:
+        log(f"coverage ablation: {len(excluded)} pool molecules excluded ({Path(a.exclude_ids_file).name}); pool {len(pool)}")
     if a.split == "layerB":
         pool = sorted((i for i, m in mols.items() if m["layer"] == "B"), key=E6.sha)
         test_a = sorted(i for i, m in mols.items() if m["layer"] == "A")
@@ -626,6 +642,7 @@ def main() -> int:
     tests = {"a": test_a, "b": test_b}
     res = dict(date=datetime.now().strftime("%Y-%m-%d %H:%M"), smoke=a.smoke, provenance=provenance(),
                model="rungC_equivariant C1 (from scratch; output scaled by the training set's RMS ΔH, or per entry class)",
+               excluded_ids=excluded, exclude_ids_file=a.exclude_ids_file,
                n_molecules=len(mols), holdout_a=test_a, holdout_b=test_b, scaffold_cores=cores, pool=len(pool), pool_ids=pool, pool_layers=a.pool_layers,
                sizes=sizes, seeds=seeds, epochs=a.epochs, lr=a.lr, aux_weight=a.aux_weight, loss=a.loss, scale=a.scale, inner_val=a.inner_val,
                patience=a.patience, pretrained=a.pretrained, aggregation=a.aggregation, pretrained_elements=a.pretrained_elements,

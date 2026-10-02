@@ -1406,3 +1406,20 @@ above α-tuning for every λ (5.3–6.0 against 5.2). *α stays the recipe:* **m
 +0.2 cm⁻¹), removes the naphthalene instability (0.22–0.25 against 0.25–0.67 unregularised) and gives the lowest naphthalene ratio of any column (0.23).
 The predictions held in direction: naphthalene improves monotonically with λ (9.4 → 8.3 → 5.9), benzene and pyridine keep their gain at small λ. Transfer
 recipe until more anchors: α-tuning, with the λ = 1 head as the equal alternative; T3's ≤ 3 cm⁻¹ line waits for anthracene as the fourth anchor (≈ 5 Oct).
+
+## Dated amendment 2 October 17:2x — coverage ablation (registered before it runs; the user: "Blijf Sherlock")
+
+**Question.** The error map (06:5x) says the hold-out error follows the scaffold size, and the next pool (200 ids, running) is chosen on that reading
+with the prediction (b) ≤ 0.28. The existing pool can test the mechanism tonight: it holds 130 molecules with three or more aromatic rings
+(phenanthridine 34, acridine, dibenzothiophene, carbazole, dibenzofuran, phenanthrene 12, anthracene 10, phenazine, biphenylene 7, pyrene 7 — children of
+the layer-A three-ring parents plus pyrenes; `out/pool_ring3plus_ids_2026-10-02.txt`). **Runs (chain 28, carried recipe, three seeds each).** *Ablation:*
+the pool without those 130 (620 molecules, `--exclude-ids-file`). *Control:* the first 620 of the full pool in its hash order (`--sizes 620`), i.e. the
+same count with the three-ring molecules kept in proportion. **Read-outs.** Hold-out (a) ratio overall and on its three-ring parents (phenanthrene,
+phenanthridine, biphenylene: 0.20 today); hold-out (b) ratio (fluorene / fluoranthene scaffolds, 0.33 today); the per-kind error map on both.
+**Predictions.** *Within-scaffold coverage:* the (a) three-ring parents worsen from 0.20 to ≥ 0.30 in the ablation and stay within 0.03 in the control —
+the children of a scaffold carry its parent. *Cross-scaffold coverage:* (b) worsens by ≥ 0.03 in the ablation relative to the control, because the pyrenes
+and the three-ring systems teach fused-ring couplings that fluoranthene and fluorene share. **Lines.** *Both hold:* the next pool's prediction stands, and
+the ordering of future pools is by scaffold coverage. *Within holds, cross does not* ((b) within 0.03 of the control): scaffold coverage transfers only to
+substituted children of the same parent — then the 200 improve (b) only through their fused two-ring B rows, the prediction for (b) is lowered to
+≤ 0.31, and the four-ring A2 rows are valued for (a)-type parents, not for unseen scaffolds. *Neither holds:* the error map's gradient is about scaffold
+*difficulty*, not coverage, and the data lever is not the data; the model-side levers return. Decision 51 applies (cap 200, patience 20).

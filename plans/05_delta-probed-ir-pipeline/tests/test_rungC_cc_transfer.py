@@ -40,6 +40,18 @@ def test_freeze_for_transfer_leaves_only_last_layer_and_alpha():
     assert not any(p.requires_grad for p in m.body.parameters())
 
 
+def test_exclude_pool_ids(tmp_path):
+    f = tmp_path / "ex.txt"
+    f.write_text("m2\n\nm9\n", encoding="utf-8")
+    pool, dropped = RT.exclude_pool_ids(["m1", "m2", "m3"], str(f))
+    assert pool == ["m1", "m3"] and dropped == ["m2"]
+    assert RT.exclude_pool_ids(["m1"], None) == (["m1"], [])
+    with pytest.raises(SystemExit):
+        RT.exclude_pool_ids(["m1"], str(f))                      # nothing in common: refuse rather than run the full pool
+    text = (M05 / "rungC_train.py").read_text(encoding="utf-8")
+    assert 'add_argument("--exclude-ids-file"' in text and "pool, excluded = exclude_pool_ids(pool, a.exclude_ids_file)" in text
+
+
 def test_record_paths_keep_a_dotted_prefix():
     j, m = RT.record_paths("out/T3b_l20.01_seed0_2026-10-02")
     assert j.name == "T3b_l20.01_seed0_2026-10-02.json" and m.name == "T3b_l20.01_seed0_2026-10-02.md"
