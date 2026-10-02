@@ -16,22 +16,22 @@
  "test_rms_diag_229": {
   "CH-stretch": {
    "zero": 43.78032684326172,
-   "baseline_retrained": 2.6255459785461426
+   "baseline_retrained": 2.602741241455078
   },
   "CH-oop": {
    "zero": 24.076662063598633,
-   "baseline_retrained": 3.948249340057373
+   "baseline_retrained": 3.957235813140869
   },
   "ring-ip": {
    "zero": 20.340084075927734,
-   "baseline_retrained": 5.393651008605957
+   "baseline_retrained": 5.2799601554870605
   },
   "other": {
    "zero": 19.228384017944336,
-   "baseline_retrained": 8.503445625305176
+   "baseline_retrained": 8.398443222045898
   }
  },
- "pair_ap_229": 0.2902287289967151,
+ "pair_ap_229": 0.29382493540515525,
  "splits_229": {
   "train": 191,
   "val": 18,

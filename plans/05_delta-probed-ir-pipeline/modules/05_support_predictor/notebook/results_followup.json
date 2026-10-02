@@ -7,40 +7,40 @@
  "test_rms_diag_corrected": {
   "CH-stretch": {
    "zero": 43.78032684326172,
-   "baseline_retrained": 2.620861053466797
+   "baseline_retrained": 2.83369779586792
   },
   "CH-oop": {
    "zero": 24.076662063598633,
-   "baseline_retrained": 3.979602575302124
+   "baseline_retrained": 4.070833206176758
   },
   "ring-ip": {
    "zero": 20.340084075927734,
-   "baseline_retrained": 5.580438613891602
+   "baseline_retrained": 5.5540900230407715
   },
   "other": {
    "zero": 19.228384017944336,
-   "baseline_retrained": 8.461214065551758
+   "baseline_retrained": 8.454269409179688
   }
  },
  "test_rms_coup_corrected": {
   "CH-stretch": {
    "zero": 0.46912387013435364,
-   "baseline_retrained": 0.468683660030365
+   "baseline_retrained": 0.46913087368011475
   },
   "CH-oop": {
    "zero": 3.2121198177337646,
-   "baseline_retrained": 3.2304842472076416
+   "baseline_retrained": 3.2253103256225586
   },
   "ring-ip": {
    "zero": 4.018321514129639,
-   "baseline_retrained": 4.019571781158447
+   "baseline_retrained": 4.01857852935791
   },
   "other": {
    "zero": 2.419247627258301,
-   "baseline_retrained": 2.3832361698150635
+   "baseline_retrained": 2.3821656703948975
   }
  },
- "pair_ap_corrected": 0.2847331788388197,
+ "pair_ap_corrected": 0.28016197536736753,
  "benzene_check": {
   "wb97x_dH_max": 0.02080304721129886,
   "max_freq_disagreement_cm": 132.45348122834798
