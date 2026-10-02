@@ -19,7 +19,7 @@ def test_max_memory_switch_default_and_plumbing():
     assert defaults["max_memory"] == 26000
     assert re.search(r'add_argument\("--max-memory", type=int, default=26000', text)
     assert re.search(r"gto\.M\([^\n]*max_memory=max_memory", text) and "max_memory=26000)" not in text   # the hard-coded value is gone from gto.M
-    assert text.count("a.charge, a.spin, a.max_memory, fast") == 2                        # reference (check_fast=True) and displaced gradients
+    assert text.count("a.charge, a.spin, a.max_memory, fast") == 3   # reference, the separate two-route check (2 Oct 2026), displaced gradients
 
 
 def test_parallel_chain_parses_and_fails_fast():

@@ -1281,3 +1281,19 @@ both spreads → the trade-off returns at 750 and the weight is searched. Decisi
 Both cells *work*; they are equal on hold-out (a) within spreads and 0.3 is better on hold-out (b) (0.34 / ω 3.6 against 0.36 / 4.0). Chain 23 (750) started
 06:07 at weight 0.1, as the amendment of 05:3x fixed (ω(a) equal, so no change before the start); the (b) advantage of 0.3 is noted and a 0.3 cell at 750
 follows if chain 23 reads *half* or if (b) matters for the decision. Decision 51: best epochs below the cap.
+
+## Dated amendment 2 October 06:2x — anthracene CCSD(T)/cc-pVDZ Hessian on the CCX53, and the gate's two-route checks moved to a parallel lane (registered before the launch)
+
+**Why anthracene** (the user, 2 Oct: "ik denk dat we het sowieso moeten doen"): the first three-ring CC anchor; with benzene, fluorobenzene, pyridine and
+naphthalene it makes T3 a test over ring count. Corpus id `A_a1e6ec1862` (layer A, 24 atoms, B3LYP and ωB97X FD Hessians present). **Machine:** CCX53
+`ubuntu-128gb-hel1-2` (32 dedicated vCPU, 122 GB; the CCX63 was not orderable), bootstrapped 06:10 (env qc05, pyscf 2.14.0, kernels built against its
+bundled OpenBLAS/libgomp), gate 1 to pass there before the launch. **Gate change (code, tested, smoke on water in WSL and on the server):**
+`e8_cc_hessian_fd.py --two-route-check {inline,separate,only}` — the kernel-against-pyscf comparisons (lambda 93 min and density 5.2 h on naphthalene;
+estimated 2–3 days on anthracene) run in a lane *beside* the partial runs (`only` mode recomputes the reference with the checks, compares with the stored
+reference to 1e-8 and writes `two_route_check.json`); the assembling run refuses an unchecked reference without that passing file. Nothing is skipped;
+the wait is removed. Default `inline` = the registered behaviour. **Launch plan:** `run_anchors_hel23_parallel.sh` with `TWO_ROUTE=separate`, ANCHOR_LIST
+`anthracene|molecules/A_a1e6ec1862/geometry.json|results/anthracene_ccpvdz|4|8|22000|--fast-t-density --fast-t-lambda`, check lane 8 threads × 16000 MB,
+memory guard 1500 MB (4 × 22 + 16 = 104 of 122 GB). **Predictions:** ≈ 20 symmetry-unique displacements (D₂h), 2.5–4 h per production gradient at 8 threads,
+≈ 1.5 days to the Hessian, ≈ €35–50; the check lane finishes within the production window. **Lines:** VALID by the probe's own checks (asymmetry,
+symmetry reconstruction, sum rule, energy route, pair checks) and a passing two-route file → the anchor joins the set; IMAGINARY / INVALID → excluded
+and read as such; a failed two-route file → the Hessian is not written and the kernels are re-examined on this molecule before anything else.

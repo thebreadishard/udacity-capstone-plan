@@ -18,6 +18,8 @@ LOG=${LOG:-/root/e8/anchors.log}
 CORPUS=${CORPUS:-/root/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/corpus}
 GUARD_MB=${GUARD_MB:-1500}
 FAST=${FAST---fast-t-density --fast-t-lambda}
+TWO_ROUTE=${TWO_ROUTE:-inline}   # 2 Oct 2026: 'separate' runs the kernel two-route checks in a lane beside the partial runs (CT threads, CM MB)
+CT=${CT:-8}; CM=${CM:-16000}
 SKIP=${SKIP:-}   # space-separated anchor names to leave out (30 Sep 2026: benzonitrile's Hessian awaits a verdict; the rest goes on)
 skipped() { [[ " $SKIP " == *" $1 "* ]] && say "ANCHOR $1 SKIPPED (SKIP)"; }
 SMOKE=${SMOKE:-}
@@ -50,11 +52,15 @@ anchor_parallel() {   # name geom out workers threads mem_mb [extra e8 args]
   local name=$1 geom=$2 out=$3 W=$4 T=$5 M=$6; shift 6
   mkdir -p "$out"
   say "ANCHOR $name START (parallel: $W partial runs x $T threads x $M MB) ($geom)"
-  OMP_NUM_THREADS=16 "$PY" e8_cc_hessian_fd.py "$geom" "$out" --threads 16 --symmetry --only-reference "$@" >> "$out/chain.log" 2>&1 \
+  OMP_NUM_THREADS=16 "$PY" e8_cc_hessian_fd.py "$geom" "$out" --threads 16 --symmetry --only-reference --two-route-check "$TWO_ROUTE" "$@" >> "$out/chain.log" 2>&1 \
     || { say "ANCHOR $name FAILED (reference gradient; see $out/e8_fd.log)"; return 1; }
   local nk; nk=$(n_unique "$geom")
   say "ANCHOR $name: $nk symmetry-unique displacements over $W partial runs"
   local pids=() lo hi i
+  if [ "$TWO_ROUTE" = "separate" ]; then     # the slow-route comparison runs beside the partial runs; the assembly requires its passing file
+    OMP_NUM_THREADS=$CT nohup "$PY" e8_cc_hessian_fd.py "$geom" "$out" --threads "$CT" --two-route-check only --max-memory "$CM" "$@" > "$out/two_route_check.log" 2>&1 &
+    pids+=($!); say "ANCHOR $name: two-route check lane started (pid $!, $CT threads, $CM MB)"; sleep 5
+  fi
   for ((i = 0; i < W; i++)); do
     lo=$((i * nk / W)); hi=$(((i + 1) * nk / W))
     [ "$lo" -ge "$hi" ] && continue

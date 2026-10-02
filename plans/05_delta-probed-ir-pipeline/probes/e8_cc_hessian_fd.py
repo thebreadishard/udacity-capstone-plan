@@ -30,6 +30,8 @@ CORE_ORBITALS = {"H": 0, "He": 0, "Li": 1, "Be": 1, "B": 1, "C": 1, "N": 1, "O":
 LAMBDA_TOL = 1e-8            # ccsd_t_lambda / uccsd_t_lambda convergence (pyscf's default), solved explicitly since the 29 Sep 2026 incident
 FAST_T_LIMIT = 1e-10         # largest |kernel − pyscf| over the (T) density intermediates on the reference gradient (water: 4e-18, 29 Sep 2026)
 FIRST_PAIR_LIMIT = 1e-4      # a.u.; |mean(g+, g−) − g0| is O(h²) ≈ 1e-5 for h = 0.005 bohr; the frozen-6-of-10 run gave 2–9e-4 in plane
+TWO_ROUTE_GRAD_LIMIT = 1e-8  # a.u.; the checked reference gradient must equal the stored one (same code, same machine: 1e-10 observed on water)
+TWO_ROUTE_ENERGY_LIMIT = 1e-9  # E_h; idem for the reference energy
 # the Hessian self-check and its limits live in e8_hessian_checks.py (split into INVALID / IMAGINARY / VALID on 30 Sep 2026)
 def pair_consistency(gp, gm, g0) -> float:
     """max |mean(g(+k), g(−k)) − g0|: zero to O(h²) when both displaced calculations sit on the same surface as the reference."""
@@ -202,6 +204,10 @@ def main():
     ap.add_argument("--frozen", type=int, default=None, help="core orbitals to freeze; default: derived from the elements (all 1s of first-row atoms); "
                     "a stated value that differs from the derived one refuses to start unless --allow-frozen-mismatch")
     ap.add_argument("--allow-frozen-mismatch", action="store_true"); ap.add_argument("--only-reference", action="store_true")
+    ap.add_argument("--two-route-check", default="inline", choices=["inline", "separate", "only"],
+                    help="2 Oct 2026: where the (T)-kernel two-route checks against pyscf's slow route run — 'inline' with the reference gradient (registered); "
+                         "'separate' = the reference skips them and is marked unchecked; 'only' = recompute the reference with the checks, compare with "
+                         "reference.npz and write two_route_check.json (the assembly refuses an unchecked reference without a passing file)")
     ap.add_argument("--charge", type=int, default=0); ap.add_argument("--spin", type=int, default=0, help="2S (1 = doublet); > 0 selects UHF-UCCSD(T), 29 Sep 2026")
     ap.add_argument("--max-memory", type=int, default=26000, help="pyscf max_memory in MB per process (default the former hard-coded 26000); partial runs "
                     "sharing one box take less (29 Sep 2026: 3 x 8000 on a 31 GB CPX62)")
@@ -245,14 +251,39 @@ def main():
         f"{a.threads} threads, max_memory {a.max_memory} MB" + (f", charge {a.charge}, spin {a.spin} (UHF-UCCSD(T))" if a.spin else "")
         + ", explicit (T) lambda" + (", fast (T) density kernel" if a.fast_t_density else "") + (", fast (T) lambda kernel" if a.fast_t_lambda else ""))
     ref_p = os.path.join(a.out, "reference.npz")
+    check_p = os.path.join(a.out, "two_route_check.json")
+    if a.two_route_check == "only":
+        if not os.path.exists(ref_p):
+            raise SystemExit("--two-route-check only needs an existing reference.npz (run the reference first)")
+        ref = np.load(ref_p); e0, g0 = float(ref["energy"]), ref["gradient"]
+        t0 = time.time(); e1, g1 = gradient(sym, x0, a.basis, a.frozen, log, a.charge, a.spin, a.max_memory, fast, check_fast=True)
+        dgrad = float(np.abs(np.asarray(g1) - np.asarray(g0)).max()); de = abs(e1 - e0)
+        passed = bool(dgrad <= TWO_ROUTE_GRAD_LIMIT and de <= TWO_ROUTE_ENERGY_LIMIT)   # the kernel checks inside gradient() raise on failure
+        json.dump(dict(passed=passed, max_grad_diff=dgrad, energy_diff=de, grad_limit=TWO_ROUTE_GRAD_LIMIT, energy_limit=TWO_ROUTE_ENERGY_LIMIT,
+                       seconds=round(time.time() - t0), date=time.strftime("%F %T")), open(check_p, "w"), indent=1)
+        log(f"two-route check {'PASSED' if passed else 'FAILED'}: checked reference vs stored reference max |Δgrad| {dgrad:.1e} (limit {TWO_ROUTE_GRAD_LIMIT:.0e}), "
+            f"|ΔE| {de:.1e}; {time.time() - t0:.0f} s")
+        if not passed:
+            raise SystemExit(5)
+        return
     if os.path.exists(ref_p):
         ref = np.load(ref_p); e0, g0 = float(ref["energy"]), ref["gradient"]
+        ref_checked = bool(ref["two_route_checked"]) if "two_route_checked" in ref.files else True
     else:
-        t0 = time.time(); e0, g0 = gradient(sym, x0, a.basis, a.frozen, log, a.charge, a.spin, a.max_memory, fast, check_fast=True)
-        np.savez(ref_p, energy=e0, gradient=g0, coords_bohr=x0, charge=a.charge, spin=a.spin)
-        log(f"reference: E = {e0:.9f}, max|grad| {np.abs(g0).max():.2e}, {time.time() - t0:.0f} s")
+        inline = a.two_route_check == "inline"
+        t0 = time.time(); e0, g0 = gradient(sym, x0, a.basis, a.frozen, log, a.charge, a.spin, a.max_memory, fast, check_fast=inline)
+        np.savez(ref_p, energy=e0, gradient=g0, coords_bohr=x0, charge=a.charge, spin=a.spin, two_route_checked=inline)
+        ref_checked = inline
+        log(f"reference: E = {e0:.9f}, max|grad| {np.abs(g0).max():.2e}, {time.time() - t0:.0f} s"
+            + ("" if inline else "; two-route checks deferred to a separate run (--two-route-check only)"))
     if a.only_reference:
         return
+    if not a.ks and not ref_checked:
+        ok = os.path.exists(check_p) and bool(json.load(open(check_p)).get("passed"))
+        if not ok:
+            raise SystemExit("the reference gradient is unchecked and no passing two_route_check.json exists — run `--two-route-check only` "
+                             "before assembling the Hessian (rule: every derived quantity has a second route)")
+        log("two-route check on file: passed — assembling")
     G = np.zeros((3 * n, 3 * n))          # row k: gradient (flattened) at +/− displacement of coordinate k, differenced
     ks = list(range(3 * n)); ops = None
     if a.symmetry:
