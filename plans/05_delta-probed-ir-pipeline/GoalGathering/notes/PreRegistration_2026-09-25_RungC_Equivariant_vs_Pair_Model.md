@@ -1269,3 +1269,15 @@ reads better on ω at equal (a); the choice is recorded here before the run star
 Controls: chain 17 (750 without the diagonal term: 0.22 / 0.33 / ω 3.50) and rung B f at 750 (0.32 / 0.43 / 4.47). **Prediction:** (a) 0.20–0.23, (b)
 0.32–0.35, ω 2.2–2.8. **Lines.** *T1 met in full:* (a) ≤ 0.30 and ω ≤ 3 at 750 on hold-out (a), (b) read beside it. *Half:* ω ≤ 3 with (a) above chain 17 by
 both spreads → the trade-off returns at 750 and the weight is searched. Decision 51 as always.
+
+## Outcome, lever 5 (both cells) — 2 October 06:1x (`out/E7_rungC_lever5_kd{0.1,0.3}_175_2026-10-01`)
+
+| K-diagonal weight (pattern f, projected, pattern + 0.3 × kring, 175) | (a) ratio | (b) ratio | (a) ω | (b) ω | (a) ΔH | best epochs |
+|---|---|---|---|---|---|---|
+| 0 (chain 14b) | 0.24 | 0.37 | 5.00 | 5.6 | 0.185 | 67–103 |
+| 0.1 | 0.23 (0.22 / 0.23 / 0.24) | 0.36 | **2.78** (2.7 / 2.9 / 2.7) | 4.02 | 0.144 | 89–104 |
+| 0.3 | 0.225 (0.23 / 0.23 / 0.22) | **0.34** | **2.76** (2.9 / 2.6 / 2.8) | **3.60** | 0.153 | 60–138 |
+
+Both cells *work*; they are equal on hold-out (a) within spreads and 0.3 is better on hold-out (b) (0.34 / ω 3.6 against 0.36 / 4.0). Chain 23 (750) started
+06:07 at weight 0.1, as the amendment of 05:3x fixed (ω(a) equal, so no change before the start); the (b) advantage of 0.3 is noted and a 0.3 cell at 750
+follows if chain 23 reads *half* or if (b) matters for the decision. Decision 51: best epochs below the cap.
