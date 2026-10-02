@@ -1189,3 +1189,10 @@ The 175 point draws from A + A2 only; the 449 and 750 points mix in layer B. **R
 same as A + A2 at 175). **Lines.** *Count:* within spreads of chain 14b → the curve is a count curve with a shallow ratio slope and the T2 numbers above
 stand. *Composition:* ≤ 0.21 or ≥ 0.27 → layer B's substituted molecules move the hold-out by themselves, and the curve must be re-drawn at fixed
 composition before any extrapolation. Decision 51 as always.
+
+## Outcome, chain 19 — the wide body on the carried recipe, 175 — 2 October 02:4x (`out/E7_rungC_carried_wide_175_2026-10-01`)
+
+3 × 128, 300 epochs: (a) **0.22** (0.23 / 0.21 / 0.23), (b) 0.35, ω 4.92 (4.19 / 6.06 / 4.51), ΔH 0.176; best epochs 50–94. Control chain 14b (3 × 64): 0.24
+(0.22–0.26), 0.37, ω 5.00. **Against the lines:** *flat* — the spreads touch at 0.22 and ω moves by 0.08, not 0.5. Width helped the narrow support (pattern d:
+0.40 → 0.35) and not the wide one: once the pairs it needs are on the pattern, the 64-channel body is enough at 175. **The carried body stays 3 × 64.**
+Decision 51: best epochs far below the cap.
