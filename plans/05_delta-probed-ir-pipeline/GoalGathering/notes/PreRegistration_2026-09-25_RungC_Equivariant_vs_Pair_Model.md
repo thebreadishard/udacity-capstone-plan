@@ -1434,3 +1434,30 @@ all ten (a) parents — benzene's after the sum-rule limit was set by its two-ro
 the zero rule) was wrong by the mechanism noted at 11:0x — at 10 cm⁻¹ FWHM the overlap is a frequency-position metric; the relative intensity error is
 the intensity-specific number, and it falls from 0.59 to 0.14–0.18: the predicted correction reproduces how the lines redistribute intensity, not only
 where they sit. What this does not say: the APT is the low level's own; the CC-level dipole response is a separate term (E8 stores no dipoles yet).
+
+## Outcome 2 October 22:0x — chain 28: the coverage ablation (amendment 17:2x)
+
+`out/E7_rungC_coverage_ablation620_2026-10-02.json` (the pool without its 130 three-and-more-ring molecules, 620) and `…_control620_…` (the first 620 of the
+full pool), carried recipe, three seeds each, best epochs 112–139 / 57–139.
+
+| arm | (a) ratio | (a) ω | (a) three-ring parents (phenanthrene / phenanthridine / biphenylene) | (a) single-ring (benzene / biphenyl / benzonitrile) | (b) ratio | (b) fluorene scaffold | (b) fluoranthene scaffold |
+|---|---|---|---|---|---|---|---|
+| control 620 | 0.229 | 3.10 | 0.15 / 0.16 / 0.15 | 0.06 / 0.24 / 0.10 | 0.349 | 0.30 | 0.37 |
+| ablation 620 | **0.373** | 4.78 | **0.48 / 0.52 / 0.34** | 0.11 / 0.23 / 0.13 | **0.411** | **0.40** | 0.41 |
+
+**Against the predictions.** *Within-scaffold coverage* (three-ring parents ≥ 0.30 without their children, control within 0.03): holds — 0.15 → 0.48–0.52,
+while the single-ring parents do not move. *Cross-scaffold coverage* ((b) worse by ≥ 0.03 than the control): holds — 0.349 → 0.411; the fluorene
+scaffold carries most of it (0.30 → 0.40), fluoranthene less (0.37 → 0.41). The control at 620 equals the 750 record (0.229 / 0.349 against 0.22 / 0.33):
+the last 130 molecules of the hash order add nothing by count. **Line: both hold.** The next pool's prediction stands ((b) ≤ 0.28 with the 200 in), future
+pools are ordered by scaffold coverage, and T2 reads as coverage: what a scaffold family teaches transfers to its parents (strongly) and to neighbouring
+fused scaffolds (by 0.06–0.10). What this does not yet say: whether the seven pyrenes (the only four-ring source) or the 123 three-ring children carry the
+cross-scaffold part — chain 29.
+
+### Amendment 22:0x — chain 29: pyrenes against three-ring children (registered before it runs)
+
+Two arms, carried recipe, three seeds: *no-ring4* = the pool without its 7 pyrenes (743; `out/pool_ring4_ids_2026-10-02.txt`); *no-ring3* = the pool
+without the 123 three-ring molecules (627; `…ring3only…`). **Predictions.** no-ring3 reproduces most of chain 28: three-ring parents ≥ 0.40, (b) ≥ 0.38,
+fluorene scaffold ≥ 0.37; no-ring4 leaves (a) within 0.02 of the control and moves the fluoranthene scaffold by < 0.03 — seven molecules are too few to
+carry a scaffold. **Lines.** *Pyrenes matter:* no-ring4 moves fluoranthene by ≥ 0.03 → the four-ring A2 rows are worth more per molecule than the
+three-ring ones, and the next pool after the 200 is four-ring first. *Pyrenes do not matter at seven:* then the 93 four-ring rows in the manifest are a
+question of count (the 55 in the running 200 answer it), and the three-ring family is the proven lever.

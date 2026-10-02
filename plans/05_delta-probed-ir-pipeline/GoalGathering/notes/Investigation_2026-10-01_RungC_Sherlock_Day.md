@@ -235,3 +235,10 @@ larger blocks (6.65 h per gradient at 8 threads under 40-on-32 contention).
 
 **Coverage ablation (amendment 17:2x) running:** chain 28 — the pool without its 130 three-and-more-ring molecules (620) on lane B since 17:22, the
 620-molecule control on lane A after chain 26; both three seeds; read ≈ 20:30.
+
+## 2 October, 22:0x — the coverage ablation: both lines hold
+
+Without its 130 three-and-more-ring molecules the pool loses 0.15 on hold-out (a) (the three-ring parents go from 0.15 to 0.5, the single rings stay)
+and 0.06 on hold-out (b) (fluorene scaffold +0.10, fluoranthene +0.04); a 620-molecule control equals the 750 record. Scaffold coverage is the data
+lever, within a family strongly and across fused scaffolds measurably; the 200 keep their prediction. Chain 29 (registered above) separates the seven
+pyrenes from the three-ring children overnight (two lanes, ≈ 01:30). Outcome table in the pre-registration.
