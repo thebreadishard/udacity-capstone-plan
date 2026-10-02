@@ -91,6 +91,22 @@ def test_family_freq_rms_is_zero_on_the_truth_and_split_by_family():
     assert e["ring-ip"] > 1.0 and e["CH-stretch"] < 1e-6 and e["CH-oop"] < 1e-6
 
 
+def test_head_l2_switch_present_and_penalty_keeps_the_proxy_weights():
+    import rungC_cc_transfer as CT
+    text = (M05 / "rungC_cc_transfer.py").read_text(encoding="utf-8")
+    assert 'add_argument("--head-l2"' in text and '"network_head_l2"' in text
+    # the penalty term: with the weights at W0 it is zero and its gradient vanishes — checked on a tiny stand-in head
+    lin = torch.nn.Linear(4, 1)
+    w0 = [p.detach().clone() for p in lin.parameters()]
+    pen = 10.0 * sum(((p - q) ** 2).sum() for p, q in zip(lin.parameters(), w0, strict=True))
+    assert float(pen) == 0.0
+    with torch.no_grad():
+        lin.weight += 0.5
+    pen = 10.0 * sum(((p - q) ** 2).sum() for p, q in zip(lin.parameters(), w0, strict=True))
+    assert float(pen) == pytest.approx(10.0 * 4 * 0.25)
+    assert "head_l2" in CT.finetune.__doc__
+
+
 def test_alpha_scaling_baseline_recovers_a_per_class_factor():
     import rungC_cc_transfer as CT
     K = 5

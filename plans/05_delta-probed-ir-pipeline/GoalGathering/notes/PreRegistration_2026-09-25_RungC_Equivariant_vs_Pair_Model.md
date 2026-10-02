@@ -1358,3 +1358,32 @@ chain 26 (the intensity read on all ten (a) parents). **Intensity read-out (leve
 the start (A_fdc27f1bd1, A_e72997e726):** spectrum overlap **0.978 / 0.990 / 0.968** (zero rule 0.239), intensity-weighted relative rms **0.23 / 0.18 / 0.19**
 (zero rule 0.47). The registered line (overlap ≥ 0.95) is met on these two; the zero rule sits at 0.24, not the ≈ 0.85 guessed — the overlap is dominated by
 frequency positions at 10 cm⁻¹ FWHM (noted 11:0x). The full ten read in chain 26.
+
+## Outcome 2 October 14:2x — chain 25: T3 leave-one-anchor-out transfer to CCSD(T)/cc-pVDZ (amendment 06:4x)
+
+`out/T3_cc_transfer_seed{0,1,2}_2026-10-02.json` — chain 24's three models, four folds each, 300 fine-tune epochs at lr 1e-3. Ring-coupling ratio
+(mean over the three models, range) and **ring-ip corrected-ω rms in cm⁻¹** on the held-out anchor:
+
+| held-out | zero rule | α scaling (3 anchors, no network) | network untouched | network, α tuned (9 parameters) | network, head tuned |
+|---|---|---|---|---|---|
+| benzene | 1.00 / 25.0 | 0.12 / 6.4 | 0.91 / 22.8 | 0.16 (0.13–0.17) / **6.2** | **0.07** (0.05–0.09) / **4.4** |
+| fluorobenzene | 1.00 / 28.3 | 0.18 / 7.8 | 0.99 / 26.0 | 0.22 / **5.2** | 0.21 (0.15–0.26) / 5.2 |
+| pyridine | 1.00 / 25.9 | 0.23 / 7.3 | 0.89 / 30.8 | 0.27 / 6.6 | 0.26 (0.23–0.28) / **5.2** |
+| naphthalene | 1.00 / 25.9 | 0.32 / 10.2 | 0.99 / 20.4 | **0.27** (0.25–0.29) / **6.0** | 0.41 (0.25–0.67) / 10.5 |
+
+All-mode ω (CH-oop and CH-stretch included) stays 6–26 cm⁻¹: the cc-pVDZ CC correction of the out-of-plane modes is not carried by anything here.
+**Against the lines.** *Met* (head-tuned ring-ip ω ≤ 3 on naphthalene): **not met** — 10.5, and the best column gives 6.0. *Transfers but short:* the
+untouched proxy model does nothing at CC scale (ratio 0.9–1.0: it predicts a correction of proxy size, 2.4× too small and differently shaped); the
+**α-tuned network beats α scaling on ring-ip ω on all four anchors** (6.2 / 5.2 / 6.6 / 6.0 against 6.4 / 7.8 / 7.3 / 10.2) and on the ratio on the fused
+ring (0.27 against 0.32) — the network's features carry structure of the CC correction beyond a per-class scale, most visibly where the correction is
+largest; the head fine-tune (257 parameters on three molecules) wins on benzene and pyridine but is unstable on naphthalene (0.25–0.67 across models),
+i.e. it overfits three anchors. Verdict: **transfers but short**, by the α-tuned column; the lever is more anchors (anthracene running) and a fine-tune
+between α (9 parameters) and the full last layer. The ω of 5–6 cm⁻¹ in-plane on an unseen molecule from three CC anchors is the number to carry.
+
+### Amendment 14:2x — T3b: the regularised head fine-tune (registered before it runs)
+
+`rungC_cc_transfer.py --head-l2 λ`: the head fine-tune with an L2 penalty λ‖W − W₀‖² toward the proxy-trained last layer (W₀), λ ∈ {0.01, 0.1, 1}, same
+folds, same three models (chain 27). **Predictions.** Naphthalene's ring-ip ω lands between the α-tuned 6.0 and the head-tuned 10.5 for λ = 0.01, at or
+below 6.0 for λ ≥ 0.1, with the model spread of the ratio under 0.1 (against 0.25–0.67 now); benzene and pyridine keep their head-tuned gain at λ ≤ 0.1.
+**Lines.** *Regularised head is the transfer recipe:* some λ beats the α-tuned column on ring-ip ω on all four anchors. *α stays the recipe:* no λ does;
+then the transfer recipe until more anchors is α-tuning, and T3 waits for anthracene. T3's ≤ 3 cm⁻¹ line stands for the four-anchor set with anthracene added.

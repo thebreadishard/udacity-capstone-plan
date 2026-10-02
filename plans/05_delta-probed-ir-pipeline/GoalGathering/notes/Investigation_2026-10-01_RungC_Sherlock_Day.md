@@ -180,3 +180,11 @@ the head fine-tune runs in seconds per fold.
 busy, which OpenMP spin-waits also produce — the CPU-hour comparison with the reference says nothing. Action: the check lane's threads reniced to 19
 (its work is kept; it yields to the four production lanes); the lanes themselves untouched. If no file lands by 15:30 the lanes are inspected one by one
 (pyscf scratch, iteration state); the launch recipe gets the rule *threads ≤ cores including the check lane* either way (TASKS).
+
+## 2 October, 14:2x — T3 read: transfers but short; T3b registered
+
+Three CC anchors plus the proxy-trained network bring an unseen anchor's in-plane ω from 25–28 cm⁻¹ (B3LYP) to **5–6 cm⁻¹** (α-tuned network),
+against 6–10 for the SQM-like per-class scaling without a network; the full-head fine-tune overfits three molecules (naphthalene 0.25–0.67 across the
+three models). The ≤ 3 cm⁻¹ line is not met (naphthalene 6.0 at best). Outcome table in the pre-registration. Next: T3b (L2-to-proxy regularised head,
+chain 27, minutes) and anthracene as the fourth training anchor. The CH-oop and CH-stretch CC corrections (all-mode ω 6–26) are a separate question: the
+cc-pVDZ level's own out-of-plane behaviour (R0 deck, 22 Sep) — nothing in the proxy carries it.
