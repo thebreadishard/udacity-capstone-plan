@@ -1205,3 +1205,20 @@ missed by 0.01 on the low side. **Against the lines:** *flat middle* for this cu
 factor as the carried recipe's (1.17 per decade; 0.32 at 5,000) but two curves that each have one step and one flat segment are not yet a law: both read
 as composition or sampling effects of the pool at these counts, and the composition control (chain 20, running) is the next word on T2 for both.
 Decision 51: best epochs below the cap.
+
+## Outcome, chain 20 — composition control: the carried recipe at 175 from the mixed pool — 2 October 03:0x (`out/E7_rungC_carried_mixed175_2026-10-01`)
+
+The first 175 molecules of the mixed pool's hashed order are 138 layer-B and 37 layer-A2 molecules, no layer A. Read-outs: (a) **0.275** (0.28 / 0.26 / 0.28),
+(b) 0.37, ω 5.75 (7.0 / 4.8 / 5.5), ΔH 0.208; best epochs 29–91. Control, 175 from A + A2 (chain 14b): 0.24 (0.22–0.26), 0.37, ω 5.00. **Against the lines:**
+*composition* — 0.275 ≥ 0.27: at equal count the B-heavy pool is worse on hold-out (a) (whose ten molecules are layer-A parents) and equal on (b)
+(scaffolds). **Reading:** the mixed-pool curve (175 → 449 → 750) conflates count with composition — the larger points add molecules that are both more
+numerous and less like hold-out (a). Its extrapolation (0.19 at 5,000) is therefore not a count law and is withdrawn as a T2 number. The curve is
+re-drawn at fixed composition: within A + A2 at 45 / 100 / 175 (chain 21, below) — the sizes rung B's curve used — with the 750 point kept as
+"more count and a different mix". Decision 51: best epochs below the cap.
+
+## Dated amendment 2 October 03:1x — chain 21: the carried recipe at fixed composition, 45 and 100 (registered before it runs)
+
+Lane B at once: pattern f, projected target, pattern + 0.3 × kring, `--pool-layers A,A2 --sizes 45,100`, seeds 0–2 → `out/E7_rungC_carried_AA2_45_100_2026-10-01`;
+with chain 14b (175) it gives a three-point curve at fixed composition. **Prediction:** (a) 0.34–0.40 at 45, 0.28–0.32 at 100. **Lines.** *Law:* monotone
+beyond spreads over 45 / 100 / 175 → fitted and extrapolated (`rungC_learning_curve_fit.py`); the slope within A + A2 is the T2 slope until a larger
+fixed-composition pool exists. *Flat:* the sizes 45–175 do not separate → T2 needs the PC-scale pool and no extrapolation is written. Decision 51 as always.
