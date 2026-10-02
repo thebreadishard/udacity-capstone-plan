@@ -6,7 +6,7 @@ set -u
 P=/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline
 cd "$P/modules/05_support_predictor" || exit 1
 echo "=== apt holdout a start $(date)"
-for i in $(tr -d "" < /mnt/c/Users/thebr/AppData/Local/Temp/claude/C--Users-thebr-Documents-CapstonePlan/080ff7ed-d45b-451f-8c06-e90bcbbe88a0/scratchpad/holdout_a_ids.txt); do
+for i in $(tr -d '\r' < /mnt/c/Users/thebr/AppData/Local/Temp/claude/C--Users-thebr-Documents-CapstonePlan/080ff7ed-d45b-451f-8c06-e90bcbbe88a0/scratchpad/holdout_a_ids.txt); do
   d=corpus/molecules/$i
   [ -f "$d/dipole_b3lyp_fd.npz" ] && { echo "$i: APT exists, skipped"; continue; }
   H=hessian_b3lyp.npz; [ -f "$d/hessian_b3lyp_analytic.npz" ] && H=hessian_b3lyp_analytic.npz

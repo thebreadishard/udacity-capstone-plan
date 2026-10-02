@@ -30,6 +30,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "src"))
 import e6_learning_curve as E6  # noqa: E402
 import e7_t2_posthoc as PH  # noqa: E402
 import e7_t2_sqm as T2  # noqa: E402
+import rungC_intensities as RI  # noqa: E402
 from e7_rungB_pairs import molecule_pairs, readouts  # noqa: E402
 from rungC_equivariant import (  # noqa: E402
     AGGREGATION,
@@ -383,7 +384,8 @@ def train_one(train_ids: list, tensors: dict, seed: int, epochs: int, lr: float 
     return model, hist
 
 
-PER_MOLECULE_KEYS = ("coupling_ratio", "coupling_rms", "coupling_zero_rms", "corrected_freq_rms", "dH_residual_ratio")
+PER_MOLECULE_KEYS = ("coupling_ratio", "coupling_rms", "coupling_zero_rms", "corrected_freq_rms", "dH_residual_ratio",
+                     "spectrum_overlap", "spectrum_overlap_zero_rule", "intensity_rel_rms", "intensity_rel_rms_zero_rule", "n_modes")
 
 
 def per_molecule_readouts(mols: dict, ids: list, tr: list, dF_of) -> dict:
@@ -392,6 +394,9 @@ def per_molecule_readouts(mols: dict, ids: list, tr: list, dF_of) -> dict:
     out = {}
     for i in ids:
         r = readouts(mols, [i], tr, dF_of)
+        if "apt" in mols[i]:                                               # lever 5 step 2 (2 Oct 2026): the spectrum read-outs where an APT exists
+            B = mols[i]["B"]
+            r.update(RI.intensity_readout(mols[i]["H_low"], mols[i]["dH_true"], B.T @ dF_of(i) @ B, mols[i]["masses"], mols[i]["apt"]))
         out[i] = {k: (None if isinstance(r.get(k), float) and np.isnan(r[k]) else r.get(k)) for k in PER_MOLECULE_KEYS}
     return out
 
@@ -554,6 +559,16 @@ def main() -> int:
                 substituted.append(i)
         log(f"analytic second-route Hessians substituted for {len(substituted)} molecules")
     mols = {i: m for i, m in mols.items() if not m["imaginary"]}
+    n_apt = 0
+    for i, m in mols.items():                                              # lever 5 step 2: atomic polar tensors (probes/dipole_derivs_fd.py) where present
+        p = Path(a.molecules) / i / "dipole_b3lyp_fd.npz"
+        if p.exists():
+            z = np.load(p)
+            if bool(z["passed"]):
+                m["apt"] = np.asarray(z["apt"], float)
+                n_apt += 1
+    if n_apt:
+        log(f"atomic polar tensors found for {n_apt} molecules: intensity read-outs on (lever 5, registered 2 Oct 2026 06:5x)")
     test_a = [i for i in test_a if i in mols]
     test_b = [i for i in test_b if i in mols]
     pool = [i for i in pool if i in mols]
@@ -643,6 +658,7 @@ def main() -> int:
                     continue
                 r = readouts(mols, ids, tr, dF_of)
                 r["per_molecule"] = per_molecule_readouts(mols, ids, tr, dF_of)
+                r.update(RI.aggregate(r["per_molecule"]))
                 out[h] = r
                 z = res["zero_rule"][h] if h in res["zero_rule"] else res["zero_rule_c"][str(n)]
                 lines.append(f"| {n} | {seed} | ({h}) | {r['coupling_rms']:.2f} | {r['coupling_zero_rms']:.2f} | {r['coupling_ratio']:.2f} | "
