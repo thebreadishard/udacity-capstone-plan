@@ -1250,3 +1250,22 @@ once):** the carried recipe (pattern f, projected target, pattern + 0.3 × kring
 control chain 14b (0.24 / 0.37 / ω 5.00). **Prediction:** ω 4.2–4.8 at 0.3 with (a) 0.23–0.26. **Lines.** *Works:* ω below 5.0 by more than 0.5 with (a) ≤ 0.26
 → carried, re-read at 750. *Flat:* ω within 0.3 of 5.0 → the diagonal is not what limits ω under this head; the next suspect is the per-class scale floor of
 the diagonal classes. *Hurts:* (a) > 0.27 → the ω gain costs couplings; the weight is lowered or the term dropped. Decision 51 as always.
+
+## Outcome, lever 5 (first cell) — K-diagonal term, weight 0.1, on the carried recipe, 175 — 2 October 05:2x (`out/E7_rungC_lever5_kd0.1_175_2026-10-01`; the 0.3 cell is running)
+
+| recipe (pattern f, projected, pattern + 0.3 × kring, 175) | (a) ratio, seeds | (b) ratio | (a) ω, seeds | (a) ΔH residual | best epochs |
+|---|---|---|---|---|---|
+| without the diagonal term (chain 14b) | 0.24 (0.22 / 0.26 / 0.24) | 0.37 | 5.00 | 0.185 | 67–103 |
+| **+ 0.1 × K-diagonal term** | **0.23** (0.22 / 0.23 / 0.24) | **0.36** | **2.78** (2.7 / 2.9 / 2.7) | **0.144** | 89–104 |
+
+**Against the lines:** *works*, by far more than the line asked (ω below 5.0 by 2.2 cm⁻¹ against the 0.5 required; (a) unchanged; ΔH residual down from
+0.185 to 0.144). The framing of 04:1x was right: the ω error sat in diagonal entries no term weighted. **T1's ω criterion (≤ 3 cm⁻¹) is met at 175 by this
+recipe, with the ratio criterion already met.** The 0.3 cell and the 750 read (chain 23, registered below) follow. Decision 51: best epochs below the cap.
+
+## Dated amendment 2 October 05:3x — chain 23: the carried recipe with the diagonal term at 750 (registered before it runs)
+
+Lane B after chain 22: pattern f, projected target, pattern + 0.3 × kring + 0.1 × K-diagonal (the weight is raised to 0.3 before the start if the 0.3 cell
+reads better on ω at equal (a); the choice is recorded here before the run starts), pool A + A2 + B, seeds 0–2 → `out/E7_rungC_carried_kd_750_2026-10-01`.
+Controls: chain 17 (750 without the diagonal term: 0.22 / 0.33 / ω 3.50) and rung B f at 750 (0.32 / 0.43 / 4.47). **Prediction:** (a) 0.20–0.23, (b)
+0.32–0.35, ω 2.2–2.8. **Lines.** *T1 met in full:* (a) ≤ 0.30 and ω ≤ 3 at 750 on hold-out (a), (b) read beside it. *Half:* ω ≤ 3 with (a) above chain 17 by
+both spreads → the trade-off returns at 750 and the weight is searched. Decision 51 as always.

@@ -78,7 +78,7 @@ Satisfied = T1 met → T2 designed; T2 met → the PC; T3 met → the mandate's 
 
 Per molecule (seed 0): 2.2–6.0 cm⁻¹, two molecules at 5.1 and 6.0. The ring block — the read-out the auxiliary terms aim at — is the best family; the ω
 rms is carried by the *other* family, whose diagonal entries no term weights (the pattern term standardises them with a floored class scale, the kring
-term ignores them). The first registered lever on ω is therefore a diagonal term over all modes beside the ring block (lever 5, `--kdiag-weight`).
+term ignores them). The first registered lever on ω is therefore a diagonal term over all modes beside the ring block (lever 5, `--kdiag-weight`). **Read 05:2x: weight 0.1 at 175 gives ω 2.78 (2.7–2.9) against 5.00, (a) 0.23 unchanged, ΔH 0.144 — T1's ω criterion met at 175; the 750 read is chain 23.**
 
 ## Decisions carried from the day
 
