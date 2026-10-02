@@ -396,6 +396,77 @@ def per_molecule_readouts(mols: dict, ids: list, tr: list, dF_of) -> dict:
     return out
 
 
+def molecule_tensors(i: str, m: dict, mol: dict, mol_dir: Path, cfg, cache_dir: Path, target_residuals: dict | None = None) -> dict:
+    """The tensors one molecule contributes to training and read-out: the Cartesian inputs and truth (`m`, as `load_molecule` returns it, or a CC-substituted
+    equivalent), B⁺ and the projected internal ΔF, the entry classes, the kring tensors, the pattern classes (and the LS target when asked), the hybrid
+    tensors. `cfg` carries aux, head, pattern, aux_target, ls_lam, zero_hlow (the trainer's namespace or a SimpleNamespace); `mol` is the rung-B loader's
+    entry (B, F_low, masses, V, w, family). Factored out of main on 2 Oct 2026 so that the CC-transfer script builds anchors with the same code."""
+    t = to_torch(m)
+    t["Bp"] = torch.as_tensor(np.linalg.pinv(mol["B"]), dtype=torch.float32)
+    t["dF_true"] = t["Bp"].T @ t["dH_true"] @ t["Bp"]
+    t["dF_norm"] = (t["dF_true"] ** 2).mean().clamp_min(1e-30)
+    t["cls"] = entry_classes(m)
+    if cfg.aux in ("kring", "both"):
+        t.update(kring_tensors(mol["masses"], mol["V"], mol["w"], mol["family"], m["dH_true"]))
+    if cfg.aux in ("pattern", "both") or cfg.head == "hybrid":            # the hybrid's class scales need the pattern classes under any aux term
+        t["pat_cls"] = pattern_classes(mol_dir, mol, cfg.pattern)
+        if cfg.aux_target == "ls":                                          # lever 4 (1 Oct 2026): the pattern-consistent target
+            mask = (t["pat_cls"] >= 0).numpy()
+            X, cached = cached_pattern_ls_target(cache_dir, i, cfg.pattern, m["dH_true"], mol["B"], m["masses"], mask, lam_rel=cfg.ls_lam)
+            projected = np.where(mask, t["dF_true"].numpy(), 0.0)
+            ratio = scale_ratio(X, projected)                                 # the cache refuses to store such a target; a stale file is caught here
+            if ratio > SCALE_LIMIT:
+                raise RuntimeError(f"{i}: LS target entries {ratio:.3g}× the projected target's (cached: {cached}) — the blow-ups of 1 Oct 11:4x / "
+                                   f"12:2x; delete the cache file or raise --ls-lam (now {cfg.ls_lam:g})")
+            if target_residuals is not None:
+                target_residuals[i] = {"projected": weighted_residual(m["dH_true"], mol["B"], m["masses"], projected),
+                                       "ls": weighted_residual(m["dH_true"], mol["B"], m["masses"], X), "scale_ratio": ratio, "from_cache": cached}
+            t["dF_true"] = torch.as_tensor(X, dtype=torch.float32)
+    if cfg.head == "hybrid":
+        t.update(hybrid_tensors(mol_dir, mol, cfg.pattern))
+    if getattr(cfg, "zero_hlow", False):
+        t["H_low"] = torch.zeros_like(t["H_low"])
+    return t
+
+
+HYBRID_CTOR_KEYS = ("aggregation", "tensor_input", "sqm_scale", "n_pair_features", "hidden", "n_s", "n_v", "n_blocks")
+
+
+def save_hybrid_model(model: HybridDeltaFModel, path: Path, args: dict, n: int, seed: int) -> None:
+    """Lever 1 / T3 (2 Oct 2026): the trained hybrid model with everything needed to rebuild it — state (buffers included), aux settings, constructor arguments."""
+    ctor = dict(aggregation=args["aggregation"], tensor_input=bool(args["tensor_input"]), sqm_scale=bool(args["sqm_scale"]),
+                n_pair_features=int(model.n_pair_features), hidden=int(model.head[0].out_features), n_s=int(model.body.blocks[0].n_s),
+                n_v=int(model.body.n_v), n_blocks=len(model.body.blocks))
+    torch.save({"state": model.state_dict(), "ctor": ctor, "aux_mode": model.aux_mode,
+                "aux_class_scale": None if model.aux_class_scale is None else model.aux_class_scale.clone(),
+                "kring_weight": float(getattr(model, "kring_weight", 1.0)), "kdiag_weight": float(getattr(model, "kdiag_weight", 0.0)),
+                "pattern": args["pattern"], "aux_target": args["aux_target"], "ls_lam": args["ls_lam"], "head": args["head"],
+                "n": n, "seed": seed, "args": args}, path)
+
+
+def load_hybrid_model(path: Path) -> tuple[HybridDeltaFModel, dict]:
+    """(model, record) from `save_hybrid_model`; the record carries the settings the transfer script needs (pattern, aux, aux_target, ls_lam, args)."""
+    ck = torch.load(path, map_location="cpu", weights_only=False)
+    model = HybridDeltaFModel(**ck["ctor"])
+    model.load_state_dict(ck["state"])
+    model.aux_mode = ck["aux_mode"]
+    model.aux_class_scale = ck["aux_class_scale"]
+    model.kring_weight, model.kdiag_weight = ck["kring_weight"], ck["kdiag_weight"]
+    model.scale, model.class_scale_values = 1.0, None
+    return model, ck
+
+
+def freeze_for_transfer(model: HybridDeltaFModel) -> list:
+    """Lever 1 / T3: only the head's last linear layer and the SQM α stay trainable; the encoder, the pooled-feature layers and the input scales are frozen.
+    Returns the trainable parameters."""
+    for p in model.parameters():
+        p.requires_grad_(False)
+    train = list(model.head[-1].parameters()) + ([model.alpha] if model.alpha is not None else [])
+    for p in train:
+        p.requires_grad_(True)
+    return train
+
+
 def predictor(model: torch.nn.Module, tensors: dict, mols: dict):
     """dF_of(i): the model's Cartesian ΔH projected to the pair model's internal coordinates (B⁺ᵀ ΔH B⁺), as `readouts` expects."""
     cache = {}
@@ -438,6 +509,7 @@ def main() -> int:
     ap.add_argument("--patience", type=int, default=0, help="search stage 2: early stopping on the inner validation term, best state restored (0 = off)")
     ap.add_argument("--kring-weight", type=float, default=1.0, help="lever 3b (1 Oct 2026): weight of the kring term inside --aux both (the pattern term keeps weight 1)")
     ap.add_argument("--kdiag-weight", type=float, default=0.0, help="lever 5 (2 Oct 2026): weight of a term on the diagonal of K over all modes inside --aux both (0 = off)")
+    ap.add_argument("--save-model", action="store_true", help="lever 1 / T3 (2 Oct 2026): save the trained hybrid model per size and seed next to the record")
     ap.add_argument("--aux", default="all", choices=["all", "pattern", "kring", "both"],
                     help="internal term: 'all' (registered) or 'pattern' (30 Sep 2026, rank 2 of the external reviews: the pair model's pattern only, one "
                          "standardisation scale per pair class from the fit molecules)")
@@ -512,32 +584,7 @@ def main() -> int:
     tensors, target_residuals = {}, {}
     for i in sorted(needed):
         m = load_molecule(Path(a.molecules) / i, use_analytic=a.use_analytic)
-        t = to_torch(m)
-        t["Bp"] = torch.as_tensor(np.linalg.pinv(mols[i]["B"]), dtype=torch.float32)
-        t["dF_true"] = t["Bp"].T @ t["dH_true"] @ t["Bp"]
-        t["dF_norm"] = (t["dF_true"] ** 2).mean().clamp_min(1e-30)
-        t["cls"] = entry_classes(m)
-        if a.aux in ("kring", "both"):
-            t.update(kring_tensors(mols[i]["masses"], mols[i]["V"], mols[i]["w"], mols[i]["family"], m["dH_true"]))
-        if a.aux in ("pattern", "both") or a.head == "hybrid":            # the hybrid's class scales need the pattern classes under any aux term
-            t["pat_cls"] = pattern_classes(Path(a.molecules) / i, mols[i], a.pattern)
-            if a.aux_target == "ls":                                        # lever 4 (1 Oct 2026): the pattern-consistent target
-                mask = (t["pat_cls"] >= 0).numpy()
-                X, cached = cached_pattern_ls_target(Path(a.out_prefix).parent / "ls_targets", i, a.pattern, m["dH_true"], mols[i]["B"], m["masses"], mask,
-                                                     lam_rel=a.ls_lam)
-                projected = np.where(mask, t["dF_true"].numpy(), 0.0)
-                ratio = scale_ratio(X, projected)                               # the cache refuses to store such a target; a stale file is caught here
-                if ratio > SCALE_LIMIT:
-                    raise RuntimeError(f"{i}: LS target entries {ratio:.3g}× the projected target's (cached: {cached}) — the blow-ups of 1 Oct 11:4x / "
-                                       f"12:2x; delete the cache file or raise --ls-lam (now {a.ls_lam:g})")
-                target_residuals[i] = {"projected": weighted_residual(m["dH_true"], mols[i]["B"], m["masses"], projected),
-                                       "ls": weighted_residual(m["dH_true"], mols[i]["B"], m["masses"], X), "scale_ratio": ratio, "from_cache": cached}
-                t["dF_true"] = torch.as_tensor(X, dtype=torch.float32)
-        if a.head == "hybrid":
-            t.update(hybrid_tensors(Path(a.molecules) / i, mols[i], a.pattern))
-        if a.zero_hlow:
-            t["H_low"] = torch.zeros_like(t["H_low"])
-        tensors[i] = t
+        tensors[i] = molecule_tensors(i, m, mols[i], Path(a.molecules) / i, a, Path(a.out_prefix).parent / "ls_targets", target_residuals)
     log(f"{len(mols)} molecules; pool {len(pool)}; hold-out (a) {len(test_a)}, (b) {len(test_b)} ({cores}); sizes {sizes}; seeds {seeds}; epochs {a.epochs}; "
         f"threads {a.threads}; model {sum(p.numel() for p in DeltaHessianModel(n_s=a.body_width, n_v=a.body_width, n_blocks=a.body_blocks, tensor_input=a.tensor_input).parameters()):,} "
         f"parameters, {a.aggregation} aggregation"
@@ -580,6 +627,11 @@ def main() -> int:
                                     pair_features=a.pair_features, hybrid_hidden=a.hybrid_hidden, body_blocks=a.body_blocks, body_width=a.body_width,
                                     kring_weight=a.kring_weight, kdiag_weight=a.kdiag_weight)
             dF_of = predictor(model, tensors, mols)
+            if a.save_model:
+                if a.head != "hybrid":
+                    raise SystemExit("--save-model is written for the hybrid head (the model the CC transfer uses)")
+                save_hybrid_model(model, Path(f"{a.out_prefix}_model_n{n}_seed{seed}.pt"), vars(a), n, seed)
+                log(f"  model saved: {a.out_prefix}_model_n{n}_seed{seed}.pt")
             out = {"seed": seed, "train_history": hist, "output_scale": model.scale, "class_scale": model.class_scale_values,
                    "aux_class_scale": (None if model.aux_class_scale is None else model.aux_class_scale.tolist()),
                    "seconds": round(time.time() - t1, 1), "inner_val_ids": val_ids,
