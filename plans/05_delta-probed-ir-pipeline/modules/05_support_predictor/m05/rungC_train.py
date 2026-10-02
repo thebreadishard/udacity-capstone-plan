@@ -402,6 +402,12 @@ def per_molecule_readouts(mols: dict, ids: list, tr: list, dF_of) -> dict:
     return out
 
 
+def record_paths(prefix) -> tuple[Path, Path]:
+    """(json, md) for an output prefix, by concatenation — `Path.with_suffix` treats everything after the first dot as the suffix (2 Oct 2026 14:4x:
+    `T3b_l20.01_seed0_…` became `T3b_l20.json`, and the λ 0.01 and 0.1 records overwrote each other)."""
+    return Path(f"{prefix}.json"), Path(f"{prefix}.md")
+
+
 def load_corpus(molecules: str, use_analytic: bool, log=print) -> tuple:
     """The corpus as the trainer sees it: the rung-B loader's entries, E6's splits, the analytic second-route Hessians substituted where both exist
     (`--use-analytic`), molecules with an imaginary mode dropped, and the atomic polar tensors attached where a passed file exists (CPHF route first).

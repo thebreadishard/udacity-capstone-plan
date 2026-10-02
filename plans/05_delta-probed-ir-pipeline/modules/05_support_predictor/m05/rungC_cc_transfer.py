@@ -35,6 +35,7 @@ from rungC_train import (  # noqa: E402
     pattern_class_scales,
     predictor,
     readouts,
+    record_paths,
 )
 
 
@@ -185,8 +186,8 @@ def main() -> int:
               f"{fold['network_alpha']['corrected_freq_rms']:.2f} | head tuned {fold['network_head']['coupling_ratio']:.2f} / {fold['network_head']['corrected_freq_rms']:.2f}"
               + (f" | head L2 {a.head_l2:g}: {fold['network_head_l2']['coupling_ratio']:.2f} / {fold['network_head_l2']['freq_rms_by_family'].get('ring-ip', float('nan')):.2f} ring-ip" if a.head_l2 > 0 else ""), flush=True)
     res["seconds"] = round(time.time() - t0)
-    out = Path(a.out_prefix)
-    json.dump(res, open(out.with_suffix(".json"), "w"), indent=1)
+    out_json, out_md = record_paths(a.out_prefix)
+    json.dump(res, open(out_json, "w"), indent=1)
     lines = [f"# T3 — leave-one-anchor-out transfer to CCSD(T)/cc-pVDZ ({res['date']})", "", f"Model `{Path(a.model).name}` ({res['model_record']}); fine-tune {a.epochs} epochs at lr {a.lr:g}, "
              f"aux weight {a.aux_weight:g}; low levels {lows}.", "",
              "| held-out anchor | read-out | zero rule | α scaling (3 anchors) | network as is | network, α tuned | network, head tuned |" + (f" head tuned, L2 {a.head_l2:g} |" if a.head_l2 > 0 else ""),
@@ -200,7 +201,7 @@ def main() -> int:
         fams = f["network_head"]["diag_rms"]
         lines.append(f"| {held} | per-family diag rms, head tuned | — | — | — | — | " + ", ".join(f"{k} {v:.1f}" for k, v in fams.items()) + " |")
     lines += ["", f"{res['seconds']} s."]
-    out.with_suffix(".md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    out_md.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print("\n".join(lines))
     return 0
 

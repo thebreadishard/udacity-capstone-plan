@@ -20,7 +20,7 @@ PLAN = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PLAN / "modules" / "05_support_predictor" / "m05"))
 import rungC_intensities as RI  # noqa: E402
 from rungC_equivariant import load_molecule  # noqa: E402
-from rungC_train import load_corpus, load_hybrid_model, molecule_tensors, per_molecule_readouts, predictor, readouts  # noqa: E402
+from rungC_train import load_corpus, load_hybrid_model, molecule_tensors, per_molecule_readouts, predictor, readouts, record_paths  # noqa: E402
 
 
 def main() -> int:
@@ -64,9 +64,9 @@ def main() -> int:
                              f"{v['spectrum_overlap']:.3f} | {v['spectrum_overlap_zero_rule']:.3f} | {v['intensity_rel_rms']:.2f} | {v['intensity_rel_rms_zero_rule']:.2f} | {v['n_modes']} |")
     res["seconds"] = round(time.time() - t0)
     lines += ["", f"{res['seconds']} s."]
-    out = Path(a.out_prefix)
-    json.dump(res, open(out.with_suffix(".json"), "w"), indent=1)
-    out.with_suffix(".md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    out_json, out_md = record_paths(a.out_prefix)
+    json.dump(res, open(out_json, "w"), indent=1)
+    out_md.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print("\n".join(lines))
     return 0
 

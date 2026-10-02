@@ -40,6 +40,14 @@ def test_freeze_for_transfer_leaves_only_last_layer_and_alpha():
     assert not any(p.requires_grad for p in m.body.parameters())
 
 
+def test_record_paths_keep_a_dotted_prefix():
+    j, m = RT.record_paths("out/T3b_l20.01_seed0_2026-10-02")
+    assert j.name == "T3b_l20.01_seed0_2026-10-02.json" and m.name == "T3b_l20.01_seed0_2026-10-02.md"
+    for src in ("rungC_cc_transfer.py",):
+        assert "with_suffix" not in (M05 / src).read_text(encoding="utf-8")
+    assert "with_suffix" not in (PLAN / "probes" / "rungC_eval_saved.py").read_text(encoding="utf-8")
+
+
 def test_trainer_switch_present():
     import re
     text = (M05 / "rungC_train.py").read_text(encoding="utf-8")
