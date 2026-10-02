@@ -161,3 +161,10 @@ cost. Options for the user at lunch: a second CPX62 for the A2 half (≈ €25 p
 
 **Chain 8c (d + ridge at 750, the route's last record):** seeds 0–1 (a) 0.60 / 0.46 — the ridge target at λ 1e-3 on pattern d is as bad at 750 as at
 175 (0.44); the route stays closed (chain 12's λ 0.1 cell was the only working one, and pattern f + projected beats it).
+
+**11:0x — intensity read-out, first numbers (smoke model, two APT molecules; `probes/rungC_eval_saved.py`).** The zero rule's spectrum overlap is
+**0.20–0.28**, not the ≈ 0.85 guessed at 06:5x: with a 10 cm⁻¹ FWHM the 23 cm⁻¹ frequency shift of the uncorrected modes already destroys the
+cosine, so the overlap is a frequency-position metric first and an intensity metric second (the 2-epoch smoke model with ω ≈ 6 cm⁻¹ already reaches
+0.97 / 0.81). The intensity-weighted relative rms is the intensity-specific number: smoke model 0.29 / 0.17 against zero rule 0.54 / 0.39. The
+registered line (overlap ≥ 0.95 for the carried model) stands; the relative rms is read beside it as the quantity that answers the intensity
+question. Full read: chain 26 (chain 24's three models on all ten (a) parents once their APTs are in).
