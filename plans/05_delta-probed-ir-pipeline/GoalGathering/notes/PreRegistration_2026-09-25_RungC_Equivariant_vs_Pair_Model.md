@@ -1222,3 +1222,21 @@ Lane B at once: pattern f, projected target, pattern + 0.3 × kring, `--pool-lay
 with chain 14b (175) it gives a three-point curve at fixed composition. **Prediction:** (a) 0.34–0.40 at 45, 0.28–0.32 at 100. **Lines.** *Law:* monotone
 beyond spreads over 45 / 100 / 175 → fitted and extrapolated (`rungC_learning_curve_fit.py`); the slope within A + A2 is the T2 slope until a larger
 fixed-composition pool exists. *Flat:* the sizes 45–175 do not separate → T2 needs the PC-scale pool and no extrapolation is written. Decision 51 as always.
+
+## Outcome, chain 21 — the carried recipe at fixed composition (A + A2: 45 / 100 / 175) — 2 October 04:1x (`out/E7_rungC_carried_AA2_45_100_2026-10-01`, fit `out/rungC_lc_carried_AA2_2026-10-02`)
+
+| pool (A + A2 only) | (a) ratio, seeds | (b) ratio | (a) ω | best epochs |
+|---|---|---|---|---|
+| 45 | 0.29 (0.28 / 0.28 / 0.30) | 0.41 | 7.0 | 164 / 131 / 64 |
+| 100 | **0.25** (0.26 / 0.24 / 0.23) | 0.38 | 4.9 | 84 / 155 / 176 |
+| 175 (chain 14b) | 0.24 (0.22 / 0.26 / 0.24) | 0.37 | 5.0 | 67–103 |
+| 750, mixed (chain 17) | 0.22 (0.21–0.22) | 0.33 | 3.5 | 75–94 |
+
+**Against the lines:** 45 → 100 is a step beyond the spreads (0.29 → 0.25, ω 7.0 → 4.9); 100 → 175 is *flat* (0.25 → 0.24, ω 4.9 → 5.0). Predictions
+0.34–0.40 at 45 and 0.28–0.32 at 100 were pessimistic. The three-point fit (factor 1.37 per decade on (a)) is carried by the 45 point and is not written
+as a T2 number: at fixed composition the ratio saturates near 0.24 by 100 molecules of A + A2. The 750 point's 0.22 and its (b) 0.33 come with layer B —
+molecules of a different kind, not more of the same — and hold-out (b) (scaffolds) gains most from them. **Reading for T2:** on this corpus, data pays
+through *coverage* (new kinds of molecules) more than through count; a count law needs a pool whose diversity grows with its size, which is what the
+PC-scale corpus would be. No extrapolation is written; the T2 question is restated as a coverage question (which molecules to compute next), and the
+read-out to design it with is the per-molecule field of the records (H7). Decision 51: one best epoch at 100 (176) within 10 % of the cap — noted, not
+repeated (the point is flat with its neighbours).
