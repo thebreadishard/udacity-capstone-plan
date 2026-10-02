@@ -120,3 +120,21 @@ overlap of the two Lorentzian-broadened spectra (FWHM 10 cm⁻¹, 500–3500 cm�
 baseline = the zero rule (modes of H_low). Prediction: the carried model's spectra overlap ≥ 0.95 on hold-out (a) where the zero rule sits near 0.85 — the
 intensities move mainly through the mode mixing (Duschinsky) that the ratio already measures; the APT's own level dependence (B3LYP vs CC) is a second
 term, read later when the E8 probe stores dipoles. First data: the ten hold-out (a) parents on the laptop when a lane frees (chain 23's lane, ≈ 09:00).
+
+## 2 October, 07:3x — the next pool runs (the user: "Reken die 200 kandidaten maar op een CPX62"); the coverage prediction, registered before the data lands
+
+**What runs.** The 200 ids of `out/next_pool_candidates_2026-10-02.csv` (63 three- and four-ring A2 rows, 137 B rows of the weak fused-two-ring and
+new single-ring kinds) on the new CPX62 `ubuntu-32gb-hel1-2` (46.62.227.91 — same name as the deleted naphthalene server, different IP), the corpus
+route as it was for layer B (psi4 1.11, deck v1: B3LYP and ωB97X/6-31G* FD Hessians at the B3LYP geometry), two runners of 8 threads × 12 GB on two
+copies of the corpus dir, each with a cost-balanced half of the ids (`scratchpad/next_pool_ids_{a,b}.txt`; `bootstrap_nextpool_1002.sh`). Expected
+≈ 1–2 h per molecule per runner → 4–7 days; results come back through `merge_shards.py` as the layer-B shards did.
+
+**The test this is (lever 2, T2 as coverage).** The carried recipe (pattern f, projected target, pattern + 0.3 kring + 0.1 K-diagonal, 3 × 64 body)
+retrained on pool + the 200 (same hold-outs (a) and (b), three seeds; a 750-row control with the same recipe is chain 17/23's record). **Predictions.**
+Hold-out (b) — the fluorene/fluoranthene scaffolds, 0.33–0.36 today — falls to ≤ 0.28 because four-ring fused scaffolds enter the pool for the first
+time (the error map's gradient: 0.11 → 0.20 → 0.3 → 0.4 with scaffold size); the 4ar-fused kinds in the per-kind map fall by ≥ 0.05 each; hold-out (a)
+stays within its seed spread (0.21–0.24). **Lines.** *Coverage confirmed:* (b) ≤ 0.28 with (a) unchanged → the next pools are chosen by scaffold
+coverage, and the A2 pending rows (441 three-ring, remaining four-ring) come next. *Count, not coverage:* (b) improves by < 0.03 → the 200 did what any
+200 would (compare the 449 → 750 step: 0.37 → 0.33 on (b) for 300 B rows), and the scaffold hypothesis is dropped for the next pool. *Worse:* a
+(b) above 0.36 means the new rows carry noise (FD B3LYP: the target noise floor is ratio ≈ 0.1) — check the analytic second route on a sample before
+reading further. The error map is rerun on the new records as the mechanical check (`probes/rungC_error_map.py`).
