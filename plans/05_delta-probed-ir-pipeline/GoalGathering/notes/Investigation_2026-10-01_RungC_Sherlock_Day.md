@@ -209,3 +209,14 @@ time in `einsum` over the vvvv and ovvv blocks; moving the two largest contracti
 code item, measurable on water/benzene against pyscf's own Λ (two routes). Not pursued: DF-CCSD(T) (no gradient path in pyscf), a different CC code
 (the probe's two-route checks and gate 1 are built on pyscf). (2) The SCF + CCSD part stays ≤ 25 %; nothing to do there before (b). Lever 3 is read; the
 code item (b) sits in the throughput row of TASKS, after the Sherlock day.
+
+## 2 October, 15:0x — T3b read; anthracene's measured pace
+
+**T3b** (outcome in the pre-registration): no λ beats α-tuning on all four anchors (fluorobenzene resists); λ = 1 ties it, is stable on naphthalene and
+gives its lowest ratio (0.23). α-tuning stays the transfer recipe; the next T3 read is with anthracene as the fourth training anchor. Incident on the way:
+`Path.with_suffix` on a dotted prefix overwrote two cells — `record_paths` by concatenation in both scripts, test added (`test_record_paths_keep_a_dotted_prefix`).
+
+**Anthracene:** first four gradients at 14:42 after **6.65 h each** at 8 threads with 40 threads on 32 vCPUs (reference 1.7 h at 16 threads alone — the
+lambda stage at 24 atoms is almost the whole gradient, as lever 3's table says). Ten to eleven gradients per lane → Hessian ≈ 5 Oct morning (the check lane
+reniced since 14:13 should shave a little). Rule written: lanes × threads ≤ cores including the check lane; for the next anchor of this size: 3 lanes × 10 + check
+lane at 2 on a CCX53, or the check lane after the lanes.

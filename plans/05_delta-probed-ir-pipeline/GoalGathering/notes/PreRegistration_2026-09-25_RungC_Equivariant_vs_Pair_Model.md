@@ -1387,3 +1387,22 @@ folds, same three models (chain 27). **Predictions.** Naphthalene's ring-ip ω l
 below 6.0 for λ ≥ 0.1, with the model spread of the ratio under 0.1 (against 0.25–0.67 now); benzene and pyridine keep their head-tuned gain at λ ≤ 0.1.
 **Lines.** *Regularised head is the transfer recipe:* some λ beats the α-tuned column on ring-ip ω on all four anchors. *α stays the recipe:* no λ does;
 then the transfer recipe until more anchors is α-tuning, and T3 waits for anthracene. T3's ≤ 3 cm⁻¹ line stands for the four-anchor set with anthracene added.
+
+## Outcome 2 October 15:0x — chains 27/27b: T3b, the L2-to-proxy regularised head (amendment 14:2x)
+
+`out/T3b_l2{0.01,0.1,1}_seed{0,1,2}_2026-10-02.json` (the λ 0.01 and 0.1 cells rerun as chain 27b after the `with_suffix` incident of 14:4x — the first
+copies overwrote each other; fixed with `record_paths` and a test). Ring-coupling ratio (mean, range over the three models) and ring-ip ω of the
+regularised head, against the α-tuned column:
+
+| held-out | λ 0.01 | λ 0.1 | λ 1 | α tuned |
+|---|---|---|---|---|
+| benzene | 0.04 (0.03–0.06) / 4.4 | 0.07 / 5.4 | 0.13 / 5.5 | 0.16 / 6.2 |
+| fluorobenzene | 0.17 (0.13–0.20) / 5.3 | 0.16 / 6.0 | 0.19 / 5.4 | 0.22 / **5.2** |
+| pyridine | 0.25 / 5.1 | 0.24 / 5.6 | 0.25 / 6.0 | 0.27 / 6.6 |
+| naphthalene | 0.37 (0.19–0.64) / 9.4 | 0.33 (0.19–0.41) / 8.3 | **0.23 (0.22–0.25) / 5.9** | 0.27 (0.25–0.29) / 6.0 |
+
+**Against the lines.** *Regularised head is the transfer recipe* (some λ beats α-tuning on ring-ip ω on all four): **not met** — fluorobenzene stays at or
+above α-tuning for every λ (5.3–6.0 against 5.2). *α stays the recipe:* **met, with a qualification** — λ = 1 ties α-tuning (three of four below it, fluorobenzene
++0.2 cm⁻¹), removes the naphthalene instability (0.22–0.25 against 0.25–0.67 unregularised) and gives the lowest naphthalene ratio of any column (0.23).
+The predictions held in direction: naphthalene improves monotonically with λ (9.4 → 8.3 → 5.9), benzene and pyridine keep their gain at small λ. Transfer
+recipe until more anchors: α-tuning, with the λ = 1 head as the equal alternative; T3's ≤ 3 cm⁻¹ line waits for anthracene as the fourth anchor (≈ 5 Oct).
