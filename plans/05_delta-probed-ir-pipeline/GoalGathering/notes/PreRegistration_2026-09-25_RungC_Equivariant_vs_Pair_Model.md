@@ -1348,3 +1348,13 @@ diagonal term buys frequency accuracy without costing the couplings, as it did a
 0.60 / 0.46 / 0.45 (mean 0.50), ω 4.4 / 4.0 / 4.3; hold-out (b) 0.54 / 0.48 / 0.50, ω 5.0–5.4. Worse than the projected target on the same pattern at 750
 (chain 6: 0.37) and than the ridge target at 175 (0.44): more data does not rescue a target the network cannot fit (H9's second half — the LS target
 lowers the bound but is less learnable). The lever-4 route is closed as recorded at 06:2x; pattern f with the projected target is the carried recipe.
+
+## Outcome 2 October 14:1x — chain 24: the carried recipe at 750 again, models saved (lever 1 / T3 amendment 06:4x); first intensity read-outs
+
+`out/E7_rungC_carried_kd_750_saved_2026-10-02.json` (identical recipe to chain 23, `--save-model`; seeds 0–2, best epochs 77 / 80 / 138). **Hold-out (a):**
+ratio 0.236 / 0.219 / 0.206 (mean **0.22**), ω 2.96 / 2.78 / 2.45 (mean **2.73 cm⁻¹**), ΔH residual 0.126–0.153; **hold-out (b):** 0.346 / 0.348 / 0.324
+(mean 0.34), ω 3.6. T1 reproduced within the seed spread of chain 23 (0.22 / 2.82). The three models `…_model_n750_seed{0,1,2}.pt` feed chain 25 (T3) and
+chain 26 (the intensity read on all ten (a) parents). **Intensity read-out (lever 5 step 2, registered 06:5x), on the two (a) parents whose APT existed at
+the start (A_fdc27f1bd1, A_e72997e726):** spectrum overlap **0.978 / 0.990 / 0.968** (zero rule 0.239), intensity-weighted relative rms **0.23 / 0.18 / 0.19**
+(zero rule 0.47). The registered line (overlap ≥ 0.95) is met on these two; the zero rule sits at 0.24, not the ≈ 0.85 guessed — the overlap is dominated by
+frequency positions at 10 cm⁻¹ FWHM (noted 11:0x). The full ten read in chain 26.

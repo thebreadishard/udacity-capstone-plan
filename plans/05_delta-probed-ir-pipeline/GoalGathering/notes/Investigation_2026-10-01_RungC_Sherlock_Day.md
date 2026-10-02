@@ -168,3 +168,15 @@ cosine, so the overlap is a frequency-position metric first and an intensity met
 0.97 / 0.81). The intensity-weighted relative rms is the intensity-specific number: smoke model 0.29 / 0.17 against zero rule 0.54 / 0.39. The
 registered line (overlap ≥ 0.95 for the carried model) stands; the relative rms is read beside it as the quantity that answers the intensity
 question. Full read: chain 26 (chain 24's three models on all ten (a) parents once their APTs are in).
+
+## 2 October, 14:1x — chain 24 read; the anthracene lanes relieved
+
+**Chain 24** (outcome in the pre-registration): (a) 0.22 / ω 2.73, (b) 0.34 / 3.6 — T1 reproduced; models saved; intensity read-outs on the two APT
+molecules: overlap 0.97–0.99 against 0.24 (zero rule), weighted relative intensity error 0.18–0.23 against 0.47. Chain 25 (T3 folds) started 14:08;
+the head fine-tune runs in seconds per fold.
+
+**Anthracene, 14:1x.** No gradient file after 5 h 50 min of lane time (reference: 1.7 h at 16 threads alone; a gradient at 8 threads should take ≈ 3.4 h,
+≈ 4.3 h under proportional contention). Four lanes × 8 threads + the two-route check lane × 8 = 40 threads on 32 vCPUs; every process shows ≈ 7 cores
+busy, which OpenMP spin-waits also produce — the CPU-hour comparison with the reference says nothing. Action: the check lane's threads reniced to 19
+(its work is kept; it yields to the four production lanes); the lanes themselves untouched. If no file lands by 15:30 the lanes are inspected one by one
+(pyscf scratch, iteration state); the launch recipe gets the rule *threads ≤ cores including the check lane* either way (TASKS).
