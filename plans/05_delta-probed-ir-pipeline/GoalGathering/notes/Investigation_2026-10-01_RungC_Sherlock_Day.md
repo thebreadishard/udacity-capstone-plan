@@ -138,3 +138,26 @@ coverage, and the A2 pending rows (441 three-ring, remaining four-ring) come nex
 200 would (compare the 449 → 750 step: 0.37 → 0.33 on (b) for 300 B rows), and the scaffold hypothesis is dropped for the next pool. *Worse:* a
 (b) above 0.36 means the new rows carry noise (FD B3LYP: the target noise floor is ratio ≈ 0.1) — check the analytic second route on a sample before
 reading further. The error map is rerun on the new records as the mechanical check (`probes/rungC_error_map.py`).
+
+## 2 October, 10:2x — T1 met; the APT route switched to CPHF; the next pool's pace
+
+**T1 met at 750** (chain 23, outcome in the pre-registration): hold-out (a) ratio 0.22 (0.215–0.226), ω 2.82 cm⁻¹ (2.59–2.98), ΔH residual 0.139, best
+epochs 79–113 of 200; hold-out (b) 0.33 / ω 3.6. The proposal of 1 Oct asked ≤ 0.25 and ≤ 3 cm⁻¹ on (a): both satisfied by all three seeds on ω except
+seed 1 (2.98, within). The remaining gap is (b), the unseen scaffolds — the next pool's question.
+
+**Lever 5, the route changed at 07:4x.** The FD APT loop ran ≈ 5 min per SCF on a 22-atom molecule (6N SCFs → 11 h per molecule) and was stopped by pid;
+`probes/dipole_derivs_cphf.py` computes the APT from the CPHF response (`hessian.rhf` `make_h1` / `solve_mo1`, as pyscf's `hess_elec` does, plus the
+derivative dipole integrals `int1e_irp`), with the sum rule and the FD APT as the two routes: water 4.6e-7 (sum rule) and **1.3e-5 against the FD
+route**, 7 s against 108 s. On the hold-out parents it costs 60–80 min per 22–23-atom molecule at 4 threads beside the two torch lanes (the CPHF with
+the xc response at grid 99/590 dominates); A_fdc27f1bd1 PASS 1.8e-5, A_e72997e726 PASS 1.2e-5, **benzene FAIL 1.1e-4** (limit 1e-4, marginal) — the
+benzene FD run at the end of the loop measures whether this is CPHF accuracy (then tighten `conv_tol_cpscf` and rerun) or the limit set too tight for a
+12-atom molecule's basis. The trainer reads `dipole_b3lyp_cphf.npz` first, FD second; chain 24 (lane A, after chain 8c, ≈ 10:4x–14:00) is the first
+record that can carry the intensity read-outs — for the molecules whose APT exists when it starts (three to five of ten); the full set reads from chain 25's
+models or a later record.
+
+**Next pool pace (46.62.227.91):** dibenzothiophene+CONH₂ (25 atoms) took 2.0 h on runner b; pyrene+SH (27 atoms) was still running after 4.5 h on
+runner a. At 2–4 h per A2 molecule and ≈ 1 h per B molecule the 200 take ≈ 8–12 days on one CPX62, not the 4–7 estimated — the A2 four-ring rows are the
+cost. Options for the user at lunch: a second CPX62 for the A2 half (≈ €25 per week), or let it run. Watchdog quiet.
+
+**Chain 8c (d + ridge at 750, the route's last record):** seeds 0–1 (a) 0.60 / 0.46 — the ridge target at λ 1e-3 on pattern d is as bad at 750 as at
+175 (0.44); the route stays closed (chain 12's λ 0.1 cell was the only working one, and pattern f + projected beats it).

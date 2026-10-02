@@ -1331,3 +1331,13 @@ correction is 2.4× the proxy); the untouched proxy model removes part of it but
 spread on every anchor and ω under half the zero rule → the network carries structure to CC level; more anchors are the lever (anthracene running). *Does
 not transfer:* head-tuned not below α scaling → the proxy features do not describe the CC correction; the route becomes CC data first. Decision 51 is
 not at stake (fixed epochs on a convex-ish head problem; the loss history is recorded).
+
+## Outcome 2 October 10:2x — chain 23: the carried recipe with the K-diagonal term at 750 (lever 5 of 2 Oct 05:2x, registered 06:0x)
+
+`out/E7_rungC_carried_kd_750_2026-10-01.json` (pattern f, projected target, pattern + 0.3 × kring + 0.1 × K-diagonal, 3 × 64 sum body, 750 molecules,
+seeds 0–2, cap 200, patience 20; best epochs 83 / 113 / 79 — decision 51 satisfied). **Hold-out (a):** ring-coupling ratio 0.226 / 0.215 / 0.219
+(mean **0.22**), corrected ω rms 2.88 / 2.98 / 2.59 (mean **2.82 cm⁻¹**, zero rule 23.3), ΔH residual 0.139; per-family diagonal rms CH-stretch 1.1–1.6,
+ring-ip 2.1–2.3, CH-oop 3.0–3.4, other 4.1–5.0 cm⁻¹. **Hold-out (b):** 0.345 / 0.341 / 0.315 (mean 0.33), ω 3.6. Against the 06:0x prediction
+(≤ 0.22 on (a), ω ≤ 3): both met; against chain 17 (same recipe without the diagonal term: 0.22 / ω 3.50): the ratio unchanged, ω −0.7 cm⁻¹ — the
+diagonal term buys frequency accuracy without costing the couplings, as it did at 175 (2.78 vs 5.0). **T1 as proposed on 1 Oct (ratio ≤ 0.25 and
+ω ≤ 3 cm⁻¹ on hold-out (a) at the full pool) is met.** The carried recipe stays this one; chain 24 retrains it with `--save-model` for T3.
