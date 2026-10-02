@@ -1,0 +1,40 @@
+{
+ "paths": {
+  "rhf": true,
+  "uhf": true
+ },
+ "host": "ubuntu-32gb-hel1-2",
+ "pyscf": "2.14.0",
+ "fingerprint": {
+  "e8_cc_hessian_fd.py": "5a9b5fdb61367bc71fe7e07dae012085d71ceda7ffb00ebd4ffbe43a74cf43dc",
+  "e8_hessian_checks.py": "8ade4fbc3e37209222db43c5647f743ff4cddf725cd22dd6714132f1f0256ad9",
+  "t_density_fast.py": "6e6a9a1e8b4b78e31213a26713691b675feb7692ab7d62880535bde31df8486c",
+  "ccsd_t_rdm_kernel.so": "8dda6a4ec2d3e99044eedb3673223a002748a186636e4b2cfc218f9d8e470090",
+  "test_acceptance_water.py": "8ddbb712e2b7a40f19d74675c37f21e2ddc82bcf9c8fc3adf3d6ee4c93081ebb"
+ },
+ "time": "2026-10-01 06:30:39",
+ "seconds": 50,
+ "results": {
+  "dE_psi4_charge0": 5.483684617502149e-10,
+  "dE_psi4_charge1": 2.1917543335803202e-09,
+  "dgrad_fd_charge0": 1.3077164040531386e-07,
+  "dE_cccbdb": 1.2474836807996326e-07,
+  "max_force_at_cccbdb_geometry": 0.00021603429780880923,
+  "r_angstrom": 0.9662780433009078,
+  "angle_deg": 101.91264763934691,
+  "pair_check": 2.250082459509528e-05,
+  "null_space_cm": 6.973042309481702e-05,
+  "omega_cm": [
+   1690.2388032035276,
+   3821.6294155477785,
+   3927.6034166352447
+  ],
+  "selfcheck": "VALID",
+  "trans_sum_rule": 2.7358283060871513e-07,
+  "energy_route_max": 3.8682949288215696e-06,
+  "fast_kernel": true,
+  "fast_lambda": true,
+  "dgrad_fast_kernel": 3.552713678800501e-15,
+  "dgrad_fd_charge1": 1.4842074147480844e-07
+ }
+}
