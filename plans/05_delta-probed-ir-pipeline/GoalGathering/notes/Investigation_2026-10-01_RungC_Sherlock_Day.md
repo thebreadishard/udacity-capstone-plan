@@ -188,3 +188,24 @@ against 6–10 for the SQM-like per-class scaling without a network; the full-he
 three models). The ≤ 3 cm⁻¹ line is not met (naphthalene 6.0 at best). Outcome table in the pre-registration. Next: T3b (L2-to-proxy regularised head,
 chain 27, minutes) and anthracene as the fourth training anchor. The CH-oop and CH-stretch CC corrections (all-mode ω 6–26) are a separate question: the
 cc-pVDZ level's own out-of-plane behaviour (R0 deck, 22 Sep) — nothing in the proxy carries it.
+
+## 2 October, 14:2x — lever 3: where a CCSD(T) gradient's time goes (benzene, cc-pVDZ, frozen 6, both (T) C kernels; laptop WSL, `probes/results_m1/cc_timing_benzene_2026-10-02.log`)
+
+| threads | reference gradient total | SCF + CCSD (by difference) | (T) + CCSD lambda | gradient assembly |
+|---|---|---|---|---|
+| 4 | 402 s | 67 s | 303 s | 32 s |
+| 8 | 253 s | 56 s | 175 s | 22 s |
+| 16 | 197 s | 49 s | 128 s | 20 s |
+
+Caveat: every run shared the 16 cores with a torch lane (8 threads) and the CPHF APT loop (4), the 16-thread point also with chain 25 — the absolute
+numbers are pessimistic, the shape is what counts. **The lambda stage is 65–75 % of a gradient and the part that stops scaling:** 4 → 16 threads gives
+2.4× on lambda, 1.4× on SCF + CCSD (already small here), 1.6× on the assembly; the whole gradient 2.0×. On naphthalene (28 min per gradient at 8 threads,
+1 Oct) and anthracene (≈ 4 h) the same stage dominates with a steeper N⁷. **Design note.** (1) The lambda stage = the CCSD Λ iterations (pyscf's
+`ccsd_lambda`, Python-level loops over the ovvv/vvvv blocks, OpenMP only inside the BLAS calls) plus our (T)-lambda C kernel (OpenMP over ijk, scales).
+Two measured options, in order: (a) *more lanes, fewer threads each* — 8 threads give 1.6× the throughput of 16 on this stage per core-hour; anthracene
+already runs 4 lanes × 8 (memory ≈ 13 GB per lane, so a CCX53 carries 4–5 lanes at 24 atoms); the rule from today: **lanes × threads ≤ cores including
+the check lane**. (b) *the Λ update in C* — the same route as the (T) kernels (PR #3469/#3470 family): the `update_lambda` of `ccsd_lambda.py` spends its
+time in `einsum` over the vvvv and ovvv blocks; moving the two largest contractions to a kernel with OpenMP over occupied pairs is the next concrete
+code item, measurable on water/benzene against pyscf's own Λ (two routes). Not pursued: DF-CCSD(T) (no gradient path in pyscf), a different CC code
+(the probe's two-route checks and gate 1 are built on pyscf). (2) The SCF + CCSD part stays ≤ 25 %; nothing to do there before (b). Lever 3 is read; the
+code item (b) sits in the throughput row of TASKS, after the Sherlock day.

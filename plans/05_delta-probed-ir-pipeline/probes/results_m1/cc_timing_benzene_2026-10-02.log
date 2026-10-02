@@ -1,0 +1,15 @@
+=== cc timing start Fri Oct  2 07:10:25 CEST 2026
+gate 1: stamp valid
+--- threads 4 start Fri Oct  2 10:20:27 CEST 2026
+[2026-10-02 10:20:28] E8 FD Hessian: 12 atoms, cc-pvdz, frozen 6 (derived from the elements: 6), step 0.005 bohr, 72 displacements, 4 threads, max_memory 8000 M
+[2026-10-02 10:27:10] (T) lambda 303 s, gradient 32 s
+[2026-10-02 10:27:10] reference: E = -231.581302636, max|grad| 7.67e-03, 402 s; two-route checks deferred to a separate run (--two-route-check only)
+--- threads 8 start Fri Oct  2 10:27:11 CEST 2026
+[2026-10-02 10:27:12] E8 FD Hessian: 12 atoms, cc-pvdz, frozen 6 (derived from the elements: 6), step 0.005 bohr, 72 displacements, 8 threads, max_memory 8000 M
+[2026-10-02 10:31:25] (T) lambda 175 s, gradient 22 s
+[2026-10-02 10:31:25] reference: E = -231.581302636, max|grad| 7.67e-03, 253 s; two-route checks deferred to a separate run (--two-route-check only)
+--- threads 16 start Fri Oct  2 14:11:26 CEST 2026
+[2026-10-02 14:11:27] E8 FD Hessian: 12 atoms, cc-pvdz, frozen 6 (derived from the elements: 6), step 0.005 bohr, 72 displacements, 16 threads, max_memory 8000 
+[2026-10-02 14:14:44] (T) lambda 128 s, gradient 20 s
+[2026-10-02 14:14:44] reference: E = -231.581302636, max|grad| 7.67e-03, 197 s; two-route checks deferred to a separate run (--two-route-check only)
+=== cc timing finished Fri Oct  2 14:14:45 CEST 2026
