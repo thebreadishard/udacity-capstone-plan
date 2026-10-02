@@ -22,7 +22,7 @@ from nbclient import NotebookClient
 from nbformat.v4 import new_code_cell, new_markdown_cell, new_notebook
 
 HERE = Path(__file__).resolve().parent
-RELEASE = os.environ.get("M05_RELEASE", "layerA_2026-09-22")
+RELEASE = os.environ.get("M05_RELEASE", "layerA2_2026-09-23")   # 2 Oct 2026: the release the executed notebook carries; sections 7+ assert the follow-ups against its ids
 cells = []
 
 
@@ -579,10 +579,10 @@ registered condition for this test had been set against 23 and was recalibrated 
 md("""### 10.2 The noise floor, by two routes""")
 code("""NF = json.load(open(OUT / "E11_noise_floor_2026-09-25.json", encoding="utf-8")); TS = json.load(open(OUT / "E11_target_orbit_symmetry_2026-09-25.json", encoding="utf-8"))
 rig = {i: v for i, v in TS["per_molecule"].items() if v["spread_ratio"] is not None and v["spread_ratio"] < 0.15}
-W = sum(v["within_rms"] ** 2 * v["n_pairs_classed"] for v in rig.values()); T = sum(v["total_rms"] ** 2 * v["n_pairs_classed"] for v in rig.values())
+W = sum(v["within_rms"] ** 2 * v["n_pairs_classed"] for v in rig.values()); TT = sum(v["total_rms"] ** 2 * v["n_pairs_classed"] for v in rig.values())   # TT, not T: T is the tensor dict section 11 reuses (2 Oct 2026)
 medK = NF["median_per_molecule"]["K_diag_rms"]; pooledK = NF["pooled_rms"]["K_diag_rms"]; plateau = 3 * medK   # the pre-registration's bound is 3 × the median (the pooled value is benzene's artefact)
 print(f"route 1 — repeat spread of the K diagonal on {NF['n_molecules']} molecules with two routes: median {medK:.2f} cm⁻¹ per molecule (pooled {pooledK:.2f}, dominated by benzene's artefact); plateau bound 3× median → {plateau:.1f} cm⁻¹")
-print(f"route 2 — within-orbit spread of the coupling target on the {len(rig)} rigid hold-out molecules (mirror-image pairs must be equal in the truth): {np.sqrt(W / T):.3f} of the target's RMS")""")
+print(f"route 2 — within-orbit spread of the coupling target on the {len(rig)} rigid hold-out molecules (mirror-image pairs must be equal in the truth): {np.sqrt(W / TT):.3f} of the target's RMS")""")
 md("""*Reading.* Two independent routes to the same quantity: the labels carry a numerical noise of about 2 cm⁻¹ on the diagonal and about a tenth of
 the signal on the couplings. A curve that reaches that floor and stops is the best that can be had from these labels; a curve that stays far above
 it says the model, not the data, is the limit. The plateau bound written into the proof-of-learning pre-registration (6.3 cm⁻¹) is three times route 1.""")
@@ -658,7 +658,7 @@ md("""### 10.7 What we learned (continued)
 code("""followup4 = dict(shuffled={h: dict(real=RB["curve"]["175"]["B1_mlp"]["mean"][h]["coupling_ratio"], control=SH["curve"]["175"]["B1_mlp"]["mean"][h]["coupling_ratio"],
                                   real_rms=RB["curve"]["175"]["B1_mlp"]["mean"][h]["corrected_freq_rms"], control_rms=SH["curve"]["175"]["B1_mlp"]["mean"][h]["corrected_freq_rms"],
                                   zero_rms=SH["curve"]["175"]["B1_mlp"]["mean"][h]["corrected_freq_rms_zero_rule"]) for h in "ab"},
-                 noise=dict(median_K=medK, pooled_K=pooledK, plateau=plateau, target_orbit_spread_rigid=float(np.sqrt(W / T)), n_rigid=len(rig)),
+                 noise=dict(median_K=medK, pooled_K=pooledK, plateau=plateau, target_orbit_spread_rigid=float(np.sqrt(W / TT)), n_rigid=len(rig)),
                  symmetry=dict(coarse_model=RD["symmetry_pooled"]["pooled_ratio"], coarse_target=TC["pooled_ratio"], orbit_model=op["rigid"]["pred_ratio"], orbit_target=op["rigid"]["target_ratio"],
                                benzene=dict(model=per["benzene"]["pred"]["spread_ratio"], target=per["benzene"]["target"]["spread_ratio"])),
                  orbit_avg=dict(pair_gain_pct=float(pair_gain), ratio_a=OA["curve"]["175"]["B1_mlp"]["mean"]["a"]["coupling_ratio"], ratio_b=OA["curve"]["175"]["B1_mlp"]["mean"]["b"]["coupling_ratio"]),
@@ -830,12 +830,99 @@ now buys 0.04 on both hold-outs at no cost in ω. On the target proposal of the 
 rows; the ω criterion (≤ 3 cm⁻¹) is not — {_f(_c17[2], 1)} against a target bound of 0.4 — and that gap, which every model shares, is the next question.
 """)
 
+# ---- 12.2 the next day (2 October 2026): T1 met, the CC transfer, the error map, the first intensities
+
+
+def _t3(prefix, col, key="coupling_ratio", fam=None):
+    """Mean over the three saved models of a leave-one-anchor-out column, per held-out anchor (None when a file is absent)."""
+    out = {}
+    for s in (0, 1, 2):
+        p = HERE.parent / "out" / f"{prefix}_seed{s}_2026-10-02.json"
+        if not p.exists():
+            return None
+        for held, f in json.load(open(p, encoding="utf-8"))["folds"].items():
+            v = f[col]["freq_rms_by_family"].get(fam) if fam else f[col][key]
+            out.setdefault(held, []).append(v)
+    return {h: float(np.mean(v)) for h, v in out.items()}
+
+
+_names = {"A_8448043181": "benzene", "B_8b12a55d3a": "fluorobenzene", "A_6e858b26e5": "pyridine", "A_01f3186607": "naphthalene"}
+_c23 = [_rc("E7_rungC_carried_kd_750_2026-10-01", 750, h, k) for h, k in (("a", "coupling_ratio"), ("b", "coupling_ratio"), ("a", "corrected_freq_rms"), ("a", "dH_residual_ratio"))]
+_c24 = [_rc("E7_rungC_carried_kd_750_saved_2026-10-02", 750, h, k) for h, k in (("a", "coupling_ratio"), ("b", "coupling_ratio"), ("a", "corrected_freq_rms"), ("a", "dH_residual_ratio"))]
+_cols = (("zero_rule", "zero rule"), ("alpha_scaling", "α scaling, no network"), ("network_alpha", "network, α tuned"), ("network_head", "network, head tuned"))
+_t3r = {c: _t3("T3_cc_transfer", c) for c, _ in _cols}
+_t3w = {c: _t3("T3_cc_transfer", c, fam="ring-ip") for c, _ in _cols}
+_l2r, _l2w = _t3("T3b_l21", "network_head_l2"), _t3("T3b_l21", "network_head_l2", fam="ring-ip")
+_t3_rows = []
+for i, nm in _names.items():
+    cells_ = [f"{_f(_t3r[c][i]) if _t3r[c] else '—'} / {_f(_t3w[c][i], 1) if _t3w[c] else '—'}" for c, _ in _cols]
+    cells_.append(f"{_f(_l2r[i]) if _l2r else '—'} / {_f(_l2w[i], 1) if _l2w else '—'}")
+    _t3_rows.append(f"| {nm} | " + " | ".join(cells_) + " |")
+_em_p = HERE.parent / "out" / "rungC_error_map_2026-10-02.json"
+_em = json.load(open(_em_p, encoding="utf-8"))["table"] if _em_p.exists() else []
+_em_pick = {"1ar|carbo|sub:none": "benzene", "3ar-fused|carbo|sub:none": "three fused rings (phenanthrene, biphenylene)", "2ar-fused|carbo|sub:none": "fluorene",
+            "4ar-fused|carbo|sub:none": "fluoranthene", "4ar-fused|carbo|sub:CF": "fluoranthene + CF₃"}
+_em_rows = "\n".join(f"| {_em_pick[t['kind']]} | {t['pool_count']} | {_f(t['coupling_ratio'])} | {_f(t['omega'], 1)} |" for t in _em if t["kind"] in _em_pick)
+_c24p = HERE.parent / "out" / "E7_rungC_carried_kd_750_saved_2026-10-02.json"
+_ov = None
+if _c24p.exists():
+    _s = json.load(open(_c24p, encoding="utf-8"))["curve"]["750"]["per_seed"]
+    if _s[0]["a"].get("intensity_n"):
+        _ov = (float(np.mean([x["a"]["spectrum_overlap"] for x in _s])), _s[0]["a"]["spectrum_overlap_zero_rule"],
+               float(np.mean([x["a"]["intensity_rel_rms"] for x in _s])), _s[0]["a"]["intensity_rel_rms_zero_rule"], _s[0]["a"]["intensity_n"])
+md(f"""### 12.2 The next day (2 October 2026): the target met, and what the network carries to coupled-cluster level
+
+**T1 met.** The carried recipe plus a small weight (0.1) on the diagonal of K, at 750 molecules, three seeds (`E7_rungC_carried_kd_750_2026-10-01`
+and its repeat with the models saved, `…_saved_2026-10-02`):
+
+| record | (a) ratio | (b) ratio | (a) ω (cm⁻¹) | (a) ΔH residual |
+|---|---|---|---|---|
+| chain 23 | {_f(_c23[0])} | {_f(_c23[1])} | {_f(_c23[2], 1)} | {_f(_c23[3])} |
+| chain 24 (repeat, models saved) | {_f(_c24[0])} | {_f(_c24[1])} | {_f(_c24[2], 1)} | {_f(_c24[3])} |
+
+The 1 October proposal asked for a ratio ≤ 0.25 and ω ≤ 3 cm⁻¹ on hold-out (a) at the full pool; both rows satisfy both, with best epochs 77–138 of 200.
+Hold-out (b) — the fluorene and fluoranthene scaffolds the pool never contains — stays at 0.33–0.34, and that is the open question (below).
+
+**The error follows the scaffold, not the substituent** (`probes/rungC_error_map.py` over fifteen records; hold-out error per kind of molecule, pool count = how many of that kind the training pool holds):
+
+| kind | in the pool | ratio | ω (cm⁻¹) |
+|---|---|---|---|
+{_em_rows}
+
+Within one scaffold a substituent moves the ratio by at most 0.1; across scaffolds it moves from 0.11 to 0.4. The pool has almost no four-ring scaffolds, and
+the manifest holds 93 four-ring and 441 three-ring pending rows: the next pool (200 ids, running on a rented machine since 07:33) is chosen for scaffold
+coverage, with the prediction registered that hold-out (b) falls to ≤ 0.28 when they are in.
+
+**T3 — transfer to CCSD(T)/cc-pVDZ, leave one anchor out** (`m05/rungC_cc_transfer.py`; the four CC anchors as the high level, the saved models fine-tuned on three,
+read on the fourth; ratio / ring-ip ω in cm⁻¹, mean over the three models):
+
+| held-out anchor | {' | '.join(lbl for _, lbl in _cols)} | network, head tuned with L2 to the proxy (λ = 1) |
+|---|---|---|---|---|---|
+{chr(10).join(_t3_rows)}
+
+The untouched proxy model does nothing at CC scale (its correction is 2.4× too small and differently shaped); with only its nine per-class scale factors tuned on
+three anchors, the network brings an unseen anchor's in-plane frequencies from 25–28 cm⁻¹ to 5–6 cm⁻¹ — below the scaling-without-a-network baseline on all four.
+The full last layer overfits three molecules (naphthalene 0.25–0.67 across the three models); an L2 pull toward the proxy weights (λ = 1) removes that and ties
+the α-tuned column. The ≤ 3 cm⁻¹ line of T3 is not met; anthracene (computing) joins as the fourth anchor before the next read.
+
+**Intensities, first numbers.** With atomic polar tensors from the CPHF response (`probes/dipole_derivs_cphf.py`, 1.3e-5 against finite differences on water),
+the spectrum overlap of the predicted against the true corrected spectrum on the {_ov[4] if _ov else '…'} hold-out (a) molecules whose tensor existed when
+chain 24 started: {_f(_ov[0], 3) if _ov else '—'} against {_f(_ov[1], 3) if _ov else '—'} for the zero rule; intensity-weighted relative intensity error
+{_f(_ov[2]) if _ov else '—'} against {_f(_ov[3]) if _ov else '—'}. The overlap is dominated by frequency positions at 10 cm⁻¹ FWHM (the zero rule's 23 cm⁻¹ shift
+alone destroys it); the relative error is the intensity-specific number. The full ten read in a later section once all tensors are in.
+""")
+
 nb = new_notebook(cells=cells, metadata={"kernelspec": {"name": "python3", "display_name": "Python 3", "language": "python"}})
 path = HERE / "deep_learning.ipynb"
-nbformat.write(nb, path)
+# 2 Oct 2026 15:1x: the executed notebook on disk is replaced only after a successful execution — a failed run (a wrong M05_RELEASE) had left it
+# without outputs for a few minutes; the draft goes to a temporary name and is moved over the original at the end.
+tmp = HERE / "deep_learning.building.ipynb"
+nbformat.write(nb, tmp)
 if "--no-execute" not in sys.argv:
     NotebookClient(nb, timeout=3600, kernel_name="python3", resources={"metadata": {"path": str(HERE)}}).execute()
-    nbformat.write(nb, path)
+    nbformat.write(nb, tmp)
+    os.replace(tmp, path)
     print("executed and written:", path)
 else:
+    os.replace(tmp, path)
     print("written (not executed):", path)
