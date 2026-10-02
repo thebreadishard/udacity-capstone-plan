@@ -395,7 +395,7 @@ def per_molecule_readouts(mols: dict, ids: list, tr: list, dF_of) -> dict:
     out = {}
     for i in ids:
         r = readouts(mols, [i], tr, dF_of)
-        if "apt" in mols[i]:                                               # lever 5 step 2 (2 Oct 2026): the spectrum read-outs where an APT exists
+        if "apt" in mols.get(i, {}):                                       # lever 5 step 2 (2 Oct 2026): the spectrum read-outs where an APT exists
             B = mols[i]["B"]
             r.update(RI.intensity_readout(mols[i]["H_low"], mols[i]["dH_true"], B.T @ dF_of(i) @ B, mols[i]["masses"], mols[i]["apt"]))
         out[i] = {k: (None if isinstance(r.get(k), float) and np.isnan(r[k]) else r.get(k)) for k in PER_MOLECULE_KEYS}
