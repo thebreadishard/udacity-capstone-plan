@@ -1341,3 +1341,10 @@ ring-ip 2.1–2.3, CH-oop 3.0–3.4, other 4.1–5.0 cm⁻¹. **Hold-out (b):** 
 (≤ 0.22 on (a), ω ≤ 3): both met; against chain 17 (same recipe without the diagonal term: 0.22 / ω 3.50): the ratio unchanged, ω −0.7 cm⁻¹ — the
 diagonal term buys frequency accuracy without costing the couplings, as it did at 175 (2.78 vs 5.0). **T1 as proposed on 1 Oct (ratio ≤ 0.25 and
 ω ≤ 3 cm⁻¹ on hold-out (a) at the full pool) is met.** The carried recipe stays this one; chain 24 retrains it with `--save-model` for T3.
+
+## Outcome 2 October 10:5x — chain 8c: the ridge-anchored target on pattern d at 750 (lever 4 of 1 Oct, the route's last record)
+
+`out/E7_rungC_lever4_ls_750_2026-10-01.json` (hybrid, pattern d, LS target λ 1e-3, pattern term, 750 molecules, seeds 0–2): hold-out (a) ratio
+0.60 / 0.46 / 0.45 (mean 0.50), ω 4.4 / 4.0 / 4.3; hold-out (b) 0.54 / 0.48 / 0.50, ω 5.0–5.4. Worse than the projected target on the same pattern at 750
+(chain 6: 0.37) and than the ridge target at 175 (0.44): more data does not rescue a target the network cannot fit (H9's second half — the LS target
+lowers the bound but is less learnable). The lever-4 route is closed as recorded at 06:2x; pattern f with the projected target is the carried recipe.
