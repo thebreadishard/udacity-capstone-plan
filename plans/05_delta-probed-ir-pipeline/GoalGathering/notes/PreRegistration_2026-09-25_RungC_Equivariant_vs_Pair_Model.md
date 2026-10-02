@@ -1461,3 +1461,30 @@ fluorene scaffold ≥ 0.37; no-ring4 leaves (a) within 0.02 of the control and m
 carry a scaffold. **Lines.** *Pyrenes matter:* no-ring4 moves fluoranthene by ≥ 0.03 → the four-ring A2 rows are worth more per molecule than the
 three-ring ones, and the next pool after the 200 is four-ring first. *Pyrenes do not matter at seven:* then the 93 four-ring rows in the manifest are a
 question of count (the 55 in the running 200 answer it), and the three-ring family is the proven lever.
+
+## Outcome 3 October 01:1x — chain 29: pyrenes against three-ring children (amendment 22:0x)
+
+`out/E7_rungC_coverage_noring4_2026-10-02.json` (pool without its 7 pyrenes, 743) and `…_noring3_…` (without the 123 three-ring molecules, 627); carried
+recipe, three seeds; the chain-28 arms beside them:
+
+| arm | pool | (a) ratio | (a) ω | three-ring parents | (b) ratio | fluorene scaffold | fluoranthene scaffold |
+|---|---|---|---|---|---|---|---|
+| control (all) | 750 | 0.229 | 3.10 | 0.15 | 0.349 | 0.30 | 0.37 |
+| without the 7 pyrenes | 743 | 0.221 | 2.64 | 0.15 | 0.354 | 0.29 | 0.39 |
+| without the 123 three-ring | 627 | 0.369 | 4.20 | 0.44 | 0.418 | 0.40 | 0.43 |
+| without all 130 | 620 | 0.373 | 4.78 | 0.42 | 0.411 | 0.40 | 0.41 |
+
+**Against the predictions.** no-ring3 reproduces chain 28 (three-ring parents 0.44 ≥ 0.40, (b) 0.418 ≥ 0.38, fluorene 0.40 ≥ 0.37): holds. no-ring4 leaves
+(a) within 0.02 of the control (0.221) and moves fluoranthene by 0.02 (< 0.03): holds. **Line: pyrenes do not matter at seven.** The three-ring family is
+the proven lever (123 molecules carry 0.15 on (a) and 0.06–0.07 on (b)); the value of four-ring rows is a question of count that the 55 four-ring A2 rows
+in the running 200 will answer; the manifest's remaining 93 four-ring rows wait for that reading.
+
+### Amendment 3 October 01:1x — chain 30: the coverage curve of one scaffold family (registered before it runs)
+
+How many three-ring children does the pool need? Two arms, carried recipe, three seeds, the rest of the pool intact: *keep25* = 31 of the 123 three-ring
+molecules kept (pool 658; the 92 others excluded, `out/pool_ring3_drop_for_keep25_2026-10-03.txt`, hash order), *keep50* = 62 kept (689). With no-ring3
+(0 kept) and the control (123 kept) this is a four-point curve. **Predictions.** The three-ring parents fall 0.44 → ≈ 0.25 at 31 and ≈ 0.18 at 62, i.e. most of
+the gain within the first quarter (coverage saturates), and hold-out (b)'s fluorene scaffold follows (0.40 → ≈ 0.33 → ≈ 0.31). **Lines.** *Saturating:*
+keep25 recovers ≥ half of the control's gain on the three-ring parents → a scaffold family is covered by a few dozen children, and the next pools spread
+over more families rather than deepen one. *Linear:* keep25 recovers < a third → coverage is a count per family, and the 200's 63 three/four-ring rows are
+a first instalment, not the answer.

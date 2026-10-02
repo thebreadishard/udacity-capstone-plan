@@ -242,3 +242,9 @@ Without its 130 three-and-more-ring molecules the pool loses 0.15 on hold-out (a
 and 0.06 on hold-out (b) (fluorene scaffold +0.10, fluoranthene +0.04); a 620-molecule control equals the 750 record. Scaffold coverage is the data
 lever, within a family strongly and across fused scaffolds measurably; the 200 keep their prediction. Chain 29 (registered above) separates the seven
 pyrenes from the three-ring children overnight (two lanes, ≈ 01:30). Outcome table in the pre-registration.
+
+## 3 October, 01:1x — chain 29: the three-ring children carry it; chain 30 asks how many
+
+Seven pyrenes removed: nothing moves (fluoranthene +0.02). The 123 three-ring children removed: the full chain-28 effect ((a) 0.37, three-ring parents 0.44,
+(b) 0.42). The proven data lever is the three-ring family; four-ring value is a count question the running 200 answer. Chain 30 (registered above) runs the
+coverage curve of that family overnight — 31 and 62 of the 123 kept — on both lanes, read ≈ 04:45.
