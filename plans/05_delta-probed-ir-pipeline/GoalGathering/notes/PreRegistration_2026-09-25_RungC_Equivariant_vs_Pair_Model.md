@@ -1297,3 +1297,20 @@ memory guard 1500 MB (4 × 22 + 16 = 104 of 122 GB). **Predictions:** ≈ 20 sym
 ≈ 1.5 days to the Hessian, ≈ €35–50; the check lane finishes within the production window. **Lines:** VALID by the probe's own checks (asymmetry,
 symmetry reconstruction, sum rule, energy route, pair checks) and a passing two-route file → the anchor joins the set; IMAGINARY / INVALID → excluded
 and read as such; a failed two-route file → the Hessian is not written and the kernels are re-examined on this molecule before anything else.
+
+## Outcome, chain 12 — λ and weight cells for the ridge target on pattern d, 175 — 2 October 06:2x (`out/E7_rungC_lever4_{lam1e-1,lam1e-2,w0.3}_175_2026-10-01`)
+
+| cell (pattern d, ridge target, 175) | (a) ratio, seeds | (b) ratio | (a) ω | best epochs / 200 |
+|---|---|---|---|---|
+| λ 1e-3, weight 1.0 (7c) | 0.44 (0.42–0.45) | 0.49 | 4.44 | 158–167 |
+| **λ 1e-1**, weight 1.0 | **0.35** (0.35 / 0.36 / 0.35) | 0.41 | **4.03** | 175 / 191 / 199 |
+| λ 1e-2, weight 1.0 | 0.38 (0.40 / 0.36 / 0.37) | 0.45 | 4.14 | 196 / 166 / 189 |
+| λ 1e-3, weight 0.3 | 0.39 (0.38 / 0.38 / 0.40) | 0.45 | 4.14 | 161 / 173 / 185 |
+| projected target (lever 1) | 0.40 (0.39–0.42) | 0.50 | 4.70 | 30–140 |
+
+**Against the lines:** λ 1e-1 *works* on the narrow support — 0.35 against 0.40, below by both spreads, ω 4.0 — the strongly anchored ridge target (entries at
+the projected scale, bound 0.28 against 0.31) is learnable where the λ 1e-3 one was not; the weaker-anchored cells are flat. All best epochs sit within
+10 % of the cap (decision 51 flags the whole chain; the ridge targets converge slowly). **Reading and decision:** on pattern d the ridge at λ 0.1 would be a
+lever (0.40 → 0.35), but the carried support (pattern f, projected: 0.28, with the K terms 0.23) is already far below it, and chain 13 showed the projected
+target winning on pattern f. The ridge route is closed as planned; λ 0.1 is the setting to try if a ridge target is ever revisited. Chain 8b (d + ridge
+λ 1e-3 at 750) runs last as the record of the route.
