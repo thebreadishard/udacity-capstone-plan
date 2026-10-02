@@ -1314,3 +1314,20 @@ the projected scale, bound 0.28 against 0.31) is learnable where the λ 1e-3 one
 lever (0.40 → 0.35), but the carried support (pattern f, projected: 0.28, with the K terms 0.23) is already far below it, and chain 13 showed the projected
 target winning on pattern f. The ridge route is closed as planned; λ 0.1 is the setting to try if a ridge target is ever revisited. Chain 8b (d + ridge
 λ 1e-3 at 750) runs last as the record of the route.
+
+## Dated amendment 2 October 06:4x — lever 1 / T3: leave-one-anchor-out transfer to CCSD(T) (registered before it runs)
+
+**Question.** Does the proxy-trained network carry over to coupled-cluster level on an anchor it never saw? **Data.** The four valid CCSD(T)/cc-pVDZ
+anchors (benzene `e8_benzene_ccpvdz_tlambda`, fluorobenzene and pyridine `…_2026-09-30`, naphthalene `…_tlambda_2026-10-02`) as the high level, the
+analytic B3LYP of each as the low level (`substitute_cc`). **Model.** The carried recipe at 750 (pattern f, projected target, pattern + 0.3 × kring + 0.1 ×
+K-diagonal) saved per seed (`--save-model`, chain 24 on lane A after chain 8b). **Code.** `rungC_train.py`: `molecule_tensors` factored out, `--save-model`,
+`load_hybrid_model`, `freeze_for_transfer`; `m05/rungC_cc_transfer.py`; tests `tests/test_rungC_cc_transfer.py`. **Procedure.** For each held-out anchor:
+fine-tune the saved model on the other three with only the head's last layer and the SQM α trainable (300 epochs, lr 1e-3, the registered terms), read
+out on the held-out with the registered read-outs; beside it the zero rule (B3LYP as is), the proxy model untouched, α only, and a per-class α scaling fitted
+on the three (the SQM-like transfer, no network). Three seeds' models → three repeats. **Predictions.** Zero rule ω on the anchors ≈ 20–50 cm⁻¹ (the CC
+correction is 2.4× the proxy); the untouched proxy model removes part of it but not the scale (ratio 0.5–0.8); α scaling 0.5–0.7; head-tuned network
+0.35–0.6 on the ring couplings with ω 6–15 cm⁻¹ — three anchors are few. **Lines (T3 as proposed: in-plane ω ≤ 3 cm⁻¹ on the held-out anchor).**
+*Met:* head-tuned ω ≤ 3 on naphthalene (the fused ring, the anchor that matters). *Transfers but short:* head-tuned below α scaling by more than the seed
+spread on every anchor and ω under half the zero rule → the network carries structure to CC level; more anchors are the lever (anthracene running). *Does
+not transfer:* head-tuned not below α scaling → the proxy features do not describe the CC correction; the route becomes CC data first. Decision 51 is
+not at stake (fixed epochs on a convex-ish head problem; the loss history is recorded).
