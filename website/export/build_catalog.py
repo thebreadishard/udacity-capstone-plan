@@ -24,9 +24,13 @@ import numpy as np
 RUNGS = ["listed", "cheap_level_done", "correction_predicted", "spectrum_predicted", "anchored", "validated"]
 
 # The molecules whose rung is set by evidence outside the corpus factory. Each entry names the file that carries it (relative to plan 05).
-ANCHORED = {
-    "A_8448043181": ["probes/results_m1/e8_benzene_ccpvdz/E8_locality_benzene.md", "probes/results_m1/R0_DIAGONAL_READING_2026-09-22.md"],
-    "A_01f3186607": ["probes/results_m1/M3_TZ_MODE22_READING_2026-09-23.md", "probes/results_m1/M3_TZ_MODE12_READING_2026-09-20.md"],
+ANCHORED = {   # 2 Oct 2026: the four CCSD(T)/cc-pVDZ Hessians of the corrected route (lambda incident of 29 Sep: the earlier benzene reading is kept as history)
+    "A_8448043181": ["probes/results_m1/e8_benzene_ccpvdz_tlambda/E8_locality_benzene.md", "probes/results_m1/e8_benzene_ccpvdz_tlambda/hessian_ccsd_t.npz",
+                     "probes/results_m1/R0_DIAGONAL_READING_2026-09-22.md"],
+    "A_01f3186607": ["probes/results_m1/e8_naphthalene_ccpvdz_tlambda_2026-10-02/E8_locality_naphthalene.md",
+                     "probes/results_m1/e8_naphthalene_ccpvdz_tlambda_2026-10-02/hessian_ccsd_t.npz", "probes/results_m1/M3_TZ_MODE22_READING_2026-09-23.md"],
+    "B_8b12a55d3a": ["probes/results_m1/e8_fluorobenzene_ccpvdz_2026-09-30/hessian_ccsd_t.npz"],
+    "A_6e858b26e5": ["probes/results_m1/e8_pyridine_ccpvdz_2026-09-30/hessian_ccsd_t.npz"],
 }
 VALIDATED = {
     "A_8448043181": ["probes/results_vpt2/benzene_benchmark_2026-09-22.md"],
