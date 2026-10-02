@@ -1,0 +1,14 @@
+b3lyp/cc-pvdz analytic Hessian: 634 s
+wb97x/cc-pvdz analytic Hessian: 806 s
+B3LYP/cc-pvdz frequencies: [161, 177, 359, 390, 477, 478, 515, 520, 630, 634, 703, 776, 782, 789, 805, 834, 898, 945, 945, 964, 983, 990, 1040, 1048, 1139, 1156, 1157, 1161, 1234, 1254, 1276, 1403, 1408, 1426, 1482, 1489, 1555, 1629, 1653, 1688, 3216, 3218, 3220, 3223, 3235, 3236, 3249, 3250]
+families: {'CH-stretch': 8, 'CH-oop': 9, 'ring-ip': 18, 'other': 13}
+CCSD(T) FD frequencies: [100, 129, 336, 342, 419, 421, 505, 517, 536, 542, 612, 652, 731, 779, 783, 797, 798, 885, 890, 895, 909, 931, 1049, 1055, 1134, 1149, 1153, 1156, 1248, 1250, 1276, 1404, 1443, 1465, 1504, 1505, 1587, 1667, 1685, 1739, 3271, 3272, 3276, 3278, 3292, 3293, 3307, 3308]
+RMS of ΔH (a.u.): CC − B3LYP 5.60e-03, proxy ωB97X − B3LYP 3.17e-03
+(a) diagonal                 CC − B3LYP             ΔH residual 0.68 | ring coupling ratio 0.67 | ring diag  15.67 | corrected ω 33.88 (zero 51.05)
+(a) diagonal                 proxy ωB97X − B3LYP    ΔH residual 0.77 | ring coupling ratio 1.05 | ring diag  17.06 | corrected ω 10.14 (zero 21.30)
+(b) + atom-sharing pairs     CC − B3LYP             ΔH residual 0.15 | ring coupling ratio 0.72 | ring diag   7.37 | corrected ω 7.14 (zero 51.05)
+(b) + atom-sharing pairs     proxy ωB97X − B3LYP    ΔH residual 0.65 | ring coupling ratio 0.90 | ring diag  14.25 | corrected ω 7.44 (zero 21.30)
+(c) + ring bond-bond pairs   CC − B3LYP             ΔH residual 0.12 | ring coupling ratio 0.69 | ring diag   7.12 | corrected ω 6.90 (zero 51.05)
+(c) + ring bond-bond pairs   proxy ωB97X − B3LYP    ΔH residual 0.35 | ring coupling ratio 0.52 | ring diag   7.13 | corrected ω 4.27 (zero 21.30)
+exploratory: element-wise correlation of ΔF_CC and ΔF_proxy on pattern (c): 0.56 | norm ratio CC/proxy: 1.7
+wrote results/naphthalene_ccpvdz/E8_locality_naphthalene verdict between
