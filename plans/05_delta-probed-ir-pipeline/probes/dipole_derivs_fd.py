@@ -25,7 +25,8 @@ HARTREE2CM = 219474.6313705
 KM_PER_MOL = 974.8802
 
 
-def dipole(mol, xc, grid, x, conv=1e-11):
+def dipole(mol, xc, grid, x, conv=1e-11, dm0=None):
+    """Analytic dipole (a.u.) of the converged RKS at geometry x; `dm0` seeds the SCF (the equilibrium density halves the displaced SCF cost)."""
     m = mol.copy()
     m.set_geom_(x, unit="Bohr")
     mf = dft.RKS(m)
@@ -33,24 +34,26 @@ def dipole(mol, xc, grid, x, conv=1e-11):
     mf.grids.atom_grid = grid
     mf.grids.prune = None
     mf.conv_tol = conv
+    mf.conv_tol_grad = 1e-8          # 2 Oct 07:0x: with the default 3e-6 the seeded SCFs left 1.5e-4 e in the APT (sum rule failed on water); 1e-8 restores 1e-6
     mf.verbose = 0
-    mf.kernel()
+    mf.kernel(dm0)
     if not mf.converged:
         raise RuntimeError("SCF not converged at a displaced geometry")
-    return mf.dip_moment(unit="AU", verbose=0)
+    return mf.dip_moment(unit="AU", verbose=0), mf.make_rdm1()
 
 
 def apt_fd(mol, xc, grid, x0, h, log=print):
-    """Atomic polar tensor P[3, 3N]: P[c, A*3+d] = ∂μ_c / ∂R_{A,d} by central differences."""
+    """Atomic polar tensor P[3, 3N]: P[c, A*3+d] = ∂μ_c / ∂R_{A,d} by central differences; every displaced SCF starts from the equilibrium density."""
     n = len(x0)
     P = np.zeros((3, 3 * n))
     t0 = time.time()
+    _, dm0 = dipole(mol, xc, grid, x0)
     for A in range(n):
         for d in range(3):
             xp, xm = x0.copy(), x0.copy()
             xp[A, d] += h
             xm[A, d] -= h
-            P[:, 3 * A + d] = (dipole(mol, xc, grid, xp) - dipole(mol, xc, grid, xm)) / (2 * h)
+            P[:, 3 * A + d] = (dipole(mol, xc, grid, xp, dm0=dm0)[0] - dipole(mol, xc, grid, xm, dm0=dm0)[0]) / (2 * h)
         log(f"  atom {A + 1}/{n} done, {time.time() - t0:.0f} s")
     return P
 
@@ -77,6 +80,7 @@ def main() -> int:
     ap.add_argument("--charge", type=int, default=0)
     ap.add_argument("--out", default=None)
     ap.add_argument("--sum-rule-limit", type=float, default=1e-4, help="max |Σ_A P_A − q·I| allowed (e)")
+    ap.add_argument("--no-half-step", action="store_true", help="skip the h/2 repeat (the sum rule stays as the second route; water: |P(h) − P(h/2)| 3e-6 e)")
     a = ap.parse_args()
     lib.num_threads(a.threads)
     grid = tuple(int(v) for v in a.grid.split(","))
@@ -87,11 +91,11 @@ def main() -> int:
                 verbose=0, max_memory=20000, charge=a.charge)
     t0 = time.time()
     P = apt_fd(mol, a.xc, grid, x0, a.step)
-    P2 = apt_fd(mol, a.xc, grid, x0, a.step / 2)
+    P2 = P if a.no_half_step else apt_fd(mol, a.xc, grid, x0, a.step / 2)
     n = len(x0)
     sum_rule = P.reshape(3, n, 3).sum(axis=1) - a.charge * np.eye(3)
     sr = float(np.abs(sum_rule).max())
-    rich = float(np.abs(P - P2).max())
+    rich = float("nan") if a.no_half_step else float(np.abs(P - P2).max())
     H = np.load(f"{a.dir}/{a.hessian}")["H_projected"]
     freq, I = intensities(P2, H, masses)
     _, I1 = intensities(P, H, masses)
