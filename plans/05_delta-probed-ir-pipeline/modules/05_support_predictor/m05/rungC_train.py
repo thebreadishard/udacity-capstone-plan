@@ -384,6 +384,7 @@ def train_one(train_ids: list, tensors: dict, seed: int, epochs: int, lr: float 
     return model, hist
 
 
+APT_FILES = ("dipole_b3lyp_cphf.npz", "dipole_b3lyp_fd.npz")           # probes/dipole_derivs_cphf.py (2 Oct 2026; 1.3e-5 vs FD on water), probes/dipole_derivs_fd.py
 PER_MOLECULE_KEYS = ("coupling_ratio", "coupling_rms", "coupling_zero_rms", "corrected_freq_rms", "dH_residual_ratio",
                      "spectrum_overlap", "spectrum_overlap_zero_rule", "intensity_rel_rms", "intensity_rel_rms_zero_rule", "n_modes")
 
@@ -560,13 +561,16 @@ def main() -> int:
         log(f"analytic second-route Hessians substituted for {len(substituted)} molecules")
     mols = {i: m for i, m in mols.items() if not m["imaginary"]}
     n_apt = 0
-    for i, m in mols.items():                                              # lever 5 step 2: atomic polar tensors (probes/dipole_derivs_fd.py) where present
-        p = Path(a.molecules) / i / "dipole_b3lyp_fd.npz"
-        if p.exists():
-            z = np.load(p)
-            if bool(z["passed"]):
-                m["apt"] = np.asarray(z["apt"], float)
-                n_apt += 1
+    for i, m in mols.items():                                              # lever 5 step 2: atomic polar tensors where present (CPHF route first, FD second)
+        for name in APT_FILES:
+            p = Path(a.molecules) / i / name
+            if p.exists():
+                z = np.load(p)
+                if bool(z["passed"]):
+                    m["apt"] = np.asarray(z["apt"], float)
+                    m["apt_file"] = name
+                    n_apt += 1
+                break
     if n_apt:
         log(f"atomic polar tensors found for {n_apt} molecules: intensity read-outs on (lever 5, registered 2 Oct 2026 06:5x)")
     test_a = [i for i in test_a if i in mols]
