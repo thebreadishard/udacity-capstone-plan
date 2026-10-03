@@ -19,7 +19,7 @@ for g in $(find "$R/probes" -name 'host_guard*.log' -mmin -1440 2>/dev/null); do
   echo "  $(basename "$g"): $(tail -1 "$g")"
 done
 # 20 Sep 2026: the watchers run detached inside WSL (anchor_watch_wsl.sh, e6_watch_wsl.sh); the old Windows night watch is retired
-NW=$(wsl.exe -e bash -c "pgrep -fc 'watch_wsl.sh'" 2>/dev/null | tr -d '
+NW=$(wsl.exe -e bash -c "pgrep -fc 'watch_wsl.sh|_watch_[a-z0-9]+\.sh'" 2>/dev/null | tr -d '
 ')
 echo "  WSL watchers running: ${NW:-0} (anchor, E6, and one per Helsinki job (vpt2, r0); relaunch recipe in memory 'Watchdogs in WSL')"
 for w in anchor_watch e6_watch vpt2_watch r0_watch; do W=$(ls -t /c/Users/thebr/AppData/Local/Temp/claude/*/*/scratchpad/$w.log 2>/dev/null | head -1); [ -n "$W" ] && { printf "  %s last: " "$w"; tail -1 "$W" | cut -c1-120; }; done

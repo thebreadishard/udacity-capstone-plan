@@ -79,7 +79,21 @@ def test_require_carried_guard(tmp_path):
     assert MR.require_carried(p, status_file=st)["status"] == "carried"
 
 
-@pytest.mark.skipif(not (M05 / "out" / "MODELS_STATUS.json").exists(), reason="module 05 out/ not present")
+@pytest.mark.skipif(not (M05 / "out" / "MODELS_STATUS.json").exists() or not any((M05 / "out").glob("*.pt")),
+                    reason="module 05 checkpoints not present (CI has the status file but no *.pt; the check is meaningful only beside the checkpoints)")
 def test_committed_registry_is_current():
-    r = subprocess.run([sys.executable, str(M05 / "m05" / "model_registry.py"), "--check"], capture_output=True, text=True, cwd=str(M05), check=False)
-    assert r.returncode == 0, r.stderr + r.stdout
+    r = subprocess.run([sys.executable, str(M05 / "m05" / "model_registry.py"), "--check"], capture_output=True, text=True, encoding="utf-8", errors="replace",
+                       cwd=str(M05), check=False)
+    assert r.returncode == 0, (r.stderr or "") + (r.stdout or "")
+
+
+def test_candidate_status_is_listed_but_refused_as_a_base(tmp_path):
+    """3 Oct 2026: a checkpoint a registered chain saved but nobody has read is 'candidate' — in the table, never a base for a read."""
+    p = _fake(tmp_path)
+    st = tmp_path / "status.json"
+    st.write_text(json.dumps({p.name: {"status": "candidate", "chain": "34"}}), encoding="utf-8")
+    table, missing = MR.rows(tmp_path, st)
+    assert not missing and table[0]["status"] == "candidate"
+    with pytest.raises(SystemExit):
+        MR.require_carried(p, status_file=st)
+    assert MR.require_carried(p, allow=True, status_file=st)["status"] == "candidate"

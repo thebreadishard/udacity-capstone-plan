@@ -33,7 +33,7 @@ jobs:
       # without them collection failed and CI stayed red from 26 Sep unnoticed. CPU torch keeps the install small.
       # scipy for test_m03_origin_columns (module 03's tables); checked in a clean venv built like this job: 109 passed, 7 skipped
       - name: Test dependencies of the module tests (pandas, scipy, CPU torch)
-        run: pip install pandas scipy && pip install torch --index-url https://download.pytorch.org/whl/cpu
+        run: pip install pandas scipy scikit-learn && pip install torch --index-url https://download.pytorch.org/whl/cpu
       - name: Ruff on tier-2 code
         run: ruff check src tests
       - name: Syntax check on the probes (tier 1)
