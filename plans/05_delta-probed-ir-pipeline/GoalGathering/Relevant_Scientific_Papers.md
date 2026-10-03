@@ -785,3 +785,23 @@ Downloaded by the author on 29 September 2026 (19:4x; the user: "Download"), ope
 | 105 | Chawananon_2022_two-ring_PAHs_jet_QCL_JCP157_064301.pdf | 33 |
 
 References these four papers point to that the plan still lacks (checked against `Papers/`, 19:5x): Pirali, Goubet et al., PCCP **15**, 10141 (2013) — the far-IR naphthalene ν₄₆–ν₄₈ origins, jet and cell (paywalled; the plan quotes its numbers from item 53's line and from Albert 2011); Gruet, Goubet, Pirali, JCP **140**, 234308 (2014) — [1,5]- and [1,6]-naphthyridine high-resolution and the zero-point inertial defect rule (paywalled); Martin-Drumel et al. (Chawananon's ref 32) — gas-phase FTS of biphenyl; Joblin et al. 1995 (A&A 299, 835) is on disk. None blocks a measurement; the first two would sharpen R1's cold columns and are worth the user's university access.
+
+## Literature search of 2026-10-03 (paper D's claim: published CC force fields / frequencies of our anchor molecules; web search, author's agent; records, not cites — re-fetch before use)
+
+The claim under test: "the complete CCSD(T) force-constant matrix with its numerical checks is not deposited for any aromatic molecule; frequency tables
+exist". Searched (3 Oct 2026, 21:0x–21:1x): benzene, naphthalene, pyridine, fluorobenzene, anthracene with "CCSD(T)" / "coupled cluster" / "harmonic".
+
+| # | what | identifier | status |
+|---|---|---|---|
+| 102 | **Benzene CCSD(T) geometry and harmonic force field** (ANO and cc-pVTZ-class bases; the out-of-plane ring modes ω₄ and ω₅ "hypersensitive" to the basis, traced to intramolecular BSSE — the observation lever 2 tests tonight at cc-pVTZ) | Martin, J. M. L.; Taylor, P. R.; Lee, T. J., Chem. Phys. Lett. (1997); secondary mention in arXiv:2308.06079 | **record (search 2026-10-03)**; DOI and volume to fetch; the paper itself to read (does it deposit the force field, or frequencies only?) |
+| 103 | Benzene in-plane harmonic force field at CCSD, large cc-VTZ basis (318 functions) | Chem. Phys. Lett. (1993), sciencedirect pii 000926149389264I | **record (search 2026-10-03)**; authors/DOI to fetch |
+| 104 | Azabenzenes (pyridine … tetrazine): anharmonic force fields at B97-1/TZ2P, VPT2 — DFT, not CC | Boese, A. D.; Martin, J. M. L., J. Phys. Chem. A 108, 3085–3096 (2004), DOI 10.1021/jp0369589 | **record (search 2026-10-03)**; check whether CCSD(T) harmonics for pyridine are included |
+| 105 | CCSD(T)-F12 and basis-set assessment for harmonic frequencies: cc-pVDZ MAE 32.0 cm⁻¹, cc-pVTZ 10.6 cm⁻¹ against the CCSD(T) limit — the size of our anchors' basis error | JCTC (2014), DOI 10.1021/ct500174q | **record (search 2026-10-03)**; authors to fetch; the numbers are from a search snippet |
+| 106 | Anthracene force field: HF/4-21G scaled with naphthalene's factors — no CC | J. Phys. Chem. (1996), DOI 10.1021/jp953694k | **record (search 2026-10-03)** |
+
+**Negative result of the search (to be confirmed by a Crossref/Scopus pass before submission):** no CCSD(T) harmonic force field or frequency table was
+found for naphthalene, pyridine, fluorobenzene or anthracene; for benzene CCSD(T) harmonic frequencies exist since 1997 (item 102). The paper's claim
+therefore reads: CC *frequencies* of benzene are published; the *matrices* with per-displacement gradients and numerical checks are not deposited for any
+aromatic molecule to our knowledge. Item 105 fixes the caveat the paper must carry: at cc-pVDZ the anchors are a defined reference level with a basis
+error of tens of cm⁻¹ against the CC limit, not experiment-grade frequencies — their value is as consistent training labels and as the quantity a
+correction is learned against.
