@@ -1488,3 +1488,22 @@ the gain within the first quarter (coverage saturates), and hold-out (b)'s fluor
 keep25 recovers ≥ half of the control's gain on the three-ring parents → a scaffold family is covered by a few dozen children, and the next pools spread
 over more families rather than deepen one. *Linear:* keep25 recovers < a third → coverage is a count per family, and the 200's 63 three/four-ring rows are
 a first instalment, not the answer.
+
+## Outcome 3 October 04:0x — chain 30: the coverage curve of the three-ring family (amendment 01:1x)
+
+`out/E7_rungC_coverage_ring3keep25_2026-10-03.json` (31 of the 123 three-ring children kept, pool 658) and `…keep50…` (62 kept, 689), carried recipe, three
+seeds, best epochs 98–131; with no-ring3 (0 kept) and the control (123 kept):
+
+| three-ring children in the pool | (a) ratio | (a) ω | three-ring parents (phenanthrene / phenanthridine / biphenylene) | (b) ratio | fluorene scaffold | fluoranthene scaffold |
+|---|---|---|---|---|---|---|
+| 0 | 0.369 | 4.20 | 0.45 (0.46 / 0.49 / 0.41) | 0.418 | 0.40 | 0.43 |
+| 31 | 0.249 | 3.30 | **0.22** (0.18 / 0.18 / 0.29) | 0.351 | 0.31 | 0.37 |
+| 62 | 0.224 | 2.50 | 0.17 (0.17 / 0.16 / 0.16) | 0.343 | 0.32 | 0.35 |
+| 123 | 0.229 | 3.10 | 0.15 (0.15 / 0.16 / 0.15) | 0.349 | 0.30 | 0.37 |
+
+**Against the predictions** (parents ≈ 0.25 at 31 and ≈ 0.18 at 62; fluorene ≈ 0.33 → ≈ 0.31): 0.22 and 0.17; fluorene 0.31 and 0.32 — as predicted, slightly
+better. The first 31 children recover 77 % of the parents' gain and all of hold-out (b)'s; 62 recover 93 %; the second half adds nothing measurable.
+**Line: saturating.** A scaffold family is covered by a few dozen substituted children; beyond that the pool should spread over more families rather than
+deepen one. For the next pools: per new scaffold family (anthracene, pyrene, chrysene, triphenylene, the heteroaromatic three-ring parents) ≈ 30 children
+each, chosen across substituents; the running 200 (55 four-ring A2 rows across pyrene / fluoranthene-type parents, 8 three-ring, 137 B) are a first
+instalment of that design. Biphenylene is the slowest to saturate (0.29 at 31) — a four-membered-ring bridge the other two-ring systems do not teach.

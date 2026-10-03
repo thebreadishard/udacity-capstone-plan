@@ -248,3 +248,10 @@ pyrenes from the three-ring children overnight (two lanes, ≈ 01:30). Outcome t
 Seven pyrenes removed: nothing moves (fluoranthene +0.02). The 123 three-ring children removed: the full chain-28 effect ((a) 0.37, three-ring parents 0.44,
 (b) 0.42). The proven data lever is the three-ring family; four-ring value is a count question the running 200 answer. Chain 30 (registered above) runs the
 coverage curve of that family overnight — 31 and 62 of the 123 kept — on both lanes, read ≈ 04:45.
+
+## 3 October, 04:0x — the coverage curve saturates: a scaffold family needs a few dozen children
+
+Kept 0 / 31 / 62 / 123 three-ring children → the three-ring parents 0.45 / 0.22 / 0.17 / 0.15 and hold-out (b) 0.42 / 0.35 / 0.34 / 0.35. The first
+quarter buys three quarters of the gain; the second half nothing. Together with chains 28–29 the night's reading is: **coverage is per scaffold family,
+cheap (≈ 30 children), and transfers to neighbouring fused scaffolds by 0.06–0.10.** The next pools are designed breadth-first over families. Outcome
+table in the pre-registration; the design rule goes to the next-pool row of TASKS.
