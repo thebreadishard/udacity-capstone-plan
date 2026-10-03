@@ -69,3 +69,13 @@ outputs are current again. Items unchanged otherwise; the reviewer sees sections
 - requirements.txt: from the environment of the 23 September run (unchanged since).
 - Running or waiting outside the rubric: layer B (six shards; `TASKS.md`), rung C training (the user's decision); neither changes the submitted notebook.
 - Open: the user's pass; Zenodo release; the submission copy at the very end; promotion of `m05/deltah_model.py` to `src/dpir`.
+
+## Status 2026-10-03 18:0x — weekend review 2, module 05 (README rewritten to the current state)
+
+- Notebook: sections 12–12.3 executed append-only (rung C: the floor, the 750 read, the CC transfer, the coverage rule); section 12.4 (targets per family,
+  decisions 53/54, chain 34's outcome) queued with one rebuild ≈ 5 Oct. The main run of 23 September untouched.
+- Model versions: `MODELS.md` + `out/MODELS_STATUS.json` (decision 55); three `carried` models (chain 24), the loaders refuse the rest.
+- requirements.txt: regenerated 3 Oct by `tools/freeze_environments.py` (now with `geometric` and `rdkit`; identical to `environments/windows-python314.txt`).
+- Running or waiting outside the rubric: the 200 (CPX62), chain 34 (laptop, after the TZ run), chain 33 and benzene⁺ (CCX53), pool 3 prepared; none changes the submitted notebook.
+- Open, unchanged: the user's pass; Zenodo release; the submission copy at the very end; promotion of the model to `src/dpir`. The rubric items themselves are
+  re-ticked in the full weekend pass (TASKS, weekend review 2).
