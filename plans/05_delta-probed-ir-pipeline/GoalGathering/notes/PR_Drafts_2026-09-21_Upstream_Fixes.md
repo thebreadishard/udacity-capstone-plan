@@ -182,3 +182,25 @@ implementation; numerics unchanged to 2e-10 cm⁻¹. The follow-up comment is dr
 > - Numerics unchanged: against pyVPT2 0.1.2 on the same Hessians, ω and φ_ijk are bitwise equal and φ_iijj, χ and ν agree to 3e-10 cm⁻¹ (the two routes are now averaged explicitly rather than summed in one expression).
 >
 > The gradient route (`assemble_quartic_from_gradients`) has the analogous two routes; happy to add the same report there in a follow-up if that is useful.
+
+## 7. Prepared (3 October 2026 10:1x; opening waits for the user's word) — pyscf `grad/ccsd.py`: keep the relaxed density, `Gradients.dip_moment()`
+
+Branch `ccsd-grad-relaxed-dm1` on the fork `thebreadishard/pyscf`, one commit (06468d3) on upstream master; software-ledger row 27.
+
+**Title:** `grad/ccsd: keep the relaxed one-particle density; Gradients.dip_moment()`
+
+**Body:**
+
+> `grad_elec` forms the fully relaxed one-particle density (orbital response included, SCF part added) and contracts it with the derivative of `hcore`,
+> but did not keep it. This PR stores it as `cc_grad.rdm1_relaxed` and adds `Gradients.dip_moment(unit=...)`, which returns the dipole moment from it
+> through the SCF `dip_moment` routine — so `-dE/dF` comes with the gradient at no extra cost (the alternative today is a finite-field derivative with six
+> energy evaluations, or re-deriving the Z-vector solve). The CCSD(T) gradient now calls `ccsd_grad.grad_elec` on the caller's object instead of a fresh
+> `ccsd_grad.Gradients`, so the attribute lands where the user can read it. RHF-based CCSD and CCSD(T) only; UCCSD can follow the same pattern.
+>
+> Tests (water/6-31G): the dipole from the relaxed density against central differences of the CCSD and CCSD(T) energies with the field on electrons and
+> nuclei (F = 1e-4 a.u.), tolerance 1e-5; observed 4e-8 for both. Note: for CCSD(T) the test passes the (T) lambda explicitly, as `test_ccsd_t.py` does;
+> `kernel()` without `l1, l2` currently falls back to the CCSD lambda (#3469).
+
+**Checks done here:** `pyscf/grad/test/test_ccsd.py` and `test_ccsd_t.py` (the two new tests and the existing gradient tests) pass under PYTHONPATH of the
+worktree against the qc05 build; style approximated with ruff under pyscf's `.flake8` limits (the one E701 one-liner follows the file's own idiom); the
+production checkout `~/pyscf-master` untouched (worktree `~/pyscf-wt-dm1`).

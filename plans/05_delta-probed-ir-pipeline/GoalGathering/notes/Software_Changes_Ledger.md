@@ -336,7 +336,7 @@ One line per change; the numbered section below the register carries every origi
 
 ### 22 — rows 1–2 merged upstream as pyscf-forge PR #212 (30 Sep, approved)
 
-**Group:** A, patch to third-party code. **Date:** 2026-09-30 → 10-03. **Status:** pr-open. *Status note (3 Oct 2026):* the state row: #212 merged, #213 (reworked 3 Oct, replied), pyscf #3469 and #3470, optking #116 open — all waiting for maintainers.
+**Group:** A, patch to third-party code. **Date:** 2026-09-30 → 10-03. **Status:** pr-open. *Planned (3 Oct 2026):* at the next environment rebuild pin pyscf-forge to master ≥ 1f1b65f (rows 1–2 become upstream code) and install pyscf-properties from master for its `infrared` module as a second route beside our CPHF APT; pyscf-core stays on our kernel branch until #3469/#3470 are merged. *Status note (3 Oct 2026):* the state row: #212 merged, #213 (reworked 3 Oct, replied), pyscf #3469 and #3470, optking #116 open — all waiting for maintainers.
 
 **Software:** upstream state of rows 1–2, 20, 21
 
@@ -487,6 +487,8 @@ One line per change; the numbered section below the register carries every origi
 ## How to use this ledger
 
 - Add a row the day a change is made; never after the fact from memory.
+- When upstream carries our fix (merged pull request, or master was ahead of us), the next environment rebuild moves to that upstream version and drops the
+  local patch; the swap is recorded in the row. Never mid-run: the environments under running anchors and the gate-1 stamps stay as they are (3 Oct 2026).
 - Before proposing any PR: re-check the upstream `master` (the fix may exist), write a minimal test, and
   follow the project's contribution guide. The user decides which to submit and when; nothing here commits
   us to anything.
