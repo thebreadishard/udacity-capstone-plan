@@ -1,17 +1,4 @@
-playwright
-python-dotenv==1.0.1
-BeautifulSoup4==4.12.3
-
-markdownify>=0.11.6
-
-# probes
-numpy
-scipy
-matplotlib
-rdkit
-ase
-
-# notebook execution
-ipykernel
-nbformat
-nbclient
+# No single environment serves this repository. The frozen listings live in
+# plans/05_delta-probed-ir-pipeline/environments/ (one file per environment, written by tools/freeze_environments.py), and each
+# Udacity module carries its own requirements.txt. The scraping list that used to be here (July–August 2026: playwright, markdownify,
+# python-dotenv, beautifulsoup4) served the opponent atlas of module 02 and is kept in git history only.

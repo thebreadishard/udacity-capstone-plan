@@ -68,7 +68,7 @@ extra layers change nothing outside seed scatter. That reading is the module's h
 ## How to run
 
 ```bash
-pip install -r requirements.txt                                   # frozen from the environment of the 23 September run (torch 2.14.0+cpu)
+pip install -r requirements.txt                                   # frozen by tools/freeze_environments.py from the Windows environment (3 Oct 2026; torch 2.14.0+cpu, rdkit, geometric)
 python m05/build_release.py corpus/molecules data/corpus_release/layerA2_2026-09-23   # dataset file + manifest (needs the corpus folders; RELEASES.md lists the releases)
 M05_RELEASE=layerA2_2026-09-23 python notebook/make_notebook.py    # writes and executes notebook/deep_learning.ipynb (M05_QUICK=1: one-minute pipeline check, labelled)
 python make_summary.py                                             # the nine-section report + addenda from the result files (docx + PDF)
