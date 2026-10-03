@@ -56,6 +56,8 @@ def main() -> int:
     ap.add_argument("--line", action="append", default=[], help="registered line, e.g. 'other<=3', 'ratio<=0.25' (hold-out (a))")
     ap.add_argument("--cap", type=int, default=200)
     a = ap.parse_args()
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")      # the table holds arrows and dashes; Windows consoles default to cp1252
     s = summarise(Path(a.record))
     g = summarise(Path(a.against)) if a.against else None
     lines = []
