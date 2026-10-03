@@ -27,6 +27,10 @@ The sequence **ends at Module 09**. There is no `Horizon/` and there are no Proj
 pipeline's own output — exists on paper, gated by measured conditions; proposal §6, mapping §"After
 Module 09".)
 
+## Use of artificial intelligence
+
+This plan — its text, the probes, the corpus pipeline, the course modules, the analyses and the drafts of our papers — was written with Claude Code (Anthropic), model Claude Fable 5.1 (earlier sessions used earlier Claude models), between September and October 2026, under the direction of the author, who specified every experiment, took every design decision (numbered below under Decisions), pre-registered the read-outs before the runs and reviewed every change. Every commit carries the model as co-author in its trailer (`Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>`), so the provenance of each change is on record; each course module has its own `PROVENANCE.md`. Every number in a document traces to a run log or a source and is checked by scripts, never typed. The author verifies the work and is responsible for it; the model is not an author, because it cannot be held accountable. Papers that come out of this work state the same in their Methods, as Nature Portfolio and ACS policies ask.
+
 ## Glossary
 
 Every symbol and term is defined once in the **Goal file's glossary** (reading-order item 3):

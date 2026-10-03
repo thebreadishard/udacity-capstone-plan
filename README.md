@@ -9,6 +9,10 @@ has run are *probes* (measurements about the data and about the method, each com
 first versions of four course modules, a corpus of cheap-level Hessians, and a sibling idea plan. A public, lay-level lab notebook in English
 lives at <https://thebreadishard.github.io/> (separate repository, same evidence rules).
 
+## Use of artificial intelligence
+
+This repository — the plan, the probes, the corpus pipeline, the course modules, the analyses and the drafts of our papers — was written with Claude Code (Anthropic), model Claude Fable 5.1 (earlier sessions used earlier Claude models), between September and October 2026, under the direction of the author, who specified every experiment, took every design decision (numbered in the plan README), pre-registered the read-outs before the runs and reviewed every change. Every commit carries the model as co-author in its trailer (`Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>`), so the provenance of each change is on record; each course module has its own `PROVENANCE.md`. Every number in a document traces to a run log or a source and is checked by scripts, never typed. The author verifies the work and is responsible for it; the model is not an author, because it cannot be held accountable. Papers that come out of this work state the same in their Methods, as Nature Portfolio and ACS policies ask.
+
 ## Where things stand (25 September 2026)
 
 - **Plan 05 is the current plan**, created 3 September 2026; its text has been frozen since 4 September and changes only
