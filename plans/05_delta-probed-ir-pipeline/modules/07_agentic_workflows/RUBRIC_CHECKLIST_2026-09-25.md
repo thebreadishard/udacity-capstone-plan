@@ -14,3 +14,8 @@
 
 **Owed before submission:** the LLM-policy run (three repeats, temperature 0, model id logged) and its numbers in notebook §4 and the report; a second reader's pass over the gate
 with the diff only (quality policy, promotion item 7) if the steward ever runs live; the diagram redrawn in the project's diagram conventions if the mentor asks for the sheet form.
+
+## Status 2026-10-03 18:2x — weekend review 2
+
+- README status rewritten to the current state. `rules/rules_v2.json` = v1 + R33–R41 (the week's incidents and decisions, sourced); scenarios S1–S8 still replay v1; the new rules' scenarios and the switch of the default are the full pass's work.
+- The LLM-policy run still waits for a key (Vocareum or Anthropic); the deterministic policy's 8/8 and the 11 tests unchanged.
