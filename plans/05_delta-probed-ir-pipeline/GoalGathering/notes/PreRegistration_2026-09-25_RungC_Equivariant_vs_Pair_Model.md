@@ -1546,3 +1546,20 @@ within 0.3 cm⁻¹ of α-tuning (5.2); r = 4 no better than r = 2 with three anc
 than α-tuning by more than 0.3 cm⁻¹ and naphthalene stable → the adapter is the candidate for the four-anchor reread (lever 6's registered test: not worse
 than α with four anchors, better with five). *Adapter overfits at three:* any anchor worse than α-tuning by > 0.5 cm⁻¹ or naphthalene's spread > 0.1 →
 the four-anchor reread compares α and λ = 1 only.
+
+## Outcome 3 October 07:3x — chain 32: α plus a rank-r adapter on three anchors (amendment 07:3x)
+
+`out/T3c_lora{2,4}_seed{0,1,2}_2026-10-03.json`. Ring-coupling ratio (mean, range over the three models) / ring-ip ω on the held-out anchor:
+
+| held-out | α tuned | α + rank-2 adapter | α + rank-4 adapter |
+|---|---|---|---|
+| benzene | 0.16 / 6.2 | 0.09 (0.04–0.17) / 4.0 | 0.05 (0.03–0.06) / 3.5 |
+| fluorobenzene | 0.22 / 5.2 | 0.19 (0.14–0.23) / 4.5 | 0.29 (0.25–0.31) / 8.4 |
+| pyridine | 0.27 / 6.6 | 0.29 (0.26–0.33) / 7.0 | 0.33 (0.31–0.36) / 8.0 |
+| naphthalene | 0.27 / 6.0 | **0.64 (0.44–0.91) / 16.2** | **0.46 (0.41–0.49) / 11.1** |
+
+**Against the predictions** (naphthalene 0.23–0.27 / 5.5–6.5 with spread ≤ 0.05; no anchor worse than α by 0.3 cm⁻¹): wrong on the fused ring by a wide
+margin — the adapter overfits three single-ring anchors *worse* than the unregularised last layer did (0.41 / 10.5), and r = 4 is worse than r = 2 on
+fluorobenzene and pyridine. Benzene alone improves. **Line: adapter overfits at three.** The subspace is small in parameters but unconstrained in
+direction: with three anchors it learns the single-ring correction and extrapolates it onto naphthalene. The four-anchor reread (anthracene) compares
+α-tuning and the λ = 1 head only; the adapter returns, if at all, with an L2 pull on A and five or more anchors. Lever 6's candidate is withdrawn.

@@ -261,3 +261,9 @@ table in the pre-registration; the design rule goes to the next-pool row of TASK
 Phenanthrene without its own children lands at 0.20 (between 0.15 covered and 0.46 uncovered), phenanthridine at 0.27 (0.16 / 0.49). The breadth-first
 rule is confirmed and sharpened: neighbours carry two thirds to five sixths, own children finish; heteroaromatics need their own children more.
 Outcome in the pre-registration, addendum in the design note (decision 52). Module 05 notebook section 12.3 carries the whole night's table.
+
+## 3 October, 07:3x — chain 32: the rank-r adapter overfits three anchors
+
+Naphthalene 0.64 / 16 cm⁻¹ (r = 2) and 0.46 / 11 (r = 4) against α-tuning's 0.27 / 6.0; benzene improves, the rest does not. A low-rank subspace is
+not a regulariser when the direction is free and the anchors are three single rings. Lever 6's candidate withdrawn; α-tuning (nine parameters) and the
+λ = 1 head remain the two recipes for the four-anchor reread. Outcome in the pre-registration.
