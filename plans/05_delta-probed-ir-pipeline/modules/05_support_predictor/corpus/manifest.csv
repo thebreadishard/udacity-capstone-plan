@@ -11321,3 +11321,123 @@ C_ffe925878b,C,ffe925878b74c5699b59509da16b38cc9abc7ef1,dsgdb9nsd_020804,,dsgdb9
 C_fff4c7b71d,C,fff4c7b71d338e11970233b5200fcad5196044ee,dsgdb9nsd_020364,,dsgdb9nsd_020364,,,pending,,,B3LYP only at the Hessian-QM9 geometry
 C_fff9ac4577,C,fff9ac4577a8c7d9de5ba65fa3732bbe7d82a938,dsgdb9nsd_124601,,dsgdb9nsd_124601,,,pending,,,B3LYP only at the Hessian-QM9 geometry
 C_fffe9b4b87,C,fffe9b4b87b834195a896b7a0f0e1a8b602697f8,dsgdb9nsd_020719,,dsgdb9nsd_020719,,,pending,,,B3LYP only at the Hessian-QM9 geometry
+P3_97c2db1a08,P3,97c2db1a08a2fe7d8823c59fb0e7d89345ce98f1,aza-pyrene-1,c1cc2ccc3cncc4ccc(c1)c2c34,,16,25,pending,,,pool3 aza4
+P3_0bb6c41350,P3,0bb6c41350b5e658f4083a1f86a32e75d161c01c,aza-pyrene-2,c1cc2ccc3ccnc4ccc(c1)c2c34,,16,25,pending,,,pool3 aza4
+P3_b36c153df2,P3,b36c153df2ebf3c6302f2459f42cdb4c422f70e3,aza-pyrene-3,c1cc2ccc3cccc4ncc(c1)c2c34,,16,25,pending,,,pool3 aza4
+P3_5592613777,P3,5592613777a4a065e81aa459a7a8971fb58776c4,aza-fluoranthene-1,c1cc2c3c(cccc3c1)-c1cnccc1-2,,16,25,pending,,,pool3 aza4
+P3_d2345d9fcf,P3,d2345d9fcfa4a34d10e30433f46bb5ec8213cfe2,aza-fluoranthene-2,c1cnc2c(c1)-c1cccc3cccc-2c13,,16,25,pending,,,pool3 aza4
+P3_1ba8fe779a,P3,1ba8fe779ac9f30d77a123f2731f69f4fb12cabd,aza-fluoranthene-3,c1ccc2c(c1)-c1cccc3ccnc-2c13,,16,25,pending,,,pool3 aza4
+P3_ff62f88395,P3,ff62f88395a25c0b6bb1dbebb536419dc7b32881,aza-fluoranthene-4,c1ccc2c(c1)-c1cccc3cncc-2c13,,16,25,pending,,,pool3 aza4
+P3_1e34c6eeef,P3,1e34c6eeef9b4024e5dba98a2d6b6c5ac2439db4,aza-fluoranthene-5,c1ccc2c(c1)-c1cccc3nccc-2c13,,16,25,pending,,,pool3 aza4
+P3_03c5f8c5cb,P3,03c5f8c5cb53966c92f696926e1c22aa0cb5b9b6,aza-pyrene-2+OH,Oc1cc2ccc3ccnc4ccc(c1)c2c34,,17,26,pending,,,pool3 aza4
+P3_12f8e0f146,P3,12f8e0f1469fae3bd84a04b9427c23267c99429a,aza-fluoranthene-3+ethynyl,C#Cc1ccc2ccnc3c2c1-c1ccccc1-3,,18,27,pending,,,pool3 aza4
+P3_03110e06c6,P3,03110e06c670d773813a507aa1687ea11696aa05,aza-fluoranthene-5+NO2,O=[N+]([O-])c1cccc2c1-c1cccc3nccc-2c13,,19,27,pending,,,pool3 aza4
+P3_0f946732f8,P3,0f946732f82d372ab104f7d3e206c2f17249b7e4,aza-fluoranthene-1+CN,N#Cc1cc2c3c(cccc3c1)-c1cnccc1-2,,18,26,pending,,,pool3 aza4
+P3_2a090cd77b,P3,2a090cd77b2d2514ac3057581cc4526d95e515a2,aza-pyrene-1+CH3,Cc1cc2ccc3cncc4ccc(c1)c2c34,,17,28,pending,,,pool3 aza4
+P3_081c1afebd,P3,081c1afebd6ce45423189cd00ce61f048d00fb05,aza-pyrene-3+OCH3,COc1cc2ccc3cccc4cnc(c1)c2c34,,18,29,pending,,,pool3 aza4
+P3_4319d1234e,P3,4319d1234e25a828d8db9dc01eec4fe24bc36731,aza-fluoranthene-2+CHO,O=Cc1ccnc2c1-c1cccc3cccc-2c13,,18,27,pending,,,pool3 aza4
+P3_1f9c62c3b1,P3,1f9c62c3b1a58d478c93753ac7344102f272c245,aza-fluoranthene-4+SH,Sc1ccc2c3c(cncc13)-c1ccccc1-2,,17,26,pending,,,pool3 aza4
+P3_2b83793839,P3,2b83793839f0fc699109501c1c4926a202052771,aza-pyrene-2+ethynyl,C#Cc1ccc2ccc3ccnc4ccc1c2c34,,18,27,pending,,,pool3 aza4
+P3_0d234813c3,P3,0d234813c3288d4f1fe294ecd7a0d4b3abe371c0,aza-fluoranthene-3+NO2,O=[N+]([O-])c1cnc2c3c(cccc13)-c1ccccc1-2,,19,27,pending,,,pool3 aza4
+P3_0e18b0e4b1,P3,0e18b0e4b133376c635513e369b123c4c374ff45,aza-fluoranthene-5+CN,N#Cc1cccc2c1-c1ccnc3cccc-2c13,,18,26,pending,,,pool3 aza4
+P3_25794fedc5,P3,25794fedc5bd5ef96e7517c461ff46e37048de68,aza-fluoranthene-1+CH3,Cc1cc2c3c(cccc3c1)-c1ccncc1-2,,17,28,pending,,,pool3 aza4
+P3_6298fa7888,P3,6298fa7888f26b25783fd205193bbbe25f816bae,aza-pyrene-1+OCH3,COc1ccc2ccc3cncc4ccc1c2c34,,18,29,pending,,,pool3 aza4
+P3_0a4f4be63f,P3,0a4f4be63fe9c09394b4c9dbf9c087cf380bd339,aza-pyrene-3+CHO,O=Cc1cc2ccc3cccc4ncc(c1)c2c34,,18,27,pending,,,pool3 aza4
+P3_3f66942313,P3,3f669423139ebfd6bb253dced555ae466f7ce2dc,aza-fluoranthene-2+SH,Sc1ccc2cccc3c2c1-c1ncccc1-3,,17,26,pending,,,pool3 aza4
+P3_5a87805198,P3,5a87805198c49744fdee71d6358aa1e95228b4a2,aza-fluoranthene-4+CF3,FC(F)(F)c1ncc2c3c(cccc13)-c1ccccc1-2,,20,28,pending,,,pool3 aza4
+P3_18cdc67ba4,P3,18cdc67ba4062a642f8158c8112a88453795078f,aza-pyrene-2+NO2,O=[N+]([O-])c1ccc2ccc3ccnc4ccc1c2c34,,19,27,pending,,,pool3 aza4
+P3_17a0b38ffb,P3,17a0b38ffbbcefd17e7272750d03d2542f165228,aza-fluoranthene-3+CN,N#Cc1cc2c3c(nccc3c1)-c1ccccc1-2,,18,26,pending,,,pool3 aza4
+P3_2359a3366c,P3,2359a3366cfc77e1969ed4653a0fec99e6d3a965,aza-fluoranthene-5+CH3,Cc1cc2c3c(ccnc3c1)-c1ccccc1-2,,17,28,pending,,,pool3 aza4
+P3_4063c67d28,P3,4063c67d28d0680edc6bd8e5b3a40c3069fef875,aza-fluoranthene-1+OCH3,COc1cc2c(cn1)-c1cccc3cccc-2c13,,18,29,pending,,,pool3 aza4
+P3_6d7a109d4a,P3,6d7a109d4a9b76d565f8f4aed25215424d2c2bef,aza-pyrene-1+CHO,O=Cc1cc2ccc3cncc4ccc(c1)c2c34,,18,27,pending,,,pool3 aza4
+P3_2176a9ba15,P3,2176a9ba154d07abcdf8c5111a97df85d1828ec4,aza-pyrene-3+SH,Sc1cc2cccc3ncc4cccc1c4c23,,17,26,pending,,,pool3 aza4
+P3_018f8ce9da,P3,018f8ce9da9b1884f5b33ffc9a6f0adafdd2efcc,perylene,c1cc2cccc3c4cccc5cccc(c(c1)c23)c54,,20,32,pending,,,pool3 five
+P3_a48efac7c7,P3,a48efac7c7ac3a48fbba551e535fe815190ad144,benzo[a]pyrene,c1ccc2c(c1)cc1ccc3cccc4ccc2c1c34,,20,32,pending,,,pool3 five
+P3_2b5a6c3201,P3,2b5a6c3201dd89ef550f341d40ddf020b9c065dc,benzo[e]pyrene,c1ccc2c(c1)c1cccc3ccc4cccc2c4c31,,20,32,pending,,,pool3 five
+P3_cb85f79bc2,P3,cb85f79bc25c9560ffd4dea6368e07a67631b624,benzo[k]fluoranthene,c1ccc2cc3c(cc2c1)-c1cccc2cccc-3c12,,20,32,pending,,,pool3 five
+P3_71cd75ce8c,P3,71cd75ce8c85d0744247d088c23b0a26d0aa382c,picene,c1ccc2c(c1)ccc1c2ccc2c3ccccc3ccc12,,22,36,pending,,,pool3 five
+P3_86e3432c8b,P3,86e3432c8bcb63288faee2cd89d395b97c6531b9,"dibenz[a,h]anthracene",c1ccc2c(c1)ccc1cc3c(ccc4ccccc43)cc12,,22,36,pending,,,pool3 five
+P3_0a21840ff5,P3,0a21840ff56de581d11b248376f3c43c22de8eeb,perylene+OH,Oc1cc2cccc3c4cccc5cccc(c(c1)c23)c54,,21,33,pending,,,pool3 five
+P3_2aa4adcc95,P3,2aa4adcc95768e286888e27d50564051af5a6e13,benzo[e]pyrene+ethynyl,C#Cc1ccc2ccc3cccc4c5ccccc5c1c2c34,,22,34,pending,,,pool3 five
+P3_086e85b2d7,P3,086e85b2d709f52b0d83a60d02de65346e1d5f0d,picene+NO2,O=[N+]([O-])c1cccc2ccc3c4ccc5ccccc5c4ccc3c12,,25,38,pending,,,pool3 five
+P3_09eab67f7b,P3,09eab67f7b68964d9316a2ffbb22955e7b265d3a,"dibenz[a,h]anthracene+CN",N#Cc1cc2ccccc2c2cc3ccc4ccccc4c3cc12,,24,37,pending,,,pool3 five
+P3_0789b0679f,P3,0789b0679f08718e4e0185cd96ec878a44d110c2,benzo[a]pyrene+CH3,Cc1ccc2ccc3cc4ccccc4c4ccc1c2c34,,21,35,pending,,,pool3 five
+P3_2500d7179b,P3,2500d7179bf100fc1be63daac5aba2668b7231cd,benzo[k]fluoranthene+OCH3,COc1ccc2cc3c(cc2c1)-c1cccc2cccc-3c12,,22,36,pending,,,pool3 five
+P3_a052950c1f,P3,a052950c1f56c2aa8c2f14b69e09c2c6922ea50b,perylene+ethynyl,C#Cc1ccc2cccc3c4cccc5cccc(c1c23)c54,,22,34,pending,,,pool3 five
+P3_133d6c56a1,P3,133d6c56a12feb7d08c66138c160fc384462a16c,benzo[e]pyrene+NO2,O=[N+]([O-])c1ccc2c(c1)c1cccc3ccc4cccc2c4c31,,23,34,pending,,,pool3 five
+P3_29827b6df4,P3,29827b6df477ecca18025c85a0f3b95df0ac491e,picene+CN,N#Cc1cc2c(ccc3c4ccccc4ccc32)c2ccccc12,,24,37,pending,,,pool3 five
+P3_37aef7945b,P3,37aef7945b0e1ab9e4754baeb181687aab49c4aa,"dibenz[a,h]anthracene+CH3",Cc1cc2ccccc2c2cc3ccc4ccccc4c3cc12,,23,39,pending,,,pool3 five
+P3_0bf323c494,P3,0bf323c494179c3cf51e67b513ab5b7d453c1cd5,benzo[a]pyrene+OCH3,COc1ccc2ccc3cc4ccccc4c4ccc1c2c34,,22,36,pending,,,pool3 five
+P3_2377eabf5d,P3,2377eabf5d8924cf2cb4e683ed875faaab136df9,benzo[k]fluoranthene+CHO,O=Cc1ccc2cc3c(cc2c1)-c1cccc2cccc-3c12,,22,34,pending,,,pool3 five
+P3_587680d8fc,P3,587680d8fcb2fc18faccc201f30c941ebcd4ddf5,perylene+NO2,O=[N+]([O-])c1ccc2cccc3c4cccc5cccc(c1c23)c54,,23,34,pending,,,pool3 five
+P3_0ba2b29988,P3,0ba2b29988d20c591e1752036c37241c60d63b4b,benzo[e]pyrene+CN,N#Cc1ccc2c3ccccc3c3cccc4ccc1c2c43,,22,33,pending,,,pool3 five
+P3_2e68b34382,P3,2e68b34382040dfaaf79571d47b458b151586350,picene+CH3,Cc1ccc2c(ccc3c2ccc2c4ccccc4ccc23)c1,,23,39,pending,,,pool3 five
+P3_234de46f33,P3,234de46f33af5aa9c512945857121ab9cc6e5675,"dibenz[a,h]anthracene+OCH3",COc1ccc2ccc3cc4c(ccc5ccccc54)cc3c2c1,,24,40,pending,,,pool3 five
+P3_37c45f1142,P3,37c45f114279a411fc56c5cc8c9dedf04e54fe5e,benzo[a]pyrene+CHO,O=Cc1ccc2ccc3c4ccccc4cc4ccc1c2c43,,22,34,pending,,,pool3 five
+P3_34d837d676,P3,34d837d676626dfe72df7d05091714dc5e1db98a,benzo[k]fluoranthene+SH,Sc1ccc2cccc3c2c1-c1cc2ccccc2cc1-3,,21,33,pending,,,pool3 five
+P3_4d14684fda,P3,4d14684fdafd323ac4bffa2bc0eaab5f8b0ff133,perylene+CN,N#Cc1cc2cccc3c4cccc5cccc(c(c1)c23)c54,,22,33,pending,,,pool3 five
+P3_0734c205ad,P3,0734c205ad0ed14b1a8dd9baa98d05ef9c991a57,benzo[e]pyrene+CH3,Cc1ccc2ccc3cccc4c5ccccc5c1c2c34,,21,35,pending,,,pool3 five
+P3_0590e0136f,P3,0590e0136f8608780c03606761b8b4681d2e6662,picene+OCH3,COc1cccc2c1ccc1c2ccc2c3ccccc3ccc21,,24,40,pending,,,pool3 five
+P3_001a50e28e,P3,001a50e28e87e71a405e54cdc951d325d47cad8c,"dibenz[a,h]anthracene+CHO",O=Cc1ccc2c(ccc3cc4c(ccc5ccccc54)cc32)c1,,24,38,pending,,,pool3 five
+P3_00b43d14f0,P3,00b43d14f018dafcd4f648226e53369b03e800d8,benzo[a]pyrene+SH,Sc1cc2cccc3ccc4c5ccccc5cc1c4c32,,21,33,pending,,,pool3 five
+P3_082a4af67e,P3,082a4af67eebee83c8942ac32efc2baaa84e6f85,benzo[k]fluoranthene+CF3,FC(F)(F)c1ccc2cc3c(cc2c1)-c1cccc2cccc-3c12,,24,35,pending,,,pool3 five
+P3c_8448043181,P3c,8448043181b9a6b0a233076fe50a805a66aa244a,benzene+,c1ccccc1,,6,12,pending,,,pool3 cation; parent A_8448043181; charge 1 mult 2
+P3c_8b12a55d3a,P3c,8b12a55d3ad6c3a70146c400bb18a5c0f25deaf3,benzene+F+,Fc1ccccc1,,7,12,pending,,,pool3 cation; parent B_8b12a55d3a; charge 1 mult 2
+P3c_1428bc8164,P3c,1428bc8164519365682ec410612b7a0c080d6508,benzene+COOH+NO2+,O=C(O)c1ccc([N+](=O)[O-])cc1,,12,17,pending,,,pool3 cation; parent B_1428bc8164; charge 1 mult 2
+P3c_10bab624bc,P3c,10bab624bcf686c94c15073cc67e41008dcd47ce,benzene+OCH3+SH+,COc1ccccc1S,,9,17,pending,,,pool3 cation; parent B_10bab624bc; charge 1 mult 2
+P3c_03bf20e8fe,P3c,03bf20e8febd2e8dd5369bd0e505f7d8daca2b1a,benzene+CH3+NO2+,Cc1ccc([N+](=O)[O-])cc1,,10,17,pending,,,pool3 cation; parent B_03bf20e8fe; charge 1 mult 2
+P3c_09978bbd5d,P3c,09978bbd5d1b38a0423a7a01271cdaede4c164e3,benzene+CH3+Cl+,Cc1cccc(Cl)c1,,8,15,pending,,,pool3 cation; parent B_09978bbd5d; charge 1 mult 2
+P3c_11644318c3,P3c,11644318c361a49a9738fe81e61bad803ee700a8,benzene+CHO+CHO+,O=Cc1cccc(C=O)c1,,10,16,pending,,,pool3 cation; parent B_11644318c3; charge 1 mult 2
+P3c_170b47dadd,P3c,170b47daddf408a8962e0216d881c1121d158d97,benzene+OCH3+CONH2+,COc1ccccc1C(N)=O,,11,20,pending,,,pool3 cation; parent B_170b47dadd; charge 1 mult 2
+P3c_16769b963f,P3c,16769b963fa7ee9138a5db2cbf2bfdb6653275f3,benzene+OH+CF3+,Oc1ccccc1C(F)(F)F,,11,16,pending,,,pool3 cation; parent B_16769b963f; charge 1 mult 2
+P3c_03923c2081,P3c,03923c20814cf65230da90ab5c0b0519eca7a42a,benzene+CN+OCH3+,COc1ccccc1C#N,,10,17,pending,,,pool3 cation; parent B_03923c2081; charge 1 mult 2
+P3c_049751d07c,P3c,049751d07c88d48c1caf0ec8c767b6b3c7b76d23,benzene+OCH3+NO2+,COc1ccccc1[N+](=O)[O-],,11,18,pending,,,pool3 cation; parent B_049751d07c; charge 1 mult 2
+P3c_188d8de09c,P3c,188d8de09c6f639f85c1792989a0056c85d3848d,benzene+CH3+OH+,Cc1ccc(O)cc1,,8,16,pending,,,pool3 cation; parent B_188d8de09c; charge 1 mult 2
+P3c_1c07e976be,P3c,1c07e976be29a5ea45c23553f8685b718c1476d3,benzene+NH2+CF3+,Nc1ccc(C(F)(F)F)cc1,,11,17,pending,,,pool3 cation; parent B_1c07e976be; charge 1 mult 2
+P3c_0ef4494cfc,P3c,0ef4494cfc1625b15943f6ca0718fd2c0b6f0d79,benzene+COOH+COOH+,O=C(O)c1cccc(C(=O)O)c1,,12,18,pending,,,pool3 cation; parent B_0ef4494cfc; charge 1 mult 2
+P3c_1a41c96f37,P3c,1a41c96f37260d7cb6e70b61ee2886d7e14866f6,benzene+F+CONH2+,NC(=O)c1cccc(F)c1,,10,16,pending,,,pool3 cation; parent B_1a41c96f37; charge 1 mult 2
+P3c_01f3186607,P3c,01f3186607fd554cce9385301f7d57d271ca20d1,naphthalene+,c1ccc2ccccc2c1,,10,18,pending,,,pool3 cation; parent A_01f3186607; charge 1 mult 2
+P3c_16116c90de,P3c,16116c90de5fbc4c08f51c33dfffb54eac83c2b2,naphthalene+Cl+,Clc1cccc2ccccc12,,11,18,pending,,,pool3 cation; parent B_16116c90de; charge 1 mult 2
+P3c_07cadc7923,P3c,07cadc7923d9dec03581b954715080bb7ce53306,naphthalene+COOH+,O=C(O)c1ccc2ccccc2c1,,13,21,pending,,,pool3 cation; parent B_07cadc7923; charge 1 mult 2
+P3c_11d1915b38,P3c,11d1915b38967743448b60f04797b1d66b86cbb7,naphthalene+CONH2+,NC(=O)c1ccc2ccccc2c1,,13,22,pending,,,pool3 cation; parent B_11d1915b38; charge 1 mult 2
+P3c_1f8e4687bd,P3c,1f8e4687bd10eaf2085bd1dd1897060700501f8f,naphthalene+NH2+OCH3+,COc1cccc2cc(N)ccc12,,13,24,pending,,,pool3 cation; parent B_1f8e4687bd; charge 1 mult 2
+P3c_0da4a5aea1,P3c,0da4a5aea1d113f142fd402d1a825a2005ad0b0d,naphthalene+OH+CN+,N#Cc1ccc2cc(O)ccc2c1,,13,20,pending,,,pool3 cation; parent B_0da4a5aea1; charge 1 mult 2
+P3c_55cca3aaf2,P3c,55cca3aaf2d3df0a67f491682ee6b00b37cd9e8f,naphthalene+OH+vinyl+,C=Cc1ccc2cc(O)ccc2c1,,13,23,pending,,,pool3 cation; parent B_55cca3aaf2; charge 1 mult 2
+P3c_476dc42b85,P3c,476dc42b857a38b386d194090608183b0acc1ff6,naphthalene+vinyl+SH+,C=Cc1cccc2cc(S)ccc12,,13,23,pending,,,pool3 cation; parent B_476dc42b85; charge 1 mult 2
+P3c_0f27b44587,P3c,0f27b44587ebc68dc1851da8dd5d85808b8dc7a6,naphthalene+CN+vinyl+,C=Cc1ccc2cc(C#N)ccc2c1,,14,23,pending,,,pool3 cation; parent B_0f27b44587; charge 1 mult 2
+P3c_18c473d7dd,P3c,18c473d7dd7d24d30a6ff15eaf4ce64ec9c6a7f0,naphthalene+F+CN+,N#Cc1cccc2ccc(F)cc12,,13,19,pending,,,pool3 cation; parent B_18c473d7dd; charge 1 mult 2
+P3c_20332edd59,P3c,20332edd59a107b88a8e858ce51c45f22904bee2,naphthalene+NH2+COOH+,Nc1c(C(=O)O)ccc2ccccc12,,14,23,pending,,,pool3 cation; parent B_20332edd59; charge 1 mult 2
+P3c_134d596518,P3c,134d596518540d4e76afa90fc65e6f5e5ad4a9e9,naphthalene+NO2+CF3+,O=[N+]([O-])c1ccc2ccc(C(F)(F)F)cc2c1,,17,23,pending,,,pool3 cation; parent B_134d596518; charge 1 mult 2
+P3c_5d15d13032,P3c,5d15d13032654f2f7aff05b0b753ff82d0b79b5e,naphthalene+OCH3+vinyl+,C=Cc1ccc2c(OC)cccc2c1,,14,26,pending,,,pool3 cation; parent B_5d15d13032; charge 1 mult 2
+P3c_168ec38a52,P3c,168ec38a52fbeb1f2f3f6f42444ef7a16b37ea40,naphthalene+CN+ethynyl+,C#Cc1cc(C#N)c2ccccc2c1,,14,21,pending,,,pool3 cation; parent B_168ec38a52; charge 1 mult 2
+P3c_67a14c45e8,P3c,67a14c45e8444092c4bd71a6696159518982fb98,naphthalene+CHO+COOH+,O=C(O)C(=O)c1ccc2ccccc2c1,,15,23,pending,,,pool3 cation; parent B_67a14c45e8; charge 1 mult 2
+P3c_a1e6ec1862,P3c,a1e6ec18626b89fd20ac0ce14f9193a2fca16c6a,anthracene+,c1ccc2cc3ccccc3cc2c1,,14,24,pending,,,pool3 cation; parent A_a1e6ec1862; charge 1 mult 2
+P3c_29caedd47d,P3c,29caedd47da6d2b8dc88710a25b593953318d7f6,anthracene+COOH+,O=C(O)c1cccc2cc3ccccc3cc12,,17,27,pending,,,pool3 cation; parent A2_29caedd47d; charge 1 mult 2
+P3c_25fed68b27,P3c,25fed68b279eb9fd7e52d1fb1606b7008e113871,anthracene+F+,Fc1ccc2cc3ccccc3cc2c1,,15,24,pending,,,pool3 cation; parent A2_25fed68b27; charge 1 mult 2
+P3c_20e59f3897,P3c,20e59f3897d185d6f7fd7787ed97cd0a4a92f6da,anthracene+NO2+,O=[N+]([O-])c1c2ccccc2cc2ccccc12,,17,26,pending,,,pool3 cation; parent A2_20e59f3897; charge 1 mult 2
+P3c_0f1a2bd718,P3c,0f1a2bd7187b8155b89701bc6dc9e8bf9b29d60e,anthracene+OCH3+,COc1c2ccccc2cc2ccccc12,,16,28,pending,,,pool3 cation; parent A2_0f1a2bd718; charge 1 mult 2
+P3c_541c53d1a5,P3c,541c53d1a5de9d1fac1a681a476ddb73391f82e5,phenanthrene+,c1ccc2c(c1)ccc1ccccc12,,14,24,pending,,,pool3 cation; parent A_541c53d1a5; charge 1 mult 2
+P3c_238c9ced38,P3c,238c9ced38a67eed477eb577bd07e0f3a22d5896,phenanthrene+CF3+,FC(F)(F)c1cccc2c1ccc1ccccc12,,18,27,pending,,,pool3 cation; parent A2_238c9ced38; charge 1 mult 2
+P3c_19eaf39036,P3c,19eaf3903652906fcd6187d19bbdac63f0756d60,phenanthrene+NO2+,O=[N+]([O-])c1ccc2ccc3ccccc3c2c1,,17,26,pending,,,pool3 cation; parent A2_19eaf39036; charge 1 mult 2
+P3c_09d0b3be91,P3c,09d0b3be917a306af495fbfe36ef727b7f0a13a2,phenanthrene+CONH2+,NC(=O)c1cccc2ccc3ccccc3c12,,17,28,pending,,,pool3 cation; parent A2_09d0b3be91; charge 1 mult 2
+P3c_0a2c2f12b8,P3c,0a2c2f12b8d78d43c75a7225b60f234aeb9e95af,phenanthrene+Cl+,Clc1ccc2ccc3ccccc3c2c1,,15,24,pending,,,pool3 cation; parent A2_0a2c2f12b8; charge 1 mult 2
+P3c_cce0ad25a5,P3c,cce0ad25a5a7737c768dc990a313e0ac189d9774,pyrene+,c1cc2ccc3cccc4ccc(c1)c2c34,,16,26,pending,,,pool3 cation; parent A_cce0ad25a5; charge 1 mult 2
+P3c_35c01ca552,P3c,35c01ca552e9e2e34795ab2eb22022c1320189e1,pyrene+NO2+,O=[N+]([O-])c1ccc2ccc3cccc4ccc1c2c34,,19,28,pending,,,pool3 cation; parent A2_35c01ca552; charge 1 mult 2
+P3c_25fe240a5d,P3c,25fe240a5d21993519c6888882194c48b4ecc0c1,pyrene+OCH3+,COc1cc2cccc3ccc4cccc1c4c32,,18,30,pending,,,pool3 cation; parent A2_25fe240a5d; charge 1 mult 2
+P3c_2d6f59a2bf,P3c,2d6f59a2bfe55a110b325faaf10a9c8bd3126c59,pyrene+OH+,Oc1cc2cccc3ccc4cccc1c4c32,,17,27,pending,,,pool3 cation; parent A2_2d6f59a2bf; charge 1 mult 2
+P3c_20747fd501,P3c,20747fd501022afc21c06c4025b837bf3c31c430,pyrene+vinyl+,C=Cc1ccc2ccc3cccc4ccc1c2c34,,18,30,pending,,,pool3 cation; parent A2_20747fd501; charge 1 mult 2
+P3c_428228e5a5,P3c,428228e5a5673d54a771ca088419dc5c08dd3002,fluoranthene+,c1ccc2c(c1)-c1cccc3cccc-2c13,,16,26,pending,,,pool3 cation; parent A_428228e5a5; charge 1 mult 2
+P3c_331729cd47,P3c,331729cd47bbba1de6fac7f2ad3454b50e408cbe,fluoranthene+CN+,N#Cc1cc2c3c(cccc3c1)-c1ccccc1-2,,18,27,pending,,,pool3 cation; parent A2_331729cd47; charge 1 mult 2
+P3c_311e979a14,P3c,311e979a14d2ad0977ee312fccb32ac4b0a37010,fluoranthene+Cl+,Clc1ccc2c(c1)-c1cccc3cccc-2c13,,17,26,pending,,,pool3 cation; parent A2_311e979a14; charge 1 mult 2
+P3c_2f079d63a1,P3c,2f079d63a193b2552e247fce26130595bb7f6153,fluoranthene+CH3+,Cc1cc2c3c(cccc3c1)-c1ccccc1-2,,17,29,pending,,,pool3 cation; parent A2_2f079d63a1; charge 1 mult 2
+P3c_097651503c,P3c,097651503ca9d6d030cc0f72e08e96ab508a955f,fluoranthene+CONH2+,NC(=O)c1cccc2c1-c1cccc3cccc-2c13,,19,30,pending,,,pool3 cation; parent A2_097651503c; charge 1 mult 2
+P3c_ff98e1160d,P3c,ff98e1160d5751db402968f3941505bd191f103d,quinoline+,c1ccc2ncccc2c1,,10,17,pending,,,pool3 cation; parent A_ff98e1160d; charge 1 mult 2
+P3c_0aed490e42,P3c,0aed490e42f381d65a2c48479c1243114af91ec8,quinoline+CF3+,FC(F)(F)c1cccc2ncccc12,,14,20,pending,,,pool3 cation; parent B_0aed490e42; charge 1 mult 2
+P3c_001ea7d3a5,P3c,001ea7d3a5f68a5ad8f3e0c290377488ce542385,quinoline+OH+,Oc1ccc2ncccc2c1,,11,18,pending,,,pool3 cation; parent B_001ea7d3a5; charge 1 mult 2
+P3c_1519881f69,P3c,1519881f69a3633aa48fa899546baf690aa62a83,quinoline+COOH+,O=C(O)c1cccc2ncccc12,,13,20,pending,,,pool3 cation; parent B_1519881f69; charge 1 mult 2
+P3c_0028cdfd85,P3c,0028cdfd850b5e679627e17299021e38a789e4b0,quinoline+CONH2+,NC(=O)c1cnc2ccccc2c1,,13,21,pending,,,pool3 cation; parent B_0028cdfd85; charge 1 mult 2
+P3c_6e858b26e5,P3c,6e858b26e563e49b4ceb7db77aebaed8958ff02e,pyridine+,c1ccncc1,,6,11,pending,,,pool3 cation; parent A_6e858b26e5; charge 1 mult 2
+P3c_02d75f732a,P3c,02d75f732a3a70bf6605323062b7813a3feb0e4b,pyridine+OH+,Oc1ccccn1,,7,12,pending,,,pool3 cation; parent B_02d75f732a; charge 1 mult 2
+P3c_00e041576d,P3c,00e041576d88ed0208c6d7c65794ff413fddf8fb,pyridine+SH+,Sc1ccccn1,,7,12,pending,,,pool3 cation; parent B_00e041576d; charge 1 mult 2
+P3c_0617e12945,P3c,0617e12945dcd1dfb113414b268344effbdbc10d,pyridine+CH3+F+,Cc1cccc(F)n1,,8,14,pending,,,pool3 cation; parent B_0617e12945; charge 1 mult 2
+P3c_17f1611949,P3c,17f1611949c43478e69bdc4792f62af6e9873cf2,pyridine+CH3+ethynyl+,C#Cc1cnccc1C,,9,16,pending,,,pool3 cation; parent B_17f1611949; charge 1 mult 2

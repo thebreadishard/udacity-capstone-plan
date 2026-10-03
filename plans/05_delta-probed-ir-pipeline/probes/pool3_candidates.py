@@ -190,8 +190,9 @@ def append_manifest(rows: list[dict], manifest_path: Path) -> int:
     existing = manifest_rows(manifest_path)
     have = {r["id"] for r in existing}
     added = 0
+    term = "\r\n" if b"\r\n" in manifest_path.read_bytes()[:4096] else "\n"      # keep the file's own line ending (build_manifest writes CRLF)
     with open(manifest_path, "a", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=BM.FIELDS, lineterminator="\n")
+        w = csv.DictWriter(f, fieldnames=BM.FIELDS, lineterminator=term)
         for r in rows:
             if r["id"] in have:
                 continue
