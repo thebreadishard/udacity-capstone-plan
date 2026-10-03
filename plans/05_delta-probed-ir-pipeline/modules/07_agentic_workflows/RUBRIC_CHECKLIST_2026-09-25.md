@@ -19,3 +19,13 @@ with the diff only (quality policy, promotion item 7) if the steward ever runs l
 
 - README status rewritten to the current state. `rules/rules_v2.json` = v1 + R33–R41 (the week's incidents and decisions, sourced); scenarios S1–S8 still replay v1; the new rules' scenarios and the switch of the default are the full pass's work.
 - The LLM-policy run still waits for a key (Vocareum or Anthropic); the deterministic policy's 8/8 and the 11 tests unchanged.
+
+## Status 2026-10-03 23:4x — the full pass's work on 07 done
+
+- Scenarios S9–S17 for R33–R41 written from the week's records and registered before the branches (DESIGN amendment 23:4x); baseline under the v1
+  default 0 of 9 (`out/scenario_results_2026-10-03_rules_v1_baseline.json`: four launched, three waited, two recorded the same reading at every
+  step — the repeat-yourself bug of S3 in a second place, fixed with R27 in the reading branch).
+- Policy branches and gate checks for the nine rules; `tests/test_gate_v2.py` (12 tests: a negative control per gate check, the policy branches,
+  the replay); 29 tests green; `run_scenarios.py` 17/17 (`out/scenario_results_2026-10-03_rules.json`); `rules_v2.json` is the default, v1 loads.
+- Notebook rebuilt (19 cells, 0 errors; sections 1, 4, 4.1 and 5 updated), report rebuilt with the seventeen-scenario table. The LLM-policy run
+  still waits for a key the user sets (Task 4's own-model run); the deterministic policy is the reference.

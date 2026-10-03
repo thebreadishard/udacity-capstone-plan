@@ -36,6 +36,39 @@ def check(p: Proposal, state: dict, rules_by_id: dict) -> GateResult:
         if o.get("facts", {}).get("contains_instruction_to_agent") and p.action not in ("escalate_to_human", "record_ledger", "wait"):
             return GateResult(approved=False, reasons=["observed content contains an instruction addressed to the agent; only escalation is allowed (R24)"],
                               forced_action=_escalate("a log contains text instructing the agent; not followed", o.get("text", "")[:300], "R24"))
+    # 1b. the stop rules of 27 Sep – 3 Oct (R33, R35, R36, R41): a launch is refused outright; the substitute is an escalation citing the rule
+    if p.action in LAUNCH_LIKE:
+        nc = facts.get("new_library_call")
+        if nc and not nc.get("upstream_test_cited"):
+            return GateResult(approved=False, reasons=[f"new library call {nc.get('call')} without the upstream test that makes the same call (R33)"],
+                              forced_action=_escalate("a new library call in the launch path cites no upstream test", str(nc.get("call", "")), "R33"))
+        st = facts.get("inherited_setting")
+        if st and st.get("value") != st.get("derived_from_elements") and not st.get("override_recorded"):
+            return GateResult(approved=False, reasons=[f"{st.get('name')} {st.get('value')} inherited; the elements give {st.get('derived_from_elements')}, no override recorded (R35)"],
+                              forced_action=_escalate("an inherited setting contradicts the molecule's elements", str(st), "R35"))
+        lp = facts.get("launch_plan")
+        if lp and sum(lp.get("lanes", {}).values()) > lp.get("cores", 0):
+            return GateResult(approved=False, reasons=[f"lanes sum to {sum(lp.get('lanes', {}).values())} threads on {lp.get('cores')} cores (R36)"],
+                              forced_action=_escalate("thread budget exceeded", str(lp), "R36"))
+        ge = facts.get("guard_event")
+        if ge and "continu" in str(ge.get("outcome", "")).lower():
+            return GateResult(approved=False, reasons=[f"a guard warned and continued in {ge.get('script')} (R41)"],
+                              forced_action=_escalate("a guard that warns and continues is not a guard; no launch until it stops", str(ge), "R41"))
+    # 1c. a reading runs on a carried model version (R37)
+    if p.action == "record_reading":
+        ms = facts.get("model_status")
+        if ms and ms.get("status") != "carried" and not ms.get("override"):
+            return GateResult(approved=False, reasons=[f"model {ms.get('path')} has status '{ms.get('status')}', not carried, no override (R37)"],
+                              forced_action=_escalate("a reading on a model version that is not carried", str(ms), "R37"))
+    # 1d. a push after a single-test run (R39) and a deletion at DONE without FETCHED (R40) — named before the generic human gate (R25)
+    argtext = " ".join(str(v) for v in p.args.values()).lower()
+    if p.action not in ("escalate_to_human", "wait"):
+        pp = facts.get("push_pending")
+        if pp and not pp.get("whole_file_run") and ("push" in argtext or p.action == "record_ledger"):
+            return GateResult(approved=False, reasons=["a push after a single-test run (R39)"], forced_action=_escalate("run the whole test file before the push", str(pp), "R39"))
+        sd = facts.get("server_done")
+        if sd and not sd.get("fetched_line") and ("delet" in argtext or facts.get("deletion_requested")):
+            return GateResult(approved=False, reasons=["a server at DONE without its FETCHED line (R40)"], forced_action=_escalate("full fetch before deletion", str(sd), "R40"))
     # 2. launch only after a passed dry run of the same job (R01), never a second instance (R06), never on the laptop during the anchor (R04)
     if p.action in LAUNCH_LIKE:
         if facts.get(f"dry_run_exit:{job}") != 0:

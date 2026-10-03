@@ -1,5 +1,5 @@
 """rules_v2.json (3 Oct 2026): v1's rules unchanged and in order, the new rules R33–R41 with every field filled and a dated source, ids unique and
-sequential, enforce in {gate, reason}; the graph's default is still v1 until the new rules have replayed scenarios."""
+sequential, enforce in {gate, reason}; v2 is the default since 3 Oct 2026 (S9–S17 replay 17/17), v1 stays loadable."""
 import json
 import sys
 from pathlib import Path
@@ -24,8 +24,9 @@ def test_v2_extends_v1_without_touching_it():
         assert "2026" in r["source"], r["id"]
 
 
-def test_loader_reads_v2_and_default_stays_v1():
-    assert DEFAULT_RULES.name == "rules_v1.json"
+def test_loader_default_is_v2_and_v1_loads():
+    assert DEFAULT_RULES.name == "rules_v2.json"
+    assert len(load_rules(HERE / "rules" / "rules_v1.json")) == 32
     rules = load_rules(HERE / "rules" / "rules_v2.json")
     rid = by_id(rules)
     assert "R37" in rid and "carried" in rid["R37"]["required"]

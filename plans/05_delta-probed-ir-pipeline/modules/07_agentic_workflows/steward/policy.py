@@ -42,11 +42,52 @@ class RuleTablePolicy:
         # R25 — the campaign needs a machine: escalate with the recipe
         if f.get("needs_new_server"):
             return Proposal(action="escalate_to_human", args={"message": f"a new server is needed: {f['needs_new_server']}", "quote": last.get("text", "")[:200]}, rule_id="R25", reason="creating machines is the human's")
+        # R41 — a guard that warned and continued: the guard is the bug; nothing launches until it stops
+        ge = f.get("guard_event")
+        if ge and "continu" in str(ge.get("outcome", "")).lower():
+            return Proposal(action="escalate_to_human", args={"message": f"{ge.get('script')}: the check '{ge.get('check')}' warned and continued — a guard stops, an override is a named flag; fix the guard before any launch", "quote": last.get("text", "")[:300]}, rule_id="R41", reason="warn-and-continue is detection without a stop")
+        # R33 — a new library call in the launch path without the upstream test that makes the same call
+        nc = f.get("new_library_call")
+        if nc and not nc.get("upstream_test_cited"):
+            return Proposal(action="escalate_to_human", args={"message": f"{nc.get('script')}: new call {nc.get('call')} — the launch note must name the upstream test or example that calls it the same way, read before the launch", "quote": last.get("text", "")[:300]}, rule_id="R33", reason="a call that looks right is not a cited call")
+        # R35 — an inherited numerical setting that the molecule's elements contradict
+        st = f.get("inherited_setting")
+        if st and st.get("value") != st.get("derived_from_elements") and not st.get("override_recorded"):
+            return Proposal(action="escalate_to_human", args={"message": f"{st.get('name')} {st.get('value')} inherited; the elements of {st.get('molecule')} give {st.get('derived_from_elements')} — derive it per molecule in the launcher or record an explicit override", "quote": last.get("text", "")[:300]}, rule_id="R35", reason="element-dependent settings are derived per molecule")
+        # R36 — lanes × threads over the cores, or a stall alarm shorter than the longest step
+        lp = f.get("launch_plan")
+        if lp and sum(lp.get("lanes", {}).values()) > lp.get("cores", 0):
+            return Proposal(action="escalate_to_human", args={"message": f"thread budget: lanes {lp.get('lanes')} sum to {sum(lp.get('lanes', {}).values())} on {lp.get('cores')} cores — re-plan before any launch", "quote": last.get("text", "")[:300]}, rule_id="R36", reason="lanes × threads must stay within the cores, check lanes included")
+        wd = f.get("watchdog")
+        if wd and wd.get("stall_min", 0) <= wd.get("longest_step_min", 0):
+            return Proposal(action="escalate_to_human", args={"message": f"watchdog stall threshold {wd.get('stall_min')} min is not above the longest step ({wd.get('longest_step_min')} min) — raise it and dry-run the alarm once", "quote": last.get("text", "")[:300]}, rule_id="R36", reason="a stall alarm shorter than a step is a false alarm")
+        # R37 — a reading on a model version that is not carried
+        ms = f.get("model_status")
+        if f.get("reading_pending") and ms and ms.get("status") != "carried" and not ms.get("override"):
+            return Proposal(action="escalate_to_human", args={"message": f"{ms.get('path')} has registry status '{ms.get('status')}' — a read runs on a carried model or with the named override, recorded", "quote": last.get("text", "")[:300]}, rule_id="R37", reason="evidence comes from carried model versions")
+        # R38 — a target read as an average over families, or a lever before floor and ceiling
+        rp = f.get("reading_pending")
+        if rp and (rp.get("per_family") is False or rp.get("floor_and_ceiling_measured") is False):
+            return Proposal(action="escalate_to_human", args={"message": f"'{rp.get('statistic')}' is read over all families — report every family, and measure the noise floor and the representation ceiling before any lever", "quote": last.get("text", "")[:300]}, rule_id="R38", reason="targets are per family; floor and ceiling first")
+        # R39 — a push after a single-test run
+        pp = f.get("push_pending")
+        if pp and not pp.get("whole_file_run"):
+            return Proposal(action="escalate_to_human", args={"message": f"branch {pp.get('branch')}: only '{pp.get('tests_run')}' was run — run the whole test file in order (tests own their fixtures) before the push", "quote": last.get("text", "")[:300]}, rule_id="R39", reason="a passing single test is not a passing file")
+        # R40 — a server at DONE without its FETCHED line
+        sd = f.get("server_done")
+        if sd and not sd.get("fetched_line"):
+            return Proposal(action="escalate_to_human", args={"message": f"{sd.get('host')} printed DONE but no FETCHED line exists — full fetch first (run directory, logs, gate stamp, environment listing; counts verified), then the human deletes", "quote": str(sd.get("done_line", ""))[:300]}, rule_id="R40", reason="a server is deleted only after its FETCHED line")
+        # R34 — a validation claim without the number and the counterpart
+        vc = f.get("validation_claim")
+        if vc and (vc.get("number") is None or vc.get("counterpart") is None):
+            return Proposal(action="escalate_to_human", args={"message": f"'{vc.get('text')}' names no number and no counterpart — 'validated' is written only as 'X against Y, Z'; the claim is not recorded", "quote": last.get("text", "")[:300]}, rule_id="R34", reason="a validation claim without a number counts as not done")
         # R14 — a consistency/learning statistic without its target control
         if f.get("reading_pending"):
             r = f["reading_pending"]
             if r.get("control_value") is None and any(k in r["statistic"].lower() for k in ("respect", "symmetr", "consisten", "learn")):
                 return Proposal(action="escalate_to_human", args={"message": f"reading of '{r['statistic']}' needs the same statistic on the target first", "quote": r.get("source", "")}, rule_id="R14", reason="control before claim")
+            if "record_reading" in done:   # R27: one line per event — found again by the S13/S14 baseline replay of 3 Oct
+                return Proposal(action="wait", args={"minutes": 30}, rule_id="R27", reason="the reading is recorded; one line per event")
             return Proposal(action="record_reading", args=dict(r), rule_id="R13", reason="registered reading with its control")
         # R21 — silent stdout but fresh checkpoint: wait
         for k, v in f.items():

@@ -23,6 +23,15 @@ evening after the user's "bouw maar zodra het rustig is"; the LLM policy is writ
 
 ## Dated note 2026-09-28 19:1x — provider switch in the reasoning node
 
+## Dated note 2026-10-03 23:4x — rules R33–R41 enforced; v2 the default
+
+Scenarios S9–S17 (`scenarios/scenarios.json`, fixtures `scenarios/fixtures/incidents_2026-09-27_to_10-03_excerpts.txt`) registered first; baseline
+replay under v1 0 of 9; then `steward/policy.py` (nine branches before the generic ones, R27 in the reading branch) and `steward/gate.py` (blocks 1b–1d:
+R33/R35/R36/R41 refuse a launch, R37 a reading, R39/R40 a ledger line or push/deletion, each substituting an escalation that cites the rule);
+`steward/rules.py` default → `rules_v2.json`. Tests 29 (`test_gate_v2.py` new, `test_rules_v2.py` updated), replay 17/17, notebook and report
+rebuilt. Commits 9d3079d (scenarios) and the one carrying this note.
+
+
 `steward/policy.py`: `resolve_provider()` (pure; tested) and `LLMPolicy(provider=…)` build `ChatAnthropic` or `ChatOpenAI` (langchain-openai 1.6.6,
 openai 3.20.0 added to `requirements.txt`; installed in the project `.venv`, Python 3.13); the OpenAI route serves the course's Vocareum keys through
 `OPENAI_BASE_URL`. Every proposal's reason now starts with `[provider:model]`. `tests/test_policy_provider.py` (4, no network) beside the 11 gate

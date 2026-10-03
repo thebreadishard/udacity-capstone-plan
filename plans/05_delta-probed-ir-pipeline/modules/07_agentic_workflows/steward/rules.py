@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-DEFAULT_RULES = HERE.parent / "rules" / "rules_v1.json"
+DEFAULT_RULES = HERE.parent / "rules" / "rules_v2.json"   # v2 since 3 Oct 2026 (S9–S17 replay; v1 stays loadable)
 
 
 def load_rules(path: Path | str = DEFAULT_RULES) -> list[dict]:

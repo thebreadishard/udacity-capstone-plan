@@ -102,7 +102,7 @@ para("Decision logic has two layers. The reasoning layer receives the persona, t
      "job whose checkpoint is fresh is not restarted; that arguments never touch a human-gated action; and that the run's launch budget is not exhausted. A refused proposal is "
      "replaced by the safe substitute the rule names — a dry run, a process check, a wait or an escalation — never by nothing.")
 rows = [(sid, " → ".join(d["actions"]), " ".join(str(x) for x in d["rules"]), ", ".join(d["forced"]) or "—", "yes" if d["escalations"] else "no") for sid, d in RP["per_scenario"].items()]
-table(["scenario", "actions taken", "rules cited", "gate substitutions", "escalated"], rows, f"Table 1. The eight pre-registered scenarios (real log excerpts of 25 September 2026) replayed with the deterministic reference policy: {RP['n_pass']} of {R['n_scenarios']} correct.")
+table(["scenario", "actions taken", "rules cited", "gate substitutions", "escalated"], rows, f"Table 1. The {R['n_scenarios']} pre-registered scenarios (S1–S8: real log excerpts of 25 September 2026; S9–S17: the records of 27 September – 3 October) replayed with the deterministic reference policy: {RP['n_pass']} of {R['n_scenarios']} correct.")
 
 heading("Safety, Reliability, and Transparency")
 para("Safeguards are the rule table made mechanical. Reliability: a dry run before every launch, no second instance, keep-alives on waiting connections, heartbeats and "
