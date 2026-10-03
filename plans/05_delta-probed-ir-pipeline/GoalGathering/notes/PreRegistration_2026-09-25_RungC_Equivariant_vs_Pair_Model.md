@@ -1590,3 +1590,17 @@ bit-reproducible"): |Δ| 1e-4–1e-3 a.u. (0.1–1 % of H_kk ≈ 0.1–0.5), wor
 (pyrene, coronene) on a laptop-class budget; the university request asks for gradients only. *Noise-limited:* 1e-4 < max |Δ| ≤ 1e-3 → viable only with
 frozen (transported) LNO spaces — plan 05's M2 route, to be measured next on the same coordinates with the reference's localisation reused. *Not viable:*
 > 1e-3 → the LNO level itself, not the noise; the anchor route stays canonical and the Snellius request is for canonical CCSD(T) gradients.
+
+### Amendment 3 October 08:1x — odds lever 2: is the out-of-plane CC correction a basis-set effect? (registered before it runs)
+
+**Run.** Benzene CCSD(T)/cc-pVTZ with the E8 probe (`probes/cc_tz_benzene_oop_1003.sh`): the reference gradient and three displacement pairs — H
+out-of-plane (k = 20), C out-of-plane (k = 2), H in-plane radial (k = 18, 89 % along the C–H bond) — 16 threads in the laptop's WSL tonight, after the
+LNO check, the DZ dipole run and anthracene's analytic Hessians; a partial run (no assembly), two-route checks of the kernels deferred (they are
+basis-independent and covered by gate 1 at DZ). Estimated 1.5–3.5 h per gradient → 10–25 h. **Read-out** (`probes/cc_basis_oop_check.py`): per
+coordinate H_kk(B3LYP analytic), H_kk(CC/DZ, the anchor), H_kk(CC/TZ, gradient route and energy route); the CC correction ΔH_kk at DZ and TZ and the
+share of the DZ correction the basis step removes. **Predictions.** The two TZ routes agree to 1e-4 a.u. For the out-of-plane coordinates the DZ
+correction is large and positive (the DZ anchors put CH-oop 76–98 cm⁻¹ above B3LYP); TZ removes 40–70 % of it (the known cc-pVDZ stiffness of
+out-of-plane bends); for the in-plane C–H coordinate TZ changes the correction by < 20 %. **Lines.** *Basis:* ≥ 40 % of the oop correction removed →
+the 60–100 cm⁻¹ gap is anchor cost (TZ or a composite DZ→TZ correction per family), not a network question; the T3 read-out keeps its in-plane line and
+a TZ-corrected oop line is registered later. *Level:* < 20 % removed → the oop correction is real at this level; it becomes a learned quantity like the
+rest, and the anchors stay DZ. *In between:* a composite (CC/DZ + [CC/TZ − CC/DZ] at a cheaper level) is designed before any new anchor.
