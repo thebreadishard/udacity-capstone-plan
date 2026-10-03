@@ -1,0 +1,40 @@
+[2026-10-03 07:43:11] E8 FD Hessian: 12 atoms, cc-pvdz, frozen 6 (derived from the elements: 6), step 0.005 bohr, 72 displacements, 8 threads, max_memory 8000 MB, explicit (T) lambda, fast (T) density kernel, fast (T) lambda kernel
+[2026-10-03 07:52:08] fast (T) lambda two-route check: max |kernel − pyscf| = 2.8e-17 (l2_t; limit 1e-10; 506 s)
+[2026-10-03 08:33:21] fast (T) density two-route check: max |kernel − pyscf| = 2.8e-17 (doo[for_grad=True]; limit 1e-10; 2450 s)
+[2026-10-03 08:33:40] (T) lambda 2473 s, gradient 19 s
+[2026-10-03 08:33:40] reference: E = -231.581302636, max|grad| 7.67e-03, 3030 s
+[2026-10-03 08:33:40] symmetry: 24 operations, orbits [[0, 1, 2, 3, 4, 5], [6, 7, 8, 9, 10, 11]], 6 displacements (12 gradients) instead of 72
+[2026-10-03 08:37:19] (T) lambda 160 s, gradient 16 s
+[2026-10-03 08:37:19] coordinate  0 p: E − E0 =    +36.32 µE_h, 218 s  (1/72 gradients)
+[2026-10-03 08:41:09] (T) lambda 174 s, gradient 16 s
+[2026-10-03 08:41:09] coordinate  0 m: E − E0 =    -17.32 µE_h, 231 s  (2/72 gradients)
+[2026-10-03 08:41:09] pair check coordinate  0: max |mean(g+, g−) − g0| = 1.5e-05 a.u. (limit 1e-04)
+[2026-10-03 08:44:47] (T) lambda 156 s, gradient 18 s
+[2026-10-03 08:44:48] coordinate  1 p: E − E0 =     -4.41 µE_h, 218 s  (3/72 gradients)
+[2026-10-03 08:48:28] (T) lambda 157 s, gradient 17 s
+[2026-10-03 08:48:28] coordinate  1 m: E − E0 =    +22.43 µE_h, 221 s  (4/72 gradients)
+[2026-10-03 08:48:28] pair check coordinate  1: max |mean(g+, g−) − g0| = 1.6e-05 a.u. (limit 1e-04)
+[2026-10-03 08:51:50] (T) lambda 143 s, gradient 15 s
+[2026-10-03 08:51:50] coordinate  2 p: E − E0 =     +1.60 µE_h, 202 s  (5/72 gradients)
+[2026-10-03 08:55:28] (T) lambda 159 s, gradient 21 s
+[2026-10-03 08:55:28] coordinate  2 m: E − E0 =     +1.03 µE_h, 218 s  (6/72 gradients)
+[2026-10-03 08:55:28] pair check coordinate  2: max |mean(g+, g−) − g0| = 1.4e-06 a.u. (limit 1e-04)
+[2026-10-03 08:58:43] (T) lambda 132 s, gradient 17 s
+[2026-10-03 08:58:43] coordinate 18 p: E − E0 =    +38.37 µE_h, 195 s  (7/72 gradients)
+[2026-10-03 09:01:38] (T) lambda 123 s, gradient 15 s
+[2026-10-03 09:01:38] coordinate 18 m: E − E0 =    -30.47 µE_h, 175 s  (8/72 gradients)
+[2026-10-03 09:01:38] pair check coordinate 18: max |mean(g+, g−) − g0| = 9.5e-06 a.u. (limit 1e-04)
+[2026-10-03 09:04:31] (T) lambda 124 s, gradient 15 s
+[2026-10-03 09:04:31] coordinate 19 p: E − E0 =    -15.71 µE_h, 174 s  (9/72 gradients)
+[2026-10-03 09:07:23] (T) lambda 122 s, gradient 13 s
+[2026-10-03 09:07:23] coordinate 19 m: E − E0 =    +18.71 µE_h, 172 s  (10/72 gradients)
+[2026-10-03 09:07:23] pair check coordinate 19: max |mean(g+, g−) − g0| = 2.0e-06 a.u. (limit 1e-04)
+[2026-10-03 09:10:25] (T) lambda 132 s, gradient 16 s
+[2026-10-03 09:10:25] coordinate 20 p: E − E0 =     +0.63 µE_h, 181 s  (11/72 gradients)
+[2026-10-03 09:13:49] (T) lambda 151 s, gradient 16 s
+[2026-10-03 09:13:49] coordinate 20 m: E − E0 =     -0.09 µE_h, 204 s  (12/72 gradients)
+[2026-10-03 09:13:49] pair check coordinate 20: max |mean(g+, g−) − g0| = 1.9e-06 a.u. (limit 1e-04)
+[2026-10-03 09:13:49] symmetry reconstruction: spread of multiply-reached rows 5.23e-05 a.u.; self-check 6.1e-11
+[2026-10-03 09:13:49] Hessian written (VALID); FD asymmetry max 5.23e-05 a.u.; vibrational frequencies (cm-1): [362, 362, 600, 600, 609, 611, 805, 805, 913, 913, 916, 1000, 1043, 1060, 1060, 1143, 1178, 1178, 1343, 1409, 1516, 1516, 1689, 1689, 3271, 3282, 3282, 3300, 3300, 3311]
+[2026-10-03 09:13:49] two-route checks: translational sum rule 1.3e-05 E_h/bohr² (limit 1e-03); translations/rotations after projection max 5.3e-05 cm⁻¹; energy route max |H_kk − d²E/dx_k²| 5.2e-05 E_h/bohr² over 6 coordinates (limit 1e-03)
+[2026-10-03 09:13:49] APT written (apt_ccsd_t.npz): translation sum rule max |Σ_A P_A − qI| = 2.8e-04 e; symmetry spread 5.8e-04, self-check 2.3e-11

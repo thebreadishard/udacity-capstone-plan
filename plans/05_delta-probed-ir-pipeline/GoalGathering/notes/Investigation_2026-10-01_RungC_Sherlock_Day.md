@@ -267,3 +267,10 @@ Outcome in the pre-registration, addendum in the design note (decision 52). Modu
 Naphthalene 0.64 / 16 cm⁻¹ (r = 2) and 0.46 / 11 (r = 4) against α-tuning's 0.27 / 6.0; benzene improves, the rest does not. A low-rank subspace is
 not a regulariser when the direction is free and the anchors are three single rings. Lever 6's candidate withdrawn; α-tuning (nine parameters) and the
 λ = 1 head remain the two recipes for the four-anchor reread. Outcome in the pre-registration.
+
+## 3 October, 09:2x — the intensity second term measured on benzene: 0.205, in between
+
+The dipole-storing probe reproduces the 2 Oct benzene Hessian to 6.7e-10 a.u. and gives the first CC atomic polar tensor (sum rule 2.8e-4 e). Against
+the B3LYP APT the intensities on the CC modes differ by 0.205 (weighted relative; spectrum overlap 0.984): C–H stretches −23 %, the oop bend +10 %, ring
+modes ≤ 10 %. Between the registered lines: the proxy APT suffices for the ring region, not for a CC-level C–H intensity line. No anchor is recomputed
+now; pyrene brings its APT free. Outcome in the pre-registration.

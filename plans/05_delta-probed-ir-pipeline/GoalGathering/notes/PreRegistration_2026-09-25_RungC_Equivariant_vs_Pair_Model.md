@@ -1604,3 +1604,15 @@ out-of-plane bends); for the in-plane C–H coordinate TZ changes the correction
 the 60–100 cm⁻¹ gap is anchor cost (TZ or a composite DZ→TZ correction per family), not a network question; the T3 read-out keeps its in-plane line and
 a TZ-corrected oop line is registered later. *Level:* < 20 % removed → the oop correction is real at this level; it becomes a learned quantity like the
 rest, and the anchors stay DZ. *In between:* a composite (CC/DZ + [CC/TZ − CC/DZ] at a cheaper level) is designed before any new anchor.
+
+## Outcome 3 October 09:2x — benzene's CC atomic polar tensor (amendment 07:4x)
+
+`probes/results_m1/e8_benzene_ccpvdz_dip_2026-10-03/` (8 threads beside the LNO check, 1 h 31 min: reference 3030 s with the inline two-route checks,
+twelve gradients). **Two-route check of the new code path:** the Hessian equals the 2 Oct anchor to 6.7e-10 a.u. (frequencies to 0.000 cm⁻¹). **CC APT:**
+translation sum rule 2.8e-4 e (limit 5e-4; the FD step's own error — B3LYP's CPHF APT held 1.1e-4), symmetry spread 5.8e-4, self-check 2e-11.
+**The second term:** against the B3LYP CPHF APT, |ΔP| ≤ 0.016 e, rms 8.7 % of the APT; on the CC modes the intensity-weighted relative intensity difference
+is **0.205** and the spectrum overlap 0.984 — the C–H stretches lose 23 % (52 → 40 km/mol), the 609 cm⁻¹ out-of-plane bend gains 10 % (78 → 86), the
+ring modes change by ≤ 10 %. **Against the lines** (small ≤ 0.15, large > 0.25): **in between** — the second term is the size of the network's own
+intensity error (0.14–0.18 on the proxy APT), concentrated in the C–H stretches where B3LYP overestimates. Reading: the proxy APT carries the intensity
+read-out for the ring region; a CC-level intensity line for the C–H stretches needs CC APTs. Consequence for the anchors: no recompute now; pyrene's APT
+comes free; naphthalene is recomputed (a server-day) the day intensities become a registered CC-level line; anthracene only on a reading's demand.
