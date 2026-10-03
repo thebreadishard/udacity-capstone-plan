@@ -113,3 +113,9 @@ was interrupted. The finished molecules stay admitted. The CCX53 (shards 4 and 5
 **For the reading of the curve.** The registered points 300 / 600 / 1,200 are now read in the new order and the outcome says so: the point at 300 has a
 different composition (larger, all-carbon) from the points at 100 and 175, so a change of slope there is first a change of population, then a
 learning effect — the two are separated by the class-wise read-out already registered (bare parents / scaffolds / size), not by the pooled number.
+
+## Composition rule for new pools (decision 52, 3 October 2026)
+
+Coverage is per scaffold family and saturates at a few dozen substituted children (≈ 30 for three quarters of the gain, ≈ 60 for nine tenths; seven is
+noise). New pools are composed breadth first over the families the pipeline must serve. The measurement and the rule: `GoalGathering/notes/Design_Note_2026-10-03_Pool_Composition_Rule.md`;
+the candidate generator `probes/rungC_error_map.py` names weak and uncovered kinds from the latest records.
