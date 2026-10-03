@@ -1,0 +1,24 @@
+# Verbatim excerpts behind scenarios S9–S17 (written 3 October 2026, 23:4x). Each line names its source file; the scenarios quote these texts.
+# S9  — GoalGathering/notes/Mandate_2026-09-13_Affordable_Plan_Obstacle_Ledger.md, entry 30 Sep 07:5x:
+The probe smoke with `--fast-t-density` then failed its own pair check at 1.5e-3 a.u. — and the cause was not the kernel: `pyscf.grad.ccsd_t.Gradients(mycc).kernel()` without l1, l2 inherits `ccsd_grad.Gradients.kernel`, which solves `mycc.solve_lambda`, the **CCSD** lambda, and hands it to the (T) density code.
+# S9/S10 — CLAUDE.md (repository root), section Evidence, the lambda incident sentence and the 'validated' rule:
+six days of CCSD(T) Hessians computed with the CCSD lambda because `Gradients(mycc).kernel()` looked right and its pair checks passed
+"Validated" is written only with the number and the counterpart: not "validated on benzene" but "gradient against finite differences of the energy on water, 1e-7". A validation claim without a number counts as not done, and a later reader (including a later session of me) may not build on it.
+# S11 — ledger entry 27 Sep 23:4x:
+E8 naphthalene: invalid Hessian, no verdict. The 30 symmetry-unique CCSD(T)/cc-pVDZ gradients (CCX53, 24–27 Sep) assembled at 23:32 into a Hessian with FD asymmetry 2.2e-2 a.u. (benzene 2.7e-4) and four imaginary modes of 5,600–7,800 cm⁻¹ after projection;
+# S12 — probes/night2_1003.sh header (3 Oct 19:3x) and rules_v2.json R36 source:
+(A) benzene CCSD(T)/cc-pVTZ out-of-plane pairs (odds lever 2) at 8 threads in WSL with PYSCF_TMPDIR=~/qc_tmp (941 GB free), in parallel with (B) chain 34 step 2 (the family-balanced K-diagonal term at 750, 8 threads, Windows python) — 8 + 8 = 16
+anthracene 2 Oct 2026: 40 threads on 32 vCPUs (check lane reniced), a 300-minute alarm against 400-minute gradients (false alarm, watchdog restarted with 480)
+# S13 — modules/05_support_predictor/out/MODELS_STATUS.json entry and ledger entry 3 Oct 12:3x:
+"rungC_pretrained_2026-09-27.pt": {"status": "superseded", "chain": "pretrain 27 Sep", "note": "QM9 pretrained body (sum aggregation); superseded by the fresh-body carried recipe (chains 23/24): the pretrained bodies gave no gain at 175 (lever 2a/2b reads of 1 Oct)"}
+decision 55 (the user): model versions. `m05/model_registry.py` generates `MODELS.md` (11 checkpoints today: 3 carried = chain 24's seeds, 4 superseded pretrained bodies, 3 smokes, 1 invalid) from the checkpoints and the reviewed `out/MODELS_STATUS.json`
+# S14 — ledger entry 3 Oct 11:1x:
+decision 53 (the user): the targets are per mode family. T1 and T3 are met only when ring-ip, CH-stretch, CH-oop *and* other are under 3 cm⁻¹ ("alle relevante fysica"; out-of-plane anchored and learned is part of the goal)
+# S15 — GoalGathering/notes/Software_Changes_Ledger.md, row 34 (pyscf PR #3477, 3 Oct):
+on test order, not on the code: `test_ccsd_t_grad` moves the O atom of the module-level `mol` in place, so the (T) dipole test, run after it, built eris from a stale `mf` and tripped the canonical-HF check (reproduced locally: alone pass, whole file fail).
+# S16 — scratchpad/ccx53_watch_anthracene.sh (the DONE line) and rules_v2.json R40 source:
+*"CHAIN FINISHED"*) echo "HEL2 DONE $now: ${tailline:0:200}"; exit 0 ;;
+the user 3 Oct 2026 ('Copy alles van de server dat je nodig hebt als 'ie klaar is'); audit: the per-displacement gradients of the two superseded benzene anchors and every deleted server's environment listing were never copied
+# S17 — rules_v2.json R41 source and ledger entry 30 Sep 17:xx:
+the user 30 Sep 2026 (see failures immediately); gate 1 in the launch path; pyVPT2 PR #58 closed by us as detection-only
+(2) The user: a warning is not a solution.
