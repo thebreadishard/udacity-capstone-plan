@@ -61,9 +61,20 @@ tables against the previous version) are a repeatable pipeline an agent could ru
 a human reviewing the diff. The scale-factor discrepancy this project found is exactly the kind of
 change such a check would surface.
 
+## Files
+
+- `build_opponent_atlas.py` — the streaming parser; per library `out/<database>_<version>/species.csv`, `bands.csv.gz`,
+  `c384_class.csv` and `SUMMARY.md`.
+- `build_line_c_table.py`, `build_cheap_line_table.py` — the two other comparison lines (the Mai 2025 peak lists; the Bos 2025
+  table joined to PAHdb uids).
+- `c384_environments.py` → `out/theoretical_4.00/c384_environments.md` — the symmetry-unique local-environment count of
+  C₃₈₄H₄₈ (36 unique carbons, 4 unique hydrogens, 56 unique bond fragments of 600; D6h confirmed numerically on PAHdb's
+  geometry), the input the report's limitations section asks for.
+- `notebook/data_workflow.ipynb` — Setup · Ingestion · Cleaning · EDA · Visualizations · Summary; written and executed by
+  `notebook/make_notebook.py`; `notebook/make_bands_derived.py` writes `notebook/bands_derived/`.
+- `make_summary.py` → `module_summary.docx/.pdf` — the written summary in the Udacity APA 7 template.
+- `REPORT.md` — the long-form report; `PROVENANCE.md` — sources, checksums and status (project notes).
+
 ## Repository
 
-Part of the `udacity-capstone-plan` repository (branch `module-02-opponent-atlas`, merged into
-`master`); project notes and provenance in `PROVENANCE.md`, the long-form report in `REPORT.md`.
-
-*Added 2026-09-13:* `c384_environments.py` → `out/theoretical_4.00/c384_environments.md` — the symmetry-unique local-environment count of C₃₈₄H₄₈ (36 unique C, 4 unique H, 56 unique bond fragments of 600; D6h confirmed numerically on PAHdb's geometry), the R6 input the report's limitations listed.
+Part of the `udacity-capstone-plan` repository (branch `module-02-opponent-atlas`, merged into `master`).
