@@ -22,7 +22,7 @@ One line per change; the numbered section below the register carries every origi
 | 9 | 2026-09-13 | A | PySCFAD 0.3.3 (PyPI 2026-06-29; jax ≥ 0.9.1 < 0.11, pyscfadlib ≥ 0.3.3… | pinned as the engine of milestone M2a (the gradient-to-energy cost ratio g), installed 2… | done |
 | 10 | 2026-09-14 | C | pyVPT2 0.1.2 (conda-forge `pyhd8ed1ab_0`, tag 2024-09-10; BSD-3-Clause… | installed in its own environment | pr-candidate |
 | 11 | 2026-09-14 | C | pyVPT2 0.1.2 → port to qcelemental 0.51 / pydantic 2 / psi4 1.11 (**co… | inventory of the 2,317-line package | pr-candidate |
-| 12 | 2026-09-15 | C | pyscf-forge 1.1.1 `pyscf/lno/test/test_ulnoccsd.py` (the shipped unit … | the shipped test fails on this pyscf | pr-candidate |
+| 12 | 2026-09-15 | C | pyscf-forge 1.1.1 `pyscf/lno/test/test_ulnoccsd.py` (the shipped unit … | the shipped test fails on this pyscf | done |
 | 13 | 2026-09-15 | B | pyscf-forge 1.1.1 `pyscf/lno/ulnoccsd_t_slow.py` (NumPy/einsum (T) ref… | an unrestricted (T) kernel of the compiled kind for the LNO fragment partition, modelled… | planned |
 | 14 | 2026-09-16 | B | pyVPT2 0.1.2 (`pyvpt2/task_base.py`, `AtomicComputer.compute`) | a checkpoint layer (probes/vpt2_checkpoint.py, ≈ 60 lines | pr-candidate |
 | 15 | 2026-09-21/22 | B | own package `dpir` (tier 2 of `QUALITY_POLICY.md`) | src/dpir/qff.py (two-route QFF, degenerate-subspace alignment, fixed mode conventions, V… | done |
@@ -36,10 +36,10 @@ One line per change; the numbered section below the register carries every origi
 | 23 | 2026-10-01 | B | own (module 05 trainer) | m05/rungC_targets.py | done |
 | 24 | 2026-10-02 | B | own (E8 probe) | two-route-check {inline,separate,only} | done |
 | 25 | 2026-10-02 | B | own (module 05) | m05/rungC_cc_transfer.py (leave-one-anchor-out transfer to CCSD(T) | done |
-| 26 | 2026-10-02 | B | own (intensities) | probes/dipole_derivs_fd.py (APT by FD of analytic SCF dipoles, sum rule + two steps | pr-candidate |
+| 26 | 2026-10-02 | B | own (intensities) | probes/dipole_derivs_fd.py (APT by FD of analytic SCF dipoles, sum rule + two steps | done |
 | 27 | 2026-10-03 | B | pyscf 2.14.0 `grad/ccsd.py::grad_elec` (semantics, no upstream file to… | gradient_with_dipole in the E8 probe and probes/cc_dipole_capture.py | pr-candidate |
 | 28 | 2026-10-03 | B | own (design input) | probes/cc_lambda_profile.py (cProfile of solve_lambda | done |
-| 29 | 2026-10-02 | C | pyscf-properties 0.1.0 (`pyscf.prop`) | no infrared module in the installed release (magnetizability, nmr, nsr, polarizability, … | pr-candidate |
+| 29 | 2026-10-02 | C | pyscf-properties 0.1.0 (`pyscf.prop`) | no infrared module in the installed release (magnetizability, nmr, nsr, polarizability, … | done |
 | 30 | 2026-10-03 | C | pyscf 2.14.0 `pyscf/lib/CMakeLists.txt` (and forge's copy of the patte… | the pyscf lookup python3 -c "import pyscf | pr-candidate |
 | 31 | 2026-09-29/30 | B | pyscf 2.14.0 `grad/ccsd_t.py`, `grad/uccsd_t.py` (`Gradients.kernel` w… | our E8 probe solves the (T) lambda explicitly (ccsd_t_lambda.kernel) before calling the … | pr-open |
 | 32 | 2026-09-30 | B | optking (psi4's optimiser) `linear-bend` cycle handling | our corpus runner optimises molecules with a triple bond in Cartesian coordinates (RETRY… | pr-open |
@@ -198,7 +198,7 @@ One line per change; the numbered section below the register carries every origi
 
 ### 12 — the shipped test fails on this pyscf
 
-**Group:** C, finding about third-party software. **Date:** 2026-09-15. **Status:** pr-candidate.
+**Group:** C, finding about third-party software. **Date:** 2026-09-15. **Status:** done. *Status note (3 Oct 2026):* fixed on upstream master on 26 Jul 2026 (forge #199, 'compatibility with PySCF v2.14.0': the tests now unpack `stability_jacobi(return_status=True)` in pyscf 2.14's order); the 1.1.1 release predates it — nothing to send.
 
 **Software:** pyscf-forge 1.1.1 `pyscf/lno/test/test_ulnoccsd.py` (the shipped unit test of `ULNOCCSD_T`) against pyscf 2.14.0
 
@@ -392,7 +392,7 @@ One line per change; the numbered section below the register carries every origi
 
 ### 26 — probes/dipole_derivs_fd.py (APT by FD of analytic SCF dipoles, sum rule + two steps
 
-**Group:** B, own layer around third-party code. **Date:** 2026-10-02. **Status:** pr-candidate.
+**Group:** B, own layer around third-party code. **Date:** 2026-10-02. **Status:** done. *Status note (3 Oct 2026):* pyscf-properties' upstream master carries an `infrared` module (rhf/rks/uhf/uks); the installed 0.1.0 predates it — nothing to offer; our CPHF APT is cross-checked against it (3 Oct, water B3LYP/6-31G*: max difference 7e-12 e, intensities identical to 0.01 km/mol) - a third route beside the FD APT and the sum rule.
 
 **Software:** own (intensities)
 
@@ -434,7 +434,7 @@ One line per change; the numbered section below the register carries every origi
 
 ### 29 — no infrared module in the installed release (magnetizability, nmr, nsr, polarizability, …
 
-**Group:** C, finding about third-party software. **Date:** 2026-10-02. **Status:** pr-candidate. *Status note (3 Oct 2026):* a report to pyscf-properties ('no infrared module') was not filed; the CPHF APT of row 26 is our own answer — the report waits for the user's word.
+**Group:** C, finding about third-party software. **Date:** 2026-10-02. **Status:** done. *Status note (3 Oct 2026):* the module exists on upstream master (last commit 7 Nov 2024); 0.1.0 is simply old — nothing to report; install from master when a third route is wanted. *Status note (3 Oct 2026):* a report to pyscf-properties ('no infrared module') was not filed; the CPHF APT of row 26 is our own answer — the report waits for the user's word.
 
 **Software:** pyscf-properties 0.1.0 (`pyscf.prop`)
 

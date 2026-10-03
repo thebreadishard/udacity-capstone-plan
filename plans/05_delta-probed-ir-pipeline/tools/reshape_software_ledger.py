@@ -20,19 +20,21 @@ STATUS_PHRASES = ("not changed", "adopted, not changed", "built and tested", "de
 # Reviewed row by row on 3 Oct 2026 (the user: a PR we have not submitted is pr-candidate, not done). Every row needs an entry; the NOTE says why where the
 # cell text and the status differ.
 STATUS = {1: "done", 2: "done", 3: "pr-candidate", 4: "done", 5: "done", 6: "pr-candidate", 7: "done", 8: "pr-candidate", 9: "done", 10: "pr-candidate",
-          11: "pr-candidate", 12: "pr-candidate", 13: "planned", 14: "pr-candidate", 15: "done", 16: "done", 17: "done", 18: "done", 19: "done",
-          20: "waiting-upstream", 21: "pr-open", 22: "pr-open", 23: "done", 24: "done", 25: "done", 26: "pr-candidate", 27: "pr-candidate", 28: "done",
-          29: "pr-candidate", 30: "pr-candidate", 31: "pr-open", 32: "pr-open"}
+          11: "pr-candidate", 12: "done", 13: "planned", 14: "pr-candidate", 15: "done", 16: "done", 17: "done", 18: "done", 19: "done",
+          20: "waiting-upstream", 21: "pr-open", 22: "pr-open", 23: "done", 24: "done", 25: "done", 26: "done", 27: "pr-candidate", 28: "done",
+          29: "done", 30: "pr-candidate", 31: "pr-open", 32: "pr-open"}
 NOTE = {1: "the cell still says 'PR candidate: yes'; it was merged upstream as pyscf-forge #212 on 30 Sep 2026 (row 22) — nothing left to do",
         2: "the cell still says 'PR candidate: yes'; merged upstream as pyscf-forge #212 on 30 Sep 2026 (row 22) — nothing left to do",
         3: "a proposal upstream (a `chkfile` attribute on the LNO kernel) is possible and was never sent; it waits for the user's word",
         5: "no pull request intended; a paper or example later — nothing pending in this ledger",
         6: "a question to the PAHdb maintainers is still to be asked (item on the user's list)",
         9: "adopted as is; nothing to send unless our use needs a patch",
+        12: "fixed on upstream master on 26 Jul 2026 (forge #199); the 1.1.1 release predates it — nothing to send",
         13: "decided (decision 41) and not started; once built and passing it becomes a pr-candidate",
         20: "the fix exists upstream (pyscf #3387); our wrapper is dropped when a release carries it — the only action left, and it waits for upstream",
         22: "the state row: #212 merged, #213 (reworked 3 Oct, replied), pyscf #3469 and #3470, optking #116 open — all waiting for maintainers",
-        29: "a report to pyscf-properties ('no infrared module') was not filed; the CPHF APT of row 26 is our own answer — the report waits for the user's word",
+        26: "pyscf-properties' upstream master carries an infrared module; the installed 0.1.0 predates it — nothing to offer",
+        29: "the infrared module exists on upstream master (last commit 7 Nov 2024); 0.1.0 is simply old — nothing to report",
         30: "the same lookup pattern in pyscf-core's CMakeLists would be a second pull request once forge #213 is merged"}
 
 
