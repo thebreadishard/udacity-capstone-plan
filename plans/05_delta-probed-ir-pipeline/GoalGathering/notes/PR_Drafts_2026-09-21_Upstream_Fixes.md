@@ -204,7 +204,7 @@ Branch `ccsd-grad-relaxed-dm1` on the fork `thebreadishard/pyscf`, one commit (0
 **Checks done here:** `pyscf/grad/test/test_ccsd.py` and `test_ccsd_t.py` (the two new tests and the existing gradient tests) pass under PYTHONPATH of the
 worktree against the qc05 build — *after the CI fix f092234 of 3 Oct 12:02 also in file order* (the first CI run failed four builds because `test_ccsd_t_grad` mutates the module-level `mol`; the dipole tests now build their own molecule and RHF); **CI 16:2x: 8 of 9 green, the Windows wheel fails on the upstream flaky `test_zero_beta_electrons` (failed on three other PRs' Windows runs this week), unrelated to the change.**
 
-**Draft comment for the PR (post only on the user's word):**
+**Comment posted 3 Oct 16:36 on the user's word ("Post die opmerking maar"): https://github.com/pyscf/pyscf/pull/3477#issuecomment-5970157506 — text as drafted, plus the pointer to pyscf#3245:**
 
 > CI note: the remaining Windows-wheel failure is `cc/test/test_uccsdt_highm.py::test_zero_beta_electrons` (NaN), which this week also fails on other PRs' Windows runs (e.g. the ROMP2 PR's runs of 1–2 Oct); this PR does not touch `cc/`. All other builds pass after the test-isolation fix in the dipole tests.
 
