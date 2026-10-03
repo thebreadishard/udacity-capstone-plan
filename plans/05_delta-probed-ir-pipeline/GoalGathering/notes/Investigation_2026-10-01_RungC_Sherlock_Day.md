@@ -255,3 +255,9 @@ Kept 0 / 31 / 62 / 123 three-ring children → the three-ring parents 0.45 / 0.2
 quarter buys three quarters of the gain; the second half nothing. Together with chains 28–29 the night's reading is: **coverage is per scaffold family,
 cheap (≈ 30 children), and transfers to neighbouring fused scaffolds by 0.06–0.10.** The next pools are designed breadth-first over families. Outcome
 table in the pre-registration; the design rule goes to the next-pool row of TASKS.
+
+## 3 October, 07:1x — chain 31: families cover each other
+
+Phenanthrene without its own children lands at 0.20 (between 0.15 covered and 0.46 uncovered), phenanthridine at 0.27 (0.16 / 0.49). The breadth-first
+rule is confirmed and sharpened: neighbours carry two thirds to five sixths, own children finish; heteroaromatics need their own children more.
+Outcome in the pre-registration, addendum in the design note (decision 52). Module 05 notebook section 12.3 carries the whole night's table.

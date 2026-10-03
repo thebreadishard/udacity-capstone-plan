@@ -1518,3 +1518,20 @@ between its two known values, nearer the covered one: phenanthrene ≈ 0.25, phe
 has acridine and phenazine beside it). Hold-out (b) and the single-ring parents unchanged. **Lines.** *Families cover each other:* the parent stays ≤ 0.30 →
 breadth-first stands and a new scaffold family benefits from its neighbours before its own children arrive. *Each family on its own:* the parent ≥ 0.38 →
 the design rule becomes "≈ 30 children for every family that must be served", and the next pools are priced per family accordingly.
+
+## Outcome 3 October 07:1x — chain 31: cross-family coverage (amendment 04:1x)
+
+`out/E7_rungC_coverage_nophenchildren_2026-10-03.json` (the 12 phenanthrene children excluded, pool 738) and `…_nophenanthridinechildren_…` (the 34
+phenanthridine children excluded, 716); carried recipe, three seeds (best epochs 83–124):
+
+| parent | with its own children (control) | without its own children, neighbours present | without all three-ring children |
+|---|---|---|---|
+| phenanthrene | 0.15 | **0.20** (0.18–0.24) | 0.46 |
+| phenanthridine | 0.16 | **0.27** (0.25–0.28) | 0.49 |
+
+The other read-outs did not move (hold-out (a) 0.220 / 0.243 against 0.229; (b) 0.329 / 0.343 against 0.349; biphenylene 0.13). **Against the
+predictions** (≈ 0.25 each): 0.20 and 0.27. **Line: families cover each other** (parent ≤ 0.30) — holds for both. Measured in the pool's own units: the
+neighbouring three-ring families carry a parent 84 % (phenanthrene) and 67 % (phenanthridine) of the way from uncovered to covered; its own children
+finish the rest. Phenanthridine, the N-heteroaromatic, depends more on its own children than the pure hydrocarbon does — heteroatoms in the ring are a
+part of the family identity the neighbours do not fully supply. Decision 52 stands and gains its third clause with numbers: a new family starts from its
+neighbours' level, not from zero, so breadth over families is worth more than depth within one.

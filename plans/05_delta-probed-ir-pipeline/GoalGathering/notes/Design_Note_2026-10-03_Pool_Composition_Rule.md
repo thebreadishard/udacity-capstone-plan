@@ -47,3 +47,11 @@ parents' own children are what the ablations remove. Registrations and outcome s
   while neighbours exist) or from zero.
 - The 200's four-ring rows decide whether four-ring families behave like the three-ring one (the pyrenes at seven said nothing).
 - A finer curve (≈ 45 kept) would locate the knee between 31 and 62; not worth a lane until a pool decision depends on it.
+
+## Addendum 3 October 07:1x — chain 31 read: neighbours carry most of a family's coverage
+
+Phenanthrene without its 12 children: 0.20 (covered 0.15, uncovered 0.46); phenanthridine without its 34: 0.27 (0.16 / 0.49); nothing else moved.
+Rule 3 now reads: **neighbouring families carry a parent two thirds to five sixths of the way from uncovered to covered; its own children finish it;
+heteroaromatic families depend more on their own children than pure hydrocarbons.** Consequence for rule 4: when a budget forces a choice, prefer one
+more *family* over the second thirty of a covered one, and give heteroaromatic families their own thirty earlier than carbocyclic ones.
+Records: `out/E7_rungC_coverage_nophenchildren_2026-10-03.json`, `…_nophenanthridinechildren_2026-10-03.json`.
