@@ -1,9 +1,9 @@
 # Software changes made in this project — ledger for possible upstream contributions
 
-*Started 2026-09-12 on the user's request: keep a list of every change we make to third-party software, and of
-every piece of our own code that fills a gap upstream, so that we can decide later which to offer as pull
-requests. One row per change; "status" says whether it is a local patch, a wrapper, or our own code; "PR
-candidate" is an assessment, not a decision. Nothing has been submitted anywhere.* *(Addendum 3 October 2026: since 21 September pull requests have been submitted on the user's word — see the status column; the register below replaces the four tables of the first version, every original cell is kept in the sections; statuses reviewed row by row on 3 October.)*
+*Started 2026-09-12 on the user's request: a list of every change we make to third-party software, of every piece of our own code that fills a gap
+upstream, and of the findings worth reporting, so that we can decide which to offer as pull requests. One register line per change with a reviewed
+status, and one section per line with the full record. Pull requests are submitted only on the user's word; the status column says where each item
+stands. Earlier versions of this text are in the git history.*
 
 ## Register
 
