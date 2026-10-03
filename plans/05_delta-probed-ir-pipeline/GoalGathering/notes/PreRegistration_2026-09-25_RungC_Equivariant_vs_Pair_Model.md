@@ -1576,3 +1576,17 @@ B3LYP→CC APT change moves benzene's intensities by 10–25 % weighted (literat
 CCSD(T)); the network's error with the CC APT stays ≤ 0.25. **Lines.** *Second term small* (weighted difference ≤ 0.15): the proxy APT suffices for the
 intensity read-out; the old anchors are not recomputed; pyrene's APT is a confirmation. *Second term large* (> 0.25): CC APTs are needed per anchor —
 naphthalene first (a server-day), anthracene only when a reading depends on it; the error map of intensities becomes a lever of its own.
+
+### Amendment 3 October 08:0x — odds lever 3, laptop version: LNO-CCSD(T) curvatures against the canonical naphthalene anchor (registered before it runs)
+
+**What.** `probes/lno_curvature_check.py`: LNO-CCSD(T)/cc-pVDZ composite energies (the L2 probe's recipe of 24 Sep: DF-RHF, Pipek–Mezey fragments, one
+fragment per localised occupied orbital, thresholds 1e-6 / 1e-7, MP2-corrected; fresh localisation at every geometry) at naphthalene's reference and at
+±0.005 bohr along six of the anchor's stored displacement coordinates (atoms 0 and 2, the three Cartesian directions each; the molecule is not axis-aligned, so each coordinate's out-of-plane fraction is recorded), 8 threads in the
+laptop's WSL (≈ 13 energies). **Read-out.** H_kk(LNO) = (E₊ + E₋ − 2E₀)/h² against the canonical anchor's H_kk (gradient-route Hessian) and its own
+energy route (stored energies). **Predictions.** The canonical energy route agrees with the Hessian to ≤ 1e-4 a.u. (as the anchor's self-check already
+showed, 4.1e-5). The LNO curvatures with *fresh* localisation at each point carry the localisation noise the M2 notes recorded ("LNO spaces are not
+bit-reproducible"): |Δ| 1e-4–1e-3 a.u. (0.1–1 % of H_kk ≈ 0.1–0.5), worse on the coordinates with a large out-of-plane fraction, where the curvature is smallest.
+**Lines.** *LNO viable for curvatures as is:* max |Δ| ≤ 1e-4 a.u. → local CC energies can replace canonical ones for the diagonal of larger anchors
+(pyrene, coronene) on a laptop-class budget; the university request asks for gradients only. *Noise-limited:* 1e-4 < max |Δ| ≤ 1e-3 → viable only with
+frozen (transported) LNO spaces — plan 05's M2 route, to be measured next on the same coordinates with the reference's localisation reused. *Not viable:*
+> 1e-3 → the LNO level itself, not the noise; the anchor route stays canonical and the Snellius request is for canonical CCSD(T) gradients.
