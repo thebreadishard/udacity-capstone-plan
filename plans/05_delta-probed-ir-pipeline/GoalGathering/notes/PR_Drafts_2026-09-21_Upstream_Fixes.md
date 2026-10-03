@@ -183,7 +183,7 @@ implementation; numerics unchanged to 2e-10 cm⁻¹. The follow-up comment is dr
 >
 > The gradient route (`assemble_quartic_from_gradients`) has the analogous two routes; happy to add the same report there in a follow-up if that is useful.
 
-## 7. Prepared (3 October 2026 10:1x; opening waits for the user's word) — pyscf `grad/ccsd.py`: keep the relaxed density, `Gradients.dip_moment()`
+## 7. Submitted (3 October 2026 10:33, the user: "Akkoord op PR-kandidaat 27, post maar") — pyscf/pyscf#3477, `grad/ccsd.py`: keep the relaxed density, `Gradients.dip_moment()`
 
 Branch `ccsd-grad-relaxed-dm1` on the fork `thebreadishard/pyscf`, one commit (06468d3) on upstream master; software-ledger row 27.
 

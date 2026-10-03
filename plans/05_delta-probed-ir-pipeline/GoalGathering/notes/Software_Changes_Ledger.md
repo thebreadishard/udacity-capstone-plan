@@ -37,7 +37,7 @@ One line per change; the numbered section below the register carries every origi
 | 24 | 2026-10-02 | B | own (E8 probe) | two-route-check {inline,separate,only} | done |
 | 25 | 2026-10-02 | B | own (module 05) | m05/rungC_cc_transfer.py (leave-one-anchor-out transfer to CCSD(T) | done |
 | 26 | 2026-10-02 | B | own (intensities) | probes/dipole_derivs_fd.py (APT by FD of analytic SCF dipoles, sum rule + two steps | done |
-| 27 | 2026-10-03 | B | pyscf 2.14.0 `grad/ccsd.py::grad_elec` (semantics, no upstream file to… | gradient_with_dipole in the E8 probe and probes/cc_dipole_capture.py | pr-candidate |
+| 27 | 2026-10-03 | B | pyscf 2.14.0 `grad/ccsd.py::grad_elec` (semantics, no upstream file to… | gradient_with_dipole in the E8 probe and probes/cc_dipole_capture.py | pr-open |
 | 28 | 2026-10-03 | B | own (design input) | probes/cc_lambda_profile.py (cProfile of solve_lambda | done |
 | 29 | 2026-10-02 | C | pyscf-properties 0.1.0 (`pyscf.prop`) | no infrared module in the installed release (magnetizability, nmr, nsr, polarizability, … | done |
 | 30 | 2026-10-03 | C | pyscf 2.14.0 `pyscf/lib/CMakeLists.txt` (and forge's copy of the patte… | the pyscf lookup python3 -c "import pyscf | pr-candidate |
@@ -406,7 +406,7 @@ One line per change; the numbered section below the register carries every origi
 
 ### 27 — gradient_with_dipole in the E8 probe and probes/cc_dipole_capture.py
 
-**Group:** B, own layer around third-party code. **Date:** 2026-10-03. **Status:** pr-candidate. *Prepared 3 Oct 10:1x:* branch `ccsd-grad-relaxed-dm1` on the fork (commit 06468d3, on upstream master) — `cc_grad.rdm1_relaxed` kept by `grad_elec`, `Gradients.dip_moment()`, the (T) gradient calls `grad_elec` on the caller's object; tests water/6-31G against finite field (CCSD and CCSD(T), 4e-8); not opened, waits for the user's word.
+**Group:** B, own layer around third-party code. **Date:** 2026-10-03. **Status:** pr-open — **submitted 3 Oct 10:33 as pyscf/pyscf#3477** on the user's word ("Akkoord op PR-kandidaat 27, post maar"). *Prepared 3 Oct 10:1x:* branch `ccsd-grad-relaxed-dm1` on the fork (commit 06468d3, on upstream master) — `cc_grad.rdm1_relaxed` kept by `grad_elec`, `Gradients.dip_moment()`, the (T) gradient calls `grad_elec` on the caller's object; tests water/6-31G against finite field (CCSD and CCSD(T), 4e-8); not opened, waits for the user's word.
 
 **Software:** pyscf 2.14.0 `grad/ccsd.py::grad_elec` (semantics, no upstream file touched)
 
