@@ -1714,3 +1714,37 @@ benzene run holds the laptop until ≈ Sunday.
 **Consequences recorded.** Gate A of the PI assessment (transported frozen spaces) loses its October measurement and folds into C as a methods
 paragraph (decision 56's addendum, filled 19:2x); odds lever 3 moves from 0.5 to ≈ 0.35 for "anchors beyond 26 atoms by local CC" and the plan's line
 for large anchors is canonical gradients on the university's machines; pyrene (26 atoms) stays canonical on a CCX53 when a server is possible again.
+
+### Amendment 3 October 20:5x — a per-family learning curve read from the existing records (reading rule written before the numbers are looked at)
+
+**What.** `probes/rungC_family_curve.py` on the carried recipe's records (pattern f, projected target, kring 0.3, sum body): 45 and 100 (pool A,A2 —
+a different composition, read with that flag), 175 (`carried_mixed175`), 449 (`carried_449`), and 750 beside the series with the K-diagonal term
+(`carried_kd_750_saved`, +kdiag 0.1 — a recipe change at that point). Per family the hold-out (a) and (b) corrected-ω rms, mean over three seeds with
+the seed range, and the fall per step. No training; nothing new is computed.
+**Why.** Decision 53 left two families open (CH-oop, other). Whether a family's error still falls with data says whether its gap is a data gap or a
+model/target gap — before chain 34 (the family-balanced term, running) is read. The per-family noise floor (step 0 of chain 34) sits beside it.
+**Reading rule.** *Still learning:* the family falls by ≥ 0.3 cm⁻¹ from 175 → 449 and the seed ranges at the two sizes do not overlap → more data of
+the kind the pool already has will keep paying for that family; its gap is a data gap first. *Stalled:* a fall < 0.3 cm⁻¹ or overlapping ranges → the
+gap is a model or target gap; the lever is the loss term, the targets (analytic) or the representation, not more of the same data. The 750 point with
+the K-diagonal term is read as "what the term did" (the fall 449 → 750 beyond the series' trend), not as part of the curve.
+**Prediction.** ring-ip and CH-stretch still learning 175 → 449 and near their floors at 750; CH-oop stalled (its FD floor of 3.3 cm⁻¹ caps what can be
+read); other still learning but above its floor by ≥ 2 cm⁻¹ at 449 — i.e. a data gap and a model gap at once, which is why chain 34 exists.
+
+## Outcome — the per-family learning curve from existing records — 3 October 20:5x (`out/rungC_family_curve_2026-10-03.{md,json}`)
+
+Hold-out (a), mean over three seeds (seed range), corrected-ω rms per family in cm⁻¹: ring-ip 2.87 (2.47–3.12) at 175 → 2.44 (2.23–2.56) at 449 →
+2.30 at 750 (+kdiag); CH-stretch 7.51 (4.08–12.41) → 4.14 (3.55–4.83) → 1.55; CH-oop 6.06 (5.81–6.32) → 4.53 (3.70–5.17) → 2.88; other 7.97 (7.34–8.59)
+→ 7.29 (5.58–8.55) → 4.14. Hold-out (b): ring-ip 3.37 → 2.90 → 2.83; CH-stretch 9.85 → 5.30 → 2.78; CH-oop 6.76 → 5.92 → 3.89; **other 10.42 → 7.55 →
+7.47**. (The 45/100 points come from the A,A2-only pool and show that 100 → 175 got *worse* for every family when the pool changed composition to the
+mixed one — decision 52's lesson seen from the other side.)
+
+**Against the reading rule.** *ring-ip:* fall +0.42 but ranges overlap by 0.1 → formally stalled, and it stands at 1.5× its floor (1.5) under the line:
+done, not stalled. *CH-stretch:* fall +3.37, ranges overlap because of one wild seed at 175 (12.41); at 750 the K-diagonal term took it to 1.55 — a
+family the term, not more data, finished. *CH-oop:* fall +1.53 with non-overlapping ranges → **still learning with data**, and at 750 it sits at the FD
+floor (2.88 against 3.3): the prediction 'stalled' was wrong — the family learned, and only the targets now cap the reading (chain 34 step 3).
+*other:* fall +0.68 with overlapping ranges → **stalled with data on seen scaffolds**; the K-diagonal term moved it by 3.15 cm⁻¹ on (a) and by 0.08 on
+(b). So 'other' has two gaps with two levers: on seen scaffolds a loss/model gap (chain 34's family-balanced term is the right lever, running); on
+unseen scaffolds a coverage gap that no term touched (the 200 and pool 3). **Consequence for 'proving the network learns the right things':** the
+families that the physics prior names (ring in-plane, C–H stretch, C–H out-of-plane) learn with data and reach their floors; the residual family
+'other' (skeletal and substituent motions) is the one where the loss had been looking away — the K-diagonal term showed it, and chain 34 tests whether
+balancing it per family closes the rest on seen scaffolds. Notebook section 12.4 carries this table.
