@@ -60,7 +60,7 @@ def main(job_path):  # 2026-09-14: psi4.hessian(..., return_wfn=True) returns (H
                 psi4.set_options(job["opt_options"]); res["opt_options"] = job["opt_options"]
             t = time.time(); e_opt = psi4.optimize(d["low_functional"], molecule=mol); res["timings_s"]["optimise"] = round(time.time() - t, 1); res["e_opt"] = e_opt
         coords = np.array(mol.geometry()); masses = np.array([mol.mass(i) for i in range(mol.natom())]); syms = [mol.symbol(i) for i in range(mol.natom())]
-        json.dump({"symbols": syms, "coords_bohr": coords.tolist(), "masses_amu": masses.tolist(), "optimised_at": d["low_functional"] if job.get("optimise", True) else "input geometry"}, open(os.path.join(out, "geometry.json"), "w"), indent=1)
+        json.dump({"symbols": syms, "coords_bohr": coords.tolist(), "masses_amu": masses.tolist(), "charge": int(d["charge"]), "multiplicity": int(d["multiplicity"]), "optimised_at": d["low_functional"] if job.get("optimise", True) else "input geometry"}, open(os.path.join(out, "geometry.json"), "w"), indent=1)
         for tag, func in (("b3lyp", d["low_functional"]), ("wb97x", d["high_functional"])):
             t = time.time(); e, wfn = psi4.hessian(func, molecule=mol, return_wfn=True)
             H = np.array(wfn.hessian()); Hp = project_tr(H, masses, coords); fr = frequencies_cm(Hp, masses)

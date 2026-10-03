@@ -1,0 +1,10 @@
+# hold-out (c): the parents of pool 3's new families (decision 54, 3 Oct 2026; probes/pool3_candidates.py, sha256 of the frozen list beside it)
+P3_0bb6c41350  # aza4 aza-pyrene-2
+P3_5592613777  # aza4 aza-fluoranthene-1
+P3_d2345d9fcf  # aza4 aza-fluoranthene-2
+P3_a48efac7c7  # five benzo[a]pyrene
+P3_2b5a6c3201  # five benzo[e]pyrene
+P3_86e3432c8b  # five dibenz[a,h]anthracene
+P3c_01f3186607  # cation naphthalene+
+P3c_541c53d1a5  # cation phenanthrene+
+P3c_428228e5a5  # cation fluoranthene+

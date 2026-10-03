@@ -79,6 +79,21 @@ def load_corpus(mdir):
     return mols
 
 
+HOLDOUT_C_FILE = Path(__file__).resolve().parents[1] / "corpus" / "holdout_c.txt"   # pool 3 (decision 54, 3 Oct 2026): frozen ids, one per line
+
+
+def holdout_c_ids() -> set:
+    """The frozen hold-out (c) ids (the parents of pool 3's new families; `probes/pool3_candidates.py`), empty when the file is absent."""
+    if not HOLDOUT_C_FILE.exists():
+        return set()
+    return {ln.strip() for ln in HOLDOUT_C_FILE.read_text(encoding="utf-8").splitlines() if ln.strip() and not ln.startswith("#")}
+
+
+def holdout_c(mols) -> list:
+    """Hold-out (c) as present in `mols`, hash order."""
+    return sorted((i for i in mols if i in holdout_c_ids()), key=sha)
+
+
 def splits(mols):
     ids_A = sorted((i for i, m in mols.items() if m["layer"] == "A"), key=sha)
     n_a = max(1, math.ceil(0.25 * len(ids_A)))
@@ -86,7 +101,7 @@ def splits(mols):
     cores = sorted({m["core"] for m in mols.values() if m["layer"] == "A2"}, key=sha)
     scaffold_cores = cores[:2]
     test_b = sorted(i for i, m in mols.items() if m["layer"] == "A2" and m["core"] in scaffold_cores)
-    held = set(test_a) | set(test_b)
+    held = set(test_a) | set(test_b) | holdout_c_ids()                     # (c) is never trained (pool 3, 3 Oct 2026); read through holdout_c()
     pool = sorted((i for i in mols if i not in held), key=sha)
     return test_a, test_b, scaffold_cores, pool
 
