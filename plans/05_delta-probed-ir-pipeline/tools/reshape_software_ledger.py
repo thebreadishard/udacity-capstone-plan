@@ -16,8 +16,24 @@ import tempfile
 
 PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "GoalGathering", "notes", "Software_Changes_Ledger.md")
 GROUPS = {"A": "patch to third-party code", "B": "own layer around third-party code", "C": "finding about third-party software", "D": "Lean 4 / Mathlib"}
-OVERRIDES = {1: "done", 2: "done"}      # merged upstream as pyscf-forge #212 on 30 Sep 2026 (row 22); their own cells still say "PR candidate: yes"
 STATUS_PHRASES = ("not changed", "adopted, not changed", "built and tested", "decided", "two upstream reports", "not sent", "submitted")
+# Reviewed row by row on 3 Oct 2026 (the user: a PR we have not submitted is pr-candidate, not done). Every row needs an entry; the NOTE says why where the
+# cell text and the status differ.
+STATUS = {1: "done", 2: "done", 3: "pr-candidate", 4: "done", 5: "done", 6: "pr-candidate", 7: "done", 8: "pr-candidate", 9: "done", 10: "pr-candidate",
+          11: "pr-candidate", 12: "pr-candidate", 13: "planned", 14: "pr-candidate", 15: "done", 16: "done", 17: "done", 18: "done", 19: "done",
+          20: "waiting-upstream", 21: "pr-open", 22: "pr-open", 23: "done", 24: "done", 25: "done", 26: "pr-candidate", 27: "pr-candidate", 28: "done",
+          29: "pr-candidate", 30: "pr-candidate", 31: "pr-open", 32: "pr-open"}
+NOTE = {1: "the cell still says 'PR candidate: yes'; it was merged upstream as pyscf-forge #212 on 30 Sep 2026 (row 22) — nothing left to do",
+        2: "the cell still says 'PR candidate: yes'; merged upstream as pyscf-forge #212 on 30 Sep 2026 (row 22) — nothing left to do",
+        3: "a proposal upstream (a `chkfile` attribute on the LNO kernel) is possible and was never sent; it waits for the user's word",
+        5: "no pull request intended; a paper or example later — nothing pending in this ledger",
+        6: "a question to the PAHdb maintainers is still to be asked (item on the user's list)",
+        9: "adopted as is; nothing to send unless our use needs a patch",
+        13: "decided (decision 41) and not started; once built and passing it becomes a pr-candidate",
+        20: "the fix exists upstream (pyscf #3387); our wrapper is dropped when a release carries it — the only action left, and it waits for upstream",
+        22: "the state row: #212 merged, #213 (reworked 3 Oct, replied), pyscf #3469 and #3470, optking #116 open — all waiting for maintainers",
+        29: "a report to pyscf-properties ('no infrared module') was not filed; the CPHF APT of row 26 is our own answer — the report waits for the user's word",
+        30: "the same lookup pattern in pyscf-core's CMakeLists would be a second pull request once forge #213 is merged"}
 
 
 def parse(text):
@@ -68,22 +84,10 @@ def title_of(change):
 
 
 def status_of(n, cells):
-    """The fixed vocabulary of the module docstring, derived from the row's last cell (and the change cell for 'not started')."""
-    if n in OVERRIDES:
-        return OVERRIDES[n]
-    change, last = cells[3], cells[-1]
-    low_last = last.lower()
-    if "not started" in (change + " " + last).lower() or "decided (decision" in change.lower():
-        return "planned"
-    if low_last.startswith("**submitted") or re.search(r"#\d+.*\bopen\b", low_last):
-        return "pr-open"
-    if "fixed upstream" in low_last or "once a release" in low_last:
-        return "waiting-upstream"
-    if low_last.startswith("none yet") or low_last.startswith("none needed"):
-        return "done"
-    if re.search(r"candidate|not drafted|could be offered|a second pr|after #\d+|possible:|upstream report|not sent|not done|^\*\*yes\*\*|^yes\b", low_last):
-        return "pr-candidate"
-    return "done"
+    """The reviewed status of row n (STATUS); a row without an entry stops the reshape — a new row must be reviewed, not guessed."""
+    if n not in STATUS:
+        raise SystemExit(f"row {n} has no reviewed status in STATUS — add it (and a NOTE if the cell text differs)")
+    return STATUS[n]
 
 
 def build(head, headers, rows, tail):
@@ -101,7 +105,8 @@ def build(head, headers, rows, tail):
         hdr = headers[g]
         status = status_of(n, cells)
         out.append(f"| {n} | {cells[1]} | {g} | {cells[2][:70]}{'…' if len(cells[2]) > 70 else ''} | {title_of(cells[3])} | {status} |")
-        sec = [f"### {n} — {title_of(cells[3])}", "", f"**Group:** {g}, {GROUPS[g]}. **Date:** {cells[1]}. **Status:** {status}.", "", f"**Software:** {cells[2]}", ""]
+        sec = [f"### {n} — {title_of(cells[3])}", "", f"**Group:** {g}, {GROUPS[g]}. **Date:** {cells[1]}. **Status:** {status}."
+               + (f" *Status note (3 Oct 2026):* {NOTE[n]}." if n in NOTE else ""), "", f"**Software:** {cells[2]}", ""]
         names = list(hdr[3:])
         if len(names) != len(cells) - 3:                       # rows 10–11 of table C were written with the four-column layout of A/B
             names = ["what", "why", "files / where", "action"][: len(cells) - 3]

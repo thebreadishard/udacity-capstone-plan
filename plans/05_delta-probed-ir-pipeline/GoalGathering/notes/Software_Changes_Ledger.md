@@ -3,7 +3,7 @@
 *Started 2026-09-12 on the user's request: keep a list of every change we make to third-party software, and of
 every piece of our own code that fills a gap upstream, so that we can decide later which to offer as pull
 requests. One row per change; "status" says whether it is a local patch, a wrapper, or our own code; "PR
-candidate" is an assessment, not a decision. Nothing has been submitted anywhere.* *(Addendum 3 October 2026: since 21 September pull requests have been submitted on the user's word — see the status column; the register below replaces the four tables of the first version, every original cell is kept in the sections.)*
+candidate" is an assessment, not a decision. Nothing has been submitted anywhere.* *(Addendum 3 October 2026: since 21 September pull requests have been submitted on the user's word — see the status column; the register below replaces the four tables of the first version, every original cell is kept in the sections; statuses reviewed row by row on 3 October.)*
 
 ## Register
 
@@ -13,7 +13,7 @@ One line per change; the numbered section below the register carries every origi
 |---|---|---|---|---|---|
 | 1 | 2026-09-10 | A | pyscf-forge 1.1.1 (`pyscf/lno/lnoccsd.py`), against pyscf 2.14.0 | the call into pyscf's DF vvvv routine updated to pyscf 2.14's seven-argument signature | done |
 | 2 | 2026-09-12 | A | pyscf-forge 1.1.1 (`pyscf/lno/lnoccsd.py::_cp`) | np.array(a, copy=False, order='C') → np.asarray(a, order='C') | done |
-| 3 | 2026-09-12 | B | pyscf-forge LNO-CCSD(T) | CheckpointedLNOCCSD_T | done |
+| 3 | 2026-09-12 | B | pyscf-forge LNO-CCSD(T) | CheckpointedLNOCCSD_T | pr-candidate |
 | 4 | 2026-09-10/12 | B | (shell) | probes/launch_detached.sh | done |
 | 5 | 2026-09-09/10 | B | pyscf-forge LNO (semantics, not code) | frozen-space arms A/B/C and the composite energy in m1_frozen_spaces.py (holding LNO spa… | done |
 | 6 | 2026-09-10 | C | PAHdb theoretical library v4.00 as served | the served XML carries the v3.00 scale factors (0.9794/0.9691/0.9597), not the three the… | pr-candidate |
@@ -39,14 +39,16 @@ One line per change; the numbered section below the register carries every origi
 | 26 | 2026-10-02 | B | own (intensities) | probes/dipole_derivs_fd.py (APT by FD of analytic SCF dipoles, sum rule + two steps | pr-candidate |
 | 27 | 2026-10-03 | B | pyscf 2.14.0 `grad/ccsd.py::grad_elec` (semantics, no upstream file to… | gradient_with_dipole in the E8 probe and probes/cc_dipole_capture.py | pr-candidate |
 | 28 | 2026-10-03 | B | own (design input) | probes/cc_lambda_profile.py (cProfile of solve_lambda | done |
-| 29 | 2026-10-02 | C | pyscf-properties 0.1.0 (`pyscf.prop`) | no infrared module in the installed release (magnetizability, nmr, nsr, polarizability, … | done |
+| 29 | 2026-10-02 | C | pyscf-properties 0.1.0 (`pyscf.prop`) | no infrared module in the installed release (magnetizability, nmr, nsr, polarizability, … | pr-candidate |
 | 30 | 2026-10-03 | C | pyscf 2.14.0 `pyscf/lib/CMakeLists.txt` (and forge's copy of the patte… | the pyscf lookup python3 -c "import pyscf | pr-candidate |
+| 31 | 2026-09-29/30 | B | pyscf 2.14.0 `grad/ccsd_t.py`, `grad/uccsd_t.py` (`Gradients.kernel` w… | our E8 probe solves the (T) lambda explicitly (ccsd_t_lambda.kernel) before calling the … | pr-open |
+| 32 | 2026-09-30 | B | optking (psi4's optimiser) `linear-bend` cycle handling | our corpus runner optimises molecules with a triple bond in Cartesian coordinates (RETRY… | pr-open |
 
 ## Sections
 
 ### 1 — the call into pyscf's DF vvvv routine updated to pyscf 2.14's seven-argument signature
 
-**Group:** A, patch to third-party code. **Date:** 2026-09-10. **Status:** done.
+**Group:** A, patch to third-party code. **Date:** 2026-09-10. **Status:** done. *Status note (3 Oct 2026):* the cell still says 'PR candidate: yes'; it was merged upstream as pyscf-forge #212 on 30 Sep 2026 (row 22) — nothing left to do.
 
 **Software:** pyscf-forge 1.1.1 (`pyscf/lno/lnoccsd.py`), against pyscf 2.14.0
 
@@ -60,7 +62,7 @@ One line per change; the numbered section below the register carries every origi
 
 ### 2 — np.array(a, copy=False, order='C') → np.asarray(a, order='C')
 
-**Group:** A, patch to third-party code. **Date:** 2026-09-12. **Status:** done.
+**Group:** A, patch to third-party code. **Date:** 2026-09-12. **Status:** done. *Status note (3 Oct 2026):* the cell still says 'PR candidate: yes'; merged upstream as pyscf-forge #212 on 30 Sep 2026 (row 22) — nothing left to do.
 
 **Software:** pyscf-forge 1.1.1 (`pyscf/lno/lnoccsd.py::_cp`)
 
@@ -74,7 +76,7 @@ One line per change; the numbered section below the register carries every origi
 
 ### 3 — CheckpointedLNOCCSD_T
 
-**Group:** B, own layer around third-party code. **Date:** 2026-09-12. **Status:** done.
+**Group:** B, own layer around third-party code. **Date:** 2026-09-12. **Status:** pr-candidate. *Status note (3 Oct 2026):* a proposal upstream (a `chkfile` attribute on the LNO kernel) is possible and was never sent; it waits for the user's word.
 
 **Software:** pyscf-forge LNO-CCSD(T)
 
@@ -102,7 +104,7 @@ One line per change; the numbered section below the register carries every origi
 
 ### 5 — frozen-space arms A/B/C and the composite energy in m1_frozen_spaces.py (holding LNO spa…
 
-**Group:** B, own layer around third-party code. **Date:** 2026-09-09/10. **Status:** done.
+**Group:** B, own layer around third-party code. **Date:** 2026-09-09/10. **Status:** done. *Status note (3 Oct 2026):* no pull request intended; a paper or example later — nothing pending in this ledger.
 
 **Software:** pyscf-forge LNO (semantics, not code)
 
@@ -116,7 +118,7 @@ One line per change; the numbered section below the register carries every origi
 
 ### 6 — the served XML carries the v3.00 scale factors (0.9794/0.9691/0.9597), not the three the…
 
-**Group:** C, finding about third-party software. **Date:** 2026-09-10. **Status:** pr-candidate.
+**Group:** C, finding about third-party software. **Date:** 2026-09-10. **Status:** pr-candidate. *Status note (3 Oct 2026):* a question to the PAHdb maintainers is still to be asked (item on the user's list).
 
 **Software:** PAHdb theoretical library v4.00 as served
 
@@ -154,7 +156,7 @@ One line per change; the numbered section below the register carries every origi
 
 ### 9 — pinned as the engine of milestone M2a (the gradient-to-energy cost ratio g), installed 2…
 
-**Group:** A, patch to third-party code. **Date:** 2026-09-13. **Status:** done.
+**Group:** A, patch to third-party code. **Date:** 2026-09-13. **Status:** done. *Status note (3 Oct 2026):* adopted as is; nothing to send unless our use needs a patch.
 
 **Software:** PySCFAD 0.3.3 (PyPI 2026-06-29; jax ≥ 0.9.1 < 0.11, pyscfadlib ≥ 0.3.3, pyscf ≥ 2.3, pyscf-properties; Apache-2.0)
 
@@ -208,7 +210,7 @@ One line per change; the numbered section below the register carries every origi
 
 ### 13 — an unrestricted (T) kernel of the compiled kind for the LNO fragment partition, modelled…
 
-**Group:** B, own layer around third-party code. **Date:** 2026-09-15. **Status:** planned.
+**Group:** B, own layer around third-party code. **Date:** 2026-09-15. **Status:** planned. *Status note (3 Oct 2026):* decided (decision 41) and not started; once built and passing it becomes a pr-candidate.
 
 **Software:** pyscf-forge 1.1.1 `pyscf/lno/ulnoccsd_t_slow.py` (NumPy/einsum (T) reference kernel of `ULNOCCSD_T`)
 
@@ -306,7 +308,7 @@ One line per change; the numbered section below the register carries every origi
 
 ### 20 — install_uccsd_t_dvvvv_fix() in probes/e8_cc_hessian_fd.py
 
-**Group:** B, own layer around third-party code. **Date:** 2026-09-30. **Status:** waiting-upstream.
+**Group:** B, own layer around third-party code. **Date:** 2026-09-30. **Status:** waiting-upstream. *Status note (3 Oct 2026):* the fix exists upstream (pyscf #3387); our wrapper is dropped when a release carries it — the only action left, and it waits for upstream.
 
 **Software:** pyscf 2.14.0 `cc/uccsd_t_rdm.py::_gamma2_intermediates` (UCCSD(T) gradient)
 
@@ -334,7 +336,7 @@ One line per change; the numbered section below the register carries every origi
 
 ### 22 — rows 1–2 merged upstream as pyscf-forge PR #212 (30 Sep, approved)
 
-**Group:** A, patch to third-party code. **Date:** 2026-09-30 → 10-03. **Status:** pr-open.
+**Group:** A, patch to third-party code. **Date:** 2026-09-30 → 10-03. **Status:** pr-open. *Status note (3 Oct 2026):* the state row: #212 merged, #213 (reworked 3 Oct, replied), pyscf #3469 and #3470, optking #116 open — all waiting for maintainers.
 
 **Software:** upstream state of rows 1–2, 20, 21
 
@@ -432,7 +434,7 @@ One line per change; the numbered section below the register carries every origi
 
 ### 29 — no infrared module in the installed release (magnetizability, nmr, nsr, polarizability, …
 
-**Group:** C, finding about third-party software. **Date:** 2026-10-02. **Status:** done.
+**Group:** C, finding about third-party software. **Date:** 2026-10-02. **Status:** pr-candidate. *Status note (3 Oct 2026):* a report to pyscf-properties ('no infrared module') was not filed; the CPHF APT of row 26 is our own answer — the report waits for the user's word.
 
 **Software:** pyscf-properties 0.1.0 (`pyscf.prop`)
 
@@ -444,7 +446,7 @@ One line per change; the numbered section below the register carries every origi
 
 ### 30 — the pyscf lookup python3 -c "import pyscf
 
-**Group:** C, finding about third-party software. **Date:** 2026-10-03. **Status:** pr-candidate.
+**Group:** C, finding about third-party software. **Date:** 2026-10-03. **Status:** pr-candidate. *Status note (3 Oct 2026):* the same lookup pattern in pyscf-core's CMakeLists would be a second pull request once forge #213 is merged.
 
 **Software:** pyscf 2.14.0 `pyscf/lib/CMakeLists.txt` (and forge's copy of the pattern)
 
@@ -453,6 +455,34 @@ One line per change; the numbered section below the register carries every origi
 **Where recorded:** forge PR #213 (reworked); pyscf-core's own CMakeLists has the same pattern — a second PR once #213 is merged
 
 **Action:** after #213
+
+### 31 — our E8 probe solves the (T) lambda explicitly (ccsd_t_lambda.kernel) before calling the …
+
+**Group:** B, own layer around third-party code. **Date:** 2026-09-29/30. **Status:** pr-open.
+
+**Software:** pyscf 2.14.0 `grad/ccsd_t.py`, `grad/uccsd_t.py` (`Gradients.kernel` without l1/l2)
+
+**What we built:** our E8 probe solves the (T) lambda explicitly (`ccsd_t_lambda.kernel`) before calling the gradient; upstream, `kernel()` without l1/l2 falls back to the CCSD lambda and returns a gradient that is not dE/dx of the CCSD(T) energy (the lambda incident of 29 Sep 2026: six days of invalid Hessians)
+
+**Gap it fills:** correctness of every CCSD(T) gradient taken through the default path
+
+**Files:** `probes/e8_cc_hessian_fd.py` (`gradient()`), tests `test_acceptance_water.py` (gate 1, gradient vs energy FD)
+
+**PR candidate:** **submitted: pyscf/pyscf#3469** (30 Sep 2026; +104 −6; CI green; no review yet)
+
+### 32 — our corpus runner optimises molecules with a triple bond in Cartesian coordinates (RETRY…
+
+**Group:** B, own layer around third-party code. **Date:** 2026-09-30. **Status:** pr-open.
+
+**Software:** optking (psi4's optimiser) `linear-bend` cycle handling
+
+**What we built:** our corpus runner optimises molecules with a triple bond in Cartesian coordinates (`RETRY_OPT_OPTIONS`, 30 Sep) because optking's internal coordinates stall in a silent infinite loop on a near-linear bend (B_4a601408a5, five hours without a line)
+
+**Gap it fills:** the layer-B factory lost a server-day to it
+
+**Files:** `modules/05_support_predictor/corpus/run_corpus.py` (`opt_options_for`), `PR_Draft_2026-09-30_optking_linear_bend_cycle_guard.md`
+
+**PR candidate:** **submitted: psi-rking/optking#116** (30 Sep 2026; guard against the loop, near-0° angle treated as a reset; no CI on that project; no review yet)
 
 ## How to use this ledger
 
