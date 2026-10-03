@@ -1607,7 +1607,7 @@ rest, and the anchors stay DZ. *In between:* a composite (CC/DZ + [CC/TZ − CC/
 
 *Dated note 4 October 01:0x (lever 2, before any TZ number exists):* the run as launched (`probes/night2_1003.sh`, `--ks 5,2,3`, 8 threads, max_memory
 10000 MB) died twice after the (T) lambda — pyscf's CCSD(T) gradient materialises the vvvv block of the two-particle density as three dense nvir⁴ arrays
-(28 GB each at cc-pVTZ). Our fast path now builds that block out of core (software ledger row 35), gate 1 on water passed again, relaunched 00:56.
+(28 GB each at cc-pVTZ). Our fast path now builds that block out of core (software ledger row 35), gate 1 on water passed again, relaunched 00:58 (a first attempt at 00:56 died in 4 s: HOME expanded on the Windows side inside a nested bash -c; probes/tz_relaunch_1004.sh since).
 Nothing in the read-out or the lines changes; the kernels' two-route check stays at DZ as registered and the gradient-route/energy-route agreement per
 pair (1e-4) is the second route at TZ.
 

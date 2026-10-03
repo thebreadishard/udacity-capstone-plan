@@ -529,7 +529,7 @@ after the (T) lambda converged, both without a traceback (an OOM kill; the last 
 **Workaround (ours):** `t_density_fast._gamma2_outcore` now calls `ccsd_rdm._gamma2_outcore(mycc, t1, t2, l1, l2, h5fobj, compress_vvvv)` for the
 CCSD part and adds the (T) increments — which touch only dovov, dooov and dovvv — in memory; `dvvvv` stays an H5 dataset, which `grad/ccsd.py`'s
 `_rdm2_mo2ao` already reads in blocks. Validated by gate 1 on water (dgrad_fast_kernel 7.1e-15; the production gradient through the new route against pyscf's
-plain CCSD(T) gradient), stamp renewed, TZ run relaunched 00:56.
+plain CCSD(T) gradient), stamp renewed, TZ run relaunched 00:58 (a first attempt at 00:56 died in 4 s: HOME expanded on the Windows side inside a nested bash -c; probes/tz_relaunch_1004.sh since).
 
 **Where recorded:** obstacle ledger 4 Oct 01:0x; the lever-2 registration (rung C pre-registration, amendment 3 Oct 08:1x, dated note 4 Oct);
 TASKS row 'Odds lever 2'.
