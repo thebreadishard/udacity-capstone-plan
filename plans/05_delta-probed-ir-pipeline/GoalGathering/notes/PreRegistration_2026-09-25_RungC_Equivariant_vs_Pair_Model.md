@@ -1507,3 +1507,14 @@ better. The first 31 children recover 77 % of the parents' gain and all of hold-
 deepen one. For the next pools: per new scaffold family (anthracene, pyrene, chrysene, triphenylene, the heteroaromatic three-ring parents) ≈ 30 children
 each, chosen across substituents; the running 200 (55 four-ring A2 rows across pyrene / fluoranthene-type parents, 8 three-ring, 137 B) are a first
 instalment of that design. Biphenylene is the slowest to saturate (0.29 at 31) — a four-membered-ring bridge the other two-ring systems do not teach.
+
+### Amendment 3 October 04:1x — chain 31: cross-family coverage (registered before it runs)
+
+Chain 30 says a family is covered by ≈ 30 of its own children. The breadth-first design rule assumes more: that families cover each other. Test: remove
+one family's children and read its parent while the other three-ring families stay. Two arms, carried recipe, three seeds: *no-phen* = the 12 phenanthrene
+children excluded (pool 738; read the phenanthrene parent, 0.15 with them, 0.46 without all three-ring children), *no-phenanthridine* = the 34
+phenanthridine children excluded (pool 716; read phenanthridine, 0.16 / 0.49). **Predictions.** With the neighbouring families present the parent lands
+between its two known values, nearer the covered one: phenanthrene ≈ 0.25, phenanthridine ≈ 0.25 (phenanthridine is the N-analogue of phenanthrene and
+has acridine and phenazine beside it). Hold-out (b) and the single-ring parents unchanged. **Lines.** *Families cover each other:* the parent stays ≤ 0.30 →
+breadth-first stands and a new scaffold family benefits from its neighbours before its own children arrive. *Each family on its own:* the parent ≥ 0.38 →
+the design rule becomes "≈ 30 children for every family that must be served", and the next pools are priced per family accordingly.
