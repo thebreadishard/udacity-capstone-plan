@@ -11,6 +11,7 @@ release replaces it when the corpus factory finishes). Model: `m05/deltah_model.
 `notebook/results.json` for `make_summary.py`. Environment knobs for a quick pipeline check (not a result): M05_QUICK=1 → 3 epochs,
 one seed. Run:  python notebook/make_notebook.py
 """
+import csv
 import json
 import os
 import sys
@@ -912,6 +913,63 @@ chain 24 started: {_f(_ov[0], 3) if _ov else '—'} against {_f(_ov[1], 3) if _o
 alone destroys it); the relative error is the intensity-specific number. The full ten read in a later section once all tensors are in.
 """)
 
+# ---- 12.3 the night of 2–3 October: coverage per scaffold family, and where learning has to begin
+
+
+def _cov(tag, hold="a", key="coupling_ratio"):
+    """Seed-mean read-out of a coverage record (the size key is the record's only size)."""
+    p = HERE.parent / "out" / f"E7_rungC_coverage_{tag}.json"
+    if not p.exists():
+        return None
+    rec = json.load(open(p, encoding="utf-8"))
+    n = next(iter(rec["curve"]))
+    return float(np.mean([s[hold][key] for s in rec["curve"][n]["per_seed"]]))
+
+
+def _cov_mol(tag, name_prefix, hold="a"):
+    """Seed-mean ratio of the hold-out molecules whose manifest name starts with name_prefix (None when the record is absent)."""
+    p = HERE.parent / "out" / f"E7_rungC_coverage_{tag}.json"
+    if not p.exists():
+        return None
+    man = {r["id"]: r["name"] for r in csv.DictReader(open(HERE.parent / "corpus" / "manifest.csv", encoding="utf-8"))}
+    rec = json.load(open(p, encoding="utf-8"))
+    n = next(iter(rec["curve"]))
+    vals = [v["coupling_ratio"] for s in rec["curve"][n]["per_seed"] for i, v in s[hold]["per_molecule"].items()
+            if man[i].split("+")[0] == name_prefix and v["coupling_ratio"] is not None]
+    return float(np.mean(vals)) if vals else None
+
+
+_cov_rows = [("all 123 three-ring children (control, 620 of 750)", "control620_2026-10-02"), ("none of the 130 three-and-more-ring molecules", "ablation620_2026-10-02"),
+             ("without the 7 pyrenes only", "noring4_2026-10-02"), ("without the 123 three-ring only", "noring3_2026-10-02"),
+             ("31 of the 123 kept", "ring3keep25_2026-10-03"), ("62 of the 123 kept", "ring3keep50_2026-10-03"),
+             ("without the 12 phenanthrene children", "nophenchildren_2026-10-03"), ("without the 34 phenanthridine children", "nophenanthridinechildren_2026-10-03")]
+_cov_table = "\n".join(f"| {lbl} | {_f(_cov(t))} | {_f(_cov_mol(t, 'phenanthrene'))} | {_f(_cov_mol(t, 'phenanthridine'))} | {_f(_cov_mol(t, 'benzene'))} | {_f(_cov(t, 'b'))} | {_f(_cov_mol(t, 'fluorene', 'b'))} |"
+                       for lbl, t in _cov_rows)
+md(f"""### 12.3 The night of 2–3 October: coverage is per scaffold family, and learning has to begin at one ring
+
+The error map of 12.2 said the hold-out error follows the size of the ring skeleton. Two explanations were open — large skeletons are harder, or the
+pool simply holds too few of them. The pool has 130 molecules with three or more aromatic rings (123 substituted three-ring systems, 7 pyrenes); the
+night's chains took them out, in parts, and in fractions (`probes/rungC_sherlock28_1002.sh` … `rungC_sherlock31_1003.sh`; the carried recipe, three
+seeds each). Ratios on hold-out (a) overall and for three of its parents, on hold-out (b) overall and for its fluorene scaffold:
+
+| training pool | (a) | phenanthrene | phenanthridine | benzene | (b) | fluorene scaffold |
+|---|---|---|---|---|---|---|
+{_cov_table}
+
+Three readings. **Coverage, not difficulty:** without the three-ring children the three-ring parents go from 0.15 to about 0.5 while benzene does not
+move, and the never-seen fluorene and fluoranthene scaffolds lose 0.06–0.10 too; the seven pyrenes carry none of it. **It saturates:** 31 of the 123
+children recover three quarters of the parents' gain and all of hold-out (b)'s, 62 recover nine tenths. **Families help each other a little:** the last two
+rows read a parent without its own children while the neighbouring three-ring families stay. This became decision 52 (how a pool is composed:
+≈ 30 mixed children per scaffold family the pipeline must serve, ≈ 60 where the best accuracy is wanted, breadth first over families).
+
+The same records answer a question asked this morning: could the learning have begun with water and carbon dioxide, since the physics of vibrational
+lines is the same? The physics is in the formula, not in the network; what the network learns is how the *correction to the couplings* depends on the
+ring skeleton, and that structure is absent from small molecules. Section 12 holds the matching evidence from the other side: an encoder pretrained on
+the Hessian-QM9 set of a hundred thousand small organic molecules brought nothing to the aromatic couplings ({_f(_pre[1])} and {_f(_pre[2])} against
+{_f(_pre[0])} fresh). Learning begins at one ring; a family is covered by a few dozen of its substituted children; small molecules remain the cheapest
+place to validate code and physics, which is how water is used throughout this project.
+""")
+
 nb = new_notebook(cells=cells, metadata={"kernelspec": {"name": "python3", "display_name": "Python 3", "language": "python"}})
 path = HERE / "deep_learning.ipynb"
 # 2 Oct 2026 15:1x: the executed notebook on disk is replaced only after a successful execution — a failed run (a wrong M05_RELEASE) had left it
@@ -919,7 +977,7 @@ path = HERE / "deep_learning.ipynb"
 tmp = HERE / "deep_learning.building.ipynb"
 nbformat.write(nb, tmp)
 if "--no-execute" not in sys.argv:
-    NotebookClient(nb, timeout=3600, kernel_name="python3", resources={"metadata": {"path": str(HERE)}}).execute()
+    NotebookClient(nb, timeout=10800, kernel_name="python3", resources={"metadata": {"path": str(HERE)}}).execute()   # 3 Oct 2026: the cap-100 audit cell took > 1 h beside two CC jobs
     nbformat.write(nb, tmp)
     os.replace(tmp, path)
     print("executed and written:", path)
