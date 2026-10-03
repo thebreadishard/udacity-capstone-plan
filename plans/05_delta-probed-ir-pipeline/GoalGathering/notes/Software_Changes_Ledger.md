@@ -406,7 +406,7 @@ One line per change; the numbered section below the register carries every origi
 
 ### 27 — gradient_with_dipole in the E8 probe and probes/cc_dipole_capture.py
 
-**Group:** B, own layer around third-party code. **Date:** 2026-10-03. **Status:** pr-candidate.
+**Group:** B, own layer around third-party code. **Date:** 2026-10-03. **Status:** pr-candidate. *Prepared 3 Oct 10:1x:* branch `ccsd-grad-relaxed-dm1` on the fork (commit 06468d3, on upstream master) — `cc_grad.rdm1_relaxed` kept by `grad_elec`, `Gradients.dip_moment()`, the (T) gradient calls `grad_elec` on the caller's object; tests water/6-31G against finite field (CCSD and CCSD(T), 4e-8); not opened, waits for the user's word.
 
 **Software:** pyscf 2.14.0 `grad/ccsd.py::grad_elec` (semantics, no upstream file touched)
 
