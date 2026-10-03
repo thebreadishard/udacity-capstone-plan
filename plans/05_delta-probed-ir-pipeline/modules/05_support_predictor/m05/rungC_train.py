@@ -150,8 +150,10 @@ def kring_tensors(masses: np.ndarray, V: np.ndarray, w: np.ndarray, family: list
     ring = np.where(np.asarray(family) == E6.RING)[0]
     K_true = kscale * (Cm @ np.asarray(dH_true, float) @ Cm.T)
     norm = float(np.mean(K_true[np.ix_(ring, ring)] ** 2)) if len(ring) else 1.0
+    codes = np.unique(np.asarray(family, dtype=str), return_inverse=True)[1]              # chain 34 (3 Oct 2026): one code per family label
     return dict(Cm=torch.as_tensor(Cm, dtype=dtype), kscale=torch.as_tensor(kscale, dtype=dtype), ring=torch.as_tensor(ring, dtype=torch.long),
-                K_true=torch.as_tensor(K_true, dtype=dtype), K_norm=torch.tensor(max(norm, 1e-30), dtype=dtype))
+                K_true=torch.as_tensor(K_true, dtype=dtype), K_norm=torch.tensor(max(norm, 1e-30), dtype=dtype),
+                fam_code=torch.as_tensor(np.asarray(codes).reshape(-1), dtype=torch.long))
 
 
 def _pattern_term(model, t, dF_p):
@@ -169,11 +171,21 @@ def _kring_term(t, pred, main):
     return ((K - t["K_true"])[r][:, r] ** 2).mean() / t["K_norm"]
 
 
-def _kdiag_term(t, pred):
-    """Lever 5 (2 Oct 2026): mean square of the diagonal of K_pred − K_true over all modes, relative to the diagonal's own mean square."""
+def _kdiag_term(t, pred, mode: str = "all"):
+    """Lever 5 (2 Oct 2026): mean square of the diagonal of K_pred − K_true over all modes, relative to the diagonal's own mean square.
+    mode 'family' (chain 34, 3 Oct 2026, decision 53): the same relative mean square per mode family, averaged over the families the molecule has —
+    the low-K families (CH-oop, other) then weigh as much as the C–H stretches, whose K grows with ω and carries the 'all' term."""
     K = (t["Cm"] @ pred @ t["Cm"].T) * t["kscale"]
     d_pred, d_true = torch.diagonal(K), torch.diagonal(t["K_true"])
-    return ((d_pred - d_true) ** 2).mean() / (d_true ** 2).mean().clamp_min(1e-30)
+    if mode == "all":
+        return ((d_pred - d_true) ** 2).mean() / (d_true ** 2).mean().clamp_min(1e-30)
+    if mode != "family":
+        raise ValueError(f"kdiag mode {mode!r}: 'all' or 'family'")
+    terms = []
+    for c in torch.unique(t["fam_code"]):
+        on = t["fam_code"] == c
+        terms.append(((d_pred[on] - d_true[on]) ** 2).mean() / (d_true[on] ** 2).mean().clamp_min(1e-30))
+    return torch.stack(terms).mean()
 
 
 def _terms(model, t):
@@ -193,7 +205,7 @@ def _terms(model, t):
         aux = _pattern_term(model, t, dF_p) + getattr(model, "kring_weight", 1.0) * _kring_term(t, pred, main)
         kd = getattr(model, "kdiag_weight", 0.0)
         if kd:
-            aux = aux + kd * _kdiag_term(t, pred)
+            aux = aux + kd * _kdiag_term(t, pred, getattr(model, "kdiag_mode", "all"))
     else:
         aux = ((dF_p - t["dF_true"]) ** 2).mean() / t["dF_norm"]        # relative internal-ΔF term (build note of 27 Sep: the raw term is ~1e9 in a.u.)
     return main, aux, pred
@@ -284,7 +296,7 @@ def train_one(train_ids: list, tensors: dict, seed: int, epochs: int, lr: float 
               pretrained: str | None = None, aggregation: str = AGGREGATION,
               pretrained_elements: list[int] | None = None, aux_mode: str = "all", tensor_input: bool = False, head: str = "cartesian",
               sqm_scale: bool = False, pair_features: bool = False, hybrid_hidden: int = 128, body_blocks: int = N_BLOCKS,
-              body_width: int = N_S, kring_weight: float = 1.0, kdiag_weight: float = 0.0) -> tuple[torch.nn.Module, list]:
+              body_width: int = N_S, kring_weight: float = 1.0, kdiag_weight: float = 0.0, kdiag_mode: str = "all") -> tuple[torch.nn.Module, list]:
     """Defaults = the registered recipe C1 of 19:50 (27 Sep). The other values are the cells of the fair-chance search registered at 20:0x:
     aux_weight 1.0; loss_mode 'internal' (the relative internal-ΔF term alone); scale_mode 'class' (one output scale per entry class: diagonal
     3×3 block, bonded pair, non-bonded pair — the pair model's per-class standardisation); val_ids = inner validation molecules held out of the
@@ -339,6 +351,7 @@ def train_one(train_ids: list, tensors: dict, seed: int, epochs: int, lr: float 
     model.aux_mode = aux_mode
     model.kring_weight = float(kring_weight)                            # lever 3b weight search (1 Oct 2026): scales the kring term inside 'both'
     model.kdiag_weight = float(kdiag_weight)                            # lever 5 (2 Oct 2026): the diagonal of K over all modes inside 'both'
+    model.kdiag_mode = kdiag_mode                                       # chain 34 (3 Oct 2026): 'all' or 'family' (per-family relative mse, averaged)
     model.aux_class_scale = pattern_class_scales(tensors, train_ids) if aux_mode in ("pattern", "both") else None
     if aux_mode == "pattern":
         log("  internal term on the pair model's pattern; class scales " + ", ".join(f"{n} {s:.3g}" for n, s in zip(PAIR_CLASS_NAMES, model.aux_class_scale.tolist(), strict=True)))
@@ -499,6 +512,7 @@ def save_hybrid_model(model: HybridDeltaFModel, path: Path, args: dict, n: int, 
     torch.save({"state": model.state_dict(), "ctor": ctor, "aux_mode": model.aux_mode,
                 "aux_class_scale": None if model.aux_class_scale is None else model.aux_class_scale.clone(),
                 "kring_weight": float(getattr(model, "kring_weight", 1.0)), "kdiag_weight": float(getattr(model, "kdiag_weight", 0.0)),
+                "kdiag_mode": getattr(model, "kdiag_mode", "all"),
                 "pattern": args["pattern"], "aux_target": args["aux_target"], "ls_lam": args["ls_lam"], "head": args["head"],
                 "n": n, "seed": seed, "args": args}, path)
 
@@ -511,6 +525,7 @@ def load_hybrid_model(path: Path) -> tuple[HybridDeltaFModel, dict]:
     model.aux_mode = ck["aux_mode"]
     model.aux_class_scale = ck["aux_class_scale"]
     model.kring_weight, model.kdiag_weight = ck["kring_weight"], ck["kdiag_weight"]
+    model.kdiag_mode = ck.get("kdiag_mode", "all")                      # records before 3 Oct 2026 carry no mode: the all-mode term
     model.scale, model.class_scale_values = 1.0, None
     return model, ck
 
@@ -567,6 +582,8 @@ def main() -> int:
                     help="search: fraction of the training ids held out per seed as inner validation (the stage read-out)")
     ap.add_argument("--patience", type=int, default=0, help="search stage 2: early stopping on the inner validation term, best state restored (0 = off)")
     ap.add_argument("--kring-weight", type=float, default=1.0, help="lever 3b (1 Oct 2026): weight of the kring term inside --aux both (the pattern term keeps weight 1)")
+    ap.add_argument("--kdiag-mode", default="all", choices=["all", "family"], help="chain 34 (3 Oct 2026, decision 53): 'family' = the K-diagonal term as the mean "
+                    "over mode families of the per-family relative mse, so that CH-oop and other weigh as much as the C–H stretches; 'all' = one relative mse over all modes")
     ap.add_argument("--kdiag-weight", type=float, default=0.0, help="lever 5 (2 Oct 2026): weight of a term on the diagonal of K over all modes inside --aux both (0 = off)")
     ap.add_argument("--save-model", action="store_true", help="lever 1 / T3 (2 Oct 2026): save the trained hybrid model per size and seed next to the record")
     ap.add_argument("--exclude-ids-file", default=None, help="coverage ablation (2 Oct 2026): ids (one per line) dropped from the training pool; hold-outs untouched")
@@ -648,7 +665,7 @@ def main() -> int:
                patience=a.patience, pretrained=a.pretrained, aggregation=a.aggregation, pretrained_elements=a.pretrained_elements,
                aux_mode=a.aux, zero_hlow=a.zero_hlow, overfit_one=a.overfit_one, tensor_input=a.tensor_input, head=a.head, sqm_scale=a.sqm_scale,
                pair_features=a.pair_features, hybrid_hidden=a.hybrid_hidden, pattern=a.pattern, body_blocks=a.body_blocks, body_width=a.body_width,
-               aux_target=a.aux_target, ls_lam=a.ls_lam, kring_weight=a.kring_weight, kdiag_weight=a.kdiag_weight, target_residuals=target_residuals,
+               aux_target=a.aux_target, ls_lam=a.ls_lam, kring_weight=a.kring_weight, kdiag_weight=a.kdiag_weight, kdiag_mode=a.kdiag_mode, target_residuals=target_residuals,
                pair_class_names=list(PAIR_CLASS_NAMES),
                substituted_analytic=substituted, curve={})
     res["zero_rule"] = {h: readouts(mols, ids, pool, lambda i: np.zeros_like(mols[i]["F_low"])) for h, ids in tests.items() if ids}
@@ -675,7 +692,7 @@ def main() -> int:
             model, hist = train_one(fit_ids, tensors, seed, a.epochs, a.lr, log, a.aux_weight, a.loss, a.scale, val_ids, a.patience, a.pretrained,
                                     a.aggregation, a.pretrained_elements, aux_mode=a.aux, tensor_input=a.tensor_input, head=a.head, sqm_scale=a.sqm_scale,
                                     pair_features=a.pair_features, hybrid_hidden=a.hybrid_hidden, body_blocks=a.body_blocks, body_width=a.body_width,
-                                    kring_weight=a.kring_weight, kdiag_weight=a.kdiag_weight)
+                                    kring_weight=a.kring_weight, kdiag_weight=a.kdiag_weight, kdiag_mode=a.kdiag_mode)
             dF_of = predictor(model, tensors, mols)
             if a.save_model:
                 if a.head != "hybrid":
