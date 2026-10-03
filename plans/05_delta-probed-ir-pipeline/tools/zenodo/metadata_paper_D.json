@@ -1,0 +1,18 @@
+{
+  "metadata": {
+    "title": "Coupled-cluster harmonic force fields of aromatic molecules with two-route numerical validation, and the companion B3LYP/ωB97X corpus (plan 05 anchors, draft deposit)",
+    "upload_type": "dataset",
+    "description": "<p>DRAFT DEPOSIT (reserved DOI; not yet published). CCSD(T)/cc-pVDZ Cartesian harmonic force fields of aromatic molecules computed by central finite differences of analytic gradients with the triples lambda equations solved explicitly, each with the gradients at the displaced geometries, the run log and the numerical checks that bound its error (energy route against gradient route per displaced coordinate, translational sum rule, finite-difference asymmetry); dipole derivatives where computed. Companion: B3LYP/6-31G* and ωB97X/6-31G* Hessians of aromatic molecules (the low-level corpus a correction model is trained on), a subset recomputed with analytic second derivatives, and the finite-difference noise per class of vibration estimated from that subset. Every archive carries a manifest with a SHA-256 per file. Produced in the project described at https://github.com/thebreadishard/udacity-capstone-plan; the data paper (in preparation) describes methods, records and validation.</p>",
+    "creators": [
+      {"name": "Petrignani, Frederic"},
+      {"name": "Petrignani, Annemieke"}
+    ],
+    "license": "cc-by-4.0",
+    "access_right": "open",
+    "keywords": ["coupled cluster", "CCSD(T)", "harmonic force field", "Hessian", "polycyclic aromatic hydrocarbons", "infrared spectra", "density functional theory", "machine learning", "delta learning", "benchmark data"],
+    "version": "0.1-draft",
+    "language": "eng",
+    "prereserve_doi": true,
+    "notes": "Draft record created from the project repository by tools/zenodo_deposit.py; files and metadata are replaced until the data paper is submitted; publication is a manual step by the depositor."
+  }
+}
