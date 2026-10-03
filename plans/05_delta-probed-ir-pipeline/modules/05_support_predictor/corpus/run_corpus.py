@@ -21,6 +21,9 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 MANIFEST, LEDGER, LOCK = HERE / "manifest.csv", HERE / "ledger.csv", HERE / "corpus.lock"
 DECK = HERE / "decks" / "deck_v1.json"
+CATION_DECK = HERE / "decks" / "deck_v1_cation.json"     # pool 3 (decision 54, 3 Oct 2026): layer P3c rows run UKS, charge 1, doublet
+CATION_DISTORT_ANG = 0.01                                # the seeded Cartesian distortion of cation_rows.py (a Jahn–Teller minimum must be reachable in c1)
+_CATION_DECK: dict = {}
 QC_PYTHON = Path(os.environ["CORPUS_QC_PYTHON"]) if os.environ.get("CORPUS_QC_PYTHON") else None   # 28 Sep 2026: no personal default path  # 2026-09-18: overridable so the same runner works on a Linux host (Hetzner CPX62)
 QM9_VAC = HERE.parent / "data" / "hessian_qm9" / "hessian_qm9_DatasetDict" / "vacuum"
 FIELDS = ["id", "layer", "priority", "name", "smiles", "qm9_label", "n_heavy", "n_atoms", "status", "machine", "deck", "note"]
@@ -110,10 +113,10 @@ def read_manifest():
 
 def queue_order(rows):
     """Run order (DESIGN, dated addition 2026-09-12): layer A first (timing-test rows at the front), then layers B and A2
-    alternating by their position inside each layer (class axis and size axis grow together), then layer C.
+    alternating by their position inside each layer (class axis and size axis grow together), then pool 3 (P3c and P3 alternating, 3 Oct 2026), then layer C.
     Inside a layer the position is the hashed priority order of the manifest."""
     pos = {}
-    for L in ("A", "A2", "B", "C"):
+    for L in ("A", "A2", "B", "P3", "P3c", "C"):
         # startswith, not ==: a crash-recovered timing-test row ("timing-test redone-after-crash") keeps its front position
         # (bug found 2026-09-14 12:5x: naphthalene was skipped for diphenylacetylene; the first fix of 12:5x broke the line with an inline comment, repaired 15:2x)
         for i, r in enumerate(sorted([r for r in rows if r["layer"] == L], key=lambda r: (0 if r.get("note", "").startswith("timing-test") else 1, r["priority"]))):
@@ -121,7 +124,8 @@ def queue_order(rows):
     def key(r):
         if r["layer"] == "A": return (0, pos[r["id"]], 0)
         if r["layer"] in ("B", "A2"): return (1, pos[r["id"]], 0 if r["layer"] == "B" else 1)
-        return (2, pos[r["id"]], 0)
+        if r["layer"] in ("P3c", "P3"): return (2, pos[r["id"]], 0 if r["layer"] == "P3c" else 1)   # pool 3 (decision 54): cations and neutrals alternating, after A2/B, before C
+        return (3, pos[r["id"]], 0)
     return sorted(rows, key=key)
 
 
@@ -140,11 +144,43 @@ def append_ledger(rec):
         w.writerow({k: rec.get(k, "") for k in LEDGER_FIELDS})
 
 
+def cation_parent(row):
+    """The neutral parent id a P3c row names in its note (`parent <id>`, written by probes/pool3_candidates.py)."""
+    import re
+    m = re.search(r"parent (\S+?)(?:;|$)", row.get("note", ""))
+    if not m:
+        raise ValueError(f"{row.get('id')}: a P3c row needs 'parent <id>' in its note")
+    return m.group(1)
+
+
+def parent_geometry_path(row):
+    p = HERE / "molecules" / cation_parent(row) / "geometry.json"
+    if not p.exists():
+        raise RuntimeError(f"{row.get('id')}: the neutral parent {cation_parent(row)} has no geometry.json under molecules/ — compute or merge it first")
+    return p
+
+
+def deck_for(row, base, overrides):
+    """(deck, hash) for a manifest row: layer P3c runs the cation deck (loaded once, the thread/memory overrides applied, the hash of the file on disk);
+    every other layer the base deck."""
+    if row.get("layer") != "P3c":
+        return base
+    if "deck" not in _CATION_DECK:
+        d = json.load(open(CATION_DECK)); d.update(overrides)
+        _CATION_DECK.update(deck=d, hash=hashlib.sha256(CATION_DECK.read_bytes()).hexdigest()[:12])
+    return _CATION_DECK["deck"], _CATION_DECK["hash"]
+
+
 def start_geometry(row):
     """Layers A/B: RDKit ETKDG + MMFF from SMILES. Layer C: the Hessian QM9 geometry (Angstrom) by label."""
     if row.get("restart_geometry"):  # --restart-from (2026-09-24): twisted geometry from saddle_restarts.py, bohr -> Angstrom, then optimise as usual
         g = json.load(open(row["restart_geometry"], encoding="utf-8")); b = 0.529177210903
         return [[s, x * b, y * b, z * b] for s, (x, y, z) in zip(g["symbols"], g["coords_bohr"], strict=True)], True
+    if row["layer"] == "P3c":  # pool 3 cations (decision 54): the neutral parent's optimised geometry (bohr → Å) with the seeded distortion, then UKS optimisation
+        import numpy as np
+        g = json.load(open(parent_geometry_path(row), encoding="utf-8")); b = 0.529177210903
+        xyz = np.asarray(g["coords_bohr"], float) * b + np.random.default_rng(0).normal(0.0, CATION_DISTORT_ANG, (len(g["symbols"]), 3))
+        return [[s, *map(float, r)] for s, r in zip(g["symbols"], xyz, strict=True)], True
     if row["layer"] == "C":
         import pyarrow as pa
         import pyarrow.ipc as ipc
@@ -245,14 +281,15 @@ def main():
                 log(f"would run {r['id']} {r['layer']} {r['name']} ({r['n_atoms']} atoms)"); done += 1; virtually_done.add(r["id"])
                 if a.max_molecules and done >= a.max_molecules: break
                 continue
-            if not a.restart_from: r["status"] = "running"; r["machine"] = machine; r["deck"] = deck_hash; write_manifest(rows)
+            row_deck, row_hash = deck_for(r, (deck, deck_hash), overrides)               # P3c rows: the cation deck and its own hash
+            if not a.restart_from: r["status"] = "running"; r["machine"] = machine; r["deck"] = row_hash; write_manifest(rows)
             out_final = HERE / "molecules" / r["id"]; out_tmp = HERE / "molecules" / (r["id"] + ".tmp")
             shutil.rmtree(out_tmp, ignore_errors=True); out_tmp.mkdir(parents=True)
             t0 = datetime.now(); log(f"start {r['id']} {r['layer']} {r['name']} ({r['n_atoms']} atoms)")
             status = "failed"; res = {}; guard = None; opts = None
             try:
                 xyz, optimise = start_geometry(r)
-                job = {"id": r["id"], "layer": r["layer"], "xyz_angstrom": xyz, "deck": deck, "out_dir": str(out_tmp), "optimise": optimise, "grid_check": a.grid_check}
+                job = {"id": r["id"], "layer": r["layer"], "xyz_angstrom": xyz, "deck": row_deck, "out_dir": str(out_tmp), "optimise": optimise, "grid_check": a.grid_check}
                 opts = opt_options_for(r, a.retry_failed)
                 if opts: job["opt_options"] = opts
                 jp = out_tmp / "job.json"; json.dump(job, open(jp, "w"))
@@ -270,11 +307,11 @@ def main():
                 rows = read_manifest()
                 for rr in rows:
                     if rr["id"] == r["id"]:
-                        rr["status"] = status; rr["machine"] = machine; rr["deck"] = deck_hash
+                        rr["status"] = status; rr["machine"] = machine; rr["deck"] = row_hash
                         if a.force: rr["note"] = (rr.get("note", "") + " forced-beside-anchor-job").strip()
                 write_manifest(rows)
             tm = res.get("timings_s", {})
-            append_ledger(dict(id=r["id"], layer=r["layer"], name=r["name"], machine=machine, deck=deck_hash, start=f"{t0:%Y-%m-%d %H:%M:%S}", end=f"{datetime.now():%Y-%m-%d %H:%M:%S}",
+            append_ledger(dict(id=r["id"], layer=r["layer"], name=r["name"], machine=machine, deck=row_hash, start=f"{t0:%Y-%m-%d %H:%M:%S}", end=f"{datetime.now():%Y-%m-%d %H:%M:%S}",
                                seconds_total=tm.get("total", ""), seconds_optimise=tm.get("optimise", ""), seconds_hessian_b3lyp=tm.get("hessian_b3lyp", ""), seconds_hessian_wb97x=tm.get("hessian_wb97x", ""),
                                peak_rss_gb=res.get("peak_rss_gb", ""), status=status, note=" ".join(x for x in (("forced" if a.force else ""), ("retry:" + ",".join(f"{k}={v}" for k, v in RETRY_OPT_OPTIONS.items()) if a.retry_failed else ("linear-bend:cartesian" if opts else "")), (guard or ""), override_note, r.get("restart_note", "")) if x)))
             done += 1
