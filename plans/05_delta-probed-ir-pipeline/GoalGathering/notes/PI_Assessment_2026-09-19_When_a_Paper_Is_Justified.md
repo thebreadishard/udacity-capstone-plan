@@ -222,3 +222,54 @@ corpus grows; the decade-long asset needs exactly that kind of built-in guarante
 *17:1x:* Gate E prerequisite (2) — route 2 at Mackie's level reproduces naphthalene's three rotationally resolved CH-oop origins to 1.2 cm⁻¹ RMS with clean quartics (`probes/results_m1/route2/ROUTE2_NAPHTHALENE_VS_LAB_2026-09-25.md`). The gate's remaining prerequisites are unchanged; no odds line moves on a prerequisite.
 
 *20:4x:* the recipe search of the day is complete (three stages): the level improved by a fifth, the slope did not move (≈ 1.1× per decade under every recipe on 45–175 molecules). No odds line moves: the proof line's open question was and is the slope at larger n; the search removed one alternative explanation (the optimiser) and left two (data regime, model class).
+
+## Dated addition, 3 October 2026 18:3x — weekend review 1: the four gates against today's evidence (the user: "ons plan rondom eigen wetenschappelijke papers opnieuw bekijken; dat is een tijdje geleden")
+
+**What exists now that did not on 25 September.** Five CCSD(T)/cc-pVDZ Hessians with two-route checks (benzene with the (T) lambda and its dipoles, fluorobenzene,
+pyridine, naphthalene at frozen 10; anthracene finishing ≈ 5 Oct; benzene⁺ queued behind it), after the lambda incident of 29 Sep invalidated the first set and
+gave us the (T)-lambda kernel and pyscf PRs #3469/#3470/#3477 (open) beside forge #212 (merged) and #213 (reworked). A rung-C network that meets the first proxy
+target (ratio 0.22, ω 2.8 cm⁻¹ at 750) and carries part of the correction to an unseen CC anchor (5–6 cm⁻¹ in-plane with three anchors). The coverage rule
+(decision 52: ≈ 30 mixed children cover a scaffold family, ≈ 60 finish it), the targets per family (decision 53: open until out-of-plane and skeletal are under
+3 cm⁻¹), pool 3 (decision 54: 60 cations, 30 aza-four-rings, 30 five-rings), carried model versions (decision 55). The CC intensity term measured on benzene
+(0.205 weighted, spectrum overlap 0.98). The two-route finding on finite-difference quartics (blog 9), with pyVPT2 PR #58 closed by us as detection-only.
+
+**Gate A — transported frozen spaces (October 2026).** Conditions: the TZ cells in and holding; the three L1 papers read (done 20 Sep, the claim reworded after Mata &
+Werner); M2's projection term existing. Status: M2 was not built — the anchor route (canonical CCSD(T) Hessians up to ≈ 26 atoms) took its place, and the local route's
+second derivatives are being measured for the first time tonight: the naphthalene LNO curvature check (two coordinates against the canonical Hessian; registered lines
+in-plane ω within 1 cm⁻¹, coupling ratio ≤ 0.1). Read 19:2x: **not viable at this level** — LNO-CCSD(T) at tight thresholds gives curvatures +0.29 % (in-plane) and +0.27 % (out-of-plane) above the canonical
+ones (2.3e-3 a.u., against a two-route noise of 5e-6), systematic rather than scattered; the registered line '> 1e-3 → the level' applies. Gate A's object does
+not exist in our hands; A folds into C as a methods paragraph, and the one follow-up that could reopen it (xtight thresholds with the reference's localisation
+reused) is registered as a candidate, not scheduled. Either way the October date is gone. **Decision for the
+user:** pursue A only if the LNO check passes and the Snellius question is asked; otherwise close A as a gate and keep its measurement for C.
+
+**Gate B — the difference Hessian from gradient patterns (Q1 2027).** Conditions: M2 by its pre-registration; the gradient decks licensed against directly computed
+references on the *real* correction; X22 answered (19 Sep: yes). Status: the real correction now exists for five molecules, so the second condition is testable
+today, and it has been tested once: the standout's CC-level test on benzene (29–30 Sep, corrected Hessian) — the registered band deck fails C1/C2, the wide deck
+with the open prior passes both (P1 at 0.54 of the blind cost, the oracle at 124 of 806). The claim has shifted from "energies cannot, gradients can" to "a
+gradient deck with the wide prior reaches the CC correction at half the blind cost on benzene"; a methods paper needs this on three to five molecules, and
+naphthalene and anthracene are the next two. **Decision:** keep B, re-anchor its condition on the anchor set instead of M2, date mid-2027.
+
+**Gate C — the main paper (mid to late 2027).** Conditions: 20–50 labelled molecules, per-family curves crossing or failing the margins, the comparison to line D
+and PAHdb on the same held-out molecules. Status: 5 → 7 CC labels this week, proxy curves at 750 with the in-plane families under the line, two families open
+(decision 53), the coverage rule in hand, the licensed-pipeline machinery (module 08) built. Pool 3 adds the three axes the astrophysical reader will ask for
+first (charge, nitrogen in large rings, size). **Verdict:** late 2027 stays plausible only if pool 3's anchors come and the per-family lines close; the registered-report
+form stands. Today's odds for the full mandate are 35–40 %, for a credible partial deliverable (neutral PAHs to four rings, in-plane + intensities, anchored) ≈ 70 %;
+C's first version is that partial deliverable.
+
+**Gate D — the data paper (ten molecules with error bars).** Status: this is now the nearest gate. Five CC Hessians carry two-route checks and, for benzene, dipole
+derivatives; anthracene and benzene⁺ make seven; two or three more cation anchors (naphthalene⁺ is in hold-out (c)) reach ten by the end of October. Beside them,
+847 proxy molecules of which 27 carry the analytic second route, with the per-family noise floor measured (3 Oct) — a dataset whose noise is characterised, which
+is what line D's abstracts say they lack. The release machinery exists (`build_release.py`, `RELEASES.md`, the public `capstone-data` mirror). **Decision for the
+user:** make D the first submission (Scientific Data or a JCTC data article), with the supervisor as co-author, outline ready for her November meeting as the
+≤ 150-word question; the lambda incident and the frozen-core incident go in the body as what the error bars cost.
+
+**Gate E — the two-route quartic note (candidate).** The finding stands (benzene semi-diagonal quartics from two FD routes differ by up to 1264 cm⁻¹ on psi4 FD
+Hessians, agree on analytic ones); the upstream PR was closed by us as detection-only. **Advice:** fold E into D's noise section rather than a note of its own.
+
+**Conditions (section 5) — one added.** 7. No number from a model version other than a `carried` one (decision 55); the registry row is cited with the number.
+
+**What I would do in which order, for the user's word:** (1) D first, outline in October, submission after the ten labels; (2) B re-anchored and read on
+naphthalene and anthracene with the wide deck; (3) A decided tonight by the LNO reading; (4) C as the registered report once pool 3's first read is in (≈ November).
+Nothing starts before the user says so, and nothing goes to the supervisor before the ≤ 150-word question.
+
+**The user's word, 3 October 2026 18:4x:** D first; B re-anchored on the anchor set; E folded into D's noise section; C as a registered report. Gate A is decided by tonight's LNO reading (see above). Recorded as decision 56 in the plan README; the D outline is a TASKS row.

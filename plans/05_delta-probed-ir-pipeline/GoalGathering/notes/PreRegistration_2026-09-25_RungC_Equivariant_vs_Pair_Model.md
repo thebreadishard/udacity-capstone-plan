@@ -1690,3 +1690,27 @@ the five-ring parents before any conclusion about data.
 **Cation gate (P3-2), registered.** On the benzene⁺ row and the first ten cation rows, FD against the analytic second route per family; line: floor
 ≤ 1.5 cm⁻¹ in every family → FD-only rows; otherwise analytic route on every cation row. A cation row with an imaginary mode in the analytic route is
 excluded (the corpus rule), not repaired.
+
+## Outcome, odds lever 3 (laptop version) — LNO-CCSD(T) curvatures against the canonical naphthalene anchor — 3 October 19:2x (`probes/results_m1/e8_naphthalene_ccpvdz_tlambda_2026-10-02/lno_curvature_check_2026-10-03.json`)
+
+**Run.** Two of the six registered coordinates (the run was cut to two when the first energy took 70 min under the day's load: atom 0, x and z; the
+in-plane one has out-of-plane fraction 0.10, the other 0.99), reference plus four displaced points, tight thresholds, fresh localisation at every point,
+16 threads, 22,299 s in total (≈ 4,300–4,600 s per LNO-CCSD(T) energy, 24 fragments, 4.3 GB).
+
+**Read-out.** Canonical energy route against the gradient-route Hessian: 5.6e-6 and 4.3e-6 a.u. (the prediction said ≤ 1e-4; the anchor's own
+self-check had 4.1e-5). LNO against the Hessian: k 0 (in-plane) 0.780751 → 0.783048, Δ = **+2.30e-3 a.u. (+0.29 %)**; k 2 (out-of-plane) 0.112645 →
+0.112950, Δ = +3.05e-4 a.u. (+0.27 %). Reference energy LNO − canonical +0.42 mE_h.
+
+**Against the registered lines.** max |Δ| = 2.30e-3 a.u. > 1e-3 → **not viable: the LNO level itself, not the noise.** By the registration the anchor
+route stays canonical and the Snellius request is for canonical CCSD(T) gradients. Two observations beside the verdict, not instead of it: (1) the two
+deviations have the same sign and the same relative size (+0.29 % and +0.27 %) on an in-plane and an out-of-plane coordinate — a systematic
+stiffening of the LNO curvature at tight thresholds rather than localisation scatter (the prediction expected scatter, worse out of plane; the
+out-of-plane coordinate is not worse in relative terms); (2) a uniform +0.3 % on the force constant is +0.15 % on ω: ≈ +1 cm⁻¹ at 800, +2 at 1,400,
++4.5 at 3,050 cm⁻¹ — larger than the per-family targets of decision 53 for the stretches, of the size of them for the rings. A follow-up that could
+change the verdict is registrable, not run: the same two coordinates at `--xtight` thresholds (1e-7 / 1e-8) and with the reference's localisation reused
+(the M2 idea), to see whether the 0.3 % shrinks with the threshold (then it is cost) or stays (then it is the level). It waits for a free lane; the TZ
+benzene run holds the laptop until ≈ Sunday.
+
+**Consequences recorded.** Gate A of the PI assessment (transported frozen spaces) loses its October measurement and folds into C as a methods
+paragraph (decision 56's addendum, filled 19:2x); odds lever 3 moves from 0.5 to ≈ 0.35 for "anchors beyond 26 atoms by local CC" and the plan's line
+for large anchors is canonical gradients on the university's machines; pyrene (26 atoms) stays canonical on a CCX53 when a server is possible again.
