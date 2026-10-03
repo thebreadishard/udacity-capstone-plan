@@ -31,8 +31,9 @@ memorisation ≤ 0.10, three seeds within ±0.03 on validity). Design and rubric
 - **2026-09-25 (quick mode, pipeline check — not a result):** `generative_model.ipynb` executed with `M06_QUICK=1` on the rented CCX53
   (`/root/m05run/06_generative_candidates/notebook/`, env `m05`, four threads) to prove the notebook runs top to bottom; its `results.json` is
   marked `quick: true` and is not the module's result. *(Dated note below records the outcome.)*
-- **Pre-registered run (three seeds, 20 epochs, 10,000 samples; the conditioned model):** not yet run — after 28 September, on a rented server or
-  the desktop (one CPU-day at most), never on the laptop while an anchor-class run is on it.
+- **Pre-registered run (three seeds, 20 epochs, 10,000 samples; the conditioned model): run 26 September 2026 on the rented CCX53**
+  (dated notes below; outcome section in `PRE_REGISTRATION.md`, 20:0x): 6 of 7 registered read-outs met, the 5-gram baseline beaten on every
+  line; the decision-51 audit of 28 September found the cap of 20 binding and was closed by the user's ruling (the outcome stands as run).
 
 **Dated note 2026-09-25 08:5x — quick-mode execution done (pipeline check).** `generative_model.ipynb` ran top to bottom on the CCX53 (env `m05`, four threads, `M06_QUICK=1`: 2,000 training molecules, 2 epochs, one seed, 1,000 samples, plus the conditioned model) after three fixes the check itself forced: RDKit drawing needs libXrender on a headless server; the neighbour grid must tolerate an empty sample set; and `hetero_class` misread the letter pair "Cc" as an element and `[nH]` as hydrogen (rewritten per token, regression tests added). Quick numbers — 2 % validity after two epochs, 94 % uniqueness, 100 % novelty, obedience 8 % — are what two epochs on 2,000 molecules give and are **not the module's result**; `results.json` is marked `quick: true`, and `make_summary.py` produced the docx with its banner and no PDF, as designed. The pre-registered run (three seeds, 20 epochs, 10,000 samples) stays after 28 September.
 

@@ -45,6 +45,6 @@ python make_summary.py                                                    # Gene
   curves, sampling and the pre-registered metrics with a failure gallery and nearest neighbours, the conditioning change, ethics, summary; `results.json`).
 - `make_summary.py` → `Generative_AI_Analysis_Report.docx/.pdf` in the rubric's section order, every number from `results.json`, banner and no PDF in quick mode.
 - `requirements.txt` (the environment of 25 September), `PROVENANCE.md` (data, code, pre-registration, runs — dated notes appended).
-- The executed notebook and the report PDF exist since 26 September 2026; a dated `RUBRIC_CHECKLIST` is still missing (listed for the weekend pass of 3–4 October).
+- `RUBRIC_CHECKLIST_2026-10-03.md` — the rubric items against the files (3 October 2026); the executed notebook and the report PDF exist since 26 September 2026.
 
 *Parked, not dropped (26 Sep 10:0x): the module's original idea — a generative proposer of coupled-cluster *measurement patterns* scored by pattern efficiency — is kept as a standout candidate in `GoalGathering/notes/Standout_2026-09-26_Pattern_Proposal_Generator.md`, with the reading of when its response data exist.*
