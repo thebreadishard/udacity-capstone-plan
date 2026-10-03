@@ -31,7 +31,7 @@ def _kabsch(A, B):
 
 def point_group_ops(symbols, coords_bohr, tol=0.02):
     """All orthogonal operations (R, perm) with R x_i ≈ x_perm[i] and same elements. tol in bohr. Includes the identity."""
-    x = np.asarray(coords_bohr, float); masses_like = np.ones(len(x)); com = x.mean(0); x = x - com; n = len(x)
+    x = np.asarray(coords_bohr, float); com = x.mean(0); x = x - com; n = len(x)
     sym = list(symbols)
     ops = []
 
@@ -93,7 +93,7 @@ def point_group_ops(symbols, coords_bohr, tol=0.02):
     changed = True
     while changed:
         changed = False
-        for (R1, p1), (R2, p2) in list(itertools.product(ops, ops)):
+        for (R1, _p1), (R2, _p2) in list(itertools.product(ops, ops)):
             r = accept(R1 @ R2)
             if r is not None:
                 ops.append(r); changed = True
@@ -136,6 +136,35 @@ def reconstruct(block_rows, ops, n):
         missing = sorted({k // 3 for k in np.where(np.isnan(H).any(1))[0]})
         raise ValueError(f"atoms not reached by the group from the representatives: {missing}")
     return 0.5 * (H + H.T), spread
+
+
+def reconstruct_apt(dip_rows, ops, n):
+    """dip_rows: {atom i: (3, 3) array D_i with D_i[x, t] = ∂μ_t/∂R_{i,x}} for the representatives. Under (R, perm): D_perm(i) = R D_i Rᵀ (the displacement
+    direction and the dipole both rotate). Returns P (3 × 3n) with P[t, 3k + x] = ∂μ_t/∂R_{k,x}, as probes/dipole_derivs_fd.py stores it, and the spread of
+    atoms reached by several operations (3 Oct 2026, odds lever 4)."""
+    D = np.full((n, 3, 3), np.nan); spread = 0.0; counts = {}
+    for i, Di in dip_rows.items():
+        Di = np.asarray(Di, float).reshape(3, 3)
+        for R, p in ops:
+            j = p[i]; new = R @ Di @ R.T
+            if np.isnan(D[j]).any():
+                D[j] = new; counts[j] = 1
+            else:
+                spread = max(spread, float(np.abs(D[j] - new).max()))
+                D[j] = (D[j] * counts[j] + new) / (counts[j] + 1); counts[j] += 1
+    if np.isnan(D).any():
+        raise ValueError(f"atoms not reached by the group from the representatives: {sorted(int(k) for k in np.where(np.isnan(D).any((1, 2)))[0])}")
+    return D.transpose(2, 0, 1).reshape(3, 3 * n), spread
+
+
+def apt_self_check(P, ops, n):
+    """Max |P − R P (P_perm ⊗ R)ᵀ| over the group: how symmetric the reconstructed APT is."""
+    D = P.reshape(3, n, 3).transpose(1, 2, 0)            # (n, x, t)
+    worst = 0.0
+    for R, p in ops:
+        for k in range(n):
+            worst = max(worst, float(np.abs(D[p[k]] - R @ D[k] @ R.T).max()))
+    return worst
 
 
 def self_check(H, ops, n):

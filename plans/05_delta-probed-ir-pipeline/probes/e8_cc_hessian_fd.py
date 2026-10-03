@@ -367,6 +367,18 @@ def main():
         f"translations/rotations after projection max {chk['tr_max_cm']:.1e} cm⁻¹; energy route max |H_kk − d²E/dx_k²| "
         + (f"{chk['energy_diag_max']:.1e} E_h/bohr² over {chk['energy_diag_n']} coordinates (limit {HC.ENERGY_DIAG_LIMIT:.0e})"
            if chk["energy_diag_n"] else "not available (energies not stored for these displacements)"))
+    dips = {k: [os.path.join(a.out, f"dip_{k:02d}_{s_}.npy") for s_ in ("p", "m")] for k in ks}
+    if all(os.path.exists(f_) for fs in dips.values() for f_ in fs):     # 3 Oct 2026 (odds lever 4): the CC atomic polar tensor over the same displacements
+        dmu = {k: (np.load(fs[0]) - np.load(fs[1])) / (2 * a.step) for k, fs in dips.items()}
+        if a.symmetry:
+            P, pspread = SYM.reconstruct_apt({i: np.array([dmu[3 * i + x] for x in range(3)]) for i in reps}, ops, n)
+            pcheck = SYM.apt_self_check(P, ops, n)
+        else:
+            P = np.array([dmu[k] for k in range(3 * n)]).T; pspread = pcheck = 0.0
+        sum_rule = float(np.abs(P.reshape(3, n, 3).sum(axis=1) - a.charge * np.eye(3)).max())
+        np.savez(os.path.join(a.out, "apt_ccsd_t.npz"), apt=P, step=a.step, symmetry_spread=pspread, self_check=pcheck, sum_rule_max=sum_rule,
+                 hessian_status=chk["status"], coords_bohr=x0, basis=a.basis)
+        log(f"APT written (apt_ccsd_t.npz): translation sum rule max |Σ_A P_A − qI| = {sum_rule:.1e} e; symmetry spread {pspread:.1e}, self-check {pcheck:.1e}")
     if chk["status"] == "INVALID":
         log(f"SELF-CHECK FAILED: {'; '.join(chk['reasons'])} — written as {out_name}; no read-out may run on it (guard of 27 Sep 2026)")
         logf.close()

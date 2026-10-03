@@ -62,6 +62,8 @@ def test_assembly_refuses_an_unchecked_reference_until_the_check_passes(tmp_path
     with pytest.raises(SystemExit) as e2:                                   # now the assembly passes the gate and runs into the fake gradient's zero
         _run(tmp_path, monkeypatch, rec, "--symmetry")                      # Hessian downstream (not a two-route refusal)
     assert "unchecked" not in str(e2.value)
+    apt = np.load(tmp_path / "out" / "apt_ccsd_t.npz")                      # 3 Oct 2026: the APT is assembled from the stored dipoles before the verdict
+    assert apt["apt"].shape == (3, 9) and float(apt["sum_rule_max"]) == 0.0  # a constant fake dipole → zero APT, sum rule exact
 
 
 def test_only_without_a_reference_refuses(tmp_path, monkeypatch):
