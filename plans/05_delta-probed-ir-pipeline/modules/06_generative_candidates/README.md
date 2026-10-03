@@ -27,7 +27,7 @@ deposited real chemistry — not synthetic, not AI-generated, not the dataset of
 python m06/fetch_pubchem_aromatics.py            # the data freeze (network; cached; idempotent)
 python -m pytest -q m06/tests                    # six tests, seconds
 python m06/train.py data/pubchem_aromatics_<date>.csv out/seed0 --quick   # smoke: 2,000 molecules, 2 epochs (minutes on a CPU)
-python m06/train.py data/pubchem_aromatics_<date>.csv out/seed0           # the pre-registered run (after the 28th)
+python m06/train.py data/pubchem_aromatics_<date>.csv out/seed0           # the pre-registered run (done 26 September 2026 on the CCX53; three seeds + the conditioned model)
 M06_QUICK=1 python notebook/make_notebook.py                              # the notebook, quick mode: a pipeline check in minutes, marked as such
 python notebook/make_notebook.py                                          # the notebook, pre-registered run (three seeds + the conditioned model; hours on a CPU)
 python make_summary.py                                                    # Generative_AI_Analysis_Report.docx/.pdf from notebook/results.json
@@ -45,6 +45,6 @@ python make_summary.py                                                    # Gene
   curves, sampling and the pre-registered metrics with a failure gallery and nearest neighbours, the conditioning change, ethics, summary; `results.json`).
 - `make_summary.py` → `Generative_AI_Analysis_Report.docx/.pdf` in the rubric's section order, every number from `results.json`, banner and no PDF in quick mode.
 - `requirements.txt` (the environment of 25 September), `PROVENANCE.md` (data, code, pre-registration, runs — dated notes appended).
-- To come with the pre-registered run after the 28th: the executed notebook, the report PDF, a dated `RUBRIC_CHECKLIST`.
+- The executed notebook and the report PDF exist since 26 September 2026; a dated `RUBRIC_CHECKLIST` is still missing (listed for the weekend pass of 3–4 October).
 
 *Parked, not dropped (26 Sep 10:0x): the module's original idea — a generative proposer of coupled-cluster *measurement patterns* scored by pattern efficiency — is kept as a standout candidate in `GoalGathering/notes/Standout_2026-09-26_Pattern_Proposal_Generator.md`, with the reading of when its response data exist.*
