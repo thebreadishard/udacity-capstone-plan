@@ -801,7 +801,7 @@ exist". Searched (3 Oct 2026, 21:0x–21:1x): benzene, naphthalene, pyridine, fl
 | 107 | pyscf program package (the coupled-cluster engine of the anchors) | Sun, Q. et al., J. Chem. Phys. 153, 024109 (2020), DOI 10.1063/5.0006074 (Crossref 2026-10-03 23:5x) | software citation, paper D |
 | 108 | Psi4 1.4 (the density-functional engine of the corpus) | Smith, D. G. A. et al., J. Chem. Phys. 152, 184108 (2020), DOI 10.1063/5.0006002 (Crossref 2026-10-03 23:5x) | software citation, paper D |
 
-**Negative result of the search (to be confirmed by a Crossref/Scopus pass before submission):** no CCSD(T) harmonic force field or frequency table was
+**Negative result of the search (Crossref bibliographic pass done 3 Oct 2026 23:5x — one query per molecule, 'CCSD(T) harmonic frequencies/force field' with naphthalene, pyridine, fluorobenzene, anthracene: only small-molecule benchmark sets and supplementary files came back, no entry for any of the four; a Scopus pass remains before submission):** no CCSD(T) harmonic force field or frequency table was
 found for naphthalene, pyridine, fluorobenzene or anthracene; for benzene CCSD(T) harmonic frequencies exist since 1997 (item 102). The paper's claim
 therefore reads: CC *frequencies* of benzene are published; the *matrices* with per-displacement gradients and numerical checks are not deposited for any
 aromatic molecule to our knowledge. Item 105 fixes the caveat the paper must carry: at cc-pVDZ the anchors are a defined reference level with a basis
