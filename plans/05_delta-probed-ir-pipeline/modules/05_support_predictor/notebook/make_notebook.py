@@ -970,6 +970,98 @@ the Hessian-QM9 set of a hundred thousand small organic molecules brought nothin
 place to validate code and physics, which is how water is used throughout this project.
 """)
 
+# ---- 12.4 targets per family (decisions 53 and 54, 3 October 2026); chain 34's row is filled when its record exists (one rebuild after the read)
+_FAM = ["ring-ip", "CH-stretch", "CH-oop", "other"]
+_fc = json.load(open(HERE.parent / "out" / "rungC_family_floor_ceiling_2026-10-03.json", encoding="utf-8"))
+_cv = json.load(open(HERE.parent / "out" / "rungC_family_curve_2026-10-03.json", encoding="utf-8"))
+
+
+def _fam_read(name, hold="a"):
+    """Seed means of a record's per-family corrected-ω rms, its coupling ratio and the best epochs (None when the record is absent)."""
+    p = HERE.parent / "out" / f"{name}.json"
+    if not p.exists():
+        return None
+    rec = json.load(open(p, encoding="utf-8")); n = next(iter(rec["curve"])); ps = rec["curve"][n]["per_seed"]
+    fam = {f: float(np.mean([s[hold]["diag_rms"][f] for s in ps if f in s[hold]["diag_rms"]])) for f in _FAM}
+    return fam, float(np.mean([s[hold]["coupling_ratio"] for s in ps])), [s.get("best_epoch") for s in ps], float(np.mean([s[hold]["corrected_freq_rms"] for s in ps]))
+
+
+_c24f = _fam_read("E7_rungC_carried_kd_750_saved_2026-10-02")
+_c34f = _fam_read("E7_rungC_chain34_kdfamily_750_2026-10-05")
+_c34b = _fam_read("E7_rungC_chain34_kdfamily_750_2026-10-05", "b")
+_fam_tab = "\n".join("| " + f + " | " + _f(_c24f[0][f]) + " | " + _f(_fc["floor_median"][f]) + " | " + _f(_fc["ceiling_ls_pooled"][f]) + " | "
+                     + (_f(_c34f[0][f]) if _c34f else "running") + " |" for f in _FAM)
+_fall = {d["to"]: d for d in _cv["falls_a"]}[449]
+_fallb = {d["to"]: d for d in _cv["falls_b"]}[449]
+_kd = next((e for e in _cv["beside"] if e["label"].startswith("750")), None)
+_s449 = next(e for e in _cv["series"] if e["n"] == 449)
+_kd_other_a = (float(np.mean(_s449["a"]["other"])) - float(np.mean(_kd["a"]["other"]))) if _kd else None
+_kd_other_b = (float(np.mean(_s449["b"]["other"])) - float(np.mean(_kd["b"]["other"]))) if _kd else None
+if _c34f:
+    _c34_txt = (f"**Chain 34 read:** hold-out (a) other {_f(_c34f[0]['other'])}, ring-ip {_f(_c34f[0]['ring-ip'])}, CH-oop {_f(_c34f[0]['CH-oop'])}, "
+                f"CH-stretch {_f(_c34f[0]['CH-stretch'])} cm⁻¹, ratio {_f(_c34f[1])}, all-mode ω {_f(_c34f[3])}; hold-out (b) other {_f(_c34b[0]['other'])}, "
+                f"ratio {_f(_c34b[1])}; best epochs {_c34f[2]} of 200. Against the registered lines (other ≤ 3 with ring-ip ≤ 3 and ratio ≤ 0.25 on (a)): "
+                + ("**met**" if _c34f[0]["other"] <= 3 and _c34f[0]["ring-ip"] <= 3 and _c34f[1] <= 0.25 else "**not met**")
+                + "; the outcome section of the pre-registration (amendment 3 Oct 11:1x) carries the reading and what follows from it.")
+else:
+    _c34_txt = ("**Chain 34 is running** (three seeds at 750, started 23:06 on 3 October after the app restart of 21:5x cost the first attempt; ≈ 90 min per seed); "
+                "its column above and this paragraph are filled by the rebuild after the read.")
+md(f"""### 12.4 Targets per family (decisions 53 and 54, 3 October 2026): the all-mode average hid two open families
+
+Section 12.2 met the lines of the 1 October proposal — ratio ≤ 0.25 and corrected-ω rms ≤ 3 cm⁻¹ on hold-out (a) at the full pool. The user's decision 53
+replaced the all-mode number by one number per mode family: the network has to learn *all* the physics, out-of-plane and the rest included, so T1 and T3
+are met only when every family is under 3 cm⁻¹. Read per family, the same chain-24 models say: ring in-plane {_f(_c24f[0]['ring-ip'])}, C–H stretch
+{_f(_c24f[0]['CH-stretch'])}, C–H out-of-plane {_f(_c24f[0]['CH-oop'])}, other {_f(_c24f[0]['other'])} cm⁻¹ — two families under the line, two above it,
+hidden in an average of {_f(_c24f[3])}.
+
+**Measure before training (the pattern this week added).** Before any lever, two numbers per family that no training can move: the noise floor of the
+targets — the median difference between the finite-difference and the analytic DFT frequencies over the {len(_fc['floor_rows'])} molecules that have
+both — and the representation ceiling of the head — the error a ridge least-squares fit of the pattern-f head's own basis leaves on the hold-out
+(λ = {_fc['lam']}). Beside them, the model and the chain that followed:
+
+| family | chain 24, hold-out (a) ω rms (cm⁻¹) | FD noise floor (median) | head ceiling (ridge LS) | chain 34 (family-balanced K-diagonal term) |
+|---|---|---|---|---|
+{_fam_tab}
+
+The two open families are open for different reasons. C–H out-of-plane sits *on its floor*: the finite-difference targets cannot resolve 3 cm⁻¹ there,
+so the CH-oop line is read only on analytic targets (chain 34's step 3 computes the analytic B3LYP and ωB97X Hessians of the finite-difference hold-out
+molecules; the corpus has them for {len(_fc['analytic_pairs'])} molecules so far). 'Other' has room — floor {_f(_fc['floor_median']['other'])}, ceiling
+{_f(_fc['ceiling_ls_pooled']['other'])}, model {_f(_c24f[0]['other'])} — so its gap is in the learning, not in the labels or the head.
+
+**Which families still learn from data** (a reading rule written before the numbers were looked at, `probes/rungC_family_curve.py` over the existing
+records at 45, 100, 175 and 449 non-overlapping molecules): from 175 to 449 the hold-out (a) error fell by {_f(_fall['CH-oop'])} cm⁻¹ for C–H out-of-plane,
+{_f(_fall['other'])} for other, {_f(_fall['ring-ip'])} for ring in-plane and {_f(_fall['CH-stretch'])} for the C–H stretches; on the never-seen scaffolds of
+hold-out (b) the same step gave other {_f(_fallb['other'])} and CH-oop {_f(_fallb['CH-oop'])}. The K-diagonal term of 2 October moved 'other' by
+{_f(_kd_other_a)} cm⁻¹ on (a) and {_f(_kd_other_b)} on (b): a loss-function gap on scaffolds the pool contains, a coverage gap on scaffolds it does not — the
+first is chain 34's job, the second the next pool's (section 12.3, decision 52).
+
+**Chain 34 (pre-registration amendment of 3 October, 11:1x).** The K-diagonal term weighted every mode alike, so 'other' — a quarter of the modes with the
+largest residual — was outvoted by the ring modes. `rungC_train.py --kdiag-mode family` takes the mean over families of each family's relative error
+instead; everything else is the carried recipe at 750, three seeds, models saved (registry status `candidate` until read). {_c34_txt}
+
+**Decision 54 — the next pool after the 200 (pool 3).** The corpus has no charged species and few four-ring or five-ring systems, and the plan's gap
+list names cations first. Batch 1 is 60 radical cations on scaffolds the pool already covers, 30 aza-four-rings and 30 five-ring systems, with a third
+hold-out (c) of three parents per family, candidates frozen in `out/pool3_candidates_2026-10-03.csv`. The network received a charge-state input for it:
+`CHARGE_STATES` maps (charge, multiplicity) to an embedding added to the atom scalars, zero-initialised so that every neutral output stays
+bit-identical to the carried models (`tests/test_rungC_charge_input.py`), and `design_check.py` refuses a cation row that reaches training unlabelled.
+The question it will answer is whether the correction to a cation's couplings is learnable from the same ring-skeleton structure, or whether the open
+shell is a family of its own.
+""")
+code("""# 12.4 — the per-family table from the records (floor, ceiling, chain 24, chain 34 when present)
+FAM = ["ring-ip", "CH-stretch", "CH-oop", "other"]
+fc = json.load(open(Path("..") / "out" / "rungC_family_floor_ceiling_2026-10-03.json", encoding="utf-8"))
+def fam_read(name, hold="a"):
+    p = Path("..") / "out" / f"{name}.json"
+    if not p.exists():
+        return None
+    rec = json.load(open(p, encoding="utf-8")); n = next(iter(rec["curve"])); ps = rec["curve"][n]["per_seed"]
+    return {f: float(np.mean([s[hold]["diag_rms"][f] for s in ps if f in s[hold]["diag_rms"]])) for f in FAM}, float(np.mean([s[hold]["coupling_ratio"] for s in ps])), [s.get("best_epoch") for s in ps]
+c24 = fam_read("E7_rungC_carried_kd_750_saved_2026-10-02"); c34 = fam_read("E7_rungC_chain34_kdfamily_750_2026-10-05")
+tab = pd.DataFrame({"chain 24 (a) ω rms": {f: c24[0][f] for f in FAM}, "FD noise floor (median)": {f: fc["floor_median"][f] for f in FAM},
+                    "head ceiling (ridge LS)": {f: fc["ceiling_ls_pooled"][f] for f in FAM}, "chain 34 (a) ω rms": {f: (c34[0][f] if c34 else np.nan) for f in FAM}}).round(2)
+display(tab)
+print(f"chain 24 ratio {c24[1]:.3f}, best epochs {c24[2]}" + (f" | chain 34 ratio {c34[1]:.3f}, best epochs {c34[2]}" if c34 else " | chain 34: no record yet"))""")
+
 nb = new_notebook(cells=cells, metadata={"kernelspec": {"name": "python3", "display_name": "Python 3", "language": "python"}})
 path = HERE / "deep_learning.ipynb"
 # 2 Oct 2026 15:1x: the executed notebook on disk is replaced only after a successful execution — a failed run (a wrong M05_RELEASE) had left it
