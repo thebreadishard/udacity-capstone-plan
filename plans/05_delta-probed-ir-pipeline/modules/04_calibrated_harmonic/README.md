@@ -39,7 +39,8 @@ Module 02's parsed libraries by `python build_training_table.py`; the report by 
 
 - `RECIPE.md` — the frozen recipe candidate (committed alone, before training).
 - `build_training_table.py` — the join; `out/SUMMARY.md` lists counts, constants and input checksums.
-- `notebook/modeling.ipynb` — Load and inspect · Preparation · Model selection and training · Evaluation · Summary;
+- `notebook/modeling.ipynb` — Load and inspect · Preparation · Model selection and training · Evaluation · Follow-up of
+  3 October 2026 (the tree model with early stopping under the project's decision 51; the first run's numbers stand) · Summary;
   writes `model_results.json`, `opponent_column_ladder.csv` (held-out predictions for the project's test
   molecules) and `uncertainty_layer.csv`.
 - `module_summary.pdf` (`.docx`) — the Machine Learning Analysis Report in the Udacity APA 7 template

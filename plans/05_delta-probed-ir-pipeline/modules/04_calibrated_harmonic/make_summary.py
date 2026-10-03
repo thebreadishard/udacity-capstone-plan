@@ -148,6 +148,17 @@ para(f"No model learns the error (Table 1). The best held-out MAE, {O[best]['MAE
      f"By the recipe's rule the baseline column for the larger project is the {NAMES[best]}; the uncertainty layer it "
      f"provides is wide: 68 % of held-out absolute residuals lie within {unc.loc['all families', 'q68']:.1f} cm⁻¹ and 95 % "
      f"within {unc.loc['all families', 'q95']:.1f} cm⁻¹.")
+F = R.get("followup_2026-10-03_early_stopping")
+if F:
+    para(f"Follow-up of 3 October 2026. Under the project's later rule that every trained model uses a validation split with "
+         f"patience and records its best iteration (decision 51 of 27 September 2026), the tree model was rerun with early stopping "
+         f"(validation fraction 0.1, patience 10 iterations) in the same leave-one-molecule-out loop; the numbers of Table 1 stand as "
+         f"run. Result: MAE {F['overall']['MAE']:.2f} cm⁻¹, RMSE {F['overall']['RMSE']:.2f}, R² {F['overall']['R2']:.3f}, "
+         f"{F['overall']['within_5']:.1%} of bands within 5 cm⁻¹, with a median best iteration of {F['best_iter_median']:.0f} of 100 "
+         f"and no fold within 10 % of the cap. The trees stop over-fitting and land {abs(F['overall']['MAE'] - O['ridge']['MAE']):.2f} cm⁻¹ "
+         f"{'below' if F['overall']['MAE'] < O['ridge']['MAE'] else 'above'} the ridge model, still within a tenth of a wavenumber of "
+         f"the uncorrected library, so the conclusion does not change. Whether the recipe's rule, applied to this run, moves the "
+         f"baseline column from ridge to the trees is a decision for the project's pilot note, not for this report.")
 
 heading("Interpretation for a Non-Technical Audience")
 para("Computers can predict where a molecule's infrared \"fingerprint\" lines fall, but the predictions are a little "

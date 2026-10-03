@@ -89,3 +89,5 @@ simpler model. The margins τ_F are the pilot note's.
 `max_iter` on this table. Under decision 51 (27 Sep 2026: validation split + patience + best iteration recorded for every trained model) the next labelled
 run sets `early_stopping=True, validation_fraction=0.1, n_iter_no_change=10` and records `n_iter_` per fold; the numbers already recorded stand as run.
 The reason is the rule, not a weakness of the baseline: the change can only lower the baseline's variance, never weaken it.
+Run on 3 October 2026 (notebook follow-up section): MAE 6.34 cm⁻¹ against 6.48 without early stopping and 6.40 for ridge,
+R² 0.016, median best iteration 17 of 100, no fold within 10 % of the cap; the numbers of 12 September stand beside it.

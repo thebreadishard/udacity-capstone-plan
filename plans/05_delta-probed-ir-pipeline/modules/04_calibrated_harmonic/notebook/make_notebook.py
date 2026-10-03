@@ -149,6 +149,25 @@ json.dump({"overall": overall.round(6).to_dict(orient="index"), "per_family": pe
           open("model_results.json", "w"), indent=1)
 print("written opponent_column_ladder.csv, uncertainty_layer.csv, model_results.json")""")
 
+md("""## Follow-up, 3 October 2026 — the tree model with early stopping (decision 51)
+
+Since 27 September 2026 the project's rule (decision 51) is that every trained model uses a validation split with patience and records its best iteration. `HistGradientBoostingRegressor` leaves early stopping off below 10,000 rows, so model 3 above ran its full 100 iterations in every fold. This section reruns model 3 alone with `early_stopping=True, validation_fraction=0.1, n_iter_no_change=10` inside the same leave-one-molecule-out loop and records, per fold, the iterations run and the iteration with the best validation score. The numbers above stand as run (the RECIPE's dated note of 28 September); this run can lower the model's variance, it cannot make the baseline stronger than the signal in the descriptors allows.""")
+code("""hgb_es = np.zeros(len(df)); n_run, n_best = [], []
+for tr, te in logo.split(X, y, groups):
+    m = make_pipeline(pre_trees, HistGradientBoostingRegressor(random_state=0, early_stopping=True, validation_fraction=0.1, n_iter_no_change=10))
+    m.fit(X.iloc[tr], y[tr]); hgb_es[te] = m.predict(X.iloc[te])
+    n_run.append(int(m[-1].n_iter_)); n_best.append(int(np.argmax(m[-1].validation_score_)) + 1)
+es = metrics(hgb_es)
+print("trees with early stopping (decision 51), leave-one-molecule-out: MAE %.3f  RMSE %.3f  R2 %.3f  within 5 cm^-1 %.3f" % (es["MAE"], es["RMSE"], es["R2"], es["within_5"]))
+print("trees as recorded above (full 100 iterations):                MAE %.3f  RMSE %.3f  R2 %.3f  within 5 cm^-1 %.3f" % tuple(overall.loc["hgb", ["MAE", "RMSE", "R2", "within_5"]]))
+print("iterations run per fold: median %d (range %d-%d); best validation iteration: median %d (range %d-%d); folds whose best iteration lies within 10 %% of the cap: %d of %d"
+      % (np.median(n_run), min(n_run), max(n_run), np.median(n_best), min(n_best), max(n_best), sum(b >= 90 for b in n_best), len(n_best)))
+R = json.load(open("model_results.json", encoding="utf-8"))
+R["followup_2026-10-03_early_stopping"] = {"model": "hgb", "settings": {"early_stopping": True, "validation_fraction": 0.1, "n_iter_no_change": 10, "random_state": 0},
+    "overall": {k: float(v) for k, v in es.items()}, "n_iter_run_per_fold": n_run, "best_iter_per_fold": n_best,
+    "n_iter_run_median": float(np.median(n_run)), "best_iter_median": float(np.median(n_best)), "folds_best_within_10pct_of_cap": int(sum(b >= 90 for b in n_best))}
+json.dump(R, open("model_results.json", "w"), indent=1); print("model_results.json: follow-up block added")""")
+
 md("""## Summary
 
 I modelled the per-band error of NASA's scaled-harmonic PAH library against argon-matrix laboratory positions as a supervised regression on 2,477 matched bands of 83 molecules, with the recipe fixed before the first run. Ridge regression, gradient-boosted trees and a per-family constant were each evaluated leave-one-molecule-out against the zero model, which is the library as served. None of them learns the error: the best held-out MAE is 6.40 cm⁻¹ against 6.49 for doing nothing, R² is at most 0.01, and an instance-level split does not rescue the tree model, so the failure is not a split effect but an absence of signal in the descriptors — the error is band-to-band scatter within a molecule (SD about 9 cm⁻¹), not a per-molecule offset (SD about 2 cm⁻¹). The main limitation is the join: about one pair in nine has an error above 15 cm⁻¹, larger than the published mismatch scale, which points to mis-assigned pairs that inflate every metric equally. For the larger project the result is a clean baseline: the calibrated-harmonic opponent is, on this table, the library itself, and the per-band uncertainty layer it provides is wide — about 7 cm⁻¹ at 68 % and 22 cm⁻¹ at 95 %.""")

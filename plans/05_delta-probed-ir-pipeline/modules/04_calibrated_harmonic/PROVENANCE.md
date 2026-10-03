@@ -50,12 +50,21 @@ simpler model); the uncertainty layer as |residual| quantiles.
   instance-level 80/20 split from a *uniform* 0.962 start on their own B3LYP/4-31G; our zero model
   starts at 6.49 because PAHdb's three-region factors are already in the file. The numbers are not
   directly comparable (different DFT sets, join, split); the report says so.
+- 2026-10-03: follow-up section in the notebook, the run the RECIPE's note of 28 September announced (decision 51):
+  the tree model with `early_stopping=True, validation_fraction=0.1, n_iter_no_change=10`, same leave-one-molecule-out
+  loop. **MAE 6.34 cm⁻¹ (ridge 6.40, uncorrected 6.49), R² 0.016, 58.7 % within 5 cm⁻¹; best validation iteration
+  median 17 of 100 (range 4–69), no fold within 10 % of the cap.** The first run's numbers stand beside it; the
+  conclusion (no model learns the error) does not change. By the recipe's rule as written the trees are now the
+  lowest-MAE model by 0.06 cm⁻¹ — whether that moves the baseline column is the pilot note's decision (Owed); the
+  ridge column stands until then. Report, README and this file updated the same evening.
 
 ## Owed
 
 - The Zenodo release of `training_table.csv` (reading 1) — the student; before the module's official
   start (proposal §12: due 30 Oct 2026).
-- The pilot note's item 6: adopt or amend this recipe by dated note; the stricter-join candidate above.
+- The pilot note's item 6: adopt or amend this recipe by dated note; the stricter-join candidate above; and whether the
+  recipe's rule, applied to the early-stopping run of 3 October 2026, moves the baseline column from ridge to the trees
+  (0.06 cm⁻¹ apart; the ridge column stands until the note says otherwise).
 - The student's own pass over notebook, README and summary.
 - The P5 uncertainty layer labelled as an extrapolation when attached to R4–R6 spectra.
 

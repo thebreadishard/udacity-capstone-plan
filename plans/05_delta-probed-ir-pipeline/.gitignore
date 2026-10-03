@@ -6,3 +6,5 @@
 
 # manuscripts: drafts of our own papers live in a separate private repository (3 Oct 2026; this repository is public)
 manuscripts/
+!modules/03_lab_scoreboard/notebook/test_results.json
+!modules/04_calibrated_harmonic/notebook/model_results.json
