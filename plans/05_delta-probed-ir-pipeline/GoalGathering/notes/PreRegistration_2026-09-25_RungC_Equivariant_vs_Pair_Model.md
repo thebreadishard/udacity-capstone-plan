@@ -1616,3 +1616,17 @@ ring modes change by ≤ 10 %. **Against the lines** (small ≤ 0.15, large > 0.
 intensity error (0.14–0.18 on the proxy APT), concentrated in the C–H stretches where B3LYP overestimates. Reading: the proxy APT carries the intensity
 read-out for the ring region; a CC-level intensity line for the C–H stretches needs CC APTs. Consequence for the anchors: no recompute now; pyrene's APT
 comes free; naphthalene is recomputed (a server-day) the day intensities become a registered CC-level line; anthracene only on a reading's demand.
+
+### Amendment 3 October 10:2x — chain 33: T3 with anthracene as the fifth anchor (registered before the Hessian exists)
+
+**Run.** `probes/rungC_sherlock33_1003.sh`: when the CCX53's chain reports anthracene finished, fetch its result directory, refuse anything but a VALID
+`hessian_ccsd_t.npz` (the probe's own checks; the two-route check lane's file must be present), and run the leave-one-anchor-out transfer over five anchors
+(benzene, fluorobenzene, pyridine, naphthalene, anthracene) with chain 24's three models, α-tuning and the λ = 1 head (`--head-l2 1`), 300 epochs at lr
+1e-3; anthracene's low level is its analytic B3LYP Hessian (queued on the laptop 3 Oct 09:18). **Read-outs.** Per held-out anchor the ring-ip ω rms and
+the ring-coupling ratio, both columns; the all-mode ω beside them. **Predictions.** With four training anchors naphthalene's ring-ip ω falls from 6.0 to
+4–5 cm⁻¹ (α-tuned) — anthracene teaches the fused-ring correction naphthalene shares; anthracene held out lands at 5–8 cm⁻¹ (its three-ring couplings are
+only partly covered by naphthalene); the single rings stay at 5–6. **Lines** (lever 1's registered test): *naphthalene ≤ 4 cm⁻¹ with four training
+anchors* → anchors are the lever, pyrene follows (when a server is possible again); *4 < naphthalene ≤ 6* → anchors help but slowly, the composite with a
+better low level (lever 2's answer) and more cheap data (the 200) are weighed before a sixth anchor; *naphthalene > 6 or worse than with three* →
+anthracene's correction does not transfer to naphthalene at this level: the family-specific part dominates, and the anchor plan is per family (one anchor
+per scaffold family) rather than cumulative.
