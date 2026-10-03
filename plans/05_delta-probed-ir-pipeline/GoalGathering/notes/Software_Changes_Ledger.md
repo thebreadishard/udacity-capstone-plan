@@ -43,6 +43,7 @@ One line per change; the numbered section below the register carries every origi
 | 30 | 2026-10-03 | C | pyscf 2.14.0 `pyscf/lib/CMakeLists.txt` (and forge's copy of the patte… | the pyscf lookup python3 -c "import pyscf | pr-candidate |
 | 31 | 2026-09-29/30 | B | pyscf 2.14.0 `grad/ccsd_t.py`, `grad/uccsd_t.py` (`Gradients.kernel` w… | our E8 probe solves the (T) lambda explicitly (ccsd_t_lambda.kernel) before calling the … | pr-open |
 | 32 | 2026-09-30 | B | optking (psi4's optimiser) `linear-bend` cycle handling | our corpus runner optimises molecules with a triple bond in Cartesian coordinates (RETRY… | pr-open |
+| 33 | 2026-09-21 → 09-30 | C | pyVPT2 (`philipmnel/pyvpt2`, `quartic.py`) | the two finite-difference routes to the semi-diagonal quartic constants disagree on psi4 FD Hessians | done |
 
 ## Sections
 
@@ -483,6 +484,18 @@ One line per change; the numbered section below the register carries every origi
 **Files:** `modules/05_support_predictor/corpus/run_corpus.py` (`opt_options_for`), `PR_Draft_2026-09-30_optking_linear_bend_cycle_guard.md`
 
 **PR candidate:** **submitted: psi-rking/optking#116** (30 Sep 2026; guard against the loop, near-0° angle treated as a reset; no CI on that project; no review yet)
+
+### 33 — the two finite-difference routes to the semi-diagonal quartic constants disagree on psi4 FD Hessians
+
+**Group:** C, finding about third-party software. **Date:** 2026-09-21 → 09-30. **Status:** done. *Status note (3 Oct 2026):* pyVPT2 PR #58 (https://github.com/philipmnel/pyvpt2/pull/58, 'quartic: report the disagreement between the two finite-difference routes to phi_iijj (Hessian route)') was opened on 21 Sep and closed by us on 30 Sep: a report in the output detects the problem but does not solve it — a warning still lets a user carry on with noisy constants; the remedy is on the input side (analytic Hessians, where the two routes agree), as our own benzene tests showed (blog post 9, 21 Sep). Nothing pending upstream.
+
+**Software:** pyVPT2 (`philipmnel/pyvpt2`, `quartic.py`; the Hessian route to φ_iijj)
+
+**Finding:** on psi4 finite-difference B3LYP Hessians at the default `DISP_SIZE`, the semi-diagonal quartic constants of benzene from the two FD routes differ by up to 1264 cm⁻¹; with analytic Hessians the routes agree. Recorded in `PR_Drafts_2026-09-21_Upstream_Fixes.md` §2 and in `probes/results_vpt2/`.
+
+**Where recorded:** PR_Drafts §2; blog post 9 ('Two roads to the same number'); the obstacle ledger of 21 and 30 Sep.
+
+**Action:** PR #58 closed by us (detection-only); our own QFF (`src/dpir/qff.py`) carries the two-route check; no upstream action pending.
 
 ## How to use this ledger
 
