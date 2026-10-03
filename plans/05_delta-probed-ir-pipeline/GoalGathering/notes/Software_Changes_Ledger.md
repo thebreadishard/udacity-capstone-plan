@@ -44,6 +44,7 @@ One line per change; the numbered section below the register carries every origi
 | 31 | 2026-09-29/30 | B | pyscf 2.14.0 `grad/ccsd_t.py`, `grad/uccsd_t.py` (`Gradients.kernel` w… | our E8 probe solves the (T) lambda explicitly (ccsd_t_lambda.kernel) before calling the … | pr-open |
 | 32 | 2026-09-30 | B | optking (psi4's optimiser) `linear-bend` cycle handling | our corpus runner optimises molecules with a triple bond in Cartesian coordinates (RETRY… | pr-open |
 | 33 | 2026-09-21 → 09-30 | C | pyVPT2 (`philipmnel/pyvpt2`, `quartic.py`) | the two finite-difference routes to the semi-diagonal quartic constants disagree on psi4 FD Hessians | done |
+| 34 | 2026-10-03 | C | pyscf (`cc/test/test_uccsdt_highm.py::test_zero_beta_electrons`, Windows CI) | the test fails intermittently on pyscf's Windows wheel job with a NaN in the first DIIS matrix; not reproducible outside that build | done |
 
 ## Sections
 
@@ -497,9 +498,22 @@ One line per change; the numbered section below the register carries every origi
 
 **Action:** PR #58 closed by us (detection-only); our own QFF (`src/dpir/qff.py`) carries the two-route check; no upstream action pending.
 
+### 34 — pyscf's flaky Windows test `test_zero_beta_electrons`: a NaN in the first DIIS matrix, not reproducible outside the CI's own build
+
+**Group:** C, finding about third-party software. **Date:** 2026-10-03. **Status:** done — nothing pending on our side; pyscf's own issue #3245 lists the flaky tests. *Status note (3 Oct 2026):* found while our PR #3477's Windows job failed on it (twice; three other pull requests' Windows runs failed on it the same week); a CI note on #3477 was posted on the user's word at 16:36; a 35-minute timebox (the user's word, 16:3x) found no local reproduction.
+
+**Software:** pyscf master, `pyscf/cc/uccsdt_highm.py` (UCCSDT for high multiplicity) under the `CI Windows` workflow: wheel built with msys2 ucrt64 gcc and its OpenBLAS DLL, Python 3.13, numpy 2.5.3, scipy 1.18.1, after ≈ 3,000 other tests in one pytest process.
+
+**Finding:** the CI artifact (`windows-installed-wheel-evidence/pytest-results.xml`) places the error at `lib/diis.py:254` → `scipy.linalg.eigh` on the DIIS B-matrix `[[1, nan]]` in the helium zero-beta case (spin 2, no β electrons): the error vector already carries NaN at the first DIIS update. Reproduction attempts, all passing: the case on Windows (conda-forge pyscf 2.14.0, Python 3.11, OpenBLAS, 1 and 4 threads, 6/6, fresh process and heap poisoned with NaN blocks), the same with every `numpy.empty` / `empty_like` NaN-filled, on Windows and against master's code on Linux (qc05), and master's test file in order on Linux. Excluded as causes: uninitialised numpy allocations (the `empty_like` residual arrays are overwritten — the einsum wrapper does `out[:] = alpha * result` when beta = 0), and the empty contraction dimension (`NPdgemm` zeroes C when k = 0). Not testable here: the CI's own build (numpy 2.5.3 needs Python ≥ 3.12; no Windows pyscf build exists for it on PyPI or conda-forge, and the laptop has no C compiler). Remaining candidates: C-level buffers in `libcc`/`libccsdt`, or that msys2 OpenBLAS build. Blind probing through 50-minute CI runs is the case we agreed not to pursue.
+
+**Where recorded:** obstacle ledger 3 Oct 16:5x; PR-drafts §7 (the CI note); the Windows conda env `pyscfwin` (`~/.conda/envs/pyscfwin`, pyscf 2.14.0) stays for a later attempt.
+
+**Action:** none; a maintainer reruns the job. If pyscf publishes a Windows build for Python ≥ 3.12, the NaN-filled-allocation probe (`scratchpad/zbe/he_nanempty.py`, kept in the obstacle ledger's description) is the first thing to run.
+
 ## How to use this ledger
 
 - Add a row the day a change is made; never after the fact from memory.
+- **Python versions (3 Oct 2026, the user: 'Zet die regel maar in het software-ledger'):** per environment the newest Python the heaviest dependency supports, pinned, and raised only at a rebuild of that environment — never mid-run, because the gate-1 stamps and the running jobs belong to the environment they were made in. Standing 3 Oct 2026: Windows system 3.14.6 (torch 2.14, rdkit; modules 05/06), `.venv` 3.13.9 (LangGraph; module 07), WSL `qc05` 3.12.14 (our pyscf branch, anchors, gate 1), conda `qc` on the servers 3.11/3.12 (psi4 1.11). Compatibility checked: psi4 1.11 has conda-forge builds for 3.10–3.14 on Linux; pyscf we build from our branch (its CI tests 3.14 on macOS); torch and rdkit run on 3.14 here; pyscf has no Windows build beyond conda-forge's 3.11, which does not matter (Windows is not a compute platform for us). At the next rebuild (new server or the PC) the chemistry environments go to 3.14, gate 1 on water after it; 3.14 is the newest series today (3.14.8).
 - When upstream carries our fix (merged pull request, or master was ahead of us), the next environment rebuild moves to that upstream version and drops the
   local patch; the swap is recorded in the row. Never mid-run: the environments under running anchors and the gate-1 stamps stay as they are (3 Oct 2026).
 - Before proposing any PR: re-check the upstream `master` (the fix may exist), write a minimal test, and
