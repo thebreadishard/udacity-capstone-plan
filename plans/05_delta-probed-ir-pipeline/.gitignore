@@ -3,3 +3,6 @@
 !modules/07_agentic_workflows/rules/*.json
 !modules/07_agentic_workflows/scenarios/*.json
 !modules/07_agentic_workflows/out/*.json
+
+# manuscripts: drafts of our own papers live in a separate private repository (3 Oct 2026; this repository is public)
+manuscripts/
