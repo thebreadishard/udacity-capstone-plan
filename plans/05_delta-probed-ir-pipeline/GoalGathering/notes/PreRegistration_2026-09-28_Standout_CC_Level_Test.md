@@ -119,3 +119,15 @@ the corrected probe (explicit `ccsd_t_lambda`/`uccsd_t_lambda`; benzene rerun on
 ## Outcome on the corrected benzene Hessian — 29 September 23:4x (`out/cc/A_8448043181_cc_test_analytic_tlambda*.{json,md}`)
 
 Same code path, CC response = the (T)-lambda Hessian of 22:47 (`results_m1/e8_benzene_ccpvdz_tlambda/`), analytic B3LYP low level. Registered band deck: C1 FAIL, C2 FAIL, oracle none — as before. Wide pool, band-free: CC P0 806, P1 median 0.54 (n_half 0.57; was 0.46), oracle 124, P1/oracle 3.5; proxy P1 0.70; C1 pass, C2 pass → 'confirmed on this molecule (CC)' for the wide deck. R5 on the same Hessian: the diagonal removes 97 % of the correction overall, 89 % ring in-plane (was 98/92). The outcome of 28 Sep and the correction of 29 Sep 05:3x stay as what the invalid response gave.
+
+## Dated note, 3 October 2026 19:5x — the naphthalene run queued (the user: "zet nummer 11 vanavond na keten 34 in de wachtrij")
+
+`probes/standout_cc_naphthalene_1003.sh`, detached: after chain 34 step 2 frees its threads, `cc_level_test.py A_01f3186607` with the (T)-lambda
+CCSD(T)/cc-pVDZ Hessian of 2 Oct (`results_m1/e8_naphthalene_ccpvdz_tlambda_2026-10-02/hessian_ccsd_t.npz`, frozen 10, VALID) and the analytic B3LYP low
+level (`--use-analytic`; the analytic export of 29 Sep exists), 4 threads beside the TZ run. Two cells, as benzene's corrected read: the registered band deck
+(`--tag analytic_tlambda`) and the wide pool with the open prior (`--pool all --w-cm 0 --tag analytic_tlambda_all_band0`, exploratory as registered on 28 Sep).
+**Lines unchanged:** C1–C3 of §2; the reading of §2 applies — C1 and C2 pass on the wide pool → the plan line may read *"confirmed on two molecules (CC)"* for
+the wide deck, and gate B of the paper plan (decision 56) has its second molecule; a fail is a dated section in the standout notebook and gate B waits for
+anthracene. **Prediction (before the run):** the band deck fails C1/C2 as on benzene (the CC correction's in-band share is small for every molecule we have
+looked at); the wide pool with the open prior reaches P1 ≈ 0.5–0.65 of P0 and passes C1; C2 is the uncertain one because naphthalene's proxy ratio was read at
+0.70 on benzene and may differ here.
