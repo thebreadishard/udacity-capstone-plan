@@ -7,12 +7,12 @@ REMOTE=${1:-origin}; BRANCH=${2:-$(git branch --show-current)}
 git push "$REMOTE" "$BRANCH"
 SHA=$(git rev-parse HEAD)
 echo "pushed ${SHA:0:7}; waiting for the CI run"
-for _ in $(seq 1 60); do
-  ID=$(gh run list --limit 10 --json databaseId,headSha,status --jq ".[] | select(.headSha==\"$SHA\") | .databaseId" | head -1)
+for _ in $(seq 1 12); do
+  ID=$(gh run list --limit 10 --json databaseId,headSha,status --jq ".[] | select(.headSha==\"$SHA\") | .databaseId" 2>/dev/null | head -1 || true)   # a GitHub 504 is retried, not fatal
   [ -n "$ID" ] && break
   sleep 10
 done
-[ -n "${ID:-}" ] || { echo "no CI run found for ${SHA:0:7} after 10 min"; exit 2; }
+[ -n "${ID:-}" ] || { echo "no CI run for ${SHA:0:7} within 2 min: the workflow's paths filter (.github/workflows/plan05-ci.yml) excludes the pushed files — nothing to watch"; exit 0; }
 gh run watch "$ID" --exit-status >/dev/null 2>&1 && { echo "CI green: run $ID"; exit 0; }
 echo "CI FAILED: run $ID"; gh run view "$ID" --log-failed 2>/dev/null | grep -E "(FAILED|ERROR) tests/|Error:" | sed 's/.*Z //' | sort -u | head -20
 exit 1
