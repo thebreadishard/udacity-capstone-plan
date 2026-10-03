@@ -61,7 +61,7 @@ floor of a typical target (FD vs analytic, 24 molecules) **0.11 / 1.5 cm⁻¹** 
 | T2 — compute helps (the PC question) | does more data keep paying? | learning curve 175 / 449 / 750 fits a power law whose extrapolation reaches ratio ≤ 0.20 (≈ 2× the noise floor) and ω ≤ 2 cm⁻¹ by ≈ 5,000 molecules | after T1 |
 | T3 — the scientific goal | does the correction transport to CC level on a molecule the network never saw? | trained on the proxy + the other CC anchors, the held-out anchor's corrected harmonic frequencies within 3 cm⁻¹ rms of CCSD(T) (in-plane modes), against ≈ 10 cm⁻¹ for scaled B3LYP | when anchor set two is complete |
 
-Satisfied = T1 met → T2 designed; T2 met → the PC; T3 met → the mandate's deliverable exists in small. Awaiting the user's word.
+Satisfied = T1 met → T2 designed; T2 met → the PC; T3 met → the mandate's deliverable exists in small. Decided 3 Oct 2026, 11:1x as **decision 53** (README): T1 stays open until CH-oop and other are ≤ 3 cm⁻¹ beside ring-ip and CH-stretch (the user: "alle relevante fysica"); T2 is the coverage formulation (decision 52), the power-law extrapolation below withdrawn; T3 requires every family, out-of-plane anchored and learned included. The same-day measurements (per-family noise floor and representation ceiling) are chain 34 steps 0–1 in the rung-C pre-registration.
 
 *Status 22:3x:* T1's ratio criterion is met at 750 by the carried recipe (0.22 / 0.33, step 175 → 750 falling); its ω criterion is not (3.50 against ≤ 3; one seed 2.94). The network moved with data (175 → 750) where the hand-feature model stayed at 0.32.
 

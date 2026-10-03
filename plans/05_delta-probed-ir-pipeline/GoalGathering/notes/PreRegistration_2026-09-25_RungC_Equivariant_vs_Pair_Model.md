@@ -1630,3 +1630,32 @@ anchors* → anchors are the lever, pyrene follows (when a server is possible ag
 better low level (lever 2's answer) and more cheap data (the 200) are weighed before a sixth anchor; *naphthalene > 6 or worse than with three* →
 anthracene's correction does not transfer to naphthalene at this level: the family-specific part dominates, and the anchor plan is per family (one anchor
 per scaffold family) rather than cumulative.
+
+### Amendment 3 October 11:1x — chain 34: T1's open families under decision 53 (steps 0–1 measured, steps 2–3 registered before they run)
+
+**Decision 53** (the user, 3 Oct 11:0x): T1 requires every mode family ≤ 3 cm⁻¹ corrected-ω rms on hold-out (a), not the all-mode rms; standing (chain 24,
+750): ring-ip 2.2–2.5, CH-stretch 1.3–1.9, CH-oop 2.4–3.2, other 3.6–4.7. Two measurements before any training (`probes/rungC_family_floor_ceiling.py`,
+`out/rungC_family_floor_ceiling_2026-10-03.{md,json}`, 11:10):
+
+**Step 0 — noise floor per family.** FD correction (psi4 deck) against the analytic second route (pyscf), both in the analytic B3LYP mode basis,
+corrected ω per family, the 26 molecules that carry both routes: median ring-ip 1.5, CH-stretch 0.2, **CH-oop 3.3**, other 1.5 cm⁻¹ (pooled rms is carried
+by benzene's known FD artefact of 29 Sep — 48.6 cm⁻¹ ring-ip — and is not the floor of a typical target). Consequence: on FD targets CH-oop cannot be read
+below ≈ 3 cm⁻¹, and 8 of the 10 hold-out (a) molecules are FD targets — the CH-oop numbers above are at their floor and carry no verdict.
+
+**Step 1 — representation ceiling per family.** The hybrid head's output is Bᵀ ΔF B with ΔF on the pattern; the best such ΔF (ridge LS, λ 1e-3)
+reconstructs the truth on hold-out (a) to ring-ip 0.22, CH-stretch 0.05, CH-oop 0.00, other 0.25 cm⁻¹ pooled (the carried recipe's own projected target
+to 0.60 / 0.05 / 0.15 / 0.11). The span is not the limit in any family; the 'other' gap (3.6–4.7 against a floor of 1.5 and a ceiling of 0.25) is a
+learning gap.
+
+**Step 2 — the family-balanced diagonal term (registered).** `rungC_train.py --kdiag-mode family`: the lever-5 term becomes the mean over families of the
+per-family relative mse of diag(K) (today one relative mse over all modes, which the C–H stretches dominate: K scales with ω). Otherwise chain 24's flags
+(hybrid head, aux both, kring 0.3, kdiag 0.1, pattern f, projected target, sum body, `--use-analytic`), 750, seeds 0–2, hold-outs (a) and (b).
+**Predictions.** other falls to 2.5–3.5; CH-oop unchanged within its floor; ring-ip +0–0.3; ratio unchanged (0.21–0.24). **Lines.** *other ≤ 3 on (a) with
+ring-ip ≤ 3 and ratio ≤ 0.25* → T1's 'other' family met, the family term enters the carried recipe; *3 < other ≤ 3.6* → the direction is right: a kdiag
+weight scan (0.1 → 0.3) and a 'low' sub-family read follow; *other > 3.6 or ring-ip > 3* → the term is not the lever: next is a per-family output scale on
+the head's diagonal classes, with the 'other' low modes' noise measured per molecule against the FD floor first.
+
+**Step 3 — analytic hold-out targets (registered).** Analytic B3LYP and ωB97X Hessians (`corpus/analytic_hessians.py`, the second route) for the 8 FD
+hold-out (a) molecules, then the 39 of (b), on the laptop lane after the night sequence and chain 34 step 2 (timing from the anthracene analytic run of
+3 Oct). T1's CH-oop line is read on analytic targets only. **Prediction.** The carried model's CH-oop on analytic hold-out targets reads 2–3 cm⁻¹; **line**
+CH-oop ≤ 3 → met; > 3 → CH-oop joins step 2's family term with its own weight.
