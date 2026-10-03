@@ -21,7 +21,7 @@ WATER = {"symbols": ["O", "H", "H"], "coords_bohr": [[0.0, 0.0, 0.2217], [0.0, 1
 def _fake_gradient(record):
     def gradient(symbols, coords_bohr, basis, frozen, log, charge=0, spin=0, max_memory=26000, fast=None, check_fast=False):
         record.append(check_fast)
-        return -76.0, np.zeros((len(symbols), 3))
+        return -76.0, np.zeros((len(symbols), 3)), np.array([0.0, 0.0, -0.76])   # energy, gradient, relaxed dipole (3 Oct 2026)
     return gradient
 
 
@@ -40,6 +40,7 @@ def test_separate_marks_the_reference_unchecked_and_skips_the_slow_route(tmp_pat
     assert rec == [False]                                                   # no slow-route comparison in the reference
     ref = np.load(tmp_path / "out" / "reference.npz")
     assert bool(ref["two_route_checked"]) is False
+    assert "dipole" in ref.files and ref["dipole"].shape == (3,)                 # the reference carries the relaxed dipole
 
 
 def test_inline_is_the_registered_default(tmp_path, monkeypatch):

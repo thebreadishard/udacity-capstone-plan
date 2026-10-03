@@ -85,9 +85,9 @@ def gradient(symbols, coords_bohr, basis, frozen, log, charge=0, spin=0, max_mem
             log(f"fast (T) density two-route check: max |kernel − pyscf| = {diffs[worst]:.1e} ({worst}; limit {FAST_T_LIMIT:.0e}; {time.time() - t1:.0f} s)")
             if diffs[worst] > FAST_T_LIMIT:
                 raise SystemExit("the fast (T) density kernel disagrees with pyscf on the reference gradient — refusing to continue")
-        t1 = time.time(); g = ccsd_t_grad.Gradients(mycc).kernel(mycc.t1, mycc.t2, l1, l2, eris)
+        t1 = time.time(); g, mu = gradient_with_dipole(mol, mf, mycc, l1, l2, eris)
         log(f"(T) lambda {t1 - t0:.0f} s, gradient {time.time() - t1:.0f} s")
-        return float(e_hf + e_corr + et), np.asarray(g)
+        return float(e_hf + e_corr + et), np.asarray(g), mu
     from pyscf.grad import uccsd_t as uccsd_t_grad
     install_uccsd_t_dvvvv_fix()   # pyscf#3305 / #3387, not in v2.14.0 (gate 1, 30 Sep 2026)
     mf = scf.UHF(mol); mf.conv_tol = 1e-11; e_hf = mf.kernel()
@@ -110,8 +110,34 @@ def gradient(symbols, coords_bohr, basis, frozen, log, charge=0, spin=0, max_mem
     if not conv:
         log("WARNING: UCCSD(T) lambda not converged")
     t1 = time.time(); g = uccsd_t_grad.Gradients(mycc).kernel(mycc.t1, mycc.t2, l1, l2, eris)
-    log(f"(T) lambda {t1 - t0:.0f} s, gradient {time.time() - t1:.0f} s")
-    return float(e_hf + e_corr + et), np.asarray(g)
+    log(f"(T) lambda {t1 - t0:.0f} s, gradient {time.time() - t1:.0f} s (no dipole on the UHF path)")
+    return float(e_hf + e_corr + et), np.asarray(g), None
+
+
+def gradient_with_dipole(mol, mf, mycc, l1, l2, eris):
+    """The CCSD(T) gradient and the relaxed dipole from one gradient evaluation (odds lever 4, 3 Oct 2026). pyscf's grad_elec builds the fully relaxed
+    one-particle density and calls `mf.get_veff(mol, dm1 + dm1.T)` with its correlation part once, last among the get_veff calls of the gradient (the
+    Z-vector solve calls it first; pyscf 2.14.0 grad/ccsd.py lines 148 and 169); a wrapper records that argument. μ = Σ Z_A R_A − Tr[(D_corr + D_HF) r].
+    Validated on water against the finite-field derivative: 6.1e-8 a.u. (probes/cc_dipole_capture.py)."""
+    captured = []
+    orig = mf.get_veff
+
+    def get_veff_recording(mol_, dm=None, *args, **kwargs):
+        if dm is not None and np.ndim(dm) == 2 and dm.shape == (mol.nao, mol.nao):
+            captured.append(np.array(dm))
+        return orig(mol_, dm, *args, **kwargs)
+
+    mf.get_veff = get_veff_recording
+    try:
+        g = ccsd_t_grad.Gradients(mycc).kernel(mycc.t1, mycc.t2, l1, l2, eris)
+    finally:
+        mf.get_veff = orig
+    if not captured:
+        raise RuntimeError("no get_veff call with an AO density during the gradient — pyscf's grad_elec changed; the dipole capture needs re-validation")
+    d_total = 0.5 * captured[-1] + mf.make_rdm1()
+    r = mol.intor("int1e_r", comp=3)
+    mu = -np.einsum("xij,ji->x", r, d_total) + np.einsum("a,ax->x", mol.atom_charges(), mol.atom_coords())
+    return g, mu
 
 
 def install_uccsd_t_dvvvv_fix():
@@ -256,7 +282,7 @@ def main():
         if not os.path.exists(ref_p):
             raise SystemExit("--two-route-check only needs an existing reference.npz (run the reference first)")
         ref = np.load(ref_p); e0, g0 = float(ref["energy"]), ref["gradient"]
-        t0 = time.time(); e1, g1 = gradient(sym, x0, a.basis, a.frozen, log, a.charge, a.spin, a.max_memory, fast, check_fast=True)
+        t0 = time.time(); e1, g1, _ = gradient(sym, x0, a.basis, a.frozen, log, a.charge, a.spin, a.max_memory, fast, check_fast=True)
         dgrad = float(np.abs(np.asarray(g1) - np.asarray(g0)).max()); de = abs(e1 - e0)
         passed = bool(dgrad <= TWO_ROUTE_GRAD_LIMIT and de <= TWO_ROUTE_ENERGY_LIMIT)   # the kernel checks inside gradient() raise on failure
         json.dump(dict(passed=passed, max_grad_diff=dgrad, energy_diff=de, grad_limit=TWO_ROUTE_GRAD_LIMIT, energy_limit=TWO_ROUTE_ENERGY_LIMIT,
@@ -271,8 +297,9 @@ def main():
         ref_checked = bool(ref["two_route_checked"]) if "two_route_checked" in ref.files else True
     else:
         inline = a.two_route_check == "inline"
-        t0 = time.time(); e0, g0 = gradient(sym, x0, a.basis, a.frozen, log, a.charge, a.spin, a.max_memory, fast, check_fast=inline)
-        np.savez(ref_p, energy=e0, gradient=g0, coords_bohr=x0, charge=a.charge, spin=a.spin, two_route_checked=inline)
+        t0 = time.time(); e0, g0, mu0 = gradient(sym, x0, a.basis, a.frozen, log, a.charge, a.spin, a.max_memory, fast, check_fast=inline)
+        np.savez(ref_p, energy=e0, gradient=g0, coords_bohr=x0, charge=a.charge, spin=a.spin, two_route_checked=inline,
+                 **({"dipole": mu0} if mu0 is not None else {}))
         ref_checked = inline
         log(f"reference: E = {e0:.9f}, max|grad| {np.abs(g0).max():.2e}, {time.time() - t0:.0f} s"
             + ("" if inline else "; two-route checks deferred to a separate run (--two-route-check only)"))
@@ -302,8 +329,10 @@ def main():
             if os.path.exists(p):
                 gs[sign] = np.load(p); continue
             x = x0.copy(); x.flat[k] += s * a.step
-            t0 = time.time(); e, gr = gradient(sym, x, a.basis, a.frozen, log, a.charge, a.spin, a.max_memory, fast); np.save(p, gr); gs[sign] = gr
+            t0 = time.time(); e, gr, mu = gradient(sym, x, a.basis, a.frozen, log, a.charge, a.spin, a.max_memory, fast); np.save(p, gr); gs[sign] = gr
             np.save(os.path.join(a.out, f"ener_{k:02d}_{sign}.npy"), np.array(e))
+            if mu is not None:
+                np.save(os.path.join(a.out, f"dip_{k:02d}_{sign}.npy"), np.asarray(mu))   # 3 Oct 2026: the CC APT by FD over the same displacements
             done = len([f for f in os.listdir(a.out) if f.startswith("grad_")])
             log(f"coordinate {k:2d} {sign}: E − E0 = {(e - e0) * 1e6:+9.2f} µE_h, {time.time() - t0:.0f} s  ({done}/{6 * n} gradients)")
         G[k] = (gs["p"].ravel() - gs["m"].ravel()) / (2 * a.step)

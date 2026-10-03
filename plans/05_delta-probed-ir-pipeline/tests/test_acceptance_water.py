@@ -72,9 +72,26 @@ def _quiet(_):
     pass
 
 
+DIPOLE_LIMIT = 1e-5          # a.u.; the captured relaxed CCSD(T) dipole against the finite-field derivative (laptop 3 Oct 2026: 6.1e-8)
+
+
 def production_gradient(x, charge=0, spin=0, fast=None, check_fast=False):
-    """The probe's own gradient() — the production path, not a re-implementation."""
-    return E.gradient(SYMBOLS, x, "cc-pvdz", FROZEN, _quiet, charge, spin, 4000, fast, check_fast)
+    """The probe's own gradient() — the production path, not a re-implementation; (energy, gradient). check_dipole_capture reads the third value."""
+    return E.gradient(SYMBOLS, x, "cc-pvdz", FROZEN, _quiet, charge, spin, 4000, fast, check_fast)[:2]
+
+
+def check_dipole_capture():
+    """3 Oct 2026 (odds lever 4): the relaxed dipole the probe captures from the gradient code's density equals −dE/dF of the CCSD(T) energy (water,
+    F = 1e-4 a.u. per component; the finite-field route of probes/cc_dipole_capture.py)."""
+    import cc_dipole_capture as DC
+    from pyscf import gto
+    _, _, mu = E.gradient(SYMBOLS, X_REF, "cc-pvdz", FROZEN, _quiet, 0, 0, 4000, None, False)
+    mol = gto.M(atom=[(s, tuple(c)) for s, c in zip(SYMBOLS, X_REF, strict=True)], unit="Bohr", basis="cc-pvdz", symmetry=False, verbose=0)
+    mol.set_common_orig((0.0, 0.0, 0.0))
+    mu_ff = DC.finite_field_dipole(mol, FROZEN, 1e-4)
+    d = float(np.abs(np.asarray(mu) - mu_ff).max())
+    assert d <= DIPOLE_LIMIT, f"captured dipole {mu} vs finite field {mu_ff}: {d:.1e} > {DIPOLE_LIMIT:.0e}"
+    return {"dmu_finite_field": d}
 
 
 def reference(charge, spin):
@@ -204,7 +221,7 @@ def check_fast_kernel():
 
 # (check, path): 'rhf' checks gate every E8 run, 'uhf' checks gate --spin > 0 runs only
 CHECKS = [(check_energy_vs_psi4, "rhf"), (check_rhf_gradient_vs_energy_fd, "rhf"), (check_geometry_and_frequencies_vs_cccbdb, "rhf"),
-          (check_fast_kernel, "rhf"), (check_uhf_gradient_vs_energy_fd, "uhf")]
+          (check_fast_kernel, "rhf"), (check_dipole_capture, "rhf"), (check_uhf_gradient_vs_energy_fd, "uhf")]
 
 
 def test_energy_vs_psi4():
@@ -225,6 +242,10 @@ def test_geometry_and_frequencies_vs_cccbdb():
 
 def test_fast_kernel():
     check_fast_kernel()
+
+
+def test_dipole_capture():
+    check_dipole_capture()
 
 
 def main():
