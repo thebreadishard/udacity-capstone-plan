@@ -94,7 +94,7 @@ class HybridDeltaFModel(nn.Module):
 
     def delta_f(self, Z, pos, H_low, t: dict) -> torch.Tensor:
         """(P,) the predicted internal correction on the pattern pairs, in a.u."""
-        s, v, *_ = self.body.encode(Z, pos, H_low)
+        s, v, *_ = self.body.encode(Z, pos, H_low, t.get("qidx"))
         vnorm = torch.sqrt((v ** 2).sum(1) + 1e-8)                                     # (N, n_v) invariant
         M = t["prim_pool"].to(s.dtype)
         hs, hv = M @ s, M @ vnorm                                                     # (K, n_s), (K, n_v)

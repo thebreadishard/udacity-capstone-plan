@@ -117,6 +117,7 @@ def test_pair_tensor_transforms_as_a_rank_two_tensor():
 
 
 def test_registered_model_is_unchanged_by_the_tensor_input_flag():
-    """Default tensor_input=False builds the registered architecture: same parameter count as before the 30 Sep change (171,554)."""
-    assert sum(p.numel() for p in RC.DeltaHessianModel().parameters()) == 171_554
-    assert sum(p.numel() for p in RC.DeltaHessianModel(tensor_input=True).parameters()) > 171_554
+    """Default tensor_input=False builds the registered architecture: the parameter count of 30 Sep (171,554) plus the zero-initialised charge-state
+    embedding of 3 Oct 2026 (4 × 64 = 256; test_rungC_charge_input shows the output unchanged to the bit)."""
+    assert sum(p.numel() for p in RC.DeltaHessianModel().parameters()) == 171_554 + 256
+    assert sum(p.numel() for p in RC.DeltaHessianModel(tensor_input=True).parameters()) > 171_554 + 256

@@ -42,6 +42,7 @@ from rungC_equivariant import (  # noqa: E402
     DeltaHessianModel,
     console_utf8_safe,
     load_molecule,
+    load_state_compat,
     to_torch,
 )
 from rungC_hybrid import HybridDeltaFModel, input_scales, pair_feature_stats, primitive_pool_matrix  # noqa: E402
@@ -235,7 +236,7 @@ def load_pretrained_body(path: str | Path, reinit_head: bool = True, seed: int =
         raise ValueError(f"{path}: checkpoint body uses {ck_agg} aggregation, the run asks for {aggregation} — pretrain again with the requested "
                          "aggregation or pass --aggregation to match")
     model = DeltaHessianModel(aggregation=aggregation)
-    model.load_state_dict(ck["body_state"])
+    load_state_compat(model, ck["body_state"])
     model.reset_elements = []
     if target_elements is not None:
         seen = ck.get("elements") or pretrained_elements
@@ -263,7 +264,7 @@ def attach_pretrained_body(model: HybridDeltaFModel, pretrained: str | Path, see
     own head is fresh by construction. Returns the reset element list."""
     pre = load_pretrained_body(pretrained, reinit_head=False, seed=seed, aggregation=aggregation, target_elements=target_elements,
                                pretrained_elements=pretrained_elements)
-    model.body.load_state_dict(pre.state_dict())
+    load_state_compat(model.body, pre.state_dict())
     return list(pre.reset_elements)
 
 
@@ -478,6 +479,7 @@ def molecule_tensors(i: str, m: dict, mol: dict, mol_dir: Path, cfg, cache_dir: 
     t["dF_true"] = t["Bp"].T @ t["dH_true"] @ t["Bp"]
     t["dF_norm"] = (t["dF_true"] ** 2).mean().clamp_min(1e-30)
     t["cls"] = entry_classes(m)
+    t["qidx"] = torch.tensor(int(mol.get("qidx", 0)), dtype=torch.long)       # pool 3 (3 Oct 2026): charge state of the row
     if cfg.aux in ("kring", "both"):
         t.update(kring_tensors(mol["masses"], mol["V"], mol["w"], mol["family"], m["dH_true"]))
     if cfg.aux in ("pattern", "both") or cfg.head == "hybrid":            # the hybrid's class scales need the pattern classes under any aux term
@@ -521,7 +523,7 @@ def load_hybrid_model(path: Path) -> tuple[HybridDeltaFModel, dict]:
     """(model, record) from `save_hybrid_model`; the record carries the settings the transfer script needs (pattern, aux, aux_target, ls_lam, args)."""
     ck = torch.load(path, map_location="cpu", weights_only=False)
     model = HybridDeltaFModel(**ck["ctor"])
-    model.load_state_dict(ck["state"])
+    load_state_compat(model, ck["state"])                                      # pre-3-Oct records: charge rows stay zero
     model.aux_mode = ck["aux_mode"]
     model.aux_class_scale = ck["aux_class_scale"]
     model.kring_weight, model.kdiag_weight = ck["kring_weight"], ck["kdiag_weight"]

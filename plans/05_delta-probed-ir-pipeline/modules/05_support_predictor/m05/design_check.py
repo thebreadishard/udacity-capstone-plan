@@ -134,6 +134,16 @@ def load_source_qm9(qm9_dir: str, sample: int) -> dict:
     return {m["id"]: m for m in iter_qm9(shards, sample)}
 
 
+def charge_rows(mols: dict, body: torch.nn.Module) -> dict:
+    """Pool 3 (decision 54, 3 Oct 2026): every cation row (id prefix `C_` or a non-zero charge in geometry.json) must carry a charge-state index
+    ≠ 0, and a pool holding any such row needs a body with the charge embedding — a run that would train cations as neutrals is refused here."""
+    cations = sorted(i for i, m in mols.items() if i.startswith("C_") or int(m.get("charge", 0)) != 0)
+    unlabelled = [i for i in cations if int(mols[i].get("qidx", 0)) == 0]
+    has_emb = hasattr(body, "q_emb")
+    return {"n_cations": len(cations), "unlabelled": unlabelled, "body_has_charge_input": bool(has_emb),
+            "pass": bool(not unlabelled and (has_emb or not cations))}
+
+
 def main(argv: list[str] | None = None) -> int:
     console_utf8_safe()
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
@@ -169,14 +179,18 @@ def main(argv: list[str] | None = None) -> int:
                                 body_blocks=a.body_blocks, body_width=a.body_width)
     probe = probe_body(body, mols, sorted(set(ext.values())))
     v = verdict(probe, a.limit_abs, a.limit_ratio)
+    cq = charge_rows(mols, body)
+    v["pass"] = bool(v["pass"] and cq["pass"])
     rec = {"date": time.strftime("%Y-%m-%d %H:%M"), "provenance": provenance(), "molecules": a.molecules, "n_target": len(mols), "body": body_desc, "target_ranges": ranges(stats),
-           "extremes": ext, "probe": probe, "verdict": v}
+           "extremes": ext, "probe": probe, "verdict": v, "charge_rows": cq}
     lines = [f"# Design check — {a.out} ({rec['date']})", "", f"body: {body_desc}; target: {len(mols)} molecules under `{a.molecules}`", "",
              "| extreme | molecule | atoms | mean deg | max deg | max Z | feature scale | worst output |", "|---|---|---|---|---|---|---|---|"]
     for name, mid in ext.items():
         s, p = stats[mid], probe[mid]
         lines.append(f"| {name} | {mid} | {s['n_atoms']} | {s['mean_degree']:.1f} | {s['max_degree']} | {s['max_Z']} | "
                      f"{p['feature_scale']:.3g} | {p['worst_output']:.3g} |")
+    lines += ["", f"charge rows: {cq['n_cations']} cation rows, {len(cq['unlabelled'])} without a charge-state index, body charge input "
+              f"{cq['body_has_charge_input']} → {'ok' if cq['pass'] else 'REFUSED'}"]
     lines += ["", f"verdict: **{'PASS' if v['pass'] else 'FAIL'}** — finite {v['finite']}, worst output {v['worst_output']:.3g} (limit {a.limit_abs:g}), "
                   f"feature-scale ratio across the extremes {v['scale_ratio']:.3g} (limit {a.limit_ratio:g})"]
     if a.source_qm9:

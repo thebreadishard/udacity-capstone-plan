@@ -26,7 +26,7 @@ import e7_rungB_reread_analytic as RR  # noqa: E402
 import e7_t2_posthoc as PH  # noqa: E402
 import e7_t2_sqm as T2  # noqa: E402
 from learning_curve_layerA import AMU2AU, HARTREE2CM, normal_modes  # noqa: E402
-from rungC_equivariant import Z_OF  # noqa: E402
+from rungC_equivariant import Z_OF, charge_index  # noqa: E402
 from rungC_train import (  # noqa: E402
     _terms,
     freeze_for_transfer,
@@ -64,7 +64,7 @@ def loaded_molecule(mol_dir: Path, m: dict) -> dict:
     g = json.load(open(mol_dir / "geometry.json", encoding="utf-8"))
     sym = [s.upper() for s in g["symbols"]]
     return dict(id=mol_dir.name, symbols=sym, Z=np.array([Z_OF[s] for s in sym]), pos=np.asarray(g["coords_bohr"], float),
-                masses=np.asarray(g["masses_amu"], float), H_low=m["H_low"], dH_true=m["dH_true"], analytic=True)
+                masses=np.asarray(g["masses_amu"], float), H_low=m["H_low"], dH_true=m["dH_true"], analytic=True, qidx=charge_index(g))
 
 
 class LowRankLinear(torch.nn.Module):

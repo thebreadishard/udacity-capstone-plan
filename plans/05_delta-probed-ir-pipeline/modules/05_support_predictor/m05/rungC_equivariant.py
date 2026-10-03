@@ -41,6 +41,27 @@ LOSS_SCALE = 1.0e4          # mass-weighted Hessian corrections are ~1e-5 au; th
 AUX_WEIGHT = 0.1
 MASSES_AMU = {"H": 1.00782503, "C": 12.0, "N": 14.003074, "O": 15.99491462, "F": 18.99840316, "S": 31.97207117, "CL": 34.96885268}
 Z_OF = {"H": 1, "C": 6, "N": 7, "O": 8, "F": 9, "S": 16, "CL": 17}
+CHARGE_STATES = {(0, 1): 0, (1, 2): 1, (-1, 2): 2, (0, 3): 3}     # (charge, multiplicity) → embedding row; 0 = closed-shell neutral (pool 3, 3 Oct 2026)
+
+
+def charge_index(g: dict) -> int:
+    """The charge-state row of a corpus geometry.json (`charge`, `multiplicity`; absent = neutral singlet, every row before pool 3). An unknown
+    state is refused, not mapped to neutral."""
+    key = (int(g.get("charge", 0)), int(g.get("multiplicity", 1)))
+    if key not in CHARGE_STATES:
+        raise ValueError(f"charge state {key} (charge, multiplicity) has no embedding row; known: {sorted(CHARGE_STATES)}")
+    return CHARGE_STATES[key]
+
+
+def load_state_compat(model: nn.Module, state: dict) -> list[str]:
+    """`load_state_dict` that tolerates exactly one kind of missing key: the charge-state embedding of a checkpoint saved before 3 Oct 2026 — its
+    zero rows are kept, so the prediction is unchanged to the bit. Any other missing key, and any unexpected key, is refused. Returns the keys
+    left at zero."""
+    missing, unexpected = model.load_state_dict(state, strict=False)
+    allowed = [k for k in missing if k.endswith("q_emb.weight")]
+    if unexpected or len(allowed) != len(missing):
+        raise RuntimeError(f"state dict mismatch: missing {sorted(set(missing) - set(allowed))}, unexpected {sorted(unexpected)}")
+    return allowed
 
 
 def console_utf8_safe() -> None:
@@ -123,7 +144,8 @@ def load_molecule(d: Path, use_analytic: bool = False) -> dict:
     hi = np.load(d / f"hessian_wb97x{tag}.npz")["H_projected"]
     sym = [s.upper() for s in g["symbols"]]
     return dict(id=d.name, symbols=sym, Z=np.array([Z_OF[s] for s in sym]), pos=np.asarray(g["coords_bohr"], float),
-                masses=np.asarray(g["masses_amu"], float), H_low=lo, dH_true=hi - lo, analytic=bool(tag))
+                masses=np.asarray(g["masses_amu"], float), H_low=lo, dH_true=hi - lo, analytic=bool(tag),
+                charge=int(g.get("charge", 0)), multiplicity=int(g.get("multiplicity", 1)), qidx=charge_index(g))
 
 
 def load_molecules(mdir: Path, ids=None, use_analytic: bool = False) -> dict:
@@ -209,6 +231,8 @@ class DeltaHessianModel(nn.Module):
         self.aggregation, self.tensor_input = aggregation, bool(tensor_input)
         self.emb = nn.Embedding(20, n_s)
         self.node_in = nn.Linear(2, n_s)
+        self.q_emb = nn.Embedding(len(CHARGE_STATES), n_s)                 # pool 3 (3 Oct 2026): charge state; zero rows = neutral behaviour kept
+        nn.init.zeros_(self.q_emb.weight)
         self.rbf = RadialBasis(N_RBF, cutoff)
         self.inv = nn.Sequential(nn.Linear(3, 16), nn.SiLU(), nn.Linear(16, 16))
         self.blocks = nn.ModuleList(Interaction(n_s, n_v, N_RBF + 16, tensor_input=self.tensor_input) for _ in range(n_blocks))
@@ -216,7 +240,7 @@ class DeltaHessianModel(nn.Module):
         self.proj = nn.Linear(n_v, n_tensor, bias=False)
         self.cutoff, self.n_v = cutoff, n_v
 
-    def encode(self, Z, pos, H_low):
+    def encode(self, Z, pos, H_low, qidx=None):
         """The body alone: per-atom scalar features s (N, n_s) and vector features v (N, 3, n_v), plus the edge set and its radial basis. Used by the
         Δ-Hessian head below and, unchanged, by the standout pattern proposer's learned-embedding scorer (26 Sep 2026)."""
         n = pos.shape[0]
@@ -228,6 +252,8 @@ class DeltaHessianModel(nn.Module):
         rbf = self.rbf(d)
         filt = torch.cat([rbf, self.inv(inv_pair[i, j])], -1)
         s = self.emb(Z) + self.node_in(inv_node)
+        if qidx is not None:                                                        # charge state (pool 3): one row added to every atom's scalars
+            s = s + self.q_emb(torch.as_tensor(qidx, device=s.device).reshape(()))[None, :]
         v = torch.zeros(n, 3, self.n_v, dtype=pos.dtype, device=pos.device)
         inv_degree = None if self.aggregation == "sum" else 1.0 / torch.bincount(i, minlength=n).clamp_min(1).to(pos.dtype)
         S_e = pair_tensor(H_low, pos)[i, j] if self.tensor_input else None       # (E, 3, 3) rank-2 input, or the registered scalars only
@@ -235,9 +261,9 @@ class DeltaHessianModel(nn.Module):
             s, v = blk(s, v, i, j, filt, rhat, inv_degree, S_e)
         return s, v, i, j, rbf, rhat
 
-    def forward(self, Z, pos, H_low):
+    def forward(self, Z, pos, H_low, qidx=None):
         n = pos.shape[0]
-        s, v, i, j, rbf, rhat = self.encode(Z, pos, H_low)
+        s, v, i, j, rbf, rhat = self.encode(Z, pos, H_low, qidx)
         u = self.proj(v)                                                           # (N, 3, n_tensor)
         p = self.head(torch.cat([s[i] + s[j], s[i] * s[j], rbf], -1))              # symmetric in i ↔ j
         a, b, c = p[:, 0], p[:, 1], p[:, 2:]
