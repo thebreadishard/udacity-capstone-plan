@@ -1605,6 +1605,12 @@ the 60–100 cm⁻¹ gap is anchor cost (TZ or a composite DZ→TZ correction pe
 a TZ-corrected oop line is registered later. *Level:* < 20 % removed → the oop correction is real at this level; it becomes a learned quantity like the
 rest, and the anchors stay DZ. *In between:* a composite (CC/DZ + [CC/TZ − CC/DZ] at a cheaper level) is designed before any new anchor.
 
+*Dated note 4 October 01:0x (lever 2, before any TZ number exists):* the run as launched (`probes/night2_1003.sh`, `--ks 5,2,3`, 8 threads, max_memory
+10000 MB) died twice after the (T) lambda — pyscf's CCSD(T) gradient materialises the vvvv block of the two-particle density as three dense nvir⁴ arrays
+(28 GB each at cc-pVTZ). Our fast path now builds that block out of core (software ledger row 35), gate 1 on water passed again, relaunched 00:56.
+Nothing in the read-out or the lines changes; the kernels' two-route check stays at DZ as registered and the gradient-route/energy-route agreement per
+pair (1e-4) is the second route at TZ.
+
 ## Outcome 3 October 09:2x — benzene's CC atomic polar tensor (amendment 07:4x)
 
 `probes/results_m1/e8_benzene_ccpvdz_dip_2026-10-03/` (8 threads beside the LNO check, 1 h 31 min: reference 3030 s with the inline two-route checks,

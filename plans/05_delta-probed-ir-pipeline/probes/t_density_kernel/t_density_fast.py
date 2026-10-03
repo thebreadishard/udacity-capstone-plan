@@ -143,7 +143,23 @@ def _gamma2_intermediates(mycc, t1, t2, l1, l2, eris=None, compress_vvvv=False):
 
 
 def _gamma2_outcore(mycc, t1, t2, l1, l2, eris, h5fobj, compress_vvvv=False):
-    return _gamma2_intermediates(mycc, t1, t2, l1, l2, eris, compress_vvvv)
+    """A real out-of-core route (4 Oct 2026). pyscf's own ccsd_t_rdm._gamma2_outcore is a one-line alias of the in-core function: it takes the dense
+    nvir^4 dvvvv from ccsd_rdm._gamma2_intermediates and copies it twice more when compressing (benzene/cc-pVTZ: 28 GB each; the TZ run of 3 Oct
+    died there twice, silently, after the lambda had converged). The CCSD part is taken from ccsd_rdm._gamma2_outcore instead, which writes dvvvv
+    (and dovvo, doovv, dovvv) blockwise into the h5 file, compressed when asked - the path pyscf's CCSD gradient uses (grad/ccsd.py, grad_elec) -
+    and the (T) increments, which touch only dovov, dooov and dovvv, are added in memory. Validated by tests/test_acceptance_water.py (the
+    production gradient through this route against pyscf's plain CCSD(T) gradient)."""
+    from pyscf.cc import ccsd_rdm
+    _check_real(t1, t2, l1, l2)
+    dovov, dvvvv, doooo, doovv, dovvo, dvvov, dovvv, dooov = ccsd_rdm._gamma2_outcore(mycc, t1, t2, l1, l2, h5fobj, compress_vvvv)
+    if eris is None:
+        eris = mycc.ao2mo()
+    t = _cached(t1, t2, eris)
+    dovov = np.asarray(dovov) + t["dovov"]
+    dooov = np.asarray(dooov) + t["dooov"]
+    dovvv = np.asarray(dovvv) + t["dovvv"]
+    dvvov = dovvv.transpose(2, 3, 0, 1)
+    return dovov, dvvvv, doooo, doovv, dovvo, dvvov, dovvv, dooov
 
 
 _ORIGINALS = {}

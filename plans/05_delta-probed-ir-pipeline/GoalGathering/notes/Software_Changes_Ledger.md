@@ -45,6 +45,7 @@ One line per change; the numbered section below the register carries every origi
 | 32 | 2026-09-30 | B | optking (psi4's optimiser) `linear-bend` cycle handling | our corpus runner optimises molecules with a triple bond in Cartesian coordinates (RETRY… | pr-open |
 | 33 | 2026-09-21 → 09-30 | C | pyVPT2 (`philipmnel/pyvpt2`, `quartic.py`) | the two finite-difference routes to the semi-diagonal quartic constants disagree on psi4 FD Hessians | done |
 | 34 | 2026-10-03 | C | pyscf (`cc/test/test_uccsdt_highm.py::test_zero_beta_electrons`, Windows CI) | the test fails intermittently on pyscf's Windows wheel job with a NaN in the first DIIS matrix; not reproducible outside that build | done |
+| 35 | 2026-10-04 | C | pyscf (`cc/ccsd_t_rdm.py::_gamma2_outcore`, used by `grad/ccsd_t.py`) | the CCSD(T) gradient's 'outcore' two-particle density is an alias of the in-core one: a dense nvir⁴ dvvvv copied three times (28 GB each for benzene/cc-pVTZ) — our fast path now takes the CCSD part from `ccsd_rdm._gamma2_outcore`; PR candidate | workaround done; PR on the user's word |
 
 ## Sections
 
@@ -509,6 +510,32 @@ One line per change; the numbered section below the register carries every origi
 **Where recorded:** obstacle ledger 3 Oct 16:5x; PR-drafts §7 (the CI note); the Windows conda env `pyscfwin` (`~/.conda/envs/pyscfwin`, pyscf 2.14.0) stays for a later attempt.
 
 **Action:** none; a maintainer reruns the job. If pyscf publishes a Windows build for Python ≥ 3.12, the NaN-filled-allocation probe (`scratchpad/zbe/he_nanempty.py`, kept in the obstacle ledger's description) is the first thing to run.
+
+### 35 — pyscf's CCSD(T) gradient has no out-of-core two-particle density: `ccsd_t_rdm._gamma2_outcore` is the in-core function under another name
+
+**Group:** C, finding about third-party software, with a workaround in our code. **Date:** 2026-10-04. **Status:** workaround done in
+`probes/t_density_kernel/t_density_fast.py` (the fast path pyscf's gradient calls when installed); an upstream PR is a candidate for the user's word.
+
+**Software:** pyscf 2.14.0, `pyscf/cc/ccsd_t_rdm.py` lines 296–330 (`_gamma2_intermediates` with `compress_vvvv`, `_gamma2_outcore` = one-line alias)
+called by `pyscf/grad/ccsd_t.py::grad_elec` with an H5 temp file and `compress_vvvv=True`.
+
+**Finding:** the (T) gradient takes the CCSD two-particle intermediates from the *in-core* `ccsd_rdm._gamma2_intermediates`, whose `dvvvv` is a
+dense nvir⁴ array, and then symmetrises it twice (`dvvvv + dvvvv.transpose(...)`) before compressing — three nvir⁴ arrays. Benzene/cc-pVTZ
+(nvir = 243): 28 GB each. On the laptop's 20 GB WSL the run of 3 Oct (19:32) died at 21:30:45 and its relaunch (23:02) at 00:48:11, both right
+after the (T) lambda converged, both without a traceback (an OOM kill; the last `bash -c` command is exec'd, so no shell was left to print
+'Killed'), with 11 GB free at the last one-minute memory sample. pyscf's CCSD gradient does not have this problem: `grad/ccsd.py` uses
+`ccsd_rdm._gamma2_outcore`, which writes dvvvv blockwise into the H5 file, compressed.
+
+**Workaround (ours):** `t_density_fast._gamma2_outcore` now calls `ccsd_rdm._gamma2_outcore(mycc, t1, t2, l1, l2, h5fobj, compress_vvvv)` for the
+CCSD part and adds the (T) increments — which touch only dovov, dooov and dovvv — in memory; `dvvvv` stays an H5 dataset, which `grad/ccsd.py`'s
+`_rdm2_mo2ao` already reads in blocks. Validated by gate 1 on water (dgrad_fast_kernel 7.1e-15; the production gradient through the new route against pyscf's
+plain CCSD(T) gradient), stamp renewed, TZ run relaunched 00:56.
+
+**Where recorded:** obstacle ledger 4 Oct 01:0x; the lever-2 registration (rung C pre-registration, amendment 3 Oct 08:1x, dated note 4 Oct);
+TASKS row 'Odds lever 2'.
+
+**Action:** upstream, the same change in `ccsd_t_rdm._gamma2_outcore` (plus a test that the gradient is unchanged) — a small PR beside #3469/#3470;
+the user decides whether and when (GitHub replies and PRs on the user's word).
 
 ## How to use this ledger
 
