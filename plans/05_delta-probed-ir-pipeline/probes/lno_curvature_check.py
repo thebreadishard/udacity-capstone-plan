@@ -31,7 +31,7 @@ def main() -> int:
     ap.add_argument("anchor")
     ap.add_argument("geometry")
     ap.add_argument("--ks", default=None, help="comma list of displacement coordinates (default: the first --max-k with stored energies)")
-    ap.add_argument("--max-k", type=int, default=6)
+    ap.add_argument("--max-k", type=int, default=2, help="coordinates taken from the stored list when --ks is not given (3 Oct 2026: two — one LNO energy is ≈ 1 h on the laptop)")
     ap.add_argument("--threads", type=int, default=8)
     ap.add_argument("--max-memory", type=int, default=8000)
     ap.add_argument("--basis", default="cc-pvdz")
@@ -57,7 +57,14 @@ def main() -> int:
     logp = a.anchor                                                    # L2.log appends to <dir>/l2.log
     xc = x0 - x0.mean(0); normal = np.linalg.eigh(xc.T @ xc)[1][:, 0]  # the molecular plane's normal (smallest principal axis)
     t0 = time.time()
-    rec0 = L2.point(sym, x0, a.basis, "tight", frozen, a.max_memory, logp, "reference")
+    cache = os.path.join(a.anchor, f"lno_reference_{a.basis}_{'xtight' if a.xtight else 'tight'}.json")   # the reference energy is reused across runs
+    if os.path.exists(cache):
+        rec0 = json.load(open(cache))
+        print(f"reference LNO energy from {os.path.basename(cache)} ({rec0.get('date', '?')})", flush=True)
+    else:
+        rec0 = L2.point(sym, x0, a.basis, "tight", frozen, a.max_memory, logp, "reference")
+        rec0["date"] = datetime.now().strftime("%Y-%m-%d %H:%M")
+        json.dump(rec0, open(cache, "w"), indent=1)
     e0 = rec0["e_tot_composite"]
     rows = []
     for k in ks:
