@@ -127,6 +127,21 @@ def test_head_l2_switch_present_and_penalty_keeps_the_proxy_weights():
     assert "head_l2" in CT.finetune.__doc__
 
 
+def test_lora_adapter_starts_as_identity_and_counts_parameters():
+    import rungC_cc_transfer as CT
+    torch.manual_seed(0)
+    m = RH.HybridDeltaFModel(aggregation="sum", sqm_scale=True, hidden=32)
+    x = torch.randn(5, 32)
+    mid = [k for k, l in enumerate(m.head) if isinstance(l, torch.nn.Linear)][1]
+    before = m.head[mid](x).detach().clone()
+    params = CT.attach_lora(m, 3)
+    assert torch.allclose(m.head[mid](x), before)                      # A = 0: the adapted layer equals the proxy layer at the start
+    assert sum(p.numel() for p in params) == 2 * 3 * 32
+    assert not any(p.requires_grad for p in m.head[mid].base.parameters())
+    text = (M05 / "rungC_cc_transfer.py").read_text(encoding="utf-8")
+    assert 'add_argument("--lora-rank"' in text and '"network_lora"' in text
+
+
 def test_alpha_scaling_baseline_recovers_a_per_class_factor():
     import rungC_cc_transfer as CT
     K = 5

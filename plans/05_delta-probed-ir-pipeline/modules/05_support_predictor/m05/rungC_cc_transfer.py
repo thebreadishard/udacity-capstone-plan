@@ -67,19 +67,46 @@ def loaded_molecule(mol_dir: Path, m: dict) -> dict:
                 masses=np.asarray(g["masses_amu"], float), H_low=m["H_low"], dH_true=m["dH_true"], analytic=True)
 
 
-def finetune(model, tensors: dict, train_ids: list, epochs: int, lr: float, mode: str, aux_weight: float, log=print, head_l2: float = 0.0) -> list:
+class LowRankLinear(torch.nn.Module):
+    """W x + b with W = W₀ + A Bᵀ, W₀ frozen, A (out × r) zero-initialised and B (in × r) random: the layer starts as W₀ and the tune moves it along a
+    rank-r subspace (lever 6, 3 Oct 2026; the LoRA construction of Hu et al. 2021 on a dense layer)."""
+
+    def __init__(self, base: torch.nn.Linear, rank: int):
+        super().__init__()
+        self.base = base
+        for p in self.base.parameters():
+            p.requires_grad_(False)
+        self.A = torch.nn.Parameter(torch.zeros(base.out_features, rank))
+        self.B = torch.nn.Parameter(torch.randn(base.in_features, rank) / rank ** 0.5)
+
+    def forward(self, x):
+        return self.base(x) + (x @ self.B) @ self.A.T
+
+
+def attach_lora(model, rank: int) -> list:
+    """Replace the head's middle linear layer by its low-rank-adapted copy; returns the adapter parameters."""
+    idx = [k for k, m in enumerate(model.head) if isinstance(m, torch.nn.Linear)][1]
+    lora = LowRankLinear(model.head[idx], rank)
+    model.head[idx] = lora
+    return [lora.A, lora.B]
+
+
+def finetune(model, tensors: dict, train_ids: list, epochs: int, lr: float, mode: str, aux_weight: float, log=print, head_l2: float = 0.0,
+             lora_rank: int = 0) -> list:
     """Fine-tune on the training anchors: mode 'head' = head's last layer + α; 'head_l2' = the same with the penalty head_l2 · ‖W − W₀‖² toward the
     proxy-trained last layer (T3b, 14:2x); 'alpha' = α only; 'none' = no training. Returns the loss history."""
     if mode == "none":
         return []
     params = freeze_for_transfer(model)
     w0 = [p.detach().clone() for p in model.head[-1].parameters()] if mode == "head_l2" else []
-    if mode == "alpha":
+    if mode in ("alpha", "lora"):
         for p in model.head[-1].parameters():
             p.requires_grad_(False)
         params = [model.alpha] if model.alpha is not None else []
         if not params:
-            raise SystemExit("mode 'alpha' needs a model with the SQM α (trained with --sqm-scale)")
+            raise SystemExit(f"mode '{mode}' needs a model with the SQM α (trained with --sqm-scale)")
+        if mode == "lora":
+            params = params + attach_lora(model, lora_rank)
     model.aux_class_scale = pattern_class_scales(tensors, train_ids)
     opt = torch.optim.Adam(params, lr=lr)
     hist = []
@@ -141,6 +168,7 @@ def main() -> int:
     ap.add_argument("--lr", type=float, default=1e-3)
     ap.add_argument("--aux-weight", type=float, default=1.0)
     ap.add_argument("--head-l2", type=float, default=0.0, help="T3b (2 Oct 2026): L2 penalty toward the proxy-trained last layer; > 0 adds the column network_head_l2")
+    ap.add_argument("--lora-rank", type=int, default=0, help="lever 6 (3 Oct 2026): α plus a rank-r adapter on the head's middle layer; > 0 adds the column network_lora")
     ap.add_argument("--threads", type=int, default=4)
     a = ap.parse_args()
     torch.set_num_threads(a.threads)
@@ -162,7 +190,7 @@ def main() -> int:
         tensors[i] = molecule_tensors(i, loaded_molecule(d, mols[i]), mols[i], d, cfg, Path(a.out_prefix).parent / "ls_targets")
     ids = sorted(anchors)
     res = {"date": datetime.now().strftime("%Y-%m-%d %H:%M"), "model": a.model, "model_record": {k: ck[k] for k in ("pattern", "aux_mode", "aux_target", "n", "seed")},
-           "anchors": anchors, "low_level": lows, "epochs": a.epochs, "lr": a.lr, "aux_weight": a.aux_weight, "head_l2": a.head_l2, "folds": {}}
+           "anchors": anchors, "low_level": lows, "epochs": a.epochs, "lr": a.lr, "aux_weight": a.aux_weight, "head_l2": a.head_l2, "lora_rank": a.lora_rank, "folds": {}}
     keep = ("coupling_ratio", "coupling_rms", "coupling_zero_rms", "corrected_freq_rms", "corrected_freq_rms_zero_rule", "dH_residual_ratio", "diag_rms")
 
     def read(held, tr, dF_of):
@@ -175,25 +203,28 @@ def main() -> int:
         fold = {"train": tr}
         fold["zero_rule"] = read(held, tr, lambda i: np.zeros_like(mols[i]["F_low"]))
         fold["alpha_scaling"] = read(held, tr, lambda i, tr=tr: alpha_scaling_baseline(mols, tensors, tr, i))
-        for mode in ("none", "alpha", "head") + (("head_l2",) if a.head_l2 > 0 else ()):
+        for mode in ("none", "alpha", "head") + (("head_l2",) if a.head_l2 > 0 else ()) + (("lora",) if a.lora_rank > 0 else ()):
             model = copy.deepcopy(model0)
             tag = f"[{held} {mode}]"
-            hist = finetune(model, tensors, tr, a.epochs, a.lr, mode, a.aux_weight, log=lambda s, tag=tag: print(f"  {tag} {s}", flush=True), head_l2=a.head_l2)
+            hist = finetune(model, tensors, tr, a.epochs, a.lr, mode, a.aux_weight, log=lambda s, tag=tag: print(f"  {tag} {s}", flush=True), head_l2=a.head_l2,
+                            lora_rank=a.lora_rank)
             fold[f"network_{mode}"] = {**read(held, tr, predictor(model, tensors, mols)), "final_loss": (hist[-1] if hist else None)}
         res["folds"][held] = fold
         print(f"{held}: zero ω {fold['zero_rule']['corrected_freq_rms']:.2f} | α-scaling {fold['alpha_scaling']['coupling_ratio']:.2f} / {fold['alpha_scaling']['corrected_freq_rms']:.2f} | "
               f"network as is {fold['network_none']['coupling_ratio']:.2f} / {fold['network_none']['corrected_freq_rms']:.2f} | α tuned {fold['network_alpha']['coupling_ratio']:.2f} / "
               f"{fold['network_alpha']['corrected_freq_rms']:.2f} | head tuned {fold['network_head']['coupling_ratio']:.2f} / {fold['network_head']['corrected_freq_rms']:.2f}"
-              + (f" | head L2 {a.head_l2:g}: {fold['network_head_l2']['coupling_ratio']:.2f} / {fold['network_head_l2']['freq_rms_by_family'].get('ring-ip', float('nan')):.2f} ring-ip" if a.head_l2 > 0 else ""), flush=True)
+              + (f" | head L2 {a.head_l2:g}: {fold['network_head_l2']['coupling_ratio']:.2f} / {fold['network_head_l2']['freq_rms_by_family'].get('ring-ip', float('nan')):.2f} ring-ip" if a.head_l2 > 0 else "")
+              + (f" | lora r{a.lora_rank}: {fold['network_lora']['coupling_ratio']:.2f} / {fold['network_lora']['freq_rms_by_family'].get('ring-ip', float('nan')):.2f} ring-ip" if a.lora_rank > 0 else ""), flush=True)
     res["seconds"] = round(time.time() - t0)
     out_json, out_md = record_paths(a.out_prefix)
     json.dump(res, open(out_json, "w"), indent=1)
     lines = [f"# T3 — leave-one-anchor-out transfer to CCSD(T)/cc-pVDZ ({res['date']})", "", f"Model `{Path(a.model).name}` ({res['model_record']}); fine-tune {a.epochs} epochs at lr {a.lr:g}, "
              f"aux weight {a.aux_weight:g}; low levels {lows}.", "",
-             "| held-out anchor | read-out | zero rule | α scaling (3 anchors) | network as is | network, α tuned | network, head tuned |" + (f" head tuned, L2 {a.head_l2:g} |" if a.head_l2 > 0 else ""),
-             "|---|---|---|---|---|---|---|" + ("---|" if a.head_l2 > 0 else "")]
+             "| held-out anchor | read-out | zero rule | α scaling (3 anchors) | network as is | network, α tuned | network, head tuned |" + (f" head tuned, L2 {a.head_l2:g} |" if a.head_l2 > 0 else "")
+             + (f" α + rank-{a.lora_rank} adapter |" if a.lora_rank > 0 else ""),
+             "|---|---|---|---|---|---|---|" + ("---|" if a.head_l2 > 0 else "") + ("---|" if a.lora_rank > 0 else "")]
     for held, f in res["folds"].items():
-        cols = ("zero_rule", "alpha_scaling", "network_none", "network_alpha", "network_head") + (("network_head_l2",) if a.head_l2 > 0 else ())
+        cols = ("zero_rule", "alpha_scaling", "network_none", "network_alpha", "network_head") + (("network_head_l2",) if a.head_l2 > 0 else ()) + (("network_lora",) if a.lora_rank > 0 else ())
         for key, label in (("coupling_ratio", "ring-coupling ratio"), ("corrected_freq_rms", "ω rms, all modes (cm⁻¹)"), ("dH_residual_ratio", "ΔH residual")):
             lines.append(f"| {held} | {label} | " + " | ".join(f"{f[c][key]:.2f}" for c in cols) + " |")
         for fam in ("ring-ip", "CH-stretch", "CH-oop", "other"):

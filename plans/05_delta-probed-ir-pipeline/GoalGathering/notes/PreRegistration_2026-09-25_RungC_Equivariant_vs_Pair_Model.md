@@ -1535,3 +1535,14 @@ neighbouring three-ring families carry a parent 84 % (phenanthrene) and 67 % (ph
 finish the rest. Phenanthridine, the N-heteroaromatic, depends more on its own children than the pure hydrocarbon does — heteroatoms in the ring are a
 part of the family identity the neighbours do not fully supply. Decision 52 stands and gains its third clause with numbers: a new family starts from its
 neighbours' level, not from zero, so breadth over families is worth more than depth within one.
+
+### Amendment 3 October 07:3x — chain 32: lever 6, α plus a rank-r adapter (baseline on three anchors, registered before it runs)
+
+`rungC_cc_transfer.py --lora-rank r`: the nine SQM α plus a rank-r adapter on the head's middle layer (W₂ + A Bᵀ, A zero-initialised: the tune starts at
+the proxy model; 2·r·256 extra parameters, i.e. 1,024 at r = 2 and 2,048 at r = 4 — between α's 9 and the last layer's 257 in freedom per molecule, but
+confined to a subspace). Same folds, same three models, 300 epochs at lr 1e-3; r ∈ {2, 4}. **Predictions on three anchors.** The adapter behaves like
+the λ = 1 head: naphthalene 0.23–0.27 / 5.5–6.5 cm⁻¹ ring-ip with a model spread ≤ 0.05, benzene and pyridine at or below α-tuning (6.2 / 6.6), fluorobenzene
+within 0.3 cm⁻¹ of α-tuning (5.2); r = 4 no better than r = 2 with three anchors. **Lines (baseline, not the lever's test).** *Adapter viable:* no anchor worse
+than α-tuning by more than 0.3 cm⁻¹ and naphthalene stable → the adapter is the candidate for the four-anchor reread (lever 6's registered test: not worse
+than α with four anchors, better with five). *Adapter overfits at three:* any anchor worse than α-tuning by > 0.5 cm⁻¹ or naphthalene's spread > 0.1 →
+the four-anchor reread compares α and λ = 1 only.
