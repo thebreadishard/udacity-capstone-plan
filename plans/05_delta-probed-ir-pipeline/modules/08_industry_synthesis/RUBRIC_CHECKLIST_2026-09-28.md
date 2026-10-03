@@ -20,3 +20,9 @@
 
 **Owed before submission:** S6 (axe pass, keyboard walk, phone layout on the built site); the licence read at 1,200 layer-B molecules (fills the predicted
 rungs or keeps them empty with the verdict); the CC-level test of the standout's plan line; the live-worker path only when a licence exists.
+
+## Status 2026-10-03 18:1x — weekend review 2
+
+- README status rewritten to the current state. Atlas republished 2 Oct (843 molecules, four CC anchors); the user's phone pass of 3 Oct closes the manual half of S6 (search, molecule page, 3D view); the axe half still needs the built site.
+- Decision 52's pricing rule ('its family first') is a design input for the price table, not yet implemented in `m08/`; listed for the full weekend pass.
+- Scenarios, tests, notebook and paper unchanged since 28 Sep; the rubric items are re-ticked in the full pass.

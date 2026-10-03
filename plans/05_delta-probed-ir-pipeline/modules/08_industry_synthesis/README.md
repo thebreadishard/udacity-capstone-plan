@@ -1,11 +1,6 @@
 # Module 08 — Industry-Integrated AI Systems Synthesis: a spectrum with a stated accuracy and price, or an honest refusal
 
-**Status (28 September 2026, evening):** first build done in one evening after the user's decisions of §8 (`DESIGN_2026-09-27.md`; recorded in
-`PRE_REGISTRATION.md`). `m08/` (request officer, certificate generator, replay worker, licence reader, measured price table, module-06 candidate draw),
-`scenarios/scenarios.json` (the eight pre-registered scenarios plus three added cases), `run_scenarios.py` (8/8 pass; S7 cost honesty 4/4; S5 catalogue
-consistency exit 0; S6 not run — needs the built site and axe), `tests/` (8 green), the executed notebook `notebook/integrated_system.ipynb` with
-`results.json` and two figures, `Reflective_Synthesis_Paper.docx/.pdf` (1,852 words, eight sections, four references), `requirements.txt` (pip freeze),
-`PROVENANCE.md`, `RUBRIC_CHECKLIST_2026-09-28.md`. Earlier status: designed on 27 September, not implemented.
+**Status (3 October 2026).** Built in one evening on 28 September after the user's decisions of §8 (`DESIGN_2026-09-27.md`; recorded in `PRE_REGISTRATION.md`): `m08/` (request officer, certificate generator, replay worker, licence reader, measured price table, module-06 candidate draw), `scenarios/scenarios.json` (eight pre-registered scenarios plus three added cases), `run_scenarios.py` (8/8 pass; S7 cost honesty 4/4; S5 catalogue consistency exit 0), `tests/` (8 green), the executed notebook `notebook/integrated_system.ipynb` with `results.json` and two figures, `Reflective_Synthesis_Paper.docx/.pdf` (1,852 words), `requirements.txt`, `PROVENANCE.md`, `RUBRIC_CHECKLIST_2026-09-28.md`. Since then: the Spectrum Atlas (the module's integrated artifact, `website/`) was republished on 2 October with 843 computed molecules and four coupled-cluster Hessians as anchored evidence, and the user's first pass on a real phone (3 October) found search, molecule page and the 3D view in order — the manual half of S6; the axe run of S6 still needs the built site. Decision 52 (3 October) added the pricing rule the Atlas will quote for an uncovered family — 'its family first', ≈ 30 molecules at the cheap level before anything is promised — which the price table here does not yet carry (a design input, not a code change so far).
 
 ## What it is
 
