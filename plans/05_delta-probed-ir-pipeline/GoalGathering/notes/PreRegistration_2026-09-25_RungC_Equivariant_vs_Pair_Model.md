@@ -1563,3 +1563,16 @@ margin — the adapter overfits three single-ring anchors *worse* than the unreg
 fluorobenzene and pyridine. Benzene alone improves. **Line: adapter overfits at three.** The subspace is small in parameters but unconstrained in
 direction: with three anchors it learns the single-ring correction and extrapolates it onto naphthalene. The four-anchor reread (anthracene) compares
 α-tuning and the λ = 1 head only; the adapter returns, if at all, with an L2 pull on A and five or more anchors. Lever 6's candidate is withdrawn.
+
+### Amendment 3 October 07:4x — benzene's CC atomic polar tensor (odds lever 4, registered before it runs; the user: "Eigenlijk moeten alle ankers opnieuw?")
+
+**Run.** Benzene CCSD(T)/cc-pVDZ with the dipole-storing probe (commit 4d68691; gate 1 PASS 07:25 on the laptop), `--symmetry` (D6h: two representative atoms,
+six displacements, twelve gradients + reference), 8 threads in the laptop's WSL, `probes/results_m1/e8_benzene_ccpvdz_dip_2026-10-03/`. The Hessian it
+also produces is a repeat of the valid 2 Oct benzene anchor (two-route check of the dipole-storing code path: the Hessians must agree to 1e-6 a.u.).
+**Read-outs.** (1) The CC APT's sum rule (≤ 5e-4 e, the CPHF limit) and symmetry self-check. (2) Benzene's CC-level double-harmonic intensities against
+its B3LYP-APT intensities on the CC modes: the intensity-weighted relative difference = *the size of the second term*. (3) The network's intensity
+read-out on benzene with the CC APT and the true CC correction (`rungC_intensities`): weighted relative error. **Predictions.** Sum rule < 1e-4; the
+B3LYP→CC APT change moves benzene's intensities by 10–25 % weighted (literature: B3LYP intensities of aromatic C–H and ring modes are within ~20 % of
+CCSD(T)); the network's error with the CC APT stays ≤ 0.25. **Lines.** *Second term small* (weighted difference ≤ 0.15): the proxy APT suffices for the
+intensity read-out; the old anchors are not recomputed; pyrene's APT is a confirmation. *Second term large* (> 0.25): CC APTs are needed per anchor —
+naphthalene first (a server-day), anthracene only when a reading depends on it; the error map of intensities becomes a lever of its own.
