@@ -9,14 +9,15 @@ import argparse
 import json
 import os
 import resource
+import sys
 import time
 from datetime import datetime
 
 import numpy as np
-import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from reduced_coords import harmonic_check, omega_from_eigenvalue, reduced_displacement   # noqa: E402  (25 Sep 2026: one displacement convention, checked)
+import lno_frozen_spaces as FS  # noqa: E402  (3 Oct 2026: frozen LNO spaces for finite differences, cell (b) of the LNO follow-up)
+from reduced_coords import harmonic_check, omega_from_eigenvalue, reduced_displacement  # noqa: E402  (25 Sep 2026: one displacement convention, checked)
 
 THRESH = {"normal": [1e-5, 1e-6], "tight": [1e-6, 1e-7], "xtight": [1e-7, 1e-8]}
 AMU2AU = 1822.888486209
@@ -63,15 +64,28 @@ def full_mp2(mf, frozen):
 TIER = "t0"
 
 
-def point(symbols, coords, basis, thresh, frozen, max_memory, out, tag):
+def point(symbols, coords, basis, thresh, frozen, max_memory, out, tag, spaces=None):
+    """One LNO-CCSD(T) composite energy. `spaces`: None (fresh localisation and LNO spaces, the L2 recipe), {'mode': 'capture', 'store': {}} to record
+    the LOs and every fragment's active space, or {'mode': 'replay', 'store': <captured>} to carry the reference geometry's spaces to this point."""
     from pyscf.lno import LNOCCSD, LNOCCSD_T
     thresh = {"t0": "tight", "t1": "normal", "t2": "tight", "t3": "normal"}[TIER]; triples = TIER in ("t0", "t1")
     rec = {"tag": tag, "stages_s": {}, "rss_gb": {}}
     t = time.time(); mol = make_mol(symbols, coords, basis, max_memory); mf = run_scf(mol); rec["stages_s"]["scf"] = round(time.time() - t, 1); rec["rss_gb"]["scf"] = round(rss_gb(), 2)
     nocc = int(np.count_nonzero(mf.mo_occ)); C_act = mf.mo_coeff[:, frozen:nocc]
-    t = time.time(); lo_c = pm_localise(mol, C_act); rec["stages_s"]["pm"] = round(time.time() - t, 1)
+    t = time.time()
+    if spaces and spaces["mode"] == "replay":
+        lo_c = FS.project_lo(spaces["store"]["lo_coeff"], C_act, mf.get_ovlp())          # the reference's LOs carried; no re-localisation
+    else:
+        lo_c = pm_localise(mol, C_act)
+    rec["stages_s"]["pm"] = round(time.time() - t, 1)
     frag_lolist = [[i] for i in range(lo_c.shape[1])]
-    t = time.time(); mcc = (LNOCCSD_T if triples else LNOCCSD)(mf, lo_c, frag_lolist, frozen=frozen); mcc.lno_thresh = THRESH[thresh]; mcc.verbose = 3; mcc.kernel()
+    t = time.time(); mcc = (LNOCCSD_T if triples else LNOCCSD)(mf, lo_c, frag_lolist, frozen=frozen); mcc.lno_thresh = THRESH[thresh]; mcc.verbose = 3
+    if spaces and spaces["mode"] == "capture":
+        spaces["store"]["lo_coeff"] = np.array(lo_c, copy=True); FS.capture(mcc, spaces["store"])
+    elif spaces and spaces["mode"] == "replay":
+        FS.replay(mcc, mf, spaces["store"])
+    mcc.kernel()
+    rec["spaces"] = spaces["mode"] if spaces else "fresh"
     rec["stages_s"]["lno_ccsd_t"] = round(time.time() - t, 1); rec["rss_gb"]["lno_ccsd_t"] = round(rss_gb(), 2)
     t = time.time(); emp2 = full_mp2(mf, frozen); rec["stages_s"]["mp2"] = round(time.time() - t, 1)
     ecc, ept2 = float(mcc.e_corr_ccsd_t if triples else mcc.e_corr_ccsd), float(mcc.e_corr_pt2)
@@ -111,7 +125,7 @@ def main():
     near = [int(t) for t in a.near.split(",") if t]
     frozen = sum(1 for s in symbols if s.upper() != "H")
     k, L, w, Minv, amp = neighbourhood_mode(H, g["masses_amu"], near)
-    omega_cm = np.sqrt(abs(w[k])) * HARTREE2CM; k_b3lyp = float(w[k])   # curvature in mass-weighted, dimensionless-q units: E = ½ ω q² (au) → k = ω² … ω in au
+    omega_cm = np.sqrt(abs(w[k])) * HARTREE2CM   # curvature in mass-weighted, dimensionless-q units: E = ½ ω q² (au) → k = ω² … ω in au
     log(f"L2: {os.path.basename(a.moldir.rstrip('/'))} {a.basis} {a.thresh}, {len(symbols)} atoms, frozen core {frozen}, {a.threads} threads, max_memory {a.max_memory} MB; "
         f"neighbourhood atoms {near}; mode {k} ({omega_cm:.0f} cm⁻¹, neighbourhood amplitude {amp:.2f})", a.out)
     recs = []; res = {"date": datetime.now().strftime("%Y-%m-%d %H:%M"), "molecule": os.path.basename(a.moldir.rstrip("/")), "basis": a.basis, "thresh": a.thresh,
