@@ -1715,6 +1715,23 @@ benzene run holds the laptop until ≈ Sunday.
 paragraph (decision 56's addendum, filled 19:2x); odds lever 3 moves from 0.5 to ≈ 0.35 for "anchors beyond 26 atoms by local CC" and the plan's line
 for large anchors is canonical gradients on the university's machines; pyrene (26 atoms) stays canonical on a CCX53 when a server is possible again.
 
+### Amendment 3 October 23:3x — LNO follow-up: truncation (cost) or the level? (registered before it runs; the user, 19:4x: 'Zet die ene test in onze takenlijst')
+
+The 19:2x outcome put both LNO curvatures +0.27 to +0.29 % above canonical, systematic in sign and size, while the canonical two routes agree to
+5e-6. Two cells on the same two naphthalene coordinates as the outcome (atom 0, x and z: k 0 in-plane, the out-of-plane k), the same reference
+geometry and step h:
+
+- **(a) tighter thresholds** — `probes/lno_curvature_check.py --xtight` (the L2 recipe's 'xtight', one decade below 'tight': 1e-7 occupied,
+  1e-8 virtual); five energies at 16 threads, ≈ 3–4 × the tight cost (≈ 6 h per energy).
+- **(b) reused localisation** — the reference geometry's Pipek–Mezey fragments and LNO spaces kept frozen and re-solved at ±h (the M2 idea of
+  20 September; a small extension of the probe, written and smoke-tested on water before it enters the queue); five energies at tight cost.
+
+Lines, per cell, on max |ΔH_kk| against the canonical gradient-route Hessian: **< 1e-3 a.u.** → 'noise-limited at tight' — the deviation was
+truncation, and the M2 route (frozen spaces) is priced for anchors beyond ≈ 26 atoms; **≥ 1e-3 a.u. with the same sign in both cells** → the
+level: closed, anchors stay canonical and the Snellius question is a canonical-cost question; **the cells disagree** → one more coordinate before
+any reading. Nothing else is read from these runs. Lane: a free laptop lane after the TZ run and chain 34 (≈ 5–6 October); the `--xtight` path is
+compile-checked and dry-run before the queue.
+
 ### Amendment 3 October 20:5x — a per-family learning curve read from the existing records (reading rule written before the numbers are looked at)
 
 **What.** `probes/rungC_family_curve.py` on the carried recipe's records (pattern f, projected target, kring 0.3, sum body): 45 and 100 (pool A,A2 —
