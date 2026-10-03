@@ -1659,3 +1659,34 @@ the head's diagonal classes, with the 'other' low modes' noise measured per mole
 hold-out (a) molecules, then the 39 of (b), on the laptop lane after the night sequence and chain 34 step 2 (timing from the anthracene analytic run of
 3 Oct). T1's CH-oop line is read on analytic targets only. **Prediction.** The carried model's CH-oop on analytic hold-out targets reads 2–3 cm⁻¹; **line**
 CH-oop ≤ 3 → met; > 3 → CH-oop joins step 2's family term with its own weight.
+
+### Amendment 3 October 11:3x — pool 3 (decision 54): the three missing axes, registered before any row is computed
+
+**Design.** `Design_Note_2026-10-03_Pool_3_Three_Axes.md`. Batch 1 = 60 radical cations on known scaffolds, 30 aza-four-rings, 30 five-ring scaffolds;
+3–4 parents of every new family form hold-out (c); the frozen candidate list (`probes/pool3_candidates.py`) defines nested subsets for the curves.
+Model: the carried recipe with the zero-initialised charge/multiplicity input (P3-1); read-outs as chains 23–31 (ratio, corrected ω per family, ΔH
+residual), per family of hold-out (c) against its children count.
+
+**Q1 — charge.** *Read 1:* the neutral-trained model (chain 24's or chain 34's) on hold-out (c)'s cations with zero cations in the pool. **Prediction:**
+ratio 0.6–0.9 — the ionisation changes the correction substantially, the neutral network carries little of it. *Read 2:* the curve 0 / 10 / 30 / 60
+cations (nested subsets, three seeds). **Prediction:** 10 → 0.4–0.5, 30 → ≈ 0.3, 60 → ≈ 0.25; the per-family pattern of decision 52 (parents fall
+with their own children, neighbours carry two thirds). **Lines.** *60 cations bring the cation parents to ≤ 0.25 and the 30 → 60 step is ≥ 0.03* →
+charge is an axis learned per family: the Atlas prices a cation as "its family's cations first", and batch 2's 30 extra cations are spent on the weakest
+families; *≤ 0.25 already at 30* → charge transfers across families once seen: 30 per scaffold class suffices, the rest of the budget goes to breadth;
+*> 0.30 at 60* → the charge input or the targets are the question before more rows: the gate's floor per family and a per-charge class scale are read
+first (no row is added on a flat curve, 25 Sep rule).
+
+**Q2 — nitrogen in large rings.** *Read 1:* aza-four-ring parents at zero own children (the N-three-rings and the carbocyclic four-rings as neighbours).
+**Prediction:** 0.30–0.40 (heteroaromatic families depend more on their own children, decision 52's finding). *Read 2:* 0 / 10 / 30. **Prediction:**
+30 → ≤ 0.25. **Lines.** *≤ 0.25 at 30* → covered by the rule; *0.25–0.30* → the family gets its second thirty in pool 4; *> 0.30 at 30* → the N position
+inside a four-ring is a new sub-family: the error map splits it before any further row.
+
+**Q3 — size.** *Read 1:* five-ring parents at zero own children (the four-rings as neighbours). **Prediction:** 0.35–0.45 (error follows scaffold size,
+2 Oct error map). *Read 2:* 0 / 10 / 30. **Prediction:** 30 → 0.22–0.28, i.e. the rule weakens with size. **Lines.** *≤ 0.25 at 30* → the rule holds at
+five rings and the size axis is priced linearly; *0.25–0.32* → five rings need their sixty (pool 4), the Atlas quotes accordingly; *> 0.32* → the
+coupling structure of five rings is not in the pattern's reach at this size — the representation ceiling per family (chain 34's probe) is measured on
+the five-ring parents before any conclusion about data.
+
+**Cation gate (P3-2), registered.** On the benzene⁺ row and the first ten cation rows, FD against the analytic second route per family; line: floor
+≤ 1.5 cm⁻¹ in every family → FD-only rows; otherwise analytic route on every cation row. A cation row with an imaginary mode in the analytic route is
+excluded (the corpus rule), not repaired.
