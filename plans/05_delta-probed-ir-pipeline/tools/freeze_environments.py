@@ -29,7 +29,9 @@ ENVIRONMENTS = {
     # name: (what runs there, listing command, python-version command)
     "windows-python314": ("modules 05/06 and the Windows probes (torch, rdkit, geometric)", [sys.executable, "-m", "pip", "freeze"], [sys.executable, "--version"]),
     "windows-venv313": ("module 07 (LangGraph)", [str(REPO / ".venv" / "Scripts" / "python.exe"), "-m", "pip", "freeze"], [str(REPO / ".venv" / "Scripts" / "python.exe"), "--version"]),
-    "wsl-qc05": ("our pyscf branch, the E8 anchors, gate 1, the LNO probes", [*WSL, "~/qc05/bin/python -m pip freeze"], [*WSL, "~/qc05/bin/python --version"]),
+    "wsl-qc05": ("our pyscf branch, the E8 anchors, gate 1, the LNO probes", [*WSL, "~/qc05/bin/python -m pip freeze"], [*WSL, "~/qc05/bin/python --version"],
+                 [("pyscf source checkout (pip shows only 2.14.0; the package was built from this branch)",
+                   [*WSL, "cd ~/pyscf-master && echo \"$(git rev-parse --abbrev-ref HEAD) $(git log -1 --format='%h %cs') dirty=$(git status --short | wc -l)\""])]),
     "wsl-vpt2": ("psi4 + pyVPT2 (route 2 of 22 Sep)", [*WSL, "~/miniforge3/bin/conda list -n vpt2 --export"], [*WSL, "~/miniforge3/envs/vpt2/bin/python --version"]),
 }
 M05_HEADER = ("# Module 05 — the Windows environment its notebook, trainer and probes run in (system Python 3.14, CPU-only torch). Frozen by\n"
@@ -74,7 +76,8 @@ def body_of(text: str) -> list[str]:
 
 def listing(name: str) -> tuple[str | None, str]:
     """(text, python version) for one environment, or (None, reason) when it cannot be listed here."""
-    _what, cmd, pycmd = ENVIRONMENTS[name]
+    _what, cmd, pycmd, *rest = ENVIRONMENTS[name]
+    extras = rest[0] if rest else []
     raw = run(cmd)
     if raw is None:
         return None, "not reachable from this machine"
@@ -82,6 +85,9 @@ def listing(name: str) -> tuple[str | None, str]:
     header = (f"# environment: {name} — {_what}\n# command: {' '.join(cmd[-1:] if cmd[:3] == WSL else cmd)}\n# python: {ver}\n"
               f"# frozen: {time.strftime('%Y-%m-%d %H:%M')} on {_host()} by tools/freeze_environments.py\n")
     header += "".join(f"# local install (not a version): {ln}\n" for ln in locals_of(raw))
+    for label, xcmd in extras:                                              # provenance a package list cannot show (a branch checkout behind a plain version)
+        out = (run(xcmd) or "unavailable").strip().replace("\n", " ")
+        header += f"# {label}: {out}\n"
     return header + "\n".join(normalise(raw)) + "\n", ver
 
 

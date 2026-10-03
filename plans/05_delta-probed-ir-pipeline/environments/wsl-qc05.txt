@@ -1,7 +1,8 @@
 # environment: wsl-qc05 — our pyscf branch, the E8 anchors, gate 1, the LNO probes
 # command: wsl -e bash -lc ~/qc05/bin/python -m pip freeze
 # python: Python 3.12.14
-# frozen: 2026-10-03 17:56 on Asus18 by tools/freeze_environments.py
+# frozen: 2026-10-03 17:57 on Asus18 by tools/freeze_environments.py
+# pyscf source checkout (pip shows only 2.14.0; the package was built from this branch): t3-intermediates-c ed66845 2026-09-30 dirty=0
 h5py==3.16.0
 iniconfig==2.3.0
 jax==0.10.2
