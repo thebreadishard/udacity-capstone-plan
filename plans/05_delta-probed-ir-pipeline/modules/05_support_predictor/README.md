@@ -80,6 +80,14 @@ The corpus factory (`corpus/`: `run_corpus.py`, shards, `STATUS.md`, `ledger.csv
 E-series live in `GoalGathering/notes/PreRegistration_2026-09-*`. Superseded and kept for the record: `m05/model.py`, `m05/smoke_test.py`,
 `m05/build_corpus.py fixture` (the 12 September scaffold).
 
+## Model versions (decision 55, 3 October 2026)
+
+`MODELS.md` lists every saved network in `out/` with its reviewed status (`carried`, `superseded`, `invalid`, `smoke`, `pretrained`), the chain that made
+it, the recipe read from the checkpoint, the hold-out numbers and the commit. It is generated — `python m05/model_registry.py`, checked by
+`python m05/model_registry.py --check` and by `tests/test_model_registry.py` — from the checkpoints and `out/MODELS_STATUS.json`, the one file that is
+written by hand (a judgement per model). Reads and transfers (`m05/rungC_cc_transfer.py`, `probes/rungC_eval_saved.py`) run on `carried` models only;
+`--allow-any-model` is the named exception.
+
 ## Files
 
 - `RECIPE.md` — task type, label rule, corpus, baseline, the one controlled change, metrics, seeds; frozen before any data, amended by dated note only.

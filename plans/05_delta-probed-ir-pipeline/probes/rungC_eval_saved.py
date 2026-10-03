@@ -18,6 +18,7 @@ import torch
 
 PLAN = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PLAN / "modules" / "05_support_predictor" / "m05"))
+import model_registry as MR  # noqa: E402
 import rungC_intensities as RI  # noqa: E402
 from rungC_equivariant import load_molecule  # noqa: E402
 from rungC_train import load_corpus, load_hybrid_model, molecule_tensors, per_molecule_readouts, predictor, readouts, record_paths  # noqa: E402
@@ -30,9 +31,11 @@ def main() -> int:
     ap.add_argument("--molecules", default=str(PLAN / "modules" / "05_support_predictor" / "corpus" / "molecules"))
     ap.add_argument("--use-analytic", action="store_true")
     ap.add_argument("--threads", type=int, default=4)
+    ap.add_argument("--allow-any-model", action="store_true", help="decision 55 (3 Oct 2026): use a model whose registry status is not 'carried' — name it in the record")
     a = ap.parse_args()
     torch.set_num_threads(a.threads)
     t0 = time.time()
+    MR.require_carried(Path(a.model), allow=a.allow_any_model)                     # decision 55: reads run on carried models
     model, ck = load_hybrid_model(Path(a.model))
     cfg = SimpleNamespace(aux=ck["aux_mode"], head=ck["head"], pattern=ck["pattern"], aux_target=ck["aux_target"], ls_lam=ck["ls_lam"], zero_hlow=False)
     mols, test_a, test_b, _, pool, substituted = load_corpus(a.molecules, a.use_analytic)

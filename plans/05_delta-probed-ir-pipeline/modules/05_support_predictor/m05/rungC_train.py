@@ -516,7 +516,7 @@ def save_hybrid_model(model: HybridDeltaFModel, path: Path, args: dict, n: int, 
                 "kring_weight": float(getattr(model, "kring_weight", 1.0)), "kdiag_weight": float(getattr(model, "kdiag_weight", 0.0)),
                 "kdiag_mode": getattr(model, "kdiag_mode", "all"),
                 "pattern": args["pattern"], "aux_target": args["aux_target"], "ls_lam": args["ls_lam"], "head": args["head"],
-                "n": n, "seed": seed, "args": args}, path)
+                "n": n, "seed": seed, "args": args, "provenance": provenance()}, path)   # decision 55: commit + command in the model file
 
 
 def load_hybrid_model(path: Path) -> tuple[HybridDeltaFModel, dict]:

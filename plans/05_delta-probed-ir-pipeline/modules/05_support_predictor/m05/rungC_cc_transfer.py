@@ -25,6 +25,7 @@ sys.path.insert(0, str(HERE))
 import e7_rungB_reread_analytic as RR  # noqa: E402
 import e7_t2_posthoc as PH  # noqa: E402
 import e7_t2_sqm as T2  # noqa: E402
+import model_registry as MR  # noqa: E402
 from learning_curve_layerA import AMU2AU, HARTREE2CM, normal_modes  # noqa: E402
 from rungC_equivariant import Z_OF, charge_index  # noqa: E402
 from rungC_train import (  # noqa: E402
@@ -170,12 +171,14 @@ def main() -> int:
     ap.add_argument("--head-l2", type=float, default=0.0, help="T3b (2 Oct 2026): L2 penalty toward the proxy-trained last layer; > 0 adds the column network_head_l2")
     ap.add_argument("--lora-rank", type=int, default=0, help="lever 6 (3 Oct 2026): α plus a rank-r adapter on the head's middle layer; > 0 adds the column network_lora")
     ap.add_argument("--threads", type=int, default=4)
+    ap.add_argument("--allow-any-model", action="store_true", help="decision 55 (3 Oct 2026): use a model whose registry status is not 'carried' — name it in the record")
     a = ap.parse_args()
     torch.set_num_threads(a.threads)
     t0 = time.time()
     anchors = dict(s.split("=", 1) for s in a.anchor)
     mdir = Path(a.molecules)
     mols = T2.load(mdir)
+    MR.require_carried(Path(a.model), allow=a.allow_any_model)                    # decision 55: reads run on carried models
     model0, ck = load_hybrid_model(Path(a.model))
     cfg = SimpleNamespace(aux=ck["aux_mode"], head=ck["head"], pattern=ck["pattern"], aux_target=ck["aux_target"], ls_lam=ck["ls_lam"], zero_hlow=False)
     print(f"model {Path(a.model).name}: pattern {cfg.pattern}, aux {cfg.aux}, target {cfg.aux_target}; anchors {sorted(anchors)}", flush=True)

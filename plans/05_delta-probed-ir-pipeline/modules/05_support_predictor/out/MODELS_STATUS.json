@@ -1,0 +1,13 @@
+{
+  "E7_rungC_carried_kd_750_saved_2026-10-02_model_n750_seed0.pt": {"status": "carried", "chain": "24", "note": "the carried recipe at 750 (decision 53 base): pattern f, projected target, pattern + 0.3 kring + 0.1 K-diag, 3x64 sum body, SQM alpha, pair features; base of T3/T3b (2 Oct), chain 33 (anthracene reread) and the error map"},
+  "E7_rungC_carried_kd_750_saved_2026-10-02_model_n750_seed1.pt": {"status": "carried", "chain": "24", "note": "seed 1 of the carried recipe at 750"},
+  "E7_rungC_carried_kd_750_saved_2026-10-02_model_n750_seed2.pt": {"status": "carried", "chain": "24", "note": "seed 2 of the carried recipe at 750"},
+  "smoke_charge_input_2026-10-03_model_n30_seed0.pt": {"status": "smoke", "chain": "P3-1 smoke", "note": "2-epoch smoke of the charge-state input and the family K-diagonal term on 30 molecules (3 Oct 12:10); not a model"},
+  "_diag_pretrain_blowup.pt": {"status": "invalid", "chain": "lever 2a diagnostic", "note": "the pretraining blow-up of 1 Oct 08:4x kept as the diagnostic object (C2-elements family of incidents); never a base"},
+  "_smoke_pretrain.pt": {"status": "smoke", "chain": "pretrain smoke", "note": "27 Sep smoke of rungC_pretrain.py"},
+  "_smoke_pretrain_mean.pt": {"status": "smoke", "chain": "pretrain smoke", "note": "28 Sep smoke of rungC_pretrain.py with the mean aggregation"},
+  "rungC_pretrained_2026-09-27.pt": {"status": "superseded", "chain": "pretrain 27 Sep", "note": "QM9 pretrained body (sum aggregation); superseded by the fresh-body carried recipe (chains 23/24): the pretrained bodies gave no gain at 175 (lever 2a/2b reads of 1 Oct)"},
+  "rungC_pretrained_2026-09-27_zerochannel.pt": {"status": "superseded", "chain": "pretrain 27 Sep", "note": "variant with the zeroed channel; superseded with the above"},
+  "rungC_pretrained_mean_2026-09-28.pt": {"status": "superseded", "chain": "pretrain 28 Sep", "note": "mean-aggregation pretrained body after the C2-elements incident; superseded by the fresh sum body of chains 23/24"},
+  "rungC_pretrained_mean_long_2026-10-01.pt": {"status": "superseded", "chain": "lever 2b", "note": "20-epoch pretrained body (cap bound, decision 51); lever 2b read 1 Oct 17:1x — kept for the record, not a base"}
+}
