@@ -21,7 +21,9 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "modules" / "05_support_predictor" / "m05"))
+import e7_rungB_reread_analytic as RR  # noqa: E402
 import e7_t2_sqm as T2  # noqa: E402
+from e11_noise_floor import freqs_cm, vib_only  # noqa: E402
 from rungC_cc_transfer import family_freq_rms  # noqa: E402
 from rungC_targets import cached_pattern_ls_target, projected_target  # noqa: E402
 from rungC_train import load_corpus, pattern_classes  # noqa: E402
@@ -50,6 +52,56 @@ def floor_rows(mols: dict, molecules: Path, substituted: list) -> list[dict]:
     return rows
 
 
+def partial_row(d: Path) -> dict:
+    """A row directory without the full set of four Hessians (today: benzene⁺ lacks the FD ωB97X): what can still be read — the B3LYP frequencies,
+    FD against analytic — so that the gate names the gap instead of skipping the row silently."""
+    g = json.load(open(d / "geometry.json", encoding="utf-8"))
+    masses = np.asarray(g["masses_amu"], float)
+    have = {k: (d / f"hessian_{k}.npz").exists() for k in ("b3lyp", "wb97x", "b3lyp_analytic", "wb97x_analytic")}
+    rec = {"id": d.name, "n_atoms": len(masses), "incomplete": True, "files": have}
+    if have["b3lyp"] and have["b3lyp_analytic"]:
+        fd = np.sort(vib_only(freqs_cm(np.load(d / "hessian_b3lyp.npz")["H_projected"], masses)))
+        an = np.sort(vib_only(freqs_cm(np.load(d / "hessian_b3lyp_analytic.npz")["H_projected"], masses)))
+        rec["b3lyp_freq_fd_vs_analytic_rms"] = float(np.sqrt(np.mean((fd - an) ** 2)))
+        rec["n_imaginary_analytic_b3lyp"] = int((freqs_cm(np.load(d / "hessian_b3lyp_analytic.npz")["H_projected"], masses) < -5).sum())
+    return rec
+
+
+def rows_from_dirs(dirs: list[Path], log=print) -> tuple[list[dict], list[dict]]:
+    """P3-2, the cation gate (decision 54): the per-family floor of arbitrary row directories (cation rows, hold-out rows computed outside the corpus).
+    Rows with both FD Hessians and both analytic ones go through the corpus loader on a temporary directory (the family labels come from the same
+    labeller as the corpus) and `floor_rows`; incomplete rows get `partial_row`. Returns (floor rows, partial rows)."""
+    import shutil
+    import tempfile
+    full, partial = [], []
+    for d in dirs:
+        d = Path(d)
+        if all((d / f"hessian_{k}.npz").exists() for k in ("b3lyp", "wb97x", "b3lyp_analytic", "wb97x_analytic")):
+            full.append(d)
+        else:
+            partial.append(partial_row(d))
+            log(f"{d.name}: incomplete row — {partial[-1].get('b3lyp_freq_fd_vs_analytic_rms', float('nan')):.2f} cm⁻¹ B3LYP FD vs analytic; files {partial[-1]['files']}")
+    if not full:
+        return [], partial
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp) / "molecules"
+        root.mkdir()
+        for d in full:
+            shutil.copytree(d, root / d.name)
+        mols = T2.load(str(root))
+        for i, m in mols.items():
+            RR.substitute(m, root / i)
+        rows = floor_rows(mols, root, list(mols))
+    return rows, partial
+
+
+def gate_verdict(rows: list[dict], limit: float) -> dict:
+    """The registered line of P3-2: floor ≤ limit in every family present → FD-only rows may follow; else every cation row carries the analytic route."""
+    med = {f: float(np.median([r["fd_vs_analytic"][f] for r in rows if f in r["fd_vs_analytic"]])) for f in FAMILIES
+           if any(f in r["fd_vs_analytic"] for r in rows)}
+    return {"n_rows": len(rows), "median_floor": med, "limit": limit, "pass": bool(rows) and all(v <= limit for v in med.values())}
+
+
 def ceiling_rows(mols: dict, molecules: Path, ids: list, pattern: str, lam: float, cache_dir: Path, log) -> list[dict]:
     rows = []
     for i in ids:
@@ -74,14 +126,31 @@ def fmt(d: dict) -> str:
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("molecules")
+    ap.add_argument("molecules", nargs="?", default="corpus/molecules")
     ap.add_argument("out_prefix")
     ap.add_argument("--pattern", default="f")
     ap.add_argument("--lam", type=float, default=1e-3)
     ap.add_argument("--cache-dir", default="out/ls_targets")
     ap.add_argument("--parts", default="floor,ceiling")
+    ap.add_argument("--dirs", nargs="+", default=None, help="P3-2 cation gate: row directories outside the corpus (floor only); the molecules argument is then unused")
+    ap.add_argument("--gate-limit", type=float, default=1.5, help="the registered line: median floor per family ≤ this (cm⁻¹) → FD-only rows may follow")
     a = ap.parse_args()
     t0 = time.time()
+    if a.dirs:
+        rows, partial = rows_from_dirs([Path(d) for d in a.dirs], print)
+        verdict = gate_verdict(rows, a.gate_limit)
+        res = {"date": datetime.now().strftime("%Y-%m-%d %H:%M"), "dirs": a.dirs, "floor_rows": rows, "partial_rows": partial, "gate": verdict,
+               "seconds": round(time.time() - t0, 1)}
+        md = [f"# Cation gate (P3-2) — per-family noise floor of {len(a.dirs)} row directories — {res['date']}", "",
+              f"**Gate:** median floor per family ≤ {a.gate_limit:g} cm⁻¹ → **{'PASS: FD-only rows may follow' if verdict['pass'] else 'NOT PASSED: every cation row carries the analytic route'}** "
+              f"({verdict['n_rows']} complete rows; medians {fmt(verdict['median_floor']) if verdict['median_floor'] else 'none'}).", ""]
+        md += [f"- {r['id']}: {fmt(r['fd_vs_analytic'])}" for r in rows]
+        md += [f"- {r['id']}: **incomplete** (files {', '.join(k for k, v in r['files'].items() if v)}); B3LYP FD vs analytic "
+               f"{r.get('b3lyp_freq_fd_vs_analytic_rms', float('nan')):.2f} cm⁻¹, imaginary (analytic) {r.get('n_imaginary_analytic_b3lyp', '?')}" for r in partial]
+        Path(a.out_prefix + ".json").write_text(json.dumps(res, indent=1), encoding="utf-8")
+        Path(a.out_prefix + ".md").write_text("\n".join(md + ["", f"{res['seconds']} s."]), encoding="utf-8")
+        print("gate:", "PASS" if verdict["pass"] else "NOT PASSED", verdict["median_floor"], "| incomplete rows:", len(partial))
+        return 0 if verdict["pass"] else 1
     molecules = Path(a.molecules)
     mols, test_a, _test_b, _cores, _pool, substituted = load_corpus(str(molecules), True)
     res = {"date": datetime.now().strftime("%Y-%m-%d %H:%M"), "pattern": a.pattern, "lam": a.lam, "holdout_a": test_a, "analytic_pairs": substituted}

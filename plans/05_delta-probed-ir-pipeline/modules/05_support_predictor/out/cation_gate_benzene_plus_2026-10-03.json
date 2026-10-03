@@ -1,0 +1,29 @@
+{
+ "date": "2026-10-03 18:04",
+ "dirs": [
+  "../../probes/results_m1/cations/benzene"
+ ],
+ "floor_rows": [],
+ "partial_rows": [
+  {
+   "id": "benzene",
+   "n_atoms": 12,
+   "incomplete": true,
+   "files": {
+    "b3lyp": true,
+    "wb97x": false,
+    "b3lyp_analytic": true,
+    "wb97x_analytic": true
+   },
+   "b3lyp_freq_fd_vs_analytic_rms": 1.473162837210675,
+   "n_imaginary_analytic_b3lyp": 0
+  }
+ ],
+ "gate": {
+  "n_rows": 0,
+  "median_floor": {},
+  "limit": 1.5,
+  "pass": false
+ },
+ "seconds": 0.0
+}
