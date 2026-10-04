@@ -1712,6 +1712,18 @@ hold-outs). What follows, as registered: the per-family output scale on the head
 molecule against the FD floor first — design and registration in the day of 4 October, not another run of the same recipe. The six chain-34/34b checkpoints
 stay `candidate`; the carried recipe remains chain 24 until the user's word.
 
+### Amendment 4 October 08:3x — the 'other' low modes measured per molecule (reading rule written before the numbers; `probes/rungC_low_modes_noise.py`)
+
+Chain 34's third branch names this measurement before any further lever. For each hold-out (a) molecule and chain 34's three models: the corrected-ω error
+per mode, 'other' split into *other-low* (uncorrected ω < 700 cm⁻¹: torsions, ring puckers, skeletal bends) and *other-mid*; beside it the zero rule and,
+for the molecules with both routes (benzene — the known artefact — and A_3100da3761), the FD-vs-analytic floor split the same way. **Reading rule.**
+(1) If ≥ 60 % of the pooled squared 'other' error sits in the low modes and the low-mode model error is within 1.5× the zero rule there, the gap is in the
+low modes themselves — labels (FD noise of soft modes) or physics the correction does not carry — and the per-family output gain is *not* tried; the
+next lever is analytic targets for the hold-out (step 3) and a read of 'other-mid' alone against the 3 cm⁻¹ line. (2) If the error is spread over low and
+mid (low share < 60 %) and the model beats the zero rule by ≥ 2× in both, the gain run is tried as registered (one chain, 750, three seeds; line other ≤ 3).
+(3) If a single molecule carries ≥ 40 % of the pooled squared 'other' error, that molecule is read on its own first (its floor, its modes) before either.
+No run starts before this reading is on record.
+
 ### Amendment 3 October 11:3x — pool 3 (decision 54): the three missing axes, registered before any row is computed
 
 **Design.** `Design_Note_2026-10-03_Pool_3_Three_Axes.md`. Batch 1 = 60 radical cations on known scaffolds, 30 aza-four-rings, 30 five-ring scaffolds;
