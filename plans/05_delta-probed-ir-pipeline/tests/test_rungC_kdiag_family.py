@@ -51,6 +51,28 @@ def test_kring_tensors_family_codes():
 
 def test_flag_parameter_and_loader_default():
     src = (PLAN / "modules" / "05_support_predictor" / "m05" / "rungC_train.py").read_text(encoding="utf-8")
-    assert re.search(r'add_argument\("--kdiag-mode", default="all", choices=\["all", "family"\]', src)
+    assert re.search(r'add_argument\("--kdiag-mode", default="all", choices=\["all", "family", "family-low"\]', src)
     assert "kdiag_mode" in inspect.signature(RT.train_one).parameters
     assert 'ck.get("kdiag_mode", "all")' in src
+
+
+def test_family_low_splits_other_at_700():
+    """Chain 34c (4 Oct 2026): kring_tensors carries a second code array with 'other' split at LOW_CM; the 'family-low' term uses it and equals
+    'family' when no 'other' mode lies below the line."""
+    masses = np.array([12.0, 1.0])
+    V = np.eye(6)
+    dH = np.eye(6) * 1e-3
+    w_cm = np.array([300.0, 1200.0, 1500.0, 3000.0, 500.0, 900.0])
+    w = (w_cm / RT.PH.HARTREE2CM) ** 2
+    fam = ["other", "ring-ip", "ring-ip", "CH-stretch", "other", "other"]
+    t = RT.kring_tensors(masses, V, w, fam, dH)
+    low = t["fam_code_low"].numpy()
+    plain = t["fam_code"].numpy()
+    assert len(set(plain)) == 3 and len(set(low)) == 4                      # other split into low (300, 500) and mid (900)
+    assert low[0] == low[4] and low[0] != low[5] and plain[0] == plain[5]
+    pred = torch.as_tensor(dH * 0.9, dtype=torch.float32)                      # a Cartesian ΔH at 90 % of the truth: relative error 0.01 in every family
+    assert float(RT._kdiag_term(t, pred, "family-low")) == pytest.approx(0.01, rel=1e-4)
+    t2 = RT.kring_tensors(masses, V, (np.array([900.0, 1200.0, 1500.0, 3000.0, 800.0, 950.0]) / RT.PH.HARTREE2CM) ** 2, fam, dH)
+    assert float(RT._kdiag_term(t2, pred, "family-low")) == pytest.approx(float(RT._kdiag_term(t2, pred, "family")), rel=1e-6)
+    with pytest.raises(ValueError):
+        RT._kdiag_term(t, pred, "family-lo")

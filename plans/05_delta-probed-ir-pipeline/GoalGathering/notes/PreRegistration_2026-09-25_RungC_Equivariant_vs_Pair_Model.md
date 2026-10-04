@@ -1724,6 +1724,33 @@ mid (low share < 60 %) and the model beats the zero rule by ≥ 2× in both, the
 (3) If a single molecule carries ≥ 40 % of the pooled squared 'other' error, that molecule is read on its own first (its floor, its modes) before either.
 No run starts before this reading is on record.
 
+## Outcome — the 'other' low modes measured — 4 October 08:3x (`out/rungC_low_modes_noise_2026-10-04.{md,json}`)
+
+Hold-out (a), chain 34's three models (rms over models), 'other' split at 700 cm⁻¹: **other-low 3.35 cm⁻¹ (132 modes), other-mid
+2.90 (54 modes)**; zero rule 10.96 / 15.89; ring-ip 1.95, CH-stretch 1.27, CH-oop 2.92.
+**77 % of the pooled squared 'other' error sits in the low modes.** The one clean molecule with both routes (A_3100da3761; benzene is the
+known artefact) has a low-mode FD floor of 1.36 against a model error of 3.74: the labels are not the limit there. The largest
+single-molecule share is 26 % (A_08dde334d8).
+
+**Against the reading rule.** (3) no molecule carries ≥ 40 %. (1) the low share is ≥ 60 %, but the model is at 0.31× the zero rule in the
+low modes, not within 1.5× — it learns them, three times better than nothing, and stops at 3.35. (2) asks for a spread error, and the error is not spread.
+**None of the three branches describes this case; the record says so.** What it does say: the 'other' line is already met on the mid modes (2.90 ≤ 3)
+and open only below 700 cm⁻¹ — torsions, ring puckers, skeletal bends — where the model learns but not enough and the labels (where measurable) leave
+room. The per-family output gain is not what this asks for (it would rescale a family the term already balances); the registered consequence is
+replaced by the amendment below, written before it runs.
+
+### Amendment 4 October 08:3x — chain 34c: the family term with 'other' split at 700 cm⁻¹ (registered before it runs)
+
+`rungC_train.py --kdiag-mode family-low` (`probes/rungC_chain34c_1004.sh`): the family-balanced K-diagonal term with other-low (< 700 cm⁻¹) and
+other-mid as separate families — the low modes get their own vote in the term instead of a fifth of 'other'. Everything else chain 34's recipe at
+weight 0.1 (chain 34b showed the weight saturated), 750, seeds 0–2, models saved; smoke first (marker gates the run), 8 threads beside the TZ run.
+**Predictions.** other-low on (a) 3.35 → 2.7–3.1; other-mid within ±0.2 of 2.90; 'other' pooled 3.48 → 3.0–3.3; ring-ip, CH-stretch, ratio within chain
+34's seed ranges; (b) other falls by 0.2–0.6. **Lines** (read with `probes/rungC_chain_lines_read.py` and `probes/rungC_low_modes_noise.py`):
+*other ≤ 3 on (a) with ring-ip ≤ 3 and ratio ≤ 0.25* → T1's 'other' family met at the proxy level, the split enters the carried recipe (the user's word
+promotes); *other-low falls ≥ 0.3 but 'other' > 3* → the split is a lever and the rest is where the labels run out: the analytic hold-out targets (step 3,
+after the TZ run) are read on other-low before any further training lever; *other-low falls < 0.3* → the low modes do not respond to weighting; next is
+a low-mode input the head does not have (torsion-angle primitives are in the pattern, their environment is not) — designed, not assumed.
+
 ### Amendment 3 October 11:3x — pool 3 (decision 54): the three missing axes, registered before any row is computed
 
 **Design.** `Design_Note_2026-10-03_Pool_3_Three_Axes.md`. Batch 1 = 60 radical cations on known scaffolds, 30 aza-four-rings, 30 five-ring scaffolds;

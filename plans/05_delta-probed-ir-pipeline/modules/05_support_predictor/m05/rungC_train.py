@@ -140,6 +140,9 @@ def pattern_class_scales(tensors: dict, ids: list) -> torch.Tensor:
     return scale.float()
 
 
+LOW_CM = 700.0   # chain 34c (4 Oct 2026): 'other' modes below this uncorrected ω are their own family in the K-diagonal term (the low-mode read of 08:2x)
+
+
 def kring_tensors(masses: np.ndarray, V: np.ndarray, w: np.ndarray, family: list, dH_true: np.ndarray, dtype=torch.float32) -> dict:
     """Lever 3 / H8 (1 Oct 2026): the read-out map as tensors. K = kscale ⊙ (Cm ΔH Cmᵀ) with Cm = Vᵀ M^-1/2 (M × 3N) is the mode-basis coupling
     matrix in cm⁻¹ that `e7_t2_posthoc.k_of` computes from ΔF (identical up to the B reconstruction); `ring` = the ring-family modes the (a)/(b)
@@ -152,9 +155,12 @@ def kring_tensors(masses: np.ndarray, V: np.ndarray, w: np.ndarray, family: list
     K_true = kscale * (Cm @ np.asarray(dH_true, float) @ Cm.T)
     norm = float(np.mean(K_true[np.ix_(ring, ring)] ** 2)) if len(ring) else 1.0
     codes = np.unique(np.asarray(family, dtype=str), return_inverse=True)[1]              # chain 34 (3 Oct 2026): one code per family label
+    fam_low = [("other-low" if (f == "other" and o * PH.HARTREE2CM < LOW_CM) else ("other-mid" if f == "other" else f)) for f, o in zip(family, om, strict=True)]
+    codes_low = np.unique(np.asarray(fam_low, dtype=str), return_inverse=True)[1]        # chain 34c (4 Oct 2026): 'other' split at LOW_CM
     return dict(Cm=torch.as_tensor(Cm, dtype=dtype), kscale=torch.as_tensor(kscale, dtype=dtype), ring=torch.as_tensor(ring, dtype=torch.long),
                 K_true=torch.as_tensor(K_true, dtype=dtype), K_norm=torch.tensor(max(norm, 1e-30), dtype=dtype),
-                fam_code=torch.as_tensor(np.asarray(codes).reshape(-1), dtype=torch.long))
+                fam_code=torch.as_tensor(np.asarray(codes).reshape(-1), dtype=torch.long),
+                fam_code_low=torch.as_tensor(np.asarray(codes_low).reshape(-1), dtype=torch.long))
 
 
 def _pattern_term(model, t, dF_p):
@@ -180,11 +186,12 @@ def _kdiag_term(t, pred, mode: str = "all"):
     d_pred, d_true = torch.diagonal(K), torch.diagonal(t["K_true"])
     if mode == "all":
         return ((d_pred - d_true) ** 2).mean() / (d_true ** 2).mean().clamp_min(1e-30)
-    if mode != "family":
-        raise ValueError(f"kdiag mode {mode!r}: 'all' or 'family'")
+    if mode not in ("family", "family-low"):
+        raise ValueError(f"kdiag mode {mode!r}: 'all', 'family' or 'family-low'")
+    code = t["fam_code_low"] if mode == "family-low" else t["fam_code"]        # 'family-low' (chain 34c, 4 Oct 2026): 'other' split at LOW_CM
     terms = []
-    for c in torch.unique(t["fam_code"]):
-        on = t["fam_code"] == c
+    for c in torch.unique(code):
+        on = code == c
         terms.append(((d_pred[on] - d_true[on]) ** 2).mean() / (d_true[on] ** 2).mean().clamp_min(1e-30))
     return torch.stack(terms).mean()
 
@@ -584,7 +591,7 @@ def main() -> int:
                     help="search: fraction of the training ids held out per seed as inner validation (the stage read-out)")
     ap.add_argument("--patience", type=int, default=0, help="search stage 2: early stopping on the inner validation term, best state restored (0 = off)")
     ap.add_argument("--kring-weight", type=float, default=1.0, help="lever 3b (1 Oct 2026): weight of the kring term inside --aux both (the pattern term keeps weight 1)")
-    ap.add_argument("--kdiag-mode", default="all", choices=["all", "family"], help="chain 34 (3 Oct 2026, decision 53): 'family' = the K-diagonal term as the mean "
+    ap.add_argument("--kdiag-mode", default="all", choices=["all", "family", "family-low"], help="chain 34c (4 Oct 2026): 'family-low' = as 'family' with the 'other' modes below 700 cm⁻¹ as their own family; chain 34 (3 Oct 2026, decision 53): 'family' = the K-diagonal term as the mean "
                     "over mode families of the per-family relative mse, so that CH-oop and other weigh as much as the C–H stretches; 'all' = one relative mse over all modes")
     ap.add_argument("--kdiag-weight", type=float, default=0.0, help="lever 5 (2 Oct 2026): weight of a term on the diagonal of K over all modes inside --aux both (0 = off)")
     ap.add_argument("--save-model", action="store_true", help="lever 1 / T3 (2 Oct 2026): save the trained hybrid model per size and seed next to the record")
