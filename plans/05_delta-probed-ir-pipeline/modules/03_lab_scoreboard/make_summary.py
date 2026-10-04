@@ -112,6 +112,12 @@ para("I analysed laboratory infrared band positions of polycyclic aromatic hydro
      "Linstrom, 1997). The question, fixed in a pre-registration note before any band was paired, is whether the offset "
      "between a band's matrix position and its gas-phase position is zero per band family; the answer matters because my "
      "larger capstone project will later be scored against exactly these laboratory numbers.")
+para("For a reader without chemistry: a molecule's infrared spectrum is the list of colours at which it absorbs infrared light (its band "
+     "positions, given in the unit cm⁻¹) and how strongly. Laboratories measure such spectra in two ways: with the molecules frozen into solid "
+     "argon at 10 K, which is precise but can shift the positions slightly, or as a hot vapour, which is closer to the conditions in space but "
+     "blurrier. This report asks, for each kind of vibration, whether the two agree. The test used is a rank test that asks whether the "
+     "differences are centred on zero without assuming a bell-shaped distribution, with a correction for asking the question six times at once. "
+     "A one-page glossary accompanies the modules (GLOSSARY.md in the repository).")
 
 heading("Dataset Description")
 para(f"Each row of the dataset is one laboratory band: its position in wavenumbers (cm⁻¹), its intensity, the molecule "

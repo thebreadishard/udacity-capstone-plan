@@ -9,6 +9,13 @@ and as a hot vapour (NIST Chemistry WebBook gas-phase records). The analytical q
 band's matrix position and its gas-phase position zero, per band family?** The answer feeds the larger
 capstone project, whose own predictions will later be scored against exactly these laboratory numbers.
 
+*For readers without chemistry:* a molecule's infrared spectrum is the list of colours at which it absorbs infrared light (positions, in the unit
+cm⁻¹) and how strongly (intensities). Laboratories measure these spectra in two ways: with the molecules frozen into solid argon at −263 °C (a
+*matrix*), which is precise but can shift the positions slightly, or as a hot vapour (*gas phase*), which is closer to the conditions in space but
+blurrier. This module asks, for each kind of vibration, whether the two agree, because the project's own predictions will be judged against these
+numbers. The statistical test is a rank test (Wilcoxon) that asks whether the shifts are centred on zero without assuming a bell curve; the Holm
+correction accounts for asking that question six times at once. One-line definitions of the terms are in [`../GLOSSARY.md`](../GLOSSARY.md).
+
 **What I built:** a builder that turns the two sources into one tidy band table and forms the
 matrix–gas pairs under the pre-registered rule (`build_lab_tables.py`), a notebook with descriptive
 statistics, three visual models and one pre-registered hypothesis test (`notebook/analysis.ipynb`),

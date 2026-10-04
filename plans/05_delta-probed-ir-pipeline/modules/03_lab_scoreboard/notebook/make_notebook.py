@@ -25,6 +25,11 @@ Plan 05 (Δ-probed IR pipeline), Module 03 of the Udacity AI Mastery Capstone. T
 
 Sections: **Load · Descriptive statistics · Visual models · Hypothesis test · Summary**.""")
 
+md("""*Reading this without chemistry.* A molecule's infrared spectrum is the list of colours (positions, in cm⁻¹) at which it absorbs infrared
+light, and how strongly. Laboratories measure it either with the molecules frozen into solid argon at 10 K (a *matrix*: precise, but the solid can
+shift the positions slightly) or as a hot vapour (*gas phase*: closer to space, but blurrier — the records used here resolve 8 cm⁻¹). The question is
+whether the two agree, per kind of vibration (*family*). The test below is a rank test (Wilcoxon) that asks whether the shifts are centred on zero
+without assuming a bell curve; the Holm correction accounts for asking six times at once. Terms: `../../GLOSSARY.md`.""")
 md("## Load the dataset")
 code("""from pathlib import Path
 import json
@@ -53,7 +58,7 @@ print(df["family"].value_counts().to_string()); print()
 print("species with matrix bands:", df.loc[df.phase == "matrix", "uid"].nunique(), "PAHdb entries |", "species with gas records:", sorted(df.loc[df.phase == "gas", "species"].unique()))
 print(); print(df.groupby("phase")["frequency_cm"].describe().round(1))
 print(); print("gas peaks per record:"); print(df[df.phase == "gas"].groupby("record").agg(species=("species", "first"), peaks=("frequency_cm", "size"), res_cm=("u_res_cm", "first"), snr_median=("snr", "median")).to_string())""")
-md("""*What the statistics reveal.* The dataset is dominated by the matrix side (3,896 of 4,218 rows); the gas side is 322 peaks from nine records. Matrix band positions run from 433 to 5,702 cm⁻¹ with a median near 1,314 cm⁻¹, i.e. in the 7.7 µm C–C/C–H region that also holds the most rows per family; gas peaks lie higher on average (median 1,596 cm⁻¹) because the hot GC-IRD spectra carry many weak features in the 1,650–2,950 cm⁻¹ overtone region that the matrix band lists do not report. The gas records differ sharply in quality: the stated resolution is 8 cm⁻¹ for the six GC-IRD records against 0.125 cm⁻¹ for the quantitative benzene cell record, and the median signal-to-noise per record ranges from about 20 to over 300. The centroid precision u_c is therefore small (median 0.17 cm⁻¹ among the primary pairs) while the resolution term is not: the resolution, not the noise, limits what these gas records can show.""")
+md("""*What the statistics reveal.* The dataset is dominated by the matrix side (3,896 of 4,218 rows); the gas side is 322 peaks from nine records (eight NIST WebBook records and the benzene cell spectrum). Matrix band positions run from 433 to 5,702 cm⁻¹ with a median near 1,314 cm⁻¹, i.e. in the 7.7 µm C–C/C–H region that also holds the most rows per family; gas peaks lie higher on average (median 1,596 cm⁻¹) because the hot GC-IRD spectra carry many weak features in the 1,650–2,950 cm⁻¹ overtone region that the matrix band lists do not report. The gas records differ sharply in quality: the stated resolution is 8 cm⁻¹ for the six GC-IRD records against 0.125 cm⁻¹ for the quantitative benzene cell record, and the median signal-to-noise per record ranges from about 20 to over 300. The centroid precision u_c is therefore small (median 0.17 cm⁻¹ among the primary pairs) while the resolution term is not: the resolution, not the noise, limits what these gas records can show.""")
 
 md("""## Three visual models
 

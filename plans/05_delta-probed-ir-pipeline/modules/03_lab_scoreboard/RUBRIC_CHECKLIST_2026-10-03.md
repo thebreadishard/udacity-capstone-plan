@@ -27,3 +27,5 @@ identical to the run of 12 September); the first checklist file written for 03.*
 
 - The report (22 Sep build) and the notebook (3 Oct re-execution) print the same numbers; no report rebuild was needed for the text fix,
   which touched the notebook summary and the README only.
+
+- Lay-reader pass done 4 Oct 2026 (TASKS item 20): matrix vs gas phase, the rank test and the Holm correction, the unit cm⁻¹ explained in README, notebook and report; `modules/GLOSSARY.md` linked; the 'nine records' count spelled out. Notebook and report rebuilt.
