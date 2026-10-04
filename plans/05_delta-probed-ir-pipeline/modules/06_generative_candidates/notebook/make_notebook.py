@@ -51,6 +51,7 @@ not used in modules 02–05. Splits are by Murcko scaffold (sha-hashed 80/10/10)
 
 Sections: **Setup · 1 Load and inspect · 2 The model · 3 Training · 4 Sampling and evaluation · 5 The design change: conditioning · 6 Ethics and responsible use · 7 Summary**.""")
 
+md("""*Reading this without chemistry.* A SMILES string writes a molecule as text (`c1ccccc1` is benzene). 'Fused aromatic' molecules are flat carbon-ring systems whose rings share edges — the family the project's spectroscopy pipeline serves. The model reads 161,000 such strings from the public PubChem database and learns to write new ones character by character; each proposal is checked by chemistry software (a valid molecule? new? similar in size and composition to the real ones?). The purpose is a list of candidates for the pipeline to compute next, never a claim about any molecule. Terms are defined in `../../GLOSSARY.md`.""")
 md("## Setup")
 code(f"""import json, math, os, sys, time, random
 from pathlib import Path

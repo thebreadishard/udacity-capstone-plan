@@ -10,6 +10,8 @@ on 24 September (PubChem; freeze now; candidates as a separately labelled source
 
 ## Project description (as it will read)
 
+*For readers without chemistry:* A SMILES string writes a molecule as text (`c1ccccc1` is benzene). 'Fused aromatic' molecules are flat carbon-ring systems whose rings share edges — the family the project's spectroscopy pipeline serves. The model reads 161,000 such strings from the public PubChem database and learns to write new ones character by character; each proposal is checked by chemistry software (a valid molecule? new? similar in size and composition to the real ones?). The purpose is a list of candidates for the pipeline to compute next, never a claim about any molecule. Terms are defined in [`../GLOSSARY.md`](../GLOSSARY.md).
+
 **Task type: sequence generation with a Transformer.** A molecule is written as a SMILES string; a small decoder-only Transformer (4 layers,
 4 heads, d 256, ≈ 3 M parameters, own PyTorch code) trained on public fused-aromatic chemistry generates new substituted and heteroatom PAH
 candidates, optionally conditioned on ring count and heteroatom set. The candidates are ranked by how close they sit to the families the project's

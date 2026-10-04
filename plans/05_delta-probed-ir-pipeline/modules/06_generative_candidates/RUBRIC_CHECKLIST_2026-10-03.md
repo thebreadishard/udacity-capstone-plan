@@ -24,3 +24,5 @@ first checklist file written for 06.*
   taken as recommended and stand open for the user to confirm or change (README status).
 - The pre-registered run stopped at its cap of 20 epochs for every seed; closed by the user's ruling of 28 September, not by a re-run. A later
   run with the cap lifted is a dated follow-up section if the user wants one, never a replacement.
+
+- Lay-reader pass done 4 Oct 2026 (TASKS item 20): a plain-language opening in README, notebook (builder and the executed notebook's markdown) and report; `modules/GLOSSARY.md` linked; the report rebuilt; the notebook re-executed after the TZ run (decision 58, text and execution split).

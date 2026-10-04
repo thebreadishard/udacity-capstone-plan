@@ -95,6 +95,7 @@ para(f"The generative task is to propose new fused-aromatic molecules, written a
      f"Outputs are judged by the standard validity–uniqueness–novelty trio of the MOSES and GuacaMol benchmarks (Polykovskiy et al., 2020; Brown et al., 2019), "
      f"by the match of their size and composition distributions to a held-out set, and by a project-specific fit criterion; all metrics and their expected "
      f"values were fixed in a pre-registration before training.")
+para("For a reader without chemistry: A SMILES string writes a molecule as text (c1ccccc1 is benzene). 'Fused aromatic' molecules are flat carbon-ring systems whose rings share edges — the family the project's spectroscopy pipeline serves. The model reads 161,000 such strings from the public PubChem database and learns to write new ones character by character; each proposal is checked by chemistry software (a valid molecule? new? similar in size and composition to the real ones?). The purpose is a list of candidates for the pipeline to compute next, never a claim about any molecule. Terms are defined in ../../GLOSSARY.md.")
 
 heading("Dataset or Prompt Description")
 sp = R["splits"]
