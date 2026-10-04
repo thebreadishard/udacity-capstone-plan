@@ -97,6 +97,7 @@ para(f"This project asks whether a Transformer can learn, from the normal modes 
      f"couplings. The dataset is the project's own corpus of {R['n_molecules']} molecules ({R['n_modes_total']:,} modes) computed at two levels of "
      f"theory on identical geometries (release {R['release']}). The model is an encoder-only Transformer over mode tokens with two output heads "
      f"(Vaswani et al., 2017); its baseline has {R['parameters']['baseline']:,} parameters.")
+para("For a reader without chemistry: The colours at which a molecule absorbs infrared light follow from a table of spring stiffnesses between its atoms (the Hessian). A cheap calculation (DFT) gives that table with systematic errors; the expensive one (coupled cluster) gets it right but is affordable only for small molecules. This network learns the difference between the two tables from the molecule's structure and the cheap table, trained on a corpus of cheap-against-cheap differences and checked against the few expensive ones (the anchors). It is judged on molecules it never saw (hold-outs), per kind of vibration (family), in cm⁻¹ — a small unit of colour; the goal is a few cm⁻¹ where the cheap calculation is off by tens. Terms are defined in ../../GLOSSARY.md.")
 
 heading("Dataset and Task Description")
 para(f"Each molecule is a sequence of normal-mode tokens; a token carries the mode's frequency, its family, the shares of C, H, N and O in the "

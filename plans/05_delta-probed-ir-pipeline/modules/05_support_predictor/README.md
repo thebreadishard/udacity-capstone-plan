@@ -6,6 +6,8 @@
 
 ## Project description (as it reads)
 
+*For readers without chemistry:* The colours at which a molecule absorbs infrared light follow from a table of spring stiffnesses between its atoms (the Hessian). A cheap calculation (DFT) gives that table with systematic errors; the expensive one (coupled cluster) gets it right but is affordable only for small molecules. This network learns the *difference* between the two tables from the molecule's structure and the cheap table, trained on a corpus of cheap-against-cheap differences and checked against the few expensive ones (the anchors). It is judged on molecules it never saw (hold-outs), per kind of vibration (family), in cm⁻¹ — a small unit of colour; the goal is a few cm⁻¹ where the cheap calculation is off by tens. Terms are defined in [`../GLOSSARY.md`](../GLOSSARY.md).
+
 **Task type: sequence modelling with a Transformer.** A molecule is a sequence of DFT normal-mode tokens (one per vibration: frequency, band
 family, symmetry and environment descriptors). The network predicts, per band family, the *correction block* between two levels of theory — the
 shift of each vibration and the couplings inside the family — and, with a pair head, which pairs of modes carry a large coupling. The target

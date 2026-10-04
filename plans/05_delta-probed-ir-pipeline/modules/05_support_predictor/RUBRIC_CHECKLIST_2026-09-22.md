@@ -79,3 +79,5 @@ outputs are current again. Items unchanged otherwise; the reviewer sees sections
 - Running or waiting outside the rubric: the 200 (CPX62), chain 34 (laptop, after the TZ run), chain 33 and benzene⁺ (CCX53), pool 3 prepared; none changes the submitted notebook.
 - Open, unchanged: the user's pass; Zenodo release; the submission copy at the very end; promotion of the model to `src/dpir`. The rubric items themselves are
   re-ticked in the full weekend pass (TASKS, weekend review 2).
+
+- Lay-reader pass done 4 Oct 2026 (TASKS item 20): a plain-language opening in README, notebook (builder and the executed notebook's markdown) and report; `modules/GLOSSARY.md` linked; the report rebuilt; the notebook re-executed after the TZ run (decision 58, text and execution split).
