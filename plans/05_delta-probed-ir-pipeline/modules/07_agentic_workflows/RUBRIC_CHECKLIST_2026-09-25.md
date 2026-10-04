@@ -29,3 +29,5 @@ with the diff only (quality policy, promotion item 7) if the steward ever runs l
   the replay); 29 tests green; `run_scenarios.py` 17/17 (`out/scenario_results_2026-10-03_rules.json`); `rules_v2.json` is the default, v1 loads.
 - Notebook rebuilt (19 cells, 0 errors; sections 1, 4, 4.1 and 5 updated), report rebuilt with the seventeen-scenario table. The LLM-policy run
   still waits for a key the user sets (Task 4's own-model run); the deterministic policy is the reference.
+
+- Lay-reader pass done 4 Oct 2026 (TASKS item 20): a plain-language opening in README, notebook (builder and the executed notebook's markdown) and report; `modules/GLOSSARY.md` linked; the report rebuilt; the notebook re-executed after the TZ run (decision 58, text and execution split).

@@ -48,6 +48,7 @@ creating or deleting machines, spending money, publishing, changing a pre-regist
 API or any OpenAI-compatible endpoint such as the course's Vocareum keys (provider switch of 28 September 2026); provider and model id are logged with every proposal. Replay mode — the mode of this notebook — touches no machine: observations are verbatim excerpts of the real logs of
 25 September 2026 (`scenarios/fixtures/`), and actions produce the effects the scenario declares.""")
 
+md("""*Reading this without chemistry.* The project's calculations run for days on rented computers, and things go wrong at night: a job dies, a lock file blocks the next one, a log falls silent while the work continues. The run steward is a small program (an 'agent') that watches those machines, applies a written table of rules distilled from the project's own past mistakes, and may take only a short list of harmless actions; anything that costs money, deletes data or makes a scientific claim it hands to a human. The scenarios in section 4 replay real log excerpts to check that it behaves. Terms are defined in `../../GLOSSARY.md`.""")
 md("""## 1. Setup and the rule table (the agent's memory of what went wrong before)""")
 code("""import json, os, sys, time, datetime as dt
 from pathlib import Path
