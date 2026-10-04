@@ -44,3 +44,26 @@ the composite is rejected for that family; TZ anchors where affordable (benzene,
 Test 1: ≈ 20 B3LYP and 12 MP2 gradient evaluations on benzene at cc-pVDZ/cc-pVTZ plus one analytic B3LYP/cc-pVDZ Hessian — of the order of an hour at
 4 threads, run today beside chain 34 step 3 (12 threads). Test 2: after the TZ anchor assembles (≈ 5 Oct midday), minutes for B3LYP, 1–2 h for MP2,
 on free lanes. Nothing changes in the Ladder, the anchors or the T3 lines before test 2 is read; test 1 only picks X.
+
+## Outcome of test 1, 4 October 16:4x — MP2 tracks all three coordinates, B3LYP none; X = MP2
+
+`modules/05_support_predictor/out/composite_test1_benzene_2026-10-04.{md,json}` (`probes/results_m1/composite_test1_benzene_2026-10-04_b.log`; 5,161 s at
+4 threads beside step 3). The first launch (14:46) died in the MP2/cc-pVTZ gradient: pyscf's `grad/mp2.py` sizes its AO blocks from
+`max_memory − current memory`, and after the B3LYP work in the same process 6,000 MB left a block of one function, smaller than a d shell — an empty
+block and a reshape error; relaunched 15:21 with MP2 first and 12,000 MB (the B3LYP numbers of the first run are identical to the digit).
+
+| k | coordinate | Δ_CC | Δ_MP2 | Δ_B3LYP | MP2 / CC | B3LYP / CC | B3LYP analytic vs FD |
+|---|---|---|---|---|---|---|---|
+| 2 | C z (oop) | +0.01678 | +0.01585 | +0.00467 | 0.94 tracks | 0.28 | 4.7e-6 |
+| 18 | H x (C–H) | −0.02425 | −0.02356 | −0.01782 | 0.97 tracks | 0.73 | 1.0e-5 |
+| 20 | H z (oop) | +0.00421 | +0.00376 | +0.00271 | 0.89 tracks | 0.64 | 6.2e-7 |
+
+**Predictions.** MP2 within 20 % on all three: yes (6–11 % short). B3LYP within 20 % on the out-of-plane pair: **no** — it gives 28 % and 64 % of the
+step; the basis stiffness of the out-of-plane bends is a correlation-basis effect too, not a one-electron one. B3LYP under-reproducing the C–H step:
+yes (73 %). Second route: the analytic B3LYP/cc-pVDZ Hessian agrees with the FD values to ≤ 1.0e-5 a.u. at the production grid (the water smoke's
+4e-4 was the small grid 75,302). **Reading rule → X = MP2 for test 2.** Cost at TZ: 640–850 s per MP2 gradient of benzene at 4 threads, so the
+full benzene step is ≈ 2 h and a naphthalene step a night; B3LYP is dropped as a fallback (it tracks nothing).
+
+*Test 2 preparation (16:5x):* `probes/cc_composite_full_check.py compute` writes the MP2 Hessian rows of the symmetry-unique displacements at a basis
+(cc-pVDZ and cc-pVTZ for benzene run tonight beside step 3); `… read` assembles the composite when the TZ anchor exists and reads it per family against
+CC/TZ with CC/DZ as the baseline, as registered above.
