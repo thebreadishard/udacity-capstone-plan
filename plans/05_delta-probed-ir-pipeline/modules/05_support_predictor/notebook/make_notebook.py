@@ -990,6 +990,39 @@ def _fam_read(name, hold="a"):
 _c24f = _fam_read("E7_rungC_carried_kd_750_saved_2026-10-02")
 _c34f = _fam_read("E7_rungC_chain34_kdfamily_750_2026-10-05")
 _c34b = _fam_read("E7_rungC_chain34_kdfamily_750_2026-10-05", "b")
+_c34bw = _fam_read("E7_rungC_chain34b_kdfamily_w03_750_2026-10-04")            # 4 Oct: weight 0.3
+_c34cw = _fam_read("E7_rungC_chain34c_kdfamilylow_750_2026-10-04")            # 4 Oct: 'other' split at 700 cm⁻¹
+
+
+def _json_or_none(name):
+    p = HERE.parent / "out" / name
+    return json.load(open(p, encoding="utf-8")) if p.exists() else None
+
+
+_lm, _lmc = _json_or_none("rungC_low_modes_noise_2026-10-04.json"), _json_or_none("rungC_low_modes_noise_c34c_2026-10-04.json")
+_oop, _t1 = _json_or_none("cc_basis_oop_check_benzene_2026-10-04.json"), _json_or_none("composite_test1_benzene_2026-10-04.json")
+if _c34f and _c34bw and _c34cw and _lm and _lmc and _oop and _t1:
+    _sh = {r["k"]: r for r in _oop["rows"]}; _tr = {r["k"]: r for r in _t1["rows"]}
+    _after34_txt = (
+        f"**What followed chain 34 (4 October).** Two more turns of the loss lever, then an answer of a different kind. Chain 34b raised the family "
+        f"term's weight from 0.1 to 0.3: 'other' {_f(_c34bw[0]['other'])} against chain 34's {_f(_c34f[0]['other'])} — saturated. Chain 34c gave the low "
+        f"modes (below 700 cm⁻¹, {100 * _lm['share_low']:.0f} % of the remaining 'other' error) a vote of their own in the term: other-low "
+        f"{_f(_lmc['pooled_pred']['other-low'])} against {_f(_lm['pooled_pred']['other-low'])}, 'other' {_f(_c34cw[0]['other'])}, and the C–H stretches paid "
+        f"{_f(_c34cw[0]['CH-stretch'] - _c34f[0]['CH-stretch'])} cm⁻¹ — the third registered line: the low modes do not respond to weighting. What does reach "
+        f"them is the labels: the finite-difference floor of the low modes is {_f(_lm['pooled_floor']['other-low'])} cm⁻¹ pooled over the hold-out molecules "
+        f"that have both routes, larger than the error itself. Step 3 computes the analytic Hessians of the eight finite-difference hold-out molecules; the "
+        f"re-read on them decides whether the remaining 'other' error is learning or labels, and only then is a new input (the environment of a torsion) "
+        f"designed.\n\nThe same afternoon the anchors' own ruler moved. Odds lever 2 compared benzene's CCSD(T) correction at cc-pVDZ and cc-pVTZ on three "
+        f"coordinates: the larger basis removes {100 * _sh[2]['basis_share_of_dz_correction']:.0f} % (carbon, out of plane) and "
+        f"{100 * _sh[20]['basis_share_of_dz_correction']:.0f} % (hydrogen, out of plane) of the small-basis correction and reverses the in-plane C–H one "
+        f"({100 * _sh[18]['basis_share_of_dz_correction']:.0f} %). The cc-pVDZ anchors are therefore not the truth for out-of-plane and C–H coordinates, and "
+        f"part of what the network 'failed' to reproduce on them was the basis, not the chemistry. The way out is a composite level — the full CCSD(T) Hessian "
+        f"at cc-pVDZ plus the TZ−DZ step measured at a cheaper method; MP2 reproduces that step on all three coordinates ({_tr[2]['ratio_mp2']:.2f}, "
+        f"{_tr[18]['ratio_mp2']:.2f}, {_tr[20]['ratio_mp2']:.2f} of it), B3LYP on none ({_tr[2]['ratio_b3lyp']:.2f}, {_tr[18]['ratio_b3lyp']:.2f}, "
+        f"{_tr[20]['ratio_b3lyp']:.2f}); the test on the full benzene anchor at cc-pVTZ runs in the night of 4–5 October "
+        f"(`GoalGathering/notes/Design_2026-10-04_Composite_Anchor_Level_DZ_TZ.md`).")
+else:
+    _after34_txt = "**What followed chain 34** is filled by the rebuild after the records of 4 October exist."
 _fam_tab = "\n".join("| " + f + " | " + _f(_c24f[0][f]) + " | " + _f(_fc["floor_median"][f]) + " | " + _f(_fc["ceiling_ls_pooled"][f]) + " | "
                      + (_f(_c34f[0][f]) if _c34f else "running") + " |" for f in _FAM)
 _fall = {d["to"]: d for d in _cv["falls_a"]}[449]
@@ -1039,6 +1072,8 @@ first is chain 34's job, the second the next pool's (section 12.3, decision 52).
 **Chain 34 (pre-registration amendment of 3 October, 11:1x).** The K-diagonal term weighted every mode alike, so 'other' — a quarter of the modes with the
 largest residual — was outvoted by the ring modes. `rungC_train.py --kdiag-mode family` takes the mean over families of each family's relative error
 instead; everything else is the carried recipe at 750, three seeds, models saved (registry status `candidate` until read). {_c34_txt}
+
+{_after34_txt}
 
 **Decision 54 — the next pool after the 200 (pool 3).** The corpus has no charged species and few four-ring or five-ring systems, and the plan's gap
 list names cations first. Batch 1 is 60 radical cations on scaffolds the pool already covers, 30 aza-four-rings and 30 five-ring systems, with a third
