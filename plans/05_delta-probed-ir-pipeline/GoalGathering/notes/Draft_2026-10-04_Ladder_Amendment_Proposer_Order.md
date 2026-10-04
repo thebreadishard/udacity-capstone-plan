@@ -1,6 +1,6 @@
 # Draft, 4 October 2026 — a dated amendment of the Ladder: partial CC decks take the proposer's order (for the user's yes or no)
 
-*Not in force. The Ladder (`../Frozen_Ladder_and_Tolerances.md`) changes only by a dated amendment on the user's word. This draft answers the
+*Adopted 4 October 2026, 09:0x, as decision 58 (the user: "Akkoord met al je adviezen"); the amendment is in the Ladder §3 and the rehearsal is registered. The Ladder (`../Frozen_Ladder_and_Tolerances.md`) changes only by a dated amendment on the user's word. This draft answers the
 question of 4 October 08:4x ("gebruiken we het geleerde uit de standout module in het eindproduct?") and TASKS item 21.*
 
 ## What the standout established

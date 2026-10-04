@@ -453,6 +453,12 @@ for fragment probing, before the R3 fragment-vs-whole comparison has printed.
 - **[05] Hold-out membership is decided before any response exists:** by a seeded rule in the
   Q0 deck (deck seed + pair index: **one deck index per pair ±p, and the pair is the hold-out
   unit** — a pair is never split between hold-out and training), fraction f_h (item 10).
+  **Dated amendment 2026-10-04 (decision 58; the standout's CC-level test, benzene 29 Sep and naphthalene 4 Oct, both passing the band-free line):**
+  a partial deck takes the order of the hand-feature pattern scorer (P1 of `modules/standout_pattern_proposer`, version and hash in the deck's
+  manifest) *before* the deck's hash is taken and before any response exists; hold-out membership stays this seeded rule and is drawn after the
+  ordering; the recovery and the stop rule are unchanged. A learned proposer replaces P1 only after its registered stages beat the hand-feature
+  scorer on the proxy and on at least one CC molecule. Full Hessians, where affordable, are unchanged. First use: the registered rehearsal on
+  naphthalene's existing gradients (`notes/PreRegistration_2026-10-04_Proposer_Order_Rehearsal_Naphthalene.md`).
 - **[05] Frozen spaces — the object, written once.** At the reference geometry the local-CC code
   stores the localized occupied orbitals and each fragment's LNO (or PNO) vectors in the AO
   basis. At a displaced geometry **both halves are transported by projection, and nothing is
