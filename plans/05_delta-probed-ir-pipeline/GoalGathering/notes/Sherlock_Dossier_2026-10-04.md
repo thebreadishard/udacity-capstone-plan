@@ -1,0 +1,22 @@
+# The Sherlock dossier, state of 4 October 2026 09:2x — the eleven open questions under the three targets
+
+*Written down because the chat version of 3 October 19:5x was lost to a context compaction and only its item 11 reached the ledger. One row per
+question: what it asks, where it stands, what moves it next. Updated by dated edits, not annotations.*
+
+| # | question | stands (4 Oct 09:2x) | next |
+|---|---|---|---|
+| 1 | T1 'other' ≤ 3 cm⁻¹: a learning or loss problem? | Partly loss: the family-balanced K-diagonal term (chain 34) took 'other' from 4.14 to 3.48 on hold-out (a), 7.47 → 6.03 on (b); weight 0.3 (chain 34b) brought nothing — saturated. The low-mode read of 08:2x: 77 % of the remaining error sits below 700 cm⁻¹; other-mid is already 2.90, under the line; the model is at 0.31× the zero rule there; the clean floor (1.36) leaves room. | Chain 34c (`--kdiag-mode family-low`, running, read ≈ 13:00): does a vote of its own move other-low? Then, as registered: analytic hold-out targets (step 3) before any further lever, and a low-mode input ablation (torsion environment) designed if weighting does not move it. |
+| 2 | T1 CH-oop ≤ 3: labels or model? | Labels: FD floor 3.3, model 3.05 on it. | Step 3 (analytic hold-out Hessians, 8 threads) after the TZ run; CH-oop is read on analytic targets only. |
+| 3 | Representation or learning? | Learning: the head's ceiling is ≤ 0.25 in every family (step 1, 3 Oct). | Closed as a question; the ceiling is re-measured only if the head changes. |
+| 4 | T2 coverage: scaffold families | The 200 at 38/200 (≈ 12 Oct); prediction (b) ≤ 0.28 registered; decision 52 (≈ 30 children cover a family); pool 3 (60 cations, 30 aza-four-rings, 30 five-rings) prepared, hold-out (c), charge input built and tested. | Read (b) when the 200 land; launch pool 3 after; benzene⁺ CC anchor queued on the CCX53 after anthracene. |
+| 5 | T3: does a fourth and fifth anchor help? | Anthracene at 28 of 42 gradients (≈ 5 Oct); chain 33 (T3 with five anchors) chained on the carried models (chain 34, decision 57). | Read chain 33 against its lines (naphthalene ≤ 4 → anchors are the lever). |
+| 6 | Is the out-of-plane CC gap a basis-set effect? | TZ benzene attempt 4 past the reference (03:15) after the out-of-core (T) density fix; 3 of 6 pair gradients at 09:1x; ≈ 13:00–14:00. | Read `probes/cc_basis_oop_check.py` against the lines (≥ 40 % removed → basis; < 20 % → the level). |
+| 7 | Local CC for anchors beyond ≈ 26 atoms (LNO)? | 3 Oct: +0.29 % / +0.27 % above canonical — the level, not scatter. Follow-up registered: (a) xtight, (b) frozen spaces (built and water-tested 3 Oct 23:5x). | Run both cells on a free laptop lane (≈ 5–6 Oct). |
+| 8 | Intensities: the second term on CC | Benzene 0.205, 'in between' (3 Oct). | Naphthalene with the dipole route when its CC APT exists. |
+| 9 | CCSD(T) gradient throughput | New 4 Oct: pyscf's (T) gradient builds the vvvv density block dense (3 × 28 GB at cc-pVTZ); our fast path builds it out of core (software ledger row 35). | A small upstream PR on the user's word; the CCSD/lambda iteration time remains the next lever (TASKS row). |
+| 10 | Cations | Charge-state input (zero rows, bit-identical neutral output), cation gate, candidate list frozen; benzene⁺ anchor queued. | Pool 3 batch 1; the cation anchor read when it lands. |
+| 11 | Standout on naphthalene (gate B's second molecule) | Ran 02:54: in-band C1/C2 FAIL, band-free pass, P1/oracle 5.0 — benzene's split again. The user (08:3x): the in-band requirement was mis-specified; band-free is the registered line; both molecules 'confirmed', gate B passed. Decision 58: partial decks take the proposer's order before the hash. | The rehearsal on naphthalene's 15 existing gradients (`probes/anchor_deck_rehearsal.py`, registered 09:1x): how many gradients does a hybrid anchor need under P1 / blind / oracle? Smoke on pyridine 09:2x; naphthalene after the TZ run. |
+
+**Decisions of the day so far:** 57 (promotion policy: the best registered model on both hold-outs is carried, open lines stay targets; chain 34 carried,
+chain 24 superseded), 58 (the proposer orders partial CC decks; rehearsal registered), module 04's baseline column stays ridge, the lay-reader pass
+over every module (modules/GLOSSARY.md; texts now, notebook re-executions after the TZ run).
