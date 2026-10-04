@@ -1,0 +1,63 @@
+{
+ "date": "2026-10-04 13:20",
+ "proposals_csv": "proposals_2026-10-04.csv",
+ "runs": [
+  {
+   "run": "seed0",
+   "seed": 0,
+   "conditioning": false,
+   "checkpoint": "notebook\\out\\seed0\\model_seed0.pt",
+   "sha256": "cddd48d609b9bc4d8cce51803f2b40afdcf1ab141b311137364ce6ba855c25e9",
+   "status": "experimental",
+   "version": "0.1",
+   "params": 3201024,
+   "n_per_request": 10000,
+   "temperature": 1.0,
+   "requests": [
+    ""
+   ],
+   "n_rows": 10000,
+   "n_parsed": 9239,
+   "seconds": 1313
+  },
+  {
+   "run": "seed1",
+   "seed": 1,
+   "conditioning": false,
+   "checkpoint": "notebook\\out\\seed1\\model_seed1.pt",
+   "sha256": "395c1a70cc17a70b188556efa20bb9bd5da345dd388ec726c183104b7ffd4c0f",
+   "status": "experimental",
+   "version": "0.1",
+   "params": 3201024,
+   "n_per_request": 10000,
+   "temperature": 1.0,
+   "requests": [
+    ""
+   ],
+   "n_rows": 10000,
+   "n_parsed": 9212,
+   "seconds": 2625
+  },
+  {
+   "run": "cond_seed0",
+   "seed": 0,
+   "conditioning": true,
+   "checkpoint": "notebook\\out\\cond_seed0\\model_seed0.pt",
+   "sha256": "68322056590096d3bdd4cd3df15584674cbe76bebbfe7c6be4393422913edc33",
+   "status": "experimental",
+   "version": "0.2",
+   "params": 3205120,
+   "n_per_request": 2500,
+   "temperature": 1.0,
+   "requests": [
+    "<r3> <hnone>",
+    "<r4+> <hnone>",
+    "<r3> <hN>",
+    "<r4+> <hN>"
+   ],
+   "n_rows": 10000,
+   "n_parsed": 7602,
+   "seconds": 1342
+  }
+ ]
+}

@@ -77,7 +77,7 @@ website/export/out/
 
 # Module 06: PubChem raw-response cache and model checkpoints (the frozen CSV is committed, compressed if needed)
 plans/*/modules/06_generative_candidates/data/cache/
-plans/*/modules/06_generative_candidates/out/
+plans/*/modules/06_generative_candidates/out/*
 *.pt
 !plans/*/modules/06_generative_candidates/data/README.md
 !plans/*/modules/06_generative_candidates/data/*.csv.gz

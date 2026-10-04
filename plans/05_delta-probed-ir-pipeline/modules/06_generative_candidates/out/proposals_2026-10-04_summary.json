@@ -1,0 +1,104 @@
+{
+ "n_samples": 30000,
+ "n_distinct": 28309,
+ "by_stage": {
+  "parses": 3947,
+  "neutral_closed_shell": 3,
+  "elements": 0,
+  "heavy_le_30": 912,
+  "fused_aromatic_2plus": 290,
+  "not_in_manifest": 177,
+  "new_ring_system": 15967
+ },
+ "n_pass": 7013,
+ "n_new_ring_systems": 881,
+ "n_new_ring_systems_in_pubchem_set": 216,
+ "n_pass_in_pubchem_set": 846,
+ "per_class": {
+  "r2 N": {
+   "molecules": 162,
+   "ring_systems": 90
+  },
+  "r2 O": {
+   "molecules": 3,
+   "ring_systems": 5
+  },
+  "r2 mixed": {
+   "molecules": 495,
+   "ring_systems": 25
+  },
+  "r2 none": {
+   "molecules": 1,
+   "ring_systems": 4
+  },
+  "r3 N": {
+   "molecules": 1166,
+   "ring_systems": 243
+  },
+  "r3 O": {
+   "molecules": 86,
+   "ring_systems": 25
+  },
+  "r3 S": {
+   "molecules": 7,
+   "ring_systems": 8
+  },
+  "r3 mixed": {
+   "molecules": 1788,
+   "ring_systems": 95
+  },
+  "r3 none": {
+   "molecules": 15,
+   "ring_systems": 13
+  },
+  "r4+ N": {
+   "molecules": 1358,
+   "ring_systems": 198
+  },
+  "r4+ O": {
+   "molecules": 94,
+   "ring_systems": 27
+  },
+  "r4+ S": {
+   "molecules": 17,
+   "ring_systems": 14
+  },
+  "r4+ mixed": {
+   "molecules": 1474,
+   "ring_systems": 47
+  },
+  "r4+ none": {
+   "molecules": 347,
+   "ring_systems": 85
+  }
+ },
+ "per_run": {
+  "cond_seed0 <r3> <hN>": {
+   "samples": 2500
+  },
+  "cond_seed0 <r3> <hnone>": {
+   "samples": 2500
+  },
+  "cond_seed0 <r4+> <hN>": {
+   "samples": 2500
+  },
+  "cond_seed0 <r4+> <hnone>": {
+   "samples": 2500
+  },
+  "seed0": {
+   "samples": 10000
+  },
+  "seed1": {
+   "samples": 10000
+  }
+ },
+ "gated_csv": "proposals_2026-10-04_gated.csv",
+ "gated_sha256": "69f25509e1c4e5a630672cb15bac1a200a31914e82cecc49f31ae41b21c3962b",
+ "date": "2026-10-04 13:26",
+ "proposals": "proposals_2026-10-04.csv",
+ "n_manifest_smiles": 5318,
+ "n_known_systems": 37,
+ "n_cores": 19,
+ "n_pubchem": 160972,
+ "seconds": 88
+}
