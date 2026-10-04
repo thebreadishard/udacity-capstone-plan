@@ -8,6 +8,12 @@ contains: how many molecules of which size and charge, which scale factors were 
 the molecules on this project's test ladder have an entry. The result is the "opponent atlas": the
 reference predictions that the project's own pipeline will later be compared against.
 
+*For readers without chemistry:* molecules vibrate, and each vibration absorbs infrared light at one colour; the list of those colours and their
+strengths is the molecule's infrared spectrum, and astronomers use such spectra to tell which molecules are in space. NASA keeps a library of
+*computed* spectra for thousands of flat carbon-ring molecules (PAHs); this module reads that library into clean tables and asks what it holds,
+how the numbers were adjusted, and which of the project's own test molecules it covers. Terms such as basis set, scale factor and cation are
+explained where they first appear and in [`../GLOSSARY.md`](../GLOSSARY.md).
+
 **What I built:** a streaming XML parser (`build_opponent_atlas.py`), two smaller readers for the
 other comparison lines, a Jupyter notebook with two cleaning functions, one EDA function and five
 labelled figures (`notebook/data_workflow.ipynb`), and a written summary (`module_summary.pdf`).

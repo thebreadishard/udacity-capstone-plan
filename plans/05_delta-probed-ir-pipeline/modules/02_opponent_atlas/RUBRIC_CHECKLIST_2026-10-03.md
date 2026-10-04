@@ -29,3 +29,5 @@ missing and who owes it. Evidence is a file or a cell, never a memory. The noteb
 - The repository name and branch count of Task 2 are a submission-time action (above).
 - Line D (the 2026 machine-learning PAH-IR predictors, PROVENANCE's dated note of 13 Sep) is not a row in the atlas; it is
   outside the rubric and belongs to the plan's opponents table, where paper D's claim already cites those works.
+
+- Lay-reader pass done 4 Oct 2026 (TASKS item 20): plain-language opening in README, notebook and report; basis set, scale factor, charge names and cm⁻¹ explained at first use; `modules/GLOSSARY.md` linked. Notebook and report rebuilt.

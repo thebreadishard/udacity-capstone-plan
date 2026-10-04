@@ -24,6 +24,12 @@ Plan 05 (Δ-probed IR pipeline), Module 02 of the Udacity AI Mastery Capstone. T
 
 Sections: **Setup · Ingestion · Cleaning · EDA · Visualizations · Summary**.""")
 
+md("""*Reading this without chemistry.* A molecule vibrates in many ways, and each vibration absorbs infrared light at one colour; the list of
+those colours (positions, in the unit cm⁻¹) with their strengths (intensities) is its infrared spectrum. NASA's library holds such spectra, *computed*
+rather than measured, for 10,749 flat carbon-ring molecules (PAHs) in several electric-charge states (neutral, +1 cation, −1 anion, +2 dication).
+Two technical words recur: the *basis set* (6-31G*, 4-31G) is the resolution of the calculation — a larger one is more accurate and more expensive —
+and a *scale factor* is a number slightly below one by which the computed positions are multiplied to bring them closer to measurements. One-line
+definitions of every such term are in `../../GLOSSARY.md`.""")
 md("## Setup")
 code("""import json, re
 from pathlib import Path

@@ -68,6 +68,12 @@ para("I built a reproducible data workflow that reads the public NASA Ames PAH I
      "species table of 10,749 rows and 27 columns and a band table of 2,517,399 rows. The library is the "
      "\"opponent\" of my larger capstone project: the reference predictions that a later, more accurate "
      "pipeline will be compared against. The data are computed science data, not AI-generated (Ricca et al., 2026).")
+para("For a reader without chemistry: molecules vibrate, and each vibration absorbs infrared light at one colour; the list of those colours "
+     "(positions, given in the unit cm⁻¹) with their strengths (intensities) is the molecule's infrared spectrum, and astronomers use such spectra "
+     "to tell which molecules are present in space. The library studied here holds such spectra, computed rather than measured, for thousands of "
+     "flat carbon-ring molecules (PAHs). Two technical terms recur: the basis set is the resolution of a calculation (a larger one is more accurate "
+     "and more expensive), and a scale factor is a number slightly below one by which computed positions are multiplied to bring them closer to "
+     "measurements. A one-page glossary accompanies the modules (GLOSSARY.md in the repository).")
 
 heading("Dataset Description")
 para("PAHdb is a library of computed infrared spectra of polycyclic aromatic hydrocarbons and related "
@@ -75,7 +81,7 @@ para("PAHdb is a library of computed infrared spectra of polycyclic aromatic hyd
      "a formula, an electric charge, element counts, the point-group symmetry, the quantum-chemical method and "
      "basis set (written only in a free-text route line), and a list of vibrational transitions, each with a "
      "frequency, an intensity in km/mol and the scale factor applied to it. The species table I derived has "
-     "10,749 rows (4,479 neutral molecules, 2,162 cations, 2,868 dications, 1,231 anions and 9 trications) and "
+     "10,749 rows (4,479 neutral molecules, 2,162 cations with one positive charge, 2,868 dications with two, 1,231 anions with one negative charge, and 9 trications) and "
      "27 columns; the band table has 2,517,399 rows. The key variables I focused on were the carbon count, the "
      "charge, the basis set, the stored scale factor, the band position and intensity, and a frequency-range "
      "family label that I added for exploration only.")
