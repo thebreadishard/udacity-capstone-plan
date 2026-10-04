@@ -24,6 +24,11 @@ Plan 05 (Δ-probed IR pipeline), Module 04 of the Udacity AI Mastery Capstone. *
 
 Sections: **Load and inspect · Preparation and preprocessing · Model selection and training · Evaluation · Summary**.""")
 
+md("""*Reading this without chemistry.* A band position is the colour (in cm⁻¹) at which a molecule absorbs infrared light; NASA's library computes
+these positions and multiplies them by a fixed *scale factor* to bring them closer to measurements. The target y of every row is how far that
+adjusted computed position still is from the one measured in the laboratory (molecules frozen into solid argon). A model that predicted y from
+simple descriptors would correct the library for free. Every model is judged on molecules it never saw, by the mean absolute error of its corrected
+positions in cm⁻¹; the 'zero model' is the library as it stands. Terms: `../../GLOSSARY.md`.""")
 md("## Load and inspect the dataset")
 code("""from pathlib import Path
 import json

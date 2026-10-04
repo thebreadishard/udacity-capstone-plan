@@ -27,3 +27,5 @@ reproduced exactly); the first checklist file written for 04.*
   6.40). The RECIPE leaves that choice to the pilot note; the ridge column stands until the note says otherwise (PROVENANCE, Owed).
 - **Zenodo release of `training_table.csv`** (reading 1): the deposit tooling exists since 3 Oct (`tools/zenodo_deposit.py`); the
   deposit and the click are the student's, after paper D's data release.
+
+- Lay-reader pass done 4 Oct 2026 (TASKS item 20): the target, the scale factor, the matrix and the evaluation explained in plain words in README, notebook and report; `modules/GLOSSARY.md` linked. Notebook and report rebuilt.

@@ -89,6 +89,11 @@ para("I addressed a supervised regression problem: predicting, per infrared band
      "library version 3.10 (https://www.astrochemistry.org/pahdb/experimental/3.10; Mattioda et al., 2020). I trained "
      "and compared a per-family constant, a ridge regression and a gradient-boosted tree ensemble against the "
      "uncorrected library, under a recipe fixed before the first run.")
+para("For a reader without chemistry: a molecule's infrared spectrum is the list of colours, called band positions and given in the unit cm⁻¹, "
+     "at which it absorbs infrared light. NASA's library computes these positions and multiplies them by a fixed number slightly below one, a "
+     "scale factor, to bring them closer to measurements. This report asks whether a machine-learning model can predict the error that remains, "
+     "band by band, from simple facts about the band and the molecule. Each model is judged on molecules it never saw, by how far its corrected "
+     "positions still are from the laboratory ones. A one-page glossary accompanies the modules (GLOSSARY.md in the repository).")
 
 heading("Dataset Description")
 para(f"Each row pairs one laboratory band with the computed band of the same molecule that the fixed join rule assigns "

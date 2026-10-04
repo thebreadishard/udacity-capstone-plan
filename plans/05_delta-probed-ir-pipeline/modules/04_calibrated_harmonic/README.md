@@ -9,6 +9,13 @@ larger capstone project, so the whole recipe — target, join rule, features, fo
 leave-one-molecule-out evaluation, metrics, no tuning, seed 0 — was fixed in `RECIPE.md` and committed
 before the first training run.
 
+*For readers without chemistry:* a molecule's infrared spectrum is the list of colours (band positions, in the unit cm⁻¹) at which it absorbs
+infrared light. NASA's library predicts these positions by computer and multiplies them by a fixed number slightly below one (a *scale factor*) to
+bring them closer to measurements. The question here is whether a machine-learning model can predict the error that remains, band by band, from
+simple facts about the band and its molecule — so that the library could be corrected without new physics. Each model is judged on molecules it
+never saw (*leave-one-molecule-out*), by how far its corrected positions still are from the laboratory ones (the mean absolute error, in cm⁻¹). The
+answer is no: the remaining error is band-to-band scatter that those facts do not capture. One-line definitions are in [`../GLOSSARY.md`](../GLOSSARY.md).
+
 **What I built:** a builder that joins the computed and the laboratory bands into one training table
 (`build_training_table.py`), a notebook that prepares the features, trains and evaluates the models
 (`notebook/modeling.ipynb`), and the Machine Learning Analysis Report (`module_summary.pdf`).
