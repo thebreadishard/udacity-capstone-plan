@@ -1666,6 +1666,38 @@ hold-out (a) molecules, then the 39 of (b), on the laptop lane after the night s
 3 Oct). T1's CH-oop line is read on analytic targets only. **Prediction.** The carried model's CH-oop on analytic hold-out targets reads 2–3 cm⁻¹; **line**
 CH-oop ≤ 3 → met; > 3 → CH-oop joins step 2's family term with its own weight.
 
+## Outcome — chain 34 step 2, the family-balanced K-diagonal term — 4 October 03:1x (`out/rungC_chain34_read_2026-10-04.{md,json}`, `probes/rungC_chain_lines_read.py`)
+
+Run 3 Oct 23:06 – 4 Oct 02:26 (8 threads, the first attempt of 19:36 lost to the app restart), 750, seeds 0–2, best epochs [76, 96, 77] of 200
+(none within 10 % of the cap). Hold-out (a), seed mean (range), against chain 24's saved 750 (the carried recipe, kdiag 0.1 over all modes):
+
+| family / quantity | chain 34 (kdiag family 0.1) | chain 24 | difference |
+|---|---|---|---|
+| ring-ip | 2.14 (1.89–2.32) | 2.30 | -0.16 |
+| CH-stretch | 1.26 (1.06–1.61) | 1.55 | -0.28 |
+| CH-oop | 3.05 (2.80–3.29) | 2.88 | +0.17 (at the FD floor of 3.3; no verdict) |
+| other | **3.48** (3.41–3.59) | 4.14 | -0.66 |
+| all-mode ω | 2.48 | 2.73 | -0.25 |
+| ratio | 0.218 | 0.221 | -0.002 |
+
+Hold-out (b): other 6.03 (5.75–6.32) against 7.47 — the family term moves the never-seen
+scaffolds too, by -1.44; ratio 0.33 unchanged.
+
+**Against the predictions:** other 2.5–3.5 → 3.48, inside; CH-oop unchanged within its floor → +0.17; ring-ip +0–0.3 → -0.16 (better, not worse);
+ratio unchanged → 0.218. **Against the lines:** other ≤ 3 not met (3.48); ring-ip ≤ 3 and ratio ≤ 0.25 met. **The line that applies is the middle one,
+*3 < other ≤ 3.6*: the direction is right.** What follows, as registered: a kdiag weight scan (0.1 → 0.3) and a 'low' sub-family read. The three chain-34
+checkpoints stay `candidate` in the registry (decision 55: promotion is the user's word; the line for 'carried' was not reached).
+
+### Amendment 4 October 03:1x — chain 34b: the family-balanced term at weight 0.3 (registered before it runs)
+
+`probes/rungC_chain34b_1004.sh`: chain 34's recipe with `--kdiag-weight 0.3` (family mode), 750, seeds 0–2, models saved, 6 threads beside the TZ run
+(8) and the notebook rebuild (2); ≈ 4.5 h. **Predictions.** other 3.0–3.4 on (a) (the term's weight is the only change; a third of the remaining gap at
+most); ring-ip and CH-stretch within ±0.2 of chain 34; ratio 0.21–0.23; (b) other falls further by 0.3–1.0. **Lines.** *other ≤ 3 with ring-ip ≤ 3 and
+ratio ≤ 0.25* → the family term at 0.3 enters the carried recipe (the user's word promotes the models); *3 < other ≤ 3.4 and a fall of ≥ 0.1 against
+chain 34* → the weight is a lever with a slope: 1.0 is tried once, then the 'low' sub-family read decides where the rest sits; *other ≥ 3.4 or ring-ip > 3
+or ratio > 0.25* → the weight is saturated at 0.1–0.3; next is the per-family output scale on the head's diagonal classes with the 'low' modes' noise
+measured per molecule against the FD floor (the registered third branch of step 2).
+
 ### Amendment 3 October 11:3x — pool 3 (decision 54): the three missing axes, registered before any row is computed
 
 **Design.** `Design_Note_2026-10-03_Pool_3_Three_Axes.md`. Batch 1 = 60 radical cations on known scaffolds, 30 aza-four-rings, 30 five-ring scaffolds;

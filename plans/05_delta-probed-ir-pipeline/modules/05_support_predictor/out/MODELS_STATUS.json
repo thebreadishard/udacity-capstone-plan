@@ -57,16 +57,16 @@
  "E7_rungC_chain34_kdfamily_750_2026-10-05_model_n750_seed0.pt": {
   "status": "candidate",
   "chain": "34",
-  "note": "chain 34 step 2 (pre-registration amendment 3 Oct 11:1x): the carried recipe with --kdiag-mode family at 750; saved by the run of the night of 3-4 Oct, not yet read against its lines - status decided at the read"
+  "note": "chain 34 step 2 (amendment 3 Oct 11:1x), read 4 Oct 03:1x: hold-out (a) other 3.48 (line 3-3.6: direction right, not the carried line), ring-ip 2.14, ratio 0.218; stays candidate - the weight scan (chain 34b) follows; promotion is the user's word"
  },
  "E7_rungC_chain34_kdfamily_750_2026-10-05_model_n750_seed1.pt": {
   "status": "candidate",
   "chain": "34",
-  "note": "chain 34 step 2 (pre-registration amendment 3 Oct 11:1x): the carried recipe with --kdiag-mode family at 750; saved by the run of the night of 3-4 Oct, not yet read against its lines - status decided at the read"
+  "note": "chain 34 step 2 (amendment 3 Oct 11:1x), read 4 Oct 03:1x: hold-out (a) other 3.48 (line 3-3.6: direction right, not the carried line), ring-ip 2.14, ratio 0.218; stays candidate - the weight scan (chain 34b) follows; promotion is the user's word"
  },
  "E7_rungC_chain34_kdfamily_750_2026-10-05_model_n750_seed2.pt": {
   "status": "candidate",
   "chain": "34",
-  "note": "chain 34 step 2 (pre-registration amendment 3 Oct 11:1x): the carried recipe with --kdiag-mode family at 750; saved by the run of the night of 3-4 Oct, not yet read against its lines - status decided at the read"
+  "note": "chain 34 step 2 (amendment 3 Oct 11:1x), read 4 Oct 03:1x: hold-out (a) other 3.48 (line 3-3.6: direction right, not the carried line), ring-ip 2.14, ratio 0.218; stays candidate - the weight scan (chain 34b) follows; promotion is the user's word"
  }
 }
