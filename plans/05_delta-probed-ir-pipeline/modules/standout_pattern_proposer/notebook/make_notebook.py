@@ -344,6 +344,34 @@ now costs 0.54 of P0 (not 0.46; oracle 124 unchanged) and passes both C1 and C2 
 for the wide deck. Directions unchanged, numbers replaced; the invalid response was systematically too soft out of plane, which is where the band deck
 lives. Every CC-level read of this module from here uses the (T)-lambda Hessians only.""")
 
+# ---- 4g. follow-up (4 October 2026): naphthalene on CC — the second molecule; the in-band requirement corrected
+md("""### 4g. Follow-up (4 October 2026): naphthalene on CC — the second molecule, and the requirement that was wrong
+
+Naphthalene's CCSD(T)/cc-pVDZ Hessian with the explicit (T) lambda (1 October) is the second real response; the test ran at 02:3x–02:5x on 4 October
+with the analytic B3LYP low level, the same deck and hash (`cc_level_test.py A_01f3186607 … --use-analytic --tag analytic_tlambda`, and the wide pool
+with the open prior as the second cell). Both reads beside benzene's (4f):""")
+code("""na_reg = json.load(open(OUT / "cc" / "A_01f3186607_cc_test_analytic_analytic_tlambda.json")); na_e = json.load(open(OUT / "cc" / "A_01f3186607_cc_test_analytic_analytic_tlambda_all_band0.json"))
+rows = []
+for tag, rr in (("benzene, registered band deck (4f)", tl_reg), ("benzene, wide pool, open prior (4f)", tl_e),
+                ("naphthalene, registered band deck", na_reg), ("naphthalene, wide pool, open prior", na_e)):
+    for resp in ("cc", "proxy"):
+        d = rr[resp]
+        rows.append({"run": tag, "response": resp, "P0 K_off(0.3)": d["P0"]["k_off_0p3"], "P0 final ρ_off": round(d["P0"]["rho_off_final"], 2), "P1 median K_off ratio": d["P1_median"]["k_off_ratio"],
+                     "P1 median n_half ratio": d["P1_median"]["n_half_ratio"], "oracle K_off(0.3)": d["oracle"]["k_off_0p3"]})
+display(pd.DataFrame(rows))
+print(f"naphthalene: in-band share of the off-diagonal Δ₂ power (200 cm⁻¹): CC {na_reg['delta2']['inband_share_cc']:.2f} vs proxy {na_reg['delta2']['inband_share_proxy']:.2f}; "
+      f"Frobenius CC/proxy {na_reg['delta2']['ratio']:.2f}; band deck: C1 {'pass' if na_reg['judged']['C1_pass'] else 'FAIL'}, C2 {'pass' if na_reg['judged']['C2_pass'] else 'FAIL'}; "
+      f"wide pool, open prior: C1 {'pass' if na_e['judged']['C1_pass'] else 'FAIL'}, C2 {'pass' if na_e['judged']['C2_pass'] else 'FAIL'}, "
+      f"P1/oracle {na_e['judged']['C3']['p1_over_oracle']} ({na_e['judged']['label']})")""")
+md("""*Reading (4 October 2026).* The same picture as benzene, on the second molecule: on the band deck the registered lines fail; on the wide pool with the
+open prior the scorer's order passes C1 and C2 and sits at five times the oracle's cost. Two molecules with one picture is no longer an accident, and the
+user's reading of it changed the requirement rather than the method: the proposer orders measurements by what they teach about the *whole* correction,
+which is what the network learns; judging it inside one spectral band measures a different and noisier thing (a handful of modes) and asks the method to
+optimise a sub-problem. The in-band line had come from the Ladder's focus on the astronomical bands and had been carried into the CC test without that
+argument being made. From 4 October the band-free read is the registered C1–C3 line (dated amendment in the pre-registration); the in-band numbers stay
+in the records as what they are. Under that line both CC molecules are 'confirmed', and gate B's second molecule is passed. What this does not say: anything
+about the learned representation (the scorer is the hand-feature one), or about molecules larger than naphthalene — anthracene's Hessian is the next.""")
+
 md("""## 5. The deck itself — the band candidate set against every pair
 
 `deck_cost_readout.py` compares, per evaluation split, what the band deck and the all-pairs candidate set cost and buy. This is the result that changes

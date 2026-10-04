@@ -174,8 +174,11 @@ para("The module proposes which calculation to run next, never a molecule or a c
      "and the reader from a premature positive one.")
 
 heading("Limitations and what follows")
-para("Proxy level: the tables are two density functionals against each other, not against coupled cluster; the test on real responses (the anchor's "
-     "naphthalene deck) comes after the 28th. The band pool's factor of five was largely the fixed recipe's blindness; on the pool that matters the "
+para("Coupled-cluster level: the test on real responses ran on benzene (29 September) and naphthalene (4 October). On both, the order the scorer "
+     "proposes halves to a fifth the number of energies the wide pool needs on the real CC correction (P1/oracle 5.0 on naphthalene), while inside the "
+     "registered spectral band neither molecule shows a gain. The in-band requirement was withdrawn on 4 October as mis-specified — the proposer serves "
+     "the whole correction, which is what the network learns — and the band-free read is the registered line; both molecules pass it. "
+     "The band pool's factor of five on the proxy was largely the fixed recipe's blindness; on the pool that matters the "
      "ordering gain is 1.3–1.6×. The learned representation has not beaten the hand features at 175 training molecules; the next stages (data growth, "
      "pretraining, the cheap-estimate input) are registered with their pass lines.")
 

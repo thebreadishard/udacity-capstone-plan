@@ -2,6 +2,8 @@
 
 **Status (3 October 2026).** Built 26 September on the user's word, pre-registered before the first run (`../../GoalGathering/notes/PreRegistration_2026-09-26_Standout_Pattern_Proposer.md`, dated amendments and a running outcome record), and read through to its CC-level test. On the proxy: E1 (band pool) and E2 (all pairs) read; the fair-chance search for the learned representation through stage 3; the adaptive ordering on the band pool (27 Sep) and on the wide pool (28 Sep 08:4x, `out/sim/all_p2s1A_*`): feedback alone helps the blind order on the parents only, and on top of a scorer it adds nothing. The wide-deck stop rule failed both readings (28–30 Sep: W1 40 %, W2 28 % false stops; the band-free prior changes nothing); the user dropped the band deck on 29 Sep — the wide deck is the only focus. At CC level (`PreRegistration_2026-09-28_Standout_CC_Level_Test.md`, `cc_level_test.py --use-analytic`): benzene's corpus psi4 row proved noise (29 Sep) and the first CC response came from the wrong lambda (the lambda incident, 29 Sep); on the corrected Hessian (29 Sep 23:4x) the registered band deck fails C1/C2 as before, while the wide pool with the open prior passes C1 and C2 (P1 0.54 of P0's cost, oracle 124 of 806) — 'confirmed on this molecule (CC)'. The notebook's section 4f carries that read beside the invalid 4c/4d, kept and labelled (30 Sep); report rebuilt. Next read: the same test on naphthalene's CC Hessian (2 Oct) and, after it, on anthracene's — the molecule decides whether the wide deck's CC claim travels beyond benzene. Design note: `DESIGN_2026-09-27.md`.
 
+**4 October 2026.** Naphthalene's CC test ran (02:5x, the (T)-lambda-corrected Hessian of 1 October, analytic low level): the band deck fails C1/C2 as on benzene, the wide pool with the open prior passes both with P1/oracle 5.0. The user read the pair of results as a mis-specified requirement, not a failed method — the proposer serves the whole correction, which is what the network learns — and the band-free read is the registered C1–C3 line since 08:4x (dated amendment in the pre-registration); both CC molecules are 'confirmed', gate B's second molecule is passed. Notebook section 4g and the report paragraph carry it; the executed notebook and the PDF are rebuilt once the laptop's CC run is done.
+
 ## The question
 
 Every molecule of plan 05 has a coupling table Δ₂ we can only afford to know in part: each entry costs an expensive energy. The recovery (banded ℓ₁,
@@ -75,5 +77,5 @@ Tests: `python -m pytest ../../tests/test_pp_planted.py -q` (7 planted-block tes
 
 ## What this is not
 
-A proxy-level result: the tables are DFT against DFT, not DFT against coupled cluster. The test on real responses (the anchor's naphthalene deck) comes
-after the 28th, as does the deck change it motivates (`../../GoalGathering/notes/PreRegistration_2026-09-27_Wide_Candidate_Deck_Stop_Rule.md`).
+The tables of sections 1–4b are DFT against DFT; the test on real coupled-cluster responses (benzene 29 September, naphthalene 4 October; sections 4c–4g)
+passes the band-free line on both molecules. The deck change the proxy motivated is `../../GoalGathering/notes/PreRegistration_2026-09-27_Wide_Candidate_Deck_Stop_Rule.md`.
