@@ -1859,3 +1859,31 @@ unseen scaffolds a coverage gap that no term touched (the 200 and pool 3). **Con
 families that the physics prior names (ring in-plane, C–H stretch, C–H out-of-plane) learn with data and reach their floors; the residual family
 'other' (skeletal and substituent motions) is the one where the loss had been looking away — the K-diagonal term showed it, and chain 34 tests whether
 balancing it per family closes the rest on seen scaffolds. Notebook section 12.4 carries this table.
+
+### Outcome 4 October 12:1x — chain 34c (the family term with 'other' split at 700 cm⁻¹): the third line — the low modes do not respond to weighting
+
+Run 08:35–12:13 at 8 threads beside the TZ run (`out/E7_rungC_chain34c_kdfamilylow_750_2026-10-04.{json,md,log}`; early stops at epochs 64 / 95 / 101,
+best inner validation at 44 / 75 / 81). Read mechanically: `out/read_chain34c_2026-10-04.md` (`probes/rungC_chain_lines_read.py` against chain 34) and
+`out/rungC_low_modes_noise_c34c_2026-10-04.md` (`probes/rungC_low_modes_noise.py`, the same pooling as the 08:2x read of chain 34).
+
+| hold-out (a), seed mean (range) | chain 34c | chain 34 | difference |
+|---|---|---|---|
+| ring-ip | 2.29 (2.10–2.45) | 2.14 (1.89–2.32) | +0.14 |
+| CH-stretch | 1.96 (1.70–2.38) | 1.26 (1.06–1.61) | +0.70 |
+| CH-oop | 3.21 (2.93–3.58) | 3.05 (2.80–3.29) | +0.15 |
+| other | 3.66 (3.14–3.97) | 3.48 (3.41–3.59) | +0.18 |
+| ratio | 0.22 | 0.22 | 0.00 |
+| other-low, pooled over 132 modes | 3.54 | 3.35 | +0.19 |
+| other-mid, pooled over 54 modes | 3.02 | 2.90 | +0.12 |
+
+Hold-out (b): other 6.41 against 6.03, CH-stretch 3.15 against 2.57, CH-oop 3.54 against 3.81. **Lines:** other 3.66 > 3 — the first line is not met;
+other-low rose by 0.19 instead of falling by ≥ 0.3 — the second line is not met; **the third line applies:** the low modes do not respond to weighting.
+The predictions were wrong in direction (other-low 3.35 → 2.7–3.1 predicted). Giving the low modes a vote of their own in the K-diagonal term moved
+nothing in their favour and cost the C–H stretches 0.7 cm⁻¹ (the term's balance shifted away from them). With chain 34b (weight 0.3, saturated) this
+closes the loss-weighting lever for 'other': the remaining error below 700 cm⁻¹ is not a matter of how much the loss asks for it.
+
+**Consequences.** Chain 34c is `superseded` (read, not promoted; decision 57 — chain 34 stays carried, v1.1). Next, as registered: (1) the analytic
+hold-out (a) targets (chain 34 step 3, in the afternoon queue of 4 Oct) are read on other-low before any further training lever — the FD floor of
+the low modes (14.8 cm⁻¹ pooled on the molecules with both routes, 1.36 on the one clean molecule) says part of the 3.5 may be the labels; (2) a
+low-mode input the head does not have, designed before it is assumed: the torsion-angle primitives are in the pattern, their environment (the
+atoms two and three bonds out, the ring fusion they sit on) is not — a design note with a measurable prediction follows (TASKS row 23).

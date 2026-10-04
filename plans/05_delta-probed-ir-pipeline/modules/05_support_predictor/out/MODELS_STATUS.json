@@ -114,21 +114,21 @@
   "note": "smoke of --kdiag-mode family-low (4 Oct 08:32, 5 molecules, 2 epochs): mechanics only, never a result"
  },
  "E7_rungC_chain34c_kdfamilylow_750_2026-10-04_model_n750_seed0.pt": {
-  "status": "candidate",
+  "status": "superseded",
   "network": "ΔH-network",
   "chain": "34c",
-  "note": "chain 34c (amendment 4 Oct 08:3x): the family-balanced K-diagonal term with other-low (< 700 cm-1) as its own family; running since 08:35, read against its lines when done"
+  "note": "chain 34c (amendment 4 Oct 08:3x): the family-balanced K-diagonal term with other-low (< 700 cm-1) as its own family; running since 08:35, read against its lines when done; read 4 Oct 12:1x: other 3.66 / other-low 3.54 against chain 34's 3.48 / 3.35, CH-stretch +0.7 — the third line (low modes do not respond to weighting); not promoted (decision 57), no version"
  },
  "E7_rungC_chain34c_kdfamilylow_750_2026-10-04_model_n750_seed1.pt": {
-  "status": "candidate",
+  "status": "superseded",
   "network": "ΔH-network",
   "chain": "34c",
-  "note": "chain 34c (amendment 4 Oct 08:3x): the family-balanced K-diagonal term with other-low (< 700 cm-1) as its own family; running since 08:35, read against its lines when done"
+  "note": "chain 34c (amendment 4 Oct 08:3x): the family-balanced K-diagonal term with other-low (< 700 cm-1) as its own family; running since 08:35, read against its lines when done; read 4 Oct 12:1x: other 3.66 / other-low 3.54 against chain 34's 3.48 / 3.35, CH-stretch +0.7 — the third line (low modes do not respond to weighting); not promoted (decision 57), no version"
  },
  "E7_rungC_chain34c_kdfamilylow_750_2026-10-04_model_n750_seed2.pt": {
-  "status": "candidate",
+  "status": "superseded",
   "network": "ΔH-network",
   "chain": "34c",
-  "note": "chain 34c (amendment 4 Oct 08:3x): the family-balanced K-diagonal term with other-low (< 700 cm-1) as its own family; running since 08:35, read against its lines when done"
+  "note": "chain 34c (amendment 4 Oct 08:3x): the family-balanced K-diagonal term with other-low (< 700 cm-1) as its own family; running since 08:35, read against its lines when done; read 4 Oct 12:1x: other 3.66 / other-low 3.54 against chain 34's 3.48 / 3.35, CH-stretch +0.7 — the third line (low modes do not respond to weighting); not promoted (decision 57), no version"
  }
 }
