@@ -83,5 +83,25 @@
   "status": "candidate",
   "chain": "34b",
   "note": "chain 34b (amendment 4 Oct 03:1x): chain 34's recipe with the family-balanced K-diagonal term at weight 0.3; read 06:3x: other 3.58 on (a) vs 3.48 at weight 0.1 - the weight is saturated; not carried"
+ },
+ "smoke_kdiag_family_low_2026-10-04_model_n5_seed0.pt": {
+  "status": "smoke",
+  "chain": "34c smoke",
+  "note": "smoke of --kdiag-mode family-low (4 Oct 08:32, 5 molecules, 2 epochs): mechanics only, never a result"
+ },
+ "E7_rungC_chain34c_kdfamilylow_750_2026-10-04_model_n750_seed0.pt": {
+  "status": "candidate",
+  "chain": "34c",
+  "note": "chain 34c (amendment 4 Oct 08:3x): the family-balanced K-diagonal term with other-low (< 700 cm-1) as its own family; running since 08:35, read against its lines when done"
+ },
+ "E7_rungC_chain34c_kdfamilylow_750_2026-10-04_model_n750_seed1.pt": {
+  "status": "candidate",
+  "chain": "34c",
+  "note": "chain 34c (amendment 4 Oct 08:3x): the family-balanced K-diagonal term with other-low (< 700 cm-1) as its own family; running since 08:35, read against its lines when done"
+ },
+ "E7_rungC_chain34c_kdfamilylow_750_2026-10-04_model_n750_seed2.pt": {
+  "status": "candidate",
+  "chain": "34c",
+  "note": "chain 34c (amendment 4 Oct 08:3x): the family-balanced K-diagonal term with other-low (< 700 cm-1) as its own family; running since 08:35, read against its lines when done"
  }
 }
