@@ -1,0 +1,263 @@
+{
+ "p1_seed0.pt": {
+  "status": "carried",
+  "network": "order scorer (P1)",
+  "version": "1.0",
+  "chain": "P1 (26 Sep)",
+  "note": "seed 0: the hand-feature scorer: 21 pair features → log₁₀|Δ_ij|, fitted 26 Sep; in production since decision 58 (the order of partial decks); rehearsal 4 Oct: in-plane read-outs closed at 60–67 % of naphthalene's gradients against 87–93 % blind"
+ },
+ "p1_seed1.pt": {
+  "status": "carried",
+  "network": "order scorer (P1)",
+  "version": "1.0",
+  "chain": "P1 (26 Sep)",
+  "note": "seed 1: the hand-feature scorer: 21 pair features → log₁₀|Δ_ij|, fitted 26 Sep; in production since decision 58 (the order of partial decks); rehearsal 4 Oct: in-plane read-outs closed at 60–67 % of naphthalene's gradients against 87–93 % blind"
+ },
+ "p1_seed2.pt": {
+  "status": "carried",
+  "network": "order scorer (P1)",
+  "version": "1.0",
+  "chain": "P1 (26 Sep)",
+  "note": "seed 2: the hand-feature scorer: 21 pair features → log₁₀|Δ_ij|, fitted 26 Sep; in production since decision 58 (the order of partial decks); rehearsal 4 Oct: in-plane read-outs closed at 60–67 % of naphthalene's gradients against 87–93 % blind"
+ },
+ "p2_seed0.pt": {
+  "status": "experimental",
+  "network": "learned order scorer (P2)",
+  "version": "0.1",
+  "chain": "P2 recipe of 26 Sep",
+  "note": "seed 0: the learned embedding, original recipe; read 26 Sep: behind the hand features"
+ },
+ "p2_seed1.pt": {
+  "status": "experimental",
+  "network": "learned order scorer (P2)",
+  "version": "0.1",
+  "chain": "P2 recipe of 26 Sep",
+  "note": "seed 1: the learned embedding, original recipe; read 26 Sep: behind the hand features"
+ },
+ "p2_seed2.pt": {
+  "status": "experimental",
+  "network": "learned order scorer (P2)",
+  "version": "0.1",
+  "chain": "P2 recipe of 26 Sep",
+  "note": "seed 2: the learned embedding, original recipe; read 26 Sep: behind the hand features"
+ },
+ "p2s1_lr1e-3_w128_seed0.pt": {
+  "status": "experimental",
+  "network": "learned order scorer (P2)",
+  "version": "0.2",
+  "chain": "P2 stage-1 recipe",
+  "note": "seed 0: the stage-1 recipe (lr 1e-3, width 128): the P2 of the simulations and the CC tests; stages 1–3 read 26 Sep 20:3x — has not beaten P1 (+0.03 Spearman on validation)"
+ },
+ "p2s1_lr1e-3_w128_seed1.pt": {
+  "status": "experimental",
+  "network": "learned order scorer (P2)",
+  "version": "0.2",
+  "chain": "P2 stage-1 recipe",
+  "note": "seed 1: the stage-1 recipe (lr 1e-3, width 128): the P2 of the simulations and the CC tests; stages 1–3 read 26 Sep 20:3x — has not beaten P1 (+0.03 Spearman on validation)"
+ },
+ "p2s1_lr1e-3_w128_seed2.pt": {
+  "status": "experimental",
+  "network": "learned order scorer (P2)",
+  "version": "0.2",
+  "chain": "P2 stage-1 recipe",
+  "note": "seed 2: the stage-1 recipe (lr 1e-3, width 128): the P2 of the simulations and the CC tests; stages 1–3 read 26 Sep 20:3x — has not beaten P1 (+0.03 Spearman on validation)"
+ },
+ "p2s1_lr1e-3_w64_seed0.pt": {
+  "status": "experimental",
+  "network": "learned order scorer (P2)",
+  "chain": "P2 stage 1",
+  "note": "seed 0: stage-1 search cell (lr 1e-3, width 64)"
+ },
+ "p2s1_lr1e-3_w64_seed1.pt": {
+  "status": "experimental",
+  "network": "learned order scorer (P2)",
+  "chain": "P2 stage 1",
+  "note": "seed 1: stage-1 search cell (lr 1e-3, width 64)"
+ },
+ "p2s1_lr1e-3_w64_seed2.pt": {
+  "status": "experimental",
+  "network": "learned order scorer (P2)",
+  "chain": "P2 stage 1",
+  "note": "seed 2: stage-1 search cell (lr 1e-3, width 64)"
+ },
+ "p2s1_lr3e-3_w128_seed0.pt": {
+  "status": "experimental",
+  "network": "learned order scorer (P2)",
+  "chain": "P2 stage 1",
+  "note": "seed 0: stage-1 search cell (lr 3e-3, width 128)"
+ },
+ "p2s1_lr3e-3_w128_seed1.pt": {
+  "status": "experimental",
+  "network": "learned order scorer (P2)",
+  "chain": "P2 stage 1",
+  "note": "seed 1: stage-1 search cell (lr 3e-3, width 128)"
+ },
+ "p2s1_lr3e-3_w128_seed2.pt": {
+  "status": "experimental",
+  "network": "learned order scorer (P2)",
+  "chain": "P2 stage 1",
+  "note": "seed 2: stage-1 search cell (lr 3e-3, width 128)"
+ },
+ "p2s1_lr3e-3_w64_seed0.pt": {
+  "status": "experimental",
+  "network": "learned order scorer (P2)",
+  "chain": "P2 stage 1",
+  "note": "seed 0: stage-1 search cell (lr 3e-3, width 64)"
+ },
+ "p2s1_lr3e-3_w64_seed1.pt": {
+  "status": "experimental",
+  "network": "learned order scorer (P2)",
+  "chain": "P2 stage 1",
+  "note": "seed 1: stage-1 search cell (lr 3e-3, width 64)"
+ },
+ "p2s1_lr3e-3_w64_seed2.pt": {
+  "status": "experimental",
+  "network": "learned order scorer (P2)",
+  "chain": "P2 stage 1",
+  "note": "seed 2: stage-1 search cell (lr 3e-3, width 64)"
+ },
+ "p2s1_lr3e-4_w128_seed0.pt": {
+  "status": "experimental",
+  "network": "learned order scorer (P2)",
+  "chain": "P2 stage 1",
+  "note": "seed 0: stage-1 search cell (lr 3e-4, width 128)"
+ },
+ "p2s1_lr3e-4_w128_seed1.pt": {
+  "status": "experimental",
+  "network": "learned order scorer (P2)",
+  "chain": "P2 stage 1",
+  "note": "seed 1: stage-1 search cell (lr 3e-4, width 128)"
+ },
+ "p2s1_lr3e-4_w128_seed2.pt": {
+  "status": "experimental",
+  "network": "learned order scorer (P2)",
+  "chain": "P2 stage 1",
+  "note": "seed 2: stage-1 search cell (lr 3e-4, width 128)"
+ },
+ "p2s1_lr3e-4_w64_seed0.pt": {
+  "status": "experimental",
+  "network": "learned order scorer (P2)",
+  "chain": "P2 stage 1",
+  "note": "seed 0: stage-1 search cell (lr 3e-4, width 64)"
+ },
+ "p2s1_lr3e-4_w64_seed1.pt": {
+  "status": "experimental",
+  "network": "learned order scorer (P2)",
+  "chain": "P2 stage 1",
+  "note": "seed 1: stage-1 search cell (lr 3e-4, width 64)"
+ },
+ "p2s1_lr3e-4_w64_seed2.pt": {
+  "status": "experimental",
+  "network": "learned order scorer (P2)",
+  "chain": "P2 stage 1",
+  "note": "seed 2: stage-1 search cell (lr 3e-4, width 64)"
+ },
+ "p2s1_seed0.pt": {
+  "status": "experimental",
+  "network": "learned order scorer (P2)",
+  "chain": "P2 stage 1",
+  "note": "seed 0: stage-1 search cell (26 Sep, before the lr × width grid)"
+ },
+ "p2s1_seed1.pt": {
+  "status": "experimental",
+  "network": "learned order scorer (P2)",
+  "chain": "P2 stage 1",
+  "note": "seed 1: stage-1 search cell (26 Sep, before the lr × width grid)"
+ },
+ "p2s1_seed2.pt": {
+  "status": "experimental",
+  "network": "learned order scorer (P2)",
+  "chain": "P2 stage 1",
+  "note": "seed 2: stage-1 search cell (26 Sep, before the lr × width grid)"
+ },
+ "p2s2_huber_seed0.pt": {
+  "status": "experimental",
+  "network": "learned order scorer (P2)",
+  "chain": "P2 stage 2",
+  "note": "seed 0: stage-2 loss cell (Huber loss)"
+ },
+ "p2s2_huber_seed1.pt": {
+  "status": "experimental",
+  "network": "learned order scorer (P2)",
+  "chain": "P2 stage 2",
+  "note": "seed 1: stage-2 loss cell (Huber loss)"
+ },
+ "p2s2_huber_seed2.pt": {
+  "status": "experimental",
+  "network": "learned order scorer (P2)",
+  "chain": "P2 stage 2",
+  "note": "seed 2: stage-2 loss cell (Huber loss)"
+ },
+ "p2s2_rank_seed0.pt": {
+  "status": "experimental",
+  "network": "learned order scorer (P2)",
+  "chain": "P2 stage 2",
+  "note": "seed 0: stage-2 loss cell (ranking loss)"
+ },
+ "p2s2_rank_seed1.pt": {
+  "status": "experimental",
+  "network": "learned order scorer (P2)",
+  "chain": "P2 stage 2",
+  "note": "seed 1: stage-2 loss cell (ranking loss)"
+ },
+ "p2s2_rank_seed2.pt": {
+  "status": "experimental",
+  "network": "learned order scorer (P2)",
+  "chain": "P2 stage 2",
+  "note": "seed 2: stage-2 loss cell (ranking loss)"
+ },
+ "p2s3_b3v_seed0.pt": {
+  "status": "experimental",
+  "network": "learned order scorer (P2)",
+  "chain": "P2 stage 3",
+  "note": "seed 0: stage-3 capacity cell (3 blocks, vector channel on)"
+ },
+ "p2s3_b3v_seed1.pt": {
+  "status": "experimental",
+  "network": "learned order scorer (P2)",
+  "chain": "P2 stage 3",
+  "note": "seed 1: stage-3 capacity cell (3 blocks, vector channel on)"
+ },
+ "p2s3_b3v_seed2.pt": {
+  "status": "experimental",
+  "network": "learned order scorer (P2)",
+  "chain": "P2 stage 3",
+  "note": "seed 2: stage-3 capacity cell (3 blocks, vector channel on)"
+ },
+ "p2s3_b5_seed0.pt": {
+  "status": "experimental",
+  "network": "learned order scorer (P2)",
+  "chain": "P2 stage 3",
+  "note": "seed 0: stage-3 capacity cell (5 blocks)"
+ },
+ "p2s3_b5_seed1.pt": {
+  "status": "experimental",
+  "network": "learned order scorer (P2)",
+  "chain": "P2 stage 3",
+  "note": "seed 1: stage-3 capacity cell (5 blocks)"
+ },
+ "p2s3_b5_seed2.pt": {
+  "status": "experimental",
+  "network": "learned order scorer (P2)",
+  "chain": "P2 stage 3",
+  "note": "seed 2: stage-3 capacity cell (5 blocks)"
+ },
+ "p2s3_b5v_seed0.pt": {
+  "status": "experimental",
+  "network": "learned order scorer (P2)",
+  "chain": "P2 stage 3",
+  "note": "seed 0: stage-3 capacity cell (5 blocks, vector channel on)"
+ },
+ "p2s3_b5v_seed1.pt": {
+  "status": "experimental",
+  "network": "learned order scorer (P2)",
+  "chain": "P2 stage 3",
+  "note": "seed 1: stage-3 capacity cell (5 blocks, vector channel on)"
+ },
+ "p2s3_b5v_seed2.pt": {
+  "status": "experimental",
+  "network": "learned order scorer (P2)",
+  "chain": "P2 stage 3",
+  "note": "seed 2: stage-3 capacity cell (5 blocks, vector channel on)"
+ }
+}

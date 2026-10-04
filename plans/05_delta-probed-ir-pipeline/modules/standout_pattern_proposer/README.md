@@ -26,8 +26,8 @@ aromatics, larger than any training molecule) are evaluation only; A2/B molecule
 | name | what decides the order | learns from |
 |---|---|---|
 | P0 | the deck's hashed order (the plan's fixed recipe) | nothing |
-| P1 | an MLP on 21 hand-made pair features (frequencies, band flag, atom-sharing overlaps, low-level Hessian projections) → log₁₀\|Δ_ij\| | training molecules |
-| P2 | the learned embedding: the rung-C equivariant body (`../05_support_predictor/m05/rungC_equivariant.py`) → per-mode embedding → pair head | training molecules |
+| P1 — the **order scorer**, v1.0 (`MODELS.md`) | an MLP on 21 hand-made pair features (frequencies, band flag, atom-sharing overlaps, low-level Hessian projections) → log₁₀\|Δ_ij\| | training molecules |
+| P2 — the **learned order scorer**, v0.1 / v0.2, not in production (`MODELS.md`) | the learned embedding: the rung-C equivariant body (`../05_support_predictor/m05/rungC_equivariant.py`) → per-mode embedding → pair head | training molecules |
 | P12 | z-score average of P1 and P2 | — |
 | P3 | the oracle: the true \|Δ_ij\| (an upper bound, never available in practice) | the answer |
 | P0+A, P1+A, P2+A | the same priors, re-ranked after every checkpoint by the current reconstruction (optimism for untouched pairs) | feedback during measurement |

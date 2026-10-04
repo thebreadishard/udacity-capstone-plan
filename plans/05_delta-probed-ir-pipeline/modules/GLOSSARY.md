@@ -59,3 +59,10 @@ compares against the expensive, accurate calculation and is the one that counts.
 
 **Pre-registration.** Writing down what will be computed, how it will be read and what counts as success *before* the numbers exist, so that the
 outcome cannot be bent afterwards. Every experiment in this project has one.
+
+**Network, model, version.** A *network* (neural network) is a computer program with millions of adjustable numbers that learns a mapping from examples; *training* sets those numbers, a *checkpoint* is the saved result, and a *seed* is one training run (the project trains three per recipe and reports their spread). A *version* names a recipe, not a seed: `1.x` means the network is used in the pipeline, `0.x` that it is an experiment. Four networks are trained here, each with its own list of versions (`modules/MODELS.md`):
+
+- the **ΔH-network** (module 05): takes the cheap calculation of a molecule and predicts the correction towards the expensive one — the heart of the end product; current version 1.1;
+- the **order scorer** (standout, P1): decides in which order the pieces of an expensive calculation are computed, so the most informative come first; version 1.0, in use since decision 58;
+- the **learned order scorer** (standout, P2): the same task, learned from the ΔH-network's internal representation instead of hand-made features; an experiment (0.x) that has not yet beaten the hand-made one;
+- the **candidate generator** (module 06): writes down new molecules worth computing next, as text strings; an experiment (0.x) outside the pipeline.

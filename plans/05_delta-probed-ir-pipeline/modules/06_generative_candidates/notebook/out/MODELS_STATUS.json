@@ -1,0 +1,23 @@
+{
+ "seed0/model_seed0.pt": {
+  "status": "experimental",
+  "network": "candidate generator",
+  "version": "0.1",
+  "chain": "run of 26 Sep",
+  "note": "the pre-registered run, unconditioned, seed 0 (notebook section 3); no checkpoint lies beside seed 2's training log in notebook/out/seed2"
+ },
+ "seed1/model_seed1.pt": {
+  "status": "experimental",
+  "network": "candidate generator",
+  "version": "0.1",
+  "chain": "run of 26 Sep",
+  "note": "the pre-registered run, unconditioned, seed 1"
+ },
+ "cond_seed0/model_seed0.pt": {
+  "status": "experimental",
+  "network": "candidate generator",
+  "version": "0.2",
+  "chain": "conditioned (section 5)",
+  "note": "the design change of section 5: the conditioned model, seed 0"
+ }
+}

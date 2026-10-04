@@ -99,3 +99,5 @@ plans/*/modules/05_support_predictor/out/_smoke_*
 plans/*/modules/05_support_predictor/out/*_smoke_*
 plans/*/probes/results_dryrun/
 plans/*/probes/results_vpt2/*.out
+!plans/*/modules/*/notebook/out/MODELS_STATUS.json
+!plans/*/modules/*/out/MODELS_STATUS.json

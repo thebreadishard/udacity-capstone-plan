@@ -82,7 +82,7 @@ E-series live in `GoalGathering/notes/PreRegistration_2026-09-*`. Superseded and
 
 ## Model versions (decision 55, 3 October 2026)
 
-`MODELS.md` lists every saved network in `out/` with its reviewed status (`carried`, `superseded`, `invalid`, `smoke`, `pretrained`), the chain that made
+`MODELS.md` lists every saved network in `out/` with its network name and version (decision 59: the ΔH-network, v1.1 = chain 34, v1.0 = chain 24), its reviewed status (`carried`, `superseded`, `invalid`, `smoke`, `pretrained`, `candidate`, `experimental`), the chain that made
 it, the recipe read from the checkpoint, the hold-out numbers and the commit. It is generated — `python m05/model_registry.py`, checked by
 `python m05/model_registry.py --check` and by `tests/test_model_registry.py` — from the checkpoints and `out/MODELS_STATUS.json`, the one file that is
 written by hand (a judgement per model). Reads and transfers (`m05/rungC_cc_transfer.py`, `probes/rungC_eval_saved.py`) run on `carried` models only;

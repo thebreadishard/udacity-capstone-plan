@@ -148,6 +148,8 @@ def main() -> int:
     exp = C.export_molecule(mol_dir, use_analytic=True, hi_override=anchor / "hessian_ccsd_t.npz")
     X, _, pairs = S.pair_features(exp)
     seeds = [int(s) for s in a.seeds.split(",")]
+    for s in seeds:                                                        # decision 59: the order scorer is a registered network (status carried, v1.0)
+        MR.require_carried(PLAN / "modules" / "standout_pattern_proposer" / "out" / f"p1_seed{s}.pt")
     Smat = np.mean([S.scores_matrix(exp, S.Scorer.load(PLAN / "modules" / "standout_pattern_proposer" / "out" / "p1", s).predict(X), pairs) for s in seeds], axis=0)
     V = np.asarray(exp["V"], float)                                        # (3N, M), mass-weighted normal modes of the analytic B3LYP Hessian
     s_k = (V ** 2) @ Smat.sum(1)                                            # Σ_{i<j} S_ij (V_ki² + V_kj²) for every Cartesian coordinate k
