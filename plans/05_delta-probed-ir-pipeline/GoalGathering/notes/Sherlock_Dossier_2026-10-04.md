@@ -1,9 +1,9 @@
-# The Sherlock dossier, state of 4 October 2026 09:2x — the eleven open questions under the three targets
+# The Sherlock dossier, state of 4 October 2026 21:1x (rows 1, 6 and 11 updated through the day) — the eleven open questions under the three targets
 
 *Written down because the chat version of 3 October 19:5x was lost to a context compaction and only its item 11 reached the ledger. One row per
 question: what it asks, where it stands, what moves it next. Updated by dated edits, not annotations.*
 
-| # | question | stands (4 Oct 09:2x) | next |
+| # | question | stands (4 Oct, time per row) | next |
 |---|---|---|---|
 | 1 | T1 'other' ≤ 3 cm⁻¹: a learning or loss problem? | Partly loss: the family-balanced K-diagonal term (chain 34) took 'other' from 4.14 to 3.48 on hold-out (a), 7.47 → 6.03 on (b); weight 0.3 (chain 34b) brought nothing — saturated. The low-mode read of 08:2x: 77 % of the remaining error sits below 700 cm⁻¹; other-mid is already 2.90, under the line; the model is at 0.31× the zero rule there; the clean floor (1.36) leaves room. | Chain 34c read 12:1x: other-low 3.54 against 3.35 — the low modes do not respond to weighting (third line; 34c superseded, CH-stretch cost 0.7). The loss-weighting lever is closed. Next: step 3's analytic hold-out targets read on other-low (this afternoon), then the low-mode input design (TASKS 23). |
 | 2 | T1 CH-oop ≤ 3: labels or model? | Labels: FD floor 3.3, model 3.05 on it. | Step 3 (analytic hold-out Hessians, 8 threads) after the TZ run; CH-oop is read on analytic targets only. |
