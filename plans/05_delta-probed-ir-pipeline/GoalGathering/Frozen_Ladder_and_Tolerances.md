@@ -458,7 +458,10 @@ for fragment probing, before the R3 fragment-vs-whole comparison has printed.
   manifest) *before* the deck's hash is taken and before any response exists; hold-out membership stays this seeded rule and is drawn after the
   ordering; the recovery and the stop rule are unchanged. A learned proposer replaces P1 only after its registered stages beat the hand-feature
   scorer on the proxy and on at least one CC molecule. Full Hessians, where affordable, are unchanged. First use: the registered rehearsal on
-  naphthalene's existing gradients (`notes/PreRegistration_2026-10-04_Proposer_Order_Rehearsal_Naphthalene.md`).
+  naphthalene's existing gradients (`notes/PreRegistration_2026-10-04_Proposer_Order_Rehearsal_Naphthalene.md`). Its outcome (4 Oct 09:3x,
+  the third registered line): no order reaches the anchor's limits before the last gradient, because the network's CC-level rows 'as is' sit at
+  ratio 1.0 (T3's column); anchors stay full symmetry-reduced decks, and the P1 order governs the order of a deck that is partial for another reason
+  (P1 closed the in-plane read-outs 27 points before the blind order). The route is re-registered when the CC transfer is near the limits out of plane.
 - **[05] Frozen spaces — the object, written once.** At the reference geometry the local-CC code
   stores the localized occupied orbitals and each fragment's LNO (or PNO) vectors in the AO
   basis. At a displaced geometry **both halves are transported by projection, and nothing is

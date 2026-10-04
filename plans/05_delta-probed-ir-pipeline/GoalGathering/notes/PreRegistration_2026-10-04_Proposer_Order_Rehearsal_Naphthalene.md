@@ -54,3 +54,32 @@ analytic B3LYP Hessian — each mode pair weighed by the displacement's share in
 output. (2) The smoke molecule is pyridine, not benzene: benzene's per-displacement gradients were never copied from its server (the fetch audit of
 3 Oct), pyridine's 21 are local. The smoke runs with `--no-network` (the B3LYP Hessian alone fills the unmeasured rows) to test the mechanics; that
 column is a baseline beside the registered hybrid, not a line.
+
+## Outcome, 4 October 2026, 09:2x–09:3x (`modules/05_support_predictor/out/deck_rehearsal_naphthalene_c34_2026-10-04.{md,json}`; the pyridine smoke beside it)
+
+Run beside the TZ run and chain 34c rather than after them (two threads, about a minute per molecule; the host's free memory held). Chain 34's three
+carried seeds filled the unmeasured rows; the probe was amended before the read with a per-read-out first-k table (the verdict table and the
+curves are unchanged by it).
+
+**Third line.** No order reaches the anchor's limits before the last gradient: P1, blind and oracle all at 15 / 15 (100 %). The k = 0 column, the
+prediction alone, is naphthalene's T3 'network as is' read of 2 October within 1 cm⁻¹ (ring-ip 20.4, CH-stretch 54.5, CH-oop 94.2, other 75.1, ratio
+1.00; T3: 20.9, 55.2, 93.6, 74.3, 0.99). At the CC level and without fine-tuning the network's correction is as far from the anchor as no correction
+at all, and worse than B3LYP alone out of plane (CH-oop 94 against 76 under the zero rule). Rows that good cannot carry an anchor: a family's rms
+drops below 1 cm⁻¹ only when every row that family lives on has been measured.
+
+**The prediction on record was wrong, and the mistake is in the registration:** it put the k = 0 column at the chain-34 hold-out numbers (≈ 2–4 cm⁻¹).
+Those are read against the corpus's high level; the CC correction is a different object, and the T3 read of 2 October had the 'network as is'
+column at ratio 0.99 on record. The registration should have cited it.
+
+**What the split shows (the per-read-out table in the output; not a registered line):** P1 does transfer from pattern pairs to displacements. Under
+P1 the in-plane read-outs close first — ring-ip ≤ 1 cm⁻¹ and ratio ≤ 0.05 at k = 9 (60 %), CH-stretch at k = 10 (67 %) — against k = 13 and 14
+under the blind order (87 %, 93 %): 27 points earlier. CH-oop and 'other' close at 15 / 15 under every order: P1 ranks the ten in-plane
+displacements before the five out-of-plane ones, and the network's out-of-plane rows are worse than B3LYP's. The 'oracle' (largest true row error
+first) measures the out-of-plane carbon rows first and is last on the in-plane read-outs; at k = 9 blind and oracle have measured the same nine
+carbon rows. A row-norm oracle is not the read-out oracle — a design note for any next registration.
+
+**Consequences.** (1) The deck route is not priced: with today's network an anchor is a full symmetry-reduced deck. The Ladder amendment of
+decision 58 stands for pattern decks and for the *order* of any displacement deck that is partial for another reason; it says nothing about stopping
+early. (2) The route re-enters when the CC-level transfer itself (T3, dossier question 5: anchors as the lever) is within a few cm⁻¹ out of plane;
+a hybrid with fine-tuned rows (T3's 'head tuned' column, ratio 0.25, CH-oop 34) is a new registration, not a rerun, and today's numbers say it would
+not reach 1 cm⁻¹ either. (3) The in-plane lead of P1 (≥ 15 points over blind on ring-ip and CH-stretch) is the candidate line for that registration.

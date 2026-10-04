@@ -30,7 +30,7 @@ sys.path.insert(0, str(PLAN / "probes"))
 import e7_t2_sqm as T2  # noqa: E402
 import e8_symmetry as SYM  # noqa: E402
 import model_registry as MR  # noqa: E402
-from e8_cc_hessian_fd import project_tr  # noqa: E402
+from learning_curve_layerA import AMU2AU  # noqa: E402
 from pp import core as C  # noqa: E402
 from pp import scorer as S  # noqa: E402
 from rungC_equivariant import load_molecule  # noqa: E402
@@ -38,6 +38,20 @@ from rungC_train import console_utf8_safe, load_corpus, load_hybrid_model, molec
 
 FAMILIES = ("ring-ip", "CH-stretch", "CH-oop", "other")
 LIMIT_CM, LIMIT_RATIO = 1.0, 0.05
+
+
+def project_tr(H, masses, x):
+    """Translations and rotations projected out (mass-weighted projector); a copy of e8_cc_hessian_fd.project_tr, whose module imports pyscf."""
+    n = len(masses); mm = np.repeat(masses * AMU2AU, 3); sm = np.sqrt(mm)
+    com = (x * masses[:, None]).sum(0) / masses.sum(); r = x - com
+    D = []
+    for k in range(3):
+        v = np.zeros((n, 3)); v[:, k] = 1.0; D.append((v * np.sqrt(masses)[:, None]).ravel())
+    for k in range(3):
+        e = np.zeros(3); e[k] = 1.0; v = np.cross(np.tile(e, (n, 1)), r); D.append((v * np.sqrt(masses)[:, None]).ravel())
+    D = np.array(D).T; q, _ = np.linalg.qr(D); Pm = np.eye(3 * n) - q @ q.T
+    Hmw = H / np.outer(sm, sm); Hp = Pm @ Hmw @ Pm
+    return Hp * np.outer(sm, sm), Hmw
 
 
 def sha(path: Path) -> str:
@@ -140,7 +154,7 @@ def main() -> int:
     p1 = sorted(ks, key=lambda k: -float(s_k[k]))
     scorer_sha = [sha(PLAN / "modules" / "standout_pattern_proposer" / "out" / f"p1_seed{s}.pt") for s in seeds]
     orders = {"P1": p1, "blind": blind, "oracle": oracle}
-    curves, first = {}, {}
+    curves, first, first_fam = {}, {}, {}
     for name, order in orders.items():
         cur = []
         for t_ in range(len(order) + 1):
@@ -150,14 +164,21 @@ def main() -> int:
             cur.append(r)
         curves[name] = cur
         first[name] = next((r["k"] for r in cur if r["within"]), None)
+        first_fam[name] = {f: next((r["k"] for r in cur if r.get(f, 0.0) <= LIMIT_CM), None) for f in FAMILIES}
+        first_fam[name]["ratio"] = next((r["k"] for r in cur if r["ratio"] <= LIMIT_RATIO), None)
     nk = len(ks)
     md = [f"# Deck rehearsal on {a.mol_id} ({anchor.name}) — {datetime.now():%Y-%m-%d %H:%M}", "",
           f"{nk} symmetry-unique displacements ({len(reps)} representative atoms, {len(ops)} operations); unmeasured rows from "
           + ("the analytic B3LYP Hessian alone (--no-network)" if a.no_network else f"B3LYP + the mean ΔH of {len(model_notes)} carried model(s)")
-          + f"; scorer seeds {seeds} (sha {', '.join(scorer_sha)}). Limits: rms ≤ {LIMIT_CM} cm⁻¹ in every family and ring-coupling ratio ≤ {LIMIT_RATIO}.", "",
+          + f"; scorer seeds {seeds} (sha {', '.join(scorer_sha)}). Limits: rms ≤ {LIMIT_CM} cm⁻¹ in every family and ring-coupling ratio ≤ {LIMIT_RATIO}. "
+          "k = 0 is the prediction alone (the 'network as is' column of the T3 read), k = all is the anchor itself.", "",
           "| order | first k within the limits | share of the gradients |", "|---|---|---|"]
     for name in orders:
         md.append(f"| {name} | {first[name] if first[name] is not None else 'never'} / {nk} | {('%.0f %%' % (100 * first[name] / nk)) if first[name] is not None else '—'} |")
+    md += ["", "Per read-out, the first k at which that family's rms is within the limit (ratio: within its limit) — the split of the verdict, not a registered line:", "",
+           "| order | " + " | ".join(FAMILIES) + " | ratio |", "|---|" + "---|" * (len(FAMILIES) + 1)]
+    for name in orders:
+        md.append(f"| {name} | " + " | ".join(str(first_fam[name][c]) if first_fam[name][c] is not None else "never" for c in [*FAMILIES, "ratio"]) + " |")
     md += ["", "## Curves (k gradients → rms per family in cm⁻¹, ring-coupling ratio)", ""]
     for name, cur in curves.items():
         md += [f"### {name}", "", "| k | % | " + " | ".join(FAMILIES) + " | all | ratio | spread |", "|---|---|" + "---|" * (len(FAMILIES) + 3)]
@@ -165,11 +186,11 @@ def main() -> int:
             md.append(f"| {r['k']} | {r['pct']:.0f} | " + " | ".join(f"{r[f]:.2f}" if f in r else "—" for f in FAMILIES) + f" | {r['all']:.2f} | {r['ratio']:.3f} | {r['spread']:.1e} |")
         md.append("")
     res = {"date": datetime.now().strftime("%Y-%m-%d %H:%M"), "anchor": str(anchor), "mol_id": a.mol_id, "n_unique": nk, "reps": reps, "ks": ks, "orders": orders,
-           "first_within": first, "limits": {"cm": LIMIT_CM, "ratio": LIMIT_RATIO}, "no_network": a.no_network, "models": model_notes,
+           "first_within": first, "first_per_readout": first_fam, "limits": {"cm": LIMIT_CM, "ratio": LIMIT_RATIO}, "no_network": a.no_network, "models": model_notes,
            "scorer_seeds": seeds, "scorer_sha": scorer_sha, "curves": curves, "seconds": round(time.time() - t0)}
     Path(a.out_prefix + ".md").write_text("\n".join(md), encoding="utf-8")
     Path(a.out_prefix + ".json").write_text(json.dumps(res, indent=1), encoding="utf-8")
-    print("\n".join(md[:12]))
+    print("\n".join(md[:18]))
     print(f"→ {a.out_prefix}.md ({res['seconds']} s)")
     return 0
 
