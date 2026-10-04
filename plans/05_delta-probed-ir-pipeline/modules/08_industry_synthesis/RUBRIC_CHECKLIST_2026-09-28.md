@@ -26,3 +26,5 @@ rungs or keeps them empty with the verdict); the CC-level test of the standout's
 - README status rewritten to the current state. Atlas republished 2 Oct (843 molecules, four CC anchors); the user's phone pass of 3 Oct closes the manual half of S6 (search, molecule page, 3D view); the axe half still needs the built site.
 - Decision 52's pricing rule ('its family first') is a design input for the price table, not yet implemented in `m08/`; listed for the full weekend pass.
 - Scenarios, tests, notebook and paper unchanged since 28 Sep; the rubric items are re-ticked in the full pass.
+
+- Lay-reader pass done 4 Oct 2026 (TASKS item 20): a plain-language opening in README, notebook (builder and the executed notebook's markdown) and report; `modules/GLOSSARY.md` linked; the report rebuilt; the notebook re-executed after the TZ run (decision 58, text and execution split).

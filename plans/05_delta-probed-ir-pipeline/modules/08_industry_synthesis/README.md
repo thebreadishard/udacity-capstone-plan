@@ -4,6 +4,8 @@
 
 ## What it is
 
+*For readers without chemistry:* The integrated system turns a request — a molecule, how accurate the answer must be, a budget — into either a computed infrared spectrum with a stated accuracy and price, or a refusal that names the missing step. Its parts come from the earlier modules: the library of existing predictions (02), the laboratory numbers to score against (03), the trained correction (05) and the run steward that is allowed to start work (07). Terms are defined in [`../GLOSSARY.md`](../GLOSSARY.md).
+
 The public **Spectrum Atlas** (built 23–24 September, `website/`) is the integrated artifact's front; this module adds the part that makes it a
 service: a **request officer** that answers a request (molecule, target rung, budget, free text) with a **certificate**, a **refusal naming the gate or the
 cap and the price of the missing step**, or a **run order** that cannot start without module 07's gate. The ladder — listed · cheap level done ·

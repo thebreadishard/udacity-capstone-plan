@@ -98,6 +98,7 @@ para("The integrated artifact is a request service on top of the project's publi
      "measured price of the missing step. A run order is a proposal in the run steward's schema, and it can start nothing until the steward's deterministic gate has "
      "approved it. In this build the worker behind a run order is a replay of recorded run logs — the user's decision of 28 September — so the service spends no money "
      "and touches no machine while the licence question is still open.")
+para("For a reader without chemistry: The integrated system turns a request — a molecule, how accurate the answer must be, a budget — into either a computed infrared spectrum with a stated accuracy and price, or a refusal that names the missing step. Its parts come from the earlier modules: the library of existing predictions (02), the laboratory numbers to score against (03), the trained correction (05) and the run steward that is allowed to start work (07). Terms are defined in ../../GLOSSARY.md.")
 para(f"Run on the repository as it stands, the catalogue holds {R['catalogue']['n']:,} molecules: {rc.get('cheap_level_done', 0)} at the cheap rung, "
      f"{rc.get('anchored', 0)} anchored and {rc.get('validated', 0)} validated; the predicted rungs are empty by rule. The eight pre-registered scenarios all produced "
      f"the registered kind of output ({SC['n_pass']} of {SC['n']}); every cost line traced to its source; and the failure case — a family whose coupled-cluster "

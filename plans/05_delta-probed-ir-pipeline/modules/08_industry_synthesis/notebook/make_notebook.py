@@ -58,6 +58,7 @@ FIG = Path("figures"); FIG.mkdir(exist_ok=True)
 cat = Catalog()
 print(f"catalogue: {len(cat.rows):,} molecules, built {cat.summary['built_utc']}; rung counts {cat.summary['rung_counts']}; module 07 rules: {len(RULES)}")""")
 
+md("""*Reading this without chemistry.* The integrated system turns a request — a molecule, how accurate the answer must be, a budget — into either a computed infrared spectrum with a stated accuracy and price, or a refusal that names the missing step. Its parts come from the earlier modules: the library of existing predictions (02), the laboratory numbers to score against (03), the trained correction (05) and the run steward that is allowed to start work (07). Terms are defined in `../../GLOSSARY.md`.""")
 md("""## 1. What the repository holds today — the ladder
 
 Every molecule holds the highest rung it reaches: 0 listed · 1 cheap level done · 2 correction predicted · 3 spectrum predicted · 4 anchored · 5 validated.
