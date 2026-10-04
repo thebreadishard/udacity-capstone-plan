@@ -1,0 +1,51 @@
+{
+ "date": "2026-10-04 13:28",
+ "tz": "probes/results_m1/e8_benzene_ccpvtz_oop_2026-10-03",
+ "dz": "probes/results_m1/e8_benzene_ccpvdz_dip_2026-10-03",
+ "molecule": "modules/05_support_predictor/corpus/molecules/A_8448043181",
+ "step": 0.005,
+ "rows": [
+  {
+   "k": 2,
+   "atom": 0,
+   "xyz": "z",
+   "oop_fraction": 0.9995930448284212,
+   "H_b3lyp": 0.13192281160652541,
+   "H_cc_dz": 0.10508950549347792,
+   "H_cc_tz": 0.12186729692942322,
+   "H_cc_tz_energy_route": 0.12187156698928447,
+   "two_route_tz": 4.270059861255504e-06,
+   "dH_dz": -0.02683330611304749,
+   "dH_tz": -0.010055514677102195,
+   "basis_share_of_dz_correction": 0.6252599424484343
+  },
+  {
+   "k": 18,
+   "atom": 6,
+   "xyz": "x",
+   "oop_fraction": 0.003714428150526542,
+   "H_b3lyp": 0.2990110597139556,
+   "H_cc_dz": 0.3159777546686915,
+   "H_cc_tz": 0.29173164919349404,
+   "H_cc_tz_energy_route": 0.29174329256420606,
+   "two_route_tz": 1.164337071202226e-05,
+   "dH_dz": 0.016966694954735906,
+   "dH_tz": -0.007279410520461549,
+   "basis_share_of_dz_correction": 1.4290411621050363
+  },
+  {
+   "k": 20,
+   "atom": 6,
+   "xyz": "z",
+   "oop_fraction": 0.9995930448284212,
+   "H_b3lyp": 0.025504221555196938,
+   "H_cc_dz": 0.021664873088854387,
+   "H_cc_tz": 0.02587827556913974,
+   "H_cc_tz_energy_route": 0.025885196919261944,
+   "two_route_tz": 6.9213501222020746e-06,
+   "dH_dz": -0.0038393484663425508,
+   "dH_tz": 0.0003740540139428039,
+   "basis_share_of_dz_correction": 1.0974264298283756
+  }
+ ]
+}

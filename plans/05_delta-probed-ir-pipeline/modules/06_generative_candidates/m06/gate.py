@@ -72,12 +72,22 @@ def ring_system(smiles: str) -> str:
     atoms = sorted(max(systems, key=len))
     frag = Chem.MolFragmentToSmiles(m, atomsToUse=atoms, canonical=True)
     fm = Chem.MolFromSmiles(frag)
+    if fm is None:                                   # a cut aromatic system can lose a hydrogen count RDKit needs; keep an unsanitised canonical key
+        fm = Chem.MolFromSmiles(frag, sanitize=False)
     return Chem.MolToSmiles(fm) if fm is not None else frag
 
 
 def ring_class(smiles: str) -> str:
     from rdkit import Chem
     m = Chem.MolFromSmiles(smiles)
+    if m is None:                                    # an unsanitised ring-system key: count its rings without aromaticity perception
+        m = Chem.MolFromSmiles(smiles, sanitize=False)
+        if m is None:
+            return "r?"
+        m.UpdatePropertyCache(strict=False)
+        Chem.FastFindRings(m)
+        n = len(m.GetRingInfo().BondRings())
+        return "r2" if n <= 2 else "r3" if n == 3 else "r4+"
     n = sum(1 for r in m.GetRingInfo().BondRings() if all(m.GetBondWithIdx(b).GetIsAromatic() for b in r))
     return "r2" if n <= 2 else "r3" if n == 3 else "r4+"
 

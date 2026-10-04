@@ -55,3 +55,37 @@ molecules that reached stage 7 counted as "new" — a methyl-naphthalene with a 
 stricter one; the predictions and the lines above now refer to **distinct new ring systems** with the same numbers (2,000–6,000 predicted; lines at
 ≥ 300 PubChem-known / ≥ 1,000 overall with ≥ 20 per requested class; < 100). The Murcko scaffold stays a column. The smoke's other numbers, for the
 record and not as a read: 94 % parse (prediction 92 %), 11 of 250 above 30 heavy atoms, 4 without two fused aromatic rings, none already in the manifest.
+
+## Outcome, 4 October 2026, 13:2x — the middle branch: 881 new ring systems, 216 of them PubChem molecules; a ten-fold conditioned run decides
+
+Export 12:14–13:20 (`out/proposals_2026-10-04.{csv,json}`, 4 threads beside the TZ run): seed 0 10,000 samples in 1,313 s, seed 1 10,000 in 2,625 s,
+cond_seed0 4 × 2,500 in 1,342 s; checkpoint hashes and the `experimental` status in the json. The gate's first run failed at the per-class table (a cut
+aromatic fragment RDKit could not re-parse; `ring_system` now keeps an unsanitised canonical key and `ring_class` counts rings without aromaticity
+perception for such a key; tests 5/5) and was re-run at 13:25 on the same export (`out/proposals_2026-10-04.md`, `_summary.json`, `_staged.csv`,
+`_gated.csv` SHA-256 `69f25509e1c4…`).
+
+| stage (first failed) | distinct SMILES | prediction |
+|---|---|---|
+| samples / distinct canonical | 30,000 / 28,309 | — |
+| parses | 3,947 fail (86 % parse) | 92 % — the conditioned run parses 76 %, the unconditioned 92 % |
+| neutral, closed shell | 3 | — |
+| > 30 heavy atoms | 912 | — |
+| fewer than two fused aromatic rings | 290 | — |
+| already in the manifest | 177 (0.7 %) | ≈ 5 % |
+| known ring system (the enumeration can make it) | 15,967 (69 % of those reaching the niche test) | 40–60 % kept → 31 % kept |
+| **pass** | **7,013 molecules, 881 distinct new ring systems** | 2,000–6,000 systems |
+
+Of the 881 systems, **216 are themselves molecules of the PubChem set** (25 %; predicted 10–30 %); 846 of the 7,013 passing molecules are PubChem
+molecules. Per requested class (new systems): `<r3> <hN>` 243, `<r4+> <hN>` 198, `<r4+> <hnone>` 85, **`<r3> <hnone>` 13** — the hydrocarbon three-ring
+skeletons are nearly all known already (the manifest's parents cover them); the generator's novelty is in the heteroatom systems.
+
+**Lines.** ≥ 300 PubChem-known new systems: no (216). ≥ 1,000 new systems with ≥ 20 per class: no (881; `<r3> <hnone>` 13). < 100: no. **The middle
+branch:** a conditioned run at ten times the request sizes decides, registered below before it runs. The prediction of 2,000–6,000 systems was too
+high by a factor of two to seven: the niche test keeps 31 % rather than 40–60 %, because most proposals decorate a known skeleton.
+
+*Dated amendment 4 October 13:3x (the ten-fold run, registered before it runs):* `cond_seed0` (v0.2), the same four requests at 25,000 samples each
+(100,000 strings, ≈ 4 h at 4 threads), appended to today's export and gated together (`out/proposals_10x_2026-10-04.*`; the gate counts distinct
+systems over the union, so today's 881 are included). Predictions: distinct new systems grow sub-linearly — 1,500–2,500 in the union, PubChem-known
+350–600; `<r3> <hnone>` stays under 40. **Lines on the union, unchanged in their numbers:** ≥ 300 PubChem-known new systems or ≥ 1,000 overall with
+≥ 20 in each of the four classes → a registered source (step c follows); otherwise not a source at this size, the generator stays 0.x. Runs tonight
+after the notebook re-executions (`probes/batch_route_10x_1004.sh`, 4 threads beside the LNO cells' 12).

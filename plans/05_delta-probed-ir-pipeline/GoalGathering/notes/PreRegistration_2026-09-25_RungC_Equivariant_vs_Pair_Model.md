@@ -1887,3 +1887,44 @@ hold-out (a) targets (chain 34 step 3, in the afternoon queue of 4 Oct) are read
 the low modes (14.8 cm⁻¹ pooled on the molecules with both routes, 1.36 on the one clean molecule) says part of the 3.5 may be the labels; (2) a
 low-mode input the head does not have, designed before it is assumed: the torsion-angle primitives are in the pattern, their environment (the
 atoms two and three bonds out, the ring fusion they sit on) is not — a design note with a measurable prediction follows (TASKS row 23).
+
+### Outcome 4 October 13:3x — odds lever 2: the out-of-plane CC correction is a basis-set effect (the 'basis' line), and so is the in-plane C–H one
+
+Attempt 4 of the benzene CCSD(T)/cc-pVTZ partial run finished 13:26 (`probes/results_m1/e8_benzene_ccpvtz_oop_2026-10-03/`, `probes/tz_relaunch_1004.sh`,
+8 threads under WSL with the out-of-core (T) density; reference 03:15, six gradients at 4,230–7,761 s each, slower while chain 34c shared the cores;
+every pair check ≤ 9.0e-6 a.u. against the limit 1e-4). Read with `probes/cc_basis_oop_check.py` against the cc-pVDZ run of 3 Oct made with the same
+kernel (`e8_benzene_ccpvdz_dip_2026-10-03`) and the analytic B3LYP Hessian; the json beside the run and in
+`modules/05_support_predictor/out/cc_basis_oop_check_benzene_2026-10-04.json`.
+
+| k | coordinate | oop | H_kk B3LYP | CC/DZ | CC/TZ (gradient route) | TZ two-route | ΔH_kk DZ | ΔH_kk TZ | share removed by the basis |
+|---|---|---|---|---|---|---|---|---|---|
+| 2 | C atom 0, z | 1.00 | 0.13192 | 0.10509 | 0.12187 | 4.3e-6 | −0.02683 | −0.01006 | **63 %** |
+| 20 | H atom 6, z | 1.00 | 0.02550 | 0.02166 | 0.02588 | 6.9e-6 | −0.00384 | +0.00037 | **110 %** (sign flips) |
+| 18 | H atom 6, x (C–H) | 0.00 | 0.29901 | 0.31598 | 0.29173 | 1.2e-5 | +0.01697 | −0.00728 | **143 %** (sign flips) |
+
+**Predictions.** The two TZ routes agree to 1e-4: yes (≤ 1.2e-5). TZ removes 40–70 % of the out-of-plane correction: yes for the carbon (63 %), more
+than all of it for the hydrogen (110 %). The in-plane C–H correction changes by < 20 %: **wrong** — it reverses sign (143 %). **Line: basis.** The
+60–100 cm⁻¹ out-of-plane gap of the DZ anchors is anchor cost, not a network question; and the C–H stretch correction of the DZ anchors is a basis
+artefact as well — at TZ, CCSD(T) sits within 0.01 a.u. of B3LYP on all three diagonal elements, where DZ put it 0.004–0.027 away.
+
+**What this changes.** (1) The cc-pVDZ anchors are not the truth for out-of-plane and C–H coordinates; the T3 read-out keeps its in-plane (ring) line
+and a TZ-corrected line for the other families is registered later, as the line said. (2) A TZ anchor is priced: 13 gradients of 1.5–2 h for benzene
+on 8 threads, and N⁷ above that (naphthalene × ≈ 17), so full TZ anchors stop at benzene on the laptop; the composite the line names — CC/DZ plus
+[CC/TZ − CC/DZ] at a cheaper level, per family — is the route and is designed before any new anchor (TASKS row 24). (3) The network's zero-shot
+failure on the DZ anchors (T3 'as is' ratio 0.99; today's rehearsal) must be re-read in this light: part of what it 'failed' to reproduce was a basis
+artefact. One exploratory check is registered right below.
+
+*Dated amendment 4 October 13:4x, before it runs — the carried network against CC/TZ on the same three coordinates:* `probes/cc_basis_network_check.py`
+reads chain 34's three carried seeds on benzene (a hold-out (a) molecule), takes H_kk(B3LYP) + ΔH_kk(network) for k = 2, 18, 20 and places it beside
+B3LYP, CC/DZ and CC/TZ. Predictions: the network's ΔH_kk is small (|ΔH| < 0.01 a.u.; its training targets are the corpus high level, not CC) and lies
+closer to CC/TZ than CC/DZ does on all three coordinates. Reading: *closer to TZ on ≥ 2 of 3* → the DZ anchors overstated the network's CC error on
+these families, and the TZ-corrected T3 line comes first in the queue; *closer to DZ* → the network carries the DZ artefact's direction and the
+composite is needed on both sides. Nothing else is read from it; it costs a minute.
+
+*Outcome of the 13:4x amendment, 13:3x (`modules/05_support_predictor/out/cc_basis_network_check_benzene_2026-10-04.{md,json}`, chain 34's three carried
+seeds, benzene as hold-out (a)):* the network's ΔH_kk is small and positive on all three coordinates (+0.0093, +0.0076, +0.0011 a.u.; prediction
+|ΔH| < 0.01: met). Closer to TZ on **2 of 3** — both out-of-plane coordinates (C z: 0.019 from TZ against 0.036 from DZ; H z: 0.0007 against 0.005);
+on the C–H coordinate it is closer to DZ (0.009 against 0.015) and pushes the same way DZ does. Reading rule met: the DZ anchors overstated the network's
+CC error on the out-of-plane family, and the TZ-corrected T3 line comes first. The caveat that stays on record: on the carbon out-of-plane coordinate the
+network's correction has the wrong sign against both CC levels (+0.009 where TZ says −0.010); it is "closer to TZ" because TZ sits near B3LYP, not because
+the network found the TZ correction. The composite (TASKS 24) and the TZ-corrected lines are the way to read the network fairly out of plane.

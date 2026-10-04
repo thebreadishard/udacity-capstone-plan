@@ -101,3 +101,6 @@ plans/*/probes/results_dryrun/
 plans/*/probes/results_vpt2/*.out
 !plans/*/modules/*/notebook/out/MODELS_STATUS.json
 !plans/*/modules/*/out/MODELS_STATUS.json
+!plans/*/modules/06_generative_candidates/out/*.md
+!plans/*/modules/06_generative_candidates/out/*.json
+!plans/*/modules/06_generative_candidates/out/*_gated.csv

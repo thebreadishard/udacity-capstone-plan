@@ -1,0 +1,67 @@
+{
+ "date": "2026-10-04 13:32",
+ "check_json": "modules/05_support_predictor/out/cc_basis_oop_check_benzene_2026-10-04.json",
+ "mol_id": "A_8448043181",
+ "models": [
+  {
+   "path": "modules\\05_support_predictor\\out\\E7_rungC_chain34_kdfamily_750_2026-10-05_model_n750_seed0.pt",
+   "status": "carried",
+   "version": "1.1"
+  },
+  {
+   "path": "modules\\05_support_predictor\\out\\E7_rungC_chain34_kdfamily_750_2026-10-05_model_n750_seed1.pt",
+   "status": "carried",
+   "version": "1.1"
+  },
+  {
+   "path": "modules\\05_support_predictor\\out\\E7_rungC_chain34_kdfamily_750_2026-10-05_model_n750_seed2.pt",
+   "status": "carried",
+   "version": "1.1"
+  }
+ ],
+ "rows": [
+  {
+   "k": 2,
+   "atom": 0,
+   "xyz": "z",
+   "oop": 1.0,
+   "H_b3lyp": 0.13192281160652541,
+   "H_cc_dz": 0.10508950549347792,
+   "H_cc_tz": 0.12186729692942322,
+   "dH_net": 0.009329847060143948,
+   "H_net": 0.14125265866666936,
+   "dist_dz": 0.03616315317319144,
+   "dist_tz": 0.019385361737246143,
+   "closer_to": "TZ"
+  },
+  {
+   "k": 18,
+   "atom": 6,
+   "xyz": "x",
+   "oop": 0.0,
+   "H_b3lyp": 0.2990110597139556,
+   "H_cc_dz": 0.3159777546686915,
+   "H_cc_tz": 0.29173164919349404,
+   "dH_net": 0.007552889796594779,
+   "H_net": 0.3065639495105504,
+   "dist_dz": 0.009413805158141109,
+   "dist_tz": 0.014832300317056346,
+   "closer_to": "DZ"
+  },
+  {
+   "k": 20,
+   "atom": 6,
+   "xyz": "z",
+   "oop": 1.0,
+   "H_b3lyp": 0.025504221555196938,
+   "H_cc_dz": 0.021664873088854387,
+   "H_cc_tz": 0.02587827556913974,
+   "dH_net": 0.0011057523467267554,
+   "H_net": 0.026609973901923694,
+   "dist_dz": 0.004945100813069307,
+   "dist_tz": 0.0007316983327839525,
+   "closer_to": "TZ"
+  }
+ ],
+ "n_closer_to_tz": 2
+}
