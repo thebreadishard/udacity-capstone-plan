@@ -71,6 +71,8 @@ Whenever the machine is busy or the user is away, the next item is the cheapest 
 
 ## 6. Log
 
+- **4 Oct, 06:3x — chain 34b read: the family term's weight is saturated.** Weight 0.3 against 0.1: hold-out (a) other 3.58 (3.40–3.89) vs 3.48, ring-ip 2.19 vs 2.14, CH-stretch 1.47 vs 1.26, ratio 0.225 vs 0.218; (b) other 5.87 vs 6.03. Prediction (3.0–3.4) not met; the registered third branch applies: the weight is not the lever beyond 0.1. Next, as registered in step 2's third branch: a per-family output scale on the head's diagonal classes, after the 'other' low modes' noise is measured per molecule against the FD floor — design and registration today, no further run of the same recipe. Six checkpoints `candidate`; chain 24 carried until the user decides (TASKS). TZ pairs: 1 of 6 gradients done at 06:3x (RSS 11.9 GB, 7.4 GB free).
+
 - **4 Oct, 04:1x — the out-of-core route holds: TZ attempt 4 finished its reference gradient at 03:15 (the two earlier attempts died there) and is on the displacement pairs (k 20, 2, 18), RSS 11.5 GB, 7.8 GB free; ≈ 15:00–16:00. Chain 34b seed 0 at epoch 80 (04:0x).
 
 - **4 Oct, 03:1x — module-05 notebook rebuild (section 12.4) failed: kernel died after 4 min.** Host commit charge 43 of 47 GB (vmmemWSL 14 GB for the TZ run, chain 34b 1.5 GB); the builder's temp-file rule kept the executed notebook of 13:10 intact. Rebuild after the TZ run or chain 34b; the builder and its numbers are committed (0a1042d).

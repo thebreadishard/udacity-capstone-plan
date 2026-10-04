@@ -1698,6 +1698,20 @@ chain 34* → the weight is a lever with a slope: 1.0 is tried once, then the 'l
 or ratio > 0.25* → the weight is saturated at 0.1–0.3; next is the per-family output scale on the head's diagonal classes with the 'low' modes' noise
 measured per molecule against the FD floor (the registered third branch of step 2).
 
+## Outcome — chain 34b, the family-balanced term at weight 0.3 — 4 October 06:3x (`out/rungC_chain34b_read_2026-10-04.{md,json}`)
+
+Run 03:12–06:28 (6 threads), 750, seeds 0–2, best epochs [86, 64, 79] of 200. Hold-out (a), seed mean (range), against chain 34 (weight 0.1):
+ring-ip 2.19 (2.12–2.24) vs 2.14; CH-stretch 1.47 vs 1.26; CH-oop 3.06 vs 3.05;
+**other 3.58 (3.40–3.89) vs 3.48** (+0.10); ratio 0.225 vs 0.218; all-mode ω 2.56 vs 2.48.
+Hold-out (b): other 5.87 vs 6.03 (-0.16), ratio 0.336.
+
+**Against the predictions:** other 3.0–3.4 → 3.58, not met (slightly worse than 0.1, inside the seed scatter of both chains); ring-ip and CH-stretch within
+±0.2 → +0.05 and +0.20; ratio 0.21–0.23 → 0.225; (b) other falls by 0.3–1.0 → -0.16. **Against the lines:** the third branch,
+*other ≥ 3.4* — **the weight is saturated between 0.1 and 0.3.** The family-balanced term is kept at 0.1 (chain 34's value; the better of the two on both
+hold-outs). What follows, as registered: the per-family output scale on the head's diagonal classes, with the 'other' low modes' noise measured per
+molecule against the FD floor first — design and registration in the day of 4 October, not another run of the same recipe. The six chain-34/34b checkpoints
+stay `candidate`; the carried recipe remains chain 24 until the user's word.
+
 ### Amendment 3 October 11:3x — pool 3 (decision 54): the three missing axes, registered before any row is computed
 
 **Design.** `Design_Note_2026-10-03_Pool_3_Three_Axes.md`. Batch 1 = 60 radical cations on known scaffolds, 30 aza-four-rings, 30 five-ring scaffolds;
