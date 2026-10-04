@@ -47,3 +47,10 @@ C–H stretch family is the first to be done under every order (it is local), th
 No new chemistry: the gradients, the Hessian and the network exist. The adapter, the assembly and the read-out are one probe (`probes/anchor_deck_rehearsal.py`),
 two threads, minutes per order; built after the lay-reader passes of 4 October, run on the laptop when the TZ run is done (the network's prediction
 needs the torch environment the host cannot spare beside the TZ run's VM today). Nothing in the Ladder changes until the read is on record.
+
+*Dated note 4 October 09:2x (while building, before any read):* two details fixed in `probes/anchor_deck_rehearsal.py`. (1) The adapter: the scorer scores
+pairs of normal modes, so a Cartesian displacement k is scored as s_k = Σ_{i<j} S_ij (V_ki² + V_kj²) with V the mass-weighted normal modes of the
+analytic B3LYP Hessian — each mode pair weighed by the displacement's share in its two modes; scorer seeds 0–2 averaged, the checkpoint hashes in the
+output. (2) The smoke molecule is pyridine, not benzene: benzene's per-displacement gradients were never copied from its server (the fetch audit of
+3 Oct), pyridine's 21 are local. The smoke runs with `--no-network` (the B3LYP Hessian alone fills the unmeasured rows) to test the mechanics; that
+column is a baseline beside the registered hybrid, not a line.
