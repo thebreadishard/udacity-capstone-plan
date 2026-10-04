@@ -157,8 +157,8 @@ if F:
          f"{F['overall']['within_5']:.1%} of bands within 5 cm⁻¹, with a median best iteration of {F['best_iter_median']:.0f} of 100 "
          f"and no fold within 10 % of the cap. The trees stop over-fitting and land {abs(F['overall']['MAE'] - O['ridge']['MAE']):.2f} cm⁻¹ "
          f"{'below' if F['overall']['MAE'] < O['ridge']['MAE'] else 'above'} the ridge model, still within a tenth of a wavenumber of "
-         f"the uncorrected library, so the conclusion does not change. Whether the recipe's rule, applied to this run, moves the "
-         f"baseline column from ridge to the trees is a decision for the project's pilot note, not for this report.")
+         f"the uncorrected library, so the conclusion does not change. The baseline column stays the ridge model: the two differ by less than "
+         f"the noise of the comparison and ridge is the simpler model (decision of 4 October 2026).")
 
 heading("Interpretation for a Non-Technical Audience")
 para("Computers can predict where a molecule's infrared \"fingerprint\" lines fall, but the predictions are a little "

@@ -64,7 +64,7 @@ simpler model); the uncertainty layer as |residual| quantiles.
   start (proposal §12: due 30 Oct 2026).
 - The pilot note's item 6: adopt or amend this recipe by dated note; the stricter-join candidate above; and whether the
   recipe's rule, applied to the early-stopping run of 3 October 2026, moves the baseline column from ridge to the trees
-  (0.06 cm⁻¹ apart; the ridge column stands until the note says otherwise).
+  (0.06 cm⁻¹ apart) — **decided 4 October 2026 (the user): ridge stays**, the difference is inside the noise and ridge is the simpler model (RECIPE dated note).
 - The student's own pass over notebook, README and summary.
 - The P5 uncertainty layer labelled as an extrapolation when attached to R4–R6 spectra.
 

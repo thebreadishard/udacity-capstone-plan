@@ -1625,6 +1625,9 @@ comes free; naphthalene is recomputed (a server-day) the day intensities become 
 
 ### Amendment 3 October 10:2x — chain 33: T3 with anthracene as the fifth anchor (registered before the Hessian exists)
 
+*Dated note 4 October 08:4x:* chain 33 runs on the carried models of decision 57 — chain 34's three seeds (`probes/rungC_chain33_1004.sh`, outputs `T3_five_anchors_c34_seed*`) instead of chain 24's; the waiter of 3 Oct was replaced before anthracene finished. Lines unchanged; the comparison column 'with four anchors' is T3b of 2 Oct on chain 24, so the read states both the anchor and the model change and, if the line is met, repeats the four-anchor read on chain 34's models before attributing the gain to the fifth anchor.
+
+
 **Run.** `probes/rungC_sherlock33_1003.sh`: when the CCX53's chain reports anthracene finished, fetch its result directory, refuse anything but a VALID
 `hessian_ccsd_t.npz` (the probe's own checks; the two-route check lane's file must be present), and run the leave-one-anchor-out transfer over five anchors
 (benzene, fluorobenzene, pyridine, naphthalene, anthracene) with chain 24's three models, α-tuning and the λ = 1 head (`--head-l2 1`), 300 epochs at lr

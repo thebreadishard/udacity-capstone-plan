@@ -158,3 +158,12 @@ outcome section.
 — the plan-line label is 'proxy'. Band-free read (`--pool all --w-cm 0`, the Ladder default since the wide-deck note of 28 Sep): C1 pass, C2 pass, C3 oracle
 K_off(0.3) 156, P1/oracle 5.00, label 'confirmed'. The same split as benzene on 29 Sep: the registered in-band line fails, the band-free read passes.
 Nothing here changes a registration; the user reads it in the morning (TASKS row 'Standout CC test on naphthalene').
+
+**Dated amendment 4 October 08:4x — the band-free read is the registered CC line; the in-band requirement was mis-specified (the user: "Waarom zouden
+we de eis stellen dat we een in-band claim hebben? We willen toch niet sub-optimalisatie doen?").** The proposer orders measurements by what they teach
+about the *whole* correction, which is what the network learns; judging it only inside one spectral band measures a different, noisier quantity (a
+handful of modes) and asks the method to optimise for a sub-problem. The in-band line came from the Ladder's focus on the astronomical bands and was
+carried into the CC test without that argument being made. From today C1–C3 are read band-free (`--pool all --w-cm 0`), as the Ladder has done by default
+since the wide-deck note of 28 September; the in-band numbers stay in the records as what they are. Under the registered line both CC molecules pass:
+benzene (29 Sep: P1/oracle in the band-free read) and naphthalene (4 Oct 02:54: C1 pass, C2 pass, P1/oracle 5.00) — label 'confirmed'; gate B's second
+molecule is passed. The standout report and notebook state the change as a correction of the requirement, not as a result that improved.

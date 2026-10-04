@@ -1,18 +1,18 @@
 {
  "E7_rungC_carried_kd_750_saved_2026-10-02_model_n750_seed0.pt": {
-  "status": "carried",
+  "status": "superseded",
   "chain": "24",
-  "note": "the carried recipe at 750 (decision 53 base): pattern f, projected target, pattern + 0.3 kring + 0.1 K-diag, 3x64 sum body, SQM alpha, pair features; base of T3/T3b (2 Oct), chain 33 (anthracene reread) and the error map"
+  "note": "the carried recipe at 750 (decision 53 base): pattern f, projected target, pattern + 0.3 kring + 0.1 K-diag, 3x64 sum body, SQM alpha, pair features; base of T3/T3b (2 Oct), chain 33 (anthracene reread) and the error map — superseded 4 Oct 08:4x by chain 34 (decision 57): worse on every family of both hold-outs; T3/T3b of 2 Oct stand as read on it"
  },
  "E7_rungC_carried_kd_750_saved_2026-10-02_model_n750_seed1.pt": {
-  "status": "carried",
+  "status": "superseded",
   "chain": "24",
-  "note": "seed 1 of the carried recipe at 750"
+  "note": "seed 1 of the carried recipe at 750 — superseded 4 Oct 08:4x by chain 34 (decision 57): worse on every family of both hold-outs; T3/T3b of 2 Oct stand as read on it"
  },
  "E7_rungC_carried_kd_750_saved_2026-10-02_model_n750_seed2.pt": {
-  "status": "carried",
+  "status": "superseded",
   "chain": "24",
-  "note": "seed 2 of the carried recipe at 750"
+  "note": "seed 2 of the carried recipe at 750 — superseded 4 Oct 08:4x by chain 34 (decision 57): worse on every family of both hold-outs; T3/T3b of 2 Oct stand as read on it"
  },
  "smoke_charge_input_2026-10-03_model_n30_seed0.pt": {
   "status": "smoke",
@@ -55,19 +55,19 @@
   "note": "20-epoch pretrained body (cap bound, decision 51); lever 2b read 1 Oct 17:1x — kept for the record, not a base"
  },
  "E7_rungC_chain34_kdfamily_750_2026-10-05_model_n750_seed0.pt": {
-  "status": "candidate",
+  "status": "carried",
   "chain": "34",
-  "note": "chain 34 step 2 (amendment 3 Oct 11:1x), read 4 Oct 03:1x: hold-out (a) other 3.48 (line 3-3.6: direction right, not the carried line), ring-ip 2.14, ratio 0.218; stays candidate - the weight scan (chain 34b) follows; promotion is the user's word"
+  "note": "carried since 4 Oct 08:4x (decision 57, the user): chain 34 — the carried recipe with the family-balanced K-diagonal term (--kdiag-mode family, weight 0.1); read 4 Oct 03:1x: (a) ring-ip 2.14, CH-stretch 1.26, CH-oop 3.05, other 3.48, ratio 0.218; (b) other 6.03, ratio 0.33; T1's 'other' line (<= 3) still open — the target, not a gate; base of chain 33 (T3, five anchors) and of pool 3"
  },
  "E7_rungC_chain34_kdfamily_750_2026-10-05_model_n750_seed1.pt": {
-  "status": "candidate",
+  "status": "carried",
   "chain": "34",
-  "note": "chain 34 step 2 (amendment 3 Oct 11:1x), read 4 Oct 03:1x: hold-out (a) other 3.48 (line 3-3.6: direction right, not the carried line), ring-ip 2.14, ratio 0.218; stays candidate - the weight scan (chain 34b) follows; promotion is the user's word"
+  "note": "carried since 4 Oct 08:4x (decision 57, the user): chain 34 — the carried recipe with the family-balanced K-diagonal term (--kdiag-mode family, weight 0.1); read 4 Oct 03:1x: (a) ring-ip 2.14, CH-stretch 1.26, CH-oop 3.05, other 3.48, ratio 0.218; (b) other 6.03, ratio 0.33; T1's 'other' line (<= 3) still open — the target, not a gate; base of chain 33 (T3, five anchors) and of pool 3"
  },
  "E7_rungC_chain34_kdfamily_750_2026-10-05_model_n750_seed2.pt": {
-  "status": "candidate",
+  "status": "carried",
   "chain": "34",
-  "note": "chain 34 step 2 (amendment 3 Oct 11:1x), read 4 Oct 03:1x: hold-out (a) other 3.48 (line 3-3.6: direction right, not the carried line), ring-ip 2.14, ratio 0.218; stays candidate - the weight scan (chain 34b) follows; promotion is the user's word"
+  "note": "carried since 4 Oct 08:4x (decision 57, the user): chain 34 — the carried recipe with the family-balanced K-diagonal term (--kdiag-mode family, weight 0.1); read 4 Oct 03:1x: (a) ring-ip 2.14, CH-stretch 1.26, CH-oop 3.05, other 3.48, ratio 0.218; (b) other 6.03, ratio 0.33; T1's 'other' line (<= 3) still open — the target, not a gate; base of chain 33 (T3, five anchors) and of pool 3"
  },
  "E7_rungC_chain34b_kdfamily_w03_750_2026-10-04_model_n750_seed0.pt": {
   "status": "candidate",
