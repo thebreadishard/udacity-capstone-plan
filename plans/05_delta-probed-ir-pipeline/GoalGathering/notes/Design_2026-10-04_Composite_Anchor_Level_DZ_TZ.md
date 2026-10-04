@@ -67,3 +67,5 @@ full benzene step is ≈ 2 h and a naphthalene step a night; B3LYP is dropped as
 *Test 2 preparation (16:5x):* `probes/cc_composite_full_check.py compute` writes the MP2 Hessian rows of the symmetry-unique displacements at a basis
 (cc-pVDZ and cc-pVTZ for benzene run tonight beside step 3); `… read` assembles the composite when the TZ anchor exists and reads it per family against
 CC/TZ with CC/DZ as the baseline, as registered above.
+
+*16:5x:* the `read` step smoked on benzene with the DZ anchor and the DZ rows standing in for TZ — the composite reproduces CC/DZ to 0.00 cm⁻¹ in every family (the identity the assembly must satisfy); the zero-rule column (B3LYP alone against CC/DZ: ring-ip 25.0, CH-stretch 99.3, CH-oop 72.0, other 55.9) matches the T3 read-out's convention. The MP2 rows at cc-pVTZ run until ≈ 19:30; the read waits for the TZ anchor (5 Oct).
