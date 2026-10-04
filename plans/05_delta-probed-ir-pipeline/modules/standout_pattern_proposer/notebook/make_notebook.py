@@ -59,6 +59,7 @@ OUT = Path("..") / "out"
 FIG = Path("figures"); FIG.mkdir(exist_ok=True)
 print("torch", torch.__version__, "| threads", torch.get_num_threads(), "| exports:", (OUT / "exports").exists())""")
 
+md("""*Reading this without chemistry.* The expensive calculations that anchor this project can be done in pieces: each piece (a 'pattern') costs one energy evaluation and reveals part of the table of couplings between vibrations. The question here is which pieces to measure first, so that the table is known after as few pieces as possible. 'Proxy level' means the rehearsal uses two cheap calculations standing in for the cheap and the expensive one; the test on real expensive responses is in sections 4c–4g. Terms are defined in `../../GLOSSARY.md`.""")
 md("""## 1. Data — the corpus Δ₂ response records and the splits
 
 One export per molecule (`run_export.py`): modes and frequencies, atomic participations, the low-level Hessian (what a scorer may see), Δ₂ (the answer,

@@ -96,6 +96,7 @@ para("Every molecule of the pipeline has a table of vibrational couplings that w
      "enough. This module asks whether a network that has only seen other molecules can choose the order of measurement better than the fixed recipe, "
      "and, once the first experiment was read, whether the recipe's candidate list should reach every pair of modes at all. It is a simulation with no new "
      "quantum chemistry: the corpus's cheap-against-cheap Hessians give the full table for 289 molecules, hence the exact response of any pattern.")
+para("For a reader without chemistry: The expensive calculations that anchor this project can be done in pieces: each piece (a 'pattern') costs one energy evaluation and reveals part of the table of couplings between vibrations. The question here is which pieces to measure first, so that the table is known after as few pieces as possible. 'Proxy level' means the rehearsal uses two cheap calculations standing in for the cheap and the expensive one; the test on real expensive responses is in sections 4c–4g. Terms are defined in ../../GLOSSARY.md.")
 para(R["summary"])
 
 heading("Data")

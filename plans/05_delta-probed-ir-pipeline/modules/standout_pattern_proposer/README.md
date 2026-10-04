@@ -6,6 +6,8 @@
 
 ## The question
 
+*For readers without chemistry:* The expensive calculations that anchor this project can be done in pieces: each piece (a 'pattern') costs one energy evaluation and reveals part of the table of couplings between vibrations. The question here is which pieces to measure first, so that the table is known after as few pieces as possible. 'Proxy level' means the rehearsal uses two cheap calculations standing in for the cheap and the expensive one; the test on real expensive responses is in sections 4c–4g. Terms are defined in [`../GLOSSARY.md`](../GLOSSARY.md).
+
 Every molecule of plan 05 has a coupling table Δ₂ we can only afford to know in part: each entry costs an expensive energy. The recovery (banded ℓ₁,
 FISTA, warm-started) reconstructs the table from pattern responses R_s = ½ aᵀ Δ a and stops when the held-out residual ρ_off is low enough. The
 deck fixes *which* patterns exist and in *which order* they are measured. This module asks whether a network that has only seen other molecules can
@@ -79,3 +81,5 @@ Tests: `python -m pytest ../../tests/test_pp_planted.py -q` (7 planted-block tes
 
 The tables of sections 1–4b are DFT against DFT; the test on real coupled-cluster responses (benzene 29 September, naphthalene 4 October; sections 4c–4g)
 passes the band-free line on both molecules. The deck change the proxy motivated is `../../GoalGathering/notes/PreRegistration_2026-09-27_Wide_Candidate_Deck_Stop_Rule.md`.
+
+*Lay-reader pass done 4 Oct 2026 (TASKS item 20): a plain-language opening in README, notebook (builder and the executed notebook's markdown) and report; `modules/GLOSSARY.md` linked; the report rebuilt; the notebook re-executed after the TZ run (decision 58, text and execution split).*
