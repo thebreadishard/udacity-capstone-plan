@@ -456,20 +456,20 @@
    "w1_heavy": 1.0,
    "w1_arom_rings": 0.14427860696517414,
    "w1_hetero": 0.07462686567164178,
-   "seconds": 692.3
+   "seconds": 543.5
   },
   "seed0_T0.7": {
    "n_samples": 10000,
    "validity": 0.9817,
    "uniqueness": 0.9353162880717123,
-   "novelty": 0.8445872358963189,
+   "novelty": 0.8446961446307993,
    "scaffold_novelty": 0.3754084077543019,
-   "memorisation": 0.1871243760823062,
-   "project_fit": 0.9543520309477757,
+   "memorisation": 0.1870225119690333,
+   "project_fit": 0.9543579164517793,
    "w1_heavy": 1.3582089552238805,
    "w1_arom_rings": 0.13930348258706468,
    "w1_hetero": 0.513681592039801,
-   "seconds": 697.6
+   "seconds": 506.6
   },
   "seed1_T1.0": {
    "n_samples": 10000,
@@ -482,7 +482,7 @@
    "w1_heavy": 1.0645273631840808,
    "w1_arom_rings": 0.14427860696517414,
    "w1_hetero": 0.07462686567164178,
-   "seconds": 820.7
+   "seconds": 652.3
   },
   "seed1_T0.7": {
    "n_samples": 10000,
@@ -495,33 +495,33 @@
    "w1_heavy": 1.2736318407960199,
    "w1_arom_rings": 0.12437810945273632,
    "w1_hetero": 0.5422885572139303,
-   "seconds": 705.5
+   "seconds": 554.4
   },
   "seed2_T1.0": {
    "n_samples": 10000,
-   "validity": 0.6473,
-   "uniqueness": 0.9904217518924764,
-   "novelty": 0.9539853377008267,
-   "scaffold_novelty": 0.6655747933239744,
-   "memorisation": 0.05206241310057161,
-   "project_fit": 0.8996075866579464,
-   "w1_heavy": 0.6537313432835838,
-   "w1_arom_rings": 0.09950248756218906,
-   "w1_hetero": 0.24378109452736318,
-   "seconds": 894.7
+   "validity": 0.9229,
+   "uniqueness": 0.9924152129158088,
+   "novelty": 0.909815482039524,
+   "scaffold_novelty": 0.5383775521345125,
+   "memorisation": 0.09545996315960559,
+   "project_fit": 0.9464778591143646,
+   "w1_heavy": 1.0209452736318365,
+   "w1_arom_rings": 0.14427860696517414,
+   "w1_hetero": 0.05970149253731343,
+   "seconds": 587.1
   },
   "seed2_T0.7": {
    "n_samples": 10000,
-   "validity": 0.8525,
-   "uniqueness": 0.9530791788856305,
-   "novelty": 0.935876923076923,
-   "scaffold_novelty": 0.5304615384615384,
-   "memorisation": 0.08903225806451613,
-   "project_fit": 0.9297738032614413,
-   "w1_heavy": 1.0348258706467661,
-   "w1_arom_rings": 0.13432835820895522,
-   "w1_hetero": 1.0398009950248757,
-   "seconds": 1105.3
+   "validity": 0.9817,
+   "uniqueness": 0.942446776000815,
+   "novelty": 0.8492217898832685,
+   "scaffold_novelty": 0.3859706009511457,
+   "memorisation": 0.18101252928593256,
+   "project_fit": 0.9576174112256587,
+   "w1_heavy": 1.3432835820895523,
+   "w1_arom_rings": 0.13930348258706468,
+   "w1_hetero": 0.5074626865671642,
+   "seconds": 545.4
   }
  },
  "predictions": {
@@ -537,13 +537,13 @@
   "memorisation": 0.1
  },
  "verdict": {
-  "validity": false,
+  "validity": true,
   "uniqueness": true,
   "novelty": true,
   "scaffold_novelty": true,
   "memorisation": true,
   "project_fit": false,
-  "seed_spread_validity": false
+  "seed_spread_validity": true
  },
  "conditioning": {
   "obedience_all": 0.8689877238881063,
@@ -611,15 +611,15 @@
   ],
   "unconditioned_metrics": {
    "n_samples": 10000,
-   "validity": 0.9216,
-   "uniqueness": 0.9951171875,
-   "novelty": 0.9224730127576055,
-   "scaffold_novelty": 0.5726747355795442,
-   "memorisation": 0.08094618055555555,
-   "project_fit": 0.9427895981087471,
+   "validity": 0.9215,
+   "uniqueness": 0.99511665762344,
+   "novelty": 0.9224645583424209,
+   "scaffold_novelty": 0.572628135223555,
+   "memorisation": 0.08095496473141617,
+   "project_fit": 0.9427828348504551,
    "w1_heavy": 1.308457711442786,
    "w1_arom_rings": 0.1890547263681592,
-   "w1_hetero": 0.07711442786069651
+   "w1_hetero": 0.07686567164179127
   },
   "history": [
    {
@@ -764,8 +764,8 @@
    }
   ]
  },
- "summary": "A character-level decoder-only Transformer (3,201,024 parameters, written in PyTorch without pretrained weights) was trained on 125,065 fused-aromatic PubChem molecules split by scaffold. At temperature 1.0 its samples are 83 % valid, 99 % unique and 92 % novel (58 % with a scaffold unseen in training), with a memorisation rate of 8.3 % and a project-fit share of 93 %; the heavy-atom, ring and heteroatom distributions of the samples sit 1.0, 0.14 and 0.07 (Wasserstein-1) from the held-out set. Conditioning on ring and heteroatom classes is obeyed in 87 % of valid samples. Against the predictions fixed before training, 4 of 7 read-outs were met.",
- "date": "2026-10-05 17:18",
+ "summary": "A character-level decoder-only Transformer (3,201,024 parameters, written in PyTorch without pretrained weights) was trained on 125,065 fused-aromatic PubChem molecules split by scaffold. At temperature 1.0 its samples are 92 % valid, 99 % unique and 91 % novel (54 % with a scaffold unseen in training), with a memorisation rate of 9.8 % and a project-fit share of 94 %; the heavy-atom, ring and heteroatom distributions of the samples sit 1.0, 0.14 and 0.07 (Wasserstein-1) from the held-out set. Conditioning on ring and heteroatom classes is obeyed in 87 % of valid samples. Against the predictions fixed before training, 6 of 7 read-outs were met.",
+ "date": "2026-09-26 18:02",
  "baseline": {
   "model": "5-gram token Markov, stupid back-off, train split only",
   "metrics": {
@@ -779,7 +779,7 @@
    "w1_heavy": 13.367686567164178,
    "w1_arom_rings": 2.593756218905473,
    "w1_hetero": 3.322338308457711,
-   "seconds": 37.9
+   "seconds": 13.0
   },
   "check": {
    "validity_margin": 0.8942000000000001,
