@@ -1,14 +1,14 @@
 {
- "date": "2026-09-28 20:18",
+ "date": "2026-10-05 14:54",
  "catalogue": {
-  "n": 11321,
-  "built_utc": "2026-09-28T18:16:00Z",
+  "n": 11322,
+  "built_utc": "2026-10-02T15:12:11Z",
   "rung_counts": {
-   "listed": 10787,
-   "cheap_level_done": 532,
+   "listed": 10475,
+   "cheap_level_done": 843,
    "correction_predicted": 0,
    "spectrum_predicted": 0,
-   "anchored": 1,
+   "anchored": 3,
    "validated": 1
   }
  },
@@ -166,17 +166,6 @@
    "ring / CH-ip (9-10.5 um)"
   ],
   "coverage": [
-   {
-    "family": "CH-oop (10.5-15 um; benzene nu11 at 673 included)",
-    "n_modes": 1,
-    "evidence": [
-     "probes/results_m1/M3_TZ_MODE12_READING_2026-09-20.md"
-    ],
-    "rms_dev_vs_ccsdt": null,
-    "u_band": 9.61,
-    "wider_than_tolerance": false,
-    "reading": "a family reading exists (curvature at DZ and TZ); no per-mode deviation table"
-   },
    {
     "family": "ring / CH-ip (9-10.5 um)",
     "n_modes": 1,
@@ -379,7 +368,7 @@
    }
   }
  },
- "n_rules": 32,
+ "n_rules": 41,
  "versions": {
   "python": "3.14.6",
   "pandas": "3.0.3",
