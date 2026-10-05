@@ -119,3 +119,7 @@ a repeat at a higher cap is owed only when a read-out of this module comes to ca
 line's data source and the proposal cites its numbers as a proxy). The threshold flaw and the schedule are recorded as what the module learned about
 its own recipe; the next run of `m06/train.py`, whenever it comes, uses a threshold of 1e-3 (≈ 0.2 % of the loss, stated here) and a schedule that
 does not end at the cap. The 26 September outcome stands as run.
+
+## Dated note 5 October 2026 — the re-execution was reverted
+
+*Re-execution of 5 October 2026, not adopted:* the lay-reader pass's execution half re-ran the notebook with `M06_REUSE=1`. Seeds 0 and 1 reproduced the 26 September numbers to the digit, but seed 2's checkpoint had never been saved on 26 September (only its training log), so the reuse path trained seed 2 anew (20 epochs, 6 threads): a different model with validity 0.647 at T 1.0 against 0.923, which flipped two of the seven pre-registered read-outs. A retrained seed is a new run, not a reproduction, so the 26 September record stands (notebook, `results.json`, report restored from git; the 4 October plain-language opening is in them), and the retrained checkpoint is registered `invalid` in `MODELS.md`. What follows, as a dated follow-up if the user wants it (TASKS 26): retrain seed 2 with the recipe and save it, and store the drawn samples so a re-execution evaluates stored artefacts instead of redrawing.
