@@ -89,3 +89,22 @@ systems over the union, so today's 881 are included). Predictions: distinct new 
 350–600; `<r3> <hnone>` stays under 40. **Lines on the union, unchanged in their numbers:** ≥ 300 PubChem-known new systems or ≥ 1,000 overall with
 ≥ 20 in each of the four classes → a registered source (step c follows); otherwise not a source at this size, the generator stays 0.x. Runs tonight
 after the notebook re-executions (`probes/batch_route_10x_1004.sh`, 4 threads beside the LNO cells' 12).
+
+## Outcome of the ten-fold run, 5 October 2026, 19:0x — both lines met on the union: the generator is a registered source
+
+`cond_seed0` × four requests × 25,000 (14:55–19:00, 4 threads; 100,000 strings, 75.6 % parse) appended to the 4 October export and gated on the union
+(`out/proposals_10x_2026-10-04.{csv,md,_summary.json,_gated.csv}`, SHA-256 of the frozen list `a71f2283…`, gate 224 s). 130,000 samples, 96,469 distinct;
+25,905 do not parse, 2,400 exceed 30 heavy atoms, 1,034 lack two fused aromatic rings, 259 are already in the manifest, 43,099 sit on a known ring
+system; **23,769 pass, on 2,272 distinct new fused aromatic ring systems, 308 of which are themselves PubChem molecules** (1,655 of the passing
+molecules are). Per requested class (new systems): `<r3> <hN>` 558, `<r4+> <hN>` 760, `<r4+> <hnone>` 426, `<r3> <hnone>` 25.
+
+**Predictions.** 1,500–2,500 systems: 2,272, inside. PubChem-known 350–600: 308, below. `<r3> <hnone>` under 40: 25, inside — the hydrocarbon three-ring
+skeletons are known already; the generator's novelty is in nitrogen systems and in four-ring and larger hydrocarbons (426).
+
+**Lines.** ≥ 300 PubChem-known new systems → **met (308)**; ≥ 1,000 new systems with ≥ 20 in each of the four requested classes → **met (2,272; 25 / 426 /
+558 / 760)**. The generator is a registered source for the corpus manifest. Step (c) follows, as registered, with one design choice made here before it is
+built: **layer G holds one representative molecule per new ring system** — the most frequent passing molecule of that system, ties by SMILES — PubChem-known
+systems first, then by the system's occurrence count (2,272 rows, not the 23,769 passing molecules; the enumeration can add substituents to a listed
+system later, which is what a new *core* is for); status `pending`, note `source=generator v0.1+v0.2 <gated sha>`; hold-out membership by the seeded rule
+when a pool draws from it; what is computed stays with the composition rule (decision 52) and the steward. Step (d), the Atlas: a `source` field
+(enumeration / qm9 / generator) and a label, after (c). Version 1.0 for the generator at the first pool that carries its molecules.
