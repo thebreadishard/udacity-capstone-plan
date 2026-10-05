@@ -1928,3 +1928,34 @@ on the C–H coordinate it is closer to DZ (0.009 against 0.015) and pushes the 
 CC error on the out-of-plane family, and the TZ-corrected T3 line comes first. The caveat that stays on record: on the carbon out-of-plane coordinate the
 network's correction has the wrong sign against both CC levels (+0.009 where TZ says −0.010); it is "closer to TZ" because TZ sits near B3LYP, not because
 the network found the TZ correction. The composite (TASKS 24) and the TZ-corrected lines are the way to read the network fairly out of plane.
+
+### Outcome 5 October 06:5x — chain 34 step 3: the hold-out (a) targets analytic; CH-oop met, 'other' not; evaluation noise is not what is left
+
+Step 3 (`corpus/analytic_hessians.py`, 4 Oct 13:28 – 5 Oct 06:50, 12 threads shared with the day's other work): analytic B3LYP and ωB97X Hessians for
+the eight hold-out (a) molecules that had finite-difference targets only; 35–93 min per functional and molecule. Analytic against the corpus's FD Hessians,
+per molecule: max |Δfreq| 0–6 cm⁻¹ at B3LYP, 4–9 cm⁻¹ at ωB97X (`out/chain34_step3_analytic_holdout_a_2026-10-04.log`) — the label noise the FD route
+carried into every hold-out number so far. Then the registered re-read, automatic (`probes/step3_read_1005.sh`): chain 34's three carried seeds on the
+hold-outs with analytic targets substituted for 36 molecules (`probes/rungC_eval_saved.py --use-analytic`, `probes/rungC_eval_means.py`;
+`out/read_chain34_analytic_2026-10-05.md`) and the low-mode split (`out/rungC_low_modes_noise_c34_analytic_2026-10-05.md`).
+
+| hold-out (a), seed mean (range) | analytic targets | the record (FD targets) | difference |
+|---|---|---|---|
+| ring-ip | 1.82 (1.68–1.99) | 2.14 | −0.32 |
+| CH-stretch | 1.25 (1.07–1.60) | 1.26 | −0.01 |
+| **CH-oop** | **2.36 (2.11–2.50)** | 3.05 | −0.69 |
+| other | 3.35 (3.23–3.46) | 3.48 | −0.14 |
+| other-low / other-mid (pooled) | 3.21 / 2.76 | 3.35 / 2.90 | −0.14 / −0.14 |
+| ratio | 0.192 | 0.218 | −0.03 |
+| ω, all modes | 2.30 | 2.48 | −0.18 |
+
+Hold-out (b) is unchanged to the digit (no analytic targets there). **Lines.** Decision 53's CH-oop line, read on analytic targets as registered: 2.36 ≤ 3
+→ **met** — the 3.05 of the record sat on the FD floor (3.3), as step 0 said. 'other' 3.35 > 3 → not met, and with the evaluation labels now clean that
+3.2–3.4 is not evaluation noise. T1 stands at three families of four under the line on clean labels; the open one is 'other', and within it the low modes.
+
+**What is left for 'other', and the order.** Two candidates: the *training* labels — the models were trained on finite-difference targets whose low-mode
+floor is 4.8 cm⁻¹ pooled (the analytic-vs-FD difference over the ten hold-out (a) molecules), so the network has been fitting noise there — and the input
+(the torsion environment the head does not see). The registered order (chain 34c outcome) was labels first, then input, and the label lever is now
+concrete: analytic ωB97X and B3LYP Hessians for the training pool, then chain 34's recipe retrained on them (chain 35). Price from step 3's timings: ≈ 1 h
+per molecule at 12 laptop threads → 750 molecules ≈ a month on the laptop, ≈ 3–4 days on a 32-core server (≈ €1.6/h × 90 h ≈ €150) — the user's word
+(TASKS, waiting). Prediction to register with chain 35: other-low 3.2 → ≤ 2.5 if label noise is the cause, unchanged if it is the input; the input design
+(TASKS 23) follows only in the second case or beside it on the user's word.
