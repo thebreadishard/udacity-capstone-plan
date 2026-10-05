@@ -103,7 +103,7 @@ skeletons are known already; the generator's novelty is in nitrogen systems and 
 
 **Lines.** ≥ 300 PubChem-known new systems → **met (308)**; ≥ 1,000 new systems with ≥ 20 in each of the four requested classes → **met (2,272; 25 / 426 /
 558 / 760)**. The generator is a registered source for the corpus manifest. Step (c) follows, as registered, with one design choice made here before it is
-built: **layer G holds one representative molecule per new ring system** — the most frequent passing molecule of that system, ties by SMILES — PubChem-known
+built: **layer G holds one representative molecule per new ring system** — the bare ring system itself when it passed the gate (it is the core; the smallest molecule of the system), otherwise the most frequent passing molecule of that system, ties by SMILES (refined 19:2x, before the builder ran: the top system's most frequent molecule was a dimethyl derivative while the bare system itself had passed) — PubChem-known
 systems first, then by the system's occurrence count (2,272 rows, not the 23,769 passing molecules; the enumeration can add substituents to a listed
 system later, which is what a new *core* is for); status `pending`, note `source=generator v0.1+v0.2 <gated sha>`; hold-out membership by the seeded rule
 when a pool draws from it; what is computed stays with the composition rule (decision 52) and the steward. Step (d), the Atlas: a `source` field

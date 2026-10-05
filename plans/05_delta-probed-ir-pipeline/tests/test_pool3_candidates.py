@@ -3,7 +3,6 @@ against the manifest's neutral rows; heavy-atom cap; the five-ring parents have 
 every cation has a finished neutral parent; hold-out (c) = three parents per family, never ranked; curve ranks are 1..n without gaps; the manifest
 append adds the rows once with the manifest's own id scheme and leaves them alone on a second call."""
 import csv
-import shutil
 import sys
 from pathlib import Path
 
@@ -35,7 +34,7 @@ def test_no_duplicates_and_caps(rows):
     neutral = [r for r in rows if r["layer"] == "P3"]
     smiles = [r["smiles"] for r in neutral]
     assert len(set(smiles)) == len(smiles)
-    known = {r["smiles"] for r in P.manifest_rows(MANIFEST) if r["smiles"]}
+    known = {r["smiles"] for r in P.manifest_rows(MANIFEST) if r["smiles"] and r["layer"] not in ("P3", "P3c")}   # the list itself was appended on 3 Oct
     assert not known & set(smiles)
     assert len({r["id"] for r in rows}) == len(rows)
     assert max(r["n_atoms"] for r in rows) <= P.MAX_ATOMS
@@ -74,7 +73,11 @@ def test_holdout_c_and_curve_ranks(rows):
 
 def test_manifest_append_is_idempotent(rows, tmp_path):
     m = tmp_path / "manifest.csv"
-    shutil.copy(MANIFEST, m)
+    rows_wo = [r for r in P.manifest_rows(MANIFEST) if r["layer"] not in ("P3", "P3c")]          # a manifest as it was before the 3 Oct append
+    with open(m, "w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=list(rows_wo[0].keys()), lineterminator="\r\n")
+        w.writeheader()
+        w.writerows(rows_wo)
     n0 = len(P.manifest_rows(m))
     assert P.append_manifest(rows, m) == len(rows)
     assert P.append_manifest(rows, m) == 0

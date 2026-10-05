@@ -104,3 +104,4 @@ plans/*/probes/results_vpt2/*.out
 !plans/*/modules/06_generative_candidates/out/*.md
 !plans/*/modules/06_generative_candidates/out/*.json
 !plans/*/modules/06_generative_candidates/out/*_gated.csv
+!plans/*/modules/06_generative_candidates/out/layer_g_*.csv
