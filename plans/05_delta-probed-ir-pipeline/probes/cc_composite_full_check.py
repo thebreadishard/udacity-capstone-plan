@@ -52,10 +52,10 @@ def compute(a) -> int:
         g = []
         for s in (+1, -1):
             x = x0.ravel().copy(); x[k] += s * a.step
-            g.append(gradient("mp2", sym, x.reshape(-1, 3), a.basis, (99, 590), frozen, a.max_memory))
+            g.append(gradient("mp2", sym, x.reshape(-1, 3), a.basis, (99, 590), frozen, a.max_memory, a.cart))
         rows[k] = (g[0] - g[1]) / (2 * a.step)
         print(f"[{datetime.now():%H:%M:%S}] mp2 {a.basis} k={k}: H_kk {rows[k][k]:+.6f} ({(datetime.now() - t0).seconds} s)", flush=True)
-    np.savez(a.out, ks=np.array(ks), reps=np.array(reps), step=a.step, basis=a.basis, frozen=frozen, coords_bohr=x0,
+    np.savez(a.out, ks=np.array(ks), reps=np.array(reps), step=a.step, basis=a.basis, frozen=frozen, cart=a.cart, coords_bohr=x0,
              **{f"row_{k:02d}": rows[k] for k in ks})
     print(f"→ {a.out} ({len(ks)} displacements)")
     return 0
@@ -129,6 +129,7 @@ def main() -> int:
     c.add_argument("geometry"); c.add_argument("out")
     c.add_argument("--basis", required=True); c.add_argument("--threads", type=int, default=4); c.add_argument("--step", type=float, default=0.005)
     c.add_argument("--frozen", default="auto"); c.add_argument("--max-memory", type=int, default=12000); c.add_argument("--ks", default=None)
+    c.add_argument("--cart", action="store_true", help="Cartesian d functions (the corpus's 6-31G* convention); the cc-pVnZ anchors are spherical")
     r = sub.add_parser("read")
     r.add_argument("dz_anchor"); r.add_argument("tz_anchor"); r.add_argument("mol_id"); r.add_argument("mp2_dz"); r.add_argument("mp2_tz"); r.add_argument("out_prefix")
     a = ap.parse_args()

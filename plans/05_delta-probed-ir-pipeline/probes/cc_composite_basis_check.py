@@ -23,9 +23,10 @@ CORE = {"H": 0, "C": 1, "N": 1, "O": 1, "F": 1, "S": 5, "Cl": 5}
 WATER = dict(symbols=["O", "H", "H"], coords_bohr=[[0.0, 0.0, 0.2217], [0.0, 1.4309, -0.8867], [0.0, -1.4309, -0.8867]])
 
 
-def build(symbols, coords, basis, max_memory):
+def build(symbols, coords, basis, max_memory, cart=False):
+    """cart=True selects Cartesian d functions (the corpus's 6-31G* convention, `corpus/analytic_hessians.py`); the cc-pVnZ anchors use spherical."""
     from pyscf import gto
-    return gto.M(atom=[(s, tuple(c)) for s, c in zip(symbols, coords, strict=True)], unit="Bohr", basis=basis, symmetry=False, verbose=0, max_memory=max_memory)
+    return gto.M(atom=[(s, tuple(c)) for s, c in zip(symbols, coords, strict=True)], unit="Bohr", basis=basis, cart=cart, symmetry=False, verbose=0, max_memory=max_memory)
 
 
 def b3lyp_mf(mol, grid):
@@ -37,10 +38,10 @@ def b3lyp_mf(mol, grid):
     return mf, float(e)
 
 
-def gradient(level, symbols, coords, basis, grid, frozen, max_memory):
+def gradient(level, symbols, coords, basis, grid, frozen, max_memory, cart=False):
     """The analytic nuclear gradient (3N, flattened) at one geometry for X = b3lyp | mp2."""
     from pyscf import mp, scf
-    mol = build(symbols, coords, basis, max_memory)
+    mol = build(symbols, coords, basis, max_memory, cart)
     if level == "b3lyp":
         mf, _ = b3lyp_mf(mol, grid)
         return mf.nuc_grad_method().kernel().ravel()
@@ -51,12 +52,12 @@ def gradient(level, symbols, coords, basis, grid, frozen, max_memory):
     return pt.nuc_grad_method().kernel().ravel()
 
 
-def fd_curvature(level, symbols, x0, k, basis, step, grid, frozen, max_memory):
+def fd_curvature(level, symbols, x0, k, basis, step, grid, frozen, max_memory, cart=False):
     """H_kk and the whole row H_k,: by central differences of the gradient along Cartesian coordinate k."""
     rows = []
     for s in (+1, -1):
         x = np.array(x0, float).ravel(); x[k] += s * step
-        rows.append(gradient(level, symbols, x.reshape(-1, 3), basis, grid, frozen, max_memory))
+        rows.append(gradient(level, symbols, x.reshape(-1, 3), basis, grid, frozen, max_memory, cart))
     row = (rows[0] - rows[1]) / (2 * step)
     return float(row[k]), row
 
