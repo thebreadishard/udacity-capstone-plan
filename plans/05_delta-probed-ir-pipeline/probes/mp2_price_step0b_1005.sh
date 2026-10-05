@@ -26,7 +26,7 @@ PYEOF
   N=${NU%% *}; KS=${NU##* }
   t0=$(date +%s)
   echo "=== step 0b: $ID start — $N symmetry-unique displacements, timing the first four ($KS) $(date '+%F %T')"
-  if OMP_NUM_THREADS=2 ~/qc05/bin/python probes/cc_composite_full_check.py compute "$G" "$OUT/mp2_rows_${ID}_631gs_first4.npz" --basis 6-31g* --cart --threads 2 --max-memory 6000 --ks "$KS"; then
+  if OMP_NUM_THREADS=2 ~/qc05/bin/python probes/cc_composite_full_check.py compute "$G" "$OUT/mp2_rows_${ID}_631gs_first4.npz" --basis 6-31g* --cart --threads 2 --max-memory 4000 --ks "$KS"; then
     dt=$(( $(date +%s) - t0 ))
     echo "=== step 0b: $ID four displacements in $dt s at 2 threads → whole molecule ≈ $(( dt * N / 4 )) s at 2 threads $(date '+%F %T')"
   else
