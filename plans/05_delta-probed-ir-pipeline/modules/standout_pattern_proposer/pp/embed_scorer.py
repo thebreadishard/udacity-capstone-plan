@@ -142,8 +142,12 @@ class EmbedScorer:
         obj = torch.load(str(prefix) + f"_seed{seed}.pt")
         cfg, states = (obj["cfg"], obj["states"]) if isinstance(obj, dict) else (dict(n_embed=64, n_blocks=3), obj)   # first-run files were a bare list
         s = cls(seed=seed, **cfg)
+        from rungC_equivariant import DeltaHessianModel, load_state_compat
         for m, sd in zip(s.modules(), states, strict=True):
-            m.load_state_dict(sd)
+            if isinstance(m, DeltaHessianModel):
+                load_state_compat(m, sd)       # 5 Oct 2026: P2 checkpoints of 26 Sep predate the charge-state row q_emb (3 Oct); zero rows = the neutral identity
+            else:
+                m.load_state_dict(sd)
         return s
 
 
