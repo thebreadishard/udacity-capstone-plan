@@ -19,5 +19,11 @@
   "version": "0.2",
   "chain": "conditioned (section 5)",
   "note": "the design change of section 5: the conditioned model, seed 0"
+ },
+ "seed2/model_seed2.pt": {
+  "status": "invalid",
+  "network": "candidate generator",
+  "chain": "re-execution of 5 Oct",
+  "note": "written 5 Oct 2026 by the notebook re-execution: the 26 Sep seed-2 checkpoint had never been saved, so M06_REUSE retrained seed 2 (20 epochs, 6 threads) — a different model (validity 0.647 at T 1.0 against 0.923 on 26 Sep); not the registered run, not a base; the re-execution was reverted"
  }
 }
