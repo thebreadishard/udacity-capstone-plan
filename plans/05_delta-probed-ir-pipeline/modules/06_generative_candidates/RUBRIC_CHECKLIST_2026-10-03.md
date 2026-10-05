@@ -21,7 +21,7 @@ first checklist file written for 06.*
 ## Open points (not rubric failures)
 
 - The three design decisions of 24 September (PubChem as the source; freeze now; candidates as a separately labelled source for the atlas) were
-  taken as recommended and stand open for the user to confirm or change (README status).
+  taken as recommended and confirmed by the user on 5 October 2026.
 - The pre-registered run stopped at its cap of 20 epochs for every seed; closed by the user's ruling of 28 September, not by a re-run. A later
   run with the cap lifted is a dated follow-up section if the user wants one, never a replacement.
 
