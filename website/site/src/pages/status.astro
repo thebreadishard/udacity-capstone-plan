@@ -18,6 +18,14 @@ const labels = { listed: 'Listed', cheap_level_done: 'Cheap level done', correct
       <thead><tr><th>layer</th><th class="num">molecules</th></tr></thead>
       <tbody>{Object.entries(summary.layer_counts).map(([k, v]) => <tr><td>{k}</td><td class="num">{v.toLocaleString('en')}</td></tr>)}</tbody>
     </table>
+    <h3 style="margin-top: 16px">Where the molecules come from</h3>
+    <p class="muted small">Every entry names its source: parents chosen by hand, children enumerated from them, the Hessian-QM9 set, pool 3 (chosen by rule), or
+      a proposal of the candidate generator — a language model for molecules trained on PubChem's fused aromatics; its rows say whether PubChem already knows the ring system.
+      A proposal is listed, not computed: what gets computed follows the corpus's composition rule.</p>
+    <table>
+      <thead><tr><th>source</th><th class="num">molecules</th></tr></thead>
+      <tbody>{Object.entries(summary.source_counts).map(([k, v]) => <tr><td>{k}</td><td class="num">{v.toLocaleString('en')}</td></tr>)}</tbody>
+    </table>
   </section>
   <section class="card" style="margin-top: 16px">
     <h2>Releases</h2>

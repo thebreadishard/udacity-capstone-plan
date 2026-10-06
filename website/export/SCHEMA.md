@@ -11,7 +11,8 @@ exits non-zero when an invariant breaks. Numbers in the site's templates never c
 | `name` | string | manifest | corpus name (`fluoranthene+COOH` style for substituted entries) |
 | `smiles` | string | manifest | |
 | `formula`, `inchikey` | string or null | RDKit from `smiles` | null when the SMILES is absent or does not parse — today all 6,055 layer-C rows (QM9 entries carry a `qm9_label` and no SMILES yet) |
-| `layer` | `A` / `A2` / `B` / `C` | manifest | |
+| `layer` | `A` / `A2` / `B` / `C` / `P3` / `P3c` / `G` | manifest | |
+| `source` | string | derived from `layer` (and the manifest note for `G`) | where the molecule entered the corpus, in plain words: parents chosen by hand, enumerated children, Hessian-QM9, pool 3 (decision 54), or proposed by the candidate generator (module 06) — the last says whether PubChem knows the ring system (6 Oct 2026, step (d) of the batch route) |
 | `n_heavy`, `n_atoms` | int | manifest, else RDKit | pending rows of B/C carry no counts in the manifest |
 | `rung` | 0–5 | derived | see the ladder below |
 | `rung_label` | string | derived | `listed`, `cheap_level_done`, `correction_predicted`, `spectrum_predicted`, `anchored`, `validated` |
@@ -38,7 +39,7 @@ first; `body` is the first 300 characters. Nothing is rewritten; corrections app
 
 ## `summary.json`
 
-`built_utc`, `n_molecules`, `rung_counts` (sum = n_molecules — checked), `layer_counts`, `rungs`, `sources` (SHA-256 of manifest and ledger),
+`built_utc`, `n_molecules`, `rung_counts` (sum = n_molecules — checked), `layer_counts`, `source_counts`, `rungs`, `sources` (SHA-256 of manifest and ledger),
 `releases`.
 
 ## Invariants the build enforces

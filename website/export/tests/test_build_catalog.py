@@ -62,3 +62,15 @@ def test_vib_only_drops_six():
     import numpy as np
     f = np.array([-30.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 100.0, 200.0])
     assert list(bc.vib_only(f)) == [-30.0, 100.0, 200.0]
+
+
+def test_source_per_layer(built):
+    out, summary = built
+    catalog = json.load(open(os.path.join(out, "catalog.json"), encoding="utf-8"))
+    assert all(r["source"] for r in catalog) and sum(summary["source_counts"].values()) == len(catalog)
+    known = bc.source_of(dict(layer="G", note="source=generator v0.1+v0.2; list abc; system c1ccc2ccccc2c1; bare system; pubchem yes; rank 1"))
+    new = bc.source_of(dict(layer="G", note="source=generator v0.1+v0.2; list abc; system c1ccncc1; most frequent molecule; pubchem no; rank 2"))
+    assert known.endswith("known to PubChem") and new.endswith("not in PubChem")
+    assert bc.source_of(dict(layer="C", note="")) == bc.SOURCES["C"]
+    with pytest.raises(KeyError):
+        bc.source_of(dict(layer="Z", note=""))

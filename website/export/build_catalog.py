@@ -2,9 +2,9 @@
 
 Sources (read-only): the corpus manifest and ledger, every corpus molecule directory with a result, the release manifests, the second-route
 checks, the E8 results, and the fixed list of anchored / validated molecules below (each with the file that carries the evidence). Outputs:
-  out/catalog.json           one row per manifest molecule: identity, size, rung, flags, release membership, formula and InChIKey (RDKit)
+  out/catalog.json           one row per manifest molecule: identity, size, source, rung, flags, release membership, formula and InChIKey (RDKit)
   out/molecules/<id>.json    per computed molecule: geometry, frequency lists per functional, imaginary counts, timings, deck, second route, releases
-  out/summary.json           rung counts, layer counts, data freshness, source hashes
+  out/summary.json           rung, layer and source counts, data freshness, source hashes
 The script fails (non-zero exit) when an invariant breaks: a catalog id without a manifest row, a frequency list whose length is not 3N, rung
 counts that do not add up, a computed molecule without both Hessians. Nothing here is typed by hand; the anchored/validated list names its files.
 
@@ -22,6 +22,26 @@ import time
 import numpy as np
 
 RUNGS = ["listed", "cheap_level_done", "correction_predicted", "spectrum_predicted", "anchored", "validated"]
+
+# Where a manifest row came from (step (d) of the candidate generator's batch route, 6 Oct 2026), keyed by the manifest layer. A layer without a line
+# here stops the export (KeyError) rather than shipping an unlabelled molecule. Generator rows carry 'pubchem yes|no' in their manifest note.
+SOURCES = {
+    "A": "parent molecules chosen by hand (benzene, naphthalene, the PAH cores and their relatives)",
+    "A2": "substituted three- and four-ring cores, enumerated from the parents (layer A′)",
+    "B": "cores with one or two substituents, enumerated from the parents",
+    "C": "Hessian-QM9 (small molecules of up to nine heavy atoms)",
+    "P3": "pool 3, chosen by rule (decision 54): aza four-rings and five-ring systems",
+    "P3c": "pool 3, chosen by rule (decision 54): cations of finished parents",
+    "G": "proposed by the candidate generator (module 06): a new fused ring system",
+}
+
+
+def source_of(r):
+    """The source line of a manifest row; generator rows say whether PubChem knows the ring system."""
+    s = SOURCES[r["layer"]]
+    if r["layer"] == "G":
+        s += ", known to PubChem" if "pubchem yes" in r.get("note", "") else ", not in PubChem"
+    return s
 
 # The molecules whose rung is set by evidence outside the corpus factory. Each entry names the file that carries it (relative to plan 05).
 ANCHORED = {   # 2 Oct 2026: the four CCSD(T)/cc-pVDZ Hessians of the corrected route (lambda incident of 29 Sep: the earlier benzene reading is kept as history)
@@ -121,7 +141,7 @@ def build(repo, out, limit=None):
             if not os.path.exists(os.path.join(plan, f)):
                 raise SystemExit(f"evidence file missing for {k}: {f}")
     os.makedirs(os.path.join(out, "molecules"), exist_ok=True)
-    catalog = []; counts = {r: 0 for r in RUNGS}; layer_counts = {}; problems = []
+    catalog = []; counts = {r: 0 for r in RUNGS}; layer_counts = {}; source_counts = {}; problems = []
     for r in manifest:
         mid = r["id"]; mdir = os.path.join(corpus, "molecules", mid)
         result_p = os.path.join(mdir, "result.json"); computed = r["status"] == "done" and os.path.exists(result_p)
@@ -130,7 +150,7 @@ def build(repo, out, limit=None):
         n_heavy = int(r["n_heavy"]) if r.get("n_heavy") else n_heavy_rd
         if computed and n_atoms_rd is not None and N != n_atoms_rd:
             problems.append(f"{mid}: manifest n_atoms {N} differs from the SMILES count {n_atoms_rd}")
-        row = dict(id=mid, name=r["name"], smiles=r["smiles"], formula=formula, inchikey=ikey, layer=r["layer"], n_heavy=n_heavy, n_atoms=N,
+        row = dict(id=mid, name=r["name"], smiles=r["smiles"], formula=formula, inchikey=ikey, layer=r["layer"], source=source_of(r), n_heavy=n_heavy, n_atoms=N,
                    rung=0, rung_label="listed", flags=[], releases=releases.get(mid, []), manifest_status=r["status"])
         if computed:
             res = json.load(open(result_p, encoding="utf-8"))
@@ -150,7 +170,7 @@ def build(repo, out, limit=None):
                 row["flags"].append("replaced_by_second_route")
             if mid in screen and screen[mid]["max_abs_shift"] > 80:
                 row["flags"].append("screen_flagged")
-            mol = dict(id=mid, name=r["name"], smiles=r["smiles"], formula=formula, layer=r["layer"], n_atoms=N,
+            mol = dict(id=mid, name=r["name"], smiles=r["smiles"], formula=formula, layer=r["layer"], source=row["source"], n_atoms=N,
                        geometry=json.load(open(os.path.join(mdir, "geometry.json"), encoding="utf-8")), deck=res.get("deck"), timings_s=res.get("timings_s"),
                        energies=dict(b3lyp=res.get("e_b3lyp"), wb97x=res.get("e_wb97x")), n_imaginary=n_im, frequencies_cm={}, releases=releases.get(mid, []),
                        ledger=ledger.get(mid), second_route=None)
@@ -168,6 +188,7 @@ def build(repo, out, limit=None):
         if mid in VALIDATED:
             row["rung"] = 5; row["evidence"] = ANCHORED.get(mid, []) + VALIDATED[mid]
         row["rung_label"] = RUNGS[row["rung"]]; counts[row["rung_label"]] += 1; layer_counts[r["layer"]] = layer_counts.get(r["layer"], 0) + 1
+        source_counts[row["source"]] = source_counts.get(row["source"], 0) + 1
         catalog.append(row)
     # invariants
     ids = {r["id"] for r in manifest}
@@ -182,7 +203,7 @@ def build(repo, out, limit=None):
     json.dump(catalog, open(os.path.join(out, "catalog.json"), "w", encoding="utf-8"), ensure_ascii=False)
     changelog = read_changelog(os.path.join(plan, "GoalGathering", "notes", "Mandate_2026-09-13_Affordable_Plan_Obstacle_Ledger.md"))
     json.dump(changelog, open(os.path.join(out, "changelog.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=0)
-    summary = dict(built_utc=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), n_molecules=len(catalog), rung_counts=counts, layer_counts=layer_counts,
+    summary = dict(built_utc=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), n_molecules=len(catalog), rung_counts=counts, layer_counts=layer_counts, source_counts=source_counts,
                    rungs=RUNGS, sources=dict(manifest=sha256(manifest_p), ledger=sha256(ledger_p)), releases=sorted({n for v in releases.values() for n in v}),
                    n_changelog=len(changelog))
     json.dump(summary, open(os.path.join(out, "summary.json"), "w", encoding="utf-8"), indent=1)

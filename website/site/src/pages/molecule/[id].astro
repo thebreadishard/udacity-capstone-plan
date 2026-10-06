@@ -87,6 +87,7 @@ const notifyHref = `https://github.com/thebreadishard/spectrum-atlas/issues/new?
         <h2>Provenance</h2>
         <ul class="small">
           <li>Releases: {row.releases.length ? row.releases.join(', ') : 'none yet'}</li>
+          <li>Entered the corpus as: {row.source} (layer {row.layer})</li>
           {mol.ledger && <li>Run: {mol.ledger.machine}, {mol.ledger.start} → {mol.ledger.end}, {Number(mol.ledger.seconds_total).toFixed(0)} s, peak {mol.ledger.peak_rss_gb} GB, deck {mol.ledger.deck}</li>}
           <li>Imaginary modes: B3LYP {mol.n_imaginary.b3lyp}, ωB97X {mol.n_imaginary.wb97x}</li>
           <li>Source files: <a href={repo + 'modules/05_support_predictor/corpus/'}>corpus factory</a> · <a href={repo + 'modules/05_support_predictor/corpus/manifest.csv'}>manifest</a></li>
