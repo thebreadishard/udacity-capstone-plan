@@ -10,7 +10,8 @@ export PYSCF_TMPDIR=$HOME/qc_tmp TMPDIR=$HOME/qc_tmp
 P=/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline
 OUT=$P/probes/results_m1/mp2_step0_2026-10-05
 cd "$P" || exit 1
-for ID in A_428228e5a5 A2_02c8833bd5; do
+IDS=${*:-A_428228e5a5 A2_02c8833bd5}   # 6 Oct 2026: ids as arguments; default = both large molecules
+for ID in $IDS; do
   G=$P/modules/05_support_predictor/corpus/molecules/$ID/geometry.json
   NU=$(~/qc05/bin/python - "$G" <<'PYEOF'
 import json, sys
@@ -33,4 +34,4 @@ PYEOF
     echo "=== step 0b: $ID FAILED $(date '+%F %T')"
   fi
 done
-echo "=== step 0: all five molecules done (two by extrapolation from four displacements) $(date '+%F %T')"
+echo "=== step 0b: priced $IDS (four displacements each) $(date '+%F %T')"
