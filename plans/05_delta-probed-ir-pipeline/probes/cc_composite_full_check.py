@@ -11,6 +11,17 @@ Two steps, two environments:
            CC/TZ anchor with CC/DZ against CC/TZ as the baseline: rms of corrected frequencies per family (ring-ip, CH-stretch, CH-oop, other), all
            modes, and the ring-coupling ratio — the read-out the rehearsal and the T3 line use.
       python probes/cc_composite_full_check.py read <dz anchor dir> <tz anchor dir> <mol_id> <mp2_dz.npz> <mp2_tz.npz> <out_prefix>
+
+Test 3 (6 Oct 2026) — the out-of-plane repair of an anchor whose CC/DZ Hessian is IMAGINARY through the small-basis arene artefact (anthracene: −51 and
++7 cm⁻¹ for the two softest out-of-plane modes). Only the out-of-plane block gets the MP2 basis step; for a planar molecule that block does not couple to
+the in-plane block by symmetry, so the rows of the representatives' out-of-plane displacements suffice (anthracene: 7 of 21 unique displacements):
+
+  planeframe  — writes the geometry in its principal frame (plane normal on z; `frame` and `origin` kept for the way back) and lists the out-of-plane
+                unique displacements:   python probes/cc_composite_full_check.py planeframe <geometry.json> <geometry_planeframe.json>
+  merge       — rows computed in several lanes into one file:   python probes/cc_composite_full_check.py merge <out.npz> <part1.npz> <part2.npz> ...
+  repair-oop  (Windows, the project's python) — H = R [ Rᵀ H_CC/DZ R + (M_TZ − M_DZ)|out-of-plane ] Rᵀ, frequencies, the two softest out-of-plane modes
+                against the corpus DFT values, the registered lines:
+      python probes/cc_composite_full_check.py repair-oop <anchor dir> <mol_id> <geometry_planeframe.json> <mp2_dz.npz> <mp2_tz.npz> <out_prefix>
 """
 from __future__ import annotations
 
@@ -122,6 +133,159 @@ def read(a) -> int:
     return 0
 
 
+# ---- test 3: the out-of-plane repair (6 Oct 2026) ------------------------------------------------------------------------------------------------
+CM_PER_SQRT_AU = 5140.4871      # cm⁻¹ per sqrt(E_h / (bohr² amu)); reproduces the E8 probe's frequencies (anthracene −51.2 / 7.0)
+SOFT_LINE_CM = 40.0             # registered line: the two softest out-of-plane modes within 40 cm⁻¹ of ωB97X
+
+
+def plane_frame(x0: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """Principal frame of a (near-)planar set of points: columns of V are the axes, the plane normal last (z); origin = centroid."""
+    c = x0 - x0.mean(0)
+    w, V = np.linalg.eigh(c.T @ c)
+    V = V[:, ::-1]                                   # largest extent first, the normal (smallest) on z
+    if np.linalg.det(V) < 0:
+        V[:, 2] *= -1                                # keep a proper rotation
+    return V, x0.mean(0)
+
+
+def planeframe(a) -> int:
+    sym, x0, masses = load_geometry(a.geometry)
+    V, origin = plane_frame(x0)
+    xr = (x0 - origin) @ V
+    n = len(sym)
+    ops = SYM.point_group_ops(sym, xr)
+    ks, reps = SYM.unique_displacements(ops, n)
+    oop = [3 * i + 2 for i in reps]
+    out = dict(symbols=sym, coords_bohr=xr.tolist(), masses_amu=masses.tolist(), frame=V.tolist(), origin=origin.tolist(), source=str(a.geometry),
+               max_out_of_plane_bohr=float(np.abs(xr[:, 2]).max()), n_ops=len(ops), unique_ks=ks, oop_ks=oop)
+    Path(a.out).write_text(json.dumps(out, indent=1), encoding="utf-8")
+    print(f"{a.out}: {n} atoms, {len(ops)} operations, {len(ks)} unique displacements, out-of-plane {oop}; max |z| {out['max_out_of_plane_bohr']:.1e} bohr")
+    print(",".join(str(k) for k in oop))
+    return 0
+
+
+def merge(a) -> int:
+    parts = [np.load(p) for p in a.parts]
+    rows = {}
+    for z in parts:
+        for key in z.files:
+            if key.startswith("row_"):
+                rows[key] = z[key]
+    meta = {k: parts[0][k] for k in parts[0].files if not k.startswith("row_") and k != "ks"}
+    ks = sorted(int(k[4:]) for k in rows)
+    np.savez(a.out, ks=np.array(ks), **meta, **rows)
+    print(f"→ {a.out}: {len(ks)} displacements {ks} from {len(parts)} files")
+    return 0
+
+
+def assemble_oop(npz: Path, ops, reps, n: int) -> tuple[np.ndarray, float]:
+    """Rows of the representatives' z displacements only (the plane frame); the in-plane rows are zero, so the reconstruction carries the out-of-plane
+    block and nothing else."""
+    z = np.load(npz)
+    block = {}
+    for i in reps:
+        b = np.zeros((3, 3 * n))
+        k = 3 * i + 2
+        if f"row_{k:02d}" not in z.files:
+            raise SystemExit(f"{npz}: out-of-plane row for atom {i} (displacement {k}) missing")
+        b[2] = z[f"row_{k:02d}"]
+        block[i] = b
+    H, spread = SYM.reconstruct(block, ops, n)
+    return 0.5 * (H + H.T), float(spread)
+
+
+def frequencies_cm(H: np.ndarray, masses: np.ndarray, x0: np.ndarray) -> np.ndarray:
+    """Vibrational frequencies (signed, cm⁻¹) of a Cartesian Hessian after projecting translations and rotations; the six smallest |ω| dropped."""
+    sys.path.insert(0, str(PLAN / "probes"))
+    from anchor_deck_rehearsal import project_tr
+    Hp = project_tr(H, masses, x0)[0]
+    Mi = np.repeat(1 / np.sqrt(masses), 3)
+    w = np.linalg.eigvalsh(0.5 * (Hp + Hp.T) * Mi[:, None] * Mi[None, :])
+    f = np.sign(w) * CM_PER_SQRT_AU * np.sqrt(np.abs(w))
+    keep = np.argsort(np.abs(f))[6:]
+    return np.sort(f[keep])
+
+
+def oop_fraction(H: np.ndarray, masses: np.ndarray, normal: np.ndarray, n_modes: int = 2):
+    """Out-of-plane fraction of the n softest modes of a mass-weighted Hessian (no projection; the softest modes are far from the TR null space only
+    when they are real — used for reporting)."""
+    n = len(masses); Mi = np.repeat(1 / np.sqrt(masses), 3)
+    w, v = np.linalg.eigh(0.5 * (H + H.T) * Mi[:, None] * Mi[None, :])
+    f = np.sign(w) * CM_PER_SQRT_AU * np.sqrt(np.abs(w))
+    order = [i for i in np.argsort(f) if abs(f[i]) > 1.0][:n_modes]
+    out = []
+    for i in order:
+        q = (v[:, i] * Mi).reshape(n, 3)
+        out.append((float(f[i]), float(((q @ normal) ** 2).sum() / (q ** 2).sum())))
+    return out
+
+
+def repair_oop(a) -> int:
+    anchor = Path(a.anchor_dir)
+    src = next((anchor / f for f in ("hessian_ccsd_t_IMAGINARY.npz", "hessian_ccsd_t.npz") if (anchor / f).exists()), None)
+    if src is None:
+        raise SystemExit(f"{anchor}: no hessian_ccsd_t(_IMAGINARY).npz")
+    pf = json.loads(Path(a.planeframe).read_text(encoding="utf-8"))
+    sym = [s.capitalize() for s in pf["symbols"]]; xr = np.asarray(pf["coords_bohr"], float); masses = np.asarray(pf["masses_amu"], float)
+    V = np.asarray(pf["frame"], float); origin = np.asarray(pf["origin"], float); n = len(sym)
+    z = np.load(src); H = np.asarray(z["H_raw"], float); x0 = np.asarray(z["coords_bohr"], float).reshape(n, 3)
+    if np.abs((x0 - origin) @ V - xr).max() > 1e-6:
+        raise SystemExit("the plane-frame geometry does not match the anchor's coordinates")
+    T = np.kron(np.eye(n), V)                        # x − origin = T x_r  →  H_r = Tᵀ H T
+    H_r = T.T @ H @ T
+    ops = SYM.point_group_ops(sym, xr)
+    _, reps = SYM.unique_displacements(ops, n)
+    M_dz, s_dz = assemble_oop(Path(a.mp2_dz), ops, reps, n)
+    M_tz, s_tz = assemble_oop(Path(a.mp2_tz), ops, reps, n)
+    zi = np.arange(2, 3 * n, 3); ip = np.array([k for k in range(3 * n) if k % 3 != 2])
+    coupling_cc = float(np.abs(H_r[np.ix_(zi, ip)]).max())          # in-plane/out-of-plane coupling of the anchor (zero by symmetry for a planar molecule)
+    coupling_step = float(np.abs((M_tz - M_dz)[np.ix_(zi, ip)]).max())
+    step = np.zeros_like(H_r); step[np.ix_(zi, zi)] = (M_tz - M_dz)[np.ix_(zi, zi)]
+    H_comp_r = H_r + step
+    H_comp = T @ H_comp_r @ T.T
+    f_dz = frequencies_cm(H, masses, x0); f_comp = frequencies_cm(H_comp, masses, x0)
+    normal = V[:, 2]
+    soft_dz = oop_fraction(H, masses, normal); soft_comp = oop_fraction(H_comp, masses, normal)
+    molecules = PLAN / "modules" / "05_support_predictor" / "corpus" / "molecules" / a.mol_id
+    dft = {}
+    for tag in ("b3lyp", "wb97x"):
+        p = molecules / f"hessian_{tag}.npz"
+        if p.exists():
+            fr = np.asarray(np.load(p)["freq_cm"], float); fr = fr[np.abs(fr) > 1.0]; dft[tag] = np.sort(fr)[:6]
+    n_im = int((f_comp < -10.0).sum())
+    ref = dft.get("wb97x")
+    within = bool(ref is not None and len(f_comp) >= 2 and np.abs(f_comp[:2] - ref[:2]).max() <= SOFT_LINE_CM)
+    if n_im:
+        verdict = "still imaginary: the artefact survives the MP2 basis step — the anchor stays excluded"
+    elif within:
+        verdict = "repaired: no imaginary mode and both soft modes within 40 cm⁻¹ of ωB97X — the composite anchor enters T3 (lines provisional)"
+    else:
+        verdict = "repaired but flagged: real, yet a soft mode more than 40 cm⁻¹ from ωB97X — the full composite is computed before use"
+    status = "VALID" if n_im == 0 else "IMAGINARY"
+    out = Path(a.out_prefix)
+    np.savez(str(out) + ".npz", H_raw=H_comp, H_plane_frame=H_comp_r, freq_cm=f_comp, coords_bohr=x0, frame=V, origin=origin, status=status,
+             source_anchor=str(src), mp2_dz=str(a.mp2_dz), mp2_tz=str(a.mp2_tz), spread_dz=s_dz, spread_tz=s_tz, coupling_cc=coupling_cc,
+             coupling_step=coupling_step, repair="out-of-plane block, MP2/TZ − MP2/DZ (test 3, 6 Oct 2026)")
+    fmt = lambda arr: ", ".join(f"{v:.0f}" for v in np.asarray(arr)[:6])  # noqa: E731
+    md = [f"# Composite anchor level, test 3 — {a.mol_id}: out-of-plane repair of the CC/DZ anchor — {datetime.now():%Y-%m-%d %H:%M}", "",
+          f"Anchor `{src.name}` ({anchor.name}); MP2 rows `{Path(a.mp2_dz).name}`, `{Path(a.mp2_tz).name}` (symmetry spread {s_dz:.1e} / {s_tz:.1e} a.u.); "
+          f"in-plane/out-of-plane coupling: anchor {coupling_cc:.1e}, MP2 step {coupling_step:.1e} a.u. (zero by symmetry for a planar molecule). "
+          f"Status of the composite: **{status}** ({n_im} imaginary).", "",
+          "| lowest six vibrations (cm⁻¹) | values |", "|---|---|",
+          f"| CC/DZ anchor | {fmt(f_dz)} |", f"| **composite (out-of-plane block repaired)** | **{fmt(f_comp)}** |"]
+    md += [f"| {tag} (corpus) | {fmt(v)} |" for tag, v in dft.items()]
+    md += ["", "Two softest modes and their out-of-plane fraction: CC/DZ " + ", ".join(f"{f:.0f} ({p:.2f})" for f, p in soft_dz)
+           + "; composite " + ", ".join(f"{f:.0f} ({p:.2f})" for f, p in soft_comp) + ".", "", f"**Lines:** {verdict}."]
+    out.with_suffix(".md").write_text("\n".join(md), encoding="utf-8")
+    out.with_suffix(".json").write_text(json.dumps(dict(date=datetime.now().strftime("%Y-%m-%d %H:%M"), mol_id=a.mol_id, anchor=str(src), status=status,
+                                                        n_imaginary=n_im, freq_dz=f_dz.tolist(), freq_composite=f_comp.tolist(),
+                                                        dft={k: v.tolist() for k, v in dft.items()}, soft_dz=soft_dz, soft_composite=soft_comp,
+                                                        spread=dict(dz=s_dz, tz=s_tz), coupling=dict(anchor=coupling_cc, step=coupling_step),
+                                                        verdict=verdict), indent=1), encoding="utf-8")
+    print("\n".join(md))
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -132,8 +296,12 @@ def main() -> int:
     c.add_argument("--cart", action="store_true", help="Cartesian d functions (the corpus's 6-31G* convention); the cc-pVnZ anchors are spherical")
     r = sub.add_parser("read")
     r.add_argument("dz_anchor"); r.add_argument("tz_anchor"); r.add_argument("mol_id"); r.add_argument("mp2_dz"); r.add_argument("mp2_tz"); r.add_argument("out_prefix")
+    p = sub.add_parser("planeframe"); p.add_argument("geometry"); p.add_argument("out")
+    m = sub.add_parser("merge"); m.add_argument("out"); m.add_argument("parts", nargs="+")
+    o = sub.add_parser("repair-oop")
+    o.add_argument("anchor_dir"); o.add_argument("mol_id"); o.add_argument("planeframe"); o.add_argument("mp2_dz"); o.add_argument("mp2_tz"); o.add_argument("out_prefix")
     a = ap.parse_args()
-    return compute(a) if a.cmd == "compute" else read(a)
+    return {"compute": compute, "read": read, "planeframe": planeframe, "merge": merge, "repair-oop": repair_oop}[a.cmd](a)
 
 
 if __name__ == "__main__":

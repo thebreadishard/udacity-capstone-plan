@@ -94,3 +94,31 @@ other X) and each family's TZ-corrected line stays provisional. What follows: th
 steps exist. **The same evening anthracene's CC/DZ Hessian came out IMAGINARY** (−51 and +7 cm⁻¹ for the two softest out-of-plane modes, B3LYP 92 and
 124; pure out-of-plane; pair checks and energy route clean): the small-basis arene artefact, which makes the out-of-plane basis step a repair, not a
 refinement, from three rings on (TASKS lever 1).
+
+
+## Test 3 — the out-of-plane repair of anthracene's CC/DZ anchor (registered 6 October 19:1x, before the read; the user: 'ga door volgens jouw advies')
+
+**Why.** Anthracene's CCSD(T)/cc-pVDZ Hessian (assembled 6 Oct) is IMAGINARY: the two softest out-of-plane modes come out at −51 and +7 cm⁻¹ where
+B3LYP has 92 and 124 and ωB97X 105 and 126; pure out-of-plane (fraction 1.00); pair checks and both energy routes clean. That is the small-basis arene
+artefact of correlated methods (intramolecular basis-set superposition; Moran, Simmonett, Leach, Allen, Schleyer, Schaefer, *J. Am. Chem. Soc.* 128,
+9342, 2006), which benzene and naphthalene escape at cc-pVDZ and anthracene does not. Test 2 showed on benzene that the MP2 basis step removes 94 % of
+the DZ anchor's distance to CC/TZ. The repair applies that step to the out-of-plane block only: for a planar molecule the Hessian does not couple
+out-of-plane to in-plane displacements, so the rows of the seven representatives' out-of-plane displacements (in the molecule's plane frame) carry
+the whole block — 14 gradients per basis instead of 42.
+
+**What runs.** `probes/anthracene_oop_rows_ccx53.sh` on the anthracene CCX53 (18:43 UTC; two lanes of 8 threads beside the pyscf two-route lane):
+MP2 (frozen core, spherical) rows at cc-pVDZ and cc-pVTZ for displacements 2, 8, 11, 14, 44, 50, 53 of `geometry_planeframe.json` (the plane normal on
+z; `cc_composite_full_check.py planeframe`). Read on the laptop: `cc_composite_full_check.py repair-oop` — H = R [Rᵀ H_CC/DZ R + (M_TZ − M_DZ)|oop] Rᵀ,
+frequencies after TR projection, the in-plane/out-of-plane coupling of anchor and step reported (both zero by symmetry; a non-zero value is a frame or
+symmetry error). Tests: `tests/test_composite_repair_oop.py` (4: flattening and the displacement list; merge; zero step leaves the anchor unchanged;
+a step changes only the out-of-plane block).
+
+**Predictions.** The composite's two softest out-of-plane modes come out real, between 60 and 140 cm⁻¹; the other out-of-plane modes move by
+≤ 30 cm⁻¹; the in-plane block is untouched by construction. Price: the TZ gradients at ≈ 5–10 h each on 8 threads (benzene/TZ 850 s on 4 threads,
+scaled ~N⁵) → ≈ 2 days, ≈ €40; the DZ rows hours.
+
+**Lines.** *No imaginary mode and both soft modes within 40 cm⁻¹ of ωB97X* → repaired: the composite anchor enters T3 (chain 33 with five anchors) and
+the benzene⁺ chain may start; its lines are provisional like every TZ-corrected line. *Real, but a soft mode more than 40 cm⁻¹ from ωB97X* → repaired
+but flagged: the full composite (in-plane rows too) is computed before the anchor is used. *Still imaginary* → the artefact survives the MP2 basis step;
+the anchor stays excluded, and the next step is CCSD(T)/cc-pVTZ for the seven out-of-plane rows (priced first) or anthracene's exclusion from the
+anchor set. Second routes: the symmetry spread of the reconstructed rows; the coupling check above; the zero-step identity in the tests.
