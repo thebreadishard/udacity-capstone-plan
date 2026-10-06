@@ -391,6 +391,13 @@ def main():
     else:
         H = 0.5 * (G + G.T); asym = float(np.abs(G - G.T).max())
     import e8_hessian_checks as HC
+    if not partial:   # decision 61 (6 Oct 2026): the energy route to the reference gradient runs in every assembling run — free, end to end
+        er = energy_route_gradient_check(a.out, g0, a.step)
+        log(f"energy route to the reference gradient: max |g0 − (E(+h) − E(−h))/2h| = {er['max_grad_diff']:.1e} a.u. over {er['n_coordinates']} "
+            f"coordinates (limit {ENERGY_GRAD_LIMIT:.0e}) — {'PASSED' if er['passed'] else 'FAILED'}")
+        if not er["passed"]:
+            log("ENERGY ROUTE FAILED: the reference gradient disagrees with the displaced energies — no Hessian written")
+            raise SystemExit(6)
     chk = HC.classify_hessian(H, x0, masses, asym, ediag)
     Hp, fr_s = chk["H_projected"], chk["freq_cm"]
     out_name = {"VALID": "hessian_ccsd_t.npz", "INVALID": "hessian_ccsd_t_INVALID.npz", "IMAGINARY": "hessian_ccsd_t_IMAGINARY.npz"}[chk["status"]]
