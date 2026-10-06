@@ -1,0 +1,46 @@
+{
+ "date": "2026-10-06 17:38",
+ "mol_id": "A_8448043181",
+ "dz_anchor": "probes/results_m1/e8_benzene_ccpvdz_dip_2026-10-03",
+ "tz_anchor": "probes/results_m1/e8_benzene_ccpvtz_oop_2026-10-03",
+ "mp2_dz": "probes/results_m1/composite_mp2_rows_benzene_ccpvdz_2026-10-04.npz",
+ "mp2_tz": "probes/results_m1/composite_mp2_rows_benzene_ccpvtz_2026-10-04.npz",
+ "spread": {
+  "dz": 9.792969252132638e-05,
+  "tz": 8.094936741071847e-05
+ },
+ "mp2_step_rms": 0.0071156861680620785,
+ "results": {
+  "dz": {
+   "ring-ip": 24.927167564452507,
+   "CH-stretch": 137.89606419918016,
+   "CH-oop": 69.59163359960942,
+   "other": 40.81476424415873,
+   "ratio": 5.928331075257677,
+   "all": 72.92847471092786
+  },
+  "comp": {
+   "ring-ip": 3.2890313131851907,
+   "CH-stretch": 4.368172516720265,
+   "CH-oop": 7.296238838914831,
+   "other": 3.323708666819971,
+   "ratio": 0.30827231081627576,
+   "all": 4.58170943797128
+  },
+  "low": {
+   "ring-ip": 14.142995819256283,
+   "CH-stretch": 38.65244690430929,
+   "CH-oop": 14.860593190598633,
+   "other": 13.313323335384062,
+   "ratio": 1.0,
+   "all": 21.42866653249754
+  }
+ },
+ "lines": {
+  "ring-ip": false,
+  "CH-stretch": false,
+  "CH-oop": false,
+  "other": false
+ },
+ "verdict": "3\u201310 cm\u207b\u00b9 in some family"
+}

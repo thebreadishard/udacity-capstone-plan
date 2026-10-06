@@ -32,6 +32,28 @@ FAST_T_LIMIT = 1e-10         # largest |kernel − pyscf| over the (T) density i
 FIRST_PAIR_LIMIT = 1e-4      # a.u.; |mean(g+, g−) − g0| is O(h²) ≈ 1e-5 for h = 0.005 bohr; the frozen-6-of-10 run gave 2–9e-4 in plane
 TWO_ROUTE_GRAD_LIMIT = 1e-8  # a.u.; the checked reference gradient must equal the stored one (same code, same machine: 1e-10 observed on water)
 TWO_ROUTE_ENERGY_LIMIT = 1e-9  # E_h; idem for the reference energy
+ENERGY_GRAD_LIMIT = 2e-5  # a.u.; |g0_k − (E(+h) − E(−h)) / 2h| over the displaced coordinates (6 Oct 2026; the central difference at h = 0.005 bohr with
+#                           energies converged to 1e-9 is good to ~1e-6; the 29 Sep incident's CCSD-lambda gradient was wrong by ~1e-3)
+
+
+def energy_route_gradient_check(out_dir, g0, step):
+    """6 Oct 2026: the reference gradient against central differences of the stored displaced energies (ener_kk_p/m.npy), coordinate by coordinate —
+    a second route to the gradient itself (lambda, density and contraction together) that needs no slow pyscf route. Used where pyscf's (T) density
+    route does not fit (benzene/cc-pVTZ: OOM at 20 GB) or does not end (anthracene/cc-pVDZ: > 28 h). The displaced gradients are covered by the
+    assembly's H_kk energy route (e8_hessian_checks, negative control on water, 30 Sep 2026)."""
+    g0 = np.asarray(g0, float).ravel()
+    rows = {}
+    for f in sorted(os.listdir(out_dir)):
+        if f.startswith("ener_") and f.endswith("_p.npy"):
+            k = int(f[5:7]); fm = os.path.join(out_dir, f"ener_{k:02d}_m.npy")
+            if os.path.exists(fm):
+                fd = (float(np.load(os.path.join(out_dir, f))) - float(np.load(fm))) / (2 * step)
+                rows[k] = dict(fd=fd, g0=float(g0[k]), diff=abs(fd - float(g0[k])))
+    if not rows:
+        raise SystemExit("--two-route-check energy: no displaced energy pairs (ener_kk_p/m.npy) in the run directory")
+    worst = max(rows, key=lambda k: rows[k]["diff"])
+    return dict(passed=bool(rows[worst]["diff"] <= ENERGY_GRAD_LIMIT), max_grad_diff=rows[worst]["diff"], worst_coordinate=worst, n_coordinates=len(rows),
+                max_abs_g0=float(np.abs(g0).max()), per_coordinate={str(k): v for k, v in rows.items()})
 # the Hessian self-check and its limits live in e8_hessian_checks.py (split into INVALID / IMAGINARY / VALID on 30 Sep 2026)
 def pair_consistency(gp, gm, g0) -> float:
     """max |mean(g(+k), g(−k)) − g0|: zero to O(h²) when both displaced calculations sit on the same surface as the reference."""
@@ -230,10 +252,12 @@ def main():
     ap.add_argument("--frozen", type=int, default=None, help="core orbitals to freeze; default: derived from the elements (all 1s of first-row atoms); "
                     "a stated value that differs from the derived one refuses to start unless --allow-frozen-mismatch")
     ap.add_argument("--allow-frozen-mismatch", action="store_true"); ap.add_argument("--only-reference", action="store_true")
-    ap.add_argument("--two-route-check", default="inline", choices=["inline", "separate", "only"],
+    ap.add_argument("--two-route-check", default="inline", choices=["inline", "separate", "only", "energy"],
                     help="2 Oct 2026: where the (T)-kernel two-route checks against pyscf's slow route run — 'inline' with the reference gradient (registered); "
                          "'separate' = the reference skips them and is marked unchecked; 'only' = recompute the reference with the checks, compare with "
-                         "reference.npz and write two_route_check.json (the assembly refuses an unchecked reference without a passing file)")
+                         "reference.npz and write two_route_check.json (the assembly refuses an unchecked reference without a passing file); 'energy' (6 Oct 2026) = "
+                         "the stored reference gradient against central differences of the stored displaced energies, no quantum chemistry — "
+                         "the second route where pyscf's slow (T) route does not fit in memory")
     ap.add_argument("--charge", type=int, default=0); ap.add_argument("--spin", type=int, default=0, help="2S (1 = doublet); > 0 selects UHF-UCCSD(T), 29 Sep 2026")
     ap.add_argument("--max-memory", type=int, default=26000, help="pyscf max_memory in MB per process (default the former hard-coded 26000); partial runs "
                     "sharing one box take less (29 Sep 2026: 3 x 8000 on a 31 GB CPX62)")
@@ -278,6 +302,17 @@ def main():
         + ", explicit (T) lambda" + (", fast (T) density kernel" if a.fast_t_density else "") + (", fast (T) lambda kernel" if a.fast_t_lambda else ""))
     ref_p = os.path.join(a.out, "reference.npz")
     check_p = os.path.join(a.out, "two_route_check.json")
+    if a.two_route_check == "energy":
+        if not os.path.exists(ref_p):
+            raise SystemExit("--two-route-check energy needs an existing reference.npz and the displaced energies (ener_kk_p/m.npy)")
+        ref = np.load(ref_p); g0 = ref["gradient"]
+        res = energy_route_gradient_check(a.out, g0, a.step)
+        json.dump(dict(route="energy_fd", grad_limit=ENERGY_GRAD_LIMIT, step=a.step, date=time.strftime("%F %T"), **res), open(check_p, "w"), indent=1)
+        log(f"two-route check (energy route) {'PASSED' if res['passed'] else 'FAILED'}: reference gradient vs (E(+h) − E(−h)) / 2h over {res['n_coordinates']} "
+            f"coordinates, max |Δ| {res['max_grad_diff']:.1e} a.u. at coordinate {res['worst_coordinate']} (limit {ENERGY_GRAD_LIMIT:.0e}); max |g0| {res['max_abs_g0']:.1e}")
+        if not res["passed"]:
+            raise SystemExit(5)
+        return
     if a.two_route_check == "only":
         if not os.path.exists(ref_p):
             raise SystemExit("--two-route-check only needs an existing reference.npz (run the reference first)")

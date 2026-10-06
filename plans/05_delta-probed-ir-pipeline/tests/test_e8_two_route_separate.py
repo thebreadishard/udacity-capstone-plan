@@ -71,3 +71,35 @@ def test_only_without_a_reference_refuses(tmp_path, monkeypatch):
         _run(tmp_path, monkeypatch, [], "--two-route-check", "only")
     assert "needs an existing reference" in str(e.value)
     assert not os.path.exists(tmp_path / "out" / "two_route_check.json")
+
+
+def test_energy_route_check_reads_the_stored_energies(tmp_path):
+    """6 Oct 2026: the energy mode compares g0 with (E(+h) − E(−h)) / 2h per stored coordinate; a slope the gradient does not report fails it."""
+    out = tmp_path / "out"
+    out.mkdir()
+    h = 0.005
+    g0 = np.zeros(9)
+    g0[4] = 1.0e-3
+    for k, slope in ((1, 0.0), (4, 1.0e-3)):                                  # E(±h) = E0 ± slope·h → central difference = slope
+        np.save(out / f"ener_{k:02d}_p.npy", np.array(-76.0 + slope * h))
+        np.save(out / f"ener_{k:02d}_m.npy", np.array(-76.0 - slope * h))
+    res = E.energy_route_gradient_check(str(out), g0, h)
+    assert res["passed"] and res["n_coordinates"] == 2 and res["max_grad_diff"] < 1e-12
+    g_wrong = g0.copy()
+    g_wrong[4] = 0.0  # a gradient that misses the slope (the shape of the 29 Sep incident)
+    bad = E.energy_route_gradient_check(str(out), g_wrong, h)
+    assert not bad["passed"] and bad["worst_coordinate"] == 4 and abs(bad["max_grad_diff"] - 1.0e-3) < 1e-12
+    with pytest.raises(SystemExit):
+        E.energy_route_gradient_check(str(tmp_path), g0, h)                   # no energy pairs → refuses
+
+
+def test_energy_mode_writes_the_check_file_the_assembly_reads(tmp_path, monkeypatch):
+    rec = []
+    _run(tmp_path, monkeypatch, rec, "--only-reference", "--two-route-check", "separate")
+    out = tmp_path / "out"
+    for k in (0, 1):
+        np.save(out / f"ener_{k:02d}_p.npy", np.array(-76.0))
+        np.save(out / f"ener_{k:02d}_m.npy", np.array(-76.0))
+    assert _run(tmp_path, monkeypatch, rec, "--two-route-check", "energy") is None
+    chk = json.load(open(out / "two_route_check.json"))
+    assert chk["passed"] is True and chk["route"] == "energy_fd" and chk["n_coordinates"] == 2
