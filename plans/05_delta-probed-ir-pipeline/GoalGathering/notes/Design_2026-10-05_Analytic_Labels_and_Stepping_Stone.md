@@ -47,6 +47,18 @@ gradients (6N gradients, or 6 × representative atoms with symmetry), each gradi
 molecules of 12–26 atoms at the corpus basis (6-31G*) the cost per molecule is measured; above 2 h per molecule on 8 threads the stone is priced out for
 the whole pool and tried on the 46 parents only.
 
+**Step 0 outcome (6 Oct 2026, 08:3x; `probes/results_m1/mp2_step0_2026-10-05.log`, `probes/mp2_price_step0_1005.sh`, `probes/mp2_price_step0b_1005.sh`).** MP2/6-31G* (cart) gradients at 2 threads, each run beside an 8-thread anchor job, so the per-thread price is an upper bound:
+
+| molecule | atoms | unique displacements | measured | whole molecule at 2 threads | ≈ at 8 threads (÷ 3) |
+|---|---|---|---|---|---|
+| benzene | 12 | 12 | 277 s | 277 s | 0.03 h |
+| naphthalene | 18 | 30 | 3,502 s | 3,502 s | 0.3 h |
+| biphenyl | 22 | 33 | 18,149 s | 18,149 s | 1.7 h |
+| fluoranthene | 26 | 42 | 4 displacements, 12,756 s | ≈ 133,900 s | ≈ 12 h |
+| fluoranthene+vinyl | 28 | 90 | 4 displacements, 8,743 s | ≈ 196,700 s | ≈ 18 h |
+
+The line (2 h per molecule at 8 threads) holds up to biphenyl and fails from 26 atoms on; 474 of the 847 computed pool molecules have 21–26 atoms and 49 more; the vinyl variant shows that low symmetry (90 displacements) costs more than size. **Verdict as registered: the stone is priced out for the whole pool; step 1 runs on the 46 parents only.** Their sum at the measured prices is ≈ 110 h of one 8-thread lane (the three-ring and fluoranthene parents carry most of it): five days on the laptop, or ≈ 1.5 days on the labels CCX53's four lanes after the labels (≈ €30). Which, and when, is the user's call (step 1 is 'on the user's word if it needs a server').
+
 **Step 1 — the read (after step 0, on the user's word if it needs a server).** The same 750-molecule recipe trained with MP2 targets (correction
 B3LYP → MP2/6-31G*, same loss, same seeds), read on hold-out (a) against its own MP2 labels (learnability: ratio and families) and, the decisive
 number, T3 on the four DZ anchors and on their composite level when test 2 has passed: *'network as is' ratio* and *'head tuned' per family* for the
