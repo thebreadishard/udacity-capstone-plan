@@ -59,6 +59,8 @@ the whole pool and tried on the 46 parents only.
 
 The line (2 h per molecule at 8 threads) holds up to biphenyl and fails from 26 atoms on; 474 of the 847 computed pool molecules have 21–26 atoms and 49 more; the vinyl variant shows that low symmetry (90 displacements) costs more than size. **Verdict as registered: the stone is priced out for the whole pool; step 1 runs on the 46 parents only.** Their sum at the measured prices is ≈ 110 h of one 8-thread lane (the three-ring and fluoranthene parents carry most of it): five days on the laptop, or ≈ 1.5 days on the labels CCX53's four lanes after the labels (≈ €30). Which, and when, is the user's call (step 1 is 'on the user's word if it needs a server').
 
+**Decision (the user, 6 Oct 2026, 09:0x): the DFT stepping stone stays.** Step 1 is parked; MP2 on the 46 parents is re-opened only if the 'other' family does not move once the pool has analytic labels (chain 35). The stone's price, not its quality, decided: on benzene MP2 followed the anchor's basis step better (test 1), but the pool cannot afford it.
+
 **Step 1 — the read (after step 0, on the user's word if it needs a server).** The same 750-molecule recipe trained with MP2 targets (correction
 B3LYP → MP2/6-31G*, same loss, same seeds), read on hold-out (a) against its own MP2 labels (learnability: ratio and families) and, the decisive
 number, T3 on the four DZ anchors and on their composite level when test 2 has passed: *'network as is' ratio* and *'head tuned' per family* for the
