@@ -1640,6 +1640,18 @@ better low level (lever 2's answer) and more cheap data (the 200) are weighed be
 anthracene's correction does not transfer to naphthalene at this level: the family-specific part dominates, and the anchor plan is per family (one anchor
 per scaffold family) rather than cumulative.
 
+**Outcome, 7 October 05:4x (chain 33b: `probes/rungC_chain33b_1007.sh`, anthracene = the composite anchor of test 3 — its CC/DZ Hessian is IMAGINARY;
+`out/T3_five_anchors_c34_seed*_2026-10-07`; the four-anchor comparison on the same chain 34 models `out/T3_four_anchors_c34_seed*_2026-10-07`;
+seed means by `probes/t3_seed_means.py`, `out/T3_seed_means_four_vs_five_c34_2026-10-07.json`).** Ring-ip ω rms, α-tuned, naphthalene held out:
+**6.52 cm⁻¹ with three training anchors → 5.83 with anthracene as the fourth** (seed range 0.99 → 0.09); chain 24's four-anchor T3b had 5.99, so the
+model change alone did not move it and the fifth anchor accounts for the step. Anthracene held out: 7.03 (prediction 5–8: met). The single rings:
+benzene 6.03 → 6.04, pyridine 6.62 → 7.13, fluorobenzene 5.36 → 5.04. **Line met: *4 < naphthalene ≤ 6*** — anchors help but slowly; the prediction
+(4–5) was not met. As registered, the composite with a better low level (lever 2's answer: the composite per family, test 2) and the cheap data are
+weighed before a sixth anchor: pyrene is not next. Out of plane the read is not interpretable yet: naphthalene's CH-oop went 34.6 → 44.7 and benzene's
+18.8 → 26.2 while pyridine's fell 24.7 → 8.3 — the four DZ anchors still carry the basis artefact in their out-of-plane blocks and anthracene is the one
+repaired anchor, so the network is fitted to two levels at once. The order is therefore TASKS 28 (the MP2 basis step for every DZ anchor, composite
+anchors throughout), then this read again with five composite anchors, then the sixth-anchor question.
+
 ### Amendment 3 October 11:1x — chain 34: T1's open families under decision 53 (steps 0–1 measured, steps 2–3 registered before they run)
 
 **Decision 53** (the user, 3 Oct 11:0x): T1 requires every mode family ≤ 3 cm⁻¹ corrected-ω rms on hold-out (a), not the all-mode rms; standing (chain 24,
