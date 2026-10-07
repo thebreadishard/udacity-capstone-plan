@@ -1852,6 +1852,16 @@ any reading.** What the numbers already say, without a verdict: a tighter thresh
 localisation removes only a quarter of it — the offset behaves like truncation, not like localisation jitter. The extra coordinate (an out-of-plane
 one, both cells, ≈ 1 day on 8 laptop threads) is queued after chain 33c and chain 36 (TASKS).
 
+**The extra coordinate, registered 7 October 22:0x before it runs (`probes/night_1007_lno.sh`).** k 2 = atom 0 z (out-of-plane share 0.99;
+same atom as k 0/1, cached reference energies and LNO spaces reused), cells (a) xtight and (b) reused localisation at tight, then the plain
+tight cell at k 2 for scale only (not read against the lines). Reading over k 0, 1, 2 per cell, written now: cell (b) keeps the tight
+thresholds, so it carries the tight truncation and cannot fall below it — (b) answers 'is localisation jitter a large part?', (a) answers
+'is it truncation?'. Hence: **(a) < 1e-3 at k 2 as well** → 'noise-limited at tight: truncation' — the route for anchors beyond ≈ 26 atoms is
+LNO at xtight thresholds (priced with cell (a)'s cost), frozen localisation is not needed; **(a) ≥ 1e-3 at k 2 with the sign of (b)** → the
+level: closed, anchors stay canonical, the Snellius question is a canonical-cost question; (a) ≥ 1e-3 with the opposite sign → no reading,
+recorded as a limit of the energy-curvature probe (a gradient route is then the only test). (b) is reported beside it as the fraction of the
+tight offset that frozen localisation removes at k 2.
+
 ### Amendment 3 October 20:5x — a per-family learning curve read from the existing records (reading rule written before the numbers are looked at)
 
 **What.** `probes/rungC_family_curve.py` on the carried recipe's records (pattern f, projected target, kring 0.3, sum body): 45 and 100 (pool A,A2 —
