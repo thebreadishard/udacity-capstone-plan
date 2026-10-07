@@ -43,3 +43,30 @@ the 1.95). *Any family worse by more than 0.3 pooled* → rejected whatever othe
 
 **Cost and place.** ≈ 3.5 h on the laptop's free 8 threads (chain 34c took 3 h 38 min at 8 threads beside the TZ run), beside the LNO cell (8
 threads); nothing else waits for these threads until the CCX53's queue lands (≈ midnight).
+
+
+## Outcome, 7 October 10:3x — rejected: the hinge input is not the cause
+
+Trained 07:28–10:11 (`out/E7_rungC_chain36_hinge_750_2026-10-07.{json,md,log}`); read as registered on the analytic hold-out (a) targets
+(`out/read_chain36_analytic_2026-10-07.md`, `out/rungC_low_modes_noise_c36_analytic_2026-10-07.md`; the first read was refused by decision 55's guard
+until the models had a reviewed status — registered as candidates 10:15).
+
+| hold-out (a), seed mean (range) | chain 36 (+ hinge) | chain 34 (5 Oct, same targets) | difference |
+|---|---|---|---|
+| ring-ip | 1.97 (1.70–2.21) | 1.82 | +0.15 |
+| CH-stretch | 1.70 (1.34–2.28) | 1.25 | **+0.45** |
+| CH-oop | 2.21 (1.83–2.66) | 2.36 | −0.15 |
+| other | 3.73 (3.39–4.31) | 3.35 | **+0.38** |
+| other-low, pooled over 132 modes | 3.51 | 3.21 | +0.30 |
+
+The five hinge molecules, other-low: biphenyl 4.62 → 4.89, fluorene 3.66 → 2.74, benzophenone 3.62 → 4.17, benzonitrile 3.74 → 3.95, biphenylene 3.98 →
+5.15 — mean 3.92 → 4.18, **up by 0.26** where the prediction said down by ≥ 0.8. The hinge-free four: benzene 1.25 → 0.56, phenanthrene 1.87 → 2.19,
+2-naphthoic acid 1.52 → 1.71, phenanthridine 1.49 → 2.40. Hold-out (b) other 6.03 → 6.49.
+
+**Lines:** other-low 3.51 > 2.9 and the hinge five not down → the first line is not met; the hinge five down by less than 0.5 → **the hinge input is
+not the cause**; CH-stretch +0.45 and other +0.38 pooled → **rejected** by the third line as well. Chain 36 is superseded (read, not promoted;
+chain 34 stays carried, v1.1). Only fluorene moved the predicted way. The per-atom class gave the body more freedom and the low modes did not use it.
+
+**What is left for 'other', in order:** the training labels (chain 35 on analytic labels; the labels server starts when the CCX53's MP2 queue ends,
+≈ tonight) — the 4.8 cm⁻¹ finite-difference floor of the low modes in the training targets is now the leading candidate; range (a 6 Å cutoff) only
+after chain 35, since step 0 found it does not follow the models' errors.
