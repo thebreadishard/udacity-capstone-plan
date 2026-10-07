@@ -27,6 +27,9 @@ for i in $(seq 1 11); do
   if ! grep -qE "\(P5\) chain 33c finished|\(P1\) QUEUE FAILED|CHAIN 33c NOT STARTED" "$LOG"; then
     [ "$(ps -ef | grep -c '[c]omposite_pipeline_1007')" = "0" ] && { echo "ANOMALY $(t): composite pipeline not running and not finished"; exit 1; }
   fi
+  if grep -q "(C36) chain 36 (chain 34 + hinge input) training start" "$LOG" && ! grep -qE "\(C36\) chain 36 read done|\(C36\) CHAIN 36" "$LOG"; then
+    [ "$(ps -ef | grep -c '[r]ungC_chain36_1007')" = "0" ] && { echo "ANOMALY $(t): chain 36 script gone without its read marker"; exit 1; }
+  fi
   srv=$($SSH 'cd ~/e8/composite && echo "workers $(ps -eo args | grep -c "[c]c_composite_full_check.py compute") done $(ls rows/*.npz 2>/dev/null | wc -l) end $(tac queue.log | sed "/=== QUEUE start/q" | grep -oE "=== QUEUE (DONE|FAILED|REFUSED)" | head -n 1 | tr " " "_")"' 2>/dev/null)
   if [ -z "$srv" ]; then
     fails=$((fails + 1)); [ "$fails" -ge 2 ] && { echo "ANOMALY $(t): server unreachable twice"; exit 1; }
@@ -38,7 +41,7 @@ for i in $(seq 1 11); do
     elif [ "$workers" = "0" ]; then echo "ANOMALY $(t): no queue workers on the server and no end marker — $srv"; exit 1; fi
   fi
   for m in "(P3) labels server running" "(P3) LABELS BOOTSTRAP FAILED" "(P4) BUILD OR PROMOTION FAILED" "(P4) composites built" "(P5) chain 33c finished" \
-           "(N2) LNO cell (b) reuse done" "(N2) LNO CELL (b) FAILED" "CHAIN 33c NOT STARTED" "(P5) CHAIN 33c seed"; do
+           "(N2) LNO cell (b) reuse done" "(N2) LNO CELL (b) FAILED" "CHAIN 33c NOT STARTED" "(P5) CHAIN 33c seed" "(C36) chain 36 read done" "(C36) CHAIN 36"; do
     line=$(grep -F "$m" "$LOG" | tail -n 1 | cut -c1-110)
     [ -n "$line" ] && new_marker "$line" && exit 2
   done
