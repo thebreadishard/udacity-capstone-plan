@@ -2067,3 +2067,13 @@ B3LYP modes) and the CC/TZ one (the carried composite minus B3LYP, same modes), 
 cc-pVDZ anchors where they are valid. *Pooled cosine ≥ 0.5* → the proxy teaches the coupling's shape and the fine-tune sets its size; *< 0.3* →
 the proxy teaches a different coupling: if (B1) also fails, the MP2 stepping stone on the 46 parents (registration 2, parked 6 October) is the lever
 it was parked for; *between* → noted, no lever.
+
+
+**Outcome of amendment (B), 7 October 21:4x (`probes/t3_coupling_shape.py`, 3 tests; `out/t3_coupling_shape_2026-10-07.{md,json}`, 22 s).**
+(B1) Pooled over the six held-out anchors: head-tuned network 1.52 against the zero rule's 1.72 cm⁻¹ (α-tuned 1.88) → **the ring couplings are
+immaterial at the TZ tier**, and head-tuned the network is already a little better than leaving them out; the licence takes the zero rule per family
+where the network is not better, and no lever is spent on them. (B2) Cosine between the proxy's and the CC/TZ ring-coupling corrections, pooled over
+705 pairs: **0.48 — between the lines, noted, no lever**; per anchor 0.53–0.58 for naphthalene, benzonitrile, anthracene, fluorobenzene, 0.36 benzene,
+0.13 pyridine. The proxy's coupling correction is 4.1 cm⁻¹ rms against CC/TZ's 1.7 (slope 0.20): mostly the right shape at five times the size, which
+is why the fine-tune has to move the head and not only α. At cc-pVDZ the cosine was 0.30 (slope 0.70, CC size 9.3): the composite made the CC couplings
+more proxy-like in shape and much smaller.
