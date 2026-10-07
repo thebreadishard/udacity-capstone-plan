@@ -1098,6 +1098,81 @@ tab = pd.DataFrame({"chain 24 (a) ω rms": {f: c24[0][f] for f in FAM}, "FD nois
 display(tab)
 print(f"chain 24 ratio {c24[1]:.3f}, best epochs {c24[2]}" + (f" | chain 34 ratio {c34[1]:.3f}, best epochs {c34[2]}" if c34 else " | chain 34: no record yet"))""")
 
+# ---- 12.5 (5–7 October 2026): clean labels, the anchors' ruler, the fifth anchor, two tests of the low modes — numbers from the records
+_r34a = _json_or_none("read_chain34_analytic_2026-10-05.json")
+_r36a = _json_or_none("read_chain36_analytic_2026-10-07.json")
+_t2 = _json_or_none("composite_test2_benzene_2026-10-06.json")
+_t3 = _json_or_none("composite_test3_anthracene_2026-10-07.json")
+_t3m = _json_or_none("T3_seed_means_four_vs_five_c34_2026-10-07.json")
+_rd = _json_or_none("low_modes_range_diag_2026-10-07.json")
+_lm36 = _json_or_none("rungC_low_modes_noise_c36_analytic_2026-10-07.json")
+_lm34 = _json_or_none("rungC_low_modes_noise_c34_analytic_2026-10-05.json")
+if all(x is not None for x in (_r34a, _r36a, _t2, _t3, _t3m, _rd, _lm36, _lm34)):
+    _a34, _rec34, _a36 = _r34a["results"]["a"], _r34a["record"]["a"], _r36a["results"]["a"]
+    _clean_tab = "\n".join(f"| {f} | {_f(_rec34[f])} | {_f(_a34[f]['mean'])} | {_f(_a36[f]['mean'])} |" for f in _FAM)
+    _t2r = _t2["results"]
+    _t2_tab = "\n".join(f"| {f} | {_f(_t2r['low'][f])} | {_f(_t2r['dz'][f])} | {_f(_t2r['comp'][f])} |" for f in _FAM)
+    _sets = list(_t3m)
+    _four = next(s for s in _sets if "four_anchors" in s)
+    _five = next(s for s in _sets if "five_anchors" in s)
+    _nap4, _nap5 = _t3m[_four]["A_01f3186607|network_alpha"], _t3m[_five]["A_01f3186607|network_alpha"]
+    _ant5 = _t3m[_five]["A_a1e6ec1862|network_alpha"]
+    _hinge = ["A_fdc27f1bd1", "A_72b86c2331", "A_3100da3761", "A_e72997e726", "A_08dde334d8"]
+    _lo34 = {r["id"]: r["pred"].get("other-low", float("nan")) for r in _lm34["rows"]}
+    _lo36 = {r["id"]: r["pred"].get("other-low", float("nan")) for r in _lm36["rows"]}
+    _h34, _h36 = float(np.mean([_lo34[i] for i in _hinge])), float(np.mean([_lo36[i] for i in _hinge]))
+    md(f"""### 12.5 Follow-up (5–7 October 2026): clean labels, a better ruler for the anchors, and two tests of the low modes
+
+**Clean labels.** A label is the answer a network is graded against. Until 5 October the hold-out molecules were graded against Hessians made by finite
+differences — small steps of every atom, with a numerical error of its own. The analytic route computes the same Hessian exactly. Re-reading chain 34
+(the carried model, v1.1) against analytic labels on the ten hold-out molecules it never saw:
+
+| family | graded on finite-difference labels | graded on analytic labels | chain 36 (+ hinge input), analytic labels |
+|---|---|---|---|
+{_clean_tab}
+
+The out-of-plane C–H family now meets the 3 cm⁻¹ line: its earlier miss was the ruler, not the network. Three of the four families are under the line
+on clean labels; 'other' — mostly the soft, low-frequency modes — is the one left.
+
+**A better ruler for the anchors.** The anchors are the few molecules computed with the expensive coupled-cluster method, CCSD(T), which the network is
+finally tuned to. They were computed with a small basis set (cc-pVDZ, the building blocks the electrons are described with). On 6 October benzene was
+computed with the larger cc-pVTZ basis as well, and the small-basis anchor turned out to sit farther from it than the cheap B3LYP starting point does
+(corrected-ω rms against CCSD(T)/cc-pVTZ, cm⁻¹):
+
+| family | B3LYP | CCSD(T)/cc-pVDZ | composite: cc-pVDZ + the MP2 basis step |
+|---|---|---|---|
+{_t2_tab}
+
+The composite — the small-basis anchor plus the change from small to large basis measured with the much cheaper MP2 method — removes most of that
+difference; this is the additivity scheme quantum chemists have used for benchmarks for thirty years. It also repaired anthracene, whose small-basis
+anchor came out unphysical (its two softest out-of-plane modes at {_t3['freq_dz'][0]:.0f} and {_t3['freq_dz'][1]:.0f} cm⁻¹ — the known small-basis artefact of
+correlated methods on arenes): with the out-of-plane block repaired they are {_t3['freq_composite'][0]:.0f} and {_t3['freq_composite'][1]:.0f} cm⁻¹, against
+{_t3['dft']['wb97x'][0]:.0f} and {_t3['dft']['wb97x'][1]:.0f} from ωB97X. Since 7 October every anchor version is kept in a registry with its level and checks,
+and exactly one per molecule — the best — is used (decision 62).
+
+**The fifth anchor.** With anthracene's repaired anchor added, the network's transfer to coupled-cluster level on naphthalene — held out, never tuned on
+— improved in the plane from {_f(_nap4['ring-ip'])} to {_f(_nap5['ring-ip'])} cm⁻¹ (same models, three seeds); anthracene held out lands at
+{_f(_ant5['ring-ip'])}. Out of plane the numbers moved both ways, because four anchors still carried the small-basis error there and one did not. The
+read with every anchor on the composite level (chain 33c) is registered and runs when the server's MP2 rows are in.
+
+**Two tests of the low modes.** Before designing a new input, a test without training: the network only predicts corrections between atoms within
+5 Å; cutting the *true* correction at 5 Å costs the low modes {_f(_rd['pooled']['keep_5.0']['other-low'])} cm⁻¹, but molecule by molecule that cost does
+not follow the network's errors (Spearman ρ {_rd['spearman']['keep']:.2f}). The five molecules where the network is worst share a hinge — a single bond
+between rings, a four- or five-membered ring, a linear group. Chain 36 gave the network that information as an input; the test registered before the
+run said whether it helped. It did not: on the five hinge molecules the low-mode error went from {_f(_h34)} to {_f(_h36)} cm⁻¹, and over all low modes from
+{_f(_lm34['pooled_pred']['other-low'])} to {_f(_lm36['pooled_pred']['other-low'])}. A plausible cause, tested and rejected, is a result too: the leading
+candidate is now the labels the network is *trained* on, which still carry the finite-difference error of the low modes — chain 35 retrains on analytic
+labels once the labels server has made them.
+""")
+    code("""# 12.5 — the clean-label read of chain 34 and chain 36 (analytic hold-out (a) targets), from the records
+ra = json.load(open(Path("..") / "out" / "read_chain34_analytic_2026-10-05.json", encoding="utf-8"))
+rb = json.load(open(Path("..") / "out" / "read_chain36_analytic_2026-10-07.json", encoding="utf-8"))
+FAM = ["ring-ip", "CH-stretch", "CH-oop", "other"]
+display(pd.DataFrame({"chain 34, FD labels": {f: ra["record"]["a"][f] for f in FAM}, "chain 34, analytic labels": {f: ra["results"]["a"][f]["mean"] for f in FAM},
+                      "chain 36, analytic labels": {f: rb["results"]["a"][f]["mean"] for f in FAM}}).round(2))""")
+else:
+    md("### 12.5 Follow-up (5–7 October 2026)\n\nFilled by the rebuild once the records of 5–7 October are on disk.")
+
 nb = new_notebook(cells=cells, metadata={"kernelspec": {"name": "python3", "display_name": "Python 3", "language": "python"}})
 path = HERE / "deep_learning.ipynb"
 # 2 Oct 2026 15:1x: the executed notebook on disk is replaced only after a successful execution — a failed run (a wrong M05_RELEASE) had left it
