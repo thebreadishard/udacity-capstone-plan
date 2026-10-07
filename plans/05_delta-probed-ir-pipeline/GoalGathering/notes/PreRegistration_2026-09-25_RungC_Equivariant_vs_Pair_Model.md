@@ -2018,3 +2018,27 @@ the T3 standard from now on, and the anchor plan prices every new anchor as cc-p
 transfer is limited by the network or the stepping stone, not by the anchors' level; the next step is the out-of-plane input design (TASKS 23), not
 more anchor work. (Lever 1, unchanged from 3 Oct) *naphthalene ring-ip ≤ 4* → anchors are the lever, a sixth anchor is priced; *4–6* → slow;
 *> 6* → the anchor plan per family.
+
+
+**Outcome of chain 33c, 7 October 21:0x (`probes/composite_pipeline_1007.sh` step P5, 20:33–20:46; `out/T3_tz_anchors_c34_seed*_2026-10-07`,
+`out/T3_seed_means_tz_vs_dz_c34_2026-10-07.{md,json}`).** The five composites were built at 20:33 and all promoted by the registered rule (naphthalene,
+pyridine, fluorobenzene VALID; benzonitrile and anthracene VALID with their two softest modes within 38 and 19 cm⁻¹ of ωB97X); with benzene's full
+cc-pVTZ anchor the read used six anchors on the TZ tier (five training anchors per fold). Seed means, α-tuned column, the four molecules common to the
+cc-pVDZ control (`T3_four_anchors_c34`):
+
+| held-out | CH-oop DZ → TZ | other DZ → TZ | all modes DZ → TZ | ring-ip DZ → TZ | ring-coupling ratio DZ → TZ |
+|---|---|---|---|---|---|
+| naphthalene | 34.6 → 21.5 | 38.1 → 13.2 | 25.4 → 12.6 | 6.52 → 6.82 | 0.32 → 1.40 |
+| pyridine | 24.7 → 12.0 | 14.3 → 9.4 | 13.7 → 8.3 | 6.62 → 6.14 | 0.27 → 0.98 |
+| benzene | 18.8 → 11.6 | 30.8 → 8.5 | 15.9 → 7.4 | 6.03 → 5.38 | 0.14 → 0.60 |
+| fluorobenzene | 18.1 → 10.4 | 14.4 → 9.6 | 11.2 → 8.0 | 5.36 → 4.90 | 0.21 → 1.04 |
+
+**Line (H): CH-oop lower on 4 of 4, none worse → hypothesis H supported**: T3's out-of-plane chaos of chain 33 was the anchors' two levels, not the
+network. The spread of CH-oop over the held-out anchors shrinks from 5.4 (chain 33b) to 2.3 (23.5 / 10.2). As registered, the TZ tier is the T3
+standard from now on and every new anchor is priced as cc-pVDZ plus the MP2 step. **Lever-1 line on the registered column (naphthalene ring-ip,
+α-tuned): 6.82 > 6** → the third line: the family-specific part dominates and the anchor plan goes per family. Two facts beside the lines, not
+read as verdicts: the head-tuned column (λ = 1) puts naphthalene's ring-ip at 4.33 and CH-stretch at 2.47 (α-tuned 8.85), so α-only tuning is too
+rigid for the TZ targets; and the ring-coupling ratio rose above 1 on three of four (the network's in-plane couplings, learned on DFT − DFT, do not
+match the composite's — whose ring couplings test 2 found 0.31 of the zero rule's error against CC/TZ on benzene, against 5.9 for cc-pVDZ). The next
+question this raises is whether the in-plane ring couplings of the TZ tier are learnable from the proxy (a pretraining-target question), registered
+separately before any run.

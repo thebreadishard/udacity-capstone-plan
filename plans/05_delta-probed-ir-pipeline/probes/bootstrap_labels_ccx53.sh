@@ -27,15 +27,21 @@ scp -q -i $KEY -o BatchMode=yes "$C/analytic_hessians.py" "$P/probes/labels_lane
 $S 'mkdir -p /root/labels && mv /root/analytic_hessians.py /root/labels_lane.sh /root/labels_ids_[0-3].txt /root/labels/ && cd /root/labels && tar xzf /root/labels_inputs.tgz && ls molecules | wc -l' < /dev/null || { echo "UNPACK FAILED $IP"; exit 1; }
 echo "[$(t) $IP] GATE: benzene analytic B3LYP against the laptop's file (grid 99,590)"
 scp -q -i $KEY -o BatchMode=yes "$C/molecules/A_8448043181/hessian_b3lyp_analytic.npz" root@$IP:/root/labels/gate_benzene_laptop.npz || { echo "GATE SCP FAILED $IP"; exit 1; }
-$S 'cd /root/labels && mkdir -p gate/A_8448043181 && cp molecules/A_8448043181/geometry.json gate/A_8448043181/ && export OMP_NUM_THREADS=8 && /root/miniforge3/envs/qc05/bin/python analytic_hessians.py gate/A_8448043181 --threads 8 > gate/gate.log 2>&1 && /root/miniforge3/envs/qc05/bin/python - <<PYEOF
+# 7 Oct 2026: benzene is not in the input tarball (it has analytic labels already) — its geometry goes up on its own
+$S 'mkdir -p /root/labels/gate/A_8448043181' < /dev/null && scp -q -i $KEY -o BatchMode=yes "$C/molecules/A_8448043181/geometry.json" root@$IP:/root/labels/gate/A_8448043181/geometry.json \
+  || { echo "GATE GEOMETRY SCP FAILED $IP"; exit 1; }
+$S 'cd /root/labels && export OMP_NUM_THREADS=8 && /root/miniforge3/envs/qc05/bin/python analytic_hessians.py gate/A_8448043181 --threads 8 > gate/gate.log 2>&1 && /root/miniforge3/envs/qc05/bin/python - <<PYEOF
 import numpy as np
 a = np.load("gate/A_8448043181/hessian_b3lyp_analytic.npz")["H_raw"]; b = np.load("gate_benzene_laptop.npz")["H_raw"]
 d = float(np.abs(a - b).max()); print(f"GATE benzene B3LYP: max |H_server - H_laptop| = {d:.2e} a.u. ->", "PASS" if d <= 1e-6 else "FAIL")
 raise SystemExit(0 if d <= 1e-6 else 1)
-PYEOF' < /dev/null | tee "$SP/labels_gate_$IP.log" || { echo "GATE FAILED $IP — the lanes do not start"; exit 1; }
+PYEOF' < /dev/null > "$SP/labels_gate_$IP.log" 2>&1
+cat "$SP/labels_gate_$IP.log"
+grep -q "PASS" "$SP/labels_gate_$IP.log" || { echo "GATE FAILED $IP — the lanes do not start"; exit 1; }   # 7 Oct: a tee pipeline had hidden the failure
 echo "[$(t) $IP] four lanes × 8 threads, detached"
 for L in 0 1 2 3; do
-  $S "cd /root/labels && setsid nohup bash labels_lane.sh $L /root/labels/labels_ids_$L.txt > /root/labels/lane_$L.log 2>&1 < /dev/null &" < /dev/null
+  ssh -f -n -i $KEY -o ConnectTimeout=25 -o BatchMode=yes root@$IP \
+    "cd /root/labels && setsid nohup bash labels_lane.sh $L /root/labels/labels_ids_$L.txt > /root/labels/lane_$L.log 2>&1 < /dev/null &"   # 7 Oct: -f -n, a plain ssh hung
 done
 sleep 20
 $S 'ps -eo pid,etime,pcpu,args | grep analytic_hessian[s] | wc -l; tail -n 1 /root/labels/lane_*.log' < /dev/null
