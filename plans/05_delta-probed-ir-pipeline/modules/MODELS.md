@@ -6,7 +6,7 @@ Lay descriptions of the four networks are in `GLOSSARY.md`.*
 
 | network (name in text) | code | current version (in production) | versions on record | checkpoints |
 |---|---|---|---|---|
-| ΔH-network | module 05, rung C: `m05/rungC_equivariant.py` (body) + `m05/rungC_hybrid.py` (head), trained by `m05/rungC_train.py` | v1.1 (34; 3 seeds) | v1.0 — superseded (24), 3 seeds; v1.1 — carried (34), 3 seeds | 21: carried 3, superseded 13, invalid 1, smoke 4 |
+| ΔH-network | module 05, rung C: `m05/rungC_equivariant.py` (body) + `m05/rungC_hybrid.py` (head), trained by `m05/rungC_train.py` | v1.1 (34; 3 seeds) | v1.0 — superseded (24), 3 seeds; v1.1 — carried (34), 3 seeds; v1.2 — candidate (36), 3 seeds | 26: carried 3, superseded 13, invalid 1, smoke 6, candidate 3 |
 | order scorer (P1) | standout: `pp/scorer.py`, an MLP on 21 hand-made pair features | v1.0 (P1 (26 Sep); 3 seeds) | v1.0 — carried (P1 (26 Sep)), 3 seeds | 3: carried 3 |
 | learned order scorer (P2) | standout: `pp/embed_scorer.py`, the ΔH-network's body with a pair head | none in production (0.x) | v0.1 — experimental (P2 recipe of 26 Sep), 3 seeds; v0.2 — experimental (P2 stage-1 recipe), 3 seeds | 39: experimental 39 |
 | candidate generator | module 06: `m06/model.py`, a decoder-only SMILES Transformer | none in production (0.x) | v0.1 — experimental (run of 26 Sep), 2 seeds; v0.2 — experimental (conditioned (section 5)), 1 seed | 4: invalid 1, experimental 3 |
