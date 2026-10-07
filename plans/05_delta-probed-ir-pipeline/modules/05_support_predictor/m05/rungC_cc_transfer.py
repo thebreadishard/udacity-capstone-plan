@@ -22,6 +22,7 @@ import torch
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
+import anchor_registry as AR  # noqa: E402
 import e7_rungB_reread_analytic as RR  # noqa: E402
 import e7_t2_posthoc as PH  # noqa: E402
 import e7_t2_sqm as T2  # noqa: E402
@@ -172,10 +173,15 @@ def main() -> int:
     ap.add_argument("--lora-rank", type=int, default=0, help="lever 6 (3 Oct 2026): α plus a rank-r adapter on the head's middle layer; > 0 adds the column network_lora")
     ap.add_argument("--threads", type=int, default=4)
     ap.add_argument("--allow-any-model", action="store_true", help="decision 55 (3 Oct 2026): use a model whose registry status is not 'carried' — name it in the record")
+    ap.add_argument("--allow-any-anchor", action="store_true", help="7 Oct 2026: use an anchor file that is not its molecule's carried entry in the anchor "
+                    "registry (modules/ANCHORS.md) — named in the record")
+    ap.add_argument("--allow-mixed-tiers", action="store_true", help="7 Oct 2026: anchors on several tiers in one read (chain 33 showed why not) — named in the record")
     a = ap.parse_args()
     torch.set_num_threads(a.threads)
     t0 = time.time()
     anchors = dict(s.split("=", 1) for s in a.anchor)
+    found = {i: AR.require_carried_anchor(i, Path(p), allow=a.allow_any_anchor) for i, p in anchors.items()}   # the anchor registry, 7 Oct 2026
+    tier = AR.require_one_tier(found, allow=a.allow_mixed_tiers)
     mdir = Path(a.molecules)
     mols = T2.load(mdir)
     MR.require_carried(Path(a.model), allow=a.allow_any_model)                    # decision 55: reads run on carried models
@@ -193,7 +199,7 @@ def main() -> int:
         tensors[i] = molecule_tensors(i, loaded_molecule(d, mols[i]), mols[i], d, cfg, Path(a.out_prefix).parent / "ls_targets")
     ids = sorted(anchors)
     res = {"date": datetime.now().strftime("%Y-%m-%d %H:%M"), "model": a.model, "model_record": {k: ck[k] for k in ("pattern", "aux_mode", "aux_target", "n", "seed")},
-           "anchors": anchors, "low_level": lows, "epochs": a.epochs, "lr": a.lr, "aux_weight": a.aux_weight, "head_l2": a.head_l2, "lora_rank": a.lora_rank, "folds": {}}
+           "anchors": anchors, "anchor_registry": {i: (dict(level=e["level"], tier=e["tier"], sha16=e["sha16"]) if e else "not carried (--allow-any-anchor)") for i, e in found.items()}, "tier": tier, "low_level": lows, "epochs": a.epochs, "lr": a.lr, "aux_weight": a.aux_weight, "head_l2": a.head_l2, "lora_rank": a.lora_rank, "folds": {}}
     keep = ("coupling_ratio", "coupling_rms", "coupling_zero_rms", "corrected_freq_rms", "corrected_freq_rms_zero_rule", "dH_residual_ratio", "diag_rms")
 
     def read(held, tr, dF_of):
