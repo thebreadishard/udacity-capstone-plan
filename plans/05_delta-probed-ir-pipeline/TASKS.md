@@ -125,7 +125,7 @@ this file only says what is running or waiting and who acts.*
 29. **Second and third additivity test, for the paper.** Reviewer-proofing of the composite: one molecule is not enough. Pyridine's full CC/TZ anchor
     (11 atoms, C2v, 84 gradients, ≈ 1 day on the CCX53's four lanes, ≈ €20) is the heteroatom case; naphthalene/TZ would be the size case (≈ 5 days,
     ≈ €100) — the user decides after test 3. Both read with `cc_composite_full_check.py read`. Next check: with the labels server plan.
-30. **Basis-limit check and the methods paragraph.** (a) MP2/cc-pVQZ step on benzene's 12 displacements (one molecule: how much is left after TZ; ≈ 1
+30. **Basis-limit check and the methods paragraph.** **(b) written 7 Oct 11:0x** in paper D (private manuscripts repo, d1b1a05): Methods subsection 'The basis-set step (composite level)' — benzene per family, the MP2 tracking ratios, anthracene's repair, every number a macro from the composite records; references 106–110 verified at Crossref; the scope (composite force fields in this release; the pyridine and naphthalene additivity checks) left as a todo for the authors. (a) the QZ step is still open. (a) MP2/cc-pVQZ step on benzene's 12 displacements (one molecule: how much is left after TZ; ≈ 1
     day on a server lane). (b) The paper's methods section names the scheme a composite/additivity scheme and cites the focal-point analysis (Allen,
     Császár), the ΔCCSD(T) correction (Hobza, Sherrill) and composite force fields (Puzzarini, Barone); frozen core and the absence of diffuse functions
     stated with an estimate of their effect; the additivity error per family in a table (test 2's numbers). Next check: paper D's todo list.
