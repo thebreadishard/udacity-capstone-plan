@@ -206,11 +206,12 @@ def frequencies_cm(H: np.ndarray, masses: np.ndarray, x0: np.ndarray) -> np.ndar
     return np.sort(f[keep])
 
 
-def oop_fraction(H: np.ndarray, masses: np.ndarray, normal: np.ndarray, n_modes: int = 2):
-    """Out-of-plane fraction of the n softest modes of a mass-weighted Hessian (no projection; the softest modes are far from the TR null space only
-    when they are real — used for reporting)."""
+def oop_fraction(H: np.ndarray, masses: np.ndarray, x0: np.ndarray, normal: np.ndarray, n_modes: int = 2):
+    """Out-of-plane fraction of the n softest vibrations (translations and rotations projected out first) — for reporting."""
+    from anchor_deck_rehearsal import project_tr
     n = len(masses); Mi = np.repeat(1 / np.sqrt(masses), 3)
-    w, v = np.linalg.eigh(0.5 * (H + H.T) * Mi[:, None] * Mi[None, :])
+    Hp = project_tr(H, masses, x0)[0]
+    w, v = np.linalg.eigh(0.5 * (Hp + Hp.T) * Mi[:, None] * Mi[None, :])
     f = np.sign(w) * CM_PER_SQRT_AU * np.sqrt(np.abs(w))
     order = [i for i in np.argsort(f) if abs(f[i]) > 1.0][:n_modes]
     out = []
@@ -245,7 +246,7 @@ def repair_oop(a) -> int:
     H_comp = T @ H_comp_r @ T.T
     f_dz = frequencies_cm(H, masses, x0); f_comp = frequencies_cm(H_comp, masses, x0)
     normal = V[:, 2]
-    soft_dz = oop_fraction(H, masses, normal); soft_comp = oop_fraction(H_comp, masses, normal)
+    soft_dz = oop_fraction(H, masses, x0, normal); soft_comp = oop_fraction(H_comp, masses, x0, normal)
     molecules = PLAN / "modules" / "05_support_predictor" / "corpus" / "molecules" / a.mol_id
     dft = {}
     for tag in ("b3lyp", "wb97x"):
@@ -263,7 +264,9 @@ def repair_oop(a) -> int:
         verdict = "repaired but flagged: real, yet a soft mode more than 40 cm⁻¹ from ωB97X — the full composite is computed before use"
     status = "VALID" if n_im == 0 else "IMAGINARY"
     out = Path(a.out_prefix)
-    np.savez(str(out) + ".npz", H_raw=H_comp, H_plane_frame=H_comp_r, freq_cm=f_comp, coords_bohr=x0, frame=V, origin=origin, status=status,
+    from anchor_deck_rehearsal import project_tr
+    np.savez(str(out) + ".npz", H_raw=H_comp, H_projected=project_tr(H_comp, masses, x0)[0], H_plane_frame=H_comp_r, freq_cm=f_comp, coords_bohr=x0,
+             frame=V, origin=origin, status=status,
              source_anchor=str(src), mp2_dz=str(a.mp2_dz), mp2_tz=str(a.mp2_tz), spread_dz=s_dz, spread_tz=s_tz, coupling_cc=coupling_cc,
              coupling_step=coupling_step, repair="out-of-plane block, MP2/TZ − MP2/DZ (test 3, 6 Oct 2026)")
     fmt = lambda arr: ", ".join(f"{v:.0f}" for v in np.asarray(arr)[:6])  # noqa: E731

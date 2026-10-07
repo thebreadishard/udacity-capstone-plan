@@ -122,3 +122,23 @@ the benzene⁺ chain may start; its lines are provisional like every TZ-correcte
 but flagged: the full composite (in-plane rows too) is computed before the anchor is used. *Still imaginary* → the artefact survives the MP2 basis step;
 the anchor stays excluded, and the next step is CCSD(T)/cc-pVTZ for the seven out-of-plane rows (priced first) or anthracene's exclusion from the
 anchor set. Second routes: the symmetry spread of the reconstructed rows; the coupling check above; the zero-step identity in the tests.
+
+
+## Outcome of test 3, 7 October 03:27 — repaired: 86 and 115 cm⁻¹, no imaginary mode
+
+`modules/05_support_predictor/out/composite_test3_anthracene_2026-10-07.{md,json,npz}`. The MP2 rows: cc-pVDZ 236–254 s per displacement, cc-pVTZ
+5,866–5,925 s on 8 threads (seven displacements per basis, two lanes, 18:43–01:17 UTC; ≈ €7, not the ≈ €40 estimated — the N⁵ scaling from benzene
+overstated it). Symmetry spread of the reconstructed rows 1.8e-5 / 1.7e-5 a.u.; in-plane/out-of-plane coupling of the anchor 1.1e-16 and of the step
+at the same level (zero by symmetry, as required).
+
+| lowest six vibrations (cm⁻¹) | values |
+|---|---|
+| CC/DZ anchor | −51, 7, 180, 209, 224, 332 |
+| **composite, out-of-plane block repaired** | **86, 115, 209, 227, 261, 369** |
+| B3LYP (corpus) | 92, 124, 235, 238, 273, 388 |
+| ωB97X (corpus) | 105, 126, 238, 252, 278, 398 |
+
+Both soft modes are pure out-of-plane (fraction 1.00) and land 19 and 11 cm⁻¹ below ωB97X — inside the 40 cm⁻¹ line; the other out-of-plane modes
+moved by 29, 18 and 37 cm⁻¹ (the prediction said ≤ 30: one mode just over). Verdict as registered: **repaired** — the composite anchor enters T3 with
+provisional lines. Chain 33b (`probes/rungC_chain33b_1007.sh`, five anchors, three seeds) started 03:30 on the laptop with this anchor named
+explicitly. The benzene⁺ chain and the labels server wait for the CCX53, where the slow pyscf lane still runs (stopping it is the user's call).
