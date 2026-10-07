@@ -1,5 +1,7 @@
 %% Overview of plan 05 (level 1): the kinds of process and the data objects that connect them. Target architecture; no decisions, no data.
 %% Rectangle = process (here: a whole sheet); rounded ends = data object; arrow = data flow. Dashed = not built yet.
+%% 7 October 2026: the candidate generator (module 06) feeds the corpus as a registered source; the Spectrum Atlas publishes the catalogue with the status
+%% and the provenance of every molecule; training exists (the carried ΔH model); test and licence, and the spectrum pipeline as one chain, do not yet.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
@@ -10,14 +12,18 @@ flowchart LR
 
   MOL(["Molecule: geometry, charge, multiplicity"]):::data
   COND(["Observation conditions: internal energy after UV absorption (emission) or temperature (absorption); resolution of the instrument"]):::data
+  PUB(["PubChem fused aromatics, frozen set"]):::ext
   LABDB(["Laboratory spectra"]):::ext
   PAHDB(["Opponents: PAHdb and other predictors"]):::ext
-
+  GENF["Candidate generator (module 06)"]:::proc
+  CANDS(["New fused ring systems with PubChem membership"]):::data
   LABF["Label factory (sheet 4)"]:::proc
-  LABELS(["Labels: ΔH blocks with error margin per family"]):::data
+  LABELS(["Label: ΔH blocks with error margin per family and geometry term per mode, sealed"]):::data
   CORPF["Corpus step (sheet 3)"]:::proc
-  CORPUS(["Corpus records: two DFT Hessians, proxy correction and local-coordinate features per molecule"]):::data
-  TRAIN["Training (sheet 6)"]:::planned
+  CORPUS(["Corpus records: two DFT Hessians, proxy correction, local-coordinate features and deck responses per molecule"]):::data
+  ATLASF["Atlas export (website)"]:::proc
+  ATLAS(["Spectrum Atlas: catalogue with status and provenance per molecule"]):::data
+  TRAIN["Training (sheet 6)"]:::proc
   TRAINED(["Trained ΔH model: ensemble of members"]):::data
   TESTSET(["Test set"]):::data
   EVAL["Test and licence (sheet 7)"]:::planned
@@ -26,8 +32,11 @@ flowchart LR
   SPEC(["Spectrum: bands with position, intensity, profile and error margin; licence status per family"]):::data
   RES["Research process (sheets 1 and 2)"]:::research
 
+  PUB --> GENF --> CANDS --> CORPF
   MOL --> LABF --> LABELS
   MOL --> CORPF --> CORPUS
+  CORPUS --> ATLASF
+  LABELS --> ATLASF --> ATLAS
   LABELS --> TRAIN
   CORPUS --> TRAIN
   TRAIN --> TRAINED

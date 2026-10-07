@@ -1,17 +1,30 @@
 %% Data creation — the corpus: two DFT Hessians per molecule and the proxy correction (level 3). Target architecture.
-%% Rectangle = process step (operation + software); rounded ends = data object (the thing). Every step yields one data object. Everything exists.
-%% 27 September 2026: the mode-token representation of 6 September was dropped on 23 September (decision 49, E7: couplings unlearnable in the mode basis);
-%% the record keeps the Cartesian Hessians, the modes, the local-coordinate features and, since 26 September, the probe deck's pattern responses.
+%% Rectangle = process step (operation + software); rounded ends = data object (the thing). Every step yields one data object. Dashed = not built yet.
+%% 7 October 2026: the molecules come from a manifest with a source per row (parents by hand, enumerated children, Hessian-QM9, pool 3, the candidate
+%% generator of module 06 with its gate); what is computed next is chosen by the composition rule. The two Hessians are analytic (pyscf) — the
+%% finite-difference psi4 Hessians of the first layers stay in the record as the first route and are being replaced pool-wide. The record keeps the Cartesian
+%% Hessians, the modes, the local-coordinate features and the probe deck's pattern responses (the mode tokens of 6 September were dropped by decision 49).
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
+  classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
   classDef data fill:#e9ecef,stroke:#555,color:#111
+  classDef ext fill:#cfd8e3,stroke:#3d5a80,color:#111
 
+  SRCX(["Parent molecules, Hessian-QM9, pool 3"]):::ext
+  PUB(["PubChem fused aromatics, frozen set"]):::ext
+  ENUM["Enumeration of substituted children (RDKit)"]
+  KIDS(["Enumerated children of the parent cores"]):::data
+  GEN["Candidate generation and gate (module 06; PyTorch, RDKit)"]
+  CANDS(["New fused ring systems with PubChem membership"]):::data
+  MAN["Manifest assembly with a source per row (own software)"]
+  MANI(["Manifest: molecule, layer, source, status"]):::data
+  SEL["Selection by the composition rule (own software)"]
   MOL(["Molecule: SMILES or geometry, charge, multiplicity"]):::data
   OPT["Geometry optimisation at low level (psi4)"]
   GEO(["Optimised geometry"]):::data
-  DFTL["DFT at low level (psi4)"]
+  DFTL["Analytic Hessian at low level, B3LYP (pyscf)"]
   SK(["Hessian H0 and dipole derivatives"]):::data
-  DFTH["DFT at high level (psi4)"]
+  DFTH["Analytic Hessian at high level, ωB97X (pyscf)"]
   H1(["Hessian H1"]):::data
   MODE["Mode analysis (own software)"]
   MODES(["Normal modes: L, frequencies, families, symmetry blocks"]):::data
@@ -22,8 +35,11 @@ flowchart LR
   DECK["Deck responses (own software)"]
   RESP(["Pattern responses R = ½ aᵀ ΔH a of the probe deck: the measurement planner's records"]):::data
   REC["Record assembly (own software)"]
-  CORP(["Corpus record: geometry, H0 and dipole derivatives, H1, ΔH, normal modes, local-coordinate features, deck responses"]):::data
+  CORP(["Corpus records: two DFT Hessians, proxy correction, local-coordinate features and deck responses per molecule"]):::data
 
+  SRCX --> ENUM --> KIDS --> MAN
+  PUB --> GEN --> CANDS --> MAN
+  SRCX --> MAN --> MANI --> SEL --> MOL
   MOL --> OPT --> GEO
   GEO --> DFTL --> SK --> MODE --> MODES
   GEO --> DFTH --> H1

@@ -1,50 +1,39 @@
-%% Components of the ΔH model (level 4): what happens inside the step "Forward pass (ΔH model, PyTorch)" of sheet 8 (the spectrum pipeline). Since decision 49
-%% (23 September 2026) the couplings are learned in local coordinates, by two variants under test: the pairwise local head on primitive-pair features (rung B, built
-%% and measured) and the equivariant Δ-Hessian model with a tensor head (rung C, built and tested 25 September; training waits for the decision of 27 September). Both
-%% are projected onto the cheap modes; the ensemble consists of members with different seeds. The mode-token backbone of 6 September (embedding + self-attention over
-%% mode tokens) was dropped: E7 showed the couplings unlearnable in the mode basis; its block head remains module 05's pre-registered baseline for the diagonal.
+%% Components of the ΔH model (level 4): what happens inside the step "Forward pass (ΔH model, PyTorch)" of sheet 8 (the spectrum pipeline).
 %% Rectangle = process step (operation + software); rounded ends = data object (the thing). Every step yields one data object. Dashed = not built yet.
+%% 7 October 2026: redrawn to the carried design (the hybrid model, ΔH-network v1.1, chain 34). An equivariant body turns atoms, positions, charge state and
+%% the rotation invariants of H0 into per-atom features; a pair head predicts one force-constant correction per pair of primitive internal coordinates on a
+%% fixed pattern, from the features of the atoms involved, the pair features and the cheap force constants; a learned scale per pair class adds a share of
+%% the cheap force constant (SQM-like); ΔH = Bᵀ ΔF B is exactly symmetric and translation- and rotation-free. The tensor head (Cartesian 3×3 blocks) and the
+%% stand-alone pairwise head of rungs B and C remain in the code as measured variants, not in the carried design.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
   classDef data fill:#e9ecef,stroke:#555,color:#111
-  classDef part fill:#f7f7fb,stroke:#333,stroke-width:1.5px,color:#111
 
   GEO(["Molecule: atomic numbers, coordinates of the cheap minimum, charge, multiplicity"]):::data
   SK(["Hessian H0 of the cheap level"]):::data
-  PRIMC["Primitive internal coordinates (geomeTRIC)"]
-  PRIM(["Primitive internal coordinates and their pairs: diagonal, atom-sharing pairs, ring bond–bond pairs"]):::data
+  PRIMC["Primitive internal coordinates and the pair pattern (geomeTRIC, own software)"]
+  PRIM(["Primitive pairs of the pattern, Wilson B matrix, cheap force constants F0 per pair"]):::data
   FEAT["Pair features (own software)"]
-  PF(["Pair features: primitive classes, ring relations, projections of H0"]):::data
-  LOC["Pairwise local head on pair features (MLP or trees, PyTorch / scikit-learn)"]
-  DFL(["ΔF: force-constant corrections per primitive pair"]):::data
-  EQB["Equivariant body: message passing over atoms with scalar and vector channels, fed by the rotation invariants of H0 (PyTorch)"]
+  PF(["Pair features: pair classes, ring relations, projections of H0"]):::data
+  EQB["Equivariant body: message passing over atoms with scalar and vector channels, charge-state embedding, fed by the rotation invariants of H0 (PyTorch)"]
   ATOMF(["Per-atom scalar and vector features"]):::data
-  TH["Tensor head: symmetric 3×3 block per atom pair, translation sum rule (PyTorch)"]
+  HEAD["Pair head: pooled atom features of the two primitives, pair features, F0 (PyTorch)"]
+  DFR(["ΔF residual per primitive pair"]):::data
+  SQM["Class scaling: ΔF = α per pair class × F0 + residual (PyTorch)"]
+  DFL(["ΔF: force-constant correction per primitive pair"]):::data
+  BACK["Back-transformation ΔH = Bᵀ ΔF B (own software)"]
   DHC(["ΔH in Cartesian coordinates of one member"]):::data
-  PROJ["Projection onto the cheap modes: Bᵀ ΔF B or Lᵀ ΔH L (own software)"]
+  PROJ["Projection onto the cheap modes: Lᵀ ΔH L (own software)"]
   KLOC(["ΔH blocks per family of one member, couplings included"]):::data
   ENSA["Ensemble averaging over the members (own software)"]:::planned
   OUT(["ΔH blocks per family, with ensemble uncertainty"]):::data
 
-  subgraph RB["Rung B: the pairwise local head (built, measured on the 175-molecule pool)"]
-    PRIMC
-    PRIM
-    FEAT
-    PF
-    LOC
-    DFL
-  end
-  subgraph RC["Rung C: the equivariant Δ-Hessian model (built and tested; not yet trained)"]
-    EQB
-    ATOMF
-    TH
-    DHC
-  end
-  class RB,RC part
-
-  GEO --> PRIMC --> PRIM --> FEAT --> PF --> LOC --> DFL --> PROJ
-  SK --> FEAT
+  GEO --> PRIMC --> PRIM
+  PRIM --> FEAT
+  SK --> FEAT --> PF --> HEAD
   GEO --> EQB
-  SK --> EQB --> ATOMF --> TH --> DHC --> PROJ
-  PROJ --> KLOC --> ENSA --> OUT
+  SK --> EQB --> ATOMF --> HEAD
+  PRIM --> HEAD --> DFR --> SQM
+  PRIM --> SQM --> DFL --> BACK
+  PRIM --> BACK --> DHC --> PROJ --> KLOC --> ENSA --> OUT

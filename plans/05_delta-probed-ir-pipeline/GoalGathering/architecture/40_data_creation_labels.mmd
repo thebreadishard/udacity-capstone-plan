@@ -1,56 +1,58 @@
 %% Data creation — the label factory: how one label comes about (level 3). Target architecture: no decisions, no data.
 %% Rectangle = process step (operation + software); rounded ends = data object (the thing). Every step yields one data object. Dashed = not built yet.
+%% 7 October 2026: redrawn to the built route. A label is a canonical CCSD(T) Hessian by central differences of analytic gradients over the symmetry-unique
+%% displacements, raised to cc-pVTZ quality by the MP2 basis step (the composite level), checked by two routes per quantity and kept in the anchor registry
+%% (one carried version per molecule). The local-correlation (LNO) route and the open-shell gradients are the planned branches for molecules beyond the
+%% canonical cost and for cations; the deck-transport route of September is replaced by the full symmetric deck.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
   classDef data fill:#e9ecef,stroke:#555,color:#111
 
   MOL(["Molecule: geometry, charge, multiplicity"]):::data
-  DFT["DFT (psi4)"]
   SK(["Hessian H0 and dipole derivatives"]):::data
-  MODE["Mode analysis (own software)"]
-  MODES(["Normal modes: L, frequencies, families, symmetry blocks"]):::data
-  DESIGN["Deck design (own software)"]
-  DECK(["Deck: displacement patterns per family block, with energy and gradient directions"]):::data
-  LOC["Localisation and fragmentation at the equilibrium geometry (pyscf-forge)"]
-  REF(["Frozen reference spaces: local orbitals and fragment spaces"]):::data
-  TRANS["Transport (own software)"]
-  SPACES(["Reference spaces at every deck geometry"]):::data
-  EN["LNO-CCSD(T) energies (pyscf-forge)"]
-  ENS(["Energies per pattern"]):::data
-  GR["LNO-CCSD(T) gradients (own software, JAX)"]:::planned
-  GRS(["Gradients per pattern"]):::data
-  OPEN["LNO-CCSD(T) for open shell (own (T) port in C)"]:::planned
-  OPENS(["Energies per pattern for cations"]):::data
-  SOLVE["Block solve (own software)"]
+  SYM["Symmetry analysis (own software)"]
+  DECK(["Deck: symmetry-unique Cartesian displacements"]):::data
+  CCG["CCSD(T) gradients with relaxed density (pyscf, own (T) kernels in C)"]
+  GRADS(["Gradients, energies and dipoles at every displacement"]):::data
+  OPEN["UCCSD(T) gradients for open shell (pyscf, own unrestricted (T) kernels)"]:::planned
+  OPENG(["Open-shell gradients, energies and dipoles at every displacement"]):::data
+  LOC["Localisation and fragmentation (pyscf-forge)"]:::planned
+  REF(["Local orbital spaces of the reference geometry"]):::data
+  LNO["LNO-CCSD(T) gradients (own software)"]:::planned
+  LNOG(["Local-correlation gradients at every displacement"]):::data
+  FD["Central differences and symmetry reconstruction (own software)"]
+  HCC(["CCSD(T)/cc-pVDZ Hessian and dipole derivatives"]):::data
+  MP2["MP2 gradients in two basis sets (pyscf)"]
+  MROWS(["MP2 Hessian rows, cc-pVDZ and cc-pVTZ"]):::data
+  COMP["Composite assembly (own software)"]
+  HCOMP(["Composite Hessian: CCSD(T)/cc-pVDZ plus the MP2 basis step"]):::data
+  DIFF["Difference to the cheap level (own software)"]
   DH(["ΔH blocks per family: diagonal and couplings"]):::data
   CHECK["Consistency check (own software)"]
   NOISE(["Noise term per quantity: difference between two routes or between symmetry partners"]):::data
   BUDGET["Error budget (own software)"]
-  MARG(["Error margin per family: noise, quartic term, recovery error"]):::data
+  MARG(["Error margin per family: noise and additivity error of the composite"]):::data
   CUB(["Cubic constants of the low level (from the VPT2 step of sheet 8)"]):::data
-  GEO["Geometry term (own software)"]
-  GTERM(["Geometry term per mode: first-order shift towards the high-level minimum, from the ± energies along the totally symmetric modes and the low-level cubic constants, with noise term"]):::data
-  SEAL["Sealing (own software)"]
+  GEO["Geometry term (own software)"]:::planned
+  GTERM(["Geometry term per mode"]):::data
+  SEAL["Sealing and registration (own software)"]
   LABEL(["Label: ΔH blocks with error margin per family and geometry term per mode, sealed"]):::data
 
-  MOL --> DFT --> SK --> MODE --> MODES --> DESIGN --> DECK
-  SK --> LOC --> REF
-  REF --> TRANS
-  DECK --> TRANS --> SPACES
-  SPACES --> EN --> ENS
-  SPACES --> GR --> GRS
-  SPACES --> OPEN --> OPENS
-  ENS --> SOLVE
-  GRS --> SOLVE
-  OPENS --> SOLVE
-  SOLVE --> DH --> SEAL
-  ENS --> GEO
-  CUB --> GEO --> GTERM --> SEAL
-  ENS --> CHECK
-  GRS --> CHECK
+  MOL --> SYM --> DECK
+  DECK --> CCG --> GRADS --> FD
+  DECK --> OPEN --> OPENG --> FD
+  MOL --> LOC --> REF --> LNO
+  DECK --> LNO --> LNOG --> FD
+  FD --> HCC --> COMP
+  DECK --> MP2 --> MROWS --> COMP
+  COMP --> HCOMP --> DIFF
+  SK --> DIFF --> DH --> SEAL
+  GRADS --> CHECK
+  HCC --> CHECK
+  MROWS --> CHECK
   CHECK --> NOISE --> BUDGET
-  ENS --> BUDGET
-  GRS --> BUDGET
-  BUDGET --> MARG --> SEAL
+  DH --> BUDGET --> MARG --> SEAL
+  GRADS --> GEO
+  CUB --> GEO --> GTERM --> SEAL
   SEAL --> LABEL

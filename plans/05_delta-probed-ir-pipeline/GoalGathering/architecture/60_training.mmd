@@ -1,26 +1,31 @@
-%% Training (level 3): from corpus records and labels comes the trained ΔH model. Target architecture; not built yet. The assessment (test, licence, calibration) is on sheet 7.
+%% Training (level 3): from corpus records and labels comes the trained ΔH model. Target architecture. The assessment (test, licence, calibration) is on sheet 7.
 %% Rectangle = process step (operation + software); rounded ends = data object (the thing). Every step yields one data object. Dashed = not built yet.
+%% 7 October 2026: redrawn to the built route — training on the proxy correction with early stopping on an inner validation split, fine-tuning of the head
+%% and the class scales on the anchor labels with leave-one-anchor-out validation, every saved model registered with a status and a version; reads run
+%% only on carried models. The ensemble over seeds is read as seed means; an ensemble object with spread is not built yet.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
   classDef data fill:#e9ecef,stroke:#555,color:#111
 
-  CORP(["Corpus records: mode tokens and proxy correction per molecule"]):::data
-  LAB(["Labels: ΔH blocks with error margin per family"]):::data
-  SPLIT["Split per molecule and per core (own software)"]:::planned
+  CORP(["Corpus records: two DFT Hessians, proxy correction, local-coordinate features and deck responses per molecule"]):::data
+  LAB(["Label: ΔH blocks with error margin per family and geometry term per mode, sealed"]):::data
+  SPLIT["Split per molecule and per scaffold family, hold-outs fixed in advance (own software)"]
   SETS(["Training, validation and test sets"]):::data
-  PRE["Pre-training on the proxy correction (PyTorch)"]:::planned
-  PRENET(["Pre-trained ΔH model"]):::data
-  FT["Fine-tuning on the labels (PyTorch)"]:::planned
+  PRE["Training on the proxy correction with early stopping (PyTorch)"]
+  PRENET(["Proxy-trained ΔH model"]):::data
+  FT["Fine-tuning of the head and the class scales on the labels (PyTorch)"]
   FTNET(["Fine-tuned ΔH model"]):::data
-  VAL["Validation against the simple rules (own software)"]:::planned
-  VALR(["Validation errors per family"]):::data
+  VAL["Leave-one-anchor-out validation (own software)"]
+  VALR(["Transfer errors per family on held-out anchors"]):::data
   ENSF["Ensemble formation over seeds (PyTorch)"]:::planned
+  MEMB(["Ensemble of members"]):::data
+  REG["Registration with status and version (own software)"]
   ENS(["Trained ΔH model: ensemble of members"]):::data
 
   CORP --> SPLIT
   LAB --> SPLIT
   SPLIT --> SETS
-  SETS --> PRE --> PRENET --> FT --> FTNET --> ENSF --> ENS
+  SETS --> PRE --> PRENET --> FT --> FTNET --> ENSF --> MEMB --> REG --> ENS
   SETS --> FT
   FTNET --> VAL --> VALR --> FT

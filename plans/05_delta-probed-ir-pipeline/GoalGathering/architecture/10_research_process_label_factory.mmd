@@ -1,4 +1,4 @@
-%% Research process — the label factory (in the proposal: pipeline B): the tests that decide whether the target architecture of sheet 4 gets built; the end object is the licensed factory design with the first labels as evidence, not the label set (sheet 4 makes that). Status 20 September 2026.
+%% Research process — the label factory (in the proposal: pipeline B): the tests that decide whether the target architecture of sheet 4 gets built; the end object is the licensed factory design with the first labels as evidence, not the label set (sheet 4 makes that). Status 7 October 2026.
 %% This sheet may contain data and decisions. Green = passed; blue = running; dashed = still to do; red = failed and closed.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
@@ -9,35 +9,40 @@ flowchart LR
   classDef dec fill:#eee,stroke:#444,color:#111
   classDef data fill:#e9ecef,stroke:#555,color:#111
 
-  M1["M1: frozen spaces are smooth (benzene, DZ and TZ; 5–12 Sep)"]:::done
-  I14["I14: one energy per non-totally-symmetric pattern (14 Sep)"]:::done
-  X14["X14/X21/X22: couplings exact from 2k+1 gradients, linear under every symmetry (16–19 Sep)"]:::done
-  AMP["Amplitude test: energy route to couplings closed at naphthalene (17 Sep)"]:::closed
-  M2B["M2b: borrowed gradient engine does not compute our quantity (17 Sep)"]:::closed
-  ST0["Anchor stage 0: reloaded spaces reproduce the reference, 0.0002 µEh (18 Sep)"]:::done
-  ANCH["Anchor M3: naphthalene cc-pVTZ, 13 energies of 12 h; mode 12 read 20 Sep, 22 on 22 Sep, report 24 Sep"]:::running
-  M12["Mode 12 (C–H oop): beyond-MP2 increment DZ→TZ −8 cm⁻¹ against benzene +7.9 — outside the 5 cm⁻¹, sign flipped; MP2 double-ζ out-of-plane pathology (20 Sep)"]:::done
-  D1{"Does DZ carry the TZ correction per family?"}:::dec
-  CHEAP["Decks in cc-pVDZ (factor 14 cheaper per energy)"]:::todo
-  TZ["Decks in cc-pVTZ; cluster needed (Snellius request on the agenda of 28 Sep)"]:::todo
-  M2["M2 build: gradient of the frozen-space energy in JAX; pre-registration 18 Sep (T-M2-1..3, float64, checkpointing); start after 24 Sep on the author's word"]:::todo
-  D2{"T-M2-1 and T-M2-2 passed; g_M2 printed (predicted 2–4)"}:::dec
-  DECK1["First gradient deck benzene → licence against canonical"]:::todo
-  DECK2["Naphthalene deck: 19 gradients; first label beyond benzene"]:::todo
-  TPORT["(T) port for open shell (decision 41), acceptance tests first; then naphthalene+"]:::todo
-  MEM["Memory: borrowed gradient does not fit in 32 GB at plan thresholds (19 Sep, 3× OOM); 128 GB machine requested"]:::closed
-  OUT(["Licensed factory design: basis per family, g energies per label, error budget per family, first three labels (benzene, naphthalene, one cation)"]):::data
+  M1["Frozen local spaces are smooth; couplings exact from 2k+1 gradients (benzene, naphthalene; 5–19 Sep)"]:::done
+  M2B["Borrowed LNO gradient engine: does not compute our quantity, does not fit in 32 GB (17–19 Sep)"]:::closed
+  E8["Canonical CCSD(T) Hessians by central differences of analytic gradients over the symmetry-unique displacements (late September)"]:::done
+  FROZ["Naphthalene at an inherited frozen core of 6: invalid; frozen core derived from the elements since (27 Sep)"]:::closed
+  LAMB["Lambda incident: gradients with the CCSD lambda; every earlier CC Hessian invalid (29 Sep)"]:::closed
+  FIX["(T) lambda solved explicitly, (T) density and lambda kernels in C, water acceptance gate; pyscf PRs #3469, #3470, #3477 (29 Sep – 3 Oct)"]:::done
+  DZ4["Four cc-pVDZ anchors: benzene, fluorobenzene, pyridine, naphthalene (30 Sep – 2 Oct)"]:::done
+  CAT["Benzene⁺ (UHF) on a 32 GB box: out of memory (30 Sep)"]:::closed
+  ANT["Anthracene cc-pVDZ: imaginary out of plane (51i cm⁻¹), the small-basis arene artefact (6 Oct)"]:::done
+  TZB["Full benzene cc-pVTZ anchor: cc-pVDZ is 25 / 138 / 70 / 41 cm⁻¹ off per family (6 Oct)"]:::done
+  T1["Test 1: MP2 tracks the CCSD(T) basis step on three coordinates (0.89–0.97), B3LYP does not (4 Oct)"]:::done
+  T2["Test 2: composite CC/DZ + [MP2/TZ − MP2/DZ] within 3.3 / 4.4 / 7.3 / 3.3 cm⁻¹ of CC/TZ (6 Oct)"]:::done
+  T3R["Test 3: anthracene repaired out of plane, 86 / 115 cm⁻¹ against ωB97X 105 / 126 (7 Oct)"]:::done
+  POL["Energy route on every anchor (decision 61); anchor registry, one carried version per molecule (decision 62) (6–7 Oct)"]:::done
+  MP2Q["MP2 basis step for every cc-pVDZ anchor: 202 jobs on the CCX53 (7 Oct)"]:::running
+  D1{"Composite within the per-family lines on a heteroatom and a larger molecule?"}:::dec
+  ADD["Additivity checks: pyridine at cc-pVTZ, a QZ step on benzene"]:::todo
+  LNO["LNO curvatures: truncation or level? Cells disagree, one more coordinate (7 Oct)"]:::running
+  D2{"LNO deviation below 1e-3 a.u. at tighter thresholds?"}:::dec
+  BIG["Anchors beyond 26 atoms by LNO with frozen spaces"]:::todo
+  CANON["Anchors beyond 26 atoms canonical only (cost question)"]:::todo
+  CATN["Benzene⁺ on 128 GB with the unrestricted (T) path"]:::todo
+  OUT(["Licensed factory design: anchor level per family (composite), error budget per family, the first anchors with their checks (benzene, fluorobenzene, pyridine, naphthalene, anthracene, one cation)"]):::data
 
-  M1 --> ST0 --> ANCH --> M12 --> D1
-  D1 -- yes --> CHEAP
-  D1 -- no --> TZ
-  I14 --> X14 --> M2
-  AMP --> M2
-  M2B --> M2
-  MEM --> M2
-  M2 --> D2
-  D2 -- yes --> DECK1 --> DECK2
-  D2 -- no --> M2
-  CHEAP --> DECK2
-  TZ --> DECK2
-  DECK2 --> TPORT --> OUT
+  M1 --> M2B --> E8
+  E8 --> FROZ --> FIX
+  E8 --> LAMB --> FIX --> DZ4 --> TZB --> T2
+  DZ4 --> CAT --> CATN
+  FIX --> ANT --> T3R
+  T1 --> T2 --> T3R --> MP2Q --> D1
+  POL --> MP2Q
+  D1 -- yes --> OUT
+  D1 -- not yet --> ADD --> D1
+  LNO --> D2
+  D2 -- yes --> BIG --> OUT
+  D2 -- no --> CANON --> OUT
+  CATN --> OUT

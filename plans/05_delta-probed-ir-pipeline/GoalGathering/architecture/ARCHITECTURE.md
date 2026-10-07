@@ -1,11 +1,11 @@
-# Architecture of plan 05 (for the authors; first version 19 September 2026, revised 20 September; English since 21 September, translated from the Dutch original without changes of content)
+# Architecture of plan 05 (for the authors; first version 19 September 2026, English since 21 September; every sheet brought to the state of 7 October 2026)
 
 **Four kinds of diagram, kept apart (agreement of 20 September).**
 
 | kind | what it shows | sheets |
 |---|---|---|
 | **Data creation** | processes that make data: the corpus step (DFT pairs and proxy correction; sheet 3) and the label factory (coupled-cluster corrections per molecule; sheet 4) | 3, 4 |
-| **The ΔH model** | the definition of the network: the components (sheet 5) and the same definition as PyTorch code (sheet 5b) | 5, 5b |
+| **The ΔH model** | the components of the carried network (sheet 5); its code is `modules/05_support_predictor/m05/rungC_equivariant.py` (the equivariant body) and `m05/rungC_hybrid.py` (the pair head, the class scales, ΔH = Bᵀ ΔF B); sheet 5b is the mode-token design of 20 September, kept as module 05's baseline | 5, 5b |
 | **Training and assessment** | training: from corpus records and labels comes the trained ΔH model (sheet 6); test and licence: from that model and the test set come the licence table and the calibration, with the score against the laboratory columns and the opponents (sheet 7); the weights no longer change there. The spectrum pipeline uses the trained model of sheet 6 and the table and calibration of sheet 7; on sheet 8 itself those are not drawn as input objects (agreement 20 September); the measured label is drawn there, as the second source of ΔH next to the model (agreement 20 September, evening). Sheet 6 runs per model version, not per molecule, and contains the validation loop | 6, 7 |
 | **Spectrum pipeline** | molecule and observation conditions in, spectrum with error margin and licence status out; ΔH from two sources — the measured label of sheet 4 (exists for the molecules with a label) or the ΔH model (for all others) — and one shared tail (H = H₀ + ΔH, VPT2, intensities, profile) | 8 |
 | **Research process** | the tests that decide whether all of this gets built this way; the only kind of sheet in which data, decisions and experiment numbers are allowed | 1, 2 |
@@ -16,10 +16,10 @@ The overview (sheet 0) shows the kinds of process and the data objects that conn
 
 | rule | content |
 |---|---|
-| shapes | rectangle = process step; rectangle with rounded ends (grey) = data object; darker blue = external data object, not ours; light frame around several figures = part of the ΔH model (backbone, heads; sheet 5 only) |
+| shapes | rectangle = process step; rectangle with rounded ends (grey) = data object; darker blue = external data object, not ours |
 | step → object | every process step yields exactly one data object, which feeds the next step(s); a process begins and ends at a data object; branches only come out of data objects |
 | naming | a step is named after the operation with the software package in brackets ("DFT (psi4)", "VPT2 (pyVPT2 on pyscf Hessians)") or "own software" / "PyTorch" when we make it; a data object is named after the thing; no word repetition between step and object; no explanation in captions |
-| the model | the network is called **the ΔH model** (it predicts ΔH blocks per family); its shared part is called the **backbone** (rung B: the pair-feature map; rung C: the equivariant body — since decision 49 of 23 September; the embedding-and-self-attention backbone over mode tokens of 6 September was dropped), its outputs are called **heads** (pairwise local head, tensor head; the mode-basis block head remains module 05's pre-registered baseline for the diagonal); the instances with different seeds form the **ensemble** and are called **members**; the simple rules are the **baseline**. "Network" on its own does not occur on the target sheets (agreement 20 September) |
+| the model | the network is called **the ΔH model** (it predicts ΔH blocks per family); its shared part is the **body** (an equivariant message-passing network over the atoms), its output part the **pair head** (one force-constant correction per pair of primitive internal coordinates, with a learned scale per pair class); instances with different seeds are the **members** of the **ensemble**; the simple rules are the **baseline**. Trained models carry a status and a version in the model registry (ΔH-network v1.1 is carried) |
 | noise principle | every derived quantity (curvature, coupling, anharmonic constant) gets an independent second route or a symmetry check, and the difference is a term of the error budget; on sheet 4 as its own step ("Consistency check"), on sheet 8 in the data object of the anharmonic constants (agreement 21 September, after the benzene VPT2: two routes to the same quartic constant differed by up to 1,265 cm⁻¹ and the package did not see it) |
 | status | solid = exists and has been measured; dashed border, yellow fill = not built yet |
 | none | no storage figures (cylinders), no diamonds on the target sheets (decisions per item sit inside a step), no invisible helper nodes: standard Mermaid, left to right |
@@ -32,6 +32,8 @@ On the research-process sheets (1, 2) their own colours apply: green = passed, b
 ```mermaid
 %% Overview of plan 05 (level 1): the kinds of process and the data objects that connect them. Target architecture; no decisions, no data.
 %% Rectangle = process (here: a whole sheet); rounded ends = data object; arrow = data flow. Dashed = not built yet.
+%% 7 October 2026: the candidate generator (module 06) feeds the corpus as a registered source; the Spectrum Atlas publishes the catalogue with the status
+%% and the provenance of every molecule; training exists (the carried ΔH model); test and licence, and the spectrum pipeline as one chain, do not yet.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
@@ -42,14 +44,18 @@ flowchart LR
 
   MOL(["Molecule: geometry, charge, multiplicity"]):::data
   COND(["Observation conditions: internal energy after UV absorption (emission) or temperature (absorption); resolution of the instrument"]):::data
+  PUB(["PubChem fused aromatics, frozen set"]):::ext
   LABDB(["Laboratory spectra"]):::ext
   PAHDB(["Opponents: PAHdb and other predictors"]):::ext
-
+  GENF["Candidate generator (module 06)"]:::proc
+  CANDS(["New fused ring systems with PubChem membership"]):::data
   LABF["Label factory (sheet 4)"]:::proc
-  LABELS(["Labels: ΔH blocks with error margin per family"]):::data
+  LABELS(["Label: ΔH blocks with error margin per family and geometry term per mode, sealed"]):::data
   CORPF["Corpus step (sheet 3)"]:::proc
-  CORPUS(["Corpus records: two DFT Hessians, proxy correction and local-coordinate features per molecule"]):::data
-  TRAIN["Training (sheet 6)"]:::planned
+  CORPUS(["Corpus records: two DFT Hessians, proxy correction, local-coordinate features and deck responses per molecule"]):::data
+  ATLASF["Atlas export (website)"]:::proc
+  ATLAS(["Spectrum Atlas: catalogue with status and provenance per molecule"]):::data
+  TRAIN["Training (sheet 6)"]:::proc
   TRAINED(["Trained ΔH model: ensemble of members"]):::data
   TESTSET(["Test set"]):::data
   EVAL["Test and licence (sheet 7)"]:::planned
@@ -58,8 +64,11 @@ flowchart LR
   SPEC(["Spectrum: bands with position, intensity, profile and error margin; licence status per family"]):::data
   RES["Research process (sheets 1 and 2)"]:::research
 
+  PUB --> GENF --> CANDS --> CORPF
   MOL --> LABF --> LABELS
   MOL --> CORPF --> CORPUS
+  CORPUS --> ATLASF
+  LABELS --> ATLASF --> ATLAS
   LABELS --> TRAIN
   CORPUS --> TRAIN
   TRAIN --> TRAINED
@@ -82,10 +91,10 @@ flowchart LR
 
 # Research process (may contain data and decisions)
 
-## 1. Research process — the label factory and the decks (`10_research_process_label_factory.mmd`; pipeline B in the proposal)
+## 1. Research process — the label factory (`10_research_process_label_factory.mmd`; pipeline B in the proposal)
 
 ```mermaid
-%% Research process — the label factory (in the proposal: pipeline B): the tests that decide whether the target architecture of sheet 4 gets built; the end object is the licensed factory design with the first labels as evidence, not the label set (sheet 4 makes that). Status 20 September 2026.
+%% Research process — the label factory (in the proposal: pipeline B): the tests that decide whether the target architecture of sheet 4 gets built; the end object is the licensed factory design with the first labels as evidence, not the label set (sheet 4 makes that). Status 7 October 2026.
 %% This sheet may contain data and decisions. Green = passed; blue = running; dashed = still to do; red = failed and closed.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
@@ -96,44 +105,49 @@ flowchart LR
   classDef dec fill:#eee,stroke:#444,color:#111
   classDef data fill:#e9ecef,stroke:#555,color:#111
 
-  M1["M1: frozen spaces are smooth (benzene, DZ and TZ; 5–12 Sep)"]:::done
-  I14["I14: one energy per non-totally-symmetric pattern (14 Sep)"]:::done
-  X14["X14/X21/X22: couplings exact from 2k+1 gradients, linear under every symmetry (16–19 Sep)"]:::done
-  AMP["Amplitude test: energy route to couplings closed at naphthalene (17 Sep)"]:::closed
-  M2B["M2b: borrowed gradient engine does not compute our quantity (17 Sep)"]:::closed
-  ST0["Anchor stage 0: reloaded spaces reproduce the reference, 0.0002 µEh (18 Sep)"]:::done
-  ANCH["Anchor M3: naphthalene cc-pVTZ, 13 energies of 12 h; mode 12 read 20 Sep, 22 on 22 Sep, report 24 Sep"]:::running
-  M12["Mode 12 (C–H oop): beyond-MP2 increment DZ→TZ −8 cm⁻¹ against benzene +7.9 — outside the 5 cm⁻¹, sign flipped; MP2 double-ζ out-of-plane pathology (20 Sep)"]:::done
-  D1{"Does DZ carry the TZ correction per family?"}:::dec
-  CHEAP["Decks in cc-pVDZ (factor 14 cheaper per energy)"]:::todo
-  TZ["Decks in cc-pVTZ; cluster needed (Snellius request on the agenda of 28 Sep)"]:::todo
-  M2["M2 build: gradient of the frozen-space energy in JAX; pre-registration 18 Sep (T-M2-1..3, float64, checkpointing); start after 24 Sep on the author's word"]:::todo
-  D2{"T-M2-1 and T-M2-2 passed; g_M2 printed (predicted 2–4)"}:::dec
-  DECK1["First gradient deck benzene → licence against canonical"]:::todo
-  DECK2["Naphthalene deck: 19 gradients; first label beyond benzene"]:::todo
-  TPORT["(T) port for open shell (decision 41), acceptance tests first; then naphthalene+"]:::todo
-  MEM["Memory: borrowed gradient does not fit in 32 GB at plan thresholds (19 Sep, 3× OOM); 128 GB machine requested"]:::closed
-  OUT(["Licensed factory design: basis per family, g energies per label, error budget per family, first three labels (benzene, naphthalene, one cation)"]):::data
+  M1["Frozen local spaces are smooth; couplings exact from 2k+1 gradients (benzene, naphthalene; 5–19 Sep)"]:::done
+  M2B["Borrowed LNO gradient engine: does not compute our quantity, does not fit in 32 GB (17–19 Sep)"]:::closed
+  E8["Canonical CCSD(T) Hessians by central differences of analytic gradients over the symmetry-unique displacements (late September)"]:::done
+  FROZ["Naphthalene at an inherited frozen core of 6: invalid; frozen core derived from the elements since (27 Sep)"]:::closed
+  LAMB["Lambda incident: gradients with the CCSD lambda; every earlier CC Hessian invalid (29 Sep)"]:::closed
+  FIX["(T) lambda solved explicitly, (T) density and lambda kernels in C, water acceptance gate; pyscf PRs #3469, #3470, #3477 (29 Sep – 3 Oct)"]:::done
+  DZ4["Four cc-pVDZ anchors: benzene, fluorobenzene, pyridine, naphthalene (30 Sep – 2 Oct)"]:::done
+  CAT["Benzene⁺ (UHF) on a 32 GB box: out of memory (30 Sep)"]:::closed
+  ANT["Anthracene cc-pVDZ: imaginary out of plane (51i cm⁻¹), the small-basis arene artefact (6 Oct)"]:::done
+  TZB["Full benzene cc-pVTZ anchor: cc-pVDZ is 25 / 138 / 70 / 41 cm⁻¹ off per family (6 Oct)"]:::done
+  T1["Test 1: MP2 tracks the CCSD(T) basis step on three coordinates (0.89–0.97), B3LYP does not (4 Oct)"]:::done
+  T2["Test 2: composite CC/DZ + [MP2/TZ − MP2/DZ] within 3.3 / 4.4 / 7.3 / 3.3 cm⁻¹ of CC/TZ (6 Oct)"]:::done
+  T3R["Test 3: anthracene repaired out of plane, 86 / 115 cm⁻¹ against ωB97X 105 / 126 (7 Oct)"]:::done
+  POL["Energy route on every anchor (decision 61); anchor registry, one carried version per molecule (decision 62) (6–7 Oct)"]:::done
+  MP2Q["MP2 basis step for every cc-pVDZ anchor: 202 jobs on the CCX53 (7 Oct)"]:::running
+  D1{"Composite within the per-family lines on a heteroatom and a larger molecule?"}:::dec
+  ADD["Additivity checks: pyridine at cc-pVTZ, a QZ step on benzene"]:::todo
+  LNO["LNO curvatures: truncation or level? Cells disagree, one more coordinate (7 Oct)"]:::running
+  D2{"LNO deviation below 1e-3 a.u. at tighter thresholds?"}:::dec
+  BIG["Anchors beyond 26 atoms by LNO with frozen spaces"]:::todo
+  CANON["Anchors beyond 26 atoms canonical only (cost question)"]:::todo
+  CATN["Benzene⁺ on 128 GB with the unrestricted (T) path"]:::todo
+  OUT(["Licensed factory design: anchor level per family (composite), error budget per family, the first anchors with their checks (benzene, fluorobenzene, pyridine, naphthalene, anthracene, one cation)"]):::data
 
-  M1 --> ST0 --> ANCH --> M12 --> D1
-  D1 -- yes --> CHEAP
-  D1 -- no --> TZ
-  I14 --> X14 --> M2
-  AMP --> M2
-  M2B --> M2
-  MEM --> M2
-  M2 --> D2
-  D2 -- yes --> DECK1 --> DECK2
-  D2 -- no --> M2
-  CHEAP --> DECK2
-  TZ --> DECK2
-  DECK2 --> TPORT --> OUT
+  M1 --> M2B --> E8
+  E8 --> FROZ --> FIX
+  E8 --> LAMB --> FIX --> DZ4 --> TZB --> T2
+  DZ4 --> CAT --> CATN
+  FIX --> ANT --> T3R
+  T1 --> T2 --> T3R --> MP2Q --> D1
+  POL --> MP2Q
+  D1 -- yes --> OUT
+  D1 -- not yet --> ADD --> D1
+  LNO --> D2
+  D2 -- yes --> BIG --> OUT
+  D2 -- no --> CANON --> OUT
+  CATN --> OUT
 ```
 
 ## 2. Research process — the ΔH model (`20_research_process_deltaH_model.mmd`; pipeline A in the proposal)
 
 ```mermaid
-%% Research process — the ΔH model (in the proposal: pipeline A): the tests that decide whether and how the ΔH model of sheets 5 and 6 gets built; the end object is the licensed model design with the first licence table, not the trained model (sheet 6 makes that) and not the licence table of the full test set (sheet 7). Status 20 September 2026.
+%% Research process — the ΔH model (in the proposal: pipeline A): the tests that decide whether and how the ΔH model of sheets 5 and 6 gets built; the end object is the licensed model design with the first licence table, not the trained model (sheet 6 makes that). Status 7 October 2026.
 %% This sheet may contain data and decisions. Green = passed or measured; blue = running; dashed = still to do; red = lost and closed.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
@@ -144,37 +158,47 @@ flowchart LR
   classDef dec fill:#eee,stroke:#444,color:#111
   classDef data fill:#e9ecef,stroke:#555,color:#111
 
-  LA["Layer A of the corpus: 45 molecules, DFT pairs (18–19 Sep, Helsinki)"]:::done
-  LC1["Learning curves 1 and 2: C–H families below 5 cm-1 at 5–20 molecules; ring family at 12.4, flat; features do not help (19 Sep)"]:::done
-  E4["E4: the per-mode label is ill-posed for the ring family (9.2 of the 12.4 is definition); the family block transfers (19 Sep)"]:::done
-  RULE["Rule: the target object is the family block, diagonal + couplings (recipe amendment 19 Sep)"]:::done
-  E1["E1/E1b/E2/E5/E5b: contrastive embedding, atom encoder, molecule tokens, skip-gram on the coupling matrix — all lost on 45 molecules (19 Sep)"]:::closed
-  E6["E6 phase 1: layer A2, 200 molecules on four machines (since 19 Sep 23:30; done ~Wednesday)"]:::running
-  D1{"Slope of the ring family over 45 → 200 steeper than −0.25?"}:::dec
-  P2["E6 phase 2: the remaining 668 molecules (~€160)"]:::todo
-  BHH["Proxy check: BHHLYP − B3LYP on benzene and naphthalene — is the proxy's ring correction non-local?"]:::todo
-  ST1["Design step 1: equivariant pair-block model learns the full correction matrix from the corpus; Test 1: ring family below 5 cm-1 on the same 12 molecules"]:::todo
-  E3["E3: pretext task with DFT quantities (frequency, family, sign) from raw atomic fields, on the whole corpus"]:::todo
-  CC["First CC labels from the label factory (benzene, naphthalene; then the decks of M2)"]:::todo
-  FT["Fine-tuning on the CC projections; licence per family against X18 and the median rule"]:::todo
-  D2{"Per family: error below the margin of the score column?"}:::dec
-  LICF["Family licensed in the network"]:::todo
-  REF["Family refused: DFT with notice; next label chosen on disagreement"]:::todo
-  OUT(["Licensed model design: target object (family block), representation with which the ring family learns, number of labels needed per family, pre-training recipe on the corpus; first licence table per family"]):::data
+  LA["Layer A: 45 molecules, DFT pairs; the family block is the target object (18–19 Sep)"]:::done
+  TOK["Mode tokens, contrastive embeddings, skip-gram on the coupling matrix: lost on 45 molecules (19 Sep)"]:::closed
+  E7["E7: couplings unlearnable in the mode basis; learned in local coordinates (decision 49, 23 Sep)"]:::done
+  CORP["Corpus of 847 molecules (layers A, A2, B); analytic second route on 36 (Sep – Oct)"]:::done
+  RB["Rung B: pairwise local head on primitive-pair features (measured on 175)"]:::done
+  RC["Rung C: equivariant body; element incident fixed; hybrid pair head with SQM-like class scales (28 Sep – 1 Oct)"]:::done
+  T1A["T1 on the all-mode average met at 750: ratio ≤ 0.25, corrected ω ≤ 3 cm⁻¹ on unseen parents (2 Oct)"]:::done
+  FAM["Decision 53: every family under 3 cm⁻¹; chain 34 (family-balanced K-diagonal term) carried as v1.1 (3–4 Oct)"]:::done
+  ANL["Analytic hold-out labels: ring-ip 1.82, CH-stretch 1.25, CH-oop 2.36 met; other 3.35 open (5 Oct)"]:::done
+  W["Loss weighting for the low modes (chains 34b, 34c): no response (4 Oct)"]:::closed
+  HNG["Hinge input for the low modes (chain 36): rejected, other-low 3.21 → 3.51 (7 Oct)"]:::closed
+  STONE["MP2 as the proxy target: priced out for the pool (6 Oct)"]:::closed
+  LBL["Analytic training labels for the pool (labels server, from 7 Oct)"]:::running
+  C35["Chain 35: chain 34's recipe on analytic training labels"]:::todo
+  D1{"other-low ≤ 2.5 cm⁻¹ on the hold-out?"}:::dec
+  RNG["Range: a 6 Å cutoff (step 0: up to 1.2 of 1.95 cm⁻¹)"]:::todo
+  T3A["T3: proxy model fine-tuned on three cc-pVDZ anchors, about 6 cm⁻¹ in plane on the held-out anchor (2 Oct)"]:::done
+  C33["Chain 33: anthracene as fifth anchor, naphthalene 6.52 → 5.83 cm⁻¹; out of plane mixed levels (7 Oct)"]:::done
+  C33C["Chain 33c: T3 on composite (cc-pVTZ-tier) anchors (7 Oct)"]:::running
+  D2{"Out-of-plane transfer improves on ≥ 3 of 4 common anchors?"}:::dec
+  MORE["Anchor plan: every new anchor at the composite level; a sixth anchor priced"]:::todo
+  NET["Out-of-plane transfer limited by the network: the input design comes first"]:::todo
+  COV["Coverage: the 200 next-pool molecules, then pool 3 (cations, aza four-rings, five-rings)"]:::running
+  LIC["Licence per family against the lines; ensemble, calibration"]:::todo
+  OUT(["Licensed model design: target object (family block), representation with which every family learns, number of labels needed per family, pre-training recipe on the corpus; first licence table per family"]):::data
 
-  LA --> LC1 --> E4 --> RULE
-  LC1 --> E1 --> E6
-  E4 --> E6
-  E6 --> D1
-  D1 -- yes --> P2 --> ST1
-  D1 -- no --> BHH --> ST1
-  RULE --> ST1
-  E1 --> E3 --> ST1
-  ST1 --> FT
-  CC --> FT --> D2
-  D2 -- yes --> LICF --> OUT
-  D2 -- no --> REF --> CC
-  REF --> OUT
+  LA --> TOK
+  LA --> E7 --> RB --> RC
+  CORP --> RB
+  RC --> T1A --> FAM --> ANL
+  ANL --> W
+  ANL --> HNG
+  ANL --> STONE
+  ANL --> LBL --> C35 --> D1
+  D1 -- yes --> LIC
+  D1 -- no --> RNG --> LIC
+  T1A --> T3A --> C33 --> C33C --> D2
+  D2 -- yes --> MORE --> LIC
+  D2 -- no --> NET --> LIC
+  COV --> LIC
+  LIC --> OUT
 ```
 
 # Target architecture (no data, no decisions)
@@ -183,19 +207,32 @@ flowchart LR
 
 ```mermaid
 %% Data creation — the corpus: two DFT Hessians per molecule and the proxy correction (level 3). Target architecture.
-%% Rectangle = process step (operation + software); rounded ends = data object (the thing). Every step yields one data object. Everything exists.
-%% 27 September 2026: the mode-token representation of 6 September was dropped on 23 September (decision 49, E7: couplings unlearnable in the mode basis);
-%% the record keeps the Cartesian Hessians, the modes, the local-coordinate features and, since 26 September, the probe deck's pattern responses.
+%% Rectangle = process step (operation + software); rounded ends = data object (the thing). Every step yields one data object. Dashed = not built yet.
+%% 7 October 2026: the molecules come from a manifest with a source per row (parents by hand, enumerated children, Hessian-QM9, pool 3, the candidate
+%% generator of module 06 with its gate); what is computed next is chosen by the composition rule. The two Hessians are analytic (pyscf) — the
+%% finite-difference psi4 Hessians of the first layers stay in the record as the first route and are being replaced pool-wide. The record keeps the Cartesian
+%% Hessians, the modes, the local-coordinate features and the probe deck's pattern responses (the mode tokens of 6 September were dropped by decision 49).
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
+  classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
   classDef data fill:#e9ecef,stroke:#555,color:#111
+  classDef ext fill:#cfd8e3,stroke:#3d5a80,color:#111
 
+  SRCX(["Parent molecules, Hessian-QM9, pool 3"]):::ext
+  PUB(["PubChem fused aromatics, frozen set"]):::ext
+  ENUM["Enumeration of substituted children (RDKit)"]
+  KIDS(["Enumerated children of the parent cores"]):::data
+  GEN["Candidate generation and gate (module 06; PyTorch, RDKit)"]
+  CANDS(["New fused ring systems with PubChem membership"]):::data
+  MAN["Manifest assembly with a source per row (own software)"]
+  MANI(["Manifest: molecule, layer, source, status"]):::data
+  SEL["Selection by the composition rule (own software)"]
   MOL(["Molecule: SMILES or geometry, charge, multiplicity"]):::data
   OPT["Geometry optimisation at low level (psi4)"]
   GEO(["Optimised geometry"]):::data
-  DFTL["DFT at low level (psi4)"]
+  DFTL["Analytic Hessian at low level, B3LYP (pyscf)"]
   SK(["Hessian H0 and dipole derivatives"]):::data
-  DFTH["DFT at high level (psi4)"]
+  DFTH["Analytic Hessian at high level, ωB97X (pyscf)"]
   H1(["Hessian H1"]):::data
   MODE["Mode analysis (own software)"]
   MODES(["Normal modes: L, frequencies, families, symmetry blocks"]):::data
@@ -206,8 +243,11 @@ flowchart LR
   DECK["Deck responses (own software)"]
   RESP(["Pattern responses R = ½ aᵀ ΔH a of the probe deck: the measurement planner's records"]):::data
   REC["Record assembly (own software)"]
-  CORP(["Corpus record: geometry, H0 and dipole derivatives, H1, ΔH, normal modes, local-coordinate features, deck responses"]):::data
+  CORP(["Corpus records: two DFT Hessians, proxy correction, local-coordinate features and deck responses per molecule"]):::data
 
+  SRCX --> ENUM --> KIDS --> MAN
+  PUB --> GEN --> CANDS --> MAN
+  SRCX --> MAN --> MANI --> SEL --> MOL
   MOL --> OPT --> GEO
   GEO --> DFTL --> SK --> MODE --> MODES
   GEO --> DFTH --> H1
@@ -227,148 +267,144 @@ flowchart LR
 ```mermaid
 %% Data creation — the label factory: how one label comes about (level 3). Target architecture: no decisions, no data.
 %% Rectangle = process step (operation + software); rounded ends = data object (the thing). Every step yields one data object. Dashed = not built yet.
+%% 7 October 2026: redrawn to the built route. A label is a canonical CCSD(T) Hessian by central differences of analytic gradients over the symmetry-unique
+%% displacements, raised to cc-pVTZ quality by the MP2 basis step (the composite level), checked by two routes per quantity and kept in the anchor registry
+%% (one carried version per molecule). The local-correlation (LNO) route and the open-shell gradients are the planned branches for molecules beyond the
+%% canonical cost and for cations; the deck-transport route of September is replaced by the full symmetric deck.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
   classDef data fill:#e9ecef,stroke:#555,color:#111
 
   MOL(["Molecule: geometry, charge, multiplicity"]):::data
-  DFT["DFT (psi4)"]
   SK(["Hessian H0 and dipole derivatives"]):::data
-  MODE["Mode analysis (own software)"]
-  MODES(["Normal modes: L, frequencies, families, symmetry blocks"]):::data
-  DESIGN["Deck design (own software)"]
-  DECK(["Deck: displacement patterns per family block, with energy and gradient directions"]):::data
-  LOC["Localisation and fragmentation at the equilibrium geometry (pyscf-forge)"]
-  REF(["Frozen reference spaces: local orbitals and fragment spaces"]):::data
-  TRANS["Transport (own software)"]
-  SPACES(["Reference spaces at every deck geometry"]):::data
-  EN["LNO-CCSD(T) energies (pyscf-forge)"]
-  ENS(["Energies per pattern"]):::data
-  GR["LNO-CCSD(T) gradients (own software, JAX)"]:::planned
-  GRS(["Gradients per pattern"]):::data
-  OPEN["LNO-CCSD(T) for open shell (own (T) port in C)"]:::planned
-  OPENS(["Energies per pattern for cations"]):::data
-  SOLVE["Block solve (own software)"]
+  SYM["Symmetry analysis (own software)"]
+  DECK(["Deck: symmetry-unique Cartesian displacements"]):::data
+  CCG["CCSD(T) gradients with relaxed density (pyscf, own (T) kernels in C)"]
+  GRADS(["Gradients, energies and dipoles at every displacement"]):::data
+  OPEN["UCCSD(T) gradients for open shell (pyscf, own unrestricted (T) kernels)"]:::planned
+  OPENG(["Open-shell gradients, energies and dipoles at every displacement"]):::data
+  LOC["Localisation and fragmentation (pyscf-forge)"]:::planned
+  REF(["Local orbital spaces of the reference geometry"]):::data
+  LNO["LNO-CCSD(T) gradients (own software)"]:::planned
+  LNOG(["Local-correlation gradients at every displacement"]):::data
+  FD["Central differences and symmetry reconstruction (own software)"]
+  HCC(["CCSD(T)/cc-pVDZ Hessian and dipole derivatives"]):::data
+  MP2["MP2 gradients in two basis sets (pyscf)"]
+  MROWS(["MP2 Hessian rows, cc-pVDZ and cc-pVTZ"]):::data
+  COMP["Composite assembly (own software)"]
+  HCOMP(["Composite Hessian: CCSD(T)/cc-pVDZ plus the MP2 basis step"]):::data
+  DIFF["Difference to the cheap level (own software)"]
   DH(["ΔH blocks per family: diagonal and couplings"]):::data
   CHECK["Consistency check (own software)"]
   NOISE(["Noise term per quantity: difference between two routes or between symmetry partners"]):::data
   BUDGET["Error budget (own software)"]
-  MARG(["Error margin per family: noise, quartic term, recovery error"]):::data
+  MARG(["Error margin per family: noise and additivity error of the composite"]):::data
   CUB(["Cubic constants of the low level (from the VPT2 step of sheet 8)"]):::data
-  GEO["Geometry term (own software)"]
-  GTERM(["Geometry term per mode: first-order shift towards the high-level minimum, from the ± energies along the totally symmetric modes and the low-level cubic constants, with noise term"]):::data
-  SEAL["Sealing (own software)"]
+  GEO["Geometry term (own software)"]:::planned
+  GTERM(["Geometry term per mode"]):::data
+  SEAL["Sealing and registration (own software)"]
   LABEL(["Label: ΔH blocks with error margin per family and geometry term per mode, sealed"]):::data
 
-  MOL --> DFT --> SK --> MODE --> MODES --> DESIGN --> DECK
-  SK --> LOC --> REF
-  REF --> TRANS
-  DECK --> TRANS --> SPACES
-  SPACES --> EN --> ENS
-  SPACES --> GR --> GRS
-  SPACES --> OPEN --> OPENS
-  ENS --> SOLVE
-  GRS --> SOLVE
-  OPENS --> SOLVE
-  SOLVE --> DH --> SEAL
-  ENS --> GEO
-  CUB --> GEO --> GTERM --> SEAL
-  ENS --> CHECK
-  GRS --> CHECK
+  MOL --> SYM --> DECK
+  DECK --> CCG --> GRADS --> FD
+  DECK --> OPEN --> OPENG --> FD
+  MOL --> LOC --> REF --> LNO
+  DECK --> LNO --> LNOG --> FD
+  FD --> HCC --> COMP
+  DECK --> MP2 --> MROWS --> COMP
+  COMP --> HCOMP --> DIFF
+  SK --> DIFF --> DH --> SEAL
+  GRADS --> CHECK
+  HCC --> CHECK
+  MROWS --> CHECK
   CHECK --> NOISE --> BUDGET
-  ENS --> BUDGET
-  GRS --> BUDGET
-  BUDGET --> MARG --> SEAL
+  DH --> BUDGET --> MARG --> SEAL
+  GRADS --> GEO
+  CUB --> GEO --> GTERM --> SEAL
   SEAL --> LABEL
 ```
 
 ## 5. Components of the ΔH model (`50_deltaH_model_components.mmd`)
 
 ```mermaid
-%% Components of the ΔH model (level 4): what happens inside the step "Forward pass (ΔH model, PyTorch)" of sheet 8 (the spectrum pipeline). Since decision 49
-%% (23 September 2026) the couplings are learned in local coordinates, by two variants under test: the pairwise local head on primitive-pair features (rung B, built
-%% and measured) and the equivariant Δ-Hessian model with a tensor head (rung C, built and tested 25 September; training waits for the decision of 27 September). Both
-%% are projected onto the cheap modes; the ensemble consists of members with different seeds. The mode-token backbone of 6 September (embedding + self-attention over
-%% mode tokens) was dropped: E7 showed the couplings unlearnable in the mode basis; its block head remains module 05's pre-registered baseline for the diagonal.
+%% Components of the ΔH model (level 4): what happens inside the step "Forward pass (ΔH model, PyTorch)" of sheet 8 (the spectrum pipeline).
 %% Rectangle = process step (operation + software); rounded ends = data object (the thing). Every step yields one data object. Dashed = not built yet.
+%% 7 October 2026: redrawn to the carried design (the hybrid model, ΔH-network v1.1, chain 34). An equivariant body turns atoms, positions, charge state and
+%% the rotation invariants of H0 into per-atom features; a pair head predicts one force-constant correction per pair of primitive internal coordinates on a
+%% fixed pattern, from the features of the atoms involved, the pair features and the cheap force constants; a learned scale per pair class adds a share of
+%% the cheap force constant (SQM-like); ΔH = Bᵀ ΔF B is exactly symmetric and translation- and rotation-free. The tensor head (Cartesian 3×3 blocks) and the
+%% stand-alone pairwise head of rungs B and C remain in the code as measured variants, not in the carried design.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
   classDef data fill:#e9ecef,stroke:#555,color:#111
-  classDef part fill:#f7f7fb,stroke:#333,stroke-width:1.5px,color:#111
 
   GEO(["Molecule: atomic numbers, coordinates of the cheap minimum, charge, multiplicity"]):::data
   SK(["Hessian H0 of the cheap level"]):::data
-  PRIMC["Primitive internal coordinates (geomeTRIC)"]
-  PRIM(["Primitive internal coordinates and their pairs: diagonal, atom-sharing pairs, ring bond–bond pairs"]):::data
+  PRIMC["Primitive internal coordinates and the pair pattern (geomeTRIC, own software)"]
+  PRIM(["Primitive pairs of the pattern, Wilson B matrix, cheap force constants F0 per pair"]):::data
   FEAT["Pair features (own software)"]
-  PF(["Pair features: primitive classes, ring relations, projections of H0"]):::data
-  LOC["Pairwise local head on pair features (MLP or trees, PyTorch / scikit-learn)"]
-  DFL(["ΔF: force-constant corrections per primitive pair"]):::data
-  EQB["Equivariant body: message passing over atoms with scalar and vector channels, fed by the rotation invariants of H0 (PyTorch)"]
+  PF(["Pair features: pair classes, ring relations, projections of H0"]):::data
+  EQB["Equivariant body: message passing over atoms with scalar and vector channels, charge-state embedding, fed by the rotation invariants of H0 (PyTorch)"]
   ATOMF(["Per-atom scalar and vector features"]):::data
-  TH["Tensor head: symmetric 3×3 block per atom pair, translation sum rule (PyTorch)"]
+  HEAD["Pair head: pooled atom features of the two primitives, pair features, F0 (PyTorch)"]
+  DFR(["ΔF residual per primitive pair"]):::data
+  SQM["Class scaling: ΔF = α per pair class × F0 + residual (PyTorch)"]
+  DFL(["ΔF: force-constant correction per primitive pair"]):::data
+  BACK["Back-transformation ΔH = Bᵀ ΔF B (own software)"]
   DHC(["ΔH in Cartesian coordinates of one member"]):::data
-  PROJ["Projection onto the cheap modes: Bᵀ ΔF B or Lᵀ ΔH L (own software)"]
+  PROJ["Projection onto the cheap modes: Lᵀ ΔH L (own software)"]
   KLOC(["ΔH blocks per family of one member, couplings included"]):::data
   ENSA["Ensemble averaging over the members (own software)"]:::planned
   OUT(["ΔH blocks per family, with ensemble uncertainty"]):::data
 
-  subgraph RB["Rung B: the pairwise local head (built, measured on the 175-molecule pool)"]
-    PRIMC
-    PRIM
-    FEAT
-    PF
-    LOC
-    DFL
-  end
-  subgraph RC["Rung C: the equivariant Δ-Hessian model (built and tested; not yet trained)"]
-    EQB
-    ATOMF
-    TH
-    DHC
-  end
-  class RB,RC part
-
-  GEO --> PRIMC --> PRIM --> FEAT --> PF --> LOC --> DFL --> PROJ
-  SK --> FEAT
+  GEO --> PRIMC --> PRIM
+  PRIM --> FEAT
+  SK --> FEAT --> PF --> HEAD
   GEO --> EQB
-  SK --> EQB --> ATOMF --> TH --> DHC --> PROJ
-  PROJ --> KLOC --> ENSA --> OUT
+  SK --> EQB --> ATOMF --> HEAD
+  PRIM --> HEAD --> DFR --> SQM
+  PRIM --> SQM --> DFL --> BACK
+  PRIM --> BACK --> DHC --> PROJ --> KLOC --> ENSA --> OUT
 ```
 
 ## 5b. The ΔH model in code (`51_deltaH_model_pytorch.py`)
 
-Sheet 5 as a PyTorch definition, added 20 September: input layer (`TokenEmbedding`: mode tokens through a two-layer MLP, charge and multiplicity as two molecule tokens in front, no positional encoding because modes are a set), hidden layers (`Backbone`: Transformer encoder, two layers, four heads, width 64, dropout 0.1, pre-LayerNorm, with padding mask), output layers (`BlockHead`: the ΔH block per family in the mode basis, diagonal from the context vector and couplings from symmetric pair features, zero outside the family; `PairHead`: support logit per mode pair), plus what standardly belongs around it: `DeltaHConfig`, initialisation, `block_loss` (block rule of 19 September, weighting per family from the error budget), `pair_loss` (class-weighted, lesson of E5), `DeltaHEnsemble` with mean and spread per element, parameter count and a smoke test on random input. No training loop: that belongs to sheet 6 and goes into `modules/05_support_predictor/` as soon as there are labels. Numbers follow the desk note of 18 September §1.
+Sheet 5b is the mode-token design of 20 September in PyTorch (input layer `TokenEmbedding`, a two-layer Transformer `Backbone`, a `BlockHead` for the ΔH block per family in the mode basis, a `PairHead` for the support of mode pairs, losses, ensemble, smoke test). Decision 49 (23 September) moved the couplings into local coordinates, and the design is no longer the ΔH model; it stays as module 05's pre-registered baseline for the diagonal and is copied verbatim to `m05/deltah_model.py` by `m05/sync_model.py`. The carried ΔH model (sheet 5) is code in `m05/rungC_equivariant.py` and `m05/rungC_hybrid.py`; in its carried configuration (sum aggregation, three blocks, width 64, pair head hidden 256, 66 pair features) it has 304,276 parameters, 384 of them the hinge-class rows that stay at zero unless `--hinge-feature` is given.
 
 ## 6. Training (`60_training.mmd`)
 
 ```mermaid
-%% Training (level 3): from corpus records and labels comes the trained ΔH model. Target architecture; not built yet. The assessment (test, licence, calibration) is on sheet 7.
+%% Training (level 3): from corpus records and labels comes the trained ΔH model. Target architecture. The assessment (test, licence, calibration) is on sheet 7.
 %% Rectangle = process step (operation + software); rounded ends = data object (the thing). Every step yields one data object. Dashed = not built yet.
+%% 7 October 2026: redrawn to the built route — training on the proxy correction with early stopping on an inner validation split, fine-tuning of the head
+%% and the class scales on the anchor labels with leave-one-anchor-out validation, every saved model registered with a status and a version; reads run
+%% only on carried models. The ensemble over seeds is read as seed means; an ensemble object with spread is not built yet.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
   classDef data fill:#e9ecef,stroke:#555,color:#111
 
-  CORP(["Corpus records: mode tokens and proxy correction per molecule"]):::data
-  LAB(["Labels: ΔH blocks with error margin per family"]):::data
-  SPLIT["Split per molecule and per core (own software)"]:::planned
+  CORP(["Corpus records: two DFT Hessians, proxy correction, local-coordinate features and deck responses per molecule"]):::data
+  LAB(["Label: ΔH blocks with error margin per family and geometry term per mode, sealed"]):::data
+  SPLIT["Split per molecule and per scaffold family, hold-outs fixed in advance (own software)"]
   SETS(["Training, validation and test sets"]):::data
-  PRE["Pre-training on the proxy correction (PyTorch)"]:::planned
-  PRENET(["Pre-trained ΔH model"]):::data
-  FT["Fine-tuning on the labels (PyTorch)"]:::planned
+  PRE["Training on the proxy correction with early stopping (PyTorch)"]
+  PRENET(["Proxy-trained ΔH model"]):::data
+  FT["Fine-tuning of the head and the class scales on the labels (PyTorch)"]
   FTNET(["Fine-tuned ΔH model"]):::data
-  VAL["Validation against the simple rules (own software)"]:::planned
-  VALR(["Validation errors per family"]):::data
+  VAL["Leave-one-anchor-out validation (own software)"]
+  VALR(["Transfer errors per family on held-out anchors"]):::data
   ENSF["Ensemble formation over seeds (PyTorch)"]:::planned
+  MEMB(["Ensemble of members"]):::data
+  REG["Registration with status and version (own software)"]
   ENS(["Trained ΔH model: ensemble of members"]):::data
 
   CORP --> SPLIT
   LAB --> SPLIT
   SPLIT --> SETS
-  SETS --> PRE --> PRENET --> FT --> FTNET --> ENSF --> ENS
+  SETS --> PRE --> PRENET --> FT --> FTNET --> ENSF --> MEMB --> REG --> ENS
   SETS --> FT
   FTNET --> VAL --> VALR --> FT
 ```
@@ -376,8 +412,10 @@ flowchart LR
 ## 7. Test and licence (`70_test_and_licence.mmd`)
 
 ```mermaid
-%% Test and licence (level 3b): from the trained ΔH model and the test set come the licence table and the calibration that the spectrum pipeline uses alongside the trained model. The model's weights do not change here. Target architecture; not built yet.
+%% Test and licence (level 3b): from the trained ΔH model and the test set come the licence table and the calibration that the spectrum pipeline uses alongside the trained model. The model's weights no longer change here.
 %% Rectangle = process step (operation + software); rounded ends = data object (the thing). Every step yields one data object. Dashed = not built yet.
+%% 7 October 2026: the test per family on the fixed hold-outs (analytic labels where they exist) and the promotion of a model against lines registered before
+%% its run are built; the licence table, the calibration and the score against laboratory spectra and opponents are not yet.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
@@ -388,8 +426,10 @@ flowchart LR
   TESTSET(["Test set"]):::data
   LABDB(["Laboratory spectra with the margin per reference column"]):::ext
   PAHDB(["Opponents: PAHdb and other predictors"]):::ext
-  TEST["Test on the test molecules (own software)"]:::planned
+  TEST["Test on the hold-out molecules per family (own software)"]
   TESTR(["Test errors per family and charge state, alongside the opponents"]):::data
+  PROMO["Promotion against the registered lines (own software)"]
+  STAT(["Model status: carried, candidate or superseded"]):::data
   LIC["Licence determination (own software)"]:::planned
   LICT(["Licence table per family and charge state"]):::data
   CAL["Uncertainty calibration (own software)"]:::planned
@@ -400,6 +440,7 @@ flowchart LR
   LABDB --> TEST
   PAHDB --> TEST
   TEST --> TESTR
+  TESTR --> PROMO --> STAT
   TESTR --> LIC --> LICT
   TESTR --> CAL --> CALR
 ```
@@ -409,6 +450,7 @@ flowchart LR
 ```mermaid
 %% Spectrum pipeline (level 3): molecule in, spectrum with error margin out. ΔH comes from two sources: measured (the label of sheet 4, for molecules with a label) or predicted (the ΔH model, for all others); the tail is the same. Target architecture.
 %% Rectangle = process step (operation + software); rounded ends = data object (the thing). Every step yields one data object. Dashed = not built yet.
+%% 7 October 2026: the label's name is the one sheet 4 gives it, and the licence filter is the only way from ΔH to the applied blocks.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
@@ -427,7 +469,7 @@ flowchart LR
   PF(["Primitive pairs with their features; atoms and coordinates"]):::data
   FWD["Forward pass (ΔH model: pairwise local head or equivariant body, then projection onto the modes; PyTorch)"]:::planned
   DH(["ΔH blocks per family and relaxation along the totally symmetric modes, with ensemble uncertainty"]):::data
-  LAB(["Label from the label factory: ΔH blocks with error margin per family and geometry term per mode"]):::data
+  LAB(["Label: ΔH blocks with error margin per family and geometry term per mode, sealed"]):::data
   LICF["Licence filter (own software)"]:::planned
   DHL(["Applied and refused ΔH blocks, with reason"]):::data
   APPLY["Assembly of H (own software)"]
@@ -448,7 +490,8 @@ flowchart LR
   SK --> MODE --> MODES
   SK --> VPT --> ANHC
   SK --> LOCC --> PF --> FWD --> DH --> LICF
-  MODES --> FWD --> DHL --> APPLY --> H --> EIG --> POS --> GEOP --> POSG --> SHAPE
+  MODES --> FWD
+  LICF --> DHL --> APPLY --> H --> EIG --> POS --> GEOP --> POSG --> SHAPE
   DHL --> GEOP
   ANHC --> GEOP
   LAB --> LICF
