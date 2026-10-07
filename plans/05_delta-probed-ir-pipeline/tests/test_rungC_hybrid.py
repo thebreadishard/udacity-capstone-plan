@@ -127,6 +127,6 @@ def test_body_size_switches_change_the_body_and_the_head_input():
     deeper = RH.HybridDeltaFModel(aggregation="mean", n_blocks=5)
     wider = RH.HybridDeltaFModel(aggregation="mean", n_s=128, n_v=128)
     assert len(default.body.blocks) == 3 and len(deeper.body.blocks) == 5
-    assert sum(p.numel() for p in default.body.parameters()) == 171_554 + 256          # + the charge-state embedding of 3 Oct 2026 (zero rows)
+    assert sum(p.numel() for p in default.body.parameters()) == 171_554 + 256 + 384    # + charge-state (3 Oct) and hinge (7 Oct) embeddings, zero rows
     assert sum(p.numel() for p in deeper.body.parameters()) > sum(p.numel() for p in default.body.parameters())
     assert wider.head[0].in_features > default.head[0].in_features and wider.body.blocks[0].n_s == 128

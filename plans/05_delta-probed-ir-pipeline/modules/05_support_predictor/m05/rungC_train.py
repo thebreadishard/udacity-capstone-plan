@@ -41,6 +41,7 @@ from rungC_equivariant import (  # noqa: E402
     N_S,
     DeltaHessianModel,
     console_utf8_safe,
+    hinge_classes,
     load_molecule,
     load_state_compat,
     to_torch,
@@ -304,7 +305,8 @@ def train_one(train_ids: list, tensors: dict, seed: int, epochs: int, lr: float 
               pretrained: str | None = None, aggregation: str = AGGREGATION,
               pretrained_elements: list[int] | None = None, aux_mode: str = "all", tensor_input: bool = False, head: str = "cartesian",
               sqm_scale: bool = False, pair_features: bool = False, hybrid_hidden: int = 128, body_blocks: int = N_BLOCKS,
-              body_width: int = N_S, kring_weight: float = 1.0, kdiag_weight: float = 0.0, kdiag_mode: str = "all") -> tuple[torch.nn.Module, list]:
+              body_width: int = N_S, kring_weight: float = 1.0, kdiag_weight: float = 0.0, kdiag_mode: str = "all",
+              hinge: bool = False) -> tuple[torch.nn.Module, list]:
     """Defaults = the registered recipe C1 of 19:50 (27 Sep). The other values are the cells of the fair-chance search registered at 20:0x:
     aux_weight 1.0; loss_mode 'internal' (the relative internal-ΔF term alone); scale_mode 'class' (one output scale per entry class: diagonal
     3×3 block, bonded pair, non-bonded pair — the pair model's per-class standardisation); val_ids = inner validation molecules held out of the
@@ -356,6 +358,10 @@ def train_one(train_ids: list, tensors: dict, seed: int, epochs: int, lr: float 
         log(f"  {'pretrained' if pretrained else 'fresh'} {aggregation} body pre-flight: worst |output| "
             f"{check_pretrained_transfer(body, tensors, train_ids):.3g} on the training molecules")
         model = Scaled(body, scale, class_scale)
+    body_m = model.body if head == "hybrid" else body
+    body_m.h_emb.weight.requires_grad_(bool(hinge))                     # TASKS 23 / chain 36 (7 Oct 2026): the hinge input, frozen at zero unless asked
+    if hinge and head != "hybrid":
+        raise ValueError("--hinge-feature is built for the hybrid head (chain 34's recipe)")
     model.aux_mode = aux_mode
     model.kring_weight = float(kring_weight)                            # lever 3b weight search (1 Oct 2026): scales the kring term inside 'both'
     model.kdiag_weight = float(kdiag_weight)                            # lever 5 (2 Oct 2026): the diagonal of K over all modes inside 'both'
@@ -487,6 +493,7 @@ def molecule_tensors(i: str, m: dict, mol: dict, mol_dir: Path, cfg, cache_dir: 
     t["dF_norm"] = (t["dF_true"] ** 2).mean().clamp_min(1e-30)
     t["cls"] = entry_classes(m)
     t["qidx"] = torch.tensor(int(mol.get("qidx", 0)), dtype=torch.long)       # pool 3 (3 Oct 2026): charge state of the row
+    t["hidx"] = torch.as_tensor(m["hidx"] if "hidx" in m else hinge_classes(m["symbols"], m["pos"]), dtype=torch.long)   # chain 36 (7 Oct 2026)
     if cfg.aux in ("kring", "both"):
         t.update(kring_tensors(mol["masses"], mol["V"], mol["w"], mol["family"], m["dH_true"]))
     if cfg.aux in ("pattern", "both") or cfg.head == "hybrid":            # the hybrid's class scales need the pattern classes under any aux term
@@ -591,6 +598,8 @@ def main() -> int:
                     help="search: fraction of the training ids held out per seed as inner validation (the stage read-out)")
     ap.add_argument("--patience", type=int, default=0, help="search stage 2: early stopping on the inner validation term, best state restored (0 = off)")
     ap.add_argument("--kring-weight", type=float, default=1.0, help="lever 3b (1 Oct 2026): weight of the kring term inside --aux both (the pattern term keeps weight 1)")
+    ap.add_argument("--hinge-feature", action="store_true", help="chain 36 (TASKS 23, 7 Oct 2026): train the hinge-class embedding of the body "
+                    "(ring4 / ring5 / linear / rotor / sp3 per atom, from the bond graph); without it the embedding stays frozen at zero")
     ap.add_argument("--kdiag-mode", default="all", choices=["all", "family", "family-low"], help="chain 34c (4 Oct 2026): 'family-low' = as 'family' with the 'other' modes below 700 cm⁻¹ as their own family; chain 34 (3 Oct 2026, decision 53): 'family' = the K-diagonal term as the mean "
                     "over mode families of the per-family relative mse, so that CH-oop and other weigh as much as the C–H stretches; 'all' = one relative mse over all modes")
     ap.add_argument("--kdiag-weight", type=float, default=0.0, help="lever 5 (2 Oct 2026): weight of a term on the diagonal of K over all modes inside --aux both (0 = off)")
@@ -674,7 +683,7 @@ def main() -> int:
                patience=a.patience, pretrained=a.pretrained, aggregation=a.aggregation, pretrained_elements=a.pretrained_elements,
                aux_mode=a.aux, zero_hlow=a.zero_hlow, overfit_one=a.overfit_one, tensor_input=a.tensor_input, head=a.head, sqm_scale=a.sqm_scale,
                pair_features=a.pair_features, hybrid_hidden=a.hybrid_hidden, pattern=a.pattern, body_blocks=a.body_blocks, body_width=a.body_width,
-               aux_target=a.aux_target, ls_lam=a.ls_lam, kring_weight=a.kring_weight, kdiag_weight=a.kdiag_weight, kdiag_mode=a.kdiag_mode, target_residuals=target_residuals,
+               aux_target=a.aux_target, ls_lam=a.ls_lam, kring_weight=a.kring_weight, kdiag_weight=a.kdiag_weight, kdiag_mode=a.kdiag_mode, hinge_feature=a.hinge_feature, target_residuals=target_residuals,
                pair_class_names=list(PAIR_CLASS_NAMES),
                substituted_analytic=substituted, curve={})
     res["zero_rule"] = {h: readouts(mols, ids, pool, lambda i: np.zeros_like(mols[i]["F_low"])) for h, ids in tests.items() if ids}
@@ -701,7 +710,7 @@ def main() -> int:
             model, hist = train_one(fit_ids, tensors, seed, a.epochs, a.lr, log, a.aux_weight, a.loss, a.scale, val_ids, a.patience, a.pretrained,
                                     a.aggregation, a.pretrained_elements, aux_mode=a.aux, tensor_input=a.tensor_input, head=a.head, sqm_scale=a.sqm_scale,
                                     pair_features=a.pair_features, hybrid_hidden=a.hybrid_hidden, body_blocks=a.body_blocks, body_width=a.body_width,
-                                    kring_weight=a.kring_weight, kdiag_weight=a.kdiag_weight, kdiag_mode=a.kdiag_mode)
+                                    kring_weight=a.kring_weight, kdiag_weight=a.kdiag_weight, kdiag_mode=a.kdiag_mode, hinge=a.hinge_feature)
             dF_of = predictor(model, tensors, mols)
             if a.save_model:
                 if a.head != "hybrid":

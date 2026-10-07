@@ -53,12 +53,82 @@ def charge_index(g: dict) -> int:
     return CHARGE_STATES[key]
 
 
+# TASKS 23 / chain 36 (7 Oct 2026): the hinge class of each atom, from the bond graph — what the five worst low-mode molecules share (a single bond
+# between rings, a four- or five-ring, a linear group). Priority order: the first class that applies.
+HINGE_CLASSES = ("none", "rotor", "ring5", "ring4", "linear", "sp3")
+COV_RADIUS_ANG = {"H": 0.31, "C": 0.76, "N": 0.71, "O": 0.66, "F": 0.57, "S": 1.05, "CL": 1.02}
+
+
+def bond_graph(symbols, pos_bohr, scale: float = 1.25) -> list[set]:
+    """Neighbour sets from covalent radii × scale (Å)."""
+    x = np.asarray(pos_bohr, float) * BOHR2ANG
+    sym = [s.upper() for s in symbols]
+    n = len(sym)
+    adj = [set() for _ in range(n)]
+    d = np.linalg.norm(x[:, None, :] - x[None, :, :], axis=-1)
+    for i in range(n):
+        for j in range(i + 1, n):
+            if d[i, j] <= scale * (COV_RADIUS_ANG[sym[i]] + COV_RADIUS_ANG[sym[j]]):
+                adj[i].add(j)
+                adj[j].add(i)
+    return adj
+
+
+def _path_len(adj, a, b, skip_node=None, skip_edge=None, limit=8):
+    """Length (edges) of the shortest path a → b avoiding a node or an edge; None beyond `limit`."""
+    seen, frontier, dist = {a}, [a], 0
+    while frontier and dist < limit:
+        dist += 1
+        nxt = []
+        for u in frontier:
+            for w in adj[u]:
+                if w == skip_node or w in seen or (skip_edge and {u, w} == set(skip_edge)):
+                    continue
+                if w == b:
+                    return dist
+                seen.add(w)
+                nxt.append(w)
+        frontier = nxt
+    return None
+
+
+def hinge_classes(symbols, pos_bohr) -> np.ndarray:
+    """One index into HINGE_CLASSES per atom (see the design note of 7 Oct 2026)."""
+    sym = [s.upper() for s in symbols]
+    x = np.asarray(pos_bohr, float) * BOHR2ANG
+    adj = bond_graph(sym, pos_bohr)
+    heavy = [s != "H" for s in sym]
+    hdeg = [sum(heavy[w] for w in adj[a]) for a in range(len(sym))]
+    out = np.zeros(len(sym), dtype=np.int64)
+    for a in range(len(sym)):
+        nb = sorted(adj[a])
+        ring = min((L + 2 for u in nb for v in nb if u < v for L in [_path_len(adj, u, v, skip_node=a)] if L is not None), default=0)
+        linear = False
+        if heavy[a] and len(nb) == 2:
+            u, v = (x[nb[0]] - x[a]), (x[nb[1]] - x[a])
+            linear = float(np.degrees(np.arccos(np.clip(u @ v / np.linalg.norm(u) / np.linalg.norm(v), -1, 1)))) > 170.0
+        if heavy[a] and len(nb) == 1 and heavy[nb[0]] and np.linalg.norm(x[nb[0]] - x[a]) < 1.25:
+            linear = True                                                          # the terminal atom of a triple bond (C≡N, C≡C)
+        rotor = heavy[a] and hdeg[a] >= 2 and any(heavy[b] and hdeg[b] >= 2 and _path_len(adj, a, b, skip_edge=(a, b)) is None for b in nb)
+        if ring == 4:
+            out[a] = HINGE_CLASSES.index("ring4")
+        elif ring == 5:
+            out[a] = HINGE_CLASSES.index("ring5")
+        elif linear:
+            out[a] = HINGE_CLASSES.index("linear")
+        elif rotor:
+            out[a] = HINGE_CLASSES.index("rotor")
+        elif sym[a] == "C" and len(nb) == 4:
+            out[a] = HINGE_CLASSES.index("sp3")
+    return out
+
+
 def load_state_compat(model: nn.Module, state: dict) -> list[str]:
     """`load_state_dict` that tolerates exactly one kind of missing key: the charge-state embedding of a checkpoint saved before 3 Oct 2026 — its
     zero rows are kept, so the prediction is unchanged to the bit. Any other missing key, and any unexpected key, is refused. Returns the keys
     left at zero."""
     missing, unexpected = model.load_state_dict(state, strict=False)
-    allowed = [k for k in missing if k.endswith("q_emb.weight")]
+    allowed = [k for k in missing if k.endswith(("q_emb.weight", "h_emb.weight"))]   # h_emb: the hinge input of 7 Oct 2026, zero rows likewise
     if unexpected or len(allowed) != len(missing):
         raise RuntimeError(f"state dict mismatch: missing {sorted(set(missing) - set(allowed))}, unexpected {sorted(unexpected)}")
     return allowed
@@ -145,7 +215,8 @@ def load_molecule(d: Path, use_analytic: bool = False) -> dict:
     sym = [s.upper() for s in g["symbols"]]
     return dict(id=d.name, symbols=sym, Z=np.array([Z_OF[s] for s in sym]), pos=np.asarray(g["coords_bohr"], float),
                 masses=np.asarray(g["masses_amu"], float), H_low=lo, dH_true=hi - lo, analytic=bool(tag),
-                charge=int(g.get("charge", 0)), multiplicity=int(g.get("multiplicity", 1)), qidx=charge_index(g))
+                charge=int(g.get("charge", 0)), multiplicity=int(g.get("multiplicity", 1)), qidx=charge_index(g),
+                hidx=hinge_classes(sym, np.asarray(g["coords_bohr"], float)))
 
 
 def load_molecules(mdir: Path, ids=None, use_analytic: bool = False) -> dict:
@@ -239,8 +310,11 @@ class DeltaHessianModel(nn.Module):
         self.head = nn.Sequential(nn.Linear(2 * n_s + N_RBF, n_s), nn.SiLU(), nn.Linear(n_s, 2 + n_tensor))
         self.proj = nn.Linear(n_v, n_tensor, bias=False)
         self.cutoff, self.n_v = cutoff, n_v
+        # TASKS 23 (7 Oct 2026): the hinge class embedding — zero, built without a random draw and created last, so every other parameter is
+        # initialised exactly as before; frozen by the trainer unless --hinge-feature
+        self.h_emb = nn.Embedding.from_pretrained(torch.zeros(len(HINGE_CLASSES), n_s), freeze=False)
 
-    def encode(self, Z, pos, H_low, qidx=None):
+    def encode(self, Z, pos, H_low, qidx=None, hidx=None):
         """The body alone: per-atom scalar features s (N, n_s) and vector features v (N, 3, n_v), plus the edge set and its radial basis. Used by the
         Δ-Hessian head below and, unchanged, by the standout pattern proposer's learned-embedding scorer (26 Sep 2026)."""
         n = pos.shape[0]
@@ -254,6 +328,8 @@ class DeltaHessianModel(nn.Module):
         s = self.emb(Z) + self.node_in(inv_node)
         if qidx is not None:                                                        # charge state (pool 3): one row added to every atom's scalars
             s = s + self.q_emb(torch.as_tensor(qidx, device=s.device).reshape(()))[None, :]
+        if hidx is not None:                                                        # the hinge class of each atom (zero unless trained)
+            s = s + self.h_emb(torch.as_tensor(hidx, device=s.device))
         v = torch.zeros(n, 3, self.n_v, dtype=pos.dtype, device=pos.device)
         inv_degree = None if self.aggregation == "sum" else 1.0 / torch.bincount(i, minlength=n).clamp_min(1).to(pos.dtype)
         S_e = pair_tensor(H_low, pos)[i, j] if self.tensor_input else None       # (E, 3, 3) rank-2 input, or the registered scalars only
@@ -261,9 +337,9 @@ class DeltaHessianModel(nn.Module):
             s, v = blk(s, v, i, j, filt, rhat, inv_degree, S_e)
         return s, v, i, j, rbf, rhat
 
-    def forward(self, Z, pos, H_low, qidx=None):
+    def forward(self, Z, pos, H_low, qidx=None, hidx=None):
         n = pos.shape[0]
-        s, v, i, j, rbf, rhat = self.encode(Z, pos, H_low, qidx)
+        s, v, i, j, rbf, rhat = self.encode(Z, pos, H_low, qidx, hidx)
         u = self.proj(v)                                                           # (N, 3, n_tensor)
         p = self.head(torch.cat([s[i] + s[j], s[i] * s[j], rbf], -1))              # symmetric in i ↔ j
         a, b, c = p[:, 0], p[:, 1], p[:, 2:]

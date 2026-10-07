@@ -118,6 +118,8 @@ def test_pair_tensor_transforms_as_a_rank_two_tensor():
 
 def test_registered_model_is_unchanged_by_the_tensor_input_flag():
     """Default tensor_input=False builds the registered architecture: the parameter count of 30 Sep (171,554) plus the zero-initialised charge-state
-    embedding of 3 Oct 2026 (4 × 64 = 256; test_rungC_charge_input shows the output unchanged to the bit)."""
-    assert sum(p.numel() for p in RC.DeltaHessianModel().parameters()) == 171_554 + 256
-    assert sum(p.numel() for p in RC.DeltaHessianModel(tensor_input=True).parameters()) > 171_554 + 256
+    embedding of 3 Oct 2026 (4 × 64 = 256; test_rungC_charge_input shows the output unchanged to the bit) plus the hinge-class embedding of 7 Oct
+    2026 (6 × 64 = 384, zero and frozen unless --hinge-feature; test_hinge_feature shows the output unchanged)."""
+    assert sum(p.numel() for p in RC.DeltaHessianModel().parameters()) == 171_554 + 256 + 384
+    assert RC.DeltaHessianModel().h_emb.weight.numel() == 384
+    assert sum(p.numel() for p in RC.DeltaHessianModel(tensor_input=True).parameters()) > 171_554 + 256 + 384
