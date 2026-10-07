@@ -23,8 +23,9 @@ export PYTHONUTF8=1 PYTHONUNBUFFERED=1
 t() { date '+%F %T'; }
 cd "$P" || exit 1
 echo "=== (P1) composite pipeline armed: waiting for the CCX53 queue $(t)"
-until $SSH 'grep -qE "=== QUEUE (DONE|FAILED|REFUSED)" ~/e8/composite/queue.log' < /dev/null 2>/dev/null; do sleep 900; done
-if ! $SSH 'grep -q "=== QUEUE DONE" ~/e8/composite/queue.log' < /dev/null; then
+# only the lines after the last "=== QUEUE start" count (the log keeps the failed starts of 7 Oct morning)
+until $SSH 'tac ~/e8/composite/queue.log | sed "/=== QUEUE start/q" | grep -qE "=== QUEUE (DONE|FAILED|REFUSED)"' < /dev/null 2>/dev/null; do sleep 900; done
+if ! $SSH 'tac ~/e8/composite/queue.log | sed "/=== QUEUE start/q" | grep -q "=== QUEUE DONE"' < /dev/null; then
   echo "=== (P1) QUEUE FAILED on the CCX53 — see ~/e8/composite/queue.log; pipeline stops $(t)"; exit 1
 fi
 echo "=== (P2) queue done; fetching rows $(t)"
