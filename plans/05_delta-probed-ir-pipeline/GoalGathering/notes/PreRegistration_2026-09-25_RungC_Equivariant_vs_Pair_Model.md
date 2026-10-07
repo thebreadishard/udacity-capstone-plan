@@ -1838,6 +1838,20 @@ level: closed, anchors stay canonical and the Snellius question is a canonical-c
 any reading. Nothing else is read from these runs. Lane: a free laptop lane after the TZ run and chain 34 (≈ 5–6 October); the `--xtight` path is
 compile-checked and dry-run before the queue.
 
+**Outcome, 7 October 10:1x (`probes/results_m1/lno_curvature_{xtight,reuse}_2026-10-05.{json,log}`; cell (a) 6 Oct 17:36 – 7 Oct 03:10, cell (b) 03:10 –
+09:54, 8 threads in WSL).** Against the canonical gradient-route Hessian (k 0 = atom 0 x, k 1 = atom 0 y; out-of-plane share 0.10 / 0.12):
+
+| cell | ΔH_kk at k 0 | ΔH_kk at k 1 | max | relative |
+|---|---|---|---|---|
+| tight (19:2x, 3 Oct) | — | — | — | +0.27 to +0.29 % |
+| (a) xtight thresholds | +1.65e-4 | +7.29e-4 | **7.3e-4** | +0.02 / +0.11 % |
+| (b) reused localisation, tight | +1.59e-3 | +1.53e-3 | **1.6e-3** | +0.20 / +0.22 % |
+
+Cell (a) is under the line of 1e-3 (truncation), cell (b) is over it; same sign. **As registered, the cells disagree → one more coordinate before
+any reading.** What the numbers already say, without a verdict: a tighter threshold shrinks the deviation by a factor 2.5–10, while freezing the
+localisation removes only a quarter of it — the offset behaves like truncation, not like localisation jitter. The extra coordinate (an out-of-plane
+one, both cells, ≈ 1 day on 8 laptop threads) is queued after chain 33c and chain 36 (TASKS).
+
 ### Amendment 3 October 20:5x — a per-family learning curve read from the existing records (reading rule written before the numbers are looked at)
 
 **What.** `probes/rungC_family_curve.py` on the carried recipe's records (pattern f, projected target, kring 0.3, sum body): 45 and 100 (pool A,A2 —
