@@ -1,7 +1,8 @@
 """Spectrum Atlas — mechanical export of the pipeline repository to the site's JSON (BACKLOG step 1, 24 September 2026).
 
 Sources (read-only): the corpus manifest and ledger, every corpus molecule directory with a result, the release manifests, the second-route
-checks, the E8 results, and the fixed list of anchored / validated molecules below (each with the file that carries the evidence). Outputs:
+checks, the anchor registry (`modules/05_support_predictor/out/ANCHORS_STATUS.json`: a molecule with a carried coupled-cluster entry is anchored,
+its file is the evidence — 7 Oct 2026) and the fixed list of validated molecules below. Outputs:
   out/catalog.json           one row per manifest molecule: identity, size, source, rung, flags, release membership, formula and InChIKey (RDKit)
   out/molecules/<id>.json    per computed molecule: geometry, frequency lists per functional, imaginary counts, timings, deck, second route, releases
   out/summary.json           rung, layer and source counts, data freshness, source hashes
@@ -43,8 +44,17 @@ def source_of(r):
         s += ", known to PubChem" if "pubchem yes" in r.get("note", "") else ", not in PubChem"
     return s
 
-# The molecules whose rung is set by evidence outside the corpus factory. Each entry names the file that carries it (relative to plan 05).
-ANCHORED = {   # 2 Oct 2026: the four CCSD(T)/cc-pVDZ Hessians of the corrected route (lambda incident of 29 Sep: the earlier benzene reading is kept as history)
+def anchored_from_registry(plan: str) -> tuple[dict, dict]:
+    """7 Oct 2026: {mol_id: [evidence path]} and {mol_id: level} for every carried entry of the anchor registry — the best coupled-cluster Hessian of
+    each molecule, chosen in one place (`m05/anchor_registry.py`); superseded, imaginary and invalid entries never reach the Atlas."""
+    p = os.path.join(plan, "modules", "05_support_predictor", "out", "ANCHORS_STATUS.json")
+    entries = json.load(open(p, encoding="utf-8"))["anchors"]
+    carried = [e for e in entries if e["status"] == "carried"]
+    return {e["mol_id"]: [e["path"]] for e in carried}, {e["mol_id"]: e["level"] for e in carried}
+
+
+# The hand list this registry replaced (2 Oct 2026), kept for the record of what the Atlas showed until 7 Oct: the four CCSD(T)/cc-pVDZ Hessians.
+ANCHORED_UNTIL_2026_10_07 = {   # 2 Oct 2026: the four CCSD(T)/cc-pVDZ Hessians of the corrected route (lambda incident of 29 Sep: the earlier benzene reading is kept as history)
     "A_8448043181": ["probes/results_m1/e8_benzene_ccpvdz_tlambda/E8_locality_benzene.md", "probes/results_m1/e8_benzene_ccpvdz_tlambda/hessian_ccsd_t.npz",
                      "probes/results_m1/R0_DIAGONAL_READING_2026-09-22.md"],
     "A_01f3186607": ["probes/results_m1/e8_naphthalene_ccpvdz_tlambda_2026-10-02/E8_locality_naphthalene.md",
@@ -136,6 +146,7 @@ def build(repo, out, limit=None):
     sp = os.path.join(sr_dir, "corpus_screen_2026-09-23.json")
     if os.path.exists(sp):
         screen = {r["id"]: r for r in json.load(open(sp, encoding="utf-8"))["rows"]}
+    ANCHORED, anchor_level = anchored_from_registry(plan)
     for k, files in list(ANCHORED.items()) + list(VALIDATED.items()):
         for f in files:
             if not os.path.exists(os.path.join(plan, f)):
@@ -184,7 +195,7 @@ def build(repo, out, limit=None):
                 mol["second_route"] = {tag: dict(max_abs_dfreq_cm=float(np.abs(np.array(v["freq_analytic"]) - np.array(v["freq_corpus"])).max()), dH_max=v["dH_max"]) for tag, v in chk.items()}
             json.dump(mol, open(os.path.join(out, "molecules", mid + ".json"), "w", encoding="utf-8"), ensure_ascii=False)
         if mid in ANCHORED:
-            row["rung"] = 4; row["evidence"] = ANCHORED[mid]
+            row["rung"] = 4; row["evidence"] = ANCHORED[mid]; row["anchor_level"] = anchor_level[mid]
         if mid in VALIDATED:
             row["rung"] = 5; row["evidence"] = ANCHORED.get(mid, []) + VALIDATED[mid]
         row["rung_label"] = RUNGS[row["rung"]]; counts[row["rung_label"]] += 1; layer_counts[r["layer"]] = layer_counts.get(r["layer"], 0) + 1

@@ -74,3 +74,13 @@ def test_source_per_layer(built):
     assert bc.source_of(dict(layer="C", note="")) == bc.SOURCES["C"]
     with pytest.raises(KeyError):
         bc.source_of(dict(layer="Z", note=""))
+
+
+def test_anchored_rows_follow_the_registry(built):
+    out, _ = built
+    cat = {r["id"]: r for r in json.load(open(out / "catalog.json", encoding="utf-8"))}
+    ev, level = bc.anchored_from_registry(os.path.join(REPO, "plans", "05_delta-probed-ir-pipeline"))
+    for mid, row in cat.items():
+        if row["rung"] >= 4:
+            assert row["evidence"][0] == ev[mid][0] and row["anchor_level"] == level[mid]
+    assert level.get("A_8448043181") == "CCSD(T)/cc-pVTZ"
