@@ -143,6 +143,19 @@
    "sha16": "741ef7b2844b71f8",
    "checks": "symmetry spread 1.8e-5 / 1.7e-5; in-plane/out-of-plane coupling 1e-16",
    "note": "test 3: 86 / 115 cm⁻¹ (ωB97X 105 / 126); in-plane block still cc-pVDZ"
+  },
+  {
+   "mol_id": "A_8448043181",
+   "name": "benzene",
+   "path": "modules/05_support_predictor/out/composite_full_benzene_2026-10-07.npz",
+   "level": "CCSD(T)/cc-pVDZ + [MP2/cc-pVTZ − MP2/cc-pVDZ]",
+   "tier": "TZ",
+   "kind": "composite",
+   "status": "experimental",
+   "date": "2026-10-07",
+   "checks": "4.6 cm⁻¹ rms vs the full CC/TZ (all vibrations, max 8.5); symmetry spread of the MP2 rows",
+   "note": "for comparison only; the full CC/TZ anchor is carried",
+   "sha16": "a40de7f07ba33c13"
   }
  ]
 }

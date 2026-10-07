@@ -289,6 +289,69 @@ def repair_oop(a) -> int:
     return 0
 
 
+def build(a) -> int:
+    """TASKS 28 (7 Oct 2026): the full composite anchor H = CC/DZ + [MP2/TZ − MP2/DZ] over every symmetry-unique displacement — the TZ-tier anchor of
+    the anchor registry. With --planeframe the rows were computed in that frame and the step is rotated back. Writes <out>.npz (H_raw, H_projected,
+    freq_cm, status), .md and .json."""
+    anchor = Path(a.anchor)
+    z = np.load(anchor)
+    H = np.asarray(z["H_raw"], float)
+    x0 = np.asarray(z["coords_bohr"], float).reshape(-1, 3)
+    n = len(x0)
+    mol_dir = PLAN / "modules" / "05_support_predictor" / "corpus" / "molecules" / a.mol_id
+    sym, xg, masses = load_geometry(mol_dir / "geometry.json")
+    if np.abs(xg - x0).max() > 1e-6:
+        raise SystemExit(f"{anchor}: coordinates differ from the corpus geometry of {a.mol_id}")
+    if a.planeframe:
+        pf = json.loads(Path(a.planeframe).read_text(encoding="utf-8"))
+        V = np.asarray(pf["frame"], float)
+        origin = np.asarray(pf["origin"], float)
+        xr = np.asarray(pf["coords_bohr"], float)
+        if np.abs((x0 - origin) @ V - xr).max() > 1e-6:
+            raise SystemExit("the plane-frame geometry does not match the anchor's coordinates")
+    else:
+        V, xr = np.eye(3), x0
+    for rows in (a.mp2_dz, a.mp2_tz):
+        xc = np.asarray(np.load(rows)["coords_bohr"], float).reshape(-1, 3)
+        if np.abs(xc - xr).max() > 1e-6:
+            raise SystemExit(f"{rows}: rows computed at other coordinates than the anchor's (frame: {'plane' if a.planeframe else 'corpus'})")
+    ops = SYM.point_group_ops(sym, xr)
+    _, reps = SYM.unique_displacements(ops, n)
+    M_dz, s_dz = assemble(Path(a.mp2_dz), ops, reps, n)
+    M_tz, s_tz = assemble(Path(a.mp2_tz), ops, reps, n)
+    T = np.kron(np.eye(n), V)
+    step = T @ (M_tz - M_dz) @ T.T
+    H_comp = H + step
+    f_dz = frequencies_cm(H, masses, x0)
+    f_comp = frequencies_cm(H_comp, masses, x0)
+    n_im = int((f_comp < -10.0).sum())
+    status = "VALID" if n_im == 0 else "IMAGINARY"
+    dft = {}
+    for tag in ("b3lyp", "wb97x"):
+        p = mol_dir / f"hessian_{tag}.npz"
+        if p.exists():
+            fr = np.asarray(np.load(p)["freq_cm"], float)
+            dft[tag] = np.sort(fr[np.abs(fr) > 1.0])[:6]
+    from anchor_deck_rehearsal import project_tr
+    out = Path(a.out_prefix)
+    step_rms = float(np.sqrt(np.mean(step ** 2)))
+    np.savez(str(out) + ".npz", H_raw=H_comp, H_projected=project_tr(H_comp, masses, x0)[0], freq_cm=f_comp, coords_bohr=x0, status=status,
+             source_anchor=str(anchor), mp2_dz=str(a.mp2_dz), mp2_tz=str(a.mp2_tz), spread_dz=s_dz, spread_tz=s_tz, step_rms=step_rms,
+             planeframe=str(a.planeframe or ""), composite="CC/DZ + [MP2/TZ − MP2/DZ], every unique displacement (TASKS 28, 7 Oct 2026)")
+    fmt = lambda arr: ", ".join(f"{v:.0f}" for v in np.asarray(arr)[:6])  # noqa: E731
+    md = [f"# Composite anchor (full) — {a.mol_id}: CC/DZ + [MP2/TZ − MP2/DZ] — {datetime.now():%Y-%m-%d %H:%M}", "",
+          f"Anchor `{anchor.parent.name}/{anchor.name}`; MP2 rows `{Path(a.mp2_dz).name}`, `{Path(a.mp2_tz).name}` (symmetry spread {s_dz:.1e} / {s_tz:.1e} a.u.; "
+          f"rms of the basis step {step_rms:.2e} a.u.){' in the plane frame' if a.planeframe else ''}. Status: **{status}** ({n_im} imaginary).", "",
+          "| lowest six vibrations (cm⁻¹) | values |", "|---|---|", f"| CC/DZ anchor | {fmt(f_dz)} |", f"| **composite** | **{fmt(f_comp)}** |"]
+    md += [f"| {tag} (corpus) | {fmt(v)} |" for tag, v in dft.items()]
+    out.with_suffix(".md").write_text("\n".join(md) + "\n", encoding="utf-8")
+    out.with_suffix(".json").write_text(json.dumps(dict(date=datetime.now().strftime("%Y-%m-%d %H:%M"), mol_id=a.mol_id, anchor=str(anchor), status=status,
+                                                        n_imaginary=n_im, freq_dz=f_dz.tolist(), freq_composite=f_comp.tolist(), step_rms=step_rms,
+                                                        dft={k: v.tolist() for k, v in dft.items()}, spread=dict(dz=s_dz, tz=s_tz)), indent=1), encoding="utf-8")
+    print("\n".join(md))
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -301,10 +364,13 @@ def main() -> int:
     r.add_argument("dz_anchor"); r.add_argument("tz_anchor"); r.add_argument("mol_id"); r.add_argument("mp2_dz"); r.add_argument("mp2_tz"); r.add_argument("out_prefix")
     p = sub.add_parser("planeframe"); p.add_argument("geometry"); p.add_argument("out")
     m = sub.add_parser("merge"); m.add_argument("out"); m.add_argument("parts", nargs="+")
+    b = sub.add_parser("build", help="TASKS 28: the full composite anchor")
+    b.add_argument("anchor"); b.add_argument("mol_id"); b.add_argument("mp2_dz"); b.add_argument("mp2_tz"); b.add_argument("out_prefix")
+    b.add_argument("--planeframe", default=None, help="rows computed in this plane frame (cc_composite_full_check.py planeframe)")
     o = sub.add_parser("repair-oop")
     o.add_argument("anchor_dir"); o.add_argument("mol_id"); o.add_argument("planeframe"); o.add_argument("mp2_dz"); o.add_argument("mp2_tz"); o.add_argument("out_prefix")
     a = ap.parse_args()
-    return {"compute": compute, "read": read, "planeframe": planeframe, "merge": merge, "repair-oop": repair_oop}[a.cmd](a)
+    return {"compute": compute, "read": read, "planeframe": planeframe, "merge": merge, "repair-oop": repair_oop, "build": build}[a.cmd](a)
 
 
 if __name__ == "__main__":

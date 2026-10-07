@@ -119,3 +119,37 @@ def test_step_changes_only_the_out_of_plane_block(tmp_path):
     assert np.abs(D[np.ix_(ZI, ZI)] - 2.0 * H_r[np.ix_(ZI, ZI)]).max() < 1e-8   # step = (3 − 1) × the DZ out-of-plane block
     rec = json.loads((tmp_path / "rep.json").read_text(encoding="utf-8"))
     assert "repaired" in rec["verdict"]                                  # no corpus DFT values for mol_id 'none' → 'repaired but flagged'
+
+
+def test_build_full_composite_in_the_plane_frame(tmp_path, monkeypatch):
+    """The full composite: zero step reproduces the anchor; a step of (s − 1) × the DZ rows adds exactly that, rotated back from the plane frame."""
+    rng = np.random.default_rng(5)
+    x_tilt = _tilted(FLAT)
+    V, origin = C.plane_frame(x_tilt)
+    xr = (x_tilt - origin) @ V
+    ops = SYM.point_group_ops(SYMS, xr)
+    ks, reps = SYM.unique_displacements(ops, N)
+    H_r = _spd_hessian(rng)
+    H_r = SYM.reconstruct({i: H_r[3 * i:3 * i + 3] for i in reps}, ops, N)[0]
+    H_r = 0.5 * (H_r + H_r.T)
+    T = np.kron(np.eye(N), V)
+    H = T @ H_r @ T.T
+    plan = tmp_path / "plan"
+    mol = plan / "modules" / "05_support_predictor" / "corpus" / "molecules" / "M_test"
+    mol.mkdir(parents=True)
+    _write_geometry(mol / "geometry.json", x_tilt)
+    monkeypatch.setattr(C, "PLAN", plan)
+    anchor = tmp_path / "anchor.npz"
+    np.savez(anchor, H_raw=H, coords_bohr=x_tilt)
+    pf = tmp_path / "pf.json"
+    C.planeframe(SimpleNamespace(geometry=str(mol / "geometry.json"), out=str(pf)))
+    for name, s in (("dz", 1.0), ("tz", 2.5)):
+        np.savez(tmp_path / f"{name}.npz", ks=np.array(ks), coords_bohr=xr, step=0.005, basis=name, **{f"row_{k:02d}": s * H_r[k] for k in ks})
+    args = SimpleNamespace(anchor=str(anchor), mol_id="M_test", mp2_dz=str(tmp_path / "dz.npz"), mp2_tz=str(tmp_path / "tz.npz"),
+                           out_prefix=str(tmp_path / "comp"), planeframe=str(pf))
+    assert C.build(args) == 0
+    z = np.load(tmp_path / "comp.npz")
+    assert np.abs(z["H_raw"] - (H + 1.5 * H)).max() < 1e-8 and str(z["status"]) == "VALID" and "H_projected" in z.files
+    np.savez(tmp_path / "far.npz", ks=np.array(ks), coords_bohr=xr + 0.1, step=0.005, basis="x", **{f"row_{k:02d}": H_r[k] for k in ks})
+    with pytest.raises(SystemExit, match="other coordinates"):
+        C.build(SimpleNamespace(**{**vars(args), "mp2_tz": str(tmp_path / "far.npz")}))

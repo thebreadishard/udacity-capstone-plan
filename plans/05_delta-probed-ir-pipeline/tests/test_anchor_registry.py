@@ -74,3 +74,18 @@ def test_the_project_registry_is_consistent():
     if len(present) < len(entries):
         pytest.skip("anchor files not on this machine (CI)")
     assert AR.check_all(entries) == []
+
+
+def test_register_promotes_and_supersedes(tmp_path):
+    _npz(tmp_path, "a/h.npz")
+    _npz(tmp_path, "b/h.npz")
+    sf = tmp_path / "S.json"
+    AR.save([_entry(tmp_path, "a/h.npz")], sf)
+    new = dict(mol_id="A_x", name="x", path="b/h.npz", level="composite", tier="TZ", kind="composite", status="experimental", date="2026-10-08",
+               checks="—", note="—")
+    out = AR.register(new, promote=True, root=tmp_path, status_file=sf)
+    st = {e["path"]: e["status"] for e in out}
+    assert st == {"a/h.npz": "superseded", "b/h.npz": "carried"} and "superseded 2026-10-08 by b/h.npz" in out[0]["note"]
+    assert AR.load(sf) == out
+    with pytest.raises(SystemExit, match="already registered"):
+        AR.register(new, root=tmp_path, status_file=sf)

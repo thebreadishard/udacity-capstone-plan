@@ -1971,3 +1971,36 @@ concrete: analytic ωB97X and B3LYP Hessians for the training pool, then chain 3
 per molecule at 12 laptop threads → 750 molecules ≈ a month on the laptop, ≈ 3–4 days on a 32-core server (≈ €1.6/h × 90 h ≈ €150) — the user's word
 (TASKS, waiting). Prediction to register with chain 35: other-low 3.2 → ≤ 2.5 if label noise is the cause, unchanged if it is the input; the input design
 (TASKS 23) follows only in the second case or beside it on the user's word.
+
+
+### Amendment 7 October 07:1x — chain 33c: T3 on one tier of anchors, the composite (registered before the MP2 rows land; the user, 07:0x: 'ga zelfstandig door met je plan')
+
+**Why.** Chain 33's out-of-plane read (7 Oct 05:4x) moved both ways — naphthalene's CH-oop 34.6 → 44.7, pyridine's 24.7 → 8.3 — with four cc-pVDZ
+anchors and one anchor whose out-of-plane block was repaired. Test 2 put the cc-pVDZ anchor 25 / 138 / 70 / 41 cm⁻¹ from CCSD(T)/cc-pVTZ on benzene
+(ring-ip / CH-stretch / CH-oop / other), farther than B3LYP itself. Hypothesis H: the T3 transfer is limited by anchors on two levels at once, not by
+the network. The test: every anchor on one tier, the TZ tier of the anchor registry (`modules/ANCHORS.md`).
+
+**Anchors.** Benzene: the full CCSD(T)/cc-pVTZ anchor (carried). Naphthalene, pyridine, fluorobenzene, anthracene, benzonitrile: the full composite
+CC/DZ + [MP2/TZ − MP2/DZ] over every symmetry-unique displacement (`probes/mp2_rows_queue_ccx53.sh`, 202 jobs on the CCX53 since 04:49 UTC;
+`cc_composite_full_check.py build`; anthracene's rows in its plane frame with test 3's seven out-of-plane rows; the build reproduces test 2 on benzene,
+4.6 cm⁻¹ rms against the full CC/TZ). **Promotion rule (the registry):** a composite is registered `carried` (tier TZ) and the molecule's cc-pVDZ entry
+`superseded` when it is VALID and — for the two molecules whose cc-pVDZ anchor is IMAGINARY (anthracene, benzonitrile) — its two softest modes lie
+within 40 cm⁻¹ of ωB97X (test 3's line); otherwise it is registered `experimental` and the molecule is left out of the read. Benzene's composite
+(built 07:0x) is registered `experimental` beside the full anchor, for comparison only.
+
+**Run.** `m05/rungC_cc_transfer.py` with chain 34's three models, 300 epochs, lr 1e-3, head L2 1, every carried TZ-tier anchor (the registry refuses
+anything else); output `out/T3_tz_anchors_c34_seed*_<date>`; seed means by `probes/t3_seed_means.py`. Control: `out/T3_four_anchors_c34_seed*_2026-10-07`
+(benzene, fluorobenzene, pyridine, naphthalene at cc-pVDZ, same models and recipe).
+
+**Read-outs.** Per held-out anchor the corrected-ω rms per family (α-tuned; the head-L2 column beside it), all modes, the ring-coupling ratio. The four
+molecules common to both reads are compared family by family. Different targets (cc-pVDZ vs TZ tier) are compared on purpose: the question is how well
+the correction transfers to an anchor the fine-tune never saw, at each level.
+
+**Predictions.** CH-oop on the four common molecules falls with the TZ tier for at least three of them; the spread of CH-oop over the held-out anchors
+(max / min) shrinks from chain 33b's 5.4 (44.7 / 8.3); naphthalene's ring-ip lands at 4–6 cm⁻¹; CH-stretch stays ≤ 6.
+
+**Lines.** (H) *CH-oop lower with the TZ tier for ≥ 3 of the 4 common molecules and none worse by more than 5 cm⁻¹* → H supported: the TZ tier is
+the T3 standard from now on, and the anchor plan prices every new anchor as cc-pVDZ + the MP2 step. *Otherwise* → H not supported: the out-of-plane
+transfer is limited by the network or the stepping stone, not by the anchors' level; the next step is the out-of-plane input design (TASKS 23), not
+more anchor work. (Lever 1, unchanged from 3 Oct) *naphthalene ring-ip ≤ 4* → anchors are the lever, a sixth anchor is priced; *4–6* → slow;
+*> 6* → the anchor plan per family.
