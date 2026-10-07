@@ -40,6 +40,14 @@ for i in $(seq 1 11); do
     if [ -n "$end" ]; then new_marker "server $end" && exit 2
     elif [ "$workers" = "0" ]; then echo "ANOMALY $(t): no queue workers on the server and no end marker — $srv"; exit 1; fi
   fi
+  # 7 Oct 21:1x: the labels server (lever 2) — lanes alive until 'LANE n DONE'; a FAILED molecule is reported once per new count
+  lb=$($SSH 'cd /root/labels 2>/dev/null && echo "lanes $(pgrep -fc "[l]abels_lane.sh") ok $(cat lane_?.log 2>/dev/null | grep -c " ok ") failed $(cat lane_?.log 2>/dev/null | grep -c " FAILED ") done $(cat lane_?.log 2>/dev/null | grep -c "DONE:")"' 2>/dev/null)
+  if [ -n "$lb" ]; then
+    lanes=$(echo "$lb" | awk '{print $2}'); lfail=$(echo "$lb" | awk '{print $6}'); ldone=$(echo "$lb" | awk '{print $8}')
+    if [ "$ldone" = "4" ]; then new_marker "labels: all four lanes DONE — $lb" && exit 2; fi
+    if [ "$((lanes + ldone))" -lt 4 ]; then echo "ANOMALY $(t): labels lanes $lanes running + $ldone done < 4 — $lb"; exit 1; fi
+    [ "$lfail" != "0" ] && new_marker "labels failed count $lfail" > /dev/null && { echo "MARKER $(t): labels $lb"; exit 2; }
+  fi
   # 7 Oct 18:3x: the CPX62 with the 200 (lever 5) — both runners alive until their lists are done; a new 'failed' line is reported once
   np=$(ssh -o BatchMode=yes -o ConnectTimeout=20 -i $HOME/.ssh/hetzner_g_measure root@46.62.227.91 'C=/root/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor; echo "runners $(pgrep -fc "[r]un_corpus.py") done $(grep -c "] done" $C/corpus/nextpool_a.log $C/corpus_b/nextpool_b.log | cut -d: -f2 | paste -sd+ | bc) failed $(grep -c "] failed" $C/corpus/nextpool_a.log $C/corpus_b/nextpool_b.log | cut -d: -f2 | paste -sd+ | bc)"' 2>/dev/null)
   if [ -n "$np" ]; then
@@ -54,5 +62,5 @@ for i in $(seq 1 11); do
   done
   [ "$i" -lt 11 ] && sleep 600
 done
-echo "quiet cycle $(t): server $srv | CPX62 $np"
+echo "quiet cycle $(t): server $srv | CPX62 $np | labels $lb"
 exit 0
