@@ -2042,3 +2042,28 @@ rigid for the TZ targets; and the ring-coupling ratio rose above 1 on three of f
 match the composite's — whose ring couplings test 2 found 0.31 of the zero rule's error against CC/TZ on benzene, against 5.9 for cc-pVDZ). The next
 question this raises is whether the in-plane ring couplings of the TZ tier are learnable from the proxy (a pretraining-target question), registered
 separately before any run.
+
+
+### Amendment 7 October 21:3x — after chain 33c: the fine-tune mode of the TZ tier, and the ring couplings (registered before the shape numbers exist)
+
+**(A) The fine-tune mode at the TZ tier.** The α-only column was chosen on 2 October when the anchors were cc-pVDZ and the CC correction had the
+proxy's shape at another size; α scales that shape per pair class and nothing else. At the TZ tier the shape differs (test 2: the cc-pVDZ ring
+couplings were 5.9 × the zero rule's error against CC/TZ, the composite's 0.31), so the head's last layer has to move with it; the L2 pull toward the
+proxy-trained layer (λ = 1, T3b of 2 October) keeps it from fitting five anchors freely. **From now on T3 at the TZ tier reads the head-tuned column
+(λ = 1); the α-only column is reported beside it.** Chain 33c's lever-1 verdict on the α column ('per family') stays on record as provisional. The
+head-tuned 4.33 cm⁻¹ for naphthalene was seen before this choice was written, so it does not confirm it: **the confirmation is the next anchor that
+was not part of the choice** (pyridine's full cc-pVTZ anchor after the labels, or the next composite anchor), held out with the six TZ anchors in
+training — line: ring-ip ≤ 5 and CH-stretch ≤ 3 cm⁻¹ head-tuned → the mode stands; otherwise it is reopened.
+
+**(B) The ring couplings at the TZ tier.** Facts from the records before any new computation (seed means, `T3_tz_anchors_c34`, `T3_four_anchors_c34`):
+the true ring-coupling correction (the zero rule's error) is 1.6–1.8 cm⁻¹ rms at the TZ tier against 8.9–10.6 at cc-pVDZ — most of the cc-pVDZ
+coupling correction was the small basis; the network's absolute coupling error is 0.9–2.3 cm⁻¹ head-tuned and 1.0–2.6 α-tuned at the TZ tier (1.0–2.7
+and 1.2–2.9 at cc-pVDZ). The ratio above 1 is a small denominator, not a worse network. Two questions remain, with lines:
+(B1) *size* — pooled over the six anchors, head-tuned: network coupling rms ≤ zero rms + 0.5 cm⁻¹ → the couplings are immaterial at the TZ tier: the
+licence takes the zero rule (the DFT couplings) per family wherever the network is not better, and no lever is spent on them now; otherwise they are a
+target of their own.
+(B2) *shape* — `probes/t3_coupling_shape.py`: per anchor, the cosine between the proxy's ring-coupling correction (analytic ωB97X − B3LYP in the
+B3LYP modes) and the CC/TZ one (the carried composite minus B3LYP, same modes), over the upper-triangle ring pairs; beside it the same with the
+cc-pVDZ anchors where they are valid. *Pooled cosine ≥ 0.5* → the proxy teaches the coupling's shape and the fine-tune sets its size; *< 0.3* →
+the proxy teaches a different coupling: if (B1) also fails, the MP2 stepping stone on the 46 parents (registration 2, parked 6 October) is the lever
+it was parked for; *between* → noted, no lever.
