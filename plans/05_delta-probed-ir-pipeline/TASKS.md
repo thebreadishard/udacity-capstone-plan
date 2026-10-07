@@ -76,6 +76,7 @@ this file only says what is running or waiting and who acts.*
 
 | when | what | prepared by |
 |---|---|---|
+| ≈ 28 Oct (a few weeks after 7 Oct) | talk about the link the user saved on 7 Oct 18:4x — not urgent: https://openai.com/index/sharing-ai-progress-in-mathematics/ (not read yet; I read it before the conversation) | the user + me |
 | Sat evening | module 06 notebook run done 20:0x (6 of 7 read-outs met); hel1-23 stays for the standout chains through Monday (the user, 20:3x) → last pool done 28 Sep 06:39 UTC, everything fetched 08:4x: ~~hel1-23 may be deleted (the user)~~ deleted by the user 08:5x | done |
 | ~~Sun 20:00 → started 18:33~~ closed 18:2x (done 27 Sep; the two questions answered 27 Sep 19:5x, rows 12–13) | interim layer-B reading: fixed recipe read 18:3x (274 admitted; above both prediction sets on every hold-out, 0.61 / 0.64 / 0.70; outcome in the pre-registration); tuned protocol read 19:2x (0.59 / 0.65 / 0.65; level moves, picture not); §3.5 (iv) filled; left for tonight: the letter checklist after E8, and the user's two questions (B alone or A2 + B; re-hash B's order) with the rung C decision | me |
 | ~~Sun evening~~ closed 18:2x | rung C decision → verdict written 28 Sep 09:2x (row 16 above); E8 naphthalene → invalid at frozen 6, rerun at frozen 10 running (row 13 above) | the user + me |
