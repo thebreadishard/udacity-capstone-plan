@@ -71,6 +71,8 @@ Whenever the machine is busy or the user is away, the next item is the cheapest 
 
 ## 6. Log
 
+- **7 Oct, 17:4x — Spectrum Atlas republished on the user's word** with the anchors from the registry (decision 62): benzene's page names CCSD(T)/cc-pVTZ, anthracene's the out-of-plane composite; checked on the live pages.
+
 - **7 Oct, 17:2x — the MP2 rows queue: 201 of 202 jobs done by 15:16 UTC; one OOM-killed and re-run alone.** Four anthracene cc-pVTZ MP2 gradients at once exceeded the CCX53's 122 GB (the killed one held 38 GB resident; pyscf's max_memory 26000 is not a cap on the MP2 gradient). The job (anthracene k = 0) re-runs on one worker with max_memory 60000 since 15:24 UTC; the pipeline waits for the new end marker. Per-job times: anthracene cc-pVTZ 6,170–6,680 s on 8 threads with four lanes sharing the machine. Rule: anthracene-size MP2/TZ jobs ≤ 3 at once on 128 GB.
 
 - **7 Oct, 10:3x — chain 36 read: the hinge input is rejected.** On the analytic hold-out (a) targets other-low went 3.21 → 3.51 and the five hinge molecules up by 0.26 on average (only fluorene fell, 3.66 → 2.74); CH-stretch +0.45 and other +0.38 — every registered line says no. The per-atom hinge class is not what the low modes lack. Chain 36 superseded, chain 34 stays carried. The leading candidate for 'other' is now the training labels (chain 35, after the labels server). Outcome in `Design_2026-10-07_Low_Mode_Hinge_Input.md`.
