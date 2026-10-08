@@ -6,6 +6,10 @@ not provide — the diagonal is what energies can test).
 
     python probes/lno_curvature_check.py <anchor dir> <geometry.json> [--ks 0,1,2] [--max-k 6] [--threads 8] [--max-memory 8000] [--xtight] [--reuse-localisation]
 
+--spot (TASKS 36, 8 Oct 2026): spot-check anchors above the top rung — no canonical anchor exists; <anchor dir> is a work directory (created), the
+reference geometry is <geometry.json>, --ks is required, --step sets h (default 0.005 bohr, the anchors' step), and each row carries the LNO
+curvature only. The MP2 basis step at the same coordinates comes from `probes/cc_composite_full_check.py compute --ks`.
+
 --reuse-localisation (cell (b) of the LNO follow-up, registered 3 Oct 2026 23:3x): the reference point records its Pipek–Mezey orbitals and every
 fragment's LNO active space (probes/lno_frozen_spaces.py, saved as lno_spaces_<basis>_<thresh>.npz beside the cached reference energy); the displaced
 points carry those spaces instead of localising and truncating afresh, so the curvature is read inside one fixed correlation domain.
@@ -43,6 +47,8 @@ def main() -> int:
     ap.add_argument("--xtight", action="store_true", help="LNO thresholds 1e-7 / 1e-8 instead of 1e-6 / 1e-7")
     ap.add_argument("--reuse-localisation", action="store_true", help="carry the reference's LOs and LNO spaces to the displaced points (cell (b))")
     ap.add_argument("--out", default=None)
+    ap.add_argument("--spot", action="store_true", help="TASKS 36: no canonical anchor; <anchor> is a work directory, --ks required")
+    ap.add_argument("--step", type=float, default=0.005, help="--spot only: the displacement h in bohr (the anchors' step)")
     a = ap.parse_args()
     from pyscf import lib
     lib.num_threads(a.threads)
@@ -51,12 +57,18 @@ def main() -> int:
     L2.TIER = "t0"                                                     # tight thresholds, triples on
     g = json.load(open(a.geometry))
     sym = [s.capitalize() for s in g["symbols"]]
-    ref = np.load(os.path.join(a.anchor, "reference.npz"))
-    x0 = np.asarray(ref["coords_bohr"], float)
-    if np.abs(x0 - np.asarray(g["coords_bohr"], float)).max() > 1e-8:
-        raise SystemExit("geometry.json does not match the anchor's reference coordinates")
-    hz = np.load(os.path.join(a.anchor, "hessian_ccsd_t.npz"))
-    h = float(hz["step"]); H = hz["H_raw"]; e0_can = float(ref["energy"])
+    if a.spot:
+        if not a.ks:
+            raise SystemExit("--spot needs --ks (the coordinates chosen by the registered rule)")
+        os.makedirs(a.anchor, exist_ok=True)
+        x0 = np.asarray(g["coords_bohr"], float); h = a.step; H = None; e0_can = None
+    else:
+        ref = np.load(os.path.join(a.anchor, "reference.npz"))
+        x0 = np.asarray(ref["coords_bohr"], float)
+        if np.abs(x0 - np.asarray(g["coords_bohr"], float)).max() > 1e-8:
+            raise SystemExit("geometry.json does not match the anchor's reference coordinates")
+        hz = np.load(os.path.join(a.anchor, "hessian_ccsd_t.npz"))
+        h = float(hz["step"]); H = hz["H_raw"]; e0_can = float(ref["energy"])
     frozen = sum(1 for s in sym if s in FIRST_ROW)
     ks = [int(k) for k in a.ks.split(",")] if a.ks else available_ks(a.anchor)[: a.max_k]
     tagsp = "_reuse" if a.reuse_localisation else ""
@@ -88,6 +100,11 @@ def main() -> int:
             es[sgn] = L2.point(sym, x, a.basis, "tight", frozen, a.max_memory, logp, f"k{k:02d}{sgn}{'r' if a.reuse_localisation else ''}",
                                spaces={"mode": "replay", "store": store} if a.reuse_localisation else None)["e_tot_composite"]
         hkk_lno = (es["p"] + es["m"] - 2 * e0) / h ** 2
+        if a.spot:
+            rows.append(dict(k=k, atom=k // 3, xyz="xyz"[k % 3], element=sym[k // 3], oop_fraction=float(abs(normal[k % 3])), H_kk_lno=hkk_lno,
+                             dE_lno_pm=(es["p"] - es["m"])))
+            print(f"k {k:2d} ({sym[k // 3]}{k // 3} {'xyz'[k % 3]}, oop {abs(normal[k % 3]):.2f}): H_kk LNO {hkk_lno:.6f}", flush=True)
+            continue
         ep, em = float(np.load(os.path.join(a.anchor, f"ener_{k:02d}_p.npy"))), float(np.load(os.path.join(a.anchor, f"ener_{k:02d}_m.npy")))
         hkk_can = (ep + em - 2 * e0_can) / h ** 2
         rows.append(dict(k=k, atom=k // 3, xyz="xyz"[k % 3], element=sym[k // 3], oop_fraction=float(abs(normal[k % 3])), H_kk_hessian=float(H[k, k]),
@@ -96,6 +113,12 @@ def main() -> int:
                          dE_lno_pm=(es["p"] - es["m"]), dE_can_pm=(ep - em)))
         print(f"k {k:2d} ({sym[k // 3]}{k // 3} {'xyz'[k % 3]}, oop {abs(normal[k % 3]):.2f}): H_kk hessian {H[k, k]:.6f} | energy route {hkk_can:.6f} | LNO {hkk_lno:.6f} | Δ {rows[-1]['delta_lno_vs_hessian']:+.2e} "
               f"({100 * rows[-1]['rel']:+.2f} %)", flush=True)
+    if a.spot:
+        res = dict(date=datetime.now().strftime("%Y-%m-%d %H:%M"), mode="spot", workdir=a.anchor, geometry=a.geometry, basis=a.basis, frozen=frozen,
+                   step=h, thresholds=L2.THRESH["tight"], e0_lno_composite=e0, rows=rows, seconds=round(time.time() - t0), reference_record=rec0)
+        json.dump(res, open(out, "w"), indent=1)
+        print(f"LNO spot check: {len(rows)} coordinates; {res['seconds']} s → {out}")
+        return 0
     worst = max(rows, key=lambda r: abs(r["delta_lno_vs_hessian"]))
     res = dict(date=datetime.now().strftime("%Y-%m-%d %H:%M"), anchor=a.anchor, basis=a.basis, frozen=frozen, step=h, thresholds=L2.THRESH["tight"],
                spaces="reused (cell b)" if a.reuse_localisation else "fresh per point",
