@@ -6,7 +6,9 @@ lanes' id lists (largest molecules first), takes atom counts from the local corp
 per functional: p is fitted when the measured molecules span ≥ 5 atoms, otherwise bracketed by p = 3 and p = 4 (an analytic DFT Hessian scales
 between the two at this size). A functional not yet measured on a lane takes the ratio to B3LYP measured elsewhere, else 1.5 (bracketed 1.0–2.0).
 
-    python probes/labels_throughput.py <dir with lane logs and labels_ids_*.txt> <out stem> [--fetch] [--started "2026-10-07 18:47"]
+    python probes/labels_throughput.py <dir with lane logs and id lists> <out stem> [--fetch] [--lists 'small_ids_*.txt'] [--started …]
+
+Since 8 Oct 2026 07:1x the lanes run smallest-first lists (`small_ids_<n>.txt`; the original largest-first `labels_ids_<n>.txt` are kept).
 """
 from __future__ import annotations
 
@@ -80,13 +82,14 @@ def main() -> int:
     ap.add_argument("--fetch", action="store_true", help="scp the lane logs and id lists from the labels server into <dir> first")
     ap.add_argument("--started", default="2026-10-07 16:46,2026-10-07 18:47,2026-10-07 18:47,2026-10-07 18:47",
                     help="UTC start per lane, comma list (lane 0 began ungated at 16:46; the server's cost is counted from the earliest)")
+    ap.add_argument("--lists", default="small_ids_*.txt", help="the lanes' current id lists in <dir> (8 Oct: smallest first)")
     a = ap.parse_args()
     d = Path(a.dir)
     d.mkdir(parents=True, exist_ok=True)
     if a.fetch:
-        subprocess.run(["scp", "-q", "-o", "BatchMode=yes", "-i", str(KEY), f"{SERVER}:/root/labels/lane_*.log", f"{SERVER}:/root/labels/labels_ids_*.txt",
+        subprocess.run(["scp", "-q", "-o", "BatchMode=yes", "-i", str(KEY), f"{SERVER}:/root/labels/lane_*.log", f"{SERVER}:/root/labels/labels_ids_*.txt", f"{SERVER}:/root/labels/small_ids_*.txt",
                         str(d)], check=True)
-    lanes = {int(f.stem[-1]): [x.strip() for x in f.read_text().splitlines() if x.strip()] for f in sorted(d.glob("labels_ids_*.txt"))}
+    lanes = {int(f.stem[-1]): [x.strip() for x in f.read_text().splitlines() if x.strip()] for f in sorted(d.glob(a.lists))}
     done: dict = {}
     for f in sorted(d.glob("lane_?_molecules.log")):
         done.update(parse_molecule_log(f.read_text(encoding="utf-8", errors="replace")))
@@ -106,7 +109,7 @@ def main() -> int:
             total_lane_h = sum(rem.values()) + sum(lane_h)
             cases.append(dict(p=p, wb97x_over_b3lyp=r, remaining_lane_h=rem, finish_days_from_now=max(rem.values()) / 24,
                               server_days_total=(max(rem.values()) + elapsed_h) / 24, eur_total=(max(rem.values()) + elapsed_h) * EUR_PER_H,
-                              mol_per_lane_h=sum(len(v) for v in lanes.values()) / total_lane_h))
+                              mol_per_lane_h=len({i for v in lanes.values() for i in v} | set(complete)) / total_lane_h))
     md = [f"# Labels server throughput — {datetime.now():%Y-%m-%d %H:%M} (lanes started {a.started} UTC; the first {elapsed_h:.1f} h ago)", "",
           f"Measured: {len(done)} molecules with at least one functional, {len(complete)} complete. "
           + "; ".join(f"{i} ({atoms[i]} atoms): " + ", ".join(f"{k} {v:.0f} s" for k, v in done[i].items()) for i in done), "",

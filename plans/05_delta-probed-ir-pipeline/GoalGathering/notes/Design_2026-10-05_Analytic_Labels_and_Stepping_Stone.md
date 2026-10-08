@@ -35,6 +35,20 @@ chain 35 is carried (decision 57; version 1.2). *'other' falls by ≥ 0.3 but st
 designed on the analytic labels. *'other' falls by < 0.3* → the labels were not it; the input design is the next lever and the FD labels were good
 enough for the low modes.
 
+**Dated amendment, 8 October 07:2x — smallest first, and a half read that measures without judging (the user, 07:0x: "Ja, doe maar" to the
+smallest-first order; "Voorlopig wel meten, maar niet afkeuren").** The first-day read put the lanes at 0.41–0.53 molecules per lane-hour,
+below the 0.8 line (16–21 days, €330–425); a second server is out. Since 07:1x the four lanes run smallest-first lists
+(`probes/labels_lane_switch.sh`, `small_ids_<n>.txt`; the molecule each lane had in progress finished first, no lane ran two at once). The
+smallest half (≤ 22 atoms, 405 molecules) is 22–28 % of the cost, ≈ 4–6 days. **Where the low modes are** (`probes/low_modes_by_size.py`,
+`out/low_modes_by_size_2026-10-08.md`): the larger half holds 59 % of the labels list's other-low modes (20.3 per molecule against 14.0), and
+on the molecules with both routes its FD-against-analytic other-low error is 2.16 cm⁻¹ against 1.28 (8 and 7 molecules; benzene's corpus
+row, known noise since 29 Sep, left out) — ≈ 80 % of the low-mode label noise (count × error²) is in the larger half. **Hence:** *the half
+read* (chain 35's recipe on the pool with the analytic labels that exist then, against the same pool and recipe with FD labels) is measured and
+reported per family, other-low included, and **no line above applies to it — no rejection, no promotion**. One guard: a family other than
+'other' worse than its seed range at the half read means the pipeline is checked (the substitution, the loader count) before the lanes go on.
+*The full read* (every molecule of the list analytic) is the one the lines above apply to. Open, decided at the full read: the 200 merged on
+8 Oct (≈ 160 new pool molecules) are not in the labels list and stay FD unless they get labels of their own.
+
 ## Registration 2 — the stepping stone: MP2 against ωB97X
 
 **The question.** The network pretrains on the correction B3LYP → stepping stone; the anchors then tune α and the head (T3). The better stepping

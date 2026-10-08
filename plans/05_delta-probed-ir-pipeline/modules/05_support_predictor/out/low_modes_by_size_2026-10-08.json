@@ -1,0 +1,344 @@
+{
+ "date": "2026-10-08 07:18",
+ "split_atoms": 22,
+ "low": 700.0,
+ "molecules": {
+  "small": 391,
+  "large": 392
+ },
+ "mode_counts": {
+  "small": {
+   "ring-ip": 6736,
+   "CH-stretch": 2424,
+   "CH-oop": 1277,
+   "other-low": 5472,
+   "other-mid": 2118
+  },
+  "large": {
+   "ring-ip": 10325,
+   "CH-stretch": 3685,
+   "CH-oop": 925,
+   "other-low": 7939,
+   "other-mid": 3607
+  }
+ },
+ "floor_excluded": [
+  "A_8448043181"
+ ],
+ "floor_rows": {
+  "small": [
+   {
+    "id": "A_01f3186607",
+    "n_atoms": 18,
+    "n": {
+     "ring-ip": 18,
+     "CH-stretch": 8,
+     "CH-oop": 8,
+     "other-low": 10,
+     "other-mid": 4
+    },
+    "floor": {
+     "ring-ip": 1.9961218039030433,
+     "CH-stretch": 0.13511971527833413,
+     "CH-oop": 0.8287441984744782,
+     "other-low": 0.9254804227307676,
+     "other-mid": 0.6633066194658495
+    }
+   },
+   {
+    "id": "A_07cadc7923",
+    "n_atoms": 21,
+    "n": {
+     "ring-ip": 20,
+     "CH-stretch": 8,
+     "CH-oop": 9,
+     "other-low": 15,
+     "other-mid": 5
+    },
+    "floor": {
+     "ring-ip": 0.7091923732741992,
+     "CH-stretch": 0.08500999866688383,
+     "CH-oop": 2.252544482277117,
+     "other-low": 1.3341555174234456,
+     "other-mid": 1.0109402558976455
+    }
+   },
+   {
+    "id": "A_3100da3761",
+    "n_atoms": 13,
+    "n": {
+     "ring-ip": 12,
+     "CH-stretch": 5,
+     "CH-oop": 6,
+     "other-low": 8,
+     "other-mid": 2
+    },
+    "floor": {
+     "ring-ip": 1.5097865890092361,
+     "CH-stretch": 0.06201875901620763,
+     "CH-oop": 1.9646357002641806,
+     "other-low": 1.3564300843877743,
+     "other-mid": 1.19521832666937
+    }
+   },
+   {
+    "id": "A_6e858b26e5",
+    "n_atoms": 11,
+    "n": {
+     "ring-ip": 12,
+     "CH-stretch": 5,
+     "CH-oop": 6,
+     "other-low": 4,
+     "other-mid": 0
+    },
+    "floor": {
+     "ring-ip": 6.163383669443689,
+     "CH-stretch": 2.1168809153303068,
+     "CH-oop": 3.346157080427182,
+     "other-low": 1.6113938417972693
+    }
+   },
+   {
+    "id": "A_72b86c2331",
+    "n_atoms": 20,
+    "n": {
+     "ring-ip": 22,
+     "CH-stretch": 8,
+     "CH-oop": 8,
+     "other-low": 12,
+     "other-mid": 4
+    },
+    "floor": {
+     "ring-ip": 1.5053000799514984,
+     "CH-stretch": 0.08020994227868879,
+     "CH-oop": 1.3514442920973098,
+     "other-low": 0.9224068075673124,
+     "other-mid": 0.35079230948311635
+    }
+   },
+   {
+    "id": "A_fdc27f1bd1",
+    "n_atoms": 22,
+    "n": {
+     "ring-ip": 28,
+     "CH-stretch": 10,
+     "CH-oop": 0,
+     "other-low": 13,
+     "other-mid": 9
+    },
+    "floor": {
+     "ring-ip": 0.8504160893514491,
+     "CH-stretch": 0.08026274406850009,
+     "other-low": 1.3972748225978742,
+     "other-mid": 1.321450801835797
+    }
+   },
+   {
+    "id": "B_8b12a55d3a",
+    "n_atoms": 12,
+    "n": {
+     "ring-ip": 12,
+     "CH-stretch": 5,
+     "CH-oop": 5,
+     "other-low": 7,
+     "other-mid": 1
+    },
+    "floor": {
+     "ring-ip": 0.8576653193389723,
+     "CH-stretch": 0.08014558182010742,
+     "CH-oop": 3.661979105063014,
+     "other-low": 1.5967075609730983,
+     "other-mid": 0.3322762312402574
+    }
+   }
+  ],
+  "large": [
+   {
+    "id": "A2_13bafae8e0",
+    "n_atoms": 23,
+    "n": {
+     "ring-ip": 23,
+     "CH-stretch": 8,
+     "CH-oop": 0,
+     "other-low": 18,
+     "other-mid": 14
+    },
+    "floor": {
+     "ring-ip": 0.6345314406553506,
+     "CH-stretch": 0.354670435300492,
+     "other-low": 1.2982650999195833,
+     "other-mid": 1.5649431187985496
+    }
+   },
+   {
+    "id": "A2_22d0e8105c",
+    "n_atoms": 23,
+    "n": {
+     "ring-ip": 24,
+     "CH-stretch": 8,
+     "CH-oop": 0,
+     "other-low": 18,
+     "other-mid": 13
+    },
+    "floor": {
+     "ring-ip": 1.084866786799737,
+     "CH-stretch": 0.24021048615030158,
+     "other-low": 3.63824476938869,
+     "other-mid": 1.1926986802629465
+    }
+   },
+   {
+    "id": "A_08dde334d8",
+    "n_atoms": 24,
+    "n": {
+     "ring-ip": 31,
+     "CH-stretch": 10,
+     "CH-oop": 0,
+     "other-low": 17,
+     "other-mid": 8
+    },
+    "floor": {
+     "ring-ip": 1.0057129668986995,
+     "CH-stretch": 0.08764286341096898,
+     "other-low": 1.8621539141768104,
+     "other-mid": 1.3528868697676102
+    }
+   },
+   {
+    "id": "A_428228e5a5",
+    "n_atoms": 26,
+    "n": {
+     "ring-ip": 28,
+     "CH-stretch": 10,
+     "CH-oop": 11,
+     "other-low": 19,
+     "other-mid": 4
+    },
+    "floor": {
+     "ring-ip": 1.2489190007845943,
+     "CH-stretch": 0.37115681583754273,
+     "CH-oop": 2.0820477613083175,
+     "other-low": 0.9429633809032627,
+     "other-mid": 0.988973478208882
+    }
+   },
+   {
+    "id": "A_541c53d1a5",
+    "n_atoms": 24,
+    "n": {
+     "ring-ip": 25,
+     "CH-stretch": 10,
+     "CH-oop": 11,
+     "other-low": 15,
+     "other-mid": 5
+    },
+    "floor": {
+     "ring-ip": 1.535324461484348,
+     "CH-stretch": 0.10545184243685779,
+     "CH-oop": 1.7010215728462685,
+     "other-low": 1.9820528847116203,
+     "other-mid": 0.7261662559328781
+    }
+   },
+   {
+    "id": "A_a1e6ec1862",
+    "n_atoms": 24,
+    "n": {
+     "ring-ip": 24,
+     "CH-stretch": 10,
+     "CH-oop": 10,
+     "other-low": 16,
+     "other-mid": 6
+    },
+    "floor": {
+     "ring-ip": 1.9346648953808663,
+     "CH-stretch": 0.10104533850053173,
+     "CH-oop": 1.1254949965743397,
+     "other-low": 1.0501957869334997,
+     "other-mid": 0.6848655712047763
+    }
+   },
+   {
+    "id": "A_bce5bae234",
+    "n_atoms": 23,
+    "n": {
+     "ring-ip": 24,
+     "CH-stretch": 9,
+     "CH-oop": 10,
+     "other-low": 15,
+     "other-mid": 5
+    },
+    "floor": {
+     "ring-ip": 0.6063127488707062,
+     "CH-stretch": 0.04655859507727821,
+     "CH-oop": 3.1266266416948465,
+     "other-low": 2.5646771682447143,
+     "other-mid": 0.683149441287294
+    }
+   },
+   {
+    "id": "A_e72997e726",
+    "n_atoms": 23,
+    "n": {
+     "ring-ip": 28,
+     "CH-stretch": 10,
+     "CH-oop": 0,
+     "other-low": 14,
+     "other-mid": 11
+    },
+    "floor": {
+     "ring-ip": 1.4472680775874058,
+     "CH-stretch": 0.1587525736469477,
+     "other-low": 2.623312112453464,
+     "other-mid": 1.280905111974238
+    }
+   }
+  ]
+ },
+ "floor_pooled": {
+  "small": {
+   "ring-ip": [
+    2.278773853668272,
+    124
+   ],
+   "CH-stretch": [
+    0.6817898819066387,
+    49
+   ],
+   "CH-oop": [
+    2.3050729636751472,
+    42
+   ],
+   "other-low": [
+    1.2842836073403276,
+    69
+   ],
+   "other-mid": [
+    1.020700070617475,
+    25
+   ]
+  },
+  "large": {
+   "ring-ip": [
+    1.2602593155907484,
+    207
+   ],
+   "CH-stretch": [
+    0.21314032102798336,
+    75
+   ],
+   "CH-oop": [
+    2.126576174147239,
+    42
+   ],
+   "other-low": [
+    2.1602968204794397,
+    132
+   ],
+   "other-mid": [
+    1.2133502429576983,
+    66
+   ]
+  }
+ }
+}

@@ -40,7 +40,7 @@ for i in $(seq 1 11); do
     fi
   fi
   # the labels server (lever 2): 'bash labels_lane.sh' processes (not their bash -c wrappers) alive until 'LANE n DONE'
-  lb=$($LABELS 'cd /root/labels 2>/dev/null && echo "lanes $(pgrep -fc "^bash labels_lane.sh") ok $(cat lane_?.log 2>/dev/null | grep -c " ok ") failed $(cat lane_?.log 2>/dev/null | grep -c " FAILED ") done $(cat lane_?.log 2>/dev/null | grep -c "DONE:")"' 2>/dev/null)
+  lb=$($LABELS 'cd /root/labels 2>/dev/null && echo "lanes $(pgrep -fc "^bash (/root/labels/)?labels_lane(_switch)?\.sh") ok $(cat lane_?.log 2>/dev/null | grep -c " ok ") failed $(cat lane_?.log 2>/dev/null | grep -c " FAILED ") done $(cat lane_?.log 2>/dev/null | grep -c "DONE:")"' 2>/dev/null)
   if [ -z "$lb" ]; then
     fails=$((fails + 1)); [ "$fails" -ge 2 ] && { echo "ANOMALY $(t): labels server unreachable twice"; exit 1; }
   else
