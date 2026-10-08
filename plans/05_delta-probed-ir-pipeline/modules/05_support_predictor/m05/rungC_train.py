@@ -520,8 +520,9 @@ def molecule_tensors(i: str, m: dict, mol: dict, mol_dir: Path, cfg, cache_dir: 
 HYBRID_CTOR_KEYS = ("aggregation", "tensor_input", "sqm_scale", "n_pair_features", "hidden", "n_s", "n_v", "n_blocks")
 
 
-def save_hybrid_model(model: HybridDeltaFModel, path: Path, args: dict, n: int, seed: int) -> None:
-    """Lever 1 / T3 (2 Oct 2026): the trained hybrid model with everything needed to rebuild it — state (buffers included), aux settings, constructor arguments."""
+def save_hybrid_model(model: HybridDeltaFModel, path: Path, args: dict, n: int, seed: int, train_ids: list | None = None) -> None:
+    """Lever 1 / T3 (2 Oct 2026): the trained hybrid model with everything needed to rebuild it — state (buffers included), aux settings, constructor arguments.
+    train_ids (8 Oct 2026): the pool the model was trained on (inner validation included), so a later read does not re-derive it from a grown corpus."""
     ctor = dict(aggregation=args["aggregation"], tensor_input=bool(args["tensor_input"]), sqm_scale=bool(args["sqm_scale"]),
                 n_pair_features=int(model.n_pair_features), hidden=int(model.head[0].out_features), n_s=int(model.body.blocks[0].n_s),
                 n_v=int(model.body.n_v), n_blocks=len(model.body.blocks))
@@ -530,7 +531,8 @@ def save_hybrid_model(model: HybridDeltaFModel, path: Path, args: dict, n: int, 
                 "kring_weight": float(getattr(model, "kring_weight", 1.0)), "kdiag_weight": float(getattr(model, "kdiag_weight", 0.0)),
                 "kdiag_mode": getattr(model, "kdiag_mode", "all"),
                 "pattern": args["pattern"], "aux_target": args["aux_target"], "ls_lam": args["ls_lam"], "head": args["head"],
-                "n": n, "seed": seed, "args": args, "provenance": provenance()}, path)   # decision 55: commit + command in the model file
+                "n": n, "seed": seed, "args": args, "provenance": provenance(),                 # decision 55: commit + command in the model file
+                "train_ids": None if train_ids is None else list(train_ids)}, path)
 
 
 def load_hybrid_model(path: Path) -> tuple[HybridDeltaFModel, dict]:
@@ -715,7 +717,7 @@ def main() -> int:
             if a.save_model:
                 if a.head != "hybrid":
                     raise SystemExit("--save-model is written for the hybrid head (the model the CC transfer uses)")
-                save_hybrid_model(model, Path(f"{a.out_prefix}_model_n{n}_seed{seed}.pt"), vars(a), n, seed)
+                save_hybrid_model(model, Path(f"{a.out_prefix}_model_n{n}_seed{seed}.pt"), vars(a), n, seed, train_ids=tr)
                 log(f"  model saved: {a.out_prefix}_model_n{n}_seed{seed}.pt")
             out = {"seed": seed, "train_history": hist, "output_scale": model.scale, "class_scale": model.class_scale_values,
                    "aux_class_scale": (None if model.aux_class_scale is None else model.aux_class_scale.tolist()),

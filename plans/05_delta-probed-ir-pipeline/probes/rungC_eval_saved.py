@@ -28,6 +28,14 @@ from rungC_equivariant import load_molecule  # noqa: E402
 from rungC_train import load_corpus, load_hybrid_model, molecule_tensors, per_molecule_readouts, predictor, readouts, record_paths  # noqa: E402
 
 
+def training_ids(ck: dict, pool: list, admitted) -> tuple[list, str]:
+    """The model's training pool: the ids saved in the checkpoint (since 8 Oct 2026), restricted to admitted molecules; for older checkpoints the
+    first n of today's pool, which equals the training pool only while the corpus has not grown since the model was trained."""
+    if ck.get("train_ids"):
+        return [i for i in ck["train_ids"] if i in admitted], "checkpoint"
+    return pool[: ck["n"]], "pool order (checkpoint without training ids)"
+
+
 def split_holdout_b(test_b: list, frozen: list, admitted) -> tuple[list, list]:
     """(b) on the frozen list (restricted to admitted ids, in the loader's order where it has one), and (b+) = derived (b) ids not in the list."""
     keep = set(frozen)
@@ -55,7 +63,7 @@ def main() -> int:
     layers = ck["args"].get("pool_layers")
     if layers:                                                              # the trainer's --pool-layers filter, so `tr` is the training pool of the record
         pool = [i for i in pool if mols[i]["layer"] in set(layers.split(","))]
-    tr = pool[: ck["n"]]
+    tr, tr_source = training_ids(ck, pool, mols)
     b_plus = []
     if a.holdout_b_file:
         frozen = [s.strip() for s in open(a.holdout_b_file, encoding="utf-8") if s.strip() and not s.startswith("#")]
@@ -65,7 +73,7 @@ def main() -> int:
     model.eval()
     dF_of = predictor(model, tensors, mols)
     res = {"date": datetime.now().strftime("%Y-%m-%d %H:%M"), "model": a.model, "model_record": {k: ck[k] for k in ("pattern", "aux_mode", "aux_target", "n", "seed")},
-           "holdout_b_file": a.holdout_b_file, "use_analytic": a.use_analytic, "substituted_analytic": substituted, "n_train_ids": len(tr), "apt_molecules": sorted(i for i in mols if "apt" in mols[i])}
+           "holdout_b_file": a.holdout_b_file, "use_analytic": a.use_analytic, "substituted_analytic": substituted, "n_train_ids": len(tr), "train_ids_source": tr_source, "apt_molecules": sorted(i for i in mols if "apt" in mols[i])}
     lines = [f"# Saved model read on the hold-outs ({res['date']})", "", f"Model `{Path(a.model).name}` ({res['model_record']}); APTs on {len(res['apt_molecules'])} molecules.", "",
              "| hold-out | n | ring-coupling ratio | ω rms (cm⁻¹) | ΔH residual | spectrum overlap (zero rule) | intensity rel. rms (zero rule) | with APT |", "|---|---|---|---|---|---|---|---|"]
     for h, ids in [("a", test_a), ("b", test_b)] + ([("b+", b_plus)] if b_plus else []):

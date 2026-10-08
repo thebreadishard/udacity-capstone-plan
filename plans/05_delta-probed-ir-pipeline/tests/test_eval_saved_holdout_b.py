@@ -20,3 +20,12 @@ def test_split_holdout_b_freezes_the_list_and_separates_the_new_children():
 def test_split_holdout_b_refuses_a_list_with_no_admitted_id():
     with pytest.raises(SystemExit):
         ES.split_holdout_b(["b1"], ["x", "y"], admitted={"b1": 0})
+
+
+def test_training_ids_come_from_the_checkpoint_when_it_has_them():
+    """8 Oct 2026: after a merge, the first n of today's pool is no longer the model's training set; the checkpoint's own list is used."""
+    pool = ["new1", "p1", "p2", "p3"]
+    tr, src = ES.training_ids({"n": 2, "train_ids": ["p1", "p2", "gone"]}, pool, admitted={"p1": 0, "p2": 0, "p3": 0, "new1": 0})
+    assert tr == ["p1", "p2"] and src == "checkpoint"
+    tr, src = ES.training_ids({"n": 2}, pool, admitted={})
+    assert tr == ["new1", "p1"] and src.startswith("pool order")

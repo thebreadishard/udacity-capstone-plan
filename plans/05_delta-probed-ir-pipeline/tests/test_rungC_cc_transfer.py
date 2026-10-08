@@ -23,8 +23,9 @@ def test_save_and_load_round_trip(tmp_path):
     m.aux_class_scale = torch.rand(RH.N_PAIR_CLASSES)
     args = dict(aggregation="sum", tensor_input=False, sqm_scale=True, pattern="f", aux_target="projected", ls_lam=1e-3, head="hybrid")
     p = tmp_path / "m.pt"
-    RT.save_hybrid_model(m, p, args, n=750, seed=0)
+    RT.save_hybrid_model(m, p, args, n=750, seed=0, train_ids=["a", "b"])
     m2, ck = RT.load_hybrid_model(p)
+    assert ck["train_ids"] == ["a", "b"]                                   # 8 Oct 2026: the training pool travels with the model
     for k, v in m.state_dict().items():
         assert torch.equal(m2.state_dict()[k], v)
     assert (m2.aux_mode, m2.kring_weight, m2.kdiag_weight) == ("both", 0.3, 0.1) and torch.equal(m2.aux_class_scale, m.aux_class_scale)
