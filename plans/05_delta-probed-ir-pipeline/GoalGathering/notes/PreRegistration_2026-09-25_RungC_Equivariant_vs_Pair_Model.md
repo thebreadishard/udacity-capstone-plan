@@ -2144,3 +2144,29 @@ spread of the two chains' seeds on (a). Not read as a verdict, only noted for th
 fluoranthene) carry a five-membered carbocycle; the four-ring molecules that entered the pool are pyrene children (six-membered rings only).
 **Promotion (decision 57):** chain 37 is not better on both hold-outs in every family ('other' and CH-stretch higher), so chain 34 stays carried;
 chain 37's models are superseded and kept as the FD-label control of chain 35's half read on the merged pool.
+
+
+### Amendment 8 October 18:3x — chains 38 and 39: which family covers hold-out (b), and how far the correction carries in size (registered before they run)
+
+Both on chain 34's recipe (carried), the merged corpus of 8 October, three seeds, 8 laptop threads, after the cation gate releases the laptop
+(`probes/rungC_chains38_39_1009.sh`; design check first). Neither changes the carried model; their models are candidates and are read as such.
+
+**Chain 38 — the five-membered-ring families (TASKS 33).** Chain 37 showed that pyrene children do not move (b); chain 28 that removing a family
+hurts (b) (130 three-or-more-ring molecules out: (b) 0.349 → 0.411). (b)'s scaffolds, fluorene and fluoranthene, carry a five-membered ring; so do
+four pool families: acenaphthylene (14 children; carbocycle) and carbazole, dibenzofuran, dibenzothiophene (15, 16, 17; a heteroatom in the ring).
+*Ablation:* the pool without those 62 ids (`corpus/ablation_five_ring_families_2026-10-08.txt`; 59 are in the pool → 853). *Control:* the first
+853 of the full pool (912) in its hash order. Read: `rungC_eval_saved.py --holdout-b-file corpus/holdout_b_frozen_2026-10-08.txt` per seed, seed
+means. **Lines** on Δ = (b)ablation − (b)control: *Δ ≥ +0.03* → the five-membered-ring families cover (b): the next pool takes cyclopenta-fused
+families outside (b) (acenaphthylene to 60 children, acenaphthene, cyclopenta-fused pyrenes); *Δ < +0.015* → the five-membered ring is not what
+(b) needs; only (b)'s own scaffolds would cover it, and the generator (module 06) is asked for fluorene- and fluoranthene-like systems that are not
+in (b); *between* → noted, no lever. Reported beside: (b+), (a) and its four families.
+
+**Chain 39 — size extrapolation over a long distance (TASKS 35).** The mandate's targets are never anchors; the network must carry the correction
+from anchors of ≲ 35 atoms to PAHs of 50–100. The one measurement (25 Sep, E7 pair model, gap 1–8 atoms) gave ratio 0.59 against 0.36 within size
+(1.64×). *Size run:* train on the pool molecules of ≤ 20 atoms (370), hold out every pool molecule of ≥ 27 atoms as (s) (44) —
+`--size-test-min-atoms 27 --pool-max-atoms 20` (trainer switch of 8 Oct, three tests). *Control:* the same (s) held out, 370 molecules of any size
+below 27 (`--size-test-min-atoms 27 --sizes 370`). Read: ring-coupling ratio on (s), seed means, from the trainer records. **Lines** on
+q = ratio(size) / ratio(control): *q ≤ 1.3* → the correction carries over a 7–10-atom gap at modest cost: anchors may stop at the size ladder's
+top rung; *q ≥ 1.8* → a steep size penalty: the cheap corpus must reach the target sizes (pool 3's 25–40-atom neutrals become the decisive data)
+and the top rung matters more; *between* → noted; pool 3's neutrals as a held-out size set decide later. Reported beside: corrected ω and the four
+families on (s).

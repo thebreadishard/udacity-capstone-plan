@@ -429,6 +429,17 @@ def per_molecule_readouts(mols: dict, ids: list, tr: list, dF_of) -> dict:
     return out
 
 
+def size_split(pool: list, n_atoms: dict, test_min_atoms: int = 0, pool_max_atoms: int = 0) -> tuple[list, list]:
+    """TASKS 35 (8 Oct 2026), size extrapolation: (training pool, hold-out (s)). Pool molecules with ≥ test_min_atoms atoms become hold-out (s) and
+    never train; with pool_max_atoms the pool keeps only molecules of ≤ that many atoms. 0 switches either off. Order is kept."""
+    test = [i for i in pool if test_min_atoms and n_atoms[i] >= test_min_atoms]
+    held = set(test)
+    keep = [i for i in pool if i not in held and (not pool_max_atoms or n_atoms[i] <= pool_max_atoms)]
+    if test_min_atoms and not test:
+        raise SystemExit(f"--size-test-min-atoms {test_min_atoms}: no pool molecule is that large")
+    return keep, test
+
+
 def exclude_pool_ids(pool: list, path: str | None) -> tuple[list, list]:
     """Coverage ablation (2 Oct 2026): drop the ids listed one per line in `path` from the training pool; returns (pool, dropped). Refuses an empty
     intersection (a wrong file would silently run the full pool)."""
@@ -606,6 +617,8 @@ def main() -> int:
                     "over mode families of the per-family relative mse, so that CH-oop and other weigh as much as the C–H stretches; 'all' = one relative mse over all modes")
     ap.add_argument("--kdiag-weight", type=float, default=0.0, help="lever 5 (2 Oct 2026): weight of a term on the diagonal of K over all modes inside --aux both (0 = off)")
     ap.add_argument("--save-model", action="store_true", help="lever 1 / T3 (2 Oct 2026): save the trained hybrid model per size and seed next to the record")
+    ap.add_argument("--size-test-min-atoms", type=int, default=0, help="TASKS 35 (8 Oct 2026): pool molecules with at least this many atoms become hold-out (s) and never train")
+    ap.add_argument("--pool-max-atoms", type=int, default=0, help="TASKS 35: train only on pool molecules with at most this many atoms")
     ap.add_argument("--exclude-ids-file", default=None, help="coverage ablation (2 Oct 2026): ids (one per line) dropped from the training pool; hold-outs untouched")
     ap.add_argument("--aux", default="all", choices=["all", "pattern", "kring", "both"],
                     help="internal term: 'all' (registered) or 'pattern' (30 Sep 2026, rank 2 of the external reviews: the pair model's pattern only, one "
@@ -645,6 +658,10 @@ def main() -> int:
         keep = set(a.pool_layers.split(","))
         pool = [i for i in pool if mols[i]["layer"] in keep]
     pool, excluded = exclude_pool_ids(pool, a.exclude_ids_file)
+    pool, test_s = size_split(pool, nat, a.size_test_min_atoms, a.pool_max_atoms)
+    if test_s or a.pool_max_atoms:
+        log(f"size split: hold-out (s) {len(test_s)} molecules of ≥ {a.size_test_min_atoms} atoms; pool {len(pool)}"
+            + (f" of ≤ {a.pool_max_atoms} atoms" if a.pool_max_atoms else ""))
     if excluded:
         log(f"coverage ablation: {len(excluded)} pool molecules excluded ({Path(a.exclude_ids_file).name}); pool {len(pool)}")
     if a.split == "layerB":
@@ -655,7 +672,7 @@ def main() -> int:
     seeds = [int(s) for s in a.seeds.split(",")]
     if a.smoke:
         sizes, seeds, a.epochs = [min(5, len(pool))], [0], (a.epochs or 2)
-        test_a, test_b = test_a[:3], test_b[:3]
+        test_a, test_b, test_s = test_a[:3], test_b[:3], test_s[:3]
     if a.overfit_one:
         if a.overfit_one not in mols:
             raise SystemExit(f"--overfit-one {a.overfit_one}: not an admitted molecule of this corpus")
@@ -664,7 +681,7 @@ def main() -> int:
     a.epochs = a.epochs or 60
 
     # tensors for the equivariant model (Cartesian; the registered inputs), plus B⁺ for the auxiliary term and the read-out projection
-    needed = set(pool[: sizes[-1]]) | set(test_a) | set(test_b)
+    needed = set(pool[: sizes[-1]]) | set(test_a) | set(test_b) | set(test_s)
     if a.split == "layerB":
         needed |= {i for i, m in mols.items() if m["layer"] == "A2"}
     tensors, target_residuals = {}, {}
@@ -676,10 +693,11 @@ def main() -> int:
         f"parameters, {a.aggregation} aggregation"
         + (" — SMOKE" if a.smoke else ""))
 
-    tests = {"a": test_a, "b": test_b}
+    tests = {"a": test_a, "b": test_b} | ({"s": test_s} if test_s else {})
     res = dict(date=datetime.now().strftime("%Y-%m-%d %H:%M"), smoke=a.smoke, provenance=provenance(),
                model="rungC_equivariant C1 (from scratch; output scaled by the training set's RMS ΔH, or per entry class)",
-               excluded_ids=excluded, exclude_ids_file=a.exclude_ids_file,
+               excluded_ids=excluded, exclude_ids_file=a.exclude_ids_file, size_test_min_atoms=a.size_test_min_atoms,
+               pool_max_atoms=a.pool_max_atoms, holdout_s=test_s,
                n_molecules=len(mols), holdout_a=test_a, holdout_b=test_b, scaffold_cores=cores, pool=len(pool), pool_ids=pool, pool_layers=a.pool_layers,
                sizes=sizes, seeds=seeds, epochs=a.epochs, lr=a.lr, aux_weight=a.aux_weight, loss=a.loss, scale=a.scale, inner_val=a.inner_val,
                patience=a.patience, pretrained=a.pretrained, aggregation=a.aggregation, pretrained_elements=a.pretrained_elements,
