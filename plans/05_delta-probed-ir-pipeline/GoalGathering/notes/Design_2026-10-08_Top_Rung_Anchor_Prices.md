@@ -49,3 +49,22 @@ anchors (e)** on two or three molecules of 30–40 atoms (perylene, benzo[a]pyre
 diagonal at CC level, beside TASKS 35's test at the proxy level. Couplings above 26 atoms are a claim of the network, stated as such. Route (d)
 stays on the long-term list; it would be the lever that turns the spot checks into full anchors. Nothing runs before the user's word and a
 registration.
+
+## 5. Spot-check anchors — draft of the registration (the user, 8 Oct 20:1x: "Akkoord met de steekproef-ankers"; TASKS 36)
+
+*Draft, 8 Oct 20:5x. It becomes the registration when the two geometries exist and the coordinates are drawn — before the first LNO energy.*
+
+- **Molecules.** Perylene (32 atoms) and benzo[a]pyrene (32 atoms), from pool 3's neutral rows (their B3LYP geometries and FD Hessians).
+- **Coordinates, by rule.** Per molecule: the symmetry-unique atoms sorted by index; the first C and the first H of that list; for each of the two,
+  the out-of-plane direction and one in-plane direction (the plane from the smallest principal axis, as in `lno_curvature_check.py`) — four
+  Cartesian coordinates per molecule, chosen before any prediction is computed. Benzo[a]pyrene has no symmetry: its first C and first H by index.
+- **The check value.** H_kk(spot) = H_kk(LNO-CCSD(T)/cc-pVDZ, xtight, `--spot`) + [H_kk(MP2/cc-pVTZ) − H_kk(MP2/cc-pVDZ)]
+  (`cc_composite_full_check.py compute --ks`), the TZ tier of the anchors. Its own uncertainty: LNO's +0.27 % (8 Oct), stated beside every number.
+- **The prediction.** H_low(B3LYP, analytic where it exists) + ΔH of chain 34's models head-tuned on all six TZ-tier anchors (λ = 1, the standard of
+  amendment (A)), seed mean of three. Needs a T3 mode that fits on all anchors and predicts a molecule that is not an anchor (to be built and tested
+  first; today T3 only leaves one anchor out).
+- **Read.** Per coordinate and pooled: |H_kk(pred) − H_kk(spot)| against the zero rule |H_kk(B3LYP) − H_kk(spot)|. **Lines (draft):** ratio of
+  the pooled errors ≤ 0.5 → the network carries the CC correction of the diagonal beyond the anchors' size; ≥ 1.0 → it does not (no better than
+  the low level there); between → noted. A coordinate whose network error is within the LNO error bar counts as a pass for that coordinate.
+- **Cost.** 8 coordinates × 2 LNO energies at xtight (≈ 2–10 h each for 32 atoms; perylene's is measured on its reference point first) plus the MP2
+  rows; days on the laptop or the CCX53.
