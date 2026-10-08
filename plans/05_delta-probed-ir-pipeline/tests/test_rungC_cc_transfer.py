@@ -10,6 +10,7 @@ torch = pytest.importorskip("torch")
 PLAN = Path(__file__).resolve().parents[1]
 M05 = PLAN / "modules" / "05_support_predictor" / "m05"
 sys.path.insert(0, str(M05))
+import rungC_cc_transfer as RT_T  # noqa: E402
 import rungC_hybrid as RH  # noqa: E402
 import rungC_train as RT  # noqa: E402
 
@@ -156,3 +157,15 @@ def test_alpha_scaling_baseline_recovers_a_per_class_factor():
     tensors = {"m1": {"pat_cls": cls, "dF_true": torch.tensor(dF)}, "m2": {"pat_cls": cls, "dF_true": torch.tensor(2 * dF)}, "held": {"pat_cls": cls}}
     pred = CT.alpha_scaling_baseline(mols, tensors, ["m1", "m2"], "held")
     assert np.allclose(pred, 3 * dF)
+
+
+def test_load_cc_apt_refuses_an_apt_from_another_geometry(tmp_path):
+    """TASKS 32 (8 Oct 2026): the intensity read-out takes a CC APT only if it was computed at the corpus geometry of the molecule."""
+    import json
+    x = np.arange(9.0).reshape(3, 3)
+    (tmp_path / "geometry.json").write_text(json.dumps({"coords_bohr": x.tolist()}), encoding="utf-8")
+    np.savez(tmp_path / "ok.npz", apt=np.ones((3, 9)), coords_bohr=x)
+    np.savez(tmp_path / "far.npz", apt=np.ones((3, 9)), coords_bohr=x + 1e-3)
+    assert RT_T.load_cc_apt(tmp_path / "ok.npz", tmp_path).shape == (3, 9)
+    with pytest.raises(SystemExit):
+        RT_T.load_cc_apt(tmp_path / "far.npz", tmp_path)

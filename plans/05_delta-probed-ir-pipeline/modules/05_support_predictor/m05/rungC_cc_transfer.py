@@ -27,6 +27,7 @@ import e7_rungB_reread_analytic as RR  # noqa: E402
 import e7_t2_posthoc as PH  # noqa: E402
 import e7_t2_sqm as T2  # noqa: E402
 import model_registry as MR  # noqa: E402
+import rungC_intensities as RI  # noqa: E402
 from learning_curve_layerA import AMU2AU, HARTREE2CM, normal_modes  # noqa: E402
 from rungC_equivariant import Z_OF, charge_index  # noqa: E402
 from rungC_train import (  # noqa: E402
@@ -59,6 +60,17 @@ def substitute_cc(m: dict, lo_npz: Path, cc_npz: Path) -> dict:
         raise RuntimeError(f"mode count changed ({len(m['family'])} vs {len(f)})")
     m.update(V=V, w=w, freq=f, K=K, target=np.diag(K).astype(np.float32), F_low=Fl, F_high=Fh, H_low=lo, dH_true=dH, high_level="ccsd_t", cc_file=str(cc_npz))
     return m
+
+
+def load_cc_apt(apt_npz: Path, mol_dir: Path, tol: float = 1e-6) -> np.ndarray:
+    """TASKS 32 (8 Oct 2026): a CC atomic polar tensor (3 × 3N, from `cc_dipole_capture` in the E8 run) for the intensity read-out; refused unless
+    it was computed at the corpus geometry the normal modes come from (max coordinate difference ≤ tol bohr)."""
+    z = np.load(apt_npz)
+    g = json.load(open(mol_dir / "geometry.json", encoding="utf-8"))
+    d = float(np.abs(np.asarray(z["coords_bohr"], float) - np.asarray(g["coords_bohr"], float)).max())
+    if d > tol:
+        raise SystemExit(f"{apt_npz}: computed {d:.1e} bohr away from {mol_dir.name}'s corpus geometry — not this molecule's APT")
+    return np.asarray(z["apt"], float)
 
 
 def loaded_molecule(mol_dir: Path, m: dict) -> dict:
@@ -172,6 +184,8 @@ def main() -> int:
     ap.add_argument("--head-l2", type=float, default=0.0, help="T3b (2 Oct 2026): L2 penalty toward the proxy-trained last layer; > 0 adds the column network_head_l2")
     ap.add_argument("--lora-rank", type=int, default=0, help="lever 6 (3 Oct 2026): α plus a rank-r adapter on the head's middle layer; > 0 adds the column network_lora")
     ap.add_argument("--threads", type=int, default=4)
+    ap.add_argument("--apt", action="append", default=[], help="TASKS 32 (8 Oct 2026): <corpus id>=<apt_ccsd_t.npz> — the held-out anchor's "
+                    "intensity read-out with its CC APT")
     ap.add_argument("--allow-any-model", action="store_true", help="decision 55 (3 Oct 2026): use a model whose registry status is not 'carried' — name it in the record")
     ap.add_argument("--allow-any-anchor", action="store_true", help="7 Oct 2026: use an anchor file that is not its molecule's carried entry in the anchor "
                     "registry (modules/ANCHORS.md) — named in the record")
@@ -198,6 +212,7 @@ def main() -> int:
         substitute_cc(mols[i], lo, Path(cc))
         tensors[i] = molecule_tensors(i, loaded_molecule(d, mols[i]), mols[i], d, cfg, Path(a.out_prefix).parent / "ls_targets")
     ids = sorted(anchors)
+    apts = {i: load_cc_apt(Path(p), mdir / i) for i, p in (s.split("=", 1) for s in a.apt)}
     res = {"date": datetime.now().strftime("%Y-%m-%d %H:%M"), "model": a.model, "model_record": {k: ck[k] for k in ("pattern", "aux_mode", "aux_target", "n", "seed")},
            "anchors": anchors, "anchor_registry": {i: (dict(level=e["level"], tier=e["tier"], sha16=e["sha16"]) if e else "not carried (--allow-any-anchor)") for i, e in found.items()}, "tier": tier, "low_level": lows, "epochs": a.epochs, "lr": a.lr, "aux_weight": a.aux_weight, "head_l2": a.head_l2, "lora_rank": a.lora_rank, "folds": {}}
     keep = ("coupling_ratio", "coupling_rms", "coupling_zero_rms", "corrected_freq_rms", "corrected_freq_rms_zero_rule", "dH_residual_ratio", "diag_rms")
@@ -205,6 +220,9 @@ def main() -> int:
     def read(held, tr, dF_of):
         r = {k: v for k, v in readouts(mols, [held], tr, dF_of).items() if k in keep}
         r["freq_rms_by_family"] = family_freq_rms(mols[held], PH.k_of(mols[held], dF_of(held)))
+        if held in apts:                                                # TASKS 32: the intensities with the anchor's own CC APT
+            B = mols[held]["B"]
+            r["intensity"] = RI.intensity_readout(mols[held]["H_low"], mols[held]["dH_true"], B.T @ dF_of(held) @ B, mols[held]["masses"], apts[held])
         return r
 
     for held in ids:
@@ -238,6 +256,9 @@ def main() -> int:
             lines.append(f"| {held} | {label} | " + " | ".join(f"{f[c][key]:.2f}" for c in cols) + " |")
         for fam in ("ring-ip", "CH-stretch", "CH-oop", "other"):
             lines.append(f"| {held} | ω rms {fam} (cm⁻¹) | " + " | ".join(f"{f[c]['freq_rms_by_family'].get(fam, float('nan')):.2f}" for c in cols) + " |")
+        if "intensity" in f["network_head"]:
+            for key, label in (("spectrum_overlap", "spectrum overlap (CC APT)"), ("intensity_rel_rms", "intensity rel. rms (CC APT)")):
+                lines.append(f"| {held} | {label} | " + " | ".join(f"{f[c]['intensity'][key]:.3f}" for c in cols) + " |")
         fams = f["network_head"]["diag_rms"]
         lines.append(f"| {held} | per-family diag rms, head tuned | — | — | — | — | " + ", ".join(f"{k} {v:.1f}" for k, v in fams.items()) + " |")
     lines += ["", f"{res['seconds']} s."]

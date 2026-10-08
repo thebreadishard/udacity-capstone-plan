@@ -6,13 +6,13 @@
 #   labels server (CCX53) — four lanes alive until "LANE n DONE"; a new FAILED count reported once; ssh unreachable twice in a row;
 #   laptop — chain 37 (probes/rungC_chain37_1008.sh, Git Bash) alive until its read marker; its (C37) markers reported once.
 #   CPX62 — pool 3 batch 1's two runners (8 Oct 02:57): alive until their exit files; a new failed count reported once.
-#   bash probes/watch_1009.sh   (8 Oct 18:4x: watch_1008.sh plus chains 38/39)
+#   bash probes/watch_1009.sh   (8 Oct 17:5x: watch_1008.sh plus chains 38/39)
 set -uo pipefail
 # no-set-e: every check decides its own exit
 P=/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline
 LOG3=$P/probes/results_m1/lno_extra_k2_2026-10-07.log
 LOG37=$P/probes/results_m1/chain37_2026-10-08.log
-LOG38=$P/probes/results_m1/chains38_39_2026-10-09.log   # 8 Oct 18:3x: chains 38/39 (markers (C38))
+LOG38=$P/probes/results_m1/chains38_39_2026-10-09.log   # 8 Oct 17:5x: chains 38/39 (markers (C38))
 LOGG=$P/probes/results_m1/cation_gate_2026-10-08.log   # 8 Oct 11:3x: the P3-2 cation gate (markers (G))
 SEEN=/c/Users/thebr/AppData/Local/Temp/claude/C--Users-thebr-Documents-CapstonePlan/080ff7ed-d45b-451f-8c06-e90bcbbe88a0/scratchpad/watch_1007_seen.txt
 KEY=$HOME/.ssh/hetzner_g_measure

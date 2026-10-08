@@ -2146,7 +2146,7 @@ fluoranthene) carry a five-membered carbocycle; the four-ring molecules that ent
 chain 37's models are superseded and kept as the FD-label control of chain 35's half read on the merged pool.
 
 
-### Amendment 8 October 18:3x — chains 38 and 39: which family covers hold-out (b), and how far the correction carries in size (registered before they run)
+### Amendment 8 October 17:5x — chains 38 and 39: which family covers hold-out (b), and how far the correction carries in size (registered before they run)
 
 Both on chain 34's recipe (carried), the merged corpus of 8 October, three seeds, 8 laptop threads, after the cation gate releases the laptop
 (`probes/rungC_chains38_39_1009.sh`; design check first). Neither changes the carried model; their models are candidates and are read as such.
@@ -2170,3 +2170,11 @@ q = ratio(size) / ratio(control): *q ≤ 1.3* → the correction carries over a 
 top rung; *q ≥ 1.8* → a steep size penalty: the cheap corpus must reach the target sizes (pool 3's 25–40-atom neutrals become the decisive data)
 and the top rung matters more; *between* → noted; pool 3's neutrals as a held-out size set decide later. Reported beside: corrected ω and the four
 families on (s).
+
+**Amendment 8 October 18:0x — read-out (3) of the 3 October registration at the TZ tier (TASKS 32; registered before it runs).** The 3 Oct
+registration named three read-outs; (1) and (2) were read (the second term 0.205), (3) — the network's intensity read-out on benzene with the CC
+APT against the CC truth — was not, because T3 could not read intensities. `rungC_cc_transfer.py --apt <id>=<npz>` (8 Oct; the APT is refused unless
+computed at the corpus geometry; test) now does. Run: chain 33c's T3 at the TZ tier again with benzene's CC/TZ APT (`apt_ccsd_t.npz` of the full
+CCSD(T)/cc-pVTZ run), chain 34's three models, `probes/t3_intensity_benzene_1009.sh`, after chains 38/39. **Line, as registered on 3 Oct:** the
+head-tuned column (the TZ-tier standard, amendment (A)) keeps the intensity rel. rms ≤ 0.25 on held-out benzene, seed mean. Reported beside: the
+spectrum overlap, the zero rule, every column. One molecule: a first number, not a family claim. *(Clock note: the two run scripts' header comments say 18:3x and 19:0x; the clock read 18:00 when this amendment was written — the stamps here are the corrected ones; the scripts were already running and were not edited.)*
