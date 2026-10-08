@@ -50,7 +50,17 @@ def anchored_from_registry(plan: str) -> tuple[dict, dict]:
     p = os.path.join(plan, "modules", "05_support_predictor", "out", "ANCHORS_STATUS.json")
     entries = json.load(open(p, encoding="utf-8"))["anchors"]
     carried = [e for e in entries if e["status"] == "carried"]
-    return {e["mol_id"]: [e["path"]] for e in carried}, {e["mol_id"]: e["level"] for e in carried}
+    return ({e["mol_id"]: [e["path"]] + READINGS.get(e["mol_id"], []) for e in carried},
+            {e["mol_id"]: e["level"] for e in carried})
+
+
+# The readings of a molecule's coupled-cluster data (documents, not Hessians), listed after the registry's file: module 08's certificate reads the
+# per-family deviation of the composite from CCSD(T) out of benzene's R0 table (8 Oct 2026: dropped by the 7 Oct switch, restored here).
+READINGS = {
+    "A_8448043181": ["probes/results_m1/e8_benzene_ccpvdz_tlambda/E8_locality_benzene.md", "probes/results_m1/R0_DIAGONAL_READING_2026-09-22.md"],
+    "A_01f3186607": ["probes/results_m1/e8_naphthalene_ccpvdz_tlambda_2026-10-02/E8_locality_naphthalene.md",
+                     "probes/results_m1/M3_TZ_MODE22_READING_2026-09-23.md"],
+}
 
 
 # The hand list this registry replaced (2 Oct 2026), kept for the record of what the Atlas showed until 7 Oct: the four CCSD(T)/cc-pVDZ Hessians.

@@ -1,14 +1,14 @@
 {
- "date": "2026-10-05 14:54",
+ "date": "2026-10-08 11:21",
  "catalogue": {
-  "n": 11322,
-  "built_utc": "2026-10-02T15:12:11Z",
+  "n": 13714,
+  "built_utc": "2026-10-08T09:21:35Z",
   "rung_counts": {
-   "listed": 10475,
-   "cheap_level_done": 843,
+   "listed": 12668,
+   "cheap_level_done": 1040,
    "correction_predicted": 0,
    "spectrum_predicted": 0,
-   "anchored": 3,
+   "anchored": 5,
    "validated": 1
   }
  },

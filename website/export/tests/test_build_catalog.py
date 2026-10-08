@@ -84,3 +84,10 @@ def test_anchored_rows_follow_the_registry(built):
         if row["rung"] >= 4:
             assert row["evidence"][0] == ev[mid][0] and row["anchor_level"] == level[mid]
     assert level.get("A_8448043181") == "CCSD(T)/cc-pVTZ"
+
+
+def test_anchor_readings_travel_with_the_registry_file(built):
+    """8 Oct 2026: benzene's R0 diagonal reading stays in its evidence after the registry's Hessian (module 08's certificate reads it)."""
+    out, _ = built
+    b = {r["id"]: r for r in json.load(open(out / "catalog.json", encoding="utf-8"))}["A_8448043181"]
+    assert any(f.endswith("R0_DIAGONAL_READING_2026-09-22.md") for f in b["evidence"][1:])
