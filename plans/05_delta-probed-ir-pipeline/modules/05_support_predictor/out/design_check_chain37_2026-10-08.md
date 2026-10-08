@@ -1,4 +1,4 @@
-# Design check — out/design_check_chain37_2026-10-08 (2026-10-08 02:42)
+# Design check — out/design_check_chain37_2026-10-08 (2026-10-08 06:23)
 
 body: fresh body, sum aggregation, seed 0; target: 1046 molecules under `corpus/molecules`
 
@@ -15,4 +15,4 @@ charge rows: 0 cation rows, 0 without a charge-state index, body charge input Tr
 
 verdict: **PASS** — finite True, worst output 45.4 (limit 1000), feature-scale ratio across the extremes 1.33 (limit 3)
 
-4.5 s
+1.7 s

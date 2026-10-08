@@ -2124,3 +2124,23 @@ on a sample before reading further. Reported beside the lines, not read against 
 the four families on (a), and the per-kind error map on both trainer records (`probes/rungC_error_map.py`; the 4ar-fused kinds expected to fall by
 ≥ 0.05). The new models enter the registry as `candidate` in the chain's own step (`model_registry.py --add-candidates`, 8 Oct: chain 36's read was
 refused on 7 Oct when that was done by hand). **Run:** `probes/rungC_chain37_1008.sh`, after the LNO cells release the laptop (≈ 08:00), ≈ 4–5 h.
+
+**Outcome, 8 October 09:4x (`out/read_chain37_coverage_2026-10-08.md`, `out/read_chain34_frozenb_2026-10-08.md`, the per-seed
+`E7_rungC_chain3{4,7}_eval_frozenb_2026-10-08_seed{0,1,2}.md`, `out/error_map_chain3{4,7}_2026-10-08/`; training 06:23–09:16, reads to 09:21).**
+Seed means (seed ranges), chain 37 against chain 34, both re-read the same way on the merged corpus:
+
+| | chain 34 (750) | chain 37 (912) |
+|---|---|---|
+| (b), frozen 39, ratio | 0.330 (0.326–0.332) | **0.325 (0.315–0.336)** |
+| (b+), the 30 new fluoranthene children, ratio | 0.354 (0.348–0.359) | 0.353 (0.342–0.367) |
+| (a), ratio | 0.192 (0.190–0.194) | 0.182 (0.177–0.188) |
+| (a) ring-ip / CH-stretch / CH-oop / other (cm⁻¹) | 1.82 / 1.25 / 2.36 / 3.35 | 1.78 / 1.35 / 2.15 / 3.49 |
+| (b) ring-ip / CH-stretch / CH-oop / other (cm⁻¹) | 2.62 / 2.57 / 3.81 / 6.03 | 2.58 / 2.80 / 3.59 / 6.43 |
+
+**As registered: (b) falls by 0.005, less than 0.03 → *count, not coverage*: the scaffold hypothesis is dropped for the next pool.** The per-kind
+map agrees: the 4ar-fused kinds move by −0.04 to +0.03, none by the predicted ≥ 0.05. (a) improves a little (ratio 0.192 → 0.182, outside
+chain 34's seed range; CH-oop 2.36 → 2.15) while 'other' moves up on both hold-outs (3.35 → 3.49 on (a), 6.03 → 6.43 on (b)), within the
+spread of the two chains' seeds on (a). Not read as a verdict, only noted for the next design: the hold-out (b) scaffolds (fluorene,
+fluoranthene) carry a five-membered carbocycle; the four-ring molecules that entered the pool are pyrene children (six-membered rings only).
+**Promotion (decision 57):** chain 37 is not better on both hold-outs in every family ('other' and CH-stretch higher), so chain 34 stays carried;
+chain 37's models are superseded and kept as the FD-label control of chain 35's half read on the merged pool.

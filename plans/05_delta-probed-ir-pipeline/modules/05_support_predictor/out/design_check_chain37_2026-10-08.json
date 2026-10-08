@@ -1,12 +1,12 @@
 {
- "date": "2026-10-08 02:42",
+ "date": "2026-10-08 06:23",
  "provenance": {
-  "timestamp_utc": "2026-10-08 00:42:52",
+  "timestamp_utc": "2026-10-08 04:23:12",
   "host": "Asus18",
   "python": "3.14.6",
   "numpy": "2.5.1",
   "command": "design_check.py corpus/molecules --aggregation sum --out out/design_check_chain37_2026-10-08",
-  "commit": "bc1798fa2c64f397ab898fa33e6467a271dc6e41",
+  "commit": "2fd304ebfee2abc94abaa15ce5086f0d39bba7b0",
   "dirty": "yes"
  },
  "molecules": "corpus/molecules",
@@ -88,5 +88,5 @@
   "body_has_charge_input": true,
   "pass": true
  },
- "seconds": 4.5
+ "seconds": 1.7
 }
