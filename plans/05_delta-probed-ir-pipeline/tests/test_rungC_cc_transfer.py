@@ -169,3 +169,8 @@ def test_load_cc_apt_refuses_an_apt_from_another_geometry(tmp_path):
     assert RT_T.load_cc_apt(tmp_path / "ok.npz", tmp_path).shape == (3, 9)
     with pytest.raises(SystemExit):
         RT_T.load_cc_apt(tmp_path / "far.npz", tmp_path)
+
+
+def test_fit_mode_follows_the_tz_tier_standard():
+    """TASKS 36 (8 Oct 2026): the fit on all anchors uses the head-tuned column with the L2 pull when it is set (amendment (A))."""
+    assert RT_T.fit_mode(1.0) == "head_l2" and RT_T.fit_mode(0.0) == "head"

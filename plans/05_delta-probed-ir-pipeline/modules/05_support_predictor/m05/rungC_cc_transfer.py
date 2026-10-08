@@ -73,6 +73,18 @@ def load_cc_apt(apt_npz: Path, mol_dir: Path, tol: float = 1e-6) -> np.ndarray:
     return np.asarray(z["apt"], float)
 
 
+def predict_cartesian(model, t: dict) -> np.ndarray:
+    """TASKS 36: the model's Cartesian ΔH for one molecule's tensors (the quantity the spot checks compare after adding the low level)."""
+    model.eval()
+    with torch.no_grad():
+        return model(t["Z"], t["pos"], t["H_low"], t).numpy().astype(float)
+
+
+def fit_mode(head_l2: float) -> str:
+    """The fine-tune mode of a fit on all anchors: the TZ-tier standard (amendment (A), 7 Oct 2026) — head-tuned with the L2 pull when it is set."""
+    return "head_l2" if head_l2 > 0 else "head"
+
+
 def loaded_molecule(mol_dir: Path, m: dict) -> dict:
     """What `rungC_equivariant.load_molecule` returns, built from a (CC-substituted) corpus entry."""
     g = json.load(open(mol_dir / "geometry.json", encoding="utf-8"))
@@ -184,6 +196,9 @@ def main() -> int:
     ap.add_argument("--head-l2", type=float, default=0.0, help="T3b (2 Oct 2026): L2 penalty toward the proxy-trained last layer; > 0 adds the column network_head_l2")
     ap.add_argument("--lora-rank", type=int, default=0, help="lever 6 (3 Oct 2026): α plus a rank-r adapter on the head's middle layer; > 0 adds the column network_lora")
     ap.add_argument("--threads", type=int, default=4)
+    ap.add_argument("--predict", action="append", default=[], help="TASKS 36 (8 Oct 2026): a corpus id that is not an anchor — fit on all anchors "
+                    "and write its predicted ΔH to <out_prefix>_predict_<id>.npz")
+    ap.add_argument("--skip-folds", action="store_true", help="with --predict: no leave-one-anchor-out read, only the fit on all anchors")
     ap.add_argument("--apt", action="append", default=[], help="TASKS 32 (8 Oct 2026): <corpus id>=<apt_ccsd_t.npz> — the held-out anchor's "
                     "intensity read-out with its CC APT")
     ap.add_argument("--allow-any-model", action="store_true", help="decision 55 (3 Oct 2026): use a model whose registry status is not 'carried' — name it in the record")
@@ -225,7 +240,7 @@ def main() -> int:
             r["intensity"] = RI.intensity_readout(mols[held]["H_low"], mols[held]["dH_true"], B.T @ dF_of(held) @ B, mols[held]["masses"], apts[held])
         return r
 
-    for held in ids:
+    for held in ([] if a.skip_folds else ids):
         tr = [i for i in ids if i != held]
         fold = {"train": tr}
         fold["zero_rule"] = read(held, tr, lambda i: np.zeros_like(mols[i]["F_low"]))
@@ -242,6 +257,26 @@ def main() -> int:
               f"{fold['network_alpha']['corrected_freq_rms']:.2f} | head tuned {fold['network_head']['coupling_ratio']:.2f} / {fold['network_head']['corrected_freq_rms']:.2f}"
               + (f" | head L2 {a.head_l2:g}: {fold['network_head_l2']['coupling_ratio']:.2f} / {fold['network_head_l2']['freq_rms_by_family'].get('ring-ip', float('nan')):.2f} ring-ip" if a.head_l2 > 0 else "")
               + (f" | lora r{a.lora_rank}: {fold['network_lora']['coupling_ratio']:.2f} / {fold['network_lora']['freq_rms_by_family'].get('ring-ip', float('nan')):.2f} ring-ip" if a.lora_rank > 0 else ""), flush=True)
+    if a.predict:                                                       # TASKS 36: fit on all anchors, predict the molecules that are not anchors
+        clash = sorted(set(a.predict) & set(ids))
+        if clash:
+            raise SystemExit(f"--predict {clash}: anchors are read leave-one-out, not predicted from a fit that saw them")
+        model = copy.deepcopy(model0)
+        mode = fit_mode(a.head_l2)
+        hist = finetune(model, tensors, ids, a.epochs, a.lr, mode, a.aux_weight, log=lambda s: print(f"  [fit all {mode}] {s}", flush=True),
+                        head_l2=a.head_l2)
+        res["predict"] = {}
+        for i in a.predict:
+            d = mdir / i
+            lo = d / "hessian_b3lyp_analytic.npz" if (d / "hessian_b3lyp_analytic.npz").exists() else d / "hessian_b3lyp.npz"
+            if lo.name.endswith("_analytic.npz") and (d / "hessian_wb97x_analytic.npz").exists():
+                RR.substitute(mols[i], d)
+            t = molecule_tensors(i, loaded_molecule(d, mols[i]), mols[i], d, cfg, Path(a.out_prefix).parent / "ls_targets")
+            p = Path(f"{a.out_prefix}_predict_{i}.npz")
+            np.savez(p, dH_pred=predict_cartesian(model, t), H_low=np.load(lo)["H_projected"], low_level=lo.name, mode=mode, anchors=np.array(ids),
+                     model=a.model, final_loss=(hist[-1] if hist else np.nan))
+            res["predict"][i] = dict(file=str(p), low_level=lo.name, mode=mode)
+            print(f"predicted {i} ({lo.name}, fit on {len(ids)} anchors, {mode}) → {p}", flush=True)
     res["seconds"] = round(time.time() - t0)
     out_json, out_md = record_paths(a.out_prefix)
     json.dump(res, open(out_json, "w"), indent=1)
