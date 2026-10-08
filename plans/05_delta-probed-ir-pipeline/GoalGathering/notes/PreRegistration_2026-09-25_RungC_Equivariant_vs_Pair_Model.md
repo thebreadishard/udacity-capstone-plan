@@ -1862,6 +1862,23 @@ level: closed, anchors stay canonical, the Snellius question is a canonical-cost
 recorded as a limit of the energy-curvature probe (a gradient route is then the only test). (b) is reported beside it as the fraction of the
 tight offset that frozen localisation removes at k 2.
 
+**Outcome, 8 October 06:3x (`probes/results_m1/lno_curvature_{xtight,reuse,tight}_k2_2026-10-07.{json,log}`; 7 Oct 21:56 – 8 Oct 06:23, 8 threads
+in WSL).** At k 2 (atom 0 z, out-of-plane share 0.99) the canonical H_kk is 0.11265 a.u. (energy route 0.11264):
+
+| cell at k 2 | ΔH_kk | relative |
+|---|---|---|
+| tight (scale) | +3.05e-4 | +0.27 % |
+| (a) xtight thresholds | **+3.08e-4** | +0.27 % |
+| (b) reused localisation, tight | +1.04e-3 | +0.92 % |
+
+**As registered: (a) < 1e-3 at k 2 as well → 'noise-limited at tight'**; the route for anchors beyond ≈ 26 atoms is LNO at xtight thresholds
+(cell (a)'s cost: 6,823 s per energy for naphthalene at 8 threads, peak 4.2 GB), and frozen localisation is not needed — at k 2 it makes the offset three
+times larger instead of removing a part of it. Over k 0, 1, 2 the xtight deviation is at most 7.3e-4 a.u., ≤ 0.27 % of the diagonal (≈ 0.14 % in
+a frequency, ≈ 1 cm⁻¹ for an 800 cm⁻¹ mode). **What the label does not say:** at k 2 the tighter thresholds did not shrink the offset (3.05 →
+3.08e-4) as they did in plane (k 0/1: 0.27–0.29 % → 0.02 / 0.11 %), so the out-of-plane remainder is not truncation; it passes the line because
+the out-of-plane diagonal is small, not because it vanished. Recorded as the size of LNO's systematic offset for the low-curvature coordinates,
++0.27 %, to be carried as an error bar on any LNO anchor, not as a reason to reopen the line.
+
 ### Amendment 3 October 20:5x — a per-family learning curve read from the existing records (reading rule written before the numbers are looked at)
 
 **What.** `probes/rungC_family_curve.py` on the carried recipe's records (pattern f, projected target, kring 0.3, sum body): 45 and 100 (pool A,A2 —
