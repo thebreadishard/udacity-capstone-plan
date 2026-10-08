@@ -56,3 +56,10 @@ def test_queue_order_places_pool3_between_the_layers_and_c():
     assert order[:2] == ["A", "A"] and order[-2:] == ["C", "C"]
     mid = order[2:-2]
     assert mid[:4] == ["B", "A2", "B", "A2"] and mid[4:] == ["P3c", "P3", "P3c", "P3"]
+
+
+def test_queue_order_puts_a_layer_it_does_not_name_after_c():
+    """8 Oct 2026: layer G (the batch route's representatives, 5 Oct) had no position and crashed every run's queue order with a KeyError."""
+    rows = [{"id": f"{L}_{k}", "layer": L, "priority": f"{k:02d}", "note": ""} for L in ("G", "C", "P3c", "A") for k in range(2)]
+    order = [r["layer"] for r in R.queue_order(rows)]
+    assert order == ["A", "A", "P3c", "P3c", "C", "C", "G", "G"]

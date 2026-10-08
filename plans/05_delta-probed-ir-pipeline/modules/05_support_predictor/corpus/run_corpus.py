@@ -116,7 +116,9 @@ def queue_order(rows):
     alternating by their position inside each layer (class axis and size axis grow together), then pool 3 (P3c and P3 alternating, 3 Oct 2026), then layer C.
     Inside a layer the position is the hashed priority order of the manifest."""
     pos = {}
-    for L in ("A", "A2", "B", "P3", "P3c", "C"):
+    named = ("A", "A2", "B", "P3", "P3c", "C")
+    layers = list(named) + sorted({r["layer"] for r in rows} - set(named))   # 8 Oct 2026: layer G (5 Oct) had no position and crashed the key; others run after C
+    for L in layers:
         # startswith, not ==: a crash-recovered timing-test row ("timing-test redone-after-crash") keeps its front position
         # (bug found 2026-09-14 12:5x: naphthalene was skipped for diphenylacetylene; the first fix of 12:5x broke the line with an inline comment, repaired 15:2x)
         for i, r in enumerate(sorted([r for r in rows if r["layer"] == L], key=lambda r: (0 if r.get("note", "").startswith("timing-test") else 1, r["priority"]))):
@@ -125,7 +127,8 @@ def queue_order(rows):
         if r["layer"] == "A": return (0, pos[r["id"]], 0)
         if r["layer"] in ("B", "A2"): return (1, pos[r["id"]], 0 if r["layer"] == "B" else 1)
         if r["layer"] in ("P3c", "P3"): return (2, pos[r["id"]], 0 if r["layer"] == "P3c" else 1)   # pool 3 (decision 54): cations and neutrals alternating, after A2/B, before C
-        return (3, pos[r["id"]], 0)
+        if r["layer"] == "C": return (3, pos[r["id"]], 0)
+        return (3 + layers.index(r["layer"]) - len(named) + 1, pos[r["id"]], 0)
     return sorted(rows, key=key)
 
 

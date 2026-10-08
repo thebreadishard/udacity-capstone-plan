@@ -5,7 +5,7 @@
 #   laptop — the LNO extra coordinate (probes/night_1007_lno.sh, markers (N3)) and the WSL keepalive until "(N3) LNO extra coordinate finished";
 #   labels server (CCX53) — four lanes alive until "LANE n DONE"; a new FAILED count reported once; ssh unreachable twice in a row;
 #   laptop — chain 37 (probes/rungC_chain37_1008.sh, Git Bash) alive until its read marker; its (C37) markers reported once.
-#   CPX62 — the two runners of the 200 (finished 8 Oct 02:40; the check stays until pool 3 has its own).
+#   CPX62 — pool 3 batch 1's two runners (8 Oct 02:57): alive until their exit files; a new failed count reported once.
 #   bash probes/watch_1008.sh
 set -uo pipefail
 # no-set-e: every check decides its own exit
@@ -50,12 +50,17 @@ for i in $(seq 1 11); do
     if [ "$((lanes + ldone))" -lt 4 ]; then echo "ANOMALY $(t): labels lanes $lanes running + $ldone done < 4 — $lb"; exit 1; fi
     [ "$lfail" != "0" ] && new_marker "labels failed count $lfail" > /dev/null && { echo "MARKER $(t): labels $lb"; exit 2; }
   fi
-  # the CPX62 with the 200 (lever 5)
-  np=$($CPX62 'C=/root/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor; echo "runners $(pgrep -fc "[r]un_corpus.py") done $(grep -c "] done" $C/corpus/nextpool_a.log $C/corpus_b/nextpool_b.log | cut -d: -f2 | paste -sd+ | bc) failed $(grep -c "] failed" $C/corpus/nextpool_a.log $C/corpus_b/nextpool_b.log | cut -d: -f2 | paste -sd+ | bc)"' 2>/dev/null)
+  # the CPX62: pool 3 batch 1 (8 Oct 00:57 UTC) — runner a (corpus_p3: 60 cations, then neutrals shard 0/2), runner b (corpus_p3b: neutrals shard 1/2);
+  # each alive until remote_launch's <name>.exit exists; a new failed count is reported once
+  np=$($CPX62 'B=/root/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor; for r in a b; do d=$B/corpus_p3; [ $r = b ] && d=$B/corpus_p3b; alive=0; kill -0 $(cat $d/pool3_$r.pid 2>/dev/null) 2>/dev/null && alive=1; ex=$([ -f $d/pool3_$r.exit ] && echo 1 || echo 0); printf "%s %s %s %s %s " $r $alive $ex $(grep -c "] done" $d/pool3_$r.log) $(grep -c "] failed" $d/pool3_$r.log); done' 2>/dev/null)
   if [ -n "$np" ]; then
-    nr=$(echo "$np" | awk '{print $2}'); nf=$(echo "$np" | awk '{print $6}')
-    if [ "$nr" = "0" ]; then new_marker "CPX62 runners finished — $np" && exit 2; fi
-    new_marker "CPX62 failed count $nf" > /dev/null && [ "$nf" != "1" ] && { echo "MARKER $(t): CPX62 $np"; exit 2; }
+    read -r _ aa ae ad af _ ba be bd bf <<< "$np"
+    for r in a b; do
+      if [ $r = a ]; then al=$aa; ex=$ae; else al=$ba; ex=$be; fi
+      [ "$al" = "0" ] && [ "$ex" = "0" ] && { echo "ANOMALY $(t): pool 3 runner $r gone without its exit file — $np"; exit 1; }
+      [ "$ex" = "1" ] && new_marker "pool 3 runner $r finished — $np" && exit 2
+    done
+    new_marker "pool3 failed count $((af + bf))" > /dev/null && [ "$((af + bf))" != "0" ] && { echo "MARKER $(t): pool 3 a/b done $ad/$bd failed $af/$bf"; exit 2; }
   fi
   [ "$i" -lt 11 ] && sleep 600
 done
