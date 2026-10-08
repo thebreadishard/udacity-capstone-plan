@@ -38,6 +38,12 @@ def parse_molecule_log(text: str) -> dict:
     return out
 
 
+def ids_of(lanes: dict, done: dict) -> set:
+    """Every id the read needs an atom count for: the lanes' current lists and the molecules already timed (8 Oct 2026: after the switch to the
+    smallest-first lists, the five molecules finished before it are on no list)."""
+    return {i for ids in lanes.values() for i in ids} | set(done)
+
+
 def n_atoms(mol_id: str) -> int:
     return len(json.loads((MOLS / mol_id / "geometry.json").read_text(encoding="utf-8"))["symbols"])
 
@@ -93,7 +99,7 @@ def main() -> int:
     done: dict = {}
     for f in sorted(d.glob("lane_?_molecules.log")):
         done.update(parse_molecule_log(f.read_text(encoding="utf-8", errors="replace")))
-    atoms = {i: n_atoms(i) for ids in lanes.values() for i in ids}
+    atoms = {i: n_atoms(i) for i in ids_of(lanes, done)}
     complete = [i for i, f in done.items() if {"b3lyp", "wb97x"} <= set(f)]
     rb = [done[i]["wb97x"] / done[i]["b3lyp"] for i in complete]
     pb = fit_exponent([atoms[i] for i in done if "b3lyp" in done[i]], [f["b3lyp"] for f in done.values() if "b3lyp" in f])

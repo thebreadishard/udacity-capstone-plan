@@ -32,3 +32,7 @@ def test_project_counts_only_what_remains():
     assert rem[1] == pytest.approx(2000 / 3600)        # c's wb97x from a's measured wb97x
     with pytest.raises(ValueError):
         L.project({0: ["b"]}, {}, atoms, 3.0, 1.5)
+
+
+def test_ids_of_includes_molecules_timed_before_a_list_switch():
+    assert L.ids_of({0: ["b", "c"]}, {"a": {"b3lyp": 1.0}, "b": {}}) == {"a", "b", "c"}
