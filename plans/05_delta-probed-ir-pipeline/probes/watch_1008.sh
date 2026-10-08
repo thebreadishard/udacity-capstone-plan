@@ -12,6 +12,7 @@ set -uo pipefail
 P=/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline
 LOG3=$P/probes/results_m1/lno_extra_k2_2026-10-07.log
 LOG37=$P/probes/results_m1/chain37_2026-10-08.log
+LOGG=$P/probes/results_m1/cation_gate_2026-10-08.log   # 8 Oct 11:3x: the P3-2 cation gate (markers (G))
 SEEN=/c/Users/thebr/AppData/Local/Temp/claude/C--Users-thebr-Documents-CapstonePlan/080ff7ed-d45b-451f-8c06-e90bcbbe88a0/scratchpad/watch_1007_seen.txt
 KEY=$HOME/.ssh/hetzner_g_measure
 LABELS="ssh -o BatchMode=yes -o ConnectTimeout=20 -i $KEY root@157.180.32.149"
@@ -37,6 +38,12 @@ for i in $(seq 1 11); do
     while read -r line; do new_marker "$(echo "$line" | cut -c1-110)" && exit 2; done < <(grep -E "\(C37\) (chain 37 trained|chain 37 read done|CHAIN 37)" "$LOG37")
     if ! grep -qE "\(C37\) (chain 37 read done|CHAIN 37)" "$LOG37"; then
       [ "$(ps -ef | grep -c '[r]ungC_chain37_1008')" = "0" ] && { echo "ANOMALY $(t): chain 37 script gone without its read marker"; exit 1; }
+    fi
+  fi
+  if [ -f "$LOGG" ]; then
+    while read -r line; do new_marker "$(echo "$line" | cut -c1-110)" && exit 2; done < <(grep -E "^=== \(G\) (ten cations copied|analytic route done|cation gate finished|.*FAILED|GATE NOT STARTED)" "$LOGG")
+    if ! grep -qE "^=== \(G\) (cation gate finished|GATE NOT STARTED|FETCH FAILED)" "$LOGG"; then
+      [ "$(ps -ef | grep -c '[c]ation_gate_p3_2')" = "0" ] && { echo "ANOMALY $(t): cation gate script gone without its end marker"; exit 1; }
     fi
   fi
   # the labels server (lever 2): 'bash labels_lane.sh' processes (not their bash -c wrappers) alive until 'LANE n DONE'

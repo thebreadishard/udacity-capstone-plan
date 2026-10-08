@@ -16,9 +16,13 @@ OUT=$P/probes/results_m1/cation_gate_2026-10-08
 SH=$P/modules/05_support_predictor/corpus/shards_pool3/a
 t() { date '+%F %T'; }
 echo "=== (G) cation gate start $(t)"
-bash "$P/tools/fetch_corpus_shards.sh" root@46.62.227.91 shards_pool3 "a=$B/corpus_p3" || { echo "=== (G) FETCH FAILED $(t)"; exit 1; }
-mapfile -t IDS < <(grep "\] done P3c_" "$SH/pool3_a.log" | awk '{print $4}' | head -n 10)
-[ ${#IDS[@]} -eq 10 ] || { echo "=== (G) only ${#IDS[@]} cations done — the gate waits for ten $(t)"; exit 1; }
+for _ in $(seq 1 36); do                                         # up to 12 h: fetch every 20 min until ten cations are done
+  bash "$P/tools/fetch_corpus_shards.sh" root@46.62.227.91 shards_pool3 "a=$B/corpus_p3" > /dev/null || echo "(G) fetch failed, retrying $(t)"
+  mapfile -t IDS < <(grep "\] done P3c_" "$SH/pool3_a.log" 2>/dev/null | awk '{print $4}' | head -n 10)
+  [ ${#IDS[@]} -eq 10 ] && break
+  echo "(G) ${#IDS[@]} cations done — waiting for ten $(t)"; sleep 1200
+done
+[ ${#IDS[@]} -eq 10 ] || { echo "=== (G) GATE NOT STARTED: fewer than ten cations after 12 h $(t)"; exit 1; }
 mkdir -p "$OUT"
 for id in "${IDS[@]}"; do
   [ -d "$OUT/$id" ] || cp -r "$SH/molecules/$id" "$OUT/$id"
