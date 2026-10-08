@@ -2,7 +2,11 @@
 field and, where an atomic polar tensor exists, the intensity read-outs (lever 5 step 2, registered 2 Oct 2026 06:5x). Built on 2 Oct 2026 so the ten
 hold-out (a) APTs, which land after chain 24 has started, can be read against chain 24's models.
 
-    python probes/rungC_eval_saved.py <model.pt> <out_prefix> [--molecules corpus/molecules] [--use-analytic] [--threads 4]
+    python probes/rungC_eval_saved.py <model.pt> <out_prefix> [--molecules corpus/molecules] [--use-analytic] [--threads 4] [--holdout-b-file F]
+
+--holdout-b-file (8 Oct 2026): hold-out (b) is derived from the corpus (the A2 molecules of two scaffold cores), so a merge that brings new children
+of those cores enlarges it. With a frozen list (one id per line, '#' comments) (b) is read on that list — ids the loader does not admit are dropped
+as the trainer drops them — and the derived (b) ids outside it are read separately as (b+).
 
 The inputs are built by the trainer's own `load_corpus` and `molecule_tensors`; the prediction by its `predictor`; nothing is recomputed differently.
 """
@@ -24,6 +28,14 @@ from rungC_equivariant import load_molecule  # noqa: E402
 from rungC_train import load_corpus, load_hybrid_model, molecule_tensors, per_molecule_readouts, predictor, readouts, record_paths  # noqa: E402
 
 
+def split_holdout_b(test_b: list, frozen: list, admitted) -> tuple[list, list]:
+    """(b) on the frozen list (restricted to admitted ids, in the loader's order where it has one), and (b+) = derived (b) ids not in the list."""
+    keep = set(frozen)
+    if not keep & set(admitted):
+        raise SystemExit("--holdout-b-file: none of its ids is an admitted molecule")
+    return sorted(i for i in keep if i in admitted), [i for i in test_b if i not in keep]
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("model")
@@ -31,6 +43,7 @@ def main() -> int:
     ap.add_argument("--molecules", default=str(PLAN / "modules" / "05_support_predictor" / "corpus" / "molecules"))
     ap.add_argument("--use-analytic", action="store_true")
     ap.add_argument("--threads", type=int, default=4)
+    ap.add_argument("--holdout-b-file", default=None, help="frozen hold-out (b) ids; derived (b) ids outside it are read as (b+)")
     ap.add_argument("--allow-any-model", action="store_true", help="decision 55 (3 Oct 2026): use a model whose registry status is not 'carried' — name it in the record")
     a = ap.parse_args()
     torch.set_num_threads(a.threads)
@@ -43,15 +56,19 @@ def main() -> int:
     if layers:                                                              # the trainer's --pool-layers filter, so `tr` is the training pool of the record
         pool = [i for i in pool if mols[i]["layer"] in set(layers.split(","))]
     tr = pool[: ck["n"]]
+    b_plus = []
+    if a.holdout_b_file:
+        frozen = [s.strip() for s in open(a.holdout_b_file, encoding="utf-8") if s.strip() and not s.startswith("#")]
+        test_b, b_plus = split_holdout_b(test_b, frozen, mols)
     tensors = {i: molecule_tensors(i, load_molecule(Path(a.molecules) / i, use_analytic=a.use_analytic), mols[i], Path(a.molecules) / i, cfg,
-                                   Path(a.out_prefix).parent / "ls_targets") for i in test_a + test_b}
+                                   Path(a.out_prefix).parent / "ls_targets") for i in test_a + test_b + b_plus}
     model.eval()
     dF_of = predictor(model, tensors, mols)
     res = {"date": datetime.now().strftime("%Y-%m-%d %H:%M"), "model": a.model, "model_record": {k: ck[k] for k in ("pattern", "aux_mode", "aux_target", "n", "seed")},
-           "use_analytic": a.use_analytic, "substituted_analytic": substituted, "n_train_ids": len(tr), "apt_molecules": sorted(i for i in mols if "apt" in mols[i])}
+           "holdout_b_file": a.holdout_b_file, "use_analytic": a.use_analytic, "substituted_analytic": substituted, "n_train_ids": len(tr), "apt_molecules": sorted(i for i in mols if "apt" in mols[i])}
     lines = [f"# Saved model read on the hold-outs ({res['date']})", "", f"Model `{Path(a.model).name}` ({res['model_record']}); APTs on {len(res['apt_molecules'])} molecules.", "",
              "| hold-out | n | ring-coupling ratio | ω rms (cm⁻¹) | ΔH residual | spectrum overlap (zero rule) | intensity rel. rms (zero rule) | with APT |", "|---|---|---|---|---|---|---|---|"]
-    for h, ids in (("a", test_a), ("b", test_b)):
+    for h, ids in [("a", test_a), ("b", test_b)] + ([("b+", b_plus)] if b_plus else []):
         r = readouts(mols, ids, tr, dF_of)
         r["per_molecule"] = per_molecule_readouts(mols, ids, tr, dF_of)
         r.update(RI.aggregate(r["per_molecule"]))

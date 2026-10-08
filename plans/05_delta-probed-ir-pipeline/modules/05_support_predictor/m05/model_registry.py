@@ -249,6 +249,25 @@ def require_carried(path: Path, allow: bool = False, status_file: Path | None = 
     return s
 
 
+def add_candidates(paths: list, chain: str, note: str, network: str, status_file: Path | None = None) -> list[str]:
+    """Enter saved models of a registered chain as `candidate` (decision 55: saved, not yet read). Refuses a model that already has a status, so a
+    reviewed entry is never overwritten. Returns the keys added."""
+    if not paths:
+        raise SystemExit("--add-candidates: no checkpoint matches")
+    sf = Path(status_file) if status_file else status_file_for(paths[0])[0]
+    s = read_status(sf)
+    keys = [Path(p).name if status_file else status_file_for(p)[1] for p in paths]
+    taken = [k for k in keys if k in s]
+    if taken:
+        raise SystemExit(f"--add-candidates: already in the registry, not overwritten: {', '.join(taken)}")
+    for k in keys:
+        s[k] = {"status": "candidate", "network": network, "version": "", "chain": chain, "note": note}
+        check_entry(k, s[k], sf)
+    with open(sf, "w", encoding="utf-8") as f:
+        json.dump(s, f, indent=1, ensure_ascii=False)
+    return keys
+
+
 def _write_or_check(path: Path, text: str, check: bool) -> bool:
     if check:
         return path.exists() and path.read_text(encoding="utf-8") == text
@@ -263,7 +282,17 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--status-file", default=None)
     ap.add_argument("--registry", default=None)
     ap.add_argument("--check", action="store_true", help="exit 1 if a committed registry differs from what the checkpoints say")
+    ap.add_argument("--add-candidates", nargs="+", default=None, help="checkpoints of a registered chain to enter as `candidate` (then the registry is rewritten)")
+    ap.add_argument("--chain", default=None, help="with --add-candidates: the chain name")
+    ap.add_argument("--note", default="", help="with --add-candidates: what the chain is and where it is registered")
+    ap.add_argument("--network", default=None, help="with --add-candidates: the network name (default: the ΔH network)")
     a = ap.parse_args(argv)
+    if a.add_candidates:
+        if not a.chain:
+            raise SystemExit("--add-candidates needs --chain")
+        added = add_candidates([Path(p) for p in a.add_candidates], a.chain, a.note, a.network or NETWORK_NAMES[0],
+                               Path(a.status_file) if a.status_file else None)
+        print(f"registered as candidate: {', '.join(added)}")
     if a.out_dir or a.status_file or a.registry:
         mods = {"adhoc": dict(title="ad hoc", out=Path(a.out_dir or OUT), status=Path(a.status_file or STATUS_FILE), registry=Path(a.registry or REGISTRY),
                               generator="m05/model_registry.py")}

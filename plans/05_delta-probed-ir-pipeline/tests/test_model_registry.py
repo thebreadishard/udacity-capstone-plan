@@ -157,3 +157,16 @@ def test_candidate_status_is_listed_but_refused_as_a_base(tmp_path):
     with pytest.raises(SystemExit):
         MR.require_carried(p, status_file=st)
     assert MR.require_carried(p, allow=True, status_file=st)["status"] == "candidate"
+
+
+def test_add_candidates_enters_new_models_and_never_overwrites(tmp_path):
+    """8 Oct 2026: a chain script registers its saved models as 'candidate' itself (chain 36's read was refused when that was done by hand)."""
+    p0, p1 = _fake(tmp_path, seed=0), _fake(tmp_path, seed=1)
+    st = _status(tmp_path / "status.json", {p0.name: {"status": "carried", "network": DH, "version": "1.1", "chain": "34"}})
+    with pytest.raises(SystemExit):                                         # a reviewed entry is never overwritten
+        MR.add_candidates([p0, p1], "37", "note", DH, status_file=st)
+    assert MR.add_candidates([p1], "37", "coverage test", DH, status_file=st) == [p1.name]
+    s = json.loads(st.read_text(encoding="utf-8"))
+    assert s[p0.name]["status"] == "carried" and s[p1.name] == {"status": "candidate", "network": DH, "version": "", "chain": "37", "note": "coverage test"}
+    with pytest.raises(SystemExit):
+        MR.require_carried(p1, status_file=st)

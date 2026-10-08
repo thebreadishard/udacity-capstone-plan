@@ -2087,3 +2087,23 @@ where the network is not better, and no lever is spent on them. (B2) Cosine betw
 0.13 pyridine. The proxy's coupling correction is 4.1 cm⁻¹ rms against CC/TZ's 1.7 (slope 0.20): mostly the right shape at five times the size, which
 is why the fine-tune has to move the head and not only α. At cc-pVDZ the cosine was 0.30 (slope 0.70, CC size 9.3): the composite made the CC couplings
 more proxy-like in shape and much smaller.
+
+
+### Amendment 8 October 03:2x — chain 37: the coverage test with the 200 (registered before it runs; the 200 merged 02:41)
+
+**What changed since the test was written (Investigation_2026-10-01_RungC_Sherlock_Day.md, 2 Oct, "The test this is").** (1) The carried recipe is now
+chain 34's (v1.1, decision 57), so chain 37 = chain 34's recipe on the pool with the 200, `--sizes all`, seeds 0–2, and chain 34 (750) is the control,
+the same recipe without the 200. (2) **Hold-out (b) is derived, not frozen:** `E6.splits` takes the A2 molecules of two scaffold cores (fluoranthene,
+fluorene), and 31 of the 200 are fluoranthene children, which the split would add to (b) (41 → 72 ids; none of them trains — the scaffold stays unseen).
+(b) is therefore read on the pre-merge list, frozen in `corpus/holdout_b_frozen_2026-10-08.txt` (41 ids, 39 admitted — two are dropped by the loader
+as before), and the 31 as **(b+)** (`rungC_eval_saved.py --holdout-b-file`). Check before the run: chain 34 seed 0 re-read on the merged corpus with
+the frozen list gives (b) 0.331 on 39 molecules — the 5 Oct read's number to the digit — and (b+) 0.359 on 30. (3) What actually enters the pool:
+24 pyrene children (the four-ring scaffold), 4 + 4 dibenzothiophene / dibenzofuran children, 136 layer-B rows (fused two-ring and others).
+
+**Lines (as on 2 Oct, on the frozen (b), seed means of the `--use-analytic` re-read against chain 34's three models re-read the same way):**
+*coverage confirmed* — (b) ≤ 0.28 with (a) within chain 34's seed spread → the next pools are chosen by scaffold coverage; *count, not coverage* — (b)
+falls by < 0.03 → the scaffold hypothesis is dropped for the next pool; *worse* — (b) above 0.36 → the new rows carry noise: the analytic second route
+on a sample before reading further. Reported beside the lines, not read against them: (b+) against chain 34's 0.359 (seed 0; the chain reads all three),
+the four families on (a), and the per-kind error map on both trainer records (`probes/rungC_error_map.py`; the 4ar-fused kinds expected to fall by
+≥ 0.05). The new models enter the registry as `candidate` in the chain's own step (`model_registry.py --add-candidates`, 8 Oct: chain 36's read was
+refused on 7 Oct when that was done by hand). **Run:** `probes/rungC_chain37_1008.sh`, after the LNO cells release the laptop (≈ 08:00), ≈ 4–5 h.

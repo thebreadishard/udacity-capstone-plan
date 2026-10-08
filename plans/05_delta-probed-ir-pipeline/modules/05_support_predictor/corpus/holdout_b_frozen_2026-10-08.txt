@@ -1,0 +1,44 @@
+# Hold-out (b) frozen on 8 Oct 2026 02:5x: E6.splits on the corpus before the 200 were merged (847 molecules; scaffold cores fluoranthene, fluorene).
+# The 200 brought 31 fluoranthene children, which E6.splits adds to (b) automatically; reads of the coverage test use this list as (b) and the
+# added ones as (b+) (probes/rungC_eval_saved.py --holdout-b-file).
+A2_00b0ff5a24
+A2_0101e57296
+A2_02c8833bd5
+A2_041da590e8
+A2_043da5bed2
+A2_048ea73dab
+A2_05f5ff045c
+A2_06222c33e3
+A2_066237c4f5
+A2_06873ee7ad
+A2_097651503c
+A2_0dc3aa4eb9
+A2_0e1c741b76
+A2_10d7d03408
+A2_11c681aefb
+A2_1543119d9d
+A2_16521f2764
+A2_1b389dc1d8
+A2_1bb2e3fbf1
+A2_1c2781e93a
+A2_20d3215ce3
+A2_210c322595
+A2_21b688db0c
+A2_27130c4c79
+A2_27370742a0
+A2_27edf7297c
+A2_28eed45ad3
+A2_2931e48c62
+A2_2c22216564
+A2_2e154f6054
+A2_2f079d63a1
+A2_3058513f57
+A2_311e979a14
+A2_331729cd47
+A2_372920f181
+A2_3825e7205b
+A2_39baaea0dd
+A2_3b6ae59b2d
+A2_3cf20db4ac
+A2_3f25a88e27
+A2_42ab9eb0a0
