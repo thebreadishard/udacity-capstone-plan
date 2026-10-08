@@ -12,6 +12,7 @@ set -uo pipefail
 P=/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline
 LOG3=$P/probes/results_m1/lno_extra_k2_2026-10-07.log
 LOG37=$P/probes/results_m1/chain37_2026-10-08.log
+LOGI=$P/probes/results_m1/t3_intensity_2026-10-09.log   # 8 Oct 18:0x: T3 intensity read (markers (I))
 LOG38=$P/probes/results_m1/chains38_39_2026-10-09.log   # 8 Oct 17:5x: chains 38/39 (markers (C38))
 LOGG=$P/probes/results_m1/cation_gate_2026-10-08.log   # 8 Oct 11:3x: the P3-2 cation gate (markers (G))
 SEEN=/c/Users/thebr/AppData/Local/Temp/claude/C--Users-thebr-Documents-CapstonePlan/080ff7ed-d45b-451f-8c06-e90bcbbe88a0/scratchpad/watch_1007_seen.txt
@@ -51,6 +52,12 @@ for i in $(seq 1 11); do
     while read -r line; do new_marker "$(echo "$line" | cut -c1-110)" && exit 2; done < <(grep -E "^=== \(C38\) " "$LOG38" | grep -v armed)
     if ! grep -qE "^=== \(C38\) (chains 38/39 done|CHAINS 38/39)" "$LOG38"; then
       [ "$(ps -ef | grep -c '[r]ungC_chains38_39_1009')" = "0" ] && { echo "ANOMALY $(t): chains 38/39 script gone without its end marker"; exit 1; }
+    fi
+  fi
+  if [ -f "$LOGI" ]; then
+    while read -r line; do new_marker "$(echo "$line" | cut -c1-110)" && exit 2; done < <(grep -E "^=== \(I\) " "$LOGI" | grep -v armed)
+    if ! grep -qF "(I) T3 intensity read finished" "$LOGI"; then
+      [ "$(ps -ef | grep -c '[t]3_intensity_benzene_1009')" = "0" ] && { echo "ANOMALY $(t): T3 intensity script gone without its end marker"; exit 1; }
     fi
   fi
   # the labels server (lever 2): 'bash labels_lane.sh' processes (not their bash -c wrappers) alive until 'LANE n DONE'
