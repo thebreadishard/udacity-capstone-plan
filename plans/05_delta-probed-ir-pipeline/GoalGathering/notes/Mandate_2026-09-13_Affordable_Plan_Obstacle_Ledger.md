@@ -71,6 +71,8 @@ Whenever the machine is busy or the user is away, the next item is the cheapest 
 
 ## 6. Log
 
+- **9 Oct, 16:5x — TASKS 38 priced: the five-membered-ring pool is 181 rows already in the manifest, ≈ €30.** The pending A2 children of acenaphthylene, carbazole, dibenzofuran and dibenzothiophene finish those families at ≈ 60 each; from the 200's measured CPX62 runner times ≈ 6 days on one CPX62 (excl. VAT, analytic labels on top). Pool 3's 'five-ring' batch turned out to mean five fused rings; it holds 23 cyclopenta-fused neutrals. Server and timing wait on the user.
+
 - **9 Oct, 13:5x — read-out (3) on benzene: the registered number measured a mode swap, not intensities.** Sorted pairing compared benzene's bright C–H out-of-plane mode with a dark neighbour that changes order between B3LYP and CC (0.734 in every column, the zero rule included). Paired by eigenvector, all columns read ≈ 0.003: with one APT, benzene's symmetry fixes the intensities, so this molecule cannot test the Hessian's part. The defect also sat in chain 34's proxy read: corrected 0.127 against a zero rule of 0.296 (was 0.152 / 0.589) — the network still halves the intensity error. Matched pairing added beside the old keys, with a test.
 
 - **9 Oct, 13:2x — chain 38 read: the five-membered-ring families cover hold-out (b).** Without the 59 acenaphthylene, carbazole, dibenzofuran and dibenzothiophene children the network reads (b) at 0.410 against 0.317 for a same-size control (Δ +0.093; line +0.03); both (b) scaffolds lose, and in (a) only fluorene and fluoranthene move. With chain 37 (count, not coverage) the lever for unseen scaffolds is now specific: more molecules of the same ring topology in other families. Next: a cyclopenta-fused pool outside (b), to be priced for the user.
