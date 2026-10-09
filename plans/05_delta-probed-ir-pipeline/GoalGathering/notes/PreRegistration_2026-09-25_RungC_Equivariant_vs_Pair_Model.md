@@ -2178,3 +2178,15 @@ computed at the corpus geometry; test) now does. Run: chain 33c's T3 at the TZ t
 CCSD(T)/cc-pVTZ run), chain 34's three models, `probes/t3_intensity_benzene_1009.sh`, after chains 38/39. **Line, as registered on 3 Oct:** the
 head-tuned column (the TZ-tier standard, amendment (A)) keeps the intensity rel. rms ≤ 0.25 on held-out benzene, seed mean. Reported beside: the
 spectrum overlap, the zero rule, every column. One molecule: a first number, not a family claim. *(Clock note: the two run scripts' header comments say 18:3x and 19:0x; the clock read 18:00 when this amendment was written — the stamps here are the corrected ones; the scripts were already running and were not edited.)*
+
+**Outcome of chain 39, 9 October 07:3x (`out/E7_rungC_chain39_{size_le20,control}_2026-10-09.{json,md}`; 05:46–07:21, 8 threads).** Ring-coupling
+ratio on hold-out (s), the 44 pool molecules of ≥ 27 atoms, seed means (ranges): **size run (370 molecules of ≤ 20 atoms) 0.690 (0.658–0.716),
+control (370 of any size below 27) 0.352 (0.329–0.373) → q = 1.96: as registered, a steep size penalty (q ≥ 1.8).** Corrected ω on (s): 5.59 against
+3.68 cm⁻¹ (no correction 23.2) — across the gap the network still removes three quarters of the frequency error, but twice as much is left as with
+neighbours in size. Beside it: (a) 0.378 against 0.233, (b) 0.435 against 0.383. **What the split cannot separate:** in this corpus size and ring
+count go together — the ≤ 20-atom pool holds one- and two-ring scaffolds only (pyridine 130, naphthalene 55, benzene 45, azulene 27, …), while (s) is
+pyrene 26, phenanthrene 5, phenanthridine 5, anthracene 4, acridine 4; the control trains on three-ring children of 21–26 atoms. The penalty is
+therefore 'no three- and four-ring scaffolds in training' as much as 'smaller molecules', in line with chain 28 (removing the three-ring families
+hurt (a)'s three-ring parents 0.15 → 0.50). **Consequence, as registered:** the cheap corpus must reach the target sizes and ring counts — which it
+can, since the cheap level is affordable to 40 atoms (pool 3's neutrals are 25–40 atoms) — and the anchors' top rung matters more; pool 3's
+neutrals as a held-out size set (trained up to four rings) are the cleaner test of size alone.
