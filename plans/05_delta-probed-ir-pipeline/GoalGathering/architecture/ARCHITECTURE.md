@@ -119,13 +119,13 @@ flowchart LR
   T2["Test 2: composite CC/DZ + [MP2/TZ − MP2/DZ] within 3.3 / 4.4 / 7.3 / 3.3 cm⁻¹ of CC/TZ (6 Oct)"]:::done
   T3R["Test 3: anthracene repaired out of plane, 86 / 115 cm⁻¹ against ωB97X 105 / 126 (7 Oct)"]:::done
   POL["Energy route on every anchor (decision 61); anchor registry, one carried version per molecule (decision 62) (6–7 Oct)"]:::done
-  MP2Q["MP2 basis step for every cc-pVDZ anchor: 202 jobs on the CCX53 (7 Oct)"]:::running
+  MP2Q["MP2 basis step for every cc-pVDZ anchor: six carried TZ-tier anchors; chain 33c: out-of-plane error halved on 4 of 4 (7 Oct)"]:::done
   D1{"Composite within the per-family lines on a heteroatom and a larger molecule?"}:::dec
   ADD["Additivity checks: pyridine at cc-pVTZ, a QZ step on benzene"]:::todo
-  LNO["LNO curvatures: truncation or level? Cells disagree, one more coordinate (7 Oct)"]:::running
-  D2{"LNO deviation below 1e-3 a.u. at tighter thresholds?"}:::dec
-  BIG["Anchors beyond 26 atoms by LNO with frozen spaces"]:::todo
-  CANON["Anchors beyond 26 atoms canonical only (cost question)"]:::todo
+  LNO["LNO curvatures at xtight: within 0.27 % of canonical on three coordinates; frozen spaces worse (8 Oct)"]:::done
+  D2{"Full anchor above the top rung affordable? Pyrene 4–5 CCX53 days, perylene 20–36 (price note, 8 Oct)"}:::dec
+  BIG["Spot-check anchors above 26 atoms: LNO diagonal plus the MP2 step at rule-chosen coordinates, a test of the network (TASKS 36)"]:::todo
+  CANON["Full anchors up to anthracene–pyrene (24–26 atoms), canonical with the MP2 step"]:::todo
   CATN["Benzene⁺ on 128 GB with the unrestricted (T) path"]:::todo
   OUT(["Licensed factory design: anchor level per family (composite), error budget per family, the first anchors with their checks (benzene, fluorobenzene, pyridine, naphthalene, anthracene, one cation)"]):::data
 
@@ -139,8 +139,8 @@ flowchart LR
   D1 -- yes --> OUT
   D1 -- not yet --> ADD --> D1
   LNO --> D2
-  D2 -- yes --> BIG --> OUT
-  D2 -- no --> CANON --> OUT
+  D2 -- up to pyrene --> CANON --> OUT
+  D2 -- above --> BIG --> OUT
   CATN --> OUT
 ```
 
@@ -212,6 +212,10 @@ flowchart LR
 %% generator of module 06 with its gate); what is computed next is chosen by the composition rule. The two Hessians are analytic (pyscf) — the
 %% finite-difference psi4 Hessians of the first layers stay in the record as the first route and are being replaced pool-wide. The record keeps the Cartesian
 %% Hessians, the modes, the local-coordinate features and the probe deck's pattern responses (the mode tokens of 6 September were dropped by decision 49).
+%% 9 October 2026, the cheap level's reach (measured): both DFT Hessians by finite differences (psi4, 6-31G*, 8 threads of a CPX62) take 4.0 h for
+%% perylene (32 atoms), 5.3 h for a 33-atom, 6.6 h for a 35-atom and 7.6 h for a 38-atom molecule of pool 3; the analytic route (pyscf, the labels
+%% server) takes 6,000–14,000 s per functional at 30 atoms. So the corpus can hold the large families themselves (≈ 40 atoms); chain 39 (9 Oct) showed
+%% that it has to — the network does not carry the correction across a large gap in size and ring count.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
@@ -261,6 +265,14 @@ flowchart LR
   SK --> REC
   REC --> CORP
 ```
+
+**The cheap level's reach (9 October 2026).** The corpus level is DFT (B3LYP and ωB97X, 6-31G*), and it reaches the sizes the mandate needs: on one
+CPX62 runner (8 threads) both finite-difference Hessians took 4.0 h for perylene (32 atoms), 5.3 h for benzo[a]pyrene+SH (33), 6.6 h for
+benzo[k]fluoranthene+CF3 (35) and 7.6 h for dibenz[a,h]anthracene+CHO (38) — pool 3's runner logs. The analytic route on the labels server takes
+6,000–14,000 s per functional at 30 atoms. Coupled-cluster anchors stop at 24–26 atoms (pyrene: 4–5 CCX53 days); above them the network carries
+the correction, and chain 39 (9 Oct) showed that it can do so only for the families the corpus contains: trained on molecules of ≤ 20 atoms (one-
+and two-ring scaffolds) its error on ≥ 27-atom molecules is twice that of a control trained across sizes. The corpus therefore holds the large
+families themselves, at the DFT level, up to ≈ 40 atoms.
 
 ## 4. Data creation — the label factory: how one label comes about (`40_data_creation_labels.mmd`)
 

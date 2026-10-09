@@ -4,6 +4,10 @@
 %% generator of module 06 with its gate); what is computed next is chosen by the composition rule. The two Hessians are analytic (pyscf) — the
 %% finite-difference psi4 Hessians of the first layers stay in the record as the first route and are being replaced pool-wide. The record keeps the Cartesian
 %% Hessians, the modes, the local-coordinate features and the probe deck's pattern responses (the mode tokens of 6 September were dropped by decision 49).
+%% 9 October 2026, the cheap level's reach (measured): both DFT Hessians by finite differences (psi4, 6-31G*, 8 threads of a CPX62) take 4.0 h for
+%% perylene (32 atoms), 5.3 h for a 33-atom, 6.6 h for a 35-atom and 7.6 h for a 38-atom molecule of pool 3; the analytic route (pyscf, the labels
+%% server) takes 6,000–14,000 s per functional at 30 atoms. So the corpus can hold the large families themselves (≈ 40 atoms); chain 39 (9 Oct) showed
+%% that it has to — the network does not carry the correction across a large gap in size and ring count.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111

@@ -23,13 +23,13 @@ flowchart LR
   T2["Test 2: composite CC/DZ + [MP2/TZ − MP2/DZ] within 3.3 / 4.4 / 7.3 / 3.3 cm⁻¹ of CC/TZ (6 Oct)"]:::done
   T3R["Test 3: anthracene repaired out of plane, 86 / 115 cm⁻¹ against ωB97X 105 / 126 (7 Oct)"]:::done
   POL["Energy route on every anchor (decision 61); anchor registry, one carried version per molecule (decision 62) (6–7 Oct)"]:::done
-  MP2Q["MP2 basis step for every cc-pVDZ anchor: 202 jobs on the CCX53 (7 Oct)"]:::running
+  MP2Q["MP2 basis step for every cc-pVDZ anchor: six carried TZ-tier anchors; chain 33c: out-of-plane error halved on 4 of 4 (7 Oct)"]:::done
   D1{"Composite within the per-family lines on a heteroatom and a larger molecule?"}:::dec
   ADD["Additivity checks: pyridine at cc-pVTZ, a QZ step on benzene"]:::todo
-  LNO["LNO curvatures: truncation or level? Cells disagree, one more coordinate (7 Oct)"]:::running
-  D2{"LNO deviation below 1e-3 a.u. at tighter thresholds?"}:::dec
-  BIG["Anchors beyond 26 atoms by LNO with frozen spaces"]:::todo
-  CANON["Anchors beyond 26 atoms canonical only (cost question)"]:::todo
+  LNO["LNO curvatures at xtight: within 0.27 % of canonical on three coordinates; frozen spaces worse (8 Oct)"]:::done
+  D2{"Full anchor above the top rung affordable? Pyrene 4–5 CCX53 days, perylene 20–36 (price note, 8 Oct)"}:::dec
+  BIG["Spot-check anchors above 26 atoms: LNO diagonal plus the MP2 step at rule-chosen coordinates, a test of the network (TASKS 36)"]:::todo
+  CANON["Full anchors up to anthracene–pyrene (24–26 atoms), canonical with the MP2 step"]:::todo
   CATN["Benzene⁺ on 128 GB with the unrestricted (T) path"]:::todo
   OUT(["Licensed factory design: anchor level per family (composite), error budget per family, the first anchors with their checks (benzene, fluorobenzene, pyridine, naphthalene, anthracene, one cation)"]):::data
 
@@ -43,6 +43,6 @@ flowchart LR
   D1 -- yes --> OUT
   D1 -- not yet --> ADD --> D1
   LNO --> D2
-  D2 -- yes --> BIG --> OUT
-  D2 -- no --> CANON --> OUT
+  D2 -- up to pyrene --> CANON --> OUT
+  D2 -- above --> BIG --> OUT
   CATN --> OUT
