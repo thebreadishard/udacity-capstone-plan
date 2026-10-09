@@ -282,7 +282,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--status-file", default=None)
     ap.add_argument("--registry", default=None)
     ap.add_argument("--check", action="store_true", help="exit 1 if a committed registry differs from what the checkpoints say")
-    ap.add_argument("--add-candidates", nargs="+", default=None, help="checkpoints of a registered chain to enter as `candidate` (then the registry is rewritten)")
+    ap.add_argument("--add-candidates", nargs="+", default=None, help="checkpoints of a registered chain to enter as `candidate` (then the registry is rewritten); give all of a chain's checkpoints in one call after all its trainings, or the rebuild stops on the ones not yet entered")
     ap.add_argument("--chain", default=None, help="with --add-candidates: the chain name")
     ap.add_argument("--note", default="", help="with --add-candidates: what the chain is and where it is registered")
     ap.add_argument("--network", default=None, help="with --add-candidates: the network name (default: the ΔH network)")
@@ -293,6 +293,8 @@ def main(argv: list[str] | None = None) -> int:
         added = add_candidates([Path(p) for p in a.add_candidates], a.chain, a.note, a.network or NETWORK_NAMES[0],
                                Path(a.status_file) if a.status_file else None)
         print(f"registered as candidate: {', '.join(added)}")
+    else:
+        added = []
     if a.out_dir or a.status_file or a.registry:
         mods = {"adhoc": dict(title="ad hoc", out=Path(a.out_dir or OUT), status=Path(a.status_file or STATUS_FILE), registry=Path(a.registry or REGISTRY),
                               generator="m05/model_registry.py")}
@@ -303,6 +305,9 @@ def main(argv: list[str] | None = None) -> int:
         table, missing = rows(m["out"], m["status"])
         if missing:
             print("model registry STOPPED: no reviewed status for " + ", ".join(missing) + f" — add them to {m['status']}", file=sys.stderr)
+            if added:
+                print(f"(the {len(added)} candidates of this call ARE recorded in the status file; only the rebuild stopped — register all of a "
+                      "chain's checkpoints in one --add-candidates call after all its trainings)", file=sys.stderr)
             return 1
         tables[key] = table
         try:

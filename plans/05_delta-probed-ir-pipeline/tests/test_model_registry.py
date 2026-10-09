@@ -170,3 +170,17 @@ def test_add_candidates_enters_new_models_and_never_overwrites(tmp_path):
     assert s[p0.name]["status"] == "carried" and s[p1.name] == {"status": "candidate", "network": DH, "version": "", "chain": "37", "note": "coverage test"}
     with pytest.raises(SystemExit):
         MR.require_carried(p1, status_file=st)
+
+
+def test_add_candidates_with_another_unentered_checkpoint(tmp_path, capsys):
+    """9 Oct 2026 (chain 38): entering one set while another checkpoint in the folder has no status stops the rebuild (the guard), but the
+    entered candidates stay recorded and the message says so."""
+    p0, p1 = _fake(tmp_path, name="A_2026-10-09", seed=0), _fake(tmp_path, name="B_2026-10-09", seed=0)
+    st = _status(tmp_path / "status.json", {})
+    args = ["--out-dir", str(tmp_path), "--status-file", str(st), "--registry", str(tmp_path / "MODELS.md")]
+    assert MR.main([*args, "--add-candidates", str(p0), "--chain", "38"]) == 1
+    err = capsys.readouterr().err
+    assert p1.name in err and "ARE recorded" in err
+    assert json.loads(st.read_text(encoding="utf-8"))[p0.name]["status"] == "candidate"
+    assert MR.main([*args, "--add-candidates", str(p1), "--chain", "38"]) == 0
+

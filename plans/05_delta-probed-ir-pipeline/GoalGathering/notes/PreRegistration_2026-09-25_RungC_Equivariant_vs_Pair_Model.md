@@ -2190,3 +2190,16 @@ therefore 'no three- and four-ring scaffolds in training' as much as 'smaller mo
 hurt (a)'s three-ring parents 0.15 → 0.50). **Consequence, as registered:** the cheap corpus must reach the target sizes and ring counts — which it
 can, since the cheap level is affordable to 40 atoms (pool 3's neutrals are 25–40 atoms) — and the anchors' top rung matters more; pool 3's
 neutrals as a held-out size set (trained up to four rings) are the cleaner test of size alone.
+
+**Outcome of chain 38, 9 October 13:2x (`out/read_chain38_{ablation_fivering,control}_2026-10-09.md`, per-seed `out/E7_rungC_chain38_*_eval_frozenb_2026-10-09_seed*.json`;
+trainings 07:21–13:02, 8 threads, best epochs 80–165 of 200).** Ring-coupling ratio on hold-out (b) frozen at 39, seed means (ranges): ablation (pool without the 59 five-membered-ring-family children, 853) **0.410 (0.391–0.438)** against the same-size control **0.317 (0.311–0.331)** → **Δ = +0.093**, above the line of +0.03 with the seed ranges apart. **As
+registered: the five-membered-ring families cover (b).** Both of (b)'s scaffolds lose: fluoranthene children 0.345 → 0.445, fluorene children 0.261 →
+0.346. Corrected ω on (b): 4.00 against 3.41 cm⁻¹. Beside it: (b+) 0.450 against 0.343; (a) 0.230 against 0.186, and inside (a) exactly the two
+five-membered-ring parents move (fluoranthene 0.254 → 0.388, fluorene 0.207 → 0.298) while the other eight stay within ±0.06 (biphenylene, with its
+four-membered ring, 0.138 → 0.133). The control (853 of 912) reads (b) 0.317, beside chain 34's 0.330 and chain 37's 0.325 — the pool size is not
+what moves (b). Together with chain 37 (count, not coverage) and chain 28: the network transfers within a ring topology it has seen in other
+families, and (b)'s error is set by how many cyclopenta-fused molecules the pool holds. **Consequence, as registered:** the next pool takes
+cyclopenta-fused families outside (b) (acenaphthylene to 60 children, acenaphthene, cyclopenta-fused pyrenes). The six chain 38 models are
+superseded (not promoted; chain 34 stays carried). One step of the chain script failed and was redone by hand: registering the ablation's models
+stopped the registry rebuild because the control's models were already saved without a status, so the ablation's evaluation was skipped; it ran
+at 13:1x with the same command (the registry now says the candidates were recorded, and a chain registers all its models in one call).
