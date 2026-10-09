@@ -22,6 +22,10 @@ echo "(1) copy: code, decks, manifest, ledger, $(echo "$PARENTS" | wc -w) parent
 "${SSH[@]}" "test ! -e $R || { echo '$R exists — refusing to overwrite'; exit 1; }; mkdir -p $R"
 # shellcheck disable=SC2086   # PARENTS is a list of paths
 tar czf - run_corpus.py psi4_worker.py cation_rows.py status.py check_results.py decks manifest.csv ledger.csv $PARENTS | "${SSH[@]}" "cd $R && tar xzf - && ls | tr '\n' ' '; echo; ls molecules | wc -l"
+echo "(1b) optking linear-bend fix (9 Oct 2026: missing on the installs after 30 Sep)"
+scp -q -i "$KEY" -o BatchMode=yes "$C/../../../probes/optking_patches/apply_optking_fix.py" "$HOST:/tmp/apply_optking_fix.py" \
+  && "${SSH[@]}" "$PY /tmp/apply_optking_fix.py > /dev/null && $PY /tmp/apply_optking_fix.py --check | grep -c 'already patched' | grep -qx 2" \
+  || { echo "OPTKING FIX NOT APPLIED"; exit 1; }
 echo "(2) dry runs"
 "${SSH[@]}" "cd $R && export CORPUS_QC_PYTHON=$PY && $PY run_corpus.py --layer P3c --dry-run 2>&1 | tail -n 4 && $PY run_corpus.py --layer P3 --dry-run 2>&1 | tail -n 4"
 echo "(3) smoke: water cation, cation deck, 4 threads"

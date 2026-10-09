@@ -22,6 +22,10 @@ TGZ=$SP/corpus_scripts_$IP.tgz
 (cd "$C/.." && tar czf "$TGZ" --exclude='psi4.out' --exclude='worker_stdout.txt' --exclude='__pycache__' --exclude='psi.*.clean' --exclude='*.log' --exclude='corpus.lock' --exclude='molecules' --exclude='*.pre_fetch*' --exclude='*.pre_merge*' --exclude='restart_jobs_*' --exclude='rehash_layerB_proposal_*' 05_support_predictor/corpus)
 scp -q -i $KEY -o BatchMode=yes "$TGZ" root@$IP:/root/corpus_scripts.tgz && $S "rm -rf $R/05_support_predictor $R/corpus $R/corpus_b; mkdir -p $R && cd $R/.. && tar xzf /root/corpus_scripts.tgz && cp -r $R/corpus $R/corpus_b && ls $R/corpus | wc -l && ls $R/corpus_b | wc -l" < /dev/null || { echo "CORPUS DIR FAILED $IP"; exit 1; }
 scp -q -i $KEY -o BatchMode=yes "$SP/next_pool_ids_a.txt" "$SP/next_pool_ids_b.txt" root@$IP:/root/ || { echo "ID LISTS FAILED $IP"; exit 1; }
+echo "[$(t) $IP] optking linear-bend fix (9 Oct 2026: missing on the installs after 30 Sep)"
+scp -q -i $KEY -o BatchMode=yes "$C/../../probes/optking_patches/apply_optking_fix.py" root@$IP:/tmp/apply_optking_fix.py \
+  && $S "/root/miniforge3/envs/qc/bin/python /tmp/apply_optking_fix.py > /dev/null && /root/miniforge3/envs/qc/bin/python /tmp/apply_optking_fix.py --check | grep -c 'already patched' | grep -qx 2" < /dev/null \
+  || { echo "OPTKING FIX NOT APPLIED $IP"; exit 1; }
 echo "[$(t) $IP] water smoke (psi4 worker, deck v1, 8 threads)"
 $S "PY=/root/miniforge3/envs/qc/bin/python; mkdir -p /root/smoke; \$PY - <<PYEOF
 import json
