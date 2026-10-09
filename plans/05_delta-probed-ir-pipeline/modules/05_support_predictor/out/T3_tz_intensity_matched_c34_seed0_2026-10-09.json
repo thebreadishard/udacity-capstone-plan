@@ -1,0 +1,920 @@
+{
+ "date": "2026-10-09 13:32",
+ "model": "out/E7_rungC_chain34_kdfamily_750_2026-10-05_model_n750_seed0.pt",
+ "model_record": {
+  "pattern": "f",
+  "aux_mode": "both",
+  "aux_target": "projected",
+  "n": 750,
+  "seed": 0
+ },
+ "anchors": {
+  "A_8448043181": "C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/e8_benzene_ccpvtz_oop_2026-10-03/hessian_ccsd_t.npz",
+  "A_01f3186607": "C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/out/composite_full_naphthalene_2026-10-07.npz",
+  "A_6e858b26e5": "C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/out/composite_full_pyridine_2026-10-07.npz",
+  "B_8b12a55d3a": "C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/out/composite_full_fluorobenzene_2026-10-07.npz",
+  "A_3100da3761": "C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/out/composite_full_benzonitrile_2026-10-07.npz",
+  "A_a1e6ec1862": "C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/out/composite_full_anthracene_2026-10-07.npz"
+ },
+ "anchor_registry": {
+  "A_8448043181": {
+   "level": "CCSD(T)/cc-pVTZ",
+   "tier": "TZ",
+   "sha16": "4f264c390ec9ffc5"
+  },
+  "A_01f3186607": {
+   "level": "CCSD(T)/cc-pVDZ + [MP2/cc-pVTZ \u2212 MP2/cc-pVDZ]",
+   "tier": "TZ",
+   "sha16": "3d37769ea7dcd41c"
+  },
+  "A_6e858b26e5": {
+   "level": "CCSD(T)/cc-pVDZ + [MP2/cc-pVTZ \u2212 MP2/cc-pVDZ]",
+   "tier": "TZ",
+   "sha16": "6f4d4ec0fddccbba"
+  },
+  "B_8b12a55d3a": {
+   "level": "CCSD(T)/cc-pVDZ + [MP2/cc-pVTZ \u2212 MP2/cc-pVDZ]",
+   "tier": "TZ",
+   "sha16": "b3a0383b4af2175b"
+  },
+  "A_3100da3761": {
+   "level": "CCSD(T)/cc-pVDZ + [MP2/cc-pVTZ \u2212 MP2/cc-pVDZ]",
+   "tier": "TZ",
+   "sha16": "75ce70055ff7fc5b"
+  },
+  "A_a1e6ec1862": {
+   "level": "CCSD(T)/cc-pVDZ + [MP2/cc-pVTZ \u2212 MP2/cc-pVDZ]",
+   "tier": "TZ",
+   "sha16": "595b8ff6c66c0bc5"
+  }
+ },
+ "tier": "TZ",
+ "low_level": {
+  "A_8448043181": "hessian_b3lyp_analytic.npz",
+  "A_01f3186607": "hessian_b3lyp_analytic.npz",
+  "A_6e858b26e5": "hessian_b3lyp_analytic.npz",
+  "B_8b12a55d3a": "hessian_b3lyp_analytic.npz",
+  "A_3100da3761": "hessian_b3lyp_analytic.npz",
+  "A_a1e6ec1862": "hessian_b3lyp_analytic.npz"
+ },
+ "epochs": 300,
+ "lr": 0.001,
+ "aux_weight": 1.0,
+ "head_l2": 1.0,
+ "lora_rank": 0,
+ "folds": {
+  "A_01f3186607": {
+   "train": [
+    "A_3100da3761",
+    "A_6e858b26e5",
+    "A_8448043181",
+    "A_a1e6ec1862",
+    "B_8b12a55d3a"
+   ],
+   "zero_rule": {
+    "diag_rms": {
+     "CH-stretch": 33.078232342203194,
+     "CH-oop": 20.79054290590923,
+     "ring-ip": 16.3244434347819,
+     "other": 17.752566787198294
+    },
+    "coupling_rms": 1.581459801405028,
+    "coupling_zero_rms": 1.581459801405028,
+    "coupling_ratio": 1.0,
+    "corrected_freq_rms": 21.118599947417756,
+    "corrected_freq_rms_zero_rule": 21.118599947417756,
+    "dH_residual_ratio": 1.0,
+    "freq_rms_by_family": {
+     "CH-oop": 21.146769196490226,
+     "CH-stretch": 33.254194529762636,
+     "other": 17.202376304990192,
+     "ring-ip": 16.398932454674025
+    }
+   },
+   "alpha_scaling": {
+    "diag_rms": {
+     "CH-stretch": 13.141684245206891,
+     "CH-oop": 12.600932582464733,
+     "ring-ip": 7.5538897806583,
+     "other": 9.809216141464038
+    },
+    "coupling_rms": 1.505400109853841,
+    "coupling_zero_rms": 1.581459801405028,
+    "coupling_ratio": 0.9519053905236081,
+    "corrected_freq_rms": 9.995911535923174,
+    "corrected_freq_rms_zero_rule": 21.118599947417756,
+    "dH_residual_ratio": 0.7471880897674537,
+    "freq_rms_by_family": {
+     "CH-oop": 11.54939478792893,
+     "CH-stretch": 13.314471334747434,
+     "other": 9.608870499373614,
+     "ring-ip": 7.5208637575371
+    }
+   },
+   "network_none": {
+    "diag_rms": {
+     "CH-stretch": 76.57786932137259,
+     "CH-oop": 43.253794719312346,
+     "ring-ip": 29.308688719217272,
+     "other": 27.203058845619147
+    },
+    "coupling_rms": 3.745483248119048,
+    "coupling_zero_rms": 1.581459801405028,
+    "coupling_ratio": 2.3683708209284995,
+    "corrected_freq_rms": 42.40277610727725,
+    "corrected_freq_rms_zero_rule": 21.118599947417756,
+    "dH_residual_ratio": 2.2345876269313023,
+    "freq_rms_by_family": {
+     "CH-oop": 43.00942343525181,
+     "CH-stretch": 76.46003058918114,
+     "other": 26.252414393952577,
+     "ring-ip": 28.951641980273266
+    },
+    "final_loss": null
+   },
+   "network_alpha": {
+    "diag_rms": {
+     "CH-stretch": 9.056109146222823,
+     "CH-oop": 21.542295588163267,
+     "ring-ip": 6.895536358332762,
+     "other": 15.835049592361683
+    },
+    "coupling_rms": 2.2474024877220447,
+    "coupling_zero_rms": 1.581459801405028,
+    "coupling_ratio": 1.4210936539299754,
+    "corrected_freq_rms": 12.839690747819798,
+    "corrected_freq_rms_zero_rule": 21.118599947417756,
+    "dH_residual_ratio": 0.9096654258923565,
+    "freq_rms_by_family": {
+     "CH-oop": 21.50506986006457,
+     "CH-stretch": 9.17161301434201,
+     "other": 13.844069042715716,
+     "ring-ip": 6.901127206565646
+    },
+    "final_loss": 0.2894901543855667
+   },
+   "network_head": {
+    "diag_rms": {
+     "CH-stretch": 4.848768991636204,
+     "CH-oop": 14.420486591537076,
+     "ring-ip": 2.9201725032806487,
+     "other": 7.372185379430808
+    },
+    "coupling_rms": 1.288466516381712,
+    "coupling_zero_rms": 1.581459801405028,
+    "coupling_ratio": 0.8147323853802607,
+    "corrected_freq_rms": 7.8127000008671486,
+    "corrected_freq_rms_zero_rule": 21.118599947417756,
+    "dH_residual_ratio": 0.5548987259657852,
+    "freq_rms_by_family": {
+     "CH-oop": 14.908883467547984,
+     "CH-stretch": 4.898892505856005,
+     "other": 7.606356947185409,
+     "ring-ip": 2.8834060317961945
+    },
+    "final_loss": 0.052934746444225314
+   },
+   "network_head_l2": {
+    "diag_rms": {
+     "CH-stretch": 2.5229374700350067,
+     "CH-oop": 19.949065959107482,
+     "ring-ip": 4.5200718075298445,
+     "other": 14.054195699270998
+    },
+    "coupling_rms": 1.7713884323232822,
+    "coupling_zero_rms": 1.581459801405028,
+    "coupling_ratio": 1.1200970336075027,
+    "corrected_freq_rms": 11.076012121204998,
+    "corrected_freq_rms_zero_rule": 21.118599947417756,
+    "dH_residual_ratio": 0.7786212650729822,
+    "freq_rms_by_family": {
+     "CH-oop": 20.0657061217827,
+     "CH-stretch": 2.5826465615026537,
+     "other": 12.718984773604854,
+     "ring-ip": 4.405231117786362
+    },
+    "final_loss": 0.2198651760816574
+   }
+  },
+  "A_3100da3761": {
+   "train": [
+    "A_01f3186607",
+    "A_6e858b26e5",
+    "A_8448043181",
+    "A_a1e6ec1862",
+    "B_8b12a55d3a"
+   ],
+   "zero_rule": {
+    "diag_rms": {
+     "CH-stretch": 35.211121507779445,
+     "CH-oop": 13.612057571686272,
+     "ring-ip": 15.29450405733306,
+     "other": 25.638679870451682
+    },
+    "coupling_rms": 1.8400219600672068,
+    "coupling_zero_rms": 1.8400219600672068,
+    "coupling_ratio": 1.0,
+    "corrected_freq_rms": 22.776737445825315,
+    "corrected_freq_rms_zero_rule": 22.776737445825315,
+    "dH_residual_ratio": 1.0,
+    "freq_rms_by_family": {
+     "CH-oop": 13.959219928713686,
+     "CH-stretch": 35.40718961759727,
+     "other": 26.134807802812777,
+     "ring-ip": 15.416296215960223
+    }
+   },
+   "alpha_scaling": {
+    "diag_rms": {
+     "CH-stretch": 2.3170527106318204,
+     "CH-oop": 11.122613967697564,
+     "ring-ip": 4.902844762136964,
+     "other": 14.585664647581336
+    },
+    "coupling_rms": 2.0000007221198888,
+    "coupling_zero_rms": 1.8400219600672068,
+    "coupling_ratio": 1.0869439417162385,
+    "corrected_freq_rms": 10.07714006472642,
+    "corrected_freq_rms_zero_rule": 22.776737445825315,
+    "dH_residual_ratio": 0.6587453292559975,
+    "freq_rms_by_family": {
+     "CH-oop": 11.393688984197837,
+     "CH-stretch": 2.3487357490358676,
+     "other": 15.034554396187588,
+     "ring-ip": 4.866987972990051
+    }
+   },
+   "network_none": {
+    "diag_rms": {
+     "CH-stretch": 78.03013020062915,
+     "CH-oop": 34.07648947483189,
+     "ring-ip": 27.955784361721467,
+     "other": 45.18600853853813
+    },
+    "coupling_rms": 3.9384636353566607,
+    "coupling_zero_rms": 1.8400219600672068,
+    "coupling_ratio": 2.1404438212317904,
+    "corrected_freq_rms": 44.90944116428397,
+    "corrected_freq_rms_zero_rule": 22.776737445825315,
+    "dH_residual_ratio": 1.6439493919200139,
+    "freq_rms_by_family": {
+     "CH-oop": 31.03760110383713,
+     "CH-stretch": 77.94346877411252,
+     "other": 45.06880766326615,
+     "ring-ip": 28.994854327158695
+    },
+    "final_loss": null
+   },
+   "network_alpha": {
+    "diag_rms": {
+     "CH-stretch": 7.799326720154677,
+     "CH-oop": 12.964032131951168,
+     "ring-ip": 4.669683156665703,
+     "other": 37.69593633061965
+    },
+    "coupling_rms": 1.5878430789672044,
+    "coupling_zero_rms": 1.8400219600672068,
+    "coupling_ratio": 0.8629478959638115,
+    "corrected_freq_rms": 20.93085975505126,
+    "corrected_freq_rms_zero_rule": 22.776737445825315,
+    "dH_residual_ratio": 0.7155234601641927,
+    "freq_rms_by_family": {
+     "CH-oop": 10.516368967793507,
+     "CH-stretch": 7.8937553889329735,
+     "other": 36.426052215031675,
+     "ring-ip": 4.219356238429662
+    },
+    "final_loss": 0.3582842230796814
+   },
+   "network_head": {
+    "diag_rms": {
+     "CH-stretch": 1.722783111856433,
+     "CH-oop": 7.075063354589422,
+     "ring-ip": 2.6711863733827683,
+     "other": 34.251875089288376
+    },
+    "coupling_rms": 1.3757214945441283,
+    "coupling_zero_rms": 1.8400219600672068,
+    "coupling_ratio": 0.7476658020396018,
+    "corrected_freq_rms": 18.57569443094724,
+    "corrected_freq_rms_zero_rule": 22.776737445825315,
+    "dH_residual_ratio": 0.8851186766867721,
+    "freq_rms_by_family": {
+     "CH-oop": 6.663989008416428,
+     "CH-stretch": 1.8409394929709793,
+     "other": 33.17775187412435,
+     "ring-ip": 2.825951111487591
+    },
+    "final_loss": 0.06547973528504372
+   },
+   "network_head_l2": {
+    "diag_rms": {
+     "CH-stretch": 1.1278225515519327,
+     "CH-oop": 11.11058851533958,
+     "ring-ip": 2.62356772238309,
+     "other": 35.38955807639289
+    },
+    "coupling_rms": 1.0418650544173471,
+    "coupling_zero_rms": 1.8400219600672068,
+    "coupling_ratio": 0.566224250051501,
+    "corrected_freq_rms": 19.393150791987033,
+    "corrected_freq_rms_zero_rule": 22.776737445825315,
+    "dH_residual_ratio": 0.6443159111732797,
+    "freq_rms_by_family": {
+     "CH-oop": 10.413023065933595,
+     "CH-stretch": 1.1387592693130977,
+     "other": 34.179803542358435,
+     "ring-ip": 2.440149595913742
+    },
+    "final_loss": 0.2564954400062561
+   }
+  },
+  "A_6e858b26e5": {
+   "train": [
+    "A_01f3186607",
+    "A_3100da3761",
+    "A_8448043181",
+    "A_a1e6ec1862",
+    "B_8b12a55d3a"
+   ],
+   "zero_rule": {
+    "diag_rms": {
+     "CH-stretch": 35.37975876700039,
+     "CH-oop": 5.58210786487302,
+     "ring-ip": 14.880605204467265,
+     "other": 12.843899797174222
+    },
+    "coupling_rms": 1.8293208808846866,
+    "coupling_zero_rms": 1.8293208808846866,
+    "coupling_ratio": 1.0,
+    "corrected_freq_rms": 19.088234479823885,
+    "corrected_freq_rms_zero_rule": 19.088234479823885,
+    "dH_residual_ratio": 1.0,
+    "freq_rms_by_family": {
+     "CH-oop": 5.395164792118224,
+     "CH-stretch": 35.57910351293361,
+     "other": 13.022472171044695,
+     "ring-ip": 14.875566660143525
+    }
+   },
+   "alpha_scaling": {
+    "diag_rms": {
+     "CH-stretch": 9.364360756798444,
+     "CH-oop": 19.72156004725705,
+     "ring-ip": 7.322565874951133,
+     "other": 3.8427745798353947
+    },
+    "coupling_rms": 1.9065048189009715,
+    "coupling_zero_rms": 1.8293208808846866,
+    "coupling_ratio": 1.042192673151447,
+    "corrected_freq_rms": 11.34892665815153,
+    "corrected_freq_rms_zero_rule": 19.088234479823885,
+    "dH_residual_ratio": 0.5546254313614484,
+    "freq_rms_by_family": {
+     "CH-oop": 18.990334459178978,
+     "CH-stretch": 9.483993190711004,
+     "other": 3.9551083415643107,
+     "ring-ip": 8.172365531047156
+    }
+   },
+   "network_none": {
+    "diag_rms": {
+     "CH-stretch": 77.6747199637882,
+     "CH-oop": 22.149561257204628,
+     "ring-ip": 28.5322895612412,
+     "other": 22.0910809375412
+    },
+    "coupling_rms": 4.023773322633844,
+    "coupling_zero_rms": 1.8293208808846866,
+    "coupling_ratio": 2.1995995151424106,
+    "corrected_freq_rms": 40.590875380163304,
+    "corrected_freq_rms_zero_rule": 19.088234479823885,
+    "dH_residual_ratio": 2.56024882218157,
+    "freq_rms_by_family": {
+     "CH-oop": 21.557210359249325,
+     "CH-stretch": 77.59654360467053,
+     "other": 22.13888337643251,
+     "ring-ip": 28.32960612009727
+    },
+    "final_loss": null
+   },
+   "network_alpha": {
+    "diag_rms": {
+     "CH-stretch": 6.989049785308252,
+     "CH-oop": 12.397270684600237,
+     "ring-ip": 6.074575013647394,
+     "other": 8.75364312596719
+    },
+    "coupling_rms": 1.7935872274125146,
+    "coupling_zero_rms": 1.8293208808846866,
+    "coupling_ratio": 0.9804661643314919,
+    "corrected_freq_rms": 8.3826994357483,
+    "corrected_freq_rms_zero_rule": 19.088234479823885,
+    "dH_residual_ratio": 0.591137357038536,
+    "freq_rms_by_family": {
+     "CH-oop": 12.079552588723166,
+     "CH-stretch": 7.073835833461426,
+     "other": 8.914582687063017,
+     "ring-ip": 6.148930096762367
+    },
+    "final_loss": 0.29230338633060454
+   },
+   "network_head": {
+    "diag_rms": {
+     "CH-stretch": 3.3323372370746713,
+     "CH-oop": 10.877529277695194,
+     "ring-ip": 2.596419419659282,
+     "other": 2.479542691386147
+    },
+    "coupling_rms": 1.5355061119790294,
+    "coupling_zero_rms": 1.8293208808846866,
+    "coupling_ratio": 0.8393858770345616,
+    "corrected_freq_rms": 5.588824452132897,
+    "corrected_freq_rms_zero_rule": 19.088234479823885,
+    "dH_residual_ratio": 0.36376438345284845,
+    "freq_rms_by_family": {
+     "CH-oop": 10.119475157788239,
+     "CH-stretch": 3.3244146144905096,
+     "other": 2.554374285397842,
+     "ring-ip": 3.506698910812517
+    },
+    "final_loss": 0.051065797358751296
+   },
+   "network_head_l2": {
+    "diag_rms": {
+     "CH-stretch": 2.579333726243843,
+     "CH-oop": 10.989303363665316,
+     "ring-ip": 4.328094254461126,
+     "other": 7.554617335295442
+    },
+    "coupling_rms": 1.5293115777444815,
+    "coupling_zero_rms": 1.8293208808846866,
+    "coupling_ratio": 0.8359996290016019,
+    "corrected_freq_rms": 6.604067259416351,
+    "corrected_freq_rms_zero_rule": 19.088234479823885,
+    "dH_residual_ratio": 0.41656545245147014,
+    "freq_rms_by_family": {
+     "CH-oop": 10.610076966115955,
+     "CH-stretch": 2.606229796803077,
+     "other": 7.710719742612046,
+     "ring-ip": 4.381254139128704
+    },
+    "final_loss": 0.22042141556739808
+   }
+  },
+  "A_8448043181": {
+   "train": [
+    "A_01f3186607",
+    "A_3100da3761",
+    "A_6e858b26e5",
+    "A_a1e6ec1862",
+    "B_8b12a55d3a"
+   ],
+   "zero_rule": {
+    "diag_rms": {
+     "CH-stretch": 38.41771014217692,
+     "CH-oop": 15.346855555191729,
+     "ring-ip": 14.060992369185147,
+     "other": 20.41178985001355
+    },
+    "coupling_rms": 1.71112787770222,
+    "coupling_zero_rms": 1.71112787770222,
+    "coupling_ratio": 1.0,
+    "corrected_freq_rms": 21.428666152381616,
+    "corrected_freq_rms_zero_rule": 21.428666152381616,
+    "dH_residual_ratio": 1.0,
+    "freq_rms_by_family": {
+     "CH-oop": 14.860592557451566,
+     "CH-stretch": 38.65244590832406,
+     "other": 13.313323910731047,
+     "ring-ip": 14.14299584523823
+    },
+    "intensity": {
+     "spectrum_overlap": 0.25697828418930424,
+     "spectrum_overlap_zero_rule": 0.25697828418930424,
+     "intensity_rel_rms": 0.733621561230969,
+     "intensity_rel_rms_zero_rule": 0.733621561230969,
+     "intensity_rel_rms_matched": 0.0031955448711109683,
+     "intensity_rel_rms_zero_rule_matched": 0.0031955448711109683,
+     "n_modes": 30
+    }
+   },
+   "alpha_scaling": {
+    "diag_rms": {
+     "CH-stretch": 6.516490464236727,
+     "CH-oop": 23.48935653435669,
+     "ring-ip": 8.731869104310233,
+     "other": 11.579934622766158
+    },
+    "coupling_rms": 1.6977366827178284,
+    "coupling_zero_rms": 1.71112787770222,
+    "coupling_ratio": 0.9921740536409389,
+    "corrected_freq_rms": 11.35111199368104,
+    "corrected_freq_rms_zero_rule": 21.428666152381616,
+    "dH_residual_ratio": 0.5733773716552953,
+    "freq_rms_by_family": {
+     "CH-oop": 20.70946596067611,
+     "CH-stretch": 6.602109543103151,
+     "other": 2.7418062609712828,
+     "ring-ip": 8.739942845069077
+    },
+    "intensity": {
+     "spectrum_overlap": 0.2692830371115363,
+     "spectrum_overlap_zero_rule": 0.25697828418930424,
+     "intensity_rel_rms": 0.7336344717590704,
+     "intensity_rel_rms_zero_rule": 0.733621561230969,
+     "intensity_rel_rms_matched": 0.005399496019231686,
+     "intensity_rel_rms_zero_rule_matched": 0.0031955448711109683,
+     "n_modes": 30
+    }
+   },
+   "network_none": {
+    "diag_rms": {
+     "CH-stretch": 81.0366118034591,
+     "CH-oop": 29.80487782030682,
+     "ring-ip": 25.77330081133993,
+     "other": 31.422614993839233
+    },
+    "coupling_rms": 3.0696977505909735,
+    "coupling_zero_rms": 1.71112787770222,
+    "coupling_ratio": 1.7939616264759257,
+    "corrected_freq_rms": 42.92785128877346,
+    "corrected_freq_rms_zero_rule": 21.428666152381616,
+    "dH_residual_ratio": 2.1834104666291325,
+    "freq_rms_by_family": {
+     "CH-oop": 27.01830426641584,
+     "CH-stretch": 80.98998412131773,
+     "other": 21.413601703729444,
+     "ring-ip": 26.682035209651577
+    },
+    "intensity": {
+     "spectrum_overlap": 0.6009258790219062,
+     "spectrum_overlap_zero_rule": 0.25697828418930424,
+     "intensity_rel_rms": 0.733937172084498,
+     "intensity_rel_rms_zero_rule": 0.733621561230969,
+     "intensity_rel_rms_matched": 0.021757645102175045,
+     "intensity_rel_rms_zero_rule_matched": 0.0031955448711109683,
+     "n_modes": 30
+    },
+    "final_loss": null
+   },
+   "network_alpha": {
+    "diag_rms": {
+     "CH-stretch": 4.245167786028523,
+     "CH-oop": 18.498028327048644,
+     "ring-ip": 6.96596005667086,
+     "other": 18.85433640884143
+    },
+    "coupling_rms": 1.1027427870522644,
+    "coupling_zero_rms": 1.71112787770222,
+    "coupling_ratio": 0.6444537555738249,
+    "corrected_freq_rms": 7.558874906110832,
+    "corrected_freq_rms_zero_rule": 21.428666152381616,
+    "dH_residual_ratio": 0.70276915751695,
+    "freq_rms_by_family": {
+     "CH-oop": 11.675317089897888,
+     "CH-stretch": 4.299242872580825,
+     "other": 8.078748693036161,
+     "ring-ip": 5.941947897385697
+    },
+    "intensity": {
+     "spectrum_overlap": 0.34534415208492736,
+     "spectrum_overlap_zero_rule": 0.25697828418930424,
+     "intensity_rel_rms": 0.7337083227336271,
+     "intensity_rel_rms_zero_rule": 0.733621561230969,
+     "intensity_rel_rms_matched": 0.011727120766170555,
+     "intensity_rel_rms_zero_rule_matched": 0.0031955448711109683,
+     "n_modes": 30
+    },
+    "final_loss": 0.3071107596158981
+   },
+   "network_head": {
+    "diag_rms": {
+     "CH-stretch": 6.530056076789591,
+     "CH-oop": 11.696824188261793,
+     "ring-ip": 2.8289093319914294,
+     "other": 11.095575861874185
+    },
+    "coupling_rms": 0.7342455654350674,
+    "coupling_zero_rms": 1.71112787770222,
+    "coupling_ratio": 0.42910034662111024,
+    "corrected_freq_rms": 5.771247668048987,
+    "corrected_freq_rms_zero_rule": 21.428666152381616,
+    "dH_residual_ratio": 0.39970869144474347,
+    "freq_rms_by_family": {
+     "CH-oop": 8.979934338657102,
+     "CH-stretch": 6.616525507395489,
+     "other": 5.4527822979629,
+     "ring-ip": 2.8290937980247803
+    },
+    "intensity": {
+     "spectrum_overlap": 0.3649545752256031,
+     "spectrum_overlap_zero_rule": 0.25697828418930424,
+     "intensity_rel_rms": 0.7336286634394974,
+     "intensity_rel_rms_zero_rule": 0.733621561230969,
+     "intensity_rel_rms_matched": 0.00456007797268944,
+     "intensity_rel_rms_zero_rule_matched": 0.0031955448711109683,
+     "n_modes": 30
+    },
+    "final_loss": 0.056346792727708817
+   },
+   "network_head_l2": {
+    "diag_rms": {
+     "CH-stretch": 3.563577945148395,
+     "CH-oop": 16.43066908204133,
+     "ring-ip": 5.313699260140577,
+     "other": 17.45996019067543
+    },
+    "coupling_rms": 0.9906468942835039,
+    "coupling_zero_rms": 1.71112787770222,
+    "coupling_ratio": 0.5789438108002714,
+    "corrected_freq_rms": 7.326171992238518,
+    "corrected_freq_rms_zero_rule": 21.428666152381616,
+    "dH_residual_ratio": 0.625477845315708,
+    "freq_rms_by_family": {
+     "CH-oop": 12.390204812195595,
+     "CH-stretch": 3.606274240285153,
+     "other": 7.440124243481006,
+     "ring-ip": 5.070823805760216
+    },
+    "intensity": {
+     "spectrum_overlap": 0.40571610780112094,
+     "spectrum_overlap_zero_rule": 0.25697828418930424,
+     "intensity_rel_rms": 0.7336660896217926,
+     "intensity_rel_rms_zero_rule": 0.733621561230969,
+     "intensity_rel_rms_matched": 0.008691999213788472,
+     "intensity_rel_rms_zero_rule_matched": 0.0031955448711109683,
+     "n_modes": 30
+    },
+    "final_loss": 0.229964542388916
+   }
+  },
+  "A_a1e6ec1862": {
+   "train": [
+    "A_01f3186607",
+    "A_3100da3761",
+    "A_6e858b26e5",
+    "A_8448043181",
+    "B_8b12a55d3a"
+   ],
+   "zero_rule": {
+    "diag_rms": {
+     "CH-stretch": 32.72495655260743,
+     "CH-oop": 26.96446889022488,
+     "ring-ip": 16.656576752568267,
+     "other": 18.119738594538234
+    },
+    "coupling_rms": 1.7603972276103848,
+    "coupling_zero_rms": 1.7603972276103848,
+    "coupling_ratio": 1.0,
+    "corrected_freq_rms": 21.48619211497478,
+    "corrected_freq_rms_zero_rule": 21.48619211497478,
+    "dH_residual_ratio": 1.0,
+    "freq_rms_by_family": {
+     "CH-oop": 26.433570990850757,
+     "CH-stretch": 32.87960994683582,
+     "other": 16.45658847595548,
+     "ring-ip": 16.724827921372935
+    }
+   },
+   "alpha_scaling": {
+    "diag_rms": {
+     "CH-stretch": 14.852086050677366,
+     "CH-oop": 16.795535315985585,
+     "ring-ip": 8.354082295728348,
+     "other": 10.74494686275841
+    },
+    "coupling_rms": 1.7603813408362352,
+    "coupling_zero_rms": 1.7603972276103848,
+    "coupling_ratio": 0.9999909754605947,
+    "corrected_freq_rms": 10.652333624896162,
+    "corrected_freq_rms_zero_rule": 21.48619211497478,
+    "dH_residual_ratio": 0.824670606484856,
+    "freq_rms_by_family": {
+     "CH-oop": 14.027145392481044,
+     "CH-stretch": 15.008097771440633,
+     "other": 8.622060682748627,
+     "ring-ip": 8.250377350811835
+    }
+   },
+   "network_none": {
+    "diag_rms": {
+     "CH-stretch": 76.88218943546406,
+     "CH-oop": 48.22845083010471,
+     "ring-ip": 32.026766035762186,
+     "other": 25.900247539356382
+    },
+    "coupling_rms": 3.6423227715814717,
+    "coupling_zero_rms": 1.7603972276103848,
+    "coupling_ratio": 2.069034598813626,
+    "corrected_freq_rms": 41.918246065817044,
+    "corrected_freq_rms_zero_rule": 21.48619211497478,
+    "dH_residual_ratio": 2.201433164571213,
+    "freq_rms_by_family": {
+     "CH-oop": 46.63989375103757,
+     "CH-stretch": 76.74334144148662,
+     "other": 24.413656382007364,
+     "ring-ip": 30.420942807882327
+    },
+    "final_loss": null
+   },
+   "network_alpha": {
+    "diag_rms": {
+     "CH-stretch": 8.639461545781284,
+     "CH-oop": 26.484853782690497,
+     "ring-ip": 10.87573652422927,
+     "other": 14.930840466183561
+    },
+    "coupling_rms": 2.64934100770227,
+    "coupling_zero_rms": 1.7603972276103848,
+    "coupling_ratio": 1.5049677232783216,
+    "corrected_freq_rms": 13.914659568318834,
+    "corrected_freq_rms_zero_rule": 21.48619211497478,
+    "dH_residual_ratio": 1.060907980575825,
+    "freq_rms_by_family": {
+     "CH-oop": 23.729053896320735,
+     "CH-stretch": 8.683545081011266,
+     "other": 12.647669053312647,
+     "ring-ip": 10.944660618033621
+    },
+    "final_loss": 0.25935696959495547
+   },
+   "network_head": {
+    "diag_rms": {
+     "CH-stretch": 9.072741169654083,
+     "CH-oop": 20.13821249762056,
+     "ring-ip": 4.2766781105226785,
+     "other": 7.208612682396805
+    },
+    "coupling_rms": 1.359402557452894,
+    "coupling_zero_rms": 1.7603972276103848,
+    "coupling_ratio": 0.7722135300668402,
+    "corrected_freq_rms": 8.994332285116277,
+    "corrected_freq_rms_zero_rule": 21.48619211497478,
+    "dH_residual_ratio": 0.6184981432007656,
+    "freq_rms_by_family": {
+     "CH-oop": 17.03177341952767,
+     "CH-stretch": 9.290395018824597,
+     "other": 7.361154589572823,
+     "ring-ip": 3.996020358960014
+    },
+    "final_loss": 0.04959657154977322
+   },
+   "network_head_l2": {
+    "diag_rms": {
+     "CH-stretch": 2.130971333604546,
+     "CH-oop": 25.573859971752846,
+     "ring-ip": 8.378478978864901,
+     "other": 13.70397392514687
+    },
+    "coupling_rms": 2.3586988715720967,
+    "coupling_zero_rms": 1.7603972276103848,
+    "coupling_ratio": 1.3398674086608646,
+    "corrected_freq_rms": 12.003691409167148,
+    "corrected_freq_rms_zero_rule": 21.48619211497478,
+    "dH_residual_ratio": 0.9257028483082249,
+    "freq_rms_by_family": {
+     "CH-oop": 22.508388731083002,
+     "CH-stretch": 1.7957191950404692,
+     "other": 11.233076883657382,
+     "ring-ip": 8.254599794631147
+    },
+    "final_loss": 0.19714570939540862
+   }
+  },
+  "B_8b12a55d3a": {
+   "train": [
+    "A_01f3186607",
+    "A_3100da3761",
+    "A_6e858b26e5",
+    "A_8448043181",
+    "A_a1e6ec1862"
+   ],
+   "zero_rule": {
+    "diag_rms": {
+     "CH-stretch": 34.5225056410585,
+     "CH-oop": 8.55273084536693,
+     "ring-ip": 16.115816738243634,
+     "other": 12.472531841010513
+    },
+    "coupling_rms": 1.5849750591065963,
+    "coupling_zero_rms": 1.5849750591065963,
+    "coupling_ratio": 1.0,
+    "corrected_freq_rms": 18.964164439767536,
+    "corrected_freq_rms_zero_rule": 18.964164439767536,
+    "dH_residual_ratio": 1.0,
+    "freq_rms_by_family": {
+     "CH-oop": 8.29033744329436,
+     "CH-stretch": 34.71117908103869,
+     "other": 12.604462889796078,
+     "ring-ip": 16.202437749806357
+    }
+   },
+   "alpha_scaling": {
+    "diag_rms": {
+     "CH-stretch": 10.551243245881468,
+     "CH-oop": 17.8783311802549,
+     "ring-ip": 5.757680285770264,
+     "other": 4.318273395788703
+    },
+    "coupling_rms": 1.7846095938751008,
+    "coupling_zero_rms": 1.5849750591065963,
+    "coupling_ratio": 1.125954369831556,
+    "corrected_freq_rms": 9.51560408691527,
+    "corrected_freq_rms_zero_rule": 18.964164439767536,
+    "dH_residual_ratio": 0.5185217463466597,
+    "freq_rms_by_family": {
+     "CH-oop": 17.875841888231907,
+     "CH-stretch": 10.686157364435122,
+     "other": 4.31918282687308,
+     "ring-ip": 5.7623815944395425
+    }
+   },
+   "network_none": {
+    "diag_rms": {
+     "CH-stretch": 76.65053788390884,
+     "CH-oop": 27.770800630071157,
+     "ring-ip": 28.393185865149512,
+     "other": 21.5692479697469
+    },
+    "coupling_rms": 3.4179642518961137,
+    "coupling_zero_rms": 1.5849750591065963,
+    "coupling_ratio": 2.15647825639775,
+    "corrected_freq_rms": 39.22157544287796,
+    "corrected_freq_rms_zero_rule": 18.964164439767536,
+    "dH_residual_ratio": 2.308868468320361,
+    "freq_rms_by_family": {
+     "CH-oop": 27.406357334673256,
+     "CH-stretch": 76.56548304593541,
+     "other": 21.606135040040442,
+     "ring-ip": 27.911244379322607
+    },
+    "final_loss": null
+   },
+   "network_alpha": {
+    "diag_rms": {
+     "CH-stretch": 9.28464376790418,
+     "CH-oop": 10.032639419838047,
+     "ring-ip": 4.830390801885053,
+     "other": 9.629694075868388
+    },
+    "coupling_rms": 1.6448834837383224,
+    "coupling_zero_rms": 1.5849750591065963,
+    "coupling_ratio": 1.0377977081011576,
+    "corrected_freq_rms": 8.103725429634737,
+    "corrected_freq_rms_zero_rule": 18.964164439767536,
+    "dH_residual_ratio": 0.6297859322647207,
+    "freq_rms_by_family": {
+     "CH-oop": 9.817996267967436,
+     "CH-stretch": 9.400324429742366,
+     "other": 9.75360238389677,
+     "ring-ip": 4.875561069856813
+    },
+    "final_loss": 0.3063921362161636
+   },
+   "network_head": {
+    "diag_rms": {
+     "CH-stretch": 2.6178925031721314,
+     "CH-oop": 7.297088909611756,
+     "ring-ip": 3.931051477477825,
+     "other": 3.4357936589615137
+    },
+    "coupling_rms": 1.1645832951931576,
+    "coupling_zero_rms": 1.5849750591065963,
+    "coupling_ratio": 0.7347644295737996,
+    "corrected_freq_rms": 4.362952019928218,
+    "corrected_freq_rms_zero_rule": 18.964164439767536,
+    "dH_residual_ratio": 0.3044822459788415,
+    "freq_rms_by_family": {
+     "CH-oop": 7.119939552177383,
+     "CH-stretch": 2.680024849306688,
+     "other": 3.3982372230461726,
+     "ring-ip": 3.9717336470288482
+    },
+    "final_loss": 0.05128344632685185
+   },
+   "network_head_l2": {
+    "diag_rms": {
+     "CH-stretch": 1.019249344609279,
+     "CH-oop": 8.639913544780166,
+     "ring-ip": 3.127959171460478,
+     "other": 7.944267856567995
+    },
+    "coupling_rms": 1.1088193471172747,
+    "coupling_zero_rms": 1.5849750591065963,
+    "coupling_ratio": 0.6995815743260234,
+    "corrected_freq_rms": 5.742889147979037,
+    "corrected_freq_rms_zero_rule": 18.964164439767536,
+    "dH_residual_ratio": 0.5012945811866479,
+    "freq_rms_by_family": {
+     "CH-oop": 8.39446217030236,
+     "CH-stretch": 1.0208333547919473,
+     "other": 8.051830493385813,
+     "ring-ip": 3.0716716308205667
+    },
+    "final_loss": 0.2301300823688507
+   }
+  }
+ },
+ "seconds": 451
+}

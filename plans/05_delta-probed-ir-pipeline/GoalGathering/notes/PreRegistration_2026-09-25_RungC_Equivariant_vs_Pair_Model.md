@@ -2203,3 +2203,19 @@ cyclopenta-fused families outside (b) (acenaphthylene to 60 children, acenaphthe
 superseded (not promoted; chain 34 stays carried). One step of the chain script failed and was redone by hand: registering the ablation's models
 stopped the registry rebuild because the control's models were already saved without a status, so the ablation's evaluation was skipped; it ran
 at 13:1x with the same command (the registry now says the candidates were recorded, and a chain registers all its models in one call).
+
+**Outcome of read-out (3), 9 October 13:5x (`out/T3_tz_intensity_c34_seed*_2026-10-09.{json,md}`, 13:11–13:27; re-run with the matched metric
+`out/T3_tz_intensity_matched_c34_seed*_2026-10-09.*`, 13:32–13:52, identical in every other number).** *As registered* (intensity rel. rms,
+head-tuned column, seed mean): **0.490 (0.734, 0.002, 0.734) — above the line of 0.25.** The number does not measure intensities. The read-out paired
+modes in sorted frequency order, and benzene's bright a2u C–H out-of-plane mode (105 km/mol) and a dark neighbour swap order between B3LYP (695 / 718
+cm⁻¹) and CC/TZ (674 / 709): the comparison is 105 against 0 km/mol whenever the corrected Hessian leaves the swap, in every column including the
+zero rule (0.734), and 0.002 in the one fold that undid it. Every intensity itself agrees within 2 % (e1u 3.36 / 3.42, 7.62 / 7.62, 34.15 / 34.10
+km/mol). *Post hoc, labelled as such:* with modes paired by eigenvector overlap (`intensity_rel_rms_matched`, added 13:3x with a test; the sorted
+keys stay) the head-tuned column reads 0.003 (0.005, 0.002, 0.002) — but so does the zero rule (0.003): **with one APT for all three spectra,
+benzene's IR-active mode shapes are fixed by symmetry and the read-out cannot tell a corrected Hessian from an uncorrected one.** What benzene does
+show is the spectrum overlap (positions and intensities together): head-tuned 0.592 (0.365, 0.856, 0.554) against the zero rule's 0.257 — the
+frequency correction. **For the intensity question:** (i) the APT's own level is the larger term (the CC-minus-B3LYP second term, 0.205 on
+benzene, read-out (2) above); (ii) a test of the Hessian's part needs a molecule of low symmetry with a CC APT (the confirmation anchor brings one). The same
+pairing defect sat in every earlier intensity read: chain 34 on hold-out (a) at the proxy level, re-read with the matched metric
+(`out/E7_rungC_chain34_eval_matched_2026-10-09_seed*`): **network 0.127 against zero rule 0.296** (sorted: 0.152 against 0.589); the network still
+halves the intensity error, the zero rule was overstated twofold. Spectrum overlap unchanged (0.972 against 0.270).
