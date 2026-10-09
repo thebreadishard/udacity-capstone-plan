@@ -2179,7 +2179,7 @@ CCSD(T)/cc-pVTZ run), chain 34's three models, `probes/t3_intensity_benzene_1009
 head-tuned column (the TZ-tier standard, amendment (A)) keeps the intensity rel. rms ≤ 0.25 on held-out benzene, seed mean. Reported beside: the
 spectrum overlap, the zero rule, every column. One molecule: a first number, not a family claim. *(Clock note: the two run scripts' header comments say 18:3x and 19:0x; the clock read 18:00 when this amendment was written — the stamps here are the corrected ones; the scripts were already running and were not edited.)*
 
-**Outcome of chain 39, 9 October 07:3x (`out/E7_rungC_chain39_{size_le20,control}_2026-10-09.{json,md}`; 05:46–07:21, 8 threads).** Ring-coupling
+**Outcome of chain 39, 9 October 07:2x (`out/E7_rungC_chain39_{size_le20,control}_2026-10-09.{json,md}`; 05:46–07:21, 8 threads).** Ring-coupling
 ratio on hold-out (s), the 44 pool molecules of ≥ 27 atoms, seed means (ranges): **size run (370 molecules of ≤ 20 atoms) 0.690 (0.658–0.716),
 control (370 of any size below 27) 0.352 (0.329–0.373) → q = 1.96: as registered, a steep size penalty (q ≥ 1.8).** Corrected ω on (s): 5.59 against
 3.68 cm⁻¹ (no correction 23.2) — across the gap the network still removes three quarters of the frequency error, but twice as much is left as with
