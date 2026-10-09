@@ -413,7 +413,8 @@ def train_one(train_ids: list, tensors: dict, seed: int, epochs: int, lr: float 
 
 APT_FILES = ("dipole_b3lyp_cphf.npz", "dipole_b3lyp_fd.npz")           # probes/dipole_derivs_cphf.py (2 Oct 2026; 1.3e-5 vs FD on water), probes/dipole_derivs_fd.py
 PER_MOLECULE_KEYS = ("coupling_ratio", "coupling_rms", "coupling_zero_rms", "corrected_freq_rms", "dH_residual_ratio",
-                     "spectrum_overlap", "spectrum_overlap_zero_rule", "intensity_rel_rms", "intensity_rel_rms_zero_rule", "n_modes")
+                     "spectrum_overlap", "spectrum_overlap_zero_rule", "intensity_rel_rms", "intensity_rel_rms_zero_rule",
+                     "intensity_rel_rms_matched", "intensity_rel_rms_zero_rule_matched", "n_modes")
 
 
 def per_molecule_readouts(mols: dict, ids: list, tr: list, dF_of) -> dict:

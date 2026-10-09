@@ -45,6 +45,20 @@ def test_perfect_prediction_overlaps_one_and_zero_rule_less():
     assert r["spectrum_overlap_zero_rule"] <= half["spectrum_overlap"] <= 1.0
 
 
+def test_matched_pairing_survives_a_mode_crossing():
+    """9 Oct 2026 (benzene, CC/TZ): a bright mode that moves past a dark neighbour must not read as a 100 % intensity error."""
+    masses = np.ones(2)
+    truth = np.diag([1.0e-3, 1.1e-3, 2e-3, 3e-3, 4e-3, 5e-3])          # x0 (bright) below x1 (dark)
+    pred = np.diag([1.2e-3, 1.1e-3, 2e-3, 3e-3, 4e-3, 5e-3])           # x0 moved above x1: the sorted order swaps
+    apt = np.zeros((3, 6))
+    apt[0, 0] = 1.0
+    apt[1, 2:] = 0.3
+    low = np.diag([1.3e-3, 1.1e-3, 2e-3, 3e-3, 4e-3, 5e-3])            # the zero rule is crossed too
+    r = RI.intensity_readout(low, truth - low, pred - low, masses, apt)
+    assert r["intensity_rel_rms"] > 0.5 and r["intensity_rel_rms_matched"] == pytest.approx(0.0, abs=1e-12)
+    assert r["intensity_rel_rms_zero_rule"] > 0.5 and r["intensity_rel_rms_zero_rule_matched"] == pytest.approx(0.0, abs=1e-12)
+
+
 def test_trainer_wiring_present():
     text = (PLAN / "modules" / "05_support_predictor" / "m05" / "rungC_train.py").read_text(encoding="utf-8")
     assert "import rungC_intensities as RI" in text and 'if "apt" in mols.get(i, {}):' in text and 'r.update(RI.aggregate(r["per_molecule"]))' in text

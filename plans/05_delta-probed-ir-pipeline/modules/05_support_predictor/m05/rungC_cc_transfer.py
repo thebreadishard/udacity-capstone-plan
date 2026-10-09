@@ -292,7 +292,7 @@ def main() -> int:
         for fam in ("ring-ip", "CH-stretch", "CH-oop", "other"):
             lines.append(f"| {held} | ω rms {fam} (cm⁻¹) | " + " | ".join(f"{f[c]['freq_rms_by_family'].get(fam, float('nan')):.2f}" for c in cols) + " |")
         if "intensity" in f["network_head"]:
-            for key, label in (("spectrum_overlap", "spectrum overlap (CC APT)"), ("intensity_rel_rms", "intensity rel. rms (CC APT)")):
+            for key, label in (("spectrum_overlap", "spectrum overlap (CC APT)"), ("intensity_rel_rms_matched", "intensity rel. rms, modes matched by eigenvector (CC APT)"), ("intensity_rel_rms", "intensity rel. rms (CC APT)")):
                 lines.append(f"| {held} | {label} | " + " | ".join(f"{f[c]['intensity'][key]:.3f}" for c in cols) + " |")
         fams = f["network_head"]["diag_rms"]
         lines.append(f"| {held} | per-family diag rms, head tuned | — | — | — | — | " + ", ".join(f"{k} {v:.1f}" for k, v in fams.items()) + " |")
