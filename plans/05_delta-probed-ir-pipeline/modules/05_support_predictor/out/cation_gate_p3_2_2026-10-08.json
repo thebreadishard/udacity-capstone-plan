@@ -1,0 +1,125 @@
+{
+ "date": "2026-10-09 05:44",
+ "dirs": [
+  "C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/cation_gate_2026-10-08/P3c_001ea7d3a5",
+  "C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/cation_gate_2026-10-08/P3c_0028cdfd85",
+  "C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/cation_gate_2026-10-08/P3c_00e041576d",
+  "C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/cation_gate_2026-10-08/P3c_01f3186607",
+  "C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/cation_gate_2026-10-08/P3c_02d75f732a",
+  "C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/cation_gate_2026-10-08/P3c_03923c2081",
+  "C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/cation_gate_2026-10-08/P3c_03bf20e8fe",
+  "C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/cation_gate_2026-10-08/P3c_049751d07c",
+  "C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/cation_gate_2026-10-08/P3c_0617e12945",
+  "C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/cation_gate_2026-10-08/P3c_07cadc7923"
+ ],
+ "floor_rows": [
+  {
+   "id": "P3c_001ea7d3a5",
+   "n_atoms": 18,
+   "fd_vs_analytic": {
+    "CH-oop": 4.29885606640642,
+    "CH-stretch": 0.10620593649210448,
+    "other": 2.1984305460759526,
+    "ring-ip": 0.9631832197988857
+   }
+  },
+  {
+   "id": "P3c_0028cdfd85",
+   "n_atoms": 21,
+   "fd_vs_analytic": {
+    "CH-stretch": 0.05588066164503508,
+    "other": 1.7515824763185814,
+    "ring-ip": 1.2374694597057072
+   }
+  },
+  {
+   "id": "P3c_00e041576d",
+   "n_atoms": 12,
+   "fd_vs_analytic": {
+    "CH-oop": 3.052793217311405,
+    "CH-stretch": 0.051702029296792705,
+    "other": 3.274840958334948,
+    "ring-ip": 1.1367646774752103
+   }
+  },
+  {
+   "id": "P3c_01f3186607",
+   "n_atoms": 18,
+   "fd_vs_analytic": {
+    "CH-oop": 1.0636433133177103,
+    "CH-stretch": 0.10042456398310086,
+    "other": 0.8599891639807139,
+    "ring-ip": 1.7010485385611538
+   }
+  },
+  {
+   "id": "P3c_02d75f732a",
+   "n_atoms": 12,
+   "fd_vs_analytic": {
+    "CH-oop": 3.928662034606036,
+    "CH-stretch": 0.051975735876679405,
+    "other": 1.5399847088637175,
+    "ring-ip": 1.1722612360379352
+   }
+  },
+  {
+   "id": "P3c_03923c2081",
+   "n_atoms": 17,
+   "fd_vs_analytic": {
+    "CH-stretch": 0.13157769392598018,
+    "other": 6.5548375919566935,
+    "ring-ip": 2.289804075325355
+   }
+  },
+  {
+   "id": "P3c_03bf20e8fe",
+   "n_atoms": 17,
+   "fd_vs_analytic": {
+    "CH-stretch": 0.10146238146873363,
+    "other": 15.129229517749906,
+    "ring-ip": 2.669461642422157
+   }
+  },
+  {
+   "id": "P3c_049751d07c",
+   "n_atoms": 18,
+   "fd_vs_analytic": {
+    "CH-stretch": 0.0872403249528241,
+    "other": 2.343214656775692,
+    "ring-ip": 1.414557531455159
+   }
+  },
+  {
+   "id": "P3c_0617e12945",
+   "n_atoms": 14,
+   "fd_vs_analytic": {
+    "CH-stretch": 0.06671974345753683,
+    "other": 4.020782642496461,
+    "ring-ip": 1.1252813316059775
+   }
+  },
+  {
+   "id": "P3c_07cadc7923",
+   "n_atoms": 21,
+   "fd_vs_analytic": {
+    "CH-oop": 2.508249508453185,
+    "CH-stretch": 0.08842769450998489,
+    "other": 1.955601632471655,
+    "ring-ip": 0.9570356828771701
+   }
+  }
+ ],
+ "partial_rows": [],
+ "gate": {
+  "n_rows": 10,
+  "median_floor": {
+   "ring-ip": 1.2048653478718212,
+   "CH-stretch": 0.0878340097314045,
+   "CH-oop": 3.052793217311405,
+   "other": 2.2708226014258224
+  },
+  "limit": 1.5,
+  "pass": false
+ },
+ "seconds": 1.0
+}
