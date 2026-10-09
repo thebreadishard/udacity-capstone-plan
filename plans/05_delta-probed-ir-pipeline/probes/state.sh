@@ -33,6 +33,12 @@ echo "--- git ---"
 echo "  $(git status --porcelain | wc -l) uncommitted paths; HEAD: $(git log --oneline -1)"
 # 30 Sep 2026: CI had been red for five days unnoticed — the digest now shows the last CI result on every session start
 echo "  CI (last plan05 run): $(gh run list --repo thebreadishard/udacity-capstone-plan --workflow plan05 --limit 1 --json conclusion,status,headSha,createdAt --jq '.[0] | (.conclusion // .status) + " on " + .headSha[:7] + " " + .createdAt[:16]' 2>/dev/null || echo 'gh unavailable')"
+# 9 Oct 2026: the data mirror had stood still for ten days unnoticed — the digest shows its last backup commit and flags one older than two days
+MIRROR=/c/Users/thebr/Documents/CapstoneData
+if [ -d "$MIRROR/.git" ]; then
+  last=$(git -C "$MIRROR" log -1 --format=%ct 2>/dev/null || echo 0); age_h=$(( ($(date +%s) - last) / 3600 ))
+  echo "  data backup (capstone-data): last commit $(git -C "$MIRROR" log -1 --format='%ad' --date=format:'%Y-%m-%d %H:%M' 2>/dev/null), ${age_h} h ago$([ "$age_h" -gt 48 ] && echo ' — STALE: check the scheduled task CapstoneDataBackup')"
+fi
 echo "--- three most recent ledger entries (first line each) ---"
 sed -n '/^## 6. Log/,$p' "$LED" | grep -a '^- \*\*' | head -3 | cut -c1-140 | sed 's/^/  /'
 echo "=== grep the ledger only if something above needs explaining ==="
