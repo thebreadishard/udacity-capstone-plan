@@ -1,5 +1,7 @@
 #!/bin/bash
 # no-set-e: polling / diagnostic script — an empty grep or pgrep is a normal outcome and every step handles its own failure (rule of 28 Sep 2026)
+# SUPERSEDED 9 Oct 2026 by the Windows scheduled task CapstoneDataBackup (tools/backup_task.cmd): this Git Bash loop died with an app restart on
+# 29 Sep and the mirror fell ten days behind. Kept for the record; do not start it.
 # backup_loop.sh — run tools/backup_data.py once a day at 03:30 (laptop time), detached. Alarm-only: the log carries every run; nothing prints to
 # stdout after the launch line. Start with:  nohup bash tools/backup_loop.sh > /dev/null 2>&1 &   (one instance; the pid file refuses a second)
 # Stop by pid:  kill $(cat "$PIDFILE")
