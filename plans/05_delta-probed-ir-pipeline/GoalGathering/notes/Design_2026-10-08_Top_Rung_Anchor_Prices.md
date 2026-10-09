@@ -55,14 +55,19 @@ registration.
 *Draft, 8 Oct 20:5x. It becomes the registration when the two geometries exist and the coordinates are drawn — before the first LNO energy.*
 
 - **Molecules.** Perylene (32 atoms) and benzo[a]pyrene (32 atoms), from pool 3's neutral rows (their B3LYP geometries and FD Hessians).
-- **Coordinates, by rule.** Per molecule: the symmetry-unique atoms sorted by index; the first C and the first H of that list; for each of the two,
-  the out-of-plane direction and one in-plane direction (the plane from the smallest principal axis, as in `lno_curvature_check.py`) — four
-  Cartesian coordinates per molecule, chosen before any prediction is computed. Benzo[a]pyrene has no symmetry: its first C and first H by index.
+- **Coordinates, by rule.** Per molecule: the first C and the first H by atom index (the lowest index of a symmetry orbit is its unique
+  representative, so this equals 'the first C and H of the symmetry-unique atoms'); for each, the Cartesian axis with the largest share of the
+  plane normal (out of plane; the normal is the smallest principal axis, as in `lno_curvature_check.py`) and the axis with the smallest share (in
+  plane) — four Cartesian coordinates per molecule, chosen before any prediction is computed. Drawn by `probes/spot_coordinates.py` (tested; it
+  refuses a geometry whose best axis carries < 0.98 of the normal). **Perylene, drawn 08:2x 9 Oct** from pool 3's geometry (`P3_018f8ce9da`, runner b): `--ks 2,1,62,61`
+  = C0 z (out of plane, normal share 0.995), C0 y (in plane, 0.011), H20 z, H20 y. Benzo[a]pyrene (`P3_a48efac7c7`) is in runner a's
+  shard, place 54 of its 57 pool 3 rows in queue order, so its geometry lands near the end of pool 3 (≈ 23–25 Oct); this does not
+  hold the work back, since the LNO energies wait for a free machine anyway (laptop after ≈ 15 Oct, CCX53 after ≈ 27 Oct).
 - **The check value.** H_kk(spot) = H_kk(LNO-CCSD(T)/cc-pVDZ, xtight, `--spot`) + [H_kk(MP2/cc-pVTZ) − H_kk(MP2/cc-pVDZ)]
   (`cc_composite_full_check.py compute --ks`), the TZ tier of the anchors. Its own uncertainty: LNO's +0.27 % (8 Oct), stated beside every number.
 - **The prediction.** H_low(B3LYP, analytic where it exists) + ΔH of chain 34's models head-tuned on all six TZ-tier anchors (λ = 1, the standard of
-  amendment (A)), seed mean of three. Needs a T3 mode that fits on all anchors and predicts a molecule that is not an anchor (to be built and tested
-  first; today T3 only leaves one anchor out).
+  amendment (A)), seed mean of three, by `rungC_cc_transfer.py --predict <id> --skip-folds` (fits on all anchors, refuses an anchor as target;
+  smoke on pyrene 8 Oct).
 - **Read.** Per coordinate and pooled: |H_kk(pred) − H_kk(spot)| against the zero rule |H_kk(B3LYP) − H_kk(spot)|. **Lines (draft):** ratio of
   the pooled errors ≤ 0.5 → the network carries the CC correction of the diagonal beyond the anchors' size; ≥ 1.0 → it does not (no better than
   the low level there); between → noted. A coordinate whose network error is within the LNO error bar counts as a pass for that coordinate.
