@@ -31,6 +31,16 @@ def select(manifest: list[dict], frozen_b: set[str]) -> list[dict]:
     return sorted(rows, key=lambda r: (scaffold(r["name"]), r["id"]))
 
 
+def run_order(rows: list[dict]) -> list[dict]:
+    """Breadth first (decision 52): round robin over the families, smallest molecule first within each — a runner stopped part-way (the
+    laptop hands the rest to the pool 3 box, the user's option 3 of 9 Oct) leaves every family equally advanced."""
+    queues = [sorted((r for r in rows if scaffold(r["name"]) == f), key=lambda r: (int(r["n_atoms"]), r["id"])) for f in FAMILIES]
+    out = []
+    for i in range(max((len(q) for q in queues), default=0)):
+        out += [q[i] for q in queues if i < len(q)]
+    return out
+
+
 def hours_by_atoms(ledgers: list[Path], manifest: dict, machine: str = "ubuntu-32gb-hel1-2", since: str = "2026-10-02") -> dict[int, float]:
     """Median runner-hours per molecule by atom count over the done A2 rows the 200-molecule pool computed (its CPX62, from its start; the ledger
     copies also hold older records of other machines, and restart variants that are not manifest ids)."""
@@ -66,7 +76,7 @@ def main() -> int:
     per_family = {f: sum(scaffold(r["name"]) == f for r in rows) for f in FAMILIES}
     print(f"{p['n']} candidates {per_family}; measured hours per molecule by atoms {table}")
     print(f"≈ {p['runner_hours']:.0f} runner-hours = {p['box_hours']:.0f} CPX62-hours ≈ {p['days_one_box']:.1f} days on one box ≈ €{p['eur']:.0f} (excl. VAT)")
-    (HERE / a.out).write_text("".join(r["id"] + "\n" for r in rows), encoding="utf-8")
+    (HERE / a.out).write_text("".join(r["id"] + "\n" for r in run_order(rows)), encoding="utf-8")   # the file order is the run order
     print(f"wrote {a.out}")
     return 0
 

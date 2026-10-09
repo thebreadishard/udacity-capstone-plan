@@ -24,6 +24,12 @@ def test_select_refuses_the_frozen_holdout_b():
         FP.select([_row("x1", "carbazole+CH3")], {"x1"})
 
 
+def test_run_order_is_round_robin_smallest_first():
+    rows = [_row("c2", "carbazole+X", n=24), _row("c1", "carbazole+Y", n=21), _row("a1", "acenaphthylene+Z", n=22),
+            _row("d1", "dibenzofuran", n=20)]
+    assert [r["id"] for r in FP.run_order(rows)] == ["a1", "c1", "d1", "c2"]
+
+
 def test_price_interpolates_and_splits_over_two_runners():
     p = FP.price([_row("a", "carbazole", n=21), _row("b", "carbazole", n=23)], {20: 1.0, 22: 2.0, 24: 4.0}, 0.2)
     assert p["runner_hours"] == pytest.approx(1.5 + 3.0) and p["box_hours"] == pytest.approx(2.25) and p["eur"] == pytest.approx(0.45)
