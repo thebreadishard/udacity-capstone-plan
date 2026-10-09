@@ -31,8 +31,8 @@ One line per change; the numbered section below the register carries every origi
 | 18 | 2026-09-23 | B | own scripts of the E6/E7 day (module 05) | m05/e6_learning_curve.py (pre-registered curve, M1–M5, two hold-outs, --exclude-imaginar… | done |
 | 19 | 2026-09-23 | B | corpus second route and guards | corpus/analytic_hessians.py (pyscf analytic Hessians beside the psi4 FD files), the sort… | done |
 | 20 | 2026-09-30 | B | pyscf 2.14.0 `cc/uccsd_t_rdm.py::_gamma2_intermediates` (UCCSD(T) grad… | install_uccsd_t_dvvvv_fix() in probes/e8_cc_hessian_fd.py | waiting-upstream |
-| 21 | 2026-09-29/30 | B | pyscf 2.14.0 `cc/ccsd_t_rdm.py` (T) densities and `cc/ccsd_t_lambda.py… | C kernels t_density_intermediates and t_lambda_intermediates (probes/t_density_kernel/),… | pr-open |
-| 22 | 2026-09-30 → 10-03 | A | upstream state of rows 1–2, 20, 21 | rows 1–2 merged upstream as pyscf-forge PR #212 (30 Sep, approved) | pr-open |
+| 21 | 2026-09-29/30 | B | pyscf 2.14.0 `cc/ccsd_t_rdm.py` (T) densities and `cc/ccsd_t_lambda.py… | C kernels t_density_intermediates and t_lambda_intermediates (probes/t_density_kernel/),… | waiting-upstream |
+| 22 | 2026-09-30 → 10-03 | A | upstream state of rows 1–2, 20, 21 | rows 1–2 merged upstream as pyscf-forge PR #212 (30 Sep, approved) | waiting-upstream |
 | 23 | 2026-10-01 | B | own (module 05 trainer) | m05/rungC_targets.py | done |
 | 24 | 2026-10-02 | B | own (E8 probe) | two-route-check {inline,separate,only} | done |
 | 25 | 2026-10-02 | B | own (module 05) | m05/rungC_cc_transfer.py (leave-one-anchor-out transfer to CCSD(T) | done |
@@ -41,12 +41,15 @@ One line per change; the numbered section below the register carries every origi
 | 28 | 2026-10-03 | B | own (design input) | probes/cc_lambda_profile.py (cProfile of solve_lambda | done |
 | 29 | 2026-10-02 | C | pyscf-properties 0.1.0 (`pyscf.prop`) | no infrared module in the installed release (magnetizability, nmr, nsr, polarizability, … | done |
 | 30 | 2026-10-03 | C | pyscf 2.14.0 `pyscf/lib/CMakeLists.txt` (and forge's copy of the patte… | the pyscf lookup python3 -c "import pyscf | pr-candidate |
-| 31 | 2026-09-29/30 | B | pyscf 2.14.0 `grad/ccsd_t.py`, `grad/uccsd_t.py` (`Gradients.kernel` w… | our E8 probe solves the (T) lambda explicitly (ccsd_t_lambda.kernel) before calling the … | pr-open |
+| 31 | 2026-09-29/30 | B | pyscf 2.14.0 `grad/ccsd_t.py`, `grad/uccsd_t.py` (`Gradients.kernel` w… | our E8 probe solves the (T) lambda explicitly (ccsd_t_lambda.kernel) before calling the … | waiting-upstream |
 | 32 | 2026-09-30 | B | optking (psi4's optimiser) `linear-bend` cycle handling | our corpus runner optimises molecules with a triple bond in Cartesian coordinates (RETRY… | pr-open |
 | 33 | 2026-09-21 → 09-30 | C | pyVPT2 (`philipmnel/pyvpt2`, `quartic.py`) | the two finite-difference routes to the semi-diagonal quartic constants disagree on psi4 FD Hessians | done |
 | 34 | 2026-10-03 | C | pyscf (`cc/test/test_uccsdt_highm.py::test_zero_beta_electrons`, Windows CI) | the test fails intermittently on pyscf's Windows wheel job with a NaN in the first DIIS matrix; not reproducible outside that build | done |
-| 36 | 2026-10-04 | C | pyscf (`grad/mp2.py::grad_elec`) | the MP2 gradient sizes its AO blocks from the memory left in the process (`max_memory − current_memory`), `blksize = max(1, …)`, and `_shell_prange` with a block smaller than a shell's function count yields an empty block → `ValueError: cannot reshape array of size 0` (benzene/cc-pVTZ after B3LYP work in the same process at max_memory 6000). Fix candidate: a floor of the largest shell size on `blksize`, or a clear error; our workaround: MP2 first in a fresh process, max_memory 12000 (`probes/cc_composite_basis_check.py`) | workaround done; issue/PR on the user's word |
+| 36 | 2026-10-04 | C | pyscf (`grad/mp2.py::grad_elec`) | the MP2 gradient's AO block size can fall below a shell's size → empty block, ValueError | pr-candidate |
 | 35 | 2026-10-04 | C | pyscf (`cc/ccsd_t_rdm.py::_gamma2_outcore`, used by `grad/ccsd_t.py`) | the CCSD(T) gradient's 'outcore' two-particle density is an alias of the in-core one: a dense nvir⁴ dvvvv copied three times (28 GB each for benzene/cc-pVTZ) — our fast path now takes the CCSD part from `ccsd_rdm._gamma2_outcore`; PR candidate | workaround done; PR on the user's word |
+| 37 | 2026-10-09 | A | optking 0.5.0 as installed (`v3d.py`, `addIntcos.py`) | the #116 fix applied to the installs made after 30 Sep (pool 3 CPX62, laptop qc env); bootstraps apply it | waiting-upstream |
+| 38 | 2026-10-09 | C | pyscf (`grad/ccsd_t.py` + #3477; issue #1272) | CO/cc-pVTZ relaxed CCSD(T) dipole: dip_moment() = finite field = 0.17029 D; Molpro's 0.2135 D is not that energy's field derivative | done |
+| 39 | 2026-10-09 | C | optking docs (`devtools/conda-envs/docs.yaml`, Read the Docs) | the docs build fails importing qcelemental under the current pydantic (master's last build 1 June) | done |
 
 ## Sections
 
@@ -326,7 +329,7 @@ One line per change; the numbered section below the register carries every origi
 
 ### 21 — C kernels t_density_intermediates and t_lambda_intermediates (probes/t_density_kernel/),…
 
-**Group:** B, own layer around third-party code. **Date:** 2026-09-29/30. **Status:** pr-open.
+**Group:** B, own layer around third-party code. **Date:** 2026-09-29/30. **Status:** waiting-upstream. *Status note (20:1x 9 Oct 2026):* **#3470 merged 6 Oct** (pyscf master); our `probes/t_density_kernel/` stays until the next pyscf release, then the rebuild drops it.
 
 **Software:** pyscf 2.14.0 `cc/ccsd_t_rdm.py` (T) densities and `cc/ccsd_t_lambda.py::make_intermediates`
 
@@ -340,7 +343,7 @@ One line per change; the numbered section below the register carries every origi
 
 ### 22 — rows 1–2 merged upstream as pyscf-forge PR #212 (30 Sep, approved)
 
-**Group:** A, patch to third-party code. **Date:** 2026-09-30 → 10-03. **Status:** pr-open. *Planned (3 Oct 2026):* at the next environment rebuild pin pyscf-forge to master ≥ 1f1b65f (rows 1–2 become upstream code) and install pyscf-properties from master for its `infrared` module as a second route beside our CPHF APT; pyscf-core stays on our kernel branch until #3469/#3470 are merged. *Status note (3 Oct 2026):* the state row: #212 merged, #213 (reworked 3 Oct, replied), pyscf #3469 and #3470, optking #116 open — all waiting for maintainers.
+**Group:** A, patch to third-party code. **Date:** 2026-09-30 → 10-09. **Status:** waiting-upstream. *Status note (20:1x 9 Oct 2026):* #212 merged 30 Sep, #3469 and #3470 merged 6 Oct; #3477 approved (row 27), forge #213 and optking #116 open (rows 30, 32). *Planned (3 Oct 2026):* at the next environment rebuild pin pyscf-forge to master ≥ 1f1b65f (rows 1–2 become upstream code) and install pyscf-properties from master for its `infrared` module as a second route beside our CPHF APT; pyscf-core stays on our kernel branch until #3469/#3470 are merged. *Status note (3 Oct 2026):* the state row: #212 merged, #213 (reworked 3 Oct, replied), pyscf #3469 and #3470, optking #116 open — all waiting for maintainers.
 
 **Software:** upstream state of rows 1–2, 20, 21
 
@@ -350,7 +353,7 @@ One line per change; the numbered section below the register carries every origi
 
 **Files:** `PR_Drafts_2026-09-21_Upstream_Fixes.md`, `PR_Draft_2026-09-30_optking_linear_bend_cycle_guard.md`
 
-**PR candidate:** #212 merged; #213, #3469, #3470, #116 open
+**PR candidate:** #212 merged (30 Sep); #3469, #3470 merged (6 Oct); #3477, #213, #116 open (9 Oct)
 
 ### 23 — m05/rungC_targets.py
 
@@ -410,7 +413,7 @@ One line per change; the numbered section below the register carries every origi
 
 ### 27 — gradient_with_dipole in the E8 probe and probes/cc_dipole_capture.py
 
-**Group:** B, own layer around third-party code. **Date:** 2026-10-03. **Status:** pr-open — **submitted 3 Oct 10:33 as pyscf/pyscf#3477** on the user's word ("Akkoord op PR-kandidaat 27, post maar"). *CI, 3 Oct 11:5x–12:0x:* the first run failed four builds (linux 3.8/3.12, macOS, windows wheel) on test order, not on the code: `test_ccsd_t_grad` moves the O atom of the module-level `mol` in place, so the (T) dipole test, run after it, built eris from a stale `mf` and tripped the canonical-HF check (reproduced locally: alone pass, whole file fail). Fix f092234 pushed 12:02: both dipole tests build their own molecule and RHF; the two files pass in full locally (10 tests, 185 s). *CI after the fix, 16:2x:* 8 of 9 checks green (both Linux builds, macOS, aarch64, multithread, three style checks). The Windows-wheel job fails on `pyscf/cc/test/test_uccsdt_highm.py::test_zero_beta_electrons` (ValueError: NaNs) — a test outside our four files that also failed on three other pull requests' Windows runs this week (runs 37070358945, 36986042296, 36868472041); our branch sits on current master. No action from our side; a maintainer can rerun the job. The CI note was posted on the PR at 16:36 on the user's word (issuecomment-5970157506). *Prepared 3 Oct 10:1x:* branch `ccsd-grad-relaxed-dm1` on the fork (commit 06468d3, on upstream master) — `cc_grad.rdm1_relaxed` kept by `grad_elec`, `Gradients.dip_moment()`, the (T) gradient calls `grad_elec` on the caller's object; tests water/6-31G against finite field (CCSD and CCSD(T), 4e-8); not opened, waits for the user's word.
+**Group:** B, own layer around third-party code. **Date:** 2026-10-03. **Status:** pr-open — *status note (20:1x 9 Oct 2026):* **approved by sunqm 6 Oct**, CI green, awaiting merge; jeanwsr's question (does it fix #1272?) answered 9 Oct on the user's word (row 38). — **submitted 3 Oct 10:33 as pyscf/pyscf#3477** on the user's word ("Akkoord op PR-kandidaat 27, post maar"). *CI, 3 Oct 11:5x–12:0x:* the first run failed four builds (linux 3.8/3.12, macOS, windows wheel) on test order, not on the code: `test_ccsd_t_grad` moves the O atom of the module-level `mol` in place, so the (T) dipole test, run after it, built eris from a stale `mf` and tripped the canonical-HF check (reproduced locally: alone pass, whole file fail). Fix f092234 pushed 12:02: both dipole tests build their own molecule and RHF; the two files pass in full locally (10 tests, 185 s). *CI after the fix, 16:2x:* 8 of 9 checks green (both Linux builds, macOS, aarch64, multithread, three style checks). The Windows-wheel job fails on `pyscf/cc/test/test_uccsdt_highm.py::test_zero_beta_electrons` (ValueError: NaNs) — a test outside our four files that also failed on three other pull requests' Windows runs this week (runs 37070358945, 36986042296, 36868472041); our branch sits on current master. No action from our side; a maintainer can rerun the job. The CI note was posted on the PR at 16:36 on the user's word (issuecomment-5970157506). *Prepared 3 Oct 10:1x:* branch `ccsd-grad-relaxed-dm1` on the fork (commit 06468d3, on upstream master) — `cc_grad.rdm1_relaxed` kept by `grad_elec`, `Gradients.dip_moment()`, the (T) gradient calls `grad_elec` on the caller's object; tests water/6-31G against finite field (CCSD and CCSD(T), 4e-8); not opened, waits for the user's word.
 
 **Software:** pyscf 2.14.0 `grad/ccsd.py::grad_elec` (semantics, no upstream file touched)
 
@@ -450,7 +453,7 @@ One line per change; the numbered section below the register carries every origi
 
 ### 30 — the pyscf lookup python3 -c "import pyscf
 
-**Group:** C, finding about third-party software. **Date:** 2026-10-03. **Status:** pr-candidate. *Status note (3 Oct 2026):* the same lookup pattern in pyscf-core's CMakeLists would be a second pull request once forge #213 is merged.
+**Group:** C, finding about third-party software. **Date:** 2026-10-03. **Status:** pr-candidate. *Status note (20:1x 9 Oct 2026):* forge #213 had changes requested on 6 Oct (cmake_minimum_required ≥ 3.15 for policy CMP0094; an unintended mode change on setup.py); pushed 84230da and replied 9 Oct on the user's word; open. *Status note (3 Oct 2026):* the same lookup pattern in pyscf-core's CMakeLists would be a second pull request once forge #213 is merged.
 
 **Software:** pyscf 2.14.0 `pyscf/lib/CMakeLists.txt` (and forge's copy of the pattern)
 
@@ -462,7 +465,7 @@ One line per change; the numbered section below the register carries every origi
 
 ### 31 — our E8 probe solves the (T) lambda explicitly (ccsd_t_lambda.kernel) before calling the …
 
-**Group:** B, own layer around third-party code. **Date:** 2026-09-29/30. **Status:** pr-open.
+**Group:** B, own layer around third-party code. **Date:** 2026-09-29/30. **Status:** waiting-upstream. *Status note (20:1x 9 Oct 2026):* **#3469 merged 6 Oct**; our explicit (T)-lambda call stays until the next pyscf release. A branch that predates #3469 still takes the CCSD lambda by default: on CO/cc-pVTZ (row 38) it gives a dipole of 0.0851 D against the true 0.17029 D.
 
 **Software:** pyscf 2.14.0 `grad/ccsd_t.py`, `grad/uccsd_t.py` (`Gradients.kernel` without l1/l2)
 
@@ -476,7 +479,7 @@ One line per change; the numbered section below the register carries every origi
 
 ### 32 — our corpus runner optimises molecules with a triple bond in Cartesian coordinates (RETRY…
 
-**Group:** B, own layer around third-party code. **Date:** 2026-09-30. **Status:** pr-open.
+**Group:** B, own layer around third-party code. **Date:** 2026-09-30. **Status:** pr-open. *Status note (20:1x 9 Oct 2026):* the maintainer (Rollin King) reviewed on 6 Oct, pushed d72bac0 to our branch himself (libxc in the CI test environments) and dismissed his review; the CI run waits for his approval; the Read the Docs failure is the docs environment, not this change (row 39) — noted on the PR 9 Oct on the user's word. Pull d72bac0 before any change to `~/optking-pr`.
 
 **Software:** optking (psi4's optimiser) `linear-bend` cycle handling
 
@@ -537,6 +540,58 @@ TASKS row 'Odds lever 2'.
 
 **Action:** upstream, the same change in `ccsd_t_rdm._gamma2_outcore` (plus a test that the gradient is unchanged) — a small PR beside #3469/#3470;
 the user decides whether and when (GitHub replies and PRs on the user's word).
+
+### 36 — the MP2 gradient's AO block size can fall below a shell's size → empty block, ValueError
+
+**Group:** C, finding about third-party software. **Date:** 2026-10-04. **Status:** pr-candidate (register cell of 4 Oct: 'workaround done; issue/PR on the user's word'; section added 9 Oct, the text was in the register only).
+
+**Software:** pyscf (`grad/mp2.py::grad_elec`)
+
+**Finding:** the MP2 gradient sizes its AO blocks from the memory left in the process (`max_memory − current_memory`), `blksize = max(1, …)`, and `_shell_prange` with a block smaller than a shell's function count yields an empty block → `ValueError: cannot reshape array of size 0` (benzene/cc-pVTZ after B3LYP work in the same process at max_memory 6000). Fix candidate: a floor of the largest shell size on `blksize`, or a clear error; our workaround: MP2 first in a fresh process, max_memory 12000 (`probes/cc_composite_basis_check.py`)
+
+### 37 — the #116 fix applied to the installs made after 30 Sep (pool 3 CPX62, laptop qc env); bootstraps apply it
+
+**Group:** A, patch to third-party code. **Date:** 2026-10-09. **Status:** waiting-upstream (drop at the first optking release that carries #116).
+
+**Software:** optking 0.5.0 as installed in the psi4 environments (`v3d.py`, `addIntcos.py`)
+
+**Change:** `probes/optking_patches/apply_optking_fix.py` (30 Sep, the user: 'los het issue op in onze versie van de code') had been applied to the
+five installations of that day. `--check` on 20:1x 9 Oct said **NOT patched** on the two made since: the pool 3 CPX62 (4 ethynyl rows pending) and the
+laptop's `qc` env (15 ethynyl rows in the five-ring pool, TASKS 38). Applied on both (atomic file replace, between molecules); `--check` now
+'already patched' on both; laptop water smoke 50 s after it. `probes/bootstrap_pool3_cpx62.sh` and `probes/bootstrap_nextpool_1002.sh` now apply the
+fix and stop unless `--check` confirms both files.
+
+**Why:** the stall guard (90 min) and the Cartesian retry (row 32) covered the hang; the patch removes the lost time.
+
+**Files:** `probes/optking_patches/`, the two bootstrap scripts (commit 3c7a1a34)
+
+### 38 — CO/cc-pVTZ relaxed CCSD(T) dipole: dip_moment() = finite field = 0.17029 D; Molpro's 0.2135 D is not that energy's field derivative
+
+**Group:** C, finding about third-party software. **Date:** 2026-10-09. **Status:** done (reported on pyscf#3477, 9 Oct, the user's word).
+
+**Software:** pyscf `grad/ccsd_t.py` with #3477 (`Gradients.dip_moment()`); issue pyscf#1272 (2022)
+
+**Finding:** CO, cc-pVTZ, all electrons, R = 1.128 Å (the issue's input): relaxed CCSD(T) dipole from #3477 +0.17029 D after a gradient with the (T)
+lambda; central differences of the CCSD(T) energy in a uniform field (h = 1e-3 and 2e-3 a.u., Richardson) +0.17029 D (difference < 1e-5 D). SCF,
+CCSD and CCSD(T) energies equal the Molpro values quoted in the issue to 1e-8 Eh, so Molpro's 0.2135 D (`ccsd(t);core,0;cphf,1`) is not the field
+derivative of that energy. The issue's unrelaxed (T) density gives 0.17674 D, unchanged. On the PR branch without #3469 the default `kernel()` takes
+the CCSD lambda: 0.0851 D (row 31).
+
+**Where recorded:** pyscf#3477 comment of 9 Oct; scratchpad scripts `co_dipole_1272.py`, `co_dipole_1272b.py` (61 s at 4 threads).
+
+**Action:** none; it also confirms the route our CC APTs use (explicit (T) lambda, row 27) on a second molecule.
+
+### 39 — the optking docs build fails importing qcelemental under the current pydantic
+
+**Group:** C, finding about third-party software. **Date:** 2026-10-09. **Status:** done (noted on optking#116, 9 Oct, the user's word).
+
+**Software:** optking documentation (`devtools/conda-envs/docs.yaml`, Read the Docs; sphinx-automodapi imports the package)
+
+**Finding:** every docs build of #116 (30 Sep, 6 Oct) fails in `import qcelemental` → pydantic schema generation (`ValueError: not enough values to
+unpack` in a NumPy-array annotation); #116 does not touch the docs environment; master's last docs build is from 1 June, so a fresh master build would
+likely fail the same way.
+
+**Action:** none unless the maintainer asks; a pin in `docs.yaml` would be a separate small PR (not drafted).
 
 ## How to use this ledger
 
