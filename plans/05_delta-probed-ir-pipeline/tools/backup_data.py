@@ -4,6 +4,8 @@ is prima"; the GB-scale psi4 logs stay on the laptop until the PC arrives).
 What is mirrored (relative to the plan directory), and what is not:
   modules/05_support_predictor/corpus/molecules/   every file except psi4.out and worker_stdout.txt (the 1.9 GB of logs; reproducible)
   modules/05_support_predictor/corpus/{manifest,ledger}.csv, STATUS.md
+  modules/05_support_predictor/corpus/shards_*/      (since 10 Oct 2026) every shard folder, psi4.out and worker_stdout.txt excluded as above —
+                                                    fetched server rows before their merge and the laptop's own computations into them
   modules/05_support_predictor/data/corpus_release/, data/second_route/, data/e9/
   modules/05_support_predictor/out/                 run records incl. the *.pt checkpoints the code repo ignores
   modules/standout_pattern_proposer/out/
@@ -35,6 +37,8 @@ SOURCES = [                                                   # (relative dir, e
     ("modules/standout_pattern_proposer/out", set()),
     ("probes/results_m1", set()),
 ]
+SOURCES += [(f"{M05}/corpus/{p.name}", {"psi4.out", "worker_stdout.txt"})          # TASKS 43 (1), 10 Oct 2026: found at run time, so a new shard
+            for p in sorted((PLAN / M05 / "corpus").glob("shards_*")) if p.is_dir()]   # folder is mirrored without an edit here
 SINGLE_FILES = [f"{M05}/corpus/manifest.csv", f"{M05}/corpus/ledger.csv", f"{M05}/corpus/STATUS.md"]
 EXCLUDED_SUFFIXES = {".tmp", ".lock", ".pid"}
 
