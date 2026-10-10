@@ -2219,3 +2219,27 @@ benzene, read-out (2) above); (ii) a test of the Hessian's part needs a molecule
 pairing defect sat in every earlier intensity read: chain 34 on hold-out (a) at the proxy level, re-read with the matched metric
 (`out/E7_rungC_chain34_eval_matched_2026-10-09_seed*`): **network 0.127 against zero rule 0.296** (sorted: 0.152 against 0.589); the network still
 halves the intensity error, the zero rule was overstated twofold. Spectrum overlap unchanged (0.972 against 0.270).
+
+### Amendment 10 October 13:0x — chain 40: does *adding* five-membered-ring children cover hold-out (b)? Read at ~30 per family
+
+**Why now.** Chain 38 showed that *removing* the acenaphthylene, carbazole, dibenzofuran and dibenzothiophene children hurts (b) (0.317 → 0.410).
+The five-ring pool (TASKS 38) adds 181 pending children of those four families; decision 52 says ~30 children cover a family and ~60 finish it.
+The laptop runner works in round-robin order, smallest first (`corpus/five_ring_pool_candidates_2026-10-09.txt`), so after its first **64**
+candidates the four families stand at 29, 30, 31 and 32 children (13–16 today). The question is decided there, not after all 181 (≈ 15 Oct instead
+of ≈ 24 Oct), and the answer also decides whether the rest of the pool is computed.
+
+**Trigger.** The first 64 ids of the candidate list have a `result.json` in `corpus/shards_fivering/laptop/molecules/` (done or failed; failures
+are counted and reported, they are not replaced). **Data.** `merge_shards.py corpus/shards_fivering/laptop/` (rows done or failed only; the runner
+keeps going in its own copy); the pool is then the current pool plus the merged done rows. **Model.** Chain 34's recipe (v1.1, as in chains 37–39),
+`--sizes all`, three seeds, models saved and entered as candidates in one `--add-candidates` call after all trainings, 8 threads beside the runner.
+**Read.** `rungC_eval_saved.py --holdout-b-file corpus/holdout_b_frozen_2026-10-08.txt` per seed, seed means. **Lines** on Δ = (b)chain 40 − (b)chain
+37 (0.325, the 912-molecule pool with the 200, frozen (b), seed mean):
+- *Δ ≤ −0.03* → adding the five-ring families covers (b): the runner continues to the end of the list (~60 per family), and (b) is read again then;
+- *Δ > −0.015* → adding them does not move (b) at this count: the runner gets its STOP file after the read (≈ 30 per family kept), the laptop goes
+  back to the cations, and the generator route for (b)-like scaffolds (chain 38's other branch) is proposed to the user;
+- *between* → the runner continues; noted, no lever claimed.
+
+Reported beside: (b+), (a) and its four families, per (b) scaffold (fluorene and fluoranthene children separately), chain 38's control (0.317, 853
+molecules) as a second reference, the best epochs. **What this cannot separate:** there is no same-size control; chain 37 measured what count alone
+does (+200 molecules of other kinds: 0.330 → 0.325), and the seed ranges of chains 37/38 are 0.01–0.02 wide, which the lines exceed. The new rows carry
+FD labels only, as the 200 did.
