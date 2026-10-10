@@ -13,6 +13,7 @@ pytestmark = pytest.mark.skipif(BASH is None, reason="bash not available")
 
 STUB = r"""#!/usr/bin/env bash
 # stands in for the psi4 python: `run_corpus.py --ids ID [--retry-failed] …` writes molecules/ID/result.json and counts its calls
+cat > /dev/null                      # like python under psi4, the stub reads stdin (10 Oct: the loop lost its list that way)
 id=""; retry=0
 while [ $# -gt 0 ]; do case "$1" in --ids) id=$2; shift ;; --retry-failed) retry=1 ;; esac; shift; done
 mkdir -p "molecules/$id"; echo "$id $retry" >> calls.txt

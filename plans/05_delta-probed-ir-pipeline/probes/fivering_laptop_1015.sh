@@ -13,7 +13,9 @@
 # 20 Sep 2026); a molecule that fails again stays failed and is named in the end marker. Retried ids are recorded in <dir>/retried.txt, so a
 # relaunch does not retry them a second time.
 #
-#   PRIORITY=1 nohup bash probes/fivering_laptop_1015.sh >> probes/results_m1/fivering_laptop_2026-10-09.log 2>&1 < /dev/null & disown
+#   PRIORITY=1 nohup bash probes/fivering_laptop_1015.sh >> probes/results_m1/fivering_laptop_2026-10-10.log 2>&1 < /dev/null & disown
+# 10 Oct 13:3x: every command inside the read loops takes stdin from /dev/null — the first launch ended after one molecule because the python
+# read the rest of the candidate list from the loop's stdin (the old log, fivering_laptop_2026-10-09.log, holds that false end marker).
 #   DRY=1 bash probes/fivering_laptop_1015.sh   → copy + one-molecule dry run, no waiting
 #   PRIORITY=1 …   (10 Oct 2026, the user: 'Ja, laat de vijfringpool voorgaan'): wait only until no analytic_hessians.py runs in WSL (the cation
 #                  queue script was stopped and its current molecule finishes), not for the cation route's end marker; the cations resume
@@ -61,7 +63,7 @@ while read -r id; do
   [ -z "$id" ] && continue
   [ -f "$D/STOP" ] && { echo "=== (F5) STOP file: the runner hands the rest over $(t)"; stopped=1; break; }
   [ -f "$D/molecules/$id/result.json" ] && continue                 # done or failed: the main pass never repeats a molecule
-  "$PY" run_corpus.py --ids "$id" --worker-max-hours 8 >> "$D/runner.log" 2>&1
+  "$PY" run_corpus.py --ids "$id" --worker-max-hours 8 >> "$D/runner.log" 2>&1 < /dev/null   # never the loop's stdin
   [ "$(status_of "$id")" = done ] && echo "(F5) $id done $(t)" || echo "(F5) $id FAILED $(t)"
 done < "$LIST"
 [ "$stopped" = 1 ] && exit 0
@@ -74,7 +76,7 @@ while read -r id; do                                                  # one retr
   grep -qxF "$id" "$D/retried.txt" && { failed_again="$failed_again $id"; continue; }
   [ -f "$D/STOP" ] && { echo "=== (F5) STOP file during the retry pass $(t)"; exit 0; }
   echo "$id" >> "$D/retried.txt"
-  "$PY" run_corpus.py --ids "$id" --retry-failed --worker-max-hours 8 >> "$D/runner.log" 2>&1
+  "$PY" run_corpus.py --ids "$id" --retry-failed --worker-max-hours 8 >> "$D/runner.log" 2>&1 < /dev/null
   if [ "$(status_of "$id")" = done ]; then echo "(F5) $id done on retry $(t)"; else echo "(F5) $id FAILED AGAIN $(t)"; failed_again="$failed_again $id"; fi
 done < "$LIST"
 echo "=== (F5) laptop runner finished: $(ls "$D/molecules" 2>/dev/null | wc -l) molecules with a folder; failed after one retry:${failed_again:- none} $(t)"

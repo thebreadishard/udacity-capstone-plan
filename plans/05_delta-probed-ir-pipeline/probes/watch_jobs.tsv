@@ -2,4 +2,4 @@
 # TAB-separated: name, log (relative to the plan folder), marker ERE (lines reported once; lines containing 'armed' are skipped), end ERE (the job's
 # last marker), process ERE (matched in `ps -ef`; bracket the first letter so the pattern never matches itself).
 CA	probes/results_m1/cation_analytic_2026-10-09.log	^=== \(CA\) |ANALYTIC FAILED	^=== \(CA\) (all 60|STOPPED)	[c]ation_analytic_all|[c]ations_after_fivering
-F5	probes/results_m1/fivering_laptop_2026-10-09.log	^=== \(F5\) |FAILED	^=== \(F5\) (laptop runner finished|STOP file|COPY FAILED|NO CANDIDATE)	[f]ivering_laptop_1015
+F5	probes/results_m1/fivering_laptop_2026-10-10.log	^=== \(F5\) |FAILED	^=== \(F5\) (laptop runner finished|STOP file|COPY FAILED|NO CANDIDATE)	[f]ivering_laptop_1015

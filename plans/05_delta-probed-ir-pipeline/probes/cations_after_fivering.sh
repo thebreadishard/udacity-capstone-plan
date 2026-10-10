@@ -12,7 +12,7 @@
 set -u
 # no-set-e: a waiting loop; the relaunch is the last command
 P=$(cd "$(dirname "$0")/.." && pwd)   # the plan folder, wherever the checkout is (CI runs on Linux)
-F5LOG=${F5LOG:-$P/probes/results_m1/fivering_laptop_2026-10-09.log}
+F5LOG=${F5LOG:-$P/probes/results_m1/fivering_laptop_2026-10-10.log}   # 10 Oct 13:3x: new log; the old one holds a false end marker
 F5PID=${F5PID:-$P/probes/results_m1/fivering_laptop.pid}
 SLEEP_S=${SLEEP_S:-900}
 MAX_DAYS=${MAX_DAYS:-21}
