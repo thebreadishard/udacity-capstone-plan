@@ -11,7 +11,7 @@
 # Overridable for tests: F5LOG, F5PID, SLEEP_S, MAX_DAYS, CA_CMD.
 set -u
 # no-set-e: a waiting loop; the relaunch is the last command
-P=/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline
+P=$(cd "$(dirname "$0")/.." && pwd)   # the plan folder, wherever the checkout is (CI runs on Linux)
 F5LOG=${F5LOG:-$P/probes/results_m1/fivering_laptop_2026-10-09.log}
 F5PID=${F5PID:-$P/probes/results_m1/fivering_laptop.pid}
 SLEEP_S=${SLEEP_S:-900}
