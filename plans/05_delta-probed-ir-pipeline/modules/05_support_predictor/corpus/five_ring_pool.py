@@ -56,11 +56,22 @@ def hours_by_atoms(ledgers: list[Path], manifest: dict, machine: str = "ubuntu-3
     return {n: float(np.median(v)) for n, v in sorted(by.items())}
 
 
-def price(rows: list[dict], table: dict[int, float], eur_per_hour: float) -> dict:
-    ns, hs = np.array(sorted(table)), np.array([table[n] for n in sorted(table)])
-    runner_h = float(sum(np.interp(int(r["n_atoms"]), ns, hs) for r in rows))   # clamped at the measured ends
+def price(rows: list[dict], table: dict[int, float], eur_per_hour: float, outside: str = "powerlaw") -> dict:
+    """Runner-hours per molecule: linear interpolation inside the measured atom range; outside it (10 Oct 2026: it used to clamp to the end value,
+    which prices a large molecule as the largest measured one) a power law h = c·N^p fitted to the measured medians, or a refusal with
+    outside='refuse'. The rows priced outside the range and the fitted exponent are part of the result."""
+    if len(table) < 2:
+        raise ValueError(f"price: {len(table)} measured size(s) — need at least two to price anything")
+    ns, hs = np.array(sorted(table), float), np.array([table[n] for n in sorted(table)], float)
+    p, logc = np.polyfit(np.log(ns), np.log(hs), 1)
+    out_rows = [r for r in rows if not ns[0] <= int(r["n_atoms"]) <= ns[-1]]
+    if out_rows and outside == "refuse":
+        raise ValueError(f"price: {len(out_rows)} molecule(s) outside the measured range {ns[0]:.0f}–{ns[-1]:.0f} atoms")
+    runner_h = float(sum(np.interp(int(r["n_atoms"]), ns, hs) if ns[0] <= int(r["n_atoms"]) <= ns[-1]
+                         else np.exp(logc) * int(r["n_atoms"]) ** p for r in rows))
     box_h = runner_h / RUNNERS_PER_BOX
-    return dict(n=len(rows), runner_hours=runner_h, box_hours=box_h, days_one_box=box_h / 24, eur=box_h * eur_per_hour)
+    return dict(n=len(rows), runner_hours=runner_h, box_hours=box_h, days_one_box=box_h / 24, eur=box_h * eur_per_hour,
+                n_outside_range=len(out_rows), measured_range=[int(ns[0]), int(ns[-1])], power_law_exponent=round(float(p), 2))
 
 
 def main() -> int:
@@ -75,7 +86,8 @@ def main() -> int:
     p = price(rows, table, a.eur_per_hour)
     per_family = {f: sum(scaffold(r["name"]) == f for r in rows) for f in FAMILIES}
     print(f"{p['n']} candidates {per_family}; measured hours per molecule by atoms {table}")
-    print(f"≈ {p['runner_hours']:.0f} runner-hours = {p['box_hours']:.0f} CPX62-hours ≈ {p['days_one_box']:.1f} days on one box ≈ €{p['eur']:.0f} (excl. VAT)")
+    print(f"≈ {p['runner_hours']:.0f} runner-hours = {p['box_hours']:.0f} CPX62-hours ≈ {p['days_one_box']:.1f} days on one box ≈ €{p['eur']:.0f} (excl. VAT); "
+          f"{p['n_outside_range']} outside the measured {p['measured_range'][0]}–{p['measured_range'][1]} atoms, priced by N^{p['power_law_exponent']}")
     (HERE / a.out).write_text("".join(r["id"] + "\n" for r in run_order(rows)), encoding="utf-8")   # the file order is the run order
     print(f"wrote {a.out}")
     return 0
