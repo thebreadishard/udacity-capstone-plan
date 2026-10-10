@@ -125,3 +125,43 @@ Route B: compute only, scheduled and priced when chosen.
    are the cheap input's, labelled so; the predicted series (corrected Hessian + B3LYP APT, a band over the seeds, in-training marked) has its slot
    built now and appears per family when licensed; no unlicensed preview; no ωB97X heights.
 3. **Decided 10 Oct 15:4x:** the broadened curve with sticks, static SVG, no toggle.
+
+## 9. Addendum (10 Oct 17:3x, TASKS 45) — anchored pages lead with the anchor spectrum
+
+*The user, 10 Oct: "beetje vreemd om een 'foute' input te tonen als de 'waarheid' bekend is"; then "Ga". Design only; build after the user's word.*
+
+**Principle.** Every page leads with the best spectrum it has: **anchor** (rung 4–5) > **predicted** (rung 3, only when licensed) > **cheap input**
+(rung 1). Lower levels stay on the page as comparison series, lighter, with the measured gap to the leading one.
+
+**The six carried anchors (`out/ANCHORS_STATUS.json`, checked today).** All six Hessians were computed at the corpus geometry (max coordinate
+difference 0.0 bohr), none has an imaginary mode, and the cheap input sits 19–23 cm⁻¹ rms from each (sorted frequencies):
+
+| anchor | Hessian (carried, TZ tier) | heights from | cheap–anchor rms |
+|---|---|---|---|
+| benzene | CCSD(T)/cc-pVTZ | **its own CC APT** (`apt_ccsd_t.npz`, CCSD(T)/cc-pVTZ) | 22.2 cm⁻¹ |
+| benzonitrile | CCSD(T)/cc-pVDZ + MP2 basis step | the B3LYP APT (labelled "heights with cheap-level dipole derivatives") | 22.7 |
+| naphthalene, pyridine, fluorobenzene, anthracene | CCSD(T)/cc-pVDZ + MP2 basis step | none yet → positions only, labelled | 21.2, 18.8, 19.0, 21.5 |
+
+**What is drawn on an anchor page.** The lead chart: the anchor's curve and sticks (heights as in the table; positions-only anchors draw unit
+sticks in the anchor colour, as the positions chart does). The cheap input as a second, lighter curve in the same axes. For the comparison the cheap
+series uses the **analytic** B3LYP Hessian where it exists — the low level of every coupled-cluster comparison in the project, and benzene's
+finite-difference Hessian is the noisy one its page already flags — with the same APT as the anchor series where the anchor uses the B3LYP APT, so
+the two curves differ only by the Hessian. Under the chart: "Anchor: CCSD(T)/cc-pVTZ (rung 5, validated against NIST); compared with the cheap input:
+spectrum overlap 0.26, frequency rms 22.2 cm⁻¹" — every number computed at export time from the files, not typed.
+
+**The optional test series** (labelled "test of the network, not a served prediction"): the network's leave-one-anchor-out prediction (T3, chain
+34's carried models, head-tuned at the TZ tier, the band over three seeds). It needs one code change: `rungC_cc_transfer.py` does not keep the
+per-fold predicted Hessians today (only the read-outs), so a `--save-fold-predictions` switch (with a test) and one re-run (≈ 20 min at 8 threads,
+three seeds) come first. Benzene's numbers for the label: overlap 0.59 (seeds 0.37–0.86) against the cheap input's 0.26. It is drawn only on anchor
+pages, never on other molecules (there it would be an unlicensed prediction).
+
+**Data path.** The export reads the carried anchors from the registry (as the rung already does), computes the anchor series with
+`m08.spectrum`'s routine (a small generalisation: Hessian file and APT file as arguments), and writes `anchor_spectrum`, `comparison`
+(overlap, rms) and, when the test series exists, `test_prediction` into the molecule JSON. Module 08's certificate uses the same fields for its
+anchored rung. Tests: benzene's anchor series has 4 bands with heights from the CC APT; naphthalene's is positions only; the comparison numbers
+equal a direct computation; a page without an anchor is unchanged.
+
+**Decisions for the user.**
+1. Lead with the anchor on the six anchor pages, cheap input as comparison (recommended) — or show both side by side as equals.
+2. The test series: include it, labelled, after the re-run (recommended) — or leave it out.
+3. Benzonitrile: heights with the B3LYP APT, labelled (recommended) — or positions only until a CC APT exists for it.
