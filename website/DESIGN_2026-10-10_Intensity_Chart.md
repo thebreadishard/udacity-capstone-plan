@@ -46,6 +46,45 @@ A now; C measured, then in the labels route if it is cheap; B only for what C do
 - **Pages without an APT** keep today's unit-height chart with the line "Band heights are not computed for this molecule yet (no dipole
   derivatives); positions only" — never invented heights.
 
+## 4a. Where it sits on the page (added 10 Oct 15:2x; the user: "waar precies komt het in de UI? Desktop, tablet en telefoon?")
+
+**Measured on the live benzene page today (the app's browser).** Phone, 375 px: the chart's SVG is 309 px wide, so its 11-unit labels render at
+**4.7 px**, and the spectrum starts **1,427 px down** (below Structure, the status ladder and the request card) on an 812 px screen. Tablet portrait,
+820 px: 707 px wide, labels 10.8 px, spectrum 1,284 px down. The present positions chart therefore already fails on phones; the new chart must not
+inherit that.
+
+**Desktop (≥ 1024 px, the 2:3 columns; landscape tablets share it with the sticky side column).** A new first card in the right column,
+"Infrared spectrum (cheap level, B3LYP)": the chart at the column's width (≈ 700 px), the one-line summary under it, then "How well is this shape
+known?" as an open `<details>` block. The existing card "Harmonic frequencies at the cheap level" follows unchanged (its two-functional positions chart
+and the table, now with a height column); Second route and Provenance below it. The left column is unchanged.
+
+```
+┌ Structure ─────────┐  ┌ Infrared spectrum (cheap level, B3LYP) ───────────┐
+│ depiction, 2D/3D   │  │  µm axis                                           │
+├ Status ladder ─────┤  │  curve + sticks (km/mol), 500–3500 cm⁻¹            │
+│ …                  │  │  "7 infrared-active bands; strongest 695 cm⁻¹ …"   │
+├ Request a run ─────┤  │  ▾ How well is this shape known?  (open)           │
+└────────────────────┘  ├ Harmonic frequencies (positions, both functionals)┤
+                        │  chart + table (+ height column)                   │
+                        ├ Second route ─┤ ├ Provenance ─┤
+```
+
+**Tablet portrait (768–1023 px, one column).** The same card, full width (≈ 700 px, labels ≈ 11 px), placed **directly under the header, before the
+Structure | Status ladder pair** — the spectrum is the page's reason to exist and should not start 1,284 px down. The details block open.
+
+**Phone (< 768 px).** Order: header → **Infrared spectrum** → Structure → Status ladder → Harmonic frequencies → Second route → Provenance →
+Request (design §6's order, with the spectrum moved up). The chart gets **its own narrow SVG** rather than the desktop one scaled down: viewBox
+≈ 360 units wide so labels render at ≈ 12 px, ticks every 1,000 cm⁻¹, micron ticks at 3, 5, 10, 20 µm, sticks and curve as on desktop; the desktop
+SVG and the phone SVG are both in the page and CSS shows one (no JavaScript). The summary sentence under it; "How well is this shape known?" collapsed;
+the band table collapsed as "All bands (table)". The same narrow-SVG fix goes into the positions chart, which has the 4.7 px problem today.
+
+**Pages without heights (1,036 of 1,046 today, route A).** No new card; the positions card moves up to the same first place, with the line "Band
+heights are not computed for this molecule yet (no dipole derivatives); positions only."
+
+**How the order changes without duplicating the page.** On phones and portrait tablets the two wrappers (`.side`, `.mainc`) get `display: contents`
+and the cards an `order`, so one DOM serves all three layouts; on desktop the wrappers stay as they are. Checked at build: 375, 820, 1024 and 1280 px
+widths, no horizontal scroll, labels ≥ 11 px rendered, the spectrum card's top within the first screen on phone and tablet portrait.
+
 ## 5. How well the shape is known (the block beside the chart)
 
 The same numbers as module 08's certificate, read at export time from the same records (not typed): a two-row table (proxy level; CCSD(T) on
