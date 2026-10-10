@@ -4,6 +4,8 @@
 // else the cheap level's with band heights, else the cheap positions — so phones and portrait tablets see it in the first screen (it started
 // 1,427 px down on a 375 px phone); on desktop it heads the right column. One DOM: the lead card is the first child of .cols, placed by grid on
 // wide screens; the cards are components so no card is written twice.
+// Design §10 (10 Oct 2026): on wide screens the header sits in the left column above the structure, so the right column starts at the top and
+// a landscape tablet (1024 × 660) shows the anchor spectrum and the cheap input — one card, two panels — in its first screen.
 import fs from 'node:fs';
 import path from 'node:path';
 import Base from '../../layouts/Base.astro';
@@ -41,15 +43,18 @@ const notifyHref = `https://github.com/thebreadishard/spectrum-atlas/issues/new?
 ---
 <Base title={row.name} description={`${row.name} (${row.formula ?? row.smiles}) in the Spectrum Atlas: status, spectrum, frequencies, provenance.`}>
   <nav aria-label="Breadcrumb" class="crumb muted"><a href={withBase('/atlas/')}>Atlas</a> › {row.name}</nav>
+  <div class="mol">
   <header class="head">
     <h1>{row.name} <span class="mono muted formula">{row.formula}</span></h1>
     <p class="mono muted ids">{row.id} · SMILES <span>{row.smiles}</span>{row.inchikey && <> · InChIKey <span>{row.inchikey}</span></>}</p>
-    <p><span class="chip" data-rung={row.rung}><span class="dot" aria-hidden="true"></span>{labels[row.rung]}</span>
-      {describeFlags(row.flags).map((f) => <span class="chip" title={f.title}>{f.text}</span>)}</p>
+    <div class="chips"><span class="chip" data-rung={row.rung}><span class="dot" aria-hidden="true"></span>{labels[row.rung]}</span>
+      {describeFlags(row.flags).map((f) => f.short
+        ? <details class="chip flag"><summary>{f.short}</summary><span class="small">{f.text}. {f.title}</span></details>
+        : <span class="chip" title={f.title}>{f.text}</span>)}</div>
   </header>
 
   <div class="cols">
-    {lead === 'anchor' && <AnchorSpectrumCard name={row.name} anchor={mol.anchor_spectrum} comparison={mol.comparison} test={mol.test_prediction} validated={row.rung === 5} />}
+    {lead === 'anchor' && <AnchorSpectrumCard name={row.name} anchor={mol.anchor_spectrum} comparison={mol.comparison} test={mol.test_prediction} cheap={cheapBands} validated={row.rung === 5} />}
     {lead === 'cheap' && <CheapSpectrumCard name={row.name} bands={cheapBands} acc={summary.shape_accuracy} lead />}
     {lead === 'positions' && <FrequenciesCard name={row.name} rows={rows} b3lyp={vib.b3lyp.vibrational} wb97x={vib.wb97x.vibrational} hasHeights={false} lead />}
     <aside class="side">
@@ -79,7 +84,7 @@ const notifyHref = `https://github.com/thebreadishard/spectrum-atlas/issues/new?
     </aside>
 
     <div class="mainc">
-      {lead === 'anchor' && heights && <CheapSpectrumCard name={row.name} bands={cheapBands} acc={summary.shape_accuracy} />}
+      {lead === 'anchor' && heights && <CheapSpectrumCard name={row.name} bands={cheapBands} acc={summary.shape_accuracy} chart={false} />}
       {lead !== 'positions' && <FrequenciesCard name={row.name} rows={rows} b3lyp={vib.b3lyp.vibrational} wb97x={vib.wb97x.vibrational} hasHeights={!!heights} />}
       {mol.second_route && (
         <section class="card">
@@ -103,21 +108,35 @@ const notifyHref = `https://github.com/thebreadishard/spectrum-atlas/issues/new?
       </section>
     </div>
   </div>
+  </div>
 </Base>
 <style>
   .crumb { font-size: 0.9rem; margin-bottom: var(--space-3); }
   .head { margin-bottom: var(--space-6); }
+  .chips { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: flex-start; }
+  .flag summary { cursor: pointer; list-style: none; }
+  .flag summary::-webkit-details-marker { display: none; }
+  .flag summary::after { content: ' ⓘ'; color: var(--fg-muted); }
+  .flag[open] { display: block; border-radius: var(--radius); padding: var(--space-2) var(--space-3); }
+  .flag[open] span { display: block; margin-top: var(--space-1); }
   .formula { font-size: 0.7em; margin-left: 8px; }
   .ids span { word-break: break-all; }
   .small { font-size: 0.9rem; }
-  /* One column below 1024 px: the lead card (first child) leads, then the side cards, then the rest (10 Oct 2026). The lead card is a component,
-     so its class is matched with :global() — a scoped selector would not reach a child component's element. */
+  /* One column below 1024 px: the header, the lead card (first child of .cols), then the side cards, then the rest (10 Oct 2026). The lead card is
+     a component, so its class is matched with :global() — a scoped selector would not reach a child component's element.
+     From 1024 px (design §10) .cols dissolves (display: contents, a div without a role) and its children join the header in one grid:
+       head  | lead          row 1: the header's height
+       side  | lead          row 2 (1fr): what the lead card needs beyond the header, so no gap opens under either
+       side  | rest          row 3: the frequency table and the rest */
   .cols { display: grid; grid-template-columns: 1fr; gap: var(--space-4); align-items: start; }
   @media (min-width: 1024px) {
-    .cols { grid-template-columns: minmax(300px, 2fr) 3fr; }
-    .cols > .side { grid-column: 1; grid-row: 1 / span 2; }
-    .cols > :global(.first) { grid-column: 2; grid-row: 1; }
-    .cols > .mainc { grid-column: 2; grid-row: 2; }
+    .mol { display: grid; grid-template-columns: minmax(300px, 2fr) 3fr; grid-template-rows: auto 1fr auto; gap: var(--space-4); align-items: start; }
+    .cols { display: contents; }
+    .head { grid-column: 1; grid-row: 1; margin-bottom: 0; }
+    .cols > .side { grid-column: 1; grid-row: 2 / span 2; }
+    .cols > :global(.first) { grid-column: 2; grid-row: 1 / span 2; }
+    .cols > .mainc { grid-column: 2; grid-row: 3; }
+    .head h1 { font-size: 1.75rem; }
   }
   .side, .mainc { display: grid; gap: var(--space-4); }
   .depiction { margin: 0 auto; max-width: 260px; }
@@ -133,7 +152,8 @@ const notifyHref = `https://github.com/thebreadishard/spectrum-atlas/issues/new?
     .head h1 { font-size: 2rem; }
   }
   @media (min-width: 1024px) and (max-width: 1279px) {
-    .cols { gap: var(--space-6); }
+    .mol { gap: var(--space-6); }
+    .depiction { max-width: 200px; }
     .side { position: sticky; top: 76px; max-height: calc(100dvh - 92px); overflow: auto; }   /* the ladder stays in view while the modes scroll */
   }
   @media (min-width: 768px) and (max-width: 1279px) {

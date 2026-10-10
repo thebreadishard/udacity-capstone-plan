@@ -1,27 +1,37 @@
 ---
-// Infrared spectrum with band heights (TASKS 44–45, design DESIGN_2026-10-10_Intensity_Chart.md §4–4a, §9): the lead series as a Lorentzian curve
+// Infrared spectrum with band heights (TASKS 44–45, design DESIGN_2026-10-10_Intensity_Chart.md §4–4a, §9–10): the lead series as a Lorentzian curve
 // (FWHM 10 cm⁻¹, the read-out the project measures its accuracy with) with its sticks drawn at their Lorentzian peak; optionally a comparison series
-// (a lighter dashed curve, e.g. the cheap input under an anchor) and a test series (the network's leave-one-out prediction: the band between the
-// seeds' curves, shaded, with their mean dashed). Static SVG, three renders — wide, medium, narrow — of which the card's own width shows one.
+// (a lighter dashed curve, e.g. the cheap input under an anchor), a test series (the network's leave-one-out prediction: the band between the
+// seeds' curves, shaded, with their mean dashed) and a lower panel (§10: a second spectrum on the same wavenumber axis and the same height scale,
+// so the eye drops straight down to compare). Static SVG, three renders — wide, medium, narrow — of which the card's own width shows one.
+// Below the figure: a swatch legend, the card's key line (slot "key"), and the reading notes behind a tap (default slot; touch has no hover).
 import type { Band } from '../lib/bands';
-interface Props { bands: Band[]; title: string; compare?: Band[]; test?: Band[][]; leadLabel?: string; compareLabel?: string; testLabel?: string; min?: number; max?: number }
-const { bands, title, compare = [], test = [], leadLabel = 'spectrum', compareLabel = 'comparison', testLabel = 'test series', min = 500, max = 3500 } = Astro.props as Props;
+interface Props { bands: Band[]; title: string; compare?: Band[]; test?: Band[][]; below?: Band[]; leadLabel?: string; compareLabel?: string;
+                  testLabel?: string; belowLabel?: string; min?: number; max?: number }
+const { bands, title, compare = [], test = [], below = [], leadLabel = 'spectrum', compareLabel = 'comparison', testLabel = 'test series',
+        belowLabel = 'lower panel', min = 500, max = 3500 } = Astro.props as Props;
 const HWHM = 5;
 const peak = (km: number) => km / (Math.PI * HWHM);                          // a Lorentzian's height at its centre, per cm⁻¹
 const inWin = (bs: Band[]) => bs.filter((b) => b.km > 0 && b.omega >= min && b.omega <= max);
-const lead = inWin(bands), cmp = inWin(compare), tests = test.map(inWin);
+const lead = inWin(bands), cmp = inWin(compare), tests = test.map(inWin), low = inWin(below);
 const curve = (bs: Band[]) => (w: number) => bs.reduce((s, b) => s + (b.km / Math.PI) * HWHM / ((w - b.omega) ** 2 + HWHM ** 2), 0);
-const leadAt = curve(lead), cmpAt = curve(cmp), testAt = tests.map(curve);
-const allBands = [lead, cmp, ...tests].flat();
-const yMax = Math.max(1e-9, ...allBands.map((b) => peak(b.km))) * 1.08;
+const leadAt = curve(lead), cmpAt = curve(cmp), testAt = tests.map(curve), lowAt = curve(low);
+const stacked = low.length > 0;
+const allBands = [lead, cmp, ...tests, low].flat();
+const yMax = Math.max(1e-9, ...allBands.map((b) => peak(b.km))) * 1.08;   // one height scale for both panels
 function nice(v: number) { const p = 10 ** Math.floor(Math.log10(v)); const m = v / p; return (m >= 5 ? 5 : m >= 2 ? 2 : 1) * p; }
 const yStep = nice(yMax / 3);
 const yTicks = [] as number[];
 for (let t = 0; t <= yMax; t += yStep) yTicks.push(t);
-function render(W: number, H: number, font: number, tick: number, microns: number[]) {
-  const padL = 46, padR = 12, padT = 26, padB = 34;
+// One render: W wide; the upper panel's plot is h1 high, the lower panel's h2 (stacked only). Stacked, each panel's name has a row of its own at the
+// left — the upper one above the µm labels, the lower one in the gap — so no name sits on a band or a µm label (benzonitrile has a band at 2230 cm⁻¹).
+function render(W: number, h1: number, h2: number, font: number, tick: number, microns: number[]) {
+  const nameRow = stacked ? font + 8 : 0;
+  const padL = 46, padR = 12, padT = 26 + nameRow, padB = 34, gap = stacked ? font + 14 : 0;
+  const H = padT + h1 + (stacked ? gap + h2 : 0) + padB;
   const x = (v: number) => padL + (W - padL - padR) * (max - v) / (max - min);   // high wavenumber on the left, as spectroscopists read it
-  const y = (v: number) => H - padB - (H - padT - padB) * v / yMax;
+  const panel = (top: number, h: number) => ({ top, bottom: top + h, y: (v: number) => top + h - h * v / yMax });
+  const panels = [panel(padT, h1), ...(stacked ? [panel(padT + h1 + gap, h2)] : [])];
   const ticks = [] as number[];
   for (let t = Math.ceil(min / tick) * tick; t <= max; t += tick) ticks.push(t);
   const step = (max - min) / ((W - padL - padR) * 2);                         // two samples per pixel, plus every band centre so peaks reach their sticks
@@ -29,49 +39,75 @@ function render(W: number, H: number, font: number, tick: number, microns: numbe
   for (let w = max; w >= min; w -= step) ws.push(w);
   ws.push(...allBands.map((b) => b.omega));
   ws.sort((a, b) => b - a);
-  const path = (f: (w: number) => number) => ws.map((w, k) => `${k ? 'L' : 'M'}${x(w).toFixed(1)} ${y(f(w)).toFixed(1)}`).join('');
+  const path = (f: (w: number) => number, y: (v: number) => number) => ws.map((w, k) => `${k ? 'L' : 'M'}${x(w).toFixed(1)} ${y(f(w)).toFixed(1)}`).join('');
+  const y = panels[0].y;
   let envelope = '';
   if (testAt.length) {
     const lo = ws.map((w) => Math.min(...testAt.map((f) => f(w)))), hi = ws.map((w) => Math.max(...testAt.map((f) => f(w))));
     envelope = ws.map((w, k) => `${k ? 'L' : 'M'}${x(w).toFixed(1)} ${y(hi[k]).toFixed(1)}`).join('')
       + [...ws].reverse().map((w, k) => `L${x(w).toFixed(1)} ${y(lo[ws.length - 1 - k]).toFixed(1)}`).join('') + 'Z';
   }
-  const testMean = testAt.length ? path((w) => testAt.reduce((s, f) => s + f(w), 0) / testAt.length) : '';
-  return { W, H, font, padL, padR, padT, padB, x, y, ticks, lead: path(leadAt), cmp: cmp.length ? path(cmpAt) : '', envelope, testMean,
+  const testMean = testAt.length ? path((w) => testAt.reduce((s, f) => s + f(w), 0) / testAt.length, y) : '';
+  const series = [{ p: panels[0], bands: lead, curve: path(leadAt, y), label: leadLabel },
+                  ...(stacked ? [{ p: panels[1], bands: low, curve: path(lowAt, panels[1].y), label: belowLabel }] : [])];
+  return { W, H, font, padL, padR, padT, padB, nameRow, x, panels, series, ticks, cmp: cmp.length ? path(cmpAt, y) : '', envelope, testMean,
            microns: microns.filter((m) => 1e4 / m >= min + 0.04 * (max - min) && 1e4 / m <= max) };   // no label cut at the right edge
 }
-const wide = render(620, 250, 12.5, 500, [3, 4, 5, 6, 8, 10, 15, 20]);   // ≥ 11 px labels from a 1024 px desktop column to a tablet's full width
-const medium = render(480, 240, 12, 500, [3, 4, 5, 6, 8, 10, 15, 20]);    // a 1024 px desktop's column is 512 px wide
-const narrow = render(360, 240, 13, 1000, [3, 5, 10, 20]);                 // ≈ 11 px labels at a 375 px phone's card width
-const strongest = lead.reduce((a, b) => (b.km > a.km ? b : a), lead[0] ?? { omega: 0, km: 0 });
-const summaryLine = lead.length
-  ? `${lead.length} infrared-active bands (${min}–${max} cm⁻¹); the strongest at ${strongest.omega.toFixed(0)} cm⁻¹ (${(1e4 / strongest.omega).toFixed(1)} µm), ${strongest.km.toFixed(0)} km/mol.`
-  : `No infrared-active bands between ${min} and ${max} cm⁻¹.`;
-const desc = lead.length
-  ? `${lead.length} infrared-active bands between ${min} and ${max} per centimetre; the strongest at ${strongest.omega.toFixed(0)} per centimetre (${(1e4 / strongest.omega).toFixed(1)} micrometre), ${strongest.km.toFixed(0)} kilometres per mole.`
-  : 'No infrared-active bands in this window.';
+const wide = stacked ? render(620, 160, 140, 12.5, 500, [3, 4, 5, 6, 8, 10, 15, 20]) : render(620, 190, 0, 12.5, 500, [3, 4, 5, 6, 8, 10, 15, 20]);
+const medium = stacked ? render(480, 150, 130, 12, 500, [3, 4, 5, 6, 8, 10, 15, 20]) : render(480, 180, 0, 12, 500, [3, 4, 5, 6, 8, 10, 15, 20]);
+const narrow = stacked ? render(360, 140, 120, 13, 1000, [3, 5, 10, 20]) : render(360, 180, 0, 13, 1000, [3, 5, 10, 20]);
+// wide: ≥ 11 px labels from a 1024 px desktop column to a tablet's full width; medium: a 1024 px desktop's column is 512 px wide;
+// narrow: ≈ 11 px labels at a 375 px phone's card width
+function describe(bs: Band[]) {
+  const s = bs.reduce((a, b) => (b.km > a.km ? b : a), bs[0] ?? { omega: 0, km: 0 });
+  return bs.length
+    ? { line: `${bs.length} infrared-active bands (${min}–${max} cm⁻¹); the strongest at ${s.omega.toFixed(0)} cm⁻¹ (${(1e4 / s.omega).toFixed(1)} µm), ${s.km.toFixed(0)} km/mol.`,
+        aria: `${bs.length} infrared-active bands between ${min} and ${max} per centimetre; the strongest at ${s.omega.toFixed(0)} per centimetre (${(1e4 / s.omega).toFixed(1)} micrometre), ${s.km.toFixed(0)} kilometres per mole.` }
+    : { line: `No infrared-active bands between ${min} and ${max} cm⁻¹.`, aria: 'No infrared-active bands in this window.' };
+}
+const top = describe(lead), bottom = stacked ? describe(low) : null;
+const desc = bottom ? `Upper panel, ${leadLabel}: ${top.aria} Lower panel, ${belowLabel}: ${bottom.aria}` : top.aria;
 ---
 <figure class="irspec">
   {[['wide', wide], ['medium', medium], ['narrow', narrow]].map(([cls, r]) => (
     <svg class={cls} viewBox={`0 0 ${r.W} ${r.H}`} role="img" aria-label={`${title}. ${desc}`} width="100%">
       <g font-size={r.font} fill="currentColor">
-        {r.ticks.map((t) => <g><line x1={r.x(t)} x2={r.x(t)} y1={r.padT} y2={r.H - r.padB} stroke="currentColor" stroke-opacity="0.12" /><text x={r.x(t)} y={r.H - r.padB + r.font + 4} text-anchor="middle">{t}</text></g>)}
+        {r.panels.map((p) => r.ticks.map((t) => <line x1={r.x(t)} x2={r.x(t)} y1={p.top} y2={p.bottom} stroke="currentColor" stroke-opacity="0.12" />))}
+        {r.ticks.map((t) => <text x={r.x(t)} y={r.H - r.padB + r.font + 4} text-anchor="middle">{t}</text>)}
         {r.microns.map((m) => <text x={r.x(1e4 / m)} y={r.padT - 10} text-anchor="middle" fill-opacity="0.7">{m} µm</text>)}
-        {yTicks.map((t) => <g><line x1={r.padL} x2={r.W - r.padR} y1={r.y(t)} y2={r.y(t)} stroke="currentColor" stroke-opacity="0.08" /><text x={r.padL - 4} y={r.y(t) + 4} text-anchor="end">{t >= 10 ? t.toFixed(0) : t.toFixed(1)}</text></g>)}
+        {r.panels.map((p) => yTicks.map((t) => <g><line x1={r.padL} x2={r.W - r.padR} y1={p.y(t)} y2={p.y(t)} stroke="currentColor" stroke-opacity="0.08" /><text x={r.padL - 4} y={p.y(t) + 4} text-anchor="end">{t >= 10 ? t.toFixed(0) : t.toFixed(1)}</text></g>))}
         <text x={(r.padL + r.W - r.padR) / 2} y={r.H - 4} text-anchor="middle">wavenumber (cm⁻¹)</text>
+        {stacked && r.series.map((s, i) => <text x={r.padL} y={i ? s.p.top - 6 : r.nameRow - 4} text-anchor="start" font-weight="600">{s.label}</text>)}
       </g>
       {r.envelope && <path d={r.envelope} fill="#009E73" fill-opacity="0.22" stroke="none" />}
       {r.testMean && <path d={r.testMean} fill="none" stroke="#009E73" stroke-width="1.4" stroke-dasharray="4 3" />}
       {r.cmp && <path d={r.cmp} fill="none" stroke="currentColor" stroke-opacity="0.45" stroke-width="1.2" stroke-dasharray="2 2" />}
-      <g stroke="#D55E00" stroke-width="1.2">
-        {lead.map((b) => <line x1={r.x(b.omega)} x2={r.x(b.omega)} y1={r.y(0)} y2={r.y(peak(b.km))} />)}
-      </g>
-      <path d={r.lead} fill="none" stroke="#0072B2" stroke-width="1.6" />
-      <line x1={r.padL} x2={r.W - r.padR} y1={r.H - r.padB} y2={r.H - r.padB} stroke="currentColor" stroke-opacity="0.5" />
+      {r.series.map((s) => (
+        <g>
+          <g stroke="#D55E00" stroke-width="1.2">{s.bands.map((b) => <line x1={r.x(b.omega)} x2={r.x(b.omega)} y1={s.p.y(0)} y2={s.p.y(peak(b.km))} />)}</g>
+          <path d={s.curve} fill="none" stroke="#0072B2" stroke-width="1.6" />
+          <line x1={r.padL} x2={r.W - r.padR} y1={s.p.bottom} y2={s.p.bottom} stroke="currentColor" stroke-opacity="0.5" />
+        </g>
+      ))}
     </svg>
   ))}
-  <figcaption class="small">{summaryLine} <span class="muted">{leadLabel}: blue curve, sticks orange at the curve's peak scale{cmp.length ? `; ${compareLabel}: grey dashed` : ''}{tests.length ? `; ${testLabel}: green band between its ${tests.length} seeds, mean dashed` : ''}. Lorentzian, FWHM 10 cm⁻¹; axis in km mol⁻¹ per cm⁻¹.</span></figcaption>
+  <figcaption class="legend small">
+    <span><i class="sw curve" aria-hidden="true"></i>{stacked ? 'spectrum' : leadLabel}</span>
+    <span><i class="sw stick" aria-hidden="true"></i>bands</span>
+    {cmp.length > 0 && <span><i class="sw cmp" aria-hidden="true"></i>{compareLabel}</span>}
+    {tests.length > 0 && <span><i class="sw test" aria-hidden="true"></i>{testLabel}</span>}
+  </figcaption>
 </figure>
+<slot name="key" />
+<details class="howto">
+  <summary><span aria-hidden="true">ⓘ</span> How to read this</summary>
+  <div class="small">
+    <p>{stacked ? <>Upper panel ({leadLabel}): {top.line} Lower panel ({belowLabel}): {bottom!.line}</> : top.line}</p>
+    <p class="muted">{leadLabel}: blue curve, sticks orange at the curve's peak scale{cmp.length ? `; ${compareLabel}: grey dashed` : ''}{tests.length ? `; ${testLabel}: green band between its ${tests.length} seeds, mean dashed` : ''}{stacked ? `; ${belowLabel}: the lower panel, drawn the same way` : ''}.
+      Lorentzian, FWHM 10 cm⁻¹; axis in km mol⁻¹ per cm⁻¹{stacked ? ', one scale for both panels' : ''}.</p>
+    <slot />
+  </div>
+</details>
 <style>
   .irspec { margin: 0; color: var(--fg); }
   .irspec svg { display: block; max-width: 100%; }
@@ -81,4 +117,14 @@ const desc = lead.length
   @container (max-width: 600px) { .irspec .wide { display: none; } .irspec .medium { display: block; } }
   @container (max-width: 420px) { .irspec .medium { display: none; } .irspec .narrow { display: block; } }
   .small { font-size: 0.9rem; }
+  .legend { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: var(--space-1); color: var(--fg-muted); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .sw { display: inline-block; width: 18px; height: 0; border-top: 2px solid #0072B2; }
+  .sw.stick { width: 0; height: 12px; border-top: 0; border-left: 2px solid #D55E00; }
+  .sw.cmp { border-top: 2px dashed currentColor; opacity: 0.7; }
+  .sw.test { height: 10px; border: 0; border-top: 2px dashed #009E73; background: color-mix(in srgb, #009E73 22%, transparent); }
+  .howto { margin-top: var(--space-2); }
+  .howto summary { cursor: pointer; color: var(--accent); min-height: 44px; display: flex; align-items: center; gap: 6px; }
+  .howto[open] summary { margin-bottom: var(--space-2); }
+  .howto p:last-child { margin-bottom: 0; }
 </style>

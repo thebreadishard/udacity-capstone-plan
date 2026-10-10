@@ -165,3 +165,27 @@ equal a direct computation; a page without an anchor is unchanged.
 1. Lead with the anchor on the six anchor pages, cheap input as comparison (recommended) — or show both side by side as equals.
 2. The test series: include it, labelled, after the re-run (recommended) — or leave it out.
 3. Benzonitrile: heights with the B3LYP APT, labelled (recommended) — or positions only until a CC APT exists for it.
+
+
+## 10. Addendum (10 Oct 19:1x, TASKS 46) — both spectra in a landscape tablet's first screen
+
+The user (10 Oct 18:4x, screenshot of benzene on an iPad in landscape): both charts should be in view on opening; the top half had unused room;
+the notes under the first chart were long. Measured on the live page before the change: at 1024 × 660 the anchor chart sat at 434–690 px and the
+cheap chart at 1108–1364 px; at 1180 × 740, 434–678 and 1072–1316. Causes: the header (196 px over the full width, empty on the right), ≈ 230 px
+of notes under the first chart, and two cards each with its own heading.
+
+Built (the user's yes, 19:0x):
+1. **Header in the left column** from 1024 px. `.cols` dissolves (`display: contents`, a div without a role) into one grid with the header:
+   rows `auto 1fr auto` — head | lead, side | lead, side | rest — so the 1fr row takes what the lead card needs beyond the header and no gap
+   opens under either. Below 1024 px the order is unchanged (header, lead, side cards, rest). The long flag story is a short chip
+   ('analytic Hessian ⓘ') that opens to the whole story (`FlagView.short`).
+2. **One card, two panels** (`IRSpectrum` prop `below`): the anchor (with the cheap Hessian dashed and the network test band) above, the cheap
+   input (B3LYP Hessian and its own B3LYP dipole derivatives) below, on one wavenumber axis and one height scale; each panel's name in a row of
+   its own at the left (benzonitrile has a band at 2230 cm⁻¹). The cheap card under an anchor keeps its words and the accuracy table, no second
+   chart (`chart={false}`).
+3. **Notes behind a tap**: a swatch legend and one key line stay visible ('Spectrum overlap with the anchor: network test 0.37 (0.35–0.41) ·
+   cheap Hessian 0.26'); the rest is in a `<details>` 'How to read this' — a tooltip would not open on touch. The text stays in the HTML.
+
+Checked on the local build (benzene): the second panel ends at 626 px of 660 (1024 × 660, legend to 652), 588 of 740 (1180 × 740), 882 of 1180
+(820 × 1180), 673 of 812 (375 × 812); no horizontal scroll; benzonitrile, naphthalene (positions only), azulene and a cheap-lead page
+(A_07cadc7923) render. Tests: `website/export/tests/test_site_pages.py` (8).

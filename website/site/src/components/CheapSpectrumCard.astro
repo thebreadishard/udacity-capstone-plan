@@ -1,15 +1,20 @@
 ---
 // The cheap level's infrared spectrum with band heights (TASKS 44), labelled as the pipeline's input, with the measured accuracy of the shape and
-// the empty slot of the predicted series (rung 3, shown only when a mode family is licensed). Leads the page unless an anchor exists (TASKS 45).
+// the empty slot of the predicted series (rung 3, shown only when a mode family is licensed). Leads the page unless an anchor exists (TASKS 45);
+// under an anchor its curve is the anchor card's lower panel (design §10), so this card keeps only the words and the accuracy table (chart={false}).
 import IRSpectrum from './IRSpectrum.astro';
 import type { Band } from '../lib/bands';
-const { name, bands, acc, lead = false } = Astro.props as { name: string; bands: Band[]; acc: any; lead?: boolean };
+const { name, bands, acc, lead = false, chart = true } = Astro.props as { name: string; bands: Band[]; acc: any; lead?: boolean; chart?: boolean };
+const heightsNote = 'Band heights from the molecule\'s dipole derivatives and the same B3LYP Hessian as the listed positions (double harmonic).';
 ---
 <section class:list={['card', { first: lead }]}>
   <h2>Infrared spectrum at the cheap level <span class="muted small">(B3LYP/6-31G*, the pipeline's input)</span></h2>
-  <IRSpectrum bands={bands} title={`Infrared spectrum of ${name} at the cheap level (B3LYP)`} leadLabel="cheap input (B3LYP)" />
-  <p class="muted small">Band heights from the molecule's dipole derivatives and the same B3LYP Hessian as the listed positions (double harmonic).
-    <strong>Predicted spectrum</strong> (rung 3, the learned correction): — not licensed yet; it will appear here as a band over the model's seeds.</p>
+  {chart
+    ? <IRSpectrum bands={bands} title={`Infrared spectrum of ${name} at the cheap level (B3LYP)`} leadLabel="cheap input (B3LYP)">
+        <p class="muted">{heightsNote}</p>
+      </IRSpectrum>
+    : <p class="muted small">Drawn as the lower panel of the anchor spectrum above. {heightsNote}</p>}
+  <p class="muted small"><strong>Predicted spectrum</strong> (rung 3, the learned correction): not licensed yet; it will appear here as a band over the model's seeds.</p>
   {acc && (
     <details class="acc" open>
       <summary>How well is this shape known?</summary>

@@ -1,6 +1,7 @@
 // Flag labels (27 Sep 2026). The catalog carries machine flags (export/SCHEMA.md); the pages show them as plain sentences. The two
 // second-route flags are one story — the finite-difference Hessian was noisy, so the release uses the analytic one — and are shown as one phrase.
-export type FlagView = { text: string; title: string };
+// `short` (10 Oct 2026, design §10): the molecule page's chip shows it and keeps the whole story behind a tap.
+export type FlagView = { text: string; title: string; short?: string };
 
 const LABEL: Record<string, FlagView> = {
   imaginary_mode_under_review: { text: 'imaginary mode, second route pending', title: 'The cheap-level Hessian has an imaginary frequency; the analytic (second-route) Hessian has not been computed yet.' },
@@ -25,7 +26,7 @@ export function describeFlags(flags: string[]): FlagView[] {
     const titles = set.has('screen_flagged') ? [LABEL.screen_flagged.title] : [];
     steps.push('finite-difference Hessian was noisy', 'release uses the analytic Hessian');
     titles.push(LABEL.second_route_disagrees.title, LABEL.replaced_by_second_route.title);
-    out.push({ text: steps.join(' → '), title: titles.join(' ') });
+    out.push({ text: steps.join(' → '), title: titles.join(' '), short: 'analytic Hessian' });
     for (const f of ['screen_flagged', 'second_route_disagrees', 'replaced_by_second_route']) set.delete(f);
   }
   const rest = [...ORDER.filter((f) => set.has(f)), ...flags.filter((f) => set.has(f) && !ORDER.includes(f))];
