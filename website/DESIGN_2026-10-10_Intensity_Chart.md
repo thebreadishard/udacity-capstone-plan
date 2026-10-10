@@ -120,8 +120,8 @@ Route B: compute only, scheduled and priced when chosen.
 
 ## 8. Decisions for the user
 
-1. **Coverage:** A now, C measured next, B only for the rest (recommended) — or B at once for everything (≈ €107 or ≈ 43 laptop-days), or A only.
+1. **Decided 10 Oct 15:4x (the user: 'advies is oké'):** A now, C measured next (water, benzene), B only for what C does not reach, priced again then.
 2. **Decided 10 Oct 15:4x** (the user asked whether the heights should use *our prediction* rather than the input; then 'Oké'): the served heights
    are the cheap input's, labelled so; the predicted series (corrected Hessian + B3LYP APT, a band over the seeds, in-training marked) has its slot
    built now and appears per family when licensed; no unlicensed preview; no ωB97X heights.
-3. **Default view:** broadened curve with sticks (recommended) — or sticks only with a toggle (the toggle needs a small JavaScript island).
+3. **Decided 10 Oct 15:4x:** the broadened curve with sticks, static SVG, no toggle.
