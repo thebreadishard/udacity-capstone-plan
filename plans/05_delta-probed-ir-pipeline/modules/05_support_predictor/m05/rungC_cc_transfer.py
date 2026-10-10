@@ -58,7 +58,8 @@ def substitute_cc(m: dict, lo_npz: Path, cc_npz: Path) -> dict:
     Fh, _ = T2.to_internal(hi, m["B"])
     if len(m["family"]) != len(f):
         raise RuntimeError(f"mode count changed ({len(m['family'])} vs {len(f)})")
-    m.update(V=V, w=w, freq=f, K=K, target=np.diag(K).astype(np.float32), F_low=Fl, F_high=Fh, H_low=lo, dH_true=dH, high_level="ccsd_t", cc_file=str(cc_npz))
+    m.update(V=V, w=w, freq=f, K=K, target=np.diag(K).astype(np.float32), F_low=Fl, F_high=Fh, H_low=lo, dH_true=dH, high_level="ccsd_t", cc_file=str(cc_npz),
+             low_file=Path(lo_npz).name)
     return m
 
 
@@ -78,6 +79,15 @@ def predict_cartesian(model, t: dict) -> np.ndarray:
     model.eval()
     with torch.no_grad():
         return model(t["Z"], t["pos"], t["H_low"], t).numpy().astype(float)
+
+
+def save_prediction(path: Path, dH_pred: np.ndarray, H_low: np.ndarray, low_level: str, mode: str, anchors: list[str], model: str,
+                    final_loss: float | None, held: str | None = None) -> Path:
+    """One file per predicted molecule (TASKS 36 `--predict`, TASKS 45 `--save-fold-predictions`): the Cartesian ΔH, the low level it is added to,
+    the fine-tune mode, the anchors the fit saw, the proxy model, and — for a fold — the held-out anchor."""
+    np.savez(path, dH_pred=dH_pred, H_low=H_low, low_level=low_level, mode=mode, anchors=np.array(anchors), model=model,
+             final_loss=(np.nan if final_loss is None else final_loss), held=(held or ""))
+    return path
 
 
 def fit_mode(head_l2: float) -> str:
@@ -198,6 +208,8 @@ def main() -> int:
     ap.add_argument("--threads", type=int, default=4)
     ap.add_argument("--predict", action="append", default=[], help="TASKS 36 (8 Oct 2026): a corpus id that is not an anchor — fit on all anchors "
                     "and write its predicted ΔH to <out_prefix>_predict_<id>.npz")
+    ap.add_argument("--save-fold-predictions", action="store_true", help="TASKS 45 (10 Oct 2026): keep each fold's ΔH of the TZ-tier standard mode "
+                    "as <out_prefix>_fold_<held>.npz (the Atlas draws it as the network's test series beside the anchor)")
     ap.add_argument("--skip-folds", action="store_true", help="with --predict: no leave-one-anchor-out read, only the fit on all anchors")
     ap.add_argument("--apt", action="append", default=[], help="TASKS 32 (8 Oct 2026): <corpus id>=<apt_ccsd_t.npz> — the held-out anchor's "
                     "intensity read-out with its CC APT")
@@ -251,6 +263,10 @@ def main() -> int:
             hist = finetune(model, tensors, tr, a.epochs, a.lr, mode, a.aux_weight, log=lambda s, tag=tag: print(f"  {tag} {s}", flush=True), head_l2=a.head_l2,
                             lora_rank=a.lora_rank)
             fold[f"network_{mode}"] = {**read(held, tr, predictor(model, tensors, mols)), "final_loss": (hist[-1] if hist else None)}
+            if a.save_fold_predictions and mode == fit_mode(a.head_l2):
+                fp = save_prediction(Path(f"{a.out_prefix}_fold_{held}.npz"), predict_cartesian(model, tensors[held]), mols[held]["H_low"],
+                                     mols[held]["low_file"], mode, tr, a.model, hist[-1] if hist else None, held=held)
+                fold["saved_prediction"] = str(fp)
         res["folds"][held] = fold
         print(f"{held}: zero ω {fold['zero_rule']['corrected_freq_rms']:.2f} | α-scaling {fold['alpha_scaling']['coupling_ratio']:.2f} / {fold['alpha_scaling']['corrected_freq_rms']:.2f} | "
               f"network as is {fold['network_none']['coupling_ratio']:.2f} / {fold['network_none']['corrected_freq_rms']:.2f} | α tuned {fold['network_alpha']['coupling_ratio']:.2f} / "
@@ -273,8 +289,7 @@ def main() -> int:
                 RR.substitute(mols[i], d)
             t = molecule_tensors(i, loaded_molecule(d, mols[i]), mols[i], d, cfg, Path(a.out_prefix).parent / "ls_targets")
             p = Path(f"{a.out_prefix}_predict_{i}.npz")
-            np.savez(p, dH_pred=predict_cartesian(model, t), H_low=np.load(lo)["H_projected"], low_level=lo.name, mode=mode, anchors=np.array(ids),
-                     model=a.model, final_loss=(hist[-1] if hist else np.nan))
+            save_prediction(p, predict_cartesian(model, t), np.load(lo)["H_projected"], lo.name, mode, ids, a.model, hist[-1] if hist else None)
             res["predict"][i] = dict(file=str(p), low_level=lo.name, mode=mode)
             print(f"predicted {i} ({lo.name}, fit on {len(ids)} anchors, {mode}) → {p}", flush=True)
     res["seconds"] = round(time.time() - t0)

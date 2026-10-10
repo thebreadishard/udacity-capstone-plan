@@ -171,6 +171,16 @@ def test_load_cc_apt_refuses_an_apt_from_another_geometry(tmp_path):
         RT_T.load_cc_apt(tmp_path / "far.npz", tmp_path)
 
 
+def test_save_prediction_round_trip(tmp_path):
+    """TASKS 45 (10 Oct 2026): one writer for --predict and --save-fold-predictions; a fold file names its held-out anchor."""
+    p = RT_T.save_prediction(tmp_path / "x_fold_A.npz", np.eye(3), 2 * np.eye(3), "hessian_b3lyp_analytic.npz", "head_l2", ["B", "C"], "m.pt", None, held="A")
+    z = np.load(p)
+    assert z["held"].item() == "A" and list(z["anchors"]) == ["B", "C"] and z["mode"].item() == "head_l2" and np.isnan(z["final_loss"])
+    assert np.allclose(z["dH_pred"] + z["H_low"], 3 * np.eye(3))
+    text = (Path(RT_T.__file__)).read_text(encoding="utf-8")
+    assert "--save-fold-predictions" in text and "mode == fit_mode(a.head_l2)" in text
+
+
 def test_fit_mode_follows_the_tz_tier_standard():
     """TASKS 36 (8 Oct 2026): the fit on all anchors uses the head-tuned column with the L2 pull when it is set (amendment (A))."""
     assert RT_T.fit_mode(1.0) == "head_l2" and RT_T.fit_mode(0.0) == "head"
