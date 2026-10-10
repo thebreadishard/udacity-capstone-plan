@@ -2243,3 +2243,10 @@ Reported beside: (b+), (a) and its four families, per (b) scaffold (fluorene and
 molecules) as a second reference, the best epochs. **What this cannot separate:** there is no same-size control; chain 37 measured what count alone
 does (+200 molecules of other kinds: 0.330 → 0.325), and the seed ranges of chains 37/38 are 0.01–0.02 wide, which the lines exceed. The new rows carry
 FD labels only, as the 200 did.
+
+**Correction, 10 October 17:4x, to the outcome of read-out (3) above.** That outcome read the 'head tuned' column (λ = 0); the TZ-tier standard and the
+column the registration named is the head-tuned column with the L2 pull, λ = 1 (amendment (A) of 7 October; `fit_mode`). The λ = 1 numbers (same
+records): *as registered* (sorted pairing) **0.734 in all three seeds** (not 0.490); matched pairing 0.007 (0.009, 0.007, 0.006) against the zero
+rule's 0.003; spectrum overlap **0.372 (0.406, 0.355, 0.354)** against 0.257 (not 0.592). The conclusions stand — the registered number measured the
+mode swap, benzene cannot test the Hessian's part of the heights — but the overlap gain at CC level is 0.26 → 0.37. Module 08's certificate and the
+Atlas read the λ = 1 column from now on (`m08/spectrum.py` CC_COLUMN, with a test).

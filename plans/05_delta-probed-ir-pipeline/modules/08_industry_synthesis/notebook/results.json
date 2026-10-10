@@ -1,8 +1,8 @@
 {
- "date": "2026-10-10 15:59",
+ "date": "2026-10-10 17:41",
  "catalogue": {
   "n": 13714,
-  "built_utc": "2026-10-10T13:51:54Z",
+  "built_utc": "2026-10-10T14:01:17Z",
   "rung_counts": {
    "listed": 12668,
    "cheap_level_done": 1040,
@@ -296,8 +296,8 @@
      "intensity_error": 0.003
     },
     "corrected": {
-     "spectrum_overlap": 0.592,
-     "intensity_error": 0.003
+     "spectrum_overlap": 0.372,
+     "intensity_error": 0.007
     },
     "sources": [
      "modules/05_support_predictor/out/T3_tz_intensity_matched_c34_seed0_2026-10-09.json",

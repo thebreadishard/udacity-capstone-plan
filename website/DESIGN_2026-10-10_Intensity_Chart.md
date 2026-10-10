@@ -19,7 +19,7 @@ axis, a data-table twin, provenance; §6–7: phone layout, WCAG 2.2 AA, no clie
   degenerate partners in its figure, and reads the stated accuracy from module 05's records. The intensities stored inside the APT files are not
   used (8 of 10 were computed with the FD Hessian, 2 with the analytic one).
 - **Measured accuracy of the shape** (module 08 certificate, seed means): proxy level (10 unseen molecules) spectrum overlap 0.27 cheap → 0.97
-  corrected, height error 0.30 → 0.13; CCSD(T)/cc-pVTZ on benzene overlap 0.26 → 0.59, heights not testable there (symmetry). Open: the APT is
+  corrected, height error 0.30 → 0.13; CCSD(T)/cc-pVTZ on benzene overlap 0.26 → 0.37 (the λ = 1 column; 0.59 in a first version read the λ = 0 column), heights not testable there (symmetry). Open: the APT is
   computed at the cheap level; its CC-minus-B3LYP difference is ≈ 20 % on benzene.
 
 ## 3. Coverage: three routes to heights for the other ~1,036 pages
@@ -152,7 +152,7 @@ spectrum overlap 0.26, frequency rms 22.2 cm⁻¹" — every number computed at 
 **The optional test series** (labelled "test of the network, not a served prediction"): the network's leave-one-anchor-out prediction (T3, chain
 34's carried models, head-tuned at the TZ tier, the band over three seeds). It needs one code change: `rungC_cc_transfer.py` does not keep the
 per-fold predicted Hessians today (only the read-outs), so a `--save-fold-predictions` switch (with a test) and one re-run (≈ 20 min at 8 threads,
-three seeds) come first. Benzene's numbers for the label: overlap 0.59 (seeds 0.37–0.86) against the cheap input's 0.26. It is drawn only on anchor
+three seeds) come first. Benzene's numbers for the label: overlap 0.37 (seeds 0.35–0.41, the λ = 1 column) against the cheap input's 0.26. It is drawn only on anchor
 pages, never on other molecules (there it would be an unlicensed prediction).
 
 **Data path.** The export reads the carried anchors from the registry (as the rung already does), computes the anchor series with

@@ -27,6 +27,8 @@ ACTIVE_FRACTION = 0.005                                # 'infrared-active': ≥ 
 PROXY_RECORDS = [f"modules/05_support_predictor/out/E7_rungC_chain34_eval_matched_2026-10-09_seed{s}.json" for s in range(3)]
 CC_RECORDS = [f"modules/05_support_predictor/out/T3_tz_intensity_matched_c34_seed{s}_2026-10-09.json" for s in range(3)]
 BENZENE = "A_8448043181"
+CC_COLUMN = "network_head_l2"       # the TZ-tier standard: head-tuned with the L2 pull λ = 1 (amendment (A), 7 Oct 2026; m05 `fit_mode`).
+                                    # 10 Oct 2026: the first version read 'network_head' (λ = 0) and quoted 0.59 instead of 0.37.
 
 
 def _ri():
@@ -79,7 +81,7 @@ def measured_accuracy() -> dict:
     for r in proxy:
         pm = {i: v for i, v in r["a"]["per_molecule"].items() if v.get("spectrum_overlap") is not None}
         per_seed.append({k: float(np.mean([v[k] for v in pm.values()])) for k in keys} | dict(n=len(pm)))
-    head = [r["folds"][BENZENE]["network_head"]["intensity"] for r in cc]
+    head = [r["folds"][BENZENE][CC_COLUMN]["intensity"] for r in cc]
     zero = [r["folds"][BENZENE]["zero_rule"]["intensity"] for r in cc]
     return dict(
         proxy=dict(level="DFT proxy (ωB97X as the higher level), 10 unseen molecules of hold-out (a), chain 34 (carried model), seed mean of 3",
@@ -88,7 +90,8 @@ def measured_accuracy() -> dict:
                               intensity_error=_mean([s["intensity_rel_rms_zero_rule_matched"] for s in per_seed])),
                    corrected=dict(spectrum_overlap=_mean([s["spectrum_overlap"] for s in per_seed]),
                                   intensity_error=_mean([s["intensity_rel_rms_matched"] for s in per_seed]))),
-        cc=dict(level="CCSD(T)/cc-pVTZ with its own CC APT, benzene (leave-one-anchor-out, head-tuned), seed mean of 3", sources=CC_RECORDS,
+        cc=dict(level="CCSD(T)/cc-pVTZ with its own CC APT, benzene (leave-one-anchor-out, head-tuned with λ = 1), seed mean of 3",
+                sources=CC_RECORDS, column=CC_COLUMN,
                 cheap=dict(spectrum_overlap=_mean([z["spectrum_overlap"] for z in zero]), intensity_error=_mean([z["intensity_rel_rms_matched"] for z in zero])),
                 corrected=dict(spectrum_overlap=_mean([h["spectrum_overlap"] for h in head]), intensity_error=_mean([h["intensity_rel_rms_matched"] for h in head])),
                 note="benzene's symmetry fixes its band heights, so the intensity error cannot separate corrected from uncorrected here; a "

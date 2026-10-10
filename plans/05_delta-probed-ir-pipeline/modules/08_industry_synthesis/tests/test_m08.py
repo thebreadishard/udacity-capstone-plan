@@ -92,6 +92,7 @@ def test_spectral_shape_heights_only_with_an_apt(cat):
     acc = b["accuracy"]
     assert acc["proxy"]["n_molecules"] == 10 and acc["proxy"]["corrected"]["spectrum_overlap"] > acc["proxy"]["cheap"]["spectrum_overlap"]
     assert acc["proxy"]["corrected"]["intensity_error"] < acc["proxy"]["cheap"]["intensity_error"]
+    assert acc["cc"]["column"] == "network_head_l2" and abs(acc["cc"]["corrected"]["spectrum_overlap"] - 0.372) < 0.002   # the λ = 1 column
     n = certificate(cat.find("naphthalene"), cat)
     assert n["spectral_shape"]["kind"] == "positions only" and "Positions only" in to_markdown(n)
     assert "heights only where an APT exists" in n["rung"]["ladder"][3]["note"]

@@ -13,7 +13,7 @@ correction predicted · spectrum predicted · anchored · validated — is on ev
 Since 10 October the certificate also carries the **spectral shape** as astronomers read it: band positions *and* heights (double-harmonic
 intensities from the molecule's dipole derivatives, `m08/spectrum.py`), Lorentzian-broadened, with its accuracy read from module 05's records —
 at the proxy level the learned correction lifts the spectrum overlap from 0.27 to 0.97 and halves the height error (0.30 → 0.13); against
-CCSD(T) on benzene the overlap goes from 0.26 to 0.59. Heights appear only where dipole derivatives exist (ten molecules today); every other
+CCSD(T) on benzene the overlap goes from 0.26 to 0.37. Heights appear only where dipole derivatives exist (ten molecules today); every other
 certificate shows positions only and says why. Notebook §3.6.
 
 Five earlier modules are load-bearing in code: **03** (the laboratory tolerance u_band per family = the certificate's error budget; the family rule is

@@ -185,7 +185,7 @@ display(pd.DataFrame([dict(level=acc[k]["level"], overlap_cheap=acc[k]["cheap"][
 print("naphthalene:", certificate(cat.find("naphthalene"), cat)["spectral_shape"]["reason"])""")
 
 md("""*Reading.* At the proxy level the correction lifts the spectrum overlap from about 0.27 to 0.97 and halves the height error (0.30 → 0.13) on ten
-molecules the network never saw. Against CCSD(T) on benzene the overlap rises from 0.26 to about 0.6; the height error is near zero for both, because
+molecules the network never saw. Against CCSD(T) on benzene the overlap rises from 0.26 to 0.37; the height error is near zero for both, because
 benzene's symmetry fixes its band heights — that comparison cannot separate the two and is named as the open test (a low-symmetry molecule with a
 coupled-cluster APT). One limit stays on the page: the APT itself is computed at the cheap level, and its difference to the coupled-cluster APT
 (about 20 % on benzene) is not corrected by any rung yet. A measurement error found on 9 October belongs to this section's history: the first height
