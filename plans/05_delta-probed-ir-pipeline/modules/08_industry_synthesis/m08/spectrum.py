@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+from pathlib import Path
 
 import numpy as np
 
@@ -27,6 +28,8 @@ ACTIVE_FRACTION = 0.005                                # 'infrared-active': ≥ 
 PROXY_RECORDS = [f"modules/05_support_predictor/out/E7_rungC_chain34_eval_matched_2026-10-09_seed{s}.json" for s in range(3)]
 CC_RECORDS = [f"modules/05_support_predictor/out/T3_tz_intensity_matched_c34_seed{s}_2026-10-09.json" for s in range(3)]
 BENZENE = "A_8448043181"
+ANCHORS_STATUS = M05 / "out" / "ANCHORS_STATUS.json"
+CC_APT = "apt_ccsd_t.npz"            # the CC APT an anchor run stores beside its Hessian (cc_dipole_capture, 3 Oct 2026)
 CC_COLUMN = "network_head_l2"       # the TZ-tier standard: head-tuned with the L2 pull λ = 1 (amendment (A), 7 Oct 2026; m05 `fit_mode`).
                                     # 10 Oct 2026: the first version read 'network_head' (λ = 0) and quoted 0.59 instead of 0.37.
 
@@ -38,26 +41,96 @@ def _ri():
     return mod
 
 
+def _rel(p: Path) -> str:
+    return str(Path(p).resolve().relative_to(PLAN)).replace("\\", "/")
+
+
+def _geometry(mid: str) -> dict:
+    return json.load(open(CORPUS / mid / "geometry.json", encoding="utf-8"))
+
+
+def series(hessian: Path, masses: np.ndarray, apt: Path | None) -> dict:
+    """One spectrum from a projected Cartesian Hessian file and, when given, an APT file: sticks sorted by position with heights in km/mol, or
+    positions only (km_mol None) without an APT. The sources travel with it."""
+    ri = _ri()
+    H = np.load(hessian)["H_projected"]
+    P = np.asarray(np.load(apt)["apt"], float) if apt is not None else np.zeros((3, H.shape[0]))
+    freq, inten = ri.mode_intensities(H, masses, P)
+    order = np.argsort(freq)
+    freq, inten = freq[order], inten[order]
+    out = dict(hessian_source=_rel(hessian), broadening=dict(lineshape="Lorentzian", fwhm_cm=FWHM, grid_cm=list(GRID)),
+               method="double harmonic: A_k = 974.88 km/mol · |P L_k/√m|² (module 05 m05/rungC_intensities.py)")
+    if apt is None:
+        return dict(out, kind="positions only", sticks=[dict(omega_cm=round(float(w), 1), km_mol=None) for w in freq], apt_source=None, n_ir_active=None)
+    return dict(out, kind="positions and heights", apt_source=_rel(apt), n_ir_active=int((inten >= ACTIVE_FRACTION * inten.max()).sum()),
+                sticks=[dict(omega_cm=round(float(w), 1), km_mol=round(float(a), 2)) for w, a in zip(freq, inten, strict=True)])
+
+
 def shape(mid: str, listed_cm: list[float] | None = None) -> dict:
-    """Sticks (position, height) for one corpus molecule, or the reason there are none. `listed_cm` = the certificate's listed B3LYP positions:
+    """The cheap rung's sticks (position, height) for one corpus molecule, or the reason there are none. `listed_cm` = the listed B3LYP positions:
     the largest difference to the positions computed here is recorded as a consistency check (same Hessian → ≈ 0)."""
     d = CORPUS / mid
     apt = next((d / f for f in APT_FILES if (d / f).exists()), None)
     if apt is None or not (d / HESSIAN).exists():
         return dict(kind="positions only", reason="no dipole derivatives (APT) computed for this molecule — heights are not shown rather than guessed")
-    ri = _ri()
-    masses = np.asarray(json.load(open(d / "geometry.json", encoding="utf-8"))["masses_amu"], float)
-    freq, inten = ri.mode_intensities(np.load(d / HESSIAN)["H_projected"], masses, np.asarray(np.load(apt)["apt"], float))
-    order = np.argsort(freq)
-    freq, inten = freq[order], inten[order]
+    s = series(d / HESSIAN, np.asarray(_geometry(mid)["masses_amu"], float), apt)
+    freq = np.array([x["omega_cm"] for x in s["sticks"]])
     check = None
     if listed_cm is not None and len(listed_cm) == len(freq):
         check = round(float(np.abs(np.sort(np.asarray(listed_cm, float)) - freq).max()), 2)
-    rel = lambda p: str(p.relative_to(PLAN)).replace("\\", "/")   # noqa: E731
-    return dict(kind="positions and heights", sticks=[dict(omega_cm=round(float(w), 1), km_mol=round(float(a), 2)) for w, a in zip(freq, inten, strict=True)],
-                n_ir_active=int((inten >= ACTIVE_FRACTION * inten.max()).sum()), apt_source=rel(apt), hessian_source=rel(d / HESSIAN),
-                broadening=dict(lineshape="Lorentzian", fwhm_cm=FWHM, grid_cm=list(GRID)), max_dev_from_listed_cm=check,
-                method="double harmonic: A_k = 974.88 km/mol · |P L_k/√m|² (module 05 m05/rungC_intensities.py)")
+    return dict(s, max_dev_from_listed_cm=check)
+
+
+def carried_anchor(mid: str) -> dict | None:
+    """The carried entry of module 05's anchor registry for this molecule (one at most), or None."""
+    rows = json.load(open(ANCHORS_STATUS, encoding="utf-8"))["anchors"]
+    hits = [e for e in rows if e["mol_id"] == mid and e["status"] == "carried"]
+    return hits[0] if hits else None
+
+
+def _cc_apt_at(anchor_hessian: Path, mid: str, tol: float = 1e-6) -> Path | None:
+    """The anchor run's own CC APT (`apt_ccsd_t.npz` beside its Hessian), only when it was computed at the corpus geometry."""
+    p = anchor_hessian.parent / CC_APT
+    if not p.exists():
+        return None
+    d = float(np.abs(np.asarray(np.load(p)["coords_bohr"], float) - np.asarray(_geometry(mid)["coords_bohr"], float)).max())
+    return p if d <= tol else None
+
+
+def anchor_series(mid: str) -> dict | None:
+    """The anchor's spectrum (TASKS 45): positions and mode shapes from the carried anchor Hessian; heights from the anchor's own CC APT where
+    one exists, else from the B3LYP APT (labelled), else positions only. None for a molecule without a carried anchor."""
+    e = carried_anchor(mid)
+    if e is None:
+        return None
+    h = PLAN / e["path"]
+    cc = _cc_apt_at(h, mid)
+    b3 = next((CORPUS / mid / f for f in APT_FILES if (CORPUS / mid / f).exists()), None)
+    apt, apt_level = (cc, "CCSD(T) (the anchor's own)") if cc is not None else ((b3, "B3LYP (cheap level)") if b3 is not None else (None, None))
+    s = series(h, np.asarray(_geometry(mid)["masses_amu"], float), apt)
+    return dict(s, level=e["level"], tier=e.get("tier"), apt_level=apt_level, registry_sha16=e.get("sha16"))
+
+
+def cheap_hessian(mid: str) -> Path:
+    """The cheap Hessian of every coupled-cluster comparison: the analytic B3LYP where it exists, else the deck's finite differences."""
+    a = CORPUS / mid / "hessian_b3lyp_analytic.npz"
+    return a if a.exists() else CORPUS / mid / HESSIAN
+
+
+def comparison(mid: str, anchor: dict) -> dict:
+    """The cheap Hessian with the anchor's own APT, so the two spectra differ only by the Hessian: its sticks, the spectrum overlap with the
+    anchor (only with heights) and the rms of the sorted frequencies."""
+    ri = _ri()
+    apt = PLAN / anchor["apt_source"] if anchor["apt_source"] else None
+    c = series(cheap_hessian(mid), np.asarray(_geometry(mid)["masses_amu"], float), apt)
+    fa = np.array([x["omega_cm"] for x in anchor["sticks"]]); fc = np.array([x["omega_cm"] for x in c["sticks"]])
+    rms = round(float(np.sqrt(np.mean((fa - fc) ** 2))), 1) if len(fa) == len(fc) else None
+    overlap = None
+    if apt is not None:
+        grid = np.arange(GRID[0], GRID[1], 1.0)
+        cur = lambda s: ri.broadened(np.array([x["omega_cm"] for x in s]), np.array([x["km_mol"] for x in s]), grid, FWHM)   # noqa: E731
+        overlap = round(float(ri.cosine(cur(c["sticks"]), cur(anchor["sticks"]))), 3)
+    return dict(cheap=c, spectrum_overlap=overlap, freq_rms_cm=rms, note="the cheap Hessian with the anchor's dipole derivatives: the curves differ only by the Hessian")
 
 
 def broadened(sticks: list[dict], step: float = 1.0) -> tuple[np.ndarray, np.ndarray]:

@@ -98,6 +98,24 @@ def test_spectral_shape_heights_only_with_an_apt(cat):
     assert "heights only where an APT exists" in n["rung"]["ladder"][3]["note"]
 
 
+def test_anchor_series_and_comparison():
+    """TASKS 45 (10 Oct 2026): anchored pages lead with the anchor spectrum. Benzene: the CCSD(T)/cc-pVTZ Hessian with its own CC APT; its
+    comparison (the analytic B3LYP Hessian, the same APT) reproduces T3's zero-rule overlap (0.257, a second route). Benzonitrile: heights with the
+    B3LYP APT, labelled. Naphthalene: positions only. A molecule without a carried anchor: None."""
+    from m08 import spectrum as S
+    b = S.anchor_series("A_8448043181")
+    assert b["kind"] == "positions and heights" and b["apt_level"].startswith("CCSD(T)") and b["apt_source"].endswith("apt_ccsd_t.npz")
+    assert b["n_ir_active"] == 7 and len(b["sticks"]) == 30
+    c = S.comparison("A_8448043181", b)
+    assert c["cheap"]["hessian_source"].endswith("hessian_b3lyp_analytic.npz") and c["cheap"]["apt_source"] == b["apt_source"]
+    assert abs(c["spectrum_overlap"] - 0.257) < 0.005 and 15 < c["freq_rms_cm"] < 30
+    assert S.anchor_series("A_3100da3761")["apt_level"].startswith("B3LYP")
+    n = S.anchor_series("A_01f3186607")
+    assert n["kind"] == "positions only" and all(s["km_mol"] is None for s in n["sticks"])
+    assert S.comparison("A_01f3186607", n)["spectrum_overlap"] is None
+    assert S.anchor_series("A_07cadc7923") is None
+
+
 def test_failure_case_is_displayed_not_hidden(cat):
     c = certificate(cat.find("benzene"), cat)
     wider = [a for a in c["anchor_coverage"] if a["wider_than_tolerance"]]
