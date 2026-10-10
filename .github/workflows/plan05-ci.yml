@@ -6,6 +6,8 @@ on:
       - "plans/05_delta-probed-ir-pipeline/src/**"
       - "plans/05_delta-probed-ir-pipeline/tests/**"
       - "plans/05_delta-probed-ir-pipeline/probes/*.py"
+      - "plans/05_delta-probed-ir-pipeline/probes/*.sh"   # 10 Oct 2026: tests cover watch.sh and cations_after_fivering.sh
+      - "plans/05_delta-probed-ir-pipeline/tools/**"
       - "plans/05_delta-probed-ir-pipeline/probes/results_vpt2/**"
       - "plans/05_delta-probed-ir-pipeline/pyproject.toml"
       - ".github/workflows/plan05-ci.yml"
