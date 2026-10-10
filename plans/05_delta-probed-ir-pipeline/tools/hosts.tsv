@@ -1,0 +1,6 @@
+# Rented servers by name (10 Oct 2026). One row per live server; delete the row when the user deletes the server.
+# The machine-id (/etc/machine-id) is pinned: Hetzner hands a deleted server's IP — and often its name — to the next server, so a script that
+# reaches the right IP may be talking to the wrong machine (157.180.32.149 was hel1-23 on 30 Sep and is the CCX53 now). tools/hosts.sh refuses
+# a machine whose id differs. Columns are TAB-separated: name, ip, machine-id, what it is.
+labels	157.180.32.149	edcb17d0044b431791e20cc6c5207edf	CCX53 ubuntu-128gb-hel1-2, the analytic labels server (7 Oct 2026)
+pool3	46.62.227.91	90dc99782b0a4621b3793166a5dfc682	CPX62 ubuntu-32gb-hel1-2, pool 3 (8 Oct 2026)
