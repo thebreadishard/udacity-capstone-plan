@@ -10,6 +10,9 @@
 #
 #   setsid nohup bash probes/fivering_laptop_1015.sh >> probes/results_m1/fivering_laptop_2026-10-09.log 2>&1 < /dev/null &
 #   DRY=1 bash probes/fivering_laptop_1015.sh   → copy + one-molecule dry run, no waiting
+#   PRIORITY=1 …   (10 Oct 2026, the user: 'Ja, laat de vijfringpool voorgaan'): wait only until no analytic_hessians.py runs in WSL (the cation
+#                  queue script was stopped and its current molecule finishes), not for the cation route's end marker; the cations resume
+#                  after this runner through probes/cations_after_fivering.sh
 set -u
 # no-set-e: a waiting loop and one run_corpus call per molecule; each failure is logged and the loop goes on to the next molecule
 P=/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline
@@ -23,8 +26,14 @@ t() { date '+%F %T'; }
 [ -s "$LIST" ] || { echo "=== (F5) NO CANDIDATE LIST $LIST $(t)"; exit 1; }
 if [ "${DRY:-0}" != 1 ]; then
   echo $$ > "$P/probes/results_m1/fivering_laptop.pid"
-  echo "=== (F5) armed (pid $$), waiting for the cation route to end $(t)"
-  until grep -qE '^=== \(CA\) (all 60 cations|STOPPED)' "$WAIT_LOG" 2>/dev/null; do sleep 600; done
+  echo "=== (F5) armed (pid $$), priority ${PRIORITY:-0} $(t)"
+  if [ "${PRIORITY:-0}" = 1 ]; then
+    echo "(F5) priority mode: waiting for the running cation molecule to finish $(t)"
+    while wsl.exe -e bash -c 'pgrep -f "[a]nalytic_hessians.py"' > /dev/null 2>&1; do sleep 300; done   # bracket: never matches its own command line
+    echo "(F5) no analytic job in WSL; starting $(t)"
+  else
+    until grep -qE '^=== \(CA\) (all 60 cations|STOPPED)' "$WAIT_LOG" 2>/dev/null; do sleep 600; done
+  fi
 fi
 if [ ! -f "$D/manifest.csv" ]; then
   mkdir -p "$D" && (cd "$C" && cp run_corpus.py psi4_worker.py cation_rows.py check_results.py status.py manifest.csv "$D/" && cp -r decks "$D/" \
