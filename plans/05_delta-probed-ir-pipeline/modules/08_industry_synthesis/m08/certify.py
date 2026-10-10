@@ -1,5 +1,6 @@
-"""The certificate: spectrum · per-band error budget · cost record · coverage · provenance, every number with its source, signed by release and
-commit. A rung not reached shows '—' and why. Written as JSON (the record) and Markdown (the page)."""
+"""The certificate: spectrum · spectral shape (heights where an APT exists, 10 Oct 2026) · per-band error budget · cost record · coverage ·
+provenance, every number with its source, signed by release and commit. A rung not reached shows '—' and why. Written as JSON (the record)
+and Markdown (the page)."""
 from __future__ import annotations
 
 import json
@@ -10,6 +11,7 @@ import time
 from pathlib import Path
 
 from . import prices
+from . import spectrum as shape_mod
 from .catalog import FAMILY_SOURCE, PLAN, REPO, RUNG_LABELS, Catalog, family
 from .licence import state as licence_state
 from .replay import replay_run
@@ -99,6 +101,9 @@ def certificate(row: dict, catalog: Catalog) -> dict:
             budget[fam] = dict(n_modes=len(vs), omega_range=[round(min(vs), 1), round(max(vs), 1)], u_band_lab=ub.get(fam, {}).get("u_band"),
                                u_band_source=ub.get(fam, {}).get("source"), ensemble_pm=None,
                                ensemble_note="— : no predicted correction is shown; " + lic["statement"].split(";")[0])
+    shape = shape_mod.shape(row["id"], mol["frequencies_cm"]["b3lyp"]["vibrational"] if mol else None) if mol else dict(kind="none", reason="no cheap rung")
+    if mol:
+        shape["accuracy"] = shape_mod.measured_accuracy()
     coverage = anchor_coverage(row.get("evidence", []), ub) if rung >= 4 else []
     run = replay_run(mol) if mol else None
     cost = []
@@ -118,10 +123,12 @@ def certificate(row: dict, catalog: Catalog) -> dict:
                 pre_registrations=["GoalGathering/notes/PreRegistration_2026-09-25_Proof_of_Learning_Layer_B.md", "modules/08_industry_synthesis/PRE_REGISTRATION.md"],
                 family_rule=FAMILY_SOURCE, licence=dict(rule_source=lic["rule_source"], licensed_families=lic["licensed_families"], latest_reading=lic["latest_reading"]))
     ladder = {r: dict(label=RUNG_LABELS[r], reached=(r <= rung and r not in (2, 3)) or (r in (2, 3) and False),
-                      note=("—: no family licensed" if r in (2, 3) else ("" if r <= rung else "— not reached"))) for r in range(6)}
+                      note=("—: no family licensed" + ("; when licensed, heights only where an APT exists" if r == 3 else "") if r in (2, 3)
+                            else ("" if r <= rung else "— not reached"))) for r in range(6)}
     return dict(kind="certificate", date=time.strftime("%Y-%m-%d %H:%M"), molecule=dict(id=row["id"], name=row["name"], smiles=row.get("smiles"), formula=row.get("formula"),
                 layer=row.get("layer"), n_atoms=row.get("n_atoms"), flags=row.get("flags", [])),
-                rung=dict(reached=rung, label=RUNG_LABELS[rung], ladder=ladder), spectrum=freqs, per_band_budget=budget, anchor_coverage=coverage,
+                rung=dict(reached=rung, label=RUNG_LABELS[rung], ladder=ladder), spectrum=freqs, spectral_shape=shape, per_band_budget=budget,
+                anchor_coverage=coverage,
                 laboratory=catalog.lab_bands(row["name"]) if rung >= 5 else dict(n_bands=0, note="not validated against a laboratory record (rung < 5)"),
                 cost_record=cost, provenance=prov,
                 statement=(f"{row['name']}: rung {rung} ({RUNG_LABELS[rung]}). The cheap-level spectrum is served with the laboratory tolerance per family; no predicted "
@@ -137,6 +144,7 @@ def to_markdown(c: dict) -> str:
     L += ["", "## Spectrum (cheap rung; harmonic, cm⁻¹)", ""]
     for fn, s in c["spectrum"].items():
         L.append(f"- **{fn}**: {s['n']} vibrational modes, {s['n_imaginary']} imaginary; source {s['source']}")
+    L += _shape_markdown(c.get("spectral_shape", {}))
     L += ["", "## Per-band error budget", "", "| family | modes | ω range | laboratory tolerance u_band (cm⁻¹) | ensemble ± | source |", "|---|---|---|---|---|---|"]
     for fam, b in c["per_band_budget"].items():
         L.append(f"| {fam} | {b['n_modes']} | {b['omega_range'][0]}–{b['omega_range'][1]} | {b['u_band_lab']} | — | {b['u_band_source']} |")
@@ -157,6 +165,30 @@ def to_markdown(c: dict) -> str:
           "- evidence: " + ("; ".join(f"{e['path']} ({'exists' if e['exists'] else 'MISSING'})" for e in p["evidence"]) or "—"),
           f"- licence: {len(p['licence']['licensed_families'])} families licensed ({p['licence']['rule_source']})", f"- family rule: {p['family_rule']}", ""]
     return "\n".join(L)
+
+
+def _shape_markdown(s: dict) -> list[str]:
+    """The spectrum as astronomers read it: the strongest bands, and how well that shape is known (TASKS 39)."""
+    L = ["", "## Spectral shape (cheap rung; positions and heights)", ""]
+    if s.get("kind") != "positions and heights":
+        return L + [f"Positions only: {s.get('reason', '—')}."]
+    top = sorted(s["sticks"], key=lambda x: -x["km_mol"])[:8]
+    L += [f"{s['n_ir_active']} infrared-active bands of {len(s['sticks'])} modes (the others have height zero and are not drawn); "
+          f"{s['broadening']['lineshape']} FWHM {s['broadening']['fwhm_cm']:g} cm⁻¹. APT {s['apt_source']}; Hessian {s['hessian_source']}; "
+          f"largest difference to the listed positions {s['max_dev_from_listed_cm']} cm⁻¹.", "",
+          "| band (cm⁻¹) | height (km/mol) | family |", "|---|---|---|"]
+    L += [f"| {b['omega_cm']} | {b['km_mol']} | {family(b['omega_cm'])} |" for b in sorted(top, key=lambda x: x['omega_cm'])]
+    a = s.get("accuracy")
+    if a:
+        L += ["", "**How well the shape is known** (measured; 'corrected' is the learned correction, not served until a family is licensed):", "",
+              "| level | spectrum overlap, cheap → corrected | height error, cheap → corrected | records |", "|---|---|---|---|"]
+        for k in ("proxy", "cc"):
+            x = a[k]
+            L.append(f"| {x['level']} | {x['cheap']['spectrum_overlap']} → {x['corrected']['spectrum_overlap']} | "
+                     f"{x['cheap']['intensity_error']} → {x['corrected']['intensity_error']} | {'; '.join(x['sources'])} |")
+        L += ["", f"*Overlap:* {a['definitions']['spectrum_overlap']}. *Height error:* {a['definitions']['intensity_error']}. *Benzene:* {a['cc']['note']}. "
+              f"*Open:* {a['open'][0]}."]
+    return L
 
 
 def write(c: dict, out_dir: Path) -> tuple[Path, Path]:

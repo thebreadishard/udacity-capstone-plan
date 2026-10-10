@@ -152,6 +152,46 @@ code("""s3 = next(r for r in R["results"] if r["id"] == "S3")
 print("candidate:", s3["candidate"]["smiles"], "|", s3["candidate"]["source"])
 for line in s3["decision"]["reasons"]: print(" -", line)""")
 
+md("""### 3.6 Added 10 October 2026 — the spectral shape: positions *and* heights
+
+*Why this was added.* Astronomers do not compare lists of wavenumbers; they compare spectra — where the bands are and how strong they are. Until
+today the certificate listed positions only. A band's height comes from how the molecule's charge moves when the atoms move (its atomic polar
+tensor, APT, computed in module 05 for ten molecules) combined with the shape of each vibration from the cheap rung's Hessian. Vibrations that do not
+move the charge have height zero, so they vanish from the drawn spectrum by construction. **Rule:** heights only where an APT exists; otherwise the
+certificate shows positions only and says why.
+
+*How well is the shape known?* Two measured comparisons, read from module 05's records (seed means): the spectrum overlap (the cosine similarity of the
+two broadened spectra; 1 = identical) and the height error (relative, bands paired by the shape of the motion). "Cheap" is what this certificate
+serves; "corrected" is what the learned correction would bring once a family is licensed — measured, but not served.""")
+code("""cb = certificate(cat.find("benzene"), cat); sb = cb["spectral_shape"]
+from m08.spectrum import broadened
+g, y = broadened(sb["sticks"])
+fig, ax = plt.subplots(figsize=(9, 3.2))
+ax.plot(g, y, color="#1f77b4", lw=1.2, label="broadened (Lorentzian, FWHM 10 cm⁻¹)")
+merged = []                                                   # degenerate partners (within 1 cm⁻¹ of the previous) drawn as one stick
+for s_ in sorted(sb["sticks"], key=lambda x: x["omega_cm"]):
+    if merged and s_["omega_cm"] - merged[-1][0] <= 1.0: merged[-1][1] += s_["km_mol"]
+    else: merged.append([s_["omega_cm"], s_["km_mol"]])
+top_ = max(a_ for _, a_ in merged)
+for w_, a_ in merged:
+    if a_ > 0.005 * top_: ax.vlines(w_, 0, a_ / (np.pi * 5.0), color="#d62728", lw=1.0)
+ax.set_xlim(500, 3500); ax.set_xlabel("harmonic wavenumber, cm⁻¹"); ax.set_ylabel("absorbance (arb.)"); ax.legend(fontsize=8)
+ax.set_title("Figure 3. Benzene, cheap rung: the spectrum as astronomers read it (sticks: band heights, degenerate pairs summed, scaled to the peak)", fontsize=9)
+fig.tight_layout(); fig.savefig(FIG / "benzene_shape.png", dpi=150); plt.show()
+print(sb["n_ir_active"], "infrared-active bands of", len(sb["sticks"]), "modes; largest difference to the listed positions:", sb["max_dev_from_listed_cm"], "cm⁻¹")
+acc = sb["accuracy"]
+display(pd.DataFrame([dict(level=acc[k]["level"], overlap_cheap=acc[k]["cheap"]["spectrum_overlap"], overlap_corrected=acc[k]["corrected"]["spectrum_overlap"],
+                           height_error_cheap=acc[k]["cheap"]["intensity_error"], height_error_corrected=acc[k]["corrected"]["intensity_error"]) for k in ("proxy", "cc")]))
+print("naphthalene:", certificate(cat.find("naphthalene"), cat)["spectral_shape"]["reason"])""")
+
+md("""*Reading.* At the proxy level the correction lifts the spectrum overlap from about 0.27 to 0.97 and halves the height error (0.30 → 0.13) on ten
+molecules the network never saw. Against CCSD(T) on benzene the overlap rises from 0.26 to about 0.6; the height error is near zero for both, because
+benzene's symmetry fixes its band heights — that comparison cannot separate the two and is named as the open test (a low-symmetry molecule with a
+coupled-cluster APT). One limit stays on the page: the APT itself is computed at the cheap level, and its difference to the coupled-cluster APT
+(about 20 % on benzene) is not corrected by any rung yet. A measurement error found on 9 October belongs to this section's history: the first height
+comparison paired bands in order of position, and benzene's strong out-of-plane band and a dark neighbour swap places between the two levels; the
+pairing by the shape of the motion replaced it, and the corrected numbers are the ones above.""")
+
 md("""## 4. Evaluation, limitations and a failure case (Task 5)
 
 **What the scenarios show.** Every request produced an observable output of the registered kind; no run started; every cost line traces to a run log
@@ -175,6 +215,8 @@ code("""out = dict(date=time.strftime("%Y-%m-%d %H:%M"), catalogue=dict(n=len(ca
            licence=lic, scenarios=dict(n_pass=R["n_pass"], n=R["n_scenarios"], date=R["date"], table=rows, mechanical=R["mechanical"]),
            s1=dict(rung=c1["rung"]["reached"], families=list(c1["per_band_budget"].keys()), coverage=c1["anchor_coverage"], cost=c1["cost_record"]),
            s8=dict(rung=c8["rung"]["reached"], coverage=c8["anchor_coverage"], n_lab_bands=c8["laboratory"]["n_bands"]),
+           shape=dict(benzene=dict(n_ir_active=sb["n_ir_active"], n_modes=len(sb["sticks"]), max_dev_from_listed_cm=sb["max_dev_from_listed_cm"]),
+                      accuracy={k: dict(cheap=acc[k]["cheap"], corrected=acc[k]["corrected"], sources=acc[k]["sources"]) for k in ("proxy", "cc")}),
            s2=dict(kind=d2.kind, gate=d2.gate_named, needed=d2.what_would_be_needed), s2b=dict(kind=d2b.kind, gate=d2b.gate),
            s3=dict(candidate=s3["candidate"], reasons=s3["decision"]["reasons"]), prices=dict(machines=prices.MACHINES, steps={k: prices.step_price(k) for k in prices.STEPS}),
            n_rules=len(RULES), versions=dict(python=sys.version.split()[0], pandas=pd.__version__, numpy=np.__version__))

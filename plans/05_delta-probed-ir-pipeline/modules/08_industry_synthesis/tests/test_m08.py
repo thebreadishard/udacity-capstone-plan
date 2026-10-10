@@ -47,7 +47,8 @@ def test_scenarios_as_registered(cat):
     d1 = decide(Request(**by["S1"]["request"]), cat); assert d1.kind == "certificate" and d1.rung_reached == 4
     d2 = decide(Request(**by["S2"]["request"]), cat); assert d2.kind == "refusal" and "not licensed" in d2.gate_named and "R14" in d2.rule_ids
     assert any(p["step"] == "anchor_e8_cc_hessian_naphthalene" for p in d2.price_lines)
-    outside = "c1ccc2c(c1)ccc1c2ccc2cc3ccccc3cc12"; assert cat.find(outside) is None
+    # coronene (10 Oct 2026): the earlier stand-in, a five-ring PAH, is now listed as a module-06 generator row (layer G) in the export
+    outside = "c1cc2ccc3ccc4ccc5ccc6ccc1c1c2c3c4c5c61"; assert cat.find(outside) is None
     d3 = decide(Request(molecule=outside, target_rung=4, budget_eur=20), cat)
     assert d3.kind == "refusal" and "cap" in d3.gate_named and any("rung 1" in r for r in d3.reasons)
     d4a = decide(Request(**by["S4a"]["request"]), cat); assert d4a.kind == "refusal" and "invalid" in d4a.gate_named
@@ -78,6 +79,22 @@ def test_certificate_sources_and_evidence(cat):
         assert k["source"]
     md = to_markdown(c)
     assert "## Cost record" in md and "## Provenance" in md and "no family licensed" in md
+
+
+def test_spectral_shape_heights_only_with_an_apt(cat):
+    """TASKS 39 (10 Oct 2026): benzene has an APT → heights, consistent with the listed positions; naphthalene has none → positions only,
+    said on the page; the accuracy numbers come from the records."""
+    b = certificate(cat.find("benzene"), cat)["spectral_shape"]
+    assert b["kind"] == "positions and heights" and b["max_dev_from_listed_cm"] < 0.5 and len(b["sticks"]) == 30
+    strongest = max(b["sticks"], key=lambda x: x["km_mol"])
+    assert 680 < strongest["omega_cm"] < 710                              # benzene's C–H out-of-plane band (a2u)
+    assert b["n_ir_active"] == 7                                            # a2u + 3 × e1u (degenerate pairs); FD leakage below 0.5 % ignored
+    acc = b["accuracy"]
+    assert acc["proxy"]["n_molecules"] == 10 and acc["proxy"]["corrected"]["spectrum_overlap"] > acc["proxy"]["cheap"]["spectrum_overlap"]
+    assert acc["proxy"]["corrected"]["intensity_error"] < acc["proxy"]["cheap"]["intensity_error"]
+    n = certificate(cat.find("naphthalene"), cat)
+    assert n["spectral_shape"]["kind"] == "positions only" and "Positions only" in to_markdown(n)
+    assert "heights only where an APT exists" in n["rung"]["ladder"][3]["note"]
 
 
 def test_failure_case_is_displayed_not_hidden(cat):

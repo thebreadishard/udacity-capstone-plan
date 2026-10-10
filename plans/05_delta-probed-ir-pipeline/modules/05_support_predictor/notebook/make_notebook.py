@@ -1173,6 +1173,31 @@ display(pd.DataFrame({"chain 34, FD labels": {f: ra["record"]["a"][f] for f in F
 else:
     md("### 12.5 Follow-up (5–7 October 2026)\n\nFilled by the rebuild once the records of 5–7 October are on disk.")
 
+md("""### 12.6 Follow-up (9–10 October 2026): the height read-out paired bands in the wrong order — corrected numbers
+
+§12.2 reported the network's spectra on hold-out (a) with a height error of about 0.15 against 0.59 for no correction. On 9 October the coupled-cluster
+version of the same read-out gave 0.73 in *every* column for benzene, including the column without any correction — a number that cannot tell a
+corrected molecule from an uncorrected one is measuring something else. It was: the read-out paired bands in order of position, and benzene's strong
+out-of-plane band and a dark neighbour swap places between the two levels, so a bright band was compared with a dark one. The read-out now also
+pairs bands by the shape of the motion (eigenvector overlap; `m05/rungC_intensities.py`, with a test that a crossing reads as zero error); the old,
+sorted numbers stay in the records so that earlier reads keep their meaning. Re-read of chain 34's three saved models on hold-out (a):""")
+code("""# 12.6 — sorted against matched pairing, from the records of 9 October (seed means over 3 seeds, 10 molecules with an APT)
+_mt = [json.load(open(Path("..") / "out" / f"E7_rungC_chain34_eval_matched_2026-10-09_seed{s}.json", encoding="utf-8")) for s in range(3)]
+def _avg(key):
+    vals = []
+    for r in _mt:
+        pm = [v for v in r["a"]["per_molecule"].values() if v.get("spectrum_overlap") is not None]
+        vals.append(np.mean([v[key] for v in pm]))
+    return round(float(np.mean(vals)), 3)
+display(pd.DataFrame({"network": {"spectrum overlap": _avg("spectrum_overlap"), "height error, sorted pairing": _avg("intensity_rel_rms"),
+                                  "height error, matched pairing": _avg("intensity_rel_rms_matched")},
+                      "no correction": {"spectrum overlap": _avg("spectrum_overlap_zero_rule"), "height error, sorted pairing": _avg("intensity_rel_rms_zero_rule"),
+                                        "height error, matched pairing": _avg("intensity_rel_rms_zero_rule_matched")}}))""")
+md("""*Reading.* The network still halves the height error (0.13 against 0.30), but the baseline was overstated twofold by the pairing; the spectrum
+overlap (0.97 against 0.27) did not depend on pairing and is unchanged. At coupled-cluster level on benzene the corrected read-out gives about 0.003 for
+every column: benzene's symmetry fixes its band heights, so that molecule cannot test this part, and the test moves to a low-symmetry molecule with a
+coupled-cluster dipole derivative. These numbers are what module 08's certificate now quotes beside the spectral shape.""")
+
 nb = new_notebook(cells=cells, metadata={"kernelspec": {"name": "python3", "display_name": "Python 3", "language": "python"}})
 path = HERE / "deep_learning.ipynb"
 # 2 Oct 2026 15:1x: the executed notebook on disk is replaced only after a successful execution — a failed run (a wrong M05_RELEASE) had left it

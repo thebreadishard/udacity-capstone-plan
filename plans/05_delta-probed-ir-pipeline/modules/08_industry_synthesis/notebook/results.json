@@ -1,5 +1,5 @@
 {
- "date": "2026-10-08 11:21",
+ "date": "2026-10-10 09:25",
  "catalogue": {
   "n": 13714,
   "built_utc": "2026-10-08T09:21:35Z",
@@ -267,6 +267,45 @@
    }
   ],
   "n_lab_bands": 92
+ },
+ "shape": {
+  "benzene": {
+   "n_ir_active": 7,
+   "n_modes": 30,
+   "max_dev_from_listed_cm": 0.0
+  },
+  "accuracy": {
+   "proxy": {
+    "cheap": {
+     "spectrum_overlap": 0.27,
+     "intensity_error": 0.296
+    },
+    "corrected": {
+     "spectrum_overlap": 0.972,
+     "intensity_error": 0.127
+    },
+    "sources": [
+     "modules/05_support_predictor/out/E7_rungC_chain34_eval_matched_2026-10-09_seed0.json",
+     "modules/05_support_predictor/out/E7_rungC_chain34_eval_matched_2026-10-09_seed1.json",
+     "modules/05_support_predictor/out/E7_rungC_chain34_eval_matched_2026-10-09_seed2.json"
+    ]
+   },
+   "cc": {
+    "cheap": {
+     "spectrum_overlap": 0.257,
+     "intensity_error": 0.003
+    },
+    "corrected": {
+     "spectrum_overlap": 0.592,
+     "intensity_error": 0.003
+    },
+    "sources": [
+     "modules/05_support_predictor/out/T3_tz_intensity_matched_c34_seed0_2026-10-09.json",
+     "modules/05_support_predictor/out/T3_tz_intensity_matched_c34_seed1_2026-10-09.json",
+     "modules/05_support_predictor/out/T3_tz_intensity_matched_c34_seed2_2026-10-09.json"
+    ]
+   }
+  }
  },
  "s2": {
   "kind": "refusal",
