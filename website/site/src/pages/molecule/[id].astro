@@ -54,7 +54,7 @@ const notifyHref = `https://github.com/thebreadishard/spectrum-atlas/issues/new?
   </header>
 
   <div class="cols">
-    {lead === 'anchor' && <AnchorSpectrumCard name={row.name} anchor={mol.anchor_spectrum} comparison={mol.comparison} test={mol.test_prediction} cheap={cheapBands} validated={row.rung === 5} />}
+    {lead === 'anchor' && <AnchorSpectrumCard name={row.name} anchor={mol.anchor_spectrum} comparison={mol.comparison} test={mol.test_prediction} cheap={cheapBands} wb97x={vib.wb97x.vibrational} validated={row.rung === 5} />}
     {lead === 'cheap' && <CheapSpectrumCard name={row.name} bands={cheapBands} acc={summary.shape_accuracy} lead />}
     {lead === 'positions' && <FrequenciesCard name={row.name} rows={rows} b3lyp={vib.b3lyp.vibrational} wb97x={vib.wb97x.vibrational} hasHeights={false} lead />}
     <aside class="side">

@@ -73,3 +73,18 @@ def test_a_cheap_lead_page_keeps_one_panel_and_the_notes_behind_a_tap():
     card = lead_card(h)
     assert "Infrared spectrum at the cheap level" in card and "cheap input (B3LYP)</text>" not in card
     assert card.index('class="howto"') < card.index("Band heights from the molecule")
+
+
+def test_every_series_is_drawn_once():
+    """The user, 10 Oct 19:3x (pyridine): the B3LYP row stood in the anchor chart and again in the frequencies chart."""
+    for mid in ("A_6e858b26e5", "A_01f3186607"):                                         # pyridine, naphthalene: positions-only anchors
+        h = page(mid)
+        assert h.count('class="spectrum"') == 1 and "ωB97X</text>" in lead_card(h)
+        assert "Both functionals are drawn in the anchor chart above" in h
+    h = page("A_8448043181")                                                             # benzene: heights; the table carries ωB97X
+    assert 'class="spectrum"' not in h and h.count('class="irspec"') == 1
+    assert page("A_d9139359ab").count('class="spectrum"') == 1                          # azulene: the frequencies card leads with its chart
+
+
+def test_a_long_flag_label_gets_a_short_chip():
+    assert ">finite-difference Hessian noisy</summary>" in page("A_6e858b26e5")
