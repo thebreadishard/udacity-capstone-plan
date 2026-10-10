@@ -20,6 +20,29 @@ def built(tmp_path_factory):
     return out, summary
 
 
+def test_heights_for_benzene_aligned_and_none_for_naphthalene(built):
+    """TASKS 44 (10 Oct 2026): band heights from module 08's shape, aligned with the listed B3LYP positions; positions only without an APT."""
+    out, summary = built
+    def read(name):
+        with open(os.path.join(out, "molecules", name), encoding="utf-8") as f:
+            return json.load(f)
+    b = read("A_8448043181.json")
+    pos, h = b["frequencies_cm"]["b3lyp"]["vibrational"], b["intensities_km_mol"]["b3lyp"]
+    assert len(h) == len(pos) == 30 and b["shape"]["n_ir_active"] == 7 and b["predicted_spectrum"] is None
+    i = max(range(30), key=lambda k: h[k])
+    assert abs(pos[i] - 694.6) < 0.5 and 70 < h[i] < 85                  # benzene's C–H out-of-plane band (a2u)
+    n = read("A_01f3186607.json")
+    assert n["intensities_km_mol"] is None and n["shape"] is None
+    assert summary["n_with_intensities"] >= 1 and summary["shape_accuracy"]["proxy"]["corrected"]["spectrum_overlap"] > 0.9
+
+
+def test_heights_refused_when_positions_differ():
+    sh = {"kind": "positions and heights", "sticks": [{"omega_cm": 100.0, "km_mol": 1.0}], "max_dev_from_listed_cm": 2.0}
+    assert bc.heights_for(sh, [102.0]) is None
+    assert bc.heights_for(dict(sh, max_dev_from_listed_cm=0.0), [100.0]) == [1.0]
+    assert bc.heights_for({"kind": "positions only"}, [100.0]) is None
+
+
 def test_rung_counts_add_up(built):
     out, s = built
     cat = json.load(open(out / "catalog.json", encoding="utf-8"))

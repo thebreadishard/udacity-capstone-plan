@@ -126,8 +126,26 @@ def vib_only(freq):
     return np.sort(f[keep])
 
 
+HEIGHT_TOLERANCE_CM = 0.5      # 10 Oct 2026: heights only when the shape module's positions match the listed ones (same Hessian)
+
+
+def heights_for(shape: dict, listed: list[float]) -> list[float] | None:
+    """Heights (km/mol) in the order of the listed B3LYP positions, or None (no APT, or positions that do not match the listed ones)."""
+    if shape.get("kind") != "positions and heights":
+        return None
+    dev = shape.get("max_dev_from_listed_cm")
+    if dev is None or dev > HEIGHT_TOLERANCE_CM or len(shape["sticks"]) != len(listed):
+        return None
+    order = np.argsort(np.asarray(listed, float), kind="stable")    # the sticks come sorted by position
+    out = np.empty(len(listed)); out[order] = [s["km_mol"] for s in shape["sticks"]]
+    return [round(float(v), 3) for v in out]
+
+
 def build(repo, out, limit=None):
     plan = os.path.join(repo, "plans", "05_delta-probed-ir-pipeline"); corpus = os.path.join(plan, "modules", "05_support_predictor", "corpus")
+    sys.path.insert(0, os.path.join(plan, "modules", "08_industry_synthesis"))
+    # TASKS 44: one implementation of the band heights for module 08's certificate and the Atlas
+    from m08 import spectrum as shape_mod
     manifest_p = os.path.join(corpus, "manifest.csv"); ledger_p = os.path.join(corpus, "ledger.csv")
     manifest = list(csv.DictReader(open(manifest_p, encoding="utf-8")))
     if limit:
@@ -162,7 +180,7 @@ def build(repo, out, limit=None):
             if not os.path.exists(os.path.join(plan, f)):
                 raise SystemExit(f"evidence file missing for {k}: {f}")
     os.makedirs(os.path.join(out, "molecules"), exist_ok=True)
-    catalog = []; counts = {r: 0 for r in RUNGS}; layer_counts = {}; source_counts = {}; problems = []
+    catalog = []; counts = {r: 0 for r in RUNGS}; layer_counts = {}; source_counts = {}; problems = []; n_heights = 0
     for r in manifest:
         mid = r["id"]; mdir = os.path.join(corpus, "molecules", mid)
         result_p = os.path.join(mdir, "result.json"); computed = r["status"] == "done" and os.path.exists(result_p)
@@ -194,12 +212,20 @@ def build(repo, out, limit=None):
             mol = dict(id=mid, name=r["name"], smiles=r["smiles"], formula=formula, layer=r["layer"], source=row["source"], n_atoms=N,
                        geometry=json.load(open(os.path.join(mdir, "geometry.json"), encoding="utf-8")), deck=res.get("deck"), timings_s=res.get("timings_s"),
                        energies=dict(b3lyp=res.get("e_b3lyp"), wb97x=res.get("e_wb97x")), n_imaginary=n_im, frequencies_cm={}, releases=releases.get(mid, []),
-                       ledger=ledger.get(mid), second_route=None)
+                       ledger=ledger.get(mid), second_route=None, intensities_km_mol=None, shape=None, predicted_spectrum=None)
             for tag in ("b3lyp", "wb97x"):
                 z = np.load(os.path.join(mdir, f"hessian_{tag}.npz")); fr = np.asarray(z["freq_cm"], float)
                 if len(fr) != 3 * N:
                     problems.append(f"{mid}: {tag} frequency list has {len(fr)} entries, 3N = {3 * N}")
                 mol["frequencies_cm"][tag] = dict(all=fr.round(2).tolist(), vibrational=vib_only(fr).round(2).tolist())
+            sh = shape_mod.shape(mid, mol["frequencies_cm"]["b3lyp"]["vibrational"])
+            hts = heights_for(sh, mol["frequencies_cm"]["b3lyp"]["vibrational"])
+            if hts is not None:
+                mol["intensities_km_mol"] = {"b3lyp": hts}
+                mol["shape"] = {k: sh[k] for k in ("n_ir_active", "apt_source", "hessian_source", "broadening", "method", "max_dev_from_listed_cm")}
+                row["has_intensities"] = True; n_heights += 1
+            elif sh.get("kind") == "positions and heights":
+                problems.append(f"{mid}: APT present but its positions do not match the listed ones ({sh.get('max_dev_from_listed_cm')} cm⁻¹)")
             if os.path.exists(os.path.join(mdir, "analytic_check.json")):
                 chk = json.load(open(os.path.join(mdir, "analytic_check.json"), encoding="utf-8"))
                 mol["second_route"] = {tag: dict(max_abs_dfreq_cm=float(np.abs(np.array(v["freq_analytic"]) - np.array(v["freq_corpus"])).max()), dH_max=v["dH_max"]) for tag, v in chk.items()}
@@ -226,7 +252,7 @@ def build(repo, out, limit=None):
     json.dump(changelog, open(os.path.join(out, "changelog.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=0)
     summary = dict(built_utc=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), n_molecules=len(catalog), rung_counts=counts, layer_counts=layer_counts, source_counts=source_counts,
                    rungs=RUNGS, sources=dict(manifest=sha256(manifest_p), ledger=sha256(ledger_p)), releases=sorted({n for v in releases.values() for n in v}),
-                   n_changelog=len(changelog))
+                   n_changelog=len(changelog), n_with_intensities=n_heights, shape_accuracy=shape_mod.measured_accuracy())
     json.dump(summary, open(os.path.join(out, "summary.json"), "w", encoding="utf-8"), indent=1)
     return summary
 

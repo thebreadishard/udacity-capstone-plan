@@ -32,6 +32,10 @@ Hessian of the molecule; 7 Oct 2026) · 5 validated (compared with a laboratory 
 record), `timings_s`, `energies {b3lyp, wb97x}`, `n_imaginary {b3lyp, wb97x}`, `frequencies_cm {b3lyp, wb97x: {all: 3N values, vibrational: 3N−6
 values by the corpus convention — six entries nearest zero dropped, imaginary negative}}`, `releases`, `ledger` (the run's ledger row: machine, deck,
 start, end, seconds, peak memory), `second_route` (per functional: `max_abs_dfreq_cm`, `dH_max`; null when no analytic check exists).
+Since 10 Oct 2026 (TASKS 44): `intensities_km_mol {b3lyp: one height per entry of frequencies_cm.b3lyp.vibrational, km/mol}` — double-harmonic
+heights from the molecule's dipole derivatives (APT) and its `hessian_b3lyp.npz`, through module 08's `m08.spectrum.shape`; null when the molecule
+has no APT or when the computed positions differ from the listed ones by more than 0.5 cm⁻¹. `shape` (with heights: `n_ir_active`, `apt_source`,
+`hessian_source`, `broadening`, `method`, `max_dev_from_listed_cm`; else null). `predicted_spectrum`: null until a mode family is licensed (rung 3).
 
 ## `changelog.json`
 
@@ -41,7 +45,7 @@ first; `body` is the first 300 characters. Nothing is rewritten; corrections app
 ## `summary.json`
 
 `built_utc`, `n_molecules`, `rung_counts` (sum = n_molecules — checked), `layer_counts`, `source_counts`, `rungs`, `sources` (SHA-256 of manifest and ledger),
-`releases`.
+`releases`, `n_changelog`; since 10 Oct 2026 `n_with_intensities` (pages with band heights) and `shape_accuracy` (the measured accuracy of the spectral shape, read by module 08's `m08.spectrum.measured_accuracy` from module 05's records).
 
 ## Invariants the build enforces
 
