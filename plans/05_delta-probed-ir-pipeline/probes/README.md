@@ -10,6 +10,10 @@ Conventions, carried from plans 01–04:
 - **[05]** A pattern set is a versioned, ordered input: its hash, the amplitude q_s, the
   hold-out seed and f_h are printed by every recovery probe that uses it. K and K_off are
   printed, never typed. Every Q6 line prints its formula, its inputs and its verdict.
+- **Runs are data (10 October 2026, TASKS 41).** A chain of steps (wait → train → register → evaluate → read) is a JSON spec in `runs/`
+  executed by `chain_runner.py` (tests in `tests/test_chain_runner.py`); the laptop jobs the watch follows are rows in `watch_jobs.tsv`, the
+  rented servers rows in `../tools/hosts.tsv`. **No new `.sh` for a run that has an existing shape** — write a spec; a new kind of step goes
+  into the runner, with a test. Every command reads `/dev/null`, never a loop's stdin; scripts find the plan folder from their own location.
 
 ## Probes that exist
 
