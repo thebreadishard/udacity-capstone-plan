@@ -108,3 +108,5 @@ plans/*/probes/results_vpt2/*.out
 
 # 10 Oct 2026: probes/watch.sh's seen markers (machine-local state, not a record)
 plans/05_delta-probed-ir-pipeline/probes/watch_state/
+# 10 Oct 2026: run specs of probes/chain_runner.py are code, not records
+!plans/05_delta-probed-ir-pipeline/probes/runs/*.json

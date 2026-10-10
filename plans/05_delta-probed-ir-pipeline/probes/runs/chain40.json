@@ -1,0 +1,18 @@
+{
+ "_about": "Chain 40 (registered 10 Oct 2026, rung C pre-registration): hold-out (b) after the first 64 five-ring candidates (~30 per family). Lines on Δ against chain 37's 0.325: ≤ −0.03 finish the list (the user rents a CPX62 for the rest); > −0.015 STOP the runner, the laptop returns to the cations; between → continue.",
+ "name": "C40",
+ "poll_s": 600,
+ "wait": [
+  {"kind": "results", "list": "modules/05_support_predictor/corpus/five_ring_pool_candidates_2026-10-09.txt", "first": 64,
+   "dir": "modules/05_support_predictor/corpus/shards_fivering/laptop/molecules"}
+ ],
+ "steps": [
+  {"kind": "cmd", "label": "merge the laptop shard", "argv": ["{python}", "merge_shards.py", "shards_fivering/laptop/"],
+   "cwd": "modules/05_support_predictor/corpus", "log": "modules/05_support_predictor/out/merge_chain40.log"},
+  {"kind": "rungc", "chain": "40",
+   "note": "chain 40 — hold-out (b) after the first 64 five-ring candidates (~30 per family); registered 10 Oct 2026 in the rung C pre-registration; candidate until its read",
+   "trainings": [{"prefix": "out/E7_rungC_chain40_fivering30", "args": ["--sizes", "all"]}]}
+ ],
+ "outputs": ["modules/05_support_predictor/out/E7_rungC_chain40_fivering30.json",
+             "modules/05_support_predictor/out/read_E7_rungC_chain40_fivering30.json"]
+}
