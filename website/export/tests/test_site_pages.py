@@ -57,8 +57,8 @@ def test_anchor_card_draws_the_cheap_input_as_its_lower_panel_and_the_cheap_card
 
 def test_key_line_shows_and_the_reading_notes_sit_behind_a_tap():
     card = lead_card(page("A_8448043181"))
-    key, notes = card.index("Spectrum overlap with the anchor (1 = the same shape): network test 0.37"), card.index('class="howto"')
-    assert key < notes < card.index("Compared with the cheap Hessian") and notes < card.index("Test of the network, not a served prediction.")
+    key, notes = card.index("Spectrum overlap with the anchor (1 = the same shape): network, held-out test 0.37"), card.index('class="howto"')
+    assert key < notes < card.index("Compared with the cheap Hessian") and notes < card.index("The network's prediction, shown as a test.")
 
 
 def test_the_long_flag_story_sits_behind_a_short_chip():

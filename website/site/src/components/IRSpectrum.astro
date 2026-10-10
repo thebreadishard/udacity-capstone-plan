@@ -27,7 +27,7 @@ for (let t = 0; t <= yMax; t += yStep) yTicks.push(t);
 // left — the upper one above the µm labels, the lower one in the gap — so no name sits on a band or a µm label (benzonitrile has a band at 2230 cm⁻¹).
 function render(W: number, h1: number, h2: number, font: number, tick: number, microns: number[]) {
   const nameRow = stacked ? font + 8 : 0;
-  const padL = 46, padR = 12, padT = 26 + nameRow, padB = 34, gap = stacked ? font + 14 : 0;
+  const padL = 46, padR = 12, padT = 26 + nameRow, padB = 34, gap = stacked ? font + 24 : 0;   // the user, 19:3x: a little more room above the lower panel's name
   const H = padT + h1 + (stacked ? gap + h2 : 0) + padB;
   const x = (v: number) => padL + (W - padL - padR) * (max - v) / (max - min);   // high wavenumber on the left, as spectroscopists read it
   const panel = (top: number, h: number) => ({ top, bottom: top + h, y: (v: number) => top + h - h * v / yMax });
@@ -53,9 +53,9 @@ function render(W: number, h1: number, h2: number, font: number, tick: number, m
   return { W, H, font, padL, padR, padT, padB, nameRow, x, panels, series, ticks, cmp: cmp.length ? path(cmpAt, y) : '', envelope, testMean,
            microns: microns.filter((m) => 1e4 / m >= min + 0.04 * (max - min) && 1e4 / m <= max) };   // no label cut at the right edge
 }
-const wide = stacked ? render(620, 160, 140, 12.5, 500, [3, 4, 5, 6, 8, 10, 15, 20]) : render(620, 190, 0, 12.5, 500, [3, 4, 5, 6, 8, 10, 15, 20]);
-const medium = stacked ? render(480, 150, 130, 12, 500, [3, 4, 5, 6, 8, 10, 15, 20]) : render(480, 180, 0, 12, 500, [3, 4, 5, 6, 8, 10, 15, 20]);
-const narrow = stacked ? render(360, 140, 120, 13, 1000, [3, 5, 10, 20]) : render(360, 180, 0, 13, 1000, [3, 5, 10, 20]);
+const wide = stacked ? render(620, 156, 136, 12.5, 500, [3, 4, 5, 6, 8, 10, 15, 20]) : render(620, 190, 0, 12.5, 500, [3, 4, 5, 6, 8, 10, 15, 20]);
+const medium = stacked ? render(480, 146, 126, 12, 500, [3, 4, 5, 6, 8, 10, 15, 20]) : render(480, 180, 0, 12, 500, [3, 4, 5, 6, 8, 10, 15, 20]);
+const narrow = stacked ? render(360, 136, 116, 13, 1000, [3, 5, 10, 20]) : render(360, 180, 0, 13, 1000, [3, 5, 10, 20]);
 // wide: ≥ 11 px labels from a 1024 px desktop column to a tablet's full width; medium: a 1024 px desktop's column is 512 px wide;
 // narrow: ≈ 11 px labels at a 375 px phone's card width
 function describe(bs: Band[]) {

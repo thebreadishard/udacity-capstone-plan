@@ -19,7 +19,7 @@ const cmpLine = `Compared with the cheap Hessian (B3LYP${comparison.cheap.hessia
   + (comparison.spectrum_overlap != null ? `spectrum overlap ${comparison.spectrum_overlap.toFixed(2)}, ` : '')
   + `frequency rms ${comparison.freq_rms_cm.toFixed(1)} cm⁻¹.`;
 const testBands = test ? test.seeds.map((s) => mergeBands(s.sticks)) : [];
-const overlaps = [test && `network test ${test.spectrum_overlap_mean.toFixed(2)} (${test.spectrum_overlap_range[0].toFixed(2)}–${test.spectrum_overlap_range[1].toFixed(2)})`,
+const overlaps = [test && `network, held-out test ${test.spectrum_overlap_mean.toFixed(2)} (${test.spectrum_overlap_range[0].toFixed(2)}–${test.spectrum_overlap_range[1].toFixed(2)})`,
                   comparison.spectrum_overlap != null && `cheap Hessian ${comparison.spectrum_overlap.toFixed(2)}`].filter(Boolean);
 ---
 <section class="card first">
@@ -27,12 +27,13 @@ const overlaps = [test && `network test ${test.spectrum_overlap_mean.toFixed(2)}
   {hasHeights
     ? <IRSpectrum bands={mergeBands(anchor.sticks)} compare={mergeBands(comparison.cheap.sticks)} test={testBands} below={cheap ?? []}
         title={`Infrared spectrum of ${name} at the anchor level${cheap ? ', with the cheap input below' : ''}`}
-        leadLabel="anchor" compareLabel="cheap Hessian" testLabel="network test (not served)" belowLabel="cheap input (B3LYP)">
+        leadLabel="anchor" compareLabel="cheap Hessian" testLabel="network (held-out test)" belowLabel="cheap input (B3LYP)">
         {overlaps.length > 0 && <p slot="key" class="small key">Spectrum overlap with the anchor (1 = the same shape): {overlaps.join(' · ')}.</p>}
         <p class="muted">{rungNote} {aptNote} {cmpLine}{cheap ? ' The lower panel is the pipeline\'s input: the B3LYP Hessian with its own B3LYP dipole derivatives.' : ''}</p>
         {test && (
-          <p><strong>Test of the network, not a served prediction.</strong> This anchor was left out when the network was tuned to the coupled-cluster
-            anchors (T3, the carried model's three seeds), so the green band shows how the network does on a molecule it did not see at this level:
+          <p><strong>The network's prediction, shown as a test.</strong> The Atlas does not yet give the network's predictions as its answer (that is
+            rung 3, which waits until a mode family is licensed). This one is shown because this anchor was left out when the network was tuned to the
+            coupled-cluster anchors (T3, the carried model's three seeds), so the green band shows how the network does on a molecule it did not see at this level:
             spectrum overlap with the anchor {test.spectrum_overlap_mean.toFixed(2)} ({test.spectrum_overlap_range[0].toFixed(2)}–{test.spectrum_overlap_range[1].toFixed(2)}
             over the seeds){comparison.spectrum_overlap != null ? `, against ${comparison.spectrum_overlap.toFixed(2)} for the cheap Hessian` : ''}.</p>
         )}
