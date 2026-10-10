@@ -36,6 +36,10 @@ Since 10 Oct 2026 (TASKS 44): `intensities_km_mol {b3lyp: one height per entry o
 heights from the molecule's dipole derivatives (APT) and its `hessian_b3lyp.npz`, through module 08's `m08.spectrum.shape`; null when the molecule
 has no APT or when the computed positions differ from the listed ones by more than 0.5 cm⁻¹. `shape` (with heights: `n_ir_active`, `apt_source`,
 `hessian_source`, `broadening`, `method`, `max_dev_from_listed_cm`; else null). `predicted_spectrum`: null until a mode family is licensed (rung 3).
+Since 10 Oct 2026 (TASKS 45), on pages with a carried anchor: `anchor_spectrum` (m08 `anchor_series`: sticks from the anchor's Hessian, heights from
+its own CC APT, else the B3LYP APT, else null; `level`, `apt_level`, sources), `comparison` (the cheap Hessian — analytic where it exists — with the
+anchor's APT: `cheap` sticks, `spectrum_overlap`, `freq_rms_cm`) and `test_prediction` (the network's leave-one-anchor-out series from T3's
+`--save-fold-predictions` files, all three seeds or null; labelled a test, never a served prediction). Summary: `n_anchor_spectra`.
 
 ## `changelog.json`
 

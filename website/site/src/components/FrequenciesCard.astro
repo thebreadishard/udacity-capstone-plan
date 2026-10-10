@@ -1,0 +1,25 @@
+---
+// The cheap level's positions: both functionals as a stick chart and as a table (with the B3LYP band heights when the molecule has them).
+// Leads the page when nothing better exists (no anchor, no heights); otherwise it sits below the lead card (TASKS 44–45, 10 Oct 2026).
+import Spectrum from './Spectrum.astro';
+interface Row { i: number; b3lyp: number; wb97x: number; shift: number; km: number | null }
+const { name, rows, b3lyp, wb97x, hasHeights, lead = false } = Astro.props as { name: string; rows: Row[]; b3lyp: number[]; wb97x: number[]; hasHeights: boolean; lead?: boolean };
+---
+<section class:list={['card', { first: lead }]}>
+  <h2>Harmonic frequencies at the cheap level <span class="muted small">(deck v1: B3LYP and ωB97X, 6-31G*, at the B3LYP geometry)</span></h2>
+  <p class="muted small">{rows.length} vibrational modes; imaginary modes negative. Shift = ωB97X − B3LYP{hasHeights ? '; height = B3LYP band height (km/mol)' : ''}.</p>
+  <Spectrum title={`Harmonic stick spectrum of ${name} at the cheap level`} series={[{ label: 'B3LYP', values: b3lyp }, { label: 'ωB97X', values: wb97x }]} />
+  <p class="muted small">{hasHeights
+    ? 'Positions of both functionals at unit height; the heights are in the spectrum above and in the table.'
+    : 'Band heights are not computed for this molecule yet (no dipole derivatives); positions only, at unit height. High wavenumbers on the left; the table below is the same data.'}</p>
+  <div class="tablewrap" tabindex="0" role="region" aria-label="Table of vibrational modes; scrolls horizontally">
+    <table>
+      <thead><tr><th>#</th><th class="num">B3LYP (cm⁻¹)</th>{hasHeights && <th class="num">height (km/mol)</th>}<th class="num">ωB97X (cm⁻¹)</th><th class="num">shift</th></tr></thead>
+      <tbody>{rows.map((r) => <tr><td class="num">{r.i}</td><td class="num">{r.b3lyp.toFixed(1)}</td>{hasHeights && <td class="num">{(r.km ?? 0).toFixed(2)}</td>}<td class="num">{r.wb97x.toFixed(1)}</td><td class="num">{r.shift >= 0 ? '+' : ''}{r.shift.toFixed(1)}</td></tr>)}</tbody>
+    </table>
+  </div>
+</section>
+<style>
+  .small { font-size: 0.9rem; }
+  .tablewrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+</style>

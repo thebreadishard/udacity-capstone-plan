@@ -29,6 +29,7 @@ PROXY_RECORDS = [f"modules/05_support_predictor/out/E7_rungC_chain34_eval_matche
 CC_RECORDS = [f"modules/05_support_predictor/out/T3_tz_intensity_matched_c34_seed{s}_2026-10-09.json" for s in range(3)]
 BENZENE = "A_8448043181"
 ANCHORS_STATUS = M05 / "out" / "ANCHORS_STATUS.json"
+TEST_SEEDS = 3                        # the carried model's three seeds: the test band needs all of them
 CC_APT = "apt_ccsd_t.npz"            # the CC APT an anchor run stores beside its Hessian (cc_dipole_capture, 3 Oct 2026)
 CC_COLUMN = "network_head_l2"       # the TZ-tier standard: head-tuned with the L2 pull λ = 1 (amendment (A), 7 Oct 2026; m05 `fit_mode`).
                                     # 10 Oct 2026: the first version read 'network_head' (λ = 0) and quoted 0.59 instead of 0.37.
@@ -49,11 +50,11 @@ def _geometry(mid: str) -> dict:
     return json.load(open(CORPUS / mid / "geometry.json", encoding="utf-8"))
 
 
-def series(hessian: Path, masses: np.ndarray, apt: Path | None) -> dict:
-    """One spectrum from a projected Cartesian Hessian file and, when given, an APT file: sticks sorted by position with heights in km/mol, or
-    positions only (km_mol None) without an APT. The sources travel with it."""
+def series(hessian: Path, masses: np.ndarray, apt: Path | None, H: np.ndarray | None = None) -> dict:
+    """One spectrum from a projected Cartesian Hessian (the file, or `H` in memory with the file as its named source) and, when given, an APT
+    file: sticks sorted by position with heights in km/mol, or positions only (km_mol None) without an APT. The sources travel with it."""
     ri = _ri()
-    H = np.load(hessian)["H_projected"]
+    H = np.load(hessian)["H_projected"] if H is None else H
     P = np.asarray(np.load(apt)["apt"], float) if apt is not None else np.zeros((3, H.shape[0]))
     freq, inten = ri.mode_intensities(H, masses, P)
     order = np.argsort(freq)
@@ -111,6 +112,33 @@ def anchor_series(mid: str) -> dict | None:
     return dict(s, level=e["level"], tier=e.get("tier"), apt_level=apt_level, registry_sha16=e.get("sha16"))
 
 
+def _overlap(a: list[dict], b: list[dict]) -> float:
+    ri = _ri()
+    grid = np.arange(GRID[0], GRID[1], 1.0)
+    cur = lambda s: ri.broadened(np.array([x["omega_cm"] for x in s]), np.array([x["km_mol"] for x in s]), grid, FWHM)   # noqa: E731
+    return round(float(ri.cosine(cur(a), cur(b))), 3)
+
+
+def test_prediction(mid: str, anchor: dict) -> dict | None:
+    """The network's leave-one-anchor-out prediction for an anchor (TASKS 45): per seed, the fold's low level + its predicted ΔH, with the
+    anchor's APT. Labelled a test, never a served prediction. None unless all TEST_SEEDS fold files exist (a run in progress never shows a
+    partial band) and the anchor has heights."""
+    files = sorted((M05 / "out").glob(f"T3_tz_folds_c34_seed*_fold_{mid}.npz"))
+    if len(files) != TEST_SEEDS or anchor.get("apt_source") is None:
+        return None
+    masses = np.asarray(_geometry(mid)["masses_amu"], float)
+    seeds = []
+    for f in files:
+        z = np.load(f)
+        s = series(f, masses, PLAN / anchor["apt_source"], H=z["H_low"] + z["dH_pred"])
+        seeds.append(dict(file=_rel(f), mode=str(z["mode"]), low_level=str(z["low_level"]), sticks=s["sticks"],
+                          spectrum_overlap=_overlap(s["sticks"], anchor["sticks"])))
+    ov = [s["spectrum_overlap"] for s in seeds]
+    return dict(label="test of the network, not a served prediction: the anchor was left out of the fine-tune (T3, chain 34's carried models, "
+                "head-tuned with λ = 1), so this is how the network does on a molecule it did not see at this level",
+                seeds=seeds, spectrum_overlap_mean=round(float(np.mean(ov)), 3), spectrum_overlap_range=[min(ov), max(ov)])
+
+
 def cheap_hessian(mid: str) -> Path:
     """The cheap Hessian of every coupled-cluster comparison: the analytic B3LYP where it exists, else the deck's finite differences."""
     a = CORPUS / mid / "hessian_b3lyp_analytic.npz"
@@ -120,16 +148,11 @@ def cheap_hessian(mid: str) -> Path:
 def comparison(mid: str, anchor: dict) -> dict:
     """The cheap Hessian with the anchor's own APT, so the two spectra differ only by the Hessian: its sticks, the spectrum overlap with the
     anchor (only with heights) and the rms of the sorted frequencies."""
-    ri = _ri()
     apt = PLAN / anchor["apt_source"] if anchor["apt_source"] else None
     c = series(cheap_hessian(mid), np.asarray(_geometry(mid)["masses_amu"], float), apt)
     fa = np.array([x["omega_cm"] for x in anchor["sticks"]]); fc = np.array([x["omega_cm"] for x in c["sticks"]])
     rms = round(float(np.sqrt(np.mean((fa - fc) ** 2))), 1) if len(fa) == len(fc) else None
-    overlap = None
-    if apt is not None:
-        grid = np.arange(GRID[0], GRID[1], 1.0)
-        cur = lambda s: ri.broadened(np.array([x["omega_cm"] for x in s]), np.array([x["km_mol"] for x in s]), grid, FWHM)   # noqa: E731
-        overlap = round(float(ri.cosine(cur(c["sticks"]), cur(anchor["sticks"]))), 3)
+    overlap = _overlap(c["sticks"], anchor["sticks"]) if apt is not None else None
     return dict(cheap=c, spectrum_overlap=overlap, freq_rms_cm=rms, note="the cheap Hessian with the anchor's dipole derivatives: the curves differ only by the Hessian")
 
 

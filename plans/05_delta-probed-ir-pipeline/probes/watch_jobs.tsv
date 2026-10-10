@@ -4,4 +4,3 @@
 CA	probes/results_m1/cation_analytic_2026-10-09.log	^=== \(CA\) |ANALYTIC FAILED	^=== \(CA\) (all 60|STOPPED)	[c]ation_analytic_all|[c]ations_after_fivering
 F5	probes/results_m1/fivering_laptop_2026-10-10.log	^=== \(F5\) |FAILED	^=== \(F5\) (laptop runner finished|STOP file|COPY FAILED|NO CANDIDATE)	[f]ivering_laptop_1015
 C40	probes/results_m1/chain40.log	^=== \(C40\) 	^=== \(C40\) (run done|RUN FAILED)	[c]hain_runner.py probes/runs/chain40
-T3F	probes/results_m1/t3_folds_2026-10-10.log	^=== \(T3F\) 	^=== \(T3F\) (run done|RUN FAILED)	[c]hain_runner.py probes/runs/t3_folds

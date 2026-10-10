@@ -1,15 +1,19 @@
 ---
-// Infrared spectrum with band heights (TASKS 44, design DESIGN_2026-10-10_Intensity_Chart.md §4–4a): Lorentzian-broadened curve (FWHM 10 cm⁻¹, the
-// read-out the project measures its accuracy with) and the sticks under it, drawn at their Lorentzian peak so stick and curve share one axis.
-// Static SVG at build time, two renders — a wide one (desktop, tablets) and a narrow one (phones, labels ≈ 12 px) — of which CSS shows one.
-// Degenerate partners arrive merged (the page sums bands within 1 cm⁻¹); IR-inactive bands (height 0) are not drawn.
-interface Band { omega: number; km: number }
-const { bands, title, min = 500, max = 3500 } = Astro.props as { bands: Band[]; title: string; min?: number; max?: number };
+// Infrared spectrum with band heights (TASKS 44–45, design DESIGN_2026-10-10_Intensity_Chart.md §4–4a, §9): the lead series as a Lorentzian curve
+// (FWHM 10 cm⁻¹, the read-out the project measures its accuracy with) with its sticks drawn at their Lorentzian peak; optionally a comparison series
+// (a lighter dashed curve, e.g. the cheap input under an anchor) and a test series (the network's leave-one-out prediction: the band between the
+// seeds' curves, shaded, with their mean dashed). Static SVG, three renders — wide, medium, narrow — of which the card's own width shows one.
+import type { Band } from '../lib/bands';
+interface Props { bands: Band[]; title: string; compare?: Band[]; test?: Band[][]; leadLabel?: string; compareLabel?: string; testLabel?: string; min?: number; max?: number }
+const { bands, title, compare = [], test = [], leadLabel = 'spectrum', compareLabel = 'comparison', testLabel = 'test series', min = 500, max = 3500 } = Astro.props as Props;
 const HWHM = 5;
 const peak = (km: number) => km / (Math.PI * HWHM);                          // a Lorentzian's height at its centre, per cm⁻¹
-const shown = bands.filter((b) => b.km > 0 && b.omega >= min && b.omega <= max);
-const curveAt = (w: number) => shown.reduce((s, b) => s + (b.km / Math.PI) * HWHM / ((w - b.omega) ** 2 + HWHM ** 2), 0);
-const yMax = Math.max(1e-9, ...shown.map((b) => peak(b.km))) * 1.08;
+const inWin = (bs: Band[]) => bs.filter((b) => b.km > 0 && b.omega >= min && b.omega <= max);
+const lead = inWin(bands), cmp = inWin(compare), tests = test.map(inWin);
+const curve = (bs: Band[]) => (w: number) => bs.reduce((s, b) => s + (b.km / Math.PI) * HWHM / ((w - b.omega) ** 2 + HWHM ** 2), 0);
+const leadAt = curve(lead), cmpAt = curve(cmp), testAt = tests.map(curve);
+const allBands = [lead, cmp, ...tests].flat();
+const yMax = Math.max(1e-9, ...allBands.map((b) => peak(b.km))) * 1.08;
 function nice(v: number) { const p = 10 ** Math.floor(Math.log10(v)); const m = v / p; return (m >= 5 ? 5 : m >= 2 ? 2 : 1) * p; }
 const yStep = nice(yMax / 3);
 const yTicks = [] as number[];
@@ -20,23 +24,31 @@ function render(W: number, H: number, font: number, tick: number, microns: numbe
   const y = (v: number) => H - padB - (H - padT - padB) * v / yMax;
   const ticks = [] as number[];
   for (let t = Math.ceil(min / tick) * tick; t <= max; t += tick) ticks.push(t);
-  const step = (max - min) / ((W - padL - padR) * 2);                         // two samples per pixel of the plot area
-  const ws = [] as number[];                                                  // the grid plus every band centre, so each peak reaches its stick
+  const step = (max - min) / ((W - padL - padR) * 2);                         // two samples per pixel, plus every band centre so peaks reach their sticks
+  const ws = [] as number[];
   for (let w = max; w >= min; w -= step) ws.push(w);
-  ws.push(...shown.map((b) => b.omega));
+  ws.push(...allBands.map((b) => b.omega));
   ws.sort((a, b) => b - a);
-  const d = ws.map((w, k) => `${k ? 'L' : 'M'}${x(w).toFixed(1)} ${y(curveAt(w)).toFixed(1)}`).join('');
-  return { W, H, font, padL, padR, padT, padB, x, y, ticks, d, microns: microns.filter((m) => 1e4 / m >= min + 0.04 * (max - min) && 1e4 / m <= max) };   // no label cut at the right edge
+  const path = (f: (w: number) => number) => ws.map((w, k) => `${k ? 'L' : 'M'}${x(w).toFixed(1)} ${y(f(w)).toFixed(1)}`).join('');
+  let envelope = '';
+  if (testAt.length) {
+    const lo = ws.map((w) => Math.min(...testAt.map((f) => f(w)))), hi = ws.map((w) => Math.max(...testAt.map((f) => f(w))));
+    envelope = ws.map((w, k) => `${k ? 'L' : 'M'}${x(w).toFixed(1)} ${y(hi[k]).toFixed(1)}`).join('')
+      + [...ws].reverse().map((w, k) => `L${x(w).toFixed(1)} ${y(lo[ws.length - 1 - k]).toFixed(1)}`).join('') + 'Z';
+  }
+  const testMean = testAt.length ? path((w) => testAt.reduce((s, f) => s + f(w), 0) / testAt.length) : '';
+  return { W, H, font, padL, padR, padT, padB, x, y, ticks, lead: path(leadAt), cmp: cmp.length ? path(cmpAt) : '', envelope, testMean,
+           microns: microns.filter((m) => 1e4 / m >= min + 0.04 * (max - min) && 1e4 / m <= max) };   // no label cut at the right edge
 }
 const wide = render(620, 250, 12.5, 500, [3, 4, 5, 6, 8, 10, 15, 20]);   // ≥ 11 px labels from a 1024 px desktop column to a tablet's full width
-const narrow = render(360, 240, 13, 1000, [3, 5, 10, 20]);   // ≈ 11 px labels at a 375 px phone's card width
-const medium = render(480, 240, 12, 500, [3, 4, 5, 6, 8, 10, 15, 20]);   // 10 Oct: a 1024 px desktop's column is 512 px wide
-const strongest = shown.reduce((a, b) => (b.km > a.km ? b : a), shown[0] ?? { omega: 0, km: 0 });
-const summaryLine = shown.length
-  ? `${shown.length} infrared-active bands (${min}–${max} cm⁻¹); the strongest at ${strongest.omega.toFixed(0)} cm⁻¹ (${(1e4 / strongest.omega).toFixed(1)} µm), ${strongest.km.toFixed(0)} km/mol.`
+const medium = render(480, 240, 12, 500, [3, 4, 5, 6, 8, 10, 15, 20]);    // a 1024 px desktop's column is 512 px wide
+const narrow = render(360, 240, 13, 1000, [3, 5, 10, 20]);                 // ≈ 11 px labels at a 375 px phone's card width
+const strongest = lead.reduce((a, b) => (b.km > a.km ? b : a), lead[0] ?? { omega: 0, km: 0 });
+const summaryLine = lead.length
+  ? `${lead.length} infrared-active bands (${min}–${max} cm⁻¹); the strongest at ${strongest.omega.toFixed(0)} cm⁻¹ (${(1e4 / strongest.omega).toFixed(1)} µm), ${strongest.km.toFixed(0)} km/mol.`
   : `No infrared-active bands between ${min} and ${max} cm⁻¹.`;
-const desc = shown.length
-  ? `${shown.length} infrared-active bands between ${min} and ${max} per centimetre; the strongest at ${strongest.omega.toFixed(0)} per centimetre (${(1e4 / strongest.omega).toFixed(1)} micrometre), ${strongest.km.toFixed(0)} kilometres per mole.`
+const desc = lead.length
+  ? `${lead.length} infrared-active bands between ${min} and ${max} per centimetre; the strongest at ${strongest.omega.toFixed(0)} per centimetre (${(1e4 / strongest.omega).toFixed(1)} micrometre), ${strongest.km.toFixed(0)} kilometres per mole.`
   : 'No infrared-active bands in this window.';
 ---
 <figure class="irspec">
@@ -48,14 +60,17 @@ const desc = shown.length
         {yTicks.map((t) => <g><line x1={r.padL} x2={r.W - r.padR} y1={r.y(t)} y2={r.y(t)} stroke="currentColor" stroke-opacity="0.08" /><text x={r.padL - 4} y={r.y(t) + 4} text-anchor="end">{t >= 10 ? t.toFixed(0) : t.toFixed(1)}</text></g>)}
         <text x={(r.padL + r.W - r.padR) / 2} y={r.H - 4} text-anchor="middle">wavenumber (cm⁻¹)</text>
       </g>
+      {r.envelope && <path d={r.envelope} fill="#009E73" fill-opacity="0.22" stroke="none" />}
+      {r.testMean && <path d={r.testMean} fill="none" stroke="#009E73" stroke-width="1.4" stroke-dasharray="4 3" />}
+      {r.cmp && <path d={r.cmp} fill="none" stroke="currentColor" stroke-opacity="0.45" stroke-width="1.2" stroke-dasharray="2 2" />}
       <g stroke="#D55E00" stroke-width="1.2">
-        {shown.map((b) => <line x1={r.x(b.omega)} x2={r.x(b.omega)} y1={r.y(0)} y2={r.y(peak(b.km))} />)}
+        {lead.map((b) => <line x1={r.x(b.omega)} x2={r.x(b.omega)} y1={r.y(0)} y2={r.y(peak(b.km))} />)}
       </g>
-      <path d={r.d} fill="none" stroke="#0072B2" stroke-width="1.6" />
+      <path d={r.lead} fill="none" stroke="#0072B2" stroke-width="1.6" />
       <line x1={r.padL} x2={r.W - r.padR} y1={r.H - r.padB} y2={r.H - r.padB} stroke="currentColor" stroke-opacity="0.5" />
     </svg>
   ))}
-  <figcaption class="small">{summaryLine} <span class="muted">Curve: Lorentzian, FWHM 10 cm⁻¹ (blue); sticks: band heights at the curve's peak scale (orange); axis in km mol⁻¹ per cm⁻¹.</span></figcaption>
+  <figcaption class="small">{summaryLine} <span class="muted">{leadLabel}: blue curve, sticks orange at the curve's peak scale{cmp.length ? `; ${compareLabel}: grey dashed` : ''}{tests.length ? `; ${testLabel}: green band between its ${tests.length} seeds, mean dashed` : ''}. Lorentzian, FWHM 10 cm⁻¹; axis in km mol⁻¹ per cm⁻¹.</span></figcaption>
 </figure>
 <style>
   .irspec { margin: 0; color: var(--fg); }

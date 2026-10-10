@@ -1,18 +1,21 @@
 ---
 // Molecule page (design §4.3): header, spectrum, depiction, status ladder, frequency tables, provenance.
-// 10 Oct 2026 (TASKS 44, DESIGN_2026-10-10_Intensity_Chart.md §4a): the spectrum card comes first — with band heights where the molecule has dipole
-// derivatives, otherwise the positions chart in the same place — so phones and portrait tablets see it in the first screen (it started 1,427 px
-// down on a 375 px phone); on desktop it heads the right column. One DOM: the card is the first child of .cols, placed by grid on wide screens.
+// 10 Oct 2026 (TASKS 44–45, DESIGN_2026-10-10_Intensity_Chart.md §4a, §9): the page leads with the best spectrum it has — the anchor's (rung 4–5),
+// else the cheap level's with band heights, else the cheap positions — so phones and portrait tablets see it in the first screen (it started
+// 1,427 px down on a 375 px phone); on desktop it heads the right column. One DOM: the lead card is the first child of .cols, placed by grid on
+// wide screens; the cards are components so no card is written twice.
 import fs from 'node:fs';
 import path from 'node:path';
 import Base from '../../layouts/Base.astro';
-import Spectrum from '../../components/Spectrum.astro';
-import IRSpectrum from '../../components/IRSpectrum.astro';
+import AnchorSpectrumCard from '../../components/AnchorSpectrumCard.astro';
+import CheapSpectrumCard from '../../components/CheapSpectrumCard.astro';
+import FrequenciesCard from '../../components/FrequenciesCard.astro';
 import Viewer3D from '../../components/Viewer3D.astro';
 import catalog from '../../../../export/out/catalog.json';
 import summary from '../../../../export/out/summary.json';
 import { withBase } from '../../lib/base';
 import { describeFlags } from '../../lib/flags';
+import { mergeBands, sticksFrom } from '../../lib/bands';
 
 export async function getStaticPaths() {
   return catalog.filter((r) => r.rung >= 1).map((r) => ({ params: { id: r.id }, props: { row: r } }));
@@ -27,16 +30,8 @@ const reached = (i) => i <= row.rung && !(i === 2 || i === 3);   // rungs 2–3 
 const vib = mol.frequencies_cm;
 const heights = mol.intensities_km_mol?.b3lyp ?? null;
 const rows = vib.b3lyp.vibrational.map((f, i) => ({ i: i + 1, b3lyp: f, wb97x: vib.wb97x.vibrational[i], shift: vib.wb97x.vibrational[i] - f, km: heights ? heights[i] : null }));
-// bands for the drawn spectrum: degenerate partners (within 1 cm⁻¹ of the previous) summed; bands under 0.5 % of the strongest are not infrared-active
-const merged = [];
-for (const r of [...rows].sort((a, b) => a.b3lyp - b.b3lyp)) {
-  if (!heights) break;
-  const last = merged[merged.length - 1];
-  if (last && r.b3lyp - last.omega <= 1.0) last.km += r.km; else merged.push({ omega: r.b3lyp, km: r.km });
-}
-const kmMax = merged.reduce((m, b) => Math.max(m, b.km), 0);
-const bands = merged.filter((b) => b.km >= 0.005 * kmMax);
-const acc = summary.shape_accuracy;
+const cheapBands = heights ? mergeBands(sticksFrom(vib.b3lyp.vibrational, heights)) : null;
+const lead = mol.anchor_spectrum ? 'anchor' : heights ? 'cheap' : 'positions';
 const repo = 'https://github.com/thebreadishard/udacity-capstone-plan/blob/master/plans/05_delta-probed-ir-pipeline/';
 const notifyTitle = encodeURIComponent(`Notify me: ${row.name} (${row.id})`);
 const notifyBody = encodeURIComponent(`Please notify me when ${row.name} (${row.id}) has a predicted or anchored spectrum.
@@ -54,42 +49,9 @@ const notifyHref = `https://github.com/thebreadishard/spectrum-atlas/issues/new?
   </header>
 
   <div class="cols">
-    {heights ? (
-      <section class="card first">
-        <h2>Infrared spectrum at the cheap level <span class="muted small">(B3LYP/6-31G*, the pipeline's input)</span></h2>
-        <IRSpectrum bands={bands} title={`Infrared spectrum of ${row.name} at the cheap level (B3LYP)`} />
-        <p class="muted small">Band heights from the molecule's dipole derivatives and the same B3LYP Hessian as the positions below (double harmonic).
-          <strong>Predicted spectrum</strong> (rung 3, the learned correction): — not licensed yet; it will appear here as a band over the model's seeds.</p>
-        {acc && (
-          <details class="acc" open>
-            <summary>How well is this shape known?</summary>
-            <table>
-              <thead><tr><th>measured on</th><th class="num">spectrum overlap<br />cheap → corrected</th><th class="num">height error<br />cheap → corrected</th></tr></thead>
-              <tbody>
-                <tr><td>10 unseen molecules, DFT stand-in for the higher level</td><td class="num">{acc.proxy.cheap.spectrum_overlap.toFixed(2)} → {acc.proxy.corrected.spectrum_overlap.toFixed(2)}</td><td class="num">{acc.proxy.cheap.intensity_error.toFixed(2)} → {acc.proxy.corrected.intensity_error.toFixed(2)}</td></tr>
-                <tr><td>benzene against CCSD(T)/cc-pVTZ</td><td class="num">{acc.cc.cheap.spectrum_overlap.toFixed(2)} → {acc.cc.corrected.spectrum_overlap.toFixed(2)}</td><td class="num">not testable (symmetry)</td></tr>
-              </tbody>
-            </table>
-            <p class="muted small">Overlap: similarity of the two broadened spectra (1 = the same shape). Height error: relative error per band, weighted by
-              height (0 = the same heights). "Corrected" is measured but not served until a mode family is licensed. Open: the dipole derivatives
-              themselves are computed at the cheap level (on benzene they differ from coupled cluster by about 20 %).</p>
-          </details>
-        )}
-      </section>
-    ) : (
-      <section class="card first">
-        <h2>Harmonic frequencies at the cheap level <span class="muted small">(deck v1: B3LYP and ωB97X, 6-31G*, at the B3LYP geometry)</span></h2>
-        <p class="muted small">{rows.length} vibrational modes; imaginary modes negative. Shift = ωB97X − B3LYP. The corrected spectrum (rung 3) will appear here as a band with its ensemble spread.</p>
-        <Spectrum title={`Harmonic stick spectrum of ${row.name} at the cheap level`} series={[{ label: 'B3LYP', values: vib.b3lyp.vibrational }, { label: 'ωB97X', values: vib.wb97x.vibrational }]} />
-        <p class="muted small">Band heights are not computed for this molecule yet (no dipole derivatives); positions only, at unit height. High wavenumbers on the left; the table below is the same data.</p>
-        <div class="tablewrap" tabindex="0" role="region" aria-label="Table of vibrational modes; scrolls horizontally">
-          <table>
-            <thead><tr><th>#</th><th class="num">B3LYP (cm⁻¹)</th><th class="num">ωB97X (cm⁻¹)</th><th class="num">shift</th></tr></thead>
-            <tbody>{rows.map((r) => <tr><td class="num">{r.i}</td><td class="num">{r.b3lyp.toFixed(1)}</td><td class="num">{r.wb97x.toFixed(1)}</td><td class="num">{r.shift >= 0 ? '+' : ''}{r.shift.toFixed(1)}</td></tr>)}</tbody>
-          </table>
-        </div>
-      </section>
-    )}
+    {lead === 'anchor' && <AnchorSpectrumCard name={row.name} anchor={mol.anchor_spectrum} comparison={mol.comparison} test={mol.test_prediction} validated={row.rung === 5} />}
+    {lead === 'cheap' && <CheapSpectrumCard name={row.name} bands={cheapBands} acc={summary.shape_accuracy} lead />}
+    {lead === 'positions' && <FrequenciesCard name={row.name} rows={rows} b3lyp={vib.b3lyp.vibrational} wb97x={vib.wb97x.vibrational} hasHeights={false} lead />}
     <aside class="side">
       <section class="card">
         <h2>Structure</h2>
@@ -117,20 +79,8 @@ const notifyHref = `https://github.com/thebreadishard/spectrum-atlas/issues/new?
     </aside>
 
     <div class="mainc">
-      {heights && (
-        <section class="card">
-          <h2>Harmonic frequencies at the cheap level <span class="muted small">(deck v1: B3LYP and ωB97X, 6-31G*, at the B3LYP geometry)</span></h2>
-          <p class="muted small">{rows.length} vibrational modes; imaginary modes negative. Shift = ωB97X − B3LYP; height = B3LYP band height (km/mol).</p>
-          <Spectrum title={`Harmonic stick spectrum of ${row.name} at the cheap level`} series={[{ label: 'B3LYP', values: vib.b3lyp.vibrational }, { label: 'ωB97X', values: vib.wb97x.vibrational }]} />
-          <p class="muted small">Positions of both functionals at unit height; the heights are in the spectrum above and in the table.</p>
-          <div class="tablewrap" tabindex="0" role="region" aria-label="Table of vibrational modes; scrolls horizontally">
-            <table>
-              <thead><tr><th>#</th><th class="num">B3LYP (cm⁻¹)</th><th class="num">height (km/mol)</th><th class="num">ωB97X (cm⁻¹)</th><th class="num">shift</th></tr></thead>
-              <tbody>{rows.map((r) => <tr><td class="num">{r.i}</td><td class="num">{r.b3lyp.toFixed(1)}</td><td class="num">{r.km.toFixed(2)}</td><td class="num">{r.wb97x.toFixed(1)}</td><td class="num">{r.shift >= 0 ? '+' : ''}{r.shift.toFixed(1)}</td></tr>)}</tbody>
-            </table>
-          </div>
-        </section>
-      )}
+      {lead === 'anchor' && heights && <CheapSpectrumCard name={row.name} bands={cheapBands} acc={summary.shape_accuracy} />}
+      {lead !== 'positions' && <FrequenciesCard name={row.name} rows={rows} b3lyp={vib.b3lyp.vibrational} wb97x={vib.wb97x.vibrational} hasHeights={!!heights} />}
       {mol.second_route && (
         <section class="card">
           <h2>Second route</h2>
@@ -143,9 +93,11 @@ const notifyHref = `https://github.com/thebreadishard/spectrum-atlas/issues/new?
           <li>Releases: {row.releases.length ? row.releases.join(', ') : 'none yet'}</li>
           <li>Entered the corpus as: {row.source} (layer {row.layer})</li>
           {row.anchor_level && <li>Coupled-cluster anchor: {row.anchor_level}</li>}
+          {mol.anchor_spectrum && <li>Anchor spectrum: Hessian {mol.anchor_spectrum.hessian_source.split('/').pop()}{mol.anchor_spectrum.apt_source && <>, dipole derivatives <a href={repo + mol.anchor_spectrum.apt_source}>{mol.anchor_spectrum.apt_source.split('/').pop()}</a></>}</li>}
+          {mol.test_prediction && <li>Network test series: {mol.test_prediction.seeds.map((s) => s.file.split('/').pop()).join(', ')}</li>}
           {mol.ledger && <li>Run: {mol.ledger.machine}, {mol.ledger.start} → {mol.ledger.end}, {Number(mol.ledger.seconds_total).toFixed(0)} s, peak {mol.ledger.peak_rss_gb} GB, deck {mol.ledger.deck}</li>}
           <li>Imaginary modes: B3LYP {mol.n_imaginary.b3lyp}, ωB97X {mol.n_imaginary.wb97x}</li>
-          {mol.shape && <li>Band heights: dipole derivatives <a href={repo + mol.shape.apt_source}>{mol.shape.apt_source.split('/').pop()}</a>, Hessian {mol.shape.hessian_source.split('/').pop()}</li>}
+          {mol.shape && <li>Cheap-level band heights: dipole derivatives <a href={repo + mol.shape.apt_source}>{mol.shape.apt_source.split('/').pop()}</a>, Hessian {mol.shape.hessian_source.split('/').pop()}</li>}
           <li>Source files: <a href={repo + 'modules/05_support_predictor/corpus/'}>corpus factory</a> · <a href={repo + 'modules/05_support_predictor/corpus/manifest.csv'}>manifest</a></li>
         </ul>
       </section>
@@ -158,13 +110,13 @@ const notifyHref = `https://github.com/thebreadishard/spectrum-atlas/issues/new?
   .formula { font-size: 0.7em; margin-left: 8px; }
   .ids span { word-break: break-all; }
   .small { font-size: 0.9rem; }
-  /* One column below 1024 px: the spectrum card (first child) leads, then the side cards, then the rest (10 Oct 2026). */
+  /* One column below 1024 px: the lead card (first child) leads, then the side cards, then the rest (10 Oct 2026). The lead card is a component,
+     so its class is matched with :global() — a scoped selector would not reach a child component's element. */
   .cols { display: grid; grid-template-columns: 1fr; gap: var(--space-4); align-items: start; }
-  /* From 1024 px: the 2:3 columns; the spectrum card heads the right column, the side column spans both rows. */
   @media (min-width: 1024px) {
     .cols { grid-template-columns: minmax(300px, 2fr) 3fr; }
     .cols > .side { grid-column: 1; grid-row: 1 / span 2; }
-    .cols > .first { grid-column: 2; grid-row: 1; }
+    .cols > :global(.first) { grid-column: 2; grid-row: 1; }
     .cols > .mainc { grid-column: 2; grid-row: 2; }
   }
   .side, .mainc { display: grid; gap: var(--space-4); }
@@ -172,10 +124,6 @@ const notifyHref = `https://github.com/thebreadishard/spectrum-atlas/issues/new?
   .steps { list-style: none; padding: 0; margin: 0; display: grid; gap: 6px; }
   .steps .off { color: var(--fg-muted); }
   .steps .mark { color: var(--accent); }
-  .tablewrap { overflow-x: auto; }
-  .acc { margin-top: var(--space-3); }
-  .acc summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
-  .acc table { width: 100%; font-size: 0.9rem; }
   /* tablets (addendum 27 Sep 2026) */
   @media (min-width: 768px) and (max-width: 1023px) {
     .cols { gap: var(--space-6); }
@@ -191,7 +139,5 @@ const notifyHref = `https://github.com/thebreadishard/spectrum-atlas/issues/new?
   @media (min-width: 768px) and (max-width: 1279px) {
     .steps { gap: 10px; }
     .steps li { min-height: 32px; }
-    .tablewrap { -webkit-overflow-scrolling: touch; }
   }
-  @media (max-width: 767px) { .acc:not([open]) { margin-top: var(--space-2); } }
 </style>

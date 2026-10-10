@@ -36,6 +36,24 @@ def test_heights_for_benzene_aligned_and_none_for_naphthalene(built):
     assert summary["n_with_intensities"] >= 1 and summary["shape_accuracy"]["proxy"]["corrected"]["spectrum_overlap"] > 0.9
 
 
+def test_anchor_pages_carry_the_anchor_spectrum(built):
+    """TASKS 45 (10 Oct 2026): benzene's anchor spectrum has heights from its own CC APT and a comparison that reproduces T3's zero-rule overlap;
+    naphthalene's anchor is positions only; when T3's fold files exist, benzene's test series reproduces T3's own λ = 1 read (0.406/0.355/0.354)."""
+    out, summary = built
+    def read(name):
+        with open(os.path.join(out, "molecules", name), encoding="utf-8") as f:
+            return json.load(f)
+    b = read("A_8448043181.json")
+    assert b["anchor_spectrum"]["apt_level"].startswith("CCSD(T)") and abs(b["comparison"]["spectrum_overlap"] - 0.257) < 0.005
+    n = read("A_01f3186607.json")
+    assert n["anchor_spectrum"]["kind"] == "positions only" and n["comparison"]["spectrum_overlap"] is None and n["test_prediction"] is None
+    assert summary["n_anchor_spectra"] >= 2
+    tp = b["test_prediction"]
+    if tp is not None:
+        assert "not a served prediction" in tp["label"] and len(tp["seeds"]) == 3
+        assert abs(tp["spectrum_overlap_mean"] - 0.372) < 0.01                 # T3's own read of the λ = 1 column, a second route
+
+
 def test_heights_refused_when_positions_differ():
     sh = {"kind": "positions and heights", "sticks": [{"omega_cm": 100.0, "km_mol": 1.0}], "max_dev_from_listed_cm": 2.0}
     assert bc.heights_for(sh, [102.0]) is None

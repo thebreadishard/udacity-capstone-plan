@@ -1,0 +1,34 @@
+---
+// The cheap level's infrared spectrum with band heights (TASKS 44), labelled as the pipeline's input, with the measured accuracy of the shape and
+// the empty slot of the predicted series (rung 3, shown only when a mode family is licensed). Leads the page unless an anchor exists (TASKS 45).
+import IRSpectrum from './IRSpectrum.astro';
+import type { Band } from '../lib/bands';
+const { name, bands, acc, lead = false } = Astro.props as { name: string; bands: Band[]; acc: any; lead?: boolean };
+---
+<section class:list={['card', { first: lead }]}>
+  <h2>Infrared spectrum at the cheap level <span class="muted small">(B3LYP/6-31G*, the pipeline's input)</span></h2>
+  <IRSpectrum bands={bands} title={`Infrared spectrum of ${name} at the cheap level (B3LYP)`} leadLabel="cheap input (B3LYP)" />
+  <p class="muted small">Band heights from the molecule's dipole derivatives and the same B3LYP Hessian as the listed positions (double harmonic).
+    <strong>Predicted spectrum</strong> (rung 3, the learned correction): — not licensed yet; it will appear here as a band over the model's seeds.</p>
+  {acc && (
+    <details class="acc" open>
+      <summary>How well is this shape known?</summary>
+      <table>
+        <thead><tr><th>measured on</th><th class="num">spectrum overlap<br />cheap → corrected</th><th class="num">height error<br />cheap → corrected</th></tr></thead>
+        <tbody>
+          <tr><td>10 unseen molecules, DFT stand-in for the higher level</td><td class="num">{acc.proxy.cheap.spectrum_overlap.toFixed(2)} → {acc.proxy.corrected.spectrum_overlap.toFixed(2)}</td><td class="num">{acc.proxy.cheap.intensity_error.toFixed(2)} → {acc.proxy.corrected.intensity_error.toFixed(2)}</td></tr>
+          <tr><td>benzene against CCSD(T)/cc-pVTZ</td><td class="num">{acc.cc.cheap.spectrum_overlap.toFixed(2)} → {acc.cc.corrected.spectrum_overlap.toFixed(2)}</td><td class="num">not testable (symmetry)</td></tr>
+        </tbody>
+      </table>
+      <p class="muted small">Overlap: similarity of the two broadened spectra (1 = the same shape). Height error: relative error per band, weighted by
+        height (0 = the same heights). "Corrected" is measured but not served until a mode family is licensed. Open: the dipole derivatives
+        themselves are computed at the cheap level (on benzene they differ from coupled cluster by about 20 %).</p>
+    </details>
+  )}
+</section>
+<style>
+  .small { font-size: 0.9rem; }
+  .acc { margin-top: var(--space-3); }
+  .acc summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
+  .acc table { width: 100%; font-size: 0.9rem; }
+</style>

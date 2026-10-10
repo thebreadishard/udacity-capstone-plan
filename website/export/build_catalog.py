@@ -180,7 +180,7 @@ def build(repo, out, limit=None):
             if not os.path.exists(os.path.join(plan, f)):
                 raise SystemExit(f"evidence file missing for {k}: {f}")
     os.makedirs(os.path.join(out, "molecules"), exist_ok=True)
-    catalog = []; counts = {r: 0 for r in RUNGS}; layer_counts = {}; source_counts = {}; problems = []; n_heights = 0
+    catalog = []; counts = {r: 0 for r in RUNGS}; layer_counts = {}; source_counts = {}; problems = []; n_heights = 0; n_anchor_spectra = 0
     for r in manifest:
         mid = r["id"]; mdir = os.path.join(corpus, "molecules", mid)
         result_p = os.path.join(mdir, "result.json"); computed = r["status"] == "done" and os.path.exists(result_p)
@@ -212,7 +212,8 @@ def build(repo, out, limit=None):
             mol = dict(id=mid, name=r["name"], smiles=r["smiles"], formula=formula, layer=r["layer"], source=row["source"], n_atoms=N,
                        geometry=json.load(open(os.path.join(mdir, "geometry.json"), encoding="utf-8")), deck=res.get("deck"), timings_s=res.get("timings_s"),
                        energies=dict(b3lyp=res.get("e_b3lyp"), wb97x=res.get("e_wb97x")), n_imaginary=n_im, frequencies_cm={}, releases=releases.get(mid, []),
-                       ledger=ledger.get(mid), second_route=None, intensities_km_mol=None, shape=None, predicted_spectrum=None)
+                       ledger=ledger.get(mid), second_route=None, intensities_km_mol=None, shape=None, predicted_spectrum=None,
+                       anchor_spectrum=None, comparison=None, test_prediction=None)
             for tag in ("b3lyp", "wb97x"):
                 z = np.load(os.path.join(mdir, f"hessian_{tag}.npz")); fr = np.asarray(z["freq_cm"], float)
                 if len(fr) != 3 * N:
@@ -226,6 +227,13 @@ def build(repo, out, limit=None):
                 row["has_intensities"] = True; n_heights += 1
             elif sh.get("kind") == "positions and heights":
                 problems.append(f"{mid}: APT present but its positions do not match the listed ones ({sh.get('max_dev_from_listed_cm')} cm⁻¹)")
+            if mid in ANCHORED:                              # TASKS 45: the page leads with the best spectrum it has
+                an = shape_mod.anchor_series(mid)
+                if an is not None:
+                    mol["anchor_spectrum"] = an
+                    mol["comparison"] = shape_mod.comparison(mid, an)
+                    mol["test_prediction"] = shape_mod.test_prediction(mid, an)
+                    n_anchor_spectra += 1
             if os.path.exists(os.path.join(mdir, "analytic_check.json")):
                 chk = json.load(open(os.path.join(mdir, "analytic_check.json"), encoding="utf-8"))
                 mol["second_route"] = {tag: dict(max_abs_dfreq_cm=float(np.abs(np.array(v["freq_analytic"]) - np.array(v["freq_corpus"])).max()), dH_max=v["dH_max"]) for tag, v in chk.items()}
@@ -252,7 +260,7 @@ def build(repo, out, limit=None):
     json.dump(changelog, open(os.path.join(out, "changelog.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=0)
     summary = dict(built_utc=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), n_molecules=len(catalog), rung_counts=counts, layer_counts=layer_counts, source_counts=source_counts,
                    rungs=RUNGS, sources=dict(manifest=sha256(manifest_p), ledger=sha256(ledger_p)), releases=sorted({n for v in releases.values() for n in v}),
-                   n_changelog=len(changelog), n_with_intensities=n_heights, shape_accuracy=shape_mod.measured_accuracy())
+                   n_changelog=len(changelog), n_with_intensities=n_heights, n_anchor_spectra=n_anchor_spectra, shape_accuracy=shape_mod.measured_accuracy())
     json.dump(summary, open(os.path.join(out, "summary.json"), "w", encoding="utf-8"), indent=1)
     return summary
 

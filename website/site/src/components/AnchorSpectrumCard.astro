@@ -1,0 +1,35 @@
+---
+// The anchor's spectrum (TASKS 45, design §9): the best spectrum the page has, so it leads. Positions and mode shapes from the carried anchor
+// Hessian; heights from the anchor's own CC dipole derivatives, else the B3LYP ones (said), else positions only. The cheap Hessian is drawn with the
+// same dipole derivatives so the two curves differ only by the Hessian; the network's leave-one-out prediction is a labelled test series.
+import IRSpectrum from './IRSpectrum.astro';
+import Spectrum from './Spectrum.astro';
+import { mergeBands } from '../lib/bands';
+const { name, anchor, comparison, test, validated = false } = Astro.props as { name: string; anchor: any; comparison: any; test: any; validated?: boolean };
+const hasHeights = anchor.kind === 'positions and heights';
+const rung = validated ? 'rung 5, validated against laboratory bands' : 'rung 4, anchored';
+const aptNote = !hasHeights ? 'Band heights: not computed for this molecule yet (no dipole derivatives); positions only.'
+  : anchor.apt_level.startsWith('CCSD(T)') ? 'Band heights from the anchor\'s own coupled-cluster dipole derivatives.'
+  : 'Band heights from cheap-level (B3LYP) dipole derivatives: the positions and mode shapes are the anchor\'s, the dipole derivatives are not.';
+const cmpLine = `Compared with the cheap Hessian (B3LYP${comparison.cheap.hessian_source.endsWith('_analytic.npz') ? ', analytic' : ''}${hasHeights ? ', the same dipole derivatives' : ''}): `
+  + (comparison.spectrum_overlap != null ? `spectrum overlap ${comparison.spectrum_overlap.toFixed(2)}, ` : '')
+  + `frequency rms ${comparison.freq_rms_cm.toFixed(1)} cm⁻¹.`;
+const testBands = test ? test.seeds.map((s) => mergeBands(s.sticks)) : [];
+---
+<section class="card first">
+  <h2>Infrared spectrum at the anchor level <span class="muted small">({anchor.level}; {rung})</span></h2>
+  {hasHeights
+    ? <IRSpectrum bands={mergeBands(anchor.sticks)} compare={mergeBands(comparison.cheap.sticks)} test={testBands} title={`Infrared spectrum of ${name} at the anchor level`}
+        leadLabel="anchor" compareLabel="cheap Hessian" testLabel="network test (not served)" />
+    : <Spectrum title={`Positions of ${name}: anchor and cheap level`} series={[{ label: 'anchor', values: anchor.sticks.map((s) => s.omega_cm) }, { label: 'B3LYP', values: comparison.cheap.sticks.map((s) => s.omega_cm), dashed: true }]} />}
+  <p class="muted small">{aptNote} {cmpLine}</p>
+  {test && (
+    <p class="small"><strong>Test of the network, not a served prediction.</strong> This anchor was left out when the network was tuned to the coupled-cluster
+      anchors (T3, the carried model's three seeds), so the green band shows how the network does on a molecule it did not see at this level:
+      spectrum overlap with the anchor {test.spectrum_overlap_mean.toFixed(2)} ({test.spectrum_overlap_range[0].toFixed(2)}–{test.spectrum_overlap_range[1].toFixed(2)}
+      over the seeds){comparison.spectrum_overlap != null ? `, against ${comparison.spectrum_overlap.toFixed(2)} for the cheap Hessian` : ''}.</p>
+  )}
+</section>
+<style>
+  .small { font-size: 0.9rem; }
+</style>
