@@ -41,7 +41,13 @@ A now; C measured, then in the labels route if it is cheap; B only for what C do
 - **Default window 500–3500 cm⁻¹ (2.9–20 µm)**, the window of the interstellar bands; the full range in the table.
 - **Heights in km/mol** for the sticks (left axis); the curve shares that axis (Lorentzian peak height = A/(π · HWHM)), so the strongest band's peak and
   stick agree. IR-inactive modes have height zero and are not drawn; degenerate partners (within 1 cm⁻¹) are drawn as one stick with the summed height.
-- **B3LYP only for heights** (the APT is B3LYP); the ωB97X positions stay in the existing positions chart and table. *(Decision 2 below.)*
+- **The served heights are the cheap level's (B3LYP), labelled as the input** (decided 10 Oct 15:4x, §8.2); ωB97X heights are not made — ωB97X is the
+  pipeline's training stand-in, not what it delivers. Its positions stay in the existing positions chart and table.
+- **A slot for the predicted series (rung 3), built now, shown only when licensed.** Heights from *our prediction*: the corrected Hessian (B3LYP
+  + the learned ΔH towards CCSD(T), the carried model's seeds) gives new positions *and* new mode shapes, hence new heights, with the B3LYP APT
+  (the network does not predict the APT — the open ≈ 20 % term). Drawn as a band over the seeds with the mean as a line (design §4.3), and
+  marked whether the molecule was in the network's training set (a fitted molecule is not an out-of-sample prediction). The export writes the
+  series only for a licensed family; until then the slot stays empty and the page says '— not licensed yet' (module 08's rule, the ladder).
 - **Text summary** under the figure (WCAG): "7 infrared-active bands; the strongest at 695 cm⁻¹ (14.4 µm), 78 km/mol".
 - **Pages without an APT** keep today's unit-height chart with the line "Band heights are not computed for this molecule yet (no dipole
   derivatives); positions only" — never invented heights.
@@ -115,5 +121,7 @@ Route B: compute only, scheduled and priced when chosen.
 ## 8. Decisions for the user
 
 1. **Coverage:** A now, C measured next, B only for the rest (recommended) — or B at once for everything (≈ €107 or ≈ 43 laptop-days), or A only.
-2. **Heights for B3LYP only** (recommended; the APT is B3LYP) — or also ωB97X heights, which need a second APT per molecule.
+2. **Decided 10 Oct 15:4x** (the user asked whether the heights should use *our prediction* rather than the input; then 'Oké'): the served heights
+   are the cheap input's, labelled so; the predicted series (corrected Hessian + B3LYP APT, a band over the seeds, in-training marked) has its slot
+   built now and appears per family when licensed; no unlicensed preview; no ωB97X heights.
 3. **Default view:** broadened curve with sticks (recommended) — or sticks only with a toggle (the toggle needs a small JavaScript island).
