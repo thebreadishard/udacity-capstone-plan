@@ -161,7 +161,7 @@ pages, never on other molecules (there it would be an unlicensed prediction).
 anchored rung. Tests: benzene's anchor series has 4 bands with heights from the CC APT; naphthalene's is positions only; the comparison numbers
 equal a direct computation; a page without an anchor is unchanged.
 
-**Decisions for the user.**
+**Decisions for the user — taken 10 Oct 17:4x (the user: 'Advies is goed'): 1 anchor first, 2 the labelled test series, 3 benzonitrile with the B3LYP APT.**
 1. Lead with the anchor on the six anchor pages, cheap input as comparison (recommended) — or show both side by side as equals.
 2. The test series: include it, labelled, after the re-run (recommended) — or leave it out.
 3. Benzonitrile: heights with the B3LYP APT, labelled (recommended) — or positions only until a CC APT exists for it.
