@@ -1,0 +1,88 @@
+{
+ "probe": "TASKS 44 route C",
+ "limits": {
+  "vs_route_b": 0.0001,
+  "sum_rule": 0.0005,
+  "vs_fd": 0.001,
+  "hessian": 1e-05
+ },
+ "threads": 4,
+ "grid": [
+  99,
+  590
+ ],
+ "molecules": [
+  {
+   "dir": "probes/results_m1/water_dipole_fd_2026-10-02",
+   "atoms": 3,
+   "seconds": {
+    "scf": 1.1,
+    "hessian": 3.1,
+    "apt_contraction": 0.0
+   },
+   "sum_rule": 4.586256848737591e-07,
+   "apt_share_of_hessian": 0.0,
+   "vs_route_b": 1.1543929545609899e-07,
+   "km_vs_route_b": 3.0327089763915183e-05,
+   "route_b_seconds": 7,
+   "vs_fd": 1.2466143296141485e-05,
+   "checks": {
+    "vs_route_b": true,
+    "sum_rule": true,
+    "vs_fd": true
+   },
+   "passed": true,
+   "strongest_bands": [
+    [
+     1679.2,
+     79.52
+    ],
+    [
+     4000.1,
+     23.45
+    ],
+    [
+     3870.8,
+     2.48
+    ]
+   ]
+  },
+  {
+   "dir": "modules/05_support_predictor/corpus/molecules/A_8448043181",
+   "atoms": 12,
+   "seconds": {
+    "scf": 17.5,
+    "hessian": 464.7,
+    "apt_contraction": 0.0
+   },
+   "sum_rule": 0.00010592113921170654,
+   "apt_share_of_hessian": 0.0,
+   "vs_route_b": 4.7660984758834957e-07,
+   "km_vs_route_b": 1.6433170628715743e-06,
+   "route_b_seconds": 194,
+   "vs_fd": 0.0004353982242003007,
+   "hessian_vs_saved": 9.523937194444443e-12,
+   "checks": {
+    "vs_route_b": true,
+    "sum_rule": true,
+    "vs_fd": true,
+    "hessian": true
+   },
+   "passed": true,
+   "strongest_bands": [
+    [
+     694.9,
+     77.57
+    ],
+    [
+     3199.4,
+     52.0
+    ],
+    [
+     3199.4,
+     51.98
+    ]
+   ]
+  }
+ ]
+}

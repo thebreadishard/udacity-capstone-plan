@@ -8,48 +8,33 @@ pyscf's own `hess_elec` uses it: pyscf/hessian/rhf.py, exercised by pyscf/hessia
 dipole_<xc>_fd.npz exists — the finite-difference APT (water, 2 Oct: the two routes agree to the number printed). The index convention of `int1e_irp`
 was fixed against the FD route on water and is asserted here, not assumed.
 
+11 Oct 2026 (TASKS 44 route C): the contraction is `apt_from_mo1` in corpus/apt.py, shared with the labels route, which takes the response its
+own Hessian solves (`capture_mo1`) and so gets the APT without this script's second CPHF solve.
+
     python probes/dipole_derivs_cphf.py <dir with geometry.json> [--xc b3lyp] [--hessian hessian_b3lyp_analytic.npz] [--threads 8] [--check-fd dipole_b3lyp_fd.npz]
 """
 import argparse
 import json
+import os
 import sys
 import time
 
 import numpy as np
 from pyscf import dft, gto, lib
 
-sys.path.insert(0, __file__.rsplit("/", 1)[0] if "/" in __file__ else ".")
-from dipole_derivs_fd import intensities  # noqa: E402  (same intensity formula as the FD route)
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "modules", "05_support_predictor", "corpus"))
+from apt import apt_from_mo1, intensities, sum_rule  # noqa: E402  (one implementation, corpus/apt.py)
 
 
 def apt_cphf(mf, log=print):
     """Atomic polar tensor P[3, 3N] (∂μ_t/∂R_{A,x}, a.u.) from the CPHF response of a converged RKS object."""
-    mol = mf.mol
     t0 = time.time()
     hobj = mf.Hessian()
     mo_coeff, mo_occ, mo_energy = mf.mo_coeff, mf.mo_occ, mf.mo_energy
     h1ao = hobj.make_h1(mo_coeff, mo_occ)                       # (natm, 3, nao, nao): the Fock derivative incl. the xc response
     mo1s, _ = hobj.solve_mo1(mo_energy, mo_coeff, mo_occ, h1ao)  # mo1s[A]: (3, nao, nocc) = ∂C_occ/∂R_{A,x} in the AO basis
     log(f"  CPHF solved: {time.time() - t0:.0f} s")
-    mocc = mo_coeff[:, mo_occ > 0]
-    dm = mf.make_rdm1()
-    r = mol.intor("int1e_r", comp=3)                              # ⟨μ|r_t|ν⟩
-    irp = mol.intor("int1e_irp", comp=9).reshape(3, 3, mol.nao, mol.nao)   # derivative dipole integrals, two index orders possible → fixed below
-    Z = mol.atom_charges()
-    n = mol.natm
-    P = np.zeros((3, 3 * n))
-    aoslices = mol.aoslice_by_atom()
-    for A in range(n):
-        p0, p1 = aoslices[A, 2:]
-        for x in range(3):
-            dD = 2.0 * (mo1s[A][x] @ mocc.T)
-            dD = dD + dD.T
-            P[:, 3 * A + x] -= np.einsum("pq,tpq->t", dD, r)      # −Tr(∂D r)
-            # −Tr(D ∂r/∂R): the functions on A move; ∂⟨μ|r|ν⟩/∂R_A = −⟨∂μ|r|ν⟩ − ⟨μ|r|∂ν⟩ for μ, ν on A.  int1e_irp[t, x] = ⟨μ| r_t ∂_x |ν⟩ (checked on water)
-            blk = irp[:, x, :, p0:p1]                              # (3, nao, nA): ⟨μ| r_t ∂_x |ν⟩, ν on A
-            P[:, 3 * A + x] -= -2.0 * np.einsum("pq,tpq->t", dm[:, p0:p1], blk)   # both ⟨∂μ|r|ν⟩ and ⟨μ|r|∂ν⟩ by symmetry of D
-        P[:, 3 * A:3 * A + 3] += Z[A] * np.eye(3)
-    return P
+    return apt_from_mo1(mf, mo1s)
 
 
 def main() -> int:
@@ -85,8 +70,7 @@ def main() -> int:
     if not mf.converged:
         raise SystemExit("SCF not converged")
     P = apt_cphf(mf)
-    n = len(x0)
-    sr = float(np.abs(P.reshape(3, n, 3).sum(axis=1) - a.charge * np.eye(3)).max())
+    sr = sum_rule(P, a.charge)
     fd_diff = float("nan")
     if a.check_fd:
         fd_diff = float(np.abs(P - np.load(a.check_fd)["apt"]).max())

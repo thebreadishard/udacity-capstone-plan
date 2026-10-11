@@ -12,17 +12,15 @@ pyscf calls: `mf.dip_moment(unit='AU')` as in pyscf/scf/test/test_rhf.py (test_d
 """
 import argparse
 import json
+import os
 import sys
 import time
 
 import numpy as np
 from pyscf import dft, gto, lib
 
-AMU2AU = 1822.888486209
-HARTREE2CM = 219474.6313705
-# A_k [km/mol] = 974.8802 · |∂μ/∂Q_k|² with μ in e·bohr... the usual constant for (D/Å)²/amu is 42.2561 km/mol; in atomic units (e² bohr² / bohr² amu⁻¹
-# → e²/amu) the factor is 42.2561 × (2.541746 D/e·Å ... ) — written out: 1 e/√amu → (2.541746 D / 0.529177 Å)² × 42.2561 = 974.88 km/mol.
-KM_PER_MOL = 974.8802
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "modules", "05_support_predictor", "corpus"))
+from apt import intensities  # noqa: E402  (one implementation, corpus/apt.py, 11 Oct 2026: shared with the labels route)
 
 
 def dipole(mol, xc, grid, x, conv=1e-11, dm0=None):
@@ -56,17 +54,6 @@ def apt_fd(mol, xc, grid, x0, h, log=print):
             P[:, 3 * A + d] = (dipole(mol, xc, grid, xp, dm0=dm0)[0] - dipole(mol, xc, grid, xm, dm0=dm0)[0]) / (2 * h)
         log(f"  atom {A + 1}/{n} done, {time.time() - t0:.0f} s")
     return P
-
-
-def intensities(P, H_projected, masses):
-    """IR intensities (km/mol) of the vibrational modes of the projected Hessian from the APT."""
-    mm = np.repeat(masses * AMU2AU, 3)
-    Hm = H_projected / np.sqrt(np.outer(mm, mm))
-    w, L = np.linalg.eigh(Hm)
-    freq = np.sign(w) * np.sqrt(np.abs(w)) * HARTREE2CM
-    vib = np.abs(freq) > 20.0
-    dmu_dQ = P @ (L[:, vib] / np.sqrt(np.repeat(masses, 3))[:, None])          # e / √amu
-    return freq[vib], KM_PER_MOL * (dmu_dQ ** 2).sum(axis=0)
 
 
 def main() -> int:

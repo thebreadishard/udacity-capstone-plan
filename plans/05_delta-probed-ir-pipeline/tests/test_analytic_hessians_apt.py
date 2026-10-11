@@ -1,0 +1,53 @@
+"""The labels route's APT (11 Oct 2026, TASKS 44 route C): analytic_hessians.py writes dipole_b3lyp_cphf.npz from the response its B3LYP Hessian
+solves; it keeps an existing APT file, --no-apt turns it off, analytic_check.json keeps one entry per functional (the export reads it so), and a
+failed APT costs neither Hessian but ends with exit status 3. Water at a small grid; needs pyscf, so it runs in WSL and is skipped elsewhere."""
+import json
+import sys
+from pathlib import Path
+
+import numpy as np
+import pytest
+
+pytest.importorskip("pyscf")
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "modules" / "05_support_predictor" / "corpus"))
+import analytic_hessians as AH  # noqa: E402
+
+WATER = {"symbols": ["O", "H", "H"], "coords_bohr": [[0.0, 0.0, 0.2217], [0.0, 1.4309, -0.8867], [0.0, -1.4309, -0.8867]],
+         "masses_amu": [15.995, 1.008, 1.008]}
+
+
+def _run(tmp_path, monkeypatch, *args):
+    d = tmp_path / "water"
+    d.mkdir(exist_ok=True)
+    (d / "geometry.json").write_text(json.dumps(WATER))
+    monkeypatch.setattr(sys, "argv", ["analytic_hessians.py", str(d), "--threads", "1", "--grid", "50,194", *args])
+    AH.main()
+    return d
+
+
+def test_the_b3lyp_pass_writes_the_apt_and_the_check_file_keeps_its_shape(tmp_path, monkeypatch):
+    d = _run(tmp_path, monkeypatch)
+    z = np.load(d / AH.APT_FILE)
+    assert str(z["route"]) == "hessian_response" and bool(z["passed"]) and float(z["sum_rule_max"]) < AH.SUM_RULE_LIMIT
+    assert z["apt"].shape == (3, 9) and len(z["intensity_km_mol"]) == 3
+    assert set(json.loads((d / "analytic_check.json").read_text())) == {"b3lyp", "wb97x"}
+
+
+def test_an_existing_apt_file_is_kept_and_no_apt_writes_none(tmp_path, monkeypatch):
+    d = _run(tmp_path, monkeypatch)
+    before = (d / AH.APT_FILE).read_bytes()
+    _run(tmp_path, monkeypatch)
+    assert (d / AH.APT_FILE).read_bytes() == before
+    (d / AH.APT_FILE).unlink()
+    _run(tmp_path, monkeypatch, "--no-apt")
+    assert not (d / AH.APT_FILE).exists()
+
+
+def test_a_failed_apt_keeps_both_hessians_and_exits_3(tmp_path, monkeypatch):
+    monkeypatch.setattr(AH, "apt_from_mo1", lambda mf, mo1: np.ones((3, 9)))      # breaks the translation sum rule
+    with pytest.raises(SystemExit) as e:
+        _run(tmp_path, monkeypatch)
+    assert e.value.code == 3
+    d = tmp_path / "water"
+    assert (d / "hessian_b3lyp_analytic.npz").exists() and (d / "hessian_wb97x_analytic.npz").exists()
+    assert not bool(np.load(d / AH.APT_FILE)["passed"])
