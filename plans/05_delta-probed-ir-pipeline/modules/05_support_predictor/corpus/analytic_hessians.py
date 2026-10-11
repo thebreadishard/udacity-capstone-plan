@@ -17,7 +17,7 @@ import os
 import time
 
 import numpy as np
-from apt import apt_from_mo1, capture_mo1, intensities, sum_rule
+from apt import apt_from_mo1, hessian_with_response, intensities, sum_rule
 from pyscf import dft, gto, lib
 
 AMU2AU = 1822.888486209
@@ -92,8 +92,8 @@ def main():
                     if abs(s2 - s * (s + 1)) > 0.05: print(f"{d} {tag}: WARNING <S^2> = {s2:.3f}, expected {s * (s + 1):.3f} (spin contamination)", flush=True)
                 hobj = mf.Hessian()
                 want_apt = tag == "b3lyp" and not a.spin and not a.no_apt and not os.path.exists(f"{d}/{APT_FILE}")
-                captured = capture_mo1(hobj) if want_apt else None
-                H = hobj.kernel(); Hc = H.transpose(0, 2, 1, 3).reshape(3 * n, 3 * n); Hc = 0.5 * (Hc + Hc.T)
+                H, mo1 = hessian_with_response(hobj) if want_apt else (hobj.kernel(), None)
+                Hc = H.transpose(0, 2, 1, 3).reshape(3 * n, 3 * n); Hc = 0.5 * (Hc + Hc.T)
                 Hp = project_tr(Hc, masses, x)
             # frequencies from the projected Hessian by the corpus's own convention: a 3N-long list, imaginary modes negative, six ~0 entries.
             # (pyscf's harmonic_analysis drops a mode when an imaginary one falls in its trans/rot window — 62 instead of 63 entries on A2_3a2982dd85, 23 Sep.)
@@ -101,9 +101,9 @@ def main():
             if not a.compare_only:
                 np.savez_compressed(f"{d}/hessian_{tag}_analytic.npz", H_raw=Hc, H_projected=Hp, freq_cm=fr, energy=float(e), grid=np.array([rad, ang]),
                                     charge=a.charge, spin=a.spin, reference="UKS" if a.spin else "RKS")
-                if captured is not None:      # after the Hessian is on disk: an APT failure never costs the Hessian
+                if mo1 is not None:           # after the Hessian is on disk: an APT failure never costs the Hessian
                     try:
-                        print(f"{d} b3lyp: {write_apt(d, mf, captured['mo1'], Hp, masses, (rad, ang))}", flush=True)
+                        print(f"{d} b3lyp: {write_apt(d, mf, mo1, Hp, masses, (rad, ang))}", flush=True)
                     except Exception as exc:  # noqa: BLE001 — reported and turned into exit status 3 after both functionals
                         apt_errors.append(f"{d}: {exc}")
                         print(f"{d} b3lyp: APT FAILED: {exc}", flush=True)

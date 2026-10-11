@@ -1,11 +1,11 @@
 """TASKS 44 route C probe (11 Oct 2026): is the APT a by-product of the analytic Hessian? `corpus/analytic_hessians.py` (the labels route) solves
 the CPHF response ∂C_occ/∂R inside `mf.Hessian().kernel()`; `dipole_derivs_cphf.py` (route B) solves the same response again. This probe runs the
-labels route's B3LYP Hessian at its own settings with the response captured (`capture_mo1`), contracts it to the APT (`apt_from_mo1`, the one
+labels route's B3LYP Hessian at its own settings with the response kept (`hessian_with_response`), contracts it to the APT (`apt_from_mo1`, the one
 implementation route B uses too), and measures, per molecule:
   - cost: SCF, Hessian, and the extra contraction, in seconds;
   - two routes: the APT against route B's saved file (dipole_b3lyp_cphf.npz) and the finite-difference APT (dipole_b3lyp_fd.npz) where present,
     the translation sum rule, and the Hessian against the saved hessian_b3lyp_analytic.npz;
-  - the band heights (km/mol) from the captured APT against route B's.
+  - the band heights (km/mol) from this APT against route B's.
 Nothing is written into the molecule folders; one JSON per run goes to --out.
 
     python probes/apt_route_c_probe.py <dir with geometry.json> [more dirs] --out <file.json> [--threads 4] [--grid 99,590]
@@ -23,7 +23,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, "..", "modules", "05_support_predictor", "corpus"))
 from analytic_hessians import project_tr  # noqa: E402  (the labels route's own projector)
-from apt import apt_from_mo1, capture_mo1, intensities, sum_rule  # noqa: E402
+from apt import apt_from_mo1, hessian_with_response, intensities, sum_rule  # noqa: E402
 
 LIMITS = {"vs_route_b": 1e-4, "sum_rule": 5e-4, "vs_fd": 1e-3, "hessian": 1e-5}   # e, e, e, hartree/bohr² (route B's own limits; the
 # Hessian limit: the same call at the same settings, so only the SCF's convergence separates the two)
@@ -51,11 +51,9 @@ def probe(d, grid, log=print):
     if not mf.converged:
         raise RuntimeError(f"{d}: SCF not converged")
     t1 = time.time()
-    hobj = mf.Hessian()
-    captured = capture_mo1(hobj)
-    H = hobj.kernel()
+    H, mo1 = hessian_with_response(mf.Hessian())
     t2 = time.time()
-    P = apt_from_mo1(mf, captured["mo1"])
+    P = apt_from_mo1(mf, mo1)
     t3 = time.time()
     Hc = H.transpose(0, 2, 1, 3).reshape(3 * n, 3 * n)
     Hc = 0.5 * (Hc + Hc.T)

@@ -9,7 +9,7 @@ dipole_<xc>_fd.npz exists — the finite-difference APT (water, 2 Oct: the two r
 was fixed against the FD route on water and is asserted here, not assumed.
 
 11 Oct 2026 (TASKS 44 route C): the contraction is `apt_from_mo1` in corpus/apt.py, shared with the labels route, which takes the response its
-own Hessian solves (`capture_mo1`) and so gets the APT without this script's second CPHF solve.
+own Hessian solves (`hessian_with_response`) and so gets the APT without this script's second CPHF solve.
 
     python probes/dipole_derivs_cphf.py <dir with geometry.json> [--xc b3lyp] [--hessian hessian_b3lyp_analytic.npz] [--threads 8] [--check-fd dipole_b3lyp_fd.npz]
 """

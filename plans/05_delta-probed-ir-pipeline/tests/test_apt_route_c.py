@@ -13,7 +13,7 @@ from pyscf import dft, gto  # noqa: E402
 PLAN = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PLAN / "probes"))
 sys.path.insert(0, str(PLAN / "modules" / "05_support_predictor" / "corpus"))
-from apt import apt_from_mo1, capture_mo1, sum_rule  # noqa: E402
+from apt import apt_from_mo1, hessian_with_response, sum_rule  # noqa: E402
 from dipole_derivs_cphf import apt_cphf  # noqa: E402
 
 WATER = [("O", (0.0, 0.0, 0.2217)), ("H", (0.0, 1.4309, -0.8867)), ("H", (0.0, -1.4309, -0.8867))]
@@ -31,12 +31,11 @@ def mf():
     return m
 
 
-def test_captured_response_gives_route_b_apt_and_leaves_the_hessian_unchanged(mf):
+def test_the_kept_response_gives_route_b_apt_and_the_same_hessian(mf):
     hobj = mf.Hessian()
-    captured = capture_mo1(hobj)
-    H = hobj.kernel()
-    P_c = apt_from_mo1(mf, captured["mo1"])
+    H, mo1 = hessian_with_response(hobj)
+    P_c = apt_from_mo1(mf, mo1)
     P_b = apt_cphf(mf, log=lambda *_: None)
     assert np.abs(P_c - P_b).max() < 1e-6
     assert sum_rule(P_c) < 5e-4                                                          # translation sum rule, neutral molecule
-    assert np.abs(H - mf.Hessian().kernel()).max() < 1e-8
+    assert np.abs(H - mf.Hessian().kernel()).max() < 1e-8 and hobj.de is H                   # the same Hessian as kernel(), stored as kernel() stores it

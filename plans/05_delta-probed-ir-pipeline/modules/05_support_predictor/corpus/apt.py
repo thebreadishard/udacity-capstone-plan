@@ -6,7 +6,9 @@ script from a folder of its own, with this file copied next to it.
 ∂μ_t/∂R_{A,x} = Z_A δ_tx − Tr(∂D/∂R_{A,x} · r_t) − Tr(D · ∂r_t/∂R_{A,x}), with ∂C_occ/∂R from pyscf's `hessian.rhf.solve_mo1` (the occupied block
 included, as pyscf's own `hess_elec` uses it: pyscf/hessian/rhf.py, exercised by pyscf/hessian/test/test_rks.py) and ∂r/∂R from the derivative
 dipole integrals (`int1e_irp`, the basis functions on atom A); the index convention of `int1e_irp` was fixed against the FD route on water (2 Oct).
-Measured (11 Oct, `probes/apt_route_c_probe.py`): the captured response gives route B's APT to 4.8e-7 e on benzene, the contraction costs < 0.01 s
+The Hessian with its response kept (`hessian_with_response`) follows pyscf-properties' `pyscf/prop/infrared/rhf.py` (`proc_hessian_`): solve
+the response once and hand it to `hess_elec(mo1=, mo_e1=, h1ao=)`, the arguments pyscf's `hessian/rhf.py` `hess_elec` takes for this (2.14).
+Measured (11 Oct, `probes/apt_route_c_probe.py`): the kept response gives route B's APT to 4.8e-7 e on benzene, the contraction costs < 0.01 s
 against a 465 s Hessian; against finite differences 4.4e-4 e (benzene), 1.2e-5 e (water).
 """
 import numpy as np
@@ -17,20 +19,19 @@ HARTREE2CM = 219474.6313705
 KM_PER_MOL = 974.8802
 
 
-def capture_mo1(hobj):
-    """Keep the CPHF response a Hessian object solves: returns a dict that holds 'mo1' (as `solve_mo1` returns it) once `hobj.kernel()` has run.
-    pyscf 2.14's `hessian/rhf.py` `hess_elec` calls `hessobj.solve_mo1(...)` on the instance (line 59), so an instance attribute takes the call.
-    Closed shell only: a UKS Hessian returns an (alpha, beta) pair, which `apt_from_mo1` does not take."""
-    store = {}
-    solve = hobj.solve_mo1
-
-    def keep(*args, **kwargs):
-        mo1, e1 = solve(*args, **kwargs)
-        store["mo1"] = mo1
-        return mo1, e1
-
-    hobj.solve_mo1 = keep
-    return store
+def hessian_with_response(hobj):
+    """`hobj.kernel()` with the CPHF response solved once and returned: (de (natm, natm, 3, 3) as `kernel` returns it, mo1). The steps of pyscf's
+    `HessianBase.kernel` (2.14) with `make_h1` and `solve_mo1` called here, as pyscf-properties' infrared module does; `hobj.de` is set as `kernel`
+    sets it. Closed shell only: a UKS Hessian's response is an (alpha, beta) pair, which `apt_from_mo1` does not take."""
+    mf = hobj.base
+    mo_energy, mo_coeff, mo_occ, atmlst = mf.mo_energy, mf.mo_coeff, mf.mo_occ, hobj.atmlst
+    h1ao = hobj.make_h1(mo_coeff, mo_occ, None, atmlst)
+    mo1, mo_e1 = hobj.solve_mo1(mo_energy, mo_coeff, mo_occ, h1ao, None, atmlst)
+    de = hobj.hess_elec(mo_energy, mo_coeff, mo_occ, mo1=mo1, mo_e1=mo_e1, h1ao=h1ao, atmlst=atmlst)
+    hobj.de = de + hobj.hess_nuc(hobj.mol, atmlst=atmlst)
+    if mf.do_disp():
+        hobj.de += hobj.get_dispersion()
+    return hobj.de, mo1
 
 
 def apt_from_mo1(mf, mo1s):
