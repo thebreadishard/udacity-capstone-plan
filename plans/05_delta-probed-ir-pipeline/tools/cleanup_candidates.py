@@ -6,7 +6,8 @@ A candidate (a dated one-off `probes/*_MMDD.sh|py`, or a tool named in SUPERSEDE
   2. no kept code names it: a script, module, test, notebook, config or job file (code extensions below) outside the run records
      (`results_*`, `out/`); references among candidates do not count once both go (a fixed point);
   3. its outcome is recorded — one of: its name appears in a Markdown document (ledger, TASKS, registrations, READMEs, notes); the chain
-     or lever its header names ('chain 24', 'Chain 36', 'Lever 5') appears in one; a log or result file it writes (out/…, results_m1/…) exists on disk.
+     or lever its header names ('chain 24', 'Chain 36', 'Lever 5') appears in a record of outcomes (GoalGathering/notes/, TASKS.md; a
+     'lever 2' in a reading list is another lever — 11 Oct, the first sweep matched one there); a log or result file it writes (out/…, results_m1/…) exists on disk.
 A file name inside a comment line (#, rem, ::, //) is documentation, not use, and keeps nothing.
 Documents that cite a removed file keep the path: git keeps the file.
 
@@ -67,9 +68,10 @@ def evidence(path, text, docs, plan=PLAN):
     if named:
         return "named", named[0]
     header = "\n".join(text.split("\n")[:6])
+    outcomes = {f: t for f, t in docs.items() if "GoalGathering/notes/" in f or f.endswith("TASKS.md")}
     for kind, n in CHAIN.findall(header):
         pat = re.compile(rf"\b{kind.lower()}s?[ _]?{re.escape(n)}\b", re.I)
-        hit = sorted(f for f, t in docs.items() if pat.search(t))
+        hit = sorted(f for f, t in outcomes.items() if pat.search(t))
         if hit:
             return f"{kind.lower()} {n} recorded", hit[0]
     for out in OUTPUT.findall(text):

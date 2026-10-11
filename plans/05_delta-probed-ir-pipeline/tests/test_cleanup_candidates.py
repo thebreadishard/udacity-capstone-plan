@@ -34,9 +34,11 @@ def test_comment_lines_keep_nothing_and_a_kept_referrer_keeps_its_target():
 
 
 def test_evidence_by_name_by_chain_or_lever_or_by_output(tmp_path):
-    docs = {"ledger.md": "chain 24 read: 0.33. Lever 5 stopped.", "tasks.md": "probes/named_1003.sh ran"}
+    docs = {"GoalGathering/notes/ledger.md": "chain 24 read: 0.33. Lever 5 stopped.", "x/TASKS.md": "probes/named_1003.sh ran",
+            "GoalGathering/Papers.md": "lever 7 of the review"}
     assert evidence("probes/named_1003.sh", "", docs)[0] == "named"
-    assert evidence("probes/c_1003.sh", "#!/bin/bash\n# Chain 24, 2 Oct 2026\n", docs) == ("chain 24 recorded", "ledger.md")
+    assert evidence("probes/c_1003.sh", "#!/bin/bash\n# Chain 24, 2 Oct 2026\n", docs) == ("chain 24 recorded", "GoalGathering/notes/ledger.md")
+    assert evidence("probes/p_1003.sh", "#!/bin/bash\n# Lever 7\n", docs) is None              # a reading list is not a record
     assert evidence("probes/l_1003.sh", "#!/bin/bash\n# Lever 5 (2 Oct)\n", docs)[0] == "lever 5 recorded"
     (tmp_path / "out").mkdir()
     (tmp_path / "out" / "r.log").write_text("done", encoding="utf-8")
