@@ -18,7 +18,9 @@ while read -r id; do
     skip=$((skip + 1)); echo "[$(date '+%F %T')] lane $LANE $id skipped (analytic files exist)"; continue
   fi
   t0=$(date +%s)
-  if $PY analytic_hessians.py "molecules/$id" --threads 8 >> "lane_${LANE}_molecules.log" 2>&1; then
+  # stdin from /dev/null: a command inside 'while read … < LIST' that reads stdin eats the list (the five-ring runner, 10 Oct 2026); the copies
+  # running on the labels server since 8 Oct lack it and are left as they are (a running bash script is not edited) — pyscf does not read stdin
+  if $PY analytic_hessians.py "molecules/$id" --threads 8 >> "lane_${LANE}_molecules.log" 2>&1 < /dev/null; then
     ok=$((ok + 1)); echo "[$(date '+%F %T')] lane $LANE $id ok $(( $(date +%s) - t0 )) s ($ok ok, $fail failed, $skip skipped of $n)"
   else
     fail=$((fail + 1)); echo "[$(date '+%F %T')] lane $LANE $id FAILED $(( $(date +%s) - t0 )) s — see lane_${LANE}_molecules.log"

@@ -120,3 +120,15 @@ def test_failure_case_is_displayed_not_hidden(cat):
     c = certificate(cat.find("benzene"), cat)
     wider = [a for a in c["anchor_coverage"] if a["wider_than_tolerance"]]
     assert c["rung"]["reached"] == 5 and wider and all("wider" in a["reading"] for a in wider)
+
+
+def test_a_failed_apt_is_not_drawn(tmp_path):
+    """11 Oct 2026: the labels route keeps a failed APT on disk (passed=False); the spectrum module skips it and falls back to the next file."""
+    import numpy as np
+    from m08.spectrum import APT_FILES, cheap_apt
+    np.savez(tmp_path / APT_FILES[0], apt=np.zeros((3, 9)), passed=False)
+    assert cheap_apt(tmp_path) is None
+    np.savez(tmp_path / APT_FILES[1], apt=np.zeros((3, 9)))                               # an FD file without the field counts as passed
+    assert cheap_apt(tmp_path) == tmp_path / APT_FILES[1]
+    np.savez(tmp_path / APT_FILES[0], apt=np.zeros((3, 9)), passed=True)
+    assert cheap_apt(tmp_path) == tmp_path / APT_FILES[0]

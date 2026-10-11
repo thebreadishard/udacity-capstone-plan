@@ -67,11 +67,23 @@ def series(hessian: Path, masses: np.ndarray, apt: Path | None, H: np.ndarray | 
                 sticks=[dict(omega_cm=round(float(w), 1), km_mol=round(float(a), 2)) for w, a in zip(freq, inten, strict=True)])
 
 
+def cheap_apt(d: Path) -> Path | None:
+    """The molecule's B3LYP APT file, or None: the first of APT_FILES that exists and has not failed its own checks (a file written with
+    passed=False — the labels route keeps a failed APT on disk since 11 Oct 2026 — is not drawn; a file without the field counts as passed)."""
+    for f in APT_FILES:
+        p = d / f
+        if p.exists():
+            with np.load(p) as z:
+                if "passed" not in z.files or bool(z["passed"]):
+                    return p
+    return None
+
+
 def shape(mid: str, listed_cm: list[float] | None = None) -> dict:
     """The cheap rung's sticks (position, height) for one corpus molecule, or the reason there are none. `listed_cm` = the listed B3LYP positions:
     the largest difference to the positions computed here is recorded as a consistency check (same Hessian → ≈ 0)."""
     d = CORPUS / mid
-    apt = next((d / f for f in APT_FILES if (d / f).exists()), None)
+    apt = cheap_apt(d)
     if apt is None or not (d / HESSIAN).exists():
         return dict(kind="positions only", reason="no dipole derivatives (APT) computed for this molecule — heights are not shown rather than guessed")
     s = series(d / HESSIAN, np.asarray(_geometry(mid)["masses_amu"], float), apt)
@@ -106,7 +118,7 @@ def anchor_series(mid: str) -> dict | None:
         return None
     h = PLAN / e["path"]
     cc = _cc_apt_at(h, mid)
-    b3 = next((CORPUS / mid / f for f in APT_FILES if (CORPUS / mid / f).exists()), None)
+    b3 = cheap_apt(CORPUS / mid)
     apt, apt_level = (cc, "CCSD(T) (the anchor's own)") if cc is not None else ((b3, "B3LYP (cheap level)") if b3 is not None else (None, None))
     s = series(h, np.asarray(_geometry(mid)["masses_amu"], float), apt)
     return dict(s, level=e["level"], tier=e.get("tier"), apt_level=apt_level, registry_sha16=e.get("sha16"))

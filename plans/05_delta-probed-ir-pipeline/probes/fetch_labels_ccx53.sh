@@ -2,6 +2,8 @@
 # fetch_labels_ccx53.sh <ip> — the full fetch of the analytic-label server (rule of 3 Oct: copy everything a server made before it is deleted; delete only
 # after the FETCHED line). Copies every molecule's analytic Hessians and analytic_check.json into the corpus (the FD files stay beside them), the lane logs,
 # the gate log and the environment listing into probes/results_m1/labels_ccx53_<date>/, then counts and prints the FETCHED line. Safe to re-run.
+# 11 Oct 2026: also the APT files the labels route writes since then (dipole_b3lyp_cphf.npz, TASKS 44 route C), without overwriting an APT the
+# corpus already holds (route B's ten of 2 Oct); the FETCHED line counts them on both sides.
 #   bash probes/fetch_labels_ccx53.sh <ip>
 set -u
 # no-set-e: the counts at the end say what arrived; a partial fetch must still report
@@ -15,10 +17,13 @@ RS="rsync -a -e ssh -i $KEY -o BatchMode=yes"
 echo "[$(date '+%T')] analytic files → corpus"
 rsync -a --include='*/' --include='hessian_b3lyp_analytic.npz' --include='hessian_wb97x_analytic.npz' --include='analytic_check.json' --exclude='*' \
       -e "ssh -i $KEY -o BatchMode=yes" root@$IP:/root/labels/molecules/ "$C/molecules/" || echo "RSYNC MOLECULES FAILED"
+rsync -a --ignore-existing --include='*/' --include='dipole_b3lyp_cphf.npz' --exclude='*'       -e "ssh -i $KEY -o BatchMode=yes" root@$IP:/root/labels/molecules/ "$C/molecules/" || echo "RSYNC APT FAILED"
 echo "[$(date '+%T')] logs, gate, environment → $D"
 rsync -a -e "ssh -i $KEY -o BatchMode=yes" --include='*.log' --include='*.txt' --exclude='*' root@$IP:/root/labels/ "$D/" || echo "RSYNC LOGS FAILED"
 rsync -a -e "ssh -i $KEY -o BatchMode=yes" root@$IP:/root/labels/gate/ "$D/gate/" 2>/dev/null
 ssh -i $KEY -o BatchMode=yes root@$IP '/root/miniforge3/envs/qc05/bin/pip freeze; uname -a; nproc; free -g | head -2' > "$D/environment.txt" 2>&1
 n_w=$(ls "$C"/molecules/*/hessian_wb97x_analytic.npz 2>/dev/null | wc -l); n_b=$(ls "$C"/molecules/*/hessian_b3lyp_analytic.npz 2>/dev/null | wc -l)
 n_srv=$(ssh -i $KEY -o BatchMode=yes root@$IP 'ls /root/labels/molecules/*/hessian_wb97x_analytic.npz 2>/dev/null | wc -l')
-echo "FETCHED $(date '+%F %H:%M') $IP: corpus now holds $n_w analytic ωB97X and $n_b analytic B3LYP Hessians (server had $n_srv ωB97X); logs in $D"
+n_a=$(ls "$C"/molecules/*/dipole_b3lyp_cphf.npz 2>/dev/null | wc -l)
+n_srv_a=$(ssh -i $KEY -o BatchMode=yes root@$IP 'ls /root/labels/molecules/*/dipole_b3lyp_cphf.npz 2>/dev/null | wc -l')
+echo "FETCHED $(date '+%F %H:%M') $IP: corpus now holds $n_w analytic ωB97X and $n_b analytic B3LYP Hessians (server had $n_srv ωB97X), $n_a APTs (server had $n_srv_a); logs in $D"
