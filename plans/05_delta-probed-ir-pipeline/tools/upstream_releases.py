@@ -74,6 +74,7 @@ def summary(pinned, latest):
 
 
 def main():
+    sys.stdout.reconfigure(encoding="utf-8")       # Git Bash reads UTF-8; Windows Python writes cp1252
     line, _ = summary(pinned_versions(), {p: latest_release(p) for p in PACKAGES})
     print(line)
     return 0

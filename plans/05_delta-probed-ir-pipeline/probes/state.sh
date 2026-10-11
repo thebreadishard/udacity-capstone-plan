@@ -42,6 +42,9 @@ fi
 # 11 Oct 2026: pyscf can publish a release during the project, some carrying our merged pull requests — the digest shows the newest PyPI
 # release against the pinned versions; a newer one goes through the upgrade checklist of the software ledger, never mid-run
 timeout 15 python "$R/tools/upstream_releases.py" 2>/dev/null || echo "  upstream releases: check failed"
+# 11 Oct 2026: CI runs only the plan's tests without pyscf; the module suites, the website export's tests and the WSL pyscf tests run
+# nightly through tools/run_test_suites.py (after the data backup) — the digest shows the last result, a failure or a stale run
+timeout 15 python "$R/tools/run_test_suites.py" --summary 2>/dev/null || echo "  test suites: summary failed"
 echo "--- three most recent ledger entries (first line each) ---"
 sed -n '/^## 6. Log/,$p' "$LED" | grep -a '^- \*\*' | head -3 | cut -c1-140 | sed 's/^/  /'
 echo "=== grep the ledger only if something above needs explaining ==="
