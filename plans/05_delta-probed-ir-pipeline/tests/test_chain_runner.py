@@ -67,3 +67,22 @@ def test_checkpoint_glob_must_match_exactly_one(tmp_path):
     (tmp_path / "x_model_n20_seed0.pt").write_text("", encoding="utf-8")
     with pytest.raises(RuntimeError, match="matches 2 files"):
         CR._resolve(["x_model_n*_seed0.pt"], tmp_path)
+
+
+def test_fd_labels_train_without_analytic_and_eval_stays_analytic():
+    """Chain 35's half read (11 Oct 2026): one pool, analytic against FD training labels; the yardstick (evaluation) is analytic for both."""
+    spec = {"kind": "rungc", "chain": "35h", "note": "t", "date": "2026-10-13",
+            "trainings": [{"prefix": "out/A", "args": []}, {"prefix": "out/F", "args": [], "labels": "fd"}]}
+    steps = {s["label"]: s["argv"] for s in CR.rungc_steps(spec, "py")}
+    assert "--use-analytic" in steps["train A"] and "--use-analytic" not in steps["train F"]
+    assert all("--use-analytic" in a for k, a in steps.items() if k.startswith("eval"))
+    with pytest.raises(ValueError, match="labels must be"):
+        CR.rungc_steps({**spec, "trainings": [{"prefix": "out/X", "labels": "psi4"}]}, "py")
+
+
+def test_cmd_condition_holds_on_exit_zero(tmp_path):
+    assert CR.condition_holds({"kind": "cmd", "argv": [sys.executable, "-c", "pass"], "cwd": str(tmp_path)})
+    assert not CR.condition_holds({"kind": "cmd", "argv": [sys.executable, "-c", "import sys; sys.exit(1)"], "cwd": str(tmp_path)})
+    assert not CR.condition_holds({"kind": "cmd", "argv": ["no-such-program-xyz"], "cwd": str(tmp_path)})
+    with pytest.raises(ValueError, match="unknown wait kind"):
+        CR.condition_holds({"kind": "tea"})

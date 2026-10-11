@@ -8,6 +8,7 @@ Spec (paths relative to the plan folder unless absolute):
   wait        list of conditions, all must hold, checked every `poll_s` (default 600) seconds:
                 {"kind": "marker", "log": …, "regex": …}                 a line of a log matches
                 {"kind": "results", "list": …, "first": N, "dir": …}     the first N ids of a list each have dir/<id>/result.json
+                {"kind": "cmd", "argv": [...], "cwd": …}                a command exits 0 (e.g. a check on a server; 120 s timeout)
   steps       run in order; the run stops at the first failing step:
                 {"kind": "cmd", "argv": [...], "cwd": …, "log": …}       any command (stdin is /dev/null, always; "{python}" = the runner's python)
                 {"kind": "rungc", …}                                      the standard rung C chain, expanded by `rungc_steps`
@@ -15,7 +16,9 @@ Spec (paths relative to the plan folder unless absolute):
 A standard rung C step: design check → every training (chain 34's recipe v1.1 plus each training's own arguments, models saved) → ONE
 `model_registry --add-candidates` call for all checkpoints of the run (9 Oct: registering per training stopped the rebuild on the next training's
 unregistered models) → `rungC_eval_saved` per checkpoint on the frozen hold-out (b) → `rungC_eval_means` per training. Its keys: "chain", "note",
-"date", "trainings": [{"prefix": …, "args": [...]}], optional "seeds" (default 0,1,2), "threads" (8), "holdout_b_file", "recipe" (override).
+"date", "trainings": [{"prefix": …, "args": [...], "labels": "analytic" (default) | "fd"}], optional "seeds" (default 0,1,2),
+"threads" (8), "holdout_b_file", "recipe" (override). A training with "labels": "fd" trains without `--use-analytic` (chain 35's half read
+compares the two on one pool, 11 Oct 2026); evaluation always uses the analytic labels, the one yardstick.
 Markers: "armed", "waiting", "<step> done", "run done"; failures: "RUN FAILED at <step>: …". Exit 0 done, 1 failed.
 """
 from __future__ import annotations
@@ -58,6 +61,13 @@ def condition_holds(c: dict) -> bool:
     if c["kind"] == "results":
         ids = [s.strip() for s in _p(c["list"]).read_text(encoding="utf-8").split() if s.strip()][: int(c["first"])]
         return len(ids) == int(c["first"]) and all((_p(c["dir"]) / i / "result.json").exists() for i in ids)
+    if c["kind"] == "cmd":
+        try:
+            r = subprocess.run(c["argv"], cwd=_p(c.get("cwd", PLAN)), stdin=subprocess.DEVNULL, capture_output=True, timeout=120, check=False)
+        except (OSError, subprocess.TimeoutExpired):
+            return False
+        return r.returncode == 0
+    raise ValueError(f"unknown wait kind {c['kind']!r}")
     raise ValueError(f"unknown wait kind {c['kind']!r}")
 
 
@@ -71,8 +81,12 @@ def rungc_steps(s: dict, python: str) -> list[dict]:
                                              f"out/design_check_{s['chain']}_{date}"], log=f"out/design_check_{s['chain']}_{date}.log")]
     for t in s["trainings"]:
         pre = t["prefix"]
+        labels = t.get("labels", "analytic")
+        if labels not in ("analytic", "fd"):
+            raise ValueError(f"training {pre}: labels must be 'analytic' or 'fd', not {labels!r}")
+        base = BASE if labels == "analytic" else [a for a in BASE if a != "--use-analytic"]
         out.append(dict(label=f"train {Path(pre).name}", log=f"{pre}.log",
-                        argv=[python, "m05/rungC_train.py", "corpus/molecules", pre, *BASE, "--seeds", seed_arg, "--threads", threads, *recipe,
+                        argv=[python, "m05/rungC_train.py", "corpus/molecules", pre, *base, "--seeds", seed_arg, "--threads", threads, *recipe,
                               *t.get("args", []), "--save-model"]))
     ckpts = [f"{t['prefix']}_model_n*_seed{x}.pt" for t in s["trainings"] for x in seeds]
     out.append(dict(label="register candidates", log=f"out/registry_{s['chain']}_{date}.log", glob_args=True,

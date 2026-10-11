@@ -1,0 +1,58 @@
+{
+ "_about": "Chain 35's half read (design note Design_2026-10-05_Analytic_Labels_and_Stepping_Stone.md, amendment 8 Oct 07:2x; spec 11 Oct 2026): chain 34's recipe (v1.1, 750, three seeds) on one pool, trained with the analytic labels of the smallest half against the same pool trained with FD labels; evaluation on analytic labels for both. It MEASURES and does not judge: no line applies (the full read does). Guard: a family other than 'other' worse than its seed range means the pipeline (substitution, loader count) is checked before the lanes go on. Waits for the half on the server AND for chain 40's end (one 8-thread training at a time beside the runner; the fetch must not change chain 40's labels mid-run).",
+ "name": "C35h",
+ "poll_s": 600,
+ "wait": [
+  {
+   "kind": "cmd",
+   "argv": [
+    "bash",
+    "probes/labels_half_ready.sh"
+   ]
+  },
+  {
+   "kind": "marker",
+   "log": "probes/results_m1/chain40.log",
+   "regex": "^=== \\(C40\\) (run done|RUN FAILED)"
+  }
+ ],
+ "steps": [
+  {
+   "kind": "cmd",
+   "label": "fetch the analytic labels",
+   "argv": [
+    "bash",
+    "-c",
+    ". tools/hosts.sh && bash probes/fetch_labels_ccx53.sh \"$(host_ip labels)\""
+   ],
+   "cwd": ".",
+   "log": "probes/results_m1/chain35h_fetch.log"
+  },
+  {
+   "kind": "rungc",
+   "chain": "35h",
+   "note": "chain 35 half read — analytic (smallest half) against FD training labels, one pool; measures, does not judge (design note amendment 8 Oct 2026)",
+   "trainings": [
+    {
+     "prefix": "out/E7_rungC_chain35h_analytic",
+     "args": [
+      "--sizes",
+      "750"
+     ]
+    },
+    {
+     "prefix": "out/E7_rungC_chain35h_fd",
+     "args": [
+      "--sizes",
+      "750"
+     ],
+     "labels": "fd"
+    }
+   ]
+  }
+ ],
+ "outputs": [
+  "modules/05_support_predictor/out/read_E7_rungC_chain35h_analytic.json",
+  "modules/05_support_predictor/out/read_E7_rungC_chain35h_fd.json"
+ ]
+}
