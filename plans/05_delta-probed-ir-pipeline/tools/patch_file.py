@@ -1,16 +1,24 @@
-"""patch_file — the shared helper promised on 14 September 2026 (QUALITY_POLICY, incident → guard): exact-string edits with an assertion on every
+r"""patch_file — the shared helper promised on 14 September 2026 (QUALITY_POLICY, incident → guard): exact-string edits with an assertion on every
 anchor, the whole new text built in memory, then `os.replace` of a temp file over the original. The target is never opened for writing before
 every assertion has passed (a probe script was emptied that way on 14 September).
 
+New text may not carry control characters other than a newline unless the caller says so (`controls=True`): a backslash path or a regex
+written through a bash heredoc or a non-raw Python string turns \t, \b, \f, \a, \v into a tab, a backspace, … (3–4 Oct and twice on
+11 Oct 2026: a log path in TASKS lost its 't' to a tab). In patch(), a control character that the anchor itself carries is allowed.
+
 Library:  from patch_file import patch, append, insert_after_line
-    patch(path, [(old, new), ...], count=1)   # every old must occur exactly `count` times
+    patch(path, [(old, new), ...], count=1)   # every old must occur exactly `count` times; no control characters in new
+                                              # (controls=True to allow; append and insert_after_line take it too)
     append(path, text)                        # text after the file's last non-empty line
     insert_after_line(path, needle, text)     # after the single line that contains needle
 CLI:      python patch_file.py <target> <edits.json>     with [{"old": "...", "new": "..."}, ...]   (exit 1 and no write if any anchor fails)
 """
 import json
 import os
+import re
 import sys
+
+_CONTROLS = re.compile(r"[\x00-\x09\x0b-\x1f\x7f]")   # every C0 control and DEL except the newline
 
 
 def _write(path, text):
@@ -20,7 +28,16 @@ def _write(path, text):
     os.replace(tmp, path)
 
 
-def patch(path, edits, count=1):
+def _check_controls(path, new, old=""):
+    bad = sorted({c for c in _CONTROLS.findall(new) if c not in old})
+    if bad:
+        raise AssertionError(f"{path}: new text carries control characters {bad} (a mangled escape?); pass controls=True if intended")
+
+
+def patch(path, edits, count=1, controls=False):
+    if not controls:
+        for old, new in edits:
+            _check_controls(path, new, old)
     text = open(path, encoding="utf-8").read()
     problems = [(old[:60], text.count(old)) for old, _ in edits if text.count(old) != count]
     if problems:
@@ -31,12 +48,16 @@ def patch(path, edits, count=1):
     return len(edits)
 
 
-def append(path, text):
+def append(path, text, controls=False):
+    if not controls:
+        _check_controls(path, text)
     body = open(path, encoding="utf-8").read().rstrip("\n") + "\n" + text
     _write(path, body)
 
 
-def insert_after_line(path, needle, text):
+def insert_after_line(path, needle, text, controls=False):
+    if not controls:
+        _check_controls(path, text)
     lines = open(path, encoding="utf-8").read().split("\n")
     hits = [i for i, l in enumerate(lines) if needle in l]
     if len(hits) != 1:
