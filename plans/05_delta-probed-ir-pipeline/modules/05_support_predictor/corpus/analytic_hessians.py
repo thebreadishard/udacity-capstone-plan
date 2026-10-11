@@ -10,19 +10,44 @@ Usage: python analytic_hessians.py <molecule dir> [more dirs...] [--threads 16] 
        contracted from the CPHF response the Hessian solves anyway (apt.py, next to this file; < 0.01 s against a 465 s Hessian on benzene, equal
        to the separate CPHF route to 4.8e-7 e). An existing APT file is kept. A failed APT (or a sum rule above 5e-4 e) is reported after the
        molecule's two Hessians are written, and the exit status is 3, so the lane logs the molecule as FAILED. --no-apt turns it off.
+       Provenance (11 Oct 2026, TASKS 47): every file written carries `software` — the pyscf, numpy and Python versions, pyscf's source
+       commit when it is imported from a git checkout, and the sha256 of this script and apt.py — as a JSON string in the npz files and as a
+       field inside each functional's entry of analytic_check.json (its readers iterate the entries).
 """
 import argparse
+import hashlib
 import json
 import os
+import platform
+import subprocess
 import time
 
 import numpy as np
+import pyscf
 from apt import apt_from_mo1, hessian_with_response, intensities, sum_rule
 from pyscf import dft, gto, lib
 
 AMU2AU = 1822.888486209
 APT_FILE = "dipole_b3lyp_cphf.npz"     # the name the export and module 08 read; route B writes it too
 SUM_RULE_LIMIT = 5e-4                  # e; route B's limit (benzene: CPHF vs FD differ by 4.4e-4 e at most)
+
+
+def software():
+    """What made a file: versions, pyscf's commit when it comes from a git checkout (its parent folder the checkout's root, so an unrelated
+    repository around site-packages is not reported), and the sha256 (first 12) of this script and apt.py."""
+    here = os.path.dirname(os.path.abspath(__file__))
+    pdir = os.path.dirname(os.path.abspath(pyscf.__file__))
+    git = None
+    try:
+        top = subprocess.run(["git", "-C", pdir, "rev-parse", "--show-toplevel"], capture_output=True, text=True, timeout=10,
+                             check=False).stdout.strip()
+        if top and os.path.samefile(top, os.path.dirname(pdir)):
+            git = subprocess.run(["git", "-C", top, "describe", "--always", "--dirty"], capture_output=True, text=True,
+                                 timeout=10, check=False).stdout.strip()
+    except (OSError, subprocess.SubprocessError):
+        pass
+    sha = {f: hashlib.sha256(open(os.path.join(here, f), "rb").read()).hexdigest()[:12] for f in ("analytic_hessians.py", "apt.py")}
+    return {"pyscf": pyscf.__version__, "pyscf_git": git, "numpy": np.__version__, "python": platform.python_version(), "sha256": sha}
 
 
 def project_tr(H, masses, x):
@@ -53,7 +78,7 @@ def vib_only(f):
     return np.sort(f[keep])
 
 
-def write_apt(d, mf, mo1, Hp, masses, grid):
+def write_apt(d, mf, mo1, Hp, masses, grid, stamp):
     """The APT from the Hessian's own response, its sum rule and band heights, written as route B writes them (the file carries the summary;
     analytic_check.json keeps one entry per functional, as its readers expect). Raises ValueError when the sum rule fails (the file is written
     all the same, marked passed=False)."""
@@ -63,7 +88,8 @@ def write_apt(d, mf, mo1, Hp, masses, grid):
     freq, km = intensities(P, Hp, masses)
     passed = sr <= SUM_RULE_LIMIT
     np.savez_compressed(f"{d}/{APT_FILE}", apt=P, sum_rule_max=sr, fd_max_diff=float("nan"), freq_cm=freq, intensity_km_mol=km, xc="b3lyp",
-                        basis="6-31g*", grid=np.array(grid), passed=passed, route="hessian_response", seconds=round(time.time() - t0, 3))
+                        basis="6-31g*", grid=np.array(grid), passed=passed, route="hessian_response", seconds=round(time.time() - t0, 3),
+                        software=json.dumps(stamp, sort_keys=True))
     if not passed:
         raise ValueError(f"APT sum rule {sr:.1e} > {SUM_RULE_LIMIT:g}")
     return f"APT from the Hessian's response: sum rule {sr:.1e}, {time.time() - t0:.2f} s"
@@ -75,6 +101,7 @@ def main():
     ap.add_argument("--no-apt", action="store_true", help="skip the B3LYP APT from the Hessian's response (closed shell only; on by default since 11 Oct 2026)")
     a = ap.parse_args(); lib.num_threads(a.threads); rad, ang = (int(v) for v in a.grid.split(","))
     apt_errors = []
+    stamp = software()
     for d in a.dirs:
         g = json.load(open(d + "/geometry.json")); sym = g["symbols"]; x = np.array(g["coords_bohr"]); masses = np.array(g["masses_amu"])
         mol = gto.M(atom=[(s.capitalize(), tuple(c)) for s, c in zip(sym, x, strict=True)], unit="Bohr", basis="6-31g*", cart=True, symmetry=False, verbose=0, max_memory=20000,
@@ -100,21 +127,21 @@ def main():
             fr = freqs_cm(Hp, masses)
             if not a.compare_only:
                 np.savez_compressed(f"{d}/hessian_{tag}_analytic.npz", H_raw=Hc, H_projected=Hp, freq_cm=fr, energy=float(e), grid=np.array([rad, ang]),
-                                    charge=a.charge, spin=a.spin, reference="UKS" if a.spin else "RKS")
+                                    charge=a.charge, spin=a.spin, reference="UKS" if a.spin else "RKS", software=json.dumps(stamp, sort_keys=True))
                 if mo1 is not None:           # after the Hessian is on disk: an APT failure never costs the Hessian
                     try:
-                        print(f"{d} b3lyp: {write_apt(d, mf, mo1, Hp, masses, (rad, ang))}", flush=True)
+                        print(f"{d} b3lyp: {write_apt(d, mf, mo1, Hp, masses, (rad, ang), stamp)}", flush=True)
                     except Exception as exc:  # noqa: BLE001 — reported and turned into exit status 3 after both functionals
                         apt_errors.append(f"{d}: {exc}")
                         print(f"{d} b3lyp: APT FAILED: {exc}", flush=True)
             if not os.path.exists(f"{d}/hessian_{tag}.npz"):
-                out[tag] = dict(freq_analytic=vib_only(fr).tolist(), energy=float(e), seconds=round(time.time() - t0), corpus_file="absent")
+                out[tag] = dict(freq_analytic=vib_only(fr).tolist(), energy=float(e), seconds=round(time.time() - t0), corpus_file="absent", software=stamp)
                 print(f"{d} {tag}: {out[tag]['seconds']} s; no corpus psi4 file to compare with; lowest vib {vib_only(fr)[:3].round(1).tolist()} cm-1", flush=True)
                 continue
             corpus = np.load(f"{d}/hessian_{tag}.npz")
             fr = vib_only(fr); fc = vib_only(corpus["freq_cm"])     # drop the six trans/rot entries (smallest |value|) from both lists; imaginary modes stay, negative
             out[tag] = dict(freq_analytic=fr.tolist(), freq_corpus=fc.tolist(), dH_max=float(np.abs(Hc - corpus["H_raw"]).max()),
-                            dH_rms=float(np.sqrt(np.mean((Hc - corpus["H_raw"]) ** 2))), energy=float(e), energy_corpus=float(corpus["energy"]), seconds=round(time.time() - t0))
+                            dH_rms=float(np.sqrt(np.mean((Hc - corpus["H_raw"]) ** 2))), energy=float(e), energy_corpus=float(corpus["energy"]), seconds=round(time.time() - t0), software=stamp)
             print(f"{d} {tag}: {out[tag]['seconds']} s; |H_analytic − H_corpus| max {out[tag]['dH_max']:.2e} rms {out[tag]['dH_rms']:.2e}; max |Δfreq| {np.abs(fr - fc).max():.0f} cm-1", flush=True)
         json.dump(out, open(d + "/analytic_check.json", "w"), indent=1)
     if apt_errors:

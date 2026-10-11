@@ -33,6 +33,16 @@ def test_the_b3lyp_pass_writes_the_apt_and_the_check_file_keeps_its_shape(tmp_pa
     assert set(json.loads((d / "analytic_check.json").read_text())) == {"b3lyp", "wb97x"}
 
 
+def test_every_file_names_the_software_that_made_it(tmp_path, monkeypatch):
+    """TASKS 47 (11 Oct 2026): pyscf can publish a release during the project; a file that travels alone still says which version made it."""
+    import pyscf
+    d = _run(tmp_path, monkeypatch)
+    stamps = [json.loads(str(np.load(d / f)["software"])) for f in (AH.APT_FILE, "hessian_b3lyp_analytic.npz", "hessian_wb97x_analytic.npz")]
+    stamps += [v["software"] for v in json.loads((d / "analytic_check.json").read_text()).values()]
+    assert all(s == stamps[0] for s in stamps) and stamps[0]["pyscf"] == pyscf.__version__
+    assert set(stamps[0]["sha256"]) == {"analytic_hessians.py", "apt.py"} and "pyscf_git" in stamps[0]
+
+
 def test_an_existing_apt_file_is_kept_and_no_apt_writes_none(tmp_path, monkeypatch):
     d = _run(tmp_path, monkeypatch)
     before = (d / AH.APT_FILE).read_bytes()

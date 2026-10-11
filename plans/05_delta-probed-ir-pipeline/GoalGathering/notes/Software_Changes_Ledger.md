@@ -53,7 +53,7 @@ One line per change; the numbered section below the register carries every origi
 | 40 | 2026-10-11 | C | pyscf-properties master 4eee5a43 (`prop/infrared/rhf.py`, `uhf.py`: `proc_hessian_`) | an explicit mo_energy, mo_coeff, mo_occ or h1ao_grad raises ValueError (`x if x else default` on an array) | pr-open |
 | 41 | 2026-10-11 | C | pyscf-properties master 4eee5a43 (`prop/infrared/test/test_ir_inten.py`) | a reference-free check of the four infrared classes: analytic APT against finite differences of the dipole (UKS test 'a little bit loose') | pr-open |
 | 42 | 2026-10-11 | C | pyscf-properties 0.1.0 on PyPI | the published release has no infrared module; master has had it since June 2022 (row 29) — an issue asking for a release | done |
-| 43 | 2026-10-11 | C | pyscf master (`hessian/thermo.py::harmonic_analysis`) | the Hessian goes to `numpy.linalg.eigh` unsymmetrised; eigh reads one triangle, so an asymmetric analytic Hessian (UKS: 6.2e-5) shifts modes and heights | pr-candidate |
+| 43 | 2026-10-11 | C | pyscf master (`hessian/thermo.py::harmonic_analysis`) | the Hessian goes to `numpy.linalg.eigh` unsymmetrised; eigh reads one triangle, so an asymmetric analytic Hessian (UKS: 6.2e-5) shifts modes and heights | pr-open |
 
 ## Sections
 
@@ -646,8 +646,10 @@ module pass on pyscf 2.14.0 (11 Oct, 4 of 4, through `probes/upstream_infrared.p
 
 ### 43 — `harmonic_analysis` diagonalises the Hessian without symmetrising it
 
-**Group:** C, finding about third-party software. **Date:** 2026-10-11. **Status:** pr-candidate (waits for the user's word; pyscf/pyscf is
-active — the file changed on 9 Oct 2026, #3491).
+**Group:** C, finding about third-party software. **Date:** 2026-10-11. **Status:** pr-open. *Status note (11 Oct 21:3x):* opened as
+pyscf/pyscf#3507 on the user's word ('Ja, doe beide maar'): `h = (h + h.T) * .5` before the projection and eigh, and a test (water/STO-3G
+RHF Hessian plus an antisymmetric part of 1e-3: frequencies and |modes| unchanged to 1e-8; fails without the change); the six thermo tests
+pass against pyscf 2.14.0 with the branch's thermo.py; ruff as in lint.yml clean. Branch `thermo-symmetrize-hessian` in ~/pyscf-wt-thermo.
 
 **Software:** pyscf 2.14.0 and master (`pyscf/hessian/thermo.py`, `harmonic_analysis`: `h = mass_hess.transpose(0,2,1,3).reshape(...)`, then
 `numpy.linalg.eigh(bvec.T h bvec)`); used by pyscf-properties' infrared module for its normal modes.
