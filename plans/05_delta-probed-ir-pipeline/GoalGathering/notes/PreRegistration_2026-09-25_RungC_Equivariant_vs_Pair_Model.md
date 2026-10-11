@@ -2250,3 +2250,26 @@ records): *as registered* (sorted pairing) **0.734 in all three seeds** (not 0.4
 rule's 0.003; spectrum overlap **0.372 (0.406, 0.355, 0.354)** against 0.257 (not 0.592). The conclusions stand — the registered number measured the
 mode swap, benzene cannot test the Hessian's part of the heights — but the overlap gain at CC level is 0.26 → 0.37. Module 08's certificate and the
 Atlas read the λ = 1 column from now on (`m08/spectrum.py` CC_COLUMN, with a test).
+
+**Chain 41 — five fused rings from a corpus of at most four: size and ring count beyond the corpus (TASKS 35; registered 11 October 2026, 22:3x,
+before any pool 3 neutral was fetched or read).** Chain 39 read a steep size penalty (q = 1.96) but could not separate size from ring count: its
+≤ 20-atom pool had no three-ring scaffold. The mandate's question is the joint one — does a network trained on the corpus as it stands (fused ring
+systems of at most four rings, ≤ ≈ 30 atoms) carry the correction to larger ring systems? Pool 3's thirty five-ring neutrals answer it at 32–40
+atoms: perylene, benzo[a]pyrene, benzo[e]pyrene, benzo[k]fluoranthene, picene and dibenz[a,h]anthracene, five molecules each (the parent and four
+derivatives). **Sets, frozen now:** `modules/05_support_predictor/out/chain41_size5_folds_2026-10-11.json`, derived from the frozen candidate list
+`out/pool3_candidates_2026-10-03.csv` (sha256 108239f36bb6…, recorded in the file). *Size arm:* chain 34's recipe (v1.1) on the whole pool as it
+stands after chain 40's merge (layers A, A2, B), every pool 3 id excluded, three seeds; tested on s5 (the thirty). *Control:* the same pool plus the
+five-ring molecules of three scaffolds, tested on the other three, in two folds by scaffold (fold 1 trains perylene, benzo[k]fluoranthene, picene —
+15 molecules — and tests the 15 of benzo[a]pyrene, benzo[e]pyrene, dibenz[a,h]anthracene; fold 2 the reverse with 12, the three hold-out (c) parents
+never in training); every s5 molecule is tested once. Each derivative goes with its scaffold, so the control tests unseen scaffolds of a seen ring
+count, not seen molecules. The control's pool is larger by 12–15 molecules of ≈ 1,000; the difference is ignored. **Read:** ring-coupling ratio on
+s5, seed means, size arm r_S against the control r_K (both folds pooled). **Lines** on q5 = r_S / r_K: *q5 ≤ 1.3* → the correction carries from four
+to five rings and from ≈ 30 to 40 atoms at modest cost: the mandate's larger PAHs ride on the network, the cheap corpus does not need every ring
+count; *q5 ≥ 1.8* → steep: the cheap corpus must contain each ring count the mandate targets up to the DFT reach (≈ 40 atoms), and beyond it the
+mandate's 50–100-atom PAHs rest on an extrapolation this test says fails — the mandate's odds are re-estimated with that; *between* → noted, and
+the five-ring families enter the corpus before the next pool is designed. Reported beside, without a line: corrected ω and the four families on s5
+against the zero rule; the size arm on s4N (the thirty aza four-rings, 25–29 atoms: an unseen-scaffold test at a size inside the corpus); r_S per
+scaffold. **Before the run** (≈ 23–25 Oct, when the thirty have their labels on the laptop): `rungC_eval_saved.py` gets an `--eval-ids-file`
+switch (an explicit test set; to build, with a test), the loader is checked to take layer P3 with `--exclude-ids-file` (smoke on two ids), and the
+run is a chain-runner spec (`probes/runs/chain41.json`, dry-run). Evaluation labels: analytic where the molecule has them, else FD; the counts are
+recorded.
