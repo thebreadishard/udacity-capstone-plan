@@ -70,3 +70,7 @@ registered three (scrollable diagram sources unreachable by keyboard; a name on 
 of the fixed source S6 passes**: 0 serious or critical axe findings and 0 contrast failures on Home, Atlas, benzene, pyridine and benzene+Cl, in the
 light and the dark scheme, at 1280 px and 375 px, no horizontal scroll; the keyboard walk reaches every control with a visible 2 px focus outline.
 The published site passes once that build is published (on the user's word). Two tests in `website/export/tests/test_site_pages.py` hold the fixes.
+
+**Published 11 October 2026 13:36 on the user's word ('Ja oké')** (`website/deploy.sh --no-export`: the tested build, the export of 10 October).
+Re-measured live at 13:3x: pyridine and benzene+Cl 0 serious axe findings and 0 contrast failures (light, 1280 px; lowest 6.13:1), Methods 0 and 0.
+S6 passes on the published site.

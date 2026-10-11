@@ -6,17 +6,67 @@
   "pass_line": "axe serious_or_critical == 0 and contrast failures == 0 on every page and scheme",
   "published_site_before_fixes": {
     "url": "https://thebreadishard.github.io/spectrum-atlas/",
-    "viewport": [1280, 800],
+    "viewport": [
+      1280,
+      800
+    ],
     "scheme": "light",
     "pages": {
-      "home": {"axe_serious_or_critical": 0, "axe_passes": 41, "contrast_checked": 36, "contrast_failures": 0, "lowest_ratio": 6.13},
-      "atlas": {"axe_serious_or_critical": 0, "axe_passes": 43, "axe_seconds": 33, "contrast_checked": 3248, "contrast_failures": 0, "lowest_ratio": 6.3},
-      "benzene A_8448043181": {"axe_serious_or_critical": 0, "axe_passes": 52, "contrast_checked": 267, "contrast_failures": 0, "lowest_ratio": 6.13},
-      "pyridine A_6e858b26e5": {"axe_serious_or_critical": 0, "contrast_checked": 186, "contrast_failures": [
-        {"element": "stick-chart lane label 'B3LYP'", "fg": "#E69F00", "bg": "#FFFFFF", "ratio": 2.25, "need": 4.5},
-        {"element": "stick-chart lane label 'ωB97X'", "fg": "#009E73", "bg": "#FFFFFF", "ratio": 3.42, "need": 4.5}]},
-      "benzene+Cl B_1ed01fda1b": {"axe_serious_or_critical": 0, "contrast_checked": 189, "contrast_failures": [
-        {"element": "stick-chart lane label 'ωB97X'", "fg": "#E69F00", "bg": "#FFFFFF", "ratio": 2.25, "need": 4.5}]}
+      "home": {
+        "axe_serious_or_critical": 0,
+        "axe_passes": 41,
+        "contrast_checked": 36,
+        "contrast_failures": 0,
+        "lowest_ratio": 6.13
+      },
+      "atlas": {
+        "axe_serious_or_critical": 0,
+        "axe_passes": 43,
+        "axe_seconds": 33,
+        "contrast_checked": 3248,
+        "contrast_failures": 0,
+        "lowest_ratio": 6.3
+      },
+      "benzene A_8448043181": {
+        "axe_serious_or_critical": 0,
+        "axe_passes": 52,
+        "contrast_checked": 267,
+        "contrast_failures": 0,
+        "lowest_ratio": 6.13
+      },
+      "pyridine A_6e858b26e5": {
+        "axe_serious_or_critical": 0,
+        "contrast_checked": 186,
+        "contrast_failures": [
+          {
+            "element": "stick-chart lane label 'B3LYP'",
+            "fg": "#E69F00",
+            "bg": "#FFFFFF",
+            "ratio": 2.25,
+            "need": 4.5
+          },
+          {
+            "element": "stick-chart lane label 'ωB97X'",
+            "fg": "#009E73",
+            "bg": "#FFFFFF",
+            "ratio": 3.42,
+            "need": 4.5
+          }
+        ]
+      },
+      "benzene+Cl B_1ed01fda1b": {
+        "axe_serious_or_critical": 0,
+        "contrast_checked": 189,
+        "contrast_failures": [
+          {
+            "element": "stick-chart lane label 'ωB97X'",
+            "fg": "#E69F00",
+            "bg": "#FFFFFF",
+            "ratio": 2.25,
+            "need": 4.5
+          }
+        ]
+      }
     },
     "verdict": "fail: the stick chart's lane labels (Spectrum.astro) under 4.5:1 in the light scheme; axe did not see it (oklch incomplete)"
   },
@@ -28,30 +78,119 @@
     "url": "http://127.0.0.1:4321/spectrum-atlas/ (astro dev, source of commit with the fixes)",
     "desktop_1280x800": {
       "light": {
-        "pyridine": {"axe_serious_or_critical": 0, "contrast_checked": 186, "contrast_failures": 0, "lowest_ratio": 6.13},
-        "benzene": {"axe_serious_or_critical": 0, "contrast_checked": 267, "contrast_failures": 0, "lowest_ratio": 6.13},
-        "benzene+Cl": {"axe_serious_or_critical": 0, "contrast_checked": 189, "contrast_failures": 0, "lowest_ratio": 6.13},
-        "methods (sources)": {"axe_serious_or_critical": 0, "contrast_failures": 0},
-        "methods (diagrams rendered, mermaid neutral theme)": {"axe_serious_or_critical": 0, "contrast_checked": 190, "contrast_failures": 0, "lowest_ratio": 6.3}
+        "pyridine": {
+          "axe_serious_or_critical": 0,
+          "contrast_checked": 186,
+          "contrast_failures": 0,
+          "lowest_ratio": 6.13
+        },
+        "benzene": {
+          "axe_serious_or_critical": 0,
+          "contrast_checked": 267,
+          "contrast_failures": 0,
+          "lowest_ratio": 6.13
+        },
+        "benzene+Cl": {
+          "axe_serious_or_critical": 0,
+          "contrast_checked": 189,
+          "contrast_failures": 0,
+          "lowest_ratio": 6.13
+        },
+        "methods (sources)": {
+          "axe_serious_or_critical": 0,
+          "contrast_failures": 0
+        },
+        "methods (diagrams rendered, mermaid neutral theme)": {
+          "axe_serious_or_critical": 0,
+          "contrast_checked": 190,
+          "contrast_failures": 0,
+          "lowest_ratio": 6.3
+        }
       },
       "dark": {
-        "home": {"axe_serious_or_critical": 0, "contrast_checked": 36, "contrast_failures": 0, "lowest_ratio": 6.68},
-        "atlas (contrast only)": {"contrast_checked": 3248, "contrast_failures": 0, "lowest_ratio": 6.68},
-        "pyridine": {"axe_serious_or_critical": 0, "contrast_checked": 186, "contrast_failures": 0, "lowest_ratio": 6.68},
-        "benzene": {"axe_serious_or_critical": 0, "contrast_checked": 267, "contrast_failures": 0, "lowest_ratio": 6.68},
-        "benzene+Cl": {"axe_serious_or_critical": 0, "contrast_checked": 189, "contrast_failures": 0, "lowest_ratio": 6.68},
-        "status": {"axe_serious_or_critical": 0, "contrast_checked": 191, "contrast_failures": 0, "lowest_ratio": 6.68},
-        "about": {"axe_serious_or_critical": 0, "contrast_checked": 23, "contrast_failures": 0, "lowest_ratio": 6.68},
-        "methods (before the methods fix)": {"axe_serious_or_critical": 2, "violations": ["aria-prohibited-attr (6)", "scrollable-region-focusable (6)"]},
-        "methods (after, sources)": {"axe_serious_or_critical": 0, "contrast_checked": 55, "contrast_failures": 0},
-        "methods (after, diagrams rendered, mermaid dark theme)": {"axe_serious_or_critical": 0, "contrast_checked": 190, "contrast_failures": 0, "lowest_ratio": 6.68}
+        "home": {
+          "axe_serious_or_critical": 0,
+          "contrast_checked": 36,
+          "contrast_failures": 0,
+          "lowest_ratio": 6.68
+        },
+        "atlas (contrast only)": {
+          "contrast_checked": 3248,
+          "contrast_failures": 0,
+          "lowest_ratio": 6.68
+        },
+        "pyridine": {
+          "axe_serious_or_critical": 0,
+          "contrast_checked": 186,
+          "contrast_failures": 0,
+          "lowest_ratio": 6.68
+        },
+        "benzene": {
+          "axe_serious_or_critical": 0,
+          "contrast_checked": 267,
+          "contrast_failures": 0,
+          "lowest_ratio": 6.68
+        },
+        "benzene+Cl": {
+          "axe_serious_or_critical": 0,
+          "contrast_checked": 189,
+          "contrast_failures": 0,
+          "lowest_ratio": 6.68
+        },
+        "status": {
+          "axe_serious_or_critical": 0,
+          "contrast_checked": 191,
+          "contrast_failures": 0,
+          "lowest_ratio": 6.68
+        },
+        "about": {
+          "axe_serious_or_critical": 0,
+          "contrast_checked": 23,
+          "contrast_failures": 0,
+          "lowest_ratio": 6.68
+        },
+        "methods (before the methods fix)": {
+          "axe_serious_or_critical": 2,
+          "violations": [
+            "aria-prohibited-attr (6)",
+            "scrollable-region-focusable (6)"
+          ]
+        },
+        "methods (after, sources)": {
+          "axe_serious_or_critical": 0,
+          "contrast_checked": 55,
+          "contrast_failures": 0
+        },
+        "methods (after, diagrams rendered, mermaid dark theme)": {
+          "axe_serious_or_critical": 0,
+          "contrast_checked": 190,
+          "contrast_failures": 0,
+          "lowest_ratio": 6.68
+        }
       }
     },
     "phone_375x812": {
-      "benzene light": {"axe_serious_or_critical": 0, "contrast_failures": 0, "horizontal_scroll": false, "smallest_chart_text_px": 15},
-      "home dark": {"axe_serious_or_critical": 0, "contrast_failures": 0, "horizontal_scroll": false},
-      "atlas dark (contrast only)": {"contrast_checked": 3248, "contrast_failures": 0, "horizontal_scroll": false},
-      "pyridine dark": {"axe_serious_or_critical": 0, "contrast_failures": 0, "horizontal_scroll": false}
+      "benzene light": {
+        "axe_serious_or_critical": 0,
+        "contrast_failures": 0,
+        "horizontal_scroll": false,
+        "smallest_chart_text_px": 15
+      },
+      "home dark": {
+        "axe_serious_or_critical": 0,
+        "contrast_failures": 0,
+        "horizontal_scroll": false
+      },
+      "atlas dark (contrast only)": {
+        "contrast_checked": 3248,
+        "contrast_failures": 0,
+        "horizontal_scroll": false
+      },
+      "pyridine dark": {
+        "axe_serious_or_critical": 0,
+        "contrast_failures": 0,
+        "horizontal_scroll": false
+      }
     },
     "keyboard_walk": {
       "benzene": "20 stops then wraps: skip link, home, Atlas, Methods, Status, About, search, breadcrumb, flag chip, 'How to read this', Show 3D, evidence ×2, issue link, 'How well is this shape known?', mode table region, four file links; every stop a 2 px solid outline and scrolled into view; order header → chips → lead chart → side column → rest (the DOM order of the grid)",
@@ -63,5 +202,28 @@
     "screen-reader session (website BACKLOG row 9; not part of S6's registered line)",
     "the flag chip's summary is 18 px tall on a phone: WCAG 2.2 target size passes on spacing (axe target-size passes), the howto summary elsewhere has 44 px; a taller chip is a design choice for the next Atlas round",
     "axe in CI (BACKLOG row 9)"
-  ]
+  ],
+  "published_site_after_fixes": {
+    "published": "2026-10-11 13:36 local, on the user's word, website/deploy.sh --no-export (the tested build; export of 10 Oct)",
+    "remeasured": "2026-10-11 13:3x, light, 1280x800",
+    "pages": {
+      "pyridine A_6e858b26e5": {
+        "axe_serious_or_critical": 0,
+        "contrast_checked": 186,
+        "contrast_failures": 0,
+        "lowest_ratio": 6.13
+      },
+      "benzene+Cl B_1ed01fda1b": {
+        "axe_serious_or_critical": 0,
+        "contrast_checked": 189,
+        "contrast_failures": 0,
+        "lowest_ratio": 6.13
+      },
+      "methods": {
+        "axe_serious_or_critical": 0,
+        "contrast_failures": 0
+      }
+    },
+    "verdict": "S6 passes on the published site"
+  }
 }
