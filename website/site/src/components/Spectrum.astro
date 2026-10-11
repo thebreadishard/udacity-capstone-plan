@@ -4,9 +4,12 @@
 // positions; heights are drawn by IRSpectrum.astro where the molecule has dipole derivatives (TASKS 44).
 // 10 Oct 2026: two renders, a wide one and a narrow one for phones, of which CSS shows one — on a 375 px phone the single 720-unit render put its
 // labels at 4.7 px (measured on the live benzene page).
+// 11 Oct 2026 (accessibility audit S6, website/tools/a11y_audit.js): each series has its own lane and label, so colour identifies nothing; the
+// labels are drawn in the text colour with a halo in the card colour (they sit over the C–H sticks), and Okabe–Ito orange #E69F00 (2.25:1 on
+// white, under WCAG 1.4.11's 3:1 for graphics) is darkened to #B07400 (3.9:1 on the light card, 4.5:1 on the dark one).
 interface Series { label: string; values: number[]; color?: string; dashed?: boolean }
 const { series, min = 0, max = 3600, height = 220, title = 'Harmonic stick spectrum' } = Astro.props as { series: Series[]; min?: number; max?: number; height?: number; title?: string };
-const palette = ['#0072B2', '#E69F00', '#009E73', '#CC79A7'];
+const palette = ['#0072B2', '#B07400', '#009E73', '#CC79A7'];
 // comparisons stay in the frontmatter: a "<=" inside the template is read as a tag by the Astro compiler
 const inRange = (vals: number[]) => vals.filter((v) => v >= min && v <= max);
 const seriesIn = series.map((s) => ({ ...s, shown: inRange(s.values) }));
@@ -34,7 +37,7 @@ const medium = render(480, height, 12, 500, [3, 4, 5, 6, 8, 10, 15, 25]);   // 1
       {seriesIn.map((s, i) => (
         <g stroke={s.color ?? palette[i % palette.length]} stroke-width="1.5" stroke-dasharray={s.dashed ? '3 2' : undefined}>
           {s.shown.map((v) => <line x1={r.x(v)} x2={r.x(v)} y1={r.padT + r.lane * (i + 1) - 4} y2={r.padT + r.lane * i + 6} />)}
-          <text x={r.padL + 4} y={r.padT + r.lane * i + r.font + 3} font-size={r.font} fill={s.color ?? palette[i % palette.length]} stroke="none">{s.label}</text>
+          <text x={r.padL + 4} y={r.padT + r.lane * i + r.font + 3} font-size={r.font} fill="currentColor" class="lab">{s.label}</text>
         </g>
       ))}
       <line x1={r.padL} x2={r.W - r.padR} y1={r.H - r.padB} y2={r.H - r.padB} stroke="currentColor" stroke-opacity="0.5" />
@@ -44,6 +47,7 @@ const medium = render(480, height, 12, 500, [3, 4, 5, 6, 8, 10, 15, 25]);   // 1
 <style>
   .spectrum { margin: 0; color: var(--fg); }
   .spectrum svg { display: block; max-width: 100%; }
+  .spectrum .lab { stroke: var(--bg-elev); stroke-width: 3px; stroke-dasharray: none; paint-order: stroke; stroke-linejoin: round; }
   /* the render follows the card's own width, not the screen's (10 Oct 2026): ≥ 11 px labels from a 375 px phone to a 1280 px desktop */
   .spectrum { container-type: inline-size; }
   .spectrum .medium, .spectrum .narrow { display: none; }

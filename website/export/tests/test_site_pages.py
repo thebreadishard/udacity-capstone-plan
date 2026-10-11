@@ -4,6 +4,7 @@ cheap positions with the 'not computed' line. Design §10 (10 Oct 2026): under a
 reading notes sit behind a tap, and the long flag story behind a short chip. Runs against website/site/dist after `npm run build`; skipped when
 there is no build."""
 import os
+import re
 
 import pytest
 
@@ -88,3 +89,22 @@ def test_every_series_is_drawn_once():
 
 def test_a_long_flag_label_gets_a_short_chip():
     assert ">finite-difference Hessian noisy</summary>" in page("A_6e858b26e5")
+
+
+def test_stick_chart_labels_meet_text_contrast():
+    """S6 audit, 11 Oct 2026 (website/tools/a11y_audit.js): the lane labels were drawn in the series colour, 2.25:1 for Okabe-Ito orange on
+    white; they are drawn in the text colour now, and the orange sticks in a darker orange (3.9:1, WCAG 1.4.11)."""
+    h = page("A_6e858b26e5")                                                             # pyridine: anchor / B3LYP / ωB97X lanes
+    for name in ("anchor", "B3LYP", "ωB97X"):
+        assert re.search(rf'<text[^>]*fill="currentColor"[^>]*class="lab"[^>]*>{name}</text>', h), name
+    assert "#E69F00" not in h and "#B07400" in h
+
+
+def test_methods_source_blocks_take_keyboard_focus():
+    """S6 audit, 11 Oct 2026: axe found the scrollable diagram sources unreachable by keyboard and a name on a role-less div."""
+    with open(os.path.join(DIST, "..", "methods", "index.html"), encoding="utf-8") as f:
+        h = f.read()
+    sources = re.findall(r'<pre class="mermaid-src"[^>]*>', h)
+    assert sources and all('tabindex="0"' in s and 'role="region"' in s and "aria-label=" in s for s in sources)
+    outs = re.findall(r'<div class="mermaid-out"[^>]*>', h)
+    assert len(outs) == len(sources) and all('role="figure"' in o for o in outs)

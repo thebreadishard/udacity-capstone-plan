@@ -58,3 +58,15 @@ and the case registered as S4c before the final run. Tests: 8 green. Paper: 1,85
 The standout's plan line stays **proxy**: on benzene the registered CC-level test failed (C1, C2), because the coupled-cluster correction's couplings lie
 outside the band the plan is built on (4 % in band against 52 % for the proxy). The certificate's wording does not change; the "confirmed" label waits for
 a plan that reaches its target on a real response (the wide-candidate deck) and for naphthalene.
+
+## Outcome addendum, 11 October 2026 13:2x — S6 run
+
+S6 was run with `website/tools/a11y_audit.js`: axe-core 4.10.2 at WCAG 2.2 AA plus best practice, and a contrast sweep of its own, because axe
+cannot parse the site's oklch() colour tokens and leaves those nodes "incomplete" (`out/s6_accessibility_2026-10-11.json`). **On the published site S6 failed**: axe found
+nothing serious, but the sweep found the stick chart's lane labels in the series colour at 2.25:1 (orange) and 3.42:1 (green) against 4.5:1 in the
+light scheme, on every positions-only page (pyridine, the substituted benzenes). Fixed in `Spectrum.astro`: labels in the text colour, the orange
+sticks darkened to #B07400 (3.9:1, WCAG 1.4.11's 3:1 for graphics). The same pass found two serious axe findings on the Methods page, outside the
+registered three (scrollable diagram sources unreachable by keyboard; a name on a role-less element), fixed in `methods.astro`. **On the local build
+of the fixed source S6 passes**: 0 serious or critical axe findings and 0 contrast failures on Home, Atlas, benzene, pyridine and benzene+Cl, in the
+light and the dark scheme, at 1280 px and 375 px, no horizontal scroll; the keyboard walk reaches every control with a visible 2 px focus outline.
+The published site passes once that build is published (on the user's word). Two tests in `website/export/tests/test_site_pages.py` hold the fixes.

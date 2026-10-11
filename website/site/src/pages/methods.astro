@@ -28,8 +28,8 @@ const sheets = wanted.filter(([f]) => fs.existsSync(path.join(archDir, f))).map(
       <details class="sheet" open={s.file.startsWith('00')}>
         <summary><strong>{s.title}</strong> <span class="mono muted small">{s.file}</span></summary>
         {s.comment && <p class="small">{s.comment}</p>}
-        <pre class="mermaid-src" data-title={s.title}>{s.body}</pre>
-        <div class="mermaid-out" aria-label={`Diagram: ${s.title}`}></div>
+        <pre class="mermaid-src" data-title={s.title} tabindex="0" role="region" aria-label={`Diagram source: ${s.title}; scrolls`}>{s.body}</pre>
+        <div class="mermaid-out" role="figure" aria-label={`Diagram: ${s.title}`}></div>
         <p class="muted small"><a href={repo + 'GoalGathering/architecture/' + s.file}>source</a></p>
       </details>
     ))}

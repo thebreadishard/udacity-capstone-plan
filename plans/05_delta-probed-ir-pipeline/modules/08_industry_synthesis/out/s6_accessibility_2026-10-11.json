@@ -1,0 +1,67 @@
+{
+  "scenario": "S6 accessibility and mobile (PRE_REGISTRATION.md): axe 0 serious/critical on Home, Atlas, one molecule page; keyboard walk; phone layout",
+  "date": "2026-10-11",
+  "tool": "website/tools/a11y_audit.js: axe-core 4.10.2 (WCAG 2.0/2.1 A+AA, 2.2 AA, best practice) plus an own contrast sweep, because axe cannot parse the site's oklch() tokens and reports those nodes as incomplete; text inside an SVG is measured against the shape painted beneath it",
+  "browser": "Claude desktop built-in browser (Chromium), viewport emulation, prefers-color-scheme emulation; <details> opened before each run",
+  "pass_line": "axe serious_or_critical == 0 and contrast failures == 0 on every page and scheme",
+  "published_site_before_fixes": {
+    "url": "https://thebreadishard.github.io/spectrum-atlas/",
+    "viewport": [1280, 800],
+    "scheme": "light",
+    "pages": {
+      "home": {"axe_serious_or_critical": 0, "axe_passes": 41, "contrast_checked": 36, "contrast_failures": 0, "lowest_ratio": 6.13},
+      "atlas": {"axe_serious_or_critical": 0, "axe_passes": 43, "axe_seconds": 33, "contrast_checked": 3248, "contrast_failures": 0, "lowest_ratio": 6.3},
+      "benzene A_8448043181": {"axe_serious_or_critical": 0, "axe_passes": 52, "contrast_checked": 267, "contrast_failures": 0, "lowest_ratio": 6.13},
+      "pyridine A_6e858b26e5": {"axe_serious_or_critical": 0, "contrast_checked": 186, "contrast_failures": [
+        {"element": "stick-chart lane label 'B3LYP'", "fg": "#E69F00", "bg": "#FFFFFF", "ratio": 2.25, "need": 4.5},
+        {"element": "stick-chart lane label 'ωB97X'", "fg": "#009E73", "bg": "#FFFFFF", "ratio": 3.42, "need": 4.5}]},
+      "benzene+Cl B_1ed01fda1b": {"axe_serious_or_critical": 0, "contrast_checked": 189, "contrast_failures": [
+        {"element": "stick-chart lane label 'ωB97X'", "fg": "#E69F00", "bg": "#FFFFFF", "ratio": 2.25, "need": 4.5}]}
+    },
+    "verdict": "fail: the stick chart's lane labels (Spectrum.astro) under 4.5:1 in the light scheme; axe did not see it (oklch incomplete)"
+  },
+  "fixes": [
+    "Spectrum.astro: lane labels in the text colour with a halo in the card colour; Okabe-Ito orange #E69F00 (2.25:1 on white, under WCAG 1.4.11's 3:1 for graphics) darkened to #B07400 (3.93:1 on white, 4.53:1 on the dark card)",
+    "methods.astro: the scrollable diagram sources take keyboard focus (tabindex 0, role region, aria-label; axe scrollable-region-focusable, serious, 6 nodes); the diagram container gets role figure for its aria-label (axe aria-prohibited-attr, serious, 6 nodes). The Methods page is outside the registered three; found in the same pass"
+  ],
+  "local_dev_build_after_fixes": {
+    "url": "http://127.0.0.1:4321/spectrum-atlas/ (astro dev, source of commit with the fixes)",
+    "desktop_1280x800": {
+      "light": {
+        "pyridine": {"axe_serious_or_critical": 0, "contrast_checked": 186, "contrast_failures": 0, "lowest_ratio": 6.13},
+        "benzene": {"axe_serious_or_critical": 0, "contrast_checked": 267, "contrast_failures": 0, "lowest_ratio": 6.13},
+        "benzene+Cl": {"axe_serious_or_critical": 0, "contrast_checked": 189, "contrast_failures": 0, "lowest_ratio": 6.13},
+        "methods (sources)": {"axe_serious_or_critical": 0, "contrast_failures": 0},
+        "methods (diagrams rendered, mermaid neutral theme)": {"axe_serious_or_critical": 0, "contrast_checked": 190, "contrast_failures": 0, "lowest_ratio": 6.3}
+      },
+      "dark": {
+        "home": {"axe_serious_or_critical": 0, "contrast_checked": 36, "contrast_failures": 0, "lowest_ratio": 6.68},
+        "atlas (contrast only)": {"contrast_checked": 3248, "contrast_failures": 0, "lowest_ratio": 6.68},
+        "pyridine": {"axe_serious_or_critical": 0, "contrast_checked": 186, "contrast_failures": 0, "lowest_ratio": 6.68},
+        "benzene": {"axe_serious_or_critical": 0, "contrast_checked": 267, "contrast_failures": 0, "lowest_ratio": 6.68},
+        "benzene+Cl": {"axe_serious_or_critical": 0, "contrast_checked": 189, "contrast_failures": 0, "lowest_ratio": 6.68},
+        "status": {"axe_serious_or_critical": 0, "contrast_checked": 191, "contrast_failures": 0, "lowest_ratio": 6.68},
+        "about": {"axe_serious_or_critical": 0, "contrast_checked": 23, "contrast_failures": 0, "lowest_ratio": 6.68},
+        "methods (before the methods fix)": {"axe_serious_or_critical": 2, "violations": ["aria-prohibited-attr (6)", "scrollable-region-focusable (6)"]},
+        "methods (after, sources)": {"axe_serious_or_critical": 0, "contrast_checked": 55, "contrast_failures": 0},
+        "methods (after, diagrams rendered, mermaid dark theme)": {"axe_serious_or_critical": 0, "contrast_checked": 190, "contrast_failures": 0, "lowest_ratio": 6.68}
+      }
+    },
+    "phone_375x812": {
+      "benzene light": {"axe_serious_or_critical": 0, "contrast_failures": 0, "horizontal_scroll": false, "smallest_chart_text_px": 15},
+      "home dark": {"axe_serious_or_critical": 0, "contrast_failures": 0, "horizontal_scroll": false},
+      "atlas dark (contrast only)": {"contrast_checked": 3248, "contrast_failures": 0, "horizontal_scroll": false},
+      "pyridine dark": {"axe_serious_or_critical": 0, "contrast_failures": 0, "horizontal_scroll": false}
+    },
+    "keyboard_walk": {
+      "benzene": "20 stops then wraps: skip link, home, Atlas, Methods, Status, About, search, breadcrumb, flag chip, 'How to read this', Show 3D, evidence ×2, issue link, 'How well is this shape known?', mode table region, four file links; every stop a 2 px solid outline and scrolled into view; order header → chips → lead chart → side column → rest (the DOM order of the grid)",
+      "atlas": "16 stops: skip link, header links, site search (Search molecules), atlas search (Name, formula or SMILES), Status and Layer selects, the results region, then the result rows; every stop a 2 px solid outline"
+    }
+  },
+  "verdict": "S6 passes on the local build of the fixed source: 0 serious/critical axe findings and 0 contrast failures on Home, Atlas and three molecule pages (plus Methods, Status, About) in both schemes, at 1280 px and 375 px, no horizontal scroll, keyboard walk complete with visible focus. The published site passes once the fixed build is published.",
+  "left_open": [
+    "screen-reader session (website BACKLOG row 9; not part of S6's registered line)",
+    "the flag chip's summary is 18 px tall on a phone: WCAG 2.2 target size passes on spacing (axe target-size passes), the howto summary elsewhere has 44 px; a taller chip is a design choice for the next Atlas round",
+    "axe in CI (BACKLOG row 9)"
+  ]
+}
