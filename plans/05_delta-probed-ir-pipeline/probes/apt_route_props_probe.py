@@ -7,6 +7,8 @@ route's settings (`corpus/analytic_hessians.py`: B3LYP/6-31G* Cartesian, grid un
   - L1 the APT against route B's saved file, L2 the Hessian against the saved analytic one, L3 upstream's heights against
     `corpus/apt.intensities` on the same APT, Hessian and masses, L4 the translation sum rule, L5 the APT against finite differences.
 Nothing is written into the molecule folders; one JSON per run goes to --out.
+An FD file with two steps (dipole_derivs_fd.py without --no-half-step) adds the Richardson reading of
+`probes/results_m1/uks_apt_margin_2026-10-11/REGISTRATION.md` (M3): the gap at h, at h/2 and to P* = (4 P(h/2) − P(h)) / 3.
 
     python probes/apt_route_props_probe.py <dir with geometry.json> [more dirs] --out <file.json> [--threads 4] [--grid 99,590]
                                            [--charge 1 --spin 1] [--fd <FD npz, one dir only>]
@@ -66,6 +68,12 @@ def compare_heights(freq_a, km_a, freq_b, km_b):
         raise ValueError(f"degenerate groups differ: {len(ga)} vs {len(gb)}")
     rel = [abs(a[1] - b[1]) / max(a[1], b[1]) for a, b in zip(ga, gb, strict=True) if max(a[1], b[1]) >= HEIGHT_FLOOR]
     return maxdiff(fa, fb), max(rel) if rel else 0.0
+
+
+def richardson(P, P_h, P_h2):
+    """M3 of the margin registration: max |P − P_FD| at h, at h/2, and against P* = (4 P(h/2) − P(h)) / 3, plus |P(h) − P(h/2)|."""
+    star = (4.0 * np.asarray(P_h2) - np.asarray(P_h)) / 3.0
+    return {"g_h": maxdiff(P, P_h), "g_h2": maxdiff(P, P_h2), "g_richardson": maxdiff(P, star), "fd_pair": maxdiff(P_h, P_h2)}
 
 
 def upstream_heights(ir, H, masses):
@@ -132,6 +140,8 @@ def probe(d, grid, charge, spin, fd_file, infrared, log=print):
         r["vs_fd"] = maxdiff(P, zf["apt"])
         r["fd_file"] = saved["fd"]
         r["fd_sum_rule"] = float(zf["sum_rule_max"])
+        if "apt_h" in zf.files and not np.array_equal(zf["apt_h"], zf["apt"]):
+            r["richardson"] = richardson(P, zf["apt_h"], zf["apt"])
     if os.path.exists(saved["h"]):
         zh = np.load(saved["h"])
         if "spin" in zh.files and int(zh["spin"]) != spin:

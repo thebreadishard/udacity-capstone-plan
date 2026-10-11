@@ -16,7 +16,7 @@ PLAN = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PLAN / "probes"))
 sys.path.insert(0, str(PLAN / "modules" / "05_support_predictor" / "corpus"))
 from apt import apt_from_mo1, hessian_with_response, sum_rule  # noqa: E402
-from apt_route_props_probe import apt_from_upstream, band_groups, compare_heights, upstream_route  # noqa: E402
+from apt_route_props_probe import apt_from_upstream, band_groups, compare_heights, richardson, upstream_route  # noqa: E402
 from dipole_derivs_fd import apt_fd  # noqa: E402
 from upstream_infrared import CHECKOUT, load  # noqa: E402
 
@@ -44,6 +44,14 @@ def test_apt_from_upstream_reorders_atom_axis_dipole_to_dipole_column():
     de = np.arange(2 * 3 * 3, dtype=float).reshape(2, 3, 3)                              # de[A, x, t]
     P = apt_from_upstream(de)
     assert P.shape == (3, 6) and all(P[t, 3 * A + x] == de[A, x, t] for A in range(2) for x in range(3) for t in range(3))
+
+
+def test_richardson_removes_a_pure_second_order_step_error():
+    P = np.ones((3, 6))
+    err = np.full((3, 6), 1e-3)                                                           # FD error c·h² at h; a quarter at h/2
+    r = richardson(P, P + err, P + err / 4)
+    assert abs(r["g_h"] - 1e-3) < 1e-15 and abs(r["g_h2"] - 2.5e-4) < 1e-15 and r["g_richardson"] < 1e-15
+    assert abs(r["fd_pair"] - 7.5e-4) < 1e-15
 
 
 def test_band_groups_sum_degenerate_modes_and_compare_heights_ignores_their_split():
