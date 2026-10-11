@@ -1,0 +1,60 @@
+{
+ "probe": "TASKS 44 third route (pyscf-properties infrared)",
+ "pyscf_properties_commit": "4eee5a430fb47eca5962f36fdcaf75c2b87e7ede",
+ "limits": {
+  "vs_route_b": 0.0001,
+  "hessian": 1e-05,
+  "freq": 0.1,
+  "height_rel": 0.001,
+  "sum_rule": 0.0005,
+  "vs_fd": 0.001
+ },
+ "threads": 4,
+ "grid": [
+  99,
+  590
+ ],
+ "molecules": [
+  {
+   "dir": "probes/results_m1/water_dipole_fd_2026-10-02",
+   "atoms": 3,
+   "charge": 0,
+   "spin": 0,
+   "reference": "RKS",
+   "seconds": {
+    "scf": 1.0,
+    "upstream_hessian_and_apt": 3.0
+   },
+   "sum_rule": 4.5862568709420515e-07,
+   "freq_maxdiff": 4.276477284292923e-06,
+   "height_maxrel": 9.477486832969066e-08,
+   "vs_route_b": 1.154392867963594e-07,
+   "vs_fd": 1.2466143304801225e-05,
+   "fd_file": "probes/results_m1/water_dipole_fd_2026-10-02/dipole_b3lyp_fd.npz",
+   "fd_sum_rule": 2.500088913670595e-06,
+   "checks": {
+    "vs_route_b": true,
+    "freq": true,
+    "height_rel": true,
+    "sum_rule": true,
+    "vs_fd": true
+   },
+   "passed": true,
+   "peak_rss_gb": 0.38,
+   "bands": [
+    [
+     1679.2,
+     79.52
+    ],
+    [
+     3870.8,
+     2.48
+    ],
+    [
+     4000.1,
+     23.45
+    ]
+   ]
+  }
+ ]
+}

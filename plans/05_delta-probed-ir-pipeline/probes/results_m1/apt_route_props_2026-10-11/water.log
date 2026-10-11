@@ -1,0 +1,27 @@
+/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/prop/efg/rhf.py:45: UserWarning: Module EFG is under testing
+  warnings.warn('Module EFG is under testing')
+/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/prop/efg/dhf.py:30: UserWarning: Module EFG is under testing
+  warnings.warn('Module EFG is under testing')
+/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/prop/zfs/uhf.py:40: UserWarning: Module ZFS is under testing
+  warnings.warn('Module ZFS is under testing')
+/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/prop/gtensor/uhf.py:43: UserWarning: Module g-tensor is under testing
+  warnings.warn('Module g-tensor is under testing')
+/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/prop/gtensor/uks.py:41: UserWarning: Module g-tensor is under testing
+  warnings.warn('Module g-tensor is under testing')
+/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/prop/hfc/uks.py:35: UserWarning: Module HFC is under testing
+  warnings.warn('Module HFC is under testing')
+/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/prop/magnetizability/rhf.py:39: UserWarning: Module magnetizability is under testing
+  warnings.warn('Module magnetizability is under testing')
+/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/prop/magnetizability/uhf.py:37: UserWarning: Module magnetizability is under testing
+  warnings.warn('Module magnetizability is under testing')
+/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/prop/magnetizability/rks.py:37: UserWarning: Module magnetizability is under testing
+  warnings.warn('Module magnetizability is under testing')
+/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/prop/magnetizability/uks.py:39: UserWarning: Module magnetizability is under testing
+  warnings.warn('Module magnetizability is under testing')
+/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/prop/polarizability/uhf.py:34: UserWarning: Module polarizability is under testing
+  warnings.warn('Module polarizability is under testing')
+/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/prop/polarizability/rks.py:29: UserWarning: Module polarizability is under testing
+  warnings.warn('Module polarizability is under testing')
+/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/prop/polarizability/uks.py:29: UserWarning: Module polarizability is under testing
+  warnings.warn('Module polarizability is under testing')
+probes/results_m1/water_dipole_fd_2026-10-02: 3 atoms, RKS; SCF 1.0 s, upstream Hessian + APT 3.0 s, peak 0.38 GB; sum rule 4.6e-07; vs route B 1.2e-07 e; vs FD 1.2e-05 e; heights: freq 4.3e-06 cm-1, rel 9.5e-08 → PASS

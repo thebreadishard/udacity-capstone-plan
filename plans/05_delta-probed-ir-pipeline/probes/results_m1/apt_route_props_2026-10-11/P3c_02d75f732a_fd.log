@@ -1,0 +1,66 @@
+  atom 1/12 done, 535 s
+  atom 2/12 done, 1002 s
+  atom 3/12 done, 1514 s
+  atom 4/12 done, 1986 s
+  atom 5/12 done, 2419 s
+  atom 6/12 done, 2819 s
+  atom 7/12 done, 3299 s
+  atom 8/12 done, 3699 s
+  atom 9/12 done, 4096 s
+  atom 10/12 done, 4467 s
+  atom 11/12 done, 4854 s
+  atom 12/12 done, 5294 s
+modules/05_support_predictor/corpus/shards_pool3/a/molecules/P3c_02d75f732a: APT by FD (h = 0.005 and 0.0025); sum rule max |Σ P − qI| = 3.9e-05 (limit 0.0001) → PASS; |P(h) − P(h/2)| max nan e; 5294 s
+     161.4 cm-1      3.37 km/mol  (h:     3.37)
+     362.2 cm-1      1.70 km/mol  (h:     1.70)
+     423.9 cm-1     13.68 km/mol  (h:    13.68)
+     442.1 cm-1      1.98 km/mol  (h:     1.98)
+     546.4 cm-1      0.65 km/mol  (h:     0.65)
+     607.6 cm-1      6.46 km/mol  (h:     6.46)
+     644.5 cm-1     61.60 km/mol  (h:    61.60)
+     737.5 cm-1     34.20 km/mol  (h:    34.20)
+     812.1 cm-1    105.41 km/mol  (h:   105.41)
+     848.9 cm-1      6.26 km/mol  (h:     6.26)
+     854.5 cm-1      0.09 km/mol  (h:     0.09)
+     984.8 cm-1      6.31 km/mol  (h:     6.31)
+     996.3 cm-1      2.12 km/mol  (h:     2.12)
+    1005.1 cm-1     48.64 km/mol  (h:    48.64)
+    1021.6 cm-1      2.10 km/mol  (h:     2.10)
+    1104.5 cm-1     40.89 km/mol  (h:    40.89)
+    1172.4 cm-1     19.84 km/mol  (h:    19.84)
+    1186.6 cm-1     67.69 km/mol  (h:    67.69)
+    1370.4 cm-1     11.41 km/mol  (h:    11.41)
+    1400.9 cm-1     44.54 km/mol  (h:    44.54)
+    1429.2 cm-1    117.49 km/mol  (h:   117.49)
+    1481.1 cm-1      1.28 km/mol  (h:     1.28)
+    1501.2 cm-1    170.52 km/mol  (h:   170.52)
+    1558.5 cm-1     52.93 km/mol  (h:    52.93)
+    1615.8 cm-1     36.27 km/mol  (h:    36.27)
+    3215.8 cm-1      1.37 km/mol  (h:     1.37)
+    3234.4 cm-1      0.02 km/mol  (h:     0.02)
+    3241.0 cm-1      9.19 km/mol  (h:     9.19)
+    3247.8 cm-1     12.63 km/mol  (h:    12.63)
+    3573.4 cm-1    288.96 km/mol  (h:   288.96)
+	Command being timed: "nice -n 19 /home/thebreadishard/qc05/bin/python probes/dipole_derivs_fd.py modules/05_support_predictor/corpus/shards_pool3/a/molecules/P3c_02d75f732a --charge 1 --spin 1 --threads 4 --step 0.005 --no-half-step --out probes/results_m1/apt_route_props_2026-10-11/P3c_02d75f732a_fd.npz"
+	User time (seconds): 24012.33
+	System time (seconds): 280.03
+	Percent of CPU this job got: 458%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 1:28:15
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 719604
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 146
+	Minor (reclaiming a frame) page faults: 16325634
+	Voluntary context switches: 282506
+	Involuntary context switches: 41885
+	Swaps: 0
+	File system inputs: 458161
+	File system outputs: 87448
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

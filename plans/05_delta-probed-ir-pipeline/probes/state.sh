@@ -39,6 +39,9 @@ if [ -d "$MIRROR/.git" ]; then
   last=$(git -C "$MIRROR" log -1 --format=%ct 2>/dev/null || echo 0); age_h=$(( ($(date +%s) - last) / 3600 ))
   echo "  data backup (capstone-data): last commit $(git -C "$MIRROR" log -1 --format='%ad' --date=format:'%Y-%m-%d %H:%M' 2>/dev/null), ${age_h} h ago$([ "$age_h" -gt 48 ] && echo ' — STALE: check the scheduled task CapstoneDataBackup')"
 fi
+# 11 Oct 2026: pyscf can publish a release during the project, some carrying our merged pull requests — the digest shows the newest PyPI
+# release against the pinned versions; a newer one goes through the upgrade checklist of the software ledger, never mid-run
+timeout 15 python "$R/tools/upstream_releases.py" 2>/dev/null || echo "  upstream releases: check failed"
 echo "--- three most recent ledger entries (first line each) ---"
 sed -n '/^## 6. Log/,$p' "$LED" | grep -a '^- \*\*' | head -3 | cut -c1-140 | sed 's/^/  /'
 echo "=== grep the ledger only if something above needs explaining ==="

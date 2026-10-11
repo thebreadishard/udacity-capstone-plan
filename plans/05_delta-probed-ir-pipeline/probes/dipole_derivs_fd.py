@@ -7,10 +7,15 @@ Intensities: A_k = (N_A π / 3c²) |∂μ/∂Q_k|² in km/mol with ∂μ/∂Q fr
 
 pyscf calls: `mf.dip_moment(unit='AU')` as in pyscf/scf/test/test_rhf.py (test_dip_moment) and examples/scf/18-dipole_moment.py (cited per the
 29 Sep 2026 rule); the Hessian comes from a stored npz (corpus/analytic_hessians.py), not recomputed here.
+Open shells (11 Oct 2026, TASKS 44's cation heights): `--spin` (2S, pyscf's convention, as analytic_hessians.py takes it) selects UKS, the
+second route against pyscf-properties' UKS infrared module (`probes/apt_route_props_probe.py`). An ion's APT does not depend on the origin of
+the dipole (moving the origin shifts μ by a constant −q·c), so the displaced dipoles keep pyscf's default origin.
 
     python probes/dipole_derivs_fd.py <dir with geometry.json> --xc b3lyp [--hessian hessian_b3lyp_analytic.npz] [--step 0.005] [--threads 8] [--out dipole_b3lyp_fd.npz]
+                                      [--charge 1 --spin 1]
 """
 import argparse
+import functools
 import json
 import os
 import sys
@@ -24,10 +29,11 @@ from apt import intensities  # noqa: E402  (one implementation, corpus/apt.py, 1
 
 
 def dipole(mol, xc, grid, x, conv=1e-11, dm0=None):
-    """Analytic dipole (a.u.) of the converged RKS at geometry x; `dm0` seeds the SCF (the equilibrium density halves the displaced SCF cost)."""
+    """Analytic dipole (a.u.) of the converged RKS (UKS when mol.spin > 0) at geometry x; `dm0` seeds the SCF (the equilibrium density halves
+    the displaced SCF cost)."""
     m = mol.copy()
     m.set_geom_(x, unit="Bohr")
-    mf = dft.RKS(m)
+    mf = dft.UKS(m) if m.spin else dft.RKS(m)
     mf.xc = xc
     mf.grids.atom_grid = grid
     mf.grids.prune = None
@@ -65,6 +71,7 @@ def main() -> int:
     ap.add_argument("--threads", type=int, default=8)
     ap.add_argument("--grid", default="99,590")
     ap.add_argument("--charge", type=int, default=0)
+    ap.add_argument("--spin", type=int, default=0, help="2S; > 0 selects UKS (as analytic_hessians.py)")
     ap.add_argument("--out", default=None)
     ap.add_argument("--sum-rule-limit", type=float, default=1e-4, help="max |Σ_A P_A − q·I| allowed (e)")
     ap.add_argument("--no-half-step", action="store_true", help="skip the h/2 repeat (the sum rule stays as the second route; water: |P(h) − P(h/2)| 3e-6 e)")
@@ -75,10 +82,11 @@ def main() -> int:
     x0 = np.asarray(g["coords_bohr"], float)
     masses = np.asarray(g["masses_amu"], float)
     mol = gto.M(atom=[(s.capitalize(), tuple(c)) for s, c in zip(g["symbols"], x0, strict=True)], unit="Bohr", basis="6-31g*", cart=True, symmetry=False,
-                verbose=0, max_memory=20000, charge=a.charge)
+                verbose=0, max_memory=20000, charge=a.charge, spin=a.spin)
     t0 = time.time()
-    P = apt_fd(mol, a.xc, grid, x0, a.step)
-    P2 = P if a.no_half_step else apt_fd(mol, a.xc, grid, x0, a.step / 2)
+    progress = functools.partial(print, flush=True)      # 11 Oct 2026: unflushed, the per-atom lines sat in the buffer until the end of a run
+    P = apt_fd(mol, a.xc, grid, x0, a.step, log=progress)
+    P2 = P if a.no_half_step else apt_fd(mol, a.xc, grid, x0, a.step / 2, log=progress)
     n = len(x0)
     sum_rule = P.reshape(3, n, 3).sum(axis=1) - a.charge * np.eye(3)
     sr = float(np.abs(sum_rule).max())
@@ -89,9 +97,11 @@ def main() -> int:
     out = a.out or f"{a.dir}/dipole_{a.xc}_fd.npz"
     passed = sr <= a.sum_rule_limit
     np.savez_compressed(out, apt=P2, apt_h=P, step=a.step, sum_rule_max=sr, richardson_max=rich, freq_cm=freq, intensity_km_mol=I, intensity_km_mol_h=I1,
-                        xc=a.xc, basis="6-31g*", grid=np.array(grid), passed=passed, seconds=round(time.time() - t0))
-    print(f"{a.dir}: APT by FD (h = {a.step:g} and {a.step / 2:g}); sum rule max |Σ P − qI| = {sr:.1e} (limit {a.sum_rule_limit:g}) → {'PASS' if passed else 'FAIL'}; "
-          f"|P(h) − P(h/2)| max {rich:.1e} e; {time.time() - t0:.0f} s")
+                        xc=a.xc, basis="6-31g*", grid=np.array(grid), charge=a.charge, spin=a.spin, passed=passed, seconds=round(time.time() - t0))
+    steps = f"h = {a.step:g}" if a.no_half_step else f"h = {a.step:g} and {a.step / 2:g}"
+    pair = "" if a.no_half_step else f"|P(h) − P(h/2)| max {rich:.1e} e; "
+    print(f"{a.dir}: APT by FD ({steps}); sum rule max |Σ P − qI| = {sr:.1e} (limit {a.sum_rule_limit:g}) → {'PASS' if passed else 'FAIL'}; "
+          f"{pair}{time.time() - t0:.0f} s", flush=True)
     for f, i, i1 in zip(freq, I, I1, strict=True):
         print(f"  {f:8.1f} cm-1  {i:8.2f} km/mol  (h: {i1:8.2f})")
     return 0 if passed else 3

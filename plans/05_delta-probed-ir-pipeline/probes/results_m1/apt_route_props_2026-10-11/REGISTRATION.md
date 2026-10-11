@@ -32,3 +32,31 @@ conv_tol 1e-11, 4 threads at nice 19 beside the five-ring runner (8 threads; 12 
 numbers). L2–L5 pass on the cation → the UKS module gives cation heights we can trust at the labels route's settings, and a UKS branch for
 the labels route (route C's pattern on the unrestricted Hessian) gets its own design note and the user's word before any production change.
 A failed line stops the reading at that line: diagnose, record, no adoption.
+
+## Outcome, 11 October 2026 16:3x
+
+Files: `water.json/.log`, `benzene.json/.log`, `P3c_02d75f732a.json/.log` (the registered run), `P3c_02d75f732a_fd.npz/.log` (the FD APT),
+`P3c_02d75f732a_diag.json/.log` (a rerun with two diagnostic fields, not registered lines), `diagnose_l3.py/.json`.
+
+| | L1 vs route B (e) | L2 Hessian vs saved | L3 freq (cm⁻¹) / heights (rel.) | L4 sum rule (e) | L5 vs FD (e) | seconds, peak |
+|---|---|---|---|---|---|---|
+| water | 1.2e-7 | — (no saved analytic Hessian in that folder) | 4.3e-6 / 9.5e-8 | 4.6e-7 | 1.2e-5 | 3, 0.38 GB |
+| benzene | 4.8e-7 | 3.3e-12 | 8.0e-4 / 1.5e-6 | 1.1e-4 | 4.4e-4 | 473, 1.51 GB |
+| 3-hydroxypyridine⁺ (UKS, ⟨S²⟩ 0.7656) | — | 1.8e-11 | 3.1e-2 / **3.2e-3 FAIL** | 3.0e-6 | 9.0e-4 | 1273, 2.06 GB |
+
+The cation's FD APT (`dipole_derivs_fd.py --charge 1 --spin 1`, h = 0.005 bohr) passed its own sum rule, 3.9e-5 e (limit 1e-4), in 88 min.
+
+**Reading.** Closed shell: L1–L5 pass on water and benzene; pyscf-properties' infrared module is a third implementation that agrees with routes
+B and C — its APT against route B's on benzene 4.8e-7 e, its heights against ours 1.5e-6 relative. Open shell: L2, L4 and L5 pass, **L3 fails**
+(3.2e-3 against 1e-3), so the reading stops there as registered: upstream's heights are not adopted.
+
+**Diagnosis of L3** (the rerun's diagnostic fields; `diagnose_l3.py` first showed that on the saved, already symmetrised Hessian upstream's modes
+and ours agree to 2e-13): the analytic UKS Hessian as pyscf returns it is asymmetric, max |H − Hᵀ| = 6.2e-5 Eh/bohr²; pyscf's
+`hessian.thermo.harmonic_analysis` passes it to `numpy.linalg.eigh`, which reads one triangle; the labels route symmetrises first
+(`analytic_hessians.py`). On the symmetrised Hessian upstream's heights equal ours to 9.3e-8 relative and the frequencies to 3.8e-6 cm⁻¹. The L3
+difference is in pyscf's normal-mode step, not in the APT and not in our heights. pyscf master's `harmonic_analysis` still does not symmetrise
+(checked 11 Oct, last change #3491 on 9 Oct): software ledger row 43.
+
+**What follows.** The UKS module's APT passes the sum rule and FD (L4, L5) on a pool 3 cation, so cation heights from it with our own normal modes
+on the symmetrised Hessian are within reach; L5's margin is small (9.0e-4 against 1e-3 — the DFT terms carry no grid response; the same order on
+NH3⁺ in the pull-request measurement, 2.8e-4), and a design note for a UKS branch of the labels route must settle that limit before the user's word.

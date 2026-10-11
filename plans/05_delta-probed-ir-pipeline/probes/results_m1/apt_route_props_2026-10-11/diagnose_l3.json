@@ -1,0 +1,26 @@
+{
+ "cation P3c_02d75f732a": {
+  "asymmetry_max": 0.0,
+  "asymmetry_rel": 0.0,
+  "ours_vs_upstream_raw": [
+   3.750837095140014e-06,
+   2.3399864927582785e-13
+  ],
+  "ours_vs_upstream_symmetrised": [
+   3.750837095140014e-06,
+   2.3399864927582785e-13
+  ]
+ },
+ "benzene A_8448043181": {
+  "asymmetry_max": 0.0,
+  "asymmetry_rel": 0.0,
+  "ours_vs_upstream_raw": [
+   3.369446858414449e-06,
+   1.2824279931871164e-15
+  ],
+  "ours_vs_upstream_symmetrised": [
+   3.369446858414449e-06,
+   1.2824279931871164e-15
+  ]
+ }
+}

@@ -50,6 +50,10 @@ One line per change; the numbered section below the register carries every origi
 | 37 | 2026-10-09 | A | optking 0.5.0 as installed (`v3d.py`, `addIntcos.py`) | the #116 fix applied to the installs made after 30 Sep (pool 3 CPX62, laptop qc env); bootstraps apply it | waiting-upstream |
 | 38 | 2026-10-09 | C | pyscf (`grad/ccsd_t.py` + #3477; issue #1272) | CO/cc-pVTZ relaxed CCSD(T) dipole: dip_moment() = finite field = 0.17029 D; Molpro's 0.2135 D is not that energy's field derivative | done |
 | 39 | 2026-10-09 | C | optking docs (`devtools/conda-envs/docs.yaml`, Read the Docs) | the docs build fails importing qcelemental under the current pydantic (master's last build 1 June) | done |
+| 40 | 2026-10-11 | C | pyscf-properties master 4eee5a43 (`prop/infrared/rhf.py`, `uhf.py`: `proc_hessian_`) | an explicit mo_energy, mo_coeff, mo_occ or h1ao_grad raises ValueError (`x if x else default` on an array) | pr-open |
+| 41 | 2026-10-11 | C | pyscf-properties master 4eee5a43 (`prop/infrared/test/test_ir_inten.py`) | a reference-free check of the four infrared classes: analytic APT against finite differences of the dipole (UKS test 'a little bit loose') | pr-open |
+| 42 | 2026-10-11 | C | pyscf-properties 0.1.0 on PyPI | the published release has no infrared module; master has had it since June 2022 (row 29) — an issue asking for a release | done |
+| 43 | 2026-10-11 | C | pyscf master (`hessian/thermo.py::harmonic_analysis`) | the Hessian goes to `numpy.linalg.eigh` unsymmetrised; eigh reads one triangle, so an asymmetric analytic Hessian (UKS: 6.2e-5) shifts modes and heights | pr-candidate |
 
 ## Sections
 
@@ -593,12 +597,84 @@ likely fail the same way.
 
 **Action:** none unless the maintainer asks; a pin in `docs.yaml` would be a separate small PR (not drafted).
 
+### 40 — an explicit argument to `proc_hessian_` raises ValueError
+
+**Group:** C, finding about third-party software. **Date:** 2026-10-11. **Status:** pr-open. *Status note (11 Oct 15:4x):* opened as
+pyscf/properties#16 on the user's word ('Dien ze maar in'); the repository's last commit is 7 Nov 2024 and pull requests #13 (Mar 2026) and
+#15 (Jun 2026) have no maintainer reply, so review may not come.
+
+**Software:** pyscf-properties master 4eee5a43 (`pyscf/prop/infrared/rhf.py` and `uhf.py`, `proc_hessian_`, lines 41–44 of rhf.py); upstream master
+is the same commit (checked 11 Oct 2026), no open pull request on it.
+
+**Finding:** `mo_energy = mo_energy if mo_energy else mf.mo_energy` (and the same for mo_coeff, mo_occ, h1ao_grad) takes the truth value of a NumPy
+array; any explicit argument raises `ValueError: The truth value of an array with more than one element is ambiguous`. Only the default path works
+(`kernel_dipderiv` passes no arguments). Measured 11 Oct on water/STO-3G RHF in qc05 (pyscf 2.14.0): explicit `mo_energy` → ValueError, defaults → ok.
+Our route C (`corpus/apt.py`, `hessian_with_response`) follows this function's pattern with its own code.
+
+**Action:** a two-line pull request (`is None` instead of the truth value, in rhf.py and uhf.py) with a test that passes explicit arrays.
+
+### 41 — a reference-free test for the infrared module
+
+**Group:** C, finding about third-party software. **Date:** 2026-10-11. **Status:** pr-open. *Status note (11 Oct 15:4x):* opened as
+pyscf/properties#17 on the user's word. Measured for the PR (NH3/6-31G, step 1e-3 bohr): max |analytic − FD| RHF 5.1e-6, UHF 9.2e-6, RKS 8.0e-5,
+UKS 2.8e-4 e; the DFT part equals the sum-rule residual (no grid response in the analytic DFT terms); tolerances 5e-5 (HF), 1e-3 (DFT); a response
+term scaled by 1/2 makes it fail; 45 s.
+
+**Software:** pyscf-properties master 4eee5a43 (`pyscf/prop/infrared/test/test_ir_inten.py`).
+
+**Finding:** the four upstream tests compare intensities with Q-Chem at rtol 5e-4 (RHF, UHF, RKS) and 1e-3 (UKS, with the comment "this criteria is a
+little bit loose … could be grid setting, grid response, atomic mass"). The APT can be checked without an external program: central finite
+differences of the SCF dipole and the translation sum rule. Ours (`tests/test_apt_route_props.py`, 11 Oct): H2O⁺ UKS/B3LYP/6-31G against
+upstream's UKS APT within 1e-4 e, sum rules < 5e-4 e, seconds; at the labels settings water 1.2e-5 e, benzene 4.4e-4 e against FD
+(`probes/results_m1/apt_route_props_2026-10-11/`).
+
+**Action:** a pull request adding the FD check for all four classes (small basis, small grid); it separates the APT from the masses and grids
+that the Q-Chem comparison mixes.
+
+### 42 — the PyPI release has no infrared module
+
+**Group:** C, finding about third-party software. **Date:** 2026-10-11. **Status:** done. *Status note (11 Oct 15:4x):* not filed — issue #10
+('Make new release?', 26 Apr 2025, no reply) already asks for it; a duplicate would add nothing.
+
+**Software:** pyscf-properties 0.1.0 as installed by pip (row 29); the infrared module came with pull request #1 (merged June 2022); the repository
+has no GitHub releases.
+
+**Finding:** `pip install pyscf-properties` gives a package without `infrared`; users find the module only on master. Upstream's own tests of the
+module pass on pyscf 2.14.0 (11 Oct, 4 of 4, through `probes/upstream_infrared.py`).
+
+**Action:** an issue asking for a release from master.
+
+### 43 — `harmonic_analysis` diagonalises the Hessian without symmetrising it
+
+**Group:** C, finding about third-party software. **Date:** 2026-10-11. **Status:** pr-candidate (waits for the user's word; pyscf/pyscf is
+active — the file changed on 9 Oct 2026, #3491).
+
+**Software:** pyscf 2.14.0 and master (`pyscf/hessian/thermo.py`, `harmonic_analysis`: `h = mass_hess.transpose(0,2,1,3).reshape(...)`, then
+`numpy.linalg.eigh(bvec.T h bvec)`); used by pyscf-properties' infrared module for its normal modes.
+
+**Finding:** the analytic UKS/B3LYP/6-31G* Hessian of 3-hydroxypyridine⁺ (12 atoms, grid 99/590) is asymmetric, max |H − Hᵀ| = 6.2e-5 Eh/bohr²;
+`eigh` uses one triangle, so the modes depend on which. Heights from these modes differ from those on the symmetrised Hessian by 3.2e-3 relative and
+the frequencies by 3.1e-2 cm⁻¹; on the symmetrised Hessian the two codes agree to 9e-8 (benzene, RKS: 1.5e-6). Measured in
+`probes/results_m1/apt_route_props_2026-10-11/` (REGISTRATION.md, outcome 16:3x).
+
+**Action:** a small pull request: symmetrise `hess` in `harmonic_analysis` (½(H + Hᵀ) over the (atom, atom, x, y) layout) with a test on an
+asymmetric input; draft only on the user's word.
+
 ## How to use this ledger
 
 - Add a row the day a change is made; never after the fact from memory.
 - **Python versions (3 Oct 2026, the user: 'Zet die regel maar in het software-ledger'):** per environment the newest Python the heaviest dependency supports, pinned, and raised only at a rebuild of that environment — never mid-run, because the gate-1 stamps and the running jobs belong to the environment they were made in. Standing 3 Oct 2026: Windows system 3.14.6 (torch 2.14, rdkit; modules 05/06), `.venv` 3.13.9 (LangGraph; module 07), WSL `qc05` 3.12.14 (our pyscf branch, anchors, gate 1), conda `qc` on the servers 3.11/3.12 (psi4 1.11). Compatibility checked: psi4 1.11 has conda-forge builds for 3.10–3.14 on Linux; pyscf we build from our branch (its CI tests 3.14 on macOS); torch and rdkit run on 3.14 here; pyscf has no Windows build beyond conda-forge's 3.11, which does not matter (Windows is not a compute platform for us). At the next rebuild (new server or the PC) the chemistry environments go to 3.14, gate 1 on water after it; 3.14 is the newest series today (3.14.8).
 - When upstream carries our fix (merged pull request, or master was ahead of us), the next environment rebuild moves to that upstream version and drops the
   local patch; the swap is recorded in the row. Never mid-run: the environments under running anchors and the gate-1 stamps stay as they are (3 Oct 2026).
+- **Upgrade checklist (11 Oct 2026, the user: pyscf may publish releases during the project, some with our pull requests in them).** `state.sh`
+  shows the newest PyPI release of pyscf and pyscf-forge against the pinned versions (`tools/upstream_releases.py`). A newer release:
+  (1) read its changelog for our pull requests and for changes to the calls we use (Hessians, CPHF, grids, CC gradients, dip_moment);
+  (2) build it in a new environment beside the old one — the running jobs and the corpus layer in progress stay on the old one;
+  (3) in the new environment run upstream's tests of the modules we call and our own two-route checks against their saved numbers: gate 1 on
+  water, route C on water and benzene (`probes/apt_route_c_probe.py`, limits in its file), the analytic Hessian against the saved one, and
+  `tests/` in WSL; (4) for every waiting-upstream row the release closes, remove our patch or fallback and keep a test that upstream now
+  behaves; (5) record the move in the row and in the environment listing (`tools/freeze_environments.py`). One corpus layer is computed with
+  one version: a layer started on the old environment finishes on it.
 - Before proposing any PR: re-check the upstream `master` (the fix may exist), write a minimal test, and
   follow the project's contribution guide. The user decides which to submit and when; nothing here commits
   us to anything.

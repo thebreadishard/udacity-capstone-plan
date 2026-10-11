@@ -1,0 +1,66 @@
+{
+ "probe": "TASKS 44 third route (pyscf-properties infrared)",
+ "pyscf_properties_commit": "4eee5a430fb47eca5962f36fdcaf75c2b87e7ede",
+ "limits": {
+  "vs_route_b": 0.0001,
+  "hessian": 1e-05,
+  "freq": 0.1,
+  "height_rel": 0.001,
+  "sum_rule": 0.0005,
+  "vs_fd": 0.001
+ },
+ "threads": 4,
+ "grid": [
+  99,
+  590
+ ],
+ "molecules": [
+  {
+   "dir": "modules/05_support_predictor/corpus/molecules/A_8448043181",
+   "atoms": 12,
+   "charge": 0,
+   "spin": 0,
+   "reference": "RKS",
+   "seconds": {
+    "scf": 17.9,
+    "upstream_hessian_and_apt": 473.3
+   },
+   "sum_rule": 0.00010592113919294377,
+   "freq_maxdiff": 0.0007975866265041986,
+   "height_maxrel": 1.4787863293940243e-06,
+   "vs_route_b": 4.766297267977393e-07,
+   "vs_fd": 0.00043539822342336665,
+   "fd_file": "modules/05_support_predictor/corpus/molecules/A_8448043181/dipole_b3lyp_fd.npz",
+   "fd_sum_rule": 1.5710128706269977e-05,
+   "hessian_vs_saved": 3.33244543071487e-12,
+   "checks": {
+    "vs_route_b": true,
+    "hessian": true,
+    "freq": true,
+    "height_rel": true,
+    "sum_rule": true,
+    "vs_fd": true
+   },
+   "passed": true,
+   "peak_rss_gb": 1.51,
+   "bands": [
+    [
+     694.9,
+     77.57
+    ],
+    [
+     1068.8,
+     6.53
+    ],
+    [
+     1531.1,
+     13.02
+    ],
+    [
+     3199.4,
+     103.98
+    ]
+   ]
+  }
+ ]
+}
