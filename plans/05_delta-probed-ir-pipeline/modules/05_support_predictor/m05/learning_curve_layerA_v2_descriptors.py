@@ -99,11 +99,12 @@ def atom_classes(symbols, coords_bohr):
     return cls, len(R)
 
 
-def environment_tokens(mol_dir, base):
+def environment_tokens(mol_dir, base, lo=None):
+    """`lo`: the projected low-level Hessian when the caller has it (analytic-only folders, TASKS 49); else the psi4 file."""
     g = json.load(open(mol_dir / "geometry.json"))
     symbols = g["symbols"]; masses = np.asarray(g["masses_amu"])
-    lo = np.load(mol_dir / "hessian_b3lyp.npz")
-    _, _, V, _ = normal_modes(lo["H_projected"], masses)
+    lo = np.load(mol_dir / "hessian_b3lyp.npz")["H_projected"] if lo is None else lo
+    _, _, V, _ = normal_modes(lo, masses)
     A = (V.reshape(len(symbols), 3, -1) ** 2).sum(1)          # (N, M) participation per atom
     cls, n_rings = atom_classes(symbols, g["coords_bohr"])
     cols = []

@@ -28,6 +28,32 @@ import torch.nn as nn
 AMU2AU = 1822.888486209
 HARTREE2CM = 219474.6313705
 FAMILIES = ["CH-stretch", "CH-oop", "ring-ip", "other"]
+ANALYTIC_ONLY = "analytic_only"   # result.json "labels" of a folder labelled by analytic_hessians.py alone, no psi4 layer (TASKS 49, 12 Oct 2026)
+
+
+def is_analytic_only(mol_dir) -> bool:
+    """A folder without the psi4 FD pair whose result.json says labels 'analytic_only' and which has both analytic Hessians."""
+    mol_dir = Path(mol_dir)
+    if (mol_dir / "hessian_b3lyp.npz").exists() or (mol_dir / "hessian_wb97x.npz").exists():
+        return False
+    if not ((mol_dir / "hessian_b3lyp_analytic.npz").exists() and (mol_dir / "hessian_wb97x_analytic.npz").exists()):
+        return False
+    r = json.load(open(mol_dir / "result.json", encoding="utf-8")) if (mol_dir / "result.json").exists() else {}
+    return r.get("labels") == ANALYTIC_ONLY
+
+
+def hessian_pair(mol_dir, analytic_only_ok=False):
+    """(low, high) projected Hessians of a corpus folder and their source: the psi4 FD pair ('fd'); the analytic pair ('analytic') for an
+    analytic-only folder, but only when the caller admits such folders — analytic-only labels must not enter a run trained on FD labels.
+    None when the folder offers neither."""
+    mol_dir = Path(mol_dir)
+    if (mol_dir / "hessian_b3lyp.npz").exists() and (mol_dir / "hessian_wb97x.npz").exists():
+        tag, source = "", "fd"
+    elif analytic_only_ok and is_analytic_only(mol_dir):
+        tag, source = "_analytic", "analytic"
+    else:
+        return None
+    return (np.load(mol_dir / f"hessian_b3lyp{tag}.npz")["H_projected"], np.load(mol_dir / f"hessian_wb97x{tag}.npz")["H_projected"], source)
 SIZES = [5, 10, 20, 30]
 SEEDS = [0, 1, 2]
 

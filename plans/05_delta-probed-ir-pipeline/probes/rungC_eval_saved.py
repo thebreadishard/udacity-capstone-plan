@@ -3,10 +3,16 @@ field and, where an atomic polar tensor exists, the intensity read-outs (lever 5
 hold-out (a) APTs, which land after chain 24 has started, can be read against chain 24's models.
 
     python probes/rungC_eval_saved.py <model.pt> <out_prefix> [--molecules corpus/molecules] [--use-analytic] [--threads 4] [--holdout-b-file F]
+                                      [--eval-ids-file NAME=FILE ...]
 
 --holdout-b-file (8 Oct 2026): hold-out (b) is derived from the corpus (the A2 molecules of two scaffold cores), so a merge that brings new children
 of those cores enlarges it. With a frozen list (one id per line, '#' comments) (b) is read on that list — ids the loader does not admit are dropped
 as the trainer drops them — and the derived (b) ids outside it are read separately as (b+).
+
+--eval-ids-file NAME=FILE (12 Oct 2026; chain 41's size and scaffold sets, TASKS 49's large-PAH test): an explicit test set, read as hold-out
+(NAME) with the same read-outs. Ids the loader does not admit are dropped and counted; a set that shares an id with the model's training ids is
+refused (a read on trained molecules is not a test); NAME may not be a, b or b+. Repeatable. With --use-analytic each set records how many of its
+molecules carry analytic labels.
 
 The inputs are built by the trainer's own `load_corpus` and `molecule_tensors`; the prediction by its `predictor`; nothing is recomputed differently.
 """
@@ -44,6 +50,27 @@ def split_holdout_b(test_b: list, frozen: list, admitted) -> tuple[list, list]:
     return sorted(i for i in keep if i in admitted), [i for i in test_b if i not in keep]
 
 
+def eval_sets(specs: list, admitted, train_ids, substituted=()) -> dict:
+    """{NAME: {"ids", "dropped", "file", "n_analytic"}} from NAME=FILE specs (one id per line, '#' comments); see --eval-ids-file."""
+    out = {}
+    trained, analytic = set(train_ids), set(substituted)
+    for spec in specs:
+        name, sep, path = spec.partition("=")
+        if not sep or not name or not path:
+            raise SystemExit(f"--eval-ids-file {spec!r}: expected NAME=FILE")
+        if name in ("a", "b", "b+") or name in out:
+            raise SystemExit(f"--eval-ids-file: the name {name!r} is taken")
+        listed = [s.strip() for s in open(path, encoding="utf-8") if s.strip() and not s.startswith("#")]
+        overlap = sorted(set(listed) & trained)
+        if overlap:
+            raise SystemExit(f"--eval-ids-file {name}: {len(overlap)} ids are in the model's training set ({', '.join(overlap[:5])}) — not a test")
+        ids = [i for i in listed if i in admitted]
+        if not ids:
+            raise SystemExit(f"--eval-ids-file {name}: none of its {len(listed)} ids is an admitted molecule")
+        out[name] = {"ids": ids, "dropped": [i for i in listed if i not in admitted], "file": path, "n_analytic": sum(i in analytic for i in ids)}
+    return out
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("model")
@@ -52,6 +79,7 @@ def main() -> int:
     ap.add_argument("--use-analytic", action="store_true")
     ap.add_argument("--threads", type=int, default=4)
     ap.add_argument("--holdout-b-file", default=None, help="frozen hold-out (b) ids; derived (b) ids outside it are read as (b+)")
+    ap.add_argument("--eval-ids-file", action="append", default=[], metavar="NAME=FILE", help="an explicit test set read as hold-out (NAME); repeatable")
     ap.add_argument("--allow-any-model", action="store_true", help="decision 55 (3 Oct 2026): use a model whose registry status is not 'carried' — name it in the record")
     a = ap.parse_args()
     torch.set_num_threads(a.threads)
@@ -68,24 +96,29 @@ def main() -> int:
     if a.holdout_b_file:
         frozen = [s.strip() for s in open(a.holdout_b_file, encoding="utf-8") if s.strip() and not s.startswith("#")]
         test_b, b_plus = split_holdout_b(test_b, frozen, mols)
+    extra = eval_sets(a.eval_ids_file, mols, tr, substituted)
+    extra_ids = [i for s in extra.values() for i in s["ids"]]
     tensors = {i: molecule_tensors(i, load_molecule(Path(a.molecules) / i, use_analytic=a.use_analytic), mols[i], Path(a.molecules) / i, cfg,
-                                   Path(a.out_prefix).parent / "ls_targets") for i in test_a + test_b + b_plus}
+                                   Path(a.out_prefix).parent / "ls_targets") for i in dict.fromkeys(test_a + test_b + b_plus + extra_ids)}
     model.eval()
     dF_of = predictor(model, tensors, mols)
     res = {"date": datetime.now().strftime("%Y-%m-%d %H:%M"), "model": a.model, "model_record": {k: ck[k] for k in ("pattern", "aux_mode", "aux_target", "n", "seed")},
            "holdout_b_file": a.holdout_b_file, "use_analytic": a.use_analytic, "substituted_analytic": substituted, "n_train_ids": len(tr), "train_ids_source": tr_source, "apt_molecules": sorted(i for i in mols if "apt" in mols[i])}
     lines = [f"# Saved model read on the hold-outs ({res['date']})", "", f"Model `{Path(a.model).name}` ({res['model_record']}); APTs on {len(res['apt_molecules'])} molecules.", "",
              "| hold-out | n | ring-coupling ratio | ω rms (cm⁻¹) | ΔH residual | spectrum overlap (zero rule) | intensity rel. rms (zero rule) | with APT |", "|---|---|---|---|---|---|---|---|"]
-    for h, ids in [("a", test_a), ("b", test_b)] + ([("b+", b_plus)] if b_plus else []):
+    holdouts = [("a", test_a), ("b", test_b)] + ([("b+", b_plus)] if b_plus else []) + [(n, s["ids"]) for n, s in extra.items()]
+    for h, ids in holdouts:
         r = readouts(mols, ids, tr, dF_of)
         r["per_molecule"] = per_molecule_readouts(mols, ids, tr, dF_of)
         r.update(RI.aggregate(r["per_molecule"]))
+        if h in extra:
+            r.update({k: extra[h][k] for k in ("file", "dropped", "n_analytic")})
         res[h] = r
         so = f"{r['spectrum_overlap']:.3f} ({r['spectrum_overlap_zero_rule']:.3f})" if r.get("intensity_n") else "—"
         ir = f"{r['intensity_rel_rms']:.2f} ({r['intensity_rel_rms_zero_rule']:.2f})" if r.get("intensity_n") else "—"
         lines.append(f"| ({h}) | {len(ids)} | {r['coupling_ratio']:.3f} | {r['corrected_freq_rms']:.2f} | {r['dH_residual_ratio']:.3f} | {so} | {ir} | {r.get('intensity_n', 0)} |")
     lines += ["", "Per molecule with an APT:", "", "| molecule | ratio | ω rms | overlap | overlap zero rule | rel. rms | rel. rms zero rule | modes |", "|---|---|---|---|---|---|---|---|"]
-    for h in ("a", "b"):
+    for h, _ in holdouts:
         for i, v in res[h]["per_molecule"].items():
             if v.get("spectrum_overlap") is not None:
                 lines.append(f"| {i} ({h}) | {v['coupling_ratio'] if v['coupling_ratio'] is None else round(v['coupling_ratio'], 3)} | {v['corrected_freq_rms']:.2f} | "

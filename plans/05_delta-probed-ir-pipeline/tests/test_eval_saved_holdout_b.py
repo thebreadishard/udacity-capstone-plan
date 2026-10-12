@@ -29,3 +29,21 @@ def test_training_ids_come_from_the_checkpoint_when_it_has_them():
     assert tr == ["p1", "p2"] and src == "checkpoint"
     tr, src = ES.training_ids({"n": 2}, pool, admitted={})
     assert tr == ["new1", "p1"] and src.startswith("pool order")
+
+
+def test_eval_sets_read_an_explicit_list_and_refuse_trained_ids(tmp_path):
+    """--eval-ids-file (12 Oct 2026; chain 41, TASKS 49): unadmitted ids drop out and are counted; any trained id refuses the set."""
+    f = tmp_path / "s5.txt"
+    f.write_text("# five-ring neutrals\nx1\nx2\ngone\n", encoding="utf-8")
+    sets = ES.eval_sets([f"s5={f}"], admitted={"x1": 0, "x2": 0, "p1": 0}, train_ids=["p1"], substituted=["x2"])
+    assert sets["s5"]["ids"] == ["x1", "x2"] and sets["s5"]["dropped"] == ["gone"] and sets["s5"]["n_analytic"] == 1
+    with pytest.raises(SystemExit, match="training set"):
+        ES.eval_sets([f"s5={f}"], admitted={"x1": 0, "x2": 0}, train_ids=["x1"])
+
+
+def test_eval_sets_refuse_a_taken_name_or_a_malformed_spec(tmp_path):
+    f = tmp_path / "t.txt"
+    f.write_text("x1\n", encoding="utf-8")
+    for specs in ([f"b={f}"], [f"t={f}", f"t={f}"], [str(f)]):
+        with pytest.raises(SystemExit):
+            ES.eval_sets(specs, admitted={"x1": 0}, train_ids=[])

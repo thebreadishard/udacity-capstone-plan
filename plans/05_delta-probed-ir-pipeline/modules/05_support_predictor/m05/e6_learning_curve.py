@@ -46,7 +46,7 @@ from deltah_model import DeltaHConfig, DeltaHModel, block_loss  # noqa: E402
 from embedding_experiments_E import atom_sets, probe  # noqa: E402
 
 EE.NMAX = 32   # the E-series constant (28) was layer A's largest molecule; A2 reaches 30 atoms
-from learning_curve_layerA import FAMILIES, molecule_features, predict, rms, train  # noqa: E402
+from learning_curve_layerA import FAMILIES, hessian_pair, molecule_features, predict, rms, train  # noqa: E402
 from learning_curve_layerA_v2_descriptors import environment_tokens  # noqa: E402
 
 RING = "ring-ip"
@@ -58,27 +58,34 @@ def sha(s):
 
 
 # ----------------------------------------------------------------------------------------------------------------------- data
-def load_corpus(mdir):
+def load_corpus(mdir, analytic_only_ok=False):
+    """Every corpus folder with the psi4 FD pair; with `analytic_only_ok` (the trainer under --use-analytic, TASKS 49, 12 Oct 2026) also the
+    folders labelled by analytic Hessians alone (`learning_curve_layerA.is_analytic_only`), their features built from the analytic pair."""
     import csv
     names = {}
     if (mdir.parent / "manifest.csv").exists():
         with open(mdir.parent / "manifest.csv", newline="", encoding="utf-8") as f:
             names = {r["id"]: r["name"] for r in csv.DictReader(f)}
     mols = {}
-    for d in sorted(p for p in mdir.iterdir() if (p / "hessian_wb97x.npz").exists() and (p / "hessian_b3lyp.npz").exists()):
+    for d in sorted(p for p in mdir.iterdir() if p.is_dir()):
         try:
-            base = molecule_features(d)
-            tokB, _, _ = environment_tokens(d, base)
+            pair = hessian_pair(d, analytic_only_ok)
+            if pair is None:
+                continue
+            lo, hi, source = pair
+            base = molecule_features(d, lo, hi)
+            tokB, _, _ = environment_tokens(d, base, lo)
             r = json.load(open(d / "result.json")) if (d / "result.json").exists() else {}
-            mols[d.name] = dict(base, tokens=tokB.astype(np.float32), K=E5.coupling_matrix(d), sets=atom_sets(d, base),
+            mols[d.name] = dict(base, tokens=tokB.astype(np.float32), K=E5.coupling_matrix(d, lo, hi), sets=atom_sets(d, base, lo),
                                 layer=r.get("layer", "A2" if d.name.startswith("A2_") else "A"),
-                                core=names.get(d.name, d.name).split("+")[0],
+                                core=names.get(d.name, d.name).split("+")[0], hessian_source=source,
                                 imaginary=bool(r.get("n_imaginary_b3lyp", 0) or r.get("n_imaginary_wb97x", 0)))
         except Exception as e:  # noqa: BLE001 — a broken molecule is reported and skipped, as in the E-series
             print("skip", d.name, repr(e), flush=True)
     return mols
 
 
+TEST_LAYER = "T"   # TASKS 49 (12 Oct 2026): the mandate's four shape molecules as a size test; read with rungC_eval_saved --eval-ids-file
 HOLDOUT_C_FILE = Path(__file__).resolve().parents[1] / "corpus" / "holdout_c.txt"   # pool 3 (decision 54, 3 Oct 2026): frozen ids, one per line
 
 
@@ -102,6 +109,7 @@ def splits(mols):
     scaffold_cores = cores[:2]
     test_b = sorted(i for i, m in mols.items() if m["layer"] == "A2" and m["core"] in scaffold_cores)
     held = set(test_a) | set(test_b) | holdout_c_ids()                     # (c) is never trained (pool 3, 3 Oct 2026); read through holdout_c()
+    held |= {i for i, m in mols.items() if m["layer"] == TEST_LAYER}       # layer T, the large-PAH size test (TASKS 49), is never trained
     pool = sorted((i for i in mols if i not in held), key=sha)
     return test_a, test_b, scaffold_cores, pool
 

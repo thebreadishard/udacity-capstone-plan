@@ -220,8 +220,10 @@ def load_molecule(d: Path, use_analytic: bool = False) -> dict:
 
 
 def load_molecules(mdir: Path, ids=None, use_analytic: bool = False) -> dict:
+    from learning_curve_layerA import is_analytic_only
     out = {}
-    for d in sorted(p for p in Path(mdir).iterdir() if (p / "hessian_b3lyp.npz").exists() and (p / "hessian_wb97x.npz").exists()):
+    for d in sorted(p for p in Path(mdir).iterdir() if ((p / "hessian_b3lyp.npz").exists() and (p / "hessian_wb97x.npz").exists())
+                    or (use_analytic and is_analytic_only(p))):   # analytic-only folders under use_analytic, as the trainer's loader (TASKS 49)
         if ids is None or d.name in ids:
             out[d.name] = load_molecule(d, use_analytic)
     return out

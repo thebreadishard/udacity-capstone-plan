@@ -40,12 +40,13 @@ def principal_frame(coords_A, masses):
     return x @ R, R
 
 
-def atom_sets(mol_dir, base):
-    """Per mode: (NMAX, 13) atom tokens [onehot5, x/5, y/5, z/5, dx, dy, dz, |d|, participation] and a mask."""
+def atom_sets(mol_dir, base, lo=None):
+    """Per mode: (NMAX, 13) atom tokens [onehot5, x/5, y/5, z/5, dx, dy, dz, |d|, participation] and a mask. `lo`: the projected low-level
+    Hessian when the caller has it (analytic-only folders, TASKS 49); else the psi4 file."""
     g = json.load(open(mol_dir / "geometry.json"))
     symbols = g["symbols"]; masses = np.asarray(g["masses_amu"]); coords = np.asarray(g["coords_bohr"]) * BOHR
-    lo = np.load(mol_dir / "hessian_b3lyp.npz")
-    _, _, V, _ = normal_modes(lo["H_projected"], masses)
+    lo = np.load(mol_dir / "hessian_b3lyp.npz")["H_projected"] if lo is None else lo
+    _, _, V, _ = normal_modes(lo, masses)
     xf, R = principal_frame(coords, masses)
     N, M = len(symbols), V.shape[1]
     onehot = np.array([[1.0 if s == e else 0.0 for e in ELEMENTS] for s in symbols])

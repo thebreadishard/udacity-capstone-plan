@@ -33,12 +33,14 @@ RING = "ring-ip"
 BALANCED = False   # set by --balanced
 
 
-def coupling_matrix(mol_dir):
+def coupling_matrix(mol_dir, lo=None, hi=None):
+    """`lo`, `hi`: the projected Hessians when the caller has them (analytic-only folders, TASKS 49); else the psi4 files."""
     g = json.load(open(mol_dir / "geometry.json")); masses = np.asarray(g["masses_amu"])
-    lo = np.load(mol_dir / "hessian_b3lyp.npz"); hi = np.load(mol_dir / "hessian_wb97x.npz")
-    w, f, V, _ = normal_modes(lo["H_projected"], masses)
+    lo = np.load(mol_dir / "hessian_b3lyp.npz")["H_projected"] if lo is None else lo
+    hi = np.load(mol_dir / "hessian_wb97x.npz")["H_projected"] if hi is None else hi
+    w, f, V, _ = normal_modes(lo, masses)
     m = np.repeat(masses * AMU2AU, 3)
-    dH = hi["H_projected"] / np.sqrt(np.outer(m, m)) - lo["H_projected"] / np.sqrt(np.outer(m, m))
+    dH = hi / np.sqrt(np.outer(m, m)) - lo / np.sqrt(np.outer(m, m))
     Km = V.T @ dH @ V
     om = np.sqrt(np.abs(w))
     return (Km / (2 * np.sqrt(np.outer(om, om))) * HARTREE2CM).astype(np.float32)   # (M, M), diag = first-order shift
