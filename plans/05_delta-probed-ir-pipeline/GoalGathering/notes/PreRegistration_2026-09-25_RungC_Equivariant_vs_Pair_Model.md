@@ -2273,3 +2273,10 @@ scaffold. **Before the run** (≈ 23–25 Oct, when the thirty have their labels
 switch (an explicit test set; to build, with a test), the loader is checked to take layer P3 with `--exclude-ids-file` (smoke on two ids), and the
 run is a chain-runner spec (`probes/runs/chain41.json`, dry-run). Evaluation labels: analytic where the molecule has them, else FD; the counts are
 recorded.
+
+**Chain 42 — the mandate's four shape molecules as a size test, and six large PAHs in the corpus (registered 12 October 2026, 15:2x, before any of the ten was optimised or labelled; lever 5, TASKS 49).** Registered in full in `GoalGathering/notes/PreRegistration_2026-10-12_Large_PAH_Size_Test.md`. In short, on analytic DFT labels:
+- test set T is coronene, peropyrene, ovalene and HBC (36–60 atoms, never trained);
+- arm 0 is chain 34's recipe on the pool as it stands; arm D adds six PAHs of 34–54 atoms;
+- line 1 is q_T = r₀(T)/r₀(a) (≤ 1.3 carries, ≥ 1.8 steep);
+- line 2 is g = r_D(T)/r₀(T) (≤ 0.85 the lever works; ≥ 0.95 six are too few to judge, so a second point follows);
+- coronene goes first, as the timing, and stops the chain above 30 h or 100 GB.
