@@ -103,3 +103,35 @@ Pyridine is re-read in the same T3 run; its numbers must reproduce R3H within se
 
 **Cost.** About 50 min of CC per molecule at 4 threads, then three T3 seeds of ≈ 13 min. The four threads come from the APT recompute's
 second lane, which is stopped for the run and restarted after it.
+
+### Outcome of lever 6b (12 Oct, 22:2x)
+
+Run `probes/runs/lever6b_cc_apt_1012.json`, 16:41–22:26 (`lever6b.log`).
+
+**CC APTs — both PASS.**
+- Fluorobenzene: sum rule ≤ 1e-6, 1 h 44 min.
+- Benzonitrile: sum rule 8.9e-11, 11,432 s.
+
+Each gradient took about twice benzene's time: the (T) lambda needed up to 26 cycles. My estimate of ≈ 50 min per molecule was wrong.
+
+**Read** (matched intensity rel. rms, CC APT, seeds 0/1/2 → mean; `out/T3_tz_lowsym_apt_c34_seed{0,1,2}_2026-10-12.log`):
+
+| molecule | zero rule | λ = 1 (registered) | λ = 0 | λ = 1 − λ = 0 | registered column | L2 cost (≥ 0.05) |
+|---|---|---|---|---|---|---|
+| pyridine (re-read) | 0.262 | 0.305 / 0.303 / 0.323 → 0.310 | 0.147 / 0.059 / 0.113 → 0.106 | 0.204 | FAIL | holds |
+| fluorobenzene | 0.104 | 0.178 / 0.170 / 0.169 → 0.172 | 0.081 / 0.157 / 0.057 → 0.098 | 0.074 | FAIL (≤ 0.25 but above the zero rule) | holds |
+| benzonitrile | 0.258 | 0.462 / 0.446 / 0.420 → 0.443 | 0.296 / 0.211 / 0.248 → 0.252 | 0.191 | FAIL | holds |
+
+**The run check holds.** Pyridine reproduces R3H to the third digit in every seed and column.
+
+**All three molecules are informative**, since every zero rule is ≥ 0.05. The registered column fails on all three: with λ = 1 the network's
+mode shapes give worse intensities than B3LYP's Hessian. The L2 cost holds on both new molecules, so with pyridine it is three of three.
+
+As registered, a chain to re-choose λ on frequencies and intensities together is registered next. The standard is not switched by this read.
+
+**Reported beside, not judged:**
+- λ = 0 is about level with the zero rule on two molecules (fluorobenzene 0.098 against 0.104, benzonitrile 0.252 against 0.258) and well
+  below it on pyridine. So at λ = 0 the network's mode shapes are at least as good as B3LYP's; at λ = 1 they are worse.
+- The spectrum overlap (positions and heights) is better than the zero rule in both columns, for example benzonitrile 0.617 (λ = 1) and
+  0.822 (λ = 0) against 0.479.
+- The cost of λ = 1 sits in the eigenvectors, not in the band positions.

@@ -71,6 +71,17 @@ Whenever the machine is busy or the user is away, the next item is the cheapest 
 
 ## 6. Log
 
+- **12 Oct, 22:2x — lever 6b: the λ = 1 fine-tune costs mode shapes, three of three.** CC APTs by the field route for
+fluorobenzene and benzonitrile both pass their sum rules. With all three low-symmetry CC APTs in one T3 run, the matched intensity rel. rms
+(λ = 1 / λ = 0 / zero rule) is:
+- pyridine 0.310 / 0.106 / 0.262;
+- fluorobenzene 0.172 / 0.098 / 0.104;
+- benzonitrile 0.443 / 0.252 / 0.258.
+
+The TZ standard (head tuned with the L2 pull, λ = 1; amendment (A), chosen on frequencies) gives worse intensities than B3LYP's own Hessian
+on every one. λ = 0 is level with or better than the zero rule. The positions, as the spectrum overlap shows, are better in both columns.
+As registered beforehand, a chain to re-choose λ on frequencies and intensities together comes next; the standard is not switched by this
+read. Registration and outcome: `probes/results_m1/cc_apt_field_2026-10-12/REGISTRATION.md`.
 - **12 Oct, 16:3x — lever 6: a CC APT by the field route, and read-out (3) on pyridine fails on the registered column.**
 `probes/cc_apt_field.py` gives a CCSD(T) APT from six CC gradients in a field, instead of 6N displacements. Results:
 - water: 1.6e-5 e from FD of the relaxed CC dipole;
