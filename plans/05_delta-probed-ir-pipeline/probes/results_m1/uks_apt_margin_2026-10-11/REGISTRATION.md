@@ -22,3 +22,40 @@ nice 19 beside the five-ring runner (8 threads). FD: `probes/dipole_derivs_fd.py
   - Between the two: recorded as undecided; the first cation gets the same Richardson pair before the design note.
 
 The result does not change any production file; it decides the limit a later UKS branch registers.
+
+## Outcome, 12 October 2026 03:4x
+
+Files here: `P3c_00e041576d_fd.{npz,log}` (the FD pair), `P3c_00e041576d.{json,log}` (the registered probe run), `chain.log`; the diagnosis below:
+`*_field.{npz,log}` (`probes/apt_field_route.py`), `P3c_00e041576d_upstream_apt.npz` (the analytic APT saved), `diagnose_cphf.{py,json,log}`,
+`diagnose_xc.{py,json,log}`, `water_field.npz`, `benzene_field.{npz,log}`.
+
+**M1** passes: the FD sum rule at h/2 is 3.0e-5 e (limit 1e-4). **M2** passes: the analytic sum rule 4.1e-6 e, the Hessian against the saved one
+7.5e-11. **M3: an analytic error.** g(h) = 3.59e-3, g(h/2) = 3.61e-3, g(R) = 3.62e-3 e (line 3e-4), while the FD pair itself differs by 5.7e-5 e:
+the FD route has converged in its step and the analytic UKS APT does not agree with it. (As on the first cation, the heights' L3 also fails, 1.2e-3,
+from the asymmetric UKS Hessian, 5.0e-5; on the symmetrised Hessian 9e-8.)
+
+**Diagnosis (not registered lines; each step recorded as it ran).** A third route was built: the APT as minus the field derivative of pyscf's analytic
+nuclear gradient in a uniform field (`probes/apt_field_route.py`, F = 1e-3 a.u., with and without the gradient's grid response; test
+`tests/test_apt_field_route.py`). On water it agrees with route B's CPHF APT to 7.4e-6 and with FD to 5.5e-6; at HF it converges to route C as F²
+(3.6e-5, 9.1e-6, 2.4e-6 e at F = 2e-3, 1e-3, 5e-4).
+- *Grid response is not the cause:* the field route with and without it differs by 8e-6 (this cation), 5e-6 (the first), 4e-5 (benzene), 3e-7
+  (water); with it the sum rule is exact (1e-10).
+- *The field route and FD agree:* 2.8e-4 e on this cation (against FD's Richardson value), 9.9e-5 on 3-hydroxypyridine⁺, 3.9e-5 on benzene.
+- *The CPHF-based analytic APT disagrees with both:* upstream's UKS APT against the field route 3.3e-3 e here, spread over the heavy atoms (per
+  atom 0.4–3.6e-3); and — the larger news — our closed-shell route B/C on benzene against the field route 4.0e-4 e (against FD 4.4e-4, the gap
+  recorded on 11 Oct and then put down to FD).
+- *Not the CPHF's convergence:* max_cycle 200 and conv_tol_cpscf 1e-12 change the UKS APT by 3e-10; the Hessian's asymmetry stays 5.0e-5.
+- *Not the grid choice:* pyscf's DFT Hessian uses `mf.grids` (`hessian/rks.py`, `uks.py`: `hessobj.grids` falls back to it).
+- *In the exchange-correlation part:* route C against the field route on benzene at the same grid — **HF 8.6e-6 (agrees), PBE 2.2e-4, B3LYP
+  4.0e-4**. The part every method shares is right; the XC part of pyscf's response (`make_h1`'s XC derivative or the response kernel) is not
+  consistent with pyscf's own gradient, already for a GGA without exact exchange.
+
+**What it costs the heights.** On the same Hessian, route C's heights against the field route's: benzene ≤ 0.6 % per band (median 0.2 %, total
+0.03 %); this cation ≤ 2.8 % on a 2.6 km/mol band (median 0.08 %, total 0.09 %). The spectra the Atlas draws do not change visibly; the route-C APTs
+in production (closed shell) carry an error of this size.
+
+**What follows (open).** (1) Whether pyscf's analytic DFT Hessians — the labels — carry an error from the same XC term: the Hessian uses the same
+`make_h1`; a fixed-grid finite-difference check of the analytic gradient on benzene decides it. (2) For the cations' heights the field route is the
+validated choice (≈ 15 min per 12-atom cation at 4 threads), not the CPHF APT. (3) A minimal reproduction (benzene PBE, route C against the field
+route) for a pyscf report — on the user's word. (4) The 1e-3 limit of route B and of the third route's L5 was wide enough to hide a 4e-4 error;
+limits for APTs are set from the field route from now on.

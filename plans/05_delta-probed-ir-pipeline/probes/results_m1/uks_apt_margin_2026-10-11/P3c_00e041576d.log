@@ -1,0 +1,1 @@
+modules/05_support_predictor/corpus/shards_pool3/a/molecules/P3c_00e041576d: 12 atoms, UKS <S²> 0.7638; SCF 75.7 s, upstream Hessian + APT 1339.2 s, peak 2.13 GB; sum rule 4.1e-06; vs FD 3.6e-03 e; Hessian vs saved 7.5e-11; heights: freq 2.1e-02 cm-1, rel 1.2e-03 → FAIL ['height_rel', 'vs_fd']

@@ -100,7 +100,7 @@ def upstream_route(mf, masses, infrared):
     return apt_from_upstream(ir.de), H, freq, km, t1 - t0, sym
 
 
-def probe(d, grid, charge, spin, fd_file, infrared, log=print):
+def probe(d, grid, charge, spin, fd_file, infrared, log=print, save_apt=None):
     g = json.load(open(os.path.join(d, "geometry.json")))
     x = np.asarray(g["coords_bohr"], float)
     masses = np.asarray(g["masses_amu"], float)
@@ -123,6 +123,8 @@ def probe(d, grid, charge, spin, fd_file, infrared, log=print):
     P, H, freq_up, km_up, hess_s, (freq_sym, km_sym) = upstream_route(mf, masses, infrared)
     Hc = H.transpose(0, 2, 1, 3).reshape(3 * n, 3 * n)
     r_asym = float(np.abs(Hc - Hc.T).max())
+    if save_apt:
+        np.savez_compressed(save_apt, apt=P, charge=charge, spin=spin, grid=np.array(grid))
     Hc = 0.5 * (Hc + Hc.T)
     freq, km = intensities(P, project_tr(Hc, masses, x), masses)
     r["seconds"] = {"scf": round(scf_s, 1), "upstream_hessian_and_apt": round(hess_s, 1)}
@@ -172,13 +174,14 @@ def main() -> int:
     ap.add_argument("--charge", type=int, default=0)
     ap.add_argument("--spin", type=int, default=0, help="2S; > 0 selects UKS (as analytic_hessians.py)")
     ap.add_argument("--fd", default=None, help="an FD APT file (dipole_derivs_fd.py --out) for a single molecule")
+    ap.add_argument("--save-apt", default=None, help="write the upstream APT (P[3, 3N]) of a single molecule to this npz (12 Oct: per-element reads)")
     a = ap.parse_args()
-    if a.fd and len(a.dirs) != 1:
-        ap.error("--fd names the FD file of one molecule")
+    if (a.fd or a.save_apt) and len(a.dirs) != 1:
+        ap.error("--fd and --save-apt name the files of one molecule")
     lib.num_threads(a.threads)
     infrared, commit = load()
     grid = tuple(int(v) for v in a.grid.split(","))
-    rows = [probe(d, grid, a.charge, a.spin, a.fd, infrared) for d in a.dirs]
+    rows = [probe(d, grid, a.charge, a.spin, a.fd, infrared, save_apt=a.save_apt) for d in a.dirs]
     with open(a.out, "w") as f:
         json.dump({"probe": "TASKS 44 third route (pyscf-properties infrared)", "pyscf_properties_commit": commit, "limits": LIMITS,
                    "threads": a.threads, "grid": list(grid), "molecules": rows}, f, indent=1)

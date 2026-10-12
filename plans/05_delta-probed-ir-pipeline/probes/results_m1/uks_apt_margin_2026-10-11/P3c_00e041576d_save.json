@@ -1,0 +1,154 @@
+{
+ "probe": "TASKS 44 third route (pyscf-properties infrared)",
+ "pyscf_properties_commit": "4eee5a430fb47eca5962f36fdcaf75c2b87e7ede",
+ "limits": {
+  "vs_route_b": 0.0001,
+  "hessian": 1e-05,
+  "freq": 0.1,
+  "height_rel": 0.001,
+  "sum_rule": 0.0005,
+  "vs_fd": 0.001
+ },
+ "threads": 4,
+ "grid": [
+  99,
+  590
+ ],
+ "molecules": [
+  {
+   "dir": "modules/05_support_predictor/corpus/shards_pool3/a/molecules/P3c_00e041576d",
+   "atoms": 12,
+   "charge": 1,
+   "spin": 1,
+   "reference": "UKS",
+   "s2": 0.7638,
+   "seconds": {
+    "scf": 75.8,
+    "upstream_hessian_and_apt": 1337.0
+   },
+   "sum_rule": 4.078143141184043e-06,
+   "freq_maxdiff": 0.021406928584468687,
+   "height_maxrel": 0.001197372944935979,
+   "diagnostic": {
+    "hessian_asymmetry_max": 4.961374080969527e-05,
+    "symmetrised": {
+     "freq_maxdiff": 3.4043455343635287e-06,
+     "height_maxrel": 9.25222715059755e-08
+    }
+   },
+   "vs_fd": 0.0036117941013071864,
+   "fd_file": "probes/results_m1/uks_apt_margin_2026-10-11/P3c_00e041576d_fd.npz",
+   "fd_sum_rule": 2.9927427647180593e-05,
+   "richardson": {
+    "g_h": 0.0035878146382697373,
+    "g_h2": 0.0036117941013071864,
+    "g_richardson": 0.003619787255653012,
+    "fd_pair": 5.740937325526829e-05
+   },
+   "hessian_vs_saved": 6.966516252759902e-11,
+   "checks": {
+    "hessian": true,
+    "freq": true,
+    "height_rel": false,
+    "sum_rule": true,
+    "vs_fd": false
+   },
+   "passed": false,
+   "peak_rss_gb": 2.15,
+   "bands": [
+    [
+     137.0,
+     3.84
+    ],
+    [
+     282.0,
+     2.46
+    ],
+    [
+     426.6,
+     5.17
+    ],
+    [
+     464.6,
+     33.18
+    ],
+    [
+     607.7,
+     11.81
+    ],
+    [
+     685.4,
+     6.88
+    ],
+    [
+     746.4,
+     4.82
+    ],
+    [
+     786.5,
+     38.02
+    ],
+    [
+     917.2,
+     16.27
+    ],
+    [
+     982.7,
+     21.51
+    ],
+    [
+     1032.9,
+     32.14
+    ],
+    [
+     1123.0,
+     2.04
+    ],
+    [
+     1152.5,
+     2.6
+    ],
+    [
+     1315.7,
+     10.94
+    ],
+    [
+     1379.8,
+     14.57
+    ],
+    [
+     1447.8,
+     44.13
+    ],
+    [
+     1472.8,
+     7.15
+    ],
+    [
+     1555.9,
+     20.83
+    ],
+    [
+     1581.1,
+     62.4
+    ],
+    [
+     2666.1,
+     30.23
+    ],
+    [
+     3223.8,
+     1.95
+    ],
+    [
+     3234.4,
+     2.56
+    ],
+    [
+     3243.3,
+     4.07
+    ]
+   ]
+  }
+ ]
+}

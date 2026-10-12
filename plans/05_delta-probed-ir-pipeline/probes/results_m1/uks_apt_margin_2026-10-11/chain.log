@@ -1,0 +1,10 @@
+start 22:26:52
+fd rc=0 01:29:41
+probe rc=3 01:53:17
+diag start 01:56:14
+field P3c_00e041576d rc=0 02:11:50
+field P3c_02d75f732a rc=0 02:26:16
+probe save rc=3 02:49:50
+benzene field rc=0 02:58:22
+cphf rc=0 03:16:53
+xc rc=0 03:46:17

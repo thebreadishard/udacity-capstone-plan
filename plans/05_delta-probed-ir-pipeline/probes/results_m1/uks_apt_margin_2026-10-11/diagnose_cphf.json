@@ -1,0 +1,11 @@
+{
+ "seconds": 1439,
+ "max_cycle": 200,
+ "conv_tol_cpscf": 1e-12,
+ "tight_vs_field_noGR": 0.003338157663712482,
+ "tight_vs_fd_richardson": 0.0036197871270980675,
+ "default_vs_field_noGR": 0.0033381577922674266,
+ "tight_vs_default": 3.364232364910791e-10,
+ "sum_rule_tight": 4.078143271968315e-06,
+ "hessian_asymmetry_tight": 4.9613764598110954e-05
+}

@@ -54,6 +54,7 @@ One line per change; the numbered section below the register carries every origi
 | 41 | 2026-10-11 | C | pyscf-properties master 4eee5a43 (`prop/infrared/test/test_ir_inten.py`) | a reference-free check of the four infrared classes: analytic APT against finite differences of the dipole (UKS test 'a little bit loose') | pr-open |
 | 42 | 2026-10-11 | C | pyscf-properties 0.1.0 on PyPI | the published release has no infrared module; master has had it since June 2022 (row 29) — an issue asking for a release | done |
 | 43 | 2026-10-11 | C | pyscf master (`hessian/thermo.py::harmonic_analysis`) | the Hessian goes to `numpy.linalg.eigh` unsymmetrised; eigh reads one triangle, so an asymmetric analytic Hessian (UKS: 6.2e-5) shifts modes and heights | pr-open |
+| 44 | 2026-10-12 | C | pyscf 2.14.0 (`hessian/rks.py`, `uks.py`: the XC part of `make_h1` or the response kernel) | the CPHF dipole derivatives of DFT disagree with the field derivative of the analytic gradient and with FD (benzene B3LYP 4.0e-4 e, PBE 2.2e-4, HF 8.6e-6) | pr-candidate |
 
 ## Sections
 
@@ -661,6 +662,23 @@ the frequencies by 3.1e-2 cm⁻¹; on the symmetrised Hessian the two codes agre
 
 **Action:** a small pull request: symmetrise `hess` in `harmonic_analysis` (½(H + Hᵀ) over the (atom, atom, x, y) layout) with a test on an
 asymmetric input; draft only on the user's word.
+
+### 44 — the DFT response's XC part disagrees with pyscf's own gradient
+
+**Group:** C, finding about third-party software. **Date:** 2026-10-12. **Status:** pr-candidate (a report first; waits for a minimal reproduction
+and the user's word).
+
+**Software:** pyscf 2.14.0 — the analytic DFT Hessian's response (`hessian/rks.py`, `hessian/uks.py`: `make_h1` with `_get_vxc_deriv1`, and the
+CPHF kernel), as used by our route C (`corpus/apt.py`) and by pyscf-properties' infrared module.
+
+**Finding:** dipole derivatives contracted from the Hessian's CPHF response differ from two routes that agree with each other — minus the field
+derivative of the analytic nuclear gradient (`probes/apt_field_route.py`) and central differences of the SCF dipole: water 7e-6 e, benzene 4.0e-4
+(B3LYP/6-31G*, grid 99/590), a 12-atom UKS cation 3.3e-3. On benzene at the same grid: HF 8.6e-6 (the field error, O(F²)), PBE 2.2e-4, B3LYP
+4.0e-4. Not the CPHF convergence (max_cycle 200, conv_tol_cpscf 1e-12: 3e-10), not grid response (field route with/without it: 4e-5), not the grid
+(the Hessian uses `mf.grids`). Measured in `probes/results_m1/uks_apt_margin_2026-10-11/` (REGISTRATION.md, outcome of 12 Oct).
+
+**Open before a report:** whether the analytic DFT Hessian itself carries the error (a fixed-grid FD check of the gradient), and which term (LDA
+against GGA bisects further); the reproduction should be a few lines (benzene, PBE, two routes).
 
 ## How to use this ledger
 

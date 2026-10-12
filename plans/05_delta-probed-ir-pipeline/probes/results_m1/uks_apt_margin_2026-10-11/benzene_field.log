@@ -1,0 +1,4 @@
+  field component 1/3 done, 136 s
+  field component 2/3 done, 278 s
+  field component 3/3 done, 410 s
+modules/05_support_predictor/corpus/molecules/A_8448043181: field route (F = 0.001): sum rule without grid response 1.1e-04, with 1.2e-10; |P_noGR − P_GR| max 4.0e-05 e; 437 s
