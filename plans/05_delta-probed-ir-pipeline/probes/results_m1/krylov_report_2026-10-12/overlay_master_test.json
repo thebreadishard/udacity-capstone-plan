@@ -1,0 +1,20 @@
+[
+ {
+  "label": "2.14.0 as installed",
+  "seconds": 391.5,
+  "residual": 6.834829299450298e-05,
+  "apt_vs_field": 0.00022089108732016582
+ },
+ {
+  "label": "2.14.0, one right-hand side at a time",
+  "seconds": 2192.4,
+  "residual": 1.0442045741980353,
+  "apt_vs_field": 0.5163433604534852
+ },
+ {
+  "label": "master 52f57374 overlay",
+  "seconds": 231.3,
+  "residual": 5.6410062035397446e-05,
+  "apt_vs_field": 0.00014323459240800362
+ }
+]

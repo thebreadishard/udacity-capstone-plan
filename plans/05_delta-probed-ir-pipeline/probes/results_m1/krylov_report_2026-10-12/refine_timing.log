@@ -1,0 +1,1 @@
+{"hessian_seconds": 779.7, "refine_seconds": 1171.0, "operator_applications": 408, "residual_before": 0.00012651054173441756, "residual_after": 3.937530440589754e-10, "apt_vs_field_before": 0.0004311076465681185, "apt_vs_field_after": 3.752827061541397e-05, "sum_rule_before": 0.00010592113923180158, "sum_rule_after": 0.00010604179616757747}

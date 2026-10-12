@@ -54,7 +54,7 @@ One line per change; the numbered section below the register carries every origi
 | 41 | 2026-10-11 | C | pyscf-properties master 4eee5a43 (`prop/infrared/test/test_ir_inten.py`) | a reference-free check of the four infrared classes: analytic APT against finite differences of the dipole (UKS test 'a little bit loose') | pr-open |
 | 42 | 2026-10-11 | C | pyscf-properties 0.1.0 on PyPI | the published release has no infrared module; master has had it since June 2022 (row 29) — an issue asking for a release | done |
 | 43 | 2026-10-11 | C | pyscf master (`hessian/thermo.py::harmonic_analysis`) | the Hessian goes to `numpy.linalg.eigh` unsymmetrised; eigh reads one triangle, so an asymmetric analytic Hessian (UKS: 6.2e-5) shifts modes and heights | pr-open |
-| 44 | 2026-10-12 | C | pyscf 2.14.0 (`lib/linalg_helper.py::krylov`, via `scf/cphf.py solve_withs1` and the Hessian's `solve_mo1`) | the Krylov solver stops 7e-5 off its own system for DFT CPHF, whatever tol/max_cycle, without a warning; dipole derivatives from that solution are off by 1e-4 (benzene), the Hessian is insensitive | pr-candidate |
+| 44 | 2026-10-12 | C | pyscf 2.14.0 (`lib/linalg_helper.py::krylov`, via `scf/cphf.py solve_withs1` and the Hessian's `solve_mo1`) | the Krylov solver stops 7e-5 off its own system for DFT CPHF, whatever tol/max_cycle, without a warning; dipole derivatives from that solution are off by 1e-4 (benzene), the Hessian is insensitive | pr-open |
 
 ## Sections
 
@@ -666,7 +666,7 @@ asymmetric input; draft only on the user's word.
 ### 44 — the DFT response's XC part disagrees with pyscf's own gradient
 
 **Group:** C, finding about third-party software. **Date:** 2026-10-12. **Status:** pr-candidate (a report first; waits for a minimal reproduction
-and the user's word). *Status note (12 Oct 09:3x):* the cause is the Krylov solver, not the XC terms the first text below names — see the addendum of `probes/results_m1/uks_apt_margin_2026-10-11/REGISTRATION.md`: h1 and the response kernel are exact, pyscf's solution misses its own system by 7e-5, GMRES on the same system (7e-14) brings the APT to the field route (5.9e-6 from 1.6e-4).
+and the user's word). *Status note (12 Oct 10:5x):* **reported on pyscf issue #2702** (open since 2025, no reply before ours; https://github.com/pyscf/pyscf/issues/2702#issuecomment-6121024352) on the user's word ('Ja, doe beide maar'): a standalone reproduction (benzene PBE/6-31G*, default grid: requested tol 1.2e-7, true residual 9.2e-5; ~100 s), the tol/max_cycle insensitivity, master's #3334 overlaid (5.6e-5, not fixed — as its description says), the exact pieces, the Hessian's insensitivity and the APT's sensitivity, and one round of batched defect correction as a cheap fix (7.8e-8, APT 3.8e-5, ≈ 120 s on a 780 s Hessian); a pull request offered. Files: `probes/results_m1/krylov_report_2026-10-12/`. *Status note (12 Oct 09:3x):* the cause is the Krylov solver, not the XC terms the first text below names — see the addendum of `probes/results_m1/uks_apt_margin_2026-10-11/REGISTRATION.md`: h1 and the response kernel are exact, pyscf's solution misses its own system by 7e-5, GMRES on the same system (7e-14) brings the APT to the field route (5.9e-6 from 1.6e-4).
 
 **Software:** pyscf 2.14.0 — the analytic DFT Hessian's response (`hessian/rks.py`, `hessian/uks.py`: `make_h1` with `_get_vxc_deriv1`, and the
 CPHF kernel), as used by our route C (`corpus/apt.py`) and by pyscf-properties' infrared module.

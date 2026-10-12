@@ -1,0 +1,33 @@
+{
+ "hessian_seconds": 586.5,
+ "rounds": [
+  {
+   "round": 0,
+   "residual": 0.00012651054496555514,
+   "apt_vs_field": 0.0004311076458251295,
+   "seconds": 49.7,
+   "operator_calls": 1
+  },
+  {
+   "round": 1,
+   "residual": 7.841218705936792e-08,
+   "apt_vs_field": 3.7542959887434946e-05,
+   "seconds": 118.4,
+   "operator_calls": 8
+  },
+  {
+   "round": 2,
+   "residual": 7.84121870699931e-08,
+   "apt_vs_field": 3.7542959887434946e-05,
+   "seconds": 165.9,
+   "operator_calls": 9
+  },
+  {
+   "round": 3,
+   "residual": 7.841218707519727e-08,
+   "apt_vs_field": 3.7542959887434946e-05,
+   "seconds": 217.0,
+   "operator_calls": 10
+  }
+ ]
+}
