@@ -103,6 +103,42 @@ for the prediction and for the zero rule (`probes/l6_mode_shape_diagnosis.py` ge
 - The CCX53 can take waves 2–3 after its labels (≈ 22–26 Oct) if one CPX62 is too slow; that needs the user's word.
 - A server is deleted by the user after the full fetch.
 
+## Price and launch (12 Oct 23:5x; before any anchor number)
+
+**Measured on `anchors3`** (`probes/anchor_gradient_timing.py`, quinoline, 17 atoms, 175 basis functions, (T) C kernels). One CCSD(T)
+gradient took:
+- 2,318 s at 5 threads;
+- 917 s at 16 threads;
+- 8.6 GB peak memory either way.
+
+Three partial runs of 5 threads would need about 26 GB on a 30 GB box. **Two partial runs of 8 threads** give about the same throughput
+(≈ 4.6 gradients per hour) for 17 GB, and that is the setting.
+
+**Estimates.** Gradients ÷ 4.6 per hour, scaled by (basis functions ÷ 175)⁵ for size, plus the reference gradient and the CC APT's six
+gradients at 16 threads:
+
+| molecule | estimate |
+|---|---|
+| quinoxaline | ≈ 13 h |
+| azulene | ≈ 17 h |
+| acenaphthylene | ≈ 40 h |
+| **wave 1** | **≈ 70 h ≈ 2.9 days ≈ €15** |
+| wave 2 | ≈ 50 h |
+| wave 3 | ≈ 60 h |
+| **all eight** | **≈ 7.5 days ≈ €38**, before the composite MP2 step |
+
+The stop rule's threshold for wave 1 is therefore 140 h.
+
+**A second route for every APT, free.** Since 3 Oct the FD run writes its own CC APT from the captured relaxed dipoles (`apt_ccsd_t.npz`).
+`probes/anchor_wave.sh` compares the field route against it with F2's line, max |ΔP| ≤ 1e-3 e.
+
+**The wave script's smoke on water** (on `anchors3`, its own log) passed every step:
+- Hessian DONE, FD asymmetry 6e-13;
+- field-route sum rule 1.5e-12;
+- field against FD 1.6e-5 e.
+
+**Wave 1 launched** 21:58 UTC (`/root/dpir/anchors.log`, markers `=== (AS3)`, followed by `probes/watch.sh` `check_anchors3`).
+
 ## Outcome
 
 *(appended after the reads)*
