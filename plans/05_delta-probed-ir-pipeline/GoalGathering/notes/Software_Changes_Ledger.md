@@ -40,7 +40,7 @@ One line per change; the numbered section below the register carries every origi
 | 27 | 2026-10-03 | B | pyscf 2.14.0 `grad/ccsd.py::grad_elec` (semantics, no upstream file to… | gradient_with_dipole in the E8 probe and probes/cc_dipole_capture.py | pr-open |
 | 28 | 2026-10-03 | B | own (design input) | probes/cc_lambda_profile.py (cProfile of solve_lambda | done |
 | 29 | 2026-10-02 | C | pyscf-properties 0.1.0 (`pyscf.prop`) | no infrared module in the installed release (magnetizability, nmr, nsr, polarizability, … | done |
-| 30 | 2026-10-03 | C | pyscf 2.14.0 `pyscf/lib/CMakeLists.txt` (and forge's copy of the patte… | the pyscf lookup python3 -c "import pyscf | pr-candidate |
+| 30 | 2026-10-03 | C | pyscf 2.14.0 `pyscf/lib/CMakeLists.txt` (and forge's copy of the patte… | the pyscf lookup python3 -c "import pyscf | done |
 | 31 | 2026-09-29/30 | B | pyscf 2.14.0 `grad/ccsd_t.py`, `grad/uccsd_t.py` (`Gradients.kernel` w… | our E8 probe solves the (T) lambda explicitly (ccsd_t_lambda.kernel) before calling the … | waiting-upstream |
 | 32 | 2026-09-30 | B | optking (psi4's optimiser) `linear-bend` cycle handling | our corpus runner optimises molecules with a triple bond in Cartesian coordinates (RETRY… | pr-open |
 | 33 | 2026-09-21 → 09-30 | C | pyVPT2 (`philipmnel/pyvpt2`, `quartic.py`) | the two finite-difference routes to the semi-diagonal quartic constants disagree on psi4 FD Hessians | done |
@@ -54,7 +54,7 @@ One line per change; the numbered section below the register carries every origi
 | 41 | 2026-10-11 | C | pyscf-properties master 4eee5a43 (`prop/infrared/test/test_ir_inten.py`) | a reference-free check of the four infrared classes: analytic APT against finite differences of the dipole (UKS test 'a little bit loose') | pr-open |
 | 42 | 2026-10-11 | C | pyscf-properties 0.1.0 on PyPI | the published release has no infrared module; master has had it since June 2022 (row 29) — an issue asking for a release | done |
 | 43 | 2026-10-11 | C | pyscf master (`hessian/thermo.py::harmonic_analysis`) | the Hessian goes to `numpy.linalg.eigh` unsymmetrised; eigh reads one triangle, so an asymmetric analytic Hessian (UKS: 6.2e-5) shifts modes and heights | pr-open |
-| 44 | 2026-10-12 | C | pyscf 2.14.0 (`lib/linalg_helper.py::krylov`, via `scf/cphf.py solve_withs1` and the Hessian's `solve_mo1`) | the Krylov solver stops 7e-5 off its own system for DFT CPHF, whatever tol/max_cycle, without a warning; dipole derivatives from that solution are off by 1e-4 (benzene), the Hessian is insensitive | pr-open |
+| 44 | 2026-10-12 | C | pyscf 2.14.0 (`lib/linalg_helper.py::krylov`, via `scf/cphf.py solve_withs1` and the Hessian's `solve_mo1`) | the Krylov solver stops 7e-5 off its own system for DFT CPHF, whatever tol/max_cycle, without a warning; dipole derivatives from that solution are off by 1e-4 (benzene), the Hessian is insensitive; our #3508, upstream's #3384 solves it too | pr-open |
 
 ## Sections
 
@@ -458,7 +458,10 @@ One line per change; the numbered section below the register carries every origi
 
 ### 30 — the pyscf lookup python3 -c "import pyscf
 
-**Group:** C, finding about third-party software. **Date:** 2026-10-03. **Status:** pr-candidate. *Status note (12 Oct 08:0x):* forge #213 was **merged on 9 Oct 2026 (17:53 UTC, MatthewRHermes)** — noticed only now; the forge half is done. The same lookup pattern in pyscf-core's CMakeLists is the second pull request the note below names, now due (waits for the user's word). *Status note (20:1x 9 Oct 2026):* forge #213 had changes requested on 6 Oct (cmake_minimum_required ≥ 3.15 for policy CMP0094; an unintended mode change on setup.py); pushed 84230da and replied 9 Oct on the user's word; open. *Status note (3 Oct 2026):* the same lookup pattern in pyscf-core's CMakeLists would be a second pull request once forge #213 is merged.
+**Group:** C, finding about third-party software. **Date:** 2026-10-03. **Status:** done. *Status note (12 Oct 13:3x):* the user gave the
+word for the second pull request ('Akkoord op forge #213'); checked first: pyscf-core's `pyscf/lib/CMakeLists.txt` has **no** pyscf lookup — it
+builds pyscf itself (none in v2.8.0, v2.10.0, v2.14.0 or master 52f5737; only a commented-out numpy lookup). Of our checkouts only pyscf-forge
+carried the pattern, and #213 fixed it there. No second pull request: the note below assumed a pattern that is not in core. *Status note (12 Oct 08:0x):* forge #213 was **merged on 9 Oct 2026 (17:53 UTC, MatthewRHermes)** — noticed only now; the forge half is done. The same lookup pattern in pyscf-core's CMakeLists is the second pull request the note below names, now due (waits for the user's word). *Status note (20:1x 9 Oct 2026):* forge #213 had changes requested on 6 Oct (cmake_minimum_required ≥ 3.15 for policy CMP0094; an unintended mode change on setup.py); pushed 84230da and replied 9 Oct on the user's word; open. *Status note (3 Oct 2026):* the same lookup pattern in pyscf-core's CMakeLists would be a second pull request once forge #213 is merged.
 
 **Software:** pyscf 2.14.0 `pyscf/lib/CMakeLists.txt` (and forge's copy of the pattern)
 
@@ -663,22 +666,22 @@ the frequencies by 3.1e-2 cm⁻¹; on the symmetrised Hessian the two codes agre
 **Action:** a small pull request: symmetrise `hess` in `harmonic_analysis` (½(H + Hᵀ) over the (atom, atom, x, y) layout) with a test on an
 asymmetric input; draft only on the user's word.
 
-### 44 — the DFT response's XC part disagrees with pyscf's own gradient
+### 44 — pyscf's multi-root Krylov CPHF stops before its solution satisfies its equations
 
-**Group:** C, finding about third-party software. **Date:** 2026-10-12. **Status:** pr-candidate (a report first; waits for a minimal reproduction
-and the user's word). *Status note (12 Oct 10:5x):* **reported on pyscf issue #2702** (open since 2025, no reply before ours; https://github.com/pyscf/pyscf/issues/2702#issuecomment-6121024352) on the user's word ('Ja, doe beide maar'): a standalone reproduction (benzene PBE/6-31G*, default grid: requested tol 1.2e-7, true residual 9.2e-5; ~100 s), the tol/max_cycle insensitivity, master's #3334 overlaid (5.6e-5, not fixed — as its description says), the exact pieces, the Hessian's insensitivity and the APT's sensitivity, and one round of batched defect correction as a cheap fix (7.8e-8, APT 3.8e-5, ≈ 120 s on a 780 s Hessian); a pull request offered. Files: `probes/results_m1/krylov_report_2026-10-12/`. *Status note (12 Oct 09:3x):* the cause is the Krylov solver, not the XC terms the first text below names — see the addendum of `probes/results_m1/uks_apt_margin_2026-10-11/REGISTRATION.md`: h1 and the response kernel are exact, pyscf's solution misses its own system by 7e-5, GMRES on the same system (7e-14) brings the APT to the field route (5.9e-6 from 1.6e-4).
+**Group:** C, finding about third-party software. **Date:** 2026-10-12. **Status:** pr-open. *Status note (12 Oct 13:3x):* **pull request [pyscf/pyscf#3508](https://github.com/pyscf/pyscf/pull/3508)** opened 12:5x on the user's word ('Je mag de PR indienen als je wilt'): `solve_withs1` checks the true residual with the induced potential it computes anyway and solves once more on it (defect correction), with `test_cphf_residual` (fails without the change). Measured on master 52f5737 → #3508: labels case (benzene PBE/6-31G* Cartesian, (99, 590)) 5.5e-5 → 5.8e-8 (solve_mo1 298 → 392 s), the #2702 reproduction 6.4e-7 → 3.2e-8, water B3LYP 5.7e-6 → 4.0e-9. On full master the reproduction is already 6.4e-7 (2.14.0: 9.2e-5; master's `lindep` change since 2.14.0) — the comment's 'master does not fix it' was measured on the labels case, which master still misses in full (5.5e-5). **jeanwsr asked on #2702 (09:16 UTC) whether their open PR #3384** (per-RHS fallback inside `lib.krylov`) solves our problem; merged locally onto master and measured: labels case 5.4e-8 at 313 s, reproduction 1.9e-8 at 58 s, water B3LYP 1.5e-6 (inside their relaxed fallback_tol), water HF 3.9e-9. It solves it, in the solver itself, for every caller and cheaper than #3508. Draft reply (yes, numbers, close #3508 in favour of #3384) in `probes/results_m1/krylov_report_2026-10-12/reply_3384_draft.md`, waits for the user's word. Our `refine_response` stays as the guard (decision c). *Status note (12 Oct 10:5x):* **reported on pyscf issue #2702** (open since 2025, no reply before ours; https://github.com/pyscf/pyscf/issues/2702#issuecomment-6121024352) on the user's word ('Ja, doe beide maar'): a standalone reproduction (benzene PBE/6-31G*, default grid: requested tol 1.2e-7, true residual 9.2e-5; ~100 s), the tol/max_cycle insensitivity, master's #3334 overlaid (5.6e-5, not fixed — as its description says), the exact pieces, the Hessian's insensitivity and the APT's sensitivity, and one round of batched defect correction as a cheap fix (7.8e-8, APT 3.8e-5, ≈ 120 s on a 780 s Hessian); a pull request offered. Files: `probes/results_m1/krylov_report_2026-10-12/`. *Status note (12 Oct 09:3x):* the cause is the Krylov solver, not the XC terms the first text below names — see the addendum of `probes/results_m1/uks_apt_margin_2026-10-11/REGISTRATION.md`: h1 and the response kernel are exact, pyscf's solution misses its own system by 7e-5, GMRES on the same system (7e-14) brings the APT to the field route (5.9e-6 from 1.6e-4).
 
-**Software:** pyscf 2.14.0 — the analytic DFT Hessian's response (`hessian/rks.py`, `hessian/uks.py`: `make_h1` with `_get_vxc_deriv1`, and the
-CPHF kernel), as used by our route C (`corpus/apt.py`) and by pyscf-properties' infrared module.
+**Software:** pyscf 2.14.0 and master — `lib/linalg_helper.py::krylov` with many right-hand sides, as `scf/cphf.py solve_withs1` calls it for
+the analytic Hessian's `solve_mo1` (all 3N directions at once); used by our route C (`corpus/apt.py`) and by pyscf-properties' infrared module.
 
-**Finding:** dipole derivatives contracted from the Hessian's CPHF response differ from two routes that agree with each other — minus the field
-derivative of the analytic nuclear gradient (`probes/apt_field_route.py`) and central differences of the SCF dipole: water 7e-6 e, benzene 4.0e-4
-(B3LYP/6-31G*, grid 99/590), a 12-atom UKS cation 3.3e-3. On benzene at the same grid: HF 8.6e-6 (the field error, O(F²)), PBE 2.2e-4, B3LYP
-4.0e-4. Not the CPHF convergence (max_cycle 200, conv_tol_cpscf 1e-12: 3e-10), not grid response (field route with/without it: 4e-5), not the grid
-(the Hessian uses `mf.grids`). Measured in `probes/results_m1/uks_apt_margin_2026-10-11/` (REGISTRATION.md, outcome of 12 Oct).
+**Finding:** for DFT the returned response misses its own equations by 1e-5 to 1e-4 (benzene B3LYP/6-31G*, (99, 590): 1.3e-4), whatever
+`tol` and `max_cycle` say, without a warning; the solver stops on the norm of its last trial vector. The Hessian is insensitive (benzene
+0.06 cm⁻¹ against the frozen-grid FD of the gradient: the labels are not affected); dipole derivatives contracted from the response are
+not (benzene 4.3e-4 e against the field route, heights ≤ 0.6 %). Proven by GMRES on the same system (route C onto the field route); an earlier
+attribution to the XC part was withdrawn. Measured in `probes/results_m1/uks_apt_margin_2026-10-11/` (REGISTRATION.md with addendum) and
+`probes/results_m1/krylov_report_2026-10-12/`.
 
-**12 Oct 04:2x:** the analytic DFT Hessian does not carry it — benzene B3LYP against the frozen-grid FD of the gradient, max |Δω| 0.06 cm⁻¹ (`probes/results_m1/hessian_xc_check_2026-10-12/`). **Open before a report:** why the dipole derivatives from the same response differ, and which term (LDA
-against GGA bisects further); the reproduction should be a few lines (benzene, PBE, two routes).
+**What we built:** `corpus/apt.py refine_response` (batched defect correction, bound 1e-6), installed on the labels server 12 Oct 11:51
+(TASKS 44 a); the route-C APTs written before it are recomputed (b); it stays as a guard after an upstream fix (c).
 
 ## How to use this ledger
 
