@@ -77,7 +77,7 @@ check_pool3() {   # pool 3's two runners, each alive until remote_launch's <name
 check_anchors3() {   # anchor set three (probes/anchor_wave.sh): each '=== (AS3)' line once; the wave runner gone before 'wave done' is an anomaly
   has_host anchors3 || return 0
   local rc alive last line
-  an=$(host_ssh anchors3 'test -f /root/dpir/anchors.log || { echo NOLOG; exit 0; }; echo "alive $(pgrep -fc "^bash /root/dpir/probes/anchor_wave.sh")"; grep "^=== (AS3) " /root/dpir/anchors.log | tail -n 30'); rc=$?
+  an=$(host_ssh anchors3 'test -f /root/dpir/anchors.log || { echo NOLOG; exit 0; }; echo "alive $(pgrep -fc "^bash (/root/dpir/)?probes/anchor_wave\.sh ")"; grep "^=== (AS3) " /root/dpir/anchors.log | tail -n 30'); rc=$?
   if [ -z "$an" ]; then remote_fail anchors3 "$rc" afails; return 0; fi
   afails=0
   [ "$an" = "NOLOG" ] && return 0
