@@ -6,4 +6,3 @@ F5	probes/results_m1/fivering_laptop_2026-10-10.log	^=== \(F5\) |FAILED	^=== \(F
 C40	probes/results_m1/chain40.log	^=== \(C40\) 	^=== \(C40\) (run done|RUN FAILED)	[c]hain_runner.py probes/runs/chain40
 C35h	probes/results_m1/chain35h.log	^=== \(C35h\) 	^=== \(C35h\) (run done|RUN FAILED)	[c]hain_runner.py probes/runs/chain35h
 APTb	probes/results_m1/apt_refine_install_2026-10-12/recompute/lanes.log	^=== \(APTb\) |FAILED	^=== \(APTb\) all lanes done	[a]pt_recompute_lanes
-APTb2	probes/results_m1/apt_refine_install_2026-10-12/recompute/lanes_half2.log	^=== \(APTb\) all|FAILED	^=== \(APTb\) all lanes done	[f]etched_half2
