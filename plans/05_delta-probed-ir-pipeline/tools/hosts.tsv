@@ -4,3 +4,4 @@
 # a machine whose id differs. Columns are TAB-separated: name, ip, machine-id, what it is.
 labels	157.180.32.149	edcb17d0044b431791e20cc6c5207edf	CCX53 ubuntu-128gb-hel1-2, the analytic labels server (7 Oct 2026)
 pool3	46.62.227.91	90dc99782b0a4621b3793166a5dfc682	CPX62 ubuntu-32gb-hel1-2, pool 3 (8 Oct 2026)
+anchors3	204.168.180.16	e041d0f8a2764449ba15116cd156c664	CPX62 ubuntu-32gb-hel1-4, anchor set three (12 Oct 2026)
