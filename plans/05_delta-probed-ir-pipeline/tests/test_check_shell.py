@@ -41,6 +41,8 @@ def test_cli_exit_codes(tmp_path):
 
 def test_repo_shell_scripts_conform():
     """Every committed .sh under the plan (outside run directories) passes — the hook's promise, checked here too."""
-    scripts = [p for p in PLAN.rglob("*.sh") if "results_" not in str(p) and "node_modules" not in str(p)]
+    # committed files only, as the docstring says (13 Oct 2026: the git-ignored launch wrappers of tools/launch_outside_app.sh were picked up)
+    listed = subprocess.run(["git", "ls-files", "--", "*.sh"], cwd=PLAN, capture_output=True, text=True, check=True).stdout.split()
+    scripts = [PLAN / p for p in listed if "results_" not in p and "node_modules" not in p]
     problems = [x for p in scripts for x in CS.check(p, None)]
     assert not problems, problems

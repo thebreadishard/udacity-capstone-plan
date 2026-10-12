@@ -25,6 +25,14 @@ def mean_of(records: list, hold: str, key: str = "coupling_ratio") -> float:
     return float(np.mean([r[hold][key] for r in records]))
 
 
+def require_complete(records: list, hold: str) -> None:
+    """A registered test set is read whole or not at all (13 Oct 2026: the loader had silently skipped every molecule above 32 atoms)."""
+    for r in records:
+        dropped = r[hold].get("dropped") or []
+        if dropped:
+            raise SystemExit(f"hold-out ({hold}) lost {len(dropped)} registered molecules at evaluation ({', '.join(dropped[:5])}) — not read")
+
+
 def verdicts(q_t: float, g: float) -> dict:
     line1 = "carries (≤ 1.3)" if q_t <= 1.3 else "steep (≥ 1.8)" if q_t >= 1.8 else "between: noted"
     line2 = ("the lever works (≤ 0.85)" if g <= 0.85 else "six are too few to judge (≥ 0.95): a second point (≈ 20) before any conclusion"
@@ -33,6 +41,8 @@ def verdicts(q_t: float, g: float) -> dict:
 
 
 def read(arm0: list, arm_d: list) -> dict:
+    require_complete(arm0, "T")
+    require_complete(arm_d, "T")
     r0t, r0a, rdt = mean_of(arm0, "T"), mean_of(arm0, "a"), mean_of(arm_d, "T")
     res = {"r0_T": r0t, "r0_a": r0a, "rD_T": rdt, "q_T": r0t / r0a, "g": rdt / r0t, "n_seeds": [len(arm0), len(arm_d)]}
     res.update(verdicts(res["q_T"], res["g"]))

@@ -184,3 +184,11 @@ def test_save_prediction_round_trip(tmp_path):
 def test_fit_mode_follows_the_tz_tier_standard():
     """TASKS 36 (8 Oct 2026): the fit on all anchors uses the head-tuned column with the L2 pull when it is set (amendment (A))."""
     assert RT_T.fit_mode(1.0) == "head_l2" and RT_T.fit_mode(0.0) == "head"
+
+
+def test_an_exclude_file_s_comment_lines_are_not_ids(tmp_path):
+    """13 Oct 2026: chain 41's exclude files carry a '#' header; it must not count as an id."""
+    import rungC_train as RT
+    f = tmp_path / "ex.txt"
+    f.write_text("# header\nb\n", encoding="utf-8")
+    assert RT.exclude_pool_ids(["a", "b"], str(f)) == (["a"], ["b"])

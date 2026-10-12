@@ -18,7 +18,8 @@ A standard rung C step: design check → every training (chain 34's recipe v1.1 
 unregistered models) → `rungC_eval_saved` per checkpoint on the frozen hold-out (b) → `rungC_eval_means` per training. Its keys: "chain", "note",
 "date", "trainings": [{"prefix": …, "args": [...], "labels": "analytic" (default) | "fd"}], optional "seeds" (default 0,1,2),
 "threads" (8), "holdout_b_file", "recipe" (override), "eval_args" (extra arguments for every rungC_eval_saved call, e.g. chain 42's
-`--eval-ids-file T=…`). A training with "labels": "fd" trains without `--use-analytic` (chain 35's half read
+`--eval-ids-file T=…`); a training's own "eval_args" replaces the spec's for that training's evaluations (chain 41: each control fold
+reads its own test list, 13 Oct 2026). A training with "labels": "fd" trains without `--use-analytic` (chain 35's half read
 compares the two on one pool, 11 Oct 2026); evaluation always uses the analytic labels, the one yardstick.
 Markers: "armed", "waiting", "<step> done", "run done"; failures: "RUN FAILED at <step>: …". Exit 0 done, 1 failed.
 """
@@ -100,7 +101,7 @@ def rungc_steps(s: dict, python: str) -> list[dict]:
             evals.append(f"{ev}.json")
             out.append(dict(label=f"eval {Path(pre).name} seed {x}", log=f"{ev}.log", glob_args=True,
                             argv=[python, "../../probes/rungC_eval_saved.py", f"{pre}_model_n*_seed{x}.pt", ev, "--use-analytic", "--threads", threads,
-                                  "--allow-any-model", "--holdout-b-file", hb, *s.get("eval_args", [])]))
+                                  "--allow-any-model", "--holdout-b-file", hb, *t.get("eval_args", s.get("eval_args", []))]))
         read = f"out/read_{Path(pre).name}"
         out.append(dict(label=f"seed means {Path(pre).name}", log=f"{read}.log",
                         argv=[python, "../../probes/rungC_eval_means.py", read, *evals, "--against", f"{pre}.json"]))

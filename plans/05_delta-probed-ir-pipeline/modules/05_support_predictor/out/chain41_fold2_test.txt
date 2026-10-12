@@ -1,0 +1,16 @@
+# chain 41 (fold2_test), from chain41_size5_folds_2026-10-11.json (sha256 of its candidates csv 108239f36bb6)
+P3_018f8ce9da
+P3_0590e0136f
+P3_082a4af67e
+P3_086e85b2d7
+P3_0a21840ff5
+P3_2377eabf5d
+P3_2500d7179b
+P3_29827b6df4
+P3_2e68b34382
+P3_34d837d676
+P3_4d14684fda
+P3_587680d8fc
+P3_71cd75ce8c
+P3_a052950c1f
+P3_cb85f79bc2

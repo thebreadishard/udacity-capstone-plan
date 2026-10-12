@@ -446,7 +446,7 @@ def exclude_pool_ids(pool: list, path: str | None) -> tuple[list, list]:
     intersection (a wrong file would silently run the full pool)."""
     if not path:
         return pool, []
-    wanted = {s.strip() for s in open(path, encoding="utf-8") if s.strip()}
+    wanted = {s.strip() for s in open(path, encoding="utf-8") if s.strip() and not s.startswith("#")}   # '#' header lines (13 Oct 2026)
     dropped = [i for i in pool if i in wanted]
     if not dropped:
         raise SystemExit(f"--exclude-ids-file {path}: none of its {len(wanted)} ids is in the pool")

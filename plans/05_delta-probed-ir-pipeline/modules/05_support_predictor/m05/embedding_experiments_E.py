@@ -41,8 +41,10 @@ def principal_frame(coords_A, masses):
 
 
 def atom_sets(mol_dir, base, lo=None):
-    """Per mode: (NMAX, 13) atom tokens [onehot5, x/5, y/5, z/5, dx, dy, dz, |d|, participation] and a mask. `lo`: the projected low-level
-    Hessian when the caller has it (analytic-only folders, TASKS 49); else the psi4 file."""
+    """Per mode: (max(NMAX, N), 13) atom tokens [onehot5, x/5, y/5, z/5, dx, dy, dz, |d|, participation] and a mask. `lo`: the projected
+    low-level Hessian when the caller has it (analytic-only folders, TASKS 49); else the psi4 file. 13 Oct 2026: a molecule larger than NMAX
+    pads to its own size. Before, it raised, and E6's loader skipped every molecule above 32 atoms: pool 3's five-ring neutrals and the large
+    PAHs. Molecules up to NMAX keep the same arrays. The E-series batch augmentation still assumes NMAX and is not run on them."""
     g = json.load(open(mol_dir / "geometry.json"))
     symbols = g["symbols"]; masses = np.asarray(g["masses_amu"]); coords = np.asarray(g["coords_bohr"]) * BOHR
     lo = np.load(mol_dir / "hessian_b3lyp.npz")["H_projected"] if lo is None else lo
@@ -50,7 +52,8 @@ def atom_sets(mol_dir, base, lo=None):
     xf, R = principal_frame(coords, masses)
     N, M = len(symbols), V.shape[1]
     onehot = np.array([[1.0 if s == e else 0.0 for e in ELEMENTS] for s in symbols])
-    X = np.zeros((M, NMAX, 13), np.float32); mask = np.ones((M, NMAX), bool)
+    nmax = max(NMAX, N)
+    X = np.zeros((M, nmax, 13), np.float32); mask = np.ones((M, nmax), bool)
     for i in range(M):
         d = (V[:, i].reshape(N, 3) @ R)          # rotate displacement into the frame
         d = d / (np.linalg.norm(d) + 1e-12)

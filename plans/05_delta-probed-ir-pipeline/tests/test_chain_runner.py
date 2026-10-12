@@ -96,3 +96,12 @@ def test_eval_args_reach_every_eval():
     evals = [a for k, a in steps.items() if k.startswith("eval")]
     assert len(evals) == 6 and all(a[-2:] == ["--eval-ids-file", "T=corpus/t.txt"] for a in evals)
     assert "--eval-ids-file" not in steps["train D"] and steps["train D"][-3:-1] == ["--pool-layers", "A,A2,B,D"]
+
+
+def test_a_training_s_own_eval_args_replace_the_spec_s():
+    """Chain 41 (13 Oct 2026): the size arm reads s5 and s4N, each control fold only its own test list."""
+    spec = {"kind": "rungc", "chain": "41", "note": "t", "date": "2026-10-13", "eval_args": ["--eval-ids-file", "s5=all.txt"],
+            "trainings": [{"prefix": "out/S", "args": []}, {"prefix": "out/K1", "args": [], "eval_args": ["--eval-ids-file", "s5=fold1.txt"]}]}
+    steps = {s["label"]: s["argv"] for s in CR.rungc_steps(spec, "py")}
+    assert steps["eval S seed 0"][-2:] == ["--eval-ids-file", "s5=all.txt"]
+    assert steps["eval K1 seed 0"][-2:] == ["--eval-ids-file", "s5=fold1.txt"] and "s5=all.txt" not in steps["eval K1 seed 0"]

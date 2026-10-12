@@ -59,3 +59,15 @@ def test_the_jobs_optimise_without_fd_hessians_and_name_their_layer(tmp_path):
     j = LJ.job(sp, "T", str(tmp_path), {"basis": "6-31G*"})
     assert j["hessians"] is False and j["optimise"] is True and j["layer"] == "T" and j["id"].startswith("T_") and len(j["id"]) == 12
     assert j["xyz_angstrom"] == [["C", 0.0, 0.0, 0.0], ["H", 0.0, 0.0, 1.1]] and j["source"]["pahdb_uid"] == 18
+
+
+def test_a_molecule_larger_than_nmax_is_loaded_not_skipped(corpus, monkeypatch):
+    """13 Oct 2026 (chain 41's P3 smoke): atom_sets had a fixed NMAX of 32 and the loader skipped every larger molecule, which meant all of
+    pool 3's five-ring neutrals and every large PAH. A molecule above NMAX now pads to its own size; one at or below it keeps its arrays."""
+    import e6_learning_curve as E6
+    import embedding_experiments_E as EE
+    before = E6.load_corpus(corpus)["A_fd"]["sets"]
+    monkeypatch.setattr(EE, "NMAX", 8)                                   # benzene has 12 atoms: now larger than NMAX
+    after = E6.load_corpus(corpus)
+    assert "A_fd" in after and after["A_fd"]["sets"][0].shape[1] == 12
+    assert np.array_equal(after["A_fd"]["sets"][0][:, :12], before[0][:, :12])

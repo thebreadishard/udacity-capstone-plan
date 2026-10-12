@@ -1,0 +1,27 @@
+{
+ "_about": "Chain 41 (registered 11 Oct 2026 in the rung C pre-registration; spec 13 Oct 2026): five fused rings from a corpus of at most four. Size arm = chain 34's recipe on the pool as it stands (layers A, A2, B; pool 3 out through the layer filter), read on s5 (and s4N beside). Control = the same pool plus the five-ring molecules of three scaffolds (layer P3 with each fold's exclude list), read on the other three scaffolds' fifteen. q5 = r_S / r_K, r_K the mean of the two folds' ratios (fixed before any number, probes/chain41_read.py). Waits for every s5/s4N molecule to carry analytic labels on the laptop and for chain 35h's end (one 8-thread training at a time); chain 42 waits for this run.",
+ "name": "C41",
+ "poll_s": 1800,
+ "wait": [
+  {"kind": "cmd", "argv": ["python", "probes/ids_have_labels.py", "modules/05_support_predictor/out/chain41_all_labelled.txt"]},
+  {"kind": "marker", "log": "probes/results_m1/chain35h.log", "regex": "^=== \\(C35h\\) (run done|RUN FAILED)"}
+ ],
+ "steps": [
+  {"kind": "rungc", "chain": "41",
+   "note": "chain 41 - five fused rings from a corpus of at most four: size arm and two control folds; registered 11 Oct 2026; candidate until its read",
+   "trainings": [
+    {"prefix": "out/E7_rungC_chain41_size", "args": ["--sizes", "all"],
+     "eval_args": ["--eval-ids-file", "s5=out/chain41_s5.txt", "--eval-ids-file", "s4N=out/chain41_s4N.txt"]},
+    {"prefix": "out/E7_rungC_chain41_control1", "args": ["--sizes", "all", "--pool-layers", "A,A2,B,P3", "--exclude-ids-file", "out/chain41_fold1_exclude.txt"],
+     "eval_args": ["--eval-ids-file", "s5=out/chain41_fold1_test.txt"]},
+    {"prefix": "out/E7_rungC_chain41_control2", "args": ["--sizes", "all", "--pool-layers", "A,A2,B,P3", "--exclude-ids-file", "out/chain41_fold2_exclude.txt"],
+     "eval_args": ["--eval-ids-file", "s5=out/chain41_fold2_test.txt"]}
+   ]},
+  {"kind": "cmd", "label": "chain 41 read", "cwd": "modules/05_support_predictor", "log": "modules/05_support_predictor/out/read_chain41.log",
+   "argv": ["{python}", "../../probes/chain41_read.py",
+            "--size", "out/E7_rungC_chain41_size_eval_frozenb_seed0.json", "out/E7_rungC_chain41_size_eval_frozenb_seed1.json", "out/E7_rungC_chain41_size_eval_frozenb_seed2.json",
+            "--fold1", "out/E7_rungC_chain41_control1_eval_frozenb_seed0.json", "out/E7_rungC_chain41_control1_eval_frozenb_seed1.json", "out/E7_rungC_chain41_control1_eval_frozenb_seed2.json",
+            "--fold2", "out/E7_rungC_chain41_control2_eval_frozenb_seed0.json", "out/E7_rungC_chain41_control2_eval_frozenb_seed1.json", "out/E7_rungC_chain41_control2_eval_frozenb_seed2.json"]}
+ ],
+ "outputs": ["modules/05_support_predictor/out/read_chain41.json", "modules/05_support_predictor/out/read_chain41.md"]
+}

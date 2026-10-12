@@ -4,7 +4,7 @@
 # the five-ring runner, the cation queue script, the chain 40 and 35h runners, both APT recompute lanes in WSL, and WSL itself. `nohup … & disown`
 # and `setsid` do not leave that tree.
 #
-# Here the command goes into a small script under probes/watch_state/launch/<name>.sh (git-ignored). Windows creates it as a new process
+# Here the command goes into a small script under probes/watch_state/launch/<name>_<timestamp>.sh (git-ignored). Windows creates it as a new process
 # through WMI (Win32_Process.Create), so its parent is the WMI provider, not the app. A WSL job launched this way keeps its wsl.exe, and with it
 # the WSL VM, alive. The command's own redirections decide where its output goes. Prints the new process id; exit 1 when WMI refuses.
 #   bash tools/launch_outside_app.sh fivering /c/…/plans/05_delta-probed-ir-pipeline 'PRIORITY=1 bash probes/fivering_laptop_1015.sh >> probes/results_m1/fivering_laptop_2026-10-10.log 2>&1'
@@ -15,10 +15,11 @@ CMD="$*"
 HERE=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 DIR="$HERE/../probes/watch_state/launch"
 mkdir -p "$DIR"
-SCRIPT="$DIR/$NAME.sh"
+SCRIPT="$DIR/${NAME}_$(date +%Y%m%d_%H%M%S).sh"   # never overwrite a wrapper a running bash may still read
 {
   echo "#!/usr/bin/env bash"
   echo "# written by tools/launch_outside_app.sh $(date '+%F %T')"
+  echo "# no-set-e: a generated wrapper; the command it starts carries its own error handling"
   echo "cd $(printf '%q' "$WORKDIR") || exit 1"
   echo "exec < /dev/null"
   echo "$CMD"
