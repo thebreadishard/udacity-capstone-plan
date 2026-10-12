@@ -71,6 +71,18 @@ Whenever the machine is busy or the user is away, the next item is the cheapest 
 
 ## 6. Log
 
+- **13 Oct 00:1x — a silent size cap in the loader, found by a smoke before it cost a run.** Chain 41's owed P3 smoke loaded two of pool 3's
+five-ring neutrals (33 and 38 atoms). Both were skipped with a one-line 'skip' print: `embedding_experiments_E.atom_sets` padded to a fixed
+NMAX of 32 and raised on anything larger, and `E6.load_corpus` catches per-molecule errors. Chain 41's thirty test molecules (32–40 atoms)
+and all of chain 42's large PAHs (34–60) would have vanished, and only the eval's 'none admitted' would have spoken, and only if every id was
+lost.
+
+Fixed:
+- pad to max(NMAX, N); molecules up to 32 atoms keep their arrays, and the corpus stops at 30;
+- a regression test.
+
+Guard: the chain 41/42 reads refuse a registered set that lost molecules at evaluation. In the same pass, exclude files skip '#' header lines.
+The rule it confirms: a smoke on the real inputs of the next run, not on the corpus's typical molecule.
 - **12 Oct, 22:2x — lever 6b: the λ = 1 fine-tune costs mode shapes, three of three.** CC APTs by the field route for
 fluorobenzene and benzonitrile both pass their sum rules. With all three low-symmetry CC APTs in one T3 run, the matched intensity rel. rms
 (λ = 1 / λ = 0 / zero rule) is:
