@@ -86,3 +86,13 @@ def test_cmd_condition_holds_on_exit_zero(tmp_path):
     assert not CR.condition_holds({"kind": "cmd", "argv": ["no-such-program-xyz"], "cwd": str(tmp_path)})
     with pytest.raises(ValueError, match="unknown wait kind"):
         CR.condition_holds({"kind": "tea"})
+
+
+def test_eval_args_reach_every_eval():
+    """Chain 42 (12 Oct 2026): the size-test ids go to every rungC_eval_saved call; the trainings do not see them."""
+    spec = {"kind": "rungc", "chain": "42", "note": "t", "date": "2026-10-13", "eval_args": ["--eval-ids-file", "T=corpus/t.txt"],
+            "trainings": [{"prefix": "out/A", "args": []}, {"prefix": "out/D", "args": ["--pool-layers", "A,A2,B,D"]}]}
+    steps = {s["label"]: s["argv"] for s in CR.rungc_steps(spec, "py")}
+    evals = [a for k, a in steps.items() if k.startswith("eval")]
+    assert len(evals) == 6 and all(a[-2:] == ["--eval-ids-file", "T=corpus/t.txt"] for a in evals)
+    assert "--eval-ids-file" not in steps["train D"] and steps["train D"][-3:-1] == ["--pool-layers", "A,A2,B,D"]

@@ -1,0 +1,7 @@
+# lever 5 (TASKS 49): layer D, from selection.json
+D_210c3076e6
+D_ac28161d06
+D_e1a31cd772
+D_d9fa7459f3
+D_ea2ba4fc5a
+D_8a1c3dddb7

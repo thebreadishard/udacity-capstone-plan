@@ -115,6 +115,32 @@ unseen corpus molecules at corpus sizes. The thresholds are the same as chains 3
   `--use-analytic`, and `rungC_eval_saved --eval-ids-file`.
 - The run as a chain-runner spec (`probes/runs/chain42.json`, dry-run).
 
+## Amendment (15:5x, 12 Oct, before any of the ten was optimised or labelled; the owed items done)
+
+**1. Threshold for an imaginary mode.** The minima guard counts a mode as imaginary below **−10 cm⁻¹**, not the −20 written above. That is
+the corpus's own count (`psi4_worker.py`), which the loader's imaginary flag has always used. `analytic_hessians.py` now writes
+`n_imaginary_b3lyp/wb97x` into an analytic-only folder's `result.json`. It is installed on the labels server
+(12 Oct 13:50 UTC, water smoke passed).
+
+**2. Owed items done:**
+- `probes/runs/chain42.json`, dry-run passed. It waits for `probes/large_pah_ready.py` and for chain 35h's end.
+- The read is `probes/chain42_read.py`, with tests.
+- The id lists are frozen in `corpus/large_pah_{test,train}_ids_2026-10-12.txt`.
+
+**3. Whole-path smoke** on benzene as a stand-in layer-T folder. Each step passed:
+- the psi4 optimisation without Hessians took 25 s, and the folder was marked analytic_only;
+- `analytic_hessians.py` at a coarse grid (50, 194) wrote n_imaginary 0/0;
+- the loader under `--use-analytic` and `rungC_eval_saved --eval-ids-file T=…` on a small copy of the corpus read hold-out (T) beside (a)
+  and (b);
+- `chain42_read.read` gave its lines on that record.
+
+**4. A risk, recorded before the run.** In the smoke, the APT failed its translation sum rule: 5.2e-4 against the 5e-4 limit, at the coarse
+grid (benzene at the label grid: 1.1e-4). The sum rule of an APT without grid response grows with molecule size: 1.9e-4 on a 22-atom
+labels molecule. HBC (60 atoms) may exceed 5e-4 at the label grid. A failed APT does not touch the Hessians, so chain 42's lines are not
+affected. Only the intensity read-out beside them would lose that molecule. Coronene, run first, gives the measured value. If the four
+fail the limit, the field route with grid response (`probes/apt_field_route.py`, exact sum rule) is their APT's second route. The limit is
+not moved after the fact.
+
 ## Outcome
 
 *(appended after the run)*
