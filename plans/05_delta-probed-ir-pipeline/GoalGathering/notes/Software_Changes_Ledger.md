@@ -677,7 +677,7 @@ derivative of the analytic nuclear gradient (`probes/apt_field_route.py`) and ce
 4.0e-4. Not the CPHF convergence (max_cycle 200, conv_tol_cpscf 1e-12: 3e-10), not grid response (field route with/without it: 4e-5), not the grid
 (the Hessian uses `mf.grids`). Measured in `probes/results_m1/uks_apt_margin_2026-10-11/` (REGISTRATION.md, outcome of 12 Oct).
 
-**Open before a report:** whether the analytic DFT Hessian itself carries the error (a fixed-grid FD check of the gradient), and which term (LDA
+**12 Oct 04:2x:** the analytic DFT Hessian does not carry it — benzene B3LYP against the frozen-grid FD of the gradient, max |Δω| 0.06 cm⁻¹ (`probes/results_m1/hessian_xc_check_2026-10-12/`). **Open before a report:** why the dipole derivatives from the same response differ, and which term (LDA
 against GGA bisects further); the reproduction should be a few lines (benzene, PBE, two routes).
 
 ## How to use this ledger

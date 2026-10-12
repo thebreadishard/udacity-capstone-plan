@@ -1,0 +1,7 @@
+  atom 1/3 done, 5 s
+  atom 2/3 done, 10 s
+  atom 3/3 done, 16 s
+probes/results_m1/water_dipole_fd_2026-10-02 (b3lyp): max |H_analytic − H_FD,frozen grid| 7.77e-06, FD asymmetry 7.98e-06; max |Δω| 0.06 cm-1 (mode at 1679.2); 22 s
+    1679.2 cm-1  Δω -0.065
+    3870.8 cm-1  Δω +0.027
+    4000.1 cm-1  Δω +0.026

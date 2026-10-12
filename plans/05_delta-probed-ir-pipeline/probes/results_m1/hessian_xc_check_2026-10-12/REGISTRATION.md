@@ -20,3 +20,17 @@ gradients.
 - |Δω| ≥ 2 cm⁻¹ → the labels carry it; the labels route and its two-route checks are reviewed before more labels are used for a read.
 - Between → recorded with the per-mode pattern; ωB97X gets the same check before any conclusion.
 Reported beside: max |ΔH| (Eh/bohr²), water's floor, the per-mode Δω.
+
+## Outcome, 12 October 2026 04:2x
+
+`water.{npz,log}` (smoke, 22 s), `benzene_b3lyp.{npz,log}` (2,107 s, 72 displaced SCFs and gradients), `chain.log`.
+
+- Water: max |ΔH| 7.8e-6 Eh/bohr², max |Δω| 0.06 cm⁻¹ — the floor of the comparison.
+- **Benzene, the labels route's saved B3LYP Hessian against the frozen-grid FD of the gradient: max |ΔH| 3.3e-5, max |Δω| 0.06 cm⁻¹** (1531 cm⁻¹;
+  every mode within 0.07; the FD's own asymmetry 7.5e-6).
+
+**Reading, as registered: |Δω| ≤ 0.5 cm⁻¹ → the analytic Hessian is consistent with pyscf's gradient; the labels do not carry the APT's XC
+error.** No ωB97X check is owed (the line asks for it only between 0.5 and 2). What this sharpens: the Hessian built from the same `make_h1` and
+CPHF response agrees with the gradient to the floor, while the dipole derivatives contracted from that response do not (benzene 4.0e-4 e) — the
+defect sits in what the APT uses and the Hessian does not, or the Hessian's formula is insensitive to it. That is the next day's question (row 44
+of the software ledger); the labels are not affected.
