@@ -1,0 +1,172 @@
+{
+ "_about": "Lever 6 (12 Oct 2026, the user: 'Doe 6 ook'): CCSD(T) APT by the field route on benzene (line F2 against the E8 FD APT) and pyridine (F3), then read-out (3) on pyridine with T3's chain 34 models (R3H). Registration: probes/results_m1/cc_apt_field_2026-10-12/REGISTRATION.md.",
+ "name": "L6",
+ "steps": [
+  {
+   "kind": "cmd",
+   "label": "CC field APT benzene",
+   "log": "probes/results_m1/cc_apt_field_2026-10-12/benzene_field.log",
+   "argv": [
+    "wsl",
+    "-e",
+    "bash",
+    "-lc",
+    "cd /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline && OMP_NUM_THREADS=4 nice -n 10 ~/qc05/bin/python probes/cc_apt_field.py modules/05_support_predictor/corpus/molecules/A_8448043181/geometry.json --out probes/results_m1/cc_apt_field_2026-10-12/benzene_ccpvdz_field.npz --basis cc-pvdz --threads 4 --max-memory 8000 --fast"
+   ]
+  },
+  {
+   "kind": "cmd",
+   "label": "F2 benzene line",
+   "log": "probes/results_m1/cc_apt_field_2026-10-12/F2_benzene_check.log",
+   "argv": [
+    "{python}",
+    "probes/cc_apt_field_check.py",
+    "probes/results_m1/cc_apt_field_2026-10-12/benzene_ccpvdz_field.npz",
+    "--ref",
+    "probes/results_m1/e8_benzene_ccpvdz_dip_2026-10-03/apt_ccsd_t.npz",
+    "--line",
+    "1e-3"
+   ]
+  },
+  {
+   "kind": "cmd",
+   "label": "CC field APT pyridine",
+   "log": "probes/results_m1/cc_apt_field_2026-10-12/pyridine_field.log",
+   "argv": [
+    "wsl",
+    "-e",
+    "bash",
+    "-lc",
+    "cd /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline && OMP_NUM_THREADS=4 nice -n 10 ~/qc05/bin/python probes/cc_apt_field.py modules/05_support_predictor/corpus/molecules/A_6e858b26e5/geometry.json --out probes/results_m1/cc_apt_field_2026-10-12/pyridine_ccpvdz_field.npz --basis cc-pvdz --threads 4 --max-memory 8000 --fast"
+   ]
+  },
+  {
+   "kind": "cmd",
+   "label": "F3 pyridine sum rule",
+   "log": "probes/results_m1/cc_apt_field_2026-10-12/F3_pyridine_check.log",
+   "argv": [
+    "{python}",
+    "probes/cc_apt_field_check.py",
+    "probes/results_m1/cc_apt_field_2026-10-12/pyridine_ccpvdz_field.npz"
+   ]
+  },
+  {
+   "kind": "cmd",
+   "label": "R3H T3 seed 0",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/T3_tz_pyridine_apt_c34_seed0_2026-10-12.log",
+   "argv": [
+    "{python}",
+    "m05/rungC_cc_transfer.py",
+    "corpus/molecules",
+    "out/E7_rungC_chain34_kdfamily_750_2026-10-05_model_n750_seed0.pt",
+    "out/T3_tz_pyridine_apt_c34_seed0_2026-10-12",
+    "--threads",
+    "4",
+    "--epochs",
+    "300",
+    "--lr",
+    "1e-3",
+    "--head-l2",
+    "1",
+    "--anchor",
+    "A_8448043181=C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/e8_benzene_ccpvtz_oop_2026-10-03/hessian_ccsd_t.npz",
+    "--anchor",
+    "A_01f3186607=C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/out/composite_full_naphthalene_2026-10-07.npz",
+    "--anchor",
+    "A_6e858b26e5=C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/out/composite_full_pyridine_2026-10-07.npz",
+    "--anchor",
+    "B_8b12a55d3a=C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/out/composite_full_fluorobenzene_2026-10-07.npz",
+    "--anchor",
+    "A_3100da3761=C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/out/composite_full_benzonitrile_2026-10-07.npz",
+    "--anchor",
+    "A_a1e6ec1862=C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/out/composite_full_anthracene_2026-10-07.npz",
+    "--apt",
+    "A_8448043181=../../probes/results_m1/e8_benzene_ccpvtz_oop_2026-10-03/apt_ccsd_t.npz",
+    "--apt",
+    "A_6e858b26e5=../../probes/results_m1/cc_apt_field_2026-10-12/pyridine_ccpvdz_field.npz"
+   ]
+  },
+  {
+   "kind": "cmd",
+   "label": "R3H T3 seed 1",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/T3_tz_pyridine_apt_c34_seed1_2026-10-12.log",
+   "argv": [
+    "{python}",
+    "m05/rungC_cc_transfer.py",
+    "corpus/molecules",
+    "out/E7_rungC_chain34_kdfamily_750_2026-10-05_model_n750_seed1.pt",
+    "out/T3_tz_pyridine_apt_c34_seed1_2026-10-12",
+    "--threads",
+    "4",
+    "--epochs",
+    "300",
+    "--lr",
+    "1e-3",
+    "--head-l2",
+    "1",
+    "--anchor",
+    "A_8448043181=C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/e8_benzene_ccpvtz_oop_2026-10-03/hessian_ccsd_t.npz",
+    "--anchor",
+    "A_01f3186607=C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/out/composite_full_naphthalene_2026-10-07.npz",
+    "--anchor",
+    "A_6e858b26e5=C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/out/composite_full_pyridine_2026-10-07.npz",
+    "--anchor",
+    "B_8b12a55d3a=C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/out/composite_full_fluorobenzene_2026-10-07.npz",
+    "--anchor",
+    "A_3100da3761=C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/out/composite_full_benzonitrile_2026-10-07.npz",
+    "--anchor",
+    "A_a1e6ec1862=C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/out/composite_full_anthracene_2026-10-07.npz",
+    "--apt",
+    "A_8448043181=../../probes/results_m1/e8_benzene_ccpvtz_oop_2026-10-03/apt_ccsd_t.npz",
+    "--apt",
+    "A_6e858b26e5=../../probes/results_m1/cc_apt_field_2026-10-12/pyridine_ccpvdz_field.npz"
+   ]
+  },
+  {
+   "kind": "cmd",
+   "label": "R3H T3 seed 2",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/T3_tz_pyridine_apt_c34_seed2_2026-10-12.log",
+   "argv": [
+    "{python}",
+    "m05/rungC_cc_transfer.py",
+    "corpus/molecules",
+    "out/E7_rungC_chain34_kdfamily_750_2026-10-05_model_n750_seed2.pt",
+    "out/T3_tz_pyridine_apt_c34_seed2_2026-10-12",
+    "--threads",
+    "4",
+    "--epochs",
+    "300",
+    "--lr",
+    "1e-3",
+    "--head-l2",
+    "1",
+    "--anchor",
+    "A_8448043181=C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/e8_benzene_ccpvtz_oop_2026-10-03/hessian_ccsd_t.npz",
+    "--anchor",
+    "A_01f3186607=C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/out/composite_full_naphthalene_2026-10-07.npz",
+    "--anchor",
+    "A_6e858b26e5=C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/out/composite_full_pyridine_2026-10-07.npz",
+    "--anchor",
+    "B_8b12a55d3a=C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/out/composite_full_fluorobenzene_2026-10-07.npz",
+    "--anchor",
+    "A_3100da3761=C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/out/composite_full_benzonitrile_2026-10-07.npz",
+    "--anchor",
+    "A_a1e6ec1862=C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/out/composite_full_anthracene_2026-10-07.npz",
+    "--apt",
+    "A_8448043181=../../probes/results_m1/e8_benzene_ccpvtz_oop_2026-10-03/apt_ccsd_t.npz",
+    "--apt",
+    "A_6e858b26e5=../../probes/results_m1/cc_apt_field_2026-10-12/pyridine_ccpvdz_field.npz"
+   ]
+  }
+ ],
+ "outputs": [
+  "probes/results_m1/cc_apt_field_2026-10-12/benzene_ccpvdz_field.npz",
+  "probes/results_m1/cc_apt_field_2026-10-12/pyridine_ccpvdz_field.npz",
+  "modules/05_support_predictor/out/T3_tz_pyridine_apt_c34_seed0_2026-10-12.log",
+  "modules/05_support_predictor/out/T3_tz_pyridine_apt_c34_seed1_2026-10-12.log",
+  "modules/05_support_predictor/out/T3_tz_pyridine_apt_c34_seed2_2026-10-12.log"
+ ]
+}

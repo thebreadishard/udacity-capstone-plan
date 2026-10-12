@@ -1,0 +1,136 @@
+{
+ "molecules": 387,
+ "nbas_range": [
+  100,
+  307
+ ],
+ "fits": {
+  "all": {
+   "exponent": 3.39792852107213
+  },
+  "larger_half": {
+   "exponent": 3.448062027905971
+  }
+ },
+ "lane_hours": {
+  "coronene": {
+   "group": "test",
+   "atoms": 36,
+   "nbas": 384,
+   "hours": [
+    14.4,
+    14.8
+   ]
+  },
+  "peropyrene": {
+   "group": "test",
+   "atoms": 40,
+   "nbas": 418,
+   "hours": [
+    19.2,
+    19.9
+   ]
+  },
+  "ovalene": {
+   "group": "test",
+   "atoms": 46,
+   "nbas": 508,
+   "hours": [
+    37.2,
+    39.0
+   ]
+  },
+  "hexa-peri-hexabenzocoronene": {
+   "group": "test",
+   "atoms": 60,
+   "nbas": 666,
+   "hours": [
+    93.4,
+    99.1
+   ]
+  },
+  "benzo[ghi]perylene C22H12": {
+   "group": "train",
+   "atoms": 34,
+   "nbas": 354,
+   "hours": [
+    10.9,
+    11.2
+   ]
+  },
+  "dibenzopyrene C24H14": {
+   "group": "train",
+   "atoms": 38,
+   "nbas": 388,
+   "hours": [
+    14.9,
+    15.4
+   ]
+  },
+  "benzo[a]coronene C28H14": {
+   "group": "train",
+   "atoms": 42,
+   "nbas": 448,
+   "hours": [
+    24.3,
+    25.3
+   ]
+  },
+  "tribenzoperylene C28H16": {
+   "group": "train",
+   "atoms": 44,
+   "nbas": 452,
+   "hours": [
+    25.0,
+    26.0
+   ]
+  },
+  "dibenzocoronene C32H16": {
+   "group": "train",
+   "atoms": 48,
+   "nbas": 512,
+   "hours": [
+    38.2,
+    40.0
+   ]
+  },
+  "circumbiphenyl C38H16": {
+   "group": "train",
+   "atoms": 54,
+   "nbas": 602,
+   "hours": [
+    66.3,
+    70.0
+   ]
+  }
+ },
+ "notes": "lane = 8 threads on the CCX53 with three other lanes busy; + 10 % optimisation allowance",
+ "test_total": {
+  "lane_hours": [
+   164,
+   173
+  ],
+  "ccx53_days": [
+   1.7,
+   1.8
+  ],
+  "eur": [
+   35,
+   37
+  ]
+ },
+ "train_total": {
+  "lane_hours": [
+   180,
+   188
+  ],
+  "ccx53_days": [
+   1.9,
+   2.0
+  ],
+  "eur": [
+   38,
+   40
+  ]
+ }
+}
