@@ -10,6 +10,10 @@ Usage: python analytic_hessians.py <molecule dir> [more dirs...] [--threads 16] 
        contracted from the CPHF response the Hessian solves anyway (apt.py, next to this file; < 0.01 s against a 465 s Hessian on benzene, equal
        to the separate CPHF route to 4.8e-7 e). An existing APT file is kept. A failed APT (or a sum rule above 5e-4 e) is reported after the
        molecule's two Hessians are written, and the exit status is 3, so the lane logs the molecule as FAILED. --no-apt turns it off.
+       Residual-checked response (12 Oct 2026, TASKS 44 (a)): pyscf's Krylov CPHF stops early for DFT (pyscf #2702), which the Hessian does not
+       feel and the APT does; the APT is contracted from the response after `refine_response` (apt.py), route "hessian_response_refined", and the
+       file carries cphf_residual_before/after and cphf_refine_rounds. A residual above apt.CPHF_BOUND fails the APT as a sum rule does.
+       The Hessian keeps pyscf's own response.
        Provenance (11 Oct 2026, TASKS 47): every file written carries `software` — the pyscf, numpy and Python versions, pyscf's source
        commit when it is imported from a git checkout, and the sha256 of this script and apt.py — as a JSON string in the npz files and as a
        field inside each functional's entry of analytic_check.json (its readers iterate the entries).
@@ -24,7 +28,7 @@ import time
 
 import numpy as np
 import pyscf
-from apt import apt_from_mo1, hessian_with_response, intensities, sum_rule
+from apt import CPHF_BOUND, apt_from_mo1, hessian_with_response, intensities, refine_response, solve_response, sum_rule
 from pyscf import dft, gto, lib
 
 AMU2AU = 1822.888486209
@@ -78,21 +82,43 @@ def vib_only(f):
     return np.sort(f[keep])
 
 
-def write_apt(d, mf, mo1, Hp, masses, grid, stamp):
-    """The APT from the Hessian's own response, its sum rule and band heights, written as route B writes them (the file carries the summary;
-    analytic_check.json keeps one entry per functional, as its readers expect). Raises ValueError when the sum rule fails (the file is written
-    all the same, marked passed=False)."""
+def labels_mol(geometry, charge=0, spin=0):
+    """The labels route's molecule from a geometry.json dict: 6-31G* with Cartesian d (as psi4), no symmetry."""
+    return gto.M(atom=[(s.capitalize(), tuple(c)) for s, c in zip(geometry["symbols"], geometry["coords_bohr"], strict=True)], unit="Bohr",
+                 basis="6-31g*", cart=True, symmetry=False, verbose=0, max_memory=20000, charge=charge, spin=spin)
+
+
+def labels_scf(mol, xc, grid):
+    """The labels route's converged SCF (RKS, or UKS when mol.spin > 0) at an unpruned (radial, angular) grid; raises when it does not converge."""
+    mf = dft.UKS(mol) if mol.spin else dft.RKS(mol)
+    mf.xc = xc; mf.grids.atom_grid = tuple(grid); mf.grids.prune = None; mf.conv_tol = 1e-11
+    e = mf.kernel()
+    if not mf.converged:
+        raise RuntimeError(f"{xc}: SCF not converged")
+    return mf, e
+
+
+def write_apt(d, hobj, response, Hp, masses, grid, stamp):
+    """The APT from the Hessian's own response after `refine_response`, its sum rule and band heights, written as route B writes them (the file
+    carries the summary; analytic_check.json keeps one entry per functional, as its readers expect). Raises ValueError when the sum rule or the
+    response's residual fails (the file is written all the same, marked passed=False)."""
     t0 = time.time()
+    mf = hobj.base
+    mo1, info = refine_response(hobj, response.mo1, response.h1ao, bound=CPHF_BOUND)
     P = apt_from_mo1(mf, mo1)
     sr = sum_rule(P, mf.mol.charge)
     freq, km = intensities(P, Hp, masses)
-    passed = sr <= SUM_RULE_LIMIT
+    fails = [f"APT sum rule {sr:.1e} > {SUM_RULE_LIMIT:g}"] if sr > SUM_RULE_LIMIT else []
+    if info["residual_after"] > CPHF_BOUND:
+        fails.append(f"CPHF residual {info['residual_after']:.1e} > {CPHF_BOUND:g} after {info['rounds']} rounds")
     np.savez_compressed(f"{d}/{APT_FILE}", apt=P, sum_rule_max=sr, fd_max_diff=float("nan"), freq_cm=freq, intensity_km_mol=km, xc="b3lyp",
-                        basis="6-31g*", grid=np.array(grid), passed=passed, route="hessian_response", seconds=round(time.time() - t0, 3),
-                        software=json.dumps(stamp, sort_keys=True))
-    if not passed:
-        raise ValueError(f"APT sum rule {sr:.1e} > {SUM_RULE_LIMIT:g}")
-    return f"APT from the Hessian's response: sum rule {sr:.1e}, {time.time() - t0:.2f} s"
+                        basis="6-31g*", grid=np.array(grid), passed=not fails, route="hessian_response_refined",
+                        cphf_residual_before=info["residual_before"], cphf_residual_after=info["residual_after"], cphf_refine_rounds=info["rounds"],
+                        seconds=round(time.time() - t0, 3), software=json.dumps(stamp, sort_keys=True))
+    if fails:
+        raise ValueError("; ".join(fails))
+    return (f"APT from the Hessian's response: CPHF residual {info['residual_before']:.1e} -> {info['residual_after']:.1e} in {info['rounds']} "
+            f"rounds, sum rule {sr:.1e}, {time.time() - t0:.1f} s")
 
 
 def main():
@@ -104,22 +130,24 @@ def main():
     stamp = software()
     for d in a.dirs:
         g = json.load(open(d + "/geometry.json")); sym = g["symbols"]; x = np.array(g["coords_bohr"]); masses = np.array(g["masses_amu"])
-        mol = gto.M(atom=[(s.capitalize(), tuple(c)) for s, c in zip(sym, x, strict=True)], unit="Bohr", basis="6-31g*", cart=True, symmetry=False, verbose=0, max_memory=20000,
-                    charge=a.charge, spin=a.spin)
+        mol = labels_mol(g, a.charge, a.spin)
         out = {}
         for tag, xc in (("b3lyp", "b3lyp"), ("wb97x", "wb97x")):
             n = len(sym); t0 = time.time()
             if a.compare_only:
                 z = np.load(f"{d}/hessian_{tag}_analytic.npz"); Hc = z["H_raw"]; Hp = z["H_projected"]; e = float(z["energy"])
             else:
-                mf = dft.UKS(mol) if a.spin else dft.RKS(mol); mf.xc = xc; mf.grids.atom_grid = (rad, ang); mf.grids.prune = None; mf.conv_tol = 1e-11; e = mf.kernel()
-                if not mf.converged: raise RuntimeError(f"{d} {tag}: SCF not converged")
+                try:
+                    mf, e = labels_scf(mol, xc, (rad, ang))
+                except RuntimeError as exc:
+                    raise RuntimeError(f"{d} {tag}: SCF not converged") from exc
                 if a.spin:
                     s2 = float(mf.spin_square()[0]); s = a.spin / 2
                     if abs(s2 - s * (s + 1)) > 0.05: print(f"{d} {tag}: WARNING <S^2> = {s2:.3f}, expected {s * (s + 1):.3f} (spin contamination)", flush=True)
                 hobj = mf.Hessian()
                 want_apt = tag == "b3lyp" and not a.spin and not a.no_apt and not os.path.exists(f"{d}/{APT_FILE}")
-                H, mo1 = hessian_with_response(hobj) if want_apt else (hobj.kernel(), None)
+                response = solve_response(hobj) if want_apt else None
+                H = hessian_with_response(hobj, response)[0] if want_apt else hobj.kernel()
                 Hc = H.transpose(0, 2, 1, 3).reshape(3 * n, 3 * n); Hc = 0.5 * (Hc + Hc.T)
                 Hp = project_tr(Hc, masses, x)
             # frequencies from the projected Hessian by the corpus's own convention: a 3N-long list, imaginary modes negative, six ~0 entries.
@@ -128,9 +156,9 @@ def main():
             if not a.compare_only:
                 np.savez_compressed(f"{d}/hessian_{tag}_analytic.npz", H_raw=Hc, H_projected=Hp, freq_cm=fr, energy=float(e), grid=np.array([rad, ang]),
                                     charge=a.charge, spin=a.spin, reference="UKS" if a.spin else "RKS", software=json.dumps(stamp, sort_keys=True))
-                if mo1 is not None:           # after the Hessian is on disk: an APT failure never costs the Hessian
+                if response is not None:      # after the Hessian is on disk: an APT failure never costs the Hessian
                     try:
-                        print(f"{d} b3lyp: {write_apt(d, mf, mo1, Hp, masses, (rad, ang), stamp)}", flush=True)
+                        print(f"{d} b3lyp: {write_apt(d, hobj, response, Hp, masses, (rad, ang), stamp)}", flush=True)
                     except Exception as exc:  # noqa: BLE001 — reported and turned into exit status 3 after both functionals
                         apt_errors.append(f"{d}: {exc}")
                         print(f"{d} b3lyp: APT FAILED: {exc}", flush=True)

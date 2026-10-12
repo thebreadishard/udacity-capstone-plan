@@ -14,7 +14,7 @@ from pyscf import gto  # noqa: E402
 PLAN = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PLAN / "probes"))
 sys.path.insert(0, str(PLAN / "modules" / "05_support_predictor" / "corpus"))
-from apt import apt_from_mo1, hessian_with_response, sum_rule  # noqa: E402
+from apt import apt_from_mo1, hessian_with_response, refine_response, solve_response, sum_rule  # noqa: E402
 from apt_field_route import apt_field, scf_in_field  # noqa: E402
 
 WATER = [("O", (0.0, 0.0, 0.2217)), ("H", (0.0, 1.4309, -0.8867)), ("H", (0.0, -1.4309, -0.8867))]
@@ -40,3 +40,18 @@ def test_grid_response_makes_the_sum_rule_exact_for_dft():
     mol = _mol()
     P_no, P_gr = apt_field(mol, {"xc": "b3lyp", "grid": (50, 194)}, 1e-3, log=lambda *a, **k: None)
     assert sum_rule(P_gr) < 1e-8 < sum_rule(P_no)
+
+
+def test_the_refined_response_puts_route_c_on_the_field_route_for_dft():
+    """TASKS 44 (a), 12 Oct 2026: pyscf's Krylov CPHF stops early for DFT (pyscf #2702); on water B3LYP at (50, 194) route C's APT is 6e-5 e
+    off the field route, the refined one 7.5e-6 (measured; the field error at F = 1e-3 is ~9e-6). Against the field route without grid response,
+    the derivative the analytic Hessian takes."""
+    mol = _mol()
+    settings = {"xc": "b3lyp", "grid": (50, 194)}
+    mf = scf_in_field(mol, settings, np.zeros(3))
+    hobj = mf.Hessian()
+    resp = solve_response(hobj)
+    P_c = apt_from_mo1(mf, resp.mo1)
+    P_r = apt_from_mo1(mf, refine_response(hobj, resp.mo1, resp.h1ao)[0])
+    P_no = apt_field(mol, settings, 1e-3, log=lambda *a, **k: None)[0]
+    assert np.abs(P_r - P_no).max() < 2e-5 < np.abs(P_c - P_no).max()

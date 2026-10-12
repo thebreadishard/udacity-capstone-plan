@@ -1,6 +1,7 @@
 """The labels route's APT (11 Oct 2026, TASKS 44 route C): analytic_hessians.py writes dipole_b3lyp_cphf.npz from the response its B3LYP Hessian
-solves; it keeps an existing APT file, --no-apt turns it off, analytic_check.json keeps one entry per functional (the export reads it so), and a
-failed APT costs neither Hessian but ends with exit status 3. Water at a small grid; needs pyscf, so it runs in WSL and is skipped elsewhere."""
+solves (after refine_response, 12 Oct 2026: residual before/after in the file, a residual above the bound fails it); it keeps an existing
+APT file, --no-apt turns it off, analytic_check.json keeps one entry per functional (the export reads it so), and a failed APT costs neither
+Hessian but ends with exit status 3. Water at a small grid; needs pyscf, so it runs in WSL and is skipped elsewhere."""
 import json
 import sys
 from pathlib import Path
@@ -28,7 +29,8 @@ def _run(tmp_path, monkeypatch, *args):
 def test_the_b3lyp_pass_writes_the_apt_and_the_check_file_keeps_its_shape(tmp_path, monkeypatch):
     d = _run(tmp_path, monkeypatch)
     z = np.load(d / AH.APT_FILE)
-    assert str(z["route"]) == "hessian_response" and bool(z["passed"]) and float(z["sum_rule_max"]) < AH.SUM_RULE_LIMIT
+    assert str(z["route"]) == "hessian_response_refined" and bool(z["passed"]) and float(z["sum_rule_max"]) < AH.SUM_RULE_LIMIT
+    assert float(z["cphf_residual_after"]) <= AH.CPHF_BOUND < float(z["cphf_residual_before"]) and int(z["cphf_refine_rounds"]) >= 1
     assert z["apt"].shape == (3, 9) and len(z["intensity_km_mol"]) == 3
     assert set(json.loads((d / "analytic_check.json").read_text())) == {"b3lyp", "wb97x"}
 
@@ -61,3 +63,15 @@ def test_a_failed_apt_keeps_both_hessians_and_exits_3(tmp_path, monkeypatch):
     d = tmp_path / "water"
     assert (d / "hessian_b3lyp_analytic.npz").exists() and (d / "hessian_wb97x_analytic.npz").exists()
     assert not bool(np.load(d / AH.APT_FILE)["passed"])
+
+
+def test_a_residual_above_the_bound_fails_the_apt_and_exits_3(tmp_path, monkeypatch):
+    """TASKS 44 (a), 12 Oct 2026: the bound is checked, not assumed: at a bound no solver reaches, the APT is written with passed=False and the
+    molecule ends with exit status 3, its Hessians kept."""
+    monkeypatch.setattr(AH, "CPHF_BOUND", 0.0)
+    with pytest.raises(SystemExit) as e:
+        _run(tmp_path, monkeypatch)
+    assert e.value.code == 3
+    d = tmp_path / "water"
+    z = np.load(d / AH.APT_FILE)
+    assert not bool(z["passed"]) and int(z["cphf_refine_rounds"]) == 3 and (d / "hessian_wb97x_analytic.npz").exists()

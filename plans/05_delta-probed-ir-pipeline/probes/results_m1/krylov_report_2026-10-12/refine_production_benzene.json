@@ -1,0 +1,23 @@
+{
+ "scf_seconds": 22.0,
+ "response_seconds": 328.4,
+ "refine": {
+  "residual_before": 0.0001265100073921943,
+  "residual_after": 7.841331375407984e-08,
+  "rounds": 1,
+  "seconds": 132.2
+ },
+ "apt_vs_field_unrefined": 0.0004311252136488808,
+ "apt_vs_field_refined": 3.757532550340004e-05,
+ "sum_rule_refined": 0.00010604132405322986,
+ "software": {
+  "pyscf": "2.14.0",
+  "pyscf_git": null,
+  "numpy": "2.5.2",
+  "python": "3.12.14",
+  "sha256": {
+   "analytic_hessians.py": "f5d8eb7f47cf",
+   "apt.py": "19d5c134e234"
+  }
+ }
+}
