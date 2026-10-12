@@ -1,0 +1,18 @@
+{
+ "hf": {
+  "residual_pyscf": 3.247532714750409e-08,
+  "residual_fd_solution": 4.6531288387663405e-07,
+  "U_vo_pyscf_vs_fd": 2.535111812043689e-06,
+  "U_vo_max": 0.10859311835475957,
+  "dD_rebuilt_vs_fd": 5.683604856754343e-07,
+  "U_oo_check_vs_fd": 0.04744464621153891
+ },
+ "pbe": {
+  "residual_pyscf": 1.0797234135056719e-05,
+  "residual_fd_solution": 3.6878908935521204e-07,
+  "U_vo_pyscf_vs_fd": 1.6034279348250968e-05,
+  "U_vo_max": 0.07378125637907898,
+  "dD_rebuilt_vs_fd": 6.030352064784195e-07,
+  "U_oo_check_vs_fd": 0.038438517357116744
+ }
+}

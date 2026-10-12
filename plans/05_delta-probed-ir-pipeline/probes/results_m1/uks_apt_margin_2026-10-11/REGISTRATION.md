@@ -59,3 +59,30 @@ in production (closed shell) carry an error of this size.
 validated choice (≈ 15 min per 12-atom cation at 4 threads), not the CPHF APT. (3) A minimal reproduction (benzene PBE, route C against the field
 route) for a pyscf report — on the user's word. (4) The 1e-3 limit of route B and of the third route's L5 was wide enough to hide a 4e-4 error;
 limits for APTs are set from the field route from now on.
+
+## Addendum, 12 October 2026 09:3x — the cause is pyscf's Krylov solver, not the exchange-correlation terms (correction of the night's attribution)
+
+The night ended with 'the XC part of pyscf's response'. The morning's measurements on benzene, carbon 0, PBE, grid (99, 590), each a script here:
+- `diagnose_riddle.py`: on the frozen grid the field route equals FD of the dipole (5e-6, 7e-6, 1e-6 e); route C does not (1.6e-4, 1.1e-4, 2.7e-6);
+  `h1` and the density response look close per element, the response's dipole contraction does not (1.7e-4).
+- `diagnose_h1.py`: `make_h1` against frozen-grid FD at h = 0.01, 0.005, 0.0025 falls as h² (5e-5, 1.3e-5, 3.3e-6) for HF, PBE and B3LYP — exact.
+- `diagnose_kernel.py`: the response function `mf.gen_response(hermi=1)` against FD of Veff: 1.6e-9 (LDA), 8.2e-10 (PBE), 4.6e-10 (B3LYP) — exact.
+- `diagnose_rks_cphf.py`: the closed-shell solver at max_cycle 200 / conv_tol_cpscf 1e-12 against the defaults: 7e-11; no 'not converged' line.
+- `diagnose_residual.py`: inserted into the CPHF equation built from pyscf's own pieces, the true solution (from frozen-grid FD of the density)
+  leaves 3.7e-7, pyscf's solution 1.1e-5 (HF: 4.7e-7 and 3.2e-8).
+- `diagnose_krylov.py`: pyscf's solution is off its own solver system by 6.8e-5 (simple fixed-point refinement diverges: the operator's spectral
+  radius exceeds 1 — a statement about that refinement, not about the system).
+- **`diagnose_gmres.py`, the proof:** the same system solved by GMRES to a residual of 7e-14 gives route C's column against the field route
+  **5.9e-6, 2.0e-6, 4.8e-7 e** (from 1.6e-4, 1.0e-4, 2.4e-6).
+
+**Cause.** `pyscf.lib.krylov` (used by `scf/cphf.py solve_withs1` for all 3N right-hand sides of the Hessian at once) stops when the norm of its next,
+unnormalised Krylov vector falls below `lindep` (`DSOLVE_LINDEP`, 1e-13) or tol², not on the true residual; for the DFT systems here it returns a
+solution 7e-5 off its own equations, the same whatever `tol` and `max_cycle` say, and without a warning. HF converges before that. The functional
+mattered only through the solver: the night's 'XC part' attribution is withdrawn. The analytic Hessian, built from the same solution, is
+insensitive at this level (benzene 0.06 cm⁻¹ against the frozen-grid FD of the gradient); the dipole derivatives, first order in the response,
+are not. The UKS route (`ucphf`, the same `lib.krylov`) is the likely cause of the cations' larger gaps (3.3e-3) — to confirm with the same GMRES test.
+
+**For us.** The route-C APTs in production carry this solver error (benzene ≤ 0.6 % per band height). A fix is cheap and ours to make: solve the
+response to a residual we check (GMRES on the solver's own operator, or a refinement of pyscf's solution) inside `corpus/apt.py`, with a test that
+the residual is below a stated bound, then the field route as the second route on a sample — a design note and the user's word before the labels
+server's code changes.

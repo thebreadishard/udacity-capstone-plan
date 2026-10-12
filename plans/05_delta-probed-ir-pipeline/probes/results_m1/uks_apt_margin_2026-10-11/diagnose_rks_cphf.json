@@ -1,0 +1,8 @@
+{
+ "conv_tol_cpscf_default": 1e-08,
+ "default_vs_field": 0.00022089169484397486,
+ "tight_vs_field": 0.00022089165234996655,
+ "default_vs_tight": 7.284002220830921e-11,
+ "not_converged_lines": 0,
+ "log": "diagnose_rks_cphf_pyscf.log"
+}

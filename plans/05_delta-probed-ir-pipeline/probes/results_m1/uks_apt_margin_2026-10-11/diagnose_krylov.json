@@ -1,0 +1,32 @@
+[
+ {
+  "refinement_step": 0,
+  "residual_max": 6.834829850238186e-05,
+  "apt_vs_field": 0.00022089385893155067
+ },
+ {
+  "refinement_step": 1,
+  "residual_max": 0.00017829522186305416,
+  "apt_vs_field": 0.0006419460232364033
+ },
+ {
+  "refinement_step": 2,
+  "residual_max": 0.0004720550339134093,
+  "apt_vs_field": 0.00177019172250871
+ },
+ {
+  "refinement_step": 3,
+  "residual_max": 0.0012506432310448491,
+  "apt_vs_field": 0.004722239373360235
+ },
+ {
+  "refinement_step": 4,
+  "residual_max": 0.0033166317785476955,
+  "apt_vs_field": 0.012612863150069611
+ },
+ {
+  "refinement_step": 5,
+  "residual_max": 0.008804140917281381,
+  "apt_vs_field": 0.033588657802418584
+ }
+]

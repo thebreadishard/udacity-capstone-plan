@@ -1,0 +1,2 @@
+=== max_cycle 50, conv_tol_cpscf 1e-08
+=== max_cycle 200, conv_tol_cpscf 1e-12

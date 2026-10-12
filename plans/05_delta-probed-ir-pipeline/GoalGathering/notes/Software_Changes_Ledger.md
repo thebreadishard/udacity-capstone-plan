@@ -54,7 +54,7 @@ One line per change; the numbered section below the register carries every origi
 | 41 | 2026-10-11 | C | pyscf-properties master 4eee5a43 (`prop/infrared/test/test_ir_inten.py`) | a reference-free check of the four infrared classes: analytic APT against finite differences of the dipole (UKS test 'a little bit loose') | pr-open |
 | 42 | 2026-10-11 | C | pyscf-properties 0.1.0 on PyPI | the published release has no infrared module; master has had it since June 2022 (row 29) — an issue asking for a release | done |
 | 43 | 2026-10-11 | C | pyscf master (`hessian/thermo.py::harmonic_analysis`) | the Hessian goes to `numpy.linalg.eigh` unsymmetrised; eigh reads one triangle, so an asymmetric analytic Hessian (UKS: 6.2e-5) shifts modes and heights | pr-open |
-| 44 | 2026-10-12 | C | pyscf 2.14.0 (`hessian/rks.py`, `uks.py`: the XC part of `make_h1` or the response kernel) | the CPHF dipole derivatives of DFT disagree with the field derivative of the analytic gradient and with FD (benzene B3LYP 4.0e-4 e, PBE 2.2e-4, HF 8.6e-6) | pr-candidate |
+| 44 | 2026-10-12 | C | pyscf 2.14.0 (`lib/linalg_helper.py::krylov`, via `scf/cphf.py solve_withs1` and the Hessian's `solve_mo1`) | the Krylov solver stops 7e-5 off its own system for DFT CPHF, whatever tol/max_cycle, without a warning; dipole derivatives from that solution are off by 1e-4 (benzene), the Hessian is insensitive | pr-candidate |
 
 ## Sections
 
@@ -458,7 +458,7 @@ One line per change; the numbered section below the register carries every origi
 
 ### 30 — the pyscf lookup python3 -c "import pyscf
 
-**Group:** C, finding about third-party software. **Date:** 2026-10-03. **Status:** pr-candidate. *Status note (20:1x 9 Oct 2026):* forge #213 had changes requested on 6 Oct (cmake_minimum_required ≥ 3.15 for policy CMP0094; an unintended mode change on setup.py); pushed 84230da and replied 9 Oct on the user's word; open. *Status note (3 Oct 2026):* the same lookup pattern in pyscf-core's CMakeLists would be a second pull request once forge #213 is merged.
+**Group:** C, finding about third-party software. **Date:** 2026-10-03. **Status:** pr-candidate. *Status note (12 Oct 08:0x):* forge #213 was **merged on 9 Oct 2026 (17:53 UTC, MatthewRHermes)** — noticed only now; the forge half is done. The same lookup pattern in pyscf-core's CMakeLists is the second pull request the note below names, now due (waits for the user's word). *Status note (20:1x 9 Oct 2026):* forge #213 had changes requested on 6 Oct (cmake_minimum_required ≥ 3.15 for policy CMP0094; an unintended mode change on setup.py); pushed 84230da and replied 9 Oct on the user's word; open. *Status note (3 Oct 2026):* the same lookup pattern in pyscf-core's CMakeLists would be a second pull request once forge #213 is merged.
 
 **Software:** pyscf 2.14.0 `pyscf/lib/CMakeLists.txt` (and forge's copy of the pattern)
 
@@ -666,7 +666,7 @@ asymmetric input; draft only on the user's word.
 ### 44 — the DFT response's XC part disagrees with pyscf's own gradient
 
 **Group:** C, finding about third-party software. **Date:** 2026-10-12. **Status:** pr-candidate (a report first; waits for a minimal reproduction
-and the user's word).
+and the user's word). *Status note (12 Oct 09:3x):* the cause is the Krylov solver, not the XC terms the first text below names — see the addendum of `probes/results_m1/uks_apt_margin_2026-10-11/REGISTRATION.md`: h1 and the response kernel are exact, pyscf's solution misses its own system by 7e-5, GMRES on the same system (7e-14) brings the APT to the field route (5.9e-6 from 1.6e-4).
 
 **Software:** pyscf 2.14.0 — the analytic DFT Hessian's response (`hessian/rks.py`, `hessian/uks.py`: `make_h1` with `_get_vxc_deriv1`, and the
 CPHF kernel), as used by our route C (`corpus/apt.py`) and by pyscf-properties' infrared module.
