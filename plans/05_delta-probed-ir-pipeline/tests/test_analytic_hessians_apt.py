@@ -75,3 +75,17 @@ def test_a_residual_above_the_bound_fails_the_apt_and_exits_3(tmp_path, monkeypa
     d = tmp_path / "water"
     z = np.load(d / AH.APT_FILE)
     assert not bool(z["passed"]) and int(z["cphf_refine_rounds"]) == 3 and (d / "hessian_wb97x_analytic.npz").exists()
+
+
+def test_an_analytic_only_folder_gets_its_imaginary_counts(tmp_path, monkeypatch):
+    """Chain 42 (12 Oct 2026): psi4_worker without Hessians leaves result.json without n_imaginary; analytic_hessians.py writes them there for
+    such a folder (the loader reads its imaginary flag from result.json), and leaves an ordinary folder's result.json alone."""
+    d = tmp_path / "water"
+    d.mkdir()
+    (d / "result.json").write_text(json.dumps({"layer": "T", "labels": "analytic_only", "status": "done"}))
+    _run(tmp_path, monkeypatch, "--no-apt")
+    r = json.loads((d / "result.json").read_text())
+    assert r["n_imaginary_b3lyp"] == 0 and r["n_imaginary_wb97x"] == 0 and r["layer"] == "T"
+    (d / "result.json").write_text(json.dumps({"layer": "A"}))
+    _run(tmp_path, monkeypatch, "--no-apt")
+    assert json.loads((d / "result.json").read_text()) == {"layer": "A"}

@@ -17,6 +17,9 @@ Usage: python analytic_hessians.py <molecule dir> [more dirs...] [--threads 16] 
        Provenance (11 Oct 2026, TASKS 47): every file written carries `software` — the pyscf, numpy and Python versions, pyscf's source
        commit when it is imported from a git checkout, and the sha256 of this script and apt.py — as a JSON string in the npz files and as a
        field inside each functional's entry of analytic_check.json (its readers iterate the entries).
+       Analytic-only folders (12 Oct 2026, chain 42, TASKS 49): a folder whose result.json says labels "analytic_only" (psi4_worker with
+       "hessians": false) gets n_imaginary_b3lyp/wb97x written into that result.json from these frequencies (below −10 cm⁻¹, psi4_worker's own
+       count), because the trainer's loader reads its imaginary flag there.
 """
 import argparse
 import hashlib
@@ -82,6 +85,21 @@ def vib_only(f):
     return np.sort(f[keep])
 
 
+def mark_imaginary(d, counts):
+    """n_imaginary_<tag> into an analytic-only folder's result.json (atomic replace); other folders keep the psi4 worker's own counts."""
+    path = os.path.join(d, "result.json")
+    if not os.path.exists(path):
+        return False
+    r = json.load(open(path, encoding="utf-8"))
+    if r.get("labels") != "analytic_only":
+        return False
+    r.update({f"n_imaginary_{tag}": int(n) for tag, n in counts.items()})
+    with open(path + ".tmp", "w", encoding="utf-8") as fh:
+        json.dump(r, fh, indent=1)
+    os.replace(path + ".tmp", path)
+    return True
+
+
 def labels_mol(geometry, charge=0, spin=0):
     """The labels route's molecule from a geometry.json dict: 6-31G* with Cartesian d (as psi4), no symmetry."""
     return gto.M(atom=[(s.capitalize(), tuple(c)) for s, c in zip(geometry["symbols"], geometry["coords_bohr"], strict=True)], unit="Bohr",
@@ -132,6 +150,7 @@ def main():
         g = json.load(open(d + "/geometry.json")); sym = g["symbols"]; x = np.array(g["coords_bohr"]); masses = np.array(g["masses_amu"])
         mol = labels_mol(g, a.charge, a.spin)
         out = {}
+        imaginary = {}
         for tag, xc in (("b3lyp", "b3lyp"), ("wb97x", "wb97x")):
             n = len(sym); t0 = time.time()
             if a.compare_only:
@@ -153,6 +172,7 @@ def main():
             # frequencies from the projected Hessian by the corpus's own convention: a 3N-long list, imaginary modes negative, six ~0 entries.
             # (pyscf's harmonic_analysis drops a mode when an imaginary one falls in its trans/rot window — 62 instead of 63 entries on A2_3a2982dd85, 23 Sep.)
             fr = freqs_cm(Hp, masses)
+            imaginary[tag] = int((vib_only(fr) < -10).sum())
             if not a.compare_only:
                 np.savez_compressed(f"{d}/hessian_{tag}_analytic.npz", H_raw=Hc, H_projected=Hp, freq_cm=fr, energy=float(e), grid=np.array([rad, ang]),
                                     charge=a.charge, spin=a.spin, reference="UKS" if a.spin else "RKS", software=json.dumps(stamp, sort_keys=True))
@@ -172,6 +192,8 @@ def main():
                             dH_rms=float(np.sqrt(np.mean((Hc - corpus["H_raw"]) ** 2))), energy=float(e), energy_corpus=float(corpus["energy"]), seconds=round(time.time() - t0), software=stamp)
             print(f"{d} {tag}: {out[tag]['seconds']} s; |H_analytic − H_corpus| max {out[tag]['dH_max']:.2e} rms {out[tag]['dH_rms']:.2e}; max |Δfreq| {np.abs(fr - fc).max():.0f} cm-1", flush=True)
         json.dump(out, open(d + "/analytic_check.json", "w"), indent=1)
+        if not a.compare_only and mark_imaginary(d, imaginary):
+            print(f"{d}: analytic-only folder, imaginary modes {imaginary} written to result.json", flush=True)
     if apt_errors:
         raise SystemExit(3)
 
