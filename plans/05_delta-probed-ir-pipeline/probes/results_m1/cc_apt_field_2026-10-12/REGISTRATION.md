@@ -75,3 +75,31 @@ The λ = 0 column (0.106) is far better than both. It is post hoc and one molecu
 next: whether the L2 pull of the TZ standard (amendment (A), chosen on frequencies) costs mode shapes in general. That needs a second
 low-symmetry molecule with a CC APT: fluorobenzene or benzonitrile, at the same cost (≈ 50 min each), with this read registered for both
 columns before it runs.
+
+## Lever 6b — two more low-symmetry anchors (registered 12 Oct, 16:4x, before the runs; the user: 'Ja, doe fluorbenzeen en benzonitril maar')
+
+**Question.** Does the L2 pull of the TZ standard (head tuned, λ = 1; amendment (A) of 7 Oct, chosen on frequencies) cost the mode shapes
+in general? On pyridine the registered column (λ = 1) gave 0.310 against the zero rule's 0.262, and λ = 0 gave 0.106. That was read
+post hoc, on one molecule.
+
+**Molecules.** Fluorobenzene (B_8b12a55d3a) and benzonitrile (A_3100da3761). Both are C2v carried TZ anchors with CCSD(T)/cc-pVDZ FD
+Hessians from 30 Sep and no dipoles.
+
+**CC APT.** Same method as above: `probes/cc_apt_field.py`, F = 1e-3, cc-pVDZ, frozen core by the E8 rule, `--fast`.
+- Line: sum rule ≤ 1e-6 per molecule. F2 already validated the route on benzene.
+
+**Read.** T3 with chain 34's three models as in R3H, `--apt` for all three low-symmetry anchors (pyridine, fluorobenzene, benzonitrile).
+Matched intensity rel. rms, seed means, two columns: "head tuned, L2 1" (λ = 1) and "head tuned" (λ = 0), against the "zero rule".
+
+**Lines, per molecule** (informative when the zero rule is ≥ 0.05):
+- **Registered column, unchanged:** pass when λ = 1 is ≤ 0.25 and below the zero rule.
+- **The pattern:** the L2 cost holds on a molecule when λ = 1 minus λ = 0 is at least 0.05.
+  - **Holds on both:** with pyridine that makes three of three. A chain to re-choose λ on frequencies and intensities together is registered
+    next. The standard is not switched by this read.
+  - **Holds on neither:** pyridine's λ = 0 advantage was one molecule's, and λ = 1 stays.
+  - **One of two:** noted; the next low-symmetry CC APT decides.
+
+Pyridine is re-read in the same T3 run; its numbers must reproduce R3H within seed noise. That is a check on the run, not a new result.
+
+**Cost.** About 50 min of CC per molecule at 4 threads, then three T3 seeds of ≈ 13 min. The four threads come from the APT recompute's
+second lane, which is stopped for the run and restarted after it.
