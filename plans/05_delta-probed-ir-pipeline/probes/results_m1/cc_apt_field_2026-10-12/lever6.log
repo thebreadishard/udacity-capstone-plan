@@ -1,0 +1,9 @@
+=== (L6) armed (pid 19628), 7 steps 2026-10-12 14:14:45
+(L6) CC field APT benzene done 2026-10-12 15:06:57
+(L6) F2 benzene line done 2026-10-12 15:06:57
+(L6) CC field APT pyridine done 2026-10-12 15:53:38
+(L6) F3 pyridine sum rule done 2026-10-12 15:53:39
+(L6) R3H T3 seed 0 done 2026-10-12 16:08:15
+(L6) R3H T3 seed 1 done 2026-10-12 16:21:08
+(L6) R3H T3 seed 2 done 2026-10-12 16:35:40
+=== (L6) run done — 7 steps, 5 declared outputs present 2026-10-12 16:35:40

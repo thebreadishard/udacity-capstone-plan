@@ -45,3 +45,33 @@ in a field; the E8 displaced points took ≈ 2 min of (T) lambda at 5 threads. T
 ## Outcome
 
 *(appended after the runs)*
+
+**12 Oct, 16:3x.** Run `probes/runs/lever6_cc_apt_1012.json`, 14:14–16:35, log `lever6.log`.
+
+**F2 — PASS.** Benzene: the field route is 1.0e-4 e from the E8 run's FD APT (line 1e-3). Its sum rule is 4.7e-11, against the FD APT's
+2.8e-4. Six CC gradients took 3,128 s at 4 threads (`F2_benzene_check.log`).
+
+**F3 — PASS.** Pyridine: sum rule 6.0e-11, 2,799 s (`pyridine_ccpvdz_field.npz`). No B3LYP APT exists for pyridine, so no distance to it is
+reported.
+
+**R3H — informative, FAIL on the registered column.** Intensity rel. rms with modes matched by eigenvector, pyridine, CC APT
+(`out/T3_tz_pyridine_apt_c34_seed{0,1,2}_2026-10-12.log`):
+
+| column | seed 0 | seed 1 | seed 2 | mean |
+|---|---|---|---|---|
+| zero rule | 0.262 | 0.262 | 0.262 | 0.262 |
+| head tuned, L2 1 (registered) | 0.305 | 0.303 | 0.323 | **0.310** |
+| head tuned, L2 0 (reported, not judged) | 0.147 | 0.059 | 0.113 | 0.106 |
+
+The zero rule is 0.262 ≥ 0.05, so the test is informative: pyridine's modes do mix, unlike benzene's. The registered column is 0.310, which
+fails both conditions: it is above 0.25 and above the zero rule. With the standard fine-tune (λ = 1), the network's corrected Hessian gives
+pyridine worse intensities than the B3LYP Hessian does.
+
+The spectrum overlap, which also counts the positions, goes the other way: 0.751 against the zero rule's 0.626 (λ = 0: 0.781). The positions
+improve; the intensities from the mode shapes do not. This matches the note written before the read: CH-oop frequencies are already worse
+than the zero rule on pyridine (10.6 against 5.4 cm⁻¹).
+
+The λ = 0 column (0.106) is far better than both. It is post hoc and one molecule, so it is not a result. It does say what to register
+next: whether the L2 pull of the TZ standard (amendment (A), chosen on frequencies) costs mode shapes in general. That needs a second
+low-symmetry molecule with a CC APT: fluorobenzene or benzonitrile, at the same cost (≈ 50 min each), with this read registered for both
+columns before it runs.
