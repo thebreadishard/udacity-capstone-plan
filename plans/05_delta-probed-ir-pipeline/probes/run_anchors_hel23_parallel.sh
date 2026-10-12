@@ -103,6 +103,8 @@ say "chain (corrected route) start on $(hostname)"
 while IFS='|' read -r name geom out W T M extra; do
   [ -z "$name" ] && continue
   # shellcheck disable=SC2086   # extra is a list of probe arguments, split on purpose
-  skipped "$name" || anchor_parallel "$name" "$geom" "$out" "$W" "$T" "$M" $extra
+  # 12 Oct 2026: the loop reads the list on stdin; every command of an anchor takes /dev/null instead (the five-ring runner lost its list to a
+  # python that read stdin, 10 Oct)
+  skipped "$name" || anchor_parallel "$name" "$geom" "$out" "$W" "$T" "$M" $extra < /dev/null
 done <<< "$ANCHOR_LIST"
 say "CHAIN FINISHED"

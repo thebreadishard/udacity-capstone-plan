@@ -38,7 +38,7 @@ check_jobs() {
   done < "$JOBS"
 }
 
-lb="" np=""; lfails=0; pfails=0
+lb="" np="" an=""; lfails=0; pfails=0; afails=0
 remote_fail() {   # $1 = host, $2 = rc, $3 = name of the counter variable
   [ "$2" = "3" ] && { echo "ANOMALY $(t): host $1 answers with another machine (re-used IP?) — see tools/hosts.tsv"; exit 1; }
   printf -v "$3" '%d' $(( ${!3} + 1 ))
@@ -74,11 +74,26 @@ check_pool3() {   # pool 3's two runners, each alive until remote_launch's <name
   return 0
 }
 
+check_anchors3() {   # anchor set three (probes/anchor_wave.sh): each '=== (AS3)' line once; the wave runner gone before 'wave done' is an anomaly
+  has_host anchors3 || return 0
+  local rc alive last line
+  an=$(host_ssh anchors3 'test -f /root/dpir/anchors.log || { echo NOLOG; exit 0; }; echo "alive $(pgrep -fc "^bash /root/dpir/probes/anchor_wave.sh")"; grep "^=== (AS3) " /root/dpir/anchors.log | tail -n 30'); rc=$?
+  if [ -z "$an" ]; then remote_fail anchors3 "$rc" afails; return 0; fi
+  afails=0
+  [ "$an" = "NOLOG" ] && return 0
+  alive=$(echo "$an" | head -1 | awk '{print $2}')
+  while read -r line; do new_marker "$(echo "$line" | cut -c1-110)" && exit 2; done < <(echo "$an" | tail -n +2)
+  last=$(echo "$an" | tail -n 1)
+  if [ "$alive" = "0" ] && [[ "$last" != *"wave done"* ]]; then echo "ANOMALY $(t): anchors3 wave runner gone without 'wave done' — $last"; exit 1; fi
+  return 0
+}
+
 for i in $(seq 1 "$CYCLES"); do
   check_jobs
   check_labels
   check_pool3
+  check_anchors3
   [ "$i" -lt "$CYCLES" ] && sleep "$SLEEP"
 done
-echo "quiet cycle $(t): labels ${lb:-—} | pool3 ${np:-—}"
+echo "quiet cycle $(t): labels ${lb:-—} | pool3 ${np:-—} | anchors3 $(echo "${an:-—}" | tail -n 1 | cut -c1-80)"
 exit 0
