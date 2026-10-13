@@ -29,6 +29,13 @@ def _kabsch(A, B):
     return U @ Vt
 
 
+def _kabsch_both(A, B):
+    """Kabsch's solution and the one with the weakest singular direction flipped (13 Oct 2026). For three atoms nearly coplanar with the
+    centre the weakest direction is undetermined, so a proper operation can come out improper or the reverse; both are tried."""
+    U, _, Vt = np.linalg.svd(B @ A.T)
+    return [U @ Vt, U @ np.diag([1.0, 1.0, -1.0]) @ Vt]
+
+
 def point_group_ops(symbols, coords_bohr, tol=0.02):
     """All orthogonal operations (R, perm) with R x_i ≈ x_perm[i] and same elements. tol in bohr. Includes the identity."""
     x = np.asarray(coords_bohr, float); com = x.mean(0); x = x - com; n = len(x)
@@ -81,9 +88,10 @@ def point_group_ops(symbols, coords_bohr, tol=0.02):
                 if c2 in (a2, b2) or sym[c2] != sym[c] or abs(np.linalg.norm(x[a2] - x[c2]) - dac) > tol or abs(np.linalg.norm(x[b2] - x[c2]) - dbc) > tol:
                     continue
                 A = np.array([x[a], x[b], x[c]]).T; B = np.array([x[a2], x[b2], x[c2]]).T
-                R = _kabsch(A, B); cands.append(R)
-                if normal is not None:                      # the improper partner through the molecular plane
-                    S = np.eye(3) - 2 * np.outer(normal, normal); cands.append(S @ R); cands.append(R @ S)
+                for R in _kabsch_both(A, B):
+                    cands.append(R)
+                    if normal is not None:                  # the improper partner through the molecular plane
+                        S = np.eye(3) - 2 * np.outer(normal, normal); cands.append(S @ R); cands.append(R @ S)
     for R in cands:
         if np.allclose(R @ R.T, np.eye(3), atol=1e-6):
             r = accept(R)

@@ -50,6 +50,12 @@ allowance removed). At ≈ €0.21 per lane-hour (a CCX53 day ≈ €20 for four
 **≈ €2,750 for the five, more than half of it HBC.** Above 307 basis functions the Hessian time and memory are extrapolated (TASKS 49's
 caveat). This route does not fit the mandate's budget. It fits for tetracene, and perhaps coronene.
 
+*Addition, 13 Oct 2026 21:5x (S1 registration, amendment 2).* The Hessian counts are now exact (`probes/qff_symmetry_count.py`): tetracene
+100, coronene 109, peropyrene 135, ovalene 156, HBC 192 with the ± saving. A second saving uses the degenerate pairs (one Hessian per pair):
+coronene 75, HBC 134. The five then cost €2,157 at R. S1's own timing on benzene puts G at 0.48 and B at 0.69 of R per Hessian, not the
+3–5× route (a) below assumed; at G with both savings the five cost ≈ €1,030, HBC ≈ €570 of it. Route (a) alone does not make the five
+affordable; it does make the three of S3's validation set cheap (≈ €200 at G).
+
 ## 3. Four cheaper routes, and what each must show
 
 **(a) A cheaper level for the anharmonic part only.** The anharmonic shift Δ_anh = ν − ω is a difference of derivatives. Hybrid schemes

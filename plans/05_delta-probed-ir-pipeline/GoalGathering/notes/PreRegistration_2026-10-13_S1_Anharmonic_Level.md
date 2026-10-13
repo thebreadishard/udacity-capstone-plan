@@ -80,6 +80,35 @@ after another at 4. Settings, step, lines, prediction and the stop rule (R's fir
 unchanged. The server first repeats the water smoke in the parallel mode (`probes/bootstrap_s1_cpx62.sh`); the laptop's waiting S1 was
 stopped before it started.
 
+## Amendment 2 (13 Oct 2026, 21:5x, before any benzene Δ_anh) — what each outcome costs, and a second symmetry saving
+
+At the time of writing no QFF of benzene has run: R has 22 of its 60 displaced Hessians, G 50, B 33. The level rule above stands unchanged.
+This amendment fixes, before the numbers, what follows from each outcome for the five large molecules.
+
+**Measured cost per displaced Hessian on benzene** (s1, 5 threads per setting, the three settings in parallel; median interval between
+Hessian files): R 234 s, G 112 s, B 162 s. G is 2.1× and B 1.4× cheaper than R — not the 3–5× that the design note's route (a) needed to
+make the five affordable. These are benzene's ratios; the grid's share of a Hessian falls as the basis grows, so G's saving on the large
+molecules is likely smaller.
+
+**A second symmetry saving** (`probes/qff_symmetry_count.py`, counts and prices in `probes/results_m1/qff_symmetry_count_2026-10-13/`).
+Of a degenerate pair (a, b) only the +δa Hessian is computed: with a chosen as an eigenvector of eigenvalue −1 of an operation restricted to
+the pair, its images under the group come in ± pairs on at least three lines, which give ∂H/∂q_a, ∂H/∂q_b and Q_aa, Q_ab, Q_bb by least
+squares. Hessians per molecule (± saving → ± and pair saving): benzene 33 → 23, coronene 109 → 75, HBC 192 → 134 (PAHdb's geometry, D3d;
+more if our optimised geometry is D6h); tetracene 100, peropyrene 135 and ovalene 156 have no degenerate modes. The five at R:
+€2,715 → €2,157; at G €1,300 → €1,032; at B €1,880 → €1,493 (lane-hours of the design note §2 × benzene's setting ratio × €0.21).
+
+**Decision rule, fixed now:**
+1. The level is the cheapest passing setting of the consequence above.
+2. Route A — full GVPT2 at that level, with the ± and, once step 4 passes, the pair saving — for tetracene, coronene and peropyrene:
+   €418 at R, €200 at G, €289 at B with pairs. These three are S3's validation set. The first Hessian of each is timed on the target before
+   the rest runs, and the price is restated from that time.
+3. Ovalene and HBC (€1,739 at R, €832 at G, €1,204 at B, with pairs) are not started by this rule. They go to the user with their re-timed
+   price, beside routes (b) and (c) validated on the three molecules of step 2.
+4. The pair saving enters production only after it reproduces the direct result on benzene, at no extra cost: from S1's own R Hessians,
+   rebuild each pair's second-partner Hessians from the first by the group, and compare GVPT2 Δ_anh over the window with the direct one.
+   Lines: rms ≤ 0.2 cm⁻¹ and max ≤ 0.5 cm⁻¹, below R's quartic route noise on benzene (0.4 cm⁻¹, prediction section). If it fails, the
+   prices without the pair saving stand.
+
 ## Outcome
 
 *(appended after the run)*
