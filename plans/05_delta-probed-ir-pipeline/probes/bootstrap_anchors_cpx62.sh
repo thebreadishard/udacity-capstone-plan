@@ -22,11 +22,7 @@ t() { date '+%T'; }
 host_ssh "$NAME" 'true' || { echo "WRONG OR UNREACHABLE MACHINE $NAME"; exit 1; }
 
 echo "[$(t) $NAME] 1. system + miniforge + env qc05"
-$S 'export DEBIAN_FRONTEND=noninteractive; apt-get update -q > /tmp/apt.log 2>&1; apt-get install -yq build-essential rsync htop >> /tmp/apt.log 2>&1;
-    test -x /root/miniforge3/bin/conda || { curl -sL https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh -o /tmp/mf.sh && bash /tmp/mf.sh -b -p /root/miniforge3 > /tmp/mf.log 2>&1; };
-    test -x /root/miniforge3/envs/qc05/bin/python || /root/miniforge3/bin/conda create -y -q -n qc05 python=3.12 > /tmp/env.log 2>&1;
-    /root/miniforge3/envs/qc05/bin/pip install -q pyscf==2.14.0 numpy scipy psutil pytest >> /tmp/env.log 2>&1;
-    /root/miniforge3/envs/qc05/bin/python -c "import pyscf; print(\"pyscf\", pyscf.__version__)"' < /dev/null || { echo "ENV FAILED $NAME"; exit 1; }
+bash "$HERE/../tools/bootstrap_qc05_env.sh" "$NAME" || exit 1      # step 1, shared with the S1 server (13 Oct 2026)
 
 echo "[$(t) $NAME] 2. the plan's files under /root/dpir (git archive of HEAD)"
 P=plans/05_delta-probed-ir-pipeline

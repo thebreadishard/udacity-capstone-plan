@@ -8,7 +8,8 @@
 #
 # Resumable: every step skips what exists (the optimised stub, the Hessians by file name). Markers '=== (S1) ...' for the watch.
 # WAIT_LOG / WAIT_RE: wait until the log shows the pattern (S1 waits for the five-ring runner's end). MAX_FIRST: the registration's stop rule,
-# seconds allowed for the first displaced Hessian of the first setting (default 900).
+# seconds allowed for the first displaced Hessian of the first setting (default 900). PARALLEL=1 (13 Oct 2026, the S1 server): one
+# process per setting, <threads> each; a failed setting is named in '=== (S1) SETTINGS FAILED: …' after the others have ended.
 set -euo pipefail
 PY=${PY:-/home/thebreadishard/qc05/bin/python}
 HERE=$(cd "$(dirname "$0")" && pwd)
@@ -22,12 +23,12 @@ if [ -n "${WAIT_LOG:-}" ]; then
   until grep -qE "$WAIT_RE" "$WAIT_LOG" 2>/dev/null; do sleep 600; done
 fi
 MAX_FIRST=${MAX_FIRST:-900}
-first=1
-mark "start: $# settings, step $DISP, $thr threads, geometry $geom"
-names=()
-for spec in "$@"; do
-  IFS=: read -r name basis grid <<< "$spec"
-  names+=("$root/$name")
+PARALLEL=${PARALLEL:-0}
+mark "start: $# settings, step $DISP, $thr threads$([ "$PARALLEL" = 1 ] && echo ' per setting, the settings in parallel'), geometry $geom"
+
+run_setting() {   # $1 = name:basis:grid; $2 = 1 for the first setting, whose first displaced Hessian the stop rule times
+  local name basis grid d
+  IFS=: read -r name basis grid <<< "$1"
   d=$root/$name
   mkdir -p "$d/refstub" "$d/stubs" "$d/hess"
   if [ ! -f "$d/refstub/ref.json" ]; then
@@ -39,9 +40,8 @@ for spec in "$@"; do
   "$PY" "$HERE/make_qff_displacements.py" "$d/ref.json" "$d/stubs" --disp "$DISP"
   cp "$d/ref.json" "$d/hess/ref.json"      # the reference stub carries the same name, so it is not computed twice
   mark "$name: $(ls "$d/stubs" | wc -l) Hessians to compute"
-  if [ "$first" = 1 ]; then
+  if [ "$2" = 1 ]; then
     "$PY" "$HERE/pyscf_hessians_for_qff.py" "$d/stubs" "$d/hess" --basis "$basis" --grid "$grid" --threads "$thr" --max-first-seconds "$MAX_FIRST"       || { mark "$name: STOPPED by the stop rule or a failure (first displaced Hessian > ${MAX_FIRST} s?) — re-price"; exit 1; }
-    first=0
   else
     "$PY" "$HERE/pyscf_hessians_for_qff.py" "$d/stubs" "$d/hess" --basis "$basis" --grid "$grid" --threads "$thr"
   fi
@@ -55,6 +55,23 @@ for spec in "$@"; do
     touch "$d/NOISY"
     (cd "$PLAN" && PYTHONPATH=src "$PY" -m dpir.qff "$d/hess" --disp "$DISP" --allow-noisy --out "$d/qff_report.md" > "$d/qff_stdout.log" 2>&1)
   fi
-done
+}
+
+names=()
+for spec in "$@"; do names+=("$root/${spec%%:*}"); done
+if [ "$PARALLEL" = 1 ]; then
+  # 13 Oct 2026 (the S1 server): one process per setting. A failed setting does not stop the others — their Hessians stay usable at a
+  # re-pricing, since every step resumes — and the comparison runs only when every setting has finished.
+  pids=(); i=0
+  for spec in "$@"; do
+    i=$((i + 1)); ( run_setting "$spec" "$([ "$i" = 1 ] && echo 1 || echo 0)" ) & pids+=("$!")
+  done
+  failed=""; i=0
+  for spec in "$@"; do wait "${pids[$i]}" || failed="$failed ${spec%%:*}"; i=$((i + 1)); done
+  [ -z "$failed" ] || { mark "SETTINGS FAILED:$failed"; exit 1; }
+else
+  first=1
+  for spec in "$@"; do run_setting "$spec" "$first"; first=0; done
+fi
 "$PY" "$HERE/s1_anharmonic_level.py" compare "${names[@]}" --out "$root/compare.json"
 mark "all settings done"

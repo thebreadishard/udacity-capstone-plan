@@ -71,6 +71,15 @@ Water's O–H quartics are large, so part of that may be finite-difference trunc
   wait on F5's end marker.
 - The watch follows the markers `=== (S1)`.
 
+## Amendment 1 (13 Oct 2026, 20:0x, before any benzene number) — place and threads
+
+The run moves from the laptop to a CPX62 rented for it (the user created `ubuntu-32gb-hel1-6`, host `s1` in `tools/hosts.tsv`). On the laptop
+it would have waited for the five-ring runner until ≈ 25–28 Oct; the anharmonic level decides the price of the whole shape test, so two
+weeks matter. The three settings run in parallel, 5 threads each (`PARALLEL=1`, new in `probes/s1_anharmonic_level.sh`), instead of one
+after another at 4. Settings, step, lines, prediction and the stop rule (R's first displaced Hessian > 15 min: stop and re-price) are
+unchanged. The server first repeats the water smoke in the parallel mode (`probes/bootstrap_s1_cpx62.sh`); the laptop's waiting S1 was
+stopped before it started.
+
 ## Outcome
 
 *(appended after the run)*

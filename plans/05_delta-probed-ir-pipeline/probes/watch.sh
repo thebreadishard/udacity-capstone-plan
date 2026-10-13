@@ -42,7 +42,7 @@ check_jobs() {
   done < "$JOBS"
 }
 
-lb="" np="" an=""; lfails=0; pfails=0; afails=0
+lb="" np="" an="" so=""; lfails=0; pfails=0; afails=0; sfails=0
 remote_fail() {   # $1 = host, $2 = rc, $3 = name of the counter variable
   [ "$2" = "3" ] && { echo "ANOMALY $(t): host $1 answers with another machine (re-used IP?) — see tools/hosts.tsv"; exit 1; }
   printf -v "$3" '%d' $(( ${!3} + 1 ))
@@ -92,6 +92,21 @@ check_anchors3() {   # anchor set three (probes/anchor_wave.sh): each '=== (AS3)
   return 0
 }
 
+check_s1srv() {   # S1 on the server 's1' (13 Oct 2026, TASKS 53): each '=== (S1)' line once; the runner gone before an end marker is an anomaly
+  has_host s1 || return 0
+  local rc alive line
+  so=$(host_ssh s1 'test -f /root/dpir/s1.log || { echo NOLOG; exit 0; }; echo "alive $(pgrep -fc "^bash (/root/dpir/)?probes/s1_anharmonic_level\.sh ")"; grep "^=== (S1) " /root/dpir/s1.log | tail -n 30'); rc=$?
+  if [ -z "$so" ]; then remote_fail s1 "$rc" sfails; return 0; fi
+  sfails=0
+  [ "$so" = "NOLOG" ] && return 0
+  alive=$(echo "$so" | head -1 | awk '{print $2}')
+  while read -r line; do new_marker "$(echo "$line" | cut -c1-110)" && exit 2; done < <(echo "$so" | tail -n +2)
+  if [ "$alive" = "0" ] && ! echo "$so" | grep -qE '^=== \(S1\) (all settings done|SETTINGS FAILED|[A-Z]+: STOPPED|[A-Z]+: QFF FAILED)'; then
+    echo "ANOMALY $(t): S1 runner on s1 gone without an end marker — $(echo "$so" | tail -n 1)"; exit 1
+  fi
+  return 0
+}
+
 check_ci() {   # 13 Oct 2026: six red plan05 runs in a row went unseen for eight hours; a failed run is reported once per commit
   local r
   r=$(gh run list -R thebreadishard/udacity-capstone-plan --workflow plan05 --limit 1 --json status,conclusion,headSha         --jq '.[0] | "\(.status) \(.conclusion) \(.headSha[:8])"' 2>/dev/null) || return 0      # offline or gh missing: no verdict
@@ -106,8 +121,9 @@ for i in $(seq 1 "$CYCLES"); do
   check_labels
   check_pool3
   check_anchors3
+  check_s1srv
   check_ci
   [ "$i" -lt "$CYCLES" ] && sleep "$SLEEP"
 done
-echo "quiet cycle $(t): labels ${lb:-—} | pool3 ${np:-—} | anchors3 $(echo "${an:-—}" | tail -n 1 | cut -c1-80)"
+echo "quiet cycle $(t): labels ${lb:-—} | pool3 ${np:-—} | anchors3 $(echo "${an:-—}" | tail -n 1 | cut -c1-80) | s1 $(echo "${so:-—}" | tail -n 1 | cut -c1-60)"
 exit 0
