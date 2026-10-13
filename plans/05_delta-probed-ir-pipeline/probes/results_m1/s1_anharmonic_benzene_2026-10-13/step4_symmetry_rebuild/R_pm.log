@@ -1,0 +1,24 @@
+{
+ "group_order": 24,
+ "totally_symmetric": [
+  12,
+  29
+ ],
+ "pm_rebuilt": [
+  4,
+  5,
+  10,
+  11,
+  15,
+  18,
+  19,
+  24
+ ],
+ "pairs_rebuilt": [],
+ "summary": {
+  "files": 61,
+  "replaced": 8,
+  "max_rel_change_max": 0.04275696791444018,
+  "max_rel_change_median": 0.023350872416174007
+ }
+}

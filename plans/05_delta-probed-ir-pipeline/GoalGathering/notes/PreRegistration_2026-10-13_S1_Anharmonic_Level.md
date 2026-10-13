@@ -119,4 +119,35 @@ at G). The test runs as registered.
 
 ## Outcome
 
-*(appended after the run)*
+*(appended after the run, 14 Oct 2026 00:1x)*
+
+Run on `s1`, all three settings ended 13 Oct 22:02:47 UTC ('all settings done', exit 0); fetched in full, 454 files sha256-checked
+(`probes/results_m1/s1_anharmonic_benzene_2026-10-13/`, FETCHED.txt). Benzene, 30 modes, 22 in the window 550–2000 cm⁻¹. Numbers from
+`s1_benzene/compare.json` and each setting's `qff_report.md`.
+
+| setting | noise guard (quartic route disagreement max) | Δ_anh vs R over the window: rms / max (cm⁻¹) | lines (≤ 1.0 / ≤ 3.0) |
+|---|---|---|---|
+| R (reference) | passed (1.4 cm⁻¹) | — | — |
+| **G** (6-31G*, 75/302) | passed (1.1 cm⁻¹) | **0.19 / 0.35** | **passes** |
+| **B** (6-31G, 99/590) | passed (3.9 cm⁻¹) | **3.16 / 7.51** | **fails** |
+
+The registered prediction (G passes, B fails) holds. The lowest mode overlap in the matching (0.64 for G, 0.65 for B) is a rotation inside
+a degenerate pair; the pairs' subspaces match at 1.0000. **Consequence (registered):** G is the anharmonic level of S2 and S3; B is out, so the
+combined setting is not registered.
+
+**Amendment 2, step 4 — the symmetry rebuild on S1's own R Hessians** (`step4_symmetry_rebuild/`, `probes/qff_symmetry_rebuild.py`):
+
+| saving | noise guard | Δ_anh vs direct R, window: rms / max (cm⁻¹) | lines (≤ 0.2 / ≤ 0.5) |
+|---|---|---|---|
+| ± (−δ Hessian from the image of +δ) | passed | 0.17 / 0.40 | **passes** |
+| pairs (b's Hessians from a's images) | tripped | 1.22 / 3.24 | **fails** |
+
+Image errors on this set (`step4_symmetry_rebuild/image_errors.json`): 5.6e-3 of the displacement signal (median of 5) for grid-compatible
+operations, 3.0e-2 (median of 91) for the others — the development read of 22:0x repeated. The ± saving passes closer to its line than on the
+21 Sep set (0.03 / 0.09); this geometry has fewer grid-compatible operations, so more of its images carry the grid's asymmetry.
+
+**What follows (amendment 2's rule):** the prices without the pair saving stand. At G with the ± saving: tetracene ≈ €32, coronene ≈ €72,
+peropyrene ≈ €118 — **≈ €222 for S3's three** — with each first Hessian re-timed on the target; ovalene (≈ €267) and HBC (≈ €811) go to the
+user beside routes (b)/(c). The pair saving waits for a symmetry-adapted grid (TASKS 55). The ± saving should run in the symmetry frame,
+where the D₂h subgroup's operations are grid-compatible.
+

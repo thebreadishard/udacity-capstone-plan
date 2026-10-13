@@ -1,0 +1,52 @@
+=== (S1) start: 3 settings, step 0.10, 4 threads per setting, the settings in parallel, geometry probes/results_m1/water_dipole_fd_2026-10-02/geometry.json 2026-10-13 18:06:19
+=== (S1) G: optimising (B3LYP/6-31g*, grid 75,302) 2026-10-13 18:06:19
+=== (S1) R: optimising (B3LYP/6-31g*, grid 99,590) 2026-10-13 18:06:19
+=== (S1) B: optimising (B3LYP/6-31g, grid 99,590) 2026-10-13 18:06:19
+BFGS: E = -76.4070240901, max |g_internal| = 2.9e-05 after 6 evaluations
+  Newton 0: E = -76.4070240901, max |g_internal| = 2.9e-05, net force 8.7e-06
+  Newton 1: E = -76.4070240909, max |g_internal| = 9.2e-09, net force 8.7e-06
+[18:06:31] 1/1 ref.json E = -76.40702409 in 2 s
+done: 1 Hessians in 0.0 min
+7 stubs in /root/s1_smoke_water/G/stubs; step 0.1; omega (cm-1): 1710.8, 3721.1, 3844.9
+=== (S1) G: 7 Hessians to compute 2026-10-13 18:06:31
+[18:06:33] 1/7 mode00_m.json E = -76.40698495 in 2 s
+BFGS: E = -76.3861166797, max |g_internal| = 3.8e-05 after 7 evaluations
+  Newton 0: E = -76.3861166797, max |g_internal| = 3.8e-05, net force 1.9e-08
+  Newton 1: E = -76.3861166853, max |g_internal| = 1.3e-09, net force 1.7e-08
+BFGS: E = -76.4070241176, max |g_internal| = 2.9e-05 after 6 evaluations
+  Newton 0: E = -76.4070241176, max |g_internal| = 2.9e-05, net force 8.0e-07
+  Newton 1: E = -76.4070241186, max |g_internal| = 2.0e-09, net force 8.0e-07
+[18:06:35] 2/7 mode00_p.json E = -76.40698528 in 2 s
+[18:06:36] 3/7 mode01_m.json E = -76.40694072 in 2 s
+[18:06:37] 1/1 ref.json E = -76.38611669 in 3 s
+done: 1 Hessians in 0.0 min
+7 stubs in /root/s1_smoke_water/B/stubs; step 0.1; omega (cm-1): 1619.1, 3616.1, 3781.1
+=== (S1) B: 7 Hessians to compute 2026-10-13 18:06:37
+[18:06:38] 4/7 mode01_p.json E = -76.40693789 in 2 s
+[18:06:38] 1/1 ref.json E = -76.40702412 in 3 s
+done: 1 Hessians in 0.1 min
+7 stubs in /root/s1_smoke_water/R/stubs; step 0.1; omega (cm-1): 1710.9, 3721.1, 3844.9
+=== (S1) R: 7 Hessians to compute 2026-10-13 18:06:39
+[18:06:39] 5/7 mode02_m.json E = -76.40693648 in 2 s
+[18:06:40] 1/7 mode00_m.json E = -76.38607956 in 3 s
+[18:06:41] 6/7 mode02_p.json E = -76.40693648 in 2 s
+done: 7 Hessians in 0.2 min
+=== (S1) G: NOISY — quartic route disagreement max 14.8 cm⁻¹; assembled with --allow-noisy for the record 2026-10-13 18:06:41
+[18:06:42] 2/7 mode00_p.json E = -76.38608004 in 3 s
+[18:06:42] 1/7 mode00_m.json E = -76.40698535 in 3 s
+[18:06:45] 3/7 mode01_m.json E = -76.38603293 in 2 s
+[18:06:46] 2/7 mode00_p.json E = -76.40698494 in 3 s
+[18:06:47] 4/7 mode01_p.json E = -76.38603565 in 3 s
+[18:06:49] 3/7 mode01_m.json E = -76.40694071 in 3 s
+[18:06:50] 5/7 mode02_m.json E = -76.38603053 in 3 s
+[18:06:52] 4/7 mode01_p.json E = -76.40693795 in 3 s
+[18:06:53] 6/7 mode02_p.json E = -76.38603053 in 2 s
+done: 7 Hessians in 0.3 min
+=== (S1) B: NOISY — quartic route disagreement max 10.5 cm⁻¹; assembled with --allow-noisy for the record 2026-10-13 18:06:53
+[18:06:55] 5/7 mode02_m.json E = -76.40693651 in 3 s
+[18:06:59] 6/7 mode02_p.json E = -76.40693651 in 3 s
+done: 7 Hessians in 0.3 min
+=== (S1) R: QFF and VPT2 done 2026-10-13 18:06:59
+/root/s1_smoke_water/G: Δ_anh difference over 1 modes in 550–2000 cm⁻¹: rms 0.50, max 0.50 cm⁻¹ (min mode overlap 1.000) — NOISY: failed the force-field noise guard
+/root/s1_smoke_water/B: Δ_anh difference over 1 modes in 550–2000 cm⁻¹: rms 2.51, max 2.51 cm⁻¹ (min mode overlap 0.994) — NOISY: failed the force-field noise guard
+=== (S1) all settings done 2026-10-13 18:06:59
