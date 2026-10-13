@@ -1,0 +1,4 @@
+
+WARN: Krylov solver reached subspace convergence but true residual |aop(x)+x-b| = 3.016e-04 exceeds tolerance 2.2e-07. Falling back to per-root solve.
+
+{"pyscf": "/home/thebreadishard/pyscf-wt-3384/pyscf/__init__.py", "version": "2.14.0", "residual": 8.098477496402967e-05, "seconds_response": 4971}
