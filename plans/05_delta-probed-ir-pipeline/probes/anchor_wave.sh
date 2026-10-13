@@ -10,6 +10,8 @@
 # "=== (AS3) ": "<name> hessian DONE|FAILED|IMAGINARY", "<name> apt PASS|FAIL", and "wave done" at the end. probes/watch.sh reports them
 # (check_anchors3). A molecule whose Hessian file already exists is not recomputed, so a relaunch resumes the wave.
 #   setsid nohup bash /root/dpir/probes/anchor_wave.sh /root/dpir/wave1.txt > /dev/null 2>&1 < /dev/null &
+# TWO_ROUTE (default 'energy' since 13 Oct 2026) goes to the anchor runner: the reference gradient is checked by the energy route after the partial
+# runs instead of pyscf's slow (T) route before them. WAIT_PGREP=<pattern>: wait while a process matching it runs (a run started by an earlier wave).
 # no-set-e: one failing molecule is logged and the wave goes on to the next
 set -u
 LIST=${1:?list file}
@@ -17,9 +19,14 @@ ROOT=${ROOT:-/root/dpir/probes}
 PY=${PY:-/root/miniforge3/envs/qc05/bin/python}
 LOG=${LOG:-/root/dpir/anchors.log}
 FAST=${FAST---fast-t-density --fast-t-lambda}
+export TWO_ROUTE=${TWO_ROUTE:-energy}
 cd "$ROOT" || exit 1
 mark() { echo "=== (AS3) $* $(date '+%F %T')" >> "$LOG"; }
-mark "wave start: $(grep -c . "$LIST") molecules from $LIST on $(hostname)"
+if [ -n "${WAIT_PGREP:-}" ]; then
+  mark "waiting while '$WAIT_PGREP' runs"
+  while pgrep -f "$WAIT_PGREP" > /dev/null; do sleep 300; done
+fi
+mark "wave start: $(grep -c . "$LIST") molecules from $LIST on $(hostname), two-route mode $TWO_ROUTE"
 while IFS='|' read -r name geom W T M; do
   [ -z "$name" ] && continue
   out="results/${name}_ccpvdz"

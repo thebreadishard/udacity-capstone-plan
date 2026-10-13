@@ -19,6 +19,9 @@ CORPUS=${CORPUS:-/root/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05
 GUARD_MB=${GUARD_MB:-1500}
 FAST=${FAST---fast-t-density --fast-t-lambda}
 TWO_ROUTE=${TWO_ROUTE:-inline}   # 2 Oct 2026: 'separate' runs the kernel two-route checks in a lane beside the partial runs (CT threads, CM MB)
+# 13 Oct 2026: 'energy' — the reference skips pyscf's slow (T) route (marked unchecked); after the partial runs, the reference gradient is checked
+# against central differences of the stored displaced energies (e8_cc_hessian_fd.py --two-route-check energy, the route of 6 Oct for anthracene),
+# and the assembly refuses without that passing file. On quinoxaline (16 atoms) the inline route held the reference for > 6 h on 3 of 16 cores.
 CT=${CT:-8}; CM=${CM:-16000}
 SKIP=${SKIP:-}   # space-separated anchor names to leave out (30 Sep 2026: benzonitrile's Hessian awaits a verdict; the rest goes on)
 skipped() { [[ " $SKIP " == *" $1 "* ]] && say "ANCHOR $1 SKIPPED (SKIP)"; }
@@ -52,7 +55,8 @@ anchor_parallel() {   # name geom out workers threads mem_mb [extra e8 args]
   local name=$1 geom=$2 out=$3 W=$4 T=$5 M=$6; shift 6
   mkdir -p "$out"
   say "ANCHOR $name START (parallel: $W partial runs x $T threads x $M MB) ($geom)"
-  OMP_NUM_THREADS=16 "$PY" e8_cc_hessian_fd.py "$geom" "$out" --threads 16 --symmetry --only-reference --two-route-check "$TWO_ROUTE" "$@" >> "$out/chain.log" 2>&1 \
+  local ref_mode=$TWO_ROUTE; [ "$TWO_ROUTE" = "energy" ] && ref_mode=separate
+  OMP_NUM_THREADS=16 "$PY" e8_cc_hessian_fd.py "$geom" "$out" --threads 16 --symmetry --only-reference --two-route-check "$ref_mode" "$@" >> "$out/chain.log" 2>&1 \
     || { say "ANCHOR $name FAILED (reference gradient; see $out/e8_fd.log)"; return 1; }
   local nk; nk=$(n_unique "$geom")
   say "ANCHOR $name: $nk symmetry-unique displacements over $W partial runs"
@@ -83,6 +87,11 @@ anchor_parallel() {   # name geom out workers threads mem_mb [extra e8 args]
   for p in "${pids[@]}"; do wait "$p" 2>/dev/null || true; done
   if grep -q "PAIR CHECK FAILED" "$out/e8_fd.log"; then say "ANCHOR $name FAILED (pair check; see $out/e8_fd.log)"; return 1; fi
   say "ANCHOR $name: partial runs done ($(ls "$out"/grad_*.npy 2>/dev/null | wc -l) gradient files) -> assembling run"
+  if [ "$TWO_ROUTE" = "energy" ]; then
+    "$PY" e8_cc_hessian_fd.py "$geom" "$out" --two-route-check energy "$@" >> "$out/chain.log" 2>&1 \
+      || { say "ANCHOR $name FAILED (energy-route check of the reference gradient; see $out/e8_fd.log)"; return 1; }
+    say "ANCHOR $name: $(grep -o 'two-route check (energy route) PASSED[^;]*' "$out/e8_fd.log" | tail -1)"
+  fi
   rm -f "$out/hessian_ccsd_t.npz" "$out/hessian_ccsd_t_INVALID.npz" "$out/hessian_ccsd_t_IMAGINARY.npz"   # no stale verdict (review, 30 Sep)
   local rc=0
   OMP_NUM_THREADS=16 "$PY" e8_cc_hessian_fd.py "$geom" "$out" --threads 16 --symmetry "$@" >> "$out/chain.log" 2>&1 || rc=$?

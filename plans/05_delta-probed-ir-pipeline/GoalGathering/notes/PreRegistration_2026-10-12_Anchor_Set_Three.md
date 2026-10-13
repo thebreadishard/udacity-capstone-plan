@@ -139,6 +139,20 @@ The stop rule's threshold for wave 1 is therefore 140 h.
 
 **Wave 1 launched** 21:58 UTC (`/root/dpir/anchors.log`, markers `=== (AS3)`, followed by `probes/watch.sh` `check_anchors3`).
 
+## Amendment (13 Oct 03:4x, before any anchor number)
+
+**The two-route check of the reference gradient moves to the energy route.**
+- Quinoxaline's reference ran pyscf's slow (T) route inline: 6 h on 3 of 16 cores, with the partial runs waiting behind it.
+- The (T)-lambda kernel check had passed on quinoxaline itself (2.8e-17, 4,508 s); the density check would have taken ≈ 6 h more.
+- The runner gains `TWO_ROUTE=energy`, the default in `probes/anchor_wave.sh`. The reference is marked unchecked; after the partial runs it
+  is checked against central differences of the stored displaced energies (`e8_cc_hessian_fd.py --two-route-check energy`, the route of
+  6 Oct for anthracene). The assembly refuses without that passing file.
+- Water smoke on anchors3: 3.5e-6 a.u. against the 2e-5 limit, then the assembly and the APT.
+
+**Restart.** The inline quinoxaline run was stopped before its reference was written; its logs are kept in
+`results/quinoxaline_ccpvdz_inline_stopped/`. Wave 1b (`/root/dpir/wave1b.txt`: quinoxaline, azulene, acenaphthylene) runs in the energy mode.
+Lost: ≈ 6 h of wall time on the first anchor; saved: ≈ 5 h on it and more on the larger two.
+
 ## Outcome
 
 *(appended after the reads)*
