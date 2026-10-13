@@ -33,7 +33,11 @@ check_jobs() {
     [ -f "$log" ] || continue
     while read -r line; do new_marker "$(echo "$line" | cut -c1-110)" && exit 2; done < <(grep -E "$mark" "$log" | grep -v armed)
     if ! grep -qE "$end" "$log"; then
-      [ "$(ps -ef | grep -cE "$proc")" = "0" ] && { echo "ANOMALY $(t): job $name gone without its end marker"; exit 1; }
+      # 13 Oct 2026: one ps snapshot missed a live runner (C35h, 16:19, during a WMI launch); a job is gone only when two snapshots 30 s apart miss it
+      if [ "$(ps -ef | grep -cE "$proc")" = "0" ]; then
+        sleep 30
+        [ "$(ps -ef | grep -cE "$proc")" = "0" ] && { echo "ANOMALY $(t): job $name gone without its end marker (two snapshots 30 s apart)"; exit 1; }
+      fi
     fi
   done < "$JOBS"
 }

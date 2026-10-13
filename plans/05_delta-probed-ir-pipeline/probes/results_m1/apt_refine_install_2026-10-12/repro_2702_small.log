@@ -1,0 +1,10 @@
+== 3384
+WARN: Krylov solver reached subspace convergence but true residual |aop(x)+x-b| = 6.143e-05 exceeds tolerance 3.0e-08. Falling back to per-root solve.
+{"case": "water B3LYP/6-31G, default grid", "residual": 1.4928732084370368e-06, "solve_mo1_seconds": 1.2, "operator_calls": 7, "operator_vectors": 38, "pyscf": "/home/thebreadishard/pyscf-wt-3384/pyscf/__init__.py"}
+{"case": "benzene PBE/6-31G* cart, grid (99, 590)", "residual": 5.4314663441202795e-08, "solve_mo1_seconds": 1058.3, "operator_calls": 13, "operator_vectors": 179, "pyscf": "/home/thebreadishard/pyscf-wt-3384/pyscf/__init__.py"}
+== 3384tol
+WARN: Krylov solver reached subspace convergence but true residual |aop(x)+x-b| = 6.143e-05 exceeds tolerance 3.0e-08. Falling back to per-root solve.
+{"case": "water B3LYP/6-31G, default grid", "residual": 9.331884119607497e-11, "solve_mo1_seconds": 3.0, "operator_calls": 8, "operator_vectors": 50, "pyscf": "/home/thebreadishard/pyscf-wt-3384tol/pyscf/__init__.py"}
+{"case": "benzene PBE/6-31G* cart, grid (99, 590)", "residual": 5.4314544332999006e-08, "solve_mo1_seconds": 1035.9, "operator_calls": 13, "operator_vectors": 179, "pyscf": "/home/thebreadishard/pyscf-wt-3384tol/pyscf/__init__.py"}
+
+[exited with code 0]
