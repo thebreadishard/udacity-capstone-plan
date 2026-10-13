@@ -71,6 +71,23 @@ Whenever the machine is busy or the user is away, the next item is the cheapest 
 
 ## 6. Log
 
+- **13 Oct, 19:3x — the day: the APT stall fixed in our code, the first set-three anchor in, and laptop jobs that survive a relaunch.**
+(1) APT (TASKS 44): the diagnosis read 'solver' — batched Krylov rounds stay at 1.7e-6 → 2.1e-6 → 2.1e-6 while scipy GMRES on each of
+the twelve worst columns alone reaches 2e-12 to 1.2e-11 (`apt_refine_install_2026-10-12/floor_B_127dd8c4ed/diagnose_floor.log`). A
+per-column GMRES fallback in `corpus/apt.py` `refine_response` (installed on the labels server 09:22); the two guard-failed APTs pass:
+B_1194d7a42a 9.4e-7 (1 single-column solve), B_127dd8c4ed 8.8e-7 (5). pyscf #3384 detects the stall on B_127 but ends at 8.1e-5 vs
+8.2e-5 on 2.14.0 (`pr3384_check.log`), because its per-root solve stops at `fallback_tol` = 1000·tol; reported on #2702 on the user's word.
+The diagnosis was quoted at ≈ 2 h and took 7.4 h: time a component on the target before quoting. (2) Anchor set three (TASKS 51):
+quinoxaline CCSD(T)/cc-pVDZ Hessian valid (energy route 5.0e-6), CC APT field route vs FD-dipole route 1.6e-4 e; fetched in full (155
+files, sha256-checked) by `probes/fetch_anchor.sh`. (3) Hybrid head (TASKS 52): not reflection-equivariant — mixed dihedral or wag ×
+bond or angle pairs are parity-odd; proven on H2O2 and ethylene stand-ins, fix behind `--parity-odd-mixed`. (4) CI red 06:52–15:16 over
+six pushes: a new test lacked `importorskip('geometric')`; CI now installs geomeTRIC 1.1.1 and the watch reports a failed run once per
+commit. (5) Restart resilience (TASKS 54): chain_runner resumes recorded steps, `tools/resume_laptop_jobs.sh` + scheduled task
+CapstoneResumeJobs relaunch what is neither finished nor running (kill test 18:28: relaunched within 30 s). App-relaunch test 18:48: the
+user ended all 16 Claude processes; all 25 job processes alive, heartbeat without a gap over 75 s, no relaunch needed. A first attempt
+(window closed, app still running) showed that WMI-started jobs sat in empty-looking terminal windows whose closing kills the job; the
+launcher now uses `conhost --headless`. Not tested: a Windows restart.
+
 - **13 Oct 00:1x — a silent size cap in the loader, found by a smoke before it cost a run.** Chain 41's owed P3 smoke loaded two of pool 3's
 five-ring neutrals (33 and 38 atoms). Both were skipped with a one-line 'skip' print: `embedding_experiments_E.atom_sets` padded to a fixed
 NMAX of 32 and raised on anything larger, and `E6.load_corpus` catches per-molecule errors. Chain 41's thirty test molecules (32–40 atoms)
