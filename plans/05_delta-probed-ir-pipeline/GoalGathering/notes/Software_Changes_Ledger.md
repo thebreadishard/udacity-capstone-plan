@@ -56,6 +56,7 @@ One line per change; the numbered section below the register carries every origi
 | 43 | 2026-10-11 | C | pyscf master (`hessian/thermo.py::harmonic_analysis`) | the Hessian goes to `numpy.linalg.eigh` unsymmetrised; eigh reads one triangle, so an asymmetric analytic Hessian (UKS: 6.2e-5) shifts modes and heights | pr-open |
 | 44 | 2026-10-12 | C | pyscf 2.14.0 (`lib/linalg_helper.py::krylov`, via `scf/cphf.py solve_withs1` and the Hessian's `solve_mo1`) | the Krylov solver stops 7e-5 off its own system for DFT CPHF, whatever tol/max_cycle, without a warning; dipole derivatives from that solution are off by 1e-4 (benzene), the Hessian is insensitive; our #3508, upstream's #3384 solves it too (#3508 closed for it) | waiting-upstream |
 | 45 | 2026-10-13 | C | pyVPT2 main 2eae571 (`FD: HESSIAN`, `assemble_quartic_from_hessians`, `check_cubic` / `check_quartic`) | the consistency checks compare routes that were averaged before the check, so they always pass; one route per element, then the same symmetrisation — philipmnel/pyvpt2#59 | pr-open |
+| 46 | 2026-10-13 | C | pyscf 2.14.0 `dft/gen_grid.py` (`Grids.symmetry`, `get_partition`) | the molecular DFT grid is not invariant under the molecule's point group (one lab-frame Lebedev orientation for every atom); `Grids.symmetry` is documented 'whether to symmetrize mesh grids (TODO)' — a symmetry-adapted orientation per atom orbit would fill it | pr-candidate |
 
 ## Sections
 
@@ -703,6 +704,30 @@ independent routes, then the same symmetrisation as before: returned constants u
 **PR:** **philipmnel/pyvpt2#59**, opened 13 Oct on the user's word ('Ja, push en open de PR maar'); refs #57, which stays open (this fixes the
 check, not the noise; our own QFF `src/dpir/qff.py` carries the two-route check and refuses a noisy force field). Maintainer Philip Nelson, a
 one-person project; polite follow-up ≈ 27 Oct (TASKS, the software tasks row).
+
+### 46 — pyscf's DFT grid is not invariant under the molecule's point group; `Grids.symmetry` is an unimplemented TODO
+
+**Group:** C, finding about third-party software, with a fix designed (TASKS 55). **Date:** 2026-10-13. **Status:** pr-candidate (nothing
+built; the user wants to understand it first: 'We gaan het waarschijnlijk wel doen, maar eerst moet ik het beter begrijpen').
+
+**Software:** pyscf 2.14.0 `dft/gen_grid.py`: `gen_atomic_grids` builds one atomic grid per element in the laboratory axes, `get_partition`
+translates it onto every atom of that element; `Grids.symmetry` (set from `mol.symmetry`) is documented as 'whether to symmetrize mesh grids
+(TODO)' and not used.
+
+**Finding:** the molecular grid has at most the octahedral group's operations (signed permutations of the axes), not the molecule's group.
+For a hexagonal molecule a C₆ or C₃ image of a computed Hessian is therefore not the Hessian at the image geometry. Measured on the 21 Sep
+benzene B3LYP/6-31G* set (99/590, `probes/results_m1/qff_symmetry_rebuild_dev_2026-10-13/image_errors.json`): image against computed
+Hessian 3.0e-3 of the displacement signal (median of 14) for grid-compatible operations, 2.4e-2 (median of 82) for the others. Consequence
+here: the quartic force field's pair saving fails (Δ_anh 0.56 / 1.06 cm⁻¹ against the direct set), while the method is exact on symmetric
+model data (`tests/test_qff_symmetry_rebuild.py`).
+
+**Fix designed (not built):** orient each atom's grid so that the molecular grid is invariant under the point group — the atomic grid of
+one atom per orbit aligned with the atom's stabiliser (for PAH atoms at most C₂v, contained in the octahedral grid), the others obtained by
+the group's operations; the Becke partition depends only on positions. Same points, no extra cost. Cannot serve an atom on a C₆ axis.
+Tests planned: energy invariance under every operation, Hessian covariance, image errors at the noise floor for all operations.
+
+**PR candidate:** implementing the TODO in `Grids` (orientation per atom from `mol.symmetry`'s operations), with those tests — only after
+our own version passes on benzene, and on the user's word. Before drafting: re-check pyscf master and open issues/PRs for symmetric grids.
 
 ## How to use this ledger
 
