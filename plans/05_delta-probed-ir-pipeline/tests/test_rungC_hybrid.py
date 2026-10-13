@@ -17,13 +17,15 @@ torch.set_num_threads(1)
 
 
 def _hybrid_tensors(m, R=None):
-    """Water tensors with the pattern from e7_rungB_pairs on the (optionally rotated) geometry; F_int = a fixed synthetic internal force-constant matrix."""
+    """Tensors (water, or any small stand-in) with the pattern from e7_rungB_pairs on the (optionally rotated)
+    geometry; F_int = a fixed synthetic internal force-constant matrix."""
     geometric = pytest.importorskip("geometric")  # noqa: F841
     import e7_rungB_pairs as RB
     pos = m["pos"] if R is None else m["pos"] @ R.T
     H = m["H_low"] if R is None else RC.transform_hessian(m["H_low"], R)
     symbols = m["symbols"]
-    pairs, feat, pcls, B, atoms = RB.molecule_pairs(symbols, pos, np.eye(3), return_atoms=True)
+    K0 = RB.T2.internals(symbols, pos)[0].shape[0]                     # was np.eye(3): right for water only (13 Oct 2026)
+    pairs, feat, pcls, B, atoms = RB.molecule_pairs(symbols, pos, np.eye(K0), return_atoms=True)
     K = B.shape[0]
     F_int = np.diag(np.linspace(0.3, 0.9, K)) + 0.02
     t = RC.to_torch(dict(m, pos=pos, H_low=H), torch.float64)
@@ -130,3 +132,45 @@ def test_body_size_switches_change_the_body_and_the_head_input():
     assert sum(p.numel() for p in default.body.parameters()) == 171_554 + 256 + 384    # + charge-state (3 Oct) and hinge (7 Oct) embeddings, zero rows
     assert sum(p.numel() for p in deeper.body.parameters()) > sum(p.numel() for p in default.body.parameters())
     assert wider.head[0].in_features > default.head[0].in_features and wider.body.blocks[0].n_s == 128
+
+
+def _molecule(symbols, pos, bonds):
+    """A stand-in like RC.water() for any small molecule: synthetic bond Hessian, masses, Z."""
+    pos = np.asarray(pos, float)
+    return dict(id="synthetic", symbols=symbols, Z=np.array([RC.Z_OF[s] for s in symbols]), pos=pos,
+                masses=np.array([RC.MASSES_AMU[s] for s in symbols]), H_low=RC.synthetic_bond_hessian(pos, bonds), dH_true=np.zeros((3 * len(pos),) * 2))
+
+
+H2O2 = (["O", "O", "H", "H"], [[0.0, 1.37, -0.06], [0.0, -1.37, -0.06], [1.48, 1.62, 0.48], [-0.42, -1.62, 1.55]], [(0, 1, 0.3), (0, 2, 0.5), (1, 3, 0.5)])
+ETHYLENE = (["C", "C", "H", "H", "H", "H"], [[0.0, 1.26, 0.0], [0.0, -1.26, 0.0], [1.75, 2.33, 0.0], [-1.75, 2.33, 0.0], [1.75, -2.33, 0.0],
+                                             [-1.75, -2.33, 0.0]], [(0, 1, 0.6), (0, 2, 0.35), (0, 3, 0.35), (1, 4, 0.35), (1, 5, 0.35)])
+PARITY = ("TASKS 52 (13 Oct 2026): a dihedral's Wilson-B row is parity-odd (the angle changes sign under a reflection), while the head predicts ΔF "
+          "of a mixed dihedral–other pair from invariants only; Bᵀ ΔF B is then SO(3)- but not O(3)-equivariant, and a planar molecule's "
+          "prediction couples the plane to its normal. The water test above has no dihedral. strict: a fix turns these into passes and fails CI "
+          "until the marks go.")
+
+
+@pytest.mark.xfail(strict=True, raises=AssertionError, reason=PARITY)
+def test_hybrid_is_reflection_equivariant_with_dihedrals():
+    m = _molecule(*H2O2)
+    torch.manual_seed(0)
+    model = RH.HybridDeltaFModel(aggregation="mean", class_scale=torch.tensor([1e-2] * RH.N_PAIR_CLASSES)).double()
+    with torch.no_grad():
+        t0 = _hybrid_tensors(m)
+        dH = model(t0["Z"], t0["pos"], t0["H_low"], t0).numpy()
+        R = RC.rotation(3, reflect=True)
+        t1 = _hybrid_tensors(m, R)
+        dH1 = model(t1["Z"], t1["pos"], t1["H_low"], t1).numpy()
+    assert np.abs(dH1 - RC.transform_hessian(dH, R)).max() / (np.abs(dH).max() + 1e-30) < 1e-6
+
+
+@pytest.mark.xfail(strict=True, raises=AssertionError, reason=PARITY)
+def test_a_planar_molecule_s_prediction_keeps_its_mirror_plane():
+    m = _molecule(*ETHYLENE)
+    torch.manual_seed(0)
+    model = RH.HybridDeltaFModel(aggregation="mean", class_scale=torch.tensor([1e-2] * RH.N_PAIR_CLASSES)).double()
+    with torch.no_grad():
+        t0 = _hybrid_tensors(m)
+        dH = model(t0["Z"], t0["pos"], t0["H_low"], t0).numpy()
+    S = np.diag([1.0, 1.0, -1.0])                                       # the molecular plane is z = 0
+    assert np.abs(RC.transform_hessian(dH, S) - dH).max() / (np.abs(dH).max() + 1e-30) < 1e-6

@@ -5,7 +5,13 @@ F_low,pq, F_low,pp, F_low,qq — the object rung B is anchored on. The Cartesian
 rotations annihilated by the Wilson B matrix), so every read-out and loss of `rungC_train` applies unchanged.
 
 Invariance: the head sees only O(3)-invariant quantities (scalar channels, the norms of the vector channels, F_low elements), ΔF is invariant, and
-B transforms with the frame, so ΔH is equivariant by construction (tested in `tests/test_rungC_hybrid.py` with B rebuilt for the rotated geometry).
+B transforms with the frame, so ΔH is **rotation**-equivariant by construction (tested in `tests/test_rungC_hybrid.py` with B rebuilt for the rotated
+geometry). **Not reflection-equivariant (13 Oct 2026, TASKS 52):** a dihedral's (and an out-of-plane wag's) B row changes sign under a reflection,
+so a pair of one such primitive with a bond or angle needs a parity-odd ΔF, and the head predicts it from invariants. Removing the mixed-parity
+pairs restores the symmetry to 1e-15 (ethylene, H₂O₂); on a planar molecule the defect couples in-plane and out-of-plane modes (≤ 2.4 cm⁻¹ on
+the six anchors), with no measurable effect on the T3 reads (heights and out-of-plane ω unchanged to 1e-3 under σ_h symmetrisation). The
+reflection test above used water, which has no dihedral; the strict xfails in the test file mark the defect until the head is fixed (a
+parity-odd factor, e.g. sin φ, on mixed pairs — the next model version).
 
 Options: `tensor_input` (the rank-2 input of the encoder, rank 1), `sqm_scale` (Gemini's suggestion: ΔF_pq = α_c F_low,pq + residual, one α per
 pair class, initialised at 0 so the default is the pure residual). Class scales (one per pair class, the RMS of the true internal ΔF over the fit
