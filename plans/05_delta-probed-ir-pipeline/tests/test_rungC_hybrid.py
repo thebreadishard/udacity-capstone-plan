@@ -201,6 +201,7 @@ def test_parity_odd_head_is_reflection_equivariant(name):
 
 
 def test_primitive_parity_finds_dihedrals_odd_and_bonds_even():
+    pytest.importorskip("geometric")                                    # CI has no geomeTRIC (failed six runs on 13 Oct without this)
     import e7_rungB_pairs as RB
     symbols, pos, _ = ETHYLENE
     odd, s = RH.primitive_parity(symbols, np.asarray(pos, float))

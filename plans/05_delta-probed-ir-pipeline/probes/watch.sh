@@ -92,11 +92,21 @@ check_anchors3() {   # anchor set three (probes/anchor_wave.sh): each '=== (AS3)
   return 0
 }
 
+check_ci() {   # 13 Oct 2026: six red plan05 runs in a row went unseen for eight hours; a failed run is reported once per commit
+  local r
+  r=$(gh run list -R thebreadishard/udacity-capstone-plan --workflow plan05 --limit 1 --json status,conclusion,headSha         --jq '.[0] | "\(.status) \(.conclusion) \(.headSha[:8])"' 2>/dev/null) || return 0      # offline or gh missing: no verdict
+  case "$r" in
+    "completed failure "*) new_marker "CI plan05 FAILED on ${r##* } — gh run list -R thebreadishard/udacity-capstone-plan --workflow plan05" && exit 2 ;;
+  esac
+  return 0
+}
+
 for i in $(seq 1 "$CYCLES"); do
   check_jobs
   check_labels
   check_pool3
   check_anchors3
+  check_ci
   [ "$i" -lt "$CYCLES" ] && sleep "$SLEEP"
 done
 echo "quiet cycle $(t): labels ${lb:-—} | pool3 ${np:-—} | anchors3 $(echo "${an:-—}" | tail -n 1 | cut -c1-80)"
