@@ -17,17 +17,11 @@ def test_a_file_that_vanishes_during_the_plan_is_skipped(tmp_path, monkeypatch):
     src = tmp_path / "plan" / "data"
     src.mkdir(parents=True)
     (src / "keep.json").write_text("{}")
-    gone = src / "gone.json"
-    gone.write_text("{}")
     monkeypatch.setattr(B, "PLAN", tmp_path / "plan")
     monkeypatch.setattr(B, "SOURCES", [("data", set())])
     monkeypatch.setattr(B, "SINGLE_FILES", [])
-    real_stat = Path.stat
-
-    def stat(self, *a, **k):
-        if self.name == "gone.json":
-            raise FileNotFoundError(self)
-        return real_stat(self, *a, **k)
-    monkeypatch.setattr(Path, "stat", stat)
+    # the listing saw gone.json; by the stat it is gone (a running job's temporary file). The real stat is used: a mocked Path.stat behaves
+    # differently across Python versions (3.12's is_file calls it, 3.14's does not), which failed CI on 13 Oct 2026.
+    monkeypatch.setattr(B, "iter_files", lambda rel, ex: [src / "keep.json", src / "gone.json"])
     pairs, n, _ = B.plan_copies(tmp_path / "mirror")
     assert n == 1 and B.plan_copies.vanished == 1 and [p.name for p, _ in pairs] == ["keep.json"]
