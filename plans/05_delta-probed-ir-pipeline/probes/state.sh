@@ -38,6 +38,9 @@ MIRROR=/c/Users/thebr/Documents/CapstoneData
 if [ -d "$MIRROR/.git" ]; then
   last=$(git -C "$MIRROR" log -1 --format=%ct 2>/dev/null || echo 0); age_h=$(( ($(date +%s) - last) / 3600 ))
   echo "  data backup (capstone-data): last commit $(git -C "$MIRROR" log -1 --format='%ad' --date=format:'%Y-%m-%d %H:%M' 2>/dev/null), ${age_h} h ago$([ "$age_h" -gt 48 ] && echo ' — STALE: check the scheduled task CapstoneDataBackup')"
+  # 13 Oct 2026: the 03:30 run failed (exit 1) and the digest said only '26 h ago' — the task log's last exit code is shown when it is not 0
+  last_exit=$(grep -o 'backup task end, exit [0-9]*' "$LOCALAPPDATA/Temp/claude/backup_task.log" 2>/dev/null | tail -1 | grep -o '[0-9]*$')
+  [ -n "$last_exit" ] && [ "$last_exit" != "0" ] && echo "  data backup: LAST RUN FAILED (exit $last_exit) — see %LOCALAPPDATA%/Temp/claude/backup_task.log"
 fi
 # 11 Oct 2026: pyscf can publish a release during the project, some carrying our merged pull requests — the digest shows the newest PyPI
 # release against the pinned versions; a newer one goes through the upgrade checklist of the software ledger, never mid-run

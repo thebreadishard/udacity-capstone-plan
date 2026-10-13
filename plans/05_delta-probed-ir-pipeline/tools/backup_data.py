@@ -20,6 +20,7 @@ Usage: python tools/backup_data.py [--mirror C:\\Users\\thebr\\Documents\\Capsto
 from __future__ import annotations
 
 import argparse
+import re
 import shutil
 import subprocess
 import sys
@@ -41,6 +42,7 @@ SOURCES += [(f"{M05}/corpus/{p.name}", {"psi4.out", "worker_stdout.txt"})       
             for p in sorted((PLAN / M05 / "corpus").glob("shards_*")) if p.is_dir()]   # folder is mirrored without an edit here
 SINGLE_FILES = [f"{M05}/corpus/manifest.csv", f"{M05}/corpus/ledger.csv", f"{M05}/corpus/STATUS.md"]
 EXCLUDED_SUFFIXES = {".tmp", ".lock", ".pid"}
+PSI4_SCRATCH = re.compile(r"^psi\.\d+\.")   # psi.<pid>.clean and friends, written and removed by a running psi4 (13 Oct 2026)
 
 
 def iter_files(rel_dir: str, excluded: set[str]):
@@ -48,7 +50,7 @@ def iter_files(rel_dir: str, excluded: set[str]):
     if not root.is_dir():
         return
     for p in root.rglob("*"):
-        if p.is_file() and p.name not in excluded and p.suffix not in EXCLUDED_SUFFIXES:
+        if p.name not in excluded and p.suffix not in EXCLUDED_SUFFIXES and not PSI4_SCRATCH.match(p.name) and p.is_file():
             yield p
 
 
@@ -60,16 +62,22 @@ def needs_copy(src: Path, dst: Path) -> bool:
 
 
 def plan_copies(mirror: Path) -> tuple[list[tuple[Path, Path]], int, int]:
-    """(pairs to copy, files considered, bytes considered)."""
+    """(pairs to copy, files considered, bytes considered). A file that vanishes between the listing and its stat — a running job's
+    temporary file — is skipped and counted in `plan_copies.vanished` (13 Oct 2026: one such file ended the 03:30 backup with exit 1)."""
     pairs, n, total = [], 0, 0
+    plan_copies.vanished = 0
     files = [(p, p.relative_to(PLAN)) for rel, ex in SOURCES for p in iter_files(rel, ex)]
     files += [(PLAN / f, Path(f)) for f in SINGLE_FILES if (PLAN / f).is_file()]
     for src, rel in files:
+        try:
+            total += src.stat().st_size
+            dst = mirror / rel
+            if needs_copy(src, dst):
+                pairs.append((src, dst))
+        except FileNotFoundError:
+            plan_copies.vanished += 1
+            continue
         n += 1
-        total += src.stat().st_size
-        dst = mirror / rel
-        if needs_copy(src, dst):
-            pairs.append((src, dst))
     return pairs, n, total
 
 
@@ -88,8 +96,9 @@ def main(argv=None) -> int:
     a = ap.parse_args(argv)
     mirror = Path(a.mirror)
     pairs, n, total = plan_copies(mirror)
-    changed = sum(s.stat().st_size for s, _ in pairs)
-    print(f"{n} files, {total / 2**20:.0f} MB considered; {len(pairs)} to copy ({changed / 2**20:.1f} MB) into {mirror}")
+    changed = sum(s.stat().st_size for s, _ in pairs if s.exists())
+    print(f"{n} files, {total / 2**20:.0f} MB considered; {len(pairs)} to copy ({changed / 2**20:.1f} MB) into {mirror}"
+          + (f"; {plan_copies.vanished} vanished while listed (skipped)" if plan_copies.vanished else ""))
     if a.dry_run:
         for s, _ in pairs[:10]:
             print("  ", s.relative_to(PLAN))
@@ -98,7 +107,10 @@ def main(argv=None) -> int:
         raise SystemExit(f"{mirror} is not a git repository — clone the data repository there first (git clone <url> {mirror})")
     for src, dst in pairs:
         dst.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(src, dst)
+        try:
+            shutil.copy2(src, dst)
+        except FileNotFoundError:                                       # vanished since the plan; the next night copies what remains
+            print(f"vanished before its copy (skipped): {src.relative_to(PLAN)}")
     stamp = datetime.now().strftime("%Y-%m-%d %H:%M")
     line = f"- {stamp}: {len(pairs)} files copied ({changed / 2**20:.1f} MB); {n} files, {total / 2**20:.0f} MB in the mirror\n"
     with (mirror / "BACKUP_LOG.md").open("a", encoding="utf-8") as fh:
