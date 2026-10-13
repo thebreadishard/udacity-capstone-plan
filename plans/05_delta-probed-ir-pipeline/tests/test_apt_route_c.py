@@ -70,3 +70,19 @@ def test_refine_response_repairs_a_perturbed_response(mf):
     assert np.abs(apt_from_mo1(mf, bad) - P).max() > 1e-4
     assert info_bad["residual_after"] <= CPHF_BOUND and np.abs(apt_from_mo1(mf, fixed) - P).max() < 1e-6
     assert refine_response(hobj, resp.mo1, resp.h1ao, bound=0.0, max_rounds=2)[1]["rounds"] == 2
+
+
+def test_the_per_column_fallback_finishes_what_the_batched_rounds_leave(mf):
+    """TASKS 44 (13 Oct 2026): with no batched round allowed, the single-column GMRES fallback alone takes a response pushed 1e-4 off back
+    below the bound, column by column, to the APT of the refined response; without the fallback the same call stays above it."""
+    hobj = mf.Hessian()
+    resp = solve_response(hobj)
+    mo1, _ = refine_response(hobj, resp.mo1, resp.h1ao)
+    o, v = mf.mo_occ > 0, mf.mo_occ == 0
+    rng = np.random.default_rng(1)
+    bad = [m + np.einsum("pa,xai->xpi", mf.mo_coeff[:, v], 1e-4 * rng.standard_normal((3, int(v.sum()), int(o.sum())))) for m in resp.mo1]
+    stays, info0 = refine_response(hobj, bad, resp.h1ao, max_rounds=0, per_column=False)
+    fixed, info1 = refine_response(hobj, bad, resp.h1ao, max_rounds=0)
+    assert info0["residual_after"] > CPHF_BOUND and info0["columns_fallback"] == 0
+    assert info1["residual_after"] <= CPHF_BOUND and info1["rounds"] == 0 and info1["columns_fallback"] == 3 * mf.mol.natm
+    assert np.abs(apt_from_mo1(mf, fixed) - apt_from_mo1(mf, mo1)).max() < 1e-6

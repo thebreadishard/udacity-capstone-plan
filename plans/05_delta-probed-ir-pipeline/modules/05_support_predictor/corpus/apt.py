@@ -59,15 +59,19 @@ def hessian_with_response(hobj, response=None):
     return hobj.de, mo1
 
 
-def refine_response(hobj, mo1, h1ao, bound=CPHF_BOUND, max_rounds=3, tol=1e-9):
+def refine_response(hobj, mo1, h1ao, bound=CPHF_BOUND, max_rounds=3, tol=1e-9, per_column=True):
     """The Hessian's CPHF response checked against the equations pyscf's `scf/cphf.py` `solve_withs1` solves, and corrected where it is off.
 
     The system, per right-hand side in the MO basis (x = C^T S mo1): x_ai + e_ai·fx(x)_ai = −e_ai (h1 − s1·e_i)_ai on the virtual rows, with
     e_ai = 1/(e_a − e_i), fx the induced potential of `hessian.rhf.gen_vind` (the operator `solve_mo1` uses), and x_ij = −s1_ij/2 on the
     occupied rows, which are set here as pyscf sets them. The residual of all 3N right-hand sides is formed in one batched `fx` call; while its largest element
     exceeds `bound` (at most `max_rounds` times), the correction equation (I + A) δ = r is solved by the same multi-root `lib.krylov` and x += δ.
-    Returns (mo1 refined, in pyscf's layout, and info: residual_before, residual_after, rounds, seconds). The caller decides what a residual
-    above `bound` means; nothing is raised. Closed shell only, all atoms (the APT needs every column)."""
+    **Per-column fallback** (13 Oct 2026, `per_column`): every column still above `bound` after the batched rounds is solved alone by scipy GMRES
+    (rtol 1e-10, ≤ 300 iterations, restart 60) from the refined solution. The batched solver can stall where a single right-hand side converges:
+    B_127dd8c4ed stayed at 2.1e-6 through five batched rounds, and single-column GMRES reached 1.2e-11 (`probes/results_m1/
+    apt_refine_install_2026-10-12/diagnose_floor.log`). A bound ≤ 0 (a measurement of the rounds alone) skips it.
+    Returns (mo1 refined, in pyscf's layout, and info: residual_before, residual_after, rounds, columns_fallback, seconds). The caller decides
+    what a residual above `bound` means; nothing is raised. Closed shell only, all atoms (the APT needs every column)."""
     from pyscf import lib
     from pyscf.hessian import rhf as rhf_hess
     t0 = time.time()
@@ -117,8 +121,20 @@ def refine_response(hobj, mo1, h1ao, bound=CPHF_BOUND, max_rounds=3, tol=1e-9):
         r = residual(x)
         after = float(np.abs(r).max())
         rounds += 1
+    n_fallback = 0
+    if per_column and bound > 0 and after > bound:
+        from scipy.sparse.linalg import LinearOperator, gmres
+        dim = nmo * nocc
+        op = LinearOperator((dim, dim), matvec=lambda y: y + a_vo(y.reshape(1, nmo, nocc)).reshape(-1), dtype=float)
+        for j in np.flatnonzero(np.abs(r.reshape(len(r), -1)).max(axis=1) > bound):
+            d, _ = gmres(op, r[j].reshape(-1), rtol=1e-10, atol=0.0, maxiter=300, restart=60)
+            x[j] = x[j] + d.reshape(nmo, nocc)
+            n_fallback += 1
+        r = residual(x)
+        after = float(np.abs(r).max())
     mo1_refined = [np.einsum("pq,xqi->xpi", C, x[3 * A:3 * A + 3]) for A in range(mol.natm)]
-    return mo1_refined, {"residual_before": before, "residual_after": after, "rounds": rounds, "seconds": round(time.time() - t0, 1)}
+    return mo1_refined, {"residual_before": before, "residual_after": after, "rounds": rounds, "columns_fallback": n_fallback,
+                         "seconds": round(time.time() - t0, 1)}
 
 
 def apt_from_mo1(mf, mo1s):

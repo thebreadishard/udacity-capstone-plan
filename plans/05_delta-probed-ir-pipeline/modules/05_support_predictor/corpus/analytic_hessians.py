@@ -12,7 +12,8 @@ Usage: python analytic_hessians.py <molecule dir> [more dirs...] [--threads 16] 
        molecule's two Hessians are written, and the exit status is 3, so the lane logs the molecule as FAILED. --no-apt turns it off.
        Residual-checked response (12 Oct 2026, TASKS 44 (a)): pyscf's Krylov CPHF stops early for DFT (pyscf #2702), which the Hessian does not
        feel and the APT does; the APT is contracted from the response after `refine_response` (apt.py), route "hessian_response_refined", and the
-       file carries cphf_residual_before/after and cphf_refine_rounds. A residual above apt.CPHF_BOUND fails the APT as a sum rule does.
+       file carries cphf_residual_before/after, cphf_refine_rounds and cphf_fallback_columns (13 Oct 2026: columns still above the bound after
+       the batched rounds, solved one by one). A residual above apt.CPHF_BOUND fails the APT as a sum rule does.
        The Hessian keeps pyscf's own response.
        Provenance (11 Oct 2026, TASKS 47): every file written carries `software` — the pyscf, numpy and Python versions, pyscf's source
        commit when it is imported from a git checkout, and the sha256 of this script and apt.py — as a JSON string in the npz files and as a
@@ -128,10 +129,11 @@ def write_apt(d, hobj, response, Hp, masses, grid, stamp):
     freq, km = intensities(P, Hp, masses)
     fails = [f"APT sum rule {sr:.1e} > {SUM_RULE_LIMIT:g}"] if sr > SUM_RULE_LIMIT else []
     if info["residual_after"] > CPHF_BOUND:
-        fails.append(f"CPHF residual {info['residual_after']:.1e} > {CPHF_BOUND:g} after {info['rounds']} rounds")
+        fails.append(f"CPHF residual {info['residual_after']:.1e} > {CPHF_BOUND:g} after {info['rounds']} rounds and "
+                     f"{info.get('columns_fallback', 0)} single-column solves")
     np.savez_compressed(f"{d}/{APT_FILE}", apt=P, sum_rule_max=sr, fd_max_diff=float("nan"), freq_cm=freq, intensity_km_mol=km, xc="b3lyp",
                         basis="6-31g*", grid=np.array(grid), passed=not fails, route="hessian_response_refined",
-                        cphf_residual_before=info["residual_before"], cphf_residual_after=info["residual_after"], cphf_refine_rounds=info["rounds"],
+                        cphf_residual_before=info["residual_before"], cphf_residual_after=info["residual_after"], cphf_refine_rounds=info["rounds"], cphf_fallback_columns=info.get("columns_fallback", 0),
                         seconds=round(time.time() - t0, 3), software=json.dumps(stamp, sort_keys=True))
     if fails:
         raise ValueError("; ".join(fails))
