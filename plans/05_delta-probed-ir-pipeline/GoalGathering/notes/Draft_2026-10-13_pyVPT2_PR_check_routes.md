@@ -1,4 +1,4 @@
-# Draft — pyVPT2 PR: the FD: HESSIAN consistency checks compare independent routes (13 Oct 2026; not posted)
+# pyVPT2 PR: the FD: HESSIAN consistency checks compare independent routes (drafted 13 Oct 2026; **posted as philipmnel/pyvpt2#59 on the user's word, 'Ja, push en open de PR maar'**)
 
 *Branch `check-routes-before-averaging` in `~/pyvpt2-fork` (WSL), one commit 7cba69c on upstream main 2eae571; not pushed. Posting needs the
 user's word (GitHub). Replaces nothing: PR #58 was closed by us on 30 Sep; issue #57 stays open (this fixes the check, not the noise).*
