@@ -72,7 +72,8 @@ check_pool3() {   # pool 3's two runners, each alive until remote_launch's <name
   for r in a b; do
     if [ $r = a ]; then al=$aa; ex=$ae; else al=$ba; ex=$be; fi
     [ "$al" = "0" ] && [ "$ex" = "0" ] && { echo "ANOMALY $(t): pool 3 runner $r gone without its exit file — $np"; exit 1; }
-    [ "$ex" = "1" ] && new_marker "pool 3 runner $r finished — $np" && exit 2
+    # the marker is the stable text only: with the counts in it, every change of the other runner's count re-reported it (13 Oct 23:24)
+    [ "$ex" = "1" ] && new_marker "pool 3 runner $r finished" && { echo "  counts: $np"; exit 2; }
   done
   new_marker "pool3 failed count $((af + bf))" > /dev/null && [ "$((af + bf))" != "0" ] && { echo "MARKER $(t): pool 3 a/b done $ad/$bd failed $af/$bf"; exit 2; }
   return 0
