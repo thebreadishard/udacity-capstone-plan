@@ -34,8 +34,10 @@ jobs:
       # 30 Sep 2026: the module tests (test_pp_*, test_m03_origin_columns) import torch and pandas through the modules they test;
       # without them collection failed and CI stayed red from 26 Sep unnoticed. CPU torch keeps the install small.
       # scipy for test_m03_origin_columns (module 03's tables); checked in a clean venv built like this job: 109 passed, 7 skipped
-      - name: Test dependencies of the module tests (pandas, scipy, CPU torch)
-        run: pip install pandas scipy scikit-learn && pip install torch --index-url https://download.pytorch.org/whl/cpu
+      # 13 Oct 2026: geomeTRIC (internal coordinates, Wilson B) — four test files skipped their geomeTRIC parts here, and one test without its
+      # importorskip kept CI red for eight hours; the laptop's version, so CI runs what the laptop runs
+      - name: Test dependencies of the module tests (pandas, scipy, CPU torch, geomeTRIC)
+        run: pip install pandas scipy scikit-learn geometric==1.1.1 && pip install torch --index-url https://download.pytorch.org/whl/cpu
       - name: Ruff on tier-2 code
         run: ruff check src tests
       - name: Syntax check on the probes (tier 1)
