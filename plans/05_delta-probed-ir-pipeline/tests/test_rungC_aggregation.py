@@ -1,5 +1,6 @@
 """Rung C, dated amendment of 28 September 2026: neighbour-count normalisation of the interaction blocks (`aggregation="mean"`), recorded in the
 checkpoint and refused on mismatch — the guard against a body setting travelling unexamined (the E8 lesson of 27 Sep). Synthetic clusters only."""
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -15,6 +16,12 @@ import rungC_pretrain as PT  # noqa: E402
 import rungC_train as RT  # noqa: E402
 
 torch.set_num_threads(1)
+
+# the child writes and the test reads UTF-8 whatever the console code page (13 Oct 2026: cp1252 broke these on Windows)
+def run_help(script):
+    """`script --help` with the output written and read as UTF-8."""
+    return subprocess.run([sys.executable, str(script), "--help"], capture_output=True, encoding="utf-8",
+                          env={**os.environ, "PYTHONIOENCODING": "utf-8"}, timeout=120, check=False)
 
 
 def _cluster(n_atoms: int, seed: int, spread_bohr: float = 3.0) -> dict:
@@ -73,6 +80,6 @@ def test_invalid_aggregation_is_refused():
 
 def test_cli_switch_is_wired_in_both_drivers():
     for script in ("rungC_train.py", "rungC_pretrain.py"):
-        r = subprocess.run([sys.executable, str(M05 / script), "--help"], capture_output=True, text=True, timeout=120, check=False)
+        r = run_help(M05 / script)
         assert r.returncode == 0, (script, r.stderr)
         assert "--aggregation {sum,mean}" in r.stdout, script

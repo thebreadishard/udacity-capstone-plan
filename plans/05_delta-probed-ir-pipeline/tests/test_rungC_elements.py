@@ -1,6 +1,7 @@
 """Rung C, 28 September 2026: element embeddings the pretraining never trained (Hessian QM9 has no S, Cl) are reset to the trained mean at
 fine-tune time, a checkpoint without an element list is refused unless the elements are named, and the design check can probe the body as the
 fine-tune sees it. Synthetic checkpoints only."""
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -17,6 +18,12 @@ import rungC_train as RT  # noqa: E402
 
 torch.set_num_threads(1)
 QM9 = [1, 6, 7, 8, 9]
+
+# the child writes and the test reads UTF-8 whatever the console code page (13 Oct 2026: cp1252 broke these on Windows)
+def run_help(script):
+    """`script --help` with the output written and read as UTF-8."""
+    return subprocess.run([sys.executable, str(script), "--help"], capture_output=True, encoding="utf-8",
+                          env={**os.environ, "PYTHONIOENCODING": "utf-8"}, timeout=120, check=False)
 
 
 def _checkpoint(tmp_path, elements):
@@ -58,7 +65,7 @@ def test_design_check_probes_the_body_as_the_finetune_sees_it(tmp_path):
 
 
 def test_cli_switches_are_wired():
-    r = subprocess.run([sys.executable, str(M05 / "rungC_train.py"), "--help"], capture_output=True, text=True, timeout=120, check=False)
+    r = run_help(M05 / "rungC_train.py")
     assert r.returncode == 0 and "--pretrained-elements" in r.stdout, r.stderr
-    r = subprocess.run([sys.executable, str(M05 / "design_check.py"), "--help"], capture_output=True, text=True, timeout=120, check=False)
+    r = run_help(M05 / "design_check.py")
     assert r.returncode == 0 and "--as-finetune" in r.stdout and "--pretrained-elements" in r.stdout, r.stderr

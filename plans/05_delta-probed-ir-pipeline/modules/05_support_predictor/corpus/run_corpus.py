@@ -169,7 +169,7 @@ def deck_for(row, base, overrides):
     if row.get("layer") != "P3c":
         return base
     if "deck" not in _CATION_DECK:
-        d = json.load(open(CATION_DECK)); d.update(overrides)
+        d = json.load(open(CATION_DECK, encoding="utf-8")); d.update(overrides)
         _CATION_DECK.update(deck=d, hash=hashlib.sha256(CATION_DECK.read_bytes()).hexdigest()[:12])
     return _CATION_DECK["deck"], _CATION_DECK["hash"]
 
@@ -233,7 +233,7 @@ def main():
     ap.add_argument("--restart-from", default=None, help="restart_jobs_<date>.json from saddle_restarts.py: run <id>_r+ and <id>_r- from the twisted geometries; manifest untouched (2026-09-24)")
     ap.add_argument("--ids", default=None, help="comma-separated manifest ids to (re)run regardless of status; the result folder is replaced (2026-09-15: benzene grid rerun with per-mode frequencies)")
     a = ap.parse_args()
-    deck = json.load(open(DECK)); deck_hash = hashlib.sha256(DECK.read_bytes()).hexdigest()[:12]
+    deck = json.load(open(DECK, encoding="utf-8")); deck_hash = hashlib.sha256(DECK.read_bytes()).hexdigest()[:12]
     machine = socket.gethostname()
     overrides = {k: v for k, v in (("threads", a.threads), ("memory_gb", a.memory_gb)) if v is not None}
     deck.update(overrides)  # the in-memory job deck; DECK on disk and deck_hash are untouched
@@ -302,7 +302,7 @@ def main():
                 if guard:
                     log(f"GUARD {guard}: {r['id']} terminated after {(datetime.now() - t0).total_seconds():.0f} s (no file change for {a.stall_min} min or beyond {a.worker_max_hours} h)")
                 if (out_tmp / "result.json").exists():
-                    res = json.load(open(out_tmp / "result.json")); status = res.get("status", "failed")
+                    res = json.load(open(out_tmp / "result.json", encoding="utf-8")); status = res.get("status", "failed")
             except Exception as e:  # noqa: BLE001 — the corpus runner records any failure of one molecule and continues with the next
                 (out_tmp / "runner_error.txt").write_text(repr(e))
             shutil.rmtree(out_final, ignore_errors=True); os.replace(out_tmp, out_final)
