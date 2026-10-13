@@ -75,7 +75,9 @@ Whenever the machine is busy or the user is away, the next item is the cheapest 
 Learning on the corpus (T1) 70 → 70: nothing read; chain 40 (≈ 16 Oct) and 35h still run. CC transfer (T3) 60 → 55: the network's CC-level
 out-of-plane diagonal has no skill on the six anchors (slopes ≤ 0.19, `oop_block_2026-10-13`, exploratory) and the λ = 1 fine-tune costs
 mode shapes three of three (12 Oct 22:2x); held up by anchor set three (quinoxaline in, seven to come) and arm M, a three-number shift model at
-11.5 vs the network's 17.8 cm⁻¹ (exploratory; R-C registered before any set-three read). Hold-out (b) 50 → 50: chain 40 unread.
+11.5 vs the network's 17.8 cm⁻¹ out-of-plane ω rms (means over the six anchors of the 'ω rms oop' rows of
+`probes/results_m1/oop_block_2026-10-13/oop_block_read.md`; better on five, worse on pyridine 15.5 vs 11.0; exploratory, R-C registered
+before any set-three read). Hold-out (b) 50 → 50: chain 40 unread.
 Affordability 60 → 60: S1 runs on a CPX62 for a few euros; the €2,750 question of the shape test waits on S1's G and B; the labels lanes now end
 ≈ 28 Oct (time, not money). Licensed pipeline 87 → 88: the APT stall is fixed in our code (both guard failures pass, 9.4e-7 and 8.8e-7), the
 parity defect was found by our own read and proven before it touched a number, and a relaunch now costs no run (test 18:48); offset by the
