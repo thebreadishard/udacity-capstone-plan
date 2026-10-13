@@ -26,6 +26,7 @@ import anchor_registry as AR  # noqa: E402
 import e7_rungB_reread_analytic as RR  # noqa: E402
 import e7_t2_posthoc as PH  # noqa: E402
 import e7_t2_sqm as T2  # noqa: E402
+import mode_blocks as MB  # noqa: E402
 import model_registry as MR  # noqa: E402
 import rungC_intensities as RI  # noqa: E402
 from learning_curve_layerA import AMU2AU, HARTREE2CM, normal_modes  # noqa: E402
@@ -213,6 +214,12 @@ def main() -> int:
     ap.add_argument("--skip-folds", action="store_true", help="with --predict: no leave-one-anchor-out read, only the fit on all anchors")
     ap.add_argument("--apt", action="append", default=[], help="TASKS 32 (8 Oct 2026): <corpus id>=<apt_ccsd_t.npz> — the held-out anchor's "
                     "intensity read-out with its CC APT")
+    ap.add_argument("--oop-couplings-low", action="store_true", help="TASKS 51 (13 Oct 2026): read each head-tuned fold also with the couplings "
+                    "between out-of-plane modes from the low level (mode_blocks.oop_couplings_from_low); adds the columns network_head_ooplow "
+                    "(and network_head_l2_ooplow)")
+    ap.add_argument("--oop-diagonal-model", action="store_true", help="TASKS 51 (13 Oct 2026), R-A's fail branch: per fold, fit the out-of-plane "
+                    "shift model (mode_blocks.fit_oop_shift) on the training anchors; adds oop_model_only (low level + the model's out-of-plane "
+                    "diagonal) and network_head_oopmodel (and network_head_l2_oopmodel): the network with that out-of-plane block")
     ap.add_argument("--allow-any-model", action="store_true", help="decision 55 (3 Oct 2026): use a model whose registry status is not 'carried' — name it in the record")
     ap.add_argument("--allow-any-anchor", action="store_true", help="7 Oct 2026: use an anchor file that is not its molecule's carried entry in the anchor "
                     "registry (modules/ANCHORS.md) — named in the record")
@@ -240,8 +247,39 @@ def main() -> int:
         tensors[i] = molecule_tensors(i, loaded_molecule(d, mols[i]), mols[i], d, cfg, Path(a.out_prefix).parent / "ls_targets")
     ids = sorted(anchors)
     apts = {i: load_cc_apt(Path(p), mdir / i) for i, p in (s.split("=", 1) for s in a.apt)}
+    geoms = {i: json.load(open(mdir / i / "geometry.json", encoding="utf-8")) for i in ids}
+    coords = {i: np.asarray(geoms[i]["coords_bohr"], float) for i in ids}
+
+    def ooplow(dF_of):
+        """TASKS 51: the arm of R-A's fail branch on a predictor (cached per molecule, as `predictor` is)."""
+        cache = {}
+
+        def f(i):
+            if i not in cache:
+                cache[i] = MB.oop_couplings_from_low_internal(dF_of(i), mols[i]["B"], mols[i]["H_low"], mols[i]["masses"], coords[i])
+            return cache[i]
+        return f
+
+    def oop_coef(tr):
+        """TASKS 51: (a, b, c) of the out-of-plane shift model on the training anchors' truth (dH_true is the CC Hessian minus the low level)."""
+        rows = []
+        for i in tr:
+            Vo, fo, h = MB.oop_modes(mols[i]["H_low"], mols[i]["masses"], coords[i], geoms[i]["symbols"])
+            rows.append((fo, h, MB.oop_shifts(mols[i]["dH_true"], Vo, fo, mols[i]["masses"])))
+        return MB.fit_oop_shift(rows)
+
+    def oopmodel(dF_of, coef):
+        cache = {}
+
+        def f(i):
+            if i not in cache:
+                cache[i] = MB.internal(dF_of(i), mols[i]["B"], lambda dH: MB.oop_block_from_model(dH, mols[i]["H_low"], mols[i]["masses"], coords[i],
+                                                                                               geoms[i]["symbols"], coef))
+            return cache[i]
+        return f
+
     res = {"date": datetime.now().strftime("%Y-%m-%d %H:%M"), "model": a.model, "model_record": {k: ck[k] for k in ("pattern", "aux_mode", "aux_target", "n", "seed")},
-           "anchors": anchors, "anchor_registry": {i: (dict(level=e["level"], tier=e["tier"], sha16=e["sha16"]) if e else "not carried (--allow-any-anchor)") for i, e in found.items()}, "tier": tier, "low_level": lows, "epochs": a.epochs, "lr": a.lr, "aux_weight": a.aux_weight, "head_l2": a.head_l2, "lora_rank": a.lora_rank, "folds": {}}
+           "anchors": anchors, "anchor_registry": {i: (dict(level=e["level"], tier=e["tier"], sha16=e["sha16"]) if e else "not carried (--allow-any-anchor)") for i, e in found.items()}, "tier": tier, "low_level": lows, "epochs": a.epochs, "lr": a.lr, "aux_weight": a.aux_weight, "head_l2": a.head_l2, "lora_rank": a.lora_rank, "oop_couplings_low": a.oop_couplings_low, "oop_diagonal_model": a.oop_diagonal_model, "folds": {}}
     keep = ("coupling_ratio", "coupling_rms", "coupling_zero_rms", "corrected_freq_rms", "corrected_freq_rms_zero_rule", "dH_residual_ratio", "diag_rms")
 
     def read(held, tr, dF_of):
@@ -257,12 +295,20 @@ def main() -> int:
         fold = {"train": tr}
         fold["zero_rule"] = read(held, tr, lambda i: np.zeros_like(mols[i]["F_low"]))
         fold["alpha_scaling"] = read(held, tr, lambda i, tr=tr: alpha_scaling_baseline(mols, tensors, tr, i))
+        if a.oop_diagonal_model:
+            coef = oop_coef(tr)
+            fold["oop_model_coef"] = [float(c) for c in coef]
+            fold["oop_model_only"] = read(held, tr, oopmodel(lambda i: np.zeros_like(mols[i]["F_low"]), coef))
         for mode in ("none", "alpha", "head") + (("head_l2",) if a.head_l2 > 0 else ()) + (("lora",) if a.lora_rank > 0 else ()):
             model = copy.deepcopy(model0)
             tag = f"[{held} {mode}]"
             hist = finetune(model, tensors, tr, a.epochs, a.lr, mode, a.aux_weight, log=lambda s, tag=tag: print(f"  {tag} {s}", flush=True), head_l2=a.head_l2,
                             lora_rank=a.lora_rank)
             fold[f"network_{mode}"] = {**read(held, tr, predictor(model, tensors, mols)), "final_loss": (hist[-1] if hist else None)}
+            if a.oop_couplings_low and mode in ("head", "head_l2"):
+                fold[f"network_{mode}_ooplow"] = read(held, tr, ooplow(predictor(model, tensors, mols)))
+            if a.oop_diagonal_model and mode in ("head", "head_l2"):
+                fold[f"network_{mode}_oopmodel"] = read(held, tr, oopmodel(predictor(model, tensors, mols), coef))
             if a.save_fold_predictions and mode == fit_mode(a.head_l2):
                 fp = save_prediction(Path(f"{a.out_prefix}_fold_{held}.npz"), predict_cartesian(model, tensors[held]), mols[held]["H_low"],
                                      mols[held]["low_file"], mode, tr, a.model, hist[-1] if hist else None, held=held)
@@ -298,10 +344,18 @@ def main() -> int:
     lines = [f"# T3 — leave-one-anchor-out transfer to CCSD(T)/cc-pVDZ ({res['date']})", "", f"Model `{Path(a.model).name}` ({res['model_record']}); fine-tune {a.epochs} epochs at lr {a.lr:g}, "
              f"aux weight {a.aux_weight:g}; low levels {lows}.", "",
              "| held-out anchor | read-out | zero rule | α scaling (3 anchors) | network as is | network, α tuned | network, head tuned |" + (f" head tuned, L2 {a.head_l2:g} |" if a.head_l2 > 0 else "")
-             + (f" α + rank-{a.lora_rank} adapter |" if a.lora_rank > 0 else ""),
-             "|---|---|---|---|---|---|---|" + ("---|" if a.head_l2 > 0 else "") + ("---|" if a.lora_rank > 0 else "")]
+             + (f" α + rank-{a.lora_rank} adapter |" if a.lora_rank > 0 else "")
+             + (" head tuned, oop couplings from the low level |" + (f" head tuned L2 {a.head_l2:g}, oop couplings from the low level |" if a.head_l2 > 0 else "")
+                if a.oop_couplings_low else "")
+             + (" low level + oop model |  head tuned, oop block from the model |" + (f" head tuned L2 {a.head_l2:g}, oop block from the model |" if a.head_l2 > 0 else "")
+                if a.oop_diagonal_model else ""),
+             "|---|---|---|---|---|---|---|" + ("---|" if a.head_l2 > 0 else "") + ("---|" if a.lora_rank > 0 else "")
+             + (("---|" + ("---|" if a.head_l2 > 0 else "")) if a.oop_couplings_low else "")
+             + (("---|---|" + ("---|" if a.head_l2 > 0 else "")) if a.oop_diagonal_model else "")]
     for held, f in res["folds"].items():
         cols = ("zero_rule", "alpha_scaling", "network_none", "network_alpha", "network_head") + (("network_head_l2",) if a.head_l2 > 0 else ()) + (("network_lora",) if a.lora_rank > 0 else ())
+        cols += (("network_head_ooplow",) + (("network_head_l2_ooplow",) if a.head_l2 > 0 else ())) if a.oop_couplings_low else ()
+        cols += (("oop_model_only", "network_head_oopmodel") + (("network_head_l2_oopmodel",) if a.head_l2 > 0 else ())) if a.oop_diagonal_model else ()
         for key, label in (("coupling_ratio", "ring-coupling ratio"), ("corrected_freq_rms", "ω rms, all modes (cm⁻¹)"), ("dH_residual_ratio", "ΔH residual")):
             lines.append(f"| {held} | {label} | " + " | ".join(f"{f[c][key]:.2f}" for c in cols) + " |")
         for fam in ("ring-ip", "CH-stretch", "CH-oop", "other"):

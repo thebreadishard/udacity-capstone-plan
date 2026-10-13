@@ -153,6 +153,78 @@ The stop rule's threshold for wave 1 is therefore 140 h.
 `results/quinoxaline_ccpvdz_inline_stopped/`. Wave 1b (`/root/dpir/wave1b.txt`: quinoxaline, azulene, acenaphthylene) runs in the energy mode.
 Lost: ≈ 6 h of wall time on the first anchor; saved: ≈ 5 h on it and more on the larger two.
 
+## Amendment (13 Oct 07:3x, before any anchor of set three is read): R-C as a tool, two arms for the final read
+
+*On the user's word (13 Oct 07:1x: 'begin met 1 en 2'): (2) the R-C reading as a tool, (1) the arm for R-A's fail branch prepared before the read.*
+
+**R-C, now code.** `m05/mode_blocks.py`:
+- the pair is `oop_pair`: the out-of-plane mode with the largest truth intensity, and its nearest out-of-plane neighbour of the same symmetry
+  species (characters from `probes/e8_symmetry.point_group_ops`);
+- the angle is `pair_rotation`: the rotation that diagonalises the test Hessian's 2 × 2 block on the truth's two modes, signed on the truth's
+  axes; beside it κ, the coupling in cm⁻¹ (tan 2θ = 2κ/Δω), and the share of the test's two matched modes inside the pair's plane.
+
+A first rule ('the two strongest out-of-plane modes') picked fluorobenzene's 769/902 (gap 142 cm⁻¹, barely turned) instead of the 670/769
+pair the diagnosis named. It was replaced before any set-three number. Mixing scales as κ/gap and only one species mixes, so the partner is
+chosen by species and gap, from the truth alone.
+
+**The baseline, exploratory** (`probes/oop_block_read.py` on the saved λ = 1 folds of 10 Oct → `probes/results_m1/oop_block_2026-10-13/`):
+
+| anchor | pair (cm⁻¹) | θ zero rule | θ λ = 1 (seeds) | κ λ = 1 / zero (cm⁻¹) | captured |
+|---|---|---|---|---|---|
+| pyridine | 717.7 / 757.8 | −15.7° | −19.5 / −18.9 / −21.1° | +15.4 / +11.5 | 0.999 |
+| fluorobenzene | 669.7 / 768.6 | −5.5° | −9.1 / −8.7 / −8.8° | +10.4 / +6.7 | 0.995 |
+| benzonitrile | 682.9 / 770.9 | −10.7° | −15.4 / −14.0 / −14.0° | +19.1 / +13.3 | 0.984 |
+
+On all three, λ = 1 turns the pair further in B3LYP's own direction: the network adds 4–6 cm⁻¹ of coupling. Pyridine reproduces the 12 Oct
+diagnosis (≈ 16° → 19–20°).
+
+**What the baseline says about the out-of-plane block** (same files; exploratory):
+- **The couplings carry no position.** Remove every coupling that involves an out-of-plane mode:
+  - the out-of-plane ω move by ≤ 0.8 cm⁻¹;
+  - the matched heights return to the zero rule's: pyridine 0.310 → 0.262, fluorobenzene 0.172 → 0.107, benzonitrile 0.443 → 0.258.
+- **The network's out-of-plane diagonal does not follow the truth.**
+  - Measured as first-order shifts ΔH_kk/2ω_k per out-of-plane mode of B3LYP, predicted against true: slopes 0.03–0.19, benzonitrile −0.34 to
+    −0.50; correlations −0.49 to 0.32.
+  - The truth lowers most out-of-plane modes by 10–50 cm⁻¹. The prediction moves them by −11 to +5, apart from benzonitrile's lowest, which it
+    raises.
+- **The prediction breaks σ_h.** It couples in-plane and out-of-plane modes by up to 2.4 cm⁻¹, where the truth has ≤ 0.19. When the model
+  below moved an out-of-plane mode next to an in-plane one, they mixed (benzonitrile's heights went to 0.64). Both arms therefore take every
+  coupling that involves an out-of-plane mode from the low level, where σ_h makes the in-plane/out-of-plane ones zero. TASKS 52.
+- **A three-number model of the out-of-plane shift**, a + b·ω/1000 + c·h (h the mode's mass-weighted share on hydrogen), fitted
+  leave-one-anchor-out on the other five anchors' truth:
+  - out-of-plane ω rms 13.3 / 9.8 / 15.5 / 10.3 / 7.0 / 13.5 cm⁻¹ against λ = 1's 19.6 / 19.7 / 11.0 / 10.1 / 24.6 / 21.9 (benzene,
+    naphthalene, pyridine, fluorobenzene, benzonitrile, anthracene);
+  - means 11.5 against 17.8; worse on pyridine.
+  - Five forms were tried and this one is fixed here, so these numbers are not evidence for it.
+
+**Two arms in the final read.**
+- In the code: `m05/rungC_cc_transfer.py --oop-couplings-low --oop-diagonal-model`, with the columns `network_head_l2_ooplow`,
+  `oop_model_only` and `network_head_l2_oopmodel` (and the λ = 0 twins).
+- The model's three numbers are fitted per fold on the training anchors only.
+- Tests: `tests/test_mode_blocks.py` and `tests/test_rungC_cc_transfer.py`; smoke on pyridine, fluorobenzene and benzonitrile with 2 epochs.
+- The arms are judged **only on the new anchors' folds** of the final all-anchor run, each new anchor held out. The six original anchors' values
+  are reported, not judged, because they shaped the design.
+- 'CH-oop' and 'other' are the registered read's families. The intensity read uses each new anchor's CC APT, field route.
+
+**Arm M** — the out-of-plane block from the model, the network's in-plane block. This is R-A's fail branch, prepared, and it is read whatever
+R-A says. Means over the new carried anchors and the three seeds:
+- **adopt** when all three hold:
+  - CH-oop ω rms is ≥ 20 % below λ = 1's;
+  - 'other' is ≤ 10 % above λ = 1's;
+  - the matched intensity rel. rms is at or below λ = 1's on at least two thirds of the new anchors.
+
+  The standard's out-of-plane block then becomes the model's, and the certificate says so.
+- **fails out of sample** when CH-oop is < 5 % below λ = 1's;
+- **between:** noted.
+
+If R-B passes (the network's own shapes beat B3LYP's), arm M is not adopted as it stands, because it would throw those shapes away. A variant
+with the model's diagonal and the network's couplings is registered then.
+
+**Arm C** — the couplings that involve an out-of-plane mode come from the low level. This is R-B's fallback, read only when R-B fails and arm M
+is not adopted. It is adopted when:
+- its matched intensity rel. rms is below λ = 1's on at least two thirds of the new anchors; and
+- its CH-oop ω rms is within 1.0 cm⁻¹ of λ = 1's.
+
 ## Outcome
 
 *(appended after the reads)*

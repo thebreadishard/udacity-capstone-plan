@@ -192,3 +192,17 @@ def test_an_exclude_file_s_comment_lines_are_not_ids(tmp_path):
     f = tmp_path / "ex.txt"
     f.write_text("# header\nb\n", encoding="utf-8")
     assert RT.exclude_pool_ids(["a", "b"], str(f)) == (["a"], ["b"])
+
+
+def test_oop_couplings_low_switch_adds_its_columns():
+    """TASKS 51 (13 Oct 2026): the arm of R-A's fail branch is a column of the same read, for both head-tuned modes."""
+    text = (M05 / "rungC_cc_transfer.py").read_text(encoding="utf-8")
+    assert 'add_argument("--oop-couplings-low"' in text and 'f"network_{mode}_ooplow"' in text
+    assert '"network_head_ooplow"' in text and '"network_head_l2_ooplow"' in text and 'mode in ("head", "head_l2")' in text
+
+
+def test_oop_diagonal_model_switch_fits_per_fold_on_the_training_anchors_only():
+    """TASKS 51: the model's coefficients come from `tr` (never the held-out anchor) and its columns sit in the same read."""
+    text = (M05 / "rungC_cc_transfer.py").read_text(encoding="utf-8")
+    assert 'add_argument("--oop-diagonal-model"' in text and "coef = oop_coef(tr)" in text
+    assert '"oop_model_only"' in text and 'f"network_{mode}_oopmodel"' in text and '"network_head_l2_oopmodel"' in text
