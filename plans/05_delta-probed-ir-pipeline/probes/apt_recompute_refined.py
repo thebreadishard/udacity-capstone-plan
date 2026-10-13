@@ -36,8 +36,10 @@ def recompute(src, out_dir, grid=(99, 590), stamp=None):
     t0 = time.time()
     g = json.load(open(os.path.join(src, "geometry.json")))
     old = np.load(os.path.join(src, AH.APT_FILE))
-    if str(old["route"]) != "hessian_response":
-        raise ValueError(f"{src}: the APT file's route is {old['route']!s}, not the unrefined route C")
+    failed_refined = str(old["route"]) == "hessian_response_refined" and not bool(old["passed"])   # 13 Oct 2026: the guard's failures
+    if str(old["route"]) != "hessian_response" and not failed_refined:                                   # (B_1194d7a42a, B_127dd8c4ed) redo
+        raise ValueError(f"{src}: the APT file's route is {old['route']!s} (passed {bool(old['passed'])}): neither unrefined route C nor a failed "
+                         "refined one")
     hz = np.load(os.path.join(src, "hessian_b3lyp_analytic.npz"))
     if tuple(hz["grid"]) != tuple(grid) or int(hz["spin"]) != 0:
         raise ValueError(f"{src}: Hessian grid {tuple(hz['grid'])} / spin {int(hz['spin'])} is not the labels route's closed-shell setting")

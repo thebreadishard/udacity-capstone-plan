@@ -7,3 +7,4 @@ C40	probes/results_m1/chain40.log	^=== \(C40\) 	^=== \(C40\) (run done|RUN FAILE
 C35h	probes/results_m1/chain35h.log	^=== \(C35h\) 	^=== \(C35h\) (run done|RUN FAILED)	[c]hain_runner.py probes/runs/chain35h
 APTb	probes/results_m1/apt_refine_install_2026-10-12/recompute/lanes.log	^=== \(APTb\) |FAILED	^=== \(APTb\) all lanes done	[a]pt_recompute_lanes
 S1	probes/results_m1/s1_anharmonic_2026-10-13.log	^=== \(S1\) 	^=== \(S1\) (all settings done|.*STOPPED|.*FAILED)	[s]1_after_fivering|[s]1_anharmonic_level
+APTb2	probes/results_m1/apt_refine_install_2026-10-12/recompute/lanes_half2.log	^=== \(APTb\) |FAILED	^=== \(APTb\) all lanes done	[a]pt_recompute_refined.py /home/thebreadishard/apt_recompute/fetched_half2|[f]etched_half2

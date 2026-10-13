@@ -1,0 +1,19 @@
+{"step": "response", "seconds": 5746}
+{"rounds": 1, "residual_after": 1.719311597865418e-06, "seconds": 1982.1}
+{"rounds": 2, "residual_after": 2.1289097275889457e-06, "seconds": 2793.7}
+{"rounds": 3, "residual_after": 2.128910461321465e-06, "seconds": 3578.2}
+{"rounds": 5, "residual_after": 2.128910327234279e-06, "seconds": 5700.9}
+{"residual_after_3": 2.128911253854171e-06, "columns_above_1e-7": 46, "fx_repeat_max_diff": 1.0156805951844206e-15}
+{"column": 4, "before": 2.128911253854171e-06, "after": 1.2164911439294102e-11, "gmres_info": 0}
+{"column": 3, "before": 1.8187025530476408e-06, "after": 1.0431627783802355e-11, "gmres_info": 0}
+{"column": 5, "before": 1.2999050459649997e-06, "after": 7.439892452110186e-12, "gmres_info": 0}
+{"column": 15, "before": 1.1557620248348055e-06, "after": 6.58335885805883e-12, "gmres_info": 0}
+{"column": 42, "before": 1.1184324209476126e-06, "after": 2.118569208953147e-12, "gmres_info": 0}
+{"column": 33, "before": 8.767097145617742e-07, "after": 1.2042630781472496e-11, "gmres_info": 0}
+{"column": 18, "before": 8.605232010138603e-07, "after": 1.2008533056828696e-11, "gmres_info": 0}
+{"column": 7, "before": 8.23456312791862e-07, "after": 4.700136113644504e-12, "gmres_info": 0}
+{"column": 19, "before": 7.975337636689783e-07, "after": 1.1033608054988875e-11, "gmres_info": 0}
+{"column": 40, "before": 6.769865218414495e-07, "after": 3.8660585149896676e-12, "gmres_info": 0}
+{"column": 8, "before": 5.954801529572604e-07, "after": 3.4060150533310463e-12, "gmres_info": 0}
+{"column": 9, "before": 5.701158240709048e-07, "after": 7.986930561365568e-12, "gmres_info": 0}
+{"reading": "solver (1)", "max_after_gmres": 1.2164911439294102e-11, "seconds_total": 26585}

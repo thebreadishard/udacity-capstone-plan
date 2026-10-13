@@ -23,7 +23,8 @@ Ways it can come out:
 As a check on the floor reading, the operator is applied twice to the same vector and the difference is reported, but only if fx is not
 deterministic. It is deterministic, so only (1)/(2) apply.
 
-    python diagnose_floor.py   (WSL, qc05, 4 threads; ≈ 2 h)
+    python diagnose_floor.py   (WSL, qc05, 4 threads; '≈ 2 h' was written unmeasured — it took 26,585 s, 13 Oct: the loop re-runs the
+    refinement from scratch for 1, 2, 3 and 5 rounds; a rerun should read the rounds from one call)
 """
 import json
 import os

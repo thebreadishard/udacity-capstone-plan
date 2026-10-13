@@ -28,3 +28,24 @@ grid response (the derivative the analytic Hessian takes); the field route with 
 ## Outcome
 
 *(appended after the runs)*
+
+**The guard's two failures, diagnosed (13 Oct 09:2x).** Two of the first 20 refined labels APTs stayed above the 1e-6 bound after three batched
+rounds: B_1194d7a42a at 1.1e-6 and B_127dd8c4ed at 2.1e-6. The bound was not moved. The diagnosis on B_127dd8c4ed (`diagnose_floor.py`, rule fixed
+in its docstring before the run → `floor_B_127dd8c4ed/diagnose_floor.{log,json}`):
+- the batched rounds are flat: 1.7e-6 (1 round), 2.1e-6 (2), 2.1e-6 (3), 2.1e-6 (5);
+- 46 of 66 columns stayed above 1e-7;
+- the operator is deterministic (two applications differ by 1.0e-15);
+- scipy GMRES on each of the worst twelve columns alone reaches 2.1e-12 to 1.2e-11 (gmres info 0 in all twelve).
+
+**Reading: solver (1)**, max 1.2e-11 against the line ≤ 1e-7. The batched multi-root `lib.krylov` stalls where a single right-hand side
+converges — pyscf #2702's early stop again; upstream's remedy in #3384 is per right-hand side too.
+
+**Action, as the rule says.**
+- `apt.refine_response` gained the per-column GMRES fallback after the batched rounds (commit 3eb7cd0f; test: with no batched round allowed,
+  the fallback alone brings a perturbed water response below the bound to the refined APT within 1e-6 e). It is recorded as
+  `cphf_fallback_columns`.
+- Installed on the labels server 13 Oct 09:22 local (`tools/install_labels_code.sh`: water smoke passed, residual 1.4e-7; sha 35bb49dfb46f /
+  fcd373fcd45c).
+- The two molecules are recomputed first in recompute lane 2 (`apt_recompute_refined.py` now also takes a failed refined file).
+
+The script's own '≈ 2 h' was unmeasured; it took 7.4 h (26,585 s), because its loop re-ran the refinement from scratch for 1, 2, 3 and 5 rounds.
