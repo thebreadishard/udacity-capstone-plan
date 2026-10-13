@@ -105,7 +105,7 @@ per molecule.
 |---|---|---|---|
 | **S1** | naphthalene GVPT2 at the reference settings and at two cheaper ones (default grid; 6-31G); time per Hessian printed; Δ_anh per mode in 550–2000 cm⁻¹ against the reference | laptop when the five-ring pool ends (≈ 16 Oct), or a CCX53 lane after the labels; ≈ 50 lane-h reference + ≈ 20–30 for the cheaper two | route (a): the level for every later step |
 | **S2** | GVPT2 of ≈ 20 corpus molecules ≤ 20 atoms (families and scaffolds of the training pool, selection rule fixed first); (b) and (c) fitted, read on held-out molecules | after S1, at S1's level; ≈ €30–150 | whether (b) is built further |
-| **S3** | tetracene GVPT2 (route A, with symmetry) — the validation of (b)/(c) at 30 atoms; also its combination bands from the displaced APTs | CCX53, ≈ €65 (or ≈ €15–25 at a level S1 licenses) | the anharmonic column for the five; (b)'s line |
+| **S3** | tetracene GVPT2 (route A, with symmetry) — the validation of (b)/(c) at 30 atoms; also its combination bands from the displaced APTs; **and our VPT2 beside the published anharmonic spectra of the supervisor's line** (§6) | CCX53, ≈ €65 (or ≈ €15–25 at a level S1 licenses) | the anharmonic column for the five; (b)'s line |
 | **S4** | the shape score run for all five, columns 0 and N, with the anharmonic step from the route S3 chose | desk + the large-PAH labels (TASKS 49, chain 42) | the goal sentence's shape clause |
 
 Each step gets its registration (lines, prediction) before its run; S1's line is proposed here as **Δ_anh rms ≤ 1 cm⁻¹ and max ≤ 3 cm⁻¹
@@ -113,7 +113,38 @@ against the reference, over the modes in 550–2000 cm⁻¹**. Timeline: S1 this
 anchor waves; S4 when chain 42's large-PAH labels and the out-of-plane outcome of TASKS 51 are in. This is the stage the supervisor
 conversation in November should see as planned and priced, not as done.
 
-## 6. Risks named now
+## 6. The supervisor's workflow, and the comparison it suggests (added 13 Oct 2026, 13:xx; the user: 'Idee en voorstel akkoord')
+
+Read from the papers she co-authored:
+- **2015–2016:** Maltseva, Petrignani et al. (ApJ 2015; arXiv:1510.04948) and Mackie et al. (JCP 143, 224314, 2015; JCP 145, 084313, 2016):
+  - anharmonic force constants from Gaussian 09;
+  - VPT2 with simultaneous treatment of multiple resonances (polyads within 200 cm⁻¹, Fermi and 1-1/2-2 couplings) in a modified version of
+    SPECTRO (Martin et al. 1995);
+  - double-harmonic intensities.
+
+  The arXiv text prints the level as "B9-71/TZ2P", presumably B97-1/TZ2P (unconfirmed); the later Mackie line uses B3LYP/N07D.
+- **2022:** Wiersma, Candian, Bakker & Petrignani (MNRAS 516, 5216; arXiv:2111.08592):
+  - Gaussian 16 rev. C.01;
+  - harmonic B3LYP/6-311++G(2d,p), scaled 0.96;
+  - anharmonic B3LYP/N07D. The method is not named in the text; Gaussian's built-in VPT2/GVPT2 is the natural reading.
+- **SPECTRO is not open source.** It originates with Gaw, Willetts, Green and Handy (1991) and circulates as locally modified copies between
+  groups; no public repository or licence was found. We compare against its published results, not its code.
+
+**The comparison (the user agreed, 13 Oct).** S3 puts our VPT2 (`src/dpir/qff.py`, Mills' expressions, polyad deperturbation within 200 cm⁻¹)
+beside the anharmonic spectra of the Mackie line for naphthalene, anthracene and tetracene. Those are in PAHdb's anharmonic library v1.00,
+already frozen in module 02 as the shape score's column B (tetracene: 3,651 transitions).
+
+What is compared:
+- fundamental positions in 550–2000 cm⁻¹, mode by mode;
+- the shape score's own read on the cold spectra (tetracene).
+
+Differences to expect and to name, not to tune away:
+- level and basis (B3LYP/6-31G* against B97-1/TZ2P or B3LYP/N07D) — S1 measures our side's basis sensitivity;
+- their resonance treatment (wider polyads, intensity sharing in later work) against ours.
+
+The supervisor reads this comparison without translation: it is her own reference set.
+
+## 7. Risks named now
 
 - Δ_anh may not transfer from ≤ 20 atoms to 30–60 the way the harmonic correction struggled to (chain 39's size penalty). S3 is the read.
   If (b) fails it, the shape claim for ovalene and HBC carries (c)'s larger error bar, stated.
