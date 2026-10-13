@@ -36,9 +36,10 @@ def main():
     ap.add_argument("--selection", default=SELECTION)
     ap.add_argument("--threads", type=int, default=8)
     ap.add_argument("--memory-gb", type=int, default=24)
+    ap.add_argument("--deck", default=DECK, help="13 Oct 2026: the deck file, for a run outside the repository (the labels server)")
     a = ap.parse_args()
     sel = json.load(open(a.selection, encoding="utf-8"))
-    deck = dict(json.load(open(DECK, encoding="utf-8")), threads=a.threads, memory_gb=a.memory_gb)
+    deck = dict(json.load(open(a.deck, encoding="utf-8")), threads=a.threads, memory_gb=a.memory_gb)
     ids = {"T": [], "D": []}
     for layer, group in (("T", sel["test"]), ("D", sel["train"])):
         for key, sp in group.items():
