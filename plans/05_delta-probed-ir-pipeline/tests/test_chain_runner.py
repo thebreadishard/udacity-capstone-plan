@@ -37,6 +37,12 @@ def test_results_condition(tmp_path):
     assert CR.condition_holds(c)
 
 
+@pytest.fixture(autouse=True)
+def _state_in_tmp(tmp_path, monkeypatch):
+    """Resume records go to the test's own folder, never the repository's watch_state."""
+    monkeypatch.setattr(CR, "STATE_DIR", tmp_path / "chain_state")
+
+
 def _spec(tmp: Path, steps: list[dict], outputs: list[str]) -> Path:
     (tmp / "gate.log").write_text("=== (X) ready\n", encoding="utf-8")
     spec = {"name": "T", "wait": [{"kind": "marker", "log": str(tmp / "gate.log"), "regex": r"^=== \(X\) ready"}], "steps": steps, "outputs": outputs}
@@ -105,3 +111,26 @@ def test_a_training_s_own_eval_args_replace_the_spec_s():
     steps = {s["label"]: s["argv"] for s in CR.rungc_steps(spec, "py")}
     assert steps["eval S seed 0"][-2:] == ["--eval-ids-file", "s5=all.txt"]
     assert steps["eval K1 seed 0"][-2:] == ["--eval-ids-file", "s5=fold1.txt"] and "s5=all.txt" not in steps["eval K1 seed 0"]
+
+
+def test_a_relaunch_skips_the_steps_an_earlier_run_finished(tmp_path, capsys):
+    """13 Oct 2026: a chain killed after its first step (an app or Windows restart) resumes at the second; the first does not run again."""
+    count = tmp_path / "count.txt"
+    bump = f"import pathlib; p = pathlib.Path(r'{count}'); p.write_text(str(int(p.read_text()) + 1) if p.exists() else '1')"
+    flag = tmp_path / "second_may_pass"
+    second = f"import pathlib, sys; sys.exit(0 if pathlib.Path(r'{flag}').exists() else 5)"
+    spec = _spec(tmp_path, [_cmd(tmp_path, bump, "first"), _cmd(tmp_path, second, "second")], [])
+    assert CR.main([str(spec)]) == 1 and count.read_text() == "1"                 # the 'kill': the run stops after the first step
+    flag.write_text("")
+    assert CR.main([str(spec)]) == 0
+    out = capsys.readouterr().out
+    assert count.read_text() == "1" and "first skipped: done in an earlier run" in out and "resuming: 1 of 2" in out
+    assert CR.main([str(spec), "--fresh"]) == 0 and count.read_text() == "2"      # --fresh runs everything again
+
+
+def test_a_changed_spec_does_not_reuse_the_record(tmp_path, capsys):
+    count = tmp_path / "count.txt"
+    bump = f"import pathlib; p = pathlib.Path(r'{count}'); p.write_text(str(int(p.read_text()) + 1) if p.exists() else '1')"
+    assert CR.main([str(_spec(tmp_path, [_cmd(tmp_path, bump, "first")], []))]) == 0
+    assert CR.main([str(_spec(tmp_path, [_cmd(tmp_path, bump + "  # changed", "first")], []))]) == 0
+    assert count.read_text() == "2" and "the spec changed" in capsys.readouterr().out

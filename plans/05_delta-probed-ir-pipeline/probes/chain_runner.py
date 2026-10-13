@@ -22,10 +22,14 @@ unregistered models) → `rungC_eval_saved` per checkpoint on the frozen hold-ou
 reads its own test list, 13 Oct 2026). A training with "labels": "fd" trains without `--use-analytic` (chain 35's half read
 compares the two on one pool, 11 Oct 2026); evaluation always uses the analytic labels, the one yardstick.
 Markers: "armed", "waiting", "<step> done", "run done"; failures: "RUN FAILED at <step>: …". Exit 0 done, 1 failed.
+Resume (13 Oct 2026): every finished step is recorded in probes/watch_state/chains/<name>.json with a hash of the expanded steps; a relaunch
+(after an app or Windows restart, tools/resume_laptop_jobs.sh) skips the recorded steps while the hash matches, and starts afresh, with a
+marker saying so, when the spec changed. --fresh ignores and removes the record.
 """
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -41,6 +45,7 @@ RECIPE_V11 = ["--head", "hybrid", "--aux", "both", "--kring-weight", "0.3", "--k
               "--pair-features", "--aux-weight", "1.0", "--epochs", "200", "--patience", "20", "--lr", "3e-4", "--hybrid-hidden", "256", "--pattern", "f"]
 BASE = ["--use-analytic", "--pool-layers", "A,A2,B", "--inner-val", "0.15", "--aggregation", "sum"]
 HOLDOUT_B = "corpus/holdout_b_frozen_2026-10-08.txt"
+STATE_DIR = PLAN / "probes" / "watch_state" / "chains"                 # resume records; tests point it at a temporary folder
 
 
 def _p(path: str | Path) -> Path:
@@ -134,6 +139,27 @@ def run_step(st: dict, env: dict) -> None:
         raise RuntimeError(f"exit {r.returncode} (log {log})")
 
 
+def steps_hash(steps: list[dict]) -> str:
+    """What a record of finished steps is valid for: the labels, commands and folders of the expanded steps."""
+    return hashlib.sha256(json.dumps([[st["label"], st["argv"], str(st["cwd"])] for st in steps]).encode()).hexdigest()[:16]
+
+
+def load_done(name: str, h: str) -> tuple[set, bool]:
+    """(labels finished in an earlier run of these very steps, whether a record for other steps was set aside)."""
+    p = STATE_DIR / f"{name}.json"
+    if not p.exists():
+        return set(), False
+    rec = json.load(open(p, encoding="utf-8"))
+    return (set(rec["done"]), False) if rec.get("hash") == h else (set(), True)
+
+
+def save_done(name: str, h: str, done: set) -> None:
+    STATE_DIR.mkdir(parents=True, exist_ok=True)
+    tmp = STATE_DIR / f"{name}.json.tmp"
+    tmp.write_text(json.dumps({"hash": h, "done": sorted(done), "updated": stamp()}, indent=1), encoding="utf-8")
+    os.replace(tmp, STATE_DIR / f"{name}.json")
+
+
 def expand(spec: dict, python: str) -> list[dict]:
     steps = []
     for st in spec.get("steps", []):
@@ -153,6 +179,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("spec")
     ap.add_argument("--dry-run", action="store_true", help="print the expanded steps and the wait conditions' state; run nothing")
     ap.add_argument("--python", default=sys.executable)
+    ap.add_argument("--fresh", action="store_true", help="ignore and remove the record of finished steps (13 Oct 2026: the default resumes)")
     a = ap.parse_args(argv)
     spec = json.load(open(_p(a.spec), encoding="utf-8"))
     name = spec["name"]
@@ -171,12 +198,25 @@ def main(argv: list[str] | None = None) -> int:
         marker(name, "waiting")
         while not all(condition_holds(c) for c in waits):
             time.sleep(float(spec.get("poll_s", 600)))
+    h = steps_hash(steps)
+    if a.fresh:
+        (STATE_DIR / f"{name}.json").unlink(missing_ok=True)
+    done, stale = load_done(name, h)
+    if stale:
+        marker(name, "resume record is for other steps (the spec changed) — starting from the first step")
+    elif done:
+        marker(name, f"resuming: {len(done)} of {len(steps)} steps finished in an earlier run are skipped")
     for st in steps:
+        if st["label"] in done:
+            print(f"({name}) {st['label']} skipped: done in an earlier run {stamp()}", flush=True)
+            continue
         try:
             run_step(st, env)
         except (RuntimeError, OSError) as e:
             marker(name, f"RUN FAILED at {st['label']}: {e}")
             return 1
+        done.add(st["label"])
+        save_done(name, h, done)
         print(f"({name}) {st['label']} done {stamp()}", flush=True)
     missing = [o for o in spec.get("outputs", []) if not _p(o).exists()]
     if missing:
