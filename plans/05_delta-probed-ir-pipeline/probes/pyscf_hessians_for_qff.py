@@ -26,8 +26,10 @@ def main():
     ap.add_argument("--xc", default="b3lyp"); ap.add_argument("--basis", default="6-31g*")
     ap.add_argument("--grid", default="99,590"); ap.add_argument("--threads", type=int, default=4)
     ap.add_argument("--conv", type=float, default=1e-11)
+    ap.add_argument("--max-first-seconds", type=float, default=None, help="13 Oct 2026 (S1's stop rule): stop after the first Hessian computed "
+                    "in this call when it took longer than this — time first, then the rest")
     a = ap.parse_args()
-    from pyscf import gto, dft, lib
+    from pyscf import dft, gto, lib
     from pyscf.hessian import rks as rks_hess
     lib.num_threads(a.threads)
     os.makedirs(a.out_dir, exist_ok=True)
@@ -58,6 +60,9 @@ def main():
         json.dump(rec, open(out, "w"))
         done += 1
         print(f"[{time.strftime('%H:%M:%S')}] {done}/{len(files)} {os.path.basename(f)} E = {e:.8f} in {time.time()-t0:.0f} s", flush=True)
+        if a.max_first_seconds is not None and time.time() - t0 > a.max_first_seconds:
+            raise SystemExit(f"STOP: the first Hessian took {time.time() - t0:.0f} s > {a.max_first_seconds:.0f} s — re-price before the rest")
+        a.max_first_seconds = None                              # the rule reads the first Hessian only
     print(f"done: {done} Hessians in {(time.time()-t_all)/60:.1f} min")
 
 
