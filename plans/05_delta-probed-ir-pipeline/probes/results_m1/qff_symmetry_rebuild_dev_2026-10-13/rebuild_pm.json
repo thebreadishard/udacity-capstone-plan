@@ -1,0 +1,34 @@
+{
+ "group_order": 24,
+ "totally_symmetric": [
+  12,
+  29
+ ],
+ "pm_rebuilt": [
+  4,
+  5,
+  10,
+  11,
+  15,
+  18,
+  19,
+  24
+ ],
+ "pairs_rebuilt": [],
+ "max_rel_change": {
+  "mode04_m.json": 0.0009589287474746008,
+  "mode05_p.json": 0.002521464026369028,
+  "mode10_p.json": 0.0013478728904045344,
+  "mode11_p.json": 0.013440816375425432,
+  "mode15_m.json": 0.008177586991326348,
+  "mode18_m.json": 0.0024323073383382457,
+  "mode19_m.json": 0.032544714422465995,
+  "mode24_m.json": 0.001328220180073149
+ },
+ "summary": {
+  "files": 61,
+  "replaced": 8,
+  "max_rel_change_max": 0.032544714422465995,
+  "max_rel_change_median": 0.002476885682353637
+ }
+}

@@ -109,6 +109,14 @@ more if our optimised geometry is D6h); tetracene 100, peropyrene 135 and ovalen
    Lines: rms ≤ 0.2 cm⁻¹ and max ≤ 0.5 cm⁻¹, below R's quartic route noise on benzene (0.4 cm⁻¹, prediction section). If it fails, the
    prices without the pair saving stand.
 
+*Note (22:0x, still before any S1 number; development, not the registered test).* `probes/qff_symmetry_rebuild.py` was tried on the 21 Sep
+benzene set at R's settings (`probes/results_m1/qff_symmetry_rebuild_dev_2026-10-13/README.md`): the ± saving moves Δ_anh by rms 0.03 / max
+0.09 cm⁻¹, the pair saving by 0.56 / 1.06 — it fails step 4's lines there. On exactly symmetric model data both rebuilds are exact up to the
+shared finite-difference truncation, so the method is sound; the DFT images under operations that do not map the Lebedev grid onto itself
+differ by 2.4e-2 of the displacement signal against 3.0e-3 for those that do. The pair saving needs C₆/C₃, which no octahedral grid has.
+My expectation for step 4 on S1's data: the ± saving passes, the pair saving fails, and the prices without it stand (€2,715 at R, €1,300
+at G). The test runs as registered.
+
 ## Outcome
 
 *(appended after the run)*
