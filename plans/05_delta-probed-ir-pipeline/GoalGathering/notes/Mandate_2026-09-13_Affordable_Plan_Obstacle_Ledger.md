@@ -71,6 +71,22 @@ Whenever the machine is busy or the user is away, the next item is the cheapest 
 
 ## 6. Log
 
+- **13 Oct, 20:3x — odds re-estimated for the user (previous: 12 Oct 13:5x).** Judgement on the day's evidence, not a measurement.
+Learning on the corpus (T1) 70 → 70: nothing read; chain 40 (≈ 16 Oct) and 35h still run. CC transfer (T3) 60 → 55: the network's CC-level
+out-of-plane diagonal has no skill on the six anchors (slopes ≤ 0.19, `oop_block_2026-10-13`, exploratory) and the λ = 1 fine-tune costs
+mode shapes three of three (12 Oct 22:2x); held up by anchor set three (quinoxaline in, seven to come) and arm M, a three-number shift model at
+11.5 vs the network's 17.8 cm⁻¹ (exploratory; R-C registered before any set-three read). Hold-out (b) 50 → 50: chain 40 unread.
+Affordability 60 → 60: S1 runs on a CPX62 for a few euros; the €2,750 question of the shape test waits on S1's G and B; the labels lanes now end
+≈ 28 Oct (time, not money). Licensed pipeline 87 → 88: the APT stall is fixed in our code (both guard failures pass, 9.4e-7 and 8.8e-7), the
+parity defect was found by our own read and proven before it touched a number, and a relaunch now costs no run (test 18:48); offset by the
+same slip of mine twice more (diagnosis '≈ 2 h' took 7.4 h; the #2702 large case '≈ 19:30' runs to ≈ 01:00) and by CI red for eight hours.
+Intensities 80 → 75: the prediction couples in-plane and out-of-plane modes on the anchors (σ_h, TASKS 52; fix behind a flag, not trained),
+and only λ = 0 keeps the mode shapes. Spectral shape, anharmonic step (new line): 45 — designed, S1 started 20:07; G passing would make the
+five large PAHs affordable, B and G both failing would leave route (b) or (c). Size 50 → 50: chain 41 unread. Full mandate 37 → 36 (T3 −,
+intensities −, the shape line started +). Long-term line 60 → 60. Levers in order: (1) S1's read (tomorrow), then the level for the five;
+(2) R-C on anchor set three as each anchor lands (azulene ≈ 14 Oct), arm M against the network's out-of-plane block; (3) chain 40 (≈ 16 Oct);
+(4) the parity-odd retrain (v1.3) once the laptop frees; (5) chain 41 (size vs scaffold); (6) quote no runtime I have not timed on the target.
+
 - **13 Oct, 19:3x — the day: the APT stall fixed in our code, the first set-three anchor in, and laptop jobs that survive a relaunch.**
 (1) APT (TASKS 44): the diagnosis read 'solver' — batched Krylov rounds stay at 1.7e-6 → 2.1e-6 → 2.1e-6 while scipy GMRES on each of
 the twelve worst columns alone reaches 2e-12 to 1.2e-11 (`apt_refine_install_2026-10-12/floor_B_127dd8c4ed/diagnose_floor.log`). A
