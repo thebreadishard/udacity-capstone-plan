@@ -13,7 +13,8 @@ the six anchors), with no measurable effect on the T3 reads (heights and out-of-
 reflection test above used water, which has no dihedral; the strict xfails in the test file mark the defect until the head is fixed (a
 parity-odd factor, e.g. sin φ, on mixed pairs — the next model version).
 
-Options: `tensor_input` (the rank-2 input of the encoder, rank 1), `sqm_scale` (Gemini's suggestion: ΔF_pq = α_c F_low,pq + residual, one α per
+Options: `parity_odd` (13 Oct 2026, TASKS 52: the fix of the reflection defect above — off by default, so saved models and their records are
+unchanged), `tensor_input` (the rank-2 input of the encoder, rank 1), `sqm_scale` (Gemini's suggestion: ΔF_pq = α_c F_low,pq + residual, one α per
 pair class, initialised at 0 so the default is the pure residual). Class scales (one per pair class, the RMS of the true internal ΔF over the fit
 molecules) and input scales (RMS of the three F_low inputs over the fit molecules) are set by the trainer from the fit ids only.
 """
@@ -41,6 +42,30 @@ def primitive_pool_matrix(prim_atoms: list[set[int]], n_atoms: int, dtype=torch.
         for a in atoms:
             M[p, a] = 1.0 / len(atoms)
     return M
+
+
+def primitive_parity(symbols: list, coords_bohr) -> tuple:
+    """(odd (K,) bool, s (K,) float): which primitives are parity-odd, and sin(value) of each — in geomeTRIC's primitive order, the order of the
+    pattern builder's B. Decided numerically, not by type: the B row at the geometry reflected through z = 0 is compared with the reflected B row
+    (−1 → odd), so linear-angle components are classified too. s is the pseudo-scalar the odd member of a mixed pair carries (0 when planar)."""
+    import numpy as np
+    from geometric.internal import PrimitiveInternalCoordinates
+    from geometric.molecule import Molecule
+    x = np.asarray(coords_bohr, float)
+    mol = Molecule()
+    mol.elem = [s.capitalize() for s in symbols]
+    mol.xyzs = [x * 0.529177210903]
+    ic = PrimitiveInternalCoordinates(mol, build=True, connect=True, addcart=False)
+    S = np.diag([1.0, 1.0, -1.0])
+    B0 = np.asarray(ic.wilsonB(x.reshape(-1)))
+    B1 = np.asarray(ic.wilsonB((x @ S).reshape(-1)))
+    ref = (B0.reshape(len(B0), -1, 3) @ S).reshape(len(B0), -1)
+    cos = (B1 * ref).sum(1) / (np.linalg.norm(B1, axis=1) * np.linalg.norm(ref, axis=1) + 1e-300)
+    if np.abs(np.abs(cos) - 1.0).max() > 1e-6:
+        raise ValueError(f"a primitive's B row is neither even nor odd under the reflection (|cos| off by {np.abs(np.abs(cos) - 1.0).max():.1e})")
+    odd = cos < 0
+    s = np.array([np.sin(float(p.value(x.reshape(-1)))) if o else 0.0 for p, o in zip(ic.Internals, odd, strict=True)])
+    return odd, s
 
 
 def hybrid_inputs(t: dict) -> torch.Tensor:
@@ -74,8 +99,11 @@ def input_scales(tensors: dict, ids: list) -> torch.Tensor:
 class HybridDeltaFModel(nn.Module):
     def __init__(self, aggregation: str = AGGREGATION, tensor_input: bool = False, sqm_scale: bool = False,
                  class_scale: torch.Tensor | None = None, n_s: int = N_S, hidden: int = HIDDEN, n_pair_features: int = 0,
-                 n_v: int = N_V, n_blocks: int = N_BLOCKS):
+                 n_v: int = N_V, n_blocks: int = N_BLOCKS, parity_odd: bool = False):
         super().__init__()
+        if parity_odd and n_pair_features:
+            raise ValueError("parity_odd with rung B's pair features: those carry signed primitive values (parity-odd); not combined")
+        self.parity_odd = bool(parity_odd)
         self.body = DeltaHessianModel(n_s=n_s, n_v=n_v, n_blocks=n_blocks, aggregation=aggregation, tensor_input=tensor_input)   # encode() only
 
         self.cls_emb = nn.Embedding(N_PAIR_CLASSES, N_CLASS_EMB)
@@ -105,14 +133,21 @@ class HybridDeltaFModel(nn.Module):
         M = t["prim_pool"].to(s.dtype)
         hs, hv = M @ s, M @ vnorm                                                     # (K, n_s), (K, n_v)
         p, q = t["pairs"][:, 0], t["pairs"][:, 1]
-        x_low = hybrid_inputs(t).to(s.dtype) / self.flow_scale.to(s.dtype)
+        x_low = hybrid_inputs(t).to(s.dtype)
+        if self.parity_odd:                                                             # TASKS 52: a mixed pair's F_pq is odd; enter it as |F_pq|
+            mixed = t["podd"][p] ^ t["podd"][q]
+            x_low = torch.cat([torch.where(mixed, x_low[:, 0].abs(), x_low[:, 0])[:, None], x_low[:, 1:]], -1)
+        x_low = x_low / self.flow_scale.to(s.dtype)
         parts = [hs[p] + hs[q], hs[p] * hs[q], hv[p] + hv[q], self.cls_emb(t["pcls"]).to(s.dtype), self.flow_in(x_low)]
         if self.pfeat_in is not None:
             z = (t["pfeat"].to(s.dtype) - self.pfeat_mu.to(s.dtype)) / self.pfeat_sd.to(s.dtype)
             parts.append(self.pfeat_in(z))
         x = torch.cat(parts, -1)
         r = self.head(x).squeeze(-1) * self.class_scale.to(s.dtype)[t["pcls"]]
-        if self.alpha is not None:
+        if self.parity_odd:                                                             # ... and its ΔF carries the odd member's sin(value)
+            sodd = torch.where(t["podd"][p], t["psin"][p], t["psin"][q]).to(s.dtype)
+            r = torch.where(mixed, r * sodd, r)
+        if self.alpha is not None:                                                      # α F_pq is equivariant as it is (F_pq transforms with B)
             r = r + self.alpha.to(s.dtype)[t["pcls"]] * t["F_int"][p, q].to(s.dtype)
         return r
 

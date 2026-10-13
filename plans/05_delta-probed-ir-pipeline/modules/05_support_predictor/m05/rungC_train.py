@@ -46,7 +46,7 @@ from rungC_equivariant import (  # noqa: E402
     load_state_compat,
     to_torch,
 )
-from rungC_hybrid import HybridDeltaFModel, input_scales, pair_feature_stats, primitive_pool_matrix  # noqa: E402
+from rungC_hybrid import HybridDeltaFModel, input_scales, pair_feature_stats, primitive_parity, primitive_pool_matrix  # noqa: E402
 from rungC_targets import LAM_REL, SCALE_LIMIT, cached_pattern_ls_target, scale_ratio, weighted_residual  # noqa: E402
 
 from dpir.provenance import provenance  # noqa: E402
@@ -103,7 +103,10 @@ def hybrid_tensors(mol_dir: Path, m: dict, pattern: str = "c") -> dict:
                                                  pattern=pattern)
     if B.shape != np.asarray(m["B"]).shape or not np.allclose(B, m["B"], atol=1e-8):
         raise ValueError(f"{mol_dir.name}: the pattern builder's primitives differ from the loader's B matrix — hybrid head refused")
-    return dict(pairs=torch.as_tensor(pairs, dtype=torch.long), pcls=torch.as_tensor(pcls, dtype=torch.long), pfeat=torch.as_tensor(feat, dtype=torch.float32),
+    podd, psin = primitive_parity(g["symbols"], np.asarray(g["coords_bohr"], float))      # TASKS 52 (13 Oct 2026), read only with --parity-odd-mixed
+    if len(podd) != B.shape[0]:
+        raise ValueError(f"{mol_dir.name}: {len(podd)} parities for {B.shape[0]} primitives")
+    return dict(podd=torch.as_tensor(podd), psin=torch.as_tensor(psin, dtype=torch.float32), pairs=torch.as_tensor(pairs, dtype=torch.long), pcls=torch.as_tensor(pcls, dtype=torch.long), pfeat=torch.as_tensor(feat, dtype=torch.float32),
                 prim_pool=primitive_pool_matrix(atoms, len(g["symbols"])), F_int=torch.as_tensor(np.asarray(m["F_low"], float), dtype=torch.float32),
                 B=torch.as_tensor(B, dtype=torch.float32))
 
@@ -306,7 +309,7 @@ def train_one(train_ids: list, tensors: dict, seed: int, epochs: int, lr: float 
               pretrained_elements: list[int] | None = None, aux_mode: str = "all", tensor_input: bool = False, head: str = "cartesian",
               sqm_scale: bool = False, pair_features: bool = False, hybrid_hidden: int = 128, body_blocks: int = N_BLOCKS,
               body_width: int = N_S, kring_weight: float = 1.0, kdiag_weight: float = 0.0, kdiag_mode: str = "all",
-              hinge: bool = False) -> tuple[torch.nn.Module, list]:
+              hinge: bool = False, parity_odd: bool = False) -> tuple[torch.nn.Module, list]:
     """Defaults = the registered recipe C1 of 19:50 (27 Sep). The other values are the cells of the fair-chance search registered at 20:0x:
     aux_weight 1.0; loss_mode 'internal' (the relative internal-ΔF term alone); scale_mode 'class' (one output scale per entry class: diagonal
     3×3 block, bonded pair, non-bonded pair — the pair model's per-class standardisation); val_ids = inner validation molecules held out of the
@@ -335,7 +338,7 @@ def train_one(train_ids: list, tensors: dict, seed: int, epochs: int, lr: float 
         n_pf = int(tensors[train_ids[0]]["pfeat"].shape[1]) if pair_features else 0
         model = HybridDeltaFModel(aggregation=aggregation, tensor_input=tensor_input, sqm_scale=sqm_scale,
                                   class_scale=pattern_class_scales(tensors, train_ids), n_pair_features=n_pf, hidden=hybrid_hidden,
-                                  n_s=body_width, n_v=body_width, n_blocks=body_blocks)
+                                  n_s=body_width, n_v=body_width, n_blocks=body_blocks, parity_odd=parity_odd)
         model.set_input_scales(input_scales(tensors, train_ids))
         if pretrained:
             reset = attach_pretrained_body(model, pretrained, seed, aggregation, target_elements, pretrained_elements)
@@ -529,7 +532,7 @@ def molecule_tensors(i: str, m: dict, mol: dict, mol_dir: Path, cfg, cache_dir: 
     return t
 
 
-HYBRID_CTOR_KEYS = ("aggregation", "tensor_input", "sqm_scale", "n_pair_features", "hidden", "n_s", "n_v", "n_blocks")
+HYBRID_CTOR_KEYS = ("aggregation", "tensor_input", "sqm_scale", "n_pair_features", "hidden", "n_s", "n_v", "n_blocks", "parity_odd")
 
 
 def save_hybrid_model(model: HybridDeltaFModel, path: Path, args: dict, n: int, seed: int, train_ids: list | None = None) -> None:
@@ -537,7 +540,7 @@ def save_hybrid_model(model: HybridDeltaFModel, path: Path, args: dict, n: int, 
     train_ids (8 Oct 2026): the pool the model was trained on (inner validation included), so a later read does not re-derive it from a grown corpus."""
     ctor = dict(aggregation=args["aggregation"], tensor_input=bool(args["tensor_input"]), sqm_scale=bool(args["sqm_scale"]),
                 n_pair_features=int(model.n_pair_features), hidden=int(model.head[0].out_features), n_s=int(model.body.blocks[0].n_s),
-                n_v=int(model.body.n_v), n_blocks=len(model.body.blocks))
+                n_v=int(model.body.n_v), n_blocks=len(model.body.blocks), parity_odd=bool(getattr(model, "parity_odd", False)))
     torch.save({"state": model.state_dict(), "ctor": ctor, "aux_mode": model.aux_mode,
                 "aux_class_scale": None if model.aux_class_scale is None else model.aux_class_scale.clone(),
                 "kring_weight": float(getattr(model, "kring_weight", 1.0)), "kdiag_weight": float(getattr(model, "kdiag_weight", 0.0)),
@@ -630,6 +633,8 @@ def main() -> int:
                     help="rank 3 (30 Sep 2026): 'hybrid' = equivariant encoder → ΔF on the pair model's pattern (with F_low,pq/pp/qq as inputs) → ΔH = Bᵀ ΔF B; needs --aux pattern")
     ap.add_argument("--sqm-scale", action="store_true", help="hybrid head: add α_class · F_low,pq to the residual (one α per pair class, initialised at 0)")
     ap.add_argument("--pair-features", action="store_true", help="hybrid head (1 Oct 2026): rung B's 66 pair features beside the encoder's features — does the learned environment add anything to hand-made topology?")
+    ap.add_argument("--parity-odd-mixed", action="store_true", help="hybrid head (13 Oct 2026, TASKS 52): reflection-equivariant — a pair of a "
+                    "parity-odd primitive (dihedral, wag) and an even one gets ΔF = r · sin(odd value) and |F_pq| as input; off = the carried models' head")
     ap.add_argument("--hybrid-hidden", type=int, default=128, help="hybrid head: width of its MLP (search stage H1, 1 Oct 2026; 128 = the 00:4x model)")
     ap.add_argument("--pattern", default="c", choices=["c", "d", "e", "f"], help="lever 1 (1 Oct 2026): 'c' = the registered pattern; 'd' = (c) + disjoint pairs one bond apart (off_twobond); "
                     "'e' / 'f' = up to two / three bonds apart (off_dist2 / off_dist3)")
@@ -703,7 +708,7 @@ def main() -> int:
                sizes=sizes, seeds=seeds, epochs=a.epochs, lr=a.lr, aux_weight=a.aux_weight, loss=a.loss, scale=a.scale, inner_val=a.inner_val,
                patience=a.patience, pretrained=a.pretrained, aggregation=a.aggregation, pretrained_elements=a.pretrained_elements,
                aux_mode=a.aux, zero_hlow=a.zero_hlow, overfit_one=a.overfit_one, tensor_input=a.tensor_input, head=a.head, sqm_scale=a.sqm_scale,
-               pair_features=a.pair_features, hybrid_hidden=a.hybrid_hidden, pattern=a.pattern, body_blocks=a.body_blocks, body_width=a.body_width,
+               pair_features=a.pair_features, parity_odd_mixed=a.parity_odd_mixed, hybrid_hidden=a.hybrid_hidden, pattern=a.pattern, body_blocks=a.body_blocks, body_width=a.body_width,
                aux_target=a.aux_target, ls_lam=a.ls_lam, kring_weight=a.kring_weight, kdiag_weight=a.kdiag_weight, kdiag_mode=a.kdiag_mode, hinge_feature=a.hinge_feature, target_residuals=target_residuals,
                pair_class_names=list(PAIR_CLASS_NAMES),
                substituted_analytic=substituted, curve={})
@@ -731,7 +736,8 @@ def main() -> int:
             model, hist = train_one(fit_ids, tensors, seed, a.epochs, a.lr, log, a.aux_weight, a.loss, a.scale, val_ids, a.patience, a.pretrained,
                                     a.aggregation, a.pretrained_elements, aux_mode=a.aux, tensor_input=a.tensor_input, head=a.head, sqm_scale=a.sqm_scale,
                                     pair_features=a.pair_features, hybrid_hidden=a.hybrid_hidden, body_blocks=a.body_blocks, body_width=a.body_width,
-                                    kring_weight=a.kring_weight, kdiag_weight=a.kdiag_weight, kdiag_mode=a.kdiag_mode, hinge=a.hinge_feature)
+                                    kring_weight=a.kring_weight, kdiag_weight=a.kdiag_weight, kdiag_mode=a.kdiag_mode, hinge=a.hinge_feature,
+                                    parity_odd=a.parity_odd_mixed)
             dF_of = predictor(model, tensors, mols)
             if a.save_model:
                 if a.head != "hybrid":

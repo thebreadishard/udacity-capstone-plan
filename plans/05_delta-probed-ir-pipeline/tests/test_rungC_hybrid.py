@@ -18,7 +18,7 @@ torch.set_num_threads(1)
 
 def _hybrid_tensors(m, R=None):
     """Tensors (water, or any small stand-in) with the pattern from e7_rungB_pairs on the (optionally rotated)
-    geometry; F_int = a fixed synthetic internal force-constant matrix."""
+    geometry; F_int = B⁺ᵀ H_low B⁺, as the loader builds it."""
     geometric = pytest.importorskip("geometric")  # noqa: F841
     import e7_rungB_pairs as RB
     pos = m["pos"] if R is None else m["pos"] @ R.T
@@ -26,11 +26,14 @@ def _hybrid_tensors(m, R=None):
     symbols = m["symbols"]
     K0 = RB.T2.internals(symbols, pos)[0].shape[0]                     # was np.eye(3): right for water only (13 Oct 2026)
     pairs, feat, pcls, B, atoms = RB.molecule_pairs(symbols, pos, np.eye(K0), return_atoms=True)
-    K = B.shape[0]
-    F_int = np.diag(np.linspace(0.3, 0.9, K)) + 0.02
+    Bp = np.linalg.pinv(B)
+    F_int = Bp.T @ H @ Bp                                               # 13 Oct 2026: the loader's F_low (was a fixed synthetic matrix, which
+                                                                        # does not transform with the frame and broke the α term's reflection)
     t = RC.to_torch(dict(m, pos=pos, H_low=H), torch.float64)
     t.update(pairs=torch.as_tensor(pairs, dtype=torch.long), pcls=torch.as_tensor(pcls, dtype=torch.long), pfeat=torch.as_tensor(feat, dtype=torch.float64),
              prim_pool=RH.primitive_pool_matrix(atoms, len(symbols), torch.float64), F_int=torch.as_tensor(F_int), B=torch.as_tensor(B))
+    podd, psin = RH.primitive_parity(symbols, pos)
+    t.update(podd=torch.as_tensor(podd), psin=torch.as_tensor(psin))
     return t
 
 
@@ -174,3 +177,35 @@ def test_a_planar_molecule_s_prediction_keeps_its_mirror_plane():
         dH = model(t0["Z"], t0["pos"], t0["H_low"], t0).numpy()
     S = np.diag([1.0, 1.0, -1.0])                                       # the molecular plane is z = 0
     assert np.abs(RC.transform_hessian(dH, S) - dH).max() / (np.abs(dH).max() + 1e-30) < 1e-6
+
+
+@pytest.mark.parametrize("name", ["H2O2", "ETHYLENE"])
+def test_parity_odd_head_is_reflection_equivariant(name):
+    """TASKS 52's fix: with parity_odd the two checks the default head fails pass — a general reflection (H₂O₂) and a planar molecule's own
+    mirror plane (ethylene) — and rotations still hold."""
+    m = _molecule(*globals()[name])
+    torch.manual_seed(0)
+    model = RH.HybridDeltaFModel(aggregation="mean", class_scale=torch.tensor([1e-2] * RH.N_PAIR_CLASSES), parity_odd=True, sqm_scale=True).double()
+    with torch.no_grad():
+        model.alpha.copy_(torch.linspace(-0.2, 0.2, RH.N_PAIR_CLASSES, dtype=torch.float64))
+        t0 = _hybrid_tensors(m)
+        dH = model(t0["Z"], t0["pos"], t0["H_low"], t0).numpy()
+        scale = np.abs(dH).max() + 1e-30
+        for R in (RC.rotation(3, reflect=True), RC.rotation(5), np.diag([1.0, 1.0, -1.0])):
+            t1 = _hybrid_tensors(m, R)
+            dH1 = model(t1["Z"], t1["pos"], t1["H_low"], t1).numpy()
+            assert np.abs(dH1 - RC.transform_hessian(dH, R)).max() / scale < 1e-6
+    if name == "ETHYLENE":
+        S = np.diag([1.0, 1.0, -1.0])
+        assert np.abs(RC.transform_hessian(dH, S) - dH).max() / scale < 1e-10
+
+
+def test_primitive_parity_finds_dihedrals_odd_and_bonds_even():
+    import e7_rungB_pairs as RB
+    symbols, pos, _ = ETHYLENE
+    odd, s = RH.primitive_parity(symbols, np.asarray(pos, float))
+    _, types = RB.T2.internals(symbols, np.asarray(pos, float))
+    kinds = [ty[0] for ty in types]
+    assert all(o == (k in ("dihedral", "oop")) for o, k in zip(odd, kinds, strict=True)) and np.allclose(s, 0.0, atol=1e-12)   # planar: sin = 0
+    with pytest.raises(ValueError, match="pair features"):
+        RH.HybridDeltaFModel(parity_odd=True, n_pair_features=3)
