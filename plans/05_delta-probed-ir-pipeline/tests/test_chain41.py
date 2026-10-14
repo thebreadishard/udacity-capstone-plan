@@ -47,3 +47,28 @@ def test_a_set_that_lost_molecules_is_not_read():
     bad = [dict(_rec(s5=0.3), s5={**_rec(s5=0.3)["s5"], "dropped": ["P3_x"]})] * 3
     with pytest.raises(SystemExit, match="lost 1 registered"):
         R.read(size, bad, [_rec(s5=0.5)] * 3)
+
+
+def test_a_steep_q5_reads_by_the_control_curve():
+    """14 Oct 2026, learning-curve amendment: a steep q5 is 'data-limited' when the control still learns from half to full, and goes to the
+    search when its curve is flat; never a verdict on the mandate from one point."""
+    size = [_rec(s5=0.80, s4N=0.40)] * 3
+    full1 = [_rec(s5=v) for v in (0.30, 0.31, 0.29)]
+    full2 = [_rec(s5=v) for v in (0.30, 0.29, 0.31)]
+    learning = R.read(size, full1, full2, None, [_rec(s5=v) for v in (0.45, 0.46, 0.44)], [_rec(s5=v) for v in (0.45, 0.44, 0.46)])
+    assert learning["control_curve"]["still_learning"] and "data-limited" in learning["verdict"]
+    flat = R.read(size, full1, full2, None, [_rec(s5=v) for v in (0.31, 0.30, 0.29)], [_rec(s5=v) for v in (0.29, 0.31, 0.30)])
+    assert not flat["control_curve"]["still_learning"] and "search" in flat["verdict"]
+    assert R.read(size, full1, full2)["control_curve"] is None
+
+
+def test_the_half_folds_keep_two_per_scaffold_and_scaffolds_come_from_the_name():
+    import chain41_half_folds as H
+    d = json.load(open(H.FOLDS, encoding="utf-8"))
+    rows = {r["id"]: r for r in __import__("csv").DictReader(open(H.CANDIDATES, encoding="utf-8"))}
+    for n in (1, 2):
+        fold = d[f"control_fold{n}"]
+        parent_of = {i: H.scaffold_name(rows, i) for i in fold["train_extra"]}
+        kept, dropped = H.half(fold, parent_of)
+        assert len(kept) == 2 * len(fold["scaffolds_trained"]) and len(kept) + len(dropped) == len(fold["train_extra"])
+        assert set(parent_of.values()) == set(fold["scaffolds_trained"])

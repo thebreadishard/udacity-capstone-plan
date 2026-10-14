@@ -15,13 +15,19 @@
     {"prefix": "out/E7_rungC_chain41_control1", "args": ["--sizes", "all", "--pool-layers", "A,A2,B,P3", "--exclude-ids-file", "out/chain41_fold1_exclude.txt"],
      "eval_args": ["--eval-ids-file", "s5=out/chain41_fold1_test.txt"]},
     {"prefix": "out/E7_rungC_chain41_control2", "args": ["--sizes", "all", "--pool-layers", "A,A2,B,P3", "--exclude-ids-file", "out/chain41_fold2_exclude.txt"],
+     "eval_args": ["--eval-ids-file", "s5=out/chain41_fold2_test.txt"]},
+    {"prefix": "out/E7_rungC_chain41_control1half", "args": ["--sizes", "all", "--pool-layers", "A,A2,B,P3", "--exclude-ids-file", "out/chain41_fold1_half_exclude.txt"],
+     "eval_args": ["--eval-ids-file", "s5=out/chain41_fold1_test.txt"]},
+    {"prefix": "out/E7_rungC_chain41_control2half", "args": ["--sizes", "all", "--pool-layers", "A,A2,B,P3", "--exclude-ids-file", "out/chain41_fold2_half_exclude.txt"],
      "eval_args": ["--eval-ids-file", "s5=out/chain41_fold2_test.txt"]}
    ]},
   {"kind": "cmd", "label": "chain 41 read", "cwd": "modules/05_support_predictor", "log": "modules/05_support_predictor/out/read_chain41.log",
    "argv": ["{python}", "../../probes/chain41_read.py",
             "--size", "out/E7_rungC_chain41_size_eval_frozenb_seed0.json", "out/E7_rungC_chain41_size_eval_frozenb_seed1.json", "out/E7_rungC_chain41_size_eval_frozenb_seed2.json",
             "--fold1", "out/E7_rungC_chain41_control1_eval_frozenb_seed0.json", "out/E7_rungC_chain41_control1_eval_frozenb_seed1.json", "out/E7_rungC_chain41_control1_eval_frozenb_seed2.json",
-            "--fold2", "out/E7_rungC_chain41_control2_eval_frozenb_seed0.json", "out/E7_rungC_chain41_control2_eval_frozenb_seed1.json", "out/E7_rungC_chain41_control2_eval_frozenb_seed2.json"]}
+            "--fold2", "out/E7_rungC_chain41_control2_eval_frozenb_seed0.json", "out/E7_rungC_chain41_control2_eval_frozenb_seed1.json", "out/E7_rungC_chain41_control2_eval_frozenb_seed2.json",
+            "--fold1-half", "out/E7_rungC_chain41_control1half_eval_frozenb_seed0.json", "out/E7_rungC_chain41_control1half_eval_frozenb_seed1.json", "out/E7_rungC_chain41_control1half_eval_frozenb_seed2.json",
+            "--fold2-half", "out/E7_rungC_chain41_control2half_eval_frozenb_seed0.json", "out/E7_rungC_chain41_control2half_eval_frozenb_seed1.json", "out/E7_rungC_chain41_control2half_eval_frozenb_seed2.json"]}
  ],
  "outputs": ["modules/05_support_predictor/out/read_chain41.json", "modules/05_support_predictor/out/read_chain41.md"]
 }

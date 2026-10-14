@@ -2280,3 +2280,33 @@ recorded.
 - line 1 is q_T = r₀(T)/r₀(a) (≤ 1.3 carries, ≥ 1.8 steep);
 - line 2 is g = r_D(T)/r₀(T) (≤ 0.85 the lever works; ≥ 0.95 six are too few to judge, so a second point follows);
 - coronene goes first, as the timing, and stops the chain above 30 h or 100 GB.
+
+### Amendment 14 October 2026, 10:5x — the learning-curve rule for chains 40, 41 and 42 (before any of them is read)
+
+*The user, 14 Oct: a test on a limited number of molecules that misses its line while it is demonstrably still learning (validation errors
+still falling) has not failed — and 'De "nog aan het leren"-regel geldt niet alleen voor S2. … Ja, repareer.' The standing rules of 19 Sep (no
+verdict on tiny data; scale along a curve) and 25 Sep (no negative conclusion without the search) were missing from these three reads.*
+
+**Chain 40.** The spec gains a half-count arm, `out/E7_rungC_chain40_fivering15` (chain 34's recipe v1.1, `--sizes all`, three seeds, read the
+same way), trained on the same merged pool minus candidates 33–181 of the list (`corpus/five_ring_pool_exclude_after32_2026-10-14.txt`): it sees
+the first 32 of the 64 (round-robin, ≈ 8 more children per family, ≈ 21–24 per family against ≈ 29–32 for the full arm). With chain 37
+(0.325, no five-ring children added) the read is a three-point curve: 0 / ≈ 8 / ≈ 16 added children per family. **'Still learning':**
+(b) of the full arm is below the half arm's by more than twice the combined standard error of the two seed means (standard error = seed
+standard deviation / √3), and below chain 37's. **Verdict changes:** the STOP branch (Δ > −0.015) applies only when the curve is *not*
+still learning; when it is, the runner continues to ≈ 60 per family and (b) is read again there, whatever Δ says. The ≤ −0.03 and the
+'between' branches stand. The runner, still waiting for its trigger with no step done, is restarted with the amended spec.
+
+**Chain 41.** Line q5 ≥ 1.8 read 'the cheap corpus must contain each ring count …; beyond it the mandate's 50–100-atom PAHs rest on an
+extrapolation this test says fails'. That second clause is a negative conclusion from one point and is withdrawn. A steep q5 says the
+correction does not carry *without* data of that ring count; whether data of that ring count closes the gap is a learning-curve question,
+and chain 41's control arm is that curve's far point (12–15 five-ring molecules in training). **Added:** a half-control arm per fold — two
+training molecules per trained scaffold, the first two by the sha1 of their id (6 instead of 15 and 12 five-ring molecules;
+`probes/chain41_half_folds.py` → `out/chain41_fold{1,2}_half_exclude.txt`), three seeds, the same test lists — so that r_K is read at 0 (the
+size arm), 6 and 12–15 five-ring training molecules; `probes/chain41_read.py --fold1-half/--fold2-half` reads the curve (r_K per seed = the
+mean of the two folds' ratios of that seed). **'Still learning':** r_K(full) below r_K(half) by more than
+twice the combined standard error. A steep q5 with a control curve still learning reads 'data-limited: the five-ring and larger families
+enter the corpus' — chain 42's arm D is the next point; a steep q5 with a flat control curve goes to the search (recipe, loss, the
+ring-coupling input) before any statement about the mandate.
+
+**Chain 42.** Line 2 already carries the rule (g ≥ 0.95: 'six are too few to judge, so a second point follows'). Line 1 (q_T ≥ 1.8) is read
+like chain 41's: alone it is not a verdict on the 50–100-atom targets; with line 2's g it is the curve's first two points.

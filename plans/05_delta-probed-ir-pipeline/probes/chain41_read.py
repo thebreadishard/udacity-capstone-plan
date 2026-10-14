@@ -46,23 +46,44 @@ def require_complete(records: list, hold: str) -> None:
             raise SystemExit(f"hold-out ({hold}) lost {len(dropped)} registered molecules at evaluation ({', '.join(dropped[:5])}) — not read")
 
 
-def verdict(q5: float) -> str:
-    return "carries (≤ 1.3)" if q5 <= 1.3 else "steep (≥ 1.8)" if q5 >= 1.8 else "between: noted; the five-ring families enter the corpus first"
+def verdict(q5: float, curve: dict | None = None) -> str:
+    if q5 <= 1.3:
+        return "carries (≤ 1.3)"
+    if q5 < 1.8:
+        return "between: noted; the five-ring families enter the corpus first"
+    if curve is None:
+        return "steep (≥ 1.8) — no control curve read"
+    return ("steep (≥ 1.8) and the control still learning: data-limited — the five-ring and larger families enter the corpus; chain 42's arm D next"
+            if curve["still_learning"] else "steep (≥ 1.8) with a flat control curve: the search (recipe, loss, ring-coupling input) before any statement")
 
 
 def scaffold_of(ids) -> dict:
-    """id → its scaffold: the parent's name for a derivative, its own name for a parent."""
+    """id → its scaffold: the parent's name for a derivative with a parent_id, else the name before '+' (14 Oct 2026: the five-ring
+    neutrals carry no parent_id, so every derivative had counted as its own scaffold)."""
     rows = {r["id"]: r for r in csv.DictReader(open(CANDIDATES, encoding="utf-8"))}
-    return {i: rows[rows[i]["parent_id"]]["name"] if rows[i]["parent_id"] else rows[i]["name"] for i in ids if i in rows}
+    return {i: rows[rows[i]["parent_id"]]["name"] if rows[i]["parent_id"] in rows else rows[i]["name"].split("+")[0] for i in ids if i in rows}
 
 
-def read(size: list, fold1: list, fold2: list, scaffolds: dict | None = None) -> dict:
-    for recs, holds in ((size, ("s5", "s4N")), (fold1, ("s5",)), (fold2, ("s5",))):
+def seed_r_k(fold1: list, fold2: list) -> np.ndarray:
+    """r_K per seed: the mean of the two folds' ratios of that seed (records in seed order)."""
+    return np.array([0.5 * (a["s5"]["coupling_ratio"] + b["s5"]["coupling_ratio"]) for a, b in zip(fold1, fold2, strict=True)])
+
+
+def still_learning(full: np.ndarray, half: np.ndarray) -> dict:
+    """The learning-curve clause (14 Oct 2026): r_K(full) below r_K(half) by more than twice the combined standard error of the seed means."""
+    se = float(np.sqrt(full.var(ddof=1) / len(full) + half.var(ddof=1) / len(half)))
+    drop = float(half.mean() - full.mean())
+    return {"r_K_half": float(half.mean()), "r_K_full": float(full.mean()), "drop": drop, "two_se": 2 * se, "still_learning": drop > 2 * se}
+
+
+def read(size: list, fold1: list, fold2: list, scaffolds: dict | None = None, half1: list | None = None, half2: list | None = None) -> dict:
+    for recs, holds in ((size, ("s5", "s4N")), (fold1, ("s5",)), (fold2, ("s5",)), (half1 or [], ("s5",)), (half2 or [], ("s5",))):
         for h in holds:
             require_complete(recs, h)
     r_s = mean_of(size, "s5")
     r_k = float(np.mean([mean_of(fold1, "s5"), mean_of(fold2, "s5")]))
-    res = {"r_S": r_s, "r_K": r_k, "q5": r_s / r_k, "verdict": verdict(r_s / r_k),
+    curve = still_learning(seed_r_k(fold1, fold2), seed_r_k(half1, half2)) if half1 and half2 else None
+    res = {"r_S": r_s, "r_K": r_k, "q5": r_s / r_k, "verdict": verdict(r_s / r_k, curve), "control_curve": curve,
            "beside": {"size_arm_s4N": mean_of(size, "s4N"),
                       "omega_rms_s5": {"size": mean_of(size, "s5", "corrected_freq_rms"),
                                        "control": float(np.mean([mean_of(fold1, "s5", "corrected_freq_rms"), mean_of(fold2, "s5", "corrected_freq_rms")])),
@@ -83,15 +104,22 @@ def main() -> int:
     ap.add_argument("--size", nargs="+", required=True)
     ap.add_argument("--fold1", nargs="+", required=True)
     ap.add_argument("--fold2", nargs="+", required=True)
+    ap.add_argument("--fold1-half", nargs="+", default=None, help="the half-control arm of fold 1 (14 Oct 2026, learning-curve amendment)")
+    ap.add_argument("--fold2-half", nargs="+", default=None)
     a = ap.parse_args()
     load = lambda paths: [json.loads(Path(p).read_text(encoding="utf-8")) for p in paths]  # noqa: E731
     size = load(a.size)
-    res = read(size, load(a.fold1), load(a.fold2), scaffold_of(size[0]["s5"]["per_molecule"]))
-    res["files"] = {"size": a.size, "fold1": a.fold1, "fold2": a.fold2}
+    res = read(size, load(a.fold1), load(a.fold2), scaffold_of(size[0]["s5"]["per_molecule"]),
+               load(a.fold1_half) if a.fold1_half else None, load(a.fold2_half) if a.fold2_half else None)
+    res["files"] = {"size": a.size, "fold1": a.fold1, "fold2": a.fold2, "fold1_half": a.fold1_half, "fold2_half": a.fold2_half}
     lines = ["# Chain 41 — five fused rings from a corpus of at most four (registered read)", "",
              f"q5 = r_S / r_K = {res['r_S']:.3f} / {res['r_K']:.3f} = **{res['q5']:.2f}** → {res['verdict']}", "",
              f"Beside: size arm on s4N {res['beside']['size_arm_s4N']:.3f}; corrected ω on s5 — size {res['beside']['omega_rms_s5']['size']:.2f}, "
              f"control {res['beside']['omega_rms_s5']['control']:.2f}, zero rule {res['beside']['omega_rms_s5']['zero_rule']:.2f} cm⁻¹."]
+    if res["control_curve"]:
+        c = res["control_curve"]
+        lines.append(f"Control curve: r_K half {c['r_K_half']:.3f} → full {c['r_K_full']:.3f} (drop {c['drop']:.3f} against 2 SE {c['two_se']:.3f}): "
+                     f"{'still learning' if c['still_learning'] else 'flat'}.")
     for sc, v in res["beside"].get("r_S_per_scaffold", {}).items():
         lines.append(f"- r_S {sc}: {v:.3f}")
     Path(f"{OUT}.json").write_text(json.dumps(res, indent=1), encoding="utf-8")
