@@ -71,6 +71,15 @@ Whenever the machine is busy or the user is away, the next item is the cheapest 
 
 ## 6. Log
 
+- **15 Oct, 00:1x — two exploratory desk reads before their tests (the user, 14 Oct night: 'werk zelfstandig door').** (1) Benzene's basis
+ladder from data we have (`probes/benzene_anharmonic_basis_ladder.py`): Δ_anh at 6-31G*, against Miani 2000's B3LYP/TZ2P (the one calculation
+Boese & Martin also tabulate), differs by rms ≈ 8 cm⁻¹ on degenerate and non-degenerate, in- and out-of-plane modes alike — not a ν19 oddity
+and not a degenerate-pair artefact of our VPT2; d functions move out-of-plane modes most (rms 4.6 against 2.2). The basis question is broad on
+benzene; S1-TZ reads three molecules as registered. (2) Chain 39's size penalty per family (`probes/size_penalty_per_family.py`): ring
+couplings 1.96×, ring-ip 1.70× (seed range 1.57–1.87), 'other' 1.34×, CH-stretch 1.27×, CH-oop 1.33× unresolved — the size gap is ring
+in-plane physics, which rung 4's new families feed. Notes in both registrations; no line or prediction changed. Odds: shape 52 and size 50
+unchanged (both reads aim the coming tests; neither is a test).
+
 - **15 Oct, 00:0x — does more data still pay? Yes, steeply, on the frequencies (TASKS 58, desk; the user, 14 Oct night: 'Graag … werk
 zelfstandig door').** The withdrawn 30 Sep verdict is replaced by a measurement from existing records: the mixed curve 175/449/750 (chains 20/18/17)
 is a count curve at fixed composition (layer shares within 0.04) that the 2 Oct fit never used — it had paired an A + A2 175 with B-heavy 449/750

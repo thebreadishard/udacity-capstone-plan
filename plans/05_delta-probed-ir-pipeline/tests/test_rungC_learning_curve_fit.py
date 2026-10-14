@@ -69,3 +69,19 @@ def test_family_readouts_and_composition(tmp_path):
     big = _family_record(tmp_path / "b.json", [400], lambda i: "B" if i % 4 else "A2")
     c = LC.composition([str(small), str(big)])
     assert not c["fixed"] and c["max_spread"] == 0.75
+
+
+def test_size_penalty_per_family(tmp_path):
+    """probes/size_penalty_per_family.py (15 Oct 2026): exact per-seed numbers give exact ratios; a record of two sizes is refused."""
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "probes"))
+    import size_penalty_per_family as SP
+
+    def rec(path, scale, sizes=(370,)):
+        fam = {f: scale * (k + 1) for k, f in enumerate(SP.FAMILIES)}
+        one = {"coupling_ratio": scale, "corrected_freq_rms": 10 * scale, "diag_rms": fam}
+        json.dump({"curve": {str(n): {"per_seed": [{"s": one}, {"s": one}, {"s": one}]} for n in sizes}}, open(path, "w"))
+        return str(path)
+    out = SP.penalty(rec(tmp_path / "a.json", 2.0), rec(tmp_path / "b.json", 1.0))
+    assert all(abs(v["ratio"] - 2.0) < 1e-12 and v["size_se"] == 0 for v in out.values()) and len(out) == 6
+    with pytest.raises(ValueError, match="pool sizes"):
+        SP.penalty(rec(tmp_path / "c.json", 1.0, sizes=(100, 370)), rec(tmp_path / "b.json", 1.0))

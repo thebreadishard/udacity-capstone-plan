@@ -215,6 +215,9 @@ alarms). **Next:** a's step 1 place (the user, 15 Oct); the registration before 
 family, curve ranks breadth first; exact price 1,214–1,243 lane-h (CCX53 12.6–12.9 days, €259–266). Registered:
 `GoalGathering/notes/PreRegistration_2026-10-14_Rung4_Broad_Set.md` (line: every band family ≤ 2.5 cm⁻¹ on tetracene at k = 30; curve k = 0/10/20/30;
 still learning → 60 per family; flat → search first). **Waits for:** the user's place (15 Oct) → `--write-manifest`, exclude files + chain spec.
+**15 Oct 00:1x (desk, exploratory):** chain 39's size penalty per family (`probes/size_penalty_per_family.py`): ring couplings 1.96×, ring-ip
+1.70× (1.57–1.87), 'other' 1.34×, CH-stretch 1.27×, CH-oop 1.33× (0.85–2.04, unresolved) — the penalty sits in ring in-plane physics, which
+rung 4's new families feed. Note in the registration.
 60. **S1-TZ — does the basis of the anharmonic part matter? (registered 14 Oct 18:3x; the user: 'De registratie ... mag je schrijven, maar
 blijf voorzichtig met het gebruiken van benzeen als representant van wat dan ook').** `GoalGathering/notes/PreRegistration_2026-10-14_TZ_Anharmonic_Basis.md`.
 Δ_anh at B3LYP/def2-TZVP (G's grid 75/302) against G on **benzene, naphthalene and acenaphthylene** (sextet, quartet, trio + duo C–H) — benzene

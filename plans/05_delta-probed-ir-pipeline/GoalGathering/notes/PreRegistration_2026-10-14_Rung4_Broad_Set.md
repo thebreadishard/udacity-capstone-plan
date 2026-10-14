@@ -67,6 +67,15 @@ written from the frozen CSV by a small script with a test; one chain spec in `pr
 e(0) misses 2.5 cm⁻¹ in CH-oop on tetracene (solo hydrogens, rare below rung 4) and meets it in CH-stretch; at k = 30 ring-ip and CH-stretch
 meet the line, CH-oop does not but is still learning, so the most likely outcome is 'data-limited → 60 per family'. q₄ between 1.3 and 2.
 
+## Note (15 Oct 2026, 00:1x, before any rung-4 label) — where chain 39's size penalty sits; exploratory
+
+No line and no prediction above changes. `probes/size_penalty_per_family.py` on chain 39's two records
+(`probes/results_m1/size_penalty_2026-10-15/chain39_per_family.md`), hold-out (s) of ≥ 27 atoms, size run ≤ 20 atoms against the control
+of every size below 27, ratio of seed means (range from the seed extremes): ring-coupling ratio 1.96 (1.76–2.18), ring-ip diagonal **1.70
+(1.57–1.87)**, 'other' 1.34 (1.16–1.54), CH-stretch 1.27 (1.05–1.48), CH-oop 1.33 (0.85–2.04, not resolved from 1). The size penalty sits in
+the ring in-plane physics — the modes delocalised over fused rings — which is what a rung of new four-ring families feeds. My registered
+prediction named CH-oop as the likely miss at k = 30; on this evidence ring-ip is at least as likely. Recorded so that the read can say which.
+
 ## Outcome
 
 *(empty until the read)*
