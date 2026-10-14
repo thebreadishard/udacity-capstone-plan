@@ -71,6 +71,25 @@ Whenever the machine is busy or the user is away, the next item is the cheapest 
 
 ## 6. Log
 
+- **14 Oct, 23:5x — odds re-estimated for the user (previous: 14 Oct 07:2x).** Judgement on the day's evidence, not a measurement.
+Learning on the corpus (T1) 70 → 72: the 30 Sep 'data volume moves neither rung' verdict is withdrawn (12:3x; read on curves held at a target
+floor), so data volume is an open lever again, and every open read now carries the still-learning rule; nothing new was measured. Spectral
+shape 55 → 52: the benzene hybrid check missed its line (G 7.16 cm⁻¹ against ν_MCP − ω_CCSD(T); the published B3LYP/TZ2P 6.89 and B97-1/TZ2P
+5.19 miss it too, so the reference's own error exceeds 3.0) and left one real question, the basis of the anharmonic part (ν19 off by ≈ 15);
+S1-TZ is registered on three molecules (benzene never deciding alone) and S2's read is ready before its numbers; S2 has two of nineteen force
+fields. Size 50 → 50: rung 4 turned out to be two families wide (fluoranthene, pyrene) and rung 5 empty in the corpus — a thinner base for the
+size ladder than the word 'rung' suggested — but the fix is frozen, registered and priced (five four-ring benzenoid families × 30, tetracene the
+test family, 1,214–1,243 lane-hours, €259–266 on the CCX53 or less on two CPX62; place on the user's word, 15 Oct), and pool 3's neutrals now run
+on both runners. CC transfer (T3) 55 → 55 and intensities 75 → 75: anchor set three has two of eight anchors (quinoxaline; azulene since 22:06,
+its field-route APT accepted on the user's word with the FD cross-check failed for a diagnosed cause — a geometry symmetric only to 2.6e-3 bohr
+and an FD reference off the sum rule by 1.7e-3; the corpus-wide asymmetry moves frequencies by ≤ 0.47 cm⁻¹). Affordability 68 → 68 (rung 4's
+€120–266 is new, S1-TZ rides on `s1`). Licensed pipeline 89 → 88: a stale test found and fixed and the test runner now names failures; the
+Atlas changelog had dropped 11 of 489 ledger entries since 24 Sep (fixed, republished with four days of data); offset by my own slips — twice
+'four anchors of set three' to the user where there are two, a diagnostic's symmetry convention wrong for a few minutes (caught by benzene's
+8.1 bohr), a time stamp ahead of the clock. Hold-out (b) 50. Full mandate 38 → 38 (shape down, T1 up). Long-term line 60 → 60. Levers in
+order: (1) S2's read (≈ 18 Oct); (2) rung 4's place and launch (15 Oct); (3) S1-TZ after S2; (4) chain 40 (≈ 16 Oct); (5) the remaining six
+anchors of set three; (6) no number to the user I have not read from its source in the same breath.
+
 - **14 Oct, 12:3x — past verdicts that were read while the model could not learn, or on one point (the user: 'Hebben we in het verleden
 testen laten falen die eigenlijk nog aan het leren waren?' … 'doe de drie correcties maar').** Audit of the ledger's negative readings
 against the 19/25 Sep rules. **(1) Withdrawn: 'data volume of this kind moves neither rung … test closed … the PC is not bought for data
