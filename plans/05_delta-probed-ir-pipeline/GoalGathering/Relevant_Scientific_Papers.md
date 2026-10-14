@@ -812,3 +812,15 @@ therefore reads: CC *frequencies* of benzene are published; the *matrices* with 
 aromatic molecule to our knowledge. Item 105 fixes the caveat the paper must carry: at cc-pVDZ the anchors are a defined reference level with a basis
 error of tens of cm⁻¹ against the CC limit, not experiment-grade frequencies — their value is as consistent training labels and as the quantity a
 correction is learned against.
+
+## 14 October 2026, 13:0x — TASKS 56: is there a published CCSD(T) quartic force field of benzene? (author, web search + Crossref)
+
+Searched: two standard and one extended web search ('CCSD(T) quartic force field benzene', 'benzene anharmonic force field coupled cluster
+VPT2', 'benzene CCSD(T) anharmonic frequencies VPT2 OR VCI …'), then Crossref for every candidate. **No full CCSD(T) cubic/quartic force field
+of benzene was found**; the literature's standard for benzene is the hybrid (CC harmonic + DFT anharmonic), as item 14 says.
+
+| # | what | identifier | status |
+|---|---|---|---|
+| 111 | Focal-point MP2/CCSD(T) for harmonic and VPT2 fundamental frequencies; MAE 7.3 cm⁻¹ vs experiment — **on 20 molecules of up to six atoms, so not benzene** (a search snippet had suggested benzene) | Nelson, P. M.; Glick, Z. L.; Sherrill, C. D., J. Chem. Phys. 159, 094104 (2023), DOI 10.1063/5.0168608 (Crossref abstract read 14 Oct) | **record**; Nelson is pyVPT2's maintainer (item 83) |
+| 104 (addendum) | Boese & Martin 2004 (item 104) carry the benzene data a free check needs: Table I, benzene harmonics at B97-1/TZ2P, B3LYP/TZ2P and **CCSD(T)/spdf (item 102)** beside experimentally derived ω; Table II, computed fundamentals (B97-1/TZ2P, B3LYP/TZ2P, the **hybrid 'CCSD(T)/B97-1'**) against the **experimental fundamentals of GOT and of Miani et al. 2000 (MCP)**; the text names the Fermi resonances (ν3+ν16/ν15, ν13+ν16/ν12, ν16+ν13/ν5, ν2+ν18/ν16) and reports, without the C–H stretches, B3LYP/TZ2P fundamentals at MAE 3.7 / RMS 4.8 cm⁻¹ against MCP | arXiv:physics/0311069 (open; read 14 Oct). **The PDF's text extraction scrambles Table I's columns: numbers must be read from the rendered page** | **usable for TASKS 56's check** |
+| 45 (note) | Esposito, Fortenberry, Boersma & Allamandola, J. Chem. Phys. 160, 211101 (2024) — the C–H stretch overtones of benzene → tetracene; the abstract names no CCSD(T) quartic force field | DOI 10.1063/5.0208597 (Crossref 14 Oct) | already item 45 |
