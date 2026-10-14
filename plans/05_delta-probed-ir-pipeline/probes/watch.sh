@@ -93,7 +93,8 @@ check_anchors3() {   # anchor set three (probes/anchor_wave.sh): each '=== (AS3)
   return 0
 }
 
-check_server_run() {   # $1 host, $2 log, $3 tag, $4 process ERE, $5 end-marker ERE, $6 unreachable counter, $7 variable for the quiet line
+check_server_run() {   # $1 host, $2 log, $3 tag, $4 process ERE, $5 end-marker ERE, $6 unreachable counter, $7 variable for the quiet line,
+  # $8 (optional) ERE of routine markers: recorded as seen without waking the session (14 Oct 2026, S2's per-molecule start/done)
   # each '=== (<tag>)' line once; the runner gone before an end marker is an anomaly (S1 13 Oct, S2 14 Oct 2026)
   has_host "$1" || return 0
   local rc alive line out
@@ -103,7 +104,10 @@ check_server_run() {   # $1 host, $2 log, $3 tag, $4 process ERE, $5 end-marker 
   printf -v "$7" '%s' "$out"
   [ "$out" = "NOLOG" ] && return 0
   alive=$(echo "$out" | head -1 | awk '{print $2}')
-  while read -r line; do new_marker "$(echo "$line" | cut -c1-110)" && exit 2; done < <(echo "$out" | tail -n +2)
+  while read -r line; do
+    if [ -n "${8:-}" ] && echo "$line" | grep -qE "$8"; then new_marker "$(echo "$line" | cut -c1-110)" > /dev/null; continue; fi
+    new_marker "$(echo "$line" | cut -c1-110)" && exit 2
+  done < <(echo "$out" | tail -n +2)
   if [ "$alive" = "0" ] && ! echo "$out" | grep -qE "$5"; then
     echo "ANOMALY $(t): $3 runner on $1 gone without an end marker — $(echo "$out" | tail -n 1)"; exit 1
   fi
@@ -112,7 +116,8 @@ check_server_run() {   # $1 host, $2 log, $3 tag, $4 process ERE, $5 end-marker 
 
 check_s1srv() { check_server_run s1 /root/dpir/s1.log S1 '^bash (/root/dpir/)?probes/s1_anharmonic_level\.sh ' \
   '^=== \(S1\) (all settings done|SETTINGS FAILED|[A-Z]+: STOPPED|[A-Z]+: QFF FAILED)' sfails so; }
-check_s2srv() { check_server_run s1 /root/dpir_s2/s2.log S2 '^bash (/root/dpir_s2/)?probes/s2_batch\.sh ' '^=== \(S2\) all done' s2fails s2o; }
+check_s2srv() { check_server_run s1 /root/dpir_s2/s2.log S2 '^bash (/root/dpir_s2/)?probes/s2_batch\.sh ' '^=== \(S2\) all done' s2fails s2o \
+  '^=== \(S2\) [A-Za-z0-9_]+: (start|done|already done, skipped) '; }
 
 check_ci() {   # 13 Oct 2026: six red plan05 runs in a row went unseen for eight hours; a failed run is reported once per commit
   local r
