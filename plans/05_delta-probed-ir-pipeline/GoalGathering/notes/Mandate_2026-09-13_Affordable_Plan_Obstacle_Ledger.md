@@ -71,6 +71,20 @@ Whenever the machine is busy or the user is away, the next item is the cheapest 
 
 ## 6. Log
 
+- **14 Oct, 07:2x — odds re-estimated for the user after the night's affordability read (previous: 13 Oct 20:3x).** Judgement, not a
+measurement. Spectral shape, anharmonic step 45 → 55: S1 read as registered and predicted — G (6-31G*, 75/302) moves Δ_anh by 0.19 / 0.35 cm⁻¹
+against R and costs 0.48 of R per Hessian on benzene, B fails (3.16 / 7.51); the ± symmetry saving passes its registered test (0.17 / 0.40),
+the pair saving fails (1.22 / 3.24; the Lebedev grid is not hexagonal, TASKS 55); S2 (can Δ_anh be learned per mode) registered and running
+on `s1` since 07:02. Affordability 60 → 68: the shape line's committed part (S2 + S3's tetracene, coronene, peropyrene) ≈ €240–290, the five
+large PAHs at G ≈ €1,300 instead of ≈ €2,750; HBC (≈ €811) stays the open item, beside routes (b)/(c); caveat: G's 0.48 is benzene's ratio,
+re-timed on each target. Licensed pipeline 88 → 89: two registrations held before their numbers and both predictions came true; optking #116
+merged upstream; two operational faults caught within minutes and fixed at the source (a CRLF id list failed all of S2's molecules in 3 s;
+a watch marker that repeated); offset by my third unmeasured time quote in two days (#2702 '≈ 01:00', still running at 07:00). Unchanged: T1
+70, T3 55, hold-out (b) 50, intensities 75, size 50 (no new read). Full mandate 36 → 38 (the shape half moved from priced-out to priced and
+half-tested). Long-term line 60 → 60. Levers in order: (1) S2's read (days) — whether one learned shift carries the large PAHs; (2) S3 on
+tetracene at G, first Hessian timed (≈ €32); (3) R-C as anchor set three lands (azulene); (4) chain 40 (≈ 16 Oct); (5) the parity-odd retrain
+when the laptop frees; (6) quote no runtime I have not timed on the target.
+
 - **13 Oct, 20:3x — odds re-estimated for the user (previous: 12 Oct 13:5x).** Judgement on the day's evidence, not a measurement.
 Learning on the corpus (T1) 70 → 70: nothing read; chain 40 (≈ 16 Oct) and 35h still run. CC transfer (T3) 60 → 55: the network's CC-level
 out-of-plane diagonal has no skill on the six anchors (slopes ≤ 0.19, `oop_block_2026-10-13`, exploratory) and the λ = 1 fine-tune costs
