@@ -193,6 +193,14 @@ withdrawn sentence.
 route for the hybrid head' on one size (750) with seeds spread 0.30–0.44. *Redo when a lane is free:* the hybrid head on the ridge target at
 two more pool sizes, three seeds, with the learning-curve clause; or a dated note that the carried recipe has made the question moot,
 with the reason.
+60. **S1-TZ — does the basis of the anharmonic part matter? (registered 14 Oct 18:3x; the user: 'De registratie ... mag je schrijven, maar
+blijf voorzichtig met het gebruiken van benzeen als representant van wat dan ook').** `GoalGathering/notes/PreRegistration_2026-10-14_TZ_Anharmonic_Basis.md`.
+Δ_anh at B3LYP/def2-TZVP (G's grid 75/302) against G on **benzene, naphthalene and acenaphthylene** (sextet, quartet, trio + duo C–H) — benzene
+only because it has the semi-experimental reference; no decision on benzene alone (the fused pair decides when they differ). Lines: (a) G holds
+if rms(d) ≤ 1.5 on each and pooled CH-oop ≤ 1.5; (b) basis matters if > 3.0 on any or pooled CH-oop > 3.0 (S3 route A at T); (c) between: G
+stays, per-family d carried as a systematic error, one T force field on tetracene. Grid gate at T (max |Δω| ≤ 1.0 cm⁻¹, 75/302 vs 99/590).
+*Price:* benzene's first T Hessian prices it (G per Hessian measured: 112 / 550 / 967 s). *Where:* `s1` after S2 (≈ 18 Oct) **only if the user
+keeps the server for it** (spending), or another server on the user's word. Nothing runs before then; S3's route-A numbers wait for this read.
 attempt did not test it: closing the window left the app running (Claude processes from 12 Oct 23:14; snapshot
 `probes/watch_state/relaunch_test_2026-10-13_before.txt`, every pid alive, heartbeat without a gap). It showed a real risk instead: every job
 launched on 12 Oct sat in an empty-looking Windows Terminal window, and closing one kills its job; `tools/launch_outside_app.sh` now starts
