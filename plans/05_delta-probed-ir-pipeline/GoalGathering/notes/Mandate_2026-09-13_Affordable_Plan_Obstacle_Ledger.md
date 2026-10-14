@@ -71,6 +71,16 @@ Whenever the machine is busy or the user is away, the next item is the cheapest 
 
 ## 6. Log
 
+- **15 Oct, 00:0x — does more data still pay? Yes, steeply, on the frequencies (TASKS 58, desk; the user, 14 Oct night: 'Graag … werk
+zelfstandig door').** The withdrawn 30 Sep verdict is replaced by a measurement from existing records: the mixed curve 175/449/750 (chains 20/18/17)
+is a count curve at fixed composition (layer shares within 0.04) that the 2 Oct fit never used — it had paired an A + A2 175 with B-heavy 449/750
+(spread 0.78) and read 1.17 / 1.69 per decade. At fixed composition: corrected ω falls 2.13× per decade on hold-out (a) and 1.93× on (b); CH-oop
+2.06× / 2.20×; 'other' 1.95× on (a), 1.47× and noisy on (b) — the coverage gap count does not close; ring ratio 1.46× (a), 1.17× (b). A further
+decade at that composition: ≈ 10,700 lane-hours ≈ 111 CCX53-days ≈ €2,290 (labels-server fit, inside its measured range), and more A2/B
+candidates than are pending. Caveats: three points over 0.63 decade, the 2 Oct recipe on FD labels (chain 34 sits lower at 750), proxy level.
+`probes/rungC_learning_curve_fit.py` now reports composition and flags a spread above 0.05 (tests). **Odds:** T1 72 → 75 (a judgement now
+standing on a measured slope); full mandate 38 → 39; the PC question goes to the user with this curve.
+
 - **14 Oct, 23:5x — odds re-estimated for the user (previous: 14 Oct 07:2x).** Judgement on the day's evidence, not a measurement.
 Learning on the corpus (T1) 70 → 72: the 30 Sep 'data volume moves neither rung' verdict is withdrawn (12:3x; read on curves held at a target
 floor), so data volume is an open lever again, and every open read now carries the still-learning rule; nothing new was measured. Spectral

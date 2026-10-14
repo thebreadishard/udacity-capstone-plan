@@ -40,3 +40,32 @@ def test_duplicate_size_refused_and_two_sizes_needed(tmp_path):
     with pytest.raises(ValueError, match="at least two"):
         LC.fit_curves([str(p2)], targets=(5000,))
     assert np.isfinite(LC.fit_curves([str(p1)], targets=(5000,))["a"]["ring_coupling_ratio"]["slope"])
+
+
+def _family_record(path, sizes, layers_at, slope=-0.3):
+    """Exact power laws in every read-out and family; pool_ids whose layer shares are `layers_at(n)`."""
+    curve = {}
+    for n in sizes:
+        r = 2.0 * n ** slope
+        fam = {f: (k + 1) * r for k, f in enumerate(LC.FAMILIES)}
+        one = {"coupling_ratio": r, "corrected_freq_rms": 10 * r, "diag_rms": fam}
+        curve[str(n)] = {"per_seed": [{"seed": s, "a": one, "b": one} for s in range(3)]}
+    n_max = max(sizes)
+    ids = [f"{layers_at(i)}_{i:06d}" for i in range(n_max)]
+    json.dump({"curve": curve, "pool_ids": ids}, open(path, "w"))
+    return path
+
+
+def test_family_readouts_and_composition(tmp_path):
+    """--families (15 Oct 2026): every band family is fitted; the composition check passes a nested pool and flags a curve whose layers change."""
+    nested = _family_record(tmp_path / "n.json", [100, 400], lambda i: "B" if i % 4 else "A2")
+    out = LC.fit_curves([str(nested)], targets=(5000,), families=True)
+    for k, f in enumerate(LC.FAMILIES):
+        assert abs(out["a"][f"diag_rms_{f}"]["slope"] + 0.3) < 1e-9
+        assert abs(out["b"][f"diag_rms_{f}"]["predictions"]["5000"]["point"] - (k + 1) * 2.0 * 5000 ** -0.3) < 1e-6
+    assert "diag_rms_CH-oop" not in LC.fit_curves([str(nested)], targets=(5000,))["a"]
+    assert LC.composition([str(nested)])["fixed"]
+    small = _family_record(tmp_path / "s.json", [100], lambda i: "A2")
+    big = _family_record(tmp_path / "b.json", [400], lambda i: "B" if i % 4 else "A2")
+    c = LC.composition([str(small), str(big)])
+    assert not c["fixed"] and c["max_spread"] == 0.75

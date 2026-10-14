@@ -188,7 +188,11 @@ neither rung; the PC is not bought for data volume' was read on curves held at a
 desk first:* refit the post-fix curves — chain 18's T2 (ω factor 1.69 per decade, ≈ 20,000 molecules for ω ≤ 2 cm⁻¹ at that slope), chain
 37's count step, chain 39's learning curve (TASKS 37) — per family and per hold-out, and state what a further decade of DFT rows would buy
 and cost (labels server prices). *Then:* the PC question (`reference-alternate-pc-config`) put to the user with that curve, not with the
-withdrawn sentence.
+withdrawn sentence. **15 Oct 00:0x desk step DONE** (`probes/results_m1/data_volume_curves_2026-10-15/README.md`): the mixed curve 175/449/750 is at fixed
+composition (spread 0.04) and was never fitted — ω falls ≈ 2× per decade on both hold-outs (2.13 (a), 1.93 (b)), CH-oop ≈ 2.1×, 'other' 1.95× on
+(a) but 1.47× and noisy on (b) (the coverage gap); a decade (750 → 7,500 at that composition) ≈ 10,700 lane-hours ≈ 111 CCX53-days ≈ €2,290 on the
+labels fit, and needs ≈ 5,200 B / 1,280 A2 rows (3,610 / 605 pending). **Next:** the PC question to the user with this curve; the slope of
+today's carried recipe (chain 34) is unmeasured — one cheap check: chain 34's recipe at 449 beside its 750 (chain 18's 449 took 1,403 s per seed on the laptop, its record; chain 34's recipe untimed at 449).
 59. **The ridge target for the hybrid head, read along a curve (14 Oct 2026; same request; low priority).** Chain 10 (1 Oct) closed 'the ridge
 route for the hybrid head' on one size (750) with seeds spread 0.30–0.44. *Redo when a lane is free:* the hybrid head on the ridge target at
 two more pool sizes, three seeds, with the learning-curve clause; or a dated note that the carried recipe has made the question moot,

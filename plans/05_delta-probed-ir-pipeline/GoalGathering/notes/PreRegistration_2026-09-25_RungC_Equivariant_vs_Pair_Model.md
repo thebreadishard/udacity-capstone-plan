@@ -2310,3 +2310,16 @@ ring-coupling input) before any statement about the mandate.
 
 **Chain 42.** Line 2 already carries the rule (g ≥ 0.95: 'six are too few to judge, so a second point follows'). Line 1 (q_T ≥ 1.8) is read
 like chain 41's: alone it is not a verdict on the 50–100-atom targets; with line 2's g it is the curve's first two points.
+
+## Dated correction, 15 October 2026, 00:0x — chain 20's reading, and the data-volume curve at fixed composition (TASKS 58; desk, no new run)
+
+Chain 20 (2 Oct 03:0x) withdrew the mixed-pool curve as 'count conflated with composition' after comparing its 175 point with chain 14b's A + A2
+175. But the mixed curve's own points — 175 (chain 20), 449 (chain 18), 750 (chain 17) — are nested subsets of one hashed order with layer shares
+A2 0.21 / 0.19 / 0.19, B 0.79 / 0.78 / 0.77, A 0 / 0.03 / 0.04 (spread 0.04): a count curve at fixed composition, never fitted. Fitted now
+(`probes/rungC_learning_curve_fit.py --families`, which since today reports the composition and flags a spread above 0.05;
+`probes/results_m1/data_volume_curves_2026-10-15/`): hold-out (a) corrected ω 5.75 → 4.58 → 3.50, factor 2.13 per decade (68 % slope band
+−0.41 … −0.25), ring ratio 0.275 → 0.216, factor 1.46; hold-out (b) ω 6.70 → 4.41, factor 1.93, ratio factor 1.17. Per family: CH-oop 2.06 (a) /
+2.20 (b) per decade, 'other' 1.95 (a) / 1.47 (b, noisy), ring-ip 1.36 / 1.35, CH-stretch 3.51 / 3.02. The 2 Oct fit (1.17 / 1.69) mixed an
+A + A2 175 with B-heavy 449/750 (spread 0.78) and understated the slope; chain 21's A + A2 curve is not at fixed composition either (layer A
+0 → 0.19). Caveats in the results README (three points over 0.63 decade, the 2 Oct recipe on FD labels, proxy level). The T2 numbers of 2 Oct
+stay withdrawn; these replace them as the planning curve, not as a registered read.
