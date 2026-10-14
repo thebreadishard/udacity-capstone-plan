@@ -1,4 +1,4 @@
-# Is our DFT anharmonic shift right for benzene? A free check against experiment (registered 14 Oct 2026, 13:1x, before any table number was read)
+# Is our DFT anharmonic shift right for benzene? A free check against experiment (registered 14 Oct 2026, 13:0x, before any table number was read)
 
 *TASKS 56. The pipeline's spectrum is ν = ω(CC, through the network) + Δ_anh(DFT): the hybrid scheme. A full CCSD(T) quartic force field of
 benzene is not published as far as we could find (`Relevant_Scientific_Papers.md`, section of 14 Oct). What is published: benzene's CCSD(T)
