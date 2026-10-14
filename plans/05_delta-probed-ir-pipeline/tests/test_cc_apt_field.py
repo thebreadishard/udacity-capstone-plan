@@ -28,3 +28,18 @@ def test_the_cc_field_route_agrees_with_fd_of_the_relaxed_dipole():
     assert np.abs(P_field - P_fd).max() < 5e-5
     assert sum_rule(P_field) < 1e-9 < sum_rule(P_fd)
     assert np.abs(apt_cc_field(mol, 1, 5e-4, log=quiet) - P_field).max() < 2e-5          # the field error is O(F²) and small
+
+
+def test_a_stopped_field_run_resumes_from_its_cached_gradients(tmp_path):
+    """14 Oct 2026: azulene's re-run was stopped after 4 of 6 fields and kept nothing; each field's gradient is now cached and reused, and
+    a cache from another geometry is refused, not reused."""
+    mol = gto.M(atom=WATER, unit="Bohr", basis="6-31g", symmetry=False, verbose=0)
+    quiet = lambda *a, **k: None  # noqa: E731
+    P1 = apt_cc_field(mol, 1, 1e-3, log=quiet, cache_dir=str(tmp_path))
+    assert len(list(tmp_path.glob("grad_*.npz"))) == 6
+    seen = []
+    P2 = apt_cc_field(mol, 1, 1e-3, log=lambda *a, **k: seen.append(a[0]), cache_dir=str(tmp_path))
+    assert np.array_equal(P1, P2) and sum("reused" in s for s in seen) == 6
+    moved = gto.M(atom=[(s, (x, y, z + 0.01)) for s, (x, y, z) in WATER], unit="Bohr", basis="6-31g", symmetry=False, verbose=0)
+    with pytest.raises(SystemExit):
+        apt_cc_field(moved, 1, 1e-3, log=quiet, cache_dir=str(tmp_path))

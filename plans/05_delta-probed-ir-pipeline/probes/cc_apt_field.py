@@ -49,16 +49,32 @@ def cc_gradient_in_field(mol, frozen, F):
     return grad - mol.atom_charges()[:, None] * F[None, :], mu, energy
 
 
-def apt_cc_field(mol, frozen, field=1e-3, log=print):
-    """The CCSD(T) APT [3, 3N] from six gradients in ±field along x, y, z."""
+def apt_cc_field(mol, frozen, field=1e-3, log=print, cache_dir=None):
+    """The CCSD(T) APT [3, 3N] from six gradients in ±field along x, y, z. With cache_dir, each field's gradient is kept as
+    <cache_dir>/grad_<x|y|z><p|m>.npy and reused on a re-run (14 Oct 2026: a stopped run had lost 4 of 6 fields); a cached gradient is used only
+    when its stored field, coordinates and basis match."""
     P = np.zeros((3, 3 * mol.natm))
     t0 = time.time()
+    if cache_dir:
+        os.makedirs(cache_dir, exist_ok=True)
     for t in range(3):
         g = []
         for s in (+1.0, -1.0):
             F = np.zeros(3)
             F[t] = s * field
+            tag = f"{'xyz'[t]}{'p' if s > 0 else 'm'}"
+            path = os.path.join(cache_dir, f"grad_{tag}.npz") if cache_dir else None
+            if path and os.path.exists(path):
+                c = np.load(path)
+                if np.allclose(c["field"], F) and np.allclose(c["coords_bohr"], mol.atom_coords()) and str(c["basis"]) == str(mol.basis):
+                    g.append(c["grad"])
+                    log(f"  field {'xyz'[t]}{'+' if s > 0 else '-'} reused from {path}", flush=True)
+                    continue
+                raise SystemExit(f"{path} belongs to another field, geometry or basis — not reused; remove it or choose another --cache-dir")
             g.append(cc_gradient_in_field(mol, frozen, F)[0])
+            if path:
+                np.savez(path + ".tmp.npz", grad=g[-1], field=F, coords_bohr=mol.atom_coords(), basis=str(mol.basis))
+                os.replace(path + ".tmp.npz", path)
             log(f"  field {'xyz'[t]}{'+' if s > 0 else '-'} done, {time.time() - t0:.0f} s", flush=True)
         P[t] = -(g[0] - g[1]).ravel() / (2 * field)
     return P
@@ -89,6 +105,7 @@ def main():
     ap.add_argument("--max-memory", type=int, default=8000)
     ap.add_argument("--coords-from", help="an E8 npz (reference.npz, apt_ccsd_t.npz) whose coords_bohr replace the geometry file's (same atom order)")
     ap.add_argument("--fast", action="store_true", help="the (T) density and lambda C kernels of probes/t_density_kernel (as the E8 probe's flags)")
+    ap.add_argument("--cache-dir", default=None, help="keep each field's gradient here and reuse it on a re-run (default: <out>.fields)")
     a = ap.parse_args()
     lib.num_threads(a.threads)
     log = print
@@ -110,7 +127,7 @@ def main():
     log(f"CC APT by the field route: {len(symbols)} atoms, {a.basis}, frozen {frozen}, field {a.field:g}, {a.threads} threads"
         f"{', fast (T) kernels' if a.fast else ''}", flush=True)
     t0 = time.time()
-    P = apt_cc_field(mol, frozen, a.field, log)
+    P = apt_cc_field(mol, frozen, a.field, log, cache_dir=a.cache_dir or a.out + ".fields")
     sr = sum_rule(P, mol.charge)
     np.savez_compressed(a.out, apt=P, sum_rule_max=sr, field=a.field, basis=a.basis, frozen=frozen, coords_bohr=x, symbols=np.array(symbols),
                         route="cc_field", seconds=round(time.time() - t0))
