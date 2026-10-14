@@ -71,6 +71,21 @@ Whenever the machine is busy or the user is away, the next item is the cheapest 
 
 ## 6. Log
 
+- **14 Oct, 12:3x — past verdicts that were read while the model could not learn, or on one point (the user: 'Hebben we in het verleden
+testen laten falen die eigenlijk nog aan het leren waren?' … 'doe de drie correcties maar').** Audit of the ledger's negative readings
+against the 19/25 Sep rules. **(1) Withdrawn: 'data volume of this kind moves neither rung … test closed … the PC is not bought for data
+volume'** (30 Sep 23:2x, C1: 449 → 0.83, 750 → 0.82 against 0.81 at 175; C2 the same; the hybrid head 0.51 → 0.47 → 0.46 'read as flat').
+On 1 Oct every head turned out to sit on a floor of ≈ 0.4 set by the training target (the pattern term's projected target), not by the data:
+those curves could not fall whatever the data. After the fix the carried recipe learns with data — chain 18 (2 Oct 01:4x): (a) 0.24 / 0.235
+/ 0.22 and ω 5.0 / 4.6 / 3.5 cm⁻¹ at 175 / 449 / 750 (ω falls by a factor 1.69 per decade). The data-volume question, and the PC question that
+hung on it, are reopened (TASKS 58). **(2) Relabelled: QM9 pretraining 'flat'** — lever 2b (1 Oct 17:1x) was read 'flat' while its own
+line says validation was still falling at the cap (decision 51 flagged both), and chain 15c (2 Oct 00:0x) found 'no information at 175' at one
+pool size; pretraining is parked, not refuted, until it is read along the pool size (TASKS 57). **(3) Relabelled as single points:** chain
+10's 'the ridge route is closed for the hybrid head' (1 Oct 19:3x: one size, 750, seeds 0.30–0.44) and 'B adds nothing' (27 Sep 20:1x: one
+added point, +274 layer-B molecules, which led to the re-hash, not to a stop) — neither is a statement about what more data would do (TASKS
+59 for the first). Held as read: E6's flat coupling curve (23 Sep; three sizes, slope ≈ 0 against the registered −0.25, answered by a new
+representation that then learned), E11.8 (a label-noise lever, not a data one), module 06's decision-51 audit (closed by a reasoned note).
+
 - **14 Oct, 11:2x — the 'still learning' rule applied to every open read (the user: 'De "nog aan het leren"-regel geldt niet alleen voor
 S2 … Ja, repareer').** A test on few molecules that misses its line while its validation error is still falling has not failed (standing
 rules of 19 and 25 Sep). Audit of the open registrations: (1) **chain 40** — the STOP branch at ≈ 30 per family was a one-count verdict;
