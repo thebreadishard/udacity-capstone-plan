@@ -150,6 +150,17 @@ a solo-C–H molecule). That is a learned quantity read on few examples, so the 
 read and fetched (FETCHED line), then the user deletes it. Benzene's first T Hessian prices the run; the price goes to TASKS 60 before
 naphthalene and acenaphthylene start.
 
+## Note (15 Oct 2026, 00:1x, before any triple-ζ computation) — benzene's basis ladder from data we already have; exploratory
+
+No line and no prediction above changes. `probes/benzene_anharmonic_basis_ladder.py` → `probes/results_m1/benzene_basis_ladder_2026-10-15/`
+puts benzene's Δ_anh at B3LYP/6-31G (S1's B), 6-31G* (G) and TZ2P (Miani et al. 2000's finite-difference force field — the same single
+calculation that Boese & Martin tabulate, so not a second route) side by side, over the hybrid check's 14 modes. 6-31G* − TZ2P: rms 7.5 on the
+degenerate modes, 8.1 on the non-degenerate ones, 7.5 out of plane, 8.0 in plane — so the gap is **not** a degenerate-pair artefact of dpir's VPT2
+and not confined to ν19 (the largest are ν3, a2g, +20.2, which the paper marks as Fermi-affected; ν19, e2u, +15.5; ν9, b2u, −6.5). Adding
+d functions (6-31G → 6-31G*) moves Δ_anh by rms 3.3, more out of plane (4.6) than in plane (2.2), and ν19 goes −11.7 → −4.5 → −20 along the
+three bases: not monotonic. On benzene alone this says the basis question is broad, which is why S1-TZ reads three molecules; the TZ2P column
+carries the finite-difference precision of 2000 and is no truth.
+
 ## Outcome
 
 *(empty until all three T force fields are read)*

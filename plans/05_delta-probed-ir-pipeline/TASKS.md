@@ -226,6 +226,9 @@ keeps the server for it** (spending), or another server on the user's word. Noth
 **18:4x amendment 1:** the user: 'Ja' (keep `s1` for S1-TZ after S2, until read and fetched) 'en vergeet niet de is-nog-aan-het-leren regel' — the
 per-family correction d̄_f (branch c, solo question) is read along k = 1, 2 molecules; a transfer miss while still learning is data-limited →
 one more fused hydrocarbon at T (biphenylene, then azulene), not a failure; flat → the search first, then route A at T.
+**15 Oct 00:1x (desk, exploratory, before any T number):** benzene's basis ladder from existing data (`probes/benzene_anharmonic_basis_ladder.py`):
+6-31G* − TZ2P (Miani 2000) rms ≈ 8 cm⁻¹ on degenerate and non-degenerate, in- and out-of-plane modes alike — broad, not a ν19 or degenerate-pair
+artefact; 6-31G → 6-31G* moves Δ_anh by rms 3.3 (out of plane 4.6). Note in the registration; lines and prediction unchanged.
 **19:1x tools ready (before any T number):** grid gate in the runner (`GATE_GRID=99,590 bash probes/s2_batch.sh <list> <root> 3 5
 T:def2-tzvp:75,302`; `s1_anharmonic_level.py gate`; water smoke in WSL: pass 0.03 cm⁻¹ runs on, a forced fail stops before the first displaced
 Hessian with GATE_FAILED and the batch marker 'GATE FAILED'); the read `probes/s1tz_read.py --mol benzene=G,T --mol naphthalene=G,T --mol

@@ -55,3 +55,17 @@ def test_geometry_survey_on_azulene_and_benzene():
     assert az["max_abs_dfreq_symmetrised_cm"] == pytest.approx(0.056, abs=2e-3)
     bz = G.survey_one(str(MOL / "A_8448043181"))
     assert bz["n_ops"] == 24 and bz["geometry_residual_bohr"] < 2e-4
+
+
+@pytest.mark.skipif(not (PLAN / "probes/results_m1/s1_anharmonic_benzene_2026-10-13/s1_benzene/B/qff_report.npz").exists(), reason="S1 results not here")
+def test_benzene_basis_ladder_matches_the_hybrid_check():
+    """probes/benzene_anharmonic_basis_ladder.py (15 Oct 2026): the 6-31G* column is the hybrid check's G column; ν19 (e2u) reads −11.7 / −4.5 /
+    −20 along 6-31G, 6-31G*, TZ2P."""
+    import json
+
+    import benzene_anharmonic_basis_ladder as L
+    rows = {x["mode"]: x for x in L.ladder()}
+    hc = json.load(open(PLAN / "probes/results_m1/hybrid_check_benzene_2026-10-14/hybrid_check.json", encoding="utf-8"))
+    assert all(abs(rows[p["mode"]]["d_631gs"] - p["d_G"]) < 1e-9 for p in hc["pairs"])
+    r19 = rows[19]
+    assert r19["irrep"] == "e2u" and (round(r19["d_631g"], 1), round(r19["d_631gs"], 1), r19["d_tz2p"]) == (-11.7, -4.5, -20)
