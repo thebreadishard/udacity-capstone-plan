@@ -225,6 +225,34 @@ is not adopted. It is adopted when:
 - its matched intensity rel. rms is below λ = 1's on at least two thirds of the new anchors; and
 - its CH-oop ω rms is within 1.0 cm⁻¹ of λ = 1's.
 
+## Amendment (14 Oct 2026, 11:1x, before any read of set three; quinoxaline is fetched, nothing of it is read) — the scale of the test
+
+*The user, 14 Oct: a test on a limited number of molecules that misses its line while it is demonstrably still learning has not failed, and
+the rule holds beyond S2 ('Ja, repareer'). R-A's '< 5 % lower → anchors are not the lever' and arm M's 'fails out of sample' were verdicts
+on one count of anchors (six plus at most eight).*
+
+**R-A along the anchor count.** Besides the registered 5 against 5 + k, the original six anchors' leave-one-anchor-out CH-oop error (λ = 1,
+mean over the six and the three seeds) is read with k_s new carried anchors added to every fold's pool, k_s ∈ {2, 4, all}, five random
+subsets per k_s below 'all' (numpy seed 0; all subsets when fewer exist). **'Still learning':** the error at 'all' is below the error at
+k_s = 4 by more than twice the combined standard error (over subsets and seeds), and the last step is downward.
+**Verdicts, replacing the '< 5 %' branch:**
+- **< 5 % lower and still learning** → data-limited: anchors are still the lever at this count; anchor set four (the next low-symmetry
+  corpus molecules by set three's rule) is priced and put to the user, and the structural change is registered beside it, not instead;
+- **< 5 % lower and flat** → anchors at this count are not the lever for the out-of-plane block; the structural change (block-wise treatment
+  of the couplings) is registered next, as before;
+- the ≥ 20 % and 'between' branches stand. 'other' is reported along the same curve.
+
+**Arm M along the anchor count.** The model's three numbers are fitted per fold on the training anchors; the arm is also read with the fit
+on subsets of the training anchors (k_t ∈ {4, 8, all} of the fold's training anchors, five subsets below 'all', seed 0), judged on the new
+anchors' folds as registered. **'Still learning'** as above, between k_t = 8 and 'all'. **'Fails out of sample'** (< 5 % below λ = 1's) now
+requires a flat curve; < 5 % with a curve still learning reads 'data-limited', and the arm is read again with set four. 'Adopt' stands.
+
+**R-B** is reported along the same anchor-count curve as R-A (no new line): if λ = 1's matched intensity error is still falling with k_s,
+the λ question waits for set four instead of a re-choice of λ.
+
+**Cost:** fine-tune and evaluation runs only (no new quantum chemistry); the number of runs is 3 sizes × 5 subsets × 3 seeds per arm, timed
+on the first subset and stated before the rest run.
+
 ## Outcome
 
 *(appended after the reads)*

@@ -71,6 +71,22 @@ Whenever the machine is busy or the user is away, the next item is the cheapest 
 
 ## 6. Log
 
+- **14 Oct, 11:2x — the 'still learning' rule applied to every open read (the user: 'De "nog aan het leren"-regel geldt niet alleen voor
+S2 … Ja, repareer').** A test on few molecules that misses its line while its validation error is still falling has not failed (standing
+rules of 19 and 25 Sep). Audit of the open registrations: (1) **chain 40** — the STOP branch at ≈ 30 per family was a one-count verdict;
+a half-count arm (first 32 of the 64) is added to the spec and STOP now needs a flat curve (runner restarted 11:12, no step had run);
+(2) **chain 41** — 'the 50–100-atom PAHs rest on an extrapolation this test says fails' withdrawn; half-control arms per fold (two per
+scaffold) give r_K at 0 / 6 / 12–15 five-ring training molecules, `chain41_read.py` reads the curve (tests); found on the way: the five-ring
+neutrals have no parent_id, so the read's per-scaffold report had counted every derivative as its own scaffold — fixed; (3) **chain 42** —
+line 1 read with line 2 (which already had the rule); (4) **anchor set three** — R-A's '< 5 % → anchors are not the lever' and arm M's
+'fails out of sample' now need a flat curve along the anchor count (k ∈ {2, 4, all}, five subsets); still learning → set four priced;
+(5) **chain 35h** compares FD and analytic labels on one pool — a label-quality question, not a data-count one; unchanged; (6) **S2** —
+amended this morning. **Correction to the 13 Oct 20:3x odds entry:** 'the network's CC-level out-of-plane diagonal has no skill on the six
+anchors (slopes ≤ 0.19)' is a reading at six anchors, exploratory; it is a point on a curve that set three extends, not a property of the
+network. T3 stays at 55 on the other reason (the λ = 1 fine-tune turns the mode shapes, three of three) until R-A/arm M read. Likewise
+'count, not coverage' (chain 37: +200 molecules of other kinds) and chain 39's 'steep size penalty' (≤ 20-atom pool) are single points;
+TASKS 37 (chain 39's learning curve) and chain 41's curve read them as curves.
+
 - **14 Oct, 07:2x — odds re-estimated for the user after the night's affordability read (previous: 13 Oct 20:3x).** Judgement, not a
 measurement. Spectral shape, anharmonic step 45 → 55: S1 read as registered and predicted — G (6-31G*, 75/302) moves Δ_anh by 0.19 / 0.35 cm⁻¹
 against R and costs 0.48 of R per Hessian on benzene, B fails (3.16 / 7.51); the ± symmetry saving passes its registered test (0.17 / 0.40),
