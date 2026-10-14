@@ -22,6 +22,7 @@ from pyscf.cc import ccsd_t_lambda
 from pyscf.grad import ccsd_t as ccsd_t_grad
 
 FIRST_ROW = {"B", "C", "N", "O", "F"}
+MAX_CYCLE = 200      # CCSD and (T) lambda iterations (pyscf default 50; 14 Oct 2026, azulene in a field needed more)
 
 
 def _cc_with_lambda(mol, frozen, hcore_shift=None):
@@ -34,12 +35,17 @@ def _cc_with_lambda(mol, frozen, hcore_shift=None):
     e_hf = mf.kernel()
     mycc = cc.CCSD(mf, frozen=frozen)
     mycc.conv_tol, mycc.conv_tol_normt = 1e-10, 1e-8
+    # 14 Oct 2026: azulene in a field of 1e-3 a.u. reached dE 7.8e-12 but |t| 1.49e-8 after pyscf's default 50 cycles (the norm falls ~5 % per
+    # cycle); the tolerances stay, the cycle limit is raised. The attribute as pyscf's own test sets it: pyscf/cc/test/test_ccsd_lambda.py
+    # (cc1.max_cycle), documented in pyscf/cc/ccsd.py (CCSD.max_cycle, default 50).
+    mycc.max_cycle = MAX_CYCLE
     e_corr = mycc.kernel()[0]
     et = mycc.ccsd_t()
     eris = mycc.ao2mo()
-    conv, l1, l2 = ccsd_t_lambda.kernel(mycc, eris, mycc.t1, mycc.t2, tol=1e-8)
-    if not (mf.converged and mycc.converged and conv):
-        raise RuntimeError("SCF, CCSD or the (T) lambda did not converge")
+    conv, l1, l2 = ccsd_t_lambda.kernel(mycc, eris, mycc.t1, mycc.t2, max_cycle=MAX_CYCLE, tol=1e-8)
+    failed = [name for name, ok in (("SCF", mf.converged), ("CCSD", mycc.converged), ("the (T) lambda", conv)) if not ok]
+    if failed:
+        raise RuntimeError(f"{', '.join(failed)} did not converge (CCSD and lambda limit {MAX_CYCLE} cycles)")
     return float(e_hf + e_corr + et), mf, mycc, l1, l2, eris
 
 
