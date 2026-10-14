@@ -263,7 +263,9 @@ an asymmetric geometry is asymmetric — while the FD-dipole route symmetrises (
 azulene's APT; the cross-check is recorded as failed for this cause (`apt_cross_check_decision.md` in the run folder; marker 'apt ACCEPTED'
 in anchors.log, which `probes/fetch_anchor.sh` now admits beside PASS). Fetched: `probes/results_m1/e8_azulene_ccpvdz_2026-10-14/` (218
 files, sha256-checked 22:06 and again after a stamp correction 22:07). Open, separately: why azulene's corpus geometry is less symmetric, and
-what that means for its CC Hessian (TASKS 51).
+what that means for its CC Hessian (TASKS 51). **Closed 23:0x:** the corpus's C1 optimisation to psi4's default criteria leaves residuals up to
+1.7e-2 bohr (layers A/A2: median 1.8e-4, 90th percentile 2.9e-3 — azulene's level); forcing the symmetry moves B3LYP frequencies by ≤ 0.47 cm⁻¹
+(azulene 0.056): immaterial for the Hessians; nothing to redo (`probes/geometry_symmetry_survey.py`).
 
 ## Outcome
 

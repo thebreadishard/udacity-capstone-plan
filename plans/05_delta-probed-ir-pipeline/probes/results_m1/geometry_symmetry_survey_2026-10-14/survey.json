@@ -1,0 +1,1600 @@
+{
+ "summary": {
+  "molecules": 308,
+  "with_symmetry": 221,
+  "residual_bohr_quantiles": {
+   "50": 0.00017935092323828616,
+   "90": 0.0028561945442304726,
+   "99": 0.012100783795385555,
+   "100": 0.017498686167908617
+  },
+  "max_abs_dfreq_quantiles_cm": {
+   "50": 0.0015493194605582516,
+   "90": 0.06968321349960721,
+   "99": 0.4594912908437318,
+   "100": 0.46537469230248973
+  }
+ },
+ "molecules": {
+  "A_01f3186607": {
+   "name": "naphthalene",
+   "n_ops": 8,
+   "geometry_residual_bohr": 5.4710183878370344e-05,
+   "max_abs_dfreq_symmetrised_cm": 0.0001279362815012064
+  },
+  "A_8448043181": {
+   "name": "benzene",
+   "n_ops": 24,
+   "geometry_residual_bohr": 0.00014135232942713571,
+   "max_abs_dfreq_symmetrised_cm": 0.022482843313582634
+  },
+  "A_d9139359ab": {
+   "name": "azulene",
+   "n_ops": 4,
+   "geometry_residual_bohr": 0.002603385788801593,
+   "max_abs_dfreq_symmetrised_cm": 0.05550636622183447
+  },
+  "A_3100da3761": {
+   "name": "benzonitrile",
+   "n_ops": 4,
+   "geometry_residual_bohr": 7.616296308046722e-05,
+   "max_abs_dfreq_symmetrised_cm": 0.00012945444416345708
+  },
+  "A_45187bb7c8": {
+   "name": "acenaphthylene",
+   "n_ops": 4,
+   "geometry_residual_bohr": 0.00012177627053322482,
+   "max_abs_dfreq_symmetrised_cm": 4.542282121633434e-05
+  },
+  "A_541c53d1a5": {
+   "name": "phenanthrene",
+   "n_ops": 4,
+   "geometry_residual_bohr": 9.254352142909483e-05,
+   "max_abs_dfreq_symmetrised_cm": 0.0011730635742424056
+  },
+  "A_7aa232d4e9": {
+   "name": "quinoxaline",
+   "n_ops": 4,
+   "geometry_residual_bohr": 9.735557989687393e-05,
+   "max_abs_dfreq_symmetrised_cm": 0.00022656471332993533
+  },
+  "A_a1e6ec1862": {
+   "name": "anthracene",
+   "n_ops": 8,
+   "geometry_residual_bohr": 8.885131803615387e-05,
+   "max_abs_dfreq_symmetrised_cm": 0.0009484486822799454
+  },
+  "A_cce0ad25a5": {
+   "name": "pyrene",
+   "n_ops": 8,
+   "geometry_residual_bohr": 6.80919209249814e-05
+  },
+  "A_6e858b26e5": {
+   "name": "pyridine",
+   "n_ops": 4,
+   "geometry_residual_bohr": 4.3143325978323155e-05,
+   "max_abs_dfreq_symmetrised_cm": 1.6063276575550844e-05
+  },
+  "A_fdc27f1bd1": {
+   "name": "biphenyl",
+   "n_ops": 4,
+   "geometry_residual_bohr": 5.241795496158108e-06,
+   "max_abs_dfreq_symmetrised_cm": 0.0005396926372327471
+  },
+  "A_ff98e1160d": {
+   "name": "quinoline",
+   "n_ops": 2,
+   "geometry_residual_bohr": 7.49144107889399e-05,
+   "max_abs_dfreq_symmetrised_cm": 0.00016625265334369033
+  },
+  "A_014f8519af": {
+   "name": "diphenylacetylene",
+   "n_ops": 8,
+   "geometry_residual_bohr": 0.0008472496242425964,
+   "max_abs_dfreq_symmetrised_cm": 0.46537469230248973
+  },
+  "A_0674939e7f": {
+   "name": "4-phenylpyridine",
+   "n_ops": 2,
+   "geometry_residual_bohr": 1.2660602157349432e-06
+  },
+  "A_07cadc7923": {
+   "name": "2-naphthoic_acid",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0062385858718783105,
+   "max_abs_dfreq_symmetrised_cm": 0.01481588281623658
+  },
+  "A_08dde334d8": {
+   "name": "benzophenone",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.003958510724670461,
+   "max_abs_dfreq_symmetrised_cm": 0.004965980042818785
+  },
+  "A_20db5837c9": {
+   "name": "dibenzofuran",
+   "n_ops": 4,
+   "geometry_residual_bohr": 0.00010382956991406012
+  },
+  "A_428228e5a5": {
+   "name": "fluoranthene",
+   "n_ops": 4,
+   "geometry_residual_bohr": 0.00020857900661352957,
+   "max_abs_dfreq_symmetrised_cm": 0.004663996951819627
+  },
+  "A_466972291d": {
+   "name": "1-naphthol",
+   "n_ops": 1,
+   "geometry_residual_bohr": 2.6645352591003757e-15
+  },
+  "A_519351d19c": {
+   "name": "2-naphthylamine",
+   "n_ops": 1,
+   "geometry_residual_bohr": 6.217248937900877e-15
+  },
+  "A_593ba8280d": {
+   "name": "1,8-naphthalimide-free_diimide_model_1,8-naphthalic_anhydride",
+   "n_ops": 4,
+   "geometry_residual_bohr": 0.0003213772863364106
+  },
+  "A_5a75c6c39e": {
+   "name": "diphenyl_ether",
+   "n_ops": 2,
+   "geometry_residual_bohr": 3.4983326554771654e-06
+  },
+  "A_69789470db": {
+   "name": "2-methylnaphthalene",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0022444127081852616
+  },
+  "A_6aa211768a": {
+   "name": "1-naphthonitrile",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0003540585125676454
+  },
+  "A_72b86c2331": {
+   "name": "biphenylene",
+   "n_ops": 8,
+   "geometry_residual_bohr": 5.5827652766737845e-05,
+   "max_abs_dfreq_symmetrised_cm": 0.00010400248670805468
+  },
+  "A_76e053ce6a": {
+   "name": "indole",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00020971156530258384,
+   "max_abs_dfreq_symmetrised_cm": 0.00032635788556945045
+  },
+  "A_78896cfe24": {
+   "name": "9-methylanthracene",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00021645470865866434,
+   "max_abs_dfreq_symmetrised_cm": 0.0001811608734527681
+  },
+  "A_7a57a52879": {
+   "name": "stilbene_E",
+   "n_ops": 4,
+   "geometry_residual_bohr": 0.0014039552287763435
+  },
+  "A_8152ea74fd": {
+   "name": "carbazole",
+   "n_ops": 4,
+   "geometry_residual_bohr": 0.00012403362370760895
+  },
+  "A_8d1f3c46b0": {
+   "name": "acenaphthene",
+   "n_ops": 4,
+   "geometry_residual_bohr": 0.00016056257772878446
+  },
+  "A_8f6ed7c002": {
+   "name": "styrene",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00010098647812006867
+  },
+  "A_90df3e4aa9": {
+   "name": "indene",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00010736958821971898
+  },
+  "A_9d7c66d274": {
+   "name": "benzothiophene",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00018929028982452023
+  },
+  "A_a6412e1ae4": {
+   "name": "acridine",
+   "n_ops": 4,
+   "geometry_residual_bohr": 6.35946786708419e-05
+  },
+  "A_a848c04a21": {
+   "name": "phenylacetylene",
+   "n_ops": 4,
+   "geometry_residual_bohr": 6.613483069239923e-05
+  },
+  "A_aa22880426": {
+   "name": "quinoline-N-oxide",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00016871826344488916
+  },
+  "A_b77821c742": {
+   "name": "phenazine",
+   "n_ops": 8,
+   "geometry_residual_bohr": 7.47640369422875e-05
+  },
+  "A_b90527ca2d": {
+   "name": "2-phenylpyridine",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.000390673927229912,
+   "max_abs_dfreq_symmetrised_cm": 0.00047447745357942495
+  },
+  "A_bce5bae234": {
+   "name": "phenanthridine",
+   "n_ops": 2,
+   "geometry_residual_bohr": 6.991689038647608e-05,
+   "max_abs_dfreq_symmetrised_cm": 7.566068961750716e-05
+  },
+  "A_d037c0ed95": {
+   "name": "dibenzothiophene",
+   "n_ops": 4,
+   "geometry_residual_bohr": 9.290676453665991e-05
+  },
+  "A_d09f8d1ef8": {
+   "name": "isoquinoline",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0001087289937114766,
+   "max_abs_dfreq_symmetrised_cm": 2.7318537831888534e-05
+  },
+  "A_d295f2fa80": {
+   "name": "quinazoline",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0002757866600856529,
+   "max_abs_dfreq_symmetrised_cm": 3.0318567269205232e-05
+  },
+  "A_d551b360c3": {
+   "name": "1-aminoanthracene",
+   "n_ops": 1,
+   "geometry_residual_bohr": 1.7763568394002505e-15
+  },
+  "A_e72997e726": {
+   "name": "fluorene",
+   "n_ops": 4,
+   "geometry_residual_bohr": 0.00014124842534246618,
+   "max_abs_dfreq_symmetrised_cm": 0.00031489489637692714
+  },
+  "A_ea73419366": {
+   "name": "1-methylnaphthalene",
+   "n_ops": 2,
+   "geometry_residual_bohr": 7.40520277504042e-05
+  },
+  "A_fead28d796": {
+   "name": "benzofuran",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0002042633019111728,
+   "max_abs_dfreq_symmetrised_cm": 1.9162633748237567e-05
+  },
+  "A2_00b0ff5a24": {
+   "name": "fluoranthene+COOH",
+   "n_ops": 1,
+   "geometry_residual_bohr": 1.7763568394002505e-15
+  },
+  "A2_00eeb8e5ed": {
+   "name": "quinoxaline+OH",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00027629684696794943
+  },
+  "A2_0101e57296": {
+   "name": "fluoranthene+NH2",
+   "n_ops": 1,
+   "geometry_residual_bohr": 3.552713678800501e-15
+  },
+  "A2_019964a9ed": {
+   "name": "quinoxaline+OH",
+   "n_ops": 2,
+   "geometry_residual_bohr": 5.67314222774673e-05
+  },
+  "A2_02c8833bd5": {
+   "name": "fluoranthene+vinyl",
+   "n_ops": 1,
+   "geometry_residual_bohr": 3.552713678800501e-15
+  },
+  "A2_02f13355a2": {
+   "name": "acridine+CN",
+   "n_ops": 4,
+   "geometry_residual_bohr": 7.641063644728274e-05
+  },
+  "A2_041da590e8": {
+   "name": "fluoranthene+CH3",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.000603238564761549
+  },
+  "A2_0420908ebe": {
+   "name": "phenanthridine+CF3",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0004075575535984477,
+   "max_abs_dfreq_symmetrised_cm": 0.010343848005035738
+  },
+  "A2_043da5bed2": {
+   "name": "fluoranthene+SH",
+   "n_ops": 1,
+   "geometry_residual_bohr": 5.329070518200751e-15
+  },
+  "A2_04719edc88": {
+   "name": "phenanthridine+COOH",
+   "n_ops": 1,
+   "geometry_residual_bohr": 3.552713678800501e-15
+  },
+  "A2_048ea73dab": {
+   "name": "fluoranthene+CH3",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00017984655580249864
+  },
+  "A2_04af6632de": {
+   "name": "anthracene+ethynyl",
+   "n_ops": 4,
+   "geometry_residual_bohr": 0.00014961352835349273
+  },
+  "A2_05a9e0e4c8": {
+   "name": "phenanthridine+CN",
+   "n_ops": 2,
+   "geometry_residual_bohr": 9.591606642656014e-05
+  },
+  "A2_05e08111d2": {
+   "name": "phenazine+CHO",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0003507160651069485
+  },
+  "A2_05f5ff045c": {
+   "name": "fluorene+NH2",
+   "n_ops": 1,
+   "geometry_residual_bohr": 1.7763568394002505e-15
+  },
+  "A2_06067133dc": {
+   "name": "quinoxaline+F",
+   "n_ops": 2,
+   "geometry_residual_bohr": 7.932663497678405e-05
+  },
+  "A2_06222c33e3": {
+   "name": "fluoranthene+NH2",
+   "n_ops": 1,
+   "geometry_residual_bohr": 3.552713678800501e-15
+  },
+  "A2_066237c4f5": {
+   "name": "fluorene+Cl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 9.513669333349739e-05
+  },
+  "A2_06873ee7ad": {
+   "name": "fluorene+NH2",
+   "n_ops": 1,
+   "geometry_residual_bohr": 3.552713678800501e-15
+  },
+  "A2_074ffaa9fa": {
+   "name": "phenanthridine+vinyl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0005246994000279448
+  },
+  "A2_07f1fa9135": {
+   "name": "phenanthridine+CHO",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0004507042295136543
+  },
+  "A2_0805297aa2": {
+   "name": "dibenzothiophene+CHO",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0002001282329249232
+  },
+  "A2_0814eb7409": {
+   "name": "phenazine+CHO",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00010181069688952604
+  },
+  "A2_097651503c": {
+   "name": "fluoranthene+CONH2",
+   "n_ops": 1,
+   "geometry_residual_bohr": 1.7763568394002505e-15
+  },
+  "A2_099cb8d5d4": {
+   "name": "dibenzothiophene+CH3",
+   "n_ops": 1,
+   "geometry_residual_bohr": 7.105427357601002e-15
+  },
+  "A2_09c1f9ee8a": {
+   "name": "dibenzofuran+CHO",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00011673881830409627
+  },
+  "A2_09d0b3be91": {
+   "name": "phenanthrene+CONH2",
+   "n_ops": 1,
+   "geometry_residual_bohr": 3.552713678800501e-15
+  },
+  "A2_0a158816bd": {
+   "name": "quinoxaline+NH2",
+   "n_ops": 1,
+   "geometry_residual_bohr": 9.992007221626409e-16
+  },
+  "A2_0a2685346d": {
+   "name": "acridine+vinyl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0001646844583852447
+  },
+  "A2_0a2c2f12b8": {
+   "name": "phenanthrene+Cl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 6.509701500717613e-05
+  },
+  "A2_0a89c174d8": {
+   "name": "dibenzofuran+NO2",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.008903745875070923
+  },
+  "A2_0ae8c5746d": {
+   "name": "acridine+CN",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0013308502991413729
+  },
+  "A2_0b93df3e1a": {
+   "name": "acenaphthylene+CHO",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.000989422991498068
+  },
+  "A2_0beab28c4f": {
+   "name": "phenanthridine+Cl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 9.300227070208056e-05
+  },
+  "A2_0bf85f35e5": {
+   "name": "phenanthridine+Cl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 7.114687279408116e-05
+  },
+  "A2_0c7ac2371d": {
+   "name": "acenaphthylene+CONH2",
+   "n_ops": 1,
+   "geometry_residual_bohr": 5.329070518200751e-15
+  },
+  "A2_0cfc5b5bdb": {
+   "name": "acenaphthylene+CF3",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00018782539739270465
+  },
+  "A2_0dc3aa4eb9": {
+   "name": "fluorene+CH3",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00013995986402989824
+  },
+  "A2_0e07e41776": {
+   "name": "dibenzofuran+CF3",
+   "n_ops": 1,
+   "geometry_residual_bohr": 3.552713678800501e-15
+  },
+  "A2_0e1c741b76": {
+   "name": "fluoranthene+CN",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00010401944864857349
+  },
+  "A2_0e7288334d": {
+   "name": "dibenzothiophene+NH2",
+   "n_ops": 1,
+   "geometry_residual_bohr": 5.329070518200751e-15
+  },
+  "A2_0ed4bfb28a": {
+   "name": "carbazole+CONH2",
+   "n_ops": 1,
+   "geometry_residual_bohr": 3.552713678800501e-15
+  },
+  "A2_0ef0a3a61c": {
+   "name": "biphenylene+CN",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0006257035994985394
+  },
+  "A2_0efbc8f50c": {
+   "name": "phenanthrene+CONH2",
+   "n_ops": 1,
+   "geometry_residual_bohr": 1.7763568394002505e-15
+  },
+  "A2_0f1a2bd718": {
+   "name": "anthracene+OCH3",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0005237706767065031
+  },
+  "A2_0f86544b37": {
+   "name": "phenanthrene+CN",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00010746639804413288
+  },
+  "A2_101910c9ef": {
+   "name": "phenanthridine+CHO",
+   "n_ops": 2,
+   "geometry_residual_bohr": 8.742678311057794e-05
+  },
+  "A2_10374ec43c": {
+   "name": "acridine+NO2",
+   "n_ops": 1,
+   "geometry_residual_bohr": 1.0352829704629585e-14
+  },
+  "A2_1046eed218": {
+   "name": "phenanthridine+CF3",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00018846982937326118
+  },
+  "A2_10d7d03408": {
+   "name": "fluorene+COOH",
+   "n_ops": 1,
+   "geometry_residual_bohr": 1.7763568394002505e-15
+  },
+  "A2_11a9a9ada2": {
+   "name": "phenanthridine+OH",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0001824952382976086
+  },
+  "A2_11c681aefb": {
+   "name": "fluorene+CF3",
+   "n_ops": 1,
+   "geometry_residual_bohr": 3.552713678800501e-15
+  },
+  "A2_11d7cdeab0": {
+   "name": "acenaphthylene+OCH3",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00024154833565658007
+  },
+  "A2_11dec05d1b": {
+   "name": "phenanthridine+vinyl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0002812829674349593
+  },
+  "A2_1279063d3c": {
+   "name": "carbazole+CN",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00016444280800453903
+  },
+  "A2_12deece5a3": {
+   "name": "phenanthridine+ethynyl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0004055825913649169
+  },
+  "A2_13327d8d52": {
+   "name": "carbazole+SH",
+   "n_ops": 1,
+   "geometry_residual_bohr": 3.552713678800501e-15
+  },
+  "A2_13a0f8f47e": {
+   "name": "phenanthridine+ethynyl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0010173596523295192
+  },
+  "A2_13a226a056": {
+   "name": "acridine+OCH3",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.005343860361185726
+  },
+  "A2_13bafae8e0": {
+   "name": "carbazole+SH",
+   "n_ops": 1,
+   "geometry_residual_bohr": 5.329070518200751e-15
+  },
+  "A2_13eea56ee5": {
+   "name": "phenanthrene+CH3",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0011754237418557523,
+   "max_abs_dfreq_symmetrised_cm": 0.005727675456384418
+  },
+  "A2_14a0a0f3c9": {
+   "name": "phenanthridine+COOH",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00017778193544326637
+  },
+  "A2_14dee3bc02": {
+   "name": "phenanthridine+CH3",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0001636166841317288
+  },
+  "A2_1543119d9d": {
+   "name": "fluorene+OCH3",
+   "n_ops": 1,
+   "geometry_residual_bohr": 2.6645352591003757e-15
+  },
+  "A2_156fe03a44": {
+   "name": "dibenzothiophene+NH2",
+   "n_ops": 1,
+   "geometry_residual_bohr": 1.4654943925052066e-14
+  },
+  "A2_159a501353": {
+   "name": "phenanthridine+COOH",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0006356407518028906
+  },
+  "A2_16521f2764": {
+   "name": "fluorene+ethynyl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 6.180613520712086e-05
+  },
+  "A2_16ec607c96": {
+   "name": "phenanthrene+CHO",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00020385624640528732
+  },
+  "A2_1767c744aa": {
+   "name": "acenaphthylene+OCH3",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.008466258543215949
+  },
+  "A2_177784139f": {
+   "name": "phenazine+OH",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0001421385927957708
+  },
+  "A2_187a20beab": {
+   "name": "phenanthrene+CF3",
+   "n_ops": 1,
+   "geometry_residual_bohr": 4.440892098500626e-15
+  },
+  "A2_18b62c6a42": {
+   "name": "dibenzothiophene+COOH",
+   "n_ops": 1,
+   "geometry_residual_bohr": 2.220446049250313e-15
+  },
+  "A2_192cd5911c": {
+   "name": "phenazine+Cl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 6.493462431300667e-05
+  },
+  "A2_196b4cd166": {
+   "name": "acenaphthylene+Cl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00014603936186806388
+  },
+  "A2_197913eb9c": {
+   "name": "carbazole+vinyl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0019262884439384467,
+   "max_abs_dfreq_symmetrised_cm": 0.0019255753468740977
+  },
+  "A2_198d828af1": {
+   "name": "phenanthridine+SH",
+   "n_ops": 1,
+   "geometry_residual_bohr": 8.881784197001252e-16
+  },
+  "A2_19eaf39036": {
+   "name": "phenanthrene+NO2",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0012187196076662854
+  },
+  "A2_1a20326972": {
+   "name": "acridine+CONH2",
+   "n_ops": 1,
+   "geometry_residual_bohr": 3.552713678800501e-15
+  },
+  "A2_1a3e9f41ee": {
+   "name": "acridine+ethynyl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00014859118157924123
+  },
+  "A2_1aa4c0cfbc": {
+   "name": "dibenzofuran+vinyl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0006284203308496439
+  },
+  "A2_1b0ef60572": {
+   "name": "phenanthridine+CN",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.002774907819639516
+  },
+  "A2_1b2d1b7caf": {
+   "name": "phenanthridine+CHO",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0009016935540067106
+  },
+  "A2_1b3089a9c8": {
+   "name": "acridine+NH2",
+   "n_ops": 1,
+   "geometry_residual_bohr": 2.6645352591003757e-15
+  },
+  "A2_1b389dc1d8": {
+   "name": "fluorene+Cl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0001540522966670954
+  },
+  "A2_1bb2e3fbf1": {
+   "name": "fluorene+F",
+   "n_ops": 2,
+   "geometry_residual_bohr": 6.223907499158798e-06
+  },
+  "A2_1c2781e93a": {
+   "name": "fluorene+NH2",
+   "n_ops": 1,
+   "geometry_residual_bohr": 3.552713678800501e-15
+  },
+  "A2_1c29b66c9d": {
+   "name": "phenanthridine+CH3",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.005488947381760756,
+   "max_abs_dfreq_symmetrised_cm": 0.09334320213598346
+  },
+  "A2_1c7ee11812": {
+   "name": "acenaphthylene+OH",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0002903902979861095
+  },
+  "A2_1c9af68a67": {
+   "name": "dibenzofuran+Cl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 9.420067691401357e-05
+  },
+  "A2_1d6c152813": {
+   "name": "anthracene+CH3",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.002892682628599763
+  },
+  "A2_1e3ee2b3a8": {
+   "name": "carbazole+COOH",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0042461568497620394
+  },
+  "A2_1e5e1afa5c": {
+   "name": "phenanthridine+CH3",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0016918562682119997
+  },
+  "A2_1eeb0a54f6": {
+   "name": "phenanthridine+CHO",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0001094326442604987
+  },
+  "A2_1f52b56b90": {
+   "name": "dibenzofuran+CN",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0007240636501548714
+  },
+  "A2_1fa17eaaa2": {
+   "name": "phenanthridine+CN",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00021711951550665298
+  },
+  "A2_1fa81d01d6": {
+   "name": "carbazole+SH",
+   "n_ops": 1,
+   "geometry_residual_bohr": 7.105427357601002e-15
+  },
+  "A2_1ff7551053": {
+   "name": "biphenylene+CF3",
+   "n_ops": 1,
+   "geometry_residual_bohr": 1.7763568394002505e-15
+  },
+  "A2_202963092d": {
+   "name": "acenaphthylene+OCH3",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.004686043029663328
+  },
+  "A2_204c06557b": {
+   "name": "acridine+COOH",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0003348073987443634
+  },
+  "A2_20747fd501": {
+   "name": "pyrene+vinyl",
+   "n_ops": 1,
+   "geometry_residual_bohr": 7.105427357601002e-15
+  },
+  "A2_20d3215ce3": {
+   "name": "fluorene+CONH2",
+   "n_ops": 1,
+   "geometry_residual_bohr": 2.6645352591003757e-15
+  },
+  "A2_20e53d754a": {
+   "name": "dibenzothiophene+F",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00010189781065000902
+  },
+  "A2_20e59f3897": {
+   "name": "anthracene+NO2",
+   "n_ops": 4,
+   "geometry_residual_bohr": 0.017498686167908617,
+   "max_abs_dfreq_symmetrised_cm": 0.12837340551521947
+  },
+  "A2_210c322595": {
+   "name": "fluorene+F",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00011717509489539424
+  },
+  "A2_215e004a51": {
+   "name": "phenazine+COOH",
+   "n_ops": 1,
+   "geometry_residual_bohr": 2.6645352591003757e-15
+  },
+  "A2_21a2401f6c": {
+   "name": "carbazole+CHO",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00010133303029319363
+  },
+  "A2_21b688db0c": {
+   "name": "fluorene+CH3",
+   "n_ops": 1,
+   "geometry_residual_bohr": 5.329070518200751e-15
+  },
+  "A2_220d2c107b": {
+   "name": "phenanthrene+NO2",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00028068735360653463,
+   "max_abs_dfreq_symmetrised_cm": 0.011850817813211734
+  },
+  "A2_221bc30690": {
+   "name": "phenazine+Cl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 4.579998429876664e-05
+  },
+  "A2_224abc958a": {
+   "name": "pyrene+COOH",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.008040745505168478
+  },
+  "A2_22d0e8105c": {
+   "name": "carbazole+SH",
+   "n_ops": 1,
+   "geometry_residual_bohr": 2.6645352591003757e-15
+  },
+  "A2_233ec9a78f": {
+   "name": "acridine+Cl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 8.370724072026547e-05
+  },
+  "A2_2354759bfb": {
+   "name": "quinoxaline+CONH2",
+   "n_ops": 1,
+   "geometry_residual_bohr": 1.7763568394002505e-15
+  },
+  "A2_238c9ced38": {
+   "name": "phenanthrene+CF3",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0003135032340078059
+  },
+  "A2_23d2ef8efb": {
+   "name": "dibenzofuran+NO2",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.000725952598016999
+  },
+  "A2_24d0139cc4": {
+   "name": "dibenzothiophene+CF3",
+   "n_ops": 1,
+   "geometry_residual_bohr": 3.552713678800501e-15
+  },
+  "A2_253cbb1c94": {
+   "name": "carbazole+COOH",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.001118997149557821
+  },
+  "A2_25e55c7a83": {
+   "name": "phenanthrene+vinyl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00046902409046167826
+  },
+  "A2_25fe240a5d": {
+   "name": "pyrene+OCH3",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.01130534558210372
+  },
+  "A2_25fed68b27": {
+   "name": "anthracene+F",
+   "n_ops": 2,
+   "geometry_residual_bohr": 8.053726387979854e-05
+  },
+  "A2_2607024fdf": {
+   "name": "carbazole+vinyl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0004603702222190087
+  },
+  "A2_26664f6a75": {
+   "name": "biphenylene+ethynyl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00017935092323828616
+  },
+  "A2_26a9174202": {
+   "name": "biphenylene+OCH3",
+   "n_ops": 1,
+   "geometry_residual_bohr": 3.552713678800501e-15
+  },
+  "A2_27130c4c79": {
+   "name": "fluorene+vinyl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0014094679835227053
+  },
+  "A2_27370742a0": {
+   "name": "fluoranthene+CF3",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00010809402301825699
+  },
+  "A2_2743aef5e8": {
+   "name": "phenanthridine+NO2",
+   "n_ops": 1,
+   "geometry_residual_bohr": 2.6645352591003757e-15
+  },
+  "A2_27edf7297c": {
+   "name": "fluorene+CH3",
+   "n_ops": 1,
+   "geometry_residual_bohr": 8.881784197001252e-16
+  },
+  "A2_28eed45ad3": {
+   "name": "fluorene+CF3",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00015975839935455927,
+   "max_abs_dfreq_symmetrised_cm": 0.010325697791849109
+  },
+  "A2_2931e48c62": {
+   "name": "fluoranthene+CN",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.002323639420489909
+  },
+  "A2_29caedd47d": {
+   "name": "anthracene+COOH",
+   "n_ops": 1,
+   "geometry_residual_bohr": 3.552713678800501e-15
+  },
+  "A2_2a0b78bd2b": {
+   "name": "carbazole+CF3",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0011236476180094268,
+   "max_abs_dfreq_symmetrised_cm": 0.013165567266000266
+  },
+  "A2_2a43bd67da": {
+   "name": "phenanthridine+Cl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0011179527587885651
+  },
+  "A2_2a88c6ce4f": {
+   "name": "phenanthridine+CONH2",
+   "n_ops": 1,
+   "geometry_residual_bohr": 2.6645352591003757e-15
+  },
+  "A2_2ade2a9b93": {
+   "name": "biphenylene+OH",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00011024230317913108
+  },
+  "A2_2b693cf6e7": {
+   "name": "pyrene+CH3",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00018182657146764702,
+   "max_abs_dfreq_symmetrised_cm": 0.0003420222305301479
+  },
+  "A2_2b7c0323a9": {
+   "name": "dibenzofuran+OH",
+   "n_ops": 2,
+   "geometry_residual_bohr": 9.383396737083771e-05
+  },
+  "A2_2bb0e5721b": {
+   "name": "acenaphthylene+COOH",
+   "n_ops": 2,
+   "geometry_residual_bohr": 9.874637507234496e-05
+  },
+  "A2_2be56a1e2f": {
+   "name": "phenanthridine+vinyl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00024486750182761696
+  },
+  "A2_2c22216564": {
+   "name": "fluorene+NO2",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0011143303759422185,
+   "max_abs_dfreq_symmetrised_cm": 0.06705432587334315
+  },
+  "A2_2ca281c2d5": {
+   "name": "quinoxaline+CN",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00012748474578438973
+  },
+  "A2_2ce877d5e9": {
+   "name": "phenanthridine+F",
+   "n_ops": 2,
+   "geometry_residual_bohr": 8.321092089669246e-05
+  },
+  "A2_2cf97d4a75": {
+   "name": "carbazole+CF3",
+   "n_ops": 1,
+   "geometry_residual_bohr": 1.7763568394002505e-15
+  },
+  "A2_2d6f59a2bf": {
+   "name": "pyrene+OH",
+   "n_ops": 2,
+   "geometry_residual_bohr": 9.413426315840745e-05
+  },
+  "A2_2e154f6054": {
+   "name": "fluorene+NO2",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0006178568472807733
+  },
+  "A2_2e1bd8f645": {
+   "name": "phenazine+ethynyl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0001241558627341731
+  },
+  "A2_2e2d3e4196": {
+   "name": "anthracene+F",
+   "n_ops": 4,
+   "geometry_residual_bohr": 7.45819622813837e-05
+  },
+  "A2_2ef47ebcc1": {
+   "name": "anthracene+ethynyl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0015668322046631378
+  },
+  "A2_2f079d63a1": {
+   "name": "fluoranthene+CH3",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00531845395988384
+  },
+  "A2_2f5e215666": {
+   "name": "quinoxaline+Cl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 8.963392544192317e-05
+  },
+  "A2_3020175511": {
+   "name": "quinoxaline+NO2",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0008437953532922648,
+   "max_abs_dfreq_symmetrised_cm": 0.00235775949482786
+  },
+  "A2_303433ef20": {
+   "name": "anthracene+F",
+   "n_ops": 2,
+   "geometry_residual_bohr": 9.658199659247357e-05
+  },
+  "A2_3058513f57": {
+   "name": "fluorene+Cl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 9.413737938834821e-05
+  },
+  "A2_306152f5f9": {
+   "name": "phenanthrene+SH",
+   "n_ops": 1,
+   "geometry_residual_bohr": 1.7763568394002505e-15
+  },
+  "A2_3077af0137": {
+   "name": "phenanthrene+F",
+   "n_ops": 2,
+   "geometry_residual_bohr": 5.691124683770976e-05
+  },
+  "A2_30b024df67": {
+   "name": "acridine+OCH3",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.003904122974598856
+  },
+  "A2_311e979a14": {
+   "name": "fluoranthene+Cl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00021326214911199237
+  },
+  "A2_3216c45c98": {
+   "name": "phenanthridine+CF3",
+   "n_ops": 1,
+   "geometry_residual_bohr": 1.7763568394002505e-15
+  },
+  "A2_3250fa71cc": {
+   "name": "phenanthridine+CH3",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00017286288439999353
+  },
+  "A2_32861fe1de": {
+   "name": "quinoxaline+CHO",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0014054236022107425
+  },
+  "A2_32ab8c6937": {
+   "name": "anthracene+CONH2",
+   "n_ops": 1,
+   "geometry_residual_bohr": 1.9984014443252818e-15
+  },
+  "A2_32e53836ea": {
+   "name": "biphenylene+CHO",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0014439845486234892
+  },
+  "A2_330b4d6d8d": {
+   "name": "phenazine+vinyl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0021258820700375547,
+   "max_abs_dfreq_symmetrised_cm": 0.00421733741847774
+  },
+  "A2_331729cd47": {
+   "name": "fluoranthene+CN",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0015076220266097562
+  },
+  "A2_336097f54c": {
+   "name": "dibenzothiophene+CHO",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0009474098161290634
+  },
+  "A2_33d8ee2f2f": {
+   "name": "carbazole+CN",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00010942983109613058
+  },
+  "A2_3468258fcf": {
+   "name": "phenanthridine+CN",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0002776681517588919
+  },
+  "A2_3483a22b30": {
+   "name": "dibenzothiophene+CONH2",
+   "n_ops": 1,
+   "geometry_residual_bohr": 2.6645352591003757e-15
+  },
+  "A2_34bb1210bc": {
+   "name": "dibenzofuran+CH3",
+   "n_ops": 1,
+   "geometry_residual_bohr": 8.881784197001252e-16
+  },
+  "A2_34db2b4f50": {
+   "name": "phenanthridine+NH2",
+   "n_ops": 1,
+   "geometry_residual_bohr": 1.7763568394002505e-15
+  },
+  "A2_34decc4ca8": {
+   "name": "acenaphthylene+SH",
+   "n_ops": 1,
+   "geometry_residual_bohr": 8.881784197001252e-16
+  },
+  "A2_356c370f21": {
+   "name": "phenanthridine+NO2",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00039637473130738066,
+   "max_abs_dfreq_symmetrised_cm": 0.008468457054128464
+  },
+  "A2_356dcf6450": {
+   "name": "dibenzothiophene+vinyl",
+   "n_ops": 1,
+   "geometry_residual_bohr": 5.329070518200751e-15
+  },
+  "A2_35abf04801": {
+   "name": "pyrene+SH",
+   "n_ops": 1,
+   "geometry_residual_bohr": 3.552713678800501e-15
+  },
+  "A2_35c01ca552": {
+   "name": "pyrene+NO2",
+   "n_ops": 1,
+   "geometry_residual_bohr": 7.854827899222983e-15
+  },
+  "A2_35fb26a423": {
+   "name": "phenanthridine+CH3",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00031366970664725713
+  },
+  "A2_360ca4faa6": {
+   "name": "dibenzothiophene+F",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00011674187735688513
+  },
+  "A2_361b2c502b": {
+   "name": "pyrene+CHO",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0004350247662383566
+  },
+  "A2_362fc56435": {
+   "name": "acenaphthylene+COOH",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.005033502089859088
+  },
+  "A2_372920f181": {
+   "name": "fluoranthene+OH",
+   "n_ops": 1,
+   "geometry_residual_bohr": 3.552713678800501e-15
+  },
+  "A2_3740d0ba57": {
+   "name": "quinoxaline+SH",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.001884072668649317
+  },
+  "A2_37cf4a0e50": {
+   "name": "dibenzofuran+CHO",
+   "n_ops": 2,
+   "geometry_residual_bohr": 9.156470361759705e-05
+  },
+  "A2_3802542cb6": {
+   "name": "acenaphthylene+vinyl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.010722979085212136,
+   "max_abs_dfreq_symmetrised_cm": 0.055162801957806096
+  },
+  "A2_3825e7205b": {
+   "name": "fluoranthene+ethynyl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00023850872712083415
+  },
+  "A2_3933867951": {
+   "name": "acridine+CF3",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0028561945442304726
+  },
+  "A2_39baaea0dd": {
+   "name": "fluoranthene+ethynyl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00015195838181114585
+  },
+  "A2_3a06a80d61": {
+   "name": "biphenylene+NO2",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00023650324379698162
+  },
+  "A2_3a2982dd85": {
+   "name": "biphenylene+CH3",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.01443623001289207,
+   "max_abs_dfreq_symmetrised_cm": 0.45028904753644383
+  },
+  "A2_3a4d58eb26": {
+   "name": "acenaphthylene+CHO",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00019204129677252713
+  },
+  "A2_3a5def0ce1": {
+   "name": "dibenzofuran+NH2",
+   "n_ops": 1,
+   "geometry_residual_bohr": 3.552713678800501e-15
+  },
+  "A2_3ac24b6972": {
+   "name": "dibenzofuran+NO2",
+   "n_ops": 1,
+   "geometry_residual_bohr": 3.552713678800501e-15
+  },
+  "A2_3b49468c8c": {
+   "name": "phenanthrene+CN",
+   "n_ops": 2,
+   "geometry_residual_bohr": 8.386469510535122e-05
+  },
+  "A2_3b6ae59b2d": {
+   "name": "fluorene+SH",
+   "n_ops": 1,
+   "geometry_residual_bohr": 1.7763568394002505e-15
+  },
+  "A2_3c2cf09504": {
+   "name": "phenanthrene+Cl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 8.215850589554652e-05,
+   "max_abs_dfreq_symmetrised_cm": 0.00024123930694486262
+  },
+  "A2_3c35334467": {
+   "name": "dibenzothiophene+CN",
+   "n_ops": 2,
+   "geometry_residual_bohr": 7.333290368061185e-05
+  },
+  "A2_3c758d3b72": {
+   "name": "pyrene+CF3",
+   "n_ops": 2,
+   "geometry_residual_bohr": 6.760604406946813e-05
+  },
+  "A2_3c982d4d3f": {
+   "name": "dibenzothiophene+SH",
+   "n_ops": 1,
+   "geometry_residual_bohr": 3.552713678800501e-15
+  },
+  "A2_3cf20db4ac": {
+   "name": "fluorene+CN",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0001424541221346498
+  },
+  "A2_3e6f108b14": {
+   "name": "phenanthridine+CH3",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0018754067255412066
+  },
+  "A2_3f25a88e27": {
+   "name": "fluoranthene+OCH3",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.012181056710086013
+  },
+  "A2_4282860cee": {
+   "name": "phenanthridine+vinyl",
+   "n_ops": 1,
+   "geometry_residual_bohr": 3.552713678800501e-15
+  },
+  "A2_429f6cd63b": {
+   "name": "dibenzofuran+CONH2",
+   "n_ops": 1,
+   "geometry_residual_bohr": 1.887379141862766e-15
+  },
+  "A2_42ab9eb0a0": {
+   "name": "fluoranthene+CF3",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00012006489369764672
+  },
+  "A2_4435992442": {
+   "name": "phenanthridine+CN",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00014856644720828704
+  },
+  "A2_45d7124294": {
+   "name": "dibenzofuran+F",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0001285815804701329
+  },
+  "A2_4c2fa122d4": {
+   "name": "pyrene+NH2",
+   "n_ops": 1,
+   "geometry_residual_bohr": 1.4654943925052066e-14
+  },
+  "A2_4e8b0a2d6e": {
+   "name": "dibenzothiophene+Cl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00012219790579379164
+  },
+  "A2_5084813224": {
+   "name": "dibenzothiophene+NO2",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00021975338050994608
+  },
+  "A2_515a84b67a": {
+   "name": "fluoranthene+ethynyl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0011115695223889999
+  },
+  "A2_53601ae85b": {
+   "name": "fluoranthene+OH",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0001673935768925633
+  },
+  "A2_54129467f7": {
+   "name": "fluoranthene+CHO",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0008423889587100275
+  },
+  "A2_545ba22a6a": {
+   "name": "pyrene+F",
+   "n_ops": 2,
+   "geometry_residual_bohr": 7.741168369213014e-05
+  },
+  "A2_5934acbbc2": {
+   "name": "pyrene+CONH2",
+   "n_ops": 1,
+   "geometry_residual_bohr": 1.7763568394002505e-15
+  },
+  "A2_5a264a248c": {
+   "name": "fluoranthene+OCH3",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.009027865280268554
+  },
+  "A2_5a9365499b": {
+   "name": "fluoranthene+CHO",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0008507987376502602
+  },
+  "A2_5d08d2da6f": {
+   "name": "pyrene+SH",
+   "n_ops": 1,
+   "geometry_residual_bohr": 6.217248937900877e-15
+  },
+  "A2_606c11e73b": {
+   "name": "dibenzothiophene+OH",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0001370227213126629
+  },
+  "A2_60bf45f8a6": {
+   "name": "fluoranthene+ethynyl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0006159954039775262
+  },
+  "A2_625017d185": {
+   "name": "pyrene+vinyl",
+   "n_ops": 1,
+   "geometry_residual_bohr": 1.7763568394002505e-15
+  },
+  "A2_6270dd2fca": {
+   "name": "fluoranthene+OH",
+   "n_ops": 1,
+   "geometry_residual_bohr": 6.217248937900877e-15
+  },
+  "A2_67fde0ce90": {
+   "name": "dibenzofuran+SH",
+   "n_ops": 1,
+   "geometry_residual_bohr": 3.552713678800501e-15
+  },
+  "A2_6849063f11": {
+   "name": "pyrene+CN",
+   "n_ops": 4,
+   "geometry_residual_bohr": 0.00016257296773980467
+  },
+  "A2_6ad9241b55": {
+   "name": "pyrene+vinyl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00011135691572805584
+  },
+  "A2_75730d770d": {
+   "name": "pyrene+CONH2",
+   "n_ops": 1,
+   "geometry_residual_bohr": 2.6645352591003757e-15
+  },
+  "A2_76e1cd109e": {
+   "name": "pyrene+OCH3",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.004583844427848205
+  },
+  "A2_76e9c2ae8a": {
+   "name": "fluoranthene+Cl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00018377722880502656
+  },
+  "A2_7712baf378": {
+   "name": "fluoranthene+SH",
+   "n_ops": 1,
+   "geometry_residual_bohr": 4.440892098500626e-15
+  },
+  "A2_7c950f1732": {
+   "name": "fluoranthene+NH2",
+   "n_ops": 1,
+   "geometry_residual_bohr": 1.7763568394002505e-15
+  },
+  "A2_7f8e85ab0f": {
+   "name": "fluoranthene+OCH3",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.005823850945945175
+  },
+  "A2_7fbfba93fa": {
+   "name": "fluoranthene+CN",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.000408522226043484
+  },
+  "A2_8b444cb44d": {
+   "name": "fluoranthene+SH",
+   "n_ops": 1,
+   "geometry_residual_bohr": 1.7763568394002505e-15
+  },
+  "A2_8c1f3bb424": {
+   "name": "fluoranthene+CONH2",
+   "n_ops": 1,
+   "geometry_residual_bohr": 1.7763568394002505e-15
+  },
+  "A2_8cb80a9eb5": {
+   "name": "fluoranthene+Cl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00011704095459208474
+  },
+  "A2_8fbcbe2d29": {
+   "name": "fluoranthene+CN",
+   "n_ops": 2,
+   "geometry_residual_bohr": 1.2436604912485771e-05
+  },
+  "A2_93b01a9fe6": {
+   "name": "pyrene+Cl",
+   "n_ops": 4,
+   "geometry_residual_bohr": 8.629451976316371e-05
+  },
+  "A2_9af1313ca9": {
+   "name": "fluoranthene+CONH2",
+   "n_ops": 1,
+   "geometry_residual_bohr": 1.0658141036401503e-14
+  },
+  "A2_9ca7d76762": {
+   "name": "fluoranthene+CH3",
+   "n_ops": 1,
+   "geometry_residual_bohr": 6.217248937900877e-15
+  },
+  "A2_9d46ea3cb6": {
+   "name": "fluoranthene+CHO",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.001884194135411403
+  },
+  "A2_a446301566": {
+   "name": "pyrene+NH2",
+   "n_ops": 2,
+   "geometry_residual_bohr": 6.238564395744106e-06
+  },
+  "A2_a44dc7e358": {
+   "name": "fluoranthene+NH2",
+   "n_ops": 1,
+   "geometry_residual_bohr": 3.552713678800501e-15
+  },
+  "A2_a748e707a3": {
+   "name": "pyrene+CHO",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0007802594347907643
+  },
+  "A2_a7660342b4": {
+   "name": "fluoranthene+CONH2",
+   "n_ops": 1,
+   "geometry_residual_bohr": 1.7763568394002505e-15
+  },
+  "A2_a7c4ac38b3": {
+   "name": "pyrene+NH2",
+   "n_ops": 1,
+   "geometry_residual_bohr": 8.583411759133242e-15
+  },
+  "A2_a93989fbcf": {
+   "name": "fluoranthene+OCH3",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.001848995394998193
+  },
+  "A2_abcb2cfa5c": {
+   "name": "fluoranthene+OH",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00017668366317957762
+  },
+  "A2_ae6934f7a9": {
+   "name": "fluoranthene+Cl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00010367902931851525
+  },
+  "A2_b1b28842fa": {
+   "name": "pyrene+OH",
+   "n_ops": 1,
+   "geometry_residual_bohr": 5.329070518200751e-15
+  },
+  "A2_b8ee4f6fea": {
+   "name": "pyrene+CN",
+   "n_ops": 2,
+   "geometry_residual_bohr": 2.6317576263035214e-05
+  },
+  "A2_bd2f772579": {
+   "name": "fluoranthene+SH",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.011779692136583697
+  },
+  "A2_c243a4be67": {
+   "name": "pyrene+CH3",
+   "n_ops": 2,
+   "geometry_residual_bohr": 8.839862863785353e-05
+  },
+  "A2_c57ef05eac": {
+   "name": "fluoranthene+NH2",
+   "n_ops": 1,
+   "geometry_residual_bohr": 3.552713678800501e-15
+  },
+  "A2_c587225988": {
+   "name": "fluoranthene+CH3",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.0002891017513343419
+  },
+  "A2_c8e297718b": {
+   "name": "pyrene+Cl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 9.59424169488729e-05
+  },
+  "A2_cca8340b51": {
+   "name": "pyrene+CN",
+   "n_ops": 2,
+   "geometry_residual_bohr": 1.8339897788932635e-05
+  },
+  "A2_d132085db5": {
+   "name": "pyrene+CH3",
+   "n_ops": 2,
+   "geometry_residual_bohr": 5.715024263741597e-05
+  },
+  "A2_d651801d25": {
+   "name": "fluoranthene+SH",
+   "n_ops": 1,
+   "geometry_residual_bohr": 5.329070518200751e-15
+  },
+  "A2_d967af1be9": {
+   "name": "pyrene+Cl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 8.50314693808911e-05
+  },
+  "A2_dd6e27d965": {
+   "name": "pyrene+CONH2",
+   "n_ops": 1,
+   "geometry_residual_bohr": 8.881784197001252e-15
+  },
+  "A2_e9df4561cc": {
+   "name": "fluoranthene+Cl",
+   "n_ops": 2,
+   "geometry_residual_bohr": 9.275922577256512e-05
+  },
+  "A2_eef0ebf680": {
+   "name": "fluoranthene+OH",
+   "n_ops": 2,
+   "geometry_residual_bohr": 0.00015875750636407115
+  },
+  "A2_f050f29a85": {
+   "name": "pyrene+SH",
+   "n_ops": 1,
+   "geometry_residual_bohr": 8.881784197001252e-16
+  },
+  "A2_fe568a45a8": {
+   "name": "pyrene+OH",
+   "n_ops": 2,
+   "geometry_residual_bohr": 6.532462455632881e-05
+  },
+  "A2_ff6da56848": {
+   "name": "fluoranthene+CONH2",
+   "n_ops": 1,
+   "geometry_residual_bohr": 1.7763568394002505e-15
+  }
+ }
+}

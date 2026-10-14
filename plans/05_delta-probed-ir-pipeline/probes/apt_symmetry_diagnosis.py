@@ -21,6 +21,12 @@ from e8_symmetry import point_group_ops  # noqa: E402
 from qff_symmetry_rebuild import rep  # noqa: E402
 
 
+def geometry_residual(x, ops) -> float:
+    """Largest |R x_i − x_perm[i]| over the operations, coordinates about their mean — point_group_ops' own convention."""
+    c = np.asarray(x, float) - np.asarray(x, float).mean(0)
+    return float(max(np.abs(c @ R.T - c[perm]).max() for R, perm in ops))
+
+
 def diagnose(field_npz: str, fd_npz: str) -> dict:
     F, R = np.load(field_npz, allow_pickle=True), np.load(fd_npz, allow_pickle=True)
     x = np.asarray(F["coords_bohr"], float)
@@ -43,7 +49,7 @@ def diagnose(field_npz: str, fd_npz: str) -> dict:
     Pf, Pr = np.asarray(F["apt"], float), np.asarray(R["apt"], float)
     d = (Pf - Pr).reshape(3, n, 3)
     return {"field": field_npz, "fd_dipole": fd_npz, "operations": len(ops),
-            "geometry_symmetry_residual_bohr": float(max(np.abs((x @ Rm.T)[perm] - x).max() for Rm, perm in ops)),
+            "geometry_symmetry_residual_bohr": geometry_residual(x, ops),
             "symmetry_deviation": {"field": sym_dev(Pf), "fd_dipole": sym_dev(Pr)},
             "translation_sum_rule": {"field": sum_rule(Pf), "fd_dipole": sum_rule(Pr)},
             "max_abs_diff": float(np.abs(d).max()), "max_abs_diff_both_symmetrised": float(np.abs(sym_avg(Pf) - sym_avg(Pr)).max()),

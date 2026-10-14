@@ -40,3 +40,18 @@ def test_the_numbers_of_the_azulene_decision():
     assert az["max_abs_diff"] == pytest.approx(2.39e-3, abs=5e-5) and az["max_abs_diff_both_symmetrised"] == pytest.approx(1.09e-3, abs=5e-5)
     qx = A.diagnose(str(QX / "apt_ccsd_t_field.npz"), str(QX / "apt_ccsd_t.npz"))
     assert qx["max_abs_diff"] == pytest.approx(1.6e-4, abs=5e-6) and qx["geometry_symmetry_residual_bohr"] < 1e-4
+
+
+MOL = PLAN / "modules" / "05_support_predictor" / "corpus" / "molecules"
+
+
+@pytest.mark.skipif(not (MOL / "A_d9139359ab" / "hessian_b3lyp_analytic.npz").exists(), reason="corpus molecules not here")
+def test_geometry_survey_on_azulene_and_benzene():
+    """probes/geometry_symmetry_survey.py: azulene's corpus geometry is C2v to 2.6e-3 bohr and forcing the symmetry moves its B3LYP
+    frequencies by 0.056 cm⁻¹; benzene (D6h, 24 operations, rotations beyond C2 — the convention test) holds to 1.4e-4 bohr."""
+    import geometry_symmetry_survey as G
+    az = G.survey_one(str(MOL / "A_d9139359ab"))
+    assert az["n_ops"] == 4 and az["geometry_residual_bohr"] == pytest.approx(2.6e-3, abs=5e-5)
+    assert az["max_abs_dfreq_symmetrised_cm"] == pytest.approx(0.056, abs=2e-3)
+    bz = G.survey_one(str(MOL / "A_8448043181"))
+    assert bz["n_ops"] == 24 and bz["geometry_residual_bohr"] < 2e-4
