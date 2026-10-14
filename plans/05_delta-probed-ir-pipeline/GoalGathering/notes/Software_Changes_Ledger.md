@@ -57,6 +57,7 @@ One line per change; the numbered section below the register carries every origi
 | 44 | 2026-10-12 | C | pyscf 2.14.0 (`lib/linalg_helper.py::krylov`, via `scf/cphf.py solve_withs1` and the Hessian's `solve_mo1`) | the Krylov solver stops 7e-5 off its own system for DFT CPHF, whatever tol/max_cycle, without a warning; dipole derivatives from that solution are off by 1e-4 (benzene), the Hessian is insensitive; our #3508, upstream's #3384 solves it too (#3508 closed for it) | waiting-upstream |
 | 45 | 2026-10-13 | C | pyVPT2 main 2eae571 (`FD: HESSIAN`, `assemble_quartic_from_hessians`, `check_cubic` / `check_quartic`) | the consistency checks compare routes that were averaged before the check, so they always pass; one route per element, then the same symmetrisation — philipmnel/pyvpt2#59 | pr-open |
 | 46 | 2026-10-13 | C | pyscf 2.14.0 `dft/gen_grid.py` (`Grids.symmetry`, `get_partition`) | the molecular DFT grid is not invariant under the molecule's point group (one lab-frame Lebedev orientation for every atom); `Grids.symmetry` is documented 'whether to symmetrize mesh grids (TODO)' — a symmetry-adapted orientation per atom orbit would fill it | pr-candidate |
+| 47 | 2026-10-14 | B | pyscf-properties master (`prop/infrared`: RHF/UHF/RKS/UKS only) | a CCSD(T) atomic polar tensor by finite field — central differences of the CCSD(T) gradient in ±F along x, y, z, with the field's core-Hamiltonian derivative in the gradient; our `probes/cc_apt_field.py` + `apt_field_route.field_hcore_generator` + `cc_dipole_capture` | pr-candidate |
 
 ## Sections
 
@@ -728,6 +729,30 @@ Tests planned: energy invariance under every operation, Hessian covariance, imag
 
 **PR candidate:** implementing the TODO in `Grids` (orientation per atom from `mol.symmetry`'s operations), with those tests — only after
 our own version passes on benzene, and on the user's word. Before drafting: re-check pyscf master and open issues/PRs for symmetric grids.
+
+### 47 — a CCSD(T) atomic polar tensor by finite field, for pyscf-properties' infrared module
+
+**Group:** B, own layer around third-party code, offered upstream later. **Date:** 2026-10-14. **Status:** pr-candidate (the user, 14 Oct:
+'Ja' to listing it; to be proposed after anchor set three's read, on the user's word).
+
+**Software:** pyscf-properties master, `prop/infrared` — infrared intensities for RHF, UHF, RKS and UKS through the analytic CPHF APT (rows
+29, 40–42); nothing for coupled cluster. pyscf itself has CCSD(T) gradients (`grad/ccsd_t.py`) but no CC dipole derivatives.
+
+**What we built:** `probes/cc_apt_field.py` (12 Oct 2026, lever 6): P[t, 3A+x] = −∂g_Ax/∂F_t by central differences of the CCSD(T) gradient in
+a uniform field ±F along x, y, z — six gradients instead of the 6N of finite differences of the dipole. The field enters the core
+Hamiltonian (+F·r per electron, −Z_A F·R_A for the nuclei) and, through `apt_field_route.field_hcore_generator`, the gradient's
+core-Hamiltonian derivative (`int1e_irp`); the CC chain is `cc_dipole_capture._cc_with_lambda` (RHF → CCSD → (T) → the explicit (T) lambda,
+then `grad.ccsd_t.Gradients(mycc).kernel(t1, t2, l1, l2, eris)`, the call pyscf/grad/test/test_ccsd_t.py makes). Since 14 Oct each field's
+gradient is cached and reused on a re-run, and the CCSD/lambda cycle limit is 200 at unchanged tolerances.
+
+**Validation (numbers with their counterparts):** water/6-31G against central differences of the relaxed CCSD(T) dipole, 1.8e-5 e
+(`tests/test_cc_apt_field.py`); benzene against the E8 run's FD APT, 1.0e-4 e (line 1e-3); translation sum rule ≤ 1e-10 e on every anchor
+so far, against ≈ 3e-4 for the dipole route; quinoxaline field against FD dipole 1.6e-4 e (anchor set three).
+
+**PR candidate:** a function in `prop/infrared` (or a small `prop/apt_cc` module) taking a CCSD or CCSD(T) object and returning the APT by
+finite field, with the water test against FD of the relaxed dipole and the sum-rule check. Before drafting: re-check pyscf-properties and
+pyscf master for a CC dipole-derivative route, read their contribution guide, and keep the (T) lambda explicit (the lambda incident of 29
+Sep). Size: one module of ≈ 150 lines plus tests; decided by the user.
 
 ## How to use this ledger
 
