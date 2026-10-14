@@ -193,6 +193,13 @@ withdrawn sentence.
 route for the hybrid head' on one size (750) with seeds spread 0.30–0.44. *Redo when a lane is free:* the hybrid head on the ridge target at
 two more pool sizes, three seeds, with the learning-curve clause; or a dated note that the carried recipe has made the question moot,
 with the reason.
+61. **Rungs 4 and 5 as broad sets (14 Oct 19:4x; the user: 'een trede is niet 1 molecuul … een zo groot mogelijke set'; 'Ja oké' to a
+proposal).** `GoalGathering/notes/Design_2026-10-14_Rungs_4_5_Broad_Sets.md`. Rung 4 is two families wide (fluoranthene 51, pyrene 33); the five
+other four-ring benzenoids (tetracene, chrysene, benz[a]anthracene, benzo[c]phenanthrene, triphenylene) have no row done; rung 5 has 16 rows
+(pool 3, ≈ 5 per scaffold). Proposed: step 0 the 29 pending P3 neutrals onto pool 3 runner b's idle threads (no new cost); step 1 the five
+families × 30 (150 molecules, tetracene held out whole), analytic labels, ≈ 1,125 lane-h ≈ €240 on the CCX53 after lever 5 (≈ 7 Nov) or ≈ €120 on
+two new CPX62 if a lane matches (unmeasured); step 2 rung 5 only after rung 4 holds (outlook ≈ €770). Registered before launch, curve 0/10/20/30.
+*Waits for the user:* steps 0 and 1's place, the held-out family.
 60. **S1-TZ — does the basis of the anharmonic part matter? (registered 14 Oct 18:3x; the user: 'De registratie ... mag je schrijven, maar
 blijf voorzichtig met het gebruiken van benzeen als representant van wat dan ook').** `GoalGathering/notes/PreRegistration_2026-10-14_TZ_Anharmonic_Basis.md`.
 Δ_anh at B3LYP/def2-TZVP (G's grid 75/302) against G on **benzene, naphthalene and acenaphthylene** (sextet, quartet, trio + duo C–H) — benzene
