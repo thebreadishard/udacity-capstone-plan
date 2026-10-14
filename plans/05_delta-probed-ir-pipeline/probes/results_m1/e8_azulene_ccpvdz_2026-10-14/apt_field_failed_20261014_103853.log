@@ -1,0 +1,55 @@
+CC APT by the field route: 18 atoms, cc-pvdz, frozen 10, field 0.001, 16 threads, fast (T) kernels
+cycle = 1  norm(lambda1,lambda2) = 0.0974377
+cycle = 2  norm(lambda1,lambda2) = 0.0362288
+cycle = 3  norm(lambda1,lambda2) = 0.0224363
+cycle = 4  norm(lambda1,lambda2) = 0.00671821
+cycle = 5  norm(lambda1,lambda2) = 0.00316591
+cycle = 6  norm(lambda1,lambda2) = 0.000905877
+cycle = 7  norm(lambda1,lambda2) = 0.000455775
+cycle = 8  norm(lambda1,lambda2) = 0.00014809
+cycle = 9  norm(lambda1,lambda2) = 7.2057e-05
+cycle = 10  norm(lambda1,lambda2) = 3.06949e-05
+cycle = 11  norm(lambda1,lambda2) = 1.36904e-05
+cycle = 12  norm(lambda1,lambda2) = 7.333e-06
+cycle = 13  norm(lambda1,lambda2) = 4.54823e-06
+cycle = 14  norm(lambda1,lambda2) = 1.95784e-06
+cycle = 15  norm(lambda1,lambda2) = 1.21357e-06
+cycle = 16  norm(lambda1,lambda2) = 7.05881e-07
+cycle = 17  norm(lambda1,lambda2) = 4.9941e-07
+cycle = 18  norm(lambda1,lambda2) = 3.08512e-07
+cycle = 19  norm(lambda1,lambda2) = 1.47174e-07
+cycle = 20  norm(lambda1,lambda2) = 1.10426e-07
+cycle = 21  norm(lambda1,lambda2) = 6.48099e-08
+cycle = 22  norm(lambda1,lambda2) = 4.6901e-08
+cycle = 23  norm(lambda1,lambda2) = 4.0428e-08
+cycle = 24  norm(lambda1,lambda2) = 3.40645e-08
+cycle = 25  norm(lambda1,lambda2) = 2.57216e-08
+cycle = 26  norm(lambda1,lambda2) = 3.45394e-08
+cycle = 27  norm(lambda1,lambda2) = 2.67003e-08
+cycle = 28  norm(lambda1,lambda2) = 2.24697e-08
+cycle = 29  norm(lambda1,lambda2) = 1.98933e-08
+cycle = 30  norm(lambda1,lambda2) = 1.82094e-08
+cycle = 31  norm(lambda1,lambda2) = 1.70293e-08
+cycle = 32  norm(lambda1,lambda2) = 1.69875e-08
+cycle = 33  norm(lambda1,lambda2) = 1.49869e-08
+cycle = 34  norm(lambda1,lambda2) = 1.36338e-08
+cycle = 35  norm(lambda1,lambda2) = 1.2637e-08
+cycle = 36  norm(lambda1,lambda2) = 1.18394e-08
+cycle = 37  norm(lambda1,lambda2) = 1.11527e-08
+cycle = 38  norm(lambda1,lambda2) = 1.04779e-08
+cycle = 39  norm(lambda1,lambda2) = 9.69446e-09
+Traceback (most recent call last):
+  File "/root/dpir/probes/cc_apt_field.py", line 121, in <module>
+    main()
+  File "/root/dpir/probes/cc_apt_field.py", line 113, in main
+    P = apt_cc_field(mol, frozen, a.field, log)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/dpir/probes/cc_apt_field.py", line 61, in apt_cc_field
+    g.append(cc_gradient_in_field(mol, frozen, F)[0])
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/dpir/probes/cc_apt_field.py", line 39, in cc_gradient_in_field
+    energy, mf, mycc, l1, l2, eris = _cc_with_lambda(mol, frozen, hcore_shift=shift)
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/dpir/probes/cc_dipole_capture.py", line 42, in _cc_with_lambda
+    raise RuntimeError("SCF, CCSD or the (T) lambda did not converge")
+RuntimeError: SCF, CCSD or the (T) lambda did not converge

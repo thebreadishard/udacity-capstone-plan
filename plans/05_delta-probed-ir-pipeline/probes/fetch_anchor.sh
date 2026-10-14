@@ -14,8 +14,10 @@ SRC=/root/dpir/probes/results/${NAME}_ccpvdz
 DST="$HERE/results_m1/e8_${NAME}_ccpvdz_${DATE}"
 if [ -z "${VERIFY_ONLY:-}" ]; then
 [ -e "$DST" ] && { echo "$DST exists — refusing"; exit 1; }
-host_ssh anchors3 "test -f $SRC/apt_ccsd_t_field.npz && grep -q '=== (AS3) $NAME apt PASS' /root/dpir/anchors.log" \
-  || { echo "$NAME: no passed field-route APT yet — not fetched"; exit 1; }
+# PASS, or ACCEPTED: the user's decision recorded on the server when the cross-check failed for a diagnosed cause (14 Oct 2026, azulene;
+# apt_cross_check_decision.md in the run folder travels with the fetch)
+host_ssh anchors3 "test -f $SRC/apt_ccsd_t_field.npz && grep -qE '=== \(AS3\) $NAME apt (PASS|ACCEPTED)' /root/dpir/anchors.log" \
+  || { echo "$NAME: no passed or accepted field-route APT yet — not fetched"; exit 1; }
 mkdir -p "$DST/server"
 SCP="scp -q -o BatchMode=yes -o ConnectTimeout=20 -i $HOME/.ssh/hetzner_g_measure"
 $SCP -r "root@$IP:$SRC/." "$DST/"

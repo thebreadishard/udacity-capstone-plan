@@ -253,6 +253,18 @@ the λ question waits for set four instead of a re-choice of λ.
 **Cost:** fine-tune and evaluation runs only (no new quantum chemistry); the number of runs is 3 sizes × 5 subsets × 3 seeds per arm, timed
 on the first subset and stated before the rest run.
 
+## Per-anchor note — azulene's APT (14 Oct 2026, 22:0x; not a read)
+
+The field-route APT met its registered line (item 2: translation sum rule 1.7e-10 ≤ 1e-6); the wave's cross-check against the FD-dipole APT
+failed (max |ΔP| 2.39e-3 > 1e-3). `probes/apt_symmetry_diagnosis.py` (test `tests/test_apt_symmetry_diagnosis.py`), with quinoxaline beside it:
+the corpus geometry is C2v only to 2.6e-3 bohr (quinoxaline 9.7e-5), the field APT deviates from C2v by 3.4e-3 (5.1e-5) — the true APT at
+an asymmetric geometry is asymmetric — while the FD-dipole route symmetrises (spread 3.0e-3) and breaks the translation sum rule by 1.7e-3
+(3.7e-5); both symmetrised, 1.09e-3. **The user, 14 Oct ≈ 22:0x: 'Optie 1, accepteer de veldroute en haal azuleen op'.** The field APT is
+azulene's APT; the cross-check is recorded as failed for this cause (`apt_cross_check_decision.md` in the run folder; marker 'apt ACCEPTED'
+in anchors.log, which `probes/fetch_anchor.sh` now admits beside PASS). Fetched: `probes/results_m1/e8_azulene_ccpvdz_2026-10-14/` (218
+files, sha256-checked 22:06 and again after a stamp correction 22:07). Open, separately: why azulene's corpus geometry is less symmetric, and
+what that means for its CC Hessian (TASKS 51).
+
 ## Outcome
 
 *(appended after the reads)*

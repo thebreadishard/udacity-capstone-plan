@@ -1,0 +1,1 @@
+{"apt": "results/azulene_ccpvdz/apt_ccsd_t_field.npz", "sum_rule": 1.691424778016426e-10, "seconds": 17232, "passed": false, "ref": "results/azulene_ccpvdz/apt_ccsd_t.npz", "max_abs_diff": 0.0023912451282631086, "line": 0.001, "ref_sum_rule": 0.001736406615577682}
