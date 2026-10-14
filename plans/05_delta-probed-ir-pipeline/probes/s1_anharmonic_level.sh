@@ -73,5 +73,9 @@ else
   first=1
   for spec in "$@"; do run_setting "$spec" "$first"; first=0; done
 fi
-"$PY" "$HERE/s1_anharmonic_level.py" compare "${names[@]}" --out "$root/compare.json"
-mark "all settings done"
+if [ "${#names[@]}" -gt 1 ]; then
+  "$PY" "$HERE/s1_anharmonic_level.py" compare "${names[@]}" --out "$root/compare.json"
+  mark "all settings done"
+else
+  mark "all settings done (one setting: no comparison)"      # 14 Oct 2026: S2 runs one setting per molecule (probes/s2_batch.sh)
+fi

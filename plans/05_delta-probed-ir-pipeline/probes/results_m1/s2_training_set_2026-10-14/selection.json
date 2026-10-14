@@ -1,0 +1,147 @@
+{
+ "rule": "1. Universe: corpus manifest rows with status done and n_atoms \u2264 20, neutral, elements C and N besides H (the large targets are C/H; the\n     aza families of pool 3 are the next nearest), not in hold-out (b) (corpus/holdout_b_frozen_2026-10-08.txt).\n  2. Every pure hydrocarbon of the universe is taken (the targets' own chemistry).\n  3. The rest up to N_TOTAL = 20 are nitrogen-containing members, breadth first over Murcko scaffolds (decision 52): scaffolds in the order of\n     the sha1 of their SMILES, one molecule per scaffold per round, within a scaffold in the order of the sha1 of the molecule id.\n  4. Benzene's GVPT2 at G exists (S1, 13 Oct) and is reused, not recomputed.",
+ "universe": 73,
+ "universe_scaffolds": 14,
+ "selected": [
+  {
+   "id": "A_01f3186607",
+   "smiles": "c1ccc2ccccc2c1",
+   "n_atoms": 18,
+   "has_n": false,
+   "scaffold": "c1ccc2ccccc2c1"
+  },
+  {
+   "id": "A_8448043181",
+   "smiles": "c1ccccc1",
+   "n_atoms": 12,
+   "has_n": false,
+   "scaffold": "c1ccccc1"
+  },
+  {
+   "id": "A_d9139359ab",
+   "smiles": "c1ccc2cccc-2cc1",
+   "n_atoms": 18,
+   "has_n": false,
+   "scaffold": "c1ccc2cccc-2cc1"
+  },
+  {
+   "id": "A_45187bb7c8",
+   "smiles": "C1=Cc2cccc3cccc1c23",
+   "n_atoms": 20,
+   "has_n": false,
+   "scaffold": "C1=Cc2cccc3cccc1c23"
+  },
+  {
+   "id": "A_72b86c2331",
+   "smiles": "c1ccc2c(c1)-c1ccccc1-2",
+   "n_atoms": 20,
+   "has_n": false,
+   "scaffold": "c1ccc2c(c1)-c1ccccc1-2"
+  },
+  {
+   "id": "A_8f6ed7c002",
+   "smiles": "C=Cc1ccccc1",
+   "n_atoms": 16,
+   "has_n": false,
+   "scaffold": "c1ccccc1"
+  },
+  {
+   "id": "A_90df3e4aa9",
+   "smiles": "C1=Cc2ccccc2C1",
+   "n_atoms": 17,
+   "has_n": false,
+   "scaffold": "C1=Cc2ccccc2C1"
+  },
+  {
+   "id": "A_a848c04a21",
+   "smiles": "C#Cc1ccccc1",
+   "n_atoms": 14,
+   "has_n": false,
+   "scaffold": "c1ccccc1"
+  },
+  {
+   "id": "B_0603418c5b",
+   "smiles": "C#Cc1cc2cccccc-2c1",
+   "n_atoms": 20,
+   "has_n": false,
+   "scaffold": "c1ccc2cccc-2cc1"
+  },
+  {
+   "id": "B_190a33a33e",
+   "smiles": "C#Cc1cccc(C=C)c1",
+   "n_atoms": 18,
+   "has_n": false,
+   "scaffold": "c1ccccc1"
+  },
+  {
+   "id": "B_a41f4cff9d",
+   "smiles": "N#Cc1ccc2ccccc2c1",
+   "n_atoms": 19,
+   "has_n": true,
+   "scaffold": "c1ccc2ccccc2c1"
+  },
+  {
+   "id": "B_151c8ce719",
+   "smiles": "Cc1c[nH]cn1",
+   "n_atoms": 12,
+   "has_n": true,
+   "scaffold": "c1c[nH]cn1"
+  },
+  {
+   "id": "B_16194573ac",
+   "smiles": "C=Cc1ccc[nH]1",
+   "n_atoms": 14,
+   "has_n": true,
+   "scaffold": "c1cc[nH]c1"
+  },
+  {
+   "id": "B_17f1611949",
+   "smiles": "C#Cc1cnccc1C",
+   "n_atoms": 16,
+   "has_n": true,
+   "scaffold": "c1ccncc1"
+  },
+  {
+   "id": "B_0040149ee1",
+   "smiles": "Cc1cccc2[nH]ccc12",
+   "n_atoms": 19,
+   "has_n": true,
+   "scaffold": "c1ccc2[nH]ccc2c1"
+  },
+  {
+   "id": "A_7aa232d4e9",
+   "smiles": "c1ccc2nccnc2c1",
+   "n_atoms": 16,
+   "has_n": true,
+   "scaffold": "c1ccc2nccnc2c1"
+  },
+  {
+   "id": "B_410ac0fb2f",
+   "smiles": "C#Cc1ccc(N)cc1",
+   "n_atoms": 16,
+   "has_n": true,
+   "scaffold": "c1ccccc1"
+  },
+  {
+   "id": "B_079e66d017",
+   "smiles": "Cc1cncc2ccccc12",
+   "n_atoms": 20,
+   "has_n": true,
+   "scaffold": "c1ccc2cnccc2c1"
+  },
+  {
+   "id": "A_d295f2fa80",
+   "smiles": "c1ccc2ncncc2c1",
+   "n_atoms": 16,
+   "has_n": true,
+   "scaffold": "c1ccc2ncncc2c1"
+  },
+  {
+   "id": "B_78f8233b4c",
+   "smiles": "Nc1cc2cccccc-2c1",
+   "n_atoms": 20,
+   "has_n": true,
+   "scaffold": "c1ccc2cccc-2cc1"
+  }
+ ]
+}
