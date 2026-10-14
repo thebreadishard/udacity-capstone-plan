@@ -32,7 +32,7 @@ molecule with published CCSD(T) harmonics and gas-phase fundamentals (none found
 **My prediction:** passes, rms ≈ 2–3 cm⁻¹, with the largest differences in the b2g out-of-plane modes. Boese & Martin report B3LYP/TZ2P
 fundamentals against MCP at RMS 4.8 cm⁻¹ without the C–H stretches, and that includes B3LYP's harmonic error, which Δ_anh does not carry.
 
-## Outcome (14 Oct 2026, 13:4x)
+## Outcome (14 Oct 2026, 13:0x)
 
 `probes/hybrid_check_benzene.py` → `probes/results_m1/hybrid_check_benzene_2026-10-14/hybrid_check.{json,md}`; the table numbers in
 `boese_martin_tables.json` (pypdf layout extraction, columns checked row by row; Table I's e2u row has two misaligned values in its last two
