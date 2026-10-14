@@ -10,6 +10,8 @@
 # WAIT_LOG / WAIT_RE: wait until the log shows the pattern (S1 waits for the five-ring runner's end). MAX_FIRST: the registration's stop rule,
 # seconds allowed for the first displaced Hessian of the first setting (default 900). PARALLEL=1 (13 Oct 2026, the S1 server): one
 # process per setting, <threads> each; a failed setting is named in '=== (S1) SETTINGS FAILED: …' after the others have ended.
+# GATE_GRID (14 Oct 2026, S1-TZ): before any displacement, the reference Hessian is recomputed at this finer grid and the harmonic ω compared
+# (s1_anharmonic_level.py gate, line GATE_LINE, default 1.0 cm⁻¹); a failed gate stops the setting with a GATE_FAILED file and marker.
 set -euo pipefail
 PY=${PY:-/home/thebreadishard/qc05/bin/python}
 HERE=$(cd "$(dirname "$0")" && pwd)
@@ -37,6 +39,14 @@ run_setting() {   # $1 = name:basis:grid; $2 = 1 for the first setting, whose fi
   fi
   "$PY" "$HERE/pyscf_hessians_for_qff.py" "$d/refstub" "$d/refhess" --basis "$basis" --grid "$grid" --threads "$thr"
   cp "$d/refhess/ref.json" "$d/ref.json"
+  if [ -n "${GATE_GRID:-}" ]; then
+    "$PY" "$HERE/pyscf_hessians_for_qff.py" "$d/refstub" "$d/refhess_gate" --basis "$basis" --grid "$GATE_GRID" --threads "$thr"
+    if "$PY" "$HERE/s1_anharmonic_level.py" gate "$d/ref.json" "$d/refhess_gate/ref.json" --line "${GATE_LINE:-1.0}" > "$d/grid_gate.log" 2>&1; then
+      mark "$name: $(cat "$d/grid_gate.log")"
+    else
+      mark "$name: GRID GATE FAILED — $(cat "$d/grid_gate.log")"; touch "$d/GATE_FAILED"; return 1
+    fi
+  fi
   "$PY" "$HERE/make_qff_displacements.py" "$d/ref.json" "$d/stubs" --disp "$DISP"
   cp "$d/ref.json" "$d/hess/ref.json"      # the reference stub carries the same name, so it is not computed twice
   mark "$name: $(ls "$d/stubs" | wc -l) Hessians to compute"

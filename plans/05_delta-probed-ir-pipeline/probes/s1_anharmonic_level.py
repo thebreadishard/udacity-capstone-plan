@@ -8,6 +8,8 @@ python -m dpir.qff):
         the minimum at the setting itself (VPT2 assumes a stationary point; the corpus geometry is psi4's, and pyscf's B3LYP and grids move
         it): BFGS on the analytic RKS gradient to max |g| ≤ 1e-4, then Newton steps on the analytic Hessian until ≤ 1e-6 E_h/bohr (BFGS alone
         stalled at 3e-6 on water: line-search precision against a 1e-11 energy), written as a stub json for pyscf_hessians_for_qff.py.
+    python s1_anharmonic_level.py gate <ref.json> <ref_finer_grid.json> [--window 550,2000] [--line 1.0]
+        S1-TZ's grid gate (14 Oct 2026): exit 0 when the largest |Δω| over the window is within the line, 3 when not.
     python s1_anharmonic_level.py compare <ref_dir> <test_dir> [<test_dir> ...] [--window 550,2000]
         each directory holds a setting's reference Hessian (ref.json) and its dpir.qff report (qff_report.npz); modes are matched to the
         reference setting's by eigenvector overlap; prints and writes Δ_anh per mode and the rms / max difference over the window.
@@ -153,6 +155,17 @@ def compare(ref_dir: str, test_dirs: list, window=(550.0, 2000.0)) -> dict:
     return out
 
 
+def grid_gate(ref_json: str, gate_json: str, window=(550.0, 2000.0), line=1.0) -> dict:
+    """S1-TZ's grid gate (14 Oct 2026): harmonic ω of the same minimum at the run's grid and at a finer one, compared in sorted order (as the
+    0.33 cm⁻¹ between G and R at 6-31G* was measured); passes when the largest |Δω| over the window's modes is within the line."""
+    w1, _ = harmonic_modes(ref_json)
+    w2, _ = harmonic_modes(gate_json)
+    w1, w2 = np.sort(w1), np.sort(w2)
+    inwin = (w1 >= window[0]) & (w1 <= window[1])
+    dmax = float(np.abs(w1 - w2)[inwin].max())
+    return {"max_abs_domega_window": dmax, "n_window": int(inwin.sum()), "line": line, "passed": dmax <= line}
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -167,7 +180,18 @@ def main():
     c.add_argument("test_dirs", nargs="+")
     c.add_argument("--window", default="550,2000")
     c.add_argument("--out", default=None)
+    gt = sub.add_parser("gate")
+    gt.add_argument("ref_json")
+    gt.add_argument("gate_json")
+    gt.add_argument("--window", default="550,2000")
+    gt.add_argument("--line", type=float, default=1.0)
     a = ap.parse_args()
+    if a.cmd == "gate":
+        lo, hi = (float(v) for v in a.window.split(","))
+        g = grid_gate(a.ref_json, a.gate_json, (lo, hi), a.line)
+        print(f"grid gate: max |Δω| {g['max_abs_domega_window']:.2f} cm⁻¹ over {g['n_window']} modes in {lo:g}–{hi:g} "
+              f"(line {g['line']:g}) → {'PASS' if g['passed'] else 'FAIL'}")
+        return 0 if g["passed"] else 3
     if a.cmd == "optimise":
         g = json.load(open(a.geometry, encoding="utf-8"))
         sym = [s.capitalize() for s in g["symbols"]]

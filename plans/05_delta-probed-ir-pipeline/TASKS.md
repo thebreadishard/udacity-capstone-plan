@@ -204,6 +204,12 @@ keeps the server for it** (spending), or another server on the user's word. Noth
 **18:4x amendment 1:** the user: 'Ja' (keep `s1` for S1-TZ after S2, until read and fetched) 'en vergeet niet de is-nog-aan-het-leren regel' — the
 per-family correction d̄_f (branch c, solo question) is read along k = 1, 2 molecules; a transfer miss while still learning is data-limited →
 one more fused hydrocarbon at T (biphenylene, then azulene), not a failure; flat → the search first, then route A at T.
+**19:1x tools ready (before any T number):** grid gate in the runner (`GATE_GRID=99,590 bash probes/s2_batch.sh <list> <root> 3 5
+T:def2-tzvp:75,302`; `s1_anharmonic_level.py gate`; water smoke in WSL: pass 0.03 cm⁻¹ runs on, a forced fail stops before the first displaced
+Hessian with GATE_FAILED and the batch marker 'GATE FAILED'); the read `probes/s1tz_read.py --mol benzene=G,T --mol naphthalene=G,T --mol
+acenaphthylene=G,T [--transfer NAME=G,T] --out <dir>` (branches, fused molecules decide, CH-oop spread, amendment 1's curve and transfer,
+benzene's reference read via `hybrid_check_benzene.match_to_table`, whose registered output is byte-identical); tests reproduce S1's
+0.19 / 0.35, 3.16 / 7.51, the hybrid check's 7.16 and the gate's 0.33. Note: s2_batch.sh's markers say '(S2)'; S1-TZ gets its own log.
 attempt did not test it: closing the window left the app running (Claude processes from 12 Oct 23:14; snapshot
 `probes/watch_state/relaunch_test_2026-10-13_before.txt`, every pid alive, heartbeat without a gap). It showed a real risk instead: every job
 launched on 12 Oct sat in an empty-looking Windows Terminal window, and closing one kills its job; `tools/launch_outside_app.sh` now starts

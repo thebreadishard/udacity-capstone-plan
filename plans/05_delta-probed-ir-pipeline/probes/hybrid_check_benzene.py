@@ -33,14 +33,14 @@ CLASS_OF_IRREP = {"a1g": ("ip", "g", 1, True), "a2g": ("ip", "g", 1, False), "b1
                   "e1g": ("oop", "g", 2, False), "e2u": ("oop", "u", 2, False)}
 
 
-def our_modes(setting: str) -> list[dict]:
-    """One entry per fundamental of the setting: ω, Δ_anh, symmetry class."""
-    ref = json.load(open(os.path.join(RUN, setting, "ref.json"), encoding="utf-8"))
+def our_modes(path: str) -> list[dict]:
+    """One entry per fundamental of the setting directory `path` (ref.json, qff_report.npz): ω, Δ_anh, symmetry class."""
+    ref = json.load(open(os.path.join(path, "ref.json"), encoding="utf-8"))
     sym = ref["molecule"]["symbols"]
     x = np.array(ref["molecule"]["geometry"], float).reshape(-1, 3)
     n = len(sym)
-    w, q = harmonic_modes(os.path.join(RUN, setting, "ref.json"))
-    z = np.load(os.path.join(RUN, setting, "qff_report.npz"))
+    w, q = harmonic_modes(os.path.join(path, "ref.json"))
+    z = np.load(os.path.join(path, "qff_report.npz"))
     d_anh = z["nu_sym"] - z["omega_cm"]
     assert np.allclose(z["omega_cm"], w, atol=0.5), "qff_report and ref.json disagree on ω"
     ops = point_group_ops(sym, x)
@@ -69,17 +69,31 @@ def our_modes(setting: str) -> list[dict]:
     return out
 
 
-def main() -> None:
-    tab = json.load(open(os.path.join(OUT, "boese_martin_tables.json"), encoding="utf-8"))["rows"]
-    modes = {s: our_modes(s) for s in ("R", "G")}
-    pairs = []
+def match_to_table(tab: list[dict], modes: dict) -> list[tuple]:
+    """Pair the table's rows with each setting's modes: per symmetry class, in the order of ω. `modes` maps a setting name to our_modes();
+    returns (row, {setting: mode}) per table row."""
+    out = []
     for cls in sorted(set(CLASS_OF_IRREP.values())):
         rows = sorted([r for r in tab if CLASS_OF_IRREP[r["irrep"]] == cls], key=lambda r: -r["omega_ccsdt"])
         ours = {s: sorted([m for m in modes[s] if m["class"] == cls], key=lambda m: -m["omega"]) for s in modes}
         if any(len(ours[s]) != len(rows) for s in ours):
-            raise SystemExit(f"class {cls}: {len(rows)} table rows, ours R {len(ours['R'])} / G {len(ours['G'])}")
-        for r, mr, mg in zip(rows, ours["R"], ours["G"], strict=True):
-            pairs.append({"mode": r["mode"], "irrep": r["irrep"], "omega_ccsdt": r["omega_ccsdt"], "omega_R": mr["omega"], "omega_G": mg["omega"],
+            raise SystemExit(f"class {cls}: {len(rows)} table rows, ours " + " / ".join(f"{s} {len(v)}" for s, v in ours.items()))
+        for i, r in enumerate(rows):
+            out.append((r, {s: ours[s][i] for s in ours}))
+    return out
+
+
+def load_table() -> list[dict]:
+    return json.load(open(os.path.join(OUT, "boese_martin_tables.json"), encoding="utf-8"))["rows"]
+
+
+def main() -> None:
+    tab = load_table()
+    modes = {s: our_modes(os.path.join(RUN, s)) for s in ("R", "G")}
+    pairs = []
+    for r, m in match_to_table(tab, modes):
+        mr, mg = m["R"], m["G"]
+        pairs.append({"mode": r["mode"], "irrep": r["irrep"], "omega_ccsdt": r["omega_ccsdt"], "omega_R": mr["omega"], "omega_G": mg["omega"],
                           "d_semi": r["nu_mcp"] - r["omega_ccsdt"], "d_R": mr["d_anh"], "d_G": mg["d_anh"],
                           "d_b3lyp_tz2p": r["nu_b3lyp"] - r["omega_b3lyp"], "d_b971_tz2p": r["nu_b971"] - r["omega_b971"], "fermi": r["fermi"], "starred": r["starred_table_ii"]})
     use = [p for p in pairs if WINDOW[0] <= p["omega_R"] <= WINDOW[1] and not p["fermi"]]

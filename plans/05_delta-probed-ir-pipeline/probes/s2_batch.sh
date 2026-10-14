@@ -18,6 +18,7 @@ one() {   # $1 = id, $2 = geometry path
   bash "$HERE/s1_anharmonic_level.sh" "$g" "$d" "$THR" "$SETTING" > "$ROOT/$id.log" 2>&1; rc=$?
   if [ "$rc" = 0 ]; then
     if [ -f "$d/$name/NOISY" ]; then mark "$id: NOISY (excluded by the noise rule)"; else mark "$id: done"; fi
+  elif [ -f "$d/$name/GATE_FAILED" ]; then mark "$id: GATE FAILED (grid gate at ${GATE_GRID:-?}; re-price at that grid)"
   elif grep -q 'STOPPED' "$ROOT/$id.log"; then mark "$id: STOPPED (first displaced Hessian over $MAX_FIRST s)"
   else mark "$id: FAILED rc=$rc (see $ROOT/$id.log)"; fi
 }
