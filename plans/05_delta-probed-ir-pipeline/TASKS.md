@@ -199,7 +199,13 @@ other four-ring benzenoids (tetracene, chrysene, benz[a]anthracene, benzo[c]phen
 (pool 3, ≈ 5 per scaffold). Proposed: step 0 the 29 pending P3 neutrals onto pool 3 runner b's idle threads (no new cost); step 1 the five
 families × 30 (150 molecules, tetracene held out whole), analytic labels, ≈ 1,125 lane-h ≈ €240 on the CCX53 after lever 5 (≈ 7 Nov) or ≈ €120 on
 two new CPX62 if a lane matches (unmeasured); step 2 rung 5 only after rung 4 holds (outlook ≈ €770). Registered before launch, curve 0/10/20/30.
-*Waits for the user:* steps 0 and 1's place, the held-out family.
+*Waits for the user:* steps 0 and 1's place, the held-out family. **20:0x the user: 'Stap 0 ja, waar stap 1 op draait wil ik morgen
+beslissen, tetraceen akkoord'.** Step 0 done: runner a had already finished its 60 cations and was on its neutrals (3 done, P3_0734c205ad running,
+25 pending); the last 13 of a's queue (aza-pyrenes/-fluoranthenes, benzo[a/e]pyrene, perylene, picene, dibenz[a,h]anthracene, benzo[k]fluoranthene
+rows) set to status 'moved' in corpus_p3/manifest.csv (backup manifest.csv.pre_rebalance_*, atomic, mid-molecule; merge_shards ignores 'moved'),
+ids in corpus_p3b/rebalance_ids_2026-10-14.txt; runner b relaunched 20:02 with `run_corpus.py --ids <13>` (remote_launch name pool3_b, dry run 13
+'would run'; the first run's files kept as pool3_b_run1_2026-10-13.*; the watch's seen marker 'pool 3 runner b finished' cleared so its end
+alarms). **Next:** a's step 1 place (the user, 15 Oct); the registration before step 1.
 60. **S1-TZ — does the basis of the anharmonic part matter? (registered 14 Oct 18:3x; the user: 'De registratie ... mag je schrijven, maar
 blijf voorzichtig met het gebruiken van benzeen als representant van wat dan ook').** `GoalGathering/notes/PreRegistration_2026-10-14_TZ_Anharmonic_Basis.md`.
 Δ_anh at B3LYP/def2-TZVP (G's grid 75/302) against G on **benzene, naphthalene and acenaphthylene** (sextet, quartet, trio + duo C–H) — benzene
