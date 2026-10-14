@@ -206,6 +206,11 @@ rows) set to status 'moved' in corpus_p3/manifest.csv (backup manifest.csv.pre_r
 ids in corpus_p3b/rebalance_ids_2026-10-14.txt; runner b relaunched 20:02 with `run_corpus.py --ids <13>` (remote_launch name pool3_b, dry run 13
 'would run'; the first run's files kept as pool3_b_run1_2026-10-13.*; the watch's seen marker 'pool 3 runner b finished' cleared so its end
 alarms). **Next:** a's step 1 place (the user, 15 Oct); the registration before step 1.
+**20:2x step 1 prepared (the user: 'Ja, begin maar met 1 en 2'):** frozen list `modules/05_support_predictor/out/rung4_candidates_2026-10-14.csv`
+(sha256 cb854acef18d…, `probes/rung4_candidates.py`, 6 tests): 150 rows, 30–34 atoms, 15 substituents × 2 positions per family, tetracene the test
+family, curve ranks breadth first; exact price 1,214–1,243 lane-h (CCX53 12.6–12.9 days, €259–266). Registered:
+`GoalGathering/notes/PreRegistration_2026-10-14_Rung4_Broad_Set.md` (line: every band family ≤ 2.5 cm⁻¹ on tetracene at k = 30; curve k = 0/10/20/30;
+still learning → 60 per family; flat → search first). **Waits for:** the user's place (15 Oct) → `--write-manifest`, exclude files + chain spec.
 60. **S1-TZ — does the basis of the anharmonic part matter? (registered 14 Oct 18:3x; the user: 'De registratie ... mag je schrijven, maar
 blijf voorzichtig met het gebruiken van benzeen als representant van wat dan ook').** `GoalGathering/notes/PreRegistration_2026-10-14_TZ_Anharmonic_Basis.md`.
 Δ_anh at B3LYP/def2-TZVP (G's grid 75/302) against G on **benzene, naphthalene and acenaphthylene** (sextet, quartet, trio + duo C–H) — benzene

@@ -1,0 +1,151 @@
+id,layer,name,smiles,n_heavy,n_atoms,kind,family,is_parent,test_family,curve_rank,same_as,nbas,lane_hours_lo,lane_hours_hi,reason
+R4_37539913ef,R4,benzo[c]phenanthrene,c1ccc2c(c1)ccc1ccc3ccccc3c12,18,30,4ar-fused|carbo|sub:none,benzo[c]phenanthrene,1,0,1,G_37539913ef,294,5.8,5.91,rung 4 broad set (TASKS 61); parent
+R4_210c4aa9c4,R4,benzo[c]phenanthrene+OH,Oc1cc2ccccc2c2c1ccc1ccccc12,19,31,4ar-fused|carbo|sub:O,benzo[c]phenanthrene,0,0,2,,309,6.87,7.02,rung 4 broad set (TASKS 61)
+R4_172087a3e1,R4,benzo[c]phenanthrene+ethynyl,C#Cc1ccc2c(ccc3ccc4ccccc4c32)c1,20,32,4ar-fused|carbo|sub:C,benzo[c]phenanthrene,0,0,3,,324,8.07,8.26,rung 4 broad set (TASKS 61)
+R4_09c43c27da,R4,benzo[c]phenanthrene+NO2,O=[N+]([O-])c1ccc2ccc3ccc4ccccc4c3c2c1,21,32,4ar-fused|carbo|sub:NO,benzo[c]phenanthrene,0,0,4,,337,9.23,9.46,rung 4 broad set (TASKS 61)
+R4_225a0e48de,R4,benzo[c]phenanthrene+CN,N#Cc1cc2ccccc2c2c1ccc1ccccc12,20,31,4ar-fused|carbo|sub:CN,benzo[c]phenanthrene,0,0,5,,322,7.91,8.09,rung 4 broad set (TASKS 61)
+R4_00d72f65ee,R4,benzo[c]phenanthrene+CH3,Cc1ccc2c(ccc3ccc4ccccc4c32)c1,19,33,4ar-fused|carbo|sub:C,benzo[c]phenanthrene,0,0,6,,313,7.18,7.34,rung 4 broad set (TASKS 61)
+R4_0f7116fb72,R4,benzo[c]phenanthrene+OCH3,COc1ccc2c(ccc3ccc4ccccc4c32)c1,20,34,4ar-fused|carbo|sub:CO,benzo[c]phenanthrene,0,0,7,,328,8.42,8.62,rung 4 broad set (TASKS 61)
+R4_092f5e4e31,R4,benzo[c]phenanthrene+CHO,O=Cc1cccc2c1ccc1ccc3ccccc3c12,20,32,4ar-fused|carbo|sub:CO,benzo[c]phenanthrene,0,0,8,,324,8.07,8.26,rung 4 broad set (TASKS 61)
+R4_083a8946f6,R4,benzo[c]phenanthrene+SH,Sc1cc2ccc3ccccc3c2c2ccccc12,19,31,4ar-fused|carbo|sub:S,benzo[c]phenanthrene,0,0,9,,313,7.18,7.34,rung 4 broad set (TASKS 61)
+R4_28318166c8,R4,benzo[c]phenanthrene+CF3,FC(F)(F)c1cc2ccccc2c2c1ccc1ccccc12,22,33,4ar-fused|carbo|sub:CF,benzo[c]phenanthrene,0,0,10,,352,10.7,11.0,rung 4 broad set (TASKS 61)
+R4_001c348db2,R4,benzo[c]phenanthrene+COOH,O=C(O)c1cccc2c1ccc1ccc3ccccc3c12,21,33,4ar-fused|carbo|sub:CO,benzo[c]phenanthrene,0,0,11,,339,9.42,9.66,rung 4 broad set (TASKS 61)
+R4_74813af8b6,R4,benzo[c]phenanthrene+vinyl,C=Cc1cc2ccccc2c2c1ccc1ccccc12,20,34,4ar-fused|carbo|sub:C,benzo[c]phenanthrene,0,0,12,,328,8.42,8.62,rung 4 broad set (TASKS 61)
+R4_0ae2888b79,R4,benzo[c]phenanthrene+Cl,Clc1ccc2ccc3ccc4ccccc4c3c2c1,19,30,4ar-fused|carbo|sub:Cl,benzo[c]phenanthrene,0,0,13,,311,7.03,7.18,rung 4 broad set (TASKS 61)
+R4_13bf25313a,R4,benzo[c]phenanthrene+NH2,Nc1ccc2ccc3ccc4ccccc4c3c2c1,19,32,4ar-fused|carbo|sub:N,benzo[c]phenanthrene,0,0,14,,311,7.03,7.18,rung 4 broad set (TASKS 61)
+R4_16bfe69ed9,R4,benzo[c]phenanthrene+CONH2,NC(=O)c1cc2ccccc2c2c1ccc1ccccc12,21,34,4ar-fused|carbo|sub:CNO,benzo[c]phenanthrene,0,0,15,,341,9.61,9.86,rung 4 broad set (TASKS 61)
+R4_1fb1cb93c7,R4,benzo[c]phenanthrene+F,Fc1cc2ccc3ccccc3c2c2ccccc12,19,30,4ar-fused|carbo|sub:F,benzo[c]phenanthrene,0,0,16,,307,6.72,6.86,rung 4 broad set (TASKS 61)
+R4_89c346a0ea,R4,benzo[c]phenanthrene+OH,Oc1cc2ccc3ccccc3c2c2ccccc12,19,31,4ar-fused|carbo|sub:O,benzo[c]phenanthrene,0,0,17,,309,6.87,7.02,rung 4 broad set (TASKS 61)
+R4_5392100780,R4,benzo[c]phenanthrene+ethynyl,C#Cc1cc2ccc3ccccc3c2c2ccccc12,20,32,4ar-fused|carbo|sub:C,benzo[c]phenanthrene,0,0,18,,324,8.07,8.26,rung 4 broad set (TASKS 61)
+R4_0af6627102,R4,benzo[c]phenanthrene+NO2,O=[N+]([O-])c1ccc2c(ccc3ccc4ccccc4c32)c1,21,32,4ar-fused|carbo|sub:NO,benzo[c]phenanthrene,0,0,19,,337,9.23,9.46,rung 4 broad set (TASKS 61)
+R4_239c7863c7,R4,benzo[c]phenanthrene+CN,N#Cc1ccc2ccc3ccc4ccccc4c3c2c1,20,31,4ar-fused|carbo|sub:CN,benzo[c]phenanthrene,0,0,20,,322,7.91,8.09,rung 4 broad set (TASKS 61)
+R4_130ea47114,R4,benzo[c]phenanthrene+CH3,Cc1cc2ccccc2c2c1ccc1ccccc12,19,33,4ar-fused|carbo|sub:C,benzo[c]phenanthrene,0,0,21,,313,7.18,7.34,rung 4 broad set (TASKS 61)
+R4_16db3cb7d3,R4,benzo[c]phenanthrene+OCH3,COc1cccc2ccc3ccc4ccccc4c3c12,20,34,4ar-fused|carbo|sub:CO,benzo[c]phenanthrene,0,0,22,,328,8.42,8.62,rung 4 broad set (TASKS 61)
+R4_4c95943e6f,R4,benzo[c]phenanthrene+CHO,O=Cc1ccc2c(ccc3ccc4ccccc4c32)c1,20,32,4ar-fused|carbo|sub:CO,benzo[c]phenanthrene,0,0,23,,324,8.07,8.26,rung 4 broad set (TASKS 61)
+R4_0ae75f4508,R4,benzo[c]phenanthrene+SH,Sc1cccc2c1ccc1ccc3ccccc3c12,19,31,4ar-fused|carbo|sub:S,benzo[c]phenanthrene,0,0,24,,313,7.18,7.34,rung 4 broad set (TASKS 61)
+R4_2894efa0e7,R4,benzo[c]phenanthrene+CF3,FC(F)(F)c1ccc2c(ccc3ccc4ccccc4c32)c1,22,33,4ar-fused|carbo|sub:CF,benzo[c]phenanthrene,0,0,25,,352,10.7,11.0,rung 4 broad set (TASKS 61)
+R4_0347d8c06f,R4,benzo[c]phenanthrene+COOH,O=C(O)c1ccc2ccc3ccc4ccccc4c3c2c1,21,33,4ar-fused|carbo|sub:CO,benzo[c]phenanthrene,0,0,26,,339,9.42,9.66,rung 4 broad set (TASKS 61)
+R4_880c746f77,R4,benzo[c]phenanthrene+vinyl,C=Cc1ccc2ccc3ccc4ccccc4c3c2c1,20,34,4ar-fused|carbo|sub:C,benzo[c]phenanthrene,0,0,27,,328,8.42,8.62,rung 4 broad set (TASKS 61)
+R4_1d048c989b,R4,benzo[c]phenanthrene+Cl,Clc1ccc2c(ccc3ccc4ccccc4c32)c1,19,30,4ar-fused|carbo|sub:Cl,benzo[c]phenanthrene,0,0,28,,311,7.03,7.18,rung 4 broad set (TASKS 61)
+R4_17ffac430a,R4,benzo[c]phenanthrene+NH2,Nc1cccc2ccc3ccc4ccccc4c3c12,19,32,4ar-fused|carbo|sub:N,benzo[c]phenanthrene,0,0,29,,311,7.03,7.18,rung 4 broad set (TASKS 61)
+R4_295170f459,R4,benzo[c]phenanthrene+CONH2,NC(=O)c1cccc2c1ccc1ccc3ccccc3c12,21,34,4ar-fused|carbo|sub:CNO,benzo[c]phenanthrene,0,0,30,,341,9.61,9.86,rung 4 broad set (TASKS 61)
+R4_93fa88cb22,R4,benz[a]anthracene,c1ccc2cc3c(ccc4ccccc43)cc2c1,18,30,4ar-fused|carbo|sub:none,benz[a]anthracene,1,0,1,G_93fa88cb22,294,5.8,5.91,rung 4 broad set (TASKS 61); parent
+R4_3271e2f952,R4,benz[a]anthracene+OH,Oc1cc2cc3ccccc3cc2c2ccccc12,19,31,4ar-fused|carbo|sub:O,benz[a]anthracene,0,0,2,,309,6.87,7.02,rung 4 broad set (TASKS 61)
+R4_061778ab13,R4,benz[a]anthracene+ethynyl,C#Cc1ccc2c(ccc3cc4ccccc4cc32)c1,20,32,4ar-fused|carbo|sub:C,benz[a]anthracene,0,0,3,,324,8.07,8.26,rung 4 broad set (TASKS 61)
+R4_0c891ce791,R4,benz[a]anthracene+NO2,O=[N+]([O-])c1cccc2cc3ccc4ccccc4c3cc12,21,32,4ar-fused|carbo|sub:NO,benz[a]anthracene,0,0,4,,337,9.23,9.46,rung 4 broad set (TASKS 61)
+R4_16ecd57d9c,R4,benz[a]anthracene+CN,N#Cc1c2ccccc2cc2ccc3ccccc3c12,20,31,4ar-fused|carbo|sub:CN,benz[a]anthracene,0,0,5,,322,7.91,8.09,rung 4 broad set (TASKS 61)
+R4_0af7530e94,R4,benz[a]anthracene+CH3,Cc1cccc2c1ccc1cc3ccccc3cc12,19,33,4ar-fused|carbo|sub:C,benz[a]anthracene,0,0,6,,313,7.18,7.34,rung 4 broad set (TASKS 61)
+R4_24de1fb966,R4,benz[a]anthracene+OCH3,COc1cc2ccccc2c2cc3ccccc3cc12,20,34,4ar-fused|carbo|sub:CO,benz[a]anthracene,0,0,7,,328,8.42,8.62,rung 4 broad set (TASKS 61)
+R4_144a18da4b,R4,benz[a]anthracene+CHO,O=Cc1cc2cc3ccccc3cc2c2ccccc12,20,32,4ar-fused|carbo|sub:CO,benz[a]anthracene,0,0,8,,324,8.07,8.26,rung 4 broad set (TASKS 61)
+R4_070681f639,R4,benz[a]anthracene+SH,Sc1ccc2cc3c(ccc4ccccc43)cc2c1,19,31,4ar-fused|carbo|sub:S,benz[a]anthracene,0,0,9,,313,7.18,7.34,rung 4 broad set (TASKS 61)
+R4_0c2cb1eb9c,R4,benz[a]anthracene+CF3,FC(F)(F)c1cccc2ccc3cc4ccccc4cc3c12,22,33,4ar-fused|carbo|sub:CF,benz[a]anthracene,0,0,10,,352,10.7,11.0,rung 4 broad set (TASKS 61)
+R4_6d2d74d4b8,R4,benz[a]anthracene+COOH,O=C(O)c1c2ccccc2cc2ccc3ccccc3c12,21,33,4ar-fused|carbo|sub:CO,benz[a]anthracene,0,0,11,,339,9.42,9.66,rung 4 broad set (TASKS 61)
+R4_171aef5ff9,R4,benz[a]anthracene+vinyl,C=Cc1c2ccccc2cc2c1ccc1ccccc12,20,34,4ar-fused|carbo|sub:C,benz[a]anthracene,0,0,12,,328,8.42,8.62,rung 4 broad set (TASKS 61)
+R4_0b9d12ee41,R4,benz[a]anthracene+Cl,Clc1ccc2c(ccc3cc4ccccc4cc32)c1,19,30,4ar-fused|carbo|sub:Cl,benz[a]anthracene,0,0,13,,311,7.03,7.18,rung 4 broad set (TASKS 61)
+R4_1e712eb965,R4,benz[a]anthracene+NH2,Nc1c2ccccc2cc2c1ccc1ccccc12,19,32,4ar-fused|carbo|sub:N,benz[a]anthracene,0,0,14,,311,7.03,7.18,rung 4 broad set (TASKS 61)
+R4_03c50a74e2,R4,benz[a]anthracene+CONH2,NC(=O)c1cccc2cc3c(ccc4ccccc43)cc12,21,34,4ar-fused|carbo|sub:CNO,benz[a]anthracene,0,0,15,,341,9.61,9.86,rung 4 broad set (TASKS 61)
+R4_200a1192ed,R4,benz[a]anthracene+F,Fc1cccc2ccc3cc4ccccc4cc3c12,19,30,4ar-fused|carbo|sub:F,benz[a]anthracene,0,0,16,,307,6.72,6.86,rung 4 broad set (TASKS 61)
+R4_56d286383e,R4,benz[a]anthracene+OH,Oc1cccc2ccc3cc4ccccc4cc3c12,19,31,4ar-fused|carbo|sub:O,benz[a]anthracene,0,0,17,,309,6.87,7.02,rung 4 broad set (TASKS 61)
+R4_4485b81f87,R4,benz[a]anthracene+ethynyl,C#Cc1ccc2cc3ccc4ccccc4c3cc2c1,20,32,4ar-fused|carbo|sub:C,benz[a]anthracene,0,0,18,,324,8.07,8.26,rung 4 broad set (TASKS 61)
+R4_114b9c7d72,R4,benz[a]anthracene+NO2,O=[N+]([O-])c1ccc2cc3c(ccc4ccccc43)cc2c1,21,32,4ar-fused|carbo|sub:NO,benz[a]anthracene,0,0,19,,337,9.23,9.46,rung 4 broad set (TASKS 61)
+R4_1d2d6b3ca8,R4,benz[a]anthracene+CN,N#Cc1ccc2ccc3cc4ccccc4cc3c2c1,20,31,4ar-fused|carbo|sub:CN,benz[a]anthracene,0,0,20,,322,7.91,8.09,rung 4 broad set (TASKS 61)
+R4_1879dc1293,R4,benz[a]anthracene+CH3,Cc1c2ccccc2cc2c1ccc1ccccc12,19,33,4ar-fused|carbo|sub:C,benz[a]anthracene,0,0,21,,313,7.18,7.34,rung 4 broad set (TASKS 61)
+R4_462d6837a0,R4,benz[a]anthracene+OCH3,COc1ccc2c(ccc3cc4ccccc4cc32)c1,20,34,4ar-fused|carbo|sub:CO,benz[a]anthracene,0,0,22,,328,8.42,8.62,rung 4 broad set (TASKS 61)
+R4_3808705d75,R4,benz[a]anthracene+CHO,O=Cc1cccc2cc3c(ccc4ccccc43)cc12,20,32,4ar-fused|carbo|sub:CO,benz[a]anthracene,0,0,23,,324,8.07,8.26,rung 4 broad set (TASKS 61)
+R4_16f5d0fbc3,R4,benz[a]anthracene+SH,Sc1c2ccccc2cc2c1ccc1ccccc12,19,31,4ar-fused|carbo|sub:S,benz[a]anthracene,0,0,24,,313,7.18,7.34,rung 4 broad set (TASKS 61)
+R4_0d63f6c002,R4,benz[a]anthracene+CF3,FC(F)(F)c1cccc2cc3ccc4ccccc4c3cc12,22,33,4ar-fused|carbo|sub:CF,benz[a]anthracene,0,0,25,,352,10.7,11.0,rung 4 broad set (TASKS 61)
+R4_7a0f1e8442,R4,benz[a]anthracene+COOH,O=C(O)c1ccc2ccc3cc4ccccc4cc3c2c1,21,33,4ar-fused|carbo|sub:CO,benz[a]anthracene,0,0,26,,339,9.42,9.66,rung 4 broad set (TASKS 61)
+R4_49b3842928,R4,benz[a]anthracene+vinyl,C=Cc1ccc2cc3c(ccc4ccccc43)cc2c1,20,34,4ar-fused|carbo|sub:C,benz[a]anthracene,0,0,27,,328,8.42,8.62,rung 4 broad set (TASKS 61)
+R4_0d93570175,R4,benz[a]anthracene+Cl,Clc1cccc2ccc3cc4ccccc4cc3c12,19,30,4ar-fused|carbo|sub:Cl,benz[a]anthracene,0,0,28,,311,7.03,7.18,rung 4 broad set (TASKS 61)
+R4_2c9b4ac77d,R4,benz[a]anthracene+NH2,Nc1c2ccccc2cc2ccc3ccccc3c12,19,32,4ar-fused|carbo|sub:N,benz[a]anthracene,0,0,29,,311,7.03,7.18,rung 4 broad set (TASKS 61)
+R4_4f65f76457,R4,benz[a]anthracene+CONH2,NC(=O)c1cc2cc3ccccc3cc2c2ccccc12,21,34,4ar-fused|carbo|sub:CNO,benz[a]anthracene,0,0,30,,341,9.61,9.86,rung 4 broad set (TASKS 61)
+R4_cc63e78416,R4,tetracene,c1ccc2cc3cc4ccccc4cc3cc2c1,18,30,4ar-fused|carbo|sub:none,tetracene,1,1,0,G_cc63e78416,294,5.8,5.91,"rung 4 broad set (TASKS 61); parent; test family, never trained"
+R4_7babf49b58,R4,tetracene+OH,Oc1cccc2cc3cc4ccccc4cc3cc12,19,31,4ar-fused|carbo|sub:O,tetracene,0,1,0,,309,6.87,7.02,"rung 4 broad set (TASKS 61); test family, never trained"
+R4_029185ca08,R4,tetracene+ethynyl,C#Cc1cccc2cc3cc4ccccc4cc3cc12,20,32,4ar-fused|carbo|sub:C,tetracene,0,1,0,,324,8.07,8.26,"rung 4 broad set (TASKS 61); test family, never trained"
+R4_064c8c7bb5,R4,tetracene+NO2,O=[N+]([O-])c1cccc2cc3cc4ccccc4cc3cc12,21,32,4ar-fused|carbo|sub:NO,tetracene,0,1,0,,337,9.23,9.46,"rung 4 broad set (TASKS 61); test family, never trained"
+R4_50dc5b410d,R4,tetracene+CN,N#Cc1ccc2cc3cc4ccccc4cc3cc2c1,20,31,4ar-fused|carbo|sub:CN,tetracene,0,1,0,,322,7.91,8.09,"rung 4 broad set (TASKS 61); test family, never trained"
+R4_42b9890a5f,R4,tetracene+CH3,Cc1ccc2cc3cc4ccccc4cc3cc2c1,19,33,4ar-fused|carbo|sub:C,tetracene,0,1,0,,313,7.18,7.34,"rung 4 broad set (TASKS 61); test family, never trained"
+R4_629040f24e,R4,tetracene+OCH3,COc1ccc2cc3cc4ccccc4cc3cc2c1,20,34,4ar-fused|carbo|sub:CO,tetracene,0,1,0,,328,8.42,8.62,"rung 4 broad set (TASKS 61); test family, never trained"
+R4_2e9ba76ac3,R4,tetracene+CHO,O=Cc1c2ccccc2cc2cc3ccccc3cc12,20,32,4ar-fused|carbo|sub:CO,tetracene,0,1,0,,324,8.07,8.26,"rung 4 broad set (TASKS 61); test family, never trained"
+R4_6412802454,R4,tetracene+SH,Sc1ccc2cc3cc4ccccc4cc3cc2c1,19,31,4ar-fused|carbo|sub:S,tetracene,0,1,0,,313,7.18,7.34,"rung 4 broad set (TASKS 61); test family, never trained"
+R4_6f81087db4,R4,tetracene+CF3,FC(F)(F)c1c2ccccc2cc2cc3ccccc3cc12,22,33,4ar-fused|carbo|sub:CF,tetracene,0,1,0,,352,10.7,11.0,"rung 4 broad set (TASKS 61); test family, never trained"
+R4_189ebe024d,R4,tetracene+COOH,O=C(O)c1c2ccccc2cc2cc3ccccc3cc12,21,33,4ar-fused|carbo|sub:CO,tetracene,0,1,0,,339,9.42,9.66,"rung 4 broad set (TASKS 61); test family, never trained"
+R4_41104962d5,R4,tetracene+vinyl,C=Cc1cccc2cc3cc4ccccc4cc3cc12,20,34,4ar-fused|carbo|sub:C,tetracene,0,1,0,,328,8.42,8.62,"rung 4 broad set (TASKS 61); test family, never trained"
+R4_5f804fe870,R4,tetracene+Cl,Clc1cccc2cc3cc4ccccc4cc3cc12,19,30,4ar-fused|carbo|sub:Cl,tetracene,0,1,0,,311,7.03,7.18,"rung 4 broad set (TASKS 61); test family, never trained"
+R4_8fac6e81b8,R4,tetracene+NH2,Nc1c2ccccc2cc2cc3ccccc3cc12,19,32,4ar-fused|carbo|sub:N,tetracene,0,1,0,,311,7.03,7.18,"rung 4 broad set (TASKS 61); test family, never trained"
+R4_024d51a284,R4,tetracene+CONH2,NC(=O)c1c2ccccc2cc2cc3ccccc3cc12,21,34,4ar-fused|carbo|sub:CNO,tetracene,0,1,0,,341,9.61,9.86,"rung 4 broad set (TASKS 61); test family, never trained"
+R4_14706d9ff5,R4,tetracene+F,Fc1cccc2cc3cc4ccccc4cc3cc12,19,30,4ar-fused|carbo|sub:F,tetracene,0,1,0,,307,6.72,6.86,"rung 4 broad set (TASKS 61); test family, never trained"
+R4_e5867287b0,R4,tetracene+OH,Oc1ccc2cc3cc4ccccc4cc3cc2c1,19,31,4ar-fused|carbo|sub:O,tetracene,0,1,0,,309,6.87,7.02,"rung 4 broad set (TASKS 61); test family, never trained"
+R4_aff59183f7,R4,tetracene+ethynyl,C#Cc1ccc2cc3cc4ccccc4cc3cc2c1,20,32,4ar-fused|carbo|sub:C,tetracene,0,1,0,,324,8.07,8.26,"rung 4 broad set (TASKS 61); test family, never trained"
+R4_45a7b2a6ac,R4,tetracene+NO2,O=[N+]([O-])c1c2ccccc2cc2cc3ccccc3cc12,21,32,4ar-fused|carbo|sub:NO,tetracene,0,1,0,,337,9.23,9.46,"rung 4 broad set (TASKS 61); test family, never trained"
+R4_6ffe03aa87,R4,tetracene+CN,N#Cc1c2ccccc2cc2cc3ccccc3cc12,20,31,4ar-fused|carbo|sub:CN,tetracene,0,1,0,,322,7.91,8.09,"rung 4 broad set (TASKS 61); test family, never trained"
+R4_ae2dd64b16,R4,tetracene+CH3,Cc1cccc2cc3cc4ccccc4cc3cc12,19,33,4ar-fused|carbo|sub:C,tetracene,0,1,0,,313,7.18,7.34,"rung 4 broad set (TASKS 61); test family, never trained"
+R4_b281c0e71a,R4,tetracene+OCH3,COc1c2ccccc2cc2cc3ccccc3cc12,20,34,4ar-fused|carbo|sub:CO,tetracene,0,1,0,,328,8.42,8.62,"rung 4 broad set (TASKS 61); test family, never trained"
+R4_676799ed3c,R4,tetracene+CHO,O=Cc1ccc2cc3cc4ccccc4cc3cc2c1,20,32,4ar-fused|carbo|sub:CO,tetracene,0,1,0,,324,8.07,8.26,"rung 4 broad set (TASKS 61); test family, never trained"
+R4_dd23affa6b,R4,tetracene+SH,Sc1cccc2cc3cc4ccccc4cc3cc12,19,31,4ar-fused|carbo|sub:S,tetracene,0,1,0,,313,7.18,7.34,"rung 4 broad set (TASKS 61); test family, never trained"
+R4_705c04e865,R4,tetracene+CF3,FC(F)(F)c1ccc2cc3cc4ccccc4cc3cc2c1,22,33,4ar-fused|carbo|sub:CF,tetracene,0,1,0,,352,10.7,11.0,"rung 4 broad set (TASKS 61); test family, never trained"
+R4_55c0210bcd,R4,tetracene+COOH,O=C(O)c1ccc2cc3cc4ccccc4cc3cc2c1,21,33,4ar-fused|carbo|sub:CO,tetracene,0,1,0,,339,9.42,9.66,"rung 4 broad set (TASKS 61); test family, never trained"
+R4_6a0e8a63c3,R4,tetracene+vinyl,C=Cc1ccc2cc3cc4ccccc4cc3cc2c1,20,34,4ar-fused|carbo|sub:C,tetracene,0,1,0,,328,8.42,8.62,"rung 4 broad set (TASKS 61); test family, never trained"
+R4_61d2609c9e,R4,tetracene+Cl,Clc1ccc2cc3cc4ccccc4cc3cc2c1,19,30,4ar-fused|carbo|sub:Cl,tetracene,0,1,0,,311,7.03,7.18,"rung 4 broad set (TASKS 61); test family, never trained"
+R4_90f0463b9a,R4,tetracene+NH2,Nc1ccc2cc3cc4ccccc4cc3cc2c1,19,32,4ar-fused|carbo|sub:N,tetracene,0,1,0,,311,7.03,7.18,"rung 4 broad set (TASKS 61); test family, never trained"
+R4_316054e411,R4,tetracene+CONH2,NC(=O)c1ccc2cc3cc4ccccc4cc3cc2c1,21,34,4ar-fused|carbo|sub:CNO,tetracene,0,1,0,,341,9.61,9.86,"rung 4 broad set (TASKS 61); test family, never trained"
+R4_ebcf683ba7,R4,chrysene,c1ccc2c(c1)ccc1c3ccccc3ccc21,18,30,4ar-fused|carbo|sub:none,chrysene,1,0,1,G_ebcf683ba7,294,5.8,5.91,rung 4 broad set (TASKS 61); parent
+R4_197274b40f,R4,chrysene+OH,Oc1cc2c3ccccc3ccc2c2ccccc12,19,31,4ar-fused|carbo|sub:O,chrysene,0,0,2,,309,6.87,7.02,rung 4 broad set (TASKS 61)
+R4_129618072a,R4,chrysene+ethynyl,C#Cc1cccc2c1ccc1c3ccccc3ccc21,20,32,4ar-fused|carbo|sub:C,chrysene,0,0,3,,324,8.07,8.26,rung 4 broad set (TASKS 61)
+R4_50f6fb150e,R4,chrysene+NO2,O=[N+]([O-])c1cc2c3ccccc3ccc2c2ccccc12,21,32,4ar-fused|carbo|sub:NO,chrysene,0,0,4,,337,9.23,9.46,rung 4 broad set (TASKS 61)
+R4_7479b2c4b0,R4,chrysene+CN,N#Cc1ccc2c(ccc3c4ccccc4ccc23)c1,20,31,4ar-fused|carbo|sub:CN,chrysene,0,0,5,,322,7.91,8.09,rung 4 broad set (TASKS 61)
+R4_0385d87ca0,R4,chrysene+CH3,Cc1cc2c3ccccc3ccc2c2ccccc12,19,33,4ar-fused|carbo|sub:C,chrysene,0,0,6,,313,7.18,7.34,rung 4 broad set (TASKS 61)
+R4_2b67b3d56b,R4,chrysene+OCH3,COc1cccc2ccc3c4ccccc4ccc3c12,20,34,4ar-fused|carbo|sub:CO,chrysene,0,0,7,,328,8.42,8.62,rung 4 broad set (TASKS 61)
+R4_0ac840f215,R4,chrysene+CHO,O=Cc1cccc2ccc3c4ccccc4ccc3c12,20,32,4ar-fused|carbo|sub:CO,chrysene,0,0,8,,324,8.07,8.26,rung 4 broad set (TASKS 61)
+R4_6579b1f29a,R4,chrysene+SH,Sc1cccc2c1ccc1c3ccccc3ccc21,19,31,4ar-fused|carbo|sub:S,chrysene,0,0,9,,313,7.18,7.34,rung 4 broad set (TASKS 61)
+R4_7606e91493,R4,chrysene+CF3,FC(F)(F)c1ccc2ccc3c4ccccc4ccc3c2c1,22,33,4ar-fused|carbo|sub:CF,chrysene,0,0,10,,352,10.7,11.0,rung 4 broad set (TASKS 61)
+R4_34bfe8ddf5,R4,chrysene+COOH,O=C(O)c1cccc2ccc3c4ccccc4ccc3c12,21,33,4ar-fused|carbo|sub:CO,chrysene,0,0,11,,339,9.42,9.66,rung 4 broad set (TASKS 61)
+R4_61e37e6d4e,R4,chrysene+vinyl,C=Cc1ccc2ccc3c4ccccc4ccc3c2c1,20,34,4ar-fused|carbo|sub:C,chrysene,0,0,12,,328,8.42,8.62,rung 4 broad set (TASKS 61)
+R4_39c1131f6b,R4,chrysene+Cl,Clc1cccc2ccc3c4ccccc4ccc3c12,19,30,4ar-fused|carbo|sub:Cl,chrysene,0,0,13,,311,7.03,7.18,rung 4 broad set (TASKS 61)
+R4_51c793b051,R4,chrysene+NH2,Nc1cc2ccccc2c2ccc3ccccc3c12,19,32,4ar-fused|carbo|sub:N,chrysene,0,0,14,,311,7.03,7.18,rung 4 broad set (TASKS 61)
+R4_00d3bbecba,R4,chrysene+CONH2,NC(=O)c1cccc2ccc3c4ccccc4ccc3c12,21,34,4ar-fused|carbo|sub:CNO,chrysene,0,0,15,,341,9.61,9.86,rung 4 broad set (TASKS 61)
+R4_12f1415355,R4,chrysene+F,Fc1cc2c3ccccc3ccc2c2ccccc12,19,30,4ar-fused|carbo|sub:F,chrysene,0,0,16,,307,6.72,6.86,rung 4 broad set (TASKS 61)
+R4_6e0a31350a,R4,chrysene+OH,Oc1cc2ccccc2c2ccc3ccccc3c12,19,31,4ar-fused|carbo|sub:O,chrysene,0,0,17,,309,6.87,7.02,rung 4 broad set (TASKS 61)
+R4_26ff9c9e53,R4,chrysene+ethynyl,C#Cc1ccc2ccc3c4ccccc4ccc3c2c1,20,32,4ar-fused|carbo|sub:C,chrysene,0,0,18,,324,8.07,8.26,rung 4 broad set (TASKS 61)
+R4_98b2889f26,R4,chrysene+NO2,O=[N+]([O-])c1cc2ccccc2c2ccc3ccccc3c12,21,32,4ar-fused|carbo|sub:NO,chrysene,0,0,19,,337,9.23,9.46,rung 4 broad set (TASKS 61)
+R4_7d59def61c,R4,chrysene+CN,N#Cc1cc2ccccc2c2ccc3ccccc3c12,20,31,4ar-fused|carbo|sub:CN,chrysene,0,0,20,,322,7.91,8.09,rung 4 broad set (TASKS 61)
+R4_07911a2d03,R4,chrysene+CH3,Cc1cccc2ccc3c4ccccc4ccc3c12,19,33,4ar-fused|carbo|sub:C,chrysene,0,0,21,,313,7.18,7.34,rung 4 broad set (TASKS 61)
+R4_3946ddcfd2,R4,chrysene+OCH3,COc1cccc2c1ccc1c3ccccc3ccc21,20,34,4ar-fused|carbo|sub:CO,chrysene,0,0,22,,328,8.42,8.62,rung 4 broad set (TASKS 61)
+R4_2cee608fde,R4,chrysene+CHO,O=Cc1cccc2c1ccc1c3ccccc3ccc21,20,32,4ar-fused|carbo|sub:CO,chrysene,0,0,23,,324,8.07,8.26,rung 4 broad set (TASKS 61)
+R4_8b25d0a20d,R4,chrysene+SH,Sc1ccc2c(ccc3c4ccccc4ccc23)c1,19,31,4ar-fused|carbo|sub:S,chrysene,0,0,24,,313,7.18,7.34,rung 4 broad set (TASKS 61)
+R4_7f98193960,R4,chrysene+CF3,FC(F)(F)c1ccc2c(ccc3c4ccccc4ccc23)c1,22,33,4ar-fused|carbo|sub:CF,chrysene,0,0,25,,352,10.7,11.0,rung 4 broad set (TASKS 61)
+R4_5e48814f81,R4,chrysene+COOH,O=C(O)c1cc2ccccc2c2ccc3ccccc3c12,21,33,4ar-fused|carbo|sub:CO,chrysene,0,0,26,,339,9.42,9.66,rung 4 broad set (TASKS 61)
+R4_7208cad870,R4,chrysene+vinyl,C=Cc1cc2c3ccccc3ccc2c2ccccc12,20,34,4ar-fused|carbo|sub:C,chrysene,0,0,27,,328,8.42,8.62,rung 4 broad set (TASKS 61)
+R4_8605b819cb,R4,chrysene+Cl,Clc1cc2c3ccccc3ccc2c2ccccc12,19,30,4ar-fused|carbo|sub:Cl,chrysene,0,0,28,,311,7.03,7.18,rung 4 broad set (TASKS 61)
+R4_8b9e082115,R4,chrysene+NH2,Nc1cccc2ccc3c4ccccc4ccc3c12,19,32,4ar-fused|carbo|sub:N,chrysene,0,0,29,,311,7.03,7.18,rung 4 broad set (TASKS 61)
+R4_0afd43f8a1,R4,chrysene+CONH2,NC(=O)c1cc2ccccc2c2ccc3ccccc3c12,21,34,4ar-fused|carbo|sub:CNO,chrysene,0,0,30,,341,9.61,9.86,rung 4 broad set (TASKS 61)
+R4_fc33a5dc93,R4,triphenylene,c1ccc2c(c1)c1ccccc1c1ccccc21,18,30,4ar-fused|carbo|sub:none,triphenylene,1,0,1,G_fc33a5dc93,294,5.8,5.91,rung 4 broad set (TASKS 61); parent
+R4_85a186d54c,R4,triphenylene+OH,Oc1ccc2c3ccccc3c3ccccc3c2c1,19,31,4ar-fused|carbo|sub:O,triphenylene,0,0,2,,309,6.87,7.02,rung 4 broad set (TASKS 61)
+R4_beaff082c6,R4,triphenylene+ethynyl,C#Cc1cccc2c3ccccc3c3ccccc3c12,20,32,4ar-fused|carbo|sub:C,triphenylene,0,0,3,,324,8.07,8.26,rung 4 broad set (TASKS 61)
+R4_0ff27aa696,R4,triphenylene+NO2,O=[N+]([O-])c1ccc2c3ccccc3c3ccccc3c2c1,21,32,4ar-fused|carbo|sub:NO,triphenylene,0,0,4,,337,9.23,9.46,rung 4 broad set (TASKS 61)
+R4_5c5b7a2e90,R4,triphenylene+CN,N#Cc1ccc2c3ccccc3c3ccccc3c2c1,20,31,4ar-fused|carbo|sub:CN,triphenylene,0,0,5,,322,7.91,8.09,rung 4 broad set (TASKS 61)
+R4_23b2c74cb3,R4,triphenylene+CH3,Cc1ccc2c3ccccc3c3ccccc3c2c1,19,33,4ar-fused|carbo|sub:C,triphenylene,0,0,6,,313,7.18,7.34,rung 4 broad set (TASKS 61)
+R4_0d2f41b7c2,R4,triphenylene+OCH3,COc1ccc2c3ccccc3c3ccccc3c2c1,20,34,4ar-fused|carbo|sub:CO,triphenylene,0,0,7,,328,8.42,8.62,rung 4 broad set (TASKS 61)
+R4_845602bb77,R4,triphenylene+CHO,O=Cc1cccc2c3ccccc3c3ccccc3c12,20,32,4ar-fused|carbo|sub:CO,triphenylene,0,0,8,,324,8.07,8.26,rung 4 broad set (TASKS 61)
+R4_4236232408,R4,triphenylene+SH,Sc1cccc2c3ccccc3c3ccccc3c12,19,31,4ar-fused|carbo|sub:S,triphenylene,0,0,9,,313,7.18,7.34,rung 4 broad set (TASKS 61)
+R4_25fb6bf19d,R4,triphenylene+CF3,FC(F)(F)c1cccc2c3ccccc3c3ccccc3c12,22,33,4ar-fused|carbo|sub:CF,triphenylene,0,0,10,,352,10.7,11.0,rung 4 broad set (TASKS 61)
+R4_7e0ec22a07,R4,triphenylene+COOH,O=C(O)c1cccc2c3ccccc3c3ccccc3c12,21,33,4ar-fused|carbo|sub:CO,triphenylene,0,0,11,,339,9.42,9.66,rung 4 broad set (TASKS 61)
+R4_282cef9fd1,R4,triphenylene+vinyl,C=Cc1ccc2c3ccccc3c3ccccc3c2c1,20,34,4ar-fused|carbo|sub:C,triphenylene,0,0,12,,328,8.42,8.62,rung 4 broad set (TASKS 61)
+R4_29bb169a01,R4,triphenylene+Cl,Clc1ccc2c3ccccc3c3ccccc3c2c1,19,30,4ar-fused|carbo|sub:Cl,triphenylene,0,0,13,,311,7.03,7.18,rung 4 broad set (TASKS 61)
+R4_411a2e432d,R4,triphenylene+NH2,Nc1ccc2c3ccccc3c3ccccc3c2c1,19,32,4ar-fused|carbo|sub:N,triphenylene,0,0,14,,311,7.03,7.18,rung 4 broad set (TASKS 61)
+R4_0a195689d8,R4,triphenylene+CONH2,NC(=O)c1cccc2c3ccccc3c3ccccc3c12,21,34,4ar-fused|carbo|sub:CNO,triphenylene,0,0,15,,341,9.61,9.86,rung 4 broad set (TASKS 61)
+R4_24fa7cec17,R4,triphenylene+F,Fc1cccc2c3ccccc3c3ccccc3c12,19,30,4ar-fused|carbo|sub:F,triphenylene,0,0,16,,307,6.72,6.86,rung 4 broad set (TASKS 61)
+R4_c6e2395abb,R4,triphenylene+OH,Oc1cccc2c3ccccc3c3ccccc3c12,19,31,4ar-fused|carbo|sub:O,triphenylene,0,0,17,,309,6.87,7.02,rung 4 broad set (TASKS 61)
+R4_fe8d3e376b,R4,triphenylene+ethynyl,C#Cc1ccc2c3ccccc3c3ccccc3c2c1,20,32,4ar-fused|carbo|sub:C,triphenylene,0,0,18,,324,8.07,8.26,rung 4 broad set (TASKS 61)
+R4_a03f1ce9dc,R4,triphenylene+NO2,O=[N+]([O-])c1cccc2c3ccccc3c3ccccc3c12,21,32,4ar-fused|carbo|sub:NO,triphenylene,0,0,19,,337,9.23,9.46,rung 4 broad set (TASKS 61)
+R4_d0ff42048d,R4,triphenylene+CN,N#Cc1cccc2c3ccccc3c3ccccc3c12,20,31,4ar-fused|carbo|sub:CN,triphenylene,0,0,20,,322,7.91,8.09,rung 4 broad set (TASKS 61)
+R4_bd57d8d3f1,R4,triphenylene+CH3,Cc1cccc2c3ccccc3c3ccccc3c12,19,33,4ar-fused|carbo|sub:C,triphenylene,0,0,21,,313,7.18,7.34,rung 4 broad set (TASKS 61)
+R4_2faf6ad954,R4,triphenylene+OCH3,COc1cccc2c3ccccc3c3ccccc3c12,20,34,4ar-fused|carbo|sub:CO,triphenylene,0,0,22,,328,8.42,8.62,rung 4 broad set (TASKS 61)
+R4_9f3ab79668,R4,triphenylene+CHO,O=Cc1ccc2c3ccccc3c3ccccc3c2c1,20,32,4ar-fused|carbo|sub:CO,triphenylene,0,0,23,,324,8.07,8.26,rung 4 broad set (TASKS 61)
+R4_b0b0426cad,R4,triphenylene+SH,Sc1ccc2c3ccccc3c3ccccc3c2c1,19,31,4ar-fused|carbo|sub:S,triphenylene,0,0,24,,313,7.18,7.34,rung 4 broad set (TASKS 61)
+R4_ec8cd39081,R4,triphenylene+CF3,FC(F)(F)c1ccc2c3ccccc3c3ccccc3c2c1,22,33,4ar-fused|carbo|sub:CF,triphenylene,0,0,25,,352,10.7,11.0,rung 4 broad set (TASKS 61)
+R4_ac13a4ac8f,R4,triphenylene+COOH,O=C(O)c1ccc2c3ccccc3c3ccccc3c2c1,21,33,4ar-fused|carbo|sub:CO,triphenylene,0,0,26,,339,9.42,9.66,rung 4 broad set (TASKS 61)
+R4_b82660b4a7,R4,triphenylene+vinyl,C=Cc1cccc2c3ccccc3c3ccccc3c12,20,34,4ar-fused|carbo|sub:C,triphenylene,0,0,27,,328,8.42,8.62,rung 4 broad set (TASKS 61)
+R4_7a3e3100a2,R4,triphenylene+Cl,Clc1cccc2c3ccccc3c3ccccc3c12,19,30,4ar-fused|carbo|sub:Cl,triphenylene,0,0,28,,311,7.03,7.18,rung 4 broad set (TASKS 61)
+R4_f0b9b3b13d,R4,triphenylene+NH2,Nc1cccc2c3ccccc3c3ccccc3c12,19,32,4ar-fused|carbo|sub:N,triphenylene,0,0,29,,311,7.03,7.18,rung 4 broad set (TASKS 61)
+R4_60b3888c0e,R4,triphenylene+CONH2,NC(=O)c1ccc2c3ccccc3c3ccccc3c2c1,21,34,4ar-fused|carbo|sub:CNO,triphenylene,0,0,30,,341,9.61,9.86,rung 4 broad set (TASKS 61)
