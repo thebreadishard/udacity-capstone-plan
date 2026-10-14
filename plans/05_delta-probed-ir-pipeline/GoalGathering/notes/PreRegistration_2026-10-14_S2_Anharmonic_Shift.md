@@ -82,6 +82,22 @@ last step (k = 10 → all) is still downward.
 **Prediction, unchanged and added to:** (b) beats (c); (b) at 'all' reaches 3.0 cm⁻¹ at even odds; if it does not, I expect the curve to
 be still learning rather than flat (most of the spread within a family runs with ω, which (b) has and (c) has not).
 
+## Development note (14 Oct 2026, 18:5x, before any S2 force-field report was read) — the read's implementation
+
+`probes/s2_read.py` (tests `tests/test_s2_read.py`: an exact linear shift recovered by (b), an unseen family, the 'still learning' rule,
+the data-limited and flat readings, the loader on S1's benzene) implements the read above with amendment 1. Three choices the text left
+open, fixed now:
+1. **Training modes:** both routes are fitted on the training molecules' modes inside the window (550–2,000 cm⁻¹), the modes they are
+   scored on. Below 550 cm⁻¹ are the torsions and methyl rotors, whose VPT2 shifts are not this read's object.
+2. **The features h and o** are the family rule's own numbers (`e8_cc_locality.mode_shares`, factored out of `families` with identical
+   output, checked on S1's three benzene settings and a non-planar variant); o is taken without the rule's planarity gate, so a methylated
+   molecule keeps its out-of-plane feature (its family is still assigned by the rule as is).
+3. **A family absent from a training subset** (possible only at small k): its held-out modes are predicted by the training window mean in
+   both routes and counted in the output.
+The learning-curve subsets are drawn with numpy `default_rng(0)` in the order k, subset, held-out scaffold, the same for both routes.
+End-to-end dry run on S1's G/R/B benzene directories posing as three scaffolds (numbers meaningless by construction) and one missing
+molecule, which the read names as excluded.
+
 ## Outcome
 
 *(appended after the run)*

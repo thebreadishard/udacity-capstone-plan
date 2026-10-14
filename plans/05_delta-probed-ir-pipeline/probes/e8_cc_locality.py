@@ -9,7 +9,6 @@ of learning_curve_layerA_v2_descriptors are re-implemented here in their minimal
 Usage: python e8_cc_locality.py <geometry.json> <hessian_ccsd_t.npz> <out prefix> [--threads 16] [--basis cc-pvdz]
 """
 import argparse
-import itertools
 import json
 import time
 from datetime import datetime
@@ -64,14 +63,23 @@ def rings(adj, max_len=7):
     return [r for r in found if 5 <= len(r) <= max_len]
 
 
-def families(freq, V, symbols, masses, coords_bohr):
-    """The corpus family rule (learning_curve_layerA.molecule_features), minimal copy."""
+def mode_shares(V, symbols, masses, coords_bohr):
+    """Per mode of the mass-weighted modes V (3N × M): the hydrogen share, the share along the normal of the largest principal moment
+    (the molecular plane's normal for a planar molecule), and whether the molecule is planar (every atom within 0.5 bohr of that plane)."""
     n = len(symbols); A = (V.reshape(n, 3, -1) ** 2).sum(1); sym = np.array(symbols)
     hshare = A[sym == "H"].sum(0) if (sym == "H").any() else np.zeros(V.shape[1])
     com = (coords_bohr * masses[:, None]).sum(0) / masses.sum(); x = coords_bohr - com
     I = sum(mm * (np.dot(r, r) * np.eye(3) - np.outer(r, r)) for r, mm in zip(x, masses)); ev, R = np.linalg.eigh(I); nrm = R[:, np.argmax(ev)]
     planar = float(np.abs(x @ nrm).max()) < 0.5
-    Vn = (V.reshape(n, 3, -1) * nrm[None, :, None]).sum(1); oop = (Vn ** 2).sum(0) if planar else np.zeros(V.shape[1])
+    Vn = (V.reshape(n, 3, -1) * nrm[None, :, None]).sum(1)
+    return hshare, (Vn ** 2).sum(0), planar
+
+
+def families(freq, V, symbols, masses, coords_bohr):
+    """The corpus family rule (learning_curve_layerA.molecule_features), minimal copy."""
+    hshare, oop, planar = mode_shares(V, symbols, masses, coords_bohr)
+    if not planar:
+        oop = np.zeros(V.shape[1])
     fam = []
     for i, f in enumerate(freq):
         if f > 2800 and hshare[i] > 0.5:
@@ -155,7 +163,7 @@ def main():
            "freq_wb97x": normal_modes(H["wb97x"], masses)[1].tolist(), "patterns": {}}
     dHs = {"CC − B3LYP": H_cc - H["b3lyp"], "proxy ωB97X − B3LYP": H["wb97x"] - H["b3lyp"]}
     res["norms"] = {k: float(np.sqrt(np.mean(v ** 2))) for k, v in dHs.items()}
-    print(f"RMS of ΔH (a.u.): " + ", ".join(f"{k} {v:.2e}" for k, v in res["norms"].items()), flush=True)
+    print("RMS of ΔH (a.u.): " + ", ".join(f"{k} {v:.2e}" for k, v in res["norms"].items()), flush=True)
     dF = {k: Bp.T @ v @ Bp for k, v in dHs.items()}
     for pname, pat in patterns.items():
         res["patterns"][pname] = {}
