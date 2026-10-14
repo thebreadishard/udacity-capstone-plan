@@ -51,6 +51,37 @@ score's window), pooled over the scaffolds; the per-family rms is reported besid
 **My prediction, before any number:** (b) beats (c) by more than 20 % (Δ_anh within a family runs with ω, benzene's ring-ip modes span −11 to
 −40 cm⁻¹ at R); whether (b) reaches 3.0 cm⁻¹ I rate as even odds.
 
+## Amendment 1 (14 Oct 2026, 09:0x, before any S2 force field — 0 of 19 QFF reports exist) — the scale of the test
+
+The user, 14 Oct 08:5x: *'laten we rekening blijven houden met de schaal van de testen. Als een test met beperkt aantal moleculen de 3 cm⁻¹
+niet haalt maar wel aantoonbaar nog aan het leren is (validatie fouten dalen nog), dan is de test niet gefaald.'* This is the standing rule
+of 19 Sep (no verdict on tiny data; scale along a curve) and of 25 Sep (no negative conclusion without the search). The registration above
+lacked both; they are added now, before any number.
+
+**Learning curve.** Inside the leave-one-scaffold-out read, for every held-out scaffold the training molecules are subsampled by scaffold:
+k ∈ {4, 6, 8, 10, all} training scaffolds, 20 random subsets per k (numpy seed 0, the same subsets for (b) and (c)). For each k: the pooled
+window rms of (b) and of (c), as the mean over the subsets, with the standard error of that mean.
+
+**'Still learning'**, fixed now: the pooled rms at 'all' is below the rms at k = 6 by more than twice the combined standard error, and the
+last step (k = 10 → all) is still downward.
+
+**Verdicts, replacing lines 1–3's consequences:**
+1. **Line 2 met** (pooled rms ≤ 3.0 cm⁻¹ at 'all'): the route is licensed, to be confirmed on tetracene in S3 (unchanged).
+2. **Line 2 missed, the curve still learning: not failed — data-limited.** Next step, registered now: S2b, the next molecules of the same
+   universe by the same breadth-first rule (`probes/s2_select.py` continued), as many as a fit rms(k) = a + b·k^(−c) to the curve says are
+   needed to reach 3.0 cm⁻¹, priced from S2's own per-Hessian times and put to the user with that price. If the universe (73 molecules) is
+   too small for the extrapolated need, it is widened by one rule step (≤ 24 atoms, then O/F/Cl), stated before the selection.
+3. **Line 2 missed, the curve flat:** no negative conclusion yet. First the search: the model class (ridge as registered; kernel ridge; a
+   small network with early stopping) × the features (as registered; plus the mode's local environment, e.g. the bond orders and ring
+   membership of its largest-amplitude atoms), each at this size, the read the same. Only a curve that stays flat after the search reads
+   as 'route (b) does not learn Δ_anh from these features'; the next idea is then registered (e.g. a cheap anharmonic input such as a
+   semi-empirical force field's own Δ_anh per mode) — the goal stays.
+4. **Line 1** ((b) ≤ 0.8 × (c)) is read the same way: if (b) misses it while its curve still descends faster than (c)'s, (b) is not
+   stopped; the comparison is repeated at S2b's size.
+
+**Prediction, unchanged and added to:** (b) beats (c); (b) at 'all' reaches 3.0 cm⁻¹ at even odds; if it does not, I expect the curve to
+be still learning rather than flat (most of the spread within a family runs with ω, which (b) has and (c) has not).
+
 ## Outcome
 
 *(appended after the run)*
