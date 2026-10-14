@@ -110,9 +110,25 @@ def read_changelog(ledger_md):
     if not os.path.exists(ledger_md):
         return []
     months = {"Sep": "09", "Oct": "10", "Nov": "11", "Dec": "12", "Aug": "08"}
-    out = []
+    head = re.compile(r"- \*\*(\d{1,2}) (Sep|Oct|Nov|Dec|Aug),? ([0-9:x]+) — ")
+    # An entry is its head line and the continuation lines up to the next list item, heading or blank line: a bold head may run over two
+    # lines (14 Oct 2026: a line-by-line match had missed 11 of 489 entries).
+    entries, cur = [], None
     for line in open(ledger_md, encoding="utf-8"):
-        m = re.match(r"- \*\*(\d{1,2}) (Sep|Oct|Nov|Dec|Aug),? ([0-9:x]+) — (.+?)\*\*\s*(.*)", line.strip())
+        s = line.strip()
+        if head.match(s):
+            cur = [s]
+            entries.append(cur)
+        elif cur is not None and s and not s.startswith(("- ", "#", "|")):
+            cur.append(s)
+        else:
+            cur = None
+    out = []
+    for e in entries:
+        text = " ".join(e)
+        m = re.match(r"- \*\*(\d{1,2}) (Sep|Oct|Nov|Dec|Aug),? ([0-9:x]+) — (.+?)\*\*\s*(.*)", text, re.DOTALL)
+        if not m:   # a head whose bold is never closed (6 entries): its first sentence is the title
+            m = re.match(r"- \*\*(\d{1,2}) (Sep|Oct|Nov|Dec|Aug),? ([0-9:x]+) — (.+?[.:])(?:\s+|$)(.*)", text, re.DOTALL)
         if not m:
             continue
         day, mon, hhmm, title, body = m.groups()

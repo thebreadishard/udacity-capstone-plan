@@ -99,6 +99,18 @@ def test_frequency_lengths_are_3N_everywhere(built):
             assert len(m["frequencies_cm"][tag]["all"]) == 3 * m["n_atoms"]
 
 
+def test_changelog_reads_a_head_over_two_lines(tmp_path):
+    """14 Oct 2026: entries whose bold head runs over two lines were dropped; the body is cut at the next item, heading or blank line."""
+    md = tmp_path / "ledger.md"
+    md.write_text("# Ledger\n\n- **14 Oct, 12:3x — a head that runs\nover two lines.** Body starts here\nand goes on.\n"
+                  "- **13 Oct, 09:0x — one line.** Short.\n\n## Next\n- **12 Oct, 08:0x — no closing bold on this line\n", encoding="utf-8")
+    got = bc.read_changelog(str(md))
+    assert [(e["date"], e["title"]) for e in got] == [("2026-10-14", "a head that runs over two lines."), ("2026-10-13", "one line.")]
+    assert got[0]["body"] == "Body starts here and goes on."
+    md.write_text("- **24 Sep, 07:3x — a head never closed: the rest follows. More text.\n", encoding="utf-8")
+    assert [(e["title"], e["body"]) for e in bc.read_changelog(str(md))] == [("a head never closed:", "the rest follows. More text.")]
+
+
 def test_vib_only_drops_six():
     import numpy as np
     f = np.array([-30.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 100.0, 200.0])
