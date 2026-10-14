@@ -124,6 +124,32 @@ comparison above. CH-oop: |d| smaller than benzene's ν19 — I expect benzene's
 direction of that at no better than 60 %. Benzene: T moves ν19 by ≥ 8 cm⁻¹ toward the reference (the basis explains most of the gap);
 benzene's rms against Δ_semi falls but stays above 3.0, inside the published routes' spread.
 
+## Amendment 1 (14 Oct 2026, 18:4x, before any triple-ζ computation) — the still-learning rule, and the place
+
+**The user, 14 Oct: 'Ja, en vergeet niet de ‘is-nog-aan-het-leren’ regel.'** The scale clause above said this test has no curve along
+training size. That is true of the convergence measurement itself (d is computed, not fitted), but not of what branch (c) and the solo
+question do with it: they **estimate a per-family correction d̄_f from three molecules and apply it to a molecule outside them** (tetracene,
+a solo-C–H molecule). That is a learned quantity read on few examples, so the rule applies (ledger 14 Oct 11:2x):
+
+- **Curve, fixed now.** For k = 1 and k = 2 molecules: every subset of size k of the three gives d̄_f (the mean d of the subset's modes per
+  family); it predicts the per-mode d of each molecule outside the subset; e(k) = rms of predicted − measured d over those modes, pooled
+  over subsets, per family and over all window modes, with its standard error from the spread over subsets (SE = sd / √n_subsets). The
+  three-molecule d̄_f is the one carried; e(1) and e(2) are reported with it.
+- **'Still learning'** (the rule's definition, as in S2's amendment 1): e(2) < e(1) − 2 × √(SE₁² + SE₂²).
+- **How a transfer test is read.** When tetracene's T force field (branch c) or a solo-C–H molecule (scale clause) misses — its per-family d
+  outside d̄_f ± 1.5 cm⁻¹, the line of branch (a) — while the curve is **still learning**, the correction has **not failed**: it is
+  data-limited, and the next step is one more fused hydrocarbon at T from the S2 set (biphenylene, A_72b86c2331, then azulene,
+  A_d9139359ab), priced on the measured T times, with d̄_f re-estimated on four. When the curve is **flat** and the transfer misses, the
+  correction does not carry across molecules: before that is concluded, the search comes first (is the miss one family, one adjacency
+  class, a Fermi-affected mode?), and then route A runs at T, as in branch (b).
+- **Branch (a) and (b) are not affected:** they are read on the measured d of each molecule, not on a fitted quantity. A molecule that
+  fails the grid gate or the noise guard is still re-run, never dropped (scale clause).
+- No scope-reducing fallback: a miss while learning never narrows the question to the molecules already done.
+
+**Place (the user, 14 Oct, 'Ja' to keeping `s1` for this run):** S1-TZ runs on `s1` after S2's last molecule; the server stays until S1-TZ is
+read and fetched (FETCHED line), then the user deletes it. Benzene's first T Hessian prices the run; the price goes to TASKS 60 before
+naphthalene and acenaphthylene start.
+
 ## Outcome
 
 *(empty until all three T force fields are read)*

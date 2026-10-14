@@ -201,6 +201,9 @@ if rms(d) ≤ 1.5 on each and pooled CH-oop ≤ 1.5; (b) basis matters if > 3.0 
 stays, per-family d carried as a systematic error, one T force field on tetracene. Grid gate at T (max |Δω| ≤ 1.0 cm⁻¹, 75/302 vs 99/590).
 *Price:* benzene's first T Hessian prices it (G per Hessian measured: 112 / 550 / 967 s). *Where:* `s1` after S2 (≈ 18 Oct) **only if the user
 keeps the server for it** (spending), or another server on the user's word. Nothing runs before then; S3's route-A numbers wait for this read.
+**18:4x amendment 1:** the user: 'Ja' (keep `s1` for S1-TZ after S2, until read and fetched) 'en vergeet niet de is-nog-aan-het-leren regel' — the
+per-family correction d̄_f (branch c, solo question) is read along k = 1, 2 molecules; a transfer miss while still learning is data-limited →
+one more fused hydrocarbon at T (biphenylene, then azulene), not a failure; flat → the search first, then route A at T.
 attempt did not test it: closing the window left the app running (Claude processes from 12 Oct 23:14; snapshot
 `probes/watch_state/relaunch_test_2026-10-13_before.txt`, every pid alive, heartbeat without a gap). It showed a real risk instead: every job
 launched on 12 Oct sat in an empty-looking Windows Terminal window, and closing one kills its job; `tools/launch_outside_app.sh` now starts
