@@ -1,2 +1,4 @@
 # Shell scripts run inside WSL (bash): keep LF on checkout even with core.autocrlf=true
 *.sh text eol=lf
+# Lists read by bash on the servers (14 Oct 2026: git archive wrote s2_ids.tsv with CRLF and every S2 path ended in a CR)
+*.tsv text eol=lf

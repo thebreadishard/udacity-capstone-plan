@@ -24,7 +24,7 @@ one() {   # $1 = id, $2 = geometry path
 export -f one mark
 mkdir -p "$ROOT"
 mark "start: $(grep -c . "$LIST") molecules, $PAR at a time, $THR threads each, setting $SETTING"
-cut -f1,2 "$LIST" | xargs -P "$PAR" -L 1 bash -c 'one "$0" "$1"'
+tr -d '\r' < "$LIST" | cut -f1,2 | xargs -P "$PAR" -L 1 bash -c 'one "$0" "$1"'   # CR-proof: a CRLF list failed every molecule (14 Oct 2026)
 name=${SETTING%%:*}
 n_done=$(find "$ROOT" -path "*/$name/qff_report.npz" | wc -l); n_noisy=$(find "$ROOT" -path "*/$name/NOISY" | wc -l)
 mark "all done: $n_done force fields ($n_noisy noisy) of $(grep -c . "$LIST")"
