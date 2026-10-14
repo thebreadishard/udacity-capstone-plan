@@ -51,9 +51,9 @@ score's window), pooled over the scaffolds; the per-family rms is reported besid
 **My prediction, before any number:** (b) beats (c) by more than 20 % (Δ_anh within a family runs with ω, benzene's ring-ip modes span −11 to
 −40 cm⁻¹ at R); whether (b) reaches 3.0 cm⁻¹ I rate as even odds.
 
-## Amendment 1 (14 Oct 2026, 09:0x, before any S2 force field — 0 of 19 QFF reports exist) — the scale of the test
+## Amendment 1 (14 Oct 2026, 10:3x, before any S2 force field — 0 of 19 QFF reports exist) — the scale of the test
 
-The user, 14 Oct 08:5x: *'laten we rekening blijven houden met de schaal van de testen. Als een test met beperkt aantal moleculen de 3 cm⁻¹
+The user, 14 Oct ≈ 10:2x: *'laten we rekening blijven houden met de schaal van de testen. Als een test met beperkt aantal moleculen de 3 cm⁻¹
 niet haalt maar wel aantoonbaar nog aan het leren is (validatie fouten dalen nog), dan is de test niet gefaald.'* This is the standing rule
 of 19 Sep (no verdict on tiny data; scale along a curve) and of 25 Sep (no negative conclusion without the search). The registration above
 lacked both; they are added now, before any number.
