@@ -6,7 +6,7 @@ from pathlib import Path
 
 PLAN = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PLAN / "tools"))
-from run_test_suites import counts, pyscf_tests, summary, verdict  # noqa: E402
+from run_test_suites import counts, failures, pyscf_tests, summary, verdict  # noqa: E402
 
 
 def test_counts_read_the_closing_line():
@@ -14,6 +14,14 @@ def test_counts_read_the_closing_line():
         "failed": 3, "passed": 327, "skipped": 7, "deselected": 1}
     assert counts("26 skipped, 9 deselected, 5 errors in 14.48s")["error"] == 5
     assert counts("timeout after 1800 s") == {}
+
+
+def test_failures_keep_the_names_from_the_short_summary():
+    text = "..F.E\n=== short test summary info ===\nFAILED tests/a.py::t_one - AssertionError: x\nERROR tests/b.py::t_two\n" \
+           "1 failed, 3 passed, 1 error in 2.0s"
+    assert failures(text) == ["FAILED tests/a.py::t_one - AssertionError: x", "ERROR tests/b.py::t_two"]
+    assert failures("5 passed in 1.0s") == []
+    assert len(failures("\n".join(f"FAILED t{i}" for i in range(30)))) == 20
 
 
 def test_a_pass_needs_exit_zero_and_a_passed_test():

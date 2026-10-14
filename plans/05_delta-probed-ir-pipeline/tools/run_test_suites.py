@@ -56,6 +56,11 @@ def counts(text):
     return out
 
 
+def failures(text):
+    """pytest's short-summary lines for failed and erroring tests (its default -r fE), at most 20, each cut to 300 characters."""
+    return [ln[:300] for ln in text.splitlines() if ln.startswith(("FAILED ", "ERROR "))][:20]
+
+
 def verdict(rc, c):
     """'pass' only for exit 0 with at least one test passed; pytest exit 5 (nothing collected) is a failure of the check itself."""
     return "pass" if rc == 0 and c.get("passed", 0) > 0 and not c.get("failed") and not c.get("error") else "FAIL"
@@ -81,12 +86,13 @@ def run_all():
     rows = []
     for name, py, rel, args in SUITES:
         rc, text, s = run([py, *pytest, *args], os.path.join(ROOT, rel), env, windows_idle=True)
-        rows.append(dict(suite=name, rc=rc, seconds=s, counts=counts(text), tail=text.strip().splitlines()[-1:] or [""]))
+        rows.append(dict(suite=name, rc=rc, seconds=s, counts=counts(text), tail=text.strip().splitlines()[-1:] or [""], failures=failures(text)))
     wsl_plan = "/mnt/" + PLAN[0].lower() + PLAN[2:].replace("\\", "/")
     args = " ".join(shlex.quote(x) for x in [*pytest, *pyscf_tests()])               # bash -lc reads one string: quote every word
     cmd = f"cd {shlex.quote(wsl_plan)} && OMP_NUM_THREADS=1 nice -n 19 {WSL_PY} {args}"
     rc, text, s = run(["wsl.exe", "-e", "bash", "-lc", cmd], ROOT, env, windows_idle=False)
-    rows.append(dict(suite="plan 05 pyscf (WSL)", rc=rc, seconds=s, counts=counts(text), tail=text.strip().splitlines()[-1:] or [""]))
+    rows.append(dict(suite="plan 05 pyscf (WSL)", rc=rc, seconds=s, counts=counts(text), tail=text.strip().splitlines()[-1:] or [""],
+                     failures=failures(text)))
     for r in rows:
         r["verdict"] = verdict(r["rc"], r["counts"])
     return rows
@@ -127,6 +133,8 @@ def main():
     os.replace(tmp, STATE)
     for r in rows:
         print(f"{r['suite']}: {r['verdict']} {r['counts']} ({r['seconds']} s){'' if r['verdict'] == 'pass' else ' — ' + r['tail'][0]}", flush=True)
+        for ln in r.get("failures", []):
+            print(f"    {ln}", flush=True)
     return 0 if all(r["verdict"] == "pass" for r in rows) else 1
 
 
