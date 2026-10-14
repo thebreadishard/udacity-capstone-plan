@@ -103,6 +103,11 @@ def formula_and_key(smiles):
         return None, None, None, None
 
 
+def _plain(s):
+    """The ledger's markdown as the page shows it, plain text: bold and code markers removed (they showed literally, 14 Oct 2026)."""
+    return s.replace("**", "").replace("`", "").strip()
+
+
 def read_changelog(ledger_md):
     """The obstacle ledger's dated entries ('- **23 Sep, 14:4x — title.** body…'): date, time, title (the bold head up to its first full stop) and the
     first 300 characters of the body, newest first as the ledger keeps them. Mechanical; nothing is rewritten."""
@@ -132,7 +137,7 @@ def read_changelog(ledger_md):
         if not m:
             continue
         day, mon, hhmm, title, body = m.groups()
-        out.append(dict(date=f"2026-{months[mon]}-{int(day):02d}", time=hhmm, title=title.strip(), body=body.strip()[:300]))
+        out.append(dict(date=f"2026-{months[mon]}-{int(day):02d}", time=hhmm, title=_plain(title), body=_plain(body)[:300]))
     out.sort(key=lambda e: (e["date"], e["time"].replace("x", "0")), reverse=True)   # the ledger's day blocks are not strictly ordered; the site is
     return out
 

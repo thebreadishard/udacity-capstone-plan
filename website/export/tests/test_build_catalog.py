@@ -109,6 +109,8 @@ def test_changelog_reads_a_head_over_two_lines(tmp_path):
     assert got[0]["body"] == "Body starts here and goes on."
     md.write_text("- **24 Sep, 07:3x — a head never closed: the rest follows. More text.\n", encoding="utf-8")
     assert [(e["title"], e["body"]) for e in bc.read_changelog(str(md))] == [("a head never closed:", "the rest follows. More text.")]
+    md.write_text("- **14 Oct, 12:3x — a `file.py` head.** **(1) Withdrawn:** see `x`.\n", encoding="utf-8")
+    assert [(e["title"], e["body"]) for e in bc.read_changelog(str(md))] == [("a file.py head.", "(1) Withdrawn: see x.")]
 
 
 def test_vib_only_drops_six():
