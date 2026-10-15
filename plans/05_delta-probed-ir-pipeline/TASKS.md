@@ -216,7 +216,7 @@ the amendment's synthetic test (an exact-fit regime below 15 atoms) and the fit 
 re-read when lever 5's labels are fetched (after ≈ 22–26 Oct + fetch); freeze their inputs first (`architecture_floor.py freeze`).
 **15 Oct 23:4x — built before the data:** amendment 1's fit rule (`floor_lines.FitRule`, `AMENDED`) and, after a post-hoc check showed the
 per-molecule forecast unstable even so (target ring-ip 7,070 cm⁻¹ at 60), amendment 2: line 2 read directly on the ≥ 34-atom molecules
-(`--direct-min-atoms 34`), both forecasts beside (per molecule; pooled bins). `--from-record` re-reads a stored record. Tests 22 → 24.
+(`--direct-min-atoms 34`), both forecasts beside (per molecule; pooled bins). `--from-record` re-reads a stored record. Tests: 22 in the three floor files (6 + 8 + 8, counted; the commit message's '24' was not).
 Post hoc, no line: binned forecast at 60 — form ring-ip 0.13, target ring-ip 2.6 cm⁻¹ (ratio 0.27).
 68. **The third target, ready before it is needed (15 Oct 21:2x).** If TASKS 66 reads 'line 1 missed, flat', the registered next step is the
 read-out-metric target: the least-squares ΔF for the whole K (what `probes/hybrid_form_floor.py` solves), anchored by a ridge toward the
