@@ -109,7 +109,7 @@ def test_cache_round_trip_and_invalidation_on_lambda(tmp_path):
 
 def test_trainer_switch_present_with_the_registered_default():
     text = (M05 / "rungC_train.py").read_text(encoding="utf-8")
-    assert re.search(r'add_argument\("--aux-target", default="projected", choices=\["projected", "ls"\]', text)
+    assert re.search(r'add_argument\("--aux-target", default="projected", choices=\["projected", "ls", "kfit"\]', text)
     assert re.search(r'add_argument\("--ls-lam", type=float, default=LAM_REL', text)
 
 
@@ -126,3 +126,87 @@ def test_prior_cutoff_and_store_guard(tmp_path, monkeypatch):
     with pytest.raises(RuntimeError, match="not stored"):
         RT.cached_pattern_ls_target(tmp_path, "mol", "d", dH, B, masses, mask)
     assert not (tmp_path / f"d_lam{RT.LAM_REL:g}" / "mol.npz").exists()
+
+
+
+# ---------------------------------------------------------------- the read-out target (TASKS 68, 15 Oct 2026)
+
+def _modes(B, masses, seed=3):
+    """A random positive low-level Hessian on the system's coordinates: its vibrational eigenvalues and mass-weighted eigenvectors."""
+    rng = np.random.default_rng(seed)
+    n = B.shape[1]
+    A = rng.normal(size=(n, n))
+    m = np.repeat(masses * RT.AMU2AU, 3)
+    Hm = (A @ A.T + n * np.eye(n)) * 1e-3 / np.sqrt(np.outer(m, m))
+    w, V = np.linalg.eigh(Hm)
+    return w[3:], V[:, 3:]                                         # three "rigid" directions dropped, as normal_modes drops six
+
+
+def _augmented_kfit(dH, B, masses, w, V, mask, lam_rel):
+    """The read-out objective as a dense least squares: rows = every entry of K (both triangles), plus √λ (x − x_proj)."""
+    U, K = RT.readout_basis(dH, B, masses, w, V)
+    I, J = np.where(np.triu(mask))
+    cols = []
+    for i, j in zip(I, J, strict=True):
+        E = np.outer(U[:, i], U[:, j])
+        cols.append((E + E.T if i != j else E).ravel())
+    A = np.stack(cols, 1)
+    lam = lam_rel * float((A * A).sum()) / A.shape[1]
+    x0 = RT.projected_target(dH, B)[I, J]
+    Aa = np.vstack([A, np.sqrt(lam) * np.eye(len(I))])
+    x = scipy.linalg.lstsq(Aa, np.concatenate([K.ravel(), np.sqrt(lam) * x0]), lapack_driver="gelsd")[0]
+    X = np.zeros((B.shape[0], B.shape[0]))
+    X[I, J] = x
+    X[J, I] = x
+    return X
+
+
+def test_kfit_normal_equations_equal_the_augmented_least_squares():
+    B, masses, dH, mask = _random_system(seed=4)
+    w, V = _modes(B, masses)
+    for lam in (1e-2, 1e-4):
+        X = RT.kfit_target(dH, B, masses, w, V, mask, lam_rel=lam)
+        X_ref = _augmented_kfit(dH, B, masses, w, V, mask, lam)
+        assert np.allclose(X, X_ref, rtol=1e-6, atol=1e-9 * np.abs(X_ref).max())
+        assert np.all(X[~mask] == 0.0)
+
+
+def test_kfit_is_exact_inside_the_form_and_beats_the_ls_target_in_its_own_metric():
+    B, masses, _, mask = _random_system(seed=5)
+    w, V = _modes(B, masses)
+    rng = np.random.default_rng(6)
+    inside = np.where(mask, rng.normal(size=mask.shape), 0.0)
+    inside = 0.5 * (inside + inside.T)
+    dH = B.T @ inside @ B                                          # a correction the pattern can write exactly
+    assert RT.readout_residual(dH, B, masses, w, V, RT.kfit_target(dH, B, masses, w, V, mask, lam_rel=1e-10)) < 1e-6
+    B, masses, dH, mask = _random_system(seed=7)
+    w, V = _modes(B, masses)
+    kfit = RT.readout_residual(dH, B, masses, w, V, RT.kfit_target(dH, B, masses, w, V, mask, lam_rel=1e-6))
+    ls = RT.readout_residual(dH, B, masses, w, V, RT.pattern_ls_target(dH, B, masses, mask, lam_rel=1e-6))
+    assert kfit <= ls * (1 + 1e-9)
+
+
+def test_the_readout_basis_is_k_of_s():
+    """U ΔF Uᵀ equals e7_t2_posthoc.k_of's K for the same molecule fields (the trainer's read-out)."""
+    PH = pytest.importorskip("e7_t2_posthoc", reason="module 05's posthoc module imports torch through its loaders")
+    B, masses, dH, mask = _random_system(seed=8)
+    w, V = _modes(B, masses)
+    X = np.where(mask, np.random.default_rng(9).normal(size=mask.shape), 0.0)
+    X = 0.5 * (X + X.T)
+    U, _ = RT.readout_basis(dH, B, masses, w, V)
+    m = {"masses": masses, "w": w, "V": V, "B": B}
+    assert np.allclose(U @ X @ U.T, PH.k_of(m, X), rtol=1e-9, atol=1e-12)
+    assert RT.HARTREE2CM == pytest.importorskip("learning_curve_layerA").HARTREE2CM
+
+
+def test_the_cache_keeps_the_ls_folder_and_separates_kfit(tmp_path):
+    B, masses, dH, mask = _random_system(seed=1, n_atoms=4, K=8)
+    w, V = _modes(B, masses)
+    X_ls, _ = RT.cached_pattern_target(tmp_path, "mol", "d", dH, B, masses, mask)
+    X_kf, c1 = RT.cached_pattern_target(tmp_path, "mol", "d", dH, B, masses, mask, kind="kfit", w=w, V=V)
+    _, c2 = RT.cached_pattern_target(tmp_path, "mol", "d", dH, B, masses, mask, kind="kfit", w=w, V=V)
+    _, c3 = RT.cached_pattern_target(tmp_path, "mol", "d", dH, B, masses, mask, kind="kfit", w=w * 1.01, V=V)
+    assert (c1, c2, c3) == (False, True, False) and not np.allclose(X_ls, X_kf)
+    assert (tmp_path / f"d_lam{RT.LAM_REL:g}" / "mol.npz").exists() and (tmp_path / f"d_kfit_lam{RT.LAM_REL:g}" / "mol.npz").exists()
+    with pytest.raises(ValueError, match="needs the low level"):
+        RT.cached_pattern_target(tmp_path, "mol2", "d", dH, B, masses, mask, kind="kfit")

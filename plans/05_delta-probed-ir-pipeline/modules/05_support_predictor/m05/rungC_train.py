@@ -47,7 +47,7 @@ from rungC_equivariant import (  # noqa: E402
     to_torch,
 )
 from rungC_hybrid import HybridDeltaFModel, input_scales, pair_feature_stats, primitive_parity, primitive_pool_matrix  # noqa: E402
-from rungC_targets import LAM_REL, SCALE_LIMIT, cached_pattern_ls_target, scale_ratio, weighted_residual  # noqa: E402
+from rungC_targets import LAM_REL, SCALE_LIMIT, cached_pattern_target, readout_residual, scale_ratio, weighted_residual  # noqa: E402
 
 from dpir.provenance import provenance  # noqa: E402
 
@@ -520,17 +520,20 @@ def molecule_tensors(i: str, m: dict, mol: dict, mol_dir: Path, cfg, cache_dir: 
         t.update(kring_tensors(mol["masses"], mol["V"], mol["w"], mol["family"], m["dH_true"]))
     if cfg.aux in ("pattern", "both") or cfg.head == "hybrid":            # the hybrid's class scales need the pattern classes under any aux term
         t["pat_cls"] = pattern_classes(mol_dir, mol, cfg.pattern)
-        if cfg.aux_target == "ls":                                          # lever 4 (1 Oct 2026): the pattern-consistent target
+        if cfg.aux_target in ("ls", "kfit"):                               # lever 4 (1 Oct 2026); 'kfit' the read-out target (TASKS 68, 15 Oct 2026)
             mask = (t["pat_cls"] >= 0).numpy()
-            X, cached = cached_pattern_ls_target(cache_dir, i, cfg.pattern, m["dH_true"], mol["B"], m["masses"], mask, lam_rel=cfg.ls_lam)
+            X, cached = cached_pattern_target(cache_dir, i, cfg.pattern, m["dH_true"], mol["B"], m["masses"], mask, lam_rel=cfg.ls_lam,
+                                              kind=cfg.aux_target, w=mol["w"], V=mol["V"])
             projected = np.where(mask, t["dF_true"].numpy(), 0.0)
             ratio = scale_ratio(X, projected)                                 # the cache refuses to store such a target; a stale file is caught here
             if ratio > SCALE_LIMIT:
-                raise RuntimeError(f"{i}: LS target entries {ratio:.3g}× the projected target's (cached: {cached}) — the blow-ups of 1 Oct 11:4x / "
+                raise RuntimeError(f"{i}: {cfg.aux_target} target entries {ratio:.3g}× the projected target's (cached: {cached}) — the blow-ups of 1 Oct 11:4x / "
                                    f"12:2x; delete the cache file or raise --ls-lam (now {cfg.ls_lam:g})")
             if target_residuals is not None:
                 target_residuals[i] = {"projected": weighted_residual(m["dH_true"], mol["B"], m["masses"], projected),
-                                       "ls": weighted_residual(m["dH_true"], mol["B"], m["masses"], X), "scale_ratio": ratio, "from_cache": cached}
+                                       cfg.aux_target: weighted_residual(m["dH_true"], mol["B"], m["masses"], X), "scale_ratio": ratio, "from_cache": cached,
+                                       "readout_projected": readout_residual(m["dH_true"], mol["B"], m["masses"], mol["w"], mol["V"], projected),
+                                       "readout_target": readout_residual(m["dH_true"], mol["B"], m["masses"], mol["w"], mol["V"], X)}
             t["dF_true"] = torch.as_tensor(X, dtype=torch.float32)
     if cfg.head == "hybrid":
         t.update(hybrid_tensors(mol_dir, mol, cfg.pattern))
@@ -645,9 +648,10 @@ def main() -> int:
     ap.add_argument("--hybrid-hidden", type=int, default=128, help="hybrid head: width of its MLP (search stage H1, 1 Oct 2026; 128 = the 00:4x model)")
     ap.add_argument("--pattern", default="c", choices=["c", "d", "e", "f"], help="lever 1 (1 Oct 2026): 'c' = the registered pattern; 'd' = (c) + disjoint pairs one bond apart (off_twobond); "
                     "'e' / 'f' = up to two / three bonds apart (off_dist2 / off_dist3)")
-    ap.add_argument("--aux-target", default="projected", choices=["projected", "ls"],
+    ap.add_argument("--aux-target", default="projected", choices=["projected", "ls", "kfit"],
                     help="lever 4 (1 Oct 2026): target of the pattern term — 'projected' = B⁺ᵀ ΔH B⁺ on the pattern (registered), 'ls' = the mass-weighted "
-                         "least-squares ΔF supported on the pattern (rungC_targets), whose reconstruction is the head's true ceiling")
+                         "least-squares ΔF supported on the pattern (rungC_targets), whose reconstruction is the head's true ceiling; 'kfit' (15 Oct 2026, "
+                         "TASKS 68) = the same in the read-out's metric, the mode-basis K (rungC_targets.kfit_target); both ridge-anchored by --ls-lam")
     ap.add_argument("--ls-lam", type=float, default=LAM_REL, help="lever 4: ridge of the LS target toward the projected truth, relative to the normal matrix's "
                     "mean diagonal (0 = plain least squares — explodes on redundant internals, 1 Oct 11:4x)")
     ap.add_argument("--body-blocks", type=int, default=N_BLOCKS, help="lever 2c (1 Oct 2026): interaction blocks of a fresh body (registered: 3)")
@@ -725,7 +729,7 @@ def main() -> int:
              f"inner validation {a.inner_val}, patience {a.patience}; pool layers {a.pool_layers}; {a.aggregation} aggregation"
              + ("; H_low input zeroed (diagnostic 1)" if a.zero_hlow else "") + (f"; overfit-one {a.overfit_one} (diagnostic 2)" if a.overfit_one else "")
              + ("; rank-2 tensor input" if a.tensor_input else "") + (f"; hybrid head{' + SQM α' if a.sqm_scale else ''}{' + rung B pair features' if a.pair_features else ''}" if a.head == "hybrid" else "")
-             + (f"; pattern {a.pattern}" if a.pattern != "c" else "") + (f"; LS pattern target (λ_rel {a.ls_lam:g})" if a.aux_target == "ls" else ""), "",
+             + (f"; pattern {a.pattern}" if a.pattern != "c" else "") + (f"; {a.aux_target} pattern target (λ_rel {a.ls_lam:g})" if a.aux_target in ("ls", "kfit") else ""), "",
              "| n | seed | hold-out | ring couplings | zero | ratio | corrected ω | zero ω | ΔH residual ratio | s |",
              "|---|---|---|---|---|---|---|---|---|---|"]
     for n in sizes:
