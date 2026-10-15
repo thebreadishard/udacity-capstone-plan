@@ -34,6 +34,11 @@ writing before the assertions pass — that emptied a probe script on 14 Septemb
 - Since 15 October 2026 every run is launched through `tools/runspec.py launch probes/runspecs/<name>.json`: the spec names the log lines
   that prove progress and how long they may stay away, whatever the run's expected length (the #2702 repro ran 37 h without one).
 
+## Hooks
+`tools/hooks/guard.py` (plan 05) runs before every shell, Edit and Write call and after every edit: eight rules from incidents
+(TASKS 64). A refused call names its rule and reason; fix the call rather than exempting it. `# hook-exempt: <reason>` is for a case the
+user asked for, and is logged.
+
 ## Committing
 Never `git add -A`: the run directories are written live and `results_vpt2/benzene_vpt2_psi4.out` is
 75 MB of psi4 scratch. Name the paths. Compile-check first.

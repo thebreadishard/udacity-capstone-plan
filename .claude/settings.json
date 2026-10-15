@@ -1,0 +1,28 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|PowerShell|Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "timeout": 20,
+            "command": "python \"$CLAUDE_PROJECT_DIR\"/plans/05_delta-probed-ir-pipeline/tools/hooks/guard.py pre"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "timeout": 60,
+            "command": "python \"$CLAUDE_PROJECT_DIR\"/plans/05_delta-probed-ir-pipeline/tools/hooks/guard.py post"
+          }
+        ]
+      }
+    ]
+  }
+}

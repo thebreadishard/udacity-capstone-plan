@@ -110,3 +110,8 @@ plans/*/probes/results_vpt2/*.out
 plans/05_delta-probed-ir-pipeline/probes/watch_state/
 # 10 Oct 2026: run specs of probes/chain_runner.py are code, not records
 !plans/05_delta-probed-ir-pipeline/probes/runs/*.json
+
+# 15 Oct 2026: the hooks' registration and mode (TASKS 64) and the run specs (TASKS 63) are committed
+!.claude/settings.json
+!plans/*/tools/hooks/*.json
+!plans/*/probes/runspecs/*.json
