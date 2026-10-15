@@ -185,3 +185,17 @@ def test_a_quiet_call_is_not_logged_and_a_broken_payload_never_blocks(tmp_path):
     assert hook(tmp_path, {"tool_name": "Bash", "tool_input": {"command": "ls"}}, "enforce").returncode == 0 and logged(tmp_path) == []
     r = hook(tmp_path, "{not json", "enforce")
     assert r.returncode == 1 and "guard.py failed" in r.stderr
+
+
+def test_the_log_reader_counts_per_rule_and_lists_distinct_examples(tmp_path):
+    """tools/hooks/read_log.py (15 Oct 2026): the table the hook review is held on; plain ASCII, so a Windows console shows it whole."""
+    import read_log as RL
+    log = tmp_path / "hooks.log"
+    rows = [dict(time=f"2026-10-16T0{i}:00:00", rule=r, decision="deny", acted=False, exempt=x, tool="Bash", excerpt=c, reason="r")
+            for i, (r, x, c) in enumerate([("git_add_all", None, "git add -A"), ("git_add_all", None, "git add -A"),
+                                           ("git_add_all", "asked", "git add ."), ("retired_rule", None, "x")])]
+    log.write_text("".join(json.dumps(e) + "\n" for e in rows), encoding="utf-8")
+    text = "\n".join(RL.table(RL.load(log), examples=1))
+    assert "| git_add_all | deny | 3 | 1 |" in text and "## git_add_all: 2 distinct" in text and "... and 1 more" in text
+    assert "no longer has: retired_rule" in text and text.isascii()
+    assert RL.load(log, since="2026-10-16T02") == rows[2:]

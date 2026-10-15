@@ -267,7 +267,7 @@ def main(argv: list[str]) -> int:
     for rule, reason in hits:
         log({"time": now().isoformat(timespec="seconds"), "rule": rule.name, "decision": rule.decision, "acted": acting,
              "exempt": exempt.group(1)[:120] if exempt and rule.decision == "deny" else None, "tool": call.tool,
-             "excerpt": (call.command or call.path)[:200], "reason": reason[:300]})
+             "excerpt": (call.command or call.path)[:1000], "reason": reason[:300]})
     code, out, err = respond(event, call, hits, acting)
     if out:
         print(out)
