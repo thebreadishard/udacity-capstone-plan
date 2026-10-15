@@ -6,13 +6,30 @@ Pooling works on sums of squares, so a pooled rms is exact over molecules of dif
 """
 from __future__ import annotations
 
+from dataclasses import dataclass
+
 import numpy as np
 
 FAMILIES = ("CH-stretch", "CH-oop", "ring-ip", "other")       # learning_curve_layerA.FAMILIES; a test keeps the two equal
 RING = "ring-ip"
 LINE_1_MIN_ATOMS, LINE_1_MIN_MOLECULES = 25, 30
-LINE_2_FIT_MIN_ATOMS, LINE_2_AT_ATOMS = 10, 60
+LINE_2_AT_ATOMS = 60
 BOOTSTRAP, BOOTSTRAP_SEED = 1000, 0
+
+
+@dataclass(frozen=True)
+class FitRule:
+    """Which molecules enter line 2's power law: at least `min_atoms` atoms and a value of at least `min_value` (exact zeros never enter)."""
+    name: str
+    min_atoms: int
+    min_value: float
+
+
+SIZE_BINS = ((0, 14), (15, 19), (20, 23), (24, 27), (28, 33), (34, 45), (46, 99))   # atoms; 34+ for lever 5's large PAHs
+
+ORIGINAL = FitRule("original", 10, 0.0)          # as registered 15 Oct 19:0x / 19:4x; took numerically-zero floors — its forecasts are invalid
+AMENDED = FitRule("amended", 15, 1e-6)           # the amendment of 15 Oct 21:2x, fixed before lever 5's large-PAH re-read
+RULES = {r.name: r for r in (ORIGINAL, AMENDED)}
 
 
 def error_sums(K_true: np.ndarray, K_fit: np.ndarray, families: list[str]) -> dict:
@@ -64,11 +81,30 @@ def bootstrap_interval(n_atoms: np.ndarray, values: np.ndarray, at: float, rng: 
     return [float(np.percentile(draws, 2.5)), float(np.percentile(draws, 97.5))]
 
 
-def forecast(points: list[tuple[int, float]], rng: np.random.Generator) -> tuple[float, list[float] | None, int]:
-    """(value at LINE_2_AT_ATOMS, bootstrap interval, molecules fitted) from (atoms, value) points of molecules ≥ LINE_2_FIT_MIN_ATOMS; nan and
-    None with fewer than three points."""
-    kept = [(n, v) for n, v in points if n >= LINE_2_FIT_MIN_ATOMS]
+def forecast(points: list[tuple[int, float]], rng: np.random.Generator, rule: FitRule = ORIGINAL) -> tuple[float, list[float] | None, int]:
+    """(value at LINE_2_AT_ATOMS, bootstrap interval, molecules fitted) from the (atoms, value) points the rule admits; nan and None with fewer
+    than three points."""
+    kept = [(n, v) for n, v in points if n >= rule.min_atoms and v >= rule.min_value]
     if len(kept) < 3:
         return float("nan"), None, len(kept)
     n, v = (np.asarray(x, dtype=float) for x in zip(*kept, strict=True))
     return power_law_at(n, v, LINE_2_AT_ATOMS), bootstrap_interval(n, v, LINE_2_AT_ATOMS, rng), len(kept)
+
+
+def binned_forecast(items: list[tuple[int, list[float]]], rule: FitRule = ORIGINAL, at: float = LINE_2_AT_ATOMS) -> float:
+    """A forecast from pooled size bins (amendment 2, 15 Oct 2026): `items` are (atoms, [num, den]) per molecule; each bin of SIZE_BINS is
+    pooled exactly and placed at its molecules' mean atom count; a log–log line through the bins with a non-zero value is evaluated at `at`.
+    Per-molecule values spread over orders of magnitude within a narrow size range, which made the per-molecule fit unstable; a bin is not.
+    Only the molecules the rule admits are binned (atoms and value), so an exact-fit regime does not set the slope.
+    nan with fewer than three such bins."""
+    pts = []
+    admitted = [(n, s) for n, s in items if n >= rule.min_atoms and s[1] and np.sqrt(s[0] / s[1]) >= rule.min_value]
+    for lo, hi in SIZE_BINS:
+        inside = [(n, s) for n, s in admitted if lo <= n <= hi]
+        value = pooled([{"x": s} for _, s in inside], "x") if inside else float("nan")
+        if inside and np.isfinite(value) and value > 0:
+            pts.append((float(np.mean([n for n, _ in inside])), value))
+    if len(pts) < 3:
+        return float("nan")
+    n, v = (np.asarray(x, dtype=float) for x in zip(*pts, strict=True))
+    return power_law_at(n, v, at)

@@ -44,3 +44,13 @@ def test_the_forecast_recovers_a_known_power_law_and_needs_three_points():
 def test_the_families_are_the_read_outs():
     la = pytest.importorskip("learning_curve_layerA", reason="module 05 on the path needs torch")
     assert tuple(la.FAMILIES) == FL.FAMILIES
+
+
+
+def test_the_binned_forecast_recovers_a_power_law_and_needs_three_bins():
+    items = [(n, [(0.02 * n ** 1.3) ** 2 * 10, 10]) for n in [16, 18, 21, 22, 25, 26, 30, 31] * 6]
+    assert FL.binned_forecast(items) == pytest.approx(0.02 * 60 ** 1.3, rel=0.02)
+    assert np.isnan(FL.binned_forecast(items[:2]))                          # one bin only
+    exact = [(n, [1e-24, 10]) for n in (8, 10, 12, 14) * 6]                # an exact-fit regime below 15 atoms
+    assert FL.binned_forecast(exact + items, FL.AMENDED) == pytest.approx(0.02 * 60 ** 1.3, rel=0.02)
+    assert FL.binned_forecast(exact + items, FL.ORIGINAL) > 10 * 0.02 * 60 ** 1.3     # what the rule prevents

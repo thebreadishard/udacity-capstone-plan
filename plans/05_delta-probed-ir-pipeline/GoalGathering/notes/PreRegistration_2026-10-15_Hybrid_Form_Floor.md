@@ -120,3 +120,18 @@ or the ratio) **and** it has ≥ 15 atoms; the power law is fitted to the 15-ato
 molecules and evaluated at 60 atoms; the lines (1.25 cm⁻¹ / 0.15) are unchanged. The new molecules are also read directly — pooled, by the
 same bins — beside the forecast, since at 34–60 atoms the forecast is no longer needed. A synthetic test with an exact-fit regime below 15
 atoms is written with the change, before the re-read.
+
+## Amendment 2 (15 Oct 2026, 23:4x) — line 2 read directly on the large molecules; still before lever 5's data
+
+Amendment 1's fit rule was checked post hoc on the stored records of this read (`floor_posthoc_2026-10-15_2340.md`, `--from-record`; the
+rule was written after seeing the data, so this is a check of the tool, not a read). The per-molecule power law stays unstable even under it:
+target ring-ip 7,070 cm⁻¹ at 60 atoms (interval 1,749–32,994), form ring-ip 3.6 (0.98–17.3) — single molecules spread over orders of
+magnitude across 15–33 atoms, and the slope carries that to 60. **So for the registered re-read on lever 5's labels and layer T, line 2 is
+read directly**: the pooled value over the molecules of ≥ 34 atoms (`hybrid_form_floor.py --direct-min-atoms 34`; no read with fewer than
+five), against the same thresholds (1.25 cm⁻¹ / 0.15). Both forecasts are reported beside, without lines: per molecule, and from pooled size
+bins (`floor_lines.binned_forecast`, bins of `SIZE_BINS`, the same fit rule). Tests: the direct read and the binned forecast through an
+exact-fit regime (`tests/test_hybrid_form_floor.py`, `tests/test_floor_lines.py`).
+
+**Post hoc, beside, no line (binned forecast at 60 atoms on the 534, amendment 1's rule):** form ring-ip 0.13 cm⁻¹, ring-coupling ratio
+0.027; the trained target ring-ip 2.6 cm⁻¹, ratio 0.27. If the bins' trend holds to 60 atoms, the projected target alone would cost about the
+whole 2.5 cm⁻¹ line in ring-ip — the reason the target comparison (TASKS 66) matters for the mandate. Lever 5's direct read will say.

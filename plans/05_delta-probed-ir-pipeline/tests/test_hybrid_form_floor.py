@@ -78,6 +78,46 @@ def test_the_verdict_follows_the_registered_order():
     assert HF.read(synthetic(1.0, 1.0))["verdict"].startswith("the form costs (ring-ip")
     assert HF.read(synthetic(0.1, 1.0))["verdict"].startswith("the form holds it but the trained target does not (ring-ip")
     res = HF.read(synthetic(0.1, 0.2))
-    assert res["verdict"].startswith("neither line met") and res["quantities"]["form"]["ring-ip"]["line_2_at_60"] == pytest.approx(0.3)
+    assert res["verdict"].startswith("neither line met") and res["quantities"]["form"]["ring-ip"]["line_2"] == pytest.approx(0.3)
     assert "no fit" in "\n".join(HF.report(res))                          # a read-out with no non-zero point is reported, not fitted
     json.dumps(res)
+
+
+def two_regimes() -> list[dict]:
+    """Below 15 atoms the form fits exactly (floors of 1e-10, the exact-fit regime); from 15 atoms on the ring-ip floor grows as 0.1·(n/20)."""
+    recs = []
+    for n in [8, 10, 12, 14] * 5 + [16, 20, 24, 28, 32] * 5:
+        value = 1e-10 if n < 15 else 0.1 * n / 20
+        block = {F: ([value ** 2 * 10, 10] if F == "ring-ip" else [0.0, 5]) for F in HF.FL.FAMILIES} | {"ring_coupling": [0.0, 4.0]}
+        recs.append({"id": f"m{len(recs)}", "n_atoms": n, "form": block, "target": block})
+    return recs
+
+
+def test_the_amended_rule_reads_through_an_exact_fit_regime_and_the_original_does_not():
+    """TASKS 69 (amendment of 15 Oct 21:2x): the first read forecast 10^10 cm^-1 because numerically-zero floors entered the fit."""
+    amended = HF.read(two_regimes(), HF.FL.AMENDED)["quantities"]["form"]["ring-ip"]
+    original = HF.read(two_regimes(), HF.FL.ORIGINAL)["quantities"]["form"]["ring-ip"]
+    assert amended["forecast_at_60"] == pytest.approx(0.3, rel=1e-6) and amended["n_fit"] == 25
+    assert original["forecast_at_60"] > 1e3                                  # the failure the amendment removes
+    assert HF.read(two_regimes())["line_2_rule"]["name"] == "amended"      # the default for every read from now on
+
+
+def test_a_stored_record_re_reads_without_recomputing(tmp_path):
+    stored = tmp_path / "floor.json"
+    stored.write_text(json.dumps({"records": two_regimes()}), encoding="utf-8")
+    assert HF.main(["--from-record", str(stored), "--out", str(tmp_path / "again"), "--line-2-rule", "amended"]) == 0
+    again = json.loads((tmp_path / "again.json").read_text(encoding="utf-8"))
+    assert again["quantities"]["form"]["ring-ip"]["forecast_at_60"] == pytest.approx(0.3, rel=1e-6)
+
+
+
+def test_amendment_2_reads_line_2_directly_on_the_large_molecules():
+    """Lever 5's re-read: line 2 is the pooled value over the molecules of >= 34 atoms; with fewer than five such molecules there is no read."""
+    recs = two_regimes()
+    for n in (36, 40, 44, 50, 58):
+        block = {F: ([0.5 ** 2 * 10, 10] if F == "ring-ip" else [0.0, 5]) for F in HF.FL.FAMILIES} | {"ring_coupling": [0.0, 4.0]}
+        recs.append({"id": f"big{n}", "n_atoms": n, "form": block, "target": block})
+    x = HF.read(recs, HF.FL.AMENDED, direct_min_atoms=34)["quantities"]["form"]["ring-ip"]
+    assert x["line_2"] == pytest.approx(0.5) and not x["line_2_met"] and x["line_2_kind"].startswith("direct on 5 molecules")
+    few = HF.read(recs[:-1], HF.FL.AMENDED, direct_min_atoms=34)["quantities"]["form"]["ring-ip"]
+    assert np.isnan(few["line_2"]) and not few["line_2_met"]

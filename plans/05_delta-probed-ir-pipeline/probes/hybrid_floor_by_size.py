@@ -15,8 +15,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import floor_lines as FL  # noqa: E402
 
-BINS = ((0, 14), (15, 19), (20, 23), (24, 27), (28, 99))
-EXACT = 1e-6                     # cm⁻¹: a per-molecule form floor below this is the exact-fit regime, not a floor
+BINS = FL.SIZE_BINS
+EXACT = FL.AMENDED.min_value     # cm⁻¹: a per-molecule form floor below this is the exact-fit regime, not a floor
 KEYS = ("ring-ip", "other", "CH-stretch", "ring_coupling")
 
 

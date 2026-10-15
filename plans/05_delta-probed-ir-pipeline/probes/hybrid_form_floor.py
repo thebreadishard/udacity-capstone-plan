@@ -7,9 +7,12 @@ quantities are exact per molecule:
   target  the read-out of the target the recipe trains (the projected truth masked to the pattern)
 Each molecule is loaded as the trainer holds an analytic one (T2.load's fields with e7_rungB_reread_analytic.substitute's Hessians).
 
-    python probes/hybrid_form_floor.py --inputs probes/results_m1/arch_floor_2026-10-15/inputs.tsv --out <prefix>
+    python probes/hybrid_form_floor.py --inputs probes/results_m1/arch_floor_2026-10-15/inputs.tsv --out <prefix> [--line-2-rule amended]
+    python probes/hybrid_form_floor.py --from-record <prefix>.json --out <prefix2> [--line-2-rule original]     re-read without recomputing
 
-The inputs are architecture_floor's frozen list (sha256 checked); the read writes <prefix>.json and <prefix>.md.
+The inputs are architecture_floor's frozen list (sha256 checked); the read writes <prefix>.json and <prefix>.md. Line 2's fit rule is
+floor_lines.AMENDED by default (fixed 15 Oct 21:2x for lever 5's large-PAH re-read); the first read of 15 Oct used ORIGINAL, whose forecasts
+were invalid (it took numerically-zero floors) — `--line-2-rule original` reproduces it.
 """
 from __future__ import annotations
 
@@ -37,6 +40,7 @@ KEYS = (*FL.FAMILIES, "ring_coupling")
 LINE_1 = {"family": 1.0, "ring_coupling": 0.10}           # cm⁻¹ per family; the ring-coupling ratio
 LINE_2 = {"family": 1.25, "ring_coupling": 0.15}
 PROGRESS_EVERY = 25                                       # molecules between progress lines
+DIRECT_MIN_MOLECULES = 5                                  # amendment 2: line 2 read directly needs at least this many large molecules
 
 
 # ---------------------------------------------------------------- one molecule
@@ -101,7 +105,10 @@ def _kind(key: str) -> str:
     return "ring_coupling" if key == "ring_coupling" else "family"
 
 
-def read(records: list[dict]) -> dict:
+def read(records: list[dict], rule: FL.FitRule = FL.AMENDED, direct_min_atoms: int | None = None) -> dict:
+    """The registered read. Line 2 is the power-law forecast at 60 atoms (`rule`), or — amendment 2, for lever 5's re-read — the pooled
+    value over the molecules of ≥ `direct_min_atoms` atoms read directly (nan with fewer than DIRECT_MIN_MOLECULES). Both forecasts, per
+    molecule and from pooled size bins, are always reported beside."""
     bound = FL.line_1_bound([r["n_atoms"] for r in records])
     upper = [r for r in records if r["n_atoms"] >= bound]
     rng = np.random.default_rng(FL.BOOTSTRAP_SEED)
@@ -111,9 +118,17 @@ def read(records: list[dict]) -> dict:
         for key in KEYS:
             now = FL.pooled([r[qty] for r in upper], key)
             pts = [(r["n_atoms"], v) for r in records if (v := FL.per_molecule(r[qty], key)) is not None]
-            at60, interval, n_fit = FL.forecast(pts, rng)
-            out[qty][key] = {"line_1": now, "line_1_met": bool(now >= LINE_1[_kind(key)]), "line_2_at_60": at60, "line_2_interval": interval,
-                             "line_2_met": bool(at60 >= LINE_2[_kind(key)]), "n_fit": n_fit}
+            at60, interval, n_fit = FL.forecast(pts, rng, rule)
+            if direct_min_atoms is None:
+                line2, kind = at60, "forecast"
+            else:
+                large = [r[qty] for r in records if r["n_atoms"] >= direct_min_atoms]
+                line2 = FL.pooled(large, key) if len(large) >= DIRECT_MIN_MOLECULES else float("nan")
+                kind = f"direct on {len(large)} molecules of >= {direct_min_atoms} atoms"
+            out[qty][key] = {"line_1": now, "line_1_met": bool(now >= LINE_1[_kind(key)]),
+                             "line_2": line2, "line_2_kind": kind, "line_2_met": bool(line2 >= LINE_2[_kind(key)]),
+                             "forecast_at_60": at60, "forecast_interval": interval, "n_fit": n_fit,
+                             "binned_forecast_at_60": FL.binned_forecast([(r["n_atoms"], r[qty][key]) for r in records], rule)}
     met = {qty: [k for k, x in out[qty].items() if x["line_1_met"] or x["line_2_met"]] for qty in QUANTITIES}
     if met["form"]:
         verdict = f"the form costs ({', '.join(met['form'])}): a wider pattern is registered as a training comparison"
@@ -121,38 +136,49 @@ def read(records: list[dict]) -> dict:
         verdict = f"the form holds it but the trained target does not ({', '.join(met['target'])}): a target comparison is registered"
     else:
         verdict = "neither line met: pattern f and its target are not the limit at these sizes; the size penalty is a learning and data question"
-    return {"verdict": verdict, "quantities": out, "line_1_bound_atoms": bound, "n_upper": len(upper), "n_molecules": len(records)}
+    return {"verdict": verdict, "quantities": out, "line_1_bound_atoms": bound, "n_upper": len(upper), "n_molecules": len(records),
+            "line_2_rule": {"name": rule.name, "min_atoms": rule.min_atoms, "min_value": rule.min_value}}
 
 
 def _cell(x: dict, line: str) -> str:
-    value = x[line] if line == "line_1" else x["line_2_at_60"]
-    return f"{value:.3f}{' MET' if x[f'{line}_met'] else ''}"
+    return f"{x[line]:.3f}{' MET' if x[f'{line}_met'] else ''}"
 
 
 def report(res: dict) -> list[str]:
     lines = ["# The carried head's floor (TASKS 65, registered read)", "", f"**{res['verdict']}**", "",
              f"{res['n_molecules']} molecules; line 1 on the {res['n_upper']} of ≥ {res['line_1_bound_atoms']} atoms. Families in cm⁻¹ "
-             "(lines 1.0 / 1.25); ring couplings as the ratio (lines 0.10 / 0.15).", "",
-             "| quantity | read-out | line 1 | line 2 at 60 atoms | 95 % interval | molecules fitted |", "|---|---|---|---|---|---|"]
+             "(lines 1.0 / 1.25); ring couplings as the ratio (lines 0.10 / 0.15). Line 2's fit rule: "
+             f"{res['line_2_rule']['name']} (≥ {res['line_2_rule']['min_atoms']} atoms, values ≥ {res['line_2_rule']['min_value']:g}).", "",
+             "| quantity | read-out | line 1 | line 2 | per-molecule forecast at 60 (95 %) | binned forecast at 60 |", "|---|---|---|---|---|---|"]
     for qty, block in res["quantities"].items():
         for key, x in block.items():
-            span = f"{x['line_2_interval'][0]:.3f}–{x['line_2_interval'][1]:.3f}" if x["line_2_interval"] else "no fit"
-            lines.append(f"| {qty} | {key} | {_cell(x, 'line_1')} | {_cell(x, 'line_2')} | {span} | {x['n_fit']} |")
+            span = f" ({x['forecast_interval'][0]:.3f}–{x['forecast_interval'][1]:.3f})" if x["forecast_interval"] else " (no fit)"
+            lines.append(f"| {qty} | {key} | {_cell(x, 'line_1')} | {_cell(x, 'line_2')} | {x['forecast_at_60']:.3f}{span} | "
+                         f"{x['binned_forecast_at_60']:.3f} |")
+    kinds = sorted({x["line_2_kind"] for block in res["quantities"].values() for x in block.values()})
+    lines += ["", f"Line 2 read as: {'; '.join(kinds)}."]
     return lines
 
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    ap.add_argument("--inputs", type=Path, required=True)
+    src = ap.add_mutually_exclusive_group(required=True)
+    src.add_argument("--inputs", type=Path, help="a frozen input list: compute every molecule")
+    src.add_argument("--from-record", type=Path, help="a stored read's JSON: re-read its records")
     ap.add_argument("--out", type=Path, required=True)
+    ap.add_argument("--line-2-rule", choices=sorted(FL.RULES), default=FL.AMENDED.name)
+    ap.add_argument("--direct-min-atoms", type=int, default=None, help="amendment 2: read line 2 directly on the molecules of at least this size")
     a = ap.parse_args(argv)
-    folders = AF.frozen_folders(a.inputs)
-    records = []
-    for n, d in enumerate(folders, 1):
-        records.append(molecule_record(d))
-        if n % PROGRESS_EVERY == 0 or n == len(folders):
-            print(f"  progress {n}/{len(folders)} molecules", flush=True)       # the run spec's progress line
-    res = read(records)
+    if a.from_record:
+        records = json.loads(a.from_record.read_text(encoding="utf-8"))["records"]
+    else:
+        folders = AF.frozen_folders(a.inputs)
+        records = []
+        for n, d in enumerate(folders, 1):
+            records.append(molecule_record(d))
+            if n % PROGRESS_EVERY == 0 or n == len(folders):
+                print(f"  progress {n}/{len(folders)} molecules", flush=True)       # the run spec's progress line
+    res = read(records, FL.RULES[a.line_2_rule], a.direct_min_atoms)
     a.out.parent.mkdir(parents=True, exist_ok=True)
     Path(f"{a.out}.json").write_text(json.dumps({**res, "records": records}, indent=1, ensure_ascii=False), encoding="utf-8")
     lines = report(res)

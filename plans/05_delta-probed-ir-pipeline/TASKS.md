@@ -214,6 +214,10 @@ TASKS 49) and layer T are the first molecules beyond 35 atoms; `PreRegistration_
 with the line-2 rule amended tonight (only values ≥ 1e-6 and ≥ 15 atoms enter the fit; the new molecules read directly too). **Next:**
 the amendment's synthetic test (an exact-fit regime below 15 atoms) and the fit rule in `probes/hybrid_form_floor.py`, before the data; the
 re-read when lever 5's labels are fetched (after ≈ 22–26 Oct + fetch); freeze their inputs first (`architecture_floor.py freeze`).
+**15 Oct 23:4x — built before the data:** amendment 1's fit rule (`floor_lines.FitRule`, `AMENDED`) and, after a post-hoc check showed the
+per-molecule forecast unstable even so (target ring-ip 7,070 cm⁻¹ at 60), amendment 2: line 2 read directly on the ≥ 34-atom molecules
+(`--direct-min-atoms 34`), both forecasts beside (per molecule; pooled bins). `--from-record` re-reads a stored record. Tests 22 → 24.
+Post hoc, no line: binned forecast at 60 — form ring-ip 0.13, target ring-ip 2.6 cm⁻¹ (ratio 0.27).
 68. **The third target, ready before it is needed (15 Oct 21:2x).** If TASKS 66 reads 'line 1 missed, flat', the registered next step is the
 read-out-metric target: the least-squares ΔF for the whole K (what `probes/hybrid_form_floor.py` solves), anchored by a ridge toward the
 projected truth as `m05/rungC_targets.py` anchors the LS target (unanchored LS targets exploded to 1e7–1e10 on 1 Oct). Built now, it costs
@@ -235,6 +239,8 @@ labels for the corpus', ≈ 24–29 Oct); a chain spec + run spec, priced on the
 on the fly and the scale guard may stop the run; the LS cache keys on ΔH, so targets cached on FD labels are recomputed after the merge) and
 `probes/runspecs/chain44.json` (valid, resumable). `rungC_train --sizes half` (= pool // 2, `pool_sizes`, test). **Next:** after the FETCHED
 line of the labels server and a look at the merged corpus: price on the merged corpus, `runspec.py launch probes/runspecs/chain44.json`.
+**15 Oct 23:4x:** weight raised by TASKS 69's post-hoc binned forecast (no line): the projected target may cost ≈ 2.6 cm⁻¹ ring-ip at
+60 atoms — about the whole 2.5 line — while the form costs 0.13.
 65. **The architecture's floor — can rung C's form hold a large molecule's correction? (15 Oct 19:1x; the user: 'Ja, begin maar met de
 registratie. Let extra op codekwaliteit, ook van de Python.')** Why: the size levers bought so far (lever 5, rung 4, the PC question) assume a
 learning error; the head writes pair blocks only within 5 Å, symmetric, diagonal from the sum rule, and nobody measured what that form cannot
