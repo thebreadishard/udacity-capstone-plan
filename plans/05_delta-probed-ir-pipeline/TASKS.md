@@ -217,6 +217,10 @@ pattern f, ΔH = Bᵀ ΔF B); the 5 Å symmetric-block form is the plain equivar
 comparison with chain 39 compared two heads; the announced training comparison is not registered. Dated correction in the registration.
 **Next (proposed to the user):** the same question for the carried head — pattern f's target bound (the projected target it trains; 0.09 on
 hold-out (a) on 1 Oct, `probes/rungC_target_bound_holdouts.py`) against molecule size on the 534 analytic pairs.
+**15 Oct 19:4x — REGISTERED (the user: 'Ja, begin maar met de registratie'):** `GoalGathering/notes/PreRegistration_2026-10-15_Hybrid_Form_Floor.md`
+— the carried head's form floor solved exactly in the read-out's metric (least squares for the whole K over ΔF on pattern f; no compensation
+route) and the trained target's bound, on the same frozen 534; lines as before plus ring-coupling ratio ≥ 0.10 / ≥ 0.15; consequences:
+wider pattern / target comparison / data. **Next:** the script with tests (loader checked against T2.load + substitute), then the read.
 64. **Claude Code hooks for the rules I break by hand (15 Oct 17:3x; the user: 'zet hooks op de takenlijst, want die moeten op termijn ook echt').**
 Persistent configuration in `.claude/settings.json`: built only with the user's word on the concrete hook list. Candidates, each from an
 incident: PreToolUse on Bash refusing (1) a Python or JSON heredoc that carries a backslash (watch.sh 15 Oct, the smoke spec the same evening,
