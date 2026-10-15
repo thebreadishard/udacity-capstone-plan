@@ -213,6 +213,12 @@ function, each with its decision and incident; `# hook-exempt: <reason>` passes 
 picked the settings up live (first entries 17:49). Cost ≈ 0.6 s per tool call (bare python 0.4 s here), plus ruff after an edit. Log:
 `probes/watch_state/hooks.log`. First false alarm seen at once: github_post on 'gh pr create' quoted inside a JSON string.
 **Next (≈ 16 Oct evening):** the log's hits to the user (true / false per rule), tighten the false ones, then `"mode": "enforce"`.
+**15 Oct 18:4x — the cause, tested (the user: 'geen oplossing die ervoor zorgt dat je de heredoc fout gewoon vermijdt?'):** not the
+heredoc. A doubled backslash arrives single in the Bash tool's command in every quoting form (single-quoted printf, quoted and unquoted
+heredoc, `python -c` with a raw string all printed one backslash); Write/Edit keep text exactly. So: no code or file content inside a shell
+command at all — content through Write/Edit, the shell only runs files (memory note rewritten). For the review: replace `heredoc_backslash`
+by a rule that refuses inline code outright (a heredoc feeding an interpreter or a file; a long `python -c`), because the hook sees the
+command after the backslash is gone and a backslash test cannot be reliable.
 63. **One door for long runs: `tools/runspec.py` (15 Oct 17:3x; the user: 'Doe 1 en 2 maar').** Why: the #2702 repro ran 37 h without a
 progress line; the hourly rule had a threshold that needed an estimate, and the job was started by hand. Built: a pydantic `RunSpec` per run in
 `probes/runspecs/<name>.json` (purpose, host, workdir, command, sources, a progress contract — ERE + max gap ≤ 120 min, optional start line —
