@@ -169,9 +169,16 @@ def test_enforce_asks_in_the_documented_shape(tmp_path):
 
 
 def test_an_exemption_passes_a_deny_rule_and_is_logged(tmp_path):
-    cmd = "nohup bash x.sh &  # hook-exempt: a one-off listener the user asked for"
+    cmd = "# hook-exempt: a one-off listener the user asked for\nnohup bash x.sh &"
     r = hook(tmp_path, {"tool_name": "Bash", "tool_input": {"command": cmd}}, "enforce")
     assert r.returncode == 0 and logged(tmp_path)[0]["exempt"].startswith("a one-off listener")
+
+
+def test_a_mention_of_the_exemption_is_not_one(tmp_path):
+    """15 Oct 2026: a commit message describing '# hook-exempt: <reason>' was logged as an exemption."""
+    cmd = "git add -A && git commit -m \"'# hook-exempt: <reason>' passes a deny rule\""
+    r = hook(tmp_path, {"tool_name": "Bash", "tool_input": {"command": cmd}}, "enforce")
+    assert r.returncode == 2 and logged(tmp_path)[0]["exempt"] is None
 
 
 def test_a_quiet_call_is_not_logged_and_a_broken_payload_never_blocks(tmp_path):

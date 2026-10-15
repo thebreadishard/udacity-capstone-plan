@@ -6,7 +6,7 @@ carries its decision and the incident it comes from:
   deny  the call is refused (exit 2; the reason goes back to Claude)
   ask   the user confirms in the app (permissionDecision 'ask')
   post  the call already ran; its problem goes back to Claude (exit 2)
-A Bash or PowerShell command carrying a line '# hook-exempt: <reason>' passes the deny rules; the exemption is logged.
+A Bash or PowerShell command with a line of its own '# hook-exempt: <reason>' passes the deny rules; the exemption is logged.
 
 Mode (tools/hooks/guard_config.json): 'log' records what would have happened and lets everything pass — the first day, to find false alarms;
 'enforce' acts. Every hit is a JSON line in probes/watch_state/hooks.log (git-ignored) in both modes. A crash of the guard exits 1, which
@@ -30,7 +30,7 @@ CONFIG = Path(os.environ.get("GUARD_CONFIG", Path(__file__).with_name("guard_con
 LOG = Path(os.environ.get("GUARD_LOG", PLAN / "probes" / "watch_state" / "hooks.log"))
 SHELLS = ("Bash", "PowerShell")
 EDITS = ("Edit", "Write")
-EXEMPT = re.compile(r"#\s*hook-exempt:\s*(\S.*)")
+EXEMPT = re.compile(r"^[ \t]*#[ \t]*hook-exempt:[ \t]*(\S.*)$", re.M)   # a line of its own, not a mention in a message
 
 
 @dataclass(frozen=True)
