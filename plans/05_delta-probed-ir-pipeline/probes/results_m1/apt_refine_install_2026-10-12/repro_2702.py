@@ -2,6 +2,8 @@
 
 Prints, per case, the max |residual| of the equations solve_withs1 solves (scaled by e_ai, as in the comments on #2702), the wall time of
 solve_mo1, and the cost in operator applications: calls of the Krylov operator and the number of vectors it was applied to (load-independent).
+While solve_mo1 runs, a progress line (operator calls and vectors so far, minutes since its start) at most every PROGRESS_SECONDS: the
+per-root fallback of the 3384 branches applies the operator root by root and can run for days (15 Oct 2026: 37 h without a line).
 
     python repro_2702.py              # all cases (C12H9Cl last: ~1.5 h of solve_mo1 on 4 threads)
     python repro_2702.py --small      # water B3LYP and benzene PBE only (minutes)
@@ -47,6 +49,8 @@ C -1.209 0.698 0.000; H 0.000 2.479 0.000; H 2.147 1.240 0.000; H 2.147 -1.240 0
 H -2.147 -1.240 0.000; H -2.147 1.240 0.000"""
 
 COUNT = {"calls": 0, "vectors": 0}
+PROGRESS_SECONDS = 600
+PROGRESS = {"start": time.time(), "last": time.time()}
 _krylov = lib.krylov
 
 
@@ -58,6 +62,11 @@ def counting_krylov(aop, b, *args, **kwargs):
     def counted(x):
         COUNT["calls"] += 1
         COUNT["vectors"] += 1 if numpy.ndim(x) == 1 else len(x)
+        now = time.time()
+        if now - PROGRESS["last"] >= PROGRESS_SECONDS:
+            PROGRESS["last"] = now
+            print(f"  progress {time.strftime('%F %T')}: {COUNT['calls']} operator calls, {COUNT['vectors']} vectors, "
+                  f"{(now - PROGRESS['start']) / 60:.0f} min into solve_mo1", flush=True)
         return aop(x)
     counted._counted = True
     return _krylov(counted, b, *args, **kwargs)
@@ -107,6 +116,7 @@ for name, molargs, xc, grid in CASES:
     h1ao = hobj.make_h1(mf.mo_coeff, mf.mo_occ)
     COUNT.update(calls=0, vectors=0)
     t0 = time.time()
+    PROGRESS.update(start=t0, last=t0)
     mo1, _ = hobj.solve_mo1(mf.mo_energy, mf.mo_coeff, mf.mo_occ, h1ao)
     t = time.time() - t0
     print(json.dumps({"case": name, "residual": residual(mf, mo1), "solve_mo1_seconds": round(t, 1), "operator_calls": COUNT["calls"],
