@@ -209,6 +209,13 @@ not yet read). *Desk next:* run `qff_noise_diagnosis.py` on every S2 molecule wi
 read, without touching it), to size the torsion share per molecule; then propose a rotor policy (decouple below a frequency, or hindered rotor)
 for S2b/S3, registered before numbers. A grid re-check of styrene's torsion displacements (99/590) would separate grid noise from the large-
 amplitude physics — a few Hessians on `s1`, on the user's word.
+**15 Oct 07:3x the user: 'Doe de roostertoets van styreen maar op hel1-6, als dat geen lopende run schaadt'.** s1 is full (S2's three lanes × 5
+threads, load 16 on 16 vCPU), so `probes/s2_gridcheck_styrene.sh` (deployed sha256 0d1cecfcda550a58, dry run ok) **waits** — remote_launch
+`s2gridcheck` in /root/s2_gridcheck, sleeping — until all 19 S2 molecules have started and fewer than three S2 pipelines run, then computes 13
+Hessians at grid 99/590 (reference + ± of modes 0, 1, 4, 5, 18, 33) on that lane's 5 threads: no running run is slowed. Expected ≈ 17–18 Oct (S2's
+tail). Read with `probes/qff_grid_recheck.py <coarse> <fine>` (test: reproduces the report's routes exactly; the coarse subset is fetched to
+`probes/results_m1/qff_noise_styrene_2026-10-15/G_hess_subset/`); the watch has a row for it (`check_s2gsrv`). Read: route disagreement well
+below 10 at 99/590 → grid noise; still ≈ 10 → the large-amplitude torsion (the rotor policy then matters).
 61. **Rungs 4 and 5 as broad sets (14 Oct 19:4x; the user: 'een trede is niet 1 molecuul … een zo groot mogelijke set'; 'Ja oké' to a
 proposal).** `GoalGathering/notes/Design_2026-10-14_Rungs_4_5_Broad_Sets.md`. Rung 4 is two families wide (fluoranthene 51, pyrene 33); the five
 other four-ring benzenoids (tetracene, chrysene, benz[a]anthracene, benzo[c]phenanthrene, triphenylene) have no row done; rung 5 has 16 rows

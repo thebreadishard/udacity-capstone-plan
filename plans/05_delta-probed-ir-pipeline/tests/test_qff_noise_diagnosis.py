@@ -29,3 +29,17 @@ def test_styrene_noise_sits_on_the_vinyl_torsion():
     assert all(x["j"] == 0 or x["i"] == 0 for x in d["worst"]) and d["lowest_modes"][0] == pytest.approx(39.85, abs=0.01)
     assert d["worst"][0]["disagreement"] == pytest.approx(10.65, abs=0.01)
     assert d["dnu_routes_window_max"] == pytest.approx(1.153, abs=1e-3) and d["decoupling"]["window_max_abs_shift"] == pytest.approx(4.614, abs=1e-3)
+
+
+@pytest.mark.skipif(not (STY / "G_hess_subset" / "ref.json").exists(), reason="styrene's Hessians not here")
+def test_grid_recheck_reproduces_the_report_routes():
+    """probes/qff_grid_recheck.py (15 Oct 2026): with the coarse set given twice, both reads agree and equal the report's own routes."""
+    import qff_grid_recheck as G
+    res = G.recheck(str(STY / "G_hess_subset"), str(STY / "G_hess_subset"))
+    z = np.load(STY / "qff_report.npz")
+    assert res["modes"] == [0, 1, 4, 5, 18, 33]
+    for r in res["pairs"]:
+        assert r["coarse"] == r["fine"]
+        assert r["coarse"]["route_a"] == pytest.approx(z["phi_iijj_route_a"][r["i"], r["j"]], abs=1e-6)
+        assert r["coarse"]["route_b"] == pytest.approx(z["phi_iijj_route_b"][r["i"], r["j"]], abs=1e-6)
+    assert res["max_disagreement"]["coarse"] == pytest.approx(10.65, abs=0.01)

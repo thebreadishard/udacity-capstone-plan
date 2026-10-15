@@ -42,7 +42,7 @@ check_jobs() {
   done < "$JOBS"
 }
 
-lb="" np="" an="" so="" s2o=""; lfails=0; pfails=0; afails=0; sfails=0; s2fails=0
+lb="" np="" an="" so="" s2o="" s2go=""; lfails=0; pfails=0; afails=0; sfails=0; s2fails=0; s2gfails=0
 remote_fail() {   # $1 = host, $2 = rc, $3 = name of the counter variable
   [ "$2" = "3" ] && { echo "ANOMALY $(t): host $1 answers with another machine (re-used IP?) — see tools/hosts.tsv"; exit 1; }
   printf -v "$3" '%d' $(( ${!3} + 1 ))
@@ -118,6 +118,8 @@ check_s1srv() { check_server_run s1 /root/dpir/s1.log S1 '^bash (/root/dpir/)?pr
   '^=== \(S1\) (all settings done|SETTINGS FAILED|[A-Z]+: STOPPED|[A-Z]+: QFF FAILED)' sfails so; }
 check_s2srv() { check_server_run s1 /root/dpir_s2/s2.log S2 '^bash (/root/dpir_s2/)?probes/s2_batch\.sh ' '^=== \(S2\) all done' s2fails s2o \
   '^=== \(S2\) [A-Za-z0-9_]+: (start|done|already done, skipped) '; }
+check_s2gsrv() { check_server_run s1 /root/s2_gridcheck/s2gridcheck.log S2G '^bash /root/dpir_s2/probes/s2_gridcheck_styrene\.sh' \
+  '^=== \(S2G\) styrene grid check done' s2gfails s2go; }   # 15 Oct 2026: styrene's grid check, TASKS 62
 
 check_ci() {   # 13 Oct 2026: six red plan05 runs in a row went unseen for eight hours; a failed run is reported once per commit
   local r
@@ -135,6 +137,7 @@ for i in $(seq 1 "$CYCLES"); do
   check_anchors3
   check_s1srv
   check_s2srv
+  check_s2gsrv
   check_ci
   [ "$i" -lt "$CYCLES" ] && sleep "$SLEEP"
 done
