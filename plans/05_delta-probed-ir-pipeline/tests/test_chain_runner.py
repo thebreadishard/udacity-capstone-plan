@@ -2,6 +2,7 @@
 on the frozen hold-out (b) and keeps everything in module 05's folder; commands never see the runner's stdin; a failing step or a missing declared
 output fails the run with a marker; wait conditions on markers and on result files."""
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -134,3 +135,21 @@ def test_a_changed_spec_does_not_reuse_the_record(tmp_path, capsys):
     assert CR.main([str(_spec(tmp_path, [_cmd(tmp_path, bump, "first")], []))]) == 0
     assert CR.main([str(_spec(tmp_path, [_cmd(tmp_path, bump + "  # changed", "first")], []))]) == 0
     assert count.read_text() == "2" and "the spec changed" in capsys.readouterr().out
+
+
+def test_a_running_step_reports_progress_only_while_its_log_grows(tmp_path, capsys, monkeypatch):
+    """15 Oct 2026 (TASKS 63): the progress marker is the line a run spec's contract counts; a step whose log stands still prints none."""
+    monkeypatch.setattr(CR, "PROGRESS_S", 0.3)
+    grows = "import time\nfor i in range(4):\n    print(i, flush=True); time.sleep(0.4)\n"
+    still = "import time\ntime.sleep(1.5)\n"
+    for label, code in (("grows", grows), ("still", still)):
+        CR.run_step(dict(label=label, argv=[sys.executable, "-c", code], cwd=str(tmp_path), log=str(tmp_path / f"{label}.log")), dict(os.environ),
+                   "T", "1/1")
+    out = capsys.readouterr().out
+    assert "=== (T) progress: grows (1/1) running" in out and "progress: still" not in out
+
+
+def test_a_failing_step_still_raises_with_its_exit_code(tmp_path):
+    with pytest.raises(RuntimeError, match="exit 3"):
+        CR.run_step(dict(label="x", argv=[sys.executable, "-c", "raise SystemExit(3)"], cwd=str(tmp_path), log=str(tmp_path / "x.log")),
+                   dict(os.environ), "T", "1/1")

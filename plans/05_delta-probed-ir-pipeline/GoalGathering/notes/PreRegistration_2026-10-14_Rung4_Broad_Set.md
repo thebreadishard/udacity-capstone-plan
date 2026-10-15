@@ -83,6 +83,20 @@ batch and its wait condition as arguments) in /root/labels/rung4 waits for '=== 
 no Hessians; jobs from `probes/rung4_jobs.py`, start geometry `run_corpus.start_geometry`) and labels them (analytic_hessians.py), four lanes
 × 8 threads. The test family is held out structurally: `corpus/holdout_rung4_test.txt` (30 ids) is read by `E6.splits`, as hold-out (c).
 
+## The read's tools and three clarifications (15 Oct 2026, 18:2x; before any rung-4 label)
+
+Built: `probes/rung4_curve_files.py` (the exclude files from the frozen list, sha256-checked), `probes/rung4_read.py` (lines and rule above),
+`probes/manifest_settled.py` (the wait), chain spec `probes/runs/chain43.json` (dry run: 23 steps — design check, 4 trainings, registry, 12 evaluations, 4 seed means, the read), tests `tests/test_rung4_read_prep.py`.
+No line, threshold or prediction changes. Three places where the text above was not precise enough to be run:
+1. **'Per-family corrected-ω rms'** is the evaluation's per-family read-out `diag_rms[F]` — predicted against true diagonal of the correction in
+   the mode basis, cm⁻¹ — the read-out decision 53 and TASKS 58 use per family. `rungC_eval_saved` has no per-family frequency rms; its
+   overall `corrected_freq_rms` is reported beside per k.
+2. **The test family is not in the exclude files.** Since 15 Oct `E6.splits` holds it out of every pool (`corpus/holdout_rung4_test.txt`),
+   which does what 'tetracene's 30 are in every exclude file' was for; and k = 30 gets no exclude file, because `rungC_train` refuses one
+   none of whose ids is in the pool.
+3. **'Pool 3 merged' means its neutral layer P3.** The cations (P3c) stay out of training: the model has no charge input yet (P3-1), as in
+   chain 41's controls. The chain waits until no P3 or R4 manifest row is left to compute.
+
 ## Outcome
 
 *(empty until the read)*

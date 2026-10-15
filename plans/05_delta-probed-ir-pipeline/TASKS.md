@@ -267,6 +267,14 @@ runner `probes/labels_batch_ccx53.sh` (sha256 2f55e04e954463b2 on the server, dr
 (`corpus/holdout_rung4_test.txt` read by `E6.splits`; the same commit fixed hold-out (c)'s reader, which had taken whole lines with their
 comments as ids). Atlas export knows layer R4. **Expected:** after lever 5 (≈ 22–26 Oct) ≈ 12.6–12.9 CCX53-days → ≈ 7–9 Nov. **Still to build
 before the read:** the k = 0/10/20/30 exclude files and the chain spec; the fetch into `corpus/molecules` with the manifest rows set to done.
+**15 Oct 18:2x — the read is prepared (the user: 'Doe ze alle drie maar').** `probes/rung4_curve_files.py` (k = 0/10/20 exclude files, 120/80/40
+ids; tetracene's 30 to `out/rung4_tetracene.txt`), `probes/rung4_read.py` (line 1, the still-learning rule, q4; refuses a set that lost
+molecules), `probes/manifest_settled.py` (wait: no P3 or R4 row left to compute), chain spec `probes/runs/chain43.json` (dry run 23 steps;
+date fixed so the resume hash holds across days), run spec `probes/runspecs/chain43.json` (valid; NOT launched yet — after the laptop resume of
+runspec runs, TASKS 63 (b)). Three clarifications dated in the registration before any label (per-family read-out = `diag_rms[F]`; test family
+by the structural hold-out, not the exclude files; P3 neutrals only). `chain_runner.py` prints progress while a step's log grows and
+'starting' after its wait. Tests: `tests/test_rung4_read_prep.py` (9), `tests/test_chain_runner.py` (+2). **Still to do at the end of the run:**
+the fetch into `corpus/molecules` with the R4 rows set to done.
 60. **S1-TZ — does the basis of the anharmonic part matter? (registered 14 Oct 18:3x; the user: 'De registratie ... mag je schrijven, maar
 blijf voorzichtig met het gebruiken van benzeen als representant van wat dan ook').** `GoalGathering/notes/PreRegistration_2026-10-14_TZ_Anharmonic_Basis.md`.
 Δ_anh at B3LYP/def2-TZVP (G's grid 75/302) against G on **benzene, naphthalene and acenaphthylene** (sextet, quartet, trio + duo C–H) — benzene

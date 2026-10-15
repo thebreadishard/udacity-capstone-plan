@@ -1,0 +1,27 @@
+{
+ "_about": "Chain 43 = rung 4's learning curve (registered 14 Oct 2026, GoalGathering/notes/PreRegistration_2026-10-14_Rung4_Broad_Set.md; TASKS 61; spec 15 Oct 2026). Chain 34's recipe on the pool with pool 3's neutrals merged (layers A, A2, B, P3; cations P3c out: no charge input yet, P3-1) plus the rung-4 training families at k = 0, 10, 20, 30 rows per family (exclude files from probes/rung4_curve_files.py; k = 30 has none). The tetracene family is held out structurally (E6.splits) and read with --eval-ids-file. Waits until pool 3's neutrals and rung 4 are fetched and merged (no P3 or R4 row left to compute).",
+ "name": "C43",
+ "poll_s": 1800,
+ "wait": [
+  {"kind": "cmd", "argv": ["python", "probes/manifest_settled.py", "P3", "R4"]},
+  {"kind": "cmd", "argv": ["python", "probes/ids_have_labels.py", "modules/05_support_predictor/out/rung4_tetracene.txt"]}
+ ],
+ "steps": [
+  {"kind": "rungc", "chain": "43", "date": "2026-10-15",
+   "note": "chain 43 - rung 4's learning curve on the tetracene family, k = 0/10/20/30 rows per training family; registered 14 Oct 2026; candidate until its read",
+   "eval_args": ["--eval-ids-file", "tetracene=out/rung4_tetracene.txt"],
+   "trainings": [
+    {"prefix": "out/E7_rungC_chain43_k0", "args": ["--sizes", "all", "--pool-layers", "A,A2,B,P3,R4", "--exclude-ids-file", "out/rung4_k0_exclude.txt"]},
+    {"prefix": "out/E7_rungC_chain43_k10", "args": ["--sizes", "all", "--pool-layers", "A,A2,B,P3,R4", "--exclude-ids-file", "out/rung4_k10_exclude.txt"]},
+    {"prefix": "out/E7_rungC_chain43_k20", "args": ["--sizes", "all", "--pool-layers", "A,A2,B,P3,R4", "--exclude-ids-file", "out/rung4_k20_exclude.txt"]},
+    {"prefix": "out/E7_rungC_chain43_k30", "args": ["--sizes", "all", "--pool-layers", "A,A2,B,P3,R4"]}
+   ]},
+  {"kind": "cmd", "label": "rung 4 read", "cwd": "modules/05_support_predictor", "log": "modules/05_support_predictor/out/read_rung4.log",
+   "argv": ["{python}", "../../probes/rung4_read.py",
+            "--k0", "out/E7_rungC_chain43_k0_eval_frozenb_seed0.json", "out/E7_rungC_chain43_k0_eval_frozenb_seed1.json", "out/E7_rungC_chain43_k0_eval_frozenb_seed2.json",
+            "--k10", "out/E7_rungC_chain43_k10_eval_frozenb_seed0.json", "out/E7_rungC_chain43_k10_eval_frozenb_seed1.json", "out/E7_rungC_chain43_k10_eval_frozenb_seed2.json",
+            "--k20", "out/E7_rungC_chain43_k20_eval_frozenb_seed0.json", "out/E7_rungC_chain43_k20_eval_frozenb_seed1.json", "out/E7_rungC_chain43_k20_eval_frozenb_seed2.json",
+            "--k30", "out/E7_rungC_chain43_k30_eval_frozenb_seed0.json", "out/E7_rungC_chain43_k30_eval_frozenb_seed1.json", "out/E7_rungC_chain43_k30_eval_frozenb_seed2.json"]}
+ ],
+ "outputs": ["modules/05_support_predictor/out/read_rung4.json", "modules/05_support_predictor/out/read_rung4.md"]
+}

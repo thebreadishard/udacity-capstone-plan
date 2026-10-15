@@ -21,7 +21,9 @@ unregistered models) → `rungC_eval_saved` per checkpoint on the frozen hold-ou
 `--eval-ids-file T=…`); a training's own "eval_args" replaces the spec's for that training's evaluations (chain 41: each control fold
 reads its own test list, 13 Oct 2026). A training with "labels": "fd" trains without `--use-analytic` (chain 35's half read
 compares the two on one pool, 11 Oct 2026); evaluation always uses the analytic labels, the one yardstick.
-Markers: "armed", "waiting", "<step> done", "run done"; failures: "RUN FAILED at <step>: …". Exit 0 done, 1 failed.
+Markers: "armed", "waiting", "starting", "<step> done", "run done"; failures: "RUN FAILED at <step>: …". Exit 0 done, 1 failed.
+While a step runs, "progress: <step> (i/N) running M min, its log +B bytes" every PROGRESS_S seconds in which the step's log grew (15 Oct 2026,
+TASKS 63: the progress contract of tools/runspec.py; a step whose log stands still prints nothing, so the contract's gap catches a hang).
 Resume (13 Oct 2026): every finished step is recorded in probes/watch_state/chains/<name>.json with a hash of the expanded steps; a relaunch
 (after an app or Windows restart, tools/resume_laptop_jobs.sh) skips the recorded steps while the hash matches, and starts afresh, with a
 marker saying so, when the spec changed. --fresh ignores and removes the record.
@@ -46,6 +48,7 @@ RECIPE_V11 = ["--head", "hybrid", "--aux", "both", "--kring-weight", "0.3", "--k
 BASE = ["--use-analytic", "--pool-layers", "A,A2,B", "--inner-val", "0.15", "--aggregation", "sum"]
 HOLDOUT_B = "corpus/holdout_b_frozen_2026-10-08.txt"
 STATE_DIR = PLAN / "probes" / "watch_state" / "chains"                 # resume records; tests point it at a temporary folder
+PROGRESS_S = 600                                                       # seconds between progress checks of a running step; tests lower it
 
 
 def _p(path: str | Path) -> Path:
@@ -74,7 +77,6 @@ def condition_holds(c: dict) -> bool:
         except (OSError, subprocess.TimeoutExpired):
             return False
         return r.returncode == 0
-    raise ValueError(f"unknown wait kind {c['kind']!r}")
     raise ValueError(f"unknown wait kind {c['kind']!r}")
 
 
@@ -128,15 +130,26 @@ def _resolve(argv: list[str], cwd: Path) -> list[str]:
     return out
 
 
-def run_step(st: dict, env: dict) -> None:
+def run_step(st: dict, env: dict, name: str | None = None, position: str = "") -> None:
+    """Run one step with its output appended to its log; with a name, a progress marker for every PROGRESS_S in which that log grew."""
     cwd = _p(st.get("cwd", PLAN))
     argv = _resolve(st["argv"], cwd) if st.get("glob_args") else st["argv"]
     log = Path(st["log"])                                              # absolute: expand() resolves every log
     log.parent.mkdir(parents=True, exist_ok=True)
     with open(log, "a", encoding="utf-8") as fh:
-        r = subprocess.run(argv, cwd=cwd, stdin=subprocess.DEVNULL, stdout=fh, stderr=subprocess.STDOUT, env=env, check=False)
-    if r.returncode != 0:
-        raise RuntimeError(f"exit {r.returncode} (log {log})")
+        proc = subprocess.Popen(argv, cwd=cwd, stdin=subprocess.DEVNULL, stdout=fh, stderr=subprocess.STDOUT, env=env)
+        size, t0 = log.stat().st_size, time.time()
+        while True:
+            try:
+                rc = proc.wait(timeout=PROGRESS_S)
+                break
+            except subprocess.TimeoutExpired:
+                grown = log.stat().st_size - size
+                if name and grown > 0:
+                    size += grown
+                    marker(name, f"progress: {st['label']} ({position}) running {(time.time() - t0) / 60:.0f} min, its log +{grown} bytes")
+    if rc != 0:
+        raise RuntimeError(f"exit {rc} (log {log})")
 
 
 def steps_hash(steps: list[dict]) -> str:
@@ -198,6 +211,7 @@ def main(argv: list[str] | None = None) -> int:
         marker(name, "waiting")
         while not all(condition_holds(c) for c in waits):
             time.sleep(float(spec.get("poll_s", 600)))
+    marker(name, f"starting: {len(steps)} steps")                     # the line a run spec's start_regex waits for (TASKS 63)
     h = steps_hash(steps)
     if a.fresh:
         (STATE_DIR / f"{name}.json").unlink(missing_ok=True)
@@ -206,12 +220,12 @@ def main(argv: list[str] | None = None) -> int:
         marker(name, "resume record is for other steps (the spec changed) — starting from the first step")
     elif done:
         marker(name, f"resuming: {len(done)} of {len(steps)} steps finished in an earlier run are skipped")
-    for st in steps:
+    for n, st in enumerate(steps, 1):
         if st["label"] in done:
             print(f"({name}) {st['label']} skipped: done in an earlier run {stamp()}", flush=True)
             continue
         try:
-            run_step(st, env)
+            run_step(st, env, name, f"{n}/{len(steps)}")
         except (RuntimeError, OSError) as e:
             marker(name, f"RUN FAILED at {st['label']}: {e}")
             return 1

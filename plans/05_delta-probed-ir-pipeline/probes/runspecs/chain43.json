@@ -1,0 +1,8 @@
+{"name": "chain43", "purpose": "TASKS 61: rung 4's learning curve and its registered read (chain 43)", "host": "laptop",
+ "workdir": "probes/results_m1", "command": "python ../chain_runner.py probes/runs/chain43.json",
+ "sources": [{"local": "probes/chain_runner.py"}, {"local": "probes/manifest_settled.py"}, {"local": "probes/ids_have_labels.py"},
+             {"local": "probes/rung4_read.py"}, {"local": "probes/rungC_eval_saved.py"}, {"local": "probes/rungC_eval_means.py"},
+             {"local": "modules/05_support_predictor/m05/rungC_train.py"}, {"local": "modules/05_support_predictor/m05/design_check.py"}],
+ "progress": {"regex": "^=== \\(C43\\) progress: |^\\(C43\\) .* done ", "max_gap_minutes": 90, "start_regex": "^=== \\(C43\\) starting: "},
+ "marker_regex": "^=== \\(C43\\) (armed|waiting|starting|resuming|RUN FAILED|run done)",
+ "end_regex": "^=== \\(C43\\) run done", "dry_run_args": "--dry-run"}
