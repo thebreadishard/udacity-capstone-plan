@@ -196,7 +196,7 @@ composition (spread 0.04) and was never fitted — ω falls ≈ 2× per decade o
 (a) but 1.47× and noisy on (b) (the coverage gap); a decade (750 → 7,500 at that composition) ≈ 10,700 lane-hours ≈ 111 CCX53-days ≈ €2,290 on the
 labels fit, and needs ≈ 5,200 B / 1,280 A2 rows (3,610 / 605 pending). **Next:** the PC question to the user with this curve; the slope of
 today's carried recipe (chain 34) is unmeasured — one cheap check: chain 34's recipe at 449 beside its 750 (chain 18's 449 took 1,403 s per seed on the laptop, its record; chain 34's recipe untimed at 449).
-59. **The ridge target for the hybrid head, read along a curve (14 Oct 2026; same request; low priority).** Chain 10 (1 Oct) closed 'the ridge
+59. **The ridge target for the hybrid head, read along a curve (14 Oct 2026; same request; ~~low priority~~ RAISED 15 Oct 21:0x: TASKS 65 found the projected target's bound growing with size — ring-ip 0.73 → 1.42 cm⁻¹ from 15–19 to ≥ 28 atoms — while the form holds the correction; read it on the size hold-out too).** Chain 10 (1 Oct) closed 'the ridge
 route for the hybrid head' on one size (750) with seeds spread 0.30–0.44. *Redo when a lane is free:* the hybrid head on the ridge target at
 two more pool sizes, three seeds, with the learning-curve clause; or a dated note that the carried recipe has made the question moot,
 with the reason.
@@ -220,7 +220,11 @@ hold-out (a) on 1 Oct, `probes/rungC_target_bound_holdouts.py`) against molecule
 **15 Oct 19:4x — REGISTERED (the user: 'Ja, begin maar met de registratie'):** `GoalGathering/notes/PreRegistration_2026-10-15_Hybrid_Form_Floor.md`
 — the carried head's form floor solved exactly in the read-out's metric (least squares for the whole K over ΔF on pattern f; no compensation
 route) and the trained target's bound, on the same frozen 534; lines as before plus ring-coupling ratio ≥ 0.10 / ≥ 0.15; consequences:
-wider pattern / target comparison / data. **Next:** the script with tests (loader checked against T2.load + substitute), then the read.
+wider pattern / target comparison / data.
+**15 Oct 21:0x — READ.** The form is not the limit: its floor at ≥ 24 atoms is ring-ip 0.107, coupling ratio 0.017 (lines 1.0 / 0.10), flat
+with size. The trained projected target is, and grows with size: ring-ip 0.73 → 1.42 cm⁻¹, coupling ratio 0.078 → 0.138 from 15–19 to
+≥ 28 atoms (line 1 met: 1.126 / 0.122). Line 2 invalid (my fit rule took numerically-zero floors; forecasts of 10¹⁰). Second branch taken
+with its reason: a target comparison (projected vs ridge) on (a), (b), (s), joined to TASKS 59. Outcome in the registration.
 64. **Claude Code hooks for the rules I break by hand (15 Oct 17:3x; the user: 'zet hooks op de takenlijst, want die moeten op termijn ook echt').**
 Persistent configuration in `.claude/settings.json`: built only with the user's word on the concrete hook list. Candidates, each from an
 incident: PreToolUse on Bash refusing (1) a Python or JSON heredoc that carries a backslash (watch.sh 15 Oct, the smoke spec the same evening,

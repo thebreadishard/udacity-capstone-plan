@@ -72,6 +72,42 @@ molecules, so the floor rises from near zero with size. At ≥ 25 atoms: diagona
 0.03–0.08 (line 1 not met); exponent between 1 and 2, giving at 60 atoms diagonal floors of 0.5–1.5 and a ratio of 0.06–0.15 (line 2 open,
 most likely in the ring couplings). The target bound above the form floor everywhere (it is one point of the form, not the best one).
 
-## Outcome
+## Outcome (15 Oct 2026, 21:0x)
 
-(to be appended)
+Read through `tools/runspec.py` (run `hybrid_floor`, 19:55–21:0x, exit 0) on the frozen 534; `probes/results_m1/hybrid_floor_2026-10-15/`
+(`floor.md`, `floor.json`); line 1's bound 24 atoms (30 molecules). Beside, exploratory and written after the read:
+`probes/hybrid_floor_by_size.py` → `by_size.md`.
+
+**Line 1 (≥ 24 atoms, pooled):**
+
+| read-out | form floor | target bound | line |
+|---|---|---|---|
+| ring-ip | 0.107 | **1.126** | 1.0 cm⁻¹ |
+| other | 0.022 | 0.267 | 1.0 cm⁻¹ |
+| CH-stretch | 0.020 | 0.024 | 1.0 cm⁻¹ |
+| CH-oop | 0.000 | 0.117 | 1.0 cm⁻¹ |
+| ring-coupling ratio | 0.017 | **0.122** | 0.10 |
+
+The form misses line 1 everywhere by a factor of ten or more; the trained target meets it in ring-ip and in the ring couplings.
+
+**Line 2 has no valid reading, for the form or for the target.** The script printed forecasts of 10⁷–10¹² cm⁻¹ at 60 atoms. The cause is
+in this registration, not in the molecules: the fit rule left out only floors that are exactly zero, and on the small molecules the floor is
+numerically zero (74 of the 93 below 15 atoms are below 10⁻⁶ cm⁻¹ for the form), so a straight line in log–log through 10⁻¹⁰ and 10⁻¹ has a
+slope of tens. My prediction said the floor 'rises from near zero', and I did not draw the consequence for the fit. The mechanical verdict
+('the form costs') comes only from these invalid forecasts and is not used.
+
+**What the sizes show (beside, by_size.md):** the pattern has more free entries than K has conditions in every size bin (median 1,483 against
+465 below 15 atoms, 12,597 against 3,321 at 28 or more), so the form fits almost everything; its pooled ring-ip floor stays at or below 0.14
+cm⁻¹ in every bin with no rise (0.008 at 28 or more atoms). The trained target loses more as the molecules grow: ring-ip 0.016 / 0.73 / 0.81 /
+0.87 / 1.42 cm⁻¹ and ring-coupling ratio 0.004 / 0.078 / 0.088 / 0.107 / 0.138 over the bins below 15, 15–19, 20–23, 24–27 and 28 or more atoms.
+
+**Reading:** pattern f is not the limit; the projected target the recipe trains is a limit, a growing one. At 24 or more atoms it costs
+1.1 cm⁻¹ in ring-ip before any learning error — about a tenth of the carried model's error variance there (3.78 cm⁻¹ on chain 39's size
+hold-out, another set), and rising with size. **What follows, the registration's second branch** ('no form line met but a target line met'),
+taken instead of the mechanical first branch for the reason above: a target comparison — projected against the ridge target
+(`--aux-target ls`) — read on hold-outs (a), (b) and the size hold-out. It joins TASKS 59 (the ridge target along a curve, which chain 10
+closed on one size on 1 Oct when the ridge target trained worse at 750 although its bound is lower): the learnability question stays open,
+and this read gives it a size reason. To be registered before it runs; laptop time from about the end of October.
+
+My prediction: right that the form is not the limit at these sizes and that line 1 is not met for it; wrong that the pattern is
+over-constrained above the smallest molecules (it is under-constrained at every size here) and silent on the target, which carries the finding.
