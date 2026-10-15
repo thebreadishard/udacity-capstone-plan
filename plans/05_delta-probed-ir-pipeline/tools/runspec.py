@@ -11,10 +11,14 @@ A run is a spec, probes/runspecs/<name>.json (committed: the launch record), and
   check     what probes/watch.sh runs every ten minutes. Per running run: marker lines, the exit file, the pid, the count of progress lines.
             One line per event on stdout — 'ANOMALY <text>' (a decision is needed), 'MARKER <text>' (news), a final 'QUIET <summary>'. The
             texts are stable while the situation lasts, so the watch's seen file reports each one once.
+  resume    what tools/resume_laptop_jobs.sh runs every 30 minutes (the scheduled task CapstoneResumeJobs): a laptop run whose spec is
+            `resumable` (its command skips finished work), neither ended nor alive in two looks 30 s apart, is relaunched with its log
+            appended. The watch gives a resumable run RESUME_GRACE before it reports it gone, so a restart does not wake the session.
 
     python tools/runspec.py validate probes/runspecs/<name>.json
     python tools/runspec.py launch probes/runspecs/<name>.json
     python tools/runspec.py check
+    python tools/runspec.py resume [--dry-run]
     python tools/runspec.py list
 
 Regexes are POSIX ERE, matched by grep -E where the log lives; Python's \\d, \\s, \\w, \\b and (?...) are refused because grep -E does not
@@ -31,6 +35,7 @@ import shlex
 import shutil
 import subprocess
 import sys
+import time
 from dataclasses import asdict, dataclass, replace
 from datetime import datetime, timedelta
 from pathlib import Path, PurePosixPath
@@ -45,6 +50,8 @@ LAPTOP = "laptop"
 ESTIMATE_OVERRUN = 1.5          # elapsed / estimate at which the run is reported once: an overrun is the moment to read the log
 MARKER_WIDTH = 110              # the width of the watch's other markers
 DRY_RUN_TIMEOUT_S = 900
+RESUME_GRACE = timedelta(minutes=40)   # longer than the resume task's 30 minutes: a resumable run gone for less is the resume's business
+RESUME_SECOND_LOOK_S = 30              # a run is gone only when two looks this far apart both miss it (13 Oct: one ps snapshot missed a runner)
 _NOT_ERE = re.compile(r"\\[dDsSwWbB]|\(\?")
 
 
@@ -95,6 +102,7 @@ class RunSpec(_Frozen):
     dry_run_args: str | None = Field(default=None, description="appended to the command for the dry run before the launch")
     threads: int | None = Field(default=None, ge=1, le=64)
     estimate: Estimate | None = None
+    resumable: bool = Field(default=False, description="laptop only: the command skips finished work, so `resume` may relaunch it")
 
     _check_regex = field_validator("marker_regex", "end_regex")(_ere)
 
@@ -107,6 +115,8 @@ class RunSpec(_Frozen):
             raise ValueError("a server workdir is absolute")
         if on_laptop and any(s.remote for s in self.sources):
             raise ValueError("a laptop run has no remote copies of its sources")
+        if self.resumable and not on_laptop:
+            raise ValueError("resumable is for laptop runs (a server is not restarted under a run)")
         return self
 
 
@@ -124,6 +134,8 @@ class RunState:
     progress_count: int = 0
     progress_seen_at: datetime | None = None  # the last check at which the count changed
     unreachable: int = 0
+    gone_seen_at: datetime | None = None      # a resumable run first seen gone (cleared when it is alive again)
+    relaunches: int = 0
 
     def to_json(self) -> str:
         return json.dumps({k: v.isoformat() if isinstance(v, datetime) else v for k, v in asdict(self).items()}, indent=1)
@@ -171,7 +183,14 @@ def assess(spec: RunSpec, state: RunState, obs: Observation, now: datetime) -> t
             return events + [f"ANOMALY {who} exited 0 without its end line /{spec.end_regex}/"], state
         return events + [f"MARKER {who} ended (exit 0)"], state
     if not obs.alive:
+        if spec.resumable:
+            gone = state.gone_seen_at or now
+            state = replace(state, gone_seen_at=gone)
+            if now - gone < RESUME_GRACE:
+                return events, state                             # the resume task relaunches it
+            return events + [f"ANOMALY {who} gone since {gone:%d %b %H:%M} and not resumed (see probes/watch_state/resume.log)"], state
         return events + [f"ANOMALY {who} gone without an exit file (launched {state.started_at:%d %b %H:%M})"], state
+    state = replace(state, gone_seen_at=None)
 
     if state.phase_started_at is None:                       # still waiting for start_regex
         if not obs.started:
@@ -256,10 +275,10 @@ class Shell:
             r = self._run([self.bash, "-c", '. "$0" && host_ssh "$1" "$2"', (TOOLS / "hosts.sh").as_posix(), host, script], timeout)
         return r.returncode, r.stdout
 
-    def launch_laptop(self, spec: RunSpec) -> tuple[int, str]:
+    def launch_laptop(self, spec: RunSpec, append: bool = False) -> tuple[int, str]:
         n = shlex.quote(spec.name)
         env = f"export OMP_NUM_THREADS={spec.threads} MKL_NUM_THREADS={spec.threads} OPENBLAS_NUM_THREADS={spec.threads}; " if spec.threads else ""
-        wrapped = f"echo $$ > {n}.pid; rm -f {n}.exit; ( {env}{spec.command} ) > {n}.log 2>&1; echo $? > {n}.exit"
+        wrapped = f"echo $$ > {n}.pid; rm -f {n}.exit; ( {env}{spec.command} ) {'>>' if append else '>'} {n}.log 2>&1; echo $? > {n}.exit"
         r = self._run([self.bash, (TOOLS / "launch_outside_app.sh").as_posix(), spec.name, (ROOT / spec.workdir).as_posix(), wrapped])
         return r.returncode, r.stdout + r.stderr
 
@@ -370,6 +389,47 @@ def launch(spec_path: Path, shell: Shell, now: datetime, state_dir: Path = STATE
     return out.strip()
 
 
+# ---------------------------------------------------------------- resume
+
+def _gone(spec: RunSpec, shell: Shell) -> bool:
+    obs = observe(spec, shell)
+    return obs.reachable and not obs.workdir_missing and obs.exit_code is None and not obs.alive
+
+
+def resume(shell: Shell, now: datetime, spec_dir: Path = SPEC_DIR, state_dir: Path = STATE_DIR, dry: bool = False,
+           second_look: float = RESUME_SECOND_LOOK_S) -> list[str]:
+    """Relaunch every resumable laptop run that is gone; one line per run acted on (or that would be, with dry)."""
+    lines = []
+    for path in sorted(spec_dir.glob("*.json")):
+        state = load_state(path.stem, state_dir)
+        if state is None or state.status != "running":
+            continue
+        try:
+            spec = load_spec(path)
+        except ValidationError as e:
+            lines.append(f"{path.stem}: spec invalid, not resumed: {str(e).splitlines()[0]}")
+            continue
+        if spec.host != LAPTOP or not spec.resumable or not _gone(spec, shell):
+            continue
+        time.sleep(second_look)
+        if not _gone(spec, shell):
+            continue
+        if dry:
+            lines.append(f"{spec.name}: gone without an exit file - would relaunch: {spec.command}")
+            continue
+        problems = preflight(spec, shell)
+        if problems:
+            lines.append(f"{spec.name}: NOT relaunched: {'; '.join(problems)}")
+            continue
+        rc, out = shell.launch_laptop(spec, append=True)
+        if rc != 0:
+            lines.append(f"{spec.name}: RELAUNCH FAILED (exit {rc}): {out.strip()[-200:]}")
+            continue
+        save_state(spec.name, replace(state, relaunches=state.relaunches + 1, gone_seen_at=None), state_dir)
+        lines.append(f"{spec.name}: RELAUNCHED (pid {out.strip()}, relaunch {state.relaunches + 1}): {spec.command}")
+    return lines
+
+
 # ---------------------------------------------------------------- check
 
 def check(shell: Shell, now: datetime, spec_dir: Path = SPEC_DIR, state_dir: Path = STATE_DIR) -> list[str]:
@@ -400,6 +460,7 @@ def main(argv: list[str] | None = None) -> int:
     for name in ("validate", "launch"):
         sub.add_parser(name).add_argument("spec", type=Path)
     sub.add_parser("check")
+    sub.add_parser("resume").add_argument("--dry-run", action="store_true")
     sub.add_parser("list")
     a = ap.parse_args(argv)
     shell = Shell()
@@ -421,6 +482,10 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     if a.cmd == "check":
         print("\n".join(check(shell, _now())))
+        return 0
+    if a.cmd == "resume":
+        lines = resume(shell, _now(), dry=a.dry_run)
+        print("\n".join(lines) or "no run to resume")
         return 0
     for path in sorted(SPEC_DIR.glob("*.json")):
         state = load_state(path.stem)

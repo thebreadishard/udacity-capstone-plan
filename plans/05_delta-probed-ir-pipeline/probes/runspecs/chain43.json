@@ -5,4 +5,4 @@
              {"local": "modules/05_support_predictor/m05/rungC_train.py"}, {"local": "modules/05_support_predictor/m05/design_check.py"}],
  "progress": {"regex": "^=== \\(C43\\) progress: |^\\(C43\\) .* done ", "max_gap_minutes": 90, "start_regex": "^=== \\(C43\\) starting: "},
  "marker_regex": "^=== \\(C43\\) (armed|waiting|starting|resuming|RUN FAILED|run done)",
- "end_regex": "^=== \\(C43\\) run done", "dry_run_args": "--dry-run"}
+ "end_regex": "^=== \\(C43\\) run done", "dry_run_args": "--dry-run", "resumable": true}

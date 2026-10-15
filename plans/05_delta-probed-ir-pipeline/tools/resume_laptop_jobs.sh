@@ -8,6 +8,7 @@
 # Then it starts the job's command through tools/launch_outside_app.sh (WMI). Every job resumes by itself (done items are skipped). One line per
 # action and one summary per call go to probes/watch_state/resume.log; a relaunch also goes to probes/watch_state/RELAUNCHED.txt, which
 # state.sh shows. A lock keeps two calls from overlapping. Run by the scheduled task CapstoneResumeJobs at logon and every 30 minutes.
+# Since 15 Oct 2026 it also runs `tools/runspec.py resume` for the runs launched through tools/runspec.py whose spec is resumable (TASKS 63).
 # no-set-e: each job is decided on its own; one failure is logged and the others are still checked
 set -u
 HERE=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
@@ -51,3 +52,10 @@ while IFS=$'\t' read -r name cmd; do
   fi
 done < "$JOBS"
 say "checked $n: $ndone finished, $nrun running, $nrel relaunched$([ "$DRY" = 1 ] && echo ' (dry run)'), $nerr errors"
+RUNSPEC_ARGS=(resume); [ "$DRY" = 1 ] && RUNSPEC_ARGS+=(--dry-run)
+out=$(python "$HERE/runspec.py" "${RUNSPEC_ARGS[@]}" 2>&1); rc=$?
+while IFS= read -r line; do
+  [ -n "$line" ] && say "runspec: $line"
+  case "$line" in *": RELAUNCHED "*) echo "$(t) runspec $line" >> "$STATE/RELAUNCHED.txt" ;; esac
+done <<< "$(printf '%s' "$out" | tr -d '\r')"
+[ "$rc" = 0 ] || say "runspec resume FAILED (exit $rc)"

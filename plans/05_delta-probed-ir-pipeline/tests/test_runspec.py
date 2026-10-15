@@ -167,8 +167,8 @@ class FakeShell:
             return self.rc, "workdir=ok\n" + "".join(f"{h}  {p}\n" for p, h in self.sha.items())
         return self.rc, self.probe_out
 
-    def launch_laptop(self, s):
-        self.launched.append(("laptop", s.name))
+    def launch_laptop(self, s, append=False):
+        self.launched.append(("laptop", s.name, append))
         return 0, "4242"
 
     def launch_remote(self, s, ip):
@@ -188,7 +188,7 @@ def test_launch_records_the_state_and_refuses_a_second_launch(tmp_path):
     sh = FakeShell()
     R.launch(p, sh, T0, tmp_path / "state")
     st = R.load_state("demo", tmp_path / "state")
-    assert sh.launched == [("laptop", "demo")] and st.started_at == T0 and st.phase_started_at == T0 and st.status == "running"
+    assert sh.launched == [("laptop", "demo", False)] and st.started_at == T0 and st.phase_started_at == T0 and st.status == "running"
     with pytest.raises(R.LaunchRefused, match="already running"):
         R.launch(p, sh, T0, tmp_path / "state")
 
@@ -241,3 +241,45 @@ def test_check_reports_a_broken_spec_instead_of_crashing(tmp_path):
     R.save_state("demo", run_state(), state)
     out = R.check(FakeShell(), T0, specs, state)
     assert out[0].startswith("ANOMALY run demo: the check failed: ValidationError") and out[-1] == "QUIET no runs"
+
+
+# ---------------------------------------------------------------- resume after a restart (TASKS 63 (b))
+
+def test_resumable_is_for_the_laptop():
+    with pytest.raises(ValidationError, match="laptop runs"):
+        spec(host="labels", workdir="/root/x", resumable=True)
+
+
+def test_a_resumable_run_gets_the_resume_interval_before_it_is_reported_gone():
+    s, gone = spec(resumable=True), R.Observation(alive=False)
+    ev, st = R.assess(s, run_state(), gone, T0)
+    assert ev == [] and st.gone_seen_at == T0
+    ev, st = R.assess(s, st, gone, T0 + timedelta(minutes=30))
+    assert ev == []
+    ev, _ = R.assess(s, st, gone, T0 + timedelta(minutes=41))
+    assert ev == ["ANOMALY run demo gone since 15 Oct 18:00 and not resumed (see probes/watch_state/resume.log)"]
+    _, st = R.assess(s, st, alive(0), T0 + timedelta(minutes=45))
+    assert st.gone_seen_at is None
+
+
+def test_resume_relaunches_only_a_gone_resumable_laptop_run(tmp_path):
+    specs, state = tmp_path / "specs", tmp_path / "state"
+    for name, over in (("gone", {"resumable": True}), ("plain", {}), ("finished", {"resumable": True})):
+        write_spec(specs, spec(name=name, **over))
+        R.save_state(name, run_state(status="ended" if name == "finished" else "running"), state)
+    sh = FakeShell(probe_out="exit=\nalive=0\nprogress=3\n")
+    assert R.resume(sh, T0, specs, state, dry=True, second_look=0) == ["gone: gone without an exit file - would relaunch: python probes/demo.py"]
+    assert sh.launched == []
+    out = R.resume(sh, T0, specs, state, second_look=0)
+    assert out[0].startswith("gone: RELAUNCHED (pid 4242, relaunch 1)") and sh.launched == [("laptop", "gone", True)]
+    assert R.load_state("gone", state).relaunches == 1
+    assert R.resume(FakeShell(probe_out="exit=\nalive=1\nprogress=3\n"), T0, specs, state, second_look=0) == []
+    assert R.resume(FakeShell(probe_out="exit=0\nalive=0\nprogress=3\n"), T0, specs, state, second_look=0) == []
+
+
+def test_a_relaunch_appends_to_the_log(monkeypatch):
+    calls = []
+    monkeypatch.setattr(R.Shell, "_run", lambda self, args, timeout=120, cwd=None: calls.append(args) or subprocess.CompletedProcess(args, 0, "1", ""))
+    R.Shell("bash").launch_laptop(spec())
+    R.Shell("bash").launch_laptop(spec(), append=True)
+    assert ") > demo.log 2>&1" in calls[0][-1] and ") >> demo.log 2>&1" in calls[1][-1]

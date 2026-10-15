@@ -221,8 +221,8 @@ re-used host, a source that does not compile or whose server copy differs (sha25
 launch_outside_app.sh; `check` (watch row `check_runs`) reports a missing progress line, a vanished run, a bad exit, an overrun of 1.5× the
 estimate, once each. Tests: `tests/test_runspec.py` (31), `tests/test_watch.py` (+1). Smokes 15 Oct: laptop (WMI launch, pid seen alive
 mid-run, end marker, exit 0) and s1 (refused before the copy, dry run, launch, check, end). **Still open:** (a) existing runs keep their
-hand-written watch rows until they end — new runs only through the door; (b) a laptop run started by the door is not yet in
-`tools/laptop_jobs.tsv` (no resume after a reboot); (c) enforcement past my memory is TASKS 64.
+hand-written watch rows until they end — new runs only through the door; (b) ~~no resume after a reboot~~ **done 18:3x**: a `resumable` laptop spec is relaunched by `runspec.py resume`, which
+`tools/resume_laptop_jobs.sh` runs every 30 min; the watch gives it 40 min before 'gone' (smoke: killed, resumed, log appended, exit 0); (c) enforcement past my memory is TASKS 64.
 62. **A rotor policy for the anharmonic step (15 Oct 07:2x; from styrene's noise diagnosis, the user: 'doe stap 1 maar').** VPT2 assumes small
 amplitudes; a rotatable substituent (vinyl, methyl, OH, NH₂, CHO, …) has a torsion of tens of cm⁻¹ that breaks it. Styrene: decoupling its
 40 cm⁻¹ torsion moves window fundamentals by up to 4.6 cm⁻¹ (rms 1.24) — more than its route noise (≤ 1.15). Literature: decouple the torsion
@@ -271,7 +271,7 @@ before the read:** the k = 0/10/20/30 exclude files and the chain spec; the fetc
 ids; tetracene's 30 to `out/rung4_tetracene.txt`), `probes/rung4_read.py` (line 1, the still-learning rule, q4; refuses a set that lost
 molecules), `probes/manifest_settled.py` (wait: no P3 or R4 row left to compute), chain spec `probes/runs/chain43.json` (dry run 23 steps;
 date fixed so the resume hash holds across days), run spec `probes/runspecs/chain43.json` (valid; NOT launched yet — after the laptop resume of
-runspec runs, TASKS 63 (b)). Three clarifications dated in the registration before any label (per-family read-out = `diag_rms[F]`; test family
+runspec runs, TASKS 63 (b)). **18:3x: LAUNCHED through the door** (`runspec.py launch`, resumable; armed 18:38, waiting for P3 and R4 to settle). Three clarifications dated in the registration before any label (per-family read-out = `diag_rms[F]`; test family
 by the structural hold-out, not the exclude files; P3 neutrals only). `chain_runner.py` prints progress while a step's log grows and
 'starting' after its wait. Tests: `tests/test_rung4_read_prep.py` (9), `tests/test_chain_runner.py` (+2). **Still to do at the end of the run:**
 the fetch into `corpus/molecules` with the R4 rows set to done.
