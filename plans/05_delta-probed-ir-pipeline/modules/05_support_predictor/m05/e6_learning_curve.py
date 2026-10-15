@@ -87,13 +87,25 @@ def load_corpus(mdir, analytic_only_ok=False):
 
 TEST_LAYER = "T"   # TASKS 49 (12 Oct 2026): the mandate's four shape molecules as a size test; read with rungC_eval_saved --eval-ids-file
 HOLDOUT_C_FILE = Path(__file__).resolve().parents[1] / "corpus" / "holdout_c.txt"   # pool 3 (decision 54, 3 Oct 2026): frozen ids, one per line
+HOLDOUT_R4_FILE = Path(__file__).resolve().parents[1] / "corpus" / "holdout_rung4_test.txt"   # rung 4's test family (TASKS 61, 15 Oct 2026)
 
 
 def holdout_c_ids() -> set:
     """The frozen hold-out (c) ids (the parents of pool 3's new families; `probes/pool3_candidates.py`), empty when the file is absent."""
     if not HOLDOUT_C_FILE.exists():
         return set()
-    return {ln.strip() for ln in HOLDOUT_C_FILE.read_text(encoding="utf-8").splitlines() if ln.strip() and not ln.startswith("#")}
+    return _frozen_ids(HOLDOUT_C_FILE)
+
+
+def _frozen_ids(path: Path) -> set:
+    """The ids of a frozen hold-out file: one per line, '#' comments and blank lines ignored, text after an id ignored."""
+    return {ln.split()[0] for ln in path.read_text(encoding="utf-8").splitlines() if ln.strip() and not ln.startswith("#")}
+
+
+def holdout_r4_ids() -> set:
+    """Rung 4's test family (tetracene and its 29 children, registration PreRegistration_2026-10-14_Rung4_Broad_Set.md): never trained; read with
+    rungC_eval_saved --eval-ids-file. Empty when the file is absent."""
+    return _frozen_ids(HOLDOUT_R4_FILE) if HOLDOUT_R4_FILE.exists() else set()
 
 
 def holdout_c(mols) -> list:
@@ -110,6 +122,7 @@ def splits(mols):
     test_b = sorted(i for i, m in mols.items() if m["layer"] == "A2" and m["core"] in scaffold_cores)
     held = set(test_a) | set(test_b) | holdout_c_ids()                     # (c) is never trained (pool 3, 3 Oct 2026); read through holdout_c()
     held |= {i for i, m in mols.items() if m["layer"] == TEST_LAYER}       # layer T, the large-PAH size test (TASKS 49), is never trained
+    held |= holdout_r4_ids()                                               # rung 4's test family (TASKS 61) is never trained
     pool = sorted((i for i in mols if i not in held), key=sha)
     return test_a, test_b, scaffold_cores, pool
 

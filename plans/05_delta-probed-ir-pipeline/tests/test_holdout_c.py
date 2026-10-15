@@ -47,3 +47,28 @@ def test_listed_ids_leave_the_pool(tmp_path, monkeypatch):
 def test_worker_geometry_carries_charge_and_multiplicity():
     src = (M05 / "corpus" / "psi4_worker.py").read_text(encoding="utf-8")
     assert re.search(r'"charge": int\(d\["charge"\]\), "multiplicity": int\(d\["multiplicity"\]\)', src)
+
+
+def test_rung4_test_family_never_trained(tmp_path, monkeypatch):
+    """TASKS 61 (15 Oct 2026): ids in the rung-4 test file leave the pool like (c); an absent file changes nothing; the shipped file holds the
+    30 tetracene rows of the frozen list."""
+    monkeypatch.setattr(E6, "HOLDOUT_C_FILE", tmp_path / "none.txt")
+    mols = _mols()
+    mols.update({f"R4_{k:010d}": {"layer": "R4", "core": "tetracene"} for k in range(4)})
+    monkeypatch.setattr(E6, "HOLDOUT_R4_FILE", tmp_path / "absent.txt")
+    assert {"R4_0000000001", "R4_0000000002"} <= set(E6.splits(mols)[3])
+    f = tmp_path / "r4.txt"
+    f.write_text("# test family\nR4_0000000001  # tetracene\nR4_0000000002\n", encoding="utf-8")
+    monkeypatch.setattr(E6, "HOLDOUT_R4_FILE", f)
+    a, b, cores, pool = E6.splits(mols)
+    assert not {"R4_0000000001", "R4_0000000002"} & (set(pool) | set(a) | set(b)) and "R4_0000000003" in pool
+    monkeypatch.undo()
+    shipped = E6.holdout_r4_ids()
+    assert len(shipped) == 30 and all(i.startswith("R4_") for i in shipped)
+
+
+def test_shipped_holdout_c_ids_are_bare_ids():
+    """15 Oct 2026: the shipped holdout_c.txt carries a comment after each id; the reader used the whole line as the id, so no (c) molecule
+    would ever have matched once pool 3 was merged. Every id read from it is now a bare P3 id."""
+    ids = E6.holdout_c_ids()
+    assert ids and all(re.fullmatch(r"P3c?_[0-9a-f]{10}", i) for i in ids)

@@ -34,6 +34,7 @@ SOURCES = {
     "P3": "pool 3, chosen by rule (decision 54): aza four-rings and five-ring systems",
     "P3c": "pool 3, chosen by rule (decision 54): cations of finished parents",
     "G": "proposed by the candidate generator (module 06): a new fused ring system",
+    "R4": "rung 4 of the size ladder, chosen by rule: four-ring families as broad sets (TASKS 61)",
 }
 
 

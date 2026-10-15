@@ -127,6 +127,7 @@ def test_source_per_layer(built):
     new = bc.source_of(dict(layer="G", note="source=generator v0.1+v0.2; list abc; system c1ccncc1; most frequent molecule; pubchem no; rank 2"))
     assert known.endswith("known to PubChem") and new.endswith("not in PubChem")
     assert bc.source_of(dict(layer="C", note="")) == bc.SOURCES["C"]
+    assert bc.source_of(dict(layer="R4", note="rung4 chrysene")) == bc.SOURCES["R4"]          # 15 Oct 2026: rung 4's rows, TASKS 61
     with pytest.raises(KeyError):
         bc.source_of(dict(layer="Z", note=""))
 

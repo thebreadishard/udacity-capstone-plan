@@ -1,0 +1,32 @@
+# Rung 4's test family (TASKS 61; GoalGathering/notes/PreRegistration_2026-10-14_Rung4_Broad_Set.md): tetracene and its 29 children,
+# never trained (E6.splits reads this file); from modules/05_support_predictor/out/rung4_candidates_2026-10-14.csv, sha256 cb854acef18d…
+R4_cc63e78416  # tetracene
+R4_7babf49b58  # tetracene+OH
+R4_029185ca08  # tetracene+ethynyl
+R4_064c8c7bb5  # tetracene+NO2
+R4_50dc5b410d  # tetracene+CN
+R4_42b9890a5f  # tetracene+CH3
+R4_629040f24e  # tetracene+OCH3
+R4_2e9ba76ac3  # tetracene+CHO
+R4_6412802454  # tetracene+SH
+R4_6f81087db4  # tetracene+CF3
+R4_189ebe024d  # tetracene+COOH
+R4_41104962d5  # tetracene+vinyl
+R4_5f804fe870  # tetracene+Cl
+R4_8fac6e81b8  # tetracene+NH2
+R4_024d51a284  # tetracene+CONH2
+R4_14706d9ff5  # tetracene+F
+R4_e5867287b0  # tetracene+OH
+R4_aff59183f7  # tetracene+ethynyl
+R4_45a7b2a6ac  # tetracene+NO2
+R4_6ffe03aa87  # tetracene+CN
+R4_ae2dd64b16  # tetracene+CH3
+R4_b281c0e71a  # tetracene+OCH3
+R4_676799ed3c  # tetracene+CHO
+R4_dd23affa6b  # tetracene+SH
+R4_705c04e865  # tetracene+CF3
+R4_55c0210bcd  # tetracene+COOH
+R4_6a0e8a63c3  # tetracene+vinyl
+R4_61d2609c9e  # tetracene+Cl
+R4_90f0463b9a  # tetracene+NH2
+R4_316054e411  # tetracene+CONH2
