@@ -75,6 +75,38 @@ The form floor is small next to the observed errors at these sizes: ring-ip 0.3�
 CH-oop below 0.3; the cutoff dominates the symmetry restriction; the power-law exponent ≈ 1, giving 0.6–1.5 cm⁻¹ at 60 atoms — line 2 the
 open one.
 
-## Outcome
+## Outcome (15 Oct 2026, 19:2x)
 
-(to be appended)
+Read with `probes/architecture_floor.py` on the frozen 534 (`probes/results_m1/arch_floor_2026-10-15/`: `inputs.tsv`, `floor.md`,
+`floor.json`); line 1's bound came out at 24 atoms (30 molecules). Invariants before the read: an unrestricted oracle returns the correction
+to 1e-12; raw and projected Hessians give the same K to 1.7e-8 cm⁻¹ over all 534.
+
+| family | line 1 (≥ 1.0) | line 2 at 60 atoms (≥ 1.25) | cutoff only | symmetry only |
+|---|---|---|---|---|
+| CH-stretch | 0.70 | **1.39** (0.98–1.89) | 0.05 | 0.70 |
+| CH-oop | 0.90 | **4.00** (1.49–13.4) | 0.90 | 0.00 |
+| ring-ip | **5.58** | **5.62** (4.11–7.58) | 1.49 | 5.41 |
+| other | **10.03** | **7.89** (5.81–10.70) | 3.01 | 9.68 |
+
+By the registered procedure both lines are met (line 1 in ring-ip and other, line 2 in all four families). **The read does not carry the
+meaning the registration gave it.** The registration called the projection oracle 'the floor of perfect local learning' and said it was not
+a strict bound; the numbers show it is not a floor at all. Chain 39's control network — this very form — reads ring-ip 3.78 and other 5.09
+on molecules of ≥ 27 atoms, against FD truth that adds noise; the 'floor' here is 5.6 and 10.0. A floor cannot sit above what a network of
+the form already reaches. The reason is in the read-out: the per-family numbers are the *diagonal of K in the mode basis*, a few hundred
+numbers per molecule, while the form writes thousands of block entries. A network compensates a block it cannot write (an antisymmetric part,
+a pair beyond 5 Å) through the blocks it can, so the element-wise projection overstates what is lost — by far the most for the symmetric-block
+restriction, which carries nearly all of the 'floor' (symmetry only 5.41 of 5.58 in ring-ip).
+
+**What stands:** the cutoff part is small in ring-ip (1.49 by projection, also an overstatement) and in CH-stretch, and in CH-oop it falls
+steeply with the cutoff (0.90 at 5 Å, 0.08 at 8 Å) — the one pattern that reads as a real reach effect. **What does not:** a floor, and
+therefore line 2's forecast for 60 atoms.
+
+**What follows (a departure from the registered consequence, with its reason):** the registration said 'a line met → a model change is
+registered before more data is bought for size'. That consequence assumed the numbers were a floor. On this evidence alone no model change is
+justified. The question remains open and is answered directly, not by a better bound: a registered training comparison on chain 34's recipe
+at one pool size — the head as it is, the head with non-symmetric pair blocks, the head with an 8 Å pair cutoff — read against chain 34 on
+hold-outs (a), (b) and the size hold-out. To be registered before it runs; it needs laptop time that the current jobs hold until about the end
+of October. Until then the size levers stay with data, and the PC question is put without a claim either way about the architecture.
+
+My prediction (small floors, line 1 not met) was wrong in its numbers and right in its conclusion, for a reason I had not foreseen: the
+measure, not the network, was the problem.

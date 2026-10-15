@@ -205,7 +205,13 @@ registratie. Let extra op codekwaliteit, ook van de Python.')** Why: the size le
 learning error; the head writes pair blocks only within 5 Å, symmetric, diagonal from the sum rule, and nobody measured what that form cannot
 hold. Registered: `GoalGathering/notes/PreRegistration_2026-10-15_Architecture_Floor.md` (oracle of the form on the 534 analytic pairs;
 line 1 ≥ 1.0 cm⁻¹ on ≥ 25 atoms, line 2 ≥ 1.25 cm⁻¹ at 60 atoms by a power law, re-read on lever 5's labels; it cannot explain chain 39's
-ratio, said in the registration). **Next:** fetch the server's analytic pairs (id list + sha256 first), the script with tests, the read.
+ratio, said in the registration).
+**15 Oct 19:2x — read.** Both lines met by the procedure (ring-ip 5.58, other 10.03 on ≥ 24 atoms), but the projection is not a floor:
+chain 39's control network of this very form reaches ring-ip 3.78, other 5.09 on ≥ 27 atoms; the diagonal of K can be compensated through
+the blocks the head writes. Almost all of the 'floor' is the symmetric-block restriction; the cutoff part is small except CH-oop (0.90 at 5 Å,
+0.08 at 8 Å). Outcome and the departure from the registered consequence written in the registration. **Next:** register a direct training
+comparison (head as is / non-symmetric pair blocks / 8 Å cutoff) on chain 34's recipe, read on (a), (b) and the size hold-out; laptop time
+from about the end of October.
 64. **Claude Code hooks for the rules I break by hand (15 Oct 17:3x; the user: 'zet hooks op de takenlijst, want die moeten op termijn ook echt').**
 Persistent configuration in `.claude/settings.json`: built only with the user's word on the concrete hook list. Candidates, each from an
 incident: PreToolUse on Bash refusing (1) a Python or JSON heredoc that carries a backslash (watch.sh 15 Oct, the smoke spec the same evening,
