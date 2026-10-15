@@ -200,6 +200,23 @@ today's carried recipe (chain 34) is unmeasured — one cheap check: chain 34's 
 route for the hybrid head' on one size (750) with seeds spread 0.30–0.44. *Redo when a lane is free:* the hybrid head on the ridge target at
 two more pool sizes, three seeds, with the learning-curve clause; or a dated note that the carried recipe has made the question moot,
 with the reason.
+64. **Claude Code hooks for the rules I break by hand (15 Oct 17:3x; the user: 'zet hooks op de takenlijst, want die moeten op termijn ook echt').**
+Persistent configuration in `.claude/settings.json`: built only with the user's word on the concrete hook list. Candidates, each from an
+incident: PreToolUse on Bash refusing (1) a Python or JSON heredoc that carries a backslash (watch.sh 15 Oct, the smoke spec the same evening,
+three times 3–4 Oct), (2) `git add -A`, (3) a long job started past `tools/runspec.py launch` (`nohup`, `& disown`, `setsid`,
+`wsl -e bash -c … python` — the #2702 repro), (4) a write to `probes/watch.sh` while a watch runs (Windows lock); PostToolUse on Edit/Write of
+`.py`/`.sh` running `ruff`/`py_compile`/`bash -n` at once instead of at the commit. Each hook gets a test (a refused and an allowed command).
+**Next:** the list with a draft of each hook to the user.
+63. **One door for long runs: `tools/runspec.py` (15 Oct 17:3x; the user: 'Doe 1 en 2 maar').** Why: the #2702 repro ran 37 h without a
+progress line; the hourly rule had a threshold that needed an estimate, and the job was started by hand. Built: a pydantic `RunSpec` per run in
+`probes/runspecs/<name>.json` (purpose, host, workdir, command, sources, a progress contract — ERE + max gap ≤ 120 min, optional start line —
+markers, end line, dry run, an estimate only with its measured basis); `launch` refuses an invalid spec, a second launch, an unknown or
+re-used host, a source that does not compile or whose server copy differs (sha256), a failed dry run, then starts through remote_launch.sh /
+launch_outside_app.sh; `check` (watch row `check_runs`) reports a missing progress line, a vanished run, a bad exit, an overrun of 1.5× the
+estimate, once each. Tests: `tests/test_runspec.py` (31), `tests/test_watch.py` (+1). Smokes 15 Oct: laptop (WMI launch, pid seen alive
+mid-run, end marker, exit 0) and s1 (refused before the copy, dry run, launch, check, end). **Still open:** (a) existing runs keep their
+hand-written watch rows until they end — new runs only through the door; (b) a laptop run started by the door is not yet in
+`tools/laptop_jobs.tsv` (no resume after a reboot); (c) enforcement past my memory is TASKS 64.
 62. **A rotor policy for the anharmonic step (15 Oct 07:2x; from styrene's noise diagnosis, the user: 'doe stap 1 maar').** VPT2 assumes small
 amplitudes; a rotatable substituent (vinyl, methyl, OH, NH₂, CHO, …) has a torsion of tens of cm⁻¹ that breaks it. Styrene: decoupling its
 40 cm⁻¹ torsion moves window fundamentals by up to 4.6 cm⁻¹ (rms 1.24) — more than its route noise (≤ 1.15). Literature: decouple the torsion

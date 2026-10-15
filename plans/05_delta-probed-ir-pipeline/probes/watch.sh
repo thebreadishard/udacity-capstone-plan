@@ -5,8 +5,9 @@
 #   laptop jobs  — probes/watch_jobs.tsv: each job's markers reported once; a job whose process is gone before its end marker is an anomaly.
 #   rented hosts — tools/hosts.tsv via tools/hosts.sh: the machine-id is checked on every call, so a re-used IP is an anomaly, not a silent read
 #                  of the wrong machine; a host row that is deleted is no longer watched. Labels lanes ('labels'), pool 3 runners ('pool3').
+#   specced runs — since 15 Oct 2026 every run launched through tools/runspec.py (probes/runspecs/): its progress contract is checked there.
 # The seen markers live in the plan (probes/watch_state/seen.txt, git-ignored), not in a session's scratchpad.
-# Overridable for tests: WATCH_JOBS, WATCH_SEEN, WATCH_CYCLES, WATCH_SLEEP, HOSTS_FILE, HOSTS_SSH.
+# Overridable for tests: WATCH_JOBS, WATCH_SEEN, WATCH_CYCLES, WATCH_SLEEP, HOSTS_FILE, HOSTS_SSH, RUNSPEC_DIR, RUNSPEC_STATE, RUNSPEC_PYTHON.
 #   bash probes/watch.sh
 set -uo pipefail
 # no-set-e: every check decides its own exit
@@ -42,7 +43,7 @@ check_jobs() {
   done < "$JOBS"
 }
 
-lb="" np="" an="" so="" s2o="" s2go="" l5o="" r4o=""; lfails=0; pfails=0; afails=0; sfails=0; s2fails=0; s2gfails=0; l5fails=0; r4fails=0
+lb="" np="" an="" so="" s2o="" s2go="" l5o="" r4o="" ro=""; lfails=0; pfails=0; afails=0; sfails=0; s2fails=0; s2gfails=0; l5fails=0; r4fails=0
 remote_fail() {   # $1 = host, $2 = rc, $3 = name of the counter variable
   [ "$2" = "3" ] && { echo "ANOMALY $(t): host $1 answers with another machine (re-used IP?) — see tools/hosts.tsv"; exit 1; }
   printf -v "$3" '%d' $(( ${!3} + 1 ))
@@ -125,6 +126,25 @@ check_l5srv() { check_server_run labels /root/labels/large_pah/run.log L5 '^bash
 check_r4srv() { check_server_run labels /root/labels/rung4/run.log R4 '^bash /root/labels/labels_batch_ccx53\.sh /root/labels/rung4 ' \
   '^=== \(R4\) (all done|STOPPED)' r4fails r4o; }   # 15 Oct 2026: rung 4 (TASKS 61), waits for lever 5's end
 
+check_runs() {   # 15 Oct 2026 (TASKS 63): the runs of tools/runspec.py. Its ANOMALY and MARKER texts stay the same while a situation lasts,
+  # so each is reported once through the seen file; QUIET is the summary for the quiet line. A crash of the check is itself reported once.
+  local out rc line
+  out=$("${RUNSPEC_PYTHON:-python}" "$P/tools/runspec.py" check 2>&1); rc=$?
+  out=$(printf '%s' "$out" | tr -d '\r')   # Windows python ends lines with CR LF; the seen file must see the same text twice
+  if [ "$rc" != "0" ]; then
+    new_marker "runspec check failed: $(echo "$out" | tail -n 1 | cut -c1-80)" > /dev/null && { echo "ANOMALY $(t): tools/runspec.py check exit $rc - $(echo "$out" | tail -n 1)"; exit 1; }
+    return 0
+  fi
+  while IFS= read -r line; do
+    case "$line" in
+      "ANOMALY "*) new_marker "${line#ANOMALY }" > /dev/null && { echo "ANOMALY $(t): ${line#ANOMALY }"; exit 1; } ;;
+      "MARKER "*) new_marker "${line#MARKER }" && exit 2 ;;
+      "QUIET "*) ro=${line#QUIET } ;;
+    esac
+  done <<< "$out"
+  return 0
+}
+
 check_ci() {   # 13 Oct 2026: six red plan05 runs in a row went unseen for eight hours; a failed run is reported once per commit
   local r
   r=$(gh run list -R thebreadishard/udacity-capstone-plan --workflow plan05 --limit 1 --json status,conclusion,headSha         --jq '.[0] | "\(.status) \(.conclusion) \(.headSha[:8])"' 2>/dev/null) || return 0      # offline or gh missing: no verdict
@@ -144,8 +164,9 @@ for i in $(seq 1 "$CYCLES"); do
   check_s2gsrv
   check_l5srv
   check_r4srv
+  check_runs
   check_ci
   [ "$i" -lt "$CYCLES" ] && sleep "$SLEEP"
 done
-echo "quiet cycle $(t): labels ${lb:-—} | pool3 ${np:-—} | anchors3 $(echo "${an:-—}" | tail -n 1 | cut -c1-80) | s1 $(echo "${so:-—}" | tail -n 1 | cut -c1-60) | s2 $(echo "${s2o:-—}" | tail -n 1 | cut -c1-60)"
+echo "quiet cycle $(t): labels ${lb:-—} | pool3 ${np:-—} | anchors3 $(echo "${an:-—}" | tail -n 1 | cut -c1-80) | s1 $(echo "${so:-—}" | tail -n 1 | cut -c1-60) | s2 $(echo "${s2o:-—}" | tail -n 1 | cut -c1-60) | runs ${ro:-—}"
 exit 0

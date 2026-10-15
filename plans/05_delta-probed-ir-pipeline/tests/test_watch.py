@@ -4,6 +4,8 @@ read of the wrong machine."""
 import os
 import shutil
 import subprocess
+import sys
+from datetime import datetime, timedelta
 from pathlib import Path
 
 import pytest
@@ -20,7 +22,8 @@ def _run(tmp: Path, jobs: str, hosts: str = "", ssh_out: str = "") -> subprocess
     stub = tmp / "ssh_stub.sh"                                        # stands in for ssh: prints a machine-id line and the remote output
     stub.write_text(f"#!/usr/bin/env bash\ncat '{(tmp / 'ssh_out.txt').as_posix()}'\n", encoding="utf-8", newline="\n")
     env = dict(os.environ, WATCH_JOBS=str(tmp / "jobs.tsv"), WATCH_SEEN=str(tmp / "seen.txt"), WATCH_CYCLES="1", WATCH_SLEEP="0",
-               HOSTS_FILE=str(tmp / "hosts.tsv"), HOSTS_SSH=f"bash {stub.as_posix()}")   # not BASH: its path may hold a space
+               HOSTS_FILE=str(tmp / "hosts.tsv"), HOSTS_SSH=f"bash {stub.as_posix()}",   # not BASH: its path may hold a space
+               RUNSPEC_ROOT=str(tmp), RUNSPEC_DIR=str(tmp / "specs"), RUNSPEC_STATE=str(tmp / "runstate"), RUNSPEC_PYTHON=sys.executable)
     return subprocess.run([BASH, (PLAN / "probes" / "watch.sh").as_posix()], env=env, capture_output=True, text=True, timeout=120, check=False)
 
 
@@ -49,3 +52,26 @@ def test_reused_ip_is_an_anomaly(tmp_path):
     assert r.returncode == 1 and "another machine" in r.stdout
     r = _run(tmp_path, "", hosts, ssh_out="aaaa\nlanes 4 ok 1 failed 0 done 0")
     assert r.returncode == 0 and "lanes 4 ok 1" in r.stdout
+
+
+def test_a_specced_run_that_vanished_wakes_once(tmp_path):
+    """15 Oct 2026 (TASKS 63): a run of tools/runspec.py whose process is gone without an exit file is one ANOMALY through the watch, then
+    quiet while nothing changes; the quiet line names the run. (The progress gap itself is tested in test_runspec.py.)"""
+    pytest.importorskip("pydantic")
+    sys.path.insert(0, str(PLAN / "tools"))
+    import runspec as R
+    work = tmp_path / "w"
+    work.mkdir()
+    (work / "demo.log").write_text("  progress 1\n", encoding="utf-8", newline="\n")
+    spec = R.RunSpec.model_validate(dict(name="demo", purpose="TASKS 63 watch test", host="laptop", workdir="w", command="true",
+                                         sources=[{"local": "tools/stamp.py"}], progress={"regex": "^  progress ", "max_gap_minutes": 30}))
+    (tmp_path / "specs").mkdir()
+    (tmp_path / "specs" / "demo.json").write_text(spec.model_dump_json(), encoding="utf-8")
+    long_ago = datetime.now().astimezone() - timedelta(hours=2)
+    R.save_state("demo", R.RunState(started_at=long_ago, phase_started_at=long_ago, progress_count=1, progress_seen_at=long_ago),
+                 tmp_path / "runstate")
+    (work / "demo.pid").write_text("999999\n", encoding="utf-8")       # no such process: gone without an exit file
+    r = _run(tmp_path, "")
+    assert r.returncode == 1 and "run demo gone without an exit file" in r.stdout
+    r = _run(tmp_path, "")
+    assert r.returncode == 0 and "runs demo 1 lines" in r.stdout

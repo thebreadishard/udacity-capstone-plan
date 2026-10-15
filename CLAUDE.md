@@ -31,6 +31,8 @@ writing before the assertions pass — that emptied a probe script on 14 Septemb
 - A timer here is a Monitor process, not a cron job. `CronList` and the scheduled-task list being empty
   proves nothing — look in `ps -ef`.
 - Compile-check and dry-run every script a queued job will run. Smoke-test on water before the real run.
+- Since 15 October 2026 every run is launched through `tools/runspec.py launch probes/runspecs/<name>.json`: the spec names the log lines
+  that prove progress and how long they may stay away, whatever the run's expected length (the #2702 repro ran 37 h without one).
 
 ## Committing
 Never `git add -A`: the run directories are written live and `results_vpt2/benzene_vpt2_psi4.out` is
