@@ -200,6 +200,12 @@ today's carried recipe (chain 34) is unmeasured — one cheap check: chain 34's 
 route for the hybrid head' on one size (750) with seeds spread 0.30–0.44. *Redo when a lane is free:* the hybrid head on the ridge target at
 two more pool sizes, three seeds, with the learning-curve clause; or a dated note that the carried recipe has made the question moot,
 with the reason.
+65. **The architecture's floor — can rung C's form hold a large molecule's correction? (15 Oct 19:1x; the user: 'Ja, begin maar met de
+registratie. Let extra op codekwaliteit, ook van de Python.')** Why: the size levers bought so far (lever 5, rung 4, the PC question) assume a
+learning error; the head writes pair blocks only within 5 Å, symmetric, diagonal from the sum rule, and nobody measured what that form cannot
+hold. Registered: `GoalGathering/notes/PreRegistration_2026-10-15_Architecture_Floor.md` (oracle of the form on the 534 analytic pairs;
+line 1 ≥ 1.0 cm⁻¹ on ≥ 25 atoms, line 2 ≥ 1.25 cm⁻¹ at 60 atoms by a power law, re-read on lever 5's labels; it cannot explain chain 39's
+ratio, said in the registration). **Next:** fetch the server's analytic pairs (id list + sha256 first), the script with tests, the read.
 64. **Claude Code hooks for the rules I break by hand (15 Oct 17:3x; the user: 'zet hooks op de takenlijst, want die moeten op termijn ook echt').**
 Persistent configuration in `.claude/settings.json`: built only with the user's word on the concrete hook list. Candidates, each from an
 incident: PreToolUse on Bash refusing (1) a Python or JSON heredoc that carries a backslash (watch.sh 15 Oct, the smoke spec the same evening,
