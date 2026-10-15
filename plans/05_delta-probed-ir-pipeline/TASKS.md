@@ -66,7 +66,7 @@ are free (rebalanced 14 Oct 20:02 on the user's word: the last 13 of a's neutral
 
 | task | why | what is needed | when |
 |---|---|---|---|
-| Analytic labels for the corpus (registration 1, chain 35) — **the user said yes (5 Oct 07:5x)**; **no longer waiting: starts by itself on the anthracene CCX53 when the MP2 queue ends (pipeline step P3, ≈ 19:00 7 Oct)** | 811 molecules with FD labels only; price re-measured from step 3: ≈ 8–10 days on four 8-thread lanes, ≈ €165–205 (`Design_2026-10-05_Analytic_Labels_and_Stepping_Stone.md`) | **5 Oct 08:1x: the dedicated-vCPU limit is 32/32 (the anthracene CCX53) — no second CCX53 today; plan: the labels run on the anthracene server itself once its chain has finished and the full fetch is on record (pyscf env qc05 is there; the bootstrap skips what exists).** Then `probes/bootstrap_labels_ccx53.sh <ip>` (env, inputs, the benzene gate ≤ 1e-6, four lanes), `probes/labels_watch.sh` armed, `probes/fetch_labels_ccx53.sh` at the end; delete only after FETCHED | **running since 7 Oct ≈ 21:00 (gate PASS 1.7e-11); smallest first since 8 Oct 07:1x, half read ≈ 12–14 Oct, full labels ≈ 24–29 Oct — row 12**; then chain 35 (other-low 3.2 → ≤ 2.5 registered, at the full read) |
+| Analytic labels for the corpus (registration 1, chain 35) — **the user said yes (5 Oct 07:5x)**; **no longer waiting: starts by itself on the anthracene CCX53 when the MP2 queue ends (pipeline step P3, ≈ 19:00 7 Oct)** | 811 molecules with FD labels only; price re-measured from step 3: ≈ 8–10 days on four 8-thread lanes, ≈ €165–205 (`Design_2026-10-05_Analytic_Labels_and_Stepping_Stone.md`) | **5 Oct 08:1x: the dedicated-vCPU limit is 32/32 (the anthracene CCX53) — no second CCX53 today; plan: the labels run on the anthracene server itself once its chain has finished and the full fetch is on record (pyscf env qc05 is there; the bootstrap skips what exists).** Then `probes/bootstrap_labels_ccx53.sh <ip>` (env, inputs, the benzene gate ≤ 1e-6, four lanes), `probes/labels_watch.sh` armed, `probes/fetch_labels_ccx53.sh` at the end; delete only after FETCHED | **running since 7 Oct ≈ 21:00 (gate PASS 1.7e-11); smallest first since 8 Oct 07:1x, half read ≈ 12–14 Oct, full labels ≈ 24–29 Oct — row 12**; then chain 35 (other-low 3.2 → ≤ 2.5 registered, at the full read); **since 15 Oct 21:2x also the precondition of TASKS 66** (the target comparison trains and reads on analytic labels) |
 | CFOUR for the anchors — a conversation with the supervisor (the user, 5 Oct 07:3x; **brief written 08:0x: `GoalGathering/notes/Supervisor_Brief_CFOUR_2026-10-05.md`, English and Dutch, 130 words**) | pyscf has no analytic CCSD(T) second derivatives and we will not write them (months, high risk); CFOUR has them and is free for academic use on request; it would give anchor Hessians without finite differences and a check of our FD route on benzene | the user asks the supervisor (November meeting or earlier by mail, ≤ 150 words: what we have, what CFOUR would add, whether the group has or can get a licence); I prepare the one-paragraph brief on request. **6 Oct 08:0x:** the user mailed her a short progress message ("ik denk dat het gaat lukken", the proof of principle with the 750/10 numbers, five anchors) and proposed a Wednesday in Weesp — CFOUR and the Snellius question go to that meeting | her reply; the Weesp date |
 | Module 02 — the rubric's repository name at submission | Task 2 requires a repository named `ai-programming-foundations-project` with at least two branches; checked 5 Oct 07:5x: the old repository of that name was already renamed to `draft-qm9-foundations-unsubmitted` (June draft, never handed in), so the name is free (the user: the school's name is the name) | the user creates it from the module folder when submitting (two branches); nothing to prepare | at submission |
 | Hetzner credit | 5 Oct (the user): credit €30.59, usage €83.19; billing at the start of November; the September invoice is paid — not urgent | the user raises if the labels server pushes usage past the credit before November; I report the running usage in the morning summary | November |
@@ -200,6 +200,38 @@ today's carried recipe (chain 34) is unmeasured — one cheap check: chain 34's 
 route for the hybrid head' on one size (750) with seeds spread 0.30–0.44. *Redo when a lane is free:* the hybrid head on the ridge target at
 two more pool sizes, three seeds, with the learning-curve clause; or a dated note that the carried recipe has made the question moot,
 with the reason.
+71. **The odds after the target comparison (15 Oct 21:2x; the user: 'zet alle stappen op de takenlijst die nodig zijn om het project een succes
+te laten zijn met deze nieuwe kennis').** TASKS 65 changed what the size odds rest on: the form is not a wall, the trained target is a
+growing loss. No odds moved on a desk finding. **Next:** when TASKS 66 is read, re-estimate size (50), mandate (39) and T1 (75) with the
+read as evidence, in the ledger, and tell the user what moved and why.
+70. **The PC question, with tonight's evidence (15 Oct 21:2x).** The user decides; I bring: data still pays at fixed composition (TASKS 58:
+≈ 2× per decade of data, a decade ≈ €2,290 rental against the PC's ≈ €2,329 alternate configuration), the head's form does not limit large
+molecules (TASKS 65), and the cheapest lever now is the target (TASKS 66, laptop hours, no purchase). My advice to give with it: decide the
+PC on its own merits (compute for data, which still pays), not as the answer to the size penalty, which has a cheaper first lever.
+**Next:** put to the user with the TASKS 58 curve and the TASKS 65 table — the user's timing.
+69. **Re-read the floor and the target bound on the large PAHs (registered re-read, 15 Oct 21:2x).** Lever 5's analytic labels (34–60 atoms,
+TASKS 49) and layer T are the first molecules beyond 35 atoms; `PreRegistration_2026-10-15_Hybrid_Form_Floor.md` registers their re-read
+with the line-2 rule amended tonight (only values ≥ 1e-6 and ≥ 15 atoms enter the fit; the new molecules read directly too). **Next:**
+the amendment's synthetic test (an exact-fit regime below 15 atoms) and the fit rule in `probes/hybrid_form_floor.py`, before the data; the
+re-read when lever 5's labels are fetched (after ≈ 22–26 Oct + fetch); freeze their inputs first (`architecture_floor.py freeze`).
+68. **The third target, ready before it is needed (15 Oct 21:2x).** If TASKS 66 reads 'line 1 missed, flat', the registered next step is the
+read-out-metric target: the least-squares ΔF for the whole K (what `probes/hybrid_form_floor.py` solves), anchored by a ridge toward the
+projected truth as `m05/rungC_targets.py` anchors the LS target (unanchored LS targets exploded to 1e7–1e10 on 1 Oct). Built now, it costs
+no laptop time and saves a week if needed. **Next:** `rungC_targets.py` gains the target with its cache and scale guard; tests: exact inside
+the form, bounded on a redundant molecule, equal to the floor's fit at λ → 0; a `--aux-target kfit` switch in `rungC_train.py` with its test.
+Not trained before TASKS 66 is read.
+67. **Two process steps from tonight's slips (15 Oct 21:2x).** (1) A registration's read script and a test on synthetic records with the
+regime's edge cases (zeros, identical arms, noise, missing seeds, two regimes) are written and run **before** the registration is committed —
+the first line-2 rule would have failed such a test. (2) A claim about 'the model' names the head that runs and reads it from the carried
+recipe (`chain_runner.RECIPE_V11` / the record's provenance), with a test where it matters (`tests/test_hybrid_form_floor.py` does this).
+Written into CLAUDE.md (Evidence). **Next:** none beyond keeping them; the hook review (TASKS 64) checks whether a third mechanism helps.
+66. **The target comparison: projected against ridge, where the molecules are large (registered 15 Oct 21:2x; the user, 21:1x: 'Registreer
+de doelvergelijking maar').** Why: TASKS 65 — the projected target loses 1.13 cm⁻¹ ring-ip at ≥ 24 atoms and more with size; the ridge target's
+bound is lower but trained worse at 750 on 1 Oct. Registration `GoalGathering/notes/PreRegistration_2026-10-15_Target_Comparison.md`; read
+`probes/target_comparison_read.py` (tests on synthetic records first: `tests/test_target_comparison_read.py`, 8). Arms P / R × setting C (size
+split at 27, full and half pool) and F (full pool), 3 seeds: 18 trainings. **Before the launch:** the analytic labels merged (row 'Analytic
+labels for the corpus', ≈ 24–29 Oct); a chain spec + run spec, priced on the merged corpus (chain 39's control: 979–1,100 s per seed, 9 Oct).
+**Next:** the chain spec and its dry run while the labels finish; launch after the merge; read; outcome; TASKS 71.
 65. **The architecture's floor — can rung C's form hold a large molecule's correction? (15 Oct 19:1x; the user: 'Ja, begin maar met de
 registratie. Let extra op codekwaliteit, ook van de Python.')** Why: the size levers bought so far (lever 5, rung 4, the PC question) assume a
 learning error; the head writes pair blocks only within 5 Å, symmetric, diagonal from the sum rule, and nobody measured what that form cannot

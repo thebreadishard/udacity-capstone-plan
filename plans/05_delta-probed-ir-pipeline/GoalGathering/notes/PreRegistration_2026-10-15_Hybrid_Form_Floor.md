@@ -111,3 +111,12 @@ and this read gives it a size reason. To be registered before it runs; laptop ti
 
 My prediction: right that the form is not the limit at these sizes and that line 1 is not met for it; wrong that the pattern is
 over-constrained above the smallest molecules (it is under-constrained at every size here) and silent on the target, which carries the finding.
+
+## Amendment (15 Oct 2026, 21:2x) — line 2's fit rule for the registered re-read on lever 5's large-PAH labels, before those data exist
+
+The outcome found line 2 unreadable: the fit took numerically-zero floors from the exact-fit regime. For the re-read (lever 5's 34–60-atom
+labels and layer T, same script) line 2 is read as follows, fixed now: a molecule enters a read-out's fit only if its value is ≥ 1e-6 (cm⁻¹,
+or the ratio) **and** it has ≥ 15 atoms; the power law is fitted to the 15-atom-and-larger part of the frozen 534 together with the new
+molecules and evaluated at 60 atoms; the lines (1.25 cm⁻¹ / 0.15) are unchanged. The new molecules are also read directly — pooled, by the
+same bins — beside the forecast, since at 34–60 atoms the forecast is no longer needed. A synthetic test with an exact-fit regime below 15
+atoms is written with the change, before the re-read.

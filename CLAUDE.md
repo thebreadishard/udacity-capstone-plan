@@ -53,6 +53,9 @@ lambda because `Gradients(mycc).kernel()` looked right and its pair checks passe
 - **A new library call in a production path cites the upstream test or example that makes the same call**, by
   file name, in the launch note or the ledger entry. pyscf's own `grad/test/test_ccsd_t.py` showed the correct
   usage the whole time; five minutes of reading against three lost days.
+- **A registration's read script runs on synthetic records with the regime's edge cases before the registration is committed** (15 Oct
+  2026: a line-2 fit through numerically-zero floors forecast 10¹⁰ cm⁻¹). **A claim about 'the model' names the head that runs**, read
+  from the carried recipe, not from memory (the same evening a floor test analysed a head the recipe does not use).
 - **"Validated" is written only with the number and the counterpart**: not "validated on benzene" but "gradient
   against finite differences of the energy on water, 1e-7". A validation claim without a number counts as not done,
   and a later reader (including a later session of me) may not build on it.
