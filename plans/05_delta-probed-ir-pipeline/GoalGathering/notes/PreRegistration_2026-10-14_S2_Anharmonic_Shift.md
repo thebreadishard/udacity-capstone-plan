@@ -98,6 +98,17 @@ The learning-curve subsets are drawn with numpy `default_rng(0)` in the order k,
 End-to-end dry run on S1's G/R/B benzene directories posing as three scaffolds (numbers meaningless by construction) and one missing
 molecule, which the read names as excluded.
 
+## Note (15 Oct 2026, 07:2x) — why styrene tripped the noise guard; a diagnosis of an excluded molecule, not a read
+
+Styrene (A_8f6ed7c002) is excluded by the noise rule (route disagreement 10.7 cm⁻¹ against 10). `probes/qff_noise_diagnosis.py` on its report
+(`probes/results_m1/qff_noise_styrene_2026-10-15/`; the script reproduces the report's ν exactly): all five worst constants couple mode 0, the
+vinyl torsion (40 cm⁻¹, out-of-plane share 1.00, 77 % on the vinyl atoms) — with modes at 449, 1,714 (vinyl C=C), 1,038, 450 and 208 cm⁻¹.
+Swapping route a for route b moves the window's fundamentals by at most 1.15 cm⁻¹ (rms 0.30). The literature's remedy for a large-amplitude
+torsion — the mode decoupled from VPT2 (V30 benchmark's VPT2+R; HDCPT2's hindered rotors) — moves them by up to **4.6 cm⁻¹ (rms 1.24)**: how the
+torsion is treated weighs more than the noise the guard saw, and the same holds, in some measure, for the molecules with rotatable
+substituents that passed it. S2's read is unchanged (styrene stays excluded, nothing else is touched); a rotor policy is a question for the next
+registration (TASKS 62).
+
 ## Outcome
 
 *(appended after the run)*
