@@ -11,6 +11,7 @@ Library:  from patch_file import patch, append, insert_after_line
                                               # (controls=True to allow; append and insert_after_line take it too)
     append(path, text)                        # text after the file's last non-empty line
     insert_after_line(path, needle, text)     # after the single line that contains needle
+    patch_many({path: [(old, new), ...], ...})  # every anchor in every file checked before any file is written
 CLI:      python patch_file.py <target> <edits.json>     with [{"old": "...", "new": "..."}, ...]   (exit 1 and no write if any anchor fails)
 """
 import json
@@ -34,7 +35,8 @@ def _check_controls(path, new, old=""):
         raise AssertionError(f"{path}: new text carries control characters {bad} (a mangled escape?); pass controls=True if intended")
 
 
-def patch(path, edits, count=1, controls=False):
+def _patched(path, edits, count=1, controls=False):
+    """The text of `path` with `edits` applied, after every check; raises before anything is written."""
     if not controls:
         for old, new in edits:
             _check_controls(path, new, old)
@@ -44,8 +46,21 @@ def patch(path, edits, count=1, controls=False):
         raise AssertionError(f"{path}: anchors not matching exactly {count} time(s): {problems}")
     for old, new in edits:
         text = text.replace(old, new)
-    _write(path, text)
+    return text
+
+
+def patch(path, edits, count=1, controls=False):
+    _write(path, _patched(path, edits, count, controls))
     return len(edits)
+
+
+def patch_many(plan, count=1, controls=False):
+    """{path: edits}: every file's anchors are checked and every new text built before the first file is written (15 Oct 2026: a four-file
+    patch wrote three files and stopped at the fourth). Returns the number of edits."""
+    texts = {path: _patched(path, edits, count, controls) for path, edits in plan.items()}
+    for path, text in texts.items():
+        _write(path, text)
+    return sum(len(e) for e in plan.values())
 
 
 def append(path, text, controls=False):

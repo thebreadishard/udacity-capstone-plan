@@ -53,3 +53,15 @@ def test_control_characters_from_a_mangled_escape_are_refused(tmp_path):
     pf.patch(str(p), [("path:", "a\tb")], controls=True)                         # a TSV edit says so
     pf.patch(str(p), [("a\tb", "c\td")])                                       # a tab the anchor carries may stay
     assert p.read_text(encoding="utf-8") == "c\td C:\\Temp\\claude\\test.log\n"
+
+
+def test_patch_many_writes_no_file_when_one_anchor_fails(tmp_path):
+    """15 Oct 2026: a four-file patch wrote three files and stopped at the fourth; patch_many checks all before writing any."""
+    a, b = tmp_path / "a.txt", tmp_path / "b.txt"
+    a.write_text("alpha\n", encoding="utf-8")
+    b.write_text("beta\n", encoding="utf-8")
+    with pytest.raises(AssertionError, match="b.txt"):
+        pf.patch_many({str(a): [("alpha", "ALPHA")], str(b): [("gamma", "GAMMA")]})
+    assert a.read_text(encoding="utf-8") == "alpha\n" and b.read_text(encoding="utf-8") == "beta\n"
+    assert pf.patch_many({str(a): [("alpha", "ALPHA")], str(b): [("beta", "BETA")]}) == 2
+    assert a.read_text(encoding="utf-8") == "ALPHA\n" and b.read_text(encoding="utf-8") == "BETA\n"
