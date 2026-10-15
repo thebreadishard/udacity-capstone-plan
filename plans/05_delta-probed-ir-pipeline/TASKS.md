@@ -212,6 +212,11 @@ the blocks the head writes. Almost all of the 'floor' is the symmetric-block res
 0.08 at 8 Å). Outcome and the departure from the registered consequence written in the registration. **Next:** register a direct training
 comparison (head as is / non-symmetric pair blocks / 8 Å cutoff) on chain 34's recipe, read on (a), (b) and the size hold-out; laptop time
 from about the end of October.
+**15 Oct 19:3x — CORRECTION: the test analysed the wrong head.** The carried recipe uses `--head hybrid` (ΔF between internal primitives on
+pattern f, ΔH = Bᵀ ΔF B); the 5 Å symmetric-block form is the plain equivariant head, not carried. The numbers describe that head only; the
+comparison with chain 39 compared two heads; the announced training comparison is not registered. Dated correction in the registration.
+**Next (proposed to the user):** the same question for the carried head — pattern f's target bound (the projected target it trains; 0.09 on
+hold-out (a) on 1 Oct, `probes/rungC_target_bound_holdouts.py`) against molecule size on the 534 analytic pairs.
 64. **Claude Code hooks for the rules I break by hand (15 Oct 17:3x; the user: 'zet hooks op de takenlijst, want die moeten op termijn ook echt').**
 Persistent configuration in `.claude/settings.json`: built only with the user's word on the concrete hook list. Candidates, each from an
 incident: PreToolUse on Bash refusing (1) a Python or JSON heredoc that carries a backslash (watch.sh 15 Oct, the smoke spec the same evening,

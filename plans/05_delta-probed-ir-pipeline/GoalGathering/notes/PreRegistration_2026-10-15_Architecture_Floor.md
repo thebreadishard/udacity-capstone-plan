@@ -110,3 +110,21 @@ of October. Until then the size levers stay with data, and the PC question is pu
 
 My prediction (small floors, line 1 not met) was wrong in its numbers and right in its conclusion, for a reason I had not foreseen: the
 measure, not the network, was the problem.
+
+## Correction (15 Oct 2026, 19:3x) — this test analysed a head the project does not carry
+
+Found while preparing the training comparison the outcome above announced. The carried recipe (chain 34, and chain 39 whose numbers the
+outcome quotes) trains `--head hybrid` (`m05/rungC_hybrid.py`): the equivariant encoder supplies atom features, and the head predicts a
+correction ΔF between **internal primitives** on a fixed pattern (diagonal, shared-atom pairs, same-ring bond–bond pairs, pairs at set
+distance 1–3; pattern f), with ΔH = Bᵀ ΔF B. The form analysed here — Cartesian pair blocks within 5 Å, each symmetric, diagonal by the sum
+rule — is the plain equivariant head of `m05/rungC_equivariant.py`, which is not carried. So:
+- the numbers above describe the plain head's form, not the carried model's;
+- the outcome's comparison with chain 39's 3.78 / 5.09 compared two different heads, and its argument that the projection 'is not a floor'
+  rests on that comparison — withdrawn as an argument (the compensation point stands as reasoning, not as evidence);
+- the training comparison announced (non-symmetric blocks, an 8 Å cutoff) would test a head nobody uses — **not registered**.
+
+The registration's 'Why' named the wrong file; I did not check which head the carried recipe uses before writing it. The question it asked
+remains right for the carried head, in its own terms: does pattern f's reach (at most three bonds between the primitives' atoms, no pairs
+across a larger ring system) leave out correction that grows with size? Pattern f's target bounds were measured once, on hold-out (a)
+(1 Oct 2026, `probes/rungC_target_bound_holdouts.py`, ring-coupling ratio): 0.09 for the projected target the carried recipe trains, 0.03
+for the ridge target — never against molecule size. That is the test to register next.
