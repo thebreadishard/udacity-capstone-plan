@@ -76,6 +76,13 @@ of every size below 27, ratio of seed means (range from the seed extremes): ring
 the ring in-plane physics — the modes delocalised over fused rings — which is what a rung of new four-ring families feeds. My registered
 prediction named CH-oop as the likely miss at k = 30; on this evidence ring-ip is at least as likely. Recorded so that the read can say which.
 
+## Place (15 Oct 2026, 08:1x; the user: 'Trede 4 draait op de CCX53 na hefboom 5')
+
+The labels server (CCX53), after lever 5. Nothing above changes. Armed: `probes/labels_batch_ccx53.sh` (lever 5's runner pattern with the
+batch and its wait condition as arguments) in /root/labels/rung4 waits for '=== (L5) all done', then optimises the 150 (psi4, corpus deck,
+no Hessians; jobs from `probes/rung4_jobs.py`, start geometry `run_corpus.start_geometry`) and labels them (analytic_hessians.py), four lanes
+× 8 threads. The test family is held out structurally: `corpus/holdout_rung4_test.txt` (30 ids) is read by `E6.splits`, as hold-out (c).
+
 ## Outcome
 
 *(empty until the read)*

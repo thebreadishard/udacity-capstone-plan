@@ -11443,18 +11443,18 @@ P3c_0617e12945,P3c,0617e12945dcd1dfb113414b268344effbdbc10d,pyridine+CH3+F+,Cc1c
 P3c_17f1611949,P3c,17f1611949c43478e69bdc4792f62af6e9873cf2,pyridine+CH3+ethynyl+,C#Cc1cnccc1C,,9,16,pending,,,pool3 cation; parent B_17f1611949; charge 1 mult 2
 G_b0c5495a20,G,b0c5495a2048f6a0e1e26036a163479cd4c27332,generator r3 N #1 (PubChem),c1ccc(-c2nc3ccccc3[nH]2)cc1,,15,25,pending,,,source=generator v0.1+v0.2; list 0fd5f53ccc3602e2; system c1ccc2[nH]cnc2c1; most frequent molecule; pubchem yes; rank 1
 G_05421c04e0,G,05421c04e09309611bccd9bcddf83ca75c47a125,generator r3 N #2 (PubChem),c1ccc2c(c1)ncc1nncn12,,13,19,pending,,,source=generator v0.1+v0.2; list 0fd5f53ccc3602e2; system c1ccc2c(c1)ncc1nncn12; bare system; pubchem yes; rank 2
-G_93fa88cb22,G,93fa88cb22bd470d59ec8b566851ce60fd41ad1c,generator r4+ none #3 (PubChem),c1ccc2cc3c(ccc4ccccc43)cc2c1,,18,30,pending,,,source=generator v0.1+v0.2; list 0fd5f53ccc3602e2; system c1ccc2cc3c(ccc4ccccc43)cc2c1; bare system; pubchem yes; rank 3
-G_37539913ef,G,37539913efb30bcdad0c6b9dd8c666d77859d209,generator r4+ none #4 (PubChem),c1ccc2c(c1)ccc1ccc3ccccc3c12,,18,30,pending,,,source=generator v0.1+v0.2; list 0fd5f53ccc3602e2; system c1ccc2c(c1)ccc1ccc3ccccc3c12; bare system; pubchem yes; rank 4
+G_93fa88cb22,G,93fa88cb22bd470d59ec8b566851ce60fd41ad1c,generator r4+ none #3 (PubChem),c1ccc2cc3c(ccc4ccccc43)cc2c1,,18,30,moved,,,"source=generator v0.1+v0.2; list 0fd5f53ccc3602e2; system c1ccc2cc3c(ccc4ccccc43)cc2c1; bare system; pubchem yes; rank 3 computed as R4_93fa88cb22 (rung 4, TASKS 61)"
+G_37539913ef,G,37539913efb30bcdad0c6b9dd8c666d77859d209,generator r4+ none #4 (PubChem),c1ccc2c(c1)ccc1ccc3ccccc3c12,,18,30,moved,,,"source=generator v0.1+v0.2; list 0fd5f53ccc3602e2; system c1ccc2c(c1)ccc1ccc3ccccc3c12; bare system; pubchem yes; rank 4 computed as R4_37539913ef (rung 4, TASKS 61)"
 G_25e4ae5a40,G,25e4ae5a405dca9130ab8714ca95b54b6b08f5f9,generator r3 N #5 (PubChem),c1ccc2c(c1)ncc1nnnn12,,13,18,pending,,,source=generator v0.1+v0.2; list 0fd5f53ccc3602e2; system c1ccc2c(c1)ncc1nnnn12; bare system; pubchem yes; rank 5
-G_ebcf683ba7,G,ebcf683ba7c64e239dc9f194779f0c1fc78df89a,generator r4+ none #6 (PubChem),c1ccc2c(c1)ccc1c3ccccc3ccc21,,18,30,pending,,,source=generator v0.1+v0.2; list 0fd5f53ccc3602e2; system c1ccc2c(c1)ccc1c3ccccc3ccc21; bare system; pubchem yes; rank 6
+G_ebcf683ba7,G,ebcf683ba7c64e239dc9f194779f0c1fc78df89a,generator r4+ none #6 (PubChem),c1ccc2c(c1)ccc1c3ccccc3ccc21,,18,30,moved,,,"source=generator v0.1+v0.2; list 0fd5f53ccc3602e2; system c1ccc2c(c1)ccc1c3ccccc3ccc21; bare system; pubchem yes; rank 6 computed as R4_ebcf683ba7 (rung 4, TASKS 61)"
 G_11430021a4,G,11430021a486a89150b61f6eff7824a76d6c1699,generator r3 N #7 (PubChem),c1ccc2c(c1)[nH]c1cnccc12,,13,21,pending,,,source=generator v0.1+v0.2; list 0fd5f53ccc3602e2; system c1ccc2c(c1)[nH]c1cnccc12; bare system; pubchem yes; rank 7
 G_b3cf735b2d,G,b3cf735b2d14890c1af59b910575272b788fe75c,generator r4+ none #8 (PubChem),c1ccc2c(c1)ccc1c3ccccc3c3ccccc3c21,,22,36,pending,,,source=generator v0.1+v0.2; list 0fd5f53ccc3602e2; system c1ccc2c(c1)ccc1c3ccccc3c3ccccc3c21; bare system; pubchem yes; rank 8
 G_ae856d2126,G,ae856d212670c8fda020471c0d84c5b96d47d05f,generator r4+ N #9 (PubChem),Fc1ccc(-c2nc3ccccc3n3cccc23)cc1,,20,31,pending,,,source=generator v0.1+v0.2; list 0fd5f53ccc3602e2; system c1ccc2c(c1)ncc1cccn12; most frequent molecule; pubchem yes; rank 9
 G_94efd7124d,G,94efd7124d9ee5cddffa49a4de7c8c5f9330622f,generator r3 N #10 (PubChem),c1ccc2c(c1)[nH]c1cncnc12,,13,20,pending,,,source=generator v0.1+v0.2; list 0fd5f53ccc3602e2; system c1ccc2c(c1)[nH]c1cncnc12; bare system; pubchem yes; rank 10
 G_1865c06654,G,1865c06654d4369f62d009da9c28d7361c7b7671,generator r4+ N #11 (PubChem),CNc1nc2ccccc2n2c(-c3ccccc3)cnc12,,21,35,pending,,,source=generator v0.1+v0.2; list 0fd5f53ccc3602e2; system c1ccc2c(c1)ncc1nccn12; most frequent molecule; pubchem yes; rank 11
 G_8bdca73b05,G,8bdca73b05d5c44a26681b45c8ca7252e5c2eebb,generator r3 N #12 (PubChem),c1ccc2c(c1)ccn1ccnc21,,13,21,pending,,,source=generator v0.1+v0.2; list 0fd5f53ccc3602e2; system c1ccc2c(c1)ccn1ccnc21; bare system; pubchem yes; rank 12
-G_fc33a5dc93,G,fc33a5dc9322dde0d7ae6075b2be2246566d5b33,generator r4+ none #13 (PubChem),c1ccc2c(c1)c1ccccc1c1ccccc21,,18,30,pending,,,source=generator v0.1+v0.2; list 0fd5f53ccc3602e2; system c1ccc2c(c1)c1ccccc1c1ccccc21; bare system; pubchem yes; rank 13
-G_cc63e78416,G,cc63e7841652c161974c954f8cc9077c45f9fcc9,generator r4+ none #14 (PubChem),c1ccc2cc3cc4ccccc4cc3cc2c1,,18,30,pending,,,source=generator v0.1+v0.2; list 0fd5f53ccc3602e2; system c1ccc2cc3cc4ccccc4cc3cc2c1; bare system; pubchem yes; rank 14
+G_fc33a5dc93,G,fc33a5dc9322dde0d7ae6075b2be2246566d5b33,generator r4+ none #13 (PubChem),c1ccc2c(c1)c1ccccc1c1ccccc21,,18,30,moved,,,"source=generator v0.1+v0.2; list 0fd5f53ccc3602e2; system c1ccc2c(c1)c1ccccc1c1ccccc21; bare system; pubchem yes; rank 13 computed as R4_fc33a5dc93 (rung 4, TASKS 61)"
+G_cc63e78416,G,cc63e7841652c161974c954f8cc9077c45f9fcc9,generator r4+ none #14 (PubChem),c1ccc2cc3cc4ccccc4cc3cc2c1,,18,30,moved,,,"source=generator v0.1+v0.2; list 0fd5f53ccc3602e2; system c1ccc2cc3cc4ccccc4cc3cc2c1; bare system; pubchem yes; rank 14 computed as R4_cc63e78416 (rung 4, TASKS 61)"
 G_940a8ca588,G,940a8ca588d15cd5bd260f85e7c398b481e954ae,generator r4+ none #15 (PubChem),c1ccc2cc3c(ccc4c5ccccc5ccc34)cc2c1,,22,36,pending,,,source=generator v0.1+v0.2; list 0fd5f53ccc3602e2; system c1ccc2cc3c(ccc4c5ccccc5ccc34)cc2c1; bare system; pubchem yes; rank 15
 G_1d137b67e1,G,1d137b67e189d014daffb8282698ab69699d90dc,generator r3 N #16 (PubChem),c1ccc2c(c1)[nH]c1ccncc12,,13,21,pending,,,source=generator v0.1+v0.2; list 0fd5f53ccc3602e2; system c1ccc2c(c1)[nH]c1ccncc12; bare system; pubchem yes; rank 16
 G_7a0060e60e,G,7a0060e60e7e6c69c93cddc2c7657ac8375cf6c2,generator r4+ mixed #17 (PubChem),CN(C)CCNc1nc(-c2ccc(Cl)cc2)nc2c1oc1ccccc12,,26,45,pending,,,source=generator v0.1+v0.2; list 0fd5f53ccc3602e2; system c1ccc2c(c1)oc1cncnc12; most frequent molecule; pubchem yes; rank 17
@@ -13713,3 +13713,153 @@ G_ee731ac7db,G,ee731ac7db97d78b72493087be4e2677ac778f8a,generator r4+ N #2269,c1
 G_0e12243f3b,G,0e12243f3b2f1ad4fcbc631ed2ae4e6f181ae77a,generator r4+ N #2270,c1cncc(-n2ncc3c4ncc(Nc5ccc6[nH]ccc6c5)nc4ccc32)c1,,29,44,pending,,,source=generator v0.1+v0.2; list 0fd5f53ccc3602e2; system c1cnc2c(ccc3nncc32)n1; most frequent molecule; pubchem no; rank 2270
 G_eeb39015db,G,eeb39015db7cdc32e3ef467188ed9ead8d90d343,generator r3 mixed #2271,c1nc2c(ccc3cscc32)[nH]1,,12,18,pending,,,source=generator v0.1+v0.2; list 0fd5f53ccc3602e2; system c1nc2c(ccc3cscc32)[nH]1; bare system; pubchem no; rank 2271
 G_201dc3136d,G,201dc3136d115e69b02660648c5a90231bc85643,generator r4+ N #2272,c1nc2ccc(-c3nnn4ncc5ccc6[nH]ccc6c5c34)cc2[nH]1,,25,36,pending,,,source=generator v0.1+v0.2; list 0fd5f53ccc3602e2; system c1cc2c(ccc3cnn4nncc4c32)[nH]1; most frequent molecule; pubchem no; rank 2272
+R4_37539913ef,R4,37539913efb30bcdad0c6b9dd8c666d77859d209,benzo[c]phenanthrene,c1ccc2c(c1)ccc1ccc3ccccc3c12,,18,30,pending,,,rung4 benzo[c]phenanthrene; parent
+R4_210c4aa9c4,R4,210c4aa9c40fb9465f262ae3aed41ef9b30f5caf,benzo[c]phenanthrene+OH,Oc1cc2ccccc2c2c1ccc1ccccc12,,19,31,pending,,,rung4 benzo[c]phenanthrene
+R4_172087a3e1,R4,172087a3e1d5e7c9946f745a50aa57139130aa07,benzo[c]phenanthrene+ethynyl,C#Cc1ccc2c(ccc3ccc4ccccc4c32)c1,,20,32,pending,,,rung4 benzo[c]phenanthrene
+R4_09c43c27da,R4,09c43c27daba0559739a35aa50b838818a1877b1,benzo[c]phenanthrene+NO2,O=[N+]([O-])c1ccc2ccc3ccc4ccccc4c3c2c1,,21,32,pending,,,rung4 benzo[c]phenanthrene
+R4_225a0e48de,R4,225a0e48de41a24a5eb61505ccece78857e5ccec,benzo[c]phenanthrene+CN,N#Cc1cc2ccccc2c2c1ccc1ccccc12,,20,31,pending,,,rung4 benzo[c]phenanthrene
+R4_00d72f65ee,R4,00d72f65eeef823d54f25f1b9988ac333b46b4ae,benzo[c]phenanthrene+CH3,Cc1ccc2c(ccc3ccc4ccccc4c32)c1,,19,33,pending,,,rung4 benzo[c]phenanthrene
+R4_0f7116fb72,R4,0f7116fb7250405f3016fe34312a1eaa0c3e0479,benzo[c]phenanthrene+OCH3,COc1ccc2c(ccc3ccc4ccccc4c32)c1,,20,34,pending,,,rung4 benzo[c]phenanthrene
+R4_092f5e4e31,R4,092f5e4e31424c171f69964c9d864a4196b44173,benzo[c]phenanthrene+CHO,O=Cc1cccc2c1ccc1ccc3ccccc3c12,,20,32,pending,,,rung4 benzo[c]phenanthrene
+R4_083a8946f6,R4,083a8946f667e108f666ced17498d17fbfdc2c72,benzo[c]phenanthrene+SH,Sc1cc2ccc3ccccc3c2c2ccccc12,,19,31,pending,,,rung4 benzo[c]phenanthrene
+R4_28318166c8,R4,28318166c855559965bfd37cddb30bd903cff380,benzo[c]phenanthrene+CF3,FC(F)(F)c1cc2ccccc2c2c1ccc1ccccc12,,22,33,pending,,,rung4 benzo[c]phenanthrene
+R4_001c348db2,R4,001c348db2a871f0f2ef83e40e4b9e8d53f9e5b4,benzo[c]phenanthrene+COOH,O=C(O)c1cccc2c1ccc1ccc3ccccc3c12,,21,33,pending,,,rung4 benzo[c]phenanthrene
+R4_74813af8b6,R4,74813af8b69362d69e836da44dcc5078a0b671f4,benzo[c]phenanthrene+vinyl,C=Cc1cc2ccccc2c2c1ccc1ccccc12,,20,34,pending,,,rung4 benzo[c]phenanthrene
+R4_0ae2888b79,R4,0ae2888b79f9680241d0ad0ce7d02752f9dca73d,benzo[c]phenanthrene+Cl,Clc1ccc2ccc3ccc4ccccc4c3c2c1,,19,30,pending,,,rung4 benzo[c]phenanthrene
+R4_13bf25313a,R4,13bf25313a9853beb7d69cf7e7153a1a5732f60c,benzo[c]phenanthrene+NH2,Nc1ccc2ccc3ccc4ccccc4c3c2c1,,19,32,pending,,,rung4 benzo[c]phenanthrene
+R4_16bfe69ed9,R4,16bfe69ed9eca868618d8f81cf0eb46e31f34f10,benzo[c]phenanthrene+CONH2,NC(=O)c1cc2ccccc2c2c1ccc1ccccc12,,21,34,pending,,,rung4 benzo[c]phenanthrene
+R4_1fb1cb93c7,R4,1fb1cb93c79b13a60c1de8a84d3fc4e63ea470d7,benzo[c]phenanthrene+F,Fc1cc2ccc3ccccc3c2c2ccccc12,,19,30,pending,,,rung4 benzo[c]phenanthrene
+R4_89c346a0ea,R4,89c346a0ea0cc9ba7a89485c47684d90e60f3355,benzo[c]phenanthrene+OH,Oc1cc2ccc3ccccc3c2c2ccccc12,,19,31,pending,,,rung4 benzo[c]phenanthrene
+R4_5392100780,R4,53921007804136d90ebd4d34979801135a558132,benzo[c]phenanthrene+ethynyl,C#Cc1cc2ccc3ccccc3c2c2ccccc12,,20,32,pending,,,rung4 benzo[c]phenanthrene
+R4_0af6627102,R4,0af662710284bc416e6f0c3fdac223e3e8e1eeb0,benzo[c]phenanthrene+NO2,O=[N+]([O-])c1ccc2c(ccc3ccc4ccccc4c32)c1,,21,32,pending,,,rung4 benzo[c]phenanthrene
+R4_239c7863c7,R4,239c7863c721934654f969419026f75625bc77ce,benzo[c]phenanthrene+CN,N#Cc1ccc2ccc3ccc4ccccc4c3c2c1,,20,31,pending,,,rung4 benzo[c]phenanthrene
+R4_130ea47114,R4,130ea47114b07d22074a3b909b3da1212838fa61,benzo[c]phenanthrene+CH3,Cc1cc2ccccc2c2c1ccc1ccccc12,,19,33,pending,,,rung4 benzo[c]phenanthrene
+R4_16db3cb7d3,R4,16db3cb7d33f41a6c7d35da22f6dea917740027a,benzo[c]phenanthrene+OCH3,COc1cccc2ccc3ccc4ccccc4c3c12,,20,34,pending,,,rung4 benzo[c]phenanthrene
+R4_4c95943e6f,R4,4c95943e6fe5d264f0f98e4b501417773a6e931c,benzo[c]phenanthrene+CHO,O=Cc1ccc2c(ccc3ccc4ccccc4c32)c1,,20,32,pending,,,rung4 benzo[c]phenanthrene
+R4_0ae75f4508,R4,0ae75f45084e703056913d8b979f78638ad41c1e,benzo[c]phenanthrene+SH,Sc1cccc2c1ccc1ccc3ccccc3c12,,19,31,pending,,,rung4 benzo[c]phenanthrene
+R4_2894efa0e7,R4,2894efa0e778334c0ac70e602a8316cc8c27fdb1,benzo[c]phenanthrene+CF3,FC(F)(F)c1ccc2c(ccc3ccc4ccccc4c32)c1,,22,33,pending,,,rung4 benzo[c]phenanthrene
+R4_0347d8c06f,R4,0347d8c06f87f8e59e05a36a893e16ac3572abed,benzo[c]phenanthrene+COOH,O=C(O)c1ccc2ccc3ccc4ccccc4c3c2c1,,21,33,pending,,,rung4 benzo[c]phenanthrene
+R4_880c746f77,R4,880c746f770c46685eecdb397f7cc812900745de,benzo[c]phenanthrene+vinyl,C=Cc1ccc2ccc3ccc4ccccc4c3c2c1,,20,34,pending,,,rung4 benzo[c]phenanthrene
+R4_1d048c989b,R4,1d048c989b3d45a9d6a9cd53e3a4ddfe5dbd94d6,benzo[c]phenanthrene+Cl,Clc1ccc2c(ccc3ccc4ccccc4c32)c1,,19,30,pending,,,rung4 benzo[c]phenanthrene
+R4_17ffac430a,R4,17ffac430a452f74b7029972ba9dd3ba2f0416fa,benzo[c]phenanthrene+NH2,Nc1cccc2ccc3ccc4ccccc4c3c12,,19,32,pending,,,rung4 benzo[c]phenanthrene
+R4_295170f459,R4,295170f45920d67086a51679029447024efd188c,benzo[c]phenanthrene+CONH2,NC(=O)c1cccc2c1ccc1ccc3ccccc3c12,,21,34,pending,,,rung4 benzo[c]phenanthrene
+R4_93fa88cb22,R4,93fa88cb22bd470d59ec8b566851ce60fd41ad1c,benz[a]anthracene,c1ccc2cc3c(ccc4ccccc43)cc2c1,,18,30,pending,,,rung4 benz[a]anthracene; parent
+R4_3271e2f952,R4,3271e2f952a592c6365143536e3ba20448b93b6d,benz[a]anthracene+OH,Oc1cc2cc3ccccc3cc2c2ccccc12,,19,31,pending,,,rung4 benz[a]anthracene
+R4_061778ab13,R4,061778ab134819f5b8bdb0b2519053cfc8cc9cfd,benz[a]anthracene+ethynyl,C#Cc1ccc2c(ccc3cc4ccccc4cc32)c1,,20,32,pending,,,rung4 benz[a]anthracene
+R4_0c891ce791,R4,0c891ce7915414a62309ae8158d03e2052ee4a5f,benz[a]anthracene+NO2,O=[N+]([O-])c1cccc2cc3ccc4ccccc4c3cc12,,21,32,pending,,,rung4 benz[a]anthracene
+R4_16ecd57d9c,R4,16ecd57d9c1287fee3db67010b8935247666b51e,benz[a]anthracene+CN,N#Cc1c2ccccc2cc2ccc3ccccc3c12,,20,31,pending,,,rung4 benz[a]anthracene
+R4_0af7530e94,R4,0af7530e94d4700b7c073b912914361ae0922f7f,benz[a]anthracene+CH3,Cc1cccc2c1ccc1cc3ccccc3cc12,,19,33,pending,,,rung4 benz[a]anthracene
+R4_24de1fb966,R4,24de1fb966450815853dc5a3f8be1adedcab1d31,benz[a]anthracene+OCH3,COc1cc2ccccc2c2cc3ccccc3cc12,,20,34,pending,,,rung4 benz[a]anthracene
+R4_144a18da4b,R4,144a18da4b65721cc68900ee2594b890938b04cc,benz[a]anthracene+CHO,O=Cc1cc2cc3ccccc3cc2c2ccccc12,,20,32,pending,,,rung4 benz[a]anthracene
+R4_070681f639,R4,070681f639bca9538b6598f5dedb16b2db1cd46a,benz[a]anthracene+SH,Sc1ccc2cc3c(ccc4ccccc43)cc2c1,,19,31,pending,,,rung4 benz[a]anthracene
+R4_0c2cb1eb9c,R4,0c2cb1eb9c6b032e2dc2831b53cdd9e942106081,benz[a]anthracene+CF3,FC(F)(F)c1cccc2ccc3cc4ccccc4cc3c12,,22,33,pending,,,rung4 benz[a]anthracene
+R4_6d2d74d4b8,R4,6d2d74d4b8380238d92508ab78edb9530f6c9f5f,benz[a]anthracene+COOH,O=C(O)c1c2ccccc2cc2ccc3ccccc3c12,,21,33,pending,,,rung4 benz[a]anthracene
+R4_171aef5ff9,R4,171aef5ff9b89df34774133e5ea966991802adb6,benz[a]anthracene+vinyl,C=Cc1c2ccccc2cc2c1ccc1ccccc12,,20,34,pending,,,rung4 benz[a]anthracene
+R4_0b9d12ee41,R4,0b9d12ee413676c85cc28cd5a7729488b09991f4,benz[a]anthracene+Cl,Clc1ccc2c(ccc3cc4ccccc4cc32)c1,,19,30,pending,,,rung4 benz[a]anthracene
+R4_1e712eb965,R4,1e712eb96566c4e1599bb522f8c6e97503100da4,benz[a]anthracene+NH2,Nc1c2ccccc2cc2c1ccc1ccccc12,,19,32,pending,,,rung4 benz[a]anthracene
+R4_03c50a74e2,R4,03c50a74e290a1f42900cdcdda69cb3e412366fd,benz[a]anthracene+CONH2,NC(=O)c1cccc2cc3c(ccc4ccccc43)cc12,,21,34,pending,,,rung4 benz[a]anthracene
+R4_200a1192ed,R4,200a1192ed63f67ac589370540b23f4569d7aeee,benz[a]anthracene+F,Fc1cccc2ccc3cc4ccccc4cc3c12,,19,30,pending,,,rung4 benz[a]anthracene
+R4_56d286383e,R4,56d286383e79310847333f1737ed5fb14f92a3ea,benz[a]anthracene+OH,Oc1cccc2ccc3cc4ccccc4cc3c12,,19,31,pending,,,rung4 benz[a]anthracene
+R4_4485b81f87,R4,4485b81f87a664947d6a726c1f665c8f5d35e884,benz[a]anthracene+ethynyl,C#Cc1ccc2cc3ccc4ccccc4c3cc2c1,,20,32,pending,,,rung4 benz[a]anthracene
+R4_114b9c7d72,R4,114b9c7d7299c738b47fb2bf564b64e520a99547,benz[a]anthracene+NO2,O=[N+]([O-])c1ccc2cc3c(ccc4ccccc43)cc2c1,,21,32,pending,,,rung4 benz[a]anthracene
+R4_1d2d6b3ca8,R4,1d2d6b3ca83e988a0c69aa6928aa87779269bd40,benz[a]anthracene+CN,N#Cc1ccc2ccc3cc4ccccc4cc3c2c1,,20,31,pending,,,rung4 benz[a]anthracene
+R4_1879dc1293,R4,1879dc1293c3c84e2760a179575f875af3195509,benz[a]anthracene+CH3,Cc1c2ccccc2cc2c1ccc1ccccc12,,19,33,pending,,,rung4 benz[a]anthracene
+R4_462d6837a0,R4,462d6837a0631999da373cfc9154c5b46327f6b8,benz[a]anthracene+OCH3,COc1ccc2c(ccc3cc4ccccc4cc32)c1,,20,34,pending,,,rung4 benz[a]anthracene
+R4_3808705d75,R4,3808705d75cb264720e5ad41938853378c581b37,benz[a]anthracene+CHO,O=Cc1cccc2cc3c(ccc4ccccc43)cc12,,20,32,pending,,,rung4 benz[a]anthracene
+R4_16f5d0fbc3,R4,16f5d0fbc3fe50925be2884d2388f4538f9931dd,benz[a]anthracene+SH,Sc1c2ccccc2cc2c1ccc1ccccc12,,19,31,pending,,,rung4 benz[a]anthracene
+R4_0d63f6c002,R4,0d63f6c002aca60b795e3b60f6245450a5ec8ab2,benz[a]anthracene+CF3,FC(F)(F)c1cccc2cc3ccc4ccccc4c3cc12,,22,33,pending,,,rung4 benz[a]anthracene
+R4_7a0f1e8442,R4,7a0f1e84421c07b07f20f9b0aa2d8661c30e9983,benz[a]anthracene+COOH,O=C(O)c1ccc2ccc3cc4ccccc4cc3c2c1,,21,33,pending,,,rung4 benz[a]anthracene
+R4_49b3842928,R4,49b38429288086c6f0fb7498f8a3ffd6fd9052f9,benz[a]anthracene+vinyl,C=Cc1ccc2cc3c(ccc4ccccc43)cc2c1,,20,34,pending,,,rung4 benz[a]anthracene
+R4_0d93570175,R4,0d935701754b9ace339d26aea497cc083a015fb6,benz[a]anthracene+Cl,Clc1cccc2ccc3cc4ccccc4cc3c12,,19,30,pending,,,rung4 benz[a]anthracene
+R4_2c9b4ac77d,R4,2c9b4ac77dcafb74ca20a58ae9b9b29fcf9e9aee,benz[a]anthracene+NH2,Nc1c2ccccc2cc2ccc3ccccc3c12,,19,32,pending,,,rung4 benz[a]anthracene
+R4_4f65f76457,R4,4f65f764572255b83ef51dc403eeeec249e7b9f7,benz[a]anthracene+CONH2,NC(=O)c1cc2cc3ccccc3cc2c2ccccc12,,21,34,pending,,,rung4 benz[a]anthracene
+R4_cc63e78416,R4,cc63e7841652c161974c954f8cc9077c45f9fcc9,tetracene,c1ccc2cc3cc4ccccc4cc3cc2c1,,18,30,pending,,,rung4 tetracene; parent; test family
+R4_7babf49b58,R4,7babf49b5864fdb655905d7fff7b666f65785d52,tetracene+OH,Oc1cccc2cc3cc4ccccc4cc3cc12,,19,31,pending,,,rung4 tetracene; test family
+R4_029185ca08,R4,029185ca08f11f9637ecc4f31376c6ed27d2d993,tetracene+ethynyl,C#Cc1cccc2cc3cc4ccccc4cc3cc12,,20,32,pending,,,rung4 tetracene; test family
+R4_064c8c7bb5,R4,064c8c7bb59bd7181c185d7a62a0efd493a33064,tetracene+NO2,O=[N+]([O-])c1cccc2cc3cc4ccccc4cc3cc12,,21,32,pending,,,rung4 tetracene; test family
+R4_50dc5b410d,R4,50dc5b410d8a9e089a1930dcddde5de1465f5ce7,tetracene+CN,N#Cc1ccc2cc3cc4ccccc4cc3cc2c1,,20,31,pending,,,rung4 tetracene; test family
+R4_42b9890a5f,R4,42b9890a5ff81e656ea81735ca0b399bde7b72c6,tetracene+CH3,Cc1ccc2cc3cc4ccccc4cc3cc2c1,,19,33,pending,,,rung4 tetracene; test family
+R4_629040f24e,R4,629040f24e4dbedb6fda1c7c1e44133b6797f498,tetracene+OCH3,COc1ccc2cc3cc4ccccc4cc3cc2c1,,20,34,pending,,,rung4 tetracene; test family
+R4_2e9ba76ac3,R4,2e9ba76ac3ad91cf1074ef6db4f49a18e63f1388,tetracene+CHO,O=Cc1c2ccccc2cc2cc3ccccc3cc12,,20,32,pending,,,rung4 tetracene; test family
+R4_6412802454,R4,641280245499e9d35227e7873c428f2fdeca3385,tetracene+SH,Sc1ccc2cc3cc4ccccc4cc3cc2c1,,19,31,pending,,,rung4 tetracene; test family
+R4_6f81087db4,R4,6f81087db4c35e5f00563b5564ab38ab0d34a382,tetracene+CF3,FC(F)(F)c1c2ccccc2cc2cc3ccccc3cc12,,22,33,pending,,,rung4 tetracene; test family
+R4_189ebe024d,R4,189ebe024d1097aa4834abc0023bf5407723c78b,tetracene+COOH,O=C(O)c1c2ccccc2cc2cc3ccccc3cc12,,21,33,pending,,,rung4 tetracene; test family
+R4_41104962d5,R4,41104962d54db05a24866979d557e01387a45578,tetracene+vinyl,C=Cc1cccc2cc3cc4ccccc4cc3cc12,,20,34,pending,,,rung4 tetracene; test family
+R4_5f804fe870,R4,5f804fe870ea25f1e85e90bbe7f143b95dbc0c68,tetracene+Cl,Clc1cccc2cc3cc4ccccc4cc3cc12,,19,30,pending,,,rung4 tetracene; test family
+R4_8fac6e81b8,R4,8fac6e81b80f3ee92b0e65721995e785b990c9c1,tetracene+NH2,Nc1c2ccccc2cc2cc3ccccc3cc12,,19,32,pending,,,rung4 tetracene; test family
+R4_024d51a284,R4,024d51a284728608f5291f9d04debef8d8da24a8,tetracene+CONH2,NC(=O)c1c2ccccc2cc2cc3ccccc3cc12,,21,34,pending,,,rung4 tetracene; test family
+R4_14706d9ff5,R4,14706d9ff567b6d27cfd3c78e31b359d878fda6f,tetracene+F,Fc1cccc2cc3cc4ccccc4cc3cc12,,19,30,pending,,,rung4 tetracene; test family
+R4_e5867287b0,R4,e5867287b0069c195462648a024c46062e7b9432,tetracene+OH,Oc1ccc2cc3cc4ccccc4cc3cc2c1,,19,31,pending,,,rung4 tetracene; test family
+R4_aff59183f7,R4,aff59183f7b565afcb116933440fe343891260a3,tetracene+ethynyl,C#Cc1ccc2cc3cc4ccccc4cc3cc2c1,,20,32,pending,,,rung4 tetracene; test family
+R4_45a7b2a6ac,R4,45a7b2a6acc43a66f26818cc2e1e7695220de946,tetracene+NO2,O=[N+]([O-])c1c2ccccc2cc2cc3ccccc3cc12,,21,32,pending,,,rung4 tetracene; test family
+R4_6ffe03aa87,R4,6ffe03aa8777ee6b6ac38621cb637f6b50d2ce50,tetracene+CN,N#Cc1c2ccccc2cc2cc3ccccc3cc12,,20,31,pending,,,rung4 tetracene; test family
+R4_ae2dd64b16,R4,ae2dd64b162413860ff5e60367294bacce47b456,tetracene+CH3,Cc1cccc2cc3cc4ccccc4cc3cc12,,19,33,pending,,,rung4 tetracene; test family
+R4_b281c0e71a,R4,b281c0e71a291047e401efbe665f745a22b2b643,tetracene+OCH3,COc1c2ccccc2cc2cc3ccccc3cc12,,20,34,pending,,,rung4 tetracene; test family
+R4_676799ed3c,R4,676799ed3c2f4fc83fe0f397f2351894ee12313e,tetracene+CHO,O=Cc1ccc2cc3cc4ccccc4cc3cc2c1,,20,32,pending,,,rung4 tetracene; test family
+R4_dd23affa6b,R4,dd23affa6b6405ba4bc73a619ceca036ea638f70,tetracene+SH,Sc1cccc2cc3cc4ccccc4cc3cc12,,19,31,pending,,,rung4 tetracene; test family
+R4_705c04e865,R4,705c04e865735222cd40ae9ebb1cbc221bc6631a,tetracene+CF3,FC(F)(F)c1ccc2cc3cc4ccccc4cc3cc2c1,,22,33,pending,,,rung4 tetracene; test family
+R4_55c0210bcd,R4,55c0210bcdc0cce135df69004659952fdbb80845,tetracene+COOH,O=C(O)c1ccc2cc3cc4ccccc4cc3cc2c1,,21,33,pending,,,rung4 tetracene; test family
+R4_6a0e8a63c3,R4,6a0e8a63c30811350c54e80bb01e56efd9ac3e03,tetracene+vinyl,C=Cc1ccc2cc3cc4ccccc4cc3cc2c1,,20,34,pending,,,rung4 tetracene; test family
+R4_61d2609c9e,R4,61d2609c9e1ce0ccea5b25db13f7ce019e68fdbc,tetracene+Cl,Clc1ccc2cc3cc4ccccc4cc3cc2c1,,19,30,pending,,,rung4 tetracene; test family
+R4_90f0463b9a,R4,90f0463b9a19366f882978d70b18f7d142e2ffdd,tetracene+NH2,Nc1ccc2cc3cc4ccccc4cc3cc2c1,,19,32,pending,,,rung4 tetracene; test family
+R4_316054e411,R4,316054e411f44c033d87fc3144f49eca0c3e2041,tetracene+CONH2,NC(=O)c1ccc2cc3cc4ccccc4cc3cc2c1,,21,34,pending,,,rung4 tetracene; test family
+R4_ebcf683ba7,R4,ebcf683ba7c64e239dc9f194779f0c1fc78df89a,chrysene,c1ccc2c(c1)ccc1c3ccccc3ccc21,,18,30,pending,,,rung4 chrysene; parent
+R4_197274b40f,R4,197274b40f4b82a351f8598ed5d18a2c41f51174,chrysene+OH,Oc1cc2c3ccccc3ccc2c2ccccc12,,19,31,pending,,,rung4 chrysene
+R4_129618072a,R4,129618072a5ae5ee39c7b709af83fba258d76cbe,chrysene+ethynyl,C#Cc1cccc2c1ccc1c3ccccc3ccc21,,20,32,pending,,,rung4 chrysene
+R4_50f6fb150e,R4,50f6fb150e2dd7c05fffa1d56616e7a708ed4339,chrysene+NO2,O=[N+]([O-])c1cc2c3ccccc3ccc2c2ccccc12,,21,32,pending,,,rung4 chrysene
+R4_7479b2c4b0,R4,7479b2c4b020ba0274b69872ea180284df6697cd,chrysene+CN,N#Cc1ccc2c(ccc3c4ccccc4ccc23)c1,,20,31,pending,,,rung4 chrysene
+R4_0385d87ca0,R4,0385d87ca0dbb6994c9c3dbd08801c4ab91735f3,chrysene+CH3,Cc1cc2c3ccccc3ccc2c2ccccc12,,19,33,pending,,,rung4 chrysene
+R4_2b67b3d56b,R4,2b67b3d56b6f9a4c788e2d565ec862e4ab41f860,chrysene+OCH3,COc1cccc2ccc3c4ccccc4ccc3c12,,20,34,pending,,,rung4 chrysene
+R4_0ac840f215,R4,0ac840f2151fb213a8825010207b0dbe3ea0d0d8,chrysene+CHO,O=Cc1cccc2ccc3c4ccccc4ccc3c12,,20,32,pending,,,rung4 chrysene
+R4_6579b1f29a,R4,6579b1f29abfc4f256dbfeaf10a1ceea2463eac8,chrysene+SH,Sc1cccc2c1ccc1c3ccccc3ccc21,,19,31,pending,,,rung4 chrysene
+R4_7606e91493,R4,7606e9149312cdaf1676f3c6a0ce3d959443da5a,chrysene+CF3,FC(F)(F)c1ccc2ccc3c4ccccc4ccc3c2c1,,22,33,pending,,,rung4 chrysene
+R4_34bfe8ddf5,R4,34bfe8ddf5cd58f210a30f95286702edd5783eb2,chrysene+COOH,O=C(O)c1cccc2ccc3c4ccccc4ccc3c12,,21,33,pending,,,rung4 chrysene
+R4_61e37e6d4e,R4,61e37e6d4ee70c16d5bcdb7d332961dd114556dd,chrysene+vinyl,C=Cc1ccc2ccc3c4ccccc4ccc3c2c1,,20,34,pending,,,rung4 chrysene
+R4_39c1131f6b,R4,39c1131f6bc72e6dab263c65790217855c27a863,chrysene+Cl,Clc1cccc2ccc3c4ccccc4ccc3c12,,19,30,pending,,,rung4 chrysene
+R4_51c793b051,R4,51c793b05188dde95c6b0812cb8058d45253ab20,chrysene+NH2,Nc1cc2ccccc2c2ccc3ccccc3c12,,19,32,pending,,,rung4 chrysene
+R4_00d3bbecba,R4,00d3bbecbaa09ff3299ba9eeb2234ebe32cf86ac,chrysene+CONH2,NC(=O)c1cccc2ccc3c4ccccc4ccc3c12,,21,34,pending,,,rung4 chrysene
+R4_12f1415355,R4,12f1415355ec9a7e5ffd59dce3541f2ead9b7105,chrysene+F,Fc1cc2c3ccccc3ccc2c2ccccc12,,19,30,pending,,,rung4 chrysene
+R4_6e0a31350a,R4,6e0a31350a55eeacb59e3b02a6bcff92a8179098,chrysene+OH,Oc1cc2ccccc2c2ccc3ccccc3c12,,19,31,pending,,,rung4 chrysene
+R4_26ff9c9e53,R4,26ff9c9e530bce7568ee72fca6ea725a54832062,chrysene+ethynyl,C#Cc1ccc2ccc3c4ccccc4ccc3c2c1,,20,32,pending,,,rung4 chrysene
+R4_98b2889f26,R4,98b2889f260d45b68bd1e72706acf34ad290d27b,chrysene+NO2,O=[N+]([O-])c1cc2ccccc2c2ccc3ccccc3c12,,21,32,pending,,,rung4 chrysene
+R4_7d59def61c,R4,7d59def61c56d7279bbc24d8bd6c0c37c49db17a,chrysene+CN,N#Cc1cc2ccccc2c2ccc3ccccc3c12,,20,31,pending,,,rung4 chrysene
+R4_07911a2d03,R4,07911a2d03be4bfc1533de548a92b0963c05834f,chrysene+CH3,Cc1cccc2ccc3c4ccccc4ccc3c12,,19,33,pending,,,rung4 chrysene
+R4_3946ddcfd2,R4,3946ddcfd20da4e423f646ac5d57ebf735da80ab,chrysene+OCH3,COc1cccc2c1ccc1c3ccccc3ccc21,,20,34,pending,,,rung4 chrysene
+R4_2cee608fde,R4,2cee608fde74111f331815eb565ab2b6c6778056,chrysene+CHO,O=Cc1cccc2c1ccc1c3ccccc3ccc21,,20,32,pending,,,rung4 chrysene
+R4_8b25d0a20d,R4,8b25d0a20ddce5251d9297cfe23fc3714d712622,chrysene+SH,Sc1ccc2c(ccc3c4ccccc4ccc23)c1,,19,31,pending,,,rung4 chrysene
+R4_7f98193960,R4,7f98193960c09d0a62dadaf8e73f82bd989c9997,chrysene+CF3,FC(F)(F)c1ccc2c(ccc3c4ccccc4ccc23)c1,,22,33,pending,,,rung4 chrysene
+R4_5e48814f81,R4,5e48814f817e54aa7f3d9b99b8d394cdf6ada313,chrysene+COOH,O=C(O)c1cc2ccccc2c2ccc3ccccc3c12,,21,33,pending,,,rung4 chrysene
+R4_7208cad870,R4,7208cad870791db3279cabc00e6fac717510f6ae,chrysene+vinyl,C=Cc1cc2c3ccccc3ccc2c2ccccc12,,20,34,pending,,,rung4 chrysene
+R4_8605b819cb,R4,8605b819cb28dff7bf4ae0225c94fe6633c30cd1,chrysene+Cl,Clc1cc2c3ccccc3ccc2c2ccccc12,,19,30,pending,,,rung4 chrysene
+R4_8b9e082115,R4,8b9e082115eb3b6a5e9566ba1f9ceda57368ebee,chrysene+NH2,Nc1cccc2ccc3c4ccccc4ccc3c12,,19,32,pending,,,rung4 chrysene
+R4_0afd43f8a1,R4,0afd43f8a189f0f5065a3a332bec5e6211202e0f,chrysene+CONH2,NC(=O)c1cc2ccccc2c2ccc3ccccc3c12,,21,34,pending,,,rung4 chrysene
+R4_fc33a5dc93,R4,fc33a5dc9322dde0d7ae6075b2be2246566d5b33,triphenylene,c1ccc2c(c1)c1ccccc1c1ccccc21,,18,30,pending,,,rung4 triphenylene; parent
+R4_85a186d54c,R4,85a186d54c0f184df3a14457e5cae3d923263b11,triphenylene+OH,Oc1ccc2c3ccccc3c3ccccc3c2c1,,19,31,pending,,,rung4 triphenylene
+R4_beaff082c6,R4,beaff082c66ee8bca2b2eee59da854692c2bc0af,triphenylene+ethynyl,C#Cc1cccc2c3ccccc3c3ccccc3c12,,20,32,pending,,,rung4 triphenylene
+R4_0ff27aa696,R4,0ff27aa696a050d60f794356e62201bddfa3dba5,triphenylene+NO2,O=[N+]([O-])c1ccc2c3ccccc3c3ccccc3c2c1,,21,32,pending,,,rung4 triphenylene
+R4_5c5b7a2e90,R4,5c5b7a2e90925fefc2b9cd580842cf9fe60218cc,triphenylene+CN,N#Cc1ccc2c3ccccc3c3ccccc3c2c1,,20,31,pending,,,rung4 triphenylene
+R4_23b2c74cb3,R4,23b2c74cb38192ae2eb7d6c947cc2662185ac9a9,triphenylene+CH3,Cc1ccc2c3ccccc3c3ccccc3c2c1,,19,33,pending,,,rung4 triphenylene
+R4_0d2f41b7c2,R4,0d2f41b7c243866c580e623dfb7868fe77d4a363,triphenylene+OCH3,COc1ccc2c3ccccc3c3ccccc3c2c1,,20,34,pending,,,rung4 triphenylene
+R4_845602bb77,R4,845602bb771e3aa4ae047eed86f50dce51f9b9bc,triphenylene+CHO,O=Cc1cccc2c3ccccc3c3ccccc3c12,,20,32,pending,,,rung4 triphenylene
+R4_4236232408,R4,42362324083f441afcbae30b9726087ed2b5f88f,triphenylene+SH,Sc1cccc2c3ccccc3c3ccccc3c12,,19,31,pending,,,rung4 triphenylene
+R4_25fb6bf19d,R4,25fb6bf19d13d84b33c68dbe80be7734bba4093c,triphenylene+CF3,FC(F)(F)c1cccc2c3ccccc3c3ccccc3c12,,22,33,pending,,,rung4 triphenylene
+R4_7e0ec22a07,R4,7e0ec22a07d529bce5e416c900fcfe1178ff5872,triphenylene+COOH,O=C(O)c1cccc2c3ccccc3c3ccccc3c12,,21,33,pending,,,rung4 triphenylene
+R4_282cef9fd1,R4,282cef9fd123ed4bdfdb150b03b17259dfe418d2,triphenylene+vinyl,C=Cc1ccc2c3ccccc3c3ccccc3c2c1,,20,34,pending,,,rung4 triphenylene
+R4_29bb169a01,R4,29bb169a0125a404569f0673f0256bab5d46770f,triphenylene+Cl,Clc1ccc2c3ccccc3c3ccccc3c2c1,,19,30,pending,,,rung4 triphenylene
+R4_411a2e432d,R4,411a2e432d6417065fc4f67ed4b1cf0a4b623c5f,triphenylene+NH2,Nc1ccc2c3ccccc3c3ccccc3c2c1,,19,32,pending,,,rung4 triphenylene
+R4_0a195689d8,R4,0a195689d87f883b711103894dee4bd65fb9e9af,triphenylene+CONH2,NC(=O)c1cccc2c3ccccc3c3ccccc3c12,,21,34,pending,,,rung4 triphenylene
+R4_24fa7cec17,R4,24fa7cec17232b43e8d55756fb377cb2e748c1c4,triphenylene+F,Fc1cccc2c3ccccc3c3ccccc3c12,,19,30,pending,,,rung4 triphenylene
+R4_c6e2395abb,R4,c6e2395abb57d0a0be78bc55fed8ad2d6fdfc99e,triphenylene+OH,Oc1cccc2c3ccccc3c3ccccc3c12,,19,31,pending,,,rung4 triphenylene
+R4_fe8d3e376b,R4,fe8d3e376b94519863eea05399a3497f722c316e,triphenylene+ethynyl,C#Cc1ccc2c3ccccc3c3ccccc3c2c1,,20,32,pending,,,rung4 triphenylene
+R4_a03f1ce9dc,R4,a03f1ce9dc24be600f735173f6ba1e6657f7db04,triphenylene+NO2,O=[N+]([O-])c1cccc2c3ccccc3c3ccccc3c12,,21,32,pending,,,rung4 triphenylene
+R4_d0ff42048d,R4,d0ff42048d3bb64756906cdd57eeb5588fc35858,triphenylene+CN,N#Cc1cccc2c3ccccc3c3ccccc3c12,,20,31,pending,,,rung4 triphenylene
+R4_bd57d8d3f1,R4,bd57d8d3f1128ba232b0cc482e22277b80e40212,triphenylene+CH3,Cc1cccc2c3ccccc3c3ccccc3c12,,19,33,pending,,,rung4 triphenylene
+R4_2faf6ad954,R4,2faf6ad954ce6cbdd04a87a2c83b5665f9380987,triphenylene+OCH3,COc1cccc2c3ccccc3c3ccccc3c12,,20,34,pending,,,rung4 triphenylene
+R4_9f3ab79668,R4,9f3ab796682fe4d1342a8aabed7d4e8c5f1f283c,triphenylene+CHO,O=Cc1ccc2c3ccccc3c3ccccc3c2c1,,20,32,pending,,,rung4 triphenylene
+R4_b0b0426cad,R4,b0b0426cadc168c5d81c990c8ec637d73cdea348,triphenylene+SH,Sc1ccc2c3ccccc3c3ccccc3c2c1,,19,31,pending,,,rung4 triphenylene
+R4_ec8cd39081,R4,ec8cd39081df1017e2330e6d26d5986f92b65856,triphenylene+CF3,FC(F)(F)c1ccc2c3ccccc3c3ccccc3c2c1,,22,33,pending,,,rung4 triphenylene
+R4_ac13a4ac8f,R4,ac13a4ac8fdefcf7a2de9867a698fc7a2735ec27,triphenylene+COOH,O=C(O)c1ccc2c3ccccc3c3ccccc3c2c1,,21,33,pending,,,rung4 triphenylene
+R4_b82660b4a7,R4,b82660b4a72162252281cbd6c31207d526410925,triphenylene+vinyl,C=Cc1cccc2c3ccccc3c3ccccc3c12,,20,34,pending,,,rung4 triphenylene
+R4_7a3e3100a2,R4,7a3e3100a2979ef1d2b3b8ee57219bffbc8e3d2a,triphenylene+Cl,Clc1cccc2c3ccccc3c3ccccc3c12,,19,30,pending,,,rung4 triphenylene
+R4_f0b9b3b13d,R4,f0b9b3b13dbae476b4eede004b1bca8f690bf35a,triphenylene+NH2,Nc1cccc2c3ccccc3c3ccccc3c12,,19,32,pending,,,rung4 triphenylene
+R4_60b3888c0e,R4,60b3888c0eea7c3368a2635f86c499ef5c46b363,triphenylene+CONH2,NC(=O)c1ccc2c3ccccc3c3ccccc3c2c1,,21,34,pending,,,rung4 triphenylene

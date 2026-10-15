@@ -42,7 +42,7 @@ check_jobs() {
   done < "$JOBS"
 }
 
-lb="" np="" an="" so="" s2o="" s2go=""; lfails=0; pfails=0; afails=0; sfails=0; s2fails=0; s2gfails=0
+lb="" np="" an="" so="" s2o="" s2go="" l5o="" r4o=""; lfails=0; pfails=0; afails=0; sfails=0; s2fails=0; s2gfails=0; l5fails=0; r4fails=0
 remote_fail() {   # $1 = host, $2 = rc, $3 = name of the counter variable
   [ "$2" = "3" ] && { echo "ANOMALY $(t): host $1 answers with another machine (re-used IP?) — see tools/hosts.tsv"; exit 1; }
   printf -v "$3" '%d' $(( ${!3} + 1 ))
@@ -120,6 +120,10 @@ check_s2srv() { check_server_run s1 /root/dpir_s2/s2.log S2 '^bash (/root/dpir_s
   '^=== \(S2\) [A-Za-z0-9_]+: (start|done|already done, skipped) '; }
 check_s2gsrv() { check_server_run s1 /root/s2_gridcheck/s2gridcheck.log S2G '^bash /root/dpir_s2/probes/s2_gridcheck_styrene\.sh' \
   '^=== \(S2G\) styrene grid check done' s2gfails s2go; }   # 15 Oct 2026: styrene's grid check, TASKS 62
+check_l5srv() { check_server_run labels /root/labels/large_pah/run.log L5 '^bash /root/labels/large_pah_ccx53\.sh' \
+  '^=== \(L5\) all done' l5fails l5o; }   # 15 Oct 2026: lever 5 (TASKS 49), armed on the labels server since 13 Oct
+check_r4srv() { check_server_run labels /root/labels/rung4/run.log R4 '^bash /root/labels/labels_batch_ccx53\.sh /root/labels/rung4 ' \
+  '^=== \(R4\) (all done|STOPPED)' r4fails r4o; }   # 15 Oct 2026: rung 4 (TASKS 61), waits for lever 5's end
 
 check_ci() {   # 13 Oct 2026: six red plan05 runs in a row went unseen for eight hours; a failed run is reported once per commit
   local r
@@ -138,6 +142,8 @@ for i in $(seq 1 "$CYCLES"); do
   check_s1srv
   check_s2srv
   check_s2gsrv
+  check_l5srv
+  check_r4srv
   check_ci
   [ "$i" -lt "$CYCLES" ] && sleep "$SLEEP"
 done

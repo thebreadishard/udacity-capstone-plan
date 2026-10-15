@@ -79,3 +79,17 @@ def test_manifest_append_is_idempotent_and_touches_only_the_twins(rows, tmp_path
     assert len(after) == len(before) + 150 and len(changed) == len(twins) == 5
     by_id = {r["id"]: r for r in csv.DictReader(open(m, newline="", encoding="utf-8"))}
     assert all(by_id[g]["status"] == "moved" for g in twins) and all(by_id[r["id"]]["status"] == "pending" for r in rows)
+
+
+def test_jobs_from_the_frozen_list(tmp_path):
+    """probes/rung4_jobs.py (15 Oct 2026): every row becomes an optimise-only psi4 job with the list's atom count and the server's out_dir."""
+    import json as _json
+
+    import rung4_jobs as J
+    rows = list(csv.DictReader(open(J.CSV, encoding="utf-8")))
+    deck = dict(_json.load(open(J.DECK, encoding="utf-8")), threads=8, memory_gb=24)
+    for r in rows[:3] + [next(x for x in rows if x["test_family"] == "1")]:
+        j = J.job(r, deck, "/srv/r4")
+        assert len(j["xyz_angstrom"]) == int(r["n_atoms"]) and j["out_dir"] == f"/srv/r4/{r['id']}"
+        assert j["optimise"] and not j["hessians"] and j["layer"] == "R4" and j["source"]["test_family"] == int(r["test_family"])
+    assert J.job(rows[0], deck, "/srv/r4") == J.job(rows[0], deck, "/srv/r4")                        # deterministic (seed 0)
