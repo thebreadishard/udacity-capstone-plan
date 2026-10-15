@@ -115,3 +115,6 @@ plans/05_delta-probed-ir-pipeline/probes/watch_state/
 !.claude/settings.json
 !plans/*/tools/hooks/*.json
 !plans/*/probes/runspecs/*.json
+
+# 15 Oct 2026: label snapshots fetched for a read (TASKS 65); their ids and sha256 are committed with the read, the files are not
+plans/*/modules/*/corpus/labels_snapshot_*/
