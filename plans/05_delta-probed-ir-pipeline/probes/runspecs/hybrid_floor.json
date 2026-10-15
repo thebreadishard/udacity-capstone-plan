@@ -1,0 +1,6 @@
+{"name": "hybrid_floor", "purpose": "TASKS 65: the carried head's floor, registered read (PreRegistration_2026-10-15_Hybrid_Form_Floor.md)",
+ "host": "laptop", "workdir": "probes/results_m1/hybrid_floor_2026-10-15",
+ "command": "PYTHONUTF8=1 nice -n 10 python ../../hybrid_form_floor.py --inputs ../arch_floor_2026-10-15/inputs.tsv --out floor",
+ "sources": [{"local": "probes/hybrid_form_floor.py"}, {"local": "probes/floor_lines.py"}, {"local": "probes/architecture_floor.py"}],
+ "progress": {"regex": "^  progress [0-9]+/[0-9]+ molecules", "max_gap_minutes": 30},
+ "end_regex": "^# The carried head's floor", "threads": 4}

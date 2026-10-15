@@ -59,27 +59,13 @@ def test_the_form_keeps_near_symmetric_blocks_and_the_sum_rule():
     assert np.allclose(full, full.T)
 
 
-def test_floor_sums_pool_exactly():
-    K = np.diag([1.0, 2.0, 3.0, 4.0])
-    K[1, 2] = K[2, 1] = 0.5                                               # a coupling inside the ring family (modes 1 and 2)
-    Kf = K + np.diag([0.0, 1.0, 2.0, 0.0])
-    s = AF.floor_sums(K, Kf, ["CH-stretch", "ring-ip", "ring-ip", "other"])
-    assert s["ring-ip"] == [5.0, 2] and s["CH-stretch"] == [0.0, 1] and s["CH-oop"] == [0.0, 0]
-    assert s["ring_coupling"] == [0.0, 0.25]
-    rec = {"variants": {"form": s}}
+def test_records_pool_through_the_shared_lines():
+    s = {"ring-ip": [5.0, 2], "CH-oop": [0.0, 0], "ring_coupling": [1.0, 4.0]}
+    rec = {"n_atoms": 24, "variants": {"form": s}}
     assert AF.pooled_rms([rec, rec], "form", "ring-ip") == pytest.approx(np.sqrt(10 / 4))
     assert np.isnan(AF.pooled_rms([rec], "form", "CH-oop"))
-
-
-def test_line_1_bound_is_lowered_until_thirty_molecules_are_in():
-    recs = [{"n_atoms": n} for n in [30] * 10 + [24] * 15 + [23] * 10 + [10] * 50]
-    assert AF.line_1_bound(recs) == 23
-    assert AF.line_1_bound([{"n_atoms": 26}] * 30) == 25
-
-
-def test_the_power_law_recovers_a_known_exponent():
-    n = np.array([10.0, 15, 20, 30])
-    assert AF.power_law_at(n, 0.02 * n ** 1.3, 60) == pytest.approx(0.02 * 60 ** 1.3)
+    assert AF.pooled_rms([rec], "form", "ring_coupling") == pytest.approx(0.5)
+    assert AF.line_1_bound([rec] * 30) == 24
 
 
 def synthetic_records(scale: float) -> list[dict]:

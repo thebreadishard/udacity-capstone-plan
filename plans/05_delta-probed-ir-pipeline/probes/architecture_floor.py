@@ -24,19 +24,16 @@ import numpy as np
 
 PLAN = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PLAN / "modules" / "05_support_predictor" / "m05"))
+sys.path.insert(0, str(PLAN / "probes"))
+import floor_lines as FL  # noqa: E402  (pooling, line 1's bound, line 2's power law: shared with hybrid_form_floor.py)
 import learning_curve_layerA as LA  # noqa: E402  (normal modes, mode families and units exactly as rung C's read-outs use them)
 
 BOHR_PER_ANGSTROM = 1 / 0.529177210903
 MODEL_CUTOFF_ANGSTROM = 5.0                  # rungC_equivariant.CUTOFF_BOHR in Å; tests/test_architecture_floor.py keeps the two equal
 SWEEP_ANGSTROM = (4.0, 5.0, 6.0, 8.0, 10.0)
-FAMILIES = tuple(LA.FAMILIES)                # CH-stretch, CH-oop, ring-ip, other
-RING = "ring-ip"
+FAMILIES = FL.FAMILIES
 LABEL_FILES = ("geometry.json", "hessian_b3lyp_analytic.npz", "hessian_wb97x_analytic.npz")
-
-# the registered lines
-LINE_1_CM, LINE_1_MIN_ATOMS, LINE_1_MIN_MOLECULES = 1.0, 25, 30
-LINE_2_CM, LINE_2_AT_ATOMS, LINE_2_FIT_MIN_ATOMS = 1.25, 60, 10
-BOOTSTRAP, BOOTSTRAP_SEED = 1000, 0
+LINE_1_CM, LINE_2_CM = 1.0, 1.25             # the registered lines (cm⁻¹); the size bound and the forecast's rules are floor_lines'
 
 
 @dataclass(frozen=True)
@@ -94,18 +91,6 @@ def mode_correction(dH: np.ndarray, masses_amu: np.ndarray, w: np.ndarray, V: np
     return km / (2 * np.sqrt(np.outer(om, om))) * LA.HARTREE2CM
 
 
-def floor_sums(K_true: np.ndarray, K_form: np.ndarray, families: list[str]) -> dict:
-    """Sums of squares for exact pooling: per family (sum of squared diagonal errors, modes); for the ring family's couplings (sum of squared
-    off-diagonal errors, sum of squared true couplings)."""
-    fam = np.asarray(families)
-    err = K_form - K_true
-    out = {F: [float(np.sum(np.diag(err)[fam == F] ** 2)), int(np.sum(fam == F))] for F in FAMILIES}
-    r = np.flatnonzero(fam == RING)
-    iu = np.triu_indices(len(r), 1)
-    out["ring_coupling"] = [float(np.sum(err[np.ix_(r, r)][iu] ** 2)), float(np.sum(K_true[np.ix_(r, r)][iu] ** 2))]
-    return out
-
-
 # ---------------------------------------------------------------- one molecule (I/O)
 
 def molecule_floor(folder: Path) -> dict:
@@ -118,9 +103,9 @@ def molecule_floor(folder: Path) -> dict:
     K_true = mode_correction(dH, masses, w, V)
     K_projected = mode_correction(hi["H_projected"] - lo["H_projected"], masses, w, V)
     rec = {"id": folder.name, "n_atoms": len(masses), "raw_vs_projected_max_cm": float(np.max(np.abs(K_true - K_projected))),
-           "variants": {v.name: floor_sums(K_true, mode_correction(form_oracle(dH, coords, MODEL_CUTOFF_ANGSTROM, v), masses, w, V), families)
+           "variants": {v.name: FL.error_sums(K_true, mode_correction(form_oracle(dH, coords, MODEL_CUTOFF_ANGSTROM, v), masses, w, V), families)
                         for v in VARIANTS},
-           "sweep": {str(c): floor_sums(K_true, mode_correction(form_oracle(dH, coords, c, FORM), masses, w, V), families)
+           "sweep": {str(c): FL.error_sums(K_true, mode_correction(form_oracle(dH, coords, c, FORM), masses, w, V), families)
                      for c in SWEEP_ANGSTROM}}
     return rec
 
@@ -128,66 +113,27 @@ def molecule_floor(folder: Path) -> dict:
 # ---------------------------------------------------------------- the registered read (pure, on the records)
 
 def pooled_rms(records: list[dict], key: str, family: str, where: str = "variants") -> float:
-    ss = sum(r[where][key][family][0] for r in records)
-    n = sum(r[where][key][family][1] for r in records)
-    return float(np.sqrt(ss / n)) if n else float("nan")
-
-
-def ring_coupling_floor(records: list[dict], key: str, where: str = "variants") -> float:
-    err = sum(r[where][key]["ring_coupling"][0] for r in records)
-    true = sum(r[where][key]["ring_coupling"][1] for r in records)
-    return float(np.sqrt(err / true)) if true else float("nan")
+    """A family's pooled rms (or, family "ring_coupling", the ring-coupling ratio) of one variant or sweep point over records."""
+    return FL.pooled([r[where][key] for r in records], family)
 
 
 def line_1_bound(records: list[dict]) -> int:
-    """≥ 25 atoms; lowered one atom at a time until at least 30 molecules are in (registered)."""
-    bound = LINE_1_MIN_ATOMS
-    while bound > 0 and sum(r["n_atoms"] >= bound for r in records) < LINE_1_MIN_MOLECULES:
-        bound -= 1
-    return bound
-
-
-def power_law_at(n_atoms: np.ndarray, floor: np.ndarray, at: float) -> float:
-    """Least squares in log–log, evaluated at `at` atoms."""
-    slope, icpt = np.polyfit(np.log(n_atoms), np.log(floor), 1)
-    return float(np.exp(icpt + slope * np.log(at)))
-
-
-def per_molecule_floor(records: list[dict], family: str) -> tuple[np.ndarray, np.ndarray]:
-    """(atom counts, the form floor's rms) of the molecules of ≥ LINE_2_FIT_MIN_ATOMS that have modes of the family and a non-zero floor
-    (a zero cannot enter a log–log fit)."""
-    atoms, floors = [], []
-    for r in records:
-        ss, n = r["variants"][FORM.name][family]
-        if r["n_atoms"] >= LINE_2_FIT_MIN_ATOMS and n and ss > 0:
-            atoms.append(r["n_atoms"])
-            floors.append(np.sqrt(ss / n))
-    return np.asarray(atoms, dtype=float), np.asarray(floors, dtype=float)
-
-
-def bootstrap_interval(n_atoms: np.ndarray, floor: np.ndarray, at: float, rng: np.random.Generator) -> list[float]:
-    """The 2.5 and 97.5 percentiles of the power law's value at `at` over BOOTSTRAP resamples of the molecules."""
-    values = []
-    for _ in range(BOOTSTRAP):
-        idx = rng.integers(0, len(n_atoms), len(n_atoms))
-        values.append(power_law_at(n_atoms[idx], floor[idx], at))
-    return [float(np.percentile(values, 2.5)), float(np.percentile(values, 97.5))]
+    return FL.line_1_bound([r["n_atoms"] for r in records])
 
 
 def read(records: list[dict]) -> dict:
     bound = line_1_bound(records)
     upper = [r for r in records if r["n_atoms"] >= bound]
-    rng = np.random.default_rng(BOOTSTRAP_SEED)
+    rng = np.random.default_rng(FL.BOOTSTRAP_SEED)
     fam_out = {}
     for F in FAMILIES:
         line1 = pooled_rms(upper, FORM.name, F)
-        n, f = per_molecule_floor(records, F)
-        fit = len(n) >= 3
-        at60 = power_law_at(n, f, LINE_2_AT_ATOMS) if fit else float("nan")
+        points = [(r["n_atoms"], v) for r in records if (v := FL.per_molecule(r["variants"][FORM.name], F)) is not None]
+        at60, interval, n_fit = FL.forecast(points, rng)
         fam_out[F] = {
             "line_1_floor_cm": line1, "line_1_met": bool(line1 >= LINE_1_CM),
-            "line_2_floor_at_60_cm": at60, "line_2_interval_cm": bootstrap_interval(n, f, LINE_2_AT_ATOMS, rng) if fit else None,
-            "line_2_met": bool(at60 >= LINE_2_CM), "n_fit": int(len(n)),
+            "line_2_floor_at_60_cm": at60, "line_2_interval_cm": interval,
+            "line_2_met": bool(at60 >= LINE_2_CM), "n_fit": n_fit,
             "attribution_upper_cm": {v.name: pooled_rms(upper, v.name, F) for v in VARIANTS},
             "sweep_upper_cm": {c: pooled_rms(upper, c, F, "sweep") for c in map(str, SWEEP_ANGSTROM)},
         }
@@ -195,7 +141,7 @@ def read(records: list[dict]) -> dict:
     verdict = (f"the form costs in {', '.join(met)}: a model change is registered before more data is bought for size" if met
                else "neither line met: the form is not the limit at these sizes; the size levers stay with data")
     return {"verdict": verdict, "families": fam_out, "line_1_bound_atoms": bound, "n_upper": len(upper), "n_molecules": len(records),
-            "ring_coupling_floor_upper": {v.name: ring_coupling_floor(upper, v.name) for v in VARIANTS},
+            "ring_coupling_floor_upper": {v.name: pooled_rms(upper, v.name, "ring_coupling") for v in VARIANTS},
             "raw_vs_projected_max_cm": max(r["raw_vs_projected_max_cm"] for r in records)}
 
 
