@@ -27,3 +27,9 @@ def test_size_split_off_and_control():
 def test_size_split_refuses_an_empty_holdout():
     with pytest.raises(SystemExit):
         RT.size_split(["a", "b"], NAT, test_min_atoms=40)
+
+
+def test_pool_sizes_accept_all_half_and_numbers():
+    """15 Oct 2026 (TASKS 66): 'half' is half of the pool known at the run; numbers are capped at the pool; repeats collapse."""
+    assert RT.pool_sizes("all", 868) == [868] and RT.pool_sizes("half", 868) == [434] and RT.pool_sizes("half", 7) == [3]
+    assert RT.pool_sizes("45,100,all", 80) == [45, 80] and RT.pool_sizes("half,all,999", 10) == [5, 10]

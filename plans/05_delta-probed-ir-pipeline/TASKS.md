@@ -231,7 +231,10 @@ bound is lower but trained worse at 750 on 1 Oct. Registration `GoalGathering/no
 `probes/target_comparison_read.py` (tests on synthetic records first: `tests/test_target_comparison_read.py`, 8). Arms P / R × setting C (size
 split at 27, full and half pool) and F (full pool), 3 seeds: 18 trainings. **Before the launch:** the analytic labels merged (row 'Analytic
 labels for the corpus', ≈ 24–29 Oct); a chain spec + run spec, priced on the merged corpus (chain 39's control: 979–1,100 s per seed, 9 Oct).
-**Next:** the chain spec and its dry run while the labels finish; launch after the merge; read; outcome; TASKS 71.
+**15 Oct 23:2x — spec ready, not launched:** `probes/runs/chain44.json` (dry run 33 steps; the R arm first, because its LS targets are computed
+on the fly and the scale guard may stop the run; the LS cache keys on ΔH, so targets cached on FD labels are recomputed after the merge) and
+`probes/runspecs/chain44.json` (valid, resumable). `rungC_train --sizes half` (= pool // 2, `pool_sizes`, test). **Next:** after the FETCHED
+line of the labels server and a look at the merged corpus: price on the merged corpus, `runspec.py launch probes/runspecs/chain44.json`.
 65. **The architecture's floor — can rung C's form hold a large molecule's correction? (15 Oct 19:1x; the user: 'Ja, begin maar met de
 registratie. Let extra op codekwaliteit, ook van de Python.')** Why: the size levers bought so far (lever 5, rung 4, the PC question) assume a
 learning error; the head writes pair blocks only within 5 Å, symmetric, diagonal from the sum rule, and nobody measured what that form cannot

@@ -66,3 +66,8 @@ couplings (d ≈ 0.02–0.04); line 2 met. Less likely (one in three): flat, as 
 ## Outcome
 
 (to be appended)
+
+## Note (15 Oct 2026, 23:2x; before any training) — 'half' made precise
+
+'Half of the pool' in setting C is `rungC_train --sizes half`, i.e. the first ⌊N/2⌋ molecules of the size-split pool in its hash order (the
+trainer's own order for every pool size), N known only on the merged corpus. Spec: `probes/runs/chain44.json`. No line changes.

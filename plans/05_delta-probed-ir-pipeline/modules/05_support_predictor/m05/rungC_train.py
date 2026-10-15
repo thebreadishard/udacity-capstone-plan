@@ -433,6 +433,13 @@ def per_molecule_readouts(mols: dict, ids: list, tr: list, dF_of) -> dict:
     return out
 
 
+def pool_sizes(spec: str, n_pool: int) -> list[int]:
+    """The training pool sizes of --sizes: integers, 'all' (the whole pool) or 'half' (15 Oct 2026, TASKS 66: half of a pool whose size is known
+    only at the run), each capped at the pool, sorted and without repeats."""
+    named = {"all": n_pool, "half": n_pool // 2}
+    return sorted({min(named[s] if s in named else int(s), n_pool) for s in spec.split(",")})
+
+
 def size_split(pool: list, n_atoms: dict, test_min_atoms: int = 0, pool_max_atoms: int = 0) -> tuple[list, list]:
     """TASKS 35 (8 Oct 2026), size extrapolation: (training pool, hold-out (s)). Pool molecules with ≥ test_min_atoms atoms become hold-out (s) and
     never train; with pool_max_atoms the pool keeps only molecules of ≤ that many atoms. 0 switches either off. Order is kept."""
@@ -596,7 +603,7 @@ def main() -> int:
     ap.add_argument("molecules")
     ap.add_argument("out_prefix")
     ap.add_argument("--threads", type=int, default=8)
-    ap.add_argument("--sizes", default="45,100,175", help="the pair model's registered sizes; 'all' = the whole pool")
+    ap.add_argument("--sizes", default="45,100,175", help="the pair model's registered sizes; 'all' = the whole pool, 'half' = half of it")
     ap.add_argument("--pool-layers", default="A,A2",
                     help="split e6: keep only these layers in the pool (the registered floor's pool was layer A + A2; layer B entered the corpus later)")
     ap.add_argument("--seeds", default="0,1,2")
@@ -674,7 +681,7 @@ def main() -> int:
         pool = sorted((i for i, m in mols.items() if m["layer"] == "B"), key=E6.sha)
         test_a = sorted(i for i, m in mols.items() if m["layer"] == "A")
         assert pool, "no admitted layer-B molecules under the molecules directory"
-    sizes = sorted({min(int(s) if s != "all" else len(pool), len(pool)) for s in a.sizes.split(",")})
+    sizes = pool_sizes(a.sizes, len(pool))
     seeds = [int(s) for s in a.seeds.split(",")]
     if a.smoke:
         sizes, seeds, a.epochs = [min(5, len(pool))], [0], (a.epochs or 2)
