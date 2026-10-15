@@ -20,7 +20,7 @@ next check. Keep it current — a task that starts or ends changes a row, with t
 
 ## Editing
 One python patch script per edit round, in the scratchpad, built on `plans/05_delta-probed-ir-pipeline/tools/patch_file.py`
-(`patch`, `append`, `insert_after_line`): exact-string `assert` on every anchor, the whole new text built in memory, then `os.replace` a
+(`patch`, `append`, `insert_after_line`; `patch_many` when an edit round touches several files): exact-string `assert` on every anchor, the whole new text built in memory, then `os.replace` a
 temp file over the original. Never open the target for
 writing before the assertions pass — that emptied a probe script on 14 September.
 
