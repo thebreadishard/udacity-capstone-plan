@@ -1,0 +1,31 @@
+{
+ "verdict": "L4 fails on B_1f3de8463a",
+ "line_e": 0.0001,
+ "molecules": {
+  "B_1b2efba17c": {
+   "max_diff_no_grid_response_e": 4.065526583818535e-05,
+   "max_diff_grid_response_e": 8.381355547917857e-05,
+   "meets_line": true
+  },
+  "B_038a62c6d7": {
+   "max_diff_no_grid_response_e": 6.448807471709506e-05,
+   "max_diff_grid_response_e": 9.08307199394831e-05,
+   "meets_line": true
+  },
+  "A2_0b93df3e1a": {
+   "max_diff_no_grid_response_e": 8.294811503262167e-05,
+   "max_diff_grid_response_e": 0.0001056301137624116,
+   "meets_line": true
+  },
+  "B_05e6c88b0b": {
+   "max_diff_no_grid_response_e": 3.495380892659661e-05,
+   "max_diff_grid_response_e": 3.8335951136364566e-05,
+   "meets_line": true
+  },
+  "B_1f3de8463a": {
+   "max_diff_no_grid_response_e": 0.00029712965308981154,
+   "max_diff_grid_response_e": 0.0002994070209396682,
+   "meets_line": false
+  }
+ }
+}

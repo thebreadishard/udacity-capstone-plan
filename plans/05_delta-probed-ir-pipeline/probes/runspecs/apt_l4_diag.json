@@ -1,0 +1,8 @@
+{"name": "apt_l4_diag", "purpose": "TASKS 44: diagnosis D1 of L4's miss - the field route at F = 2e-3 on B_1f3de8463a (REGISTRATION.md, 16 Oct 2026)",
+ "host": "laptop", "workdir": "probes/results_m1/apt_refine_install_2026-10-12/l4",
+ "command": "MSYS_NO_PATHCONV=1 wsl -e bash /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/apt_l4_run.sh --field 2e-3 --only B_1f3de8463a",
+ "sources": [{"local": "probes/apt_l4_run.sh"}, {"local": "probes/apt_field_route.py"}, {"local": "probes/apt_l4_diag.py"}],
+ "progress": {"regex": "^  field component [0-9]/3 done|^=== \\(L4D\\) ", "max_gap_minutes": 90},
+ "marker_regex": "^=== \\(L4D\\) (start|STOPPED|all done)", "end_regex": "^=== \\(L4D\\) all done",
+ "estimate": {"hours": 0.8, "basis": "L4 on this molecule at F = 1e-3: 2749 s on this laptop (16 Oct 2026, apt_l4.log)"},
+ "dry_run_args": "--dry-run", "resumable": true}
