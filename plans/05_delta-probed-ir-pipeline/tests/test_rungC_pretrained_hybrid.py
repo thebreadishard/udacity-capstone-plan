@@ -1,6 +1,5 @@
 """Lever 2a (1 Oct 2026): a `rungC_pretrain.py` checkpoint's body under the hybrid head — the weights arrive unchanged, an aggregation mismatch is
 refused, unseen element rows are reset to the trained mean, and the trainer no longer refuses `--pretrained --head hybrid`."""
-import re
 import sys
 from pathlib import Path
 
@@ -12,6 +11,7 @@ sys.path.insert(0, str(M05))
 import rungC_equivariant as RC  # noqa: E402
 import rungC_hybrid as RH  # noqa: E402
 import rungC_train as RT  # noqa: E402
+from rungC_config import TrainConfig  # noqa: E402
 
 torch.set_num_threads(1)
 
@@ -48,6 +48,6 @@ def test_unseen_elements_are_reset_and_mismatched_aggregation_refused(tmp_path):
 
 
 def test_trainer_guard_refuses_tensor_input_only():
-    text = (M05 / "rungC_train.py").read_text(encoding="utf-8")
-    assert re.search(r"if pretrained and tensor_input:\n\s+raise ValueError", text)
-    assert "--tensor-input and --head hybrid are fresh-body variants" not in text
+    with pytest.raises(ValueError, match="--tensor-input is a fresh-body variant"):
+        TrainConfig(molecules="mol", out_prefix="out", pretrained="x.pt", tensor_input=True)
+    assert TrainConfig(molecules="mol", out_prefix="out", pretrained="x.pt", head="hybrid", aux="both").pretrained == "x.pt"   # allowed

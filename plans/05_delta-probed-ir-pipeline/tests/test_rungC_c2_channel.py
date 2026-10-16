@@ -12,6 +12,7 @@ sys.path.insert(0, str(M05))
 import rungC_equivariant as RC  # noqa: E402
 import rungC_pretrain as PT  # noqa: E402
 import rungC_train as RT  # noqa: E402
+from rungC_config import TrainConfig  # noqa: E402
 
 torch.set_num_threads(1)
 
@@ -41,11 +42,11 @@ def test_non_finite_loss_aborts():
     t["dF_norm"] = torch.tensor(1.0)
     t["cls"] = RT.entry_classes(w)
     tensors = {"w": t}
-    model_ok, _ = RT.train_one(["w"], tensors, seed=0, epochs=1, log=lambda s: None)
-    assert model_ok is not None
+    cfg = TrainConfig(molecules="-", out_prefix="-", epochs=1)
+    assert RT.train_one(["w"], tensors, 0, cfg, log=lambda s: None).model is not None
     tensors["w"]["dH_true"] = t["dH_true"] * float("nan")                        # a NaN target makes the first loss NaN
     with pytest.raises(RuntimeError, match="non-finite loss"):
-        RT.train_one(["w"], tensors, seed=0, epochs=1, log=lambda s: None)
+        RT.train_one(["w"], tensors, 0, cfg, log=lambda s: None)
 
 
 def test_pretrained_transfer_preflight():

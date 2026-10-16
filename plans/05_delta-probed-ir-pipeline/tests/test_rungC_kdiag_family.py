@@ -1,8 +1,6 @@
 """Chain 34 (3 Oct 2026, decision 53): the family-balanced K-diagonal term of rungC_train. Synthetic tensors: two families whose true diagonals differ
 20× in size; an error on the small family alone barely moves the 'all' term and moves the 'family' term by half its size; with one family the two modes
 agree; kring_tensors carries one code per family label; the CLI flag and the train_one parameter exist; the loader defaults old records to 'all'."""
-import inspect
-import re
 import sys
 from pathlib import Path
 
@@ -13,6 +11,7 @@ torch = pytest.importorskip("torch")
 PLAN = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PLAN / "modules" / "05_support_predictor" / "m05"))
 import rungC_train as RT  # noqa: E402
+from rungC_config import parse_config  # noqa: E402
 
 
 def _tensors(d_true, fam):
@@ -50,10 +49,10 @@ def test_kring_tensors_family_codes():
 
 
 def test_flag_parameter_and_loader_default():
-    src = (PLAN / "modules" / "05_support_predictor" / "m05" / "rungC_train.py").read_text(encoding="utf-8")
-    assert re.search(r'add_argument\("--kdiag-mode", default="all", choices=\["all", "family", "family-low"\]', src)
-    assert "kdiag_mode" in inspect.signature(RT.train_one).parameters
-    assert 'ck.get("kdiag_mode", "all")' in src
+    assert parse_config(["mol", "out"]).kdiag_mode == "all"
+    assert parse_config(["mol", "out", "--aux", "both", "--kdiag-weight", "0.1", "--kdiag-mode", "family-low"]).kdiag_mode == "family-low"
+    saved_before_3_oct = {"aux_mode": "both", "kring_weight": 0.3, "kdiag_weight": 0.1, "aux_class_scale": torch.ones(9)}
+    assert RT.loss_settings(saved_before_3_oct).kdiag_mode == "all"
 
 
 def test_family_low_splits_other_at_700():

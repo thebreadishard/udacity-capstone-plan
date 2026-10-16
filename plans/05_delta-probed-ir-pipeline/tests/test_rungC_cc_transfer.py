@@ -13,6 +13,7 @@ sys.path.insert(0, str(M05))
 import rungC_cc_transfer as RT_T  # noqa: E402
 import rungC_hybrid as RH  # noqa: E402
 import rungC_train as RT  # noqa: E402
+from rungC_config import TrainConfig, parse_config  # noqa: E402
 
 torch.set_num_threads(1)
 
@@ -20,16 +21,17 @@ torch.set_num_threads(1)
 def test_save_and_load_round_trip(tmp_path):
     torch.manual_seed(0)
     m = RH.HybridDeltaFModel(aggregation="sum", sqm_scale=True, n_pair_features=66, hidden=256)
-    m.aux_mode, m.kring_weight, m.kdiag_weight = "both", 0.3, 0.1
-    m.aux_class_scale = torch.rand(RH.N_PAIR_CLASSES)
+    loss = RT.LossSettings(mode="both", kring_weight=0.3, kdiag_weight=0.1, kdiag_mode="family", class_scale=torch.rand(RH.N_PAIR_CLASSES))
     args = dict(aggregation="sum", tensor_input=False, sqm_scale=True, pattern="f", aux_target="projected", ls_lam=1e-3, head="hybrid")
     p = tmp_path / "m.pt"
-    RT.save_hybrid_model(m, p, args, n=750, seed=0, train_ids=["a", "b"])
+    RT.save_hybrid_model(m, loss, p, args, n=750, seed=0, train_ids=["a", "b"])
     m2, ck = RT.load_hybrid_model(p)
     assert ck["train_ids"] == ["a", "b"]                                   # 8 Oct 2026: the training pool travels with the model
     for k, v in m.state_dict().items():
         assert torch.equal(m2.state_dict()[k], v)
-    assert (m2.aux_mode, m2.kring_weight, m2.kdiag_weight) == ("both", 0.3, 0.1) and torch.equal(m2.aux_class_scale, m.aux_class_scale)
+    back = RT.loss_settings(ck)
+    assert (back.mode, back.kring_weight, back.kdiag_weight, back.kdiag_mode) == ("both", 0.3, 0.1, "family")
+    assert torch.equal(back.class_scale, loss.class_scale)
     assert ck["pattern"] == "f" and ck["n"] == 750 and m2.head[0].out_features == 256 and m2.n_pair_features == 66
 
 
@@ -50,8 +52,9 @@ def test_exclude_pool_ids(tmp_path):
     assert RT.exclude_pool_ids(["m1"], None) == (["m1"], [])
     with pytest.raises(SystemExit):
         RT.exclude_pool_ids(["m1"], str(f))                      # nothing in common: refuse rather than run the full pool
-    text = (M05 / "rungC_train.py").read_text(encoding="utf-8")
-    assert 'add_argument("--exclude-ids-file"' in text and "pool, excluded = exclude_pool_ids(pool, a.exclude_ids_file)" in text
+    assert parse_config(["mol", "out", "--exclude-ids-file", str(f)]).exclude_ids_file == str(f)
+    with pytest.raises(SystemExit):
+        parse_config(["mol", "out", "--exclude-ids-file", str(tmp_path / "missing.txt")])   # refused before the corpus is loaded
 
 
 def test_record_paths_keep_a_dotted_prefix():
@@ -63,10 +66,9 @@ def test_record_paths_keep_a_dotted_prefix():
 
 
 def test_trainer_switch_present():
-    import re
-    text = (M05 / "rungC_train.py").read_text(encoding="utf-8")
-    assert re.search(r'add_argument\("--save-model", action="store_true"', text)
-    assert "tensors[i] = molecule_tensors(i, m, mols[i]" in text
+    assert parse_config(["mol", "out", "--head", "hybrid", "--aux", "both", "--save-model"]).save_model
+    with pytest.raises(ValueError, match="--save-model works only with --head hybrid"):
+        TrainConfig(molecules="mol", out_prefix="out", save_model=True)       # refused before training, not after the first seed
 
 
 @pytest.mark.skipif(not (PLAN / "modules" / "05_support_predictor" / "corpus" / "molecules" / "A_8448043181" / "hessian_b3lyp_analytic.npz").exists(),

@@ -13,6 +13,7 @@ import copy
 import json
 import sys
 import time
+from dataclasses import replace
 from datetime import datetime
 from pathlib import Path
 from types import SimpleNamespace
@@ -32,9 +33,11 @@ import rungC_intensities as RI  # noqa: E402
 from learning_curve_layerA import AMU2AU, HARTREE2CM, normal_modes  # noqa: E402
 from rungC_equivariant import Z_OF, charge_index  # noqa: E402
 from rungC_train import (  # noqa: E402
+    LossSettings,
     _terms,
     freeze_for_transfer,
     load_hybrid_model,
+    loss_settings,
     molecule_tensors,
     pattern_class_scales,
     predictor,
@@ -128,10 +131,11 @@ def attach_lora(model, rank: int) -> list:
     return [lora.A, lora.B]
 
 
-def finetune(model, tensors: dict, train_ids: list, epochs: int, lr: float, mode: str, aux_weight: float, log=print, head_l2: float = 0.0,
-             lora_rank: int = 0) -> list:
-    """Fine-tune on the training anchors: mode 'head' = head's last layer + α; 'head_l2' = the same with the penalty head_l2 · ‖W − W₀‖² toward the
-    proxy-trained last layer (T3b, 14:2x); 'alpha' = α only; 'none' = no training. Returns the loss history."""
+def finetune(model, loss_cfg: LossSettings, tensors: dict, train_ids: list, epochs: int, lr: float, mode: str, aux_weight: float, log=print,
+             head_l2: float = 0.0, lora_rank: int = 0) -> list:
+    """Fine-tune on the training anchors with the loss the model was trained with (`loss_cfg`), its pattern class scales refitted on the
+    anchors: mode 'head' = head's last layer + α; 'head_l2' = the same with the penalty head_l2 · ‖W − W₀‖² toward the proxy-trained last
+    layer (T3b, 14:2x); 'alpha' = α only; 'none' = no training. Returns the loss history."""
     if mode == "none":
         return []
     params = freeze_for_transfer(model)
@@ -144,7 +148,7 @@ def finetune(model, tensors: dict, train_ids: list, epochs: int, lr: float, mode
             raise SystemExit(f"mode '{mode}' needs a model with the SQM α (trained with --sqm-scale)")
         if mode == "lora":
             params = params + attach_lora(model, lora_rank)
-    model.aux_class_scale = pattern_class_scales(tensors, train_ids)
+    fit_loss = replace(loss_cfg, class_scale=pattern_class_scales(tensors, train_ids))
     opt = torch.optim.Adam(params, lr=lr)
     hist = []
     for ep in range(epochs):
@@ -152,7 +156,7 @@ def finetune(model, tensors: dict, train_ids: list, epochs: int, lr: float, mode
         tot = 0.0
         for i in train_ids:
             opt.zero_grad()
-            main, aux, _ = _terms(model, tensors[i])
+            main, aux, _ = _terms(model, tensors[i], fit_loss)
             loss = main + aux_weight * aux
             if w0:
                 loss = loss + head_l2 * sum(((p - q) ** 2).sum() for p, q in zip(model.head[-1].parameters(), w0, strict=True))
@@ -234,6 +238,7 @@ def main() -> int:
     mols = T2.load(mdir)
     MR.require_carried(Path(a.model), allow=a.allow_any_model)                    # decision 55: reads run on carried models
     model0, ck = load_hybrid_model(Path(a.model))
+    loss_cfg = loss_settings(ck)
     cfg = SimpleNamespace(aux=ck["aux_mode"], head=ck["head"], pattern=ck["pattern"], aux_target=ck["aux_target"], ls_lam=ck["ls_lam"], zero_hlow=False)
     print(f"model {Path(a.model).name}: pattern {cfg.pattern}, aux {cfg.aux}, target {cfg.aux_target}; anchors {sorted(anchors)}", flush=True)
     tensors, lows = {}, {}
@@ -302,8 +307,8 @@ def main() -> int:
         for mode in ("none", "alpha", "head") + (("head_l2",) if a.head_l2 > 0 else ()) + (("lora",) if a.lora_rank > 0 else ()):
             model = copy.deepcopy(model0)
             tag = f"[{held} {mode}]"
-            hist = finetune(model, tensors, tr, a.epochs, a.lr, mode, a.aux_weight, log=lambda s, tag=tag: print(f"  {tag} {s}", flush=True), head_l2=a.head_l2,
-                            lora_rank=a.lora_rank)
+            hist = finetune(model, loss_cfg, tensors, tr, a.epochs, a.lr, mode, a.aux_weight, log=lambda s, tag=tag: print(f"  {tag} {s}", flush=True),
+                            head_l2=a.head_l2, lora_rank=a.lora_rank)
             fold[f"network_{mode}"] = {**read(held, tr, predictor(model, tensors, mols)), "final_loss": (hist[-1] if hist else None)}
             if a.oop_couplings_low and mode in ("head", "head_l2"):
                 fold[f"network_{mode}_ooplow"] = read(held, tr, ooplow(predictor(model, tensors, mols)))
@@ -325,8 +330,8 @@ def main() -> int:
             raise SystemExit(f"--predict {clash}: anchors are read leave-one-out, not predicted from a fit that saw them")
         model = copy.deepcopy(model0)
         mode = fit_mode(a.head_l2)
-        hist = finetune(model, tensors, ids, a.epochs, a.lr, mode, a.aux_weight, log=lambda s: print(f"  [fit all {mode}] {s}", flush=True),
-                        head_l2=a.head_l2)
+        hist = finetune(model, loss_cfg, tensors, ids, a.epochs, a.lr, mode, a.aux_weight,
+                        log=lambda s: print(f"  [fit all {mode}] {s}", flush=True), head_l2=a.head_l2)
         res["predict"] = {}
         for i in a.predict:
             d = mdir / i

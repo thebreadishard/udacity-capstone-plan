@@ -60,11 +60,12 @@ def test_matched_pairing_survives_a_mode_crossing():
 
 
 def test_trainer_wiring_present():
-    text = (PLAN / "modules" / "05_support_predictor" / "m05" / "rungC_train.py").read_text(encoding="utf-8")
-    assert "import rungC_intensities as RI" in text and 'if "apt" in mols.get(i, {}):' in text and 'r.update(RI.aggregate(r["per_molecule"]))' in text
-    assert 'APT_FILES = ("dipole_b3lyp_cphf.npz", "dipole_b3lyp_fd.npz")' in text
-    assert "mols, test_a, test_b, cores, pool, substituted = load_corpus(a.molecules, a.use_analytic, log)" in text
-    assert '"spectrum_overlap"' in text.split("PER_MOLECULE_KEYS = ")[1].split(")")[0]
+    """The trainer reads the APTs (CPHF route first) and reports the spectrum read-outs per molecule; end to end in
+    test_rungC_train_regression."""
+    pytest.importorskip("torch")
+    import rungC_train as RT
+    assert RT.APT_FILES == ("dipole_b3lyp_cphf.npz", "dipole_b3lyp_fd.npz") and RT.RI is RI
+    assert {"spectrum_overlap", "intensity_rel_rms", "intensity_rel_rms_matched"} <= set(RT.PER_MOLECULE_KEYS)
 
 
 def test_intensity_constant_and_broadening():

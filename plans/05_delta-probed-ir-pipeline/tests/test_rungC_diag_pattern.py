@@ -1,7 +1,6 @@
 """rungC_train switches of 30 Sep 2026 (after the external reviews): the pattern internal term, its class scales, the zeroed-H_low diagnostic and the
 overfit-one diagnostic. Synthetic tensors for the term and the scales (no torch model needed beyond a stub); the pattern builder on the corpus benzene
 when geomeTRIC and the corpus are present; the CLI flags from the source."""
-import re
 import sys
 from pathlib import Path
 
@@ -13,6 +12,7 @@ PLAN = Path(__file__).resolve().parents[1]
 M05 = PLAN / "modules" / "05_support_predictor" / "m05"
 sys.path.insert(0, str(M05))
 import rungC_train as R  # noqa: E402
+from rungC_config import TrainConfig, parse_config  # noqa: E402
 
 CORPUS = PLAN / "modules" / "05_support_predictor" / "corpus" / "molecules"
 
@@ -52,9 +52,6 @@ def test_pattern_term_equals_manual_standardised_mse_and_ignores_off_pattern_ent
     t = dict(T["m1"], Z=None, pos=None, H_low=None, mw=torch.ones(4, 4), dH_true=torch.zeros(4, 4), Bp=torch.eye(4), dF_norm=torch.tensor(1.))
 
     class Stub:
-        aux_mode = "pattern"
-        aux_class_scale = torch.tensor([2., 1., 1., 1., 0.5, 3.])
-
         def __call__(self, Z, pos, H_low, tt):
             out = torch.zeros(4, 4)
             out[0, 0] = 3.0      # class 0: error (3−2)/2 = 0.5
@@ -62,7 +59,7 @@ def test_pattern_term_equals_manual_standardised_mse_and_ignores_off_pattern_ent
             out[1, 3] = out[3, 1] = 100.  # off-pattern: must not count
             return out
 
-    main, aux, _ = R._terms(Stub(), t)
+    main, aux, _ = R._terms(Stub(), t, R.LossSettings(mode="pattern", class_scale=torch.tensor([2., 1., 1., 1., 0.5, 3.])))
     on = (t["pat_cls"] >= 0).sum().item()                       # 4 diagonal + 4 off-diagonal entries
     expected = (0.5 ** 2 + 2 * 2.0 ** 2 + (4. / 1) ** 2 + (6. / 1) ** 2 + (8. / 1) ** 2 + 2 * (3. / 3) ** 2) / on
     assert on == 8 and abs(float(aux) - expected) < 1e-6
@@ -87,13 +84,11 @@ def test_pattern_classes_on_benzene_match_the_loader_and_are_symmetric():
 
 
 def test_cli_switches_present_and_recipe_unchanged_by_default():
-    text = (M05 / "rungC_train.py").read_text(encoding="utf-8")
-    assert re.search(r'add_argument\("--aux", default="all", choices=\["all", "pattern", "kring", "both"\]', text)   # kring, both added 1 Oct (levers 3, 3b)
-    assert re.search(r'add_argument\("--zero-hlow", action="store_true"', text)
-    assert re.search(r'add_argument\("--overfit-one", default=None', text)
-    assert 'aux_mode: str = "all"' in text                                            # default keeps the registered internal term
-    assert re.search(r'add_argument\("--hybrid-hidden", type=int, default=128', text)  # search stage H1 (1 Oct): width of the hybrid head
-    assert "pattern_class_scales(tensors, train_ids)" in text                          # scales from the fit molecules of the seed, nothing else
+    cfg = parse_config(["mol", "out"])
+    assert (cfg.aux, cfg.hybrid_hidden, cfg.zero_hlow, cfg.overfit_one) == ("all", 128, False, None)   # the registered internal term
+    assert parse_config(["mol", "out", "--aux", "kring", "--zero-hlow", "--overfit-one", "A_1"]).overfit_one == "A_1"
+    with pytest.raises(SystemExit):
+        parse_config(["mol", "out", "--aux", "none"])
 
 
 @pytest.mark.skipif(not (CORPUS / "A_8448043181" / "geometry.json").exists(), reason="corpus benzene not on this machine")
@@ -171,25 +166,20 @@ def test_kring_tensors_reproduce_k_of_and_vanish_on_the_truth():
     assert torch.allclose(t["K_true"], torch.as_tensor(K_t))
 
     class Truth(torch.nn.Module):
-        aux_mode = "kring"
-
         def forward(self, Z, pos, H_low, t):
             return t["dH_true"]
     t.update(dH_true=torch.as_tensor(dH), mw=torch.ones_like(torch.as_tensor(dH)), Bp=torch.as_tensor(Bp), dF_true=torch.as_tensor(Bp.T @ dH @ Bp),
              dF_norm=torch.tensor(1.0, dtype=torch.float64), Z=None, pos=None, H_low=None)
-    main, aux, _pred = RT._terms(Truth(), t)
+    main, aux, _pred = RT._terms(Truth(), t, RT.LossSettings(mode="kring"))
     assert float(main) == 0.0 and float(aux) < 1e-20
-    text = (M05 / "rungC_train.py").read_text(encoding="utf-8")
-    assert re.search(r'add_argument\("--aux", default="all", choices=\["all", "pattern", "kring", "both"\]', text)
 
 
 def test_body_size_switches_present_and_pretrained_refused():
-    import rungC_train as RT
-    text = (M05 / "rungC_train.py").read_text(encoding="utf-8")
-    assert re.search(r'add_argument\("--body-blocks", type=int, default=N_BLOCKS', text)
-    assert re.search(r'add_argument\("--body-width", type=int, default=N_S', text)
+    import rungC_equivariant as RC
+    assert (parse_config(["mol", "out", "--body-blocks", "5", "--body-width", "32"]).body_blocks, parse_config(["mol", "out"]).body_width) == (5, RC.N_S)
+    assert parse_config(["mol", "out"]).body_blocks == RC.N_BLOCKS
     with pytest.raises(ValueError, match="pretrained body"):
-        RT.train_one([], {}, 0, 1, pretrained="x.pt", body_blocks=5)
+        TrainConfig(molecules="mol", out_prefix="out", pretrained="x.pt", body_blocks=5)
 
 
 @pytest.mark.skipif(not (CORPUS / "A_01f3186607" / "geometry.json").exists(), reason="corpus naphthalene not on this machine")
@@ -238,30 +228,22 @@ def test_aux_both_is_the_sum_of_pattern_and_kring_terms():
     pred = pred + pred.T
 
     class Fixed(torch.nn.Module):
-        aux_mode = "pattern"
-        aux_class_scale = torch.full((RT.PAIR_CLASS_NAMES.__len__(),), 0.5)
-
         def forward(self, Z, pos, H_low, t):
             return pred
     m = Fixed()
-    _, pat, _ = RT._terms(m, t)
-    m.aux_mode = "kring"
-    _, kr, _ = RT._terms(m, t)
-    m.aux_mode = "both"
-    _, both, _ = RT._terms(m, t)
+    scales = torch.full((len(RT.PAIR_CLASS_NAMES),), 0.5)
+    _, pat, _ = RT._terms(m, t, RT.LossSettings(mode="pattern", class_scale=scales))
+    _, kr, _ = RT._terms(m, t, RT.LossSettings(mode="kring"))
+    _, both, _ = RT._terms(m, t, RT.LossSettings(mode="both", class_scale=scales))
     assert torch.allclose(both, pat + kr) and float(pat) > 0 and float(kr) > 0
-    m.kring_weight = 0.3                                                       # lever 3b weight search: both = pattern + w · kring
-    _, both_w, _ = RT._terms(m, t)
+    _, both_w, _ = RT._terms(m, t, RT.LossSettings(mode="both", kring_weight=0.3, class_scale=scales))   # lever 3b: pattern + w · kring
     assert torch.allclose(both_w, pat + 0.3 * kr)
-    m.kdiag_weight = 0.5                                                       # lever 5: + kd · kdiag (diagonal of K over all modes)
-    _, both_wd, _ = RT._terms(m, t)
+    _, both_wd, _ = RT._terms(m, t, RT.LossSettings(mode="both", kring_weight=0.3, kdiag_weight=0.5, class_scale=scales))   # lever 5: + kd · kdiag
     kd_term = RT._kdiag_term(t, pred)
     assert torch.allclose(both_wd, pat + 0.3 * kr + 0.5 * kd_term) and float(kd_term) > 0
     t_truth = dict(t)
     K_true_pred = (t["Cm"] @ pred @ t["Cm"].T) * t["kscale"]
     t_truth["K_true"] = K_true_pred
     assert float(RT._kdiag_term(t_truth, pred)) == 0.0                         # vanishes when the prediction is the truth
-    text = (M05 / "rungC_train.py").read_text(encoding="utf-8")
-    assert re.search(r'add_argument\("--kdiag-weight", type=float, default=0.0', text)
-    text = (M05 / "rungC_train.py").read_text(encoding="utf-8")
-    assert re.search(r'add_argument\("--kring-weight", type=float, default=1.0', text)
+    cfg = parse_config(["mol", "out"])
+    assert (cfg.kdiag_weight, cfg.kring_weight) == (0.0, 1.0)

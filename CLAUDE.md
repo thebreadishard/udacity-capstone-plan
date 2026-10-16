@@ -55,8 +55,10 @@ before the commit — ruff's project set is the floor, not the bar:
 - **Comments** say why, not what; a date or incident only where it explains a guard. History belongs in git and the ledger.
 - **Tests**: a test for every switch; a refactor of code a run uses starts with a regression test that pins the current output, on a
   branch in its own worktree (the laptop's queued chains run from this checkout).
-- Check: `python -m ruff check --isolated --select E,F,W,B,SIM,UP,C90,PLR,RUF --line-length 160 <files>` on the touched files; every
-  finding is fixed or carries a `# noqa: <rule>  <reason>`. A hook for it is TASKS 64's candidate (9).
+- Check: `python -m ruff check --isolated --select E,F,W,B,SIM,UP,C90,PLR,RUF --ignore RUF001,RUF002,RUF003,PLR2004,PLR0917
+  --line-length 160 --config "lint.pylint.max-args = 6" <files>` on the touched files (the ignored rules are the paper's Greek and
+  physical constants); every finding is fixed or carries a `# noqa: <rule>  <reason>`. A hook for it is TASKS 64's candidate (9).
+  First file brought to it: `m05/rungC_train.py` (16 Oct 2026: 46 findings → 0, the record of a pinned run unchanged to the bit).
 
 ## Committing
 Never `git add -A`: the run directories are written live and `results_vpt2/benzene_vpt2_psi4.out` is
