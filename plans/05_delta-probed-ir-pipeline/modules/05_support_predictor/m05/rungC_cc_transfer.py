@@ -407,7 +407,7 @@ def fit_and_predict(an: Anchors, mdir: Path, model0, loss_cfg: LossSettings, cfg
 def table_columns(a) -> list[tuple[str, str]]:
     """(fold key, column header) of the markdown table, in the order of the switches."""
     l2 = f"L2 {a.head_l2:g}"
-    cols = [("zero_rule", "zero rule"), ("alpha_scaling", "α scaling (3 anchors)"), ("network_none", "network as is"),
+    cols = [("zero_rule", "zero rule"), ("alpha_scaling", "α scaling (training anchors)"), ("network_none", "network as is"),
             ("network_alpha", "network, α tuned"), ("network_head", "network, head tuned")]
     if a.head_l2 > 0:
         cols.append(("network_head_l2", f"head tuned, {l2}"))

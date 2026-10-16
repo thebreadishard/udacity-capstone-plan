@@ -6,12 +6,15 @@ made once with `--make-model`: the carried recipe, smoke size, 3 epochs); two an
 molecules that are planar (the out-of-plane routines refuse fluorene's CH₂ and biphenyl's twist) and carry an analytic low level (an FD
 one mixes in- and out-of-plane modes: phenylacetylene's stopped the second attempt), as every real anchor does — each with its analytic
 ωB97X Hessian standing in for the coupled-cluster one (a valid input for the code, not physics), and phenanthrene's CPHF APT as its "CC
-APT"; dibenzofuran as the molecule to predict. Each fold fine-tunes on one anchor. The switches: the folds' none / α / head / head-L2
-modes, the out-of-plane couplings from the low level and the out-of-plane model, the intensity read-out, the fold predictions and
---predict. Not --lora-rank: the adapter's random start drew from torch's default generator, which this torch seeds from the clock (two
-runs gave 14.44 and 14.05 cm⁻¹ on the same fold), so the script as it was cannot be pinned there; the refactor seeds it and a test of its
-own holds it. The run goes through `tests/cc_pin_runner.py`, which replaces only the model-registry gate. Bit-identity holds in the
-pinning environment (as the trainer's pin).
+APT"; dibenzofuran as the molecule to predict. Each fold fine-tunes on one anchor. The switches: the folds' none / α / head / head-L2 /
+rank-2 adapter modes, the out-of-plane couplings from the low level and the out-of-plane model, the intensity read-out, the fold
+predictions and --predict. The run goes through `tests/cc_pin_runner.py`, which replaces only the model-registry gate. Bit-identity holds
+in the pinning environment (as the trainer's pin).
+
+History: pinned first (6ea10300) with the script as it was, without --lora-rank — its adapter drew its random start from torch's default
+generator, which this torch seeds from the clock (the same fold gave 14.44 and 14.05 cm⁻¹ in two runs). The refactor (83d79448) matched
+that pin to the bit and seeded the adapter; the pin was then rewritten with the adapter in and the table's α column named for the training
+anchors rather than "3 anchors" — two deliberate changes, nothing else.
 
     python tests/test_rungC_cc_transfer_regression.py --make-model                 # once, before the first pin
     python tests/test_rungC_cc_transfer_regression.py --write-golden [SCRIPT]       # with the script as it is before a change
@@ -51,8 +54,8 @@ ANCHORS = ("A_8448043181", "A_541c53d1a5")                      # benzene, phena
 APT_ANCHOR = "A_541c53d1a5"
 PREDICT = "A_20db5837c9"                                         # dibenzofuran, not an anchor
 VOLATILE = frozenset({"date", "seconds"})
-SWITCHES = ["--epochs", "3", "--head-l2", "0.1", "--oop-couplings-low", "--oop-diagonal-model", "--save-fold-predictions", "--threads", "1",
-            "--allow-any-model", "--allow-any-anchor", "--allow-mixed-tiers"]
+SWITCHES = ["--epochs", "3", "--head-l2", "0.1", "--lora-rank", "2", "--oop-couplings-low", "--oop-diagonal-model", "--save-fold-predictions",
+            "--threads", "1", "--allow-any-model", "--allow-any-anchor", "--allow-mixed-tiers"]
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "probes"))
 
@@ -119,7 +122,7 @@ def test_the_run_takes_every_switch():
     folds = run["record"]["folds"]
     assert sorted(folds) == sorted(ANCHORS) and run["record"]["predict"][PREDICT]["mode"] == "head_l2"
     fold = folds[APT_ANCHOR]
-    for column in ("network_none", "network_alpha", "network_head", "network_head_l2", "network_head_ooplow",
+    for column in ("network_none", "network_alpha", "network_head", "network_head_l2", "network_lora", "network_head_ooplow",
                    "network_head_l2_oopmodel", "oop_model_only", "alpha_scaling", "zero_rule"):
         assert column in fold, column
     assert "intensity" in fold["network_head"] and fold["saved_prediction"]

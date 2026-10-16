@@ -287,6 +287,36 @@
        "spectrum_overlap_zero_rule": 0.2871240978183447
       }
      },
+     "network_lora": {
+      "corrected_freq_rms": 14.743221888617326,
+      "corrected_freq_rms_zero_rule": 23.33897108117373,
+      "coupling_ratio": 0.918206628015605,
+      "coupling_rms": 3.6862824092725615,
+      "coupling_zero_rms": 4.014654541580931,
+      "dH_residual_ratio": 0.7498966375474053,
+      "diag_rms": {
+       "CH-oop": 19.19779361771261,
+       "CH-stretch": 23.105216870862968,
+       "other": 8.145142108162847,
+       "ring-ip": 12.630690257865716
+      },
+      "final_loss": 0.3316385746002197,
+      "freq_rms_by_family": {
+       "CH-oop": 18.254634455787517,
+       "CH-stretch": 22.873520209828104,
+       "other": 8.307813772267393,
+       "ring-ip": 12.756187389209988
+      },
+      "intensity": {
+       "intensity_rel_rms": 0.3796757404158101,
+       "intensity_rel_rms_matched": 0.15780447010576082,
+       "intensity_rel_rms_zero_rule": 0.34814420535118795,
+       "intensity_rel_rms_zero_rule_matched": 0.17653318282740704,
+       "n_modes": 66,
+       "spectrum_overlap": 0.6096592821423747,
+       "spectrum_overlap_zero_rule": 0.2871240978183447
+      }
+     },
      "network_none": {
       "corrected_freq_rms": 13.593247855192141,
       "corrected_freq_rms_zero_rule": 23.33897108117373,
@@ -549,6 +579,27 @@
        "ring-ip": 14.5304625810807
       }
      },
+     "network_lora": {
+      "corrected_freq_rms": 14.032193440762054,
+      "corrected_freq_rms_zero_rule": 25.010250770736004,
+      "coupling_ratio": 0.8818428663315456,
+      "coupling_rms": 2.9090945582849916,
+      "coupling_zero_rms": 3.298880865688448,
+      "dH_residual_ratio": 0.6856528194733188,
+      "diag_rms": {
+       "CH-oop": 18.26675874848747,
+       "CH-stretch": 13.843949992556228,
+       "other": 7.856740911154648,
+       "ring-ip": 14.625020032605553
+      },
+      "final_loss": 0.31929248571395874,
+      "freq_rms_by_family": {
+       "CH-oop": 16.952634683303007,
+       "CH-stretch": 13.689286200725896,
+       "other": 7.7425584903485865,
+       "ring-ip": 14.567105320764387
+      }
+     },
      "network_none": {
       "corrected_freq_rms": 15.467829652260312,
       "corrected_freq_rms_zero_rule": 25.010250770736004,
@@ -622,7 +673,7 @@
     }
    },
    "head_l2": 0.1,
-   "lora_rank": 0,
+   "lora_rank": 2,
    "low_level": {
     "A_541c53d1a5": "hessian_b3lyp_analytic.npz",
     "A_8448043181": "hessian_b3lyp_analytic.npz"
@@ -647,6 +698,6 @@
    },
    "tier": null
   },
-  "table": "# T3 \u2014 leave-one-anchor-out transfer to CCSD(T)/cc-pVDZ (<date>)\n\nModel `rungC_cc_pin_model.pt` ({'pattern': 'f', 'aux_mode': 'both', 'aux_target': 'projected', 'n': 5, 'seed': 0}); fine-tune 3 epochs at lr 0.001, aux weight 1; low levels {'A_8448043181': 'hessian_b3lyp_analytic.npz', 'A_541c53d1a5': 'hessian_b3lyp_analytic.npz'}.\n\n| held-out anchor | read-out | zero rule | \u03b1 scaling (3 anchors) | network as is | network, \u03b1 tuned | network, head tuned | head tuned, L2 0.1 | head tuned, oop couplings from the low level | head tuned L2 0.1, oop couplings from the low level | low level + oop model |  head tuned, oop block from the model | head tuned L2 0.1, oop block from the model |\n|---|---|---|---|---|---|---|---|---|---|---|---|---|\n| A_541c53d1a5 | ring-coupling ratio | 1.00 | 0.81 | 0.95 | 0.93 | 0.92 | 0.92 | 0.92 | 0.92 | 1.00 | 0.92 | 0.92 |\n| A_541c53d1a5 | \u03c9 rms, all modes (cm\u207b\u00b9) | 23.34 | 9.33 | 13.59 | 14.29 | 14.59 | 14.59 | 14.59 | 14.59 | 21.21 | 12.97 | 12.96 |\n| A_541c53d1a5 | \u0394H residual | 1.00 | 0.63 | 0.73 | 0.75 | 0.75 | 0.75 | 0.75 | 0.75 | 0.98 | 0.73 | 0.73 |\n| A_541c53d1a5 | \u03c9 rms ring-ip (cm\u207b\u00b9) | 18.41 | 10.05 | 12.61 | 12.62 | 12.70 | 12.70 | 12.70 | 12.70 | 18.41 | 12.70 | 12.70 |\n| A_541c53d1a5 | \u03c9 rms CH-stretch (cm\u207b\u00b9) | 43.85 | 5.96 | 17.75 | 22.36 | 22.95 | 22.94 | 22.95 | 22.94 | 43.85 | 22.95 | 22.94 |\n| A_541c53d1a5 | \u03c9 rms CH-oop (cm\u207b\u00b9) | 23.54 | 13.49 | 18.43 | 17.24 | 17.74 | 17.73 | 17.74 | 17.74 | 6.23 | 6.18 | 6.18 |\n| A_541c53d1a5 | \u03c9 rms other (cm\u207b\u00b9) | 10.37 | 6.55 | 8.17 | 7.85 | 8.04 | 8.03 | 8.03 | 8.03 | 8.85 | 8.30 | 8.30 |\n| A_541c53d1a5 | spectrum overlap (CC APT) | 0.287 | 0.936 | 0.693 | 0.642 | 0.619 | 0.619 | 0.619 | 0.619 | 0.384 | 0.672 | 0.672 |\n| A_541c53d1a5 | intensity rel. rms, modes matched by eigenvector (CC APT) | 0.177 | 0.128 | 0.174 | 0.173 | 0.158 | 0.158 | 0.150 | 0.150 | 0.177 | 0.150 | 0.150 |\n| A_541c53d1a5 | intensity rel. rms (CC APT) | 0.348 | 0.326 | 0.375 | 0.368 | 0.369 | 0.369 | 0.336 | 0.336 | 0.852 | 0.847 | 0.847 |\n| A_541c53d1a5 | per-family diag rms, head tuned | \u2014 | \u2014 | \u2014 | \u2014 | CH-stretch 23.2, CH-oop 18.6, ring-ip 12.6, other 7.9 |\n| A_8448043181 | ring-coupling ratio | 1.00 | 0.70 | 0.89 | 0.89 | 0.88 | 0.88 | 0.88 | 0.88 | 1.00 | 0.88 | 0.88 |\n| A_8448043181 | \u03c9 rms, all modes (cm\u207b\u00b9) | 25.01 | 7.24 | 15.47 | 14.03 | 13.76 | 13.76 | 13.76 | 13.76 | 22.83 | 11.97 | 11.97 |\n| A_8448043181 | \u0394H residual | 1.00 | 0.41 | 0.72 | 0.70 | 0.69 | 0.69 | 0.69 | 0.69 | 0.97 | 0.67 | 0.67 |\n| A_8448043181 | \u03c9 rms ring-ip (cm\u207b\u00b9) | 17.83 | 8.38 | 15.33 | 14.89 | 14.77 | 14.77 | 14.77 | 14.77 | 17.46 | 14.53 | 14.53 |\n| A_8448043181 | \u03c9 rms CH-stretch (cm\u207b\u00b9) | 42.91 | 0.48 | 17.73 | 13.33 | 12.55 | 12.55 | 12.55 | 12.55 | 42.91 | 12.55 | 12.55 |\n| A_8448043181 | \u03c9 rms CH-oop (cm\u207b\u00b9) | 22.56 | 9.78 | 17.76 | 16.61 | 16.39 | 16.38 | 16.38 | 16.38 | 9.82 | 9.82 | 9.82 |\n| A_8448043181 | \u03c9 rms other (cm\u207b\u00b9) | 10.30 | 4.05 | 8.29 | 7.71 | 7.58 | 7.58 | 7.58 | 7.58 | 3.08 | 2.35 | 2.35 |\n| A_8448043181 | per-family diag rms, head tuned | \u2014 | \u2014 | \u2014 | \u2014 | CH-stretch 12.7, CH-oop 17.6, ring-ip 14.8, other 7.7 |\n\n"
+  "table": "# T3 \u2014 leave-one-anchor-out transfer to CCSD(T)/cc-pVDZ (<date>)\n\nModel `rungC_cc_pin_model.pt` ({'pattern': 'f', 'aux_mode': 'both', 'aux_target': 'projected', 'n': 5, 'seed': 0}); fine-tune 3 epochs at lr 0.001, aux weight 1; low levels {'A_8448043181': 'hessian_b3lyp_analytic.npz', 'A_541c53d1a5': 'hessian_b3lyp_analytic.npz'}.\n\n| held-out anchor | read-out | zero rule | \u03b1 scaling (training anchors) | network as is | network, \u03b1 tuned | network, head tuned | head tuned, L2 0.1 | \u03b1 + rank-2 adapter | head tuned, oop couplings from the low level | head tuned L2 0.1, oop couplings from the low level | low level + oop model |  head tuned, oop block from the model | head tuned L2 0.1, oop block from the model |\n|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n| A_541c53d1a5 | ring-coupling ratio | 1.00 | 0.81 | 0.95 | 0.93 | 0.92 | 0.92 | 0.92 | 0.92 | 0.92 | 1.00 | 0.92 | 0.92 |\n| A_541c53d1a5 | \u03c9 rms, all modes (cm\u207b\u00b9) | 23.34 | 9.33 | 13.59 | 14.29 | 14.59 | 14.59 | 14.74 | 14.59 | 14.59 | 21.21 | 12.97 | 12.96 |\n| A_541c53d1a5 | \u0394H residual | 1.00 | 0.63 | 0.73 | 0.75 | 0.75 | 0.75 | 0.75 | 0.75 | 0.75 | 0.98 | 0.73 | 0.73 |\n| A_541c53d1a5 | \u03c9 rms ring-ip (cm\u207b\u00b9) | 18.41 | 10.05 | 12.61 | 12.62 | 12.70 | 12.70 | 12.76 | 12.70 | 12.70 | 18.41 | 12.70 | 12.70 |\n| A_541c53d1a5 | \u03c9 rms CH-stretch (cm\u207b\u00b9) | 43.85 | 5.96 | 17.75 | 22.36 | 22.95 | 22.94 | 22.87 | 22.95 | 22.94 | 43.85 | 22.95 | 22.94 |\n| A_541c53d1a5 | \u03c9 rms CH-oop (cm\u207b\u00b9) | 23.54 | 13.49 | 18.43 | 17.24 | 17.74 | 17.73 | 18.25 | 17.74 | 17.74 | 6.23 | 6.18 | 6.18 |\n| A_541c53d1a5 | \u03c9 rms other (cm\u207b\u00b9) | 10.37 | 6.55 | 8.17 | 7.85 | 8.04 | 8.03 | 8.31 | 8.03 | 8.03 | 8.85 | 8.30 | 8.30 |\n| A_541c53d1a5 | spectrum overlap (CC APT) | 0.287 | 0.936 | 0.693 | 0.642 | 0.619 | 0.619 | 0.610 | 0.619 | 0.619 | 0.384 | 0.672 | 0.672 |\n| A_541c53d1a5 | intensity rel. rms, modes matched by eigenvector (CC APT) | 0.177 | 0.128 | 0.174 | 0.173 | 0.158 | 0.158 | 0.158 | 0.150 | 0.150 | 0.177 | 0.150 | 0.150 |\n| A_541c53d1a5 | intensity rel. rms (CC APT) | 0.348 | 0.326 | 0.375 | 0.368 | 0.369 | 0.369 | 0.380 | 0.336 | 0.336 | 0.852 | 0.847 | 0.847 |\n| A_541c53d1a5 | per-family diag rms, head tuned | \u2014 | \u2014 | \u2014 | \u2014 | CH-stretch 23.2, CH-oop 18.6, ring-ip 12.6, other 7.9 |\n| A_8448043181 | ring-coupling ratio | 1.00 | 0.70 | 0.89 | 0.89 | 0.88 | 0.88 | 0.88 | 0.88 | 0.88 | 1.00 | 0.88 | 0.88 |\n| A_8448043181 | \u03c9 rms, all modes (cm\u207b\u00b9) | 25.01 | 7.24 | 15.47 | 14.03 | 13.76 | 13.76 | 14.03 | 13.76 | 13.76 | 22.83 | 11.97 | 11.97 |\n| A_8448043181 | \u0394H residual | 1.00 | 0.41 | 0.72 | 0.70 | 0.69 | 0.69 | 0.69 | 0.69 | 0.69 | 0.97 | 0.67 | 0.67 |\n| A_8448043181 | \u03c9 rms ring-ip (cm\u207b\u00b9) | 17.83 | 8.38 | 15.33 | 14.89 | 14.77 | 14.77 | 14.57 | 14.77 | 14.77 | 17.46 | 14.53 | 14.53 |\n| A_8448043181 | \u03c9 rms CH-stretch (cm\u207b\u00b9) | 42.91 | 0.48 | 17.73 | 13.33 | 12.55 | 12.55 | 13.69 | 12.55 | 12.55 | 42.91 | 12.55 | 12.55 |\n| A_8448043181 | \u03c9 rms CH-oop (cm\u207b\u00b9) | 22.56 | 9.78 | 17.76 | 16.61 | 16.39 | 16.38 | 16.95 | 16.38 | 16.38 | 9.82 | 9.82 | 9.82 |\n| A_8448043181 | \u03c9 rms other (cm\u207b\u00b9) | 10.30 | 4.05 | 8.29 | 7.71 | 7.58 | 7.58 | 7.74 | 7.58 | 7.58 | 3.08 | 2.35 | 2.35 |\n| A_8448043181 | per-family diag rms, head tuned | \u2014 | \u2014 | \u2014 | \u2014 | CH-stretch 12.7, CH-oop 17.6, ring-ip 14.8, other 7.7 |\n\n"
  }
 }
