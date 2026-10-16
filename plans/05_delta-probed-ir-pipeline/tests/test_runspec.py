@@ -277,6 +277,14 @@ def test_resume_relaunches_only_a_gone_resumable_laptop_run(tmp_path):
     assert R.resume(FakeShell(probe_out="exit=0\nalive=0\nprogress=3\n"), T0, specs, state, second_look=0) == []
 
 
+def test_the_shell_never_inherits_stdin(monkeypatch):
+    """16 Oct 2026: under the scheduled task (no console) an inherited stdin handle is invalid — every call must pass stdin=DEVNULL."""
+    seen = {}
+    monkeypatch.setattr(R.subprocess, "run", lambda args, **kw: seen.update(kw) or subprocess.CompletedProcess(args, 0, "", ""))
+    R.Shell("bash").run(R.LAPTOP, "true")
+    assert seen["stdin"] is subprocess.DEVNULL
+
+
 def test_a_relaunch_appends_to_the_log(monkeypatch):
     calls = []
     monkeypatch.setattr(R.Shell, "_run", lambda self, args, timeout=120, cwd=None: calls.append(args) or subprocess.CompletedProcess(args, 0, "1", ""))

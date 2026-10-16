@@ -94,7 +94,7 @@ def nbas_of(smi: str) -> int:
 
 
 def build(manifest_path: Path) -> list[dict]:
-    manifest = manifest_rows(manifest_path)
+    manifest = [r for r in manifest_rows(manifest_path) if r["layer"] != LAYER]   # this list's own rows, once appended, are not 'known'
     held = holdout_ids()
     by_smiles = {}
     for r in manifest:
@@ -107,8 +107,8 @@ def build(manifest_path: Path) -> list[dict]:
     rows = []
     for fam in sorted(PARENTS, key=lambda f: sha(PARENTS[f])):
         psmi = BM.canon(PARENTS[fam])
-        prior = [r for r in by_smiles.get(psmi, []) if r["layer"] != LAYER]
-        if any(r["status"] != "pending" or r["layer"] != "G" for r in prior):
+        prior = by_smiles.get(psmi, [])
+        if any(r["status"] not in ("pending", "moved") or r["layer"] != "G" for r in prior):   # 'moved': moved to R4 by this list's append
             raise RuntimeError(f"{fam}: the parent exists in the manifest as {[(r['id'], r['status']) for r in prior]} — not a pending layer-G row")
         fr = [{"name": fam, "smiles": psmi, "is_parent": 1, "same_as": ",".join(r["id"] for r in prior)}]
         fr += [{"name": f"{fam}+{sn}", "smiles": smi, "is_parent": 0, "same_as": ""}

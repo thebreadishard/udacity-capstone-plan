@@ -256,7 +256,8 @@ class Shell:
         self.bash = bash or shutil.which("bash") or "bash"
 
     def _run(self, args: list[str], timeout: float = 120, cwd: Path = ROOT) -> subprocess.CompletedProcess:
-        return subprocess.run(args, cwd=cwd, capture_output=True, text=True, timeout=timeout, check=False)
+        # stdin from /dev/null: the scheduled resume task has no console, and inheriting its invalid stdin handle raised WinError 6 (16 Oct)
+        return subprocess.run(args, cwd=cwd, stdin=subprocess.DEVNULL, capture_output=True, text=True, timeout=timeout, check=False)
 
     def host_row(self, host: str) -> tuple[str, str] | None:
         """(ip, machine-id) from tools/hosts.tsv, None when the name is not there."""
