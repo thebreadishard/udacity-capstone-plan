@@ -310,7 +310,7 @@ function, each with its decision and incident; `# hook-exempt: <reason>` passes 
 (mode), `.claude/settings.json` (PreToolUse Bash|PowerShell|Edit|Write, PostToolUse Edit|Write); `tests/test_hooks_guard.py` (55). The app
 picked the settings up live (first entries 17:49). Cost ≈ 0.6 s per tool call (bare python 0.4 s here), plus ruff after an edit. Log:
 `probes/watch_state/hooks.log`. First false alarm seen at once: github_post on 'gh pr create' quoted inside a JSON string.
-**Next (≈ 16 Oct evening):** the log's hits to the user (true / false per rule), tighten the false ones, then `"mode": "enforce"`.
+**Next (weekend 17–18 Oct; moved 16 Oct 16:11, the user: 'Laten we de hook-log dit weekend bespreken'; the hooks keep logging meanwhile, a longer log is a better sample):** the log's hits to the user (true / false per rule), tighten the false ones, then `"mode": "enforce"`.
 **Candidate (9), 16 Oct 08:32 (the user: clean code in every Python change — 'iets voor een hook, later, misschien'):** PostToolUse on Edit/Write of `.py` runs ruff with the clean-code set (C90, PLR0912/0913/0915, SIM115, RUF059, RUF100) on the touched file and reports, log mode first; only findings new in that edit, so old files do not drown it. Proposed with the review, not built.
 **15 Oct 18:4x — the cause, tested (the user: 'geen oplossing die ervoor zorgt dat je de heredoc fout gewoon vermijdt?'):** not the
 heredoc. A doubled backslash arrives single in the Bash tool's command in every quoting form (single-quoted printf, quoted and unquoted
