@@ -345,7 +345,7 @@ threads, load 16 on 16 vCPU), so `probes/s2_gridcheck_styrene.sh` (deployed sha2
 Hessians at grid 99/590 (reference + ± of modes 0, 1, 4, 5, 18, 33) on that lane's 5 threads: no running run is slowed. Expected ≈ 17–18 Oct (S2's
 tail). Read with `probes/qff_grid_recheck.py <coarse> <fine>` (test: reproduces the report's routes exactly; the coarse subset is fetched to
 `probes/results_m1/qff_noise_styrene_2026-10-15/G_hess_subset/`); the watch has a row for it (`check_s2gsrv`). Read: route disagreement well
-below 10 at 99/590 → grid noise; still ≈ 10 → the large-amplitude torsion (the rotor policy then matters).
+below 10 at 99/590 → grid noise; still ≈ 10 → the large-amplitude torsion (the rotor policy then matters). **16 Oct 22:00 — S2's fifth NOISY: B_17f1611949, 3-ethynyl-4-methylpyridine (C#Cc1cnccc1C, 16 atoms),** G assembled 19:52 (local 21:52); quartic route disagreement max 7.2 cm⁻¹ (inside 10) but the CUBIC route spread max 23.1 cm⁻¹ (median 0.02) trips `dpir.qff.ROUTE_NOISE_LIMIT_CM`; lowest ω 96.2 cm⁻¹ (the methyl torsion). Tally: 5 NOISY — 3 vinyl, 2 methyl (4-methylimidazole, this one). First NOISY read on the cubic route alone: the policy options should say which route each rotor class trips (`/root/s2/B_17f1611949/G/qff_report.md` on s1).
 61. **Rungs 4 and 5 as broad sets (14 Oct 19:4x; the user: 'een trede is niet 1 molecuul … een zo groot mogelijke set'; 'Ja oké' to a
 proposal).** `GoalGathering/notes/Design_2026-10-14_Rungs_4_5_Broad_Sets.md`. Rung 4 is two families wide (fluoranthene 51, pyrene 33); the five
 other four-ring benzenoids (tetracene, chrysene, benz[a]anthracene, benzo[c]phenanthrene, triphenylene) have no row done; rung 5 has 16 rows
