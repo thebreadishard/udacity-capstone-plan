@@ -39,6 +39,25 @@ writing before the assertions pass — that emptied a probe script on 14 Septemb
 (TASKS 64). A refused call names its rule and reason; fix the call rather than exempting it. `# hook-exempt: <reason>` is for a case the
 user asked for, and is logged.
 
+## Python code
+Since 16 October 2026 (the user: clean-code best practices in every change we write or adjust) a Python change meets these, checked
+before the commit — ruff's project set is the floor, not the bar:
+- **One job per function.** Past ~50 statements, ~12 branches or ~6 parameters it is split, or its settings become one validated config
+  object (pydantic or a frozen dataclass), not a long argument list.
+- **Configuration is explicit and checked up front.** Defaults are the carried recipe; an older recipe is a named preset. Options that do
+  not combine are refused before any data is loaded — never ignored, never refused after the first seed has trained. No
+  `getattr(obj, "setting", default)` for settings and no attributes bolted onto an object after it is built.
+- **Fail loudly.** `raise` with the reason, never `assert` for a runtime check (`python -O` strips it), no silent fallback.
+- **One implementation** of every constant and formula, imported where needed.
+- **No dead code**: unused variables, unused `# noqa`, commented-out code and stale docstrings go in the same change.
+- **Resources** through context managers; a record is written to a temp file and moved over the target.
+- **Types and names**: type hints on every public function; names say what a thing is (matrix notation H, B, F stays — it is the paper's).
+- **Comments** say why, not what; a date or incident only where it explains a guard. History belongs in git and the ledger.
+- **Tests**: a test for every switch; a refactor of code a run uses starts with a regression test that pins the current output, on a
+  branch in its own worktree (the laptop's queued chains run from this checkout).
+- Check: `python -m ruff check --isolated --select E,F,W,B,SIM,UP,C90,PLR,RUF --line-length 160 <files>` on the touched files; every
+  finding is fixed or carries a `# noqa: <rule>  <reason>`. A hook for it is TASKS 64's candidate (9).
+
 ## Committing
 Never `git add -A`: the run directories are written live and `results_vpt2/benzene_vpt2_psi4.out` is
 75 MB of psi4 scratch. Name the paths. Compile-check first.
