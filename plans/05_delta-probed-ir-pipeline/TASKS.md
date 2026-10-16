@@ -214,7 +214,7 @@ yet entered (chain 40, 15:2x) — the pin's lesson again; make it check only wha
 user: 'Repareer de registertest ook maar'):** `model_registry.py` keeps apart the checkpoints of a running chain (its spec's training
 prefixes; running = 'armed' in its log without 'run done' or 'RUN FAILED' after it; logs of chains from before the run door in
 probes/results_m1) and names them; an ended or failed chain's unentered model still stops it; `main` split, file at the clean-code check;
-8 new tests; `--check` ok with chain 40's model pending. Open: TASKS.md's lock. Worktree and branch removed 10:01 on the user's word ('Ja, ruim de worktree maar op'; clean, branch merged).
+8 new tests; `--check` ok with chain 40's model pending. **16 Oct 15:53 — TASKS.md's lock DONE (the user: 'Wil je de bestandslock op TASKS.md ook repareren?'):** `tools/patch_file._write` tries `os.replace` three times, then writes the target in place, reads it back and compares, puts the old text back on any failure, and removes the temp file only once the target holds the new text; 3 tests (a refused move, a failed in-place write restored, a real open handle). Review of 16 Oct: all points closed. Worktree and branch removed 10:01 on the user's word ('Ja, ruim de worktree maar op'; clean, branch merged).
 71. **The odds after the target comparison (15 Oct 21:2x; the user: 'zet alle stappen op de takenlijst die nodig zijn om het project een succes
 te laten zijn met deze nieuwe kennis').** TASKS 65 changed what the size odds rest on: the form is not a wall, the trained target is a
 growing loss. No odds moved on a desk finding. **Next:** when TASKS 66 is read, re-estimate size (50), mandate (39) and T1 (75) with the

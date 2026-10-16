@@ -5,7 +5,7 @@ import sys
 import pytest
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "tools"))
-import patch_file as pf  # noqa: E402
+import patch_file as pf
 
 
 def test_patch_applies_and_keeps_lf(tmp_path):
@@ -60,8 +60,56 @@ def test_patch_many_writes_no_file_when_one_anchor_fails(tmp_path):
     a, b = tmp_path / "a.txt", tmp_path / "b.txt"
     a.write_text("alpha\n", encoding="utf-8")
     b.write_text("beta\n", encoding="utf-8")
-    with pytest.raises(AssertionError, match="b.txt"):
+    with pytest.raises(AssertionError, match=r"b\.txt"):
         pf.patch_many({str(a): [("alpha", "ALPHA")], str(b): [("gamma", "GAMMA")]})
     assert a.read_text(encoding="utf-8") == "alpha\n" and b.read_text(encoding="utf-8") == "beta\n"
     assert pf.patch_many({str(a): [("alpha", "ALPHA")], str(b): [("beta", "BETA")]}) == 2
     assert a.read_text(encoding="utf-8") == "ALPHA\n" and b.read_text(encoding="utf-8") == "BETA\n"
+
+
+def _refuse_replace(monkeypatch) -> list:
+    """os.replace refused as Windows refuses it while another process holds the target; returns the list of attempts."""
+    tries = []
+
+    def refuse(src, dst):
+        tries.append(dst)
+        raise PermissionError(5, "Access is denied")
+    monkeypatch.setattr(pf.os, "replace", refuse)
+    monkeypatch.setattr(pf.time, "sleep", lambda s: None)
+    return tries
+
+
+def test_a_held_target_is_written_in_place_after_the_retries(tmp_path, monkeypatch):
+    """16 Oct 2026: os.replace onto TASKS.md failed with WinError 5 while the app's file view held it; a write in place went through."""
+    p = tmp_path / "a.md"
+    p.write_text("alpha\nbeta\n", encoding="utf-8", newline="\n")
+    tries = _refuse_replace(monkeypatch)
+    assert pf.patch(str(p), [("beta", "BETA")]) == 1
+    assert p.read_bytes() == b"alpha\nBETA\n" and len(tries) == pf.REPLACE_TRIES
+    assert not (tmp_path / "a.md.tmp").exists()
+
+
+def test_a_failed_in_place_write_puts_the_old_text_back_and_keeps_the_new_one_aside(tmp_path, monkeypatch):
+    p = tmp_path / "a.md"
+    p.write_text("alpha\r\nbeta\r\n", encoding="utf-8", newline="")
+    _refuse_replace(monkeypatch)
+    real = pf._read_raw
+    calls = []
+
+    def read_back_wrong(path):
+        calls.append(path)
+        return real(path) if len(calls) == 1 else "something else"
+    monkeypatch.setattr(pf, "_read_raw", read_back_wrong)
+    with pytest.raises(OSError, match="reads back different"):
+        pf.patch(str(p), [("beta", "BETA")])
+    assert p.read_bytes() == b"alpha\r\nbeta\r\n"                                        # the old bytes, CRLF and all
+    assert (tmp_path / "a.md.tmp").read_bytes() == b"alpha\r\nBETA\r\n".replace(b"\r", b"")   # the new text stays aside
+
+
+def test_a_target_held_open_by_this_process_is_still_patched(tmp_path):
+    """A real open handle: on Windows it blocks os.replace (Python opens without delete sharing) and the in-place write takes over."""
+    p = tmp_path / "a.md"
+    p.write_text("alpha\nbeta\n", encoding="utf-8", newline="\n")
+    with open(p, encoding="utf-8"):
+        assert pf.patch(str(p), [("beta", "BETA")]) == 1
+    assert p.read_bytes() == b"alpha\nBETA\n" and not (tmp_path / "a.md.tmp").exists()

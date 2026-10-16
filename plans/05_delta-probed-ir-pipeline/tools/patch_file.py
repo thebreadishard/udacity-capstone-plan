@@ -1,6 +1,7 @@
 r"""patch_file — the shared helper promised on 14 September 2026 (QUALITY_POLICY, incident → guard): exact-string edits with an assertion on every
-anchor, the whole new text built in memory, then `os.replace` of a temp file over the original. The target is never opened for writing before
-every assertion has passed (a probe script was emptied that way on 14 September).
+anchor, the whole new text built in memory, then `os.replace` of a temp file over the original (written in place and verified instead when
+another process holds the target, see `_write`). The target is never opened for writing before every assertion has passed (a probe script
+was emptied that way on 14 September).
 
 New text may not carry control characters other than a newline unless the caller says so (`controls=True`): a backslash path or a regex
 written through a bash heredoc or a non-raw Python string turns \t, \b, \f, \a, \v into a tab, a backspace, … (3–4 Oct and twice on
@@ -18,15 +19,56 @@ import json
 import os
 import re
 import sys
+import time
 
 _CONTROLS = re.compile(r"[\x00-\x09\x0b-\x1f\x7f]")   # every C0 control and DEL except the newline
+REPLACE_TRIES = 3
+REPLACE_WAIT_S = 0.5
+
+
+def _read_raw(path):
+    with open(path, encoding="utf-8", newline="") as f:
+        return f.read()
+
+
+def _read_text(path):
+    """The file's text with any line ending read as a newline, as every edit sees it."""
+    with open(path, encoding="utf-8") as f:
+        return f.read()
+
+
+def _write_in_place(path, text):
+    """Write `text` into the existing file, read it back and compare; on any failure the old text is put back before the error is raised."""
+    old = _read_raw(path)
+    try:
+        with open(path, "r+", encoding="utf-8", newline="\n") as f:
+            f.seek(0)
+            f.write(text)
+            f.truncate()
+        if _read_raw(path) != text:
+            raise OSError(f"{path}: the in-place write reads back different")
+    except BaseException:
+        with open(path, "w", encoding="utf-8", newline="") as f:
+            f.write(old)
+        raise
 
 
 def _write(path, text):
+    """The text goes to a temp file, which is moved over the target. On Windows a process that holds the target without delete sharing
+    blocks the move but not a write (16 Oct 2026: TASKS.md, WinError 5, while the app's file view had it open): after REPLACE_TRIES the
+    text is written into the target in place and verified, and the temp file is removed only once the target holds the new text."""
     tmp = path + ".tmp"
     with open(tmp, "w", encoding="utf-8", newline="\n") as f:
         f.write(text)
-    os.replace(tmp, path)
+    for attempt in range(REPLACE_TRIES):
+        try:
+            os.replace(tmp, path)
+            return
+        except PermissionError:
+            if attempt + 1 < REPLACE_TRIES:
+                time.sleep(REPLACE_WAIT_S)
+    _write_in_place(path, text)
+    os.remove(tmp)
 
 
 def _check_controls(path, new, old=""):
@@ -40,8 +82,8 @@ def _patched(path, edits, count=1, controls=False):
     if not controls:
         for old, new in edits:
             _check_controls(path, new, old)
-    text = open(path, encoding="utf-8").read()
-    problems = [(old[:60], text.count(old)) for old, _ in edits if text.count(old) != count]
+    text = _read_text(path)
+    problems =[(old[:60], text.count(old)) for old, _ in edits if text.count(old) != count]
     if problems:
         raise AssertionError(f"{path}: anchors not matching exactly {count} time(s): {problems}")
     for old, new in edits:
@@ -66,15 +108,15 @@ def patch_many(plan, count=1, controls=False):
 def append(path, text, controls=False):
     if not controls:
         _check_controls(path, text)
-    body = open(path, encoding="utf-8").read().rstrip("\n") + "\n" + text
+    body = _read_text(path).rstrip("\n") + "\n" + text
     _write(path, body)
 
 
 def insert_after_line(path, needle, text, controls=False):
     if not controls:
         _check_controls(path, text)
-    lines = open(path, encoding="utf-8").read().split("\n")
-    hits = [i for i, l in enumerate(lines) if needle in l]
+    lines = _read_text(path).split("\n")
+    hits = [i for i, line in enumerate(lines) if needle in line]
     if len(hits) != 1:
         raise AssertionError(f"{path}: needle {needle[:60]!r} found {len(hits)} times, need exactly 1")
     lines.insert(hits[0] + 1, text)
@@ -83,13 +125,15 @@ def insert_after_line(path, needle, text, controls=False):
 
 def main():
     if len(sys.argv) != 3:
-        print(__doc__); sys.exit(2)
+        print(__doc__)
+        sys.exit(2)
     target, edits_p = sys.argv[1], sys.argv[2]
-    edits = [(e["old"], e["new"]) for e in json.load(open(edits_p, encoding="utf-8"))]
+    edits = [(e["old"], e["new"]) for e in json.loads(_read_text(edits_p))]
     try:
         n = patch(target, edits)
     except AssertionError as e:
-        print("no write:", e); sys.exit(1)
+        print("no write:", e)
+        sys.exit(1)
     print(f"{n} edit(s) applied to {target}")
 
 
