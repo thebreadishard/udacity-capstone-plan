@@ -1,0 +1,17 @@
+{
+ "name": "anchors3_wave2",
+ "purpose": "TASKS 51: anchor set three, wave 2 (quinoline A_ff98e1160d, isoquinoline A_d09f8d1ef8) — PreRegistration_2026-10-12_Anchor_Set_Three.md; wave 1 took 95 h against the stop rule's 140 h",
+ "host": "anchors3",
+ "workdir": "/root/dpir",
+ "command": "bash probes/anchor_wave_progress.sh /root/dpir/wave2.txt",
+ "sources": [
+  {"local": "probes/anchor_wave_progress.sh", "remote": "/root/dpir/probes/anchor_wave_progress.sh"},
+  {"local": "probes/anchor_wave.sh", "remote": "/root/dpir/probes/anchor_wave.sh"}
+ ],
+ "progress": {"regex": "^=== \\(AS3W\\) progress: ", "max_gap_minutes": 120},
+ "marker_regex": "^=== \\(AS3W\\) wave",
+ "end_regex": "^=== \\(AS3W\\) wave done",
+ "dry_run_args": "--dry-run",
+ "threads": 16,
+ "estimate": {"hours": 50, "basis": "registration 12 Oct: quinoline's measured CCSD(T) gradient (917 s at 16 threads; 4.6 gradients/h in two 8-thread runs) times the gradient count; wave 1 took 95 h against its 70 h"}
+}

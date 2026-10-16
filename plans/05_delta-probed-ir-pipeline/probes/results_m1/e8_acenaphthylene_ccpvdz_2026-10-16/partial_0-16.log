@@ -1,0 +1,105 @@
+[2026-10-14 11:07:52] E8 FD Hessian: 20 atoms, cc-pvdz, frozen 12 (derived from the elements: 12), step 0.005 bohr, 120 displacements, 8 threads, max_memory 10000 MB, explicit (T) lambda, fast (T) density kernel, fast (T) lambda kernel
+[2026-10-14 11:07:52] symmetry: 4 operations, orbits [[0, 1], [2, 10], [3, 9], [4, 8], [5, 7], [6], [11], [12, 13], [14, 19], [15, 18], [16, 17]], 33 displacements (66 gradients) instead of 120
+[2026-10-14 11:07:52] partial run: displacement indices [0, 1, 2, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
+cycle = 1  norm(lambda1,lambda2) = 0.0840102
+cycle = 2  norm(lambda1,lambda2) = 0.0250536
+cycle = 3  norm(lambda1,lambda2) = 0.0118531
+cycle = 4  norm(lambda1,lambda2) = 0.00434059
+cycle = 5  norm(lambda1,lambda2) = 0.00147923
+cycle = 6  norm(lambda1,lambda2) = 0.000416448
+cycle = 7  norm(lambda1,lambda2) = 0.000205594
+cycle = 8  norm(lambda1,lambda2) = 6.49561e-05
+cycle = 9  norm(lambda1,lambda2) = 3.6162e-05
+cycle = 10  norm(lambda1,lambda2) = 1.61944e-05
+cycle = 11  norm(lambda1,lambda2) = 5.95519e-06
+cycle = 12  norm(lambda1,lambda2) = 3.35279e-06
+cycle = 13  norm(lambda1,lambda2) = 1.60098e-06
+cycle = 14  norm(lambda1,lambda2) = 6.89406e-07
+cycle = 15  norm(lambda1,lambda2) = 3.69203e-07
+cycle = 16  norm(lambda1,lambda2) = 1.45545e-07
+cycle = 17  norm(lambda1,lambda2) = 7.30913e-08
+cycle = 18  norm(lambda1,lambda2) = 4.19083e-08
+cycle = 19  norm(lambda1,lambda2) = 2.75852e-08
+cycle = 20  norm(lambda1,lambda2) = 2.24255e-08
+cycle = 21  norm(lambda1,lambda2) = 1.73638e-08
+cycle = 22  norm(lambda1,lambda2) = 1.54922e-08
+cycle = 23  norm(lambda1,lambda2) = 1.56594e-08
+cycle = 24  norm(lambda1,lambda2) = 1.104e-08
+cycle = 25  norm(lambda1,lambda2) = 9.26668e-09
+[2026-10-14 13:24:28] (T) lambda 6525 s, gradient 209 s
+[2026-10-14 13:24:28] coordinate  0 p: E − E0 =    -15.34 µE_h, 8196 s  (2/120 gradients)
+cycle = 1  norm(lambda1,lambda2) = 0.0838029
+cycle = 2  norm(lambda1,lambda2) = 0.0249771
+cycle = 3  norm(lambda1,lambda2) = 0.0118013
+cycle = 4  norm(lambda1,lambda2) = 0.00432392
+cycle = 5  norm(lambda1,lambda2) = 0.0014747
+cycle = 6  norm(lambda1,lambda2) = 0.000416215
+cycle = 7  norm(lambda1,lambda2) = 0.000205309
+cycle = 8  norm(lambda1,lambda2) = 6.53414e-05
+cycle = 9  norm(lambda1,lambda2) = 3.63004e-05
+cycle = 10  norm(lambda1,lambda2) = 1.6315e-05
+cycle = 11  norm(lambda1,lambda2) = 5.99775e-06
+cycle = 12  norm(lambda1,lambda2) = 3.36193e-06
+cycle = 13  norm(lambda1,lambda2) = 1.60141e-06
+cycle = 14  norm(lambda1,lambda2) = 6.90522e-07
+cycle = 15  norm(lambda1,lambda2) = 3.67018e-07
+cycle = 16  norm(lambda1,lambda2) = 1.45651e-07
+cycle = 17  norm(lambda1,lambda2) = 7.30485e-08
+cycle = 18  norm(lambda1,lambda2) = 4.20353e-08
+cycle = 19  norm(lambda1,lambda2) = 2.78462e-08
+cycle = 20  norm(lambda1,lambda2) = 2.25028e-08
+cycle = 21  norm(lambda1,lambda2) = 1.74255e-08
+cycle = 22  norm(lambda1,lambda2) = 1.54911e-08
+cycle = 23  norm(lambda1,lambda2) = 1.57496e-08
+cycle = 24  norm(lambda1,lambda2) = 1.11052e-08
+cycle = 25  norm(lambda1,lambda2) = 9.28988e-09
+[2026-10-14 15:36:46] (T) lambda 6390 s, gradient 191 s
+[2026-10-14 15:36:46] coordinate  0 m: E − E0 =    +30.18 µE_h, 7938 s  (3/120 gradients)
+[2026-10-14 15:36:46] pair check coordinate  0: max |mean(g+, g−) − g0| = 1.4e-05 a.u. (limit 1e-04)
+cycle = 1  norm(lambda1,lambda2) = 0.0839526
+cycle = 2  norm(lambda1,lambda2) = 0.0250322
+cycle = 3  norm(lambda1,lambda2) = 0.0118393
+cycle = 4  norm(lambda1,lambda2) = 0.00433792
+cycle = 5  norm(lambda1,lambda2) = 0.00148026
+cycle = 6  norm(lambda1,lambda2) = 0.000416614
+cycle = 7  norm(lambda1,lambda2) = 0.000205825
+cycle = 8  norm(lambda1,lambda2) = 6.51689e-05
+cycle = 9  norm(lambda1,lambda2) = 3.62551e-05
+cycle = 10  norm(lambda1,lambda2) = 1.6256e-05
+cycle = 11  norm(lambda1,lambda2) = 5.97665e-06
+cycle = 12  norm(lambda1,lambda2) = 3.3572e-06
+cycle = 13  norm(lambda1,lambda2) = 1.60257e-06
+cycle = 14  norm(lambda1,lambda2) = 6.90167e-07
+cycle = 15  norm(lambda1,lambda2) = 3.6843e-07
+cycle = 16  norm(lambda1,lambda2) = 1.45319e-07
+cycle = 17  norm(lambda1,lambda2) = 7.27583e-08
+cycle = 18  norm(lambda1,lambda2) = 4.15524e-08
+cycle = 19  norm(lambda1,lambda2) = 2.73169e-08
+cycle = 20  norm(lambda1,lambda2) = 2.20379e-08
+cycle = 21  norm(lambda1,lambda2) = 1.69292e-08
+cycle = 22  norm(lambda1,lambda2) = 1.50824e-08
+cycle = 23  norm(lambda1,lambda2) = 1.52664e-08
+cycle = 24  norm(lambda1,lambda2) = 1.05925e-08
+cycle = 25  norm(lambda1,lambda2) = 8.79865e-09
+Traceback (most recent call last):
+  File "/root/dpir/probes/e8_cc_hessian_fd.py", line 437, in <module>
+    main()
+  File "/root/dpir/probes/e8_cc_hessian_fd.py", line 367, in main
+    t0 = time.time(); e, gr, mu = gradient(sym, x, a.basis, a.frozen, log, a.charge, a.spin, a.max_memory, fast); np.save(p, gr); gs[sign] = gr
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/dpir/probes/e8_cc_hessian_fd.py", line 110, in gradient
+    t1 = time.time(); g, mu = gradient_with_dipole(mol, mf, mycc, l1, l2, eris)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/dpir/probes/e8_cc_hessian_fd.py", line 154, in gradient_with_dipole
+    g = ccsd_t_grad.Gradients(mycc).kernel(mycc.t1, mycc.t2, l1, l2, eris)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/grad/ccsd.py", line 443, in kernel
+    de = self.grad_elec(t1, t2, l1, l2, eris, atmlst, verbose=log)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/grad/ccsd_t.py", line 38, in grad_elec
+    de = ccsd_grad.grad_elec(cc_grad, t1, t2, l1, l2, eris, atmlst,
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/grad/ccsd.py", line 107, in grad_elec
+    Imat += lib.einsum('ipx,iqx->pq', eri0.reshape(nf,nao,-1), dm2buf)
+                                      ^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: cannot reshape array of size 0 into shape (0,208,newaxis)
