@@ -251,6 +251,13 @@ on the fly and the scale guard may stop the run; the LS cache keys on ΔH, so ta
 line of the labels server and a look at the merged corpus: price on the merged corpus, `runspec.py launch probes/runspecs/chain44.json`.
 **15 Oct 23:4x:** weight raised by TASKS 69's post-hoc binned forecast (no line): the projected target may cost ≈ 2.6 cm⁻¹ ring-ip at
 60 atoms — about the whole 2.5 line — while the form costs 0.13.
+**16 Oct 14:1x — FIRST after the labels (the user: 'Ja, doe punt 1 maar'; commit 1ca2f179):** chain 44 may change the carried recipe the size
+tests train, so it runs before chains 41/42. Chain 44 LAUNCHED 14:12 through the run door, armed and waiting for (i) chain 35h's end and
+(ii) the gate line. **To release it**, after the labels server's FETCHED line, the merge and the look at the merged corpus with its price,
+append `=== (C44G) merged corpus reviewed <date time>` to `probes/results_m1/chain44_gate.log`. Chain 41 waits for chain 44's end — its
+spec says so, but its runner (pid 9064, armed 07:31, no step done) read the old spec: it must be stopped and relaunched
+(`python tools/runspec.py launch probes/runspecs/chain41.json`); the stop was refused by the session's sandbox, so it waits for the
+user's action. Until then the old runner would start chain 41 before 44 once its labels and chain 35h are there (≈ 26 Oct).
 65. **The architecture's floor — can rung C's form hold a large molecule's correction? (15 Oct 19:1x; the user: 'Ja, begin maar met de
 registratie. Let extra op codekwaliteit, ook van de Python.')** Why: the size levers bought so far (lever 5, rung 4, the PC question) assume a
 learning error; the head writes pair blocks only within 5 Å, symmetric, diagonal from the sum rule, and nobody measured what that form cannot
