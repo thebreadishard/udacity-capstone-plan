@@ -1,6 +1,7 @@
 """probes/chain_runner.py (TASKS 41, 10 Oct 2026): a run is a JSON spec. The standard rung C chain registers all checkpoints of a run in one call, reads
 on the frozen hold-out (b) and keeps everything in module 05's folder; commands never see the runner's stdin; a failing step or a missing declared
 output fails the run with a marker; wait conditions on markers and on result files."""
+import io
 import json
 import os
 import sys
@@ -180,3 +181,13 @@ def test_the_target_comparison_runs_before_the_size_tests():
     assert "chain44" in end_marker_waits(c41) and "chain41" in end_marker_waits(c42)
     assert "chain35h" in end_marker_waits(c44)
     assert any(w["kind"] == "marker" and w["log"].endswith("chain44_gate.log") for w in c44["wait"])
+
+def test_the_runner_writes_its_log_in_utf8_whatever_the_code_page():
+    """17 Oct 2026: a cp1252 '—' in chain40.log made grep call it a binary file and the watch reported no marker text."""
+    raw = io.BytesIO()
+    stream = io.TextIOWrapper(raw, encoding="cp1252", newline="\n")
+    CR.utf8_stdout(stream)
+    stream.write("=== (T) run done — 1 steps\n")
+    stream.flush()
+    assert raw.getvalue().decode("utf-8") == "=== (T) run done — 1 steps\n"
+

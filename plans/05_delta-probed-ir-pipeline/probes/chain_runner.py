@@ -32,6 +32,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import io
 import json
 import os
 import re
@@ -242,5 +243,12 @@ def main(argv: list[str] | None = None) -> int:
     return 0
 
 
+def utf8_stdout(stream: io.TextIOWrapper) -> None:
+    """The chain log is the runner's redirected stdout, which Windows opens in the locale's code page: a marker's '—' became byte 0x97
+    and grep read chain40.log as a binary file (17 Oct 2026)."""
+    stream.reconfigure(encoding="utf-8")
+
+
 if __name__ == "__main__":
+    utf8_stdout(sys.stdout)
     sys.exit(main())

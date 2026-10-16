@@ -32,7 +32,7 @@ check_jobs() {
     case "$name" in ''|'#'*) continue ;; esac
     log=$P/$log
     [ -f "$log" ] || continue
-    while read -r line; do new_marker "$(echo "$line" | cut -c1-110)" && exit 2; done < <(grep -E "$mark" "$log" | grep -v armed)
+    while read -r line; do new_marker "$(echo "$line" | cut -c1-110)" && exit 2; done < <(grep -aE "$mark" "$log" | grep -v armed)
     if ! grep -qE "$end" "$log"; then
       # 13 Oct 2026: one ps snapshot missed a live runner (C35h, 16:19, during a WMI launch); a job is gone only when two snapshots 30 s apart miss it
       if [ "$(ps -ef | grep -cE "$proc")" = "0" ]; then
