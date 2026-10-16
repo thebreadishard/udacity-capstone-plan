@@ -71,6 +71,7 @@ Whenever the machine is busy or the user is away, the next item is the cheapest 
 
 ## 6. Log
 
+- **17 Oct, 00:20 — chain 40 read: STOP, by 0.0005.** Hold-out (b) coupling ratio, seed mean on the frozen (b): 0.310 with ≈ 30 children per five-ring family, 0.332 with ≈ 22, 0.325 for chain 37 without them; Δ = −0.0145 against the STOP line −0.015; the still-learning clause of 14 Oct does not hold (gap 0.0215 < 2 × combined SE 0.0403). As registered: the five-ring runner stopped (STOP file 00:19, 69 of 181 with a result), the laptop returns to the cations, the generator route for (b)-like scaffolds goes to the user. (b)'s targets are identical in both reads (the 8 newly analytic molecules are outside (b)). Read script `probes/chain40_read.py` (9 synthetic tests before the read); outcome in the rung C pre-registration.
 - **15 Oct, 00:1x — two exploratory desk reads before their tests (the user, 14 Oct night: 'werk zelfstandig door').** (1) Benzene's basis
 ladder from data we have (`probes/benzene_anharmonic_basis_ladder.py`): Δ_anh at 6-31G*, against Miani 2000's B3LYP/TZ2P (the one calculation
 Boese & Martin also tabulate), differs by rms ≈ 8 cm⁻¹ on degenerate and non-degenerate, in- and out-of-plane modes alike — not a ν19 oddity
