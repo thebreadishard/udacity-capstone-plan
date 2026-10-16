@@ -1,0 +1,7 @@
+{"name": "apt_l4", "purpose": "TASKS 44: L4 of the refined-APT registration, the field route on the five selected molecules",
+ "host": "laptop", "workdir": "probes/results_m1/apt_refine_install_2026-10-12/l4",
+ "command": "MSYS_NO_PATHCONV=1 wsl -e bash /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/apt_l4_run.sh",
+ "sources": [{"local": "probes/apt_l4_run.sh"}, {"local": "probes/apt_field_route.py"}, {"local": "probes/apt_l4.py"}],
+ "progress": {"regex": "^  field component [0-9]/3 done|^=== \\(L4\\) ", "max_gap_minutes": 90},
+ "marker_regex": "^=== \\(L4\\) (start|STOPPED|all done)", "end_regex": "^=== \\(L4\\) all done",
+ "dry_run_args": "--dry-run", "resumable": true}
