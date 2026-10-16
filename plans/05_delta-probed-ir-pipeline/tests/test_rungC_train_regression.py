@@ -1,16 +1,21 @@
-"""Regression pin of the rung-C trainer (TASKS 72): small runs must give the same record and the same saved model through the refactor.
-The pins were written by the trainer as it stood before the refactor (master 95291f4b, 16 Oct 2026).
+"""Regression pin of the rung-C trainer (TASKS 72): small runs on a frozen corpus must give the same record and the same saved model to the
+bit. The pins are written by the trainer as it stood before the refactor (master 95291f4b, 16 Oct 2026), on the frozen corpus.
+
+The corpus is `tests/data/rungC_pin_corpus/` (built by `tests/data/make_rungC_pin_corpus.py`: 27 molecules, only the files the trainer reads,
+a sha256 per file), so the pin runs the same bytes on every machine, CI included. It first ran on the live corpus, whose pool and class
+scales moved when chain 40 merged 64 molecules into it (16 Oct 11:32): red without a code change, a pin that could not tell drift from a
+regression. A changed or added file in the frozen corpus now fails as such, before any training.
 
 Two cases, both the carried recipe exactly as `chain_runner` passes it (with `--save-model`, as every chain trains), cut to mechanics size
 by `--smoke` (5 pool molecules, seed 0, hold-outs cut to 3): 'carried' as it is (3 epochs); 'chainlike' with the switches the queued chains
-add — an excluded-ids file (chains 41, 43), a size hold-out (chain 42) and the kfit target (chain 44) — 2 epochs. Each runs in a fresh
-single-threaded process: two runs with two torch threads differed by up to 1.4e-6 relative (float32 reductions), and the BLAS thread counts
-must be set before numpy is imported. Wall-clock fields, provenance and the run's own temporary paths are dropped; everything else must
-match to the last bit — the record including its training history, and the checkpoint's settings and a sha256 of every state tensor.
+add — an excluded-ids file (chains 41, 43), a size hold-out (chain 42; at the frozen set's own scale) and the kfit target (chain 44) —
+2 epochs. Each runs in a fresh single-threaded process: two runs with two torch threads differed by up to 1.4e-6 relative (float32
+reductions), and the BLAS thread counts must be set before numpy is imported. Wall-clock fields, provenance and the run's own temporary
+paths are dropped; everything else must match to the last bit — the record including its training history, and the checkpoint's settings
+and a sha256 of every state tensor.
 
-    python tests/test_rungC_train_regression.py --write-golden [TRAINER]   # before a refactor (with the old trainer), or after a deliberate change
-
-The corpus is not in git: the test reads it from RUNGC_CORPUS, or from the plan's own corpus folder, and skips when neither exists."""
+    python tests/test_rungC_train_regression.py --write-golden [TRAINER]   # with the old trainer before a refactor, or after a deliberate change
+"""
 from __future__ import annotations
 
 import hashlib
@@ -24,28 +29,33 @@ import pytest
 
 PLAN = Path(__file__).resolve().parents[1]
 GOLDEN = PLAN / "tests" / "data" / "rungC_train_golden.json"
+PIN_CORPUS = PLAN / "tests" / "data" / "rungC_pin_corpus"
 TRAINER = PLAN / "modules" / "05_support_predictor" / "m05" / "rungC_train.py"
 VOLATILE = frozenset({"date", "provenance", "seconds", "exclude_ids_file"})
 RUN_PATHS = frozenset({"molecules", "out_prefix", "exclude_ids_file"})    # the run's own temporary paths, in the checkpoint's args
-EXCLUDED = ("A2_233ec9a78f", "B_83267b6b89")                              # the first two pool molecules: the smoke cut moves past them
 CASES = {"carried": ["--epochs", "3"],
-         "chainlike": ["--epochs", "2", "--size-test-min-atoms", "28", "--aux-target", "kfit", "--exclude-ids-file", "{excluded}"]}
+         "chainlike": ["--epochs", "2", "--size-test-min-atoms", "{size_min_atoms}", "--aux-target", "kfit", "--exclude-ids-file", "{excluded}"]}
 
 sys.path.insert(0, str(PLAN / "probes"))
 
 
-def corpus_dir() -> Path:
-    return Path(os.environ.get("RUNGC_CORPUS", PLAN / "modules" / "05_support_predictor" / "corpus" / "molecules"))
+def pin_record() -> dict:
+    return json.loads((PIN_CORPUS / "pin_corpus.json").read_text(encoding="utf-8"))
 
 
-def full_corpus_present() -> bool:
-    """The local corpus, not the single tracked molecule a CI checkout has (16 Oct 2026: the folder alone passed the check, and the trainer
-    failed on it): at least as many molecules with a B3LYP Hessian as the pinned run read."""
-    d = corpus_dir()
-    if not d.is_dir() or not GOLDEN.exists():
-        return False
-    needed = json.loads(GOLDEN.read_text(encoding="utf-8"))["carried"]["record"]["n_molecules"]
-    return sum(1 for p in d.iterdir() if p.is_dir() and any(p.glob("hessian_b3lyp*.npz"))) >= needed
+def sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def corpus_changes(root: Path, record: dict) -> list[str]:
+    """What differs between the frozen corpus on disk and its record: changed, missing or extra files, extra molecule folders."""
+    listed = record["sha256"]
+    on_disk = {f"{p.parent.name}/{p.name}": p for p in (root / "molecules").glob("*/*") if p.is_file()}
+    changes = [f"{k}: {'missing' if k not in on_disk else 'changed'}" for k, h in listed.items() if k not in on_disk or sha256(on_disk[k]) != h]
+    changes += [f"{k}: not in the record" for k in sorted(on_disk.keys() - listed.keys())]
+    folders = {p.name for p in (root / "molecules").iterdir() if p.is_dir()}
+    changes += [f"{d}/: not in the record" for d in sorted(folders - {m["id"] for m in record["molecules"]})]
+    return changes
 
 
 def stable(record):
@@ -89,28 +99,33 @@ def checkpoint_summary(path: Path) -> dict:
 
 
 def run_pin(case: str, workdir: Path, trainer: Path = TRAINER) -> dict:
-    """Run one case in a fresh single-threaded process; the stable record and the checkpoint."""
+    """Run one case on the frozen corpus in a fresh single-threaded process; the stable record and the checkpoint."""
     import chain_runner
 
+    record = pin_record()
     excluded = workdir / "excluded.txt"
-    excluded.write_text("\n".join(EXCLUDED) + "\n", encoding="utf-8")
+    excluded.write_text("\n".join(record["excluded"]) + "\n", encoding="utf-8")
     prefix = workdir / case
-    extra = [a.format(excluded=excluded) for a in CASES[case]]
-    argv = [str(corpus_dir()), str(prefix), *chain_runner.BASE, *chain_runner.RECIPE_V11, "--smoke", "--threads", "1", "--seeds", "0",
+    extra = [a.format(excluded=excluded, size_min_atoms=record["size_min_atoms"]) for a in CASES[case]]
+    argv = [str(PIN_CORPUS / "molecules"), str(prefix), *chain_runner.BASE, *chain_runner.RECIPE_V11, "--smoke", "--threads", "1", "--seeds", "0",
             "--save-model", *extra]
     env = os.environ | {v: "1" for v in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS")} | {"PYTHONUTF8": "1"}
     subprocess.run([sys.executable, str(trainer), *argv], env=env, stdin=subprocess.DEVNULL, check=True)
-    record = stable(json.loads(Path(f"{prefix}.json").read_text(encoding="utf-8")))
-    return {"record": record, "checkpoint": checkpoint_summary(Path(f"{prefix}_model_n5_seed0.pt"))}
+    out = stable(json.loads(Path(f"{prefix}.json").read_text(encoding="utf-8")))
+    return {"record": out, "checkpoint": checkpoint_summary(Path(f"{prefix}_model_n5_seed0.pt"))}
+
+
+def test_the_frozen_corpus_is_as_recorded():
+    assert (changes := corpus_changes(PIN_CORPUS, pin_record())) == [], changes
 
 
 @pytest.mark.parametrize("case", sorted(CASES))
 def test_the_pinned_run_is_unchanged(case, tmp_path):
     pytest.importorskip("torch")
+    pytest.importorskip("geometric")
     if not GOLDEN.exists():
         pytest.fail(f"no pin at {GOLDEN}: write it with --write-golden before changing the trainer")
-    if not full_corpus_present():
-        pytest.skip(f"the full corpus with its Hessians is not present (it is not in git): {corpus_dir()}")
+    assert corpus_changes(PIN_CORPUS, pin_record()) == [], "the frozen corpus changed: rebuild it and re-pin with the old trainer"
     pinned = json.loads(GOLDEN.read_text(encoding="utf-8"))[case]
     assert (diff := first_difference(pinned, run_pin(case, tmp_path))) is None, diff
 
@@ -120,8 +135,19 @@ def test_the_chainlike_case_exercises_its_switches():
     if not GOLDEN.exists():
         pytest.skip("no pin yet")
     rec = json.loads(GOLDEN.read_text(encoding="utf-8"))["chainlike"]["record"]
-    assert rec["excluded_ids"] == list(EXCLUDED) and rec["holdout_s"] and rec["aux_target"] == "kfit"
+    assert rec["excluded_ids"] == pin_record()["excluded"] and rec["holdout_s"] and rec["aux_target"] == "kfit"
     assert rec["target_residuals"] and all("readout_target" in v for v in rec["target_residuals"].values())
+
+
+def test_a_changed_or_added_file_is_named(tmp_path):
+    (tmp_path / "molecules" / "m1").mkdir(parents=True)
+    f = tmp_path / "molecules" / "m1" / "geometry.json"
+    f.write_text("{}", encoding="utf-8")
+    record = {"sha256": {"m1/geometry.json": sha256(f), "m1/result.json": "0"}, "molecules": [{"id": "m1"}]}
+    assert corpus_changes(tmp_path, record) == ["m1/result.json: missing"]
+    f.write_text("{ }", encoding="utf-8")
+    (tmp_path / "molecules" / "m2").mkdir()
+    assert corpus_changes(tmp_path, record) == ["m1/geometry.json: changed", "m1/result.json: missing", "m2/: not in the record"]
 
 
 def test_stable_drops_volatile_fields_at_any_depth():
@@ -149,11 +175,12 @@ if __name__ == "__main__":
         sys.exit(__doc__)
     import tempfile
 
+    if changes := corpus_changes(PIN_CORPUS, pin_record()):
+        sys.exit(f"the frozen corpus differs from its record: {changes[:5]}")
     trainer = Path(sys.argv[2]) if len(sys.argv) == 3 else TRAINER
     pins = {}
     for case in sorted(CASES):
         with tempfile.TemporaryDirectory() as tmp:
             pins[case] = run_pin(case, Path(tmp), trainer)
-    GOLDEN.parent.mkdir(exist_ok=True)
     GOLDEN.write_text(json.dumps(pins, indent=1, sort_keys=True), encoding="utf-8")
     print(f"pinned {sorted(pins)} with {trainer} to {GOLDEN}")

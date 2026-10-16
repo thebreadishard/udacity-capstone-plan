@@ -117,6 +117,7 @@ plans/05_delta-probed-ir-pipeline/probes/watch_state/
 !plans/*/probes/runspecs/*.json
 # 16 Oct 2026: pinned outputs of regression tests (TASKS 72)
 !plans/*/tests/data/*.json
+!plans/*/tests/data/rungC_pin_corpus/**
 
 # 15 Oct 2026: label snapshots fetched for a read (TASKS 65); their ids and sha256 are committed with the read, the files are not
 plans/*/modules/*/corpus/labels_snapshot_*/
