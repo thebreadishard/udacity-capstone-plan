@@ -22,14 +22,19 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 import time
+from fnmatch import fnmatch
 from pathlib import Path
 
 import torch
 
 M05 = Path(__file__).resolve().parents[1]
 PLAN = M05.parents[1]
+RUNS = PLAN / "probes" / "runs"            # chain specs: which checkpoints a chain will save
+RUNSPECS = PLAN / "probes" / "runspecs"    # their run specs: where each chain's log lives
+CHAIN_WORKDIR = "probes/results_m1"        # where chains launched before the run door (15 Oct 2026) write their logs
 MODULES_DIR = PLAN / "modules"
 OUT = M05 / "out"
 STATUS_FILE = OUT / "MODELS_STATUS.json"
@@ -104,11 +109,12 @@ def recipe_of(ck) -> str:
     kind = kind_of(ck)
     if kind == "hybrid":
         c, a = ck["ctor"], ck["args"]
-        return (f"{ck.get('head', a.get('head'))} head, pattern {ck.get('pattern')}, target {ck.get('aux_target')} (λ {ck.get('ls_lam')}), aux {ck.get('aux_mode')} "
-                f"(kring {ck.get('kring_weight')}, kdiag {ck.get('kdiag_weight')} {ck.get('kdiag_mode', 'all')}), body {c.get('n_blocks')}×{c.get('n_s')} {c.get('aggregation')}"
-                f"{', tensor input' if c.get('tensor_input') else ''}, sqm α {'on' if c.get('sqm_scale') else 'off'}, pair features {c.get('n_pair_features', 0)}, "
-                f"hidden {c.get('hidden')}, pool {a.get('pool_layers')}, analytic {'on' if a.get('use_analytic') else 'off'}, epochs {a.get('epochs')} / patience "
-                f"{a.get('patience')}, lr {a.get('lr')}, n {ck.get('n')}, seed {ck.get('seed')}")
+        return (f"{ck.get('head', a.get('head'))} head, pattern {ck.get('pattern')}, target {ck.get('aux_target')} (λ {ck.get('ls_lam')}), "
+                f"aux {ck.get('aux_mode')} (kring {ck.get('kring_weight')}, kdiag {ck.get('kdiag_weight')} {ck.get('kdiag_mode', 'all')}), "
+                f"body {c.get('n_blocks')}×{c.get('n_s')} {c.get('aggregation')}{', tensor input' if c.get('tensor_input') else ''}, "
+                f"sqm α {'on' if c.get('sqm_scale') else 'off'}, pair features {c.get('n_pair_features', 0)}, "
+                f"hidden {c.get('hidden')}, pool {a.get('pool_layers')}, analytic {'on' if a.get('use_analytic') else 'off'}, "
+                f"epochs {a.get('epochs')} / patience {a.get('patience')}, lr {a.get('lr')}, n {ck.get('n')}, seed {ck.get('seed')}")
     if kind == "pretrained body":
         keys = [k for k in ("aggregation", "epochs", "lr", "n_molecules", "elements", "tensor_input") if k in ck]
         return "pretrained body: " + ", ".join(f"{k} {ck[k]}" for k in keys)
@@ -187,17 +193,54 @@ def rows(out_dir: Path = OUT, status_file: Path = STATUS_FILE) -> tuple[list[dic
         ck = load_checkpoint(p)
         rec = result_record(p)
         e = status[key]
-        out.append(dict(model=key, network=e["network"], version=str(e.get("version", "") or "—"), kind=kind_of(ck), status=e["status"], chain=e.get("chain", ""),
-                        recipe=recipe_of(ck), a=holdout_numbers(rec, ck, "a"), b=holdout_numbers(rec, ck, "b"), commit=commit_of(rec, ck),
-                        saved=(rec or {}).get("date") or time.strftime("%Y-%m-%d %H:%M", time.localtime(p.stat().st_mtime)), note=e.get("note", "")))
+        saved = (rec or {}).get("date") or time.strftime("%Y-%m-%d %H:%M", time.localtime(p.stat().st_mtime))
+        out.append(dict(model=key, network=e["network"], version=str(e.get("version", "") or "—"), kind=kind_of(ck), status=e["status"],
+                        chain=e.get("chain", ""), recipe=recipe_of(ck), a=holdout_numbers(rec, ck, "a"), b=holdout_numbers(rec, ck, "b"),
+                        commit=commit_of(rec, ck), saved=saved, note=e.get("note", "")))
     return out, missing
+
+
+def chain_running(log: Path) -> bool:
+    """A chain is running when its log has an 'armed' marker and no 'run done' or 'RUN FAILED' after the last one."""
+    if not log.exists():
+        return False
+    text = log.read_text(encoding="utf-8", errors="replace")
+    last = text.rfind(") armed (")
+    return last >= 0 and not re.search(r"^=== \(\S+\) (run done|RUN FAILED)", text[last:], re.M)
+
+
+def running_chain_checkpoints(out_dir: Path, runs: Path = RUNS, runspecs: Path = RUNSPECS, plan: Path = PLAN) -> dict[str, str]:
+    """{checkpoint glob relative to out_dir: chain} of every rung-C chain that is running. A chain saves its models one training at a time
+    and enters them all with its own register step after the last training, so until then they have no status by design (16 Oct 2026:
+    chain 40's first model stopped --check mid-run). A chain that ended or failed is not running: its unentered models stop the registry."""
+    out = {}
+    for spec_path in sorted(runs.glob("*.json")):
+        runspec = runspecs / spec_path.name
+        workdir = json.loads(runspec.read_text(encoding="utf-8"))["workdir"] if runspec.exists() else CHAIN_WORKDIR
+        log = plan / workdir / f"{spec_path.stem}.log"
+        if not chain_running(log):
+            continue
+        spec = json.loads(spec_path.read_text(encoding="utf-8"))
+        for step in spec.get("steps", []):
+            for t in step.get("trainings", []) if step.get("kind") == "rungc" else []:
+                prefix = M05 / t["prefix"]
+                if prefix.parent.resolve() == out_dir.resolve():
+                    out[f"{prefix.name}_model_n*_seed*.pt"] = spec.get("name", spec_path.stem)
+    return out
+
+
+def split_pending(missing: list[str], running: dict[str, str]) -> tuple[list[str], dict[str, str]]:
+    """(truly missing, {key: chain} of the checkpoints a running chain will still enter)."""
+    pending = {k: chain for k in missing for pattern, chain in running.items() if fnmatch(k, pattern)}
+    return [k for k in missing if k not in pending], pending
 
 
 def render(table: list[dict], module: dict | None = None) -> str:
     m = module or MODULES["05"]
-    head = HEADER.format(title=m["title"], generator=m["generator"], out=m["out"].relative_to(PLAN).as_posix(), status=m["status"].relative_to(PLAN).as_posix(), rule=RULE)
-    body = "".join(f"| `{r['model']}` | {r['network']} | {r['version']} | {r['kind']} | **{r['status']}** | {r['chain']} | {r['recipe']} | {r['a']} | {r['b']} | "
-                   f"{r['commit']} | {r['saved']} | {r['note']} |\n" for r in table)
+    head = HEADER.format(title=m["title"], generator=m["generator"], out=m["out"].relative_to(PLAN).as_posix(),
+                         status=m["status"].relative_to(PLAN).as_posix(), rule=RULE)
+    body = "".join(f"| `{r['model']}` | {r['network']} | {r['version']} | {r['kind']} | **{r['status']}** | {r['chain']} | {r['recipe']} | "
+                   f"{r['a']} | {r['b']} | {r['commit']} | {r['saved']} | {r['note']} |\n" for r in table)
     return head + body
 
 
@@ -207,8 +250,8 @@ def render_overview(tables: dict[str, list[dict]]) -> str:
         rs = [r for r in tables.get(key, []) if r["network"] == name]
         carried = sorted({r["version"] for r in rs if r["status"] == "carried"})
         chains = sorted({r["chain"] for r in rs if r["status"] == "carried"})
-        current = ", ".join(f"v{v}" for v in carried) + (f" ({', '.join(chains)}; {sum(r['status'] == 'carried' for r in rs)} seeds)" if chains else "") if carried \
-            else "none in production (0.x)"
+        seeds = f" ({', '.join(chains)}; {sum(r['status'] == 'carried' for r in rs)} seeds)" if chains else ""
+        current = ", ".join(f"v{v}" for v in carried) + seeds if carried else "none in production (0.x)"
         seen: dict[tuple, int] = {}
         for r in rs:
             if r["version"] != "—":
@@ -275,50 +318,63 @@ def _write_or_check(path: Path, text: str, check: bool) -> bool:
     return True
 
 
-def main(argv: list[str] | None = None) -> int:
+def build_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--module", default="all", choices=["all", *MODULES], help="which registry to write (default: all three and the overview)")
     ap.add_argument("--out-dir", default=None, help="ad-hoc single folder (tests): with --status-file and --registry")
     ap.add_argument("--status-file", default=None)
     ap.add_argument("--registry", default=None)
     ap.add_argument("--check", action="store_true", help="exit 1 if a committed registry differs from what the checkpoints say")
-    ap.add_argument("--add-candidates", nargs="+", default=None, help="checkpoints of a registered chain to enter as `candidate` (then the registry is rewritten); give all of a chain's checkpoints in one call after all its trainings, or the rebuild stops on the ones not yet entered")
+    ap.add_argument("--add-candidates", nargs="+", default=None, help="checkpoints of a registered chain to enter as `candidate` (then the "
+                    "registry is rewritten); give all of a chain's checkpoints in one call after all its trainings, or the rebuild stops on the "
+                    "ones not yet entered")
     ap.add_argument("--chain", default=None, help="with --add-candidates: the chain name")
     ap.add_argument("--note", default="", help="with --add-candidates: what the chain is and where it is registered")
     ap.add_argument("--network", default=None, help="with --add-candidates: the network name (default: the ΔH network)")
-    a = ap.parse_args(argv)
-    if a.add_candidates:
-        if not a.chain:
-            raise SystemExit("--add-candidates needs --chain")
-        added = add_candidates([Path(p) for p in a.add_candidates], a.chain, a.note, a.network or NETWORK_NAMES[0],
-                               Path(a.status_file) if a.status_file else None)
-        print(f"registered as candidate: {', '.join(added)}")
-    else:
-        added = []
+    return ap
+
+
+def register_candidates(a) -> list[str]:
+    if not a.chain:
+        raise SystemExit("--add-candidates needs --chain")
+    added = add_candidates([Path(p) for p in a.add_candidates], a.chain, a.note, a.network or NETWORK_NAMES[0],
+                           Path(a.status_file) if a.status_file else None)
+    print(f"registered as candidate: {', '.join(added)}")
+    return added
+
+
+def selected_modules(a) -> dict:
     if a.out_dir or a.status_file or a.registry:
-        mods = {"adhoc": dict(title="ad hoc", out=Path(a.out_dir or OUT), status=Path(a.status_file or STATUS_FILE), registry=Path(a.registry or REGISTRY),
-                              generator="m05/model_registry.py")}
-    else:
-        mods = MODULES if a.module == "all" else {a.module: MODULES[a.module]}
-    tables, stale = {}, []
-    for key, m in mods.items():
-        table, missing = rows(m["out"], m["status"])
-        if missing:
-            print("model registry STOPPED: no reviewed status for " + ", ".join(missing) + f" — add them to {m['status']}", file=sys.stderr)
-            if added:
-                print(f"(the {len(added)} candidates of this call ARE recorded in the status file; only the rebuild stopped — register all of a "
-                      "chain's checkpoints in one --add-candidates call after all its trainings)", file=sys.stderr)
-            return 1
-        tables[key] = table
-        try:
-            text = render(table, m)
-        except ValueError:                                                  # an ad-hoc folder outside the plan: header paths cannot be made relative
-            text = render(table, dict(m, out=PLAN / m["out"].name, status=PLAN / m["status"].name))
-        if not _write_or_check(m["registry"], text, a.check):
-            stale.append(str(m["registry"]))
-    if mods is MODULES and not _write_or_check(OVERVIEW, render_overview(tables), a.check):
-        stale.append(str(OVERVIEW))
-    if a.check:
+        return {"adhoc": dict(title="ad hoc", out=Path(a.out_dir or OUT), status=Path(a.status_file or STATUS_FILE),
+                              registry=Path(a.registry or REGISTRY), generator="m05/model_registry.py")}
+    return MODULES if a.module == "all" else {a.module: MODULES[a.module]}
+
+
+def module_table(m: dict, added: list[str]) -> list[dict] | None:
+    """The module's rows; None (with the reason on stderr) when a checkpoint has no reviewed status and no running chain will enter it."""
+    table, missing = rows(m["out"], m["status"])
+    missing, pending = split_pending(missing, running_chain_checkpoints(m["out"]))
+    if pending:
+        print(f"model registry: {len(pending)} checkpoint(s) of running chain(s) {', '.join(sorted(set(pending.values())))} not listed until "
+              f"their register step: {', '.join(sorted(pending))}", file=sys.stderr)
+    if not missing:
+        return table
+    print("model registry STOPPED: no reviewed status for " + ", ".join(missing) + f" — add them to {m['status']}", file=sys.stderr)
+    if added:
+        print(f"(the {len(added)} candidates of this call ARE recorded in the status file; only the rebuild stopped — register all of a "
+              "chain's checkpoints in one --add-candidates call after all its trainings)", file=sys.stderr)
+    return None
+
+
+def render_module(table: list[dict], m: dict) -> str:
+    try:
+        return render(table, m)
+    except ValueError:                                                      # an ad-hoc folder outside the plan: header paths cannot be made relative
+        return render(table, dict(m, out=PLAN / m["out"].name, status=PLAN / m["status"].name))
+
+
+def report(check: bool, stale: list[str], tables: dict, mods: dict) -> int:
+    if check:
         if stale:
             print("model registry STALE: " + ", ".join(stale) + " differ from the checkpoints — run m05/model_registry.py", file=sys.stderr)
             return 1
@@ -329,6 +385,23 @@ def main(argv: list[str] | None = None) -> int:
     if mods is MODULES:
         print(f"wrote {OVERVIEW}")
     return 0
+
+
+def main(argv: list[str] | None = None) -> int:
+    a = build_parser().parse_args(argv)
+    added = register_candidates(a) if a.add_candidates else []
+    mods = selected_modules(a)
+    tables, stale = {}, []
+    for key, m in mods.items():
+        table = module_table(m, added)
+        if table is None:
+            return 1
+        tables[key] = table
+        if not _write_or_check(m["registry"], render_module(table, m), a.check):
+            stale.append(str(m["registry"]))
+    if mods is MODULES and not _write_or_check(OVERVIEW, render_overview(tables), a.check):
+        stale.append(str(OVERVIEW))
+    return report(a.check, stale, tables, mods)
 
 
 if __name__ == "__main__":

@@ -210,7 +210,11 @@ smoke pool's class scales; commit 8797139b, the user: 'Ja, begin maar met 1'):**
 refactor matched to the bit (83d79448: main split, Anchors / FinetuneSettings / Prediction, the adapter seeded), then two deliberate output
 changes re-pinned (66fe29d3); every file touched today passes both checks; shared pin tools in `tests/pin_tools.py`. **Open:**
 `test_committed_registries_are_current` reads the live `out/` folder and fails while a chain has saved a model its register step has not
-yet entered (chain 40, 15:2x) — the pin's lesson again; make it check only what a finished chain left. TASKS.md's lock. Worktree and branch removed 10:01 on the user's word ('Ja, ruim de worktree maar op'; clean, branch merged).
+yet entered (chain 40, 15:2x) — the pin's lesson again; make it check only what a finished chain left. **16 Oct 15:5x — DONE (the
+user: 'Repareer de registertest ook maar'):** `model_registry.py` keeps apart the checkpoints of a running chain (its spec's training
+prefixes; running = 'armed' in its log without 'run done' or 'RUN FAILED' after it; logs of chains from before the run door in
+probes/results_m1) and names them; an ended or failed chain's unentered model still stops it; `main` split, file at the clean-code check;
+8 new tests; `--check` ok with chain 40's model pending. Open: TASKS.md's lock. Worktree and branch removed 10:01 on the user's word ('Ja, ruim de worktree maar op'; clean, branch merged).
 71. **The odds after the target comparison (15 Oct 21:2x; the user: 'zet alle stappen op de takenlijst die nodig zijn om het project een succes
 te laten zijn met deze nieuwe kennis').** TASKS 65 changed what the size odds rest on: the form is not a wall, the trained target is a
 growing loss. No odds moved on a desk finding. **Next:** when TASKS 66 is read, re-estimate size (50), mandate (39) and T1 (75) with the

@@ -184,3 +184,54 @@ def test_add_candidates_with_another_unentered_checkpoint(tmp_path, capsys):
     assert json.loads(st.read_text(encoding="utf-8"))[p0.name]["status"] == "candidate"
     assert MR.main([*args, "--add-candidates", str(p1), "--chain", "38"]) == 0
 
+
+def _chain(root: Path, log_text: str | None, name: str = "chain99", runspec: bool = True) -> None:
+    """A chain spec saving 'out/E7_rungC_chain99_arm' checkpoints, its run spec and its log, under a synthetic plan folder."""
+    (root / "runs").mkdir(exist_ok=True)
+    (root / "runspecs").mkdir(exist_ok=True)
+    spec = {"name": "C99", "steps": [{"kind": "rungc", "trainings": [{"prefix": "out/E7_rungC_chain99_arm"}]}, {"kind": "cmd"}]}
+    (root / "runs" / f"{name}.json").write_text(json.dumps(spec), encoding="utf-8")
+    if runspec:
+        (root / "runspecs" / f"{name}.json").write_text(json.dumps({"workdir": "logs"}), encoding="utf-8")
+    if log_text is not None:
+        (root / "logs").mkdir(exist_ok=True)
+        (root / "logs" / f"{name}.log").write_text(log_text, encoding="utf-8")
+
+
+def _running(root: Path) -> dict:
+    return MR.running_chain_checkpoints(MR.OUT, runs=root / "runs", runspecs=root / "runspecs", plan=root)
+
+
+ARMED = "=== (C99) armed (pid 1), 4 steps 2026-10-16 11:00:00\n=== (C99) waiting 2026-10-16 11:00:00\n"
+
+
+@pytest.mark.parametrize(("log", "running"), [
+    (ARMED + "(C99) train E7_rungC_chain99_arm done 2026-10-16 12:00:00\n", True),
+    (ARMED + "=== (C99) run done — 4 steps 2026-10-16 13:00:00\n", False),
+    (ARMED + "=== (C99) RUN FAILED at train: boom 2026-10-16 13:00:00\n", False),
+    (ARMED + "=== (C99) RUN FAILED at train: boom\n" + ARMED.replace("pid 1", "pid 2"), True),        # relaunched after a failure
+    (None, False),
+    ("", False),
+])
+def test_a_chain_is_running_from_its_armed_marker_to_its_end(tmp_path, log, running):
+    """16 Oct 2026: chain 40's first model stopped --check mid-run; the checkpoints of a running chain wait for its own register step."""
+    _chain(tmp_path, log)
+    assert bool(_running(tmp_path)) is running
+
+
+def test_checkpoints_of_a_running_chain_are_pending_and_others_still_stop(tmp_path):
+    _chain(tmp_path, ARMED)
+    running = _running(tmp_path)
+    assert running == {"E7_rungC_chain99_arm_model_n*_seed*.pt": "C99"}
+    missing, pending = MR.split_pending(["E7_rungC_chain99_arm_model_n500_seed0.pt", "Other_model_n5_seed0.pt"], running)
+    assert missing == ["Other_model_n5_seed0.pt"] and pending == {"E7_rungC_chain99_arm_model_n500_seed0.pt": "C99"}
+
+
+def test_a_chain_without_a_run_spec_has_its_log_in_the_chain_folder(tmp_path):
+    """Chains launched before the run door (chain 40, 14 Oct 2026) have no run spec; their logs are in the chain runner's folder."""
+    _chain(tmp_path, None, runspec=False)
+    assert _running(tmp_path) == {}
+    (tmp_path / MR.CHAIN_WORKDIR).mkdir(parents=True)
+    (tmp_path / MR.CHAIN_WORKDIR / "chain99.log").write_text(ARMED, encoding="utf-8")
+    assert _running(tmp_path) == {"E7_rungC_chain99_arm_model_n*_seed*.pt": "C99"}
+
