@@ -11,7 +11,7 @@ Spec (paths relative to the plan folder unless absolute):
                 {"kind": "cmd", "argv": [...], "cwd": …}                a command exits 0 (e.g. a check on a server; 120 s timeout)
   steps       run in order; the run stops at the first failing step:
                 {"kind": "cmd", "argv": [...], "cwd": …, "log": …}       any command (stdin is /dev/null, always; "{python}" = the runner's python)
-                {"kind": "rungc", …}                                      the standard rung C chain, expanded by `rungc_steps`
+                {"kind": "rungc", …}                                      the standard rung C chain, expanded by `rungc_steps` (needs "date")
   outputs     files that must exist at the end (TASKS 43: declared outputs); a missing one fails the run
 A standard rung C step: design check → every training (chain 34's recipe v1.1 plus each training's own arguments, models saved) → ONE
 `model_registry --add-candidates` call for all checkpoints of the run (9 Oct: registering per training stopped the rebuild on the next training's
@@ -84,7 +84,9 @@ def rungc_steps(s: dict, python: str) -> list[dict]:
     """The standard rung C chain as plain command steps (cwd = module 05). Checkpoint names follow rungC_train's `<prefix>_model_n<N>_seed<s>.pt`;
     N is found after training, so the registry and eval steps carry a glob that `run_step` resolves."""
     seeds = s.get("seeds", [0, 1, 2]); threads = str(s.get("threads", 8)); recipe = s.get("recipe", RECIPE_V11)
-    hb = s.get("holdout_b_file", HOLDOUT_B); date = s.get("date", datetime.now().strftime("%Y-%m-%d"))
+    hb = s.get("holdout_b_file", HOLDOUT_B); date = s.get("date")
+    if not date:   # 16 Oct 2026: a date taken from the clock named the logs by the day, so a relaunch on another day changed the resume hash
+        raise ValueError(f"rungc step of chain {s.get('chain')}: no 'date' — a fixed date keeps the resume record valid across days")
     seed_arg = ",".join(str(x) for x in seeds)
     out = [dict(label="design check", argv=[python, "m05/design_check.py", "corpus/molecules", "--aggregation", "sum", "--out",
                                              f"out/design_check_{s['chain']}_{date}"], log=f"out/design_check_{s['chain']}_{date}.log")]

@@ -153,3 +153,15 @@ def test_a_failing_step_still_raises_with_its_exit_code(tmp_path):
     with pytest.raises(RuntimeError, match="exit 3"):
         CR.run_step(dict(label="x", argv=[sys.executable, "-c", "raise SystemExit(3)"], cwd=str(tmp_path), log=str(tmp_path / "x.log")),
                    dict(os.environ), "T", "1/1")
+
+
+def test_a_rungc_step_without_a_date_is_refused():
+    """16 Oct 2026: the date named the step logs; taken from the clock, it changed the resume hash on every new day."""
+    with pytest.raises(ValueError, match="no 'date'"):
+        CR.rungc_steps({"kind": "rungc", "chain": "x", "note": "t", "trainings": [{"prefix": "out/X"}]}, "py")
+
+
+def test_every_chain_spec_in_the_repository_has_its_dates():
+    for path in sorted((Path(__file__).resolve().parents[1] / "probes" / "runs").glob("chain*.json")):
+        spec = json.loads(path.read_text(encoding="utf-8"))
+        assert all(st.get("date") for st in spec["steps"] if st["kind"] == "rungc"), path.name

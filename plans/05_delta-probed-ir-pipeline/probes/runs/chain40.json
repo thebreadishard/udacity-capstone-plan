@@ -9,7 +9,7 @@
  "steps": [
   {"kind": "cmd", "label": "merge the laptop shard", "argv": ["{python}", "merge_shards.py", "shards_fivering/laptop/"],
    "cwd": "modules/05_support_predictor/corpus", "log": "modules/05_support_predictor/out/merge_chain40.log"},
-  {"kind": "rungc", "chain": "40",
+  {"kind": "rungc", "chain": "40", "date": "2026-10-14",
    "note": "chain 40 — hold-out (b) after the first 64 five-ring candidates (~30 per family); registered 10 Oct 2026 in the rung C pre-registration; candidate until its read",
    "trainings": [{"prefix": "out/E7_rungC_chain40_fivering30", "args": ["--sizes", "all"]},
                  {"prefix": "out/E7_rungC_chain40_fivering15", "args": ["--sizes", "all", "--exclude-ids-file",

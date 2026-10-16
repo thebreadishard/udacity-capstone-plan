@@ -1,0 +1,8 @@
+{"name": "chain41", "purpose": "TASKS 35: chain 41, five fused rings from a corpus of at most four (registered 11 Oct); waits for its labels and chain 35h",
+ "host": "laptop", "workdir": "probes/results_m1", "command": "python ../chain_runner.py probes/runs/chain41.json",
+ "sources": [{"local": "probes/chain_runner.py"}, {"local": "probes/chain41_read.py"}, {"local": "probes/ids_have_labels.py"},
+             {"local": "probes/rungC_eval_saved.py"}, {"local": "probes/rungC_eval_means.py"},
+             {"local": "modules/05_support_predictor/m05/rungC_train.py"}, {"local": "modules/05_support_predictor/m05/design_check.py"}],
+ "progress": {"regex": "^=== \\(C41\\) progress: |^\\(C41\\) .* done ", "max_gap_minutes": 90, "start_regex": "^=== \\(C41\\) starting: "},
+ "marker_regex": "^=== \\(C41\\) (armed|starting|resuming|RUN FAILED|run done)",
+ "end_regex": "^=== \\(C41\\) run done", "dry_run_args": "--dry-run", "resumable": true}

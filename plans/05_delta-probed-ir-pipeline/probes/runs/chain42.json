@@ -25,6 +25,7 @@
   {
    "kind": "rungc",
    "chain": "42",
+   "date": "2026-10-16",
    "note": "chain 42 - the four shape molecules as a size test, arms 0 and D; registered 12 Oct 2026; candidate until its read",
    "eval_args": [
     "--eval-ids-file",

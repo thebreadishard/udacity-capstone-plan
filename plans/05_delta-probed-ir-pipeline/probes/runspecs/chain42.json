@@ -1,0 +1,8 @@
+{"name": "chain42", "purpose": "TASKS 49: chain 42, the mandate's four shape molecules (34-60 atoms) as a size test (registered 12 Oct); waits for lever 5's labels, chain 35h and chain 41",
+ "host": "laptop", "workdir": "probes/results_m1", "command": "python ../chain_runner.py probes/runs/chain42.json",
+ "sources": [{"local": "probes/chain_runner.py"}, {"local": "probes/chain42_read.py"}, {"local": "probes/large_pah_ready.py"},
+             {"local": "probes/rungC_eval_saved.py"}, {"local": "probes/rungC_eval_means.py"},
+             {"local": "modules/05_support_predictor/m05/rungC_train.py"}, {"local": "modules/05_support_predictor/m05/design_check.py"}],
+ "progress": {"regex": "^=== \\(C42\\) progress: |^\\(C42\\) .* done ", "max_gap_minutes": 90, "start_regex": "^=== \\(C42\\) starting: "},
+ "marker_regex": "^=== \\(C42\\) (armed|starting|resuming|RUN FAILED|run done)",
+ "end_regex": "^=== \\(C42\\) run done", "dry_run_args": "--dry-run", "resumable": true}

@@ -7,7 +7,7 @@
   {"kind": "marker", "log": "probes/results_m1/chain35h.log", "regex": "^=== \\(C35h\\) (run done|RUN FAILED)"}
  ],
  "steps": [
-  {"kind": "rungc", "chain": "41",
+  {"kind": "rungc", "chain": "41", "date": "2026-10-16",
    "note": "chain 41 - five fused rings from a corpus of at most four: size arm and two control folds; registered 11 Oct 2026; candidate until its read",
    "trainings": [
     {"prefix": "out/E7_rungC_chain41_size", "args": ["--sizes", "all"],
