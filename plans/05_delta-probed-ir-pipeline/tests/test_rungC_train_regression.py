@@ -2,7 +2,9 @@
 bit. The pins are written by the trainer as it stood before the refactor (master 95291f4b, 16 Oct 2026), on the frozen corpus.
 
 The corpus is `tests/data/rungC_pin_corpus/` (built by `tests/data/make_rungC_pin_corpus.py`: 27 molecules, only the files the trainer reads,
-a sha256 per file), so the pin runs the same bytes on every machine, CI included. It first ran on the live corpus, whose pool and class
+a sha256 per file), so the pin reads the same bytes on every machine. Bit-identity of the training itself holds only in the environment the
+pin was written in (platform, Python, torch, numpy, geomeTRIC, recorded in the golden): elsewhere the pin skips in CI and fails locally,
+so an upgrade cannot switch the guard off unnoticed. It first ran on the live corpus, whose pool and class
 scales moved when chain 40 merged 64 molecules into it (16 Oct 11:32): red without a code change, a pin that could not tell drift from a
 regression. A changed or added file in the frozen corpus now fails as such, before any training.
 
@@ -37,6 +39,24 @@ CASES = {"carried": ["--epochs", "3"],
          "chainlike": ["--epochs", "2", "--size-test-min-atoms", "{size_min_atoms}", "--aux-target", "kfit", "--exclude-ids-file", "{excluded}"]}
 
 sys.path.insert(0, str(PLAN / "probes"))
+
+
+def environment() -> dict:
+    """What bit-identity depends on beyond the code: CI's Linux torch gave other checkpoint bytes than this laptop's (16 Oct 2026)."""
+    import platform
+
+    import geometric
+    import numpy
+    import torch
+
+    return {"system": platform.system(), "python": platform.python_version(), "torch": torch.__version__, "numpy": numpy.__version__,
+            "geometric": geometric.__version__}
+
+
+def environment_mismatch(pinned: dict, here: dict) -> str | None:
+    """None where the pin was written; elsewhere the reason bit-identity cannot be expected, naming what differs."""
+    differs = {k: (pinned.get(k), here.get(k)) for k in pinned.keys() | here.keys() if pinned.get(k) != here.get(k)}
+    return f"bit-identity holds in the pinning environment only; differs: {dict(sorted(differs.items()))}" if differs else None
 
 
 def pin_record() -> dict:
@@ -126,8 +146,12 @@ def test_the_pinned_run_is_unchanged(case, tmp_path):
     if not GOLDEN.exists():
         pytest.fail(f"no pin at {GOLDEN}: write it with --write-golden before changing the trainer")
     assert corpus_changes(PIN_CORPUS, pin_record()) == [], "the frozen corpus changed: rebuild it and re-pin with the old trainer"
-    pinned = json.loads(GOLDEN.read_text(encoding="utf-8"))[case]
-    assert (diff := first_difference(pinned, run_pin(case, tmp_path))) is None, diff
+    golden = json.loads(GOLDEN.read_text(encoding="utf-8"))
+    if message := environment_mismatch(golden["environment"], environment()):
+        if os.environ.get("CI"):
+            pytest.skip(message)
+        pytest.fail(message + " — re-pin here with the trainer as it was before the change under test")
+    assert (diff := first_difference(golden[case], run_pin(case, tmp_path))) is None, diff
 
 
 def test_the_chainlike_case_exercises_its_switches():
@@ -148,6 +172,13 @@ def test_a_changed_or_added_file_is_named(tmp_path):
     f.write_text("{ }", encoding="utf-8")
     (tmp_path / "molecules" / "m2").mkdir()
     assert corpus_changes(tmp_path, record) == ["m1/geometry.json: changed", "m1/result.json: missing", "m2/: not in the record"]
+
+
+def test_an_other_environment_is_named():
+    here = {"system": "Windows", "torch": "2.14.0+cpu"}
+    assert environment_mismatch(here, dict(here)) is None
+    msg = environment_mismatch(here, {"system": "Linux", "torch": "2.14.0+cpu"})
+    assert "'system': ('Windows', 'Linux')" in msg and "torch" not in msg
 
 
 def test_stable_drops_volatile_fields_at_any_depth():
@@ -178,7 +209,7 @@ if __name__ == "__main__":
     if changes := corpus_changes(PIN_CORPUS, pin_record()):
         sys.exit(f"the frozen corpus differs from its record: {changes[:5]}")
     trainer = Path(sys.argv[2]) if len(sys.argv) == 3 else TRAINER
-    pins = {}
+    pins: dict = {"environment": environment()}
     for case in sorted(CASES):
         with tempfile.TemporaryDirectory() as tmp:
             pins[case] = run_pin(case, Path(tmp), trainer)

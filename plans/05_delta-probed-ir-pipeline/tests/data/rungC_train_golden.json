@@ -1968,5 +1968,12 @@
     }
    }
   }
+ },
+ "environment": {
+  "geometric": "1.1.1",
+  "numpy": "2.5.1",
+  "python": "3.14.6",
+  "system": "Windows",
+  "torch": "2.14.0+cpu"
  }
 }
