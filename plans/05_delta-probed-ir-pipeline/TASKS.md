@@ -256,8 +256,9 @@ tests train, so it runs before chains 41/42. Chain 44 LAUNCHED 14:12 through the
 (ii) the gate line. **To release it**, after the labels server's FETCHED line, the merge and the look at the merged corpus with its price,
 append `=== (C44G) merged corpus reviewed <date time>` to `probes/results_m1/chain44_gate.log`. Chain 41 waits for chain 44's end — its
 spec says so, but its runner (pid 9064, armed 07:31, no step done) read the old spec: it must be stopped and relaunched
-(`python tools/runspec.py launch probes/runspecs/chain41.json`); the stop was refused by the session's sandbox, so it waits for the
-user's action. Until then the old runner would start chain 41 before 44 once its labels and chain 35h are there (≈ 26 Oct).
+(`python tools/runspec.py launch probes/runspecs/chain41.json`); the stop was refused by the session's sandbox, so it waited for the
+user's action. **14:18 — on the user's word ('Stop proces 9064 en start chain 41 opnieuw'): pid 9064 stopped (command line checked first;
+exit 127, no step done), chain 41 relaunched through the run door (armed 14:18:39, pid 30696) on the new spec: it now waits for chain 44.**
 65. **The architecture's floor — can rung C's form hold a large molecule's correction? (15 Oct 19:1x; the user: 'Ja, begin maar met de
 registratie. Let extra op codekwaliteit, ook van de Python.')** Why: the size levers bought so far (lever 5, rung 4, the PC question) assume a
 learning error; the head writes pair blocks only within 5 Å, symmetric, diagonal from the sum rule, and nobody measured what that form cannot
