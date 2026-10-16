@@ -38,6 +38,16 @@ def corpus_dir() -> Path:
     return Path(os.environ.get("RUNGC_CORPUS", PLAN / "modules" / "05_support_predictor" / "corpus" / "molecules"))
 
 
+def full_corpus_present() -> bool:
+    """The local corpus, not the single tracked molecule a CI checkout has (16 Oct 2026: the folder alone passed the check, and the trainer
+    failed on it): at least as many molecules with a B3LYP Hessian as the pinned run read."""
+    d = corpus_dir()
+    if not d.is_dir() or not GOLDEN.exists():
+        return False
+    needed = json.loads(GOLDEN.read_text(encoding="utf-8"))["carried"]["record"]["n_molecules"]
+    return sum(1 for p in d.iterdir() if p.is_dir() and any(p.glob("hessian_b3lyp*.npz"))) >= needed
+
+
 def stable(record):
     """The record without its wall-clock, provenance and temporary-path fields, at any depth."""
     if isinstance(record, dict):
@@ -97,10 +107,10 @@ def run_pin(case: str, workdir: Path, trainer: Path = TRAINER) -> dict:
 @pytest.mark.parametrize("case", sorted(CASES))
 def test_the_pinned_run_is_unchanged(case, tmp_path):
     pytest.importorskip("torch")
-    if not corpus_dir().is_dir():
-        pytest.skip(f"corpus not present: {corpus_dir()}")
     if not GOLDEN.exists():
         pytest.fail(f"no pin at {GOLDEN}: write it with --write-golden before changing the trainer")
+    if not full_corpus_present():
+        pytest.skip(f"the full corpus with its Hessians is not present (it is not in git): {corpus_dir()}")
     pinned = json.loads(GOLDEN.read_text(encoding="utf-8"))[case]
     assert (diff := first_difference(pinned, run_pin(case, tmp_path))) is None, diff
 
