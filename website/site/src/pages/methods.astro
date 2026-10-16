@@ -1,6 +1,6 @@
 ---
 // Methods: the architecture sheets (mermaid sources read at build time from the repository) rendered on tap by a lazy mermaid island,
-// the three lessons with their pre-registrations. The sheet sources stay visible as text, so the page works without JavaScript.
+// the lessons with their sources. The sheet sources stay visible as text, so the page works without JavaScript.
 import fs from 'node:fs';
 import path from 'node:path';
 import Base from '../layouts/Base.astro';
@@ -36,11 +36,14 @@ const sheets = wanted.filter(([f]) => fs.existsSync(path.join(archDir, f))).map(
   </section>
 
   <section class="card" style="margin-top: 16px">
-    <h2>Three lessons</h2>
+    <h2>Six lessons</h2>
     <ol>
-      <li><strong>Every derived quantity gets a second route.</strong> Finite-difference quartics turned out to be noise; a benzene Hessian in the corpus was wrong by 133 cm⁻¹ because of a quadrature grid, found by an analytic second calculation. <a href={repo + 'QUALITY_POLICY.md'}>Quality policy</a>.</li>
-      <li><strong>The couplings are learned only in local coordinates.</strong> In the basis of normal modes the correction's couplings are unlearnable at any data size; written as pairwise terms in bonds and angles the same data teach them. <a href={repo + 'GoalGathering/notes/PreRegistration_2026-09-23_E7_Couplings_in_Local_Coordinates.md'}>E7</a>.</li>
-      <li><strong>The coupled-cluster correction is local too, one bond further.</strong> Benzene's CCSD(T) correction sits 98 % inside the pairwise pattern once pairs two bonds apart are included. <a href={repo + 'GoalGathering/notes/PreRegistration_2026-09-23_E8_CC_Correction_Locality.md'}>E8</a>.</li>
+      <li><strong>Compute every number twice, by two different methods.</strong> One vibration of benzene in our training set was off by 133 cm⁻¹. At first it looked as if the model could not learn benzene. A second calculation by another method showed that the number itself was wrong: an artefact of the step-by-step (finite-difference) way it had been computed. Since then every computed quantity gets a second route. <a href={repo + 'QUALITY_POLICY.md'}>Quality policy</a>.</li>
+      <li><strong>Code that runs and looks right can still be wrong.</strong> For six days our coupled-cluster calculations called a library function in a way that quietly used an ingredient of a simpler method. Nothing crashed, the numbers looked reasonable and our own checks passed, yet the frequencies were off by 2.5 to 7.7 cm⁻¹ on water. The library's own tests showed the correct call all along. Now, the first time we use a library function, we write down which of the library's own tests makes the same call. <a href={repo + 'probes/results_m1/lambda_incident_2026-09-29/README.md'}>Incident note</a>.</li>
+      <li><strong>A check needs its own check.</strong> The infrared intensities come from an equation that pyscf solves step by step. Sometimes the solver stopped before the answer was finished, without a warning. We now test every answer against the equation it should satisfy, recomputed 49 molecules, and added our evidence to the known pyscf issue. The second method we then used to confirm the result had a weakness of its own: on one molecule it needed a second electric-field strength before the two methods agreed. <a href="https://thebreadishard.github.io/2026/10/16/the-check-that-needed-checking/">Blog post</a>, <a href="https://github.com/pyscf/pyscf/issues/2702">pyscf issue #2702</a>.</li>
+      <li><strong>A result on a few molecules is one point on a curve.</strong> On 30 September we concluded that more training data would not help, because the errors stayed flat as the data grew. They stayed flat because of a flaw in the training targets, which held every model at the same floor. Once that was fixed, more data clearly helped. A result on a small set now counts as one point on a learning curve, and we only stop when the curve has stopped falling. <a href={repo + 'GoalGathering/notes/Mandate_2026-09-13_Affordable_Plan_Obstacle_Ledger.md'}>Ledger</a>.</li>
+      <li><strong>The couplings can only be learned in local terms.</strong> When one bond in a molecule vibrates, its neighbours feel it. Written in the molecule's overall vibration patterns (its normal modes), these couplings could not be learned from any amount of data. Written as pairs of bonds and angles, the same data teach them. <a href={repo + 'GoalGathering/notes/PreRegistration_2026-09-23_E7_Couplings_in_Local_Coordinates.md'}>E7</a>.</li>
+      <li><strong>The coupled-cluster correction is local too, one bond further.</strong> About 95 % of benzene's correction and 93 % of naphthalene's sits in pairs of bonds and angles at most two bonds apart. An earlier reading said 98 % for benzene; it came from the calculations of lesson 2 and was redone. <a href={repo + 'GoalGathering/notes/PreRegistration_2026-09-23_E8_CC_Correction_Locality.md'}>E8</a>, <a href={repo + 'probes/results_m1/e8_benzene_ccpvdz_tlambda/E8_between_benzene.md'}>benzene</a>, <a href={repo + 'probes/results_m1/e8_naphthalene_ccpvdz_tlambda_2026-10-02/E8_between_naphthalene.md'}>naphthalene</a>.</li>
     </ol>
   </section>
 </Base>
