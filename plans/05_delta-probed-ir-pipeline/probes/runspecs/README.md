@@ -18,3 +18,5 @@ checks every running run through `tools/runspec.py check`. The model and its rul
 - Regexes are POSIX ERE (grep -E): `[0-9]`, not `\d`. In JSON a literal parenthesis is written `\\(`. Write a spec with an editor or the
   Write tool, never through a bash heredoc, which mangles the backslashes.
 - `estimate` only with the measurement it comes from; at 1.5× of it the watch reports the run once.
+- A laptop command that calls `wsl.exe` with a Linux path starts with `MSYS_NO_PATHCONV=1`, or Git Bash rewrites
+  `/mnt/c/…` into a Windows path; call the script directly (not `bash -lc '…'`) so the dry run's arguments reach it.
