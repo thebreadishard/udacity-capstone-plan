@@ -4,7 +4,8 @@
  "poll_s": 1800,
  "wait": [
   {"kind": "cmd", "argv": ["python", "probes/ids_have_labels.py", "modules/05_support_predictor/out/chain41_all_labelled.txt"]},
-  {"kind": "marker", "log": "probes/results_m1/chain35h.log", "regex": "^=== \\(C35h\\) (run done|RUN FAILED)"}
+  {"kind": "marker", "log": "probes/results_m1/chain35h.log", "regex": "^=== \\(C35h\\) (run done|RUN FAILED)"},
+  {"kind": "marker", "log": "probes/results_m1/chain44.log", "regex": "^=== \\(C44\\) (run done|RUN FAILED)"}
  ],
  "steps": [
   {"kind": "rungc", "chain": "41", "date": "2026-10-16",

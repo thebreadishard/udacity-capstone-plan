@@ -1,4 +1,4 @@
-{"name": "chain44", "purpose": "TASKS 66: the target comparison, projected against ridge (chain 44); launch only after the analytic labels are merged",
+{"name": "chain44", "purpose": "TASKS 66: the target comparison, projected against ridge (chain 44); first after the labels (16 Oct): waits for chain 35h and the review gate line in chain44_gate.log",
  "host": "laptop", "workdir": "probes/results_m1", "command": "python ../chain_runner.py probes/runs/chain44.json",
  "sources": [{"local": "probes/chain_runner.py"}, {"local": "probes/target_comparison_read.py"}, {"local": "probes/floor_lines.py"},
              {"local": "probes/rungC_eval_saved.py"}, {"local": "probes/rungC_eval_means.py"},

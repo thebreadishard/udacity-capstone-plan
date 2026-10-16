@@ -2,6 +2,10 @@
  "_about": "Chain 44 = the target comparison (TASKS 66; GoalGathering/notes/PreRegistration_2026-10-15_Target_Comparison.md; spec 15 Oct 2026). Arms P (chain 34's recipe, projected target) and R (the same with the ridge target, --aux-target ls --ls-lam 1e-3), each in setting C (size split at 27 atoms, full pool and half) and F (full pool). R first: its LS targets are computed on the fly and the scale guard may stop the run; that should surface before hours of P. Launched only after the labels server's analytic labels are fetched into the corpus (the launch is the gate; no wait condition can tell a reviewed merge).",
  "name": "C44",
  "poll_s": 600,
+ "wait": [
+  {"kind": "marker", "log": "probes/results_m1/chain35h.log", "regex": "^=== \\(C35h\\) (run done|RUN FAILED)"},
+  {"kind": "marker", "log": "probes/results_m1/chain44_gate.log", "regex": "^=== \\(C44G\\) merged corpus reviewed"}
+ ],
  "steps": [
   {"kind": "rungc", "chain": "44", "date": "2026-10-15",
    "note": "chain 44 - the target comparison, projected (P) against ridge (R), settings C (size split 27, full/half) and F; registered 15 Oct 2026; candidate until its read",
