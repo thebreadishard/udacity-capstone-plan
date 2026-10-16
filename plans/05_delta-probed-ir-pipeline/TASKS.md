@@ -205,7 +205,12 @@ smoke pool's class scales; commit 8797139b, the user: 'Ja, begin maar met 1'):**
 `tests/data/make_rungC_pin_corpus.py`, sha256 per file, binary in git, 3.0 MB); pins rewritten with the pre-refactor trainer (git archive
 95291f4b) and matched by the current one, 8 passed; the pin runs in CI too. Open from the same review: `rungC_cc_transfer.py` and
 `test_rungC_diag_pattern.py` were touched without meeting the clean-code check (41 findings over the day's touched files); TASKS.md's
-`os.replace` refused while a viewer holds the file. Worktree and branch removed 10:01 on the user's word ('Ja, ruim de worktree maar op'; clean, branch merged).
+`os.replace` refused while a viewer holds the file. **16 Oct 15:3x — point 2 DONE (the user: 'Doe punt 2 ook maar'):** a pin for
+`rungC_cc_transfer.py` first (6ea10300; it found `--lora-rank` unreproducible: torch's default generator is clock-seeded here), then its
+refactor matched to the bit (83d79448: main split, Anchors / FinetuneSettings / Prediction, the adapter seeded), then two deliberate output
+changes re-pinned (66fe29d3); every file touched today passes both checks; shared pin tools in `tests/pin_tools.py`. **Open:**
+`test_committed_registries_are_current` reads the live `out/` folder and fails while a chain has saved a model its register step has not
+yet entered (chain 40, 15:2x) — the pin's lesson again; make it check only what a finished chain left. TASKS.md's lock. Worktree and branch removed 10:01 on the user's word ('Ja, ruim de worktree maar op'; clean, branch merged).
 71. **The odds after the target comparison (15 Oct 21:2x; the user: 'zet alle stappen op de takenlijst die nodig zijn om het project een succes
 te laten zijn met deze nieuwe kennis').** TASKS 65 changed what the size odds rest on: the form is not a wall, the trained target is a
 growing loss. No odds moved on a desk finding. **Next:** when TASKS 66 is read, re-estimate size (50), mandate (39) and T1 (75) with the
