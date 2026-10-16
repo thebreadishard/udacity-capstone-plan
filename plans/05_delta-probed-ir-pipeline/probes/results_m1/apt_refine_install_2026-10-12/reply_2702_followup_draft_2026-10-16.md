@@ -1,4 +1,4 @@
-# Follow-up on pyscf/pyscf#2702 — DRAFT, not posted (16 Oct 2026, 04:5x; to be posted only on the user's word)
+# Follow-up on pyscf/pyscf#2702 (drafted 16 Oct 2026, 04:5x; **posted 07:1x on the user's word**: issuecomment-6208657340)
 
 *Numbers: `repro_2702_large.log` (C12H9Cl; 3384 13 Oct 16:19–22:36, 3384tol 13 Oct 22:36 – 16 Oct 04:50), `repro_2702_small.log` (water,
 benzene), `floor_B_127dd8c4ed/diagnose_floor.json` (scipy GMRES, 2,251 s for the twelve worst columns from a batched start). Script
