@@ -23,6 +23,10 @@ counted the vectors by wrapping the operator passed to `lib.krylov`, so applicat
 be counted; if the count is complete, most of the time is spent outside the operator. I have not profiled it — the machine was also loaded,
 so please take the absolute times with care, but the ratio on water (seconds, small) points the same way.
 
+Setup, for the timings: a laptop, AMD Ryzen 7 260 (8 cores / 16 threads), WSL2 with 19 GB, Python 3.12, numpy 2.5.2 with OpenBLAS 0.3.34
+(scipy-openblas). `lib.num_threads(4)` was set, but the process used about nine cores, so OpenBLAS threads were not capped by it, and other
+jobs ran on the machine at the same time. The residuals and the vector counts do not depend on any of this.
+
 For comparison, scipy's GMRES on each of the twelve worst C12H9Cl columns alone, starting from a batched solution, reached ≤ 1.2e-11 in
 2,251 s in total.
 
