@@ -11,6 +11,7 @@ M05 = Path(__file__).resolve().parents[1] / "modules" / "05_support_predictor" /
 sys.path.insert(0, str(M05))
 import rungC_equivariant as RC  # noqa: E402
 import rungC_train as RT  # noqa: E402
+from rungC_config import TrainConfig  # noqa: E402
 
 torch.set_num_threads(1)
 
@@ -68,9 +69,10 @@ def test_inner_split_is_deterministic_and_disjoint():
 def test_defaults_are_the_registered_recipe_and_switches_run():
     tensors = _water_tensors(3)
     ids = list(tensors)
-    model, hist = RT.train_one(ids, tensors, seed=0, epochs=2, log=lambda s: None)
-    assert model.class_scale is None and model.best_epoch is None and len(hist) == 2 and "val_aux" not in hist[0]
-    model2, hist2 = RT.train_one(ids[:2], tensors, seed=0, epochs=3, log=lambda s: None, loss_mode="internal", scale_mode="class",
-                                 val_ids=ids[2:], patience=5)
-    assert len(model2.class_scale_values) == 3 and isinstance(model2.best_epoch, int) and 1 <= model2.best_epoch <= 3
-    assert all("val_aux" in h for h in hist2) and np.isfinite(RT.inner_val_aux(model2, tensors, ids[2:]))
+    first = RT.train_one(ids, tensors, 0, TrainConfig(molecules="-", out_prefix="-", epochs=2), log=lambda s: None)
+    assert first.model.class_scale is None and first.class_scale is None and first.best_epoch is None
+    assert len(first.history) == 2 and "val_aux" not in first.history[0]
+    cfg = TrainConfig(molecules="-", out_prefix="-", epochs=3, loss="internal", scale="class", inner_val=0.3, patience=5)
+    second = RT.train_one(ids[:2], tensors, 0, cfg, val_ids=ids[2:], log=lambda s: None)
+    assert len(second.class_scale) == 3 and isinstance(second.best_epoch, int) and 1 <= second.best_epoch <= 3
+    assert all("val_aux" in h for h in second.history) and np.isfinite(RT.inner_val_aux(second.model, tensors, ids[2:], second.loss))

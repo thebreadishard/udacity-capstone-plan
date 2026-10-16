@@ -1,7 +1,6 @@
 """rungC_targets (1 Oct 2026, lever 4): the ridge-anchored pattern target from the normal equations equals the same problem solved as an augmented
 dense least squares; on corpus benzene it reconstructs far better than the projected target while staying at its scale; the plain least squares
 (λ = 0) is the explosive case the ridge removes; the cache round-trips and invalidates on a changed λ; the trainer carries the switch."""
-import re
 import sys
 from pathlib import Path
 
@@ -108,9 +107,11 @@ def test_cache_round_trip_and_invalidation_on_lambda(tmp_path):
 
 
 def test_trainer_switch_present_with_the_registered_default():
-    text = (M05 / "rungC_train.py").read_text(encoding="utf-8")
-    assert re.search(r'add_argument\("--aux-target", default="projected", choices=\["projected", "ls", "kfit"\]', text)
-    assert re.search(r'add_argument\("--ls-lam", type=float, default=LAM_REL', text)
+    pytest.importorskip("torch")
+    from rungC_config import parse_config
+    cfg = parse_config(["mol", "out"])
+    assert (cfg.aux_target, cfg.ls_lam) == ("projected", RT.LAM_REL)
+    assert parse_config(["mol", "out", "--aux", "both", "--aux-target", "kfit"]).aux_target == "kfit"
 
 
 def test_prior_cutoff_and_store_guard(tmp_path, monkeypatch):
