@@ -1,0 +1,10 @@
+== 3384 16:19:25
+
+WARN: Krylov solver reached subspace convergence but true residual |aop(x)+x-b| = 3.016e-04 exceeds tolerance 2.2e-07. Falling back to per-root solve.
+
+{"case": "C12H9Cl B3LYP/6-31G* cart, grid (99, 590)", "residual": 8.098477881075151e-05, "solve_mo1_seconds": 16305.1, "operator_calls": 7, "operator_vectors": 355, "pyscf": "/home/thebreadishard/pyscf-wt-3384/pyscf/__init__.py"}
+== 3384tol 22:36:09
+
+WARN: Krylov solver reached subspace convergence but true residual |aop(x)+x-b| = 3.016e-04 exceeds tolerance 2.2e-07. Falling back to per-root solve.
+
+{"case": "C12H9Cl B3LYP/6-31G* cart, grid (99, 590)", "residual": 3.19408767186481e-08, "solve_mo1_seconds": 191767.3, "operator_calls": 9, "operator_vectors": 489, "pyscf": "/home/thebreadishard/pyscf-wt-3384tol/pyscf/__init__.py"}
