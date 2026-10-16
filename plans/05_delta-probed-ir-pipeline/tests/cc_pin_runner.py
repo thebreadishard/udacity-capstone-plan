@@ -16,6 +16,7 @@ import model_registry  # noqa: E402  (from the script's own folder, as the scrip
 model_registry.require_carried = lambda path, allow=False, status_file=None: {"status": "pin fixture (tests/cc_pin_runner.py)"}
 spec = importlib.util.spec_from_file_location("rungC_cc_transfer", script)
 module = importlib.util.module_from_spec(spec)
+sys.modules[spec.name] = module            # dataclasses resolve their deferred annotations through sys.modules
 spec.loader.exec_module(module)
 sys.argv = [str(script), *sys.argv[2:]]
 sys.exit(module.main())

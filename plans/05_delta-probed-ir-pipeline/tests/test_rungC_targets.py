@@ -77,7 +77,7 @@ def test_benzene_ridge_target_reconstructs_well_at_the_projected_scale_and_plain
     import e7_rungB_pairs as RB
     import e7_t2_sqm as T2
     d = CORPUS / "A_8448043181"
-    g = json.load(open(d / "geometry.json"))
+    g = json.loads((d / "geometry.json").read_text(encoding="utf-8"))
     masses, coords = np.asarray(g["masses_amu"]), np.asarray(g["coords_bohr"], float)
     lo = np.load(d / "hessian_b3lyp.npz")["H_projected"]
     dH = np.load(d / "hessian_wb97x.npz")["H_projected"] - lo
@@ -143,7 +143,7 @@ def _modes(B, masses, seed=3):
     return w[3:], V[:, 3:]                                         # three "rigid" directions dropped, as normal_modes drops six
 
 
-def _augmented_kfit(dH, B, masses, w, V, mask, lam_rel):
+def _augmented_kfit(dH, B, masses, w, V, mask, lam_rel):   # noqa: PLR0913  the arguments of kfit_target, which it checks
     """The read-out objective as a dense least squares: rows = every entry of K (both triangles), plus √λ (x − x_proj)."""
     U, K = RT.readout_basis(dH, B, masses, w, V)
     I, J = np.where(np.triu(mask))

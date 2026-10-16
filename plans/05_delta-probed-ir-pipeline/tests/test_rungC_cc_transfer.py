@@ -84,7 +84,7 @@ def test_substitute_cc_builds_k_from_the_cc_hessian():
     cc = PLAN / "probes" / "results_m1" / "e8_benzene_ccpvdz_tlambda" / "hessian_ccsd_t.npz"
     if not cc.exists():
         pytest.skip("benzene CC anchor not on this machine")
-    g = json.load(open(d / "geometry.json"))
+    g = json.loads((d / "geometry.json").read_text(encoding="utf-8"))
     masses, coords = np.asarray(g["masses_amu"]), np.asarray(g["coords_bohr"], float)
     B, _ = T2.internals(g["symbols"], coords)
     m = dict(masses=masses, B=B, family=["ring-ip"] * 30)
@@ -117,8 +117,7 @@ def test_family_freq_rms_is_zero_on_the_truth_and_split_by_family():
 
 def test_head_l2_switch_present_and_penalty_keeps_the_proxy_weights():
     import rungC_cc_transfer as CT
-    text = (M05 / "rungC_cc_transfer.py").read_text(encoding="utf-8")
-    assert 'add_argument("--head-l2"' in text and '"network_head_l2"' in text
+    assert CT.build_parser().parse_args(["m", "x.pt", "out", "--anchor", "a=b", "--head-l2", "0.1"]).head_l2 == 0.1
     # the penalty term: with the weights at W0 it is zero and its gradient vanishes — checked on a tiny stand-in head
     lin = torch.nn.Linear(4, 1)
     w0 = [p.detach().clone() for p in lin.parameters()]
@@ -136,14 +135,27 @@ def test_lora_adapter_starts_as_identity_and_counts_parameters():
     torch.manual_seed(0)
     m = RH.HybridDeltaFModel(aggregation="sum", sqm_scale=True, hidden=32)
     x = torch.randn(5, 32)
-    mid = [k for k, l in enumerate(m.head) if isinstance(l, torch.nn.Linear)][1]
+    mid = [k for k, layer in enumerate(m.head) if isinstance(layer, torch.nn.Linear)][1]
     before = m.head[mid](x).detach().clone()
     params = CT.attach_lora(m, 3)
     assert torch.allclose(m.head[mid](x), before)                      # A = 0: the adapted layer equals the proxy layer at the start
     assert sum(p.numel() for p in params) == 2 * 3 * 32
     assert not any(p.requires_grad for p in m.head[mid].base.parameters())
-    text = (M05 / "rungC_cc_transfer.py").read_text(encoding="utf-8")
-    assert 'add_argument("--lora-rank"' in text and '"network_lora"' in text
+
+
+def test_the_lora_start_is_reproducible_and_leaves_the_global_generator_alone():
+    """16 Oct 2026: the adapter's B drew from torch's default generator, which this torch seeds from the clock (the same fold gave 14.44
+    and 14.05 cm⁻¹ in two runs); it now has its own seeded generator."""
+    import rungC_cc_transfer as CT
+    torch.manual_seed(1)
+    starts = []
+    for _ in range(2):
+        m = RH.HybridDeltaFModel(aggregation="sum", sqm_scale=True, hidden=32)
+        state = torch.get_rng_state()
+        starts.append(CT.attach_lora(m, 3)[1].detach().clone())
+        assert torch.equal(torch.get_rng_state(), state)
+    assert torch.equal(starts[0], starts[1])
+    assert not torch.equal(CT.LowRankLinear(torch.nn.Linear(32, 32), 3, seed=1).B, starts[0])
 
 
 def test_alpha_scaling_baseline_recovers_a_per_class_factor():
@@ -174,13 +186,12 @@ def test_load_cc_apt_refuses_an_apt_from_another_geometry(tmp_path):
 
 
 def test_save_prediction_round_trip(tmp_path):
-    """TASKS 45 (10 Oct 2026): one writer for --predict and --save-fold-predictions; a fold file names its held-out anchor."""
-    p = RT_T.save_prediction(tmp_path / "x_fold_A.npz", np.eye(3), 2 * np.eye(3), "hessian_b3lyp_analytic.npz", "head_l2", ["B", "C"], "m.pt", None, held="A")
-    z = np.load(p)
-    assert z["held"].item() == "A" and list(z["anchors"]) == ["B", "C"] and z["mode"].item() == "head_l2" and np.isnan(z["final_loss"])
-    assert np.allclose(z["dH_pred"] + z["H_low"], 3 * np.eye(3))
-    text = (Path(RT_T.__file__)).read_text(encoding="utf-8")
-    assert "--save-fold-predictions" in text and "mode == fit_mode(a.head_l2)" in text
+    """TASKS 45 (10 Oct 2026): one writer for --predict and --save-fold-predictions; a fold file names its held-out anchor. The switch's
+    use (the standard mode's fold files) is pinned by test_rungC_cc_transfer_regression."""
+    pred = RT_T.Prediction(np.eye(3), 2 * np.eye(3), "hessian_b3lyp_analytic.npz", "head_l2", ["B", "C"], "m.pt", None, held="A")
+    with np.load(pred.save(tmp_path / "x_fold_A.npz")) as z:
+        assert z["held"].item() == "A" and list(z["anchors"]) == ["B", "C"] and z["mode"].item() == "head_l2" and np.isnan(z["final_loss"])
+        assert np.allclose(z["dH_pred"] + z["H_low"], 3 * np.eye(3))
 
 
 def test_fit_mode_follows_the_tz_tier_standard():
@@ -196,15 +207,13 @@ def test_an_exclude_file_s_comment_lines_are_not_ids(tmp_path):
     assert RT.exclude_pool_ids(["a", "b"], str(f)) == (["a"], ["b"])
 
 
-def test_oop_couplings_low_switch_adds_its_columns():
-    """TASKS 51 (13 Oct 2026): the arm of R-A's fail branch is a column of the same read, for both head-tuned modes."""
-    text = (M05 / "rungC_cc_transfer.py").read_text(encoding="utf-8")
-    assert 'add_argument("--oop-couplings-low"' in text and 'f"network_{mode}_ooplow"' in text
-    assert '"network_head_ooplow"' in text and '"network_head_l2_ooplow"' in text and 'mode in ("head", "head_l2")' in text
-
-
-def test_oop_diagonal_model_switch_fits_per_fold_on_the_training_anchors_only():
-    """TASKS 51: the model's coefficients come from `tr` (never the held-out anchor) and its columns sit in the same read."""
-    text = (M05 / "rungC_cc_transfer.py").read_text(encoding="utf-8")
-    assert 'add_argument("--oop-diagonal-model"' in text and "coef = oop_coef(tr)" in text
-    assert '"oop_model_only"' in text and 'f"network_{mode}_oopmodel"' in text and '"network_head_l2_oopmodel"' in text
+def test_the_out_of_plane_switches_add_their_table_columns():
+    """TASKS 51 (13 Oct 2026): the arms of R-A's fail branch are columns of the same read, for both head-tuned modes; that the model's
+    coefficients come from the training anchors only is the signature of oop_shift_coefficients (an, train_ids), and the columns' values
+    are pinned by test_rungC_cc_transfer_regression."""
+    import rungC_cc_transfer as CT
+    a = CT.build_parser().parse_args(["m", "x.pt", "out", "--anchor", "a=b", "--head-l2", "0.1", "--oop-couplings-low", "--oop-diagonal-model"])
+    keys = [k for k, _ in CT.table_columns(a)]
+    assert {"network_head_ooplow", "network_head_l2_ooplow", "oop_model_only", "network_head_oopmodel", "network_head_l2_oopmodel"} <= set(keys)
+    plain = CT.build_parser().parse_args(["m", "x.pt", "out", "--anchor", "a=b"])
+    assert [k for k, _ in CT.table_columns(plain)] == ["zero_rule", "alpha_scaling", "network_none", "network_alpha", "network_head"]

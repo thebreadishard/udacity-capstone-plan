@@ -17,7 +17,7 @@ WATER = PLAN / "probes" / "results_m1" / "water_dipole_fd_2026-10-02"
 def test_water_intensities_match_the_probe():
     import json
     z = np.load(WATER / "dipole_b3lyp_fd.npz")
-    g = json.load(open(WATER / "geometry.json"))
+    g = json.loads((WATER / "geometry.json").read_text(encoding="utf-8"))
     # the probe's Hessian is the analytic B3LYP one of the scratch run; rebuild the intensities from the stored APT through the module's own path
     # by checking the module on the probe's own frequencies: a diagonal Hessian with those frequencies and the identity modes is not water, so the test
     # uses the stored intensities only as the reference of the constant — the mode path is covered by the synthetic test below.
@@ -72,7 +72,7 @@ def test_intensity_constant_and_broadening():
     # one mode of unit dμ/dQ in e/√amu is 974.88 km/mol: a single atom of mass 1 moving along x with APT = identity column
     masses = np.array([1.0])
     H = np.diag([1e-4, 2e-4, 3e-4])                           # three "modes" far above the threshold
-    f, i = RI.mode_intensities(H, masses, np.eye(3))
+    _f, i = RI.mode_intensities(H, masses, np.eye(3))
     assert np.allclose(i, RI.KM_PER_MOL)
     s = RI.broadened(np.array([1000.0]), np.array([1.0]))
     assert abs(s.sum() - 1.0) < 0.01                          # a unit Lorentzian integrates to one over a 1 cm⁻¹ grid (tails cut at 2500 cm⁻¹)

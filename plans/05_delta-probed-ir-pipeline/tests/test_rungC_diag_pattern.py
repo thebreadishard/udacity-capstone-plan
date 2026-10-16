@@ -59,7 +59,7 @@ def test_pattern_term_equals_manual_standardised_mse_and_ignores_off_pattern_ent
             out[1, 3] = out[3, 1] = 100.  # off-pattern: must not count
             return out
 
-    main, aux, _ = R._terms(Stub(), t, R.LossSettings(mode="pattern", class_scale=torch.tensor([2., 1., 1., 1., 0.5, 3.])))
+    _main, aux, _ = R._terms(Stub(), t, R.LossSettings(mode="pattern", class_scale=torch.tensor([2., 1., 1., 1., 0.5, 3.])))
     on = (t["pat_cls"] >= 0).sum().item()                       # 4 diagonal + 4 off-diagonal entries
     expected = (0.5 ** 2 + 2 * 2.0 ** 2 + (4. / 1) ** 2 + (6. / 1) ** 2 + (8. / 1) ** 2 + 2 * (3. / 3) ** 2) / on
     assert on == 8 and abs(float(aux) - expected) < 1e-6
@@ -72,7 +72,7 @@ def test_pattern_classes_on_benzene_match_the_loader_and_are_symmetric():
 
     import e7_t2_sqm as T2
     d = CORPUS / "A_8448043181"
-    g = json.load(open(d / "geometry.json"))
+    g = json.loads((d / "geometry.json").read_text(encoding="utf-8"))
     B, _types = T2.internals(g["symbols"], np.asarray(g["coords_bohr"], float))
     K = B.shape[0]
     m = dict(B=B, F_low=np.eye(K))
@@ -102,7 +102,7 @@ def test_pattern_d_extends_c_with_two_bonds_apart_pairs_of_class_6():
     import e7_t2_sqm as T2
     from learning_curve_layerA_v2_descriptors import bond_graph
     d = CORPUS / "A_8448043181"
-    g = json.load(open(d / "geometry.json"))
+    g = json.loads((d / "geometry.json").read_text(encoding="utf-8"))
     coords = np.asarray(g["coords_bohr"], float)
     K = T2.internals(g["symbols"], coords)[0].shape[0]
     F = np.eye(K)                                                                    # F_low enters the features only; the identity will do
@@ -150,7 +150,7 @@ def test_kring_tensors_reproduce_k_of_and_vanish_on_the_truth():
     import e7_t2_sqm as T2
     import rungC_train as RT
     d = CORPUS / "A_8448043181"
-    g = json.load(open(d / "geometry.json"))
+    g = json.loads((d / "geometry.json").read_text(encoding="utf-8"))
     masses, coords = np.asarray(g["masses_amu"]), np.asarray(g["coords_bohr"], float)
     lo = np.load(d / "hessian_b3lyp.npz")["H_projected"]
     hi = np.load(d / "hessian_wb97x.npz")["H_projected"]
@@ -193,7 +193,7 @@ def test_patterns_e_and_f_extend_d_by_set_distance():
     import e7_t2_sqm as T2
     from learning_curve_layerA_v2_descriptors import bond_graph
     d = CORPUS / "A_01f3186607"
-    g = json.load(open(d / "geometry.json"))
+    g = json.loads((d / "geometry.json").read_text(encoding="utf-8"))
     coords = np.asarray(g["coords_bohr"], float)
     K = T2.internals(g["symbols"], coords)[0].shape[0]
     F = np.eye(K)

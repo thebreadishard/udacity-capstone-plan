@@ -9,7 +9,7 @@ from pathlib import Path
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "probes"))
-import chain_runner as CR  # noqa: E402
+import chain_runner as CR
 
 
 def test_rungc_expansion_registers_once_and_reads_frozen_b():
