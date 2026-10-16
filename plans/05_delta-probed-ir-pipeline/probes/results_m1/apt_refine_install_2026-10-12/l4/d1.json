@@ -1,0 +1,9 @@
+{
+ "verdict": "field-route truncation",
+ "slope": 4.006046910494424,
+ "entries_over_line": 9,
+ "max_diff_F_e": 0.00029712965308981154,
+ "max_diff_2F_e": 0.0011882306085588823,
+ "max_diff_richardson_e": 5.667849976909167e-06,
+ "line_e": 0.0001
+}

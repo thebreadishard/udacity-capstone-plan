@@ -72,3 +72,12 @@ R = (4 A(F) − A(2F)) / 3.
 - **0.5 ≤ s ≤ 1.5 → the refined APT is in doubt:** D2 next — the same molecule re-solved to a residual of 1e-9 and read against both
   field runs; the labels server's file for it is not used until D2 is read.
 - **Anything else → unexplained:** no conclusion; examined further before any statement about the labels' APTs.
+
+**D1 — read 16 Oct 2026 13:04 (`probes/apt_l4_diag.py` → `l4/d1.{json,md}`; field run 11:37–13:03, 5119 s, the laptop shared with chain
+40's training): field-route truncation.** Slope 4.01 over the 9 entries over the line (max diff 2.97e-4 e at F = 1e-3, 1.19e-3 e at 2e-3);
+Richardson R = (4 A(F) − A(2F)) / 3 lies 5.7e-6 e from the refined APT. By the registered rule the refined APT of B_1f3de8463a stands, and
+L4 read against R for this molecule only meets the line (5.7e-6 ≤ 1e-4). **L4 holds on all five molecules: four at F = 1e-3 (3.5e-5 to
+8.3e-5 e), one against the Richardson-extrapolated field route.**
+
+Lesson for later second routes: at F = 1e-3 the field route's own error reaches 3e-4 e on a push-pull molecule (≈ 2.9e-4 of it the F² term);
+a field-route check on a polar or push-pull molecule takes two fields and the extrapolation, or it tests the field route rather than the APT.
