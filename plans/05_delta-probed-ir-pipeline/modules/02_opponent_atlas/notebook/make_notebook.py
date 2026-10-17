@@ -18,6 +18,8 @@ def code(s):
 
 md("""# Module 02 — the opponent atlas: a data workflow on NASA's PAHdb computed library
 
+**Author:** Frederic Petrignani
+
 **This table is parsed from the public NASA Ames PAHdb v4.00 computed library (DOI 10.3847/1538-4365/ae1c38). It is computed science data, not AI-generated, and it is the *opponent* of this project's pipeline, not its training data.**
 
 Plan 05 (Δ-probed IR pipeline), Module 02 of the Udacity AI Mastery Capstone. The dataset is the tidy species table `species_pahdb_theoretical_4.00.csv` in this folder (10,749 rows × 27 columns), produced by `../build_opponent_atlas.py` from the library's XML download; the per-band table (2.5 million rows) is read from `../out/` for the plots that need it. Sources, versions and checksums are in `../PROVENANCE.md`; the written summary with citations is `../module_summary.pdf`.
@@ -29,9 +31,9 @@ those colours (positions, in the unit cm⁻¹) with their strengths (intensities
 rather than measured, for 10,749 flat carbon-ring molecules (PAHs) in several electric-charge states (neutral, +1 cation, −1 anion, +2 dication).
 Two technical words recur: the *basis set* (6-31G*, 4-31G) is the resolution of the calculation — a larger one is more accurate and more expensive —
 and a *scale factor* is a number slightly below one by which the computed positions are multiplied to bring them closer to measurements. One-line
-definitions of every such term are in `../../GLOSSARY.md`.""")
+definitions of every such term are in the [glossary](https://github.com/thebreadishard/udacity-capstone-plan/blob/master/plans/05_delta-probed-ir-pipeline/modules/GLOSSARY.md).""")
 md("## Setup")
-code("""import json, re
+code("""import json
 from pathlib import Path
 import numpy as np, pandas as pd
 %matplotlib inline

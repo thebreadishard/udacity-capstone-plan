@@ -12,7 +12,7 @@ reference predictions that the project's own pipeline will later be compared aga
 strengths is the molecule's infrared spectrum, and astronomers use such spectra to tell which molecules are in space. NASA keeps a library of
 *computed* spectra for thousands of flat carbon-ring molecules (PAHs); this module reads that library into clean tables and asks what it holds,
 how the numbers were adjusted, and which of the project's own test molecules it covers. Terms such as basis set, scale factor and cation are
-explained where they first appear and in [`../GLOSSARY.md`](../GLOSSARY.md).
+explained where they first appear and in the [glossary](https://github.com/thebreadishard/udacity-capstone-plan/blob/master/plans/05_delta-probed-ir-pipeline/modules/GLOSSARY.md).
 
 **What I built:** a streaming XML parser (`build_opponent_atlas.py`), two smaller readers for the
 other comparison lines, a Jupyter notebook with two cleaning functions, one EDA function and five
@@ -83,4 +83,4 @@ change such a check would surface.
 
 ## Repository
 
-Part of the `udacity-capstone-plan` repository (branch `module-02-opponent-atlas`, merged into `master`).
+Submitted as the repository `ai-programming-foundations-project` (the name Task 2 of the rubric gives), with two branches: `main` and the development branch `module-02-opponent-atlas`. Its commit history is this module's own, carried over from the plan's repository [udacity-capstone-plan](https://github.com/thebreadishard/udacity-capstone-plan), where the module lives as `plans/05_delta-probed-ir-pipeline/modules/02_opponent_atlas/`.
