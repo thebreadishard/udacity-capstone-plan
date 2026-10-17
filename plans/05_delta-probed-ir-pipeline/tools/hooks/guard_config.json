@@ -1,2 +1,2 @@
-{"mode": "log",
- "note": "15 Oct 2026, the user: 'eerst een dag loggen'. 'log' records what the rules would do and lets everything pass; 'enforce' acts. Switch after the log has been read with the user (TASKS 64)."}
+{"mode": "enforce",
+ "note": "17 Oct 2026 10:35, after the log review with the user ('Akkoord'): enforce. 15 Oct: 'eerst een dag loggen' — 44 hits in two days, 5 false alarms fixed (command words only), inline_code replaced heredoc_backslash. 'log' records what the rules would do and lets everything pass; 'enforce' acts. clean_code_after_edit stays log-only (its own flag) until its log is read (TASKS 64)."}

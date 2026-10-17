@@ -1,4 +1,4 @@
-"""tools/hooks/guard.py (TASKS 64, 15 Oct 2026): each of the eight rules refuses what its incident was and lets the everyday neighbour pass;
+"""tools/hooks/guard.py (TASKS 64, 15 Oct 2026; reviewed 17 Oct): each rule refuses what its incident was and lets the everyday neighbour pass;
 the hook answers Claude Code in the documented shapes (exit 2 + stderr to deny, permissionDecision 'ask' as JSON, exit 1 when it breaks);
 'log' mode lets everything pass and records it."""
 import json
@@ -30,12 +30,21 @@ def names(call: G.Call, event: str = "pre") -> set[str]:
 @pytest.mark.parametrize("command, hit", [
     ("python - <<'EOF'\nprint('a\\nb')\nEOF", True),                      # the 15 Oct watch.sh patch
     ("cat > spec.json <<EOF\n{\"r\": \"^=== \\\\(SM\\\\) \"}\nEOF", True),  # the 15 Oct smoke spec
-    ("cat <<-END\n\tx \\ y\n\tEND\necho done", True),
-    ("python - <<'EOF'\nprint('plain')\nEOF\necho 'a\\b'", False),         # a backslash outside the heredoc
-    ("echo $((1 << 3))", False),
+    ("python - <<'EOF'\nprint('plain')\nEOF", True),                        # no backslash, still code in a shell command (17 Oct review)
+    ("python -c \"import psi4; print(psi4.__version__)\"", True),            # 17 Oct: four of these passed the old rule
+    ("cd x; ST=$(date); /root/miniforge3/envs/qc/bin/python -c 'import json'", True),
+    ("ssh -i k root@1.2.3.4 'cd /x && /root/env/bin/python -c \"import psi4\"'", True),   # code handed to a server
+    ("node -e 'console.log(1)'", True),
+    ("echo $((1 << 3))", False), ("python probes/s2_read.py --dry-run", False), ("python -m pytest -q tests", False),
+    ("git commit -q -m 'never python -c here; a <<EOF in a message'", False), ("awk '{print $1}' f.txt", False),
+    ("grep -c . x <<< \"$list\"", False),                                    # a here-string is data
 ])
-def test_heredoc_backslash(command, hit):
-    assert ("heredoc_backslash" in names(bash(command))) is hit
+def test_inline_code(command, hit):
+    assert ("inline_code" in names(bash(command))) is hit
+
+
+def test_inline_code_in_powershell():
+    assert "inline_code" in names(G.Call("PowerShell", {"command": "python -c \"print(1)\""}))
 
 
 @pytest.mark.parametrize("command, hit", [
@@ -58,6 +67,11 @@ def test_git_add_all(command, hit):
     (bash("until grep -q done x.log; do sleep 120; done; cut -c1-80 x.log", run_in_background=True), False),
     (bash("python -m pytest -q tests", run_in_background=True), False),
     (bash("python probes/s2_read.py"), False),                                                 # foreground: bounded by the tool's timeout
+    (bash(". tools/hosts.sh; host_ssh pool3 'cd /root/x && setsid nohup bash run.sh > r.log 2>&1 &'"), True),   # detached on a server
+    # 16 Oct 23:38 and 23:44, false alarms in the log: reading the wrapper is not starting it
+    (bash("cd p; grep -n 'def probe_script' -A22 tools/runspec.py | grep -i 'log'; grep -n 'log' tools/remote_launch.sh | head -6"), False),
+    (bash("sed -n '14,40p' tools/hosts.sh | cut -c1-220; grep -n 'scp' probes/fetch_anchor.sh tools/remote_launch.sh | head -4"), False),
+    (bash("git commit -q -m 'the runner no longer uses nohup or setsid'"), False),
 ])
 def test_long_job_past_the_door(call, hit):
     assert ("long_job_past_the_door" in names(call)) is hit
@@ -78,6 +92,8 @@ def test_watch_while_running_only_when_a_watch_runs():
     ("gh release create v1", True),
     ("gh run list -R o/r --limit 1", False), ("gh api repos/pyscf/pyscf/issues/2702/comments --jq '.[].body'", False),
     ("gh pr view 3469 --json state", False),
+    ("git commit -q -m \"hooks: 'gh pr create' quoted in a message is not a post\"", False),   # 15 Oct 17:49, a false alarm in the log
+    ("gh api -X GET repos/o/r/pulls", False), ("cd x && gh issue comment 57 --repo o/r --body-file p.md", True),
 ])
 def test_github_post_asks(command, hit):
     assert ("github_post" in names(bash(command))) is hit
@@ -89,6 +105,9 @@ def test_github_post_asks(command, hit):
     ("git reset --hard HEAD~1", True), ("git clean -fdx", True),
     ("rm -rf /c/Users/x/scratchpad/runspec_smoke/state", False),                  # local scratch
     ("git push -q && git log --oneline -1", False), ("git reset HEAD file", False),
+    # 17 Oct 09:30, a false alarm in the log: a local rm of the scratchpad beside a harmless host_ssh
+    ("S=/c/Users/x/scratchpad/f5stage; rm -rf \"$S\"; mkdir -p \"$S\"; . tools/hosts.sh; host_ssh pool3 'ls -d /root/f5 2>&1'", False),
+    ("ssh root@1.2.3.4 rm -rf /root/labels", True),
 ])
 def test_destructive_asks(command, hit):
     assert ("destructive" in names(bash(command))) is hit
@@ -130,8 +149,29 @@ def test_lint_skips_files_outside_the_repository(tmp_path, monkeypatch):
     assert G.lint_after_edit(G.Call("Write", {"file_path": str(f), "content": ""})) is None
 
 
+def test_clean_code_reports_only_the_lines_just_written(tmp_path, monkeypatch):
+    """Candidate (9), 17 Oct 2026: the CLAUDE.md clean-code set on the edited span only, so old files do not drown it; log-only for now."""
+    pytest.importorskip("ruff")
+    monkeypatch.setenv("CLAUDE_PROJECT_DIR", str(tmp_path))
+    f = tmp_path / "m.py"
+    old = "def old():\n    unused = 1\n    return 2\n"
+    new = "def new():\n    spare = 3\n    return 4\n"
+    f.write_text(old + "\n\n" + new, encoding="utf-8", newline="\n")
+    reason = G.clean_code_after_edit(G.Call("Edit", {"file_path": str(f), "old_string": "x", "new_string": new}))
+    assert reason and "spare" in reason and "unused" not in reason
+    assert G.clean_code_after_edit(G.Call("Edit", {"file_path": str(f), "old_string": "x", "new_string": "return 4\n"})) is None
+    rule = next(r for r in G.RULES if r.name == "clean_code_after_edit")
+    assert rule.log_only and G.respond(G.Call("Edit", {}), [(rule, reason)], acting=True) == (0, "", "")
+
+
+def test_commands_reads_command_words_only():
+    cmds = G.commands("cd x && ST=$(python tools/stamp.py); git commit -m 'gh pr create; rm -rf /'  # note\nwsl -e bash -c 'nohup run &'")
+    assert ["python", "tools/stamp.py"] in cmds and ["nohup", "run"] in cmds
+    assert not any(w[0] in ("gh", "rm") for w in cmds)
+
+
 def test_every_rule_names_its_incident_and_a_known_decision():
-    assert len(G.RULES) == 8 and len({r.name for r in G.RULES}) == 8
+    assert len(G.RULES) == 9 and len({r.name for r in G.RULES}) == 9
     assert all(r.incident and r.decision in ("deny", "ask", "post") and r.event in ("pre", "post") for r in G.RULES)
 
 
@@ -179,6 +219,14 @@ def test_a_mention_of_the_exemption_is_not_one(tmp_path):
     cmd = "git add -A && git commit -m \"'# hook-exempt: <reason>' passes a deny rule\""
     r = hook(tmp_path, {"tool_name": "Bash", "tool_input": {"command": cmd}}, "enforce")
     assert r.returncode == 2 and logged(tmp_path)[0]["exempt"] is None
+
+
+def test_an_exemption_line_inside_a_multi_line_message_is_not_one(tmp_path):
+    """15 Oct 17:50 and 17:51, in the log: a commit message whose line began '# hook-exempt: <reason>' counted as an exemption."""
+    cmd = "git add -A && git commit -q -m \"hooks built\n# hook-exempt: a deny rule passes when asked\nmore text\""
+    r = hook(tmp_path, {"tool_name": "Bash", "tool_input": {"command": cmd}}, "enforce")
+    assert r.returncode == 2 and logged(tmp_path)[0]["exempt"] is None
+    assert G.exemption("# hook-exempt: <reason>\nnohup x &") is None                 # the placeholder is not a reason
 
 
 def test_a_quiet_call_is_not_logged_and_a_broken_payload_never_blocks(tmp_path):
