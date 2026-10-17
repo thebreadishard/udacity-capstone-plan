@@ -33,12 +33,13 @@ def test_the_id_files_follow_the_frozen_set_file():
 
 
 def test_ids_have_labels_names_what_is_missing(tmp_path):
+    needed = (L.GEOMETRY, *L.LABEL_SETS["analytic"][0])
     (tmp_path / "X").mkdir()
-    for f in L.NEEDED:
+    for f in needed:
         (tmp_path / "X" / f).write_text("{}")
     (tmp_path / "Y").mkdir()
     (tmp_path / "Y" / "geometry.json").write_text("{}")
-    assert L.missing(["X", "Y", "Z"], tmp_path) == {"Y": ["hessian_b3lyp_analytic.npz", "hessian_wb97x_analytic.npz"], "Z": list(L.NEEDED)}
+    assert L.missing(["X", "Y", "Z"], tmp_path) == {"Y": ["hessian_b3lyp_analytic.npz", "hessian_wb97x_analytic.npz"], "Z": list(needed)}
 
 
 def test_a_set_that_lost_molecules_is_not_read():
