@@ -95,7 +95,7 @@ para(f"The generative task is to propose new fused-aromatic molecules, written a
      f"Outputs are judged by the standard validity–uniqueness–novelty trio of the MOSES and GuacaMol benchmarks (Polykovskiy et al., 2020; Brown et al., 2019), "
      f"by the match of their size and composition distributions to a held-out set, and by a project-specific fit criterion; all metrics and their expected "
      f"values were fixed in a pre-registration before training.")
-para("For a reader without chemistry: This module is a language model for molecules. A molecule can be written as a line of text, a SMILES string (c1ccccc1 is benzene), and the 'fused aromatic' molecules — flat carbon-ring systems whose rings share edges, the family the project's spectroscopy pipeline serves — are its sentences. Input: 161,000 such strings of real, deposited molecules from the public PubChem database. The model learns their grammar character by character, the way a language model learns from sentences, and then writes new strings. Output: proposals that look like the real ones but are not among them; chemistry software checks each one (a valid molecule? new? similar in size and composition to the real ones?). The purpose is a list of candidates for the pipeline to compute next, never a claim about any molecule. The proposals have not entered the pipeline or the Spectrum Atlas yet: the route that would take them there — an exported, gated list as a new layer of the corpus — is TASKS row 22. Terms are defined in ../../GLOSSARY.md.")
+para("For a reader without chemistry: This module is a language model for molecules. A molecule can be written as a line of text, a SMILES string (c1ccccc1 is benzene), and the 'fused aromatic' molecules — flat carbon-ring systems whose rings share edges, the family the project's spectroscopy pipeline serves — are its sentences. Input: 161,000 such strings of real, deposited molecules from the public PubChem database. The model learns their grammar character by character, the way a language model learns from sentences, and then writes new strings. Output: proposals that look like the real ones but are not among them; chemistry software checks each one (a valid molecule? new? similar in size and composition to the real ones?). The purpose is a list of candidates for the pipeline to compute next, never a claim about any molecule. The proposals have not entered the pipeline or the Spectrum Atlas yet: the route that would take them there — an exported, gated list as a new layer of the corpus — is tracked in the plan repository's task list. Terms are defined in the glossary (https://github.com/thebreadishard/udacity-capstone-plan/blob/master/plans/05_delta-probed-ir-pipeline/modules/GLOSSARY.md).")
 
 heading("Dataset or Prompt Description")
 sp = R["splits"]
@@ -117,8 +117,8 @@ para(f"The model is a decoder-only Transformer over characters: token and learne
      f"(Loshchilov & Hutter, 2019), gradient clipping at 1.0, batch 128, and early stopping on validation loss with patience 3; sampling is autoregressive "
      f"and multinomial at a temperature. Design decisions and their reasons: the character level because the vocabulary is small and every SMILES is "
      f"representable; a decoder-only model because a sampler is needed, not an encoder; pre-normalisation and warm-up for stable small-model training "
-     f"(Xiong et al., 2020); scaffold splitting for honest novelty. The pre-registered run trains {len(seeds)} seed(s) for up to 20 epochs; seed {seeds[0]} "
-     f"stopped after {len(tr)} epoch(s) at a best validation loss of {min(h['val_loss'] for h in tr):.3f} nats per token, its raw samples reaching "
+     f"(Xiong et al., 2020); scaffold splitting for honest novelty. The pre-registered run trains {len(seeds)} {'seed' if len(seeds) == 1 else 'seeds'} for up to 20 epochs; seed {seeds[0]} "
+     f"stopped after {len(tr)} {'epoch' if len(tr) == 1 else 'epochs'} at a best validation loss of {min(h['val_loss'] for h in tr):.3f} nats per token, its raw samples reaching "
      f"{pct(tr[-1]['validity_200'])} validity at temperature 1.0. Alternatives were considered and set aside: a GAN on discrete strings trains unstably and "
      f"gives no likelihood (Guimaraes et al., 2017), a SMILES VAE trades validity for a latent space the task does not need (Gómez-Bombarelli et al., 2018), "
      f"and graph diffusion is heavier than the question.")
@@ -150,7 +150,7 @@ if R.get("baseline"):
          f"and sampled {bl['n_samples']:,} times reaches validity {bl['validity']:.3f}, uniqueness {bl['uniqueness']:.3f}, novelty {bl['novelty']:.3f} and project fit {bl['project_fit']:.3f}, "
          f"with Wasserstein-1 distances of {bl['w1_heavy']:.2f} (heavy atoms), {bl['w1_arom_rings']:.2f} (aromatic rings) and {bl['w1_hetero']:.2f} (heteroatoms) to the test split. "
          f"The registered rule asks the Transformer to beat it by at least 0.25 in validity and 0.15 in project fit with smaller distances on all three descriptors; the primary "
-         f"seed gives margins of {bc['validity_margin']:+.3f} and {bc['project_fit_margin']:+.3f} with all distances smaller: {bc['w1_smaller_all']} — "
+         f"seed gives margins of {bc['validity_margin']:+.3f} and {bc['project_fit_margin']:+.3f} {'and every distance is smaller' if bc['w1_smaller_all'] else 'but not every distance is smaller'} — "
          + ("the model has learned more than token statistics." if bc["beats_baseline"] else "the rule is not met" + (" (quick mode: a pipeline check, not a result)." if R.get("quick") else " and the module's verdict is FAIL by the amendment.")))
 
 heading("Ethical Considerations and Responsible Use")

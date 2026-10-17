@@ -33,6 +33,8 @@ def code(s):
 
 md(f"""# Module 06 — a generative model of aromatic candidates: a character-level Transformer on SMILES
 
+**Author:** Frederic Petrignani
+
 **The generative task (declared for the rubric).** Generate *new* fused-aromatic molecules — as SMILES strings — that resemble a frozen set of
 160,972 PubChem molecules with at least two fused aromatic rings, so that the Δ-probed IR pipeline of plan 05 has candidates to compute next:
 molecules inside the families its learned correction is licensed for, not yet in any spectral library. The output is a sequence of characters
@@ -51,7 +53,7 @@ not used in modules 02–05. Splits are by Murcko scaffold (sha-hashed 80/10/10)
 
 Sections: **Setup · 1 Load and inspect · 2 The model · 3 Training · 4 Sampling and evaluation · 5 The design change: conditioning · 6 Ethics and responsible use · 7 Summary**.""")
 
-md("""*Reading this without chemistry.* This module is a language model for molecules. A molecule can be written as a line of text, a SMILES string (`c1ccccc1` is benzene), and the 'fused aromatic' molecules — flat carbon-ring systems whose rings share edges, the family the project's spectroscopy pipeline serves — are its sentences. Input: 161,000 such strings of real, deposited molecules from the public PubChem database. The model learns their grammar character by character, the way a language model learns from sentences, and then writes new strings. Output: proposals that look like the real ones but are not among them; chemistry software checks each one (a valid molecule? new? similar in size and composition to the real ones?). The purpose is a list of candidates for the pipeline to compute next, never a claim about any molecule. The proposals have not entered the pipeline or the Spectrum Atlas yet: the route that would take them there — an exported, gated list as a new layer of the corpus — is TASKS row 22. Terms are defined in `../../GLOSSARY.md`.""")
+md("""*Reading this without chemistry.* This module is a language model for molecules. A molecule can be written as a line of text, a SMILES string (`c1ccccc1` is benzene), and the 'fused aromatic' molecules — flat carbon-ring systems whose rings share edges, the family the project's spectroscopy pipeline serves — are its sentences. Input: 161,000 such strings of real, deposited molecules from the public PubChem database. The model learns their grammar character by character, the way a language model learns from sentences, and then writes new strings. Output: proposals that look like the real ones but are not among them; chemistry software checks each one (a valid molecule? new? similar in size and composition to the real ones?). The purpose is a list of candidates for the pipeline to compute next, never a claim about any molecule. The proposals have not entered the pipeline or the Spectrum Atlas yet: the route that would take them there — an exported, gated list as a new layer of the corpus — is tracked in the plan repository's task list. Terms are defined in the [glossary](https://github.com/thebreadishard/udacity-capstone-plan/blob/master/plans/05_delta-probed-ir-pipeline/modules/GLOSSARY.md).""")
 md("## Setup")
 code(f"""import json, math, os, sys, time, random
 from pathlib import Path
@@ -60,10 +62,10 @@ import numpy as np, pandas as pd, torch
 import matplotlib.pyplot as plt
 from IPython.display import display
 sys.path.insert(0, str(Path("..") / "m06"))
-from data import read_dataset, assign_splits, tokenize, Vocab, hetero_class, prefix_for, murcko
+from data import read_dataset, assign_splits, tokenize, Vocab, hetero_class, murcko
 from model import SmilesTransformer
 from train import train_model, generate
-from evaluate import canonical, descriptors, project_fit, wasserstein1, evaluate_samples, obedience
+from evaluate import canonical, descriptors, project_fit, evaluate_samples, obedience
 QUICK = os.environ.get("M06_QUICK") == "1"
 torch.set_num_threads(int(os.environ.get("M06_THREADS", "4")))
 SEEDS = [0] if QUICK else [0, 1, 2]
