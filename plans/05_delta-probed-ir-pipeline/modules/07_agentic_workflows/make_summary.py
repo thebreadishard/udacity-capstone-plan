@@ -78,7 +78,7 @@ para(f"This report describes an agentic workflow built for a real, running resea
      f"(a LangChain chat model: the Anthropic API or an OpenAI-compatible endpoint such as the course's Vocareum keys, chosen per run and logged with every proposal) and a deterministic reference policy used for testing. An agentic approach fits because the decisions are sequential, "
      f"depend on state that changes on its own and require tools; a bounded design fits because the correct behaviour is rule application under uncertainty, and the cost "
      f"of a wrong autonomous action — a deleted server, a duplicate forty-hour run, a false scientific claim — far exceeds the cost of asking a human (Amodei et al., 2016; Shavit et al., 2023).")
-para("For a reader without chemistry: The project's calculations run for days on rented computers, and things go wrong at night: a job dies, a lock file blocks the next one, a log falls silent while the work continues. The run steward is a small program (an 'agent') that watches those machines, applies a written table of rules distilled from the project's own past mistakes, and may take only a short list of harmless actions; anything that costs money, deletes data or makes a scientific claim it hands to a human. The scenarios in section 4 replay real log excerpts to check that it behaves. Terms are defined in ../../GLOSSARY.md.")
+para("For a reader without chemistry: The project's calculations run for days on rented computers, and things go wrong at night: a job dies, a lock file blocks the next one, a log falls silent while the work continues. The run steward is a small program (an 'agent') that watches those machines, applies a written table of rules distilled from the project's own past mistakes, and may take only a short list of harmless actions; anything that costs money, deletes data or makes a scientific claim it hands to a human. The scenarios in section 4 replay real log excerpts to check that it behaves. Terms are defined in https://github.com/thebreadishard/udacity-capstone-plan/blob/master/plans/05_delta-probed-ir-pipeline/modules/GLOSSARY.md.")
 
 heading("System Architecture and Design")
 para(f"Components. The persona is a careful laboratory technician who applies written rules and escalates what matches no rule. The reasoning loop is observe → propose → "
@@ -111,12 +111,12 @@ para("Safeguards are the rule table made mechanical. Reliability: a dry run befo
      "line carries a clock read in the same call, and a refusal names its reasons. Misuse prevention: the allow-list is closed; observed content is data — a log line that "
      "addresses the agent with an imperative is flagged by a scan and can only lead to an escalation with the quote, which is the defence the indirect-prompt-injection "
      "literature recommends for tool-using agents (Greshake et al., 2023). Human gates are structural rather than behavioural: the actions that need a human are not in the "
-     "agent's vocabulary. The tests are negative controls in the sense of the project's quality policy: each guard has a test that fails without it, and the eight scenarios "
+     "agent's vocabulary. The tests are negative controls in the sense of the project's quality policy: each guard has a test that fails without it, and the seventeen scenarios "
      "replay in the test suite.")
 
 heading("Observed Behavior and Limitations")
-para(f"With the deterministic reference policy the agent took the correct action sequence in {RP['n_pass']} of {R['n_scenarios']} scenarios, escalated the three cases that "
-     f"belong to a human (a machine to create, a failure with no known signature, an instruction hidden in a log) and refused to record the one scientific reading that lacked its "
+para(f"With the deterministic reference policy the agent took the correct action sequence in {RP['n_pass']} of {R['n_scenarios']} scenarios, escalated every case that "
+     f"belongs to a human — thirteen of the seventeen, among them a machine to create, a failure with no known signature and an instruction hidden in a log — and refused to record the one scientific reading that lacked its "
      f"control — the very reading that had been recorded by a human, and withdrawn, on the morning the fixtures come from. The gate never had to substitute an action for the reference "
      f"policy, which is expected: the reference encodes the rules; the gate's own tests show it stopping each forbidden action when asked. "
      + (f"With the language-model policy ({LP['model']}) the agent passed {LP['n_pass']} of {LP['n_runs']} scenario runs and the gate substituted an action in {LP['n_gate_substitutions']} of them. "
@@ -125,7 +125,7 @@ para("A genuine failure was found while building: for the failed-molecule scenar
      "budget ended the run. The rule 'one line per event' was in the table but not in the policy's state handling, and the gate did not cover repetition. The general lesson is "
      "that a rule in a prompt is a request, not a guarantee; only a gate guarantees. Limitations: the deterministic policy is brittle by design and falls through to waiting when a "
      "state is described in words it does not know; fact extraction from live logs is not yet a tool, and every parser is a place where a line can be misread (the project's own "
-     "handover watcher parsed a substring of a comment as a job identifier on the day of the fixtures); the scenarios are eight and were chosen from one day.")
+     "handover watcher parsed a substring of a comment as a job identifier on the day of the fixtures); the scenarios are seventeen — eight from the logs of one day and nine from the incidents of the week after.")
 
 heading("Ethical and Responsible Use Considerations")
 para("The main ethical concern is accountability under autonomy. The steward spends other people's money (rented machines), can idle or duplicate expensive computation, and — "

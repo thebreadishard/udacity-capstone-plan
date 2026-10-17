@@ -27,6 +27,8 @@ def code(s):
 
 md("""# Module 07 — an agentic workflow: the *run steward* of a computational-chemistry campaign
 
+**Author:** Frederic Petrignani
+
 **The agentic task (Task 1).** Plan 05 runs a pre-registered computational campaign on five rented machines and a laptop: corpus shards, learning-curve
 searches, coupled-cluster references, cation rows. Between 10 and 25 September 2026 a human-in-the-loop operator (the project's AI assistant, supervised
 by the project owner) took several hundred operational decisions — what to launch, what to read, what to retry, what to hand to the owner — and wrote
@@ -48,15 +50,15 @@ creating or deleting machines, spending money, publishing, changing a pre-regist
 API or any OpenAI-compatible endpoint such as the course's Vocareum keys (provider switch of 28 September 2026); provider and model id are logged with every proposal. Replay mode — the mode of this notebook — touches no machine: observations are verbatim excerpts of the real logs of
 25 September 2026 (`scenarios/fixtures/`), and actions produce the effects the scenario declares.""")
 
-md("""*Reading this without chemistry.* The project's calculations run for days on rented computers, and things go wrong at night: a job dies, a lock file blocks the next one, a log falls silent while the work continues. The run steward is a small program (an 'agent') that watches those machines, applies a written table of rules distilled from the project's own past mistakes, and may take only a short list of harmless actions; anything that costs money, deletes data or makes a scientific claim it hands to a human. The scenarios in section 4 replay real log excerpts to check that it behaves. Terms are defined in `../../GLOSSARY.md`.""")
+md("""*Reading this without chemistry.* The project's calculations run for days on rented computers, and things go wrong at night: a job dies, a lock file blocks the next one, a log falls silent while the work continues. The run steward is a small program (an 'agent') that watches those machines, applies a written table of rules distilled from the project's own past mistakes, and may take only a short list of harmless actions; anything that costs money, deletes data or makes a scientific claim it hands to a human. The scenarios in section 4 replay real log excerpts to check that it behaves. Terms are defined in [glossary](https://github.com/thebreadishard/udacity-capstone-plan/blob/master/plans/05_delta-probed-ir-pipeline/modules/GLOSSARY.md).""")
 md("""## 1. Setup and the rule table (the agent's memory of what went wrong before)""")
-code("""import json, os, sys, time, datetime as dt
+code("""import json, os, sys, datetime as dt
 from pathlib import Path
 import pandas as pd
 from IPython.display import display
 sys.path.insert(0, str(Path("..").resolve()))
 import langgraph, langchain_core
-from steward.rules import load_rules, by_id, rules_as_text
+from steward.rules import load_rules, by_id
 from steward.schema import ACTIONS, Proposal
 from steward.gate import check
 from steward.policy import RuleTablePolicy, LLMPolicy
@@ -190,7 +192,7 @@ md("""## 5. Summary (Task 5)
 The run steward is a single bounded agent that keeps a pre-registered computational campaign moving: it observes machines and result files, proposes one
 action that cites a rule from a table of the project's own past mistakes, passes it through a deterministic gate, acts through eleven allow-listed tools
 and records every step with a clock-read stamp. Replayed on seventeen scenarios — eight from the real logs of 25 September 2026 and nine from the incidents and decisions of the week after — it took the correct sequence
-of actions in all seventeen with the deterministic reference policy, escalated the three cases that belong to a human (a new machine, an unknown failure, an
+of actions in all seventeen with the deterministic reference policy, escalated every case that belongs to a human (thirteen of the seventeen, among them a new machine, an unknown failure and an
 instruction hidden in a log) and refused the one scientific claim that lacked its control. The main challenge was not the graph but the boundary: deciding
 what the agent may do at all, and encoding each lesson as a check that fails without it. Known risks are the untested LLM policy, the brittleness of
 fact extraction outside replay, and the temptation to widen the allow-list when a scenario is inconvenient — the design answer to the last is that widening
@@ -200,7 +202,9 @@ code("""out = dict(date=dt.datetime.now().strftime("%Y-%m-%d %H:%M"), n_rules=le
            llm_policy=(dict(model=lp.model_id, n_runs=len(llm_results), n_pass=int(sum(r["pass"] for r in llm_results)), n_gate_substitutions=int(sum(bool(r["forced_by_gate"]) for r in llm_results)),
                             per_run=[dict(id=r["id"], rep=r["repeat"], actions=r["actions"], rules=r["rules"], forced=r["forced_by_gate"], passed=r["pass"]) for r in llm_results]) if llm_results else None),
            versions=dict(langgraph=getattr(langgraph, "__version__", "1.2.x"), langchain_core=langchain_core.__version__, python=sys.version.split()[0]))
-json.dump(out, open("results.json", "w"), indent=1, ensure_ascii=False); print("results.json written")""")
+with open("results.json", "w", encoding="utf-8") as f:
+    json.dump(out, f, indent=1, ensure_ascii=False)
+print("results.json written")""")
 
 nb = new_notebook(cells=cells, metadata={"kernelspec": {"name": "python3", "display_name": "Python 3", "language": "python"}})
 path = HERE / "agentic_system.ipynb"

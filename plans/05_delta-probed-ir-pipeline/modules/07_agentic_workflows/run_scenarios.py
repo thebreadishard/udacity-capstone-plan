@@ -1,4 +1,4 @@
-"""Replay the eight pre-registered scenarios through the steward and write the results (no machine is touched).
+"""Replay the pre-registered scenarios (eight of 25 Sep 2026, nine added the week after; scenarios/scenarios.json) through the steward and write the results (no machine is touched).
 
 Usage: python run_scenarios.py [--policy rules|llm] [--repeats 1] [--out out/scenario_results_<date>.json]
 `--policy llm` needs a model key: ANTHROPIC_API_KEY, or OPENAI_API_KEY for any OpenAI-compatible endpoint (the course's Vocareum keys with
