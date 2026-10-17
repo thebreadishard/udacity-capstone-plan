@@ -1,10 +1,11 @@
 #!/usr/bin/env python
-"""Builds module_summary.docx (the Deep Learning Systems Analysis Report) in the Udacity APA 7 template with the nine sections the
-Module 05 instructions prescribe (Rubrics/05, Task 7), then converts it to module_summary.pdf with Word (COM through PowerShell).
+"""Builds Deep_Learning_Systems_Analysis_Report.docx (the Deep Learning Systems Analysis Report) in the Udacity APA 7 template with the nine sections the
+Module 05 instructions prescribe (Rubrics/05, Task 7), then converts it to Deep_Learning_Systems_Analysis_Report.pdf with Word (COM through PowerShell) and copies it to module_summary.pdf (the name the rubric's overview uses).
 Run:  python make_summary.py            (22 September 2026 scaffold; the text reads every number from notebook/results.json and the
 release manifest — nothing is typed in by hand. A results file from a quick pipeline check (results["quick"] is true) produces a
 docx with a banner and no PDF, so that a check can never be mistaken for the submission.)"""
 import json
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -17,7 +18,8 @@ HERE = Path(__file__).resolve().parent
 TEMPLATE = HERE.parents[3] / "Rubrics" / "APA7_template.docx"
 NB = HERE / "notebook"
 FIG = NB / "figures"
-OUT_DOCX = HERE / "module_summary.docx"
+OUT_DOCX = HERE / "Deep_Learning_Systems_Analysis_Report.docx"
+OUT_COPY = HERE / "module_summary.pdf"
 
 R = json.load(open(NB / "results.json", encoding="utf-8"))
 MAN = json.load(open(HERE / "data" / "corpus_release" / R["release"].replace(".npz", "_manifest.json"), encoding="utf-8"))
@@ -85,7 +87,7 @@ para("The ΔH model: a Transformer that predicts the family blocks of a Hessian 
 para(indent_first=False)
 para("Frederic Petrignani", center=True, indent_first=False)
 para("Udacity AI Mastery Capstone — Module 05 (Deep Learning Systems)", center=True, indent_first=False)
-para("module_summary.pdf", center=True, indent_first=False)
+para("Deep Learning Systems Analysis Report", center=True, indent_first=False)
 if QUICK:
     para("PIPELINE CHECK — NOT A RESULT (quick mode: fewer epochs, one seed). This document exists to test the report builder; "
          "the submission is produced from a full execution of the notebook.", bold=True, center=True, indent_first=False)
@@ -97,7 +99,7 @@ para(f"This project asks whether a Transformer can learn, from the normal modes 
      f"couplings. The dataset is the project's own corpus of {R['n_molecules']} molecules ({R['n_modes_total']:,} modes) computed at two levels of "
      f"theory on identical geometries (release {R['release']}). The model is an encoder-only Transformer over mode tokens with two output heads "
      f"(Vaswani et al., 2017); its baseline has {R['parameters']['baseline']:,} parameters.")
-para("For a reader without chemistry: The colours at which a molecule absorbs infrared light follow from a table of spring stiffnesses between its atoms (the Hessian). A cheap calculation (DFT) gives that table with systematic errors; the expensive one (coupled cluster) gets it right but is affordable only for small molecules. This network learns the difference between the two tables from the molecule's structure and the cheap table, trained on a corpus of cheap-against-cheap differences and checked against the few expensive ones (the anchors). It is judged on molecules it never saw (hold-outs), per kind of vibration (family), in cm⁻¹ — a small unit of colour; the goal is a few cm⁻¹ where the cheap calculation is off by tens. Terms are defined in ../../GLOSSARY.md.")
+para("For a reader without chemistry: The colours at which a molecule absorbs infrared light follow from a table of spring stiffnesses between its atoms (the Hessian). A cheap calculation (DFT) gives that table with systematic errors; the expensive one (coupled cluster) gets it right but is affordable only for small molecules. This network learns the difference between the two tables from the molecule's structure and the cheap table, trained on a corpus of cheap-against-cheap differences and checked against the few expensive ones (the anchors). It is judged on molecules it never saw (hold-outs), per kind of vibration (family), in cm⁻¹ — a small unit of colour; the goal is a few cm⁻¹ where the cheap calculation is off by tens. Terms are defined in the glossary (https://github.com/thebreadishard/udacity-capstone-plan/blob/master/plans/05_delta-probed-ir-pipeline/modules/GLOSSARY.md).")
 
 heading("Dataset and Task Description")
 para(f"Each molecule is a sequence of normal-mode tokens; a token carries the mode's frequency, its family, the shares of C, H, N and O in the "
@@ -294,3 +296,6 @@ ps = f'''$w = New-Object -ComObject Word.Application; $w.Visible = $false
 $d = $w.Documents.Open("{OUT_DOCX}"); $d.SaveAs2("{OUT_DOCX.with_suffix('.pdf')}", 17); $d.Close(); $w.Quit()'''
 subprocess.run(["powershell", "-NoProfile", "-Command", ps], check=True)
 print("pdf:", OUT_DOCX.with_suffix(".pdf").exists())
+if OUT_DOCX.with_suffix(".pdf").exists():
+    shutil.copyfile(OUT_DOCX.with_suffix(".pdf"), OUT_COPY)
+    print("copy:", OUT_COPY.name)
