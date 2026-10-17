@@ -21,7 +21,12 @@ def _run(tmp: Path, jobs: str, hosts: str = "", ssh_out: str = "") -> subprocess
     (tmp / "ssh_out.txt").write_text(ssh_out + "\n", encoding="utf-8", newline="\n")
     stub = tmp / "ssh_stub.sh"                                        # stands in for ssh: prints a machine-id line and the remote output
     stub.write_text(f"#!/usr/bin/env bash\ncat '{(tmp / 'ssh_out.txt').as_posix()}'\n", encoding="utf-8", newline="\n")
+    fake_bin = tmp / "bin"                                            # 17 Oct 2026: the real gh made these tests fail while the live CI was red
+    fake_bin.mkdir(exist_ok=True)
+    (fake_bin / "gh").write_text("#!/usr/bin/env bash\nexit 1\n", encoding="utf-8", newline="\n")
+    (fake_bin / "gh").chmod(0o755)
     env = dict(os.environ, WATCH_JOBS=str(tmp / "jobs.tsv"), WATCH_SEEN=str(tmp / "seen.txt"), WATCH_CYCLES="1", WATCH_SLEEP="0",
+               PATH=fake_bin.as_posix() + os.pathsep + os.environ["PATH"],
                HOSTS_FILE=str(tmp / "hosts.tsv"), HOSTS_SSH=f"bash {stub.as_posix()}",   # not BASH: its path may hold a space
                RUNSPEC_ROOT=str(tmp), RUNSPEC_DIR=str(tmp / "specs"), RUNSPEC_STATE=str(tmp / "runstate"), RUNSPEC_PYTHON=sys.executable)
     return subprocess.run([BASH, (PLAN / "probes" / "watch.sh").as_posix()], env=env, capture_output=True, text=True, timeout=120, check=False)
