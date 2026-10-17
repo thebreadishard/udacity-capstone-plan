@@ -1,33 +1,53 @@
 """A chain runner's wait condition (13 Oct 2026): exit 0 when every id in the given files (one per line, '#' comments) has its corpus folder in
-module 05's corpus/molecules with geometry.json and both analytic Hessians; else exit 1 with one status line naming what is missing (first ten).
+module 05's corpus/molecules with geometry.json and its labels; else exit 1 with one status line naming what is missing (first ten).
 
-    python probes/ids_have_labels.py <ids file> [...] [--molecules modules/05_support_predictor/corpus/molecules]
+    python probes/ids_have_labels.py <ids file> [...] [--labels analytic|any] [--molecules modules/05_support_predictor/corpus/molecules]
+
+--labels analytic (the default) needs both analytic Hessians; --labels any (17 Oct 2026, the user: chain 41 on the FD labels its registration
+allows — 'analytic where the molecule has them, else FD' — with the analytic re-read later) takes both analytic or both FD Hessians.
 """
 import argparse
 import sys
 from pathlib import Path
 
 MOLECULES = Path(__file__).resolve().parents[1] / "modules" / "05_support_predictor" / "corpus" / "molecules"
-NEEDED = ("geometry.json", "hessian_b3lyp_analytic.npz", "hessian_wb97x_analytic.npz")
+GEOMETRY = "geometry.json"
+LABEL_SETS = {"analytic": (("hessian_b3lyp_analytic.npz", "hessian_wb97x_analytic.npz"),),
+              "any": (("hessian_b3lyp_analytic.npz", "hessian_wb97x_analytic.npz"), ("hessian_b3lyp.npz", "hessian_wb97x.npz"))}
 
 
-def missing(ids: list, molecules: Path) -> dict:
+def missing(ids: list[str], molecules: Path, labels: str = "analytic") -> dict[str, list[str]]:
+    """Per id what it lacks: geometry.json, and the first acceptable label set when none is complete."""
     out = {}
     for i in ids:
-        lack = [f for f in NEEDED if not (molecules / i / f).exists()]
+        folder = molecules / i
+        lack = [] if (folder / GEOMETRY).exists() else [GEOMETRY]
+        sets = LABEL_SETS[labels]
+        if not any(all((folder / f).exists() for f in s) for s in sets):
+            lack += [f for f in sets[0] if not (folder / f).exists()]
         if lack:
             out[i] = lack
     return out
 
 
-def main() -> int:
+def read_ids(files: list[str]) -> list[str]:
+    ids = []
+    for name in files:
+        with open(name, encoding="utf-8") as f:
+            ids += [s.strip() for s in f if s.strip() and not s.startswith("#")]
+    return ids
+
+
+def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("files", nargs="+")
+    ap.add_argument("--labels", choices=sorted(LABEL_SETS), default="analytic")
     ap.add_argument("--molecules", default=str(MOLECULES))
-    a = ap.parse_args()
-    ids = [s.strip() for f in a.files for s in open(f, encoding="utf-8") if s.strip() and not s.startswith("#")]
-    miss = missing(ids, Path(a.molecules))
-    print(f"labelled {len(ids) - len(miss)}/{len(ids)}" + ("" if not miss else "; missing " + ", ".join(f"{i} ({'/'.join(v)})" for i, v in list(miss.items())[:10])))
+    a = ap.parse_args(argv)
+    ids = read_ids(a.files)
+    miss = missing(ids, Path(a.molecules), a.labels)
+    detail = "" if not miss else "; missing " + ", ".join(f"{i} ({'/'.join(v)})" for i, v in list(miss.items())[:10])
+    print(f"labelled ({a.labels}) {len(ids) - len(miss)}/{len(ids)}{detail}")
     return 0 if not miss else 1
 
 

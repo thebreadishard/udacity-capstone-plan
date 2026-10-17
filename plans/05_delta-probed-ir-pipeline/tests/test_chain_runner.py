@@ -173,12 +173,14 @@ def end_marker_waits(spec: dict) -> set[str]:
     return {Path(w["log"]).stem for w in spec.get("wait", []) if w["kind"] == "marker" and "run done|RUN FAILED" in w["regex"]}
 
 
-def test_the_target_comparison_runs_before_the_size_tests():
-    """16 Oct 2026 (the user: 'Ja, doe punt 1 maar'): chain 44 may change the carried recipe the size tests train, so chain 41 (and through it
-    42) waits for chain 44's end, and chain 44 waits for chain 35h and the gate line written after the merged labels are reviewed."""
+def test_the_chain_order_the_user_set():
+    """16 Oct 2026 (the user: 'Ja, doe punt 1 maar'): chain 44 first, waiting for chain 35h and the gate line written after the merged labels are
+    reviewed. 17 Oct ('Prima'): the labels' larger half keeps chain 44 until ≈ 24–29 Oct, so chain 41 runs now — after chain 35h2, not after
+    chain 44 — on FD-or-analytic labels as its registration allows (the analytic re-read later, TASKS 74); chain 42 still waits for chain 41."""
     runs = Path(__file__).resolve().parents[1] / "probes" / "runs"
     c41, c42, c44 = (json.loads((runs / f"chain{n}.json").read_text(encoding="utf-8")) for n in (41, 42, 44))
-    assert "chain44" in end_marker_waits(c41) and "chain41" in end_marker_waits(c42)
+    assert "chain35h2" in end_marker_waits(c41) and "chain44" not in end_marker_waits(c41) and "chain41" in end_marker_waits(c42)
+    assert any(w["kind"] == "cmd" and "--labels" in w["argv"] and w["argv"][w["argv"].index("--labels") + 1] == "any" for w in c41["wait"])
     assert "chain35h" in end_marker_waits(c44)
     assert any(w["kind"] == "marker" and w["log"].endswith("chain44_gate.log") for w in c44["wait"])
 
