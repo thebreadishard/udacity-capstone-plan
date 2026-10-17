@@ -18,6 +18,8 @@ def code(s):
 
 md("""# Module 04 — the calibrated-harmonic baseline: can a model learn the error of scaled-harmonic DFT band positions?
 
+**Author:** Frederic Petrignani
+
 **The training table is a derived dataset matching public computed bands (NASA PAHdb theoretical library v4.00) to public laboratory bands (PAHdb experimental library v3.10); its provenance and its distinctness from the Module 02 and 03 datasets are described in `../PROVENANCE.md`; it is not AI-generated.**
 
 Plan 05 (Δ-probed IR pipeline), Module 04 of the Udacity AI Mastery Capstone. **Problem type: supervised regression.** Target per band: y = ν_lab − ν_scaled, the error of the library's scaled-harmonic position against the laboratory position, in cm⁻¹. A model that predicts y corrects the library; this corrected library is the strongest fair opponent the larger project must beat, so the recipe — features, four models, leave-one-molecule-out evaluation, metrics, no tuning, seed 0 — was fixed in `../RECIPE.md` before this notebook first ran. Dataset: `training_table.csv` (built by `../build_training_table.py`).
@@ -28,7 +30,7 @@ md("""*Reading this without chemistry.* A band position is the colour (in cm⁻�
 these positions and multiplies them by a fixed *scale factor* to bring them closer to measurements. The target y of every row is how far that
 adjusted computed position still is from the one measured in the laboratory (molecules frozen into solid argon). A model that predicted y from
 simple descriptors would correct the library for free. Every model is judged on molecules it never saw, by the mean absolute error of its corrected
-positions in cm⁻¹; the 'zero model' is the library as it stands. Terms: `../../GLOSSARY.md`.""")
+positions in cm⁻¹; the 'zero model' is the library as it stands. Terms: [glossary](https://github.com/thebreadishard/udacity-capstone-plan/blob/master/plans/05_delta-probed-ir-pipeline/modules/GLOSSARY.md).""")
 md("## Load and inspect the dataset")
 code("""from pathlib import Path
 import json
@@ -96,6 +98,7 @@ md("""## Evaluation
 
 Metrics (RECIPE): mean absolute error (MAE, primary — the plan scores per-band |error|), root-mean-square error, R² of the predicted against the actual error, and the share of bands whose corrected position lies within 5 cm⁻¹ of the laboratory band; overall and per family, for all four models side by side.""")
 code("""def metrics(p):
+    \"\"\"MAE, RMSE, R² and the share within 5 cm⁻¹ of the predicted corrections p against the observed errors y.\"\"\"
     r = y - p
     return dict(MAE=np.abs(r).mean(), RMSE=np.sqrt((r ** 2).mean()), R2=1 - (r ** 2).sum() / ((y - y.mean()) ** 2).sum(), within_5=(np.abs(r) <= 5).mean())
 overall = pd.DataFrame({k: metrics(p) for k, p in pred.items()}).T
@@ -175,7 +178,7 @@ json.dump(R, open("model_results.json", "w"), indent=1); print("model_results.js
 
 md("""## Summary
 
-I modelled the per-band error of NASA's scaled-harmonic PAH library against argon-matrix laboratory positions as a supervised regression on 2,477 matched bands of 83 molecules, with the recipe fixed before the first run. Ridge regression, gradient-boosted trees and a per-family constant were each evaluated leave-one-molecule-out against the zero model, which is the library as served. None of them learns the error: the best held-out MAE is 6.40 cm⁻¹ against 6.49 for doing nothing, R² is at most 0.01, and an instance-level split does not rescue the tree model, so the failure is not a split effect but an absence of signal in the descriptors — the error is band-to-band scatter within a molecule (SD about 9 cm⁻¹), not a per-molecule offset (SD about 2 cm⁻¹). The main limitation is the join: about one pair in nine has an error above 15 cm⁻¹, larger than the published mismatch scale, which points to mis-assigned pairs that inflate every metric equally. For the larger project the result is a clean baseline: the calibrated-harmonic opponent is, on this table, the library itself, and the per-band uncertainty layer it provides is wide — about 7 cm⁻¹ at 68 % and 22 cm⁻¹ at 95 %.""")
+I modelled the per-band error of NASA's scaled-harmonic PAH library against argon-matrix laboratory positions as a supervised regression on 2,477 matched bands of 83 molecules, with the recipe fixed before the first run. Ridge regression, gradient-boosted trees and a per-family constant were each evaluated leave-one-molecule-out against the zero model, which is the library as served. None of them learns the error: the best held-out MAE is 6.40 cm⁻¹ against 6.49 for doing nothing (6.34 for the trees once early stopping is added, 3 Oct), R² is at most 0.01, and an instance-level split does not rescue the tree model, so the failure is not a split effect but an absence of signal in the descriptors — the error is band-to-band scatter within a molecule (SD about 9 cm⁻¹), not a per-molecule offset (SD about 2 cm⁻¹). The main limitation is the join: about one pair in nine has an error above 15 cm⁻¹, larger than the published mismatch scale, which points to mis-assigned pairs that inflate every metric equally. For the larger project the result is a clean baseline: the calibrated-harmonic opponent is, on this table, the library itself, and the per-band uncertainty layer it provides is wide — about 7 cm⁻¹ at 68 % and 22 cm⁻¹ at 95 %.""")
 
 nb["cells"] = cells
 nb.metadata["kernelspec"] = {"name": "python3", "display_name": "Python 3", "language": "python"}

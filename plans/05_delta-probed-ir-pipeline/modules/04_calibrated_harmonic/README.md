@@ -14,11 +14,11 @@ infrared light. NASA's library predicts these positions by computer and multipli
 bring them closer to measurements. The question here is whether a machine-learning model can predict the error that remains, band by band, from
 simple facts about the band and its molecule — so that the library could be corrected without new physics. Each model is judged on molecules it
 never saw (*leave-one-molecule-out*), by how far its corrected positions still are from the laboratory ones (the mean absolute error, in cm⁻¹). The
-answer is no: the remaining error is band-to-band scatter that those facts do not capture. One-line definitions are in [`../GLOSSARY.md`](../GLOSSARY.md).
+answer is no: the remaining error is band-to-band scatter that those facts do not capture. One-line definitions are in the [glossary](https://github.com/thebreadishard/udacity-capstone-plan/blob/master/plans/05_delta-probed-ir-pipeline/modules/GLOSSARY.md).
 
 **What I built:** a builder that joins the computed and the laboratory bands into one training table
 (`build_training_table.py`), a notebook that prepares the features, trains and evaluates the models
-(`notebook/modeling.ipynb`), and the Machine Learning Analysis Report (`module_summary.pdf`).
+(`notebook/modeling.ipynb`), and the Machine Learning Analysis Report (`Machine_Learning_Analysis_Report.pdf`, also as `module_summary.pdf`).
 
 **Dataset:** `notebook/training_table.csv`, 2,477 rows × 28 columns — one row per matched pair of a
 laboratory band (PAHdb experimental library v3.10, argon matrix,
@@ -50,6 +50,6 @@ Module 02's parsed libraries by `python build_training_table.py`; the report by 
   3 October 2026 (the tree model with early stopping under the project's decision 51; the first run's numbers stand) · Summary;
   writes `model_results.json`, `opponent_column_ladder.csv` (held-out predictions for the project's test
   molecules) and `uncertainty_layer.csv`.
-- `module_summary.pdf` (`.docx`) — the Machine Learning Analysis Report in the Udacity APA 7 template
-  (the instructions also call it `Machine_Learning_Analysis_Report.pdf`; same document).
+- `Machine_Learning_Analysis_Report.pdf` (`.docx`) — the Machine Learning Analysis Report in the Udacity APA 7 template; `module_summary.pdf` is the
+  same file under the name the rubric's overview uses.
 - `PROVENANCE.md` — sources, checksums, status, and what is still owed (project notes).

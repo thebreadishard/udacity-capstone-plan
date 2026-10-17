@@ -1,10 +1,12 @@
 #!/usr/bin/env python
-"""Builds module_summary.docx (the Machine Learning Analysis Report) in the Udacity APA 7 template
+"""Builds Machine_Learning_Analysis_Report.docx (the Machine Learning Analysis Report; the instructions' name) in the Udacity APA 7 template
 (Rubrics/APA7_template.docx) with the sections the Module 04 instructions prescribe, then converts it to
-module_summary.pdf with Word (COM automation through PowerShell). Run:  python make_summary.py
+Machine_Learning_Analysis_Report.pdf with Word (COM automation through PowerShell), and copies it to module_summary.pdf — the name the rubric's overview
+and grading table use for the same report. Run:  python make_summary.py
 Every number in the text is read from notebook/training_table.csv and notebook/model_results.json (written by
 the executed notebook); citations are APA author-year and the References list contains exactly the sources cited."""
 import json
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -17,7 +19,8 @@ HERE = Path(__file__).resolve().parent
 TEMPLATE = HERE.parents[3] / "Rubrics" / "APA7_template.docx"
 NB = HERE / "notebook"
 FIG = NB / "figures"
-OUT_DOCX = HERE / "module_summary.docx"
+OUT_DOCX = HERE / "Machine_Learning_Analysis_Report.docx"
+OUT_COPY = HERE / "module_summary.pdf"
 
 df = pd.read_csv(NB / "training_table.csv", dtype={"uid": str})
 R = json.load(open(NB / "model_results.json", encoding="utf-8"))
@@ -75,8 +78,8 @@ para(indent_first=False)
 para("Frederic Petrignani", center=True, indent_first=False)
 para("Udacity AI Mastery Capstone", center=True, indent_first=False)
 para("Module 04 — Applied Machine Learning: Model Design, Training, and Performance Evaluation", center=True, indent_first=False)
-para("Machine Learning Analysis Report (module_summary.pdf)", center=True, indent_first=False)
-para("12 September 2026", center=True, indent_first=False)
+para("Machine Learning Analysis Report", center=True, indent_first=False)
+para("12 September 2026, revised 17 October 2026", center=True, indent_first=False)
 page_break()
 para(TITLE, bold=True, center=True, indent_first=False)
 
@@ -93,7 +96,7 @@ para("For a reader without chemistry: a molecule's infrared spectrum is the list
      "at which it absorbs infrared light. NASA's library computes these positions and multiplies them by a fixed number slightly below one, a "
      "scale factor, to bring them closer to measurements. This report asks whether a machine-learning model can predict the error that remains, "
      "band by band, from simple facts about the band and the molecule. Each model is judged on molecules it never saw, by how far its corrected "
-     "positions still are from the laboratory ones. A one-page glossary accompanies the modules (GLOSSARY.md in the repository).")
+     "positions still are from the laboratory ones. A one-page glossary accompanies the modules (https://github.com/thebreadishard/udacity-capstone-plan/blob/master/plans/05_delta-probed-ir-pipeline/modules/GLOSSARY.md).")
 
 heading("Dataset Description")
 para(f"Each row pairs one laboratory band with the computed band of the same molecule that the fixed join rule assigns "
@@ -115,8 +118,9 @@ para("Preparation. The table has no missing values. The two categorical columns 
      "kept as the grouping variable for the split and never used as a feature.")
 para("Model selection. Four models were fixed in advance. The zero model predicts no correction and is the reference: "
      "it is the library as served. The per-family constant predicts each family's mean error in the training fold, the "
-     "simplest recalibration of the scale factors. Ridge regression is the transparent linear baseline. Gradient-boosted "
-     "trees (Friedman, 2001), in scikit-learn's histogram implementation with library defaults, can represent "
+     "simplest recalibration of the scale factors. Ridge regression (Hoerl & Kennard, 1970) is the transparent linear baseline. "
+     "Gradient-boosted trees (Friedman, 2001), in scikit-learn's histogram implementation (Pedregosa et al., 2011) with library "
+     "defaults, can represent "
      "interactions between size, family and intensity that a linear model cannot. No hyper-parameter search was run: the "
      "recipe set the tuning budget to zero so that the baseline is reproducible from the defaults, with the random seed 0. "
      "The approach follows the machine-learning correction of DFT scale factors published by Bos et al. (2025), implemented "
@@ -126,7 +130,8 @@ para("Evaluation. Bands of one molecule share that molecule's systematic error, 
      "appropriate design when observations are structured in this way (Roberts et al., 2017). I therefore used "
      f"leave-one-molecule-out: {n_mol} folds, each molecule predicted by models that never saw any of its bands. The "
      "primary metric is the mean absolute error (MAE) of the corrected position against the laboratory band, because the "
-     "larger project scores per-band absolute errors; the root-mean-square error, the coefficient of determination R² and "
+     "larger project scores per-band absolute errors and the MAE is the plain average of their size (Willmott & Matsuura, 2005); "
+     "the root-mean-square error, the coefficient of determination R² and "
      "the share of bands within 5 cm⁻¹ are reported beside it. The models assume that the descriptors carry information "
      "about the error, that pairs within a fold are exchangeable, and, for ridge, that the relation is additive in the "
      "features.")
@@ -188,7 +193,8 @@ para(f"Limitations. The pairing of laboratory and computed bands is itself a mod
      f"averages over bands of unequal reliability, weak and strong alike.")
 para("Bias and responsible use. The dataset over-represents the molecules that laboratory groups chose to measure — "
      "mostly compact, neutral or singly charged PAHs of 10 to 50 carbons — and any model trained on it would carry that "
-     "selection into predictions for larger or differently shaped molecules. A second risk is specific to my project: "
+     "selection into predictions for larger or differently shaped molecules — a sampling bias in the sense of Mehrabi et al. "
+     "(2021). A second risk is specific to my project: "
      "this baseline is the opponent my own method will be compared with, so I had an interest in a weak baseline. The step "
      "taken against that interest was to fix the recipe — target, join, features, models, split, metrics, zero tuning "
      "and the rule for choosing the baseline column — in a note committed to version control before the first training "
@@ -202,11 +208,15 @@ page_break()
 heading("References")
 REFS = [
  "Bos, R., King, M., Calangian, A. J., Davin, K. A., McCraley, S., Putnam, R. A., Manjarrés, J., & Stoneburner, S. J. (2025). Ethereal AI: Infrared spectra of polycyclic aromatic hydrocarbons with machine learning DFT scaling factors. ACS Omega, 10(50), 62282–62290. https://doi.org/10.1021/acsomega.5c10225",
- "Friedman, J. H. (2001). Greedy function approximation: A gradient boosting machine. The Annals of Statistics, 29(5). https://doi.org/10.1214/aos/1013203451",
+ "Friedman, J. H. (2001). Greedy function approximation: A gradient boosting machine. The Annals of Statistics, 29(5), 1189–1232. https://doi.org/10.1214/aos/1013203451",
+ "Hoerl, A. E., & Kennard, R. W. (1970). Ridge regression: Biased estimation for nonorthogonal problems. Technometrics, 12(1), 55–67. https://doi.org/10.1080/00401706.1970.10488634",
  "Hudgins, D. M., & Sandford, S. A. (1998). Infrared spectroscopy of matrix isolated polycyclic aromatic hydrocarbons. 1. PAHs containing two to four rings. The Journal of Physical Chemistry A, 102(2), 329–343. https://doi.org/10.1021/jp9834816",
  "Mattioda, A. L., Hudgins, D. M., Boersma, C., Bauschlicher, C. W., Jr., Ricca, A., Cami, J., Peeters, E., Sánchez de Armas, F., Puerta Saborido, G., & Allamandola, L. J. (2020). The NASA Ames PAH IR Spectroscopic Database: The laboratory spectra. The Astrophysical Journal Supplement Series, 251(2), 22. https://doi.org/10.3847/1538-4365/abc2c8",
+ "Mehrabi, N., Morstatter, F., Saxena, N., Lerman, K., & Galstyan, A. (2021). A survey on bias and fairness in machine learning. ACM Computing Surveys, 54(6), Article 115. https://doi.org/10.1145/3457607",
+ "Pedregosa, F., Varoquaux, G., Gramfort, A., Michel, V., Thirion, B., Grisel, O., Blondel, M., Prettenhofer, P., Weiss, R., Dubourg, V., Vanderplas, J., Passos, A., Cournapeau, D., Brucher, M., Perrot, M., & Duchesnay, É. (2011). Scikit-learn: Machine learning in Python. Journal of Machine Learning Research, 12, 2825–2830.",
  "Ricca, A., Boersma, C., Maragkoudakis, A., Roser, J. E., Shannon, M. J., Allamandola, L. J., & Bauschlicher, C. W., Jr. (2026). The NASA Ames PAH IR Spectroscopic Database: Computational version 4.00, software tools, website, and documentation. The Astrophysical Journal Supplement Series, 282(1), 7. https://doi.org/10.3847/1538-4365/ae1c38",
  "Roberts, D. R., Bahn, V., Ciuti, S., Boyce, M. S., Elith, J., Guillera-Arroita, G., Hauenstein, S., Lahoz-Monfort, J. J., Schröder, B., Thuiller, W., Warton, D. I., Wintle, B. A., Hartig, F., & Dormann, C. F. (2017). Cross-validation strategies for data with temporal, spatial, hierarchical, or phylogenetic structure. Ecography, 40(8), 913–929. https://doi.org/10.1111/ecog.02881",
+ "Willmott, C. J., & Matsuura, K. (2005). Advantages of the mean absolute error (MAE) over the root mean square error (RMSE) in assessing average model performance. Climate Research, 30(1), 79–82. https://doi.org/10.3354/cr030079",
 ]
 for ref in REFS:
     p = doc.add_paragraph(); p.paragraph_format.first_line_indent = Inches(-0.5); p.paragraph_format.left_indent = Inches(0.5)
@@ -217,3 +227,6 @@ ps = f'''$w = New-Object -ComObject Word.Application; $w.Visible = $false
 $d = $w.Documents.Open("{OUT_DOCX}"); $d.SaveAs2("{OUT_DOCX.with_suffix('.pdf')}", 17); $d.Close(); $w.Quit()'''
 r = subprocess.run(["powershell", "-NoProfile", "-Command", ps], capture_output=True, text=True, check=False)   # Word may be absent: reported, not fatal
 print("pdf:", OUT_DOCX.with_suffix(".pdf").exists(), f"(powershell exit {r.returncode})", r.stderr[:300])
+if OUT_DOCX.with_suffix(".pdf").exists():
+    shutil.copyfile(OUT_DOCX.with_suffix(".pdf"), OUT_COPY)
+    print("copy:", OUT_COPY.name)
