@@ -78,6 +78,7 @@ are free (rebalanced 14 Oct 20:02 on the user's word: the last 13 of a's neutral
 
 | when | what | prepared by |
 |---|---|---|
+| ≈ 24 Oct (a week of edits after 17 Oct 10:35) | **decide with the user whether `clean_code_after_edit` acts** (the user, 17 Oct 10:38: 'Onthoud je dat we nog gaan beslissen over clean code?'): `python tools/hooks/read_log.py --since 2026-10-17T10:35` — per finding kind true / noise, then 'post' (acts) or stays log-only, or the set changes; TASKS 64 | me (the log table), the user decides |
 | ≈ 28 Oct (a few weeks after 7 Oct) | talk about the link the user saved on 7 Oct 18:4x — not urgent: https://openai.com/index/sharing-ai-progress-in-mathematics/ (not read yet; I read it before the conversation) | the user + me |
 | Sat evening | module 06 notebook run done 20:0x (6 of 7 read-outs met); hel1-23 stays for the standout chains through Monday (the user, 20:3x) → last pool done 28 Sep 06:39 UTC, everything fetched 08:4x: ~~hel1-23 may be deleted (the user)~~ deleted by the user 08:5x | done |
 | ~~Sun 20:00 → started 18:33~~ closed 18:2x (done 27 Sep; the two questions answered 27 Sep 19:5x, rows 12–13) | interim layer-B reading: fixed recipe read 18:3x (274 admitted; above both prediction sets on every hold-out, 0.61 / 0.64 / 0.70; outcome in the pre-registration); tuned protocol read 19:2x (0.59 / 0.65 / 0.65; level moves, picture not); §3.5 (iv) filled; left for tonight: the letter checklist after E8, and the user's two questions (B alone or A2 + B; re-hash B's order) with the rung C decision | me |
