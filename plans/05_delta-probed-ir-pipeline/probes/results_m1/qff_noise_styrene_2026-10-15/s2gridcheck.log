@@ -1,0 +1,17 @@
+=== (S2G) styrene grid check: 13 stubs; S2 started 6/19, lanes busy 3 2026-10-15 05:29:16
+=== (S2G) a lane is free (S2 started 19, lanes busy 2); 13 Hessians at grid 99,590, 5 threads 2026-10-17 18:59:20
+[19:10:03] 1/13 mode00_m.json E = -309.64179325 in 642 s
+[19:20:38] 2/13 mode00_p.json E = -309.64179418 in 635 s
+[19:31:12] 3/13 mode01_m.json E = -309.64179023 in 634 s
+[19:41:56] 4/13 mode01_p.json E = -309.64179021 in 644 s
+[19:52:29] 5/13 mode04_m.json E = -309.64178488 in 633 s
+[20:03:07] 6/13 mode04_p.json E = -309.64178461 in 638 s
+[20:13:40] 7/13 mode05_m.json E = -309.64178462 in 633 s
+[20:24:29] 8/13 mode05_p.json E = -309.64178482 in 649 s
+[20:35:02] 9/13 mode18_m.json E = -309.64177138 in 633 s
+[20:45:39] 10/13 mode18_p.json E = -309.64177126 in 638 s
+[20:55:58] 11/13 mode33_m.json E = -309.64175607 in 619 s
+[21:06:32] 12/13 mode33_p.json E = -309.64175578 in 634 s
+[21:17:06] 13/13 ref.json E = -309.64179497 in 634 s
+done: 13 Hessians in 137.7 min
+=== (S2G) styrene grid check done (13 Hessians) 2026-10-17 21:17:06
