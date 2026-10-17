@@ -312,5 +312,47 @@
   "version": "",
   "chain": "35h",
   "note": "INVALID (17 Oct 2026): chain 35h's label fetch failed (rsync missing in Git Bash) yet exited 0, so the 'analytic' arm trained with 44 analytic labels instead of the smallest half's 413 — not the registered half read; rerun as chain 35h2"
+ },
+ "E7_rungC_chain35h2_analytic_model_n750_seed0.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "35h2",
+  "note": "chain 35 half read, second run (35h's labels never arrived) — analytic (smallest half) against FD training labels, one pool; measures, does not judge (design note amendment 8 Oct 2026)"
+ },
+ "E7_rungC_chain35h2_analytic_model_n750_seed1.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "35h2",
+  "note": "chain 35 half read, second run (35h's labels never arrived) — analytic (smallest half) against FD training labels, one pool; measures, does not judge (design note amendment 8 Oct 2026)"
+ },
+ "E7_rungC_chain35h2_analytic_model_n750_seed2.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "35h2",
+  "note": "chain 35 half read, second run (35h's labels never arrived) — analytic (smallest half) against FD training labels, one pool; measures, does not judge (design note amendment 8 Oct 2026)"
+ },
+ "E7_rungC_chain35h2_fd_model_n750_seed0.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "35h2",
+  "note": "chain 35 half read, second run (35h's labels never arrived) — analytic (smallest half) against FD training labels, one pool; measures, does not judge (design note amendment 8 Oct 2026)"
+ },
+ "E7_rungC_chain35h2_fd_model_n750_seed1.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "35h2",
+  "note": "chain 35 half read, second run (35h's labels never arrived) — analytic (smallest half) against FD training labels, one pool; measures, does not judge (design note amendment 8 Oct 2026)"
+ },
+ "E7_rungC_chain35h2_fd_model_n750_seed2.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "35h2",
+  "note": "chain 35 half read, second run (35h's labels never arrived) — analytic (smallest half) against FD training labels, one pool; measures, does not judge (design note amendment 8 Oct 2026)"
  }
 }
