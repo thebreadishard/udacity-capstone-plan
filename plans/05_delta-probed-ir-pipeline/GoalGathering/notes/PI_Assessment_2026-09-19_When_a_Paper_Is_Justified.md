@@ -273,3 +273,8 @@ naphthalene and anthracene with the wide deck; (3) A decided tonight by the LNO 
 Nothing starts before the user says so, and nothing goes to the supervisor before the ≤ 150-word question.
 
 **The user's word, 3 October 2026 18:4x:** D first; B re-anchored on the anchor set; E folded into D's noise section; C as a registered report. Gate A is decided by tonight's LNO reading (see above). Recorded as decision 56 in the plan README; the D outline is a TASKS row.
+
+## Dated addition, 17 October 2026 19:43 — the gates under the capstone's end point (decision 63)
+
+*the user, 17 Oct 2026: 'Ik denk dat mijn master's project misschien kan eindigen met: we hebben alles in de steigers gezet, en we hebben met twee verschillende DFT's aangetoond dat het idee werkt. De volgende stap is de ankers berekenen' … 'we hoeven die ankers dus niet te hebben voor juli 2027. Het is na juni 2027 aan de supervisor om te beslissen of ze de fabricage daarvan anders wil gaan organiseren of niet, en zo ja: hoe' … 'Ja, leg het maar vast'.* **Gate D** (data paper) becomes a draft at the capstone's submission: the CCSD(T) Hessians that exist (eleven with wave 2) with two-route error bars, and the proxy set with its per-family noise floor — the supervisor finishes and submits it, or not. **Gate C** (the main paper) becomes an outline: the proxy results are the capstone's, the CC-scale results are the supervisor's phase. **Gate B** stays closed as an independent paper; its measurements stay methods paragraphs. **Gate A** stays folded into C. Novelty is claimed only against papers read in full (condition 2); CC-level ML potentials exist (Käser 2021, ANI-1ccx), so the claim must be the per-family licensed CC correction of harmonic frequencies and IR intensities of large PAHs.
+
