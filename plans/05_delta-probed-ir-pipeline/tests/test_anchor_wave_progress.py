@@ -29,7 +29,8 @@ def _run(list_file: Path, env: dict, *extra: str) -> subprocess.CompletedProcess
 
 def test_progress_lines_follow_new_files_and_the_end_is_reported(tmp_path):
     body = ("out=$ROOT/results/quinoline_ccpvdz; mkdir -p $out/apt_ccsd_t_field.npz.fields\n"
-            "sleep 2; touch $out/grad_00_m.npy $out/grad_00_p.npy; sleep 2; touch $out/apt_ccsd_t_field.npz.fields/x_p.npz; sleep 2\n")
+            "sleep 2; touch $out/grad_00_m.npy $out/grad_00_p.npy; sleep 2; touch $out/apt_ccsd_t_field.npz.fields/x_p.npz; sleep 8\n")
+    # the long last sleep: the wrapper counts only while the wave runs, and a loaded laptop (the 03:41 nightly suite, 17 Oct) polls slowly
     list_file, env = _setup(tmp_path, body)
     r = _run(list_file, env)
     assert r.returncode == 0, r.stdout + r.stderr
