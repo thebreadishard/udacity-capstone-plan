@@ -31,3 +31,8 @@ missing and who owes it. Evidence is a file or a cell, never a memory. The noteb
   outside the rubric and belongs to the plan's opponents table, where paper D's claim already cites those works.
 
 - Lay-reader pass done 4 Oct 2026 (TASKS item 20): plain-language opening in README, notebook and report; basis set, scale factor, charge names and cm⁻¹ explained at first use; `modules/GLOSSARY.md` linked. Notebook and report rebuilt.
+
+## Review of 17 October 2026 20:28 (the user: 'laten we nu Udacity module 02 reviewen')
+
+Checked on the files, not on this table: the notebook re-executed (0 error outputs), every rubric item present. Found and fixed (bd8f646e): Task 3's **author** was missing from the notebook's first cell (now 'Frederic Petrignani'); two links pointed outside the module folder (`../../GLOSSARY.md` in the notebook, `../GLOSSARY.md` in the README), dead in the submission repository — now the glossary's GitHub URL; the README's Repository section now describes the submission repository `ai-programming-foundations-project` (main + `module-02-opponent-atlas`); an unused `import re` removed (the user: no unnecessary imports; Task 4's seaborn is not added, the grading table allows Matplotlib). The notebook was rebuilt by `make_notebook.py` (0 errors, ruff F401 clean). **Git/GitHub usage:** a copy of the folder would carry one commit; `tools/make_module_repo.sh` carries the module's own history (git subtree split: `main` from master, the development branch kept), tested on a synthetic repository; the user creates the GitHub repository and pushes both branches. **At submission:** regenerate `requirements.txt` with `pip freeze` in the environment the notebook runs in (the user: 't.z.t.').
+
