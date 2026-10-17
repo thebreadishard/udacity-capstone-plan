@@ -228,5 +228,89 @@
   "version": "",
   "chain": "38",
   "note": "9 Oct 2026: chain 38 (same-size control); read 13:2x: (b) frozen ablation 0.410 against control 0.317 → the five-membered-ring families cover (b) (registered line Δ ≥ +0.03); not promoted (decision 57)"
+ },
+ "E7_rungC_chain40_fivering30_model_n972_seed0.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "40",
+  "note": "chain 40 — hold-out (b) after the first 64 five-ring candidates (~30 per family); registered 10 Oct 2026 in the rung C pre-registration; candidate until its read"
+ },
+ "E7_rungC_chain40_fivering30_model_n972_seed1.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "40",
+  "note": "chain 40 — hold-out (b) after the first 64 five-ring candidates (~30 per family); registered 10 Oct 2026 in the rung C pre-registration; candidate until its read"
+ },
+ "E7_rungC_chain40_fivering30_model_n972_seed2.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "40",
+  "note": "chain 40 — hold-out (b) after the first 64 five-ring candidates (~30 per family); registered 10 Oct 2026 in the rung C pre-registration; candidate until its read"
+ },
+ "E7_rungC_chain40_fivering15_model_n943_seed0.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "40",
+  "note": "chain 40 — hold-out (b) after the first 64 five-ring candidates (~30 per family); registered 10 Oct 2026 in the rung C pre-registration; candidate until its read"
+ },
+ "E7_rungC_chain40_fivering15_model_n943_seed1.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "40",
+  "note": "chain 40 — hold-out (b) after the first 64 five-ring candidates (~30 per family); registered 10 Oct 2026 in the rung C pre-registration; candidate until its read"
+ },
+ "E7_rungC_chain40_fivering15_model_n943_seed2.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "40",
+  "note": "chain 40 — hold-out (b) after the first 64 five-ring candidates (~30 per family); registered 10 Oct 2026 in the rung C pre-registration; candidate until its read"
+ },
+ "E7_rungC_chain35h_analytic_model_n750_seed0.pt": {
+  "status": "invalid",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "35h",
+  "note": "INVALID (17 Oct 2026): chain 35h's label fetch failed (rsync missing in Git Bash) yet exited 0, so the 'analytic' arm trained with 44 analytic labels instead of the smallest half's 413 — not the registered half read; rerun as chain 35h2"
+ },
+ "E7_rungC_chain35h_analytic_model_n750_seed1.pt": {
+  "status": "invalid",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "35h",
+  "note": "INVALID (17 Oct 2026): chain 35h's label fetch failed (rsync missing in Git Bash) yet exited 0, so the 'analytic' arm trained with 44 analytic labels instead of the smallest half's 413 — not the registered half read; rerun as chain 35h2"
+ },
+ "E7_rungC_chain35h_analytic_model_n750_seed2.pt": {
+  "status": "invalid",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "35h",
+  "note": "INVALID (17 Oct 2026): chain 35h's label fetch failed (rsync missing in Git Bash) yet exited 0, so the 'analytic' arm trained with 44 analytic labels instead of the smallest half's 413 — not the registered half read; rerun as chain 35h2"
+ },
+ "E7_rungC_chain35h_fd_model_n750_seed0.pt": {
+  "status": "invalid",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "35h",
+  "note": "INVALID (17 Oct 2026): chain 35h's label fetch failed (rsync missing in Git Bash) yet exited 0, so the 'analytic' arm trained with 44 analytic labels instead of the smallest half's 413 — not the registered half read; rerun as chain 35h2"
+ },
+ "E7_rungC_chain35h_fd_model_n750_seed1.pt": {
+  "status": "invalid",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "35h",
+  "note": "INVALID (17 Oct 2026): chain 35h's label fetch failed (rsync missing in Git Bash) yet exited 0, so the 'analytic' arm trained with 44 analytic labels instead of the smallest half's 413 — not the registered half read; rerun as chain 35h2"
+ },
+ "E7_rungC_chain35h_fd_model_n750_seed2.pt": {
+  "status": "invalid",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "35h",
+  "note": "INVALID (17 Oct 2026): chain 35h's label fetch failed (rsync missing in Git Bash) yet exited 0, so the 'analytic' arm trained with 44 analytic labels instead of the smallest half's 413 — not the registered half read; rerun as chain 35h2"
  }
 }

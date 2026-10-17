@@ -1,0 +1,9 @@
+{"name": "chain35h2", "purpose": "Chain 35's half read, rerun (design note of 5 Oct, amendment 8 Oct 07:2x): chain 35h's labels never arrived (silent rsync failure), its models are invalid",
+ "host": "laptop", "workdir": "probes/results_m1", "command": "python ../chain_runner.py probes/runs/chain35h2.json",
+ "sources": [{"local": "probes/chain_runner.py"}, {"local": "probes/fetch_labels_ccx53.sh"}, {"local": "probes/require_analytic_labels.py"},
+             {"local": "probes/rungC_eval_saved.py"}, {"local": "probes/rungC_eval_means.py"},
+             {"local": "modules/05_support_predictor/m05/rungC_train.py"}, {"local": "modules/05_support_predictor/m05/design_check.py"}],
+ "progress": {"regex": "^=== \\(C35h2\\) progress: |^\\(C35h2\\) .* done ", "max_gap_minutes": 120, "start_regex": "^=== \\(C35h2\\) starting: "},
+ "marker_regex": "^=== \\(C35h2\\) (armed|starting|resuming|RUN FAILED|run done)",
+ "end_regex": "^=== \\(C35h2\\) run done", "dry_run_args": "--dry-run", "resumable": true,
+ "estimate": {"hours": 7.5, "basis": "chain 35h on the same recipe, pool and laptop: 00:10 → 07:06 (6.9 h) for both arms, three seeds each"}}
