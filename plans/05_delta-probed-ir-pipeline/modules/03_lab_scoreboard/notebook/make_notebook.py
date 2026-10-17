@@ -19,6 +19,10 @@ def code(s):
 
 md("""# Module 03 — the laboratory scoreboard: matrix and gas-phase infrared bands of PAHs
 
+**Author:** Frederic Petrignani
+
+**Sources:** NASA Ames PAH IR Spectroscopic Database, experimental library v3.10 (https://www.astrochemistry.org/pahdb/experimental/3.10); NIST Chemistry WebBook (https://webbook.nist.gov/chemistry/).
+
 **These are laboratory measurements from the public PAHdb experimental library and the NIST Chemistry WebBook. Not synthetic, not AI-generated, not the Module 02 dataset.**
 
 Plan 05 (Δ-probed IR pipeline), Module 03 of the Udacity AI Mastery Capstone. The dataset is `bands_lab.csv` in this folder: one row per laboratory band — every band of the 84 species of NASA's PAHdb *experimental* library v3.10 (argon-matrix spectra), the peaks of eight gas-phase NIST WebBook records for six PAHs, and the four benzene bands of the project's R0 scoreboard. The second file, `pairs_matrix_gas.csv`, holds the matrix–gas pairs formed under the rule frozen in `../PRE_REGISTRATION.md` **before** any pair was computed. The analytical question is that note's question: **is the offset between a band's matrix position and its gas-phase position zero, per band family?**
@@ -29,7 +33,7 @@ md("""*Reading this without chemistry.* A molecule's infrared spectrum is the li
 light, and how strongly. Laboratories measure it either with the molecules frozen into solid argon at 10 K (a *matrix*: precise, but the solid can
 shift the positions slightly) or as a hot vapour (*gas phase*: closer to space, but blurrier — the records used here resolve 8 cm⁻¹). The question is
 whether the two agree, per kind of vibration (*family*). The test below is a rank test (Wilcoxon) that asks whether the shifts are centred on zero
-without assuming a bell curve; the Holm correction accounts for asking six times at once. Terms: `../../GLOSSARY.md`.""")
+without assuming a bell curve; the Holm correction accounts for asking six times at once. Terms: [glossary](https://github.com/thebreadishard/udacity-capstone-plan/blob/master/plans/05_delta-probed-ir-pipeline/modules/GLOSSARY.md).""")
 md("## Load the dataset")
 code("""from pathlib import Path
 import json
@@ -73,7 +77,7 @@ ax.legend(); plt.tight_layout(); fig.savefig(FIG / "fig1_positions_by_phase.png"
 code("""prim = pairs[pairs.gas_role == "primary"].copy()
 order = prim.groupby("family")["delta_cm"].median().sort_values().index.tolist()
 fig, ax = plt.subplots(figsize=(9.5, 4.6))
-ax.boxplot([prim.loc[prim.family == f, "delta_cm"].values for f in order], tick_labels=[f.split(" (")[0] for f in order], vert=True, widths=0.6)
+ax.boxplot([prim.loc[prim.family == f, "delta_cm"].values for f in order], tick_labels=[f.split(" (")[0] for f in order], widths=0.6)
 ax.set_ylim(prim.delta_cm.min() - 3, prim.delta_cm.max() + 2)
 for i, f in enumerate(order, start=1):
     ax.text(i, prim.delta_cm.min() - 2.4, f"n={int((prim.family == f).sum())}", ha="center", fontsize=8)

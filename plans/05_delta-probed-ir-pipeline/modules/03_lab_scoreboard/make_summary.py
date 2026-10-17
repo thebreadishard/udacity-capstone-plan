@@ -1,11 +1,13 @@
 #!/usr/bin/env python
-"""Builds module_summary.docx (the Statistical Analysis Report) in the Udacity APA 7 template
+"""Builds Statistical_Analysis_Report.docx (the Statistical Analysis Report; Task 7's name) in the Udacity APA 7 template
 (Rubrics/APA7_template.docx) with the sections the Module 03 instructions prescribe, then converts it to
-module_summary.pdf with Word (COM automation through PowerShell). Run:  python make_summary.py
+Statistical_Analysis_Report.pdf with Word (COM automation through PowerShell), and copies it to module_summary.pdf — the name the
+rubric's overview and grading table use for the same report. Run:  python make_summary.py
 Every number in the text is read from notebook/bands_lab.csv, notebook/pairs_matrix_gas.csv and
 notebook/test_results.json (written by the executed notebook); citations are APA author-year and the
 References list contains exactly the sources cited."""
 import json
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -18,7 +20,8 @@ HERE = Path(__file__).resolve().parent
 TEMPLATE = HERE.parents[3] / "Rubrics" / "APA7_template.docx"
 NB = HERE / "notebook"
 FIG = NB / "figures"
-OUT_DOCX = HERE / "module_summary.docx"
+OUT_DOCX = HERE / "Statistical_Analysis_Report.docx"
+OUT_COPY = HERE / "module_summary.pdf"
 
 # ---------------- numbers (read, not typed)
 df = pd.read_csv(NB / "bands_lab.csv")
@@ -97,7 +100,7 @@ para(indent_first=False)
 para("Frederic Petrignani", center=True, indent_first=False)
 para("Udacity AI Mastery Capstone", center=True, indent_first=False)
 para("Module 03 — Conduct a Statistical Analysis Using Python", center=True, indent_first=False)
-para("Statistical Analysis Report (module_summary.pdf)", center=True, indent_first=False)
+para("Statistical Analysis Report", center=True, indent_first=False)
 para("11 September 2026", center=True, indent_first=False)
 page_break()
 
@@ -112,12 +115,13 @@ para("I analysed laboratory infrared band positions of polycyclic aromatic hydro
      "Linstrom, 1997). The question, fixed in a pre-registration note before any band was paired, is whether the offset "
      "between a band's matrix position and its gas-phase position is zero per band family; the answer matters because my "
      "larger capstone project will later be scored against exactly these laboratory numbers.")
+heading("For Readers Without Chemistry")
 para("For a reader without chemistry: a molecule's infrared spectrum is the list of colours at which it absorbs infrared light (its band "
      "positions, given in the unit cm⁻¹) and how strongly. Laboratories measure such spectra in two ways: with the molecules frozen into solid "
      "argon at 10 K, which is precise but can shift the positions slightly, or as a hot vapour, which is closer to the conditions in space but "
      "blurrier. This report asks, for each kind of vibration, whether the two agree. The test used is a rank test that asks whether the "
      "differences are centred on zero without assuming a bell-shaped distribution, with a correction for asking the question six times at once. "
-     "A one-page glossary accompanies the modules (GLOSSARY.md in the repository).")
+     "A one-page glossary accompanies the modules (https://github.com/thebreadishard/udacity-capstone-plan/blob/master/plans/05_delta-probed-ir-pipeline/modules/GLOSSARY.md).")
 
 heading("Dataset Description")
 para(f"Each row of the dataset is one laboratory band: its position in wavenumbers (cm⁻¹), its intensity, the molecule "
@@ -125,7 +129,8 @@ para(f"Each row of the dataset is one laboratory band: its position in wavenumbe
      f"where the source documents them, the signal-to-noise ratio and width of gas-phase peaks, two uncertainty columns "
      f"(resolution term and centroid precision) and a frequency-range family label. The table has {n_rows:,} rows and "
      f"{n_cols} columns: {n_matrix:,} matrix bands from {n_matrix_entries} PAHdb entries, {n_gas} gas-phase peaks from "
-     f"{n_gas_records} records of {n_gas_species} PAHs, and four bands of a quantitative benzene cell spectrum (Chu et al., 1999). "
+     f"{n_gas_records} records of {n_gas_species} molecules — benzene among them, whose four bands come from a quantitative cell spectrum "
+     f"(Chu et al., 1999) and are counted in the {n_gas}. "
      f"A second file holds the {n_pairs} matrix–gas pairs for the four neutral PAHs present on both sides (naphthalene, "
      f"anthracene, pyrene, chrysene), {n_prim} of them against the primary gas record of each molecule. The key variables "
      f"examined were the band position by phase and family, and the paired offset Δ = ν(matrix) − ν(gas). The data are public "
@@ -149,7 +154,7 @@ para("Hypothesis test. The offsets are paired differences of a few observations 
      "(Wilcoxon, 1945), a rank-based test for paired data whose null hypothesis is that the differences are distributed "
      "symmetrically about zero. It assumes the pairs within a family are exchangeable and the differences are measured on a "
      "scale where ranking is meaningful; it does not assume normality. Because eight families are examined, the "
-     "significance level α = 0.05 is applied with the Holm–Bonferroni step-down correction, and a family with fewer than "
+     "significance level α = 0.05 is applied with the Holm–Bonferroni step-down correction (Holm, 1979), and a family with fewer than "
      "six pairs cannot reach α under the exact two-sided test and is reported as inconclusive by construction rather than "
      "tested. A pooled test over all primary pairs is reported as a declared secondary result. All of this — the species, "
      "the peak definition, the ±20 cm⁻¹ largest-intensity one-to-one matching rule, the test, α, the correction and the "
@@ -225,8 +230,9 @@ para("Use of AI assistance. This module was planned, coded and written with Clau
 page_break()
 heading("References")
 REFS = [
- "Chu, P. M., Guenther, F. R., Rhoderick, G. C., & Lafferty, W. J. (1999). The NIST quantitative infrared database. Journal of Research of the National Institute of Standards and Technology, 104(1), 59. https://doi.org/10.6028/jres.104.004",
+ "Chu, P. M., Guenther, F. R., Rhoderick, G. C., & Lafferty, W. J. (1999). The NIST quantitative infrared database. Journal of Research of the National Institute of Standards and Technology, 104(1), 59–81. https://doi.org/10.6028/jres.104.004",
  "Danchev, V. (2022). Reproducible data science with Python: An open learning resource. Journal of Open Source Education, 5(56), 156. https://doi.org/10.21105/jose.00156",
+ "Holm, S. (1979). A simple sequentially rejective multiple test procedure. Scandinavian Journal of Statistics, 6(2), 65–70. https://www.jstor.org/stable/4615733",
  "Hudgins, D. M., & Sandford, S. A. (1998). Infrared spectroscopy of matrix isolated polycyclic aromatic hydrocarbons. 1. PAHs containing two to four rings. The Journal of Physical Chemistry A, 102(2), 329–343. https://doi.org/10.1021/jp9834816",
  "Linstrom, P. (1997). NIST Chemistry WebBook, NIST Standard Reference Database 69 [Data set]. National Institute of Standards and Technology. https://doi.org/10.18434/T4D303",
  "Lusa, L., Proust-Lima, C., Schmidt, C. O., Lee, K. J., le Cessie, S., Baillie, M., Lawrence, F., & Huebner, M., on behalf of TG3 of the STRATOS Initiative. (2024). Initial data analysis for longitudinal studies to build a solid foundation for reproducible analysis. PLOS ONE, 19(5), e0295726. https://doi.org/10.1371/journal.pone.0295726",
@@ -244,3 +250,6 @@ ps = f'''$w = New-Object -ComObject Word.Application; $w.Visible = $false
 $d = $w.Documents.Open("{OUT_DOCX}"); $d.SaveAs2("{OUT_DOCX.with_suffix('.pdf')}", 17); $d.Close(); $w.Quit()'''
 r = subprocess.run(["powershell", "-NoProfile", "-Command", ps], capture_output=True, text=True, check=False)   # Word may be absent: reported, not fatal
 print("pdf:", OUT_DOCX.with_suffix(".pdf").exists(), f"(powershell exit {r.returncode})", r.stderr[:300])
+if OUT_DOCX.with_suffix(".pdf").exists():
+    shutil.copyfile(OUT_DOCX.with_suffix(".pdf"), OUT_COPY)
+    print("copy:", OUT_COPY.name)
