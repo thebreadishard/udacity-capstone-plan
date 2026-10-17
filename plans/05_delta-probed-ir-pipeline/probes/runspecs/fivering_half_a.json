@@ -1,0 +1,9 @@
+{"name": "fivering_half_a", "purpose": "TASKS 38: half of the five-ring pool's rest on the pool 3 box, runner a (28 of corpus/five_ring_half_2026-10-17_a.txt; the user, 17 Oct: 'half, en dan nieuw beslispunt')",
+ "host": "pool3", "workdir": "/root/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/corpus_f5a",
+ "command": "NO_WAIT=1 P=/root/CapstonePlan/plans/05_delta-probed-ir-pipeline D=/root/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/corpus_f5a LIST=/root/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/corpus_f5a/list.txt PY=/root/miniforge3/envs/qc/bin/python CORPUS_QC_PYTHON=/root/miniforge3/envs/qc/bin/python PIDFILE=/root/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/corpus_f5a/runner.pid WORKER_MAX_HOURS=16 bash /root/f5/progress_on_growth.sh --tag F5A --dir /root/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/corpus_f5a/molecules --name psi4.out -- bash /root/f5/fivering_laptop_1015.sh",
+ "sources": [{"local": "probes/fivering_laptop_1015.sh", "remote": "/root/f5/fivering_laptop_1015.sh"},
+             {"local": "probes/progress_on_growth.sh", "remote": "/root/f5/progress_on_growth.sh"}],
+ "progress": {"regex": "^=== \\(F5A\\) progress: |^\\(F5\\) [A-Za-z0-9_]+ (done|FAILED)", "max_gap_minutes": 120},
+ "marker_regex": "^=== \\(F5\\) |^\\(F5\\) [A-Za-z0-9_]+ FAILED|^=== \\(F5A\\) command ended",
+ "end_regex": "^=== \\(F5\\) laptop runner finished", "dry_run_args": "--dry-run", "threads": 8,
+ "estimate": {"hours": 156, "basis": "laptop shard's measured hours per molecule by heavy atoms (13: 3.2, 14: 4.1, 15: 5.8, 16: 7.1; 17 extrapolated 9) over the 56 molecules = 312 runner-hours, two runners; the box's per-thread speed is not measured yet"}}

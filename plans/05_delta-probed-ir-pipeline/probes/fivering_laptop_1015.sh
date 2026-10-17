@@ -21,6 +21,8 @@
 #                  queue script was stopped and its current molecule finishes), not for the cation route's end marker; the cations resume
 #                  after this runner through probes/cations_after_fivering.sh
 # Overridable for tests: P (plan folder), D (work dir), LIST, PY, PIDFILE, NO_WAIT=1.
+# 17 Oct 2026 (the user: 'half, en dan nieuw beslispunt' — half the rest of the pool on the pool 3 box): also CORPUS_QC_PYTHON and
+# WORKER_MAX_HOURS (the box's larger molecules), and '--dry-run' as an argument (tools/runspec.py appends it), same as DRY=1.
 set -u
 # no-set-e: a waiting loop and one run_corpus call per molecule; each failure is logged and the loop goes on to the next molecule
 P=${P:-$(cd "$(dirname "$0")/.." && pwd)}
@@ -30,7 +32,9 @@ LIST=${LIST:-$C/five_ring_pool_candidates_2026-10-09.txt}
 WAIT_LOG=$P/probes/results_m1/cation_analytic_2026-10-09.log
 PY=${PY:-/c/Users/thebr/.conda/envs/qc/python.exe}
 PIDFILE=${PIDFILE:-$P/probes/results_m1/fivering_laptop.pid}
-export CORPUS_QC_PYTHON='C:\Users\thebr\.conda\envs\qc\python.exe' PYTHONUTF8=1
+export CORPUS_QC_PYTHON=${CORPUS_QC_PYTHON:-'C:\Users\thebr\.conda\envs\qc\python.exe'} PYTHONUTF8=1
+WORKER_MAX_HOURS=${WORKER_MAX_HOURS:-8}
+[ "${1:-}" = --dry-run ] && DRY=1
 t() { date '+%F %T'; }
 status_of() { grep -o '"status": "[a-z]*"' "$D/molecules/$1/result.json" 2>/dev/null | head -1 | cut -d'"' -f4; }
 [ -s "$LIST" ] || { echo "=== (F5) NO CANDIDATE LIST $LIST $(t)"; exit 1; }
@@ -63,7 +67,7 @@ while read -r id; do
   [ -z "$id" ] && continue
   [ -f "$D/STOP" ] && { echo "=== (F5) STOP file: the runner hands the rest over $(t)"; stopped=1; break; }
   [ -f "$D/molecules/$id/result.json" ] && continue                 # done or failed: the main pass never repeats a molecule
-  "$PY" run_corpus.py --ids "$id" --worker-max-hours 8 >> "$D/runner.log" 2>&1 < /dev/null   # never the loop's stdin
+  "$PY" run_corpus.py --ids "$id" --worker-max-hours "$WORKER_MAX_HOURS" >> "$D/runner.log" 2>&1 < /dev/null   # never the loop's stdin
   [ "$(status_of "$id")" = done ] && echo "(F5) $id done $(t)" || echo "(F5) $id FAILED $(t)"
 done < "$LIST"
 [ "$stopped" = 1 ] && exit 0
@@ -76,7 +80,7 @@ while read -r id; do                                                  # one retr
   grep -qxF "$id" "$D/retried.txt" && { failed_again="$failed_again $id"; continue; }
   [ -f "$D/STOP" ] && { echo "=== (F5) STOP file during the retry pass $(t)"; exit 0; }
   echo "$id" >> "$D/retried.txt"
-  "$PY" run_corpus.py --ids "$id" --retry-failed --worker-max-hours 8 >> "$D/runner.log" 2>&1 < /dev/null
+  "$PY" run_corpus.py --ids "$id" --retry-failed --worker-max-hours "$WORKER_MAX_HOURS" >> "$D/runner.log" 2>&1 < /dev/null
   if [ "$(status_of "$id")" = done ]; then echo "(F5) $id done on retry $(t)"; else echo "(F5) $id FAILED AGAIN $(t)"; failed_again="$failed_again $id"; fi
 done < "$LIST"
 echo "=== (F5) laptop runner finished: $(ls "$D/molecules" 2>/dev/null | wc -l) molecules with a folder; failed after one retry:${failed_again:- none} $(t)"
