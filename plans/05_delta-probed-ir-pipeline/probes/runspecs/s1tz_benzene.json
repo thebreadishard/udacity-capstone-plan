@@ -1,0 +1,14 @@
+{"name": "s1tz_benzene",
+ "purpose": "TASKS 60: S1-TZ phase 1 on s1 — benzene (A_8448043181) at T:def2-tzvp:75,302 with the grid gate at 99/590; its first displaced T Hessian prices the run before naphthalene and acenaphthylene start (PreRegistration_2026-10-14_TZ_Anharmonic_Basis.md; s1 kept for it, the user 14 Oct 'Ja'). MAX_FIRST 7200 s is a safety stop, not a price: G's first benzene Hessian took 112 s and def2-TZVP has 222 basis functions against 6-31G*'s 102, so a third to fourth power gives 1,100-2,500 s; 7200 is about three times the upper end",
+ "host": "s1",
+ "workdir": "/root/dpir_s1tz",
+ "command": "MAX_FIRST=7200 bash probes/s1tz_run.sh S1TZA probes/results_m1/s1tz_2026-10-18/ids_benzene.tsv /root/s1tz 1 5",
+ "sources": [
+  {"local": "probes/s1tz_run.sh", "remote": "/root/dpir_s1tz/probes/s1tz_run.sh"},
+  {"local": "probes/progress_on_growth.sh", "remote": "/root/dpir_s1tz/probes/progress_on_growth.sh"}
+ ],
+ "progress": {"regex": "^=== \\(S1TZA\\) progress: |^=== \\(S2\\) [A-Za-z0-9_]+: (done|NOISY)", "max_gap_minutes": 120},
+ "marker_regex": "^=== \\(S2\\) |^=== \\(S1TZA\\) command ended",
+ "end_regex": "^=== \\(S2\\) all done",
+ "dry_run_args": "--dry-run",
+ "threads": 5}
