@@ -272,3 +272,12 @@ The learning-curve rules as amended apply to (x1).
 (x1) brings ring-ip to ≤ 3.0 and CH-oop below 4.5. Odds of line 2 in all three families: one in four.
 
 **Options 2 and 3** stay open and are put to the user with their price after this read (TASKS 62).
+
+**Smoke note (18 Oct 2026, 14:4x — water, before any S2 molecule).** The chain runs end to end (`probes/xtb_anharmonic.sh`,
+`probes/xtb_hessians_for_qff.py`), but water's xtb force field is NOISY far beyond its B3LYP one: quartic route disagreement median 25.8,
+max 130.3 cm⁻¹ (B3LYP G: 14.8), identical at --acc 0.01 and 0.0001. Cause, measured: xtb's `hessian` file is projected — at a displaced,
+non-stationary water geometry its translation residual |H·t| is 1e-10 and it differs from central differences of xtb's own analytic
+gradients by up to 0.0097 E_h/bohr² (1.7 % of the largest element). Removing the rotations is wrong away from a minimum, and the
+displaced Hessians of a quartic force field are all away from it. The file is therefore not used; the method choice for the Hessians goes
+to the user (own differences of analytic gradients — noisy by the same mechanism as psi4's in September — or exact derivatives by
+automatic differentiation, dxtb). No S2 molecule has been computed.
