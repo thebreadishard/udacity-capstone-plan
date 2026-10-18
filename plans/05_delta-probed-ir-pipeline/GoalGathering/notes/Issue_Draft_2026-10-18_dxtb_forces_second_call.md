@@ -1,4 +1,4 @@
-# dxtb issue + PR: a second positions tensor reuses component caches, and the forces are wrong (drafted 18 Oct 2026; **not posted — waits for the user's word**)
+# dxtb issue + PR: a second positions tensor reuses component caches, and the forces are wrong (drafted 18 Oct 2026; **posted on the user's word, 'Ja, maak de fork en plaats issue en PR': issue grimme-lab/dxtb#277, PR grimme-lab/dxtb#278 from the fork thebreadishard/dxtb, branch `reset-caches-new-positions`**)
 
 *Found while validating dxtb's GFN2-xTB against the xtb 6.7.1 binary for S2 amendment 4 (memory 'reference-dxtb-pitfalls'). Reproduced
 on dxtb 0.4.0 from PyPI (WSL env `dxtb`, Python 3.11, numpy 1.26.4, tad pins of 0.4.0) and on `main` 2070660 (env `dxtb-np2`), torch
