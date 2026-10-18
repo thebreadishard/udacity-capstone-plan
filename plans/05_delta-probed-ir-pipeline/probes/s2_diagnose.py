@@ -65,15 +65,19 @@ def main() -> int:
     ap.add_argument("--selection", required=True)
     ap.add_argument("--extra", nargs="*", default=[])
     ap.add_argument("--out", required=True)
+    ap.add_argument("--gvpt2-dir", help="S2 amendment 2: GVPT2 labels from probes/gvpt2_labels.py")
+    ap.add_argument("--scope", choices=("all", "no-linear-xh"), default="all")
     a = ap.parse_args()
-    by_scaf, used, _excluded = load_selection(a.root, a.selection, "G", dict(e.split("=", 1) for e in a.extra))
+    by_scaf, used, _excluded = load_selection(a.root, a.selection, "G", dict(e.split("=", 1) for e in a.extra), a.gvpt2_dir, a.scope)
     mols = [m for ms in by_scaf.values() for m in ms]
     n_params = design(np.zeros(1), np.array(["other"]), np.zeros(1), np.zeros(1)).shape[1]
-    res = {"molecules": len(used), "scaffolds": len(by_scaf), "route_b_parameters": n_params,
+    res = {"labels": "GVPT2" if a.gvpt2_dir else "DVPT2 (stored)", "scope": a.scope,
+           "molecules": len(used), "scaffolds": len(by_scaf), "route_b_parameters": n_params,
            "in_sample": per_family(*in_sample(mols)), "held_out": per_family(*loso(by_scaf)[:4]),
            "other_by_molecule": held_out_by_molecule(by_scaf, "other"), "largest_errors": largest_errors(by_scaf)}
     ins, ho = res["in_sample"], res["held_out"]
-    lines = [f"# S2 diagnostics — bias or variance? ({len(used)} molecules, {len(by_scaf)} scaffolds, route (b) has {n_params} coefficients)", "",
+    lines = [f"# S2 diagnostics — bias or variance? ({len(used)} molecules, {len(by_scaf)} scaffolds, route (b) has {n_params} coefficients; "
+             f"labels {res['labels']}, scope {a.scope})", "",
              "| family | modes | (b) in-sample | (b) held out | (c) in-sample | (c) held out |", "|---|---|---|---|---|---|"]
     lines += [f"| {fa} | {ho[fa]['n']} | {ins[fa]['b']:.2f} | {ho[fa]['b']:.2f} | {ins[fa]['c']:.2f} | {ho[fa]['c']:.2f} |" for fa in FAMILIES]
     lines += ["", "| molecule | scaffold | 'other' modes | (b) held-out rms |", "|---|---|---|---|"]
