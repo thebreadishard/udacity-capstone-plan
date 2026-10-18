@@ -373,7 +373,7 @@ and the Q9 test are worth their care, not a deliverable.
 |---|---|---|---|---|
 | 02 | PAHdb v4.00 computed band table | NASA public download | yes (public today) | no |
 | 03 | PAHdb experimental v3.10 + gas v1.00 + NIST JCAMP | NASA/NIST public | yes (public today) | no — measurements, not the 02 predictions |
-| 04 | paired theory↔lab table, own versioned release | derived, Zenodo DOI | must be, before M04 | distinct per reading 1 — decided by the user 2026-09-02 (carried); provenance paragraph required |
+| 04 | paired theory↔lab table, own versioned release | derived, Zenodo DOI — **18 Oct 2026: no separate release; public in the plan repository since 12 Sep and in the submission repository** | must be, before M04 | distinct per reading 1 — decided by the user 2026-09-02 (carried); provenance paragraph required |
 | 05 | Hessian QM9 + recomputed B3LYP Hessians → Δ₂ tensors; PAH dry-run tensors as labelled test set | public benchmark + own computed, Zenodo DOI | Hessian QM9 is; the release must be, before M05 | distinct per reading 1 (decision 4); decision 7 removes the module-02 exposure; reading-2 fallback a named debt |
 | 06 | pattern-response records of the QM9-subset dry runs, own release, new split hash (PAH dry-run tensors excluded — they are M05's test set) | computed, Zenodo DOI | must be, before M06 | distinct from 05's QM9-derived Δ₂ corpus; no overlap with 05's test set; split disjoint by hash |
 | 07 | — | — | — | — |

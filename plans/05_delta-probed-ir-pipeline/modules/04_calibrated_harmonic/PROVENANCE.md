@@ -2,9 +2,8 @@
 
 **Required sentence (reading 1).** The training table is a derived dataset matching public computed
 bands (PAHdb theoretical v4.00) to public laboratory bands (PAHdb experimental v3.10); its provenance and
-distinctness from the Module 02/03 datasets are described here; it is not AI-generated. **The Zenodo
-release with a DOI (reading 1, user decision 2026-09-02) is still owed and is the student's action**;
-until then the table is pre-release and the sentence's "(DOI …)" is empty.
+distinctness from the Module 02/03 datasets are described here; it is not AI-generated. **No separate
+Zenodo release** (the user, 18 Oct 2026: the table only joins two public PAHdb libraries; it has been public in the plan repository (github.com/thebreadishard/udacity-capstone-plan) since 12 Sep 2026 and ships in the submission repository, which meets the rubric's 'publicly available'; the report cites the two libraries). This replaces the release with a DOI decided on 2026-09-02.
 
 ## Sources
 
@@ -60,8 +59,6 @@ simpler model); the uncertainty layer as |residual| quantiles.
 
 ## Owed
 
-- The Zenodo release of `training_table.csv` (reading 1) — the student; before the module's official
-  start (proposal §12: due 30 Oct 2026).
 - The pilot note's item 6: adopt or amend this recipe by dated note; the stricter-join candidate above; and whether the
   recipe's rule, applied to the early-stopping run of 3 October 2026, moves the baseline column from ridge to the trees
   (0.06 cm⁻¹ apart) — **decided 4 October 2026 (the user): ridge stays**, the difference is inside the noise and ridge is the simpler model (RECIPE dated note).
