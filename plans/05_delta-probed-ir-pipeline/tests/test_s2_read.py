@@ -44,6 +44,27 @@ def test_the_curve_is_deterministic_and_has_every_k():
     r1, r2 = R.curve(d, n_subsets=5), R.curve(d, n_subsets=5)
     assert r1 == r2 and set(r1) == {"4", "6", "8", "10", "all"} and r1["all"]["k"] == 11
     assert all(r1[k]["b_se"] > 0 for k in ("4", "6", "8", "10"))
+    assert set(r1["4"]["per_family"]) == set(R.FAMILIES) and r1["4"]["per_family"]["ring-ip"]["b_se"] > 0
+
+
+def test_a_k_that_equals_the_full_set_is_no_row_and_the_last_step_is_the_largest_real_k():
+    rows = R.curve(dataset(n_scaf=9, noise=2.0), n_subsets=5)        # 8 training scaffolds, as S2 had
+    assert set(rows) == {"4", "6", "all"} and rows["all"]["k"] == 8
+    rows = {"4": {"b": 5.3, "b_se": 0.1}, "6": {"b": 5.0, "b_se": 0.1}, "all": {"b": 4.0, "b_se": 0.0}}
+    assert R.still_learning(rows, "b")                                # 6 → all is the last step, and it goes down
+    rows["all"]["b"] = 5.0
+    assert not R.still_learning(rows, "b")
+    with pytest.raises(ValueError):
+        R.still_learning({"4": {"b": 5.0, "b_se": 0.1}, "all": {"b": 4.0, "b_se": 0.0}}, "b")
+
+
+def test_a_descending_curve_with_its_asymptote_above_the_line_reads_as_flat():
+    a, b, c = 9.68, 2.4, 1.9                                          # S2's own fit: the curve still falls, towards 9.7
+    rows = {str(k): {"b": a + b * k ** -c, "b_se": 0.001, "c": 12.0, "c_se": 0.001} for k in (4, 6)}
+    rows["all"] = {"b": a + b * 8 ** -c, "b_se": 0.0, "c": 12.0, "c_se": 0.0, "k": 8}
+    v = R.verdict(rows)
+    assert v["still_learning"]["b"] and v["extrapolation"]["scaffolds_needed"] is None
+    assert "read as flat" in v["reading"] and "data-limited" not in v["reading"]
 
 
 def test_a_family_missing_from_training_is_predicted_by_the_training_mean_and_counted():

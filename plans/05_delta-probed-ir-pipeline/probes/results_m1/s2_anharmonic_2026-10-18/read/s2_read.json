@@ -1,0 +1,196 @@
+{
+ "registration": "PreRegistration_2026-10-14_S2_Anharmonic_Shift.md (+ amendment 1)",
+ "window": [
+  550.0,
+  2000.0
+ ],
+ "ridge": 0.001,
+ "molecules": [
+  {
+   "id": "A_01f3186607",
+   "scaffold": "c1ccc2ccccc2c1",
+   "planar": true,
+   "n_modes": 48,
+   "n_window": 32
+  },
+  {
+   "id": "A_8448043181",
+   "scaffold": "c1ccccc1",
+   "planar": true,
+   "n_modes": 30,
+   "n_window": 22
+  },
+  {
+   "id": "A_d9139359ab",
+   "scaffold": "c1ccc2cccc-2cc1",
+   "planar": true,
+   "n_modes": 48,
+   "n_window": 33
+  },
+  {
+   "id": "A_45187bb7c8",
+   "scaffold": "C1=Cc2cccc3cccc1c23",
+   "planar": true,
+   "n_modes": 54,
+   "n_window": 38
+  },
+  {
+   "id": "A_72b86c2331",
+   "scaffold": "c1ccc2c(c1)-c1ccccc1-2",
+   "planar": true,
+   "n_modes": 54,
+   "n_window": 38
+  },
+  {
+   "id": "A_90df3e4aa9",
+   "scaffold": "C1=Cc2ccccc2C1",
+   "planar": false,
+   "n_modes": 45,
+   "n_window": 31
+  },
+  {
+   "id": "A_a848c04a21",
+   "scaffold": "c1ccccc1",
+   "planar": true,
+   "n_modes": 36,
+   "n_window": 22
+  },
+  {
+   "id": "B_0603418c5b",
+   "scaffold": "c1ccc2cccc-2cc1",
+   "planar": true,
+   "n_modes": 54,
+   "n_window": 34
+  },
+  {
+   "id": "B_a41f4cff9d",
+   "scaffold": "c1ccc2ccccc2c1",
+   "planar": true,
+   "n_modes": 51,
+   "n_window": 33
+  },
+  {
+   "id": "A_7aa232d4e9",
+   "scaffold": "c1ccc2nccnc2c1",
+   "planar": true,
+   "n_modes": 42,
+   "n_window": 28
+  },
+  {
+   "id": "B_410ac0fb2f",
+   "scaffold": "c1ccccc1",
+   "planar": false,
+   "n_modes": 42,
+   "n_window": 24
+  },
+  {
+   "id": "B_079e66d017",
+   "scaffold": "c1ccc2cnccc2c1",
+   "planar": false,
+   "n_modes": 54,
+   "n_window": 35
+  },
+  {
+   "id": "A_d295f2fa80",
+   "scaffold": "c1ccc2ncncc2c1",
+   "planar": true,
+   "n_modes": 42,
+   "n_window": 28
+  },
+  {
+   "id": "B_78f8233b4c",
+   "scaffold": "c1ccc2cccc-2cc1",
+   "planar": false,
+   "n_modes": 54,
+   "n_window": 34
+  }
+ ],
+ "excluded": {
+  "A_8f6ed7c002": "NOISY (noise rule)",
+  "B_190a33a33e": "NOISY (noise rule)",
+  "B_151c8ce719": "NOISY (noise rule)",
+  "B_16194573ac": "NOISY (noise rule)",
+  "B_17f1611949": "NOISY (noise rule)",
+  "B_0040149ee1": "no qff_report.npz (STOPPED or FAILED)"
+ },
+ "scaffolds": 9,
+ "curve": {
+  "4": {
+   "b": 9.856301637951232,
+   "b_se": 0.02281646427695073,
+   "c": 11.98378692124739,
+   "c_se": 0.0076577217700579915,
+   "unseen_family_modes": 0
+  },
+  "6": {
+   "b": 9.771200647896903,
+   "b_se": 0.009626102830583533,
+   "c": 11.975471242832281,
+   "c_se": 0.004298893372973818,
+   "unseen_family_modes": 0
+  },
+  "8": {
+   "b": 9.720927035492167,
+   "b_se": 1.904930487974995e-15,
+   "c": 11.959651421707154,
+   "c_se": 4.07524207927e-16,
+   "unseen_family_modes": 0
+  },
+  "10": {
+   "b": 9.720927035492164,
+   "b_se": 2.1351312962619453e-15,
+   "c": 11.959651421707154,
+   "c_se": 4.07524207927e-16,
+   "unseen_family_modes": 0
+  },
+  "all": {
+   "b": 9.720927035492151,
+   "b_se": 0.0,
+   "c": 11.959651421707155,
+   "c_se": 0.0,
+   "unseen_family_modes": 0,
+   "n_modes": 432,
+   "per_family": {
+    "CH-stretch": {
+     "n": 0,
+     "b": NaN,
+     "c": NaN
+    },
+    "CH-oop": {
+     "n": 74,
+     "b": 5.670557403225921,
+     "c": 5.91822017710184
+    },
+    "ring-ip": {
+     "n": 257,
+     "b": 3.1472028164246,
+     "c": 8.7695009493948
+    },
+    "other": {
+     "n": 101,
+     "b": 18.852584066676094,
+     "c": 19.759476749085557
+    }
+   },
+   "k": 8
+  }
+ },
+ "verdict": {
+  "line1_b_le_0.8c": false,
+  "licensed": [],
+  "still_learning": {
+   "b": true,
+   "c": false
+  },
+  "reading": "line 2 missed, route b still learning: not failed \u2014 data-limited; next S2b, sized by the extrapolation",
+  "extrapolation": {
+   "fit": {
+    "a": 9.681137511386709,
+    "b": 2.4168841918133226,
+    "c": 1.8887576666240575
+   },
+   "scaffolds_needed": null
+  },
+  "line1_reading": "(b) misses line 1 but descends faster than (c): not stopped, repeated at S2b's size"
+ }
+}

@@ -60,7 +60,8 @@ def load_molecule(setting_dir):
     if len(z["omega_cm"]) != len(omega) or not np.allclose(z["omega_cm"], omega, atol=1e-3):
         raise SystemExit(f"{setting_dir}: the report's ω does not match its own ref.json (max diff "
                          f"{np.abs(np.asarray(z['omega_cm']) - omega).max() if len(z['omega_cm']) == len(omega) else 'shape'})")
-    r = json.load(open(ref, encoding="utf-8"))
+    with open(ref, encoding="utf-8") as fh:
+        r = json.load(fh)
     sym = r["molecule"]["symbols"]
     x = np.array(r["molecule"]["geometry"], float).reshape(-1, 3)
     m = np.array([MASS[s] for s in sym])
@@ -116,7 +117,11 @@ def loso(mols_by_scaffold, k=None, rng=None):
         if len(test["omega"]) == 0:
             continue
         b, c, u = fit_predict(train, test)
-        truth.append(test["delta"]); pb.append(b); pc.append(c); fam.append(test["family"]); unseen += u
+        truth.append(test["delta"])
+        pb.append(b)
+        pc.append(c)
+        fam.append(test["family"])
+        unseen += u
     return np.concatenate(truth), np.concatenate(pb), np.concatenate(pc), np.concatenate(fam), unseen
 
 
@@ -124,28 +129,52 @@ def rms(a):
     return float(np.sqrt(np.mean(np.square(a)))) if len(a) else float("nan")
 
 
+def mean_se(values):
+    """Mean and standard error of the mean over the subsets (nan entries — a family absent from a draw — left out)."""
+    v = np.asarray([x for x in values if not np.isnan(x)], float)
+    if v.size == 0:
+        return float("nan"), float("nan")
+    return float(v.mean()), float(v.std(ddof=1) / np.sqrt(v.size)) if v.size > 1 else 0.0
+
+
 def curve(mols_by_scaffold, ks=KS, n_subsets=N_SUBSETS, seed=0):
-    """Amendment 1's learning curve: per k, the pooled rms of (b) and (c) as mean ± SE over the subsets; 'all' once."""
+    """Amendment 1's learning curve: per k, the pooled rms of (b) and (c) as mean ± SE over the subsets, and the same per family; 'all' once.
+    A k with no fewer training scaffolds than 'all' has is not a subsample (every draw is the full set) and gets no row."""
     rng = np.random.default_rng(seed)
+    n_train = len(mols_by_scaffold) - 1
     rows = {}
-    for k in ks:
+    for k in (k for k in ks if k < n_train):
         rb, rc, un = [], [], 0
+        fam_b, fam_c = {fa: [] for fa in FAMILIES}, {fa: [] for fa in FAMILIES}
         for _ in range(n_subsets):
-            t, b, c, _f, u = loso(mols_by_scaffold, k, rng)
-            rb.append(rms(b - t)); rc.append(rms(c - t)); un += u
-        rows[str(k)] = {"b": float(np.mean(rb)), "b_se": float(np.std(rb, ddof=1) / np.sqrt(n_subsets)),
-                        "c": float(np.mean(rc)), "c_se": float(np.std(rc, ddof=1) / np.sqrt(n_subsets)), "unseen_family_modes": un}
+            t, b, c, f, u = loso(mols_by_scaffold, k, rng)
+            rb.append(rms(b - t))
+            rc.append(rms(c - t))
+            un += u
+            for fa in FAMILIES:
+                fam_b[fa].append(rms((b - t)[f == fa]))
+                fam_c[fa].append(rms((c - t)[f == fa]))
+        (mb, sb), (mc, sc) = mean_se(rb), mean_se(rc)
+        per_family = {}
+        for fa in FAMILIES:
+            (fb, fbs), (fc, fcs) = mean_se(fam_b[fa]), mean_se(fam_c[fa])
+            per_family[fa] = {"b": fb, "b_se": fbs, "c": fc, "c_se": fcs}
+        rows[str(k)] = {"b": mb, "b_se": sb, "c": mc, "c_se": sc, "unseen_family_modes": un, "per_family": per_family}
     t, b, c, f, un = loso(mols_by_scaffold)
     fam_rows = {fa: {"n": int((f == fa).sum()), "b": rms((b - t)[f == fa]), "c": rms((c - t)[f == fa])} for fa in FAMILIES}
-    rows["all"] = {"b": rms(b - t), "b_se": 0.0, "c": rms(c - t), "c_se": 0.0, "unseen_family_modes": un, "n_modes": int(len(t)),
-                   "per_family": fam_rows, "k": len(mols_by_scaffold) - 1}
+    rows["all"] = {"b": rms(b - t), "b_se": 0.0, "c": rms(c - t), "c_se": 0.0, "unseen_family_modes": un, "n_modes": len(t),
+                   "per_family": fam_rows, "k": n_train}
     return rows
 
 
 def still_learning(rows, route):
-    """Amendment 1: rms at 'all' below rms at k = 6 by more than twice the combined SE, and the last step (k = 10 → all) still downward."""
-    a, six, ten = rows["all"], rows["6"], rows["10"]
-    return bool(a[route] < six[route] - 2 * np.hypot(six[f"{route}_se"], a[f"{route}_se"]) and a[route] < ten[route])
+    """Amendment 1: rms at 'all' below rms at k = 6 by more than twice the combined SE, and the last step still downward — from k = 10 to
+    'all', or from the largest k below 'all' when fewer scaffolds exist (a k that equals 'all' has no row)."""
+    if "6" not in rows:
+        raise ValueError("fewer than 7 training scaffolds: no k = 6 row, the curve cannot be read")
+    a, six = rows["all"], rows["6"]
+    last = rows[str(max(int(k) for k in rows if k != "all"))]
+    return bool(a[route] < six[route] - 2 * np.hypot(six[f"{route}_se"], a[f"{route}_se"]) and a[route] < last[route])
 
 
 def extrapolate(rows, route, target=LINE_LICENSE):
@@ -172,16 +201,32 @@ def verdict(rows):
         out["reading"] = f"line 2 met by route(s) {', '.join(out['licensed'])}: licensed, to be confirmed on tetracene in S3"
     else:
         best = "b" if a["b"] <= a["c"] else "c"
-        if out["still_learning"][best]:
+        extrapolation = extrapolate(rows, best) if out["still_learning"][best] else None
+        if extrapolation is not None and extrapolation["scaffolds_needed"] is not None:
             out["reading"] = f"line 2 missed, route {best} still learning: not failed — data-limited; next S2b, sized by the extrapolation"
-            out["extrapolation"] = extrapolate(rows, best)
+            out["extrapolation"] = extrapolation
+        elif extrapolation is not None:
+            # 18 Oct 2026 (registration note, after S2's read): a curve that still descends towards an asymptote at or above the line gives
+            # S2b no size — more molecules of this kind do not reach it, so the reading is the flat one
+            out["reading"] = (f"line 2 missed, route {best} still descending but its fitted asymptote is at or above {LINE_LICENSE} cm⁻¹: "
+                              "read as flat — the search (model class × features) first")
+            out["extrapolation"] = extrapolation
         else:
             out["reading"] = f"line 2 missed, route {best} flat: no negative conclusion yet — the search (model class × features) first"
     if not out["line1_b_le_0.8c"]:
         slope = {r: rows["6"][r] - a[r] for r in ("b", "c")}
-        out["line1_reading"] = ("(b) misses line 1 but descends faster than (c): not stopped, repeated at S2b's size"
+        where = "at S2b's size" if "data-limited" in out.get("reading", "") else "after the search"
+        out["line1_reading"] = (f"(b) misses line 1 but descends faster than (c): not stopped, repeated {where}"
                                 if slope["b"] > slope["c"] else "(b) misses line 1 and does not descend faster than (c): (b) stops")
     return out
+
+
+def write_atomic(path, text):
+    """A record is written to a temp file beside it and moved over the target, so a crash never leaves half a file."""
+    tmp = path + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as fh:
+        fh.write(text)
+    os.replace(tmp, path)
 
 
 def main():
@@ -192,7 +237,8 @@ def main():
     ap.add_argument("--extra", nargs="*", default=[], help="ID=DIR: a molecule's setting directory computed elsewhere")
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
-    sel = json.load(open(a.selection, encoding="utf-8"))["selected"]
+    with open(a.selection, encoding="utf-8") as fh:
+        sel = json.load(fh)["selected"]
     extra = dict(e.split("=", 1) for e in a.extra)
     by_scaf, used, excluded = {}, [], {}
     for m in sel:
@@ -210,20 +256,24 @@ def main():
     res = {"registration": "PreRegistration_2026-10-14_S2_Anharmonic_Shift.md (+ amendment 1)", "window": WINDOW, "ridge": RIDGE,
            "molecules": used, "excluded": excluded, "scaffolds": len(by_scaf), "curve": rows, "verdict": verdict(rows)}
     os.makedirs(a.out, exist_ok=True)
-    json.dump(res, open(os.path.join(a.out, "s2_read.json"), "w", encoding="utf-8"), indent=1)
+    write_atomic(os.path.join(a.out, "s2_read.json"), json.dumps(res, indent=1))
     lines = [f"# S2 read — {len(used)} molecules in {len(by_scaf)} scaffolds, excluded {len(excluded)}", "",
              "| k (training scaffolds) | (b) rms ± SE | (c) rms ± SE | unseen-family modes |", "|---|---|---|---|"]
     for k, r in rows.items():
         lines.append(f"| {k if k != 'all' else 'all (' + str(r['k']) + ')'} | {r['b']:.2f} ± {r['b_se']:.2f} | {r['c']:.2f} ± {r['c_se']:.2f} | "
                      f"{r['unseen_family_modes']} |")
-    lines += ["", "| family | modes | (b) | (c) |", "|---|---|---|---|"]
-    lines += [f"| {f} | {v['n']} | {v['b']:.2f} | {v['c']:.2f} |" for f, v in rows["all"]["per_family"].items()]
+    ks_present = [k for k in rows if k != "all"]
+    lines += ["", "| family | modes | " + " | ".join(f"(b) k={k}" for k in ks_present) + " | (b) all | (c) all |",
+              "|---|---|" + "---|" * (len(ks_present) + 2)]
+    for fa, v in rows["all"]["per_family"].items():
+        cells = " | ".join(f"{rows[k]['per_family'][fa]['b']:.2f} ± {rows[k]['per_family'][fa]['b_se']:.2f}" for k in ks_present)
+        lines.append(f"| {fa} | {v['n']} | {cells} | {v['b']:.2f} | {v['c']:.2f} |")
     if rows["all"]["k"] <= max(KS):
-        lines += ["", f"*Only {rows['all']['k']} training scaffolds per held-out scaffold: the curve's k ≥ {rows['all']['k']} rows equal 'all', "
-                  "and 'still learning' cannot be read as registered.*"]
+        lines += ["", f"*{rows['all']['k']} training scaffolds per held-out scaffold: k ≥ {rows['all']['k']} is the full set, so the curve "
+                  f"ends at k = {max(int(k) for k in ks_present)} → all.*"]
     lines += ["", f"**{res['verdict']['reading']}**"] + ([res["verdict"]["line1_reading"]] if "line1_reading" in res["verdict"] else [])
     lines += [""] + [f"- excluded {i}: {w}" for i, w in excluded.items()]
-    open(os.path.join(a.out, "s2_read.md"), "w", encoding="utf-8").write("\n".join(lines) + "\n")
+    write_atomic(os.path.join(a.out, "s2_read.md"), "\n".join(lines) + "\n")
     print("\n".join(lines))
     return 0
 

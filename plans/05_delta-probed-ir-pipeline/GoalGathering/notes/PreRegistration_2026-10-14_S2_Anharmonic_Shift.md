@@ -112,3 +112,23 @@ registration (TASKS 62).
 ## Outcome
 
 *(appended after the run)*
+
+## Note (18 Oct 2026, 13:xx — AFTER the read; two gaps in the read's rules, and the verdict the user chose)
+
+S2 ended with 14 usable molecules in 9 scaffolds (5 NOISY, 1 FAILED; `probes/results_m1/s2_anharmonic_2026-10-18/`, FETCHED 3,758 files).
+Pooled window rms at 'all': (b) 9.72, (c) 11.96 cm⁻¹; per family (b) ring-ip 3.15, CH-oop 5.67, other 18.85. Line 2 is missed by both routes.
+
+**Gap 1 — degenerate k.** With 9 scaffolds every held-out scaffold has 8 training scaffolds, so k = 8 and k = 10 draw the full set: those
+rows equalled 'all' to 1e-14, and 'the last step (k = 10 → all) still downward' compared 'all' with itself and passed on rounding. The first
+read (`read/`) printed 'still learning — data-limited, next S2b' on that. `probes/s2_read.py` now gives no row to a k that equals the full set
+and takes the last step from the largest real k (here 6 → all: 9.77 → 9.72, down by more than twice the SE).
+
+**Gap 2 — a descent towards an asymptote above the line.** Verdict 2 sizes S2b by the fit rms(k) = a + b·k^(−c). S2's fit has a = 9.68 cm⁻¹,
+above the 3.0 line, so no number of molecules reaches it and S2b has no size. The read now says so: a curve that still descends but whose
+fitted asymptote is at or above the line reads as flat (verdict 3). The per-family curves (`read_v2/`, new in the read, the registered
+quantities unchanged) are flat in the same way: k = 4 → 6 → all, (b) ring-ip 3.32 → 3.20 → 3.15, CH-oop 5.81 → 5.73 → 5.67, other
+19.04 → 18.93 → 18.85.
+
+**Verdict (the user, 18 Oct, 'Ja, akkoord met verdict 3 en de zoektocht'):** verdict 3 — no negative conclusion; the search (model class ×
+features) first, its form registered before any of its numbers. These two rules were written after the numbers were seen; they are stated
+here so that a reader can judge them, and they change no registered number.
