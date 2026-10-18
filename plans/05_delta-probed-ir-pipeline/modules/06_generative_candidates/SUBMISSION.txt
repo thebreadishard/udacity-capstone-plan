@@ -7,6 +7,7 @@ requirements.txt
 Generative_AI_Analysis_Report.pdf
 PRE_REGISTRATION.md
 MODELS.md
+MODEL_CARD.md
 SUBMISSION.txt
 notebook/generative_model.ipynb
 notebook/results.json
