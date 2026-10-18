@@ -46,16 +46,19 @@ BOHR_PER_ANGSTROM = 1.8897261246
 SP_CC_MAX = 1.25 * BOHR_PER_ANGSTROM      # a C–C this short makes both carbons sp (C≡C 1.20 Å; aromatic C–C ≥ 1.36 Å)
 CH_BOND_MAX = 1.15 * BOHR_PER_ANGSTROM    # an H this close to a C is bonded to it
 LINEAR_XH_SHARE = 0.5                     # amendment 2 §2: a mode leaves the scoped read when half its hydrogen motion is on sp-bound H
+LABILE_PARTNERS = ("N", "O")              # amendment 3: hydrogens on these wag, invert and twist with large amplitude, as on an sp carbon
+SCOPES = ("all", "no-linear-xh", "no-large-amplitude")
 
 
-def linear_xh_share(q, symbols, coords_bohr):
-    """Per mode of the mass-weighted modes q (3N × M): the share of its hydrogen motion on hydrogens bonded to an sp carbon (0 where the
-    mode moves no hydrogen)."""
+def linear_xh_share(q, symbols, coords_bohr, partners=()):
+    """Per mode of the mass-weighted modes q (3N × M): the share of its hydrogen motion on hydrogens bonded to an sp carbon — and, with
+    `partners` (element symbols), to any atom of those elements (0 where the mode moves no hydrogen)."""
     sym = np.array(symbols)
     n = len(sym)
     d = np.linalg.norm(coords_bohr[:, None, :] - coords_bohr[None, :, :], axis=2)
     carbon = sym == "C"
     sp = carbon & ((d < SP_CC_MAX) & carbon[None, :] & ~np.eye(n, dtype=bool)).any(axis=1)
+    sp = sp | np.isin(sym, partners)
     hyd = sym == "H"
     sp_h = hyd & ((d < CH_BOND_MAX) & sp[None, :]).any(axis=1)
     a = (q.reshape(n, 3, -1) ** 2).sum(axis=1)
@@ -73,9 +76,10 @@ def gvpt2_delta(path, omega):
     return np.asarray(g["nu_gvpt2"]) - w
 
 
-def apply_scope(rec):
-    """The molecule without its linear X–H modes (amendment 2 §2); per-mode arrays shortened, the rest unchanged."""
-    keep = ~rec["linear_xh"]
+def apply_scope(rec, flag="linear_xh"):
+    """The molecule without the modes flagged by `flag` ('linear_xh', amendment 2 §2; 'large_amplitude', amendment 3); per-mode arrays
+    shortened, the rest unchanged."""
+    keep = ~rec[flag]
     return {k: (v[keep] if isinstance(v, np.ndarray) and v.shape[:1] == keep.shape else v) for k, v in rec.items()}
 
 
@@ -104,7 +108,8 @@ def load_molecule(setting_dir, gvpt2_file=None):
     h, o, planar = mode_shares(q, sym, m, x)
     delta = gvpt2_delta(gvpt2_file, np.asarray(z["omega_cm"])) if gvpt2_file else np.asarray(z["nu_sym"]) - np.asarray(z["omega_cm"])
     return {"omega": omega, "delta": delta, "family": families(omega, q, sym, m, x), "h": h, "o": o, "planar": bool(planar),
-            "linear_xh": linear_xh_share(q, sym, x) >= LINEAR_XH_SHARE}, ""
+            "linear_xh": linear_xh_share(q, sym, x) >= LINEAR_XH_SHARE,
+            "large_amplitude": linear_xh_share(q, sym, x, LABILE_PARTNERS) >= LINEAR_XH_SHARE}, ""
 
 
 def design(omega, fam, h, o):
@@ -269,8 +274,9 @@ def write_atomic(path, text):
 def load_selection(root, selection_path, setting="G", extra=None, gvpt2_dir=None, scope="all"):
     """The selected molecules grouped by scaffold, the used ones listed and the excluded ones with their reason (the registration's noise
     rule). `extra` maps an id to a setting directory computed elsewhere (benzene: S1's G); `gvpt2_dir` switches the labels to
-    probes/gvpt2_labels.py's <id>.json; scope 'no-linear-xh' drops the linear X–H modes (amendment 2)."""
-    if scope not in ("all", "no-linear-xh"):
+    probes/gvpt2_labels.py's <id>.json; scope 'no-linear-xh' drops the linear X–H modes (amendment 2), 'no-large-amplitude' also the
+    N–H and O–H ones (amendment 3)."""
+    if scope not in SCOPES:
         raise ValueError(f"unknown scope {scope!r}")
     extra = extra or {}
     with open(selection_path, encoding="utf-8") as fh:
@@ -283,8 +289,8 @@ def load_selection(root, selection_path, setting="G", extra=None, gvpt2_dir=None
         if rec is None:
             excluded[m["id"]] = why
             continue
-        if scope == "no-linear-xh":
-            rec = apply_scope(rec)
+        if scope != "all":
+            rec = apply_scope(rec, "linear_xh" if scope == "no-linear-xh" else "large_amplitude")
         rec["id"], rec["dir"] = m["id"], d
         by_scaf.setdefault(m["scaffold"], []).append(rec)
         used.append({"id": m["id"], "scaffold": m["scaffold"], "planar": rec["planar"], "n_modes": len(rec["omega"]),
@@ -300,7 +306,7 @@ def main():
     ap.add_argument("--extra", nargs="*", default=[], help="ID=DIR: a molecule's setting directory computed elsewhere")
     ap.add_argument("--out", required=True)
     ap.add_argument("--gvpt2-dir", help="amendment 2: GVPT2 labels from probes/gvpt2_labels.py instead of the stored DVPT2 ones")
-    ap.add_argument("--scope", choices=("all", "no-linear-xh"), default="all", help="amendment 2 §2")
+    ap.add_argument("--scope", choices=SCOPES, default="all", help="amendment 2 §2, amendment 3")
     a = ap.parse_args()
     by_scaf, used, excluded = load_selection(a.root, a.selection, a.setting, dict(e.split("=", 1) for e in a.extra), a.gvpt2_dir, a.scope)
     if len(by_scaf) < 2:

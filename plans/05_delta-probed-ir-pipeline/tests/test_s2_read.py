@@ -79,6 +79,17 @@ def test_linear_xh_share_finds_hydrogens_on_sp_carbons():
     assert share[0] == pytest.approx(1.0) and share[1] == pytest.approx(0.0) and share[2] == 0.0
 
 
+def test_the_large_amplitude_share_adds_hydrogens_on_nitrogen_and_oxygen():
+    a = R.BOHR_PER_ANGSTROM
+    sym = ["H", "N", "C", "C", "H"]                          # H–N–C–C–H on a line: no sp carbon, one N-bound hydrogen
+    x = np.array([[0, 0, 0], [1.01, 0, 0], [2.40, 0, 0], [3.80, 0, 0], [4.88, 0, 0]], float) * a
+    q = np.zeros((15, 2))
+    q[1, 0] = 1.0                                            # mode 0: the N-bound hydrogen
+    q[13, 1] = 1.0                                           # mode 1: the C-bound hydrogen
+    assert list(R.linear_xh_share(q, sym, x)) == [0.0, 0.0]
+    assert list(R.linear_xh_share(q, sym, x, R.LABILE_PARTNERS)) == [1.0, 0.0]
+
+
 def test_the_scope_drops_only_the_flagged_modes():
     rec = {"omega": np.array([600.0, 900.0, 1500.0]), "delta": np.array([40.0, -5.0, -20.0]), "family": np.array(["other", "CH-oop", "ring-ip"]),
            "h": np.ones(3), "o": np.zeros(3), "planar": True, "linear_xh": np.array([True, False, False])}

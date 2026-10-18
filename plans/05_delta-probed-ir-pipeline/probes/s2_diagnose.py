@@ -18,7 +18,7 @@ import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-from s2_read import FAMILIES, concat, design, fit_predict, load_selection, loso, rms, write_atomic  # noqa: E402
+from s2_read import FAMILIES, SCOPES, concat, design, fit_predict, load_selection, loso, rms, write_atomic  # noqa: E402
 
 
 def in_sample(mols):
@@ -66,7 +66,7 @@ def main() -> int:
     ap.add_argument("--extra", nargs="*", default=[])
     ap.add_argument("--out", required=True)
     ap.add_argument("--gvpt2-dir", help="S2 amendment 2: GVPT2 labels from probes/gvpt2_labels.py")
-    ap.add_argument("--scope", choices=("all", "no-linear-xh"), default="all")
+    ap.add_argument("--scope", choices=SCOPES, default="all")
     a = ap.parse_args()
     by_scaf, used, _excluded = load_selection(a.root, a.selection, "G", dict(e.split("=", 1) for e in a.extra), a.gvpt2_dir, a.scope)
     mols = [m for ms in by_scaf.values() for m in ms]

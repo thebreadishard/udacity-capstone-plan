@@ -199,3 +199,17 @@ see. GVPT2 is the label that corresponds to the observed band, so the harder tar
 the error stays. (3) CH-oop's error is the model's — consistent (its labels barely move: 5.67 / 5.81 / 5.65 / 5.78). Noted in passing:
 removing five modes moved ring-ip from 3.15 to 2.88 although no ring-ip mode left — the shared h and o coefficients of (b) were bent by the
 outliers. The search of §3 runs on GVPT2 labels, no linear X–H, as registered.
+
+## Amendment 3 (18 Oct 2026, 14:1x — after step 1, before the search) — one rule for large-amplitude motions
+
+Step 1 (`diagnose_a2/`, 59f45574): on GVPT2 labels without the linear X–H modes, the 'other' residual (14.0 cm⁻¹) sits in one molecule,
+4-ethynylaniline (43 rms; its 594 and 559 cm⁻¹ modes, whose largest partners are the N–H stretches — the NH₂ wag, a near-inversion with
+two minima, which VPT2 cannot describe any more than a linear X–H bend or a free rotor). The user: *'Akkoord met de algemene regel,
+rapporteer beide uitlezingen, maar zet ook een lage prioriteitstaak op de takenlijst om de uitzonderingen opnieuw te bekijken.'*
+
+**Rule.** Scope 'no-large-amplitude': a mode leaves the scoped read when at least half of its hydrogen motion sits on hydrogens bonded to
+an sp carbon, a nitrogen or an oxygen (linear X–H bends; NH₂/OH wags, inversions and torsions). It replaces amendment 2 §2 for the
+search; the 'no-linear-xh' reads stay as recorded. Free rotors (methyl, vinyl torsions) lie below the 550 cm⁻¹ window or trip the noise
+rule, which stays. **Every read is reported both ways, 'all' and 'no-large-amplitude'.** This is the second exclusion written after
+numbers were seen; it is stated as a physical class, not as a list of molecules, and the class is to be brought back by software that
+treats it (TASKS 75).
