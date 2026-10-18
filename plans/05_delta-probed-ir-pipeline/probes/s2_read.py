@@ -42,10 +42,46 @@ N_SUBSETS = 20
 RIDGE = 1e-3
 LINE_LICENSE = 3.0          # cm⁻¹, line 2
 LINE_RATIO = 0.8            # line 1: (b) ≤ 0.8 × (c)
+BOHR_PER_ANGSTROM = 1.8897261246
+SP_CC_MAX = 1.25 * BOHR_PER_ANGSTROM      # a C–C this short makes both carbons sp (C≡C 1.20 Å; aromatic C–C ≥ 1.36 Å)
+CH_BOND_MAX = 1.15 * BOHR_PER_ANGSTROM    # an H this close to a C is bonded to it
+LINEAR_XH_SHARE = 0.5                     # amendment 2 §2: a mode leaves the scoped read when half its hydrogen motion is on sp-bound H
 
 
-def load_molecule(setting_dir):
-    """The per-mode table of one molecule from its setting directory; None (with the reason) if it is excluded."""
+def linear_xh_share(q, symbols, coords_bohr):
+    """Per mode of the mass-weighted modes q (3N × M): the share of its hydrogen motion on hydrogens bonded to an sp carbon (0 where the
+    mode moves no hydrogen)."""
+    sym = np.array(symbols)
+    n = len(sym)
+    d = np.linalg.norm(coords_bohr[:, None, :] - coords_bohr[None, :, :], axis=2)
+    carbon = sym == "C"
+    sp = carbon & ((d < SP_CC_MAX) & carbon[None, :] & ~np.eye(n, dtype=bool)).any(axis=1)
+    hyd = sym == "H"
+    sp_h = hyd & ((d < CH_BOND_MAX) & sp[None, :]).any(axis=1)
+    a = (q.reshape(n, 3, -1) ** 2).sum(axis=1)
+    h_all = a[hyd].sum(axis=0)
+    return np.divide(a[sp_h].sum(axis=0), h_all, out=np.zeros_like(h_all), where=h_all > 0)
+
+
+def gvpt2_delta(path, omega):
+    """Δ_anh = ν(GVPT2) − ω from a probes/gvpt2_labels.py file, after checking its ω against the report's."""
+    with open(path, encoding="utf-8") as fh:
+        g = json.load(fh)
+    w = np.asarray(g["omega"])
+    if w.shape != omega.shape or not np.allclose(w, omega, atol=1e-6):
+        raise ValueError(f"{path}: ω does not match the molecule's report")
+    return np.asarray(g["nu_gvpt2"]) - w
+
+
+def apply_scope(rec):
+    """The molecule without its linear X–H modes (amendment 2 §2); per-mode arrays shortened, the rest unchanged."""
+    keep = ~rec["linear_xh"]
+    return {k: (v[keep] if isinstance(v, np.ndarray) and v.shape[:1] == keep.shape else v) for k, v in rec.items()}
+
+
+def load_molecule(setting_dir, gvpt2_file=None):
+    """The per-mode table of one molecule from its setting directory; None (with the reason) if it is excluded. With gvpt2_file the
+    label is the GVPT2 fundamental (S2 amendment 2 §1) instead of the stored DVPT2 one."""
     from s1_anharmonic_level import harmonic_modes
 
     from dpir.qff import MASS
@@ -66,8 +102,9 @@ def load_molecule(setting_dir):
     x = np.array(r["molecule"]["geometry"], float).reshape(-1, 3)
     m = np.array([MASS[s] for s in sym])
     h, o, planar = mode_shares(q, sym, m, x)
-    return {"omega": omega, "delta": np.asarray(z["nu_sym"]) - np.asarray(z["omega_cm"]), "family": families(omega, q, sym, m, x),
-            "h": h, "o": o, "planar": bool(planar)}, ""
+    delta = gvpt2_delta(gvpt2_file, np.asarray(z["omega_cm"])) if gvpt2_file else np.asarray(z["nu_sym"]) - np.asarray(z["omega_cm"])
+    return {"omega": omega, "delta": delta, "family": families(omega, q, sym, m, x), "h": h, "o": o, "planar": bool(planar),
+            "linear_xh": linear_xh_share(q, sym, x) >= LINEAR_XH_SHARE}, ""
 
 
 def design(omega, fam, h, o):
@@ -229,19 +266,25 @@ def write_atomic(path, text):
     os.replace(tmp, path)
 
 
-def load_selection(root, selection_path, setting="G", extra=None):
+def load_selection(root, selection_path, setting="G", extra=None, gvpt2_dir=None, scope="all"):
     """The selected molecules grouped by scaffold, the used ones listed and the excluded ones with their reason (the registration's noise
-    rule). `extra` maps an id to a setting directory computed elsewhere (benzene: S1's G)."""
+    rule). `extra` maps an id to a setting directory computed elsewhere (benzene: S1's G); `gvpt2_dir` switches the labels to
+    probes/gvpt2_labels.py's <id>.json; scope 'no-linear-xh' drops the linear X–H modes (amendment 2)."""
+    if scope not in ("all", "no-linear-xh"):
+        raise ValueError(f"unknown scope {scope!r}")
     extra = extra or {}
     with open(selection_path, encoding="utf-8") as fh:
         sel = json.load(fh)["selected"]
     by_scaf, used, excluded = {}, [], {}
     for m in sel:
         d = extra.get(m["id"], os.path.join(root, m["id"], setting))
-        rec, why = load_molecule(d) if os.path.isdir(d) else (None, f"no directory {d}")
+        gfile = os.path.join(gvpt2_dir, f"{m['id']}.json") if gvpt2_dir else None
+        rec, why = load_molecule(d, gfile) if os.path.isdir(d) else (None, f"no directory {d}")
         if rec is None:
             excluded[m["id"]] = why
             continue
+        if scope == "no-linear-xh":
+            rec = apply_scope(rec)
         rec["id"], rec["dir"] = m["id"], d
         by_scaf.setdefault(m["scaffold"], []).append(rec)
         used.append({"id": m["id"], "scaffold": m["scaffold"], "planar": rec["planar"], "n_modes": len(rec["omega"]),
@@ -256,8 +299,10 @@ def main():
     ap.add_argument("--setting", default="G")
     ap.add_argument("--extra", nargs="*", default=[], help="ID=DIR: a molecule's setting directory computed elsewhere")
     ap.add_argument("--out", required=True)
+    ap.add_argument("--gvpt2-dir", help="amendment 2: GVPT2 labels from probes/gvpt2_labels.py instead of the stored DVPT2 ones")
+    ap.add_argument("--scope", choices=("all", "no-linear-xh"), default="all", help="amendment 2 §2")
     a = ap.parse_args()
-    by_scaf, used, excluded = load_selection(a.root, a.selection, a.setting, dict(e.split("=", 1) for e in a.extra))
+    by_scaf, used, excluded = load_selection(a.root, a.selection, a.setting, dict(e.split("=", 1) for e in a.extra), a.gvpt2_dir, a.scope)
     if len(by_scaf) < 2:
         raise SystemExit(f"{len(by_scaf)} scaffold(s) with a usable molecule: no leave-one-scaffold-out read")
     rows = curve(by_scaf)
@@ -265,7 +310,10 @@ def main():
            "molecules": used, "excluded": excluded, "scaffolds": len(by_scaf), "curve": rows, "verdict": verdict(rows)}
     os.makedirs(a.out, exist_ok=True)
     write_atomic(os.path.join(a.out, "s2_read.json"), json.dumps(res, indent=1))
-    lines = [f"# S2 read — {len(used)} molecules in {len(by_scaf)} scaffolds, excluded {len(excluded)}", "",
+    if a.gvpt2_dir or a.scope != "all":
+        res["amendment_2"] = {"labels": "GVPT2" if a.gvpt2_dir else "DVPT2 (stored)", "scope": a.scope}
+    variant = f" — labels {res['amendment_2']['labels']}, scope {a.scope}" if "amendment_2" in res else ""
+    lines = [f"# S2 read — {len(used)} molecules in {len(by_scaf)} scaffolds, excluded {len(excluded)}{variant}", "",
              "| k (training scaffolds) | (b) rms ± SE | (c) rms ± SE | unseen-family modes |", "|---|---|---|---|"]
     for k, r in rows.items():
         lines.append(f"| {k if k != 'all' else 'all (' + str(r['k']) + ')'} | {r['b']:.2f} ± {r['b_se']:.2f} | {r['c']:.2f} ± {r['c_se']:.2f} | "

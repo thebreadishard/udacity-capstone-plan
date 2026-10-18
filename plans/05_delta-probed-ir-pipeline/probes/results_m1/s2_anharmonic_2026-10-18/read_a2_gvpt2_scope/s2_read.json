@@ -1,0 +1,233 @@
+{
+ "registration": "PreRegistration_2026-10-14_S2_Anharmonic_Shift.md (+ amendment 1)",
+ "window": [
+  550.0,
+  2000.0
+ ],
+ "ridge": 0.001,
+ "molecules": [
+  {
+   "id": "A_01f3186607",
+   "scaffold": "c1ccc2ccccc2c1",
+   "planar": true,
+   "n_modes": 48,
+   "n_window": 32
+  },
+  {
+   "id": "A_8448043181",
+   "scaffold": "c1ccccc1",
+   "planar": true,
+   "n_modes": 30,
+   "n_window": 22
+  },
+  {
+   "id": "A_d9139359ab",
+   "scaffold": "c1ccc2cccc-2cc1",
+   "planar": true,
+   "n_modes": 48,
+   "n_window": 33
+  },
+  {
+   "id": "A_45187bb7c8",
+   "scaffold": "C1=Cc2cccc3cccc1c23",
+   "planar": true,
+   "n_modes": 54,
+   "n_window": 38
+  },
+  {
+   "id": "A_72b86c2331",
+   "scaffold": "c1ccc2c(c1)-c1ccccc1-2",
+   "planar": true,
+   "n_modes": 54,
+   "n_window": 38
+  },
+  {
+   "id": "A_90df3e4aa9",
+   "scaffold": "C1=Cc2ccccc2C1",
+   "planar": false,
+   "n_modes": 45,
+   "n_window": 31
+  },
+  {
+   "id": "A_a848c04a21",
+   "scaffold": "c1ccccc1",
+   "planar": true,
+   "n_modes": 30,
+   "n_window": 20
+  },
+  {
+   "id": "B_0603418c5b",
+   "scaffold": "c1ccc2cccc-2cc1",
+   "planar": true,
+   "n_modes": 48,
+   "n_window": 32
+  },
+  {
+   "id": "B_a41f4cff9d",
+   "scaffold": "c1ccc2ccccc2c1",
+   "planar": true,
+   "n_modes": 51,
+   "n_window": 33
+  },
+  {
+   "id": "A_7aa232d4e9",
+   "scaffold": "c1ccc2nccnc2c1",
+   "planar": true,
+   "n_modes": 42,
+   "n_window": 28
+  },
+  {
+   "id": "B_410ac0fb2f",
+   "scaffold": "c1ccccc1",
+   "planar": false,
+   "n_modes": 37,
+   "n_window": 23
+  },
+  {
+   "id": "B_079e66d017",
+   "scaffold": "c1ccc2cnccc2c1",
+   "planar": false,
+   "n_modes": 54,
+   "n_window": 35
+  },
+  {
+   "id": "A_d295f2fa80",
+   "scaffold": "c1ccc2ncncc2c1",
+   "planar": true,
+   "n_modes": 42,
+   "n_window": 28
+  },
+  {
+   "id": "B_78f8233b4c",
+   "scaffold": "c1ccc2cccc-2cc1",
+   "planar": false,
+   "n_modes": 54,
+   "n_window": 34
+  }
+ ],
+ "excluded": {
+  "A_8f6ed7c002": "NOISY (noise rule)",
+  "B_190a33a33e": "NOISY (noise rule)",
+  "B_151c8ce719": "NOISY (noise rule)",
+  "B_16194573ac": "NOISY (noise rule)",
+  "B_17f1611949": "NOISY (noise rule)",
+  "B_0040149ee1": "no qff_report.npz (STOPPED or FAILED)"
+ },
+ "scaffolds": 9,
+ "curve": {
+  "4": {
+   "b": 7.871285385440389,
+   "b_se": 0.03453090759261752,
+   "c": 10.12753497024375,
+   "c_se": 0.007680061528896266,
+   "unseen_family_modes": 0,
+   "per_family": {
+    "CH-stretch": {
+     "b": NaN,
+     "b_se": NaN,
+     "c": NaN,
+     "c_se": NaN
+    },
+    "CH-oop": {
+     "b": 5.904717988072108,
+     "b_se": 0.08633141712975385,
+     "c": 5.984454441055187,
+     "c_se": 0.08205895474602831
+    },
+    "ring-ip": {
+     "b": 4.000110389726745,
+     "b_se": 0.021664508439953874,
+     "c": 9.502314292566746,
+     "c_se": 0.004012835931616474
+    },
+    "other": {
+     "b": 14.34392171911792,
+     "b_se": 0.06824041193081878,
+     "c": 13.66679163616694,
+     "c_se": 0.012079542481625054
+    }
+   }
+  },
+  "6": {
+   "b": 7.733211525104258,
+   "b_se": 0.013705918665231995,
+   "c": 10.109302307042075,
+   "c_se": 0.003862999781193464,
+   "unseen_family_modes": 0,
+   "per_family": {
+    "CH-stretch": {
+     "b": NaN,
+     "b_se": NaN,
+     "c": NaN,
+     "c_se": NaN
+    },
+    "CH-oop": {
+     "b": 5.823233352193833,
+     "b_se": 0.03690769252179924,
+     "c": 5.940608566602025,
+     "c_se": 0.039345821553674144
+    },
+    "ring-ip": {
+     "b": 3.9169968090264993,
+     "b_se": 0.012388324927770094,
+     "c": 9.500684981003374,
+     "c_se": 0.0014482642034130615
+    },
+    "other": {
+     "b": 14.098049205262612,
+     "b_se": 0.02974747502269047,
+     "c": 13.627200720526059,
+     "c_se": 0.007529632188181621
+    }
+   }
+  },
+  "all": {
+   "b": 7.680530760085241,
+   "b_se": 0.0,
+   "c": 10.097985116346665,
+   "c_se": 0.0,
+   "unseen_family_modes": 0,
+   "n_modes": 427,
+   "per_family": {
+    "CH-stretch": {
+     "n": 0,
+     "b": NaN,
+     "c": NaN
+    },
+    "CH-oop": {
+     "n": 74,
+     "b": 5.777297108311428,
+     "c": 5.888629740083709
+    },
+    "ring-ip": {
+     "n": 257,
+     "b": 3.901660163088654,
+     "c": 9.498430349033873
+    },
+    "other": {
+     "n": 96,
+     "b": 13.996561101774887,
+     "c": 13.612297393867657
+    }
+   },
+   "k": 8
+  }
+ },
+ "verdict": {
+  "line1_b_le_0.8c": true,
+  "licensed": [],
+  "still_learning": {
+   "b": true,
+   "c": true
+  },
+  "reading": "line 2 missed, route b still descending but its fitted asymptote is at or above 3.0 cm\u207b\u00b9: read as flat \u2014 the search (model class \u00d7 features) first",
+  "extrapolation": {
+   "fit": {
+    "a": 7.600598502683975,
+    "b": 3.104255618208031,
+    "c": 1.7597752388441465
+   },
+   "scaffolds_needed": null
+  }
+ }
+}

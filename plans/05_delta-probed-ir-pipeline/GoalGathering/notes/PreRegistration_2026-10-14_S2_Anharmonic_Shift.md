@@ -173,3 +173,29 @@ said so. Flat after the search → the next idea is registered before it runs: a
 **Predictions.** GVPT2 lowers ring-ip's labels' spread and route (b)'s ring-ip rms to ≤ 3.0; CH-oop improves most from the adjacency class
 (the C–H out-of-plane bands of PAHs are classified by it); 'other' without the ethynyl bends falls to the 3–5 cm⁻¹ of the other eleven
 molecules before any model change.
+
+## Amendment 2, §1–2 outcome (18 Oct 2026, 13:46 — before the search of §3)
+
+**Validation passed.** (a) and (b) in `tests/test_gvpt2_labels.py`; (c) H₂CO end to end: our path reproduces pyVPT2's deperturbed and GVPT2
+fundamentals to 5e-13 cm⁻¹ (`probes/results_m1/s2_anharmonic_2026-10-18/gvpt2_validation/`). **Upstream pyVPT2's polyad solver fails on S2's
+molecules** (eigenvalue-to-state assignment raises KeyError when two eigenvectors peak on one state; an interaction bridging two polyads is
+not merged — 7 of 14 molecules have such bridges): fixed in the fork, branch `polyad-assignment-and-merge` (eb353ab, two tests that fail on
+the old code; the upstream suite passes); the labels name the solver file's sha256. Benzene's 16 resonances touch degenerate modes and
+stay deperturbed, as §1 says.
+
+**Reads (route (b) / (c) at 'all', cm⁻¹; `read_a2_*`):**
+
+| labels, scope | pooled (b) | CH-oop (b) | ring-ip (b) | other (b) | other (c) |
+|---|---|---|---|---|---|
+| DVPT2, all (the registered read) | 9.72 | 5.67 | 3.15 | 18.85 | 19.76 |
+| DVPT2, no linear X–H | 7.25 | 5.81 | **2.88** | 13.63 | 13.22 |
+| GVPT2, all | 10.01 | 5.65 | 4.06 | 19.06 | 19.97 |
+| GVPT2, no linear X–H | 7.68 | 5.78 | 3.90 | 14.00 | 13.61 |
+
+**Predictions against outcome.** (1) 'GVPT2 lowers ring-ip to ≤ 3.0' — **wrong**: ring-ip rises from 2.88 to 3.90. The polyads move 6–19
+fundamentals per molecule by up to 35 cm⁻¹; that push depends on how close a combination band happens to lie, which (b)'s features do not
+see. GVPT2 is the label that corresponds to the observed band, so the harder target is the right one; the resonance-proximity features of
+§3 are the registered answer. (2) ''other' falls to 3–5 without the ethynyl bends' — **wrong**: 18.85 → 13.63; five modes leave, most of
+the error stays. (3) CH-oop's error is the model's — consistent (its labels barely move: 5.67 / 5.81 / 5.65 / 5.78). Noted in passing:
+removing five modes moved ring-ip from 3.15 to 2.88 although no ring-ip mode left — the shared h and o coefficients of (b) were bent by the
+outliers. The search of §3 runs on GVPT2 labels, no linear X–H, as registered.

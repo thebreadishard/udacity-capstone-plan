@@ -67,6 +67,33 @@ def test_a_descending_curve_with_its_asymptote_above_the_line_reads_as_flat():
     assert "read as flat" in v["reading"] and "data-limited" not in v["reading"]
 
 
+def test_linear_xh_share_finds_hydrogens_on_sp_carbons():
+    a = R.BOHR_PER_ANGSTROM
+    sym = ["H", "C", "C", "C", "H"]                          # H–C≡C–C(aromatic-like)–H, on a line for simplicity
+    x = np.array([[0, 0, 0], [1.06, 0, 0], [2.26, 0, 0], [3.70, 0, 0], [4.78, 0, 0]], float) * a
+    q = np.zeros((15, 3))
+    q[1, 0] = 1.0                                            # mode 0: the sp-bound hydrogen alone
+    q[13, 1] = 1.0                                           # mode 1: the other hydrogen alone
+    q[3:6, 2] = 1.0 / np.sqrt(3)                             # mode 2: carbon only
+    share = R.linear_xh_share(q, sym, x)
+    assert share[0] == pytest.approx(1.0) and share[1] == pytest.approx(0.0) and share[2] == 0.0
+
+
+def test_the_scope_drops_only_the_flagged_modes():
+    rec = {"omega": np.array([600.0, 900.0, 1500.0]), "delta": np.array([40.0, -5.0, -20.0]), "family": np.array(["other", "CH-oop", "ring-ip"]),
+           "h": np.ones(3), "o": np.zeros(3), "planar": True, "linear_xh": np.array([True, False, False])}
+    out = R.apply_scope(rec)
+    assert list(out["omega"]) == [900.0, 1500.0] and list(out["family"]) == ["CH-oop", "ring-ip"] and out["planar"] is True
+
+
+def test_gvpt2_labels_must_match_the_reports_omega(tmp_path):
+    p = tmp_path / "m.json"
+    p.write_text('{"omega": [500.0, 1000.0], "nu_gvpt2": [495.0, 990.0]}', encoding="utf-8")
+    assert list(R.gvpt2_delta(str(p), np.array([500.0, 1000.0]))) == [-5.0, -10.0]
+    with pytest.raises(ValueError):
+        R.gvpt2_delta(str(p), np.array([500.0, 1001.0]))
+
+
 def test_a_family_missing_from_training_is_predicted_by_the_training_mean_and_counted():
     rng = np.random.default_rng(3)
     train = R.concat([molecule(rng, fams=("CH-stretch", "ring-ip"))])
