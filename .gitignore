@@ -132,3 +132,7 @@ plans/05_delta-probed-ir-pipeline/probes/results_m1/s2_anharmonic_2026-10-18/dpi
 plans/05_delta-probed-ir-pipeline/probes/results_m1/s2_anharmonic_2026-10-18/s2_gridcheck/
 plans/05_delta-probed-ir-pipeline/probes/results_m1/s2_anharmonic_2026-10-18/s2_smoke/
 plans/05_delta-probed-ir-pipeline/probes/results_m1/s2_anharmonic_2026-10-18/s2_smoke*
+
+# 18 Oct 2026: module 06's PAHdb comparison (PRE_REGISTRATION addition) — its formula table and its record are tracked
+!plans/05_delta-probed-ir-pipeline/modules/06_generative_candidates/data/pahdb_theoretical_4.00_neutral_chno.csv
+!plans/05_delta-probed-ir-pipeline/modules/06_generative_candidates/notebook/pahdb_comparison.json

@@ -1,0 +1,10 @@
+{"name": "m06_pahdb_samples",
+ "purpose": "Module 06's PAHdb comparison (PRE_REGISTRATION addition of 18 Oct 2026): regenerate seed 0's 10,000 samples at T 1.0 from the saved weights with the notebook's call; refuses unless validity and uniqueness reproduce results.json. Two threads, nice 10, beside chain 41",
+ "host": "laptop",
+ "workdir": "modules/06_generative_candidates",
+ "command": "OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 nice -n 10 python m06/pahdb_compare.py samples notebook/out/seed0 notebook/out/samples_seed0_T1.0.txt",
+ "sources": [{"local": "modules/06_generative_candidates/m06/pahdb_compare.py"}, {"local": "modules/06_generative_candidates/m06/train.py"},
+             {"local": "modules/06_generative_candidates/m06/model.py"}],
+ "progress": {"regex": "samples reproduce results.json", "max_gap_minutes": 120},
+ "end_regex": "samples reproduce results.json|do not reproduce",
+ "threads": 2}
