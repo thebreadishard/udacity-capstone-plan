@@ -6,7 +6,8 @@ Upstream: dxtb's test/test_properties/test_hessian.py makes the same calls (Calc
 charge), calc.hessian_numerical) with GFN1-xTB at atol/rtol 1e-5; GFN2's energies are tested in test/test_scf/test_elements_gfn2.py and
 test/test_singlepoint/refs/gfn2. Here, for each molecule at its reference geometry and at a displaced one (0.05 bohr, seed 0):
   - energy and gradient against the xtb 6.7.1 binary (`--acc 0.0001`): pass |ΔE| ≤ 1e-6 E_h, max |Δg| ≤ 1e-5 E_h/bohr;
-  - the autograd Hessian against dxtb's own central-difference Hessian: pass max |ΔH| ≤ 1e-5 E_h/bohr² (the upstream test's atol);
+  - the autograd Hessian against central differences of dxtb's autograd forces (step 1e-4 bohr): pass max |ΔH| ≤ 1e-5 E_h/bohr² (the
+    upstream test's atol; dxtb's own NumericalCalculator, differences of energies, gave no result for water in 50 minutes);
   - no projection: |H·t| for the three translations ≤ 1e-8 (a Cartesian Hessian is translation-invariant; xtb's file is also
     rotation-projected, which is wrong away from a minimum).
 Writes <dir>/dxtb_validate.json and prints PASS or FAIL per check.
@@ -21,7 +22,7 @@ import tempfile
 import numpy as np
 import torch
 from dxtb import GFN2_XTB
-from dxtb.calculators import AutogradCalculator, NumericalCalculator   # GFN2's analytical gradient is not implemented in dxtb 0.4.0
+from dxtb.calculators import AutogradCalculator   # GFN2's analytical gradient is not implemented in dxtb 0.4.0
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -31,6 +32,7 @@ Z = {"H": 1, "C": 6, "N": 7, "O": 8, "F": 9, "S": 16, "Cl": 17}
 # the upstream test's options, with the libcint integral driver: dxtb 0.4.0's PyTorch drivers lack GFN2's multipole integrals
 OPTS = {"maxiter": 200, "mixer": "anderson", "scf_mode": "full", "verbosity": 0, "f_atol": 1e-10, "x_atol": 1e-10, "int_driver": "libcint"}
 TOL_E, TOL_G, TOL_H, TOL_T = 1e-6, 1e-5, 1e-5, 1e-8
+FD_STEP = 1e-4                         # bohr
 DD = {"dtype": torch.double, "device": torch.device("cpu")}
 
 
@@ -46,6 +48,22 @@ def xtb_energy_gradient(symbols, geom_bohr):
     return energy, np.array([[float(v.replace("D", "E")) for v in r.split()] for r in rows[n:2 * n]])
 
 
+def forces_fd_hessian(calc, pos):
+    """Central differences of the autograd forces: H[:, k] = −(F(x + h e_k) − F(x − h e_k)) / 2h, symmetrised."""
+    x = pos.detach().reshape(-1)
+    n = x.numel()
+    H = np.zeros((n, n))
+    for k in range(n):
+        cols = []
+        for s in (1.0, -1.0):
+            xk = x.clone()
+            xk[k] += s * FD_STEP
+            calc.reset()
+            cols.append(calc.forces(xk.reshape(-1, 3).requires_grad_(True), 0).detach().numpy().reshape(-1))
+        H[:, k] = -(cols[0] - cols[1]) / (2 * FD_STEP)
+    return 0.5 * (H + H.T)
+
+
 def check_geometry(symbols, geom_bohr):
     numbers = torch.tensor([Z[s] for s in symbols])
     pos = torch.tensor(np.asarray(geom_bohr).reshape(-1, 3), **DD)
@@ -54,7 +72,7 @@ def check_geometry(symbols, geom_bohr):
     g = -calc.forces(pos.clone().requires_grad_(True), 0).detach().numpy()
     calc.reset()
     h = calc.hessian(pos.clone().requires_grad_(True), 0, matrix=True).detach().numpy()
-    h_num = NumericalCalculator(numbers, GFN2_XTB, opts=OPTS, **DD).hessian_numerical(pos.clone(), 0, matrix=True).detach().numpy()
+    h_num = forces_fd_hessian(calc, pos)
     e_x, g_x = xtb_energy_gradient(symbols, geom_bohr)
     n = len(symbols)
     t = np.zeros((3 * n, 3))
