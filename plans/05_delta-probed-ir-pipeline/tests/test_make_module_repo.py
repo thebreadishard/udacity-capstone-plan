@@ -138,7 +138,10 @@ def test_a_module_without_a_development_branch_gets_main_only(tmp_path):
 @needs_jupyter
 def test_notebooks_run_in_the_interpreter_given(tmp_path):
     mono = _module_with_manifest(tmp_path, MANIFEST)
-    r = _make(mono, tmp_path / "repo", "--python", Path(sys.executable).as_posix())
+    exe = Path(sys.executable).as_posix()
+    if len(exe) > 1 and exe[1] == ":":                        # pass it the way a Git Bash user types it: /c/Users/... (the 18 Oct failure)
+        exe = "/" + exe[0].lower() + exe[2:]
+    r = _make(mono, tmp_path / "repo", "--python", exe)
     assert r.returncode == 0, r.stdout + r.stderr
     bad = subprocess.run([BASH, SCRIPT.as_posix(), "plans/m02", "-", (tmp_path / "repo2").as_posix(), "--python", "/no/such/python"],
                          cwd=mono, capture_output=True, text=True, timeout=120, check=False)

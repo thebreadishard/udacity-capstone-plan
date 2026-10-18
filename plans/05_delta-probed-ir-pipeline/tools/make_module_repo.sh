@@ -99,9 +99,11 @@ git clone -q "$TARGET" "$CHECK/repo"
 if grep -nE '\]\(\.\./' "$CHECK/repo/README.md" 2> /dev/null; then echo "README links outside the repository (above)" >&2; exit 1; fi
 JUPYTER=(jupyter)
 if [ -n "$NB_PYTHON" ]; then
+  # the kernel is started by Windows: a Git Bash path (/c/…) must become C:/… (WinError 2 otherwise)
+  kernel_python=$(cygpath -m "$NB_PYTHON" 2> /dev/null || echo "$NB_PYTHON")
   mkdir -p "$CHECK/jupyter/kernels/python3"
   printf '{"argv": ["%s", "-m", "ipykernel_launcher", "-f", "{connection_file}"], "display_name": "Python 3 (submission check)", "language": "python"}\n' \
-    "$NB_PYTHON" > "$CHECK/jupyter/kernels/python3/kernel.json"
+    "$kernel_python" > "$CHECK/jupyter/kernels/python3/kernel.json"
   export JUPYTER_DATA_DIR="$CHECK/jupyter"
   JUPYTER=("$NB_PYTHON" -m jupyter)
 fi
