@@ -23,7 +23,7 @@ with pandas, NumPy and matplotlib.
 |---|---|---|---|
 | PAHdb **theoretical 4.00** (2024-06-27) | 10,749 species, B3LYP harmonic frequencies with per-band scale factors | the database's download form (e-mail address and citation agreement, submitted by the student on 2026-09-10; link e-mailed; gzip XML, 503 MB unpacked) | sha256 `0d8cb460…` |
 | PAHdb **anharmonic 1.00** (2026-07-01) | 45 species, VPT2 transitions | same form | sha256 `2fb7a776…` |
-| PAHdb **experimental 3.10** | 84 species, matrix-isolation band lists (Module 03's) | same form | sha256 `b8b48777…` |
+| PAHdb **experimental 3.10** | 84 species, matrix-isolation band lists (Module 03's dataset; not used in this module's analysis since 18 Oct 2026) | same form | sha256 `b8b48777…` |
 | Mai et al. 2025 (MNRAS 541, 3073) | MLMD spectra of 1,704 PAHdb species at 50/300/600 K | Zenodo 10.5281/zenodo.15771437, `Supplementary.zip`, 102 MB, CC BY-NC-SA 4.0 | sha256 `8c3688f9…` |
 | Bos et al. 2025 (ACS Omega 10, 62282) | ML-corrected scale factors: SI tables | Europe PMC public copy of the Supporting Information (PMC12750190), CC BY-NC-ND 4.0 | sha256 `3443b354…` |
 
@@ -85,7 +85,6 @@ C–H stretch (1.90 × 10⁶), the C–H out-of-plane (1.58 × 10⁶), the 8.6 �
 | B: PAHdb anharmonic 1.00 | 1 | 1 | 2 | 1 (tetracene) | 0 | 0 | 0 |
 | C: Mai 2025 MLMD | 0 | 1 | 2 | 7 | 1 | 388 | 0 |
 | cheap: Bos 2025 SI | 0 | 1 | 3 | 6 | 2 | 0 | 0 |
-| lab: PAHdb experimental 3.10 (matrix) | 0 | 1 | 3 | 6 | 2 | 0 | 0 |
 
 **Benzene is in no library except the anharmonic one.** That is consistent with the plan: benzene
 is an agreement rung (decision 28) where the comparison is printed and claims nothing. Line B's

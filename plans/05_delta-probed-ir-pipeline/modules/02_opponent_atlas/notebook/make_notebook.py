@@ -47,7 +47,7 @@ md("## Ingestion\n\nOne row per molecular species: identifier (`uid`), formula, 
 code("""sp = pd.read_csv(DATA, dtype={"uid": str, "charge": str})
 print(sp.shape)
 sp.head()""")
-code("""# secondary tables (derived by the same parser from the other two PAHdb libraries and the two other comparison lines)
+code("""# secondary tables (derived by the same parser from the PAHdb anharmonic library, and the two other comparison lines)
 # The full band table of the computed library (2,517,399 rows, 51 MB, out/theoretical_4.00/bands.csv.gz) is not in the repository;
 # notebook/bands_derived/ holds exactly the aggregates and samples the cells below need, written by notebook/make_bands_derived.py.
 DER = Path("bands_derived")
@@ -58,10 +58,9 @@ neutral_hist = pd.read_csv(DER / "neutral_intensity_hist.csv")
 neutral_family = pd.read_csv(DER / "neutral_family_intensity.csv", index_col="family")["summed_intensity_km_mol"]
 b617 = pd.read_csv(DER / "uid617_bands.csv", dtype={"uid": str, "charge": str})
 an_sp = pd.read_csv(OUT / "anharmonic_1.00/species.csv", dtype={"uid": str, "charge": str})
-ex_sp = pd.read_csv(OUT / "experimental_3.10/species.csv", dtype={"uid": str, "charge": str})
 lc_sp = pd.read_csv(OUT / "lineC_mai2025/species.csv", dtype={"uid": str})
 cheap_sp = pd.read_csv(OUT / "cheapline_bos2025/species.csv", dtype={"uid": str, "charge": str})
-print(f"bands: {bands_summary['n_rows']:,} rows; anharmonic: {len(an_sp)} species; experimental: {len(ex_sp)}; line C: {len(lc_sp):,}; cheap line: {len(cheap_sp)}")
+print(f"bands: {bands_summary['n_rows']:,} rows; anharmonic: {len(an_sp)} species; line C: {len(lc_sp):,}; cheap line: {len(cheap_sp)}")
 print("missing values per column (species):"); print(sp.isna().sum()[sp.isna().sum() > 0])""")
 
 md("""## Cleaning
@@ -158,7 +157,7 @@ axes[1].barh(fam.index, fam.values, color="darkorange"); axes[1].set_xlabel("sum
 plt.tight_layout(); fig.savefig(FIG / "fig3_positions_by_family.png", dpi=140); plt.show()
 print(fam.round(0))""")
 md("*Figure 3 interpretation.* Intensity-weighted, the neutral library shows the familiar PAH pattern: the 7.7 µm C–C/C–H in-plane region carries the most summed intensity, then the C–H stretch near 3.3 µm, the C–H out-of-plane bands at 11–14 µm, the 8.6 µm bend and the 6.2 µm C–C stretch. The family label is a frequency-range rule, not an assignment.")
-code("""lines = {"A: PAHdb theoretical 4.00": sp, "B: PAHdb anharmonic 1.00": an_sp, "C: Mai 2025 MLMD": lc_sp, "cheap: Bos 2025 SI": cheap_sp, "lab: PAHdb experimental 3.10 (matrix)": ex_sp}
+code("""lines = {"A: PAHdb theoretical 4.00": sp, "B: PAHdb anharmonic 1.00": an_sp, "C: Mai 2025 MLMD": lc_sp, "cheap: Bos 2025 SI": cheap_sp}
 cov = pd.DataFrame({name: coverage_summary(df) for name, df in lines.items()}).T
 print(cov)
 fig, ax = plt.subplots(figsize=(10, 3.6))

@@ -93,7 +93,7 @@ para("Ingestion: a streaming XML parser (Python's iterparse) reads the 503 MB un
      "The notebook then loads the species table with pandas and displays its first rows. Cleaning: two "
      "documented functions separate the charge suffix from the formula string and flag species whose basis set "
      "cannot be resolved from the route line. Exploratory analysis: one documented function counts species per "
-     "rung of my project's test ladder for each of five comparison lines. Visualizations: five titled and "
+     "rung of my project's test ladder for each of four comparison lines. Visualizations: five titled and "
      "labelled figures. Summary: findings, assumptions and limitations in the notebook's final section. The "
      "whole notebook is rebuilt and executed by a script, so a reviewer obtains the same figures from the same "
      "tables; this follows the guidance that a data-science workflow should be re-runnable from its inputs "
@@ -139,7 +139,7 @@ para("Figure 3 shows the familiar PAH pattern: the 7.7 µm C–C/C–H in-plane 
 figure("fig4_ladder_coverage.png", "Figure 4. Species per ladder rung for each comparison line (all charges); a dash means no entry.")
 para("Figure 4 shows the second surprise: benzene, the project's first test molecule, is in no library except "
      "the small anharmonic one. The smallest entries of the computed library are phenol- and indene-like "
-     "species; the smallest plain PAH is naphthalene. From naphthalene upward all five lines have entries; "
+     "species; the smallest plain PAH is naphthalene. From naphthalene upward all four lines have entries; "
      "above coronene only the computed library and the machine-learning simulation of Mai et al. (2025) "
      "remain, and above 216 carbons only the computed library.")
 figure("fig5_c384h48_sticks.png", "Figure 5. C384H48 (uid 617): the scaled harmonic stick spectrum at B3LYP/4-31G, 1,290 modes.")
