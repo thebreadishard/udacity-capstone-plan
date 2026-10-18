@@ -1,5 +1,6 @@
 """tools/make_module_repo.sh: a module folder becomes its own repository with its own history — main from master, the development branch
 kept — and an existing target is refused."""
+import json
 import shutil
 import subprocess
 from pathlib import Path
@@ -47,3 +48,66 @@ def test_module_history_and_branches_carried_over(tmp_path):
     again = subprocess.run([BASH, SCRIPT.as_posix(), "plans/m02", "module-02", target.as_posix()], cwd=mono, capture_output=True, text=True,
                            timeout=120, check=False)
     assert again.returncode == 2 and "exists" in again.stderr
+
+
+# ---- SUBMISSION.txt: deliverables only, and the notebook runs in a fresh clone (18 Oct 2026)
+
+def _notebook_reading(path: str) -> str:
+    cell = {"cell_type": "code", "source": [f"print(open({path!r}).read())"], "execution_count": None, "outputs": [], "metadata": {}}
+    return json.dumps({"cells": [cell], "metadata": {"kernelspec": {"name": "python3", "display_name": "Python 3", "language": "python"}},
+                       "nbformat": 4, "nbformat_minor": 5})
+
+
+def _module_with_manifest(tmp_path: Path, manifest: str, notebook_reads: str = "data.txt", readme: str = "# m\n") -> Path:
+    mono = tmp_path / "mono"
+    mono.mkdir()
+    _git(mono, "init", "-q", "-b", "master")
+    _git(mono, "config", "user.name", "t")
+    _git(mono, "config", "user.email", "t@t")
+    _commit(mono, "plans/outside.txt", "only in the plan repository", "outside the module")
+    _commit(mono, "plans/m02/build.py", "print('builder')", "builder")
+    _commit(mono, "plans/m02/nb/data.txt", "data", "data")
+    _commit(mono, "plans/m02/nb/work.ipynb", _notebook_reading(notebook_reads), "notebook")
+    _commit(mono, "plans/m02/README.md", readme, "readme")
+    _commit(mono, "plans/m02/SUBMISSION.txt", manifest, "manifest")
+    _git(mono, "branch", "module-02")
+    return mono
+
+
+def _make(mono: Path, target: Path, *extra: str) -> subprocess.CompletedProcess:
+    return subprocess.run([BASH, SCRIPT.as_posix(), "plans/m02", "module-02", target.as_posix(), *extra], cwd=mono, capture_output=True,
+                          text=True, timeout=300, check=False)
+
+
+MANIFEST = "# deliverables\nREADME.md\nSUBMISSION.txt\nnb/\nrun: nb/work.ipynb\n"
+needs_jupyter = pytest.mark.skipif(shutil.which("jupyter") is None, reason="needs jupyter nbconvert")
+
+
+@needs_jupyter
+def test_only_listed_files_kept_and_notebook_runs_standalone(tmp_path):
+    mono = _module_with_manifest(tmp_path, MANIFEST)
+    target = tmp_path / "repo"
+    r = _make(mono, target)
+    assert r.returncode == 0, r.stdout + r.stderr
+    assert sorted(_git(target, "ls-files").split()) == ["README.md", "SUBMISSION.txt", "nb/data.txt", "nb/work.ipynb"]   # the builder is gone
+    assert "build.py" in _git(target, "ls-tree", "-r", "--name-only", "main~1").split()   # ... from main's tip only; the history keeps it
+    assert "1 notebook(s) executed" in r.stdout
+
+
+@needs_jupyter
+def test_notebook_reading_outside_the_module_fails(tmp_path):
+    mono = _module_with_manifest(tmp_path, MANIFEST, notebook_reads="../../outside.txt")   # exists in the plan repository, not in the clone
+    r = _make(mono, tmp_path / "repo")
+    assert r.returncode == 1 and "fails in a fresh clone" in r.stderr
+
+
+def test_no_run_skips_execution_but_not_the_file_checks(tmp_path):
+    mono = _module_with_manifest(tmp_path, MANIFEST + "missing.csv\n")
+    r = _make(mono, tmp_path / "repo", "--no-run")
+    assert r.returncode == 1 and "missing.csv" in r.stderr
+
+
+def test_readme_link_outside_the_repository_fails(tmp_path):
+    mono = _module_with_manifest(tmp_path, MANIFEST, readme="# m\nsee [the parser](../build.py)\n")
+    r = _make(mono, tmp_path / "repo", "--no-run")
+    assert r.returncode == 1 and "README links outside" in r.stderr

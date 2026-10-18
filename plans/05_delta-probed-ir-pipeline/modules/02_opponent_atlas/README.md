@@ -14,9 +14,10 @@ strengths is the molecule's infrared spectrum, and astronomers use such spectra 
 how the numbers were adjusted, and which of the project's own test molecules it covers. Terms such as basis set, scale factor and cation are
 explained where they first appear and in the [glossary](https://github.com/thebreadishard/udacity-capstone-plan/blob/master/plans/05_delta-probed-ir-pipeline/modules/GLOSSARY.md).
 
-**What I built:** a streaming XML parser (`build_opponent_atlas.py`), two smaller readers for the
-other comparison lines, a Jupyter notebook with two cleaning functions, one EDA function and five
-labelled figures (`notebook/data_workflow.ipynb`), and a written summary (`module_summary.pdf`).
+**What I built:** a Jupyter notebook with two cleaning functions, one EDA function and five labelled
+figures (`notebook/data_workflow.ipynb`), and a written summary (`module_summary.pdf`). The tables the
+notebook reads were made by a streaming XML parser and two smaller readers for the other comparison
+lines; those scripts stay in the plan's repository (see *Where the data come from* below).
 
 **Dataset:** NASA Ames PAH IR Spectroscopic Database, computed library version 4.00 —
 https://www.astrochemistry.org/pahdb/theoretical/4.00 (download form; the derived tabular file used by
@@ -30,14 +31,20 @@ pip install -r requirements.txt
 jupyter notebook notebook/data_workflow.ipynb
 ```
 
-Run all cells top to bottom (the notebook is also rebuilt and executed by
-`python notebook/make_notebook.py`). Everything the notebook reads is in the repository: the species
-table beside it, the small comparison tables under `out/`, and `notebook/bands_derived/` — the aggregates and
-samples of the computed library's band table (2,517,399 rows, 51 MB, not shipped) that the band-level cells use,
-written by `python notebook/make_bands_derived.py`. To regenerate everything from the raw XML, place the PAHdb
-download in `data/` and run `python build_opponent_atlas.py data/<file>.xml`, then the derive script.
+Run all cells top to bottom. Everything the notebook reads is in this repository: the species table
+beside it, the three small comparison tables under `out/`, and `notebook/bands_derived/` — the aggregates and
+samples of the computed library's band table (2,517,399 rows, 51 MB, not shipped) that the band-level cells use.
+Before submission the notebook was executed in a fresh clone of this repository, with nothing else present.
 
 `requirements.txt` was created with `pip freeze > requirements.txt`.
+
+### Where the data come from
+
+The tables were made from the PAHdb XML download by scripts that stay in the plan's repository, in the module's
+folder [`modules/02_opponent_atlas`](https://github.com/thebreadishard/udacity-capstone-plan/tree/master/plans/05_delta-probed-ir-pipeline/modules/02_opponent_atlas): `build_opponent_atlas.py` (the
+streaming parser), `build_line_c_table.py` and `build_cheap_line_table.py` (the two other comparison lines),
+`notebook/make_bands_derived.py` (the band aggregates) and `notebook/make_notebook.py` (writes and executes this
+notebook). Sources, versions and checksums are in that folder's `PROVENANCE.md`, the long-form report in `REPORT.md`.
 
 ## Reflection questions
 
@@ -69,18 +76,15 @@ change such a check would surface.
 
 ## Files
 
-- `build_opponent_atlas.py` — the streaming parser; per library `out/<database>_<version>/species.csv`, `bands.csv.gz`,
-  `c384_class.csv` and `SUMMARY.md`.
-- `build_line_c_table.py`, `build_cheap_line_table.py` — the two other comparison lines (the Mai 2025 peak lists; the Bos 2025
-  table joined to PAHdb uids).
-- `c384_environments.py` → `out/theoretical_4.00/c384_environments.md` — the symmetry-unique local-environment count of
-  C₃₈₄H₄₈ (36 unique carbons, 4 unique hydrogens, 56 unique bond fragments of 600; D6h confirmed numerically on PAHdb's
-  geometry), the input the report's limitations section asks for.
-- `notebook/data_workflow.ipynb` — Setup · Ingestion · Cleaning · EDA · Visualizations · Summary; written and executed by
-  `notebook/make_notebook.py`; `notebook/make_bands_derived.py` writes `notebook/bands_derived/`.
-- `make_summary.py` → `module_summary.docx/.pdf` — the written summary in the Udacity APA 7 template.
-- `REPORT.md` — the long-form report; `PROVENANCE.md` — sources, checksums and status (project notes).
+- `notebook/data_workflow.ipynb` — Setup · Ingestion · Cleaning · EDA · Visualizations · Summary.
+- `notebook/species_pahdb_theoretical_4.00.csv` — the tidy species table of the computed library (10,749 rows × 27 columns).
+- `notebook/bands_derived/` — aggregates and samples of the band table that the band-level cells read.
+- `notebook/figures/` — the five figures, as the notebook writes them.
+- `out/anharmonic_1.00/species.csv`, `out/lineC_mai2025/species.csv`, `out/cheapline_bos2025/species.csv` — the species
+  tables of the three other comparison lines (PAHdb's anharmonic library, the Mai 2025 peak lists, the Bos 2025 table).
+- `module_summary.pdf` — the written summary in the Udacity APA 7 template.
+- `SUBMISSION.txt` — the list of files this repository holds.
 
 ## Repository
 
-Submitted as the repository `ai-programming-foundations-project` (the name Task 2 of the rubric gives), with two branches: `main` and the development branch `module-02-opponent-atlas`. Its commit history is this module's own, carried over from the plan's repository [udacity-capstone-plan](https://github.com/thebreadishard/udacity-capstone-plan), where the module lives as `plans/05_delta-probed-ir-pipeline/modules/02_opponent_atlas/`.
+Submitted as the repository `ai-programming-foundations-project` (the name Task 2 of the rubric gives), with two branches: `main` and the development branch `module-02-opponent-atlas`. Its commit history is this module's own, carried over from the plan's repository [udacity-capstone-plan](https://github.com/thebreadishard/udacity-capstone-plan), where the module lives as `plans/05_delta-probed-ir-pipeline/modules/02_opponent_atlas/`. The last commit on `main` keeps only the files listed in `SUBMISSION.txt`: the notebook, the data it reads, the figures and the summary.

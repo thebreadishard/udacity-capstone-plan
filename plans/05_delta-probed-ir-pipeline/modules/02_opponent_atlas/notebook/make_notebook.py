@@ -22,7 +22,7 @@ md("""# Module 02 — the opponent atlas: a data workflow on NASA's PAHdb comput
 
 **This table is parsed from the public NASA Ames PAHdb v4.00 computed library (DOI 10.3847/1538-4365/ae1c38). It is computed science data, not AI-generated, and it is the *opponent* of this project's pipeline, not its training data.**
 
-Plan 05 (Δ-probed IR pipeline), Module 02 of the Udacity AI Mastery Capstone. The dataset is the tidy species table `species_pahdb_theoretical_4.00.csv` in this folder (10,749 rows × 27 columns), produced by `../build_opponent_atlas.py` from the library's XML download; the per-band table (2.5 million rows) is read from `../out/` for the plots that need it. Sources, versions and checksums are in `../PROVENANCE.md`; the written summary with citations is `../module_summary.pdf`.
+Plan 05 (Δ-probed IR pipeline), Module 02 of the Udacity AI Mastery Capstone. The dataset is the tidy species table `species_pahdb_theoretical_4.00.csv` in this folder (10,749 rows × 27 columns), produced from the library's XML download by a streaming parser that stays in the plan's repository (`build_opponent_atlas.py` in [the module's folder](https://github.com/thebreadishard/udacity-capstone-plan/tree/master/plans/05_delta-probed-ir-pipeline/modules/02_opponent_atlas), with `PROVENANCE.md` for sources, versions and checksums); the per-band table (2.5 million rows) is not shipped, and the plots that need it read its aggregates in `bands_derived/`. The written summary with citations is `module_summary.pdf` at the top of this repository.
 
 Sections: **Setup · Ingestion · Cleaning · EDA · Visualizations · Summary**.""")
 

@@ -1,0 +1,14 @@
+# What the submission repository ai-programming-foundations-project holds (read by tools/make_module_repo.sh, 18 Oct 2026).
+# The notebook must run in a fresh clone of that repository alone; the scripts that made its data stay in the plan repository.
+README.md
+requirements.txt
+module_summary.pdf
+SUBMISSION.txt
+notebook/data_workflow.ipynb
+notebook/species_pahdb_theoretical_4.00.csv
+notebook/bands_derived/
+notebook/figures/
+out/anharmonic_1.00/species.csv
+out/cheapline_bos2025/species.csv
+out/lineC_mai2025/species.csv
+run: notebook/data_workflow.ipynb
