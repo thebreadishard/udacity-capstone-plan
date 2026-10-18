@@ -223,3 +223,22 @@ The local-environment features are kinetic-energy shares of the mode on: hydroge
 solo, duo, trio, quartet, five or more), fusion atoms, heteroatoms with their hydrogens, substituent atoms (`probes/s2_features.py`, tested
 on naphthalene, benzene, phenanthrene, phenylacetylene and aniline). The search runs on both scopes ('all', 'no-large-amplitude') with
 GVPT2 labels.
+
+## The search's outcome (18 Oct 2026, 14:3x; `search_no-large-amplitude/`, `search_all/`)
+
+36 configurations (3 feature sets × ridge / 27 kernel-ridge / 6 network settings), nested leave-one-scaffold-out, GVPT2 labels.
+
+| family | scope no-large-amplitude: nested rms | ridge-F1 (route (b)) | (c) family constant | scope all: nested rms |
+|---|---|---|---|---|
+| CH-oop | 7.63 | 5.67 | 5.89 | 6.58 |
+| ring-ip | 3.79 | 3.81 | 9.38 | 3.52 |
+| other | 4.84 | 4.60 | 5.39 | 19.05 |
+
+**No family is licensed.** The nested score is no better than route (b) in any family and worse for CH-oop, where it is also worse than a
+constant per family. The landscape (information only) says why: every model gets worse when the local-environment and proximity
+features are added (CH-oop 5.7 → 6.2–8.3, ring-ip 3.8 → 4.5–5.9) — with 14 molecules and ~420 modes the extra inputs are fitted, not
+learned; the C–H adjacency class did not help CH-oop. Kernel ridge on F1 alone gains a little on ring-ip (3.51–3.57 against 3.81). The
+networks stopped early (best epochs 32–173, no cap hit). Prediction (3) of amendment 2 ('CH-oop improves most from the adjacency class')
+is wrong. Reading by amendment 2 §4: the simple model is bias-limited (in-sample ≈ held-out) and the richer ones are variance-limited at
+this size; no configuration reaches the line. Next, as registered: the cheap anharmonic input (GFN2-xTB Δ_anh per mode) for Δ-learning,
+registered before it runs; the alternatives (more molecules at G — paid, before 15 Nov; the fallbacks of line 3) go to the user.
