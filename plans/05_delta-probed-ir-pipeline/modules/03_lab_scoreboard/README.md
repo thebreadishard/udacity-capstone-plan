@@ -60,3 +60,10 @@ and `PROVENANCE.md` (sources, versions, checksums).
 - `Statistical_Analysis_Report.pdf` — the Statistical Analysis Report in the Udacity APA 7 template; `module_summary.pdf` is the same file
   under the name the rubric's overview uses.
 - `SUBMISSION.txt` — the list of files this repository holds.
+
+## Repository
+
+Submitted as the public repository `udacity-statistical-analysis`, with two branches: `main` (the default branch the review reads) and the
+development branch `module-03-lab-scoreboard`. Its commit history is this module's own, carried over from the plan's repository
+[udacity-capstone-plan](https://github.com/thebreadishard/udacity-capstone-plan), where the module lives as
+`plans/05_delta-probed-ir-pipeline/modules/03_lab_scoreboard/`. The last commit on `main` keeps only the files listed in `SUBMISSION.txt`.

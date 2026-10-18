@@ -92,7 +92,7 @@ written by hand (a judgement per model). Reads and transfers (`m05/rungC_cc_tran
 
 - `RECIPE.md` — task type, label rule, corpus, baseline, the one controlled change, metrics, seeds; frozen before any data, amended by dated note only.
 - `notebook/make_notebook.py` → `notebook/deep_learning.ipynb`; `notebook/results.json` (main run) and `results_followup{,2,3,4,5}.json` (sections 7–11; section 12 reads `out/E7_rungC_*`); `notebook/figures/`.
-- `make_summary.py` → `module_summary.docx`, `module_summary.pdf` (Report Overview, Dataset and Task Description, Model Architecture and Design
+- `make_summary.py` → `Deep_Learning_Systems_Analysis_Report.docx/.pdf`, copied to `module_summary.pdf` (Report Overview, Dataset and Task Description, Model Architecture and Design
   Decisions, Experimental Comparison, Results and Interpretation, Limitations and Risks, Ethical and Responsible Use, Future Improvements, References; four addenda).
 - `m05/deltah_model.py` (+ `sync_model.py`), `m05/build_release.py`, `m05/release_index.py`; the E-series scripts `m05/e6_*`, `e7_*`, `e9_*`, `e10_*`, `e11_*`.
 - Rung C: `m05/rungC_equivariant.py` (body, charge-state input), `rungC_hybrid.py` (head), `rungC_targets.py` (ridge target), `rungC_train.py` (trainer, `--kdiag-mode family`, `--save-model`), `rungC_cc_transfer.py` (T3), `rungC_intensities.py`, `rungC_pretrain.py`, `rungC_stage_pick.py`; `m05/model_registry.py` → `MODELS.md` + `out/MODELS_STATUS.json`; `m05/design_check.py` (before every run).
