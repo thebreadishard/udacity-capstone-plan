@@ -1,0 +1,16 @@
+{"name": "s1tz_acenaphthylene",
+ "purpose": "TASKS 60: S1-TZ phase 2 on s1 — acenaphthylene (A_45187bb7c8) at T:def2-tzvp:75,302 with the grid gate, priced on benzene's first T Hessians (PreRegistration_2026-10-14_TZ_Anharmonic_Basis.md). MAX_FIRST 7400 s = 1.5 × the price: benzene T 572 s per Hessian against G 112 s (factor 5.1, measured) times acenaphthylene's measured G 967 s ≈ 4,900 s",
+ "host": "s1",
+ "workdir": "/root/dpir_s1tz",
+ "command": "MAX_FIRST=7400 bash probes/s1tz_run.sh S1TZC probes/results_m1/s1tz_2026-10-18/ids_acenaphthylene.tsv /root/s1tz_acenaphthylene 1 5",
+ "sources": [
+  {"local": "probes/s1tz_run.sh", "remote": "/root/dpir_s1tz/probes/s1tz_run.sh"},
+  {"local": "probes/progress_on_growth.sh", "remote": "/root/dpir_s1tz/probes/progress_on_growth.sh"},
+  {"local": "probes/results_m1/s1tz_2026-10-18/ids_acenaphthylene.tsv", "remote": "/root/dpir_s1tz/probes/results_m1/s1tz_2026-10-18/ids_acenaphthylene.tsv"}
+ ],
+ "progress": {"regex": "^=== \\(S1TZC\\) progress: |^=== \\(S2\\) [A-Za-z0-9_]+: (done|NOISY)", "max_gap_minutes": 120},
+ "marker_regex": "^=== \\(S2\\) |^=== \\(S1TZC\\) command ended",
+ "end_regex": "^=== \\(S2\\) all done",
+ "dry_run_args": "--dry-run",
+ "threads": 5,
+ "estimate": {"hours": 150, "basis": "109 Hessians × ≈ 4,900 s at 5 threads: benzene's measured T/G factor 5.1 (572 / 112 s) × acenaphthylene's measured G time 967 s"}}
