@@ -19,3 +19,28 @@ jupyter notebook notebook/agentic_system.ipynb         # the notebook (rebuilt a
 endpoint (with `OPENAI_BASE_URL`, e.g. the course's Vocareum endpoint); `STEWARD_PROVIDER` / `STEWARD_MODEL` override the choice, and the
 provider and model id are written into every proposal. No machine is touched in either mode. Terms are explained in the [glossary](https://github.com/thebreadishard/udacity-capstone-plan/blob/master/plans/05_delta-probed-ir-pipeline/modules/GLOSSARY.md).
 
+The notebook runs in the same environment (its kernel must be the Python with LangGraph); before submission it was executed in a fresh
+clone of this repository, with nothing else present. `requirements.txt` was created with `pip freeze > requirements.txt`.
+
+## Files
+
+- `notebook/agentic_system.ipynb` — the agent: the problem, the graph, the gate, the replay of the 17 scenarios, the results.
+- `steward/` — the agent's code: `graph.py` (the LangGraph graph), `gate.py` (the deterministic gate), `policy.py` (rule-table and LLM
+  policies), `rules.py`, `schema.py` (the closed action list), `tools.py` (the replay tools).
+- `rules/` — the rule tables (`rules_v1.json`, `rules_v2.json`), the lessons the policy applies.
+- `scenarios/` — the 17 scenarios and the log excerpts they replay (`fixtures/`).
+- `run_scenarios.py` — the command-line runner; `out/` — its recorded results; `tests/` — the gate's and the rules' tests.
+- `notebook/results.json`, `notebook/figures/` — the notebook's numbers and figure.
+- `Agentic_AI_System_Design_Report.pdf` — the report in the Udacity APA 7 template.
+- `SUBMISSION.txt` — the list of files this repository holds.
+
+The design note, the provenance notes and the scripts that build the notebook and the report stay in the plan's repository, in the module's
+folder [`modules/07_agentic_workflows`](https://github.com/thebreadishard/udacity-capstone-plan/tree/master/plans/05_delta-probed-ir-pipeline/modules/07_agentic_workflows).
+
+## Repository
+
+Submitted as the public repository `udacity-agentic-workflows` (its default branch `main` is the one the review reads). Its commit history
+is this module's own, carried over from the plan's repository [udacity-capstone-plan](https://github.com/thebreadishard/udacity-capstone-plan),
+where the module lives as `plans/05_delta-probed-ir-pipeline/modules/07_agentic_workflows/`. The last commit on `main` keeps only the files
+listed in `SUBMISSION.txt`.
+

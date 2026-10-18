@@ -12,11 +12,22 @@
 # link leaves the repository, and every 'run:' notebook executes there with no error and no unexecuted cell (tools/notebook_ran.py).
 # Any failure stops with exit 1. --no-run skips the execution (a notebook that trains for hours), not the other checks.
 # <dev branch> '-' (18 Oct 2026): a module without a development branch (the rubrics of 03–09 ask for none) gets `main` only.
+# --python PATH (18 Oct 2026): the notebooks execute in that interpreter's environment (module 07: its .venv with LangGraph), through a
+# temporary 'python3' kernelspec in the check folder; without it, `jupyter` on PATH and its 'python3' kernel.
 # Run from anywhere inside the plan repository; the temporary split branches are removed again.
 set -euo pipefail
 NO_RUN=0
+NB_PYTHON=""
 ARGS=()
-for a in "$@"; do [ "$a" = --no-run ] && NO_RUN=1 || ARGS+=("$a"); done
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --no-run) NO_RUN=1 ;;
+    --python) NB_PYTHON=${2:?--python needs a path}; shift ;;
+    *) ARGS+=("$1") ;;
+  esac
+  shift
+done
+[ -z "$NB_PYTHON" ] || [ -x "$NB_PYTHON" ] || { echo "--python $NB_PYTHON is not an executable" >&2; exit 2; }
 MODULE=${ARGS[0]:?module dir, relative to the repository root}
 DEV=${ARGS[1]:?development branch}
 TARGET=${ARGS[2]:?target dir (must not exist)}
@@ -86,12 +97,20 @@ fi
 CHECK=$(mktemp -d)
 git clone -q "$TARGET" "$CHECK/repo"
 if grep -nE '\]\(\.\./' "$CHECK/repo/README.md" 2> /dev/null; then echo "README links outside the repository (above)" >&2; exit 1; fi
+JUPYTER=(jupyter)
+if [ -n "$NB_PYTHON" ]; then
+  mkdir -p "$CHECK/jupyter/kernels/python3"
+  printf '{"argv": ["%s", "-m", "ipykernel_launcher", "-f", "{connection_file}"], "display_name": "Python 3 (submission check)", "language": "python"}\n' \
+    "$NB_PYTHON" > "$CHECK/jupyter/kernels/python3/kernel.json"
+  export JUPYTER_DATA_DIR="$CHECK/jupyter"
+  JUPYTER=("$NB_PYTHON" -m jupyter)
+fi
 if [ "$NO_RUN" = 0 ]; then
   for spec in "${runs[@]}"; do
     read -r -a words <<< "$spec"
     nb=${words[0]}
     d=$(dirname "$CHECK/repo/$nb")
-    (cd "$d" && env "${words[@]:1}" jupyter nbconvert --to notebook --execute "$(basename "$nb")" --output-dir "$CHECK/out" --output ran.ipynb \
+    (cd "$d" && env "${words[@]:1}" "${JUPYTER[@]}" nbconvert --to notebook --execute "$(basename "$nb")" --output-dir "$CHECK/out" --output ran.ipynb \
       --ExecutePreprocessor.timeout=1800 > "$CHECK/nbconvert.log" 2>&1) || { tail -5 "$CHECK/nbconvert.log" >&2; echo "notebook $nb fails in a fresh clone" >&2; exit 1; }
     python "$TOOLS/notebook_ran.py" "$CHECK/out/ran.ipynb" || exit 1
   done

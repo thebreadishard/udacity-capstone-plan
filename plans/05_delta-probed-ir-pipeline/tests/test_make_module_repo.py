@@ -3,6 +3,7 @@ kept — and an existing target is refused."""
 import json
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -132,6 +133,16 @@ def test_a_module_without_a_development_branch_gets_main_only(tmp_path):
                        timeout=300, check=False)
     assert r.returncode == 0, r.stdout + r.stderr
     assert _git(target, "branch", "--format=%(refname:short)").split() == ["main"]
+
+
+@needs_jupyter
+def test_notebooks_run_in_the_interpreter_given(tmp_path):
+    mono = _module_with_manifest(tmp_path, MANIFEST)
+    r = _make(mono, tmp_path / "repo", "--python", Path(sys.executable).as_posix())
+    assert r.returncode == 0, r.stdout + r.stderr
+    bad = subprocess.run([BASH, SCRIPT.as_posix(), "plans/m02", "-", (tmp_path / "repo2").as_posix(), "--python", "/no/such/python"],
+                         cwd=mono, capture_output=True, text=True, timeout=120, check=False)
+    assert bad.returncode == 2 and "not an executable" in bad.stderr
 
 
 def test_readme_link_outside_the_repository_fails(tmp_path):

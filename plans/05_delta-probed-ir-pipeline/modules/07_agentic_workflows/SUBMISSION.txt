@@ -1,0 +1,16 @@
+# What module 07's submission repository holds (read by tools/make_module_repo.sh, 18 Oct 2026).
+# The notebook must run in a fresh clone of that repository alone; the scripts that made its report stay in the plan repository.
+README.md
+requirements.txt
+Agentic_AI_System_Design_Report.pdf
+SUBMISSION.txt
+notebook/agentic_system.ipynb
+notebook/results.json
+notebook/figures/
+run_scenarios.py
+steward/
+rules/
+scenarios/
+tests/
+out/
+run: notebook/agentic_system.ipynb
