@@ -123,3 +123,21 @@ does not end at the cap. The 26 September outcome stands as run.
 ## Dated note 5 October 2026 — the re-execution was reverted
 
 *Re-execution of 5 October 2026, not adopted:* the lay-reader pass's execution half re-ran the notebook with `M06_REUSE=1`. Seeds 0 and 1 reproduced the 26 September numbers to the digit, but seed 2's checkpoint had never been saved on 26 September (only its training log), so the reuse path trained seed 2 anew (20 epochs, 6 threads): a different model with validity 0.647 at T 1.0 against 0.923, which flipped two of the seven pre-registered read-outs. A retrained seed is a new run, not a reproduction, so the 26 September record stands (notebook, `results.json`, report restored from git; the 4 October plain-language opening is in them), and the retrained checkpoint is registered `invalid` in `MODELS.md`. What follows, as a dated follow-up if the user wants it (TASKS 26): retrain seed 2 with the recipe and save it, and store the drawn samples so a re-execution evaluates stored artefacts instead of redrawing.
+
+## Addition (18 Oct 2026, before it is computed) — the PAHdb comparison the report promised
+
+The report and the notebook's ethics cell say that PAHdb's species list is the comparison set for how far the samples sit from the
+astrochemical distribution; no such comparison was computed (modules review of 17 Oct). The user, 18 Oct: compute it. Descriptive, no line.
+
+**Sets.** (G) seed 0's 10,000 samples at temperature 1.0, regenerated from its saved weights with the notebook's own call
+(`generate(model, vocab, n=10000, temperature=1.0, seed=0)`), valid and unique (canonical SMILES) — the regeneration counts only if its
+validity and uniqueness equal `results.json`'s `seed0_T1.0` (0.9239, 0.99167); the raw samples are committed. (P) the PubChem dataset, all
+160,972 rows. (A) PAHdb's computed library v4.00, neutral species made of C, H, N and O only (module 02's species table, reduced to a
+formula table committed in `data/`).
+
+**Measures**, from the molecular formula alone (PAHdb has no SMILES): the carbon count n_C; the H/C ratio; the shares of molecules with N
+and with O; the share with any other element (S, F, Cl — none in A). Between each pair of sets, the Wasserstein-1 distance of n_C and of
+H/C. Figure: the three n_C and H/C histograms.
+
+**Expectation.** G sits close to P and far from A: smaller (P and G: mostly 10–20 C; A: tens to hundreds), richer in hydrogen (substituents)
+and in heteroatoms. W1(G, P) small against W1(G, A) and W1(P, A) on both measures. This is the bias the ethics cell names, measured.
