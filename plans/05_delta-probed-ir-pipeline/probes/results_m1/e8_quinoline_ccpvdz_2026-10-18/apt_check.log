@@ -1,0 +1,1 @@
+{"apt": "results/quinoline_ccpvdz/apt_ccsd_t_field.npz", "sum_rule": 1.226796442210798e-10, "seconds": 6157, "passed": true, "ref": "results/quinoline_ccpvdz/apt_ccsd_t.npz", "max_abs_diff": 0.0003504982236662013, "line": 0.001, "ref_sum_rule": 0.0004439489949417952}
