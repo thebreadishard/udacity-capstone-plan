@@ -1,4 +1,4 @@
-# pyVPT2 issue + PR: the GVPT2 polyad solver (drafted 18 Oct 2026; **not posted — waits for the user's word**)
+# pyVPT2 issue + PR: the GVPT2 polyad solver (drafted 18 Oct 2026; **posted 18 Oct 14:0x on the user's word, 'push en/of plaats je bug fixes maar': issue philipmnel/pyvpt2#60, PR philipmnel/pyvpt2#61**)
 
 *Branch `polyad-assignment-and-merge` in the WSL worktree `~/pyvpt2-wt-polyad`, one commit eb353ab on upstream main 2eae571; not pushed.
 Separate from PR #59 (branch `check-routes-before-averaging`). Found in S2 amendment 2 §1 (GVPT2 labels from our force fields): upstream's
