@@ -31,6 +31,9 @@ GTOL = 1e-6                     # E_h/bohr, max component: tighter than geomeTRI
 
 
 BFGS_GTOL = 1e-4                # hand-over to the Newton polish
+DIIS_CYCLES = 200               # an SCF step's DIIS budget; beyond it the second-order solver continues
+NEWTON_CYCLES = 100
+NEWTON_CONV_TOL_GRAD = 1e-6      # the second-order solver's orbital gradient stalls near 3e-7 on a DFT grid; DIIS finishes
 
 
 def external_basis(x: np.ndarray) -> np.ndarray:
@@ -96,7 +99,7 @@ def optimise(symbols, x0, energy_and_gradient, gtol=BFGS_GTOL, max_iter=200, log
     return flat.reshape(n, 3), float(e), gmax, len(hist)
 
 
-def pyscf_energy_and_gradient(symbols, basis, grid, threads, hessian=False):
+def pyscf_energy_and_gradient(symbols, basis, grid, threads, hessian=False, diis_cycles=DIIS_CYCLES):
     """eg(x) → (E, g), or (E, g, H) with hessian=True (Cartesian, E_h/bohr²), at the S1 setting."""
     from pyscf import dft, gto, lib
     from pyscf.hessian import rks as rks_hess
@@ -111,10 +114,22 @@ def pyscf_energy_and_gradient(symbols, basis, grid, threads, hessian=False):
         mf.grids.prune = None
         mf.conv_tol = 1e-11
         mf.conv_tol_grad = 1e-8
-        mf.max_cycle = 200
+        mf.max_cycle = diis_cycles
         e = mf.kernel()
         if not mf.converged:
-            raise SystemExit("SCF not converged during the optimisation")
+            # second-order fallback from DIIS's orbitals (pyscf examples/scf/22-newton.py: xc and grid first, then .newton()) to near
+            # convergence, then DIIS again from its density to the tight thresholds
+            mo, occ = mf.mo_coeff, mf.mo_occ
+            nf = mf.newton()
+            nf.max_cycle, nf.conv_tol_grad = NEWTON_CYCLES, NEWTON_CONV_TOL_GRAD
+            nf.kernel(mo, occ)
+            if not nf.converged:
+                raise SystemExit("SCF not converged during the optimisation (DIIS, then the second-order solver)")
+            mf = nf.undo_newton()
+            mf.max_cycle = diis_cycles
+            e = mf.kernel(dm0=mf.make_rdm1())
+            if not mf.converged:
+                raise SystemExit("SCF not converged during the optimisation (DIIS after the second-order solver)")
         g = mf.nuc_grad_method().kernel()
         if not hessian:
             return e, g
