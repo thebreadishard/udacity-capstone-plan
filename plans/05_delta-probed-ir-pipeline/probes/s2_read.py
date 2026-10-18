@@ -242,7 +242,7 @@ def load_selection(root, selection_path, setting="G", extra=None):
         if rec is None:
             excluded[m["id"]] = why
             continue
-        rec["id"] = m["id"]
+        rec["id"], rec["dir"] = m["id"], d
         by_scaf.setdefault(m["scaffold"], []).append(rec)
         used.append({"id": m["id"], "scaffold": m["scaffold"], "planar": rec["planar"], "n_modes": len(rec["omega"]),
                      "n_window": int(((rec["omega"] >= WINDOW[0]) & (rec["omega"] <= WINDOW[1])).sum())})
