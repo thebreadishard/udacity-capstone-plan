@@ -55,8 +55,8 @@ kept in `out/figshare_record_26363959.json`; the archive and shards stay out of 
    figure in the memory notes is an order of magnitude, not a plan number. **The subset size is fixed by
    a dated note** after the naphthalene dry run prints its Hessian timing and the machine is decided (P13).
    Not while an anchor job runs.
-3. **The Zenodo release** of the corpus (Δ₂ tensors, labels, deck hashes) — the user; before the module's
-   official start.
+3. ~~**The Zenodo release** of the corpus~~ — **dropped 18 Oct 2026 (the user)**: the releases are public in this repository and, since 27 September 2026, in the plan's public GitHub repository with their
+   manifests, which meets the rubric's 'publicly available'; a DOI for these data comes with paper D's data release.
 4. **Reading-2 fallback** — a second public Hessian source, to be searched and verified; none named.
 5. **The label threshold θ** and the P3 effect size — pilot-note item 5 (RECIPE gives θ = 0.1 as candidate).
 6. The notebook (`deep_learning.ipynb`), the report in the APA template with the nine prescribed sections,

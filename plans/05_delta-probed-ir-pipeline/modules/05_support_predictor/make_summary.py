@@ -108,8 +108,9 @@ para(f"Each molecule is a sequence of normal-mode tokens; a token carries the mo
      f"the ωB97X and B3LYP Hessians; its diagonal is the first-order band shift of each mode and its off-diagonal elements are the couplings "
      f"between modes of one family. The release holds {MAN['n_molecules']} molecules with up to {MAN['max_modes']} modes each "
      f"({', '.join(f'{FAM[k]} {v:,}' for k, v in MAN['mode_counts_per_family'].items())} modes); every input file is listed with its SHA-256 in the "
-     f"release manifest. The data are computed ab initio data produced by this project's corpus factory, released publicly with a DOI before the "
-     f"module's submission; they are not synthetic in the sense of model-generated, not AI-generated, and not the PAHdb or NIST data of Modules 02–04. "
+     f"release manifest. The data are computed ab initio data produced by this project's corpus factory, "
+     f"public in this repository and, since 27 September 2026, in the plan's public GitHub repository; "
+     f"they are not synthetic in the sense of model-generated, not AI-generated, and not the PAHdb or NIST data of Modules 02–04. "
      f"Splits are by molecule ({R['splits']['train']} training, {R['splits']['val']} validation, {R['splits']['test']} test), because the modes of one "
      f"molecule are strongly correlated (Danchev, 2022, on reproducible workflows; the splitting rule was fixed in the recipe before training).")
 

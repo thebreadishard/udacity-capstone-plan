@@ -6,7 +6,8 @@
 # the repository on GitHub and pushes both branches (the commands are printed at the end).
 #   bash tools/make_module_repo.sh plans/05_delta-probed-ir-pipeline/modules/02_opponent_atlas module-02-opponent-atlas /c/tmp/ai-programming-foundations-project
 # 18 Oct 2026 (the user: a submitted module must run standalone — other modules' folders do not exist then; builders stay in the plan
-# repository, option 1): when the module holds a SUBMISSION.txt (one path or 'dir/' per line, '#' comments, 'run: <notebook>' lines), `main`
+# repository, option 1): when the module holds a SUBMISSION.txt (one path or 'dir/' per line, '#' comments, 'run: <notebook> [VAR=value …]'
+# lines, the assignments set for that notebook's execution only — module 05's labelled pipeline check M05_QUICK=1), `main`
 # gets one more commit that keeps only those files, and the repository is then checked in a fresh clone: every listed path exists, no README
 # link leaves the repository, and every 'run:' notebook executes there with no error and no unexecuted cell (tools/notebook_ran.py).
 # Any failure stops with exit 1. --no-run skips the execution (a notebook that trains for hours), not the other checks.
@@ -56,6 +57,10 @@ if [ -f "$MANIFEST" ]; then
     case "$line" in run:*) runs+=("$(echo "${line#run:}" | sed 's/^[[:space:]]*//')") ;; *) keep+=("$line") ;; esac
   done < "$MANIFEST"
   for k in "${keep[@]}"; do [ -e "$TARGET/$k" ] || { echo "SUBMISSION.txt lists $k, which the module does not hold" >&2; exit 1; }; done
+  for spec in "${runs[@]}"; do
+    read -r -a words <<< "$spec"
+    for w in "${words[@]:1}"; do [[ "$w" =~ ^[A-Za-z_][A-Za-z0-9_]*=[^[:space:]]*$ ]] || { echo "run line '$spec': '$w' is not a VAR=value assignment" >&2; exit 1; }; done
+  done
   drop=()
   while IFS= read -r f; do
     hit=0
@@ -75,9 +80,11 @@ CHECK=$(mktemp -d)
 git clone -q "$TARGET" "$CHECK/repo"
 if grep -nE '\]\(\.\./' "$CHECK/repo/README.md" 2> /dev/null; then echo "README links outside the repository (above)" >&2; exit 1; fi
 if [ "$NO_RUN" = 0 ]; then
-  for nb in "${runs[@]}"; do
+  for spec in "${runs[@]}"; do
+    read -r -a words <<< "$spec"
+    nb=${words[0]}
     d=$(dirname "$CHECK/repo/$nb")
-    (cd "$d" && jupyter nbconvert --to notebook --execute "$(basename "$nb")" --output-dir "$CHECK/out" --output ran.ipynb \
+    (cd "$d" && env "${words[@]:1}" jupyter nbconvert --to notebook --execute "$(basename "$nb")" --output-dir "$CHECK/out" --output ran.ipynb \
       --ExecutePreprocessor.timeout=1800 > "$CHECK/nbconvert.log" 2>&1) || { tail -5 "$CHECK/nbconvert.log" >&2; echo "notebook $nb fails in a fresh clone" >&2; exit 1; }
     python "$TOOLS/notebook_ran.py" "$CHECK/out/ran.ipynb" || exit 1
   done

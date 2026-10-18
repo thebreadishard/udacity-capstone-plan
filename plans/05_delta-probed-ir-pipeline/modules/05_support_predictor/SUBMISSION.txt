@@ -1,0 +1,27 @@
+# What module 05's submission repository holds (read by tools/make_module_repo.sh, 18 Oct 2026).
+# The notebook must run in a fresh clone of that repository alone; the scripts that made its data stay in the plan repository.
+# The standalone check runs the notebook's labelled pipeline check (M05_QUICK=1: fewer epochs, one seed, never a result); the stored notebook
+# is the full run.
+README.md
+requirements.txt
+Deep_Learning_Systems_Analysis_Report.pdf
+module_summary.pdf
+RECIPE.md
+MODELS.md
+SUBMISSION.txt
+notebook/deep_learning.ipynb
+notebook/results.json
+notebook/results_followup.json
+notebook/results_followup2.json
+notebook/results_followup3.json
+notebook/results_followup4.json
+notebook/results_followup5.json
+notebook/figures/
+m05/deltah_model.py
+data/corpus_release/
+data/second_route/
+data/e8/
+data/e9/
+out/
+corpus/manifest.csv
+run: notebook/deep_learning.ipynb M05_QUICK=1

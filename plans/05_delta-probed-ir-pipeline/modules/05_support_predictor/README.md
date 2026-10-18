@@ -6,7 +6,7 @@
 
 ## Project description (as it reads)
 
-*For readers without chemistry:* The colours at which a molecule absorbs infrared light follow from a table of spring stiffnesses between its atoms (the Hessian). A cheap calculation (DFT) gives that table with systematic errors; the expensive one (coupled cluster) gets it right but is affordable only for small molecules. This network learns the *difference* between the two tables from the molecule's structure and the cheap table, trained on a corpus of cheap-against-cheap differences and checked against the few expensive ones (the anchors). It is judged on molecules it never saw (hold-outs), per kind of vibration (family), in cm⁻¹ — a small unit of colour; the goal is a few cm⁻¹ where the cheap calculation is off by tens. Terms are defined in [`../GLOSSARY.md`](../GLOSSARY.md).
+*For readers without chemistry:* The colours at which a molecule absorbs infrared light follow from a table of spring stiffnesses between its atoms (the Hessian). A cheap calculation (DFT) gives that table with systematic errors; the expensive one (coupled cluster) gets it right but is affordable only for small molecules. This network learns the *difference* between the two tables from the molecule's structure and the cheap table, trained on a corpus of cheap-against-cheap differences and checked against the few expensive ones (the anchors). It is judged on molecules it never saw (hold-outs), per kind of vibration (family), in cm⁻¹ — a small unit of colour; the goal is a few cm⁻¹ where the cheap calculation is off by tens. Terms are defined in the [glossary](https://github.com/thebreadishard/udacity-capstone-plan/blob/master/plans/05_delta-probed-ir-pipeline/modules/GLOSSARY.md).
 
 **Task type: sequence modelling with a Transformer.** A molecule is a sequence of DFT normal-mode tokens (one per vibration: frequency, band
 family, symmetry and environment descriptors). The network predicts, per band family, the *correction block* between two levels of theory — the
@@ -64,21 +64,22 @@ extra layers change nothing outside seed scatter. That reading is the module's h
 ## How to run
 
 ```bash
-pip install -r requirements.txt                                   # frozen by tools/freeze_environments.py from the Windows environment (3 Oct 2026; torch 2.14.0+cpu, rdkit, geometric)
-python m05/build_release.py corpus/molecules data/corpus_release/layerA2_2026-09-23   # dataset file + manifest (needs the corpus folders; RELEASES.md lists the releases)
-M05_RELEASE=layerA2_2026-09-23 python notebook/make_notebook.py    # writes and executes notebook/deep_learning.ipynb (M05_QUICK=1: one-minute pipeline check, labelled)
-python make_summary.py                                             # the nine-section report + addenda from the result files (docx + PDF)
-python m05/e7_rungB_pairs.py corpus/molecules out/E7_rungB_<date> --use-analytic --sizes 45,100,175 --seeds 0,1,2   # rung B, the pre-registered E7 curve
-python m05/rungC_train.py corpus/molecules out/<prefix> --use-analytic --pool-layers A,A2,B --sizes all --seeds 0,1,2 --inner-val 0.15 --threads 8 --aggregation sum \
-    --head hybrid --aux both --kring-weight 0.3 --kdiag-weight 0.1 --sqm-scale --pair-features --aux-weight 1.0 --epochs 200 --patience 20 --lr 3e-4 --hybrid-hidden 256 --pattern f --save-model
-                                                                   # rung C, the carried recipe of chains 23/24 (MODELS.md); design_check.py before every run
-python m05/rungC_cc_transfer.py corpus/molecules out/<model>.pt out/<prefix> --head-l2 1 --anchor <id>=<hessian_ccsd_t.npz> ...   # T3: leave-one-anchor-out to CC level (carried models only)
-python m05/model_registry.py --check                               # the saved networks and their reviewed status
+pip install -r requirements.txt     # torch is the CPU build: pip may need --extra-index-url https://download.pytorch.org/whl/cpu
+jupyter notebook notebook/deep_learning.ipynb
 ```
 
-The corpus factory (`corpus/`: `run_corpus.py`, shards, `STATUS.md`, `ledger.csv`) is documented in `corpus/README.md`; the pre-registrations of the
-E-series live in `GoalGathering/notes/PreRegistration_2026-09-*`. Superseded and kept for the record: `m05/model.py`, `m05/smoke_test.py`,
-`m05/build_corpus.py fixture` (the 12 September scaffold).
+Run all cells top to bottom. The full run trains every model of the notebook (several hours on a laptop); the stored notebook is that run.
+`M05_QUICK=1 jupyter notebook notebook/deep_learning.ipynb` runs the same cells as a pipeline check (fewer epochs, one seed; the notebook
+labels its numbers as not a result). The notebook needs only the files listed below; before submission the pipeline check was executed in
+a fresh clone of this repository, with nothing else present. `requirements.txt` was created with `pip freeze > requirements.txt`.
+
+### Where the data come from
+
+The corpus releases in `data/corpus_release/` were built from the project's corpus factory (psi4 and pyscf Hessians of each molecule at two
+levels of theory) by `m05/build_release.py`; the factory, the release builder, the experiment scripts of sections 7–12 and
+`notebook/make_notebook.py` (which writes and executes this notebook) stay in the plan's repository, in the module's folder
+[`modules/05_support_predictor`](https://github.com/thebreadishard/udacity-capstone-plan/tree/master/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor). Every input file of a release is listed with its SHA-256 in the release's
+manifest. The data are public in this repository and, since 27 September 2026, in the plan's public GitHub repository.
 
 ## Model versions (decision 55, 3 October 2026)
 
@@ -91,11 +92,17 @@ written by hand (a judgement per model). Reads and transfers (`m05/rungC_cc_tran
 ## Files
 
 - `RECIPE.md` — task type, label rule, corpus, baseline, the one controlled change, metrics, seeds; frozen before any data, amended by dated note only.
-- `notebook/make_notebook.py` → `notebook/deep_learning.ipynb`; `notebook/results.json` (main run) and `results_followup{,2,3,4,5}.json` (sections 7–11; section 12 reads `out/E7_rungC_*`); `notebook/figures/`.
-- `make_summary.py` → `Deep_Learning_Systems_Analysis_Report.docx/.pdf`, copied to `module_summary.pdf` (Report Overview, Dataset and Task Description, Model Architecture and Design
-  Decisions, Experimental Comparison, Results and Interpretation, Limitations and Risks, Ethical and Responsible Use, Future Improvements, References; four addenda).
-- `m05/deltah_model.py` (+ `sync_model.py`), `m05/build_release.py`, `m05/release_index.py`; the E-series scripts `m05/e6_*`, `e7_*`, `e9_*`, `e10_*`, `e11_*`.
-- Rung C: `m05/rungC_equivariant.py` (body, charge-state input), `rungC_hybrid.py` (head), `rungC_targets.py` (ridge target), `rungC_train.py` (trainer, `--kdiag-mode family`, `--save-model`), `rungC_cc_transfer.py` (T3), `rungC_intensities.py`, `rungC_pretrain.py`, `rungC_stage_pick.py`; `m05/model_registry.py` → `MODELS.md` + `out/MODELS_STATUS.json`; `m05/design_check.py` (before every run).
-- Probes that read the module's outputs: `probes/rungC_error_map.py`, `probes/rungC_eval_saved.py`, `probes/rungC_family_floor_ceiling.py` (floor, ceiling, the pool-3 cation gate), `probes/pool3_candidates.py`; tests in `tests/test_rungC_*.py`, `test_model_registry.py`, `test_pool3_candidates.py`.
-- `data/corpus_release/` — manifests in git, archives local (size); `RELEASES.md` generated.
-- `PROVENANCE.md`, `RUBRIC_CHECKLIST_2026-09-22.md`, `REPORT_OUTLINE.md`, `requirements.txt`.
+- `notebook/deep_learning.ipynb`; `notebook/results.json` (main run) and `results_followup{,2,3,4,5}.json` (sections 7–11); `notebook/figures/`.
+- `m05/deltah_model.py` — the ΔH model the notebook trains.
+- `data/corpus_release/` — the dataset: the corpus releases with their manifests (`RELEASES.md` lists them); `data/second_route/`, `data/e8/`,
+  `data/e9/` — the second-route checks and the E8–E10 records the follow-up sections read.
+- `out/` — the experiment records sections 7–12 read; `corpus/manifest.csv` — the corpus manifest; `MODELS.md` — the saved networks and their status.
+- `Deep_Learning_Systems_Analysis_Report.pdf` — the report in the Udacity APA 7 template; `module_summary.pdf` is the same file.
+- `SUBMISSION.txt` — the list of files this repository holds.
+
+## Repository
+
+Submitted as the public repository `udacity-deep-learning-systems`, with two branches: `main` (the default branch the review reads) and the
+development branch `module-05-support-predictor`. Its commit history is this module's own, carried over from the plan's repository
+[udacity-capstone-plan](https://github.com/thebreadishard/udacity-capstone-plan), where the module lives as
+`plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/`. The last commit on `main` keeps only the files listed in `SUBMISSION.txt`.

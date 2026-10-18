@@ -52,13 +52,17 @@ def test_module_history_and_branches_carried_over(tmp_path):
 
 # ---- SUBMISSION.txt: deliverables only, and the notebook runs in a fresh clone (18 Oct 2026)
 
-def _notebook_reading(path: str) -> str:
-    cell = {"cell_type": "code", "source": [f"print(open({path!r}).read())"], "execution_count": None, "outputs": [], "metadata": {}}
+def _notebook_reading(path: str, require_env: str = "") -> str:
+    guard = (f"import os\nif os.environ.get({require_env!r}) != '1':\n    raise RuntimeError('variable not set')\n"
+             if require_env else "")
+    cell = {"cell_type": "code", "source": [guard + f"print(open({path!r}).read())"], "execution_count": None, "outputs": [],
+            "metadata": {}}
     return json.dumps({"cells": [cell], "metadata": {"kernelspec": {"name": "python3", "display_name": "Python 3", "language": "python"}},
                        "nbformat": 4, "nbformat_minor": 5})
 
 
-def _module_with_manifest(tmp_path: Path, manifest: str, notebook_reads: str = "data.txt", readme: str = "# m\n") -> Path:
+def _module_with_manifest(tmp_path: Path, manifest: str, notebook_reads: str = "data.txt", readme: str = "# m\n",
+                          require_env: str = "") -> Path:
     mono = tmp_path / "mono"
     mono.mkdir()
     _git(mono, "init", "-q", "-b", "master")
@@ -67,7 +71,7 @@ def _module_with_manifest(tmp_path: Path, manifest: str, notebook_reads: str = "
     _commit(mono, "plans/outside.txt", "only in the plan repository", "outside the module")
     _commit(mono, "plans/m02/build.py", "print('builder')", "builder")
     _commit(mono, "plans/m02/nb/data.txt", "data", "data")
-    _commit(mono, "plans/m02/nb/work.ipynb", _notebook_reading(notebook_reads), "notebook")
+    _commit(mono, "plans/m02/nb/work.ipynb", _notebook_reading(notebook_reads, require_env), "notebook")
     _commit(mono, "plans/m02/README.md", readme, "readme")
     _commit(mono, "plans/m02/SUBMISSION.txt", manifest, "manifest")
     _git(mono, "branch", "module-02")
@@ -105,6 +109,20 @@ def test_no_run_skips_execution_but_not_the_file_checks(tmp_path):
     mono = _module_with_manifest(tmp_path, MANIFEST + "missing.csv\n")
     r = _make(mono, tmp_path / "repo", "--no-run")
     assert r.returncode == 1 and "missing.csv" in r.stderr
+
+
+@needs_jupyter
+def test_run_line_assignments_reach_the_notebook(tmp_path):
+    manifest = MANIFEST.replace("run: nb/work.ipynb", "run: nb/work.ipynb QUICK_CHECK=1")
+    mono = _module_with_manifest(tmp_path, manifest, require_env="QUICK_CHECK")   # the notebook fails without the variable
+    r = _make(mono, tmp_path / "repo")
+    assert r.returncode == 0, r.stdout + r.stderr
+
+
+def test_run_line_word_that_is_no_assignment_is_refused(tmp_path):
+    mono = _module_with_manifest(tmp_path, MANIFEST.replace("run: nb/work.ipynb", "run: nb/work.ipynb --quick"))
+    r = _make(mono, tmp_path / "repo", "--no-run")
+    assert r.returncode == 1 and "not a VAR=value assignment" in r.stderr
 
 
 def test_readme_link_outside_the_repository_fails(tmp_path):
