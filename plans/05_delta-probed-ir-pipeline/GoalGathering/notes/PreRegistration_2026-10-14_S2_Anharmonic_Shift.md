@@ -242,3 +242,33 @@ networks stopped early (best epochs 32–173, no cap hit). Prediction (3) of ame
 is wrong. Reading by amendment 2 §4: the simple model is bias-limited (in-sample ≈ held-out) and the richer ones are variance-limited at
 this size; no configuration reaches the line. Next, as registered: the cheap anharmonic input (GFN2-xTB Δ_anh per mode) for Δ-learning,
 registered before it runs; the alternatives (more molecules at G — paid, before 15 Nov; the fallbacks of line 3) go to the user.
+
+## Amendment 4 (18 Oct 2026, 14:5x — before any xtb number) — a cheap anharmonic input (GFN2-xTB) for Δ-learning
+
+The user, 18 Oct: *'Ja, installeer xtb en ga door met optie 1, maar laten we opties 2 en 3 niet vergeten'* (2: more molecules at G, S2b;
+3: the fallbacks of line 3 — route A on a few large molecules, or a scale factor; both in TASKS 62).
+
+**Why.** The search showed the simple model bias-limited and the richer ones variance-limited at 14 molecules. A cheap method's own
+anharmonic shift per mode carries the physics (the cubic and quartic couplings) that the harmonic features do not, so a model need only
+learn the difference to B3LYP — the usual way to learn from few data (Δ-learning). For a large PAH a GFN2-xTB quartic force field costs
+minutes, not the hundreds of DFT Hessians the pipeline cannot pay.
+
+**Computation** (laptop, WSL; xtb 6.7.1 from conda-forge, env `xtb`). Per S2 molecule that the read uses (the 14): GFN2-xTB optimisation
+from the B3LYP G minimum (`--opt extreme`, `--acc 0.01`); the xtb Hessian (xtb's own: central differences of analytic gradients, step
+0.005 bohr) at that minimum and at ±0.10 along every xtb normal mode (probes/make_qff_displacements.py, the S1/S2 convention); the force
+field, its noise guard and VPT2 by dpir.qff exactly as for G; GVPT2 by probes/gvpt2_labels.py (Martin K 1, the fixed pyVPT2 solver) — the
+same treatment as the B3LYP labels. xtb modes are matched to the G modes by squared eigenvector overlap (Hungarian, as S1's comparison);
+a G mode whose best overlap is below 0.5 has no xtb partner, leaves the xtb reads and is counted. A NOISY xtb force field is reported and
+its molecule leaves the xtb reads (the noise rule), counted.
+
+**Reads** (GVPT2 labels; scopes 'all' and 'no-large-amplitude', both reported; nested leave-one-scaffold-out as amendment 2 §3; line 2,
+≤ 3.0 cm⁻¹ per family):
+- (x0) raw: Δ_xtb as the prediction, no fit — how far the cheap method is on its own;
+- (x1) ridge in route (b)'s form plus per-family slopes on Δ_xtb (F1 + family × Δ_xtb) — Δ-learning with the slope learned;
+- (x2) kernel ridge on F1 + Δ_xtb, the search's grid, chosen on inner folds.
+The learning-curve rules as amended apply to (x1).
+
+**Predictions.** Δ_xtb correlates with Δ_B3LYP within each family (Pearson r ≥ 0.7 in ring-ip and CH-oop); (x0) is no better than (c);
+(x1) brings ring-ip to ≤ 3.0 and CH-oop below 4.5. Odds of line 2 in all three families: one in four.
+
+**Options 2 and 3** stay open and are put to the user with their price after this read (TASKS 62).
