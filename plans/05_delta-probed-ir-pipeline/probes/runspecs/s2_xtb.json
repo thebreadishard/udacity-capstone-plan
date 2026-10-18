@@ -1,0 +1,12 @@
+{"name": "s2_xtb",
+ "purpose": "S2 amendment 4: GFN2-xTB quartic force fields of the 14 molecules the S2 read uses (laptop, WSL): xtb-binary minima, dxtb Hessians by differences of exact forces (two shards of two threads, nice 10, ~0.3 GB each — the incident of 18 Oct 15:43), dpir.qff. Naphthalene runs first and is the noise test (water smoke: route disagreement 0.3 cm⁻¹). Validation: dxtb energy 1.8e-7 E_h from the xtb binary, autograd Hessian 3e-9 from force differences on water",
+ "host": "laptop",
+ "workdir": "probes/results_m1/s2_xtb_2026-10-18",
+ "command": "MSYS_NO_PATHCONV=1 wsl -e bash /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/xtb_anharmonic.sh probes/results_m1/s2_xtb_2026-10-18/ids.tsv probes/results_m1/s2_xtb_2026-10-18/xtb",
+ "sources": [{"local": "probes/xtb_anharmonic.sh"}, {"local": "probes/xtb_hessians_for_qff.py"}, {"local": "probes/dxtb_hessians_for_qff.py"},
+             {"local": "probes/make_qff_displacements.py"}],
+ "progress": {"regex": "^\\[[0-9:]+\\] [0-9]+/[0-9]+ |^=== \\(XTB\\) ", "max_gap_minutes": 30},
+ "marker_regex": "^=== \\(XTB\\) [A-Za-z0-9_]+: (NOISY|FAILED)",
+ "end_regex": "^=== \\(XTB\\) all done",
+ "dry_run_args": "--dry-run",
+ "threads": 4}
