@@ -1,0 +1,15 @@
+# What module 04's submission repository holds (read by tools/make_module_repo.sh, 18 Oct 2026).
+# The notebook must run in a fresh clone of that repository alone; the scripts that made its data stay in the plan repository.
+README.md
+requirements.txt
+Machine_Learning_Analysis_Report.pdf
+module_summary.pdf
+RECIPE.md
+SUBMISSION.txt
+notebook/modeling.ipynb
+notebook/training_table.csv
+notebook/model_results.json
+notebook/opponent_column_ladder.csv
+notebook/uncertainty_layer.csv
+notebook/figures/
+run: notebook/modeling.ipynb

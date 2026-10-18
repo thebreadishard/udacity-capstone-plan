@@ -20,7 +20,7 @@ md("""# Module 04 — the calibrated-harmonic baseline: can a model learn the er
 
 **Author:** Frederic Petrignani
 
-**The training table is a derived dataset matching public computed bands (NASA PAHdb theoretical library v4.00) to public laboratory bands (PAHdb experimental library v3.10); its provenance and its distinctness from the Module 02 and 03 datasets are described in `../PROVENANCE.md`; it is not AI-generated.**
+**The training table is a derived dataset matching public computed bands (NASA PAHdb theoretical library v4.00) to public laboratory bands (PAHdb experimental library v3.10); its provenance and its distinctness from the Module 02 and 03 datasets are described in this repository's README (Dataset) and, with checksums, in `PROVENANCE.md` in [the module's folder](https://github.com/thebreadishard/udacity-capstone-plan/tree/master/plans/05_delta-probed-ir-pipeline/modules/04_calibrated_harmonic) of the plan's repository; it is not AI-generated.**
 
 Plan 05 (Δ-probed IR pipeline), Module 04 of the Udacity AI Mastery Capstone. **Problem type: supervised regression.** Target per band: y = ν_lab − ν_scaled, the error of the library's scaled-harmonic position against the laboratory position, in cm⁻¹. A model that predicts y corrects the library; this corrected library is the strongest fair opponent the larger project must beat, so the recipe — features, four models, leave-one-molecule-out evaluation, metrics, no tuning, seed 0 — was fixed in `../RECIPE.md` before this notebook first ran. Dataset: `training_table.csv` (built by `../build_training_table.py`).
 

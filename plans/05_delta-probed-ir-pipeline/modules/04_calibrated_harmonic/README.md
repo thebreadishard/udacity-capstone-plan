@@ -16,9 +16,10 @@ simple facts about the band and its molecule — so that the library could be co
 never saw (*leave-one-molecule-out*), by how far its corrected positions still are from the laboratory ones (the mean absolute error, in cm⁻¹). The
 answer is no: the remaining error is band-to-band scatter that those facts do not capture. One-line definitions are in the [glossary](https://github.com/thebreadishard/udacity-capstone-plan/blob/master/plans/05_delta-probed-ir-pipeline/modules/GLOSSARY.md).
 
-**What I built:** a builder that joins the computed and the laboratory bands into one training table
-(`build_training_table.py`), a notebook that prepares the features, trains and evaluates the models
+**What I built:** a notebook that prepares the features, trains and evaluates the models
 (`notebook/modeling.ipynb`), and the Machine Learning Analysis Report (`Machine_Learning_Analysis_Report.pdf`, also as `module_summary.pdf`).
+The training table was made by a builder that joins the computed and the laboratory bands; it stays in the plan's repository (see
+*Where the data come from* below).
 
 **Dataset:** `notebook/training_table.csv`, 2,477 rows × 28 columns — one row per matched pair of a
 laboratory band (PAHdb experimental library v3.10, argon matrix,
@@ -36,20 +37,33 @@ pip install -r requirements.txt
 jupyter notebook notebook/modeling.ipynb
 ```
 
-Run all cells top to bottom (about one minute; 83 folds × 2 fitted models). The notebook is also
-rebuilt and executed by `python notebook/make_notebook.py`; the training table is regenerated from
-Module 02's parsed libraries by `python build_training_table.py`; the report by `python make_summary.py`
-(python-docx plus Microsoft Word for the PDF). `requirements.txt` was created with
-`pip freeze > requirements.txt`.
+Run all cells top to bottom (about one minute; 83 folds × 2 fitted models). The notebook needs only the
+files in `notebook/`; before submission it was executed in a fresh clone of this repository, with nothing else
+present. `requirements.txt` was created with `pip freeze > requirements.txt`.
+
+### Where the data come from
+
+The training table was made by `build_training_table.py`, which joins the two parsed PAHdb libraries; it stays in
+the plan's repository, in the module's folder [`modules/04_calibrated_harmonic`](https://github.com/thebreadishard/udacity-capstone-plan/tree/master/plans/05_delta-probed-ir-pipeline/modules/04_calibrated_harmonic),
+together with `notebook/make_notebook.py` (writes and executes this notebook), `make_summary.py` (builds the
+report) and `PROVENANCE.md` (sources, checksums and the table's distinctness from the Module 02 and 03 datasets).
 
 ## Files
 
 - `RECIPE.md` — the frozen recipe candidate (committed alone, before training).
-- `build_training_table.py` — the join; `out/SUMMARY.md` lists counts, constants and input checksums.
 - `notebook/modeling.ipynb` — Load and inspect · Preparation · Model selection and training · Evaluation · Follow-up of
-  3 October 2026 (the tree model with early stopping under the project's decision 51; the first run's numbers stand) · Summary;
-  writes `model_results.json`, `opponent_column_ladder.csv` (held-out predictions for the project's test
-  molecules) and `uncertainty_layer.csv`.
-- `Machine_Learning_Analysis_Report.pdf` (`.docx`) — the Machine Learning Analysis Report in the Udacity APA 7 template; `module_summary.pdf` is the
+  3 October 2026 (the tree model with early stopping under the project's decision 51; the first run's numbers stand) · Summary.
+- `notebook/training_table.csv` — the dataset (2,477 rows × 28 columns).
+- `notebook/model_results.json`, `notebook/opponent_column_ladder.csv` (held-out predictions for the project's test molecules),
+  `notebook/uncertainty_layer.csv` — what the notebook writes.
+- `notebook/figures/` — the three figures, as the notebook writes them.
+- `Machine_Learning_Analysis_Report.pdf` — the Machine Learning Analysis Report in the Udacity APA 7 template; `module_summary.pdf` is the
   same file under the name the rubric's overview uses.
-- `PROVENANCE.md` — sources, checksums, status, and what is still owed (project notes).
+- `SUBMISSION.txt` — the list of files this repository holds.
+
+## Repository
+
+Submitted as the public repository `udacity-applied-machine-learning`, with two branches: `main` (the default branch the review reads) and
+the development branch `module-04-calibrated-harmonic`. Its commit history is this module's own, carried over from the plan's repository
+[udacity-capstone-plan](https://github.com/thebreadishard/udacity-capstone-plan), where the module lives as
+`plans/05_delta-probed-ir-pipeline/modules/04_calibrated_harmonic/`. The last commit on `main` keeps only the files listed in `SUBMISSION.txt`.
