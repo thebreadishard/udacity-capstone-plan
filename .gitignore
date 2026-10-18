@@ -124,3 +124,11 @@ plans/05_delta-probed-ir-pipeline/probes/watch_state/
 
 # 15 Oct 2026: label snapshots fetched for a read (TASKS 65); their ids and sha256 are committed with the read, the files are not
 plans/*/modules/*/corpus/labels_snapshot_*/
+
+# 18 Oct 2026: S2's fetched bulk (3,758 files, 141 MB) stays out of git; tools/backup_data.py mirrors it with probes/results_m1;
+# the reads, FETCHED.txt and the server lists are tracked
+plans/05_delta-probed-ir-pipeline/probes/results_m1/s2_anharmonic_2026-10-18/s2/
+plans/05_delta-probed-ir-pipeline/probes/results_m1/s2_anharmonic_2026-10-18/dpir_s2/
+plans/05_delta-probed-ir-pipeline/probes/results_m1/s2_anharmonic_2026-10-18/s2_gridcheck/
+plans/05_delta-probed-ir-pipeline/probes/results_m1/s2_anharmonic_2026-10-18/s2_smoke/
+plans/05_delta-probed-ir-pipeline/probes/results_m1/s2_anharmonic_2026-10-18/s2_smoke*

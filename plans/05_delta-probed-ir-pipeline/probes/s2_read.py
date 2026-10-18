@@ -229,6 +229,26 @@ def write_atomic(path, text):
     os.replace(tmp, path)
 
 
+def load_selection(root, selection_path, setting="G", extra=None):
+    """The selected molecules grouped by scaffold, the used ones listed and the excluded ones with their reason (the registration's noise
+    rule). `extra` maps an id to a setting directory computed elsewhere (benzene: S1's G)."""
+    extra = extra or {}
+    with open(selection_path, encoding="utf-8") as fh:
+        sel = json.load(fh)["selected"]
+    by_scaf, used, excluded = {}, [], {}
+    for m in sel:
+        d = extra.get(m["id"], os.path.join(root, m["id"], setting))
+        rec, why = load_molecule(d) if os.path.isdir(d) else (None, f"no directory {d}")
+        if rec is None:
+            excluded[m["id"]] = why
+            continue
+        rec["id"] = m["id"]
+        by_scaf.setdefault(m["scaffold"], []).append(rec)
+        used.append({"id": m["id"], "scaffold": m["scaffold"], "planar": rec["planar"], "n_modes": len(rec["omega"]),
+                     "n_window": int(((rec["omega"] >= WINDOW[0]) & (rec["omega"] <= WINDOW[1])).sum())})
+    return by_scaf, used, excluded
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("root")
@@ -237,19 +257,7 @@ def main():
     ap.add_argument("--extra", nargs="*", default=[], help="ID=DIR: a molecule's setting directory computed elsewhere")
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
-    with open(a.selection, encoding="utf-8") as fh:
-        sel = json.load(fh)["selected"]
-    extra = dict(e.split("=", 1) for e in a.extra)
-    by_scaf, used, excluded = {}, [], {}
-    for m in sel:
-        d = extra.get(m["id"], os.path.join(a.root, m["id"], a.setting))
-        rec, why = load_molecule(d) if os.path.isdir(d) else (None, f"no directory {d}")
-        if rec is None:
-            excluded[m["id"]] = why
-            continue
-        by_scaf.setdefault(m["scaffold"], []).append(rec)
-        used.append({"id": m["id"], "scaffold": m["scaffold"], "planar": rec["planar"], "n_modes": len(rec["omega"]),
-                     "n_window": int(((rec["omega"] >= WINDOW[0]) & (rec["omega"] <= WINDOW[1])).sum())})
+    by_scaf, used, excluded = load_selection(a.root, a.selection, a.setting, dict(e.split("=", 1) for e in a.extra))
     if len(by_scaf) < 2:
         raise SystemExit(f"{len(by_scaf)} scaffold(s) with a usable molecule: no leave-one-scaffold-out read")
     rows = curve(by_scaf)
