@@ -132,3 +132,44 @@ quantities unchanged) are flat in the same way: k = 4 → 6 → all, (b) ring-ip
 **Verdict (the user, 18 Oct, 'Ja, akkoord met verdict 3 en de zoektocht'):** verdict 3 — no negative conclusion; the search (model class ×
 features) first, its form registered before any of its numbers. These two rules were written after the numbers were seen; they are stated
 here so that a reader can judge them, and they change no registered number.
+
+## Amendment 2 (18 Oct 2026, 13:3x — after the read and step 0, before any number of the search or of the GVPT2 labels)
+
+The user, 18 Oct: *'Ja, stel amendement 2 op en begin met GVPT2.'* Step 0 (exploratory, `probes/results_m1/s2_anharmonic_2026-10-18/`
+`diagnose/` and `label_check/`, commits fada4c4a and f3339ef3) found that route (b)'s error is bias, not variance (in-sample ≈ held-out in
+every family), and that part of it is in the labels, not the model: (i) ring-ip labels move by 1.95 cm⁻¹ rms between two legitimate
+deperturbation settings (min K 0 and 1), 33 % of them are resonance-affected and the polyads are not diagonalised; (ii) the ethynyl ≡C–H
+bends' labels are the small sum of four terms of 140–340 cm⁻¹ (VPT2 in rectilinear normal coordinates for a linear X–H bend); (iii) CH-oop
+labels are clean (0.16), so CH-oop's 5.7 is the model's. This amendment fixes, in this order, the labels, the scope and the search.
+
+**1. Labels: GVPT2.** Each molecule's fundamentals are recomputed from its stored force constants (no new force field): dpir.qff's χ with
+Martin's threshold (min K 1 cm⁻¹, window 200 cm⁻¹ — pyVPT2's defaults, `FERMI_K_THRESH` and `FERMI_OMEGA_THRESH`), then the Fermi polyads
+(fundamental with overtone, type 1; fundamental with combination band, type 2) diagonalised by pyVPT2's `fermi_solver` — the upstream
+implementation, tested in pyVPT2's `tests/test_polyad.py`, `tests/test_fermi_solver.py` and, end to end with `GVPT2: True`,
+`tests/test_h2co.py`. Overtone and combination energies from χ by the standard expressions pyVPT2's `process_vpt2` uses. The label is the
+GVPT2 fundamental minus ω. **Validation before any S2 number:** (a) with no resonance the GVPT2 fundamental equals the DVPT2 one; (b) the
+trace of every polyad is conserved; (c) H₂CO end to end: pyVPT2's own force constants of its `test_h2co` fed through our path reproduce
+pyVPT2's GVPT2 fundamentals to 0.1 cm⁻¹ (the test's own tolerance). A resonance that involves an exactly degenerate mode (benzene) keeps
+its DVPT2 label and is named (pyVPT2 leaves multiple degeneracies open). The label floor per family is reported beside every read:
+|GVPT2 − DVPT2(K 1)| and the route difference.
+
+**2. Scope.** Linear X–H bends — modes whose hydrogen kinetic-energy share sits mostly (≥ 0.5 of the mode's h) on hydrogens bonded to an
+sp carbon (C–C ≤ 1.25 Å on that carbon) — leave the read: their label is not a property VPT2 in these coordinates can deliver to 3 cm⁻¹,
+and the mandate's large PAHs carry no ethynyl group. Every read is reported with and without them. 3-ethynylstyrene stays excluded (NOISY).
+
+**3. The search** (verdict 3), on the GVPT2 labels within the scope, per family (CH-oop, ring-ip, other), leave-one-scaffold-out as
+registered: models {ridge as registered; kernel ridge, RBF; a one-hidden-layer network (32 units) with early stopping on an inner
+validation split, decision 51} × features {as registered (family, ω/1000, h, o); + the mode's local environment (for its largest-amplitude
+atoms: ring count, heteroatom neighbour, the C–H adjacency class solo/duo/trio/quartet); + resonance proximity (the smallest |2ω_j − ω_i| and
+|ω_j + ω_k − ω_i| with its Martin K)}. **Nested**: each outer held-out scaffold's combination and hyper-parameters are chosen by an inner
+leave-one-scaffold-out on its training scaffolds only; the outer score is pooled per family. Nine combinations on 14 molecules would
+otherwise flatter the winner.
+
+**4. Lines and readings.** Per family, line 2 (rms ≤ 3.0 cm⁻¹ at 'all') licenses that family; the learning-curve rules as amended (a curve
+whose fitted asymptote is at or above the line reads as flat). A family whose label floor is itself near the line is read against it and
+said so. Flat after the search → the next idea is registered before it runs: a cheap anharmonic input per mode (GFN2-xTB VPT2 Δ_anh) for
+Δ-learning — the goal stays. Everything runs on the laptop; no new force field.
+
+**Predictions.** GVPT2 lowers ring-ip's labels' spread and route (b)'s ring-ip rms to ≤ 3.0; CH-oop improves most from the adjacency class
+(the C–H out-of-plane bands of PAHs are classified by it); 'other' without the ethynyl bends falls to the 3–5 cm⁻¹ of the other eleven
+molecules before any model change.
