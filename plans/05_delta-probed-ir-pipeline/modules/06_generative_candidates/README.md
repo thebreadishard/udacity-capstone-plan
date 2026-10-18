@@ -51,12 +51,16 @@ report's builder (`make_summary.py`), the design note and the provenance notes s
 - `PRE_REGISTRATION.md` — split, tokenizer, model, metrics and predictions, fixed before training; its outcome section.
 - `notebook/generative_model.ipynb` — task and model choice, load and inspect, the model, training with curves, sampling and the
   pre-registered metrics with a failure gallery and nearest neighbours, the conditioning change, ethics, summary.
-- `notebook/results.json` (the numbers), `notebook/figures/`, `notebook/out/` (the training logs of the three seeds and the conditioned model).
+- `notebook/results.json` (the numbers), `notebook/figures/`, `notebook/out/` (the training logs of the three seeds and the conditioned model,
+  and `samples_seed0_T1.0.txt`, seed 0's 10,000 samples).
+- `notebook/pahdb_comparison.json` — how far the samples sit from the astrochemical distribution (PAHdb v4.00), made by
+  `m06/pahdb_compare.py` from the samples and `data/pahdb_theoretical_4.00_neutral_chno.csv`.
 - `m06/` — `data.py` (dataset, Murcko scaffold split, tokenizer, conditioning prefixes), `model.py` (the Transformer, sampling), `train.py`
   (protocol, per-epoch log, early stopping, `generate`), `evaluate.py` (the pre-registered metrics), `baseline_ngram.py` (the 5-gram
   baseline), `tests/test_m06.py`.
 - `data/` — `README.md` and the dataset as two gzip parts.
-- `Generative_AI_Analysis_Report.pdf` — the report in the Udacity APA 7 template; `MODELS.md` — the generator's versions.
+- `Generative_AI_Analysis_Report.pdf` — the report in the Udacity APA 7 template; `MODELS.md` — the generator's versions;
+  `MODEL_CARD.md` — the model card.
 - `SUBMISSION.txt` — the list of files this repository holds.
 
 ## Repository

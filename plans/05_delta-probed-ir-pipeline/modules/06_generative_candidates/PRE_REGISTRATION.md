@@ -141,3 +141,16 @@ H/C. Figure: the three n_C and H/C histograms.
 
 **Expectation.** G sits close to P and far from A: smaller (P and G: mostly 10–20 C; A: tens to hundreds), richer in hydrogen (substituents)
 and in heteroatoms. W1(G, P) small against W1(G, A) and W1(P, A) on both measures. This is the bias the ethics cell names, measured.
+
+**Outcome (18 Oct 2026, 21:0x; `notebook/pahdb_comparison.json`, figure `notebook/figures/pahdb_comparison.png`).** The regeneration
+reproduced `results.json` exactly (validity 0.9239, uniqueness 0.99167); the 10,000 raw samples are `notebook/out/samples_seed0_T1.0.txt`.
+
+| set | molecules | n_C median (range) | H/C median | with N | with O | with S, F or Cl |
+|---|---|---|---|---|---|---|
+| G, generated (valid, unique) | 9,162 | 18 (5–30) | 0.90 | 0.91 | 0.84 | 0.59 |
+| P, PubChem dataset | 160,972 | 19 (7–30) | 0.90 | 0.90 | 0.83 | 0.60 |
+| A, PAHdb v4.00 neutral C/H/N/O | 4,476 | 34 (6–384) | 0.36 | 0.12 | 0.01 | 0 |
+
+Wasserstein-1, n_C / H/C: G–P 0.28 / 0.010; G–A 34.4 / 0.55; P–A 34.2 / 0.54. As expected: the generator sits on its training
+distribution, and that distribution is far from the astrochemical one — half the size, more than twice the hydrogen per carbon, and nearly
+always a heteroatom, where PAHdb's species are bare or nitrogen-substituted carbon frameworks. The bias the ethics cell names, measured.

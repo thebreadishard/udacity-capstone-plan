@@ -11,6 +11,7 @@ MODEL_CARD.md
 SUBMISSION.txt
 notebook/generative_model.ipynb
 notebook/results.json
+notebook/pahdb_comparison.json
 notebook/figures/
 notebook/out/
 m06/data.py
@@ -19,7 +20,9 @@ m06/train.py
 m06/evaluate.py
 m06/baseline_ngram.py
 m06/tests/test_m06.py
+m06/pahdb_compare.py
 data/README.md
+data/pahdb_theoretical_4.00_neutral_chno.csv
 data/pubchem_aromatics_2026-09-24.part1.csv.gz
 data/pubchem_aromatics_2026-09-24.part2.csv.gz
 run: notebook/generative_model.ipynb M06_QUICK=1
