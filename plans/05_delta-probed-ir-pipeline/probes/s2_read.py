@@ -26,6 +26,7 @@ import argparse
 import json
 import os
 import sys
+from dataclasses import dataclass, field
 
 import numpy as np
 from scipy.optimize import curve_fit
@@ -76,6 +77,12 @@ def gvpt2_delta(path, omega):
     return np.asarray(g["nu_gvpt2"]) - w
 
 
+def search_features(q, symbols, coords_bohr, omega):
+    """The search's per-mode features (S2 amendment 2 §3 as corrected): local environment and resonance proximity."""
+    from s2_features import local_environment, resonance_proximity
+    return {"local": local_environment(q, symbols, coords_bohr), "prox": resonance_proximity(omega)}
+
+
 def apply_scope(rec, flag="linear_xh"):
     """The molecule without the modes flagged by `flag` ('linear_xh', amendment 2 §2; 'large_amplitude', amendment 3); per-mode arrays
     shortened, the rest unchanged."""
@@ -83,9 +90,10 @@ def apply_scope(rec, flag="linear_xh"):
     return {k: (v[keep] if isinstance(v, np.ndarray) and v.shape[:1] == keep.shape else v) for k, v in rec.items()}
 
 
-def load_molecule(setting_dir, gvpt2_file=None):
+def load_molecule(setting_dir, gvpt2_file=None, features=False):
     """The per-mode table of one molecule from its setting directory; None (with the reason) if it is excluded. With gvpt2_file the
-    label is the GVPT2 fundamental (S2 amendment 2 §1) instead of the stored DVPT2 one."""
+    label is the GVPT2 fundamental (S2 amendment 2 §1) instead of the stored DVPT2 one; with features, the search's per-mode features
+    (probes/s2_features.py: 'local' M × 9, 'prox' M × 2)."""
     from s1_anharmonic_level import harmonic_modes
 
     from dpir.qff import MASS
@@ -109,7 +117,8 @@ def load_molecule(setting_dir, gvpt2_file=None):
     delta = gvpt2_delta(gvpt2_file, np.asarray(z["omega_cm"])) if gvpt2_file else np.asarray(z["nu_sym"]) - np.asarray(z["omega_cm"])
     return {"omega": omega, "delta": delta, "family": families(omega, q, sym, m, x), "h": h, "o": o, "planar": bool(planar),
             "linear_xh": linear_xh_share(q, sym, x) >= LINEAR_XH_SHARE,
-            "large_amplitude": linear_xh_share(q, sym, x, LABILE_PARTNERS) >= LINEAR_XH_SHARE}, ""
+            "large_amplitude": linear_xh_share(q, sym, x, LABILE_PARTNERS) >= LINEAR_XH_SHARE,
+            **(search_features(q, sym, x, omega) if features else {})}, ""
 
 
 def design(omega, fam, h, o):
@@ -271,21 +280,41 @@ def write_atomic(path, text):
     os.replace(tmp, path)
 
 
-def load_selection(root, selection_path, setting="G", extra=None, gvpt2_dir=None, scope="all"):
+@dataclass(frozen=True)
+class ReadOptions:
+    """How the selected molecules are read. `extra` maps an id to a setting directory computed elsewhere (benzene: S1's G); `gvpt2_dir`
+    switches the labels to probes/gvpt2_labels.py's <id>.json (amendment 2); scope 'no-linear-xh' drops the linear X–H modes (amendment 2),
+    'no-large-amplitude' also the N–H and O–H ones (amendment 3); `features` attaches the search's per-mode features."""
+    setting: str = "G"
+    extra: dict = field(default_factory=dict)
+    gvpt2_dir: str | None = None
+    scope: str = "all"
+    features: bool = False
+
+    def __post_init__(self):
+        if self.scope not in SCOPES:
+            raise ValueError(f"unknown scope {self.scope!r}; one of {SCOPES}")
+        if self.gvpt2_dir is not None and not os.path.isdir(self.gvpt2_dir):
+            raise ValueError(f"no GVPT2 label directory {self.gvpt2_dir}")
+
+
+def options_from_args(a) -> ReadOptions:
+    """The command line's --setting/--extra/--gvpt2-dir/--scope as ReadOptions (the attributes a parser may lack take their defaults)."""
+    return ReadOptions(setting=vars(a).get("setting", "G"), extra=dict(e.split("=", 1) for e in a.extra),
+                       gvpt2_dir=vars(a).get("gvpt2_dir"), scope=vars(a).get("scope", "all"))
+
+
+def load_selection(root, selection_path, options: ReadOptions = ReadOptions()):  # noqa: B008  a frozen dataclass is an immutable default
     """The selected molecules grouped by scaffold, the used ones listed and the excluded ones with their reason (the registration's noise
-    rule). `extra` maps an id to a setting directory computed elsewhere (benzene: S1's G); `gvpt2_dir` switches the labels to
-    probes/gvpt2_labels.py's <id>.json; scope 'no-linear-xh' drops the linear X–H modes (amendment 2), 'no-large-amplitude' also the
-    N–H and O–H ones (amendment 3)."""
-    if scope not in SCOPES:
-        raise ValueError(f"unknown scope {scope!r}")
-    extra = extra or {}
+    rule), read as `options` say."""
+    setting, extra, gvpt2_dir, scope, features = options.setting, options.extra, options.gvpt2_dir, options.scope, options.features
     with open(selection_path, encoding="utf-8") as fh:
         sel = json.load(fh)["selected"]
     by_scaf, used, excluded = {}, [], {}
     for m in sel:
         d = extra.get(m["id"], os.path.join(root, m["id"], setting))
         gfile = os.path.join(gvpt2_dir, f"{m['id']}.json") if gvpt2_dir else None
-        rec, why = load_molecule(d, gfile) if os.path.isdir(d) else (None, f"no directory {d}")
+        rec, why = load_molecule(d, gfile, features) if os.path.isdir(d) else (None, f"no directory {d}")
         if rec is None:
             excluded[m["id"]] = why
             continue
@@ -308,7 +337,7 @@ def main():
     ap.add_argument("--gvpt2-dir", help="amendment 2: GVPT2 labels from probes/gvpt2_labels.py instead of the stored DVPT2 ones")
     ap.add_argument("--scope", choices=SCOPES, default="all", help="amendment 2 §2, amendment 3")
     a = ap.parse_args()
-    by_scaf, used, excluded = load_selection(a.root, a.selection, a.setting, dict(e.split("=", 1) for e in a.extra), a.gvpt2_dir, a.scope)
+    by_scaf, used, excluded = load_selection(a.root, a.selection, options_from_args(a))
     if len(by_scaf) < 2:
         raise SystemExit(f"{len(by_scaf)} scaffold(s) with a usable molecule: no leave-one-scaffold-out read")
     rows = curve(by_scaf)

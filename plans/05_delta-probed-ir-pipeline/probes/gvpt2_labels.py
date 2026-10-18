@@ -28,7 +28,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, "..", "src"))
 from s2_label_check import molecule_inputs  # noqa: E402
-from s2_read import load_selection, write_atomic  # noqa: E402
+from s2_read import load_selection, options_from_args, write_atomic  # noqa: E402
 
 from dpir.qff import degenerate_groups, vpt2  # noqa: E402
 
@@ -96,7 +96,7 @@ def main() -> int:
     ap.add_argument("--extra", nargs="*", default=[])
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
-    by_scaf, _used, _excluded = load_selection(a.root, a.selection, "G", dict(e.split("=", 1) for e in a.extra))
+    by_scaf, _used, _excluded = load_selection(a.root, a.selection, options_from_args(a))
     os.makedirs(a.out, exist_ok=True)
     provenance = solver_provenance()
     print(f"pyVPT2 polyad solver: {provenance['fermi_solver']} sha256 {provenance['sha256'][:12]}")

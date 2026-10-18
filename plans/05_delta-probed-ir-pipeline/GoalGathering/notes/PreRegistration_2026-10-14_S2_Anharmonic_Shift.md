@@ -213,3 +213,13 @@ search; the 'no-linear-xh' reads stay as recorded. Free rotors (methyl, vinyl to
 rule, which stays. **Every read is reported both ways, 'all' and 'no-large-amplitude'.** This is the second exclusion written after
 numbers were seen; it is stated as a physical class, not as a list of molecules, and the class is to be brought back by software that
 treats it (TASKS 75).
+
+## Correction to amendment 2 §3 (18 Oct 2026, 14:2x — before any number of the search)
+
+§3 listed the resonance-proximity feature 'with its Martin K'. K needs the cubic constants φ_ijk, which come from the force field — the
+expensive part the pipeline is meant to skip for large PAHs. A feature may use only what the cheap harmonic calculation gives (geometry,
+modes, ω). The proximity features are therefore min_j |2ω_j − ω_i| and min_{j,k} |ω_j + ω_k − ω_i|, as log10(1 + Δ/cm⁻¹), without K.
+The local-environment features are kinetic-energy shares of the mode on: hydrogens by C–H adjacency class (0 = not on a ring carbon,
+solo, duo, trio, quartet, five or more), fusion atoms, heteroatoms with their hydrogens, substituent atoms (`probes/s2_features.py`, tested
+on naphthalene, benzene, phenanthrene, phenylacetylene and aniline). The search runs on both scopes ('all', 'no-large-amplitude') with
+GVPT2 labels.

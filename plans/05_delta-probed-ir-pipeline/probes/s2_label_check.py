@@ -27,7 +27,7 @@ import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, "..", "src"))
-from s2_read import FAMILIES, LINE_LICENSE, WINDOW, load_selection, rms, write_atomic  # noqa: E402
+from s2_read import FAMILIES, LINE_LICENSE, WINDOW, load_selection, options_from_args, rms, write_atomic  # noqa: E402
 
 from dpir.qff import coriolis_zeta, degenerate_groups, rotational_constants, symmetry_average, vpt2  # noqa: E402
 
@@ -123,7 +123,7 @@ def main() -> int:
     ap.add_argument("--extra", nargs="*", default=[])
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
-    by_scaf, _used, _excluded = load_selection(a.root, a.selection, "G", dict(e.split("=", 1) for e in a.extra))
+    by_scaf, _used, _excluded = load_selection(a.root, a.selection, options_from_args(a))
     modes, skipped = [], {}
     for rec in (m for ms in by_scaf.values() for m in ms):
         try:
