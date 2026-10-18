@@ -125,6 +125,15 @@ def test_run_line_word_that_is_no_assignment_is_refused(tmp_path):
     assert r.returncode == 1 and "not a VAR=value assignment" in r.stderr
 
 
+def test_a_module_without_a_development_branch_gets_main_only(tmp_path):
+    mono = _module_with_manifest(tmp_path, MANIFEST)
+    target = tmp_path / "repo"
+    r = subprocess.run([BASH, SCRIPT.as_posix(), "plans/m02", "-", target.as_posix(), "--no-run"], cwd=mono, capture_output=True, text=True,
+                       timeout=300, check=False)
+    assert r.returncode == 0, r.stdout + r.stderr
+    assert _git(target, "branch", "--format=%(refname:short)").split() == ["main"]
+
+
 def test_readme_link_outside_the_repository_fails(tmp_path):
     mono = _module_with_manifest(tmp_path, MANIFEST, readme="# m\nsee [the parser](../build.py)\n")
     r = _make(mono, tmp_path / "repo", "--no-run")

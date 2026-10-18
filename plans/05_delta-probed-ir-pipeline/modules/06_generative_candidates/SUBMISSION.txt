@@ -1,0 +1,24 @@
+# What module 06's submission repository holds (read by tools/make_module_repo.sh, 18 Oct 2026).
+# The notebook must run in a fresh clone of that repository alone; the scripts that made its data stay in the plan repository.
+# The standalone check runs the notebook's labelled pipeline check (M06_QUICK=1: 2,000 molecules, one seed, never a result); the stored
+# notebook is the full run of 26 September 2026.
+README.md
+requirements.txt
+Generative_AI_Analysis_Report.pdf
+PRE_REGISTRATION.md
+MODELS.md
+SUBMISSION.txt
+notebook/generative_model.ipynb
+notebook/results.json
+notebook/figures/
+notebook/out/
+m06/data.py
+m06/model.py
+m06/train.py
+m06/evaluate.py
+m06/baseline_ngram.py
+m06/tests/test_m06.py
+data/README.md
+data/pubchem_aromatics_2026-09-24.part1.csv.gz
+data/pubchem_aromatics_2026-09-24.part2.csv.gz
+run: notebook/generative_model.ipynb M06_QUICK=1

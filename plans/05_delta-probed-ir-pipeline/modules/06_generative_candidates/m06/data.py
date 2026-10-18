@@ -1,17 +1,37 @@
 """Module 06 — data: the frozen PubChem CSV, the scaffold split, the character tokenizer (PRE_REGISTRATION.md, "Data handling")."""
 import csv
+import gzip
 import hashlib
 import re
 from dataclasses import dataclass
+from pathlib import Path
 
 TOKEN_RE = re.compile(r"Cl|Br|\[[^\]]+\]|.", re.S)     # two-letter elements and bracket atoms are single tokens; everything else one character
 SPECIAL = ["<pad>", "<bos>", "<eos>"]
 
 
+def dataset_parts(path):
+    """The committed gzip parts of a dataset CSV (<stem>.part1.csv.gz, <stem>.part2.csv.gz, …, each with the header), in order."""
+    p = Path(path)
+    return sorted(p.parent.glob(f"{p.stem}.part*.csv.gz"), key=lambda q: int(q.name[len(p.stem) + 5:].split(".")[0]))
+
+
 def read_dataset(path):
-    rows = list(csv.DictReader(open(path, encoding="utf-8")))
+    """The dataset rows: from the CSV if it exists, otherwise from its committed gzip parts (a fresh clone has only those)."""
+    if Path(path).exists():
+        with open(path, encoding="utf-8", newline="") as fh:
+            rows = list(csv.DictReader(fh))
+    else:
+        parts = dataset_parts(path)
+        if not parts:
+            raise FileNotFoundError(f"{path}: neither the CSV nor its .partN.csv.gz parts exist")
+        rows = []
+        for part in parts:
+            with gzip.open(part, "rt", encoding="utf-8", newline="") as fh:
+                rows += list(csv.DictReader(fh))
     for r in rows:
-        r["n_heavy"] = int(r["n_heavy"]); r["n_arom_rings"] = int(r["n_arom_rings"])
+        r["n_heavy"] = int(r["n_heavy"])
+        r["n_arom_rings"] = int(r["n_arom_rings"])
     return rows
 
 
@@ -35,7 +55,8 @@ def split_of(scaffold_smiles):
 
 def assign_splits(rows):
     for r in rows:
-        r["scaffold"] = murcko(r["smiles"]); r["split"] = split_of(r["scaffold"])
+        r["scaffold"] = murcko(r["smiles"])
+        r["split"] = split_of(r["scaffold"])
     return rows
 
 
@@ -53,12 +74,14 @@ def hetero_class(smiles):
     els = set()
     for tok in tokenize(smiles):
         if tok.startswith("["):
-            m = BRACKET_RE.match(tok); e = m.group(1) if m else ""
+            m = BRACKET_RE.match(tok)
+            e = m.group(1) if m else ""
         elif tok in ("Cl", "Br") or (len(tok) == 1 and tok.isalpha()):
             e = tok
         else:
             continue
-        if e: els.add(e.capitalize())
+        if e:
+            els.add(e.capitalize())
     het = {e.lower() for e in els} - {"c", "h", "cl", "br", "f", "b"}
     if not het:
         return "none"
@@ -100,5 +123,7 @@ class Vocab:
 
 
 def prefix_for(row):
-    n = row["n_arom_rings"]; r = "<r2>" if n <= 2 else "<r3>" if n == 3 else "<r4+>"
-    h = hetero_class(row["smiles"]); return (r, "<h" + h + ">")
+    n = row["n_arom_rings"]
+    r = "<r2>" if n <= 2 else "<r3>" if n == 3 else "<r4+>"
+    h = hetero_class(row["smiles"])
+    return (r, "<h" + h + ">")

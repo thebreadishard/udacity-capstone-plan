@@ -11,6 +11,7 @@
 # gets one more commit that keeps only those files, and the repository is then checked in a fresh clone: every listed path exists, no README
 # link leaves the repository, and every 'run:' notebook executes there with no error and no unexecuted cell (tools/notebook_ran.py).
 # Any failure stops with exit 1. --no-run skips the execution (a notebook that trains for hours), not the other checks.
+# <dev branch> '-' (18 Oct 2026): a module without a development branch (the rubrics of 03–09 ask for none) gets `main` only.
 # Run from anywhere inside the plan repository; the temporary split branches are removed again.
 set -euo pipefail
 NO_RUN=0
@@ -26,8 +27,10 @@ cd "$ROOT"
 [ -d "$MODULE" ] || { echo "no module dir $MODULE" >&2; exit 2; }
 [ -e "$TARGET" ] && { echo "target $TARGET exists; refusing to overwrite" >&2; exit 2; }
 dev_ref=$DEV
-git rev-parse --verify -q "$dev_ref" > /dev/null || dev_ref="origin/$DEV"
-git rev-parse --verify -q "$dev_ref" > /dev/null || { echo "no branch $DEV (local or origin)" >&2; exit 2; }
+if [ "$DEV" != - ]; then
+  git rev-parse --verify -q "$dev_ref" > /dev/null || dev_ref="origin/$DEV"
+  git rev-parse --verify -q "$dev_ref" > /dev/null || { echo "no branch $DEV (local or origin)" >&2; exit 2; }
+fi
 AUTHOR_NAME=$(git config user.name || true)
 AUTHOR_EMAIL=$(git config user.email || true)
 [ -n "$AUTHOR_NAME" ] && [ -n "$AUTHOR_EMAIL" ] || { echo "no git user.name/user.email for the submission commit" >&2; exit 2; }
@@ -39,10 +42,14 @@ CHECK=""
 cleanup() { git branch -D -q "$split_main" "$split_dev" 2> /dev/null || true; [ -z "$CHECK" ] || rm -rf "$CHECK"; }
 trap cleanup EXIT
 git subtree split -q --prefix="$MODULE" "$MAIN_REF" -b "$split_main" > /dev/null
-git subtree split -q --prefix="$MODULE" "$dev_ref" -b "$split_dev" > /dev/null
+[ "$DEV" = - ] || git subtree split -q --prefix="$MODULE" "$dev_ref" -b "$split_dev" > /dev/null
 
 git init -q -b main "$TARGET"
-git -C "$TARGET" fetch -q "$ROOT" "$split_main:refs/heads/main-tmp" "$split_dev:refs/heads/$DEV"   # git refuses to fetch into the unborn current branch
+if [ "$DEV" = - ]; then
+  git -C "$TARGET" fetch -q "$ROOT" "$split_main:refs/heads/main-tmp"   # git refuses to fetch into the unborn current branch
+else
+  git -C "$TARGET" fetch -q "$ROOT" "$split_main:refs/heads/main-tmp" "$split_dev:refs/heads/$DEV"
+fi
 git -C "$TARGET" branch -m main-tmp main
 git -C "$TARGET" checkout -q main
 
@@ -91,9 +98,9 @@ if [ "$NO_RUN" = 0 ]; then
 fi
 
 echo "repository at $TARGET"
-for b in main "$DEV"; do echo "  $b: $(git -C "$TARGET" rev-list --count "$b") commits"; done
+for b in main $([ "$DEV" = - ] || echo "$DEV"); do echo "  $b: $(git -C "$TARGET" rev-list --count "$b") commits"; done
 echo "  files on main: $(git -C "$TARGET" ls-files | wc -l)"
 echo "  largest file in history: $(git -C "$TARGET" rev-list --objects --all | git -C "$TARGET" cat-file --batch-check='%(objecttype) %(objectsize) %(rest)' | awk '$1 == "blob" {print $2, $3}' | sort -n | tail -1)"
 echo "  standalone check: $([ "$NO_RUN" = 1 ] && echo 'files and links only (--no-run)' || echo "passed (${#runs[@]} notebook(s) executed in a fresh clone)")"
 echo "to publish (the user): create the empty GitHub repository, then"
-echo "  git -C $TARGET remote add origin <url> && git -C $TARGET push -u origin main $DEV"
+echo "  git -C $TARGET remote add origin <url> && git -C $TARGET push -u origin main $([ "$DEV" = - ] || echo "$DEV")"

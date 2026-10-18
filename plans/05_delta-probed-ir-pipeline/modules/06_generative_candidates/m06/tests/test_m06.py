@@ -6,11 +6,25 @@ import sys
 import torch
 
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, os.path.join(HERE, ".."))
-from data import Vocab, hetero_class, murcko, split_of, tokenize  # noqa: E402
 from evaluate import evaluate_samples, project_fit  # noqa: E402
 from model import SmilesTransformer  # noqa: E402
 
+from data import Vocab, hetero_class, murcko, read_dataset, split_of, tokenize  # noqa: E402
+
 TOY = ["c1ccc2ccccc2c1", "c1ccc2ncccc2c1", "Cc1ccc2ccccc2c1", "c1ccc2occc2c1", "Clc1ccc2ccccc2c1", "c1ccc2[nH]ccc2c1", "Oc1ccc2ccccc2c1", "c1ccc2sccc2c1"]
+
+
+def test_read_dataset_from_the_gzip_parts_when_the_csv_is_absent(tmp_path):
+    import gzip
+    header = "cid,smiles,formula,n_heavy,n_arom_rings,cores\n"
+    rows = ["1,c1ccc2ccccc2c1,C10H8,10,2,naphthalene\n", "2,c1ccc2ncccc2c1,C9H7N,10,2,quinoline\n", "3,Cc1ccc2ccccc2c1,C11H10,11,2,naphthalene\n"]
+    for i, chunk in enumerate((rows[:2], rows[2:]), 1):
+        with gzip.open(tmp_path / f"d.part{i}.csv.gz", "wt", encoding="utf-8") as fh:
+            fh.write(header + "".join(chunk))
+    got = read_dataset(tmp_path / "d.csv")
+    assert [r["smiles"] for r in got] == ["c1ccc2ccccc2c1", "c1ccc2ncccc2c1", "Cc1ccc2ccccc2c1"] and got[2]["n_heavy"] == 11
+    (tmp_path / "d.csv").write_text(header + "".join(rows), encoding="utf-8")
+    assert read_dataset(tmp_path / "d.csv") == got
 
 
 def test_tokenizer_round_trip():

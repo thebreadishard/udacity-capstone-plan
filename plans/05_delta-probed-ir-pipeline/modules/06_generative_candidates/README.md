@@ -22,33 +22,49 @@ on-distribution generator whose candidates the pipeline can run — not a beauti
 
 **Dataset.** PubChem compound records with a fused-aromatic core (naphthalene, quinoline, isoquinoline, indole, benzofuran, benzothiophene,
 quinoxaline, benzimidazole, azulene), retrieved through PUG-REST, filtered with RDKit (neutral; C, H, N, O, S, F, Cl; ≤ 30 heavy atoms; no
-isotopes; ≥ 2 fused aromatic rings; one canonical SMILES each) and frozen as `data/pubchem_aromatics_<date>.csv` with a checksum. Public domain,
+isotopes; ≥ 2 fused aromatic rings; one canonical SMILES each) and frozen as `data/pubchem_aromatics_2026-09-24.csv` with a checksum (committed as two gzip parts). Public domain,
 deposited real chemistry — not synthetic, not AI-generated, not the dataset of any earlier module.
 
-## How to run what exists
+## How to run
 
 ```bash
-python m06/fetch_pubchem_aromatics.py            # the data freeze (network; cached; idempotent)
-python -m pytest -q m06/tests                    # six tests, seconds
-python m06/train.py data/pubchem_aromatics_<date>.csv out/seed0 --quick   # smoke: 2,000 molecules, 2 epochs (minutes on a CPU)
-python m06/train.py data/pubchem_aromatics_<date>.csv out/seed0           # the pre-registered run (done 26 September 2026 on the CCX53; three seeds + the conditioned model)
-M06_QUICK=1 python notebook/make_notebook.py                              # the notebook, quick mode: a pipeline check in minutes, marked as such
-python notebook/make_notebook.py                                          # the notebook, pre-registered run (three seeds + the conditioned model; hours on a CPU)
-python make_summary.py                                                    # Generative_AI_Analysis_Report.docx/.pdf from notebook/results.json
+pip install -r requirements.txt
+python -m pytest -q m06/tests                       # the model code's tests, seconds
+jupyter notebook notebook/generative_model.ipynb
 ```
+
+Run all cells top to bottom. The full run trains three seeds and the conditioned model (hours on a CPU); the stored notebook is that run
+(26 September 2026). `M06_QUICK=1 jupyter notebook notebook/generative_model.ipynb` runs the same cells as a pipeline check (2,000 training
+molecules, one seed; the notebook labels its numbers as not a result). The notebook reads the dataset from the two committed gzip parts in
+`data/` (the frozen CSV is 12.8 MB; header and rows of the parts are the CSV row for row). Before submission the pipeline check was executed
+in a fresh clone of this repository, with nothing else present. `requirements.txt` was created with `pip freeze > requirements.txt`.
+
+### Where the data come from
+
+`data/README.md` records the PubChem query (PUG-REST, 24 September 2026), the filters, the counts at every step and the SHA-256 of the
+frozen CSV. The script that ran the query (`m06/fetch_pubchem_aromatics.py`), the notebook's builder (`notebook/make_notebook.py`), the
+report's builder (`make_summary.py`), the design note and the provenance notes stay in the plan's repository, in the module's folder
+[`modules/06_generative_candidates`](https://github.com/thebreadishard/udacity-capstone-plan/tree/master/plans/05_delta-probed-ir-pipeline/modules/06_generative_candidates).
 
 ## Files
 
-- `DESIGN_2026-09-24.md` — the design note (task, dataset choice, model, evaluation, ethics, rubric mapping).
-- `PRE_REGISTRATION.md` — split, tokenizer, model, metrics and predictions fixed before training.
-- `data/` — `README.md` (query, filters, counts, SHA-256) and the frozen CSV; `cache/` (raw PubChem responses, not committed).
-- `m06/fetch_pubchem_aromatics.py` — the data freeze; `data.py` (CSV, Murcko scaffold split by sha, tokenizer, conditioning prefixes);
-  `model.py` (the Transformer, sampling); `train.py` (protocol, per-epoch log with validity of 200 samples, early stop, `generate`);
-  `evaluate.py` (the pre-registered metrics); `tests/test_m06.py`.
-- `notebook/make_notebook.py` → `generative_model.ipynb` (25 September 2026; 27 cells: task and model choice, load and inspect, the model, training with
-  curves, sampling and the pre-registered metrics with a failure gallery and nearest neighbours, the conditioning change, ethics, summary; `results.json`).
-- `make_summary.py` → `Generative_AI_Analysis_Report.docx/.pdf` in the rubric's section order, every number from `results.json`, banner and no PDF in quick mode.
-- `requirements.txt` (the environment of 25 September), `PROVENANCE.md` (data, code, pre-registration, runs — dated notes appended).
-- `RUBRIC_CHECKLIST_2026-10-03.md` — the rubric items against the files (3 October 2026); the executed notebook and the report PDF exist since 26 September 2026.
+- `PRE_REGISTRATION.md` — split, tokenizer, model, metrics and predictions, fixed before training; its outcome section.
+- `notebook/generative_model.ipynb` — task and model choice, load and inspect, the model, training with curves, sampling and the
+  pre-registered metrics with a failure gallery and nearest neighbours, the conditioning change, ethics, summary.
+- `notebook/results.json` (the numbers), `notebook/figures/`, `notebook/out/` (the training logs of the three seeds and the conditioned model).
+- `m06/` — `data.py` (dataset, Murcko scaffold split, tokenizer, conditioning prefixes), `model.py` (the Transformer, sampling), `train.py`
+  (protocol, per-epoch log, early stopping, `generate`), `evaluate.py` (the pre-registered metrics), `baseline_ngram.py` (the 5-gram
+  baseline), `tests/test_m06.py`.
+- `data/` — `README.md` and the dataset as two gzip parts.
+- `Generative_AI_Analysis_Report.pdf` — the report in the Udacity APA 7 template; `MODELS.md` — the generator's versions.
+- `SUBMISSION.txt` — the list of files this repository holds.
+
+## Repository
+
+Submitted as the public repository `udacity-generative-ai-applications` (its default branch `main` is the one the review reads). Its
+commit history is this module's own, carried over from the plan's repository
+[udacity-capstone-plan](https://github.com/thebreadishard/udacity-capstone-plan), where the module lives as
+`plans/05_delta-probed-ir-pipeline/modules/06_generative_candidates/`. The last commit on `main` keeps only the files listed in
+`SUBMISSION.txt`.
 
 *Parked, not dropped (26 Sep 10:0x): the module's original idea — a generative proposer of coupled-cluster *measurement patterns* scored by pattern efficiency — is kept as a standout candidate in [Standout_2026-09-26_Pattern_Proposal_Generator.md](https://github.com/thebreadishard/udacity-capstone-plan/blob/master/plans/05_delta-probed-ir-pipeline/GoalGathering/notes/Standout_2026-09-26_Pattern_Proposal_Generator.md), with the reading of when its response data exist.*
