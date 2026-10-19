@@ -83,6 +83,30 @@ def test_a_specced_run_that_vanished_wakes_once(tmp_path):
     assert r.returncode == 0 and "runs demo 1 lines" in r.stdout
 
 
+def test_every_new_line_of_one_check_is_reported(tmp_path):
+    """19 Oct 2026: the watch stopped at the first new line of a runspec check, and the check had saved the states already, so a second
+    run's news in the same check was never reported. Two runs with news in one check: both lines, and the anomaly's exit code."""
+    pytest.importorskip("pydantic")
+    sys.path.insert(0, str(PLAN / "tools"))
+    import runspec as R
+    (tmp_path / "specs").mkdir()
+    long_ago = datetime.now().astimezone() - timedelta(hours=2)
+    for name in ("ended", "gone"):
+        work = tmp_path / name
+        work.mkdir()
+        (work / f"{name}.log").write_text("  progress 1\n", encoding="utf-8", newline="\n")
+        spec = R.RunSpec.model_validate(dict(name=name, purpose="watch test, two runs", host="laptop", workdir=name, command="true",
+                                             sources=[{"local": "tools/stamp.py"}], progress={"regex": "^  progress ", "max_gap_minutes": 30}))
+        (tmp_path / "specs" / f"{name}.json").write_text(spec.model_dump_json(), encoding="utf-8")
+        R.save_state(name, R.RunState(started_at=long_ago, phase_started_at=long_ago, progress_count=1, progress_seen_at=long_ago),
+                     tmp_path / "runstate")
+    (tmp_path / "ended" / "ended.exit").write_text("0\n", encoding="utf-8")
+    (tmp_path / "gone" / "gone.pid").write_text("999999\n", encoding="utf-8")
+    r = _run(tmp_path, "")
+    assert r.returncode == 1 and "run ended ended (exit 0)" in r.stdout and "run gone gone without an exit file" in r.stdout
+    assert _run(tmp_path, "").returncode == 0
+
+
 def test_every_check_stamps_the_heartbeat(tmp_path):
     """19 Oct 2026: on 18 Oct no watch ran for hours and nothing said so; state.sh reads this stamp's age."""
     _run(tmp_path, "")

@@ -129,7 +129,7 @@ check_r4srv() { check_server_run labels /root/labels/rung4/run.log R4 '^bash /ro
 
 check_runs() {   # 15 Oct 2026 (TASKS 63): the runs of tools/runspec.py. Its ANOMALY and MARKER texts stay the same while a situation lasts,
   # so each is reported once through the seen file; QUIET is the summary for the quiet line. A crash of the check is itself reported once.
-  local out rc line
+  local out rc line found=0
   out=$("${RUNSPEC_PYTHON:-python}" "$P/tools/runspec.py" check 2>&1); rc=$?
   out=$(printf '%s' "$out" | tr -d '\r')   # Windows python ends lines with CR LF; the seen file must see the same text twice
   if [ "$rc" != "0" ]; then
@@ -138,11 +138,14 @@ check_runs() {   # 15 Oct 2026 (TASKS 63): the runs of tools/runspec.py. Its ANO
   fi
   while IFS= read -r line; do
     case "$line" in
-      "ANOMALY "*) new_marker "${line#ANOMALY }" > /dev/null && { echo "ANOMALY $(t): ${line#ANOMALY }"; exit 1; } ;;
-      "MARKER "*) new_marker "${line#MARKER }" && exit 2 ;;
+      "ANOMALY "*) new_marker "${line#ANOMALY }" > /dev/null && { echo "ANOMALY $(t): ${line#ANOMALY }"; found=1; } ;;
+      "MARKER "*) new_marker "${line#MARKER }" && [ "$found" = 0 ] && found=2 ;;
       "QUIET "*) ro=${line#QUIET } ;;
     esac
   done <<< "$out"
+  # 19 Oct 2026: every new line of one check is reported before the exit — the check has saved the runs' states already, so a line left
+  # for the next check never came back (the cation run's end after its own marker); an anomaly outranks a marker in the exit code
+  [ "$found" != 0 ] && exit "$found"
   return 0
 }
 

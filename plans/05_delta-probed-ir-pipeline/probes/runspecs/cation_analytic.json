@@ -2,7 +2,7 @@
  "purpose": "Pool 3 P3-2 consequence (registered 3 Oct, gate read 9 Oct): the 40 of runner a's 60 cations still without both analytic UKS Hessians (B3LYP + ωB97X, 6-31G*, grid 99,590), computed in WSL into the fetched shard corpus/shards_pool3/a; relaunched 19 Oct after the out-of-memory of 00:46 under a cgroup cap, one pass, three failures in a row stop it; since 12:4x smallest basis first (probes/cation_order.py), a molecule stopped at the cap ends the run and names the larger ones that wait, a saved functional is reused (the user: stop after the current molecule and restart sorted)",
  "host": "laptop",
  "workdir": "probes/results_m1",
- "command": "bash ../progress_on_growth.sh --tag CAP --dir ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules --name pyscf.log -- bash ../cation_analytic_all.sh",
+ "command": "bash ../progress_on_growth.sh --tag CAP --dir ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules --name pyscf.log -- env CAP_MB=5120 bash ../cation_analytic_all.sh",
  "sources": [{"local": "probes/cation_analytic_all.sh"}, {"local": "probes/wsl_capped.sh"}, {"local": "probes/progress_on_growth.sh"},
              {"local": "probes/library_log.py"}, {"local": "modules/05_support_predictor/corpus/analytic_hessians.py"},
              {"local": "modules/05_support_predictor/corpus/apt.py"}, {"local": "probes/cation_order.py"},
@@ -13,5 +13,5 @@
  "dry_run_args": "--dry-run",
  "threads": 6,
  "estimate": {"hours": 190, "basis": "40 molecules × 4.8 h: four consecutive cations of 17-19 Oct took 3.1-6.8 h each (log stamps of cation_analytic_2026-10-09.log), beside other jobs"},
- "memory": {"peak_gb": 3.5, "basis": "a bound, not a peak: probes/wsl_capped.sh stops the molecule's process tree at 3584 MB (MemoryMax, tested 19 Oct: 600 MB under a 300 MB cap killed); pyscf told max_memory 3000 MB; measured 19 Oct: P3c_0f27b44587 (228 basis functions) finished B3LYP under it (the scope touched the cap 63 times, file cache reclaimed, program memory 2.2 GB) and was OOM-killed in ωB97X at 12:11; the smaller molecules run first and the first kill stops the run"},
+ "memory": {"peak_gb": 5.0, "basis": "a bound: probes/wsl_capped.sh stops a molecule at 5120 MB (CAP_MB; pyscf max_memory 4536). Measured 19 Oct under the 3584 MB cap, max RSS by basis size: 100 → 2.00 GB, 102 → 2.06, 115 → 2.37, 136 → 3.08, 149 → 3.57; 155 OOM-killed. Roughly basis^1.5, so 5120 MB reaches about 190 basis functions; the larger ones wait for a budget without chain 41"},
  "resumable": true}
