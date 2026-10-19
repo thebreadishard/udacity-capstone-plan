@@ -41,9 +41,10 @@ there_sum=$($S "cd $DEST && sha256sum ${GEOMS[*]}" < /dev/null | sed 's/ [ *]/ /
 [ "$here_sum" = "$there_sum" ] || { echo "GEOMETRY SHA256 MISMATCH"; exit 1; }
 echo "${#GEOMS[@]} geometries, sha256 equal"
 
+SMOKE=/root/s1tz_smoke_$(basename "$DEST")   # 19 Oct 2026: a fresh smoke folder per destination; a reused one skips water and tests nothing
 echo "[$(t) $NAME] 3. SMOKE: water through s1tz_run.sh at T with the grid gate"
-$S "cd $DEST && printf 'water\tprobes/results_m1/water_dipole_fd_2026-10-02/geometry.json\n' > /root/s1tz_smoke_ids.tsv && MAX_FIRST=600 bash probes/s1tz_run.sh S1TZS /root/s1tz_smoke_ids.tsv /root/s1tz_smoke 1 4 > /root/s1tz_smoke.log 2>&1; grep '^=== (S2)' /root/s1tz_smoke.log" < /dev/null
-$S "grep -qE '=== \(S2\) water: (done|NOISY)' /root/s1tz_smoke.log && test -f /root/s1tz_smoke/water/T/qff_report.npz && test -f /root/s1tz_smoke/water/T/grid_gate.log" < /dev/null \
-  || { echo "SMOKE FAILED $NAME — see /root/s1tz_smoke.log"; exit 1; }
-$S "cat /root/s1tz_smoke/water/T/grid_gate.log" < /dev/null
+$S "cd $DEST && printf 'water\tprobes/results_m1/water_dipole_fd_2026-10-02/geometry.json\n' > $SMOKE.ids.tsv && MAX_FIRST=600 bash probes/s1tz_run.sh S1TZS $SMOKE.ids.tsv $SMOKE 1 4 > $SMOKE.log 2>&1; grep '^=== (S2)' $SMOKE.log" < /dev/null
+$S "grep -qE '=== \(S2\) water: (done|NOISY)' $SMOKE.log && test -f $SMOKE/water/T/qff_report.npz && test -f $SMOKE/water/T/grid_gate.log" < /dev/null \
+  || { echo "SMOKE FAILED $NAME — see $SMOKE.log"; exit 1; }
+$S "cat $SMOKE/water/T/grid_gate.log" < /dev/null
 echo "[$(t) $NAME] DEPLOY DONE"
