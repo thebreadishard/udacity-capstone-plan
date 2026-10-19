@@ -51,9 +51,9 @@ run_setting() {   # $1 = name:basis:grid; $2 = 1 for the first setting, whose fi
   cp "$d/ref.json" "$d/hess/ref.json"      # the reference stub carries the same name, so it is not computed twice
   mark "$name: $(ls "$d/stubs" | wc -l) Hessians to compute"
   if [ "$2" = 1 ]; then
-    "$PY" "$HERE/pyscf_hessians_for_qff.py" "$d/stubs" "$d/hess" --basis "$basis" --grid "$grid" --threads "$thr" --max-first-seconds "$MAX_FIRST"       || { mark "$name: STOPPED by the stop rule or a failure (first displaced Hessian > ${MAX_FIRST} s?) — re-price"; exit 1; }
+    "$PY" "$HERE/pyscf_hessians_for_qff.py" "$d/stubs" "$d/hess" --basis "$basis" --grid "$grid" --threads "$thr" --max-first-seconds "$MAX_FIRST" ${GUESS_FROM_PREVIOUS:+--guess-from-previous}       || { mark "$name: STOPPED by the stop rule or a failure (first displaced Hessian > ${MAX_FIRST} s?) — re-price"; exit 1; }
   else
-    "$PY" "$HERE/pyscf_hessians_for_qff.py" "$d/stubs" "$d/hess" --basis "$basis" --grid "$grid" --threads "$thr"
+    "$PY" "$HERE/pyscf_hessians_for_qff.py" "$d/stubs" "$d/hess" --basis "$basis" --grid "$grid" --threads "$thr" ${GUESS_FROM_PREVIOUS:+--guess-from-previous}
   fi
   # dpir.qff refuses a force field whose two finite-difference routes disagree by > 10 cm⁻¹: for S1 that refusal is an outcome (the setting
   # fails), recorded, and the numbers are then assembled with --allow-noisy for the record only (the registration's rule)

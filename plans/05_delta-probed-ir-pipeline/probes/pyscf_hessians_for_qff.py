@@ -39,7 +39,22 @@ def parse_args() -> argparse.Namespace:
     ap.add_argument("--conv", type=float, default=1e-11)
     ap.add_argument("--max-first-seconds", type=float, default=None, help="13 Oct 2026 (S1's stop rule): stop after the first Hessian computed "
                     "in this call when it took longer than this — time first, then the rest")
+    ap.add_argument("--guess-from-previous", action="store_true", help="19 Oct 2026: start each SCF from the previous Hessian's converged "
+                    "density (displaced geometries are close; DIIS from pyscf's default guess stalls for acenaphthylene at def2-TZVP)")
     return ap.parse_args()
+
+
+def rks_setup(mol: Any, xc: str, grid: str, conv: float) -> Any:
+    """The RKS of every Hessian here: functional, unpruned (radial, angular) grid, energy and gradient thresholds."""
+    from pyscf import dft
+    rad, ang = (int(x) for x in grid.split(","))
+    mf = dft.RKS(mol)
+    mf.xc = xc
+    mf.grids.atom_grid = (rad, ang)
+    mf.grids.prune = None
+    mf.conv_tol = conv
+    mf.conv_tol_grad = 1e-8
+    return mf
 
 
 def displaced_geometry(path: str) -> dict[str, Any] | None:
@@ -51,23 +66,18 @@ def displaced_geometry(path: str) -> dict[str, Any] | None:
     return d
 
 
-def hessian_record(d: dict[str, Any], a: argparse.Namespace, lib_log: TextIO) -> tuple[dict[str, Any], float]:
-    """The analytic Hessian at one displaced geometry as the record qff_from_hessians.py reads, with its energy. The SCF falls back to the
-    second-order solver when DIIS stalls (scf_converge.py); raises SCFNotConverged (a RuntimeError) when that fails too."""
-    from pyscf import dft
+def hessian_record(d: dict[str, Any], a: argparse.Namespace, lib_log: TextIO, dm0: Any = None) -> tuple[dict[str, Any], float, Any]:
+    """The analytic Hessian at one displaced geometry as the record qff_from_hessians.py reads, with its energy and the converged density
+    (the next geometry's start with --guess-from-previous). The SCF starts from dm0 when given and falls back to the second-order solver
+    when DIIS stalls (scf_converge.py); raises SCFNotConverged (a RuntimeError) when that fails too."""
     from pyscf.hessian import rks as rks_hess
     rad, ang = (int(x) for x in a.grid.split(","))
     sym = d["molecule"]["symbols"]
     geom = np.array(d["molecule"]["geometry"], float).reshape(-1, 3)
     mol = pyscf_mole(lib_log, atom=[(s, tuple(x)) for s, x in zip(sym, geom, strict=True)], unit="Bohr", basis=a.basis, symmetry=False)
-    mf = dft.RKS(mol)
-    mf.xc = a.xc
-    mf.grids.atom_grid = (rad, ang)
-    mf.grids.prune = None
-    mf.conv_tol = a.conv
-    mf.conv_tol_grad = 1e-8
+    mf = rks_setup(mol, a.xc, a.grid, a.conv)
     t0 = time.time()
-    mf, e = converged_scf(mf, 200, log=lambda m: print(m, flush=True))
+    mf, e = converged_scf(mf, 200, log=lambda m: print(m, flush=True), dm0=dm0)
     H = rks_hess.Hessian(mf).kernel()                      # (natm, natm, 3, 3) in E_h/bohr²
     n = mol.natm
     Hc = H.transpose(0, 2, 1, 3).reshape(3 * n, 3 * n)
@@ -76,7 +86,7 @@ def hessian_record(d: dict[str, Any], a: argparse.Namespace, lib_log: TextIO) ->
            "molecule": {"symbols": sym, "geometry": geom.reshape(-1).tolist()},
            "return_result": Hc.reshape(-1).tolist(), "properties": {"return_energy": float(e)},
            "provenance": {"creator": "pyscf", "routine": "pyscf_hessians_for_qff.py", "wall_s": round(time.time() - t0, 1)}}
-    return rec, float(e)
+    return rec, float(e), mf.make_rdm1()
 
 
 def main() -> None:
@@ -86,7 +96,7 @@ def main() -> None:
     os.makedirs(a.out_dir, exist_ok=True)
     files = sorted(glob.glob(os.path.join(a.cache_dir, "*.json")))
     max_first = a.max_first_seconds                            # the stop rule reads the first Hessian computed in this call only
-    done, t_all = 0, time.time()
+    done, t_all, dm = 0, time.time(), None
     with open(os.path.join(a.out_dir, PYSCF_LOG_NAME), "a", encoding="utf-8") as lib_log:
         for f in files:
             d = displaced_geometry(f)
@@ -99,11 +109,12 @@ def main() -> None:
             print(f"[{time.strftime('%H:%M:%S')}] start {done + 1}/{len(files)} {os.path.basename(f)}", flush=True)
             t0 = time.time()
             try:
-                rec, e = hessian_record(d, a, lib_log)
+                rec, e, dm_new = hessian_record(d, a, lib_log, dm if a.guess_from_previous else None)
             except RuntimeError as exc:
                 raise SystemExit(f"{exc} at {f}") from exc
             with open(out, "w", encoding="utf-8") as fh:
                 json.dump(rec, fh)
+            dm = dm_new
             done += 1
             print(f"[{time.strftime('%H:%M:%S')}] {done}/{len(files)} {os.path.basename(f)} E = {e:.8f} in {time.time()-t0:.0f} s", flush=True)
             if max_first is not None and time.time() - t0 > max_first:

@@ -1,0 +1,15 @@
+{"name": "scf_guess_test",
+ "purpose": "TASKS 80 brought forward for S1-TZ acenaphthylene's re-pricing (the user, 19 Oct: 'Ja, doe (b)'): does a displaced T SCF converge under DIIS from a neighbouring geometry's density? SCF only, three runs (A default, B default, B from A's density) on two neighbouring stubs",
+ "host": "s1",
+ "workdir": "/root/scf_guess_test",
+ "command": "/root/miniforge3/envs/qc05/bin/python probes/scf_guess_test.py /root/s1tz_acenaphthylene/A_45187bb7c8/T/stubs/mode00_p.json /root/s1tz_acenaphthylene/A_45187bb7c8/T/stubs/mode01_m.json --basis def2-tzvp --grid 75,302 --threads 5 --out /root/scf_guess_test/result.json",
+ "sources": [
+  {"local": "probes/scf_guess_test.py", "remote": "/root/scf_guess_test/probes/scf_guess_test.py"},
+  {"local": "probes/pyscf_hessians_for_qff.py", "remote": "/root/scf_guess_test/probes/pyscf_hessians_for_qff.py"},
+  {"local": "probes/scf_converge.py", "remote": "/root/scf_guess_test/probes/scf_converge.py"},
+  {"local": "probes/library_log.py", "remote": "/root/scf_guess_test/probes/library_log.py"}
+ ],
+ "progress": {"regex": "^mode0[01]_[mp]\\.json: |^\\|E\\(B2\\)", "max_gap_minutes": 120},
+ "marker_regex": "^\\|E\\(B2\\)|Traceback|Error",
+ "end_regex": "^\\|E\\(B2\\)",
+ "threads": 5}

@@ -20,13 +20,14 @@ class SCFNotConverged(RuntimeError):
     """Neither DIIS nor the second-order solver followed by DIIS reached the thresholds."""
 
 
-def converged_scf(mf: Any, diis_cycles: int = DIIS_CYCLES, log: Callable[[str], None] = print) -> tuple[Any, Any]:
+def converged_scf(mf: Any, diis_cycles: int = DIIS_CYCLES, log: Callable[[str], None] = print, dm0: Any = None) -> tuple[Any, Any]:
     """Run mf to convergence: (the converged SCF object, its energy). The object is a new one when the fallback ran (undo_newton), so the
-    caller takes gradients and Hessians from the one returned. Raises SCFNotConverged."""
+    caller takes gradients and Hessians from the one returned. dm0: a start density (a neighbouring geometry's, 19 Oct 2026), else pyscf's
+    default guess. Raises SCFNotConverged."""
     if diis_cycles < 1:
         raise ValueError(f"diis_cycles {diis_cycles} must be positive")
     mf.max_cycle = diis_cycles
-    e = mf.kernel()
+    e = mf.kernel() if dm0 is None else mf.kernel(dm0=dm0)
     if mf.converged:
         return mf, e
     log(f"  SCF: DIIS not converged in {diis_cycles} cycles; second-order solver")
