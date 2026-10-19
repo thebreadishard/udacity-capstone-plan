@@ -21,7 +21,8 @@ T0 = datetime(2026, 10, 15, 18, 0).astimezone()
 
 def spec(**over) -> R.RunSpec:
     base = dict(name="demo", purpose="TASKS 63 test run", host="laptop", workdir="probes", command="python probes/demo.py",
-                sources=[{"local": "tools/stamp.py"}], progress={"regex": "^  progress ", "max_gap_minutes": 60})
+                sources=[{"local": "tools/stamp.py"}], progress={"regex": "^  progress ", "max_gap_minutes": 60},
+                memory={"peak_gb": 4.0, "basis": "peak working set of a test run"})
     return R.RunSpec.model_validate(base | over)
 
 
@@ -198,7 +199,7 @@ def test_launch_refuses_a_source_that_does_not_compile(tmp_path, monkeypatch):
     (tmp_path / "w").mkdir()
     (tmp_path / "bad.py").write_text("def f(:\n", encoding="utf-8")
     p = write_spec(tmp_path / "specs", spec(workdir="w", sources=[{"local": "bad.py"}, {"local": "absent.py"}]))
-    with pytest.raises(R.LaunchRefused, match="bad.py does not compile.*absent.py not found"):
+    with pytest.raises(R.LaunchRefused, match=r"bad\.py does not compile.*absent\.py not found"):
         R.launch(p, FakeShell(), T0, tmp_path / "state")
     assert R.load_state("demo", tmp_path / "state") is None
 
@@ -209,7 +210,7 @@ def test_launch_on_a_server_checks_the_pinned_host_and_the_copies(tmp_path):
     good = hashlib.sha256(local.read_bytes()).hexdigest()
     s = spec(host="labels", workdir="/root/x", sources=[{"local": "tools/stamp.py", "remote": "/root/x/stamp.py"}])
     p = write_spec(tmp_path / "specs", s)
-    with pytest.raises(R.LaunchRefused, match="not in tools/hosts.tsv"):
+    with pytest.raises(R.LaunchRefused, match=r"not in tools/hosts\.tsv"):
         R.launch(p, FakeShell(), T0, tmp_path / "state")
     with pytest.raises(R.LaunchRefused, match="differs"):
         R.launch(p, FakeShell(hosts={"labels": ("192.0.2.1", "aaaa")}, sha={"/root/x/stamp.py": "0" * 64}), T0, tmp_path / "state")
@@ -291,3 +292,51 @@ def test_a_relaunch_appends_to_the_log(monkeypatch):
     R.Shell("bash").launch_laptop(spec())
     R.Shell("bash").launch_laptop(spec(), append=True)
     assert ") > demo.log 2>&1" in calls[0][-1] and ") >> demo.log 2>&1" in calls[1][-1]
+
+
+# ---------------------------------------------------------------- the memory budget and unbuffered output (19 Oct 2026)
+
+def test_a_laptop_run_without_a_measured_peak_is_not_launched(tmp_path):
+    p = write_spec(tmp_path / "specs", spec(memory=None))
+    with pytest.raises(R.LaunchRefused, match="no measured peak memory"):
+        R.launch(p, FakeShell(), T0, tmp_path / "state")
+
+
+def test_the_budget_counts_laptop_runs_in_progress_but_not_waiting_ones_or_servers(tmp_path):
+    specs, state = tmp_path / "specs", tmp_path / "state"
+    big = {"peak_gb": 8.0, "basis": "peak working set of a test run"}
+    write_spec(specs, spec(name="training", memory=big))
+    write_spec(specs, spec(name="waiting", memory=big))
+    write_spec(specs, spec(name="remote", host="labels", workdir="/root/x", memory=big))
+    R.save_state("training", run_state(), state)
+    R.save_state("waiting", run_state(phase_started_at=None), state)       # armed, not yet at its start line
+    R.save_state("remote", run_state(), state)
+    assert R.memory_problems(spec(), specs, state) == []                   # 4 + 8 = 12 <= 13
+    over = R.memory_problems(spec(memory={"peak_gb": 6.0, "basis": "peak working set of a test run"}), specs, state)
+    assert over == ["memory: 6 GB + 8 GB of laptop runs in progress = 14 GB > 13 GB"]
+
+
+def test_a_run_in_progress_without_a_peak_blocks_the_budget(tmp_path):
+    specs, state = tmp_path / "specs", tmp_path / "state"
+    write_spec(specs, spec(name="old", memory=None))
+    R.save_state("old", run_state(), state)
+    assert R.memory_problems(spec(), specs, state) == ["laptop run old is in progress without a stated peak memory, so the budget cannot be checked"]
+
+
+def test_resume_does_not_relaunch_past_the_budget(tmp_path):
+    specs, state = tmp_path / "specs", tmp_path / "state"
+    write_spec(specs, spec(name="gone", resumable=True, memory={"peak_gb": 10.0, "basis": "peak working set of a test run"}))
+    write_spec(specs, spec(name="busy"))
+    R.save_state("gone", run_state(), state)
+    R.save_state("busy", run_state(), state)
+    sh = FakeShell(probe_out="exit=\nalive=0\nprogress=3\n")
+    out = R.resume(sh, T0, specs, state, second_look=0)
+    assert out == ["gone: NOT relaunched: memory: 10 GB + 4 GB of laptop runs in progress = 14 GB > 13 GB"] and sh.launched == []
+
+
+def test_python_output_is_unbuffered_on_the_laptop_and_on_a_server(monkeypatch):
+    calls = []
+    monkeypatch.setattr(R.Shell, "_run", lambda self, args, timeout=120, cwd=None: calls.append(args) or subprocess.CompletedProcess(args, 0, "1", ""))
+    R.Shell("bash").launch_laptop(spec())
+    assert "export PYTHONUNBUFFERED=1; " in calls[0][-1]
+    assert 'ENVLINE="export PYTHONUNBUFFERED=1"' in (PLAN / "tools" / "remote_launch.sh").read_text(encoding="utf-8")

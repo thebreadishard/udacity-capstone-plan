@@ -5,4 +5,5 @@
              {"local": "modules/05_support_predictor/m05/rungC_train.py"}, {"local": "modules/05_support_predictor/m05/design_check.py"}],
  "progress": {"regex": "^=== \\(C41\\) progress: |^\\(C41\\) .* done ", "max_gap_minutes": 90, "start_regex": "^=== \\(C41\\) starting: "},
  "marker_regex": "^=== \\(C41\\) (armed|starting|resuming|RUN FAILED|run done)",
- "end_regex": "^=== \\(C41\\) run done", "dry_run_args": "--dry-run", "resumable": true}
+ "end_regex": "^=== \\(C41\\) run done", "dry_run_args": "--dry-run", "resumable": true,
+ "memory": {"peak_gb": 7.7, "basis": "PeakWorkingSet64 of rungC_train.py, 19 Oct 2026 07:24, chain 41 step 5 (control1half, n = 978); the chain runner itself 0.02 GB. Full-data steps not measured yet: re-read at chain 41's next step"}}

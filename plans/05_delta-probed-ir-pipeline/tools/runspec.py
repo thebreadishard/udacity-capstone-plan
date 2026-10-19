@@ -6,8 +6,10 @@ wrapper. Here a run cannot start without saying which log lines prove progress a
 
 A run is a spec, probes/runspecs/<name>.json (committed: the launch record), and a state, probes/watch_state/runs/<name>.json (git-ignored).
   launch    refuses an invalid spec, a run already running, an unknown or re-used host, a source that does not compile or whose server copy
-            differs (sha256), and a failed dry run; then starts the command through the existing wrappers — tools/remote_launch.sh on a server,
-            tools/launch_outside_app.sh on the laptop. Both leave <name>.log, <name>.pid and, when the command ends, <name>.exit in the workdir.
+            differs (sha256), a laptop run without a measured peak memory or past the laptop's memory budget, and a failed dry run; then
+            starts the command through the existing wrappers — tools/remote_launch.sh on a server, tools/launch_outside_app.sh on the laptop.
+            Both leave <name>.log, <name>.pid and, when the command ends, <name>.exit in the workdir. Python's output is unbuffered
+            (PYTHONUNBUFFERED=1), so a line printed is a line in the log.
   check     what probes/watch.sh runs every ten minutes. Per running run: marker lines, the exit file, the pid, the count of progress lines.
             One line per event on stdout — 'ANOMALY <text>' (a decision is needed), 'MARKER <text>' (news), a final 'QUIET <summary>'. The
             texts are stable while the situation lasts, so the watch's seen file reports each one once.
@@ -52,6 +54,10 @@ MARKER_WIDTH = 110              # the width of the watch's other markers
 DRY_RUN_TIMEOUT_S = 900
 RESUME_GRACE = timedelta(minutes=40)   # longer than the resume task's 30 minutes: a resumable run gone for less is the resume's business
 RESUME_SECOND_LOOK_S = 30              # a run is gone only when two looks this far apart both miss it (13 Oct: one ps snapshot missed a runner)
+# The laptop's memory for runs, GB. 19 Oct 2026 07:24: 11.0 of 31.3 GB free with one trainer at 3.2 GB, so Windows, the app and an idle WSL
+# hold ≈ 16 GB; 2 GB stay free as margin. At 00:46 that night chain 41, two dxtb shards and a UKS cation together ran Windows out of memory.
+LAPTOP_RUN_MEMORY_GB = 13.0
+RUN_ENV = "export PYTHONUNBUFFERED=1; "  # a print to a file is block-buffered otherwise: 18-19 Oct, an optimisation's lines sat in the buffer for hours
 _NOT_ERE = re.compile(r"\\[dDsSwWbB]|\(\?")
 
 
@@ -89,6 +95,11 @@ class Estimate(_Frozen):
     basis: str = Field(min_length=10, description="the measurement the hours come from; an estimate without one is not written down")
 
 
+class Memory(_Frozen):
+    peak_gb: float = Field(gt=0, le=64, description="the run's peak memory (all its processes, WSL included), GB")
+    basis: str = Field(min_length=10, description="the measurement the peak comes from")
+
+
 class RunSpec(_Frozen):
     name: str = Field(pattern=r"^[A-Za-z0-9][A-Za-z0-9_-]{0,39}$")
     purpose: str = Field(min_length=10, description="the TASKS row or registration the run serves")
@@ -102,6 +113,7 @@ class RunSpec(_Frozen):
     dry_run_args: str | None = Field(default=None, description="appended to the command for the dry run before the launch")
     threads: int | None = Field(default=None, ge=1, le=64)
     estimate: Estimate | None = None
+    memory: Memory | None = Field(default=None, description="laptop runs: required at launch and resume (the memory budget)")
     resumable: bool = Field(default=False, description="laptop only: the command skips finished work, so `resume` may relaunch it")
 
     _check_regex = field_validator("marker_regex", "end_regex")(_ere)
@@ -160,8 +172,8 @@ class Observation:
     markers: tuple[str, ...] = ()
 
 
-def assess(spec: RunSpec, state: RunState, obs: Observation, now: datetime) -> tuple[list[str], RunState]:
-    """The events of one check and the state after it. No I/O: everything the decision needs is in the arguments."""
+def _unreachable(spec: RunSpec, state: RunState, obs: Observation) -> tuple[list[str], RunState] | None:
+    """The check's outcome when the host or the run's folder cannot be read, None when they can."""
     who = f"run {spec.name}"
     if obs.host_gone:
         return [f"ANOMALY {who}: host {spec.host} is no longer in tools/hosts.tsv and the run never ended"], state
@@ -170,28 +182,37 @@ def assess(spec: RunSpec, state: RunState, obs: Observation, now: datetime) -> t
     if not obs.reachable:
         state = replace(state, unreachable=state.unreachable + 1)
         return ([f"ANOMALY {who}: host {spec.host} unreachable twice"] if state.unreachable >= 2 else []), state
-    state = replace(state, unreachable=0)
     if obs.workdir_missing:
-        return [f"ANOMALY {who}: workdir {spec.workdir} missing on {spec.host}"], state
-    events = [f"MARKER {who}: {m[:MARKER_WIDTH]}" for m in obs.markers]
+        return [f"ANOMALY {who}: workdir {spec.workdir} missing on {spec.host}"], replace(state, unreachable=0)
+    return None
 
-    if obs.exit_code is not None:
-        state = replace(state, status="ended")
-        if obs.exit_code != 0:
-            return events + [f"ANOMALY {who} ended with exit {obs.exit_code}"], state
-        if spec.end_regex and not obs.ended_marker:
-            return events + [f"ANOMALY {who} exited 0 without its end line /{spec.end_regex}/"], state
-        return events + [f"MARKER {who} ended (exit 0)"], state
-    if not obs.alive:
-        if spec.resumable:
-            gone = state.gone_seen_at or now
-            state = replace(state, gone_seen_at=gone)
-            if now - gone < RESUME_GRACE:
-                return events, state                             # the resume task relaunches it
-            return events + [f"ANOMALY {who} gone since {gone:%d %b %H:%M} and not resumed (see probes/watch_state/resume.log)"], state
-        return events + [f"ANOMALY {who} gone without an exit file (launched {state.started_at:%d %b %H:%M})"], state
-    state = replace(state, gone_seen_at=None)
 
+def _ended(spec: RunSpec, state: RunState, obs: Observation, events: list[str]) -> tuple[list[str], RunState]:
+    """A run with an exit file: ended, cleanly or not."""
+    who = f"run {spec.name}"
+    state = replace(state, status="ended")
+    if obs.exit_code != 0:
+        return [*events, f"ANOMALY {who} ended with exit {obs.exit_code}"], state
+    if spec.end_regex and not obs.ended_marker:
+        return [*events, f"ANOMALY {who} exited 0 without its end line /{spec.end_regex}/"], state
+    return [*events, f"MARKER {who} ended (exit 0)"], state
+
+
+def _vanished(spec: RunSpec, state: RunState, events: list[str], now: datetime) -> tuple[list[str], RunState]:
+    """A run neither ended nor alive: the resume task's business for RESUME_GRACE when it is resumable, an anomaly otherwise."""
+    who = f"run {spec.name}"
+    if not spec.resumable:
+        return [*events, f"ANOMALY {who} gone without an exit file (launched {state.started_at:%d %b %H:%M})"], state
+    gone = state.gone_seen_at or now
+    state = replace(state, gone_seen_at=gone)
+    if now - gone < RESUME_GRACE:
+        return events, state
+    return [*events, f"ANOMALY {who} gone since {gone:%d %b %H:%M} and not resumed (see probes/watch_state/resume.log)"], state
+
+
+def _progress(spec: RunSpec, state: RunState, obs: Observation, events: list[str], now: datetime) -> tuple[list[str], RunState]:
+    """A live run: its progress lines against the allowed gap, and its time against the estimate."""
+    who = f"run {spec.name}"
     if state.phase_started_at is None:                       # still waiting for start_regex
         if not obs.started:
             return events, state
@@ -200,10 +221,24 @@ def assess(spec: RunSpec, state: RunState, obs: Observation, now: datetime) -> t
         state = replace(state, progress_count=obs.progress_count, progress_seen_at=now)
     seen = state.progress_seen_at or state.phase_started_at
     if now - seen > timedelta(minutes=spec.progress.max_gap_minutes):
-        events.append(f"ANOMALY {who}: no progress line since {seen:%d %b %H:%M} (the spec allows {spec.progress.max_gap_minutes} min)")
+        events = [*events, f"ANOMALY {who}: no progress line since {seen:%d %b %H:%M} (the spec allows {spec.progress.max_gap_minutes} min)"]
     if spec.estimate and now - state.phase_started_at > timedelta(hours=ESTIMATE_OVERRUN * spec.estimate.hours):
-        events.append(f"MARKER {who} past {ESTIMATE_OVERRUN}x its estimate of {spec.estimate.hours:g} h - read its log")
+        events = [*events, f"MARKER {who} past {ESTIMATE_OVERRUN}x its estimate of {spec.estimate.hours:g} h - read its log"]
     return events, state
+
+
+def assess(spec: RunSpec, state: RunState, obs: Observation, now: datetime) -> tuple[list[str], RunState]:
+    """The events of one check and the state after it. No I/O: everything the decision needs is in the arguments."""
+    early = _unreachable(spec, state, obs)
+    if early is not None:
+        return early
+    state = replace(state, unreachable=0)
+    events = [f"MARKER run {spec.name}: {m[:MARKER_WIDTH]}" for m in obs.markers]
+    if obs.exit_code is not None:
+        return _ended(spec, state, obs, events)
+    if not obs.alive:
+        return _vanished(spec, state, events, now)
+    return _progress(spec, replace(state, gone_seen_at=None), obs, events, now)
 
 
 def summary(spec: RunSpec, state: RunState) -> str:
@@ -278,7 +313,8 @@ class Shell:
 
     def launch_laptop(self, spec: RunSpec, append: bool = False) -> tuple[int, str]:
         n = shlex.quote(spec.name)
-        env = f"export OMP_NUM_THREADS={spec.threads} MKL_NUM_THREADS={spec.threads} OPENBLAS_NUM_THREADS={spec.threads}; " if spec.threads else ""
+        env = RUN_ENV + (f"export OMP_NUM_THREADS={spec.threads} MKL_NUM_THREADS={spec.threads} OPENBLAS_NUM_THREADS={spec.threads}; "
+                         if spec.threads else "")
         wrapped = f"echo $$ > {n}.pid; rm -f {n}.exit; ( {env}{spec.command} ) {'>>' if append else '>'} {n}.log 2>&1; echo $? > {n}.exit"
         r = self._run([self.bash, (TOOLS / "launch_outside_app.sh").as_posix(), spec.name, (ROOT / spec.workdir).as_posix(), wrapped])
         return r.returncode, r.stdout + r.stderr
@@ -289,7 +325,7 @@ class Shell:
             args += ["--threads", str(spec.threads)]
         if spec.dry_run_args is not None:
             args += ["--dry-run", spec.dry_run_args]
-        r = self._run(args + ["--", spec.command], timeout=DRY_RUN_TIMEOUT_S + 120)
+        r = self._run([*args, "--", spec.command], timeout=DRY_RUN_TIMEOUT_S + 120)
         return r.returncode, r.stdout + r.stderr
 
 
@@ -327,8 +363,8 @@ def save_state(name: str, state: RunState, state_dir: Path = STATE_DIR) -> None:
     os.replace(tmp, p)
 
 
-def preflight(spec: RunSpec, shell: Shell) -> list[str]:
-    """Every reason not to launch, empty when there is none. Local sources compile; a server is the pinned machine and has the same copies."""
+def _source_problems(spec: RunSpec, shell: Shell) -> list[str]:
+    """Local sources exist and compile (Python) or parse (bash -n)."""
     problems = []
     for s in spec.sources:
         path = ROOT / s.local
@@ -344,17 +380,19 @@ def preflight(spec: RunSpec, shell: Shell) -> list[str]:
             rc, _ = shell.run(LAPTOP, f"bash -n {shlex.quote(path.as_posix())} 2>&1")
             if rc != 0:
                 problems.append(f"source {s.local} fails bash -n")
-    if spec.host == LAPTOP:
-        if not (ROOT / spec.workdir).is_dir():
-            problems.append(f"workdir {spec.workdir} does not exist")
-        return problems
+    return problems
+
+
+def _server_problems(spec: RunSpec, shell: Shell) -> list[str]:
+    """A server run's host is the pinned machine, its workdir exists and its source copies equal the local files (sha256)."""
     if shell.host_row(spec.host) is None:
-        return problems + [f"host {spec.host} is not in tools/hosts.tsv"]
+        return [f"host {spec.host} is not in tools/hosts.tsv"]
     remote = [s for s in spec.sources if s.remote]
     rc, out = shell.run(spec.host, f"test -d {shlex.quote(spec.workdir)} && echo workdir=ok; "
                         + "; ".join(f"sha256sum {shlex.quote(s.remote)} 2>/dev/null || echo 'none {s.remote}'" for s in remote))
     if rc == 3:
-        return problems + [f"host {spec.host} answers with another machine"]
+        return [f"host {spec.host} answers with another machine"]
+    problems = []
     if "workdir=ok" not in out:
         problems.append(f"workdir {spec.workdir} missing on {spec.host} (or the host is unreachable)")
     there = {line.split()[-1]: line.split()[0] for line in out.splitlines() if len(line.split()) == 2}
@@ -365,6 +403,48 @@ def preflight(spec: RunSpec, shell: Shell) -> list[str]:
     return problems
 
 
+def preflight(spec: RunSpec, shell: Shell) -> list[str]:
+    """Every reason not to launch, empty when there is none. Local sources compile; a server is the pinned machine and has the same copies."""
+    problems = _source_problems(spec, shell)
+    if spec.host != LAPTOP:
+        return problems + _server_problems(spec, shell)
+    if not (ROOT / spec.workdir).is_dir():
+        problems.append(f"workdir {spec.workdir} does not exist")
+    return problems
+
+
+def memory_problems(spec: RunSpec, spec_dir: Path, state_dir: Path) -> list[str]:
+    """Why a laptop run may not start now for memory, empty when it may: it states its measured peak, and that peak plus the peaks of the
+    laptop runs in progress fits LAPTOP_RUN_MEMORY_GB. A run still waiting for its start line holds no memory yet and is not counted (the
+    chains wait for one another, so one trains at a time)."""
+    if spec.host != LAPTOP:
+        return []
+    if spec.memory is None:
+        return [f"{spec.name} states no measured peak memory (memory.peak_gb with its basis); a laptop run needs one"]
+    others, unknown = 0.0, []
+    for path in sorted(spec_dir.glob("*.json")):
+        state = load_state(path.stem, state_dir)
+        if path.stem == spec.name or state is None or state.status != "running" or state.phase_started_at is None:
+            continue
+        try:
+            other = load_spec(path)
+        except ValidationError:
+            unknown.append(path.stem)
+            continue
+        if other.host != LAPTOP:
+            continue
+        if other.memory is None:
+            unknown.append(other.name)
+        else:
+            others += other.memory.peak_gb
+    problems = [f"laptop run {n} is in progress without a stated peak memory, so the budget cannot be checked" for n in unknown]
+    total = others + spec.memory.peak_gb
+    if total > LAPTOP_RUN_MEMORY_GB:
+        problems.append(f"memory: {spec.memory.peak_gb:g} GB + {others:g} GB of laptop runs in progress = {total:g} GB "
+                        f"> {LAPTOP_RUN_MEMORY_GB:g} GB")
+    return problems
+
+
 def launch(spec_path: Path, shell: Shell, now: datetime, state_dir: Path = STATE_DIR) -> str:
     spec = load_spec(spec_path)
     if spec_path.stem != spec.name:
@@ -372,7 +452,7 @@ def launch(spec_path: Path, shell: Shell, now: datetime, state_dir: Path = STATE
     old = load_state(spec.name, state_dir)
     if old is not None and old.status == "running":
         raise LaunchRefused(f"run {spec.name} is already running (launched {old.started_at:%d %b %H:%M})")
-    problems = preflight(spec, shell)
+    problems = preflight(spec, shell) + memory_problems(spec, spec_path.parent, state_dir)
     if problems:
         raise LaunchRefused("; ".join(problems))
     if spec.host == LAPTOP:
@@ -418,7 +498,7 @@ def resume(shell: Shell, now: datetime, spec_dir: Path = SPEC_DIR, state_dir: Pa
         if dry:
             lines.append(f"{spec.name}: gone without an exit file - would relaunch: {spec.command}")
             continue
-        problems = preflight(spec, shell)
+        problems = preflight(spec, shell) + memory_problems(spec, spec_dir, state_dir)
         if problems:
             lines.append(f"{spec.name}: NOT relaunched: {'; '.join(problems)}")
             continue
@@ -448,11 +528,49 @@ def check(shell: Shell, now: datetime, spec_dir: Path = SPEC_DIR, state_dir: Pat
         save_state(spec.name, state, state_dir)
         lines += events
         quiet.append(summary(spec, state) if state.status == "running" else f"{spec.name} ended")
-    return lines + ["QUIET " + ("; ".join(quiet) or "no runs")]
+    return [*lines, "QUIET " + ("; ".join(quiet) or "no runs")]
 
 
 def _now() -> datetime:
     return datetime.now().astimezone()
+
+
+def _cmd_validate(a: argparse.Namespace, shell: Shell) -> int:
+    try:
+        spec = load_spec(a.spec)
+    except ValidationError as e:
+        print(e)
+        return 1
+    problems = preflight(spec, shell)
+    print("\n".join(problems) or f"{spec.name}: valid, sources compile" + ("" if spec.host == LAPTOP else ", server copies match"))
+    return 1 if problems else 0
+
+
+def _cmd_launch(a: argparse.Namespace, shell: Shell) -> int:
+    try:
+        print(launch(a.spec, shell, _now()))
+    except (LaunchRefused, ValidationError) as e:
+        print(f"NOT launched: {e}")
+        return 1
+    return 0
+
+
+def _cmd_check(_: argparse.Namespace, shell: Shell) -> int:
+    print("\n".join(check(shell, _now())))
+    return 0
+
+
+def _cmd_resume(a: argparse.Namespace, shell: Shell) -> int:
+    print("\n".join(resume(shell, _now(), dry=a.dry_run)) or "no run to resume")
+    return 0
+
+
+def _cmd_list(_: argparse.Namespace, __: Shell) -> int:
+    for path in sorted(SPEC_DIR.glob("*.json")):
+        state = load_state(path.stem)
+        print(f"{path.stem}\t{'never launched' if state is None else state.status}\t"
+              f"{'' if state is None else state.started_at.strftime('%Y-%m-%d %H:%M')}")
+    return 0
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -464,35 +582,8 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("resume").add_argument("--dry-run", action="store_true")
     sub.add_parser("list")
     a = ap.parse_args(argv)
-    shell = Shell()
-    if a.cmd == "validate":
-        try:
-            spec = load_spec(a.spec)
-        except ValidationError as e:
-            print(e)
-            return 1
-        problems = preflight(spec, shell)
-        print("\n".join(problems) or f"{spec.name}: valid, sources compile" + ("" if spec.host == LAPTOP else ", server copies match"))
-        return 1 if problems else 0
-    if a.cmd == "launch":
-        try:
-            print(launch(a.spec, shell, _now()))
-        except (LaunchRefused, ValidationError) as e:
-            print(f"NOT launched: {e}")
-            return 1
-        return 0
-    if a.cmd == "check":
-        print("\n".join(check(shell, _now())))
-        return 0
-    if a.cmd == "resume":
-        lines = resume(shell, _now(), dry=a.dry_run)
-        print("\n".join(lines) or "no run to resume")
-        return 0
-    for path in sorted(SPEC_DIR.glob("*.json")):
-        state = load_state(path.stem)
-        print(f"{path.stem}\t{'never launched' if state is None else state.status}\t"
-              f"{'' if state is None else state.started_at.strftime('%Y-%m-%d %H:%M')}")
-    return 0
+    commands = {"validate": _cmd_validate, "launch": _cmd_launch, "check": _cmd_check, "resume": _cmd_resume, "list": _cmd_list}
+    return commands[a.cmd](a, Shell())
 
 
 if __name__ == "__main__":
