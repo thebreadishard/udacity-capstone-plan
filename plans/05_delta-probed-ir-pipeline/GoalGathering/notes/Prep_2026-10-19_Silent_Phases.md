@@ -31,6 +31,10 @@ appointments. This note gives the facts and the options. The decision is the use
 Code lines found: `pyscf_hessians_for_qff.py` writes one line per Hessian (≈ 600 s each for benzene at T). `optimise()` writes only at its
 end; `newton_polish()` writes one line per step.
 
+## Found the next morning (19 Oct 04:5x)
+
+Acenaphthylene's optimiser was not only silent by design. Its RSS rose from 0.26 to 4.3 GB, the size of a T Hessian, so it had most likely left BFGS for Newton polish. The 'BFGS:' line had been printed but sat in Python's stdout buffer: `print` to a file is block-buffered. Naphthalene's optimisation lines also appeared only when its process ended. A line the program writes is no use if it reaches the log hours later. Rule 1 therefore includes `flush=True`, and launchers run Python with `-u` or `PYTHONUNBUFFERED=1`.
+
 ## Candidate rules, each with its cost
 
 1. **A heartbeat in the code.** Any loop that can run longer than about 10 min writes a line per iteration: elapsed time, the quantity
