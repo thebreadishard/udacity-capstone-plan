@@ -1,0 +1,169 @@
+{
+ "rule": "1. Universe: corpus manifest rows with status done and n_atoms ≤ 28, neutral, elements C, N and O besides H, not in hold-out (b)\n     (corpus/holdout_b_frozen_2026-10-08.txt), not already in S2 (probes/results_m1/s2_training_set_2026-10-14/selection.json).\n     Neutral is the deck in the molecule's job.json: charge 0 and multiplicity 1 (a pool 3 cation's manifest SMILES is its neutral parent's, and S2's\n     runner has no charge input).\n  2. Rigid only: no rotatable bond (RDKit), no acyclic linker between ring systems, no CH₃, no H on N or O (all five of S2's NOISY\n     molecules carried one of these). The linker clause catches what RDKit's count misses next to a triple bond: diphenylacetylene's\n     rings turn almost freely about the C≡C axis.\n  3. One molecule per Murcko scaffold that none of S2's selected molecules has: the smallest rigid member, ties by the sha1 of the id.",
+ "universe": 663,
+ "universe_rigid": 84,
+ "universe_scaffolds": 43,
+ "selected": [
+  {
+   "id": "B_052693bd01",
+   "smiles": "N#Cc1cocn1",
+   "n_atoms": 9,
+   "rigid": true,
+   "scaffold": "c1cocn1"
+  },
+  {
+   "id": "A_fead28d796",
+   "smiles": "c1ccc2occc2c1",
+   "n_atoms": 15,
+   "rigid": true,
+   "scaffold": "c1ccc2occc2c1"
+  },
+  {
+   "id": "A_ff98e1160d",
+   "smiles": "c1ccc2ncccc2c1",
+   "n_atoms": 17,
+   "rigid": true,
+   "scaffold": "c1ccc2ncccc2c1"
+  },
+  {
+   "id": "A_aa22880426",
+   "smiles": "[O-][n+]1cccc2ccccc21",
+   "n_atoms": 18,
+   "rigid": true,
+   "scaffold": "c1ccc2[nH+]cccc2c1"
+  },
+  {
+   "id": "A_20db5837c9",
+   "smiles": "c1ccc2c(c1)oc1ccccc12",
+   "n_atoms": 21,
+   "rigid": true,
+   "scaffold": "c1ccc2c(c1)oc1ccccc12"
+  },
+  {
+   "id": "A_593ba8280d",
+   "smiles": "O=C1OC(=O)c2cccc3cccc1c23",
+   "n_atoms": 21,
+   "rigid": true,
+   "scaffold": "O=C1OC(=O)c2cccc3cccc1c23"
+  },
+  {
+   "id": "A_8d1f3c46b0",
+   "smiles": "c1cc2c3c(cccc3c1)CC2",
+   "n_atoms": 22,
+   "rigid": true,
+   "scaffold": "c1cc2c3c(cccc3c1)CC2"
+  },
+  {
+   "id": "A_b77821c742",
+   "smiles": "c1ccc2nc3ccccc3nc2c1",
+   "n_atoms": 22,
+   "rigid": true,
+   "scaffold": "c1ccc2nc3ccccc3nc2c1"
+  },
+  {
+   "id": "A_e72997e726",
+   "smiles": "c1ccc2c(c1)Cc1ccccc1-2",
+   "n_atoms": 23,
+   "rigid": true,
+   "scaffold": "c1ccc2c(c1)Cc1ccccc1-2"
+  },
+  {
+   "id": "A_bce5bae234",
+   "smiles": "c1ccc2c(c1)cnc1ccccc12",
+   "n_atoms": 23,
+   "rigid": true,
+   "scaffold": "c1ccc2c(c1)cnc1ccccc12"
+  },
+  {
+   "id": "A_a6412e1ae4",
+   "smiles": "c1ccc2nc3ccccc3cc2c1",
+   "n_atoms": 23,
+   "rigid": true,
+   "scaffold": "c1ccc2nc3ccccc3cc2c1"
+  },
+  {
+   "id": "A_541c53d1a5",
+   "smiles": "c1ccc2c(c1)ccc1ccccc12",
+   "n_atoms": 24,
+   "rigid": true,
+   "scaffold": "c1ccc2c(c1)ccc1ccccc12"
+  },
+  {
+   "id": "A_a1e6ec1862",
+   "smiles": "c1ccc2cc3ccccc3cc2c1",
+   "n_atoms": 24,
+   "rigid": true,
+   "scaffold": "c1ccc2cc3ccccc3cc2c1"
+  },
+  {
+   "id": "P3_d2345d9fcf",
+   "smiles": "c1cnc2c(c1)-c1cccc3cccc-2c13",
+   "n_atoms": 25,
+   "rigid": true,
+   "scaffold": "c1cnc2c(c1)-c1cccc3cccc-2c13"
+  },
+  {
+   "id": "P3_0bb6c41350",
+   "smiles": "c1cc2ccc3ccnc4ccc(c1)c2c34",
+   "n_atoms": 25,
+   "rigid": true,
+   "scaffold": "c1cc2ccc3ccnc4ccc(c1)c2c34"
+  },
+  {
+   "id": "P3_5592613777",
+   "smiles": "c1cc2c3c(cccc3c1)-c1cnccc1-2",
+   "n_atoms": 25,
+   "rigid": true,
+   "scaffold": "c1cc2c3c(cccc3c1)-c1cnccc1-2"
+  },
+  {
+   "id": "P3_97c2db1a08",
+   "smiles": "c1cc2ccc3cncc4ccc(c1)c2c34",
+   "n_atoms": 25,
+   "rigid": true,
+   "scaffold": "c1cc2ccc3cncc4ccc(c1)c2c34"
+  },
+  {
+   "id": "P3_ff62f88395",
+   "smiles": "c1ccc2c(c1)-c1cccc3cncc-2c13",
+   "n_atoms": 25,
+   "rigid": true,
+   "scaffold": "c1ccc2c(c1)-c1cccc3cncc-2c13"
+  },
+  {
+   "id": "P3_1e34c6eeef",
+   "smiles": "c1ccc2c(c1)-c1cccc3nccc-2c13",
+   "n_atoms": 25,
+   "rigid": true,
+   "scaffold": "c1ccc2c(c1)-c1cccc3nccc-2c13"
+  },
+  {
+   "id": "P3_b36c153df2",
+   "smiles": "c1cc2ccc3cccc4ncc(c1)c2c34",
+   "n_atoms": 25,
+   "rigid": true,
+   "scaffold": "c1cc2ccc3cccc4ncc(c1)c2c34"
+  },
+  {
+   "id": "P3_1ba8fe779a",
+   "smiles": "c1ccc2c(c1)-c1cccc3ccnc-2c13",
+   "n_atoms": 25,
+   "rigid": true,
+   "scaffold": "c1ccc2c(c1)-c1cccc3ccnc-2c13"
+  },
+  {
+   "id": "A_428228e5a5",
+   "smiles": "c1ccc2c(c1)-c1cccc3cccc-2c13",
+   "n_atoms": 26,
+   "rigid": true,
+   "scaffold": "c1ccc2c(c1)-c1cccc3cccc-2c13"
+  },
+  {
+   "id": "A_cce0ad25a5",
+   "smiles": "c1cc2ccc3cccc4ccc(c1)c2c34",
+   "n_atoms": 26,
+   "rigid": true,
+   "scaffold": "c1cc2ccc3cccc4ccc(c1)c2c34"
+  }
+ ]
+}

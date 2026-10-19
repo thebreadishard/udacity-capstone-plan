@@ -1,0 +1,10 @@
+{
+ "what": "water's harmonic ω (cm⁻¹) at G (B3LYP/6-31G*, grid 75,302) from dpir.qff, S2's deploy smoke on s1, 14 Oct 2026 04:59",
+ "source": "probes/results_m1/s2_anharmonic_2026-10-18/s2_smoke/water/G/qff_report.npz (fetched; git-ignored)",
+ "tolerance_cm": 0.001,
+ "omega_cm": [
+  1710.8043631167907,
+  3721.097252271306,
+  3844.9313096277356
+ ]
+}

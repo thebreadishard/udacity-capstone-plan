@@ -20,6 +20,7 @@ import argparse
 import json
 import os
 import sys
+from collections.abc import Callable
 
 import numpy as np
 from scipy.optimize import linear_sum_assignment
@@ -74,14 +75,19 @@ def window(rec: dict) -> np.ndarray:
     return (rec["omega"] >= WINDOW[0]) & (rec["omega"] <= WINDOW[1])
 
 
-def predict_x1(train: dict, test: dict) -> tuple[np.ndarray, np.ndarray, int]:
-    """x1 in s2_read.curve's 'b' slot: the FX ridge; route (c) and the unseen-family count as route (b) has them (an unseen family's
+def config_predictor(cfg: Config) -> Callable[[dict, dict], tuple[np.ndarray, np.ndarray, int]]:
+    """One search configuration in s2_read.curve's 'b' slot; route (c) and the unseen-family count as route (b) has them (an unseen family's
     modes get the training mean, as route (b) does)."""
-    _, pc, unseen = fit_predict(train, test)
-    p, _ = search_fit_predict(X1, train, test, None)
-    seen = np.isin(test["family"], np.unique(train["family"]))
-    p[~seen] = train["delta"].mean()
-    return p, pc, unseen
+    def predict(train: dict, test: dict) -> tuple[np.ndarray, np.ndarray, int]:
+        _, pc, unseen = fit_predict(train, test)
+        p, _ = search_fit_predict(cfg, train, test, None)
+        seen = np.isin(test["family"], np.unique(train["family"]))
+        p[~seen] = train["delta"].mean()
+        return p, pc, unseen
+    return predict
+
+
+predict_x1 = config_predictor(X1)      # x1: the FX ridge
 
 
 def x0_read(by_scaf: dict) -> dict:
