@@ -2337,3 +2337,13 @@ Reported beside: (b+) 0.339 / 0.358; (a) 0.186 / 0.189 (no cost on (a)); (b) per
 **Data.** The next 56 candidates without a result in the list's breadth-first order — exactly 14 per family (acenaphthylene, carbazole, dibenzofuran, dibenzothiophene; 13–17 heavy atoms) — frozen in `corpus/five_ring_half_2026-10-17_{a,b}.txt` (sha256 beside them), on the pool 3 box in two runners (deck v1, 8 threads × 12 GB, psi4 1.11 as on the laptop, worker limit 16 h, one retry per failure), through `tools/runspec.py` (`fivering_half_a/b`). With the laptop's 70 (64 in chain 40, 6 since) the four families stand at ≈ 45 children each.
 
 **Model and read (chain 40b).** Chain 40's full arm unchanged (recipe v1.1, `--sizes all`, three seeds), on chain 40's pool plus every merged five-ring row; pool 3's rows stay out (as chain 41's pool). `probes/chain40_read.py` logic on the frozen (b): seed means of the coupling ratio. **Reported:** the curve 0 / ≈ 22 / ≈ 30 / ≈ 45 children per family (chain 37 0.325, half arm 0.332, full arm 0.310, chain 40b), (b+), (a), the four families. **Lines for the decision point** (advice to the user, who decides): (i) (b) ≤ 0.295 — Δ ≤ −0.03 against chain 37, the original 'covers' line → compute the rest (≈ 60 per family); (ii) (b) not below 0.310 by more than twice the combined standard error of the two seed means → flat from 30 to 45 → stop the pool, the generator route; (iii) otherwise between → reported, the user decides. Failures are counted per family and reported, not replaced.
+
+**Amendment to chain 41's read (19 Oct 2026, 19:1x — the evaluations done, the read refused, no ratio of it looked at; the user: 'Ja, doe
+optie 1').** Two of s5's thirty registered molecules are refused by the corpus loader's standing rule (a molecule with an imaginary mode in
+its labels is not admitted): P3_086e85b2d7 (picene + NO₂, lowest B3LYP frequency −53.7 cm⁻¹) and P3_2aa4adcc95 (benzo[e]pyrene + ethynyl,
+−28.4 cm⁻¹). Both are in the B3LYP finite-difference Hessians only; their ωB97X Hessians have none. Every arm dropped the same molecules: the
+size arm both, fold 1's controls the second, fold 2's the first. The read's guard of 13 Oct ('a registered test set is read whole or not at
+all') was written against a silent loader drop, and this drop is the loader's announced rule. So the two leave the read by name: the size
+arm on 28, each fold on 14. Any other drop still refuses the read. They return in TASKS 74's analytic re-read, where the analytic
+frequencies decide the imaginary rule, as the module-05 release already does (16 of the corpus's 20 FD imaginary modes were soft torsions
+flipped by grid noise, 23 Sep).

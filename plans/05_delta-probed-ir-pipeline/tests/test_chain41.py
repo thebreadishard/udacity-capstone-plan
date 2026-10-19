@@ -5,6 +5,7 @@ import sys
 from pathlib import Path
 
 import numpy as np
+import pytest
 
 PLAN = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PLAN / "probes"))
@@ -48,6 +49,15 @@ def test_a_set_that_lost_molecules_is_not_read():
     bad = [dict(_rec(s5=0.3), s5={**_rec(s5=0.3)["s5"], "dropped": ["P3_x"]})] * 3
     with pytest.raises(SystemExit, match="lost 1 registered"):
         R.read(size, bad, [_rec(s5=0.5)] * 3)
+
+
+def test_only_the_amended_molecules_may_be_missing():
+    """19 Oct 2026: the two molecules the amendment names leave the read; any other drop still refuses it."""
+    allowed = [dict(_rec(s5=0.3), s5={**_rec(s5=0.3)["s5"], "dropped": sorted(R.AMENDED_OUT)})] * 3
+    R.require_complete(allowed, "s5")
+    mixed = [dict(_rec(s5=0.3), s5={**_rec(s5=0.3)["s5"], "dropped": [*sorted(R.AMENDED_OUT), "P3_other"]})] * 3
+    with pytest.raises(SystemExit, match="P3_other"):
+        R.require_complete(mixed, "s5")
 
 
 def test_a_steep_q5_reads_by_the_control_curve():

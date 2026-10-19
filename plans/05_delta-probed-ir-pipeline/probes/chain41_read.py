@@ -38,10 +38,16 @@ def mean_of(records: list, hold: str, key: str = "coupling_ratio") -> float:
     return float(np.mean([r[hold][key] for r in records]))
 
 
+# The amendment of 19 Oct 2026 (rung C pre-registration, chain 41): these two leave the read by the loader's imaginary-mode rule (B3LYP
+# finite-difference labels; their ωB97X Hessians have none); TASKS 74's analytic re-read brings them back
+AMENDED_OUT = {"P3_086e85b2d7": "imaginary mode −53.7 cm⁻¹ in the B3LYP FD label", "P3_2aa4adcc95": "imaginary mode −28.4 cm⁻¹ in the B3LYP FD label"}
+
+
 def require_complete(records: list, hold: str) -> None:
-    """A registered test set is read whole or not at all (13 Oct 2026: the loader had silently skipped every molecule above 32 atoms)."""
+    """A registered test set is read whole or not at all (13 Oct 2026: the loader had silently skipped every molecule above 32 atoms); only
+    the molecules the 19 Oct amendment names may be missing."""
     for r in records:
-        dropped = r[hold].get("dropped") or []
+        dropped = [i for i in (r[hold].get("dropped") or []) if i not in AMENDED_OUT]
         if dropped:
             raise SystemExit(f"hold-out ({hold}) lost {len(dropped)} registered molecules at evaluation ({', '.join(dropped[:5])}) — not read")
 
