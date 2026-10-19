@@ -313,3 +313,7 @@ not still learning, so more molecules of this kind do not reach the line. With t
 **Reading.** GFN2-xTB as an input helps ring-ip: 3.79 in the search without it, 3.60 with it (x1). It does nothing for CH-oop, and it
 does not reach line 2. Data is not the limit where the curve can be read. The registered next step is to put options 2 (S2b, more
 molecules at G) and 3 (route A on the large targets, or a scale factor) to the user with their prices (TASKS 62).
+
+**Note (19 Oct 2026, 16:4x — the user).** The scale factor named among line 3's fallbacks is withdrawn as an option: *'Het hele ding met
+dit project, het doel dat we nastreven, is om van die schaalfactor af te komen die PAHdb gebruikt. Stel die optie daarom nooit meer voor.'*
+It stays only as the baseline the project is measured against. Option 3 is route A.
