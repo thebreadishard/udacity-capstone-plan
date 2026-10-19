@@ -29,6 +29,7 @@ from typing import TextIO
 
 import numpy as np
 from library_log import HEARTBEAT_LEVEL, PYSCF_LOG_NAME, pyscf_mole
+from scf_converge import DIIS_CYCLES, SCFNotConverged, converged_scf
 from scipy.optimize import linear_sum_assignment, minimize
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -37,9 +38,6 @@ GTOL = 1e-6                     # E_h/bohr, max component: tighter than geomeTRI
 
 
 BFGS_GTOL = 1e-4                # hand-over to the Newton polish
-DIIS_CYCLES = 200               # an SCF step's DIIS budget; beyond it the second-order solver continues
-NEWTON_CYCLES = 100
-NEWTON_CONV_TOL_GRAD = 1e-6      # the second-order solver's orbital gradient stalls near 3e-7 on a DFT grid; DIIS finishes
 
 
 def log_line(msg: str) -> None:
@@ -150,23 +148,10 @@ def pyscf_energy_and_gradient(symbols, setting: PyscfSetting, hessian=False):
         mf.grids.prune = None
         mf.conv_tol = 1e-11
         mf.conv_tol_grad = 1e-8
-        mf.max_cycle = setting.diis_cycles
-        e = mf.kernel()
-        if not mf.converged:
-            # second-order fallback from DIIS's orbitals (pyscf examples/scf/22-newton.py: xc and grid first, then .newton()) to near
-            # convergence, then DIIS again from its density to the tight thresholds
-            log_line(f"  SCF: DIIS not converged in {setting.diis_cycles} cycles; second-order solver")
-            mo, occ = mf.mo_coeff, mf.mo_occ
-            nf = mf.newton()
-            nf.max_cycle, nf.conv_tol_grad = NEWTON_CYCLES, NEWTON_CONV_TOL_GRAD
-            nf.kernel(mo, occ)
-            if not nf.converged:
-                raise SystemExit("SCF not converged during the optimisation (DIIS, then the second-order solver)")
-            mf = nf.undo_newton()
-            mf.max_cycle = setting.diis_cycles
-            e = mf.kernel(dm0=mf.make_rdm1())
-            if not mf.converged:
-                raise SystemExit("SCF not converged during the optimisation (DIIS after the second-order solver)")
+        try:
+            mf, e = converged_scf(mf, setting.diis_cycles, log=log_line)
+        except SCFNotConverged as exc:
+            raise SystemExit(f"{exc} during the optimisation") from exc
         g = mf.nuc_grad_method().kernel()
         if not hessian:
             return e, g

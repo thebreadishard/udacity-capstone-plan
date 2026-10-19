@@ -16,11 +16,11 @@ PLAN=$(cd "$HERE/.." && pwd)
 IP=$(host_ip "$NAME") || exit 1
 host_ssh "$NAME" 'true' || { echo "WRONG OR UNREACHABLE MACHINE $NAME"; exit 1; }
 S="ssh -i $HOME/.ssh/hetzner_g_measure -o ConnectTimeout=25 -o BatchMode=yes root@$IP"
-DEST=/root/dpir_s1tz
+DEST=${DEST:-/root/dpir_s1tz}   # 19 Oct 2026: another folder while a run still executes from the first
 LISTS=(probes/results_m1/s1tz_2026-10-18/ids_benzene.tsv probes/results_m1/s1tz_2026-10-18/ids_fused.tsv)
 P=plans/05_delta-probed-ir-pipeline
 FILES=(probes/s1tz_run.sh probes/progress_on_growth.sh probes/s2_batch.sh probes/s1_anharmonic_level.sh probes/s1_anharmonic_level.py
-       probes/pyscf_hessians_for_qff.py probes/make_qff_displacements.py probes/qff_from_hessians.py src/dpir/__init__.py src/dpir/qff.py
+       probes/pyscf_hessians_for_qff.py probes/library_log.py probes/scf_converge.py probes/make_qff_displacements.py probes/qff_from_hessians.py src/dpir/__init__.py src/dpir/qff.py
        src/dpir/provenance.py probes/results_m1/water_dipole_fd_2026-10-02/geometry.json "${LISTS[@]}")
 t() { date '+%T'; }
 

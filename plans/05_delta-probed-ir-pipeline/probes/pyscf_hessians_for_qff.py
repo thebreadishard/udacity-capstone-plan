@@ -11,7 +11,8 @@ Usage: python pyscf_hessians_for_qff.py <cache_dir> <out_dir> [--xc b3lyp] [--ba
 Note on the functional: pyscf's 'b3lyp' is the Gaussian definition (VWN3-type correlation); psi4's 'b3lyp' is the same family. The
 noise diagnostic does not depend on this; absolute frequencies do at the cm⁻¹ level, and the report says which was used.
 pyscf's own log (every SCF cycle and the Hessian's step timers, `library_log.py`) is appended to `<out_dir>/pyscf.log`, so a Hessian that
-runs for an hour shows whether it is computing (19 Oct 2026).
+runs for an hour shows whether it is computing (19 Oct 2026). A stalled DIIS falls back to the second-order solver (`scf_converge.py`;
+acenaphthylene's T reference Hessian, 19 Oct).
 """
 from __future__ import annotations
 
@@ -24,6 +25,7 @@ from typing import Any, TextIO
 
 import numpy as np
 from library_log import PYSCF_LOG_NAME, pyscf_mole
+from scf_converge import converged_scf
 
 
 def parse_args() -> argparse.Namespace:
@@ -50,8 +52,8 @@ def displaced_geometry(path: str) -> dict[str, Any] | None:
 
 
 def hessian_record(d: dict[str, Any], a: argparse.Namespace, lib_log: TextIO) -> tuple[dict[str, Any], float]:
-    """The analytic Hessian at one displaced geometry as the record qff_from_hessians.py reads, with its energy. Raises RuntimeError when
-    the SCF does not converge."""
+    """The analytic Hessian at one displaced geometry as the record qff_from_hessians.py reads, with its energy. The SCF falls back to the
+    second-order solver when DIIS stalls (scf_converge.py); raises SCFNotConverged (a RuntimeError) when that fails too."""
     from pyscf import dft
     from pyscf.hessian import rks as rks_hess
     rad, ang = (int(x) for x in a.grid.split(","))
@@ -64,11 +66,8 @@ def hessian_record(d: dict[str, Any], a: argparse.Namespace, lib_log: TextIO) ->
     mf.grids.prune = None
     mf.conv_tol = a.conv
     mf.conv_tol_grad = 1e-8
-    mf.max_cycle = 200
     t0 = time.time()
-    e = mf.kernel()
-    if not mf.converged:
-        raise RuntimeError("SCF not converged")
+    mf, e = converged_scf(mf, 200, log=lambda m: print(m, flush=True))
     H = rks_hess.Hessian(mf).kernel()                      # (natm, natm, 3, 3) in E_h/bohr²
     n = mol.natm
     Hc = H.transpose(0, 2, 1, 3).reshape(3 * n, 3 * n)
