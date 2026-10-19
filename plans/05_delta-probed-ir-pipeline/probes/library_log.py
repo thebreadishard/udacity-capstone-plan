@@ -14,7 +14,7 @@ Levels: 4 (INFO) gives one line per SCF cycle. 5 (DEBUG, the default here) adds 
 Hessian, the whole Hessian. The CPHF equations inside an analytic Hessian stay silent at every level in pyscf 2.14. `hessian/rhf.py`
 `solve_mo1` calls `cphf.solve` without its logger, so `lib.krylov` runs at the default WARN and its 'krylov cycle' lines never print (water,
 19 Oct: the level-5 log gains two lines for the whole Hessian). That silent stretch is the CPHF part of each Hessian. A one-line upstream
-fix, passing the logger on, is drafted for the user (TASKS 79).
+fix, passing the logger on, is pyscf/pyscf#3530 / PR #3531 (posted 19 Oct; TASKS 79).
 """
 from __future__ import annotations
 

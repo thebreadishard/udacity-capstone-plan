@@ -1,6 +1,6 @@
 # Draft: pyscf issue and PR — the Hessian's CPHF iterations are never logged (19 Oct 2026)
 
-**Status: DRAFT, not posted.** Posting waits for the user's word (memory 'GitHub replies need consultation').
+**Status: POSTED 19 Oct 2026 08:4x on the user's word ('Ja, plaats issue en PR'): issue pyscf/pyscf#3530, PR pyscf/pyscf#3531** (branch pushed to the fork, 3342c336c). The texts below are what was posted; the PR body adds 'Fixes #3530' and the test count.
 
 **Why we found it.** On 18–19 Oct an S1-TZ optimisation ran 12 h without one log line, and a slow run looked the same as a stuck one. The user
 then decided: switch on the libraries' own log levels, rather than change their code (19 Oct: 'Als we hun eigen logniveau kunnen aanzetten, dan
