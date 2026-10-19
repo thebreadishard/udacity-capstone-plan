@@ -1,6 +1,6 @@
 """GVPT2 fundamentals from a stored dpir.qff force field (18 Oct 2026; S2 amendment 2, §1) — runs in the WSL env with pyVPT2 (`vpt2`).
 
-    python gvpt2_labels.py <s2_root> --selection <selection.json> [--extra ID=DIR ...] --out <dir>
+    python gvpt2_labels.py <s2_root> --selection <selection.json> [--extra ID=DIR ...] [--setting G|X] --out <dir>
 
 Per molecule: dpir.qff.vpt2 with Martin's threshold (min K 1 cm⁻¹, window 200 cm⁻¹: pyVPT2's FERMI_K_THRESH / FERMI_OMEGA_THRESH defaults)
 gives the deperturbed χ and fundamentals; overtone and combination energies follow from χ by the expressions pyVPT2's process_vpt2 uses;
@@ -94,6 +94,7 @@ def main() -> int:
     ap.add_argument("root")
     ap.add_argument("--selection", required=True)
     ap.add_argument("--extra", nargs="*", default=[])
+    ap.add_argument("--setting", default="G", help="the setting folder under each molecule (X: amendment 4's GFN2-xTB force fields)")
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
     by_scaf, _used, _excluded = load_selection(a.root, a.selection, options_from_args(a))

@@ -1,0 +1,430 @@
+{
+ "registration": "PreRegistration_2026-10-14_S2_Anharmonic_Shift.md, amendment 4",
+ "min_overlap": 0.5,
+ "molecules_g": 14,
+ "excluded_g": {
+  "A_8f6ed7c002": "NOISY (noise rule)",
+  "B_190a33a33e": "NOISY (noise rule)",
+  "B_151c8ce719": "NOISY (noise rule)",
+  "B_16194573ac": "NOISY (noise rule)",
+  "B_17f1611949": "NOISY (noise rule)",
+  "B_0040149ee1": "no qff_report.npz (STOPPED or FAILED)"
+ },
+ "excluded_xtb": {
+  "A_8f6ed7c002": "no directory probes/results_m1/s2_xtb_2026-10-18/xtb\\A_8f6ed7c002\\X",
+  "B_190a33a33e": "no directory probes/results_m1/s2_xtb_2026-10-18/xtb\\B_190a33a33e\\X",
+  "B_151c8ce719": "no directory probes/results_m1/s2_xtb_2026-10-18/xtb\\B_151c8ce719\\X",
+  "B_16194573ac": "no directory probes/results_m1/s2_xtb_2026-10-18/xtb\\B_16194573ac\\X",
+  "B_17f1611949": "no directory probes/results_m1/s2_xtb_2026-10-18/xtb\\B_17f1611949\\X",
+  "B_0040149ee1": "no directory probes/results_m1/s2_xtb_2026-10-18/xtb\\B_0040149ee1\\X"
+ },
+ "scopes": {
+  "all": {
+   "counts": {
+    "molecules_without_xtb": [],
+    "modes_without_partner": 17,
+    "window_modes_without_partner": 13
+   },
+   "scaffolds": 9,
+   "read": {
+    "x0": {
+     "CH-oop": {
+      "n": 72,
+      "rms": 10.339096633430627,
+      "pearson_r": 0.051890058766869245,
+      "c_rms": 5.986888667742511,
+      "licensed": false
+     },
+     "ring-ip": {
+      "n": 248,
+      "rms": 5.6303413697636095,
+      "pearson_r": 0.8630038728294285,
+      "c_rms": 9.580392730523108,
+      "licensed": false
+     },
+     "other": {
+      "n": 99,
+      "rms": 20.157807648698842,
+      "pearson_r": 0.5840078543741908,
+      "c_rms": 20.067106401903427,
+      "licensed": false
+     }
+    },
+    "x1": {
+     "curve": {
+      "4": {
+       "b": 10.615485766856155,
+       "b_se": 0.33153157193866295,
+       "c": 12.503296825322511,
+       "c_se": 0.009076289845742984,
+       "unseen_family_modes": 0,
+       "per_family": {
+        "CH-stretch": {
+         "b": NaN,
+         "b_se": NaN,
+         "c": NaN,
+         "c_se": NaN
+        },
+        "CH-oop": {
+         "b": 6.4207690272758215,
+         "b_se": 0.19709453501239566,
+         "c": 6.079137638184709,
+         "c_se": 0.08698893706257306
+        },
+        "ring-ip": {
+         "b": 4.473444794083527,
+         "b_se": 0.04428293954847465,
+         "c": 9.585191863699382,
+         "c_se": 0.003954221968569582
+        },
+        "other": {
+         "b": 19.858874089821192,
+         "b_se": 0.7488520019343112,
+         "c": 20.112465578089008,
+         "c_se": 0.021301288119230127
+        }
+       }
+      },
+      "6": {
+       "b": 10.072661581540917,
+       "b_se": 0.24116495934422585,
+       "c": 12.494874417170614,
+       "c_se": 0.005336197467443122,
+       "unseen_family_modes": 0,
+       "per_family": {
+        "CH-stretch": {
+         "b": NaN,
+         "b_se": NaN,
+         "c": NaN,
+         "c_se": NaN
+        },
+        "CH-oop": {
+         "b": 6.561655545303886,
+         "b_se": 0.21710658743183167,
+         "c": 6.037262549567382,
+         "c_se": 0.041479227386869884
+        },
+        "ring-ip": {
+         "b": 4.421813956344322,
+         "b_se": 0.027434872428277673,
+         "c": 9.582723546649444,
+         "c_se": 0.0014924072480672844
+        },
+        "other": {
+         "b": 18.642787520542107,
+         "b_se": 0.5404024338804193,
+         "c": 20.104502895701906,
+         "c_se": 0.011180558762929739
+        }
+       }
+      },
+      "all": {
+       "b": 8.552061987336552,
+       "b_se": 0.0,
+       "c": 12.475205454991906,
+       "c_se": 0.0,
+       "unseen_family_modes": 0,
+       "n_modes": 419,
+       "per_family": {
+        "CH-stretch": {
+         "n": 0,
+         "b": NaN,
+         "c": NaN
+        },
+        "CH-oop": {
+         "n": 72,
+         "b": 5.9340735273573335,
+         "c": 5.986888667742511
+        },
+        "ring-ip": {
+         "n": 248,
+         "b": 4.420357858902925,
+         "c": 9.580392730523108
+        },
+        "other": {
+         "n": 99,
+         "b": 15.329234953057107,
+         "c": 20.067106401903427
+        }
+       },
+       "k": 8
+      }
+     },
+     "verdict": {
+      "line1_b_le_0.8c": true,
+      "licensed": [],
+      "still_learning": {
+       "b": true,
+       "c": true
+      },
+      "reading": "line 2 missed, route b still learning: not failed \u2014 data-limited; next S2b, sized by the extrapolation",
+      "extrapolation": {
+       "fit": {
+        "a": 2.829004685650577e-14,
+        "b": 16.036012033837245,
+        "c": 0.28596337508573993
+       },
+       "scaffolds_needed": 351.31245536323564
+      }
+     },
+     "per_family": {
+      "CH-stretch": {
+       "n": 0,
+       "b": NaN,
+       "c": NaN,
+       "licensed": false
+      },
+      "CH-oop": {
+       "n": 72,
+       "b": 5.9340735273573335,
+       "c": 5.986888667742511,
+       "licensed": false
+      },
+      "ring-ip": {
+       "n": 248,
+       "b": 4.420357858902925,
+       "c": 9.580392730523108,
+       "licensed": false
+      },
+      "other": {
+       "n": 99,
+       "b": 15.329234953057107,
+       "c": 20.067106401903427,
+       "licensed": false
+      }
+     }
+    },
+    "x2": {
+     "CH-oop": {
+      "n": 72,
+      "rms": 5.807042339351189,
+      "licensed": false,
+      "chosen": {
+       "krr-FX \u03b1=1 \u03b3=1": 1,
+       "krr-FX \u03b1=1 \u03b3=3": 6
+      }
+     },
+     "ring-ip": {
+      "n": 248,
+      "rms": 3.5327963458559024,
+      "licensed": false,
+      "chosen": {
+       "krr-FX \u03b1=0.01 \u03b3=0.3": 1,
+       "krr-FX \u03b1=0.01 \u03b3=1": 1,
+       "krr-FX \u03b1=0.1 \u03b3=1": 7
+      }
+     },
+     "other": {
+      "n": 99,
+      "rms": 16.85295796951629,
+      "licensed": false,
+      "chosen": {
+       "krr-FX \u03b1=0.01 \u03b3=0.3": 1,
+       "krr-FX \u03b1=0.01 \u03b3=3": 8
+      }
+     }
+    }
+   }
+  },
+  "no-large-amplitude": {
+   "counts": {
+    "molecules_without_xtb": [],
+    "modes_without_partner": 13,
+    "window_modes_without_partner": 11
+   },
+   "scaffolds": 9,
+   "read": {
+    "x0": {
+     "CH-oop": {
+      "n": 72,
+      "rms": 10.339096633430627,
+      "pearson_r": 0.051890058766869245,
+      "c_rms": 5.986888667742511,
+      "licensed": false
+     },
+     "ring-ip": {
+      "n": 243,
+      "rms": 5.03626559330158,
+      "pearson_r": 0.9007434688689381,
+      "c_rms": 9.48206547149286,
+      "licensed": false
+     },
+     "other": {
+      "n": 92,
+      "rms": 5.835066650134416,
+      "pearson_r": 0.2918028975398748,
+      "c_rms": 5.422060924102879,
+      "licensed": false
+     }
+    },
+    "x1": {
+     "curve": {
+      "4": {
+       "b": 4.9245389877419985,
+       "b_se": 0.10643261635413175,
+       "c": 8.189032778127876,
+       "c_se": 0.015020261090216851,
+       "unseen_family_modes": 0,
+       "per_family": {
+        "CH-stretch": {
+         "b": NaN,
+         "b_se": NaN,
+         "c": NaN,
+         "c_se": NaN
+        },
+        "CH-oop": {
+         "b": 7.718863084568531,
+         "b_se": 0.3647283364336277,
+         "c": 6.079137638184709,
+         "c_se": 0.08698893706257306
+        },
+        "ring-ip": {
+         "b": 3.661675822277475,
+         "b_se": 0.02055012525176618,
+         "c": 9.488383583707437,
+         "c_se": 0.0044144861242522565
+        },
+        "other": {
+         "b": 4.9119334010648075,
+         "b_se": 0.059718634714643976,
+         "c": 5.463323454568249,
+         "c_se": 0.021988004812216577
+        }
+       }
+      },
+      "6": {
+       "b": 4.920997148328015,
+       "b_se": 0.05772090639279246,
+       "c": 8.175261189783273,
+       "c_se": 0.006282956017245051,
+       "unseen_family_modes": 0,
+       "per_family": {
+        "CH-stretch": {
+         "b": NaN,
+         "b_se": NaN,
+         "c": NaN,
+         "c_se": NaN
+        },
+        "CH-oop": {
+         "b": 7.856241978695374,
+         "b_se": 0.20049158774271256,
+         "c": 6.037262549567382,
+         "c_se": 0.041479227386869884
+        },
+        "ring-ip": {
+         "b": 3.6216256790605703,
+         "b_se": 0.0072695445741196825,
+         "c": 9.485693937974542,
+         "c_se": 0.0018610347497303914
+        },
+        "other": {
+         "b": 4.883357177768843,
+         "b_se": 0.029101938727769564,
+         "c": 5.42785247846336,
+         "c_se": 0.011446288936805502
+        }
+       }
+      },
+      "all": {
+       "b": 4.862024778097905,
+       "b_se": 0.0,
+       "c": 8.164974807420665,
+       "c_se": 0.0,
+       "unseen_family_modes": 0,
+       "n_modes": 407,
+       "per_family": {
+        "CH-stretch": {
+         "n": 0,
+         "b": NaN,
+         "c": NaN
+        },
+        "CH-oop": {
+         "n": 72,
+         "b": 7.734896377314537,
+         "c": 5.986888667742511
+        },
+        "ring-ip": {
+         "n": 243,
+         "b": 3.60425712317282,
+         "c": 9.48206547149286
+        },
+        "other": {
+         "n": 92,
+         "b": 4.841841550751856,
+         "c": 5.422060924102879
+        }
+       },
+       "k": 8
+      }
+     },
+     "verdict": {
+      "line1_b_le_0.8c": true,
+      "licensed": [],
+      "still_learning": {
+       "b": false,
+       "c": false
+      },
+      "reading": "line 2 missed, route b flat: no negative conclusion yet \u2014 the search (model class \u00d7 features) first"
+     },
+     "per_family": {
+      "CH-stretch": {
+       "n": 0,
+       "b": NaN,
+       "c": NaN,
+       "licensed": false
+      },
+      "CH-oop": {
+       "n": 72,
+       "b": 7.734896377314537,
+       "c": 5.986888667742511,
+       "licensed": false
+      },
+      "ring-ip": {
+       "n": 243,
+       "b": 3.60425712317282,
+       "c": 9.48206547149286,
+       "licensed": false
+      },
+      "other": {
+       "n": 92,
+       "b": 4.841841550751856,
+       "c": 5.422060924102879,
+       "licensed": false
+      }
+     }
+    },
+    "x2": {
+     "CH-oop": {
+      "n": 72,
+      "rms": 5.83346287435775,
+      "licensed": false,
+      "chosen": {
+       "krr-FX \u03b1=1 \u03b3=1": 2,
+       "krr-FX \u03b1=1 \u03b3=3": 5
+      }
+     },
+     "ring-ip": {
+      "n": 243,
+      "rms": 3.8024897156074657,
+      "licensed": false,
+      "chosen": {
+       "krr-FX \u03b1=0.01 \u03b3=0.3": 1,
+       "krr-FX \u03b1=0.01 \u03b3=1": 2,
+       "krr-FX \u03b1=0.1 \u03b3=1": 5,
+       "krr-FX \u03b1=1 \u03b3=0.3": 1
+      }
+     },
+     "other": {
+      "n": 92,
+      "rms": 5.139377763110322,
+      "licensed": false,
+      "chosen": {
+       "krr-FX \u03b1=0.01 \u03b3=3": 3,
+       "krr-FX \u03b1=1 \u03b3=3": 6
+      }
+     }
+    }
+   }
+  }
+ }
+}

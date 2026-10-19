@@ -25,6 +25,7 @@ sys.path.insert(0, HERE)
 from s2_read import FAMILIES, LINE_LICENSE, RIDGE, SCOPES, WINDOW, load_selection, options_from_args, rms, write_atomic  # noqa: E402
 
 FEATURE_SETS = ("F1", "F2", "F3")
+XTB_FEATURES = "FX"                    # S2 amendment 4: F1 + Δ_xtb of the matched GFN2-xTB mode
 KRR_ALPHA = (1e-2, 1e-1, 1.0)
 KRR_GAMMA = (0.3, 1.0, 3.0)            # divided by the number of input columns (standardised inputs)
 MLP_ALPHA = (1e-4, 1e-2)
@@ -59,8 +60,9 @@ def configs() -> list[Config]:
 
 
 def window_table(mols):
-    """All window modes of a list of molecules: label, family, ω, h, o, local (· × 9), prox (· × 2)."""
-    keys = ("delta", "family", "omega", "h", "o", "local", "prox")
+    """All window modes of a list of molecules: label, family, ω, h, o, then local (· × 9), prox (· × 2) and Δ_xtb where every molecule
+    carries them."""
+    keys = ("delta", "family", "omega", "h", "o") + tuple(k for k in ("local", "prox", "xtb") if mols and all(k in m for m in mols))
     out = {k: np.concatenate([m[k] for m in mols]) for k in keys}
     w = (out["omega"] >= WINDOW[0]) & (out["omega"] <= WINDOW[1])
     return {k: v[w] for k, v in out.items()}
@@ -73,17 +75,25 @@ def inputs(t, features):
         cols.append(t["local"])
     if features == "F3":
         cols.append(t["prox"])
+    if features == XTB_FEATURES:
+        cols.append(t["xtb"][:, None])
     return np.hstack(cols)
 
 
 def ridge_design(t, features):
-    """Route (b)'s form: per-family intercepts and ω slopes, the other columns shared across families."""
-    base = np.zeros((len(t["omega"]), 2 * len(FAMILIES)))
+    """Route (b)'s form: per-family intercepts and ω slopes, the other columns shared across families; with FX (amendment 4's x1) h and o
+    shared and Δ_xtb with a slope per family."""
+    n_fam = len(FAMILIES)
+    width = 3 * n_fam if features == XTB_FEATURES else 2 * n_fam
+    base = np.zeros((len(t["omega"]), width))
     for j, f in enumerate(FAMILIES):
         sel = t["family"] == f
         base[sel, j] = 1.0
-        base[sel, len(FAMILIES) + j] = t["omega"][sel] / 1000.0
-    return np.hstack([base, inputs(t, features)[:, len(FAMILIES) + 1:]])
+        base[sel, n_fam + j] = t["omega"][sel] / 1000.0
+        if features == XTB_FEATURES:
+            base[sel, 2 * n_fam + j] = t["xtb"][sel]
+    shared = inputs(t, "F1" if features == XTB_FEATURES else features)[:, n_fam + 1:]
+    return np.hstack([base, shared])
 
 
 def split_validation(train_scaffold_ids, rng):

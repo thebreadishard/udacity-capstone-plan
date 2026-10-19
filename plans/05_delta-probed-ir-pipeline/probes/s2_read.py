@@ -146,16 +146,20 @@ def fit_predict(train, test):
     return pb, pc, int((~seen).sum())
 
 
+XTB_KEY = "xtb"            # amendment 4: Δ_anh of the matched GFN2-xTB mode, carried when every molecule has it
+
+
 def concat(mols):
-    """The window modes of a list of molecules, stacked."""
-    keys = ("omega", "delta", "family", "h", "o")
+    """The window modes of a list of molecules, stacked (with the Δ_xtb column when every molecule carries one)."""
+    keys = ("omega", "delta", "family", "h", "o") + ((XTB_KEY,) if mols and all(XTB_KEY in m for m in mols) else ())
     out = {k: np.concatenate([m[k] for m in mols]) for k in keys}
     w = (out["omega"] >= WINDOW[0]) & (out["omega"] <= WINDOW[1])
     return {k: v[w] for k, v in out.items()}
 
 
-def loso(mols_by_scaffold, k=None, rng=None):
-    """One leave-one-scaffold-out pass; with k, each held-out scaffold trains on k of its training scaffolds drawn from rng.
+def loso(mols_by_scaffold, k=None, rng=None, predict=fit_predict):
+    """One leave-one-scaffold-out pass; with k, each held-out scaffold trains on k of its training scaffolds drawn from rng. `predict`
+    (train, test) → (pred_b, pred_c, unseen) is route (b)/(c)'s fit_predict unless a read passes its own (amendment 4's x1 in the 'b' slot).
     Returns pooled arrays (truth, pred_b, pred_c, family) over all held-out window modes and the unseen-family count."""
     scafs = sorted(mols_by_scaffold)
     truth, pb, pc, fam, unseen = [], [], [], [], 0
@@ -167,7 +171,7 @@ def loso(mols_by_scaffold, k=None, rng=None):
         test = concat(mols_by_scaffold[s])
         if len(test["omega"]) == 0:
             continue
-        b, c, u = fit_predict(train, test)
+        b, c, u = predict(train, test)
         truth.append(test["delta"])
         pb.append(b)
         pc.append(c)
@@ -188,9 +192,10 @@ def mean_se(values):
     return float(v.mean()), float(v.std(ddof=1) / np.sqrt(v.size)) if v.size > 1 else 0.0
 
 
-def curve(mols_by_scaffold, ks=KS, n_subsets=N_SUBSETS, seed=0):
+def curve(mols_by_scaffold, ks=KS, n_subsets=N_SUBSETS, seed=0, predict=fit_predict):
     """Amendment 1's learning curve: per k, the pooled rms of (b) and (c) as mean ± SE over the subsets, and the same per family; 'all' once.
-    A k with no fewer training scaffolds than 'all' has is not a subsample (every draw is the full set) and gets no row."""
+    A k with no fewer training scaffolds than 'all' has is not a subsample (every draw is the full set) and gets no row. `predict` as in
+    loso (the 'b' entries are the passed predictor's)."""
     rng = np.random.default_rng(seed)
     n_train = len(mols_by_scaffold) - 1
     rows = {}
@@ -198,7 +203,7 @@ def curve(mols_by_scaffold, ks=KS, n_subsets=N_SUBSETS, seed=0):
         rb, rc, un = [], [], 0
         fam_b, fam_c = {fa: [] for fa in FAMILIES}, {fa: [] for fa in FAMILIES}
         for _ in range(n_subsets):
-            t, b, c, f, u = loso(mols_by_scaffold, k, rng)
+            t, b, c, f, u = loso(mols_by_scaffold, k, rng, predict)
             rb.append(rms(b - t))
             rc.append(rms(c - t))
             un += u
@@ -211,7 +216,7 @@ def curve(mols_by_scaffold, ks=KS, n_subsets=N_SUBSETS, seed=0):
             (fb, fbs), (fc, fcs) = mean_se(fam_b[fa]), mean_se(fam_c[fa])
             per_family[fa] = {"b": fb, "b_se": fbs, "c": fc, "c_se": fcs}
         rows[str(k)] = {"b": mb, "b_se": sb, "c": mc, "c_se": sc, "unseen_family_modes": un, "per_family": per_family}
-    t, b, c, f, un = loso(mols_by_scaffold)
+    t, b, c, f, un = loso(mols_by_scaffold, predict=predict)
     fam_rows = {fa: {"n": int((f == fa).sum()), "b": rms((b - t)[f == fa]), "c": rms((c - t)[f == fa])} for fa in FAMILIES}
     rows["all"] = {"b": rms(b - t), "b_se": 0.0, "c": rms(c - t), "c_se": 0.0, "unseen_family_modes": un, "n_modes": len(t),
                    "per_family": fam_rows, "k": n_train}

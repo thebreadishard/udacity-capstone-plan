@@ -281,3 +281,35 @@ gradients by up to 0.0097 E_h/bohr² (1.7 % of the largest element). Removing th
 displaced Hessians of a quartic force field are all away from it. The file is therefore not used; the method choice for the Hessians goes
 to the user (own differences of analytic gradients — noisy by the same mechanism as psi4's in September — or exact derivatives by
 automatic differentiation, dxtb). No S2 molecule has been computed.
+
+## Amendment 4 — outcome (19 Oct 2026, 16:3x; `probes/results_m1/s2_xtb_2026-10-18/read_a4/`)
+
+**Computation as run.** The xtb Hessians came from dxtb, by central differences of its exact autograd forces (the binary's file is
+rotation-projected; smoke note above). 14 molecules, 14 force fields, none NOISY (`probes/xtb_anharmonic.sh`, run spec `s2_xtb`, done
+19 Oct 16:03). GVPT2 labels by `probes/gvpt2_labels.py --setting X` with the same pyVPT2 solver as the G labels (sha256 937c176f1f10).
+Read by `probes/s2_xtb_read.py`, tested first on synthetic records (`tests/test_s2_xtb_read.py`). 9 scaffolds, so the curve has k = 4 and
+6 and 'all' (8). G window modes without an xtb partner (overlap < 0.5): 13 (scope all), 11 (no-large-amplitude).
+
+| scope | family | modes | (x0) Δ_xtb rms | Pearson r | (c) rms | (x1) rms | (x2) nested rms |
+|---|---|---|---|---|---|---|---|
+| all | CH-oop | 72 | 10.34 | 0.05 | 5.99 | 5.93 | 5.81 |
+| all | ring-ip | 248 | 5.63 | 0.86 | 9.58 | 4.42 | 3.53 |
+| all | other | 99 | 20.16 | 0.58 | 20.07 | 15.33 | 16.85 |
+| no-large-amplitude | CH-oop | 72 | 10.34 | 0.05 | 5.99 | 7.73 | 5.83 |
+| no-large-amplitude | ring-ip | 243 | 5.04 | 0.90 | 9.48 | 3.60 | 3.80 |
+| no-large-amplitude | other | 92 | 5.84 | 0.29 | 5.42 | 4.84 | 5.14 |
+
+**Against the predictions.**
+- Pearson r ≥ 0.7: holds in ring-ip (0.86 / 0.90). It fails in CH-oop, where r = 0.05: GFN2-xTB's out-of-plane shifts carry no
+  information about B3LYP's.
+- (x0) no better than (c): wrong in ring-ip, where xtb on its own already beats the family mean (5.0–5.6 against 9.5–9.6). Holds in CH-oop.
+- (x1) ring-ip ≤ 3.0: missed (3.60 without the large-amplitude modes). CH-oop below 4.5: missed (7.73; the per-family xtb slope fits noise).
+- Line 2 is met in no family by any read. The odds were one in four.
+
+**Curves (x1).** Without the large-amplitude modes the curve is flat: 4.92 ± 0.11 at k = 4, 4.92 ± 0.06 at k = 6, 4.86 at 'all'. It is
+not still learning, so more molecules of this kind do not reach the line. With them, the pooled curve still descends: 10.62 → 10.07 →
+8.55, carried by 'other' (19.9 → 15.3). Its fit has an asymptote near 0 and asks for 351 scaffolds; that is not a size S2b could have.
+
+**Reading.** GFN2-xTB as an input helps ring-ip: 3.79 in the search without it, 3.60 with it (x1). It does nothing for CH-oop, and it
+does not reach line 2. Data is not the limit where the curve can be read. The registered next step is to put options 2 (S2b, more
+molecules at G) and 3 (route A on the large targets, or a scale factor) to the user with their prices (TASKS 62).
