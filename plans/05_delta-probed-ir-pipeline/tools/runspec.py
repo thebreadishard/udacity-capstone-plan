@@ -86,6 +86,9 @@ class Progress(_Frozen):
     regex: str = Field(description="ERE of a progress line in the run's log")
     max_gap_minutes: int = Field(ge=10, le=120, description="an alarm when no new progress line appeared for this long")
     start_regex: str | None = Field(default=None, description="ERE of the line from which the gap counts (a run that first waits for another)")
+    heartbeat_glob: str | None = Field(default=None, pattern=r"^[A-Za-z0-9_./*?-]+$",
+                                       description="a library log (glob, relative to the workdir or absolute) whose growth also resets the gap: a run "
+                                                   "whose own pyscf.log grows is not stuck, however far apart its progress lines are (19 Oct 2026)")
 
     _check_regex = field_validator("regex", "start_regex")(_ere)
 
@@ -144,7 +147,8 @@ class RunState:
     status: str = "running"                 # running | ended
     phase_started_at: datetime | None = None  # when the progress gap began to count (the launch, or start_regex's first line)
     progress_count: int = 0
-    progress_seen_at: datetime | None = None  # the last check at which the count changed
+    progress_seen_at: datetime | None = None  # the last check at which the count (or the heartbeat's size) changed
+    heartbeat_bytes: int = 0                  # the heartbeat files' total size at the last check
     unreachable: int = 0
     gone_seen_at: datetime | None = None      # a resumable run first seen gone (cleared when it is alive again)
     relaunches: int = 0
@@ -167,6 +171,7 @@ class Observation:
     exit_code: int | None = None
     alive: bool = False
     progress_count: int = 0
+    heartbeat_bytes: int = 0
     started: bool = False
     ended_marker: bool = False
     markers: tuple[str, ...] = ()
@@ -216,12 +221,13 @@ def _progress(spec: RunSpec, state: RunState, obs: Observation, events: list[str
     if state.phase_started_at is None:                       # still waiting for start_regex
         if not obs.started:
             return events, state
-        state = replace(state, phase_started_at=now, progress_count=obs.progress_count, progress_seen_at=now)
-    if obs.progress_count != state.progress_count:
-        state = replace(state, progress_count=obs.progress_count, progress_seen_at=now)
+        state = replace(state, phase_started_at=now, progress_count=obs.progress_count, heartbeat_bytes=obs.heartbeat_bytes, progress_seen_at=now)
+    if obs.progress_count != state.progress_count or obs.heartbeat_bytes != state.heartbeat_bytes:
+        state = replace(state, progress_count=obs.progress_count, heartbeat_bytes=obs.heartbeat_bytes, progress_seen_at=now)
     seen = state.progress_seen_at or state.phase_started_at
     if now - seen > timedelta(minutes=spec.progress.max_gap_minutes):
-        events = [*events, f"ANOMALY {who}: no progress line since {seen:%d %b %H:%M} (the spec allows {spec.progress.max_gap_minutes} min)"]
+        what = "no progress line and no heartbeat growth" if spec.progress.heartbeat_glob else "no progress line"
+        events = [*events, f"ANOMALY {who}: {what} since {seen:%d %b %H:%M} (the spec allows {spec.progress.max_gap_minutes} min)"]
     if spec.estimate and now - state.phase_started_at > timedelta(hours=ESTIMATE_OVERRUN * spec.estimate.hours):
         events = [*events, f"MARKER {who} past {ESTIMATE_OVERRUN}x its estimate of {spec.estimate.hours:g} h - read its log"]
     return events, state
@@ -258,6 +264,8 @@ def probe_script(spec: RunSpec) -> str:
              f'echo "exit=$(cat {q(spec.name + ".exit")} 2>/dev/null)"',
              f'p=$(cat {q(spec.name + ".pid")} 2>/dev/null); if [ -n "$p" ] && kill -0 "$p" 2>/dev/null; then echo alive=1; else echo alive=0; fi',
              f'echo "progress=$(grep -cE {q(spec.progress.regex)} {log} 2>/dev/null)"']
+    if spec.progress.heartbeat_glob:                         # unquoted so the shell expands it; the field's pattern admits no other syntax
+        lines.append(f"echo \"heartbeat=$(ls -l {spec.progress.heartbeat_glob} 2>/dev/null | awk '{{s += $5}} END {{print s + 0}}')\"")
     for key, rx in (("started", spec.progress.start_regex), ("ended", spec.end_regex)):
         if rx:
             lines.append(f"grep -qE {q(rx)} {log} 2>/dev/null && echo {key}=1")
@@ -279,7 +287,7 @@ def parse_probe(spec: RunSpec, out: str) -> Observation:
         return Observation(workdir_missing=True)
     code = fields.get("exit", "")
     return Observation(exit_code=int(code) if code.lstrip("-").isdigit() else None, alive=fields.get("alive") == "1",
-                       progress_count=int(fields.get("progress") or 0),
+                       progress_count=int(fields.get("progress") or 0), heartbeat_bytes=int(fields.get("heartbeat") or 0),
                        started=spec.progress.start_regex is None or fields.get("started") == "1",
                        ended_marker=fields.get("ended") == "1", markers=tuple(markers))
 

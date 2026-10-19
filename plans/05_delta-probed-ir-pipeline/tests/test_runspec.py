@@ -40,6 +40,7 @@ def spec(**over) -> R.RunSpec:
     ({"estimate": {"hours": 2, "basis": "guess"}}, "at least 10"),                              # an estimate names its measurement
     ({"eta": "soon"}, "Extra inputs"),
     ({"name": "has space"}, "pattern"),
+    ({"progress": {"regex": "^p", "max_gap_minutes": 60, "heartbeat_glob": "x; rm -rf /"}}, "pattern"),   # expanded by the shell: no syntax
 ])
 def test_spec_refusals(over, words):
     with pytest.raises(ValidationError, match=words):
@@ -74,6 +75,16 @@ def test_progress_resets_the_gap_and_silence_is_one_stable_anomaly():
     assert len(ev1) == 1 and ev1[0].startswith("ANOMALY run demo: no progress line since 15 Oct 18:50") and ev1 == ev2   # same text: seen once
     ev, st = R.assess(s, st, alive(2), T0 + timedelta(minutes=131))
     assert ev == []
+
+
+def test_a_growing_heartbeat_resets_the_gap_and_a_still_one_does_not():
+    s = spec(progress={"regex": "^  progress ", "max_gap_minutes": 60, "heartbeat_glob": "hess/pyscf.log"})
+    ev, st = R.assess(s, run_state(), alive(0, heartbeat_bytes=100), T0 + timedelta(minutes=50))
+    assert ev == [] and st.heartbeat_bytes == 100 and st.progress_seen_at == T0 + timedelta(minutes=50)
+    ev, st = R.assess(s, st, alive(0, heartbeat_bytes=900), T0 + timedelta(minutes=105))
+    assert ev == [] and st.progress_seen_at == T0 + timedelta(minutes=105)        # no progress line for 105 min, but the log grew
+    ev, st = R.assess(s, st, alive(0, heartbeat_bytes=900), T0 + timedelta(minutes=170))
+    assert len(ev) == 1 and "no progress line and no heartbeat growth since 15 Oct 19:45" in ev[0]
 
 
 def test_a_waiting_run_has_no_gap_until_its_start_line():
@@ -149,6 +160,16 @@ def test_probe_lines_read_a_real_run_folder(tmp_path):
     shutil.rmtree(w)
     obs = R.parse_probe(s, subprocess.run([BASH, "-c", script], cwd=tmp_path, capture_output=True, text=True, check=True).stdout)
     assert obs.workdir_missing
+
+
+def test_the_probe_sums_the_heartbeat_files(tmp_path):
+    s = spec(workdir="w", progress={"regex": "^  progress ", "max_gap_minutes": 60, "heartbeat_glob": "*/pyscf.log"})
+    for sub, text in (("a", "x" * 300), ("b", "y" * 45)):
+        (tmp_path / "w" / sub).mkdir(parents=True)
+        (tmp_path / "w" / sub / "pyscf.log").write_text(text, encoding="utf-8")
+    script = R.probe_script(s)
+    assert R.parse_probe(s, subprocess.run([BASH, "-c", script], cwd=tmp_path, capture_output=True, text=True, check=True).stdout).heartbeat_bytes == 345
+    assert "heartbeat" not in R.probe_script(spec())                              # no glob, no line
 
 
 # ---------------------------------------------------------------- launch and check against a stand-in shell

@@ -13,7 +13,7 @@
   {"local": "probes/s1_anharmonic_level.py", "remote": "/root/dpir_s1tz_e/probes/s1_anharmonic_level.py"},
   {"local": "probes/results_m1/s1tz_2026-10-18/ids_acenaphthylene.tsv", "remote": "/root/dpir_s1tz_e/probes/results_m1/s1tz_2026-10-18/ids_acenaphthylene.tsv"}
  ],
- "progress": {"regex": "^=== \\(S1TZC\\) progress: |^=== \\(S2\\) [A-Za-z0-9_]+: (done|NOISY)", "max_gap_minutes": 120},
+ "progress": {"regex": "^=== \\(S1TZC\\) progress: |^=== \\(S2\\) [A-Za-z0-9_]+: (done|NOISY)", "max_gap_minutes": 120, "heartbeat_glob": "/root/s1tz_acenaphthylene/A_45187bb7c8/T/hess/pyscf.log"},
  "marker_regex": "^=== \\(S2\\) |^=== \\(S1TZC\\) command ended",
  "end_regex": "^=== \\(S2\\) all done: 1 force fields",
  "dry_run_args": "--dry-run",
