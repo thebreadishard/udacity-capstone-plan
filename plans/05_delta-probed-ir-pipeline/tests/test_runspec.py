@@ -340,3 +340,26 @@ def test_python_output_is_unbuffered_on_the_laptop_and_on_a_server(monkeypatch):
     R.Shell("bash").launch_laptop(spec())
     assert "export PYTHONUNBUFFERED=1; " in calls[0][-1]
     assert 'ENVLINE="export PYTHONUNBUFFERED=1"' in (PLAN / "tools" / "remote_launch.sh").read_text(encoding="utf-8")
+
+
+def test_a_new_launch_keeps_the_earlier_log(tmp_path, monkeypatch):
+    monkeypatch.setattr(R, "ROOT", tmp_path)
+    (tmp_path / "w").mkdir()
+    (tmp_path / "w" / "demo.log").write_text("the first run's history\n", encoding="utf-8")
+    (tmp_path / "tools").mkdir()
+    (tmp_path / "tools" / "stamp.py").write_text("x = 1\n", encoding="utf-8")
+    p = write_spec(tmp_path / "specs", spec(workdir="w"))
+    R.launch(p, FakeShell(), T0, tmp_path / "state")
+    kept = tmp_path / "w" / f"demo.{T0:%Y%m%d-%H%M%S}.log"
+    assert kept.read_text(encoding="utf-8") == "the first run's history\n" and not (tmp_path / "w" / "demo.log").exists()
+
+
+def test_a_peek_leaves_the_state_and_its_one_time_events_to_the_watch(tmp_path):
+    specs, state = tmp_path / "specs", tmp_path / "state"
+    write_spec(specs, spec())
+    R.save_state("demo", run_state(), state)
+    ended = FakeShell(probe_out="exit=0\nalive=0\nprogress=4\n")
+    assert R.check(ended, T0, specs, state, peek=True)[0] == "MARKER run demo ended (exit 0)"
+    assert R.load_state("demo", state).status == "running"
+    assert R.check(ended, T0, specs, state)[0] == "MARKER run demo ended (exit 0)"      # the watch still sees the end
+    assert R.load_state("demo", state).status == "ended"

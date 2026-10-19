@@ -33,6 +33,12 @@ writing before the assertions pass — that emptied a probe script on 14 Septemb
 - Compile-check and dry-run every script a queued job will run. Smoke-test on water before the real run.
 - Since 15 October 2026 every run is launched through `tools/runspec.py launch probes/runspecs/<name>.json`: the spec names the log lines
   that prove progress and how long they may stay away, whatever the run's expected length (the #2702 repro ran 37 h without one).
+- Since 19 October 2026 (the user: we want to see whether something is stuck, without hours of uncertainty): a library's own log is
+  on (pyscf through `probes/library_log.py`, level 5, into a `pyscf.log` beside the outputs); every own log line is flushed and every
+  run's Python is unbuffered (runspec sets PYTHONUNBUFFERED); a laptop run states its peak memory, and launch and resume refuse it past
+  the budget for all laptop runs together (13 GB; a WSL run cites its `probes/wsl_capped.sh` cgroup cap as the bound). The watch stamps
+  `probes/watch_state/watch_heartbeat`; state.sh says NOT RUNNING past 25 min. Look at runs with `runspec.py check --peek` — a plain
+  `check` by hand uses up one-time events the watch must see (anchors3's end, 19 Oct).
 
 ## Hooks
 `tools/hooks/guard.py` (plan 05) runs before every shell, Edit and Write call and after every edit: eight rules from incidents

@@ -19,7 +19,7 @@ A run is a spec, probes/runspecs/<name>.json (committed: the launch record), and
 
     python tools/runspec.py validate probes/runspecs/<name>.json
     python tools/runspec.py launch probes/runspecs/<name>.json
-    python tools/runspec.py check
+    python tools/runspec.py check [--peek]      (--peek: the same lines, the state not saved; for a look by hand — the watch owns the state)
     python tools/runspec.py resume [--dry-run]
     python tools/runspec.py list
 
@@ -445,6 +445,19 @@ def memory_problems(spec: RunSpec, spec_dir: Path, state_dir: Path) -> list[str]
     return problems
 
 
+def keep_earlier_log(spec: RunSpec, now: datetime) -> Path | None:
+    """A laptop run's log from an earlier launch, renamed <name>.<launch time>.log so the new launch does not overwrite it (19 Oct 2026:
+    chain 41's relaunch overwrote its history). Returns the new path, None when there was no log."""
+    log = ROOT / spec.workdir / f"{spec.name}.log"
+    if spec.host != LAPTOP or not log.exists():
+        return None
+    kept = log.with_name(f"{spec.name}.{now:%Y%m%d-%H%M%S}.log")
+    if kept.exists():
+        raise LaunchRefused(f"{kept.name} exists already: two launches in the same second")
+    log.rename(kept)
+    return kept
+
+
 def launch(spec_path: Path, shell: Shell, now: datetime, state_dir: Path = STATE_DIR) -> str:
     spec = load_spec(spec_path)
     if spec_path.stem != spec.name:
@@ -461,6 +474,7 @@ def launch(spec_path: Path, shell: Shell, now: datetime, state_dir: Path = STATE
                                 timeout=DRY_RUN_TIMEOUT_S)
             if rc != 0:
                 raise LaunchRefused(f"dry run failed (exit {rc}): {out.strip()[-300:]}")
+        keep_earlier_log(spec, now)
         rc, out = shell.launch_laptop(spec)
     else:
         rc, out = shell.launch_remote(spec, shell.host_row(spec.host)[0])
@@ -513,7 +527,9 @@ def resume(shell: Shell, now: datetime, spec_dir: Path = SPEC_DIR, state_dir: Pa
 
 # ---------------------------------------------------------------- check
 
-def check(shell: Shell, now: datetime, spec_dir: Path = SPEC_DIR, state_dir: Path = STATE_DIR) -> list[str]:
+def check(shell: Shell, now: datetime, spec_dir: Path = SPEC_DIR, state_dir: Path = STATE_DIR, peek: bool = False) -> list[str]:
+    """One line per event of every running run, then the QUIET summary. With peek the states are not saved: an event that is reported
+    once (an end, a marker) stays for the watch."""
     lines, quiet = [], []
     for path in sorted(spec_dir.glob("*.json")):
         state = load_state(path.stem, state_dir)
@@ -525,7 +541,8 @@ def check(shell: Shell, now: datetime, spec_dir: Path = SPEC_DIR, state_dir: Pat
         except (ValidationError, OSError, subprocess.SubprocessError, ValueError) as e:
             lines.append(f"ANOMALY run {path.stem}: the check failed: {type(e).__name__}: {str(e).splitlines()[0][:MARKER_WIDTH]}")
             continue
-        save_state(spec.name, state, state_dir)
+        if not peek:
+            save_state(spec.name, state, state_dir)
         lines += events
         quiet.append(summary(spec, state) if state.status == "running" else f"{spec.name} ended")
     return [*lines, "QUIET " + ("; ".join(quiet) or "no runs")]
@@ -555,8 +572,8 @@ def _cmd_launch(a: argparse.Namespace, shell: Shell) -> int:
     return 0
 
 
-def _cmd_check(_: argparse.Namespace, shell: Shell) -> int:
-    print("\n".join(check(shell, _now())))
+def _cmd_check(a: argparse.Namespace, shell: Shell) -> int:
+    print("\n".join(check(shell, _now(), peek=a.peek)))
     return 0
 
 
@@ -578,7 +595,7 @@ def main(argv: list[str] | None = None) -> int:
     sub = ap.add_subparsers(dest="cmd", required=True)
     for name in ("validate", "launch"):
         sub.add_parser(name).add_argument("spec", type=Path)
-    sub.add_parser("check")
+    sub.add_parser("check").add_argument("--peek", action="store_true", help="do not save the state (a look by hand)")
     sub.add_parser("resume").add_argument("--dry-run", action="store_true")
     sub.add_parser("list")
     a = ap.parse_args(argv)

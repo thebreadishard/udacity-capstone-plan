@@ -52,6 +52,7 @@ SUM_RULE_LIMIT = 5e-4                  # e; route B's limit (benzene: CPHF vs FD
 FUNCTIONALS = (("b3lyp", "b3lyp"), ("wb97x", "wb97x"))
 IMAGINARY_BELOW = -10.0                # cm⁻¹, psi4_worker's own count
 SPIN_CONTAMINATION = 0.05              # |<S²> − S(S+1)| above which a warning is printed
+MAX_MEMORY_MB = 20000                  # pyscf's max_memory (its blocking target); a run under a memory cap passes a smaller one
 
 
 @dataclass(frozen=True)
@@ -63,12 +64,15 @@ class LabelsRun:
     compare_only: bool
     apt: bool
     stamp: dict
+    max_memory_mb: int = MAX_MEMORY_MB
 
     def __post_init__(self) -> None:
         if len(self.grid) != 2 or min(self.grid) < 1:
             raise ValueError(f"grid {self.grid} is not two positive integers (radial, angular)")
         if self.spin < 0:
             raise ValueError(f"spin (2S) {self.spin} is negative")
+        if self.max_memory_mb < 1:
+            raise ValueError(f"max_memory {self.max_memory_mb} MB is not positive")
 
 
 def software():
@@ -144,11 +148,11 @@ def mark_imaginary(d, counts):
     return True
 
 
-def labels_mol(geometry, log_stream: TextIO, charge=0, spin=0):
+def labels_mol(geometry, log_stream: TextIO, charge=0, spin=0, max_memory=MAX_MEMORY_MB):
     """The labels route's molecule from a geometry.json dict: 6-31G* with Cartesian d (as psi4), no symmetry. pyscf's own log (every SCF
     cycle, the Hessian's step timers) goes to log_stream (`probes/library_log.py`)."""
     atoms = [(s.capitalize(), tuple(c)) for s, c in zip(geometry["symbols"], geometry["coords_bohr"], strict=True)]
-    return pyscf_mole(log_stream, atom=atoms, unit="Bohr", basis="6-31g*", cart=True, symmetry=False, max_memory=20000, charge=charge,
+    return pyscf_mole(log_stream, atom=atoms, unit="Bohr", basis="6-31g*", cart=True, symmetry=False, max_memory=max_memory, charge=charge,
                       spin=spin)
 
 
@@ -243,7 +247,7 @@ def process_molecule(d: str, run: LabelsRun, lib_log: TextIO) -> list[str]:
     with open(d + "/geometry.json", encoding="utf-8") as fh:
         g = json.load(fh)
     x, masses = np.array(g["coords_bohr"]), np.array(g["masses_amu"])
-    mol = labels_mol(g, lib_log, run.charge, run.spin)
+    mol = labels_mol(g, lib_log, run.charge, run.spin, run.max_memory_mb)
     out, imaginary, apt_errors = {}, {}, []
     for tag, xc in FUNCTIONALS:
         t0 = time.time()
@@ -281,6 +285,7 @@ def parse_args() -> argparse.Namespace:
     ap.add_argument("--compare-only", action="store_true", help="rebuild analytic_check.json from the saved *_analytic.npz files (no DFT)")
     ap.add_argument("--charge", type=int, default=0)
     ap.add_argument("--spin", type=int, default=0, help="2S; > 0 selects UKS (the E8 open-shell path uses the same convention)")
+    ap.add_argument("--max-memory", type=int, default=MAX_MEMORY_MB, help="pyscf's max_memory in MB (19 Oct 2026: below a run's memory cap)")
     ap.add_argument("--no-apt", action="store_true",
                     help="skip the B3LYP APT from the Hessian's response (closed shell only; on by default since 11 Oct 2026)")
     return ap.parse_args()
@@ -289,7 +294,8 @@ def parse_args() -> argparse.Namespace:
 def main():
     a = parse_args()
     rad, ang = (int(v) for v in a.grid.split(","))
-    run = LabelsRun(grid=(rad, ang), charge=a.charge, spin=a.spin, compare_only=a.compare_only, apt=not a.no_apt, stamp=software())
+    run = LabelsRun(grid=(rad, ang), charge=a.charge, spin=a.spin, compare_only=a.compare_only, apt=not a.no_apt, stamp=software(),
+                    max_memory_mb=a.max_memory)
     lib.num_threads(a.threads)
     apt_errors = []
     for d in a.dirs:
