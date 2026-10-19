@@ -1,0 +1,21 @@
+{"name": "s1tz_acenaphthylene3",
+ "purpose": "TASKS 80 / option (b), the user 19 Oct 'Ja, doe (b)': S1-TZ acenaphthylene (A_45187bb7c8) goes on after its stop rule, each displaced SCF started from the previous Hessian's density (GUESS_FROM_PREVIOUS=1). Measured by scf_guess_test on s1, 19 Oct: the neighbour's density converges under DIIS in 15 cycles, 255.8 s against 2,426.4 s from the default guess, |dE| 9.5e-12 Eh. Fresh code folder /root/dpir_s1tz_e; /root/s1tz_acenaphthylene keeps its reference, gate and mode00_m Hessians, which the runner skips. The first Hessian computed starts from the default guess (nothing before it in this call), so MAX_FIRST 10,800 s = 1.2 x the measured 9,007 s",
+ "host": "s1",
+ "workdir": "/root/dpir_s1tz_e",
+ "command": "GUESS_FROM_PREVIOUS=1 MAX_FIRST=10800 bash probes/s1tz_run.sh S1TZC probes/results_m1/s1tz_2026-10-18/ids_acenaphthylene.tsv /root/s1tz_acenaphthylene 1 5",
+ "sources": [
+  {"local": "probes/s1tz_run.sh", "remote": "/root/dpir_s1tz_e/probes/s1tz_run.sh"},
+  {"local": "probes/s1_anharmonic_level.sh", "remote": "/root/dpir_s1tz_e/probes/s1_anharmonic_level.sh"},
+  {"local": "probes/progress_on_growth.sh", "remote": "/root/dpir_s1tz_e/probes/progress_on_growth.sh"},
+  {"local": "probes/pyscf_hessians_for_qff.py", "remote": "/root/dpir_s1tz_e/probes/pyscf_hessians_for_qff.py"},
+  {"local": "probes/scf_converge.py", "remote": "/root/dpir_s1tz_e/probes/scf_converge.py"},
+  {"local": "probes/library_log.py", "remote": "/root/dpir_s1tz_e/probes/library_log.py"},
+  {"local": "probes/s1_anharmonic_level.py", "remote": "/root/dpir_s1tz_e/probes/s1_anharmonic_level.py"},
+  {"local": "probes/results_m1/s1tz_2026-10-18/ids_acenaphthylene.tsv", "remote": "/root/dpir_s1tz_e/probes/results_m1/s1tz_2026-10-18/ids_acenaphthylene.tsv"}
+ ],
+ "progress": {"regex": "^=== \\(S1TZC\\) progress: |^=== \\(S2\\) [A-Za-z0-9_]+: (done|NOISY)", "max_gap_minutes": 120},
+ "marker_regex": "^=== \\(S2\\) |^=== \\(S1TZC\\) command ended",
+ "end_regex": "^=== \\(S2\\) all done: 1 force fields",
+ "dry_run_args": "--dry-run",
+ "threads": 5,
+ "estimate": {"hours": 204, "basis": "108 Hessians: the first 9,007 s (default guess, measured 19 Oct), then 107 x (6,527 s Hessian kernel measured in mode00_m's pyscf.log + 256 s SCF from the neighbour's density measured by scf_guess_test)"}}
