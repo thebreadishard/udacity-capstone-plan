@@ -2347,3 +2347,8 @@ all') was written against a silent loader drop, and this drop is the loader's an
 arm on 28, each fold on 14. Any other drop still refuses the read. They return in TASKS 74's analytic re-read, where the analytic
 frequencies decide the imaginary rule, as the module-05 release already does (16 of the corpus's 20 FD imaginary modes were soft torsions
 flipped by grid noise, 23 Sep).
+
+**Addendum to that amendment (19 Oct 2026, 19:2x — when the amended read was first run it stopped again before writing anything; still no
+number seen).** s4N, the set reported beside without lines, lost one molecule to the same rule: P3_2a090cd77b (aza-pyrene + CH₃,
+lowest ωB97X frequency −39.8 cm⁻¹ in the finite-difference label, a methyl torsion; its B3LYP Hessian has none). Same treatment: it leaves
+the read by name and returns in TASKS 74's analytic re-read.

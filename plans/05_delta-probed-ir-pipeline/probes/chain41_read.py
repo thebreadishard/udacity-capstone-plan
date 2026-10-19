@@ -40,7 +40,8 @@ def mean_of(records: list, hold: str, key: str = "coupling_ratio") -> float:
 
 # The amendment of 19 Oct 2026 (rung C pre-registration, chain 41): these two leave the read by the loader's imaginary-mode rule (B3LYP
 # finite-difference labels; their ωB97X Hessians have none); TASKS 74's analytic re-read brings them back
-AMENDED_OUT = {"P3_086e85b2d7": "imaginary mode −53.7 cm⁻¹ in the B3LYP FD label", "P3_2aa4adcc95": "imaginary mode −28.4 cm⁻¹ in the B3LYP FD label"}
+AMENDED_OUT = {"P3_086e85b2d7": "imaginary mode −53.7 cm⁻¹ in the B3LYP FD label", "P3_2aa4adcc95": "imaginary mode −28.4 cm⁻¹ in the B3LYP FD label",
+               "P3_2a090cd77b": "imaginary mode −39.8 cm⁻¹ in the ωB97X FD label (s4N; methyl torsion)"}
 
 
 def require_complete(records: list, hold: str) -> None:
