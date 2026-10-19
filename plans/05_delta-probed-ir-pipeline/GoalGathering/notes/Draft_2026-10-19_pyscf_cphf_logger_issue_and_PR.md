@@ -2,6 +2,8 @@
 
 **Status: POSTED 19 Oct 2026 08:4x on the user's word ('Ja, plaats issue en PR'): issue pyscf/pyscf#3530, PR pyscf/pyscf#3531** (branch pushed to the fork, 3342c336c). The texts below are what was posted; the PR body adds 'Fixes #3530' and the test count.
 
+**Edited 19 Oct ≈ 11:5x on the user's word ('Ja, pas de alinea zo aan'), before any reply:** the issue's second paragraph said the CPHF stretch shows no output at high verbosity. On acenaphthylene's T Hessian (11:4x) a 'vj and vk' timer appeared once per iteration, so the paragraph now reads: 'At high verbosity the CPHF stage is not entirely silent: for DFT the response's `vj and vk` timer lines appear once per iteration. What is missing is the Krylov solver's own progress, the residual per cycle, so a long CPHF solve shows that it is running but not how close it is to convergence.' The PR text needed no change.
+
 **Why we found it.** On 18–19 Oct an S1-TZ optimisation ran 12 h without one log line, and a slow run looked the same as a stuck one. The user
 then decided: switch on the libraries' own log levels, rather than change their code (19 Oct: 'Als we hun eigen logniveau kunnen aanzetten, dan
 is dat beter'). `probes/library_log.py` does that for pyscf. Measured on water: every SCF cycle and every Hessian step timer reach the log at
