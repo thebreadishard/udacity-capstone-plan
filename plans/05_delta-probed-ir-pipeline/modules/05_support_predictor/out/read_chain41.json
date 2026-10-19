@@ -1,0 +1,56 @@
+{
+ "r_S": 0.4281251206555135,
+ "r_K": 0.4063931017245984,
+ "q5": 1.0534753637271193,
+ "verdict": "carries (\u2264 1.3)",
+ "control_curve": {
+  "r_K_half": 0.41258729010565903,
+  "r_K_full": 0.40639310172459847,
+  "drop": 0.006194188381060561,
+  "two_se": 0.017984128999764953,
+  "still_learning": false
+ },
+ "beside": {
+  "size_arm_s4N": 0.3449735986159581,
+  "omega_rms_s5": {
+   "size": 3.9739604966276296,
+   "control": 3.4147063096413426,
+   "zero_rule": 22.632865314471548
+  },
+  "r_S_per_scaffold": {
+   "benzo[a]pyrene": 0.4911980955993915,
+   "benzo[e]pyrene": 0.4163781899610245,
+   "benzo[k]fluoranthene": 0.3296882213502045,
+   "dibenz[a,h]anthracene": 0.359846123346677,
+   "perylene": 0.4879266091100639,
+   "picene": 0.44791859155971125
+  }
+ },
+ "files": {
+  "size": [
+   "out/E7_rungC_chain41_size_eval_frozenb_seed0.json",
+   "out/E7_rungC_chain41_size_eval_frozenb_seed1.json",
+   "out/E7_rungC_chain41_size_eval_frozenb_seed2.json"
+  ],
+  "fold1": [
+   "out/E7_rungC_chain41_control1_eval_frozenb_seed0.json",
+   "out/E7_rungC_chain41_control1_eval_frozenb_seed1.json",
+   "out/E7_rungC_chain41_control1_eval_frozenb_seed2.json"
+  ],
+  "fold2": [
+   "out/E7_rungC_chain41_control2_eval_frozenb_seed0.json",
+   "out/E7_rungC_chain41_control2_eval_frozenb_seed1.json",
+   "out/E7_rungC_chain41_control2_eval_frozenb_seed2.json"
+  ],
+  "fold1_half": [
+   "out/E7_rungC_chain41_control1half_eval_frozenb_seed0.json",
+   "out/E7_rungC_chain41_control1half_eval_frozenb_seed1.json",
+   "out/E7_rungC_chain41_control1half_eval_frozenb_seed2.json"
+  ],
+  "fold2_half": [
+   "out/E7_rungC_chain41_control2half_eval_frozenb_seed0.json",
+   "out/E7_rungC_chain41_control2half_eval_frozenb_seed1.json",
+   "out/E7_rungC_chain41_control2half_eval_frozenb_seed2.json"
+  ]
+ }
+}

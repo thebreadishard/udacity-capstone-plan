@@ -2352,3 +2352,12 @@ flipped by grid noise, 23 Sep).
 number seen).** s4N, the set reported beside without lines, lost one molecule to the same rule: P3_2a090cd77b (aza-pyrene + CH₃,
 lowest ωB97X frequency −39.8 cm⁻¹ in the finite-difference label, a methyl torsion; its B3LYP Hessian has none). Same treatment: it leaves
 the read by name and returns in TASKS 74's analytic re-read.
+
+**Chain 41 — outcome (19 Oct 2026, 19:2x; `modules/05_support_predictor/out/read_chain41.{json,md}`, after the amendment and its addendum
+above).** q5 = r_S / r_K = 0.428 / 0.406 = **1.05 → carries** (line ≤ 1.3; steep ≥ 1.8). A model trained on at most four fused rings
+predicts the ring couplings of five-ring neutrals of 32–40 atoms about as well as one with five-ring molecules in its training. Beside,
+without lines: the size arm on s4N 0.345. Corrected ω on s5: size arm 3.97, control 3.41, zero rule 22.63 cm⁻¹. The control's curve is flat
+(r_K half 0.413 → full 0.406, the drop 0.006 within 2 SE 0.018), so more five-ring training molecules barely help. r_S per scaffold:
+benzo[a]pyrene 0.491, benzo[e]pyrene 0.416, benzo[k]fluoranthene 0.330, dibenz[a,h]anthracene 0.360, perylene 0.488, picene 0.448. Chain
+39's steep reading (q = 1.96) mixed size with ring count; separated here, size alone is no wall up to 40 atoms. Not tested: the mandate's
+50–100-atom targets (chain 42), and the labels are finite-difference where no analytic Hessian exists (TASKS 74's analytic re-read follows).
