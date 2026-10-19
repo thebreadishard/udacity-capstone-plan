@@ -9,9 +9,9 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-pytest.importorskip("pyscf")
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "modules" / "05_support_predictor" / "corpus"))
-import analytic_hessians as AH  # noqa: E402
+pytest.importorskip("pyscf")
+AH = pytest.importorskip("analytic_hessians")
 
 WATER = {"symbols": ["O", "H", "H"], "coords_bohr": [[0.0, 0.0, 0.2217], [0.0, 1.4309, -0.8867], [0.0, -1.4309, -0.8867]],
          "masses_amu": [15.995, 1.008, 1.008]}
@@ -89,3 +89,10 @@ def test_an_analytic_only_folder_gets_its_imaginary_counts(tmp_path, monkeypatch
     (d / "result.json").write_text(json.dumps({"layer": "A"}))
     _run(tmp_path, monkeypatch, "--no-apt")
     assert json.loads((d / "result.json").read_text()) == {"layer": "A"}
+
+
+def test_pyscfs_own_log_lands_in_the_molecule_folder(tmp_path, monkeypatch):
+    d = _run(tmp_path, monkeypatch, "--no-apt")
+    log = (d / AH.PYSCF_LOG_NAME).read_text(encoding="utf-8")
+    first_cycles = [s for s in log.splitlines() if s.startswith("cycle= 1 ")]
+    assert len(first_cycles) == 2 and log.count("CPU time for RHF hessian") == 2      # both functionals' SCF and Hessian timers (RKS logs as RHF)

@@ -23,8 +23,8 @@ $S 'export DEBIAN_FRONTEND=noninteractive; apt-get update -q > /tmp/apt.log 2>&1
 echo "[$(t) $IP] env qc05 (python 3.12, pyscf 2.14.0)"
 $S 'test -x /root/miniforge3/envs/qc05/bin/python || /root/miniforge3/bin/conda create -y -q -n qc05 python=3.12 > /tmp/env.log 2>&1; /root/miniforge3/envs/qc05/bin/pip install -q pyscf==2.14.0 numpy psutil >> /tmp/env.log 2>&1; /root/miniforge3/envs/qc05/bin/python -c "import pyscf, numpy; print(\"pyscf\", pyscf.__version__, \"numpy\", numpy.__version__)"' < /dev/null || { echo "ENV FAILED $IP"; exit 1; }
 echo "[$(t) $IP] files: analytic_hessians.py, labels_lane.sh, id lists, molecule inputs"
-scp -q -i $KEY -o BatchMode=yes "$C/analytic_hessians.py" "$P/probes/labels_lane.sh" "$SP"/labels_ids_[0-3].txt "$SP/labels_inputs.tgz" root@$IP:/root/ || { echo "SCP FAILED $IP"; exit 1; }
-$S 'mkdir -p /root/labels && mv /root/analytic_hessians.py /root/labels_lane.sh /root/labels_ids_[0-3].txt /root/labels/ && cd /root/labels && tar xzf /root/labels_inputs.tgz && ls molecules | wc -l' < /dev/null || { echo "UNPACK FAILED $IP"; exit 1; }
+scp -q -i $KEY -o BatchMode=yes "$C/analytic_hessians.py" "$C/apt.py" "$P/probes/library_log.py" "$P/probes/labels_lane.sh" "$SP"/labels_ids_[0-3].txt "$SP/labels_inputs.tgz" root@$IP:/root/ || { echo "SCP FAILED $IP"; exit 1; }
+$S 'mkdir -p /root/labels && mv /root/analytic_hessians.py /root/apt.py /root/library_log.py /root/labels_lane.sh /root/labels_ids_[0-3].txt /root/labels/ && cd /root/labels && tar xzf /root/labels_inputs.tgz && ls molecules | wc -l' < /dev/null || { echo "UNPACK FAILED $IP"; exit 1; }
 echo "[$(t) $IP] GATE: benzene analytic B3LYP against the laptop's file (grid 99,590)"
 scp -q -i $KEY -o BatchMode=yes "$C/molecules/A_8448043181/hessian_b3lyp_analytic.npz" root@$IP:/root/labels/gate_benzene_laptop.npz || { echo "GATE SCP FAILED $IP"; exit 1; }
 # 7 Oct 2026: benzene is not in the input tarball (it has analytic labels already) — its geometry goes up on its own

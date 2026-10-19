@@ -1,10 +1,12 @@
 """probes/s1_anharmonic_level.py (13 Oct 2026): the optimiser S1 needs — BFGS, then Newton in the internal space. Water smoke showed why the
 internal space matters: without grid response the gradient carries a net force, and a pseudo-inverse of the full Hessian turned it into
 0.024-bohr translations while the internal gradient stayed. A model potential with a deliberate net force reproduces that case."""
+import io
 import sys
 from pathlib import Path
 
 import numpy as np
+import pytest
 
 PLAN = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PLAN / "probes"))
@@ -59,3 +61,24 @@ def test_bfgs_then_newton_reaches_the_s1_tolerance():
     x, _, _, _ = S.optimise(["O", "H", "H"], X0.copy(), eg, log=lambda s: None)
     _, gmax, _ = S.newton_polish(x, model, log=lambda s: None)[1:]
     assert gmax <= S.GTOL
+
+
+def test_bfgs_writes_one_line_per_evaluation():
+    lines = []
+
+    def eg(x):
+        e, g, _ = model(x)
+        return e, g
+    _, _, _, evaluations = S.optimise(["O", "H", "H"], X0.copy(), eg, log=lines.append)
+    per_evaluation = [s for s in lines if s.startswith("  BFGS evaluation ")]
+    assert len(per_evaluation) == evaluations and per_evaluation[-1].startswith(f"  BFGS evaluation {evaluations}:")
+
+
+@pytest.mark.parametrize("grid, threads, diis", [("75", 2, 10), ("75,abc", 2, 10), ("0,302", 2, 10), ("75,302", 0, 10), ("75,302", 2, 0)])
+def test_a_setting_that_cannot_run_is_refused_before_any_computation(grid, threads, diis):
+    with pytest.raises(ValueError):
+        S.PyscfSetting("6-31g*", grid, threads, io.StringIO(), diis_cycles=diis)
+
+
+def test_a_valid_setting_gives_its_grid_as_integers():
+    assert S.PyscfSetting("6-31g*", "75,302", 2, io.StringIO()).atom_grid == (75, 302)

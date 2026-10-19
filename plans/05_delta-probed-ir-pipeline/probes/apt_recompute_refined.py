@@ -34,7 +34,8 @@ def height_change(old, new):
 def recompute(src, out_dir, grid=(99, 590), stamp=None):
     """The refined APT of one fetched labels molecule (closed shell); returns the summary row."""
     t0 = time.time()
-    g = json.load(open(os.path.join(src, "geometry.json")))
+    with open(os.path.join(src, "geometry.json"), encoding="utf-8") as fh:
+        g = json.load(fh)
     old = np.load(os.path.join(src, AH.APT_FILE))
     failed_refined = str(old["route"]) == "hessian_response_refined" and not bool(old["passed"])   # 13 Oct 2026: the guard's failures
     if str(old["route"]) != "hessian_response" and not failed_refined:                                   # (B_1194d7a42a, B_127dd8c4ed) redo
@@ -43,11 +44,12 @@ def recompute(src, out_dir, grid=(99, 590), stamp=None):
     hz = np.load(os.path.join(src, "hessian_b3lyp_analytic.npz"))
     if tuple(hz["grid"]) != tuple(grid) or int(hz["spin"]) != 0:
         raise ValueError(f"{src}: Hessian grid {tuple(hz['grid'])} / spin {int(hz['spin'])} is not the labels route's closed-shell setting")
-    mol = AH.labels_mol(g, int(hz["charge"]), 0)
-    mf, _ = AH.labels_scf(mol, "b3lyp", grid)
-    hobj = mf.Hessian()
-    response = solve_response(hobj)
     os.makedirs(out_dir, exist_ok=True)
+    with open(os.path.join(out_dir, AH.PYSCF_LOG_NAME), "a", encoding="utf-8") as lib_log:
+        mol = AH.labels_mol(g, lib_log, int(hz["charge"]), 0)
+        mf, _ = AH.labels_scf(mol, "b3lyp", grid)
+        hobj = mf.Hessian()
+        response = solve_response(hobj)
     try:
         message, error = AH.write_apt(out_dir, hobj, response, hz["H_projected"], np.array(g["masses_amu"]), grid, stamp or AH.software()), ""
     except ValueError as exc:

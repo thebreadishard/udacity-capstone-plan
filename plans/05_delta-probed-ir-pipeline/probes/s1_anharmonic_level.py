@@ -15,14 +15,20 @@ python -m dpir.qff):
         reference setting's by eigenvector overlap; prints and writes Δ_anh per mode and the rms / max difference over the window.
 
 No pyscf import at module level, so `compare` and the tests run without it.
+
+Logging (19 Oct 2026, after an optimisation ran 12 h without a line): every line of this script is flushed at once; BFGS writes one line per
+evaluation; pyscf's own log (every SCF and CPHF cycle, `library_log.py`) is appended to `pyscf.log` beside the stub.
 """
 import argparse
 import json
 import os
 import sys
 import time
+from dataclasses import dataclass
+from typing import TextIO
 
 import numpy as np
+from library_log import HEARTBEAT_LEVEL, PYSCF_LOG_NAME, pyscf_mole
 from scipy.optimize import linear_sum_assignment, minimize
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -34,6 +40,34 @@ BFGS_GTOL = 1e-4                # hand-over to the Newton polish
 DIIS_CYCLES = 200               # an SCF step's DIIS budget; beyond it the second-order solver continues
 NEWTON_CYCLES = 100
 NEWTON_CONV_TOL_GRAD = 1e-6      # the second-order solver's orbital gradient stalls near 3e-7 on a DFT grid; DIIS finishes
+
+
+def log_line(msg: str) -> None:
+    """This script's log line, flushed at once: stdout to a file is block-buffered, and an unflushed line is a silent run."""
+    print(msg, flush=True)
+
+
+@dataclass(frozen=True)
+class PyscfSetting:
+    """The level an energy, gradient or Hessian is computed at, and where pyscf's own log goes."""
+    basis: str
+    grid: str                       # "radial,angular", unpruned
+    threads: int
+    log_stream: TextIO
+    diis_cycles: int = DIIS_CYCLES
+    log_level: int = HEARTBEAT_LEVEL
+
+    def __post_init__(self) -> None:
+        parts = self.grid.split(",")
+        if len(parts) != 2 or not all(p.strip().isdigit() and int(p) > 0 for p in parts):
+            raise ValueError(f"grid {self.grid!r} is not 'radial,angular' with two positive integers")
+        if self.threads < 1 or self.diis_cycles < 1:
+            raise ValueError(f"threads ({self.threads}) and diis_cycles ({self.diis_cycles}) must be positive")
+
+    @property
+    def atom_grid(self) -> tuple[int, int]:
+        rad, ang = (int(v) for v in self.grid.split(","))
+        return rad, ang
 
 
 def external_basis(x: np.ndarray) -> np.ndarray:
@@ -51,7 +85,7 @@ def internal_gradient(x: np.ndarray, g: np.ndarray) -> np.ndarray:
     return gf - T @ (T.T @ gf)
 
 
-def newton_polish(x, energy_gradient_hessian, gtol=GTOL, max_steps=6, log=print):
+def newton_polish(x, energy_gradient_hessian, gtol=GTOL, max_steps=6, log=log_line):
     """Newton steps in the internal space only: x ← x − W (Wᵀ H W)⁻¹ Wᵀ g, W an orthonormal basis of the complement of the rigid translations
     and rotations. (A pseudo-inverse of the full H does not do: without grid response the external eigenvalues are ~1e-4, not 0, and the net
     force divided by them gave 0.024-bohr translations on water while the internal gradient stayed.)"""
@@ -71,16 +105,18 @@ def newton_polish(x, energy_gradient_hessian, gtol=GTOL, max_steps=6, log=print)
     return x, float(e), float(np.abs(internal_gradient(x, g)).max()), max_steps
 
 
-def optimise(symbols, x0, energy_and_gradient, gtol=BFGS_GTOL, max_iter=200, log=print):
+def optimise(symbols, x0, energy_and_gradient, gtol=BFGS_GTOL, max_iter=200, log=log_line):
     """BFGS on Cartesian coordinates (bohr) to gtol (max component). energy_and_gradient(x (n, 3)) → (E, g (n, 3)).
-    Returns (x, E, max |g|, evaluations)."""
+    Returns (x, E, max |g|, evaluations). One log line per evaluation."""
     n = len(symbols)
     hist = []
 
     def f(flat):
+        t0 = time.time()
         e, g = energy_and_gradient(flat.reshape(n, 3))
         gi = internal_gradient(flat.reshape(n, 3), g)
         hist.append((e, float(np.abs(gi).max())))
+        log(f"  BFGS evaluation {len(hist)}: E = {e:.10f}, max |g_internal| = {hist[-1][1]:.1e}, {time.time() - t0:.0f} s")
         return e, gi
 
     def stop(flat):
@@ -99,26 +135,27 @@ def optimise(symbols, x0, energy_and_gradient, gtol=BFGS_GTOL, max_iter=200, log
     return flat.reshape(n, 3), float(e), gmax, len(hist)
 
 
-def pyscf_energy_and_gradient(symbols, basis, grid, threads, hessian=False, diis_cycles=DIIS_CYCLES):
-    """eg(x) → (E, g), or (E, g, H) with hessian=True (Cartesian, E_h/bohr²), at the S1 setting."""
-    from pyscf import dft, gto, lib
+def pyscf_energy_and_gradient(symbols, setting: PyscfSetting, hessian=False):
+    """eg(x) → (E, g), or (E, g, H) with hessian=True (Cartesian, E_h/bohr²), at the S1 setting; pyscf logs to setting.log_stream."""
+    from pyscf import dft, lib
     from pyscf.hessian import rks as rks_hess
-    lib.num_threads(threads)
-    rad, ang = (int(v) for v in grid.split(","))
+    lib.num_threads(setting.threads)
 
     def eg(x):
-        mol = gto.M(atom=[(s, tuple(p)) for s, p in zip(symbols, x, strict=True)], unit="Bohr", basis=basis, symmetry=False, verbose=0)
+        mol = pyscf_mole(setting.log_stream, setting.log_level, atom=[(s, tuple(p)) for s, p in zip(symbols, x, strict=True)], unit="Bohr",
+                         basis=setting.basis, symmetry=False)
         mf = dft.RKS(mol)
         mf.xc = "b3lyp"
-        mf.grids.atom_grid = (rad, ang)
+        mf.grids.atom_grid = setting.atom_grid
         mf.grids.prune = None
         mf.conv_tol = 1e-11
         mf.conv_tol_grad = 1e-8
-        mf.max_cycle = diis_cycles
+        mf.max_cycle = setting.diis_cycles
         e = mf.kernel()
         if not mf.converged:
             # second-order fallback from DIIS's orbitals (pyscf examples/scf/22-newton.py: xc and grid first, then .newton()) to near
             # convergence, then DIIS again from its density to the tight thresholds
+            log_line(f"  SCF: DIIS not converged in {setting.diis_cycles} cycles; second-order solver")
             mo, occ = mf.mo_coeff, mf.mo_occ
             nf = mf.newton()
             nf.max_cycle, nf.conv_tol_grad = NEWTON_CYCLES, NEWTON_CONV_TOL_GRAD
@@ -126,7 +163,7 @@ def pyscf_energy_and_gradient(symbols, basis, grid, threads, hessian=False, diis
             if not nf.converged:
                 raise SystemExit("SCF not converged during the optimisation (DIIS, then the second-order solver)")
             mf = nf.undo_newton()
-            mf.max_cycle = diis_cycles
+            mf.max_cycle = setting.diis_cycles
             e = mf.kernel(dm0=mf.make_rdm1())
             if not mf.converged:
                 raise SystemExit("SCF not converged during the optimisation (DIIS after the second-order solver)")
@@ -141,7 +178,8 @@ def pyscf_energy_and_gradient(symbols, basis, grid, threads, hessian=False, diis
 def harmonic_modes(ref_json: str):
     """(ω cm⁻¹, mass-weighted eigenvectors) of a reference Hessian record, in dpir.qff's own order and convention."""
     from dpir.qff import harmonic
-    d = json.load(open(ref_json, encoding="utf-8"))
+    with open(ref_json, encoding="utf-8") as fh:
+        d = json.load(fh)
     sym = d["molecule"]["symbols"]
     geom = np.array(d["molecule"]["geometry"], float).reshape(-1, 3)
     H = np.array(d["return_result"], float).reshape(3 * len(sym), 3 * len(sym))
@@ -158,7 +196,7 @@ def compare(ref_dir: str, test_dirs: list, window=(550.0, 2000.0)) -> dict:
     inwin = (wr >= window[0]) & (wr <= window[1])
     out = {"window": list(window), "reference": ref_dir, "omega_ref": wr.tolist(), "d_anh_ref": dr.tolist(), "tests": {}}
     for t in test_dirs:
-        wt, qt = harmonic_modes(os.path.join(t, "ref.json"))
+        _, qt = harmonic_modes(os.path.join(t, "ref.json"))
         zt = np.load(os.path.join(t, "qff_report.npz"))
         dt = zt["nu_sym"] - zt["omega_cm"]
         m = linear_sum_assignment(-(qr.T @ qt) ** 2)[1]                 # test mode matched to each reference mode
@@ -208,18 +246,23 @@ def main():
               f"(line {g['line']:g}) → {'PASS' if g['passed'] else 'FAIL'}")
         return 0 if g["passed"] else 3
     if a.cmd == "optimise":
-        g = json.load(open(a.geometry, encoding="utf-8"))
+        with open(a.geometry, encoding="utf-8") as fh:
+            g = json.load(fh)
         sym = [s.capitalize() for s in g["symbols"]]
         t0 = time.time()
-        x, e, gmax, it = optimise(sym, np.asarray(g["coords_bohr"], float), pyscf_energy_and_gradient(sym, a.basis, a.grid, a.threads))
-        x, e, gmax, nk = newton_polish(x, pyscf_energy_and_gradient(sym, a.basis, a.grid, a.threads, hessian=True))
+        with open(os.path.join(os.path.dirname(os.path.abspath(a.stub)), PYSCF_LOG_NAME), "a", encoding="utf-8") as lib_log:
+            setting = PyscfSetting(a.basis, a.grid, a.threads, lib_log)
+            log_line(f"optimising: pyscf's own log in {lib_log.name}")
+            x, e, gmax, it = optimise(sym, np.asarray(g["coords_bohr"], float), pyscf_energy_and_gradient(sym, setting))
+            x, e, gmax, nk = newton_polish(x, pyscf_energy_and_gradient(sym, setting, hessian=True))
         it = f"{it} BFGS evaluations + {nk} Newton steps"
         if gmax > GTOL:
             raise SystemExit(f"not converged: max |g| {gmax:.1e} > {GTOL:g}")
-        json.dump({"driver": "hessian", "molecule": {"symbols": sym, "geometry": x.reshape(-1).tolist()},
-                   "optimisation": {"basis": a.basis, "grid": a.grid, "energy": e, "max_gradient": gmax, "evaluations": it,
-                                    "seconds": round(time.time() - t0), "start": os.path.abspath(a.geometry)}},
-                  open(a.stub, "w", encoding="utf-8"))
+        with open(a.stub + ".tmp", "w", encoding="utf-8") as fh:
+            json.dump({"driver": "hessian", "molecule": {"symbols": sym, "geometry": x.reshape(-1).tolist()},
+                       "optimisation": {"basis": a.basis, "grid": a.grid, "energy": e, "max_gradient": gmax, "evaluations": it,
+                                        "seconds": round(time.time() - t0), "start": os.path.abspath(a.geometry)}}, fh)
+        os.replace(a.stub + ".tmp", a.stub)
         return 0
     lo, hi = (float(v) for v in a.window.split(","))
     res = compare(a.ref_dir, a.test_dirs, (lo, hi))
@@ -227,7 +270,8 @@ def main():
         print(f"{t}: Δ_anh difference over {r['n_window']} modes in {lo:g}–{hi:g} cm⁻¹: rms {r['rms_window']:.2f}, max {r['max_window']:.2f} cm⁻¹ "
               f"(min mode overlap {r['min_overlap']:.3f})" + (" — NOISY: failed the force-field noise guard" if r["noisy"] else ""))
     if a.out:
-        json.dump(res, open(a.out, "w", encoding="utf-8"), indent=1)
+        with open(a.out, "w", encoding="utf-8") as fh:
+            json.dump(res, fh, indent=1)
     return 0
 
 

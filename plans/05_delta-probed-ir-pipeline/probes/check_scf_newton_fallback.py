@@ -7,11 +7,12 @@ to 1e-10 E_h, gradient to 1e-7 E_h/bohr — ten times below the optimiser's fina
 """
 import os
 import sys
+import tempfile
 
 import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from s1_anharmonic_level import pyscf_energy_and_gradient  # noqa: E402
+from s1_anharmonic_level import PyscfSetting, pyscf_energy_and_gradient
 
 SYM = ["O", "H", "H"]
 X = np.array([[0.0, 0.0, 0.2217], [0.0, 1.4309, -0.8867], [0.0, -1.4309, -0.8867]])
@@ -19,8 +20,12 @@ TOL_E, TOL_G = 1e-10, 1e-7
 
 
 def main() -> int:
-    e_ref, g_ref = pyscf_energy_and_gradient(SYM, "6-31g*", "75,302", 2)(X)
-    e_fb, g_fb = pyscf_energy_and_gradient(SYM, "6-31g*", "75,302", 2, diis_cycles=3)(X)
+    with tempfile.TemporaryFile("w+", encoding="utf-8") as lib_log:
+        e_ref, g_ref = pyscf_energy_and_gradient(SYM, PyscfSetting("6-31g*", "75,302", 2, lib_log))(X)
+        e_fb, g_fb = pyscf_energy_and_gradient(SYM, PyscfSetting("6-31g*", "75,302", 2, lib_log, diis_cycles=3))(X)
+        lib_log.seek(0)
+        cycles = sum(line.startswith("cycle=") for line in lib_log)
+    print(f"pyscf's own log: {cycles} SCF cycle lines")
     de, dg = abs(e_fb - e_ref), float(np.abs(g_fb - g_ref).max())
     ok = de <= TOL_E and dg <= TOL_G
     print(f"|ΔE| {de:.1e} E_h, max |Δg| {dg:.1e} E_h/bohr -> {'PASS' if ok else 'FAIL'}")
