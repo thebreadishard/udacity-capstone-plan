@@ -7,7 +7,7 @@
 #                  of the wrong machine; a host row that is deleted is no longer watched. Labels lanes ('labels'), pool 3 runners ('pool3').
 #   specced runs — since 15 Oct 2026 every run launched through tools/runspec.py (probes/runspecs/): its progress contract is checked there.
 # The seen markers live in the plan (probes/watch_state/seen.txt, git-ignored), not in a session's scratchpad.
-# Overridable for tests: WATCH_JOBS, WATCH_SEEN, WATCH_CYCLES, WATCH_SLEEP, HOSTS_FILE, HOSTS_SSH, RUNSPEC_DIR, RUNSPEC_STATE, RUNSPEC_PYTHON.
+# Overridable for tests: WATCH_JOBS, WATCH_SEEN, WATCH_CYCLES, WATCH_SLEEP, WATCH_BEAT, HOSTS_FILE, HOSTS_SSH, RUNSPEC_DIR, RUNSPEC_STATE, RUNSPEC_PYTHON.
 #   bash probes/watch.sh
 set -uo pipefail
 # no-set-e: every check decides its own exit
@@ -16,6 +16,7 @@ JOBS=${WATCH_JOBS:-$P/probes/watch_jobs.tsv}
 SEEN=${WATCH_SEEN:-$P/probes/watch_state/seen.txt}
 CYCLES=${WATCH_CYCLES:-11}
 SLEEP=${WATCH_SLEEP:-600}
+BEAT=${WATCH_BEAT:-$P/probes/watch_state/watch_heartbeat}   # 19 Oct 2026: stamped at every check; state.sh reads its age
 # shellcheck source=../tools/hosts.sh
 . "$P/tools/hosts.sh"
 mkdir -p "$(dirname "$SEEN")"; touch "$SEEN"
@@ -155,6 +156,7 @@ check_ci() {   # 13 Oct 2026: six red plan05 runs in a row went unseen for eight
 }
 
 for i in $(seq 1 "$CYCLES"); do
+  date '+%F %T' > "$BEAT.tmp" && mv "$BEAT.tmp" "$BEAT"
   check_jobs
   check_labels
   check_pool3

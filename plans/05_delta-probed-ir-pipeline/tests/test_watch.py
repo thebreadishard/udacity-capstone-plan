@@ -26,6 +26,7 @@ def _run(tmp: Path, jobs: str, hosts: str = "", ssh_out: str = "") -> subprocess
     (fake_bin / "gh").write_text("#!/usr/bin/env bash\nexit 1\n", encoding="utf-8", newline="\n")
     (fake_bin / "gh").chmod(0o755)
     env = dict(os.environ, WATCH_JOBS=str(tmp / "jobs.tsv"), WATCH_SEEN=str(tmp / "seen.txt"), WATCH_CYCLES="1", WATCH_SLEEP="0",
+               WATCH_BEAT=str(tmp / "watch_heartbeat"),                   # never the live heartbeat: a test would make a stopped watch look alive
                PATH=fake_bin.as_posix() + os.pathsep + os.environ["PATH"],
                HOSTS_FILE=str(tmp / "hosts.tsv"), HOSTS_SSH=f"bash {stub.as_posix()}",   # not BASH: its path may hold a space
                RUNSPEC_ROOT=str(tmp), RUNSPEC_DIR=str(tmp / "specs"), RUNSPEC_STATE=str(tmp / "runstate"), RUNSPEC_PYTHON=sys.executable)
@@ -80,3 +81,10 @@ def test_a_specced_run_that_vanished_wakes_once(tmp_path):
     assert r.returncode == 1 and "run demo gone without an exit file" in r.stdout
     r = _run(tmp_path, "")
     assert r.returncode == 0 and "runs demo 1 lines" in r.stdout
+
+
+def test_every_check_stamps_the_heartbeat(tmp_path):
+    """19 Oct 2026: on 18 Oct no watch ran for hours and nothing said so; state.sh reads this stamp's age."""
+    _run(tmp_path, "")
+    stamp = (tmp_path / "watch_heartbeat").read_text(encoding="utf-8").strip()
+    assert abs(datetime.now() - datetime.strptime(stamp, "%Y-%m-%d %H:%M:%S")) < timedelta(minutes=2)

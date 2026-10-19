@@ -41,6 +41,14 @@ if [ -d "$MIRROR/.git" ]; then
   # 13 Oct 2026: the 03:30 run failed (exit 1) and the digest said only '26 h ago' — the task log's last exit code is shown when it is not 0
   last_exit=$(grep -o 'backup task end, exit [0-9]*' "$LOCALAPPDATA/Temp/claude/backup_task.log" 2>/dev/null | tail -1 | grep -o '[0-9]*$')
   [ -n "$last_exit" ] && [ "$last_exit" != "0" ] && echo "  data backup: LAST RUN FAILED (exit $last_exit) — see %LOCALAPPDATA%/Temp/claude/backup_task.log"
+  # 19 Oct 2026: the watch stamps probes/watch_state/watch_heartbeat at every check (10 min apart); older than 25 min = no watch runs
+  beat=plans/05_delta-probed-ir-pipeline/probes/watch_state/watch_heartbeat
+  if [ -f "$beat" ]; then
+    beat_min=$(( ($(date +%s) - $(date -d "$(cat "$beat")" +%s)) / 60 ))
+    echo "  watch: last check $(cat "$beat"), ${beat_min} min ago$([ "$beat_min" -gt 25 ] && echo ' — NOT RUNNING: re-arm probes/watch.sh')"
+  else
+    echo "  watch: no heartbeat file yet — NOT RUNNING or older than 19 Oct: re-arm probes/watch.sh"
+  fi
   # 13 Oct 2026: the scheduled task CapstoneResumeJobs relaunches unfinished laptop jobs that are not running (tools/resume_laptop_jobs.sh)
   echo "  resume task: $(tail -n 1 plans/05_delta-probed-ir-pipeline/probes/watch_state/resume.log 2>/dev/null | cut -c1-110)"
   [ -f plans/05_delta-probed-ir-pipeline/probes/watch_state/RELAUNCHED.txt ] && echo "  RELAUNCHED by the resume task (last 3): $(tail -n 3 plans/05_delta-probed-ir-pipeline/probes/watch_state/RELAUNCHED.txt | tr '
