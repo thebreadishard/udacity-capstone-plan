@@ -1,0 +1,12 @@
+{"name": "psi4_logs_archive",
+ "purpose": "The user, 19 Oct 2026: 'optie 1: een gecomprimeerd archief als release-bijlage in capstone-data op GitHub'. tools/archive_psi4_logs.py packs the psi4 logs the data mirror leaves out by name (the only copy of every displaced geometry's energy and gradient behind the corpus Hessians) into one xz archive with a sha256 list, outside the repository, and reads it back against the list. The upload is a separate, manual gh step",
+ "host": "laptop",
+ "workdir": "probes/results_m1",
+ "command": "python ../../tools/archive_psi4_logs.py --out C:/Users/thebr/Documents/CapstoneData_archives --date 2026-10-19",
+ "sources": [{"local": "tools/archive_psi4_logs.py"}, {"local": "tools/backup_data.py"}],
+ "progress": {"regex": "^\\[[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\] (packed [0-9]+/[0-9]+|[0-9]+ logs|reading the archive back)", "max_gap_minutes": 30},
+ "marker_regex": "^=== ARCHIVE VERIFIED|Traceback|Error",
+ "end_regex": "^=== ARCHIVE VERIFIED",
+ "threads": 1,
+ "estimate": {"hours": 1.0, "basis": "not measured on the whole set: 7.4 GB of logs through xz preset 6 on one core; a 113 MB sample compressed 26x in seconds (scratchpad psi4_compress_sample.py). The progress lines every 25 files give the real rate"},
+ "memory": {"peak_gb": 0.5, "basis": "xz preset 6 uses about 94 MB to compress (liblzma's table); files are streamed in 1 MB blocks for hashing"}}
