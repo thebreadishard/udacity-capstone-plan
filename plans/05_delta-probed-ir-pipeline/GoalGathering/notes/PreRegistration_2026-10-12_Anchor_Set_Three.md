@@ -267,6 +267,28 @@ what that means for its CC Hessian (TASKS 51). **Closed 23:0x:** the corpus's C1
 1.7e-2 bohr (layers A/A2: median 1.8e-4, 90th percentile 2.9e-3 — azulene's level); forcing the symmetry moves B3LYP frequencies by ≤ 0.47 cm⁻¹
 (azulene 0.056): immaterial for the Hessians; nothing to redo (`probes/geometry_symmetry_survey.py`).
 
+## Declaration (19 Oct 2026, 20:5x, before any read of set three) — the final read is on waves 1–2
+
+'The final read comes after wave 3, or after the last wave that finishes if the budget stops the set early. That is declared before the
+read.' Wave 3 (indole, benzofuran, quinazoline) is frozen by decision 63 (17 Oct: no new CC anchors before July 2027; all paid compute stops
+15 Nov), and wave 2 finished on 19 Oct (isoquinoline's APT PASS, sum rule 1.9e-10; anchors3 fully fetched and deleted). **Declared: the
+final read is on waves 1–2** — quinoxaline, azulene, acenaphthylene, quinoline, isoquinoline. No number of set three has been read: the
+pipeline checks (pair, symmetry and two-route checks, APT sum rules) were run as each anchor finished; no Hessian or APT of set three has met
+a model.
+
+Each of the five enters as a *new carried anchor* only after step 3 of its pipeline — the composite TZ tier (MP2/cc-pVTZ − MP2/cc-pVDZ
+rows), promotion by chain 33c's rule and the registry (decision 62). An anchor that fails promotion leaves the read by name. With five, R-A's
+k_s ∈ {2, 4, all} reads 'all' = 5 (five subsets of four exist, all are used); arm M's k_t ∈ {4, 8, all} works on ten training anchors per
+fold. Nothing else changes.
+
+**Still to compute (not desk work).** Step 3 has not run for any of the five. Priced from the 7 Oct composite queue's measured rows
+(`probes/results_m1/composite_rows_2026-10-07/worker_*.log`, 4 workers × 8 threads, max_memory 26,000 MB; median seconds per row fitted over
+pyridine, fluorobenzene, benzonitrile, naphthalene and anthracene: cc-pVTZ exp(−5.39) · n^4.48, cc-pVDZ exp(−6.21) · n^3.69): quinoxaline
+7.8, azulene 18.1, acenaphthylene 29.0, quinoline 21.7, isoquinoline 21.7 worker-hours — **98 worker-hours, ≈ 25 h on four workers.** A
+worker needs 26 GB: not the laptop (13 GB budget for all its runs), not s1 beside S1-TZ. The labels CCX53 after its labels (≈ 24–29 Oct) is
+where it fits; the fine-tune and evaluation runs of R-A, R-B and the arms follow on the laptop, timed on the first subset and stated before
+the rest run (amendment of 14 Oct). Where and when is the user's word.
+
 ## Outcome
 
 *(appended after the reads)*
