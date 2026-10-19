@@ -69,5 +69,5 @@ Both fail without the change and pass with it; `test_rhf.py` and `test_uhf.py` p
 ---
 
 **After posting:** a Software_Changes_Ledger row, the TASKS 'Software' row (follow-up with the others ≈ 1 Nov), and `probes/library_log.py`'s
-docstring gets the issue number. Until merged and released, our CPHF stretches stay silent. Their liveness is read from CPU time and, where
+docstring gets the issue number. Until merged and released, our CPHF stretches show only their per-iteration 'vj and vk' timers (a heartbeat, corrected 11:5x), not their residuals. Their liveness is read from CPU time and, where
 installed, `py-spy dump` (rule 4 of the 19 Oct preparation).
