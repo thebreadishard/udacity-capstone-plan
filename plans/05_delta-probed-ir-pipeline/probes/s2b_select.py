@@ -22,6 +22,7 @@ import os
 from collections.abc import Callable, Iterable
 from typing import Any
 
+from corpus_state import NEUTRAL_SINGLET, recorded_state
 from rdkit import Chem
 from rdkit.Chem import rdMolDescriptors
 from rdkit.Chem.Scaffolds import MurckoScaffold
@@ -32,24 +33,11 @@ MAX_ATOMS = 28
 ELEMENTS = frozenset({"C", "N", "O"})
 LABILE = ("N", "O")          # an H on these wags and inverts with large amplitude (S2 amendment 3)
 METHYL_H = 3
-NEUTRAL_SINGLET = (0, 1)
 
 
 def geometry_path(mol_id: str) -> str:
     """The geometry's path relative to the plan, as the server-side runner reads it."""
     return f"modules/05_support_predictor/corpus/molecules/{mol_id}/geometry.json"
-
-
-def recorded_state(mol_id: str) -> tuple[int, int]:
-    """(charge, multiplicity) from the deck in the molecule's job.json, the input its corpus Hessian was computed with."""
-    path = os.path.join(CORPUS, "molecules", mol_id, "job.json")
-    if not os.path.isfile(path):
-        raise SystemExit(f"{mol_id}: no job.json, so its charge is unknown")
-    with open(path, encoding="utf-8") as fh:
-        deck = json.load(fh).get("deck", {})
-    if "charge" not in deck or "multiplicity" not in deck:
-        raise SystemExit(f"{mol_id}: job.json's deck names no charge or multiplicity")
-    return int(deck["charge"]), int(deck["multiplicity"])
 
 
 def has_linker(mol: Chem.Mol) -> bool:
