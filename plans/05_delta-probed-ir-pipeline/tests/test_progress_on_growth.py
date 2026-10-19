@@ -32,6 +32,12 @@ def test_growth_gives_progress_and_the_end_line_carries_the_exit_code(tmp_path):
     assert lines[-1].startswith("=== (T) command ended rc=4")
 
 
+def test_the_end_of_a_short_job_is_seen_within_seconds_not_after_the_interval(tmp_path):
+    """19 Oct 2026: with a 600 s interval a job that ended at once still held the wrapper for ten minutes (a dry run, a deploy smoke)."""
+    r = _run(tmp_path, "exit 3\n", "--interval", "600")       # the later --interval wins; the 60 s timeout fails the old loop
+    assert r.returncode == 3 and r.stdout.splitlines()[-1].startswith("=== (T) command ended rc=3")
+
+
 def test_a_job_that_writes_nothing_prints_no_progress(tmp_path):
     r = _run(tmp_path, "sleep 4\n")
     assert r.returncode == 0 and "progress:" not in r.stdout

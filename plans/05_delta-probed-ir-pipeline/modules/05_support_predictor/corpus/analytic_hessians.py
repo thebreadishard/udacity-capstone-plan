@@ -65,8 +65,11 @@ class LabelsRun:
     apt: bool
     stamp: dict
     max_memory_mb: int = MAX_MEMORY_MB
+    reuse_existing: bool = False
 
     def __post_init__(self) -> None:
+        if self.reuse_existing and self.compare_only:
+            raise ValueError("--reuse-existing and --compare-only do not combine: --compare-only reads both Hessians already")
         if len(self.grid) != 2 or min(self.grid) < 1:
             raise ValueError(f"grid {self.grid} is not two positive integers (radial, angular)")
         if self.spin < 0:
@@ -251,9 +254,13 @@ def process_molecule(d: str, run: LabelsRun, lib_log: TextIO) -> list[str]:
     out, imaginary, apt_errors = {}, {}, []
     for tag, xc in FUNCTIONALS:
         t0 = time.time()
-        if run.compare_only:
-            z = np.load(f"{d}/hessian_{tag}_analytic.npz")
+        saved = f"{d}/hessian_{tag}_analytic.npz"
+        load = run.compare_only or (run.reuse_existing and os.path.exists(saved))
+        if load:
+            z = np.load(saved)
             Hc, Hp, e, response = z["H_raw"], z["H_projected"], float(z["energy"]), None
+            if not run.compare_only:
+                print(f"{d} {tag}: analytic Hessian reused from {os.path.basename(saved)}", flush=True)
         else:
             Hc, e, hobj, response = compute_hessian(d, mol, tag, xc, run)
             Hp = project_tr(Hc, masses, x)
@@ -261,7 +268,7 @@ def process_molecule(d: str, run: LabelsRun, lib_log: TextIO) -> list[str]:
         # (pyscf's harmonic_analysis drops a mode when an imaginary one falls in its trans/rot window — 62 instead of 63 entries on A2_3a2982dd85.)
         fr = freqs_cm(Hp, masses)
         imaginary[tag] = int((vib_only(fr) < IMAGINARY_BELOW).sum())
-        if not run.compare_only:
+        if not load:
             save_hessian(d, tag, Hc, Hp, fr, e, run)
         if response is not None:                  # after the Hessian is on disk: an APT failure never costs the Hessian
             try:
@@ -286,6 +293,8 @@ def parse_args() -> argparse.Namespace:
     ap.add_argument("--charge", type=int, default=0)
     ap.add_argument("--spin", type=int, default=0, help="2S; > 0 selects UKS (the E8 open-shell path uses the same convention)")
     ap.add_argument("--max-memory", type=int, default=MAX_MEMORY_MB, help="pyscf's max_memory in MB (19 Oct 2026: below a run's memory cap)")
+    ap.add_argument("--reuse-existing", action="store_true",
+                    help="read a functional's saved hessian_<tag>_analytic.npz instead of recomputing it (19 Oct 2026: a retry after a stop)")
     ap.add_argument("--no-apt", action="store_true",
                     help="skip the B3LYP APT from the Hessian's response (closed shell only; on by default since 11 Oct 2026)")
     return ap.parse_args()
@@ -295,7 +304,7 @@ def main():
     a = parse_args()
     rad, ang = (int(v) for v in a.grid.split(","))
     run = LabelsRun(grid=(rad, ang), charge=a.charge, spin=a.spin, compare_only=a.compare_only, apt=not a.no_apt, stamp=software(),
-                    max_memory_mb=a.max_memory)
+                    max_memory_mb=a.max_memory, reuse_existing=a.reuse_existing)
     lib.num_threads(a.threads)
     apt_errors = []
     for d in a.dirs:

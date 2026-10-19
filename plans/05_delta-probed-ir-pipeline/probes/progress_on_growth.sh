@@ -26,8 +26,13 @@ total_bytes() { find "$DIR" -name "$NAME" -type f -printf '%s\n' 2>/dev/null | a
 "$@" &
 job=$!
 last=$(total_bytes)
+step=$(( INTERVAL < 5 ? INTERVAL : 5 ))   # 19 Oct 2026: the command's end is seen within a step, not after a whole interval (a dry run waited 10 min)
 while kill -0 "$job" 2>/dev/null; do
-  sleep "$INTERVAL" & wait $!
+  waited=0
+  while [ "$waited" -lt "$INTERVAL" ] && kill -0 "$job" 2>/dev/null; do
+    sleep "$step" & wait $!
+    waited=$((waited + step))
+  done
   now=$(total_bytes)
   [ "$now" != "$last" ] && say "progress: $NAME under $DIR at $now bytes (+$((now - last)))"
   last=$now

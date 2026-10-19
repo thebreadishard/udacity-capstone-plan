@@ -91,6 +91,20 @@ def test_an_analytic_only_folder_gets_its_imaginary_counts(tmp_path, monkeypatch
     assert json.loads((d / "result.json").read_text()) == {"layer": "A"}
 
 
+def test_reuse_existing_recomputes_only_the_missing_functional(tmp_path, monkeypatch):
+    d = _run(tmp_path, monkeypatch, "--no-apt")
+    b3lyp = (d / "hessian_b3lyp_analytic.npz").read_bytes()
+    (d / "hessian_wb97x_analytic.npz").unlink()
+    _run(tmp_path, monkeypatch, "--no-apt", "--reuse-existing")
+    assert (d / "hessian_b3lyp_analytic.npz").read_bytes() == b3lyp and (d / "hessian_wb97x_analytic.npz").exists()
+    assert set(json.loads((d / "analytic_check.json").read_text())) == {"b3lyp", "wb97x"}
+
+
+def test_reuse_existing_and_compare_only_do_not_combine(tmp_path, monkeypatch):
+    with pytest.raises(ValueError, match="do not combine"):
+        _run(tmp_path, monkeypatch, "--compare-only", "--reuse-existing")
+
+
 def test_pyscfs_own_log_lands_in_the_molecule_folder(tmp_path, monkeypatch):
     d = _run(tmp_path, monkeypatch, "--no-apt")
     log = (d / AH.PYSCF_LOG_NAME).read_text(encoding="utf-8")
