@@ -11,10 +11,11 @@ How pyscf logs (pyscf 2.14, read 19 Oct): `lib/logger.py` writes every line to `
 geometry would wipe the log each time. Here the Mole is given a stream the caller opened once, in append mode, before it is built.
 
 Levels: 4 (INFO) gives one line per SCF cycle. 5 (DEBUG, the default here) adds the timer of every step: each SCF cycle, the partial
-Hessian, the whole Hessian. The CPHF equations inside an analytic Hessian stay silent at every level in pyscf 2.14. `hessian/rhf.py`
-`solve_mo1` calls `cphf.solve` without its logger, so `lib.krylov` runs at the default WARN and its 'krylov cycle' lines never print (water,
-19 Oct: the level-5 log gains two lines for the whole Hessian). That silent stretch is the CPHF part of each Hessian. A one-line upstream
-fix, passing the logger on, is pyscf/pyscf#3530 / PR #3531 (posted 19 Oct; TASKS 79).
+Hessian, the whole Hessian, and in the CPHF stage a 'CPU time for vj and vk' line per Krylov iteration (the response's Coulomb and exchange
+build; acenaphthylene at def2-TZVP, 19 Oct: one every 3–4 min). What stays missing is the Krylov residual itself: `hessian/rhf.py`
+`solve_mo1` calls `cphf.solve` without its logger, so `lib.krylov`'s 'krylov cycle … r = …' lines never print — a heartbeat, but no measure
+of convergence. (A small water test shows no vj/vk lines at all, which first read as 'the CPHF is silent'.) The upstream fix, passing the
+logger on, is pyscf/pyscf#3530 / PR #3531 (posted 19 Oct; TASKS 79).
 """
 from __future__ import annotations
 
