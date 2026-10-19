@@ -28,7 +28,8 @@ echo "[$(t) $NAME] 1. the S1-TZ files under $DEST (git archive of HEAD)"
 ( cd "$PLAN" && git ls-files --error-unmatch "${FILES[@]}" > /dev/null && git diff --quiet HEAD -- "${FILES[@]}" ) \
   || { echo "S1-TZ FILES NOT TRACKED OR NOT COMMITTED — the server runs HEAD"; exit 1; }
 $S "test ! -e $DEST" < /dev/null || { echo "$DEST EXISTS on $NAME — not overwritten"; exit 1; }
-( cd "$PLAN/../.." && git archive --format=tar --prefix=x/ HEAD "${FILES[@]/#/$P/}" ) \
+# -c core.autocrlf=false: on Windows git archive otherwise writes CRLF into the .py files (19 Oct 2026: runspec's sha256 check failed)
+( cd "$PLAN/../.." && git -c core.autocrlf=false archive --format=tar --prefix=x/ HEAD "${FILES[@]/#/$P/}" ) \
   | $S "mkdir -p /root/tmp_s1tz && tar xf - -C /root/tmp_s1tz && mv /root/tmp_s1tz/x/$P $DEST && rm -r /root/tmp_s1tz && find $DEST -type f | wc -l" \
   || { echo "FILES FAILED $NAME"; exit 1; }
 git -C "$PLAN" rev-parse HEAD | $S "cat > $DEST/COMMIT" || exit 1

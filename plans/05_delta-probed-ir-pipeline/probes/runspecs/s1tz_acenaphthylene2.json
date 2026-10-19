@@ -1,0 +1,20 @@
+{"name": "s1tz_acenaphthylene2",
+ "purpose": "TASKS 60: S1-TZ acenaphthylene (A_45187bb7c8) relaunched 19 Oct after its first run ended FAILED at the reference Hessian ('SCF not converged': pyscf_hessians_for_qff.py lacked the DIIS fallback, now probes/scf_converge.py). Fresh code folder /root/dpir_s1tz_d (naphthalene runs from /root/dpir_s1tz); the optimised stub in /root/s1tz_acenaphthylene is kept, so the run starts at the reference Hessian. MAX_FIRST 7400 s = 1.5 × the price, as registered for the first run",
+ "host": "s1",
+ "workdir": "/root/dpir_s1tz_d",
+ "command": "MAX_FIRST=7400 bash probes/s1tz_run.sh S1TZC probes/results_m1/s1tz_2026-10-18/ids_acenaphthylene.tsv /root/s1tz_acenaphthylene 1 5",
+ "sources": [
+  {"local": "probes/s1tz_run.sh", "remote": "/root/dpir_s1tz_d/probes/s1tz_run.sh"},
+  {"local": "probes/progress_on_growth.sh", "remote": "/root/dpir_s1tz_d/probes/progress_on_growth.sh"},
+  {"local": "probes/pyscf_hessians_for_qff.py", "remote": "/root/dpir_s1tz_d/probes/pyscf_hessians_for_qff.py"},
+  {"local": "probes/scf_converge.py", "remote": "/root/dpir_s1tz_d/probes/scf_converge.py"},
+  {"local": "probes/library_log.py", "remote": "/root/dpir_s1tz_d/probes/library_log.py"},
+  {"local": "probes/s1_anharmonic_level.py", "remote": "/root/dpir_s1tz_d/probes/s1_anharmonic_level.py"},
+  {"local": "probes/results_m1/s1tz_2026-10-18/ids_acenaphthylene.tsv", "remote": "/root/dpir_s1tz_d/probes/results_m1/s1tz_2026-10-18/ids_acenaphthylene.tsv"}
+ ],
+ "progress": {"regex": "^=== \\(S1TZC\\) progress: |^=== \\(S2\\) [A-Za-z0-9_]+: (done|NOISY)", "max_gap_minutes": 120},
+ "marker_regex": "^=== \\(S2\\) |^=== \\(S1TZC\\) command ended",
+ "end_regex": "^=== \\(S2\\) all done: 1 force fields",
+ "dry_run_args": "--dry-run",
+ "threads": 5,
+ "estimate": {"hours": 150, "basis": "109 Hessians × ≈ 4,900 s at 5 threads: benzene's measured T/G factor 5.1 (572 / 112 s) × acenaphthylene's measured G time 967 s"}}
