@@ -13,6 +13,18 @@ def test_psi4_scratch_names_are_excluded():
     assert not B.PSI4_SCRATCH.match("psi4_worker.py") and not B.PSI4_SCRATCH.match("psi4.out")
 
 
+def test_psi4_logs_stay_out_of_every_source_that_can_hold_them(tmp_path, monkeypatch):
+    """19 Oct 2026: a server's full fetch under probes/results_m1 brought 2.8 GB of psi4 logs, past GitHub's 2 GB push limit."""
+    excluded = dict(B.SOURCES)
+    assert excluded["probes/results_m1"] == B.PSI4_LOGS and excluded[f"{B.M05}/corpus/molecules"] == B.PSI4_LOGS
+    run = tmp_path / "plan" / "probes" / "results_m1" / "box" / "mol"
+    run.mkdir(parents=True)
+    for name in ("psi4.out", "worker_stdout.txt", "result.json"):
+        (run / name).write_text("x")
+    monkeypatch.setattr(B, "PLAN", tmp_path / "plan")
+    assert [p.name for p in B.iter_files("probes/results_m1", excluded["probes/results_m1"])] == ["result.json"]
+
+
 def test_a_file_that_vanishes_during_the_plan_is_skipped(tmp_path, monkeypatch):
     src = tmp_path / "plan" / "data"
     src.mkdir(parents=True)

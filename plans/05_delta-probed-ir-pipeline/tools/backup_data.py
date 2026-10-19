@@ -9,7 +9,8 @@ What is mirrored (relative to the plan directory), and what is not:
   modules/05_support_predictor/data/corpus_release/, data/second_route/, data/e9/
   modules/05_support_predictor/out/                 run records incl. the *.pt checkpoints the code repo ignores
   modules/standout_pattern_proposer/out/
-  probes/results_m1/                                (small; also in the code repo, kept here so the data repo stands alone)
+  probes/results_m1/                                (also in the code repo, kept here so the data repo stands alone); psi4.out and
+                                                    worker_stdout.txt excluded since 19 Oct 2026 (a server's full fetch, 2.8 GB of them)
 Not mirrored: data/hessian_qm9 (8 GB, re-downloadable), notebook logs, anything under the scratchpad.
 
 Files are copied when size or mtime differ; nothing is deleted in the mirror. Then one commit in the mirror with the clock's stamp and, unless
@@ -29,16 +30,17 @@ from pathlib import Path
 
 PLAN = Path(__file__).resolve().parents[1]
 M05 = "modules/05_support_predictor"
+PSI4_LOGS = frozenset({"psi4.out", "worker_stdout.txt"})    # GB-scale and reproducible: they stay on the laptop until the PC
 SOURCES = [                                                   # (relative dir, excluded file names)
-    (f"{M05}/corpus/molecules", {"psi4.out", "worker_stdout.txt"}),
+    (f"{M05}/corpus/molecules", PSI4_LOGS),
     (f"{M05}/data/corpus_release", set()),
     (f"{M05}/data/second_route", set()),
     (f"{M05}/data/e9", set()),
     (f"{M05}/out", set()),
     ("modules/standout_pattern_proposer/out", set()),
-    ("probes/results_m1", set()),
+    ("probes/results_m1", PSI4_LOGS),                           # 19 Oct 2026: the pool 3 box's full fetch brought 555 of them
 ]
-SOURCES += [(f"{M05}/corpus/{p.name}", {"psi4.out", "worker_stdout.txt"})          # TASKS 43 (1), 10 Oct 2026: found at run time, so a new shard
+SOURCES += [(f"{M05}/corpus/{p.name}", PSI4_LOGS)          # TASKS 43 (1), 10 Oct 2026: found at run time, so a new shard
             for p in sorted((PLAN / M05 / "corpus").glob("shards_*")) if p.is_dir()]   # folder is mirrored without an edit here
 SINGLE_FILES = [f"{M05}/corpus/manifest.csv", f"{M05}/corpus/ledger.csv", f"{M05}/corpus/STATUS.md"]
 EXCLUDED_SUFFIXES = {".tmp", ".lock", ".pid"}
