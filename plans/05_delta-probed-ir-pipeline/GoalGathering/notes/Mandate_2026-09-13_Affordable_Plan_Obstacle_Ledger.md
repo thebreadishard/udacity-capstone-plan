@@ -78,7 +78,7 @@ Whenever the machine is busy or the user is away, the next item is the cheapest 
   the rehearsal also three models), beside the set-three read (~1.5 GB) and the cation run (cap 8.2 GB in WSL). Windows ran out of
   commit memory: the read's step RA_k4_s3_seed1 failed ('DefaultCPUAllocator: not enough memory'), and the cation run's wsl.exe
   connection was closed (`Wsl/Service/0x80072746`) during P3c_1519881f69's ωB97X Hessian — about two hours lost; its B3LYP analytic
-  Hessian (19:34) is kept and is reused on a retry. **Repair:** the read relaunched 19:52 through its run spec (21 done steps skipped,
+  Hessian (19:34) is kept and is reused on a retry. **Repair:** the read relaunched 19:52 through its run spec (20 done steps skipped,
   the failed one recomputed); the cation run had already moved on to molecule 6 of 30. **Guard (4e1f5c44):** a pin that loads the
   corpus first checks the committable memory and skips with the numbers below 6 GB (19:5x: 3.0 GB was free beside the two jobs) — also
   for the nightly suite at 03:30, which runs beside the cation run. **Lesson:** a test that loads the corpus is a run for the memory
