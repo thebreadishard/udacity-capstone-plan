@@ -73,6 +73,12 @@ Whenever the machine is busy or the user is away, the next item is the cheapest 
 
 ## 6. Log
 
+- **20 Oct, 12:4x — azulene's composite: a symmetry spread a hundred times the others', checked before promotion, immaterial.** The build
+  reported the MP2 rows' symmetry spread at 1.9e-3 / 1.7e-3 a.u. (quinoline 2.5e-5), a third of the basis step's rms (5.7e-3). Cause known
+  since 14 Oct: azulene's corpus geometry is C2v only to 2.6e-3 bohr, so the true rows are not exactly symmetric and the reconstruction
+  averages them. `probes/composite_step_symmetry.py`: the asymmetry largely cancels in the step (spread 1.6e-4); building the step from the
+  first image instead of the average changes the matrix by up to 7.9e-5 a.u. and the composite's frequencies by at most 3.0e-5 cm⁻¹
+  (quinoline: step spread 2.0e-5). Promoted: VALID, lowest 151/162 cm⁻¹ (DZ 74/97, B3LYP 167/173); 10 carried.
 - **20 Oct, 08:2x — anchor set three's final read is built before its data (the user, 07:4x: 'kies één bureau-taak die de kansen van het
   project enorm helpt').** The five new anchors are the last CC anchors before July 2027 (decision 63), and their read had no code:
   `rungC_cc_transfer.py` could only hold every anchor out in turn. Added `--held` and `--oop-fit-sizes` (with neither, the pinned record is

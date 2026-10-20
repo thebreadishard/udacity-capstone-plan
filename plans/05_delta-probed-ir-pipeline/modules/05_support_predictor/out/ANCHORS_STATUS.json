@@ -260,6 +260,19 @@
    "checks": "MP2 row symmetry spread 3.0e-05 / 3.0e-05; basis step rms 6.3e-03; softest 165, 180 cm⁻¹",
    "note": "chain 33c promotion rule: VALID",
    "sha16": "b4974d9e52c771d9"
+  },
+  {
+   "mol_id": "A_d9139359ab",
+   "name": "azulene",
+   "path": "probes/results_m1/dfmp2_anchors_2026-10-20/composite_azulene.npz",
+   "level": "CCSD(T)/cc-pVDZ + [DF-MP2 psi4 1.10.2 (cc-pvtz-jkfit / cc-pvtz-ri, frozen 10): cc-pVTZ − cc-pVDZ]",
+   "tier": "TZ",
+   "kind": "composite",
+   "status": "carried",
+   "date": "2026-10-20",
+   "checks": "MP2 row symmetry spread 1.9e-03 / 1.7e-03; basis step rms 5.7e-03; softest 151, 162 cm⁻¹",
+   "note": "chain 33c promotion rule: VALID",
+   "sha16": "0a183c6e28fd4bf8"
   }
  ]
 }
