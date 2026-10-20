@@ -14,11 +14,12 @@ def test_switch_plumbing_and_two_route_check():
     text = SRC.read_text(encoding="utf-8")
     tree = ast.parse(text)
     grad = next(n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == "gradient")
-    names = [a.arg for a in grad.args.args]
-    assert names[-2:] == ["fast", "check_fast"]
+    assert [a.arg for a in grad.args.args][-1] == "check_fast" and "    fast: Any = None" in text      # the kernel rides in CCSettings
     assert re.search(r'add_argument\("--fast-t-density", action="store_true"', text)
     assert 'raise SystemExit("--fast-t-density and --fast-t-lambda are RHF only' in text
-    assert text.index("fast.install()") < text.index('log(f"E8 FD Hessian:')                 # installed before the first gradient
+    assert "fast.install()" in text[text.index("def load_fast("):text.index("def resolve_frozen(")]
+    run = text[text.index("def run(a, log: RunLog)"):]
+    assert run.index("fast = load_fast(a)") < run.index("log(header(job, derived))")       # installed before the header and the first gradient
     assert "check_fast=True)" in text and text.count("check_fast=True") == 1                 # the reference gradient only
     assert "fast.check_against_pyscf(" in text and "FAST_T_LIMIT = 1e-10" in text
     assert "refusing to continue" in text

@@ -73,6 +73,16 @@ Whenever the machine is busy or the user is away, the next item is the cheapest 
 
 ## 6. Log
 
+- **20 Oct, 19:1x — clean code round 2: the CC Hessian probe (TASKS 81; the user, 18:3x: 'toestemming om dit plan te beginnen').** Pins
+  first: e8_cc_hessian_fd in WSL on water (symmetry, plain, C kernels, separate then only, partial then energy route, UHF H2O+, two
+  refusals; every file and exit code; gate 1 bypassed in a runner), e8_cc_locality and e8_between_extension on Windows with stored DFT
+  Hessians in place of pyscf. Refactor in a worktree: main of ~185 lines split into the run's steps, one CCSettings instead of ten
+  arguments, every gradient/energy/record written atomically (a run stopped mid-write left a half .npy for the resume to load), the
+  between-branch's copies of the DFT step and of the primitives replaced by the locality module's. All pins bit-identical. **Two misses
+  after the merge, both caught by checks:** the gate-1 test still read `E.AMU2AU` (gate 1 failed with AttributeError; fixed, gate 1 PASS:
+  dipole vs finite field 7.6e-8, UHF gradient vs energy FD 1.5e-7) and five source-reading tests looked for the old lines (updated to the
+  same facts, their shared exec in `tests/e8_source.py`). Lesson: after a refactor of a file with source-reading tests, run every test that
+  names the file before the merge, not after — the grep that finds them is now the step before each merge.
 - **20 Oct, 17:4x — clean code for the anchor pipeline, round 1 (the user: clean, reusable code for what every anchor goes through;
   one-off code only where transparency needs it; no duplication; no junk in the trunk).** Pins first (b62d9e6e: build ×2, read, repair-oop,
   planeframe, merge on real inputs; 8ff77dba in WSL: the basis check twice and compute on water), then in a worktree branch:

@@ -7,11 +7,8 @@ SRC = PLAN / "probes" / "e8_cc_hessian_fd.py"
 
 def _guard_namespace():
     """The guard functions, read from the source without importing pyscf (the laptop has no qc env for it)."""
-    import numpy as np
-    ns = {"np": np}
-    text = SRC.read_text(encoding="utf-8")
-    exec(text[text.index("CORE_ORBITALS = {"): text.index("def gradient(")], ns)
-    return ns
+    from e8_source import pure_helpers
+    return pure_helpers()
 
 
 def _core_orbital_count(symbols):

@@ -13,13 +13,14 @@ CHAIN = PLAN / "probes" / "run_anchors_hel23_parallel.sh"
 def test_max_memory_switch_default_and_plumbing():
     text = SRC.read_text(encoding="utf-8")
     tree = ast.parse(text)
-    grad = next(n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == "gradient")
-    names = [a.arg for a in grad.args.args]
-    defaults = dict(zip(names[-len(grad.args.defaults):], [getattr(d, "value", d) for d in grad.args.defaults], strict=True))
+    settings = next(n for n in tree.body if isinstance(n, ast.ClassDef) and n.name == "CCSettings")
+    defaults = {s.target.id: getattr(s.value, "value", None) for s in settings.body if isinstance(s, ast.AnnAssign)}
     assert defaults["max_memory"] == 26000
     assert re.search(r'add_argument\("--max-memory", type=int, default=26000', text)
-    assert re.search(r"gto\.M\([^\n]*max_memory=max_memory", text) and "max_memory=26000)" not in text   # the hard-coded value is gone from gto.M
-    assert text.count("a.charge, a.spin, a.max_memory, fast") == 3   # reference, the separate two-route check (2 Oct 2026), displaced gradients
+    assert "max_memory=s.max_memory, charge=s.charge, spin=s.spin)" in text      # gto.M is built from it; no hard-coded value
+    assert text.count("CCSettings(a.basis, frozen, a.charge, a.spin, a.max_memory, fast)") == 1     # one settings object for the run …
+    assert text.count("gradient(job.symbols, ") == 3 and text.count(", job.s, job.log") == 3    # … passed to the reference, the separate
+    #                                                                                               two-route check (2 Oct 2026) and the displaced gradients
 
 
 def test_parallel_chain_parses_and_fails_fast():

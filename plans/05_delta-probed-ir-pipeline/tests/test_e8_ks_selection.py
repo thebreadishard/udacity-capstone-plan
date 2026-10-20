@@ -7,11 +7,8 @@ SRC = PLAN / "probes" / "e8_cc_hessian_fd.py"
 
 
 def _select():
-    import numpy as np
-    ns = {"np": np}
-    text = SRC.read_text(encoding="utf-8")
-    exec(text[text.index("CORE_ORBITALS = {"): text.index("def gradient(")], ns)   # no pyscf on the laptop; the helpers are read from the source
-    return ns["select_displacements"]
+    from e8_source import pure_helpers  # no pyscf on the laptop; the helpers are read from the source
+    return pure_helpers()["select_displacements"]
 
 
 def test_empty_spec_keeps_the_whole_list():

@@ -13,9 +13,11 @@ FAST = PLAN / "probes" / "t_density_kernel" / "t_density_fast.py"
 def test_switch_and_install_order():
     text = SRC.read_text(encoding="utf-8")
     assert re.search(r'add_argument\("--fast-t-lambda", action="store_true"', text)
-    assert "if a.fast_t_density or a.fast_t_lambda:" in text
+    assert "if not (a.fast_t_density or a.fast_t_lambda):" in text
     assert "--fast-t-density and --fast-t-lambda are RHF only" in text
-    assert text.index("fast.install_lambda()") < text.index('log(f"E8 FD Hessian:')
+    assert "fast.install_lambda()" in text[text.index("def load_fast("):text.index("def resolve_frozen(")]
+    run = text[text.index("def run(a, log: RunLog)"):]
+    assert run.index("fast = load_fast(a)") < run.index("log(header(job, derived))")       # installed before the header and the first gradient
     assert "gate1_problem(a.fast_t_density, a.spin > 0, a.fast_t_lambda)" in text
     assert "the stamp does not cover the (T) lambda C kernel" in text
 
@@ -25,8 +27,8 @@ def test_two_route_check_before_the_lambda_solve():
     check = text.index("fast.check_lambda_against_pyscf(mycc, mycc.t1, mycc.t2, eris)")
     solve = text.index("conv, l1, l2 = ccsd_t_lambda.kernel(mycc, eris, mycc.t1, mycc.t2, tol=LAMBDA_TOL)")
     assert check < solve
-    assert "if fast is not None and check_fast and fast.lambda_installed():" in text
-    assert "if fast is not None and check_fast and fast.density_installed():" in text
+    assert "fast = s.fast if check_fast else None" in text                         # the checks run on the reference gradient only
+    assert "if fast is not None and fast.lambda_installed():" in text and "if fast is not None and fast.density_installed():" in text
     assert "the fast (T) lambda kernel disagrees with pyscf on the reference gradient — refusing to continue" in text
 
 
