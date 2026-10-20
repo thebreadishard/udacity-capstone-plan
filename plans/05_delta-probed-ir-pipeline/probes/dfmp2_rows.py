@@ -5,6 +5,9 @@
          same file format (cc_composite_full_check.assemble reads it unchanged). Resumable: the file is rewritten after every row, and rows
          already in it are skipped.
              python probes/dfmp2_rows.py rows --like <conventional.npz> --symbols-from <corpus geometry.json> --out <df.npz>
+         or, for a molecule without a conventional file, planned from the geometry itself as cc_composite_full_check.compute plans it
+         (its symmetry-unique displacements, frozen core by the element rule, the anchors' step 0.005 bohr, spherical functions):
+             python probes/dfmp2_rows.py rows --geometry <corpus geometry.json> --basis cc-pvtz --out <df.npz>
   water  check W: the analytic DF-MP2 gradient (frozen 1s) against 5-point finite differences of the DF-MP2 energy, cc-pVDZ and cc-pVTZ, at
          a stretched water; line max |Δg| ≤ 1e-6 Eh/bohr on both. Exit 1 when it fails.
              python probes/dfmp2_rows.py water --out <result.json>
@@ -26,12 +29,15 @@ from typing import Any
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import e8_symmetry as SYM
+from cc_composite_full_check import CORE, load_geometry
 from dfmp2_swap_check import check_same_molecule
 
 WATER_LINE = 1e-6                     # Eh/bohr, check W
 WATER_BASES = ("cc-pvdz", "cc-pvtz")
 WATER = (("O", (0.0, 0.0, -0.13)), ("H", (0.0, 1.52, 1.07)), ("H", (0.0, -1.43, 0.98)))   # bohr; stretched and asymmetric on purpose
 CONVERGENCE = 1e-10
+ANCHOR_STEP = 0.005                   # bohr: the composite rows' step since 7 Oct (probes/results_m1/composite_rows_2026-10-07)
 
 
 @dataclass(frozen=True)
@@ -74,43 +80,66 @@ def central_row(g_plus: np.ndarray, g_minus: np.ndarray, step: float) -> np.ndar
     return (np.asarray(g_plus) - np.asarray(g_minus)) / (2 * step)
 
 
-def like_settings(like: dict[str, np.ndarray]) -> tuple[list[int], np.ndarray, float, str, int, bool]:
-    return ([int(k) for k in like["ks"]], np.asarray(like["coords_bohr"], float), float(like["step"]), str(like["basis"]), int(like["frozen"]),
-            bool(like["cart"]))
+@dataclass(frozen=True)
+class RowsPlan:
+    """What a row file holds besides its rows: where, which displacements, and at which level."""
+    source: str
+    symbols: tuple[str, ...]
+    coords_bohr: np.ndarray
+    ks: tuple[int, ...]
+    reps: tuple[int, ...]
+    step: float
+    basis: str
+    frozen: int
+    cart: bool
 
 
-def save_rows(out: Path, like: dict[str, np.ndarray], rows: dict[int, np.ndarray], method: str) -> None:
-    """The conventional file's keys with this route's rows, through a temp file moved over the target."""
+def plan_from_like(like_path: str, symbols_from: str) -> RowsPlan:
+    """The settings of an existing conventional row file; the corpus geometry gives the symbols and must be the same molecule."""
+    like = np.load(like_path)
+    x0 = np.asarray(like["coords_bohr"], float)
+    geometry = json.loads(Path(symbols_from).read_text(encoding="utf-8"))
+    check_same_molecule(x0, np.asarray(geometry["coords_bohr"], float))
+    return RowsPlan(like_path, tuple(s.capitalize() for s in geometry["symbols"]), x0, tuple(int(k) for k in like["ks"]),
+                    tuple(int(r) for r in like["reps"]), float(like["step"]), str(like["basis"]), int(like["frozen"]), bool(like["cart"]))
+
+
+def plan_from_geometry(geometry_path: str, basis: str, step: float = ANCHOR_STEP) -> RowsPlan:
+    """The rows cc_composite_full_check.compute would plan: the geometry's symmetry-unique displacements, frozen core by the element rule."""
+    symbols, x0, _ = load_geometry(Path(geometry_path))
+    ks, reps = SYM.unique_displacements(SYM.point_group_ops(symbols, x0), len(symbols))
+    return RowsPlan(geometry_path, tuple(symbols), x0, tuple(int(k) for k in ks), tuple(int(r) for r in reps), step, basis,
+                    sum(CORE[s] for s in symbols), False)
+
+
+def save_rows(out: Path, plan: RowsPlan, rows: dict[int, np.ndarray], method: str) -> None:
+    """The conventional files' keys with this route's rows, through a temp file moved over the target."""
     tmp = out.with_name(out.name + ".tmp.npz")
-    np.savez(tmp, ks=like["ks"], reps=like["reps"], step=like["step"], basis=like["basis"], frozen=like["frozen"], cart=like["cart"],
-             coords_bohr=like["coords_bohr"], method=method, **{f"row_{k:02d}": v for k, v in sorted(rows.items())})
+    np.savez(tmp, ks=np.array(plan.ks), reps=np.array(plan.reps), step=plan.step, basis=plan.basis, frozen=plan.frozen, cart=plan.cart,
+             coords_bohr=plan.coords_bohr, method=method, **{f"row_{k:02d}": v for k, v in sorted(rows.items())})
     os.replace(tmp, out)
 
 
 def run_rows(a: argparse.Namespace) -> int:
     import psi4
-    like = dict(np.load(a.like))
-    ks, x0, step, basis, frozen, cart = like_settings(like)
-    geometry = json.loads(Path(a.symbols_from).read_text(encoding="utf-8"))
-    check_same_molecule(x0, np.asarray(geometry["coords_bohr"], float))
-    symbols = [s.capitalize() for s in geometry["symbols"]]
+    plan = plan_from_like(a.like, a.symbols_from) if a.like else plan_from_geometry(a.geometry, a.basis)
     out = Path(a.out)
     rows = {int(k[4:]): v for k, v in np.load(out).items() if k.startswith("row_")} if out.exists() else {}
-    configure(psi4, Level(basis, frozen, cart, a.threads, a.memory_gb), out.with_suffix(".psi4.log"))
-    method = f"DF-MP2 psi4 {psi4.__version__} ({basis}-jkfit / {basis}-ri, frozen {frozen})"
-    print(f"[{time.strftime('%H:%M:%S')}] {len(ks)} rows of {a.like} at {basis}, {len(rows)} already done", flush=True)
-    for k in ks:
+    configure(psi4, Level(plan.basis, plan.frozen, plan.cart, a.threads, a.memory_gb), out.with_suffix(".psi4.log"))
+    method = f"DF-MP2 psi4 {psi4.__version__} ({plan.basis}-jkfit / {plan.basis}-ri, frozen {plan.frozen})"
+    print(f"[{time.strftime('%H:%M:%S')}] {len(plan.ks)} rows of {plan.source} at {plan.basis}, {len(rows)} already done", flush=True)
+    for k in plan.ks:
         if k in rows:
             continue
         t0 = time.time()
         g = []
         for sign in (+1, -1):
-            x = x0.ravel().copy()
-            x[k] += sign * step
-            g.append(gradient(psi4, symbols, x))
-        rows[k] = central_row(g[0], g[1], step)
-        save_rows(out, like, rows, method)
-        print(f"[{time.strftime('%H:%M:%S')}] df-mp2 {basis} k={k}: H_kk {rows[k][k]:+.6f} ({time.time() - t0:.0f} s)", flush=True)
+            x = plan.coords_bohr.ravel().copy()
+            x[k] += sign * plan.step
+            g.append(gradient(psi4, list(plan.symbols), x))
+        rows[k] = central_row(g[0], g[1], plan.step)
+        save_rows(out, plan, rows, method)
+        print(f"[{time.strftime('%H:%M:%S')}] df-mp2 {plan.basis} k={k}: H_kk {rows[k][k]:+.6f} ({time.time() - t0:.0f} s)", flush=True)
     print(f"=== DF ROWS DONE {out} ({len(rows)} rows)", flush=True)
     return 0
 
@@ -138,8 +167,11 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     sub = ap.add_subparsers(dest="mode", required=True)
     rows = sub.add_parser("rows")
-    rows.add_argument("--like", required=True)
-    rows.add_argument("--symbols-from", required=True)
+    source = rows.add_mutually_exclusive_group(required=True)
+    source.add_argument("--like", help="a conventional row file whose settings are copied (needs --symbols-from)")
+    source.add_argument("--geometry", help="a corpus geometry.json whose own symmetry plans the rows (needs --basis)")
+    rows.add_argument("--symbols-from")
+    rows.add_argument("--basis")
     rows.add_argument("--out", required=True)
     water = sub.add_parser("water")
     water.add_argument("--out", required=True)
@@ -147,6 +179,10 @@ def main(argv: list[str] | None = None) -> int:
         p.add_argument("--threads", type=int, default=6)
         p.add_argument("--memory-gb", type=float, default=4.0)
     a = ap.parse_args(argv)
+    if a.mode == "rows" and a.like and (a.basis or not a.symbols_from):
+        ap.error("--like takes its basis from the file and needs --symbols-from")
+    if a.mode == "rows" and a.geometry and (a.symbols_from or not a.basis):
+        ap.error("--geometry needs --basis and takes its symbols from the geometry")
     return run_rows(a) if a.mode == "rows" else run_water(a)
 
 

@@ -1,6 +1,8 @@
 """probes/dfmp2_rows.py without psi4: a stand-in psi4 returns the exact gradient of a quadratic energy, so the central rows must give its
 Hessian to round-off; the conventional file's settings are taken over, the output has its format, an interrupted run resumes without
-recomputing a row, the psi4 options name the fitting bases and the frozen count, and a corpus geometry of another molecule is refused."""
+recomputing a row, the psi4 options name the fitting bases and the frozen count, and a corpus geometry of another molecule is refused.
+The geometry mode: pyridine's plan from its corpus geometry equals its 7 Oct conventional file's (the registered check), the mode runs end to
+end on a symmetric water, and options that do not combine are refused."""
 import json
 import sys
 import types
@@ -84,6 +86,49 @@ def test_another_molecule_is_refused(tmp_path, monkeypatch):
     geom.write_text(json.dumps({"symbols": ["o", "h", "h"], "coords_bohr": (X0 * 1.1).tolist()}), encoding="utf-8")
     with pytest.raises(SystemExit, match="same atom order"):
         R.main(["rows", "--like", str(like), "--symbols-from", str(geom), "--out", str(out)])
+
+
+PLAN = Path(__file__).resolve().parents[1]
+PYRIDINE_GEOMETRY = PLAN / "modules/05_support_predictor/corpus/molecules/A_6e858b26e5/geometry.json"
+PYRIDINE_ROWS = PLAN / "probes/results_m1/composite_rows_2026-10-07/mp2_rows_pyridine_ccpvdz.npz"
+
+
+@pytest.mark.skipif(not (PYRIDINE_GEOMETRY.is_file() and PYRIDINE_ROWS.is_file()), reason="needs the git-ignored corpus and the 7 Oct rows")
+def test_the_geometry_mode_plans_pyridine_as_its_conventional_file():
+    g = R.plan_from_geometry(str(PYRIDINE_GEOMETRY), "cc-pvdz")
+    c = R.plan_from_like(str(PYRIDINE_ROWS), str(PYRIDINE_GEOMETRY))
+    assert (g.ks, g.reps, g.step, g.frozen, g.cart, g.basis, g.symbols) == (c.ks, c.reps, c.step, c.frozen, c.cart, c.basis, c.symbols)
+    assert np.array_equal(g.coords_bohr, c.coords_bohr)
+
+
+def test_the_geometry_mode_runs_on_a_symmetric_water(tmp_path, monkeypatch):
+    water = np.array([[0.0, 0.0, -0.12], [0.0, 1.43, 0.98], [0.0, -1.43, 0.98]])
+    geom = tmp_path / "geometry.json"
+    geom.write_text(json.dumps({"symbols": ["o", "h", "h"], "coords_bohr": water.tolist(), "masses_amu": [15.995, 1.008, 1.008]}),
+                    encoding="utf-8")
+    fake = FakePsi4()
+    monkeypatch.setitem(sys.modules, "psi4", fake)
+    monkeypatch.setattr(sys.modules[__name__], "X0", water)
+    out = tmp_path / "df.npz"
+    assert R.main(["rows", "--geometry", str(geom), "--basis", "cc-pvtz", "--out", str(out)]) == 0
+    z = np.load(out)
+    ks = [int(k) for k in z["ks"]]
+    assert 0 < len(ks) < 9 and int(z["frozen"]) == 1 and float(z["step"]) == R.ANCHOR_STEP and str(z["basis"]) == "cc-pvtz"
+    for k in ks:
+        assert np.allclose(z[f"row_{k:02d}"], H_TRUE[k], atol=1e-12)
+    assert fake.options["df_basis_mp2"] == "cc-pvtz-ri"
+
+
+@pytest.mark.parametrize("args", [
+    ["--like", "a.npz", "--symbols-from", "g.json", "--basis", "cc-pvtz"],     # the file names its basis
+    ["--like", "a.npz"],                                                          # no symbols
+    ["--geometry", "g.json"],                                                     # no basis
+    ["--geometry", "g.json", "--basis", "cc-pvtz", "--symbols-from", "g.json"],   # symbols come from the geometry
+    ["--like", "a.npz", "--geometry", "g.json", "--basis", "cc-pvtz"],           # one source only
+])
+def test_options_that_do_not_combine_are_refused(args):
+    with pytest.raises(SystemExit):
+        R.main(["rows", *args, "--out", "x.npz"])
 
 
 def test_a_level_out_of_range_is_refused():
