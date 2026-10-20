@@ -73,6 +73,11 @@ Whenever the machine is busy or the user is away, the next item is the cheapest 
 
 ## 6. Log
 
+- **20 Oct, 23:58 — anchor set three's final read (registration 'Outcome').** R-A flat: CH-oop (λ = 1, original six) 14.06 → 13.69 cm⁻¹ with
+  five more anchors (−2.6 %, < 5 %, not still learning) — anchors at this count are not the lever for the out-of-plane block; registered
+  consequence: the structural change. R-B fails (0 of 3 below the zero rule, flat): the λ question stands; registered consequence: a chain
+  re-choosing λ on frequencies and intensities. Arm M between: −28.6 % CH-oop and −37.5 % 'other' on the new anchors, but intensities at or
+  below λ = 1 on 2 of 5 (B3LYP's mode shapes kept). Arm C not adopted (2 of 5). Both next steps are put to the user before registering.
 - **20 Oct, 19:47 — INCIDENT, mine: two running jobs damaged by tests I ran by hand (the user's rule of 18 Oct: 'Schaadt geen lopende run').**
   After round 3 I ran the pins of the rehearsal and of test 2's read from the main checkout; each loads the whole corpus (and torch,
   the rehearsal also three models), beside the set-three read (~1.5 GB) and the cation run (cap 8.2 GB in WSL). Windows ran out of

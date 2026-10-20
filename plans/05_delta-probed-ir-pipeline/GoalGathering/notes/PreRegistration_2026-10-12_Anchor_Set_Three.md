@@ -321,3 +321,41 @@ a failed and a pending promotion; each line moved slightly makes a test fail). W
 ## Outcome
 
 *(appended after the reads)*
+
+### 20 Oct 2026, 23:58 — the final read (waves 1–2)
+
+`python probes/anchor_set3_read.py read modules/05_support_predictor/out/anchor_set3_2026-10-20` → `read_set3.{json,md}` there (records
+gitignored, mirrored to capstone-data). All five new anchors carried, none left the read; 39 runs (S3R ended 23:44, 38 + the first;
+one step failed for lack of memory at 19:47 and was recomputed). Standard errors over subsets × seeds; n per point in brackets.
+
+**R-A — flat: anchors at this count are not the lever for the out-of-plane block.** CH-oop, λ = 1, mean over the original six:
+k_s 0: 14.06 ± 0.29 (3); 2: 13.86 ± 0.11 (15); 4: 13.73 ± 0.11 (15); all (5): 13.69 ± 0.28 (3) — 2.6 % lower at 'all', below the 5 % line,
+and not still learning (the last step, 13.73 → 13.69, is inside twice the combined error). The registered consequence: the structural change
+(block-wise treatment of the couplings) is registered next. 'other' (λ = 1) 13.52 → 13.69, no line. Beside it, λ = 0: CH-oop 10.65 → 10.43,
+'other' 10.01 → 11.58 (rising with every step), no line. Per original anchor (λ = 1, k_s 0 → 5, exploratory): naphthalene 19.95 → 17.54,
+anthracene 22.03 → 19.63, benzonitrile 10.00 → 9.54; benzene 12.56 → 13.55, pyridine 10.95 → 12.65, fluorobenzene 8.85 → 9.24 — the two
+fused-ring originals gain, the one-ring ones lose; six anchors, so a pattern to test, not a finding.
+
+**R-B — fails, flat: the λ question stands.** Matched intensity rel. rms, λ = 1 against the zero rule at 'all': pyridine 0.309 / 0.262,
+fluorobenzene 0.170 / 0.104, benzonitrile 0.521 / 0.258 — below on 0 of 3 (line: 2 of 3); the mean of the three along k_s 0.31, 0.32,
+0.33, 0.33 (not falling). The registered consequence: a chain to re-choose λ on frequencies and intensities together is registered.
+
+**Arm M — between, noted.** On the five new anchors' folds (ten training anchors each): CH-oop 28.6 % below λ = 1's 10.60 cm⁻¹ (line ≥ 20 %:
+met); 'other' 37.5 % *below* λ = 1's (line ≤ +10 %: met); matched intensity at or below λ = 1 on 2 of 5 (line: two thirds: not met) —
+acenaphthylene 1.816 / 1.143, quinoxaline 0.064 / 0.061, azulene 0.280 / 0.276 above; isoquinoline 0.158 / 0.159, quinoline 0.148 / 0.249
+at or below. Along k_t (the shift model fitted on 4, 8, all 10 anchors): 7.44 ± 0.12, 7.61 ± 0.11, 7.57 ± 0.15 — flat: three parameters
+are fitted as well from four anchors as from ten. Not adopted; R-B failed, so the variant of 'R-B passes' does not apply.
+
+**Arm C — read (R-B failed, arm M not adopted): not adopted.** Intensity below λ = 1 on 2 of 5 (line: two thirds); CH-oop 10.52 against
+10.60 (within 1.0: met). Arm C's and arm M's intensities are identical anchor by anchor — expected: both change only the diagonal of the
+out-of-plane block in the low level's mode basis, so both keep B3LYP's out-of-plane mode shapes, and the matched intensities follow the
+shapes; they differ only in frequencies.
+
+**New anchors' own intensities (reported, no line):** λ = 1 against the zero rule — acenaphthylene 1.143 / 1.819, quinoxaline 0.061 /
+0.060, isoquinoline 0.159 / 0.173, azulene 0.276 / 0.164, quinoline 0.249 / 0.151.
+
+**What it says, within its size (6 + 5 anchors).** More anchors of this kind do not move the network's out-of-plane frequencies on the
+original six, and the network's mode shapes stay worse than B3LYP's on the low-symmetry anchors. The out-of-plane frequencies respond to a
+three-parameter shift model (−29 % CH-oop, −38 % 'other' on the new anchors) but that model keeps B3LYP's shapes, which cost intensity on
+three of five. Both registered next steps (the structural change; the λ re-choice on frequencies and intensities together) are desk work on
+existing data — no new CC anchors (decision 63). They are put to the user before anything is registered or run.
