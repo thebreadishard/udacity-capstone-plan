@@ -1,0 +1,9 @@
+{"name": "anchor_set3_first", "purpose": "TASKS 51: anchor set three's final read, the first run alone (R-A k_s = 0, seed 0, the 10 Oct read on today's code with the low-symmetry CC APTs); its time and peak memory are stated in the ledger before the rest run (registration, amendment of 14 Oct and read-script note of 20 Oct)",
+ "host": "laptop", "workdir": "probes/results_m1", "command": "python ../chain_runner.py probes/runs/anchor_set3_first.json",
+ "sources": [{"local": "probes/chain_runner.py"}, {"local": "probes/runs/anchor_set3_first.json"}, {"local": "probes/anchor_set3_read.py"},
+             {"local": "modules/05_support_predictor/m05/rungC_cc_transfer.py"}, {"local": "modules/05_support_predictor/m05/rungC_train.py"},
+             {"local": "modules/05_support_predictor/m05/mode_blocks.py"}, {"local": "modules/05_support_predictor/m05/rungC_intensities.py"}],
+ "progress": {"regex": "^=== \\(S3F\\) progress: |^\\(S3F\\) .* done ", "max_gap_minutes": 60, "start_regex": "^=== \\(S3F\\) starting: "},
+ "marker_regex": "^=== \\(S3F\\) (armed|starting|resuming|RUN FAILED|run done)",
+ "end_regex": "^=== \\(S3F\\) run done", "dry_run_args": "--dry-run", "resumable": true,
+ "memory": {"peak_gb": 3.5, "basis": "NOT YET MEASURED - this run is the first measurement. Estimate: the corpus arrays rungC_cc_transfer keeps (e7_t2_sqm.load: H_low, dH_true, V, B, F_low, F_high of 1,236 molecules) are 0.47 GB, computed from the geometries 20 Oct 13:08; torch, the model and 6 anchors' tensors on top, about 2-3 GB; 3.5 stated. PeakWorkingSet64 read during the run replaces it before the rest"}}

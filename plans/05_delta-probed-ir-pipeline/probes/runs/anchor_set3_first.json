@@ -1,0 +1,62 @@
+{
+ "_about": "Anchor set three's final read (probes/anchor_set3_read.py plan): the first run alone, timed before the rest run.",
+ "name": "S3F",
+ "steps": [
+  {
+   "kind": "cmd",
+   "label": "RA_k0_s0_seed0",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/anchor_set3_2026-10-20/RA_k0_s0_seed0.log",
+   "argv": [
+    "{python}",
+    "m05/rungC_cc_transfer.py",
+    "corpus/molecules",
+    "out/E7_rungC_chain34_kdfamily_750_2026-10-05_model_n750_seed0.pt",
+    "out/anchor_set3_2026-10-20/RA_k0_s0_seed0",
+    "--threads",
+    "8",
+    "--epochs",
+    "300",
+    "--lr",
+    "1e-3",
+    "--head-l2",
+    "1",
+    "--anchor",
+    "A_8448043181=C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/e8_benzene_ccpvtz_oop_2026-10-03/hessian_ccsd_t.npz",
+    "--anchor",
+    "A_01f3186607=C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/out/composite_full_naphthalene_2026-10-07.npz",
+    "--anchor",
+    "A_6e858b26e5=C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/out/composite_full_pyridine_2026-10-07.npz",
+    "--anchor",
+    "B_8b12a55d3a=C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/out/composite_full_fluorobenzene_2026-10-07.npz",
+    "--anchor",
+    "A_3100da3761=C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/out/composite_full_benzonitrile_2026-10-07.npz",
+    "--anchor",
+    "A_a1e6ec1862=C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/out/composite_full_anthracene_2026-10-07.npz",
+    "--apt",
+    "A_8448043181=C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/e8_benzene_ccpvtz_oop_2026-10-03/apt_ccsd_t.npz",
+    "--apt",
+    "A_6e858b26e5=C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/cc_apt_field_2026-10-12/pyridine_ccpvdz_field.npz",
+    "--apt",
+    "B_8b12a55d3a=C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/cc_apt_field_2026-10-12/fluorobenzene_ccpvdz_field.npz",
+    "--apt",
+    "A_3100da3761=C:/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/cc_apt_field_2026-10-12/benzonitrile_ccpvdz_field.npz",
+    "--held",
+    "A_8448043181",
+    "--held",
+    "A_01f3186607",
+    "--held",
+    "A_6e858b26e5",
+    "--held",
+    "B_8b12a55d3a",
+    "--held",
+    "A_3100da3761",
+    "--held",
+    "A_a1e6ec1862"
+   ]
+  }
+ ],
+ "outputs": [
+  "modules/05_support_predictor/out/anchor_set3_2026-10-20/RA_k0_s0_seed0.json"
+ ]
+}
