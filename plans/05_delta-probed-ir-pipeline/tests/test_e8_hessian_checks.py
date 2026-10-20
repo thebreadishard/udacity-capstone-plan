@@ -213,8 +213,8 @@ def test_real_benzonitrile_is_imaginary_with_the_two_bends():
 
 def test_probe_and_chain_are_wired_to_the_split_check():
     probe = (PLAN / "probes" / "e8_cc_hessian_fd.py").read_text(encoding="utf-8")
-    assert "chk = HC.classify_hessian(H, x0, masses, asym, ediag)" in probe
-    assert 'np.save(os.path.join(a.out, f"ener_{k:02d}_{sign}.npy"), np.array(e))' in probe         # energies stored for the energy route
+    assert "chk = HC.classify_hessian(asm.H, x0, masses, asm.asym, ediag)" in probe
+    assert 'save_atomic(os.path.join(a.out, f"ener_{k:02d}_{sign}.npy"), lambda fh, e=e: np.save(fh, np.array(e)))' in probe   # energies stored
     assert '"IMAGINARY": "hessian_ccsd_t_IMAGINARY.npz"' in probe and "raise SystemExit(4)" in probe
     assert "SELF-CHECK FAILED" in probe and "raise SystemExit(2)" in probe
     assert 'os.path.join(_HERE, "e8_hessian_checks.py")' in probe                       # in the gate-1 fingerprint
