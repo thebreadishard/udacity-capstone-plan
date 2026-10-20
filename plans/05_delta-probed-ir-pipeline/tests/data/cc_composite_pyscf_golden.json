@@ -1,0 +1,141 @@
+{
+ "cases": {
+  "basis_oop_check": {
+   "oop.json": {
+    "frozen": 1,
+    "geometry": "<work>/geom/water.json",
+    "grid": [
+     99,
+     590
+    ],
+    "ks": [
+     0,
+     4
+    ],
+    "levels": [
+     "mp2"
+    ],
+    "rows": [
+     {
+      "H_mp2_dz": -0.011722252966623464,
+      "H_mp2_tz": -0.002828112912452857,
+      "atom": "O",
+      "d_cc": 0.010000000000000009,
+      "d_mp2": 0.008894140054170607,
+      "k": 0,
+      "oop": 1.0,
+      "ratio_mp2": 0.88941400541706,
+      "tracks_mp2": true,
+      "xyz": "x"
+     },
+     {
+      "H_mp2_dz": 0.39348131437355605,
+      "H_mp2_tz": 0.38249388503679427,
+      "atom": "H",
+      "d_cc": -0.020000000000000018,
+      "d_mp2": -0.010987429336761778,
+      "k": 4,
+      "oop": 0.0,
+      "ratio_mp2": 0.5493714668380885,
+      "tracks_mp2": false,
+      "xyz": "y"
+     }
+    ],
+    "step": 0.005
+   },
+   "oop.md": "# Composite anchor level, test 1 \u2014 basis step TZ\u2212DZ per level on geom \u2014 <date>\n\nStep 0.005 bohr, grid (99, 590), MP2 frozen core 1; levels ['mp2']; <s> s at 1 threads. A level *tracks* a coordinate when |\u0394_X \u2212 \u0394_CC| \u2264 0.2 |\u0394_CC|.\n\n| k | atom xyz | oop | \u0394_CC | \u0394_mp2 | mp2/CC | B3LYP two-route |\n|---|---|---|---|---|---|---|\n| 0 | O x | 1.00 | +0.01000 | +0.00889 | +0.89 tracks | \u2014 |\n| 4 | H y | 0.00 | -0.02000 | -0.01099 | +0.55 | \u2014 |\n\n**mp2** tracks 1 of 2 coordinates.",
+   "oop_rows.npz": {
+    "mp2_cc-pvdz_k0": "23d70baa9854be927e405415cea9c70570d7fb7fe106cca405ecd2c8d926da25",
+    "mp2_cc-pvdz_k4": "c88f90b4971a575c0031001f60ac8abb2323bc6cd130789b091d3aafac07d201",
+    "mp2_cc-pvtz_k0": "af2d559d3ff357750ae9077a157b31e4b82ead239c19632f4c55ab3337d3765e",
+    "mp2_cc-pvtz_k4": "697741248dee6c8b674e268334200d07acb1d2ee90fb4d8961d7c60c3acf05f3"
+   }
+  },
+  "basis_smoke": {
+   "smoke.json": {
+    "frozen": 1,
+    "geometry": null,
+    "grid": [
+     99,
+     590
+    ],
+    "ks": [
+     0,
+     1,
+     2
+    ],
+    "levels": [
+     "b3lyp",
+     "mp2"
+    ],
+    "rows": [
+     {
+      "H_b3lyp_dz": -0.013849193948929119,
+      "H_b3lyp_tz": -0.0035229840131861118,
+      "H_mp2_dz": -0.011722252966623464,
+      "H_mp2_tz": -0.002828112912452857,
+      "b3lyp_two_route": 2.3047383422382384e-05,
+      "d_b3lyp": 0.010326209935743007,
+      "d_mp2": 0.008894140054170607,
+      "k": 0
+     },
+     {
+      "H_b3lyp_dz": 0.7025052551058323,
+      "H_b3lyp_tz": 0.6877594731990115,
+      "H_mp2_dz": 0.7276893884797294,
+      "H_mp2_tz": 0.7038233633011515,
+      "b3lyp_two_route": 3.189232270528475e-05,
+      "d_b3lyp": -0.014745781906820743,
+      "d_mp2": -0.023866025178577943,
+      "k": 1
+     },
+     {
+      "H_b3lyp_dz": 0.46405591514786515,
+      "H_b3lyp_tz": 0.45824470312565424,
+      "H_mp2_dz": 0.47893576923478953,
+      "H_mp2_tz": 0.46227100947002775,
+      "b3lyp_two_route": 5.479032867572453e-06,
+      "d_b3lyp": -0.00581121202221091,
+      "d_mp2": -0.016664759764761783,
+      "k": 2
+     }
+    ],
+    "step": 0.005
+   },
+   "smoke.md": "# Composite anchor level, test 1 \u2014 basis step TZ\u2212DZ per level on water (smoke) \u2014 <date>\n\nStep 0.005 bohr, grid (99, 590), MP2 frozen core 1; levels ['b3lyp', 'mp2']; <s> s at 1 threads. A level *tracks* a coordinate when |\u0394_X \u2212 \u0394_CC| \u2264 0.2 |\u0394_CC|.\n\n| k | \u0394_b3lyp | \u0394_mp2 | B3LYP two-route |\n|---|---|---|---|\n| 0 | +0.01033 | +0.00889 | 2.3e-05 |\n| 1 | -0.01475 | -0.02387 | 3.2e-05 |\n| 2 | -0.00581 | -0.01666 | 5.5e-06 |",
+   "smoke_rows.npz": {
+    "b3lyp_cc-pvdz_k0": "f82e5b207506a210f44238ca499ba0ac8f8c08372d12d497cd69ab147a492252",
+    "b3lyp_cc-pvdz_k1": "aa261cac825f6743c344bfd19d17d0d1cc59eaaffcc2375f419c15e357c4191b",
+    "b3lyp_cc-pvdz_k2": "ecbaa20e1623201dfa0f6636a65f84b779ef939f607894393654fdc26996ddef",
+    "b3lyp_cc-pvtz_k0": "035908a8de0a0527a058a7f61db6f185ab31b1e45bbd297538e211a21cc2015f",
+    "b3lyp_cc-pvtz_k1": "72d2747c85969f27d90d991766b4ec1b7a46a2416419d16dd95f25767a7c76dd",
+    "b3lyp_cc-pvtz_k2": "c71e0589cb03d4aac97c622250ded73f180a1d2617dfee4d42f6b85c64025a7b",
+    "mp2_cc-pvdz_k0": "23d70baa9854be927e405415cea9c70570d7fb7fe106cca405ecd2c8d926da25",
+    "mp2_cc-pvdz_k1": "351fc7fec8edf0c3a27b5c92b21c4c3e7ba0737c8bf7e943a630f81e626fac2a",
+    "mp2_cc-pvdz_k2": "fc2a926d97b2404d06a6b009ac818d4d22d6f0caa909e95e0c6c5e874ce36b63",
+    "mp2_cc-pvtz_k0": "af2d559d3ff357750ae9077a157b31e4b82ead239c19632f4c55ab3337d3765e",
+    "mp2_cc-pvtz_k1": "8935584133d643c4cff56051813ae62035b6f166698be9d89f8302bda542a08b",
+    "mp2_cc-pvtz_k2": "de54b66d30acbb93fc303d7d977d4e908510de0221c3d18449182afdd4d5d5e5"
+   }
+  },
+  "full_compute": {
+   "rows.npz": {
+    "basis": "\"cc-pvdz\"",
+    "cart": "false",
+    "coords_bohr": "27ea64a53b8b457a924d812b77c5ce380d912fd3ddcb7935319678f6b619f1a8",
+    "frozen": "1",
+    "ks": "f7548c023e431138b11357593f5cceb9dd35eb0b0a2041f0b1560212eeb6f13e",
+    "reps": "9d34149fbd1fe777eb238799054c8cbfbce372255f219f8740838def9bfd02db",
+    "row_00": "23d70baa9854be927e405415cea9c70570d7fb7fe106cca405ecd2c8d926da25",
+    "row_04": "c88f90b4971a575c0031001f60ac8abb2323bc6cd130789b091d3aafac07d201",
+    "step": "0.005"
+   }
+  }
+ },
+ "environment": {
+  "numpy": "2.5.2",
+  "pyscf": "2.14.0",
+  "python": "3.12.14",
+  "system": "Linux"
+ }
+}
