@@ -73,6 +73,14 @@ Whenever the machine is busy or the user is away, the next item is the cheapest 
 
 ## 6. Log
 
+- **20 Oct, 17:4x — clean code for the anchor pipeline, round 1 (the user: clean, reusable code for what every anchor goes through;
+  one-off code only where transparency needs it; no duplication; no junk in the trunk).** Pins first (b62d9e6e: build ×2, read, repair-oop,
+  planeframe, merge on real inputs; 8ff77dba in WSL: the basis check twice and compute on water), then in a worktree branch:
+  `cc_composite_full_check.py` 46 → 0 findings, `cc_composite_basis_check.py` 19 → 0, the duplicated pieces made one (row assembly,
+  mass-weighted projection, plane frame, DFT reference, status, the frozen-core table) and `probes/qc_common.py` for the constants and
+  project_tr; outputs bit-identical (a one-digit change of a constant fails the pin). Nothing removed: every subcommand is production or a
+  registered test's read. Rounds 2–5 (the CC Hessian probe, the rehearsal, the frequency formula project-wide, an inventory with removal
+  lists for the user) in TASKS 81.
 - **20 Oct, 15:2x — anchor set three: all five carried, the read planned, its first run timed (stated before the rest run).** Quinoline
   (08:43), isoquinoline (10:59), azulene (12:4x) and acenaphthylene (15:1x) promoted by chain 33c's rule, all VALID; dfmp2_anchors ended
   15:04 (exit 0); 11 carried anchors. `anchor_set3_read.py plan` (15:09): 39 runs, none left the read; the CC APTs and models checked.
