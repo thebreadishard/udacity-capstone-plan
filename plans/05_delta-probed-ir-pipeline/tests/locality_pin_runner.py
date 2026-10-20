@@ -1,4 +1,4 @@
-"""Run an `e8_cc_locality.py` (the path given first) with a stand-in for pyscf that returns stored DFT Hessians.
+"""Run `e8_cc_locality.py` or a script built on it (the path given first) with a stand-in for pyscf that returns stored DFT Hessians.
 
 The script computes the B3LYP and ωB97X Hessians with pyscf and then reads them against the CC Hessian; no environment here has pyscf and
 geomeTRIC together (it ran on a server). The regression pin needs the read, not the DFT: this runner puts a minimal `pyscf` (gto.M, lib,
@@ -46,7 +46,7 @@ pyscf.dft = SimpleNamespace(RKS=_RKS)
 sys.modules["pyscf"] = pyscf
 path = Path(script).resolve()
 sys.path.insert(0, str(path.parent))
-spec = importlib.util.spec_from_file_location("e8_cc_locality", path)
+spec = importlib.util.spec_from_file_location(path.stem, path)
 module = importlib.util.module_from_spec(spec)
 sys.modules[spec.name] = module
 spec.loader.exec_module(module)
