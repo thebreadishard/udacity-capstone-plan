@@ -221,6 +221,19 @@
    "checks": "MP2 row symmetry spread 1.8e-05 / 1.7e-05; basis step rms 5.8e-03; softest 86, 115 cm⁻¹",
    "note": "chain 33c promotion rule: VALID; soft modes within 19 cm⁻¹ of ωB97X",
    "sha16": "595b8ff6c66c0bc5"
+  },
+  {
+   "mol_id": "A_7aa232d4e9",
+   "name": "quinoxaline",
+   "path": "probes/results_m1/dfmp2_anchors_2026-10-20/composite_quinoxaline.npz",
+   "level": "CCSD(T)/cc-pVDZ + [DF-MP2 psi4 1.10.2 (cc-pvtz-jkfit / cc-pvtz-ri, frozen 10): cc-pVTZ − cc-pVDZ]",
+   "tier": "TZ",
+   "kind": "composite",
+   "status": "carried",
+   "date": "2026-10-20",
+   "checks": "MP2 row symmetry spread 2.8e-05 / 2.6e-05; basis step rms 6.3e-03; softest 167, 179 cm⁻¹",
+   "note": "chain 33c promotion rule: VALID",
+   "sha16": "b440fe0efad88165"
   }
  ]
 }
