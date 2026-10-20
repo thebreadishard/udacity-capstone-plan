@@ -35,7 +35,6 @@ from rungC_train import load_hybrid_model, predictor  # noqa: E402
 FAMS = ("CH-oop", "other", "ring-ip", "CH-stretch")
 OOP_FAMS = ("CH-oop", "other")
 TEST2 = M05 / "out" / "composite_test2_benzene_2026-10-06.json"
-BENZENE_DZ = PLAN / "probes" / "results_m1" / "e8_benzene_ccpvdz_dip_2026-10-03" / "hessian_ccsd_t.npz"
 
 
 def projected(path: Path) -> np.ndarray:
@@ -107,20 +106,6 @@ def alignment(an_cc: CT.Anchors, an_px: CT.Anchors) -> dict:
     return out
 
 
-def dz_files() -> dict[str, Path]:
-    """Each anchor's CC/DZ Hessian: the composite record's source anchor (benzene's full TZ anchor: its DZ run), skipping invalid ones."""
-    out = {}
-    for i, tz in D.anchors().items():
-        if i == "A_8448043181":
-            out[i] = BENZENE_DZ
-            continue
-        rec = json.loads(Path(tz).with_suffix(".json").read_text(encoding="utf-8"))
-        src = Path(rec["anchor"])
-        if "INVALID" not in src.name and "IMAGINARY" not in src.name:
-            out[i] = src if src.is_absolute() else PLAN / src
-    return out
-
-
 def network_vs_proxy(an_px: CT.Anchors, mdir: Path) -> dict:
     """The carried chain-34 seed-0 network as it is, read against the ωB97X truth."""
     model, ck = load_hybrid_model(M05 / D.MODEL.format(chain=D.CHAIN34, seed=0))
@@ -143,7 +128,7 @@ def main(out_dir: Path) -> int:
     res["A2 proxy x c (leave-one-out)"] = mean_read(an_cc, proxy_dF(an_cc, mdir, scales))[0]
     res["A2 scales"] = scales
     res["A3 alignment"] = alignment(an_cc, an_px)
-    dz = dz_files()
+    dz = D.dz_files()
     res["A6 CC/DZ read against TZ"] = mean_read(an_cc, lambda i: internal(an_cc.mols[i], projected(dz[i]) - an_cc.mols[i]["H_low"]),
                                                sorted(dz))[0]
     res["A6 DZ files"] = {i: str(p) for i, p in dz.items()}

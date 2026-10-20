@@ -60,12 +60,27 @@ EXPERIMENTS = {
     "E23_base_fivering_n972": ("head_l2", ["--head-l2", "1", "--allow-any-model"], "chain40_fivering30_model_n972"),
 }
 VALIDATE = "V00_arm_m_seed0"
+BENZENE_DZ = PLAN / "probes" / "results_m1" / "e8_benzene_ccpvdz_dip_2026-10-03" / "hessian_ccsd_t.npz"
 
 
 def anchors() -> dict[str, str]:
     """The eleven carried TZ anchor files, as anchor set three's plan recorded them."""
     manifest = json.loads((SET3 / "manifest.json").read_text(encoding="utf-8"))
     return {i: manifest["files"][i] for i in (*S3.ORIGINALS, *S3.NEW)}
+
+
+def dz_files() -> dict[str, Path]:
+    """Each anchor's CC/DZ Hessian: the composite record's source anchor (benzene's full TZ anchor: its DZ run), skipping invalid ones."""
+    out = {}
+    for i, tz in anchors().items():
+        if i == "A_8448043181":
+            out[i] = BENZENE_DZ
+            continue
+        rec = json.loads(Path(tz).with_suffix(".json").read_text(encoding="utf-8"))
+        src = Path(rec["anchor"])
+        if "INVALID" not in src.name and "IMAGINARY" not in src.name:
+            out[i] = src if src.is_absolute() else PLAN / src
+    return out
 
 
 def build_corpus(out_dir: Path) -> Path:
