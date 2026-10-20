@@ -41,4 +41,18 @@ nearly the same in DZ and TZ and cancels in the difference) — three in four; D
 
 ## Outcome
 
-*(appended after the reads)*
+**Outcome (20 Oct 2026, 05:2x; run spec dfmp2_composite, 19 Oct 22:25–23:23, `probes/results_m1/dfmp2_composite_2026-10-19/`).**
+- **W — PASS.** max |analytic − 5-point findif| 4.6e-9 Eh/bohr (cc-pVDZ), 4.9e-8 (cc-pVTZ); line 1e-6 (`water_check.json`). The frozen core
+  holds (psi4 log: FOCC 1, AOCC 4).
+- **S — ADOPT on both.** Pyridine max |Δω| 0.423 cm⁻¹, rms 0.208 over 27 modes; naphthalene 0.460, rms 0.184 over 48 (line 0.5;
+  `swap_pyridine.md`, `swap_naphthalene.md`). rms(Δ_DF − Δ_conv)/rms(Δ_conv) 4.2e-3 and 4.7e-3; the DF rows' symmetry spread equals the
+  conventional rows' (8.5e-6–3.4e-5 a.u.). **The DF-MP2 route carries anchor set three's composite step.**
+- **P.** Median seconds per row at 6 threads: pyridine 9 (DZ) / 33 (TZ), naphthalene 30 / 136 — the 7 Oct conventional rows took 13 / 196 and
+  79 / 1,996 s at 8 threads on the CCX53. Peak RSS 0.50 / 1.09 / 0.86 / 3.33 GB. Through the power law per basis: quinoxaline 0.8 h,
+  azulene 1.5, acenaphthylene 2.0, quinoline 2.0, isoquinoline 2.0 — **all five ≈ 8.4 h on the laptop at 6 threads** (acenaphthylene's 20
+  atoms a short extrapolation from 18), against 98 worker-hours at 26 GB on a server (`price.md`).
+- **Predictions:** W ≤ 1e-7 — right; S < 0.3 cm⁻¹ — wrong (0.42 and 0.46: the line holds with less margin than predicted); ≥ 5× faster —
+  right (6–15× at TZ, on fewer threads).
+- **Next, not launched (registered: the user's read):** `dfmp2_rows.py` takes its settings from a conventional row file; the five new anchors
+  have none, so a mode that builds ks/reps from the geometry's symmetry (as `cc_composite_full_check.compute` does) comes first, tested
+  against the `--like` path on pyridine. Then the five on the laptop, promotion, the registry, and anchor set three's read.

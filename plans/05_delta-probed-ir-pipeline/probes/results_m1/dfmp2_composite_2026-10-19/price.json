@@ -1,0 +1,66 @@
+{
+ "fits": {
+  "cc-pvdz": {
+   "a": -3.6649856670730565,
+   "b": 2.444731557257716
+  },
+  "cc-pvtz": {
+   "a": -3.3987921679769473,
+   "b": 2.8755633357567514
+  }
+ },
+ "anchors": {
+  "quinoxaline": {
+   "atoms": 16,
+   "rows": 24,
+   "hours": 0.796142837376779
+  },
+  "azulene": {
+   "atoms": 18,
+   "rows": 33,
+   "hours": 1.521666666666669
+  },
+  "acenaphthylene": {
+   "atoms": 20,
+   "rows": 33,
+   "hours": 2.043623869440523
+  },
+  "quinoline": {
+   "atoms": 17,
+   "rows": 51,
+   "hours": 2.004224509961031
+  },
+  "isoquinoline": {
+   "atoms": 17,
+   "rows": 51,
+   "hours": 2.004224509961031
+  }
+ },
+ "total_hours": 8.369882393406034,
+ "measured": {
+  "naphthalene cc-pvdz": {
+   "rows": 15,
+   "median_s": 30.0
+  },
+  "naphthalene cc-pvtz": {
+   "rows": 15,
+   "median_s": 136.0
+  },
+  "pyridine cc-pvdz": {
+   "rows": 21,
+   "median_s": 9.0
+  },
+  "pyridine cc-pvtz": {
+   "rows": 21,
+   "median_s": 33.0
+  }
+ },
+ "peak_rss_gb": {
+  "naphthalene cc-pvdz": 0.863648,
+  "naphthalene cc-pvtz": 3.333648,
+  "pyridine cc-pvdz": 0.502412,
+  "pyridine cc-pvtz": 1.093884
+ },
+ "threads": 6,
+ "fits_laptop_budget": true
+}
