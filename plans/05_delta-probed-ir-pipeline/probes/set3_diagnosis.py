@@ -151,7 +151,7 @@ def read(out_dir: Path) -> dict:
         for p in sorted(out_dir.glob(f"{name}_seed*.json")):
             rec = json.loads(p.read_text(encoding="utf-8"))
             rows[p.stem] = summary(rec, column(name))
-            if name == "E07_no_finetune":
+            if name == "E01_ref_lambda1" and "zero rule" not in rows:
                 rows["zero rule"] = summary(rec, "zero_rule")
                 rows["alpha scaling (no network)"] = summary(rec, "alpha_scaling")
     keys = ["CH-oop all", "CH-oop orig", "CH-oop new", "other all", "ring-ip all", "CH-stretch all", "intensity", "ring ratio"]
