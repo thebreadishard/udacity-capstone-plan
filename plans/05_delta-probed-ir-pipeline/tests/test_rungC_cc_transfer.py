@@ -273,6 +273,16 @@ def test_modes_narrow_the_enabled_ones_and_unknown_modes_are_refused():
         RT_T.check_switches(bad, dict(s.split("=", 1) for s in bad.anchor))
 
 
+def test_init_scale_multiplies_the_last_layer_only():
+    m = RH.HybridDeltaFModel(aggregation="sum", sqm_scale=True)
+    before = {n: p.detach().clone() for n, p in m.named_parameters()}
+    RT_T.scale_last_layer(m, -0.5)
+    for n, p in m.named_parameters():
+        expected = before[n] * -0.5 if n.startswith("head.4.") else before[n]
+        assert torch.equal(p, expected), n
+    assert RT_T.build_parser().parse_args(["m", "x.pt", "out", "--anchor", "a=1"]).init_scale == 1.0
+
+
 def test_in_sample_keeps_the_held_out_anchor_in_the_pool():
     assert RT_T.training_anchors(["a", "b", "c"], "b", in_sample=False) == ["a", "c"]
     assert RT_T.training_anchors(["a", "b", "c"], "b", in_sample=True) == ["a", "b", "c"]
