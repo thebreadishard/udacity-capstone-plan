@@ -77,7 +77,7 @@ DIPOLE_LIMIT = 1e-5          # a.u.; the captured relaxed CCSD(T) dipole against
 
 def production_gradient(x, charge=0, spin=0, fast=None, check_fast=False):
     """The probe's own gradient() — the production path, not a re-implementation; (energy, gradient). check_dipole_capture reads the third value."""
-    return E.gradient(SYMBOLS, x, "cc-pvdz", FROZEN, _quiet, charge, spin, 4000, fast, check_fast)[:2]
+    return E.gradient(SYMBOLS, x, E.CCSettings("cc-pvdz", FROZEN, charge, spin, 4000, fast), _quiet, check_fast)[:2]
 
 
 def check_dipole_capture():
@@ -85,7 +85,7 @@ def check_dipole_capture():
     F = 1e-4 a.u. per component; the finite-field route of probes/cc_dipole_capture.py)."""
     import cc_dipole_capture as DC
     from pyscf import gto
-    _, _, mu = E.gradient(SYMBOLS, X_REF, "cc-pvdz", FROZEN, _quiet, 0, 0, 4000, None, False)
+    _, _, mu = E.gradient(SYMBOLS, X_REF, E.CCSettings("cc-pvdz", FROZEN, 0, 0, 4000), _quiet)
     mol = gto.M(atom=[(s, tuple(c)) for s, c in zip(SYMBOLS, X_REF, strict=True)], unit="Bohr", basis="cc-pvdz", symmetry=False, verbose=0)
     mol.set_common_orig((0.0, 0.0, 0.0))
     mu_ff = DC.finite_field_dipole(mol, FROZEN, 1e-4)
