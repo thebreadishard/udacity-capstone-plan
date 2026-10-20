@@ -261,6 +261,32 @@ def test_oop_subset_reads_fit_on_each_subset_and_keep_the_fold_s_training_anchor
     assert [r["read"]["n"] for r in out["1"]] == [1.0, 2.0, 3.0, 4.0]
 
 
+def test_modes_narrow_the_enabled_ones_and_unknown_modes_are_refused():
+    base = ["m", "x.pt", "out", "--anchor", "a=1", "--anchor", "b=2", "--anchor", "c=3"]
+    a = RT_T.build_parser().parse_args([*base, "--head-l2", "1", "--head-all", "--modes", "head_l2,head_all"])
+    assert RT_T.enabled_modes(a) == ("none", "alpha", "head", "head_l2", "head_all") and RT_T.fold_modes(a) == ("head_l2", "head_all")
+    RT_T.check_switches(a, dict(s.split("=", 1) for s in a.anchor))
+    plain = RT_T.build_parser().parse_args(base)
+    assert RT_T.fold_modes(plain) == ("none", "alpha", "head")
+    bad = RT_T.build_parser().parse_args([*base, "--modes", "head_l2"])                  # not enabled without --head-l2
+    with pytest.raises(SystemExit, match="not enabled"):
+        RT_T.check_switches(bad, dict(s.split("=", 1) for s in bad.anchor))
+
+
+def test_in_sample_keeps_the_held_out_anchor_in_the_pool():
+    assert RT_T.training_anchors(["a", "b", "c"], "b", in_sample=False) == ["a", "c"]
+    assert RT_T.training_anchors(["a", "b", "c"], "b", in_sample=True) == ["a", "b", "c"]
+
+
+def test_head_all_trains_every_head_layer_and_alpha_and_nothing_else():
+    m = RH.HybridDeltaFModel(aggregation="sum", sqm_scale=True)
+    params = RT_T._trainable(m, "head_all", RT_T.FinetuneSettings(1, 1e-3, 1.0))
+    trainable = {n for n, p in m.named_parameters() if p.requires_grad}
+    assert trainable == {n for n, _ in m.named_parameters() if n.startswith("head.")} | {"alpha"}
+    assert sum(p.numel() for p in params) == sum(p.numel() for n, p in m.named_parameters() if n in trainable)
+    assert not any(p.requires_grad for p in m.body.parameters())
+
+
 def test_the_out_of_plane_switches_add_their_table_columns():
     """TASKS 51 (13 Oct 2026): the arms of R-A's fail branch are columns of the same read, for both head-tuned modes; that the model's
     coefficients come from the training anchors only is the signature of oop_shift_coefficients (an, train_ids), and the columns' values

@@ -194,6 +194,11 @@ class FinetuneSettings:
 
 def _trainable(model, mode: str, settings: FinetuneSettings) -> list:
     params = freeze_for_transfer(model)
+    if mode == "head_all":
+        extra = [p for p in model.head.parameters() if not p.requires_grad]
+        for p in extra:
+            p.requires_grad_(True)
+        params = params + extra
     if mode in ("alpha", "lora"):
         for p in model.head[-1].parameters():
             p.requires_grad_(False)
@@ -209,7 +214,7 @@ def finetune(model, loss_cfg: LossSettings, train: dict, mode: str, settings: Fi
     """Fine-tune on the training anchors (`train`: id → tensors, in step order) with the loss the model was trained with (`loss_cfg`), its
     pattern class scales refitted on the anchors: mode 'head' = head's last layer + α; 'head_l2' = the same with the penalty
     head_l2 · ‖W − W₀‖² toward the proxy-trained last layer (T3b); 'alpha' = α only; 'lora' = α and a rank-r adapter on the head's middle
-    layer; 'none' = no training. Returns the loss history."""
+    layer; 'head_all' = every layer of the head + α; 'none' = no training. Returns the loss history."""
     if mode == "none":
         return []
     train_ids = list(train)
@@ -359,8 +364,20 @@ def read(an: Anchors, held: str, train_ids: list[str], dF_of) -> dict:
     return r
 
 
+def enabled_modes(a) -> tuple[str, ...]:
+    """The fine-tune modes the switches make available."""
+    return (("none", "alpha", "head") + (("head_l2",) if a.head_l2 > 0 else ()) + (("lora",) if a.lora_rank > 0 else ())
+            + (("head_all",) if a.head_all else ()))
+
+
 def fold_modes(a) -> tuple[str, ...]:
-    return ("none", "alpha", "head") + (("head_l2",) if a.head_l2 > 0 else ()) + (("lora",) if a.lora_rank > 0 else ())
+    """The modes a fold runs: every enabled one, or those --modes names."""
+    return tuple(m for m in enabled_modes(a) if not a.modes or m in a.modes)
+
+
+def training_anchors(ids: list[str], held: str, in_sample: bool) -> list[str]:
+    """A fold's fine-tune pool: the other anchors, or every anchor with --in-sample (the ceiling: the held-out one is seen)."""
+    return list(ids) if in_sample else [i for i in ids if i != held]
 
 
 def zero(an: Anchors):
@@ -370,7 +387,7 @@ def zero(an: Anchors):
 def run_fold(an: Anchors, held: str, model0, loss_cfg: LossSettings, a) -> dict:
     """One leave-one-anchor-out fold: the zero rule, the α scaling, the out-of-plane model alone when asked, and the network in every
     fine-tune mode (with its out-of-plane variants and the saved prediction of the standard mode when asked)."""
-    tr = [i for i in an.ids if i != held]
+    tr = training_anchors(an.ids, held, a.in_sample)
     fold = {"train": tr, "zero_rule": read(an, held, tr, zero(an)),
             "alpha_scaling": read(an, held, tr, lambda i: alpha_scaling_baseline(an.mols, an.tensors, tr, i))}
     coef = None
@@ -405,12 +422,16 @@ def fold_line(held: str, fold: dict, a) -> str:
     def ring_ip(col: str) -> str:
         return f"{fold[col]['coupling_ratio']:.2f} / {fold[col]['freq_rms_by_family'].get('ring-ip', float('nan')):.2f} ring-ip"
 
-    line = (f"{held}: zero ω {fold['zero_rule']['corrected_freq_rms']:.2f} | α-scaling {pair('alpha_scaling')} | network as is "
-            f"{pair('network_none')} | α tuned {pair('network_alpha')} | head tuned {pair('network_head')}")
-    if a.head_l2 > 0:
+    line = f"{held}: zero ω {fold['zero_rule']['corrected_freq_rms']:.2f} | α-scaling {pair('alpha_scaling')}"
+    for col, label in (("network_none", "network as is"), ("network_alpha", "α tuned"), ("network_head", "head tuned")):
+        if col in fold:                                  # --modes leaves some out
+            line += f" | {label} {pair(col)}"
+    if "network_head_l2" in fold:
         line += f" | head L2 {a.head_l2:g}: {ring_ip('network_head_l2')}"
-    if a.lora_rank > 0:
+    if "network_lora" in fold:
         line += f" | lora r{a.lora_rank}: {ring_ip('network_lora')}"
+    if "network_head_all" in fold:
+        line += f" | whole head: {ring_ip('network_head_all')}"
     return line
 
 
@@ -446,6 +467,8 @@ def table_columns(a) -> list[tuple[str, str]]:
         cols.append(("network_head_l2", f"head tuned, {l2}"))
     if a.lora_rank > 0:
         cols.append(("network_lora", f"α + rank-{a.lora_rank} adapter"))
+    if a.head_all:
+        cols.append(("network_head_all", "network, whole head tuned"))
     if a.oop_couplings_low:
         cols.append(("network_head_ooplow", "head tuned, oop couplings from the low level"))
         if a.head_l2 > 0:
@@ -460,6 +483,9 @@ def table_columns(a) -> list[tuple[str, str]]:
 def table_lines(res: dict, a) -> list[str]:
     """The record as a markdown table: per held-out anchor the read-outs of every column."""
     cols = table_columns(a)
+    first = next(iter(res["folds"].values()), None)
+    if first is not None:
+        cols = [c for c in cols if c[0] in first]                  # --modes leaves some modes out
     lines = [f"# T3 — leave-one-anchor-out transfer to CCSD(T)/cc-pVDZ ({res['date']})", "",
              f"Model `{Path(a.model).name}` ({res['model_record']}); fine-tune {a.epochs} epochs at lr {a.lr:g}, aux weight {a.aux_weight:g}; "
              f"low levels {res['low_level']}.", "",
@@ -473,13 +499,14 @@ def table_lines(res: dict, a) -> list[str]:
         for fam in FAMILY_ROWS:
             lines.append(f"| {held} | ω rms {fam} (cm⁻¹) | " + " | ".join(f"{f[c]['freq_rms_by_family'].get(fam, float('nan')):.2f}" for c in keys)
                          + " |")
-        if "intensity" in f["network_head"]:
+        if "intensity" in f["zero_rule"]:                            # the held-out anchor has a CC APT
             for key, label in (("spectrum_overlap", "spectrum overlap (CC APT)"),
                                ("intensity_rel_rms_matched", "intensity rel. rms, modes matched by eigenvector (CC APT)"),
                                ("intensity_rel_rms", "intensity rel. rms (CC APT)")):
                 lines.append(f"| {held} | {label} | " + " | ".join(f"{f[c]['intensity'][key]:.3f}" for c in keys) + " |")
-        fams = f["network_head"]["diag_rms"]
-        lines.append(f"| {held} | per-family diag rms, head tuned | — | — | — | — | " + ", ".join(f"{k} {v:.1f}" for k, v in fams.items()) + " |")
+        if "network_head" in f:
+            fams = f["network_head"]["diag_rms"]
+            lines.append(f"| {held} | per-family diag rms, head tuned | — | — | — | — | " + ", ".join(f"{k} {v:.1f}" for k, v in fams.items()) + " |")
     return [*lines, "", f"{res['seconds']} s."]
 
 
@@ -514,6 +541,9 @@ def check_switches(a, anchors: dict[str, str]) -> None:
         raise SystemExit("--oop-fit-sizes refits the out-of-plane model of --oop-diagonal-model; give both")
     if a.oop_fit_sizes and a.oop_fit_sizes[-1] >= len(anchors) - 1:
         raise SystemExit(f"--oop-fit-sizes {a.oop_fit_sizes}: a fold trains on {len(anchors) - 1} anchors; every size must be smaller")
+    unknown_modes = sorted(set(a.modes) - set(enabled_modes(a)))
+    if unknown_modes:
+        raise SystemExit(f"--modes {unknown_modes}: not enabled (available: {', '.join(enabled_modes(a))})")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -539,6 +569,11 @@ def build_parser() -> argparse.ArgumentParser:
                     "out-of-plane modes from the low level; adds the columns network_head_ooplow (and network_head_l2_ooplow)")
     ap.add_argument("--oop-diagonal-model", action="store_true", help="TASKS 51, R-A's fail branch: per fold, fit the out-of-plane shift model "
                     "on the training anchors; adds oop_model_only and network_head_oopmodel (and network_head_l2_oopmodel)")
+    ap.add_argument("--modes", type=lambda s: [m for m in s.split(",") if m], default=[], help="run only these fine-tune modes "
+                    "(comma-separated, among the enabled ones); default every enabled mode")
+    ap.add_argument("--in-sample", action="store_true", help="diagnosis: each fold also trains on its held-out anchor (the capacity "
+                    "ceiling - not a transfer read)")
+    ap.add_argument("--head-all", action="store_true", help="add mode 'head_all': every layer of the head trainable, with α")
     ap.add_argument("--held", action="append", default=[], help="anchor set three's R-A: only these anchors are held out, one fold each; "
                     "the other anchors stay in every fold's fine-tune pool (default: every anchor is a fold)")
     ap.add_argument("--oop-fit-sizes", type=_sizes, default=[], help="with --oop-diagonal-model, arm M along the anchor count: per fold also "
@@ -575,7 +610,8 @@ def main() -> int:
            "anchor_registry": registry, "tier": tier, "low_level": an.low_files, "epochs": a.epochs, "lr": a.lr, "aux_weight": a.aux_weight,
            "head_l2": a.head_l2, "lora_rank": a.lora_rank, "oop_couplings_low": a.oop_couplings_low, "oop_diagonal_model": a.oop_diagonal_model,
            "folds": {}}
-    res.update({k: v for k, v in (("held", sorted(a.held)), ("oop_fit_sizes", a.oop_fit_sizes)) if v})   # only when used: the pin's record stays
+    res.update({k: v for k, v in (("held", sorted(a.held)), ("oop_fit_sizes", a.oop_fit_sizes), ("modes", a.modes), ("in_sample", a.in_sample),
+                                  ("head_all", a.head_all)) if v})   # only when used: the pin's record stays
     folds = [] if a.skip_folds else (sorted(a.held) or an.ids)
     for held in folds:
         res["folds"][held] = run_fold(an, held, model0, loss_cfg, a)
