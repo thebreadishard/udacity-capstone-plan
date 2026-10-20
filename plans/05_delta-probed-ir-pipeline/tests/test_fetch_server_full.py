@@ -9,6 +9,8 @@ from pathlib import Path
 
 import pytest
 
+from conftest import SHELL_HANG_GUARD_S
+
 TOOL = Path(__file__).resolve().parents[1] / "tools" / "fetch_server_full.sh"
 BASH = shutil.which("bash")
 pytestmark = pytest.mark.skipif(BASH is None or shutil.which("tar") is None, reason="needs bash and tar")
@@ -47,7 +49,7 @@ def setup(tmp_path: Path, served_id: str = MACHINE_ID) -> tuple[Path, Path, dict
 
 def run(env: dict, dst: Path, *parts: str) -> subprocess.CompletedProcess:
     return subprocess.run([BASH, TOOL.as_posix(), "fake", "testrun", dst.as_posix(), *(parts or ("run", "code"))], env=env, capture_output=True,
-                          text=True, encoding="utf-8", timeout=120, check=False)
+                          text=True, encoding="utf-8", timeout=SHELL_HANG_GUARD_S, check=False)
 
 
 def test_a_finished_run_is_fetched_and_recorded_on_both_sides(tmp_path):

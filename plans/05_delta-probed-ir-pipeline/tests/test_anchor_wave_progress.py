@@ -6,6 +6,8 @@ from pathlib import Path
 
 import pytest
 
+from conftest import SHELL_HANG_GUARD_S
+
 SCRIPT = Path(__file__).resolve().parent.parent / "probes" / "anchor_wave_progress.sh"
 BASH = shutil.which("bash")
 pytestmark = pytest.mark.skipif(BASH is None, reason="needs bash")
@@ -24,7 +26,8 @@ def _setup(tmp_path: Path, wave_body: str) -> tuple[Path, dict]:
 
 
 def _run(list_file: Path, env: dict, *extra: str) -> subprocess.CompletedProcess:
-    return subprocess.run([BASH, SCRIPT.as_posix(), list_file.as_posix(), *extra], env=env, capture_output=True, text=True, timeout=60, check=False)
+    return subprocess.run([BASH, SCRIPT.as_posix(), list_file.as_posix(), *extra], env=env, capture_output=True, text=True, timeout=SHELL_HANG_GUARD_S,
+                          check=False)
 
 
 def test_progress_lines_follow_new_files_and_the_end_is_reported(tmp_path):

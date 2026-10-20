@@ -17,6 +17,10 @@ WATER_PYVPT2_JSON = RESULTS_VPT2 / "water_b3lyp_631gs_vpt2.json"  # pyVPT2 0.1.2
 BENZENE_T2_DIR = RESULTS_VPT2 / "pyscf_hessians_d005_grid99_590"  # 61 analytic pyscf Hessians, step 0.05 (21 Sep 2026)
 BENZENE_T2_NPZ = RESULTS_VPT2 / "qff_benzene_pyscf_analytic_2026-09-21.npz"  # the probe's arrays for that set (aligned analysis)
 
+# a hang guard for tests that run shell scripts: the suite also runs beside compute jobs, where a Git Bash process start costs 0.4 s
+# instead of ~0.03 s (20 Oct 2026: 8 tests failed on 60-120 s guards, one fake fetch took 61 s); it catches a hang, it times nothing
+SHELL_HANG_GUARD_S = 900
+
 
 def _need(path: Path) -> Path:
     """Data tests skip on a machine without the committed results — except where DPIR_REQUIRE_DATA is set (CI), where a

@@ -8,6 +8,8 @@ from pathlib import Path
 
 import pytest
 
+from conftest import SHELL_HANG_GUARD_S
+
 SCRIPT = Path(__file__).resolve().parent.parent / "probes" / "fetch_labels_ccx53.sh"
 BASH = shutil.which("bash")
 pytestmark = pytest.mark.skipif(BASH is None or shutil.which("tar") is None, reason="needs bash and tar")
@@ -46,7 +48,8 @@ def _setup(tmp_path: Path) -> tuple[Path, Path, dict]:
 
 
 def _run(env: dict) -> subprocess.CompletedProcess:
-    return subprocess.run([BASH, SCRIPT.as_posix(), "10.0.0.1"], env=env, capture_output=True, text=True, encoding="utf-8", timeout=120, check=False)
+    return subprocess.run([BASH, SCRIPT.as_posix(), "10.0.0.1"], env=env, capture_output=True, text=True, encoding="utf-8", timeout=SHELL_HANG_GUARD_S,
+                          check=False)
 
 
 def test_a_complete_fetch_says_fetched_and_keeps_existing_files(tmp_path):
