@@ -30,6 +30,8 @@ def test_module_history_and_branches_carried_over(tmp_path):
     mono = tmp_path / "mono"
     mono.mkdir()
     _git(mono, "init", "-q", "-b", "master")
+    _git(mono, "config", "user.name", "t")          # the script reads the repository's identity; a CI runner has no global one
+    _git(mono, "config", "user.email", "t@t")
     _commit(mono, "other/x.txt", "x", "unrelated")
     _commit(mono, "plans/m02/a.txt", "a", "module first")
     _git(mono, "checkout", "-q", "-b", "module-02")
