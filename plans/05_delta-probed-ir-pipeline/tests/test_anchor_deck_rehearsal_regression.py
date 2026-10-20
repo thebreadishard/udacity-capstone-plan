@@ -18,7 +18,7 @@ from pathlib import Path
 
 import pytest
 
-from pin_tools import DATA, PLAN, environment, require_pinning_environment, single_thread_env
+from pin_tools import DATA, PLAN, environment, require_free_memory, require_pinning_environment, single_thread_env
 
 GOLDEN = DATA / "anchor_deck_rehearsal_golden.json"
 RUNNER = Path(__file__).with_name("deck_pin_runner.py")
@@ -53,6 +53,7 @@ def test_the_pinned_rehearsal_is_unchanged(case, tmp_path):
         pytest.fail(f"no pin at {GOLDEN}: write it with --write-golden before changing the script")
     golden = json.loads(GOLDEN.read_text(encoding="utf-8"))
     require_pinning_environment(golden)
+    require_free_memory()                                                   # it loads the corpus and three models
     assert run_case(case, tmp_path, probes()) == golden["cases"][case]
 
 

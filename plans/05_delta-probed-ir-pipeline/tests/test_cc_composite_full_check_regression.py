@@ -20,7 +20,17 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from pin_tools import DATA, PLAN, digest, environment, first_difference, require_pinning_environment, single_thread_env, stable
+from pin_tools import (
+    DATA,
+    PLAN,
+    digest,
+    environment,
+    first_difference,
+    require_free_memory,
+    require_pinning_environment,
+    single_thread_env,
+    stable,
+)
 
 SCRIPT = PLAN / "probes" / "cc_composite_full_check.py"
 RUNNER = Path(__file__).with_name("cc_full_pin_runner.py")
@@ -95,6 +105,8 @@ def test_the_pinned_outputs_are_unchanged(case, tmp_path):
         pytest.fail(f"no pin at {GOLDEN}: write it with --write-golden before changing the script")
     golden = json.loads(GOLDEN.read_text(encoding="utf-8"))
     require_pinning_environment(golden)
+    if case == "read_benzene":
+        require_free_memory()                                               # test 2's read loads the corpus
     missing = [str(p) for p in inputs(case) if not p.exists()]
     assert not missing, f"pin inputs missing: {missing}"
     assert (diff := first_difference(golden["cases"][case], run_case(case, tmp_path, script_under_test()))) is None, diff
