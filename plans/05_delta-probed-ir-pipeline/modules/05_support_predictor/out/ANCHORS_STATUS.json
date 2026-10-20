@@ -234,6 +234,19 @@
    "checks": "MP2 row symmetry spread 2.8e-05 / 2.6e-05; basis step rms 6.3e-03; softest 167, 179 cm⁻¹",
    "note": "chain 33c promotion rule: VALID",
    "sha16": "b440fe0efad88165"
+  },
+  {
+   "mol_id": "A_ff98e1160d",
+   "name": "quinoline",
+   "path": "probes/results_m1/dfmp2_anchors_2026-10-20/composite_quinoline.npz",
+   "level": "CCSD(T)/cc-pVDZ + [DF-MP2 psi4 1.10.2 (cc-pvtz-jkfit / cc-pvtz-ri, frozen 10): cc-pVTZ − cc-pVDZ]",
+   "tier": "TZ",
+   "kind": "composite",
+   "status": "carried",
+   "date": "2026-10-20",
+   "checks": "MP2 row symmetry spread 2.5e-05 / 2.3e-05; basis step rms 6.2e-03; softest 169, 178 cm⁻¹",
+   "note": "chain 33c promotion rule: VALID",
+   "sha16": "4e2ce068468e77d3"
   }
  ]
 }
