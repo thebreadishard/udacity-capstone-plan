@@ -2361,3 +2361,21 @@ without lines: the size arm on s4N 0.345. Corrected ω on s5: size arm 3.97, con
 benzo[a]pyrene 0.491, benzo[e]pyrene 0.416, benzo[k]fluoranthene 0.330, dibenz[a,h]anthracene 0.360, perylene 0.488, picene 0.448. Chain
 39's steep reading (q = 1.96) mixed size with ring count; separated here, size alone is no wall up to 40 atoms. Not tested: the mandate's
 50–100-atom targets (chain 42), and the labels are finite-difference where no analytic Hessian exists (TASKS 74's analytic re-read follows).
+
+**Chain 41 — addendum after the read (20 Oct 2026, 07:3x; the user: does 'equally good' mean 'good enough'?).** The registration named, among
+the numbers reported beside, 'the four families on s5 against the zero rule'; the read script left them out. Added to `probes/chain41_read.py`
+and the read re-run on the same files: every earlier number unchanged. Seed means of the per-family error of the predicted frequency shift
+(diag_rms, cm⁻¹) on s5, computed after the read and reported, no line:
+
+| arm | CH-stretch | CH-oop | ring-ip | other |
+|---|---|---|---|---|
+| size (no five-ring molecule in training) | 3.24 | 4.99 | 3.79 | 5.04 |
+| control, fold 1 | 1.18 | 4.10 | 2.98 | 4.77 |
+| control, fold 2 | 1.40 | 4.13 | 3.77 | 4.54 |
+
+For scale, the size arm on hold-out (a) (bare parents inside the corpus): 1.34 / 2.32 / 1.84 / 3.45; on (b): 2.68 / 3.56 / 2.68 / 6.03. Reading:
+(1) the size arm is not 'equally bad': corrected ω 3.97 cm⁻¹ against the zero rule's 22.63, about 82 % of the frequency error removed; (2) no
+family reaches decision 53's 3 cm⁻¹ on s5 in either arm — CH-oop and 'other' miss it inside the corpus too (the open families), but CH-stretch
+and ring-ip are worse on five rings than inside the corpus; (3) **the pooled ring-coupling read hides a family effect:** CH-stretch is ≈ 2.5×
+worse without five-ring training molecules (3.24 against 1.18–1.40) — 'carries' holds for the ring couplings, the registered quantity, not for
+every family. Part of CH-oop's 4–5 cm⁻¹ may be the FD label floor (≈ 3.3, decision 53); TASKS 74's analytic re-read sharpens it.

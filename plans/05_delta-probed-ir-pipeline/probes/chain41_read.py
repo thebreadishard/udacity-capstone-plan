@@ -15,7 +15,9 @@ Lines on q5 = r_S / r_K, as registered:
 Reported beside, without lines:
 - corrected ω on s5 against the zero rule, both arms;
 - the size arm on s4N;
-- r_S per scaffold, as the mean of per-molecule ratios (scaffold = the candidate list's parent).
+- r_S per scaffold, as the mean of per-molecule ratios (scaffold = the candidate list's parent);
+- the four families on s5 per arm (the seed mean of diag_rms, cm⁻¹) — added 20 Oct 2026 after the read: the registration names them, the
+  first version of this script left them out (found on the user's question whether 'equally good' meant 'good').
 
 Writes out/read_chain41.{json,md} under module 05; exit 0 (a read, not a gate).
 
@@ -34,8 +36,16 @@ OUT = M05 / "out" / "read_chain41"
 CANDIDATES = M05 / "out" / "pool3_candidates_2026-10-03.csv"
 
 
+FAMILIES = ("CH-stretch", "CH-oop", "ring-ip", "other")
+
+
 def mean_of(records: list, hold: str, key: str = "coupling_ratio") -> float:
     return float(np.mean([r[hold][key] for r in records]))
+
+
+def family_rms(records: list, hold: str) -> dict[str, float]:
+    """Per family, the seed mean of the eval records' diag_rms on one hold-out."""
+    return {f: float(np.mean([r[hold]["diag_rms"][f] for r in records])) for f in FAMILIES}
 
 
 # The amendment of 19 Oct 2026 (rung C pre-registration, chain 41): these two leave the read by the loader's imaginary-mode rule (B3LYP
@@ -94,7 +104,9 @@ def read(size: list, fold1: list, fold2: list, scaffolds: dict | None = None, ha
            "beside": {"size_arm_s4N": mean_of(size, "s4N"),
                       "omega_rms_s5": {"size": mean_of(size, "s5", "corrected_freq_rms"),
                                        "control": float(np.mean([mean_of(fold1, "s5", "corrected_freq_rms"), mean_of(fold2, "s5", "corrected_freq_rms")])),
-                                       "zero_rule": mean_of(size, "s5", "corrected_freq_rms_zero_rule")}}}
+                                       "zero_rule": mean_of(size, "s5", "corrected_freq_rms_zero_rule")},
+                      "family_rms_s5": {"size": family_rms(size, "s5"), "control_fold1": family_rms(fold1, "s5"),
+                                        "control_fold2": family_rms(fold2, "s5")}}}
     if scaffolds:
         per = {}
         for i, sc in scaffolds.items():
@@ -129,6 +141,9 @@ def main() -> int:
                      f"{'still learning' if c['still_learning'] else 'flat'}.")
     for sc, v in res["beside"].get("r_S_per_scaffold", {}).items():
         lines.append(f"- r_S {sc}: {v:.3f}")
+    lines += ["", "Families on s5 (seed mean of diag_rms, cm⁻¹; added 20 Oct 2026 after the read — the registration names them):", "",
+              "| arm | " + " | ".join(FAMILIES) + " |", "|---|" + "---|" * len(FAMILIES)]
+    lines += [f"| {arm} | " + " | ".join(f"{v[f]:.2f}" for f in FAMILIES) + " |" for arm, v in res["beside"]["family_rms_s5"].items()]
     Path(f"{OUT}.json").write_text(json.dumps(res, indent=1), encoding="utf-8")
     Path(f"{OUT}.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
     print("\n".join(lines))

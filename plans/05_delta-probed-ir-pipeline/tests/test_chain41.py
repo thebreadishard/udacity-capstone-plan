@@ -14,8 +14,10 @@ import chain41_read as R  # noqa: E402
 import ids_have_labels as L  # noqa: E402
 
 
-def _rec(**sets):
-    return {k: {"coupling_ratio": v, "corrected_freq_rms": 5.0, "corrected_freq_rms_zero_rule": 9.0, "per_molecule": {}} for k, v in sets.items()}
+def _rec(diag=None, **sets):
+    diag = diag or dict.fromkeys(R.FAMILIES, 2.0)
+    return {k: {"coupling_ratio": v, "corrected_freq_rms": 5.0, "corrected_freq_rms_zero_rule": 9.0, "per_molecule": {}, "diag_rms": diag}
+            for k, v in sets.items()}
 
 
 def test_the_read_pools_the_folds_by_their_mean_and_applies_the_lines():
@@ -23,6 +25,17 @@ def test_the_read_pools_the_folds_by_their_mean_and_applies_the_lines():
     res = R.read(size, [_rec(s5=0.30)] * 3, [_rec(s5=0.50)] * 3)
     assert np.isclose(res["r_K"], 0.40) and np.isclose(res["q5"], 1.5) and res["verdict"].startswith("between")
     assert R.verdict(1.3).startswith("carries") and R.verdict(1.8).startswith("steep") and np.isclose(res["beside"]["size_arm_s4N"], 0.40)
+
+
+def test_the_four_families_are_read_per_arm_and_required():
+    size = [_rec(diag={"CH-stretch": 3.0 + s, "CH-oop": 5.0, "ring-ip": 4.0, "other": 5.0}, s5=0.4, s4N=0.3) for s in (0.0, 0.3, 0.6)]
+    res = R.read(size, [_rec(s5=0.4)] * 3, [_rec(s5=0.4)] * 3)
+    fam = res["beside"]["family_rms_s5"]
+    assert np.isclose(fam["size"]["CH-stretch"], 3.3) and np.isclose(fam["control_fold1"]["CH-oop"], 2.0)
+    assert set(fam) == {"size", "control_fold1", "control_fold2"}
+    bare = [{k: {kk: vv for kk, vv in v.items() if kk != "diag_rms"} for k, v in r.items()} for r in size]
+    with pytest.raises(KeyError):
+        R.read(bare, [_rec(s5=0.4)] * 3, [_rec(s5=0.4)] * 3)
 
 
 def test_the_id_files_follow_the_frozen_set_file():
