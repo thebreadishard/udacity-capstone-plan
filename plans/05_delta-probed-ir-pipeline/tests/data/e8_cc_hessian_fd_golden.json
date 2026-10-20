@@ -1,0 +1,483 @@
+{
+ "cases": {
+  "fast_kernels": {
+   "files": {
+    "apt_ccsd_t.npz": {
+     "apt": "52136082aefa35bc39ca12dbbc80f70e28046aa0b8d41652b3866bc87dc91c23",
+     "basis": "\"cc-pvdz\"",
+     "coords_bohr": "27ea64a53b8b457a924d812b77c5ce380d912fd3ddcb7935319678f6b619f1a8",
+     "hessian_status": "\"VALID\"",
+     "self_check": "0.0",
+     "step": "0.005",
+     "sum_rule_max": "2.5918017843018504e-06",
+     "symmetry_spread": "1.0658141036401503e-12"
+    },
+    "dip_00_m.npy": "7d9a7019be055517b45a2f501aadbd1d9e9680766392f155af6ef831e19e0c75",
+    "dip_00_p.npy": "b161568995302ace8cdb1f88a1df32efedf2baf032217445173e5a7eff13ce95",
+    "dip_01_m.npy": "53872030e2a10ccd0115133f04dbbc65dc61b364ab187c2c8a7d79f007afa2a1",
+    "dip_01_p.npy": "40e89cf9e2e1939a2640106d35bad90b4a3198a5494e9fbb63f9044ceb0fcf41",
+    "dip_02_m.npy": "f37a48eec97230d22193d014b7949e4cedd6ec482161b34a451226ac246d5d9c",
+    "dip_02_p.npy": "c34f94ead74908c45b0f54221e38305a386682d8dfd5d115cae7ca5438d13550",
+    "dip_03_m.npy": "e6a6809efa9cfe8304be37586170d9e9820dfa9603aaa59efd040db5ce242f39",
+    "dip_03_p.npy": "6e315ec384007258bb5b548d9319a07e438f9920cfd0056c1793affd50a74bf6",
+    "dip_04_m.npy": "1a9a99580a4bb3fc2e150293c39afd3ab217c60427bcc376dd9596eea8e3531f",
+    "dip_04_p.npy": "39d6dd7c608c5f3541e08e63bf0d6bd75dd6ed3813a311ac0e7a9a510171bbf9",
+    "dip_05_m.npy": "f35279ee52f5f5a1aaba28581bc29dac3e251f55001f09b8e8810b27844f0c45",
+    "dip_05_p.npy": "dbfca45e928294429dd0b4dc6eb2fced1b693f01f8b0b15e98084ccf408f3468",
+    "e8_fd.log": "E8 FD Hessian: 3 atoms, cc-pvdz, frozen 1 (derived from the elements: 1), step 0.005 bohr, 18 displacements, 1 threads, max_memory 2000 MB, explicit (T) lambda, fast (T) density kernel, fast (T) lambda kernel\nfast (T) lambda two-route check: max |kernel \u2212 pyscf| = 1.3e-18 (l2_t; limit 1e-10; <s> s)\nfast (T) density two-route check: max |kernel \u2212 pyscf| = 3.5e-18 (doo[for_grad=False]; limit 1e-10; <s> s)\n(T) lambda <s> s, gradient <s> s\nreference: E = -76.241042308, max|grad| 1.46e-02, <s> s\nsymmetry: 4 operations, orbits [[0], [1, 2]], 6 displacements (12 gradients) instead of 18\n(T) lambda <s> s, gradient <s> s\ncoordinate  0 p: E \u2212 E0 =     -0.17 \u00b5E_h, <s> s  (1/18 gradients)\n(T) lambda <s> s, gradient <s> s\ncoordinate  0 m: E \u2212 E0 =     -0.17 \u00b5E_h, <s> s  (2/18 gradients)\npair check coordinate  0: max |mean(g+, g\u2212) \u2212 g0| = 5.5e-06 a.u. (limit 1e-04)\n(T) lambda <s> s, gradient <s> s\ncoordinate  1 p: E \u2212 E0 =     +8.99 \u00b5E_h, <s> s  (3/18 gradients)\n(T) lambda <s> s, gradient <s> s\ncoordinate  1 m: E \u2212 E0 =     +8.99 \u00b5E_h, <s> s  (4/18 gradients)\npair check coordinate  1: max |mean(g+, g\u2212) \u2212 g0| = 2.4e-05 a.u. (limit 1e-04)\n(T) lambda <s> s, gradient <s> s\ncoordinate  2 p: E \u2212 E0 =    -67.27 \u00b5E_h, <s> s  (5/18 gradients)\n(T) lambda <s> s, gradient <s> s\ncoordinate  2 m: E \u2212 E0 =    +79.24 \u00b5E_h, <s> s  (6/18 gradients)\npair check coordinate  2: max |mean(g+, g\u2212) \u2212 g0| = 7.8e-06 a.u. (limit 1e-04)\n(T) lambda <s> s, gradient <s> s\ncoordinate  3 p: E \u2212 E0 =     -0.06 \u00b5E_h, <s> s  (7/18 gradients)\n(T) lambda <s> s, gradient <s> s\ncoordinate  3 m: E \u2212 E0 =     -0.06 \u00b5E_h, <s> s  (8/18 gradients)\npair check coordinate  3: max |mean(g+, g\u2212) \u2212 g0| = 3.2e-06 a.u. (limit 1e-04)\n(T) lambda <s> s, gradient <s> s\ncoordinate  4 p: E \u2212 E0 =    -12.91 \u00b5E_h, <s> s  (9/18 gradients)\n(T) lambda <s> s, gradient <s> s\ncoordinate  4 m: E \u2212 E0 =    +22.67 \u00b5E_h, <s> s  (10/18 gradients)\npair check coordinate  4: max |mean(g+, g\u2212) \u2212 g0| = 1.2e-05 a.u. (limit 1e-04)\n(T) lambda <s> s, gradient <s> s\ncoordinate  5 p: E \u2212 E0 =    +39.48 \u00b5E_h, <s> s  (11/18 gradients)\n(T) lambda <s> s, gradient <s> s\ncoordinate  5 m: E \u2212 E0 =    -33.77 \u00b5E_h, <s> s  (12/18 gradients)\npair check coordinate  5: max |mean(g+, g\u2212) \u2212 g0| = 8.3e-06 a.u. (limit 1e-04)\nsymmetry reconstruction: spread of multiply-reached rows 5.77e-13 a.u.; self-check 3.2e-30\nenergy route to the reference gradient: max |g0 \u2212 (E(+h) \u2212 E(\u2212h))/2h| = 3.5e-06 a.u. over 6 coordinates (limit 2e-05) \u2014 PASSED\nHessian written (VALID); FD asymmetry max 5.77e-13 a.u.; vibrational frequencies (cm-1): [1644, 3926, 4052]\ntwo-route checks: translational sum rule 4.0e-07 E_h/bohr\u00b2 (limit 1e-03); translations/rotations after projection max 7.4e-05 cm\u207b\u00b9; energy route max |H_kk \u2212 d\u00b2E/dx_k\u00b2| 3.9e-06 E_h/bohr\u00b2 over 6 coordinates (limit 1e-03)\nAPT written (apt_ccsd_t.npz): translation sum rule max |\u03a3_A P_A \u2212 qI| = 2.6e-06 e; symmetry spread 1.1e-12, self-check 0.0e+00\n",
+    "ener_00_m.npy": "c31e44482436a5795c6be47c7ae859a39ffe0bd9413c328587ef101882e1b404",
+    "ener_00_p.npy": "c31e44482436a5795c6be47c7ae859a39ffe0bd9413c328587ef101882e1b404",
+    "ener_01_m.npy": "53a27254042ac92eba8c1693457d2b5c80793755a65a18c8340171fb56f7d998",
+    "ener_01_p.npy": "1ee34738e69d67a2440b634c7b8dedbc5816d7450774b7d4950be1a517a602ca",
+    "ener_02_m.npy": "8b503e71ae170967a3e0b1280793fae48ccacc59f01da4f1cd328b11345ea217",
+    "ener_02_p.npy": "b2ee2693d472c49ae63f8d7b7cdcc597618d1f8a2064172a641c33634c569b14",
+    "ener_03_m.npy": "33fa02389d6742621019a5f08d863839b2c6ea6f45689b5ee0ed472866daef6a",
+    "ener_03_p.npy": "33fa02389d6742621019a5f08d863839b2c6ea6f45689b5ee0ed472866daef6a",
+    "ener_04_m.npy": "6dd8edfeec2a41598528689e9332662574f0188aab16c71435bc102cfffb6ef5",
+    "ener_04_p.npy": "7dcee3dcc6eaf79bdb2b5fa1bf035a4c54eda1e28c61dac176aa7cec00ca2641",
+    "ener_05_m.npy": "78a2ca42445afa1d064f3746333868f287e6ef7fe170b22d0d980e5cefebcbe1",
+    "ener_05_p.npy": "35f730a2c6c61b308ccf2f1e9dd440d72dbf9d8410bae86f34e9f093653818a6",
+    "grad_00_m.npy": "8530f69d7c6a3ba22411afda92b2ad105f5ec407ff749f76abaa107d672bac0f",
+    "grad_00_p.npy": "0d9dc2739b0b1db58a57465af529f6ae0322a4c8389133af6ccc448d073b8f41",
+    "grad_01_m.npy": "3b84a298fd082b58bfe76c586706c5e72a16804be5512a5a2e3eb7fb57607b54",
+    "grad_01_p.npy": "61d0d2c4ab1c4ea330d836627382549cc05437b142295d1d7e5bc7f04431970d",
+    "grad_02_m.npy": "c51bf4234e45ed770048a4ed6ae3b4d930962615e1171e82ffc6761047348893",
+    "grad_02_p.npy": "01ed99064b21129a5820e72a6f1652755a09c51fc169db809bef85d847231e62",
+    "grad_03_m.npy": "2b087ae3f701a71b4cdfd23ba4e0d10e027971c5bcc383bfa5ad9c3b6c9169e8",
+    "grad_03_p.npy": "7929bb9da67cd880e92b7e00804cfaeb221024baadb90cdaeb7fbe3e66138fc1",
+    "grad_04_m.npy": "7a49506c65f0fd24fa27fcc4879ffd3fb99fc1145a117cde04d4897d5fff9ea6",
+    "grad_04_p.npy": "cffee718e347faf34ff8f00a8d602e7e9c99e7f107bf447f4b45532c9ce080d3",
+    "grad_05_m.npy": "42eca3c3740a5a0de19ca5365281f6aca4e2bb047795cd1fe1f9c1c6fe2b3339",
+    "grad_05_p.npy": "7b9dbed3648faa74f3825ed23ec8afc3744a6eb02f43b8a3723a5e0c3280c7ca",
+    "hessian_ccsd_t.npz": {
+     "H_projected": "2abad8388537a2dcf4a278c90c1b1493c544d9eecd7f559454e8901dd24df153",
+     "H_raw": "43ee6101610a993a79a05ad3de8404acb6770b519d31b50a17aef6d10adb496b",
+     "basis": "\"cc-pvdz\"",
+     "coords_bohr": "27ea64a53b8b457a924d812b77c5ce380d912fd3ddcb7935319678f6b619f1a8",
+     "energy": "-76.24104230764705",
+     "freq_cm": "237c9f26504c332faa4deae4c040797ec0032feedb79c036312a2f3c681fde1a",
+     "frozen": "1",
+     "gradient": "8067035704c948e6e4135c4a7c9f877d1ecb8a302a14b5b56dc420bf264d1edb",
+     "status": "\"VALID\"",
+     "step": "0.005",
+     "symmetry_reduced": "true",
+     "symmetry_spread": "5.773159728050814e-13",
+     "trans_sum_rule": "4.013257726143138e-07",
+     "vib_cm": "ae50304c1f102735cf5a1f20167d3f849b95937241aa76d45eb82040a48857ea"
+    },
+    "reference.npz": {
+     "charge": "0",
+     "coords_bohr": "27ea64a53b8b457a924d812b77c5ce380d912fd3ddcb7935319678f6b619f1a8",
+     "dipole": "b1d81c2febc5a9a8d2f0f68c15422afc282f0ca7ff30a4eca12712558124928f",
+     "energy": "-76.24104230764705",
+     "gradient": "8067035704c948e6e4135c4a7c9f877d1ecb8a302a14b5b56dc420bf264d1edb",
+     "spin": "0",
+     "two_route_checked": "true"
+    }
+   },
+   "steps": [
+    {
+     "last_stderr_line": "",
+     "rc": 0
+    }
+   ]
+  },
+  "partial_then_energy": {
+   "files": {
+    "dip_00_m.npy": "2132683f32dc5707054a5f0322327eb3bef25bbd3da91f23b190d902b3001dc2",
+    "dip_00_p.npy": "6248e7339f75c395f58ee4b4d4238c126507009f5f70b835708d0da4ef35e37b",
+    "dip_01_m.npy": "a4462a64d69d15fd195aad766c9ed835b31ada82244384c33211c5f4665fbbaa",
+    "dip_01_p.npy": "940aaac1cc7208e2391d10122a3da3ad7b2d902c840423fcaea7d9bf52c66e62",
+    "e8_fd.log": "E8 FD Hessian: 3 atoms, cc-pvdz, frozen 1 (derived from the elements: 1), step 0.005 bohr, 18 displacements, 1 threads, max_memory 2000 MB, explicit (T) lambda\n(T) lambda <s> s, gradient <s> s\nreference: E = -76.241042308, max|grad| 1.46e-02, <s> s\nsymmetry: 4 operations, orbits [[0], [1, 2]], 6 displacements (12 gradients) instead of 18\npartial run: displacement indices [0, 1]\n(T) lambda <s> s, gradient <s> s\ncoordinate  0 p: E \u2212 E0 =     -0.17 \u00b5E_h, <s> s  (1/18 gradients)\n(T) lambda <s> s, gradient <s> s\ncoordinate  0 m: E \u2212 E0 =     -0.17 \u00b5E_h, <s> s  (2/18 gradients)\npair check coordinate  0: max |mean(g+, g\u2212) \u2212 g0| = 5.5e-06 a.u. (limit 1e-04)\n(T) lambda <s> s, gradient <s> s\ncoordinate  1 p: E \u2212 E0 =     +8.99 \u00b5E_h, <s> s  (3/18 gradients)\n(T) lambda <s> s, gradient <s> s\ncoordinate  1 m: E \u2212 E0 =     +8.99 \u00b5E_h, <s> s  (4/18 gradients)\npair check coordinate  1: max |mean(g+, g\u2212) \u2212 g0| = 2.4e-05 a.u. (limit 1e-04)\npartial run done; merge grad_*.npy files and rerun without --ks to assemble the Hessian\nE8 FD Hessian: 3 atoms, cc-pvdz, frozen 1 (derived from the elements: 1), step 0.005 bohr, 18 displacements, 1 threads, max_memory 2000 MB, explicit (T) lambda\ntwo-route check (energy route) PASSED: reference gradient vs (E(+h) \u2212 E(\u2212h)) / 2h over 2 coordinates, max |\u0394| 2.8e-12 a.u. at coordinate 1 (limit 2e-05); max |g0| 1.5e-02\n",
+    "ener_00_m.npy": "c31e44482436a5795c6be47c7ae859a39ffe0bd9413c328587ef101882e1b404",
+    "ener_00_p.npy": "c31e44482436a5795c6be47c7ae859a39ffe0bd9413c328587ef101882e1b404",
+    "ener_01_m.npy": "53a27254042ac92eba8c1693457d2b5c80793755a65a18c8340171fb56f7d998",
+    "ener_01_p.npy": "1ee34738e69d67a2440b634c7b8dedbc5816d7450774b7d4950be1a517a602ca",
+    "grad_00_m.npy": "fa376b82731f3a561c209a12c47dbfb2c49da8888dd6ccef7c39218e7c0a5a32",
+    "grad_00_p.npy": "7d269e96ae75b87412a9c3561d2deb0f52b160b823ceea87afd6e7df3f7d04ed",
+    "grad_01_m.npy": "5028091652dbea1deab211aeb89e9f11bbfc5dc805c561268ee3b9a46e016883",
+    "grad_01_p.npy": "824ef911f14a8761dab63eaeb315bbdc4b67ed496243a246b292acc17b4558c3",
+    "reference.npz": {
+     "charge": "0",
+     "coords_bohr": "27ea64a53b8b457a924d812b77c5ce380d912fd3ddcb7935319678f6b619f1a8",
+     "dipole": "07a992fa3a996ed619dc22bff70ca4b0fb1e32a551952d621dbcdf55f9387f44",
+     "energy": "-76.24104230764705",
+     "gradient": "30e416b81772dc63d1364de39a499b4cb848aa8caa7c5b58973422ccec2ce46b",
+     "spin": "0",
+     "two_route_checked": "true"
+    },
+    "two_route_check.json": "{\"grad_limit\": 2e-05, \"max_abs_g0\": 0.014649042085633557, \"max_grad_diff\": 2.839815149000643e-12, \"n_coordinates\": 2, \"passed\": true, \"per_coordinate\": {\"0\": {\"diff\": 1.4962695283579776e-17, \"fd\": 0.0, \"g0\": -1.4962695283579776e-17}, \"1\": {\"diff\": 2.839815149000643e-12, \"fd\": -2.8421709430404007e-12, \"g0\": -2.3557940397576166e-15}}, \"route\": \"energy_fd\", \"step\": 0.005, \"worst_coordinate\": 1}"
+   },
+   "steps": [
+    {
+     "last_stderr_line": "",
+     "rc": 0
+    },
+    {
+     "last_stderr_line": "",
+     "rc": 0
+    }
+   ]
+  },
+  "plain": {
+   "files": {
+    "apt_ccsd_t.npz": {
+     "apt": "ed4ffec104573739c9c6ad7526aa65d19b5ef3141c059d2a51ffd1de4b72ce35",
+     "basis": "\"cc-pvdz\"",
+     "coords_bohr": "27ea64a53b8b457a924d812b77c5ce380d912fd3ddcb7935319678f6b619f1a8",
+     "hessian_status": "\"VALID\"",
+     "self_check": "0.0",
+     "step": "0.005",
+     "sum_rule_max": "2.591801639972857e-06",
+     "symmetry_spread": "0.0"
+    },
+    "dip_00_m.npy": "2132683f32dc5707054a5f0322327eb3bef25bbd3da91f23b190d902b3001dc2",
+    "dip_00_p.npy": "6248e7339f75c395f58ee4b4d4238c126507009f5f70b835708d0da4ef35e37b",
+    "dip_01_m.npy": "a4462a64d69d15fd195aad766c9ed835b31ada82244384c33211c5f4665fbbaa",
+    "dip_01_p.npy": "940aaac1cc7208e2391d10122a3da3ad7b2d902c840423fcaea7d9bf52c66e62",
+    "dip_02_m.npy": "27c743e18e87a8658982fbe5457b3fd246a0082c05f11f5554baaa8de39129a5",
+    "dip_02_p.npy": "4f1c8572a991bcb4346e4916d7c20ccb10ce918a7e80f12870d3d1d47dc5ba48",
+    "dip_03_m.npy": "96ec4aca4831b1f8cc57f25ad4709e1edddd435b2288df5f75e7a255fb60aeae",
+    "dip_03_p.npy": "5989d95ff6ba531ea3d78ece9063b7595594d86247dc60aba47cbcc56d58b10c",
+    "dip_04_m.npy": "28f2034ec514175b0e770a446f4b325e72a0f59108a5d0b75f51434ea19284f2",
+    "dip_04_p.npy": "5f118623e2e04d59f493c9fa2bacedcdd01f6d05e1795b78a7ead297184f4b1e",
+    "dip_05_m.npy": "ad87ee6cbdacd4440536df89d0c6f562c3893d2974b871e25afc1e2139a8ee98",
+    "dip_05_p.npy": "3d0d3f09022b7e9375b3185d1610853636413fba4c86c5287a388c4644041c0a",
+    "dip_06_m.npy": "69708f074615d2d0212ef1bc4d9fc4a98e11f09444fc24fceaa03258c04936ef",
+    "dip_06_p.npy": "6eb25c8805d7b50e9ac82880f2a3db2d2df57477ca9086c7968180e92eb56309",
+    "dip_07_m.npy": "e1361f14c9ede31138785456a2240d0f85166ee4d03e2040f378831f2454b2f0",
+    "dip_07_p.npy": "db37ea01e74b3926066cbb0a063ab9343d5450edf982189bcb3a0ff10d2f70b9",
+    "dip_08_m.npy": "5de2870218de30004c307c4211f038406f70d0cfae06e629dec6d0ac4a941a19",
+    "dip_08_p.npy": "d3009b073326fd3b9dde62520facad3f37903c75b1ae887b6551c32ac98bce29",
+    "e8_fd.log": "E8 FD Hessian: 3 atoms, cc-pvdz, frozen 1 (derived from the elements: 1), step 0.005 bohr, 18 displacements, 1 threads, max_memory 2000 MB, explicit (T) lambda\n(T) lambda <s> s, gradient <s> s\nreference: E = -76.241042308, max|grad| 1.46e-02, <s> s\n(T) lambda <s> s, gradient <s> s\ncoordinate  0 p: E \u2212 E0 =     -0.17 \u00b5E_h, <s> s  (1/18 gradients)\n(T) lambda <s> s, gradient <s> s\ncoordinate  0 m: E \u2212 E0 =     -0.17 \u00b5E_h, <s> s  (2/18 gradients)\npair check coordinate  0: max |mean(g+, g\u2212) \u2212 g0| = 5.5e-06 a.u. (limit 1e-04)\n(T) lambda <s> s, gradient <s> s\ncoordinate  1 p: E \u2212 E0 =     +8.99 \u00b5E_h, <s> s  (3/18 gradients)\n(T) lambda <s> s, gradient <s> s\ncoordinate  1 m: E \u2212 E0 =     +8.99 \u00b5E_h, <s> s  (4/18 gradients)\npair check coordinate  1: max |mean(g+, g\u2212) \u2212 g0| = 2.4e-05 a.u. (limit 1e-04)\n(T) lambda <s> s, gradient <s> s\ncoordinate  2 p: E \u2212 E0 =    -67.27 \u00b5E_h, <s> s  (5/18 gradients)\n(T) lambda <s> s, gradient <s> s\ncoordinate  2 m: E \u2212 E0 =    +79.24 \u00b5E_h, <s> s  (6/18 gradients)\npair check coordinate  2: max |mean(g+, g\u2212) \u2212 g0| = 7.8e-06 a.u. (limit 1e-04)\n(T) lambda <s> s, gradient <s> s\ncoordinate  3 p: E \u2212 E0 =     -0.06 \u00b5E_h, <s> s  (7/18 gradients)\n(T) lambda <s> s, gradient <s> s\ncoordinate  3 m: E \u2212 E0 =     -0.06 \u00b5E_h, <s> s  (8/18 gradients)\npair check coordinate  3: max |mean(g+, g\u2212) \u2212 g0| = 3.2e-06 a.u. (limit 1e-04)\n(T) lambda <s> s, gradient <s> s\ncoordinate  4 p: E \u2212 E0 =    -12.91 \u00b5E_h, <s> s  (9/18 gradients)\n(T) lambda <s> s, gradient <s> s\ncoordinate  4 m: E \u2212 E0 =    +22.67 \u00b5E_h, <s> s  (10/18 gradients)\npair check coordinate  4: max |mean(g+, g\u2212) \u2212 g0| = 1.2e-05 a.u. (limit 1e-04)\n(T) lambda <s> s, gradient <s> s\ncoordinate  5 p: E \u2212 E0 =    +39.48 \u00b5E_h, <s> s  (11/18 gradients)\n(T) lambda <s> s, gradient <s> s\ncoordinate  5 m: E \u2212 E0 =    -33.77 \u00b5E_h, <s> s  (12/18 gradients)\npair check coordinate  5: max |mean(g+, g\u2212) \u2212 g0| = 8.3e-06 a.u. (limit 1e-04)\n(T) lambda <s> s, gradient <s> s\ncoordinate  6 p: E \u2212 E0 =     -0.06 \u00b5E_h, <s> s  (13/18 gradients)\n(T) lambda <s> s, gradient <s> s\ncoordinate  6 m: E \u2212 E0 =     -0.06 \u00b5E_h, <s> s  (14/18 gradients)\npair check coordinate  6: max |mean(g+, g\u2212) \u2212 g0| = 3.2e-06 a.u. (limit 1e-04)\n(T) lambda <s> s, gradient <s> s\ncoordinate  7 p: E \u2212 E0 =    +22.67 \u00b5E_h, <s> s  (15/18 gradients)\n(T) lambda <s> s, gradient <s> s\ncoordinate  7 m: E \u2212 E0 =    -12.91 \u00b5E_h, <s> s  (16/18 gradients)\npair check coordinate  7: max |mean(g+, g\u2212) \u2212 g0| = 1.2e-05 a.u. (limit 1e-04)\n(T) lambda <s> s, gradient <s> s\ncoordinate  8 p: E \u2212 E0 =    +39.48 \u00b5E_h, <s> s  (17/18 gradients)\n(T) lambda <s> s, gradient <s> s\ncoordinate  8 m: E \u2212 E0 =    -33.77 \u00b5E_h, <s> s  (18/18 gradients)\npair check coordinate  8: max |mean(g+, g\u2212) \u2212 g0| = 8.3e-06 a.u. (limit 1e-04)\nenergy route to the reference gradient: max |g0 \u2212 (E(+h) \u2212 E(\u2212h))/2h| = 3.5e-06 a.u. over 9 coordinates (limit 2e-05) \u2014 PASSED\nHessian written (VALID); FD asymmetry max 8.07e-06 a.u.; vibrational frequencies (cm-1): [1644, 3926, 4052]\ntwo-route checks: translational sum rule 4.0e-07 E_h/bohr\u00b2 (limit 1e-03); translations/rotations after projection max 8.8e-05 cm\u207b\u00b9; energy route max |H_kk \u2212 d\u00b2E/dx_k\u00b2| 3.9e-06 E_h/bohr\u00b2 over 9 coordinates (limit 1e-03)\nAPT written (apt_ccsd_t.npz): translation sum rule max |\u03a3_A P_A \u2212 qI| = 2.6e-06 e; symmetry spread 0.0e+00, self-check 0.0e+00\n",
+    "ener_00_m.npy": "c31e44482436a5795c6be47c7ae859a39ffe0bd9413c328587ef101882e1b404",
+    "ener_00_p.npy": "c31e44482436a5795c6be47c7ae859a39ffe0bd9413c328587ef101882e1b404",
+    "ener_01_m.npy": "53a27254042ac92eba8c1693457d2b5c80793755a65a18c8340171fb56f7d998",
+    "ener_01_p.npy": "1ee34738e69d67a2440b634c7b8dedbc5816d7450774b7d4950be1a517a602ca",
+    "ener_02_m.npy": "8b503e71ae170967a3e0b1280793fae48ccacc59f01da4f1cd328b11345ea217",
+    "ener_02_p.npy": "b2ee2693d472c49ae63f8d7b7cdcc597618d1f8a2064172a641c33634c569b14",
+    "ener_03_m.npy": "33fa02389d6742621019a5f08d863839b2c6ea6f45689b5ee0ed472866daef6a",
+    "ener_03_p.npy": "33fa02389d6742621019a5f08d863839b2c6ea6f45689b5ee0ed472866daef6a",
+    "ener_04_m.npy": "6dd8edfeec2a41598528689e9332662574f0188aab16c71435bc102cfffb6ef5",
+    "ener_04_p.npy": "7dcee3dcc6eaf79bdb2b5fa1bf035a4c54eda1e28c61dac176aa7cec00ca2641",
+    "ener_05_m.npy": "78a2ca42445afa1d064f3746333868f287e6ef7fe170b22d0d980e5cefebcbe1",
+    "ener_05_p.npy": "35f730a2c6c61b308ccf2f1e9dd440d72dbf9d8410bae86f34e9f093653818a6",
+    "ener_06_m.npy": "2f4bf7790400adb295174e440bea9f8b99ca4cb5dffa37e7d5084f9742bbfcf2",
+    "ener_06_p.npy": "2f4bf7790400adb295174e440bea9f8b99ca4cb5dffa37e7d5084f9742bbfcf2",
+    "ener_07_m.npy": "4702af0972df24dfdf7498b39d7ee218ece81883a89af96b539e34e00d091f9e",
+    "ener_07_p.npy": "7904bbad515405341029eef10cc4d9fe05a94d6df81f7d6f5d1ae68b9fa8593d",
+    "ener_08_m.npy": "cd449b25390b9c0600f4eef98d9ce55ca89bd7bfcf70235b32c435cbfb15a112",
+    "ener_08_p.npy": "35f730a2c6c61b308ccf2f1e9dd440d72dbf9d8410bae86f34e9f093653818a6",
+    "grad_00_m.npy": "fa376b82731f3a561c209a12c47dbfb2c49da8888dd6ccef7c39218e7c0a5a32",
+    "grad_00_p.npy": "7d269e96ae75b87412a9c3561d2deb0f52b160b823ceea87afd6e7df3f7d04ed",
+    "grad_01_m.npy": "5028091652dbea1deab211aeb89e9f11bbfc5dc805c561268ee3b9a46e016883",
+    "grad_01_p.npy": "824ef911f14a8761dab63eaeb315bbdc4b67ed496243a246b292acc17b4558c3",
+    "grad_02_m.npy": "38dc384ee2ace4f332a03c7581dc6d4acd97fd96bc81a3af3a637dad6c7aa775",
+    "grad_02_p.npy": "5520713b7651c5307512bf30bc6eea7d5ebffb3e8f4a61e91a9f2025dbf0eb9f",
+    "grad_03_m.npy": "d450431b9127d39e4f4005f7c4cabb3e5288f4820bc46d834ee623b0e18111ef",
+    "grad_03_p.npy": "549887d9f0208963e595758f79c73759c6c63a4d650a672f44dd6f512de00d36",
+    "grad_04_m.npy": "9fd60c19cdd2aa00a2684652e1a22362c57877fdcd09802da61c501282895ec1",
+    "grad_04_p.npy": "ed61d71d36da14c27b5e7ed6b6d1655960a34a763246b5aa836743cae4cf2c51",
+    "grad_05_m.npy": "e58f320380f063e40ba368513a8f430d93d4c4d0fb5e8fbecdc28c00c6a8d90d",
+    "grad_05_p.npy": "0552ed7409fd04d742a9ecfd19ea4b61e846b2f55ce18fd0e8e01029d304d6b5",
+    "grad_06_m.npy": "da1b14be7e0330797e720551428dde030a880c607ffd4da6a3cd52310e6592d4",
+    "grad_06_p.npy": "8741f03ed7ebe12d61f67d4c3be6428d7172a460a94eba9e828df6defee9d891",
+    "grad_07_m.npy": "55dec24b52015e000340de7f7b799691ccabcfd3e580c9c0191ce799f379e0af",
+    "grad_07_p.npy": "30a357b460e35b13a6d67a99bba45065ecd36388286dcfead04c220b0eae31c6",
+    "grad_08_m.npy": "5b0494e6e42f9a71fdb355fb38d8ebd31fef9c8cb8156a526ae3aae17be8c859",
+    "grad_08_p.npy": "145e33105a3c0ca330eff276959985cb8edac8ea7a63f4047dcaad51c4c49826",
+    "hessian_ccsd_t.npz": {
+     "H_projected": "ac0fafb2a25fee45570a887829fa8c87584ddc1c7587d3974191c5d5e1343542",
+     "H_raw": "e8a709cdc65a6d7563b655c77696f86d9f8245316d92d43d1cf00dd63b16877b",
+     "basis": "\"cc-pvdz\"",
+     "coords_bohr": "27ea64a53b8b457a924d812b77c5ce380d912fd3ddcb7935319678f6b619f1a8",
+     "energy": "-76.24104230764705",
+     "freq_cm": "6506eadc2fd726c09fcc117e85ef953b6a3399676910a52f94c7ed3d53441b03",
+     "frozen": "1",
+     "gradient": "30e416b81772dc63d1364de39a499b4cb848aa8caa7c5b58973422ccec2ce46b",
+     "status": "\"VALID\"",
+     "step": "0.005",
+     "symmetry_reduced": "false",
+     "symmetry_spread": "-1.0",
+     "trans_sum_rule": "4.01325872534386e-07",
+     "vib_cm": "71d2e60f3644ef1d75efdf76a49c9fcc2cb04e3ff5cfbf439fa7f77035f86888"
+    },
+    "reference.npz": {
+     "charge": "0",
+     "coords_bohr": "27ea64a53b8b457a924d812b77c5ce380d912fd3ddcb7935319678f6b619f1a8",
+     "dipole": "07a992fa3a996ed619dc22bff70ca4b0fb1e32a551952d621dbcdf55f9387f44",
+     "energy": "-76.24104230764705",
+     "gradient": "30e416b81772dc63d1364de39a499b4cb848aa8caa7c5b58973422ccec2ce46b",
+     "spin": "0",
+     "two_route_checked": "true"
+    }
+   },
+   "steps": [
+    {
+     "last_stderr_line": "",
+     "rc": 0
+    }
+   ]
+  },
+  "refuse_fast_uhf": {
+   "files": {
+    "e8_fd.log": ""
+   },
+   "steps": [
+    {
+     "last_stderr_line": "--fast-t-density and --fast-t-lambda are RHF only (the UHF gradient has its own (T) code)",
+     "rc": 1
+    }
+   ]
+  },
+  "refuse_frozen": {
+   "files": {
+    "e8_fd.log": ""
+   },
+   "steps": [
+    {
+     "last_stderr_line": "--frozen 3 but the elements give 1 core orbitals \u2014 refusing (guard of 27 Sep 2026: naphthalene ran with benzene's 6 of its 10 carbon cores and produced an invalid Hessian); pass --allow-frozen-mismatch to override on purpose",
+     "rc": 1
+    }
+   ]
+  },
+  "separate_then_only": {
+   "files": {
+    "apt_ccsd_t.npz": {
+     "apt": "8f0769eb5851d04012992f35f1854e35d667e0046941f1cc5ac2e15046213261",
+     "basis": "\"cc-pvdz\"",
+     "coords_bohr": "27ea64a53b8b457a924d812b77c5ce380d912fd3ddcb7935319678f6b619f1a8",
+     "hessian_status": "\"VALID\"",
+     "self_check": "0.0",
+     "step": "0.005",
+     "sum_rule_max": "2.591799874718248e-06",
+     "symmetry_spread": "8.43769498715119e-13"
+    },
+    "dip_00_m.npy": "2132683f32dc5707054a5f0322327eb3bef25bbd3da91f23b190d902b3001dc2",
+    "dip_00_p.npy": "6248e7339f75c395f58ee4b4d4238c126507009f5f70b835708d0da4ef35e37b",
+    "dip_01_m.npy": "a4462a64d69d15fd195aad766c9ed835b31ada82244384c33211c5f4665fbbaa",
+    "dip_01_p.npy": "940aaac1cc7208e2391d10122a3da3ad7b2d902c840423fcaea7d9bf52c66e62",
+    "dip_02_m.npy": "27c743e18e87a8658982fbe5457b3fd246a0082c05f11f5554baaa8de39129a5",
+    "dip_02_p.npy": "4f1c8572a991bcb4346e4916d7c20ccb10ce918a7e80f12870d3d1d47dc5ba48",
+    "dip_03_m.npy": "96ec4aca4831b1f8cc57f25ad4709e1edddd435b2288df5f75e7a255fb60aeae",
+    "dip_03_p.npy": "5989d95ff6ba531ea3d78ece9063b7595594d86247dc60aba47cbcc56d58b10c",
+    "dip_04_m.npy": "28f2034ec514175b0e770a446f4b325e72a0f59108a5d0b75f51434ea19284f2",
+    "dip_04_p.npy": "5f118623e2e04d59f493c9fa2bacedcdd01f6d05e1795b78a7ead297184f4b1e",
+    "dip_05_m.npy": "ad87ee6cbdacd4440536df89d0c6f562c3893d2974b871e25afc1e2139a8ee98",
+    "dip_05_p.npy": "3d0d3f09022b7e9375b3185d1610853636413fba4c86c5287a388c4644041c0a",
+    "e8_fd.log": "E8 FD Hessian: 3 atoms, cc-pvdz, frozen 1 (derived from the elements: 1), step 0.005 bohr, 18 displacements, 1 threads, max_memory 2000 MB, explicit (T) lambda\n(T) lambda <s> s, gradient <s> s\nreference: E = -76.241042308, max|grad| 1.46e-02, <s> s; two-route checks deferred to a separate run (--two-route-check only)\nE8 FD Hessian: 3 atoms, cc-pvdz, frozen 1 (derived from the elements: 1), step 0.005 bohr, 18 displacements, 1 threads, max_memory 2000 MB, explicit (T) lambda\n(T) lambda <s> s, gradient <s> s\ntwo-route check PASSED: checked reference vs stored reference max |\u0394grad| 0.0e+00 (limit 1e-08), |\u0394E| 0.0e+00; <s> s\nE8 FD Hessian: 3 atoms, cc-pvdz, frozen 1 (derived from the elements: 1), step 0.005 bohr, 18 displacements, 1 threads, max_memory 2000 MB, explicit (T) lambda\ntwo-route check on file: passed \u2014 assembling\nsymmetry: 4 operations, orbits [[0], [1, 2]], 6 displacements (12 gradients) instead of 18\n(T) lambda <s> s, gradient <s> s\ncoordinate  0 p: E \u2212 E0 =     -0.17 \u00b5E_h, <s> s  (1/18 gradients)\n(T) lambda <s> s, gradient <s> s\ncoordinate  0 m: E \u2212 E0 =     -0.17 \u00b5E_h, <s> s  (2/18 gradients)\npair check coordinate  0: max |mean(g+, g\u2212) \u2212 g0| = 5.5e-06 a.u. (limit 1e-04)\n(T) lambda <s> s, gradient <s> s\ncoordinate  1 p: E \u2212 E0 =     +8.99 \u00b5E_h, <s> s  (3/18 gradients)\n(T) lambda <s> s, gradient <s> s\ncoordinate  1 m: E \u2212 E0 =     +8.99 \u00b5E_h, <s> s  (4/18 gradients)\npair check coordinate  1: max |mean(g+, g\u2212) \u2212 g0| = 2.4e-05 a.u. (limit 1e-04)\n(T) lambda <s> s, gradient <s> s\ncoordinate  2 p: E \u2212 E0 =    -67.27 \u00b5E_h, <s> s  (5/18 gradients)\n(T) lambda <s> s, gradient <s> s\ncoordinate  2 m: E \u2212 E0 =    +79.24 \u00b5E_h, <s> s  (6/18 gradients)\npair check coordinate  2: max |mean(g+, g\u2212) \u2212 g0| = 7.8e-06 a.u. (limit 1e-04)\n(T) lambda <s> s, gradient <s> s\ncoordinate  3 p: E \u2212 E0 =     -0.06 \u00b5E_h, <s> s  (7/18 gradients)\n(T) lambda <s> s, gradient <s> s\ncoordinate  3 m: E \u2212 E0 =     -0.06 \u00b5E_h, <s> s  (8/18 gradients)\npair check coordinate  3: max |mean(g+, g\u2212) \u2212 g0| = 3.2e-06 a.u. (limit 1e-04)\n(T) lambda <s> s, gradient <s> s\ncoordinate  4 p: E \u2212 E0 =    -12.91 \u00b5E_h, <s> s  (9/18 gradients)\n(T) lambda <s> s, gradient <s> s\ncoordinate  4 m: E \u2212 E0 =    +22.67 \u00b5E_h, <s> s  (10/18 gradients)\npair check coordinate  4: max |mean(g+, g\u2212) \u2212 g0| = 1.2e-05 a.u. (limit 1e-04)\n(T) lambda <s> s, gradient <s> s\ncoordinate  5 p: E \u2212 E0 =    +39.48 \u00b5E_h, <s> s  (11/18 gradients)\n(T) lambda <s> s, gradient <s> s\ncoordinate  5 m: E \u2212 E0 =    -33.77 \u00b5E_h, <s> s  (12/18 gradients)\npair check coordinate  5: max |mean(g+, g\u2212) \u2212 g0| = 8.3e-06 a.u. (limit 1e-04)\nsymmetry reconstruction: spread of multiply-reached rows 6.66e-13 a.u.; self-check 6.3e-30\nenergy route to the reference gradient: max |g0 \u2212 (E(+h) \u2212 E(\u2212h))/2h| = 3.5e-06 a.u. over 6 coordinates (limit 2e-05) \u2014 PASSED\nHessian written (VALID); FD asymmetry max 6.66e-13 a.u.; vibrational frequencies (cm-1): [1644, 3926, 4052]\ntwo-route checks: translational sum rule 4.0e-07 E_h/bohr\u00b2 (limit 1e-03); translations/rotations after projection max 7.8e-05 cm\u207b\u00b9; energy route max |H_kk \u2212 d\u00b2E/dx_k\u00b2| 3.9e-06 E_h/bohr\u00b2 over 6 coordinates (limit 1e-03)\nAPT written (apt_ccsd_t.npz): translation sum rule max |\u03a3_A P_A \u2212 qI| = 2.6e-06 e; symmetry spread 8.4e-13, self-check 0.0e+00\n",
+    "ener_00_m.npy": "c31e44482436a5795c6be47c7ae859a39ffe0bd9413c328587ef101882e1b404",
+    "ener_00_p.npy": "c31e44482436a5795c6be47c7ae859a39ffe0bd9413c328587ef101882e1b404",
+    "ener_01_m.npy": "53a27254042ac92eba8c1693457d2b5c80793755a65a18c8340171fb56f7d998",
+    "ener_01_p.npy": "1ee34738e69d67a2440b634c7b8dedbc5816d7450774b7d4950be1a517a602ca",
+    "ener_02_m.npy": "8b503e71ae170967a3e0b1280793fae48ccacc59f01da4f1cd328b11345ea217",
+    "ener_02_p.npy": "b2ee2693d472c49ae63f8d7b7cdcc597618d1f8a2064172a641c33634c569b14",
+    "ener_03_m.npy": "33fa02389d6742621019a5f08d863839b2c6ea6f45689b5ee0ed472866daef6a",
+    "ener_03_p.npy": "33fa02389d6742621019a5f08d863839b2c6ea6f45689b5ee0ed472866daef6a",
+    "ener_04_m.npy": "6dd8edfeec2a41598528689e9332662574f0188aab16c71435bc102cfffb6ef5",
+    "ener_04_p.npy": "7dcee3dcc6eaf79bdb2b5fa1bf035a4c54eda1e28c61dac176aa7cec00ca2641",
+    "ener_05_m.npy": "78a2ca42445afa1d064f3746333868f287e6ef7fe170b22d0d980e5cefebcbe1",
+    "ener_05_p.npy": "35f730a2c6c61b308ccf2f1e9dd440d72dbf9d8410bae86f34e9f093653818a6",
+    "grad_00_m.npy": "fa376b82731f3a561c209a12c47dbfb2c49da8888dd6ccef7c39218e7c0a5a32",
+    "grad_00_p.npy": "7d269e96ae75b87412a9c3561d2deb0f52b160b823ceea87afd6e7df3f7d04ed",
+    "grad_01_m.npy": "5028091652dbea1deab211aeb89e9f11bbfc5dc805c561268ee3b9a46e016883",
+    "grad_01_p.npy": "824ef911f14a8761dab63eaeb315bbdc4b67ed496243a246b292acc17b4558c3",
+    "grad_02_m.npy": "38dc384ee2ace4f332a03c7581dc6d4acd97fd96bc81a3af3a637dad6c7aa775",
+    "grad_02_p.npy": "5520713b7651c5307512bf30bc6eea7d5ebffb3e8f4a61e91a9f2025dbf0eb9f",
+    "grad_03_m.npy": "d450431b9127d39e4f4005f7c4cabb3e5288f4820bc46d834ee623b0e18111ef",
+    "grad_03_p.npy": "549887d9f0208963e595758f79c73759c6c63a4d650a672f44dd6f512de00d36",
+    "grad_04_m.npy": "9fd60c19cdd2aa00a2684652e1a22362c57877fdcd09802da61c501282895ec1",
+    "grad_04_p.npy": "ed61d71d36da14c27b5e7ed6b6d1655960a34a763246b5aa836743cae4cf2c51",
+    "grad_05_m.npy": "e58f320380f063e40ba368513a8f430d93d4c4d0fb5e8fbecdc28c00c6a8d90d",
+    "grad_05_p.npy": "0552ed7409fd04d742a9ecfd19ea4b61e846b2f55ce18fd0e8e01029d304d6b5",
+    "hessian_ccsd_t.npz": {
+     "H_projected": "3c4a34df43b0a314d31f616545fb724e16eda19e4690dc29deb9b0a067da1e34",
+     "H_raw": "9b14aa912b86d5140cef4c88434e4b161091220744d425bc5a4f283711cb62e1",
+     "basis": "\"cc-pvdz\"",
+     "coords_bohr": "27ea64a53b8b457a924d812b77c5ce380d912fd3ddcb7935319678f6b619f1a8",
+     "energy": "-76.24104230764705",
+     "freq_cm": "f7ab13485f9c52dc6a0910cad2674f182e2dc83a7edad505846d0d87e4489609",
+     "frozen": "1",
+     "gradient": "30e416b81772dc63d1364de39a499b4cb848aa8caa7c5b58973422ccec2ce46b",
+     "status": "\"VALID\"",
+     "step": "0.005",
+     "symmetry_reduced": "true",
+     "symmetry_spread": "6.661338147750939e-13",
+     "trans_sum_rule": "4.013255616719391e-07",
+     "vib_cm": "2f6bcf5f76f085a175ad1e7c25e079ae6d4d4cd1997beb6e13275817c7a9f871"
+    },
+    "reference.npz": {
+     "charge": "0",
+     "coords_bohr": "27ea64a53b8b457a924d812b77c5ce380d912fd3ddcb7935319678f6b619f1a8",
+     "dipole": "07a992fa3a996ed619dc22bff70ca4b0fb1e32a551952d621dbcdf55f9387f44",
+     "energy": "-76.24104230764705",
+     "gradient": "30e416b81772dc63d1364de39a499b4cb848aa8caa7c5b58973422ccec2ce46b",
+     "spin": "0",
+     "two_route_checked": "false"
+    },
+    "two_route_check.json": "{\"energy_diff\": 0.0, \"energy_limit\": 1e-09, \"grad_limit\": 1e-08, \"max_grad_diff\": 0.0, \"passed\": true}"
+   },
+   "steps": [
+    {
+     "last_stderr_line": "",
+     "rc": 0
+    },
+    {
+     "last_stderr_line": "",
+     "rc": 0
+    },
+    {
+     "last_stderr_line": "",
+     "rc": 0
+    }
+   ]
+  },
+  "symmetry": {
+   "files": {
+    "apt_ccsd_t.npz": {
+     "apt": "8f0769eb5851d04012992f35f1854e35d667e0046941f1cc5ac2e15046213261",
+     "basis": "\"cc-pvdz\"",
+     "coords_bohr": "27ea64a53b8b457a924d812b77c5ce380d912fd3ddcb7935319678f6b619f1a8",
+     "hessian_status": "\"VALID\"",
+     "self_check": "0.0",
+     "step": "0.005",
+     "sum_rule_max": "2.591799874718248e-06",
+     "symmetry_spread": "8.43769498715119e-13"
+    },
+    "dip_00_m.npy": "2132683f32dc5707054a5f0322327eb3bef25bbd3da91f23b190d902b3001dc2",
+    "dip_00_p.npy": "6248e7339f75c395f58ee4b4d4238c126507009f5f70b835708d0da4ef35e37b",
+    "dip_01_m.npy": "a4462a64d69d15fd195aad766c9ed835b31ada82244384c33211c5f4665fbbaa",
+    "dip_01_p.npy": "940aaac1cc7208e2391d10122a3da3ad7b2d902c840423fcaea7d9bf52c66e62",
+    "dip_02_m.npy": "27c743e18e87a8658982fbe5457b3fd246a0082c05f11f5554baaa8de39129a5",
+    "dip_02_p.npy": "4f1c8572a991bcb4346e4916d7c20ccb10ce918a7e80f12870d3d1d47dc5ba48",
+    "dip_03_m.npy": "96ec4aca4831b1f8cc57f25ad4709e1edddd435b2288df5f75e7a255fb60aeae",
+    "dip_03_p.npy": "5989d95ff6ba531ea3d78ece9063b7595594d86247dc60aba47cbcc56d58b10c",
+    "dip_04_m.npy": "28f2034ec514175b0e770a446f4b325e72a0f59108a5d0b75f51434ea19284f2",
+    "dip_04_p.npy": "5f118623e2e04d59f493c9fa2bacedcdd01f6d05e1795b78a7ead297184f4b1e",
+    "dip_05_m.npy": "ad87ee6cbdacd4440536df89d0c6f562c3893d2974b871e25afc1e2139a8ee98",
+    "dip_05_p.npy": "3d0d3f09022b7e9375b3185d1610853636413fba4c86c5287a388c4644041c0a",
+    "e8_fd.log": "E8 FD Hessian: 3 atoms, cc-pvdz, frozen 1 (derived from the elements: 1), step 0.005 bohr, 18 displacements, 1 threads, max_memory 2000 MB, explicit (T) lambda\n(T) lambda <s> s, gradient <s> s\nreference: E = -76.241042308, max|grad| 1.46e-02, <s> s\nsymmetry: 4 operations, orbits [[0], [1, 2]], 6 displacements (12 gradients) instead of 18\n(T) lambda <s> s, gradient <s> s\ncoordinate  0 p: E \u2212 E0 =     -0.17 \u00b5E_h, <s> s  (1/18 gradients)\n(T) lambda <s> s, gradient <s> s\ncoordinate  0 m: E \u2212 E0 =     -0.17 \u00b5E_h, <s> s  (2/18 gradients)\npair check coordinate  0: max |mean(g+, g\u2212) \u2212 g0| = 5.5e-06 a.u. (limit 1e-04)\n(T) lambda <s> s, gradient <s> s\ncoordinate  1 p: E \u2212 E0 =     +8.99 \u00b5E_h, <s> s  (3/18 gradients)\n(T) lambda <s> s, gradient <s> s\ncoordinate  1 m: E \u2212 E0 =     +8.99 \u00b5E_h, <s> s  (4/18 gradients)\npair check coordinate  1: max |mean(g+, g\u2212) \u2212 g0| = 2.4e-05 a.u. (limit 1e-04)\n(T) lambda <s> s, gradient <s> s\ncoordinate  2 p: E \u2212 E0 =    -67.27 \u00b5E_h, <s> s  (5/18 gradients)\n(T) lambda <s> s, gradient <s> s\ncoordinate  2 m: E \u2212 E0 =    +79.24 \u00b5E_h, <s> s  (6/18 gradients)\npair check coordinate  2: max |mean(g+, g\u2212) \u2212 g0| = 7.8e-06 a.u. (limit 1e-04)\n(T) lambda <s> s, gradient <s> s\ncoordinate  3 p: E \u2212 E0 =     -0.06 \u00b5E_h, <s> s  (7/18 gradients)\n(T) lambda <s> s, gradient <s> s\ncoordinate  3 m: E \u2212 E0 =     -0.06 \u00b5E_h, <s> s  (8/18 gradients)\npair check coordinate  3: max |mean(g+, g\u2212) \u2212 g0| = 3.2e-06 a.u. (limit 1e-04)\n(T) lambda <s> s, gradient <s> s\ncoordinate  4 p: E \u2212 E0 =    -12.91 \u00b5E_h, <s> s  (9/18 gradients)\n(T) lambda <s> s, gradient <s> s\ncoordinate  4 m: E \u2212 E0 =    +22.67 \u00b5E_h, <s> s  (10/18 gradients)\npair check coordinate  4: max |mean(g+, g\u2212) \u2212 g0| = 1.2e-05 a.u. (limit 1e-04)\n(T) lambda <s> s, gradient <s> s\ncoordinate  5 p: E \u2212 E0 =    +39.48 \u00b5E_h, <s> s  (11/18 gradients)\n(T) lambda <s> s, gradient <s> s\ncoordinate  5 m: E \u2212 E0 =    -33.77 \u00b5E_h, <s> s  (12/18 gradients)\npair check coordinate  5: max |mean(g+, g\u2212) \u2212 g0| = 8.3e-06 a.u. (limit 1e-04)\nsymmetry reconstruction: spread of multiply-reached rows 6.66e-13 a.u.; self-check 6.3e-30\nenergy route to the reference gradient: max |g0 \u2212 (E(+h) \u2212 E(\u2212h))/2h| = 3.5e-06 a.u. over 6 coordinates (limit 2e-05) \u2014 PASSED\nHessian written (VALID); FD asymmetry max 6.66e-13 a.u.; vibrational frequencies (cm-1): [1644, 3926, 4052]\ntwo-route checks: translational sum rule 4.0e-07 E_h/bohr\u00b2 (limit 1e-03); translations/rotations after projection max 7.8e-05 cm\u207b\u00b9; energy route max |H_kk \u2212 d\u00b2E/dx_k\u00b2| 3.9e-06 E_h/bohr\u00b2 over 6 coordinates (limit 1e-03)\nAPT written (apt_ccsd_t.npz): translation sum rule max |\u03a3_A P_A \u2212 qI| = 2.6e-06 e; symmetry spread 8.4e-13, self-check 0.0e+00\n",
+    "ener_00_m.npy": "c31e44482436a5795c6be47c7ae859a39ffe0bd9413c328587ef101882e1b404",
+    "ener_00_p.npy": "c31e44482436a5795c6be47c7ae859a39ffe0bd9413c328587ef101882e1b404",
+    "ener_01_m.npy": "53a27254042ac92eba8c1693457d2b5c80793755a65a18c8340171fb56f7d998",
+    "ener_01_p.npy": "1ee34738e69d67a2440b634c7b8dedbc5816d7450774b7d4950be1a517a602ca",
+    "ener_02_m.npy": "8b503e71ae170967a3e0b1280793fae48ccacc59f01da4f1cd328b11345ea217",
+    "ener_02_p.npy": "b2ee2693d472c49ae63f8d7b7cdcc597618d1f8a2064172a641c33634c569b14",
+    "ener_03_m.npy": "33fa02389d6742621019a5f08d863839b2c6ea6f45689b5ee0ed472866daef6a",
+    "ener_03_p.npy": "33fa02389d6742621019a5f08d863839b2c6ea6f45689b5ee0ed472866daef6a",
+    "ener_04_m.npy": "6dd8edfeec2a41598528689e9332662574f0188aab16c71435bc102cfffb6ef5",
+    "ener_04_p.npy": "7dcee3dcc6eaf79bdb2b5fa1bf035a4c54eda1e28c61dac176aa7cec00ca2641",
+    "ener_05_m.npy": "78a2ca42445afa1d064f3746333868f287e6ef7fe170b22d0d980e5cefebcbe1",
+    "ener_05_p.npy": "35f730a2c6c61b308ccf2f1e9dd440d72dbf9d8410bae86f34e9f093653818a6",
+    "grad_00_m.npy": "fa376b82731f3a561c209a12c47dbfb2c49da8888dd6ccef7c39218e7c0a5a32",
+    "grad_00_p.npy": "7d269e96ae75b87412a9c3561d2deb0f52b160b823ceea87afd6e7df3f7d04ed",
+    "grad_01_m.npy": "5028091652dbea1deab211aeb89e9f11bbfc5dc805c561268ee3b9a46e016883",
+    "grad_01_p.npy": "824ef911f14a8761dab63eaeb315bbdc4b67ed496243a246b292acc17b4558c3",
+    "grad_02_m.npy": "38dc384ee2ace4f332a03c7581dc6d4acd97fd96bc81a3af3a637dad6c7aa775",
+    "grad_02_p.npy": "5520713b7651c5307512bf30bc6eea7d5ebffb3e8f4a61e91a9f2025dbf0eb9f",
+    "grad_03_m.npy": "d450431b9127d39e4f4005f7c4cabb3e5288f4820bc46d834ee623b0e18111ef",
+    "grad_03_p.npy": "549887d9f0208963e595758f79c73759c6c63a4d650a672f44dd6f512de00d36",
+    "grad_04_m.npy": "9fd60c19cdd2aa00a2684652e1a22362c57877fdcd09802da61c501282895ec1",
+    "grad_04_p.npy": "ed61d71d36da14c27b5e7ed6b6d1655960a34a763246b5aa836743cae4cf2c51",
+    "grad_05_m.npy": "e58f320380f063e40ba368513a8f430d93d4c4d0fb5e8fbecdc28c00c6a8d90d",
+    "grad_05_p.npy": "0552ed7409fd04d742a9ecfd19ea4b61e846b2f55ce18fd0e8e01029d304d6b5",
+    "hessian_ccsd_t.npz": {
+     "H_projected": "3c4a34df43b0a314d31f616545fb724e16eda19e4690dc29deb9b0a067da1e34",
+     "H_raw": "9b14aa912b86d5140cef4c88434e4b161091220744d425bc5a4f283711cb62e1",
+     "basis": "\"cc-pvdz\"",
+     "coords_bohr": "27ea64a53b8b457a924d812b77c5ce380d912fd3ddcb7935319678f6b619f1a8",
+     "energy": "-76.24104230764705",
+     "freq_cm": "f7ab13485f9c52dc6a0910cad2674f182e2dc83a7edad505846d0d87e4489609",
+     "frozen": "1",
+     "gradient": "30e416b81772dc63d1364de39a499b4cb848aa8caa7c5b58973422ccec2ce46b",
+     "status": "\"VALID\"",
+     "step": "0.005",
+     "symmetry_reduced": "true",
+     "symmetry_spread": "6.661338147750939e-13",
+     "trans_sum_rule": "4.013255616719391e-07",
+     "vib_cm": "2f6bcf5f76f085a175ad1e7c25e079ae6d4d4cd1997beb6e13275817c7a9f871"
+    },
+    "reference.npz": {
+     "charge": "0",
+     "coords_bohr": "27ea64a53b8b457a924d812b77c5ce380d912fd3ddcb7935319678f6b619f1a8",
+     "dipole": "07a992fa3a996ed619dc22bff70ca4b0fb1e32a551952d621dbcdf55f9387f44",
+     "energy": "-76.24104230764705",
+     "gradient": "30e416b81772dc63d1364de39a499b4cb848aa8caa7c5b58973422ccec2ce46b",
+     "spin": "0",
+     "two_route_checked": "true"
+    }
+   },
+   "steps": [
+    {
+     "last_stderr_line": "",
+     "rc": 0
+    }
+   ]
+  },
+  "uhf_cation": {
+   "files": {
+    "e8_fd.log": "E8 FD Hessian: 3 atoms, cc-pvdz, frozen 1 (derived from the elements: 1), step 0.005 bohr, 18 displacements, 1 threads, max_memory 2000 MB, charge 1, spin 1 (UHF-UCCSD(T)), explicit (T) lambda\n(T) lambda <s> s, gradient <s> s (no dipole on the UHF path)\nreference: E = -75.801687403, max|grad| 4.93e-02, <s> s\nsymmetry: 4 operations, orbits [[0], [1, 2]], 6 displacements (12 gradients) instead of 18\n(T) lambda <s> s, gradient <s> s (no dipole on the UHF path)\ncoordinate  0 p: E \u2212 E0 =     -0.56 \u00b5E_h, <s> s  (1/18 gradients)\n(T) lambda <s> s, gradient <s> s (no dipole on the UHF path)\ncoordinate  0 m: E \u2212 E0 =     -0.56 \u00b5E_h, <s> s  (2/18 gradients)\npair check coordinate  0: max |mean(g+, g\u2212) \u2212 g0| = 5.9e-06 a.u. (limit 1e-04)\n(T) lambda <s> s, gradient <s> s (no dipole on the UHF path)\ncoordinate  1 p: E \u2212 E0 =     +9.03 \u00b5E_h, <s> s  (3/18 gradients)\n(T) lambda <s> s, gradient <s> s (no dipole on the UHF path)\ncoordinate  1 m: E \u2212 E0 =     +9.03 \u00b5E_h, <s> s  (4/18 gradients)\npair check coordinate  1: max |mean(g+, g\u2212) \u2212 g0| = 2.4e-05 a.u. (limit 1e-04)\n(T) lambda <s> s, gradient <s> s (no dipole on the UHF path)\ncoordinate  2 p: E \u2212 E0 =   -240.69 \u00b5E_h, <s> s  (5/18 gradients)\n(T) lambda <s> s, gradient <s> s (no dipole on the UHF path)\ncoordinate  2 m: E \u2212 E0 =   +252.62 \u00b5E_h, <s> s  (6/18 gradients)\npair check coordinate  2: max |mean(g+, g\u2212) \u2212 g0| = 7.8e-06 a.u. (limit 1e-04)\n(T) lambda <s> s, gradient <s> s (no dipole on the UHF path)\ncoordinate  3 p: E \u2212 E0 =     -0.32 \u00b5E_h, <s> s  (7/18 gradients)\n(T) lambda <s> s, gradient <s> s (no dipole on the UHF path)\ncoordinate  3 m: E \u2212 E0 =     -0.32 \u00b5E_h, <s> s  (8/18 gradients)\npair check coordinate  3: max |mean(g+, g\u2212) \u2212 g0| = 3.4e-06 a.u. (limit 1e-04)\n(T) lambda <s> s, gradient <s> s (no dipole on the UHF path)\ncoordinate  4 p: E \u2212 E0 =   -205.10 \u00b5E_h, <s> s  (9/18 gradients)\n(T) lambda <s> s, gradient <s> s (no dipole on the UHF path)\ncoordinate  4 m: E \u2212 E0 =   +214.96 \u00b5E_h, <s> s  (10/18 gradients)\npair check coordinate  4: max |mean(g+, g\u2212) \u2212 g0| = 1.2e-05 a.u. (limit 1e-04)\n(T) lambda <s> s, gradient <s> s (no dipole on the UHF path)\ncoordinate  5 p: E \u2212 E0 =   +126.07 \u00b5E_h, <s> s  (11/18 gradients)\n(T) lambda <s> s, gradient <s> s (no dipole on the UHF path)\ncoordinate  5 m: E \u2212 E0 =   -120.58 \u00b5E_h, <s> s  (12/18 gradients)\npair check coordinate  5: max |mean(g+, g\u2212) \u2212 g0| = 8.2e-06 a.u. (limit 1e-04)\nsymmetry reconstruction: spread of multiply-reached rows 2.89e-11 a.u.; self-check 1.6e-30\nenergy route to the reference gradient: max |g0 \u2212 (E(+h) \u2212 E(\u2212h))/2h| = 3.4e-06 a.u. over 6 coordinates (limit 2e-05) \u2014 PASSED\nHessian written (VALID); FD asymmetry max 2.89e-11 a.u.; vibrational frequencies (cm-1): [1416, 4031, 4082]\ntwo-route checks: translational sum rule 3.9e-07 E_h/bohr\u00b2 (limit 1e-03); translations/rotations after projection max 8.1e-05 cm\u207b\u00b9; energy route max |H_kk \u2212 d\u00b2E/dx_k\u00b2| 3.6e-06 E_h/bohr\u00b2 over 6 coordinates (limit 1e-03)\n",
+    "ener_00_m.npy": "9c97f7cf347bd2fa6bad3bb8eb814489c04b544981a21392cba180f1a2fd33ac",
+    "ener_00_p.npy": "9c97f7cf347bd2fa6bad3bb8eb814489c04b544981a21392cba180f1a2fd33ac",
+    "ener_01_m.npy": "90dd1b41ae2ead17cee22ba260d51828ae0990b30ac364aa11c702545eace870",
+    "ener_01_p.npy": "b14fa70a1cde90f5a4f42ab50450ffbdeee23174fe92aa421f5091f61e8c5216",
+    "ener_02_m.npy": "52e56d30f24ce28b95c0c3280d37dfb23783f9859dc8a23273652f64f633989f",
+    "ener_02_p.npy": "0c3a5a4d733be5fa874f41c4df70e2a5c696fd1b537f2c8c933dae39dfb248ff",
+    "ener_03_m.npy": "8c0da763f48c8e8b2b1b081b7cf8add1df33eb31a6c1d2e61de49d20eb383fb7",
+    "ener_03_p.npy": "8c0da763f48c8e8b2b1b081b7cf8add1df33eb31a6c1d2e61de49d20eb383fb7",
+    "ener_04_m.npy": "8f2666f9efcaccc564a402faed5b758706e0f5f303c15a6094a02a2c43fc4443",
+    "ener_04_p.npy": "28769d387e0d42e55b8763138a9036494ce772dfceec25b08e1198ae414aec9a",
+    "ener_05_m.npy": "9cb2af7f8c6a16544d6bc7f88a6fb624ddbdbe923bde3360499894f1b2355b97",
+    "ener_05_p.npy": "7474acc719f97b1daa5cf51305fd8b0a37838794670ced074422ea81ab9d9780",
+    "grad_00_m.npy": "1644cbf6b9584e32f9638397fdc19726c49ba2ef594a179c0b084b785c697359",
+    "grad_00_p.npy": "a800fa6ed3105b0e1fa4bb1f03e22a7f3beffc0399795d72d2cffc69970328a1",
+    "grad_01_m.npy": "01e172b21c43fda8f55f048e3e1331df739d6ed7620bfd4db5bf24b4752d5341",
+    "grad_01_p.npy": "c590b8dd8d0be6cec34a5a06fca2387fe0544bdcc88841256223fd807a9bc60d",
+    "grad_02_m.npy": "1002231f951c199e72757b1ba35a55413b4203ae452e029182b587dac9ed26c5",
+    "grad_02_p.npy": "37a1940be72c150e8952fcc7d0f91dc08611a21627c74baabadb03015ac796c2",
+    "grad_03_m.npy": "a099b5c2fb8f7d1800cac8e3a374288c73b7094b8a3c679ff2564dcf54f684d0",
+    "grad_03_p.npy": "91d51b8316d72d521c2a3ef7e3ef8046826ec6de191979623ba9a631e0e49303",
+    "grad_04_m.npy": "f718c746e480dcb051d9d3922a37a28751ed7803ce176c883f7fdaf8b6f26086",
+    "grad_04_p.npy": "03fbe21cf94ff08a16b06dbd93cd273886858289684c8b5626a5b80227c1ce41",
+    "grad_05_m.npy": "362483f757e19367302154bab05ec799fcd719da6a0cb707fb9dfb575a6bb008",
+    "grad_05_p.npy": "6ee663b027f7a0eeec13eab1394d2777f11d0bf96277495a1db881cebe35c6df",
+    "hessian_ccsd_t.npz": {
+     "H_projected": "7d34111b759a2a15c8dfea4aeb104ce785b01f90e9af306a17e995c43df95320",
+     "H_raw": "8ca3c26812d54ada8412974f620e5eadc4977c6d6a8c4463046d39dce550ecb1",
+     "basis": "\"cc-pvdz\"",
+     "coords_bohr": "27ea64a53b8b457a924d812b77c5ce380d912fd3ddcb7935319678f6b619f1a8",
+     "energy": "-75.80168740327807",
+     "freq_cm": "e577eb3c17e50e2633de94c578ff2e43e1ca13cb7908d1c5c7e67b4a811e58f3",
+     "frozen": "1",
+     "gradient": "47ef2da0cfb889b5990b0a4f4bee448334a6d9538f291d51532b5b64e08c9236",
+     "status": "\"VALID\"",
+     "step": "0.005",
+     "symmetry_reduced": "true",
+     "symmetry_spread": "2.886579864025407e-11",
+     "trans_sum_rule": "3.8516343447980717e-07",
+     "vib_cm": "ee1527ca12843d762c14deb5c175631565f6c920b37e70617e8cee6d9ec0ca37"
+    },
+    "reference.npz": {
+     "charge": "1",
+     "coords_bohr": "27ea64a53b8b457a924d812b77c5ce380d912fd3ddcb7935319678f6b619f1a8",
+     "energy": "-75.80168740327807",
+     "gradient": "47ef2da0cfb889b5990b0a4f4bee448334a6d9538f291d51532b5b64e08c9236",
+     "spin": "1",
+     "two_route_checked": "true"
+    }
+   },
+   "steps": [
+    {
+     "last_stderr_line": "",
+     "rc": 0
+    }
+   ]
+  }
+ },
+ "environment": {
+  "numpy": "2.5.2",
+  "pyscf": "2.14.0",
+  "python": "3.12.14",
+  "system": "Linux"
+ }
+}
