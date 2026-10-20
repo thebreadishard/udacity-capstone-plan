@@ -9,7 +9,6 @@ from types import SimpleNamespace
 import numpy as np
 import pytest
 
-pytest.importorskip("torch")                     # repair-oop's frequencies use anchor_deck_rehearsal.project_tr (module 05's python)
 PLAN = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PLAN / "probes"))
 import cc_composite_full_check as C  # noqa: E402
