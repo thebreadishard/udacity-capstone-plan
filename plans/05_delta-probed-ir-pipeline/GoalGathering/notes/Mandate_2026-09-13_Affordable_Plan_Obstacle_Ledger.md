@@ -73,6 +73,16 @@ Whenever the machine is busy or the user is away, the next item is the cheapest 
 
 ## 6. Log
 
+- **20 Oct, 19:47 — INCIDENT, mine: two running jobs damaged by tests I ran by hand (the user's rule of 18 Oct: 'Schaadt geen lopende run').**
+  After round 3 I ran the pins of the rehearsal and of test 2's read from the main checkout; each loads the whole corpus (and torch,
+  the rehearsal also three models), beside the set-three read (~1.5 GB) and the cation run (cap 8.2 GB in WSL). Windows ran out of
+  commit memory: the read's step RA_k4_s3_seed1 failed ('DefaultCPUAllocator: not enough memory'), and the cation run's wsl.exe
+  connection was closed (`Wsl/Service/0x80072746`) during P3c_1519881f69's ωB97X Hessian — about two hours lost; its B3LYP analytic
+  Hessian (19:34) is kept and is reused on a retry. **Repair:** the read relaunched 19:52 through its run spec (21 done steps skipped,
+  the failed one recomputed); the cation run had already moved on to molecule 6 of 30. **Guard (4e1f5c44):** a pin that loads the
+  corpus first checks the committable memory and skips with the numbers below 6 GB (19:5x: 3.0 GB was free beside the two jobs) — also
+  for the nightly suite at 03:30, which runs beside the cation run. **Lesson:** a test that loads the corpus is a run for the memory
+  budget; before running one by hand next to laptop jobs, read the free commit memory — the run door's 13 GB budget did not see it.
 - **20 Oct, 19:1x — clean code round 2: the CC Hessian probe (TASKS 81; the user, 18:3x: 'toestemming om dit plan te beginnen').** Pins
   first: e8_cc_hessian_fd in WSL on water (symmetry, plain, C kernels, separate then only, partial then energy route, UHF H2O+, two
   refusals; every file and exit code; gate 1 bypassed in a runner), e8_cc_locality and e8_between_extension on Windows with stored DFT
