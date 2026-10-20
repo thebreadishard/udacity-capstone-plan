@@ -341,8 +341,7 @@ def test2_report(a, res: dict, spreads: tuple[float, float], step_rms: float, li
 
 def read(a) -> int:
     sys.path.insert(0, str(PLAN / "modules" / "05_support_predictor" / "m05"))
-    import e7_t2_sqm as T2
-    from anchor_deck_rehearsal import readout
+    from anchor_deck_rehearsal import readout, truth_of
     from rungC_train import load_corpus
     mol_dir = corpus_dir(a.mol_id)
     sym, x0, masses = load_geometry(mol_dir / "geometry.json")
@@ -358,11 +357,8 @@ def read(a) -> int:
     m = mols[a.mol_id]
     Hp = {name: project_tr(H, masses, x0)[0] for name, H in (("low", H_low), ("dz", H_dz), ("tz", H_tz), ("comp", H_dz + (M_tz - M_dz)),
                                                               ("mp2_dz", M_dz), ("mp2_tz", M_tz))}
-    K_tz = T2.K_from_dH(m, Hp["tz"] - Hp["low"])
-    wt, Ut = T2.corrected_frequencies(m, K_tz)
-    fam = np.array(m["family"])[np.argmax(np.abs(Ut), axis=0)]
-    ring = np.where(np.array(m["family"]) == "ring-ip")[0]
-    res = {name: readout(m, Hp[name], Hp["low"], K_tz, wt, fam, ring) for name in ("dz", "comp", "low")}
+    truth = truth_of(m, Hp["tz"], Hp["low"])
+    res = {name: readout(m, Hp[name], Hp["low"], truth) for name in ("dz", "comp", "low")}
     step_rms = float(np.sqrt(np.mean((M_tz - M_dz) ** 2)))
     lines, verdict = test2_verdict(res["comp"])
     md = test2_report(a, res, (s_dz, s_tz), step_rms, lines, verdict)
