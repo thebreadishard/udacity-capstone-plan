@@ -58,6 +58,12 @@ EXPERIMENTS = {
     "E21_base_hinge": ("head_l2", ["--head-l2", "1", "--allow-any-model"], "chain36_hinge_750_2026-10-07_model_n750"),
     "E22_base_coverage_n912": ("head_l2", ["--head-l2", "1", "--allow-any-model"], "chain37_coverage_2026-10-08_model_n912"),
     "E23_base_fivering_n972": ("head_l2", ["--head-l2", "1", "--allow-any-model"], "chain40_fivering30_model_n972"),
+    # wave 2 (after E01-E07: the pull toward the proxy's last layer costs, the untuned network reads like the proxy itself)
+    "W01_lastlayer0_lambda0": ("head", ["--init-scale", "0"], CHAIN34),
+    "W02_lastlayer-0.6_lambda0": ("head", ["--init-scale", "-0.6"], CHAIN34),
+    "W03_lastlayer-0.6_lambda1": ("head_l2", ["--init-scale", "-0.6", "--head-l2", "1"], CHAIN34),
+    "W04_lastlayer0_lambda1": ("head_l2", ["--init-scale", "0", "--head-l2", "1"], CHAIN34),
+    "W05_lastlayer-0.6_no_finetune": ("none", ["--init-scale", "-0.6"], CHAIN34),
 }
 VALIDATE = "V00_arm_m_seed0"
 BENZENE_DZ = PLAN / "probes" / "results_m1" / "e8_benzene_ccpvdz_dip_2026-10-03" / "hessian_ccsd_t.npz"
