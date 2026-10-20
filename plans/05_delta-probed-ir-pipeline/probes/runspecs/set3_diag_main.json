@@ -1,0 +1,8 @@
+{"name": "set3_diag_main", "purpose": "set-three diagnosis (the user, 21 Oct 00:1x: 'tenminste twintig ideeën'): 23 experiments, seed 0, each one change against lambda = 1 on chain 34, every anchor a fold, on the copied eleven-anchor corpus (validated: within 3.2e-6 cm-1 of the set-three record)",
+ "host": "laptop", "workdir": "probes/results_m1", "command": "python ../chain_runner.py probes/runs/set3_diag_main.json",
+ "sources": [{"local": "probes/chain_runner.py"}, {"local": "probes/runs/set3_diag_main.json"}, {"local": "probes/set3_diagnosis.py"},
+             {"local": "modules/05_support_predictor/m05/rungC_cc_transfer.py"}, {"local": "modules/05_support_predictor/m05/rungC_train.py"}],
+ "progress": {"regex": "^=== \\(S3Dmain\\) progress: |^\\(S3Dmain\\) .* done ", "max_gap_minutes": 90, "start_regex": "^=== \\(S3Dmain\\) starting: "},
+ "marker_regex": "^=== \\(S3Dmain\\) (armed|starting|resuming|RUN FAILED|run done)",
+ "end_regex": "^=== \\(S3Dmain\\) run done", "dry_run_args": "--dry-run", "resumable": true,
+ "memory": {"peak_gb": 1.6, "basis": "commit of the validation run on the copied corpus (set3_diag_validate, 21 Oct 00:34): 1.44 GB, working set 0.51 GB; 1.6 stated"}}

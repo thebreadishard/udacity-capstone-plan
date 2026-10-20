@@ -4,7 +4,8 @@ ideeën'). Exploratory: no line is tested here; every number is reported beside 
 
 Every experiment is one `m05/rungC_cc_transfer.py` run over all eleven carried TZ anchors, each held out in turn, one fine-tune mode
 (`--modes`), on a copy of the eleven anchors' corpus folders (`corpus`: loading the whole corpus costs ~2 GB beside the cation run; the copy
-reproduces the full-corpus record of anchor set three's arm M to the bit — `validate`). Seed 0 first; the read names what deserves seeds 1, 2.
+reproduces the full-corpus record of anchor set three's arm M within 3.2e-6 cm⁻¹ (6 threads here, 8 there;
+run V00_arm_m_seed0). Seed 0 first; the read names what deserves seeds 1, 2.
 
     python probes/set3_diagnosis.py corpus <out_dir>        # the eleven anchors' folders and the manifest
     python probes/set3_diagnosis.py plan <out_dir> <name>   # probes/runs/set3_diag_<name>.json from the experiment list
