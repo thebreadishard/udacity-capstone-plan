@@ -42,6 +42,7 @@ except ImportError:           # script mode on a server without pytest
 import e8_cc_hessian_fd as E  # noqa: E402
 import e8_hessian_checks as HC  # noqa: E402
 import t_density_fast as F  # noqa: E402
+from qc_common import AMU2AU  # noqa: E402
 
 SYMBOLS = ["O", "H", "H"]
 MASSES = np.array([15.99491462, 1.00782503, 1.00782503])
@@ -188,7 +189,7 @@ def check_geometry_and_frequencies_vs_cccbdb():
     H = 0.5 * (G + G.T)
     chk = HC.classify_hessian(H, x, MASSES, float(np.abs(G - G.T).max()), ediag)
     Hp, _ = E.project_tr(H, MASSES, x)
-    sm = np.sqrt(np.repeat(MASSES * E.AMU2AU, 3))
+    sm = np.sqrt(np.repeat(MASSES * AMU2AU, 3))
     fr = np.sort(E.frequencies(Hp / np.outer(sm, sm)))
     omega = sorted(fr[-3:].tolist())
     out.update(pair_check=worst_pair, null_space_cm=float(np.abs(fr[:6]).max()), omega_cm=omega)
