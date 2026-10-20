@@ -364,6 +364,13 @@ def read(an: Anchors, held: str, train_ids: list[str], dF_of) -> dict:
     return r
 
 
+def scale_last_layer(model, c: float) -> None:
+    """The head's last layer (weights and bias) times c, in place: the start of a fold's fine-tune with --init-scale."""
+    with torch.no_grad():
+        for p in model.head[-1].parameters():
+            p.mul_(c)
+
+
 def enabled_modes(a) -> tuple[str, ...]:
     """The fine-tune modes the switches make available."""
     return (("none", "alpha", "head") + (("head_l2",) if a.head_l2 > 0 else ()) + (("lora",) if a.lora_rank > 0 else ())
@@ -398,6 +405,8 @@ def run_fold(an: Anchors, held: str, model0, loss_cfg: LossSettings, a) -> dict:
     settings = FinetuneSettings(a.epochs, a.lr, a.aux_weight, a.head_l2, a.lora_rank)
     for mode in fold_modes(a):
         model = copy.deepcopy(model0)
+        if a.init_scale != 1.0:
+            scale_last_layer(model, a.init_scale)
         tag = f"[{held} {mode}]"
         hist = finetune(model, loss_cfg, {i: an.tensors[i] for i in tr}, mode, settings, log=lambda s, tag=tag: print(f"  {tag} {s}", flush=True))
         fold[f"network_{mode}"] = {**read(an, held, tr, predictor(model, an.tensors, an.mols)), "final_loss": (hist[-1] if hist else None)}
@@ -573,6 +582,8 @@ def build_parser() -> argparse.ArgumentParser:
                     "(comma-separated, among the enabled ones); default every enabled mode")
     ap.add_argument("--in-sample", action="store_true", help="diagnosis: each fold also trains on its held-out anchor (the capacity "
                     "ceiling - not a transfer read)")
+    ap.add_argument("--init-scale", type=float, default=1.0, help="diagnosis: multiply the head's last layer by this before each fold's "
+                    "fine-tune (0: no proxy knowledge in it; negative: the proxy's direction reversed); the L2 pull goes toward the scaled weights")
     ap.add_argument("--head-all", action="store_true", help="add mode 'head_all': every layer of the head trainable, with α")
     ap.add_argument("--held", action="append", default=[], help="anchor set three's R-A: only these anchors are held out, one fold each; "
                     "the other anchors stay in every fold's fine-tune pool (default: every anchor is a fold)")
@@ -610,8 +621,9 @@ def main() -> int:
            "anchor_registry": registry, "tier": tier, "low_level": an.low_files, "epochs": a.epochs, "lr": a.lr, "aux_weight": a.aux_weight,
            "head_l2": a.head_l2, "lora_rank": a.lora_rank, "oop_couplings_low": a.oop_couplings_low, "oop_diagonal_model": a.oop_diagonal_model,
            "folds": {}}
-    res.update({k: v for k, v in (("held", sorted(a.held)), ("oop_fit_sizes", a.oop_fit_sizes), ("modes", a.modes), ("in_sample", a.in_sample),
-                                  ("head_all", a.head_all)) if v})   # only when used: the pin's record stays
+    used = (("held", sorted(a.held)), ("oop_fit_sizes", a.oop_fit_sizes), ("modes", a.modes), ("in_sample", a.in_sample),
+            ("head_all", a.head_all), ("init_scale", None if a.init_scale == 1.0 else a.init_scale))
+    res.update({k: v for k, v in used if v is not None and v is not False and v != []})   # only when used (0.0 is a value): the pin's record stays
     folds = [] if a.skip_folds else (sorted(a.held) or an.ids)
     for held in folds:
         res["folds"][held] = run_fold(an, held, model0, loss_cfg, a)
