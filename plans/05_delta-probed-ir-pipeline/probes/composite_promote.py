@@ -19,8 +19,19 @@ import numpy as np
 PLAN = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PLAN / "modules" / "05_support_predictor" / "m05"))
 import anchor_registry as AR  # noqa: E402
+from cc_composite_full_check import IMAGINARY_CM  # noqa: E402
 
 SOFT_LINE_CM = 40.0
+
+
+def dz_imaginary_in_record(build_json: dict) -> bool:
+    """The cc-pVDZ anchor's own frequencies, as the build recorded them, hold an imaginary mode."""
+    return any(f < IMAGINARY_CM for f in build_json["freq_dz"])
+
+
+def level_of(build_json: dict) -> str:
+    """The registry's level string, naming the MP2 that made the basis step."""
+    return f"CCSD(T)/cc-pVDZ + [{build_json['step_method']}: cc-pVTZ − cc-pVDZ]"
 
 
 def decide(build_json: dict, dz_was_imaginary: bool) -> tuple[bool, str]:
@@ -40,10 +51,10 @@ def decide(build_json: dict, dz_was_imaginary: bool) -> tuple[bool, str]:
 def promote(npz: str, mol_id: str, name: str, date: str) -> int:
     rec = json.loads(Path(npz).with_suffix(".json").read_text(encoding="utf-8"))
     entries = AR.load()
-    dz_imag = any(e["mol_id"] == mol_id and e["status"] == "imaginary" and e["tier"] == "DZ" for e in entries)
+    dz_imag = dz_imaginary_in_record(rec) or any(e["mol_id"] == mol_id and e["status"] == "imaginary" and e["tier"] == "DZ" for e in entries)
     ok, why = decide(rec, dz_imag)
     soft = ", ".join(f"{v:.0f}" for v in rec["freq_composite"][:2])
-    AR.register(dict(mol_id=mol_id, name=name, path=npz, level="CCSD(T)/cc-pVDZ + [MP2/cc-pVTZ − MP2/cc-pVDZ]", tier="TZ", kind="composite",
+    AR.register(dict(mol_id=mol_id, name=name, path=npz, level=level_of(rec), tier="TZ", kind="composite",
                      status="experimental", date=date, checks=f"MP2 row symmetry spread {rec['spread']['dz']:.1e} / {rec['spread']['tz']:.1e}; basis step rms "
                      f"{rec['step_rms']:.1e}; softest {soft} cm⁻¹", note=f"chain 33c promotion rule: {why}"), promote=ok)
     print(f"{name}: {'PROMOTED (carried, TZ)' if ok else 'experimental'} — {why}")

@@ -39,6 +39,8 @@ import e8_symmetry as SYM  # noqa: E402
 
 FAMILIES = ("ring-ip", "CH-stretch", "CH-oop", "other")
 CORE = {"H": 0, "C": 1, "N": 1, "O": 1, "F": 1, "S": 5, "Cl": 5}
+IMAGINARY_CM = -10.0      # a frequency below this is an imaginary mode (the corpus rule)
+CONVENTIONAL_STEP = "MP2 (pyscf, conventional)"   # the 7 Oct row files, which carry no 'method' key
 
 
 def load_geometry(path: Path):
@@ -253,7 +255,7 @@ def repair_oop(a) -> int:
         p = molecules / f"hessian_{tag}.npz"
         if p.exists():
             fr = np.asarray(np.load(p)["freq_cm"], float); fr = fr[np.abs(fr) > 1.0]; dft[tag] = np.sort(fr)[:6]
-    n_im = int((f_comp < -10.0).sum())
+    n_im = int((f_comp < IMAGINARY_CM).sum())
     ref = dft.get("wb97x")
     within = bool(ref is not None and len(f_comp) >= 2 and np.abs(f_comp[:2] - ref[:2]).max() <= SOFT_LINE_CM)
     if n_im:
@@ -324,7 +326,9 @@ def build(a) -> int:
     H_comp = H + step
     f_dz = frequencies_cm(H, masses, x0)
     f_comp = frequencies_cm(H_comp, masses, x0)
-    n_im = int((f_comp < -10.0).sum())
+    n_im = int((f_comp < IMAGINARY_CM).sum())
+    with np.load(a.mp2_tz) as rows_tz:
+        step_method = str(rows_tz["method"]) if "method" in rows_tz.files else CONVENTIONAL_STEP
     status = "VALID" if n_im == 0 else "IMAGINARY"
     dft = {}
     for tag in ("b3lyp", "wb97x"):
@@ -337,7 +341,8 @@ def build(a) -> int:
     step_rms = float(np.sqrt(np.mean(step ** 2)))
     np.savez(str(out) + ".npz", H_raw=H_comp, H_projected=project_tr(H_comp, masses, x0)[0], freq_cm=f_comp, coords_bohr=x0, status=status,
              source_anchor=str(anchor), mp2_dz=str(a.mp2_dz), mp2_tz=str(a.mp2_tz), spread_dz=s_dz, spread_tz=s_tz, step_rms=step_rms,
-             planeframe=str(a.planeframe or ""), composite="CC/DZ + [MP2/TZ − MP2/DZ], every unique displacement (TASKS 28, 7 Oct 2026)")
+             planeframe=str(a.planeframe or ""), composite="CC/DZ + [MP2/TZ − MP2/DZ], every unique displacement (TASKS 28, 7 Oct 2026)",
+             step_method=step_method)
     fmt = lambda arr: ", ".join(f"{v:.0f}" for v in np.asarray(arr)[:6])  # noqa: E731
     md = [f"# Composite anchor (full) — {a.mol_id}: CC/DZ + [MP2/TZ − MP2/DZ] — {datetime.now():%Y-%m-%d %H:%M}", "",
           f"Anchor `{anchor.parent.name}/{anchor.name}`; MP2 rows `{Path(a.mp2_dz).name}`, `{Path(a.mp2_tz).name}` (symmetry spread {s_dz:.1e} / {s_tz:.1e} a.u.; "
@@ -347,6 +352,7 @@ def build(a) -> int:
     out.with_suffix(".md").write_text("\n".join(md) + "\n", encoding="utf-8")
     out.with_suffix(".json").write_text(json.dumps(dict(date=datetime.now().strftime("%Y-%m-%d %H:%M"), mol_id=a.mol_id, anchor=str(anchor), status=status,
                                                         n_imaginary=n_im, freq_dz=f_dz.tolist(), freq_composite=f_comp.tolist(), step_rms=step_rms,
+                                                        step_method=step_method,
                                                         dft={k: v.tolist() for k, v in dft.items()}, spread=dict(dz=s_dz, tz=s_tz)), indent=1), encoding="utf-8")
     print("\n".join(md))
     return 0
