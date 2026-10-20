@@ -30,7 +30,8 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import e8_symmetry as SYM
-from cc_composite_full_check import CORE, load_geometry
+from cc_composite_full_check import load_geometry
+from qc_common import CORE_ORBITALS
 from dfmp2_swap_check import check_same_molecule
 
 WATER_LINE = 1e-6                     # Eh/bohr, check W
@@ -109,7 +110,7 @@ def plan_from_geometry(geometry_path: str, basis: str, step: float = ANCHOR_STEP
     symbols, x0, _ = load_geometry(Path(geometry_path))
     ks, reps = SYM.unique_displacements(SYM.point_group_ops(symbols, x0), len(symbols))
     return RowsPlan(geometry_path, tuple(symbols), x0, tuple(int(k) for k in ks), tuple(int(r) for r in reps), step, basis,
-                    sum(CORE[s] for s in symbols), False)
+                    sum(CORE_ORBITALS[s] for s in symbols), False)
 
 
 def save_rows(out: Path, plan: RowsPlan, rows: dict[int, np.ndarray], method: str) -> None:
