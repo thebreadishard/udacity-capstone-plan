@@ -1,0 +1,9 @@
+{"name": "anchor_set3_rest", "purpose": "TASKS 51: anchor set three's final read, the 38 runs after the first (R-A k_s 0/2/4/all x subsets x 3 seeds, arm M x 3 seeds); the first run's time and memory were stated in the ledger before this launch",
+ "host": "laptop", "workdir": "probes/results_m1", "command": "python ../chain_runner.py probes/runs/anchor_set3_rest.json",
+ "sources": [{"local": "probes/chain_runner.py"}, {"local": "probes/runs/anchor_set3_rest.json"}, {"local": "probes/anchor_set3_read.py"},
+             {"local": "modules/05_support_predictor/m05/rungC_cc_transfer.py"}, {"local": "modules/05_support_predictor/m05/rungC_train.py"},
+             {"local": "modules/05_support_predictor/m05/mode_blocks.py"}, {"local": "modules/05_support_predictor/m05/rungC_intensities.py"}],
+ "progress": {"regex": "^=== \\(S3R\\) progress: |^\\(S3R\\) .* done ", "max_gap_minutes": 90, "start_regex": "^=== \\(S3R\\) starting: "},
+ "marker_regex": "^=== \\(S3R\\) (armed|starting|resuming|RUN FAILED|run done)",
+ "end_regex": "^=== \\(S3R\\) run done", "dry_run_args": "--dry-run", "resumable": true,
+ "memory": {"peak_gb": 1.5, "basis": "PeakWorkingSet64 of rungC_cc_transfer.py in the first run (anchor_set3_first, 20 Oct 15:11-15:20, six anchors): 1.10 GB, sampled every 20 s; the later runs hold up to eleven anchors' tensors, so 1.5 stated"}}

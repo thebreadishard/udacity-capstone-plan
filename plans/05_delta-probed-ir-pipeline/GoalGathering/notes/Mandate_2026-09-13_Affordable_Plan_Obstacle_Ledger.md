@@ -73,6 +73,14 @@ Whenever the machine is busy or the user is away, the next item is the cheapest 
 
 ## 6. Log
 
+- **20 Oct, 15:2x — anchor set three: all five carried, the read planned, its first run timed (stated before the rest run).** Quinoline
+  (08:43), isoquinoline (10:59), azulene (12:4x) and acenaphthylene (15:1x) promoted by chain 33c's rule, all VALID; dfmp2_anchors ended
+  15:04 (exit 0); 11 carried anchors. `anchor_set3_read.py plan` (15:09): 39 runs, none left the read; the CC APTs and models checked.
+  The first run (R-A k_s = 0, seed 0) took **530 s** beside the cation run (the 10 Oct runs: 452-515 s on an idle laptop), **peak
+  1.10 GB** (PeakWorkingSet64, sampled every 20 s), and reproduces the 10 Oct read of seed 0 **to the bit** on every fold, column and
+  family (max difference 0): --held and the added APTs change nothing they should not. Forecast for the other 38, scaled from that run by
+  each fold's pool (5 → 7, 9, 10 anchors) and arm M's five folds of ten: ≈ 9-11 h, so ≈ 02:00-04:00 on 21 Oct — an estimate, not a
+  measurement. Run spec anchor_set3_rest states 1.5 GB (the measured 1.10 with room for eleven anchors' tensors).
 - **20 Oct, 12:4x — azulene's composite: a symmetry spread a hundred times the others', checked before promotion, immaterial.** The build
   reported the MP2 rows' symmetry spread at 1.9e-3 / 1.7e-3 a.u. (quinoline 2.5e-5), a third of the basis step's rms (5.7e-3). Cause known
   since 14 Oct: azulene's corpus geometry is C2v only to 2.6e-3 bohr, so the true rows are not exactly symmetric and the reconstruction
