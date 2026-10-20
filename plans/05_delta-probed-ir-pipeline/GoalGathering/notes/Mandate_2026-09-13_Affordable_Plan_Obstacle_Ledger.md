@@ -73,6 +73,15 @@ Whenever the machine is busy or the user is away, the next item is the cheapest 
 
 ## 6. Log
 
+- **21 Oct, 01:40 — INCIDENT 2, mine: the cation run stopped (its guard: three failures in a row).** The night's diagnosis (the user's
+  request, 00:1x) ran its experiments one at a time beside the cation run; the launch read 6.5 GB of commit free and the validation
+  run's 1.44 GB. Experiment E18 (in-sample, the whole head trainable) needed more; at 01:40 Windows' commit ran out: E18 failed ('not
+  enough memory') and P3c_1f8e4687bd's wsl.exe connection closed — the third cation failure in a row (P3c_1519881f69 19:47, mine;
+  P3c_55cca3aaf2 22:38, the two runs together; this one), and cation_analytic_all.sh stopped itself (4 of 30 done, 3 failed; the B3LYP
+  halves are kept). I had seen at 22:50 that the run door's budget (13 GB of stated peaks) misses the WSL VM's real commit (8.7 + 4.0 GB)
+  and ~26 GB held by other programs, and still launched a night of runs beside the cation run on one check at launch. **Not restarted:**
+  the cation run waits for the user (the morning); the diagnosis continues alone (11.4 GB free at 01:4x). **Needed:** the budget check
+  on the measured free commit, not on stated peaks, before any second laptop run starts (TASKS 81's follow-up and the user's word).
 - **20 Oct, 23:58 — anchor set three's final read (registration 'Outcome').** R-A flat: CH-oop (λ = 1, original six) 14.06 → 13.69 cm⁻¹ with
   five more anchors (−2.6 %, < 5 %, not still learning) — anchors at this count are not the lever for the out-of-plane block; registered
   consequence: the structural change. R-B fails (0 of 3 below the zero rule, flat): the λ question stands; registered consequence: a chain
