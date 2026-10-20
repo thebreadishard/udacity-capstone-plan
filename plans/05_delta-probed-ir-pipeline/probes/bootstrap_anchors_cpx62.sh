@@ -26,7 +26,7 @@ bash "$HERE/../tools/bootstrap_qc05_env.sh" "$NAME" || exit 1      # step 1, sha
 
 echo "[$(t) $NAME] 2. the plan's files under /root/dpir (git archive of HEAD)"
 P=plans/05_delta-probed-ir-pipeline
-FILES=(probes/e8_cc_hessian_fd.py probes/e8_hessian_checks.py probes/e8_symmetry.py probes/cc_dipole_capture.py probes/cc_apt_field.py
+FILES=(probes/e8_cc_hessian_fd.py probes/qc_common.py probes/e8_hessian_checks.py probes/e8_symmetry.py probes/cc_dipole_capture.py probes/cc_apt_field.py
        probes/apt_field_route.py probes/run_anchors_hel23_parallel.sh probes/t_density_kernel/t_density_fast.py
        probes/t_density_kernel/ccsd_t_rdm_kernel.c probes/t_density_kernel/build.sh tests/test_acceptance_water.py
        modules/05_support_predictor/corpus/apt.py)

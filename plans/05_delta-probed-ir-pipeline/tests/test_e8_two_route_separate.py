@@ -19,7 +19,7 @@ WATER = {"symbols": ["O", "H", "H"], "coords_bohr": [[0.0, 0.0, 0.2217], [0.0, 1
 
 
 def _fake_gradient(record):
-    def gradient(symbols, coords_bohr, basis, frozen, log, charge=0, spin=0, max_memory=26000, fast=None, check_fast=False):
+    def gradient(symbols, coords_bohr, settings, log, check_fast=False):
         record.append(check_fast)
         return -76.0, np.zeros((len(symbols), 3)), np.array([0.0, 0.0, -0.76])   # energy, gradient, relaxed dipole (3 Oct 2026)
     return gradient
@@ -57,7 +57,7 @@ def test_assembly_refuses_an_unchecked_reference_until_the_check_passes(tmp_path
         _run(tmp_path, monkeypatch, rec, "--symmetry")                      # assembling run: no --ks, reference unchecked, no file
     assert "unchecked" in str(e.value)
     assert _run(tmp_path, monkeypatch, rec, "--two-route-check", "only") is None   # the check lane: recompute with the checks, compare, write the file
-    chk = json.load(open(tmp_path / "out" / "two_route_check.json"))
+    chk = json.loads((tmp_path / "out" / "two_route_check.json").read_text())
     assert chk["passed"] is True and chk["max_grad_diff"] == 0.0 and rec[-1] is True
     with pytest.raises(SystemExit) as e2:                                   # now the assembly passes the gate and runs into the fake gradient's zero
         _run(tmp_path, monkeypatch, rec, "--symmetry")                      # Hessian downstream (not a two-route refusal)
@@ -102,5 +102,5 @@ def test_energy_mode_writes_the_check_file_the_assembly_reads(tmp_path, monkeypa
         np.save(out / f"ener_{k:02d}_p.npy", np.array(-76.0))
         np.save(out / f"ener_{k:02d}_m.npy", np.array(-76.0))
     assert _run(tmp_path, monkeypatch, rec, "--two-route-check", "energy") is None
-    chk = json.load(open(out / "two_route_check.json"))
+    chk = json.loads((out / "two_route_check.json").read_text())
     assert chk["passed"] is True and chk["route"] == "energy_fd" and chk["n_coordinates"] == 2
