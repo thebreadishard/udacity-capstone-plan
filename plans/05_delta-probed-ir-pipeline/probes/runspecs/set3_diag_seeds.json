@@ -1,0 +1,8 @@
+{"name": "set3_diag_seeds", "purpose": "set-three diagnosis, seeds (after the 01:40 incident; the cation run is stopped and waits for the user): see probes/set3_diagnosis.py",
+ "host": "laptop", "workdir": "probes/results_m1", "command": "python ../chain_runner.py probes/runs/set3_diag_seeds.json",
+ "sources": [{"local": "probes/chain_runner.py"}, {"local": "probes/runs/set3_diag_seeds.json"}, {"local": "probes/set3_diagnosis.py"},
+             {"local": "modules/05_support_predictor/m05/rungC_cc_transfer.py"}, {"local": "modules/05_support_predictor/m05/rungC_train.py"}],
+ "progress": {"regex": "^=== \\(S3Dseeds\\) progress: |^\\(S3Dseeds\\) .* done ", "max_gap_minutes": 90, "start_regex": "^=== \\(S3Dseeds\\) starting: "},
+ "marker_regex": "^=== \\(S3Dseeds\\) (armed|starting|resuming|RUN FAILED|run done)",
+ "end_regex": "^=== \\(S3Dseeds\\) run done", "dry_run_args": "--dry-run", "resumable": true,
+ "memory": {"peak_gb": 3.0, "basis": "the validation run on the copied corpus committed 1.44 GB; E18 (in-sample, whole head) ran out at 01:40 beside the cation run, so more - 3.0 stated, the runs measured by a sampler; nothing else runs on the laptop"}}
