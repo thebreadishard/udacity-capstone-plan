@@ -8,12 +8,15 @@ fitted on the training anchors (the SQM-like transfer, no network). Every number
 Pinned by `tests/test_rungC_cc_transfer_regression.py`.
 
     python m05/rungC_cc_transfer.py corpus/molecules <model.pt> <out_prefix> --anchor A_8448043181=<hessian_ccsd_t.npz> [--anchor ...] \\
-        [--epochs 300] [--lr 1e-3]
+        [--epochs 300] [--lr 1e-3] [--held <id> ...] [--oop-diagonal-model --oop-fit-sizes 4,8]
+
+Anchor set three's read (`probes/anchor_set3_read.py`) runs it with --held (only the original anchors are folds) and --oop-fit-sizes.
 """
 from __future__ import annotations
 
 import argparse
 import copy
+import itertools
 import json
 import os
 import sys
@@ -53,6 +56,20 @@ LORA_SEED = 0          # the adapter's random start; torch's default generator i
 FAMILY_ROWS = ("ring-ip", "CH-stretch", "CH-oop", "other")
 KEPT = ("coupling_ratio", "coupling_rms", "coupling_zero_rms", "corrected_freq_rms", "corrected_freq_rms_zero_rule", "dH_residual_ratio",
         "diag_rms")
+SUBSETS_PER_SIZE = 5   # anchor set three, amendment of 14 Oct 2026: five random subsets per size below 'all', numpy seed 0,
+SUBSET_SEED = 0        # every subset when there are no more than five
+
+
+def anchor_subsets(pool: list[str], k: int, n: int = SUBSETS_PER_SIZE, seed: int = SUBSET_SEED) -> list[tuple[str, ...]]:
+    """The subsets of k anchors a read along the anchor count uses: all of them when there are at most n, else n distinct ones drawn
+    with numpy's generator at `seed` — the same draw for the same pool, whatever order the pool is given in."""
+    if not 0 < k <= len(pool):
+        raise ValueError(f"a subset of {k} from a pool of {len(pool)}")
+    every = list(itertools.combinations(sorted(pool), k))
+    if len(every) <= n:
+        return every
+    picked = np.random.default_rng(seed).choice(len(every), size=n, replace=False)
+    return [every[i] for i in sorted(picked)]
 
 
 def _geometry(mol_dir: Path) -> dict:
@@ -318,6 +335,20 @@ def oop_model_predictor(an: Anchors, dF_of, coef: np.ndarray):
     return f
 
 
+def oop_subset_reads(an: Anchors, held: str, train_ids: list[str], dF_of, sizes: list[int]) -> dict[str, list[dict]]:
+    """Arm M along the anchor count: per size k, the out-of-plane model fitted on each of `anchor_subsets(train_ids, k)` and read on the
+    held-out anchor with the network's in-plane block (`dF_of`, the fold's standard mode fine-tuned on every training anchor)."""
+    out = {}
+    for k in sizes:
+        rows = []
+        for sub in anchor_subsets(train_ids, k):
+            coef = oop_shift_coefficients(an, list(sub))
+            rows.append({"train": list(sub), "coef": [float(c) for c in coef],
+                         "read": read(an, held, train_ids, oop_model_predictor(an, dF_of, coef))})
+        out[str(k)] = rows
+    return out
+
+
 def read(an: Anchors, held: str, train_ids: list[str], dF_of) -> dict:
     """The registered read-outs on the held-out anchor, the corrected ω per family, and the intensities where its CC APT is given (TASKS 32)."""
     m = an.mols[held]
@@ -357,6 +388,8 @@ def run_fold(an: Anchors, held: str, model0, loss_cfg: LossSettings, a) -> dict:
             fold[f"network_{mode}_ooplow"] = read(an, held, tr, oop_low_predictor(an, predictor(model, an.tensors, an.mols)))
         if coef is not None and mode in ("head", "head_l2"):
             fold[f"network_{mode}_oopmodel"] = read(an, held, tr, oop_model_predictor(an, predictor(model, an.tensors, an.mols), coef))
+        if a.oop_fit_sizes and mode == fit_mode(a.head_l2):
+            fold["oop_fit_subsets"] = oop_subset_reads(an, held, tr, predictor(model, an.tensors, an.mols), a.oop_fit_sizes)
         if a.save_fold_predictions and mode == fit_mode(a.head_l2):
             pred = Prediction(predict_cartesian(model, an.tensors[held]), an.mols[held]["H_low"], an.mols[held]["low_file"], mode, tr, a.model,
                               hist[-1] if hist else None, held=held)
@@ -459,6 +492,30 @@ def write_record(prefix: str, res: dict, lines: list[str]) -> None:
         os.replace(tmp, path)
 
 
+def _sizes(text: str) -> list[int]:
+    """'4,8' → [4, 8]: positive subset sizes, each once, ascending."""
+    try:
+        sizes = sorted({int(s) for s in text.split(",")})
+    except ValueError as e:
+        raise argparse.ArgumentTypeError(f"{text!r}: comma-separated whole numbers") from e
+    if not sizes or sizes[0] < 1:
+        raise argparse.ArgumentTypeError(f"{text!r}: sizes are at least 1")
+    return sizes
+
+
+def check_switches(a, anchors: dict[str, str]) -> None:
+    """Switches that do not combine are refused before the corpus or the model is loaded."""
+    unknown = sorted(set(a.held) - set(anchors))
+    if unknown:
+        raise SystemExit(f"--held {unknown}: not among the anchors")
+    if a.held and a.skip_folds:
+        raise SystemExit("--held names the folds to run; --skip-folds runs none")
+    if a.oop_fit_sizes and not a.oop_diagonal_model:
+        raise SystemExit("--oop-fit-sizes refits the out-of-plane model of --oop-diagonal-model; give both")
+    if a.oop_fit_sizes and a.oop_fit_sizes[-1] >= len(anchors) - 1:
+        raise SystemExit(f"--oop-fit-sizes {a.oop_fit_sizes}: a fold trains on {len(anchors) - 1} anchors; every size must be smaller")
+
+
 def build_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("molecules")
@@ -482,6 +539,11 @@ def build_parser() -> argparse.ArgumentParser:
                     "out-of-plane modes from the low level; adds the columns network_head_ooplow (and network_head_l2_ooplow)")
     ap.add_argument("--oop-diagonal-model", action="store_true", help="TASKS 51, R-A's fail branch: per fold, fit the out-of-plane shift model "
                     "on the training anchors; adds oop_model_only and network_head_oopmodel (and network_head_l2_oopmodel)")
+    ap.add_argument("--held", action="append", default=[], help="anchor set three's R-A: only these anchors are held out, one fold each; "
+                    "the other anchors stay in every fold's fine-tune pool (default: every anchor is a fold)")
+    ap.add_argument("--oop-fit-sizes", type=_sizes, default=[], help="with --oop-diagonal-model, arm M along the anchor count: per fold also "
+                    "fit the out-of-plane model on subsets of k of the fold's training anchors (comma-separated k, five subsets each, numpy "
+                    "seed 0) and read it with the standard mode's in-plane block")
     ap.add_argument("--allow-any-model", action="store_true", help="decision 55: use a model whose registry status is not 'carried' — named "
                     "in the record")
     ap.add_argument("--allow-any-anchor", action="store_true", help="use an anchor file that is not its molecule's carried entry in the anchor "
@@ -496,6 +558,7 @@ def main() -> int:
     torch.set_num_threads(a.threads)
     t0 = time.time()
     anchors = dict(s.split("=", 1) for s in a.anchor)
+    check_switches(a, anchors)
     found = {i: AR.require_carried_anchor(i, Path(p), allow=a.allow_any_anchor) for i, p in anchors.items()}   # the anchor registry
     tier = AR.require_one_tier(found, allow=a.allow_mixed_tiers)
     mdir = Path(a.molecules)
@@ -512,7 +575,9 @@ def main() -> int:
            "anchor_registry": registry, "tier": tier, "low_level": an.low_files, "epochs": a.epochs, "lr": a.lr, "aux_weight": a.aux_weight,
            "head_l2": a.head_l2, "lora_rank": a.lora_rank, "oop_couplings_low": a.oop_couplings_low, "oop_diagonal_model": a.oop_diagonal_model,
            "folds": {}}
-    for held in ([] if a.skip_folds else an.ids):
+    res.update({k: v for k, v in (("held", sorted(a.held)), ("oop_fit_sizes", a.oop_fit_sizes)) if v})   # only when used: the pin's record stays
+    folds = [] if a.skip_folds else (sorted(a.held) or an.ids)
+    for held in folds:
         res["folds"][held] = run_fold(an, held, model0, loss_cfg, a)
         print(fold_line(held, res["folds"][held], a), flush=True)
     if a.predict:

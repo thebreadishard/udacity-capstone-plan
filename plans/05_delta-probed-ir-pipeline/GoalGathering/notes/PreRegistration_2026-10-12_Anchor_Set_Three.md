@@ -289,6 +289,35 @@ worker needs 26 GB: not the laptop (13 GB budget for all its runs), not s1 besid
 where it fits; the fine-tune and evaluation runs of R-A, R-B and the arms follow on the laptop, timed on the first subset and stated before
 the rest run (amendment of 14 Oct). Where and when is the user's word.
 
+## The read script (20 Oct 2026, 08:2x, before any read of set three; quinoxaline is the only one of the five promoted, nothing of it has met a model)
+
+`probes/anchor_set3_read.py` (`plan`, `read`) runs the reads above; `m05/rungC_cc_transfer.py` gained `--held` (only the named anchors are
+folds; the others stay in every fold's pool) and `--oop-fit-sizes` (arm M's out-of-plane model refitted on subsets of each fold's training
+anchors). With neither switch the transfer script's pinned record is unchanged to the bit (`tests/test_rungC_cc_transfer_regression.py`),
+and a held-out fold equals the same fold of the full run to the bit. The script ran on synthetic records with the edge cases before this
+note (`tests/test_anchor_set3_read.py`, 25 tests: every branch of R-A, R-B, arm M and arm C, values exactly on a line, a missing or NaN value,
+a failed and a pending promotion; each line moved slightly makes a test fail). What the text above left to the script, fixed here:
+
+- **Runs.** R-A and R-B come from the same runs: the original six held out, k_s ∈ {0, 2, 4, all}; k_s = 0 is the 10 Oct read run again
+  on today's code rather than its old records, so both ends of the comparison share the code. Arm M, arm C and the new anchors' own
+  intensities come from one run per seed with all eleven anchors and the five new ones held out. Models, epochs, lr, head L2 and threads
+  as in `probes/runs/t3_folds_1010.json`.
+- **CC APTs.** Benzene's as on 10 Oct (`e8_benzene_ccpvtz_oop_2026-10-03/apt_ccsd_t.npz`); pyridine, fluorobenzene and benzonitrile by
+  the field route (`cc_apt_field_2026-10-12/`, lever 6/6b); the five new anchors by the field route (`apt_ccsd_t_field.npz` in their run
+  folders, item 2 of the pipeline). All nine load against their corpus geometry (checked 08:1x).
+- **Means and errors.** A run's value is the mean over its held-out folds; a point is the mean over its runs (subsets × seeds), its
+  standard error the runs' standard deviation (ddof 1) over √n. 'Combined' is the root of the sum of squares. 'The previous size' is the
+  largest size below 'all' (k_s = 4 with five new anchors; 2 if one fails promotion; arm M: k_t = 8). For arm M's subsets, each fold
+  draws its own from its own training anchors (`anchor_subsets`, seed 0) and the j-th draws are averaged across the five folds.
+- **Comparisons.** A value exactly on a line counts as on the line's side (≥ 20 % lower; < 5 %; 'other' ≤ 10 % above; within 1.0 cm⁻¹);
+  they are compared as products, so floating point cannot move a value off its line. R-B counts an anchor as 'below the zero rule' when
+  λ = 1's matched intensity error, mean over the seeds, is strictly below; arm M's intensity condition is 'at or below', arm C's 'below',
+  as written above; two thirds of n means 3 · count ≥ 2n (4 of 5, 3 of 4).
+- **Who is in.** A new anchor leaves the read only when its promotion failed (a TZ entry that is not carried); the plan refuses to start
+  while any of the five has no TZ entry.
+- **Time.** The first run (k_s = 0, seed 0, the smallest pool) runs alone; its time and the forecast for the rest are written in the
+  ledger before the rest start.
+
 ## Outcome
 
 *(appended after the reads)*

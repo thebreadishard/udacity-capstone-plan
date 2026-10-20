@@ -207,6 +207,60 @@ def test_an_exclude_file_s_comment_lines_are_not_ids(tmp_path):
     assert RT.exclude_pool_ids(["a", "b"], str(f)) == (["a"], ["b"])
 
 
+def test_anchor_subsets_take_all_when_few_and_a_fixed_draw_when_many():
+    """Anchor set three (amendment of 14 Oct 2026): five subsets per size below 'all', numpy seed 0, all of them when no more exist."""
+    five = ["e", "d", "c", "b", "a"]
+    assert RT_T.anchor_subsets(five, 4) == [("a", "b", "c", "d"), ("a", "b", "c", "e"), ("a", "b", "d", "e"), ("a", "c", "d", "e"),
+                                            ("b", "c", "d", "e")]
+    assert RT_T.anchor_subsets(five, 5) == [("a", "b", "c", "d", "e")]
+    ten = [f"m{i}" for i in range(10)]
+    drawn = RT_T.anchor_subsets(ten, 4)
+    assert len(drawn) == 5 and len(set(drawn)) == 5 and all(len(s) == 4 and set(s) <= set(ten) for s in drawn)
+    assert RT_T.anchor_subsets(list(reversed(ten)), 4) == drawn                  # the pool's order does not change the draw
+    assert len(RT_T.anchor_subsets(five, 2)) == 5 and len(set(RT_T.anchor_subsets(five, 2))) == 5     # C(5, 2) = 10 > 5
+    for bad in (0, 6):
+        with pytest.raises(ValueError):
+            RT_T.anchor_subsets(five, bad)
+
+
+@pytest.mark.parametrize(("extra", "says"), [
+    (["--held", "z"], "not among the anchors"),
+    (["--held", "a", "--skip-folds"], "--skip-folds runs none"),
+    (["--oop-fit-sizes", "1"], "give both"),
+    (["--oop-diagonal-model", "--oop-fit-sizes", "1,2"], "every size must be smaller"),
+])
+def test_switches_that_do_not_combine_are_refused_before_loading(extra, says):
+    argv = ["m", "x.pt", "out", "--anchor", "a=1", "--anchor", "b=2", "--anchor", "c=3", *extra]
+    a = RT_T.build_parser().parse_args(argv)
+    with pytest.raises(SystemExit, match=says):
+        RT_T.check_switches(a, dict(s.split("=", 1) for s in a.anchor))
+
+
+def test_the_set_three_switches_parse_and_combine():
+    a = RT_T.build_parser().parse_args(["m", "x.pt", "out", "--anchor", "a=1", "--anchor", "b=2", "--anchor", "c=3", "--anchor", "d=4",
+                                        "--held", "b", "--held", "a", "--oop-diagonal-model", "--oop-fit-sizes", "2,1,2"])
+    assert a.held == ["b", "a"] and a.oop_fit_sizes == [1, 2]
+    RT_T.check_switches(a, dict(s.split("=", 1) for s in a.anchor))           # passes
+    for bad in ("0", "x", ""):
+        with pytest.raises(SystemExit):
+            RT_T.build_parser().parse_args(["m", "x.pt", "out", "--anchor", "a=1", "--oop-fit-sizes", bad])
+
+
+def test_oop_subset_reads_fit_on_each_subset_and_keep_the_fold_s_training_anchors(monkeypatch):
+    """The wiring of arm M along the anchor count: one fit per subset, from that subset's anchors only; the read sees the fold's full
+    training list and the network's predictor."""
+    fits, reads = [], []
+    monkeypatch.setattr(RT_T, "oop_shift_coefficients", lambda an, ids: fits.append(tuple(ids)) or np.array([len(fits), 0.0, 0.0]))
+    monkeypatch.setattr(RT_T, "oop_model_predictor", lambda an, dF_of, coef: (dF_of, float(coef[0])))
+    monkeypatch.setattr(RT_T, "read", lambda an, held, tr, pred: reads.append((held, tuple(tr), pred)) or {"n": pred[1]})
+    train = ["t1", "t2", "t3", "t4"]
+    out = RT_T.oop_subset_reads(None, "h", train, "network", [1, 3])
+    assert sorted(out) == ["1", "3"] and len(out["1"]) == 4 and len(out["3"]) == 4          # C(4, 1) = C(4, 3) = 4 ≤ 5: all of them
+    assert fits == [tuple(r["train"]) for k in ("1", "3") for r in out[k]]
+    assert all(r == ("h", tuple(train), ("network", r[2][1])) for r in reads)
+    assert [r["read"]["n"] for r in out["1"]] == [1.0, 2.0, 3.0, 4.0]
+
+
 def test_the_out_of_plane_switches_add_their_table_columns():
     """TASKS 51 (13 Oct 2026): the arms of R-A's fail branch are columns of the same read, for both head-tuned modes; that the model's
     coefficients come from the training anchors only is the signature of oop_shift_coefficients (an, train_ids), and the columns' values

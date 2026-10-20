@@ -129,6 +129,25 @@ def test_the_run_takes_every_switch():
     assert len(run["outputs"]) == len(ANCHORS) + 1
 
 
+def test_held_runs_only_the_named_fold_and_it_equals_the_pinned_one(tmp_path):
+    """Anchor set three's R-A (--held, 20 Oct 2026): holding out one anchor runs that fold alone; its pool is the other anchors, as in the
+    full run, so the fold is the pinned run's fold to the bit (without --predict, which is outside the folds)."""
+    pytest.importorskip("torch")
+    pytest.importorskip("geometric")
+    if not GOLDEN.exists():
+        pytest.skip("no pin yet")
+    require_frozen_corpus()
+    golden = json.loads(GOLDEN.read_text(encoding="utf-8"))
+    require_pinning_environment(golden)
+    argv = cc_argv(tmp_path)
+    at = argv.index("--predict")
+    argv = [*argv[:at], *argv[at + 2:], "--held", APT_ANCHOR]
+    subprocess.run([sys.executable, str(RUNNER), str(CC_SCRIPT), *argv], env=single_thread_env(), stdin=subprocess.DEVNULL, check=True)
+    record = stable(json.loads(anonymised((tmp_path / "t3.json").read_text(encoding="utf-8"), tmp_path)), VOLATILE)
+    assert record["held"] == [APT_ANCHOR] and sorted(record["folds"]) == [APT_ANCHOR]
+    assert (diff := first_difference(golden["run"]["record"]["folds"][APT_ANCHOR], record["folds"][APT_ANCHOR])) is None, diff
+
+
 def make_model() -> None:
     """The pin's proxy model: the carried recipe on the frozen corpus, smoke size, 3 epochs, by the trainer as it is (pinned itself)."""
     import tempfile
