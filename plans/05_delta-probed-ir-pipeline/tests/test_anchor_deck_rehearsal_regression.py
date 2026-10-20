@@ -2,8 +2,8 @@
 registered runs of 4 Oct on today's files — pyridine with the analytic B3LYP alone (--no-network), pyridine and naphthalene with chain 34's three
 carried models — compared without the date and the seconds.
 
-DECK_PROBES=<folder> selects the folder whose script is tested (default: this checkout's probes; a worktree's for a refactor). The script reads
-the corpus and the models from this checkout (--molecules; model paths given in full).
+DECK_PROBES=<folder> selects the folder whose script is tested (default: this checkout's probes; a worktree's for a refactor). Every run goes
+through tests/deck_pin_runner.py: this checkout's data (corpus, models, the scorer's checkpoints) and dependencies, the script from that folder.
 
     python tests/test_anchor_deck_rehearsal_regression.py --write-golden      # with the script as it is before a change
 """
@@ -21,6 +21,7 @@ import pytest
 from pin_tools import DATA, PLAN, environment, require_pinning_environment, single_thread_env
 
 GOLDEN = DATA / "anchor_deck_rehearsal_golden.json"
+RUNNER = Path(__file__).with_name("deck_pin_runner.py")
 R = PLAN / "probes" / "results_m1"
 MODELS = [str(PLAN / "modules" / "05_support_predictor" / "out" / f"E7_rungC_chain34_kdfamily_750_2026-10-05_model_n750_seed{s}.pt") for s in range(3)]
 CASES = {"pyridine_no_network": (R / "e8_pyridine_ccpvdz_2026-09-30", "A_6e858b26e5", ["--no-network"]),
@@ -38,7 +39,7 @@ def run_case(case: str, work: Path, folder: Path) -> dict:
     prefix = work / case
     argv = [str(folder / "anchor_deck_rehearsal.py"), str(anchor), mol_id, str(prefix), "--threads", "1",
             "--molecules", str(PLAN / "modules" / "05_support_predictor" / "corpus" / "molecules"), *extra]
-    subprocess.run([sys.executable, *argv], env=single_thread_env(), stdin=subprocess.DEVNULL, check=True, capture_output=True, cwd=PLAN)
+    subprocess.run([sys.executable, str(RUNNER), *argv], env=single_thread_env(), stdin=subprocess.DEVNULL, check=True, capture_output=True, cwd=PLAN)
     rec = {k: v for k, v in json.loads(Path(f"{prefix}.json").read_text(encoding="utf-8")).items() if k not in VOLATILE}
     md = Path(f"{prefix}.md").read_text(encoding="utf-8")
     md = re.sub(r"\d{4}-\d\d-\d\d \d\d:\d\d", "<date>", md.replace(str(prefix), "<prefix>"))
