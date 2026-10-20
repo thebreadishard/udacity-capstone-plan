@@ -78,7 +78,7 @@ Whenever the machine is busy or the user is away, the next item is the cheapest 
   `rungC_cc_transfer.py` could only hold every anchor out in turn. Added `--held` and `--oop-fit-sizes` (with neither, the pinned record is
   unchanged to the bit; a held-out fold equals the full run's fold to the bit) and `probes/anchor_set3_read.py`, which plans the runs from
   the anchor registry (refusing while an anchor is unpromoted; an anchor that failed promotion leaves by name) and reads R-A, R-B, arm M
-  and arm C with the registered lines. 25 synthetic tests cover every branch; moving any line slightly fails a test (7 of 7 mutations
+  and arm C with the registered lines. 26 synthetic tests cover every branch; moving any line slightly fails a test (7 of 7 mutations
   caught). One edge found while writing them: 5.5 / 5 − 1 > 0.10 in floating point, so lines are compared as products. The choices the
   registration left open are fixed in its new 'read script' section, before any read. Also this morning: the nightly suite's 8 failures
   were timeouts of shell-script tests beside the two compute runs (a Git Bash process start 0.4 s instead of ~0.03 s), not code faults; one

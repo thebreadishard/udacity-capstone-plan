@@ -295,7 +295,7 @@ the rest run (amendment of 14 Oct). Where and when is the user's word.
 folds; the others stay in every fold's pool) and `--oop-fit-sizes` (arm M's out-of-plane model refitted on subsets of each fold's training
 anchors). With neither switch the transfer script's pinned record is unchanged to the bit (`tests/test_rungC_cc_transfer_regression.py`),
 and a held-out fold equals the same fold of the full run to the bit. The script ran on synthetic records with the edge cases before this
-note (`tests/test_anchor_set3_read.py`, 25 tests: every branch of R-A, R-B, arm M and arm C, values exactly on a line, a missing or NaN value,
+note (`tests/test_anchor_set3_read.py`, 26 tests: every branch of R-A, R-B, arm M and arm C, values exactly on a line, a missing or NaN value,
 a failed and a pending promotion; each line moved slightly makes a test fail). What the text above left to the script, fixed here:
 
 - **Runs.** R-A and R-B come from the same runs: the original six held out, k_s ∈ {0, 2, 4, all}; k_s = 0 is the 10 Oct read run again
