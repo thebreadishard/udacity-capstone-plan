@@ -1,0 +1,8 @@
+{"name": "set3_diag_validate", "purpose": "set-three diagnosis (the user, 21 Oct 00:1x): the eleven anchors' copied corpus must reproduce anchor set three's arm M, seed 0, network_head_l2, to the bit before any experiment uses it",
+ "host": "laptop", "workdir": "probes/results_m1", "command": "python ../chain_runner.py probes/runs/set3_diag_validate.json",
+ "sources": [{"local": "probes/chain_runner.py"}, {"local": "probes/runs/set3_diag_validate.json"}, {"local": "probes/set3_diagnosis.py"},
+             {"local": "modules/05_support_predictor/m05/rungC_cc_transfer.py"}, {"local": "modules/05_support_predictor/m05/rungC_train.py"}],
+ "progress": {"regex": "^=== \\(S3Dvalidate\\) progress: |^\\(S3Dvalidate\\) .* done ", "max_gap_minutes": 60, "start_regex": "^=== \\(S3Dvalidate\\) starting: "},
+ "marker_regex": "^=== \\(S3Dvalidate\\) (armed|starting|resuming|RUN FAILED|run done)",
+ "end_regex": "^=== \\(S3Dvalidate\\) run done", "dry_run_args": "--dry-run", "resumable": true,
+ "memory": {"peak_gb": 2.0, "basis": "commit of rungC_cc_transfer.py with the whole corpus and eleven anchors, read 20 Oct 22:50 (2.04 GB, the set-three read); this run loads eleven molecules instead of 1,236, so at most that; its own peak is read during the run"}}
