@@ -64,6 +64,10 @@ EXPERIMENTS = {
     "W03_lastlayer-0.6_lambda1": ("head_l2", ["--init-scale", "-0.6", "--head-l2", "1"], CHAIN34),
     "W04_lastlayer0_lambda1": ("head_l2", ["--init-scale", "0", "--head-l2", "1"], CHAIN34),
     "W05_lastlayer-0.6_no_finetune": ("none", ["--init-scale", "-0.6"], CHAIN34),
+    # wave 3 (after wave 2: the last layer's start does not matter at lambda 0, the L2 strength does)
+    "W06_insample_lambda0": ("head", ["--in-sample"], CHAIN34),
+    "W09_base_analytic_labels_lambda0": ("head", ["--allow-any-model"], "chain35h2_analytic_model_n750"),
+    "W10_base_more_data_n972_lambda0": ("head", ["--allow-any-model"], "chain41_size_model_n972"),
 }
 VALIDATE = "V00_arm_m_seed0"
 BENZENE_DZ = PLAN / "probes" / "results_m1" / "e8_benzene_ccpvdz_dip_2026-10-03" / "hessian_ccsd_t.npz"
