@@ -75,7 +75,8 @@ Whenever the machine is busy or the user is away, the next item is the cheapest 
 
 - **21 Oct, 01:40 — INCIDENT 2, mine: the cation run stopped (its guard: three failures in a row).** The night's diagnosis (the user's
   request, 00:1x) ran its experiments one at a time beside the cation run; the launch read 6.5 GB of commit free and the validation
-  run's 1.44 GB. Experiment E18 (in-sample, the whole head trainable) needed more; at 01:40 Windows' commit ran out: E18 failed ('not
+  run's 1.44 GB. At 01:40, during E18 (in-sample, the whole head trainable; its rerun alone peaked at 1.47 GB commit, so not E18's own
+  size — the cation molecule's ωB97X stage growing beside it), Windows' commit ran out: E18 failed ('not
   enough memory') and P3c_1f8e4687bd's wsl.exe connection closed — the third cation failure in a row (P3c_1519881f69 19:47, mine;
   P3c_55cca3aaf2 22:38, the two runs together; this one), and cation_analytic_all.sh stopped itself (4 of 30 done, 3 failed; the B3LYP
   halves are kept). I had seen at 22:50 that the run door's budget (13 GB of stated peaks) misses the WSL VM's real commit (8.7 + 4.0 GB)
