@@ -354,5 +354,152 @@
   "version": "",
   "chain": "35h2",
   "note": "chain 35 half read, second run (35h's labels never arrived) — analytic (smallest half) against FD training labels, one pool; measures, does not judge (design note amendment 8 Oct 2026)"
+ },
+ "E7_rungC_chain41_size_model_n972_seed0.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "41",
+  "note": "chain 41 - five fused rings from a corpus of at most four: size arm and two control folds; registered 11 Oct 2026; candidate until its read"
+ },
+ "E7_rungC_chain41_size_model_n972_seed1.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "41",
+  "note": "chain 41 - five fused rings from a corpus of at most four: size arm and two control folds; registered 11 Oct 2026; candidate until its read"
+ },
+ "E7_rungC_chain41_size_model_n972_seed2.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "41",
+  "note": "chain 41 - five fused rings from a corpus of at most four: size arm and two control folds; registered 11 Oct 2026; candidate until its read"
+ },
+ "E7_rungC_chain41_control1_model_n986_seed0.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "41",
+  "note": "chain 41 - five fused rings from a corpus of at most four: size arm and two control folds; registered 11 Oct 2026; candidate until its read"
+ },
+ "E7_rungC_chain41_control1_model_n986_seed1.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "41",
+  "note": "chain 41 - five fused rings from a corpus of at most four: size arm and two control folds; registered 11 Oct 2026; candidate until its read"
+ },
+ "E7_rungC_chain41_control1_model_n986_seed2.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "41",
+  "note": "chain 41 - five fused rings from a corpus of at most four: size arm and two control folds; registered 11 Oct 2026; candidate until its read"
+ },
+ "E7_rungC_chain41_control2_model_n983_seed0.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "41",
+  "note": "chain 41 - five fused rings from a corpus of at most four: size arm and two control folds; registered 11 Oct 2026; candidate until its read"
+ },
+ "E7_rungC_chain41_control2_model_n983_seed1.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "41",
+  "note": "chain 41 - five fused rings from a corpus of at most four: size arm and two control folds; registered 11 Oct 2026; candidate until its read"
+ },
+ "E7_rungC_chain41_control2_model_n983_seed2.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "41",
+  "note": "chain 41 - five fused rings from a corpus of at most four: size arm and two control folds; registered 11 Oct 2026; candidate until its read"
+ },
+ "E7_rungC_chain41_control1half_model_n978_seed0.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "41",
+  "note": "chain 41 - five fused rings from a corpus of at most four: size arm and two control folds; registered 11 Oct 2026; candidate until its read"
+ },
+ "E7_rungC_chain41_control1half_model_n978_seed1.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "41",
+  "note": "chain 41 - five fused rings from a corpus of at most four: size arm and two control folds; registered 11 Oct 2026; candidate until its read"
+ },
+ "E7_rungC_chain41_control1half_model_n978_seed2.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "41",
+  "note": "chain 41 - five fused rings from a corpus of at most four: size arm and two control folds; registered 11 Oct 2026; candidate until its read"
+ },
+ "E7_rungC_chain41_control2half_model_n977_seed0.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "41",
+  "note": "chain 41 - five fused rings from a corpus of at most four: size arm and two control folds; registered 11 Oct 2026; candidate until its read"
+ },
+ "E7_rungC_chain41_control2half_model_n977_seed1.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "41",
+  "note": "chain 41 - five fused rings from a corpus of at most four: size arm and two control folds; registered 11 Oct 2026; candidate until its read"
+ },
+ "E7_rungC_chain41_control2half_model_n977_seed2.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "41",
+  "note": "chain 41 - five fused rings from a corpus of at most four: size arm and two control folds; registered 11 Oct 2026; candidate until its read"
+ },
+ "proxy_check_2026-10-21/base_a_model_n750_seed0.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "PX",
+  "note": "proxy check (a) distorted label / (b) without layer A2 - bases for probes/proxy_check_plan.py only, never a production model (GoalGathering/notes/Design_2026-10-21_Few_Anchor_Proxy_Check.md)"
+ },
+ "proxy_check_2026-10-21/base_a_model_n750_seed1.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "PX",
+  "note": "proxy check (a) distorted label / (b) without layer A2 - bases for probes/proxy_check_plan.py only, never a production model (GoalGathering/notes/Design_2026-10-21_Few_Anchor_Proxy_Check.md)"
+ },
+ "proxy_check_2026-10-21/base_a_model_n750_seed2.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "PX",
+  "note": "proxy check (a) distorted label / (b) without layer A2 - bases for probes/proxy_check_plan.py only, never a production model (GoalGathering/notes/Design_2026-10-21_Few_Anchor_Proxy_Check.md)"
+ },
+ "proxy_check_2026-10-21/base_b_model_n607_seed0.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "PX",
+  "note": "proxy check (a) distorted label / (b) without layer A2 - bases for probes/proxy_check_plan.py only, never a production model (GoalGathering/notes/Design_2026-10-21_Few_Anchor_Proxy_Check.md)"
+ },
+ "proxy_check_2026-10-21/base_b_model_n607_seed1.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "PX",
+  "note": "proxy check (a) distorted label / (b) without layer A2 - bases for probes/proxy_check_plan.py only, never a production model (GoalGathering/notes/Design_2026-10-21_Few_Anchor_Proxy_Check.md)"
+ },
+ "proxy_check_2026-10-21/base_b_model_n607_seed2.pt": {
+  "status": "candidate",
+  "network": "ΔH-network",
+  "version": "",
+  "chain": "PX",
+  "note": "proxy check (a) distorted label / (b) without layer A2 - bases for probes/proxy_check_plan.py only, never a production model (GoalGathering/notes/Design_2026-10-21_Few_Anchor_Proxy_Check.md)"
  }
 }
