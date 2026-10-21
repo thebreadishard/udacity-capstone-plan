@@ -1,8 +1,9 @@
 """The proxy check of the few-anchor transfer (the user, 21 Oct 2026: (a) and (b) before the cation run), planned and read.
 
-Arm (a): a base trained on the corpus with its label distorted per mode family by the CC correction's measured relation to the proxy (the
-median slope over set three's anchors, `out/set3_diagnosis_2026-10-21/decompose.json`), fine-tuned on k molecules with the true label.
-Arm (b): a base trained without layer A2, fine-tuned on k A2 molecules. Both read on fixed sets of held-out molecules with analytic labels
+Arm (a): a base trained on chain 34's pool with its label distorted per mode family by the CC correction's measured relation to the
+proxy (the median slope over set three's anchors, `out/set3_diagnosis_2026-10-21/decompose.json`), fine-tuned on k molecules with the true
+label. Arm (b): a base trained on chain 34's pool without layer A2, fine-tuned on k A2 molecules. Chain 34 is the base the CC transfer used;
+its 750 molecules also train in about half the time of today's pool. Both read on fixed sets of held-out molecules with analytic labels
 (`m05/proxy_transfer_check.py`). The base recipe is chain 34's, read from its record. Design and registration:
 `GoalGathering/notes/Design_2026-10-21_Few_Anchor_Proxy_Check.md`.
 
@@ -81,7 +82,9 @@ def family_scale_text(slopes: dict[str, float]) -> str:
 
 
 def base_extra(arm: str, out_rel: str, slopes: dict[str, float]) -> list[str]:
-    return ["--family-scale", family_scale_text(slopes)] if arm == "a" else ["--exclude-ids-file", f"{out_rel}/b_exclude.txt"]
+    """The base's flags beyond chain 34's recipe: its exclusion file (chain 34's pool; for (b) without A2) and, for (a), the family scales."""
+    extra = ["--exclude-ids-file", f"{out_rel}/{arm}_exclude.txt"]
+    return [*extra, "--family-scale", family_scale_text(slopes)] if arm == "a" else extra
 
 
 def sha_order(ids) -> list[str]:
@@ -105,12 +108,18 @@ def split_ids(elig: dict[str, str]) -> dict[str, list[str]]:
     return {"a_reservoir": every[:na], "a_read": every[na:], "b_reservoir": a2[:nb], "b_read": a2[nb:]}
 
 
-def pool_size(argv: list[str]) -> int:
+def pool_ids(argv: list[str]) -> list[str]:
     """The pool the trainer will train on with these arguments ('--sizes all'), as its own selection computes it."""
     sys.path.insert(0, str(M05 / "m05"))
     from rungC_config import config_from_argv
     from rungC_train import select_corpus
-    return len(select_corpus(config_from_argv(argv), lambda s: None).pool)
+    return list(select_corpus(config_from_argv(argv), lambda s: None).pool)
+
+
+def exclusions(pool_now: list[str], chain34_pool: list[str], a2: list[str]) -> dict[str, list[str]]:
+    """The ids each base's exclusion file lists: (a) today's pool beyond chain 34's, (b) the same and every A2 molecule."""
+    extra = sorted(set(pool_now) - set(chain34_pool))
+    return {"a_exclude": extra, "b_exclude": sorted(set(extra) | set(a2))}
 
 
 def split(out_dir: Path) -> dict:
@@ -119,14 +128,15 @@ def split(out_dir: Path) -> dict:
     mols, *_rest, substituted = load_corpus(str(M05 / "corpus" / "molecules"), use_analytic=True, log=lambda s: None)
     ids = split_ids(eligible(mols, substituted))
     out_dir.mkdir(parents=True, exist_ok=True)
-    every_a2 = sha_order(i for i, m in mols.items() if m["layer"] == "A2")
-    for name, lst in {**ids, "b_exclude": every_a2}.items():
+    slopes, flags, mdir = cc_slopes(), recipe_flags(), str(M05 / "corpus" / "molecules")
+    chain34 = json.loads(CHAIN34_RECORD.read_text(encoding="utf-8"))["pool_ids"]
+    excl = exclusions(pool_ids([mdir, str(out_dir / "pool_now"), *flags]), chain34, [i for i, m in mols.items() if m["layer"] == "A2"])
+    for name, lst in {**ids, **excl}.items():
         write_text(out_dir / f"{name}.txt", "\n".join(lst) + "\n")
-    slopes = cc_slopes()
-    flags = recipe_flags()
-    mdir = str(M05 / "corpus" / "molecules")
-    pools = {arm: pool_size([mdir, str(out_dir / f"base_{arm}"), *flags, *base_extra(arm, str(out_dir), slopes)]) for arm in ARMS}
-    manifest = {"slopes": slopes, "recipe": flags, "pool": pools, **{k: len(v) for k, v in ids.items()}, "b_exclude": len(every_a2)}
+    pools = {arm: pool_ids([mdir, str(out_dir / f"base_{arm}"), *flags, *base_extra(arm, str(out_dir), slopes)]) for arm in ARMS}
+    manifest = {"slopes": slopes, "recipe": flags, "pool": {arm: len(p) for arm, p in pools.items()},
+                "pool_a_vs_chain34": {"missing": sorted(set(chain34) - set(pools["a"])), "extra": sorted(set(pools["a"]) - set(chain34))},
+                **{k: len(v) for k, v in {**ids, **excl}.items()}}
     write_text(out_dir / "manifest.json", json.dumps(manifest, indent=1))
     return manifest
 

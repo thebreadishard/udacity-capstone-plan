@@ -48,12 +48,17 @@ def test_the_chain_trains_both_bases_registers_then_fine_tunes(tmp_path):
     st = X.steps(out_dir, manifest)
     assert [s["label"] for s in st[:3]] == ["base_b", "base_a", "register"]
     assert st[0]["argv"][-2:] == ["--exclude-ids-file", "out/proxy_check_test/b_exclude.txt"]
-    assert st[1]["argv"][-2:] == ["--family-scale", "CH-oop=-0.43,other=-1.16"]
+    assert st[1]["argv"][-4:] == ["--exclude-ids-file", "out/proxy_check_test/a_exclude.txt", "--family-scale", "CH-oop=-0.43,other=-1.16"]
     ft = [s for s in st if s["label"].startswith("ft_")]
     assert len(ft) == 3 * 4 + 3 * 6
     first_a = next(s["argv"] for s in ft if s["label"] == "ft_a_k200_seed1")
     assert first_a[3] == "out/proxy_check_test/base_a_model_n980_seed1.pt" and first_a[first_a.index("--subsets") + 1] == "1"
     assert "--allow-any-model" in first_a and first_a[first_a.index("--k") + 1] == "200"
+
+
+def test_both_bases_keep_to_chain_34s_pool():
+    ex = X.exclusions(["p1", "p2", "new1", "q1"], ["p1", "p2", "q1", "gone"], ["q1", "q9"])
+    assert ex == {"a_exclude": ["new1"], "b_exclude": ["new1", "q1", "q9"]}
 
 
 def record(oop: dict, inten: float = 0.2, draws: int = 3, modes=("head_l2", "head", "head_all", "scratch")) -> dict:
