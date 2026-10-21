@@ -73,6 +73,15 @@ Whenever the machine is busy or the user is away, the next item is the cheapest 
 
 ## 6. Log
 
+- **21 Oct, 00:20–05:00 — why set three read negative: a night of diagnosis (the user, 00:1x: data? hyperparameters? head, layers, network
+  type, embedding? at least twenty ideas).** `GoalGathering/notes/Diagnosis_2026-10-21_Set_Three_Read.md`; 44 transfer runs (each anchor
+  held out in turn, on a copied eleven-anchor corpus) and 8 analyses that train nothing. **The protocol, not the data:** the head's last
+  layer alone cannot fit the CC out-of-plane correction even on its training anchors (CH-oop 7.76 in-sample; the whole head 0.80); held
+  out, training the whole head halves the error (3 seeds: CH-oop 12.29 ± 0.21 → 6.54 ± 0.47, 'other' 12.02 → 6.35, intensity 0.322 →
+  0.206). The λ pull costs monotonically and its target does not matter; proxy-pretraining data and labels change ±1 cm⁻¹; the network
+  knows the proxy (1.8 cm⁻¹). The CC/TZ out-of-plane correction is a near-cancellation of the method part and the MP2 basis step and runs
+  against the proxy (least-squares factor −0.59). With the whole head, more anchors help (originals' CH-oop −16 %, ~2 SE; intensity −20 %).
+  All exploratory, read on the registered read's own anchors; the next registration is the user's word.
 - **21 Oct, 01:40 — INCIDENT 2, mine: the cation run stopped (its guard: three failures in a row).** The night's diagnosis (the user's
   request, 00:1x) ran its experiments one at a time beside the cation run; the launch read 6.5 GB of commit free and the validation
   run's 1.44 GB. At 01:40, during E18 (in-sample, the whole head trainable; its rerun alone peaked at 1.47 GB commit, so not E18's own
