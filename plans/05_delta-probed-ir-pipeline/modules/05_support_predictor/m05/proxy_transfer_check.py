@@ -139,12 +139,16 @@ def read_set(mols: dict, ids: list[str], train_ids: list[str], dF_of) -> dict:
         m, dF = mols[i], dF_of(i)
         row = {"freq": family_freq_rms(m, PH.k_of(m, dF))}
         if "apt" in m:
-            row["intensity"] = RI.intensity_readout(m["H_low"], m["dH_true"], m["B"].T @ dF @ m["B"], m["masses"], m["apt"])[RI.MATCHED]
+            try:
+                row["intensity"] = RI.intensity_readout(m["H_low"], m["dH_true"], m["B"].T @ dF @ m["B"], m["masses"], m["apt"])[RI.MATCHED]
+            except RI.ModeCountChanged as e:
+                row[RI.FAILED] = str(e)
         per[i] = row
     fams = sorted({f for r in per.values() for f in r["freq"]})
     inten = [r["intensity"] for r in per.values() if "intensity" in r]
     return {"family_mean": {f: float(np.mean([r["freq"][f] for r in per.values() if f in r["freq"]])) for f in fams},
             "intensity_matched_mean": float(np.mean(inten)) if inten else None, "n_intensity": len(inten),
+            "n_intensity_failed": sum(RI.FAILED in r for r in per.values()),
             "kept": {k: v for k, v in readouts(mols, ids, train_ids, dF_of).items() if k in KEPT}, "per_molecule": per}
 
 
@@ -185,7 +189,8 @@ def report(res: dict) -> list[str]:
         return " | ".join(f"{r['family_mean'].get(f, float('nan')):.2f}" for f in ("ring-ip", "CH-stretch", "CH-oop", "other"))
 
     def inten(r: dict) -> str:
-        return "–" if r["intensity_matched_mean"] is None else f"{r['intensity_matched_mean']:.3f}"
+        failed = f" ({r['n_intensity_failed']} failed)" if r.get("n_intensity_failed") else ""
+        return ("–" if r["intensity_matched_mean"] is None else f"{r['intensity_matched_mean']:.3f}") + failed
 
     lines = [f"# Proxy transfer check — k = {res['k']}, seed {res['seed']}", "", f"Base `{Path(res['model']).name}`; read set {res['n_read']} "
              f"molecules (intensity on {res['zero_rule']['n_intensity']}); reservoir {res['n_reservoir']}; {res['steps']} steps per fine-tune.", "",

@@ -470,10 +470,16 @@ def per_molecule_readouts(mols: dict, ids: list, tr: list, dF_of) -> dict:
     out = {}
     for i in ids:
         r = readouts(mols, [i], tr, dF_of)
+        failed = None
         if "apt" in mols.get(i, {}):
             B = mols[i]["B"]
-            r.update(RI.intensity_readout(mols[i]["H_low"], mols[i]["dH_true"], B.T @ dF_of(i) @ B, mols[i]["masses"], mols[i]["apt"]))
+            try:
+                r.update(RI.intensity_readout(mols[i]["H_low"], mols[i]["dH_true"], B.T @ dF_of(i) @ B, mols[i]["masses"], mols[i]["apt"]))
+            except RI.ModeCountChanged as e:
+                failed = str(e)
         out[i] = {k: (None if isinstance(r.get(k), float) and np.isnan(r[k]) else r.get(k)) for k in PER_MOLECULE_KEYS}
+        if failed:
+            out[i][RI.FAILED] = failed
     return out
 
 
@@ -826,6 +832,8 @@ def train_and_read(cfg: TrainConfig, corpus: Corpus, tensors: dict, n: int, seed
         r = readouts(corpus.mols, ids, tr, dF_of)
         r["per_molecule"] = per_molecule_readouts(corpus.mols, ids, tr, dF_of)
         r.update(RI.aggregate(r["per_molecule"]))
+        if r.get("intensity_failed_n"):
+            log(f"  n={n} seed {seed} ({h}): {r['intensity_failed_n']} molecules without an intensity read-out (a mode crossed the threshold)")
         out[h] = r
         rows.append(f"| {n} | {seed} | ({h}) | {r['coupling_rms']:.2f} | {r['coupling_zero_rms']:.2f} | {r['coupling_ratio']:.2f} | "
                     f"{r['corrected_freq_rms']:.2f} | {r['corrected_freq_rms_zero_rule']:.2f} | {r['dH_residual_ratio']:.3f} | {out['seconds']:.0f} |")

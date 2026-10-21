@@ -91,7 +91,7 @@ def test_the_registered_lines():
 
 def test_a_missing_value_stops_the_read():
     rec = record({"head_l2": 12.0, "head": 10.0, "head_all": 6.0, "scratch": 15.0})
-    rec["draws"][0]["modes"]["head_all"]["read"]["intensity_matched_mean"] = None
+    rec["draws"][0]["modes"]["head_all"]["read"]["family_mean"]["CH-oop"] = None        # intensity may be absent (reported); a frequency may not
     with pytest.raises(SystemExit, match="non-finite"):
         X.read_arm({5: [rec]})
 

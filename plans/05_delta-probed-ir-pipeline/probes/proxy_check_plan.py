@@ -205,6 +205,13 @@ def mean_se(xs: list[float]) -> tuple[float, float, int]:
     return float(np.mean(xs)), (float(np.std(xs, ddof=1) / np.sqrt(n)) if n > 1 else float("nan")), n
 
 
+def intensity_column(xs: list[float | None]) -> tuple[float, float, int]:
+    """The intensity's mean ± se over the reads that have one (a read has none when every molecule's prediction moved a mode across the
+    threshold); n says how many. Reported, no line: never a reason to stop the read."""
+    have = [x for x in xs if x is not None]
+    return mean_se(have) if have else (float("nan"), float("nan"), 0)
+
+
 def values(records: list[dict], mode: str, key) -> list[float]:
     """One value per (seed, draw) of a fine-tune mode, or per seed for 'none' and 'zero_rule'."""
     if mode in ("none", "zero_rule"):
@@ -224,7 +231,9 @@ def read_arm(records_by_k: dict[int, list[dict]]) -> dict:
     out = {}
     for k, recs in sorted(records_by_k.items()):
         modes = ["zero_rule", "none", *recs[0]["modes"]]
-        cols = {m: {q: mean_se(values(recs, m, f)) for q, f in keys.items()} for m in modes}
+        cols = {m: {q: (intensity_column if q == "intensity" else mean_se)(values(recs, m, f)) for q, f in keys.items()} for m in modes}
+        for m in modes:
+            cols[m]["intensity_failed"] = sum(values(recs, m, lambda r: r.get("n_intensity_failed", 0)))
         cmp = {}
         if {"head_all", "head_l2"} <= set(cols):
             cmp[VS_LAMBDA1] = {q: lower(cols["head_all"][q], cols["head_l2"][q]) for q in keys}
@@ -266,10 +275,11 @@ def report_lines(res: dict) -> list[str]:
         ln = res["lines"][arm]
         lines += [f"## Arm ({arm})", "", f"**L1** (whole head below λ 1 on CH-oop at {L1_NEEDED} of k = {list(L1_SIZES)}): "
                   f"{'holds' if ln['L1']['holds'] else 'does not hold'} (at {ln['L1']['at']}). **L2** (the base helps, CH-oop): largest k "
-                  f"{ln['L2']['largest_k']} (at {ln['L2']['at']}).", "", "| k | column | CH-oop | other | intensity |", "|---|---|---|---|---|"]
+                  f"{ln['L2']['largest_k']} (at {ln['L2']['at']}).", "",
+                  "| k | column | CH-oop | other | intensity | no intensity |", "|---|---|---|---|---|---|"]
         for k, r in by_k.items():
-            lines += [f"| {k} | {m} | " + " | ".join(f"{c[q][0]:.2f} ± {c[q][1]:.2f}" for q in ("CH-oop", "other", "intensity")) + " |"
-                      for m, c in r["columns"].items()]
+            lines += [f"| {k} | {m} | " + " | ".join(f"{c[q][0]:.2f} ± {c[q][1]:.2f}" for q in ("CH-oop", "other", "intensity"))
+                      + f" | {c['intensity_failed']} |" for m, c in r["columns"].items()]
         lines += [""] + [f"- k {k}: {name}: " + ", ".join(f"{q} {'yes' if v else 'no'}" for q, v in c.items())
                          for k, r in by_k.items() for name, c in r["comparisons"].items()] + [""]
     return lines

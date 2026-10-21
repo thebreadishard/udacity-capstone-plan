@@ -47,6 +47,12 @@ def cosine(a: np.ndarray, b: np.ndarray) -> float:
 
 
 MATCHED = "intensity_rel_rms_matched"       # the read-out set three's R-B and the proxy check read
+FAILED = "intensity_failed"                 # per molecule: why it has no intensity read-out (ModeCountChanged)
+
+
+class ModeCountChanged(ValueError):
+    """The prediction moves a near-zero mode across the vibrational threshold, so its modes cannot be paired with the truth's: the molecule
+    has no intensity read-out for this prediction (a property of the prediction, recorded by the caller, not an error of the data)."""
 
 
 def intensity_readout(H_low: np.ndarray, dH_true: np.ndarray, dH_pred: np.ndarray, masses: np.ndarray, apt: np.ndarray) -> dict:
@@ -55,7 +61,7 @@ def intensity_readout(H_low: np.ndarray, dH_true: np.ndarray, dH_pred: np.ndarra
     fp, ip, Lp = mode_intensities(H_low + dH_pred, masses, apt, return_modes=True)
     f0, i0, L0 = mode_intensities(H_low, masses, apt, return_modes=True)
     if not (len(ft) == len(fp) == len(f0)):
-        raise ValueError(f"mode counts differ ({len(ft)}, {len(fp)}, {len(f0)}): a near-zero mode crossed the vibrational threshold")
+        raise ModeCountChanged(f"mode counts differ ({len(ft)}, {len(fp)}, {len(f0)}): a near-zero mode crossed the vibrational threshold")
     st, sp, s0 = broadened(ft, it), broadened(fp, ip), broadened(f0, i0)
     wgt = it / max(it.sum(), 1e-30)
     rel = lambda i: float(np.sqrt(np.sum(wgt * ((i - it) / np.maximum(it, 1.0)) ** 2)))   # noqa: E731 — modes below 1 km/mol enter on an absolute scale
@@ -66,7 +72,13 @@ def intensity_readout(H_low: np.ndarray, dH_true: np.ndarray, dH_pred: np.ndarra
 
 
 def aggregate(per_molecule: dict) -> dict:
-    """Means over the molecules that have an APT (the others contribute nothing); the count says how many."""
+    """Means over the molecules that have an APT (the others contribute nothing); the count says how many, and how many had none because
+    the prediction moved a mode across the threshold (the key only when there are any)."""
+    failed = sum(FAILED in v for v in per_molecule.values())
+    return {**_means(per_molecule), **({"intensity_failed_n": failed} if failed else {})}
+
+
+def _means(per_molecule: dict) -> dict:
     rows = [v for v in per_molecule.values() if v.get("spectrum_overlap") is not None]
     if not rows:
         return {"intensity_n": 0}
