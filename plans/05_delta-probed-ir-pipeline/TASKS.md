@@ -461,7 +461,15 @@ windows until they end — do not close them. Second attempt: quit from the tray
 job processes of the snapshot were alive (21 Windows/msys, 4 WSL), the heartbeat had no gap over 75 s (beats every minute through 18:51),
 RELAUNCHED.txt had no new line — nothing needed the resume task. HB stopped (heartbeat.STOP) and its rows removed. Not tested: a Windows
 restart (all jobs stop; CapstoneResumeJobs relaunches at logon) — for a quiet laptop, about end of October. Rule: a new long laptop job gets a row in both tsv files.
-51. **21 Oct 05:0x — DIAGNOSED overnight (the user, 00:1x; `GoalGathering/notes/Diagnosis_2026-10-21_Set_Three_Read.md`, exploratory, 44
+51. **21 Oct 06:40 — the whole-head repeat of R-A and R-B REGISTERED and RUNNING (the user's item 1; registration amendment of 06:4x,
+commit 2801b401): 36 R-A runs on chain 34's three models (the registered seeds; no other models exist), first alone (S3HF, 06:40), then
+`runspec.py launch probes/runspecs/anchor_set3_headall_rest.json`; read `python probes/anchor_set3_read.py read
+modules/05_support_predictor/out/anchor_set3_headall_2026-10-21`. Predicted: R-A between (~−16 %), R-B 3 of 3. The laptop alone; the
+cation restart (P3-2) waits for its end.** **21 Oct 06:5x — item 2 DESIGNED (desk;
+`GoalGathering/notes/Design_2026-10-21_Few_Anchor_Proxy_Check.md`): the corpus has no third level (1230 molecules with B3LYP and ωB97X,
+601 analytic), so the second correction is computed — GFN2-xTB (cheap, hard case) or a third DFT (faithful, days). Next, on a free laptop:
+time one molecule of each and measure their alignment with the proxy on ~10; then the user chooses; lines registered before any fine-tune.**
+**21 Oct 05:0x — DIAGNOSED overnight (the user, 00:1x; `GoalGathering/notes/Diagnosis_2026-10-21_Set_Three_Read.md`, exploratory, 44
 runs + 8 analyses): the limit was the transfer protocol — the last layer alone cannot fit the CC out-of-plane correction even in-sample
 (CH-oop 7.8; whole head 0.8); held out, the whole head halves the error (3 seeds: CH-oop 12.29 → 6.54, 'other' 12.02 → 6.35, intensity
 0.322 → 0.206); with it, more anchors help (originals CH-oop −16 %, ~2 SE; intensity −20 %). Next, the user's word: register the
