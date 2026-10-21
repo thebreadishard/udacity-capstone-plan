@@ -68,7 +68,14 @@ EXPERIMENTS = {
     "W06_insample_lambda0": ("head", ["--in-sample"], CHAIN34),
     "W09_base_analytic_labels_lambda0": ("head", ["--allow-any-model"], "chain35h2_analytic_model_n750"),
     "W10_base_more_data_n972_lambda0": ("head", ["--allow-any-model"], "chain41_size_model_n972"),
+    # wave 4 (after E16/E18/W06: the last layer cannot fit the out-of-plane correction even in-sample; the whole head halves the error)
+    "W11_head_all_epochs100": ("head_all", ["--head-all", "--epochs", "100"], CHAIN34),
+    "W12_head_all_lr3e-4": ("head_all", ["--head-all", "--lr", "3e-4"], CHAIN34),
+    "W13_head_all_base_n972": ("head_all", ["--head-all", "--allow-any-model"], "chain41_size_model_n972"),
+    "W14_head_all_base_analytic": ("head_all", ["--head-all", "--allow-any-model"], "chain35h2_analytic_model_n750"),
+    "W15_head_all_originals_only": ("head_all", ["--head-all"], CHAIN34),
 }
+ORIGINALS_ONLY = {"W15_head_all_originals_only"}      # anchors: the original six alone (pool 5), against E16's eleven (pool 10)
 VALIDATE = "V00_arm_m_seed0"
 BENZENE_DZ = PLAN / "probes" / "results_m1" / "e8_benzene_ccpvdz_dip_2026-10-03" / "hessian_ccsd_t.npz"
 
@@ -106,7 +113,7 @@ def build_corpus(out_dir: Path) -> Path:
 
 
 def run_argv(name: str, out_rel: str, mols: Path, seed: int = 0) -> list[str]:
-    files = anchors()
+    files = {i: f for i, f in anchors().items() if name not in ORIGINALS_ONLY or i in S3.ORIGINALS}
     if name == VALIDATE:      # anchor set three's arm M, seed 0, on the copied corpus: must equal its full-corpus record
         mode, extra, chain = "head_l2", ["--head-l2", "1", *[x for i in S3.NEW for x in ("--held", i)]], CHAIN34
     else:
