@@ -67,6 +67,32 @@ ARM_C_OOP_CM = 1.0                        # arm C: CH-oop within 1.0 cm-1 of lam
 SE_FACTOR = 2.0                           # 'still learning': below the previous size by more than twice the combined standard error
 
 
+@dataclass(frozen=True)
+class Protocol:
+    """How the transfer runs and which column R-A and R-B read: the registered read (12 Oct, λ = 1, with arms M and C) or the whole-head
+    repeat (amendment of 21 Oct, after the night's diagnosis)."""
+    name: str
+    label: str
+    suffix: str
+    chain: str
+    transfer_args: tuple[str, ...]
+    standard: str
+    beside: str | None
+    arms: bool
+    rb_wait: str
+    rb_stands: str
+
+
+REGISTERED = Protocol("registered", "lambda = 1", "", "S3", tuple(TRANSFER_ARGS), STANDARD, LAMBDA0, True,
+                      "the lambda question waits for anchor set four (the error is still falling with k_s)",
+                      "the lambda question stands: a chain to re-choose lambda on frequencies and intensities together is registered")
+HEAD_ALL = Protocol("head_all", "whole head", "_headall", "S3H",
+                    ("--threads", "8", "--epochs", "300", "--lr", "1e-3", "--head-all", "--modes", "head_all"), "network_head_all", None, False,
+                    "the shape question waits for anchor set four (the error is still falling with k_s)",
+                    "the shape question stands: the whole head does not repair the shapes at this count")
+PROTOCOLS = {p.name: p for p in (REGISTERED, HEAD_ALL)}
+
+
 # ---- plan
 
 @dataclass(frozen=True)
@@ -81,8 +107,8 @@ class Run:
     prefix: str
 
 
-def plan_runs(new_carried: list[str], out_rel: str) -> list[Run]:
-    """R-A for every k_s and subset and seed, then arm M per seed; `out_rel` is the output folder relative to module 05."""
+def plan_runs(new_carried: list[str], out_rel: str, arms: bool = True) -> list[Run]:
+    """R-A for every k_s and subset and seed, then (with `arms`) arm M per seed; `out_rel` is the output folder relative to module 05."""
     import rungC_cc_transfer as CT
 
     n_new = len(new_carried)
@@ -92,14 +118,14 @@ def plan_runs(new_carried: list[str], out_rel: str) -> list[Run]:
         for k in sizes:
             for j, sub in enumerate(CT.anchor_subsets(new_carried, k) if k else [()]):
                 runs.append(Run("RA", k, j, seed, (*ORIGINALS, *sub), tuple(ORIGINALS), f"{out_rel}/RA_k{k}_s{j}_seed{seed}"))
-    if n_new:
+    if n_new and arms:
         runs += [Run("M", -1, 0, seed, (*ORIGINALS, *new_carried), tuple(new_carried), f"{out_rel}/M_seed{seed}") for seed in SEEDS]
     return runs
 
 
-def run_argv(run: Run, files: dict[str, str]) -> list[str]:
+def run_argv(run: Run, files: dict[str, str], protocol: Protocol = REGISTERED, molecules: str = "corpus/molecules") -> list[str]:
     """The transfer script's command line for a run; `files` maps every anchor id to its carried TZ file."""
-    argv = ["{python}", "m05/rungC_cc_transfer.py", "corpus/molecules", MODEL.format(seed=run.seed), run.prefix, *TRANSFER_ARGS]
+    argv = ["{python}", "m05/rungC_cc_transfer.py", molecules, MODEL.format(seed=run.seed), run.prefix, *protocol.transfer_args]
     for i in run.anchors:
         argv += ["--anchor", f"{i}={files[i]}"]
     for i in run.anchors:
@@ -112,9 +138,10 @@ def run_argv(run: Run, files: dict[str, str]) -> list[str]:
     return argv
 
 
-def chain_spec(name: str, about: str, runs: list[Run], files: dict[str, str]) -> dict:
+def chain_spec(name: str, about: str, runs: list[Run], files: dict[str, str], protocol: Protocol = REGISTERED,
+               molecules: str = "corpus/molecules") -> dict:
     steps = [{"kind": "cmd", "label": Path(r.prefix).name, "cwd": "modules/05_support_predictor",
-              "log": f"modules/05_support_predictor/{r.prefix}.log", "argv": run_argv(r, files)} for r in runs]
+              "log": f"modules/05_support_predictor/{r.prefix}.log", "argv": run_argv(r, files, protocol, molecules)} for r in runs]
     return {"_about": about, "name": name, "steps": steps,
             "outputs": [f"modules/05_support_predictor/{r.prefix}.json" for r in runs]}
 
@@ -159,20 +186,24 @@ def write_json(path: Path, obj) -> None:
     os.replace(tmp, path)
 
 
-def plan(out_dir: Path, entries: list[dict] | None = None, check: bool = True, runs_dir: Path = RUNS) -> dict:
+def plan(out_dir: Path, entries: list[dict] | None = None, check: bool = True, runs_dir: Path = RUNS,
+         protocol: Protocol = REGISTERED, molecules: str = "corpus/molecules") -> dict:
     files, left = carried_files(entries)
     new_carried = [i for i in NEW if i in files]
     if check:
         check_inputs(files)
     out_rel = Path(os.path.relpath(out_dir, M05)).as_posix()
-    runs = plan_runs(new_carried, out_rel)
+    runs = plan_runs(new_carried, out_rel, protocol.arms)
     out_dir.mkdir(parents=True, exist_ok=True)
-    manifest = {"new_carried": new_carried, "left_the_read": {i: NEW[i] for i in left}, "files": files,
-                "runs": [r.__dict__ for r in runs]}
+    manifest = {"new_carried": new_carried, "left_the_read": {i: NEW[i] for i in left}, "files": files, "protocol": protocol.name,
+                "molecules": molecules, "runs": [r.__dict__ for r in runs]}
     write_json(out_dir / "manifest.json", manifest)
-    about = "Anchor set three's final read (probes/anchor_set3_read.py plan): "
-    write_json(runs_dir / "anchor_set3_first.json", chain_spec("S3F", about + "the first run alone, timed before the rest run.", runs[:1], files))
-    write_json(runs_dir / "anchor_set3_rest.json", chain_spec("S3R", about + "every run after the first.", runs[1:], files))
+    about = f"Anchor set three's read, protocol {protocol.name} (probes/anchor_set3_read.py plan): "
+    stem = f"anchor_set3{protocol.suffix}"
+    write_json(runs_dir / f"{stem}_first.json", chain_spec(f"{protocol.chain}F", about + "the first run alone, timed before the rest run.",
+                                                          runs[:1], files, protocol, molecules))
+    write_json(runs_dir / f"{stem}_rest.json", chain_spec(f"{protocol.chain}R", about + "every run after the first.", runs[1:], files, protocol,
+                                                         molecules))
     print(f"{len(runs)} runs ({sum(r.arm == 'RA' for r in runs)} R-A, {sum(r.arm == 'M' for r in runs)} arm M); new carried "
           f"{[NEW[i] for i in new_carried]}; left the read {[NEW[i] for i in left] or 'none'}")
     return manifest
@@ -238,12 +269,14 @@ def mean_over(fold_ids, record: dict, value) -> float:
     return float(np.mean([value(record["folds"][i]) for i in fold_ids]))
 
 
-def ra_read(records: list[tuple[Run, dict]]) -> dict:
-    """R-A: the original six's leave-one-out error along k_s; the line on CH-oop of the standard column, 'other' and lambda = 0 beside."""
+def ra_read(records: list[tuple[Run, dict]], protocol: Protocol = REGISTERED) -> dict:
+    """R-A: the original six's leave-one-out error along k_s; the line on CH-oop of the protocol's standard column, 'other' and the
+    column beside it (the registered read's lambda = 0) reported."""
     ra = [(r, rec) for r, rec in records if r.arm == "RA"]
+    cols = [c for c in (protocol.standard, protocol.beside) if c]
     curves = {f"{col} {fam}": curve(ra, lambda rec, col=col, fam=fam: mean_over(ORIGINALS, rec, lambda f: family(f, col, fam)))
-              for col in (STANDARD, LAMBDA0) for fam in ("CH-oop", "other")}
-    c = curves[f"{STANDARD} CH-oop"]
+              for col in cols for fam in ("CH-oop", "other")}
+    c = curves[f"{protocol.standard} CH-oop"]
     if c[0].k != 0 or len(c) < 2:
         raise ValueError("R-A needs the k_s = 0 baseline and at least one size with new anchors")
     reduction = 1 - c[-1].mean / c[0].mean
@@ -259,21 +292,20 @@ def ra_read(records: list[tuple[Run, dict]]) -> dict:
     return {"reduction": reduction, "still_learning": learning, "verdict": verdict, "curves": curves}
 
 
-def rb_read(records: list[tuple[Run, dict]]) -> dict:
+def rb_read(records: list[tuple[Run, dict]], protocol: Protocol = REGISTERED) -> dict:
     """R-B: lambda = 1's matched intensity error against the zero rule on the three low-symmetry anchors, with the enlarged pool ('all');
     along k_s, the mean over the three."""
     ra = [(r, rec) for r, rec in records if r.arm == "RA"]
     k_all = max(r.k for r, _ in ra)
     at_all = [rec for r, rec in ra if r.k == k_all]
-    per_anchor = {i: {"standard": float(np.mean([matched(rec["folds"][i], STANDARD) for rec in at_all])),
+    col = protocol.standard
+    per_anchor = {i: {"standard": float(np.mean([matched(rec["folds"][i], col) for rec in at_all])),
                       "zero_rule": float(np.mean([matched(rec["folds"][i], ZERO) for rec in at_all]))} for i in LOW_SYMMETRY}
     below = sum(v["standard"] < v["zero_rule"] for v in per_anchor.values())
-    c = curve(ra, lambda rec: mean_over(LOW_SYMMETRY, rec, lambda f: matched(f, STANDARD)))
+    c = curve(ra, lambda rec: mean_over(LOW_SYMMETRY, rec, lambda f: matched(f, col)))
     learning = still_learning(c)
     passed = below >= 2
-    verdict = ("anchors repair the shapes" if passed else
-               "the lambda question waits for anchor set four (the error is still falling with k_s)" if learning else
-               "the lambda question stands: a chain to re-choose lambda on frequencies and intensities together is registered")
+    verdict = "anchors repair the shapes" if passed else protocol.rb_wait if learning else protocol.rb_stands
     return {"below_zero_rule": below, "passed": passed, "still_falling": learning, "verdict": verdict, "per_anchor": per_anchor, "curve": c}
 
 
@@ -357,8 +389,8 @@ def load_records(out_dir: Path) -> tuple[dict, list[tuple[Run, dict]]]:
     return manifest, records
 
 
-def read_all(records: list[tuple[Run, dict]]) -> dict:
-    ra, rb = ra_read(records), rb_read(records)
+def read_all(records: list[tuple[Run, dict]], protocol: Protocol = REGISTERED) -> dict:
+    ra, rb = ra_read(records, protocol), rb_read(records, protocol)
     has_m = any(r.arm == "M" for r, _ in records)
     m = arm_m_read(records, rb["passed"]) if has_m else None
     c = arm_c_read(records, rb["passed"], bool(m and m["adopted"])) if has_m else None
@@ -379,17 +411,19 @@ def _curve_text(c: list[Point]) -> str:
     return "; ".join(f"k {p.k}: {p.mean:.2f} ± {p.se:.2f} (n {p.n})" for p in c)
 
 
-def report_lines(res: dict, manifest: dict) -> list[str]:
+def report_lines(res: dict, manifest: dict, protocol: Protocol = REGISTERED) -> list[str]:
     ra, rb, m, c = res["R-A"], res["R-B"], res["arm M"], res["arm C"]
-    lines = ["# Anchor set three — the final read", "",
+    lab = protocol.label
+    title = "the final read" if protocol is REGISTERED else f"the read with protocol {protocol.name} ({lab})"
+    lines = [f"# Anchor set three — {title}", "",
              f"New carried anchors: {', '.join(NEW[i] for i in manifest['new_carried'])}; left the read: "
              f"{', '.join(manifest['left_the_read'].values()) or 'none'}.", "",
-             f"**R-A** (CH-oop, lambda = 1, the original six): {ra['reduction']:+.1%} lower at 'all' than at k_s = 0; still learning: "
+             f"**R-A** (CH-oop, {lab}, the original six): {ra['reduction']:+.1%} lower at 'all' than at k_s = 0; still learning: "
              f"{ra['still_learning']}. **{ra['verdict']}.**", ""]
     lines += [f"- {name}: {_curve_text(cv)}" for name, cv in ra["curves"].items()]
-    lines += ["", f"**R-B** (matched intensity, lambda = 1 below the zero rule on {rb['below_zero_rule']} of 3; along k_s still falling: "
+    lines += ["", f"**R-B** (matched intensity, {lab} below the zero rule on {rb['below_zero_rule']} of 3; along k_s still falling: "
               f"{rb['still_falling']}). **{rb['verdict']}.**", ""]
-    lines += [f"- {ORIGINALS[i]}: lambda = 1 {v['standard']:.3f}, zero rule {v['zero_rule']:.3f}" for i, v in rb["per_anchor"].items()]
+    lines += [f"- {ORIGINALS[i]}: {lab} {v['standard']:.3f}, zero rule {v['zero_rule']:.3f}" for i, v in rb["per_anchor"].items()]
     lines.append(f"- mean of the three along k_s: {_curve_text(rb['curve'])}")
     if m:
         lines += ["", f"**Arm M** (new anchors' folds): CH-oop {m['reduction']:+.1%} below lambda = 1's {m['lambda1_ch_oop']:.2f} cm-1; 'other' "
@@ -404,9 +438,10 @@ def report_lines(res: dict, manifest: dict) -> list[str]:
 
 def read(out_dir: Path) -> dict:
     manifest, records = load_records(out_dir)
-    res = read_all(records)
+    protocol = PROTOCOLS[manifest.get("protocol", REGISTERED.name)]
+    res = read_all(records, protocol)
     write_json(out_dir / "read_set3.json", _jsonable(res))
-    lines = report_lines(res, manifest)
+    lines = report_lines(res, manifest, protocol)
     tmp = out_dir / "read_set3.md.tmp"
     tmp.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
     os.replace(tmp, out_dir / "read_set3.md")
@@ -418,9 +453,11 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("action", choices=("plan", "read"))
     ap.add_argument("out_dir", type=Path)
+    ap.add_argument("--protocol", choices=sorted(PROTOCOLS), default=REGISTERED.name, help="plan: the registered read or the whole-head repeat")
+    ap.add_argument("--molecules", default="corpus/molecules", help="plan: the corpus folder the runs read (the validated eleven-anchor copy)")
     a = ap.parse_args(argv)
     if a.action == "plan":
-        plan(a.out_dir.resolve())
+        plan(a.out_dir.resolve(), protocol=PROTOCOLS[a.protocol], molecules=a.molecules)
     else:
         read(a.out_dir.resolve())
     return 0

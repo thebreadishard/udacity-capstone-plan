@@ -26,15 +26,18 @@ def column(oop: float, other: float = 5.0, inten: float | None = None) -> dict:
     return c
 
 
-def ra_records(oop_at, inten_at=lambda k, j, s: 0.30, zero_inten: float = 0.40, n_new: int = 5) -> list:
-    """R-A runs as the plan makes them; the standard column's CH-oop and the low-symmetry anchors' intensity from (k, subset, seed)."""
+def ra_records(oop_at, inten_at=lambda k, j, s: 0.30, zero_inten: float = 0.40, n_new: int = 5, protocol=S3.REGISTERED) -> list:
+    """R-A runs as the plan makes them; the protocol's standard column's CH-oop and the low-symmetry anchors' intensity from (k, subset,
+    seed); the column beside it (if any) one wave number above."""
     out = []
-    for r in S3.plan_runs(NEW_IDS[:n_new], "out/x"):
+    for r in S3.plan_runs(NEW_IDS[:n_new], "out/x", protocol.arms):
         if r.arm != "RA":
             continue
-        folds = {i: {S3.STANDARD: column(oop_at(r.k, r.subset, r.seed), inten=inten_at(r.k, r.subset, r.seed)),
-                     S3.LAMBDA0: column(oop_at(r.k, r.subset, r.seed) + 1.0, inten=0.5), S3.ZERO: column(20.0, inten=zero_inten)}
-                 for i in S3.ORIGINALS}
+        folds = {i: {protocol.standard: column(oop_at(r.k, r.subset, r.seed), inten=inten_at(r.k, r.subset, r.seed)),
+                     S3.ZERO: column(20.0, inten=zero_inten)} for i in S3.ORIGINALS}
+        if protocol.beside:
+            for i in S3.ORIGINALS:
+                folds[i][protocol.beside] = column(oop_at(r.k, r.subset, r.seed) + 1.0, inten=0.5)
         out.append((r, {"folds": folds}))
     return out
 
@@ -210,6 +213,39 @@ def test_an_original_without_a_carried_tz_entry_is_refused(tmp_path):
         S3.plan(tmp_path / "out", entries(skip=("A_6e858b26e5",)), check=False, runs_dir=tmp_path)
     with pytest.raises(SystemExit, match="TZ"):
         S3.plan(tmp_path / "out", entries(tier="DZ"), check=False, runs_dir=tmp_path)
+
+
+def test_the_head_all_plan(tmp_path):
+    """The whole-head repeat: R-A only (no arms), its own run files and chain names, the transfer told to train every head layer, and
+    the corpus folder it is given."""
+    m = S3.plan(tmp_path / "out", entries(), check=False, runs_dir=tmp_path, protocol=S3.HEAD_ALL, molecules="../x/corpus/molecules")
+    assert m["protocol"] == "head_all" and m["molecules"] == "../x/corpus/molecules"
+    assert {r["arm"] for r in m["runs"]} == {"RA"} and len(m["runs"]) == 3 * (1 + 5 + 5 + 1)
+    assert not (tmp_path / "anchor_set3_first.json").exists()
+    first = json.loads((tmp_path / "anchor_set3_headall_first.json").read_text(encoding="utf-8"))
+    rest = json.loads((tmp_path / "anchor_set3_headall_rest.json").read_text(encoding="utf-8"))
+    assert first["name"] == "S3HF" and rest["name"] == "S3HR" and len(rest["steps"]) == len(m["runs"]) - 1
+    argv = rest["steps"][0]["argv"]
+    assert argv[2] == "../x/corpus/molecules" and "--head-all" in argv and argv[argv.index("--modes") + 1] == "head_all"
+    assert "--head-l2" not in argv
+
+
+def test_the_registered_plan_records_its_protocol(tmp_path):
+    m = S3.plan(tmp_path / "out", entries(), check=False, runs_dir=tmp_path)
+    assert m["protocol"] == "registered" and m["molecules"] == "corpus/molecules"
+    assert json.loads((tmp_path / "anchor_set3_rest.json").read_text(encoding="utf-8"))["name"] == "S3R"
+
+
+def test_the_head_all_read_uses_its_column_and_texts():
+    recs = ra_records(noisy({0: 10.0, 2: 9.95, 4: 9.9, 5: 9.85}, 0.05), inten_at=lambda k, j, s: 0.5, protocol=S3.HEAD_ALL)
+    res = S3.read_all(recs, S3.HEAD_ALL)
+    assert set(res["R-A"]["curves"]) == {"network_head_all CH-oop", "network_head_all other"}
+    assert res["R-A"]["verdict"].startswith("flat") and res["arm M"] is None and res["arm C"] is None
+    assert res["R-B"]["below_zero_rule"] == 0 and res["R-B"]["verdict"].startswith("the shape question stands")
+    text = "\n".join(S3.report_lines(res, {"new_carried": NEW_IDS, "left_the_read": {}}, S3.HEAD_ALL))
+    assert "protocol head_all (whole head)" in text and "lambda" not in text
+    with pytest.raises(KeyError):
+        S3.read_all(recs)                                                      # the registered column is not in these records
 
 
 def test_the_full_read_from_files(tmp_path, monkeypatch):

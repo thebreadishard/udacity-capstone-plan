@@ -1,0 +1,43 @@
+{
+ "name": "anchor_set3_headall_rest",
+ "purpose": "TASKS 51: anchor set three's R-A and R-B repeated with the whole head trainable (amendment of 21 Oct 06:4x, the user's item 1), the 35 runs after the first",
+ "host": "laptop",
+ "workdir": "probes/results_m1",
+ "command": "python ../chain_runner.py probes/runs/anchor_set3_headall_rest.json",
+ "sources": [
+  {
+   "local": "probes/chain_runner.py"
+  },
+  {
+   "local": "probes/runs/anchor_set3_headall_rest.json"
+  },
+  {
+   "local": "probes/anchor_set3_read.py"
+  },
+  {
+   "local": "modules/05_support_predictor/m05/rungC_cc_transfer.py"
+  },
+  {
+   "local": "modules/05_support_predictor/m05/rungC_train.py"
+  },
+  {
+   "local": "modules/05_support_predictor/m05/mode_blocks.py"
+  },
+  {
+   "local": "modules/05_support_predictor/m05/rungC_intensities.py"
+  }
+ ],
+ "progress": {
+  "regex": "^=== \\(S3HR\\) progress: |^\\(S3HR\\) .* done ",
+  "max_gap_minutes": 90,
+  "start_regex": "^=== \\(S3HR\\) starting: "
+ },
+ "marker_regex": "^=== \\(S3HR\\) (armed|starting|resuming|RUN FAILED|run done)",
+ "end_regex": "^=== \\(S3HR\\) run done",
+ "dry_run_args": "--dry-run",
+ "resumable": true,
+ "memory": {
+  "peak_gb": 2.0,
+  "basis": "the registered read's runs peaked at 1.10 GB (PeakWorkingSet64, anchor_set3_first, 20 Oct); the diagnosis' in-sample whole-head run E18 committed 1.47 GB (sampler, 21 Oct); 2.0 stated"
+ }
+}

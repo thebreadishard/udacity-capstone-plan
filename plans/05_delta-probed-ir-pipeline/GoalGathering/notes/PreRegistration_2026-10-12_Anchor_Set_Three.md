@@ -359,3 +359,34 @@ original six, and the network's mode shapes stay worse than B3LYP's on the low-s
 three-parameter shift model (−29 % CH-oop, −38 % 'other' on the new anchors) but that model keeps B3LYP's shapes, which cost intensity on
 three of five. Both registered next steps (the structural change; the λ re-choice on frequencies and intensities together) are desk work on
 existing data — no new CC anchors (decision 63). They are put to the user before anything is registered or run.
+
+## Amendment (21 Oct 2026, 06:4x, after the final read and the night's diagnosis, before any run of this repeat) — R-A and R-B with the whole head
+
+**Why, and what kind of read this is.** The final read above was negative on both lines. The night's diagnosis
+(`Diagnosis_2026-10-21_Set_Three_Read.md`, exploratory) traced it to the transfer protocol, not to the anchors: with λ = 1 and only the last
+layer free, the network cannot fit the CC out-of-plane correction even on its own training anchors (in-sample CH-oop 11.65, E17; the last
+layer at λ = 0, 7.76, W06), while with every head layer free it fits it to 0.80 (E18). The user approved (21 Oct, 06:3x) repeating the
+registered R-A and R-B with that protocol. **The protocol was chosen on these same eleven anchors**, so this repeat cannot confirm it; it
+measures whether, under it, the anchor count is the lever and whether the shapes improve. The independent check is the two-DFT proxy (item 2
+of the same morning), read on hundreds of held-out corpus molecules and registered separately.
+
+**What changes, and nothing else.** `python probes/anchor_set3_read.py plan <out> --protocol head_all --molecules out/set3_diagnosis_2026-10-21/corpus/molecules`: the transfer
+runs with `--head-all --modes head_all` (every head layer and α trainable, no pull to the proxy weights; chain 34's three models, 300
+epochs, lr 1e-3, as registered). The column read is `network_head_all`. The anchors, subsets, seeds, held-out folds, APTs, the zero rule,
+the lines (R-A ≥ 20 % / < 5 % with the still-learning test; R-B below the zero rule on ≥ 2 of 3) and the standard errors are the registered
+ones. Arms M and C are not repeated: both change only the diagonal of the low level's out-of-plane block, and the question here is the
+network's own block. The corpus folder is the copy the diagnosis validated (the eleven carried TZ anchors beside the corpus; on it the final
+read's λ = 1 run was reproduced within 3.2e-6 cm⁻¹). 36 runs (R-A: 3 seeds × (1 + 5 + 5 + 1)), the first alone; the laptop only, nothing
+beside it.
+
+**Predictions, from exploratory runs on these anchors** (E16 is this protocol at 'all' with all eleven held out in turn, W15 at k_s = 0):
+
+- R-A: CH-oop on the original six ≈ 7.4 at k_s = 0 (W15 7.37 ± 0.88, 3 seeds) and ≈ 6.2 at 'all' (E16 on the same six 6.22 ± 0.50), about
+  16 % lower: **between** (5–20 %), most likely still learning. ≥ 20 % would make anchors the lever under this protocol; < 5 % would say the
+  exploratory −16 % was seed noise.
+- R-B: matched intensity below the zero rule on **3 of 3** (E16, seeds 0–2: pyridine 0.151–0.162 against 0.262, fluorobenzene 0.044–0.108
+  against 0.104, benzonitrile 0.094–0.125 against 0.258; fluorobenzene is the marginal one, one seed of three above).
+- If R-B passes as predicted, 'anchors repair the shapes' holds for this protocol only, with the caveat above; the λ re-choice (the
+  registered consequence of the final read's R-B) is then moot for the whole-head protocol, which has no λ.
+
+**Read.** `python probes/anchor_set3_read.py read <out>`; the outcome is appended under *Outcome* beside the final read, which stands.
