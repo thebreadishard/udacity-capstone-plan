@@ -30,6 +30,8 @@ VENV_PY = os.path.join(ROOT, ".venv", "Scripts", "python.exe")                  
 WSL_PY = "~/qc05/bin/python"                                                        # pyscf
 STALE_HOURS = 48
 TIMEOUT_S = 1800
+COLUMNS = "400"            # pytest cuts its short summary to the terminal width (80 when there is none): a long test id lost its message
+MAX_ERROR_LINES = 40
 
 # name, interpreter, working directory (relative to the repository root), pytest arguments
 SUITES = [
@@ -57,8 +59,14 @@ def counts(text):
 
 
 def failures(text):
-    """pytest's short-summary lines for failed and erroring tests (its default -r fE), at most 20, each cut to 300 characters."""
-    return [ln[:300] for ln in text.splitlines() if ln.startswith(("FAILED ", "ERROR "))][:20]
+    """pytest's short-summary lines for failed and erroring tests (its default -r fE), at most 20, each cut to 500 characters."""
+    return [ln[:500] for ln in text.splitlines() if ln.startswith(("FAILED ", "ERROR "))][:20]
+
+
+def error_lines(text):
+    """pytest's 'E ' lines (the raised error and its explanation) from the failure reports, at most 40, each cut to 300 characters: the
+    reason a failure had, kept for the morning (the 20-21 Oct nightly failures came without one)."""
+    return [ln[:300] for ln in text.splitlines() if ln.startswith("E ")][:MAX_ERROR_LINES]
 
 
 def verdict(rc, c):
@@ -81,18 +89,19 @@ def run(cmd, cwd, env, windows_idle):
 
 
 def run_all():
-    env = dict(os.environ, PYTHONUTF8="1", OMP_NUM_THREADS="2", MKL_NUM_THREADS="2")
+    env = dict(os.environ, PYTHONUTF8="1", OMP_NUM_THREADS="2", MKL_NUM_THREADS="2", COLUMNS=COLUMNS)
     pytest = ["-m", "pytest", "-q", "-p", "no:cacheprovider", "-m", "not slow"]
     rows = []
     for name, py, rel, args in SUITES:
         rc, text, s = run([py, *pytest, *args], os.path.join(ROOT, rel), env, windows_idle=True)
-        rows.append(dict(suite=name, rc=rc, seconds=s, counts=counts(text), tail=text.strip().splitlines()[-1:] or [""], failures=failures(text)))
+        rows.append(dict(suite=name, rc=rc, seconds=s, counts=counts(text), tail=text.strip().splitlines()[-1:] or [""], failures=failures(text),
+                         errors=error_lines(text)))
     wsl_plan = "/mnt/" + PLAN[0].lower() + PLAN[2:].replace("\\", "/")
     args = " ".join(shlex.quote(x) for x in [*pytest, *pyscf_tests()])               # bash -lc reads one string: quote every word
-    cmd = f"cd {shlex.quote(wsl_plan)} && OMP_NUM_THREADS=1 nice -n 19 {WSL_PY} {args}"
+    cmd = f"cd {shlex.quote(wsl_plan)} && COLUMNS={COLUMNS} OMP_NUM_THREADS=1 nice -n 19 {WSL_PY} {args}"
     rc, text, s = run(["wsl.exe", "-e", "bash", "-lc", cmd], ROOT, env, windows_idle=False)
     rows.append(dict(suite="plan 05 pyscf (WSL)", rc=rc, seconds=s, counts=counts(text), tail=text.strip().splitlines()[-1:] or [""],
-                     failures=failures(text)))
+                     failures=failures(text), errors=error_lines(text)))
     for r in rows:
         r["verdict"] = verdict(r["rc"], r["counts"])
     return rows
@@ -121,7 +130,11 @@ def main():
     a = ap.parse_args()
     sys.stdout.reconfigure(encoding="utf-8")                                    # Git Bash reads UTF-8; Windows Python writes cp1252
     if a.summary:
-        print(summary(json.load(open(STATE, encoding="utf-8")) if os.path.exists(STATE) else None))
+        if not os.path.exists(STATE):
+            print(summary(None))
+            return 0
+        with open(STATE, encoding="utf-8") as f:
+            print(summary(json.load(f)))
         return 0
     started = datetime.datetime.now().isoformat(timespec="seconds")
     rows = run_all()
@@ -135,6 +148,8 @@ def main():
         print(f"{r['suite']}: {r['verdict']} {r['counts']} ({r['seconds']} s){'' if r['verdict'] == 'pass' else ' — ' + r['tail'][0]}", flush=True)
         for ln in r.get("failures", []):
             print(f"    {ln}", flush=True)
+        for ln in r.get("errors", [])[:10]:
+            print(f"      {ln}", flush=True)
     return 0 if all(r["verdict"] == "pass" for r in rows) else 1
 
 

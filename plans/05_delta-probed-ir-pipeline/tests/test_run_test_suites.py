@@ -6,7 +6,7 @@ from pathlib import Path
 
 PLAN = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PLAN / "tools"))
-from run_test_suites import counts, failures, pyscf_tests, summary, verdict  # noqa: E402
+from run_test_suites import MAX_ERROR_LINES, counts, error_lines, failures, pyscf_tests, summary, verdict  # noqa: E402
 
 
 def test_counts_read_the_closing_line():
@@ -22,6 +22,13 @@ def test_failures_keep_the_names_from_the_short_summary():
     assert failures(text) == ["FAILED tests/a.py::t_one - AssertionError: x", "ERROR tests/b.py::t_two"]
     assert failures("5 passed in 1.0s") == []
     assert len(failures("\n".join(f"FAILED t{i}" for i in range(30)))) == 20
+
+
+def test_error_lines_keep_the_reason_of_a_failure():
+    text = ("____ test_x ____\n    def test_x():\n>       assert f() == 2\nE       assert 1 == 2\nE        +  where 1 = f()\n"
+            "tests/a.py:3: AssertionError\nFAILED tests/a.py::test_x - assert 1 == 2\n1 failed in 0.1s\n")
+    assert error_lines(text) == ["E       assert 1 == 2", "E        +  where 1 = f()"]
+    assert len(error_lines("E x\n" * 100)) == MAX_ERROR_LINES
 
 
 def test_a_pass_needs_exit_zero_and_a_passed_test():
