@@ -57,6 +57,7 @@ RESUME_SECOND_LOOK_S = 30              # a run is gone only when two looks this 
 # The laptop's memory for runs, GB. 19 Oct 2026 07:24: 11.0 of 31.3 GB free with one trainer at 3.2 GB, so Windows, the app and an idle WSL
 # hold ≈ 16 GB; 2 GB stay free as margin. At 00:46 that night chain 41, two dxtb shards and a UKS cation together ran Windows out of memory.
 LAPTOP_RUN_MEMORY_GB = 13.0
+FREE_COMMIT_MARGIN_GB = 4.0     # a second laptop run must leave this much committable beside its peak (20-21 Oct: 3.5-3.7 GB was not enough)
 RUN_ENV = "export PYTHONUNBUFFERED=1; "  # a print to a file is block-buffered otherwise: 18-19 Oct, an optimisation's lines sat in the buffer for hours
 _NOT_ERE = re.compile(r"\\[dDsSwWbB]|\(\?")
 
@@ -421,18 +422,17 @@ def preflight(spec: RunSpec, shell: Shell) -> list[str]:
     return problems
 
 
-def memory_problems(spec: RunSpec, spec_dir: Path, state_dir: Path) -> list[str]:
-    """Why a laptop run may not start now for memory, empty when it may: it states its measured peak, and that peak plus the peaks of the
-    laptop runs in progress fits LAPTOP_RUN_MEMORY_GB. A run still waiting for its start line holds no memory yet and is not counted (the
-    chains wait for one another, so one trains at a time)."""
-    if spec.host != LAPTOP:
-        return []
-    if spec.memory is None:
-        return [f"{spec.name} states no measured peak memory (memory.peak_gb with its basis); a laptop run needs one"]
+def measure_free_commit_gb() -> float | None:
+    from free_memory import free_commit_gb
+    return free_commit_gb()
+
+
+def laptop_runs_in_progress(name: str, spec_dir: Path, state_dir: Path) -> tuple[float, list[str]]:
+    """(the stated peaks of the laptop runs past their start line, other than `name`; those that state none or do not load)."""
     others, unknown = 0.0, []
     for path in sorted(spec_dir.glob("*.json")):
         state = load_state(path.stem, state_dir)
-        if path.stem == spec.name or state is None or state.status != "running" or state.phase_started_at is None:
+        if path.stem == name or state is None or state.status != "running" or state.phase_started_at is None:
             continue
         try:
             other = load_spec(path)
@@ -445,7 +445,31 @@ def memory_problems(spec: RunSpec, spec_dir: Path, state_dir: Path) -> list[str]
             unknown.append(other.name)
         else:
             others += other.memory.peak_gb
+    return others, unknown
+
+
+def measured_room_problems(peak_gb: float) -> list[str]:
+    free = measure_free_commit_gb()
+    if free is None or free - peak_gb >= FREE_COMMIT_MARGIN_GB:
+        return []
+    return [f"memory: {free:.1f} GB can be committed now; {peak_gb:g} GB for this run would leave {free - peak_gb:.1f} GB beside the runs "
+            f"in progress (< {FREE_COMMIT_MARGIN_GB:g} GB)"]
+
+
+def memory_problems(spec: RunSpec, spec_dir: Path, state_dir: Path) -> list[str]:
+    """Why a laptop run may not start now for memory, empty when it may: it states its measured peak, and that peak plus the peaks of the
+    laptop runs in progress fits LAPTOP_RUN_MEMORY_GB. A run still waiting for its start line holds no memory yet and is not counted (the
+    chains wait for one another, so one trains at a time). Beside a laptop run in progress, the measured free commit must also leave
+    FREE_COMMIT_MARGIN_GB after this run's peak (the user, 21 Oct 2026: the stated peaks fitted on 20-21 Oct while the commit limit ran out,
+    the WSL VM and the rest of Windows hold memory no spec states)."""
+    if spec.host != LAPTOP:
+        return []
+    if spec.memory is None:
+        return [f"{spec.name} states no measured peak memory (memory.peak_gb with its basis); a laptop run needs one"]
+    others, unknown = laptop_runs_in_progress(spec.name, spec_dir, state_dir)
     problems = [f"laptop run {n} is in progress without a stated peak memory, so the budget cannot be checked" for n in unknown]
+    if others > 0 or unknown:
+        problems += measured_room_problems(spec.memory.peak_gb)
     total = others + spec.memory.peak_gb
     if total > LAPTOP_RUN_MEMORY_GB:
         problems.append(f"memory: {spec.memory.peak_gb:g} GB + {others:g} GB of laptop runs in progress = {total:g} GB "

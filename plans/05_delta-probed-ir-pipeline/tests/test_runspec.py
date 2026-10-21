@@ -323,6 +323,29 @@ def test_a_laptop_run_without_a_measured_peak_is_not_launched(tmp_path):
         R.launch(p, FakeShell(), T0, tmp_path / "state")
 
 
+@pytest.fixture(autouse=True)
+def _plenty_of_free_memory(monkeypatch):
+    """The measured free commit is the laptop's state; every test here reads a fixed value unless it sets its own."""
+    monkeypatch.setattr(R, "measure_free_commit_gb", lambda: 100.0)
+
+
+def test_a_second_run_needs_measured_room_beside_the_runs_in_progress(tmp_path, monkeypatch):
+    specs, state = tmp_path / "specs", tmp_path / "state"
+    write_spec(specs, spec(name="training", memory={"peak_gb": 8.0, "basis": "peak working set of a test run"}))
+    R.save_state("training", run_state(), state)
+    monkeypatch.setattr(R, "measure_free_commit_gb", lambda: 7.0)            # 7 - 4 = 3 < 4
+    assert R.memory_problems(spec(), specs, state) == [
+        "memory: 7.0 GB can be committed now; 4 GB for this run would leave 3.0 GB beside the runs in progress (< 4 GB)"]
+    monkeypatch.setattr(R, "measure_free_commit_gb", lambda: 8.0)            # 8 - 4 = 4: enough
+    assert R.memory_problems(spec(), specs, state) == []
+
+
+def test_a_first_run_alone_is_not_held_to_the_measured_room(tmp_path, monkeypatch):
+    specs, state = tmp_path / "specs", tmp_path / "state"
+    monkeypatch.setattr(R, "measure_free_commit_gb", lambda: 1.0)
+    assert R.memory_problems(spec(), specs, state) == []                     # nothing in progress: the stated budget alone
+
+
 def test_the_budget_counts_laptop_runs_in_progress_but_not_waiting_ones_or_servers(tmp_path):
     specs, state = tmp_path / "specs", tmp_path / "state"
     big = {"peak_gb": 8.0, "basis": "peak working set of a test run"}

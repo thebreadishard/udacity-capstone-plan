@@ -5,36 +5,16 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import sys
 from pathlib import Path
 
 import pytest
 
 PLAN = Path(__file__).resolve().parents[1]
-
+sys.path.insert(0, str(PLAN / "tools"))
+from free_memory import free_commit_gb  # noqa: E402
 
 HEAVY_PIN_GB = 6.0   # a pin that loads the corpus (and torch) peaks near 2 GB; 4 GB stay for the running jobs to grow into
-
-
-def free_commit_gb() -> float | None:
-    """Memory the system can still commit, in GB (Windows: the commit limit minus the charge; elsewhere MemAvailable); None if unknown."""
-    if os.name == "nt":
-        import ctypes
-
-        class _Status(ctypes.Structure):
-            _fields_ = [("length", ctypes.c_ulong), ("load", ctypes.c_ulong), ("total_phys", ctypes.c_ulonglong),
-                        ("avail_phys", ctypes.c_ulonglong), ("total_commit", ctypes.c_ulonglong), ("avail_commit", ctypes.c_ulonglong),
-                        ("total_virtual", ctypes.c_ulonglong), ("avail_virtual", ctypes.c_ulonglong), ("avail_extended", ctypes.c_ulonglong)]
-        status = _Status()
-        status.length = ctypes.sizeof(_Status)
-        if not ctypes.windll.kernel32.GlobalMemoryStatusEx(ctypes.byref(status)):
-            return None
-        return status.avail_commit / 1e9
-    meminfo = Path("/proc/meminfo")
-    if meminfo.exists():
-        for line in meminfo.read_text().splitlines():
-            if line.startswith("MemAvailable:"):
-                return int(line.split()[1]) / 1e6
-    return None
 
 
 def require_free_memory(gb: float = HEAVY_PIN_GB) -> None:
