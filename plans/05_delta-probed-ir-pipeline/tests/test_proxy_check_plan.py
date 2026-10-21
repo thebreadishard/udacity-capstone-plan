@@ -79,6 +79,16 @@ def test_the_read_finds_a_clear_gap_and_no_gap():
     assert res[5]["columns"]["head_all"]["CH-oop"][2] == 9 and res[200]["columns"]["none"]["CH-oop"][2] == 3
 
 
+def test_the_registered_lines():
+    gap = {"head_l2": 12.0, "head": 10.0, "head_all": 6.0, "scratch": 15.0}
+    none = {"head_l2": 6.0, "head": 6.0, "head_all": 6.0, "scratch": 6.0}
+    by_k = X.read_arm({5: [record(gap) for _ in X.SEEDS], 10: [record(none) for _ in X.SEEDS], 20: [record(gap) for _ in X.SEEDS],
+                       50: [record(none) for _ in X.SEEDS]})
+    assert X.registered_lines(by_k) == {"L1": {"holds": True, "at": [5, 20]}, "L2": {"largest_k": 20, "at": [5, 20]}}
+    by_k = X.read_arm({k: [record(none) for _ in X.SEEDS] for k in (5, 10, 20)})
+    assert X.registered_lines(by_k) == {"L1": {"holds": False, "at": []}, "L2": {"largest_k": None, "at": []}}
+
+
 def test_a_missing_value_stops_the_read():
     rec = record({"head_l2": 12.0, "head": 10.0, "head_all": 6.0, "scratch": 15.0})
     rec["draws"][0]["modes"]["head_all"]["read"]["intensity_matched_mean"] = None

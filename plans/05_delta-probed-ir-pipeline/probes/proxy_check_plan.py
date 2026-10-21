@@ -35,6 +35,10 @@ FAMILIES = ("ring-ip", "CH-stretch", "CH-oop", "other")
 SEEDS = (0, 1, 2)
 LAYERS = ("A", "A2", "B")                 # chain 34's pool layers; cations and the size-test layer stay out
 SE_FACTOR = 2.0                           # a difference is read when it exceeds twice the combined standard error
+L1_SIZES = (5, 10, 20)                    # the few-anchor regime of line L1
+L1_NEEDED = 2                             # L1 holds at two of the three
+VS_LAMBDA1 = "whole head below the last layer (λ 1)"
+VS_SCRATCH = "whole head below scratch (the base helps)"
 THREADS = "8"
 
 
@@ -223,11 +227,19 @@ def read_arm(records_by_k: dict[int, list[dict]]) -> dict:
         cols = {m: {q: mean_se(values(recs, m, f)) for q, f in keys.items()} for m in modes}
         cmp = {}
         if {"head_all", "head_l2"} <= set(cols):
-            cmp["whole head below the last layer (λ 1)"] = {q: lower(cols["head_all"][q], cols["head_l2"][q]) for q in keys}
+            cmp[VS_LAMBDA1] = {q: lower(cols["head_all"][q], cols["head_l2"][q]) for q in keys}
         if {"head_all", "scratch"} <= set(cols):
-            cmp["whole head below scratch (the base helps)"] = {q: lower(cols["head_all"][q], cols["scratch"][q]) for q in keys}
+            cmp[VS_SCRATCH] = {q: lower(cols["head_all"][q], cols["scratch"][q]) for q in keys}
         out[k] = {"columns": cols, "comparisons": cmp}
     return out
+
+
+def registered_lines(by_k: dict) -> dict:
+    """The registered lines of one arm: L1 = head_all below head_l2 on CH-oop at L1_NEEDED of L1_SIZES; L2 = the largest k at which
+    head_all is below scratch on CH-oop (None when at none)."""
+    l1_at = [k for k in L1_SIZES if by_k[k]["comparisons"][VS_LAMBDA1]["CH-oop"]]
+    l2_at = [k for k, r in by_k.items() if r["comparisons"][VS_SCRATCH]["CH-oop"]]
+    return {"L1": {"holds": len(l1_at) >= L1_NEEDED, "at": l1_at}, "L2": {"largest_k": max(l2_at) if l2_at else None, "at": sorted(l2_at)}}
 
 
 def read(out_dir: Path) -> dict:
@@ -242,6 +254,7 @@ def read(out_dir: Path) -> dict:
                 raise SystemExit(f"missing records: {missing}")
             by_k[k] = [json.loads(p.read_text(encoding="utf-8")) for p in paths]
         res["arms"][arm] = read_arm(by_k)
+        res["lines"] = {**res.get("lines", {}), arm: registered_lines(res["arms"][arm])}
     write_text(out_dir / "proxy_check_read.json", json.dumps(res, indent=1, default=str))
     write_text(out_dir / "proxy_check_read.md", "\n".join(report_lines(res)) + "\n")
     return res
@@ -250,7 +263,10 @@ def read(out_dir: Path) -> dict:
 def report_lines(res: dict) -> list[str]:
     lines = ["# Proxy check of the few-anchor transfer — read", "", f"Slopes of arm (a): {res['manifest']['slopes']}; pools {res['manifest']['pool']}.", ""]
     for arm, by_k in res["arms"].items():
-        lines += [f"## Arm ({arm})", "", "| k | column | CH-oop | other | intensity |", "|---|---|---|---|---|"]
+        ln = res["lines"][arm]
+        lines += [f"## Arm ({arm})", "", f"**L1** (whole head below λ 1 on CH-oop at {L1_NEEDED} of k = {list(L1_SIZES)}): "
+                  f"{'holds' if ln['L1']['holds'] else 'does not hold'} (at {ln['L1']['at']}). **L2** (the base helps, CH-oop): largest k "
+                  f"{ln['L2']['largest_k']} (at {ln['L2']['at']}).", "", "| k | column | CH-oop | other | intensity |", "|---|---|---|---|---|"]
         for k, r in by_k.items():
             lines += [f"| {k} | {m} | " + " | ".join(f"{c[q][0]:.2f} ± {c[q][1]:.2f}" for q in ("CH-oop", "other", "intensity")) + " |"
                       for m, c in r["columns"].items()]
