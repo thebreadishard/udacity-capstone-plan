@@ -428,7 +428,9 @@ runspec runs, TASKS 63 (b)). **18:3x: LAUNCHED through the door** (`runspec.py l
 by the structural hold-out, not the exclude files; P3 neutrals only). `chain_runner.py` prints progress while a step's log grows and
 'starting' after its wait. Tests: `tests/test_rung4_read_prep.py` (9), `tests/test_chain_runner.py` (+2). **Still to do at the end of the run:**
 the fetch into `corpus/molecules` with the R4 rows set to done.
-60. **19 Oct 20:0x: acenaphthylene relaunched with GUESS_FROM_PREVIOUS=1 (run spec s1tz_acenaphthylene3, /root/dpir_s1tz_e; ≈ 204 h, done ≈ 28 Oct) after scf_guess_test: SCF 255.8 s from the neighbour's density against 2,426 s.** **S1-TZ — does the basis of the anharmonic part matter? (registered 14 Oct 18:3x; the user: 'De registratie ... mag je schrijven, maar
+60. **21 Oct 19:55: naphthalene RESUMED (run spec s1tz_naphthalene2, ≈ 31 h, done ≈ 23 Oct 03:00) after its stop at 17:17 —
+67 of 97 Hessians done, mode33_p's SCF did not converge from the default guess; a resumed call now starts from the neighbour's density
+(8f7d80eb).** **19 Oct 20:0x: acenaphthylene relaunched with GUESS_FROM_PREVIOUS=1 (run spec s1tz_acenaphthylene3, /root/dpir_s1tz_e; ≈ 204 h, done ≈ 28 Oct) after scf_guess_test: SCF 255.8 s from the neighbour's density against 2,426 s.** **S1-TZ — does the basis of the anharmonic part matter? (registered 14 Oct 18:3x; the user: 'De registratie ... mag je schrijven, maar
 blijf voorzichtig met het gebruiken van benzeen als representant van wat dan ook').** `GoalGathering/notes/PreRegistration_2026-10-14_TZ_Anharmonic_Basis.md`.
 Δ_anh at B3LYP/def2-TZVP (G's grid 75/302) against G on **benzene, naphthalene and acenaphthylene** (sextet, quartet, trio + duo C–H) — benzene
 only because it has the semi-experimental reference; no decision on benzene alone (the fused pair decides when they differ). Lines: (a) G holds
