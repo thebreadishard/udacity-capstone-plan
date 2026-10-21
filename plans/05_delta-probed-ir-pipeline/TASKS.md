@@ -464,7 +464,10 @@ windows until they end — do not close them. Second attempt: quit from the tray
 job processes of the snapshot were alive (21 Windows/msys, 4 WSL), the heartbeat had no gap over 75 s (beats every minute through 18:51),
 RELAUNCHED.txt had no new line — nothing needed the resume task. HB stopped (heartbeat.STOP) and its rows removed. Not tested: a Windows
 restart (all jobs stop; CapstoneResumeJobs relaunches at logon) — for a quiet laptop, about end of October. Rule: a new long laptop job gets a row in both tsv files.
-51. **21 Oct 09:27 — the proxy check (item 2, arms (a) and (b)) REGISTERED (bf408823) and RUNNING: chain PX, 33 steps
+51. **21 Oct 13:49 — PX relaunched after its stop at 13:44 (base (a)'s own read: a mode across the threshold; fixed as a named,
+counted case, 6938cf33; amendment d3454e81); base (b) done (607 molecules, 3 seeds), base (a) retrains from seed 0, ≈ 17:10; then the
+registry entries (commit MODELS_STATUS.json and MODELS.md right after, before the fine-tunes start reading it) and the fine-tunes.**
+**21 Oct 09:27 — the proxy check (item 2, arms (a) and (b)) REGISTERED (bf408823) and RUNNING: chain PX, 33 steps
 (`runspec.py launch probes/runspecs/proxy_check.json`): base (b), base (a) (chain 34's recipe and pool, three seeds each), registry
 entries, 30 fine-tune runs; read `python probes/proxy_check_plan.py read modules/05_support_predictor/out/proxy_check_2026-10-21`. Bases
 ≈ 3 h each (chain 34's 3.3 h at 750); the fine-tunes are timed on their first run.** **21 Oct 09:22 — the whole-head repeat READ: R-A between (−13.8 %), R-B passes 3 of 3 — both as predicted (registration
