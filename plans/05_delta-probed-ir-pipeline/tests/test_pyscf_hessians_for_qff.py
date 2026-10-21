@@ -75,3 +75,63 @@ def test_a_resumed_run_starts_from_the_neighbour_and_equals_a_fresh_one(tmp_path
     for name in ("w1.json", "w2.json"):
         assert abs(fresh[name]["properties"]["return_energy"] - resumed[name]["properties"]["return_energy"]) < 1e-9
         assert np.abs(np.array(fresh[name]["return_result"]) - np.array(resumed[name]["return_result"])).max() < 1e-6
+
+
+class _Fake:
+    """Stand-ins for hessian_record and converged_at: the SCF fails for the starts listed in `fails` ('default' or 'density')."""
+
+    def __init__(self, fails: set[str]):
+        self.fails, self.calls = fails, []
+
+    def record(self, d, a, lib_log, dm0=None):
+        start = "default" if dm0 is None else "density"
+        self.calls.append(start)
+        if start in self.fails:
+            from scf_converge import SCFNotConverged
+            raise SCFNotConverged(f"SCF not converged from the {start}")
+        return {"ok": start}, -1.0, "dm"
+
+    def converged(self, d, a, lib_log, dm0=None):
+        self.calls.append("neighbour SCF")
+
+        class _MF:
+            def make_rdm1(self):
+                return "neighbour dm"
+        return _MF(), -1.0
+
+
+def _q(monkeypatch, fails):
+    sys.path.insert(0, str(SCRIPT.parent))
+    import pyscf_hessians_for_qff as Q
+    fake = _Fake(fails)
+    monkeypatch.setattr(Q, "hessian_record", fake.record)
+    monkeypatch.setattr(Q, "converged_at", fake.converged)
+    monkeypatch.setattr(Q, "displaced_geometry", lambda f: {"f": f})
+    return Q, fake
+
+
+def test_a_default_guess_failure_retries_from_the_neighbour(monkeypatch):
+    Q, fake = _q(monkeypatch, {"default"})
+    rec, _, _ = Q.record_with_retry({}, "w0.json", None, None, None)
+    assert rec == {"ok": "density"} and fake.calls == ["default", "neighbour SCF", "density"]
+
+
+def test_a_density_start_failure_retries_from_the_default_guess(monkeypatch):
+    Q, fake = _q(monkeypatch, {"density"})
+    rec, _, _ = Q.record_with_retry({}, "w0.json", None, None, "dm")
+    assert rec == {"ok": "default"} and fake.calls == ["density", "default"]
+
+
+def test_both_failing_stops_with_both_reasons(monkeypatch):
+    Q, _ = _q(monkeypatch, {"default", "density"})
+    from scf_converge import SCFNotConverged
+    with pytest.raises(SCFNotConverged, match=r"from the default.*the retry from the other start.*from the density"):
+        Q.record_with_retry({}, "w0.json", None, None, None)
+
+
+def test_the_first_geometry_without_a_neighbour_stops_at_once(monkeypatch):
+    Q, fake = _q(monkeypatch, {"default"})
+    from scf_converge import SCFNotConverged
+    with pytest.raises(SCFNotConverged, match="from the default"):
+        Q.record_with_retry({}, None, None, None, None)
+    assert fake.calls == ["default"]

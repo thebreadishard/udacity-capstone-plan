@@ -25,7 +25,7 @@ from typing import Any, TextIO
 
 import numpy as np
 from library_log import PYSCF_LOG_NAME, pyscf_mole
-from scf_converge import converged_scf
+from scf_converge import SCFNotConverged, converged_scf
 
 
 def parse_args() -> argparse.Namespace:
@@ -107,6 +107,28 @@ def hessian_record(d: dict[str, Any], a: argparse.Namespace, lib_log: TextIO, dm
     return rec, float(e), mf.make_rdm1()
 
 
+def record_with_retry(d: dict[str, Any], before: str | None, a: argparse.Namespace, lib_log: TextIO,
+                      dm0: Any = None) -> tuple[dict[str, Any], float, Any]:
+    """hessian_record, with one retry from the other start when the SCF does not converge: a start from pyscf's default guess (dm0 None)
+    retries from the converged density of `before`, the geometry before it; a start from a density retries from the default guess. With no
+    `before` a default-guess failure stops at once. Raises SCFNotConverged naming both attempts when the retry fails too."""
+    try:
+        return hessian_record(d, a, lib_log, dm0)
+    except SCFNotConverged as first:
+        if dm0 is None and before is None:
+            raise
+        if dm0 is None:
+            print(f"  {first}; retry from the density of {os.path.basename(before)}", flush=True)
+            retry_dm = converged_at(displaced_geometry(before), a, lib_log)[0].make_rdm1()
+        else:
+            print(f"  {first} from the previous density; retry from pyscf's default guess", flush=True)
+            retry_dm = None
+        try:
+            return hessian_record(d, a, lib_log, retry_dm)
+        except SCFNotConverged as second:
+            raise SCFNotConverged(f"{first}; the retry from the other start: {second}") from second
+
+
 def main() -> None:
     a = parse_args()
     from pyscf import lib
@@ -123,18 +145,20 @@ def main() -> None:
             dm = mf.make_rdm1()
             print(f"[{time.strftime('%H:%M:%S')}] resumed: the start density from an SCF at {os.path.basename(before)} "
                   f"({time.time() - t0:.0f} s)", flush=True)
+        previous = None                                    # the Hessian request before f: a failed SCF's other start
         for f in files:
             d = displaced_geometry(f)
             if d is None:
                 continue
             out = os.path.join(a.out_dir, os.path.basename(f))
+            before, previous = previous, f
             if os.path.exists(out):
                 done += 1
                 continue
             print(f"[{time.strftime('%H:%M:%S')}] start {done + 1}/{len(files)} {os.path.basename(f)}", flush=True)
             t0 = time.time()
             try:
-                rec, e, dm_new = hessian_record(d, a, lib_log, dm if a.guess_from_previous else None)
+                rec, e, dm_new = record_with_retry(d, before, a, lib_log, dm if a.guess_from_previous else None)
             except RuntimeError as exc:
                 raise SystemExit(f"{exc} at {f}") from exc
             with open(out, "w", encoding="utf-8") as fh:
