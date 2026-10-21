@@ -712,9 +712,24 @@ def select_corpus(cfg: TrainConfig, log) -> Corpus:
     return Corpus(mols=mols, pool=pool, tests=tests, cores=cores, sizes=sizes, seeds=seeds, n_atoms=nat, excluded=excluded, substituted=substituted)
 
 
+def distort_families(dH: np.ndarray, masses: np.ndarray, V: np.ndarray, family: list, scales: dict[str, float]) -> np.ndarray:
+    """ΔH with each named family's diagonal block in the mode basis multiplied by its factor: X = M^-1/2 ΔH M^-1/2, X += (s − 1) P_f X P_f
+    with P_f = V_f V_fᵀ the projector on the family's (mass-weighted, orthonormal) modes, then back. Blocks between families, the other
+    families and the part outside the vibrational modes are unchanged; the mass unit cancels."""
+    sq = np.sqrt(np.repeat(np.asarray(masses, float), 3))
+    X = np.asarray(dH, float) / np.outer(sq, sq)
+    fam = np.asarray(family)
+    out = X.copy()
+    for name, s in scales.items():
+        Vf = np.asarray(V, float)[:, fam == name]
+        out += (s - 1.0) * Vf @ (Vf.T @ X @ Vf) @ Vf.T
+    return out * np.outer(sq, sq)
+
+
 def build_tensors(cfg: TrainConfig, corpus: Corpus) -> tuple[dict, dict]:
     """(tensors, target residuals) for every molecule the run trains or reads: the largest pool cut, every hold-out, and under --split
-    layerB the A2 layer (hold-out (c) is chosen per size from it)."""
+    layerB the A2 layer (hold-out (c) is chosen per size from it). Under --family-scale the training label is distorted (`distort_families`)
+    before every target is derived from it."""
     needed = set(corpus.pool[: corpus.sizes[-1]]).union(*corpus.tests.values())
     if cfg.split == "layerB":
         needed |= {i for i, m in corpus.mols.items() if m["layer"] == "A2"}
@@ -722,7 +737,10 @@ def build_tensors(cfg: TrainConfig, corpus: Corpus) -> tuple[dict, dict]:
     cache_dir = Path(cfg.out_prefix).parent / "ls_targets"
     for i in sorted(needed):
         d = Path(cfg.molecules) / i
-        tensors[i] = molecule_tensors(i, load_molecule(d, use_analytic=cfg.use_analytic), corpus.mols[i], d, cfg, cache_dir, target_residuals)
+        m, mol = load_molecule(d, use_analytic=cfg.use_analytic), corpus.mols[i]
+        if cfg.family_scales:
+            m = {**m, "dH_true": distort_families(m["dH_true"], mol["masses"], mol["V"], mol["family"], cfg.family_scales)}
+        tensors[i] = molecule_tensors(i, m, mol, d, cfg, cache_dir, target_residuals)
     return tensors, target_residuals
 
 
@@ -746,7 +764,8 @@ def new_record(cfg: TrainConfig, corpus: Corpus, target_residuals: dict) -> dict
                 body_blocks=cfg.body_blocks, body_width=cfg.body_width, aux_target=cfg.aux_target, ls_lam=cfg.ls_lam,
                 kring_weight=cfg.kring_weight, kdiag_weight=cfg.kdiag_weight, kdiag_mode=cfg.kdiag_mode, hinge_feature=cfg.hinge_feature,
                 target_residuals=target_residuals, pair_class_names=list(PAIR_CLASS_NAMES), substituted_analytic=corpus.substituted,
-                curve={}, zero_rule={h: zero_rule(corpus.mols, ids, corpus.pool) for h, ids in t.items() if ids})
+                curve={}, zero_rule={h: zero_rule(corpus.mols, ids, corpus.pool) for h, ids in t.items() if ids},
+                **({"family_scale": cfg.family_scale} if cfg.family_scale else {}))
 
 
 def table_header(cfg: TrainConfig, date: str) -> list[str]:
@@ -791,7 +810,8 @@ def train_and_read(cfg: TrainConfig, corpus: Corpus, tensors: dict, n: int, seed
     dF_of = predictor(model, tensors, corpus.mols)
     if cfg.save_model:
         path = Path(f"{cfg.out_prefix}_model_n{n}_seed{seed}.pt")
-        save_hybrid_model(model, trained.loss, path, cfg.model_dump(), n, seed, train_ids=tr)
+        save_hybrid_model(model, trained.loss, path, cfg.model_dump(exclude=set() if cfg.family_scale else {"family_scale"}), n, seed,
+                          train_ids=tr)                      # the key only when used: checkpoints without it keep their settings
         log(f"  model saved: {path}")
     out = {"seed": seed, "train_history": trained.history, "output_scale": trained.output_scale, "class_scale": trained.class_scale,
            "aux_class_scale": None if trained.loss.class_scale is None else trained.loss.class_scale.tolist(),
@@ -835,6 +855,8 @@ def main(argv: list[str] | None = None) -> int:
     t_start = time.time()
     corpus = select_corpus(cfg, log_line)
     tensors, target_residuals = build_tensors(cfg, corpus)
+    if cfg.family_scales:
+        log_line(f"training labels distorted per family ({cfg.family_scale}); the read-outs compare with the undistorted labels")
     n_params = sum(p.numel() for p in DeltaHessianModel(n_s=cfg.body_width, n_v=cfg.body_width, n_blocks=cfg.body_blocks,
                                                         tensor_input=cfg.tensor_input).parameters())
     t = corpus.tests

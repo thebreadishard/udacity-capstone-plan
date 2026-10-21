@@ -10,10 +10,12 @@ to the carried recipe waits until no queued chain relies on a default (TASKS 72)
 from __future__ import annotations
 
 import argparse
+import math
 from collections.abc import Callable, Sequence
 from pathlib import Path
 from typing import Literal
 
+from learning_curve_layerA import FAMILIES
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 from rungC_equivariant import AGGREGATION, AGGREGATIONS, AUX_WEIGHT, N_BLOCKS, N_S
 from rungC_targets import LAM_REL
@@ -75,6 +77,14 @@ class TrainConfig(BaseModel):
     pretrained: str | None = None
     aggregation: str = AGGREGATION
     pretrained_elements: list[int] | None = None
+    family_scale: str | None = None
+
+    @field_validator("family_scale")
+    @classmethod
+    def _family_scale_list(cls, v: str | None) -> str | None:
+        if v is not None:
+            parse_family_scale(v)
+        return v
 
     @field_validator("aggregation")
     @classmethod
@@ -125,6 +135,30 @@ class TrainConfig(BaseModel):
     @property
     def seed_list(self) -> list[int]:
         return [int(s) for s in self.seeds.split(",")]
+
+    @property
+    def family_scales(self) -> dict[str, float]:
+        """The --family-scale factors per mode family; empty when the labels are not distorted."""
+        return parse_family_scale(self.family_scale) if self.family_scale else {}
+
+
+def parse_family_scale(text: str) -> dict[str, float]:
+    """'CH-oop=-0.43,other=-1.16' as {family: factor}; refuses an unknown or repeated family and a factor that is not a finite number."""
+    out: dict[str, float] = {}
+    for item in text.split(","):
+        name, sep, value = item.partition("=")
+        if not sep or name not in FAMILIES:
+            raise ValueError(f"family_scale {item!r}: <family>=<factor> with a family of {FAMILIES}")
+        if name in out:
+            raise ValueError(f"family_scale: {name} given twice")
+        try:
+            factor = float(value)
+        except ValueError:
+            raise ValueError(f"family_scale {item!r}: the factor is not a number") from None
+        if not math.isfinite(factor):
+            raise ValueError(f"family_scale {item!r}: the factor is not finite")
+        out[name] = factor
+    return out
 
 
 CONFLICTS: tuple[tuple[Callable[[TrainConfig], object], str], ...] = (   # (truthy when the conflict applies, the reason)
@@ -220,6 +254,9 @@ def build_parser(description: str) -> argparse.ArgumentParser:
     ap.add_argument("--pretrained", default=None, help="a `rungC_pretrain.py` checkpoint; its body is loaded, the head re-initialised per seed")
     ap.add_argument("--aggregation", default=AGGREGATION, choices=list(AGGREGATIONS),
                     help="neighbour-message pooling in the body: mean (default since 28 Sep) or sum (the body registered on 25 Sep)")
+    ap.add_argument("--family-scale", default=None, metavar="FAMILY=FACTOR,...",
+                    help="proxy check (a): multiply each named mode family's diagonal block of the training label (low level's mode basis) by its "
+                         "factor; the read-outs still compare with the undistorted label")
     ap.add_argument("--pretrained-elements", default=None,
                     help="comma list of atomic numbers a pre-28-Sep checkpoint was trained on (Hessian QM9: 1,6,7,8,9); newer checkpoints carry it")
     return ap
