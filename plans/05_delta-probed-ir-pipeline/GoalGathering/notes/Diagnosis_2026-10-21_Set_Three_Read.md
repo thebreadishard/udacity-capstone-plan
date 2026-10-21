@@ -62,7 +62,7 @@ CH-oop 9.8, acenaphthylene 10.2), and benzonitrile's 'other' (the CN modes, no o
 | E07 | no fine-tune | | 33.24 / 25.55 / 28.93 / 77.61 / 0.329 | the proxy, as A1 |
 | E08 | α only | | 13.62 / 13.89 / 6.78 / 7.70 / 0.384 | |
 | E09, E10 | lr 3e-4, 3e-3 (λ 1) | | 12.08 / 10.77; 12.41 / 14.31 | small |
-| E11, E12 | 100, 1000 epochs (λ 1) | | 12.09 / 10.82; E12 below | small |
+| E11, E12 | 100, 1000 epochs (λ 1) | | 12.09 / 10.82; 12.77 / 14.54 (intensity 0.391) | 1000 epochs overfits a little |
 | E13, E14 | aux weight 0, 3 (λ 1) | | 13.33 / 12.77; 11.56 / 10.83 | the auxiliary term helps a little |
 | E15 | rank-4 adapter in the head's middle | | 7.84 / 7.00 / 3.74 / 2.72 / 0.213 | more trainable head, better |
 | E16 | the whole head trainable (head) | 3 seeds | 6.54 ± 0.47 / 6.35 ± 0.25 / 2.55 / 2.27 / 0.206 | the best held-out read |
