@@ -46,6 +46,9 @@ def cosine(a: np.ndarray, b: np.ndarray) -> float:
     return float(a @ b / (na * nb)) if na > 0 and nb > 0 else float("nan")
 
 
+MATCHED = "intensity_rel_rms_matched"       # the read-out set three's R-B and the proxy check read
+
+
 def intensity_readout(H_low: np.ndarray, dH_true: np.ndarray, dH_pred: np.ndarray, masses: np.ndarray, apt: np.ndarray) -> dict:
     """The registered read-outs for one molecule: spectrum overlap (prediction, zero rule) against the truth and the weighted relative intensity errors."""
     ft, it, Lt = mode_intensities(H_low + dH_true, masses, apt, return_modes=True)
@@ -58,8 +61,8 @@ def intensity_readout(H_low: np.ndarray, dH_true: np.ndarray, dH_pred: np.ndarra
     rel = lambda i: float(np.sqrt(np.sum(wgt * ((i - it) / np.maximum(it, 1.0)) ** 2)))   # noqa: E731 — modes below 1 km/mol enter on an absolute scale
     return {"spectrum_overlap": cosine(sp, st), "spectrum_overlap_zero_rule": cosine(s0, st),
             "intensity_rel_rms": rel(ip), "intensity_rel_rms_zero_rule": rel(i0),
-            "intensity_rel_rms_matched": rel(ip[match_modes(Lt, Lp)]), "intensity_rel_rms_zero_rule_matched": rel(i0[match_modes(Lt, L0)]),
-            "n_modes": int(len(ft))}
+            MATCHED: rel(ip[match_modes(Lt, Lp)]), "intensity_rel_rms_zero_rule_matched": rel(i0[match_modes(Lt, L0)]),
+            "n_modes": len(ft)}
 
 
 def aggregate(per_molecule: dict) -> dict:
