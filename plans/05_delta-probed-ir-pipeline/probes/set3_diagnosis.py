@@ -157,27 +157,43 @@ def summary(rec: dict, col: str) -> dict:
     inten = [folds[i][col]["intensity"][S3.MATCHED] for i in folds if "intensity" in folds[i][col]]
     zero = [folds[i]["zero_rule"]["intensity"][S3.MATCHED] for i in folds if "intensity" in folds[i]["zero_rule"]]
     out["intensity"] = float(np.mean(inten)) if inten else float("nan")
+    orig = [folds[i][col]["intensity"][S3.MATCHED] for i in folds if i in S3.ORIGINALS and "intensity" in folds[i][col]]
+    out["intensity orig"] = float(np.mean(orig)) if orig else float("nan")
     out["intensity zero rule"] = float(np.mean(zero)) if zero else float("nan")
     out["ring ratio"] = float(np.mean([folds[i][col]["coupling_ratio"] for i in folds]))
     return out
 
 
+def seed_mean(per_seed: list[dict]) -> dict:
+    """Mean and spread (sd, ddof 1) of each read-out over an experiment's seeds."""
+    return {k: (float(np.mean([s[k] for s in per_seed])), float(np.std([s[k] for s in per_seed], ddof=1))) for k in per_seed[0]}
+
+
 def read(out_dir: Path) -> dict:
-    rows = {}
+    rows, spread = {}, {}
     for name in EXPERIMENTS:
-        for p in sorted(out_dir.glob(f"{name}_seed*.json")):
+        seeds = sorted(out_dir.glob(f"{name}_seed*.json"))
+        for p in seeds:
             rec = json.loads(p.read_text(encoding="utf-8"))
             rows[p.stem] = summary(rec, column(name))
             if name == "E01_ref_lambda1" and "zero rule" not in rows:
                 rows["zero rule"] = summary(rec, "zero_rule")
                 rows["alpha scaling (no network)"] = summary(rec, "alpha_scaling")
-    keys = ["CH-oop all", "CH-oop orig", "CH-oop new", "other all", "ring-ip all", "CH-stretch all", "intensity", "ring ratio"]
+        if len(seeds) > 1:
+            spread[f"{name} ({len(seeds)} seeds)"] = seed_mean([rows[p.stem] for p in seeds])
+    keys = ["CH-oop all", "CH-oop orig", "CH-oop new", "other all", "other orig", "ring-ip all", "CH-stretch all", "intensity", "intensity orig",
+            "ring ratio"]
     md = ["# Set-three diagnosis — every experiment over the eleven anchors' folds", "",
           "Mean corrected-ω rms per family (cm⁻¹) over the held-out folds (orig = the original six, new = set three's five), matched intensity "
           "rel. rms over the anchors with a CC APT, ring-coupling ratio. Exploratory; one change against E01 each.", "",
           "| run | " + " | ".join(keys) + " |", "|---|" + "---|" * len(keys)]
-    md += [f"| {r} | " + " | ".join(f"{v[k]:.2f}" if k != "intensity" else f"{v[k]:.3f}" for k in keys) + " |" for r, v in rows.items()]
-    (out_dir / "diagnosis.json").write_text(json.dumps(rows, indent=1), encoding="utf-8")
+    md += [f"| {r} | " + " | ".join(f"{v[k]:.3f}" if k.startswith("intensity") else f"{v[k]:.2f}" for k in keys) + " |" for r, v in rows.items()]
+    if spread:
+        md += ["", "Over seeds — mean ± sd:", "", "| experiment | " + " | ".join(keys) + " |", "|---|" + "---|" * len(keys)]
+        md += [f"| {r} | " + " | ".join(f"{v[k][0]:.3f} ± {v[k][1]:.3f}" if k.startswith("intensity") else f"{v[k][0]:.2f} ± {v[k][1]:.2f}"
+                                        for k in keys)
+               + " |" for r, v in spread.items()]
+    (out_dir / "diagnosis.json").write_text(json.dumps({"runs": rows, "over_seeds": spread}, indent=1), encoding="utf-8")
     (out_dir / "diagnosis.md").write_text("\n".join(md) + "\n", encoding="utf-8")
     print("\n".join(md))
     return rows
