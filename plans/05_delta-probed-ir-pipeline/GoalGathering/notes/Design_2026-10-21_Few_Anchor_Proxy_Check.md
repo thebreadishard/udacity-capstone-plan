@@ -75,3 +75,13 @@ The laptop alone, after set three's whole-head repeat (ends about 09:30). One ch
 `candidate`, never a production model), then the fine-tunes, arm (b) first. Base time: chain 34's three seeds took 3.3 h at 750 molecules.
 The fine-tunes are timed on their first run before any end time is stated. Peak memory: the trainer's 7.7 GB (chain 41, n = 978) bounds
 the bases; nothing runs beside them. The cation restart (P3-2) follows the chain. No paid compute (decision 63, spending pause).
+
+## Amendment (21 Oct 2026, 14:0x, before any fine-tune ran) — molecules without an intensity read-out
+
+At 13:44 the chain stopped in base (a)'s own hold-out read, after seed 0 was trained and saved: for one hold-out molecule the distorted
+base's prediction moved a soft mode across the vibrational threshold (60 modes in the truth, 59 in the prediction), and the intensity
+read-out raised. With the 'other' block scaled by −1.16 this was to be expected, and it would equally have stopped the check's read of the
+base as it is. From now on such a molecule has no intensity read-out for that prediction: the reason is recorded per molecule and counted
+per column ('no intensity' in the read's table), the intensity is the mean over the molecules that have one, and every other error still
+stops (commit 6938cf33, `tests/test_mode_crossing.py`). The lines read CH-oop and are untouched; intensity stays reported, no line. Base
+(a) is trained again from seed 0 (the step does not resume within its seeds).

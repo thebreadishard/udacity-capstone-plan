@@ -73,6 +73,7 @@ Whenever the machine is busy or the user is away, the next item is the cheapest 
 
 ## 6. Log
 
+- **21 Oct, 13:44 — chain PX stopped in base (a): my design missed that a distorted base can move a soft mode across the vibrational threshold (60 / 59 modes), and the trainer's hold-out intensity read raised.** Seed 0 had trained and saved (early stop 150, 67 min). Fixed as a named case (rungC_intensities.ModeCountChanged), recorded and counted, every other error still stops; the trainer's pin bit-identical; registration amended before any fine-tune; base (a) retrained from seed 0. Lesson: a smoke run on the chain-34 base could not show what a distorted base predicts - smoke the arm's own base before the chain (here: one epoch of base (a) with its hold-out read).
 - **21 Oct, 09:22 — set three's whole-head repeat read (amendment 06:4x, the user's item 1): R-A between (CH-oop 7.24 → 6.25, −13.8 %; predicted ≈ −16 %), R-B passes 3 of 3 (pyridine 0.136 / 0.262, fluorobenzene 0.063 / 0.104, benzonitrile 0.086 / 0.258; the final read 0 of 3).** 36 runs, none failed. Protocol chosen on the same anchors, so a confirmation of direction, not of the protocol; the independent test is the proxy check (built on branch proxy-check, launched after this read). Registration 'Outcome'.
 - **21 Oct, 00:20–05:00 — why set three read negative: a night of diagnosis (the user, 00:1x: data? hyperparameters? head, layers, network
   type, embedding? at least twenty ideas).** `GoalGathering/notes/Diagnosis_2026-10-21_Set_Three_Read.md`; 44 transfer runs (each anchor
