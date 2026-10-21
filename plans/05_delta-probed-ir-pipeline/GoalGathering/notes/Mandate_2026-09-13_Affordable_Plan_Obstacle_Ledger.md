@@ -73,6 +73,7 @@ Whenever the machine is busy or the user is away, the next item is the cheapest 
 
 ## 6. Log
 
+- **21 Oct, 09:22 — set three's whole-head repeat read (amendment 06:4x, the user's item 1): R-A between (CH-oop 7.24 → 6.25, −13.8 %; predicted ≈ −16 %), R-B passes 3 of 3 (pyridine 0.136 / 0.262, fluorobenzene 0.063 / 0.104, benzonitrile 0.086 / 0.258; the final read 0 of 3).** 36 runs, none failed. Protocol chosen on the same anchors, so a confirmation of direction, not of the protocol; the independent test is the proxy check (built on branch proxy-check, launched after this read). Registration 'Outcome'.
 - **21 Oct, 00:20–05:00 — why set three read negative: a night of diagnosis (the user, 00:1x: data? hyperparameters? head, layers, network
   type, embedding? at least twenty ideas).** `GoalGathering/notes/Diagnosis_2026-10-21_Set_Three_Read.md`; 44 transfer runs (each anchor
   held out in turn, on a copied eleven-anchor corpus) and 8 analyses that train nothing. **The protocol, not the data:** the head's last

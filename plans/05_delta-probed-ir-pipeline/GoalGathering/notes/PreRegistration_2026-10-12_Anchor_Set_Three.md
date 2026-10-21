@@ -390,3 +390,23 @@ beside it.
   registered consequence of the final read's R-B) is then moot for the whole-head protocol, which has no λ.
 
 **Read.** `python probes/anchor_set3_read.py read <out>`; the outcome is appended under *Outcome* beside the final read, which stands.
+
+### 21 Oct 2026, 09:22 — the whole-head repeat (amendment of 21 Oct 06:4x)
+
+`python probes/anchor_set3_read.py read modules/05_support_predictor/out/anchor_set3_headall_2026-10-21` → `read_set3.{json,md}` there
+(records git-ignored, mirrored to capstone-data). 36 runs (S3HF 06:40–06:43, S3HR 06:44–09:21), none failed; all five new anchors in.
+
+**R-A — between (5–20 %), noted, as predicted.** CH-oop, whole head, mean over the original six: k_s 0: 7.24 ± 0.49 (3); 2: 6.88 ± 0.21
+(15); 4: 6.48 ± 0.16 (15); all (5): 6.25 ± 0.31 (3) — 13.8 % lower at 'all' (predicted ≈ 16 %). Every step lower, but the last one
+(6.48 → 6.25) is inside twice the combined error, so 'still learning' is not met by the registered test. 'other' 8.18 → 7.87, no line.
+Against the final read on the same anchors (λ = 1, last layer): 14.06 → 13.69; the whole head sits at about half and falls with the
+anchors where λ = 1 was flat.
+
+**R-B — passes: anchors repair the shapes, as predicted.** Matched intensity at 'all', whole head against the zero rule: pyridine 0.136 /
+0.262, fluorobenzene 0.063 / 0.104, benzonitrile 0.086 / 0.258 — below on 3 of 3 (line: 2 of 3; the final read: 0 of 3). The mean of
+the three along k_s: 0.14, 0.12, 0.11, 0.09 — falling with every step.
+
+**What it says, within its size and its caveat.** The protocol was chosen on these anchors (stated in the amendment), so this confirms
+the diagnosis's direction on the registered lines and their seeds, not the protocol itself: with the whole head trainable, the original
+six gain from the new anchors (−14 %) and the low-symmetry shapes beat the zero rule. The independent test is the proxy check
+(`Design_2026-10-21_Few_Anchor_Proxy_Check.md`, hundreds of molecules). The final read above stands as the registered protocol's result.

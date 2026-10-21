@@ -463,7 +463,8 @@ windows until they end — do not close them. Second attempt: quit from the tray
 job processes of the snapshot were alive (21 Windows/msys, 4 WSL), the heartbeat had no gap over 75 s (beats every minute through 18:51),
 RELAUNCHED.txt had no new line — nothing needed the resume task. HB stopped (heartbeat.STOP) and its rows removed. Not tested: a Windows
 restart (all jobs stop; CapstoneResumeJobs relaunches at logon) — for a quiet laptop, about end of October. Rule: a new long laptop job gets a row in both tsv files.
-51. **21 Oct 06:40 — the whole-head repeat of R-A and R-B REGISTERED and RUNNING (the user's item 1; registration amendment of 06:4x,
+51. **21 Oct 09:22 — the whole-head repeat READ: R-A between (−13.8 %), R-B passes 3 of 3 — both as predicted (registration
+'Outcome').** **21 Oct 06:40 — the whole-head repeat of R-A and R-B REGISTERED and RUNNING (the user's item 1; registration amendment of 06:4x,
 commit 2801b401): 36 R-A runs on chain 34's three models (the registered seeds; no other models exist), first alone (S3HF, 06:40), then
 `runspec.py launch probes/runspecs/anchor_set3_headall_rest.json`; read `python probes/anchor_set3_read.py read
 modules/05_support_predictor/out/anchor_set3_headall_2026-10-21`. Predicted: R-A between (~−16 %), R-B 3 of 3. The laptop alone; the
