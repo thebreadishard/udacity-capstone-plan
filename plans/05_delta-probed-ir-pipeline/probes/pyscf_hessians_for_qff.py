@@ -40,7 +40,8 @@ def parse_args() -> argparse.Namespace:
     ap.add_argument("--max-first-seconds", type=float, default=None, help="13 Oct 2026 (S1's stop rule): stop after the first Hessian computed "
                     "in this call when it took longer than this — time first, then the rest")
     ap.add_argument("--guess-from-previous", action="store_true", help="19 Oct 2026: start each SCF from the previous Hessian's converged "
-                    "density (displaced geometries are close; DIIS from pyscf's default guess stalls for acenaphthylene at def2-TZVP)")
+                    "density (displaced geometries are close; DIIS from pyscf's default guess stalls for acenaphthylene at def2-TZVP); a "
+                    "resumed call first converges an SCF at the geometry before its first new one, for that start")
     return ap.parse_args()
 
 
@@ -66,18 +67,35 @@ def displaced_geometry(path: str) -> dict[str, Any] | None:
     return d
 
 
+def converged_at(d: dict[str, Any], a: argparse.Namespace, lib_log: TextIO, dm0: Any = None) -> tuple[Any, float]:
+    """The converged RKS at one displaced geometry and its energy. The SCF starts from dm0 when given and falls back to the second-order
+    solver when DIIS stalls (scf_converge.py); raises SCFNotConverged (a RuntimeError) when that fails too."""
+    geom = np.array(d["molecule"]["geometry"], float).reshape(-1, 3)
+    atoms = [(s, tuple(x)) for s, x in zip(d["molecule"]["symbols"], geom, strict=True)]
+    mol = pyscf_mole(lib_log, atom=atoms, unit="Bohr", basis=a.basis, symmetry=False)
+    return converged_scf(rks_setup(mol, a.xc, a.grid, a.conv), 200, log=lambda m: print(m, flush=True), dm0=dm0)
+
+
+def resume_start(files: list[str], out_dir: str) -> str | None:
+    """The cache file just before the first geometry of `files` (sorted) that has no output yet, when there is one and it has its output:
+    a resumed call converges an SCF there for its first start. None for a fresh call or a finished one."""
+    asks = [f for f in files if displaced_geometry(f) is not None]
+    todo = [k for k, f in enumerate(asks) if not os.path.exists(os.path.join(out_dir, os.path.basename(f)))]
+    if not todo or todo[0] == 0:
+        return None
+    return asks[todo[0] - 1]
+
+
 def hessian_record(d: dict[str, Any], a: argparse.Namespace, lib_log: TextIO, dm0: Any = None) -> tuple[dict[str, Any], float, Any]:
     """The analytic Hessian at one displaced geometry as the record qff_from_hessians.py reads, with its energy and the converged density
-    (the next geometry's start with --guess-from-previous). The SCF starts from dm0 when given and falls back to the second-order solver
-    when DIIS stalls (scf_converge.py); raises SCFNotConverged (a RuntimeError) when that fails too."""
+    (the next geometry's start with --guess-from-previous)."""
     from pyscf.hessian import rks as rks_hess
     rad, ang = (int(x) for x in a.grid.split(","))
     sym = d["molecule"]["symbols"]
     geom = np.array(d["molecule"]["geometry"], float).reshape(-1, 3)
-    mol = pyscf_mole(lib_log, atom=[(s, tuple(x)) for s, x in zip(sym, geom, strict=True)], unit="Bohr", basis=a.basis, symmetry=False)
-    mf = rks_setup(mol, a.xc, a.grid, a.conv)
     t0 = time.time()
-    mf, e = converged_scf(mf, 200, log=lambda m: print(m, flush=True), dm0=dm0)
+    mf, e = converged_at(d, a, lib_log, dm0)
+    mol = mf.mol
     H = rks_hess.Hessian(mf).kernel()                      # (natm, natm, 3, 3) in E_h/bohr²
     n = mol.natm
     Hc = H.transpose(0, 2, 1, 3).reshape(3 * n, 3 * n)
@@ -98,6 +116,13 @@ def main() -> None:
     max_first = a.max_first_seconds                            # the stop rule reads the first Hessian computed in this call only
     done, t_all, dm = 0, time.time(), None
     with open(os.path.join(a.out_dir, PYSCF_LOG_NAME), "a", encoding="utf-8") as lib_log:
+        before = resume_start(files, a.out_dir) if a.guess_from_previous else None
+        if before is not None:
+            t0 = time.time()
+            mf, _ = converged_at(displaced_geometry(before), a, lib_log)
+            dm = mf.make_rdm1()
+            print(f"[{time.strftime('%H:%M:%S')}] resumed: the start density from an SCF at {os.path.basename(before)} "
+                  f"({time.time() - t0:.0f} s)", flush=True)
         for f in files:
             d = displaced_geometry(f)
             if d is None:

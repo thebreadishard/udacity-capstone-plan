@@ -16,12 +16,13 @@ one() {   # $1 = id, $2 = geometry path, $3 = MAX_FIRST for this molecule (empty
   local id=$1 g=$2 mf=${3:-$MAX_FIRST} name=${SETTING%%:*} d=$ROOT/$1 rc
   if [ -f "$d/$name/qff_report.npz" ]; then mark "$id: already done, skipped"; return 0; fi
   mark "$id: start"
+  [ -f "$ROOT/$id.log" ] && mv "$ROOT/$id.log" "$ROOT/$id.$(date +%Y%m%d-%H%M%S).log"   # a resumed molecule keeps its earlier log
   MAX_FIRST=$mf bash "$HERE/s1_anharmonic_level.sh" "$g" "$d" "$THR" "$SETTING" > "$ROOT/$id.log" 2>&1; rc=$?
   if [ "$rc" = 0 ]; then
     if [ -f "$d/$name/NOISY" ]; then mark "$id: NOISY (excluded by the noise rule)"; else mark "$id: done"; fi
   elif [ -f "$d/$name/GATE_FAILED" ]; then mark "$id: GATE FAILED (grid gate at ${GATE_GRID:-?}; re-price at that grid)"
-  elif grep -q 'STOPPED' "$ROOT/$id.log"; then mark "$id: STOPPED (first displaced Hessian over $mf s)"
-  else mark "$id: FAILED rc=$rc (see $ROOT/$id.log)"; fi
+  elif grep -q 'STOP: the first Hessian took' "$ROOT/$id.log"; then mark "$id: STOPPED (first displaced Hessian over $mf s)"
+  else mark "$id: FAILED rc=$rc: $(grep -m1 -E 'not converged|Error|Traceback' "$ROOT/$id.log" | cut -c1-160) (see $ROOT/$id.log)"; fi
 }
 export -f one mark
 mkdir -p "$ROOT"
