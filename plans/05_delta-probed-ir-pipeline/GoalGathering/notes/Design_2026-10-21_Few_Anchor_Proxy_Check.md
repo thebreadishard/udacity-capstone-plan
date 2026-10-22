@@ -85,3 +85,41 @@ base as it is. From now on such a molecule has no intensity read-out for that pr
 per column ('no intensity' in the read's table), the intensity is the mean over the molecules that have one, and every other error still
 stops (commit 6938cf33, `tests/test_mode_crossing.py`). The lines read CH-oop and are untouched; intensity stays reported, no line. Base
 (a) is trained again from seed 0 (the step does not resume within its seeds).
+
+## Outcome
+
+### 22 Oct 2026, 02:1x — the read
+
+`python probes/proxy_check_plan.py read modules/05_support_predictor/out/proxy_check_2026-10-21` → `proxy_check_read.{json,md}` there
+(records git-ignored, mirrored to capstone-data). Chain PX 21 Oct 09:27 – 22 Oct 02:11, 33 steps (one stop and relaunch, 13:44, recorded
+above). Means ± standard error over seeds × draws; CH-oop and 'other' in cm⁻¹, intensity the matched relative rms.
+
+**Arm (a), a different correction — L1 holds, as predicted** (the whole head below λ 1 at k = 5, 10 and 20). **L2: the base helps up to
+k = 100.** The base as it is reads 31.50 on CH-oop (the zero rule 21.90): it learned the distorted correction. Along k, CH-oop:
+
+| k | λ 1 (head_l2) | λ 0 (head) | whole head | scratch |
+|---|---|---|---|---|
+| 5 | 9.05 ± 0.31 | 5.90 ± 0.18 | 6.55 ± 0.19 | 7.33 ± 0.31 |
+| 10 | 8.44 ± 0.31 | 5.22 ± 0.08 | 5.08 ± 0.16 | 6.27 ± 0.13 |
+| 20 | 8.09 ± 0.25 | 5.37 ± 0.07 | 4.04 ± 0.14 | 5.38 ± 0.17 |
+| 50 | 9.45 ± 0.28 | 4.71 ± 0.05 | 3.81 ± 0.14 | 4.76 ± 0.16 |
+| 100 | 9.18 ± 0.29 | 4.85 ± 0.10 | 3.17 ± 0.08 | 3.41 ± 0.08 |
+| 200 | 9.90 ± 0.56 | 4.80 ± 0.17 | 2.82 ± 0.04 | 2.79 ± 0.09 |
+
+'other' and the intensity follow the same order (whole head at k = 200: 'other' 3.32, intensity 0.20; λ 1: 12.86, 0.54). Read beside
+the lines, not a line: λ 1 does not learn at all along k (8–10 throughout) — the pull toward the base holds the network on the wrong
+correction; the last layer free (λ 0) learns quickly but levels off near 4.8; the whole head keeps falling and is the only column that
+does at k ≥ 50. At k = 5 the free last layer is ahead of the whole head (5.90 against 6.55). The 'no intensity' column counts molecules
+whose prediction moved a mode across the threshold: most under λ 1 (≈ 12 per read), 4 per read for the others.
+
+**Arm (b), a new domain — L1 does not hold, as predicted** (the whole head below λ 1 only at k = 20). **L2: the base helps up to k = 20.**
+The base as it is reads 2.66 ± 0.24 on CH-oop of the 27 A2 molecules it never saw (zero rule 22.76): the correction it learned carries to
+the new family, and fine-tuning adds little (whole head 2.72 → 2.24 from k = 5 to 40; λ 1 2.73 → 2.66). Scratch needs k = 40 to come
+near (2.85 ± 0.35). 27 read molecules: the errors are wider than arm (a)'s.
+
+**What it says.** Where the correction changes (a), how the network is fine-tuned decides the outcome, and the registered protocol of set
+three (λ = 1) is the one that cannot follow: it stays where the base put it. The whole head follows, keeps improving with more molecules,
+and with a pretrained base needs about half the molecules scratch needs to reach the same error (whole head at k = 20 ≈ scratch at k = 50;
+at k = 50 ≈ scratch at k = 100). Where only the molecules change (b), the base already carries and the protocol hardly matters. This is the
+independent support set three's repeat could not give: hundreds of molecules, a protocol chosen before the read. Within its limits: one
+distortion (the median slopes, exact anti-alignment per family), one held-out family for (b), proxy-level labels.

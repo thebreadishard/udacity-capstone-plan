@@ -466,7 +466,9 @@ windows until they end — do not close them. Second attempt: quit from the tray
 job processes of the snapshot were alive (21 Windows/msys, 4 WSL), the heartbeat had no gap over 75 s (beats every minute through 18:51),
 RELAUNCHED.txt had no new line — nothing needed the resume task. HB stopped (heartbeat.STOP) and its rows removed. Not tested: a Windows
 restart (all jobs stop; CapstoneResumeJobs relaunches at logon) — for a quiet laptop, about end of October. Rule: a new long laptop job gets a row in both tsv files.
-51. **21 Oct 18:0x — PX: both bases done (base (a) 17:18; it reads 38.98 cm⁻¹ against the zero rule's 23.37 — a real change of
+51. **22 Oct 02:1x — PX READ: arm (a) L1 holds (λ 1 stuck at 8–10 CH-oop, whole head 6.55 → 2.82 along k), the base helps
+to k = 100; arm (b) L1 does not hold (the base carries, 2.66) — both as predicted (design note 'Outcome'). Next: the proposal's line
+(TASKS row 'The proposal's line') gains its second claim; the blog's last section.** **21 Oct 18:0x — PX: both bases done (base (a) 17:18; it reads 38.98 cm⁻¹ against the zero rule's 23.37 — a real change of
 correction), registry committed (16dc452c), fine-tunes running (arm (b) k 5: 12.5 min, k 10: 16.5 min); the end is stated once arm (a)'s
 first run is timed.** **21 Oct 13:49 — PX relaunched after its stop at 13:44 (base (a)'s own read: a mode across the threshold; fixed as a named,
 counted case, 6938cf33; amendment d3454e81); base (b) done (607 molecules, 3 seeds), base (a) retrains from seed 0, ≈ 17:10; then the
