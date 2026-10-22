@@ -155,3 +155,23 @@ data do not have; the scatter around the trend (the anchors' 1 − corr²) is st
 predictions — the same arms' reservoir, read set, k and draws; at least head_all and scratch, λ 1 beside them; prediction: the whole head
 reaches 3 cm⁻¹ CH-oop at fewer molecules than arm (a)'s 100–200. All three wait for the laptop: the cation run (P3-2) runs alone until
 about Friday, and the user's rule for it is no torch and no pytest beside it.
+
+### 22 Oct 2026, 14:4x — the family means measured: the draft corrected
+
+Measured on the eleven-anchor corpus copy (a scratchpad script on `set3_decompose`'s functions, numpy only, the laptop free after the
+cation run): per anchor and family the mean first-order shift of the CC correction and of the proxy, and the slope of their centred
+shifts. Medians over the nine anchors with a CC/DZ Hessian:
+
+| family | mean shift, proxy | mean shift, CC | mean ratio | centred slope | arm (a) used for both |
+|---|---|---|---|---|---|
+| CH-oop | +18 … +24 | −20 … +1 | −0.44 | −0.52 | −0.43 |
+| other | +2 … +10 | −17 … −11 | −1.45 | −0.30 | −1.16 |
+| ring-ip | −1 … +13 | −20 … −13 | −1.39 | +0.12 | −0.34 |
+| CH-stretch | +43 … +44 | −38 … −33 | −0.79 | noise (proxy centred rms 0.2–1.7) | −0.79 |
+
+(Mean shifts in cm⁻¹, the range over the anchors.) **The CC correction differs from the proxy mainly by a mean shift of opposite sign in
+every family:** ωB97X moves B3LYP's frequencies up, CCSD(T)/TZ moves them down. **For CH-oop arm (a) was close to the anchors** — mean
+−0.44 and rest −0.52 against its −0.43 — so its curve (3 cm⁻¹ at 100–200 molecules) is a fair estimate for CH-oop, not the ceiling the
+morning's draft called it. For 'other' and ring-ip arm (a) was off: their mode-to-mode variation is weaker (−0.30) or even follows the
+proxy (+0.12) while their mean runs further the other way. A run of the milder form would therefore change 'other' and ring-ip, hardly
+CH-oop; whether that is worth twelve laptop hours goes to the user.
