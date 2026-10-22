@@ -18,11 +18,13 @@ import json
 import os
 import re
 import shlex
+import shutil
 import subprocess
 import sys
 import time
+from pathlib import Path
 
-PLAN = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+PLAN =os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 ROOT = os.path.abspath(os.path.join(PLAN, "..", ".."))
 STATE = os.path.join(PLAN, "probes", "watch_state", "test_suites.json")
 SYSTEM_PY = r"C:\Users\thebr\AppData\Local\Programs\Python\Python314\python.exe"   # torch, rdkit (memory 'Python interpreters on the laptop')
@@ -41,6 +43,27 @@ SUITES = [
     ("module 08", SYSTEM_PY, "plans/05_delta-probed-ir-pipeline/modules/08_industry_synthesis", ["tests"]),
     ("website export", SYSTEM_PY, "website/export", ["tests"]),
 ]
+
+
+def git_unix_tools(git_exe):
+    """Git for Windows' usr/bin and mingw64/bin for the git executable found on PATH (the folder above it that holds usr/bin/bash.exe);
+    [] when there is none (not Windows, or no Git for Windows)."""
+    if not git_exe:
+        return []
+    for root in Path(git_exe).resolve().parents:
+        if (root / "usr" / "bin" / "bash.exe").exists():
+            return [str(root / "usr" / "bin"), str(root / "mingw64" / "bin")]
+    return []
+
+
+def suite_env(base, git_exe):
+    """The suites' environment: UTF-8, two threads, a wide terminal for pytest's summary, and Git's unix tools ahead of System32's tar and
+    find, which the nightly task's PATH puts first (the shell scripts under test need GNU tar and find; 20-22 Oct 2026)."""
+    env = dict(base, PYTHONUTF8="1", OMP_NUM_THREADS="2", MKL_NUM_THREADS="2", COLUMNS=COLUMNS)
+    tools = git_unix_tools(git_exe)
+    if tools:
+        env["PATH"] = os.pathsep.join([*tools, base.get("PATH", "")])
+    return env
 
 
 def pyscf_tests(plan=PLAN):
@@ -89,7 +112,7 @@ def run(cmd, cwd, env, windows_idle):
 
 
 def run_all():
-    env = dict(os.environ, PYTHONUTF8="1", OMP_NUM_THREADS="2", MKL_NUM_THREADS="2", COLUMNS=COLUMNS)
+    env = suite_env(os.environ, shutil.which("git"))
     pytest = ["-m", "pytest", "-q", "-p", "no:cacheprovider", "-m", "not slow"]
     rows = []
     for name, py, rel, args in SUITES:

@@ -1,6 +1,7 @@
 """tools/run_test_suites.py (11 Oct 2026): parsing pytest's closing line, the verdict rule, the pyscf file discovery and the state.sh line;
 no suite is run here."""
 import datetime
+import os
 import sys
 from pathlib import Path
 
@@ -53,3 +54,23 @@ def test_summary_flags_failures_and_a_stale_result():
     assert "1/2 pass, 39 tests" in line and "FAILED: module 07" in line and "STALE" not in line
     assert "STALE" in summary(dict(finished="2026-10-09T03:34:00", suites=rows[:1]), now)
     assert "never run" in summary(None)
+
+
+def test_git_unix_tools_go_first_on_the_suites_path(tmp_path):
+    from run_test_suites import suite_env
+    root = tmp_path / "Git"
+    for sub in ("usr/bin", "mingw64/bin", "cmd"):
+        (root / sub).mkdir(parents=True)
+    (root / "usr" / "bin" / "bash.exe").write_text("", encoding="utf-8")
+    (root / "cmd" / "git.exe").write_text("", encoding="utf-8")
+    env = suite_env({"PATH": r"C:\Windows\System32"}, str(root / "cmd" / "git.exe"))
+    parts = env["PATH"].split(os.pathsep)
+    assert parts[:2] == [str((root / "usr" / "bin").resolve()), str((root / "mingw64" / "bin").resolve())]
+    assert parts[-1] == r"C:\Windows\System32" and env["COLUMNS"] == "400"
+
+
+def test_without_git_for_windows_the_path_is_unchanged(tmp_path):
+    from run_test_suites import suite_env
+    assert suite_env({"PATH": "/usr/bin"}, None)["PATH"] == "/usr/bin"
+    (tmp_path / "git").write_text("", encoding="utf-8")
+    assert suite_env({"PATH": "/usr/bin"}, str(tmp_path / "git"))["PATH"] == "/usr/bin"
