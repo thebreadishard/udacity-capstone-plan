@@ -118,8 +118,9 @@ the new family, and fine-tuning adds little (whole head 2.72 → 2.24 from k = 5
 near (2.85 ± 0.35). 27 read molecules: the errors are wider than arm (a)'s.
 
 **What it says.** Where the correction changes (a), how the network is fine-tuned decides the outcome, and the registered protocol of set
-three (λ = 1) is the one that cannot follow: it stays where the base put it. The whole head follows, keeps improving with more molecules,
-and with a pretrained base needs about half the molecules scratch needs to reach the same error (whole head at k = 20 ≈ scratch at k = 50;
-at k = 50 ≈ scratch at k = 100). Where only the molecules change (b), the base already carries and the protocol hardly matters. This is the
+three (λ = 1) is the one that cannot follow: it stays where the base put it. The whole head follows and keeps improving with more molecules.
+The pretrained base saves most at few molecules — the whole head at k = 20 (4.04) is below scratch at k = 50 (4.76) — and the saving
+shrinks with k: at k = 100 the two differ by 0.24 (3.17 against 3.41), at k = 200 they are level (2.82 against 2.79). *(Corrected 02:2x:
+the first wording claimed 'about half the molecules' at k = 50 too, where the whole head's 3.81 is above scratch's 3.41 at k = 100.)* Where only the molecules change (b), the base already carries and the protocol hardly matters. This is the
 independent support set three's repeat could not give: hundreds of molecules, a protocol chosen before the read. Within its limits: one
 distortion (the median slopes, exact anti-alignment per family), one held-out family for (b), proxy-level labels.
