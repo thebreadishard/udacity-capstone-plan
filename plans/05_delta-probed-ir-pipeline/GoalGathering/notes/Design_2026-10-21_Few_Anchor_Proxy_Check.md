@@ -124,3 +124,34 @@ shrinks with k: at k = 100 the two differ by 0.24 (3.17 against 3.41), at k = 20
 the first wording claimed 'about half the molecules' at k = 50 too, where the whole head's 3.81 is above scratch's 3.41 at k = 100.)* Where only the molecules change (b), the base already carries and the protocol hardly matters. This is the
 independent support set three's repeat could not give: hundreds of molecules, a protocol chosen before the read. Within its limits: one
 distortion (the median slopes, exact anti-alignment per family), one held-out family for (b), proxy-level labels.
+
+## TASKS 82 — the anchor price under a milder distortion: design draft (22 Oct 2026, 07:1x; not registered, nothing run)
+
+**What arm (a) did, read again.** `set3_decompose.py` reports per anchor and family a *slope through the origin* (a·b / b·b) and a
+*centred correlation* (np.corrcoef). The family scales of arm (a) are the median slopes, applied to the whole diagonal block, so the base's
+correction is the proxy's times a negative number in every family. The anchors say something milder, and the two statistics disagree in
+sign where the families' mean shifts dominate:
+
+| family | median slope (origin) | median centred corr | median rms ratio | range of the corr over 9 anchors |
+|---|---|---|---|---|
+| CH-oop | −0.43 | −0.38 | 0.63 | −0.58 … +0.30 |
+| other | −1.16 | −0.31 | 1.32 | −0.77 … +0.36 |
+| ring-ip | −0.34 | +0.46 | 0.79 | +0.23 … +0.84 |
+| CH-stretch | −0.79 | −0.28 | 0.79 | −0.95 … +0.73 |
+
+In ring-ip the CC correction's mode-to-mode variation follows the proxy's (corr +0.46) while its overall level runs the other way (slope
+−0.34); arm (a) reversed both. So arm (a) is the hard case, and the curve it gave (3 cm⁻¹ CH-oop at 100–200 molecules) is a ceiling on
+the price, not an estimate.
+
+**The milder form.** Per family f, split the proxy's diagonal block in the mode basis into its mean shift (the trace part, m_f·Π_f) and the
+rest, and scale them separately: D_f = a_f · (mean part) + b_f · (rest), with a_f the median ratio of the CC to the proxy mean shift over
+the anchors and b_f the median *centred* slope (corr × the ratio of the centred rms). Couplings between families and the part outside the
+modes stay as in arm (a). This reproduces the anchors' level and their partial correlation per family, without inventing a component the
+data do not have; the scatter around the trend (the anchors' 1 − corr²) is still left out, which the registration states.
+
+**Before it can run.** (1) a_f and b_f need the anchors' family means and centred rms — `set3_decompose.py` keeps neither; it gains them
+(numpy only, eleven anchors). (2) `--family-scale` becomes two factors per family (mean, rest) in `rungC_train.distort_families`, with tests
+(the block algebra of the mean and the rest separately; arm (a)'s form as the special case a_f = b_f). (3) A registration amendment with
+predictions — the same arms' reservoir, read set, k and draws; at least head_all and scratch, λ 1 beside them; prediction: the whole head
+reaches 3 cm⁻¹ CH-oop at fewer molecules than arm (a)'s 100–200. All three wait for the laptop: the cation run (P3-2) runs alone until
+about Friday, and the user's rule for it is no torch and no pytest beside it.
