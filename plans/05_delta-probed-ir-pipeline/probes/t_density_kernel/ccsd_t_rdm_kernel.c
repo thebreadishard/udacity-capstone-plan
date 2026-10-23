@@ -123,7 +123,7 @@ int t_density_intermediates(int nocc, int nvir, const double *mo_energy,
                 fvoh[n] = fvo[n] * .5;
         }
 
-#pragma omp parallel shared(failed)
+#pragma omp parallel default(none) shared(failed, nocc, nvir, noo, nooo, nov, nvoo, mo_energy, eijk, t1T, t1Th, fvoh, t2T, vooo, vvop, goo, gvv, dvo, dovov, dooov, dovvv, D1, DHALF, INC1, TN, TT)
 {
         double *w = malloc(sizeof(double) * (size_t)nooo * 5);
         double *v = w + nooo;
@@ -267,7 +267,7 @@ int t_lambda_intermediates(int nocc, int nvir, const double *mo_energy,
                 fvoh[n] = fvo[n] * .5;
         }
 
-#pragma omp parallel shared(failed)
+#pragma omp parallel default(none) shared(failed, nocc, nvir, nmo, noo, nooo, mo_energy, eijk, t1Th, fvoh, t2T, vooo, vvop, fov, l1t, joovv, D1, DN1, INC1, TN, TT)
 {
         /* w, v, cache, x (Q(V+2W), later Q(W)/2), wr (P(W)/2), xt (x with the trailing pair swapped) */
         double *w = malloc(sizeof(double) * (size_t)nooo * 6);
@@ -280,7 +280,7 @@ int t_lambda_intermediates(int nocc, int nvir, const double *mo_energy,
         double *rb = (jo_a == NULL) ? NULL : jo_a + (size_t)noo * nvir;                          /* [i][j] for the current b */
         double *g = (jo_a == NULL) ? NULL : rb + noo;                                            /* ovov[j,b,k,c] as [j][k] */
         double *l1_a = (jo_a == NULL) ? NULL : g + noo;
-        int a, b, c, e, m;
+        int a, b, c, e, m, i, j, k;
         size_t nn;
 
         if (w == NULL || jo_a == NULL) {
@@ -384,7 +384,7 @@ int t_fused_intermediates(int nocc, int nvir, const double *mo_energy,
                 fvoh[n] = fvo[n] * .5;
         }
 
-#pragma omp parallel shared(failed)
+#pragma omp parallel default(none) shared(failed, nocc, nvir, nmo, noo, nooo, nov, nvoo, nvv, mo_energy, eijk, t1T, t1Th, fvoh, t2T, vooo, vvop, fov, goo, gvv, dvo, dovov, dooov, dovvv, l1t, joovv, D0, D1, DHALF, DN1, INC1, TN, TT)
 {
         /* w, v, cache, vp, v2 (density); x, xt, wq (lambda) */
         double *w = malloc(sizeof(double) * (size_t)nooo * 8);
@@ -407,7 +407,7 @@ int t_fused_intermediates(int nocc, int nvir, const double *mo_energy,
         double *l1_t = (jo_t == NULL) ? NULL : jo_t + (size_t)noo * nvv;
         double *rb = (jo_t == NULL) ? NULL : l1_t + nov;
         double *g = (jo_t == NULL) ? NULL : rb + noo;
-        int a, b, c, m, f;
+        int a, b, c, m, f, i, j, k;
         size_t nn;
 
         if (w == NULL || Umat == NULL || goo_p == NULL || dooov_p == NULL || dovov_b == NULL || jo_t == NULL) {

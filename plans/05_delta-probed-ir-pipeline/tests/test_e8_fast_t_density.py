@@ -33,3 +33,12 @@ def test_kernel_sources_and_build_script_present():
     py = (KDIR / "t_density_fast.py").read_text(encoding="utf-8")
     assert "def install()" in py and "def uninstall()" in py and "def check_against_pyscf(" in py
     assert "RTLD_GLOBAL" in py                                                                # pyscf's BLAS/OpenMP runtime, not a second one
+
+
+def test_parallel_regions_share_nothing_implicitly():
+    """i, j, k were shared loop counters in the lambda and fused regions until 23 Oct 2026 (upstream fixed it in pyscf#3470's
+    5b2633172; GCC kept them in registers, so no result changed): default(none) makes the compiler refuse any unlisted variable."""
+    c = (KDIR / "ccsd_t_rdm_kernel.c").read_text(encoding="utf-8")
+    pragmas = re.findall(r"#pragma omp parallel[^\n]*", c)
+    assert len(pragmas) == 3 and all("default(none)" in p for p in pragmas), pragmas
+    assert c.count("int a, b, c, e, m, i, j, k;") == 1 and c.count("int a, b, c, m, f, i, j, k;") == 1
