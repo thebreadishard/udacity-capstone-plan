@@ -11,7 +11,7 @@ TASKS 92 turns them into a tested `price` action of `probes/anchor_plan.py`.
 | CC anchor cover (2 per cell, ≤ 26 atoms) | 86 (61 neutral, 25 cations) | `out/anchor_plan/selection_m2_max26.md`: 7,045 CPX62 hours ≈ €1,465 by the cost rule of anchor set three |
 | its composite MP2 step (cc-pVDZ + cc-pVTZ gradient rows) | 86 | section 3 |
 | corpus fill to 30 per cell (TASKS 85/87) | 405 (no cations) | `out/anchor_plan/fill_t30.json`, section 2 |
-| cation candidates for the 27 short cation cells (TASKS 86) | not yet listed | not priced |
+| cation candidates for the 27 short cation cells (TASKS 86) | 260 | section 7 |
 | lever 5 (ten large PAHs) / TASKS 74 (chain 41's sixty) | 10 / 60 | ≈ €80 / ≈ €120 on the CCX53 (TASKS, 15 Nov plan) |
 | S2b (anharmonic learning curve) | 24 new scaffolds | ≈ €97, 6.5 days on three CPX62 (the S2b rows of TASKS) |
 
@@ -68,6 +68,7 @@ there, and the CC gradients split per displacement (each well under 120 h).
 | CC cover, 25 cations | blocked (software, TASKS 98) | blocked | — |
 | MP2 step | — | ≈ 2,300 | ≈ 385 laptop h |
 | corpus fill, analytic | 664 CCX53 h ≈ €570 | ≈ 21,000 | ≈ 3,400 laptop h (scaled, unmeasured) |
+| cation fill (TASKS 86) | not priced there | ≈ 3,500 | ≈ 584 laptop h (6 threads) |
 | lever 5 + TASKS 74 | ≈ €200 (CCX53) | not converted | — |
 | S2b | ≈ €97 | not converted | — |
 
@@ -75,3 +76,7 @@ Snellius core-hours: one CPX62 hour ≈ 16 cores, one CCX53 lane-hour ≈ 8 core
 equivalence, not a measurement. What one month of Helsinki holds under the 10 Oct limits (5 CPX62 + 1 CCX53): 3,600 CPX62 hours and 720
 CCX53 hours — the fill and the 55 smaller neutral anchors fit, the six large neutrals do not without a larger machine, the cations not at
 all. Decision 63 stands: new CC anchors are the supervisor's after June 2027; this table is what to show her.
+
+## 7. The cation fill (TASKS 86)
+
+260 radical cations of computed neutrals (twins not yet in the manifest; 822 candidates touch a short cell) fill 15 of the 27 short cation cells to 30, ≈ 584 laptop hours at 6 threads (≈ 24 days), 117–307 6-31G* functions, all under a 12 GB peak by the fit (wall s = e^−2.13 n^2.11, peak GB = e^−6.61 n^1.57 on the 21 measured cations of the 12g run, 100–228 functions — the largest extrapolated). 12 cells stay short (193 places): one-ring cells by nature (benzene⁺ alone is the sextet, pyridine⁺ the aza quintet) and one-ring substituted cations with too few computed neutrals. The cation of a neutral covers the same adjacency cells with charge +1 (`anchor_plan.cells` with layer P3c); the selection is anchor_plan's greedy cover with the laptop hours as cost.
