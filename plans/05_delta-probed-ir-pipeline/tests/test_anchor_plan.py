@@ -43,7 +43,7 @@ def test_basis_functions_and_the_price_rule():
     assert A.basis_functions("c1ccc2ncccc2c1") == 175                       # quinoline, the rule's reference
     assert A.anchor_hours(17, 175) == pytest.approx((6 * 17 + 7) / 4.6)     # ≈ 23.7 h; measured 25.8 and 28.4 h
     assert A.anchor_hours(17, 350) == pytest.approx(A.anchor_hours(17, 175) * 32)
-    with pytest.raises(ValueError, match="no cc-pVDZ count"):
+    with pytest.raises(ValueError, match="no basis count"):
         A.basis_functions("c1ccccc1[Br]")
 
 
@@ -52,10 +52,27 @@ def test_the_selection_covers_every_cell_at_the_lowest_price():
             "cheap_a": {"cells": [("a",)], "eur": 1.0, "n_atoms": 10},
             "dear_b": {"cells": [("b",)], "eur": 9.0, "n_atoms": 30},
             "dear_ab": {"cells": [("a",), ("b",)], "eur": 20.0, "n_atoms": 30}}
-    assert A.select(rows, 1) == ["cheap_ab"]
-    assert sorted(A.select(rows, 2)) == ["cheap_a", "cheap_ab", "dear_b"]     # b's second place: dear_b (9) before dear_ab (20)
+    assert A.select(rows, {("a",): 1, ("b",): 1}) == ["cheap_ab"]
+    assert sorted(A.select(rows, {("a",): 2, ("b",): 2})) == ["cheap_a", "cheap_ab", "dear_b"]   # b's second place: dear_b (9) before dear_ab
     rows["only_c"] = {"cells": [("c",)], "eur": 5.0, "n_atoms": 12}
-    assert "only_c" in A.select(rows, 2)                                       # a cell with one candidate is filled as far as it goes
+    assert "only_c" in A.select(rows, dict.fromkeys(A.cell_members(rows), 2))  # a cell with one candidate is filled as far as it goes
+
+
+def test_the_fill_plan_counts_computed_molecules_and_fills_the_rest():
+    rows = {"done_a": {"cells": [("a",)], "dft_hours": 1.0, "n_atoms": 10},
+            "pend_a": {"cells": [("a",)], "dft_hours": 1.0, "n_atoms": 10},
+            "pend_ab": {"cells": [("a",), ("b",)], "dft_hours": 1.5, "n_atoms": 20},       # two places for 1.5 h: the best ratio
+            "pend_b": {"cells": [("b",)], "dft_hours": 1.0, "n_atoms": 10}}
+    per_cell, chosen = A.fill_plan(rows, {"done_a"}, 2)
+    assert per_cell == {("a",): (1, 1), ("b",): (0, 2)}
+    assert sorted(chosen) == ["pend_ab", "pend_b"]                              # pend_ab fills a and b; pend_b the second b
+
+
+def test_the_power_law_fit():
+    a, b = A.fit_power_law([(100, 1000.0), (200, 8000.0), (400, 64000.0)])
+    assert b == pytest.approx(3.0) and a == pytest.approx(float(__import__("numpy").log(1000.0 / 100 ** 3)))
+    with pytest.raises(SystemExit, match="at least three"):
+        A.fit_power_law([(1, 1.0), (2, 2.0)])
 
 
 def test_an_unreadable_smiles_is_refused():
