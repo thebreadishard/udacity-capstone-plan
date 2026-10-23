@@ -63,10 +63,11 @@ def test_git_unix_tools_go_first_on_the_suites_path(tmp_path):
         (root / sub).mkdir(parents=True)
     (root / "usr" / "bin" / "bash.exe").write_text("", encoding="utf-8")
     (root / "cmd" / "git.exe").write_text("", encoding="utf-8")
-    env = suite_env({"PATH": r"C:\Windows\System32"}, str(root / "cmd" / "git.exe"))
+    system_dir = str(tmp_path / "System32")                      # a separator-free stand-in for C:\\Windows\\System32 on any platform
+    env = suite_env({"PATH": system_dir}, str(root / "cmd" / "git.exe"))
     parts = env["PATH"].split(os.pathsep)
     assert parts[:2] == [str((root / "usr" / "bin").resolve()), str((root / "mingw64" / "bin").resolve())]
-    assert parts[-1] == r"C:\Windows\System32" and env["COLUMNS"] == "400"
+    assert parts[-1] == system_dir and env["COLUMNS"] == "400"
 
 
 def test_without_git_for_windows_the_path_is_unchanged(tmp_path):
