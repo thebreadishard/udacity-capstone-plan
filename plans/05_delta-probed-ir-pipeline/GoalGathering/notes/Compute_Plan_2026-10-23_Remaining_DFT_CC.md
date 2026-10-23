@@ -70,7 +70,7 @@ there, and the CC gradients split per displacement (each well under 120 h).
 | CC cover, 25 cations | blocked (software, TASKS 98) | blocked | — |
 | MP2 step | — | ≈ 2,300 | ≈ 385 laptop h |
 | corpus fill, analytic | 672 CCX53 h ≈ €574 | ≈ 21,500 | ≈ 3,060 laptop h (the deck's 1,276 × 2.4, the analytic/deck ratio on the servers; unmeasured) |
-| cation fill (TASKS 86) | not priced there | ≈ 3,500 | ≈ 584 laptop h (6 threads) |
+| cation fill (TASKS 86, all 57 cation cells, TASKS 102) | not priced there | ≈ 6,700 | ≈ 1,118 laptop h (6 threads) |
 | lever 5 + TASKS 74 | ≈ €200 (CCX53) | not converted | — |
 | S2b | ≈ €97 | not converted | — |
 
@@ -80,5 +80,7 @@ CCX53 hours — the fill and the 55 smaller neutral anchors fit, the six large n
 all. Decision 63 stands: new CC anchors are the supervisor's after June 2027; this table is what to show her.
 
 ## 7. The cation fill (TASKS 86)
+
+**Since 07:2x (TASKS 102, the user: the cation side is every cell's twin):** 57 cation cells short (1,590 places), 973 candidates; **414 cations ≈ 1,118 laptop hours** (6 threads; 117–301 6-31G* functions, largest peak by the fit ≈ 10.3 GB); 33 cells stay short (763 places), 10 of them with no candidate at all — their neutral parents are not computed yet (mostly the aza and five-ring families of TASKS 85), so the cation fill follows the neutral fill and is re-run after it. The paragraph below is the first count, over the 27 cation cells a manifest row provided.
 
 260 radical cations of computed neutrals (twins not yet in the manifest; 822 candidates touch a short cell) fill 15 of the 27 short cation cells to 30, ≈ 584 laptop hours at 6 threads (≈ 24 days), 117–307 6-31G* functions, all under a 12 GB peak by the fit (wall s = e^−2.13 n^2.11, peak GB = e^−6.61 n^1.57 on the 21 measured cations of the 12g run, 100–228 functions — the largest extrapolated). 12 cells stay short (193 places): one-ring cells by nature (benzene⁺ alone is the sextet, pyridine⁺ the aza quintet) and one-ring substituted cations with too few computed neutrals. Not counted: 30 more cation cells that no manifest row covers at all (TASKS 102). The cation of a neutral covers the same adjacency cells with charge +1 (`anchor_plan.cells` with layer P3c); the selection is anchor_plan's greedy cover with the laptop hours as cost.

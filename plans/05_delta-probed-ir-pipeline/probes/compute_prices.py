@@ -8,8 +8,9 @@ Every price is a power law fitted to measured runs and names its source; what is
            to its lane logs in the atom count
   mp2      the composite's DF-MP2 step for the anchor cover (`anchor_plan.py select`), per gradient from the five anchors of 20 Oct (`time -v`
            wall time and peak, NBF and the gradient count from each psi4 log), 6 N gradients per molecule
-  cations  radical cations of computed neutrals for the cation cells short of the target: a neutral's cation covers its cells with charge
-           +1; candidates are computed in-domain neutrals whose cation twin (same SMILES hash) is not in the manifest; priced on the
+  cations  radical cations of computed neutrals for the cation cells short of the target — the cation twin of every cell of the
+           domain, whether or not a manifest row provides it yet (TASKS 102); a neutral's cation covers its cells with charge +1;
+           candidates are computed in-domain neutrals whose cation twin (same SMILES hash) is not in the manifest; priced on the
            laptop's analytic UKS runs ('(CA) <id> max RSS .. kB, wall .. s'), selected by anchor_plan's greedy cover
 
     python probes/compute_prices.py fill|mp2|cations      → out/anchor_plan/price_<action>.md and .json
@@ -178,6 +179,13 @@ def mp2_price(src: Sources) -> tuple[dict, list[str]]:
     return out, lines
 
 
+def cation_short_cells(rows: dict[str, dict], computed: set[str], target: int) -> dict[tuple, int]:
+    """Places missing to `target` computed molecules in the cation twin of every cell the domain's rows provide (TASKS 102)."""
+    have = Counter(tuple(c) for i, r in rows.items() if i in computed for c in r["cells"])
+    twins = {(c[0], c[1], c[2], 1) for c in ap.cell_members(rows)}
+    return {c: target - have[c] for c in twins if have[c] < target}
+
+
 def cation_candidates(rows: dict[str, dict], manifest: dict[str, dict], computed: set[str], short: dict[tuple, int]) -> dict[str, dict]:
     """Cation twins of computed in-domain neutrals that touch a short cell and are not in the manifest yet."""
     twins = {i.split("_", 1)[1] for i in manifest if i.startswith(CATION_LAYER + "_")}
@@ -200,8 +208,7 @@ def cation_price(src: Sources, target: int) -> tuple[dict, list[str]]:
     peak = ap.fit_power_law([(functions[i], g) for i, (g, _) in runs.items()])
     rows = ap.corpus_cells(src.manifest)
     computed = ap.computed_ids(list(manifest.values()), src.corpus)
-    have = Counter(tuple(c) for i, r in rows.items() if i in computed for c in r["cells"])
-    short = {c: target - have[c] for c in ap.cell_members(rows) if c[3] == 1 and have[c] < target}
+    short = cation_short_cells(rows, computed, target)
     cands = cation_candidates(rows, manifest, computed, short)
     for v in cands.values():
         n = ap.basis_functions(v["smiles"], ap.BASIS_FUNCTIONS_631GS)
@@ -218,8 +225,8 @@ def cation_price(src: Sources, target: int) -> tuple[dict, list[str]]:
              f"Priced on {len(runs)} analytic UKS cation runs on the laptop (6 threads, {min(functions.values())}–{max(functions.values())} "
              f"6-31G* functions): wall s = e^{wall[0]:.2f} n^{wall[1]:.2f}, peak GB = e^{peak[0]:.2f} n^{peak[1]:.2f}.", "",
              f"{len(short)} cation cells short ({sum(short.values())} places); {len(cands)} candidates. **{len(chosen)} cations, ≈ {hours:,.0f} laptop "
-             f"hours**, {sizes}. {len(still)} cells stay short ({sum(still.values())} places). A cation cell no manifest row covers is "
-             "not counted as short (the fill list's cells).", "",
+             f"hours**, {sizes}. {len(still)} cells stay short ({sum(still.values())} places). The cation cells are the twins of every "
+             "cell of the domain, also where no cation row exists yet (TASKS 102).", "",
              "| adjacency | ring context | aza | still short | candidates |", "|---|---|---|---|---|"]
     members = ap.cell_members(cands)
     lines += [f"| {c[0]} | {c[1]} | {'yes' if c[2] else 'no'} | {k} | {len(members.get(c, []))} |" for c, k in sorted(still.items(), key=lambda x: -x[1])]

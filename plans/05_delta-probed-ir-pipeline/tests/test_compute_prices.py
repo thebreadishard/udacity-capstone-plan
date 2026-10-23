@@ -54,6 +54,14 @@ def test_cation_runs_read_peak_and_wall(tmp_path):
     assert list(runs) == ["P3c_20332edd59"] and runs["P3c_20332edd59"][1] == 14559.37
 
 
+def test_every_cell_has_a_cation_twin_to_fill():
+    """TASKS 102: pyridine's cation cell counts as short although no cation row provides it."""
+    rows = {"A_4444444444": {"cells": [("quintet", "one", True, 0)]},
+            "P3c_1111111111": {"cells": [("sextet", "one", False, 1)]}}
+    short = cp.cation_short_cells(rows, computed={"A_4444444444", "P3c_1111111111"}, target=30)
+    assert short == {("quintet", "one", True, 1): 30, ("sextet", "one", False, 1): 29}
+
+
 def test_cation_candidates_are_computed_neutral_twins_not_yet_listed():
     cell = ("quartet", "two", False, 1)                                  # naphthalene: four C-H in a row per ring
     rows = {
