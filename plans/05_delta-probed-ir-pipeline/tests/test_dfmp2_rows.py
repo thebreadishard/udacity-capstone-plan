@@ -134,3 +134,49 @@ def test_options_that_do_not_combine_are_refused(args):
 def test_a_level_out_of_range_is_refused():
     with pytest.raises(ValueError, match="out of range"):
         R.Level("cc-pvdz", -1, False)
+
+
+CLOSED_SHELL_OPTIONS = {"basis": "cc-pvdz", "df_basis_scf": "cc-pvdz-jkfit", "df_basis_mp2": "cc-pvdz-ri", "scf_type": "df", "mp2_type": "df",
+                        "num_frozen_docc": 1, "puream": True, "guess": "sad", "e_convergence": 1e-10, "d_convergence": 1e-10}
+CLOSED_SHELL_KEYS = {"ks", "reps", "step", "basis", "frozen", "cart", "coords_bohr", "method", "row_00", "row_03", "row_08"}
+
+
+def test_the_closed_shell_path_is_pinned(tmp_path, monkeypatch):
+    """The neutral anchors' rows were made this way (20 Oct): every option, the '0 1' header and the file's keys stay as they were."""
+    fake = FakePsi4()
+    headers = []
+    gradient = fake.gradient
+    fake.gradient = lambda name, molecule, dertype=None: headers.append(molecule.splitlines()[0]) or gradient(name, molecule, dertype)
+    like, geom, out = setup(tmp_path, monkeypatch, fake)
+    assert R.main(["rows", "--like", str(like), "--symbols-from", str(geom), "--out", str(out)]) == 0
+    assert fake.options == CLOSED_SHELL_OPTIONS
+    assert set(headers) == {"0 1"}
+    assert set(np.load(out).files) == CLOSED_SHELL_KEYS
+
+
+def test_an_open_shell_runs_uhf_through_dfocc_and_says_so_in_the_file(tmp_path, monkeypatch):
+    fake = FakePsi4()
+    headers = []
+    gradient = fake.gradient
+    fake.gradient = lambda name, molecule, dertype=None: headers.append(molecule.splitlines()[0]) or gradient(name, molecule, dertype)
+    like, geom, out = setup(tmp_path, monkeypatch, fake)
+    argv = ["rows", "--like", str(like), "--symbols-from", str(geom), "--out", str(out), "--charge", "1", "--multiplicity", "2"]
+    assert R.main(argv) == 0
+    assert fake.options == {**CLOSED_SHELL_OPTIONS, "reference": "uhf", "qc_module": "occ"}
+    assert set(headers) == {"1 2"}
+    z = np.load(out)
+    assert set(z.files) == CLOSED_SHELL_KEYS | {"charge", "multiplicity"} and (int(z["charge"]), int(z["multiplicity"])) == (1, 2)
+    assert "UHF via DFOCC" in str(z["method"])
+
+
+def test_a_closed_shell_cation_stays_restricted():
+    fake = FakePsi4()
+    R.configure(fake, R.Level("cc-pvdz", 1, False, charge=2, multiplicity=1), Path("x.log"))
+    assert "reference" not in fake.options and "qc_module" not in fake.options
+
+
+def test_a_multiplicity_below_one_is_refused():
+    with pytest.raises(SystemExit):
+        R.main(["water", "--out", "x.json", "--multiplicity", "0"])
+    with pytest.raises(ValueError, match="out of range"):
+        R.Level("cc-pvdz", 1, False, multiplicity=0)
