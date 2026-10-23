@@ -43,8 +43,8 @@ psi4's open-shell DF-MP2 gradient, which the 20 Oct checks did not cover (TASKS 
 
 - **Cations (25 anchors, 2,055 of the 7,045 hours).** The UHF CCSD(T) gradient is not computable at these sizes with the current route:
   benzene⁺ was OOM-killed at 31.5 GB on a CPX62 on 30 Sep, because pyscf's `uccsd_t_rdm` builds unblocked o³v³ arrays (~22 GB each at
-  nocc ≈ 15, nvir ≈ 93; ledger 30 Sep). o³v³ grows with the sixth power of size: a 20-atom cation is two orders of magnitude beyond
-  that, past any node. The cation anchors need new software first: a blocked UHF (T) density, as the RHF kernels are (TASKS 98).
+  nocc ≈ 15, nvir ≈ 93; ledger 30 Sep). o³v³ grows with the sixth power of size: acenaphthylene⁺ (208 functions) would need
+  ≈ 830 GB per array, ≈ 40× benzene⁺ — past any node (`GoalGathering/notes/Design_Note_2026-10-23_UHF_CCSD_T_Gradient_Memory.md` §2). The cation anchors need new software first: a blocked UHF (T) density, as the RHF kernels are (TASKS 98).
 - **The largest neutrals (6 anchors above 250 cc-pVDZ functions, 2,402 hours).** One measured peak: quinoline (175 functions) 8.59 GB per
   gradient (`results_m1/anchors3_server_2026-10-19/dpir/timing.log`); naphthalene (180) 4.4 GB per lane (ledger 1 Oct). Scaled by n²–n⁴
   to 260–314 functions: ≈ 19–89 GB. Anthracene (246) ran on the CCX53, so 32 GB was never shown at this size. Until one gradient at
