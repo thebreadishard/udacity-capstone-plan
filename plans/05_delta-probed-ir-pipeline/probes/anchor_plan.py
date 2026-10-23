@@ -42,6 +42,10 @@ from rdkit import Chem
 
 PLAN = Path(__file__).resolve().parents[1]
 M05 = PLAN / "modules" / "05_support_predictor"
+M08 = PLAN / "modules" / "08_industry_synthesis"
+sys.path.insert(0, str(M08))
+from m08.prices import MACHINES  # noqa: E402  (after the sys.path insert)
+
 MANIFEST = M05 / "corpus" / "manifest.csv"
 LEDGER = M05 / "corpus" / "ledger.csv"
 CORPUS = M05 / "corpus"
@@ -54,7 +58,7 @@ GRADIENTS_PER_HOUR = 4.6        # two partial runs of 8 threads on a CPX62, quin
 REFERENCE_FUNCTIONS = 175       # quinoline's cc-pVDZ basis
 SIZE_EXPONENT = 5               # the registered size rule of anchor set three
 EXTRA_GRADIENTS = 7             # the reference gradient and the CC APT's six
-EUR_PER_HOUR_CPX62 = 0.208      # modules/08_industry_synthesis/m08/prices.py
+EUR_PER_HOUR_CPX62 = MACHINES["CPX62"]["eur_per_hour"]
 CATION_LAYERS = {"P3c"}
 OUT_OF_DOMAIN_LAYERS = {"C"}                     # QM9
 RING_ELEMENTS = {"C", "N"}

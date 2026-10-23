@@ -2,7 +2,7 @@
 
 Desk work for TASKS 92–97 (the user, 23 Oct: what the corpus fill and the anchor cover cost on the laptop, Helsinki, a PC and Snellius;
 whether one month of Helsinki holds it all). Every number below names its input. The fits ran in scratchpad scripts beside the cation run;
-TASKS 92 turns them into a tested `price` action of `probes/anchor_plan.py`.
+Since 23 Oct 06:5x they are code: `probes/compute_prices.py fill|mp2|cations` (tests in `tests/test_compute_prices.py`); the numbers below are its output.
 
 ## 1. What is needed
 
@@ -17,19 +17,20 @@ TASKS 92 turns them into a tested `price` action of `probes/anchor_plan.py`.
 
 ## 2. The corpus fill per machine
 
-Fits of seconds = e^a · n^b on finished rows of the corpus deck `9e27bf8e9348` (psi4, finite differences of analytic gradients,
-grid 75/302), n = 6-31G* functions, main ledger plus shard ledgers:
+Fits of seconds = e^a · n^b on the finished neutral rows of the corpus deck v1 (psi4, finite differences of analytic gradients,
+grid 75/302; both of its hashes, the text correction of 21 Sep changed only the text), n = 6-31G* functions, main ledger plus shard
+ledgers, server rows only where they record their thread count:
 
 | machine class | rows | fit | fill (405) |
 |---|---|---|---|
-| CPX62, one 16-thread runner | 601 | e^−9.25 n^3.22 (scatter ×1.16) | 867 runner-hours |
-| CPX62, 8-thread runner (two per server) | 315 | e^−8.89 n^3.20 (scatter ×1.10) | 1,098 runner-hours = 549 server-hours ≈ €114 |
-| laptop (Ryzen 7 260, 8 cores) | 70 | ×1.29 of the 8-thread runner at the same size (quartiles 0.95–1.77) | ≈ 1,420 h |
+| CPX62, one 16-thread runner | 839 | e^−9.20 n^3.21 | 861 runner-hours |
+| CPX62, 8-thread runner (two per server) | 259 | e^−8.97 n^3.22 | 1,120 runner-hours = 560 server-hours ≈ €116 |
+| laptop (Ryzen 7 260, 8 cores) | 77 | e^−5.43 n^2.63 (102–258 functions) | ≈ 1,276 h |
 
 The corpus rule (corpus README: new layers get analytic Hessians, or grid 99/590 where finite differences remain) makes the deck price a
 lower bound. The analytic labels as the labels server makes them (both functionals + APT, 8-thread lanes on the CCX53):
-0.149 · n_atoms^3.54 s, fitted on 707 molecules of 8–30 atoms (lane logs, 23 Oct 03:4x UTC) → **2,658 lane-hours = 664 CCX53 hours
-≈ €570**. Extrapolated: 33 fill molecules lie above the CPX62 data's largest size (401 functions), 127 above the lanes' 30 atoms.
+e^−1.90 · n_atoms^3.54 s, fitted on 705 molecules of 8–30 atoms (lane logs, 23 Oct 03:4x UTC) → **2,686 lane-hours = 672 CCX53 hours
+≈ €574**. Extrapolated: 33 fill molecules lie above the CPX62 data's largest size (401 functions), 127 above the lanes' 30 atoms.
 
 ## 3. The MP2 step of the cover
 
@@ -68,7 +69,7 @@ there, and the CC gradients split per displacement (each well under 120 h).
 | CC cover, 6 neutrals > 250 functions | 2,402 h by the rule, on a larger machine: price open | ≈ 38,000, larger slots | — |
 | CC cover, 25 cations | blocked (software, TASKS 98) | blocked | — |
 | MP2 step | — | ≈ 2,300 | ≈ 385 laptop h |
-| corpus fill, analytic | 664 CCX53 h ≈ €570 | ≈ 21,000 | ≈ 3,400 laptop h (scaled, unmeasured) |
+| corpus fill, analytic | 672 CCX53 h ≈ €574 | ≈ 21,500 | ≈ 3,060 laptop h (the deck's 1,276 × 2.4, the analytic/deck ratio on the servers; unmeasured) |
 | cation fill (TASKS 86) | not priced there | ≈ 3,500 | ≈ 584 laptop h (6 threads) |
 | lever 5 + TASKS 74 | ≈ €200 (CCX53) | not converted | — |
 | S2b | ≈ €97 | not converted | — |
@@ -80,4 +81,4 @@ all. Decision 63 stands: new CC anchors are the supervisor's after June 2027; th
 
 ## 7. The cation fill (TASKS 86)
 
-260 radical cations of computed neutrals (twins not yet in the manifest; 822 candidates touch a short cell) fill 15 of the 27 short cation cells to 30, ≈ 584 laptop hours at 6 threads (≈ 24 days), 117–307 6-31G* functions, all under a 12 GB peak by the fit (wall s = e^−2.13 n^2.11, peak GB = e^−6.61 n^1.57 on the 21 measured cations of the 12g run, 100–228 functions — the largest extrapolated). 12 cells stay short (193 places): one-ring cells by nature (benzene⁺ alone is the sextet, pyridine⁺ the aza quintet) and one-ring substituted cations with too few computed neutrals. The cation of a neutral covers the same adjacency cells with charge +1 (`anchor_plan.cells` with layer P3c); the selection is anchor_plan's greedy cover with the laptop hours as cost.
+260 radical cations of computed neutrals (twins not yet in the manifest; 822 candidates touch a short cell) fill 15 of the 27 short cation cells to 30, ≈ 584 laptop hours at 6 threads (≈ 24 days), 117–307 6-31G* functions, all under a 12 GB peak by the fit (wall s = e^−2.13 n^2.11, peak GB = e^−6.61 n^1.57 on the 21 measured cations of the 12g run, 100–228 functions — the largest extrapolated). 12 cells stay short (193 places): one-ring cells by nature (benzene⁺ alone is the sextet, pyridine⁺ the aza quintet) and one-ring substituted cations with too few computed neutrals. Not counted: 30 more cation cells that no manifest row covers at all (TASKS 102). The cation of a neutral covers the same adjacency cells with charge +1 (`anchor_plan.cells` with layer P3c); the selection is anchor_plan's greedy cover with the laptop hours as cost.
