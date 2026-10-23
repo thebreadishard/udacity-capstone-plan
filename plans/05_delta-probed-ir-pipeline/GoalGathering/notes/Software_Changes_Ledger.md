@@ -342,7 +342,7 @@ One line per change; the numbered section below the register carries every origi
 
 ### 21 — C kernels t_density_intermediates and t_lambda_intermediates (probes/t_density_kernel/),…
 
-**Group:** B, own layer around third-party code. **Date:** 2026-09-29/30. **Status:** waiting-upstream. *Status note (20:1x 9 Oct 2026):* **#3470 merged 6 Oct** (pyscf master); our `probes/t_density_kernel/` stays until the next pyscf release, then the rebuild drops it.
+**Group:** B, own layer around third-party code. **Date:** 2026-09-29/30. **Status:** waiting-upstream. *Status note (20:1x 9 Oct 2026):* **#3470 merged 6 Oct** (pyscf master); our `probes/t_density_kernel/` stays until the next pyscf release, then the rebuild drops it. *Status note (06:3x 23 Oct 2026):* the merged PR carries sunqm's 5b2633172 (i, j, k private in the lambda kernel); our local copy never received it and races in `t_lambda_intermediates` and `t_fused_intermediates` — TASKS 100.
 
 **Software:** pyscf 2.14.0 `cc/ccsd_t_rdm.py` (T) densities and `cc/ccsd_t_lambda.py::make_intermediates`
 
