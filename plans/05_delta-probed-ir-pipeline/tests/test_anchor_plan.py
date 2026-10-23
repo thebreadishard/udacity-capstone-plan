@@ -39,6 +39,25 @@ def test_the_target_domain(smiles, layer, inside):
     assert A.in_domain(smiles, layer) is inside
 
 
+def test_basis_functions_and_the_price_rule():
+    assert A.basis_functions("c1ccc2ncccc2c1") == 175                       # quinoline, the rule's reference
+    assert A.anchor_hours(17, 175) == pytest.approx((6 * 17 + 7) / 4.6)     # ≈ 23.7 h; measured 25.8 and 28.4 h
+    assert A.anchor_hours(17, 350) == pytest.approx(A.anchor_hours(17, 175) * 32)
+    with pytest.raises(ValueError, match="no cc-pVDZ count"):
+        A.basis_functions("c1ccccc1[Br]")
+
+
+def test_the_selection_covers_every_cell_at_the_lowest_price():
+    rows = {"cheap_ab": {"cells": [("a",), ("b",)], "eur": 1.0, "n_atoms": 10},
+            "cheap_a": {"cells": [("a",)], "eur": 1.0, "n_atoms": 10},
+            "dear_b": {"cells": [("b",)], "eur": 9.0, "n_atoms": 30},
+            "dear_ab": {"cells": [("a",), ("b",)], "eur": 20.0, "n_atoms": 30}}
+    assert A.select(rows, 1) == ["cheap_ab"]
+    assert sorted(A.select(rows, 2)) == ["cheap_a", "cheap_ab", "dear_b"]     # b's second place: dear_b (9) before dear_ab (20)
+    rows["only_c"] = {"cells": [("c",)], "eur": 5.0, "n_atoms": 12}
+    assert "only_c" in A.select(rows, 2)                                       # a cell with one candidate is filled as far as it goes
+
+
 def test_an_unreadable_smiles_is_refused():
     with pytest.raises(ValueError, match="unreadable"):
         A.cells("c1cc", "A")

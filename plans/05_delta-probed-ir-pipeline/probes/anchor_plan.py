@@ -8,7 +8,19 @@ moves with ring fusion. A cell is (adjacency class, ring context, aza, charge). 
 The target domain (the user, 23 Oct 2026): fused aromatics of C, H and N with the corpus's substituents, neutral and cation — ring atoms C
 or N only, at least one aromatic six-membered ring; QM9 (layer C) and O/S heterocycles are out.
 
-    python probes/anchor_plan.py cells    # per-cell counts over the corpus manifest → out/anchor_plan/cells.json and cells.md
+Step 2, the cost of one anchor (CCSD(T)/cc-pVDZ finite-difference Hessian with its gradients, the composite's MP2 step not counted — it is
+cheap): gradients ≈ 6 N + 7 for a molecule with only its plane as symmetry (central differences of every Cartesian, the reference, the CC
+APT's six), at 4.6 gradients per hour on a CPX62 for 175 cc-pVDZ basis functions, scaled by (basis functions / 175)^5 — the registered
+rule of anchor set three (PreRegistration_2026-10-12, 'Price and launch'), checked on its wave: quinoline and isoquinoline (Cs, 17 atoms,
+175 functions) took 25.8 and 28.4 h against the rule's 26 h. Molecules with more symmetry cost less (quinoxaline, D2h: 9.9 h); the rule
+does not take that saving, so it prices high for them.
+
+Step 3, the selection: the cheapest set with at least m molecules in every cell that has m candidates (greedy: the molecule that fills the
+most still-open cell places per euro, until every cell is full).
+
+    python probes/anchor_plan.py cells                 # per-cell counts → out/anchor_plan/cells.json and cells.md
+    python probes/anchor_plan.py select --per-cell 2   # the selection and its price → out/anchor_plan/selection_m2.json and .md
+    python probes/anchor_plan.py select --per-cell 2 --max-atoms 26   # only what a full anchor can be; the cells left open are named
 """
 from __future__ import annotations
 
@@ -27,6 +39,12 @@ M05 = PLAN / "modules" / "05_support_predictor"
 MANIFEST = M05 / "corpus" / "manifest.csv"
 OUT = M05 / "out" / "anchor_plan"
 ADJACENCY = {1: "solo", 2: "duo", 3: "trio", 4: "quartet", 5: "quintet", 6: "sextet"}
+BASIS_FUNCTIONS = {"H": 5, "C": 14, "N": 14, "O": 14, "F": 14, "S": 18, "Cl": 18}   # cc-pVDZ, spherical d
+GRADIENTS_PER_HOUR = 4.6        # two partial runs of 8 threads on a CPX62, quinoline (anchor set three's measured timing, 12 Oct 2026)
+REFERENCE_FUNCTIONS = 175       # quinoline's cc-pVDZ basis
+SIZE_EXPONENT = 5               # the registered size rule of anchor set three
+EXTRA_GRADIENTS = 7             # the reference gradient and the CC APT's six
+EUR_PER_HOUR_CPX62 = 0.208      # modules/08_industry_synthesis/m08/prices.py
 CATION_LAYERS = {"P3c"}
 OUT_OF_DOMAIN_LAYERS = {"C"}                     # QM9
 RING_ELEMENTS = {"C", "N"}
@@ -91,9 +109,47 @@ def corpus_cells(manifest: Path = MANIFEST) -> dict[str, dict]:
     with manifest.open(encoding="utf-8") as f:
         for r in csv.DictReader(f):
             if r["smiles"] and in_domain(r["smiles"], r["layer"]):
-                out[r["id"]] = {"name": r["name"], "layer": r["layer"], "status": r["status"], "n_atoms": int(r["n_atoms"] or 0),
-                                "cells": sorted(cells(r["smiles"], r["layer"]))}
+                n_atoms = Chem.AddHs(Chem.MolFromSmiles(r["smiles"])).GetNumAtoms()
+                n_functions = basis_functions(r["smiles"])
+                hours = anchor_hours(n_atoms, n_functions)
+                out[r["id"]] = {"name": r["name"], "layer": r["layer"], "status": r["status"], "n_atoms": n_atoms, "basis_functions": n_functions,
+                                "hours": round(hours, 1), "eur": round(hours * EUR_PER_HOUR_CPX62, 2), "cells": sorted(cells(r["smiles"], r["layer"]))}
     return out
+
+
+def basis_functions(smiles: str) -> int:
+    """cc-pVDZ basis functions (spherical) of the molecule with its hydrogens."""
+    mol = Chem.AddHs(Chem.MolFromSmiles(smiles))
+    missing = sorted({a.GetSymbol() for a in mol.GetAtoms()} - set(BASIS_FUNCTIONS))
+    if missing:
+        raise ValueError(f"no cc-pVDZ count for {missing}")
+    return sum(BASIS_FUNCTIONS[a.GetSymbol()] for a in mol.GetAtoms())
+
+
+def anchor_hours(n_atoms: int, n_functions: int) -> float:
+    """CPX62 hours of one anchor with only its plane as symmetry (the rule of step 2)."""
+    return (6 * n_atoms + EXTRA_GRADIENTS) / GRADIENTS_PER_HOUR * (n_functions / REFERENCE_FUNCTIONS) ** SIZE_EXPONENT
+
+
+def select(rows: dict[str, dict], per_cell: int) -> list[str]:
+    """The greedy cheapest multi-cover: each step takes the molecule with the most still-open cell places per euro, until every cell has
+    min(per_cell, its candidates) molecules. Ties go to the smaller molecule, then the id, so the selection is reproducible."""
+    members: dict[tuple, list[str]] = {}
+    for i, r in rows.items():
+        for c in r["cells"]:
+            members.setdefault(tuple(c), []).append(i)
+    need = {c: min(per_cell, len(m)) for c, m in members.items()}
+    chosen: list[str] = []
+    left = set(rows)
+    while any(need.values()):
+        def gain(i: str) -> int:
+            return sum(1 for c in rows[i]["cells"] if need[tuple(c)] > 0)
+        best = max((i for i in left if gain(i)), key=lambda i: (gain(i) / rows[i]["eur"], -rows[i]["n_atoms"], i))
+        chosen.append(best)
+        left.discard(best)
+        for c in rows[best]["cells"]:
+            need[tuple(c)] = max(0, need[tuple(c)] - 1)
+    return chosen
 
 
 def write_text(path: Path, text: str) -> None:
@@ -115,14 +171,45 @@ def cell_report(rows: dict[str, dict]) -> list[str]:
     return lines
 
 
+def selection_report(rows: dict[str, dict], chosen: list[str], per_cell: int, open_cells: list[tuple] = ()) -> list[str]:
+    cells_all = {tuple(c) for r in rows.values() for c in r["cells"]}
+    short = sorted(c for c in cells_all if sum(tuple(c) in {tuple(x) for x in rows[i]["cells"]} for i in rows) < per_cell)
+    eur = sum(rows[i]["eur"] for i in chosen)
+    hours = sum(rows[i]["hours"] for i in chosen)
+    lines = [f"# Anchor plan — the cheapest cover with {per_cell} molecules per cell", "",
+             f"**{len(chosen)} molecules, ≈ {hours:,.0f} CPX62 hours, ≈ €{eur:,.0f}** (the CC/DZ Hessian and the CC APT; the MP2 step not counted). "
+             f"{len(cells_all)} cells; {len(short)} have fewer than {per_cell} candidates and are filled as far as they go. "
+             f"Already computed in the corpus (proxy labels exist): {sum(rows[i]['status'] == 'done' for i in chosen)}.", "",
+             *([f"Cells left without a candidate under the size limit ({len(open_cells)}): " + "; ".join(" / ".join(map(str, c)) for c in open_cells), ""]
+               if open_cells else []),
+             "| molecule | id | atoms | basis functions | h | € | cells |", "|---|---|---|---|---|---|---|"]
+    lines += [f"| {rows[i]['name']} | {i} | {rows[i]['n_atoms']} | {rows[i]['basis_functions']} | {rows[i]['hours']:.0f} | {rows[i]['eur']:.0f} | "
+              f"{len(rows[i]['cells'])} |" for i in sorted(chosen, key=lambda i: rows[i]['eur'])]
+    return lines
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    ap.add_argument("action", choices=["cells"])
-    ap.parse_args(argv)
+    ap.add_argument("action", choices=["cells", "select"])
+    ap.add_argument("--per-cell", type=int, default=2)
+    ap.add_argument("--max-atoms", type=int, default=None, help="select: only molecules up to this many atoms (a full anchor's reach)")
+    a = ap.parse_args(argv)
     rows = corpus_cells()
-    write_text(OUT / "cells.json", json.dumps(rows, indent=1))
-    lines = cell_report(rows)
-    write_text(OUT / "cells.md", "\n".join(lines) + "\n")
+    if a.action == "cells":
+        write_text(OUT / "cells.json", json.dumps(rows, indent=1))
+        lines = cell_report(rows)
+        write_text(OUT / "cells.md", "\n".join(lines) + "\n")
+    else:
+        if a.per_cell < 1:
+            raise SystemExit("--per-cell must be at least 1")
+        pool = {i: r for i, r in rows.items() if a.max_atoms is None or r["n_atoms"] <= a.max_atoms}
+        open_cells = sorted({tuple(c) for r in rows.values() for c in r["cells"]} - {tuple(c) for r in pool.values() for c in r["cells"]})
+        chosen = select(pool, a.per_cell)
+        stem = f"selection_m{a.per_cell}" + (f"_max{a.max_atoms}" if a.max_atoms else "")
+        write_text(OUT / f"{stem}.json", json.dumps({"per_cell": a.per_cell, "max_atoms": a.max_atoms, "chosen": chosen,
+                                                     "open_cells": [list(c) for c in open_cells]}, indent=1))
+        lines = selection_report(pool, chosen, a.per_cell, open_cells)
+        write_text(OUT / f"{stem}.md", "\n".join(lines) + "\n")
     print("\n".join(lines))
     return 0
 
