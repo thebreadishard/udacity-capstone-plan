@@ -31,6 +31,14 @@ def test_a_cation_layer_sets_the_charge():
     assert A.cells("c1ccc2ccccc2c1", "P3c") == {("quartet", "two", False, 1)}
 
 
+@pytest.mark.parametrize(("smiles", "layer", "inside"), [
+    ("c1ccc2ccccc2c1", "A", True), ("c1ccc2ncccc2c1", "B", True), ("c1cc2cccc3c2c(c1)C=C3", "A", True),   # naphthalene, quinoline, acenaphthylene
+    ("c1ccc2occc2c1", "A2", False), ("c1ccsc1", "B", False),                                           # benzofuran, thiophene
+    ("C1CCCCC1", "B", False), ("c1ccccc1", "C", False), ("c1ccccc1", "P3c", True)])                    # no aromatic six-ring, QM9, a cation
+def test_the_target_domain(smiles, layer, inside):
+    assert A.in_domain(smiles, layer) is inside
+
+
 def test_an_unreadable_smiles_is_refused():
     with pytest.raises(ValueError, match="unreadable"):
         A.cells("c1cc", "A")

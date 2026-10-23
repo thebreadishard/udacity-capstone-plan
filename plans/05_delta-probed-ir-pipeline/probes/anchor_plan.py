@@ -5,6 +5,9 @@ Step 1, the cells. A C–H out-of-plane band is set mainly by how many C–H gro
 a lone benzene ring is a sextet) — the classical PAH assignment — and, as the anchors showed (TASKS 82, 22 Oct), the CC correction to it
 moves with ring fusion. A cell is (adjacency class, ring context, aza, charge). A molecule covers every cell its rings provide.
 
+The target domain (the user, 23 Oct 2026): fused aromatics of C, H and N with the corpus's substituents, neutral and cation — ring atoms C
+or N only, at least one aromatic six-membered ring; QM9 (layer C) and O/S heterocycles are out.
+
     python probes/anchor_plan.py cells    # per-cell counts over the corpus manifest → out/anchor_plan/cells.json and cells.md
 """
 from __future__ import annotations
@@ -25,6 +28,8 @@ MANIFEST = M05 / "corpus" / "manifest.csv"
 OUT = M05 / "out" / "anchor_plan"
 ADJACENCY = {1: "solo", 2: "duo", 3: "trio", 4: "quartet", 5: "quintet", 6: "sextet"}
 CATION_LAYERS = {"P3c"}
+OUT_OF_DOMAIN_LAYERS = {"C"}                     # QM9
+RING_ELEMENTS = {"C", "N"}
 
 
 def ch_runs(mol: Chem.Mol) -> list[tuple[int, int]]:
@@ -68,13 +73,25 @@ def cells(smiles: str, layer: str) -> set[tuple[str, str, bool, int]]:
     return {(ADJACENCY.get(run, f"run{run}") + ("5" if size == 5 else ""), ctx, aza, charge) for size, run in ch_runs(mol)}
 
 
+def in_domain(smiles: str, layer: str) -> bool:
+    """The anchor plan's target domain: not QM9, ring atoms C or N only, at least one aromatic six-membered ring."""
+    if layer in OUT_OF_DOMAIN_LAYERS:
+        return False
+    mol = Chem.MolFromSmiles(smiles)
+    if mol is None:
+        raise ValueError(f"unreadable SMILES {smiles!r}")
+    if any(a.IsInRing() and a.GetSymbol() not in RING_ELEMENTS for a in mol.GetAtoms()):
+        return False
+    return any(len(r) == 6 and all(mol.GetAtomWithIdx(a).GetIsAromatic() for a in r) for r in mol.GetRingInfo().AtomRings())
+
+
 def corpus_cells(manifest: Path = MANIFEST) -> dict[str, dict]:
-    """Every corpus row with a SMILES: its cells, atom count and layer."""
+    """Every corpus row in the target domain: its cells, atom count, layer and status (computed rows carry proxy labels)."""
     out = {}
     with manifest.open(encoding="utf-8") as f:
         for r in csv.DictReader(f):
-            if r["smiles"]:
-                out[r["id"]] = {"name": r["name"], "layer": r["layer"], "n_atoms": int(r["n_atoms"] or 0),
+            if r["smiles"] and in_domain(r["smiles"], r["layer"]):
+                out[r["id"]] = {"name": r["name"], "layer": r["layer"], "status": r["status"], "n_atoms": int(r["n_atoms"] or 0),
                                 "cells": sorted(cells(r["smiles"], r["layer"]))}
     return out
 
@@ -88,7 +105,9 @@ def write_text(path: Path, text: str) -> None:
 
 def cell_report(rows: dict[str, dict]) -> list[str]:
     count = Counter(tuple(c) for r in rows.values() for c in r["cells"])
-    lines = ["# Anchor plan, step 1 — cells over the corpus", "", f"{len(rows)} molecules, {len(count)} cells.", "",
+    done = sum(r["status"] == "done" for r in rows.values())
+    lines = ["# Anchor plan, step 1 — cells over the corpus's target domain", "",
+             f"{len(rows)} molecules in the domain ({done} computed), {len(count)} cells.", "",
              "| adjacency | ring context | aza | charge | molecules | smallest (atoms) |", "|---|---|---|---|---|---|"]
     for cell, n in sorted(count.items()):
         smallest = min((r["n_atoms"], r["name"] or i) for i, r in rows.items() if list(cell) in [list(c) for c in r["cells"]])
