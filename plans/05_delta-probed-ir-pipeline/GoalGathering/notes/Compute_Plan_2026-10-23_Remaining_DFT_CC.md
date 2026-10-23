@@ -49,6 +49,7 @@ psi4's open-shell DF-MP2 gradient, which the 20 Oct checks did not cover (TASKS 
   gradient (`results_m1/anchors3_server_2026-10-19/dpir/timing.log`); naphthalene (180) 4.4 GB per lane (ledger 1 Oct). Scaled by n²–n⁴
   to 260–314 functions: ≈ 19–89 GB. Anthracene (246) ran on the CCX53, so 32 GB was never shown at this size. Until one gradient at
   ~300 functions is measured, these six belong on a 64–128 GB machine: a CCX43/CCX53 at Hetzner, or larger Snellius slots.
+  Anchor set three's runs add the bound that matters: all five (16–20 atoms, up to acenaphthylene's 208 functions) ran as two partial runs of 8 threads at max_memory 10,000 MB each on one 32 GB CPX62 without an OOM (`results_m1/anchors3_server_2026-10-19/dpir/probes/results/*/partial_*.log` headers) — the cost rule's 'two runs per CPX62'. What does not follow max_memory is the o·v³-sized (T) work (our kernel's cached density increments, the ovvv integrals): ≈ 1.1 GB per array at 208 functions (o 28, v 168), ≈ 5.8 GB at 314 (o ≈ 46, v ≈ 250). With a handful of such arrays, one run of a 300-function anchor plausibly fits a CPX62 alone but not two: the rule's hours double for the six (≈ +2,400 CPX62 h ≈ +€500), or they go on a CCX53/CCX43. A desk estimate cannot settle it; one reference gradient of the largest at ~300 functions, its peak logged, can (when the user decides).
 
 ## 5. Snellius
 
