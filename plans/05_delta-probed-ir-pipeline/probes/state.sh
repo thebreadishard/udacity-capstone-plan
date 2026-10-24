@@ -27,6 +27,9 @@ echo "--- memory and disk ---"
 printf "  host free %s GB   C: free %s GB\n" \
   "$(powershell.exe -NoProfile -Command "[math]::Round((Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory/1MB,1)" 2>/dev/null | tr -d '\r')" \
   "$(powershell.exe -NoProfile -Command "[math]::Round((Get-PSDrive C).Free/1GB,0)" 2>/dev/null | tr -d '\r')"
+BAT=$(powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "$(cygpath -w "$PWD/$R/probes/battery_state.ps1")" \
+  2>/dev/null | tr -d '\r')
+[ -n "$BAT" ] && echo "  battery ${BAT#* }% (Win32_Battery status ${BAT%% *}; 2 = AC, 1 = discharging; the watch wakes below 90 %)"
 echo "--- monitor processes (expect 1 poller + its wrapper; 26 Sep 2026: 93 orphans found) ---"
 echo "  $(ps -ef 2>/dev/null | grep -c "[m]onitor_cmd_") monitor_cmd processes; $(ps -ef 2>/dev/null | grep -c "[s]sh -i") ssh sessions"
 echo "--- git ---"

@@ -6,8 +6,9 @@
 #   rented hosts — tools/hosts.tsv via tools/hosts.sh: the machine-id is checked on every call, so a re-used IP is an anomaly, not a silent read
 #                  of the wrong machine; a host row that is deleted is no longer watched. Labels lanes ('labels'), pool 3 runners ('pool3').
 #   specced runs — since 15 Oct 2026 every run launched through tools/runspec.py (probes/runspecs/): its progress contract is checked there.
+#   laptop power — since 24 Oct 2026 an anomaly (once an hour) when the battery discharges or falls below WATCH_BATTERY_MIN percent.
 # The seen markers live in the plan (probes/watch_state/seen.txt, git-ignored), not in a session's scratchpad.
-# Overridable for tests: WATCH_JOBS, WATCH_SEEN, WATCH_CYCLES, WATCH_SLEEP, WATCH_BEAT, HOSTS_FILE, HOSTS_SSH, RUNSPEC_DIR, RUNSPEC_STATE, RUNSPEC_PYTHON.
+# Overridable for tests: WATCH_JOBS, WATCH_SEEN, WATCH_CYCLES, WATCH_SLEEP, WATCH_BEAT, WATCH_BATTERY_CMD, WATCH_BATTERY_MIN, HOSTS_FILE, HOSTS_SSH, RUNSPEC_DIR, RUNSPEC_STATE, RUNSPEC_PYTHON.
 #   bash probes/watch.sh
 set -uo pipefail
 # no-set-e: every check decides its own exit
@@ -17,6 +18,7 @@ SEEN=${WATCH_SEEN:-$P/probes/watch_state/seen.txt}
 CYCLES=${WATCH_CYCLES:-11}
 SLEEP=${WATCH_SLEEP:-600}
 BEAT=${WATCH_BEAT:-$P/probes/watch_state/watch_heartbeat}   # 19 Oct 2026: stamped at every check; state.sh reads its age
+BATTERY_MIN=${WATCH_BATTERY_MIN:-90}   # percent; plugged in the laptop holds 99-100 %, and 90 % leaves about an hour under load
 # shellcheck source=../tools/hosts.sh
 . "$P/tools/hosts.sh"
 mkdir -p "$(dirname "$SEEN")"; touch "$SEEN"
@@ -26,6 +28,25 @@ new_marker() {   # $1 = a line; prints and records it when not seen before
   echo "$1" >> "$SEEN"; echo "MARKER $(t): $1"; return 0
 }
 has_host() { [ -n "$(_host_row "$1")" ]; }
+
+battery_state() {   # '<Win32_Battery status> <percent>', or nothing (no battery, no PowerShell)
+  if [ -n "${WATCH_BATTERY_CMD:-}" ]; then bash -c "$WATCH_BATTERY_CMD"; return 0; fi
+  command -v powershell.exe > /dev/null || return 0
+  powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "$(cygpath -w "$P/probes/battery_state.ps1")" 2> /dev/null | tr -d '\r'
+}
+
+check_power() {   # 23 Oct 2026: 99 -> 2 % in 79 min while Windows said AC (a charger too weak for the load), then 26 h asleep, unreported
+  local st pct key
+  read -r st pct < <(battery_state) || return 0
+  [ -n "${pct:-}" ] || return 0
+  if [ "$st" = "1" ] || [ "$pct" -lt "$BATTERY_MIN" ]; then
+    key="power alarm $(date '+%F %H')"
+    grep -qxF "$key" "$SEEN" && return 0
+    echo "$key" >> "$SEEN"
+    echo "ANOMALY $(t): laptop battery ${pct}% (Win32_Battery status $st; 1 = discharging) — mains off or the charger too weak for the load: plug in or check the adapter"
+    exit 1
+  fi
+}
 
 check_jobs() {
   local name log mark end proc line
@@ -160,6 +181,7 @@ check_ci() {   # 13 Oct 2026: six red plan05 runs in a row went unseen for eight
 
 for i in $(seq 1 "$CYCLES"); do
   date '+%F %T' > "$BEAT.tmp" && mv "$BEAT.tmp" "$BEAT"
+  check_power
   check_jobs
   check_labels
   check_pool3

@@ -15,7 +15,7 @@ BASH = shutil.which("bash")
 pytestmark = pytest.mark.skipif(BASH is None, reason="bash not available")
 
 
-def _run(tmp: Path, jobs: str, hosts: str = "", ssh_out: str = "") -> subprocess.CompletedProcess:
+def _run(tmp: Path, jobs: str, hosts: str = "", ssh_out: str = "", battery: str = "2 100") -> subprocess.CompletedProcess:
     (tmp / "jobs.tsv").write_text(jobs, encoding="utf-8", newline="\n")
     (tmp / "hosts.tsv").write_text(hosts, encoding="utf-8", newline="\n")
     (tmp / "ssh_out.txt").write_text(ssh_out + "\n", encoding="utf-8", newline="\n")
@@ -27,6 +27,7 @@ def _run(tmp: Path, jobs: str, hosts: str = "", ssh_out: str = "") -> subprocess
     (fake_bin / "gh").chmod(0o755)
     env = dict(os.environ, WATCH_JOBS=str(tmp / "jobs.tsv"), WATCH_SEEN=str(tmp / "seen.txt"), WATCH_CYCLES="1", WATCH_SLEEP="0",
                WATCH_BEAT=str(tmp / "watch_heartbeat"),                   # never the live heartbeat: a test would make a stopped watch look alive
+               WATCH_BATTERY_CMD=f"echo {battery}",                       # never the laptop's own battery
                PATH=fake_bin.as_posix() + os.pathsep + os.environ["PATH"],
                HOSTS_FILE=str(tmp / "hosts.tsv"), HOSTS_SSH=f"bash {stub.as_posix()}",   # not BASH: its path may hold a space
                RUNSPEC_ROOT=str(tmp), RUNSPEC_DIR=str(tmp / "specs"), RUNSPEC_STATE=str(tmp / "runstate"), RUNSPEC_PYTHON=sys.executable)
@@ -112,3 +113,17 @@ def test_every_check_stamps_the_heartbeat(tmp_path):
     _run(tmp_path, "")
     stamp = (tmp_path / "watch_heartbeat").read_text(encoding="utf-8").strip()
     assert abs(datetime.now() - datetime.strptime(stamp, "%Y-%m-%d %H:%M:%S")) < timedelta(minutes=2)
+
+
+@pytest.mark.parametrize(("battery", "why"), [("1 97", "discharging"), ("2 40", "on 'AC' but draining, as on 23 Oct")])
+def test_a_battery_in_trouble_wakes_once_an_hour(tmp_path, battery, why):
+    """24 Oct 2026: the laptop slept 26 h after its battery ran down while Windows said AC; nobody was told."""
+    first = _run(tmp_path, "", battery=battery)
+    assert first.returncode == 1 and "ANOMALY" in first.stdout and "laptop battery" in first.stdout, why
+    assert _run(tmp_path, "", battery=battery).returncode == 0                  # the same hour: reported already
+
+
+@pytest.mark.parametrize("battery", ["2 100", "2 91", ""])
+def test_a_full_battery_or_none_is_quiet(tmp_path, battery):
+    res = _run(tmp_path, "", battery=battery)
+    assert res.returncode == 0 and "battery" not in res.stdout
