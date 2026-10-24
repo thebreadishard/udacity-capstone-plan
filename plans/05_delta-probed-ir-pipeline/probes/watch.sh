@@ -7,8 +7,9 @@
 #                  of the wrong machine; a host row that is deleted is no longer watched. Labels lanes ('labels'), pool 3 runners ('pool3').
 #   specced runs — since 15 Oct 2026 every run launched through tools/runspec.py (probes/runspecs/): its progress contract is checked there.
 #   laptop power — since 24 Oct 2026 an anomaly (once an hour) when the battery discharges or falls below WATCH_BATTERY_MIN percent.
+#   GitHub       — since 24 Oct 2026 once per cycle: new comments by others on our pull requests and issues (tools/github_threads.py).
 # The seen markers live in the plan (probes/watch_state/seen.txt, git-ignored), not in a session's scratchpad.
-# Overridable for tests: WATCH_JOBS, WATCH_SEEN, WATCH_CYCLES, WATCH_SLEEP, WATCH_BEAT, WATCH_BATTERY_CMD, WATCH_BATTERY_MIN, HOSTS_FILE, HOSTS_SSH, RUNSPEC_DIR, RUNSPEC_STATE, RUNSPEC_PYTHON.
+# Overridable for tests: WATCH_JOBS, WATCH_SEEN, WATCH_CYCLES, WATCH_SLEEP, WATCH_BEAT, WATCH_BATTERY_CMD, WATCH_BATTERY_MIN, WATCH_GITHUB_CMD, HOSTS_FILE, HOSTS_SSH, RUNSPEC_DIR, RUNSPEC_STATE, RUNSPEC_PYTHON.
 #   bash probes/watch.sh
 set -uo pipefail
 # no-set-e: every check decides its own exit
@@ -170,6 +171,15 @@ check_runs() {   # 15 Oct 2026 (TASKS 63): the runs of tools/runspec.py. Its ANO
   return 0
 }
 
+check_github() {   # 24 Oct 2026 (TASKS 105): a maintainer's question on dxtb#278 went unseen for five days
+  local out
+  if [ -n "${WATCH_GITHUB_CMD:-}" ]; then out=$(bash -c "$WATCH_GITHUB_CMD" 2> /dev/null)
+  else out=$("${RUNSPEC_PYTHON:-python}" "$P/tools/github_threads.py" new 2> /dev/null); fi || return 0   # offline: no verdict
+  [ -n "$out" ] || return 0
+  echo "$out" | sed "s/^/MARKER $(t): github: /"
+  exit 2
+}
+
 check_ci() {   # 13 Oct 2026: six red plan05 runs in a row went unseen for eight hours; a failed run is reported once per commit
   local r
   r=$(gh run list -R thebreadishard/udacity-capstone-plan --workflow plan05 --limit 1 --json status,conclusion,headSha         --jq '.[0] | "\(.status) \(.conclusion) \(.headSha[:8])"' 2>/dev/null) || return 0      # offline or gh missing: no verdict
@@ -193,6 +203,7 @@ for i in $(seq 1 "$CYCLES"); do
   check_r4srv
   check_runs
   check_ci
+  [ "$i" = "1" ] && check_github     # ~30 s of API calls: once per cycle
   [ "$i" -lt "$CYCLES" ] && sleep "$SLEEP"
 done
 echo "quiet cycle $(t): labels ${lb:-—} | pool3 ${np:-—} | anchors3 $(echo "${an:-—}" | tail -n 1 | cut -c1-80) | s1 $(echo "${so:-—}" | tail -n 1 | cut -c1-60) | s2 $(echo "${s2o:-—}" | tail -n 1 | cut -c1-60) | runs ${ro:-—}"

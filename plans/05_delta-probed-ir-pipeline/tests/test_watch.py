@@ -15,7 +15,7 @@ BASH = shutil.which("bash")
 pytestmark = pytest.mark.skipif(BASH is None, reason="bash not available")
 
 
-def _run(tmp: Path, jobs: str, hosts: str = "", ssh_out: str = "", battery: str = "2 100") -> subprocess.CompletedProcess:
+def _run(tmp: Path, jobs: str, hosts: str = "", ssh_out: str = "", battery: str = "2 100", github: str = "true") -> subprocess.CompletedProcess:
     (tmp / "jobs.tsv").write_text(jobs, encoding="utf-8", newline="\n")
     (tmp / "hosts.tsv").write_text(hosts, encoding="utf-8", newline="\n")
     (tmp / "ssh_out.txt").write_text(ssh_out + "\n", encoding="utf-8", newline="\n")
@@ -28,6 +28,7 @@ def _run(tmp: Path, jobs: str, hosts: str = "", ssh_out: str = "", battery: str 
     env = dict(os.environ, WATCH_JOBS=str(tmp / "jobs.tsv"), WATCH_SEEN=str(tmp / "seen.txt"), WATCH_CYCLES="1", WATCH_SLEEP="0",
                WATCH_BEAT=str(tmp / "watch_heartbeat"),                   # never the live heartbeat: a test would make a stopped watch look alive
                WATCH_BATTERY_CMD=f"echo {battery}",                       # never the laptop's own battery
+               WATCH_GITHUB_CMD=github,                                     # never the live GitHub
                PATH=fake_bin.as_posix() + os.pathsep + os.environ["PATH"],
                HOSTS_FILE=str(tmp / "hosts.tsv"), HOSTS_SSH=f"bash {stub.as_posix()}",   # not BASH: its path may hold a space
                RUNSPEC_ROOT=str(tmp), RUNSPEC_DIR=str(tmp / "specs"), RUNSPEC_STATE=str(tmp / "runstate"), RUNSPEC_PYTHON=sys.executable)
@@ -127,3 +128,11 @@ def test_a_battery_in_trouble_wakes_once_an_hour(tmp_path, battery, why):
 def test_a_full_battery_or_none_is_quiet(tmp_path, battery):
     res = _run(tmp_path, "", battery=battery)
     assert res.returncode == 0 and "battery" not in res.stdout
+
+
+def test_a_new_github_comment_is_a_marker(tmp_path):
+    """24 Oct 2026 (TASKS 105): every line github_threads.py prints is reported; it records them itself, so a later cycle is quiet."""
+    res = _run(tmp_path, "", github="echo 'grimme-lab/dxtb#278 marvinfriede 2026-10-18 17:50: Thanks! Can this be merged?'")
+    assert res.returncode == 2 and "MARKER" in res.stdout and "github: grimme-lab/dxtb#278 marvinfriede" in res.stdout
+    assert _run(tmp_path, "", github="true").returncode == 0                      # nothing new
+    assert _run(tmp_path, "", github="exit 1").returncode == 0                    # offline: no verdict
