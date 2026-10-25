@@ -9,7 +9,7 @@
 #   2. under a cap of 64 MB — 'KILLED at the cap' (probes/cation_oom_check.sh against the system journal, tag CX).
 # The run's own settings and its dry run belong to its runspec (probes/runspecs/cations_ccx53.json). The shared steps are
 # probes/deploy_lib.sh's; `--list-files` prints the file list and contacts no server. Exit 0 when both smokes passed.
-#   DEST=/root/cations_b bash probes/deploy_cations_ccx53.sh labels
+#   DEST=/root/cations_c bash probes/deploy_cations_ccx53.sh labels      (from the main checkout: the shard folders are not in git)
 # no-set-e: every step checks its own result and stops with a named marker
 set -u
 NAME=${1:?host name, or --list-files}
