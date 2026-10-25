@@ -9,7 +9,6 @@ New (2026)
 Mackie et al. 2026, J. Chem. Phys. 165, 034104
 Qu et al. 2026, J. Chem. Phys. 164, 134116
 "Vibrational scaling factors follow a power law", Spectrochim. Acta A (2026), PMID 42035662
-Esposito et al. 2026, ACS Earth Space Chem. 10, 1685 — 10.1021/acsearthspacechem.6c00033
 CCSD(T) / benchmark references (paper D)
 Martin 1997 — 10.1016/S0009-2614(97)00735-5
 Brenner 1993 — 10.1016/0009-2614(93)89264-I
