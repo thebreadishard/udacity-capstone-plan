@@ -1,0 +1,9 @@
+# lever 5 (TASKS 49), the eight smaller at 4 lanes x 8 threads, largest first (6-31G* functions, atoms) so the lanes end together
+T_c874e3c6cf	508	46	ovalene
+D_ea2ba4fc5a	486	48	C30H18
+D_d9fa7459f3	452	44	C28H16
+D_e1a31cd772	422	42	C26H16
+T_2f846bd4a9	418	40	peropyrene
+D_ac28161d06	388	38	C24H14
+T_94b3a9d13a	384	36	coronene
+D_210c3076e6	354	34	C22H12

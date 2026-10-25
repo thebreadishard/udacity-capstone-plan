@@ -12,7 +12,7 @@
 # optimised again, one with both analytic Hessians is not labelled again.
 # Settings (environment, checked before the wait): CODE (the workers' folder) /root/labels, QC and QC05 (the psi4 and pyscf pythons), QC_TMP,
 #   LANES 4, THREADS 8, WAIT_COUNT 1, WAIT_S 900, LABEL_ARGS (e.g. '--charge 1 --spin 1 --max-memory 24000 --reuse-existing'), CAP_MB (none),
-#   CAPPED and OOM_CHECK (beside this script).
+#   CAPPED and OOM_CHECK (beside this script), IDS_FILE ids.txt (relative to the batch: two batches of one folder share its molecules).
 #   bash labels_batch_ccx53.sh <batch_dir> <TAG> <wait_log glob> <wait_regex> [--dry-run]
 #   e.g. bash /root/labels/labels_batch_ccx53.sh /root/labels/rung4 R4 /root/labels/large_pah/run.log '=== \(L5\) all done'
 set -u
@@ -29,6 +29,7 @@ LANES=${LANES:-4}; THREADS=${THREADS:-8}; WAIT_COUNT=${WAIT_COUNT:-1}; WAIT_S=${
 LABEL_ARGS=${LABEL_ARGS:-}; CAP_MB=${CAP_MB:-}
 CAPPED=${CAPPED:-$HERE/wsl_capped.sh}; OOM_CHECK=${OOM_CHECK:-$HERE/cation_oom_check.sh}
 STATUS=$BATCH/status_$TAG.log           # one line per molecule that failed or was skipped
+IDS_FILE=${IDS_FILE:-ids.txt}
 export PYSCF_TMPDIR=$QC_TMP TMPDIR=$QC_TMP PYTHONUNBUFFERED=1
 mark() { echo "=== ($TAG) $* $(date '+%F %T')"; }
 for v in LANES THREADS WAIT_COUNT WAIT_S ${CAP_MB:+CAP_MB}; do
@@ -40,12 +41,13 @@ fi
 optimised() { [ -f "molecules/$1/result.json" ] && grep -q '"status": "done"' "molecules/$1/result.json"; }
 labelled() { [ -f "molecules/$1/hessian_b3lyp_analytic.npz" ] && [ -f "molecules/$1/hessian_wb97x_analytic.npz" ]; }
 met() { grep -lE "$WAIT_RE" $WAIT_LOG 2>/dev/null | wc -l; }   # WAIT_LOG unquoted: it may be a glob of several logs
-mapfile -t IDS < <(grep -v '^#' ids.txt | cut -f1 | tr -d '\r' | sed '/^$/d')
+[ -f "$IDS_FILE" ] || { mark "STOPPED: no ids file $IDS_FILE in $BATCH"; exit 1; }
+mapfile -t IDS < <(grep -v '^#' "$IDS_FILE" | cut -f1 | tr -d '\r' | sed '/^$/d')
 missing=$(for id in "${IDS[@]}"; do [ -f "molecules/$id/job.json" ] || echo "$id"; done | wc -l)
 to_opt=$(for id in "${IDS[@]}"; do optimised "$id" || echo "$id"; done | wc -l)
 to_label=$(for id in "${IDS[@]}"; do labelled "$id" || echo "$id"; done | wc -l)
 mark "armed: ${#IDS[@]} molecules ($missing without a job file); $to_opt to optimise, $to_label to label; $LANES lanes × $THREADS threads\
-${CAP_MB:+, cap $CAP_MB MB}${LABEL_ARGS:+, label arguments '$LABEL_ARGS'}; waiting for /$WAIT_RE/ in $WAIT_COUNT of $WAIT_LOG"
+${CAP_MB:+, cap $CAP_MB MB}${LABEL_ARGS:+, label arguments '$LABEL_ARGS'}; waiting for /$WAIT_RE/ in $WAIT_COUNT of $WAIT_LOG; ids from $IDS_FILE"
 [ "$missing" = 0 ] || { mark "STOPPED: $missing job files missing"; exit 1; }
 need=("$QC05" "$CODE/analytic_hessians.py")
 [ "$to_opt" = 0 ] || need+=("$QC" "$CODE/psi4_worker.py")

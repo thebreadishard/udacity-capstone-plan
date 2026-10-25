@@ -1,0 +1,3 @@
+# lever 5 (TASKS 49), the two largest, each alone on 32 threads (memory above 307 functions is unmeasured)
+D_8a1c3dddb7	550	54	C34H20
+T_76dfc434db	666	60	hexa-peri-hexabenzocoronene

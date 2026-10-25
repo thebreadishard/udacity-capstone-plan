@@ -172,3 +172,17 @@ def test_no_psi4_is_needed_when_every_molecule_is_optimised(tmp_path):
     res = _run(tmp_path, env)
     assert res.returncode == 0, res.stdout + res.stderr
     assert "0 to optimise, 2 to label" in res.stdout and f"  {A} optimised already" in res.stdout
+
+
+def test_an_ids_file_picks_its_molecules_from_a_shared_folder(tmp_path):
+    env = _setup(tmp_path, optimised=(A, B)) | {"IDS_FILE": "ids_b.txt"}
+    (tmp_path / "batch" / "ids_b.txt").write_text(f"{B}\n", encoding="utf-8", newline="\n")
+    res = _run(tmp_path, env)
+    assert res.returncode == 0, res.stdout + res.stderr
+    assert "armed: 1 molecules" in res.stdout and "ids from ids_b.txt" in res.stdout
+    assert f"  {B} labelled " in res.stdout and A not in res.stdout
+
+
+def test_a_missing_ids_file_is_refused(tmp_path):
+    res = _run(tmp_path, _setup(tmp_path) | {"IDS_FILE": "nowhere.txt"})
+    assert res.returncode != 0 and "=== (T) STOPPED: no ids file nowhere.txt" in res.stdout

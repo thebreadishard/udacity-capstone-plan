@@ -5,7 +5,8 @@
 #   1. pool 3's qc environment exported as an explicit spec (exact builds: psi4 1.11, optking 0.5.0, qcelemental 0.51.2, numpy 2.5.3, python 3.14.7);
 #   2. created on the labels server as env 'qc' from that spec (nice 19: the four label lanes keep their cores);
 #   3. our optking linear-bend fix applied and checked (probes/optking_patches; missing on two installs once, 9 Oct);
-#   4. a water smoke through the corpus's psi4_worker.py with the deck's settings and "hessians": false (optimised, no Hessian files).
+#   4. a water smoke through the corpus's psi4_worker.py with the deck's settings and "hessians": false (optimised, no Hessian files); the
+#      job from probes/smoke_job.py (25 Oct 2026: this step built its own inline; one builder now, the one the deploy smokes use).
 # Refuses when /root/miniforge3/envs/qc exists already. Nothing here touches the label lanes or their files.
 #   bash probes/bootstrap_psi4_ccx53.sh
 set -euo pipefail
@@ -29,13 +30,7 @@ echo "(3) optking fix"
 host_ssh labels 'P=/root/miniforge3/envs/qc/bin/python; $P /root/labels/apply_optking_fix.py > /dev/null && $P /root/labels/apply_optking_fix.py --check | grep -c "already patched" | grep -qx 2' \
   || { echo "OPTKING FIX NOT APPLIED"; exit 1; }
 echo "(4) water smoke: psi4_worker, deck v1, no Hessians, 2 threads, nice 19"
-python - "$CORPUS/decks/deck_v1.json" > "$TMP/job.json" <<'EOF'
-import json, sys
-deck = json.load(open(sys.argv[1], encoding="utf-8"))
-deck.update(threads=2, memory_gb=4)
-print(json.dumps({"id": "water_smoke", "layer": "D", "deck": deck, "out_dir": "/root/labels/psi4_smoke/water_smoke", "optimise": True,
-                  "grid_check": False, "hessians": False, "xyz_angstrom": [["O", 0.0, 0.0, 0.117], ["H", 0.0, 0.757, -0.469], ["H", 0.0, -0.757, -0.469]]}))
-EOF
+python "$HERE/smoke_job.py" "$HERE/results_m1/water_dipole_fd_2026-10-02/geometry.json" /root/labels/psi4_smoke/water_smoke --job-file "$TMP/job.json"
 $SCP "$TMP/job.json" "root@$LABELS_IP:/root/labels/psi4_smoke_job.json"
 host_ssh labels 'mkdir -p /root/labels/psi4_smoke && cd /root/labels && OMP_NUM_THREADS=2 nice -n 19 timeout 900 /root/miniforge3/envs/qc/bin/python psi4_worker.py psi4_smoke_job.json > psi4_smoke/smoke.log 2>&1; echo rc=$?;
   ls psi4_smoke/water_smoke; python3 -c "import json; r=json.load(open(\"psi4_smoke/water_smoke/result.json\")); print(r.get(\"status\"), r.get(\"labels\", r.get(\"analytic_only\")))"'
