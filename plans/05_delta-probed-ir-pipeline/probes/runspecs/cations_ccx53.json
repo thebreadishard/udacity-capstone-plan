@@ -1,0 +1,21 @@
+{"name": "cations_ccx53",
+ "purpose": "TASKS 121: the 14 pool-3 cations still open (C16H10+ size and up, 260-303 6-31G* functions) on the labels CCX53 once its four label lanes are done; the user, 25 Oct: 'Ja, akkoord met de CCX53 na de labels'. Code in /root/cations (deploy_cations_ccx53.sh, commit a8ce163d, both smokes passed); /root/labels is not touched. Four lanes x 8 threads, each under a 26 GiB system-scope cap (fluoranthene+ reached 12.5 GB on the laptop at 260 functions; pyscf's UKS CPHF ignores max_memory, pyscf#3530).",
+ "host": "labels",
+ "workdir": "/root/cations",
+ "command": "bash probes/cation_ccx53.sh probes/results_m1/cation_ccx53_2026-10-25/ids.tsv",
+ "sources": [
+  {"local": "probes/cation_ccx53.sh", "remote": "/root/cations/probes/cation_ccx53.sh"},
+  {"local": "probes/wsl_capped.sh", "remote": "/root/cations/probes/wsl_capped.sh"},
+  {"local": "probes/cation_oom_check.sh", "remote": "/root/cations/probes/cation_oom_check.sh"},
+  {"local": "probes/library_log.py", "remote": "/root/cations/probes/library_log.py"},
+  {"local": "modules/05_support_predictor/corpus/analytic_hessians.py", "remote": "/root/cations/modules/05_support_predictor/corpus/analytic_hessians.py"},
+  {"local": "modules/05_support_predictor/corpus/apt.py", "remote": "/root/cations/modules/05_support_predictor/corpus/apt.py"},
+  {"local": "probes/results_m1/cation_ccx53_2026-10-25/ids.tsv", "remote": "/root/cations/probes/results_m1/cation_ccx53_2026-10-25/ids.tsv"}
+ ],
+ "progress": {"regex": "^\\(CX\\) P3c_[0-9a-f]+ (start|done|skipped|KILLED|FAILED)|^=== \\(CX\\) running: ", "max_gap_minutes": 120,
+              "start_regex": "^=== \\(CX\\) start: ", "heartbeat_glob": "molecules/*/pyscf.log"},
+ "marker_regex": "^=== \\(CX\\) |^\\(CX\\) P3c_[0-9a-f]+ (done|KILLED|FAILED)",
+ "end_regex": "^=== \\(CX\\) run done: 14 of 14 ",
+ "dry_run_args": "--dry-run",
+ "threads": 32,
+ "estimate": {"hours": 28, "basis": "after the labels (~27 Oct): the laptop's phase 2 at 8 threads took 4.1-5.2 h per cation at ~250 functions (P3c_20332edd59 to P3c_25fed68b27, 22-25 Oct); the neutral labels' CCX53 lane fit (exponent 3.4, price_large_labels.py) scales that to ~5-9 h at 260-303 functions; 14 cations largest first on 4 lanes = ~4 rounds"}}
