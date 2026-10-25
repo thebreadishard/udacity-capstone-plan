@@ -145,7 +145,7 @@ check_s2srv() { check_server_run s1 /root/dpir_s2/s2.log S2 '^bash (/root/dpir_s
 check_s2gsrv() { check_server_run s1 /root/s2_gridcheck/s2gridcheck.log S2G '^bash /root/dpir_s2/probes/s2_gridcheck_styrene\.sh' \
   '^=== \(S2G\) styrene grid check done' s2gfails s2go; }   # 15 Oct 2026: styrene's grid check, TASKS 62
 check_l5srv() { check_server_run labels /root/labels/large_pah/run.log L5 '^bash /root/labels/large_pah_ccx53\.sh' \
-  '^=== \(L5\) all done' l5fails l5o; }   # 15 Oct 2026: lever 5 (TASKS 49), armed on the labels server since 13 Oct
+  '^=== \(L5\) (all done|STOPPED)' l5fails l5o; }   # 15 Oct 2026: lever 5 (TASKS 49); a disarmed runner leaves STOPPED, as rung 4's did
 check_r4srv() { check_server_run labels /root/labels/rung4/run.log R4 '^bash /root/labels/labels_batch_ccx53\.sh /root/labels/rung4 ' \
   '^=== \(R4\) (all done|STOPPED)' r4fails r4o; }   # 15 Oct 2026: rung 4 (TASKS 61), waits for lever 5's end
 
