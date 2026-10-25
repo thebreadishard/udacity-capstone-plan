@@ -23,13 +23,15 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
+from rdkit import Chem
+from rdkit.Chem import rdDetermineBonds
 
 PLAN = Path(__file__).resolve().parents[1]
 M05 = PLAN / "modules" / "05_support_predictor"
 sys.path.insert(0, str(M05 / "m05"))
 import anchor_registry as AR  # noqa: E402  (module 05's code is not a package)
 from dryrun_symmetry_prior import assign_irreps  # noqa: E402
-from e8_symmetry import point_group_ops  # noqa: E402
+from e8_symmetry import BOHR, point_group_ops  # noqa: E402
 from learning_curve_layerA import FAMILIES, molecule_features, normal_modes  # noqa: E402
 from scale_factor_baseline import PAHDB_FACTORS, pahdb_region  # noqa: E402
 
@@ -41,6 +43,7 @@ OUT = M05 / "out" / "fundamentals_vs_experiment_2026-10-25"
 CROSSING_CM = 15.0          # registered: a pair whose irrep neighbour lies this close in either list may be a crossing
 DEGENERATE_CM = 0.5         # two modes of one degenerate irrep closer than this are one mode
 MAI_PAIR_WARN_CM = 50.0     # registered: a Mai–B3LYP pair farther apart is counted and reported
+MAI_DUPLICATE_CM = 1.0      # two entries of one molecule (naphthalene: COMPAS-1 and COMPAS-2) must agree this well to be one
 GEOMETRY_TOL_BOHR = 1e-6
 CHARACTER_TOL = 0.1          # a non-degenerate mode's character is ±1; farther off, the mode mixes species
 D2H_SPECIES = {"Ag": 9, "Au": 4, "B1g": 3, "B1u": 8, "B2g": 4, "B2u": 8, "B3g": 8, "B3u": 4}   # naphthalene, Martin's labelling
@@ -178,27 +181,48 @@ def subspace_overlap(Va: np.ndarray, ia: tuple[int, ...], Vb: np.ndarray, ib: tu
 
 # ------------------------------------------------------------------------------------------------- Mai et al. 2026
 
-MaiSpectrum = tuple[str, np.ndarray, np.ndarray]          # (entry name, scaled frequencies, their factors)
+MaiSpectrum = tuple[str, np.ndarray, np.ndarray]          # (entry names, scaled frequencies, their factors)
 
 
-def mai_spectra(zip_path: Path, formulas: list[str]) -> dict[str, MaiSpectrum]:
-    """The one neutral entry of each formula, in one pass over the archive. Refuses a formula with none or several entries."""
-    hits: dict[str, list[tuple[str, str]]] = {f: [] for f in formulas}
+def skeleton(xyz_block: str) -> str:
+    """Canonical SMILES of the heavy-atom graph, bonds from distances alone (RDKit) — the same on our geometry and on theirs."""
+    mol = Chem.MolFromXYZBlock(xyz_block)
+    if mol is None:
+        raise ValueError("unreadable xyz block")
+    rdDetermineBonds.DetermineConnectivity(mol)
+    return Chem.MolToSmiles(Chem.RemoveHs(mol, sanitize=False))
+
+
+def xyz_block(symbols: list[str], coords_bohr: np.ndarray) -> str:
+    rows = [f"{s} {x * BOHR:.6f} {y * BOHR:.6f} {z * BOHR:.6f}" for s, (x, y, z) in zip(symbols, coords_bohr, strict=True)]
+    return f"{len(symbols)}\n\n" + "\n".join(rows) + "\n"
+
+
+def mai_spectra(zip_path: Path, wanted: dict[str, str]) -> dict[str, MaiSpectrum]:
+    """Per formula, the neutral entry with that formula and that skeleton (`wanted`: formula → skeleton), in one pass over the archive.
+    Several entries of the same molecule are one when their scaled frequencies agree within MAI_DUPLICATE_CM; none, or disagreeing
+    duplicates, are refused."""
+    hits: dict[str, list[tuple[str, np.ndarray]]] = {f: [] for f in wanted}
     with zipfile.ZipFile(zip_path) as z:
         for info in z.infolist():
             if not info.filename.startswith("IR_COMPAS/charge_0/") or not info.filename.endswith(".xyz"):
                 continue
             text = z.read(info).decode("utf-8")
-            m = re.search(r"Formula=(\S+)", text.splitlines()[1])
-            if m and m[1] in hits:
-                hits[m[1]].append((info.filename, text))
+            lines = text.splitlines()
+            m = re.search(r"Formula=(\S+)", lines[1])
+            if not m or m[1] not in hits:
+                continue
+            n = int(lines[0])
+            if skeleton("\n".join(lines[: n + 2])) == wanted[m[1]]:
+                hits[m[1]].append((Path(info.filename).stem, np.array(text.split("scale_factor", 1)[1].split(), float).reshape(-1, 3)))
     out = {}
     for formula, found in hits.items():
-        if len(found) != 1:
-            raise ValueError(f"{formula}: {len(found)} neutral entries in {zip_path.name}, expected one")
-        name, text = found[0]
-        values = np.array(text.split("scale_factor", 1)[1].split(), float).reshape(-1, 3)
-        out[formula] = (Path(name).stem, values[:, 0], values[:, 2])
+        if not found:
+            raise ValueError(f"{formula}: no neutral entry with our skeleton in {zip_path.name}")
+        first = found[0][1]
+        if any(v.shape != first.shape or np.abs(v[:, 0] - first[:, 0]).max() > MAI_DUPLICATE_CM for _, v in found[1:]):
+            raise ValueError(f"{formula}: entries {[n for n, _ in found]} of the same molecule disagree by more than {MAI_DUPLICATE_CM} cm⁻¹")
+        out[formula] = (", ".join(n for n, _ in found), first[:, 0], first[:, 2])
     return out
 
 
@@ -218,6 +242,11 @@ def collect(rows: list[dict], key: str) -> dict[str, list[float]]:
         if r.get(key) is not None:
             out.setdefault(r["family"], []).append(r[key])
     return out
+
+
+def our_skeleton(mol: Molecule) -> str:
+    g = json.loads((MOLECULES / mol.mol_id / "geometry.json").read_text(encoding="utf-8"))
+    return skeleton(xyz_block(g["symbols"], np.asarray(g["coords_bohr"])))
 
 
 def read_molecule(mol: Molecule, mai: MaiSpectrum) -> dict:
@@ -317,7 +346,7 @@ def main(argv: list[str] | None = None) -> int:
     a = ap.parse_args(argv)
     if not a.mai.exists():
         raise SystemExit(f"{a.mai}: Mai et al. 2026's archive is not here (it is kept outside git; TASKS 108)")
-    mai = mai_spectra(a.mai, [m.formula for m in MOLECULES_READ])
+    mai = mai_spectra(a.mai, {m.formula: our_skeleton(m) for m in MOLECULES_READ})
     res = {m.name: read_molecule(m, mai[m.formula]) for m in MOLECULES_READ}
     lines = report(res)
     for path, text in ((a.out.with_suffix(".json"), json.dumps(res, indent=1)), (a.out.with_suffix(".md"), "\n".join(lines) + "\n")):
