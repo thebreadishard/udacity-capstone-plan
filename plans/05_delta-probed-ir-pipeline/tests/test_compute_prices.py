@@ -9,7 +9,7 @@ import pytest
 
 pytest.importorskip("rdkit")
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "probes"))
-import compute_prices as cp  # noqa: E402  (after the sys.path insert)
+import compute_prices as cp  # noqa: E402, RUF100  (after the sys.path insert: pre-commit's pinned ruff flags it, the newer one not)
 
 TIME_V = """\tCommand being timed: "python dfmp2_rows.py rows"
 \tElapsed (wall clock) time (h:mm:ss or m:ss): {wall}
@@ -133,3 +133,27 @@ def test_action_cations_proposes_the_unlisted_twin_only(tmp_path):
     out, _ = cp.cation_price(_sources(tmp_path), target=30)
     assert out["chosen"] == ["P3c_4444444444"]          # computed, no cation twin yet, and its quartet cell is short (naphthalene⁺ only)
     assert out["short_cells"] > 0 and out["hours"] > 0
+
+
+def test_action_labels_prices_each_list_on_the_lane_model(tmp_path):
+    src = _sources(tmp_path)
+    (tmp_path / "small.txt").write_text("# two\nA_1111111111\nA_2222222222\n", encoding="utf-8")
+    (tmp_path / "large.txt").write_text("A_3333333333\n", encoding="utf-8")
+    out, lines = cp.labels_price(src, [tmp_path / "small.txt", tmp_path / "large.txt"])
+    model = out["lane_model"]
+    assert out["lists"]["small.txt"]["lane_hours"] == pytest.approx((cp.power(model, 12) + cp.power(model, 18)) / 3600)
+    assert out["total"]["molecules"] == 3 and out["total"]["above_largest"] == 0
+    assert out["total"]["eur"] == pytest.approx(out["total"]["lane_hours"] / 4 * 0.855)
+    assert lines[-1].startswith("| all | 3 | 12–24 | 0 |")
+
+
+def test_action_labels_refuses_an_id_the_manifest_lacks(tmp_path):
+    (tmp_path / "bad.txt").write_text("A_9999999999\n", encoding="utf-8")
+    with pytest.raises(ValueError, match="1 ids without an atom count"):
+        cp.labels_price(_sources(tmp_path), [tmp_path / "bad.txt"])
+
+
+@pytest.mark.parametrize("argv", [["labels"], ["fill", "--ids", "x.txt"]])
+def test_ids_go_with_the_labels_action_only(argv):
+    with pytest.raises(SystemExit):
+        cp.main(argv)

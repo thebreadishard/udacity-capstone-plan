@@ -8,12 +8,15 @@ Every price is a power law fitted to measured runs and names its source; what is
            to its lane logs in the atom count
   mp2      the composite's DF-MP2 step for the anchor cover (`anchor_plan.py select`), per gradient from the five anchors of 20 Oct (`time -v`
            wall time and peak, NBF and the gradient count from each psi4 log), 6 N gradients per molecule
+  labels   the analytic labels of given id lists (TASKS 74: chain 41's test molecules) on the labels server's lane model, as fill prices
+           them; the molecules are optimised already, so no optimisation allowance
   cations  radical cations of computed neutrals for the cation cells short of the target — the cation twin of every cell of the
            domain, whether or not a manifest row provides it yet (TASKS 102); a neutral's cation covers its cells with charge +1;
            candidates are computed in-domain neutrals whose cation twin (same SMILES hash) is not in the manifest; priced on the
            laptop's analytic UKS runs ('(CA) <id> max RSS .. kB, wall .. s'), selected by anchor_plan's greedy cover
 
     python probes/compute_prices.py fill|mp2|cations      → out/anchor_plan/price_<action>.md and .json
+    python probes/compute_prices.py labels --ids out/chain41_s5.txt --ids out/chain41_s4N.txt
 """
 from __future__ import annotations
 
@@ -28,6 +31,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import anchor_plan as ap
+from ids_have_labels import read_ids
 from m08.prices import MACHINES, host_class  # anchor_plan puts modules/08_industry_synthesis on the path
 
 RESULTS = ap.PLAN / "probes" / "results_m1"
@@ -92,6 +96,13 @@ def lane_points(lane_logs: Path, atoms_of: dict[str, int]) -> list[tuple[float, 
     return pts
 
 
+def label_lane_model(src: Sources, manifest: dict[str, dict]) -> tuple[tuple[float, float], list[tuple[float, float]]]:
+    """The labels server's analytic labels (B3LYP + ωB97X Hessians, one 8-thread lane): a power law in the atom count fitted to its lane logs,
+    and the (atoms, seconds) points it rests on."""
+    lane = lane_points(src.lane_logs, {i: int(r["n_atoms"]) for i, r in manifest.items() if r["n_atoms"]})
+    return ap.fit_power_law(lane), lane
+
+
 def wall_seconds(text: str) -> float:
     """`time -v`'s 'Elapsed (wall clock) time (h:mm:ss or m:ss)' in seconds."""
     m = re.search(r"Elapsed \(wall clock\) time \(h:mm:ss or m:ss\): ([\d:.]+)", text)
@@ -132,8 +143,7 @@ def fill_price(src: Sources) -> tuple[dict, list[str]]:
     functions_of = {i: ap.basis_functions(r["smiles"], ap.BASIS_FUNCTIONS_631GS) for i, r in manifest.items() if r["smiles"]}
     sizes = [functions_of[i] for i in chosen]
     deck = deck_points(src.corpus, functions_of)
-    lane = lane_points(src.lane_logs, {i: int(r["n_atoms"]) for i, r in manifest.items() if r["n_atoms"]})
-    lane_model = ap.fit_power_law(lane)
+    lane_model, lane = label_lane_model(src, manifest)
     lane_hours = sum(power(lane_model, int(manifest[i]["n_atoms"])) for i in chosen) / 3600
     out = {"molecules": len(chosen), "deck": {}, "analytic_lane": {"rows": len(lane), "model": lane_model, "lane_hours": lane_hours}}
     lines = [f"# Price of the corpus fill list ({len(chosen)} molecules, {src.fill.name})", "",
@@ -152,6 +162,40 @@ def fill_price(src: Sources) -> tuple[dict, list[str]]:
               "", f"Extrapolated: {sum(n > beyond for n in sizes)} fill molecules above the largest timed deck row ({beyond:.0f} functions), "
               f"{sum(int(manifest[i]['n_atoms']) > max(n for n, _ in lane) for i in chosen)} above the lanes' largest molecule."]
     return out, lines
+
+
+def labels_price(src: Sources, id_files: list[Path]) -> tuple[dict, list[str]]:
+    """Lane-hours, CCX53 days on four lanes and euros for the analytic labels of each id list and of all together."""
+    manifest = read_manifest(src.manifest)
+    model, lane = label_lane_model(src, manifest)
+    largest = max(n for n, _ in lane)
+    eur_per_hour = MACHINES["CCX53"]["eur_per_hour"]
+    out = {"lane_model": model, "lane_rows": len(lane), "largest_timed_atoms": largest, "lists": {}}
+    lines = ["# Price of analytic labels for given molecules (CCX53, four 8-thread lanes)", "",
+             f"Lane model: seconds = e^{model[0]:.2f} · atoms^{model[1]:.2f}, fitted to {len(lane)} molecules of the labels lanes "
+             f"({min(n for n, _ in lane):.0f}–{largest:.0f} atoms, {src.lane_logs.name}); €{eur_per_hour}/h. The molecules are optimised "
+             "already, so no optimisation allowance.", "",
+             "| list | molecules | atoms | above the largest timed | lane-hours | CCX53 days (4 lanes) | € |", "|---|---|---|---|---|---|---|"]
+    every = []
+    for path in id_files:
+        ids = read_ids([str(path)])
+        unknown = [i for i in ids if i not in manifest or not manifest[i]["n_atoms"]]
+        if unknown:
+            raise ValueError(f"{path.name}: {len(unknown)} ids without an atom count in the manifest, e.g. {unknown[:3]}")
+        atoms = [int(manifest[i]["n_atoms"]) for i in ids]
+        every += atoms
+        out["lists"][path.name] = _label_row(path.name, atoms, model, largest, eur_per_hour, lines)
+    out["total"] = _label_row("all", every, model, largest, eur_per_hour, lines)
+    return out, lines
+
+
+def _label_row(name: str, atoms: list[int], model: tuple[float, float], largest: float, eur_per_hour: float, lines: list[str]) -> dict:
+    hours = sum(power(model, n) for n in atoms) / 3600
+    row = {"molecules": len(atoms), "atoms": [min(atoms), max(atoms)], "above_largest": sum(n > largest for n in atoms),
+           "lane_hours": hours, "days": hours / 4 / 24, "eur": hours / 4 * eur_per_hour}
+    lines.append(f"| {name} | {row['molecules']} | {min(atoms)}–{max(atoms)} | {row['above_largest']} | {hours:,.0f} | {row['days']:.1f} | "
+                 f"{row['eur']:,.0f} |")
+    return row
 
 
 def mp2_price(src: Sources) -> tuple[dict, list[str]]:
@@ -235,11 +279,16 @@ def cation_price(src: Sources, target: int) -> tuple[dict, list[str]]:
 
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    p.add_argument("action", choices=["fill", "mp2", "cations"])
+    p.add_argument("action", choices=["fill", "mp2", "cations", "labels"])
+    p.add_argument("--ids", type=Path, action="append", default=[], help="labels: an id list (repeatable; relative to module 05)")
     p.add_argument("--target", type=int, default=30, help="cations: computed molecules per cell (decision 52)")
     a = p.parse_args(argv)
+    if (a.action == "labels") != bool(a.ids):
+        p.error("--ids goes with the labels action, and the labels action needs at least one --ids")
     src = Sources()
-    if a.action == "fill":
+    if a.action == "labels":
+        out, lines = labels_price(src, [p_ if p_.is_absolute() else ap.M05 / p_ for p_ in a.ids])
+    elif a.action == "fill":
         out, lines = fill_price(src)
     elif a.action == "mp2":
         out, lines = mp2_price(src)
