@@ -12,7 +12,14 @@ CAP=${1:?cap in MB}; shift
 [ "$#" -gt 0 ] || { echo "wsl_capped.sh: no command"; exit 2; }
 case "$CAP" in ''|*[!0-9]*) echo "wsl_capped.sh: cap '$CAP' is not a whole number of MB"; exit 2 ;; esac
 command -v systemd-run > /dev/null || { echo "wsl_capped.sh: systemd-run missing - no cap, not run"; exit 2; }
-systemd-run --user --scope --quiet -p MemoryMax="${CAP}M" -p MemorySwapMax=0 "$@"
+# CAP_SCOPE=system (25 Oct 2026, the cations on the labels CCX53): a root run on a server uses a system scope — a user scope there belongs
+# to the ssh session's user manager, which stops when the session ends; the default stays the WSL user scope.
+case "${CAP_SCOPE:-user}" in
+  user) MODE=(--user) ;;
+  system) MODE=() ;;
+  *) echo "wsl_capped.sh: CAP_SCOPE must be user or system, not '${CAP_SCOPE}'"; exit 2 ;;
+esac
+systemd-run "${MODE[@]}" --scope --quiet -p MemoryMax="${CAP}M" -p MemorySwapMax=0 "$@"
 rc=$?
 [ "$rc" = 137 ] && echo "KILLED: over the cap of $CAP MB (or killed from outside)"
 exit "$rc"
