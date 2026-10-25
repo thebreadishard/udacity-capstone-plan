@@ -13,23 +13,25 @@ set -u
 # no-set-e: a molecule that fails is reported and the others continue; the end marker counts the failures
 BATCH=${1:?batch dir}; TAG=${2:?tag}; WAIT_LOG=${3:?wait log}; WAIT_RE=${4:?wait regex}; DRY=${5:-}
 cd "$BATCH" || exit 1
-QC=/root/miniforge3/envs/qc/bin/python
-QC05=/root/miniforge3/envs/qc05/bin/python
-export PYSCF_TMPDIR=/root/qc_tmp TMPDIR=/root/qc_tmp
+QC=${QC:-/root/miniforge3/envs/qc/bin/python}
+QC05=${QC05:-/root/miniforge3/envs/qc05/bin/python}
+CODE=${CODE:-/root/labels}              # psi4_worker.py and analytic_hessians.py
+QC_TMP=${QC_TMP:-/root/qc_tmp}
+export PYSCF_TMPDIR=$QC_TMP TMPDIR=$QC_TMP
 mark() { echo "=== ($TAG) $* $(date '+%F %T')"; }
 mapfile -t IDS < <(grep -v '^#' ids.txt | sed '/^$/d')
 missing=$(for id in "${IDS[@]}"; do [ -f "molecules/$id/job.json" ] || echo "$id"; done | wc -l)
 mark "armed: ${#IDS[@]} molecules ($missing without a job file); waiting for /$WAIT_RE/ in $WAIT_LOG"
 [ "$missing" = 0 ] || { mark "STOPPED: $missing job files missing"; exit 1; }
-for b in "$QC" "$QC05" /root/labels/psi4_worker.py /root/labels/analytic_hessians.py; do [ -e "$b" ] || { mark "STOPPED: $b missing"; exit 1; }; done
+for b in "$QC" "$QC05" "$CODE/psi4_worker.py" "$CODE/analytic_hessians.py"; do [ -e "$b" ] || { mark "STOPPED: $b missing"; exit 1; }; done
 [ "$DRY" = "--dry-run" ] && { mark "dry run: wait condition $(grep -qE "$WAIT_RE" "$WAIT_LOG" 2>/dev/null && echo met || echo 'not met yet')"; exit 0; }
-until grep -qE "$WAIT_RE" "$WAIT_LOG" 2>/dev/null; do sleep 900; done
+until grep -qE "$WAIT_RE" "$WAIT_LOG" 2>/dev/null; do sleep "${WAIT_S:-900}"; done
 mark "start: the wait condition is met"
 opt() {
   local id=$1
   if [ -f "molecules/$id/result.json" ] && grep -q '"status": "done"' "molecules/$id/result.json"; then echo "  $id optimised already"; return 0; fi
   local t0; t0=$(date +%s)
-  if OMP_NUM_THREADS=8 "$QC" /root/labels/psi4_worker.py "molecules/$id/job.json" > "molecules/$id/worker.log" 2>&1; then
+  if OMP_NUM_THREADS=8 "$QC" "$CODE/psi4_worker.py" "molecules/$id/job.json" > "molecules/$id/worker.log" 2>&1; then
     echo "  $id optimised $(( $(date +%s) - t0 )) s"
   else
     echo "  $id OPTIMISATION FAILED $(( $(date +%s) - t0 )) s (molecules/$id/worker.log)"
@@ -40,14 +42,14 @@ label() {
   if [ -f "molecules/$id/hessian_b3lyp_analytic.npz" ] && [ -f "molecules/$id/hessian_wb97x_analytic.npz" ]; then echo "  $id labelled already"; return 0; fi
   [ -f "molecules/$id/geometry.json" ] || { echo "  $id LABELS SKIPPED (no optimised geometry)"; return 1; }
   local t0; t0=$(date +%s)
-  if (cd /root/labels && OMP_NUM_THREADS=8 "$QC05" analytic_hessians.py "$BATCH/molecules/$id" --threads 8 >> "$BATCH/molecules/$id/labels.log" 2>&1); then
+  if (cd "$CODE" && OMP_NUM_THREADS=8 "$QC05" analytic_hessians.py "$BATCH/molecules/$id" --threads 8 >> "$BATCH/molecules/$id/labels.log" 2>&1); then
     echo "  $id labelled $(( $(date +%s) - t0 )) s"
   else
     echo "  $id LABELS FAILED $(( $(date +%s) - t0 )) s (molecules/$id/labels.log)"
   fi
 }
 export -f opt label
-export QC QC05 BATCH
+export QC QC05 BATCH CODE
 mark "optimisations"
 printf '%s\n' "${IDS[@]}" | xargs -P 4 -I{} bash -c 'opt {}'
 mark "labels"
