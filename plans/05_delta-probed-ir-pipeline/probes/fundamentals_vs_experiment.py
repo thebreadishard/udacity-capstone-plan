@@ -14,6 +14,7 @@ written, never their frequencies.
 from __future__ import annotations
 
 import argparse
+import itertools
 import json
 import re
 import sys
@@ -30,7 +31,7 @@ PLAN = Path(__file__).resolve().parents[1]
 M05 = PLAN / "modules" / "05_support_predictor"
 sys.path.insert(0, str(M05 / "m05"))
 import anchor_registry as AR  # noqa: E402  (module 05's code is not a package)
-from dryrun_symmetry_prior import assign_irreps  # noqa: E402
+from dryrun_symmetry_prior import CLASSES, D6H, apply_op, assign_irreps, atom_permutation, d6h_operations  # noqa: E402
 from e8_symmetry import BOHR, point_group_ops  # noqa: E402
 from learning_curve_layerA import FAMILIES, molecule_features, normal_modes  # noqa: E402
 from scale_factor_baseline import PAHDB_FACTORS, pahdb_region  # noqa: E402
@@ -45,6 +46,7 @@ DEGENERATE_CM = 0.5         # two modes of one degenerate irrep closer than this
 MAI_PAIR_WARN_CM = 50.0     # registered: a Mai–B3LYP pair farther apart is counted and reported
 MAI_DUPLICATE_CM = 1.0      # two entries of one molecule (naphthalene: COMPAS-1 and COMPAS-2) must agree this well to be one
 GEOMETRY_TOL_BOHR = 1e-6
+D6H_ATOM_TOL = 0.05          # the tolerance assign_irreps maps atoms with
 CHARACTER_TOL = 0.1          # a non-degenerate mode's character is ±1; farther off, the mode mixes species
 D2H_SPECIES = {"Ag": 9, "Au": 4, "B1g": 3, "B1u": 8, "B2g": 4, "B2u": 8, "B3g": 8, "B3u": 4}   # naphthalene, Martin's labelling
 
@@ -71,7 +73,7 @@ class Molecule:
     name: str
     mol_id: str
     formula: str
-    irreps: Callable[[np.ndarray, np.ndarray, list[str], np.ndarray], list[str]]
+    irreps: Callable[[np.ndarray, np.ndarray, list[str], np.ndarray], tuple[list[str], list[str]]]   # (labels, notes)
     experiment: Callable[[], list[Exp]]
 
 
@@ -85,7 +87,7 @@ def characters(V: np.ndarray, R: np.ndarray, perm: list[int]) -> np.ndarray:
     return np.einsum("axk,axk->k", W[perm], moved)
 
 
-def d2h_irreps(V: np.ndarray, freq: np.ndarray, symbols: list[str], coords: np.ndarray) -> list[str]:
+def d2h_irreps(V: np.ndarray, freq: np.ndarray, symbols: list[str], coords: np.ndarray) -> tuple[list[str], list[str]]:
     """Martin's D2h labels per mode: x normal to the plane; z the in-plane axis whose C2 keeps three out-of-plane gerade modes symmetric."""
     x = coords - coords.mean(0)
     normal = np.linalg.eigh(x.T @ x)[1][:, 0]
@@ -113,20 +115,52 @@ def d2h_irreps(V: np.ndarray, freq: np.ndarray, symbols: list[str], coords: np.n
     counts = {s: labels.count(s) for s in D2H_SPECIES}
     if counts != D2H_SPECIES:
         raise ValueError(f"D2h species counts {counts} differ from Martin's {D2H_SPECIES}")
-    return labels
+    return labels, []
 
 
-def d6h_irreps(V: np.ndarray, freq: np.ndarray, symbols: list[str], coords: np.ndarray) -> list[str]:
-    """Benzene's D6h labels per mode (lower case, as the benchmark file writes them); a mixed accidental pair is refused, not guessed."""
+def d6h_weights(V: np.ndarray, idx: list[int], irreps: list[str], symbols: list[str], coords: np.ndarray) -> np.ndarray:
+    """(modes × irreps) weights ‖P_X v‖² of one-dimensional D6h irreps X, P_X = (1/24) Σ_g χ_X(g) O_g."""
+    ops, X = d6h_operations(coords, symbols)
+    S = V[:, idx]
+    P = np.zeros((len(irreps), *S.shape))
+    for cls, R in ops:
+        moved = apply_op(S, R, atom_permutation(X, R, D6H_ATOM_TOL)[0])
+        for k, name in enumerate(irreps):
+            P[k] += D6H[name][CLASSES.index(cls)] * moved
+    return (np.sum((P / len(ops)) ** 2, axis=1)).T
+
+
+def resolve_mixed(V: np.ndarray, idx: list[int], irreps: list[str], symbols: list[str], coords: np.ndarray) -> tuple[dict[int, str], str]:
+    """A mixed block of one-dimensional irreps: each mode the irrep of the one-to-one assignment with the largest total projector weight."""
+    W = d6h_weights(V, idx, irreps, symbols, coords)
+    best = max(itertools.permutations(range(len(irreps))), key=lambda p: sum(W[m, k] for m, k in enumerate(p)))
+    chosen = {i: irreps[k] for i, k in zip(idx, best, strict=True)}
+    weights = "; ".join(f"mode {i}: " + ", ".join(f"{n} {W[m, k]:.2f}" for k, n in enumerate(irreps)) for m, i in enumerate(idx))
+    return chosen, f"mixed {'+'.join(irreps)} resolved by projector weights ({weights})"
+
+
+def d6h_irreps(V: np.ndarray, freq: np.ndarray, symbols: list[str], coords: np.ndarray) -> tuple[list[str], list[str]]:
+    """Benzene's D6h labels per mode (lower case, as the benchmark file writes them); an accidental mixed pair of one-dimensional irreps is
+    resolved from the vectors (resolve_mixed) and noted; anything else unclean is refused."""
     labels, _, _, worst = assign_irreps(V, freq, coords, symbols)
-    if worst > 0.05:
+    if worst > D6H_ATOM_TOL:
         raise ValueError(f"D6h operations map atoms only within {worst:.3f}")
-    out = []
-    for lab in labels:
-        if len(lab) != 1 or next(iter(lab)).startswith("?"):
-            raise ValueError(f"benzene mode without one clean D6h irrep: {sorted(lab)}")
-        out.append(next(iter(lab)).lower())
-    return out
+    out: dict[int, str] = {}
+    notes: list[str] = []
+    for lab in dict.fromkeys(labels):
+        idx = [i for i, other in enumerate(labels) if other == lab]
+        names = sorted(lab)
+        if any(n.startswith("?") or n not in D6H for n in names):
+            raise ValueError(f"benzene modes {idx} without a clean D6h irrep: {names}")
+        if len(names) == 1:
+            out.update(dict.fromkeys(idx, names[0]))
+        elif len(names) == len(idx) and all(D6H[n][0] == 1 for n in names):
+            chosen, note = resolve_mixed(V, idx, names, symbols, coords)
+            out.update(chosen)
+            notes.append(note)
+        else:
+            raise ValueError(f"benzene modes {idx}: mixed block {names} that is not a pair of one-dimensional irreps")
+    return [out[i].lower() for i in range(len(labels))], notes
 
 
 # ------------------------------------------------------------------------------------------------- experiment and pairing
@@ -265,8 +299,10 @@ def read_molecule(mol: Molecule, mai: MaiSpectrum) -> dict:
     _, f_b3, V_b3, _ = normal_modes(h_b3, masses)
     _, f_cc, V_cc, _ = normal_modes(cc["H_projected"], masses)
     exp = mol.experiment()
-    p_b3 = pair_by_irrep(groups(f_b3, mol.irreps(V_b3, f_b3, symbols, coords)), exp)
-    p_cc = pair_by_irrep(groups(f_cc, mol.irreps(V_cc, f_cc, symbols, coords)), exp)
+    labels_b3, notes_b3 = mol.irreps(V_b3, f_b3, symbols, coords)
+    labels_cc, notes_cc = mol.irreps(V_cc, f_cc, symbols, coords)
+    p_b3 = pair_by_irrep(groups(f_b3, labels_b3), exp)
+    p_cc = pair_by_irrep(groups(f_cc, labels_cc), exp)
     cc_of = {id(e): (gc, flag) for gc, e, flag in p_cc}
     scaled_b3 = np.array([PAHDB_FACTORS[r] for r in pahdb_region({"freq": f_b3})]) * f_b3
     entry_mai, s_mai, factor_mai = mai
@@ -288,7 +324,8 @@ def read_molecule(mol: Molecule, mai: MaiSpectrum) -> dict:
     out = {"anchor": {k: entry[k] for k in ("path", "level", "tier")}, "mai_entry": entry_mai,
            "mai_pairs_over_warn": int(np.sum(np.abs(u_mai - f_b3) > MAI_PAIR_WARN_CM)), "mai_max_pair_cm": float(np.abs(u_mai - f_b3).max()),
            "stats": {name: stats(collect(rows, key)) for name, key in comparisons.items() if collect(rows, key)},
-           "min_overlap_cc_b3": min(r["overlap_cc_b3"] for r in rows), "crossings": sum(r["crossing"] for r in rows)}
+           "min_overlap_cc_b3": min(r["overlap_cc_b3"] for r in rows), "crossings": sum(r["crossing"] for r in rows),
+           "symmetry_notes": {"b3lyp": notes_b3, "cc": notes_cc}}
     out["modes"] = [{k: v for k, v in r.items() if not k.startswith("_")} for r in rows]       # Mai's per-mode values stay out (licence)
     return out
 
@@ -324,7 +361,8 @@ def mode_table(res: dict) -> list[str]:
 def molecule_section(name: str, r: dict) -> list[str]:
     note = (f"Anchor `{r['anchor']['path']}` ({r['anchor']['level']}); Mai entry {r['mai_entry']}, its modes paired with our B3LYP by sorted "
             f"order: {r['mai_pairs_over_warn']} pairs more than {MAI_PAIR_WARN_CM:.0f} cm⁻¹ apart (largest {r['mai_max_pair_cm']:.1f}); smallest "
-            f"overlap of a CC mode with its B3LYP partner {r['min_overlap_cc_b3']:.2f}; {r['crossings']} pairs flagged as possible crossings.")
+            f"overlap of a CC mode with its B3LYP partner {r['min_overlap_cc_b3']:.2f}; {r['crossings']} pairs flagged as possible crossings."
+            + "".join(f" Symmetry, {lvl}: {n}." for lvl, ns in r["symmetry_notes"].items() for n in ns))
     return [*stats_table(name, r), "", note, "", f"#### {name}, per mode (Mai's values are not shown: licence)", "", *mode_table(r), ""]
 
 

@@ -26,14 +26,17 @@ def modes_of(npz: str, symbols: list[str]) -> tuple[np.ndarray, np.ndarray, np.n
 def test_naphthalene_d2h_labels_have_martins_species_counts():
     symbols = ["C"] * 10 + ["H"] * 8
     freq, V, coords = modes_of("probes/results_m1/e8_naphthalene_ccpvdz_tlambda_2026-10-02/hessian_ccsd_t.npz", symbols)
-    labels = F.d2h_irreps(V, freq, symbols, coords)
+    labels, notes = F.d2h_irreps(V, freq, symbols, coords)
+    assert notes == []
     assert {s: labels.count(s) for s in F.D2H_SPECIES} == F.D2H_SPECIES
 
 
 def test_benzene_d6h_labels_cover_the_twenty_wilson_modes():
     symbols = ["C"] * 6 + ["H"] * 6
     freq, V, coords = modes_of("probes/results_m1/e8_benzene_ccpvtz_oop_2026-10-03/hessian_ccsd_t.npz", symbols)
-    groups = F.groups(freq, F.d6h_irreps(V, freq, symbols, coords))
+    labels, notes = F.d6h_irreps(V, freq, symbols, coords)
+    groups = F.groups(freq, labels)
+    assert notes == []                       # CC/TZ benzene has no mixed pair
     assert len(groups) == 20 and sorted({g.irrep for g in groups}) == sorted({e.irrep for e in F.benzene_experiment()})
 
 
@@ -107,3 +110,16 @@ def test_stats_per_family_and_all():
     out = F.stats({"CH-oop": [1.0, -3.0], "ring-ip": [2.0]})
     assert out["CH-oop"] == {"n": 2, "mean": -1.0, "rms": pytest.approx(np.sqrt(5.0))}
     assert out["other"]["n"] == 0 and out["all"]["n"] == 3
+
+
+def test_a_mixed_pair_is_resolved_one_to_one_from_the_vectors():
+    """Rotate benzene's (CC/TZ) a1g breathing mode and a b1u mode into each other by 30°: the projector weights give the larger share back."""
+    symbols = ["C"] * 6 + ["H"] * 6
+    freq, V, coords = modes_of("probes/results_m1/e8_benzene_ccpvtz_oop_2026-10-03/hessian_ccsd_t.npz", symbols)
+    labels, _ = F.d6h_irreps(V, freq, symbols, coords)
+    i, j = labels.index("a1g"), labels.index("b1u")
+    c, s = np.cos(np.pi / 6), np.sin(np.pi / 6)
+    mixed = V.copy()
+    mixed[:, i], mixed[:, j] = c * V[:, i] + s * V[:, j], -s * V[:, i] + c * V[:, j]
+    chosen, note = F.resolve_mixed(mixed, [i, j], ["A1g", "B1u"], symbols, coords)
+    assert chosen == {i: "A1g", j: "B1u"} and "A1g 0.75" in note
