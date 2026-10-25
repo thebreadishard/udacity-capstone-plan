@@ -13,6 +13,8 @@ PLAN = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PLAN / "probes"))
 import fundamentals_vs_experiment as F  # noqa: E402, RUF100  (after the sys.path insert: pre-commit's pinned ruff flags it, the newer one not)
 
+from mai_fixtures import archive_entry, ring  # noqa: E402, RUF100
+
 MASS = {"C": 12.0, "H": 1.00782503207}
 
 
@@ -68,40 +70,26 @@ def test_the_same_mode_overlaps_itself_fully():
     assert F.subspace_overlap(V, (0,), V, (2,)) == pytest.approx(0.0, abs=1e-12)
 
 
-def _ring(n_c: int) -> tuple[list[str], np.ndarray]:
-    """A planar CnHn ring in bohr (C–C 1.40 Å, C–H 1.08 Å) — benzene for n = 6, a different skeleton for n = 8."""
-    r_c = 1.40 / (2 * np.sin(np.pi / n_c)) / F.BOHR
-    t = 2 * np.pi * np.arange(n_c) / n_c
-    ring = np.stack([np.cos(t), np.sin(t), 0 * t], 1)
-    return ["C"] * n_c + ["H"] * n_c, np.concatenate([r_c * ring, (r_c + 1.08 / F.BOHR) * ring])
-
-
-def _entry(formula: str, n_c: int, first: float = 1000.0) -> str:
-    symbols, coords = _ring(n_c)
-    block = F.xyz_block(symbols, coords).replace("\n\n", f"\nSource=COMPAS1 Formula={formula} Charge=0 JSD=0.01\n", 1)
-    return block + f"\nscaled_Freq(cm^-1) Inten(KM/mol) scale_factor\n{first} 1.0 0.956\n3000.0 2.0 0.960\n"
-
-
 def test_mai_entries_are_chosen_by_formula_and_skeleton(tmp_path):
-    benzene = F.skeleton(F.xyz_block(*_ring(6)))
+    benzene = F.skeleton(F.xyz_block(*ring(6)))
     z = tmp_path / "m.zip"
     with zipfile.ZipFile(z, "w") as w:
-        w.writestr("IR_COMPAS/charge_0/C1M000001.xyz", _entry("C6H6", 6))
-        w.writestr("IR_COMPAS/charge_1/C1M000001.xyz", _entry("C6H6", 6))       # a cation of the same molecule is not read
-        w.writestr("IR_COMPAS/charge_0/C1M000009.xyz", _entry("C6H6", 8))       # same formula label, another skeleton: not ours
+        w.writestr("IR_COMPAS/charge_0/C1M000001.xyz", archive_entry("C6H6", 6))
+        w.writestr("IR_COMPAS/charge_1/C1M000001.xyz", archive_entry("C6H6", 6))       # a cation of the same molecule is not read
+        w.writestr("IR_COMPAS/charge_0/C1M000009.xyz", archive_entry("C6H6", 8))       # same formula label, another skeleton: not ours
     name, scaled, factor = F.mai_spectra(z, {"C6H6": benzene})["C6H6"]
     assert name == "C1M000001" and scaled.tolist() == [1000.0, 3000.0] and factor.tolist() == [0.956, 0.960]
 
 
 def test_duplicates_of_one_molecule_must_agree(tmp_path):
-    benzene = F.skeleton(F.xyz_block(*_ring(6)))
+    benzene = F.skeleton(F.xyz_block(*ring(6)))
     z = tmp_path / "m.zip"
     with zipfile.ZipFile(z, "w") as w:
-        w.writestr("IR_COMPAS/charge_0/C1M000001.xyz", _entry("C6H6", 6))
-        w.writestr("IR_COMPAS/charge_0/C2M000001.xyz", _entry("C6H6", 6, first=1000.4))
+        w.writestr("IR_COMPAS/charge_0/C1M000001.xyz", archive_entry("C6H6", 6))
+        w.writestr("IR_COMPAS/charge_0/C2M000001.xyz", archive_entry("C6H6", 6, first=1000.4))
     assert F.mai_spectra(z, {"C6H6": benzene})["C6H6"][0] == "C1M000001, C2M000001"
     with zipfile.ZipFile(z, "a") as w:
-        w.writestr("IR_COMPAS/charge_0/C3M000001.xyz", _entry("C6H6", 6, first=1004.0))
+        w.writestr("IR_COMPAS/charge_0/C3M000001.xyz", archive_entry("C6H6", 6, first=1004.0))
     with pytest.raises(ValueError, match="disagree by more than"):
         F.mai_spectra(z, {"C6H6": benzene})
 
