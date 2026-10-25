@@ -9,6 +9,7 @@ import numpy as np
 import pytest
 
 pytest.importorskip("torch")
+pytest.importorskip("rdkit")
 PLAN = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PLAN / "probes"))
 import fundamentals_vs_experiment as F  # noqa: E402, RUF100  (after the sys.path insert: pre-commit's pinned ruff flags it, the newer one not)

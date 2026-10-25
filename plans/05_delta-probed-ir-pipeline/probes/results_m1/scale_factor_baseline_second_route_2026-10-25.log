@@ -1,0 +1,9 @@
+(a) CH-stretch S3 direct   2.02 (record   2.02)  zero rule  43.62  mean shift +43.59  sd  1.47  modes 86
+(a) CH-oop     S3 direct   9.21 (record   9.21)  zero rule  24.35  mean shift +22.84  sd  8.42  modes 61
+(a) ring-ip    S3 direct  15.47 (record  15.47)  zero rule  19.74  mean shift +11.61  sd 15.97  modes 231
+(a) other      S3 direct   8.58 (record   8.58)  zero rule  13.18  mean shift +11.13  sd  7.05  modes 186
+(b) CH-stretch S3 direct   3.86 (record   3.86)  zero rule  44.30  mean shift +44.18  sd  3.27  modes 401
+(b) CH-oop     S3 direct   9.96 (record   9.96)  zero rule  25.16  mean shift +23.69  sd  8.46  modes 83
+(b) ring-ip    S3 direct  14.19 (record  14.19)  zero rule  19.93  mean shift +13.24  sd 14.90  modes 1164
+(b) other      S3 direct  14.63 (record  14.63)  zero rule  18.90  mean shift +12.99  sd 13.73  modes 1226
+largest difference to the record: 0.0000 cm⁻¹ (agrees within 0.01)
