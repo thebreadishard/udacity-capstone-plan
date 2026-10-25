@@ -4,6 +4,5 @@
 # command here must resume by itself: done items are skipped (molecules with a result, APT files written, chain steps recorded).
 # Add a row when a long job is launched; delete it when its outcome is recorded (as for watch_jobs.tsv).
 F5	PRIORITY=1 bash probes/fivering_laptop_1015.sh >> probes/results_m1/fivering_laptop_2026-10-10.log 2>&1
-CA	bash probes/cations_after_fivering.sh >> probes/results_m1/cation_analytic_2026-10-09.log 2>&1
 C40	python probes/chain_runner.py probes/runs/chain40.json >> probes/results_m1/chain40.log 2>&1
 C35h	python probes/chain_runner.py probes/runs/chain35h.json >> probes/results_m1/chain35h.log 2>&1
