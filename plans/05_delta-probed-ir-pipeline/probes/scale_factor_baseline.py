@@ -28,6 +28,7 @@ from learning_curve_layerA import FAMILIES  # noqa: E402
 from rungC_train import load_corpus  # noqa: E402
 
 PAHDB_REGION_EDGES = (1111.0, 2500.0)   # cm⁻¹; Bauschlicher et al. 2018's regions as Mai et al. 2026 apply them (reading note of 25 Oct 2026)
+PAHDB_FACTORS = (0.956, 0.952, 0.960)   # the factors of those regions, indexed by pahdb_region (below 1111, 1111–2500, above 2500)
 CARRIED_RECORDS = tuple(M05 / "out" / f"E7_rungC_chain34_eval_analytic_2026-10-05_seed{s}.json" for s in range(3))   # decision 57
 HOLDOUTS = ("a", "b")
 OUT = M05 / "out" / "scale_factor_baseline_2026-10-25"
