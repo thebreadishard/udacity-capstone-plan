@@ -1,4 +1,4 @@
-"""TASKS 127's first check (26 Oct 2026): does the coupled-cluster anchor want shorter C–H bonds than the B3LYP/6-31G* geometry it was taken at?
+"""TASKS 127's first check (25 Oct 2026): does the coupled-cluster anchor want shorter C–H bonds than the B3LYP/6-31G* geometry it was taken at?
 The carried benzene anchor stores the CCSD(T)/cc-pVTZ gradient at that geometry. Per C–H bond: the force on the hydrogen along the bond (negative =
 pulling it towards its carbon, i.e. CC prefers a shorter bond) and, from the anchor's own Hessian, the bond length change that force implies to
 first order, Δr = F / k with k the curvature of the energy along that bond (hydrogen displaced, rest fixed).
@@ -8,6 +8,7 @@ first order, Δr = F / k with k the curvature of the energy along that bond (hyd
 from __future__ import annotations
 
 import sys
+from pathlib import Path
 
 import numpy as np
 from e8_symmetry import BOHR
@@ -23,7 +24,6 @@ def bonds(coords: np.ndarray) -> list[tuple[int, int]]:
 
 
 def main() -> int:
-    from pathlib import Path
     z = np.load(Path(__file__).resolve().parents[1] / ANCHOR)
     coords, grad, H = z["coords_bohr"], z["gradient"], z["H_raw"]
     out = []
