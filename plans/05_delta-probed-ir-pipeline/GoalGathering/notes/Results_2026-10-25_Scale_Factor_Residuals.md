@@ -39,7 +39,7 @@ Mean / rms in cm⁻¹ over the experimental fundamentals (benzene 20 Wilson mode
 
 - **The anchor, like for like** (benzene CCSD(T)/cc-pVTZ against the harmonic frequencies derived from experiment): the in-plane ring modes
   agree to 5.5 cm⁻¹ rms. The C–H stretches are 38.5 cm⁻¹ low and some out-of-plane modes up to 35 cm⁻¹ off (b2g −35, a2u +22): the first
-  is the project's convention — the CC Hessian is taken at the B3LYP/6-31G* geometry, whose C–H bonds are a little long — and the second the
+  most likely comes from the project's convention — the CC Hessian is taken at the B3LYP/6-31G* geometry, whose C–H bonds are a little long: first check (`probes/cc_ch_bond_force.py`, log `probes/results_m1/cc_ch_bond_force_2026-10-26.log`): at the B3LYP geometry (C–H 1.0871 Å) the CCSD(T)/cc-pVTZ force pulls every hydrogen towards its carbon, a first-order shortening of 0.0040 Å — the direction the explanation needs; its size in cm⁻¹ needs the cubic force constants (TASKS 127) — and the second the
   known basis sensitivity of benzene's out-of-plane CC frequencies (R0 read of 22 Sep 2026: "out-of-plane worse", C–H low).
 - **Against fundamentals the anharmonicity dominates**: CC harmonic − fundamental is +90 cm⁻¹ on the C–H stretches. A scale factor folds that
   in empirically; our pipeline must add it explicitly (the anharmonic shift, S2/S2b). Harmonic CC alone is not closer to experiment than
