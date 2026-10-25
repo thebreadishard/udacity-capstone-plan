@@ -824,3 +824,31 @@ of benzene was found**; the literature's standard for benzene is the hybrid (CC 
 | 111 | Focal-point MP2/CCSD(T) for harmonic and VPT2 fundamental frequencies; MAE 7.3 cm⁻¹ vs experiment — **on 20 molecules of up to six atoms, so not benzene** (a search snippet had suggested benzene) | Nelson, P. M.; Glick, Z. L.; Sherrill, C. D., J. Chem. Phys. 159, 094104 (2023), DOI 10.1063/5.0168608 (Crossref abstract read 14 Oct) | **record**; Nelson is pyVPT2's maintainer (item 83) |
 | 104 (addendum) | Boese & Martin 2004 (item 104) carry the benzene data a free check needs: Table I, benzene harmonics at B97-1/TZ2P, B3LYP/TZ2P and **CCSD(T)/spdf (item 102)** beside experimentally derived ω; Table II, computed fundamentals (B97-1/TZ2P, B3LYP/TZ2P, the **hybrid 'CCSD(T)/B97-1'**) against the **experimental fundamentals of GOT and of Miani et al. 2000 (MCP)**; the text names the Fermi resonances (ν3+ν16/ν15, ν13+ν16/ν12, ν16+ν13/ν5, ν2+ν18/ν16) and reports, without the C–H stretches, B3LYP/TZ2P fundamentals at MAE 3.7 / RMS 4.8 cm⁻¹ against MCP | arXiv:physics/0311069 (open; read 14 Oct). **The PDF's text extraction scrambles Table I's columns: numbers must be read from the rendered page** | **usable for TASKS 56's check** |
 | 45 (note) | Esposito, Fortenberry, Boersma & Allamandola, J. Chem. Phys. 160, 211101 (2024) — the C–H stretch overtones of benzene → tetracene; the abstract names no CCSD(T) quartic force field | DOI 10.1063/5.0208597 (Crossref 14 Oct) | already item 45 |
+
+
+## 25 October 2026, 07:5x — new work since the checks of 27 September and 14 October (author's agent, web search; the user: 'nieuwe relevante papers ... o.a. door de auteurs van de zes papers die het dichtst bij ons staan')
+
+Authors followed (the nearest prior art of the 27 September check): Mai et al. (item 5), Bos et al. (item 7), Feldmann, Steinbach &
+Bannwarth (item 91), Domenichini (item 92), the Bowman group (items 70, 93), and the PAHdb-anharmonic authors (Esposito, Mackie, Ricca,
+Boersma; items 12, 45). Topic queries: Δ-learning of Hessians to CCSD(T); equivariant Hessian prediction for IR; CCSD(T) harmonic
+benchmarks on PAHs; ML for PAH cation spectra; PANH anharmonic spectra. Each row says how much was read; records, not cites — re-fetch
+before citing.
+
+| # | what | identifier | status |
+|---|---|---|---|
+| 112 | **The newest and largest instance of the baseline this project replaces.** A machine-learning double-harmonic model (neural force field + dipole model, Hessian by automatic differentiation) gives 144,111 IR spectra of 48,037 closed-shell, even-carbon benzenoid PAHs (C6–C44; neutral, cation, anion). Teacher B3LYP/4-31G (a 200-molecule check at B3LYP/6-31G(d)); frequencies scaled with Bauschlicher et al. 2018's factors 0.960 / 0.952 / 0.956; harmonic only; trained on 651 PAHdb parents expanded to 16,275 conformations; agreement as Jensen–Shannon divergence: 0.051 vs its DFT, 0.107 vs PAHdb theory (4,579), 0.179 vs 59 PAHdb experimental spectra; no frequency MAE in cm⁻¹ given; no N, no substituents | Mai, X.; Lu, Z.-J.; Wang, Z., "A machine-learning-driven dataset of 144,111 polycyclic aromatic hydrocarbon infrared spectra for interpreting aromatic infrared bands", arXiv:2610.21205 (15 Oct 2026); journal DOI listed 10.1051/0004-6361/202662240; data 10.5281/zenodo.21506061; code github.com/zwAstroChem/ML-DH-PAH-IR | **abstract + methods (arXiv HTML) read 2026-10-25 (author's agent)** |
+| 113 | Vibrational 'carbon character' of PAH modes: aromatic and aliphatic bands less separable than assumed | Mackie, Candian, Huang, Maltseva, Petrignani, Oomens, Lee, J. Chem. Phys. **165**, 034104 (21 Jul 2026) | **search snippet only** |
+| 114 | Anharmonic IR of PAHs and PANHs at 2000–1650 cm⁻¹ against experiment; on naphthalene vs NIST 0.35 % in positions, 15.67 % in relative intensities (earlier anharmonic work 0.36 % / 17.38 %) | ACS Earth Space Chem. **10**(7), 1685–1701 (26 Jun 2026), DOI 10.1021/acsearthspacechem.6c00033, PMC13383840; authors seen in snippets: Esposito, Allamandola, Boersma, Bregman, Fortenberry, Maragkoudakis, Temi, Ricca (list not confirmed) | **search snippet only** |
+| 115 | A web application that adds anharmonicity to simulated PAH spectra for astrophysics | "CosmicPAH-IRDB", arXiv:2609.01696 (September 2026) | **title only** |
+| 116 | Benchmark of machine-learned interatomic potentials for molecular IR: equivariant SO3Net and MACE best on Hessian-derived properties; PaiNN has low force errors but high harmonic-frequency errors — force accuracy does not predict Hessian accuracy | arXiv:2605.22367 (May 2026) | **search snippet only** |
+| 117 | A potential pre-trained on GFN2-xTB Hessian labels, then fine-tuned — cheap-Hessian pretraining as in our proxy step | arXiv:2603.25373 (March 2026) | **search snippet only** |
+| 118 | Projected Hessian learning: curvature supervision for interatomic potentials | arXiv:2603.04523 (2026) | **title only** |
+| 119 | MULTIMODE with machine-learned potentials (the Bowman group's spectroscopy line, after items 70 and 93) | Qu, Allison, Houston, Conte, Nandi, Bowman, J. Chem. Phys. **164**, 134116 (2026) | **cited in a search result; not opened** |
+| 120 | DFT vibrational scaling factors following a power law rather than a constant | Spectrochim. Acta (2026), PubMed 42035662 (authors not seen) | **title only** |
+| 121 | A classifier on the full IR spectrum for PAH size and charge (JWST band diagnostics) | arXiv:2602.12531 (February 2026) | **search snippet only** |
+
+No new version or follow-up was found for items 7 (Bos), 91 (Bannwarth; still ChemRxiv v1) and 92 (Domenichini). **None of the new work
+learns a correction between two levels of theory, none reaches CCSD(T) for a PAH larger than benzene, and none treats N-containing or
+substituted PAHs with a learned model.** Item 112 matters most: it shows that the largest PAH spectral library of October 2026 still
+rests on B3LYP/4-31G with the PAHdb scale factors — the gap our goal names (memory: the PAHdb scale factor is the baseline, never a
+fallback) — and it offers 48,037 benzenoid geometries and their scaled-DFT spectra as an external evaluation set (TASKS 107).
