@@ -1,0 +1,18 @@
+{
+ "molecule": "naphthalene",
+ "quantity": "experimental vibrational fundamentals, cm-1",
+ "source": "J. M. L. Martin, J. El-Yazal, J.-P. Francois, J. Phys. Chem. 100, 15358-15367 (1996), doi:10.1021/jp960598q, as listed by NIST CCCBDB, https://cccbdb.nist.gov/exp2x.asp?casno=91203 (reference key 1996Mar/ElY:15358)",
+ "read": "2026-10-25, the page read twice independently (row by row and per species); both reads gave the same 48 values",
+ "labels": "the CCCBDB table's primary symmetry column; the page shows a second label per row, not used. In this labelling the in-plane gerade species are Ag and B3g (x normal to the plane), the out-of-plane gerade ones B1g (3 modes) and B2g (4), the out-of-plane ungerade ones Au and B3u, the in-plane ungerade ones B1u and B2u",
+ "phase": "not stated on the page",
+ "fundamentals": {
+  "Ag": [3060, 3031, 1577, 1460, 1376, 1145, 1025, 758, 512],
+  "Au": [970, 841, 581, 195],
+  "B1g": [943, 717, 386],
+  "B1u": [3065, 3058, 1595, 1389, 1265, 1125, 753, 359],
+  "B2g": [980, 876, 770, 461],
+  "B2u": [3090, 3027, 1506, 1361, 1209, 1138, 1008, 618],
+  "B3g": [3092, 3060, 1624, 1438, 1239, 1158, 935, 506],
+  "B3u": [958, 782, 476, 176]
+ }
+}
