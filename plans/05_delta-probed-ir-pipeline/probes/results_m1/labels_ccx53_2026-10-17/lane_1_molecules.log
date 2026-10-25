@@ -1,0 +1,324 @@
+molecules/A2_097651503c b3lyp: 11390 s; |H_analytic − H_corpus| max 8.28e-03 rms 7.13e-04; max |Δfreq| 6 cm-1
+molecules/A2_097651503c wb97x: 13690 s; |H_analytic − H_corpus| max 6.69e-03 rms 6.78e-04; max |Δfreq| 4 cm-1
+molecules/A2_041da590e8 b3lyp: 8819 s; |H_analytic − H_corpus| max 3.73e-03 rms 3.65e-04; max |Δfreq| 3 cm-1
+molecules/A2_041da590e8 wb97x: 10712 s; |H_analytic − H_corpus| max 3.15e-03 rms 3.39e-04; max |Δfreq| 22 cm-1
+molecules/B_052693bd01 b3lyp: 215 s; |H_analytic − H_corpus| max 3.22e-04 rms 6.56e-05; max |Δfreq| 1 cm-1
+molecules/B_052693bd01 wb97x: 267 s; |H_analytic − H_corpus| max 4.97e-03 rms 2.55e-04; max |Δfreq| 3 cm-1
+molecules/B_03a96a659a b3lyp: 358 s; |H_analytic − H_corpus| max 7.44e-04 rms 7.32e-05; max |Δfreq| 2 cm-1
+molecules/B_03a96a659a wb97x: 464 s; |H_analytic − H_corpus| max 1.27e-03 rms 1.42e-04; max |Δfreq| 6 cm-1
+molecules/B_0f265bbf9e b3lyp: 256 s; |H_analytic − H_corpus| max 3.19e-04 rms 4.66e-05; max |Δfreq| 2 cm-1
+molecules/B_0f265bbf9e wb97x: 321 s; |H_analytic − H_corpus| max 1.80e-03 rms 1.72e-04; max |Δfreq| 5 cm-1
+molecules/B_056dec31a6 b3lyp: 311 s; |H_analytic − H_corpus| max 3.26e-04 rms 3.45e-05; max |Δfreq| 1 cm-1
+molecules/B_056dec31a6 wb97x: 412 s; |H_analytic − H_corpus| max 1.40e-03 rms 1.36e-04; max |Δfreq| 12 cm-1
+molecules/B_0b1e9970cd b3lyp: 253 s; |H_analytic − H_corpus| max 1.91e-04 rms 2.19e-05; max |Δfreq| 1 cm-1
+molecules/B_0b1e9970cd wb97x: 333 s; |H_analytic − H_corpus| max 7.23e-04 rms 9.18e-05; max |Δfreq| 17 cm-1
+molecules/B_130bab9818 b3lyp: 323 s; |H_analytic − H_corpus| max 3.92e-04 rms 4.59e-05; max |Δfreq| 1 cm-1
+molecules/B_130bab9818 wb97x: 413 s; |H_analytic − H_corpus| max 1.34e-03 rms 1.50e-04; max |Δfreq| 8 cm-1
+molecules/B_1692bdc459 b3lyp: 444 s; |H_analytic − H_corpus| max 4.58e-04 rms 4.88e-05; max |Δfreq| 1 cm-1
+molecules/B_1692bdc459 wb97x: 595 s; |H_analytic − H_corpus| max 1.05e-03 rms 9.87e-05; max |Δfreq| 6 cm-1
+molecules/B_02145d28ae b3lyp: 465 s; |H_analytic − H_corpus| max 5.44e-04 rms 4.00e-05; max |Δfreq| 1 cm-1
+molecules/B_02145d28ae wb97x: 633 s; |H_analytic − H_corpus| max 1.05e-03 rms 1.08e-04; max |Δfreq| 2 cm-1
+molecules/B_077b344788 b3lyp: 601 s; |H_analytic − H_corpus| max 5.18e-04 rms 6.00e-05; max |Δfreq| 1 cm-1
+molecules/B_077b344788 wb97x: 733 s; |H_analytic − H_corpus| max 4.68e-03 rms 2.01e-04; max |Δfreq| 2 cm-1
+molecules/B_0c2d4078dc b3lyp: 410 s; |H_analytic − H_corpus| max 3.62e-04 rms 4.00e-05; max |Δfreq| 1 cm-1
+molecules/B_0c2d4078dc wb97x: 501 s; |H_analytic − H_corpus| max 1.29e-03 rms 1.38e-04; max |Δfreq| 31 cm-1
+molecules/B_151c8ce719 b3lyp: 318 s; |H_analytic − H_corpus| max 3.50e-04 rms 2.72e-05; max |Δfreq| 1 cm-1
+molecules/B_151c8ce719 wb97x: 389 s; |H_analytic − H_corpus| max 1.13e-03 rms 1.15e-04; max |Δfreq| 40 cm-1
+molecules/B_0717014b9a b3lyp: 605 s; |H_analytic − H_corpus| max 5.80e-04 rms 4.73e-05; max |Δfreq| 2 cm-1
+molecules/B_0717014b9a wb97x: 776 s; |H_analytic − H_corpus| max 2.72e-03 rms 1.50e-04; max |Δfreq| 7 cm-1
+molecules/B_0c7af0766e b3lyp: 696 s; |H_analytic − H_corpus| max 6.38e-03 rms 6.54e-04; max |Δfreq| 4 cm-1
+molecules/B_0c7af0766e wb97x: 860 s; |H_analytic − H_corpus| max 5.12e-03 rms 5.21e-04; max |Δfreq| 7 cm-1
+molecules/B_15538ae5a4 b3lyp: 618 s; |H_analytic − H_corpus| max 8.35e-04 rms 5.60e-05; max |Δfreq| 1 cm-1
+molecules/B_15538ae5a4 wb97x: 786 s; |H_analytic − H_corpus| max 2.92e-03 rms 1.51e-04; max |Δfreq| 8 cm-1
+molecules/B_1c876480c2 b3lyp: 667 s; |H_analytic − H_corpus| max 6.15e-04 rms 4.55e-05; max |Δfreq| 1 cm-1
+molecules/B_1c876480c2 wb97x: 823 s; |H_analytic − H_corpus| max 1.81e-03 rms 1.44e-04; max |Δfreq| 9 cm-1
+molecules/A_a848c04a21 b3lyp: 602 s; |H_analytic − H_corpus| max 7.47e-03 rms 4.27e-04; max |Δfreq| 3 cm-1
+molecules/A_a848c04a21 wb97x: 754 s; |H_analytic − H_corpus| max 6.68e-03 rms 5.52e-04; max |Δfreq| 5 cm-1
+molecules/B_05fdc68538 b3lyp: 1033 s; |H_analytic − H_corpus| max 1.97e-03 rms 9.91e-05; max |Δfreq| 1 cm-1
+molecules/B_05fdc68538 wb97x: 1268 s; |H_analytic − H_corpus| max 3.81e-03 rms 1.91e-04; max |Δfreq| 5 cm-1
+molecules/B_091b5a81a8 b3lyp: 839 s; |H_analytic − H_corpus| max 6.53e-04 rms 5.84e-05; max |Δfreq| 4 cm-1
+molecules/B_091b5a81a8 wb97x: 1051 s; |H_analytic − H_corpus| max 2.88e-03 rms 1.76e-04; max |Δfreq| 2 cm-1
+molecules/B_0df05f9cf6 b3lyp: 842 s; |H_analytic − H_corpus| max 5.15e-04 rms 4.12e-05; max |Δfreq| 2 cm-1
+molecules/B_0df05f9cf6 wb97x: 1069 s; |H_analytic − H_corpus| max 9.86e-04 rms 9.22e-05; max |Δfreq| 4 cm-1
+molecules/B_130dd9a6c6 b3lyp: 924 s; |H_analytic − H_corpus| max 3.65e-04 rms 4.65e-05; max |Δfreq| 3 cm-1
+molecules/B_130dd9a6c6 wb97x: 1189 s; |H_analytic − H_corpus| max 2.21e-03 rms 1.16e-04; max |Δfreq| 13 cm-1
+molecules/B_16194573ac b3lyp: 510 s; |H_analytic − H_corpus| max 2.47e-04 rms 2.23e-05; max |Δfreq| 1 cm-1
+molecules/B_16194573ac wb97x: 647 s; |H_analytic − H_corpus| max 1.10e-03 rms 1.16e-04; max |Δfreq| 6 cm-1
+molecules/B_1bc47ee69d b3lyp: 658 s; |H_analytic − H_corpus| max 2.88e-04 rms 2.62e-05; max |Δfreq| 1 cm-1
+molecules/B_1bc47ee69d wb97x: 857 s; |H_analytic − H_corpus| max 1.72e-03 rms 1.01e-04; max |Δfreq| 15 cm-1
+molecules/A_9d7c66d274 b3lyp: 904 s; |H_analytic − H_corpus| max 3.67e-04 rms 3.43e-05; max |Δfreq| 1 cm-1
+molecules/A_9d7c66d274 wb97x: 1150 s; |H_analytic − H_corpus| max 8.90e-04 rms 8.10e-05; max |Δfreq| 3 cm-1
+molecules/B_0550b7e251 b3lyp: 769 s; |H_analytic − H_corpus| max 5.56e-04 rms 3.39e-05; max |Δfreq| 2 cm-1
+molecules/B_0550b7e251 wb97x: 951 s; |H_analytic − H_corpus| max 9.01e-04 rms 5.69e-05; max |Δfreq| 120 cm-1
+molecules/B_09978bbd5d b3lyp: 739 s; |H_analytic − H_corpus| max 4.67e-04 rms 3.56e-05; max |Δfreq| 1 cm-1
+molecules/B_09978bbd5d wb97x: 956 s; |H_analytic − H_corpus| max 7.08e-04 rms 5.81e-05; max |Δfreq| 8 cm-1
+molecules/B_0cb4d08a36 b3lyp: 725 s; |H_analytic − H_corpus| max 1.81e-04 rms 2.01e-05; max |Δfreq| 1 cm-1
+molecules/B_0cb4d08a36 wb97x: 874 s; |H_analytic − H_corpus| max 1.12e-03 rms 7.21e-05; max |Δfreq| 80 cm-1
+molecules/B_0f06474656 b3lyp: 1150 s; |H_analytic − H_corpus| max 8.95e-04 rms 7.10e-05; max |Δfreq| 9 cm-1
+molecules/B_0f06474656 wb97x: 1422 s; |H_analytic − H_corpus| max 1.69e-03 rms 1.19e-04; max |Δfreq| 4 cm-1
+molecules/B_109d6fe5fe b3lyp: 1064 s; |H_analytic − H_corpus| max 4.72e-04 rms 3.54e-05; max |Δfreq| 1 cm-1
+molecules/B_109d6fe5fe wb97x: 1292 s; |H_analytic − H_corpus| max 1.16e-03 rms 1.04e-04; max |Δfreq| 14 cm-1
+molecules/B_146a56ca06 b3lyp: 993 s; |H_analytic − H_corpus| max 7.26e-04 rms 5.21e-05; max |Δfreq| 1 cm-1
+molecules/B_146a56ca06 wb97x: 1212 s; |H_analytic − H_corpus| max 1.82e-03 rms 9.93e-05; max |Δfreq| 11 cm-1
+molecules/B_19778f77bd b3lyp: 1175 s; |H_analytic − H_corpus| max 9.47e-03 rms 1.09e-03; max |Δfreq| 7 cm-1
+molecules/B_19778f77bd wb97x: 1461 s; |H_analytic − H_corpus| max 8.87e-03 rms 1.17e-03; max |Δfreq| 9 cm-1
+molecules/B_1f2035ae2a b3lyp: 851 s; |H_analytic − H_corpus| max 6.05e-04 rms 3.67e-05; max |Δfreq| 1 cm-1
+molecules/B_1f2035ae2a wb97x: 1043 s; |H_analytic − H_corpus| max 9.23e-04 rms 1.04e-04; max |Δfreq| 10 cm-1
+molecules/A_7aa232d4e9 b3lyp: 1129 s; |H_analytic − H_corpus| max 4.41e-04 rms 3.36e-05; max |Δfreq| 1 cm-1
+molecules/A_7aa232d4e9 wb97x: 1359 s; |H_analytic − H_corpus| max 1.26e-03 rms 9.31e-05; max |Δfreq| 3 cm-1
+molecules/B_0087b72fef b3lyp: 1319 s; |H_analytic − H_corpus| max 4.27e-04 rms 7.13e-05; max |Δfreq| 1 cm-1
+molecules/B_0087b72fef wb97x: 1616 s; |H_analytic − H_corpus| max 5.07e-03 rms 1.71e-04; max |Δfreq| 4 cm-1
+molecules/B_060d1b49f7 b3lyp: 1116 s; |H_analytic − H_corpus| max 6.67e-04 rms 5.19e-05; max |Δfreq| 1 cm-1
+molecules/B_060d1b49f7 wb97x: 1359 s; |H_analytic − H_corpus| max 2.94e-03 rms 1.17e-04; max |Δfreq| 4 cm-1
+molecules/B_08267d7c1c b3lyp: 807 s; |H_analytic − H_corpus| max 2.62e-04 rms 2.10e-05; max |Δfreq| 2 cm-1
+molecules/B_08267d7c1c wb97x: 990 s; |H_analytic − H_corpus| max 1.25e-03 rms 7.46e-05; max |Δfreq| 133 cm-1
+molecules/B_0ec10fe103 b3lyp: 804 s; |H_analytic − H_corpus| max 2.06e-04 rms 2.91e-05; max |Δfreq| 0 cm-1
+molecules/B_0ec10fe103 wb97x: 997 s; |H_analytic − H_corpus| max 8.23e-04 rms 6.45e-05; max |Δfreq| 17 cm-1
+molecules/B_11644318c3 b3lyp: 1120 s; |H_analytic − H_corpus| max 3.63e-04 rms 4.84e-05; max |Δfreq| 3 cm-1
+molecules/B_11644318c3 wb97x: 1340 s; |H_analytic − H_corpus| max 3.25e-03 rms 1.46e-04; max |Δfreq| 6 cm-1
+molecules/B_145ae84fff b3lyp: 1100 s; |H_analytic − H_corpus| max 3.10e-04 rms 3.59e-05; max |Δfreq| 1 cm-1
+molecules/B_145ae84fff wb97x: 1337 s; |H_analytic − H_corpus| max 1.06e-03 rms 9.26e-05; max |Δfreq| 5 cm-1
+molecules/B_16769b963f b3lyp: 1313 s; |H_analytic − H_corpus| max 9.17e-04 rms 7.57e-05; max |Δfreq| 10 cm-1
+molecules/B_16769b963f wb97x: 1583 s; |H_analytic − H_corpus| max 1.51e-03 rms 1.02e-04; max |Δfreq| 5 cm-1
+molecules/B_1a41c96f37 b3lyp: 1107 s; |H_analytic − H_corpus| max 5.71e-04 rms 5.30e-05; max |Δfreq| 2 cm-1
+molecules/B_1a41c96f37 wb97x: 1343 s; |H_analytic − H_corpus| max 1.14e-03 rms 1.02e-04; max |Δfreq| 12 cm-1
+molecules/B_1b6397a7d1 b3lyp: 1316 s; |H_analytic − H_corpus| max 8.95e-04 rms 1.01e-04; max |Δfreq| 2 cm-1
+molecules/B_1b6397a7d1 wb97x: 1643 s; |H_analytic − H_corpus| max 7.70e-03 rms 2.22e-04; max |Δfreq| 4 cm-1
+molecules/B_20d259a841 b3lyp: 1194 s; |H_analytic − H_corpus| max 6.64e-04 rms 4.65e-05; max |Δfreq| 4 cm-1
+molecules/B_20d259a841 wb97x: 1484 s; |H_analytic − H_corpus| max 1.23e-03 rms 1.03e-04; max |Δfreq| 9 cm-1
+molecules/A2_2ca281c2d5 b3lyp: 1742 s; |H_analytic − H_corpus| max 8.26e-04 rms 9.63e-05; max |Δfreq| 1 cm-1
+molecules/A2_2ca281c2d5 wb97x: 2139 s; |H_analytic − H_corpus| max 3.52e-03 rms 1.39e-04; max |Δfreq| 3 cm-1
+molecules/B_02e7e53a1d b3lyp: 1331 s; |H_analytic − H_corpus| max 4.40e-04 rms 4.56e-05; max |Δfreq| 2 cm-1
+molecules/B_02e7e53a1d wb97x: 1670 s; |H_analytic − H_corpus| max 1.89e-03 rms 9.15e-05; max |Δfreq| 32 cm-1
+molecules/B_03bf20e8fe b3lyp: 1267 s; |H_analytic − H_corpus| max 4.38e-04 rms 3.46e-05; max |Δfreq| 2 cm-1
+molecules/B_03bf20e8fe wb97x: 1538 s; |H_analytic − H_corpus| max 4.74e-04 rms 6.04e-05; max |Δfreq| 111 cm-1
+molecules/B_08cf5b5c19 b3lyp: 1481 s; |H_analytic − H_corpus| max 5.73e-04 rms 3.84e-05; max |Δfreq| 2 cm-1
+molecules/B_08cf5b5c19 wb97x: 1761 s; |H_analytic − H_corpus| max 2.14e-03 rms 1.08e-04; max |Δfreq| 6 cm-1
+molecules/B_0e2c92bb4c b3lyp: 1606 s; |H_analytic − H_corpus| max 4.71e-04 rms 7.02e-05; max |Δfreq| 1 cm-1
+molecules/B_0e2c92bb4c wb97x: 1960 s; |H_analytic − H_corpus| max 1.11e-03 rms 1.25e-04; max |Δfreq| 14 cm-1
+molecules/B_10592ae395 b3lyp: 1476 s; |H_analytic − H_corpus| max 5.05e-04 rms 7.20e-05; max |Δfreq| 1 cm-1
+molecules/B_10592ae395 wb97x: 1828 s; |H_analytic − H_corpus| max 5.89e-03 rms 1.77e-04; max |Δfreq| 6 cm-1
+molecules/B_11c93fd131 b3lyp: 1282 s; |H_analytic − H_corpus| max 4.02e-03 rms 4.70e-04; max |Δfreq| 3 cm-1
+molecules/B_11c93fd131 wb97x: 1551 s; |H_analytic − H_corpus| max 5.81e-03 rms 5.88e-04; max |Δfreq| 22 cm-1
+molecules/B_19305ef5e7 b3lyp: 1289 s; |H_analytic − H_corpus| max 4.16e-03 rms 5.33e-04; max |Δfreq| 3 cm-1
+molecules/B_19305ef5e7 wb97x: 1567 s; |H_analytic − H_corpus| max 5.50e-03 rms 6.37e-04; max |Δfreq| 13 cm-1
+molecules/B_1a89d2e805 b3lyp: 1266 s; |H_analytic − H_corpus| max 3.45e-04 rms 3.21e-05; max |Δfreq| 1 cm-1
+molecules/B_1a89d2e805 wb97x: 1538 s; |H_analytic − H_corpus| max 1.75e-03 rms 1.10e-04; max |Δfreq| 50 cm-1
+molecules/A2_0a158816bd b3lyp: 1665 s; |H_analytic − H_corpus| max 3.24e-04 rms 4.93e-05; max |Δfreq| 0 cm-1
+molecules/A2_0a158816bd wb97x: 2034 s; |H_analytic − H_corpus| max 1.20e-03 rms 8.83e-05; max |Δfreq| 4 cm-1
+molecules/A_d9139359ab b3lyp: 1449 s; |H_analytic − H_corpus| max 3.01e-04 rms 3.80e-05; max |Δfreq| 1 cm-1
+molecules/A_d9139359ab wb97x: 1735 s; |H_analytic − H_corpus| max 6.90e-04 rms 5.97e-05; max |Δfreq| 3 cm-1
+molecules/B_026a2accef b3lyp: 1442 s; |H_analytic − H_corpus| max 3.28e-04 rms 3.15e-05; max |Δfreq| 1 cm-1
+molecules/B_026a2accef wb97x: 1727 s; |H_analytic − H_corpus| max 1.49e-03 rms 7.61e-05; max |Δfreq| 6 cm-1
+molecules/B_036fa22fe6 b3lyp: 1946 s; |H_analytic − H_corpus| max 8.17e-04 rms 8.23e-05; max |Δfreq| 3 cm-1
+molecules/B_036fa22fe6 wb97x: 2389 s; |H_analytic − H_corpus| max 2.15e-03 rms 1.82e-04; max |Δfreq| 4 cm-1
+molecules/B_05988f899b b3lyp: 1640 s; |H_analytic − H_corpus| max 3.41e-04 rms 4.43e-05; max |Δfreq| 1 cm-1
+molecules/B_05988f899b wb97x: 2007 s; |H_analytic − H_corpus| max 2.24e-03 rms 1.02e-04; max |Δfreq| 52 cm-1
+molecules/B_0a616909a3 b3lyp: 1978 s; |H_analytic − H_corpus| max 4.91e-04 rms 4.13e-05; max |Δfreq| 1 cm-1
+molecules/B_0a616909a3 wb97x: 2377 s; |H_analytic − H_corpus| max 1.93e-03 rms 1.30e-04; max |Δfreq| 17 cm-1
+molecules/B_0eba31ad8c b3lyp: 1686 s; |H_analytic − H_corpus| max 4.58e-04 rms 3.68e-05; max |Δfreq| 1 cm-1
+molecules/B_0eba31ad8c wb97x: 2046 s; |H_analytic − H_corpus| max 1.12e-03 rms 7.78e-05; max |Δfreq| 4 cm-1
+molecules/B_121eb60feb b3lyp: 1216 s; |H_analytic − H_corpus| max 2.18e-04 rms 2.16e-05; max |Δfreq| 1 cm-1
+molecules/B_121eb60feb wb97x: 1478 s; |H_analytic − H_corpus| max 1.57e-03 rms 8.09e-05; max |Δfreq| 39 cm-1
+molecules/B_16116c90de b3lyp: 1780 s; |H_analytic − H_corpus| max 8.15e-04 rms 6.41e-05; max |Δfreq| 1 cm-1
+molecules/B_16116c90de wb97x: 2204 s; |H_analytic − H_corpus| max 1.08e-03 rms 9.49e-05; max |Δfreq| 4 cm-1
+molecules/B_18e23c9240 b3lyp: 1215 s; |H_analytic − H_corpus| max 3.91e-04 rms 2.26e-05; max |Δfreq| 2 cm-1
+molecules/B_18e23c9240 wb97x: 1473 s; |H_analytic − H_corpus| max 1.07e-03 rms 7.43e-05; max |Δfreq| 80 cm-1
+molecules/B_1a05c94d86 b3lyp: 1739 s; |H_analytic − H_corpus| max 5.75e-04 rms 5.55e-05; max |Δfreq| 1 cm-1
+molecules/B_1a05c94d86 wb97x: 2193 s; |H_analytic − H_corpus| max 2.37e-03 rms 1.04e-04; max |Δfreq| 9 cm-1
+molecules/B_214d0fa910 b3lyp: 1933 s; |H_analytic − H_corpus| max 4.85e-04 rms 7.51e-05; max |Δfreq| 2 cm-1
+molecules/B_214d0fa910 wb97x: 2386 s; |H_analytic − H_corpus| max 3.30e-03 rms 1.29e-04; max |Δfreq| 3 cm-1
+molecules/B_0040149ee1 b3lyp: 1634 s; |H_analytic − H_corpus| max 4.26e-04 rms 4.95e-05; max |Δfreq| 1 cm-1
+molecules/B_0040149ee1 wb97x: 1931 s; |H_analytic − H_corpus| max 1.10e-03 rms 8.08e-05; max |Δfreq| 18 cm-1
+molecules/B_0432480a4d b3lyp: 1858 s; |H_analytic − H_corpus| max 3.46e-04 rms 3.03e-05; max |Δfreq| 1 cm-1
+molecules/B_0432480a4d wb97x: 2280 s; |H_analytic − H_corpus| max 1.35e-03 rms 8.68e-05; max |Δfreq| 13 cm-1
+molecules/B_0ae7f78374 b3lyp: 2133 s; |H_analytic − H_corpus| max 5.33e-04 rms 5.98e-05; max |Δfreq| 1 cm-1
+molecules/B_0ae7f78374 wb97x: 2597 s; |H_analytic − H_corpus| max 1.09e-03 rms 9.55e-05; max |Δfreq| 3 cm-1
+molecules/B_0cc073823e b3lyp: 2153 s; |H_analytic − H_corpus| max 4.44e-04 rms 5.54e-05; max |Δfreq| 1 cm-1
+molecules/B_0cc073823e wb97x: 2582 s; |H_analytic − H_corpus| max 3.29e-03 rms 1.12e-04; max |Δfreq| 12 cm-1
+molecules/B_12d5ca3a87 b3lyp: 2478 s; |H_analytic − H_corpus| max 4.46e-04 rms 6.07e-05; max |Δfreq| 0 cm-1
+molecules/B_12d5ca3a87 wb97x: 3016 s; |H_analytic − H_corpus| max 1.32e-03 rms 1.00e-04; max |Δfreq| 3 cm-1
+molecules/B_16760ae42b b3lyp: 1856 s; |H_analytic − H_corpus| max 4.76e-04 rms 3.61e-05; max |Δfreq| 2 cm-1
+molecules/B_16760ae42b wb97x: 2200 s; |H_analytic − H_corpus| max 1.30e-03 rms 8.72e-05; max |Δfreq| 3 cm-1
+molecules/B_1c343b5a2a b3lyp: 2342 s; |H_analytic − H_corpus| max 7.04e-04 rms 1.00e-04; max |Δfreq| 2 cm-1
+molecules/B_1c343b5a2a wb97x: 2918 s; |H_analytic − H_corpus| max 1.48e-03 rms 1.11e-04; max |Δfreq| 15 cm-1
+molecules/A2_196b4cd166 b3lyp: 2825 s; |H_analytic − H_corpus| max 1.59e-03 rms 1.87e-04; max |Δfreq| 1 cm-1
+molecules/A2_196b4cd166 wb97x: 3469 s; |H_analytic − H_corpus| max 1.99e-03 rms 1.97e-04; max |Δfreq| 4 cm-1
+molecules/B_02339c1246 b3lyp: 3104 s; |H_analytic − H_corpus| max 1.32e-03 rms 9.68e-05; max |Δfreq| 3 cm-1
+molecules/B_02339c1246 wb97x: 3793 s; |H_analytic − H_corpus| max 1.20e-03 rms 1.20e-04; max |Δfreq| 5 cm-1
+molecules/B_0603418c5b b3lyp: 2395 s; |H_analytic − H_corpus| max 4.16e-04 rms 5.88e-05; max |Δfreq| 1 cm-1
+molecules/B_0603418c5b wb97x: 2907 s; |H_analytic − H_corpus| max 1.42e-03 rms 1.05e-04; max |Δfreq| 3 cm-1
+molecules/B_0b1c04cd44 b3lyp: 2692 s; |H_analytic − H_corpus| max 1.09e-03 rms 7.92e-05; max |Δfreq| 1 cm-1
+molecules/B_0b1c04cd44 wb97x: 3282 s; |H_analytic − H_corpus| max 2.06e-03 rms 1.13e-04; max |Δfreq| 6 cm-1
+molecules/B_0f5efcc001 b3lyp: 2329 s; |H_analytic − H_corpus| max 6.39e-04 rms 6.90e-05; max |Δfreq| 1 cm-1
+molecules/B_0f5efcc001 wb97x: 2893 s; |H_analytic − H_corpus| max 8.69e-04 rms 1.00e-04; max |Δfreq| 7 cm-1
+molecules/B_14c620267d b3lyp: 2821 s; |H_analytic − H_corpus| max 1.19e-03 rms 1.08e-04; max |Δfreq| 1 cm-1
+molecules/B_14c620267d wb97x: 3437 s; |H_analytic − H_corpus| max 1.64e-03 rms 1.26e-04; max |Δfreq| 10 cm-1
+molecules/B_15f0c04aa2 b3lyp: 2497 s; |H_analytic − H_corpus| max 4.76e-04 rms 5.61e-05; max |Δfreq| 1 cm-1
+molecules/B_15f0c04aa2 wb97x: 3002 s; |H_analytic − H_corpus| max 1.14e-03 rms 9.31e-05; max |Δfreq| 5 cm-1
+molecules/B_172f389f3a b3lyp: 3179 s; |H_analytic − H_corpus| max 8.22e-04 rms 1.07e-04; max |Δfreq| 3 cm-1
+molecules/B_172f389f3a wb97x: 3894 s; |H_analytic − H_corpus| max 8.91e-04 rms 1.18e-04; max |Δfreq| 6 cm-1
+molecules/B_1d4cf70cdf b3lyp: 2836 s; |H_analytic − H_corpus| max 9.70e-04 rms 1.34e-04; max |Δfreq| 1 cm-1
+molecules/B_1d4cf70cdf wb97x: 3452 s; |H_analytic − H_corpus| max 3.39e-03 rms 1.78e-04; max |Δfreq| 10 cm-1
+molecules/A2_1c7ee11812 b3lyp: 2949 s; |H_analytic − H_corpus| max 2.22e-03 rms 2.03e-04; max |Δfreq| 1 cm-1
+molecules/A2_1c7ee11812 wb97x: 3592 s; |H_analytic − H_corpus| max 1.92e-03 rms 2.01e-04; max |Δfreq| 7 cm-1
+molecules/A2_2ade2a9b93 b3lyp: 2963 s; |H_analytic − H_corpus| max 5.35e-04 rms 6.19e-05; max |Δfreq| 1 cm-1
+molecules/A2_2ade2a9b93 wb97x: 3579 s; |H_analytic − H_corpus| max 1.08e-03 rms 9.50e-05; max |Δfreq| 5 cm-1
+molecules/A_593ba8280d b3lyp: 3733 s; |H_analytic − H_corpus| max 3.13e-03 rms 2.79e-04; max |Δfreq| 4 cm-1
+molecules/A_593ba8280d wb97x: 4623 s; |H_analytic − H_corpus| max 3.99e-03 rms 2.70e-04; max |Δfreq| 3 cm-1
+molecules/A_ea73419366 b3lyp: 2238 s; |H_analytic − H_corpus| max 5.42e-04 rms 6.10e-05; max |Δfreq| 1 cm-1
+molecules/A_ea73419366 wb97x: 2748 s; |H_analytic − H_corpus| max 7.59e-04 rms 7.85e-05; max |Δfreq| 6 cm-1
+molecules/B_031abf30e2 b3lyp: 2766 s; |H_analytic − H_corpus| max 8.52e-04 rms 1.11e-04; max |Δfreq| 1 cm-1
+molecules/B_031abf30e2 wb97x: 3283 s; |H_analytic − H_corpus| max 2.16e-03 rms 1.44e-04; max |Δfreq| 8 cm-1
+molecules/B_05bafac3c6 b3lyp: 2586 s; |H_analytic − H_corpus| max 1.10e-03 rms 7.50e-05; max |Δfreq| 1 cm-1
+molecules/B_05bafac3c6 wb97x: 3154 s; |H_analytic − H_corpus| max 1.05e-03 rms 9.09e-05; max |Δfreq| 10 cm-1
+molecules/B_0840b56da4 b3lyp: APT from the Hessian's response: sum rule 4.5e-05, 0.07 s
+molecules/B_0840b56da4 b3lyp: 3451 s; |H_analytic − H_corpus| max 4.85e-04 rms 6.96e-05; max |Δfreq| 2 cm-1
+molecules/B_0840b56da4 wb97x: 4241 s; |H_analytic − H_corpus| max 2.07e-03 rms 1.08e-04; max |Δfreq| 15 cm-1
+molecules/B_0a006a11c0 b3lyp: APT from the Hessian's response: sum rule 3.2e-05, 0.07 s
+molecules/B_0a006a11c0 b3lyp: 3520 s; |H_analytic − H_corpus| max 6.67e-04 rms 9.90e-05; max |Δfreq| 3 cm-1
+molecules/B_0a006a11c0 wb97x: 4286 s; |H_analytic − H_corpus| max 1.81e-03 rms 1.36e-04; max |Δfreq| 15 cm-1
+molecules/B_10957f41e3 b3lyp: APT from the Hessian's response: sum rule 2.5e-05, 0.14 s
+molecules/B_10957f41e3 b3lyp: 3748 s; |H_analytic − H_corpus| max 1.31e-03 rms 1.20e-04; max |Δfreq| 3 cm-1
+molecules/B_10957f41e3 wb97x: 4578 s; |H_analytic − H_corpus| max 8.41e-03 rms 1.98e-04; max |Δfreq| 5 cm-1
+molecules/B_15877240da b3lyp: APT from the Hessian's response: sum rule 5.4e-05, 0.03 s
+molecules/B_15877240da b3lyp: 3092 s; |H_analytic − H_corpus| max 6.75e-04 rms 8.77e-05; max |Δfreq| 2 cm-1
+molecules/B_15877240da wb97x: 3786 s; |H_analytic − H_corpus| max 2.92e-03 rms 1.32e-04; max |Δfreq| 12 cm-1
+molecules/B_1e03da0643 b3lyp: APT from the Hessian's response: sum rule 8.2e-05, 0.03 s
+molecules/B_1e03da0643 b3lyp: 3068 s; |H_analytic − H_corpus| max 1.35e-03 rms 1.28e-04; max |Δfreq| 1 cm-1
+molecules/B_1e03da0643 wb97x: 3779 s; |H_analytic − H_corpus| max 1.36e-03 rms 1.50e-04; max |Δfreq| 19 cm-1
+molecules/A2_192cd5911c b3lyp: APT from the Hessian's response: sum rule 3.4e-05, 0.04 s
+molecules/A2_192cd5911c b3lyp: 4277 s; |H_analytic − H_corpus| max 6.27e-04 rms 5.84e-05; max |Δfreq| 1 cm-1
+molecules/A2_192cd5911c wb97x: 5222 s; |H_analytic − H_corpus| max 1.28e-03 rms 9.93e-05; max |Δfreq| 4 cm-1
+molecules/A2_32e53836ea b3lyp: APT from the Hessian's response: sum rule 6.7e-05, 0.05 s
+molecules/A2_32e53836ea b3lyp: 3645 s; |H_analytic − H_corpus| max 1.28e-03 rms 1.17e-04; max |Δfreq| 2 cm-1
+molecules/A2_32e53836ea wb97x: 4410 s; |H_analytic − H_corpus| max 1.60e-03 rms 1.30e-04; max |Δfreq| 11 cm-1
+molecules/A2_3c35334467 b3lyp: APT from the Hessian's response: sum rule 2.6e-05, 0.06 s
+molecules/A2_3c35334467 b3lyp: 4342 s; |H_analytic − H_corpus| max 3.42e-03 rms 4.02e-04; max |Δfreq| 5 cm-1
+molecules/A2_3c35334467 wb97x: 5316 s; |H_analytic − H_corpus| max 4.28e-03 rms 4.03e-04; max |Δfreq| 4 cm-1
+molecules/B_00a6eb272d b3lyp: APT from the Hessian's response: sum rule 2.4e-05, 0.06 s
+molecules/B_00a6eb272d b3lyp: 3013 s; |H_analytic − H_corpus| max 8.74e-04 rms 8.31e-05; max |Δfreq| 1 cm-1
+molecules/B_00a6eb272d wb97x: 3650 s; |H_analytic − H_corpus| max 1.48e-03 rms 1.30e-04; max |Δfreq| 23 cm-1
+molecules/B_0187256300 b3lyp: APT from the Hessian's response: sum rule 3.0e-05, 0.06 s
+molecules/B_0187256300 b3lyp: 3604 s; |H_analytic − H_corpus| max 1.51e-03 rms 1.37e-04; max |Δfreq| 2 cm-1
+molecules/B_0187256300 wb97x: 4407 s; |H_analytic − H_corpus| max 2.57e-03 rms 1.57e-04; max |Δfreq| 4 cm-1
+molecules/B_05e6c88b0b b3lyp: APT from the Hessian's response: sum rule 1.1e-05, 0.03 s
+molecules/B_05e6c88b0b b3lyp: 3694 s; |H_analytic − H_corpus| max 1.12e-03 rms 9.35e-05; max |Δfreq| 2 cm-1
+molecules/B_05e6c88b0b wb97x: 4463 s; |H_analytic − H_corpus| max 1.77e-03 rms 1.08e-04; max |Δfreq| 5 cm-1
+molecules/B_089a8027aa b3lyp: APT from the Hessian's response: CPHF residual 3.0e-04 -> 4.9e-07 in 1 rounds, sum rule 4.9e-05, 698.9 s
+molecules/B_089a8027aa b3lyp: 3943 s; |H_analytic − H_corpus| max 6.29e-04 rms 9.38e-05; max |Δfreq| 1 cm-1
+molecules/B_089a8027aa wb97x: 3863 s; |H_analytic − H_corpus| max 5.40e-03 rms 1.40e-04; max |Δfreq| 41 cm-1
+molecules/B_0d9f38f0e5 b3lyp: APT from the Hessian's response: CPHF residual 9.2e-05 -> 4.0e-07 in 1 rounds, sum rule 6.4e-05, 846.0 s
+molecules/B_0d9f38f0e5 b3lyp: 4545 s; |H_analytic − H_corpus| max 6.02e-04 rms 9.02e-05; max |Δfreq| 2 cm-1
+molecules/B_0d9f38f0e5 wb97x: 4492 s; |H_analytic − H_corpus| max 2.88e-03 rms 1.32e-04; max |Δfreq| 5 cm-1
+molecules/B_0f11ad34af b3lyp: APT from the Hessian's response: CPHF residual 8.0e-05 -> 6.2e-07 in 1 rounds, sum rule 1.6e-04, 1001.2 s
+molecules/B_0f11ad34af b3lyp: 5336 s; |H_analytic − H_corpus| max 1.98e-03 rms 1.72e-04; max |Δfreq| 12 cm-1
+molecules/B_0f11ad34af wb97x: 5233 s; |H_analytic − H_corpus| max 1.71e-03 rms 1.84e-04; max |Δfreq| 15 cm-1
+molecules/B_1194d7a42a b3lyp: APT FAILED: CPHF residual 1.1e-06 > 1e-06 after 3 rounds
+molecules/B_1194d7a42a b3lyp: 5905 s; |H_analytic − H_corpus| max 1.32e-03 rms 1.29e-04; max |Δfreq| 3 cm-1
+molecules/B_1194d7a42a wb97x: 5050 s; |H_analytic − H_corpus| max 1.11e-03 rms 1.40e-04; max |Δfreq| 5 cm-1
+molecules/B_127dd8c4ed b3lyp: APT FAILED: CPHF residual 2.1e-06 > 1e-06 after 3 rounds
+molecules/B_127dd8c4ed b3lyp: 4899 s; |H_analytic − H_corpus| max 8.40e-04 rms 7.28e-05; max |Δfreq| 1 cm-1
+molecules/B_127dd8c4ed wb97x: 4263 s; |H_analytic − H_corpus| max 1.44e-03 rms 9.66e-05; max |Δfreq| 10 cm-1
+molecules/B_147f2de574 b3lyp: APT from the Hessian's response: CPHF residual 3.3e-04 -> 3.0e-07 in 3 rounds, sum rule 3.3e-05, 1362.1 s
+molecules/B_147f2de574 b3lyp: 4603 s; |H_analytic − H_corpus| max 5.05e-04 rms 6.83e-05; max |Δfreq| 1 cm-1
+molecules/B_147f2de574 wb97x: 3999 s; |H_analytic − H_corpus| max 8.28e-04 rms 8.55e-05; max |Δfreq| 20 cm-1
+molecules/B_19bfb20792 b3lyp: APT from the Hessian's response: CPHF residual 3.6e-04 -> 1.1e-07 in 3 rounds, sum rule 1.0e-04, 1417.0 s
+molecules/B_19bfb20792 b3lyp: 4656 s; |H_analytic − H_corpus| max 5.76e-04 rms 6.19e-05; max |Δfreq| 1 cm-1
+molecules/B_19bfb20792 wb97x: 4039 s; |H_analytic − H_corpus| max 9.82e-04 rms 9.11e-05; max |Δfreq| 13 cm-1
+molecules/A2_0805297aa2 b3lyp: APT from the Hessian's response: CPHF residual 1.7e-04 -> 8.9e-07 in 1 rounds, sum rule 1.6e-05, 1093.0 s
+molecules/A2_0805297aa2 b3lyp: 5879 s; |H_analytic − H_corpus| max 1.73e-03 rms 1.50e-04; max |Δfreq| 2 cm-1
+molecules/A2_0805297aa2 wb97x: 5918 s; |H_analytic − H_corpus| max 1.88e-03 rms 1.66e-04; max |Δfreq| 5 cm-1
+molecules/A2_0beab28c4f b3lyp: APT from the Hessian's response: CPHF residual 9.3e-05 -> 2.2e-07 in 1 rounds, sum rule 5.6e-05, 1107.2 s
+molecules/A2_0beab28c4f b3lyp: 5765 s; |H_analytic − H_corpus| max 1.12e-03 rms 1.02e-04; max |Δfreq| 2 cm-1
+molecules/A2_0beab28c4f wb97x: 5856 s; |H_analytic − H_corpus| max 1.02e-03 rms 1.21e-04; max |Δfreq| 6 cm-1
+molecules/A2_13327d8d52 b3lyp: APT from the Hessian's response: CPHF residual 4.3e-05 -> 5.7e-08 in 1 rounds, sum rule 2.4e-05, 943.0 s
+molecules/A2_13327d8d52 b3lyp: 5058 s; |H_analytic − H_corpus| max 1.94e-03 rms 1.57e-04; max |Δfreq| 2 cm-1
+molecules/A2_13327d8d52 wb97x: 5132 s; |H_analytic − H_corpus| max 1.90e-03 rms 1.57e-04; max |Δfreq| 15 cm-1
+molecules/A2_1b389dc1d8 b3lyp: APT from the Hessian's response: CPHF residual 7.3e-05 -> 1.5e-07 in 1 rounds, sum rule 5.7e-05, 942.7 s
+molecules/A2_1b389dc1d8 b3lyp: 5104 s; |H_analytic − H_corpus| max 2.75e-03 rms 1.97e-04; max |Δfreq| 3 cm-1
+molecules/A2_1b389dc1d8 wb97x: 5179 s; |H_analytic − H_corpus| max 2.38e-03 rms 1.91e-04; max |Δfreq| 7 cm-1
+molecules/A2_233ec9a78f b3lyp: APT from the Hessian's response: CPHF residual 2.1e-04 -> 5.2e-07 in 1 rounds, sum rule 7.2e-06, 1084.1 s
+molecules/A2_233ec9a78f b3lyp: 5772 s; |H_analytic − H_corpus| max 7.97e-04 rms 9.71e-05; max |Δfreq| 1 cm-1
+molecules/A2_233ec9a78f wb97x: 5825 s; |H_analytic − H_corpus| max 1.19e-03 rms 1.09e-04; max |Δfreq| 3 cm-1
+molecules/A2_2bb0e5721b b3lyp: APT from the Hessian's response: CPHF residual 2.8e-04 -> 3.9e-07 in 1 rounds, sum rule 3.2e-05, 1042.0 s
+molecules/A2_2bb0e5721b b3lyp: 5553 s; |H_analytic − H_corpus| max 2.13e-03 rms 2.60e-04; max |Δfreq| 1 cm-1
+molecules/A2_2bb0e5721b wb97x: 5586 s; |H_analytic − H_corpus| max 3.55e-03 rms 2.48e-04; max |Δfreq| 6 cm-1
+molecules/A2_362fc56435 b3lyp: APT from the Hessian's response: CPHF residual 3.0e-04 -> 7.4e-07 in 3 rounds, sum rule 2.7e-05, 2497.1 s
+molecules/A2_362fc56435 b3lyp: 7072 s; |H_analytic − H_corpus| max 3.13e-03 rms 3.26e-04; max |Δfreq| 2 cm-1
+molecules/A2_362fc56435 wb97x: 5549 s; |H_analytic − H_corpus| max 3.03e-03 rms 2.62e-04; max |Δfreq| 5 cm-1
+molecules/A_5a75c6c39e b3lyp: APT from the Hessian's response: CPHF residual 8.9e-05 -> 4.7e-07 in 1 rounds, sum rule 1.0e-04, 825.4 s
+molecules/A_5a75c6c39e b3lyp: 4365 s; |H_analytic − H_corpus| max 2.99e-04 rms 3.35e-05; max |Δfreq| 1 cm-1
+molecules/A_5a75c6c39e wb97x: 4228 s; |H_analytic − H_corpus| max 7.07e-04 rms 6.11e-05; max |Δfreq| 5 cm-1
+molecules/B_06c01c982d b3lyp: APT from the Hessian's response: CPHF residual 1.2e-04 -> 3.4e-07 in 1 rounds, sum rule 4.8e-05, 834.4 s
+molecules/B_06c01c982d b3lyp: 4610 s; |H_analytic − H_corpus| max 9.19e-04 rms 8.91e-05; max |Δfreq| 1 cm-1
+molecules/B_06c01c982d wb97x: 4542 s; |H_analytic − H_corpus| max 1.85e-03 rms 1.21e-04; max |Δfreq| 9 cm-1
+molecules/B_0b76f8c1dc b3lyp: APT from the Hessian's response: CPHF residual 2.7e-04 -> 2.4e-07 in 3 rounds, sum rule 1.3e-04, 1741.5 s
+molecules/B_0b76f8c1dc b3lyp: 5760 s; |H_analytic − H_corpus| max 9.87e-04 rms 9.19e-05; max |Δfreq| 1 cm-1
+molecules/B_0b76f8c1dc wb97x: 4802 s; |H_analytic − H_corpus| max 4.66e-03 rms 1.24e-04; max |Δfreq| 4 cm-1
+molecules/B_0e645723bb b3lyp: APT from the Hessian's response: CPHF residual 2.1e-04 -> 7.4e-07 in 2 rounds, sum rule 4.8e-05, 1515.2 s
+molecules/B_0e645723bb b3lyp: 6004 s; |H_analytic − H_corpus| max 8.98e-04 rms 1.17e-04; max |Δfreq| 1 cm-1
+molecules/B_0e645723bb wb97x: 5409 s; |H_analytic − H_corpus| max 1.70e-03 rms 1.43e-04; max |Δfreq| 4 cm-1
+molecules/B_0f2bb0d3e4 b3lyp: APT from the Hessian's response: CPHF residual 6.5e-04 -> 4.9e-07 in 2 rounds, sum rule 2.6e-05, 1993.4 s
+molecules/B_0f2bb0d3e4 b3lyp: 7727 s; |H_analytic − H_corpus| max 1.67e-03 rms 1.44e-04; max |Δfreq| 39 cm-1
+molecules/B_0f2bb0d3e4 wb97x: 6827 s; |H_analytic − H_corpus| max 1.56e-03 rms 1.51e-04; max |Δfreq| 9 cm-1
+molecules/B_14b7317536 b3lyp: APT from the Hessian's response: CPHF residual 1.0e-04 -> 6.0e-07 in 1 rounds, sum rule 6.4e-05, 1326.2 s
+molecules/B_14b7317536 b3lyp: 6801 s; |H_analytic − H_corpus| max 1.48e-03 rms 1.71e-04; max |Δfreq| 45 cm-1
+molecules/B_14b7317536 wb97x: 6723 s; |H_analytic − H_corpus| max 1.82e-03 rms 1.83e-04; max |Δfreq| 10 cm-1
+molecules/B_1a4619e980 b3lyp: APT from the Hessian's response: CPHF residual 1.3e-04 -> 8.6e-07 in 1 rounds, sum rule 1.5e-04, 1127.8 s
+molecules/B_1a4619e980 b3lyp: 6102 s; |H_analytic − H_corpus| max 2.12e-03 rms 2.32e-04; max |Δfreq| 10 cm-1
+molecules/B_1a4619e980 wb97x: 6029 s; |H_analytic − H_corpus| max 2.19e-03 rms 2.32e-04; max |Δfreq| 4 cm-1
+molecules/B_1f4942051b b3lyp: APT from the Hessian's response: CPHF residual 2.2e-04 -> 8.1e-07 in 2 rounds, sum rule 5.0e-05, 1472.2 s
+molecules/B_1f4942051b b3lyp: 5981 s; |H_analytic − H_corpus| max 9.70e-04 rms 9.81e-05; max |Δfreq| 2 cm-1
+molecules/B_1f4942051b wb97x: 5498 s; |H_analytic − H_corpus| max 3.22e-03 rms 1.48e-04; max |Δfreq| 3 cm-1
+molecules/B_229097be00 b3lyp: APT from the Hessian's response: CPHF residual 1.9e-04 -> 6.1e-07 in 2 rounds, sum rule 4.7e-05, 1714.0 s
+molecules/B_229097be00 b3lyp: 6737 s; |H_analytic − H_corpus| max 9.99e-04 rms 1.30e-04; max |Δfreq| 1 cm-1
+molecules/B_229097be00 wb97x: 6187 s; |H_analytic − H_corpus| max 2.96e-03 rms 1.76e-04; max |Δfreq| 5 cm-1
+molecules/B_2649ddf309 b3lyp: APT from the Hessian's response: CPHF residual 9.2e-05 -> 9.2e-07 in 2 rounds, sum rule 5.9e-05, 1560.5 s
+molecules/B_2649ddf309 b3lyp: 6546 s; |H_analytic − H_corpus| max 1.82e-03 rms 2.23e-04; max |Δfreq| 3 cm-1
+molecules/B_2649ddf309 wb97x: 6047 s; |H_analytic − H_corpus| max 2.32e-03 rms 2.21e-04; max |Δfreq| 6 cm-1
+molecules/B_2a36ca9ac1 b3lyp: APT from the Hessian's response: CPHF residual 8.7e-05 -> 1.5e-07 in 1 rounds, sum rule 3.7e-05, 864.7 s
+molecules/B_2a36ca9ac1 b3lyp: 4571 s; |H_analytic − H_corpus| max 4.63e-04 rms 3.78e-05; max |Δfreq| 1 cm-1
+molecules/B_2a36ca9ac1 wb97x: 4494 s; |H_analytic − H_corpus| max 1.73e-03 rms 6.35e-05; max |Δfreq| 12 cm-1
+molecules/B_2de8fb1eb7 b3lyp: APT from the Hessian's response: CPHF residual 1.4e-04 -> 4.7e-07 in 1 rounds, sum rule 7.8e-05, 931.6 s
+molecules/B_2de8fb1eb7 b3lyp: 5017 s; |H_analytic − H_corpus| max 7.78e-04 rms 1.05e-04; max |Δfreq| 2 cm-1
+molecules/B_2de8fb1eb7 wb97x: 4953 s; |H_analytic − H_corpus| max 9.72e-04 rms 1.17e-04; max |Δfreq| 21 cm-1
+molecules/B_3073cf440f b3lyp: APT from the Hessian's response: CPHF residual 1.8e-04 -> 3.0e-07 in 2 rounds, sum rule 3.3e-05, 1526.7 s
+molecules/B_3073cf440f b3lyp: 6130 s; |H_analytic − H_corpus| max 7.35e-04 rms 9.61e-05; max |Δfreq| 1 cm-1
+molecules/B_3073cf440f wb97x: 5601 s; |H_analytic − H_corpus| max 1.93e-03 rms 1.21e-04; max |Δfreq| 6 cm-1
+molecules/B_33d8be45fb b3lyp: APT from the Hessian's response: CPHF residual 2.8e-04 -> 2.9e-07 in 2 rounds, sum rule 4.7e-05, 1592.6 s
+molecules/B_33d8be45fb b3lyp: 6313 s; |H_analytic − H_corpus| max 6.99e-04 rms 8.78e-05; max |Δfreq| 1 cm-1
+molecules/B_33d8be45fb wb97x: 5650 s; |H_analytic − H_corpus| max 3.41e-03 rms 1.19e-04; max |Δfreq| 7 cm-1
+molecules/B_384acde0d7 b3lyp: APT from the Hessian's response: CPHF residual 1.0e-04 -> 7.8e-07 in 1 rounds, sum rule 9.1e-05, 1185.1 s
+molecules/B_384acde0d7 b3lyp: 6204 s; |H_analytic − H_corpus| max 1.03e-03 rms 1.26e-04; max |Δfreq| 7 cm-1
+molecules/B_384acde0d7 wb97x: 6138 s; |H_analytic − H_corpus| max 3.45e-03 rms 1.53e-04; max |Δfreq| 3 cm-1
+molecules/B_3d9990c9a4 b3lyp: APT from the Hessian's response: CPHF residual 1.5e-04 -> 4.4e-07 in 1 rounds, sum rule 6.1e-05, 1004.7 s
+molecules/B_3d9990c9a4 b3lyp: 5539 s; |H_analytic − H_corpus| max 7.90e-04 rms 1.09e-04; max |Δfreq| 1 cm-1
+molecules/B_3d9990c9a4 wb97x: 5466 s; |H_analytic − H_corpus| max 5.16e-03 rms 1.65e-04; max |Δfreq| 4 cm-1
+molecules/B_41b77b2d26 b3lyp: APT from the Hessian's response: CPHF residual 1.3e-04 -> 4.5e-07 in 1 rounds, sum rule 5.0e-05, 834.0 s
+molecules/B_41b77b2d26 b3lyp: 4591 s; |H_analytic − H_corpus| max 9.51e-04 rms 9.76e-05; max |Δfreq| 1 cm-1
+molecules/B_41b77b2d26 wb97x: 4615 s; |H_analytic − H_corpus| max 1.90e-03 rms 1.26e-04; max |Δfreq| 8 cm-1
+molecules/B_44b54cd514 b3lyp: APT from the Hessian's response: CPHF residual 8.9e-05 -> 3.4e-07 in 1 rounds, sum rule 7.4e-05, 793.6 s
+molecules/B_44b54cd514 b3lyp: 4338 s; |H_analytic − H_corpus| max 7.51e-04 rms 8.14e-05; max |Δfreq| 1 cm-1
+molecules/B_44b54cd514 wb97x: 4292 s; |H_analytic − H_corpus| max 2.09e-03 rms 1.13e-04; max |Δfreq| 8 cm-1
+molecules/B_4b3014cbe9 b3lyp: APT from the Hessian's response: CPHF residual 2.0e-04 -> 3.3e-07 in 1 rounds, sum rule 3.9e-05, 886.6 s
+molecules/B_4b3014cbe9 b3lyp: 4965 s; |H_analytic − H_corpus| max 6.56e-04 rms 7.65e-05; max |Δfreq| 3 cm-1
+molecules/B_4b3014cbe9 wb97x: 4855 s; |H_analytic − H_corpus| max 1.74e-03 rms 1.12e-04; max |Δfreq| 4 cm-1
+molecules/B_4ff67f9ea2 b3lyp: APT from the Hessian's response: CPHF residual 2.4e-04 -> 6.7e-07 in 2 rounds, sum rule 2.7e-05, 1349.2 s
+molecules/B_4ff67f9ea2 b3lyp: 5368 s; |H_analytic − H_corpus| max 1.33e-03 rms 1.86e-04; max |Δfreq| 2 cm-1
+molecules/B_4ff67f9ea2 wb97x: 4925 s; |H_analytic − H_corpus| max 4.09e-03 rms 2.16e-04; max |Δfreq| 5 cm-1
+molecules/B_52f62c79be b3lyp: APT from the Hessian's response: CPHF residual 2.4e-04 -> 6.3e-07 in 1 rounds, sum rule 3.0e-05, 1107.9 s
+molecules/B_52f62c79be b3lyp: 5796 s; |H_analytic − H_corpus| max 1.32e-03 rms 1.73e-04; max |Δfreq| 1 cm-1
+molecules/B_52f62c79be wb97x: 5694 s; |H_analytic − H_corpus| max 4.54e-03 rms 2.10e-04; max |Δfreq| 3 cm-1
+molecules/B_55aa555efc b3lyp: APT from the Hessian's response: CPHF residual 1.8e-04 -> 8.5e-08 in 1 rounds, sum rule 8.0e-05, 822.7 s
+molecules/B_55aa555efc b3lyp: 4487 s; |H_analytic − H_corpus| max 5.09e-04 rms 5.73e-05; max |Δfreq| 6 cm-1
+molecules/B_55aa555efc wb97x: 4274 s; |H_analytic − H_corpus| max 2.70e-03 rms 1.02e-04; max |Δfreq| 9 cm-1
+molecules/B_59db3ebea5 b3lyp: APT from the Hessian's response: CPHF residual 1.2e-04 -> 3.8e-07 in 1 rounds, sum rule 5.0e-05, 704.3 s
+molecules/B_59db3ebea5 b3lyp: 3872 s; |H_analytic − H_corpus| max 6.78e-04 rms 6.57e-05; max |Δfreq| 1 cm-1
+molecules/B_59db3ebea5 wb97x: 3824 s; |H_analytic − H_corpus| max 1.22e-03 rms 8.78e-05; max |Δfreq| 14 cm-1
+molecules/B_604ba46268 b3lyp: APT from the Hessian's response: CPHF residual 8.6e-05 -> 1.8e-07 in 1 rounds, sum rule 1.4e-04, 803.0 s
+molecules/B_604ba46268 b3lyp: 4374 s; |H_analytic − H_corpus| max 8.46e-04 rms 5.89e-05; max |Δfreq| 1 cm-1
+molecules/B_604ba46268 wb97x: 4310 s; |H_analytic − H_corpus| max 1.63e-03 rms 9.27e-05; max |Δfreq| 5 cm-1
+molecules/B_6342ef9897 b3lyp: APT from the Hessian's response: CPHF residual 6.3e-05 -> 2.5e-07 in 1 rounds, sum rule 1.4e-04, 946.6 s
+molecules/B_6342ef9897 b3lyp: 5108 s; |H_analytic − H_corpus| max 7.96e-04 rms 8.86e-05; max |Δfreq| 1 cm-1
+molecules/B_6342ef9897 wb97x: 5088 s; |H_analytic − H_corpus| max 1.94e-03 rms 1.23e-04; max |Δfreq| 7 cm-1

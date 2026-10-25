@@ -1,0 +1,66 @@
+[2026-09-24 11:30:58] E8 FD Hessian: 18 atoms, cc-pvdz, frozen 6, step 0.005 bohr, 108 displacements, 10 threads
+[2026-09-24 11:31:18] E8 FD Hessian: 18 atoms, cc-pvdz, frozen 6, step 0.005 bohr, 108 displacements, 10 threads
+[2026-09-24 11:31:38] E8 FD Hessian: 18 atoms, cc-pvdz, frozen 6, step 0.005 bohr, 108 displacements, 10 threads
+[2026-09-24 17:20:56] reference: E = -384.801835708, max|grad| 1.10e-02, 20998 s
+[2026-09-24 17:20:56] symmetry: 8 operations, orbits [[0, 1, 5, 6], [2, 4, 7, 9], [3, 8], [10, 11, 14, 15], [12, 13, 16, 17]], 15 displacements (30 gradients) instead of 108
+[2026-09-24 17:20:56] partial run: displacement indices [0, 1, 2, 6, 7]
+[2026-09-24 17:21:06] E8 FD Hessian: 18 atoms, cc-pvdz, frozen 6, step 0.005 bohr, 108 displacements, 6 threads
+[2026-09-24 17:21:06] E8 FD Hessian: 18 atoms, cc-pvdz, frozen 6, step 0.005 bohr, 108 displacements, 6 threads
+[2026-09-24 17:21:06] symmetry: 8 operations, orbits [[0, 1, 5, 6], [2, 4, 7, 9], [3, 8], [10, 11, 14, 15], [12, 13, 16, 17]], 15 displacements (30 gradients) instead of 108
+[2026-09-24 17:21:06] partial run: displacement indices [4, 3, 9]
+[2026-09-24 17:21:06] symmetry: 8 operations, orbits [[0, 1, 5, 6], [2, 4, 7, 9], [3, 8], [10, 11, 14, 15], [12, 13, 16, 17]], 15 displacements (30 gradients) instead of 108
+[2026-09-24 17:21:06] partial run: displacement indices [14, 13, 8]
+[2026-09-24 17:23:02] reference: E = -384.801835708, max|grad| 1.10e-02, 21104 s
+[2026-09-24 17:23:02] symmetry: 8 operations, orbits [[0, 1, 5, 6], [2, 4, 7, 9], [3, 8], [10, 11, 14, 15], [12, 13, 16, 17]], 15 displacements (30 gradients) instead of 108
+[2026-09-24 17:23:02] partial run: displacement indices [8, 9, 10, 11, 30]
+[2026-09-24 17:23:20] reference: E = -384.801835708, max|grad| 1.10e-02, 21101 s
+[2026-09-24 17:23:20] symmetry: 8 operations, orbits [[0, 1, 5, 6], [2, 4, 7, 9], [3, 8], [10, 11, 14, 15], [12, 13, 16, 17]], 15 displacements (30 gradients) instead of 108
+[2026-09-24 17:23:20] partial run: displacement indices [31, 32, 36, 37, 38]
+[2026-09-25 00:18:03] coordinate  0 p: E − E0 =    -38.07 µE_h, 25027 s  (1/108 gradients)
+[2026-09-25 00:21:40] coordinate 31 p: E − E0 =    -14.96 µE_h, 25100 s  (2/108 gradients)
+[2026-09-25 00:21:40] coordinate  8 p: E − E0 =     +3.70 µE_h, 25118 s  (3/108 gradients)
+[2026-09-25 00:53:17] coordinate 14 p: E − E0 =     +4.47 µE_h, 27131 s  (4/108 gradients)
+[2026-09-25 00:55:59] coordinate  4 p: E − E0 =    -11.46 µE_h, 27294 s  (5/108 gradients)
+[2026-09-25 07:49:00] coordinate  0 m: E − E0 =    +34.95 µE_h, 27057 s  (6/108 gradients)
+[2026-09-25 07:51:28] coordinate  8 m: E − E0 =     -1.19 µE_h, 26988 s  (7/108 gradients)
+[2026-09-25 07:51:52] coordinate 31 m: E − E0 =     +9.77 µE_h, 27012 s  (8/108 gradients)
+[2026-09-25 09:04:20] coordinate  4 m: E − E0 =    +12.86 µE_h, 29301 s  (9/108 gradients)
+[2026-09-25 09:04:48] coordinate 14 m: E − E0 =     -1.78 µE_h, 29491 s  (10/108 gradients)
+[2026-09-25 16:55:53] coordinate  1 p: E − E0 =     +3.91 µE_h, 32813 s  (11/108 gradients)
+[2026-09-25 16:56:58] coordinate  9 p: E − E0 =     +0.87 µE_h, 32730 s  (12/108 gradients)
+[2026-09-25 17:02:21] coordinate 32 p: E − E0 =     -3.40 µE_h, 33029 s  (13/108 gradients)
+[2026-09-25 19:00:56] coordinate  3 p: E − E0 =    -36.41 µE_h, 35796 s  (14/108 gradients)
+[2026-09-25 19:04:42] coordinate 13 p: E − E0 =    +34.85 µE_h, 35994 s  (15/108 gradients)
+[2026-09-26 02:22:49] coordinate  1 m: E − E0 =     -2.49 µE_h, 34016 s  (16/108 gradients)
+[2026-09-26 02:23:51] coordinate  9 m: E − E0 =    -11.47 µE_h, 34014 s  (17/108 gradients)
+[2026-09-26 02:30:32] coordinate 32 m: E − E0 =     +3.69 µE_h, 34091 s  (18/108 gradients)
+[2026-09-26 05:16:41] coordinate  3 m: E − E0 =    +33.09 µE_h, 36945 s  (19/108 gradients)
+[2026-09-26 05:16:41] partial run done; merge grad_*.npy files and rerun without --ks to assemble the Hessian
+[2026-09-26 05:18:57] coordinate 13 m: E − E0 =    -20.14 µE_h, 36855 s  (20/108 gradients)
+[2026-09-26 05:18:57] partial run done; merge grad_*.npy files and rerun without --ks to assemble the Hessian
+[2026-09-26 10:48:59] coordinate  2 p: E − E0 =     -2.36 µE_h, 30370 s  (21/108 gradients)
+[2026-09-26 10:51:31] coordinate 10 p: E − E0 =    -45.34 µE_h, 30459 s  (22/108 gradients)
+[2026-09-26 10:54:15] coordinate 36 p: E − E0 =     -9.37 µE_h, 30224 s  (23/108 gradients)
+[2026-09-26 18:27:50] coordinate  2 m: E − E0 =     +4.72 µE_h, 27531 s  (24/108 gradients)
+[2026-09-26 18:31:18] coordinate 10 m: E − E0 =    +50.73 µE_h, 27587 s  (25/108 gradients)
+[2026-09-26 18:31:56] coordinate 36 m: E − E0 =     +9.53 µE_h, 27461 s  (26/108 gradients)
+[2026-09-27 01:15:06] coordinate  6 p: E − E0 =     -0.72 µE_h, 24436 s  (27/108 gradients)
+[2026-09-27 01:20:00] coordinate 11 p: E − E0 =     -3.85 µE_h, 24523 s  (28/108 gradients)
+[2026-09-27 01:21:00] coordinate 37 p: E − E0 =    +41.21 µE_h, 24544 s  (29/108 gradients)
+[2026-09-27 07:57:29] coordinate  6 m: E − E0 =    +11.59 µE_h, 24143 s  (30/108 gradients)
+[2026-09-27 08:02:15] coordinate 11 m: E − E0 =     +6.07 µE_h, 24135 s  (31/108 gradients)
+[2026-09-27 08:02:58] coordinate 37 m: E − E0 =    -57.60 µE_h, 24118 s  (32/108 gradients)
+[2026-09-27 14:42:15] coordinate  7 p: E − E0 =    +33.34 µE_h, 24286 s  (33/108 gradients)
+[2026-09-27 14:48:01] coordinate 38 p: E − E0 =     +5.13 µE_h, 24304 s  (34/108 gradients)
+[2026-09-27 14:48:11] coordinate 30 p: E − E0 =    -22.08 µE_h, 24356 s  (35/108 gradients)
+[2026-09-27 21:26:26] coordinate  7 m: E − E0 =    -20.50 µE_h, 24250 s  (36/108 gradients)
+[2026-09-27 21:26:26] partial run done; merge grad_*.npy files and rerun without --ks to assemble the Hessian
+[2026-09-27 21:31:16] coordinate 38 m: E − E0 =     -4.77 µE_h, 24195 s  (37/108 gradients)
+[2026-09-27 21:31:16] partial run done; merge grad_*.npy files and rerun without --ks to assemble the Hessian
+[2026-09-27 21:32:01] coordinate 30 m: E − E0 =    +19.18 µE_h, 24229 s  (38/108 gradients)
+[2026-09-27 21:32:01] partial run done; merge grad_*.npy files and rerun without --ks to assemble the Hessian
+[2026-09-27 21:32:01] E8 FD Hessian: 18 atoms, cc-pvdz, frozen 6, step 0.005 bohr, 108 displacements, 24 threads
+[2026-09-27 21:32:01] symmetry: 8 operations, orbits [[0, 1, 5, 6], [2, 4, 7, 9], [3, 8], [10, 11, 14, 15], [12, 13, 16, 17]], 15 displacements (30 gradients) instead of 108
+[2026-09-27 21:32:01] symmetry reconstruction: spread of multiply-reached rows 2.21e-02 a.u.; self-check 8.7e-13
+[2026-09-27 21:32:01] Hessian written; FD asymmetry max 2.21e-02 a.u.; frequencies (cm-1): [0, 0, 0, 0, 132, 150, 349, 359, 433, 451, 520, 521, 566, 600, 637, 684, 766, 801, 817, 834, 915, 924, 928, 943, 961, 986, 1144, 1155, 1169, 1208, 1236, 1334, 1350, 1355, 1368, 1423, 1463, 1469, 1556, 1681, 1731, 1884, 2086, 2103, 3307, 3309, 3402, 3402]
+[2026-09-27 21:32:01] two-route checks: six lowest |freq| after projection [7795.9, 7609.5, 5647.7, 5574.1, 0.0, 0.0] (translations/rotations → ~0)

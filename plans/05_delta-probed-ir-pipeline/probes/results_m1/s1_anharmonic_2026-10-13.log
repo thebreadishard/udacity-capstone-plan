@@ -1,0 +1,2 @@
+=== (S1) waiting for /^=== \(F5\) (laptop runner finished|STOP file|COPY FAILED|NO CANDIDATE)/ in probes/results_m1/fivering_laptop_2026-10-10.log 2026-10-13 08:40:26
+=== (S1) laptop waiter stopped 2026-10-13 20:04:03: S1 moved to the CPX62 's1' (registration amendment 1); this log ends here

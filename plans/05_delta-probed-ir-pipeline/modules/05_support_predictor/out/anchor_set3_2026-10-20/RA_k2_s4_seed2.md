@@ -1,0 +1,68 @@
+# T3 — leave-one-anchor-out transfer to CCSD(T)/cc-pVDZ (2026-10-20 21:30)
+
+Model `E7_rungC_chain34_kdfamily_750_2026-10-05_model_n750_seed2.pt` ({'pattern': 'f', 'aux_mode': 'both', 'aux_target': 'projected', 'n': 750, 'seed': 2}); fine-tune 300 epochs at lr 0.001, aux weight 1; low levels {'A_8448043181': 'hessian_b3lyp_analytic.npz', 'A_01f3186607': 'hessian_b3lyp_analytic.npz', 'A_6e858b26e5': 'hessian_b3lyp_analytic.npz', 'B_8b12a55d3a': 'hessian_b3lyp_analytic.npz', 'A_3100da3761': 'hessian_b3lyp_analytic.npz', 'A_a1e6ec1862': 'hessian_b3lyp_analytic.npz', 'A_d09f8d1ef8': 'hessian_b3lyp_analytic.npz', 'A_d9139359ab': 'hessian_b3lyp_analytic.npz'}.
+
+| held-out anchor | read-out | zero rule | α scaling (training anchors) | network as is | network, α tuned | network, head tuned | head tuned, L2 1 |
+|---|---|---|---|---|---|---|---|
+| A_01f3186607 | ring-coupling ratio | 1.00 | 0.96 | 2.35 | 1.29 | 0.54 | 0.78 |
+| A_01f3186607 | ω rms, all modes (cm⁻¹) | 21.12 | 9.50 | 42.29 | 11.72 | 6.18 | 9.63 |
+| A_01f3186607 | ΔH residual | 1.00 | 0.73 | 2.21 | 0.86 | 0.43 | 0.66 |
+| A_01f3186607 | ω rms ring-ip (cm⁻¹) | 16.40 | 7.50 | 28.43 | 6.50 | 1.77 | 3.43 |
+| A_01f3186607 | ω rms CH-stretch (cm⁻¹) | 33.25 | 11.09 | 77.02 | 6.91 | 6.70 | 1.04 |
+| A_01f3186607 | ω rms CH-oop (cm⁻¹) | 21.15 | 11.36 | 43.03 | 20.17 | 10.64 | 18.39 |
+| A_01f3186607 | ω rms other (cm⁻¹) | 17.20 | 9.63 | 25.37 | 12.53 | 6.04 | 10.44 |
+| A_01f3186607 | per-family diag rms, head tuned | — | — | — | — | CH-stretch 6.4, CH-oop 10.3, ring-ip 1.8, other 5.8 |
+| A_3100da3761 | ring-coupling ratio | 1.00 | 1.08 | 2.17 | 0.97 | 0.81 | 0.58 |
+| A_3100da3761 | ω rms, all modes (cm⁻¹) | 22.78 | 10.11 | 45.03 | 21.16 | 16.71 | 19.25 |
+| A_3100da3761 | ΔH residual | 1.00 | 0.65 | 1.66 | 0.74 | 0.78 | 0.69 |
+| A_3100da3761 | ω rms ring-ip (cm⁻¹) | 15.42 | 5.42 | 28.39 | 3.61 | 3.51 | 2.46 |
+| A_3100da3761 | ω rms CH-stretch (cm⁻¹) | 35.41 | 2.91 | 78.77 | 5.53 | 1.49 | 2.48 |
+| A_3100da3761 | ω rms CH-oop (cm⁻¹) | 13.96 | 11.56 | 30.53 | 9.31 | 7.01 | 9.17 |
+| A_3100da3761 | ω rms other (cm⁻¹) | 26.13 | 14.75 | 45.41 | 37.34 | 29.60 | 34.08 |
+| A_3100da3761 | spectrum overlap (CC APT) | 0.479 | 0.643 | 0.148 | 0.644 | 0.832 | 0.685 |
+| A_3100da3761 | intensity rel. rms, modes matched by eigenvector (CC APT) | 0.258 | 0.261 | 0.368 | 0.470 | 0.322 | 0.422 |
+| A_3100da3761 | intensity rel. rms (CC APT) | 0.258 | 2.295 | 0.368 | 0.471 | 0.322 | 0.422 |
+| A_3100da3761 | per-family diag rms, head tuned | — | — | — | — | CH-stretch 1.7, CH-oop 7.6, ring-ip 3.4, other 30.3 |
+| A_6e858b26e5 | ring-coupling ratio | 1.00 | 1.12 | 2.27 | 0.97 | 0.61 | 0.77 |
+| A_6e858b26e5 | ω rms, all modes (cm⁻¹) | 19.09 | 11.07 | 41.06 | 8.75 | 4.97 | 6.97 |
+| A_6e858b26e5 | ΔH residual | 1.00 | 0.52 | 2.56 | 0.64 | 0.30 | 0.41 |
+| A_6e858b26e5 | ω rms ring-ip (cm⁻¹) | 14.88 | 8.00 | 27.44 | 7.51 | 2.44 | 4.96 |
+| A_6e858b26e5 | ω rms CH-stretch (cm⁻¹) | 35.58 | 7.90 | 79.15 | 4.23 | 1.97 | 1.03 |
+| A_6e858b26e5 | ω rms CH-oop (cm⁻¹) | 5.40 | 18.99 | 22.78 | 12.74 | 9.43 | 11.50 |
+| A_6e858b26e5 | ω rms other (cm⁻¹) | 13.02 | 3.97 | 22.59 | 9.06 | 3.30 | 7.38 |
+| A_6e858b26e5 | spectrum overlap (CC APT) | 0.626 | 0.602 | 0.207 | 0.690 | 0.814 | 0.746 |
+| A_6e858b26e5 | intensity rel. rms, modes matched by eigenvector (CC APT) | 0.262 | 0.277 | 0.344 | 0.343 | 0.110 | 0.315 |
+| A_6e858b26e5 | intensity rel. rms (CC APT) | 0.300 | 0.311 | 0.371 | 0.343 | 0.110 | 0.315 |
+| A_6e858b26e5 | per-family diag rms, head tuned | — | — | — | — | CH-stretch 2.0, CH-oop 9.4, ring-ip 2.4, other 3.2 |
+| A_8448043181 | ring-coupling ratio | 1.00 | 1.07 | 1.80 | 0.58 | 0.19 | 0.52 |
+| A_8448043181 | ω rms, all modes (cm⁻¹) | 21.43 | 11.19 | 43.42 | 7.12 | 8.16 | 7.57 |
+| A_8448043181 | ΔH residual | 1.00 | 0.55 | 2.18 | 0.73 | 0.46 | 0.63 |
+| A_8448043181 | ω rms ring-ip (cm⁻¹) | 14.14 | 8.61 | 25.95 | 6.61 | 3.93 | 6.06 |
+| A_8448043181 | ω rms CH-stretch (cm⁻¹) | 38.65 | 5.03 | 82.30 | 1.85 | 9.58 | 6.46 |
+| A_8448043181 | ω rms CH-oop (cm⁻¹) | 14.86 | 20.83 | 28.29 | 9.98 | 10.98 | 11.50 |
+| A_8448043181 | ω rms other (cm⁻¹) | 13.31 | 2.72 | 21.75 | 8.21 | 10.21 | 6.26 |
+| A_8448043181 | spectrum overlap (CC APT) | 0.257 | 0.298 | 0.556 | 0.371 | 0.549 | 0.342 |
+| A_8448043181 | intensity rel. rms, modes matched by eigenvector (CC APT) | 0.003 | 0.006 | 0.022 | 0.011 | 0.001 | 0.006 |
+| A_8448043181 | intensity rel. rms (CC APT) | 0.734 | 0.734 | 0.734 | 0.734 | 0.734 | 0.734 |
+| A_8448043181 | per-family diag rms, head tuned | — | — | — | — | CH-stretch 9.5, CH-oop 13.8, ring-ip 3.8, other 11.6 |
+| A_a1e6ec1862 | ring-coupling ratio | 1.00 | 0.98 | 2.04 | 1.41 | 0.74 | 0.94 |
+| A_a1e6ec1862 | ω rms, all modes (cm⁻¹) | 21.49 | 9.87 | 41.91 | 12.88 | 8.27 | 10.39 |
+| A_a1e6ec1862 | ΔH residual | 1.00 | 0.80 | 2.19 | 1.01 | 0.60 | 0.74 |
+| A_a1e6ec1862 | ω rms ring-ip (cm⁻¹) | 16.72 | 8.17 | 30.05 | 9.82 | 3.35 | 5.62 |
+| A_a1e6ec1862 | ω rms CH-stretch (cm⁻¹) | 32.88 | 12.21 | 76.88 | 6.84 | 4.38 | 1.02 |
+| A_a1e6ec1862 | ω rms CH-oop (cm⁻¹) | 26.43 | 13.40 | 46.46 | 21.60 | 14.75 | 19.91 |
+| A_a1e6ec1862 | ω rms other (cm⁻¹) | 16.46 | 8.38 | 24.82 | 12.62 | 9.24 | 10.42 |
+| A_a1e6ec1862 | per-family diag rms, head tuned | — | — | — | — | CH-stretch 4.1, CH-oop 15.9, ring-ip 3.3, other 9.1 |
+| B_8b12a55d3a | ring-coupling ratio | 1.00 | 1.14 | 2.19 | 1.17 | 0.58 | 0.76 |
+| B_8b12a55d3a | ω rms, all modes (cm⁻¹) | 18.96 | 9.26 | 39.49 | 7.71 | 3.24 | 5.47 |
+| B_8b12a55d3a | ΔH residual | 1.00 | 0.49 | 2.31 | 0.63 | 0.22 | 0.47 |
+| B_8b12a55d3a | ω rms ring-ip (cm⁻¹) | 16.20 | 5.75 | 27.32 | 4.57 | 1.47 | 2.69 |
+| B_8b12a55d3a | ω rms CH-stretch (cm⁻¹) | 34.71 | 8.99 | 77.83 | 6.70 | 1.16 | 1.32 |
+| B_8b12a55d3a | ω rms CH-oop (cm⁻¹) | 8.29 | 18.01 | 27.62 | 11.35 | 7.01 | 9.22 |
+| B_8b12a55d3a | ω rms other (cm⁻¹) | 12.60 | 4.34 | 21.61 | 9.13 | 2.12 | 6.88 |
+| B_8b12a55d3a | spectrum overlap (CC APT) | 0.390 | 0.672 | 0.186 | 0.724 | 0.867 | 0.769 |
+| B_8b12a55d3a | intensity rel. rms, modes matched by eigenvector (CC APT) | 0.104 | 0.173 | 0.199 | 0.209 | 0.045 | 0.152 |
+| B_8b12a55d3a | intensity rel. rms (CC APT) | 0.288 | 0.309 | 0.199 | 0.326 | 0.281 | 0.297 |
+| B_8b12a55d3a | per-family diag rms, head tuned | — | — | — | — | CH-stretch 1.2, CH-oop 7.2, ring-ip 1.7, other 2.1 |
+
+628 s.

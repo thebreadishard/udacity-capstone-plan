@@ -1,0 +1,3 @@
+CHAIN armed 2026-09-17 11:40:59: waiting for the anchor run to seal its result (max 12 days)
+=== re-armed 2026-09-18 07:19:36 after the REPORT.md correction (old chain pid 25899 killed)
+CHAIN armed 2026-09-18 07:19:36: waiting for the anchor run to write REPORT.md (its last action) (max 12 days)

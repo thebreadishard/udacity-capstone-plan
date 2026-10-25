@@ -1,0 +1,35 @@
+33 evaluation molecules (13 parents); pool band; seeds [0, 1, 2]; checkpoints 60; λ (1e-06, 1e-05); noise σ 0.0; P2 yes; adaptive yes
+  1/33 A2_00b0ff5a24 M 81: K_off(0.3) P0 None P1 None oracle None; 2544 s
+  2/33 A2_04719edc88 M 72: K_off(0.3) P0 None P1 None oracle None; 4057 s
+  3/33 A2_066237c4f5 M 63: K_off(0.3) P0 None P1 None oracle None; 4855 s
+  4/33 A2_0a89c174d8 M 63: K_off(0.3) P0 None P1 None oracle None; 5579 s
+  5/33 A2_101910c9ef M 69: K_off(0.3) P0 None P1 None oracle None; 6703 s
+  6/33 A2_14dee3bc02 M 72: K_off(0.3) P0 None P1 None oracle None; 8020 s
+  7/33 A2_187a20beab M 75: K_off(0.3) P0 None P1 None oracle None; 9741 s
+  8/33 A2_221bc30690 M 60: K_off(0.3) P0 None P1 None oracle None; 10260 s
+  9/33 A2_2b693cf6e7 M 81: K_off(0.3) P0 None P1 None oracle None; 12683 s
+  10/33 A2_2ef47ebcc1 M 72: K_off(0.3) P0 None P1 None oracle None; 14571 s
+  11/33 A2_30b024df67 M 75: K_off(0.3) P0 None P1 None oracle None; 16524 s
+  12/33 A2_34bb1210bc M 66: K_off(0.3) P0 None P1 None oracle None; 17534 s
+  13/33 A2_3825e7205b M 78: K_off(0.3) P0 None P1 None oracle None; 19846 s
+  14/33 A2_3c982d4d3f M 60: K_off(0.3) P0 None P1 None oracle None; 20382 s
+  15/33 A_07cadc7923 M 57: K_off(0.3) P0 None P1 None oracle None; 20804 s
+  16/33 A_3100da3761 M 33: K_off(0.3) P0 None P1 None oracle None; 20874 s
+  17/33 A_466972291d M 51: K_off(0.3) P0 None P1 None oracle None; 21114 s
+  18/33 A_593ba8280d M 57: K_off(0.3) P0 None P1 None oracle None; 21516 s
+  19/33 A_6aa211768a M 51: K_off(0.3) P0 None P1 None oracle None; 21780 s
+  20/33 A_7aa232d4e9 M 42: K_off(0.3) P0 None P1 None oracle None; 21913 s
+  21/33 A_8d1f3c46b0 M 60: K_off(0.3) P0 None P1 None oracle None; 22430 s
+  22/33 A_9d7c66d274 M 39: K_off(0.3) P0 None P1 None oracle None; 22541 s
+  23/33 A_a848c04a21 M 36: K_off(0.3) P0 None P1 None oracle None; 22646 s
+  24/33 A_bce5bae234 M 63: K_off(0.3) P0 None P1 None oracle None; 23336 s
+  25/33 A_d09f8d1ef8 M 45: K_off(0.3) P0 None P1 None oracle None; 23500 s
+  26/33 A_d9139359ab M 48: K_off(0.3) P0 None P1 None oracle None; 23737 s
+  27/33 A_fdc27f1bd1 M 60: K_off(0.3) P0 None P1 None oracle None; 24243 s
+  28/33 B_00580f71bc M 33: K_off(0.3) P0 None P1 None oracle None; 24308 s
+  29/33 B_019f536250 M 63: K_off(0.3) P0 None P1 None oracle None; 24915 s
+  30/33 B_02e7e53a1d M 45: K_off(0.3) P0 None P1 None oracle None; 25046 s
+  31/33 B_0492d9fb81 M 66: K_off(0.3) P0 None P1 None oracle None; 25734 s
+  32/33 B_056dec31a6 M 27: K_off(0.3) P0 None P1 None oracle None; 25770 s
+  33/33 B_06d3bff79c M 42: K_off(0.3) P0 None P1 None oracle None; 25887 s
+-> out/sim/band_p2s1A_shard0.json / .md in 25887.4 s

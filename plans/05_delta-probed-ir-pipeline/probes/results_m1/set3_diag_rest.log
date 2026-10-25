@@ -1,0 +1,29 @@
+=== (S3Drest) armed (pid 15088), 21 steps 2026-10-21 01:43:39
+=== (S3Drest) starting: 21 steps 2026-10-21 01:43:39
+(S3Drest) W01_lastlayer0_lambda0_seed0 done 2026-10-21 01:50:49
+(S3Drest) W02_lastlayer-0.6_lambda0_seed0 done 2026-10-21 01:57:58
+(S3Drest) W03_lastlayer-0.6_lambda1_seed0 done 2026-10-21 02:05:19
+(S3Drest) W04_lastlayer0_lambda1_seed0 done 2026-10-21 02:12:31
+(S3Drest) W05_lastlayer-0.6_no_finetune_seed0 done 2026-10-21 02:12:38
+=== (S3Drest) progress: E18_insample_head_all_seed0 (6/21) running 10 min, its log +3847 bytes 2026-10-21 02:22:38
+(S3Drest) E18_insample_head_all_seed0 done 2026-10-21 02:26:09
+=== (S3Drest) progress: E16_head_all_seed0 (7/21) running 10 min, its log +4156 bytes 2026-10-21 02:36:09
+(S3Drest) E16_head_all_seed0 done 2026-10-21 02:38:29
+(S3Drest) E19_base_analytic_labels_seed0 done 2026-10-21 02:46:32
+(S3Drest) E20_base_more_data_n972_seed0 done 2026-10-21 02:54:38
+(S3Drest) E03_lambda0.1_seed0 done 2026-10-21 03:02:48
+(S3Drest) E04_lambda0.3_seed0 done 2026-10-21 03:10:52
+=== (S3Drest) progress: E15_lora4_seed0 (12/21) running 10 min, its log +4652 bytes 2026-10-21 03:20:52
+(S3Drest) E15_lora4_seed0 done 2026-10-21 03:21:06
+(S3Drest) E13_aux0_seed0 done 2026-10-21 03:29:16
+(S3Drest) E14_aux3_seed0 done 2026-10-21 03:37:55
+(S3Drest) E09_lr3e-4_seed0 done 2026-10-21 03:46:33
+(S3Drest) E10_lr3e-3_seed0 done 2026-10-21 03:54:59
+(S3Drest) E11_epochs100_seed0 done 2026-10-21 03:58:08
+(S3Drest) E21_base_hinge_seed0 done 2026-10-21 04:06:12
+(S3Drest) E22_base_coverage_n912_seed0 done 2026-10-21 04:14:23
+(S3Drest) E23_base_fivering_n972_seed0 done 2026-10-21 04:22:18
+=== (S3Drest) progress: E12_epochs1000_seed0 (21/21) running 10 min, its log +5511 bytes 2026-10-21 04:32:18
+=== (S3Drest) progress: E12_epochs1000_seed0 (21/21) running 20 min, its log +5664 bytes 2026-10-21 04:42:18
+(S3Drest) E12_epochs1000_seed0 done 2026-10-21 04:47:10
+=== (S3Drest) run done — 21 steps, 21 declared outputs present 2026-10-21 04:47:10

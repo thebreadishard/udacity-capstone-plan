@@ -1,0 +1,15 @@
+[2026-09-24 11:31:18] E8 FD Hessian: 18 atoms, cc-pvdz, frozen 6, step 0.005 bohr, 108 displacements, 10 threads
+[2026-09-24 17:23:02] reference: E = -384.801835708, max|grad| 1.10e-02, 21104 s
+[2026-09-24 17:23:02] symmetry: 8 operations, orbits [[0, 1, 5, 6], [2, 4, 7, 9], [3, 8], [10, 11, 14, 15], [12, 13, 16, 17]], 15 displacements (30 gradients) instead of 108
+[2026-09-24 17:23:02] partial run: displacement indices [8, 9, 10, 11, 30]
+[2026-09-25 00:21:40] coordinate  8 p: E − E0 =     +3.70 µE_h, 25118 s  (3/108 gradients)
+[2026-09-25 07:51:28] coordinate  8 m: E − E0 =     -1.19 µE_h, 26988 s  (7/108 gradients)
+[2026-09-25 16:56:58] coordinate  9 p: E − E0 =     +0.87 µE_h, 32730 s  (12/108 gradients)
+[2026-09-26 02:23:51] coordinate  9 m: E − E0 =    -11.47 µE_h, 34014 s  (17/108 gradients)
+[2026-09-26 10:51:31] coordinate 10 p: E − E0 =    -45.34 µE_h, 30459 s  (22/108 gradients)
+[2026-09-26 18:31:18] coordinate 10 m: E − E0 =    +50.73 µE_h, 27587 s  (25/108 gradients)
+[2026-09-27 01:20:00] coordinate 11 p: E − E0 =     -3.85 µE_h, 24523 s  (28/108 gradients)
+[2026-09-27 08:02:15] coordinate 11 m: E − E0 =     +6.07 µE_h, 24135 s  (31/108 gradients)
+[2026-09-27 14:48:11] coordinate 30 p: E − E0 =    -22.08 µE_h, 24356 s  (35/108 gradients)
+[2026-09-27 21:32:01] coordinate 30 m: E − E0 =    +19.18 µE_h, 24229 s  (38/108 gradients)
+[2026-09-27 21:32:01] partial run done; merge grad_*.npy files and rerun without --ks to assemble the Hessian

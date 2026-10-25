@@ -1,0 +1,27 @@
+# Saved-model re-read, seed means — 2026-10-19 18:37
+
+Evals: E7_rungC_chain41_size_eval_frozenb_seed0.json, E7_rungC_chain41_size_eval_frozenb_seed1.json, E7_rungC_chain41_size_eval_frozenb_seed2.json; analytic targets substituted for 601 molecules; against `E7_rungC_chain41_size.json` (its own targets).
+
+## Hold-out (a) — seed mean (seed range) and the record's number
+
+| quantity | re-read | record | difference |
+|---|---|---|---|
+| ring-ip | 1.84 (1.55–2.02) | 1.84 | +0.00 |
+| CH-stretch | 1.34 (1.25–1.48) | 1.34 | +0.00 |
+| CH-oop | 2.32 (2.18–2.48) | 2.32 | +0.00 |
+| other | 3.45 (3.38–3.53) | 3.45 | +0.00 |
+| ratio | 0.181 (0.177–0.185) | 0.181 | +0.00 |
+| omega | 2.35 (2.28–2.42) | 2.35 | +0.00 |
+| dH | 0.121 (0.119–0.125) | 0.121 | +0.00 |
+
+## Hold-out (b) — seed mean (seed range) and the record's number
+
+| quantity | re-read | record | difference |
+|---|---|---|---|
+| ring-ip | 2.68 (2.55–2.84) | 2.63 | +0.05 |
+| CH-stretch | 2.68 (2.60–2.83) | 2.23 | +0.45 |
+| CH-oop | 3.56 (3.45–3.64) | 3.62 | -0.05 |
+| other | 6.03 (5.43–6.61) | 5.61 | +0.42 |
+| ratio | 0.300 (0.283–0.311) | 0.321 | -0.02 |
+| omega | 3.38 (3.32–3.41) | 3.32 | +0.06 |
+| dH | 0.217 (0.208–0.223) | 0.245 | -0.03 |

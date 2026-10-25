@@ -1,0 +1,9 @@
+{
+ "passed": true,
+ "max_grad_diff": 2.0463630789890885e-12,
+ "energy_diff": 4.433786671143025e-12,
+ "grad_limit": 1e-08,
+ "energy_limit": 1e-09,
+ "seconds": 416415,
+ "date": "2026-10-07 01:43:54"
+}

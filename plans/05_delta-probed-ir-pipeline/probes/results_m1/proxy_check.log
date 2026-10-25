@@ -1,0 +1,97 @@
+=== (PX) armed (pid 20392), 33 steps 2026-10-21 13:49:43
+=== (PX) starting: 33 steps 2026-10-21 13:49:43
+=== (PX) resuming: 1 of 33 steps finished in an earlier run are skipped 2026-10-21 13:49:43
+(PX) base_b skipped: done in an earlier run 2026-10-21 13:49:43
+=== (PX) progress: base_a (2/33) running 10 min, its log +982 bytes 2026-10-21 13:59:43
+=== (PX) progress: base_a (2/33) running 20 min, its log +151 bytes 2026-10-21 14:09:43
+=== (PX) progress: base_a (2/33) running 30 min, its log +155 bytes 2026-10-21 14:19:43
+=== (PX) progress: base_a (2/33) running 40 min, its log +156 bytes 2026-10-21 14:29:43
+=== (PX) progress: base_a (2/33) running 50 min, its log +234 bytes 2026-10-21 14:39:43
+=== (PX) progress: base_a (2/33) running 60 min, its log +157 bytes 2026-10-21 14:49:43
+=== (PX) progress: base_a (2/33) running 70 min, its log +155 bytes 2026-10-21 14:59:43
+=== (PX) progress: base_a (2/33) running 80 min, its log +158 bytes 2026-10-21 15:09:44
+=== (PX) progress: base_a (2/33) running 90 min, its log +976 bytes 2026-10-21 15:19:44
+=== (PX) progress: base_a (2/33) running 100 min, its log +150 bytes 2026-10-21 15:29:44
+=== (PX) progress: base_a (2/33) running 110 min, its log +155 bytes 2026-10-21 15:39:44
+=== (PX) progress: base_a (2/33) running 120 min, its log +233 bytes 2026-10-21 15:49:44
+=== (PX) progress: base_a (2/33) running 130 min, its log +157 bytes 2026-10-21 15:59:44
+=== (PX) progress: base_a (2/33) running 140 min, its log +158 bytes 2026-10-21 16:09:44
+=== (PX) progress: base_a (2/33) running 150 min, its log +975 bytes 2026-10-21 16:19:44
+=== (PX) progress: base_a (2/33) running 160 min, its log +152 bytes 2026-10-21 16:29:44
+=== (PX) progress: base_a (2/33) running 170 min, its log +233 bytes 2026-10-21 16:39:44
+=== (PX) progress: base_a (2/33) running 180 min, its log +156 bytes 2026-10-21 16:49:44
+=== (PX) progress: base_a (2/33) running 190 min, its log +157 bytes 2026-10-21 16:59:44
+=== (PX) progress: base_a (2/33) running 200 min, its log +158 bytes 2026-10-21 17:09:44
+(PX) base_a done 2026-10-21 17:18:20
+(PX) register done 2026-10-21 17:18:23
+=== (PX) progress: ft_b_k5_seed0 (4/33) running 10 min, its log +7699 bytes 2026-10-21 17:28:23
+(PX) ft_b_k5_seed0 done 2026-10-21 17:30:49
+=== (PX) progress: ft_b_k10_seed0 (5/33) running 10 min, its log +4008 bytes 2026-10-21 17:40:49
+(PX) ft_b_k10_seed0 done 2026-10-21 17:47:21
+=== (PX) progress: ft_b_k20_seed0 (6/33) running 10 min, its log +3233 bytes 2026-10-21 17:57:21
+(PX) ft_b_k20_seed0 done 2026-10-21 18:06:14
+(PX) ft_b_k40_seed0 done 2026-10-21 18:14:17
+=== (PX) progress: ft_b_k5_seed1 (8/33) running 10 min, its log +8152 bytes 2026-10-21 18:24:17
+(PX) ft_b_k5_seed1 done 2026-10-21 18:27:04
+=== (PX) progress: ft_b_k10_seed1 (9/33) running 10 min, its log +4197 bytes 2026-10-21 18:37:04
+(PX) ft_b_k10_seed1 done 2026-10-21 18:42:12
+=== (PX) progress: ft_b_k20_seed1 (10/33) running 10 min, its log +2824 bytes 2026-10-21 18:52:12
+(PX) ft_b_k20_seed1 done 2026-10-21 19:00:47
+(PX) ft_b_k40_seed1 done 2026-10-21 19:10:35
+=== (PX) progress: ft_b_k5_seed2 (12/33) running 10 min, its log +7795 bytes 2026-10-21 19:20:35
+(PX) ft_b_k5_seed2 done 2026-10-21 19:23:22
+=== (PX) progress: ft_b_k10_seed2 (13/33) running 10 min, its log +5196 bytes 2026-10-21 19:33:22
+(PX) ft_b_k10_seed2 done 2026-10-21 19:39:07
+=== (PX) progress: ft_b_k20_seed2 (14/33) running 10 min, its log +3569 bytes 2026-10-21 19:49:07
+(PX) ft_b_k20_seed2 done 2026-10-21 19:58:15
+=== (PX) progress: ft_b_k40_seed2 (15/33) running 10 min, its log +2381 bytes 2026-10-21 20:08:15
+(PX) ft_b_k40_seed2 done 2026-10-21 20:08:44
+=== (PX) progress: ft_a_k5_seed0 (16/33) running 10 min, its log +7665 bytes 2026-10-21 20:18:44
+(PX) ft_a_k5_seed0 done 2026-10-21 20:19:56
+=== (PX) progress: ft_a_k10_seed0 (17/33) running 10 min, its log +4901 bytes 2026-10-21 20:29:56
+(PX) ft_a_k10_seed0 done 2026-10-21 20:33:47
+=== (PX) progress: ft_a_k20_seed0 (18/33) running 10 min, its log +3210 bytes 2026-10-21 20:43:47
+(PX) ft_a_k20_seed0 done 2026-10-21 20:48:31
+=== (PX) progress: ft_a_k50_seed0 (19/33) running 10 min, its log +1961 bytes 2026-10-21 20:58:31
+=== (PX) progress: ft_a_k50_seed0 (19/33) running 20 min, its log +3442 bytes 2026-10-21 21:08:31
+(PX) ft_a_k50_seed0 done 2026-10-21 21:10:45
+=== (PX) progress: ft_a_k100_seed0 (20/33) running 10 min, its log +1608 bytes 2026-10-21 21:20:45
+=== (PX) progress: ft_a_k100_seed0 (20/33) running 20 min, its log +1923 bytes 2026-10-21 21:30:45
+=== (PX) progress: ft_a_k100_seed0 (20/33) running 30 min, its log +1950 bytes 2026-10-21 21:40:45
+(PX) ft_a_k100_seed0 done 2026-10-21 21:47:42
+=== (PX) progress: ft_a_k200_seed0 (21/33) running 10 min, its log +1142 bytes 2026-10-21 21:57:42
+=== (PX) progress: ft_a_k200_seed0 (21/33) running 20 min, its log +953 bytes 2026-10-21 22:07:42
+(PX) ft_a_k200_seed0 done 2026-10-21 22:09:46
+=== (PX) progress: ft_a_k5_seed1 (22/33) running 10 min, its log +7734 bytes 2026-10-21 22:19:46
+(PX) ft_a_k5_seed1 done 2026-10-21 22:20:55
+=== (PX) progress: ft_a_k10_seed1 (23/33) running 10 min, its log +5492 bytes 2026-10-21 22:30:55
+(PX) ft_a_k10_seed1 done 2026-10-21 22:35:10
+=== (PX) progress: ft_a_k20_seed1 (24/33) running 10 min, its log +3452 bytes 2026-10-21 22:45:10
+(PX) ft_a_k20_seed1 done 2026-10-21 22:52:32
+=== (PX) progress: ft_a_k50_seed1 (25/33) running 10 min, its log +2335 bytes 2026-10-21 23:02:32
+=== (PX) progress: ft_a_k50_seed1 (25/33) running 20 min, its log +3157 bytes 2026-10-21 23:12:32
+(PX) ft_a_k50_seed1 done 2026-10-21 23:13:42
+=== (PX) progress: ft_a_k100_seed1 (26/33) running 10 min, its log +1605 bytes 2026-10-21 23:23:42
+=== (PX) progress: ft_a_k100_seed1 (26/33) running 20 min, its log +1934 bytes 2026-10-21 23:33:42
+=== (PX) progress: ft_a_k100_seed1 (26/33) running 30 min, its log +1659 bytes 2026-10-21 23:43:42
+(PX) ft_a_k100_seed1 done 2026-10-21 23:50:10
+=== (PX) progress: ft_a_k200_seed1 (27/33) running 10 min, its log +1240 bytes 2026-10-22 00:00:11
+=== (PX) progress: ft_a_k200_seed1 (27/33) running 20 min, its log +849 bytes 2026-10-22 00:10:11
+(PX) ft_a_k200_seed1 done 2026-10-22 00:10:22
+=== (PX) progress: ft_a_k5_seed2 (28/33) running 10 min, its log +7745 bytes 2026-10-22 00:20:22
+(PX) ft_a_k5_seed2 done 2026-10-22 00:21:48
+=== (PX) progress: ft_a_k10_seed2 (29/33) running 10 min, its log +5807 bytes 2026-10-22 00:31:48
+(PX) ft_a_k10_seed2 done 2026-10-22 00:36:36
+=== (PX) progress: ft_a_k20_seed2 (30/33) running 10 min, its log +3305 bytes 2026-10-22 00:46:36
+(PX) ft_a_k20_seed2 done 2026-10-22 00:50:34
+=== (PX) progress: ft_a_k50_seed2 (31/33) running 10 min, its log +2467 bytes 2026-10-22 01:00:34
+=== (PX) progress: ft_a_k50_seed2 (31/33) running 20 min, its log +3115 bytes 2026-10-22 01:10:34
+(PX) ft_a_k50_seed2 done 2026-10-22 01:11:07
+=== (PX) progress: ft_a_k100_seed2 (32/33) running 10 min, its log +1607 bytes 2026-10-22 01:21:07
+=== (PX) progress: ft_a_k100_seed2 (32/33) running 20 min, its log +1922 bytes 2026-10-22 01:31:07
+=== (PX) progress: ft_a_k100_seed2 (32/33) running 30 min, its log +1842 bytes 2026-10-22 01:41:07
+(PX) ft_a_k100_seed2 done 2026-10-22 01:48:25
+=== (PX) progress: ft_a_k200_seed2 (33/33) running 10 min, its log +1147 bytes 2026-10-22 01:58:26
+=== (PX) progress: ft_a_k200_seed2 (33/33) running 20 min, its log +854 bytes 2026-10-22 02:08:26
+(PX) ft_a_k200_seed2 done 2026-10-22 02:11:30
+=== (PX) run done — 33 steps, 36 declared outputs present 2026-10-22 02:11:30

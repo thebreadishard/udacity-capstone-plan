@@ -1,0 +1,30 @@
+[14:47:24] b3lyp cc-pvdz k=2: H_kk +0.135239 (84 s)
+[14:48:52] b3lyp cc-pvdz k=18: H_kk +0.305871 (89 s)
+[14:50:21] b3lyp cc-pvdz k=20: H_kk +0.024226 (89 s)
+[14:58:18] b3lyp cc-pvtz k=2: H_kk +0.139914 (477 s)
+[15:06:59] b3lyp cc-pvtz k=18: H_kk +0.288050 (522 s)
+[15:15:12] b3lyp cc-pvtz k=20: H_kk +0.026933 (493 s)
+[15:15:58] mp2 cc-pvdz k=2: H_kk +0.109861 (46 s)
+[15:16:42] mp2 cc-pvdz k=18: H_kk +0.318244 (43 s)
+[15:17:15] mp2 cc-pvdz k=20: H_kk +0.022876 (33 s)
+Traceback (most recent call last):
+  File "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/cc_composite_basis_check.py", line 159, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/cc_composite_basis_check.py", line 111, in main
+    h, row = fd_curvature(level, symbols, x0, k, basis, a.step, grid, frozen, a.max_memory)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/cc_composite_basis_check.py", line 59, in fd_curvature
+    rows.append(gradient(level, symbols, x.reshape(-1, 3), basis, grid, frozen, max_memory))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/cc_composite_basis_check.py", line 51, in gradient
+    return pt.nuc_grad_method().kernel().ravel()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/grad/mp2.py", line 309, in kernel
+    de = self.grad_elec(t2, atmlst, verbose=log)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/grad/mp2.py", line 90, in grad_elec
+    dm2buf = lib.pack_tril(dm2buf.reshape(-1,nao,nao)).reshape(nf,nao,-1)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: cannot reshape array of size 0 into shape (0,264,newaxis)
+=== composite test 1 exit 1 at 15:18:41

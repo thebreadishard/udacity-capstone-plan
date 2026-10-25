@@ -1,0 +1,9 @@
+=== (F5) armed (pid 20493), waiting for the cation route to end 2026-10-09 17:34:11
+=== (F5) armed (pid 33911), priority 1 2026-10-10 09:13:56
+(F5) priority mode: waiting for the running cation molecule to finish 2026-10-10 09:13:57
+=== (F5) armed (pid 37272), priority 1 2026-10-10 11:48:20
+(F5) priority mode: waiting for the running cation molecule to finish 2026-10-10 11:48:20
+(F5) no analytic job in WSL; starting 2026-10-10 12:28:26
+=== (F5) start: 181 candidates, one runner, deck v1 (8 threads, 12 GB) 2026-10-10 12:28:27
+(F5) A2_3dab2fb010 done 2026-10-10 13:29:37
+=== (F5) laptop runner finished: 1 molecules with a folder; failed after one retry: none 2026-10-10 13:29:58

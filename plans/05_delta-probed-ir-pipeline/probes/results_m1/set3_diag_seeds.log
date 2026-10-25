@@ -1,0 +1,13 @@
+=== (S3Dseeds) armed (pid 7780), 8 steps 2026-10-21 03:27:05
+=== (S3Dseeds) starting: 8 steps 2026-10-21 03:27:05
+=== (S3Dseeds) progress: E16_head_all_seed1 (1/8) running 10 min, its log +4044 bytes 2026-10-21 03:37:05
+(S3Dseeds) E16_head_all_seed1 done 2026-10-21 03:40:08
+(S3Dseeds) W15_head_all_originals_only_seed1 done 2026-10-21 03:43:32
+(S3Dseeds) E02_lambda0_seed1 done 2026-10-21 03:51:46
+(S3Dseeds) E01_ref_lambda1_seed1 done 2026-10-21 04:00:18
+=== (S3Dseeds) progress: E16_head_all_seed2 (5/8) running 10 min, its log +4157 bytes 2026-10-21 04:10:18
+(S3Dseeds) E16_head_all_seed2 done 2026-10-21 04:12:38
+(S3Dseeds) W15_head_all_originals_only_seed2 done 2026-10-21 04:15:42
+(S3Dseeds) E02_lambda0_seed2 done 2026-10-21 04:23:27
+(S3Dseeds) E01_ref_lambda1_seed2 done 2026-10-21 04:31:16
+=== (S3Dseeds) run done — 8 steps, 8 declared outputs present 2026-10-21 04:31:16

@@ -1,0 +1,28 @@
+[2026-10-02 04:21:28] E8 FD Hessian: 3 atoms, cc-pvdz, frozen 1 (derived from the elements: 1), step 0.005 bohr, 18 displacements, 16 threads, max_memory 26000 MB, explicit (T) lambda, fast (T) density kernel, fast (T) lambda kernel
+cycle = 1  norm(lambda1,lambda2) = 0.00817139
+cycle = 2  norm(lambda1,lambda2) = 0.00162849
+cycle = 3  norm(lambda1,lambda2) = 0.000416216
+cycle = 4  norm(lambda1,lambda2) = 0.00018216
+cycle = 5  norm(lambda1,lambda2) = 3.78941e-05
+cycle = 6  norm(lambda1,lambda2) = 1.41948e-05
+cycle = 7  norm(lambda1,lambda2) = 3.27098e-06
+cycle = 8  norm(lambda1,lambda2) = 5.42614e-07
+cycle = 9  norm(lambda1,lambda2) = 1.10972e-07
+cycle = 10  norm(lambda1,lambda2) = 2.28888e-08
+cycle = 11  norm(lambda1,lambda2) = 1.1729e-08
+cycle = 12  norm(lambda1,lambda2) = 1.06037e-08
+cycle = 13  norm(lambda1,lambda2) = 8.29226e-09
+[2026-10-02 04:21:29] (T) lambda 0 s, gradient 0 s
+[2026-10-02 04:21:29] reference: E = -76.241042308, max|grad| 1.46e-02, 1 s; two-route checks deferred to a separate run (--two-route-check only)
+[2026-10-02 04:21:45] E8 FD Hessian: 3 atoms, cc-pvdz, frozen 1 (derived from the elements: 1), step 0.005 bohr, 18 displacements, 16 threads, max_memory 26000 MB, explicit (T) lambda, fast (T) density kernel, fast (T) lambda kernel
+[2026-10-02 04:21:45] two-route check on file: passed — assembling
+[2026-10-02 04:21:45] symmetry: 4 operations, orbits [[0], [1, 2]], 6 displacements (12 gradients) instead of 18
+[2026-10-02 04:21:45] pair check coordinate  0: max |mean(g+, g−) − g0| = 5.5e-06 a.u. (limit 1e-04)
+[2026-10-02 04:21:45] pair check coordinate  1: max |mean(g+, g−) − g0| = 2.4e-05 a.u. (limit 1e-04)
+[2026-10-02 04:21:45] pair check coordinate  2: max |mean(g+, g−) − g0| = 7.8e-06 a.u. (limit 1e-04)
+[2026-10-02 04:21:45] pair check coordinate  3: max |mean(g+, g−) − g0| = 3.2e-06 a.u. (limit 1e-04)
+[2026-10-02 04:21:45] pair check coordinate  4: max |mean(g+, g−) − g0| = 1.2e-05 a.u. (limit 1e-04)
+[2026-10-02 04:21:45] pair check coordinate  5: max |mean(g+, g−) − g0| = 8.3e-06 a.u. (limit 1e-04)
+[2026-10-02 04:21:45] symmetry reconstruction: spread of multiply-reached rows 8.30e-13 a.u.; self-check 1.3e-29
+[2026-10-02 04:21:45] Hessian written (VALID); FD asymmetry max 8.30e-13 a.u.; vibrational frequencies (cm-1): [1644, 3925, 4052]
+[2026-10-02 04:21:45] two-route checks: translational sum rule 4.0e-07 E_h/bohr² (limit 1e-03); translations/rotations after projection max 5.8e-05 cm⁻¹; energy route max |H_kk − d²E/dx_k²| 4.0e-06 E_h/bohr² over 6 coordinates (limit 1e-03)

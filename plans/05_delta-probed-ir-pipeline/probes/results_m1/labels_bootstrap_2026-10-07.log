@@ -1,0 +1,9 @@
+[18:45:41 157.180.32.149] system + miniforge
+conda 26.7.2
+[18:45:45 157.180.32.149] env qc05 (python 3.12, pyscf 2.14.0)
+pyscf 2.14.0 numpy 2.5.3
+[18:45:47 157.180.32.149] files: analytic_hessians.py, labels_lane.sh, id lists, molecule inputs
+811
+[18:46:29 157.180.32.149] GATE: benzene analytic B3LYP against the laptop's file (grid 99,590)
+cp: cannot stat 'molecules/A_8448043181/geometry.json': No such file or directory
+[18:46:32 157.180.32.149] four lanes × 8 threads, detached

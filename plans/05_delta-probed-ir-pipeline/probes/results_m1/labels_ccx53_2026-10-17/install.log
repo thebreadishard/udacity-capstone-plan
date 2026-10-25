@@ -1,0 +1,7 @@
+[2026-10-11 08:49:21] analytic_hessians.py → route C APT (commit d05d54da); previous copy analytic_hessians.py.before_apt_2026-10-11
+[2026-10-11 09:18:42] apt.py + analytic_hessians.py → upstream pattern (commit 2a67412a), same numbers
+[2026-10-11 19:29:53] analytic_hessians.py → software stamp in every file (TASKS 47; water smoke in staging_apt passed, sum rule 4.6e-7); previous copy analytic_hessians.py.before_stamp_2026-10-11
+[2026-10-12 09:51:32] apt.py + analytic_hessians.py → residual-checked CPHF response for the APT (TASKS 44 a, commit c5a84671) (water smoke in staging_apt passed); previous copies *.before_2026-10-12_1151
+[2026-10-12 13:50:41] apt.py + analytic_hessians.py → n_imaginary for analytic-only folders (chain 42, commit 965fd60d) (water smoke in staging_apt passed); previous copies *.before_2026-10-12_1550
+[2026-10-13 07:22:18] apt.py + analytic_hessians.py → 13 Oct: per-column GMRES fallback in refine_response (floor diagnosis read 'solver': B_127dd8c4ed 2.1e-6 -> 1.2e-11 per column); commit 3eb7cd0f (water smoke in staging_apt passed); previous copies *.before_2026-10-13_0922
+[2026-10-16 05:41:26] refined APT files in place of unrefined route C (TASKS 44 b): 49 replaced, 0 left alone; old files in apt_unrefined_2026-10-12/

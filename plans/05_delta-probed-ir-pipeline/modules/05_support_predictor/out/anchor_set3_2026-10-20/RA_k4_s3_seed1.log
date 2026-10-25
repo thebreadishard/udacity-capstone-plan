@@ -1,0 +1,292 @@
+model E7_rungC_chain34_kdfamily_750_2026-10-05_model_n750_seed1.pt: pattern f, aux both, target projected; anchors ['A_01f3186607', 'A_3100da3761', 'A_45187bb7c8', 'A_6e858b26e5', 'A_8448043181', 'A_a1e6ec1862', 'A_d09f8d1ef8', 'A_d9139359ab', 'A_ff98e1160d', 'B_8b12a55d3a']
+  [A_01f3186607 alpha]     epoch 50/300: loss 0.4066
+  [A_01f3186607 alpha]     epoch 100/300: loss 0.402
+  [A_01f3186607 alpha]     epoch 150/300: loss 0.4004
+  [A_01f3186607 alpha]     epoch 200/300: loss 0.3998
+  [A_01f3186607 alpha]     epoch 250/300: loss 0.3996
+  [A_01f3186607 alpha]     epoch 300/300: loss 0.3996
+  [A_01f3186607 head]     epoch 50/300: loss 0.1095
+  [A_01f3186607 head]     epoch 100/300: loss 0.08481
+  [A_01f3186607 head]     epoch 150/300: loss 0.07457
+  [A_01f3186607 head]     epoch 200/300: loss 0.06933
+  [A_01f3186607 head]     epoch 250/300: loss 0.06625
+  [A_01f3186607 head]     epoch 300/300: loss 0.06427
+  [A_01f3186607 head_l2]     epoch 50/300: loss 0.2762
+  [A_01f3186607 head_l2]     epoch 100/300: loss 0.2722
+  [A_01f3186607 head_l2]     epoch 150/300: loss 0.271
+  [A_01f3186607 head_l2]     epoch 200/300: loss 0.2706
+  [A_01f3186607 head_l2]     epoch 250/300: loss 0.2705
+  [A_01f3186607 head_l2]     epoch 300/300: loss 0.2705
+A_01f3186607: zero ω 21.12 | α-scaling 0.97 / 8.81 | network as is 2.34 / 42.18 | α tuned 1.31 / 11.56 | head tuned 0.54 / 6.60 | head L2 1: 0.86 / 3.29 ring-ip
+  [A_3100da3761 alpha]     epoch 50/300: loss 0.4467
+  [A_3100da3761 alpha]     epoch 100/300: loss 0.4455
+  [A_3100da3761 alpha]     epoch 150/300: loss 0.4453
+  [A_3100da3761 alpha]     epoch 200/300: loss 0.4451
+  [A_3100da3761 alpha]     epoch 250/300: loss 0.4448
+  [A_3100da3761 alpha]     epoch 300/300: loss 0.4446
+  [A_3100da3761 head]     epoch 50/300: loss 0.1185
+  [A_3100da3761 head]     epoch 100/300: loss 0.09487
+  [A_3100da3761 head]     epoch 150/300: loss 0.08446
+  [A_3100da3761 head]     epoch 200/300: loss 0.07898
+  [A_3100da3761 head]     epoch 250/300: loss 0.07567
+  [A_3100da3761 head]     epoch 300/300: loss 0.07348
+  [A_3100da3761 head_l2]     epoch 50/300: loss 0.2881
+  [A_3100da3761 head_l2]     epoch 100/300: loss 0.2871
+  [A_3100da3761 head_l2]     epoch 150/300: loss 0.2869
+  [A_3100da3761 head_l2]     epoch 200/300: loss 0.2868
+  [A_3100da3761 head_l2]     epoch 250/300: loss 0.2866
+  [A_3100da3761 head_l2]     epoch 300/300: loss 0.2864
+A_3100da3761: zero ω 22.78 | α-scaling 1.10 / 10.12 | network as is 2.18 / 45.31 | α tuned 0.94 / 22.47 | head tuned 0.77 / 20.52 | head L2 1: 0.66 / 2.45 ring-ip
+  [A_6e858b26e5 alpha]     epoch 50/300: loss 0.3958
+  [A_6e858b26e5 alpha]     epoch 100/300: loss 0.391
+  [A_6e858b26e5 alpha]     epoch 150/300: loss 0.3892
+  [A_6e858b26e5 alpha]     epoch 200/300: loss 0.3885
+  [A_6e858b26e5 alpha]     epoch 250/300: loss 0.3884
+  [A_6e858b26e5 alpha]     epoch 300/300: loss 0.3884
+  [A_6e858b26e5 head]     epoch 50/300: loss 0.09993
+  [A_6e858b26e5 head]     epoch 100/300: loss 0.0767
+  [A_6e858b26e5 head]     epoch 150/300: loss 0.06776
+  [A_6e858b26e5 head]     epoch 200/300: loss 0.06346
+  [A_6e858b26e5 head]     epoch 250/300: loss 0.06103
+  [A_6e858b26e5 head]     epoch 300/300: loss 0.05951
+  [A_6e858b26e5 head_l2]     epoch 50/300: loss 0.2648
+  [A_6e858b26e5 head_l2]     epoch 100/300: loss 0.2603
+  [A_6e858b26e5 head_l2]     epoch 150/300: loss 0.2588
+  [A_6e858b26e5 head_l2]     epoch 200/300: loss 0.2584
+  [A_6e858b26e5 head_l2]     epoch 250/300: loss 0.2583
+  [A_6e858b26e5 head_l2]     epoch 300/300: loss 0.2583
+A_6e858b26e5: zero ω 19.09 | α-scaling 1.16 / 10.78 | network as is 2.25 / 40.54 | α tuned 1.05 / 9.62 | head tuned 0.81 / 7.26 | head L2 1: 0.90 / 5.22 ring-ip
+  [A_8448043181 alpha]     epoch 50/300: loss 0.414
+  [A_8448043181 alpha]     epoch 100/300: loss 0.4096
+  [A_8448043181 alpha]     epoch 150/300: loss 0.4079
+  [A_8448043181 alpha]     epoch 200/300: loss 0.4073
+  [A_8448043181 alpha]     epoch 250/300: loss 0.4071
+  [A_8448043181 alpha]     epoch 300/300: loss 0.4071
+  [A_8448043181 head]     epoch 50/300: loss 0.1096
+  [A_8448043181 head]     epoch 100/300: loss 0.08508
+Traceback (most recent call last):
+  File "C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\05_support_predictor\m05\rungC_cc_transfer.py", line 593, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\05_support_predictor\m05\rungC_cc_transfer.py", line 581, in main
+    res["folds"][held] = run_fold(an, held, model0, loss_cfg, a)
+                         ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\05_support_predictor\m05\rungC_cc_transfer.py", line 385, in run_fold
+    hist = finetune(model, loss_cfg, {i: an.tensors[i] for i in tr}, mode, settings, log=lambda s, tag=tag: print(f"  {tag} {s}", flush=True))
+  File "C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\05_support_predictor\m05\rungC_cc_transfer.py", line 226, in finetune
+    main, aux, _ = _terms(model, train[i], fit_loss)
+                   ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\05_support_predictor\m05\rungC_train.py", line 224, in _terms
+    pred = model(t["Z"], t["pos"], t["H_low"], t)
+  File "C:\Users\thebr\AppData\Local\Programs\Python\Python314\Lib\site-packages\torch\nn\modules\module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\thebr\AppData\Local\Programs\Python\Python314\Lib\site-packages\torch\nn\modules\module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\05_support_predictor\m05\rungC_hybrid.py", line 156, in forward
+    r = self.delta_f(Z, pos, H_low, t)
+  File "C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\05_support_predictor\m05\rungC_hybrid.py", line 146, in delta_f
+    r = self.head(x).squeeze(-1) * self.class_scale.to(s.dtype)[t["pcls"]]
+        ~~~~~~~~~^^^
+  File "C:\Users\thebr\AppData\Local\Programs\Python\Python314\Lib\site-packages\torch\nn\modules\module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\thebr\AppData\Local\Programs\Python\Python314\Lib\site-packages\torch\nn\modules\module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\thebr\AppData\Local\Programs\Python\Python314\Lib\site-packages\torch\nn\modules\container.py", line 259, in forward
+    input = module(input)
+  File "C:\Users\thebr\AppData\Local\Programs\Python\Python314\Lib\site-packages\torch\nn\modules\module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\thebr\AppData\Local\Programs\Python\Python314\Lib\site-packages\torch\nn\modules\module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "C:\Users\thebr\AppData\Local\Programs\Python\Python314\Lib\site-packages\torch\nn\modules\activation.py", line 476, in forward
+    return F.silu(input, inplace=self.inplace)
+           ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\thebr\AppData\Local\Programs\Python\Python314\Lib\site-packages\torch\nn\functional.py", line 2451, in silu
+    return torch._C._nn.silu(input)
+           ~~~~~~~~~~~~~~~~~^^^^^^^
+RuntimeError: [enforce fail at alloc_cpu.cpp:117] data. DefaultCPUAllocator: not enough memory: you tried to allocate 3790848 bytes.
+model E7_rungC_chain34_kdfamily_750_2026-10-05_model_n750_seed1.pt: pattern f, aux both, target projected; anchors ['A_01f3186607', 'A_3100da3761', 'A_45187bb7c8', 'A_6e858b26e5', 'A_8448043181', 'A_a1e6ec1862', 'A_d09f8d1ef8', 'A_d9139359ab', 'A_ff98e1160d', 'B_8b12a55d3a']
+  [A_01f3186607 alpha]     epoch 50/300: loss 0.4066
+  [A_01f3186607 alpha]     epoch 100/300: loss 0.402
+  [A_01f3186607 alpha]     epoch 150/300: loss 0.4004
+  [A_01f3186607 alpha]     epoch 200/300: loss 0.3998
+  [A_01f3186607 alpha]     epoch 250/300: loss 0.3996
+  [A_01f3186607 alpha]     epoch 300/300: loss 0.3996
+  [A_01f3186607 head]     epoch 50/300: loss 0.1095
+  [A_01f3186607 head]     epoch 100/300: loss 0.08481
+  [A_01f3186607 head]     epoch 150/300: loss 0.07457
+  [A_01f3186607 head]     epoch 200/300: loss 0.06933
+  [A_01f3186607 head]     epoch 250/300: loss 0.06625
+  [A_01f3186607 head]     epoch 300/300: loss 0.06427
+  [A_01f3186607 head_l2]     epoch 50/300: loss 0.2762
+  [A_01f3186607 head_l2]     epoch 100/300: loss 0.2722
+  [A_01f3186607 head_l2]     epoch 150/300: loss 0.271
+  [A_01f3186607 head_l2]     epoch 200/300: loss 0.2706
+  [A_01f3186607 head_l2]     epoch 250/300: loss 0.2705
+  [A_01f3186607 head_l2]     epoch 300/300: loss 0.2705
+A_01f3186607: zero ω 21.12 | α-scaling 0.97 / 8.81 | network as is 2.34 / 42.18 | α tuned 1.31 / 11.56 | head tuned 0.54 / 6.60 | head L2 1: 0.86 / 3.29 ring-ip
+  [A_3100da3761 alpha]     epoch 50/300: loss 0.4467
+  [A_3100da3761 alpha]     epoch 100/300: loss 0.4455
+  [A_3100da3761 alpha]     epoch 150/300: loss 0.4453
+  [A_3100da3761 alpha]     epoch 200/300: loss 0.4451
+  [A_3100da3761 alpha]     epoch 250/300: loss 0.4448
+  [A_3100da3761 alpha]     epoch 300/300: loss 0.4446
+  [A_3100da3761 head]     epoch 50/300: loss 0.1185
+  [A_3100da3761 head]     epoch 100/300: loss 0.09487
+  [A_3100da3761 head]     epoch 150/300: loss 0.08446
+  [A_3100da3761 head]     epoch 200/300: loss 0.07898
+  [A_3100da3761 head]     epoch 250/300: loss 0.07567
+  [A_3100da3761 head]     epoch 300/300: loss 0.07348
+  [A_3100da3761 head_l2]     epoch 50/300: loss 0.2881
+  [A_3100da3761 head_l2]     epoch 100/300: loss 0.2871
+  [A_3100da3761 head_l2]     epoch 150/300: loss 0.2869
+  [A_3100da3761 head_l2]     epoch 200/300: loss 0.2868
+  [A_3100da3761 head_l2]     epoch 250/300: loss 0.2866
+  [A_3100da3761 head_l2]     epoch 300/300: loss 0.2864
+A_3100da3761: zero ω 22.78 | α-scaling 1.10 / 10.12 | network as is 2.18 / 45.31 | α tuned 0.94 / 22.47 | head tuned 0.77 / 20.52 | head L2 1: 0.66 / 2.45 ring-ip
+  [A_6e858b26e5 alpha]     epoch 50/300: loss 0.3958
+  [A_6e858b26e5 alpha]     epoch 100/300: loss 0.391
+  [A_6e858b26e5 alpha]     epoch 150/300: loss 0.3892
+  [A_6e858b26e5 alpha]     epoch 200/300: loss 0.3885
+  [A_6e858b26e5 alpha]     epoch 250/300: loss 0.3884
+  [A_6e858b26e5 alpha]     epoch 300/300: loss 0.3884
+  [A_6e858b26e5 head]     epoch 50/300: loss 0.09993
+  [A_6e858b26e5 head]     epoch 100/300: loss 0.0767
+  [A_6e858b26e5 head]     epoch 150/300: loss 0.06776
+  [A_6e858b26e5 head]     epoch 200/300: loss 0.06346
+  [A_6e858b26e5 head]     epoch 250/300: loss 0.06103
+  [A_6e858b26e5 head]     epoch 300/300: loss 0.05951
+  [A_6e858b26e5 head_l2]     epoch 50/300: loss 0.2648
+  [A_6e858b26e5 head_l2]     epoch 100/300: loss 0.2603
+  [A_6e858b26e5 head_l2]     epoch 150/300: loss 0.2588
+  [A_6e858b26e5 head_l2]     epoch 200/300: loss 0.2584
+  [A_6e858b26e5 head_l2]     epoch 250/300: loss 0.2583
+  [A_6e858b26e5 head_l2]     epoch 300/300: loss 0.2583
+A_6e858b26e5: zero ω 19.09 | α-scaling 1.16 / 10.78 | network as is 2.25 / 40.54 | α tuned 1.05 / 9.62 | head tuned 0.81 / 7.26 | head L2 1: 0.90 / 5.22 ring-ip
+  [A_8448043181 alpha]     epoch 50/300: loss 0.414
+  [A_8448043181 alpha]     epoch 100/300: loss 0.4096
+  [A_8448043181 alpha]     epoch 150/300: loss 0.4079
+  [A_8448043181 alpha]     epoch 200/300: loss 0.4073
+  [A_8448043181 alpha]     epoch 250/300: loss 0.4071
+  [A_8448043181 alpha]     epoch 300/300: loss 0.4071
+  [A_8448043181 head]     epoch 50/300: loss 0.1096
+  [A_8448043181 head]     epoch 100/300: loss 0.08508
+  [A_8448043181 head]     epoch 150/300: loss 0.0755
+  [A_8448043181 head]     epoch 200/300: loss 0.07085
+  [A_8448043181 head]     epoch 250/300: loss 0.06819
+  [A_8448043181 head]     epoch 300/300: loss 0.06651
+  [A_8448043181 head_l2]     epoch 50/300: loss 0.2783
+  [A_8448043181 head_l2]     epoch 100/300: loss 0.2743
+  [A_8448043181 head_l2]     epoch 150/300: loss 0.2729
+  [A_8448043181 head_l2]     epoch 200/300: loss 0.2725
+  [A_8448043181 head_l2]     epoch 250/300: loss 0.2724
+  [A_8448043181 head_l2]     epoch 300/300: loss 0.2724
+A_8448043181: zero ω 21.43 | α-scaling 1.14 / 10.97 | network as is 1.70 / 43.50 | α tuned 0.61 / 8.42 | head tuned 0.26 / 7.89 | head L2 1: 0.48 / 5.19 ring-ip
+  [A_a1e6ec1862 alpha]     epoch 50/300: loss 0.392
+  [A_a1e6ec1862 alpha]     epoch 100/300: loss 0.388
+  [A_a1e6ec1862 alpha]     epoch 150/300: loss 0.3865
+  [A_a1e6ec1862 alpha]     epoch 200/300: loss 0.3859
+  [A_a1e6ec1862 alpha]     epoch 250/300: loss 0.3858
+  [A_a1e6ec1862 alpha]     epoch 300/300: loss 0.3857
+  [A_a1e6ec1862 head]     epoch 50/300: loss 0.1077
+  [A_a1e6ec1862 head]     epoch 100/300: loss 0.08279
+  [A_a1e6ec1862 head]     epoch 150/300: loss 0.07244
+  [A_a1e6ec1862 head]     epoch 200/300: loss 0.06715
+  [A_a1e6ec1862 head]     epoch 250/300: loss 0.064
+  [A_a1e6ec1862 head]     epoch 300/300: loss 0.06194
+  [A_a1e6ec1862 head_l2]     epoch 50/300: loss 0.2678
+  [A_a1e6ec1862 head_l2]     epoch 100/300: loss 0.2639
+  [A_a1e6ec1862 head_l2]     epoch 150/300: loss 0.2627
+  [A_a1e6ec1862 head_l2]     epoch 200/300: loss 0.2623
+  [A_a1e6ec1862 head_l2]     epoch 250/300: loss 0.2622
+  [A_a1e6ec1862 head_l2]     epoch 300/300: loss 0.2622
+A_a1e6ec1862: zero ω 21.49 | α-scaling 0.95 / 9.05 | network as is 2.03 / 41.65 | α tuned 1.44 / 12.78 | head tuned 0.54 / 6.60 | head L2 1: 1.02 / 6.03 ring-ip
+  [B_8b12a55d3a alpha]     epoch 50/300: loss 0.4115
+  [B_8b12a55d3a alpha]     epoch 100/300: loss 0.4071
+  [B_8b12a55d3a alpha]     epoch 150/300: loss 0.4054
+  [B_8b12a55d3a alpha]     epoch 200/300: loss 0.4048
+  [B_8b12a55d3a alpha]     epoch 250/300: loss 0.4047
+  [B_8b12a55d3a alpha]     epoch 300/300: loss 0.4046
+  [B_8b12a55d3a head]     epoch 50/300: loss 0.1071
+  [B_8b12a55d3a head]     epoch 100/300: loss 0.08167
+  [B_8b12a55d3a head]     epoch 150/300: loss 0.07151
+  [B_8b12a55d3a head]     epoch 200/300: loss 0.06647
+  [B_8b12a55d3a head]     epoch 250/300: loss 0.06353
+  [B_8b12a55d3a head]     epoch 300/300: loss 0.06163
+  [B_8b12a55d3a head_l2]     epoch 50/300: loss 0.2756
+  [B_8b12a55d3a head_l2]     epoch 100/300: loss 0.2716
+  [B_8b12a55d3a head_l2]     epoch 150/300: loss 0.2703
+  [B_8b12a55d3a head_l2]     epoch 200/300: loss 0.2699
+  [B_8b12a55d3a head_l2]     epoch 250/300: loss 0.2699
+  [B_8b12a55d3a head_l2]     epoch 300/300: loss 0.2699
+B_8b12a55d3a: zero ω 18.96 | α-scaling 1.21 / 8.83 | network as is 2.09 / 39.69 | α tuned 1.10 / 7.59 | head tuned 0.63 / 3.89 | head L2 1: 0.77 / 3.18 ring-ip
+# T3 — leave-one-anchor-out transfer to CCSD(T)/cc-pVDZ (2026-10-20 19:53)
+
+Model `E7_rungC_chain34_kdfamily_750_2026-10-05_model_n750_seed1.pt` ({'pattern': 'f', 'aux_mode': 'both', 'aux_target': 'projected', 'n': 750, 'seed': 1}); fine-tune 300 epochs at lr 0.001, aux weight 1; low levels {'A_8448043181': 'hessian_b3lyp_analytic.npz', 'A_01f3186607': 'hessian_b3lyp_analytic.npz', 'A_6e858b26e5': 'hessian_b3lyp_analytic.npz', 'B_8b12a55d3a': 'hessian_b3lyp_analytic.npz', 'A_3100da3761': 'hessian_b3lyp_analytic.npz', 'A_a1e6ec1862': 'hessian_b3lyp_analytic.npz', 'A_45187bb7c8': 'hessian_b3lyp_analytic.npz', 'A_d09f8d1ef8': 'hessian_b3lyp_analytic.npz', 'A_d9139359ab': 'hessian_b3lyp_analytic.npz', 'A_ff98e1160d': 'hessian_b3lyp_analytic.npz'}.
+
+| held-out anchor | read-out | zero rule | α scaling (training anchors) | network as is | network, α tuned | network, head tuned | head tuned, L2 1 |
+|---|---|---|---|---|---|---|---|
+| A_01f3186607 | ring-coupling ratio | 1.00 | 0.97 | 2.34 | 1.31 | 0.54 | 0.86 |
+| A_01f3186607 | ω rms, all modes (cm⁻¹) | 21.12 | 8.81 | 42.18 | 11.56 | 6.60 | 9.64 |
+| A_01f3186607 | ΔH residual | 1.00 | 0.69 | 2.22 | 0.87 | 0.46 | 0.70 |
+| A_01f3186607 | ω rms ring-ip (cm⁻¹) | 16.40 | 6.80 | 29.12 | 6.61 | 1.84 | 3.29 |
+| A_01f3186607 | ω rms CH-stretch (cm⁻¹) | 33.25 | 8.54 | 76.51 | 7.93 | 3.47 | 1.25 |
+| A_01f3186607 | ω rms CH-oop (cm⁻¹) | 21.15 | 11.26 | 42.59 | 19.86 | 12.58 | 18.01 |
+| A_01f3186607 | ω rms other (cm⁻¹) | 17.20 | 9.62 | 25.04 | 11.85 | 6.91 | 10.87 |
+| A_01f3186607 | per-family diag rms, head tuned | — | — | — | — | CH-stretch 3.1, CH-oop 12.2, ring-ip 1.9, other 6.7 |
+| A_3100da3761 | ring-coupling ratio | 1.00 | 1.10 | 2.18 | 0.94 | 0.77 | 0.66 |
+| A_3100da3761 | ω rms, all modes (cm⁻¹) | 22.78 | 10.12 | 45.31 | 22.47 | 20.52 | 22.59 |
+| A_3100da3761 | ΔH residual | 1.00 | 0.66 | 1.69 | 0.80 | 0.68 | 0.86 |
+| A_3100da3761 | ω rms ring-ip (cm⁻¹) | 15.42 | 5.24 | 29.08 | 3.67 | 2.88 | 2.45 |
+| A_3100da3761 | ω rms CH-stretch (cm⁻¹) | 35.41 | 2.18 | 78.96 | 6.00 | 1.67 | 4.78 |
+| A_3100da3761 | ω rms CH-oop (cm⁻¹) | 13.96 | 11.71 | 31.96 | 9.41 | 8.99 | 9.80 |
+| A_3100da3761 | ω rms other (cm⁻¹) | 26.13 | 14.85 | 45.05 | 39.74 | 36.46 | 40.09 |
+| A_3100da3761 | spectrum overlap (CC APT) | 0.479 | 0.642 | 0.140 | 0.512 | 0.556 | 0.551 |
+| A_3100da3761 | intensity rel. rms, modes matched by eigenvector (CC APT) | 0.258 | 0.261 | 0.380 | 0.522 | 0.290 | 0.495 |
+| A_3100da3761 | intensity rel. rms (CC APT) | 0.258 | 2.298 | 0.380 | 0.522 | 0.290 | 0.495 |
+| A_3100da3761 | per-family diag rms, head tuned | — | — | — | — | CH-stretch 1.7, CH-oop 9.4, ring-ip 2.8, other 38.5 |
+| A_6e858b26e5 | ring-coupling ratio | 1.00 | 1.16 | 2.25 | 1.05 | 0.81 | 0.90 |
+| A_6e858b26e5 | ω rms, all modes (cm⁻¹) | 19.09 | 10.78 | 40.54 | 9.62 | 7.26 | 8.02 |
+| A_6e858b26e5 | ΔH residual | 1.00 | 0.50 | 2.56 | 0.61 | 0.43 | 0.43 |
+| A_6e858b26e5 | ω rms ring-ip (cm⁻¹) | 14.88 | 7.78 | 28.00 | 7.21 | 2.70 | 5.22 |
+| A_6e858b26e5 | ω rms CH-stretch (cm⁻¹) | 35.58 | 5.78 | 78.00 | 6.21 | 5.82 | 4.02 |
+| A_6e858b26e5 | ω rms CH-oop (cm⁻¹) | 5.40 | 19.08 | 20.43 | 15.19 | 13.40 | 13.62 |
+| A_6e858b26e5 | ω rms other (cm⁻¹) | 13.02 | 3.96 | 22.55 | 8.62 | 4.73 | 7.36 |
+| A_6e858b26e5 | spectrum overlap (CC APT) | 0.626 | 0.646 | 0.193 | 0.685 | 0.726 | 0.703 |
+| A_6e858b26e5 | intensity rel. rms, modes matched by eigenvector (CC APT) | 0.262 | 0.277 | 0.317 | 0.324 | 0.116 | 0.308 |
+| A_6e858b26e5 | intensity rel. rms (CC APT) | 0.300 | 0.311 | 0.328 | 0.324 | 0.190 | 0.340 |
+| A_6e858b26e5 | per-family diag rms, head tuned | — | — | — | — | CH-stretch 5.9, CH-oop 13.5, ring-ip 2.3, other 4.6 |
+| A_8448043181 | ring-coupling ratio | 1.00 | 1.14 | 1.70 | 0.61 | 0.26 | 0.48 |
+| A_8448043181 | ω rms, all modes (cm⁻¹) | 21.43 | 10.97 | 43.50 | 8.42 | 7.89 | 8.52 |
+| A_8448043181 | ΔH residual | 1.00 | 0.54 | 2.22 | 0.68 | 0.36 | 0.60 |
+| A_8448043181 | ω rms ring-ip (cm⁻¹) | 14.14 | 8.21 | 27.73 | 6.19 | 2.80 | 5.19 |
+| A_8448043181 | ω rms CH-stretch (cm⁻¹) | 38.65 | 3.08 | 81.84 | 2.62 | 8.36 | 7.17 |
+| A_8448043181 | ω rms CH-oop (cm⁻¹) | 14.86 | 20.97 | 26.62 | 14.69 | 10.86 | 14.68 |
+| A_8448043181 | ω rms other (cm⁻¹) | 13.31 | 2.70 | 21.58 | 7.66 | 11.29 | 6.73 |
+| A_8448043181 | spectrum overlap (CC APT) | 0.257 | 0.340 | 0.527 | 0.362 | 0.688 | 0.311 |
+| A_8448043181 | intensity rel. rms, modes matched by eigenvector (CC APT) | 0.003 | 0.007 | 0.021 | 0.012 | 0.005 | 0.007 |
+| A_8448043181 | intensity rel. rms (CC APT) | 0.734 | 0.734 | 0.734 | 0.734 | 0.731 | 0.734 |
+| A_8448043181 | per-family diag rms, head tuned | — | — | — | — | CH-stretch 8.3, CH-oop 10.8, ring-ip 2.8, other 11.4 |
+| A_a1e6ec1862 | ring-coupling ratio | 1.00 | 0.95 | 2.03 | 1.44 | 0.54 | 1.02 |
+| A_a1e6ec1862 | ω rms, all modes (cm⁻¹) | 21.49 | 9.05 | 41.65 | 12.78 | 6.60 | 10.44 |
+| A_a1e6ec1862 | ΔH residual | 1.00 | 0.76 | 2.18 | 0.99 | 0.43 | 0.78 |
+| A_a1e6ec1862 | ω rms ring-ip (cm⁻¹) | 16.72 | 7.44 | 30.61 | 10.02 | 3.87 | 6.03 |
+| A_a1e6ec1862 | ω rms CH-stretch (cm⁻¹) | 32.88 | 9.35 | 76.20 | 8.15 | 4.42 | 1.48 |
+| A_a1e6ec1862 | ω rms CH-oop (cm⁻¹) | 26.43 | 13.07 | 46.40 | 22.18 | 13.31 | 20.25 |
+| A_a1e6ec1862 | ω rms other (cm⁻¹) | 16.46 | 8.24 | 23.75 | 11.27 | 5.01 | 9.99 |
+| A_a1e6ec1862 | per-family diag rms, head tuned | — | — | — | — | CH-stretch 4.5, CH-oop 15.8, ring-ip 3.8, other 4.9 |
+| B_8b12a55d3a | ring-coupling ratio | 1.00 | 1.21 | 2.09 | 1.10 | 0.63 | 0.77 |
+| B_8b12a55d3a | ω rms, all modes (cm⁻¹) | 18.96 | 8.83 | 39.69 | 7.59 | 3.89 | 5.77 |
+| B_8b12a55d3a | ΔH residual | 1.00 | 0.47 | 2.34 | 0.60 | 0.28 | 0.47 |
+| B_8b12a55d3a | ω rms ring-ip (cm⁻¹) | 16.20 | 5.08 | 28.74 | 5.04 | 1.51 | 3.18 |
+| B_8b12a55d3a | ω rms CH-stretch (cm⁻¹) | 34.71 | 6.77 | 77.64 | 7.25 | 5.41 | 2.80 |
+| B_8b12a55d3a | ω rms CH-oop (cm⁻¹) | 8.29 | 18.17 | 26.70 | 10.89 | 6.66 | 9.34 |
+| B_8b12a55d3a | ω rms other (cm⁻¹) | 12.60 | 4.32 | 21.32 | 8.42 | 2.71 | 7.09 |
+| B_8b12a55d3a | spectrum overlap (CC APT) | 0.390 | 0.680 | 0.197 | 0.680 | 0.929 | 0.705 |
+| B_8b12a55d3a | intensity rel. rms, modes matched by eigenvector (CC APT) | 0.104 | 0.115 | 0.194 | 0.203 | 0.092 | 0.175 |
+| B_8b12a55d3a | intensity rel. rms (CC APT) | 0.288 | 0.280 | 0.194 | 0.324 | 0.291 | 0.304 |
+| B_8b12a55d3a | per-family diag rms, head tuned | — | — | — | — | CH-stretch 5.8, CH-oop 6.9, ring-ip 1.8, other 2.7 |
+
+874 s.

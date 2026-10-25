@@ -1,0 +1,102 @@
+=== (C41) armed (pid 18148), 28 steps 2026-10-19 04:49:07
+=== (C41) starting: 28 steps 2026-10-19 04:49:07
+=== (C41) resuming: 4 of 28 steps finished in an earlier run are skipped 2026-10-19 04:49:07
+(C41) design check skipped: done in an earlier run 2026-10-19 04:49:07
+(C41) train E7_rungC_chain41_size skipped: done in an earlier run 2026-10-19 04:49:07
+(C41) train E7_rungC_chain41_control1 skipped: done in an earlier run 2026-10-19 04:49:07
+(C41) train E7_rungC_chain41_control2 skipped: done in an earlier run 2026-10-19 04:49:07
+=== (C41) progress: train E7_rungC_chain41_control1half (5/28) running 10 min, its log +775 bytes 2026-10-19 04:59:07
+=== (C41) progress: train E7_rungC_chain41_control1half (5/28) running 20 min, its log +154 bytes 2026-10-19 05:09:07
+=== (C41) progress: train E7_rungC_chain41_control1half (5/28) running 30 min, its log +79 bytes 2026-10-19 05:19:07
+=== (C41) progress: train E7_rungC_chain41_control1half (5/28) running 40 min, its log +158 bytes 2026-10-19 05:29:07
+=== (C41) progress: train E7_rungC_chain41_control1half (5/28) running 50 min, its log +77 bytes 2026-10-19 05:39:07
+=== (C41) progress: train E7_rungC_chain41_control1half (5/28) running 60 min, its log +157 bytes 2026-10-19 05:49:07
+=== (C41) progress: train E7_rungC_chain41_control1half (5/28) running 70 min, its log +894 bytes 2026-10-19 05:59:07
+=== (C41) progress: train E7_rungC_chain41_control1half (5/28) running 80 min, its log +78 bytes 2026-10-19 06:09:07
+=== (C41) progress: train E7_rungC_chain41_control1half (5/28) running 90 min, its log +158 bytes 2026-10-19 06:19:07
+=== (C41) progress: train E7_rungC_chain41_control1half (5/28) running 100 min, its log +79 bytes 2026-10-19 06:29:07
+=== (C41) progress: train E7_rungC_chain41_control1half (5/28) running 110 min, its log +158 bytes 2026-10-19 06:39:07
+=== (C41) progress: train E7_rungC_chain41_control1half (5/28) running 120 min, its log +158 bytes 2026-10-19 06:49:07
+=== (C41) progress: train E7_rungC_chain41_control1half (5/28) running 130 min, its log +79 bytes 2026-10-19 06:59:07
+=== (C41) progress: train E7_rungC_chain41_control1half (5/28) running 140 min, its log +160 bytes 2026-10-19 07:09:07
+=== (C41) progress: train E7_rungC_chain41_control1half (5/28) running 150 min, its log +80 bytes 2026-10-19 07:19:07
+=== (C41) progress: train E7_rungC_chain41_control1half (5/28) running 160 min, its log +901 bytes 2026-10-19 07:29:07
+=== (C41) progress: train E7_rungC_chain41_control1half (5/28) running 170 min, its log +153 bytes 2026-10-19 07:39:07
+=== (C41) progress: train E7_rungC_chain41_control1half (5/28) running 180 min, its log +79 bytes 2026-10-19 07:49:07
+=== (C41) progress: train E7_rungC_chain41_control1half (5/28) running 190 min, its log +155 bytes 2026-10-19 07:59:07
+=== (C41) progress: train E7_rungC_chain41_control1half (5/28) running 200 min, its log +79 bytes 2026-10-19 08:09:07
+=== (C41) progress: train E7_rungC_chain41_control1half (5/28) running 210 min, its log +79 bytes 2026-10-19 08:19:07
+=== (C41) progress: train E7_rungC_chain41_control1half (5/28) running 220 min, its log +78 bytes 2026-10-19 08:29:07
+=== (C41) progress: train E7_rungC_chain41_control1half (5/28) running 230 min, its log +79 bytes 2026-10-19 08:39:07
+=== (C41) progress: train E7_rungC_chain41_control1half (5/28) running 250 min, its log +79 bytes 2026-10-19 08:59:07
+(C41) train E7_rungC_chain41_control1half done 2026-10-19 09:04:34
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 10 min, its log +702 bytes 2026-10-19 09:14:34
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 20 min, its log +72 bytes 2026-10-19 09:24:34
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 30 min, its log +76 bytes 2026-10-19 09:34:34
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 40 min, its log +78 bytes 2026-10-19 09:44:34
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 60 min, its log +79 bytes 2026-10-19 10:04:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 70 min, its log +78 bytes 2026-10-19 10:14:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 80 min, its log +79 bytes 2026-10-19 10:24:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 90 min, its log +78 bytes 2026-10-19 10:34:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 110 min, its log +79 bytes 2026-10-19 10:54:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 120 min, its log +79 bytes 2026-10-19 11:04:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 130 min, its log +79 bytes 2026-10-19 11:14:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 140 min, its log +80 bytes 2026-10-19 11:24:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 160 min, its log +80 bytes 2026-10-19 11:44:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 170 min, its log +80 bytes 2026-10-19 11:54:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 180 min, its log +81 bytes 2026-10-19 12:04:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 190 min, its log +81 bytes 2026-10-19 12:14:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 200 min, its log +81 bytes 2026-10-19 12:24:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 210 min, its log +80 bytes 2026-10-19 12:34:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 230 min, its log +80 bytes 2026-10-19 12:54:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 240 min, its log +820 bytes 2026-10-19 13:04:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 250 min, its log +76 bytes 2026-10-19 13:14:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 270 min, its log +78 bytes 2026-10-19 13:34:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 280 min, its log +77 bytes 2026-10-19 13:44:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 290 min, its log +78 bytes 2026-10-19 13:54:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 310 min, its log +79 bytes 2026-10-19 14:14:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 320 min, its log +79 bytes 2026-10-19 14:24:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 330 min, its log +79 bytes 2026-10-19 14:34:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 350 min, its log +79 bytes 2026-10-19 14:54:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 360 min, its log +79 bytes 2026-10-19 15:04:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 380 min, its log +80 bytes 2026-10-19 15:24:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 390 min, its log +80 bytes 2026-10-19 15:34:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 400 min, its log +80 bytes 2026-10-19 15:44:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 420 min, its log +80 bytes 2026-10-19 16:04:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 430 min, its log +902 bytes 2026-10-19 16:14:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 440 min, its log +76 bytes 2026-10-19 16:24:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 450 min, its log +158 bytes 2026-10-19 16:34:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 460 min, its log +79 bytes 2026-10-19 16:44:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 470 min, its log +79 bytes 2026-10-19 16:54:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 480 min, its log +79 bytes 2026-10-19 17:04:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 490 min, its log +79 bytes 2026-10-19 17:14:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 500 min, its log +79 bytes 2026-10-19 17:24:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 510 min, its log +159 bytes 2026-10-19 17:34:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 520 min, its log +79 bytes 2026-10-19 17:44:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 530 min, its log +79 bytes 2026-10-19 17:54:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 540 min, its log +80 bytes 2026-10-19 18:04:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 550 min, its log +160 bytes 2026-10-19 18:14:35
+=== (C41) progress: train E7_rungC_chain41_control2half (6/28) running 560 min, its log +78 bytes 2026-10-19 18:24:35
+(C41) train E7_rungC_chain41_control2half done 2026-10-19 18:26:29
+(C41) register candidates done 2026-10-19 18:26:39
+(C41) eval E7_rungC_chain41_size seed 0 done 2026-10-19 18:31:26
+(C41) eval E7_rungC_chain41_size seed 1 done 2026-10-19 18:34:30
+(C41) eval E7_rungC_chain41_size seed 2 done 2026-10-19 18:37:35
+(C41) seed means E7_rungC_chain41_size done 2026-10-19 18:37:35
+(C41) eval E7_rungC_chain41_control1 seed 0 done 2026-10-19 18:39:59
+(C41) eval E7_rungC_chain41_control1 seed 1 done 2026-10-19 18:42:24
+(C41) eval E7_rungC_chain41_control1 seed 2 done 2026-10-19 18:44:56
+(C41) seed means E7_rungC_chain41_control1 done 2026-10-19 18:44:56
+(C41) eval E7_rungC_chain41_control2 seed 0 done 2026-10-19 18:47:26
+(C41) eval E7_rungC_chain41_control2 seed 1 done 2026-10-19 18:49:53
+(C41) eval E7_rungC_chain41_control2 seed 2 done 2026-10-19 18:52:21
+(C41) seed means E7_rungC_chain41_control2 done 2026-10-19 18:52:22
+(C41) eval E7_rungC_chain41_control1half seed 0 done 2026-10-19 18:54:55
+(C41) eval E7_rungC_chain41_control1half seed 1 done 2026-10-19 18:57:26
+(C41) eval E7_rungC_chain41_control1half seed 2 done 2026-10-19 18:59:59
+(C41) seed means E7_rungC_chain41_control1half done 2026-10-19 18:59:59
+(C41) eval E7_rungC_chain41_control2half seed 0 done 2026-10-19 19:02:27
+(C41) eval E7_rungC_chain41_control2half seed 1 done 2026-10-19 19:04:46
+(C41) eval E7_rungC_chain41_control2half seed 2 done 2026-10-19 19:07:12
+(C41) seed means E7_rungC_chain41_control2half done 2026-10-19 19:07:12
+=== (C41) RUN FAILED at chain 41 read: exit 1 (log C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\05_support_predictor\out\read_chain41.log) 2026-10-19 19:07:13

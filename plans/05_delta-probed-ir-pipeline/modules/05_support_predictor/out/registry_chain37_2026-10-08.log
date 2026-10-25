@@ -1,0 +1,5 @@
+registered as candidate: E7_rungC_chain37_coverage_2026-10-08_model_n912_seed0.pt, E7_rungC_chain37_coverage_2026-10-08_model_n912_seed1.pt, E7_rungC_chain37_coverage_2026-10-08_model_n912_seed2.pt
+wrote C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\05_support_predictor\MODELS.md (29 models; carried: 3)
+wrote C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\standout_pattern_proposer\MODELS.md (42 models; carried: 3)
+wrote C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\06_generative_candidates\MODELS.md (4 models; carried: 0)
+wrote C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\MODELS.md

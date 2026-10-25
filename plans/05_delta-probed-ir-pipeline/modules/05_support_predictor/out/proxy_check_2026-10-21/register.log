@@ -1,0 +1,5 @@
+registered as candidate: proxy_check_2026-10-21/base_a_model_n750_seed0.pt, proxy_check_2026-10-21/base_a_model_n750_seed1.pt, proxy_check_2026-10-21/base_a_model_n750_seed2.pt, proxy_check_2026-10-21/base_b_model_n607_seed0.pt, proxy_check_2026-10-21/base_b_model_n607_seed1.pt, proxy_check_2026-10-21/base_b_model_n607_seed2.pt
+wrote C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\05_support_predictor\MODELS.md (74 models; carried: 3)
+wrote C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\standout_pattern_proposer\MODELS.md (42 models; carried: 3)
+wrote C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\06_generative_candidates\MODELS.md (4 models; carried: 0)
+wrote C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\MODELS.md

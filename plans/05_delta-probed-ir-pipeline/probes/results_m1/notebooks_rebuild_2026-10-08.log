@@ -1,0 +1,10 @@
+=== (NB) rebuild start 2026-10-08 09:34:43
+(NB) 05_support_predictor start 2026-10-08 09:34:43
+=== (NB) 05_support_predictor done 2026-10-08 10:49:41
+(NB) 07_agentic_workflows start 2026-10-08 10:49:41
+=== (NB) 07_agentic_workflows done 2026-10-08 10:49:49
+(NB) 08_industry_synthesis start 2026-10-08 10:49:49
+=== (NB) 08_industry_synthesis FAILED — executed notebook restored; see /c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/notebooks_rebuild_2026-10-08/08_industry_synthesis.log 2026-10-08 10:49:56
+(NB) standout_pattern_proposer start 2026-10-08 10:49:56
+=== (NB) standout_pattern_proposer done 2026-10-08 10:50:09
+=== (NB) rebuild finished 2026-10-08 10:50:09

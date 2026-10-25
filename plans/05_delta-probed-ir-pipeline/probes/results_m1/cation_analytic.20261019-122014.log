@@ -1,0 +1,17 @@
+=== (CA) start: 40 of 60 cations to compute, cap 3584 MB, 6 threads 2026-10-19 08:18:32
+(CA) P3c_0f27b44587 start 2026-10-19 08:18:32
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 181420 bytes (+181420) 2026-10-19 08:28:33
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 181496 bytes (+76) 2026-10-19 08:38:35
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 181572 bytes (+76) 2026-10-19 09:38:43
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 181638 bytes (+66) 2026-10-19 10:08:46
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 181704 bytes (+66) 2026-10-19 10:28:48
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 181770 bytes (+66) 2026-10-19 10:38:49
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 181836 bytes (+66) 2026-10-19 10:58:51
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 181902 bytes (+66) 2026-10-19 11:08:52
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 181968 bytes (+66) 2026-10-19 11:28:55
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 182034 bytes (+66) 2026-10-19 11:38:57
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 185373 bytes (+3339) 2026-10-19 11:48:58
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 421968 bytes (+236595) 2026-10-19 11:58:59
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 447132 bytes (+25164) 2026-10-19 12:09:00
+(CA) P3c_0f27b44587 ANALYTIC FAILED 2026-10-19 12:11:51 - 
+(CA) P3c_10bab624bc start 2026-10-19 12:11:52

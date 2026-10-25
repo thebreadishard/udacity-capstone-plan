@@ -1,0 +1,38 @@
+=== (S3HR) armed (pid 16568), 35 steps 2026-10-21 06:44:05
+=== (S3HR) starting: 35 steps 2026-10-21 06:44:05
+(S3HR) RA_k2_s0_seed0 done 2026-10-21 06:48:11
+(S3HR) RA_k2_s1_seed0 done 2026-10-21 06:52:21
+(S3HR) RA_k2_s2_seed0 done 2026-10-21 06:55:59
+(S3HR) RA_k2_s3_seed0 done 2026-10-21 06:59:45
+(S3HR) RA_k2_s4_seed0 done 2026-10-21 07:03:35
+(S3HR) RA_k4_s0_seed0 done 2026-10-21 07:09:01
+(S3HR) RA_k4_s1_seed0 done 2026-10-21 07:14:17
+(S3HR) RA_k4_s2_seed0 done 2026-10-21 07:19:45
+(S3HR) RA_k4_s3_seed0 done 2026-10-21 07:25:13
+(S3HR) RA_k4_s4_seed0 done 2026-10-21 07:30:16
+(S3HR) RA_k5_s0_seed0 done 2026-10-21 07:35:58
+(S3HR) RA_k0_s0_seed1 done 2026-10-21 07:38:31
+(S3HR) RA_k2_s0_seed1 done 2026-10-21 07:42:42
+(S3HR) RA_k2_s1_seed1 done 2026-10-21 07:46:42
+(S3HR) RA_k2_s2_seed1 done 2026-10-21 07:50:18
+(S3HR) RA_k2_s3_seed1 done 2026-10-21 07:54:04
+(S3HR) RA_k2_s4_seed1 done 2026-10-21 07:57:50
+(S3HR) RA_k4_s0_seed1 done 2026-10-21 08:02:52
+(S3HR) RA_k4_s1_seed1 done 2026-10-21 08:07:58
+(S3HR) RA_k4_s2_seed1 done 2026-10-21 08:13:00
+(S3HR) RA_k4_s3_seed1 done 2026-10-21 08:18:07
+(S3HR) RA_k4_s4_seed1 done 2026-10-21 08:22:59
+(S3HR) RA_k5_s0_seed1 done 2026-10-21 08:28:40
+(S3HR) RA_k0_s0_seed2 done 2026-10-21 08:31:18
+(S3HR) RA_k2_s0_seed2 done 2026-10-21 08:35:23
+(S3HR) RA_k2_s1_seed2 done 2026-10-21 08:39:21
+(S3HR) RA_k2_s2_seed2 done 2026-10-21 08:43:02
+(S3HR) RA_k2_s3_seed2 done 2026-10-21 08:46:47
+(S3HR) RA_k2_s4_seed2 done 2026-10-21 08:50:30
+(S3HR) RA_k4_s0_seed2 done 2026-10-21 08:55:38
+(S3HR) RA_k4_s1_seed2 done 2026-10-21 09:00:55
+(S3HR) RA_k4_s2_seed2 done 2026-10-21 09:06:01
+(S3HR) RA_k4_s3_seed2 done 2026-10-21 09:11:19
+(S3HR) RA_k4_s4_seed2 done 2026-10-21 09:16:08
+(S3HR) RA_k5_s0_seed2 done 2026-10-21 09:21:52
+=== (S3HR) run done — 35 steps, 35 declared outputs present 2026-10-21 09:21:52

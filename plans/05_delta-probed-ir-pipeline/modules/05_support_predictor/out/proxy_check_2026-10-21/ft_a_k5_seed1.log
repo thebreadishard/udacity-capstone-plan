@@ -1,0 +1,159 @@
+analytic second-route Hessians substituted for 601 molecules
+atomic polar tensors found for 216 molecules: intensity read-outs on (lever 5, registered 2 Oct 2026 06:5x)
+base base_a_model_n750_seed1.pt (status candidate); reservoir 200, read 343; k 5; modes ['head_l2', 'head', 'head_all', 'scratch']
+  [head_l2 k5]     epoch 50/600: loss 1.15
+  [head_l2 k5]     epoch 100/600: loss 1.135
+  [head_l2 k5]     epoch 150/600: loss 1.132
+  [head_l2 k5]     epoch 200/600: loss 1.13
+  [head_l2 k5]     epoch 250/600: loss 1.129
+  [head_l2 k5]     epoch 300/600: loss 1.129
+  [head_l2 k5]     epoch 350/600: loss 1.129
+  [head_l2 k5]     epoch 400/600: loss 1.129
+  [head_l2 k5]     epoch 450/600: loss 1.129
+  [head_l2 k5]     epoch 500/600: loss 1.129
+  [head_l2 k5]     epoch 550/600: loss 1.129
+  [head_l2 k5]     epoch 600/600: loss 1.129
+k 5 draw 0 head_l2: CH-oop 9.56 other 13.30 (39 s)
+  [head k5]     epoch 50/600: loss 0.2607
+  [head k5]     epoch 100/600: loss 0.1492
+  [head k5]     epoch 150/600: loss 0.1219
+  [head k5]     epoch 200/600: loss 0.1097
+  [head k5]     epoch 250/600: loss 0.1028
+  [head k5]     epoch 300/600: loss 0.09842
+  [head k5]     epoch 350/600: loss 0.09535
+  [head k5]     epoch 400/600: loss 0.09303
+  [head k5]     epoch 450/600: loss 0.09119
+  [head k5]     epoch 500/600: loss 0.08971
+  [head k5]     epoch 550/600: loss 0.08851
+  [head k5]     epoch 600/600: loss 0.08753
+k 5 draw 0 head: CH-oop 5.39 other 6.37 (36 s)
+  [head_all k5]     epoch 50/600: loss 0.01385
+  [head_all k5]     epoch 100/600: loss 0.00699
+  [head_all k5]     epoch 150/600: loss 0.004433
+  [head_all k5]     epoch 200/600: loss 0.005511
+  [head_all k5]     epoch 250/600: loss 0.001788
+  [head_all k5]     epoch 300/600: loss 0.002496
+  [head_all k5]     epoch 350/600: loss 0.001431
+  [head_all k5]     epoch 400/600: loss 0.001449
+  [head_all k5]     epoch 450/600: loss 0.00139
+  [head_all k5]     epoch 500/600: loss 0.00202
+  [head_all k5]     epoch 550/600: loss 0.0007008
+  [head_all k5]     epoch 600/600: loss 0.00129
+k 5 draw 0 head_all: CH-oop 7.20 other 8.35 (52 s)
+  [scratch k5]   rung B's 66 pair features added to the hybrid head (standardised on the fit molecules)
+  [scratch k5]   hybrid head: 304,276 parameters; F_low input scales 0.0425, 0.313, 0.134; SQM α per class on
+  [scratch k5]   fresh sum body pre-flight: worst |output| 24.3 on the training molecules
+  [scratch k5]     seed 1 epoch 1/200: loss main 6.39e-06 aux 0.7503 val 1.733 (0 s)
+  [scratch k5]     seed 1 epoch 10/200: loss main 1.008e-06 aux 0.4656 val 1.451 (1 s)
+  [scratch k5]     seed 1 epoch 20/200: loss main 7.098e-07 aux 0.4333 val 1.381 (2 s)
+  [scratch k5]     seed 1 epoch 30/200: loss main 7.33e-07 aux 0.413 val 1.364 (4 s)
+  [scratch k5]     seed 1 epoch 40/200: loss main 6.891e-07 aux 0.4001 val 1.36 (5 s)
+  [scratch k5]     seed 1 epoch 50/200: loss main 6.261e-07 aux 0.3894 val 1.356 (6 s)
+  [scratch k5]     seed 1 epoch 60/200: loss main 6.026e-07 aux 0.3887 val 1.345 (7 s)
+  [scratch k5]     seed 1 epoch 70/200: loss main 5.294e-07 aux 0.3713 val 1.349 (8 s)
+  [scratch k5]     seed 1: early stop at epoch 75, best inner val 1.344 at epoch 55
+k 5 draw 0 scratch: CH-oop 8.51 other 9.88 (16 s)
+  [head_l2 k5]     epoch 50/600: loss 1.062
+  [head_l2 k5]     epoch 100/600: loss 1.055
+  [head_l2 k5]     epoch 150/600: loss 1.055
+  [head_l2 k5]     epoch 200/600: loss 1.055
+  [head_l2 k5]     epoch 250/600: loss 1.054
+  [head_l2 k5]     epoch 300/600: loss 1.054
+  [head_l2 k5]     epoch 350/600: loss 1.054
+  [head_l2 k5]     epoch 400/600: loss 1.054
+  [head_l2 k5]     epoch 450/600: loss 1.054
+  [head_l2 k5]     epoch 500/600: loss 1.054
+  [head_l2 k5]     epoch 550/600: loss 1.054
+  [head_l2 k5]     epoch 600/600: loss 1.054
+k 5 draw 1 head_l2: CH-oop 9.45 other 24.68 (44 s)
+  [head k5]     epoch 50/600: loss 0.2117
+  [head k5]     epoch 100/600: loss 0.1258
+  [head k5]     epoch 150/600: loss 0.1051
+  [head k5]     epoch 200/600: loss 0.09515
+  [head k5]     epoch 250/600: loss 0.08915
+  [head k5]     epoch 300/600: loss 0.08511
+  [head k5]     epoch 350/600: loss 0.08224
+  [head k5]     epoch 400/600: loss 0.08011
+  [head k5]     epoch 450/600: loss 0.07849
+  [head k5]     epoch 500/600: loss 0.07724
+  [head k5]     epoch 550/600: loss 0.07625
+  [head k5]     epoch 600/600: loss 0.07547
+k 5 draw 1 head: CH-oop 5.92 other 7.75 (44 s)
+  [head_all k5]     epoch 50/600: loss 0.009556
+  [head_all k5]     epoch 100/600: loss 0.00354
+  [head_all k5]     epoch 150/600: loss 0.00527
+  [head_all k5]     epoch 200/600: loss 0.002188
+  [head_all k5]     epoch 250/600: loss 0.001538
+  [head_all k5]     epoch 300/600: loss 0.00171
+  [head_all k5]     epoch 350/600: loss 0.001511
+  [head_all k5]     epoch 400/600: loss 0.00136
+  [head_all k5]     epoch 450/600: loss 0.001418
+  [head_all k5]     epoch 500/600: loss 0.001354
+  [head_all k5]     epoch 550/600: loss 0.0004314
+  [head_all k5]     epoch 600/600: loss 0.0003394
+k 5 draw 1 head_all: CH-oop 7.29 other 8.53 (66 s)
+  [scratch k5]   rung B's 66 pair features added to the hybrid head (standardised on the fit molecules)
+  [scratch k5]   hybrid head: 304,276 parameters; F_low input scales 0.043, 0.329, 0.15; SQM α per class on
+  [scratch k5]   fresh sum body pre-flight: worst |output| 23.4 on the training molecules
+  [scratch k5]     seed 1 epoch 1/200: loss main 6.47e-06 aux 0.8196 val 0.5795 (0 s)
+  [scratch k5]     seed 1 epoch 10/200: loss main 1.603e-06 aux 0.5044 val 0.3842 (1 s)
+  [scratch k5]     seed 1 epoch 20/200: loss main 1.183e-06 aux 0.4629 val 0.3487 (3 s)
+  [scratch k5]     seed 1 epoch 30/200: loss main 8.534e-07 aux 0.4459 val 0.3349 (4 s)
+  [scratch k5]     seed 1 epoch 40/200: loss main 6.044e-07 aux 0.4326 val 0.3248 (6 s)
+  [scratch k5]     seed 1 epoch 50/200: loss main 5.832e-07 aux 0.4224 val 0.3172 (7 s)
+  [scratch k5]     seed 1 epoch 60/200: loss main 5.548e-07 aux 0.4166 val 0.3112 (8 s)
+  [scratch k5]     seed 1 epoch 70/200: loss main 5.306e-07 aux 0.3951 val 0.3046 (10 s)
+  [scratch k5]     seed 1 epoch 80/200: loss main 5.527e-07 aux 0.376 val 0.3086 (11 s)
+  [scratch k5]     seed 1 epoch 90/200: loss main 5.818e-07 aux 0.3624 val 0.3132 (13 s)
+  [scratch k5]     seed 1: early stop at epoch 97, best inner val 0.2969 at epoch 77
+k 5 draw 1 scratch: CH-oop 7.20 other 9.36 (21 s)
+  [head_l2 k5]     epoch 50/600: loss 1.001
+  [head_l2 k5]     epoch 100/600: loss 0.9925
+  [head_l2 k5]     epoch 150/600: loss 0.9918
+  [head_l2 k5]     epoch 200/600: loss 0.9915
+  [head_l2 k5]     epoch 250/600: loss 0.9913
+  [head_l2 k5]     epoch 300/600: loss 0.9913
+  [head_l2 k5]     epoch 350/600: loss 0.9913
+  [head_l2 k5]     epoch 400/600: loss 0.9913
+  [head_l2 k5]     epoch 450/600: loss 0.9913
+  [head_l2 k5]     epoch 500/600: loss 0.9913
+  [head_l2 k5]     epoch 550/600: loss 0.9913
+  [head_l2 k5]     epoch 600/600: loss 0.9913
+k 5 draw 2 head_l2: CH-oop 9.21 other 14.09 (46 s)
+  [head k5]     epoch 50/600: loss 0.248
+  [head k5]     epoch 100/600: loss 0.1439
+  [head k5]     epoch 150/600: loss 0.1194
+  [head k5]     epoch 200/600: loss 0.1083
+  [head k5]     epoch 250/600: loss 0.102
+  [head k5]     epoch 300/600: loss 0.09811
+  [head k5]     epoch 350/600: loss 0.09549
+  [head k5]     epoch 400/600: loss 0.09362
+  [head k5]     epoch 450/600: loss 0.09222
+  [head k5]     epoch 500/600: loss 0.09115
+  [head k5]     epoch 550/600: loss 0.0903
+  [head k5]     epoch 600/600: loss 0.08962
+k 5 draw 2 head: CH-oop 5.35 other 5.56 (45 s)
+  [head_all k5]     epoch 50/600: loss 0.01678
+  [head_all k5]     epoch 100/600: loss 0.0107
+  [head_all k5]     epoch 150/600: loss 0.01538
+  [head_all k5]     epoch 200/600: loss 0.01301
+  [head_all k5]     epoch 250/600: loss 0.003295
+  [head_all k5]     epoch 300/600: loss 0.002273
+  [head_all k5]     epoch 350/600: loss 0.002177
+  [head_all k5]     epoch 400/600: loss 0.003184
+  [head_all k5]     epoch 450/600: loss 0.004707
+  [head_all k5]     epoch 500/600: loss 0.001938
+  [head_all k5]     epoch 550/600: loss 0.00217
+  [head_all k5]     epoch 600/600: loss 0.002196
+k 5 draw 2 head_all: CH-oop 5.98 other 7.40 (69 s)
+  [scratch k5]   rung B's 66 pair features added to the hybrid head (standardised on the fit molecules)
+  [scratch k5]   hybrid head: 304,276 parameters; F_low input scales 0.0378, 0.302, 0.129; SQM α per class on
+  [scratch k5]   fresh sum body pre-flight: worst |output| 25.3 on the training molecules
+  [scratch k5]     seed 1 epoch 1/200: loss main 5.244e-06 aux 0.6808 val 1.693 (0 s)
+  [scratch k5]     seed 1 epoch 10/200: loss main 8.187e-07 aux 0.3849 val 1.464 (2 s)
+  [scratch k5]     seed 1 epoch 20/200: loss main 5.566e-07 aux 0.357 val 1.388 (3 s)
+  [scratch k5]     seed 1 epoch 30/200: loss main 5.651e-07 aux 0.3398 val 1.381 (5 s)
+  [scratch k5]     seed 1 epoch 40/200: loss main 5.658e-07 aux 0.3273 val 1.384 (6 s)
+  [scratch k5]     seed 1: early stop at epoch 46, best inner val 1.379 at epoch 26
+k 5 draw 2 scratch: CH-oop 7.32 other 9.07 (14 s)
+wrote out/proxy_check_2026-10-21/ft_a_k5_seed1.json/.md in 665 s

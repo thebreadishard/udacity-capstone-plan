@@ -1,0 +1,27 @@
+[15:22:20] mp2 cc-pvdz k=2: H_kk +0.109861 (45 s)
+[15:23:06] mp2 cc-pvdz k=18: H_kk +0.318244 (46 s)
+[15:23:52] mp2 cc-pvdz k=20: H_kk +0.022876 (46 s)
+[15:37:59] mp2 cc-pvtz k=2: H_kk +0.125709 (847 s)
+[15:48:36] mp2 cc-pvtz k=18: H_kk +0.294687 (637 s)
+[16:02:05] mp2 cc-pvtz k=20: H_kk +0.026634 (809 s)
+[16:03:56] b3lyp cc-pvdz k=2: H_kk +0.135239 (110 s)
+[16:05:33] b3lyp cc-pvdz k=18: H_kk +0.305871 (97 s)
+[16:06:55] b3lyp cc-pvdz k=20: H_kk +0.024226 (83 s)
+[16:14:16] b3lyp cc-pvtz k=2: H_kk +0.139914 (441 s)
+[16:22:36] b3lyp cc-pvtz k=18: H_kk +0.288050 (499 s)
+[16:30:42] b3lyp cc-pvtz k=20: H_kk +0.026933 (487 s)
+[16:47:36] analytic B3LYP/cc-pvdz Hessian: max |analytic − FD| on ks 1.0e-05 a.u. (1013 s)
+# Composite anchor level, test 1 — basis step TZ−DZ per level on A_8448043181 — 2026-10-04 15:21
+
+Step 0.005 bohr, grid (99, 590), MP2 frozen core 6; levels ['mp2', 'b3lyp']; 5161 s at 4 threads. A level *tracks* a coordinate when |Δ_X − Δ_CC| ≤ 0.2 |Δ_CC|.
+
+| k | atom xyz | oop | Δ_CC | Δ_mp2 | Δ_b3lyp | mp2/CC | b3lyp/CC | B3LYP two-route |
+|---|---|---|---|---|---|---|---|---|
+| 2 | 0 z | 1.00 | +0.01678 | +0.01585 | +0.00467 | +0.94 tracks | +0.28 | 4.7e-06 |
+| 18 | 6 x | 0.00 | -0.02425 | -0.02356 | -0.01782 | +0.97 tracks | +0.73 | 1.0e-05 |
+| 20 | 6 z | 1.00 | +0.00421 | +0.00376 | +0.00271 | +0.89 tracks | +0.64 | 6.2e-07 |
+
+**mp2** tracks 3 of 3 coordinates.
+
+**b3lyp** tracks 0 of 3 coordinates.
+=== composite test 1 exit 0 at 16:47:36

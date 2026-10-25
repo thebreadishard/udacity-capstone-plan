@@ -1,0 +1,7 @@
+registered as candidate: E7_rungC_chain38_ablation_fivering_2026-10-09_model_n853_seed0.pt, E7_rungC_chain38_ablation_fivering_2026-10-09_model_n853_seed1.pt, E7_rungC_chain38_ablation_fivering_2026-10-09_model_n853_seed2.pt
+model registry STOPPED: no reviewed status for E7_rungC_chain38_control_2026-10-09_model_n853_seed0.pt, E7_rungC_chain38_control_2026-10-09_model_n853_seed1.pt, E7_rungC_chain38_control_2026-10-09_model_n853_seed2.pt — add them to C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\05_support_predictor\out\MODELS_STATUS.json
+registered as candidate: E7_rungC_chain38_control_2026-10-09_model_n853_seed0.pt, E7_rungC_chain38_control_2026-10-09_model_n853_seed1.pt, E7_rungC_chain38_control_2026-10-09_model_n853_seed2.pt
+wrote C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\05_support_predictor\MODELS.md (35 models; carried: 3)
+wrote C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\standout_pattern_proposer\MODELS.md (42 models; carried: 3)
+wrote C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\06_generative_candidates\MODELS.md (4 models; carried: 0)
+wrote C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\MODELS.md

@@ -1,0 +1,26 @@
+analytic second-route Hessians substituted for 601 molecules
+atomic polar tensors found for 216 molecules: intensity read-outs on (lever 5, registered 2 Oct 2026 06:5x)
+base base_b_model_n607_seed0.pt (status candidate); reservoir 40, read 27; k 40; modes ['head_l2', 'head', 'head_all', 'scratch']
+  [head_l2 k40]     epoch 50/75: loss 0.06663
+k 40 draw 0 head_l2: CH-oop 2.35 other 3.61 (61 s)
+  [head k40]     epoch 50/75: loss 0.05735
+k 40 draw 0 head: CH-oop 2.57 other 3.35 (57 s)
+  [head_all k40]     epoch 50/75: loss 0.01695
+k 40 draw 0 head_all: CH-oop 2.34 other 3.53 (102 s)
+  [scratch k40]   rung B's 66 pair features added to the hybrid head (standardised on the fit molecules)
+  [scratch k40]   hybrid head: 304,276 parameters; F_low input scales 0.0287, 0.261, 0.105; SQM α per class on
+  [scratch k40]   fresh sum body pre-flight: worst |output| 43.1 on the training molecules
+  [scratch k40]     seed 0 epoch 1/200: loss main 1.985e-06 aux 0.4209 val 0.2915 (2 s)
+  [scratch k40]     seed 0 epoch 10/200: loss main 5.311e-07 aux 0.241 val 0.2274 (19 s)
+  [scratch k40]     seed 0 epoch 20/200: loss main 4.858e-07 aux 0.2126 val 0.1959 (37 s)
+  [scratch k40]     seed 0 epoch 30/200: loss main 3.684e-07 aux 0.1664 val 0.1761 (56 s)
+  [scratch k40]     seed 0 epoch 40/200: loss main 3.337e-07 aux 0.135 val 0.1467 (74 s)
+  [scratch k40]     seed 0 epoch 50/200: loss main 2.594e-07 aux 0.1052 val 0.1358 (93 s)
+  [scratch k40]     seed 0 epoch 60/200: loss main 2.17e-07 aux 0.07606 val 0.1196 (112 s)
+  [scratch k40]     seed 0 epoch 70/200: loss main 2.137e-07 aux 0.06788 val 0.1013 (130 s)
+  [scratch k40]     seed 0 epoch 80/200: loss main 1.877e-07 aux 0.06011 val 0.091 (149 s)
+  [scratch k40]     seed 0 epoch 90/200: loss main 1.597e-07 aux 0.0453 val 0.1012 (167 s)
+  [scratch k40]     seed 0 epoch 100/200: loss main 1.774e-07 aux 0.05193 val 0.09881 (186 s)
+  [scratch k40]     seed 0: early stop at epoch 100, best inner val 0.091 at epoch 80
+k 40 draw 0 scratch: CH-oop 3.53 other 5.79 (187 s)
+wrote out/proxy_check_2026-10-21/ft_b_k40_seed0.json/.md in 479 s

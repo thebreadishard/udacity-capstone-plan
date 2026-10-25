@@ -1,0 +1,65 @@
+C:\Users\thebr\AppData\Local\Programs\Python\Python314\Lib\site-packages\zmq\_future.py:718: RuntimeWarning: Proactor event loop does not implement add_reader family of methods required for zmq. Registering an additional selector thread for add_reader support via tornado. Use `asyncio.set_event_loop_policy(WindowsSelectorEventLoopPolicy())` to avoid this warning.
+  self._get_loop()
+[IPKernelApp] WARNING | Kernel is running over TCP without encryption. All communication (including code and outputs) is sent in plain text and is susceptible to eavesdropping. Use IPC transport or launch with kernel manager-provisioned CurveZMQ keys to enable transport encryption.
+Traceback (most recent call last):
+  File "C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\08_industry_synthesis\notebook\make_notebook.py", line 187, in <module>
+    NotebookClient(nb, timeout=1800, kernel_name="python3", resources={"metadata": {"path": str(HERE)}}).execute()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\thebr\AppData\Local\Programs\Python\Python314\Lib\site-packages\jupyter_core\utils\__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "C:\Users\thebr\AppData\Local\Programs\Python\Python314\Lib\asyncio\base_events.py", line 719, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File "C:\Users\thebr\AppData\Local\Programs\Python\Python314\Lib\site-packages\nbclient\client.py", line 709, in async_execute
+    await self.async_execute_cell(
+        cell, index, execution_count=self.code_cells_executed + 1
+    )
+  File "C:\Users\thebr\AppData\Local\Programs\Python\Python314\Lib\site-packages\nbclient\client.py", line 1062, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "C:\Users\thebr\AppData\Local\Programs\Python\Python314\Lib\site-packages\nbclient\client.py", line 918, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+c8 = certificate(cat.find("benzene"), cat)
+cov = pd.DataFrame(c8["anchor_coverage"])[["family", "n_modes", "rms_dev_vs_ccsdt", "u_band", "wider_than_tolerance"]]
+display(cov)
+print("laboratory record:", c8["laboratory"]["n_bands"], "bands in", len(c8["laboratory"]["records"]), "records;", c8["laboratory"]["source"])
+------------------
+
+
+[31m---------------------------------------------------------------------------[39m
+[31mKeyError[39m                                  Traceback (most recent call last)
+[36mCell[39m[36m [39m[32mIn[6][39m[32m, line 2[39m
+[32m      1[39m c8 = certificate(cat.find([33m"benzene"[39m), cat)
+[32m----> [39m[32m2[39m cov = pd.DataFrame(c8[[33m"anchor_coverage"[39m])[[[33m"family"[39m, [33m"n_modes"[39m, [33m"rms_dev_vs_ccsdt"[39m, [33m"u_band"[39m, [33m"wider_than_tolerance"[39m]]
+[32m      3[39m display(cov)
+[32m      4[39m print([33m"laboratory record:"[39m, c8[[33m"laboratory"[39m][[33m"n_bands"[39m], [33m"bands in"[39m, len(c8[[33m"laboratory"[39m][[33m"records"[39m]), [33m"records;"[39m, c8[[33m"laboratory"[39m][[33m"source"[39m])
+
+[36mFile [39m[32m~\AppData\Local\Programs\Python\Python314\Lib\site-packages\pandas\core\frame.py:4384[39m, in [36mDataFrame.__getitem__[39m[34m(self, key)[39m
+[32m   4380[39m                 indexer = [indexer]
+[32m   4381[39m         [38;5;28;01melse[39;00m:
+[32m   4382[39m             [38;5;28;01mif[39;00m is_iterator(key):
+[32m   4383[39m                 key = list(key)
+[32m-> [39m[32m4384[39m             indexer = self.columns._get_indexer_strict(key, [33m"columns"[39m)[[32m1[39m]
+[32m   4385[39m 
+[32m   4386[39m         [38;5;66;03m# take() does not accept boolean indexers[39;00m
+[32m   4387[39m         [38;5;28;01mif[39;00m getattr(indexer, [33m"dtype"[39m, [38;5;28;01mNone[39;00m) == bool:
+
+[36mFile [39m[32m~\AppData\Local\Programs\Python\Python314\Lib\site-packages\pandas\core\indexes\base.py:6302[39m, in [36mIndex._get_indexer_strict[39m[34m(self, key, axis_name)[39m
+[32m   6299[39m [38;5;28;01melse[39;00m:
+[32m   6300[39m     keyarr, indexer, new_indexer = [38;5;28mself[39m._reindex_non_unique(keyarr)
+[32m-> [39m[32m6302[39m [30;43mself[39;49m[30;43m.[39;49m[30;43m_raise_if_missing[39;49m[30;43m([39;49m[30;43mkeyarr[39;49m[30;43m,[39;49m[30;43m [39;49m[30;43mindexer[39;49m[30;43m,[39;49m[30;43m [39;49m[30;43maxis_name[39;49m[30;43m)[39;49m
+[32m   6304[39m keyarr = [38;5;28mself[39m.take(indexer)
+[32m   6305[39m [38;5;28;01mif[39;00m [38;5;28misinstance[39m(key, Index):
+[32m   6306[39m     [38;5;66;03m# GH 42790 - Preserve name from an Index[39;00m
+
+[36mFile [39m[32m~\AppData\Local\Programs\Python\Python314\Lib\site-packages\pandas\core\indexes\base.py:6352[39m, in [36mIndex._raise_if_missing[39m[34m(self, key, indexer, axis_name)[39m
+[32m   6350[39m [38;5;28;01mif[39;00m nmissing:
+[32m   6351[39m     [38;5;28;01mif[39;00m nmissing == [38;5;28mlen[39m(indexer):
+[32m-> [39m[32m6352[39m         [38;5;28;01mraise[39;00m [38;5;167;01mKeyError[39;00m([33mf[39m[33m"[39m[33mNone of [[39m[38;5;132;01m{[39;00mkey[38;5;132;01m}[39;00m[33m] are in the [[39m[38;5;132;01m{[39;00maxis_name[38;5;132;01m}[39;00m[33m][39m[33m"[39m)
+[32m   6354[39m     not_found = [38;5;28mlist[39m(ensure_index(key)[missing_mask.nonzero()[[32m0[39m]].unique())
+[32m   6355[39m     [38;5;28;01mraise[39;00m [38;5;167;01mKeyError[39;00m([33mf[39m[33m"[39m[38;5;132;01m{[39;00mnot_found[38;5;132;01m}[39;00m[33m not in index[39m[33m"[39m)
+
+[31mKeyError[39m: "None of [Index(['family', 'n_modes', 'rms_dev_vs_ccsdt', 'u_band',\n       'wider_than_tolerance'],\n      dtype='str')] are in the [columns]"
+

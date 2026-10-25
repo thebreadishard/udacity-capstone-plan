@@ -1,0 +1,11 @@
+=== (S3Dwave4) armed (pid 23592), 5 steps 2026-10-21 02:41:20
+=== (S3Dwave4) starting: 5 steps 2026-10-21 02:41:20
+(S3Dwave4) W15_head_all_originals_only_seed0 done 2026-10-21 02:44:32
+=== (S3Dwave4) progress: W13_head_all_base_n972_seed0 (2/5) running 10 min, its log +4139 bytes 2026-10-21 02:54:32
+(S3Dwave4) W13_head_all_base_n972_seed0 done 2026-10-21 02:56:52
+=== (S3Dwave4) progress: W14_head_all_base_analytic_seed0 (3/5) running 10 min, its log +4148 bytes 2026-10-21 03:06:52
+(S3Dwave4) W14_head_all_base_analytic_seed0 done 2026-10-21 03:09:07
+(S3Dwave4) W11_head_all_epochs100_seed0 done 2026-10-21 03:13:28
+=== (S3Dwave4) progress: W12_head_all_lr3e-4_seed0 (5/5) running 10 min, its log +4096 bytes 2026-10-21 03:23:28
+(S3Dwave4) W12_head_all_lr3e-4_seed0 done 2026-10-21 03:26:01
+=== (S3Dwave4) run done — 5 steps, 5 declared outputs present 2026-10-21 03:26:01

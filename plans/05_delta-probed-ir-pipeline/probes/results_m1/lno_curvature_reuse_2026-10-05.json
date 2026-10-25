@@ -1,0 +1,73 @@
+{
+ "date": "2026-10-07 09:54",
+ "anchor": "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/e8_naphthalene_ccpvdz_tlambda_2026-10-02",
+ "basis": "cc-pvdz",
+ "frozen": 10,
+ "step": 0.005,
+ "thresholds": [
+  1e-06,
+  1e-07
+ ],
+ "spaces": "reused (cell b)",
+ "e0_lno_composite": -384.7928836549782,
+ "e0_canonical": -384.7933061890454,
+ "e0_shift": 0.000422534067183733,
+ "rows": [
+  {
+   "k": 0,
+   "atom": 0,
+   "xyz": "x",
+   "element": "C",
+   "oop_fraction": 0.10400996697539647,
+   "H_kk_hessian": 0.7807512274822188,
+   "H_kk_energy_route": 0.780745608608413,
+   "H_kk_lno": 0.7823381201887969,
+   "delta_lno_vs_hessian": 0.0015868927065780802,
+   "rel": 0.002032520283952062,
+   "dE_lno_pm": -5.536702906283608e-05,
+   "dE_can_pm": -5.644949959560108e-05
+  },
+  {
+   "k": 1,
+   "atom": 0,
+   "xyz": "y",
+   "element": "C",
+   "oop_fraction": 0.11514586784342903,
+   "H_kk_hessian": 0.6892160789753775,
+   "H_kk_energy_route": 0.6891909697515075,
+   "H_kk_lno": 0.6907434499225928,
+   "delta_lno_vs_hessian": 0.001527370947215334,
+   "rel": 0.002216098831423084,
+   "dE_lno_pm": -2.508222178221331e-05,
+   "dE_can_pm": -2.543856049896931e-05
+  }
+ ],
+ "max_abs_delta": 0.0015868927065780802,
+ "max_rel": 0.002216098831423084,
+ "seconds": 24234,
+ "reference_record": {
+  "tag": "reference",
+  "stages_s": {
+   "scf": 2.2,
+   "pm": 0.8,
+   "lno_ccsd_t": 4371.3,
+   "mp2": 0.1
+  },
+  "rss_gb": {
+   "scf": 0.38,
+   "lno_ccsd_t": 4.08
+  },
+  "spaces": "capture",
+  "tier": "t0",
+  "thresh": "tight",
+  "triples": true,
+  "n_fragments": 24,
+  "e_scf": -383.3828780545278,
+  "e_corr_lno_ccsd_t": -1.4099002118922273,
+  "e_corr_lno_mp2": -1.2961532596175336,
+  "e_corr_mp2_full": -1.2962586481756837,
+  "e_tot_composite": -384.7928836549782,
+  "wall_s": 4374.4,
+  "date": "2026-10-07 04:23"
+ }
+}

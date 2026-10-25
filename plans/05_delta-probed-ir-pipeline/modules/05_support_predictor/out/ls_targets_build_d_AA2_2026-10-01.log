@@ -1,0 +1,227 @@
+225 molecules of layers ['A', 'A2'], pattern d, 2 workers
+  1/225 A_6e858b26e5 atoms 11 pairs 1048 0.4 s residual projected 0.064 → ls 0.000
+  2/225 A_8448043181 atoms 12 pairs 1365 1.3 s residual projected 0.050 → ls 0.000
+  3/225 A_3100da3761 atoms 13 pairs 1478 1.7 s residual projected 0.053 → ls 0.010
+  4/225 A_a848c04a21 atoms 14 pairs 1544 2.0 s residual projected 0.081 → ls 0.040
+  5/225 A_9d7c66d274 atoms 15 pairs 2473 4.9 s residual projected 0.066 → ls 0.002
+  6/225 A_fead28d796 atoms 15 pairs 2473 5.0 s residual projected 0.060 → ls 0.001
+  7/225 A2_06067133dc atoms 16 pairs 2439 6.0 s residual projected 0.170 → ls 0.004
+  8/225 A2_2f5e215666 atoms 16 pairs 2438 6.2 s residual projected 0.172 → ls 0.005
+  9/225 A_76e053ce6a atoms 16 pairs 2898 8.5 s residual projected 0.066 → ls 0.001
+  10/225 A_7aa232d4e9 atoms 16 pairs 2426 6.6 s residual projected 0.159 → ls 0.004
+  11/225 A_8f6ed7c002 atoms 16 pairs 2068 4.8 s residual projected 0.050 → ls 0.014
+  12/225 A_d295f2fa80 atoms 16 pairs 2499 6.5 s residual projected 0.152 → ls 0.026
+  13/225 A2_00eeb8e5ed atoms 17 pairs 2586 8.3 s residual projected 0.148 → ls 0.012
+  14/225 A2_019964a9ed atoms 17 pairs 2615 8.5 s residual projected 0.162 → ls 0.011
+  15/225 A2_2ca281c2d5 atoms 17 pairs 2562 8.2 s residual projected 0.163 → ls 0.010
+  16/225 A2_3740d0ba57 atoms 17 pairs 2615 8.4 s residual projected 0.172 → ls 0.007
+  17/225 A_90df3e4aa9 atoms 17 pairs 3427 12.5 s residual projected 0.040 → ls 0.004
+  18/225 A_d09f8d1ef8 atoms 17 pairs 2913 10.0 s residual projected 0.146 → ls 0.075
+  19/225 A_ff98e1160d atoms 17 pairs 2847 9.9 s residual projected 0.142 → ls 0.056
+  20/225 A2_0a158816bd atoms 18 pairs 2883 12.3 s residual projected 0.142 → ls 0.009
+  21/225 A2_32861fe1de atoms 18 pairs 2777 10.9 s residual projected 0.166 → ls 0.016
+  22/225 A_01f3186607 atoms 18 pairs 3297 14.1 s residual projected 0.134 → ls 0.030
+  23/225 A_aa22880426 atoms 18 pairs 3316 14.3 s residual projected 0.151 → ls 0.054
+  24/225 A_d9139359ab atoms 18 pairs 3227 13.1 s residual projected 0.353 → ls 0.009
+  25/225 A_466972291d atoms 19 pairs 3533 18.7 s residual projected 0.138 → ls 0.041
+  26/225 A_6aa211768a atoms 19 pairs 3448 18.1 s residual projected 0.140 → ls 0.013
+  27/225 A2_196b4cd166 atoms 20 pairs 4763 33.0 s residual projected 0.134 → ls 0.009
+  28/225 A2_2354759bfb atoms 20 pairs 3181 19.1 s residual projected 0.146 → ls 0.012
+  29/225 A_45187bb7c8 atoms 20 pairs 4780 32.8 s residual projected 0.121 → ls 0.008
+  30/225 A_519351d19c atoms 20 pairs 3730 23.2 s residual projected 0.123 → ls 0.055
+  31/225 A_72b86c2331 atoms 20 pairs 4548 31.8 s residual projected 0.066 → ls 0.018
+  32/225 A2_0ef0a3a61c atoms 21 pairs 4707 40.6 s residual projected 0.075 → ls 0.026
+  33/225 A2_1c7ee11812 atoms 21 pairs 4951 45.2 s residual projected 0.132 → ls 0.014
+  34/225 A2_1c9af68a67 atoms 21 pairs 4447 38.7 s residual projected 0.072 → ls 0.024
+  35/225 A2_20e53d754a atoms 21 pairs 4439 39.5 s residual projected 0.066 → ls 0.019
+  36/225 A2_2ade2a9b93 atoms 21 pairs 4749 43.6 s residual projected 0.071 → ls 0.017
+  37/225 A2_34decc4ca8 atoms 21 pairs 4986 46.2 s residual projected 0.127 → ls 0.014
+  38/225 A2_360ca4faa6 atoms 21 pairs 4465 39.4 s residual projected 0.067 → ls 0.018
+  39/225 A_0674939e7f atoms 21 pairs 3439 26.8 s residual projected 0.076 → ls 0.011
+  40/225 A_07cadc7923 atoms 21 pairs 3891 32.3 s residual projected 0.142 → ls 0.040
+  41/225 A_20db5837c9 atoms 21 pairs 4428 40.0 s residual projected 0.072 → ls 0.026
+  42/225 A_593ba8280d atoms 21 pairs 4823 46.1 s residual projected 0.150 → ls 0.027
+  43/225 A_69789470db atoms 21 pairs 4026 34.9 s residual projected 0.120 → ls 0.043
+  44/225 A_d037c0ed95 atoms 21 pairs 4428 40.2 s residual projected 0.063 → ls 0.021
+  45/225 A_ea73419366 atoms 21 pairs 4129 36.4 s residual projected 0.120 → ls 0.027
+  46/225 A2_0b93df3e1a atoms 22 pairs 5197 57.4 s residual projected 0.138 → ls 0.020
+  47/225 A2_192cd5911c atoms 22 pairs 4182 41.7 s residual projected 0.234 → ls 0.042
+  48/225 A2_1f52b56b90 atoms 22 pairs 4601 47.0 s residual projected 0.085 → ls 0.030
+  49/225 A2_221bc30690 atoms 22 pairs 4196 41.8 s residual projected 0.231 → ls 0.046
+  50/225 A2_26664f6a75 atoms 22 pairs 4777 50.2 s residual projected 0.067 → ls 0.017
+  51/225 A2_2b7c0323a9 atoms 22 pairs 4651 48.7 s residual projected 0.071 → ls 0.020
+  52/225 A2_32e53836ea atoms 22 pairs 5074 55.8 s residual projected 0.079 → ls 0.020
+  53/225 A2_3a06a80d61 atoms 22 pairs 5102 56.1 s residual projected 0.083 → ls 0.018
+  54/225 A2_3a4d58eb26 atoms 22 pairs 5269 59.1 s residual projected 0.133 → ls 0.023
+  55/225 A2_3c35334467 atoms 22 pairs 4601 49.5 s residual projected 0.091 → ls 0.047
+  56/225 A2_3c982d4d3f atoms 22 pairs 4692 49.5 s residual projected 0.072 → ls 0.017
+  57/225 A_8152ea74fd atoms 22 pairs 4994 54.7 s residual projected 0.081 → ls 0.034
+  58/225 A_8d1f3c46b0 atoms 22 pairs 6085 72.8 s residual projected 0.115 → ls 0.014
+  59/225 A_b77821c742 atoms 22 pairs 4173 43.0 s residual projected 0.217 → ls 0.060
+  60/225 A_fdc27f1bd1 atoms 22 pairs 3786 36.1 s residual projected 0.063 → ls 0.009
+  61/225 A2_066237c4f5 atoms 23 pairs 5704 77.3 s residual projected 0.067 → ls 0.025
+  62/225 A2_0805297aa2 atoms 23 pairs 4844 60.3 s residual projected 0.099 → ls 0.025
+  63/225 A2_09c1f9ee8a atoms 23 pairs 4903 60.8 s residual projected 0.087 → ls 0.026
+  64/225 A2_0a89c174d8 atoms 23 pairs 4927 62.2 s residual projected 0.090 → ls 0.026
+  65/225 A2_0beab28c4f atoms 23 pairs 4905 60.6 s residual projected 0.141 → ls 0.031
+  66/225 A2_0bf85f35e5 atoms 23 pairs 4909 60.7 s residual projected 0.140 → ls 0.034
+  67/225 A2_0cfc5b5bdb atoms 23 pairs 5637 71.8 s residual projected 0.136 → ls 0.019
+  68/225 A2_0e7288334d atoms 23 pairs 4844 58.3 s residual projected 0.060 → ls 0.019
+  69/225 A2_1279063d3c atoms 23 pairs 5172 63.8 s residual projected 0.089 → ls 0.036
+  70/225 A2_13327d8d52 atoms 23 pairs 5235 65.3 s residual projected 0.083 → ls 0.023
+  71/225 A2_13bafae8e0 atoms 23 pairs 5191 66.3 s residual projected 0.079 → ls 0.022
+  72/225 A2_156fe03a44 atoms 23 pairs 4903 60.2 s residual projected 0.064 → ls 0.024
+  73/225 A2_177784139f atoms 23 pairs 4397 50.7 s residual projected 0.218 → ls 0.055
+  74/225 A2_1b389dc1d8 atoms 23 pairs 5690 74.4 s residual projected 0.061 → ls 0.014
+  75/225 A2_1bb2e3fbf1 atoms 23 pairs 5679 74.9 s residual projected 0.051 → ls 0.015
+  76/225 A2_1fa81d01d6 atoms 23 pairs 5267 68.9 s residual projected 0.077 → ls 0.020
+  77/225 A2_1ff7551053 atoms 23 pairs 5277 70.4 s residual projected 0.073 → ls 0.016
+  78/225 A2_210c322595 atoms 23 pairs 5691 76.7 s residual projected 0.054 → ls 0.017
+  79/225 A2_22d0e8105c atoms 23 pairs 5204 61.6 s residual projected 0.078 → ls 0.021
+  80/225 A2_233ec9a78f atoms 23 pairs 4741 47.9 s residual projected 0.214 → ls 0.083
+  81/225 A2_23d2ef8efb atoms 23 pairs 4891 44.1 s residual projected 0.103 → ls 0.025
+  82/225 A2_2a43bd67da atoms 23 pairs 4943 45.3 s residual projected 0.139 → ls 0.023
+  83/225 A2_2bb0e5721b atoms 23 pairs 5479 52.9 s residual projected 0.128 → ls 0.018
+  84/225 A2_2ce877d5e9 atoms 23 pairs 4902 44.6 s residual projected 0.141 → ls 0.035
+  85/225 A2_3058513f57 atoms 23 pairs 5704 57.0 s residual projected 0.052 → ls 0.017
+  86/225 A2_336097f54c atoms 23 pairs 4903 45.7 s residual projected 0.083 → ls 0.027
+  87/225 A2_33d8ee2f2f atoms 23 pairs 5128 49.6 s residual projected 0.091 → ls 0.033
+  88/225 A2_362fc56435 atoms 23 pairs 5362 53.0 s residual projected 0.133 → ls 0.023
+  89/225 A2_37cf4a0e50 atoms 23 pairs 4844 49.1 s residual projected 0.130 → ls 0.038
+  90/225 A2_3ac24b6972 atoms 23 pairs 4997 53.6 s residual projected 0.083 → ls 0.026
+  91/225 A_5a75c6c39e atoms 23 pairs 3446 34.0 s residual projected 0.055 → ls 0.012
+  92/225 A_a6412e1ae4 atoms 23 pairs 4730 56.9 s residual projected 0.197 → ls 0.068
+  93/225 A_bce5bae234 atoms 23 pairs 4889 59.8 s residual projected 0.131 → ls 0.042
+  94/225 A_e72997e726 atoms 23 pairs 5676 72.4 s residual projected 0.049 → ls 0.018
+  95/225 A2_02f13355a2 atoms 24 pairs 4893 63.7 s residual projected 0.212 → ls 0.084
+  96/225 A2_05a9e0e4c8 atoms 24 pairs 5016 67.4 s residual projected 0.144 → ls 0.057
+  97/225 A2_05e08111d2 atoms 24 pairs 4589 59.8 s residual projected 0.225 → ls 0.048
+  98/225 A2_0814eb7409 atoms 24 pairs 4646 60.0 s residual projected 0.215 → ls 0.043
+  99/225 A2_099cb8d5d4 atoms 24 pairs 5167 71.5 s residual projected 0.064 → ls 0.023
+  100/225 A2_0a2c2f12b8 atoms 24 pairs 5438 79.4 s residual projected 0.137 → ls 0.035
+  101/225 A2_0ae8c5746d atoms 24 pairs 4855 67.9 s residual projected 0.208 → ls 0.058
+  102/225 A2_0c7ac2371d atoms 24 pairs 5545 83.3 s residual projected 0.117 → ls 0.020
+  103/225 A2_0e07e41776 atoms 24 pairs 5132 74.5 s residual projected 0.099 → ls 0.041
+  104/225 A2_11a9a9ada2 atoms 24 pairs 5087 72.0 s residual projected 0.134 → ls 0.035
+  105/225 A2_11d7cdeab0 atoms 24 pairs 5379 77.0 s residual projected 0.110 → ls 0.025
+  106/225 A2_1767c744aa atoms 24 pairs 5390 78.4 s residual projected 0.129 → ls 0.028
+  107/225 A2_18b62c6a42 atoms 24 pairs 5151 74.2 s residual projected 0.078 → ls 0.024
+  108/225 A2_198d828af1 atoms 24 pairs 5115 75.5 s residual projected 0.142 → ls 0.044
+  109/225 A2_1b0ef60572 atoms 24 pairs 5037 73.5 s residual projected 0.145 → ls 0.049
+  110/225 A2_1fa17eaaa2 atoms 24 pairs 5015 72.8 s residual projected 0.137 → ls 0.042
+  111/225 A2_202963092d atoms 24 pairs 5320 76.0 s residual projected 0.125 → ls 0.025
+  112/225 A2_21a2401f6c atoms 24 pairs 5549 82.7 s residual projected 0.095 → ls 0.039
+  113/225 A2_24d0139cc4 atoms 24 pairs 5308 76.5 s residual projected 0.085 → ls 0.029
+  114/225 A2_25fed68b27 atoms 24 pairs 5325 79.8 s residual projected 0.202 → ls 0.076
+  115/225 A2_26a9174202 atoms 24 pairs 5195 77.2 s residual projected 0.061 → ls 0.018
+  116/225 A2_2e1bd8f645 atoms 24 pairs 4387 57.8 s residual projected 0.217 → ls 0.041
+  117/225 A2_2e2d3e4196 atoms 24 pairs 5331 76.9 s residual projected 0.197 → ls 0.063
+  118/225 A2_303433ef20 atoms 24 pairs 5342 76.3 s residual projected 0.200 → ls 0.090
+  119/225 A2_3077af0137 atoms 24 pairs 5422 80.3 s residual projected 0.132 → ls 0.038
+  120/225 A2_3468258fcf atoms 24 pairs 5035 71.1 s residual projected 0.149 → ls 0.037
+  121/225 A2_34bb1210bc atoms 24 pairs 5167 75.0 s residual projected 0.067 → ls 0.023
+  122/225 A2_3b6ae59b2d atoms 24 pairs 5880 90.8 s residual projected 0.059 → ls 0.020
+  123/225 A2_3cf20db4ac atoms 24 pairs 5840 88.0 s residual projected 0.094 → ls 0.050
+  124/225 A2_4435992442 atoms 24 pairs 5037 71.2 s residual projected 0.151 → ls 0.039
+  125/225 A_08dde334d8 atoms 24 pairs 3975 49.7 s residual projected 0.087 → ls 0.014
+  126/225 A_541c53d1a5 atoms 24 pairs 5411 77.5 s residual projected 0.124 → ls 0.042
+  127/225 A_a1e6ec1862 atoms 24 pairs 5313 75.7 s residual projected 0.187 → ls 0.110
+  128/225 A2_05f5ff045c atoms 25 pairs 6116 105.9 s residual projected 0.051 → ls 0.021
+  129/225 A2_06873ee7ad atoms 25 pairs 6221 109.2 s residual projected 0.059 → ls 0.024
+  130/225 A2_07f1fa9135 atoms 25 pairs 5341 91.5 s residual projected 0.148 → ls 0.042
+  131/225 A2_0f86544b37 atoms 25 pairs 5602 98.4 s residual projected 0.142 → ls 0.047
+  132/225 A2_101910c9ef atoms 25 pairs 5348 89.8 s residual projected 0.151 → ls 0.043
+  133/225 A2_10374ec43c atoms 25 pairs 5262 87.0 s residual projected 0.215 → ls 0.054
+  134/225 A2_12deece5a3 atoms 25 pairs 5081 83.8 s residual projected 0.130 → ls 0.037
+  135/225 A2_13a0f8f47e atoms 25 pairs 5101 83.4 s residual projected 0.138 → ls 0.034
+  136/225 A2_16521f2764 atoms 25 pairs 5946 105.6 s residual projected 0.078 → ls 0.065
+  137/225 A2_1a3e9f41ee atoms 25 pairs 4921 79.6 s residual projected 0.198 → ls 0.061
+  138/225 A2_1aa4c0cfbc atoms 25 pairs 5161 80.6 s residual projected 0.099 → ls 0.041
+  139/225 A2_1b2d1b7caf atoms 25 pairs 5366 85.8 s residual projected 0.136 → ls 0.041
+  140/225 A2_1b3089a9c8 atoms 25 pairs 5145 79.1 s residual projected 0.180 → ls 0.067
+  141/225 A2_1c2781e93a atoms 25 pairs 6113 104.7 s residual projected 0.048 → ls 0.016
+  142/225 A2_1e3ee2b3a8 atoms 25 pairs 5602 91.4 s residual projected 0.085 → ls 0.026
+  143/225 A2_1eeb0a54f6 atoms 25 pairs 5319 84.1 s residual projected 0.152 → ls 0.043
+  144/225 A2_215e004a51 atoms 25 pairs 4816 70.9 s residual projected 0.213 → ls 0.042
+  145/225 A2_253cbb1c94 atoms 25 pairs 5581 89.2 s residual projected 0.101 → ls 0.037
+  146/225 A2_2743aef5e8 atoms 25 pairs 5407 86.1 s residual projected 0.152 → ls 0.036
+  147/225 A2_2cf97d4a75 atoms 25 pairs 5740 94.4 s residual projected 0.094 → ls 0.027
+  148/225 A2_2e154f6054 atoms 25 pairs 6133 102.5 s residual projected 0.089 → ls 0.016
+  149/225 A2_306152f5f9 atoms 25 pairs 5650 91.1 s residual projected 0.135 → ls 0.038
+  150/225 A2_34db2b4f50 atoms 25 pairs 5310 83.7 s residual projected 0.123 → ls 0.036
+  151/225 A2_356dcf6450 atoms 25 pairs 5317 83.8 s residual projected 0.076 → ls 0.027
+  152/225 A2_3b49468c8c atoms 25 pairs 5563 88.2 s residual projected 0.140 → ls 0.044
+  153/225 A2_04719edc88 atoms 26 pairs 5557 100.4 s residual projected 0.142 → ls 0.037
+  154/225 A2_04af6632de atoms 26 pairs 5559 99.7 s residual projected 0.190 → ls 0.077
+  155/225 A2_0dc3aa4eb9 atoms 26 pairs 6568 129.1 s residual projected 0.066 → ls 0.037
+  156/225 A2_0ed4bfb28a atoms 26 pairs 5783 108.3 s residual projected 0.083 → ls 0.026
+  157/225 A2_1046eed218 atoms 26 pairs 5701 104.0 s residual projected 0.148 → ls 0.034
+  158/225 A2_10d7d03408 atoms 26 pairs 6707 131.4 s residual projected 0.058 → ls 0.026
+  159/225 A2_11c681aefb atoms 26 pairs 6410 123.5 s residual projected 0.062 → ls 0.019
+  160/225 A2_14a0a0f3c9 atoms 26 pairs 5502 97.9 s residual projected 0.143 → ls 0.042
+  161/225 A2_14dee3bc02 atoms 26 pairs 5680 101.1 s residual projected 0.126 → ls 0.040
+  162/225 A2_159a501353 atoms 26 pairs 5480 95.8 s residual projected 0.145 → ls 0.038
+  163/225 A2_16ec607c96 atoms 26 pairs 5954 111.4 s residual projected 0.135 → ls 0.040
+  164/225 A2_19eaf39036 atoms 26 pairs 5886 108.9 s residual projected 0.153 → ls 0.042
+  165/225 A2_1e5e1afa5c atoms 26 pairs 5598 101.7 s residual projected 0.121 → ls 0.033
+  166/225 A2_204c06557b atoms 26 pairs 5304 93.7 s residual projected 0.199 → ls 0.081
+  167/225 A2_21b688db0c atoms 26 pairs 6410 127.2 s residual projected 0.046 → ls 0.015
+  168/225 A2_2607024fdf atoms 26 pairs 5741 108.7 s residual projected 0.100 → ls 0.042
+  169/225 A2_27edf7297c atoms 26 pairs 6414 130.3 s residual projected 0.051 → ls 0.022
+  170/225 A2_2ef47ebcc1 atoms 26 pairs 5505 105.5 s residual projected 0.186 → ls 0.065
+  171/225 A2_311e979a14 atoms 26 pairs 7050 150.1 s residual projected 0.141 → ls 0.043
+  172/225 A2_3216c45c98 atoms 26 pairs 5613 106.8 s residual projected 0.145 → ls 0.036
+  173/225 A2_3250fa71cc atoms 26 pairs 5707 105.5 s residual projected 0.125 → ls 0.039
+  174/225 A2_35fb26a423 atoms 26 pairs 5792 106.1 s residual projected 0.126 → ls 0.045
+  175/225 A2_3933867951 atoms 26 pairs 5673 107.3 s residual projected 0.216 → ls 0.049
+  176/225 A2_3e6f108b14 atoms 26 pairs 5613 107.2 s residual projected 0.126 → ls 0.040
+  177/225 A_428228e5a5 atoms 26 pairs 7035 147.3 s residual projected 0.130 → ls 0.033
+  178/225 A_7a57a52879 atoms 26 pairs 4176 64.0 s residual projected 0.191 → ls 0.023
+  179/225 A_cce0ad25a5 atoms 26 pairs 7158 137.1 s residual projected 0.180 → ls 0.051
+  180/225 A_d551b360c3 atoms 26 pairs 5831 96.2 s residual projected 0.171 → ls 0.062
+  181/225 A2_043da5bed2 atoms 27 pairs 7294 128.4 s residual projected 0.146 → ls 0.039
+  182/225 A2_074ffaa9fa atoms 27 pairs 5640 87.1 s residual projected 0.156 → ls 0.036
+  183/225 A2_0a2685346d atoms 27 pairs 5464 85.3 s residual projected 0.200 → ls 0.065
+  184/225 A2_0e1c741b76 atoms 27 pairs 7180 131.2 s residual projected 0.140 → ls 0.047
+  185/225 A2_11dec05d1b atoms 27 pairs 5662 92.0 s residual projected 0.146 → ls 0.040
+  186/225 A2_13a226a056 atoms 27 pairs 5336 80.0 s residual projected 0.179 → ls 0.066
+  187/225 A2_1543119d9d atoms 27 pairs 6534 109.5 s residual projected 0.054 → ls 0.033
+  188/225 A2_187a20beab atoms 27 pairs 6164 98.6 s residual projected 0.144 → ls 0.048
+  189/225 A2_1a20326972 atoms 27 pairs 5605 85.2 s residual projected 0.177 → ls 0.050
+  190/225 A2_1d6c152813 atoms 27 pairs 6042 0.2 s (cache) residual projected 0.174 → ls 0.067
+  191/225 A2_20d3215ce3 atoms 27 pairs 6949 0.2 s (cache) residual projected 0.054 → ls 0.023
+  192/225 A2_238c9ced38 atoms 27 pairs 6246 0.2 s (cache) residual projected 0.149 → ls 0.044
+  193/225 A2_27130c4c79 atoms 27 pairs 6432 0.2 s (cache) residual projected 0.075 → ls 0.047
+  194/225 A2_2931e48c62 atoms 27 pairs 7149 0.2 s (cache) residual projected 0.160 → ls 0.062
+  195/225 A2_29caedd47d atoms 27 pairs 6010 0.2 s (cache) residual projected 0.184 → ls 0.064
+  196/225 A2_2a88c6ce4f atoms 27 pairs 5837 0.2 s (cache) residual projected 0.124 → ls 0.027
+  197/225 A2_2be56a1e2f atoms 27 pairs 5627 85.7 s residual projected 0.139 → ls 0.034
+  198/225 A2_2d6f59a2bf atoms 27 pairs 7418 0.3 s (cache) residual projected 0.189 → ls 0.058
+  199/225 A2_30b024df67 atoms 27 pairs 5362 0.2 s (cache) residual projected 0.175 → ls 0.070
+  200/225 A2_331729cd47 atoms 27 pairs 7124 0.3 s (cache) residual projected 0.160 → ls 0.055
+  201/225 A2_372920f181 atoms 27 pairs 7281 0.2 s (cache) residual projected 0.144 → ls 0.045
+  202/225 A2_4282860cee atoms 27 pairs 5807 0.2 s (cache) residual projected 0.125 → ls 0.029
+  203/225 A2_0101e57296 atoms 28 pairs 7469 0.3 s (cache) residual projected 0.130 → ls 0.043
+  204/225 A2_06222c33e3 atoms 28 pairs 7567 0.3 s (cache) residual projected 0.141 → ls 0.049
+  205/225 A2_09d0b3be91 atoms 28 pairs 6362 0.2 s (cache) residual projected 0.115 → ls 0.026
+  206/225 A2_0efbc8f50c atoms 28 pairs 6207 0.2 s (cache) residual projected 0.141 → ls 0.046
+  207/225 A2_0f1a2bd718 atoms 28 pairs 6024 97.9 s residual projected 0.178 → ls 0.066
+  208/225 A2_25e55c7a83 atoms 28 pairs 6162 0.2 s (cache) residual projected 0.141 → ls 0.039
+  209/225 A2_32ab8c6937 atoms 28 pairs 6088 0.2 s (cache) residual projected 0.174 → ls 0.044
+  210/225 A2_35c01ca552 atoms 28 pairs 7704 0.3 s (cache) residual projected 0.209 → ls 0.060
+  211/225 A2_361b2c502b atoms 28 pairs 7678 0.3 s (cache) residual projected 0.192 → ls 0.051
+  212/225 A2_3825e7205b atoms 28 pairs 7228 0.3 s (cache) residual projected 0.146 → ls 0.053
+  213/225 A2_39baaea0dd atoms 28 pairs 7268 0.3 s (cache) residual projected 0.141 → ls 0.050
+  214/225 A2_00b0ff5a24 atoms 29 pairs 7750 0.3 s (cache) residual projected 0.129 → ls 0.029
+  215/225 A2_041da590e8 atoms 29 pairs 7917 0.3 s (cache) residual projected 0.118 → ls 0.027
+  216/225 A2_048ea73dab atoms 29 pairs 7848 0.3 s (cache) residual projected 0.137 → ls 0.053
+  217/225 A2_224abc958a atoms 29 pairs 7855 0.3 s (cache) residual projected 0.181 → ls 0.041
+  218/225 A2_27370742a0 atoms 29 pairs 7848 0.3 s (cache) residual projected 0.167 → ls 0.057
+  219/225 A2_2f079d63a1 atoms 29 pairs 7765 0.3 s (cache) residual projected 0.151 → ls 0.052
+  220/225 A2_3c758d3b72 atoms 29 pairs 8050 0.3 s (cache) residual projected 0.183 → ls 0.038
+  221/225 A2_42ab9eb0a0 atoms 29 pairs 7916 0.3 s (cache) residual projected 0.188 → ls 0.074
+  222/225 A2_02c8833bd5 atoms 30 pairs 7857 0.3 s (cache) residual projected 0.150 → ls 0.062
+  223/225 A2_097651503c atoms 30 pairs 7948 0.3 s (cache) residual projected 0.155 → ls 0.059
+  224/225 A2_25fe240a5d atoms 30 pairs 7814 0.2 s (cache) residual projected 0.164 → ls 0.038
+  225/225 A2_3f25a88e27 atoms 30 pairs 7596 0.2 s (cache) residual projected 0.150 → ls 0.050
+median residual projected 0.134 → ls 0.035; wrote out\ls_targets_build_d_2026-10-01.json in 6393 s

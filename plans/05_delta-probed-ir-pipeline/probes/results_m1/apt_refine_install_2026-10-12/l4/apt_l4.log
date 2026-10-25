@@ -1,0 +1,32 @@
+=== (L4) start: 5 molecules 2026-10-16 07:49:00
+=== (L4) B_1b2efba17c start 2026-10-16 07:49:00
+  field component 1/3 done, 703 s
+  field component 2/3 done, 1439 s
+  field component 3/3 done, 2094 s
+/home/thebreadishard/apt_recompute/fetched/B_1b2efba17c: field route (F = 0.001): sum rule without grid response 9.2e-05, with 2.7e-10; |P_noGR − P_GR| max 6.2e-05 e; 2278 s
+=== (L4) B_1b2efba17c done 2026-10-16 08:27:00
+=== (L4) B_038a62c6d7 start 2026-10-16 08:27:00
+  field component 1/3 done, 896 s
+  field component 2/3 done, 1743 s
+  field component 3/3 done, 2523 s
+/home/thebreadishard/apt_recompute/fetched/B_038a62c6d7: field route (F = 0.001): sum rule without grid response 3.2e-05, with 1.7e-10; |P_noGR − P_GR| max 4.8e-05 e; 2763 s
+=== (L4) B_038a62c6d7 done 2026-10-16 09:13:05
+=== (L4) A2_0b93df3e1a start 2026-10-16 09:13:05
+  field component 1/3 done, 850 s
+  field component 2/3 done, 1722 s
+  field component 3/3 done, 2641 s
+/home/thebreadishard/apt_recompute/fetched/A2_0b93df3e1a: field route (F = 0.001): sum rule without grid response 1.9e-04, with 4.1e-10; |P_noGR − P_GR| max 1.1e-04 e; 2890 s
+=== (L4) A2_0b93df3e1a done 2026-10-16 10:01:15
+=== (L4) B_05e6c88b0b start 2026-10-16 10:01:15
+  field component 1/3 done, 775 s
+  field component 2/3 done, 1546 s
+  field component 3/3 done, 2269 s
+/home/thebreadishard/apt_recompute/fetched/B_05e6c88b0b: field route (F = 0.001): sum rule without grid response 1.1e-05, with 3.3e-10; |P_noGR − P_GR| max 4.2e-05 e; 2503 s
+=== (L4) B_05e6c88b0b done 2026-10-16 10:42:59
+=== (L4) B_1f3de8463a start 2026-10-16 10:42:59
+  field component 1/3 done, 812 s
+  field component 2/3 done, 1613 s
+  field component 3/3 done, 2483 s
+/home/thebreadishard/apt_recompute/fetched/B_1f3de8463a: field route (F = 0.001): sum rule without grid response 5.2e-05, with 4.1e-10; |P_noGR − P_GR| max 4.3e-05 e; 2749 s
+=== (L4) B_1f3de8463a done 2026-10-16 11:28:48
+=== (L4) all done 2026-10-16 11:28:48

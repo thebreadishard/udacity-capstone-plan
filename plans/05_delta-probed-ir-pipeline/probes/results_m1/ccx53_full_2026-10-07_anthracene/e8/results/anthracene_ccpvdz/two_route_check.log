@@ -1,0 +1,36 @@
+[2026-10-02 06:03:39] E8 FD Hessian: 24 atoms, cc-pvdz, frozen 14 (derived from the elements: 14), step 0.005 bohr, 144 displacements, 8 threads, max_memory 16000 MB, explicit (T) lambda, fast (T) density kernel, fast (T) lambda kernel
+[2026-10-04 23:42:35] fast (T) lambda two-route check: max |kernel − pyscf| = 3.8e-17 (l2_t; limit 1e-10; 232344 s)
+cycle = 1  norm(lambda1,lambda2) = 0.0909179
+cycle = 2  norm(lambda1,lambda2) = 0.0273682
+cycle = 3  norm(lambda1,lambda2) = 0.0132384
+cycle = 4  norm(lambda1,lambda2) = 0.00538318
+cycle = 5  norm(lambda1,lambda2) = 0.00179617
+cycle = 6  norm(lambda1,lambda2) = 0.000720272
+cycle = 7  norm(lambda1,lambda2) = 0.000324853
+cycle = 8  norm(lambda1,lambda2) = 0.000120153
+cycle = 9  norm(lambda1,lambda2) = 6.84752e-05
+cycle = 10  norm(lambda1,lambda2) = 2.2526e-05
+cycle = 11  norm(lambda1,lambda2) = 9.38736e-06
+cycle = 12  norm(lambda1,lambda2) = 4.3684e-06
+cycle = 13  norm(lambda1,lambda2) = 1.74747e-06
+cycle = 14  norm(lambda1,lambda2) = 8.6545e-07
+cycle = 15  norm(lambda1,lambda2) = 3.6963e-07
+cycle = 16  norm(lambda1,lambda2) = 1.78065e-07
+cycle = 17  norm(lambda1,lambda2) = 9.57255e-08
+cycle = 18  norm(lambda1,lambda2) = 5.49886e-08
+cycle = 19  norm(lambda1,lambda2) = 3.86964e-08
+cycle = 20  norm(lambda1,lambda2) = 3.73728e-08
+cycle = 21  norm(lambda1,lambda2) = 1.99738e-08
+cycle = 22  norm(lambda1,lambda2) = 1.65048e-08
+cycle = 23  norm(lambda1,lambda2) = 2.30197e-08
+cycle = 24  norm(lambda1,lambda2) = 1.73847e-08
+cycle = 25  norm(lambda1,lambda2) = 1.46852e-08
+cycle = 26  norm(lambda1,lambda2) = 1.31395e-08
+cycle = 27  norm(lambda1,lambda2) = 1.11913e-08
+cycle = 28  norm(lambda1,lambda2) = 1.03347e-08
+cycle = 29  norm(lambda1,lambda2) = 9.86395e-09
+/root/miniforge3/envs/qc05/lib/python3.12/site-packages/pyscf/cc/ccsd_t_rdm.py:181: RuntimeWarning: overflow encountered in add
+  v_blk += w_blk
+[2026-10-07 01:40:20] fast (T) density two-route check: max |kernel − pyscf| = 1.9e-16 (doo[for_grad=True]; limit 1e-10; 178818 s)
+[2026-10-07 01:43:53] (T) lambda 179866 s, gradient 213 s
+[2026-10-07 01:43:54] two-route check PASSED: checked reference vs stored reference max |Δgrad| 2.0e-12 (limit 1e-08), |ΔE| 4.4e-12; 416415 s

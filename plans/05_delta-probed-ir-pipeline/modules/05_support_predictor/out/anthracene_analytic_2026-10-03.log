@@ -1,0 +1,8 @@
+=== anthracene analytic start Sat Oct  3 09:18:09 CEST 2026
+corpus/molecules/A_a1e6ec1862 b3lyp: 5010 s; |H_analytic − H_corpus| max 8.83e-04 rms 1.02e-04; max |Δfreq| 1 cm-1
+corpus/molecules/A_a1e6ec1862 wb97x: 5149 s; |H_analytic − H_corpus| max 1.09e-03 rms 1.08e-04; max |Δfreq| 4 cm-1
+=== anthracene analytic done Sat Oct  3 12:07:31 CEST 2026
+-rwxrwxrwx 1 thebreadishard thebreadishard  6374 Oct  3 12:07 analytic_check.json
+-rwxrwxrwx 1 thebreadishard thebreadishard 59489 Oct  3 10:41 hessian_b3lyp_analytic.npz
+-rwxrwxrwx 1 thebreadishard thebreadishard 59365 Oct  3 12:07 hessian_wb97x_analytic.npz
+=== anthracene analytic finished Sat Oct  3 12:07:31 CEST 2026

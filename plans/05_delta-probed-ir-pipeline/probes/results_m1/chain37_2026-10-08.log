@@ -1,0 +1,5 @@
+=== (C37) armed (pid 12455), waiting for the LNO cells 2026-10-08 02:50:57
+=== (C37) LNO finished; design check 2026-10-08 06:23:08
+=== (C37) chain 37 (chain 34's recipe + the 200) training start, 8 threads 2026-10-08 06:23:12
+=== (C37) chain 37 trained 2026-10-08 09:16:34
+=== (C37) chain 37 read done — out/read_chain37_coverage_2026-10-08.md, out/read_chain34_frozenb_2026-10-08.md, out/error_map_chain{34,37}_2026-10-08 2026-10-08 09:21:25

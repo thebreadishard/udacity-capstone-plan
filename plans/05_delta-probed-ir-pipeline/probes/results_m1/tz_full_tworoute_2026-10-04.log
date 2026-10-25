@@ -1,0 +1,19 @@
+[2026-10-06 06:05:39] E8 FD Hessian: 12 atoms, cc-pvtz, frozen 6 (derived from the elements: 6), step 0.005 bohr, 72 displacements, 8 threads, max_memory 10000 MB, explicit (T) lambda, fast (T) density kernel, fast (T) lambda kernel
+[2026-10-06 09:10:04] fast (T) lambda two-route check: max |kernel − pyscf| = 7.3e-17 (l2_t; limit 1e-10; 10085 s)
+cycle = 1  norm(lambda1,lambda2) = 0.0622404
+cycle = 2  norm(lambda1,lambda2) = 0.0156724
+cycle = 3  norm(lambda1,lambda2) = 0.00686237
+cycle = 4  norm(lambda1,lambda2) = 0.00276185
+cycle = 5  norm(lambda1,lambda2) = 0.000448951
+cycle = 6  norm(lambda1,lambda2) = 0.000149812
+cycle = 7  norm(lambda1,lambda2) = 3.0541e-05
+cycle = 8  norm(lambda1,lambda2) = 1.03128e-05
+cycle = 9  norm(lambda1,lambda2) = 3.62338e-06
+cycle = 10  norm(lambda1,lambda2) = 6.81217e-07
+cycle = 11  norm(lambda1,lambda2) = 2.3987e-07
+cycle = 12  norm(lambda1,lambda2) = 7.34762e-08
+cycle = 13  norm(lambda1,lambda2) = 2.11859e-08
+cycle = 14  norm(lambda1,lambda2) = 1.19329e-08
+cycle = 15  norm(lambda1,lambda2) = 8.86543e-09
+/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/cc/ccsd_t_rdm.py:107: RuntimeWarning: overflow encountered in add
+  v_blk += w_blk

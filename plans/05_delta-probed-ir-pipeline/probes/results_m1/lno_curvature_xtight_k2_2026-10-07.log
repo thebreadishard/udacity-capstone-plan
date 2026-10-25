@@ -1,0 +1,23 @@
+reference LNO energy from lno_reference_cc-pvdz_xtight.json (2026-10-06 19:31)
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+E(LNOMP2) = -384.679131907271  E_corr = -1.2962582273748
+E(LNOCCSD) = -384.729353743798  E_corr = -1.34648006390149
+E(LNOCCSD_T) = -384.792908953135  E_corr = -1.4100352732382
+Summary by spin components
+LNOMP2   Ess = -0.350170100324973  Eos = -0.94608812704983  Escs = -1.25191239586801
+LNOCCSD  Ess = -0.310825168172378  Eos = -1.03565489572912  Escs = -1.34629065587634
+[23:50:07] k02p: SCF 2.1 s, PM 0.6 s, LNO-CCSD(T) 6822.9 s (24 fragments), MP2 0.1 s; peak RSS 4.16 GB; E_composite -384.79291386
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+E(LNOMP2) = -384.679128786124  E_corr = -1.29625082673421
+E(LNOCCSD) = -384.729348502458  E_corr = -1.34647054306747
+E(LNOCCSD_T) = -384.792900024967  E_corr = -1.41002206557729
+Summary by spin components
+LNOMP2   Ess = -0.350170715876399  Eos = -0.94608011085781  Escs = -1.25190298141621
+LNOCCSD  Ess = -0.310826480802471  Eos = -1.035644062265  Escs = -1.34627809282522
+[01:43:59] k02m: SCF 2.1 s, PM 0.7 s, LNO-CCSD(T) 6829.0 s (24 fragments), MP2 0.1 s; peak RSS 4.24 GB; E_composite -384.79290493
+k  2 (C0 z, oop 0.99): H_kk hessian 0.112645 | energy route 0.112641 | LNO 0.112953 | Δ +3.08e-04 (+0.27 %)
+LNO curvature check: 1 coordinates; max |H_kk(LNO) − H_kk(Hessian)| = 3.08e-04 a.u. (worst k 2), max rel 0.27 %; E0 shift LNO−canonical +0.000395 E_h; 13658 s → /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/lno_curvature_xtight_k2_2026-10-07.json

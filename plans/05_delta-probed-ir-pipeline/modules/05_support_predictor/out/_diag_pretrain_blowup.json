@@ -1,0 +1,50 @@
+{
+ "date": "2026-10-01 08:36",
+ "provenance": {
+  "timestamp_utc": "2026-10-01 06:36:45",
+  "host": "Asus18",
+  "python": "3.14.6",
+  "numpy": "2.5.1",
+  "command": "pretrain_blowup_diag.py",
+  "commit": "f5db0a6f35e015a45594eae5909237b763ff166d",
+  "dirty": "no"
+ },
+ "command": "C:/Users/thebr/AppData/Local/Temp/claude/C--Users-thebr-Documents-CapstonePlan/080ff7ed-d45b-451f-8c06-e90bcbbe88a0/scratchpad/pretrain_blowup_diag.py",
+ "shards": {
+  "data-00000-of-00005.arrow": "8fb0ae620ddaf83b",
+  "data-00001-of-00005.arrow": "4a5435bab3710f71",
+  "data-00002-of-00005.arrow": "2df9a6977971f0a2",
+  "data-00003-of-00005.arrow": "67cf5c6dbb9e03ab",
+  "data-00004-of-00005.arrow": "5cda6cd30270bd9c"
+ },
+ "epochs": 1,
+ "lr": 0.001,
+ "class_scale": [
+  0.2534851655553568,
+  0.12724846613361318,
+  0.006810434799983741
+ ],
+ "val_every": 50,
+ "smoke": false,
+ "hlow_channel": "bond",
+ "aggregation": "mean",
+ "history": [
+  {
+   "epoch": 1,
+   "train_loss": 0.0012307928743509565,
+   "val_loss": 0.0006190260162153551,
+   "n_train": 20286,
+   "n_val": 414,
+   "seconds": 347.8
+  }
+ ],
+ "molecules_seen": 20286,
+ "elements": [
+  1,
+  6,
+  7,
+  8,
+  9
+ ],
+ "seconds": 355.4
+}

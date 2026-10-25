@@ -1,0 +1,63 @@
+# T3 — leave-one-anchor-out transfer to CCSD(T)/cc-pVDZ (2026-10-20 23:32)
+
+Model `E7_rungC_chain34_kdfamily_750_2026-10-05_model_n750_seed2.pt` ({'pattern': 'f', 'aux_mode': 'both', 'aux_target': 'projected', 'n': 750, 'seed': 2}); fine-tune 300 epochs at lr 0.001, aux weight 1; low levels {'A_8448043181': 'hessian_b3lyp_analytic.npz', 'A_01f3186607': 'hessian_b3lyp_analytic.npz', 'A_6e858b26e5': 'hessian_b3lyp_analytic.npz', 'B_8b12a55d3a': 'hessian_b3lyp_analytic.npz', 'A_3100da3761': 'hessian_b3lyp_analytic.npz', 'A_a1e6ec1862': 'hessian_b3lyp_analytic.npz', 'A_7aa232d4e9': 'hessian_b3lyp_analytic.npz', 'A_d9139359ab': 'hessian_b3lyp_analytic.npz', 'A_45187bb7c8': 'hessian_b3lyp_analytic.npz', 'A_ff98e1160d': 'hessian_b3lyp_analytic.npz', 'A_d09f8d1ef8': 'hessian_b3lyp_analytic.npz'}.
+
+| held-out anchor | read-out | zero rule | α scaling (training anchors) | network as is | network, α tuned | network, head tuned | head tuned, L2 1 | head tuned, oop couplings from the low level | head tuned L2 1, oop couplings from the low level | low level + oop model |  head tuned, oop block from the model | head tuned L2 1, oop block from the model |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| A_45187bb7c8 | ring-coupling ratio | 1.00 | 0.90 | 1.85 | 1.37 | 0.77 | 0.86 | 0.77 | 0.86 | 1.00 | 0.77 | 0.86 |
+| A_45187bb7c8 | ω rms, all modes (cm⁻¹) | 20.75 | 9.52 | 41.84 | 11.59 | 7.48 | 9.92 | 7.49 | 9.92 | 17.01 | 6.32 | 5.67 |
+| A_45187bb7c8 | ΔH residual | 1.00 | 0.82 | 2.12 | 0.93 | 0.60 | 0.73 | 0.67 | 0.72 | 0.86 | 0.64 | 0.64 |
+| A_45187bb7c8 | ω rms ring-ip (cm⁻¹) | 13.54 | 8.66 | 28.39 | 5.90 | 5.13 | 3.80 | 5.13 | 3.80 | 13.54 | 5.13 | 3.80 |
+| A_45187bb7c8 | ω rms CH-stretch (cm⁻¹) | 34.39 | 7.76 | 78.13 | 7.08 | 6.62 | 3.75 | 6.62 | 3.75 | 34.39 | 6.62 | 3.75 |
+| A_45187bb7c8 | ω rms CH-oop (cm⁻¹) | 18.55 | 5.93 | 44.04 | 18.10 | 10.24 | 17.38 | 10.23 | 17.39 | 8.54 | 8.54 | 8.54 |
+| A_45187bb7c8 | ω rms other (cm⁻¹) | 20.56 | 12.26 | 27.93 | 14.36 | 8.68 | 12.08 | 8.70 | 12.08 | 10.08 | 6.29 | 6.59 |
+| A_45187bb7c8 | spectrum overlap (CC APT) | 0.351 | 0.486 | 0.271 | 0.530 | 0.596 | 0.614 | 0.625 | 0.629 | 0.335 | 0.616 | 0.655 |
+| A_45187bb7c8 | intensity rel. rms, modes matched by eigenvector (CC APT) | 1.819 | 1.831 | 1.382 | 1.403 | 0.934 | 1.081 | 1.829 | 1.819 | 1.819 | 1.829 | 1.819 |
+| A_45187bb7c8 | intensity rel. rms (CC APT) | 1.821 | 1.833 | 1.386 | 1.407 | 0.937 | 1.084 | 1.831 | 1.821 | 1.823 | 1.831 | 1.821 |
+| A_45187bb7c8 | per-family diag rms, head tuned | — | — | — | — | CH-stretch 5.5, CH-oop 10.3, ring-ip 5.1, other 9.3 |
+| A_7aa232d4e9 | ring-coupling ratio | 1.00 | 0.99 | 2.30 | 1.39 | 0.52 | 0.71 | 0.52 | 0.71 | 1.00 | 0.52 | 0.71 |
+| A_7aa232d4e9 | ω rms, all modes (cm⁻¹) | 18.39 | 7.51 | 39.54 | 8.38 | 4.66 | 5.60 | 4.66 | 5.59 | 17.68 | 5.88 | 5.64 |
+| A_7aa232d4e9 | ΔH residual | 1.00 | 0.64 | 2.46 | 0.83 | 0.35 | 0.49 | 0.35 | 0.46 | 0.94 | 0.35 | 0.42 |
+| A_7aa232d4e9 | ω rms ring-ip (cm⁻¹) | 14.94 | 7.26 | 29.01 | 5.92 | 2.04 | 2.72 | 2.04 | 2.72 | 14.83 | 2.04 | 2.72 |
+| A_7aa232d4e9 | ω rms CH-stretch (cm⁻¹) | 35.84 | 5.51 | 79.75 | 4.52 | 6.67 | 3.32 | 6.67 | 3.32 | 35.84 | 6.67 | 3.32 |
+| A_7aa232d4e9 | ω rms CH-oop (cm⁻¹) | 8.77 | 12.94 | 31.18 | 9.82 | 6.69 | 8.59 | 6.61 | 8.52 | 8.77 | 9.26 | 9.26 |
+| A_7aa232d4e9 | ω rms other (cm⁻¹) | 13.11 | 4.71 | 23.79 | 11.27 | 4.86 | 7.24 | 4.91 | 7.27 | 9.69 | 6.80 | 6.95 |
+| A_7aa232d4e9 | spectrum overlap (CC APT) | 0.627 | 0.633 | 0.293 | 0.701 | 0.809 | 0.742 | 0.811 | 0.743 | 0.601 | 0.820 | 0.895 |
+| A_7aa232d4e9 | intensity rel. rms, modes matched by eigenvector (CC APT) | 0.060 | 0.058 | 0.096 | 0.206 | 0.138 | 0.056 | 0.137 | 0.057 | 0.060 | 0.137 | 0.057 |
+| A_7aa232d4e9 | intensity rel. rms (CC APT) | 0.294 | 1.375 | 0.429 | 0.518 | 0.152 | 0.287 | 0.151 | 0.288 | 0.795 | 0.151 | 0.218 |
+| A_7aa232d4e9 | per-family diag rms, head tuned | — | — | — | — | CH-stretch 6.5, CH-oop 10.1, ring-ip 2.2, other 4.8 |
+| A_d09f8d1ef8 | ring-coupling ratio | 1.00 | 0.95 | 2.25 | 1.29 | 0.58 | 0.77 | 0.58 | 0.77 | 1.00 | 0.58 | 0.77 |
+| A_d09f8d1ef8 | ω rms, all modes (cm⁻¹) | 18.75 | 7.31 | 39.89 | 8.04 | 4.72 | 5.60 | 4.70 | 5.58 | 17.45 | 4.42 | 4.05 |
+| A_d09f8d1ef8 | ΔH residual | 1.00 | 0.70 | 2.39 | 0.82 | 0.36 | 0.55 | 0.42 | 0.53 | 0.92 | 0.41 | 0.46 |
+| A_d09f8d1ef8 | ω rms ring-ip (cm⁻¹) | 15.57 | 7.37 | 28.67 | 5.21 | 2.29 | 2.64 | 2.29 | 2.60 | 15.46 | 2.29 | 2.69 |
+| A_d09f8d1ef8 | ω rms CH-stretch (cm⁻¹) | 34.22 | 7.15 | 77.80 | 6.57 | 6.18 | 1.82 | 6.18 | 1.82 | 34.22 | 6.18 | 1.82 |
+| A_d09f8d1ef8 | ω rms CH-oop (cm⁻¹) | 10.82 | 10.07 | 33.07 | 10.33 | 6.55 | 8.77 | 6.43 | 8.65 | 4.50 | 5.17 | 5.17 |
+| A_d09f8d1ef8 | ω rms other (cm⁻¹) | 13.72 | 5.26 | 22.84 | 10.28 | 5.11 | 7.46 | 5.12 | 7.51 | 9.07 | 5.03 | 5.52 |
+| A_d09f8d1ef8 | spectrum overlap (CC APT) | 0.476 | 0.679 | 0.225 | 0.749 | 0.918 | 0.907 | 0.921 | 0.908 | 0.484 | 0.893 | 0.959 |
+| A_d09f8d1ef8 | intensity rel. rms, modes matched by eigenvector (CC APT) | 0.173 | 0.166 | 0.177 | 0.176 | 0.200 | 0.165 | 0.196 | 0.168 | 0.173 | 0.196 | 0.168 |
+| A_d09f8d1ef8 | intensity rel. rms (CC APT) | 0.181 | 0.166 | 0.433 | 0.211 | 0.200 | 0.393 | 0.196 | 0.425 | 0.354 | 0.196 | 0.168 |
+| A_d09f8d1ef8 | per-family diag rms, head tuned | — | — | — | — | CH-stretch 5.5, CH-oop 7.7, ring-ip 2.3, other 4.9 |
+| A_d9139359ab | ring-coupling ratio | 1.00 | 1.03 | 4.26 | 3.54 | 0.84 | 2.96 | 0.84 | 2.96 | 1.00 | 0.84 | 2.96 |
+| A_d9139359ab | ω rms, all modes (cm⁻¹) | 23.67 | 9.64 | 40.91 | 14.27 | 7.27 | 11.15 | 7.22 | 11.05 | 20.95 | 7.67 | 9.09 |
+| A_d9139359ab | ΔH residual | 1.00 | 0.72 | 2.84 | 2.08 | 0.55 | 1.72 | 0.60 | 1.72 | 0.93 | 0.61 | 1.70 |
+| A_d9139359ab | ω rms ring-ip (cm⁻¹) | 22.36 | 9.80 | 30.31 | 11.80 | 6.25 | 9.65 | 6.25 | 9.65 | 22.23 | 6.25 | 10.67 |
+| A_d9139359ab | ω rms CH-stretch (cm⁻¹) | 33.25 | 7.64 | 77.09 | 8.51 | 5.55 | 2.13 | 5.55 | 2.13 | 33.25 | 5.55 | 2.13 |
+| A_d9139359ab | ω rms CH-oop (cm⁻¹) | 23.10 | 9.90 | 28.91 | 16.09 | 10.34 | 11.75 | 10.36 | 11.46 | 11.67 | 11.09 | 7.96 |
+| A_d9139359ab | ω rms other (cm⁻¹) | 18.08 | 10.31 | 25.92 | 18.29 | 6.93 | 15.21 | 6.73 | 15.10 | 12.71 | 7.69 | 10.05 |
+| A_d9139359ab | spectrum overlap (CC APT) | 0.557 | 0.631 | 0.193 | 0.766 | 0.885 | 0.844 | 0.876 | 0.845 | 0.636 | 0.856 | 0.835 |
+| A_d9139359ab | intensity rel. rms, modes matched by eigenvector (CC APT) | 0.164 | 0.140 | 0.333 | 0.371 | 0.451 | 0.283 | 0.452 | 0.290 | 0.164 | 0.452 | 0.290 |
+| A_d9139359ab | intensity rel. rms (CC APT) | 1.699 | 1.637 | 0.341 | 0.560 | 0.533 | 1.640 | 0.534 | 1.641 | 1.704 | 0.534 | 1.641 |
+| A_d9139359ab | per-family diag rms, head tuned | — | — | — | — | CH-stretch 5.4, CH-oop 10.0, ring-ip 6.4, other 6.5 |
+| A_ff98e1160d | ring-coupling ratio | 1.00 | 0.98 | 2.25 | 1.28 | 0.53 | 0.71 | 0.53 | 0.71 | 1.00 | 0.53 | 0.71 |
+| A_ff98e1160d | ω rms, all modes (cm⁻¹) | 18.42 | 7.33 | 39.85 | 8.14 | 3.46 | 5.30 | 3.45 | 5.30 | 17.13 | 4.38 | 4.48 |
+| A_ff98e1160d | ΔH residual | 1.00 | 0.67 | 2.48 | 0.82 | 0.34 | 0.52 | 0.35 | 0.48 | 0.93 | 0.35 | 0.42 |
+| A_ff98e1160d | ω rms ring-ip (cm⁻¹) | 15.03 | 7.31 | 27.75 | 5.42 | 1.81 | 2.64 | 1.81 | 2.64 | 14.96 | 1.81 | 2.64 |
+| A_ff98e1160d | ω rms CH-stretch (cm⁻¹) | 34.15 | 7.24 | 78.28 | 6.38 | 4.15 | 1.86 | 4.15 | 1.86 | 34.15 | 4.15 | 1.86 |
+| A_ff98e1160d | ω rms CH-oop (cm⁻¹) | 11.81 | 9.61 | 33.34 | 9.48 | 5.19 | 7.63 | 5.32 | 7.59 | 8.24 | 8.30 | 8.30 |
+| A_ff98e1160d | ω rms other (cm⁻¹) | 12.64 | 5.40 | 22.03 | 11.00 | 3.48 | 7.34 | 3.28 | 7.37 | 6.29 | 3.35 | 4.13 |
+| A_ff98e1160d | spectrum overlap (CC APT) | 0.670 | 0.641 | 0.300 | 0.727 | 0.983 | 0.833 | 0.977 | 0.835 | 0.627 | 0.888 | 0.881 |
+| A_ff98e1160d | intensity rel. rms, modes matched by eigenvector (CC APT) | 0.151 | 0.150 | 0.198 | 0.177 | 0.138 | 0.325 | 0.156 | 0.129 | 0.151 | 0.156 | 0.129 |
+| A_ff98e1160d | intensity rel. rms (CC APT) | 3.025 | 3.019 | 0.206 | 2.896 | 0.138 | 0.330 | 0.166 | 0.140 | 3.043 | 0.166 | 0.140 |
+| A_ff98e1160d | per-family diag rms, head tuned | — | — | — | — | CH-stretch 4.0, CH-oop 6.9, ring-ip 1.8, other 3.2 |
+
+779 s.

@@ -1,0 +1,24 @@
+308 complete molecule folders under ..\05_support_predictor\corpus\molecules
+skip A2_0420908ebe imaginary mode
+  50/308 in 57 s
+skip A2_197913eb9c imaginary mode
+skip A2_20747fd501 imaginary mode
+skip A2_20e59f3897 imaginary mode
+skip A2_220d2c107b imaginary mode
+skip A2_28eed45ad3 imaginary mode
+skip A2_2a0b78bd2b imaginary mode
+skip A2_2c22216564 imaginary mode
+skip A2_3020175511 imaginary mode
+skip A2_330b4d6d8d imaginary mode
+skip A2_356c370f21 imaginary mode
+skip A2_3802542cb6 imaginary mode
+skip A2_3c2cf09504 imaginary mode
+skip A_014f8519af imaginary mode
+skip A_78896cfe24 imaginary mode
+skip A_7a57a52879 imaginary mode
+skip A_b90527ca2d imaginary mode
+skip B_0040149ee1 imaginary mode
+  250/308 in 232 s
+skip B_008b0bc366 imaginary mode
+  300/308 in 253 s
+exported 289 molecules in 254 s; splits {'eval': 56, 'train': 171, 'val': 21, 'eval_parents': 41}; -> out\exports\index.json

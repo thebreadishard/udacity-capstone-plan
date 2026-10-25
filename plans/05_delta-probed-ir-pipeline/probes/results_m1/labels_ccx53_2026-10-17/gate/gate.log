@@ -1,0 +1,2 @@
+gate/A_8448043181 b3lyp: 252 s; no corpus psi4 file to compare with; lowest vib [415.4, 415.4, 621.9] cm-1
+gate/A_8448043181 wb97x: 318 s; no corpus psi4 file to compare with; lowest vib [425.5, 425.9, 625.5] cm-1

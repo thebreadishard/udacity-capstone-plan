@@ -1,0 +1,11 @@
+=== (S3Dmain) armed (pid 8876), 23 steps 2026-10-21 00:39:31
+=== (S3Dmain) starting: 23 steps 2026-10-21 00:39:31
+(S3Dmain) E01_ref_lambda1_seed0 done 2026-10-21 00:49:15
+(S3Dmain) E02_lambda0_seed0 done 2026-10-21 00:58:59
+(S3Dmain) E06_lambda10_seed0 done 2026-10-21 01:08:38
+(S3Dmain) E05_lambda3_seed0 done 2026-10-21 01:17:16
+(S3Dmain) E07_no_finetune_seed0 done 2026-10-21 01:17:26
+(S3Dmain) E08_alpha_only_seed0 done 2026-10-21 01:26:55
+=== (S3Dmain) progress: E17_insample_lambda1_seed0 (7/23) running 10 min, its log +4575 bytes 2026-10-21 01:36:55
+(S3Dmain) E17_insample_lambda1_seed0 done 2026-10-21 01:37:55
+=== (S3Dmain) RUN FAILED at E18_insample_head_all_seed0: exit 1 (log C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\05_support_predictor\out\set3_diagnosis_2026-10-21\E18_insample_head_all_seed0.log) 2026-10-21 01:40:23

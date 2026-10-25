@@ -1,0 +1,74 @@
+=== chain 28 ablation start Fri Oct  2 17:22:01 WEDT 2026
+analytic second-route Hessians substituted for 27 molecules
+atomic polar tensors found for 10 molecules: intensity read-outs on (lever 5, registered 2 Oct 2026 06:5x)
+coverage ablation: 130 pool molecules excluded (pool_ring3plus_ids_2026-10-02.txt); pool 620
+799 molecules; pool 620; hold-out (a) 10, (b) 39 (['fluoranthene', 'fluorene']); sizes [620]; seeds [0, 1, 2]; epochs 200; threads 8; model 171,554 parameters, sum aggregation
+  rung B's 66 pair features added to the hybrid head (standardised on the fit molecules)
+  hybrid head: 303,636 parameters; F_low input scales 0.036, 0.297, 0.13; SQM α per class on
+  fresh sum body pre-flight: worst |output| 19.3 on the training molecules
+    seed 0 epoch 1/200: loss main 8.632e-07 aux 0.471 val 0.4974 (35 s)
+    seed 0 epoch 10/200: loss main 3.111e-07 aux 0.1646 val 0.1826 (390 s)
+    seed 0 epoch 20/200: loss main 2.064e-07 aux 0.1052 val 0.1388 (900 s)
+    seed 0 epoch 30/200: loss main 1.73e-07 aux 0.07653 val 0.1123 (1436 s)
+    seed 0 epoch 40/200: loss main 1.488e-07 aux 0.06341 val 0.09803 (1955 s)
+    seed 0 epoch 50/200: loss main 1.371e-07 aux 0.05298 val 0.1002 (2446 s)
+    seed 0 epoch 60/200: loss main 1.213e-07 aux 0.04429 val 0.08677 (2813 s)
+    seed 0 epoch 70/200: loss main 1.149e-07 aux 0.03922 val 0.07993 (3183 s)
+    seed 0 epoch 80/200: loss main 1.066e-07 aux 0.03546 val 0.0795 (3554 s)
+    seed 0 epoch 90/200: loss main 9.884e-08 aux 0.03132 val 0.0782 (3926 s)
+    seed 0 epoch 100/200: loss main 9.772e-08 aux 0.02937 val 0.07575 (4290 s)
+    seed 0 epoch 110/200: loss main 9.032e-08 aux 0.02648 val 0.07952 (4660 s)
+    seed 0 epoch 120/200: loss main 9.254e-08 aux 0.02695 val 0.07601 (5030 s)
+    seed 0 epoch 130/200: loss main 8.953e-08 aux 0.02461 val 0.07556 (5402 s)
+    seed 0 epoch 140/200: loss main 8.413e-08 aux 0.02218 val 0.08191 (5772 s)
+    seed 0 epoch 150/200: loss main 8.247e-08 aux 0.02099 val 0.07946 (6140 s)
+    seed 0: early stop at epoch 155, best inner val 0.07368 at epoch 135
+  n=620 seed 0: inner validation internal term 0.07368 on 93 molecules (fit on 527)
+  n=620 seed 0 (a): ring couplings 1.45 vs zero 3.76 (ratio 0.39) | corrected ω 4.72 (zero 23.27) | ΔH residual ratio 0.252
+  n=620 seed 0 (b): ring couplings 1.73 vs zero 3.74 (ratio 0.46) | corrected ω 4.32 (zero 23.09) | ΔH residual ratio 0.334
+  rung B's 66 pair features added to the hybrid head (standardised on the fit molecules)
+  hybrid head: 303,636 parameters; F_low input scales 0.0361, 0.298, 0.131; SQM α per class on
+  fresh sum body pre-flight: worst |output| 17.5 on the training molecules
+    seed 1 epoch 1/200: loss main 9.576e-07 aux 0.4701 val 0.3479 (36 s)
+    seed 1 epoch 10/200: loss main 3.285e-07 aux 0.1585 val 0.1563 (368 s)
+    seed 1 epoch 20/200: loss main 2.108e-07 aux 0.09707 val 0.1265 (738 s)
+    seed 1 epoch 30/200: loss main 1.672e-07 aux 0.06967 val 0.1143 (1112 s)
+    seed 1 epoch 40/200: loss main 1.48e-07 aux 0.05692 val 0.1033 (1485 s)
+    seed 1 epoch 50/200: loss main 1.385e-07 aux 0.04871 val 0.0995 (1861 s)
+    seed 1 epoch 60/200: loss main 1.219e-07 aux 0.04033 val 0.09719 (2232 s)
+    seed 1 epoch 70/200: loss main 1.103e-07 aux 0.0335 val 0.1012 (2611 s)
+    seed 1 epoch 80/200: loss main 1.051e-07 aux 0.02998 val 0.09777 (2985 s)
+    seed 1 epoch 90/200: loss main 1.007e-07 aux 0.02848 val 0.09878 (3353 s)
+    seed 1 epoch 100/200: loss main 9.778e-08 aux 0.02626 val 0.101 (3726 s)
+    seed 1 epoch 110/200: loss main 9.082e-08 aux 0.024 val 0.09776 (4098 s)
+    seed 1 epoch 120/200: loss main 8.788e-08 aux 0.02187 val 0.09742 (4469 s)
+    seed 1 epoch 130/200: loss main 8.002e-08 aux 0.01937 val 0.09881 (4834 s)
+    seed 1: early stop at epoch 132, best inner val 0.0956 at epoch 112
+  n=620 seed 1: inner validation internal term 0.0956 on 93 molecules (fit on 527)
+  n=620 seed 1 (a): ring couplings 1.33 vs zero 3.76 (ratio 0.35) | corrected ω 4.42 (zero 23.27) | ΔH residual ratio 0.239
+  n=620 seed 1 (b): ring couplings 1.39 vs zero 3.74 (ratio 0.37) | corrected ω 4.16 (zero 23.09) | ΔH residual ratio 0.273
+  rung B's 66 pair features added to the hybrid head (standardised on the fit molecules)
+  hybrid head: 303,636 parameters; F_low input scales 0.036, 0.297, 0.13; SQM α per class on
+  fresh sum body pre-flight: worst |output| 25.4 on the training molecules
+    seed 2 epoch 1/200: loss main 9.987e-07 aux 0.4733 val 0.4491 (39 s)
+    seed 2 epoch 10/200: loss main 3.449e-07 aux 0.1594 val 0.1737 (377 s)
+    seed 2 epoch 20/200: loss main 2.114e-07 aux 0.09478 val 0.1389 (753 s)
+    seed 2 epoch 30/200: loss main 1.685e-07 aux 0.07006 val 0.117 (1124 s)
+    seed 2 epoch 40/200: loss main 1.498e-07 aux 0.05917 val 0.1122 (1494 s)
+    seed 2 epoch 50/200: loss main 1.358e-07 aux 0.04893 val 0.1088 (1869 s)
+    seed 2 epoch 60/200: loss main 1.211e-07 aux 0.04093 val 0.1013 (2219 s)
+    seed 2 epoch 70/200: loss main 1.189e-07 aux 0.03869 val 0.1078 (2563 s)
+    seed 2 epoch 80/200: loss main 1.03e-07 aux 0.03065 val 0.09786 (2912 s)
+    seed 2 epoch 90/200: loss main 9.707e-08 aux 0.02907 val 0.09957 (3260 s)
+    seed 2 epoch 100/200: loss main 9.553e-08 aux 0.02765 val 0.09889 (3538 s)
+    seed 2 epoch 110/200: loss main 8.956e-08 aux 0.02398 val 0.09659 (3714 s)
+    seed 2 epoch 120/200: loss main 8.761e-08 aux 0.02303 val 0.09616 (3866 s)
+    seed 2 epoch 130/200: loss main 8.251e-08 aux 0.02035 val 0.09611 (4018 s)
+    seed 2 epoch 140/200: loss main 8.203e-08 aux 0.02052 val 0.09875 (4170 s)
+    seed 2: early stop at epoch 146, best inner val 0.09496 at epoch 126
+  n=620 seed 2: inner validation internal term 0.09496 on 93 molecules (fit on 527)
+  n=620 seed 2 (a): ring couplings 1.43 vs zero 3.76 (ratio 0.38) | corrected ω 5.19 (zero 23.27) | ΔH residual ratio 0.270
+  n=620 seed 2 (b): ring couplings 1.48 vs zero 3.74 (ratio 0.40) | corrected ω 4.81 (zero 23.09) | ΔH residual ratio 0.301
+wrote out/E7_rungC_coverage_ablation620_2026-10-02.json/.md in 15784 s
+=== chain 28 ablation done Fri Oct  2 21:45:09 WEDT 2026
+=== chain 28 ablation finished Fri Oct  2 21:45:09 WEDT 2026

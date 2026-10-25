@@ -1,0 +1,28 @@
+analytic second-route Hessians substituted for 44 molecules
+atomic polar tensors found for 10 molecules: intensity read-outs on (lever 5, registered 2 Oct 2026 06:5x)
+# Saved model read on the hold-outs (2026-10-17 00:06)
+
+Model `E7_rungC_chain40_fivering15_model_n943_seed0.pt` ({'pattern': 'f', 'aux_mode': 'both', 'aux_target': 'projected', 'n': 943, 'seed': 0}); APTs on 10 molecules.
+
+| hold-out | n | ring-coupling ratio | ω rms (cm⁻¹) | ΔH residual | spectrum overlap (zero rule) | intensity rel. rms (zero rule) | with APT |
+|---|---|---|---|---|---|---|---|
+| (a) | 10 | 0.191 | 2.10 | 0.117 | 0.984 (0.270) | 0.13 (0.59) | 10 |
+| (b) | 39 | 0.332 | 3.77 | 0.232 | — | — | 0 |
+| (b+) | 30 | 0.353 | 3.41 | 0.282 | — | — | 0 |
+
+Per molecule with an APT:
+
+| molecule | ratio | ω rms | overlap | overlap zero rule | rel. rms | rel. rms zero rule | modes |
+|---|---|---|---|---|---|---|---|
+| A_fdc27f1bd1 (a) | 0.176 | 1.92 | 0.981 | 0.209 | 0.27 | 0.67 | 60 |
+| A_8448043181 (a) | 0.082 | 1.28 | 0.977 | 0.323 | 0.00 | 0.02 | 30 |
+| A_e72997e726 (a) | 0.262 | 3.13 | 0.991 | 0.262 | 0.11 | 0.39 | 63 |
+| A_541c53d1a5 (a) | 0.157 | 1.35 | 0.987 | 0.287 | 0.18 | 0.35 | 66 |
+| A_428228e5a5 (a) | 0.27 | 2.49 | 0.971 | 0.227 | 0.14 | 0.16 | 72 |
+| A_07cadc7923 (a) | 0.088 | 0.98 | 0.995 | 0.208 | 0.06 | 1.26 | 57 |
+| A_08dde334d8 (a) | 0.257 | 2.83 | 0.971 | 0.269 | 0.35 | 1.51 | 66 |
+| A_3100da3761 (a) | 0.092 | 1.12 | 0.989 | 0.272 | 0.04 | 0.12 | 33 |
+| A_bce5bae234 (a) | 0.125 | 1.26 | 0.990 | 0.420 | 0.11 | 0.45 | 63 |
+| A_72b86c2331 (a) | 0.121 | 2.42 | 0.988 | 0.220 | 0.03 | 0.96 | 54 |
+
+117 s.

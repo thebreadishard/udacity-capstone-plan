@@ -1,0 +1,73 @@
+analytic second-route Hessians substituted for 601 molecules
+atomic polar tensors found for 216 molecules: intensity read-outs on (lever 5, registered 2 Oct 2026 06:5x)
+base base_a_model_n750_seed2.pt (status candidate); reservoir 200, read 343; k 50; modes ['head_l2', 'head', 'head_all', 'scratch']
+  [head_l2 k50]     epoch 50/60: loss 1.083
+k 50 draw 0 head_l2: CH-oop 8.97 other 12.87 (48 s)
+  [head k50]     epoch 50/60: loss 0.137
+k 50 draw 0 head: CH-oop 4.85 other 5.28 (45 s)
+  [head_all k50]     epoch 50/60: loss 0.02342
+k 50 draw 0 head_all: CH-oop 4.05 other 4.49 (69 s)
+  [scratch k50]   rung B's 66 pair features added to the hybrid head (standardised on the fit molecules)
+  [scratch k50]   hybrid head: 304,276 parameters; F_low input scales 0.0368, 0.298, 0.128; SQM α per class on
+  [scratch k50]   fresh sum body pre-flight: worst |output| 6.58 on the training molecules
+  [scratch k50]     seed 2 epoch 1/200: loss main 2.788e-06 aux 0.628 val 0.3835 (2 s)
+  [scratch k50]     seed 2 epoch 10/200: loss main 8.454e-07 aux 0.4594 val 0.3449 (16 s)
+  [scratch k50]     seed 2 epoch 20/200: loss main 5.927e-07 aux 0.4218 val 0.3142 (32 s)
+  [scratch k50]     seed 2 epoch 30/200: loss main 5.73e-07 aux 0.3761 val 0.2844 (47 s)
+  [scratch k50]     seed 2 epoch 40/200: loss main 4.828e-07 aux 0.2904 val 0.2285 (62 s)
+  [scratch k50]     seed 2 epoch 50/200: loss main 5.033e-07 aux 0.2134 val 0.1982 (78 s)
+  [scratch k50]     seed 2 epoch 60/200: loss main 4.338e-07 aux 0.1562 val 0.1583 (93 s)
+  [scratch k50]     seed 2 epoch 70/200: loss main 3.666e-07 aux 0.133 val 0.1755 (108 s)
+  [scratch k50]     seed 2 epoch 80/200: loss main 3.148e-07 aux 0.1122 val 0.1473 (124 s)
+  [scratch k50]     seed 2 epoch 90/200: loss main 3.007e-07 aux 0.101 val 0.1298 (139 s)
+  [scratch k50]     seed 2 epoch 100/200: loss main 2.635e-07 aux 0.09083 val 0.1333 (154 s)
+  [scratch k50]     seed 2 epoch 110/200: loss main 2.4e-07 aux 0.07082 val 0.2061 (170 s)
+  [scratch k50]     seed 2 epoch 120/200: loss main 2.001e-07 aux 0.06687 val 0.129 (185 s)
+  [scratch k50]     seed 2 epoch 130/200: loss main 1.689e-07 aux 0.04642 val 0.1428 (200 s)
+  [scratch k50]     seed 2 epoch 140/200: loss main 1.599e-07 aux 0.04553 val 0.1208 (216 s)
+  [scratch k50]     seed 2 epoch 150/200: loss main 1.488e-07 aux 0.03977 val 0.1265 (231 s)
+  [scratch k50]     seed 2 epoch 160/200: loss main 1.433e-07 aux 0.03813 val 0.1218 (246 s)
+  [scratch k50]     seed 2 epoch 170/200: loss main 1.81e-07 aux 0.03958 val 0.1211 (262 s)
+  [scratch k50]     seed 2: early stop at epoch 175, best inner val 0.1138 at epoch 155
+k 50 draw 0 scratch: CH-oop 3.80 other 5.10 (276 s)
+  [head_l2 k50]     epoch 50/60: loss 1.101
+k 50 draw 1 head_l2: CH-oop 10.43 other 12.62 (45 s)
+  [head k50]     epoch 50/60: loss 0.1431
+k 50 draw 1 head: CH-oop 4.55 other 5.31 (45 s)
+  [head_all k50]     epoch 50/60: loss 0.02453
+k 50 draw 1 head_all: CH-oop 3.28 other 3.96 (70 s)
+  [scratch k50]   rung B's 66 pair features added to the hybrid head (standardised on the fit molecules)
+  [scratch k50]   hybrid head: 304,276 parameters; F_low input scales 0.036, 0.298, 0.129; SQM α per class on
+  [scratch k50]   fresh sum body pre-flight: worst |output| 6.49 on the training molecules
+  [scratch k50]     seed 2 epoch 1/200: loss main 2.434e-06 aux 0.6127 val 0.8645 (2 s)
+  [scratch k50]     seed 2 epoch 10/200: loss main 6.824e-07 aux 0.4086 val 0.7617 (16 s)
+  [scratch k50]     seed 2 epoch 20/200: loss main 5.7e-07 aux 0.3744 val 0.7112 (33 s)
+  [scratch k50]     seed 2 epoch 30/200: loss main 4.844e-07 aux 0.2957 val 0.6024 (50 s)
+  [scratch k50]     seed 2 epoch 40/200: loss main 4.023e-07 aux 0.2286 val 0.517 (67 s)
+  [scratch k50]     seed 2 epoch 50/200: loss main 4.356e-07 aux 0.179 val 0.4964 (84 s)
+  [scratch k50]     seed 2 epoch 60/200: loss main 4.086e-07 aux 0.1429 val 0.4717 (102 s)
+  [scratch k50]     seed 2 epoch 70/200: loss main 3.082e-07 aux 0.1133 val 0.4685 (119 s)
+  [scratch k50]     seed 2: early stop at epoch 77, best inner val 0.4332 at epoch 57
+k 50 draw 1 scratch: CH-oop 5.31 other 6.32 (138 s)
+  [head_l2 k50]     epoch 50/60: loss 1.085
+k 50 draw 2 head_l2: CH-oop 9.78 other 12.68 (45 s)
+  [head k50]     epoch 50/60: loss 0.1411
+k 50 draw 2 head: CH-oop 4.66 other 5.29 (44 s)
+  [head_all k50]     epoch 50/60: loss 0.0215
+k 50 draw 2 head_all: CH-oop 3.51 other 4.11 (68 s)
+  [scratch k50]   rung B's 66 pair features added to the hybrid head (standardised on the fit molecules)
+  [scratch k50]   hybrid head: 304,276 parameters; F_low input scales 0.0372, 0.298, 0.13; SQM α per class on
+  [scratch k50]   fresh sum body pre-flight: worst |output| 6.58 on the training molecules
+  [scratch k50]     seed 2 epoch 1/200: loss main 2.604e-06 aux 0.6065 val 0.3111 (2 s)
+  [scratch k50]     seed 2 epoch 10/200: loss main 7.978e-07 aux 0.4448 val 0.2727 (15 s)
+  [scratch k50]     seed 2 epoch 20/200: loss main 5.975e-07 aux 0.411 val 0.2486 (31 s)
+  [scratch k50]     seed 2 epoch 30/200: loss main 6.237e-07 aux 0.3683 val 0.2368 (46 s)
+  [scratch k50]     seed 2 epoch 40/200: loss main 5.586e-07 aux 0.316 val 0.1958 (61 s)
+  [scratch k50]     seed 2 epoch 50/200: loss main 4.683e-07 aux 0.246 val 0.1812 (77 s)
+  [scratch k50]     seed 2 epoch 60/200: loss main 4.578e-07 aux 0.1836 val 0.1748 (92 s)
+  [scratch k50]     seed 2 epoch 70/200: loss main 3.89e-07 aux 0.1369 val 0.1517 (107 s)
+  [scratch k50]     seed 2 epoch 80/200: loss main 3.564e-07 aux 0.127 val 0.1484 (123 s)
+  [scratch k50]     seed 2 epoch 90/200: loss main 3.103e-07 aux 0.0919 val 0.1384 (138 s)
+  [scratch k50]     seed 2: early stop at epoch 99, best inner val 0.1358 at epoch 79
+k 50 draw 2 scratch: CH-oop 4.72 other 5.58 (159 s)
+wrote out/proxy_check_2026-10-21/ft_a_k50_seed2.json/.md in 1229 s

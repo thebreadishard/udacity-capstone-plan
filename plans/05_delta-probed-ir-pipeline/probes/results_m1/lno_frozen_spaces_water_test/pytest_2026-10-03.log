@@ -1,0 +1,43 @@
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+E(LNOMP2) = -76.2283752898639  E_corr = -0.201625270912909
+E(LNOCCSD) = -76.2380544498199  E_corr = -0.211304430868887
+E(LNOCCSD_T) = -76.2410937158843  E_corr = -0.214343696933269
+Summary by spin components
+LNOMP2   Ess = -0.0507748431097399  Eos = -0.150850427803169  Escs = -0.197928536119347
+LNOCCSD  Ess = -0.0452638908768349  Eos = -0.166040539992052  Escs = -0.214321523652448
+[23:56:54] ref_capture: SCF 0.3 s, PM 0.7 s, LNO-CCSD(T) 1.4 s (4 fragments), MP2 0.0 s; peak RSS 0.14 GB; E_composite -76.24109372
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+E(LNOMP2) = -76.2283752898639  E_corr = -0.201625270912909
+E(LNOCCSD) = -76.2380544498199  E_corr = -0.211304430868887
+E(LNOCCSD_T) = -76.2410937158843  E_corr = -0.214343696933269
+Summary by spin components
+LNOMP2   Ess = -0.0507748431097398  Eos = -0.150850427803169  Escs = -0.197928536119347
+LNOCCSD  Ess = -0.0452638908768349  Eos = -0.166040539992052  Escs = -0.214321523652448
+[23:56:56] ref_replay: SCF 0.1 s, PM 0.0 s, LNO-CCSD(T) 1.3 s (4 fragments), MP2 0.0 s; peak RSS 0.14 GB; E_composite -76.24109372
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+E(LNOMP2) = -76.228434221474  E_corr = -0.201765705352766
+E(LNOCCSD) = -76.2381117429514  E_corr = -0.211443226830175
+E(LNOCCSD_T) = -76.2411610701029  E_corr = -0.214492553981637
+Summary by spin components
+LNOMP2   Ess = -0.0508010958372247  Eos = -0.150964609515542  Escs = -0.198074296332446
+LNOCCSD  Ess = -0.0452693134879193  Eos = -0.166173913342256  Escs = -0.214483377402184
+[23:56:57] disp_fresh: SCF 0.1 s, PM 0.2 s, LNO-CCSD(T) 1.4 s (4 fragments), MP2 0.0 s; peak RSS 0.14 GB; E_composite -76.24116107
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+E(LNOMP2) = -76.228434833285  E_corr = -0.201766317163802
+E(LNOCCSD) = -76.2381112740549  E_corr = -0.211442757933638
+E(LNOCCSD_T) = -76.2411606085216  E_corr = -0.214492092400407
+Summary by spin components
+LNOMP2   Ess = -0.050802036692809  Eos = -0.150964280470993  Escs = -0.198074214783898
+LNOCCSD  Ess = -0.0452700830945351  Eos = -0.166172674839103  Escs = -0.214482147477404
+[23:56:59] disp_replay: SCF 0.1 s, PM 0.0 s, LNO-CCSD(T) 1.3 s (4 fragments), MP2 0.0 s; peak RSS 0.14 GB; E_composite -76.24116000
+water: ref -76.241093716 replay-at-ref Δ +0.00e+00; displaced fresh -76.241161070 reused Δ +1.07e-06
+.
+1 passed, 4 deselected in 9.20s

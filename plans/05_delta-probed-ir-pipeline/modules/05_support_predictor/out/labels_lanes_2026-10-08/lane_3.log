@@ -1,0 +1,15 @@
+[2026-10-08 01:13:21] lane 3 A2_3f25a88e27 ok 23148 s (1 ok, 0 failed, 0 skipped of 1)
+[2026-10-08 05:14:49] lane 3 switch: waiting for pid 438248 (the molecule in progress), then the smallest-first list /root/labels/small_ids_3.txt
+[2026-10-08 07:46:50] lane 3 switch: pid 438248 ended; smallest-first list starts
+[2026-10-08 07:54:43] lane 3 B_12ed44f8f4 ok 473 s (1 ok, 0 failed, 0 skipped of 1)
+[2026-10-08 08:02:32] lane 3 B_136498b70f ok 469 s (2 ok, 0 failed, 0 skipped of 2)
+[2026-10-08 08:13:59] lane 3 B_12997d50c3 ok 687 s (3 ok, 0 failed, 0 skipped of 3)
+[2026-10-08 08:26:06] lane 3 B_006cc9d756 ok 727 s (4 ok, 0 failed, 0 skipped of 4)
+[2026-10-08 08:40:23] lane 3 B_0d3f41fdd7 ok 857 s (5 ok, 0 failed, 0 skipped of 5)
+[2026-10-08 08:58:49] lane 3 B_0fb56414ca ok 1106 s (6 ok, 0 failed, 0 skipped of 6)
+[2026-10-08 09:15:58] lane 3 B_20b66247c4 ok 1029 s (7 ok, 0 failed, 0 skipped of 7)
+[2026-10-08 09:31:39] lane 3 B_00e041576d ok 941 s (8 ok, 0 failed, 0 skipped of 8)
+[2026-10-08 09:50:38] lane 3 B_07ec2a9c0a ok 1139 s (9 ok, 0 failed, 0 skipped of 9)
+[2026-10-08 10:09:33] lane 3 B_09903d4886 ok 1135 s (10 ok, 0 failed, 0 skipped of 10)
+[2026-10-08 10:27:00] lane 3 B_1d3b2b18f4 ok 1047 s (11 ok, 0 failed, 0 skipped of 11)
+[2026-10-08 10:54:23] lane 3 B_00580f71bc ok 1643 s (12 ok, 0 failed, 0 skipped of 12)

@@ -1,0 +1,55 @@
+=== (APTb) start 2026-10-12 14:06:05: 47 molecules, 1 lanes x 4 threads
+(APTb) lane 0 A2_0b93df3e1a ok 3 s 2026-10-12 14:06:08
+(APTb) lane 0 A2_192cd5911c ok 10048 s 2026-10-12 16:53:36
+(APTb) lane 0 A2_1f52b56b90 ok 10022 s 2026-10-12 19:40:38
+(APTb) lane 0 A2_221bc30690 ok 10765 s 2026-10-12 22:40:03
+=== (APTb) start 2026-10-12 23:17:52: 47 molecules, 1 lanes x 4 threads
+(APTb) lane 0 A2_0b93df3e1a ok 2 s 2026-10-12 23:17:54
+(APTb) lane 0 A2_192cd5911c ok 1 s 2026-10-12 23:17:55
+(APTb) lane 0 A2_1f52b56b90 ok 1 s 2026-10-12 23:17:56
+(APTb) lane 0 A2_221bc30690 ok 1 s 2026-10-12 23:17:57
+(APTb) lane 0 A2_26664f6a75 ok 8404 s 2026-10-13 01:38:01
+(APTb) lane 0 A2_2b7c0323a9 ok 8230 s 2026-10-13 03:55:11
+(APTb) lane 0 A2_32e53836ea ok 8063 s 2026-10-13 06:09:34
+(APTb) lane 0 A2_3a06a80d61 ok 9770 s 2026-10-13 08:52:24
+(APTb) lane 0 A2_3a4d58eb26 ok 8870 s 2026-10-13 11:20:14
+(APTb) lane 0 A2_3c35334467 ok 11588 s 2026-10-13 14:33:22
+(APTb) lane 0 A2_3c982d4d3f ok 10606 s 2026-10-13 17:30:08
+(APTb) lane 0 A_69789470db ok 6872 s 2026-10-13 19:24:40
+(APTb) lane 0 A_8152ea74fd ok 9572 s 2026-10-13 22:04:12
+(APTb) lane 0 A_8d1f3c46b0 ok 8343 s 2026-10-14 00:23:15
+(APTb) lane 0 A_b77821c742 ok 10618 s 2026-10-14 03:20:13
+(APTb) lane 0 A_d037c0ed95 ok 7998 s 2026-10-14 05:33:31
+(APTb) lane 0 B_00a6eb272d ok 7675 s 2026-10-14 07:41:26
+(APTb) lane 0 B_0187256300 ok 10656 s 2026-10-14 10:39:02
+(APTb) lane 0 B_026983edcc ok 7863 s 2026-10-14 12:50:05
+(APTb) lane 0 B_02dd029c64 ok 8905 s 2026-10-14 15:18:30
+(APTb) lane 0 B_038a62c6d7 ok 9896 s 2026-10-14 18:03:26
+(APTb) lane 0 B_0464551954 ok 13632 s 2026-10-14 21:50:38
+(APTb) lane 0 B_04adef2ece ok 8599 s 2026-10-15 00:13:57
+(APTb) lane 0 B_05870cf0d0 ok 9983 s 2026-10-15 03:00:20
+(APTb) lane 0 B_05e6c88b0b ok 5 s 2026-10-15 03:00:25
+(APTb) lane 0 B_07567ef8b1 ok 2 s 2026-10-15 03:00:27
+(APTb) lane 0 B_07cadc7923 ok 2 s 2026-10-15 03:00:29
+(APTb) lane 0 B_07d4bb1719 ok 2 s 2026-10-15 03:00:31
+(APTb) lane 0 B_080e328832 ok 2 s 2026-10-15 03:00:33
+(APTb) lane 0 B_0840b56da4 ok 1 s 2026-10-15 03:00:34
+(APTb) lane 0 B_08a663fa31 ok 2 s 2026-10-15 03:00:36
+(APTb) lane 0 B_095a0abff0 ok 2 s 2026-10-15 03:00:38
+(APTb) lane 0 B_0a006a11c0 ok 2 s 2026-10-15 03:00:40
+(APTb) lane 0 B_0cf808c510 ok 2 s 2026-10-15 03:00:42
+(APTb) lane 0 B_0d73312a78 ok 2 s 2026-10-15 03:00:44
+(APTb) lane 0 B_0e3176269f ok 1 s 2026-10-15 03:00:46
+(APTb) lane 0 B_0f1689db0d ok 3 s 2026-10-15 03:00:49
+(APTb) lane 0 B_10957f41e3 ok 2 s 2026-10-15 03:00:51
+(APTb) lane 0 B_1173965032 ok 7653 s 2026-10-15 05:08:24
+(APTb) lane 0 B_149d544a5c ok 6611 s 2026-10-15 06:58:35
+(APTb) lane 0 B_15877240da ok 8293 s 2026-10-15 09:16:48
+(APTb) lane 0 B_168ec38a52 ok 10504 s 2026-10-15 12:11:52
+(APTb) lane 0 B_175a820023 ok 8682 s 2026-10-15 14:36:34
+(APTb) lane 0 B_1863d5f90f ok 8672 s 2026-10-15 17:01:06
+(APTb) lane 0 B_1b2efba17c ok 8873 s 2026-10-15 19:28:59
+(APTb) lane 0 B_1e03da0643 ok 9574 s 2026-10-15 22:08:33
+(APTb) lane 0 B_1f3de8463a ok 10734 s 2026-10-16 01:07:27
+=== (APTb) lane 0 done 2026-10-16 01:07:27
+=== (APTb) all lanes done 2026-10-16 01:07:27: 51 ok, 0 failed

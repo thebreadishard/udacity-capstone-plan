@@ -1,0 +1,15 @@
+13 evaluation molecules (6 parents); pool all; seeds [0, 1, 2]; checkpoints 60; λ (1e-06, 1e-05); noise σ 0.0; P2 yes; adaptive no; solver prior w 0 cm⁻¹; only P12,P3_oracle
+  1/13 A2_00b0ff5a24 M 81: K_off(0.3) P0 None P12_seed0 None P3_oracle None; 28311 s
+  2/13 A2_0a158816bd M 48: K_off(0.3) P0 None P12_seed0 None P3_oracle None; 30330 s
+  3/13 A2_1767c744aa M 66: K_off(0.3) P0 4234 P12_seed0 3358 P3_oracle 2190; 39754 s
+  4/13 A2_2b693cf6e7 M 81: K_off(0.3) P0 3706 P12_seed0 1744 P3_oracle 1090; 66125 s
+  5/13 A2_336097f54c M 63: K_off(0.3) P0 4958 P12_seed0 5762 P3_oracle 4958; 72440 s
+  6/13 A_01f3186607 M 48: K_off(0.3) P0 3120 P12_seed0 1716 P3_oracle 234; 73947 s
+  7/13 A_466972291d M 51: K_off(0.3) P0 1584 P12_seed0 2464 P3_oracle 616; 76000 s
+  8/13 A_76e053ce6a M 42: K_off(0.3) P0 3360 P12_seed0 2400 P3_oracle 3120; 76797 s
+  9/13 A_a1e6ec1862 M 66: K_off(0.3) P0 4526 P12_seed0 2774 P3_oracle 584; 82193 s
+  10/13 A_d09f8d1ef8 M 45: K_off(0.3) P0 1680 P12_seed0 1330 P3_oracle 630; 82935 s
+  11/13 A_ff98e1160d M 45: K_off(0.3) P0 2800 P12_seed0 560 P3_oracle 420; 83707 s
+  12/13 B_031abf30e2 M 57: K_off(0.3) P0 None P12_seed0 None P3_oracle None; 85947 s
+  13/13 B_06d3bff79c M 42: K_off(0.3) P0 2280 P12_seed0 1380 P3_oracle 540; 86290 s
+-> out/sim/all_p2s1_w0_shard0.json / .md in 86289.7 s

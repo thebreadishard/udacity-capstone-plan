@@ -1,0 +1,12 @@
+analytic second-route Hessians substituted for 27 molecules
+atomic polar tensors found for 10 molecules: intensity read-outs on (lever 5, registered 2 Oct 2026 06:5x)
+799 molecules; pool 750; hold-out (a) 10, (b) 39 (['fluoranthene', 'fluorene']); sizes [30]; seeds [0]; epochs 2; threads 2; model 171,554 parameters, sum aggregation
+  rung B's 66 pair features added to the hybrid head (standardised on the fit molecules)
+  hybrid head: 303,636 parameters; F_low input scales 0.0343, 0.29, 0.123; SQM α per class on
+  fresh sum body pre-flight: worst |output| 17 on the training molecules
+    seed 0 epoch 1/2: loss main 2.91e-06 aux 0.7676 val 0.4933 (3 s)
+    seed 0 epoch 2/2: loss main 1.002e-06 aux 0.6236 val 0.4241 (7 s)
+  n=30 seed 0: inner validation internal term 0.4241 on 4 molecules (fit on 26)
+  n=30 seed 0 (a): ring couplings 2.42 vs zero 3.76 (ratio 0.64) | corrected ω 6.44 (zero 23.27) | ΔH residual ratio 0.385
+  n=30 seed 0 (b): ring couplings 2.54 vs zero 3.74 (ratio 0.68) | corrected ω 6.45 (zero 23.09) | ΔH residual ratio 0.459
+wrote out/smoke_kdiag_family_2026-10-03.json/.md in 106 s

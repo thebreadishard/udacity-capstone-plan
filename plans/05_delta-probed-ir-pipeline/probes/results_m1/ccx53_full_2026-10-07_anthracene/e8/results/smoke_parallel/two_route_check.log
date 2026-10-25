@@ -1,0 +1,18 @@
+[2026-10-02 04:21:30] E8 FD Hessian: 3 atoms, cc-pvdz, frozen 1 (derived from the elements: 1), step 0.005 bohr, 18 displacements, 1 threads, max_memory 1500 MB, explicit (T) lambda, fast (T) density kernel, fast (T) lambda kernel
+[2026-10-02 04:21:30] fast (T) lambda two-route check: max |kernel − pyscf| = 1.7e-18 (l2_t; limit 1e-10; 0 s)
+cycle = 1  norm(lambda1,lambda2) = 0.00817139
+cycle = 2  norm(lambda1,lambda2) = 0.00162849
+cycle = 3  norm(lambda1,lambda2) = 0.000416216
+cycle = 4  norm(lambda1,lambda2) = 0.00018216
+cycle = 5  norm(lambda1,lambda2) = 3.78941e-05
+cycle = 6  norm(lambda1,lambda2) = 1.41948e-05
+cycle = 7  norm(lambda1,lambda2) = 3.27098e-06
+cycle = 8  norm(lambda1,lambda2) = 5.42614e-07
+cycle = 9  norm(lambda1,lambda2) = 1.10972e-07
+cycle = 10  norm(lambda1,lambda2) = 2.28888e-08
+cycle = 11  norm(lambda1,lambda2) = 1.1729e-08
+cycle = 12  norm(lambda1,lambda2) = 1.06037e-08
+cycle = 13  norm(lambda1,lambda2) = 8.29219e-09
+[2026-10-02 04:21:30] fast (T) density two-route check: max |kernel − pyscf| = 2.6e-18 (dvo[for_grad=False]; limit 1e-10; 0 s)
+[2026-10-02 04:21:30] (T) lambda 0 s, gradient 0 s
+[2026-10-02 04:21:30] two-route check PASSED: checked reference vs stored reference max |Δgrad| 6.2e-15 (limit 1e-08), |ΔE| 2.8e-14; 1 s

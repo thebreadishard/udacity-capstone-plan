@@ -1,0 +1,23 @@
+	Command being timed: "/home/thebreadishard/miniforge3/envs/vpt2/bin/python /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/dfmp2_rows.py rows --geometry /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/../modules/05_support_predictor/corpus/molecules/A_45187bb7c8/geometry.json --basis cc-pvtz --out /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/dfmp2_anchors_2026-10-20/dfmp2_rows_acenaphthylene_ccpvtz.npz"
+	User time (seconds): 36944.82
+	System time (seconds): 2931.51
+	Percent of CPU this job got: 534%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 2:04:14
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 4071448
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 677201215
+	Voluntary context switches: 226571
+	Involuntary context switches: 113068
+	Swaps: 0
+	File system inputs: 202
+	File system outputs: 135399776
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

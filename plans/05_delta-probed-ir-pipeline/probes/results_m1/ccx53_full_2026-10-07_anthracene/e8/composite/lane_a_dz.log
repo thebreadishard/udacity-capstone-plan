@@ -1,0 +1,8 @@
+[18:47:58] mp2 cc-pvdz k=2: H_kk +0.097237 (254 s)
+[18:52:05] mp2 cc-pvdz k=8: H_kk +0.092842 (247 s)
+[18:56:01] mp2 cc-pvdz k=11: H_kk +0.080092 (235 s)
+[18:59:57] mp2 cc-pvdz k=14: H_kk +0.079268 (235 s)
+[19:03:55] mp2 cc-pvdz k=44: H_kk +0.022026 (238 s)
+[19:07:54] mp2 cc-pvdz k=50: H_kk +0.020986 (238 s)
+[19:11:51] mp2 cc-pvdz k=53: H_kk +0.019359 (236 s)
+→ mp2_rows_anthracene_oop_ccpvdz.npz (7 displacements)

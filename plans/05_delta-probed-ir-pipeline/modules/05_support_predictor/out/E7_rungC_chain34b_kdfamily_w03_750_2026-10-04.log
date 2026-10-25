@@ -1,0 +1,61 @@
+=== chain 34b: kdiag family, weight 0.3, 750, 6 threads start 2026-10-04 03:08:01
+analytic second-route Hessians substituted for 28 molecules
+atomic polar tensors found for 10 molecules: intensity read-outs on (lever 5, registered 2 Oct 2026 06:5x)
+799 molecules; pool 750; hold-out (a) 10, (b) 39 (['fluoranthene', 'fluorene']); sizes [750]; seeds [0, 1, 2]; epochs 200; threads 6; model 171,810 parameters, sum aggregation
+  rung B's 66 pair features added to the hybrid head (standardised on the fit molecules)
+  hybrid head: 303,892 parameters; F_low input scales 0.0344, 0.29, 0.125; SQM α per class on
+  fresh sum body pre-flight: worst |output| 41.4 on the training molecules
+    seed 0 epoch 1/200: loss main 8.846e-07 aux 0.5072 val 0.5877 (36 s)
+    seed 0 epoch 10/200: loss main 2.881e-07 aux 0.1702 val 0.2222 (389 s)
+    seed 0 epoch 20/200: loss main 1.907e-07 aux 0.1023 val 0.162 (786 s)
+    seed 0 epoch 30/200: loss main 1.562e-07 aux 0.07936 val 0.146 (1158 s)
+    seed 0 epoch 40/200: loss main 1.399e-07 aux 0.06568 val 0.1436 (1537 s)
+    seed 0 epoch 50/200: loss main 1.199e-07 aux 0.05323 val 0.1287 (1948 s)
+    seed 0 epoch 60/200: loss main 1.117e-07 aux 0.04673 val 0.1261 (2364 s)
+    seed 0 epoch 70/200: loss main 1.038e-07 aux 0.04178 val 0.1204 (2777 s)
+    seed 0 epoch 80/200: loss main 9.761e-08 aux 0.03901 val 0.1229 (3189 s)
+    seed 0 epoch 90/200: loss main 9.113e-08 aux 0.03456 val 0.1256 (3617 s)
+    seed 0 epoch 100/200: loss main 8.729e-08 aux 0.03086 val 0.1218 (4042 s)
+    seed 0: early stop at epoch 106, best inner val 0.1147 at epoch 86
+  model saved: out/E7_rungC_chain34b_kdfamily_w03_750_2026-10-04_model_n750_seed0.pt
+  n=750 seed 0: inner validation internal term 0.1147 on 112 molecules (fit on 638)
+  n=750 seed 0 (a): ring couplings 0.86 vs zero 3.76 (ratio 0.23) | corrected ω 2.48 (zero 23.27) | ΔH residual ratio 0.139
+  n=750 seed 0 (b): ring couplings 1.24 vs zero 3.74 (ratio 0.33) | corrected ω 3.52 (zero 23.09) | ΔH residual ratio 0.236
+  rung B's 66 pair features added to the hybrid head (standardised on the fit molecules)
+  hybrid head: 303,892 parameters; F_low input scales 0.0343, 0.289, 0.124; SQM α per class on
+  fresh sum body pre-flight: worst |output| 34.9 on the training molecules
+    seed 1 epoch 1/200: loss main 9.242e-07 aux 0.5122 val 0.5382 (42 s)
+    seed 1 epoch 10/200: loss main 2.952e-07 aux 0.1768 val 0.2127 (418 s)
+    seed 1 epoch 20/200: loss main 1.934e-07 aux 0.1164 val 0.1469 (836 s)
+    seed 1 epoch 30/200: loss main 1.565e-07 aux 0.08548 val 0.1333 (1233 s)
+    seed 1 epoch 40/200: loss main 1.368e-07 aux 0.06824 val 0.1189 (1601 s)
+    seed 1 epoch 50/200: loss main 1.302e-07 aux 0.05915 val 0.1233 (1958 s)
+    seed 1 epoch 60/200: loss main 1.137e-07 aux 0.0497 val 0.1157 (2356 s)
+    seed 1 epoch 70/200: loss main 1.063e-07 aux 0.04372 val 0.1117 (2748 s)
+    seed 1 epoch 80/200: loss main 1.057e-07 aux 0.04183 val 0.1094 (3140 s)
+    seed 1: early stop at epoch 84, best inner val 0.1088 at epoch 64
+  model saved: out/E7_rungC_chain34b_kdfamily_w03_750_2026-10-04_model_n750_seed1.pt
+  n=750 seed 1: inner validation internal term 0.1088 on 112 molecules (fit on 638)
+  n=750 seed 1 (a): ring couplings 0.85 vs zero 3.76 (ratio 0.23) | corrected ω 2.58 (zero 23.27) | ΔH residual ratio 0.139
+  n=750 seed 1 (b): ring couplings 1.29 vs zero 3.74 (ratio 0.34) | corrected ω 3.66 (zero 23.09) | ΔH residual ratio 0.243
+  rung B's 66 pair features added to the hybrid head (standardised on the fit molecules)
+  hybrid head: 303,892 parameters; F_low input scales 0.0345, 0.29, 0.125; SQM α per class on
+  fresh sum body pre-flight: worst |output| 9.36 on the training molecules
+    seed 2 epoch 1/200: loss main 8.554e-07 aux 0.5162 val 0.5107 (40 s)
+    seed 2 epoch 10/200: loss main 2.975e-07 aux 0.1788 val 0.2055 (383 s)
+    seed 2 epoch 20/200: loss main 1.96e-07 aux 0.1104 val 0.1546 (792 s)
+    seed 2 epoch 30/200: loss main 1.616e-07 aux 0.08267 val 0.1367 (1212 s)
+    seed 2 epoch 40/200: loss main 1.38e-07 aux 0.06716 val 0.122 (1628 s)
+    seed 2 epoch 50/200: loss main 1.211e-07 aux 0.05591 val 0.1191 (2046 s)
+    seed 2 epoch 60/200: loss main 1.174e-07 aux 0.05098 val 0.1128 (2461 s)
+    seed 2 epoch 70/200: loss main 1.055e-07 aux 0.04253 val 0.1086 (2875 s)
+    seed 2 epoch 80/200: loss main 1.016e-07 aux 0.03973 val 0.1168 (3290 s)
+    seed 2 epoch 90/200: loss main 1.004e-07 aux 0.0379 val 0.1088 (3705 s)
+    seed 2: early stop at epoch 99, best inner val 0.1067 at epoch 79
+  model saved: out/E7_rungC_chain34b_kdfamily_w03_750_2026-10-04_model_n750_seed2.pt
+  n=750 seed 2: inner validation internal term 0.1067 on 112 molecules (fit on 638)
+  n=750 seed 2 (a): ring couplings 0.82 vs zero 3.76 (ratio 0.22) | corrected ω 2.62 (zero 23.27) | ΔH residual ratio 0.135
+  n=750 seed 2 (b): ring couplings 1.24 vs zero 3.74 (ratio 0.33) | corrected ω 3.44 (zero 23.09) | ΔH residual ratio 0.232
+wrote out/E7_rungC_chain34b_kdfamily_w03_750_2026-10-04.json/.md in 12007 s
+=== chain 34b done 2026-10-04 06:28:18
+=== chain 34b finished 2026-10-04 06:28:18

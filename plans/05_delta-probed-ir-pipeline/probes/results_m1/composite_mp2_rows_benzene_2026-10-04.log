@@ -1,0 +1,17 @@
+[16:55:10] mp2 cc-pvdz k=0: H_kk +0.768214 (36 s)
+[16:55:48] mp2 cc-pvdz k=1: H_kk +0.738178 (37 s)
+[16:56:26] mp2 cc-pvdz k=2: H_kk +0.109861 (37 s)
+[16:57:04] mp2 cc-pvdz k=18: H_kk +0.318244 (38 s)
+[16:57:44] mp2 cc-pvdz k=19: H_kk +0.121233 (40 s)
+[16:58:25] mp2 cc-pvdz k=20: H_kk +0.022876 (40 s)
+→ /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/composite_mp2_rows_benzene_ccpvdz_2026-10-04.npz (6 displacements)
+=== composite rows cc-pvdz done at 16:58:25
+[17:12:37] mp2 cc-pvtz k=0: H_kk +0.720883 (850 s)
+[17:26:44] mp2 cc-pvtz k=1: H_kk +0.687146 (847 s)
+[17:40:16] mp2 cc-pvtz k=2: H_kk +0.125709 (811 s)
+[17:51:51] mp2 cc-pvtz k=18: H_kk +0.294687 (694 s)
+[18:04:38] mp2 cc-pvtz k=19: H_kk +0.117642 (767 s)
+[18:16:45] mp2 cc-pvtz k=20: H_kk +0.026634 (726 s)
+→ /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/composite_mp2_rows_benzene_ccpvtz_2026-10-04.npz (6 displacements)
+=== composite rows cc-pvtz done at 18:16:45
+=== composite rows all done at 18:16:45

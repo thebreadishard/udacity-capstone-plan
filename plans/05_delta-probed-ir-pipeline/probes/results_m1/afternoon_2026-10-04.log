@@ -1,0 +1,87 @@
+=== afternoon queue armed 2026-10-04 11:36:33
+=== (A) batch route start: chain 34c has finished 2026-10-04 12:14:36
+seed0: 10000 samples, 9239 parse (92.4 %), status experimental v0.1, sha cddd48d609b9, 1313 s
+seed1: 10000 samples, 9212 parse (92.1 %), status experimental v0.1, sha 395c1a70cc17, 2625 s
+→ out\proposals_2026-10-04.csv (20000 rows in 2 run(s))
+cond_seed0: 10000 samples, 7602 parse (76.0 %), status experimental v0.2, sha 683220565900, 1342 s
+→ out\proposals_2026-10-04.csv (30000 rows in 3 run(s))
+=== (A) BATCH ROUTE FAILED 2026-10-04 13:22:28
+=== (B) TZ run has ended; chain 34 step 3 start (WSL qc05, 12 threads) 2026-10-04 13:28:41
+=== night: armed, waiting for the notebooks 2026-10-04 14:38:47
+=== night (5 Oct): armed; the TZ anchor starts when step 3 is done 2026-10-05 05:43:35
+=== (B) chain 34 step 3 done 2026-10-05 06:50:22
+=== (C) notebook re-executions start (2 threads each, sequential) 2026-10-05 06:50:22
+=== (R) step-3 read start: chain 34 on analytic hold-out targets (2 threads) 2026-10-05 06:51:11
+=== (N1) TZ benzene full anchor: remaining displacements start (8 threads) 2026-10-05 06:51:40
+=== (R) seed 0 read on analytic targets 2026-10-05 06:53:15
+=== (R) seed 1 read on analytic targets 2026-10-05 06:54:42
+=== (R) seed 2 read on analytic targets 2026-10-05 06:56:11
+=== (R) low-mode read on analytic targets done 2026-10-05 06:57:21
+=== (R) step-3 read done — read out/E7_rungC_chain34_eval_analytic_2026-10-05_seed*.md and out/rungC_low_modes_noise_c34_analytic_2026-10-05.md 2026-10-05 06:57:21
+=== (C) 05_support_predictor notebook re-executed 2026-10-05 08:51:40
+=== (C) 05 summary rebuilt 2026-10-05 08:51:52
+=== (C) 06_generative_candidates NOTEBOOK FAILED — see modules/06_generative_candidates/notebook/reexec_2026-10-04.log 2026-10-05 14:53:24
+=== (C) 06 summary rebuilt 2026-10-05 14:53:36
+=== (C) standout_pattern_proposer NOTEBOOK FAILED — see modules/standout_pattern_proposer/notebook/reexec_2026-10-04.log 2026-10-05 14:54:16
+=== (C) standout summary rebuilt 2026-10-05 14:54:24
+=== (C) 07_agentic_workflows NOTEBOOK FAILED — see modules/07_agentic_workflows/notebook/reexec_2026-10-04.log 2026-10-05 14:54:30
+=== (C) 08_industry_synthesis notebook re-executed 2026-10-05 14:54:39
+=== (C) notebooks done 2026-10-05 14:54:39
+=== (D) LNO follow-up cells start (12 threads) 2026-10-05 14:54:39
+=== (E) batch route 10x start: notebooks are done 2026-10-05 14:54:59
+cond_seed0: 100000 samples, 75644 parse (75.6 %), status experimental v0.2, sha 683220565900, 14643 s
+→ out\proposals_10x_2026-10-04.csv (130000 rows in 4 run(s))
+5 15:09:51
+=== (C2) module 06 notebook re-execution start (6 threads, after the TZ anchor) 2026-10-05 15:14:17
+=== night b: armed; keepalive wsl session pid 18109; TZ resumes now, MP2 pricing beside it, LNO after the anchor 2026-10-05 16:17:45
+=== (N1b) TZ benzene full anchor: resume (coordinate 19), 8 threads 2026-10-05 16:17:46
+=== (S0) MP2 pricing second half start (2 threads, 4 GB) 2026-10-05 16:17:46
+=== (C2) 06 notebook re-executed 2026-10-05 17:18:23
+=== (C2) 06 summary rebuilt 2026-10-05 17:18:37
+=== (E) batch route 10x done — read out/proposals_10x_2026-10-04.md against the lines on the union 2026-10-05 19:02:57
+=== (N1b) TZ remaining displacements done 2026-10-05 20:29:19
+=== morning 1006: armed inside WSL (pid 472); MP2 vinyl pricing beside the TZ two-route check, then assembly, LNO after 2026-10-06 06:05:38
+=== (S0) MP2 pricing vinyl variant start (2 threads, 4 GB) 2026-10-06 06:05:38
+=== (N1b) TZ reference two-route check start (8 threads, 10 GB) 2026-10-06 06:05:38
+=== (S0) MP2 pricing second half done 2026-10-06 08:31:21
+=== evening 1006: armed inside WSL (pid 20391); TZ assembly on the energy-route check, LNO after 2026-10-06 17:36:33
+=== (N1) TZ FULL ANCHOR DONE — hessian_ccsd_t.npz in /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/e8_benzene_ccpvtz_oop_2026-10-03 2026-10-06 17:36:34
+=== (N2) LNO follow-up cells start (8 threads, 6 GB, after the anchor) 2026-10-06 17:36:34
+=== (N2) LNO cell (a) xtight done 2026-10-07 03:10:27
+=== chain 33b: T3 reread with five anchors (anthracene = composite of test 3) start 2026-10-07 03:30:12
+=== chain 33b seed 0 done 2026-10-07 03:35:48
+=== chain 33b seed 1 done 2026-10-07 03:40:24
+=== chain 33b seed 2 done 2026-10-07 03:45:02
+=== chain 33b finished 2026-10-07 03:45:02
+=== T3 four anchors on chain 34: start 2026-10-07 05:16:30
+=== T3 four anchors on chain 34: seed 0 done 2026-10-07 05:19:22
+=== T3 four anchors on chain 34: seed 1 done 2026-10-07 05:22:20
+=== T3 four anchors on chain 34: seed 2 done 2026-10-07 05:25:16
+=== T3 four anchors on chain 34: finished 2026-10-07 05:25:16
+=== (P1) composite pipeline armed: waiting for the CCX53 queue 2026-10-07 06:59:18
+=== (C36) chain 36 (chain 34 + hinge input) training start, 8 threads 2026-10-07 07:28:07
+=== (N2) LNO cell (b) reuse done 2026-10-07 09:54:21 — marker written by hand 10:2x: the script's own line went to the file that sed -i replaced at 06:59
+=== evening 1006 finished (marker by hand, same cause) 2026-10-07 09:54
+=== (C36) chain 36 trained 2026-10-07 10:11:13
+=== (C36) CHAIN 36 READ FAILED (one of the three steps) 2026-10-07 10:11:44
+=== (C36) chain 36 read rerun after registering the candidates 2026-10-07 10:15:52
+=== (C36) chain 36 read done — out/read_chain36_analytic_2026-10-07.md, out/rungC_low_modes_noise_c36_analytic_2026-10-07.md 2026-10-07 10:18:18
+=== (P2) queue done; fetching rows 2026-10-07 18:45:40
+=== (P2) fetched 12 merged row files, 202 job files 2026-10-07 18:45:41
+=== (P3) labels server bootstrap on 157.180.32.149 2026-10-07 18:45:41
+Terminated                 bash probes/bootstrap_labels_ccx53.sh "$IP" > "$R/labels_bootstrap_$DATE.log" 2>&1
+=== (P3) LABELS BOOTSTRAP FAILED — see /c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/labels_bootstrap_2026-10-07.log 2026-10-07 20:33:40
+=== (P4) building composites 2026-10-07 20:33:40
+naphthalene: PROMOTED (carried, TZ) — VALID
+pyridine: PROMOTED (carried, TZ) — VALID
+fluorobenzene: PROMOTED (carried, TZ) — VALID
+benzonitrile: PROMOTED (carried, TZ) — VALID; soft modes within 38 cm⁻¹ of ωB97X
+anthracene: PROMOTED (carried, TZ) — VALID; soft modes within 19 cm⁻¹ of ωB97X
+wrote modules\ANCHORS.md
+17 anchor entries, 6 carried, 0 problems
+=== (P4) composites built and registered 2026-10-07 20:33:54
+=== (P5) chain 33c: T3 on 6 TZ-tier anchors start 2026-10-07 20:33:55
+=== (P5) chain 33c seed 0 done 2026-10-07 20:38:20
+=== (P5) chain 33c seed 1 done 2026-10-07 20:42:18
+=== (P5) chain 33c seed 2 done 2026-10-07 20:46:17
+=== (P5) chain 33c finished — read /c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/out/T3_seed_means_tz_vs_dz_c34_2026-10-07.md against the lines 2026-10-07 20:46:17

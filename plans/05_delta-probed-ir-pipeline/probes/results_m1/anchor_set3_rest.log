@@ -1,0 +1,59 @@
+=== (S3R) armed (pid 22444), 38 steps 2026-10-20 19:52:42
+=== (S3R) starting: 38 steps 2026-10-20 19:52:42
+=== (S3R) resuming: 20 of 38 steps finished in an earlier run are skipped 2026-10-20 19:52:42
+(S3R) RA_k2_s0_seed0 skipped: done in an earlier run 2026-10-20 19:52:42
+(S3R) RA_k2_s1_seed0 skipped: done in an earlier run 2026-10-20 19:52:42
+(S3R) RA_k2_s2_seed0 skipped: done in an earlier run 2026-10-20 19:52:42
+(S3R) RA_k2_s3_seed0 skipped: done in an earlier run 2026-10-20 19:52:42
+(S3R) RA_k2_s4_seed0 skipped: done in an earlier run 2026-10-20 19:52:42
+(S3R) RA_k4_s0_seed0 skipped: done in an earlier run 2026-10-20 19:52:42
+(S3R) RA_k4_s1_seed0 skipped: done in an earlier run 2026-10-20 19:52:42
+(S3R) RA_k4_s2_seed0 skipped: done in an earlier run 2026-10-20 19:52:42
+(S3R) RA_k4_s3_seed0 skipped: done in an earlier run 2026-10-20 19:52:42
+(S3R) RA_k4_s4_seed0 skipped: done in an earlier run 2026-10-20 19:52:42
+(S3R) RA_k5_s0_seed0 skipped: done in an earlier run 2026-10-20 19:52:42
+(S3R) RA_k0_s0_seed1 skipped: done in an earlier run 2026-10-20 19:52:42
+(S3R) RA_k2_s0_seed1 skipped: done in an earlier run 2026-10-20 19:52:42
+(S3R) RA_k2_s1_seed1 skipped: done in an earlier run 2026-10-20 19:52:42
+(S3R) RA_k2_s2_seed1 skipped: done in an earlier run 2026-10-20 19:52:42
+(S3R) RA_k2_s3_seed1 skipped: done in an earlier run 2026-10-20 19:52:42
+(S3R) RA_k2_s4_seed1 skipped: done in an earlier run 2026-10-20 19:52:42
+(S3R) RA_k4_s0_seed1 skipped: done in an earlier run 2026-10-20 19:52:42
+(S3R) RA_k4_s1_seed1 skipped: done in an earlier run 2026-10-20 19:52:42
+(S3R) RA_k4_s2_seed1 skipped: done in an earlier run 2026-10-20 19:52:42
+=== (S3R) progress: RA_k4_s3_seed1 (21/38) running 10 min, its log +4647 bytes 2026-10-20 20:02:42
+(S3R) RA_k4_s3_seed1 done 2026-10-20 20:07:21
+=== (S3R) progress: RA_k4_s4_seed1 (22/38) running 10 min, its log +4924 bytes 2026-10-20 20:17:21
+(S3R) RA_k4_s4_seed1 done 2026-10-20 20:21:26
+=== (S3R) progress: RA_k5_s0_seed1 (23/38) running 10 min, its log +4101 bytes 2026-10-20 20:31:26
+(S3R) RA_k5_s0_seed1 done 2026-10-20 20:38:12
+(S3R) RA_k0_s0_seed2 done 2026-10-20 20:45:57
+=== (S3R) progress: RA_k2_s0_seed2 (25/38) running 10 min, its log +6322 bytes 2026-10-20 20:55:58
+(S3R) RA_k2_s0_seed2 done 2026-10-20 20:57:08
+=== (S3R) progress: RA_k2_s1_seed2 (26/38) running 10 min, its log +6266 bytes 2026-10-20 21:07:08
+(S3R) RA_k2_s1_seed2 done 2026-10-20 21:08:18
+=== (S3R) progress: RA_k2_s2_seed2 (27/38) running 10 min, its log +6765 bytes 2026-10-20 21:18:18
+(S3R) RA_k2_s2_seed2 done 2026-10-20 21:18:41
+=== (S3R) progress: RA_k2_s3_seed2 (28/38) running 10 min, its log +6766 bytes 2026-10-20 21:28:41
+(S3R) RA_k2_s3_seed2 done 2026-10-20 21:29:08
+=== (S3R) progress: RA_k2_s4_seed2 (29/38) running 10 min, its log +6707 bytes 2026-10-20 21:39:08
+(S3R) RA_k2_s4_seed2 done 2026-10-20 21:39:43
+=== (S3R) progress: RA_k4_s0_seed2 (30/38) running 10 min, its log +4918 bytes 2026-10-20 21:49:43
+(S3R) RA_k4_s0_seed2 done 2026-10-20 21:53:43
+=== (S3R) progress: RA_k4_s1_seed2 (31/38) running 10 min, its log +4926 bytes 2026-10-20 22:03:43
+(S3R) RA_k4_s1_seed2 done 2026-10-20 22:07:47
+=== (S3R) progress: RA_k4_s2_seed2 (32/38) running 10 min, its log +5253 bytes 2026-10-20 22:17:47
+(S3R) RA_k4_s2_seed2 done 2026-10-20 22:20:42
+=== (S3R) progress: RA_k4_s3_seed2 (33/38) running 10 min, its log +4973 bytes 2026-10-20 22:30:42
+(S3R) RA_k4_s3_seed2 done 2026-10-20 22:34:57
+=== (S3R) progress: RA_k4_s4_seed2 (34/38) running 10 min, its log +5200 bytes 2026-10-20 22:44:58
+(S3R) RA_k4_s4_seed2 done 2026-10-20 22:47:52
+=== (S3R) progress: RA_k5_s0_seed2 (35/38) running 10 min, its log +4213 bytes 2026-10-20 22:57:52
+(S3R) RA_k5_s0_seed2 done 2026-10-20 23:03:59
+=== (S3R) progress: M_seed0 (36/38) running 10 min, its log +4371 bytes 2026-10-20 23:13:59
+(S3R) M_seed0 done 2026-10-20 23:17:24
+=== (S3R) progress: M_seed1 (37/38) running 10 min, its log +4374 bytes 2026-10-20 23:27:24
+(S3R) M_seed1 done 2026-10-20 23:30:58
+=== (S3R) progress: M_seed2 (38/38) running 10 min, its log +4429 bytes 2026-10-20 23:40:58
+(S3R) M_seed2 done 2026-10-20 23:44:04
+=== (S3R) run done — 38 steps, 38 declared outputs present 2026-10-20 23:44:04

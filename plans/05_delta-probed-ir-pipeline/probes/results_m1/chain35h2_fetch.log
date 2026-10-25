@@ -1,0 +1,3 @@
+[07:23:39] analytic Hessians and APTs → corpus
+[07:23:58] logs, gate, environment → /c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/labels_ccx53_2026-10-17
+SNAPSHOT 2026-10-17 07:24 157.180.32.149: complete copy, but 4 label lanes still run — not the final fetch; corpus holds 586 analytic ωB97X and 587 analytic B3LYP Hessians (server 550 ωB97X), 218 APTs (server 208); logs in /c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/labels_ccx53_2026-10-17

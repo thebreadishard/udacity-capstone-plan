@@ -1,0 +1,105 @@
+model E7_rungC_chain34_kdfamily_750_2026-10-05_model_n750_seed1.pt: pattern f, aux both, target projected; anchors ['A_01f3186607', 'A_3100da3761', 'A_45187bb7c8', 'A_6e858b26e5', 'A_7aa232d4e9', 'A_8448043181', 'A_a1e6ec1862', 'A_d9139359ab', 'A_ff98e1160d', 'B_8b12a55d3a']
+  [A_01f3186607 head_all]     epoch 50/300: loss 0.006577
+  [A_01f3186607 head_all]     epoch 100/300: loss 0.005621
+  [A_01f3186607 head_all]     epoch 150/300: loss 0.00389
+  [A_01f3186607 head_all]     epoch 200/300: loss 0.00641
+  [A_01f3186607 head_all]     epoch 250/300: loss 0.00203
+  [A_01f3186607 head_all]     epoch 300/300: loss 0.002097
+A_01f3186607: zero ω 21.12 | α-scaling 0.96 / 8.86 | whole head: 0.22 / 0.76 ring-ip
+  [A_3100da3761 head_all]     epoch 50/300: loss 0.008142
+  [A_3100da3761 head_all]     epoch 100/300: loss 0.003346
+  [A_3100da3761 head_all]     epoch 150/300: loss 0.001947
+  [A_3100da3761 head_all]     epoch 200/300: loss 0.003861
+  [A_3100da3761 head_all]     epoch 250/300: loss 0.006129
+  [A_3100da3761 head_all]     epoch 300/300: loss 0.002464
+A_3100da3761: zero ω 22.78 | α-scaling 1.09 / 10.12 | whole head: 0.68 / 2.63 ring-ip
+  [A_6e858b26e5 head_all]     epoch 50/300: loss 0.005469
+  [A_6e858b26e5 head_all]     epoch 100/300: loss 0.00377
+  [A_6e858b26e5 head_all]     epoch 150/300: loss 0.003447
+  [A_6e858b26e5 head_all]     epoch 200/300: loss 0.002769
+  [A_6e858b26e5 head_all]     epoch 250/300: loss 0.002725
+  [A_6e858b26e5 head_all]     epoch 300/300: loss 0.001574
+A_6e858b26e5: zero ω 19.09 | α-scaling 1.14 / 10.74 | whole head: 0.58 / 1.88 ring-ip
+  [A_8448043181 head_all]     epoch 50/300: loss 0.006943
+  [A_8448043181 head_all]     epoch 100/300: loss 0.004687
+  [A_8448043181 head_all]     epoch 150/300: loss 0.003404
+  [A_8448043181 head_all]     epoch 200/300: loss 0.003287
+  [A_8448043181 head_all]     epoch 250/300: loss 0.01018
+  [A_8448043181 head_all]     epoch 300/300: loss 0.002494
+A_8448043181: zero ω 21.43 | α-scaling 1.12 / 10.92 | whole head: 0.34 / 3.08 ring-ip
+  [A_a1e6ec1862 head_all]     epoch 50/300: loss 0.006963
+  [A_a1e6ec1862 head_all]     epoch 100/300: loss 0.006191
+  [A_a1e6ec1862 head_all]     epoch 150/300: loss 0.002407
+  [A_a1e6ec1862 head_all]     epoch 200/300: loss 0.002418
+  [A_a1e6ec1862 head_all]     epoch 250/300: loss 0.0139
+  [A_a1e6ec1862 head_all]     epoch 300/300: loss 0.002723
+A_a1e6ec1862: zero ω 21.49 | α-scaling 0.95 / 9.13 | whole head: 0.61 / 3.19 ring-ip
+  [B_8b12a55d3a head_all]     epoch 50/300: loss 0.01196
+  [B_8b12a55d3a head_all]     epoch 100/300: loss 0.006079
+  [B_8b12a55d3a head_all]     epoch 150/300: loss 0.006852
+  [B_8b12a55d3a head_all]     epoch 200/300: loss 0.002498
+  [B_8b12a55d3a head_all]     epoch 250/300: loss 0.002605
+  [B_8b12a55d3a head_all]     epoch 300/300: loss 0.003148
+B_8b12a55d3a: zero ω 18.96 | α-scaling 1.19 / 8.81 | whole head: 0.78 / 4.15 ring-ip
+# T3 — leave-one-anchor-out transfer to CCSD(T)/cc-pVDZ (2026-10-21 08:08)
+
+Model `E7_rungC_chain34_kdfamily_750_2026-10-05_model_n750_seed1.pt` ({'pattern': 'f', 'aux_mode': 'both', 'aux_target': 'projected', 'n': 750, 'seed': 1}); fine-tune 300 epochs at lr 0.001, aux weight 1; low levels {'A_8448043181': 'hessian_b3lyp_analytic.npz', 'A_01f3186607': 'hessian_b3lyp_analytic.npz', 'A_6e858b26e5': 'hessian_b3lyp_analytic.npz', 'B_8b12a55d3a': 'hessian_b3lyp_analytic.npz', 'A_3100da3761': 'hessian_b3lyp_analytic.npz', 'A_a1e6ec1862': 'hessian_b3lyp_analytic.npz', 'A_45187bb7c8': 'hessian_b3lyp_analytic.npz', 'A_7aa232d4e9': 'hessian_b3lyp_analytic.npz', 'A_d9139359ab': 'hessian_b3lyp_analytic.npz', 'A_ff98e1160d': 'hessian_b3lyp_analytic.npz'}.
+
+| held-out anchor | read-out | zero rule | α scaling (training anchors) | network, whole head tuned |
+|---|---|---|---|---|
+| A_01f3186607 | ring-coupling ratio | 1.00 | 0.96 | 0.22 |
+| A_01f3186607 | ω rms, all modes (cm⁻¹) | 21.12 | 8.86 | 4.56 |
+| A_01f3186607 | ΔH residual | 1.00 | 0.70 | 0.29 |
+| A_01f3186607 | ω rms ring-ip (cm⁻¹) | 16.40 | 6.78 | 0.76 |
+| A_01f3186607 | ω rms CH-stretch (cm⁻¹) | 33.25 | 8.83 | 1.46 |
+| A_01f3186607 | ω rms CH-oop (cm⁻¹) | 21.15 | 11.29 | 8.07 |
+| A_01f3186607 | ω rms other (cm⁻¹) | 17.20 | 9.63 | 5.66 |
+| A_3100da3761 | ring-coupling ratio | 1.00 | 1.09 | 0.68 |
+| A_3100da3761 | ω rms, all modes (cm⁻¹) | 22.78 | 10.12 | 13.69 |
+| A_3100da3761 | ΔH residual | 1.00 | 0.66 | 0.70 |
+| A_3100da3761 | ω rms ring-ip (cm⁻¹) | 15.42 | 5.23 | 2.63 |
+| A_3100da3761 | ω rms CH-stretch (cm⁻¹) | 35.41 | 2.38 | 2.01 |
+| A_3100da3761 | ω rms CH-oop (cm⁻¹) | 13.96 | 11.63 | 5.19 |
+| A_3100da3761 | ω rms other (cm⁻¹) | 26.13 | 14.86 | 24.33 |
+| A_3100da3761 | spectrum overlap (CC APT) | 0.479 | 0.644 | 0.785 |
+| A_3100da3761 | intensity rel. rms, modes matched by eigenvector (CC APT) | 0.258 | 0.261 | 0.156 |
+| A_3100da3761 | intensity rel. rms (CC APT) | 0.258 | 2.297 | 0.156 |
+| A_6e858b26e5 | ring-coupling ratio | 1.00 | 1.14 | 0.58 |
+| A_6e858b26e5 | ω rms, all modes (cm⁻¹) | 19.09 | 10.74 | 3.27 |
+| A_6e858b26e5 | ΔH residual | 1.00 | 0.50 | 0.32 |
+| A_6e858b26e5 | ω rms ring-ip (cm⁻¹) | 14.88 | 7.73 | 1.88 |
+| A_6e858b26e5 | ω rms CH-stretch (cm⁻¹) | 35.58 | 6.04 | 2.11 |
+| A_6e858b26e5 | ω rms CH-oop (cm⁻¹) | 5.40 | 18.94 | 5.40 |
+| A_6e858b26e5 | ω rms other (cm⁻¹) | 13.02 | 4.01 | 3.52 |
+| A_6e858b26e5 | spectrum overlap (CC APT) | 0.626 | 0.643 | 0.914 |
+| A_6e858b26e5 | intensity rel. rms, modes matched by eigenvector (CC APT) | 0.262 | 0.276 | 0.095 |
+| A_6e858b26e5 | intensity rel. rms (CC APT) | 0.300 | 0.310 | 0.160 |
+| A_8448043181 | ring-coupling ratio | 1.00 | 1.12 | 0.34 |
+| A_8448043181 | ω rms, all modes (cm⁻¹) | 21.43 | 10.92 | 5.07 |
+| A_8448043181 | ΔH residual | 1.00 | 0.54 | 0.24 |
+| A_8448043181 | ω rms ring-ip (cm⁻¹) | 14.14 | 8.15 | 3.08 |
+| A_8448043181 | ω rms CH-stretch (cm⁻¹) | 38.65 | 3.31 | 3.34 |
+| A_8448043181 | ω rms CH-oop (cm⁻¹) | 14.86 | 20.86 | 8.62 |
+| A_8448043181 | ω rms other (cm⁻¹) | 13.31 | 2.76 | 5.18 |
+| A_8448043181 | spectrum overlap (CC APT) | 0.257 | 0.336 | 0.705 |
+| A_8448043181 | intensity rel. rms, modes matched by eigenvector (CC APT) | 0.003 | 0.007 | 0.002 |
+| A_8448043181 | intensity rel. rms (CC APT) | 0.734 | 0.734 | 0.002 |
+| A_a1e6ec1862 | ring-coupling ratio | 1.00 | 0.95 | 0.61 |
+| A_a1e6ec1862 | ω rms, all modes (cm⁻¹) | 21.49 | 9.13 | 6.31 |
+| A_a1e6ec1862 | ΔH residual | 1.00 | 0.76 | 0.39 |
+| A_a1e6ec1862 | ω rms ring-ip (cm⁻¹) | 16.72 | 7.44 | 3.19 |
+| A_a1e6ec1862 | ω rms CH-stretch (cm⁻¹) | 32.88 | 9.65 | 1.92 |
+| A_a1e6ec1862 | ω rms CH-oop (cm⁻¹) | 26.43 | 13.16 | 12.82 |
+| A_a1e6ec1862 | ω rms other (cm⁻¹) | 16.46 | 8.28 | 5.64 |
+| B_8b12a55d3a | ring-coupling ratio | 1.00 | 1.19 | 0.78 |
+| B_8b12a55d3a | ω rms, all modes (cm⁻¹) | 18.96 | 8.81 | 3.15 |
+| B_8b12a55d3a | ΔH residual | 1.00 | 0.47 | 0.38 |
+| B_8b12a55d3a | ω rms ring-ip (cm⁻¹) | 16.20 | 5.06 | 4.15 |
+| B_8b12a55d3a | ω rms CH-stretch (cm⁻¹) | 34.71 | 7.05 | 1.45 |
+| B_8b12a55d3a | ω rms CH-oop (cm⁻¹) | 8.29 | 18.03 | 2.80 |
+| B_8b12a55d3a | ω rms other (cm⁻¹) | 12.60 | 4.35 | 2.25 |
+| B_8b12a55d3a | spectrum overlap (CC APT) | 0.390 | 0.683 | 0.769 |
+| B_8b12a55d3a | intensity rel. rms, modes matched by eigenvector (CC APT) | 0.104 | 0.112 | 0.066 |
+| B_8b12a55d3a | intensity rel. rms (CC APT) | 0.288 | 0.279 | 0.066 |
+
+298 s.

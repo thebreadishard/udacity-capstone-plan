@@ -1,0 +1,5 @@
+molecules/A2_02c8833bd5 b3lyp: 6003 s; |H_analytic − H_corpus| max 4.54e-03 rms 5.23e-04; max |Δfreq| 6 cm-1
+molecules/A2_02c8833bd5 wb97x: 11331 s; |H_analytic − H_corpus| max 6.55e-03 rms 5.87e-04; max |Δfreq| 10 cm-1
+molecules/A2_00b0ff5a24 b3lyp: 10568 s; |H_analytic − H_corpus| max 4.70e-03 rms 3.83e-04; max |Δfreq| 6 cm-1
+molecules/A2_00b0ff5a24 wb97x: 12935 s; |H_analytic − H_corpus| max 5.72e-03 rms 4.03e-04; max |Δfreq| 5 cm-1
+molecules/A2_27370742a0 b3lyp: 11546 s; |H_analytic − H_corpus| max 1.08e-02 rms 8.31e-04; max |Δfreq| 6 cm-1

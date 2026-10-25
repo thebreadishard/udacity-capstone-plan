@@ -1,0 +1,8 @@
+=== (L4D) start: 1 molecules at F = 2e-3 2026-10-16 11:37:51
+=== (L4D) B_1f3de8463a start 2026-10-16 11:37:51
+  field component 1/3 done, 1525 s
+  field component 2/3 done, 3089 s
+  field component 3/3 done, 4736 s
+/home/thebreadishard/apt_recompute/fetched/B_1f3de8463a: field route (F = 0.002): sum rule without grid response 5.2e-05, with 1.5e-10; |P_noGR − P_GR| max 4.3e-05 e; 5119 s
+=== (L4D) B_1f3de8463a done 2026-10-16 13:03:11
+=== (L4D) all done 2026-10-16 13:03:11

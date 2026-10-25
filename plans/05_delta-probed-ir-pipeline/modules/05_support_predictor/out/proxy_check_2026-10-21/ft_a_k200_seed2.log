@@ -1,0 +1,28 @@
+analytic second-route Hessians substituted for 601 molecules
+atomic polar tensors found for 216 molecules: intensity read-outs on (lever 5, registered 2 Oct 2026 06:5x)
+base base_a_model_n750_seed2.pt (status candidate); reservoir 200, read 343; k 200; modes ['head_l2', 'head', 'head_all', 'scratch']
+k 200 draw 0 head_l2: CH-oop 10.56 other 13.03 (47 s)
+k 200 draw 0 head: CH-oop 4.74 other 5.79 (45 s)
+k 200 draw 0 head_all: CH-oop 2.85 other 3.24 (71 s)
+  [scratch k200]   rung B's 66 pair features added to the hybrid head (standardised on the fit molecules)
+  [scratch k200]   hybrid head: 304,276 parameters; F_low input scales 0.0362, 0.295, 0.128; SQM α per class on
+  [scratch k200]   fresh sum body pre-flight: worst |output| 7.06 on the training molecules
+  [scratch k200]     seed 2 epoch 1/200: loss main 1.407e-06 aux 0.5125 val 0.3845 (7 s)
+  [scratch k200]     seed 2 epoch 10/200: loss main 5.875e-07 aux 0.3055 val 0.2583 (67 s)
+  [scratch k200]     seed 2 epoch 20/200: loss main 4.065e-07 aux 0.1721 val 0.1635 (134 s)
+  [scratch k200]     seed 2 epoch 30/200: loss main 2.922e-07 aux 0.09893 val 0.1179 (200 s)
+  [scratch k200]     seed 2 epoch 40/200: loss main 2.329e-07 aux 0.07353 val 0.1133 (265 s)
+  [scratch k200]     seed 2 epoch 50/200: loss main 2.22e-07 aux 0.07128 val 0.1011 (330 s)
+  [scratch k200]     seed 2 epoch 60/200: loss main 1.715e-07 aux 0.05005 val 0.09734 (397 s)
+  [scratch k200]     seed 2 epoch 70/200: loss main 1.473e-07 aux 0.04345 val 0.09372 (465 s)
+  [scratch k200]     seed 2 epoch 80/200: loss main 1.281e-07 aux 0.03445 val 0.09418 (531 s)
+  [scratch k200]     seed 2 epoch 90/200: loss main 1.377e-07 aux 0.03507 val 0.08799 (596 s)
+  [scratch k200]     seed 2 epoch 100/200: loss main 1.116e-07 aux 0.02861 val 0.0895 (662 s)
+  [scratch k200]     seed 2 epoch 110/200: loss main 1.129e-07 aux 0.03085 val 0.08394 (727 s)
+  [scratch k200]     seed 2 epoch 120/200: loss main 8.938e-08 aux 0.02252 val 0.08219 (795 s)
+  [scratch k200]     seed 2 epoch 130/200: loss main 8.794e-08 aux 0.02013 val 0.08535 (863 s)
+  [scratch k200]     seed 2 epoch 140/200: loss main 8.333e-08 aux 0.01889 val 0.08017 (928 s)
+  [scratch k200]     seed 2 epoch 150/200: loss main 1.062e-07 aux 0.02245 val 0.08067 (993 s)
+  [scratch k200]     seed 2: early stop at epoch 157, best inner val 0.07764 at epoch 137
+k 200 draw 0 scratch: CH-oop 2.97 other 3.65 (1046 s)
+wrote out/proxy_check_2026-10-21/ft_a_k200_seed2.json/.md in 1381 s

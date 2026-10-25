@@ -1,0 +1,7 @@
+[2026-10-02 04:21:45] chain (corrected route) start on ubuntu-128gb-hel1-2
+[2026-10-02 04:21:45] ANCHOR anthracene START (parallel: 4 partial runs x 8 threads x 22000 MB) (molecules/A_a1e6ec1862/geometry.json)
+[2026-10-02 06:03:38] ANCHOR anthracene: 21 symmetry-unique displacements over 4 partial runs
+[2026-10-02 06:03:38] ANCHOR anthracene: two-route check lane started (pid 60393, 8 threads, 16000 MB)
+[2026-10-07 01:44:19] ANCHOR anthracene: partial runs done (42 gradient files) -> assembling run
+[2026-10-07 01:44:20] ANCHOR anthracene IMAGINARY (excluded from read-outs; see results/anthracene_ccpvdz/e8_fd.log)
+[2026-10-07 01:44:20] CHAIN FINISHED

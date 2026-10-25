@@ -1,0 +1,49 @@
+=== (APTb) start 2026-10-12 16:37:17: 23 molecules, 1 lanes x 4 threads
+=== (APTb) start 2026-10-12 22:26:58: 23 molecules, 1 lanes x 4 threads
+=== (APTb) start 2026-10-12 23:17:53: 23 molecules, 1 lanes x 4 threads
+(APTb) lane 0 B_05e6c88b0b ok 8433 s 2026-10-13 01:38:26
+=== (APTb) lane 2 first: the two guard-failed APTs with the per-column fallback 2026-10-13 09:23:32
+Traceback (most recent call last):
+  File "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/apt_recompute_refined.py", line 86, in <module>
+    main()
+  File "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/apt_recompute_refined.py", line 76, in main
+    row = recompute(src, out_dir, stamp=stamp)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/apt_recompute_refined.py", line 40, in recompute
+    raise ValueError(f"{src}: the APT file's route is {old['route']!s}, not the unrefined route C")
+ValueError: /home/thebreadishard/apt_recompute/fetched_half2/B_1194d7a42a: the APT file's route is hessian_response_refined, not the unrefined route C
+=== (APTb) lane 2 the two done rc=1 2026-10-13 09:23:34
+=== (APTb) start 2026-10-13 09:23:35: 25 molecules, 1 lanes x 4 threads
+(APTb) lane 0 B_05e6c88b0b ok 1 s 2026-10-13 09:23:36
+=== (APTb) lane 2 restarted, the two guard-failed APTs first (fallback installed, recompute guard widened) 2026-10-13 09:24:55
+{"id": "B_1194d7a42a", "passed": true, "error": "", "message": "APT from the Hessian's response: CPHF residual 4.6e-04 -> 9.4e-07 in 3 rounds, sum rule 1.4e-04, 7317.9 s", "residual_before": 0.00046183885816919457, "residual_after": 9.396164094427339e-07, "rounds": 3, "apt_change_max": 1.8341399911636636e-06, "height_change_max": 1.9726521965293425e-07, "sum_rule_old": 0.00014403861542489071, "sum_rule_new": 0.00014403861516454342, "seconds": 14991.2}
+{"id": "B_127dd8c4ed", "passed": true, "error": "", "message": "APT from the Hessian's response: CPHF residual 8.2e-05 -> 8.8e-07 in 3 rounds, sum rule 4.3e-05, 7884.6 s", "residual_before": 8.161958443865525e-05, "residual_after": 8.767454933236718e-07, "rounds": 3, "apt_change_max": 4.60928311118991e-06, "height_change_max": 6.959249564634445e-06, "sum_rule_old": 4.758946051763857e-05, "sum_rule_new": 4.347303327634222e-05, "seconds": 13857.8}
+=== (APTb) lane 2 the two done rc=0 2026-10-13 17:25:48
+=== (APTb) start 2026-10-13 17:25:48: 25 molecules, 1 lanes x 4 threads
+(APTb) lane 0 B_05e6c88b0b ok 3 s 2026-10-13 17:25:51
+(APTb) lane 0 B_07567ef8b1 ok 7751 s 2026-10-13 19:35:03
+(APTb) lane 0 B_07cadc7923 ok 8788 s 2026-10-13 22:01:31
+(APTb) lane 0 B_07d4bb1719 ok 7812 s 2026-10-14 00:11:43
+(APTb) lane 0 B_080e328832 ok 9976 s 2026-10-14 02:58:00
+(APTb) lane 0 B_0840b56da4 ok 9322 s 2026-10-14 05:33:22
+(APTb) lane 0 B_08a663fa31 ok 7655 s 2026-10-14 07:40:57
+(APTb) lane 0 B_095a0abff0 ok 7893 s 2026-10-14 09:52:30
+(APTb) lane 0 B_0a006a11c0 ok 9189 s 2026-10-14 12:25:39
+(APTb) lane 0 B_0cf808c510 ok 9796 s 2026-10-14 15:08:55
+(APTb) lane 0 B_0d73312a78 ok 9441 s 2026-10-14 17:46:16
+(APTb) lane 0 B_0e3176269f ok 7530 s 2026-10-14 19:51:46
+(APTb) lane 0 B_0f1689db0d ok 7761 s 2026-10-14 22:01:07
+(APTb) lane 0 B_10957f41e3 ok 13218 s 2026-10-15 01:41:25
+(APTb) lane 0 B_1173965032 ok 7589 s 2026-10-15 03:47:54
+(APTb) lane 0 B_1194d7a42a ok 2 s 2026-10-15 03:47:56
+(APTb) lane 0 B_127dd8c4ed ok 3 s 2026-10-15 03:48:00
+(APTb) lane 0 B_149d544a5c ok 6679 s 2026-10-15 05:39:19
+(APTb) lane 0 B_15877240da ok 7811 s 2026-10-15 07:49:30
+(APTb) lane 0 B_168ec38a52 ok 10952 s 2026-10-15 10:52:02
+(APTb) lane 0 B_175a820023 ok 8642 s 2026-10-15 13:16:04
+(APTb) lane 0 B_1863d5f90f ok 8833 s 2026-10-15 15:43:17
+(APTb) lane 0 B_1b2efba17c ok 7976 s 2026-10-15 17:56:13
+(APTb) lane 0 B_1e03da0643 ok 9504 s 2026-10-15 20:34:37
+(APTb) lane 0 B_1f3de8463a ok 11754 s 2026-10-15 23:50:31
+=== (APTb) lane 0 done 2026-10-15 23:50:31
+=== (APTb) all lanes done 2026-10-15 23:50:31: 50 ok, 0 failed

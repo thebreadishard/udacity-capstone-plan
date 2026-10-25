@@ -1,0 +1,20 @@
+=== (G) cation gate start 2026-10-08 11:24:52
+(G) 8 cations done — waiting for ten 2026-10-08 11:24:55
+(G) 9 cations done — waiting for ten 2026-10-08 11:44:59
+(G) 9 cations done — waiting for ten 2026-10-08 12:05:03
+(G) 9 cations done — waiting for ten 2026-10-08 12:25:07
+(G) 9 cations done — waiting for ten 2026-10-08 12:45:11
+(G) 9 cations done — waiting for ten 2026-10-08 13:05:14
+=== (G) ten cations copied: P3c_001ea7d3a5 P3c_0028cdfd85 P3c_00e041576d P3c_01f3186607 P3c_02d75f732a P3c_03923c2081 P3c_03bf20e8fe P3c_049751d07c P3c_0617e12945 P3c_07cadc7923 2026-10-08 13:25:18
+(G) P3c_001ea7d3a5 analytic done 2026-10-08 15:15:08
+(G) P3c_0028cdfd85 analytic done 2026-10-08 18:36:59
+(G) P3c_00e041576d analytic done 2026-10-08 19:04:51
+(G) P3c_01f3186607 analytic done 2026-10-08 20:39:35
+(G) P3c_02d75f732a analytic done 2026-10-08 21:06:16
+(G) P3c_03923c2081 analytic done 2026-10-08 22:34:48
+(G) P3c_03bf20e8fe analytic done 2026-10-08 23:58:46
+(G) P3c_049751d07c analytic done 2026-10-09 01:48:26
+(G) P3c_0617e12945 analytic done 2026-10-09 02:29:46
+(G) P3c_07cadc7923 analytic done 2026-10-09 05:44:46
+=== (G) analytic route done; the gate 2026-10-09 05:44:46
+=== (G) cation gate finished: NOT PASSED (exit 1) — see out/cation_gate_p3_2_2026-10-08.md 2026-10-09 05:44:51

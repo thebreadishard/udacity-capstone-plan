@@ -1,0 +1,41 @@
+=== (S3R) armed (pid 4108), 38 steps 2026-10-20 15:21:34
+=== (S3R) starting: 38 steps 2026-10-20 15:21:34
+=== (S3R) progress: RA_k2_s0_seed0 (1/38) running 10 min, its log +6158 bytes 2026-10-20 15:31:34
+(S3R) RA_k2_s0_seed0 done 2026-10-20 15:33:10
+=== (S3R) progress: RA_k2_s1_seed0 (2/38) running 10 min, its log +6384 bytes 2026-10-20 15:43:10
+(S3R) RA_k2_s1_seed0 done 2026-10-20 15:44:08
+(S3R) RA_k2_s2_seed0 done 2026-10-20 15:54:06
+=== (S3R) progress: RA_k2_s3_seed0 (4/38) running 10 min, its log +6325 bytes 2026-10-20 16:04:06
+(S3R) RA_k2_s3_seed0 done 2026-10-20 16:05:21
+=== (S3R) progress: RA_k2_s4_seed0 (5/38) running 10 min, its log +6434 bytes 2026-10-20 16:15:21
+(S3R) RA_k2_s4_seed0 done 2026-10-20 16:16:22
+=== (S3R) progress: RA_k4_s0_seed0 (6/38) running 10 min, its log +5299 bytes 2026-10-20 16:26:23
+(S3R) RA_k4_s0_seed0 done 2026-10-20 16:29:56
+=== (S3R) progress: RA_k4_s1_seed0 (7/38) running 10 min, its log +4974 bytes 2026-10-20 16:39:56
+(S3R) RA_k4_s1_seed0 done 2026-10-20 16:43:56
+=== (S3R) progress: RA_k4_s2_seed0 (8/38) running 10 min, its log +4917 bytes 2026-10-20 16:53:57
+(S3R) RA_k4_s2_seed0 done 2026-10-20 16:58:31
+=== (S3R) progress: RA_k4_s3_seed0 (9/38) running 10 min, its log +4584 bytes 2026-10-20 17:08:31
+(S3R) RA_k4_s3_seed0 done 2026-10-20 17:13:25
+=== (S3R) progress: RA_k4_s4_seed0 (10/38) running 10 min, its log +4580 bytes 2026-10-20 17:23:25
+(S3R) RA_k4_s4_seed0 done 2026-10-20 17:28:06
+=== (S3R) progress: RA_k5_s0_seed0 (11/38) running 10 min, its log +4107 bytes 2026-10-20 17:38:06
+(S3R) RA_k5_s0_seed0 done 2026-10-20 17:44:16
+(S3R) RA_k0_s0_seed1 done 2026-10-20 17:52:07
+=== (S3R) progress: RA_k2_s0_seed1 (13/38) running 10 min, its log +5001 bytes 2026-10-20 18:02:07
+(S3R) RA_k2_s0_seed1 done 2026-10-20 18:05:23
+=== (S3R) progress: RA_k2_s1_seed1 (14/38) running 10 min, its log +6216 bytes 2026-10-20 18:15:23
+(S3R) RA_k2_s1_seed1 done 2026-10-20 18:16:55
+=== (S3R) progress: RA_k2_s2_seed1 (15/38) running 10 min, its log +6488 bytes 2026-10-20 18:26:55
+(S3R) RA_k2_s2_seed1 done 2026-10-20 18:27:50
+=== (S3R) progress: RA_k2_s3_seed1 (16/38) running 10 min, its log +5439 bytes 2026-10-20 18:37:50
+(S3R) RA_k2_s3_seed1 done 2026-10-20 18:40:10
+=== (S3R) progress: RA_k2_s4_seed1 (17/38) running 10 min, its log +6268 bytes 2026-10-20 18:50:10
+(S3R) RA_k2_s4_seed1 done 2026-10-20 18:51:27
+=== (S3R) progress: RA_k4_s0_seed1 (18/38) running 10 min, its log +3816 bytes 2026-10-20 19:01:27
+(S3R) RA_k4_s0_seed1 done 2026-10-20 19:08:50
+=== (S3R) progress: RA_k4_s1_seed1 (19/38) running 10 min, its log +4533 bytes 2026-10-20 19:18:50
+(S3R) RA_k4_s1_seed1 done 2026-10-20 19:23:48
+=== (S3R) progress: RA_k4_s2_seed1 (20/38) running 10 min, its log +4534 bytes 2026-10-20 19:33:48
+(S3R) RA_k4_s2_seed1 done 2026-10-20 19:38:57
+=== (S3R) RUN FAILED at RA_k4_s3_seed1: exit 1 (log C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\05_support_predictor\out\anchor_set3_2026-10-20\RA_k4_s3_seed1.log) 2026-10-20 19:47:13

@@ -1,0 +1,43 @@
+{
+ "tolerances": {
+  "E": 1e-06,
+  "G": 1e-05,
+  "H": 1e-05,
+  "translation": 1e-08
+ },
+ "results": {
+  "probes/results_m1/s1_anharmonic_benzene_2026-10-13/s1_smoke_water/G/ref.json [reference]": {
+   "dE": 1.8027864889802458e-07,
+   "dG": 0.08456866866161117,
+   "dH_autograd_vs_numerical": 3.914363833068535e-09,
+   "translation_residual": 4.440892098500626e-16,
+   "max_H": 0.5471882142176523,
+   "pass": false
+  },
+  "probes/results_m1/s1_anharmonic_benzene_2026-10-13/s1_smoke_water/G/ref.json [displaced]": {
+   "dE": 1.8036976712210162e-07,
+   "dG": 0.10345338426154184,
+   "dH_autograd_vs_numerical": 3.0428392305825724e-09,
+   "translation_residual": 4.440892098500626e-16,
+   "max_H": 0.530701010633002,
+   "pass": false
+  },
+  "probes/results_m1/s2_anharmonic_2026-10-18/s2/A_01f3186607/G/ref.json [reference]": {
+   "dE": 9.076931526408316e-07,
+   "dG": 0.047995128465645465,
+   "dH_autograd_vs_numerical": 0.0003382874052501039,
+   "translation_residual": 3.199662756969701e-13,
+   "max_H": 0.6611455559006052,
+   "pass": false
+  },
+  "probes/results_m1/s2_anharmonic_2026-10-18/s2/A_01f3186607/G/ref.json [displaced]": {
+   "dE": 9.077079354824491e-07,
+   "dG": 0.06590371454102109,
+   "dH_autograd_vs_numerical": 7.86076415071335e-09,
+   "translation_residual": 1.9914961606887216e-13,
+   "max_H": 0.8199089676488098,
+   "pass": false
+  }
+ },
+ "pass": false
+}

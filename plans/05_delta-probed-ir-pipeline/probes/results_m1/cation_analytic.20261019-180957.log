@@ -1,0 +1,42 @@
+=== (CA) start: 40 of 60 cations to compute, smallest basis first, cap 3584 MB (pyscf 3000 MB), 6 threads 2026-10-19 12:20:49
+(CA) P3c_6e858b26e5 start (1 of 40, 100 basis functions) 2026-10-19 12:20:50
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 519440 bytes (+68866) 2026-10-19 12:31:28
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 598255 bytes (+78815) 2026-10-19 12:41:59
+(CA) P3c_6e858b26e5 analytic done 2026-10-19 12:48:06 - (CA) P3c_6e858b26e5 max RSS 1995524 kB, wall 1635.56 s
+(CA) P3c_8448043181 start (2 of 40, 102 basis functions) 2026-10-19 12:48:07
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 652899 bytes (+54644) 2026-10-19 12:52:29
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 670766 bytes (+17867) 2026-10-19 13:02:58
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 728198 bytes (+57432) 2026-10-19 13:13:26
+(CA) P3c_8448043181 analytic done 2026-10-19 13:19:56 - (CA) P3c_8448043181 max RSS 2059520 kB, wall 1909.38 s
+(CA) P3c_8b12a55d3a start (3 of 40, 115 basis functions) 2026-10-19 13:19:57
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 810736 bytes (+82538) 2026-10-19 13:23:57
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 810812 bytes (+76) 2026-10-19 13:34:29
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 903839 bytes (+93027) 2026-10-19 13:44:59
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 904245 bytes (+406) 2026-10-19 13:55:31
+(CA) P3c_8b12a55d3a analytic done 2026-10-19 13:59:36 - (CA) P3c_8b12a55d3a max RSS 2371748 kB, wall 2378.38 s
+(CA) P3c_188d8de09c start (4 of 40, 136 basis functions) 2026-10-19 13:59:37
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 1008929 bytes (+104684) 2026-10-19 14:05:58
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 1009005 bytes (+76) 2026-10-19 14:16:28
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 1131188 bytes (+122183) 2026-10-19 14:48:03
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 1131264 bytes (+76) 2026-10-19 14:58:34
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 1131396 bytes (+132) 2026-10-19 15:09:06
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 1131594 bytes (+198) 2026-10-19 15:19:39
+(CA) P3c_188d8de09c analytic done 2026-10-19 15:26:21 - (CA) P3c_188d8de09c max RSS 3082936 kB, wall 5202.96 s
+(CA) P3c_17f1611949 start (5 of 40, 149 basis functions) 2026-10-19 15:26:23
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 1267558 bytes (+135964) 2026-10-19 15:30:12
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 1267634 bytes (+76) 2026-10-19 15:40:46
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 1267710 bytes (+76) 2026-10-19 15:51:15
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 1388611 bytes (+120901) 2026-10-19 16:22:56
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 1388687 bytes (+76) 2026-10-19 16:33:27
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 1388819 bytes (+132) 2026-10-19 16:44:00
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 1389017 bytes (+198) 2026-10-19 16:54:34
+(CA) P3c_17f1611949 analytic done 2026-10-19 17:04:41 - (CA) P3c_17f1611949 max RSS 3566892 kB, wall 5897.19 s
+(CA) P3c_10bab624bc start (6 of 40, 155 basis functions) 2026-10-19 17:04:42
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 1409961 bytes (+20944) 2026-10-19 17:05:08
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 1507398 bytes (+97437) 2026-10-19 17:15:42
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 1507474 bytes (+76) 2026-10-19 17:26:20
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 1597638 bytes (+90164) 2026-10-19 17:58:04
+(CA) P3c_10bab624bc ANALYTIC FAILED 2026-10-19 18:02:01 - KILLED at the cap of 3584 MB (155 basis functions)
+=== (CA) STOPPED at the memory cap: P3c_10bab624bc (155 basis functions) needs more than 3584 MB; it and the 34 larger ones wait for a larger cap (5 done) 2026-10-19 18:02:01
+=== (CAP) progress: pyscf.log under ../../modules/05_support_predictor/corpus/shards_pool3/a/molecules at 1644361 bytes (+46723) 2026-10-19 18:02:05
+=== (CAP) command ended rc=4 2026-10-19 18:02:06

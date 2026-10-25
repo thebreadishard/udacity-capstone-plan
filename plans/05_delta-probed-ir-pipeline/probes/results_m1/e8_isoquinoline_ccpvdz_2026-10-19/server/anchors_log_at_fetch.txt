@@ -1,0 +1,59 @@
+=== (AS3) wave start: 3 molecules from /root/dpir/wave1.txt on ubuntu-32gb-hel1-4 2026-10-12 21:58:15
+[2026-10-12 21:58:15] chain (corrected route) start on ubuntu-32gb-hel1-4
+[2026-10-12 21:58:15] ANCHOR quinoxaline START (parallel: 2 partial runs x 8 threads x 10000 MB) (/root/dpir/geoms/quinoxaline/geometry.json)
+=== (AS3) waiting while '^bash /root/dpir/probes/run_anchors_hel23_parallel\.sh$' runs 2026-10-13 01:47:03
+=== (AS3) wave start: 3 molecules from /root/dpir/wave1b.txt on ubuntu-32gb-hel1-4, two-route mode energy 2026-10-13 01:52:03
+[2026-10-13 01:52:03] chain (corrected route) start on ubuntu-32gb-hel1-4
+[2026-10-13 01:52:03] ANCHOR quinoxaline START (parallel: 2 partial runs x 8 threads x 10000 MB) (/root/dpir/geoms/quinoxaline/geometry.json)
+[2026-10-13 02:04:26] ANCHOR quinoxaline: 24 symmetry-unique displacements over 2 partial runs
+[2026-10-13 11:46:20] ANCHOR quinoxaline: partial runs done (48 gradient files) -> assembling run
+[2026-10-13 11:46:21] ANCHOR quinoxaline: two-route check (energy route) PASSED: reference gradient vs (E(+h) − E(−h)) / 2h over 24 coordinates, max |Δ| 5.0e-06 a.u. at coordinate 15 (limit 2e-05)
+[2026-10-13 11:46:22] ANCHOR quinoxaline DONE: symmetry: 4 operations, orbits [[0, 1], [2, 9], [3, 8], [4, 7], [5, 6], [10, 11], [12, 15], [13, 14]], 24 displacements (48 gradients) instead of 96; FD asymmetry max 2.83e-05 a.u.
+[2026-10-13 11:46:22] CHAIN FINISHED
+=== (AS3) quinoxaline hessian DONE 2026-10-13 11:46:22
+=== (AS3) quinoxaline apt PASS {"apt": "results/quinoxaline_ccpvdz/apt_ccsd_t_field.npz", "sum_rule": 1.1681976913591186e-10, "seconds": 6632, "passed" 2026-10-13 13:36:55
+[2026-10-13 13:36:55] chain (corrected route) start on ubuntu-32gb-hel1-4
+[2026-10-13 13:36:55] ANCHOR azulene START (parallel: 2 partial runs x 8 threads x 10000 MB) (/root/dpir/geoms/azulene/geometry.json)
+[2026-10-13 13:58:26] ANCHOR azulene: 33 symmetry-unique displacements over 2 partial runs
+[2026-10-14 09:37:35] ANCHOR azulene: partial runs done (66 gradient files) -> assembling run
+[2026-10-14 09:37:35] ANCHOR azulene: two-route check (energy route) PASSED: reference gradient vs (E(+h) − E(−h)) / 2h over 33 coordinates, max |Δ| 6.5e-06 a.u. at coordinate 12 (limit 2e-05)
+[2026-10-14 09:37:36] ANCHOR azulene DONE: symmetry: 4 operations, orbits [[0], [1, 9], [2, 8], [3, 7], [4, 6], [5], [10], [11, 17], [12, 16], [13, 15], [14]], 33 displacements (66 gradients) instead of 108; FD asymmetry max 1.76e-03 a.u.
+[2026-10-14 09:37:36] CHAIN FINISHED
+=== (AS3) azulene hessian DONE 2026-10-14 09:37:36
+=== (AS3) azulene apt FAIL (see results/azulene_ccpvdz/apt_check.log) 2026-10-14 10:03:59
+[2026-10-14 10:03:59] chain (corrected route) start on ubuntu-32gb-hel1-4
+[2026-10-14 10:03:59] ANCHOR acenaphthylene START (parallel: 2 partial runs x 8 threads x 10000 MB) (/root/dpir/geoms/acenaphthylene/geometry.json)
+=== (AS3) azulene apt re-run started (8 threads, nice 5; cc_dipole_capture MAX_CYCLE MAX_CYCLE = 200) 2026-10-14 10:38:53
+[2026-10-14 11:07:52] ANCHOR acenaphthylene: 33 symmetry-unique displacements over 2 partial runs
+=== (AS3) azulene apt FAIL (see results/azulene_ccpvdz/apt_check.log) 2026-10-14 14:00:44
+=== (AS3) azulene apt re-run started (8 threads, 6000 MB, nice 5; cc_dipole_capture MAX_CYCLE = 200) 2026-10-14 14:04:50
+[2026-10-14 16:11:44] ANCHOR acenaphthylene: memory guard — 1191 MB available, stopping partial run pid 282026 (its slice is finished by the assembling run)
+[2026-10-14 17:18:16] ANCHOR acenaphthylene: partial runs done (4 gradient files) -> assembling run
+[2026-10-14 17:18:17] ANCHOR acenaphthylene: two-route check (energy route) PASSED: reference gradient vs (E(+h) − E(−h)) / 2h over 2 coordinates, max |Δ| 1.9e-06 a.u. at coordinate 19 (limit 2e-05)
+=== (AS3) azulene apt FAIL (see results/azulene_ccpvdz/apt_check.log) 2026-10-14 18:52:05
+=== (AS3) azulene apt ACCEPTED (cross-check failed for a diagnosed cause; the user 14 Oct; apt_cross_check_decision.md) 2026-10-14 20:05:51
+[2026-10-16 16:43:33] ANCHOR acenaphthylene DONE: symmetry: 4 operations, orbits [[0, 1], [2, 10], [3, 9], [4, 8], [5, 7], [6], [11], [12, 13], [14, 19], [15, 18], [16, 17]], 33 displacements (66 gradients) instead of 120; FD asymmetry max 2.88e-05 a.u.
+[2026-10-16 16:43:33] CHAIN FINISHED
+=== (AS3) acenaphthylene hessian DONE 2026-10-16 16:43:33
+=== (AS3) acenaphthylene apt PASS {"apt": "results/acenaphthylene_ccpvdz/apt_ccsd_t_field.npz", "sum_rule": 1.8043899707720357e-10, "seconds": 16815, "pas 2026-10-16 21:23:49
+=== (AS3) wave done 2026-10-16 21:23:49
+=== (AS3) wave start: 2 molecules from /root/dpir/wave2.txt on ubuntu-32gb-hel1-4, two-route mode energy 2026-10-16 21:45:56
+[2026-10-16 21:45:56] chain (corrected route) start on ubuntu-32gb-hel1-4
+[2026-10-16 21:45:56] ANCHOR quinoline START (parallel: 2 partial runs x 8 threads x 10000 MB) (/root/dpir/geoms/quinoline/geometry.json)
+[2026-10-16 22:01:39] ANCHOR quinoline: 51 symmetry-unique displacements over 2 partial runs
+[2026-10-17 23:32:58] ANCHOR quinoline: partial runs done (102 gradient files) -> assembling run
+[2026-10-17 23:32:59] ANCHOR quinoline: two-route check (energy route) PASSED: reference gradient vs (E(+h) − E(−h)) / 2h over 51 coordinates, max |Δ| 5.5e-06 a.u. at coordinate 15 (limit 2e-05)
+[2026-10-17 23:32:59] ANCHOR quinoline DONE: symmetry: 2 operations, orbits [[0], [1], [2], [3], [4], [5], [6], [7], [8], [9], [10], [11], [12], [13], [14], [15], [16]], 51 displacements (102 gradients) instead of 102; FD asymmetry max 3.63e-05 a.u.
+[2026-10-17 23:32:59] CHAIN FINISHED
+=== (AS3) quinoline hessian DONE 2026-10-17 23:32:59
+=== (AS3) quinoline apt PASS {"apt": "results/quinoline_ccpvdz/apt_ccsd_t_field.npz", "sum_rule": 1.226796442210798e-10, "seconds": 6157, "passed": t 2026-10-18 01:15:38
+[2026-10-18 01:15:38] chain (corrected route) start on ubuntu-32gb-hel1-4
+[2026-10-18 01:15:38] ANCHOR isoquinoline START (parallel: 2 partial runs x 8 threads x 10000 MB) (/root/dpir/geoms/isoquinoline/geometry.json)
+[2026-10-18 01:32:44] ANCHOR isoquinoline: 51 symmetry-unique displacements over 2 partial runs
+[2026-10-19 03:56:04] ANCHOR isoquinoline: partial runs done (102 gradient files) -> assembling run
+[2026-10-19 03:56:05] ANCHOR isoquinoline: two-route check (energy route) PASSED: reference gradient vs (E(+h) − E(−h)) / 2h over 51 coordinates, max |Δ| 7.1e-06 a.u. at coordinate 15 (limit 2e-05)
+[2026-10-19 03:56:05] ANCHOR isoquinoline DONE: symmetry: 2 operations, orbits [[0], [1], [2], [3], [4], [5], [6], [7], [8], [9], [10], [11], [12], [13], [14], [15], [16]], 51 displacements (102 gradients) instead of 102; FD asymmetry max 2.63e-05 a.u.
+[2026-10-19 03:56:06] CHAIN FINISHED
+=== (AS3) isoquinoline hessian DONE 2026-10-19 03:56:06
+=== (AS3) isoquinoline apt PASS {"apt": "results/isoquinoline_ccpvdz/apt_ccsd_t_field.npz", "sum_rule": 1.8551826741486366e-10, "seconds": 6057, "passed 2026-10-19 05:37:04
+=== (AS3) wave done 2026-10-19 05:37:04

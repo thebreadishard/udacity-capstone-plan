@@ -1,0 +1,53 @@
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+E(LNOMP2) = -384.679031314145  E_corr = -1.29615325961753
+E(LNOCCSD) = -384.729416084977  E_corr = -1.34653803044946
+E(LNOCCSD_T) = -384.79277826642  E_corr = -1.40990021189223
+Summary by spin components
+LNOMP2   Ess = -0.350133818652279  Eos = -0.946019440965255  Escs = -1.25181789076951
+LNOCCSD  Ess = -0.310875998812544  Eos = -1.03566203163692  Escs = -1.34631614556888
+[04:23:22] reference: SCF 2.2 s, PM 0.8 s, LNO-CCSD(T) 4371.3 s (24 fragments), MP2 0.1 s; peak RSS 4.08 GB; E_composite -384.79288365
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+E(LNOMP2) = -384.679049538525  E_corr = -1.29623344793187
+E(LNOCCSD) = -384.729411335528  E_corr = -1.34659524493511
+E(LNOCCSD_T) = -384.792796230811  E_corr = -1.4099801402187
+Summary by spin components
+LNOMP2   Ess = -0.350161686513076  Eos = -0.946071761418792  Escs = -1.25188995531141
+LNOCCSD  Ess = -0.310889933946104  Eos = -1.03570531098901  Escs = -1.34637272119086
+[05:34:47] k00pr: SCF 2.0 s, PM 0.0 s, LNO-CCSD(T) 4282.9 s (24 fragments), MP2 0.1 s; peak RSS 4.3 GB; E_composite -384.79290156
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+E(LNOMP2) = -384.678993074815  E_corr = -1.29607326185164
+E(LNOCCSD) = -384.729400887762  E_corr = -1.34648107479907
+E(LNOCCSD_T) = -384.792740469349  E_corr = -1.40982065638553
+Summary by spin components
+LNOMP2   Ess = -0.350105885506048  Eos = -0.945967376345596  Escs = -1.25174611148823
+LNOCCSD  Ess = -0.310861938892523  Eos = -1.03561913590654  Escs = -1.34625998873906
+[06:48:18] k00mr: SCF 2.2 s, PM 0.0 s, LNO-CCSD(T) 4408.8 s (24 fragments), MP2 0.2 s; peak RSS 4.46 GB; E_composite -384.79284619
+k  0 (C0 x, oop 0.10): H_kk hessian 0.780751 | energy route 0.780746 | LNO 0.782338 | Δ +1.59e-03 (+0.20 %)
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+E(LNOMP2) = -384.679010326799  E_corr = -1.29611277573723
+E(LNOCCSD) = -384.72942449313  E_corr = -1.34652694206791
+E(LNOCCSD_T) = -384.792781893714  E_corr = -1.40988434265184
+Summary by spin components
+LNOMP2   Ess = -0.350106459027977  Eos = -0.946006316709254  Escs = -1.25179303090742
+LNOCCSD  Ess = -0.310858176824731  Eos = -1.03566876524318  Escs = -1.34631829117445
+[08:15:02] k01pr: SCF 2.2 s, PM 0.0 s, LNO-CCSD(T) 5201.4 s (24 fragments), MP2 0.3 s; peak RSS 4.46 GB; E_composite -384.79288756
+
+WARN: Input vhf is not found. Building vhf from SCF MO.
+
+E(LNOMP2) = -384.679034533593  E_corr = -1.29619380051329
+E(LNOCCSD) = -384.72939005698  E_corr = -1.34654932389979
+E(LNOCCSD_T) = -384.792757080597  E_corr = -1.40991634751694
+Summary by spin components
+LNOMP2   Ess = -0.350160999896312  Eos = -0.946032800616976  Escs = -1.25184297370584
+LNOCCSD  Ess = -0.310893598047169  Eos = -1.03565572585262  Escs = -1.34631443917285
+[09:54:21] k01mr: SCF 3.4 s, PM 0.0 s, LNO-CCSD(T) 5955.2 s (24 fragments), MP2 0.3 s; peak RSS 4.46 GB; E_composite -384.79286248
+k  1 (C0 y, oop 0.12): H_kk hessian 0.689216 | energy route 0.689191 | LNO 0.690743 | Δ +1.53e-03 (+0.22 %)
+LNO curvature check: 2 coordinates; max |H_kk(LNO) − H_kk(Hessian)| = 1.59e-03 a.u. (worst k 0), max rel 0.22 %; E0 shift LNO−canonical +0.000423 E_h; 24234 s → /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/lno_curvature_reuse_2026-10-05.json

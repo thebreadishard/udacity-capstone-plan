@@ -1,0 +1,107 @@
+=== night2: TZ benzene oop start (8 threads, WSL, PYSCF_TMPDIR=~/qc_tmp) 2026-10-03 19:32:25
+=== night2: chain 34 step 2 start (8 threads) 2026-10-03 19:36:26
+analytic second-route Hessians substituted for 28 molecules
+atomic polar tensors found for 10 molecules: intensity read-outs on (lever 5, registered 2 Oct 2026 06:5x)
+799 molecules; pool 750; hold-out (a) 10, (b) 39 (['fluoranthene', 'fluorene']); sizes [750]; seeds [0, 1, 2]; epochs 200; threads 8; model 171,810 parameters, sum aggregation
+  rung B's 66 pair features added to the hybrid head (standardised on the fit molecules)
+  hybrid head: 303,892 parameters; F_low input scales 0.0344, 0.29, 0.125; SQM α per class on
+  fresh sum body pre-flight: worst |output| 41.4 on the training molecules
+    seed 0 epoch 1/200: loss main 9.097e-07 aux 0.4688 val 0.5476 (49 s)
+    seed 0 epoch 10/200: loss main 2.825e-07 aux 0.1452 val 0.2078 (422 s)
+    seed 0 epoch 20/200: loss main 1.84e-07 aux 0.08982 val 0.15 (919 s)
+    seed 0 epoch 30/200: loss main 1.54e-07 aux 0.06873 val 0.1533 (1509 s)
+    seed 0 epoch 40/200: loss main 1.382e-07 aux 0.0584 val 0.123 (2089 s)
+    seed 0 epoch 50/200: loss main 1.227e-07 aux 0.04941 val 0.1261 (2763 s)
+    seed 0 epoch 60/200: loss main 1.183e-07 aux 0.042 val 0.1197 (3374 s)
+    seed 0 epoch 70/200: loss main 1.072e-07 aux 0.03766 val 0.1142 (3896 s)
+    seed 0 epoch 80/200: loss main 1.017e-07 aux 0.03364 val 0.1128 (4346 s)
+    seed 0 epoch 90/200: loss main 9.986e-08 aux 0.03416 val 0.1173 (4753 s)
+    seed 0: early stop at epoch 96, best inner val 0.1093 at epoch 76
+  model saved: out/E7_rungC_chain34_kdfamily_750_2026-10-05_model_n750_seed0.pt
+  n=750 seed 0: inner validation internal term 0.1093 on 112 molecules (fit on 638)
+  n=750 seed 0 (a): ring couplings 0.79 vs zero 3.76 (ratio 0.21) | corrected ω 2.43 (zero 23.27) | ΔH residual ratio 0.126
+  n=750 seed 0 (b): ring couplings 1.24 vs zero 3.74 (ratio 0.33) | corrected ω 3.50 (zero 23.09) | ΔH residual ratio 0.230
+  rung B's 66 pair features added to the hybrid head (standardised on the fit molecules)
+  hybrid head: 303,892 parameters; F_low input scales 0.0343, 0.289, 0.124; SQM α per class on
+  fresh sum body pre-flight: worst |output| 34.9 on the training molecules
+    seed 1 epoch 1/200: loss main 9.408e-07 aux 0.4735 val 0.4986 (40 s)
+    seed 1 epoch 10/200: loss main 2.95e-07 aux 0.1581 val 0.1927 (392 s)
+    seed 1 epoch 20/200: loss main 2.046e-07 aux 0.1009 val 0.1295 (763 s)
+    seed 1 epoch 30/200: loss main 1.57e-07 aux 0.07635 val 0.1173 (1079 s)
+    seed 1 epoch 40/200: loss main 1.403e-07 aux 0.06128 val 0.1111 (1417 s)
+=== NIGHT2 TZ BENZENE OOP FAILED 2026-10-03 21:30:45
+    seed 1 epoch 50/200: loss main 1.441e-07 aux 0.05761 val 0.1132 (1647 s)
+    seed 1 epoch 60/200: loss main 1.153e-07 aux 0.04361 val 0.1097 (1854 s)
+    seed 1 epoch 70/200: loss main 1.072e-07 aux 0.03819 val 0.1031 (2060 s)
+    seed 1 epoch 80/200: loss main 1.055e-07 aux 0.03629 val 0.1097 (2265 s)
+=== relaunch of 23:0x after the app restart ===
+=== night2: TZ benzene oop start (8 threads, WSL, PYSCF_TMPDIR=~/qc_tmp) 2026-10-03 23:02:17
+=== night2: chain 34 step 2 start (8 threads) 2026-10-03 23:06:17
+analytic second-route Hessians substituted for 28 molecules
+atomic polar tensors found for 10 molecules: intensity read-outs on (lever 5, registered 2 Oct 2026 06:5x)
+799 molecules; pool 750; hold-out (a) 10, (b) 39 (['fluoranthene', 'fluorene']); sizes [750]; seeds [0, 1, 2]; epochs 200; threads 8; model 171,810 parameters, sum aggregation
+  rung B's 66 pair features added to the hybrid head (standardised on the fit molecules)
+  hybrid head: 303,892 parameters; F_low input scales 0.0344, 0.29, 0.125; SQM α per class on
+  fresh sum body pre-flight: worst |output| 41.4 on the training molecules
+    seed 0 epoch 1/200: loss main 9.097e-07 aux 0.4688 val 0.5476 (32 s)
+    seed 0 epoch 10/200: loss main 2.826e-07 aux 0.1453 val 0.208 (388 s)
+    seed 0 epoch 20/200: loss main 1.85e-07 aux 0.08921 val 0.1509 (749 s)
+    seed 0 epoch 30/200: loss main 1.61e-07 aux 0.07017 val 0.1385 (1122 s)
+    seed 0 epoch 40/200: loss main 1.407e-07 aux 0.05892 val 0.1241 (1534 s)
+    seed 0 epoch 50/200: loss main 1.266e-07 aux 0.05023 val 0.1251 (1963 s)
+    seed 0 epoch 60/200: loss main 1.208e-07 aux 0.04281 val 0.1185 (2385 s)
+    seed 0 epoch 70/200: loss main 1.071e-07 aux 0.0382 val 0.1179 (2807 s)
+    seed 0 epoch 80/200: loss main 9.957e-08 aux 0.03261 val 0.114 (3231 s)
+    seed 0 epoch 90/200: loss main 9.436e-08 aux 0.03083 val 0.1157 (3642 s)
+    seed 0: early stop at epoch 96, best inner val 0.1089 at epoch 76
+  model saved: out/E7_rungC_chain34_kdfamily_750_2026-10-05_model_n750_seed0.pt
+  n=750 seed 0: inner validation internal term 0.1089 on 112 molecules (fit on 638)
+  n=750 seed 0 (a): ring couplings 0.80 vs zero 3.76 (ratio 0.21) | corrected ω 2.38 (zero 23.27) | ΔH residual ratio 0.130
+  n=750 seed 0 (b): ring couplings 1.24 vs zero 3.74 (ratio 0.33) | corrected ω 3.46 (zero 23.09) | ΔH residual ratio 0.233
+  rung B's 66 pair features added to the hybrid head (standardised on the fit molecules)
+  hybrid head: 303,892 parameters; F_low input scales 0.0343, 0.289, 0.124; SQM α per class on
+  fresh sum body pre-flight: worst |output| 34.9 on the training molecules
+    seed 1 epoch 1/200: loss main 9.408e-07 aux 0.4735 val 0.4986 (44 s)
+    seed 1 epoch 10/200: loss main 2.952e-07 aux 0.1581 val 0.194 (421 s)
+    seed 1 epoch 20/200: loss main 2.025e-07 aux 0.1006 val 0.1295 (815 s)
+    seed 1 epoch 30/200: loss main 1.561e-07 aux 0.07447 val 0.1182 (1202 s)
+    seed 1 epoch 40/200: loss main 1.375e-07 aux 0.06089 val 0.1099 (1546 s)
+=== NIGHT2 TZ BENZENE OOP FAILED 2026-10-04 00:48:11
+    seed 1 epoch 50/200: loss main 1.284e-07 aux 0.0526 val 0.1123 (1875 s)
+    seed 1 epoch 60/200: loss main 1.151e-07 aux 0.04391 val 0.1051 (2098 s)
+    seed 1 epoch 70/200: loss main 1.09e-07 aux 0.03863 val 0.1026 (2329 s)
+    seed 1 epoch 80/200: loss main 1.03e-07 aux 0.03593 val 0.104 (2592 s)
+    seed 1 epoch 90/200: loss main 1.007e-07 aux 0.03304 val 0.1019 (2882 s)
+    seed 1 epoch 100/200: loss main 9.665e-08 aux 0.03115 val 0.1029 (3280 s)
+    seed 1 epoch 110/200: loss main 8.977e-08 aux 0.027 val 0.1004 (3665 s)
+    seed 1: early stop at epoch 116, best inner val 0.09901 at epoch 96
+  model saved: out/E7_rungC_chain34_kdfamily_750_2026-10-05_model_n750_seed1.pt
+  n=750 seed 1: inner validation internal term 0.09901 on 112 molecules (fit on 638)
+  n=750 seed 1 (a): ring couplings 0.81 vs zero 3.76 (ratio 0.22) | corrected ω 2.52 (zero 23.27) | ΔH residual ratio 0.132
+  n=750 seed 1 (b): ring couplings 1.22 vs zero 3.74 (ratio 0.33) | corrected ω 3.58 (zero 23.09) | ΔH residual ratio 0.232
+  rung B's 66 pair features added to the hybrid head (standardised on the fit molecules)
+  hybrid head: 303,892 parameters; F_low input scales 0.0345, 0.29, 0.125; SQM α per class on
+  fresh sum body pre-flight: worst |output| 9.36 on the training molecules
+    seed 2 epoch 1/200: loss main 8.836e-07 aux 0.4808 val 0.4777 (35 s)
+    seed 2 epoch 10/200: loss main 2.959e-07 aux 0.1598 val 0.1906 (371 s)
+    seed 2 epoch 20/200: loss main 1.975e-07 aux 0.09689 val 0.1358 (774 s)
+    seed 2 epoch 30/200: loss main 1.567e-07 aux 0.07424 val 0.1222 (1175 s)
+    seed 2 epoch 40/200: loss main 1.484e-07 aux 0.06059 val 0.1098 (1572 s)
+    seed 2 epoch 50/200: loss main 1.236e-07 aux 0.04965 val 0.1085 (1969 s)
+    seed 2 epoch 60/200: loss main 1.168e-07 aux 0.04325 val 0.103 (2365 s)
+    seed 2 epoch 70/200: loss main 1.096e-07 aux 0.03856 val 0.1032 (2766 s)
+    seed 2 epoch 80/200: loss main 1.062e-07 aux 0.03505 val 0.1067 (3162 s)
+    seed 2 epoch 90/200: loss main 9.669e-08 aux 0.03147 val 0.1053 (3556 s)
+    seed 2: early stop at epoch 97, best inner val 0.1006 at epoch 77
+  model saved: out/E7_rungC_chain34_kdfamily_750_2026-10-05_model_n750_seed2.pt
+  n=750 seed 2: inner validation internal term 0.1006 on 112 molecules (fit on 638)
+  n=750 seed 2 (a): ring couplings 0.84 vs zero 3.76 (ratio 0.22) | corrected ω 2.55 (zero 23.27) | ΔH residual ratio 0.134
+  n=750 seed 2 (b): ring couplings 1.24 vs zero 3.74 (ratio 0.33) | corrected ω 3.51 (zero 23.09) | ΔH residual ratio 0.234
+wrote out/E7_rungC_chain34_kdfamily_750_2026-10-05.json/.md in 11995 s
+=== chain 34 (750, family-balanced diagonal term, models saved) done 2026-10-04 02:26:29
+=== chain 34 step 2 finished 2026-10-04 02:26:29
+=== night2: TZ run ended 2026-10-04 02:26:29
+=== chain 34 step 3: analytic hold-out (a) Hessians start (WSL qc05, 16 threads) 2026-10-04 02:26:29
+=== CHAIN 34 STEP 3 FAILED 2026-10-04 03:06:39
+=== night2 finished 2026-10-04 03:06:39
+=== TZ relaunch 4 done 2026-10-04 13:26:53

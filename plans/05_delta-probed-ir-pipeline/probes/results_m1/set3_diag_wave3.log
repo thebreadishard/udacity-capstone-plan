@@ -1,0 +1,6 @@
+=== (S3Dwave3) armed (pid 15240), 3 steps 2026-10-21 02:15:02
+=== (S3Dwave3) starting: 3 steps 2026-10-21 02:15:02
+(S3Dwave3) W06_insample_lambda0_seed0 done 2026-10-21 02:23:56
+(S3Dwave3) W09_base_analytic_labels_lambda0_seed0 done 2026-10-21 02:31:56
+(S3Dwave3) W10_base_more_data_n972_lambda0_seed0 done 2026-10-21 02:39:50
+=== (S3Dwave3) run done — 3 steps, 3 declared outputs present 2026-10-21 02:39:50

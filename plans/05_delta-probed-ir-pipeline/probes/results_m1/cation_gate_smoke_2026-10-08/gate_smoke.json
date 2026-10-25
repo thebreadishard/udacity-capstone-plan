@@ -1,0 +1,31 @@
+{
+ "date": "2026-10-08 08:45",
+ "dirs": [
+  "../../probes/results_m1/cation_gate_smoke_2026-10-08/P3c_02d75f732a"
+ ],
+ "floor_rows": [
+  {
+   "id": "P3c_02d75f732a",
+   "n_atoms": 12,
+   "fd_vs_analytic": {
+    "CH-oop": 3.928662034614757,
+    "CH-stretch": 0.05197573601227751,
+    "other": 1.5399847088206697,
+    "ring-ip": 1.1722612361576794
+   }
+  }
+ ],
+ "partial_rows": [],
+ "gate": {
+  "n_rows": 1,
+  "median_floor": {
+   "ring-ip": 1.1722612361576794,
+   "CH-stretch": 0.05197573601227751,
+   "CH-oop": 3.928662034614757,
+   "other": 1.5399847088206697
+  },
+  "limit": 1.5,
+  "pass": false
+ },
+ "seconds": 0.7
+}

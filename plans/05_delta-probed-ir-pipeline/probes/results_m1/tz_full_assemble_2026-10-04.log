@@ -1,0 +1,13 @@
+[2026-10-06 17:36:34] E8 FD Hessian: 12 atoms, cc-pvtz, frozen 6 (derived from the elements: 6), step 0.005 bohr, 72 displacements, 8 threads, max_memory 10000 MB, explicit (T) lambda, fast (T) density kernel, fast (T) lambda kernel
+[2026-10-06 17:36:34] two-route check on file: passed — assembling
+[2026-10-06 17:36:34] symmetry: 24 operations, orbits [[0, 1, 2, 3, 4, 5], [6, 7, 8, 9, 10, 11]], 6 displacements (12 gradients) instead of 72
+[2026-10-06 17:36:34] pair check coordinate  0: max |mean(g+, g−) − g0| = 1.4e-05 a.u. (limit 1e-04)
+[2026-10-06 17:36:34] pair check coordinate  1: max |mean(g+, g−) − g0| = 1.5e-05 a.u. (limit 1e-04)
+[2026-10-06 17:36:34] pair check coordinate  2: max |mean(g+, g−) − g0| = 1.3e-06 a.u. (limit 1e-04)
+[2026-10-06 17:36:34] pair check coordinate 18: max |mean(g+, g−) − g0| = 9.0e-06 a.u. (limit 1e-04)
+[2026-10-06 17:36:34] pair check coordinate 19: max |mean(g+, g−) − g0| = 1.9e-06 a.u. (limit 1e-04)
+[2026-10-06 17:36:34] pair check coordinate 20: max |mean(g+, g−) − g0| = 1.7e-06 a.u. (limit 1e-04)
+[2026-10-06 17:36:34] symmetry reconstruction: spread of multiply-reached rows 1.52e-04 a.u.; self-check 5.5e-11
+[2026-10-06 17:36:34] Hessian written (VALID); FD asymmetry max 1.52e-04 a.u.; vibrational frequencies (cm-1): [403, 403, 609, 609, 674, 709, 874, 874, 973, 973, 981, 1006, 1010, 1059, 1059, 1167, 1197, 1197, 1336, 1378, 1512, 1512, 1642, 1642, 3133, 3144, 3144, 3162, 3162, 3173]
+[2026-10-06 17:36:34] two-route checks: translational sum rule 1.4e-05 E_h/bohr² (limit 1e-03); translations/rotations after projection max 5.6e-05 cm⁻¹; energy route max |H_kk − d²E/dx_k²| 4.7e-04 E_h/bohr² over 6 coordinates (limit 1e-03)
+[2026-10-06 17:36:34] APT written (apt_ccsd_t.npz): translation sum rule max |Σ_A P_A − qI| = 8.7e-05 e; symmetry spread 8.7e-04, self-check 2.3e-11

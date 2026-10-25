@@ -1,0 +1,87 @@
+{
+ "date": "2026-10-17 17:03",
+ "provenance": {
+  "timestamp_utc": "2026-10-17 15:03:26",
+  "host": "Asus18",
+  "python": "3.14.6",
+  "numpy": "2.5.1",
+  "command": "design_check.py corpus/molecules --aggregation sum --out out/design_check_41_2026-10-16",
+  "commit": "549c26d16d3d5c4280d9dd205ee1470cd3078e25",
+  "dirty": "yes"
+ },
+ "molecules": "corpus/molecules",
+ "n_target": 1230,
+ "body": "fresh body, sum aggregation, seed 0",
+ "target_ranges": {
+  "n_atoms": [
+   8,
+   40
+  ],
+  "mean_degree": [
+   6.75,
+   18.85714340209961
+  ],
+  "max_degree": [
+   7,
+   30
+  ],
+  "max_Z": [
+   6,
+   17
+  ],
+  "elements": [
+   1,
+   6,
+   7,
+   8,
+   9,
+   16,
+   17
+  ]
+ },
+ "extremes": {
+  "n_atoms_min": "B_0112c00d02",
+  "n_atoms_max": "P3_0590e0136f",
+  "mean_degree_min": "B_0112c00d02",
+  "mean_degree_max": "P3_0734c205ad",
+  "max_degree_max": "P3_0734c205ad",
+  "max_Z_max": "A2_066237c4f5"
+ },
+ "probe": {
+  "A2_066237c4f5": {
+   "feature_scale": 1.2219828367233276,
+   "worst_output": 33.99385070800781,
+   "finite": true
+  },
+  "B_0112c00d02": {
+   "feature_scale": 0.9929513931274414,
+   "worst_output": 8.026798248291016,
+   "finite": true
+  },
+  "P3_0590e0136f": {
+   "feature_scale": 1.3246784210205078,
+   "worst_output": 40.59859085083008,
+   "finite": true
+  },
+  "P3_0734c205ad": {
+   "feature_scale": 1.3658087253570557,
+   "worst_output": 48.12904357910156,
+   "finite": true
+  }
+ },
+ "verdict": {
+  "finite": true,
+  "worst_output": 48.12904357910156,
+  "scale_ratio": 1.3755041131018984,
+  "pass": true,
+  "limit_abs": 1000.0,
+  "limit_ratio": 3.0
+ },
+ "charge_rows": {
+  "n_cations": 60,
+  "unlabelled": [],
+  "body_has_charge_input": true,
+  "pass": true
+ },
+ "seconds": 8.2
+}

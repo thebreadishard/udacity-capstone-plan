@@ -1,0 +1,1 @@
+Terminated                 OMP_NUM_THREADS=16 ~/qc05/bin/python corpus/analytic_hessians.py corpus/molecules/A_72b86c2331 corpus/molecules/A_07cadc7923 corpus/molecules/A_fdc27f1bd1 corpus/molecules/A_e72997e726 corpus/molecules/A_bce5bae234 corpus/molecules/A_541c53d1a5 corpus/molecules/A_08dde334d8 corpus/molecules/A_428228e5a5 --threads 16

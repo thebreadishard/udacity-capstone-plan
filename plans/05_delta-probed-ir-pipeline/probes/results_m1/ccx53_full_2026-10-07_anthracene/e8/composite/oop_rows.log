@@ -1,0 +1,13 @@
+=== OOP ROWS start: lanes A (DZ all, then TZ 2,8,11,14) and B (TZ 44,50,53), 8 threads each, max_memory 30000 2026-10-06 18:43:44 UTC
+=== lane A: DZ rows done 2026-10-06 19:11:51 UTC
+--- heartbeat 2026-10-06 19:43:44 UTC: lane_a_dz.log:7 lane_a_tz.log:0 lane_b_tz.log:0  displacements done; 57 GB free
+--- heartbeat 2026-10-06 20:43:44 UTC: lane_a_dz.log:7 lane_a_tz.log:0 lane_b_tz.log:1  displacements done; 70 GB free
+--- heartbeat 2026-10-06 21:43:44 UTC: lane_a_dz.log:7 lane_a_tz.log:1 lane_b_tz.log:1  displacements done; 50 GB free
+--- heartbeat 2026-10-06 22:43:44 UTC: lane_a_dz.log:7 lane_a_tz.log:2 lane_b_tz.log:2  displacements done; 73 GB free
+=== lane B: TZ rows 44,50,53 done 2026-10-06 23:36:46 UTC
+--- heartbeat 2026-10-06 23:43:44 UTC: lane_a_dz.log:7 lane_a_tz.log:2 lane_b_tz.log:3  displacements done; 78 GB free
+--- heartbeat 2026-10-07 00:43:44 UTC: lane_a_dz.log:7 lane_a_tz.log:3 lane_b_tz.log:3  displacements done; 71 GB free
+=== lane A: TZ rows 2,8,11,14 done 2026-10-07 01:16:47 UTC
+→ mp2_rows_anthracene_oop_ccpvtz.npz: 7 displacements [2, 8, 11, 14, 44, 50, 53] from 2 files
+=== OOP ROWS DONE — fetch mp2_rows_anthracene_oop_{ccpvdz,ccpvtz}.npz and run repair-oop 2026-10-07 01:16:47 UTC
+--- heartbeat 2026-10-07 01:43:44 UTC: lane_a_dz.log:7 lane_a_tz.log:4 lane_b_tz.log:3  displacements done; 106 GB free

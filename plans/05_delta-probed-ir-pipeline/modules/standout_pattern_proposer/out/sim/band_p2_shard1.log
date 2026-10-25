@@ -1,0 +1,14 @@
+12 evaluation molecules (5 parents); pool band; seeds [0, 1, 2]; checkpoints 60; λ (1e-06, 1e-05); noise σ 0.0; P2 yes
+  1/12 A2_00eeb8e5ed M 45: K_off(0.3) P0 None P1 None oracle None; 101 s
+  2/12 A2_0a89c174d8 M 63: K_off(0.3) P0 None P1 None oracle None; 698 s
+  3/12 A2_177784139f M 63: K_off(0.3) P0 None P1 None oracle None; 1248 s
+  4/12 A2_2ca281c2d5 M 45: K_off(0.3) P0 None P1 None oracle None; 1356 s
+  5/12 A2_34bb1210bc M 66: K_off(0.3) P0 None P1 None oracle None; 2009 s
+  6/12 A_0674939e7f M 57: K_off(0.3) P0 None P1 None oracle None; 2254 s
+  7/12 A_519351d19c M 54: K_off(0.3) P0 None P1 None oracle None; 2442 s
+  8/12 A_7aa232d4e9 M 42: K_off(0.3) P0 None P1 None oracle None; 2529 s
+  9/12 A_a6412e1ae4 M 63: K_off(0.3) P0 None P1 None oracle None; 3059 s
+  10/12 A_d295f2fa80 M 42: K_off(0.3) P0 None P1 None oracle None; 3132 s
+  11/12 B_00580f71bc M 33: K_off(0.3) P0 None P1 None oracle None; 3169 s
+  12/12 B_0464551954 M 60: K_off(0.3) P0 None P1 None oracle 1200; 3517 s
+-> out/sim/band_p2_shard1.json / .md in 3517.3 s

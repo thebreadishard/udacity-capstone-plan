@@ -1,0 +1,13 @@
+analytic second-route Hessians substituted for 27 molecules: ['A2_0420908ebe', 'A2_13bafae8e0', 'A2_13eea56ee5', 'A2_197913eb9c', 'A2_1c29b66c9d', 'A2_20747fd501', 'A2_20e59f3897', 'A2_220d2c107b', 'A2_22d0e8105c', 'A2_28eed45ad3', 'A2_2a0b78bd2b', 'A2_2b693cf6e7', 'A2_2c22216564', 'A2_3020175511', 'A2_330b4d6d8d', 'A2_356c370f21', 'A2_3802542cb6', 'A2_3a2982dd85', 'A2_3c2cf09504', 'A_014f8519af', 'A_01f3186607', 'A_3100da3761', 'A_6e858b26e5', 'A_78896cfe24', 'A_8448043181', 'A_b90527ca2d', 'B_8b12a55d3a']
+pool restricted to layers ['A', 'A2']: 176 molecules
+799 molecules; pattern pairs per molecule 496–12950 (features 66); hold-out (a) 10, (b) 39 (['fluoranthene', 'fluorene']); pool 176; sizes [175]; seeds [0, 1, 2]; epochs 60
+Traceback (most recent call last):
+  File "C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\05_support_predictor\m05\e7_rungB_pairs.py", line 474, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\05_support_predictor\m05\e7_rungB_pairs.py", line 427, in main
+    m_ = train_mlp(X, y, c, seed, a.epochs, mu, sd, tscale)
+  File "C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\05_support_predictor\m05\e7_rungB_pairs.py", line 182, in train_mlp
+    Xt = torch.tensor((X - mu) / sd); yt = torch.tensor(y / tscale[c])
+                                                            ~~~~~~^^^
+IndexError: index 6 is out of bounds for axis 0 with size 6

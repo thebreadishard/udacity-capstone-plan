@@ -1,0 +1,21 @@
+19 evaluation molecules (8 parents); pool all; seeds [0, 1, 2]; checkpoints 60; λ (1e-06, 1e-05); noise σ 0.0; P2 yes; adaptive no
+  1/19 A2_05e08111d2 M 66: K_off(0.3) P0 3796 P1 3650 oracle 730; 3109 s
+  2/19 A2_0a89c174d8 M 63: K_off(0.3) P0 None P1 None oracle None; 5377 s
+  3/19 A2_11d7cdeab0 M 66: K_off(0.3) P0 None P1 None oracle None; 8251 s
+  4/19 A2_198d828af1 M 66: K_off(0.3) P0 None P1 None oracle None; 11193 s
+  5/19 A2_2b693cf6e7 M 81: K_off(0.3) P0 3924 P1 2180 oracle 1090; 21229 s
+  6/19 A2_3077af0137 M 66: K_off(0.3) P0 6716 P1 5110 oracle 2774; 23852 s
+  7/19 A2_3740d0ba57 M 45: K_off(0.3) P0 1540 P1 1050 oracle 420; 24115 s
+  8/19 A2_3c982d4d3f M 60: K_off(0.3) P0 3416 P1 2440 oracle 732; 25479 s
+  9/19 A_20db5837c9 M 57: K_off(0.3) P0 None P1 None oracle None; 26450 s
+  10/19 A_519351d19c M 54: K_off(0.3) P0 2254 P1 2352 oracle 686; 27090 s
+  11/19 A_6aa211768a M 51: K_off(0.3) P0 2200 P1 1584 oracle 528; 27584 s
+  12/19 A_8448043181 M 30: K_off(0.3) P0 480 P1 800 oracle 96; 27654 s
+  13/19 A_a1e6ec1862 M 66: K_off(0.3) P0 4818 P1 4380 oracle 438; 30065 s
+  14/19 A_bce5bae234 M 63: K_off(0.3) P0 4556 P1 2546 oracle 938; 31856 s
+  15/19 A_d551b360c3 M 72: K_off(0.3) P0 5046 P1 3306 oracle 1218; 36311 s
+  16/19 A_fead28d796 M 39: K_off(0.3) P0 1196 P1 728 oracle 260; 36461 s
+  17/19 B_019f536250 M 63: K_off(0.3) P0 3082 P1 3350 oracle 2278; 38312 s
+  18/19 B_0464551954 M 60: K_off(0.3) P0 2074 P1 2074 oracle 488; 39706 s
+  19/19 B_05aa97d0f9 M 54: K_off(0.3) P0 2450 P1 1764 oracle 392; 40391 s
+-> out/sim/all_p2s1_shard4.json / .md in 40390.6 s

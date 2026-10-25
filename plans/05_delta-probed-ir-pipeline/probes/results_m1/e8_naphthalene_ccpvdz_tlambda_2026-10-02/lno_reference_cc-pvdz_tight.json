@@ -1,0 +1,25 @@
+{
+ "tag": "reference",
+ "stages_s": {
+  "scf": 2.2,
+  "pm": 0.8,
+  "lno_ccsd_t": 4371.3,
+  "mp2": 0.1
+ },
+ "rss_gb": {
+  "scf": 0.38,
+  "lno_ccsd_t": 4.08
+ },
+ "spaces": "capture",
+ "tier": "t0",
+ "thresh": "tight",
+ "triples": true,
+ "n_fragments": 24,
+ "e_scf": -383.3828780545278,
+ "e_corr_lno_ccsd_t": -1.4099002118922273,
+ "e_corr_lno_mp2": -1.2961532596175336,
+ "e_corr_mp2_full": -1.2962586481756837,
+ "e_tot_composite": -384.7928836549782,
+ "wall_s": 4374.4,
+ "date": "2026-10-07 04:23"
+}

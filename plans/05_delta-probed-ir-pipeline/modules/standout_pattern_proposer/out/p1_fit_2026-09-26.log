@@ -1,0 +1,3 @@
+scorer seed 0: 91 epochs, best val MSE(log10) 0.3612
+scorer seed 1: 103 epochs, best val MSE(log10) 0.3595
+scorer seed 2: 117 epochs, best val MSE(log10) 0.3577

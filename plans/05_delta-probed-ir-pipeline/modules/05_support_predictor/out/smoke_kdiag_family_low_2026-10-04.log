@@ -1,0 +1,31 @@
+analytic second-route Hessians substituted for 28 molecules
+atomic polar tensors found for 10 molecules: intensity read-outs on (lever 5, registered 2 Oct 2026 06:5x)
+799 molecules; pool 750; hold-out (a) 3, (b) 3 (['fluoranthene', 'fluorene']); sizes [5]; seeds [0]; epochs 200; threads 2; model 171,810 parameters, sum aggregation — SMOKE
+  rung B's 66 pair features added to the hybrid head (standardised on the fit molecules)
+  hybrid head: 303,892 parameters; F_low input scales 0.0324, 0.276, 0.113; SQM α per class on
+  fresh sum body pre-flight: worst |output| 35 on the training molecules
+    seed 0 epoch 1/200: loss main 5.119e-06 aux 0.6043 (1 s)
+    seed 0 epoch 10/200: loss main 9.89e-07 aux 0.3254 (5 s)
+    seed 0 epoch 20/200: loss main 8.709e-07 aux 0.3131 (11 s)
+    seed 0 epoch 30/200: loss main 9.004e-07 aux 0.298 (16 s)
+    seed 0 epoch 40/200: loss main 8.285e-07 aux 0.287 (21 s)
+    seed 0 epoch 50/200: loss main 6.823e-07 aux 0.275 (27 s)
+    seed 0 epoch 60/200: loss main 6.844e-07 aux 0.2699 (32 s)
+    seed 0 epoch 70/200: loss main 6.898e-07 aux 0.2642 (38 s)
+    seed 0 epoch 80/200: loss main 6.257e-07 aux 0.2508 (43 s)
+    seed 0 epoch 90/200: loss main 5.489e-07 aux 0.2415 (49 s)
+    seed 0 epoch 100/200: loss main 5.181e-07 aux 0.2362 (54 s)
+    seed 0 epoch 110/200: loss main 4.846e-07 aux 0.2262 (60 s)
+    seed 0 epoch 120/200: loss main 4.448e-07 aux 0.2064 (66 s)
+    seed 0 epoch 130/200: loss main 5.301e-07 aux 0.2075 (72 s)
+    seed 0 epoch 140/200: loss main 3.968e-07 aux 0.1853 (78 s)
+    seed 0 epoch 150/200: loss main 4.881e-07 aux 0.1948 (84 s)
+    seed 0 epoch 160/200: loss main 4.085e-07 aux 0.1719 (89 s)
+    seed 0 epoch 170/200: loss main 4.643e-07 aux 0.164 (95 s)
+    seed 0 epoch 180/200: loss main 5.289e-07 aux 0.164 (101 s)
+    seed 0 epoch 190/200: loss main 3.888e-07 aux 0.1374 (107 s)
+    seed 0 epoch 200/200: loss main 4.136e-07 aux 0.1284 (113 s)
+  model saved: out/smoke_kdiag_family_low_2026-10-04_model_n5_seed0.pt
+  n=5 seed 0 (a): ring couplings 2.55 vs zero 3.09 (ratio 0.82) | corrected ω 13.85 (zero 24.00) | ΔH residual ratio 0.367
+  n=5 seed 0 (b): ring couplings 2.81 vs zero 3.99 (ratio 0.71) | corrected ω 8.71 (zero 23.08) | ΔH residual ratio 0.534
+wrote out/smoke_kdiag_family_low_2026-10-04.json/.md in 176 s

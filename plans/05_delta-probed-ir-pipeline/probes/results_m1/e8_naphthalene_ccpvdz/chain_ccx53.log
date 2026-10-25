@@ -1,0 +1,40 @@
+[2026-09-24 04:43:15] chain armed; waiting for the second-route lanes
+[2026-09-24 05:39:49] chain armed; waiting until at most one second-route lane is left
+[2026-09-24 09:03:52] at most one lane left -> benzene symmetric smoke at 24 threads
+[2026-09-24 09:03:53] E8 FD Hessian: 12 atoms, cc-pvdz, frozen 6, step 0.005 bohr, 72 displacements, 24 threads
+[2026-09-24 09:15:22] reference: E = -231.581302636, max|grad| 6.55e-03, 689 s
+[2026-09-24 09:15:22] symmetry: 24 operations, orbits [[0, 1, 2, 3, 4, 5], [6, 7, 8, 9, 10, 11]], 6 displacements (12 gradients) instead of 72
+[2026-09-24 09:26:57] coordinate  0 p: E − E0 =    +36.32 µE_h, 695 s  (1/72 gradients)
+[2026-09-24 09:38:21] coordinate  0 m: E − E0 =    -17.32 µE_h, 683 s  (2/72 gradients)
+[2026-09-24 09:49:26] coordinate  1 p: E − E0 =     -4.41 µE_h, 665 s  (3/72 gradients)
+[2026-09-24 10:00:27] coordinate  1 m: E − E0 =    +22.43 µE_h, 661 s  (4/72 gradients)
+[2026-09-24 10:11:31] coordinate  2 p: E − E0 =     +1.60 µE_h, 664 s  (5/72 gradients)
+[2026-09-24 10:22:36] coordinate  2 m: E − E0 =     +1.03 µE_h, 665 s  (6/72 gradients)
+[2026-09-24 10:33:34] coordinate 18 p: E − E0 =    +38.37 µE_h, 658 s  (7/72 gradients)
+[2026-09-24 10:44:33] coordinate 18 m: E − E0 =    -30.47 µE_h, 658 s  (8/72 gradients)
+[2026-09-24 10:55:30] coordinate 19 p: E − E0 =    -15.71 µE_h, 657 s  (9/72 gradients)
+[2026-09-24 11:06:24] coordinate 19 m: E − E0 =    +18.71 µE_h, 654 s  (10/72 gradients)
+[2026-09-24 11:17:17] coordinate 20 p: E − E0 =     +0.63 µE_h, 653 s  (11/72 gradients)
+[2026-09-24 11:28:10] coordinate 20 m: E − E0 =     -0.09 µE_h, 653 s  (12/72 gradients)
+[2026-09-24 11:28:10] symmetry reconstruction: spread of multiply-reached rows 1.00e-04 a.u.; self-check 6.1e-11
+Traceback (most recent call last):
+  File "/root/e8/e8_cc_hessian_fd.py", line 118, in <module>
+    main()
+  File "/root/e8/e8_cc_hessian_fd.py", line 112, in main
+    log(f"Hessian written; FD asymmetry max {asym:.2e} a.u.; frequencies (cm-1): {np.round(fr_s[6:], 0).astype(int).tolist()}")
+                                             ^^^^
+UnboundLocalError: cannot access local variable 'asym' where it is not associated with a value
+[2026-09-24 11:28:10] BENZENE SYMMETRIC SMOKE FAILED rc=1 - chain stops
+[2026-09-24 11:28:14] handover: benzene smoke did not pass; nothing started
+max|dH| 3.64e-05 a.u.; max|dfreq| 0.077 cm-1 (tol 0.5); PASS
+[2026-09-24 11:30:58] benzene symmetric = full: PASS (manual assembly after the log-variable crash) -> naphthalene three partial runs
+[2026-09-24 11:30:58] naphthalene: three partial symmetric runs (ks 0:5, 5:10, 10:15) at 10 threads each
+[2026-09-24 17:21:05] reference.npz present -> two extra partial runs (ks 4,3,9 and 14,13,8) at 6 threads
+[2026-09-26 05:18:57] extra partial runs done
+[2026-09-27 21:32:01] partial runs done (38 gradient files) -> assembling run
+[2026-09-27 21:32:01] E8 FD Hessian: 18 atoms, cc-pvdz, frozen 6, step 0.005 bohr, 108 displacements, 24 threads
+[2026-09-27 21:32:01] symmetry: 8 operations, orbits [[0, 1, 5, 6], [2, 4, 7, 9], [3, 8], [10, 11, 14, 15], [12, 13, 16, 17]], 15 displacements (30 gradients) instead of 108
+[2026-09-27 21:32:01] symmetry reconstruction: spread of multiply-reached rows 2.21e-02 a.u.; self-check 8.7e-13
+[2026-09-27 21:32:01] Hessian written; FD asymmetry max 2.21e-02 a.u.; frequencies (cm-1): [0, 0, 0, 0, 132, 150, 349, 359, 433, 451, 520, 521, 566, 600, 637, 684, 766, 801, 817, 834, 915, 924, 928, 943, 961, 986, 1144, 1155, 1169, 1208, 1236, 1334, 1350, 1355, 1368, 1423, 1463, 1469, 1556, 1681, 1731, 1884, 2086, 2103, 3307, 3309, 3402, 3402]
+[2026-09-27 21:32:01] two-route checks: six lowest |freq| after projection [7795.9, 7609.5, 5647.7, 5574.1, 0.0, 0.0] (translations/rotations → ~0)
+b3lyp/cc-pvdz analytic Hessian: 703 s

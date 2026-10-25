@@ -71,6 +71,23 @@ plans/*/modules/*/corpus/corpus.lock
 plans/*/modules/*/corpus/shards*/
 # evaluation arrays of the runs, mirrored in capstone-data; the two already tracked stay tracked
 plans/*/modules/*/out/**/*.npz
+# process files of the launch wrappers and runspec (pid, exit code): run state, not a record (the four already tracked stay)
+plans/*/**/*.pid
+plans/*/**/*.exit
+plans/*/**/*.cmd.sh
+# raw program output wherever a fetch put it: reproducible, and psi4.out/worker_stdout.txt are not in capstone-data either (tools/backup_data.py);
+# every .out and every corpus/molecules/ folder, as tools/check_staged_paths.py refuses them
+plans/*/**/*.out
+plans/*/**/corpus/molecules/
+plans/*/**/*.psi4.log
+plans/*/**/worker_stdout.txt
+# corpus manifest snapshots, editor backups, notebook execution logs (re-runnable; the four tracked stay)
+plans/*/modules/*/corpus/manifest.csv.pre_*
+*.bak
+plans/*/modules/*/notebook/*.log
+# two arrays above the 5 MB commit limit, mirrored in capstone-data
+plans/05_delta-probed-ir-pipeline/probes/results_m1/naphthalene_cc-pvtz_tight_m3/frozen_spaces_reference.npz
+plans/05_delta-probed-ir-pipeline/probes/results_m1/e8_naphthalene_ccpvdz_tlambda_2026-10-02/lno_spaces_cc-pvdz_tight.npz
 .claude/launch.json
 
 # Spectrum Atlas export output (rebuilt by website/export/build_catalog.py; 11k rows)
@@ -97,7 +114,6 @@ website/site/.astro/
 # Plan 06 experiments: psi4 scratch output beside a tracked result (json/md/log)
 plans/*/experiments/*_psi4.out
 plans/*/modules/05_support_predictor/corpus/*.pre_merge_*
-plans/*/modules/05_support_predictor/corpus/manifest.csv.pre_rehash_*
 plans/*/modules/05_support_predictor/notebook/execute_section*.log
 plans/*/modules/05_support_predictor/out/_smoke_*
 plans/*/modules/05_support_predictor/out/*_smoke_*

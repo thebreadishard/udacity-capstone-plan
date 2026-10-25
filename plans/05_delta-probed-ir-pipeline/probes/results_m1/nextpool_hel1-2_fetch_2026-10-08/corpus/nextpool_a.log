@@ -1,0 +1,313 @@
+[2026-10-02 05:33:05] start A2_35abf04801 A2 pyrene+SH (27 atoms)
+[2026-10-02 08:05:48] done A2_35abf04801 in 9162.1 s (opt 120.0, B3LYP 3132.8, wB97X 5908.9)
+[2026-10-02 08:05:48] progress: 1 this session, 99 pending in scope, 2.55 h elapsed
+[2026-10-02 08:05:48] start A2_3a5def0ce1 A2 dibenzofuran+NH2 (23 atoms)
+[2026-10-02 09:21:51] done A2_3a5def0ce1 in 4562.0 s (opt 99.8, B3LYP 1577.7, wB97X 2884.1)
+[2026-10-02 09:21:51] progress: 2 this session, 98 pending in scope, 3.81 h elapsed
+[2026-10-02 09:21:51] start A2_429f6cd63b A2 dibenzofuran+CONH2 (25 atoms)
+[2026-10-02 11:16:47] done A2_429f6cd63b in 6895.6 s (opt 148.6, B3LYP 2303.4, wB97X 4443.2)
+[2026-10-02 11:16:47] progress: 3 this session, 97 pending in scope, 5.73 h elapsed
+[2026-10-02 11:16:47] start A2_4e8b0a2d6e A2 dibenzothiophene+Cl (21 atoms)
+[2026-10-02 12:33:19] done A2_4e8b0a2d6e in 4591.1 s (opt 104.1, B3LYP 1629.1, wB97X 2857.5)
+[2026-10-02 12:33:19] progress: 4 this session, 96 pending in scope, 7.00 h elapsed
+[2026-10-02 12:33:19] start A2_545ba22a6a A2 pyrene+F (26 atoms)
+[2026-10-02 14:51:15] done A2_545ba22a6a in 8275.5 s (opt 110.3, B3LYP 2846.6, wB97X 5318.2)
+[2026-10-02 14:51:15] progress: 5 this session, 95 pending in scope, 9.30 h elapsed
+[2026-10-02 14:51:15] start A2_5934acbbc2 A2 pyrene+CONH2 (30 atoms)
+[2026-10-02 18:19:30] done A2_5934acbbc2 in 12494.4 s (opt 186.1, B3LYP 4257.5, wB97X 8050.3)
+[2026-10-02 18:19:30] progress: 6 this session, 94 pending in scope, 12.77 h elapsed
+[2026-10-02 18:19:30] start A2_5a264a248c A2 fluoranthene+OCH3 (30 atoms)
+[2026-10-02 21:31:16] done A2_5a264a248c in 11505.0 s (opt 186.8, B3LYP 3894.7, wB97X 7423.0)
+[2026-10-02 21:31:16] progress: 7 this session, 93 pending in scope, 15.97 h elapsed
+[2026-10-02 21:31:16] start A2_60bf45f8a6 A2 fluoranthene+ethynyl (28 atoms)
+[2026-10-03 00:23:47] done A2_60bf45f8a6 in 10349.7 s (opt 574.1, B3LYP 3390.8, wB97X 6384.4)
+[2026-10-03 00:23:47] progress: 8 this session, 92 pending in scope, 18.84 h elapsed
+[2026-10-03 00:23:47] start A2_6270dd2fca A2 fluoranthene+OH (27 atoms)
+[2026-10-03 02:51:18] done A2_6270dd2fca in 8850.7 s (opt 129.7, B3LYP 3061.5, wB97X 5659.0)
+[2026-10-03 02:51:18] progress: 9 this session, 91 pending in scope, 21.30 h elapsed
+[2026-10-03 02:51:18] start A2_67fde0ce90 A2 dibenzofuran+SH (22 atoms)
+[2026-10-03 04:05:46] done A2_67fde0ce90 in 4466.9 s (opt 77.1, B3LYP 1613.0, wB97X 2776.4)
+[2026-10-03 04:05:46] progress: 10 this session, 90 pending in scope, 22.54 h elapsed
+[2026-10-03 04:05:46] start A2_6ad9241b55 A2 pyrene+vinyl (30 atoms)
+[2026-10-03 07:02:20] done A2_6ad9241b55 in 10593.2 s (opt 125.5, B3LYP 3629.6, wB97X 6837.7)
+[2026-10-03 07:02:20] progress: 11 this session, 89 pending in scope, 25.49 h elapsed
+[2026-10-03 07:02:20] start A2_76e1cd109e A2 pyrene+OCH3 (30 atoms)
+[2026-10-03 10:07:52] done A2_76e1cd109e in 11131.7 s (opt 186.7, B3LYP 3705.7, wB97X 7238.8)
+[2026-10-03 10:07:52] progress: 12 this session, 88 pending in scope, 28.58 h elapsed
+[2026-10-03 10:07:52] start A2_7712baf378 A2 fluoranthene+SH (27 atoms)
+[2026-10-03 12:44:19] done A2_7712baf378 in 9386.5 s (opt 121.1, B3LYP 3226.7, wB97X 6038.3)
+[2026-10-03 12:44:19] progress: 13 this session, 87 pending in scope, 31.19 h elapsed
+[2026-10-03 12:44:19] start A2_7c950f1732 A2 fluoranthene+NH2 (28 atoms)
+[2026-10-03 15:16:48] done A2_7c950f1732 in 9148.3 s (opt 119.9, B3LYP 3158.3, wB97X 5869.7)
+[2026-10-03 15:16:48] progress: 14 this session, 86 pending in scope, 33.73 h elapsed
+[2026-10-03 15:16:48] start A2_7fbfba93fa A2 fluoranthene+CN (27 atoms)
+[2026-10-03 18:01:36] done A2_7fbfba93fa in 9887.1 s (opt 568.5, B3LYP 3162.4, wB97X 6155.7)
+[2026-10-03 18:01:36] progress: 15 this session, 85 pending in scope, 36.48 h elapsed
+[2026-10-03 18:01:36] start A2_8c1f3bb424 A2 fluoranthene+CONH2 (30 atoms)
+[2026-10-03 21:37:03] done A2_8c1f3bb424 in 12925.6 s (opt 218.1, B3LYP 4310.8, wB97X 8396.2)
+[2026-10-03 21:37:03] progress: 16 this session, 84 pending in scope, 40.07 h elapsed
+[2026-10-03 21:37:03] start A2_8cb80a9eb5 A2 fluoranthene+Cl (26 atoms)
+[2026-10-03 23:54:59] done A2_8cb80a9eb5 in 8275.7 s (opt 111.1, B3LYP 2881.8, wB97X 5282.4)
+[2026-10-03 23:54:59] progress: 17 this session, 83 pending in scope, 42.37 h elapsed
+[2026-10-03 23:54:59] start A2_9d46ea3cb6 A2 fluoranthene+CHO (28 atoms)
+[2026-10-04 02:44:16] done A2_9d46ea3cb6 in 10156.3 s (opt 200.4, B3LYP 3394.3, wB97X 6561.2)
+[2026-10-04 02:44:16] progress: 18 this session, 82 pending in scope, 45.19 h elapsed
+[2026-10-04 02:44:16] start A2_a44dc7e358 A2 fluoranthene+NH2 (28 atoms)
+[2026-10-04 05:12:05] done A2_a44dc7e358 in 8868.0 s (opt 112.3, B3LYP 3157.5, wB97X 5597.8)
+[2026-10-04 05:12:05] progress: 19 this session, 81 pending in scope, 47.65 h elapsed
+[2026-10-04 05:12:05] start A2_a7660342b4 A2 fluoranthene+CONH2 (30 atoms)
+[2026-10-04 08:46:00] done A2_a7660342b4 in 12834.4 s (opt 188.3, B3LYP 4272.1, wB97X 8373.6)
+[2026-10-04 08:46:00] progress: 20 this session, 80 pending in scope, 51.22 h elapsed
+[2026-10-04 08:46:00] start A2_a93989fbcf A2 fluoranthene+OCH3 (30 atoms)
+[2026-10-04 12:01:34] done A2_a93989fbcf in 11732.8 s (opt 156.9, B3LYP 3896.1, wB97X 7679.4)
+[2026-10-04 12:01:34] progress: 21 this session, 79 pending in scope, 54.47 h elapsed
+[2026-10-04 12:01:34] start A2_ae6934f7a9 A2 fluoranthene+Cl (26 atoms)
+[2026-10-04 14:25:14] done A2_ae6934f7a9 in 8619.6 s (opt 112.4, B3LYP 2873.6, wB97X 5633.2)
+[2026-10-04 14:25:14] progress: 22 this session, 78 pending in scope, 56.87 h elapsed
+[2026-10-04 14:25:14] start A2_b1b28842fa A2 pyrene+OH (27 atoms)
+[2026-10-04 16:49:38] done A2_b1b28842fa in 8663.7 s (opt 185.4, B3LYP 3037.3, wB97X 5440.6)
+[2026-10-04 16:49:38] progress: 23 this session, 77 pending in scope, 59.28 h elapsed
+[2026-10-04 16:49:39] start A2_b8ee4f6fea A2 pyrene+CN (27 atoms)
+[2026-10-04 19:32:25] done A2_b8ee4f6fea in 9765.3 s (opt 616.5, B3LYP 3249.0, wB97X 5899.4)
+[2026-10-04 19:32:25] progress: 24 this session, 76 pending in scope, 61.99 h elapsed
+[2026-10-04 19:32:25] start A2_bd2f772579 A2 fluoranthene+SH (27 atoms)
+[2026-10-04 22:05:43] done A2_bd2f772579 in 9197.8 s (opt 176.2, B3LYP 3148.2, wB97X 5873.1)
+[2026-10-04 22:05:43] progress: 25 this session, 75 pending in scope, 64.54 h elapsed
+[2026-10-04 22:05:43] start A2_c243a4be67 A2 pyrene+CH3 (29 atoms)
+[2026-10-05 00:50:08] done A2_c243a4be67 in 9863.7 s (opt 120.0, B3LYP 3313.8, wB97X 6429.4)
+[2026-10-05 00:50:08] progress: 26 this session, 74 pending in scope, 67.28 h elapsed
+[2026-10-05 00:50:08] start A2_c57ef05eac A2 fluoranthene+NH2 (28 atoms)
+[2026-10-05 03:27:10] done A2_c57ef05eac in 9421.3 s (opt 235.7, B3LYP 3219.6, wB97X 5965.6)
+[2026-10-05 03:27:10] progress: 27 this session, 73 pending in scope, 69.90 h elapsed
+[2026-10-05 03:27:10] start A2_d132085db5 A2 pyrene+CH3 (29 atoms)
+[2026-10-05 06:03:54] done A2_d132085db5 in 9403.2 s (opt 120.7, B3LYP 3303.9, wB97X 5978.2)
+[2026-10-05 06:03:54] progress: 28 this session, 72 pending in scope, 72.51 h elapsed
+[2026-10-05 06:03:54] start A2_d967af1be9 A2 pyrene+Cl (26 atoms)
+[2026-10-05 08:23:33] done A2_d967af1be9 in 8378.8 s (opt 134.1, B3LYP 2929.3, wB97X 5314.9)
+[2026-10-05 08:23:33] progress: 29 this session, 71 pending in scope, 74.84 h elapsed
+[2026-10-05 08:23:33] start A2_f050f29a85 A2 pyrene+SH (27 atoms)
+[2026-10-05 10:58:08] done A2_f050f29a85 in 9273.5 s (opt 205.2, B3LYP 3138.1, wB97X 5929.7)
+[2026-10-05 10:58:08] progress: 30 this session, 70 pending in scope, 77.42 h elapsed
+[2026-10-05 10:58:08] start A2_fe568a45a8 A2 pyrene+OH (27 atoms)
+[2026-10-05 13:21:55] done A2_fe568a45a8 in 8626.8 s (opt 112.5, B3LYP 3069.9, wB97X 5443.9)
+[2026-10-05 13:21:55] progress: 31 this session, 69 pending in scope, 79.81 h elapsed
+[2026-10-05 13:21:55] start A2_ff6da56848 A2 fluoranthene+CONH2 (30 atoms)
+[2026-10-05 16:59:29] done A2_ff6da56848 in 13052.9 s (opt 196.5, B3LYP 4321.1, wB97X 8534.8)
+[2026-10-05 16:59:29] progress: 32 this session, 68 pending in scope, 83.44 h elapsed
+[2026-10-05 16:59:29] start B_01b90d2c0a B naphthalene+F+F (18 atoms)
+[2026-10-05 17:39:05] done B_01b90d2c0a in 2375.3 s (opt 64.9, B3LYP 838.9, wB97X 1471.1)
+[2026-10-05 17:39:05] progress: 33 this session, 67 pending in scope, 84.10 h elapsed
+[2026-10-05 17:39:05] start B_02eba6e907 B naphthalene+F+SH (19 atoms)
+[2026-10-05 18:26:45] done B_02eba6e907 in 2859.6 s (opt 56.0, B3LYP 1017.1, wB97X 1786.0)
+[2026-10-05 18:26:45] progress: 34 this session, 66 pending in scope, 84.89 h elapsed
+[2026-10-05 18:26:45] start B_0496915f30 B naphthalene+OH+NH2 (21 atoms)
+[2026-10-05 19:19:47] done B_0496915f30 in 3181.0 s (opt 126.1, B3LYP 1131.9, wB97X 1922.5)
+[2026-10-05 19:19:47] progress: 35 this session, 65 pending in scope, 85.78 h elapsed
+[2026-10-05 19:19:47] start B_06330dd31f B oxazole+F (8 atoms)
+[2026-10-05 19:23:27] done B_06330dd31f in 219.7 s (opt 12.0, B3LYP 86.7, wB97X 120.6)
+[2026-10-05 19:23:27] progress: 36 this session, 64 pending in scope, 85.84 h elapsed
+[2026-10-05 19:23:27] start B_08ceb5ae9d B oxazole+NO2 (10 atoms)
+[2026-10-05 19:30:56] done B_08ceb5ae9d in 448.0 s (opt 22.6, B3LYP 169.7, wB97X 255.3)
+[2026-10-05 19:30:56] progress: 37 this session, 63 pending in scope, 85.96 h elapsed
+[2026-10-05 19:30:56] start B_1090d81b35 B pyridine+CF3+SH (15 atoms)
+[2026-10-05 19:59:08] done B_1090d81b35 in 1691.9 s (opt 107.0, B3LYP 577.4, wB97X 1007.1)
+[2026-10-05 19:59:08] progress: 38 this session, 62 pending in scope, 86.43 h elapsed
+[2026-10-05 19:59:08] start B_14ba9f1827 B naphthalene+F (18 atoms)
+[2026-10-05 20:34:37] done B_14ba9f1827 in 2128.1 s (opt 62.2, B3LYP 768.1, wB97X 1297.4)
+[2026-10-05 20:34:37] progress: 39 this session, 61 pending in scope, 87.03 h elapsed
+[2026-10-05 20:34:37] start B_22ec3ecc7c B thiazole+CONH2 (12 atoms)
+[2026-10-05 20:46:07] done B_22ec3ecc7c in 689.5 s (opt 29.3, B3LYP 249.1, wB97X 410.6)
+[2026-10-05 20:46:07] progress: 40 this session, 60 pending in scope, 87.22 h elapsed
+[2026-10-05 20:46:07] start B_236ff798a8 B benzothiophene+NH2 (17 atoms)
+[2026-10-05 21:16:15] done B_236ff798a8 in 1807.2 s (opt 58.1, B3LYP 670.4, wB97X 1078.2)
+[2026-10-05 21:16:15] progress: 41 this session, 59 pending in scope, 87.72 h elapsed
+[2026-10-05 21:16:15] start B_25401903ed B thiazole+NH2 (10 atoms)
+[2026-10-05 21:22:16] done B_25401903ed in 360.1 s (opt 22.0, B3LYP 142.8, wB97X 194.9)
+[2026-10-05 21:22:16] progress: 42 this session, 58 pending in scope, 87.82 h elapsed
+[2026-10-05 21:22:16] start B_256dabc116 B naphthalene+NH2+CN (21 atoms)
+[2026-10-05 22:25:43] done B_256dabc116 in 3806.5 s (opt 360.2, B3LYP 1255.4, wB97X 2190.5)
+[2026-10-05 22:25:43] progress: 43 this session, 57 pending in scope, 88.88 h elapsed
+[2026-10-05 22:25:43] start B_26455e55e3 B naphthalene+CH3+NH2 (23 atoms)
+[2026-10-05 23:28:27] done B_26455e55e3 in 3763.0 s (opt 77.4, B3LYP 1324.6, wB97X 2360.6)
+[2026-10-05 23:28:27] progress: 44 this session, 56 pending in scope, 89.92 h elapsed
+[2026-10-05 23:28:27] start B_2804096c51 B thiophene+CF3 (12 atoms)
+[2026-10-05 23:42:37] done B_2804096c51 in 849.5 s (opt 55.1, B3LYP 315.6, wB97X 478.4)
+[2026-10-05 23:42:37] progress: 45 this session, 55 pending in scope, 90.16 h elapsed
+[2026-10-05 23:42:37] start B_2a0d775b59 B oxazole+Cl (8 atoms)
+[2026-10-05 23:46:27] done B_2a0d775b59 in 229.4 s (opt 10.0, B3LYP 90.8, wB97X 128.2)
+[2026-10-05 23:46:27] progress: 46 this session, 54 pending in scope, 90.22 h elapsed
+[2026-10-05 23:46:27] start B_2d18aa2dde B thiophene+CN (10 atoms)
+[2026-10-05 23:53:40] done B_2d18aa2dde in 432.3 s (opt 45.2, B3LYP 154.1, wB97X 232.5)
+[2026-10-05 23:53:40] progress: 47 this session, 53 pending in scope, 90.34 h elapsed
+[2026-10-05 23:53:40] start B_2d22a8ad91 B benzothiophene+NO2 (17 atoms)
+[2026-10-06 00:33:43] done B_2d22a8ad91 in 2403.1 s (opt 86.6, B3LYP 839.9, wB97X 1476.1)
+[2026-10-06 00:33:43] progress: 48 this session, 52 pending in scope, 91.01 h elapsed
+[2026-10-06 00:33:43] start B_2de7227ecb B azulene+CONH2 (22 atoms)
+[2026-10-06 01:41:59] done B_2de7227ecb in 4095.5 s (opt 120.9, B3LYP 1388.7, wB97X 2585.5)
+[2026-10-06 01:41:59] progress: 49 this session, 51 pending in scope, 92.15 h elapsed
+[2026-10-06 01:42:00] start B_2f618c033e B benzene+CH3+SH (16 atoms)
+[2026-10-06 02:02:24] done B_2f618c033e in 1224.2 s (opt 42.5, B3LYP 443.3, wB97X 738.0)
+[2026-10-06 02:02:24] progress: 50 this session, 50 pending in scope, 92.49 h elapsed
+[2026-10-06 02:02:24] start B_30022fd926 B naphthalene+CH3+CN (22 atoms)
+[2026-10-06 03:14:51] done B_30022fd926 in 4345.9 s (opt 567.2, B3LYP 1373.7, wB97X 2404.6)
+[2026-10-06 03:14:51] progress: 51 this session, 49 pending in scope, 93.70 h elapsed
+[2026-10-06 03:14:51] start B_31cbf73ed6 B naphthalene+Cl+Cl (18 atoms)
+[2026-10-06 03:59:35] done B_31cbf73ed6 in 2683.1 s (opt 68.2, B3LYP 916.5, wB97X 1698.0)
+[2026-10-06 03:59:35] progress: 52 this session, 48 pending in scope, 94.44 h elapsed
+[2026-10-06 03:59:35] start B_3f63ae899a B naphthalene+CH3+CN (22 atoms)
+[2026-10-06 05:07:50] done B_3f63ae899a in 4094.7 s (opt 292.5, B3LYP 1389.7, wB97X 2411.9)
+[2026-10-06 05:07:50] progress: 53 this session, 47 pending in scope, 95.58 h elapsed
+[2026-10-06 05:07:50] start B_407ebd9dfc B naphthalene+NH2+CHO (22 atoms)
+[2026-10-06 06:13:17] done B_407ebd9dfc in 3925.7 s (opt 86.4, B3LYP 1397.0, wB97X 2441.9)
+[2026-10-06 06:13:17] progress: 54 this session, 46 pending in scope, 96.67 h elapsed
+[2026-10-06 06:13:17] start B_410ac0fb2f B benzene+NH2+ethynyl (16 atoms)
+[2026-10-06 06:35:10] done B_410ac0fb2f in 1312.8 s (opt 110.5, B3LYP 459.5, wB97X 742.4)
+[2026-10-06 06:35:10] progress: 55 this session, 45 pending in scope, 97.03 h elapsed
+[2026-10-06 06:35:10] start B_48689688ff B azulene+Cl (18 atoms)
+[2026-10-06 07:14:43] done B_48689688ff in 2372.4 s (opt 81.7, B3LYP 863.9, wB97X 1426.3)
+[2026-10-06 07:14:43] progress: 56 this session, 44 pending in scope, 97.69 h elapsed
+[2026-10-06 07:14:43] start B_4891e3d7c4 B naphthalene+NH2+ethynyl (22 atoms)
+[2026-10-06 08:24:13] done B_4891e3d7c4 in 4168.7 s (opt 383.6, B3LYP 1384.6, wB97X 2400.0)
+[2026-10-06 08:24:13] progress: 57 this session, 43 pending in scope, 98.85 h elapsed
+[2026-10-06 08:24:13] start B_520cc9455f B naphthalene+NH2+CHO (22 atoms)
+[2026-10-06 09:28:45] done B_520cc9455f in 3872.0 s (opt 93.3, B3LYP 1383.5, wB97X 2394.8)
+[2026-10-06 09:28:45] progress: 58 this session, 42 pending in scope, 99.93 h elapsed
+[2026-10-06 09:28:45] start B_57e3e8e943 B azulene+NH2 (20 atoms)
+[2026-10-06 10:15:31] done B_57e3e8e943 in 2804.9 s (opt 91.5, B3LYP 979.4, wB97X 1733.6)
+[2026-10-06 10:15:31] progress: 59 this session, 41 pending in scope, 100.71 h elapsed
+[2026-10-06 10:15:31] start B_57e6bfe76a B naphthalene+OH+NH2 (21 atoms)
+[2026-10-06 11:08:13] done B_57e6bfe76a in 3161.3 s (opt 68.7, B3LYP 1117.0, wB97X 1975.0)
+[2026-10-06 11:08:13] progress: 60 this session, 40 pending in scope, 101.59 h elapsed
+[2026-10-06 11:08:13] start B_5ce9447468 B naphthalene+F+F (18 atoms)
+[2026-10-06 11:47:01] done B_5ce9447468 in 2327.8 s (opt 64.5, B3LYP 847.6, wB97X 1415.2)
+[2026-10-06 11:47:01] progress: 61 this session, 39 pending in scope, 102.23 h elapsed
+[2026-10-06 11:47:01] start B_5e180d4581 B naphthalene+OH+NH2 (21 atoms)
+[2026-10-06 12:40:32] done B_5e180d4581 in 3210.1 s (opt 123.2, B3LYP 1110.1, wB97X 1976.3)
+[2026-10-06 12:40:32] progress: 62 this session, 38 pending in scope, 103.12 h elapsed
+[2026-10-06 12:40:32] start B_5f503c9cfc B naphthalene+CH3+CN (22 atoms)
+[2026-10-06 13:52:40] done B_5f503c9cfc in 4327.7 s (opt 581.1, B3LYP 1367.9, wB97X 2378.2)
+[2026-10-06 13:52:40] progress: 63 this session, 37 pending in scope, 104.33 h elapsed
+[2026-10-06 13:52:41] start B_616944e845 B azulene+SH (19 atoms)
+[2026-10-06 14:36:12] done B_616944e845 in 2611.3 s (opt 100.1, B3LYP 925.8, wB97X 1584.9)
+[2026-10-06 14:36:12] progress: 64 this session, 36 pending in scope, 105.05 h elapsed
+[2026-10-06 14:36:13] start B_63469c5802 B naphthalene+OH+NH2 (21 atoms)
+[2026-10-06 15:30:54] done B_63469c5802 in 3280.5 s (opt 72.0, B3LYP 1130.8, wB97X 2077.2)
+[2026-10-06 15:30:54] progress: 65 this session, 35 pending in scope, 105.96 h elapsed
+[2026-10-06 15:30:54] start B_6367fde381 B azulene+CN (19 atoms)
+[2026-10-06 16:17:59] done B_6367fde381 in 2825.1 s (opt 280.2, B3LYP 940.7, wB97X 1603.7)
+[2026-10-06 16:17:59] progress: 66 this session, 34 pending in scope, 106.75 h elapsed
+[2026-10-06 16:17:59] start B_63e282724f B naphthalene+OH+CN (20 atoms)
+[2026-10-06 17:14:22] done B_63e282724f in 3382.5 s (opt 318.8, B3LYP 1150.2, wB97X 1913.1)
+[2026-10-06 17:14:22] progress: 67 this session, 33 pending in scope, 107.69 h elapsed
+[2026-10-06 17:14:23] start B_649f24650b B azulene+Cl (18 atoms)
+[2026-10-06 17:53:12] done B_649f24650b in 2328.9 s (opt 78.5, B3LYP 841.0, wB97X 1409.0)
+[2026-10-06 17:53:12] progress: 68 this session, 32 pending in scope, 108.34 h elapsed
+[2026-10-06 17:53:12] start B_6c1f2b1966 B naphthalene+NH2+vinyl (24 atoms)
+[2026-10-06 19:10:39] done B_6c1f2b1966 in 4646.3 s (opt 151.0, B3LYP 1598.8, wB97X 2896.1)
+[2026-10-06 19:10:39] progress: 69 this session, 31 pending in scope, 109.63 h elapsed
+[2026-10-06 19:10:39] start B_6d47368e74 B naphthalene+NH2+OCH3 (24 atoms)
+[2026-10-06 20:27:49] done B_6d47368e74 in 4629.6 s (opt 159.7, B3LYP 1579.4, wB97X 2890.0)
+[2026-10-06 20:27:49] progress: 70 this session, 30 pending in scope, 110.91 h elapsed
+[2026-10-06 20:27:50] start B_74e12973b2 B benzene+NH2+ethynyl (16 atoms)
+[2026-10-06 20:51:31] done B_74e12973b2 in 1421.2 s (opt 153.4, B3LYP 491.6, wB97X 775.7)
+[2026-10-06 20:51:31] progress: 71 this session, 29 pending in scope, 111.31 h elapsed
+[2026-10-06 20:51:31] start B_7ee6ad5290 B naphthalene+NH2+CHO (22 atoms)
+[2026-10-06 21:58:47] done B_7ee6ad5290 in 4034.7 s (opt 94.3, B3LYP 1411.1, wB97X 2528.8)
+[2026-10-06 21:58:47] progress: 72 this session, 28 pending in scope, 112.43 h elapsed
+[2026-10-06 21:58:47] start B_8393df5514 B naphthalene+OH+CN (20 atoms)
+[2026-10-06 22:58:14] done B_8393df5514 in 3566.9 s (opt 311.3, B3LYP 1163.1, wB97X 2092.1)
+[2026-10-06 22:58:14] progress: 73 this session, 27 pending in scope, 113.42 h elapsed
+[2026-10-06 22:58:14] start B_89ae0e3368 B naphthalene+NH2 (20 atoms)
+[2026-10-06 23:41:11] done B_89ae0e3368 in 2576.7 s (opt 60.4, B3LYP 924.2, wB97X 1591.7)
+[2026-10-06 23:41:11] progress: 74 this session, 26 pending in scope, 114.14 h elapsed
+[2026-10-06 23:41:12] start B_89b6724a77 B naphthalene+CH3+NH2 (23 atoms)
+[2026-10-07 00:41:58] done B_89b6724a77 in 3646.0 s (opt 83.3, B3LYP 1348.6, wB97X 2213.7)
+[2026-10-07 00:41:58] progress: 75 this session, 25 pending in scope, 115.15 h elapsed
+[2026-10-07 00:41:58] start B_8b9f430aef B naphthalene+OH+CN (20 atoms)
+[2026-10-07 01:42:36] done B_8b9f430aef in 3636.7 s (opt 403.4, B3LYP 1160.7, wB97X 2072.2)
+[2026-10-07 01:42:36] progress: 76 this session, 24 pending in scope, 116.16 h elapsed
+[2026-10-07 01:42:36] start B_8ec966eb48 B azulene+Cl (18 atoms)
+[2026-10-07 02:22:30] done B_8ec966eb48 in 2393.7 s (opt 79.6, B3LYP 841.3, wB97X 1472.4)
+[2026-10-07 02:22:30] progress: 77 this session, 23 pending in scope, 116.82 h elapsed
+[2026-10-07 02:22:30] start B_95f04141fa B azulene+NH2 (20 atoms)
+[2026-10-07 03:07:30] done B_95f04141fa in 2699.3 s (opt 102.3, B3LYP 940.8, wB97X 1655.8)
+[2026-10-07 03:07:30] progress: 78 this session, 22 pending in scope, 117.57 h elapsed
+[2026-10-07 03:07:30] start B_96af4fd613 B naphthalene+OH+CN (20 atoms)
+[2026-10-07 04:06:24] done B_96af4fd613 in 3533.6 s (opt 365.4, B3LYP 1161.3, wB97X 2006.4)
+[2026-10-07 04:06:24] progress: 79 this session, 21 pending in scope, 118.56 h elapsed
+[2026-10-07 04:06:24] start B_9b1e3fd97d B naphthalene+CH3+NH2 (23 atoms)
+[2026-10-07 05:08:42] done B_9b1e3fd97d in 3737.6 s (opt 106.7, B3LYP 1303.8, wB97X 2326.7)
+[2026-10-07 05:08:42] progress: 80 this session, 20 pending in scope, 119.59 h elapsed
+[2026-10-07 05:08:43] start B_9d342d5ce6 B biphenyl+OCH3 (26 atoms)
+[2026-10-07 06:43:57] done B_9d342d5ce6 in 5713.6 s (opt 108.9, B3LYP 1954.6, wB97X 3649.7)
+[2026-10-07 06:43:57] progress: 81 this session, 19 pending in scope, 121.18 h elapsed
+[2026-10-07 06:43:57] start B_9e023162d4 B azulene+CONH2 (22 atoms)
+[2026-10-07 07:53:03] done B_9e023162d4 in 4145.8 s (opt 120.0, B3LYP 1444.8, wB97X 2580.5)
+[2026-10-07 07:53:03] progress: 82 this session, 18 pending in scope, 122.33 h elapsed
+[2026-10-07 07:53:03] start B_a533db6c15 B azulene+CN (19 atoms)
+[2026-10-07 08:40:16] done B_a533db6c15 in 2832.1 s (opt 263.1, B3LYP 958.9, wB97X 1609.7)
+[2026-10-07 08:40:16] progress: 83 this session, 17 pending in scope, 123.12 h elapsed
+[2026-10-07 08:40:16] start B_ac5798691f B naphthalene+CH3+NH2 (23 atoms)
+[2026-10-07 09:44:14] done B_ac5798691f in 3837.6 s (opt 153.6, B3LYP 1377.0, wB97X 2306.6)
+[2026-10-07 09:44:14] progress: 84 this session, 16 pending in scope, 124.19 h elapsed
+[2026-10-07 09:44:14] start B_af81556699 B azulene+CONH2 (22 atoms)
+[2026-10-07 10:55:07] done B_af81556699 in 4252.4 s (opt 142.0, B3LYP 1473.4, wB97X 2636.5)
+[2026-10-07 10:55:07] progress: 85 this session, 15 pending in scope, 125.37 h elapsed
+[2026-10-07 10:55:07] start B_b2410cd7f9 B naphthalene+CH3+NH2 (23 atoms)
+[2026-10-07 12:01:37] done B_b2410cd7f9 in 3989.2 s (opt 192.9, B3LYP 1374.2, wB97X 2421.6)
+[2026-10-07 12:01:37] progress: 86 this session, 14 pending in scope, 126.48 h elapsed
+[2026-10-07 12:01:37] start B_b27d511b09 B biphenyl+COOH (25 atoms)
+[2026-10-07 13:36:45] done B_b27d511b09 in 5707.3 s (opt 101.5, B3LYP 2035.3, wB97X 3570.1)
+[2026-10-07 13:36:45] progress: 87 this session, 13 pending in scope, 128.06 h elapsed
+[2026-10-07 13:36:45] start B_b3e57b2c2b B benzene+CH3+NH2 (17 atoms)
+[2026-10-07 13:56:34] done B_b3e57b2c2b in 1188.3 s (opt 27.3, B3LYP 474.4, wB97X 686.1)
+[2026-10-07 13:56:34] progress: 88 this session, 12 pending in scope, 128.39 h elapsed
+[2026-10-07 13:56:34] start B_b805d97ce1 B naphthalene+NH2+CHO (22 atoms)
+[2026-10-07 15:01:49] done B_b805d97ce1 in 3913.4 s (opt 139.9, B3LYP 1382.2, wB97X 2390.8)
+[2026-10-07 15:01:49] progress: 89 this session, 11 pending in scope, 129.48 h elapsed
+[2026-10-07 15:01:49] start B_bb5c4d9081 B azulene+F (18 atoms)
+[2026-10-07 15:39:24] done B_bb5c4d9081 in 2254.3 s (opt 75.2, B3LYP 826.7, wB97X 1352.0)
+[2026-10-07 15:39:24] progress: 90 this session, 10 pending in scope, 130.11 h elapsed
+[2026-10-07 15:39:24] start B_cc1d5a5b08 B naphthalene+CH3+NH2 (23 atoms)
+[2026-10-07 15:48:36] failed B_cc1d5a5b08 in 551.3 s (opt -, B3LYP -, wB97X -)
+[2026-10-07 15:48:36] progress: 91 this session, 9 pending in scope, 130.26 h elapsed
+[2026-10-07 15:48:36] start B_d351592aa1 B biphenyl+COOH (25 atoms)
+[2026-10-07 17:30:50] done B_d351592aa1 in 6134.0 s (opt 179.7, B3LYP 2126.5, wB97X 3827.3)
+[2026-10-07 17:30:50] progress: 92 this session, 8 pending in scope, 131.96 h elapsed
+[2026-10-07 17:30:50] start B_d434eb4a2f B naphthalene+NH2+OCH3 (24 atoms)
+[2026-10-07 18:42:25] done B_d434eb4a2f in 4293.7 s (opt 94.8, B3LYP 1525.1, wB97X 2673.2)
+[2026-10-07 18:42:25] progress: 93 this session, 7 pending in scope, 133.16 h elapsed
+[2026-10-07 18:42:25] start B_d62c8648e6 B benzene+CH3+NH2 (17 atoms)
+[2026-10-07 19:03:22] done B_d62c8648e6 in 1257.0 s (opt 45.7, B3LYP 473.8, wB97X 737.1)
+[2026-10-07 19:03:22] progress: 94 this session, 6 pending in scope, 133.50 h elapsed
+[2026-10-07 19:03:22] start B_d972298089 B azulene+SH (19 atoms)
+[2026-10-07 19:50:05] done B_d972298089 in 2802.4 s (opt 71.9, B3LYP 1044.1, wB97X 1686.1)
+[2026-10-07 19:50:05] progress: 95 this session, 5 pending in scope, 134.28 h elapsed
+[2026-10-07 19:50:06] start B_dd57f80d82 B naphthalene+NH2+CHO (22 atoms)
+[2026-10-07 20:54:47] done B_dd57f80d82 in 3880.7 s (opt 84.2, B3LYP 1381.6, wB97X 2414.4)
+[2026-10-07 20:54:47] progress: 96 this session, 4 pending in scope, 135.36 h elapsed
+[2026-10-07 20:54:47] start B_dffd36faea B azulene+F (18 atoms)
+[2026-10-07 21:30:54] done B_dffd36faea in 2166.6 s (opt 78.1, B3LYP 787.1, wB97X 1301.0)
+[2026-10-07 21:30:54] progress: 97 this session, 3 pending in scope, 135.96 h elapsed
+[2026-10-07 21:30:54] start B_e126d3ff28 B azulene+SH (19 atoms)
+[2026-10-07 22:17:36] done B_e126d3ff28 in 2801.2 s (opt 88.0, B3LYP 990.8, wB97X 1722.0)
+[2026-10-07 22:17:36] progress: 98 this session, 2 pending in scope, 136.74 h elapsed
+[2026-10-07 22:17:36] start B_e6d90ea2ef B naphthalene+NH2+OCH3 (24 atoms)
+[2026-10-07 23:31:57] done B_e6d90ea2ef in 4460.0 s (opt 69.6, B3LYP 1552.3, wB97X 2837.7)
+[2026-10-07 23:31:57] progress: 99 this session, 1 pending in scope, 137.98 h elapsed
+[2026-10-07 23:31:57] start B_e8d50a50b5 B naphthalene+CH3+NH2 (23 atoms)
+[2026-10-08 00:34:00] done B_e8d50a50b5 in 3722.3 s (opt 129.8, B3LYP 1322.9, wB97X 2269.2)
+[2026-10-08 00:34:00] progress: 100 this session, 0 pending in scope, 139.02 h elapsed
+[2026-10-08 00:34:00] nothing pending; done
+# Corpus status — 2026-10-08 00:34
+
+Manifest rows: 11,322; ledger entries: 960; compute spent so far: 957.9 h (from the ledger).
+
+| layer | pending | running | done | failed | median s/molecule (measured) | hours to go at that rate |
+|---|---|---|---|---|---|---|
+| A | 0 | 0 | 46 | 0 | 2641 | 0.0 |
+| A2 | 636 | 0 | 231 | 1 | 5423 | 958.0 |
+| B | 3,679 | 0 | 669 | 5 | 3026 | 3091.9 |
+| C | 6,055 | 0 | 0 | 0 | — | not yet measured |
+
+Last ten ledger entries:

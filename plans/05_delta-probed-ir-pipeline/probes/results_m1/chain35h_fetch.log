@@ -1,0 +1,10 @@
+[00:15:17] analytic files → corpus
+probes/fetch_labels_ccx53.sh: line 18: rsync: command not found
+RSYNC MOLECULES FAILED
+probes/fetch_labels_ccx53.sh: line 20: rsync: command not found
+RSYNC APT FAILED
+[00:15:17] logs, gate, environment → /c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/labels_ccx53_2026-10-17
+probes/fetch_labels_ccx53.sh: line 22: rsync: command not found
+RSYNC LOGS FAILED
+FETCHED 2026-10-17 00:15 157.180.32.149: corpus now holds 44 analytic ωB97X and 44 analytic B3LYP Hessians (server had 538 ωB97X), 10 APTs (server had 198); logs in /c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/labels_ccx53_2026-10-17
+CORRECTION 17 Oct 07:21: the FETCHED line above is FALSE — every rsync failed (Git Bash has none) and 44 of 538 analytic Hessians were in the corpus; the fetch was redone with tar over ssh at 07:18 (probes/fetch_labels_ccx53.sh, now refusing a partial fetch).

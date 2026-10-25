@@ -1,0 +1,173 @@
+[2026-10-03 23:02:19] E8 FD Hessian: 12 atoms, cc-pvtz, frozen 6 (derived from the elements: 6), step 0.005 bohr, 72 displacements, 8 threads, max_memory 10000 MB, explicit (T) lambda, fast (T) density kernel, fast (T) lambda kernel
+cycle = 1  norm(lambda1,lambda2) = 0.0622404
+cycle = 2  norm(lambda1,lambda2) = 0.0156724
+cycle = 3  norm(lambda1,lambda2) = 0.00686237
+cycle = 4  norm(lambda1,lambda2) = 0.00276185
+cycle = 5  norm(lambda1,lambda2) = 0.000448951
+cycle = 6  norm(lambda1,lambda2) = 0.000149812
+cycle = 7  norm(lambda1,lambda2) = 3.0541e-05
+cycle = 8  norm(lambda1,lambda2) = 1.03128e-05
+cycle = 9  norm(lambda1,lambda2) = 3.62338e-06
+cycle = 10  norm(lambda1,lambda2) = 6.81217e-07
+cycle = 11  norm(lambda1,lambda2) = 2.3987e-07
+cycle = 12  norm(lambda1,lambda2) = 7.34762e-08
+cycle = 13  norm(lambda1,lambda2) = 2.11859e-08
+cycle = 14  norm(lambda1,lambda2) = 1.19329e-08
+cycle = 15  norm(lambda1,lambda2) = 8.86512e-09
+=== TZ relaunch 2 (out-of-core (T) density) start 2026-10-04 00:56:32
+[2026-10-04 00:56:36] E8 Traceback (most recent call last):
+  File "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/e8_cc_hessian_fd.py", line 395, in <module>
+    main()
+  File "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/e8_cc_hessian_fd.py", line 300, in main
+    t0 = time.time(); e0, g0, mu0 = gradient(sym, x0, a.basis, a.frozen, log, a.charge, a.spin, a.max_memory, fast, check_fast=inline)
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/e8_cc_hessian_fd.py", line 64, in gradient
+    mf = scf.RHF(mol); mf.conv_tol = 1e-11; e_hf = mf.kernel()
+         ^^^^^^^^^^^^
+  File "/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/scf/__init__.py", line 138, in RHF
+    return rhf.RHF(mol, *args)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/scf/hf.py", line 1790, in __init__
+    self._chkfile = lib.NamedTemporaryFile(dir=lib.param.TMPDIR)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/lib/misc.py", line 1328, in NamedTemporaryFile
+    f = tempfile.NamedTemporaryFile(*args, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/thebreadishard/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/tempfile.py", line 582, in NamedTemporaryFile
+    file = _io.open(dir, mode, buffering=buffering,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/thebreadishard/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/tempfile.py", line 579, in opener
+    fd, name = _mkstemp_inner(dir, prefix, suffix, flags, output_type)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/thebreadishard/.local/share/uv/python/cpython-3.12.14-linux-x86_64-gnu/lib/python3.12/tempfile.py", line 256, in _mkstemp_inner
+    fd = _os.open(file, flags, 0o600)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/c/Users/thebr/qc_tmp/tmpzje96cbe'
+[2026-10-04 00:58:08] E8 FD Hessian: 12 atoms, cc-pvtz, frozen 6 (derived from the elements: 6), step 0.005 bohr, 72 displacements, 8 threads, max_memory 10000 MB, explicit (T) lambda, fast (T) density kernel, fast (T) lambda kernel
+[2026-10-04 01:02:45] E8 FD Hessian: 12 atoms, cc-pvtz, frozen 6 (derived from the elements: 6), step 0.005 bohr, 72 displacements, 8 threads, max_memory 10000 MB, explicit (T) lambda, fast (T) density kernel, fast (T) lambda kernel
+cycle = 1  norm(lambda1,lambda2) = 0.0622404
+cycle = 2  norm(lambda1,lambda2) = 0.0156724
+cycle = 3  norm(lambda1,lambda2) = 0.00686237
+cycle = 4  norm(lambda1,lambda2) = 0.00276185
+cycle = 5  norm(lambda1,lambda2) = 0.000448951
+cycle = 6  norm(lambda1,lambda2) = 0.000149812
+cycle = 7  norm(lambda1,lambda2) = 3.0541e-05
+cycle = 8  norm(lambda1,lambda2) = 1.03128e-05
+cycle = 9  norm(lambda1,lambda2) = 3.62338e-06
+cycle = 10  norm(lambda1,lambda2) = 6.81217e-07
+cycle = 11  norm(lambda1,lambda2) = 2.3987e-07
+cycle = 12  norm(lambda1,lambda2) = 7.34762e-08
+cycle = 13  norm(lambda1,lambda2) = 2.11859e-08
+cycle = 14  norm(lambda1,lambda2) = 1.19329e-08
+cycle = 15  norm(lambda1,lambda2) = 8.86558e-09
+[2026-10-04 03:15:50] (T) lambda 6304 s, gradient 483 s
+[2026-10-04 03:15:50] reference: E = -231.805832110, max|grad| 3.24e-03, 7986 s; two-route checks deferred to a separate run (--two-route-check only)
+[2026-10-04 03:15:51] symmetry: 24 operations, orbits [[0, 1, 2, 3, 4, 5], [6, 7, 8, 9, 10, 11]], 6 displacements (12 gradients) instead of 72
+[2026-10-04 03:15:51] partial run: displacement indices [20, 2, 18]
+cycle = 1  norm(lambda1,lambda2) = 0.0622574
+cycle = 2  norm(lambda1,lambda2) = 0.0157169
+cycle = 3  norm(lambda1,lambda2) = 0.00688012
+cycle = 4  norm(lambda1,lambda2) = 0.00277863
+cycle = 5  norm(lambda1,lambda2) = 0.000449339
+cycle = 6  norm(lambda1,lambda2) = 0.000149714
+cycle = 7  norm(lambda1,lambda2) = 3.05535e-05
+cycle = 8  norm(lambda1,lambda2) = 1.0313e-05
+cycle = 9  norm(lambda1,lambda2) = 3.62274e-06
+cycle = 10  norm(lambda1,lambda2) = 6.81256e-07
+cycle = 11  norm(lambda1,lambda2) = 2.39829e-07
+cycle = 12  norm(lambda1,lambda2) = 7.34837e-08
+cycle = 13  norm(lambda1,lambda2) = 2.12045e-08
+cycle = 14  norm(lambda1,lambda2) = 1.19718e-08
+cycle = 15  norm(lambda1,lambda2) = 8.87134e-09
+[2026-10-04 05:01:35] (T) lambda 4661 s, gradient 563 s
+[2026-10-04 05:01:35] coordinate 20 p: E − E0 =     +0.20 µE_h, 6345 s  (1/72 gradients)
+cycle = 1  norm(lambda1,lambda2) = 0.0622067
+cycle = 2  norm(lambda1,lambda2) = 0.0156396
+cycle = 3  norm(lambda1,lambda2) = 0.00684893
+cycle = 4  norm(lambda1,lambda2) = 0.00274946
+cycle = 5  norm(lambda1,lambda2) = 0.000448412
+cycle = 6  norm(lambda1,lambda2) = 0.000149817
+cycle = 7  norm(lambda1,lambda2) = 3.05247e-05
+cycle = 8  norm(lambda1,lambda2) = 1.03077e-05
+cycle = 9  norm(lambda1,lambda2) = 3.62175e-06
+cycle = 10  norm(lambda1,lambda2) = 6.80529e-07
+cycle = 11  norm(lambda1,lambda2) = 2.3977e-07
+cycle = 12  norm(lambda1,lambda2) = 7.34589e-08
+cycle = 13  norm(lambda1,lambda2) = 2.11722e-08
+cycle = 14  norm(lambda1,lambda2) = 1.18716e-08
+cycle = 15  norm(lambda1,lambda2) = 8.84731e-09
+[2026-10-04 06:40:41] (T) lambda 4471 s, gradient 284 s
+[2026-10-04 06:40:42] coordinate 20 m: E − E0 =     +0.45 µE_h, 5946 s  (2/72 gradients)
+[2026-10-04 06:40:42] pair check coordinate 20: max |mean(g+, g−) − g0| = 1.7e-06 a.u. (limit 1e-04)
+cycle = 1  norm(lambda1,lambda2) = 0.0622003
+cycle = 2  norm(lambda1,lambda2) = 0.0156384
+cycle = 3  norm(lambda1,lambda2) = 0.00684877
+cycle = 4  norm(lambda1,lambda2) = 0.00274938
+cycle = 5  norm(lambda1,lambda2) = 0.000448228
+cycle = 6  norm(lambda1,lambda2) = 0.000149812
+cycle = 7  norm(lambda1,lambda2) = 3.05001e-05
+cycle = 8  norm(lambda1,lambda2) = 1.03037e-05
+cycle = 9  norm(lambda1,lambda2) = 3.62157e-06
+cycle = 10  norm(lambda1,lambda2) = 6.80131e-07
+cycle = 11  norm(lambda1,lambda2) = 2.39848e-07
+cycle = 12  norm(lambda1,lambda2) = 7.37757e-08
+cycle = 13  norm(lambda1,lambda2) = 2.16605e-08
+cycle = 14  norm(lambda1,lambda2) = 1.24529e-08
+cycle = 15  norm(lambda1,lambda2) = 9.44896e-09
+[2026-10-04 07:51:11] (T) lambda 3082 s, gradient 378 s
+[2026-10-04 07:51:11] coordinate  2 p: E − E0 =     +1.68 µE_h, 4230 s  (3/72 gradients)
+cycle = 1  norm(lambda1,lambda2) = 0.0622806
+cycle = 2  norm(lambda1,lambda2) = 0.0157791
+cycle = 3  norm(lambda1,lambda2) = 0.0069054
+cycle = 4  norm(lambda1,lambda2) = 0.00280244
+cycle = 5  norm(lambda1,lambda2) = 0.000449645
+cycle = 6  norm(lambda1,lambda2) = 0.000149601
+cycle = 7  norm(lambda1,lambda2) = 3.05498e-05
+cycle = 8  norm(lambda1,lambda2) = 1.03106e-05
+cycle = 9  norm(lambda1,lambda2) = 3.62241e-06
+cycle = 10  norm(lambda1,lambda2) = 6.80721e-07
+cycle = 11  norm(lambda1,lambda2) = 2.39775e-07
+cycle = 12  norm(lambda1,lambda2) = 7.37921e-08
+cycle = 13  norm(lambda1,lambda2) = 2.16858e-08
+cycle = 14  norm(lambda1,lambda2) = 1.24755e-08
+cycle = 15  norm(lambda1,lambda2) = 9.46236e-09
+[2026-10-04 09:35:13] (T) lambda 4805 s, gradient 654 s
+[2026-10-04 09:35:13] coordinate  2 m: E − E0 =     +1.36 µE_h, 6242 s  (4/72 gradients)
+[2026-10-04 09:35:13] pair check coordinate  2: max |mean(g+, g−) − g0| = 1.3e-06 a.u. (limit 1e-04)
+cycle = 1  norm(lambda1,lambda2) = 0.0622761
+cycle = 2  norm(lambda1,lambda2) = 0.0158097
+cycle = 3  norm(lambda1,lambda2) = 0.00691709
+cycle = 4  norm(lambda1,lambda2) = 0.00281426
+cycle = 5  norm(lambda1,lambda2) = 0.000449738
+cycle = 6  norm(lambda1,lambda2) = 0.000149445
+cycle = 7  norm(lambda1,lambda2) = 3.05323e-05
+cycle = 8  norm(lambda1,lambda2) = 1.03016e-05
+cycle = 9  norm(lambda1,lambda2) = 3.61868e-06
+cycle = 10  norm(lambda1,lambda2) = 6.79807e-07
+cycle = 11  norm(lambda1,lambda2) = 2.39424e-07
+cycle = 12  norm(lambda1,lambda2) = 7.34736e-08
+cycle = 13  norm(lambda1,lambda2) = 2.12372e-08
+cycle = 14  norm(lambda1,lambda2) = 1.19253e-08
+cycle = 15  norm(lambda1,lambda2) = 8.88485e-09
+[2026-10-04 11:44:34] (T) lambda 5827 s, gradient 548 s
+[2026-10-04 11:44:34] coordinate 18 p: E − E0 =     -8.14 µE_h, 7761 s  (5/72 gradients)
+cycle = 1  norm(lambda1,lambda2) = 0.062308
+cycle = 2  norm(lambda1,lambda2) = 0.0158179
+cycle = 3  norm(lambda1,lambda2) = 0.00692047
+cycle = 4  norm(lambda1,lambda2) = 0.00281569
+cycle = 5  norm(lambda1,lambda2) = 0.000450205
+cycle = 6  norm(lambda1,lambda2) = 0.000149574
+cycle = 7  norm(lambda1,lambda2) = 3.05764e-05
+cycle = 8  norm(lambda1,lambda2) = 1.03205e-05
+cycle = 9  norm(lambda1,lambda2) = 3.62601e-06
+cycle = 10  norm(lambda1,lambda2) = 6.81961e-07
+cycle = 11  norm(lambda1,lambda2) = 2.40195e-07
+cycle = 12  norm(lambda1,lambda2) = 7.37444e-08
+cycle = 13  norm(lambda1,lambda2) = 2.13234e-08
+cycle = 14  norm(lambda1,lambda2) = 1.20119e-08
+cycle = 15  norm(lambda1,lambda2) = 8.89408e-09
+[2026-10-04 13:26:52] (T) lambda 4574 s, gradient 336 s
+[2026-10-04 13:26:52] coordinate 18 m: E − E0 =    +15.43 µE_h, 6138 s  (6/72 gradients)
+[2026-10-04 13:26:52] pair check coordinate 18: max |mean(g+, g−) − g0| = 9.0e-06 a.u. (limit 1e-04)
+[2026-10-04 13:26:52] partial run done; merge grad_*.npy files and rerun without --ks to assemble the Hessian
+=== python exit 0 at 13:26:53

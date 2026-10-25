@@ -1,0 +1,3 @@
+=== apt holdout a start Fri Oct  2 07:03:20 CEST 2026
+--- A_fdc27f1bd1 (hessian_b3lyp.npz) Fri Oct  2 07:03:20 CEST 2026
+=== loop stopped 2026-10-02 07:39:06: FD route replaced by the CPHF route (≈ 5 min per SCF for 22 atoms at 4 threads → 11 h per molecule)

@@ -1,0 +1,6 @@
+[2026-10-02 04:21:28] ANCHOR smoke_parallel START (parallel: 2 partial runs x 1 threads x 1500 MB) (water.json)
+[2026-10-02 04:21:29] ANCHOR smoke_parallel: 6 symmetry-unique displacements over 2 partial runs
+[2026-10-02 04:21:29] ANCHOR smoke_parallel: two-route check lane started (pid 55969, 1 threads, 1500 MB)
+[2026-10-02 04:21:44] ANCHOR smoke_parallel: partial runs done (12 gradient files) -> assembling run
+[2026-10-02 04:21:45] ANCHOR smoke_parallel DONE: symmetry: 4 operations, orbits [[0], [1, 2]], 6 displacements (12 gradients) instead of 18; FD asymmetry max 8.30e-13 a.u.
+[2026-10-02 04:21:45] SMOKE PARALLEL OK
