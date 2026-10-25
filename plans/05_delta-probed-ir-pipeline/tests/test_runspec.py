@@ -1,6 +1,7 @@
 """tools/runspec.py (15 Oct 2026, TASKS 63): a run starts only with a progress contract, and the check turns a missing progress line, a
 vanished process, a bad exit or an overrun into one stable event each. The decision (assess) is tested without I/O; the probe lines run in a
 real bash on a scratch folder; launch and check run against a stand-in shell."""
+import os
 import shutil
 import subprocess
 import sys
@@ -407,3 +408,70 @@ def test_a_peek_leaves_the_state_and_its_one_time_events_to_the_watch(tmp_path):
     assert R.load_state("demo", state).status == "running"
     assert R.check(ended, T0, specs, state)[0] == "MARKER run demo ended (exit 0)"      # the watch still sees the end
     assert R.load_state("demo", state).status == "ended"
+
+
+# ---------------------------------------------------------------- an interrupted run is resumed (TASKS 83, 25 Oct 2026)
+
+def resumable_spec(**over) -> R.RunSpec:
+    return spec(**({"resumable": True, "end_regex": "^=== \\(T\\) run done", "fail_regex": "^=== \\(T\\) RUN FAILED"} | over))
+
+
+@pytest.mark.parametrize("over, words", [
+    ({"resumable": False}, "needs a resumable run with an end_regex"),
+    ({"end_regex": None}, "needs a resumable run with an end_regex"),
+    ({"fail_regex": r"failed \d"}, "not POSIX ERE"),
+])
+def test_fail_regex_refusals(over, words):
+    with pytest.raises(ValidationError, match=words):
+        resumable_spec(**over)
+
+
+@pytest.mark.parametrize("obs, expect", [
+    (R.Observation(exit_code=4, lived_s=3600), True),                         # a restart killed it after its wrapper wrote the exit file
+    (R.Observation(exit_code=4, lived_s=30), False),                          # died at once: a start-up failure, not a restart
+    (R.Observation(exit_code=1, lived_s=3600, failed_marker=True), False),    # failed on its own and said so
+    (R.Observation(exit_code=4, lived_s=3600, ended_marker=True), False),     # its end line is there: an exit code to read, not a kill
+    (R.Observation(exit_code=0, lived_s=3600), False),
+    (R.Observation(exit_code=4), False),                                      # no lifetime known
+])
+def test_what_counts_as_interrupted(obs, expect):
+    assert R.interrupted(resumable_spec(), obs) is expect
+
+
+def test_without_fail_regex_a_bad_exit_stays_an_ending():
+    assert not R.interrupted(spec(resumable=True), R.Observation(exit_code=4, lived_s=3600))
+
+
+def test_an_interrupted_run_gets_the_resume_grace_and_is_not_ended():
+    s, obs = resumable_spec(), R.Observation(exit_code=4, lived_s=3600)
+    ev, st = R.assess(s, run_state(), obs, T0)
+    assert ev == [] and st.status == "running" and st.gone_seen_at == T0
+    ev, st = R.assess(s, st, obs, T0 + timedelta(minutes=41))
+    assert ev == ["ANOMALY run demo gone since 15 Oct 18:00 and not resumed (see probes/watch_state/resume.log)"] and st.status == "running"
+    ev, st = R.assess(s, run_state(), R.Observation(exit_code=1, lived_s=3600, failed_marker=True), T0)
+    assert ev == ["ANOMALY run demo ended with exit 1"] and st.status == "ended"
+
+
+def test_resume_relaunches_an_interrupted_run_and_names_why(tmp_path):
+    specs, state = tmp_path / "specs", tmp_path / "state"
+    write_spec(specs, resumable_spec(name="killed"))
+    R.save_state("killed", run_state(), state)
+    sh = FakeShell(probe_out="exit=4\nalive=0\nprogress=3\nlived=3600\n")
+    out = R.resume(sh, T0, specs, state, second_look=0)
+    assert out == ["killed: RELAUNCHED (pid 4242, relaunch 1): python probes/demo.py - "
+                   "interrupted (exit 4 without its end or failure line, after 3600 s)"] and sh.launched == [("laptop", "killed", True)]
+    assert R.resume(FakeShell(probe_out="exit=1\nalive=0\nprogress=3\nlived=3600\nfailed=1\n"), T0, specs, state, second_look=0) == []
+    assert R.resume(FakeShell(probe_out="exit=4\nalive=0\nprogress=3\nlived=20\n"), T0, specs, state, second_look=0) == []
+
+
+@pytest.mark.skipif(BASH is None, reason="bash not available")
+def test_the_probe_reads_the_failure_line_and_the_lifetime(tmp_path):
+    s = resumable_spec(workdir="probes")
+    (tmp_path / "demo.log").write_text("=== (T) armed\n=== (T) RUN FAILED at train: exit 3\n", encoding="utf-8", newline="\n")
+    for name, mtime in (("demo.pid", 1_000_000), ("demo.exit", 1_000_900)):
+        (tmp_path / name).write_text("1\n", encoding="utf-8")
+        os.utime(tmp_path / name, (mtime, mtime))
+    script = R.probe_script(s).replace("cd probes", f"cd {tmp_path.as_posix()}", 1)
+    out = subprocess.run([BASH, "-c", script], capture_output=True, text=True, check=True).stdout
+    obs = R.parse_probe(s, out)
+    assert obs.failed_marker and obs.lived_s == 900 and obs.exit_code == 1

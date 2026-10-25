@@ -6,5 +6,5 @@
              {"local": "modules/05_support_predictor/m05/design_check.py"}],
  "progress": {"regex": "^=== \\(C44\\) progress: |^\\(C44\\) .* done ", "max_gap_minutes": 90, "start_regex": "^=== \\(C44\\) starting: "},
  "marker_regex": "^=== \\(C44\\) (armed|starting|resuming|RUN FAILED|run done)",
- "end_regex": "^=== \\(C44\\) run done", "dry_run_args": "--dry-run", "resumable": true,
+ "end_regex": "^=== \\(C44\\) run done", "fail_regex": "^=== \\(C44\\) RUN FAILED", "dry_run_args": "--dry-run", "resumable": true,
  "memory": {"peak_gb": 7.7, "basis": "chain 41's measured peak (rungC_train.py, 7.7 GB, 19 Oct 2026, step 5 at n = 978); this chain's own not measured yet"}}

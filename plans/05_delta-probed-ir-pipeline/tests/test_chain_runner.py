@@ -193,3 +193,13 @@ def test_the_runner_writes_its_log_in_utf8_whatever_the_code_page():
     stream.flush()
     assert raw.getvalue().decode("utf-8") == "=== (T) run done — 1 steps\n"
 
+
+
+def test_a_failure_outside_a_step_still_writes_run_failed(tmp_path, capsys):
+    """TASKS 83: a run that ends without a terminal line counts as killed by a restart and is resumed; a failure in a wait condition must
+    therefore say RUN FAILED too."""
+    p = tmp_path / "spec.json"
+    p.write_text(json.dumps({"name": "T", "wait": [{"kind": "bogus"}], "steps": [], "outputs": []}), encoding="utf-8")
+    with pytest.raises(ValueError, match="unknown wait kind"):
+        CR.main([str(p)])
+    assert "=== (T) RUN FAILED: ValueError: unknown wait kind 'bogus'" in capsys.readouterr().out

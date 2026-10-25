@@ -16,6 +16,8 @@ A run is a spec, probes/runspecs/<name>.json (committed: the launch record), and
   resume    what tools/resume_laptop_jobs.sh runs every 30 minutes (the scheduled task CapstoneResumeJobs): a laptop run whose spec is
             `resumable` (its command skips finished work), neither ended nor alive in two looks 30 s apart, is relaunched with its log
             appended. The watch gives a resumable run RESUME_GRACE before it reports it gone, so a restart does not wake the session.
+            With a fail_regex a run that left a non-zero exit file but neither its end nor its failure line counts as interrupted (a
+            restart killed it after its wrapper wrote the exit file, TASKS 83) and is resumed the same way.
 
     python tools/runspec.py validate probes/runspecs/<name>.json
     python tools/runspec.py launch probes/runspecs/<name>.json
@@ -54,6 +56,7 @@ MARKER_WIDTH = 110              # the width of the watch's other markers
 DRY_RUN_TIMEOUT_S = 900
 RESUME_GRACE = timedelta(minutes=40)   # longer than the resume task's 30 minutes: a resumable run gone for less is the resume's business
 RESUME_SECOND_LOOK_S = 30              # a run is gone only when two looks this far apart both miss it (13 Oct: one ps snapshot missed a runner)
+INTERRUPTED_MIN_LIFE_S = 120           # a run that died sooner is a start-up failure to read, not a restart to resume (TASKS 83)
 # The laptop's memory for runs, GB. 19 Oct 2026 07:24: 11.0 of 31.3 GB free with one trainer at 3.2 GB, so Windows, the app and an idle WSL
 # hold ≈ 16 GB; 2 GB stay free as margin. At 00:46 that night chain 41, two dxtb shards and a UKS cation together ran Windows out of memory.
 LAPTOP_RUN_MEMORY_GB = 13.0
@@ -114,13 +117,16 @@ class RunSpec(_Frozen):
     progress: Progress
     marker_regex: str | None = Field(default=None, description="ERE of lines reported once each")
     end_regex: str | None = Field(default=None, description="ERE of the line a successful run ends with")
+    fail_regex: str | None = Field(default=None, description="ERE of the line a run that failed on its own ends with. With it, a resumable "
+                                   "laptop run whose exit is non-zero but whose log has neither this line nor its end line was killed from "
+                                   "outside (a Windows restart, TASKS 83) and is resumed, not reported ended")
     dry_run_args: str | None = Field(default=None, description="appended to the command for the dry run before the launch")
     threads: int | None = Field(default=None, ge=1, le=64)
     estimate: Estimate | None = None
     memory: Memory | None = Field(default=None, description="laptop runs: required at launch and resume (the memory budget)")
     resumable: bool = Field(default=False, description="laptop only: the command skips finished work, so `resume` may relaunch it")
 
-    _check_regex = field_validator("marker_regex", "end_regex")(_ere)
+    _check_regex = field_validator("marker_regex", "end_regex", "fail_regex")(_ere)
 
     @model_validator(mode="after")
     def _paths_fit_the_host(self) -> RunSpec:
@@ -133,6 +139,8 @@ class RunSpec(_Frozen):
             raise ValueError("a laptop run has no remote copies of its sources")
         if self.resumable and not on_laptop:
             raise ValueError("resumable is for laptop runs (a server is not restarted under a run)")
+        if self.fail_regex and not (self.resumable and self.end_regex):
+            raise ValueError("fail_regex tells a killed run from a failed one for the resume task: it needs a resumable run with an end_regex")
         return self
 
 
@@ -175,6 +183,8 @@ class Observation:
     heartbeat_bytes: int = 0
     started: bool = False
     ended_marker: bool = False
+    failed_marker: bool = False
+    lived_s: int | None = None                # exit file's mtime minus pid file's: how long the run lived (with fail_regex only)
     markers: tuple[str, ...] = ()
 
 
@@ -191,6 +201,13 @@ def _unreachable(spec: RunSpec, state: RunState, obs: Observation) -> tuple[list
     if obs.workdir_missing:
         return [f"ANOMALY {who}: workdir {spec.workdir} missing on {spec.host}"], replace(state, unreachable=0)
     return None
+
+
+def interrupted(spec: RunSpec, obs: Observation) -> bool:
+    """A resumable laptop run killed from outside (22 Oct: a Windows restart let the wrapper write a non-zero exit file after the python
+    died): exit non-zero, neither its end line nor its failure line, and alive long enough not to be a start-up failure."""
+    return (spec.fail_regex is not None and obs.exit_code not in (None, 0) and not obs.ended_marker and not obs.failed_marker
+            and obs.lived_s is not None and obs.lived_s >= INTERRUPTED_MIN_LIFE_S)
 
 
 def _ended(spec: RunSpec, state: RunState, obs: Observation, events: list[str]) -> tuple[list[str], RunState]:
@@ -241,7 +258,7 @@ def assess(spec: RunSpec, state: RunState, obs: Observation, now: datetime) -> t
         return early
     state = replace(state, unreachable=0)
     events = [f"MARKER run {spec.name}: {m[:MARKER_WIDTH]}" for m in obs.markers]
-    if obs.exit_code is not None:
+    if obs.exit_code is not None and not interrupted(spec, obs):
         return _ended(spec, state, obs, events)
     if not obs.alive:
         return _vanished(spec, state, events, now)
@@ -267,9 +284,12 @@ def probe_script(spec: RunSpec) -> str:
              f'echo "progress=$(grep -cE {q(spec.progress.regex)} {log} 2>/dev/null)"']
     if spec.progress.heartbeat_glob:                         # unquoted so the shell expands it; the field's pattern admits no other syntax
         lines.append(f"echo \"heartbeat=$(ls -l {spec.progress.heartbeat_glob} 2>/dev/null | awk '{{s += $5}} END {{print s + 0}}')\"")
-    for key, rx in (("started", spec.progress.start_regex), ("ended", spec.end_regex)):
+    for key, rx in (("started", spec.progress.start_regex), ("ended", spec.end_regex), ("failed", spec.fail_regex)):
         if rx:
             lines.append(f"grep -qE {q(rx)} {log} 2>/dev/null && echo {key}=1")
+    if spec.fail_regex:
+        exit_file, pid_file = q(spec.name + ".exit"), q(spec.name + ".pid")
+        lines.append(f'[ -f {exit_file} ] && [ -f {pid_file} ] && echo "lived=$(( $(stat -c %Y {exit_file}) - $(stat -c %Y {pid_file}) ))"')
     if spec.marker_regex:
         lines.append(f"grep -E {q(spec.marker_regex)} {log} 2>/dev/null | tail -n 30 | sed 's/^/marker=/'")
     return "\n".join(lines) + "\n"
@@ -286,11 +306,12 @@ def parse_probe(spec: RunSpec, out: str) -> Observation:
             fields[key] = value.strip()
     if fields.get("workdir") == "missing":
         return Observation(workdir_missing=True)
-    code = fields.get("exit", "")
+    code, lived = fields.get("exit", ""), fields.get("lived", "")
     return Observation(exit_code=int(code) if code.lstrip("-").isdigit() else None, alive=fields.get("alive") == "1",
                        progress_count=int(fields.get("progress") or 0), heartbeat_bytes=int(fields.get("heartbeat") or 0),
                        started=spec.progress.start_regex is None or fields.get("started") == "1",
-                       ended_marker=fields.get("ended") == "1", markers=tuple(markers))
+                       ended_marker=fields.get("ended") == "1", failed_marker=fields.get("failed") == "1",
+                       lived_s=int(lived) if lived.lstrip("-").isdigit() else None, markers=tuple(markers))
 
 
 class Shell:
@@ -518,9 +539,16 @@ def launch(spec_path: Path, shell: Shell, now: datetime, state_dir: Path = STATE
 
 # ---------------------------------------------------------------- resume
 
-def _gone(spec: RunSpec, shell: Shell) -> bool:
+def _resume_reason(spec: RunSpec, shell: Shell) -> str | None:
+    """Why a resumable laptop run is to be relaunched now: gone without an exit file, or interrupted; None when it is not."""
     obs = observe(spec, shell)
-    return obs.reachable and not obs.workdir_missing and obs.exit_code is None and not obs.alive
+    if not obs.reachable or obs.workdir_missing or obs.alive:
+        return None
+    if obs.exit_code is None:
+        return "gone without an exit file"
+    if interrupted(spec, obs):
+        return f"interrupted (exit {obs.exit_code} without its end or failure line, after {obs.lived_s} s)"
+    return None
 
 
 def resume(shell: Shell, now: datetime, spec_dir: Path = SPEC_DIR, state_dir: Path = STATE_DIR, dry: bool = False,
@@ -536,13 +564,14 @@ def resume(shell: Shell, now: datetime, spec_dir: Path = SPEC_DIR, state_dir: Pa
         except ValidationError as e:
             lines.append(f"{path.stem}: spec invalid, not resumed: {str(e).splitlines()[0]}")
             continue
-        if spec.host != LAPTOP or not spec.resumable or not _gone(spec, shell):
+        reason = _resume_reason(spec, shell) if spec.host == LAPTOP and spec.resumable else None
+        if reason is None:
             continue
         time.sleep(second_look)
-        if not _gone(spec, shell):
+        if _resume_reason(spec, shell) is None:
             continue
         if dry:
-            lines.append(f"{spec.name}: gone without an exit file - would relaunch: {spec.command}")
+            lines.append(f"{spec.name}: {reason} - would relaunch: {spec.command}")
             continue
         problems = preflight(spec, shell) + memory_problems(spec, spec_dir, state_dir)
         if problems:
@@ -553,7 +582,7 @@ def resume(shell: Shell, now: datetime, spec_dir: Path = SPEC_DIR, state_dir: Pa
             lines.append(f"{spec.name}: RELAUNCH FAILED (exit {rc}): {out.strip()[-200:]}")
             continue
         save_state(spec.name, replace(state, relaunches=state.relaunches + 1, gone_seen_at=None), state_dir)
-        lines.append(f"{spec.name}: RELAUNCHED (pid {out.strip()}, relaunch {state.relaunches + 1}): {spec.command}")
+        lines.append(f"{spec.name}: RELAUNCHED (pid {out.strip()}, relaunch {state.relaunches + 1}): {spec.command} - {reason}")
     return lines
 
 

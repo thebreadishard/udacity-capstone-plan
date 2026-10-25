@@ -84,8 +84,11 @@ def condition_holds(c: dict) -> bool:
 def rungc_steps(s: dict, python: str) -> list[dict]:
     """The standard rung C chain as plain command steps (cwd = module 05). Checkpoint names follow rungC_train's `<prefix>_model_n<N>_seed<s>.pt`;
     N is found after training, so the registry and eval steps carry a glob that `run_step` resolves."""
-    seeds = s.get("seeds", [0, 1, 2]); threads = str(s.get("threads", 8)); recipe = s.get("recipe", RECIPE_V11)
-    hb = s.get("holdout_b_file", HOLDOUT_B); date = s.get("date")
+    seeds = s.get("seeds", [0, 1, 2])
+    threads = str(s.get("threads", 8))
+    recipe = s.get("recipe", RECIPE_V11)
+    hb = s.get("holdout_b_file", HOLDOUT_B)
+    date = s.get("date")
     if not date:   # 16 Oct 2026: a date taken from the clock named the logs by the day, so a relaunch on another day changed the resume hash
         raise ValueError(f"rungc step of chain {s.get('chain')}: no 'date' — a fixed date keeps the resume record valid across days")
     seed_arg = ",".join(str(x) for x in seeds)
@@ -116,7 +119,8 @@ def rungc_steps(s: dict, python: str) -> list[dict]:
         out.append(dict(label=f"seed means {Path(pre).name}", log=f"{read}.log",
                         argv=[python, "../../probes/rungC_eval_means.py", read, *evals, "--against", f"{pre}.json"]))
     for st in out:
-        st["cwd"] = str(M05); st["log"] = str(M05 / st["log"])
+        st["cwd"] = str(M05)
+        st["log"] = str(M05 / st["log"])
     return out
 
 
@@ -165,7 +169,8 @@ def load_done(name: str, h: str) -> tuple[set, bool]:
     p = STATE_DIR / f"{name}.json"
     if not p.exists():
         return set(), False
-    rec = json.load(open(p, encoding="utf-8"))
+    with open(p, encoding="utf-8") as fh:
+        rec = json.load(fh)
     return (set(rec["done"]), False) if rec.get("hash") == h else (set(), True)
 
 
@@ -197,16 +202,33 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--python", default=sys.executable)
     ap.add_argument("--fresh", action="store_true", help="ignore and remove the record of finished steps (13 Oct 2026: the default resumes)")
     a = ap.parse_args(argv)
-    spec = json.load(open(_p(a.spec), encoding="utf-8"))
+    with open(_p(a.spec), encoding="utf-8") as fh:
+        spec = json.load(fh)
     name = spec["name"]
     steps = expand(spec, a.python)
     if a.dry_run:
-        for c in spec.get("wait", []):
-            print(f"wait {c['kind']}: {'holds' if condition_holds(c) else 'not yet'}")
-        for st in steps:
-            print(f"{st['label']}: (cwd {Path(st['cwd']).name}) {' '.join(st['argv'])}")
-        print("outputs:", ", ".join(spec.get("outputs", [])) or "—")
-        return 0
+        return dry_run(spec, steps)
+    try:
+        return run_chain(spec, steps, a.fresh)
+    except Exception as e:
+        # without a marker, runspec's resume could not tell this failure from a run a Windows restart killed (TASKS 83)
+        marker(name, f"RUN FAILED: {type(e).__name__}: {e}")
+        raise
+
+
+def dry_run(spec: dict, steps: list[dict]) -> int:
+    """The expanded steps and the wait conditions' state; nothing runs."""
+    for c in spec.get("wait", []):
+        print(f"wait {c['kind']}: {'holds' if condition_holds(c) else 'not yet'}")
+    for st in steps:
+        print(f"{st['label']}: (cwd {Path(st['cwd']).name}) {' '.join(st['argv'])}")
+    print("outputs:", ", ".join(spec.get("outputs", [])) or "—")
+    return 0
+
+
+def run_chain(spec: dict, steps: list[dict], fresh: bool) -> int:
+    """Wait, then run the steps not finished in an earlier run; 0 when every step and declared output is there, 1 at the first failure."""
+    name = spec["name"]
     env = dict(os.environ, PYTHONUTF8="1", PYTHONUNBUFFERED="1")
     marker(name, f"armed (pid {os.getpid()}), {len(steps)} steps")
     waits = spec.get("wait", [])
@@ -216,7 +238,7 @@ def main(argv: list[str] | None = None) -> int:
             time.sleep(float(spec.get("poll_s", 600)))
     marker(name, f"starting: {len(steps)} steps")                     # the line a run spec's start_regex waits for (TASKS 63)
     h = steps_hash(steps)
-    if a.fresh:
+    if fresh:
         (STATE_DIR / f"{name}.json").unlink(missing_ok=True)
     done, stale = load_done(name, h)
     if stale:
