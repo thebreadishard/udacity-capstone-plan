@@ -14,7 +14,7 @@
  ],
  "progress": {"regex": "^\\(CX\\) P3c_[0-9a-f]+ (start|done|skipped|KILLED|FAILED)|^=== \\(CX\\) running: ", "max_gap_minutes": 120,
               "start_regex": "^=== \\(CX\\) start: ", "heartbeat_glob": "molecules/*/pyscf.log"},
- "marker_regex": "^=== \\(CX\\) |^\\(CX\\) P3c_[0-9a-f]+ (done|KILLED|FAILED)",
+ "marker_regex": "^=== \\(CX\\) (armed|start|run done|STOPPED)|^\\(CX\\) P3c_[0-9a-f]+ (KILLED|FAILED)",
  "end_regex": "^=== \\(CX\\) run done: 14 of 14 ",
  "dry_run_args": "--dry-run",
  "threads": 32,
