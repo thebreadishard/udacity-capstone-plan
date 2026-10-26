@@ -66,7 +66,7 @@ B3LYP/6-31G* by +13.8 / 19.3 cm⁻¹ (mean / rms, 210 modes): CH-oop +23.0, ring
    strongest.
 2. Against experiment, the honest picture has two parts: a coupled-cluster Hessian is accurate for in-plane ring modes (benzene 5.5 cm⁻¹ rms
    like for like), and the anharmonic step is not optional. The geometry convention (CC Hessian at the B3LYP geometry) costs about −38 cm⁻¹
-   on C–H stretches — a known, systematic term the end product has to carry (TASKS 127).
+   on C–H stretches — a known, systematic term the end product has to carry; the first-order geometry term that removes it was validated on 22 Sep 2026 (ledger; `probes/r0_geometry_check_oop.py`: benzene's C–H stretches MAE 52 → 14 against CCSD(T)), so TASKS 127 is about carrying it into the end product, not inventing it.
 3. The largest recent library (Mai 2026) reaches 15–23 cm⁻¹ rms on these two molecules after scaling, with family-dependent offsets; that is
    the bar a scale-factor-free pipeline should clear on fundamentals.
 
