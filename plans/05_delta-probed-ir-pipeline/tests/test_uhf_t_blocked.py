@@ -24,7 +24,6 @@ import uhf_t_blocked as U  # noqa: E402
 TOL = 1e-12
 BLOCKS = [1, 3, 5, U.BLOCK]
 LAMBDA_FIELDS = ("l1a_t", "l1b_t", "l2aa_t", "l2ab_t", "l2bb_t")
-MOLECULE_OF: dict[int, str] = {}
 MOLECULES = {
     "H2O+": dict(atom="O 0 0 0; H 0 -0.757 0.587; H 0 0.757 0.587", charge=1, spin=1),
     "NO": dict(atom="N 0 0 0; O 0 0 1.15", charge=0, spin=1),
@@ -37,9 +36,8 @@ def case(request):
     name, frozen = request.param
     mol = gto.M(basis="6-31g", verbose=0, **MOLECULES[name])
     mf = scf.UHF(mol).run(conv_tol=1e-12)
-    mycc = cc.UCCSD(mf, frozen=frozen).run(conv_tol=1e-10)
+    mycc = cc.UCCSD(mf, frozen=frozen).run(conv_tol=1e-10, conv_tol_normt=1e-8)   # stationary amplitudes: a gradient assumes them
     l1, l2 = mycc.solve_lambda()
-    MOLECULE_OF[id(mycc)] = name
     return mycc, mycc.ao2mo(), l1, l2
 
 
@@ -148,9 +146,12 @@ FD_PLACES = 5            # that test's agreement
 
 
 def ccsd_t_gradient(mycc, eris):
-    """pyscf's own call (grad/test/test_uccsd_t.py): the (T) lambda solved explicitly, then Gradients(mycc).kernel(t1, t2, l1, l2)."""
+    """pyscf's own call (grad/test/test_uccsd_t.py): the (T) lambda solved explicitly, then Gradients(mycc).kernel(t1, t2, l1, l2). The
+    lambda must converge: on NO it needs more than pyscf's default 50 cycles, and an unconverged one put the gradient 1.5e-5 off (TASKS 132)."""
     from pyscf.grad import uccsd_t as uccsd_t_grad
-    _, l1, l2 = uccsd_t_lambda.kernel(mycc, eris, mycc.t1, mycc.t2, tol=1e-10)
+    conv, l1, l2 = uccsd_t_lambda.kernel(mycc, eris, mycc.t1, mycc.t2, tol=1e-10, max_cycle=500)
+    if not conv:
+        raise RuntimeError("the (T) lambda did not converge in 500 cycles")
     return uccsd_t_grad.Gradients(mycc).kernel(mycc.t1, mycc.t2, l1, l2, eris=eris)
 
 
@@ -190,15 +191,19 @@ def fd_gradient(mycc) -> np.ndarray:
     return g
 
 
-# NO (6-31G), all-electron and frozen core: pyscf's own UCCSD gradient, without (T) and with nothing of ours installed, is 1.1e-5 off central differences that
-# have converged (δ 1e-3 / 5e-4 Å agree to 2e-7; the UHF is internally stable) - a pyscf matter, diagnosed apart (TASKS 132).
-PYSCF_UCCSD_GRADIENT_OFF = {("NO", 0), ("NO", 1)}
+def ucphf_passes_lindep() -> bool:
+    """pyscf#3333 (4 Aug 2026, after 2.14.0) passes lindep = max(tol², eps) to lib.krylov in ucphf; without it the Krylov solve of NO's
+    Z-vector stops at a relative residual of 4e-5 and the UCCSD(T) gradient is 1.5e-5 off FD (TASKS 132)."""
+    import inspect
+
+    from pyscf.scf import ucphf
+    return "lindep" in inspect.getsource(ucphf.solve_nos1)
 
 
 def test_the_installed_gradient_equals_finite_differences(case, monkeypatch, request):
     mycc, eris, _, _ = case
-    if (MOLECULE_OF[id(mycc)], mycc.frozen) in PYSCF_UCCSD_GRADIENT_OFF:
-        request.applymarker(pytest.mark.xfail(strict=True, reason="pyscf's UCCSD gradient of NO is 1.1e-5 off FD (TASKS 132)"))
+    if mycc.mol.atom_symbol(0) == "N" and not ucphf_passes_lindep():
+        request.applymarker(pytest.mark.xfail(strict=True, reason="pyscf without #3333: ucphf's Krylov stops early on NO (TASKS 132)"))
     keep_pyscf(monkeypatch)
     U.install(block=3, slab_mb=slab_mb(mycc.t2[1].shape[2], 2))
     got = ccsd_t_gradient(mycc, eris)
