@@ -124,3 +124,21 @@ the code of §7 merged → chain 44 (Wed 28 – Thu 29 Oct) → stage 1 from the
 44's registered read (≈ 36 laptop hours, 18 trainings) and take its winner, or fold projected/ridge into the search as a categorical and
 close chain 44 with a marker. (c) The budget: about three laptop days as above, or fewer configurations. (d) Order on the laptop after
 Wednesday: chain 35's read → code (§7) → chain 44 if kept → v1.4 stage 1 when the cation labels are in (the CCX53's cations ≈ 29–30 Oct).
+
+## 9. Amendment, 26 October 2026 12:3x — what building the code showed (before any number)
+
+1. **The parity-odd factor and rung B's pair features do not combine** (`rungC_config`: the pair features carry signed primitive values,
+   which are parity-odd), and the carried recipe uses the pair features. 'Parity factor on' (§2) is therefore not a fixed choice but a
+   categorical of the search: the control is the carried recipe (pair features), `c01_control_parity` the same values with the parity
+   factor and without the pair features (the one ablation), and each drawn configuration takes one of the two by a fair coin. The
+   no-worsening rule decides between them like any other hyperparameter.
+2. **The pool** is layers A, A2, B, P3 and P3c (`--pool-layers A,A2,B,P3,P3c`); on 26 Oct 15 of the 60 cations carry both analytic
+   labels, about 29 after the CCX53's fourteen are fetched. Cation rows without analytic labels train on FD as the loader does.
+3. **Fixed numbers:** search seed 20261026, selection set `26:0.15` (seed 26, 15 % of the pool by whole scaffold cores), epoch cap
+   300, patience 20. The target (projected or ridge) is part of every configuration, so the frozen list and its sha256 are written by
+   `probes/v14_search.py plan --target <chain 44's choice> --carried-models <three checkpoints>` after chain 44's read, before the first
+   training; the carried version's checkpoints are named in the same file.
+4. **The cation number** of §4 is the per-molecule corrected ω rms of the cation rows in the selection set against the neutral rows:
+   the trainer's per-molecule record carries no per-family diagonal.
+5. **The code** (branch `v14-search-code`, merged after chain 35): `--weight-decay`, `--selection-split`, `probes/promotion_read.py`
+   (shared with chain 35's read), `probes/v14_search.py`; the stage chains and runspecs are written by the reads themselves.
