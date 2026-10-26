@@ -39,6 +39,7 @@
     "tensor_input": false,
     "threads": 1,
     "use_analytic": true,
+    "weight_decay": 0.0001,
     "zero_hlow": false
    },
    "aux_class_scale": [
@@ -849,6 +850,7 @@
    ],
    "target_residuals": {},
    "tensor_input": false,
+   "weight_decay": 0.0001,
    "zero_hlow": false,
    "zero_rule": {
     "a": {
@@ -930,6 +932,7 @@
     "tensor_input": false,
     "threads": 1,
     "use_analytic": true,
+    "weight_decay": 0.0001,
     "zero_hlow": false
    },
    "aux_class_scale": [
@@ -1910,6 +1913,7 @@
     }
    },
    "tensor_input": false,
+   "weight_decay": 0.0001,
    "zero_hlow": false,
    "zero_rule": {
     "a": {

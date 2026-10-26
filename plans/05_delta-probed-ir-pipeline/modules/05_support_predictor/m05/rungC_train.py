@@ -392,7 +392,7 @@ def _fit(model, loss: LossSettings, cfg: TrainConfig, fold: Fold, seed: int, log
     """AdamW, one molecule per step, gradient norm clipped at 5; with validation ids the best state on their auxiliary term is kept and,
     with patience, restored. Returns (history, best epoch)."""
     tensors, train_ids, val_ids = fold.tensors, fold.fit_ids, fold.val_ids
-    opt = torch.optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=1e-4)
+    opt = torch.optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay)
     rng = np.random.default_rng(seed)
     hist, t0 = [], time.time()
     best, best_state, best_ep, since = float("inf"), None, 0, 0
@@ -499,6 +499,25 @@ def size_split(pool: list, n_atoms: dict, test_min_atoms: int = 0, pool_max_atom
     if test_min_atoms and not test:
         raise SystemExit(f"--size-test-min-atoms {test_min_atoms}: no pool molecule is that large")
     return keep, test
+
+
+def selection_split(pool: list, mols: dict, seed: int, fraction: float) -> tuple[list, list]:
+    """(pool without the selection set, the selection set): whole scaffold cores (the unit hold-out (b) is split by) in the order of a
+    seeded permutation, until at least `fraction` of the pool is drawn. Siblings never sit on both sides, so the set measures what the
+    hold-outs measure — a new family — and not a memorised one. The pool keeps its order."""
+    cores = sorted({mols[i]["core"] for i in pool})
+    order = [cores[k] for k in np.random.default_rng(seed).permutation(len(cores))]
+    by_core = {c: [i for i in pool if mols[i]["core"] == c] for c in cores}
+    chosen: set = set()
+    n = 0
+    for c in order:
+        if n >= fraction * len(pool):
+            break
+        chosen.add(c)
+        n += len(by_core[c])
+    if len(chosen) == len(cores):
+        raise SystemExit(f"--selection-split: a fraction of {fraction:g} takes every scaffold core of the pool")
+    return [i for i in pool if mols[i]["core"] not in chosen], [i for i in pool if mols[i]["core"] in chosen]
 
 
 def exclude_pool_ids(pool: list, path: str | None) -> tuple[list, list]:
@@ -706,6 +725,11 @@ def select_corpus(cfg: TrainConfig, log) -> Corpus:
         test_a = sorted(i for i, m in mols.items() if m["layer"] == "A")
         if not pool:
             raise SystemExit("--split layerB: no admitted layer-B molecules under the molecules directory")
+    test_sel: list = []
+    if cfg.selection:
+        pool, test_sel = selection_split(pool, mols, *cfg.selection)
+        log(f"selection set: {len(test_sel)} molecules of {len({mols[i]['core'] for i in test_sel})} scaffold cores (seed, fraction "
+            f"{cfg.selection}); pool {len(pool)}")
     sizes, seeds = pool_sizes(cfg.sizes, len(pool)), cfg.seed_list
     if cfg.smoke:
         sizes, seeds = [min(SMOKE_POOL, len(pool))], [0]
@@ -714,7 +738,7 @@ def select_corpus(cfg: TrainConfig, log) -> Corpus:
         if cfg.overfit_one not in mols:
             raise SystemExit(f"--overfit-one {cfg.overfit_one}: not an admitted molecule of this corpus")
         pool, sizes, test_a, test_b = [cfg.overfit_one], [1], [cfg.overfit_one], [cfg.overfit_one]
-    tests = {"a": test_a, "b": test_b} | ({"s": test_s} if test_s else {})
+    tests = {"a": test_a, "b": test_b} | ({"s": test_s} if test_s else {}) | ({"sel": test_sel} if test_sel else {})
     return Corpus(mols=mols, pool=pool, tests=tests, cores=cores, sizes=sizes, seeds=seeds, n_atoms=nat, excluded=excluded, substituted=substituted)
 
 
@@ -763,6 +787,7 @@ def new_record(cfg: TrainConfig, corpus: Corpus, target_residuals: dict) -> dict
                 pool_max_atoms=cfg.pool_max_atoms, holdout_s=t.get("s", []),
                 n_molecules=len(corpus.mols), holdout_a=t["a"], holdout_b=t["b"], scaffold_cores=corpus.cores, pool=len(corpus.pool),
                 pool_ids=corpus.pool, pool_layers=cfg.pool_layers, sizes=corpus.sizes, seeds=corpus.seeds, epochs=cfg.epochs, lr=cfg.lr,
+                weight_decay=cfg.weight_decay,
                 aux_weight=cfg.aux_weight, loss=cfg.loss, scale=cfg.scale, inner_val=cfg.inner_val, patience=cfg.patience,
                 pretrained=cfg.pretrained, aggregation=cfg.aggregation, pretrained_elements=cfg.pretrained_elements, aux_mode=cfg.aux,
                 zero_hlow=cfg.zero_hlow, overfit_one=cfg.overfit_one, tensor_input=cfg.tensor_input, head=cfg.head, sqm_scale=cfg.sqm_scale,
@@ -771,7 +796,8 @@ def new_record(cfg: TrainConfig, corpus: Corpus, target_residuals: dict) -> dict
                 kring_weight=cfg.kring_weight, kdiag_weight=cfg.kdiag_weight, kdiag_mode=cfg.kdiag_mode, hinge_feature=cfg.hinge_feature,
                 target_residuals=target_residuals, pair_class_names=list(PAIR_CLASS_NAMES), substituted_analytic=corpus.substituted,
                 curve={}, zero_rule={h: zero_rule(corpus.mols, ids, corpus.pool) for h, ids in t.items() if ids},
-                **({"family_scale": cfg.family_scale} if cfg.family_scale else {}))
+                **({"family_scale": cfg.family_scale} if cfg.family_scale else {}),
+                **({"selection_split": cfg.selection_split, "holdout_sel": t["sel"]} if "sel" in t else {}))
 
 
 def table_header(cfg: TrainConfig, date: str) -> list[str]:
@@ -816,8 +842,9 @@ def train_and_read(cfg: TrainConfig, corpus: Corpus, tensors: dict, n: int, seed
     dF_of = predictor(model, tensors, corpus.mols)
     if cfg.save_model:
         path = Path(f"{cfg.out_prefix}_model_n{n}_seed{seed}.pt")
-        save_hybrid_model(model, trained.loss, path, cfg.model_dump(exclude=set() if cfg.family_scale else {"family_scale"}), n, seed,
-                          train_ids=tr)                      # the key only when used: checkpoints without it keep their settings
+        # an optional key only when used, so checkpoints without it keep their settings
+        unused = {k for k, v in (("family_scale", cfg.family_scale), ("selection_split", cfg.selection_split)) if v is None}
+        save_hybrid_model(model, trained.loss, path, cfg.model_dump(exclude=unused), n, seed, train_ids=tr)
         log(f"  model saved: {path}")
     out = {"seed": seed, "train_history": trained.history, "output_scale": trained.output_scale, "class_scale": trained.class_scale,
            "aux_class_scale": None if trained.loss.class_scale is None else trained.loss.class_scale.tolist(),

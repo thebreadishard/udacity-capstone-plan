@@ -22,6 +22,8 @@ from rungC_targets import LAM_REL
 
 KRING_WEIGHT = 1.0
 HYBRID_HIDDEN = 128
+WEIGHT_DECAY = 1e-4
+MAX_SELECTION_FRACTION = 0.3
 EPOCHS = 60
 SMOKE_EPOCHS = 2
 SMOKE_POOL = 5
@@ -44,6 +46,8 @@ class TrainConfig(BaseModel):
     seeds: str = "0,1,2"
     epochs: int | None = Field(None, ge=1)
     lr: float = Field(1e-3, gt=0)
+    weight_decay: float = Field(WEIGHT_DECAY, ge=0)
+    selection_split: str | None = None
     split: Literal["e6", "layerB"] = "e6"
     use_analytic: bool = False
     smoke: bool = False
@@ -84,6 +88,13 @@ class TrainConfig(BaseModel):
     def _family_scale_list(cls, v: str | None) -> str | None:
         if v is not None:
             parse_family_scale(v)
+        return v
+
+    @field_validator("selection_split")
+    @classmethod
+    def _selection_spec(cls, v: str | None) -> str | None:
+        if v is not None:
+            parse_selection_split(v)
         return v
 
     @field_validator("aggregation")
@@ -137,9 +148,28 @@ class TrainConfig(BaseModel):
         return [int(s) for s in self.seeds.split(",")]
 
     @property
+    def selection(self) -> tuple[int, float] | None:
+        """(seed, fraction) of the selection set, or None."""
+        return parse_selection_split(self.selection_split) if self.selection_split else None
+
+    @property
     def family_scales(self) -> dict[str, float]:
         """The --family-scale factors per mode family; empty when the labels are not distorted."""
         return parse_family_scale(self.family_scale) if self.family_scale else {}
+
+
+def parse_selection_split(text: str) -> tuple[int, float]:
+    """'SEED:FRACTION' as (seed, fraction): a non-negative integer seed and a fraction in (0, MAX_SELECTION_FRACTION]."""
+    seed, sep, fraction = text.partition(":")
+    if not sep or not seed.isdigit():
+        raise ValueError(f"selection_split {text!r}: SEED:FRACTION with a non-negative integer seed")
+    try:
+        f = float(fraction)
+    except ValueError:
+        raise ValueError(f"selection_split {text!r}: the fraction is not a number") from None
+    if not 0 < f <= MAX_SELECTION_FRACTION:
+        raise ValueError(f"selection_split {text!r}: the fraction must lie in (0, {MAX_SELECTION_FRACTION}]")
+    return int(seed), f
 
 
 def parse_family_scale(text: str) -> dict[str, float]:
@@ -192,6 +222,10 @@ CONFLICTS: tuple[tuple[Callable[[TrainConfig], object], str], ...] = (   # (trut
      "--split layerB builds its own pool; the size split and --exclude-ids-file act on the e6 pool"),
     (lambda c: c.smoke and c.overfit_one,
      "--smoke and --overfit-one each set the pool, sizes and hold-outs; choose one"),
+    (lambda c: c.selection_split and c.split == "layerB",
+     "--selection-split draws from the e6 pool; --split layerB builds its own"),
+    (lambda c: c.selection_split and c.overfit_one,
+     "--overfit-one trains and reads one molecule; a selection set needs a pool"),
 )
 
 
@@ -214,6 +248,10 @@ def build_parser(description: str) -> argparse.ArgumentParser:
     ap.add_argument("--loss", default="registered", choices=["registered", "internal"], help="'internal' = the relative internal-ΔF term alone")
     ap.add_argument("--scale", default="rms", choices=["rms", "class"],
                     help="Cartesian head: output scale = training RMS ΔH (registered) or one per entry class")
+    ap.add_argument("--weight-decay", type=float, default=WEIGHT_DECAY, help="AdamW's decoupled weight decay")
+    ap.add_argument("--selection-split", default=None, metavar="SEED:FRACTION",
+                    help="a selection set for choosing hyperparameters: whole scaffold cores drawn from the pool with this seed until "
+                         "the fraction of the pool is reached; never trained, read as hold-out (sel)")
     ap.add_argument("--inner-val", type=float, default=0.0, help="fraction of the training ids held out per seed as inner validation")
     ap.add_argument("--patience", type=int, default=0, help="early stopping on the inner validation term, best state restored (0 = off)")
     ap.add_argument("--kring-weight", type=float, default=KRING_WEIGHT, help="weight of the kring term inside --aux both (the pattern term keeps weight 1)")
