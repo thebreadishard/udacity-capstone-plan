@@ -17,6 +17,8 @@ from __future__ import annotations
 
 import functools
 import itertools
+import logging
+import time
 from collections.abc import Callable
 from dataclasses import dataclass
 
@@ -33,6 +35,7 @@ SWAP_JK_BC = (0, 2, 1, 3, 5, 4)
 INTEGRALS = ("ovvv", "OVVV", "ovVV", "OVvv", "ovoo", "OVOO", "ovOO", "OVoo", "ovov", "OVOV", "ovOV")
 UNPACKED = {"ovvv": "get_ovvv", "OVVV": "get_OVVV", "ovVV": "get_ovVV", "OVvv": "get_OVvv"}   # read through eris' unpacking getters
 SIX = ("rw", "rw*", "wvd", "wvd*")            # the block arrays a table term may name
+LOG = logging.getLogger(__name__)            # one INFO line per spin case: a sweep of hours is not silent
 
 Blocks = tuple[slice, slice, slice]
 Fn = Callable[[Blocks], np.ndarray]
@@ -262,12 +265,15 @@ def _paired_sweep(case: Case, pair: Pair, term: Term, s: Inputs, out: dict, size
 def _run(table: dict[str, list[Term]], pair: Pair, s: Inputs, out: dict, size: int) -> None:
     if size < 1:
         raise ValueError(f"block {size}: at least one virtual index per block")
+    which = next(k for k, v in TABLES.items() if v is table)
     for name, case in _cases(s).items():
+        t0 = time.time()
         six = {term: _six_letters(term) for term in table[name]}
         paired = [t for t, ls in six.items() if len(ls) == 2 and ls[0][3:] != ls[1][3:]]
         _local_sweep(case, pair, [t for t in table[name] if t not in paired], s, out, size)
         for term in paired:
             _paired_sweep(case, pair, term, s, out, size)
+        LOG.info("(T) %s %s done in %.0f s (block %d)", which, name, time.time() - t0, size)
 
 
 # ------------------------------------------------------------------------------------------------------------------------- pyscf's lines
@@ -316,6 +322,9 @@ GAMMA2: dict[str, list[Term]] = {
             ("dooOV", "mjab,ijkabc->imkc", ("t2ab", "wvd*"), -.25), ("dOOov", "jmbc,ijkabc->kmia", ("t2bb", "wvd*"), -.125),
             ("dOVOV", "ia,ijkabc->jbkc", ("t1a", "rw*"), .25), ("dovOV", "jb,ijkabc->iakc", ("t1b", "rw*"), .25)],
 }
+
+
+TABLES = {"lambda": LAMBDA, "gamma1": GAMMA1, "gamma2": GAMMA2}
 
 
 # ------------------------------------------------------------------------------------------------------------------------- the entry points
