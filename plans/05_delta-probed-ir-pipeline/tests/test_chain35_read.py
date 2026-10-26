@@ -70,9 +70,20 @@ def test_the_baselines_can_disagree_and_the_like_for_like_one_reads(tmp_path):
     assert v.branch == "labels part of it" and v.branch_against_registered == "labels not it" and not v.baselines_agree
 
 
-def test_promotion_goes_to_the_user_when_not_lower_everywhere(tmp_path):
+def test_promotion_goes_to_the_user_when_any_quantity_is_worse(tmp_path):
     v = verdict(tmp_path, Spec({**GOOD_A, "CH-stretch": 1.4}), Spec({**GOOD_A, "other": 3.5, "CH-stretch": 1.3}))
-    assert not v.promoted and "(a) CH-stretch" in v.worse_or_equal and "goes to the user" in v.promotion
+    assert not v.promoted and "(a) CH-stretch" in v.worse and "goes to the user" in v.promotion
+
+
+def test_equal_quantities_do_not_block_when_one_is_lower(tmp_path):
+    """The user's rule (26 Oct): a new version may worsen none of the five; equal at the reported precision is allowed."""
+    v = verdict(tmp_path, Spec({**GOOD_A, "other": 3.0}), Spec(GOOD_A))      # only 'other' on (a) and (b) lower, the rest equal
+    assert v.promoted and v.worse == () and "lower on 2 of 10" in v.promotion
+
+
+def test_equal_everywhere_promotes_nothing(tmp_path):
+    v = verdict(tmp_path, Spec(GOOD_A), Spec(GOOD_A))
+    assert not v.promoted and v.promotion == "equal everywhere: nothing to promote"
 
 
 def test_refuses_an_unfrozen_holdout_b(tmp_path):

@@ -11,10 +11,10 @@ Wednesday's corpus about 809). Registered lines on hold-out (a), seed means:
 - otherwise 'other' falls by ≥ 0.3 against chain 34 → the labels were part of it, the low-mode input is designed on analytic labels;
 - otherwise → the labels were not it; the input design is the next lever.
 The fall is read against chain 34 read again (the like-for-like baseline) and, beside it, against the registered table of 5 Oct; when the two
-put the read in different branches the report says so. Promotion follows decision 57 (the registered recipe best on both hold-outs is
-carried; an open line does not block): chain 35 is carried as version 1.3 when its seed mean is lower than chain 34's on every family and
-the coupling ratio of both hold-outs (the precedent of 4 Oct); otherwise the per-quantity table goes to the user. Every line is read on the
-number as reported (two decimals in cm⁻¹, three for the ratio). Writes <out>.md and .json.
+put the read in different branches the report says so. Promotion follows decision 57 with the user's rule of 26 Oct (a new version may
+worsen none of the five — the four families and the coupling ratio — on either hold-out): chain 35 is carried as version 1.3 when no seed
+mean is above chain 34's and at least one is below; otherwise the per-quantity table goes to the user. Every line and comparison is read on
+the number as reported (two decimals in cm⁻¹, three for the ratio). Writes <out>.md and .json.
 """
 from __future__ import annotations
 
@@ -75,7 +75,7 @@ class Verdict:
     other_fall_registered: float
     promoted: bool
     promotion: str
-    worse_or_equal: tuple[str, ...]
+    worse: tuple[str, ...]
 
 
 def load_arm(paths: list[Path]) -> Arm:
@@ -132,12 +132,17 @@ def decide(new: Arm, carried: Arm, comparisons: list[Comparison]) -> Verdict:
     fall = reported(reported(carried.mean("a", "other"), "other") - a["other"], "other")
     fall_registered = reported(REGISTERED_BASELINE_A["other"] - a["other"], "other")
     branch, branch_registered = branch_of(t1, fall), branch_of(t1, fall_registered)
-    worse = tuple(f"({c.hold}) {c.quantity}" for c in comparisons if reported(c.new, c.quantity) >= reported(c.carried, c.quantity))
+    worse = tuple(f"({c.hold}) {c.quantity}" for c in comparisons if reported(c.new, c.quantity) > reported(c.carried, c.quantity))
+    better = [c for c in comparisons if reported(c.new, c.quantity) < reported(c.carried, c.quantity)]
     if worse:
-        promotion = f"not lower everywhere ({', '.join(worse)}): the per-quantity table goes to the user (decision 57)"
+        promotion = f"worse on {', '.join(worse)}: not promoted; the per-quantity table goes to the user (decision 57, the user's rule of 26 Oct)"
+    elif not better:
+        promotion = "equal everywhere: nothing to promote"
     else:
-        promotion = f"lower on every family and the coupling ratio of both hold-outs: carried as version {NEW_VERSION} (decision 57)"
-    return Verdict(t1, branch, branch_registered, branch == branch_registered, fall, fall_registered, not worse, promotion, worse)
+        promotion = (f"worse on none of the five on either hold-out, lower on {len(better)} of {len(comparisons)}: carried as version {NEW_VERSION} "
+                     "(decision 57, the user's rule of 26 Oct)")
+    promoted = not worse and bool(better)
+    return Verdict(t1, branch, branch_registered, branch == branch_registered, fall, fall_registered, promoted, promotion, worse)
 
 
 def _cell(values: tuple[float, ...], digits: int) -> str:

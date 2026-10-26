@@ -1,7 +1,6 @@
 # Design and draft registration, 26 October 2026 — ΔH-network version 1.4: what it carries, and a search for hyperparameters we do not know
 
-*Draft: written before any v1.4 number exists. It becomes a registration when the user has answered the open points of §8; until then
-nothing in it runs. TASKS 129. The user, 26 Oct: "Houd bij neurale netwerken rekening met het feit dat we vantevoren niet weten wat de beste
+*Registered 26 October 2026 12:1x on the user's answers to §8, before any v1.4 number exists; the frozen configuration list and the test-set hashes are added by step 0 before the first training. TASKS 129. The user, 26 Oct: "Houd bij neurale netwerken rekening met het feit dat we vantevoren niet weten wat de beste
 hyperparameters zijn."*
 
 ## 1. Why a new version
@@ -48,9 +47,10 @@ carved from the training pool, ~15 %, **grouped by parent scaffold** (the unit h
 The trainer's inner validation split stays for early stopping only: it is a random per-molecule split, so a molecule's siblings sit on both
 sides and it rewards memorising a family, which is not the generalisation the hold-outs test.
 
-**Selection score.** The registered read-outs (E6.readout, as on the hold-outs) on the selection set, each divided by its line (the four
-families' diagonal rms by 3 cm⁻¹, the coupling ratio by 0.25), averaged: one number in which 1.0 means 'on the lines'. The worst of the five
-is reported beside it (decision 53 asks every family under its line), and the cation rows' score separately.
+**Selection score and the no-worsening rule.** The registered read-outs (E6.readout, as on the hold-outs) on the selection set, each
+divided by its line (the four families' diagonal rms by 3 cm⁻¹, the coupling ratio by 0.25), averaged: one number in which 1.0 means 'on
+the lines'. **A configuration is eligible only when none of the five is worse than the control's** (the user's rule of 26 Oct, decision
+57's amendment); the score ranks the eligible ones. The worst of the five and the cation rows' score are reported beside it.
 
 **Space** (bounded by the evidence above; log scale where marked):
 
@@ -71,20 +71,23 @@ later version, not v1.4 (it needs code no run has used).
 (Bergstra & Bengio 2012), and a list drawn once with a fixed seed and committed before the first training leaves no room to steer the search
 by its own results. Stage 1: the carried configuration (the control) plus 24 drawn configurations, one seed each, the full pool, with the
 parity factor on; plus the control with the parity factor off (the one ablation). Stage 2: the best four of stage 1 by selection score and the
-control, three seeds each (stage 1's seed reused). **The winner** is the stage-2 configuration with the lowest mean selection score — but it
-replaces the control only when its advantage exceeds twice the combined standard error of the two seed means; otherwise the control's values
-stay (the simpler choice when the data cannot tell). Every stage-1 and stage-2 score is reported, including the losers.
+control, three seeds each (stage 1's seed reused). Stage 1 screens on one seed, so its no-worsening filter is noisy: it ranks by score and
+reports the filter; the filter decides in stage 2. **The winner** is the eligible stage-2 configuration (no seed mean of the five above the
+control's) with the lowest mean selection score — and it replaces the control only when its advantage exceeds twice the combined standard
+error of the two seed means; otherwise the control's values stay (the simpler choice when the data cannot tell). Stage 2 also trains the
+winner with the target chain 44 did not choose (three seeds), so the target choice is checked at the winning hyperparameters. Every
+stage-1 and stage-2 score is reported, including the losers.
 
 **Price.** Chain 41's size arm trained 972 molecules in 3,778 / 7,011 / 5,796 s per seed on 8 threads (`out/E7_rungC_chain41_size.json`), ≈ 1.6 h;
-at ~1,200 molecules ≈ 2 h per training. Stage 1: 26 trainings ≈ 52 h; stage 2: 10 new trainings ≈ 20 h; the read: minutes. About three laptop
-days, one training at a time (peak ≈ 7.7 GB against the 13 GB budget). Free of charge: the laptop.
+at ~1,200 molecules ≈ 2 h per training. Stage 1: 26 trainings ≈ 52 h; stage 2: 10 new trainings and 3 for the target check ≈ 26 h; the read: minutes. About three
+laptop days, one training at a time (peak ≈ 7.7 GB against the 13 GB budget). Free of charge: the laptop.
 
 ## 5. The read and the promotion
 
 The winner's three stage-2 models are the version 1.4 candidates, read once on every frozen test set: (a), (b), (c) (cations separately),
-chain 41's s5/s4N, and beside them the selection score. Promotion by decision 57 against the carried version at that moment (1.1, or 1.3 if
-chain 35 carried): lower seed mean on every family and the coupling ratio of both hold-outs → carried as 1.4; otherwise the per-quantity table
-goes to the user. The comparison reuses `probes/chain35_read.py`'s logic, moved into one shared module (one implementation). **Predictions,
+chain 41's s5/s4N, and beside them the selection score. Promotion by decision 57 with its amendment of 26 Oct against the carried version
+at that moment (1.1, or 1.3 if chain 35 carried): no seed mean of the five above the carried one's on either hold-out and at least one
+below → carried as 1.4; otherwise the per-quantity table goes to the user. The comparison reuses `probes/chain35_read.py`'s logic, moved into one shared module (one implementation). **Predictions,
 written before any number:** the search moves the hold-outs less than the data does — most of v1.4's gain over 1.1 comes from the analytic
 labels and the added rows; the winner's hyperparameters differ from the carried ones in learning rate and capacity more than in the loss
 weights (34b/34c found no response there); the parity factor costs less than the seed range.
@@ -107,7 +110,15 @@ numbers. Registered separately, after v1.4's stage 1.
 4. The shared promotion read (from `chain35_read.py`), used by chain 35 and by v1.4.
 A regression pin first: the trainer with the carried recipe and no new switch must give the current record to the bit.
 
-## 8. Open points for the user
+## 8. The user's answers (26 Oct 12:1x)
+
+(a) 'Een nieuwe versie mag geen van de vijf verslechteren' — the no-worsening rule of §4 and §5, decision 57's amendment; the averaged
+score ranks what passes it. (b) Chain 44 kept, first after chain 35 (it fits the wait for the cation labels and answers its own size
+question); stage 2 checks its target at the winning hyperparameters. (c) The budget agreed. (d) The order agreed: chain 35's read →
+the code of §7 merged → chain 44 (Wed 28 – Thu 29 Oct) → stage 1 from the cation fetch (≈ Thu 29 Oct evening, ≈ 52 h) → stage 2
+(≈ 26 h) → the read ≈ Mon 2 Nov → chain 42 after lever 5.
+
+### The open points as they were put
 
 (a) The selection score: the mean of the five line-normalised read-outs (proposed), or the worst of them. (b) The target: wait for chain
 44's registered read (≈ 36 laptop hours, 18 trainings) and take its winner, or fold projected/ridge into the search as a categorical and
