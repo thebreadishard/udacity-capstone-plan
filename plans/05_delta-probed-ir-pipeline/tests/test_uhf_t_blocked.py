@@ -4,6 +4,7 @@ divide the virtual counts (edge blocks and the one-block case). The (T) lambda a
 `uccsd_t_rdm._gamma1_intermediates` (for_grad both ways), γ2 against `uccsd_t_rdm._gamma2_intermediates` uncompressed, and compressed against
 the same with the E8 probe's dvvVV fix (pyscf#3305/#3387); the out-of-core γ2 (`uccsd_gamma2_outcore`, v⁴ blocks in an HDF5 file, slabs of
 one, three and all virtual indices) against pyscf's in-core UCCSD and (T) γ2. Runs where pyscf is installed (WSL ~/qc05)."""
+import itertools
 import sys
 from pathlib import Path
 
@@ -23,6 +24,7 @@ import uhf_t_blocked as U  # noqa: E402
 TOL = 1e-12
 BLOCKS = [1, 3, 5, U.BLOCK]
 LAMBDA_FIELDS = ("l1a_t", "l1b_t", "l2aa_t", "l2ab_t", "l2bb_t")
+MOLECULE_OF: dict[int, str] = {}
 MOLECULES = {
     "H2O+": dict(atom="O 0 0 0; H 0 -0.757 0.587; H 0 0.757 0.587", charge=1, spin=1),
     "NO": dict(atom="N 0 0 0; O 0 0 1.15", charge=0, spin=1),
@@ -37,6 +39,7 @@ def case(request):
     mf = scf.UHF(mol).run(conv_tol=1e-12)
     mycc = cc.UCCSD(mf, frozen=frozen).run(conv_tol=1e-10)
     l1, l2 = mycc.solve_lambda()
+    MOLECULE_OF[id(mycc)] = name
     return mycc, mycc.ao2mo(), l1, l2
 
 
@@ -138,3 +141,66 @@ def test_the_outcore_path_refuses_the_uncompressed_form(case):
     mycc, _, l1, l2 = case
     with pytest.raises(ValueError, match="compress_vvvv=False is the in-core path"):
         O.gamma2_outcore(mycc, mycc.t1, mycc.t2, l1, l2, lib.H5TmpFile(), False)
+
+
+FD_DELTA = 1e-3          # Å, central differences as pyscf's grad/test/test_uccsd_t.py::_fd_z
+FD_PLACES = 5            # that test's agreement
+
+
+def ccsd_t_gradient(mycc, eris):
+    """pyscf's own call (grad/test/test_uccsd_t.py): the (T) lambda solved explicitly, then Gradients(mycc).kernel(t1, t2, l1, l2)."""
+    from pyscf.grad import uccsd_t as uccsd_t_grad
+    _, l1, l2 = uccsd_t_lambda.kernel(mycc, eris, mycc.t1, mycc.t2, tol=1e-10)
+    return uccsd_t_grad.Gradients(mycc).kernel(mycc.t1, mycc.t2, l1, l2, eris=eris)
+
+
+def keep_pyscf(monkeypatch) -> None:
+    """Every attribute install() replaces, restored after the test."""
+    for mod, name in ((uccsd_t_lambda, "make_intermediates"), (uccsd_t_rdm, "_gamma1_intermediates"),
+                      (uccsd_t_rdm, "_gamma2_intermediates"), (uccsd_t_rdm, "_gamma2_outcore")):
+        monkeypatch.setattr(mod, name, getattr(mod, name))
+
+
+def test_the_installed_gradient_equals_pyscf(case, monkeypatch):
+    import e8_cc_hessian_fd as E8
+    mycc, eris, _, _ = case
+    keep_pyscf(monkeypatch)
+    E8.install_uccsd_t_dvvvv_fix()
+    ref = ccsd_t_gradient(mycc, eris)
+    U.install(block=3, slab_mb=slab_mb(mycc.t2[1].shape[2], 2))
+    got = ccsd_t_gradient(mycc, eris)
+    assert np.abs(ref).max() > 1e-3
+    assert np.abs(got - ref).max() <= 1e-9, f"max |Δg| {np.abs(got - ref).max():.3g}"
+
+
+def fd_gradient(mycc) -> np.ndarray:
+    """Central differences of the UCCSD(T) energy in every Cartesian coordinate (Å steps), in Hartree/bohr."""
+    mol = mycc.mol
+    scanner = mycc.as_scanner()
+    coords = mol.atom_coords(unit="Angstrom")
+    g = np.zeros_like(coords)
+    for a, x in itertools.product(range(mol.natm), range(3)):
+        e = []
+        for sign in (1, -1):
+            c = coords.copy()
+            c[a, x] += sign * FD_DELTA
+            m = mol.set_geom_(c, unit="Angstrom", inplace=False)
+            e.append(scanner(m) + scanner.ccsd_t())
+        g[a, x] = (e[0] - e[1]) / (2 * FD_DELTA) * lib.param.BOHR
+    return g
+
+
+# NO (6-31G), all-electron and frozen core: pyscf's own UCCSD gradient, without (T) and with nothing of ours installed, is 1.1e-5 off central differences that
+# have converged (δ 1e-3 / 5e-4 Å agree to 2e-7; the UHF is internally stable) - a pyscf matter, diagnosed apart (TASKS 132).
+PYSCF_UCCSD_GRADIENT_OFF = {("NO", 0), ("NO", 1)}
+
+
+def test_the_installed_gradient_equals_finite_differences(case, monkeypatch, request):
+    mycc, eris, _, _ = case
+    if (MOLECULE_OF[id(mycc)], mycc.frozen) in PYSCF_UCCSD_GRADIENT_OFF:
+        request.applymarker(pytest.mark.xfail(strict=True, reason="pyscf's UCCSD gradient of NO is 1.1e-5 off FD (TASKS 132)"))
+    keep_pyscf(monkeypatch)
+    U.install(block=3, slab_mb=slab_mb(mycc.t2[1].shape[2], 2))
+    got = ccsd_t_gradient(mycc, eris)
+    fd = fd_gradient(mycc)
+    np.testing.assert_allclose(got, fd, atol=10.0 ** -FD_PLACES)

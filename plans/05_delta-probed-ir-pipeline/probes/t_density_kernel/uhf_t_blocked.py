@@ -9,18 +9,20 @@ LAMBDA, GAMMA1 and GAMMA2 carry pyscf's einsum strings, operands and factors; `_
 permutation operators: r6 and the j↔k swap of r4 act on the occupied axes only, so they stay inside a block; p6 and r4's (j,b)↔(k,c) swap
 move the virtual indices too, so w and v are evaluated at the permuted blocks (`_permuted`).
 
-A second route, not a replacement yet: every function here must equal pyscf's element by element (tests/test_uhf_t_blocked.py) before
-anything installs it; the C version for speed follows the same blocks.
+`install()` puts the blocked functions where pyscf's UCCSD(T) lambda solver and gradient look them up at call time; every function equals
+pyscf's element by element and the installed gradient equals pyscf's and finite differences of the CCSD(T) energy (tests/test_uhf_t_blocked.py).
+The C version for speed follows the same blocks.
 """
 from __future__ import annotations
 
+import functools
 import itertools
 from collections.abc import Callable
 from dataclasses import dataclass
 
 import numpy as np
 from pyscf import lib
-from pyscf.cc import uccsd_lambda, uccsd_rdm
+from pyscf.cc import uccsd_lambda, uccsd_rdm, uccsd_t_lambda, uccsd_t_rdm
 from uccsd_gamma2_outcore import V4_SLAB_MB
 from uccsd_gamma2_outcore import gamma2_outcore as gamma2_outcore_uccsd
 
@@ -394,3 +396,14 @@ def _add_t_gamma2(d2: tuple, s: Inputs, block: int) -> None:
     out = {"dovov": dovov, "dovOV": dovOV, "dOVOV": dOVOV, "dovvv": dovvv, "dovVV": dovVV, "dOVvv": dOVvv, "dOVVV": dOVVV,
            "dooov": dooov, "dooOV": dooOV, "dOOov": dOOov, "dOOOV": dOOOV}
     _run(GAMMA2, _lambda_pair, s, out, block)
+
+
+def install(block: int = BLOCK, slab_mb: float = V4_SLAB_MB) -> None:
+    """The blocked (T) lambda and densities in place of pyscf's: `uccsd_t_lambda.make_intermediates` (the lambda solver passes it at each call),
+    `uccsd_t_rdm._gamma1_intermediates`, `_gamma2_intermediates` and `_gamma2_outcore` (the gradient's calls). Idempotent."""
+    if block < 1:
+        raise ValueError(f"block {block}: at least one virtual index per block")
+    uccsd_t_lambda.make_intermediates = functools.partial(make_intermediates, block=block)
+    uccsd_t_rdm._gamma1_intermediates = functools.partial(gamma1_intermediates, block=block)
+    uccsd_t_rdm._gamma2_intermediates = functools.partial(gamma2_intermediates, block=block)
+    uccsd_t_rdm._gamma2_outcore = functools.partial(gamma2_outcore, block=block, slab_mb=slab_mb)
