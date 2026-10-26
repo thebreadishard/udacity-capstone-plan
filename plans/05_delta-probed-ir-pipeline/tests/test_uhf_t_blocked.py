@@ -142,6 +142,23 @@ def test_uccsd_gamma2_outcore_equals_pyscf(case, per_slab):
     nested_close(uccsd_rdm._gamma2_intermediates(mycc, mycc.t1, mycc.t2, l1, l2, compress_vvvv=True), got, "d2")
 
 
+def test_uccsd_gamma2_outcore_without_alpha_virtuals():
+    mol = gto.M(basis="6-31g", verbose=0, **MOLECULES["triplet H2O"])
+    mf = scf.UHF(mol).run(conv_tol=1e-12)
+    nocca = int(mf.mo_occ[0].sum())
+    mycc = cc.UCCSD(mf, frozen=[list(range(nocca, mol.nao)), []]).run(conv_tol=1e-10, conv_tol_normt=1e-8)
+    l1, l2 = mycc.solve_lambda()
+    h5 = lib.H5TmpFile()                                       # held: the datasets live in it
+    got = read_back(O.gamma2_outcore(mycc, mycc.t1, mycc.t2, l1, l2, h5, True, 1.0))
+    ref = uccsd_rdm._gamma2_intermediates(mycc, mycc.t1, mycc.t2, l1, l2, compress_vvvv=True)
+    for k, (r_group, g_group) in enumerate(zip(ref, got, strict=True)):
+        for m, (r, g) in enumerate(zip(r_group, g_group, strict=True)):
+            assert (r is None) == (g is None), f"d2[{k}][{m}]"
+            if r is not None:
+                assert np.shape(g) == np.shape(r), f"d2[{k}][{m}]: {np.shape(g)} against {np.shape(r)}"
+                assert np.size(r) == 0 or np.abs(np.asarray(g) - r).max() <= TOL * max(1.0, np.abs(r).max()), f"d2[{k}][{m}]"
+
+
 def test_t_gamma2_outcore_equals_pyscf_with_the_dvvvv_fix(case, monkeypatch):
     import e8_cc_hessian_fd as E8
     mycc, eris, l1, l2 = case

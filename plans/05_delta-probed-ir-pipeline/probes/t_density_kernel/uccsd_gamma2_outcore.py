@@ -25,6 +25,8 @@ V4_SLAB_MB = 2000                              # memory for one slab's two v⁴-
 def _slab(nvir_slow: int, nvir_fast: tuple[int, int, int], mb: float) -> int:
     """Virtual indices per slab: A and Bt, each slab·v·v·v doubles, within `mb` megabytes, at least one."""
     a, b, c = nvir_fast
+    if a * b * c == 0:
+        return 1                                    # a spin block without virtual orbitals: nothing to divide into slabs
     return max(1, int(mb * 1e6 / (2 * 8 * a * b * c)))
 
 
