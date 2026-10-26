@@ -53,10 +53,11 @@ def sizes(mol, frozen: int) -> Sizes:
 
 
 def block_memory_gb(s: Sizes, block: int) -> dict[str, float]:
-    """Doubles in flight per array: a block triple's o³·B³, γ1's paired sweep o³·v·B² per held operand pair."""
+    """One o³·B³ block array, a block step (BLOCK_ARRAYS of them) and γ1's paired sweep (PAIRED_ARRAYS of o³·v·B²), in GB."""
+    from uhf_t_blocked import BLOCK_ARRAYS, PAIRED_ARRAYS
     o, v = max(s.occ), max(s.vir)
-    return {"per_block_array": o**3 * block**3 * 8 / 1e9, "paired_sweep": 2 * o**3 * v * block**2 * 8 / 1e9,
-            "pyscf_whole_array": o**3 * v**3 * 8 / 1e9}
+    return {"per_block_array": o**3 * block**3 * 8 / 1e9, "block_step": BLOCK_ARRAYS * o**3 * block**3 * 8 / 1e9,
+            "paired_sweep": PAIRED_ARRAYS * o**3 * v * block**2 * 8 / 1e9, "pyscf_whole_array": o**3 * v**3 * 8 / 1e9}
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -83,8 +84,9 @@ def main(argv: list[str] | None = None) -> int:
         s = sizes(mol, frozen)
         mem = block_memory_gb(s, a.block)
         print(f"=== ({TAG}) start: {a.geometry.parent.name} charge {a.charge} 2S {a.spin} {a.basis}: {s.nbf} functions, frozen {s.frozen}, "
-              f"occ {s.occ}, vir {s.vir}; block {a.block}: {mem['per_block_array']:.2f} GB per block array, paired sweep "
-              f"{mem['paired_sweep']:.2f} GB, pyscf's whole o³v³ array {mem['pyscf_whole_array']:.1f} GB {stamp()}", flush=True)
+              f"occ {s.occ}, vir {s.vir}; block {a.block}: {mem['per_block_array']:.2f} GB per block array, block step "
+              f"{mem['block_step']:.2f} GB, paired sweep {mem['paired_sweep']:.2f} GB, "
+              f"pyscf's whole o³v³ array {mem['pyscf_whole_array']:.1f} GB {stamp()}", flush=True)
         if a.dry_run:
             return 0
         return run(mol, s, a)
@@ -100,8 +102,11 @@ def run(mol, s: Sizes, a: argparse.Namespace) -> int:
     stages, t0 = [], time.time()
 
     def done(stage: str, **extra) -> None:
-        stages.append({"stage": stage, "wall_s": round(time.time() - t0, 1), "peak_rss_gb": round(peak_gb(), 3), **extra})
-        print(f"=== ({TAG}) {stage} done: {stages[-1]['wall_s']} s, peak RSS {stages[-1]['peak_rss_gb']} GB {stamp()}", flush=True)
+        """wall_s is the time since the run started (the stage's own time is the difference to the stage before)."""
+        wall = round(time.time() - t0, 1)
+        own = round(wall - (stages[-1]["wall_s"] if stages else 0.0), 1)
+        stages.append({"stage": stage, "wall_s": wall, "stage_s": own, "peak_rss_gb": round(peak_gb(), 3), **extra})
+        print(f"=== ({TAG}) {stage} done: {own} s ({wall} s since the start), peak RSS {stages[-1]['peak_rss_gb']} GB {stamp()}", flush=True)
 
     mf = scf.UHF(mol).run(conv_tol=1e-10)
     done("UHF", e=mf.e_tot, converged=bool(mf.converged))

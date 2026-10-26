@@ -29,6 +29,8 @@ from uccsd_gamma2_outcore import V4_SLAB_MB
 from uccsd_gamma2_outcore import gamma2_outcore as gamma2_outcore_uccsd
 
 BLOCK = 24                                    # virtual indices per block: o³·BLOCK³ doubles per array in flight
+BLOCK_ARRAYS = 16          # o³·B³ arrays a block step holds, and o³·v·B² arrays γ1's paired terms hold: the tracemalloc peaks of
+PAIRED_ARRAYS = 10         # probes/uhf_t_blocked_arrays.py (14.4 and 8.3 on H2O+/aug-cc-pVDZ, 26 Oct 2026) with a margin
 P6 = ((0, 1, 2, 3, 4, 5), (1, 2, 0, 4, 5, 3), (2, 0, 1, 5, 3, 4), (0, 2, 1, 3, 5, 4), (2, 1, 0, 5, 4, 3), (1, 0, 2, 4, 3, 5))
 SWAP_JK = (0, 2, 1, 3, 4, 5)
 SWAP_JK_BC = (0, 2, 1, 3, 5, 4)
