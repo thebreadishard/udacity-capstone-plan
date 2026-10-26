@@ -1,0 +1,88 @@
+{
+ "_about": "Chain 35's registered read (design note of 5 Oct 2026, amendment 26 Oct): after chain 35's end, the carried chain 34's three saved models are read again with rungC_eval_saved.py on the same analytic targets and the frozen hold-out (b) — like for like, since chain 34's table of 5 Oct read 36 analytic molecules — and probes/chain35_read.py applies the registered lines and decision 57's promotion. Its own chain so the waiting chain 35 runner is left alone.",
+ "name": "C35R",
+ "poll_s": 1800,
+ "wait": [
+  {
+   "kind": "marker",
+   "log": "probes/results_m1/chain35.log",
+   "regex": "^=== \\(C35\\) run done"
+  }
+ ],
+ "steps": [
+  {
+   "kind": "cmd",
+   "label": "eval chain 34 seed 0 on chain 35's targets",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/E7_rungC_chain34_eval_c35labels_seed0.log",
+   "argv": [
+    "python",
+    "../../probes/rungC_eval_saved.py",
+    "out/E7_rungC_chain34_kdfamily_750_2026-10-05_model_n750_seed0.pt",
+    "out/E7_rungC_chain34_eval_c35labels_seed0",
+    "--use-analytic",
+    "--threads",
+    "8",
+    "--holdout-b-file",
+    "corpus/holdout_b_frozen_2026-10-08.txt"
+   ]
+  },
+  {
+   "kind": "cmd",
+   "label": "eval chain 34 seed 1 on chain 35's targets",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/E7_rungC_chain34_eval_c35labels_seed1.log",
+   "argv": [
+    "python",
+    "../../probes/rungC_eval_saved.py",
+    "out/E7_rungC_chain34_kdfamily_750_2026-10-05_model_n750_seed1.pt",
+    "out/E7_rungC_chain34_eval_c35labels_seed1",
+    "--use-analytic",
+    "--threads",
+    "8",
+    "--holdout-b-file",
+    "corpus/holdout_b_frozen_2026-10-08.txt"
+   ]
+  },
+  {
+   "kind": "cmd",
+   "label": "eval chain 34 seed 2 on chain 35's targets",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/E7_rungC_chain34_eval_c35labels_seed2.log",
+   "argv": [
+    "python",
+    "../../probes/rungC_eval_saved.py",
+    "out/E7_rungC_chain34_kdfamily_750_2026-10-05_model_n750_seed2.pt",
+    "out/E7_rungC_chain34_eval_c35labels_seed2",
+    "--use-analytic",
+    "--threads",
+    "8",
+    "--holdout-b-file",
+    "corpus/holdout_b_frozen_2026-10-08.txt"
+   ]
+  },
+  {
+   "kind": "cmd",
+   "label": "chain 35's registered read",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/E7_rungC_chain35_read.log",
+   "argv": [
+    "python",
+    "../../probes/chain35_read.py",
+    "--new",
+    "out/E7_rungC_chain35_analytic_eval_frozenb_seed0.json",
+    "out/E7_rungC_chain35_analytic_eval_frozenb_seed1.json",
+    "out/E7_rungC_chain35_analytic_eval_frozenb_seed2.json",
+    "--carried",
+    "out/E7_rungC_chain34_eval_c35labels_seed0.json",
+    "out/E7_rungC_chain34_eval_c35labels_seed1.json",
+    "out/E7_rungC_chain34_eval_c35labels_seed2.json",
+    "--out",
+    "out/E7_rungC_chain35_read"
+   ]
+  }
+ ],
+ "outputs": [
+  "modules/05_support_predictor/out/E7_rungC_chain35_read.json"
+ ]
+}

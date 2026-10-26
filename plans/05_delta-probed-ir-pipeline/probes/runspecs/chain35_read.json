@@ -1,0 +1,36 @@
+{
+ "name": "chain35_read",
+ "purpose": "Chain 35's registered read: after chain 35's 'run done', chain 34 read again on the same analytic targets, then probes/chain35_read.py (lines of 5 Oct, decision 57, version 1.3)",
+ "host": "laptop",
+ "workdir": "probes/results_m1",
+ "command": "python ../chain_runner.py probes/runs/chain35_read.json",
+ "sources": [
+  {
+   "local": "probes/chain_runner.py"
+  },
+  {
+   "local": "probes/rungC_eval_saved.py"
+  },
+  {
+   "local": "probes/chain35_read.py"
+  }
+ ],
+ "progress": {
+  "regex": "^=== \\(C35R\\) progress: |^\\(C35R\\) .* done ",
+  "max_gap_minutes": 60,
+  "start_regex": "^=== \\(C35R\\) starting: "
+ },
+ "marker_regex": "^=== \\(C35R\\) (armed|starting|resuming|RUN FAILED|run done)",
+ "end_regex": "^=== \\(C35R\\) run done",
+ "fail_regex": "^=== \\(C35R\\) RUN FAILED",
+ "dry_run_args": "--dry-run",
+ "resumable": true,
+ "memory": {
+  "peak_gb": 7.7,
+  "basis": "upper bound: chain 41's trainer peak (7.7 GB at n = 978, 19 Oct 2026); an eval loads the same corpus without training"
+ },
+ "estimate": {
+  "hours": 0.5,
+  "basis": "chain 35h2's evals: 202 s per seed (17 Oct 2026); the read is seconds"
+ }
+}
