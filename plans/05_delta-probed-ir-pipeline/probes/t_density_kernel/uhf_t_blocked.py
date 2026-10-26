@@ -32,6 +32,7 @@ BLOCK = 24                                    # virtual indices per block: o³·
 P6 = ((0, 1, 2, 3, 4, 5), (1, 2, 0, 4, 5, 3), (2, 0, 1, 5, 3, 4), (0, 2, 1, 3, 5, 4), (2, 1, 0, 5, 4, 3), (1, 0, 2, 4, 3, 5))
 SWAP_JK = (0, 2, 1, 3, 4, 5)
 SWAP_JK_BC = (0, 2, 1, 3, 5, 4)
+IDENTITY = (0, 1, 2, 3, 4, 5)
 INTEGRALS = ("ovvv", "OVVV", "ovVV", "OVvv", "ovoo", "OVOO", "ovOO", "OVoo", "ovov", "OVOV", "ovOV")
 UNPACKED = {"ovvv": "get_ovvv", "OVVV": "get_OVVV", "ovVV": "get_ovVV", "OVvv": "get_OVvv"}   # read through eris' unpacking getters
 SIX = ("rw", "rw*", "wvd", "wvd*")            # the block arrays a table term may name
@@ -228,16 +229,48 @@ def _six_letters(term: Term) -> list[str]:
 
 
 # ------------------------------------------------------------------------------------------------------------------------- the sweeps
+def _symmetry(case: Case, pair: Pair) -> tuple[tuple[int, ...], ...] | None:
+    """The joint permutations of (ijk, abc) under which rw and wvd of `pair` are symmetric: p6's group for the same spin (r6 commutes with
+    it), r4's (j,b)↔(k,c) for a mixed case; None for γ1's mixed cases, whose wvd = (w + v)/d3 is not symmetrised."""
+    if not case.mixed:
+        return P6
+    return (IDENTITY, SWAP_JK_BC) if pair is _lambda_pair else None
+
+
+def _canonical(case: Case, size: int) -> list[Blocks]:
+    """One block triple per orbit of the symmetry: A ≤ B ≤ C for the same spin, B ≤ C for a mixed case."""
+    if case.nv[1] != case.nv[2]:
+        raise ValueError(f"the symmetry swaps the last two virtual positions, which differ in size here: nv {case.nv}")
+    first, second = _ranges(case.nv[0], size), _ranges(case.nv[1], size)
+    if not case.mixed:
+        return [(first[i], first[j], first[k]) for i in range(len(first)) for j in range(i, len(first)) for k in range(j, len(first))]
+    return [(a, second[j], second[k]) for a in first for j in range(len(second)) for k in range(j, len(second))]
+
+
+def _orbit(group: tuple[tuple[int, ...], ...], blocks: Blocks) -> list[tuple[Blocks, tuple[int, ...]]]:
+    """(T, axes) for each distinct ordering T the group maps `blocks` to: the array on T is the array on `blocks` transposed by axes."""
+    seen: dict = {}
+    for axes in group:
+        t = (blocks[axes[3] - 3], blocks[axes[4] - 3], blocks[axes[5] - 3])
+        seen.setdefault(tuple((x.start, x.stop) for x in t), (t, axes))
+    return list(seen.values())
+
+
 def _local_sweep(case: Case, pair: Pair, terms: list[Term], s: Inputs, out: dict, size: int) -> None:
-    """Every term whose six-index operands share their virtual letters: one pass over the block triples."""
+    """Every term whose six-index operands share their virtual letters: rw and wvd once per block triple of `_canonical` when they are
+    symmetric (`_symmetry`), every other ordering read as their transpose; one pass over all block triples otherwise."""
     if not terms:
         return
-    for blocks in itertools.product(*(_ranges(n, size) for n in case.nv)):
+    group = _symmetry(case, pair)
+    triples = _canonical(case, size) if group else itertools.product(*(_ranges(n, size) for n in case.nv))
+    for blocks in triples:
         rw, wvd = pair(case, blocks)
-        for term in terms:
-            target, spec, names, scale = term
-            where = dict(zip(_six_letters(term)[0][3:], blocks, strict=True))
-            _acc(out[target], spec, tuple(_resolve(n, rw, wvd, s) for n in names), where, scale)
+        for t, axes in _orbit(group, blocks) if group else [(blocks, IDENTITY)]:
+            rw_t, wvd_t = rw.transpose(axes), wvd.transpose(axes)
+            for term in terms:
+                target, spec, names, scale = term
+                where = dict(zip(_six_letters(term)[0][3:], t, strict=True))
+                _acc(out[target], spec, tuple(_resolve(n, rw_t, wvd_t, s) for n in names), where, scale)
 
 
 def _paired_sweep(case: Case, pair: Pair, term: Term, s: Inputs, out: dict, size: int) -> None:

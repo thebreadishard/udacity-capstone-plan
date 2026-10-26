@@ -103,6 +103,25 @@ def test_a_block_below_one_is_refused(case):
             call()
 
 
+def spans(blocks) -> tuple:
+    return tuple((x.start, x.stop) for x in blocks)
+
+
+@pytest.mark.parametrize("mixed", [False, True])
+def test_the_orbits_of_the_canonical_triples_reach_every_block_triple_once(mixed):
+    c = U.Case(nv=(7, 5, 5) if mixed else (7, 7, 7), e=(None,) * 3, w=None, v=None, mixed=mixed)
+    group = U._symmetry(c, U._lambda_pair)
+    reached = [spans(t) for b in U._canonical(c, 3) for t, _ in U._orbit(group, b)]
+    every = [spans(b) for b in itertools.product(*(U._ranges(n, 3) for n in c.nv))]
+    assert sorted(reached) == sorted(every)
+
+
+def test_a_mixed_case_whose_last_positions_differ_is_refused():
+    c = U.Case(nv=(7, 5, 4), e=(None,) * 3, w=None, v=None, mixed=True)
+    with pytest.raises(ValueError, match="differ in size"):
+        U._canonical(c, 3)
+
+
 def slab_mb(nvir: int, per_slab: int) -> float:
     """The memory that gives `per_slab` virtual indices per slab for a molecule with nvir α virtuals (O._slab's inverse)."""
     return per_slab * 2 * 8 * nvir ** 3 / 1e6 * 1.0001
