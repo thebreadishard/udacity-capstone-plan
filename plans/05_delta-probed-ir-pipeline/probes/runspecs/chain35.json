@@ -1,0 +1,48 @@
+{
+ "name": "chain35",
+ "purpose": "TASKS 129 / chain 35's full read (registered 5 Oct 2026; armed 26 Oct on the user's 'ja'): waits for the four label lanes' DONE lines, fetches, requires the 811 ids analytic (at most 5 failed ones FD), trains chain 34's recipe at 750 on the analytic labels and reads it against chain 34",
+ "host": "laptop",
+ "workdir": "probes/results_m1",
+ "command": "python ../chain_runner.py probes/runs/chain35.json",
+ "sources": [
+  {
+   "local": "probes/chain_runner.py"
+  },
+  {
+   "local": "probes/fetch_labels_ccx53.sh"
+  },
+  {
+   "local": "probes/ids_have_labels.py"
+  },
+  {
+   "local": "probes/rungC_eval_saved.py"
+  },
+  {
+   "local": "probes/rungC_eval_means.py"
+  },
+  {
+   "local": "modules/05_support_predictor/m05/rungC_train.py"
+  },
+  {
+   "local": "modules/05_support_predictor/m05/design_check.py"
+  }
+ ],
+ "progress": {
+  "regex": "^=== \\(C35\\) progress: |^\\(C35\\) .* done ",
+  "max_gap_minutes": 120,
+  "start_regex": "^=== \\(C35\\) starting: "
+ },
+ "marker_regex": "^=== \\(C35\\) (armed|starting|resuming|RUN FAILED|run done)",
+ "end_regex": "^=== \\(C35\\) run done",
+ "dry_run_args": "--dry-run",
+ "resumable": true,
+ "fail_regex": "^=== \\(C35\\) RUN FAILED",
+ "memory": {
+  "peak_gb": 7.7,
+  "basis": "chain 41's measured peak (rungC_train.py, 7.7 GB, 19 Oct 2026, step 5 at n = 978); this chain trains at 750"
+ },
+ "estimate": {
+  "hours": 4.5,
+  "basis": "chain 35h2 (17 Oct): two arms of three seeds at 750 in 6.9 h on this laptop, so ≈ 3.5 h for one arm, plus the fetch"
+ }
+}

@@ -1,10 +1,12 @@
 """A chain runner's wait condition (13 Oct 2026): exit 0 when every id in the given files (one per line, '#' comments) has its corpus folder in
 module 05's corpus/molecules with geometry.json and its labels; else exit 1 with one status line naming what is missing (first ten).
 
-    python probes/ids_have_labels.py <ids file> [...] [--labels analytic|any] [--molecules modules/05_support_predictor/corpus/molecules]
+    python probes/ids_have_labels.py <ids file> [...] [--labels analytic|any] [--max-missing N] [--molecules …/corpus/molecules]
 
 --labels analytic (the default) needs both analytic Hessians; --labels any (17 Oct 2026, the user: chain 41 on the FD labels its registration
 allows — 'analytic where the molecule has them, else FD' — with the analytic re-read later) takes both analytic or both FD Hessians.
+--max-missing N (26 Oct 2026, chain 35's full read) still exits 0 when at most N ids lack their labels — the label server's failed molecules,
+which train on FD — and names them in the status line.
 """
 import argparse
 import sys
@@ -43,12 +45,15 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("files", nargs="+")
     ap.add_argument("--labels", choices=sorted(LABEL_SETS), default="analytic")
     ap.add_argument("--molecules", default=str(MOLECULES))
+    ap.add_argument("--max-missing", type=int, default=0, help="ids allowed to lack their labels (named in the status line)")
     a = ap.parse_args(argv)
+    if a.max_missing < 0:
+        ap.error(f"--max-missing {a.max_missing}: must be 0 or more")
     ids = read_ids(a.files)
     miss = missing(ids, Path(a.molecules), a.labels)
     detail = "" if not miss else "; missing " + ", ".join(f"{i} ({'/'.join(v)})" for i, v in list(miss.items())[:10])
     print(f"labelled ({a.labels}) {len(ids) - len(miss)}/{len(ids)}{detail}")
-    return 0 if not miss else 1
+    return 0 if len(miss) <= a.max_missing else 1
 
 
 if __name__ == "__main__":
