@@ -1,0 +1,13 @@
+{"name": "krylov_cost_benzene",
+ "purpose": "TASKS 133: what pyscf 2.14.0's CPHF Krylov (no lindep; master's #3333 fixed it) cost the closed-shell CC anchors - benzene CCSD(T)/cc-pVDZ's reference gradient (E8, the anchors' runner, fast (T) kernels) with the released CPHF and with master's swapped in for the Z-vector solve only, each solve's relative residual recorded; beyond 1e-6 a.u. the anchors' Hessians are re-checked through their energy route.",
+ "host": "laptop",
+ "workdir": "probes/results_m1",
+ "command": "bash ../krylov_cost_check.sh 8192 8 /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/modules/05_support_predictor/corpus/molecules/A_8448043181/geometry.json /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/krylov_cost_benzene_2026-10-26 -- --basis cc-pvdz --fast-t-density --fast-t-lambda",
+ "sources": [{"local": "probes/krylov_cost_check.sh"}, {"local": "probes/krylov_cost_check.py"}, {"local": "probes/krylov_cost_compare.py"},
+             {"local": "probes/wsl_capped.sh"}, {"local": "probes/e8_cc_hessian_fd.py"}, {"local": "probes/t_density_kernel/t_density_fast.py"}],
+ "progress": {"regex": "^=== \\(KC\\) |^\\(KC\\) |reference: E = ", "max_gap_minutes": 60},
+ "marker_regex": "^=== \\(KC\\) (released start|master start|done|compare)|KILLED|Traceback|gate 1 not passed",
+ "end_regex": "^=== \\(KC\\) run done",
+ "threads": 8,
+ "memory": {"peak_gb": 8.0, "basis": "a bound: probes/wsl_capped.sh stops each of the two runs at 8192 MB (pyscf max_memory 6963); the two run one after the other"},
+ "estimate": {"hours": 0.5, "basis": "the fused (T) density+lambda pass took 90 s for benzene/cc-pVDZ's lambda and gradient (7ab1b3a5, 30 Sep), besides SCF, CCSD and the CCSD lambda; two runs; TASKS 133 said about 30 min"}}
