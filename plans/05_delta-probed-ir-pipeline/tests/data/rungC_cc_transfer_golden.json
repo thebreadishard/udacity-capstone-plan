@@ -50,6 +50,7 @@
    },
    "aux_weight": 1.0,
    "epochs": 3,
+   "fit_mode": "head_l2",
    "folds": {
     "A_541c53d1a5": {
      "alpha_scaling": {
@@ -687,6 +688,13 @@
     "pattern": "f",
     "seed": 0
    },
+   "modes": [
+    "none",
+    "alpha",
+    "head",
+    "head_l2",
+    "lora"
+   ],
    "oop_couplings_low": true,
    "oop_diagonal_model": true,
    "predict": {

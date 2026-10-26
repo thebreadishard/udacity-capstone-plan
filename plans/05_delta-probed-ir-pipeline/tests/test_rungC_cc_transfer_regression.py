@@ -54,7 +54,8 @@ ANCHORS = ("A_8448043181", "A_541c53d1a5")                      # benzene, phena
 APT_ANCHOR = "A_541c53d1a5"
 PREDICT = "A_20db5837c9"                                         # dibenzofuran, not an anchor
 VOLATILE = frozenset({"date", "seconds"})
-SWITCHES = ["--epochs", "3", "--head-l2", "0.1", "--lora-rank", "2", "--oop-couplings-low", "--oop-diagonal-model", "--save-fold-predictions",
+SWITCHES = ["--epochs", "3", "--head-l2", "0.1", "--fit-mode", "head_l2", "--modes", "none,alpha,head,head_l2,lora",  # the 7 Oct preset
+            "--lora-rank", "2", "--oop-couplings-low", "--oop-diagonal-model", "--save-fold-predictions",
             "--threads", "1", "--allow-any-model", "--allow-any-anchor", "--allow-mixed-tiers"]
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "probes"))

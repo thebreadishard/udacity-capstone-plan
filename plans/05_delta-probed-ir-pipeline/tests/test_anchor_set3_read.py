@@ -226,7 +226,7 @@ def test_the_head_all_plan(tmp_path):
     rest = json.loads((tmp_path / "anchor_set3_headall_rest.json").read_text(encoding="utf-8"))
     assert first["name"] == "S3HF" and rest["name"] == "S3HR" and len(rest["steps"]) == len(m["runs"]) - 1
     argv = rest["steps"][0]["argv"]
-    assert argv[2] == "../x/corpus/molecules" and "--head-all" in argv and argv[argv.index("--modes") + 1] == "head_all"
+    assert argv[2] == "../x/corpus/molecules" and argv[argv.index("--modes") + 1] == "head_all" and "--fit-mode" not in argv
     assert "--head-l2" not in argv
 
 

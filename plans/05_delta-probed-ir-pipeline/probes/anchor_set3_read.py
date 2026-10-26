@@ -49,7 +49,8 @@ APTS = {"A_8448043181": RESULTS / "e8_benzene_ccpvtz_oop_2026-10-03" / "apt_ccsd
         "A_d09f8d1ef8": RESULTS / "e8_isoquinoline_ccpvdz_2026-10-19" / "apt_ccsd_t_field.npz"}
 MODEL = "out/E7_rungC_chain34_kdfamily_750_2026-10-05_model_n750_seed{seed}.pt"
 SEEDS = (0, 1, 2)
-TRANSFER_ARGS = ["--threads", "8", "--epochs", "300", "--lr", "1e-3", "--head-l2", "1"]
+TRANSFER_ARGS = ["--threads", "8", "--epochs", "300", "--lr", "1e-3", "--head-l2", "1", "--fit-mode", "head_l2",   # the registered λ = 1
+                 "--modes", "none,alpha,head,head_l2"]
 KS_BELOW_ALL = (2, 4)                     # R-A's k_s besides 0 and 'all'
 KT_BELOW_ALL = (4, 8)                     # arm M's k_t besides 'all'
 TIER = "TZ"
@@ -87,7 +88,7 @@ REGISTERED = Protocol("registered", "lambda = 1", "", "S3", tuple(TRANSFER_ARGS)
                       "the lambda question waits for anchor set four (the error is still falling with k_s)",
                       "the lambda question stands: a chain to re-choose lambda on frequencies and intensities together is registered")
 HEAD_ALL = Protocol("head_all", "whole head", "_headall", "S3H",
-                    ("--threads", "8", "--epochs", "300", "--lr", "1e-3", "--head-all", "--modes", "head_all"), "network_head_all", None, False,
+                    ("--threads", "8", "--epochs", "300", "--lr", "1e-3", "--modes", "head_all"), "network_head_all", None, False,
                     "the shape question waits for anchor set four (the error is still falling with k_s)",
                     "the shape question stands: the whole head does not repair the shapes at this count")
 PROTOCOLS = {p.name: p for p in (REGISTERED, HEAD_ALL)}

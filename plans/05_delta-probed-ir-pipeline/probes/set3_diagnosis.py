@@ -35,7 +35,7 @@ BASE = ["--threads", "6", "--epochs", "300", "--lr", "1e-3"]
 
 # name -> (fine-tune mode, extra arguments, base model): the reference and one change each
 EXPERIMENTS = {
-    "E01_ref_lambda1": ("head_l2", ["--head-l2", "1", "--save-fold-predictions"], CHAIN34),
+    "E01_ref_lambda1": ("head_l2", ["--head-l2", "1", "--fit-mode", "head_l2", "--save-fold-predictions"], CHAIN34),
     "E02_lambda0": ("head", [], CHAIN34),
     "E03_lambda0.1": ("head_l2", ["--head-l2", "0.1"], CHAIN34),
     "E04_lambda0.3": ("head_l2", ["--head-l2", "0.3"], CHAIN34),
@@ -50,9 +50,9 @@ EXPERIMENTS = {
     "E13_aux0": ("head_l2", ["--head-l2", "1", "--aux-weight", "0"], CHAIN34),
     "E14_aux3": ("head_l2", ["--head-l2", "1", "--aux-weight", "3"], CHAIN34),
     "E15_lora4": ("lora", ["--lora-rank", "4"], CHAIN34),
-    "E16_head_all": ("head_all", ["--head-all"], CHAIN34),
+    "E16_head_all": ("head_all", [], CHAIN34),
     "E17_insample_lambda1": ("head_l2", ["--head-l2", "1", "--in-sample"], CHAIN34),
-    "E18_insample_head_all": ("head_all", ["--head-all", "--in-sample"], CHAIN34),
+    "E18_insample_head_all": ("head_all", ["--in-sample"], CHAIN34),
     "E19_base_analytic_labels": ("head_l2", ["--head-l2", "1", "--allow-any-model"], "chain35h2_analytic_model_n750"),
     "E20_base_more_data_n972": ("head_l2", ["--head-l2", "1", "--allow-any-model"], "chain41_size_model_n972"),
     "E21_base_hinge": ("head_l2", ["--head-l2", "1", "--allow-any-model"], "chain36_hinge_750_2026-10-07_model_n750"),
@@ -69,11 +69,11 @@ EXPERIMENTS = {
     "W09_base_analytic_labels_lambda0": ("head", ["--allow-any-model"], "chain35h2_analytic_model_n750"),
     "W10_base_more_data_n972_lambda0": ("head", ["--allow-any-model"], "chain41_size_model_n972"),
     # wave 4 (after E16/E18/W06: the last layer cannot fit the out-of-plane correction even in-sample; the whole head halves the error)
-    "W11_head_all_epochs100": ("head_all", ["--head-all", "--epochs", "100"], CHAIN34),
-    "W12_head_all_lr3e-4": ("head_all", ["--head-all", "--lr", "3e-4"], CHAIN34),
-    "W13_head_all_base_n972": ("head_all", ["--head-all", "--allow-any-model"], "chain41_size_model_n972"),
-    "W14_head_all_base_analytic": ("head_all", ["--head-all", "--allow-any-model"], "chain35h2_analytic_model_n750"),
-    "W15_head_all_originals_only": ("head_all", ["--head-all"], CHAIN34),
+    "W11_head_all_epochs100": ("head_all", ["--epochs", "100"], CHAIN34),
+    "W12_head_all_lr3e-4": ("head_all", ["--lr", "3e-4"], CHAIN34),
+    "W13_head_all_base_n972": ("head_all", ["--allow-any-model"], "chain41_size_model_n972"),
+    "W14_head_all_base_analytic": ("head_all", ["--allow-any-model"], "chain35h2_analytic_model_n750"),
+    "W15_head_all_originals_only": ("head_all", [], CHAIN34),
 }
 ORIGINALS_ONLY = {"W15_head_all_originals_only"}      # anchors: the original six alone (pool 5), against E16's eleven (pool 10)
 VALIDATE = "V00_arm_m_seed0"

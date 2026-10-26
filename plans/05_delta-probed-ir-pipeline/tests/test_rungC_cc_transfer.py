@@ -194,9 +194,17 @@ def test_save_prediction_round_trip(tmp_path):
         assert np.allclose(z["dH_pred"] + z["H_low"], 3 * np.eye(3))
 
 
-def test_fit_mode_follows_the_tz_tier_standard():
-    """TASKS 36 (8 Oct 2026): the fit on all anchors uses the head-tuned column with the L2 pull when it is set (amendment (A))."""
-    assert RT_T.fit_mode(1.0) == "head_l2" and RT_T.fit_mode(0.0) == "head"
+def test_the_fit_mode_is_the_whole_head_unless_a_preset_is_named():
+    """TASKS 130 (26 Oct 2026): a fit on all anchors trains the whole head by default; the λ standard of 7 Oct is a named preset, refused
+    without its pull, and a fit switch is refused when --modes leaves the fit mode out."""
+    base = ["m", "x.pt", "out", "--anchor", "a=1", "--anchor", "b=2", "--anchor", "c=3"]
+    anchors = {"a": "1", "b": "2", "c": "3"}
+    assert RT_T.build_parser().parse_args(base).fit_mode == "head_all"
+    RT_T.check_switches(RT_T.build_parser().parse_args([*base, "--head-l2", "1", "--fit-mode", "head_l2"]), anchors)
+    with pytest.raises(SystemExit, match="--fit-mode head_l2: not enabled"):
+        RT_T.check_switches(RT_T.build_parser().parse_args([*base, "--fit-mode", "head_l2"]), anchors)
+    with pytest.raises(SystemExit, match="--save-fold-predictions read the fit mode head_all"):
+        RT_T.check_switches(RT_T.build_parser().parse_args([*base, "--save-fold-predictions", "--modes", "head"]), anchors)
 
 
 def test_an_exclude_file_s_comment_lines_are_not_ids(tmp_path):
@@ -263,11 +271,11 @@ def test_oop_subset_reads_fit_on_each_subset_and_keep_the_fold_s_training_anchor
 
 def test_modes_narrow_the_enabled_ones_and_unknown_modes_are_refused():
     base = ["m", "x.pt", "out", "--anchor", "a=1", "--anchor", "b=2", "--anchor", "c=3"]
-    a = RT_T.build_parser().parse_args([*base, "--head-l2", "1", "--head-all", "--modes", "head_l2,head_all"])
+    a = RT_T.build_parser().parse_args([*base, "--head-l2", "1", "--modes", "head_l2,head_all"])
     assert RT_T.enabled_modes(a) == ("none", "alpha", "head", "head_l2", "head_all") and RT_T.fold_modes(a) == ("head_l2", "head_all")
     RT_T.check_switches(a, dict(s.split("=", 1) for s in a.anchor))
     plain = RT_T.build_parser().parse_args(base)
-    assert RT_T.fold_modes(plain) == ("none", "alpha", "head")
+    assert RT_T.fold_modes(plain) == ("none", "alpha", "head", "head_all")
     bad = RT_T.build_parser().parse_args([*base, "--modes", "head_l2"])                  # not enabled without --head-l2
     with pytest.raises(SystemExit, match="not enabled"):
         RT_T.check_switches(bad, dict(s.split("=", 1) for s in bad.anchor))
@@ -306,4 +314,4 @@ def test_the_out_of_plane_switches_add_their_table_columns():
     keys = [k for k, _ in CT.table_columns(a)]
     assert {"network_head_ooplow", "network_head_l2_ooplow", "oop_model_only", "network_head_oopmodel", "network_head_l2_oopmodel"} <= set(keys)
     plain = CT.build_parser().parse_args(["m", "x.pt", "out", "--anchor", "a=b"])
-    assert [k for k, _ in CT.table_columns(plain)] == ["zero_rule", "alpha_scaling", "network_none", "network_alpha", "network_head"]
+    assert [k for k, _ in CT.table_columns(plain)] == ["zero_rule", "alpha_scaling", "network_none", "network_alpha", "network_head", "network_head_all"]

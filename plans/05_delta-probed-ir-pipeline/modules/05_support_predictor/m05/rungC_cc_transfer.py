@@ -1,10 +1,13 @@
 """Lever 1 / T3 (2 Oct 2026): does the proxy-trained hybrid model transfer to coupled-cluster level on an anchor it never saw?
 
 Leave-one-anchor-out over the CCSD(T) anchors: the high level of each anchor becomes its CC Hessian (`substitute_cc`, the analytic B3LYP as the
-low level), the proxy-trained model (`rungC_train.py --save-model`) is fine-tuned on the other anchors with only the head's last layer and the
-SQM α trainable (`freeze_for_transfer`), and read out on the held-out one with the registered read-outs (ring-coupling ratio against the zero
-rule, corrected ω rms, per-family diagonal rms). Beside it: the zero rule, the proxy model as it is (no fine-tune), and a per-class α scaling
-fitted on the training anchors (the SQM-like transfer, no network). Every number traces to the anchor files named on the command line.
+low level), the proxy-trained model (`rungC_train.py --save-model`) is fine-tuned on the other anchors in every enabled mode (from α alone to
+the whole head with α) and read out on the held-out one with the registered read-outs (ring-coupling ratio against the zero rule,
+corrected ω rms, per-family diagonal rms). A fit on all anchors (`--predict`, the saved fold predictions, the out-of-plane subset fits)
+uses `--fit-mode`: by default the whole head (set three's diagnosis, 21 Oct 2026: held-out CH-oop 12.29 → 6.54 cm⁻¹ against the last
+layer with the λ = 1 pull, three seeds; the proxy check of 22 Oct agrees); that λ = 1 standard of 7 Oct is the preset `--fit-mode head_l2`.
+Beside it: the zero rule, the proxy model as it is (no fine-tune), and a per-class α scaling fitted on the training anchors (the SQM-like
+transfer, no network). Every number traces to the anchor files named on the command line.
 Pinned by `tests/test_rungC_cc_transfer_regression.py`.
 
     python m05/rungC_cc_transfer.py corpus/molecules <model.pt> <out_prefix> --anchor A_8448043181=<hessian_ccsd_t.npz> [--anchor ...] \\
@@ -140,10 +143,7 @@ class Prediction:
         return path
 
 
-def fit_mode(head_l2: float) -> str:
-    """The fine-tune mode of a fit on all anchors: the TZ-tier standard (amendment (A), 7 Oct 2026) — head-tuned with the L2 pull when it is
-    set."""
-    return "head_l2" if head_l2 > 0 else "head"
+FIT_MODES = ("head_all", "head", "head_l2")   # the modes a fit on all anchors may use; the first is the default
 
 
 def loaded_molecule(mol_dir: Path, m: dict) -> dict:
@@ -373,8 +373,7 @@ def scale_last_layer(model, c: float) -> None:
 
 def enabled_modes(a) -> tuple[str, ...]:
     """The fine-tune modes the switches make available."""
-    return (("none", "alpha", "head") + (("head_l2",) if a.head_l2 > 0 else ()) + (("lora",) if a.lora_rank > 0 else ())
-            + (("head_all",) if a.head_all else ()))
+    return ("none", "alpha", "head") + (("head_l2",) if a.head_l2 > 0 else ()) + (("lora",) if a.lora_rank > 0 else ()) + ("head_all",)
 
 
 def fold_modes(a) -> tuple[str, ...]:
@@ -393,7 +392,7 @@ def zero(an: Anchors):
 
 def run_fold(an: Anchors, held: str, model0, loss_cfg: LossSettings, a) -> dict:
     """One leave-one-anchor-out fold: the zero rule, the α scaling, the out-of-plane model alone when asked, and the network in every
-    fine-tune mode (with its out-of-plane variants and the saved prediction of the standard mode when asked)."""
+    fine-tune mode (with its out-of-plane variants and the saved prediction of the fit mode when asked)."""
     tr = training_anchors(an.ids, held, a.in_sample)
     fold = {"train": tr, "zero_rule": read(an, held, tr, zero(an)),
             "alpha_scaling": read(an, held, tr, lambda i: alpha_scaling_baseline(an.mols, an.tensors, tr, i))}
@@ -414,9 +413,9 @@ def run_fold(an: Anchors, held: str, model0, loss_cfg: LossSettings, a) -> dict:
             fold[f"network_{mode}_ooplow"] = read(an, held, tr, oop_low_predictor(an, predictor(model, an.tensors, an.mols)))
         if coef is not None and mode in ("head", "head_l2"):
             fold[f"network_{mode}_oopmodel"] = read(an, held, tr, oop_model_predictor(an, predictor(model, an.tensors, an.mols), coef))
-        if a.oop_fit_sizes and mode == fit_mode(a.head_l2):
+        if a.oop_fit_sizes and mode == a.fit_mode:
             fold["oop_fit_subsets"] = oop_subset_reads(an, held, tr, predictor(model, an.tensors, an.mols), a.oop_fit_sizes)
-        if a.save_fold_predictions and mode == fit_mode(a.head_l2):
+        if a.save_fold_predictions and mode == a.fit_mode:
             pred = Prediction(predict_cartesian(model, an.tensors[held]), an.mols[held]["H_low"], an.mols[held]["low_file"], mode, tr, a.model,
                               hist[-1] if hist else None, held=held)
             fold["saved_prediction"] = str(pred.save(Path(f"{a.out_prefix}_fold_{held}.npz")))
@@ -445,12 +444,12 @@ def fold_line(held: str, fold: dict, a) -> str:
 
 
 def fit_and_predict(an: Anchors, mdir: Path, model0, loss_cfg: LossSettings, cfg, a) -> dict:
-    """TASKS 36: fit on all anchors in the standard mode and write the predicted ΔH of every --predict molecule (never an anchor)."""
+    """TASKS 36: fit on all anchors in the fit mode and write the predicted ΔH of every --predict molecule (never an anchor)."""
     clash = sorted(set(a.predict) & set(an.ids))
     if clash:
         raise SystemExit(f"--predict {clash}: anchors are read leave-one-out, not predicted from a fit that saw them")
     model = copy.deepcopy(model0)
-    mode = fit_mode(a.head_l2)
+    mode = a.fit_mode
     settings = FinetuneSettings(a.epochs, a.lr, a.aux_weight, a.head_l2)
     hist = finetune(model, loss_cfg, {i: an.tensors[i] for i in an.ids}, mode, settings, log=lambda s: print(f"  [fit all {mode}] {s}", flush=True))
     out = {}
@@ -476,8 +475,7 @@ def table_columns(a) -> list[tuple[str, str]]:
         cols.append(("network_head_l2", f"head tuned, {l2}"))
     if a.lora_rank > 0:
         cols.append(("network_lora", f"α + rank-{a.lora_rank} adapter"))
-    if a.head_all:
-        cols.append(("network_head_all", "network, whole head tuned"))
+    cols.append(("network_head_all", "network, whole head tuned"))
     if a.oop_couplings_low:
         cols.append(("network_head_ooplow", "head tuned, oop couplings from the low level"))
         if a.head_l2 > 0:
@@ -553,6 +551,11 @@ def check_switches(a, anchors: dict[str, str]) -> None:
     unknown_modes = sorted(set(a.modes) - set(enabled_modes(a)))
     if unknown_modes:
         raise SystemExit(f"--modes {unknown_modes}: not enabled (available: {', '.join(enabled_modes(a))})")
+    if a.fit_mode not in enabled_modes(a):
+        raise SystemExit(f"--fit-mode {a.fit_mode}: not enabled (mode head_l2 needs --head-l2 > 0)")
+    fit_switches = [s for s, on in (("--save-fold-predictions", a.save_fold_predictions), ("--oop-fit-sizes", a.oop_fit_sizes)) if on]
+    if fit_switches and a.fit_mode not in fold_modes(a):
+        raise SystemExit(f"{' and '.join(fit_switches)} read the fit mode {a.fit_mode}, which --modes leaves out")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -584,12 +587,14 @@ def build_parser() -> argparse.ArgumentParser:
                     "ceiling - not a transfer read)")
     ap.add_argument("--init-scale", type=float, default=1.0, help="diagnosis: multiply the head's last layer by this before each fold's "
                     "fine-tune (0: no proxy knowledge in it; negative: the proxy's direction reversed); the L2 pull goes toward the scaled weights")
-    ap.add_argument("--head-all", action="store_true", help="add mode 'head_all': every layer of the head trainable, with α")
+    ap.add_argument("--fit-mode", choices=FIT_MODES, default=FIT_MODES[0], help="the mode of a fit on all anchors (--predict, the saved "
+                    "fold predictions, the out-of-plane subset fits): the whole head (default), the last layer, or the λ standard of 7 Oct "
+                    "(head_l2, with --head-l2)")
     ap.add_argument("--held", action="append", default=[], help="anchor set three's R-A: only these anchors are held out, one fold each; "
                     "the other anchors stay in every fold's fine-tune pool (default: every anchor is a fold)")
     ap.add_argument("--oop-fit-sizes", type=_sizes, default=[], help="with --oop-diagonal-model, arm M along the anchor count: per fold also "
                     "fit the out-of-plane model on subsets of k of the fold's training anchors (comma-separated k, five subsets each, numpy "
-                    "seed 0) and read it with the standard mode's in-plane block")
+                    "seed 0) and read it with the fit mode's in-plane block")
     ap.add_argument("--allow-any-model", action="store_true", help="decision 55: use a model whose registry status is not 'carried' — named "
                     "in the record")
     ap.add_argument("--allow-any-anchor", action="store_true", help="use an anchor file that is not its molecule's carried entry in the anchor "
@@ -622,7 +627,7 @@ def main() -> int:
            "head_l2": a.head_l2, "lora_rank": a.lora_rank, "oop_couplings_low": a.oop_couplings_low, "oop_diagonal_model": a.oop_diagonal_model,
            "folds": {}}
     used = (("held", sorted(a.held)), ("oop_fit_sizes", a.oop_fit_sizes), ("modes", a.modes), ("in_sample", a.in_sample),
-            ("head_all", a.head_all), ("init_scale", None if a.init_scale == 1.0 else a.init_scale))
+            ("fit_mode", a.fit_mode), ("init_scale", None if a.init_scale == 1.0 else a.init_scale))
     res.update({k: v for k, v in used if v is not None and v is not False and v != []})   # only when used (0.0 is a value): the pin's record stays
     folds = [] if a.skip_folds else (sorted(a.held) or an.ids)
     for held in folds:
