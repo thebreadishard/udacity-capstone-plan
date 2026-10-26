@@ -1,4 +1,4 @@
-# Architecture of plan 05 (for the authors; first version 19 September 2026, English since 21 September; every sheet brought to the state of 7 October 2026)
+# Architecture of plan 05 (for the authors; first version 19 September 2026, English since 21 September; every sheet brought to the state of 7 October 2026, sheets 0, 1, 2, 4, 6, 7 and 8 to that of 26 October 2026)
 
 **Four kinds of diagram, kept apart (agreement of 20 September).**
 
@@ -46,7 +46,7 @@ flowchart LR
   COND(["Observation conditions: internal energy after UV absorption (emission) or temperature (absorption); resolution of the instrument"]):::data
   PUB(["PubChem fused aromatics, frozen set"]):::ext
   LABDB(["Laboratory spectra"]):::ext
-  PAHDB(["Opponents: PAHdb and other predictors"]):::ext
+  PAHDB(["Opponents: scaled DFT spectra (PAHdb and others) and other predictors"]):::ext
   GENF["Candidate generator (module 06)"]:::proc
   CANDS(["New fused ring systems with PubChem membership"]):::data
   LABF["Label factory (sheet 4)"]:::proc
@@ -94,8 +94,9 @@ flowchart LR
 ## 1. Research process — the label factory (`10_research_process_label_factory.mmd`; pipeline B in the proposal)
 
 ```mermaid
-%% Research process — the label factory (in the proposal: pipeline B): the tests that decide whether the target architecture of sheet 4 gets built; the end object is the licensed factory design with the first labels as evidence, not the label set (sheet 4 makes that). Status 7 October 2026.
+%% Research process — the label factory (in the proposal: pipeline B): the tests that decide whether the target architecture of sheet 4 gets built; the end object is the licensed factory design with the first labels as evidence, not the label set (sheet 4 makes that). Status 26 October 2026.
 %% This sheet may contain data and decisions. Green = passed; blue = running; dashed = still to do; red = failed and closed.
+%% 26 October 2026: anchor set three and the DF-MP2 step (eleven carried anchors), LNO closed, decision 63 (no new CC anchors before July 2027), the kernel race fixed, the cation anchor's blocker named.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef done fill:#d9f0dc,stroke:#2e7d32,color:#111
@@ -111,6 +112,7 @@ flowchart LR
   FROZ["Naphthalene at an inherited frozen core of 6: invalid; frozen core derived from the elements since (27 Sep)"]:::closed
   LAMB["Lambda incident: gradients with the CCSD lambda; every earlier CC Hessian invalid (29 Sep)"]:::closed
   FIX["(T) lambda solved explicitly, (T) density and lambda kernels in C, water acceptance gate; pyscf PRs #3469, #3470, #3477 (29 Sep – 3 Oct)"]:::done
+  RACE["OpenMP race in our (T) kernels, found in the maintainer's review commit: fixed and re-verified on water and formaldehyde (23 Oct)"]:::done
   DZ4["Four cc-pVDZ anchors: benzene, fluorobenzene, pyridine, naphthalene (30 Sep – 2 Oct)"]:::done
   CAT["Benzene⁺ (UHF) on a 32 GB box: out of memory (30 Sep)"]:::closed
   ANT["Anthracene cc-pVDZ: imaginary out of plane (51i cm⁻¹), the small-basis arene artefact (6 Oct)"]:::done
@@ -120,35 +122,41 @@ flowchart LR
   T3R["Test 3: anthracene repaired out of plane, 86 / 115 cm⁻¹ against ωB97X 105 / 126 (7 Oct)"]:::done
   POL["Energy route on every anchor (decision 61); anchor registry, one carried version per molecule (decision 62) (6–7 Oct)"]:::done
   MP2Q["MP2 basis step for every cc-pVDZ anchor: six carried TZ-tier anchors; chain 33c: out-of-plane error halved on 4 of 4 (7 Oct)"]:::done
+  S3W["Anchor set three: quinoxaline, quinoline, isoquinoline, azulene, acenaphthylene at CCSD(T)/cc-pVDZ, each with its CC APT (13–20 Oct)"]:::done
+  DFMP["DF-MP2 basis step (psi4): analytic gradient against finite differences on water 4.9e-8, density fitting moves ≤ 0.46 cm⁻¹; adopted (19–20 Oct)"]:::done
+  CAR11["Eleven carried composite anchors in the registry (20 Oct)"]:::done
   D1{"Composite within the per-family lines on a heteroatom and a larger molecule?"}:::dec
   ADD["Additivity checks: pyridine at cc-pVTZ, a QZ step on benzene"]:::todo
-  LNO["LNO curvatures at xtight: within 0.27 % of canonical on three coordinates; frozen spaces worse (8 Oct)"]:::done
+  LNO["LNO curvatures at xtight within 0.27 % of canonical on three coordinates, but the out-of-plane offset does not shrink and frozen spaces are worse: route closed (8–9 Oct)"]:::closed
   D2{"Full anchor above the top rung affordable? Pyrene 4–5 CCX53 days, perylene 20–36 (price note, 8 Oct)"}:::dec
-  BIG["Spot-check anchors above 26 atoms: LNO diagonal plus the MP2 step at rule-chosen coordinates, a test of the network (TASKS 36)"]:::todo
-  CANON["Full anchors up to anthracene–pyrene (24–26 atoms), canonical with the MP2 step"]:::todo
-  CATN["Benzene⁺ on 128 GB with the unrestricted (T) path"]:::todo
-  OUT(["Licensed factory design: anchor level per family (composite), error budget per family, the first anchors with their checks (benzene, fluorobenzene, pyridine, naphthalene, anthracene, one cation)"]):::data
+  END63["Decision 63: no new CC anchors before July 2027; the anchor plan and its price go to the supervisor (17 Oct)"]:::done
+  CANON["Full anchors up to anthracene–pyrene (24–26 atoms), canonical with the MP2 step — after June 2027"]:::todo
+  BIG["Spot-check anchors above 26 atoms at rule-chosen coordinates, a test of the network (TASKS 36) — after June 2027"]:::todo
+  CATN["Cation anchors: pyscf's unrestricted (T) density does not fit at this size; a blocked UHF (T) density first (design note, 23 Oct)"]:::todo
+  OUT(["Licensed factory design: anchor level per family (composite with the DF-MP2 basis step), error budget per family, eleven carried anchors with their checks; a cation anchor still open"]):::data
 
   M1 --> M2B --> E8
   E8 --> FROZ --> FIX
   E8 --> LAMB --> FIX --> DZ4 --> TZB --> T2
+  FIX --> RACE --> OUT
   DZ4 --> CAT --> CATN
   FIX --> ANT --> T3R
-  T1 --> T2 --> T3R --> MP2Q --> D1
+  T1 --> T2 --> T3R --> MP2Q --> S3W --> DFMP --> CAR11 --> D1
   POL --> MP2Q
   D1 -- yes --> OUT
   D1 -- not yet --> ADD --> D1
-  LNO --> D2
-  D2 -- up to pyrene --> CANON --> OUT
-  D2 -- above --> BIG --> OUT
+  M2B --> LNO --> D2 --> END63
+  END63 -- up to pyrene --> CANON --> OUT
+  END63 -- above --> BIG --> OUT
   CATN --> OUT
 ```
 
 ## 2. Research process — the ΔH model (`20_research_process_deltaH_model.mmd`; pipeline A in the proposal)
 
 ```mermaid
-%% Research process — the ΔH model (in the proposal: pipeline A): the tests that decide whether and how the ΔH model of sheets 5 and 6 gets built; the end object is the licensed model design with the first licence table, not the trained model (sheet 6 makes that). Status 7 October 2026.
+%% Research process — the ΔH model (in the proposal: pipeline A): the tests that decide whether and how the ΔH model of sheets 5 and 6 gets built; the end object is the licensed model design with the first licence table, not the trained model (sheet 6 makes that). Status 26 October 2026.
 %% This sheet may contain data and decisions. Green = passed or measured; blue = running; dashed = still to do; red = lost and closed.
+%% 26 October 2026: chains 35h2–44, the coverage, size, form and cation reads, set three and the proxy check (the whole head), the scale-factor comparison; the next carried version collects them.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef done fill:#d9f0dc,stroke:#2e7d32,color:#111
@@ -170,17 +178,37 @@ flowchart LR
   W["Loss weighting for the low modes (chains 34b, 34c): no response (4 Oct)"]:::closed
   HNG["Hinge input for the low modes (chain 36): rejected, other-low 3.21 → 3.51 (7 Oct)"]:::closed
   STONE["MP2 as the proxy target: priced out for the pool (6 Oct)"]:::closed
-  LBL["Analytic training labels for the pool (labels server, from 7 Oct)"]:::running
-  C35["Chain 35: chain 34's recipe on analytic training labels"]:::todo
+  SCF["Against scale factors: on hold-out (a) the network beats one-, two- and three-region factors in every family (25 Oct)"]:::done
+  LBL["Analytic training labels for the pool: 775 of 811 on the labels server (from 7 Oct)"]:::running
+  C35H["Chain 35h2, half read on 586 analytic labels: lower on every quantity of both hold-outs, other 3.45 → 3.11 (17 Oct)"]:::done
+  C35["Chain 35: the full read on every analytic label, armed for the labels' end (26 Oct)"]:::todo
   D1{"other-low ≤ 2.5 cm⁻¹ on the hold-out?"}:::dec
   RNG["Range: a 6 Å cutoff (step 0: up to 1.2 of 1.95 cm⁻¹)"]:::todo
+  VOL["Data volume pays at fixed composition: corrected ω 2.13× lower per decade on (a) (15 Oct)"]:::done
+  C37["Chain 37: 200 more molecules are count, not coverage: (b) 0.330 → 0.325 (8 Oct)"]:::closed
+  C38["Chain 38: the five-membered-ring families cover hold-out (b): without them 0.410 against 0.317 (9 Oct)"]:::done
+  C40["Chain 40: thirty five-ring children per family, (b) 0.310 against 0.325: stop, by 0.0005 (17 Oct)"]:::closed
+  C40B["Chain 40b: about 45 per family; read open"]:::todo
+  C39["Chain 39: trained on ≤ 20 atoms, twice the error on ≥ 27 atoms (q 1.96); size and ring count confounded (9 Oct)"]:::done
+  C41["Chain 41: five fused rings from a corpus of at most four, q5 = 1.05: size alone is no wall up to 40 atoms (19 Oct)"]:::done
+  C42["Chain 42: the mandate's four shape molecules, 34–60 atoms (after lever 5)"]:::todo
+  C43["Chain 43: rung 4's learning curve, tetracene held out"]:::todo
+  FLOOR["The carried head's form is not the limit; its projected target grows with size (15 Oct)"]:::done
+  C44["Chain 44: projected against ridge target"]:::todo
+  CATG["Cation gate, FD against analytic: not passed (CH-oop 3.05, other 2.27 against 1.5); every cation analytic (9 Oct)"]:::closed
+  CATL["Cation labels: phases 1–2 on the laptop, fourteen on the labels server (from 9 Oct)"]:::running
+  PAR["σ_h broken by the hybrid head on mixed-parity pairs; a parity-odd factor built, off until the next version (13 Oct)"]:::done
+  V12["Next carried version: analytic training labels, five-ring and cation rows, the parity factor, more data (TASKS 129)"]:::todo
   T3A["T3: proxy model fine-tuned on three cc-pVDZ anchors, about 6 cm⁻¹ in plane on the held-out anchor (2 Oct)"]:::done
   C33["Chain 33: anthracene as fifth anchor, naphthalene 6.52 → 5.83 cm⁻¹; out of plane mixed levels (7 Oct)"]:::done
-  C33C["Chain 33c: T3 on composite (cc-pVTZ-tier) anchors (7 Oct)"]:::running
+  C33C["Chain 33c: T3 on composite (cc-pVTZ-tier) anchors, out-of-plane error halved on 4 of 4 (7 Oct)"]:::done
   D2{"Out-of-plane transfer improves on ≥ 3 of 4 common anchors?"}:::dec
-  MORE["Anchor plan: every new anchor at the composite level; a sixth anchor priced"]:::todo
+  S3["Anchor set three, registered read (λ = 1): flat, R-A CH-oop 14.06 → 13.69, R-B 0 of 3 (20 Oct)"]:::closed
+  DIAG["Diagnosis: the last layer cannot fit the CC out-of-plane correction even in sample (7.76), the whole head can (0.80) (21 Oct)"]:::done
+  WH["Whole head, repeated read: R-A −13.8 %, R-B 3 of 3, as predicted (21 Oct)"]:::done
+  PX["Few-anchor proxy check: the whole head gains along the anchor count, λ = 1 does not (arm a, 22 Oct)"]:::done
+  FIT["The whole head is the transfer's fit mode (26 Oct)"]:::done
   NET["Out-of-plane transfer limited by the network: the input design comes first"]:::todo
-  COV["Coverage: the 200 next-pool molecules, then pool 3 (cations, aza four-rings, five-rings)"]:::running
   LIC["Licence per family against the lines; ensemble, calibration"]:::todo
   OUT(["Licensed model design: target object (family block), representation with which every family learns, number of labels needed per family, pre-training recipe on the corpus; first licence table per family"]):::data
 
@@ -191,13 +219,21 @@ flowchart LR
   ANL --> W
   ANL --> HNG
   ANL --> STONE
-  ANL --> LBL --> C35 --> D1
-  D1 -- yes --> LIC
-  D1 -- no --> RNG --> LIC
+  ANL --> SCF --> LIC
+  ANL --> LBL --> C35H --> C35 --> D1
+  D1 -- yes --> V12
+  D1 -- no --> RNG --> V12
+  FAM --> VOL --> V12
+  FAM --> C37 --> C38 --> C40 --> C40B --> V12
+  RC --> C39 --> C41 --> C42 --> V12
+  C41 --> C43 --> V12
+  RC --> FLOOR --> C44 --> V12
+  FAM --> CATG --> CATL --> V12
+  RC --> PAR --> V12
   T1A --> T3A --> C33 --> C33C --> D2
-  D2 -- yes --> MORE --> LIC
+  D2 -- yes --> S3 --> DIAG --> WH --> PX --> FIT --> LIC
   D2 -- no --> NET --> LIC
-  COV --> LIC
+  V12 --> LIC
   LIC --> OUT
 ```
 
@@ -271,8 +307,9 @@ CPX62 runner (8 threads) both finite-difference Hessians took 4.0 h for perylene
 benzo[k]fluoranthene+CF3 (35) and 7.6 h for dibenz[a,h]anthracene+CHO (38) — pool 3's runner logs. The analytic route on the labels server takes
 6,000–14,000 s per functional at 30 atoms. Coupled-cluster anchors stop at 24–26 atoms (pyrene: 4–5 CCX53 days); above them the network carries
 the correction, and chain 39 (9 Oct) showed that it can do so only for the families the corpus contains: trained on molecules of ≤ 20 atoms (one-
-and two-ring scaffolds) its error on ≥ 27-atom molecules is twice that of a control trained across sizes. The corpus therefore holds the large
-families themselves, at the DFT level, up to ≈ 40 atoms.
+and two-ring scaffolds) its error on ≥ 27-atom molecules is twice that of a control trained across sizes. Chain 41 (19 Oct) showed the other
+side: with ring systems of up to four fused rings in the corpus, five-ring molecules of 32–40 atoms are predicted about as well as with
+five-ring molecules in training (q5 = 1.05). The corpus therefore holds the large families themselves, at the DFT level, up to ≈ 40 atoms.
 
 ## 4. Data creation — the label factory: how one label comes about (`40_data_creation_labels.mmd`)
 
@@ -281,8 +318,10 @@ families themselves, at the DFT level, up to ≈ 40 atoms.
 %% Rectangle = process step (operation + software); rounded ends = data object (the thing). Every step yields one data object. Dashed = not built yet.
 %% 7 October 2026: redrawn to the built route. A label is a canonical CCSD(T) Hessian by central differences of analytic gradients over the symmetry-unique
 %% displacements, raised to cc-pVTZ quality by the MP2 basis step (the composite level), checked by two routes per quantity and kept in the anchor registry
-%% (one carried version per molecule). The local-correlation (LNO) route and the open-shell gradients are the planned branches for molecules beyond the
-%% canonical cost and for cations; the deck-transport route of September is replaced by the full symmetric deck.
+%% (one carried version per molecule). The open-shell gradients are the planned branch for cations; the deck-transport route of September is
+%% replaced by the full symmetric deck.
+%% 26 October 2026: the local-correlation (LNO) route is gone (its out-of-plane offset does not shrink); the MP2 basis step is psi4's
+%% density-fitted MP2 gradient.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
@@ -296,13 +335,9 @@ flowchart LR
   GRADS(["Gradients, energies and dipoles at every displacement"]):::data
   OPEN["UCCSD(T) gradients for open shell (pyscf, own unrestricted (T) kernels)"]:::planned
   OPENG(["Open-shell gradients, energies and dipoles at every displacement"]):::data
-  LOC["Localisation and fragmentation (pyscf-forge)"]:::planned
-  REF(["Local orbital spaces of the reference geometry"]):::data
-  LNO["LNO-CCSD(T) gradients (own software)"]:::planned
-  LNOG(["Local-correlation gradients at every displacement"]):::data
   FD["Central differences and symmetry reconstruction (own software)"]
   HCC(["CCSD(T)/cc-pVDZ Hessian and dipole derivatives"]):::data
-  MP2["MP2 gradients in two basis sets (pyscf)"]
+  MP2["DF-MP2 gradients in two basis sets (psi4)"]
   MROWS(["MP2 Hessian rows, cc-pVDZ and cc-pVTZ"]):::data
   COMP["Composite assembly (own software)"]
   HCOMP(["Composite Hessian: CCSD(T)/cc-pVDZ plus the MP2 basis step"]):::data
@@ -321,8 +356,6 @@ flowchart LR
   MOL --> SYM --> DECK
   DECK --> CCG --> GRADS --> FD
   DECK --> OPEN --> OPENG --> FD
-  MOL --> LOC --> REF --> LNO
-  DECK --> LNO --> LNOG --> FD
   FD --> HCC --> COMP
   DECK --> MP2 --> MROWS --> COMP
   COMP --> HCOMP --> DIFF
@@ -393,6 +426,8 @@ Sheet 5b is the mode-token design of 20 September in PyTorch (input layer `Token
 %% 7 October 2026: redrawn to the built route — training on the proxy correction with early stopping on an inner validation split, fine-tuning of the head
 %% and the class scales on the anchor labels with leave-one-anchor-out validation, every saved model registered with a status and a version; reads run
 %% only on carried models. The ensemble over seeds is read as seed means; an ensemble object with spread is not built yet.
+%% 26 October 2026: the fine-tune trains every layer of the head with the class scales (the last layer alone could not fit the CC
+%% out-of-plane correction).
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
@@ -404,7 +439,7 @@ flowchart LR
   SETS(["Training, validation and test sets"]):::data
   PRE["Training on the proxy correction with early stopping (PyTorch)"]
   PRENET(["Proxy-trained ΔH model"]):::data
-  FT["Fine-tuning of the head and the class scales on the labels (PyTorch)"]
+  FT["Fine-tuning of the whole head and the class scales on the labels (PyTorch)"]
   FTNET(["Fine-tuned ΔH model"]):::data
   VAL["Leave-one-anchor-out validation (own software)"]
   VALR(["Transfer errors per family on held-out anchors"]):::data
@@ -437,10 +472,10 @@ flowchart LR
   ENS(["Trained ΔH model: ensemble of members"]):::data
   TESTSET(["Test set"]):::data
   LABDB(["Laboratory spectra with the margin per reference column"]):::ext
-  PAHDB(["Opponents: PAHdb and other predictors"]):::ext
+  PAHDB(["Opponents: scaled DFT spectra (PAHdb and others) and other predictors"]):::ext
   TEST["Test on the hold-out molecules per family (own software)"]
   TESTR(["Test errors per family and charge state, alongside the opponents"]):::data
-  PROMO["Promotion against the registered lines (own software)"]
+  PROMO["Promotion against the registered lines and the learning curve (own software)"]
   STAT(["Model status: carried, candidate or superseded"]):::data
   LIC["Licence determination (own software)"]:::planned
   LICT(["Licence table per family and charge state"]):::data
@@ -463,6 +498,8 @@ flowchart LR
 %% Spectrum pipeline (level 3): molecule in, spectrum with error margin out. ΔH comes from two sources: measured (the label of sheet 4, for molecules with a label) or predicted (the ΔH model, for all others); the tail is the same. Target architecture.
 %% Rectangle = process step (operation + software); rounded ends = data object (the thing). Every step yields one data object. Dashed = not built yet.
 %% 7 October 2026: the label's name is the one sheet 4 gives it, and the licence filter is the only way from ΔH to the applied blocks.
+%% 26 October 2026: the forward pass exists (the carried hybrid model and the fit on all anchors); the geometry term and the anharmonic
+%% correction exist for benzene only, not as pipeline steps; the 5–6 µm region needs overtones and combination bands.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
@@ -479,8 +516,8 @@ flowchart LR
   MODES(["Normal modes: L, frequencies, families, symmetry blocks"]):::data
   LOCC["Local-coordinate features (own software, geomeTRIC)"]
   PF(["Primitive pairs with their features; atoms and coordinates"]):::data
-  FWD["Forward pass (ΔH model: pairwise local head or equivariant body, then projection onto the modes; PyTorch)"]:::planned
-  DH(["ΔH blocks per family and relaxation along the totally symmetric modes, with ensemble uncertainty"]):::data
+  FWD["Forward pass (ΔH model: equivariant body and hybrid pair head, then projection onto the modes; PyTorch)"]
+  DH(["ΔH blocks per family, with ensemble uncertainty"]):::data
   LAB(["Label: ΔH blocks with error margin per family and geometry term per mode, sealed"]):::data
   LICF["Licence filter (own software)"]:::planned
   DHL(["Applied and refused ΔH blocks, with reason"]):::data
@@ -488,12 +525,12 @@ flowchart LR
   H(["Force constants H = H0 + ΔH on licensed blocks, H0 elsewhere; licence status per family"]):::data
   EIG["Diagonalisation (own software)"]
   POS(["Band positions with margin and licence status per family"]):::data
-  GEOP["Geometry term (own software)"]
+  GEOP["Geometry term (own software)"]:::planned
   POSG(["Band positions with geometry term, margin and licence status per family"]):::data
   INT["Intensity calculation (own software)"]
   INTS(["Band intensities, redistributed over resonance polyads"]):::data
-  ANH["Anharmonic correction (own software)"]
-  ANHS(["Anharmonic shifts per band"]):::data
+  ANH["Anharmonic correction (own software)"]:::planned
+  ANHS(["Anharmonic shifts per band, overtones and combination bands"]):::data
   SHAPE["Profile formation (own software)"]
 
   SPEC(["Spectrum: bands with position, intensity, profile and error margin; licence status per family"]):::data

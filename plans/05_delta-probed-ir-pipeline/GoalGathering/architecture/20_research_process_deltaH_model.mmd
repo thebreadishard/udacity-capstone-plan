@@ -1,5 +1,6 @@
-%% Research process — the ΔH model (in the proposal: pipeline A): the tests that decide whether and how the ΔH model of sheets 5 and 6 gets built; the end object is the licensed model design with the first licence table, not the trained model (sheet 6 makes that). Status 7 October 2026.
+%% Research process — the ΔH model (in the proposal: pipeline A): the tests that decide whether and how the ΔH model of sheets 5 and 6 gets built; the end object is the licensed model design with the first licence table, not the trained model (sheet 6 makes that). Status 26 October 2026.
 %% This sheet may contain data and decisions. Green = passed or measured; blue = running; dashed = still to do; red = lost and closed.
+%% 26 October 2026: chains 35h2–44, the coverage, size, form and cation reads, set three and the proxy check (the whole head), the scale-factor comparison; the next carried version collects them.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef done fill:#d9f0dc,stroke:#2e7d32,color:#111
@@ -21,17 +22,37 @@ flowchart LR
   W["Loss weighting for the low modes (chains 34b, 34c): no response (4 Oct)"]:::closed
   HNG["Hinge input for the low modes (chain 36): rejected, other-low 3.21 → 3.51 (7 Oct)"]:::closed
   STONE["MP2 as the proxy target: priced out for the pool (6 Oct)"]:::closed
-  LBL["Analytic training labels for the pool (labels server, from 7 Oct)"]:::running
-  C35["Chain 35: chain 34's recipe on analytic training labels"]:::todo
+  SCF["Against scale factors: on hold-out (a) the network beats one-, two- and three-region factors in every family (25 Oct)"]:::done
+  LBL["Analytic training labels for the pool: 775 of 811 on the labels server (from 7 Oct)"]:::running
+  C35H["Chain 35h2, half read on 586 analytic labels: lower on every quantity of both hold-outs, other 3.45 → 3.11 (17 Oct)"]:::done
+  C35["Chain 35: the full read on every analytic label, armed for the labels' end (26 Oct)"]:::todo
   D1{"other-low ≤ 2.5 cm⁻¹ on the hold-out?"}:::dec
   RNG["Range: a 6 Å cutoff (step 0: up to 1.2 of 1.95 cm⁻¹)"]:::todo
+  VOL["Data volume pays at fixed composition: corrected ω 2.13× lower per decade on (a) (15 Oct)"]:::done
+  C37["Chain 37: 200 more molecules are count, not coverage: (b) 0.330 → 0.325 (8 Oct)"]:::closed
+  C38["Chain 38: the five-membered-ring families cover hold-out (b): without them 0.410 against 0.317 (9 Oct)"]:::done
+  C40["Chain 40: thirty five-ring children per family, (b) 0.310 against 0.325: stop, by 0.0005 (17 Oct)"]:::closed
+  C40B["Chain 40b: about 45 per family; read open"]:::todo
+  C39["Chain 39: trained on ≤ 20 atoms, twice the error on ≥ 27 atoms (q 1.96); size and ring count confounded (9 Oct)"]:::done
+  C41["Chain 41: five fused rings from a corpus of at most four, q5 = 1.05: size alone is no wall up to 40 atoms (19 Oct)"]:::done
+  C42["Chain 42: the mandate's four shape molecules, 34–60 atoms (after lever 5)"]:::todo
+  C43["Chain 43: rung 4's learning curve, tetracene held out"]:::todo
+  FLOOR["The carried head's form is not the limit; its projected target grows with size (15 Oct)"]:::done
+  C44["Chain 44: projected against ridge target"]:::todo
+  CATG["Cation gate, FD against analytic: not passed (CH-oop 3.05, other 2.27 against 1.5); every cation analytic (9 Oct)"]:::closed
+  CATL["Cation labels: phases 1–2 on the laptop, fourteen on the labels server (from 9 Oct)"]:::running
+  PAR["σ_h broken by the hybrid head on mixed-parity pairs; a parity-odd factor built, off until the next version (13 Oct)"]:::done
+  V12["Next carried version: analytic training labels, five-ring and cation rows, the parity factor, more data (TASKS 129)"]:::todo
   T3A["T3: proxy model fine-tuned on three cc-pVDZ anchors, about 6 cm⁻¹ in plane on the held-out anchor (2 Oct)"]:::done
   C33["Chain 33: anthracene as fifth anchor, naphthalene 6.52 → 5.83 cm⁻¹; out of plane mixed levels (7 Oct)"]:::done
-  C33C["Chain 33c: T3 on composite (cc-pVTZ-tier) anchors (7 Oct)"]:::running
+  C33C["Chain 33c: T3 on composite (cc-pVTZ-tier) anchors, out-of-plane error halved on 4 of 4 (7 Oct)"]:::done
   D2{"Out-of-plane transfer improves on ≥ 3 of 4 common anchors?"}:::dec
-  MORE["Anchor plan: every new anchor at the composite level; a sixth anchor priced"]:::todo
+  S3["Anchor set three, registered read (λ = 1): flat, R-A CH-oop 14.06 → 13.69, R-B 0 of 3 (20 Oct)"]:::closed
+  DIAG["Diagnosis: the last layer cannot fit the CC out-of-plane correction even in sample (7.76), the whole head can (0.80) (21 Oct)"]:::done
+  WH["Whole head, repeated read: R-A −13.8 %, R-B 3 of 3, as predicted (21 Oct)"]:::done
+  PX["Few-anchor proxy check: the whole head gains along the anchor count, λ = 1 does not (arm a, 22 Oct)"]:::done
+  FIT["The whole head is the transfer's fit mode (26 Oct)"]:::done
   NET["Out-of-plane transfer limited by the network: the input design comes first"]:::todo
-  COV["Coverage: the 200 next-pool molecules, then pool 3 (cations, aza four-rings, five-rings)"]:::running
   LIC["Licence per family against the lines; ensemble, calibration"]:::todo
   OUT(["Licensed model design: target object (family block), representation with which every family learns, number of labels needed per family, pre-training recipe on the corpus; first licence table per family"]):::data
 
@@ -42,11 +63,19 @@ flowchart LR
   ANL --> W
   ANL --> HNG
   ANL --> STONE
-  ANL --> LBL --> C35 --> D1
-  D1 -- yes --> LIC
-  D1 -- no --> RNG --> LIC
+  ANL --> SCF --> LIC
+  ANL --> LBL --> C35H --> C35 --> D1
+  D1 -- yes --> V12
+  D1 -- no --> RNG --> V12
+  FAM --> VOL --> V12
+  FAM --> C37 --> C38 --> C40 --> C40B --> V12
+  RC --> C39 --> C41 --> C42 --> V12
+  C41 --> C43 --> V12
+  RC --> FLOOR --> C44 --> V12
+  FAM --> CATG --> CATL --> V12
+  RC --> PAR --> V12
   T1A --> T3A --> C33 --> C33C --> D2
-  D2 -- yes --> MORE --> LIC
+  D2 -- yes --> S3 --> DIAG --> WH --> PX --> FIT --> LIC
   D2 -- no --> NET --> LIC
-  COV --> LIC
+  V12 --> LIC
   LIC --> OUT

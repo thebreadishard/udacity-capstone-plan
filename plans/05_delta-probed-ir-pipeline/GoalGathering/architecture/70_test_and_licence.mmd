@@ -11,10 +11,10 @@ flowchart LR
   ENS(["Trained ΔH model: ensemble of members"]):::data
   TESTSET(["Test set"]):::data
   LABDB(["Laboratory spectra with the margin per reference column"]):::ext
-  PAHDB(["Opponents: PAHdb and other predictors"]):::ext
+  PAHDB(["Opponents: scaled DFT spectra (PAHdb and others) and other predictors"]):::ext
   TEST["Test on the hold-out molecules per family (own software)"]
   TESTR(["Test errors per family and charge state, alongside the opponents"]):::data
-  PROMO["Promotion against the registered lines (own software)"]
+  PROMO["Promotion against the registered lines and the learning curve (own software)"]
   STAT(["Model status: carried, candidate or superseded"]):::data
   LIC["Licence determination (own software)"]:::planned
   LICT(["Licence table per family and charge state"]):::data

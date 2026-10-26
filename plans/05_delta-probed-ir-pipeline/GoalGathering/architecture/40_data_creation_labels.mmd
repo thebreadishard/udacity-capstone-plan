@@ -2,8 +2,10 @@
 %% Rectangle = process step (operation + software); rounded ends = data object (the thing). Every step yields one data object. Dashed = not built yet.
 %% 7 October 2026: redrawn to the built route. A label is a canonical CCSD(T) Hessian by central differences of analytic gradients over the symmetry-unique
 %% displacements, raised to cc-pVTZ quality by the MP2 basis step (the composite level), checked by two routes per quantity and kept in the anchor registry
-%% (one carried version per molecule). The local-correlation (LNO) route and the open-shell gradients are the planned branches for molecules beyond the
-%% canonical cost and for cations; the deck-transport route of September is replaced by the full symmetric deck.
+%% (one carried version per molecule). The open-shell gradients are the planned branch for cations; the deck-transport route of September is
+%% replaced by the full symmetric deck.
+%% 26 October 2026: the local-correlation (LNO) route is gone (its out-of-plane offset does not shrink); the MP2 basis step is psi4's
+%% density-fitted MP2 gradient.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
@@ -17,13 +19,9 @@ flowchart LR
   GRADS(["Gradients, energies and dipoles at every displacement"]):::data
   OPEN["UCCSD(T) gradients for open shell (pyscf, own unrestricted (T) kernels)"]:::planned
   OPENG(["Open-shell gradients, energies and dipoles at every displacement"]):::data
-  LOC["Localisation and fragmentation (pyscf-forge)"]:::planned
-  REF(["Local orbital spaces of the reference geometry"]):::data
-  LNO["LNO-CCSD(T) gradients (own software)"]:::planned
-  LNOG(["Local-correlation gradients at every displacement"]):::data
   FD["Central differences and symmetry reconstruction (own software)"]
   HCC(["CCSD(T)/cc-pVDZ Hessian and dipole derivatives"]):::data
-  MP2["MP2 gradients in two basis sets (pyscf)"]
+  MP2["DF-MP2 gradients in two basis sets (psi4)"]
   MROWS(["MP2 Hessian rows, cc-pVDZ and cc-pVTZ"]):::data
   COMP["Composite assembly (own software)"]
   HCOMP(["Composite Hessian: CCSD(T)/cc-pVDZ plus the MP2 basis step"]):::data
@@ -42,8 +40,6 @@ flowchart LR
   MOL --> SYM --> DECK
   DECK --> CCG --> GRADS --> FD
   DECK --> OPEN --> OPENG --> FD
-  MOL --> LOC --> REF --> LNO
-  DECK --> LNO --> LNOG --> FD
   FD --> HCC --> COMP
   DECK --> MP2 --> MROWS --> COMP
   COMP --> HCOMP --> DIFF

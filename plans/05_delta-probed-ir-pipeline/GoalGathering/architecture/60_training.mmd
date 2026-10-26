@@ -3,6 +3,8 @@
 %% 7 October 2026: redrawn to the built route — training on the proxy correction with early stopping on an inner validation split, fine-tuning of the head
 %% and the class scales on the anchor labels with leave-one-anchor-out validation, every saved model registered with a status and a version; reads run
 %% only on carried models. The ensemble over seeds is read as seed means; an ensemble object with spread is not built yet.
+%% 26 October 2026: the fine-tune trains every layer of the head with the class scales (the last layer alone could not fit the CC
+%% out-of-plane correction).
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
@@ -14,7 +16,7 @@ flowchart LR
   SETS(["Training, validation and test sets"]):::data
   PRE["Training on the proxy correction with early stopping (PyTorch)"]
   PRENET(["Proxy-trained ΔH model"]):::data
-  FT["Fine-tuning of the head and the class scales on the labels (PyTorch)"]
+  FT["Fine-tuning of the whole head and the class scales on the labels (PyTorch)"]
   FTNET(["Fine-tuned ΔH model"]):::data
   VAL["Leave-one-anchor-out validation (own software)"]
   VALR(["Transfer errors per family on held-out anchors"]):::data
