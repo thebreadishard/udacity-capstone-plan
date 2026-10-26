@@ -1,0 +1,21 @@
+{"name": "tasks74_labels",
+ "purpose": "TASKS 74, the user's 'Ja' of 26 Oct (priced 25 Oct: 520 lane-h, ~5.4 CCX53 days, ~EUR 111): analytic B3LYP and wB97X labels with the APT for chain 41's sixty test molecules (30 five-rings of 32-40 atoms, 30 aza four-rings of 25-29), so its size read rests on analytic labels; on the labels CCX53 after lever 5 (waits for l5_large's end line), the one batch runner from /root/t74 (deploy_molecules_ccx53.sh: the folders of corpus/molecules, geometry sha256 on both sides, runner smokes passed). Then fetch, chain 41's analytic re-read, and the server goes off before the 15 Nov stop.",
+ "host": "labels",
+ "workdir": "/root/t74",
+ "command": "CODE=/root/t74/modules/05_support_predictor/corpus CAP_MB=26624 LABEL_ARGS='--max-memory 24000 --reuse-existing' bash probes/labels_batch_ccx53.sh /root/t74 T74 /root/l5b/l5_large.log '^=== \\(L5L\\) all done'",
+ "sources": [
+  {"local": "probes/labels_batch_ccx53.sh", "remote": "/root/t74/probes/labels_batch_ccx53.sh"},
+  {"local": "probes/wsl_capped.sh", "remote": "/root/t74/probes/wsl_capped.sh"},
+  {"local": "probes/cation_oom_check.sh", "remote": "/root/t74/probes/cation_oom_check.sh"},
+  {"local": "probes/library_log.py", "remote": "/root/t74/probes/library_log.py"},
+  {"local": "modules/05_support_predictor/corpus/analytic_hessians.py", "remote": "/root/t74/modules/05_support_predictor/corpus/analytic_hessians.py"},
+  {"local": "modules/05_support_predictor/corpus/apt.py", "remote": "/root/t74/modules/05_support_predictor/corpus/apt.py"},
+  {"local": "probes/results_m1/tasks74_labels_2026-10-26/ids.tsv", "remote": "/root/t74/ids.txt"}
+ ],
+ "progress": {"regex": "^  P3_[0-9a-f]+ (labels started|labelled|KILLED|LABELS)", "max_gap_minutes": 120,
+              "start_regex": "^=== \\(T74\\) start: ", "heartbeat_glob": "molecules/*/pyscf.log"},
+ "marker_regex": "^=== \\(T74\\) (start|all done|STOPPED)|^  P3_[0-9a-f]+ (KILLED|LABELS)",
+ "end_regex": "^=== \\(T74\\) all done: 0 failures",
+ "dry_run_args": "--dry-run",
+ "threads": 32,
+ "estimate": {"hours": 130, "basis": "after l5_large (~3 Nov): compute_prices.py labels (out/anchor_plan/price_labels.md, 25 Oct) - 520 lane-hours on the labels lanes' model e^-1.90 atoms^3.54 (705 molecules, 8-30 atoms; the 30 five-rings extrapolated), on 4 lanes"}}
