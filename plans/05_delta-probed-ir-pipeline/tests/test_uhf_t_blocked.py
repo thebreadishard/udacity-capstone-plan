@@ -2,7 +2,8 @@
 design note of 23 Oct 2026: H₂O⁺ (doublet), NO (doublet) and triplet water, all-electron and frozen core, with block sizes that do and do not
 divide the virtual counts (edge blocks and the one-block case). The (T) lambda against `uccsd_t_lambda.make_intermediates`, γ1 against
 `uccsd_t_rdm._gamma1_intermediates` (for_grad both ways), γ2 against `uccsd_t_rdm._gamma2_intermediates` uncompressed, and compressed against
-the same with the E8 probe's dvvVV fix (pyscf#3305/#3387). Runs where pyscf is installed (WSL ~/qc05)."""
+the same with the E8 probe's dvvVV fix (pyscf#3305/#3387); the out-of-core γ2 (`uccsd_gamma2_outcore`, v⁴ blocks in an HDF5 file, slabs of
+one, three and all virtual indices) against pyscf's in-core UCCSD and (T) γ2. Runs where pyscf is installed (WSL ~/qc05)."""
 import sys
 from pathlib import Path
 
@@ -10,12 +11,13 @@ import numpy as np
 import pytest
 
 pyscf = pytest.importorskip("pyscf")
-from pyscf import cc, gto, scf  # noqa: E402
-from pyscf.cc import uccsd_t_lambda, uccsd_t_rdm  # noqa: E402
+from pyscf import cc, gto, lib, scf  # noqa: E402
+from pyscf.cc import uccsd_rdm, uccsd_t_lambda, uccsd_t_rdm  # noqa: E402
 
 PROBES = Path(__file__).resolve().parent.parent / "probes"
 sys.path.insert(0, str(PROBES / "t_density_kernel"))
 sys.path.insert(0, str(PROBES))
+import uccsd_gamma2_outcore as O  # noqa: E402
 import uhf_t_blocked as U  # noqa: E402
 
 TOL = 1e-12
@@ -98,3 +100,41 @@ def test_a_block_below_one_is_refused(case):
                  lambda: U.gamma2_intermediates(mycc, mycc.t1, mycc.t2, l1, l2, eris, block=0)):
         with pytest.raises(ValueError, match="at least one virtual index"):
             call()
+
+
+def slab_mb(nvir: int, per_slab: int) -> float:
+    """The memory that gives `per_slab` virtual indices per slab for a molecule with nvir α virtuals (O._slab's inverse)."""
+    return per_slab * 2 * 8 * nvir ** 3 / 1e6 * 1.0001
+
+
+def read_back(d2):
+    """The out-of-core d2 with its HDF5 datasets read into arrays."""
+    return tuple(tuple(None if x is None else np.asarray(x[:]) for x in group) for group in d2)
+
+
+@pytest.mark.parametrize("per_slab", [1, 3, None])
+def test_uccsd_gamma2_outcore_equals_pyscf(case, per_slab):
+    mycc, _, l1, l2 = case
+    nvira = mycc.t2[1].shape[2]
+    mb = O.V4_SLAB_MB if per_slab is None else slab_mb(nvira, per_slab)
+    h5 = lib.H5TmpFile()                                       # held: the datasets live in it
+    got = read_back(O.gamma2_outcore(mycc, mycc.t1, mycc.t2, l1, l2, h5, True, mb))
+    nested_close(uccsd_rdm._gamma2_intermediates(mycc, mycc.t1, mycc.t2, l1, l2, compress_vvvv=True), got, "d2")
+
+
+def test_t_gamma2_outcore_equals_pyscf_with_the_dvvvv_fix(case, monkeypatch):
+    import e8_cc_hessian_fd as E8
+    mycc, eris, l1, l2 = case
+    monkeypatch.setattr(uccsd_t_rdm, "_gamma2_intermediates", uccsd_t_rdm._gamma2_intermediates)
+    E8.install_uccsd_t_dvvvv_fix()
+    ref = uccsd_t_rdm._gamma2_intermediates(mycc, mycc.t1, mycc.t2, l1, l2, eris, compress_vvvv=True)
+    h5 = lib.H5TmpFile()
+    got = read_back(U.gamma2_outcore(mycc, mycc.t1, mycc.t2, l1, l2, eris, h5, True, block=3,
+                                     slab_mb=slab_mb(mycc.t2[1].shape[2], 2)))
+    nested_close(ref, got, "d2")
+
+
+def test_the_outcore_path_refuses_the_uncompressed_form(case):
+    mycc, _, l1, l2 = case
+    with pytest.raises(ValueError, match="compress_vvvv=False is the in-core path"):
+        O.gamma2_outcore(mycc, mycc.t1, mycc.t2, l1, l2, lib.H5TmpFile(), False)

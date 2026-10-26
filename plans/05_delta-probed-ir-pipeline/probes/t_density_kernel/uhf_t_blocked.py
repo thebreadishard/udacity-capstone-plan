@@ -21,6 +21,8 @@ from dataclasses import dataclass
 import numpy as np
 from pyscf import lib
 from pyscf.cc import uccsd_lambda, uccsd_rdm
+from uccsd_gamma2_outcore import V4_SLAB_MB
+from uccsd_gamma2_outcore import gamma2_outcore as gamma2_outcore_uccsd
 
 BLOCK = 24                                    # virtual indices per block: o³·BLOCK³ doubles per array in flight
 P6 = ((0, 1, 2, 3, 4, 5), (1, 2, 0, 4, 5, 3), (2, 0, 1, 5, 3, 4), (0, 2, 1, 3, 5, 4), (2, 1, 0, 5, 4, 3), (1, 0, 2, 4, 3, 5))
@@ -366,15 +368,29 @@ def _compress(x: np.ndarray, na: int, nb: int) -> np.ndarray:
 
 
 def gamma2_intermediates(mycc, t1, t2, l1, l2, eris=None, compress_vvvv=False, block: int = BLOCK):  # noqa: PLR0913  (pyscf's signature + block)
-    """pyscf's `uccsd_t_rdm._gamma2_intermediates`, blocked (the (T) terms; the UCCSD part and its v⁴ blocks are pyscf's)."""
+    """pyscf's `uccsd_t_rdm._gamma2_intermediates`, blocked (the (T) terms; the UCCSD part and its v⁴ blocks are pyscf's, in core)."""
     d2 = uccsd_rdm._gamma2_intermediates(mycc, t1, t2, l1, l2)
     s = inputs(t1, t2, mycc.ao2mo() if eris is None else eris)
-    (dovov, dovOV, _, dOVOV), vv, _, _, _, _, (dovvv, dovVV, dOVvv, dOVVV), (dooov, dooOV, dOOov, dOOOV) = d2
-    out = {"dovov": dovov, "dovOV": dovOV, "dOVOV": dOVOV, "dovvv": dovvv, "dovVV": dovVV, "dOVvv": dOVvv, "dOVVV": dOVVV,
-           "dooov": dooov, "dooOV": dooOV, "dOOov": dOOov, "dOOOV": dOOOV}
-    _run(GAMMA2, _lambda_pair, s, out, block)
+    _add_t_gamma2(d2, s, block)
     if not compress_vvvv:
         return d2
     nvira, nvirb = s.t2ab.shape[2:]
-    dvvvv, dvvVV, dVVvv, dVVVV = vv
+    dvvvv, dvvVV, dVVvv, dVVVV = d2[1]
     return (d2[0], (_compress(dvvvv, nvira, nvira), _compress(dvvVV, nvira, nvirb), dVVvv, _compress(dVVVV, nvirb, nvirb)), *d2[2:])
+
+
+def gamma2_outcore(mycc, t1, t2, l1, l2, eris, h5fobj, compress_vvvv=True, block: int = BLOCK,  # noqa: PLR0913  (pyscf's signature + sizes)
+                   slab_mb: float = V4_SLAB_MB):
+    """pyscf's `uccsd_t_rdm._gamma2_outcore` as its name says: the UCCSD part from `uccsd_gamma2_outcore` (v⁴ blocks compressed into
+    `h5fobj`), the (T) terms blocked. The gradient's call; compress_vvvv=False is refused there."""
+    d2 = gamma2_outcore_uccsd(mycc, t1, t2, l1, l2, h5fobj, compress_vvvv, slab_mb)
+    _add_t_gamma2(d2, inputs(t1, t2, eris), block)
+    return d2
+
+
+def _add_t_gamma2(d2: tuple, s: Inputs, block: int) -> None:
+    """The (T) terms of GAMMA2 added in place to pyscf's UCCSD d2 blocks (none of them a v⁴ block)."""
+    (dovov, dovOV, _, dOVOV), _, _, _, _, _, (dovvv, dovVV, dOVvv, dOVVV), (dooov, dooOV, dOOov, dOOOV) = d2
+    out = {"dovov": dovov, "dovOV": dovOV, "dOVOV": dOVOV, "dovvv": dovvv, "dovVV": dovVV, "dOVvv": dOVvv, "dOVVV": dOVVV,
+           "dooov": dooov, "dooOV": dooOV, "dOOov": dOOov, "dOOOV": dOOOV}
+    _run(GAMMA2, _lambda_pair, s, out, block)
