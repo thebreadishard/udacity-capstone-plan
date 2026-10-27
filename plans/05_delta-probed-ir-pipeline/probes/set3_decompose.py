@@ -3,7 +3,8 @@
 The anchor's correction to the low level splits as ΔH_CC = [CC/DZ − B3LYP/6-31G*] (the method part, at a double-zeta basis) + [MP2/TZ −
 MP2/DZ] (the basis step of the composite). Per anchor with a valid CC/DZ Hessian, in the low level's mode basis (analytic B3LYP, mass-
 weighted, translations and rotations projected), the first-order shifts K_kk of each part and of the proxy (ωB97X − B3LYP, the network's
-pretraining target) are compared per family (the corpus rule of e8_cc_locality): correlation with the proxy, slope on the proxy, rms.
+pretraining target) are compared per family (the corpus rule of e8_cc_locality): correlation with the proxy, slope on the proxy, rms, the
+mean shift and the slope of the centred shifts (the two factors of the anchor price's distortion, TASKS 82).
 
     python probes/set3_decompose.py <out_dir>        → <out_dir>/decompose.json, printed table
 """
@@ -38,8 +39,9 @@ def shifts(dH: np.ndarray, V: np.ndarray, w: np.ndarray, masses: np.ndarray) -> 
 
 
 def compare(a: np.ndarray, b: np.ndarray) -> dict:
+    ac, bc = a - a.mean(), b - b.mean()
     return {"corr": float(np.corrcoef(a, b)[0, 1]) if len(a) > 2 else float("nan"), "slope": float(a @ b / (b @ b)),
-            "rms": float(np.sqrt(np.mean(a ** 2)))}
+            "rms": float(np.sqrt(np.mean(a ** 2))), "mean": float(a.mean()), "centred_slope": float(ac @ bc / (bc @ bc))}
 
 
 def anchor_parts(mol_dir: Path, tz: Path, dz: Path) -> dict:
@@ -57,6 +59,7 @@ def anchor_parts(mol_dir: Path, tz: Path, dz: Path) -> dict:
         if sel.sum() >= 3:
             out[f] = {name: compare(k[name][sel], k["proxy"][sel]) for name in parts if name != "proxy"}
             out[f]["proxy rms"] = float(np.sqrt(np.mean(k["proxy"][sel] ** 2)))
+            out[f]["proxy mean"] = float(np.mean(k["proxy"][sel]))
             out[f]["n"] = int(sel.sum())
     return out
 
@@ -66,7 +69,7 @@ def main(out_dir: Path) -> int:
     tz = D.anchors()
     res = {}
     for i, dz in D.dz_files().items():
-        res[names[i]] = anchor_parts(out_dir / "corpus" / "molecules" / i, Path(tz[i]), dz)
+        res[names[i]] = {"id": i, **anchor_parts(out_dir / "corpus" / "molecules" / i, Path(tz[i]), dz)}
     (out_dir / "decompose.json").write_text(json.dumps(res, indent=1), encoding="utf-8")
     for f in FAMS:
         print(f"== {f}: correlation with the proxy shifts (slope) | rms of the part / of the proxy, cm-1")

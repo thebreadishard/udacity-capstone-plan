@@ -94,6 +94,17 @@ def ring_context(mol: Chem.Mol) -> str:
     return base + ("-five" if any(len(r) == 5 for r in rings) else "")
 
 
+def fusion_context(mol: Chem.Mol) -> str:
+    """The context the CC correction's CH-oop mean shift follows on the anchors (TASKS 82, 27 Oct 2026: ≈ 0 on single rings, about half
+    the proxy's with the opposite sign on fused ones, about the proxy's with a five-membered ring): 'five' when any ring has five members,
+    else 'fused' when a ring atom belongs to two rings, else 'single' (one ring, or rings joined by a bond as in biphenyl)."""
+    rings = mol.GetRingInfo().AtomRings()
+    if any(len(r) == 5 for r in rings):
+        return "five"
+    shared = Counter(a for r in rings for a in r)
+    return "fused" if any(n > 1 for n in shared.values()) else "single"
+
+
 def cells(smiles: str, layer: str) -> set[tuple[str, str, bool, int]]:
     """The cells a molecule covers: (adjacency class, ring context, aza, charge). Runs on five-membered rings carry a '5' suffix."""
     mol = Chem.MolFromSmiles(smiles)
