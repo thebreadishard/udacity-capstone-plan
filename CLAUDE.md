@@ -16,7 +16,8 @@ Run `bash plans/05_delta-probed-ir-pipeline/probes/state.sh`. It prints running 
 heartbeats, memory, uncommitted files and the last ledger entries in about 40 lines. Use it instead of
 reading the ledger. Only grep the ledger when the digest points at something specific.
 Then read `plans/05_delta-probed-ir-pipeline/TASKS.md` (since 26 September 2026): one row per open task with its reason, place and
-next check. Keep it current — a task that starts or ends changes a row, with the clock's stamp; the ledger keeps the outcome.
+next check. Keep it current — a task that starts or ends changes a row, with the clock's stamp; the ledger keeps the outcome, and a
+closed row moves to `TASKS_closed.md` with `tools/tasks_board.py archive` (since 27 October 2026; `check` runs in pre-commit).
 
 ## Editing
 One python patch script per edit round, in the scratchpad, built on `plans/05_delta-probed-ir-pipeline/tools/patch_file.py`

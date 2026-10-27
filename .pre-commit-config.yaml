@@ -29,3 +29,10 @@ repos:
         entry: python plans/05_delta-probed-ir-pipeline/tools/check_staged_paths.py
         language: system
         pass_filenames: true
+      - id: tasks-board
+        # 27 Oct 2026 (the user): closed rows leave the board for TASKS_closed.md; the board had grown to 396 KB of struck rows
+        name: task board - no closed row left on it, every number in one file
+        entry: python plans/05_delta-probed-ir-pipeline/tools/tasks_board.py check
+        language: system
+        files: ^plans/05_delta-probed-ir-pipeline/TASKS(_closed)?\.md$
+        pass_filenames: false
