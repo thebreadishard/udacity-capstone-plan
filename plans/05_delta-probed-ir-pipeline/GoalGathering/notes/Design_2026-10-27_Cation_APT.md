@@ -14,6 +14,8 @@ cation 3-hydroxypyridine⁺ the CPHF-based APT — ours and pyscf-properties' �
 field route (`probes/apt_field_route.py`) and finite differences of the dipole (`probes/results_m1/uks_apt_margin_2026-10-11/REGISTRATION.md`;
 the cause, pyscf 2.14's Krylov CPHF stopping early, was found on 12 Oct and is fixed upstream by #3333, unreleased).
 
+**Done before (the user, 27 Oct: the field route was used before).** The 12 Oct diagnosis built this route and ran it on water, benzene and two pool-3 cations, 3-hydroxypyridine⁺ and P3c_00e041576d: field route against finite differences of the dipole 9.9e-5 and 2.8e-4 e, with and without grid response 8e-6 apart; its outcome (2): 'for the cations' heights the field route is the validated choice (≈ 15 min per 12-atom cation at 4 threads), not the CPHF APT' (`probes/results_m1/uks_apt_margin_2026-10-11/`, outcome of 12 Oct 03:4x). The CC version of the same derivative gave the anchors' APTs (`probes/cc_apt_field.py`, lever 6, 12 Oct), and the closed-shell L4 of 16 Oct used it as the second route on five molecules (lesson D1: a polar molecule needs two fields). Nothing ran it on the cation set since: this note carries out the 12 Oct recommendation.
+
 ## What
 
 **Route: the field route.** P[t, 3A+x] = −(g_Ax(+F e_t) − g_Ax(−F e_t)) / 2F with pyscf's analytic UKS gradient in a uniform field
@@ -32,8 +34,9 @@ paired with.
    polarisability). A cation with a degenerate hole (benzene⁺, Jahn–Teller) may flip state in a field; such a molecule is named and gets
    no APT, never a silent one.
 
-**Two-route check on a subset (before the production run, registered with its line).** Five cations — the smallest, the largest that
-fits the laptop, a polar push-pull one, an aza one and one with a five-membered ring — by the field route at F = 1e-3 and 2e-3
+**Two-route check on a subset (before the production run, registered with its line).** Five cations: the two of 12 Oct (small, aza and
+sulphur) count, three new ones cover what they did not — the largest that fits the laptop, a polar push-pull one and one with a
+five-membered ring — by the field route at F = 1e-3 and 2e-3
 (Richardson; the 16 Oct lesson: a polar molecule's field route needs two fields) and by finite differences of the dipole (the 11 Oct
 route, grid response on). Line: max |ΔP| ≤ 1e-3 e between the routes on each, as the closed-shell L-lines; heights reported beside.
 
