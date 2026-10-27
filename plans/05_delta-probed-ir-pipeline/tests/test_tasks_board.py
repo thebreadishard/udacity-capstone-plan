@@ -19,12 +19,16 @@ BOARD = """# Task board
 
 ## Desk work queue (quiet hours, in order)
 
-1. ~~Done thing~~ **DONE 08:1x.**
-2. **Open thing** wrapped
-over two lines. Next: tomorrow.
+### PROOF
 
-3. **Another open thing.** Row removed at the next tidy.
-4. **Last.**
+1. ~~Done thing~~ **DONE 08:1x.** *Next:* none.
+2. **[PROOF] Open thing** wrapped
+over two lines. *Next:* tomorrow.
+
+### PRODUCT
+
+3. **[PRODUCT] Another open thing.** Row removed at the next tidy. *Next:* x.
+4. **[OPS] Last.** *Next:* y.
 
 ## Guards on this file
 
@@ -36,8 +40,8 @@ ARCHIVE = f"# closed\n\n{TB.ARCHIVE_END}\n"
 def test_rows_are_the_desk_queue_only_and_keep_their_wrapped_lines():
     rows = TB.desk_rows(BOARD)
     assert [r.number for r in rows] == [1, 2, 3, 4]
-    assert rows[1].text == "2. **Open thing** wrapped\nover two lines. Next: tomorrow."      # the blank line after it is not the row's
-    assert rows[3].text == "4. **Last.**"
+    assert rows[1].text == "2. **[PROOF] Open thing** wrapped\nover two lines. *Next:* tomorrow."   # the blank line and heading are not the row's
+    assert rows[3].text == "4. **[OPS] Last.** *Next:* y."
 
 
 def test_the_check_names_struck_and_self_closed_rows_and_the_next_number():
@@ -45,13 +49,21 @@ def test_the_check_names_struck_and_self_closed_rows_and_the_next_number():
     assert any("row 1 has a struck title" in p for p in found)
     assert any("row 3 says 'Row removed at the next tidy'" in p for p in found)
     assert not any("row 2" in p or "row 4" in p for p in found)
+    assert any("row 1 opens without its class" in p for p in found)
+
+
+def test_an_open_row_needs_its_class_and_its_next_check():
+    board = BOARD.replace("4. **[OPS] Last.** *Next:* y.", "4. **Last.** Soon.")
+    found = TB.problems(board, ARCHIVE)
+    assert any("row 4 opens without its class" in p for p in found) and any("row 4 names no next check" in p for p in found)
+    assert any("opens without its class" in p for p in TB.problems(BOARD.replace("[OPS]", "[MISC]"), ARCHIVE))
     assert TB.next_number(BOARD, "7. archived\n") == 8 and TB.next_number(BOARD, ARCHIVE) == 5
 
 
 def test_a_number_in_both_files_or_twice_is_refused():
     assert any("row 4 is both" in p for p in TB.problems(BOARD, "4. old\n"))
     assert any("appears 2 times in the archive" in p for p in TB.problems(BOARD, "9. a\n9. b\n"))
-    assert any("appears 2 times on the board" in p for p in TB.problems(BOARD.replace("4. **Last.**", "2. **Last.**"), ARCHIVE))
+    assert any("appears 2 times on the board" in p for p in TB.problems(BOARD.replace("4. **[OPS] Last.**", "2. **[OPS] Last.**"), ARCHIVE))
 
 
 def test_archive_moves_rows_verbatim_with_the_reason(tmp_path, monkeypatch):
@@ -65,7 +77,7 @@ def test_archive_moves_rows_verbatim_with_the_reason(tmp_path, monkeypatch):
     assert TB.archive(reasons, "2026-10-27 18:3x") == 0
     new_board, new_arch = board.read_text(encoding="utf-8"), arch.read_text(encoding="utf-8")
     assert [r.number for r in TB.desk_rows(new_board)] == [2, 4]
-    assert "1. ~~Done thing~~ **DONE 08:1x.**\n   → archived 2026-10-27 18:3x: done, ledger 1 Oct\n" in new_arch
+    assert "1. ~~Done thing~~ **DONE 08:1x.** *Next:* none.\n   → archived 2026-10-27 18:3x: done, ledger 1 Oct\n" in new_arch
     assert new_arch.index("## Archived 2026-10-27 18:3x") < new_arch.index(TB.ARCHIVE_END)
     assert TB.problems(new_board, new_arch) == []
 

@@ -7,7 +7,9 @@ closed rows were struck through instead of moved).
                                                                         # reasons.json: {"<number>": "<why it closed, with the pointer>"}
 
 Rules of `check`: a row number appears once on the board and once in the archive, never in both; no board row is closed by its own words
-(a struck title, or the phrase that promises removal at the next tidy). It prints the next free number for a new row.
+(a struck title, or the phrase that promises removal at the next tidy); every open row opens with its class in brackets (PROOF, PRODUCT,
+DELIVERABLE, OPS, LATER — whether it matters for the end product is said by the row itself) and names its next check (`*Next:*`). It prints
+the next free number for a new row.
 """
 from __future__ import annotations
 
@@ -28,6 +30,9 @@ ARCHIVE_END = "<!-- tasks_board.py archive: new entries go above this line -->"
 ROW_START = re.compile(r"^(\d+)\. ")
 STAMP = re.compile(r"^\d{4}-\d{2}-\d{2} \d{2}:\dx$")
 CLOSED_WORDS = ("Row removed at the next tidy", "Row closes with the next TASKS pass")
+CLASSES = ("PROOF", "PRODUCT", "DELIVERABLE", "OPS", "LATER")
+CLASS_TAG = re.compile(r"^\d+\. \*\*\[(" + "|".join(CLASSES) + r")\] ")
+NEXT_MARK = "*Next:*"
 
 
 @dataclass(frozen=True)
@@ -37,7 +42,8 @@ class Row:
 
 
 def desk_rows(text: str) -> list[Row]:
-    """The desk queue's rows in file order: a row is its numbered line and the lines after it, up to the next numbered line or heading."""
+    """The desk queue's rows in file order: a row is its numbered line and the lines after it, up to the next numbered line or a heading of
+    any level (the queue's class subsections are '### ' headings)."""
     rows: list[Row] = []
     current: list[str] | None = None
     number, inside = 0, False
@@ -47,9 +53,11 @@ def desk_rows(text: str) -> list[Row]:
             rows.append(Row(number, "\n".join(current).rstrip("\n")))
 
     for line in text.split("\n"):
-        if line.startswith("## "):
+        if line.startswith("#"):
             close()
-            current, inside = None, line.startswith(DESK_HEADING)
+            current = None
+            if line.startswith("## "):
+                inside = line.startswith(DESK_HEADING)
             continue
         m = ROW_START.match(line)
         if m and inside:
@@ -78,6 +86,10 @@ def problems(board: str, archive: str) -> list[str]:
         if body.startswith("~~"):
             out.append(f"row {r.number} has a struck title: closed rows move to {ARCHIVE.name} (tools/tasks_board.py archive)")
         out += [f"row {r.number} says '{w}': archive it" for w in CLOSED_WORDS if w in r.text]
+        if not CLASS_TAG.match(r.text):
+            out.append(f"row {r.number} opens without its class: '{r.number}. **[<{'|'.join(CLASSES)}>] Title.**'")
+        if NEXT_MARK not in r.text:
+            out.append(f"row {r.number} names no next check ({NEXT_MARK})")
     return out
 
 
