@@ -175,3 +175,7 @@ every family:** ωB97X moves B3LYP's frequencies up, CCSD(T)/TZ moves them down.
 morning's draft called it. For 'other' and ring-ip arm (a) was off: their mode-to-mode variation is weaker (−0.30) or even follows the
 proxy (+0.12) while their mean runs further the other way. A run of the milder form would therefore change 'other' and ring-ip, hardly
 CH-oop; whether that is worth twelve laptop hours goes to the user.
+
+### 27 Oct 2026, 12:5x — CH-oop's mean ratio is not uniform: arm (c) registered
+
+The 14:4x conclusion above ('hardly CH-oop') read the median only. Per anchor the CH-oop mean ratio follows the ring context — single ≈ 0, fused −0.29 to −0.71, five −0.70 / −1.09 — so arm (a)'s one factor was not the anchors' change for CH-oop either. Arm (c) (mean and rest per family, CH-oop per context, and a cell cover against random draws) is designed and registered in `PreRegistration_2026-10-27_Anchor_Price_Arm_C.md` (branch measured-distortion).
