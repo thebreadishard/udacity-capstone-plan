@@ -1,0 +1,362 @@
+{
+ "_about": "TASKS 74's analytic re-read of chain 41 (registered 11 Oct 2026; the user 17 Oct: 'ook analytisch'): once the sixty test molecules' analytic labels (runspec tasks74_labels, CCX53) are fetched into corpus/molecules, chain 41's fifteen saved models are evaluated again on the same test lists with --use-analytic and probes/chain41_read.py --analytic applies the registered lines, refusing any set not wholly on analytic labels; no retraining (the control folds' training labels stay as trained). Written 27 Oct 2026 from probes/runs/chain41.json's trainings.",
+ "name": "C41A",
+ "poll_s": 1800,
+ "wait": [
+  {
+   "kind": "cmd",
+   "argv": [
+    "python",
+    "probes/ids_have_labels.py",
+    "--labels",
+    "analytic",
+    "modules/05_support_predictor/out/chain41_all_labelled.txt"
+   ]
+  }
+ ],
+ "steps": [
+  {
+   "kind": "cmd",
+   "label": "eval size seed 0 on analytic labels",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/E7_rungC_chain41_size_eval_analytic_seed0.log",
+   "argv": [
+    "{python}",
+    "../../probes/rungC_eval_saved.py",
+    "out/E7_rungC_chain41_size_model_n972_seed0.pt",
+    "out/E7_rungC_chain41_size_eval_analytic_seed0",
+    "--use-analytic",
+    "--threads",
+    "8",
+    "--allow-any-model",
+    "--holdout-b-file",
+    "corpus/holdout_b_frozen_2026-10-08.txt",
+    "--eval-ids-file",
+    "s5=out/chain41_s5.txt",
+    "--eval-ids-file",
+    "s4N=out/chain41_s4N.txt"
+   ]
+  },
+  {
+   "kind": "cmd",
+   "label": "eval size seed 1 on analytic labels",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/E7_rungC_chain41_size_eval_analytic_seed1.log",
+   "argv": [
+    "{python}",
+    "../../probes/rungC_eval_saved.py",
+    "out/E7_rungC_chain41_size_model_n972_seed1.pt",
+    "out/E7_rungC_chain41_size_eval_analytic_seed1",
+    "--use-analytic",
+    "--threads",
+    "8",
+    "--allow-any-model",
+    "--holdout-b-file",
+    "corpus/holdout_b_frozen_2026-10-08.txt",
+    "--eval-ids-file",
+    "s5=out/chain41_s5.txt",
+    "--eval-ids-file",
+    "s4N=out/chain41_s4N.txt"
+   ]
+  },
+  {
+   "kind": "cmd",
+   "label": "eval size seed 2 on analytic labels",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/E7_rungC_chain41_size_eval_analytic_seed2.log",
+   "argv": [
+    "{python}",
+    "../../probes/rungC_eval_saved.py",
+    "out/E7_rungC_chain41_size_model_n972_seed2.pt",
+    "out/E7_rungC_chain41_size_eval_analytic_seed2",
+    "--use-analytic",
+    "--threads",
+    "8",
+    "--allow-any-model",
+    "--holdout-b-file",
+    "corpus/holdout_b_frozen_2026-10-08.txt",
+    "--eval-ids-file",
+    "s5=out/chain41_s5.txt",
+    "--eval-ids-file",
+    "s4N=out/chain41_s4N.txt"
+   ]
+  },
+  {
+   "kind": "cmd",
+   "label": "eval control1 seed 0 on analytic labels",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/E7_rungC_chain41_control1_eval_analytic_seed0.log",
+   "argv": [
+    "{python}",
+    "../../probes/rungC_eval_saved.py",
+    "out/E7_rungC_chain41_control1_model_n986_seed0.pt",
+    "out/E7_rungC_chain41_control1_eval_analytic_seed0",
+    "--use-analytic",
+    "--threads",
+    "8",
+    "--allow-any-model",
+    "--holdout-b-file",
+    "corpus/holdout_b_frozen_2026-10-08.txt",
+    "--eval-ids-file",
+    "s5=out/chain41_fold1_test.txt"
+   ]
+  },
+  {
+   "kind": "cmd",
+   "label": "eval control1 seed 1 on analytic labels",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/E7_rungC_chain41_control1_eval_analytic_seed1.log",
+   "argv": [
+    "{python}",
+    "../../probes/rungC_eval_saved.py",
+    "out/E7_rungC_chain41_control1_model_n986_seed1.pt",
+    "out/E7_rungC_chain41_control1_eval_analytic_seed1",
+    "--use-analytic",
+    "--threads",
+    "8",
+    "--allow-any-model",
+    "--holdout-b-file",
+    "corpus/holdout_b_frozen_2026-10-08.txt",
+    "--eval-ids-file",
+    "s5=out/chain41_fold1_test.txt"
+   ]
+  },
+  {
+   "kind": "cmd",
+   "label": "eval control1 seed 2 on analytic labels",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/E7_rungC_chain41_control1_eval_analytic_seed2.log",
+   "argv": [
+    "{python}",
+    "../../probes/rungC_eval_saved.py",
+    "out/E7_rungC_chain41_control1_model_n986_seed2.pt",
+    "out/E7_rungC_chain41_control1_eval_analytic_seed2",
+    "--use-analytic",
+    "--threads",
+    "8",
+    "--allow-any-model",
+    "--holdout-b-file",
+    "corpus/holdout_b_frozen_2026-10-08.txt",
+    "--eval-ids-file",
+    "s5=out/chain41_fold1_test.txt"
+   ]
+  },
+  {
+   "kind": "cmd",
+   "label": "eval control2 seed 0 on analytic labels",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/E7_rungC_chain41_control2_eval_analytic_seed0.log",
+   "argv": [
+    "{python}",
+    "../../probes/rungC_eval_saved.py",
+    "out/E7_rungC_chain41_control2_model_n983_seed0.pt",
+    "out/E7_rungC_chain41_control2_eval_analytic_seed0",
+    "--use-analytic",
+    "--threads",
+    "8",
+    "--allow-any-model",
+    "--holdout-b-file",
+    "corpus/holdout_b_frozen_2026-10-08.txt",
+    "--eval-ids-file",
+    "s5=out/chain41_fold2_test.txt"
+   ]
+  },
+  {
+   "kind": "cmd",
+   "label": "eval control2 seed 1 on analytic labels",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/E7_rungC_chain41_control2_eval_analytic_seed1.log",
+   "argv": [
+    "{python}",
+    "../../probes/rungC_eval_saved.py",
+    "out/E7_rungC_chain41_control2_model_n983_seed1.pt",
+    "out/E7_rungC_chain41_control2_eval_analytic_seed1",
+    "--use-analytic",
+    "--threads",
+    "8",
+    "--allow-any-model",
+    "--holdout-b-file",
+    "corpus/holdout_b_frozen_2026-10-08.txt",
+    "--eval-ids-file",
+    "s5=out/chain41_fold2_test.txt"
+   ]
+  },
+  {
+   "kind": "cmd",
+   "label": "eval control2 seed 2 on analytic labels",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/E7_rungC_chain41_control2_eval_analytic_seed2.log",
+   "argv": [
+    "{python}",
+    "../../probes/rungC_eval_saved.py",
+    "out/E7_rungC_chain41_control2_model_n983_seed2.pt",
+    "out/E7_rungC_chain41_control2_eval_analytic_seed2",
+    "--use-analytic",
+    "--threads",
+    "8",
+    "--allow-any-model",
+    "--holdout-b-file",
+    "corpus/holdout_b_frozen_2026-10-08.txt",
+    "--eval-ids-file",
+    "s5=out/chain41_fold2_test.txt"
+   ]
+  },
+  {
+   "kind": "cmd",
+   "label": "eval control1half seed 0 on analytic labels",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/E7_rungC_chain41_control1half_eval_analytic_seed0.log",
+   "argv": [
+    "{python}",
+    "../../probes/rungC_eval_saved.py",
+    "out/E7_rungC_chain41_control1half_model_n978_seed0.pt",
+    "out/E7_rungC_chain41_control1half_eval_analytic_seed0",
+    "--use-analytic",
+    "--threads",
+    "8",
+    "--allow-any-model",
+    "--holdout-b-file",
+    "corpus/holdout_b_frozen_2026-10-08.txt",
+    "--eval-ids-file",
+    "s5=out/chain41_fold1_test.txt"
+   ]
+  },
+  {
+   "kind": "cmd",
+   "label": "eval control1half seed 1 on analytic labels",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/E7_rungC_chain41_control1half_eval_analytic_seed1.log",
+   "argv": [
+    "{python}",
+    "../../probes/rungC_eval_saved.py",
+    "out/E7_rungC_chain41_control1half_model_n978_seed1.pt",
+    "out/E7_rungC_chain41_control1half_eval_analytic_seed1",
+    "--use-analytic",
+    "--threads",
+    "8",
+    "--allow-any-model",
+    "--holdout-b-file",
+    "corpus/holdout_b_frozen_2026-10-08.txt",
+    "--eval-ids-file",
+    "s5=out/chain41_fold1_test.txt"
+   ]
+  },
+  {
+   "kind": "cmd",
+   "label": "eval control1half seed 2 on analytic labels",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/E7_rungC_chain41_control1half_eval_analytic_seed2.log",
+   "argv": [
+    "{python}",
+    "../../probes/rungC_eval_saved.py",
+    "out/E7_rungC_chain41_control1half_model_n978_seed2.pt",
+    "out/E7_rungC_chain41_control1half_eval_analytic_seed2",
+    "--use-analytic",
+    "--threads",
+    "8",
+    "--allow-any-model",
+    "--holdout-b-file",
+    "corpus/holdout_b_frozen_2026-10-08.txt",
+    "--eval-ids-file",
+    "s5=out/chain41_fold1_test.txt"
+   ]
+  },
+  {
+   "kind": "cmd",
+   "label": "eval control2half seed 0 on analytic labels",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/E7_rungC_chain41_control2half_eval_analytic_seed0.log",
+   "argv": [
+    "{python}",
+    "../../probes/rungC_eval_saved.py",
+    "out/E7_rungC_chain41_control2half_model_n977_seed0.pt",
+    "out/E7_rungC_chain41_control2half_eval_analytic_seed0",
+    "--use-analytic",
+    "--threads",
+    "8",
+    "--allow-any-model",
+    "--holdout-b-file",
+    "corpus/holdout_b_frozen_2026-10-08.txt",
+    "--eval-ids-file",
+    "s5=out/chain41_fold2_test.txt"
+   ]
+  },
+  {
+   "kind": "cmd",
+   "label": "eval control2half seed 1 on analytic labels",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/E7_rungC_chain41_control2half_eval_analytic_seed1.log",
+   "argv": [
+    "{python}",
+    "../../probes/rungC_eval_saved.py",
+    "out/E7_rungC_chain41_control2half_model_n977_seed1.pt",
+    "out/E7_rungC_chain41_control2half_eval_analytic_seed1",
+    "--use-analytic",
+    "--threads",
+    "8",
+    "--allow-any-model",
+    "--holdout-b-file",
+    "corpus/holdout_b_frozen_2026-10-08.txt",
+    "--eval-ids-file",
+    "s5=out/chain41_fold2_test.txt"
+   ]
+  },
+  {
+   "kind": "cmd",
+   "label": "eval control2half seed 2 on analytic labels",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/E7_rungC_chain41_control2half_eval_analytic_seed2.log",
+   "argv": [
+    "{python}",
+    "../../probes/rungC_eval_saved.py",
+    "out/E7_rungC_chain41_control2half_model_n977_seed2.pt",
+    "out/E7_rungC_chain41_control2half_eval_analytic_seed2",
+    "--use-analytic",
+    "--threads",
+    "8",
+    "--allow-any-model",
+    "--holdout-b-file",
+    "corpus/holdout_b_frozen_2026-10-08.txt",
+    "--eval-ids-file",
+    "s5=out/chain41_fold2_test.txt"
+   ]
+  },
+  {
+   "kind": "cmd",
+   "label": "chain 41 analytic re-read",
+   "cwd": "modules/05_support_predictor",
+   "log": "modules/05_support_predictor/out/read_chain41_analytic.log",
+   "argv": [
+    "{python}",
+    "../../probes/chain41_read.py",
+    "--size",
+    "out/E7_rungC_chain41_size_eval_analytic_seed0.json",
+    "out/E7_rungC_chain41_size_eval_analytic_seed1.json",
+    "out/E7_rungC_chain41_size_eval_analytic_seed2.json",
+    "--fold1",
+    "out/E7_rungC_chain41_control1_eval_analytic_seed0.json",
+    "out/E7_rungC_chain41_control1_eval_analytic_seed1.json",
+    "out/E7_rungC_chain41_control1_eval_analytic_seed2.json",
+    "--fold2",
+    "out/E7_rungC_chain41_control2_eval_analytic_seed0.json",
+    "out/E7_rungC_chain41_control2_eval_analytic_seed1.json",
+    "out/E7_rungC_chain41_control2_eval_analytic_seed2.json",
+    "--fold1-half",
+    "out/E7_rungC_chain41_control1half_eval_analytic_seed0.json",
+    "out/E7_rungC_chain41_control1half_eval_analytic_seed1.json",
+    "out/E7_rungC_chain41_control1half_eval_analytic_seed2.json",
+    "--fold2-half",
+    "out/E7_rungC_chain41_control2half_eval_analytic_seed0.json",
+    "out/E7_rungC_chain41_control2half_eval_analytic_seed1.json",
+    "out/E7_rungC_chain41_control2half_eval_analytic_seed2.json",
+    "--analytic",
+    "--out",
+    "out/read_chain41_analytic"
+   ]
+  }
+ ],
+ "outputs": [
+  "modules/05_support_predictor/out/read_chain41_analytic.json",
+  "modules/05_support_predictor/out/read_chain41_analytic.md"
+ ]
+}

@@ -1,0 +1,9 @@
+{"name": "chain41_analytic", "purpose": "TASKS 74's analytic re-read of chain 41 (claim 1 of TASKS 140): after the sixty test molecules' analytic labels are fetched into corpus/molecules, chain 41's fifteen saved models evaluated again on the same test lists and probes/chain41_read.py --analytic (the registered q5 lines; any set not wholly on analytic labels is refused; no retraining)",
+ "host": "laptop", "workdir": "probes/results_m1", "command": "python ../chain_runner.py probes/runs/chain41_analytic.json",
+ "sources": [{"local": "probes/chain_runner.py"}, {"local": "probes/runs/chain41_analytic.json"}, {"local": "probes/rungC_eval_saved.py"},
+             {"local": "probes/chain41_read.py"}, {"local": "probes/ids_have_labels.py"}],
+ "progress": {"regex": "^=== \\(C41A\\) progress: |^\\(C41A\\) .* done ", "max_gap_minutes": 60, "start_regex": "^=== \\(C41A\\) starting: "},
+ "marker_regex": "^=== \\(C41A\\) (armed|starting|resuming|RUN FAILED|run done)",
+ "end_regex": "^=== \\(C41A\\) run done", "fail_regex": "^=== \\(C41A\\) RUN FAILED", "dry_run_args": "--dry-run", "resumable": true,
+ "memory": {"peak_gb": 7.7, "basis": "upper bound: chain 41's trainer peak (7.7 GB at n = 978, 19 Oct 2026); an eval loads the same corpus without training"},
+ "estimate": {"hours": 0.8, "basis": "chain 41's own evals of these fifteen models: 133-275 s each (records' 'seconds'), ≈ 40 min together; the read is seconds"}}

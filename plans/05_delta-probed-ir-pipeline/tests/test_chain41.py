@@ -1,5 +1,6 @@
 """Chain 41's run tooling (13 Oct 2026): the id files written from the frozen set file, the registered read (q5 = r_S / r_K with r_K the mean of
 the two folds' ratios, fixed before any number) and the generic wait condition on analytic labels."""
+import csv
 import json
 import sys
 from pathlib import Path
@@ -39,7 +40,7 @@ def test_the_four_families_are_read_per_arm_and_required():
 
 
 def test_the_id_files_follow_the_frozen_set_file():
-    d = json.load(open(P.SRC, encoding="utf-8"))
+    d = json.loads(Path(P.SRC).read_text(encoding="utf-8"))
     ls = P.lists(d)
     assert len(ls["s5"]) == 30 and len(ls["s4N"]) == 30 and len(ls["all_labelled"]) == 60
     assert not set(ls["fold1_test"]) & set(ls["fold2_test"]) and set(ls["fold1_test"]) | set(ls["fold2_test"]) == set(ls["s5"])
@@ -73,6 +74,27 @@ def test_only_the_amended_molecules_may_be_missing():
         R.require_complete(mixed, "s5")
 
 
+def _analytic(rec: dict, hold: str, n: int, n_analytic: int, dropped: list | None = None) -> dict:
+    per = {f"P3_{i}": {"coupling_ratio": 0.5} for i in range(n)}
+    return {**rec, hold: {**rec[hold], "per_molecule": per, "n_analytic": n_analytic, "dropped": dropped or []}}
+
+
+def test_the_analytic_re_read_takes_only_whole_sets_on_analytic_labels():
+    """TASKS 74: every molecule read on analytic labels, and the amendment's drops no longer allowed."""
+    R.require_analytic([_analytic(_rec(s5=0.3), "s5", 30, 30)] * 3, "s5")
+    with pytest.raises(SystemExit, match="29 of 30"):
+        R.require_analytic([_analytic(_rec(s5=0.3), "s5", 30, 29)] * 3, "s5")
+    with pytest.raises(SystemExit, match="lost 1"):
+        R.require_analytic([_analytic(_rec(s5=0.3), "s5", 28, 28, dropped=sorted(R.AMENDED_OUT)[:1])] * 3, "s5")
+
+
+def test_the_read_sets_name_every_arm_once():
+    size, f1, f2, h1, h2 = ([_rec(s5=x)] for x in (0.1, 0.2, 0.3, 0.4, 0.5))
+    sets = R.read_sets(size, f1, f2, h1, h2)
+    assert [h for _, h in sets] == ["s5", "s4N", "s5", "s5", "s5", "s5"]
+    assert len(R.read_sets(size, f1, f2, None, None)) == 6 and R.read_sets(size, f1, f2, None, None)[4][0] == []
+
+
 def test_a_steep_q5_reads_by_the_control_curve():
     """14 Oct 2026, learning-curve amendment: a steep q5 is 'data-limited' when the control still learns from half to full, and goes to the
     search when its curve is flat; never a verdict on the mandate from one point."""
@@ -88,8 +110,8 @@ def test_a_steep_q5_reads_by_the_control_curve():
 
 def test_the_half_folds_keep_two_per_scaffold_and_scaffolds_come_from_the_name():
     import chain41_half_folds as H
-    d = json.load(open(H.FOLDS, encoding="utf-8"))
-    rows = {r["id"]: r for r in __import__("csv").DictReader(open(H.CANDIDATES, encoding="utf-8"))}
+    d = json.loads(Path(H.FOLDS).read_text(encoding="utf-8"))
+    rows = {r["id"]: r for r in csv.DictReader(Path(H.CANDIDATES).read_text(encoding="utf-8").splitlines())}
     for n in (1, 2):
         fold = d[f"control_fold{n}"]
         parent_of = {i: H.scaffold_name(rows, i) for i in fold["train_extra"]}

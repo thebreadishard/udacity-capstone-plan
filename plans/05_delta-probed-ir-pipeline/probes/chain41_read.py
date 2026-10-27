@@ -19,9 +19,12 @@ Reported beside, without lines:
 - the four families on s5 per arm (the seed mean of diag_rms, cm⁻¹) — added 20 Oct 2026 after the read: the registration names them, the
   first version of this script left them out (found on the user's question whether 'equally good' meant 'good').
 
-Writes out/read_chain41.{json,md} under module 05; exit 0 (a read, not a gate).
+Writes out/read_chain41.{json,md} under module 05 (or --out); exit 0 (a read, not a gate).
 
-    python probes/chain41_read.py --size <3 eval json> --fold1 <3> --fold2 <3>
+--analytic is TASKS 74's re-read of the same saved models on the analytic labels of all sixty test molecules: every molecule a set reads
+carries both analytic Hessians and none may be missing, the amendment's three included (their imaginary modes were FD artefacts).
+
+    python probes/chain41_read.py --size <3 eval json> --fold1 <3> --fold2 <3> [--analytic --out out/read_chain41_analytic]
 """
 import argparse
 import csv
@@ -63,6 +66,22 @@ def require_complete(records: list, hold: str) -> None:
             raise SystemExit(f"hold-out ({hold}) lost {len(dropped)} registered molecules at evaluation ({', '.join(dropped[:5])}) — not read")
 
 
+def require_analytic(records: list, hold: str) -> None:
+    """TASKS 74's re-read: no molecule missing and every molecule read on both analytic Hessians — a set partly on FD labels is not it."""
+    for r in records:
+        e = r[hold]
+        if e.get("dropped"):
+            raise SystemExit(f"hold-out ({hold}) lost {len(e['dropped'])} molecules at evaluation ({', '.join(e['dropped'][:5])}) — not the analytic re-read")
+        if e.get("n_analytic") != len(e["per_molecule"]):
+            raise SystemExit(f"hold-out ({hold}): {e.get('n_analytic')} of {len(e['per_molecule'])} molecules on analytic labels — not the analytic re-read")
+
+
+def read_sets(size: list, fold1: list, fold2: list, half1: list | None, half2: list | None) -> list[tuple[list, str]]:
+    """Every (records, hold-out) pair the read uses."""
+    return [(recs, h) for recs, holds in ((size, ("s5", "s4N")), (fold1, ("s5",)), (fold2, ("s5",)), (half1 or [], ("s5",)), (half2 or [], ("s5",)))
+            for h in holds]
+
+
 def verdict(q5: float, curve: dict | None = None) -> str:
     if q5 <= 1.3:
         return "carries (≤ 1.3)"
@@ -77,7 +96,7 @@ def verdict(q5: float, curve: dict | None = None) -> str:
 def scaffold_of(ids) -> dict:
     """id → its scaffold: the parent's name for a derivative with a parent_id, else the name before '+' (14 Oct 2026: the five-ring
     neutrals carry no parent_id, so every derivative had counted as its own scaffold)."""
-    rows = {r["id"]: r for r in csv.DictReader(open(CANDIDATES, encoding="utf-8"))}
+    rows = {r["id"]: r for r in csv.DictReader(CANDIDATES.read_text(encoding="utf-8").splitlines())}
     return {i: rows[rows[i]["parent_id"]]["name"] if rows[i]["parent_id"] in rows else rows[i]["name"].split("+")[0] for i in ids if i in rows}
 
 
@@ -94,9 +113,8 @@ def still_learning(full: np.ndarray, half: np.ndarray) -> dict:
 
 
 def read(size: list, fold1: list, fold2: list, scaffolds: dict | None = None, half1: list | None = None, half2: list | None = None) -> dict:
-    for recs, holds in ((size, ("s5", "s4N")), (fold1, ("s5",)), (fold2, ("s5",)), (half1 or [], ("s5",)), (half2 or [], ("s5",))):
-        for h in holds:
-            require_complete(recs, h)
+    for recs, h in read_sets(size, fold1, fold2, half1, half2):
+        require_complete(recs, h)
     r_s = mean_of(size, "s5")
     r_k = float(np.mean([mean_of(fold1, "s5"), mean_of(fold2, "s5")]))
     curve = still_learning(seed_r_k(fold1, fold2), seed_r_k(half1, half2)) if half1 and half2 else None
@@ -125,13 +143,20 @@ def main() -> int:
     ap.add_argument("--fold2", nargs="+", required=True)
     ap.add_argument("--fold1-half", nargs="+", default=None, help="the half-control arm of fold 1 (14 Oct 2026, learning-curve amendment)")
     ap.add_argument("--fold2-half", nargs="+", default=None)
+    ap.add_argument("--analytic", action="store_true", help="TASKS 74's re-read: every molecule on analytic labels, none missing")
+    ap.add_argument("--out", default=str(OUT), help="output prefix of the .json and .md (the re-read writes beside the first read)")
     a = ap.parse_args()
-    load = lambda paths: [json.loads(Path(p).read_text(encoding="utf-8")) for p in paths]  # noqa: E731
-    size = load(a.size)
-    res = read(size, load(a.fold1), load(a.fold2), scaffold_of(size[0]["s5"]["per_molecule"]),
-               load(a.fold1_half) if a.fold1_half else None, load(a.fold2_half) if a.fold2_half else None)
+    load = lambda paths: [json.loads(Path(p).read_text(encoding="utf-8")) for p in paths] if paths else None  # noqa: E731
+    size, fold1, fold2, half1, half2 = load(a.size), load(a.fold1), load(a.fold2), load(a.fold1_half), load(a.fold2_half)
+    if a.analytic:
+        for recs, h in read_sets(size, fold1, fold2, half1, half2):
+            require_analytic(recs, h)
+    res = read(size, fold1, fold2, scaffold_of(size[0]["s5"]["per_molecule"]), half1, half2)
+    res["analytic"] = a.analytic
     res["files"] = {"size": a.size, "fold1": a.fold1, "fold2": a.fold2, "fold1_half": a.fold1_half, "fold2_half": a.fold2_half}
-    lines = ["# Chain 41 — five fused rings from a corpus of at most four (registered read)", "",
+    kind = ("TASKS 74's analytic re-read: the same saved models, all sixty test molecules on analytic labels; the training labels unchanged"
+            if a.analytic else "registered read")
+    lines = [f"# Chain 41 — five fused rings from a corpus of at most four ({kind})", "",
              f"q5 = r_S / r_K = {res['r_S']:.3f} / {res['r_K']:.3f} = **{res['q5']:.2f}** → {res['verdict']}", "",
              f"Beside: size arm on s4N {res['beside']['size_arm_s4N']:.3f}; corrected ω on s5 — size {res['beside']['omega_rms_s5']['size']:.2f}, "
              f"control {res['beside']['omega_rms_s5']['control']:.2f}, zero rule {res['beside']['omega_rms_s5']['zero_rule']:.2f} cm⁻¹."]
@@ -144,8 +169,8 @@ def main() -> int:
     lines += ["", "Families on s5 (seed mean of diag_rms, cm⁻¹; added 20 Oct 2026 after the read — the registration names them):", "",
               "| arm | " + " | ".join(FAMILIES) + " |", "|---|" + "---|" * len(FAMILIES)]
     lines += [f"| {arm} | " + " | ".join(f"{v[f]:.2f}" for f in FAMILIES) + " |" for arm, v in res["beside"]["family_rms_s5"].items()]
-    Path(f"{OUT}.json").write_text(json.dumps(res, indent=1), encoding="utf-8")
-    Path(f"{OUT}.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    Path(f"{a.out}.json").write_text(json.dumps(res, indent=1), encoding="utf-8")
+    Path(f"{a.out}.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
     print("\n".join(lines))
     return 0
 
