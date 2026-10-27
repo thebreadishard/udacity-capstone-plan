@@ -1,0 +1,27 @@
+=== (KC) released start 2026-10-26 21:55:51
+(KC) max RSS 2472928 kB, wall 130.69 s
+=== (KC) master start 2026-10-26 21:58:04
+(KC) max RSS 2473472 kB, wall 135.86 s
+=== (KC) compare: max |Δg| 1.18e-08 a.u. (threshold 1e-06: within); residuals 2.14.0 [1.4417440530752673e-06], master [3.7372186120771644e-08]
+=== (KC) run done 2026-10-26 22:00:21
+bda kernel
+cycle = 1  norm(lambda1,lambda2) = 0.0513589
+cycle = 2  norm(lambda1,lambda2) = 0.0122558
+cycle = 3  norm(lambda1,lambda2) = 0.00550101
+cycle = 4  norm(lambda1,lambda2) = 0.00252553
+cycle = 5  norm(lambda1,lambda2) = 0.000358578
+cycle = 6  norm(lambda1,lambda2) = 0.000124921
+cycle = 7  norm(lambda1,lambda2) = 2.65145e-05
+cycle = 8  norm(lambda1,lambda2) = 8.33361e-06
+cycle = 9  norm(lambda1,lambda2) = 2.76526e-06
+cycle = 10  norm(lambda1,lambda2) = 5.89902e-07
+cycle = 11  norm(lambda1,lambda2) = 1.80649e-07
+cycle = 12  norm(lambda1,lambda2) = 6.15492e-08
+cycle = 13  norm(lambda1,lambda2) = 3.5299e-08
+cycle = 14  norm(lambda1,lambda2) = 1.58748e-08
+cycle = 15  norm(lambda1,lambda2) = 1.17911e-08
+cycle = 16  norm(lambda1,lambda2) = 1.00882e-08
+cycle = 17  norm(lambda1,lambda2) = 8.62513e-09
+[2026-10-26 22:00:20] (T) lambda 96 s, gradient 11 s
+[2026-10-26 22:00:20] reference: E = -231.581302636, max|grad| 7.67e-03, 135 s; two-route checks deferred to a separate run (--two-route-check only)
+=== (KC) done: cphf /home/thebreadishard/pyscf-wt-base, lindep True, residuals [3.7372186120771644e-08]

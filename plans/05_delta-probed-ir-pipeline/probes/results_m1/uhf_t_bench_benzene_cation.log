@@ -1,0 +1,22 @@
+WARN: beta  nocc = 20  HOMO -0.249520084737454 >= LUMO -0.249512261242247
+WARN: HOMO -0.249512261242247 >= LUMO -0.249512261242247
+(UB) max RSS 6076160 kB, wall 7017.57 s
+hole o³v³ array 22.4 GB 2026-10-26 19:54:18
+=== (UB) UHF done: 1.8 s, peak RSS 0.298 GB 2026-10-26 19:54:20
+=== (UB) UCCSD done: 82.9 s, peak RSS 6.001 GB 2026-10-26 19:55:41
+=== (UB) (T) energy done: 146.4 s, peak RSS 6.076 GB 2026-10-26 19:56:44
+(UB) (T) lambda aaa done in 326 s (block 16)
+(UB) (T) lambda bbb done in 371 s (block 16)
+(UB) (T) lambda baa done in 435 s (block 16)
+(UB) (T) lambda bba done in 339 s (block 16)
+=== (UB) (T) lambda done: 1737.3 s, peak RSS 6.076 GB 2026-10-26 20:23:15
+(UB) (T) gamma1 aaa done in 812 s (block 16)
+(UB) (T) gamma1 bbb done in 806 s (block 16)
+(UB) (T) gamma1 baa done in 1131 s (block 16)
+(UB) (T) gamma1 bba done in 1159 s (block 16)
+(UB) (T) gamma2 aaa done in 330 s (block 16)
+(UB) (T) gamma2 bbb done in 356 s (block 16)
+(UB) (T) gamma2 baa done in 355 s (block 16)
+(UB) (T) gamma2 bba done in 308 s (block 16)
+=== (UB) gradient done: 7016.9 s, peak RSS 6.076 GB 2026-10-26 21:51:15
+=== (UB) run done: 7016.9 s, peak RSS 6.076 GB 2026-10-26 21:51:15

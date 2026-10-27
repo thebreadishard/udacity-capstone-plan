@@ -1,0 +1,16 @@
+{
+ "max_abs_dg": 1.1753429340899402e-08,
+ "threshold": 1e-06,
+ "beyond_threshold": false,
+ "max_abs_g": 0.007674346268927046,
+ "residuals_released": [
+  1.4417440530752673e-06
+ ],
+ "residuals_master": [
+  3.7372186120771644e-08
+ ],
+ "runs": [
+  "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/krylov_cost_benzene_2026-10-26/released",
+  "/mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/krylov_cost_benzene_2026-10-26/master"
+ ]
+}

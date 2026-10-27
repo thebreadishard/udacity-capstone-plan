@@ -1,0 +1,4 @@
+H2O+/aug-cc-pVDZ: o 5, v 37, blocks (4, 6, 9, 12, 18)
+lambda: peaks MB [24.4, 24.1, 24.0, 41.1, 84.1]; base 23.3 MB, N 14.4 of o3B3, M -1.9 of o3vB2; worst fit residual 4.1 MB
+gamma1: peaks MB [9.5, 13.4, 24.8, 45.3, 88.9]; base 3.6 MB, N -2.4 of o3B3, M 8.3 of o3vB2; worst fit residual 1.9 MB
+gamma2: peaks MB [115.0, 115.1, 115.1, 115.1, 134.9]; base 117.2 MB, N 10.4 of o3B3, M -3.6 of o3vB2; worst fit residual 1.1 MB

@@ -1,0 +1,12 @@
+{
+ "pyscf_version": "2.14.0",
+ "pyscf_path": "/home/thebreadishard/qc05/lib/python3.12/site-packages/pyscf/__init__.py",
+ "cphf": "/home/thebreadishard/pyscf-wt-base",
+ "solve_nos1_passes_lindep": true,
+ "solves": [
+  {
+   "residual": 3.7372186120771644e-08,
+   "max_cycle": 30
+  }
+ ]
+}
