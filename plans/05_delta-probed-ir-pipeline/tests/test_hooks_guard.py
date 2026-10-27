@@ -149,19 +149,20 @@ def test_lint_skips_files_outside_the_repository(tmp_path, monkeypatch):
     assert G.lint_after_edit(G.Call("Write", {"file_path": str(f), "content": ""})) is None
 
 
-def test_clean_code_reports_only_the_lines_just_written(tmp_path, monkeypatch):
-    """Candidate (9), 17 Oct 2026: the CLAUDE.md clean-code set on the edited span only, so old files do not drown it; log-only for now."""
+def test_lint_reports_only_the_lines_just_written_and_acts(tmp_path, monkeypatch):
+    """27 Oct 2026 (the user: option A): the one ruff set (tools/ruff_gate.py) on the edited span only, and the rule acts."""
     pytest.importorskip("ruff")
     monkeypatch.setenv("CLAUDE_PROJECT_DIR", str(tmp_path))
     f = tmp_path / "m.py"
     old = "def old():\n    unused = 1\n    return 2\n"
     new = "def new():\n    spare = 3\n    return 4\n"
     f.write_text(old + "\n\n" + new, encoding="utf-8", newline="\n")
-    reason = G.clean_code_after_edit(G.Call("Edit", {"file_path": str(f), "old_string": "x", "new_string": new}))
+    reason = G.lint_after_edit(G.Call("Edit", {"file_path": str(f), "old_string": "x", "new_string": new}))
     assert reason and "spare" in reason and "unused" not in reason
-    assert G.clean_code_after_edit(G.Call("Edit", {"file_path": str(f), "old_string": "x", "new_string": "return 4\n"})) is None
-    rule = next(r for r in G.RULES if r.name == "clean_code_after_edit")
-    assert rule.log_only and G.respond(G.Call("Edit", {}), [(rule, reason)], acting=True) == (0, "", "")
+    assert G.lint_after_edit(G.Call("Edit", {"file_path": str(f), "old_string": "x", "new_string": "return 4\n"})) is None
+    rule = next(r for r in G.RULES if r.name == "lint_after_edit")
+    assert not rule.log_only and G.respond(G.Call("Edit", {}), [(rule, reason)], acting=True) != (0, "", "")
+    assert all(r.name != "clean_code_after_edit" for r in G.RULES)
 
 
 def test_commands_reads_command_words_only():
@@ -171,7 +172,7 @@ def test_commands_reads_command_words_only():
 
 
 def test_every_rule_names_its_incident_and_a_known_decision():
-    assert len(G.RULES) == 9 and len({r.name for r in G.RULES}) == 9
+    assert len(G.RULES) == 8 and len({r.name for r in G.RULES}) == 8     # 27 Oct: clean_code_after_edit merged into lint_after_edit
     assert all(r.incident and r.decision in ("deny", "ask", "post") and r.event in ("pre", "post") for r in G.RULES)
 
 

@@ -1,12 +1,6 @@
 # Local hooks under the plan-05 quality policy (plans/05_delta-probed-ir-pipeline/QUALITY_POLICY.md).
 # Once per clone:  pip install pre-commit && pre-commit install
 repos:
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.6.9
-    hooks:
-      - id: ruff
-        files: ^plans/05_delta-probed-ir-pipeline/(src|tests|tools|modules)/.*\.py$   # 28 Sep 2026: modules and tools joined (was src|tests)
-        exclude: ^plans/05_delta-probed-ir-pipeline/modules/02_opponent_atlas/data/
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
@@ -16,6 +10,14 @@ repos:
       - id: check-merge-conflict
   - repo: local
     hooks:
+      - id: ruff-gate
+        # 27 Oct 2026: the installed ruff (pinned ruff-pre-commit v0.6.9 disagreed with it on E402 after a sys.path insert), pyproject's one
+        # set, on the staged lines only (tools/ruff_gate.py; CLAUDE.md 'Python code')
+        name: ruff on the changed lines
+        entry: python plans/05_delta-probed-ir-pipeline/tools/ruff_gate.py --staged
+        language: system
+        files: ^plans/05_delta-probed-ir-pipeline/.*\.py$
+        pass_filenames: false
       - id: check-shell
         name: shell scripts parse and fail fast (bash -n; set -e or a stated reason)
         entry: python plans/05_delta-probed-ir-pipeline/tools/check_shell.py

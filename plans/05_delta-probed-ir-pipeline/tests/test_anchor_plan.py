@@ -6,7 +6,7 @@ import pytest
 
 pytest.importorskip("rdkit")
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "probes"))
-import anchor_plan as A  # noqa: E402  (after the sys.path insert)
+import anchor_plan as A
 
 
 @pytest.mark.parametrize(("smiles", "expected"), [

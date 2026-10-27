@@ -62,7 +62,7 @@ def configs() -> list[Config]:
 def window_table(mols):
     """All window modes of a list of molecules: label, family, ω, h, o, then local (· × 9), prox (· × 2) and Δ_xtb where every molecule
     carries them."""
-    keys = ("delta", "family", "omega", "h", "o") + tuple(k for k in ("local", "prox", "xtb") if mols and all(k in m for m in mols))
+    keys = ("delta", "family", "omega", "h", "o", *(k for k in ("local", "prox", "xtb") if mols and all(k in m for m in mols)))
     out = {k: np.concatenate([m[k] for m in mols]) for k in keys}
     w = (out["omega"] >= WINDOW[0]) & (out["omega"] <= WINDOW[1])
     return {k: v[w] for k, v in out.items()}

@@ -31,14 +31,15 @@ from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))   # tools/, for the one ruff check
+import ruff_gate
+
 PLAN = Path(__file__).resolve().parents[2]
 CONFIG = Path(os.environ.get("GUARD_CONFIG", Path(__file__).with_name("guard_config.json")))
 LOG = Path(os.environ.get("GUARD_LOG", PLAN / "probes" / "watch_state" / "hooks.log"))
 SHELLS = ("Bash", "PowerShell")
 EDITS = ("Edit", "Write")
 EXEMPT = re.compile(r"^[ \t]*#[ \t]*hook-exempt:[ \t]*([^<\s].*)$", re.M)   # a comment line of its own; '<reason>' is the placeholder
-CLEAN_CODE_RUFF = ["--isolated", "--select", "E,F,W,B,SIM,UP,C90,PLR,RUF", "--ignore", "E741,RUF001,RUF002,RUF003,PLR2004,PLR0917",
-                   "--line-length", "160", "--config", "lint.pylint.max-args = 6"]                 # CLAUDE.md, 'Python code'
 
 
 @dataclass(frozen=True)
@@ -305,19 +306,26 @@ def _run(args: list[str], cwd: Path) -> subprocess.CompletedProcess:
     return subprocess.run(args, capture_output=True, text=True, timeout=50, check=False, cwd=cwd)
 
 
+def _lint_python(c: Call, p: Path) -> str | None:
+    """A Python file must compile, and the lines the edit wrote meet the one ruff set (tools/ruff_gate.py)."""
+    try:
+        compile(p.read_bytes(), str(p), "exec")
+    except SyntaxError as e:
+        return f"{p.name} does not compile: line {e.lineno}: {e.msg}"
+    try:
+        found = ruff_gate.findings({p: set(edited_lines(c, p.read_text(encoding="utf-8", errors="replace")))})
+    except RuntimeError as e:      # ruff missing or broken: say so, the edit itself is not at fault
+        return f"ruff_gate could not check {p.name}: {e}"
+    return f"ruff on the lines just written in {p.name}:\n" + "\n".join(found[:6]) if found else None
+
+
 def lint_after_edit(c: Call) -> str | None:
     p = Path(c.input.get("file_path", ""))
     if not _in_repository(p):
         return None
     if p.suffix == ".py":
-        r = _run([sys.executable, "-m", "ruff", "check", "--quiet", str(p)], p.parent)
-        if r.returncode not in (0, 2) and r.stdout.strip():   # 2: ruff not installed or no config — not the file's fault
-            return f"ruff on {p.name}:\n{_first_lines(r.stdout)}"
-        try:
-            compile(p.read_bytes(), str(p), "exec")
-        except SyntaxError as e:
-            return f"{p.name} does not compile: line {e.lineno}: {e.msg}"
-    elif p.suffix == ".sh":
+        return _lint_python(c, p)
+    if p.suffix == ".sh":
         r = _run([sys.executable, str(PLAN / "tools" / "check_shell.py"), str(p)], p.parent)
         if r.returncode != 0:
             return f"{p.name}: {_first_lines(r.stdout + r.stderr)}"
@@ -328,7 +336,7 @@ def lint_after_edit(c: Call) -> str | None:
     return None
 
 
-# ---------------------------------------------------------------- 9. after an edit: the clean-code set on the lines just written
+# ---------------------------------------------------------------- the lines an edit wrote (lint_after_edit's span)
 
 def edited_lines(c: Call, text: str) -> range:
     """The file's lines the call wrote: all of them for Write, the new_string's span for Edit (its first occurrence)."""
@@ -339,16 +347,6 @@ def edited_lines(c: Call, text: str) -> range:
     return range(start, start + c.new_text.count("\n") + 1)
 
 
-def clean_code_after_edit(c: Call) -> str | None:
-    p = Path(c.input.get("file_path", ""))
-    if p.suffix != ".py" or not _in_repository(p):
-        return None
-    r = _run([sys.executable, "-m", "ruff", "check", *CLEAN_CODE_RUFF, "--output-format", "concise", str(p)], p.parent)
-    span = edited_lines(c, p.read_text(encoding="utf-8", errors="replace"))
-    found = [line for line in r.stdout.splitlines() if (m := re.match(r".*?:(\d+):\d+: ", line)) and int(m.group(1)) in span]
-    return f"clean-code check on the lines just written in {p.name}:\n" + "\n".join(found[:6]) if found else None
-
-
 RULES = (
     Rule("inline_code", "pre", SHELLS, "deny", "3-4 Oct (3x), 15 Oct (2x): backslashes lost from code inside shell commands", inline_code),
     Rule("git_add_all", "pre", SHELLS, "deny", "CLAUDE.md: live run directories, 75 MB psi4 scratch", git_add_all),
@@ -357,9 +355,8 @@ RULES = (
     Rule("github_post", "pre", SHELLS, "ask", "22 Sep: GitHub replies need the user's word", github_post),
     Rule("destructive", "pre", SHELLS, "ask", "standing rule: deletions need the user's word", destructive),
     Rule("stamp_ahead", "pre", EDITS, "deny", "20 and 22 Sep: stamps ahead of the clock", stamp_ahead),
-    Rule("lint_after_edit", "post", EDITS, "post", "errors found only at the commit", lint_after_edit),
-    Rule("clean_code_after_edit", "post", EDITS, "post", "16 Oct: the user's clean-code rule (CLAUDE.md 'Python code')", clean_code_after_edit,
-         log_only=True),
+    Rule("lint_after_edit", "post", EDITS, "post", "errors found only at the commit; 27 Oct: the one ruff set on the lines written",
+         lint_after_edit),
 )
 
 

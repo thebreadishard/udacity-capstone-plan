@@ -5,7 +5,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
-import github_threads as gt  # noqa: E402  (after the sys.path insert)
+import github_threads as gt
 
 NOW = datetime(2026, 10, 24, 22, 0, tzinfo=UTC)
 PR = {"repository_url": "https://api.github.com/repos/grimme-lab/dxtb", "number": 278, "html_url": "https://github.com/grimme-lab/dxtb/pull/278",

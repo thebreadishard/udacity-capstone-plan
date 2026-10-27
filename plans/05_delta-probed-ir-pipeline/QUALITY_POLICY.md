@@ -56,7 +56,9 @@ Root cause of 200 findings and 4,000 style notes: the ruff hook covered `src/` a
 1. The ruff hook covers `src/`, `tests/`, `tools/` and `modules/` (executed notebooks and external code excluded); correctness rules `PLW1510`
    (subprocess without `check`), `S110` (try/except/pass), `BLE001` (blind except) are selected beside `B905`, `B023`, `B007`, `F841`, `NPY002`;
    the style rules `E501/E701/E702` stay binding in tier 2 and informative in tier 1 (per-path ignores in `pyproject.toml`). A `# noqa` carries its
-   reason on the line.
+   reason on the line. **Since 27 Oct 2026 (27 Oct 07:1x; the user: one config, the touched lines):** one ruff set in `pyproject.toml` for both tiers,
+   judged on every line written or changed (and the whole function for the function-size rules) by `tools/ruff_gate.py` — in the edit
+   hook, pre-commit and CI; the per-path ignores are gone, old lines are TASKS 139.
 2. Hook `check-shell` (`tools/check_shell.py`): every `.sh` under the plan parses (`bash -n`) and fails fast (`set -e`) or states why on a
    `# no-set-e: <reason>` line (polling and diagnostic scripts).
 3. A test that starts a subprocess runs it under the plain console environment (`tests/conftest.py` strips `PYTHONUTF8`/`PYTHONIOENCODING`) and

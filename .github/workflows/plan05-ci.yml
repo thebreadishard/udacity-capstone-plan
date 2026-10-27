@@ -25,6 +25,8 @@ jobs:
         working-directory: plans/05_delta-probed-ir-pipeline
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # ruff_gate diffs the pushed range
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -38,8 +40,13 @@ jobs:
       # importorskip kept CI red for eight hours; the laptop's version, so CI runs what the laptop runs
       - name: Test dependencies of the module tests (pandas, scipy, CPU torch, geomeTRIC)
         run: pip install pandas scipy scikit-learn geometric==1.1.1 && pip install torch --index-url https://download.pytorch.org/whl/cpu
-      - name: Ruff on tier-2 code
-        run: ruff check src tests
+      # 27 Oct 2026: one ruff set (pyproject.toml) on the lines the pushed commits change, as the edit hook and pre-commit do
+      - name: Ruff on the changed lines (tools/ruff_gate.py)
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          case "$BASE" in ''|0000000000000000000000000000000000000000) BASE=$(git rev-parse HEAD~1) ;; esac
+          python tools/ruff_gate.py --range "$BASE..${{ github.sha }}"
       - name: Syntax check on the probes (tier 1)
         run: python -m compileall -q probes
       - name: Fast test suite (synthetic + committed data; a missing data set fails, never skips)

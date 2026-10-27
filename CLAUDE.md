@@ -61,9 +61,12 @@ before the commit — ruff's project set is the floor, not the bar:
 - **Comments** say why, not what; a date or incident only where it explains a guard. History belongs in git and the ledger.
 - **Tests**: a test for every switch; a refactor of code a run uses starts with a regression test that pins the current output, on a
   branch in its own worktree (the laptop's queued chains run from this checkout).
-- Check: `python -m ruff check --isolated --select E,F,W,B,SIM,UP,C90,PLR,RUF --ignore E741,RUF001,RUF002,RUF003,PLR2004,PLR0917
-  --line-length 160 --config "lint.pylint.max-args = 6" <files>` on the touched files (the ignored rules are the paper's notation —
-  single-letter indices, Greek — and physical constants); every finding is fixed or carries a `# noqa: <rule>  <reason>`. A hook for it is TASKS 64's candidate (9).
+- Check (since 27 October 2026, the user: one config, the touched lines): `tools/ruff_gate.py` applies pyproject.toml's ruff set to every
+  line written or changed, and to the whole function around such a line for the function-size rules; a new file is checked whole. It runs
+  by itself after every Edit/Write (the hook acts), in pre-commit on the staged lines and in CI on the pushed commits; by hand
+  `python tools/ruff_gate.py <file>[:start-end]`. The ignored rules are the paper's notation — single-letter indices, Greek — and physical
+  constants. Every finding is fixed or carries a `# noqa: <rule>  <reason>`. Lines nobody touched are TASKS 139, cleaned where no run
+  depends on the file.
   First file brought to it: `m05/rungC_train.py` (16 Oct 2026: 46 findings → 0, the record of a pinned run unchanged to the bit).
 
 ## Committing
