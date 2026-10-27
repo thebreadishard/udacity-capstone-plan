@@ -5,7 +5,7 @@ pushed to the fork thebreadishard/pyscf only. pyscf's AI policy (AI_POLICY.md): 
 AI use is disclosed in the PR; discussion with maintainers is in the contributor's own words. Every branch starts from upstream master
 44313dfb4 (26 Oct 2026), built in WSL (~/pyscf-wt-base), libraries linked into each worktree.*
 
-**Order of submission:** C, B, A, then D (D is stacked on A). **Submitted by the user on 27 Oct: C #3545, B #3546, A #3547;** the disclosure line ends 'I reviewed the results and asked it to adhere to your conventions before submitting.' C and B are independent of everything else.
+**Order of submission:** C, B, A, then D (D is stacked on A). **Submitted by the user on 27 Oct: C #3545, B #3546, A #3547, D #3548 (its opening sentence without 'at 31.5 GB');** the disclosure line ends 'I reviewed the results and asked it to adhere to your conventions before submitting.' C and B are independent of everything else.
 
 **Disclosure line for every PR body (suggested):** "AI disclosure: this change was developed with Claude Code (Anthropic's Claude Opus 5.5)
 as an assistant — it read the code, wrote the change and the tests, and ran them; I reviewed the diff, the tests and the measurements
