@@ -76,6 +76,6 @@ molecule** (fused 3–4, five 1–2): single rings carry few cells, so the cell 
 
 After the branch is merged (it sits on v14-search-code, merged after chain 35): `set3_decompose.py` again on the set-three folder (adds the
 mean and the centred slope; the stored slopes unchanged, checked 27 Oct), then `anchor_price_plan.py distortion`, `cover`, `plan`, a
-runspec on the proxy check's (memory 7.7 GB, nothing beside it), dry run, launch when the laptop is free. Measured on arm (a): base
+runspec, `probes/runspecs/anchor_price.json` (the proxy check's, memory 7.7 GB, nothing beside it; valid with its sources compiling on 27 Oct, all but the chain file `plan` writes), dry run, launch when the laptop is free. Measured on arm (a): base
 3.5 h for three seeds, fine-tunes 6.0 h with four modes → arm (c) ≈ 3.5 + 2.7 (random, whole head) + 1.5 (covers) ≈ 7.7 laptop hours.
 The read by 18 Nov at the latest (TASKS 140).

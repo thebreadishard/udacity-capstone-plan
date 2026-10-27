@@ -1,0 +1,11 @@
+{"name": "anchor_price", "purpose": "TASKS 82, 84 step 4, 140 claim 3: anchor price arm (c) - base (c) on the label distorted by the anchors' measured change (mean shift and rest per family, CH-oop per ring context; chain 34's recipe and arm (a)'s pool, three seeds), the registry entries, the random fine-tunes (head_all) and the covering selections (head_all and scratch) (probes/anchor_price_plan.py; registration GoalGathering/notes/PreRegistration_2026-10-27_Anchor_Price_Arm_C.md)",
+ "host": "laptop", "workdir": "probes/results_m1", "command": "python ../chain_runner.py probes/runs/anchor_price.json",
+ "sources": [{"local": "probes/chain_runner.py"}, {"local": "probes/runs/anchor_price.json"}, {"local": "probes/anchor_price_plan.py"},
+             {"local": "probes/proxy_check_plan.py"}, {"local": "probes/anchor_plan.py"},
+             {"local": "modules/05_support_predictor/m05/proxy_transfer_check.py"}, {"local": "modules/05_support_predictor/m05/rungC_train.py"},
+             {"local": "modules/05_support_predictor/m05/rungC_config.py"}, {"local": "modules/05_support_predictor/m05/rungC_cc_transfer.py"},
+             {"local": "modules/05_support_predictor/m05/model_registry.py"}],
+ "progress": {"regex": "^=== \\(AP\\) progress: |^\\(AP\\) .* done ", "max_gap_minutes": 90, "start_regex": "^=== \\(AP\\) starting: "},
+ "marker_regex": "^=== \\(AP\\) (armed|starting|resuming|RUN FAILED|run done)",
+ "end_regex": "^=== \\(AP\\) run done", "dry_run_args": "--dry-run", "resumable": true,
+ "memory": {"peak_gb": 7.7, "basis": "the proxy check's bound, the same jobs: base (c) is rungC_train.py on chain 34's 750 molecules (chain 41's measured PeakWorkingSet64 at n = 978, 7.7 GB, 19 Oct 2026, bounds it); the fine-tunes load the corpus and ~600 molecules' tensors, smaller. Nothing runs beside it"}}
