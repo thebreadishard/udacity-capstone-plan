@@ -1,0 +1,111 @@
+{
+ "verdict": {
+  "t1_met": false,
+  "branch": "labels not it",
+  "branch_against_registered": "labels not it",
+  "baselines_agree": true,
+  "other_fall": 0.0,
+  "other_fall_registered": 0.0,
+  "promoted": true,
+  "promotion": "worse on none of the five on either hold-out, lower on 9 of 10: carried as version 1.3 (decision 57, the user's rule of 26 Oct)",
+  "worse": []
+ },
+ "comparisons": [
+  {
+   "hold": "a",
+   "quantity": "ring-ip",
+   "new": 1.6637943955505545,
+   "carried": 1.8216312191209714,
+   "difference": -0.15783682357041684,
+   "beyond_two_se": false
+  },
+  {
+   "hold": "a",
+   "quantity": "CH-stretch",
+   "new": 1.1537153007314098,
+   "carried": 1.254795550539341,
+   "difference": -0.10108024980793129,
+   "beyond_two_se": false
+  },
+  {
+   "hold": "a",
+   "quantity": "CH-oop",
+   "new": 1.993907751652263,
+   "carried": 2.3621988898161574,
+   "difference": -0.36829113816389447,
+   "beyond_two_se": true
+  },
+  {
+   "hold": "a",
+   "quantity": "other",
+   "new": 3.3492953840417514,
+   "carried": 3.3452590652872622,
+   "difference": 0.0040363187544891765,
+   "beyond_two_se": false
+  },
+  {
+   "hold": "a",
+   "quantity": "coupling_ratio",
+   "new": 0.17151156133329437,
+   "carried": 0.19242060115352067,
+   "difference": -0.020909039820226294,
+   "beyond_two_se": true
+  },
+  {
+   "hold": "b",
+   "quantity": "ring-ip",
+   "new": 2.1247001958650746,
+   "carried": 2.348729640778355,
+   "difference": -0.22402944491328025,
+   "beyond_two_se": false
+  },
+  {
+   "hold": "b",
+   "quantity": "CH-stretch",
+   "new": 2.4995337043672645,
+   "carried": 2.552153549723357,
+   "difference": -0.052619845356092654,
+   "beyond_two_se": false
+  },
+  {
+   "hold": "b",
+   "quantity": "CH-oop",
+   "new": 2.7045117047196428,
+   "carried": 3.3293557099268267,
+   "difference": -0.624844005207184,
+   "beyond_two_se": false
+  },
+  {
+   "hold": "b",
+   "quantity": "other",
+   "new": 3.8924772545485893,
+   "carried": 4.664066313010058,
+   "difference": -0.7715890584614686,
+   "beyond_two_se": false
+  },
+  {
+   "hold": "b",
+   "quantity": "coupling_ratio",
+   "new": 0.26346696809912057,
+   "carried": 0.28897169280047946,
+   "difference": -0.025504724701358894,
+   "beyond_two_se": true
+  }
+ ],
+ "registered_baseline_a": {
+  "ring-ip": 1.82,
+  "CH-stretch": 1.25,
+  "CH-oop": 2.36,
+  "other": 3.35,
+  "coupling_ratio": 0.192
+ },
+ "analytic_targets": 862,
+ "sources": [
+  "E7_rungC_chain35_analytic_eval_frozenb_seed0.json",
+  "E7_rungC_chain35_analytic_eval_frozenb_seed1.json",
+  "E7_rungC_chain35_analytic_eval_frozenb_seed2.json",
+  "E7_rungC_chain34_eval_c35labels_seed0.json",
+  "E7_rungC_chain34_eval_c35labels_seed1.json",
+  "E7_rungC_chain34_eval_c35labels_seed2.json"
+ ]
+}
