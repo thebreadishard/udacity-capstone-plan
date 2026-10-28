@@ -30,6 +30,11 @@ def test_known_curve_is_read_back(c6):
     assert r["odd_max"] == pytest.approx(2 * 35.0 * 0.4 ** 3 / 6, rel=1e-6)
 
 
+def test_two_steps_are_refused():
+    with pytest.raises(ValueError, match="at least 3"):
+        R.read_curve(0.0, [1e-5, 4e-5], [1e-5, 4e-5], [0.1, 0.2])
+
+
 def test_one_fewer_shows_truncation():
     r = read(992.0, 0.0, 907.0, 0.0, 500.0)                              # a q⁸ term: exact with four steps, aliased with three
     assert r["all_steps"]["phi_iiii"] == pytest.approx(907.0, abs=1e-2)

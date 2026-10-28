@@ -465,6 +465,12 @@ def test_resume_relaunches_an_interrupted_run_and_names_why(tmp_path):
 
 
 @pytest.mark.skipif(BASH is None, reason="bash not available")
+def test_shell_output_is_read_as_utf8(tmp_path):
+    (tmp_path / "say.sh").write_bytes("printf 'φ cm⁻¹'\n".encode())
+    assert R.Shell(BASH)._run([BASH, (tmp_path / "say.sh").as_posix()]).stdout == "φ cm⁻¹"
+
+
+@pytest.mark.skipif(BASH is None, reason="bash not available")
 def test_the_probe_reads_the_failure_line_and_the_lifetime(tmp_path):
     s = resumable_spec(workdir="probes")
     (tmp_path / "demo.log").write_text("=== (T) armed\n=== (T) RUN FAILED at train: exit 3\n", encoding="utf-8", newline="\n")

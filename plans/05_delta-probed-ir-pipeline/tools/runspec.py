@@ -321,8 +321,10 @@ class Shell:
         self.bash = bash or shutil.which("bash") or "bash"
 
     def _run(self, args: list[str], timeout: float = 120, cwd: Path = ROOT) -> subprocess.CompletedProcess:
-        # stdin from /dev/null: the scheduled resume task has no console, and inheriting its invalid stdin handle raised WinError 6 (16 Oct)
-        return subprocess.run(args, cwd=cwd, stdin=subprocess.DEVNULL, capture_output=True, text=True, timeout=timeout, check=False)
+        # stdin from /dev/null: the scheduled resume task has no console, and inheriting its invalid stdin handle raised WinError 6 (16 Oct).
+        # UTF-8 explicitly: Windows' default code page failed on a dry run's φ after the job had started, so no state was saved (28 Oct)
+        return subprocess.run(args, cwd=cwd, stdin=subprocess.DEVNULL, capture_output=True, text=True, encoding="utf-8", errors="replace",
+                              timeout=timeout, check=False)
 
     def host_row(self, host: str) -> tuple[str, str] | None:
         """(ip, machine-id) from tools/hosts.tsv, None when the name is not there."""

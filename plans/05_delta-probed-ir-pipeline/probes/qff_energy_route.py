@@ -29,6 +29,8 @@ from scf_converge import converged_scf
 
 from dpir.qff import HARTREE_CM, harmonic, load_results, reference_index
 
+MIN_STEPS = 3  # the truncation check drops the largest step and still needs q² and q⁴
+
 
 def parse_args() -> argparse.Namespace:
     ap = argparse.ArgumentParser()
@@ -42,8 +44,8 @@ def parse_args() -> argparse.Namespace:
     ap.add_argument("--conv", type=float, default=1e-11)
     ap.add_argument("--threads", type=int, default=4)
     a = ap.parse_args()
-    if len(a.steps) < 2 or sorted(a.steps) != a.steps or a.steps[0] <= 0:
-        raise SystemExit(f"--steps must be at least two increasing positive values, got {a.steps}")
+    if len(a.steps) < MIN_STEPS or sorted(a.steps) != a.steps or a.steps[0] <= 0:
+        raise SystemExit(f"--steps must be at least {MIN_STEPS} increasing positive values, got {a.steps}")
     return a
 
 
@@ -55,6 +57,8 @@ def even_fit(steps: list[float], even: list[float]) -> np.ndarray:
 
 def read_curve(e0: float, plus: list[float], minus: list[float], steps: list[float]) -> dict[str, Any]:
     """ω and φ_iiii (cm⁻¹) from the full set of steps and from all but the largest; the largest odd part (cm⁻¹)."""
+    if len(steps) < MIN_STEPS:
+        raise ValueError(f"{len(steps)} steps: the fit with one step fewer needs a q⁴ term, so at least {MIN_STEPS}")
     even = [p + m - 2 * e0 for p, m in zip(plus, minus, strict=True)]
     fits = {}
     for name, n in (("all_steps", len(steps)), ("one_fewer", len(steps) - 1)):
