@@ -1,0 +1,26 @@
+analytic second-route Hessians substituted for 862 molecules
+atomic polar tensors found for 471 molecules: intensity read-outs on (lever 5, registered 2 Oct 2026 06:5x)
+base base_c_model_n750_seed0.pt (status candidate); reservoir 10, read 343; k 10; modes ['head_all', 'scratch']
+  [head_all k10]     epoch 50/300: loss 0.06158
+  [head_all k10]     epoch 100/300: loss 0.03822
+  [head_all k10]     epoch 150/300: loss 0.02879
+  [head_all k10]     epoch 200/300: loss 0.01331
+  [head_all k10]     epoch 250/300: loss 0.01449
+  [head_all k10]     epoch 300/300: loss 0.009064
+k 10 draw 0 head_all: CH-oop 4.97 other 7.21 (87 s)
+  [scratch k10]   rung B's 66 pair features added to the hybrid head (standardised on the fit molecules)
+  [scratch k10]   hybrid head: 304,276 parameters; F_low input scales 0.0313, 0.271, 0.112; SQM α per class on
+  [scratch k10]   fresh sum body pre-flight: worst |output| 34.6 on the training molecules
+  [scratch k10]     seed 0 epoch 1/200: loss main 4.764e-06 aux 0.5954 val 2.239 (0 s)
+  [scratch k10]     seed 0 epoch 10/200: loss main 7.861e-07 aux 0.3034 val 1.862 (5 s)
+  [scratch k10]     seed 0 epoch 20/200: loss main 6.561e-07 aux 0.2775 val 1.846 (9 s)
+  [scratch k10]     seed 0 epoch 30/200: loss main 6.217e-07 aux 0.2614 val 1.838 (13 s)
+  [scratch k10]     seed 0 epoch 40/200: loss main 5.776e-07 aux 0.2484 val 1.835 (17 s)
+  [scratch k10]     seed 0 epoch 50/200: loss main 5.46e-07 aux 0.2367 val 1.809 (21 s)
+  [scratch k10]     seed 0 epoch 60/200: loss main 5.071e-07 aux 0.2254 val 1.786 (24 s)
+  [scratch k10]     seed 0 epoch 70/200: loss main 5.32e-07 aux 0.2183 val 1.806 (28 s)
+  [scratch k10]     seed 0 epoch 80/200: loss main 4.565e-07 aux 0.1958 val 1.751 (32 s)
+  [scratch k10]     seed 0 epoch 90/200: loss main 6.74e-07 aux 0.2099 val 1.748 (35 s)
+  [scratch k10]     seed 0: early stop at epoch 97, best inner val 1.724 at epoch 77
+k 10 draw 0 scratch: CH-oop 6.76 other 8.23 (46 s)
+wrote out/anchor_price_2026-10-28/cv_c_k10_d2_seed0.json/.md in 276 s

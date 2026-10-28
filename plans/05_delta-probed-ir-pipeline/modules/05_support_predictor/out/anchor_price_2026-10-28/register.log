@@ -1,0 +1,5 @@
+registered as candidate: anchor_price_2026-10-28/base_c_model_n750_seed0.pt, anchor_price_2026-10-28/base_c_model_n750_seed1.pt, anchor_price_2026-10-28/base_c_model_n750_seed2.pt
+wrote C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\05_support_predictor\MODELS.md (80 models; carried: 3)
+wrote C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\standout_pattern_proposer\MODELS.md (42 models; carried: 3)
+wrote C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\06_generative_candidates\MODELS.md (4 models; carried: 0)
+wrote C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\modules\MODELS.md

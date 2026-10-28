@@ -1,0 +1,30 @@
+analytic second-route Hessians substituted for 862 molecules
+atomic polar tensors found for 471 molecules: intensity read-outs on (lever 5, registered 2 Oct 2026 06:5x)
+base base_c_model_n750_seed1.pt (status candidate); reservoir 5, read 343; k 5; modes ['head_all', 'scratch']
+  [head_all k5]     epoch 50/600: loss 0.02238
+  [head_all k5]     epoch 100/600: loss 0.01319
+  [head_all k5]     epoch 150/600: loss 0.0058
+  [head_all k5]     epoch 200/600: loss 0.007018
+  [head_all k5]     epoch 250/600: loss 0.004416
+  [head_all k5]     epoch 300/600: loss 0.003511
+  [head_all k5]     epoch 350/600: loss 0.001989
+  [head_all k5]     epoch 400/600: loss 0.00203
+  [head_all k5]     epoch 450/600: loss 0.002073
+  [head_all k5]     epoch 500/600: loss 0.001919
+  [head_all k5]     epoch 550/600: loss 0.001773
+  [head_all k5]     epoch 600/600: loss 0.001745
+k 5 draw 0 head_all: CH-oop 6.23 other 8.23 (93 s)
+  [scratch k5]   rung B's 66 pair features added to the hybrid head (standardised on the fit molecules)
+  [scratch k5]   hybrid head: 304,276 parameters; F_low input scales 0.0287, 0.254, 0.102; SQM α per class on
+  [scratch k5]   fresh sum body pre-flight: worst |output| 26.1 on the training molecules
+  [scratch k5]     seed 1 epoch 1/200: loss main 4.38e-06 aux 0.4645 val 0.6251 (0 s)
+  [scratch k5]     seed 1 epoch 10/200: loss main 1.086e-06 aux 0.2068 val 0.4465 (2 s)
+  [scratch k5]     seed 1 epoch 20/200: loss main 8.806e-07 aux 0.1815 val 0.4288 (4 s)
+  [scratch k5]     seed 1 epoch 30/200: loss main 6.509e-07 aux 0.1684 val 0.4142 (6 s)
+  [scratch k5]     seed 1 epoch 40/200: loss main 5.048e-07 aux 0.1562 val 0.4016 (8 s)
+  [scratch k5]     seed 1 epoch 50/200: loss main 5.651e-07 aux 0.1492 val 0.4001 (10 s)
+  [scratch k5]     seed 1 epoch 60/200: loss main 4.432e-07 aux 0.1421 val 0.3879 (12 s)
+  [scratch k5]     seed 1 epoch 70/200: loss main 3.957e-07 aux 0.1332 val 0.3894 (13 s)
+  [scratch k5]     seed 1: early stop at epoch 78, best inner val 0.3837 at epoch 58
+k 5 draw 0 scratch: CH-oop 6.07 other 9.71 (22 s)
+wrote out/anchor_price_2026-10-28/cv_c_k5_d2_seed1.json/.md in 251 s

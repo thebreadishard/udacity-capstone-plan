@@ -1,0 +1,30 @@
+analytic second-route Hessians substituted for 862 molecules
+atomic polar tensors found for 471 molecules: intensity read-outs on (lever 5, registered 2 Oct 2026 06:5x)
+base base_c_model_n750_seed1.pt (status candidate); reservoir 20, read 343; k 20; modes ['head_all', 'scratch']
+  [head_all k20]     epoch 50/150: loss 0.04035
+  [head_all k20]     epoch 100/150: loss 0.03553
+  [head_all k20]     epoch 150/150: loss 0.03394
+k 20 draw 0 head_all: CH-oop 4.34 other 5.56 (87 s)
+  [scratch k20]   rung B's 66 pair features added to the hybrid head (standardised on the fit molecules)
+  [scratch k20]   hybrid head: 304,276 parameters; F_low input scales 0.0316, 0.273, 0.112; SQM α per class on
+  [scratch k20]   fresh sum body pre-flight: worst |output| 31.6 on the training molecules
+  [scratch k20]     seed 1 epoch 1/200: loss main 2.892e-06 aux 0.5195 val 0.3815 (1 s)
+  [scratch k20]     seed 1 epoch 10/200: loss main 8.484e-07 aux 0.3089 val 0.2894 (8 s)
+  [scratch k20]     seed 1 epoch 20/200: loss main 6.568e-07 aux 0.2755 val 0.293 (15 s)
+  [scratch k20]     seed 1 epoch 30/200: loss main 5.789e-07 aux 0.2468 val 0.2733 (23 s)
+  [scratch k20]     seed 1 epoch 40/200: loss main 5.395e-07 aux 0.224 val 0.3159 (30 s)
+  [scratch k20]     seed 1 epoch 50/200: loss main 6.15e-07 aux 0.2015 val 0.3081 (38 s)
+  [scratch k20]     seed 1 epoch 60/200: loss main 5.321e-07 aux 0.1833 val 0.2452 (45 s)
+  [scratch k20]     seed 1 epoch 70/200: loss main 4.676e-07 aux 0.1421 val 0.2046 (53 s)
+  [scratch k20]     seed 1 epoch 80/200: loss main 4.041e-07 aux 0.1235 val 0.2445 (60 s)
+  [scratch k20]     seed 1 epoch 90/200: loss main 3.644e-07 aux 0.1034 val 0.1915 (68 s)
+  [scratch k20]     seed 1 epoch 100/200: loss main 3.922e-07 aux 0.0949 val 0.1681 (76 s)
+  [scratch k20]     seed 1 epoch 110/200: loss main 2.963e-07 aux 0.07632 val 0.1596 (83 s)
+  [scratch k20]     seed 1 epoch 120/200: loss main 2.721e-07 aux 0.06808 val 0.1704 (91 s)
+  [scratch k20]     seed 1 epoch 130/200: loss main 2.403e-07 aux 0.06293 val 0.1566 (98 s)
+  [scratch k20]     seed 1 epoch 140/200: loss main 2.156e-07 aux 0.05194 val 0.1348 (106 s)
+  [scratch k20]     seed 1 epoch 150/200: loss main 2.597e-07 aux 0.0603 val 0.1522 (113 s)
+  [scratch k20]     seed 1 epoch 160/200: loss main 1.949e-07 aux 0.04999 val 0.1469 (121 s)
+  [scratch k20]     seed 1: early stop at epoch 169, best inner val 0.1174 at epoch 149
+k 20 draw 0 scratch: CH-oop 5.04 other 7.48 (134 s)
+wrote out/anchor_price_2026-10-28/cv_c_k20_d0_seed1.json/.md in 364 s

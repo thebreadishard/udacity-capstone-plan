@@ -1,0 +1,25 @@
+analytic second-route Hessians substituted for 862 molecules
+atomic polar tensors found for 471 molecules: intensity read-outs on (lever 5, registered 2 Oct 2026 06:5x)
+base base_c_model_n750_seed0.pt (status candidate); reservoir 20, read 343; k 20; modes ['head_all', 'scratch']
+  [head_all k20]     epoch 50/150: loss 0.05435
+  [head_all k20]     epoch 100/150: loss 0.03864
+  [head_all k20]     epoch 150/150: loss 0.02523
+k 20 draw 0 head_all: CH-oop 4.57 other 6.83 (86 s)
+  [scratch k20]   rung B's 66 pair features added to the hybrid head (standardised on the fit molecules)
+  [scratch k20]   hybrid head: 304,276 parameters; F_low input scales 0.0311, 0.269, 0.111; SQM α per class on
+  [scratch k20]   fresh sum body pre-flight: worst |output| 38.6 on the training molecules
+  [scratch k20]     seed 0 epoch 1/200: loss main 3.049e-06 aux 0.5331 val 0.636 (1 s)
+  [scratch k20]     seed 0 epoch 10/200: loss main 7.887e-07 aux 0.3169 val 0.4734 (8 s)
+  [scratch k20]     seed 0 epoch 20/200: loss main 5.877e-07 aux 0.2916 val 0.4449 (15 s)
+  [scratch k20]     seed 0 epoch 30/200: loss main 5.224e-07 aux 0.2668 val 0.414 (23 s)
+  [scratch k20]     seed 0 epoch 40/200: loss main 4.456e-07 aux 0.2373 val 0.3871 (30 s)
+  [scratch k20]     seed 0 epoch 50/200: loss main 4.43e-07 aux 0.22 val 0.4222 (38 s)
+  [scratch k20]     seed 0 epoch 60/200: loss main 1.28e-06 aux 0.1986 val 0.3754 (46 s)
+  [scratch k20]     seed 0 epoch 70/200: loss main 4.881e-07 aux 0.1601 val 0.3526 (53 s)
+  [scratch k20]     seed 0 epoch 80/200: loss main 4.361e-07 aux 0.1389 val 0.3399 (61 s)
+  [scratch k20]     seed 0 epoch 90/200: loss main 3.58e-07 aux 0.1146 val 0.3401 (68 s)
+  [scratch k20]     seed 0 epoch 100/200: loss main 3.56e-07 aux 0.1199 val 0.3564 (76 s)
+  [scratch k20]     seed 0 epoch 110/200: loss main 2.724e-07 aux 0.07804 val 0.3427 (83 s)
+  [scratch k20]     seed 0: early stop at epoch 112, best inner val 0.3272 at epoch 92
+k 20 draw 0 scratch: CH-oop 5.73 other 6.90 (92 s)
+wrote out/anchor_price_2026-10-28/cv_c_k20_d1_seed0.json/.md in 324 s

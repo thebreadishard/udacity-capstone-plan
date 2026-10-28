@@ -1,0 +1,27 @@
+analytic second-route Hessians substituted for 862 molecules
+atomic polar tensors found for 471 molecules: intensity read-outs on (lever 5, registered 2 Oct 2026 06:5x)
+base base_c_model_n750_seed2.pt (status candidate); reservoir 10, read 343; k 10; modes ['head_all', 'scratch']
+  [head_all k10]     epoch 50/300: loss 0.05728
+  [head_all k10]     epoch 100/300: loss 0.01877
+  [head_all k10]     epoch 150/300: loss 0.01274
+  [head_all k10]     epoch 200/300: loss 0.01157
+  [head_all k10]     epoch 250/300: loss 0.01009
+  [head_all k10]     epoch 300/300: loss 0.008494
+k 10 draw 0 head_all: CH-oop 4.51 other 6.08 (82 s)
+  [scratch k10]   rung B's 66 pair features added to the hybrid head (standardised on the fit molecules)
+  [scratch k10]   hybrid head: 304,276 parameters; F_low input scales 0.0319, 0.273, 0.112; SQM α per class on
+  [scratch k10]   fresh sum body pre-flight: worst |output| 5.75 on the training molecules
+  [scratch k10]     seed 2 epoch 1/200: loss main 4.237e-06 aux 0.6677 val 0.6981 (0 s)
+  [scratch k10]     seed 2 epoch 10/200: loss main 1.073e-06 aux 0.3957 val 0.5105 (4 s)
+  [scratch k10]     seed 2 epoch 20/200: loss main 5.831e-07 aux 0.3777 val 0.5034 (7 s)
+  [scratch k10]     seed 2 epoch 30/200: loss main 5.21e-07 aux 0.3681 val 0.5496 (11 s)
+  [scratch k10]     seed 2 epoch 40/200: loss main 4.978e-07 aux 0.3523 val 0.511 (14 s)
+  [scratch k10]     seed 2 epoch 50/200: loss main 4.884e-07 aux 0.3376 val 0.5072 (18 s)
+  [scratch k10]     seed 2 epoch 60/200: loss main 4.953e-07 aux 0.325 val 0.4814 (21 s)
+  [scratch k10]     seed 2 epoch 70/200: loss main 4.775e-07 aux 0.3033 val 0.4697 (25 s)
+  [scratch k10]     seed 2 epoch 80/200: loss main 1.601e-06 aux 0.2663 val 0.4962 (28 s)
+  [scratch k10]     seed 2 epoch 90/200: loss main 4.641e-07 aux 0.2475 val 0.4884 (32 s)
+  [scratch k10]     seed 2 epoch 100/200: loss main 5.261e-07 aux 0.2161 val 0.5002 (35 s)
+  [scratch k10]     seed 2: early stop at epoch 107, best inner val 0.4551 at epoch 87
+k 10 draw 0 scratch: CH-oop 6.21 other 9.18 (44 s)
+wrote out/anchor_price_2026-10-28/cv_c_k10_d1_seed2.json/.md in 263 s

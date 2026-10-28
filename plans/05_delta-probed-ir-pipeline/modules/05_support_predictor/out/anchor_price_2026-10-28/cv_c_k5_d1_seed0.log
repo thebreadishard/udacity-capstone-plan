@@ -1,0 +1,26 @@
+analytic second-route Hessians substituted for 862 molecules
+atomic polar tensors found for 471 molecules: intensity read-outs on (lever 5, registered 2 Oct 2026 06:5x)
+base base_c_model_n750_seed0.pt (status candidate); reservoir 5, read 343; k 5; modes ['head_all', 'scratch']
+  [head_all k5]     epoch 50/600: loss 0.02236
+  [head_all k5]     epoch 100/600: loss 0.009961
+  [head_all k5]     epoch 150/600: loss 0.006086
+  [head_all k5]     epoch 200/600: loss 0.005983
+  [head_all k5]     epoch 250/600: loss 0.005338
+  [head_all k5]     epoch 300/600: loss 0.004081
+  [head_all k5]     epoch 350/600: loss 0.002815
+  [head_all k5]     epoch 400/600: loss 0.003163
+  [head_all k5]     epoch 450/600: loss 0.002014
+  [head_all k5]     epoch 500/600: loss 0.002921
+  [head_all k5]     epoch 550/600: loss 0.00136
+  [head_all k5]     epoch 600/600: loss 0.001578
+k 5 draw 0 head_all: CH-oop 5.88 other 7.55 (102 s)
+  [scratch k5]   rung B's 66 pair features added to the hybrid head (standardised on the fit molecules)
+  [scratch k5]   hybrid head: 304,276 parameters; F_low input scales 0.0294, 0.26, 0.104; SQM α per class on
+  [scratch k5]   fresh sum body pre-flight: worst |output| 34.6 on the training molecules
+  [scratch k5]     seed 0 epoch 1/200: loss main 5.826e-06 aux 0.5372 val 0.4547 (0 s)
+  [scratch k5]     seed 0 epoch 10/200: loss main 9.339e-07 aux 0.2306 val 0.2741 (2 s)
+  [scratch k5]     seed 0 epoch 20/200: loss main 5.715e-07 aux 0.206 val 0.2689 (5 s)
+  [scratch k5]     seed 0 epoch 30/200: loss main 6.391e-07 aux 0.2015 val 0.3645 (7 s)
+  [scratch k5]     seed 0: early stop at epoch 34, best inner val 0.2554 at epoch 14
+k 5 draw 0 scratch: CH-oop 6.14 other 9.14 (15 s)
+wrote out/anchor_price_2026-10-28/cv_c_k5_d1_seed0.json/.md in 261 s

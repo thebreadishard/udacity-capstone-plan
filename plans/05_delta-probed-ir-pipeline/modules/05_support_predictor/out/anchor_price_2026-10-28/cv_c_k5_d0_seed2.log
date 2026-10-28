@@ -1,0 +1,41 @@
+analytic second-route Hessians substituted for 862 molecules
+atomic polar tensors found for 471 molecules: intensity read-outs on (lever 5, registered 2 Oct 2026 06:5x)
+base base_c_model_n750_seed2.pt (status candidate); reservoir 5, read 343; k 5; modes ['head_all', 'scratch']
+  [head_all k5]     epoch 50/600: loss 0.0331
+  [head_all k5]     epoch 100/600: loss 0.01467
+  [head_all k5]     epoch 150/600: loss 0.01122
+  [head_all k5]     epoch 200/600: loss 0.009908
+  [head_all k5]     epoch 250/600: loss 0.005158
+  [head_all k5]     epoch 300/600: loss 0.004817
+  [head_all k5]     epoch 350/600: loss 0.004087
+  [head_all k5]     epoch 400/600: loss 0.007109
+  [head_all k5]     epoch 450/600: loss 0.001977
+  [head_all k5]     epoch 500/600: loss 0.004506
+  [head_all k5]     epoch 550/600: loss 0.002215
+  [head_all k5]     epoch 600/600: loss 0.003076
+k 5 draw 0 head_all: CH-oop 5.95 other 8.61 (87 s)
+  [scratch k5]   rung B's 66 pair features added to the hybrid head (standardised on the fit molecules)
+  [scratch k5]   hybrid head: 304,276 parameters; F_low input scales 0.0297, 0.262, 0.109; SQM α per class on
+  [scratch k5]   fresh sum body pre-flight: worst |output| 4.33 on the training molecules
+  [scratch k5]     seed 2 epoch 1/200: loss main 4.362e-06 aux 0.5286 val 0.5571 (0 s)
+  [scratch k5]     seed 2 epoch 10/200: loss main 9.214e-07 aux 0.276 val 0.425 (2 s)
+  [scratch k5]     seed 2 epoch 20/200: loss main 8.73e-07 aux 0.2564 val 0.4081 (4 s)
+  [scratch k5]     seed 2 epoch 30/200: loss main 8.473e-07 aux 0.2468 val 0.3991 (6 s)
+  [scratch k5]     seed 2 epoch 40/200: loss main 8.473e-07 aux 0.2397 val 0.3956 (7 s)
+  [scratch k5]     seed 2 epoch 50/200: loss main 1.046e-06 aux 0.2414 val 0.3969 (9 s)
+  [scratch k5]     seed 2 epoch 60/200: loss main 7.6e-07 aux 0.2264 val 0.3917 (11 s)
+  [scratch k5]     seed 2 epoch 70/200: loss main 6.978e-07 aux 0.2171 val 0.3931 (13 s)
+  [scratch k5]     seed 2 epoch 80/200: loss main 6.638e-07 aux 0.2118 val 0.3899 (15 s)
+  [scratch k5]     seed 2 epoch 90/200: loss main 6.454e-07 aux 0.199 val 0.3865 (17 s)
+  [scratch k5]     seed 2 epoch 100/200: loss main 6.084e-07 aux 0.1871 val 0.3793 (18 s)
+  [scratch k5]     seed 2 epoch 110/200: loss main 5.681e-07 aux 0.197 val 0.37 (20 s)
+  [scratch k5]     seed 2 epoch 120/200: loss main 5.516e-07 aux 0.1626 val 0.3585 (22 s)
+  [scratch k5]     seed 2 epoch 130/200: loss main 5.593e-07 aux 0.15 val 0.3577 (24 s)
+  [scratch k5]     seed 2 epoch 140/200: loss main 7.217e-07 aux 0.169 val 0.361 (26 s)
+  [scratch k5]     seed 2 epoch 150/200: loss main 5.073e-07 aux 0.136 val 0.3529 (28 s)
+  [scratch k5]     seed 2 epoch 160/200: loss main 4.439e-07 aux 0.1206 val 0.3495 (30 s)
+  [scratch k5]     seed 2 epoch 170/200: loss main 4.649e-07 aux 0.1213 val 0.3416 (32 s)
+  [scratch k5]     seed 2 epoch 180/200: loss main 4.71e-07 aux 0.1163 val 0.3477 (33 s)
+  [scratch k5]     seed 2: early stop at epoch 189, best inner val 0.3405 at epoch 169
+k 5 draw 0 scratch: CH-oop 6.00 other 8.72 (42 s)
+wrote out/anchor_price_2026-10-28/cv_c_k5_d0_seed2.json/.md in 262 s

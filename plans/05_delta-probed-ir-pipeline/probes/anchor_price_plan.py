@@ -267,6 +267,7 @@ def report_lines(res: dict) -> list[str]:
 
 
 def main() -> int:
+    sys.stdout.reconfigure(encoding="utf-8")  # the report holds superscripts; a Windows console defaults to cp1252
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("action", choices=["distortion", "cover", "plan", "register", "read"])
     ap.add_argument("out_dir")

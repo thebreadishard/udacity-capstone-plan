@@ -1,0 +1,43 @@
+analytic second-route Hessians substituted for 862 molecules
+atomic polar tensors found for 471 molecules: intensity read-outs on (lever 5, registered 2 Oct 2026 06:5x)
+base base_c_model_n750_seed0.pt (status candidate); reservoir 200, read 343; k 5; modes ['head_all']
+  [head_all k5]     epoch 50/600: loss 0.04163
+  [head_all k5]     epoch 100/600: loss 0.01633
+  [head_all k5]     epoch 150/600: loss 0.01332
+  [head_all k5]     epoch 200/600: loss 0.01023
+  [head_all k5]     epoch 250/600: loss 0.007561
+  [head_all k5]     epoch 300/600: loss 0.008425
+  [head_all k5]     epoch 350/600: loss 0.006401
+  [head_all k5]     epoch 400/600: loss 0.004064
+  [head_all k5]     epoch 450/600: loss 0.01088
+  [head_all k5]     epoch 500/600: loss 0.004904
+  [head_all k5]     epoch 550/600: loss 0.00435
+  [head_all k5]     epoch 600/600: loss 0.003231
+k 5 draw 0 head_all: CH-oop 6.80 other 9.40 (54 s)
+  [head_all k5]     epoch 50/600: loss 0.05803
+  [head_all k5]     epoch 100/600: loss 0.01002
+  [head_all k5]     epoch 150/600: loss 0.007076
+  [head_all k5]     epoch 200/600: loss 0.009902
+  [head_all k5]     epoch 250/600: loss 0.003477
+  [head_all k5]     epoch 300/600: loss 0.0044
+  [head_all k5]     epoch 350/600: loss 0.005389
+  [head_all k5]     epoch 400/600: loss 0.003289
+  [head_all k5]     epoch 450/600: loss 0.003383
+  [head_all k5]     epoch 500/600: loss 0.002181
+  [head_all k5]     epoch 550/600: loss 0.002383
+  [head_all k5]     epoch 600/600: loss 0.002518
+k 5 draw 1 head_all: CH-oop 6.61 other 10.34 (65 s)
+  [head_all k5]     epoch 50/600: loss 0.05612
+  [head_all k5]     epoch 100/600: loss 0.03344
+  [head_all k5]     epoch 150/600: loss 0.02111
+  [head_all k5]     epoch 200/600: loss 0.01574
+  [head_all k5]     epoch 250/600: loss 0.01002
+  [head_all k5]     epoch 300/600: loss 0.007851
+  [head_all k5]     epoch 350/600: loss 0.00784
+  [head_all k5]     epoch 400/600: loss 0.005887
+  [head_all k5]     epoch 450/600: loss 0.00579
+  [head_all k5]     epoch 500/600: loss 0.01211
+  [head_all k5]     epoch 550/600: loss 0.004359
+  [head_all k5]     epoch 600/600: loss 0.005543
+k 5 draw 2 head_all: CH-oop 6.57 other 7.78 (68 s)
+wrote out/anchor_price_2026-10-28/ft_c_k5_seed0.json/.md in 404 s
