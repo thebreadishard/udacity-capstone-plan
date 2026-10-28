@@ -1,0 +1,399 @@
+{
+ "environment": {
+  "system": "Windows",
+  "python": "3.14.6",
+  "torch": "2.14.0+cpu",
+  "numpy": "2.5.1",
+  "geometric": "1.1.1"
+ },
+ "script": "modules\\05_support_predictor\\m05\\proxy_transfer_check.py",
+ "run": {
+  "record": {
+   "model_status": "pin fixture (tests/cc_pin_runner.py)",
+   "seed": 0,
+   "k": 1,
+   "n_reservoir": 2,
+   "n_read": 2,
+   "steps": 4,
+   "lr": 0.001,
+   "head_l2": 0.1,
+   "modes": [
+    "head_l2",
+    "head",
+    "head_all"
+   ],
+   "base_command": "the transfer pin's model (tests/data)",
+   "zero_rule": {
+    "family_mean": {
+     "CH-stretch": 43.95605115937754,
+     "other": 13.32155698907884,
+     "ring-ip": 19.314569348038507
+    },
+    "intensity_matched_mean": 0.24455195468134006,
+    "n_intensity": 2,
+    "n_intensity_failed": 0,
+    "kept": {
+     "diag_rms": {
+      "CH-stretch": 44.26585322445132,
+      "CH-oop": NaN,
+      "ring-ip": 20.566434288016577,
+      "other": 13.664716469998591
+     },
+     "coupling_rms": 3.0135991437700027,
+     "coupling_zero_rms": 3.0135991437700027,
+     "coupling_ratio": 1.0,
+     "corrected_freq_rms": 23.49301816558804,
+     "corrected_freq_rms_zero_rule": 23.49301816558804,
+     "dH_residual_ratio": 1.0
+    },
+    "per_molecule": {
+     "A_e72997e726": {
+      "freq": {
+       "CH-stretch": 44.491553223111545,
+       "other": 13.390212506296674,
+       "ring-ip": 19.218803236530142
+      },
+      "intensity": 0.31642482332399124
+     },
+     "A_fdc27f1bd1": {
+      "freq": {
+       "CH-stretch": 43.42054909564352,
+       "other": 13.252901471861007,
+       "ring-ip": 19.41033545954687
+      },
+      "intensity": 0.17267908603868884
+     }
+    }
+   },
+   "none": {
+    "family_mean": {
+     "CH-stretch": 18.251113494635113,
+     "other": 10.826389611098739,
+     "ring-ip": 13.937610650023407
+    },
+    "intensity_matched_mean": 0.25487741044657464,
+    "n_intensity": 2,
+    "n_intensity_failed": 0,
+    "kept": {
+     "diag_rms": {
+      "CH-stretch": 18.467727538867578,
+      "CH-oop": NaN,
+      "ring-ip": 15.661012791957678,
+      "other": 11.219692151413062
+     },
+     "coupling_rms": 2.848124706514681,
+     "coupling_zero_rms": 3.0135991437700027,
+     "coupling_ratio": 0.9450907604624834,
+     "corrected_freq_rms": 13.703048377780005,
+     "corrected_freq_rms_zero_rule": 23.49301816558804,
+     "dH_residual_ratio": 0.7357813691658731
+    },
+    "per_molecule": {
+     "A_e72997e726": {
+      "freq": {
+       "CH-stretch": 18.9299231093485,
+       "other": 10.838263222639121,
+       "ring-ip": 13.127039820659098
+      },
+      "intensity": 0.3421213055754327
+     },
+     "A_fdc27f1bd1": {
+      "freq": {
+       "CH-stretch": 17.572303879921726,
+       "other": 10.814515999558356,
+       "ring-ip": 14.748181479387716
+      },
+      "intensity": 0.1676335153177166
+     }
+    }
+   },
+   "draws": [
+    {
+     "train": [
+      "A_8448043181"
+     ],
+     "modes": {
+      "head_l2": {
+       "read": {
+        "family_mean": {
+         "CH-stretch": 23.14098482067005,
+         "other": 10.387339346324833,
+         "ring-ip": 13.423507890424055
+        },
+        "intensity_matched_mean": 0.23407987661558266,
+        "n_intensity": 2,
+        "n_intensity_failed": 0,
+        "kept": {
+         "diag_rms": {
+          "CH-stretch": 23.388885764550892,
+          "CH-oop": NaN,
+          "ring-ip": 15.009530679899047,
+          "other": 10.763587023297902
+         },
+         "coupling_rms": 2.7227754839554623,
+         "coupling_zero_rms": 3.0135991437700027,
+         "coupling_ratio": 0.9034962362476913,
+         "corrected_freq_rms": 14.508327772332231,
+         "corrected_freq_rms_zero_rule": 23.49301816558804,
+         "dH_residual_ratio": 0.7410144542121938
+        },
+        "per_molecule": {
+         "A_e72997e726": {
+          "freq": {
+           "CH-stretch": 23.771698192626367,
+           "other": 10.302382607883844,
+           "ring-ip": 12.896764397611376
+          },
+          "intensity": 0.3067673609394312
+         },
+         "A_fdc27f1bd1": {
+          "freq": {
+           "CH-stretch": 22.51027144871373,
+           "other": 10.47229608476582,
+           "ring-ip": 13.950251383236735
+          },
+          "intensity": 0.16139239229173413
+         }
+        }
+       },
+       "final_loss": 0.32668644189834595
+      },
+      "head": {
+       "read": {
+        "family_mean": {
+         "CH-stretch": 23.159729561256725,
+         "other": 10.392344629889788,
+         "ring-ip": 13.427706429976531
+        },
+        "intensity_matched_mean": 0.23405407929098254,
+        "n_intensity": 2,
+        "n_intensity_failed": 0,
+        "kept": {
+         "diag_rms": {
+          "CH-stretch": 23.407752086868722,
+          "CH-oop": NaN,
+          "ring-ip": 15.013432797647459,
+          "other": 10.768508631658278
+         },
+         "coupling_rms": 2.722646357095038,
+         "coupling_zero_rms": 3.0135991437700027,
+         "coupling_ratio": 0.9034533881931677,
+         "corrected_freq_rms": 14.516299743851679,
+         "corrected_freq_rms_zero_rule": 23.49301816558804,
+         "dH_residual_ratio": 0.7411403047398666
+        },
+        "per_molecule": {
+         "A_e72997e726": {
+          "freq": {
+           "CH-stretch": 23.79076251095919,
+           "other": 10.307000968171266,
+           "ring-ip": 12.902385411832798
+          },
+          "intensity": 0.3067123988344626
+         },
+         "A_fdc27f1bd1": {
+          "freq": {
+           "CH-stretch": 22.528696611554263,
+           "other": 10.47768829160831,
+           "ring-ip": 13.953027448120265
+          },
+          "intensity": 0.1613957597475025
+         }
+        }
+       },
+       "final_loss": 0.32661861181259155
+      },
+      "head_all": {
+       "read": {
+        "family_mean": {
+         "CH-stretch": 4.724558384433532,
+         "other": 8.725963775986575,
+         "ring-ip": 16.676690681868305
+        },
+        "intensity_matched_mean": 0.35060561988369476,
+        "n_intensity": 2,
+        "n_intensity_failed": 0,
+        "kept": {
+         "diag_rms": {
+          "CH-stretch": 4.803857996051499,
+          "CH-oop": NaN,
+          "ring-ip": 17.61523338399227,
+          "other": 9.9481052627136
+         },
+         "coupling_rms": 2.9538586798585476,
+         "coupling_zero_rms": 3.0135991437700027,
+         "coupling_ratio": 0.9801763734785509,
+         "corrected_freq_rms": 12.670930697982817,
+         "corrected_freq_rms_zero_rule": 23.49301816558804,
+         "dH_residual_ratio": 0.6212805886037077
+        },
+        "per_molecule": {
+         "A_e72997e726": {
+          "freq": {
+           "CH-stretch": 5.775576633849889,
+           "other": 7.8088122068892,
+           "ring-ip": 15.12433302230104
+          },
+          "intensity": 0.408105770468724
+         },
+         "A_fdc27f1bd1": {
+          "freq": {
+           "CH-stretch": 3.6735401350171757,
+           "other": 9.643115345083949,
+           "ring-ip": 18.22904834143557
+          },
+          "intensity": 0.29310546929866554
+         }
+        }
+       },
+       "final_loss": 0.4253995418548584
+      }
+     }
+    },
+    {
+     "train": [
+      "A_541c53d1a5"
+     ],
+     "modes": {
+      "head_l2": {
+       "read": {
+        "family_mean": {
+         "CH-stretch": 12.280911294254363,
+         "other": 9.822519486995656,
+         "ring-ip": 12.814871711178633
+        },
+        "intensity_matched_mean": 0.21609203047988074,
+        "n_intensity": 2,
+        "n_intensity_failed": 0,
+        "kept": {
+         "diag_rms": {
+          "CH-stretch": 12.459530717396289,
+          "CH-oop": NaN,
+          "ring-ip": 14.70340774590619,
+          "other": 10.215418099239486
+         },
+         "coupling_rms": 2.76711309533167,
+         "coupling_zero_rms": 3.0135991437700027,
+         "coupling_ratio": 0.9182087475210855,
+         "corrected_freq_rms": 11.684940599823323,
+         "corrected_freq_rms_zero_rule": 23.49301816558804,
+         "dH_residual_ratio": 0.6990506666054629
+        },
+        "per_molecule": {
+         "A_e72997e726": {
+          "freq": {
+           "CH-stretch": 13.107093871000963,
+           "other": 9.774841445576197,
+           "ring-ip": 12.01566959245132
+          },
+          "intensity": 0.2655212724058116
+         },
+         "A_fdc27f1bd1": {
+          "freq": {
+           "CH-stretch": 11.454728717507761,
+           "other": 9.870197528415117,
+           "ring-ip": 13.614073829905943
+          },
+          "intensity": 0.16666278855394986
+         }
+        }
+       },
+       "final_loss": 0.3149520754814148
+      },
+      "head": {
+       "read": {
+        "family_mean": {
+         "CH-stretch": 12.284410304456154,
+         "other": 9.83515013276454,
+         "ring-ip": 12.814406492900567
+        },
+        "intensity_matched_mean": 0.21519697796973586,
+        "n_intensity": 2,
+        "n_intensity_failed": 0,
+        "kept": {
+         "diag_rms": {
+          "CH-stretch": 12.46311798992552,
+          "CH-oop": NaN,
+          "ring-ip": 14.704396529829456,
+          "other": 10.227885249261842
+         },
+         "coupling_rms": 2.7673113820176622,
+         "coupling_zero_rms": 3.0135991437700027,
+         "coupling_ratio": 0.9182745448207703,
+         "corrected_freq_rms": 11.689280881728536,
+         "corrected_freq_rms_zero_rule": 23.49301816558804,
+         "dH_residual_ratio": 0.6990566395401722
+        },
+        "per_molecule": {
+         "A_e72997e726": {
+          "freq": {
+           "CH-stretch": 13.111586682734643,
+           "other": 9.786268618673038,
+           "ring-ip": 12.017511651312129
+          },
+          "intensity": 0.26350243940221724
+         },
+         "A_fdc27f1bd1": {
+          "freq": {
+           "CH-stretch": 11.457233926177665,
+           "other": 9.884031646856041,
+           "ring-ip": 13.611301334489003
+          },
+          "intensity": 0.16689151653725445
+         }
+        }
+       },
+       "final_loss": 0.31475400924682617
+      },
+      "head_all": {
+       "read": {
+        "family_mean": {
+         "CH-stretch": 32.435206137414205,
+         "other": 15.48934671731062,
+         "ring-ip": 16.998584139530237
+        },
+        "intensity_matched_mean": 0.29879120560267824,
+        "n_intensity": 2,
+        "n_intensity_failed": 0,
+        "kept": {
+         "diag_rms": {
+          "CH-stretch": 32.76439923073641,
+          "CH-oop": NaN,
+          "ring-ip": 18.188384557968437,
+          "other": 16.241546863791054
+         },
+         "coupling_rms": 2.6104507805987502,
+         "coupling_zero_rms": 3.0135991437700027,
+         "coupling_ratio": 0.8662236269861309,
+         "corrected_freq_rms": 19.866368742542434,
+         "corrected_freq_rms_zero_rule": 23.49301816558804,
+         "dH_residual_ratio": 0.6918568696617592
+        },
+        "per_molecule": {
+         "A_e72997e726": {
+          "freq": {
+           "CH-stretch": 33.6488867763009,
+           "other": 13.974719748957071,
+           "ring-ip": 17.941807390582913
+          },
+          "intensity": 0.2826076834808254
+         },
+         "A_fdc27f1bd1": {
+          "freq": {
+           "CH-stretch": 31.221525498527512,
+           "other": 17.003973685664167,
+           "ring-ip": 16.055360888477562
+          },
+          "intensity": 0.31497472772453106
+         }
+        }
+       },
+       "final_loss": 0.2550269365310669
+      }
+     }
+    }
+   ]
+  },
+  "table": "# Proxy transfer check \u2014 k = 1, seed 0\n\nBase `<model>`; read set 2 molecules (intensity on 2); reservoir 2; 4 steps per fine-tune.\n\n| column | draw | ring-ip | CH-stretch | CH-oop | other | intensity | s |\n|---|---|---|---|---|---|---|---|\n| zero rule | \u2013 | 19.31 | 43.96 | nan | 13.32 | 0.245 | \u2013 |\n| base as is | \u2013 | 13.94 | 18.25 | nan | 10.83 | 0.255 | \u2013 |\n| head_l2 | 0 | 13.42 | 23.14 | nan | 10.39 | 0.234 | <s> |\n| head | 0 | 13.43 | 23.16 | nan | 10.39 | 0.234 | <s> |\n| head_all | 0 | 16.68 | 4.72 | nan | 8.73 | 0.351 | <s> |\n| head_l2 | 1 | 12.81 | 12.28 | nan | 9.82 | 0.216 | <s> |\n| head | 1 | 12.81 | 12.28 | nan | 9.84 | 0.215 | <s> |\n| head_all | 1 | 17.00 | 32.44 | nan | 15.49 | 0.299 | <s> |\n"
+ }
+}

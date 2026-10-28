@@ -5,11 +5,14 @@ One run = one base model (one seed), one k: for each of up to `--subsets` draws 
 every mode asked and read on every molecule of the read set against its true ωB97X − B3LYP correction (analytic labels):
 'head_l2' (the head's last layer + α with the L2 pull toward the base's last layer, set three's registered protocol), 'head' (the same
 without the pull), 'head_all' (every head layer + α), and 'scratch' (the base's own training recipe, from its record, on the k molecules
-alone — what the base is worth against no base). The zero rule and the base as it is ('none') are read once. A fine-tune takes a fixed
+alone — what the base is worth against no base); and the anchor-price follow-up's early-stopped recipes 'head_all_es' and 'body1_es'
+('head_all', or it with the body's last interaction block, fitted on 1 − --es-val of the k molecules and stopped by the loss on the
+rest, decision 51). The zero rule and the base as it is ('none') are read once. A fine-tune takes a fixed
 number of optimiser steps (`--steps`, epochs = ⌈steps / k⌉): 3000 steps are set three's 300 epochs at ten anchors.
 
     python m05/proxy_transfer_check.py corpus/molecules <model.pt> <out_prefix> --reservoir ids.txt --read ids.txt --k 10 [--subsets 5]
         [--modes head_l2,head,head_all,scratch] [--steps 3000] [--lr 1e-3] [--head-l2 1] [--threads 8] [--allow-any-model]
+        [--es-max-epochs 60] [--es-val 0.15] [--es-patience 10]
 
 Planned and read by `probes/proxy_check_plan.py`; the design is `GoalGathering/notes/Design_2026-10-21_Few_Anchor_Proxy_Check.md`.
 """
@@ -36,7 +39,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import e7_t2_posthoc as PH
 import model_registry as MR
 import rungC_intensities as RI
-from rungC_cc_transfer import KEPT, FinetuneSettings, family_freq_rms, finetune
+from rungC_cc_transfer import KEPT, FinetuneSettings, family_freq_rms, finetune, finetune_early_stopped
 from rungC_config import TrainConfig, config_from_argv
 from rungC_train import (
     inner_split,
@@ -51,7 +54,8 @@ from rungC_train import (
     train_one,
 )
 
-MODES = ("head_l2", "head", "head_all", "scratch")
+MODES = ("head_l2", "head", "head_all", "scratch", "head_all_es", "body1_es")
+EARLY_STOPPED = {"head_all_es": "head_all", "body1_es": "head_all_body1"}   # the anchor-price follow-up's recipes (decision 51)
 SUBSET_SEED = 0
 MODEL_NAME = re.compile(r"_model_n\d+_seed(\d+)\.pt$")
 
@@ -154,17 +158,27 @@ def read_set(mols: dict, ids: list[str], train_ids: list[str], dF_of) -> dict:
 
 
 def fit(inp: Inputs, mode: str, train: tuple[str, ...], a, seed: int):
-    """The model of one mode on one draw: a fine-tuned copy of the base, or the recipe trained from scratch. Returns (model, final loss)."""
+    """The model of one mode on one draw: a fine-tuned copy of the base, or the recipe trained from scratch. Returns (model, its record
+    entries: the final training loss; for an early-stopped mode also the kept epoch, the epochs run, the validation loss and the split)."""
+    def log(s: str) -> None:
+        print(f"  [{mode} k{len(train)}] {s}", flush=True)
+
     if mode == "scratch":
         cfg = scratch_config(inp.record, a.molecules, a.out_prefix + "_scratch", seed)
         val_ids, fit_ids = inner_split(list(train), seed, cfg.inner_val)
-        trained = train_one(fit_ids, inp.tensors, seed, cfg, val_ids, log=lambda s: print(f"  [scratch k{len(train)}] {s}", flush=True))
-        return trained.model, (trained.history[-1] if trained.history else None)
+        trained = train_one(fit_ids, inp.tensors, seed, cfg, val_ids, log=log)
+        return trained.model, {"final_loss": trained.history[-1] if trained.history else None}
     model = copy.deepcopy(inp.model0)
+    if mode in EARLY_STOPPED:
+        val_ids, fit_ids = inner_split(list(train), seed, a.es_val)
+        anchors = ({i: inp.tensors[i] for i in fit_ids}, {i: inp.tensors[i] for i in val_ids})
+        es = finetune_early_stopped(model, inp.loss_cfg, anchors, EARLY_STOPPED[mode],
+                                    FinetuneSettings(a.es_max_epochs, a.lr, a.aux_weight, patience=a.es_patience), log=log)
+        return model, {"final_loss": es.hist[es.best_epoch - 1], "best_epoch": es.best_epoch, "epochs_run": len(es.hist),
+                       "val_loss": es.val_hist[es.best_epoch - 1], "n_fit": len(fit_ids), "n_val": len(val_ids)}
     settings = FinetuneSettings(epochs_for(a.steps, len(train)), a.lr, a.aux_weight, a.head_l2 if mode == "head_l2" else 0.0)
-    hist = finetune(model, inp.loss_cfg, {i: inp.tensors[i] for i in train}, mode, settings,
-                    log=lambda s: print(f"  [{mode} k{len(train)}] {s}", flush=True))
-    return model, (hist[-1] if hist else None)
+    hist = finetune(model, inp.loss_cfg, {i: inp.tensors[i] for i in train}, mode, settings, log=log)
+    return model, {"final_loss": hist[-1] if hist else None}
 
 
 def run(inp: Inputs, reservoir: list[str], read_ids_: list[str], a, seed: int) -> dict:
@@ -175,9 +189,9 @@ def run(inp: Inputs, reservoir: list[str], read_ids_: list[str], a, seed: int) -
         entry = {"train": list(train), "modes": {}}
         for mode in a.modes:
             t0 = time.time()
-            model, final = fit(inp, mode, train, a, seed)
+            model, fitted = fit(inp, mode, train, a, seed)
             entry["modes"][mode] = {"read": read_set(inp.mols, read_ids_, list(train), predictor(model, inp.tensors, inp.mols)),
-                                    "final_loss": final, "seconds": round(time.time() - t0, 1)}
+                                    **fitted, "seconds": round(time.time() - t0, 1)}
             fm = entry["modes"][mode]["read"]["family_mean"]
             print(f"k {a.k} draw {len(draws)} {mode}: CH-oop {fm.get('CH-oop', float('nan')):.2f} other {fm.get('other', float('nan')):.2f} "
                   f"({entry['modes'][mode]['seconds']:.0f} s)", flush=True)
@@ -225,6 +239,9 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--lr", type=float, default=1e-3)
     ap.add_argument("--aux-weight", type=float, default=1.0)
     ap.add_argument("--head-l2", type=float, default=1.0, help="the pull of mode 'head_l2' (set three's registered λ = 1)")
+    ap.add_argument("--es-max-epochs", type=int, default=60, help=f"the epoch cap of the early-stopped modes {sorted(EARLY_STOPPED)}")
+    ap.add_argument("--es-val", type=float, default=0.15, help="the share of the k molecules the early-stopped modes validate on")
+    ap.add_argument("--es-patience", type=int, default=10, help="epochs without a better validation loss before an early-stopped mode stops")
     ap.add_argument("--threads", type=int, default=8)
     ap.add_argument("--allow-any-model", action="store_true", help="decision 55: a base that is not 'carried' — the distorted and the "
                     "family-ablated bases of this check are not production models; the record names it")
@@ -237,6 +254,10 @@ def check_args(a, reservoir: list[str], read: list[str]) -> None:
     problems = [f"unknown mode {m!r} (of {MODES})" for m in a.modes if m not in MODES]
     problems += ["--steps must be positive"] * (a.steps < 1) + ["--head-l2 must be positive for mode head_l2"] * ("head_l2" in a.modes and a.head_l2 <= 0)
     problems += ["mode scratch needs --k 2 or more: its recipe holds one molecule out for inner validation"] * ("scratch" in a.modes and a.k < 2)
+    if es := sorted(set(a.modes) & set(EARLY_STOPPED)):
+        problems += [f"{es} need --k 2 or more: one molecule is held out for validation"] * (a.k < 2)
+        problems += ["--es-max-epochs and --es-patience must be positive"] * (a.es_max_epochs < 1 or a.es_patience < 1)
+        problems += ["--es-val must lie in (0, 0.5)"] * (not 0 < a.es_val < 0.5)
     if overlap := sorted(set(reservoir) & set(read)):
         problems.append(f"{len(overlap)} read ids are in the reservoir (first {overlap[:3]}): a read molecule may never be trained on")
     if problems:
@@ -259,6 +280,8 @@ def main(argv: list[str] | None = None) -> int:
     res = {"date": datetime.now().strftime("%Y-%m-%d %H:%M"), "model": str(a.model), "model_status": status["status"], "seed": seed, "k": a.k,
            "reservoir_file": str(a.reservoir), "read_file": str(a.read), "n_reservoir": len(reservoir), "n_read": len(read), "steps": a.steps,
            "lr": a.lr, "head_l2": a.head_l2, "modes": a.modes, "base_command": inp.record["provenance"]["command"],
+           **({"early_stop": {"max_epochs": a.es_max_epochs, "val": a.es_val, "patience": a.es_patience}}
+              if set(a.modes) & set(EARLY_STOPPED) else {}),
            **run(inp, reservoir, read, a, seed)}
     res["seconds"] = round(time.time() - t0, 1)
     write_record(a.out_prefix, res, report(res))

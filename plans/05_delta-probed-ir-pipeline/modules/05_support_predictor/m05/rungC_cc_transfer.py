@@ -183,19 +183,22 @@ def attach_lora(model, rank: int, seed: int = LORA_SEED) -> list:
 @dataclass(frozen=True)
 class FinetuneSettings:
     """How a fold's model is fine-tuned: epochs and learning rate, the weight of the auxiliary term, the L2 pull toward the proxy-trained
-    last layer (mode 'head_l2') and the adapter rank (mode 'lora')."""
+    last layer (mode 'head_l2'), the adapter rank (mode 'lora') and the patience of an early-stopped fine-tune (`finetune_early_stopped`)."""
 
     epochs: int
     lr: float
     aux_weight: float
     head_l2: float = 0.0
     lora_rank: int = 0
+    patience: int = 0
 
 
 def _trainable(model, mode: str, settings: FinetuneSettings) -> list:
     params = freeze_for_transfer(model)
-    if mode == "head_all":
+    if mode in ("head_all", "head_all_body1"):
         extra = [p for p in model.head.parameters() if not p.requires_grad]
+        if mode == "head_all_body1":
+            extra += list(model.body.blocks[-1].parameters())
         for p in extra:
             p.requires_grad_(True)
         params = params + extra
@@ -214,32 +217,88 @@ def finetune(model, loss_cfg: LossSettings, train: dict, mode: str, settings: Fi
     """Fine-tune on the training anchors (`train`: id → tensors, in step order) with the loss the model was trained with (`loss_cfg`), its
     pattern class scales refitted on the anchors: mode 'head' = head's last layer + α; 'head_l2' = the same with the penalty
     head_l2 · ‖W − W₀‖² toward the proxy-trained last layer (T3b); 'alpha' = α only; 'lora' = α and a rank-r adapter on the head's middle
-    layer; 'head_all' = every layer of the head + α; 'none' = no training. Returns the loss history."""
+    layer; 'head_all' = every layer of the head + α; 'head_all_body1' = 'head_all' and the body's last interaction block; 'none' = no
+    training. Returns the loss history."""
     if mode == "none":
         return []
-    train_ids = list(train)
-    w0 = [p.detach().clone() for p in model.head[-1].parameters()] if mode == "head_l2" else []
-    params = _trainable(model, mode, settings)
-    fit_loss = replace(loss_cfg, class_scale=pattern_class_scales(train, train_ids))
-    opt = torch.optim.Adam(params, lr=settings.lr)
+    w0, opt, fit_loss = _tuning(model, loss_cfg, train, mode, settings)
     hist = []
     for ep in range(settings.epochs):
-        model.train()
-        tot = 0.0
-        for i in train_ids:
-            opt.zero_grad()
-            main, aux, _ = _terms(model, train[i], fit_loss)
-            loss = main + settings.aux_weight * aux
-            if w0:
-                loss = loss + settings.head_l2 * sum(((p - q) ** 2).sum() for p, q in zip(model.head[-1].parameters(), w0, strict=True))
-            loss.backward()
-            opt.step()
-            tot += loss.item()
-        hist.append(tot / len(train_ids))
+        hist.append(_epoch(model, opt, train, fit_loss, settings, w0))
         if (ep + 1) % 50 == 0:
             log(f"    epoch {ep + 1}/{settings.epochs}: loss {hist[-1]:.4g}")
     model.eval()
     return hist
+
+
+def _tuning(model, loss_cfg: LossSettings, train: dict, mode: str, settings: FinetuneSettings) -> tuple:
+    """(the proxy-trained last layer for the pull of 'head_l2', the optimiser, the loss with its pattern class scales refitted on `train`)."""
+    w0 = [p.detach().clone() for p in model.head[-1].parameters()] if mode == "head_l2" else []
+    params = _trainable(model, mode, settings)
+    fit_loss = replace(loss_cfg, class_scale=pattern_class_scales(train, list(train)))
+    return w0, torch.optim.Adam(params, lr=settings.lr), fit_loss
+
+
+def _epoch(model, opt, train: dict, fit_loss: LossSettings, settings: FinetuneSettings, w0: list) -> float:
+    """One pass over the training anchors in their order, one optimiser step per molecule; the mean loss of the pass."""
+    model.train()
+    tot = 0.0
+    for t in train.values():
+        opt.zero_grad()
+        main, aux, _ = _terms(model, t, fit_loss)
+        loss = main + settings.aux_weight * aux
+        if w0:
+            loss = loss + settings.head_l2 * sum(((p - q) ** 2).sum() for p, q in zip(model.head[-1].parameters(), w0, strict=True))
+        loss.backward()
+        opt.step()
+        tot += loss.item()
+    return tot / len(train)
+
+
+def mean_loss(model, tensors: dict, fit_loss: LossSettings, aux_weight: float) -> float:
+    """The fit term (main + aux_weight · aux, no pull) averaged over `tensors`, the model in eval mode and without gradients."""
+    model.eval()
+    losses = []
+    with torch.no_grad():
+        for t in tensors.values():
+            main, aux, _ = _terms(model, t, fit_loss)
+            losses.append((main + aux_weight * aux).item())
+    return float(np.mean(losses))
+
+
+@dataclass(frozen=True)
+class EarlyStopped:
+    """An early-stopped fine-tune (decision 51): the training and validation loss per epoch and the epoch whose weights were kept (1-based)."""
+
+    hist: list
+    val_hist: list
+    best_epoch: int
+
+
+def finetune_early_stopped(model, loss_cfg: LossSettings, anchors: tuple[dict, dict], mode: str, settings: FinetuneSettings,
+                           log=print) -> EarlyStopped:
+    """`finetune` on the fit anchors of `anchors` = (fit, val) with decision 51's stop: after every epoch the loss on the validation
+    anchors (with the fit anchors' class scales); training ends settings.patience epochs after the best validation epoch, or at
+    settings.epochs, and the best epoch's weights are restored."""
+    fit, val = anchors
+    patience = settings.patience
+    if mode == "none" or not fit or not val or patience < 1:
+        raise ValueError(f"an early-stopped fine-tune needs a training mode, fit and validation anchors and patience ≥ 1 (mode {mode!r}, "
+                         f"{len(fit)} fit, {len(val)} validation, patience {patience})")
+    w0, opt, fit_loss = _tuning(model, loss_cfg, fit, mode, settings)
+    hist, val_hist, best, best_ep, best_state = [], [], float("inf"), 0, None
+    for ep in range(settings.epochs):
+        hist.append(_epoch(model, opt, fit, fit_loss, settings, w0))
+        val_hist.append(mean_loss(model, val, fit_loss, settings.aux_weight))
+        if val_hist[-1] < best:
+            best, best_ep, best_state = val_hist[-1], ep, copy.deepcopy(model.state_dict())
+        elif ep - best_ep >= patience:
+            break
+        if (ep + 1) % 10 == 0:
+            log(f"    epoch {ep + 1}/{settings.epochs}: loss {hist[-1]:.4g}, validation {val_hist[-1]:.4g} (best {best:.4g} at {best_ep + 1})")
+    model.load_state_dict(best_state)
+    model.eval()
+    return EarlyStopped(hist, val_hist, best_ep + 1)
 
 
 def family_freq_rms(m: dict, K_pred: np.ndarray) -> dict:
