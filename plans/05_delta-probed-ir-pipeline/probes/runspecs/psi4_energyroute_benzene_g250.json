@@ -1,0 +1,47 @@
+{
+ "name": "psi4_energyroute_benzene_g250",
+ "purpose": "TASKS 53, the user 28 Oct 'Ja, eerst psi4': pyscf's energies along benzene's modes confirmed its analytic Hessians (phi_10,10,10,10 933.1 against 907.0), so the large out-of-plane quartics are pyscf's B3LYP/def2-TZVP surface; the same 25 energies in psi4 (probes/qff_energy_route.py --program psi4) separate the level of theory from pyscf's implementation of it; at grid 250/2030, because psi4's energies along a displacement are not smooth at 99/590 (the run of 28 Oct 08:30 failed its control: mode 11's phi_iiii 75.6 against 10.4; STO-3G, mode 11: 133.7 at 99/590, 11.9 at 250/2030, pyscf 12.4)",
+ "host": "laptop",
+ "workdir": "probes/results_m1/psi4_energyroute_2026-10-28",
+ "command": "MSYS_NO_PATHCONV=1 wsl -e bash /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/wsl_capped.sh 4096 -- bash /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/psi4_energyroute_benzene.sh /mnt/c/Users/thebr/Documents/CapstonePlan/plans/05_delta-probed-ir-pipeline/probes/results_m1/psi4_energyroute_2026-10-28 250,2030",
+ "sources": [
+  {
+   "local": "probes/psi4_energyroute_benzene.sh"
+  },
+  {
+   "local": "probes/qff_energy_route.py"
+  },
+  {
+   "local": "probes/pyscf_hessians_for_qff.py"
+  },
+  {
+   "local": "probes/library_log.py"
+  },
+  {
+   "local": "probes/scf_converge.py"
+  },
+  {
+   "local": "src/dpir/qff.py"
+  },
+  {
+   "local": "probes/wsl_capped.sh"
+  }
+ ],
+ "progress": {
+  "regex": "^\\[[0-9:]+\\] [0-9]+/[0-9]+ (ref|mode[0-9]+_[pm][0-9.]+) E = |^=== \\(P4E\\) ",
+  "max_gap_minutes": 30,
+  "heartbeat_glob": "benzene_g250_2030/psi4.log"
+ },
+ "marker_regex": "^=== \\(P4E\\) |Traceback|KILLED",
+ "end_regex": "^=== \\(P4E\\) benzene psi4 energy route done",
+ "dry_run_args": "--dry-run",
+ "threads": 12,
+ "estimate": {
+  "hours": 2.5,
+  "basis": "the 99/590 run: 31-38 s per def2-TZVP SCF at 8 threads; 250/2030 has 8.7x the grid points, 12 threads"
+ },
+ "memory": {
+  "peak_gb": 4.0,
+  "basis": "a bound: probes/wsl_capped.sh stops the run at 4096 MB; psi4 is given 3 GB (PSI4_MEMORY); direct SCF stores no integrals"
+ }
+}
