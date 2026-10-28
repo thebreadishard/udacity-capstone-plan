@@ -9,6 +9,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "probes"))
 import chain35_read as R
+import promotion_read as P
 
 GOOD_A = {"ring-ip": 1.9, "CH-stretch": 1.3, "CH-oop": 2.4, "other": 3.1}
 SPREAD = (-0.05, 0.0, 0.05)
@@ -22,7 +23,7 @@ class Spec:
     ratio_a: float = 0.18
     ratio_b: float = 0.31
     substituted: tuple[str, ...] = ("m1", "m2")
-    holdout_b_file: str = "corpus/" + R.FROZEN_B
+    holdout_b_file: str = "corpus/" + P.FROZEN_B
     seeds: int = 3
 
 
@@ -33,8 +34,8 @@ def write_arm(folder: Path, name: str, spec: Spec) -> list[Path]:
     for s in range(spec.seeds):
         e = SPREAD[s] if spec.seeds == 3 else 0.0
         rec = {"holdout_b_file": spec.holdout_b_file, "substituted_analytic": list(spec.substituted),
-               "a": {"diag_rms": {f: v + e for f, v in spec.a.items()}, R.RATIO: spec.ratio_a + e / 10},
-               "b": {"diag_rms": {f: v + e for f, v in b.items()}, R.RATIO: spec.ratio_b + e / 10}}
+               "a": {"diag_rms": {f: v + e for f, v in spec.a.items()}, P.RATIO: spec.ratio_a + e / 10},
+               "b": {"diag_rms": {f: v + e for f, v in b.items()}, P.RATIO: spec.ratio_b + e / 10}}
         p = folder / f"{name}_seed{s}.json"
         p.write_text(json.dumps(rec), encoding="utf-8")
         paths.append(p)
@@ -42,8 +43,8 @@ def write_arm(folder: Path, name: str, spec: Spec) -> list[Path]:
 
 
 def verdict(tmp_path: Path, new: Spec, carried: Spec) -> R.Verdict:
-    n, c = R.load_arm(write_arm(tmp_path, "new", new)), R.load_arm(write_arm(tmp_path, "carried", carried))
-    return R.decide(n, c, R.compare(n, c))
+    n, c = P.load_eval_arm(write_arm(tmp_path, "new", new)), P.load_eval_arm(write_arm(tmp_path, "carried", carried))
+    return R.decide(n, c, P.compare(n, c))
 
 
 def test_t1_met_at_the_edge_and_promoted_when_lower_everywhere(tmp_path):
@@ -88,19 +89,19 @@ def test_equal_everywhere_promotes_nothing(tmp_path):
 
 def test_refuses_an_unfrozen_holdout_b(tmp_path):
     with pytest.raises(ValueError, match="frozen hold-out"):
-        R.load_arm(write_arm(tmp_path, "x", Spec(GOOD_A, holdout_b_file="corpus/holdout_b.txt")))
+        P.load_eval_arm(write_arm(tmp_path, "x", Spec(GOOD_A, holdout_b_file="corpus/holdout_b.txt")))
 
 
 def test_refuses_arms_on_different_analytic_targets(tmp_path):
-    new = R.load_arm(write_arm(tmp_path, "new", Spec(GOOD_A, substituted=("m1", "m2", "m3"))))
-    carried = R.load_arm(write_arm(tmp_path, "carried", Spec(GOOD_A)))
+    new = P.load_eval_arm(write_arm(tmp_path, "new", Spec(GOOD_A, substituted=("m1", "m2", "m3"))))
+    carried = P.load_eval_arm(write_arm(tmp_path, "carried", Spec(GOOD_A)))
     with pytest.raises(ValueError, match="different analytic targets"):
-        R.decide(new, carried, R.compare(new, carried))
+        P.compare(new, carried)
 
 
 def test_refuses_one_seed(tmp_path):
     with pytest.raises(ValueError, match="at least two seeds"):
-        R.load_arm(write_arm(tmp_path, "x", Spec(GOOD_A, seeds=1)))
+        P.load_eval_arm(write_arm(tmp_path, "x", Spec(GOOD_A, seeds=1)))
 
 
 def test_main_writes_both_records(tmp_path, capsys):
