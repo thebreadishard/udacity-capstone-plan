@@ -742,27 +742,45 @@ def select_corpus(cfg: TrainConfig, log) -> Corpus:
     return Corpus(mols=mols, pool=pool, tests=tests, cores=cores, sizes=sizes, seeds=seeds, n_atoms=nat, excluded=excluded, substituted=substituted)
 
 
-def distort_families(dH: np.ndarray, masses: np.ndarray, V: np.ndarray, family: list, scales: dict[str, float]) -> np.ndarray:
-    """ΔH with each named family's diagonal block in the mode basis multiplied by its factor: X = M^-1/2 ΔH M^-1/2, X += (s − 1) P_f X P_f
-    with P_f = V_f V_fᵀ the projector on the family's (mass-weighted, orthonormal) modes, then back. Blocks between families, the other
-    families and the part outside the vibrational modes are unchanged; the mass unit cancels."""
+def distort_blocks(dH: np.ndarray, masses: np.ndarray, V: np.ndarray, w: np.ndarray, family: list,  # noqa: PLR0913  the paper's operands
+                   factors: dict[str, tuple[float, float]]) -> np.ndarray:
+    """ΔH with each named family's diagonal block in the mode basis rescaled in two parts: X = M^-1/2 ΔH M^-1/2, B = V_fᵀ X V_f over the
+    family's (mass-weighted, orthonormal) modes; its mean part A = diag(2ω_k · m), m the mean over the family of the first-order shift
+    B_kk / 2ω_k, so that A carries exactly the family's mean shift; B → a·A + b·(B − A), then back. The anchors' CC correction differs from
+    the proxy mainly by that mean shift (TASKS 82), so the two parts get their own factors. With a = b the block is scaled whole and ω
+    cancels. Blocks between families, the other families and the part outside the vibrational modes are unchanged; the mass unit cancels."""
     sq = np.sqrt(np.repeat(np.asarray(masses, float), 3))
     X = np.asarray(dH, float) / np.outer(sq, sq)
     fam = np.asarray(family)
+    two_omega = 2.0 * np.sqrt(np.abs(np.asarray(w, float)))
     out = X.copy()
-    for name, s in scales.items():
-        Vf = np.asarray(V, float)[:, fam == name]
-        out += (s - 1.0) * Vf @ (Vf.T @ X @ Vf) @ Vf.T
+    for name, (a, b) in factors.items():
+        on = fam == name
+        if not on.any():
+            continue
+        Vf = np.asarray(V, float)[:, on]
+        B = Vf.T @ X @ Vf
+        A = np.diag(two_omega[on] * np.mean(np.diag(B) / two_omega[on]))
+        out += Vf @ (a * A + b * (B - A) - B) @ Vf.T
     return out * np.outer(sq, sq)
+
+
+def distort_families(dH: np.ndarray, masses: np.ndarray, V: np.ndarray, family: list, scales: dict[str, float]) -> np.ndarray:
+    """ΔH with each named family's diagonal block in the mode basis multiplied by its factor (proxy check (a)): `distort_blocks` with the
+    same factor on both parts, where the frequencies cancel."""
+    return distort_blocks(dH, masses, V, np.ones(len(family)), family, {name: (s, s) for name, s in scales.items()})
 
 
 def build_tensors(cfg: TrainConfig, corpus: Corpus) -> tuple[dict, dict]:
     """(tensors, target residuals) for every molecule the run trains or reads: the largest pool cut, every hold-out, and under --split
-    layerB the A2 layer (hold-out (c) is chosen per size from it). Under --family-scale the training label is distorted (`distort_families`)
-    before every target is derived from it."""
+    layerB the A2 layer (hold-out (c) is chosen per size from it). Under --family-scale (`distort_families`) or --distortion-file
+    (`distort_blocks`, per molecule) the training label is distorted before every target is derived from it."""
     needed = set(corpus.pool[: corpus.sizes[-1]]).union(*corpus.tests.values())
     if cfg.split == "layerB":
         needed |= {i for i, m in corpus.mols.items() if m["layer"] == "A2"}
+    distortion = cfg.distortion
+    if distortion and (missing := distortion.missing(needed)):
+        raise ValueError(f"--distortion-file {cfg.distortion_file}: no context for {len(missing)} molecules the run reads, first {missing[:5]}")
     tensors, target_residuals = {}, {}
     cache_dir = Path(cfg.out_prefix).parent / "ls_targets"
     for i in sorted(needed):
@@ -770,6 +788,8 @@ def build_tensors(cfg: TrainConfig, corpus: Corpus) -> tuple[dict, dict]:
         m, mol = load_molecule(d, use_analytic=cfg.use_analytic), corpus.mols[i]
         if cfg.family_scales:
             m = {**m, "dH_true": distort_families(m["dH_true"], mol["masses"], mol["V"], mol["family"], cfg.family_scales)}
+        elif distortion:
+            m = {**m, "dH_true": distort_blocks(m["dH_true"], mol["masses"], mol["V"], mol["w"], mol["family"], distortion.factors(i))}
         tensors[i] = molecule_tensors(i, m, mol, d, cfg, cache_dir, target_residuals)
     return tensors, target_residuals
 
@@ -797,6 +817,7 @@ def new_record(cfg: TrainConfig, corpus: Corpus, target_residuals: dict) -> dict
                 target_residuals=target_residuals, pair_class_names=list(PAIR_CLASS_NAMES), substituted_analytic=corpus.substituted,
                 curve={}, zero_rule={h: zero_rule(corpus.mols, ids, corpus.pool) for h, ids in t.items() if ids},
                 **({"family_scale": cfg.family_scale} if cfg.family_scale else {}),
+                **({"distortion_file": cfg.distortion_file} if cfg.distortion_file else {}),
                 **({"selection_split": cfg.selection_split, "holdout_sel": t["sel"]} if "sel" in t else {}))
 
 
@@ -843,7 +864,8 @@ def train_and_read(cfg: TrainConfig, corpus: Corpus, tensors: dict, n: int, seed
     if cfg.save_model:
         path = Path(f"{cfg.out_prefix}_model_n{n}_seed{seed}.pt")
         # an optional key only when used, so checkpoints without it keep their settings
-        unused = {k for k, v in (("family_scale", cfg.family_scale), ("selection_split", cfg.selection_split)) if v is None}
+        unused = {k for k, v in (("family_scale", cfg.family_scale), ("distortion_file", cfg.distortion_file),
+                                 ("selection_split", cfg.selection_split)) if v is None}
         save_hybrid_model(model, trained.loss, path, cfg.model_dump(exclude=unused), n, seed, train_ids=tr)
         log(f"  model saved: {path}")
     out = {"seed": seed, "train_history": trained.history, "output_scale": trained.output_scale, "class_scale": trained.class_scale,
@@ -890,8 +912,8 @@ def main(argv: list[str] | None = None) -> int:
     t_start = time.time()
     corpus = select_corpus(cfg, log_line)
     tensors, target_residuals = build_tensors(cfg, corpus)
-    if cfg.family_scales:
-        log_line(f"training labels distorted per family ({cfg.family_scale}); the read-outs compare with the undistorted labels")
+    if cfg.family_scales or cfg.distortion_file:
+        log_line(f"training labels distorted ({cfg.family_scale or cfg.distortion_file}); the read-outs compare with the undistorted labels")
     n_params = sum(p.numel() for p in DeltaHessianModel(n_s=cfg.body_width, n_v=cfg.body_width, n_blocks=cfg.body_blocks,
                                                         tensor_input=cfg.tensor_input).parameters())
     t = corpus.tests

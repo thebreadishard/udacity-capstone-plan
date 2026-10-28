@@ -5,8 +5,19 @@ from pathlib import Path
 import pytest
 
 pytest.importorskip("rdkit")
+from rdkit import Chem  # noqa: E402  (after the importorskip)
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "probes"))
 import anchor_plan as A
+
+
+@pytest.mark.parametrize(("smiles", "context"), [
+    ("c1ccccc1", "single"), ("c1ccc(-c2ccccc2)cc1", "single"),                       # benzene; biphenyl: two rings, none fused
+    ("c1ccc2ccccc2c1", "fused"), ("c1ccc2ncccc2c1", "fused"),                         # naphthalene, quinoline
+    ("c1ccc2cccc2cc1", "five"), ("C1=Cc2cccc3cccc1c23", "five"),                      # azulene, acenaphthylene
+])
+def test_fusion_context(smiles, context):
+    assert A.fusion_context(Chem.MolFromSmiles(smiles)) == context
 
 
 @pytest.mark.parametrize(("smiles", "expected"), [
@@ -22,7 +33,6 @@ def test_cells_of_textbook_molecules(smiles, expected):
 
 
 def test_runs_are_counted_per_ring():
-    from rdkit import Chem
     assert sorted(A.ch_runs(Chem.MolFromSmiles("c1ccc2ccccc2c1"))) == [(6, 4), (6, 4)]
     assert sorted(A.ch_runs(Chem.MolFromSmiles("Cc1ccccc1"))) == [(6, 5)]                # toluene: a quintet
 

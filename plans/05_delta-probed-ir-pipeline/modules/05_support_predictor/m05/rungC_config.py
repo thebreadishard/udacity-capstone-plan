@@ -82,12 +82,20 @@ class TrainConfig(BaseModel):
     aggregation: str = AGGREGATION
     pretrained_elements: list[int] | None = None
     family_scale: str | None = None
+    distortion_file: str | None = None
 
     @field_validator("family_scale")
     @classmethod
     def _family_scale_list(cls, v: str | None) -> str | None:
         if v is not None:
             parse_family_scale(v)
+        return v
+
+    @field_validator("distortion_file")
+    @classmethod
+    def _distortion_readable(cls, v: str | None) -> str | None:
+        if v is not None:
+            load_distortion(v)
         return v
 
     @field_validator("selection_split")
@@ -157,6 +165,11 @@ class TrainConfig(BaseModel):
         """The --family-scale factors per mode family; empty when the labels are not distorted."""
         return parse_family_scale(self.family_scale) if self.family_scale else {}
 
+    @property
+    def distortion(self) -> Distortion | None:
+        """The --distortion-file, read and checked; None when the label is not distorted per molecule."""
+        return load_distortion(self.distortion_file) if self.distortion_file else None
+
 
 def parse_selection_split(text: str) -> tuple[int, float]:
     """'SEED:FRACTION' as (seed, fraction): a non-negative integer seed and a fraction in (0, MAX_SELECTION_FRACTION]."""
@@ -189,6 +202,65 @@ def parse_family_scale(text: str) -> dict[str, float]:
             raise ValueError(f"family_scale {item!r}: the factor is not finite")
         out[name] = factor
     return out
+
+
+class FamilyFactors(BaseModel):
+    """One family's two factors (TASKS 82): on its mean first-order shift and on the rest of its diagonal block; each a number, or one
+    number per molecule context."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+    mean: float | dict[str, float]
+    rest: float | dict[str, float]
+
+    @field_validator("mean", "rest")
+    @classmethod
+    def _finite(cls, v: float | dict[str, float]) -> float | dict[str, float]:
+        if not all(math.isfinite(x) for x in (v.values() if isinstance(v, dict) else [v])):
+            raise ValueError("a factor is not finite")
+        return v
+
+    def at(self, context: str) -> tuple[float, float]:
+        """(mean factor, rest factor) for a molecule of this context."""
+        mean, rest = (f[context] if isinstance(f, dict) else f for f in (self.mean, self.rest))
+        return mean, rest
+
+
+class Distortion(BaseModel):
+    """--distortion-file: the training label's distortion per molecule — the factors per family and every molecule's context, written
+    by `probes/anchor_price_plan.py distortion`."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+    about: str
+    families: dict[str, FamilyFactors]
+    contexts: dict[str, str]
+
+    @model_validator(mode="after")
+    def _complete(self) -> Distortion:
+        if unknown := set(self.families) - set(FAMILIES):
+            raise ValueError(f"families {sorted(unknown)} are not of {FAMILIES}")
+        used = set(self.contexts.values())
+        for name, f in self.families.items():
+            for part in (f.mean, f.rest):
+                if isinstance(part, dict) and (missing := used - set(part)):
+                    raise ValueError(f"{name}: no factor for the contexts {sorted(missing)}")
+        return self
+
+    def missing(self, ids: Sequence[str] | set[str]) -> list[str]:
+        """The ids without a context."""
+        return sorted(set(ids) - set(self.contexts))
+
+    def factors(self, mol_id: str) -> dict[str, tuple[float, float]]:
+        """Per family (mean factor, rest factor) for one molecule."""
+        context = self.contexts[mol_id]
+        return {name: f.at(context) for name, f in self.families.items()}
+
+
+def load_distortion(path: str) -> Distortion:
+    """The distortion file, read and validated; refuses a missing file and every inconsistency before any data is loaded."""
+    p = Path(path)
+    if not p.is_file():
+        raise ValueError(f"distortion_file {path}: no such file")
+    return Distortion.model_validate_json(p.read_text(encoding="utf-8"))
 
 
 CONFLICTS: tuple[tuple[Callable[[TrainConfig], object], str], ...] = (   # (truthy when the conflict applies, the reason)
@@ -226,6 +298,8 @@ CONFLICTS: tuple[tuple[Callable[[TrainConfig], object], str], ...] = (   # (trut
      "--selection-split draws from the e6 pool; --split layerB builds its own"),
     (lambda c: c.selection_split and c.overfit_one,
      "--overfit-one trains and reads one molecule; a selection set needs a pool"),
+    (lambda c: c.family_scale and c.distortion_file,
+     "--family-scale and --distortion-file both distort the training label; choose one"),
 )
 
 
@@ -295,6 +369,9 @@ def build_parser(description: str) -> argparse.ArgumentParser:
     ap.add_argument("--family-scale", default=None, metavar="FAMILY=FACTOR,...",
                     help="proxy check (a): multiply each named mode family's diagonal block of the training label (low level's mode basis) by its "
                          "factor; the read-outs still compare with the undistorted label")
+    ap.add_argument("--distortion-file", default=None, metavar="JSON",
+                    help="the anchor price (TASKS 82): distort the training label per molecule — per family one factor on the mean first-order "
+                         "shift and one on the rest of the block, by the molecule's context (probes/anchor_price_plan.py distortion)")
     ap.add_argument("--pretrained-elements", default=None,
                     help="comma list of atomic numbers a pre-28-Sep checkpoint was trained on (Hessian QM9: 1,6,7,8,9); newer checkpoints carry it")
     return ap

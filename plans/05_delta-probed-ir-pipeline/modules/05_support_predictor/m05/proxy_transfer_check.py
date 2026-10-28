@@ -98,10 +98,11 @@ def base_record_path(model: Path) -> Path:
 
 
 def scratch_config(record: dict, molecules: str, out_prefix: str, seed: int) -> TrainConfig:
-    """The base's own training recipe, read from its record's command, on the true label (no --family-scale), saving nothing, one seed."""
+    """The base's own training recipe, read from its record's command, on the true label (no --family-scale or --distortion-file), saving
+    nothing, one seed."""
     argv = shlex.split(record["provenance"]["command"])[3:]          # rungC_train.py <molecules> <out_prefix> <flags…>
     cfg = config_from_argv([molecules, out_prefix, *argv])
-    return cfg.model_copy(update={"family_scale": None, "save_model": False, "seeds": str(seed)}).resolved()
+    return cfg.model_copy(update={"family_scale": None, "distortion_file": None, "save_model": False, "seeds": str(seed)}).resolved()
 
 
 @dataclass
