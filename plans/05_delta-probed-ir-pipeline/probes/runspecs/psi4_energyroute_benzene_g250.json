@@ -35,10 +35,10 @@
  "marker_regex": "^=== \\(P4E\\) |Traceback|KILLED",
  "end_regex": "^=== \\(P4E\\) benzene psi4 energy route done",
  "dry_run_args": "--dry-run",
- "threads": 12,
+ "threads": 8,
  "estimate": {
-  "hours": 2.5,
-  "basis": "the 99/590 run: 31-38 s per def2-TZVP SCF at 8 threads; 250/2030 has 8.7x the grid points, 12 threads"
+  "hours": 3,
+  "basis": "the 99/590 run: 31-38 s per def2-TZVP SCF at 8 threads; 250/2030 has 8.7x the grid points, at the runner's 8 threads (THREADS does not cross wsl -e)"
  },
  "memory": {
   "peak_gb": 4.0,
