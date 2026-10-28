@@ -1,0 +1,19 @@
+{"name": "s1tz_energyroute_benzene",
+ "purpose": "TASKS 53, the user 28 Oct 'Ja': the grid check left benzene's B3LYP/def2-TZVP out-of-plane quartics standing (phi_10,10,10,10 907.0 at 75/302, 906.5 at 99/590), seen only by the analytic Hessians; this reads the diagonal quartics of modes 5, 10 (out of plane) and 11 (in-plane control) from SCF energies along the modes of the run's reference Hessian, q = +-0.1 ... +-0.4 (probes/qff_energy_route.py): a real surface feature or a wrong analytic Hessian off the plane. Code folder /root/dpir_s1tz_e (the T force fields' pyscf); s1 is otherwise idle",
+ "host": "s1",
+ "workdir": "/root/dpir_s1tz_e",
+ "command": "THREADS=15 bash probes/s1tz_energyroute_benzene.sh",
+ "sources": [
+  {"local": "probes/s1tz_energyroute_benzene.sh", "remote": "/root/dpir_s1tz_e/probes/s1tz_energyroute_benzene.sh"},
+  {"local": "probes/qff_energy_route.py", "remote": "/root/dpir_s1tz_e/probes/qff_energy_route.py"},
+  {"local": "probes/pyscf_hessians_for_qff.py", "remote": "/root/dpir_s1tz_e/probes/pyscf_hessians_for_qff.py"},
+  {"local": "probes/scf_converge.py", "remote": "/root/dpir_s1tz_e/probes/scf_converge.py"},
+  {"local": "probes/library_log.py", "remote": "/root/dpir_s1tz_e/probes/library_log.py"},
+  {"local": "src/dpir/qff.py", "remote": "/root/dpir_s1tz_e/src/dpir/qff.py"}
+ ],
+ "progress": {"regex": "^\\[[0-9:]+\\] [0-9]+/[0-9]+ (ref|mode[0-9]+_[pm][0-9.]+) E = |^=== \\(S1TZE\\) ", "max_gap_minutes": 20, "heartbeat_glob": "/root/s1tz_energyroute/benzene/pyscf.log"},
+ "marker_regex": "^=== \\(S1TZE\\) ",
+ "end_regex": "^=== \\(S1TZE\\) benzene T energy route done",
+ "dry_run_args": "--dry-run",
+ "threads": 15,
+ "estimate": {"hours": 0.5, "basis": "25 SCFs of benzene at B3LYP/def2-TZVP, 75/302; one SCF is a small part of a T Hessian (610 s per Hessian at 5 threads, s1tz benzene log)"}}
