@@ -83,6 +83,24 @@ def test_the_pin_covers_every_mode_it_names():
     assert len(draws) == 2 and all(sorted(d["modes"]) == ["head", "head_all", "head_l2"] for d in draws)
 
 
+def test_the_early_stopped_modes_run_on_the_pin(tmp_path):
+    """The follow-up's modes beside head_all on the pin's whole reservoir (k 2, one draw): one fit and one validation molecule, at most
+    three epochs; the body's last block moves the prediction."""
+    pytest.importorskip("torch")
+    pytest.importorskip("geometric")
+    require_frozen_corpus()
+    run = run_check(tmp_path, extra=("--k", "2", "--subsets", "1", "--modes", "head_all,head_all_es,body1_es", "--es-max-epochs", "3",
+                                     "--es-patience", "1"))
+    rec = run["record"]
+    assert rec["early_stop"] == {"max_epochs": 3, "val": 0.15, "patience": 1} and len(rec["draws"]) == 1
+    modes = rec["draws"][0]["modes"]
+    assert "best_epoch" not in modes["head_all"]
+    for m in ("head_all_es", "body1_es"):
+        e = modes[m]
+        assert 1 <= e["best_epoch"] <= e["epochs_run"] <= 3 and (e["n_fit"], e["n_val"]) == (1, 1) and e["final_loss"] > 0
+    assert modes["body1_es"]["read"]["family_mean"] != modes["head_all_es"]["read"]["family_mean"]
+
+
 if __name__ == "__main__":
     if sys.argv[1:2] != ["--write-golden"]:
         raise SystemExit(__doc__)

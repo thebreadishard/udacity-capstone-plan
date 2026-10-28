@@ -315,3 +315,50 @@ def test_the_out_of_plane_switches_add_their_table_columns():
     assert {"network_head_ooplow", "network_head_l2_ooplow", "oop_model_only", "network_head_oopmodel", "network_head_l2_oopmodel"} <= set(keys)
     plain = CT.build_parser().parse_args(["m", "x.pt", "out", "--anchor", "a=b"])
     assert [k for k, _ in CT.table_columns(plain)] == ["zero_rule", "alpha_scaling", "network_none", "network_alpha", "network_head", "network_head_all"]
+
+
+def test_head_all_body1_frees_the_head_alpha_and_the_last_body_block_only():
+    m = RH.HybridDeltaFModel(aggregation="sum", sqm_scale=True)
+    RT_T._trainable(m, "head_all_body1", RT_T.FinetuneSettings(1, 1e-3, 1.0))
+    trainable = {n for n, p in m.named_parameters() if p.requires_grad}
+    last = len(m.body.blocks) - 1
+    assert trainable == {n for n, _ in m.named_parameters()
+                         if n.startswith(("head.", f"body.blocks.{last}.")) or n == "alpha"}
+    assert any(n.startswith(f"body.blocks.{last}.") for n in trainable)
+    m2 = RH.HybridDeltaFModel(aggregation="sum", sqm_scale=True)
+    RT_T._trainable(m2, "head_all", RT_T.FinetuneSettings(1, 1e-3, 1.0))
+    assert {n for n, p in m2.named_parameters() if p.requires_grad} == {n for n in trainable if not n.startswith("body.")}
+
+
+class _OneWeight(torch.nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.w = torch.nn.Parameter(torch.zeros(()))
+
+
+def _one_weight_terms(monkeypatch):
+    """A stand-in loss (w − y)² so that a fit target 1 and a validation target 0.5 put the best validation epoch midway."""
+    monkeypatch.setattr(RT_T, "_terms", lambda model, t, loss: ((model.w - t["y"]) ** 2, torch.zeros(()), None))
+    monkeypatch.setattr(RT_T, "_trainable", lambda model, mode, settings: [model.w])
+    monkeypatch.setattr(RT_T, "pattern_class_scales", lambda tensors, ids: None)
+
+
+def test_early_stop_restores_the_best_validation_epoch_and_stops_after_the_patience(monkeypatch):
+    _one_weight_terms(monkeypatch)
+    m = _OneWeight()
+    anchors = ({"a": {"y": torch.tensor(1.0)}}, {"b": {"y": torch.tensor(0.5)}})
+    es = RT_T.finetune_early_stopped(m, RT.LossSettings(), anchors, "head_all", RT_T.FinetuneSettings(50, 0.1, 1.0, patience=2),
+                                     log=lambda s: None)
+    assert es.best_epoch == int(np.argmin(es.val_hist)) + 1 and 3 <= es.best_epoch <= 7
+    assert len(es.hist) == es.best_epoch + 2 < 50                       # stopped two epochs after the best, well before the cap
+    assert abs(float(m.w) - 0.5) < 0.1                                  # the best epoch's weight, not the last one
+    assert RT_T.mean_loss(m, anchors[1], RT.LossSettings(), 1.0) == pytest.approx(es.val_hist[es.best_epoch - 1])
+
+
+def test_early_stop_refuses_without_validation_anchors_or_patience(monkeypatch):
+    _one_weight_terms(monkeypatch)
+    fit = {"a": {"y": torch.tensor(1.0)}}
+    with pytest.raises(ValueError, match="validation anchors"):
+        RT_T.finetune_early_stopped(_OneWeight(), RT.LossSettings(), (fit, {}), "head_all", RT_T.FinetuneSettings(5, 0.1, 1.0, patience=2))
+    with pytest.raises(ValueError, match="patience"):
+        RT_T.finetune_early_stopped(_OneWeight(), RT.LossSettings(), (fit, fit), "head_all", RT_T.FinetuneSettings(5, 0.1, 1.0))

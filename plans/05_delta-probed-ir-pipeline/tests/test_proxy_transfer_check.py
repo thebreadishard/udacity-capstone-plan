@@ -81,3 +81,13 @@ def test_the_report_names_every_column():
     text = "\n".join(P.report(res))
     assert "| head_all | 0 | 1.00 | 2.00 | 3.00 | 4.00 | 0.200 | 5 |" in text and "base as is" in text
     json.dumps(res)
+
+
+def test_refusals_of_the_early_stopped_modes():
+    with pytest.raises(SystemExit, match="need --k 2"):
+        P.check_args(_args(k=1, modes="head_all_es"), ["a", "b"], ["c"])
+    with pytest.raises(SystemExit, match="--es-val must lie"):
+        P.check_args(_args(modes="body1_es", **{"es-val": 0.6}), ["a", "b"], ["c"])
+    with pytest.raises(SystemExit, match="must be positive"):
+        P.check_args(_args(modes="body1_es", **{"es-patience": 0}), ["a", "b"], ["c"])
+    P.check_args(_args(k=1, modes="head_all", **{"es-val": 0.6}), ["a", "b"], ["c"])     # no early-stopped mode asked: not checked
