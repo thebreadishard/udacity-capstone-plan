@@ -742,7 +742,7 @@ def select_corpus(cfg: TrainConfig, log) -> Corpus:
     return Corpus(mols=mols, pool=pool, tests=tests, cores=cores, sizes=sizes, seeds=seeds, n_atoms=nat, excluded=excluded, substituted=substituted)
 
 
-def distort_blocks(dH: np.ndarray, masses: np.ndarray, V: np.ndarray, w: np.ndarray, family: list,  # noqa: PLR0913  the paper's operands
+def distort_blocks(dH: np.ndarray, masses: np.ndarray, V: np.ndarray, w: np.ndarray, family: list,
                    factors: dict[str, tuple[float, float]]) -> np.ndarray:
     """ΔH with each named family's diagonal block in the mode basis rescaled in two parts: X = M^-1/2 ΔH M^-1/2, B = V_fᵀ X V_f over the
     family's (mass-weighted, orthonormal) modes; its mean part A = diag(2ω_k · m), m the mean over the family of the first-order shift
