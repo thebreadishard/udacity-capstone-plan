@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 
 pytest.importorskip("rdkit")
-from rdkit import Chem  # noqa: E402  (after the importorskip)
+from rdkit import Chem
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "probes"))
 import anchor_plan as A
