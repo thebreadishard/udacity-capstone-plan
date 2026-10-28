@@ -1,5 +1,6 @@
 """probes/qff_energy_route.py (28 Oct 2026): the even-part fit returns ω and φ_iiii of a known curve in dpir.qff's convention
 (E = ½ ω q² + φ_iiii q⁴ / 24 + …), the cubic term stays out of it and shows in the odd part, and one step fewer shows the truncation."""
+import subprocess
 import sys
 from pathlib import Path
 
@@ -28,6 +29,13 @@ def test_known_curve_is_read_back(c6):
     assert r["all_steps"]["phi_iiii"] == pytest.approx(907.0, abs=1e-2)
     assert r["one_fewer"]["phi_iiii"] == pytest.approx(907.0, abs=1e-2)  # a q⁶ term is still exact with three steps
     assert r["odd_max"] == pytest.approx(2 * 35.0 * 0.4 ** 3 / 6, rel=1e-6)
+
+
+def test_importing_loads_neither_program():
+    """The psi4 environment has no pyscf: each backend imports its program only when it is used."""
+    code = "import sys; import qff_energy_route as R; print(sorted(R.BACKENDS), 'pyscf' in sys.modules, 'psi4' in sys.modules)"
+    out = subprocess.run([sys.executable, "-c", code], cwd=PLAN / "probes", capture_output=True, text=True, check=True).stdout
+    assert out.split() == ["['psi4',", "'pyscf']", "False", "False"]
 
 
 def test_two_steps_are_refused():
