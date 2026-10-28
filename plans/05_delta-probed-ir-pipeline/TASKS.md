@@ -118,6 +118,8 @@ another — counted at the merge). Chain 40b (registered 17 Oct) reads (b) at �
 
 37. **[LATER] Evidence for 'coverage over count' — chain 39's learning curve (9 Oct; the user: 'stap 1 laag').** Both arms at 100, 200 and 370 molecules, three seeds, the same hold-out (s); lines registered (q falls ≥ 0.3 → data narrows the gap; flat → coverage). For the paper, not for a decision. *Next:* an idle laptop slot. | the rung C pre-registration |
 
+142. **[LATER] psi4's grid orientation and finite differences (28 Oct; the lead of the ledger's 28 Oct 12:1x entry).** psi4 turns its DFT grid with the principal axes of the nuclear charge; for a near-symmetric top (benzene, coronene, other high-symmetry PAHs) a displacement turns it by degrees, and the energy route's psi4 misses follow the turn. Open: (a) the proof — the same STO-3G energies with the frame held fixed (pyscf with each point moved into its own charge frame, so its grid turns as psi4's does: the misses should appear; or a psi4 build without the orientation), ≈ 15 min on the laptop, no cost; (b) whether any psi4 finite-difference Hessian we used carries it (benzene's corpus psi4 row was noise, 28 Sep; pyVPT2's quartics were FD noise, 21 Sep); (c) an issue for psi4 only after (a), drafted for the user (posts on the user's word). *Next:* (a) when the laptop has a free slot; the user decides whether (b) and (c) are worth it.
+
 ## Guards on this file
 
 Every row names a file or a log; no numbers without a source; stamps from `tools/stamp.py`. A row opens with its class in brackets and names
