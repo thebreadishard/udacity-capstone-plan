@@ -18,7 +18,7 @@ import sys
 import numpy as np
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "src"))
-from dpir.qff import HARTREE_CM, assign_displacements, harmonic, load_results, reference_index  # noqa: E402
+from dpir.qff import HARTREE_CM, assign_displacements, harmonic, load_results, reference_index
 
 
 def reduced_hessians(cache_dir: str, A: np.ndarray, ref_geom: np.ndarray, disp: float):
@@ -57,7 +57,10 @@ def recheck(coarse_dir: str, fine_dir: str, disp: float = 0.10) -> dict:
             row[name] = {"route_a": float(a), "route_b": float(b), "disagreement": float(abs(a - b))}
         rows.append(row)
     rows.sort(key=lambda r: -r["coarse"]["disagreement"])
-    return {"coarse_dir": coarse_dir, "fine_dir": fine_dir, "modes": modes, "pairs": rows,
+    # φ_iiii is route a with j = i; a grid error that both routes share shows here, not in the disagreement (S1-TZ benzene, 28 Oct 2026)
+    diagonal = [{"i": i, "omega": float(harm.omega_cm[i]),
+                 **{name: float(routes(*grids[name], i, i, disp)[0]) for name in grids}} for i in modes]
+    return {"coarse_dir": coarse_dir, "fine_dir": fine_dir, "modes": modes, "pairs": rows, "diagonal": diagonal,
             "max_disagreement": {g: max(r[g]["disagreement"] for r in rows) for g in ("coarse", "fine")}}
 
 
@@ -71,9 +74,15 @@ def main():
     res = recheck(a.coarse_dir, a.fine_dir, a.disp)
     print(f"modes {res['modes']}; max route disagreement coarse {res['max_disagreement']['coarse']:.2f}, fine {res['max_disagreement']['fine']:.2f} cm⁻¹")
     for r in res["pairs"][:8]:
-        print(f"  ({r['i']},{r['j']}) ω {r['omega_i']:.0f}/{r['omega_j']:.0f}: coarse {r['coarse']['disagreement']:.2f}, fine {r['fine']['disagreement']:.2f}")
+        print(f"  ({r['i']},{r['j']}) ω {r['omega_i']:.0f}/{r['omega_j']:.0f}: coarse {r['coarse']['disagreement']:.2f}, fine {r['fine']['disagreement']:.2f}"
+              f" (φ_iijj route a coarse {r['coarse']['route_a']:.1f}, fine {r['fine']['route_a']:.1f})")
+    for d in res["diagonal"]:
+        print(f"  φ_iiii mode {d['i']} ω {d['omega']:.0f}: coarse {d['coarse']:.1f}, fine {d['fine']:.1f} cm⁻¹")
     if a.out:
-        json.dump(res, open(a.out, "w", encoding="utf-8"), indent=1)
+        tmp = a.out + ".tmp"
+        with open(tmp, "w", encoding="utf-8") as fh:
+            json.dump(res, fh, indent=1)
+        os.replace(tmp, a.out)
     return 0
 
 

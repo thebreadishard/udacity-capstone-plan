@@ -1,0 +1,17 @@
+{"name": "s1tz_gridcheck_benzene",
+ "purpose": "TASKS 53, the user 28 Oct 'Ja': S1-TZ's read said 'the basis matters' but only the out-of-plane modes moved (+41 to +251 cm-1); this recomputes benzene's T displacements of modes 5 and 10 (out of plane, +127 and +251) and 11 (in-plane control) at grid 99/590, the same geometries, so probes/qff_grid_recheck.py reads phi_iiii and phi_iijj at both grids: grid noise or basis. The 99/590 reference Hessian is the grid gate's (refhess_gate). Code folder /root/dpir_s1tz_e, the acenaphthylene run's (same pyscf as all three T force fields); s1 is otherwise idle",
+ "host": "s1",
+ "workdir": "/root/dpir_s1tz_e",
+ "command": "THREADS=15 bash probes/s1tz_gridcheck_benzene.sh",
+ "sources": [
+  {"local": "probes/s1tz_gridcheck_benzene.sh", "remote": "/root/dpir_s1tz_e/probes/s1tz_gridcheck_benzene.sh"},
+  {"local": "probes/pyscf_hessians_for_qff.py", "remote": "/root/dpir_s1tz_e/probes/pyscf_hessians_for_qff.py"},
+  {"local": "probes/scf_converge.py", "remote": "/root/dpir_s1tz_e/probes/scf_converge.py"},
+  {"local": "probes/library_log.py", "remote": "/root/dpir_s1tz_e/probes/library_log.py"}
+ ],
+ "progress": {"regex": "^\\[[0-9:]+\\] [0-9]+/[0-9]+ mode[0-9]+_[pm]\\.json E = |^=== \\(S1TZG\\) ", "max_gap_minutes": 60, "heartbeat_glob": "/root/s1tz_gridcheck/benzene/hess/pyscf.log"},
+ "marker_regex": "^=== \\(S1TZG\\) ",
+ "end_regex": "^=== \\(S1TZG\\) benzene T grid check done",
+ "dry_run_args": "--dry-run",
+ "threads": 15,
+ "estimate": {"hours": 2, "basis": "6 Hessians; benzene's T Hessians at 75/302 took 610 s at 5 threads (s1tz benzene log, 27 Oct read); 99/590 has ~2.6x the grid points, 15 threads"}}

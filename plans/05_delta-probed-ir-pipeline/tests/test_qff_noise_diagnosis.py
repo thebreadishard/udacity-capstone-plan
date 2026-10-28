@@ -43,3 +43,5 @@ def test_grid_recheck_reproduces_the_report_routes():
         assert r["coarse"]["route_a"] == pytest.approx(z["phi_iijj_route_a"][r["i"], r["j"]], abs=1e-6)
         assert r["coarse"]["route_b"] == pytest.approx(z["phi_iijj_route_b"][r["i"], r["j"]], abs=1e-6)
     assert res["max_disagreement"]["coarse"] == pytest.approx(10.65, abs=0.01)
+    for d in res["diagonal"]:                                              # φ_iiii, the constant a shared grid error moves (28 Oct)
+        assert d["coarse"] == d["fine"] == pytest.approx(z["phi_iijj"][d["i"], d["i"]], abs=1e-6)
