@@ -15,7 +15,7 @@ from recorded runs (the replay worker); this version computes a molecule that ha
 | # | step | code | state |
 |---|---|---|---|
 | 1 | start geometry from SMILES (or the given xyz) | rdkit ETKDG, system Python | new: a few lines |
-| 2 | B3LYP/6-31G* optimisation, the corpus deck | `corpus/psi4_worker.py` with `"hessians": false` (lever 5's route), WSL psi4 | exists; but WSL's psi4 (env `vpt2`) is 1.10.2 against the corpus's 1.11 — an env with 1.11 (a download, the user's word) or a check that 1.10.2 gives the corpus geometry |
+| 2 | B3LYP/6-31G* optimisation, the corpus deck | `corpus/psi4_worker.py` with `"hessians": false` (lever 5's route), the Windows conda env `qc` (psi4 1.11, the deck's own engine) | exists; checked 29 Oct: corpus benzene re-optimised from its stored start geometry, largest coordinate difference 4.8e-7 bohr |
 | 3 | cheap level: analytic B3LYP Hessian and APT | `corpus/analytic_hessians.py` (route `hessian_response_refined`), WSL `~/qc05` (pyscf 2.14.0) | exists; new: a B3LYP-only switch (it computes ωB97X too, which is the training label, not an input) |
 | 4 | the learned correction ΔH | the carried ΔH network (`modules/MODELS.md`: v1.3, three seeds, read-only files) | new: an inference loader — `rungC_train.molecule_tensors` needs the truth `dH_true` today |
 | 5 | spectrum: H_low + ΔH → positions; heights from the B3LYP APT (double harmonic); broadened | `m08/spectrum.series(hessian, masses, apt, H=...)` | exists |
