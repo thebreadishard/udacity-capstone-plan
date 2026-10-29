@@ -1,6 +1,6 @@
 """Regression pin of `probes/anchor_deck_rehearsal.py` (decision 58's rehearsal, 20 Oct 2026), written before its clean-code refactor: the three
 registered runs of 4 Oct on today's files — pyridine with the analytic B3LYP alone (--no-network), pyridine and naphthalene with chain 34's three
-carried models — compared without the date and the seconds.
+carried models — compared without the date, the seconds and each model's registry status (it changes by design; the runner bypasses its gate).
 
 DECK_PROBES=<folder> selects the folder whose script is tested (default: this checkout's probes; a worktree's for a refactor). Every run goes
 through tests/deck_pin_runner.py: this checkout's data (corpus, models, the scorer's checkpoints) and dependencies, the script from that folder.
@@ -28,10 +28,16 @@ CASES = {"pyridine_no_network": (R / "e8_pyridine_ccpvdz_2026-09-30", "A_6e858b2
          "pyridine_chain34": (R / "e8_pyridine_ccpvdz_2026-09-30", "A_6e858b26e5", ["--models", *MODELS]),
          "naphthalene_chain34": (R / "e8_naphthalene_ccpvdz_tlambda_2026-10-02", "A_01f3186607", ["--models", *MODELS])}
 VOLATILE = ("date", "seconds")
+MODEL_STATUS = re.compile(r'"status": "[^"]*"')
 
 
 def probes() -> Path:
     return Path(os.environ.get("DECK_PROBES", PLAN / "probes")).resolve()
+
+
+def without_model_status(case: dict) -> dict:
+    """The case's record with every model note's registry status masked."""
+    return {**case, "json": MODEL_STATUS.sub('"status": "<status>"', case["json"])}
 
 
 def run_case(case: str, work: Path, folder: Path) -> dict:
@@ -54,7 +60,7 @@ def test_the_pinned_rehearsal_is_unchanged(case, tmp_path):
     golden = json.loads(GOLDEN.read_text(encoding="utf-8"))
     require_pinning_environment(golden)
     require_free_memory()                                                   # it loads the corpus and three models
-    assert run_case(case, tmp_path, probes()) == golden["cases"][case]
+    assert without_model_status(run_case(case, tmp_path, probes())) == without_model_status(golden["cases"][case])
 
 
 if __name__ == "__main__":
