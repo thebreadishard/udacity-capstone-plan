@@ -36,7 +36,7 @@ Beside every spectrum, as the baseline only: the scaled B3LYP spectrum (PAHdb's 
    experiment; one molecule outside the corpus (module 06's fixed-seed candidate, if it passes step 1's checks). Large ones are computed
    before the meeting and shown from their certificate; a small one runs live.
 
-Steps 1 and 2 can be written before 9 Nov; nothing here needs a rented machine.
+Steps 1 and 2 are built (29 Oct 11:4x, branch pipeline-v01, 69e040a1); nothing here needs a rented machine.
 
 ## The version
 
