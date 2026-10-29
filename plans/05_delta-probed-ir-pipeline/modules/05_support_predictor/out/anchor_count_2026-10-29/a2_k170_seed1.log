@@ -1,0 +1,19 @@
+analytic second-route Hessians substituted for 862 molecules
+atomic polar tensors found for 471 molecules: intensity read-outs on (lever 5, registered 2 Oct 2026 06:5x)
+base base_a2_model_n750_seed1.pt (status candidate); reservoir 200, read 343; k 170; modes ['body1_es']
+  [body1_es k170]     epoch 10/120: loss 0.04032, validation 0.07449 (best 0.07358 at 8)
+  [body1_es k170]     epoch 20/120: loss 0.03092, validation 0.07315 (best 0.06846 at 17)
+  [body1_es k170]     epoch 30/120: loss 0.02677, validation 0.07062 (best 0.06526 at 22)
+  [body1_es k170]     epoch 40/120: loss 0.02318, validation 0.07089 (best 0.06088 at 32)
+k 170 draw 0 body1_es: CH-oop 2.62 other 3.37 (182 s)
+  [body1_es k170]     epoch 10/120: loss 0.04462, validation 0.05668 (best 0.05621 at 9)
+  [body1_es k170]     epoch 20/120: loss 0.03418, validation 0.04404 (best 0.04404 at 20)
+  [body1_es k170]     epoch 30/120: loss 0.02397, validation 0.04183 (best 0.04183 at 30)
+  [body1_es k170]     epoch 40/120: loss 0.021, validation 0.0373 (best 0.0373 at 40)
+k 170 draw 1 body1_es: CH-oop 2.95 other 3.33 (214 s)
+  [body1_es k170]     epoch 10/120: loss 0.05177, validation 0.0619 (best 0.0619 at 10)
+  [body1_es k170]     epoch 20/120: loss 0.03641, validation 0.05507 (best 0.055 at 17)
+  [body1_es k170]     epoch 30/120: loss 0.02668, validation 0.05702 (best 0.05217 at 26)
+  [body1_es k170]     epoch 40/120: loss 0.02077, validation 0.05126 (best 0.04878 at 39)
+k 170 draw 2 body1_es: CH-oop 2.77 other 3.04 (212 s)
+wrote out/anchor_count_2026-10-29/a2_k170_seed1.json/.md in 788 s

@@ -1,0 +1,62 @@
+=== (AC) armed (pid 31380), 30 steps 2026-10-29 10:44:43
+=== (AC) starting: 30 steps 2026-10-29 10:44:43
+=== (AC) progress: c_k100_seed0 (1/30) running 10 min, its log +1561 bytes 2026-10-29 10:54:43
+(AC) c_k100_seed0 done 2026-10-29 11:02:14
+=== (AC) progress: c_k120_seed0 (2/30) running 10 min, its log +1377 bytes 2026-10-29 11:12:14
+=== (AC) progress: c_k120_seed0 (2/30) running 20 min, its log +1477 bytes 2026-10-29 11:22:14
+(AC) c_k120_seed0 done 2026-10-29 11:26:45
+=== (AC) progress: c_k150_seed0 (3/30) running 10 min, its log +987 bytes 2026-10-29 11:36:45
+=== (AC) progress: c_k150_seed0 (3/30) running 20 min, its log +1285 bytes 2026-10-29 11:46:45
+(AC) c_k150_seed0 done 2026-10-29 11:52:25
+=== (AC) progress: c_k170_seed0 (4/30) running 10 min, its log +1269 bytes 2026-10-29 12:02:25
+=== (AC) progress: c_k170_seed0 (4/30) running 20 min, its log +1367 bytes 2026-10-29 12:12:25
+(AC) c_k170_seed0 done 2026-10-29 12:22:19
+=== (AC) progress: c_k200_seed0 (5/30) running 10 min, its log +1089 bytes 2026-10-29 12:32:19
+(AC) c_k200_seed0 done 2026-10-29 12:34:32
+=== (AC) progress: c_k100_seed1 (6/30) running 10 min, its log +1514 bytes 2026-10-29 12:44:32
+(AC) c_k100_seed1 done 2026-10-29 12:51:42
+=== (AC) progress: c_k120_seed1 (7/30) running 10 min, its log +1434 bytes 2026-10-29 13:01:42
+(AC) c_k120_seed1 done 2026-10-29 13:10:25
+=== (AC) progress: c_k150_seed1 (8/30) running 10 min, its log +1192 bytes 2026-10-29 13:20:25
+=== (AC) progress: c_k150_seed1 (8/30) running 20 min, its log +1476 bytes 2026-10-29 13:30:25
+(AC) c_k150_seed1 done 2026-10-29 13:31:05
+=== (AC) progress: c_k170_seed1 (9/30) running 10 min, its log +1205 bytes 2026-10-29 13:41:05
+=== (AC) progress: c_k170_seed1 (9/30) running 20 min, its log +1174 bytes 2026-10-29 13:51:05
+(AC) c_k170_seed1 done 2026-10-29 13:56:23
+=== (AC) progress: c_k200_seed1 (10/30) running 10 min, its log +1084 bytes 2026-10-29 14:06:23
+(AC) c_k200_seed1 done 2026-10-29 14:10:02
+=== (AC) progress: c_k100_seed2 (11/30) running 10 min, its log +1616 bytes 2026-10-29 14:20:02
+(AC) c_k100_seed2 done 2026-10-29 14:25:56
+=== (AC) progress: c_k120_seed2 (12/30) running 10 min, its log +1369 bytes 2026-10-29 14:35:56
+(AC) c_k120_seed2 done 2026-10-29 14:45:44
+=== (AC) progress: c_k150_seed2 (13/30) running 10 min, its log +1195 bytes 2026-10-29 14:55:44
+=== (AC) progress: c_k150_seed2 (13/30) running 20 min, its log +1500 bytes 2026-10-29 15:05:44
+(AC) c_k150_seed2 done 2026-10-29 15:07:41
+=== (AC) progress: c_k170_seed2 (14/30) running 10 min, its log +1107 bytes 2026-10-29 15:17:41
+=== (AC) progress: c_k170_seed2 (14/30) running 20 min, its log +1300 bytes 2026-10-29 15:27:41
+(AC) c_k170_seed2 done 2026-10-29 15:29:24
+=== (AC) progress: c_k200_seed2 (15/30) running 10 min, its log +1095 bytes 2026-10-29 15:39:25
+(AC) c_k200_seed2 done 2026-10-29 15:41:13
+(AC) a2_k100_seed0 done 2026-10-29 15:48:31
+(AC) a2_k120_seed0 done 2026-10-29 15:58:00
+=== (AC) progress: a2_k150_seed0 (18/30) running 10 min, its log +1286 bytes 2026-10-29 16:08:00
+(AC) a2_k150_seed0 done 2026-10-29 16:09:10
+=== (AC) progress: a2_k170_seed0 (19/30) running 10 min, its log +1110 bytes 2026-10-29 16:19:10
+(AC) a2_k170_seed0 done 2026-10-29 16:19:38
+(AC) a2_k200_seed0 done 2026-10-29 16:26:29
+=== (AC) progress: a2_k100_seed1 (21/30) running 10 min, its log +1556 bytes 2026-10-29 16:36:29
+(AC) a2_k100_seed1 done 2026-10-29 16:37:18
+(AC) a2_k120_seed1 done 2026-10-29 16:47:09
+(AC) a2_k150_seed1 done 2026-10-29 16:56:47
+=== (AC) progress: a2_k170_seed1 (24/30) running 10 min, its log +1108 bytes 2026-10-29 17:06:47
+(AC) a2_k170_seed1 done 2026-10-29 17:10:00
+(AC) a2_k200_seed1 done 2026-10-29 17:16:55
+(AC) a2_k100_seed2 done 2026-10-29 17:25:22
+=== (AC) progress: a2_k120_seed2 (27/30) running 10 min, its log +1378 bytes 2026-10-29 17:35:22
+(AC) a2_k120_seed2 done 2026-10-29 17:36:15
+=== (AC) progress: a2_k150_seed2 (28/30) running 10 min, its log +1200 bytes 2026-10-29 17:46:15
+(AC) a2_k150_seed2 done 2026-10-29 17:48:03
+=== (AC) progress: a2_k170_seed2 (29/30) running 10 min, its log +1107 bytes 2026-10-29 17:58:03
+(AC) a2_k170_seed2 done 2026-10-29 18:01:36
+(AC) a2_k200_seed2 done 2026-10-29 18:06:56
+=== (AC) run done — 30 steps, 30 declared outputs present 2026-10-29 18:06:56
