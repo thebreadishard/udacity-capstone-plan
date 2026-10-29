@@ -574,32 +574,40 @@ def load_corpus(molecules: str, use_analytic: bool, log=print) -> tuple:
     return mols, test_a, test_b, cores, pool, substituted
 
 
-def molecule_tensors(i: str, m: dict, mol: dict, mol_dir: Path, cfg, cache_dir: Path,   # noqa: PLR0913  shared with five probes as it is
-                     target_residuals: dict | None = None) -> dict:
-    """The tensors one molecule contributes to training and read-out: the Cartesian inputs and truth (`m`, as `load_molecule` returns it, or a
-    CC-substituted equivalent), B⁺ and the projected internal ΔF, the entry classes, the kring tensors, the pattern classes (and the ls/kfit
-    target when asked), the hybrid tensors. `cfg` carries aux, head, pattern, aux_target, ls_lam and zero_hlow (a TrainConfig, or a namespace
-    built from a saved model's record); `mol` is the rung-B loader's entry (B, F_low, masses, V, w, family)."""
+def input_tensors(m: dict, mol: dict, mol_dir: Path, cfg) -> dict:
+    """The tensors the network reads of one molecule, without its truth: the Cartesian inputs (`m`), B⁺, the entry classes, the charge and
+    hinge indices, the pattern classes when the head or the aux term asks for them, the hybrid tensors, the low level zeroed under
+    `cfg.zero_hlow`. `mol` is the rung-B loader's entry, or the inference path's (`rungC_infer.low_level`): B and F_low are read here."""
     t = to_torch(m)
     t["Bp"] = torch.as_tensor(np.linalg.pinv(mol["B"]), dtype=torch.float32)
-    t["dF_true"] = t["Bp"].T @ t["dH_true"] @ t["Bp"]
-    t["dF_norm"] = (t["dF_true"] ** 2).mean().clamp_min(1e-30)
     t["cls"] = entry_classes(m)
     t["qidx"] = torch.tensor(int(mol.get("qidx", 0)), dtype=torch.long)       # charge state of the row (pool 3)
     t["hidx"] = torch.as_tensor(m["hidx"] if "hidx" in m else hinge_classes(m["symbols"], m["pos"]), dtype=torch.long)
-    if cfg.aux in ("kring", "both"):
-        t.update(kring_tensors(mol["masses"], mol["V"], mol["w"], mol["family"], m["dH_true"]))
     if cfg.aux in ("pattern", "both") or cfg.head == "hybrid":            # the hybrid's class scales need the pattern classes under any aux term
         t["pat_cls"] = pattern_classes(mol_dir, mol, cfg.pattern)
-        if cfg.aux_target in ("ls", "kfit"):
-            target = pattern_target(i, m, mol, t, cfg, cache_dir)
-            if target_residuals is not None:
-                target_residuals[i] = target.residuals(m, mol, cfg.aux_target)
-            t["dF_true"] = torch.as_tensor(target.X, dtype=torch.float32)
     if cfg.head == "hybrid":
         t.update(hybrid_tensors(mol_dir, mol, cfg.pattern))
     if cfg.zero_hlow:
         t["H_low"] = torch.zeros_like(t["H_low"])
+    return t
+
+
+def molecule_tensors(i: str, m: dict, mol: dict, mol_dir: Path, cfg, cache_dir: Path,   # noqa: PLR0913  shared with five probes as it is
+                     target_residuals: dict | None = None) -> dict:
+    """The tensors one molecule contributes to training and read-out: its inputs (`input_tensors`) and its truth's terms — the projected
+    internal ΔF and its norm, the kring tensors, the ls/kfit target when asked. `m` is what `load_molecule` returns (or a CC-substituted
+    equivalent); `cfg` carries aux, head, pattern, aux_target, ls_lam and zero_hlow (a TrainConfig, or `tensor_config` of a saved model's
+    record); `mol` is the rung-B loader's entry (B, F_low, masses, V, w, family)."""
+    t = input_tensors(m, mol, mol_dir, cfg)
+    t["dF_true"] = t["Bp"].T @ t["dH_true"] @ t["Bp"]
+    t["dF_norm"] = (t["dF_true"] ** 2).mean().clamp_min(1e-30)
+    if cfg.aux in ("kring", "both"):
+        t.update(kring_tensors(mol["masses"], mol["V"], mol["w"], mol["family"], m["dH_true"]))
+    if "pat_cls" in t and cfg.aux_target in ("ls", "kfit"):
+        target = pattern_target(i, m, mol, t, cfg, cache_dir)
+        if target_residuals is not None:
+            target_residuals[i] = target.residuals(m, mol, cfg.aux_target)
+        t["dF_true"] = torch.as_tensor(target.X, dtype=torch.float32)
     return t
 
 
@@ -662,6 +670,24 @@ def loss_settings(record: dict) -> LossSettings:
     """The loss a saved model was trained with; records before 3 Oct 2026 carry no kdiag mode (the all-mode term)."""
     return LossSettings(mode=record["aux_mode"], kring_weight=record["kring_weight"], kdiag_weight=record["kdiag_weight"],
                         kdiag_mode=record.get("kdiag_mode", "all"), class_scale=record["aux_class_scale"])
+
+
+@dataclass(frozen=True)
+class TensorSettings:
+    """What `molecule_tensors` reads of a model's settings (a TrainConfig carries the same fields)."""
+
+    aux: str
+    head: str
+    pattern: str
+    aux_target: str | None
+    ls_lam: float | None
+    zero_hlow: bool = False
+
+
+def tensor_config(record: dict) -> TensorSettings:
+    """The tensor settings of a saved model (`load_hybrid_model`'s record), with the low level as it is."""
+    return TensorSettings(aux=record["aux_mode"], head=record["head"], pattern=record["pattern"], aux_target=record["aux_target"],
+                          ls_lam=record["ls_lam"])
 
 
 def freeze_for_transfer(model: HybridDeltaFModel) -> list:

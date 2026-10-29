@@ -110,3 +110,20 @@ def test_pyscfs_own_log_lands_in_the_molecule_folder(tmp_path, monkeypatch):
     log = (d / AH.PYSCF_LOG_NAME).read_text(encoding="utf-8")
     first_cycles = [s for s in log.splitlines() if s.startswith("cycle= 1 ")]
     assert len(first_cycles) == 2 and log.count("CPU time for RHF hessian") == 2      # both functionals' SCF and Hessian timers (RKS logs as RHF)
+
+
+def test_b3lyp_alone_writes_the_full_runs_b3lyp_files_and_no_wb97x(tmp_path, monkeypatch):
+    """The pipeline's cheap level (TASKS 146): --functionals b3lyp gives the B3LYP Hessian and APT of a run with both, to the bit."""
+    (tmp_path / "full").mkdir()
+    (tmp_path / "alone").mkdir()
+    full = _run(tmp_path / "full", monkeypatch)
+    alone = _run(tmp_path / "alone", monkeypatch, "--functionals", "b3lyp")
+    assert not (alone / "hessian_wb97x_analytic.npz").exists() and set(json.loads((alone / "analytic_check.json").read_text())) == {"b3lyp"}
+    for name, key in (("hessian_b3lyp_analytic.npz", "H_raw"), ("hessian_b3lyp_analytic.npz", "H_projected"), (AH.APT_FILE, "apt")):
+        assert np.array_equal(np.load(full / name)[key], np.load(alone / name)[key]), (name, key)
+
+
+@pytest.mark.parametrize("functionals", [(), ("b3lyp", "b3lyp"), ("pbe",)])
+def test_an_empty_repeated_or_unknown_functional_list_is_refused(functionals):
+    with pytest.raises(ValueError, match="functionals"):
+        AH.LabelsRun(grid=(50, 194), charge=0, spin=0, compare_only=False, apt=True, stamp={}, functionals=functionals)

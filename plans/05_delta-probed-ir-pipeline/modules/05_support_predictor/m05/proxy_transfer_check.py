@@ -30,7 +30,6 @@ import time
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from types import SimpleNamespace
 
 import numpy as np
 import torch
@@ -51,6 +50,7 @@ from rungC_train import (
     predictor,
     readouts,
     record_paths,
+    tensor_config,
     train_one,
 )
 
@@ -127,8 +127,7 @@ def load_inputs(molecules: str, model: Path, ids: list[str]) -> Inputs:
     if missing:
         raise SystemExit(f"{len(missing)} ids without analytic labels (or not admitted), first {missing[:5]}: the check reads analytic labels only")
     model0, ck = load_hybrid_model(model)
-    cfg = SimpleNamespace(aux=ck["aux_mode"], head=ck["head"], pattern=ck["pattern"], aux_target=ck["aux_target"], ls_lam=ck["ls_lam"],
-                          zero_hlow=False)
+    cfg = tensor_config(ck)
     cache = Path(molecules).parent / "ls_targets"
     tensors = {i: molecule_tensors(i, load_molecule(Path(molecules) / i, use_analytic=True), mols[i], Path(molecules) / i, cfg, cache)
                for i in sorted(set(ids))}

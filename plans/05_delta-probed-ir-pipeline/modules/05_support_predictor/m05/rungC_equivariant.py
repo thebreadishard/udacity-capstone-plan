@@ -206,17 +206,25 @@ def water() -> dict:
     return dict(id="water_synthetic", symbols=["O", "H", "H"], Z=np.array([8, 1, 1]), pos=pos, masses=masses, H_low=H_low, dH_true=H_high - H_low)
 
 
-def load_molecule(d: Path, use_analytic: bool = False) -> dict:
-    """One corpus folder → Z, pos (bohr), masses (amu), H_low, dH_true (Cartesian, projected Hessians; analytic second route when asked and present)."""
-    g = json.load(open(d / "geometry.json", encoding="utf-8"))
-    tag = "_analytic" if use_analytic and (d / "hessian_b3lyp_analytic.npz").exists() and (d / "hessian_wb97x_analytic.npz").exists() else ""
-    lo = np.load(d / f"hessian_b3lyp{tag}.npz")["H_projected"]
-    hi = np.load(d / f"hessian_wb97x{tag}.npz")["H_projected"]
+def low_level_inputs(d: Path, H_low: np.ndarray) -> dict:
+    """One folder's geometry with its low-level Hessian `H_low` (Cartesian, projected) → id, symbols, Z, pos (bohr), masses (amu), H_low,
+    charge, multiplicity and the charge and hinge indices: what the network reads of a molecule, without its truth."""
+    g = json.loads((d / "geometry.json").read_text(encoding="utf-8"))
     sym = [s.upper() for s in g["symbols"]]
-    return dict(id=d.name, symbols=sym, Z=np.array([Z_OF[s] for s in sym]), pos=np.asarray(g["coords_bohr"], float),
-                masses=np.asarray(g["masses_amu"], float), H_low=lo, dH_true=hi - lo, analytic=bool(tag),
-                charge=int(g.get("charge", 0)), multiplicity=int(g.get("multiplicity", 1)), qidx=charge_index(g),
-                hidx=hinge_classes(sym, np.asarray(g["coords_bohr"], float)))
+    pos = np.asarray(g["coords_bohr"], float)
+    return dict(id=d.name, symbols=sym, Z=np.array([Z_OF[s] for s in sym]), pos=pos, masses=np.asarray(g["masses_amu"], float), H_low=H_low,
+                charge=int(g.get("charge", 0)), multiplicity=int(g.get("multiplicity", 1)), qidx=charge_index(g), hidx=hinge_classes(sym, pos))
+
+
+def load_molecule(d: Path, use_analytic: bool = False) -> dict:
+    """One corpus folder → the network's inputs (`low_level_inputs`) and dH_true (Cartesian, projected Hessians; analytic second route when
+    asked and present)."""
+    tag = "_analytic" if use_analytic and (d / "hessian_b3lyp_analytic.npz").exists() and (d / "hessian_wb97x_analytic.npz").exists() else ""
+    with np.load(d / f"hessian_b3lyp{tag}.npz") as z:
+        lo = z["H_projected"]
+    with np.load(d / f"hessian_wb97x{tag}.npz") as z:
+        hi = z["H_projected"]
+    return low_level_inputs(d, lo) | dict(dH_true=hi - lo, analytic=bool(tag))
 
 
 def load_molecules(mdir: Path, ids=None, use_analytic: bool = False) -> dict:
@@ -230,8 +238,9 @@ def load_molecules(mdir: Path, ids=None, use_analytic: bool = False) -> dict:
 
 
 def to_torch(m: dict, dtype=torch.float32) -> dict:
+    """The molecule's arrays as tensors, and the mass-weighting; dH_true only where the molecule carries its truth."""
     t = dict(m)
-    for k in ("pos", "H_low", "dH_true"):
+    for k in ("pos", "H_low", *(("dH_true",) if "dH_true" in m else ())):
         t[k] = torch.as_tensor(np.asarray(m[k]), dtype=dtype)
     t["Z"] = torch.as_tensor(np.asarray(m["Z"]), dtype=torch.long)
     mm = np.repeat(np.asarray(m["masses"]) * AMU2AU, 3)
