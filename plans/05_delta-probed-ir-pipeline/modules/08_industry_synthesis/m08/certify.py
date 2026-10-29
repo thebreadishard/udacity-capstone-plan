@@ -13,7 +13,9 @@ from pathlib import Path
 from . import prices
 from . import spectrum as shape_mod
 from .catalog import FAMILY_SOURCE, PLAN, REPO, RUNG_LABELS, Catalog, family
+from .accuracy import APT_OPEN, carried_accuracy
 from .licence import state as licence_state
+from .pipeline import NETWORK
 from .replay import replay_run
 
 MODE_RE = re.compile(r"mode (\d+)[^0-9]{0,40}?(\d{3,4}\.\d) cm", re.I)
@@ -100,10 +102,11 @@ def certificate(row: dict, catalog: Catalog) -> dict:
         for fam, vs in sorted(fams.items()):
             budget[fam] = dict(n_modes=len(vs), omega_range=[round(min(vs), 1), round(max(vs), 1)], u_band_lab=ub.get(fam, {}).get("u_band"),
                                u_band_source=ub.get(fam, {}).get("source"), ensemble_pm=None,
-                               ensemble_note="— : no predicted correction is shown; " + lic["statement"].split(";")[0])
+                               ensemble_note=("— : this record is the cheap level; the pipeline serves the correction with its measured "
+                                              "error (licence, decision 65: " + lic["statement"] + ")"))
     shape = shape_mod.shape(row["id"], mol["frequencies_cm"]["b3lyp"]["vibrational"] if mol else None) if mol else dict(kind="none", reason="no cheap rung")
     if mol:
-        shape["accuracy"] = shape_mod.measured_accuracy()
+        shape["accuracy"] = carried_accuracy()
     coverage = anchor_coverage(row.get("evidence", []), ub) if rung >= 4 else []
     run = replay_run(mol) if mol else None
     cost = []
@@ -121,9 +124,11 @@ def certificate(row: dict, catalog: Catalog) -> dict:
     prov = dict(release=row.get("releases", []), deck_hash=mol["ledger"]["deck"] if mol else None, commit=commit_hash(), export_built_utc=catalog.summary["built_utc"],
                 export_sources_sha256=catalog.summary.get("sources"), evidence=[dict(path=e, exists=(PLAN / e).exists()) for e in row.get("evidence", [])],
                 pre_registrations=["GoalGathering/notes/PreRegistration_2026-09-25_Proof_of_Learning_Layer_B.md", "modules/08_industry_synthesis/PRE_REGISTRATION.md"],
-                family_rule=FAMILY_SOURCE, licence=dict(rule_source=lic["rule_source"], licensed_families=lic["licensed_families"], latest_reading=lic["latest_reading"]))
+                family_rule=FAMILY_SOURCE, licence=dict(rule_source=lic["rule_source"], licensed_families=lic["licensed_families"],
+                                                        errors=lic["errors"], sources=lic["sources"]))
     ladder = {r: dict(label=RUNG_LABELS[r], reached=(r <= rung and r not in (2, 3)) or (r in (2, 3) and False),
-                      note=("—: no family licensed" + ("; when licensed, heights only where an APT exists" if r == 3 else "") if r in (2, 3)
+                      note=("— not in this record: the pipeline (m08/pipeline.py) serves it for the licensed families (decision 65)"
+                            + ("; heights only where an APT exists" if r == 3 else "") if r in (2, 3)
                             else ("" if r <= rung else "— not reached"))) for r in range(6)}
     return dict(kind="certificate", date=time.strftime("%Y-%m-%d %H:%M"), molecule=dict(id=row["id"], name=row["name"], smiles=row.get("smiles"), formula=row.get("formula"),
                 layer=row.get("layer"), n_atoms=row.get("n_atoms"), flags=row.get("flags", [])),
@@ -132,7 +137,9 @@ def certificate(row: dict, catalog: Catalog) -> dict:
                 laboratory=catalog.lab_bands(row["name"]) if rung >= 5 else dict(n_bands=0, note="not validated against a laboratory record (rung < 5)"),
                 cost_record=cost, provenance=prov,
                 statement=(f"{row['name']}: rung {rung} ({RUNG_LABELS[rung]}). The cheap-level spectrum is served with the laboratory tolerance per family; no predicted "
-                           "correction is shown because no family is licensed; the anchor coverage lists what coupled-cluster evidence exists and where it is wider than the tolerance."))
+                           "correction is shown in this record — the pipeline serves it for the licensed families ("
+                           + ", ".join(lic["licensed_families"]) + "; decision 65); the anchor coverage lists what coupled-cluster evidence exists "
+                           "and where it is wider than the tolerance."))
 
 
 def to_markdown(c: dict) -> str:
@@ -180,14 +187,17 @@ def _shape_markdown(s: dict) -> list[str]:
     L += [f"| {b['omega_cm']} | {b['km_mol']} | {family(b['omega_cm'])} |" for b in sorted(top, key=lambda x: x['omega_cm'])]
     a = s.get("accuracy")
     if a:
-        L += ["", "**How well the shape is known** (measured; 'corrected' is the learned correction, not served until a family is licensed):", "",
-              "| level | spectrum overlap, cheap → corrected | height error, cheap → corrected | records |", "|---|---|---|---|"]
-        for k in ("proxy", "cc"):
-            x = a[k]
-            L.append(f"| {x['level']} | {x['cheap']['spectrum_overlap']} → {x['corrected']['spectrum_overlap']} | "
-                     f"{x['cheap']['intensity_error']} → {x['corrected']['intensity_error']} | {'; '.join(x['sources'])} |")
-        L += ["", f"*Overlap:* {a['definitions']['spectrum_overlap']}. *Height error:* {a['definitions']['intensity_error']}. *Benzene:* {a['cc']['note']}. "
-              f"*Open:* {a['open'][0]}."]
+        L += ["", f"**How well the shape is known** — the carried {NETWORK} v{a['version']} against {a['higher_level']}; the corrected "
+              "spectrum is the pipeline's (`m08/pipeline.py`), not this record's:", "",
+              "| hold-out | molecules with an APT | spectrum overlap, uncorrected → corrected | height error, uncorrected → corrected |",
+              "|---|---|---|---|"]
+        for h, v in a["holdouts"].items():
+            x = v["shape"]
+            L.append(f"| ({h}) | {x['n_molecules']} | {x['cheap']['spectrum_overlap']} → {x['corrected']['spectrum_overlap']} | "
+                     f"{x['cheap']['intensity_error']} → {x['corrected']['intensity_error']} |")
+        d = a["definitions"]
+        L += ["", f"*Overlap:* {d['spectrum_overlap']}. *Height error:* {d['intensity_error']}. *Coupled cluster:* {a['coupled_cluster']}. "
+              f"*Open:* {APT_OPEN}. *Sources:* {'; '.join(a['sources'])}."]
     return L
 
 

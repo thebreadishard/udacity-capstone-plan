@@ -25,13 +25,9 @@ APT_FILES = ("dipole_b3lyp_cphf.npz", "dipole_b3lyp_fd.npz")
 HESSIAN = "hessian_b3lyp.npz"
 FWHM, GRID = 10.0, (500.0, 3500.0)                     # module 05's read-out: Lorentzian FWHM 10 cm⁻¹ on 500–3500 cm⁻¹
 ACTIVE_FRACTION = 0.005                                # 'infrared-active': ≥ 0.5 % of the strongest band (FD noise leaks ~0.1 km/mol into dark modes)
-PROXY_RECORDS = [f"modules/05_support_predictor/out/E7_rungC_chain34_eval_matched_2026-10-09_seed{s}.json" for s in range(3)]
-CC_RECORDS = [f"modules/05_support_predictor/out/T3_tz_intensity_matched_c34_seed{s}_2026-10-09.json" for s in range(3)]
-BENZENE = "A_8448043181"
 ANCHORS_STATUS = M05 / "out" / "ANCHORS_STATUS.json"
 TEST_SEEDS = 3                        # the carried model's three seeds: the test band needs all of them
 CC_APT = "apt_ccsd_t.npz"            # the CC APT an anchor run stores beside its Hessian (cc_dipole_capture, 3 Oct 2026)
-CC_COLUMN = "network_head_l2"       # the TZ-tier standard: head-tuned with the L2 pull λ = 1 (amendment (A), 7 Oct 2026; m05 `fit_mode`).
                                     # 10 Oct 2026: the first version read 'network_head' (λ = 0) and quoted 0.59 instead of 0.37.
 
 
@@ -197,29 +193,3 @@ def shape_accuracy(records: list[dict], hold: str = "a") -> dict:
                 corrected=dict(spectrum_overlap=_mean([s["spectrum_overlap"] for s in per_seed]),
                                intensity_error=_mean([s["intensity_rel_rms_matched"] for s in per_seed])))
 
-
-def _record(rel: str) -> dict:
-    with open(PLAN / rel, encoding="utf-8") as f:
-        return json.load(f)
-
-
-def measured_accuracy() -> dict:
-    """Seed means from the records. 'cheap' = no correction (the zero rule: the cheap rung's own spectrum against the higher level), 'corrected' =
-    the network's correction, which is not served (no family licensed) and is reported as what the next rungs would bring."""
-    proxy = shape_accuracy([_record(p) for p in PROXY_RECORDS])
-    cc = [_record(p) for p in CC_RECORDS]
-    head = [r["folds"][BENZENE][CC_COLUMN]["intensity"] for r in cc]
-    zero = [r["folds"][BENZENE]["zero_rule"]["intensity"] for r in cc]
-    return dict(
-        proxy=dict(level="DFT proxy (ωB97X as the higher level), 10 unseen molecules of hold-out (a), chain 34 (carried model), seed mean of 3",
-                   n_molecules=proxy["n_molecules"], sources=PROXY_RECORDS, cheap=proxy["cheap"], corrected=proxy["corrected"]),
-        cc=dict(level="CCSD(T)/cc-pVTZ with its own CC APT, benzene (leave-one-anchor-out, head-tuned with λ = 1), seed mean of 3",
-                sources=CC_RECORDS, column=CC_COLUMN,
-                cheap=dict(spectrum_overlap=_mean([z["spectrum_overlap"] for z in zero]), intensity_error=_mean([z["intensity_rel_rms_matched"] for z in zero])),
-                corrected=dict(spectrum_overlap=_mean([h["spectrum_overlap"] for h in head]), intensity_error=_mean([h["intensity_rel_rms_matched"] for h in head])),
-                note="benzene's symmetry fixes its band heights, so the intensity error cannot separate corrected from uncorrected here; a "
-                     "low-symmetry molecule with a CC APT is the open test"),
-        definitions=dict(spectrum_overlap="cosine similarity of the two Lorentzian-broadened spectra (FWHM 10 cm⁻¹, 500–3500 cm⁻¹); 1 = identical shape",
-                         intensity_error="intensity-weighted rms of the relative height error per band, bands paired by the shape of the motion "
-                                         "(eigenvector overlap); 0 = identical heights"),
-        open=["the APT itself is computed at the cheap level; its CC-minus-B3LYP difference (≈ 20 % on benzene) is not corrected by any rung yet"])

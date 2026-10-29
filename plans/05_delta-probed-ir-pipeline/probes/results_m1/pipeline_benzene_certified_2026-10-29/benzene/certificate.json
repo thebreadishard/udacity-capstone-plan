@@ -1,6 +1,6 @@
 {
  "kind": "live certificate",
- "date": "2026-10-29 22:50",
+ "date": "2026-10-29 23:45",
  "pipeline_version": "0.1.dev",
  "molecule": {
   "name": "benzene",
@@ -76,8 +76,8 @@
        1.62,
        0.97
       ],
-      "target": null,
-      "within_target": null
+      "target": 3.0,
+      "within_target": true
      },
      "CH-oop": {
       "mean": 1.99,
@@ -143,8 +143,8 @@
        3.51,
        2.08
       ],
-      "target": null,
-      "within_target": null
+      "target": 3.0,
+      "within_target": true
      },
      "CH-oop": {
       "mean": 2.7,
@@ -190,7 +190,7 @@
     }
    }
   },
-  "target_source": "decision 53 (≤ 3 cm⁻¹ for ring-ip, CH-oop and 'other'; CH-stretch has no registered line) and the coupling ratio ≤ 0.25 of chain 35's T1 line (probes/chain35_read.py)",
+  "target_source": "3 cm⁻¹ per family — decision 53's line for ring-ip, CH-oop and 'other', every family's under decision 65 (the licence) — and the coupling ratio ≤ 0.25 of chain 35's T1 line (probes/chain35_read.py)",
   "sources": [
    "E7_rungC_chain35_analytic_eval_frozenb_seed0.json",
    "E7_rungC_chain35_analytic_eval_frozenb_seed1.json",
@@ -198,7 +198,9 @@
   ],
   "definitions": {
    "family": "rms over the family's modes of the corrected frequency's error against the higher level (cm⁻¹); families by module 05's rule (m05/learning_curve_layerA.molecule_features)",
-   "coupling_ratio": "rms of the predicted mode couplings' error over the rms of the couplings themselves; 0 = exact, 1 = no better than none"
+   "coupling_ratio": "rms of the predicted mode couplings' error over the rms of the couplings themselves; 0 = exact, 1 = no better than none",
+   "spectrum_overlap": "cosine similarity of the two Lorentzian-broadened spectra (FWHM 10 cm⁻¹, 500–3500 cm⁻¹); 1 = identical shape",
+   "intensity_error": "intensity-weighted rms of the relative height error per band, bands paired by the shape of the motion (eigenvector overlap); 0 = identical heights"
   },
   "coupled_cluster": "not measured for this network version: the coupled-cluster reads (T3) were made on chain 34, and tests on the 9–11 existing anchors wait for the anchor decision of November 2026"
  },
@@ -213,6 +215,7 @@
    "b3lyp_cm": 415.4,
    "baseline_cm": 397.1,
    "family": "other",
+   "licensed": false,
    "error_cm": {
     "a": 3.35,
     "b": 3.89
@@ -230,6 +233,7 @@
    "b3lyp_cm": 415.4,
    "baseline_cm": 397.1,
    "family": "other",
+   "licensed": false,
    "error_cm": {
     "a": 3.35,
     "b": 3.89
@@ -247,6 +251,7 @@
    "b3lyp_cm": 621.9,
    "baseline_cm": 594.5,
    "family": "other",
+   "licensed": false,
    "error_cm": {
     "a": 3.35,
     "b": 3.89
@@ -264,6 +269,7 @@
    "b3lyp_cm": 621.9,
    "baseline_cm": 594.5,
    "family": "other",
+   "licensed": false,
    "error_cm": {
     "a": 3.35,
     "b": 3.89
@@ -281,6 +287,7 @@
    "b3lyp_cm": 694.9,
    "baseline_cm": 664.3,
    "family": "CH-oop",
+   "licensed": true,
    "error_cm": {
     "a": 1.99,
     "b": 2.7
@@ -298,6 +305,7 @@
    "b3lyp_cm": 717.9,
    "baseline_cm": 686.3,
    "family": "other",
+   "licensed": false,
    "error_cm": {
     "a": 3.35,
     "b": 3.89
@@ -315,6 +323,7 @@
    "b3lyp_cm": 864.9,
    "baseline_cm": 826.8,
    "family": "CH-oop",
+   "licensed": true,
    "error_cm": {
     "a": 1.99,
     "b": 2.7
@@ -332,6 +341,7 @@
    "b3lyp_cm": 864.8,
    "baseline_cm": 826.7,
    "family": "CH-oop",
+   "licensed": true,
    "error_cm": {
     "a": 1.99,
     "b": 2.7
@@ -349,6 +359,7 @@
    "b3lyp_cm": 969.3,
    "baseline_cm": 926.7,
    "family": "CH-oop",
+   "licensed": true,
    "error_cm": {
     "a": 1.99,
     "b": 2.7
@@ -366,6 +377,7 @@
    "b3lyp_cm": 969.4,
    "baseline_cm": 926.7,
    "family": "CH-oop",
+   "licensed": true,
    "error_cm": {
     "a": 1.99,
     "b": 2.7
@@ -383,6 +395,7 @@
    "b3lyp_cm": 1019.8,
    "baseline_cm": 974.9,
    "family": "ring-ip",
+   "licensed": true,
    "error_cm": {
     "a": 1.66,
     "b": 2.12
@@ -400,6 +413,7 @@
    "b3lyp_cm": 1020.0,
    "baseline_cm": 975.1,
    "family": "ring-ip",
+   "licensed": true,
    "error_cm": {
     "a": 1.66,
     "b": 2.12
@@ -417,6 +431,7 @@
    "b3lyp_cm": 1011.0,
    "baseline_cm": 966.5,
    "family": "CH-oop",
+   "licensed": true,
    "error_cm": {
     "a": 1.99,
     "b": 2.7
@@ -434,6 +449,7 @@
    "b3lyp_cm": 1068.8,
    "baseline_cm": 1021.8,
    "family": "ring-ip",
+   "licensed": true,
    "error_cm": {
     "a": 1.66,
     "b": 2.12
@@ -451,6 +467,7 @@
    "b3lyp_cm": 1068.8,
    "baseline_cm": 1021.8,
    "family": "ring-ip",
+   "licensed": true,
    "error_cm": {
     "a": 1.66,
     "b": 2.12
@@ -468,6 +485,7 @@
    "b3lyp_cm": 1185.5,
    "baseline_cm": 1128.6,
    "family": "ring-ip",
+   "licensed": true,
    "error_cm": {
     "a": 1.66,
     "b": 2.12
@@ -485,6 +503,7 @@
    "b3lyp_cm": 1207.7,
    "baseline_cm": 1149.7,
    "family": "ring-ip",
+   "licensed": true,
    "error_cm": {
     "a": 1.66,
     "b": 2.12
@@ -502,6 +521,7 @@
    "b3lyp_cm": 1207.7,
    "baseline_cm": 1149.7,
    "family": "ring-ip",
+   "licensed": true,
    "error_cm": {
     "a": 1.66,
     "b": 2.12
@@ -519,6 +539,7 @@
    "b3lyp_cm": 1355.6,
    "baseline_cm": 1290.5,
    "family": "ring-ip",
+   "licensed": true,
    "error_cm": {
     "a": 1.66,
     "b": 2.12
@@ -536,6 +557,7 @@
    "b3lyp_cm": 1387.1,
    "baseline_cm": 1320.5,
    "family": "ring-ip",
+   "licensed": true,
    "error_cm": {
     "a": 1.66,
     "b": 2.12
@@ -553,6 +575,7 @@
    "b3lyp_cm": 1531.0,
    "baseline_cm": 1457.5,
    "family": "ring-ip",
+   "licensed": true,
    "error_cm": {
     "a": 1.66,
     "b": 2.12
@@ -570,6 +593,7 @@
    "b3lyp_cm": 1531.1,
    "baseline_cm": 1457.6,
    "family": "ring-ip",
+   "licensed": true,
    "error_cm": {
     "a": 1.66,
     "b": 2.12
@@ -587,6 +611,7 @@
    "b3lyp_cm": 1655.3,
    "baseline_cm": 1575.8,
    "family": "ring-ip",
+   "licensed": true,
    "error_cm": {
     "a": 1.66,
     "b": 2.12
@@ -604,6 +629,7 @@
    "b3lyp_cm": 1655.3,
    "baseline_cm": 1575.8,
    "family": "ring-ip",
+   "licensed": true,
    "error_cm": {
     "a": 1.66,
     "b": 2.12
@@ -621,6 +647,7 @@
    "b3lyp_cm": 3174.0,
    "baseline_cm": 3047.0,
    "family": "CH-stretch",
+   "licensed": true,
    "error_cm": {
     "a": 1.15,
     "b": 2.5
@@ -638,6 +665,7 @@
    "b3lyp_cm": 3183.6,
    "baseline_cm": 3056.3,
    "family": "CH-stretch",
+   "licensed": true,
    "error_cm": {
     "a": 1.15,
     "b": 2.5
@@ -655,6 +683,7 @@
    "b3lyp_cm": 3183.7,
    "baseline_cm": 3056.4,
    "family": "CH-stretch",
+   "licensed": true,
    "error_cm": {
     "a": 1.15,
     "b": 2.5
@@ -672,6 +701,7 @@
    "b3lyp_cm": 3199.4,
    "baseline_cm": 3071.4,
    "family": "CH-stretch",
+   "licensed": true,
    "error_cm": {
     "a": 1.15,
     "b": 2.5
@@ -689,6 +719,7 @@
    "b3lyp_cm": 3199.4,
    "baseline_cm": 3071.4,
    "family": "CH-stretch",
+   "licensed": true,
    "error_cm": {
     "a": 1.15,
     "b": 2.5
@@ -706,6 +737,7 @@
    "b3lyp_cm": 3210.1,
    "baseline_cm": 3081.7,
    "family": "CH-stretch",
+   "licensed": true,
    "error_cm": {
     "a": 1.15,
     "b": 2.5
@@ -765,9 +797,13 @@
   "rule": "modules/03_lab_scoreboard/build_lab_tables.py FAMILY_RULE (12 Sep 2026)"
  },
  "licence": {
-  "statement": "no family licensed: the registered verdict falls at 1,200 admitted layer-B molecules; the latest recorded table (2026-09-27 18:33, pool 274) shows ring coupling ratios (a) 0.61 / (b) 0.64 / (c) 0.70 against the zero rule, read as an interim only",
-  "rule_source": "GoalGathering/notes/PreRegistration_2026-09-25_Proof_of_Learning_Layer_B.md",
-  "licensed_families": []
+  "statement": "licensed at the DFT proxy: ring-ip (1.66 / 2.12), CH-stretch (1.15 / 2.5), CH-oop (1.99 / 2.7); not licensed: other (3.35 / 3.89) — seed-mean error on hold-outs (a) / (b) in cm⁻¹ against 3; no coupled-cluster licence",
+  "rule_source": "README.md, decision 65",
+  "licensed_families": [
+   "ring-ip",
+   "CH-stretch",
+   "CH-oop"
+  ]
  },
  "cost": {
   "steps_s": {
@@ -786,7 +822,7 @@
   "result": "C:\\Users\\thebr\\Documents\\CapstonePlan\\plans\\05_delta-probed-ir-pipeline\\probes\\results_m1\\pipeline_benzene_certified_2026-10-29\\benzene",
   "run_commit": "6e64ce42ac07cc7c5c68431b7e05f215a597b910",
   "run_dirty": "yes",
-  "certificate_commit": "6e64ce42",
+  "certificate_commit": "54fa017e",
   "deck_sha16": "9e27bf8e934893f3",
   "low_level_software": {
    "pyscf": "2.14.0",
@@ -801,5 +837,5 @@
   "host": "Asus18",
   "note": "harmonic positions: the anharmonic shift is not in this version (backlog; TASKS 53)"
  },
- "statement": "benzene: the harmonic infrared spectrum of ΔH-network v1.3 (3 seeds) — B3LYP/6-31G* corrected toward ωB97X/6-31G* — with the error measured on molecules the network never saw; at the coupled-cluster level not measured for this network version: the coupled-cluster reads (T3) were made on chain 34, and tests on the 9–11 existing anchors wait for the anchor decision of November 2026. The scaled B3LYP spectrum is shown as the baseline only."
+ "statement": "benzene: the harmonic infrared spectrum of ΔH-network v1.3 (3 seeds) — B3LYP/6-31G* corrected toward ωB97X/6-31G* — with the error measured on molecules the network never saw; licensed for ring-ip, CH-stretch, CH-oop (decision 65), each band marked; at the coupled-cluster level not measured for this network version: the coupled-cluster reads (T3) were made on chain 34, and tests on the 9–11 existing anchors wait for the anchor decision of November 2026. The scaled B3LYP spectrum is shown as the baseline only."
 }

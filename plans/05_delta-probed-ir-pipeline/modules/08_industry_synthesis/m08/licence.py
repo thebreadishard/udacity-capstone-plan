@@ -1,42 +1,30 @@
-"""The licence of the learned layer (module 05): which families may show a *predicted* correction. Read from the proof-of-learning pre-registration's
-rule and the latest recorded layer-B table — never typed in. Today no family is licensed: the registered verdict falls at 1,200 admitted molecules."""
+"""The licence of the learned correction (decision 65, the user 29 Oct 2026): a mode family is licensed where the carried ΔH network's
+seed-mean error is within decision 53's 3 cm⁻¹ on both hold-outs — read from the network's own evaluation records, never typed in. The
+licence holds at the level the network is measured at, the DFT proxy (ωB97X); no coupled-cluster licence exists. It replaces the layer-B
+rule of the proof-of-learning pre-registration (25 Sep 2026), which was written before the ΔH network."""
 from __future__ import annotations
 
-import re
-from pathlib import Path
+from .accuracy import HOLDOUTS, LICENCE_LINE_CM, carried_accuracy
 
-from .catalog import PLAN
+# isort: split
+from promotion_read import FAMILIES  # probes/, on the path through m08.pipeline
 
-PREREG = PLAN / "GoalGathering" / "notes" / "PreRegistration_2026-09-25_Proof_of_Learning_Layer_B.md"
-READING = PLAN / "modules" / "05_support_predictor" / "out" / "E7_rungB_layerB_2026-09-27.md"
-RULE = ("proof-of-learning pre-registration (25 Sep 2026): the verdict 'the network learns' falls at 1,200 admitted layer-B molecules on three "
-        "hold-outs; intermediate tables at 300 and 600 are recorded and carry no verdict; no family is licensed before the verdict")
-
-
-def latest_reading(path: Path = READING) -> dict:
-    """The B1 MLP rows of the latest layer-B table: ring coupling ratio and corrected-ω RMS per hold-out, with the pool size."""
-    out: dict = dict(source=str(path.relative_to(PLAN)).replace("\\", "/"), rows={})
-    if not path.exists():
-        return out
-    text = path.read_text(encoding="utf-8")
-    m = re.search(r"\((\d{4}-\d{2}-\d{2} \d{2}:\d{2})\)", text.split("\n")[0])
-    out["date"] = m.group(1) if m else None
-    for line in text.split("\n"):
-        cells = [c.strip() for c in line.strip().strip("|").split("|")]
-        if len(cells) >= 12 and cells[2] == "B1 MLP":
-            ratio = re.sub(r"\*", "", cells[8]); rms = cells[10].split()[0]
-            out["rows"][cells[1]] = dict(n=int(cells[0]), ring_coupling_ratio=float(ratio), corrected_omega_rms=float(rms))
-    return out
+RULE = ("decision 65 (29 Oct 2026): a mode family is licensed where the carried ΔH network's seed-mean error is within 3 cm⁻¹ "
+        "(decision 53) on both hold-outs, at the DFT-proxy level its evaluation measures; it replaces the layer-B rule of 25 Sep 2026")
+RULE_SOURCE = "README.md, decision 65"
 
 
-def state() -> dict:
-    r = latest_reading()
-    return dict(licensed_families=[], rule=RULE, rule_source=str(PREREG.relative_to(PLAN)).replace("\\", "/"), latest_reading=r,
-                statement=("no family licensed: the registered verdict falls at 1,200 admitted layer-B molecules; the latest recorded table "
-                           + (f"({r.get('date')}, pool {next(iter(r['rows'].values()))['n']}) shows ring coupling ratios "
-                              + " / ".join(f"{k} {v['ring_coupling_ratio']:.2f}" for k, v in r["rows"].items()) + " against the zero rule, read as an interim only"
-                              if r.get("rows") else "is not on disk")))
+def _errors(family: str, errors: dict[str, dict[str, float]]) -> str:
+    return f"{family} ({' / '.join(str(v) for v in errors[family].values())})"
 
 
-def licensed(family: str) -> bool:
-    return family in state()["licensed_families"]
+def state(accuracy: dict | None = None) -> dict:
+    """The licence under the carried network's evaluation records, or under `accuracy` (a `network_accuracy` result) when given."""
+    acc = carried_accuracy() if accuracy is None else accuracy
+    errors = {f: {h: acc["holdouts"][h]["readouts"][f]["mean"] for h in HOLDOUTS} for f in FAMILIES}
+    licensed = [f for f in FAMILIES if all(v <= LICENCE_LINE_CM for v in errors[f].values())]
+    statement = ("licensed at the DFT proxy: " + (", ".join(_errors(f, errors) for f in licensed) or "no family")
+                 + "; not licensed: " + (", ".join(_errors(f, errors) for f in FAMILIES if f not in licensed) or "none")
+                 + f" — seed-mean error on hold-outs (a) / (b) in cm⁻¹ against {LICENCE_LINE_CM:g}; no coupled-cluster licence")
+    return dict(licensed_families=licensed, errors=errors, line_cm=LICENCE_LINE_CM, rule=RULE, rule_source=RULE_SOURCE,
+                sources=acc["sources"], statement=statement)

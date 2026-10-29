@@ -36,9 +36,11 @@ def test_family_rule_matches_module_03():
     assert family(673.0).startswith("CH-oop") and family(1600.0).startswith("CC-stretch (6.2") and family(3050.0) == "CH-stretch"
 
 
-def test_no_family_is_licensed_today_and_the_rule_is_named():
+def test_the_licence_follows_the_carried_networks_error():
+    """Decision 65 (29 Oct 2026) on v1.3's evaluation records."""
     s = licence_state()
-    assert s["licensed_families"] == [] and "1,200" in s["rule"] and s["rule_source"].endswith("Proof_of_Learning_Layer_B.md")
+    assert s["licensed_families"] == ["ring-ip", "CH-stretch", "CH-oop"] and s["rule_source"] == "README.md, decision 65"
+    assert "other (3.35 / 3.89)" in s["statement"] and "no coupled-cluster licence" in s["statement"]
 
 
 def test_scenarios_as_registered(cat):
@@ -78,7 +80,7 @@ def test_certificate_sources_and_evidence(cat):
     for k in c["cost_record"]:
         assert k["source"]
     md = to_markdown(c)
-    assert "## Cost record" in md and "## Provenance" in md and "no family licensed" in md
+    assert "## Cost record" in md and "## Provenance" in md and "licensed at the DFT proxy" in md
 
 
 def test_spectral_shape_heights_only_with_an_apt(cat):
@@ -90,9 +92,9 @@ def test_spectral_shape_heights_only_with_an_apt(cat):
     assert 680 < strongest["omega_cm"] < 710                              # benzene's C–H out-of-plane band (a2u)
     assert b["n_ir_active"] == 7                                            # a2u + 3 × e1u (degenerate pairs); FD leakage below 0.5 % ignored
     acc = b["accuracy"]
-    assert acc["proxy"]["n_molecules"] == 10 and acc["proxy"]["corrected"]["spectrum_overlap"] > acc["proxy"]["cheap"]["spectrum_overlap"]
-    assert acc["proxy"]["corrected"]["intensity_error"] < acc["proxy"]["cheap"]["intensity_error"]
-    assert acc["cc"]["column"] == "network_head_l2" and abs(acc["cc"]["corrected"]["spectrum_overlap"] - 0.372) < 0.002   # the λ = 1 column
+    a = acc["holdouts"]["a"]["shape"]
+    assert acc["version"] == "1.3" and a["n_molecules"] == 10 and a["corrected"]["spectrum_overlap"] > a["cheap"]["spectrum_overlap"]
+    assert a["corrected"]["intensity_error"] < a["cheap"]["intensity_error"] and acc["coupled_cluster"].startswith("not measured")
     n = certificate(cat.find("naphthalene"), cat)
     assert n["spectral_shape"]["kind"] == "positions only" and "Positions only" in to_markdown(n)
     assert "heights only where an APT exists" in n["rung"]["ladder"][3]["note"]
@@ -150,4 +152,5 @@ def test_the_live_certificate_agrees_with_benzenes_export_certificate(cat):
     gap = max(abs(a - b) for a, b in zip(listed, ours, strict=True))
     assert abs(gap - m["listed"]["b3lyp_max_abs_diff_cm"]) <= 0.15
     page = LC.to_markdown(live)
-    assert "not measured for this network version" in page and "| other | 3.35 (" in page and live["licence"]["licensed_families"] == []
+    assert "not measured for this network version" in page and "| other | 3.35 (" in page
+    assert live["licence"]["licensed_families"] == ["ring-ip", "CH-stretch", "CH-oop"]

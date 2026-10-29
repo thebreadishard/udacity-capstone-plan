@@ -11,7 +11,7 @@ from typing import Literal
 from pydantic import BaseModel, Field
 
 from . import prices
-from .catalog import PLAN, RUNG_LABELS, Catalog, canonical, family
+from .catalog import PLAN, RUNG_LABELS, Catalog, canonical
 from .licence import state as licence_state
 
 sys.path.insert(0, str(PLAN / "modules" / "07_agentic_workflows"))
@@ -57,18 +57,6 @@ class Decision(BaseModel):
     date: str = Field(default_factory=lambda: datetime.now().strftime("%Y-%m-%d %H:%M"))
 
 
-def _families_of(mol: dict | None) -> list[str]:
-    if not mol:
-        return []
-    freqs = mol.get("frequencies_cm", {}).get("b3lyp", {}).get("vibrational", [])
-    seen: list[str] = []
-    for f in freqs:
-        fam = family(float(f))
-        if fam not in seen:
-            seen.append(fam)
-    return seen
-
-
 def _refuse(req: Request, reasons: list[str], rule_ids: list[str], gate_named: str, price_lines: list[dict], needed: str, row: dict | None = None) -> Decision:
     name = row["name"] if row else req.molecule
     return Decision(kind="refusal", request=req, molecule_id=row["id"] if row else None, name=name, rung_reached=row["rung"] if row else None,
@@ -77,7 +65,7 @@ def _refuse(req: Request, reasons: list[str], rule_ids: list[str], gate_named: s
                     ledger_line=f"refusal — {name}: {gate_named}; {'; '.join(reasons)}; needed: {needed}")
 
 
-def decide(req: Request, catalog: Catalog) -> Decision:
+def decide(req: Request, catalog: Catalog) -> Decision:  # noqa: PLR0911  one return per gate, in the scenarios' order; its split is TASKS 139
     lic = licence_state()
     # 0. the note is data (module 07, R24): an instruction addressed to the system is refused, not followed
     if instruction_in(req.note):
@@ -110,21 +98,19 @@ def decide(req: Request, catalog: Catalog) -> Decision:
         d.reasons.append("no run is started: the officer never spends without a passed gate, and the gate needs a dry run of a named job first (R01)")
         return d
     # 3. in the corpus: what exists against what is asked
-    mol = catalog.molecule(row["id"])
-    fams = _families_of(mol)
     reached = int(row["rung"])
     if req.target_rung in (2, 3):
-        unlicensed = [f for f in fams if f not in lic["licensed_families"]] or ["all families"]
-        return _refuse(req, [f"the learned layer is not licensed for {', '.join(unlicensed)} — {lic['statement']}"], ["R14"],
-                       "licence of the learned layer (proof-of-learning pre-registration)", [anchor],
-                       "the registered learning curve read at 1,200 molecules with a pass on the three hold-outs; until then an anchor (rung 4) is the only route to a corrected spectrum", row)
+        return _refuse(req, [f"a corrected spectrum is computed by the pipeline (m08/pipeline.py, on the laptop), not by the replay worker — "
+                             f"{lic['statement']}"], ["R14"], "the corrected rungs are the pipeline's (licence: decision 65)", [anchor],
+                       "a pipeline run of the molecule: python -m m08.pipeline --name <name> --smiles <SMILES> --out <folder>", row)
     if reached >= req.target_rung:
         return Decision(kind="certificate", request=req, molecule_id=row["id"], name=row["name"], rung_reached=reached, rung_label=RUNG_LABELS[reached],
                         reasons=[f"rung {reached} ({RUNG_LABELS[reached]}) reached; target {req.target_rung}"], rule_ids=[],
                         ledger_line=f"certificate — {row['name']} at rung {reached} ({RUNG_LABELS[reached]}), target {req.target_rung}")
     # 4. the target is above what exists: name the gate and the price; order a run only under a budget that covers it, and only through the gate
     missing = anchor if req.target_rung >= 4 else cheap
-    gate_named = ("no anchor: the learned layer is not licensed for " + ", ".join(fams or ["its families"]) + " and no coupled-cluster reading exists"
+    gate_named = ("no anchor: no coupled-cluster reading exists, and the learned layer is not licensed at the coupled-cluster level (decision 65 "
+                  "licenses it at the DFT proxy only)"
                   if req.target_rung >= 4 else "cheap level not computed")
     needed = f"{missing['what']} — measured on {missing['measured_on']}: ≈ {missing['hours']:.1f} h on a {missing['machine']} ≈ €{missing['eur_ex_vat']:.2f} ex VAT" + (f" ({missing['note']})" if missing.get("note") else "")
     if req.budget_eur is None or req.budget_eur < missing["eur_ex_vat"]:

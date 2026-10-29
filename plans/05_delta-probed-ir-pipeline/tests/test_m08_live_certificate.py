@@ -4,6 +4,7 @@ model's file is loaded), and the band table on the frozen corpus's benzene with 
 export's is in module 08's own tests, which read the export."""
 from __future__ import annotations
 
+import copy
 import json
 import shutil
 import sys
@@ -15,6 +16,8 @@ import pytest
 from pin_tools import DATA, PIN_CORPUS, PLAN, require_frozen_corpus
 
 sys.path.insert(0, str(PLAN / "modules" / "08_industry_synthesis"))
+from m08 import accuracy as A
+from m08 import licence
 from m08 import live_certificate as LC
 from m08 import pipeline as P
 
@@ -26,18 +29,18 @@ ZERO = np.zeros((36, 36))
 
 @pytest.fixture(scope="module")
 def accuracy() -> dict:
-    return LC.network_accuracy(LC.evaluation_records(V13))
+    return A.network_accuracy(A.evaluation_records(V13))
 
 
 def test_each_model_has_its_one_evaluation_record():
-    assert [p.name for p in LC.evaluation_records(V13)] == [f"E7_rungC_chain35_analytic_eval_frozenb_seed{s}.json" for s in range(3)]
+    assert [p.name for p in A.evaluation_records(V13)] == [f"E7_rungC_chain35_analytic_eval_frozenb_seed{s}.json" for s in range(3)]
 
 
 @pytest.mark.parametrize("name, match", [("rungC_cc_pin_model.pt", "not a rung-C model file name"),
                                          ("E7_rungC_nochain_model_n750_seed0.pt", "0 evaluation records")])
 def test_a_model_without_exactly_one_record_is_refused(name, match):
     with pytest.raises(ValueError, match=match):
-        LC.evaluation_records((name,))
+        A.evaluation_records((name,))
 
 
 def test_the_measured_error_is_chain_35s_read(accuracy):
@@ -46,8 +49,22 @@ def test_the_measured_error_is_chain_35s_read(accuracy):
     assert mean["a"] == {"ring-ip": 1.66, "CH-stretch": 1.15, "CH-oop": 1.99, "other": 3.35, "coupling_ratio": 0.172}
     assert mean["b"] == {"ring-ip": 2.12, "CH-stretch": 2.5, "CH-oop": 2.7, "other": 3.89, "coupling_ratio": 0.263}
     a = accuracy["holdouts"]["a"]["readouts"]
-    assert a["other"]["within_target"] is False and a["ring-ip"]["within_target"] is True and a["CH-stretch"]["target"] is None
+    assert a["other"]["within_target"] is False and a["ring-ip"]["within_target"] is True and a["CH-stretch"]["target"] == 3.0
     assert len(a["other"]["seeds"]) == 3 and accuracy["holdouts"]["a"]["shape"]["n_molecules"] == 10
+
+
+def test_the_licence_follows_the_error_of_the_files_that_ran(accuracy):
+    """Decision 65: a family is licensed where its seed-mean error is within 3 cm⁻¹ on both hold-outs."""
+    s = licence.state(accuracy)
+    assert s["licensed_families"] == ["ring-ip", "CH-stretch", "CH-oop"] and "not licensed: other (3.35 / 3.89)" in s["statement"]
+
+
+def test_a_family_on_the_line_is_licensed_and_one_above_it_is_not(accuracy):
+    acc = copy.deepcopy(accuracy)
+    for h in ("a", "b"):
+        acc["holdouts"][h]["readouts"]["other"]["mean"] = 3.0
+    acc["holdouts"]["b"]["readouts"]["CH-oop"]["mean"] = 3.01
+    assert licence.state(acc)["licensed_families"] == ["ring-ip", "CH-stretch", "other"]
 
 
 @pytest.fixture
@@ -66,9 +83,10 @@ def record(d: Path, dH: np.ndarray, seeds: list[np.ndarray]) -> None:
 
 def test_a_zero_correction_pairs_each_band_with_its_own_b3lyp_mode(result, accuracy):
     record(result, ZERO, [ZERO])
-    rows = LC.bands(LC.load_result(result), accuracy, {})
+    rows = LC.bands(LC.load_result(result), accuracy, {}, ["ring-ip"])
     assert len(rows) == 30 and all(b["network_cm"] == b["b3lyp_cm"] for b in rows)
     assert [b["network_cm"] for b in rows] == sorted(b["network_cm"] for b in rows)
+    assert all(b["licensed"] == (b["family"] == "ring-ip") for b in rows)
     assert sum(b["family"] == "CH-stretch" for b in rows) == 6 and {b["family"] for b in rows} <= {"ring-ip", "CH-stretch", "CH-oop", "other"}
     assert all(b["error_cm"]["a"] == accuracy["holdouts"]["a"]["readouts"][b["family"]]["mean"] for b in rows)
     baseline = json.loads((result / "pipeline.json").read_text(encoding="utf-8"))["spectra"]["baseline"]["sticks"]
@@ -79,7 +97,7 @@ def test_the_bands_carry_the_recorded_positions_and_seed_ranges(result, accuracy
     dH, seeds = P.correction((PIN_MODEL, PIN_MODEL), result)
     record(result, dH, seeds)
     r = LC.load_result(result)
-    rows = LC.bands(r, accuracy, {"CH-stretch": {"u_band": 9.9}})
+    rows = LC.bands(r, accuracy, {"CH-stretch": {"u_band": 9.9}}, [])
     assert [b["network_cm"] for b in rows] == [s["omega_cm"] for s in r.record["spectra"]["network"]["sticks"]]
     assert all(b["seed_range_cm"] == [b["network_cm"]] * 2 for b in rows)
     assert {b["u_band_cm"] for b in rows if b["lab_region"] == "CH-stretch"} == {9.9}
@@ -91,7 +109,7 @@ def test_a_record_that_is_not_its_correction_is_refused(result, accuracy):
     rec["spectra"]["network"]["sticks"][5]["omega_cm"] += 1.0
     P.write_json(result / "pipeline.json", rec)
     with pytest.raises(RuntimeError, match="not the one H_low"):
-        LC.bands(LC.load_result(result), accuracy, {})
+        LC.bands(LC.load_result(result), accuracy, {}, [])
 
 
 def test_a_correction_of_other_models_is_refused(result):
