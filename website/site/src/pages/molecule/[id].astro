@@ -55,7 +55,7 @@ const notifyHref = `https://github.com/thebreadishard/spectrum-atlas/issues/new?
 
   <div class="cols">
     {lead === 'anchor' && <AnchorSpectrumCard name={row.name} anchor={mol.anchor_spectrum} comparison={mol.comparison} test={mol.test_prediction} cheap={cheapBands} wb97x={vib.wb97x.vibrational} validated={row.rung === 5} />}
-    {lead === 'cheap' && <CheapSpectrumCard name={row.name} bands={cheapBands} acc={summary.shape_accuracy} lead />}
+    {lead === 'cheap' && <CheapSpectrumCard name={row.name} bands={cheapBands} acc={summary.shape_accuracy} licence={summary.licence} lead />}
     {lead === 'positions' && <FrequenciesCard name={row.name} rows={rows} b3lyp={vib.b3lyp.vibrational} wb97x={vib.wb97x.vibrational} hasHeights={false} lead />}
     <aside class="side">
       <section class="card">
@@ -84,7 +84,7 @@ const notifyHref = `https://github.com/thebreadishard/spectrum-atlas/issues/new?
     </aside>
 
     <div class="mainc">
-      {lead === 'anchor' && heights && <CheapSpectrumCard name={row.name} bands={cheapBands} acc={summary.shape_accuracy} chart={false} />}
+      {lead === 'anchor' && heights && <CheapSpectrumCard name={row.name} bands={cheapBands} acc={summary.shape_accuracy} licence={summary.licence} chart={false} />}
       {lead !== 'positions' && <FrequenciesCard name={row.name} rows={rows} b3lyp={vib.b3lyp.vibrational} wb97x={vib.wb97x.vibrational} hasHeights={!!heights} />}
       {mol.second_route && (
         <section class="card">

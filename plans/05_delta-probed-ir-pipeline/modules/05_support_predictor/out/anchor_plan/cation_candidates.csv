@@ -1,0 +1,416 @@
+order,id,parent_id,name,parent_smiles,charge,multiplicity,n_atoms,functions_631gs,laptop_hours,peak_gb,short_cells_filled
+1,P3c_0d3f41fdd7,B_0d3f41fdd7,pyridine+F+F,Fc1ccnc(F)c1,1,2,11,126,0.9,2.6,duo/one/True; solo/one/True
+2,P3c_1d3b2b18f4,B_1d3b2b18f4,pyridine+OH+F,Oc1ccnc(F)c1,1,2,12,128,0.9,2.6,duo/one/True; solo/one/True
+3,P3c_15c7b83404,B_15c7b83404,benzene+F+F,Fc1cccc(F)c1,1,2,12,128,0.9,2.6,solo/one/False; trio/one/False
+4,P3c_0136646bcc,B_0136646bcc,pyridine+OH+F,Oc1cc(F)ccn1,1,2,12,128,0.9,2.6,duo/one/True; solo/one/True
+5,P3c_119d605f16,B_119d605f16,pyridine+F+Cl,Fc1ccncc1Cl,1,2,11,130,1.0,2.7,duo/one/True; solo/one/True
+6,P3c_178eb591f8,B_178eb591f8,pyridine+NH2+F,Nc1cc(F)ccn1,1,2,13,130,1.0,2.7,duo/one/True; solo/one/True
+7,P3c_0d2ba6f0a2,B_0d2ba6f0a2,pyridine+OH+Cl,Oc1ccc(Cl)nc1,1,2,12,132,1.0,2.8,duo/one/True; solo/one/True
+8,P3c_09903d4886,B_09903d4886,pyridine+F+SH,Fc1cc(S)ccn1,1,2,12,132,1.0,2.8,duo/one/True; solo/one/True
+9,P3c_07ec2a9c0a,B_07ec2a9c0a,pyridine+OH+Cl,Oc1cnccc1Cl,1,2,12,132,1.0,2.8,duo/one/True; solo/one/True
+10,P3c_05725db8c8,B_05725db8c8,pyridine+Cl+Cl,Clc1ccc(Cl)nc1,1,2,11,134,1.0,2.9,duo/one/True; solo/one/True
+11,P3c_2b54e8cd12,B_2b54e8cd12,benzene+F+SH,Fc1cccc(S)c1,1,2,13,134,1.0,2.9,solo/one/False; trio/one/False
+12,P3c_22bfadfa55,B_22bfadfa55,benzene+OH+Cl,Oc1cccc(Cl)c1,1,2,13,134,1.0,2.9,solo/one/False; trio/one/False
+13,P3c_225a7beec3,B_225a7beec3,pyridine+OH+SH,Oc1cnccc1S,1,2,13,134,1.0,2.9,duo/one/True; solo/one/True
+14,P3c_1216dad3c6,B_1216dad3c6,pyridine+OH+SH,Oc1ccc(S)cn1,1,2,13,134,1.0,2.9,duo/one/True; solo/one/True
+15,P3c_0cb4d08a36,B_0cb4d08a36,pyridine+CH3+OH,Cc1ccc(O)cn1,1,2,15,134,1.0,2.9,duo/one/True; solo/one/True
+16,P3c_d09f8d1ef8,A_d09f8d1ef8,isoquinoline,c1ccc2cnccc2c1,1,2,17,164,1.6,4.1,duo/two/True; quartet/two/True; solo/two/True
+17,P3c_1bc47ee69d,B_1bc47ee69d,pyridine+NH2+SH,Nc1cc(S)ccn1,1,2,14,136,1.1,2.9,duo/one/True; solo/one/True
+18,P3c_111f92e06f,B_111f92e06f,benzene+NH2+Cl,Nc1cccc(Cl)c1,1,2,14,136,1.1,2.9,solo/one/False; trio/one/False
+19,P3c_074560b50f,B_074560b50f,pyridine+CH3+Cl,Cc1ccc(Cl)cn1,1,2,14,136,1.1,2.9,duo/one/True; solo/one/True
+20,P3c_b3e57b2c2b,B_b3e57b2c2b,benzene+CH3+NH2,Cc1cccc(N)c1,1,2,17,138,1.1,3.0,solo/one/False; trio/one/False
+21,P3c_2f618c033e,B_2f618c033e,benzene+CH3+SH,Cc1cccc(S)c1,1,2,16,140,1.1,3.1,solo/one/False; trio/one/False
+22,P3c_0717014b9a,B_0717014b9a,pyridine+F+CHO,O=Cc1ccncc1F,1,2,13,143,1.2,3.2,duo/one/True; solo/one/True
+23,P3c_01c0791d3b,B_01c0791d3b,pyridine+F+ethynyl,C#Cc1cnccc1F,1,2,13,143,1.2,3.2,duo/one/True; solo/one/True
+24,P3c_145d007627,B_145d007627,pyridine+Cl+CN,N#Cc1ccc(Cl)nc1,1,2,12,145,1.2,3.3,duo/one/True; solo/one/True
+25,P3c_202805b415,B_202805b415,pyridine+OH+CHO,O=Cc1ccnc(O)c1,1,2,14,145,1.2,3.3,duo/one/True; solo/one/True
+26,P3c_0bbc6f1d9c,B_0bbc6f1d9c,pyridine+OH+ethynyl,C#Cc1ccc(O)nc1,1,2,14,145,1.2,3.3,duo/one/True; solo/one/True
+27,P3c_10592ae395,B_10592ae395,indole+CN,N#Cc1ccc2cc[nH]c2c1,1,2,17,177,1.8,4.7,duo/two-five/True; duo5/two-five/True; solo/two-five/True
+28,P3c_1c876480c2,B_1c876480c2,pyridine+Cl+CHO,O=Cc1ccc(Cl)cn1,1,2,13,147,1.3,3.4,duo/one/True; solo/one/True
+29,P3c_0c7af0766e,B_0c7af0766e,pyridine+Cl+ethynyl,C#Cc1cc(Cl)ccn1,1,2,13,147,1.3,3.4,duo/one/True; solo/one/True
+30,P3c_0bf8a96c79,B_0bf8a96c79,pyridine+CN+SH,N#Cc1cc(S)ccn1,1,2,13,147,1.3,3.4,duo/one/True; solo/one/True
+31,P3c_20a4446e5d,B_20a4446e5d,pyridine+NH2+ethynyl,C#Cc1cnccc1N,1,2,15,147,1.3,3.4,duo/one/True; solo/one/True
+32,P3c_1f2035ae2a,B_1f2035ae2a,pyridine+F+vinyl,C=Cc1ccncc1F,1,2,15,147,1.3,3.4,duo/one/True; solo/one/True
+33,P3c_0a751d3299,B_0a751d3299,pyridine+F+OCH3,COc1ccncc1F,1,2,15,147,1.3,3.4,duo/one/True; solo/one/True
+34,P3c_064bdd8c02,B_064bdd8c02,pyridine+NH2+ethynyl,C#Cc1ccc(N)cn1,1,2,15,147,1.3,3.4,duo/one/True; solo/one/True
+35,P3c_14ba9f1827,B_14ba9f1827,naphthalene+F,Fc1ccc2ccccc2c1,1,2,18,179,1.9,4.8,duo/two/False; quartet/two/False; solo/two/False
+36,P3c_0eba31ad8c,B_0eba31ad8c,quinoline+OH,Oc1ccc2cccnc2c1,1,2,18,179,1.9,4.8,duo/two/True; solo/two/True; trio/two/True
+37,P3c_1a63ca9865,B_1a63ca9865,quinoline+Cl,Clc1ccc2cccnc2c1,1,2,17,181,1.9,4.9,duo/two/True; solo/two/True; trio/two/True
+38,P3c_154f7909d4,B_154f7909d4,isoquinoline+NH2,Nc1cccc2ccncc12,1,2,19,181,1.9,4.9,duo/two/True; solo/two/True; trio/two/True
+39,P3c_0e6e44fe19,B_0e6e44fe19,pyridine+CHO+SH,O=Cc1ccc(S)nc1,1,2,14,149,1.3,3.5,duo/one/True; solo/one/True
+40,P3c_08f24eb4b9,B_08f24eb4b9,pyridine+CHO+SH,O=Cc1ccnc(S)c1,1,2,14,149,1.3,3.5,duo/one/True; solo/one/True
+41,P3c_0739708879,B_0739708879,pyridine+ethynyl+SH,C#Cc1ccnc(S)c1,1,2,14,149,1.3,3.5,duo/one/True; solo/one/True
+42,P3c_76e053ce6a,A_76e053ce6a,indole,c1ccc2[nH]ccc2c1,1,2,16,149,1.3,3.5,duo5/two-five/True; quartet/two-five/True
+43,P3c_6742691205,B_6742691205,naphthalene+Cl,Clc1ccc2ccccc2c1,1,2,18,183,2.0,5.0,duo/two/False; quartet/two/False; solo/two/False
+44,P3c_519351d19c,B_519351d19c,naphthalene+NH2,Nc1ccc2ccccc2c1,1,2,20,183,2.0,5.0,duo/two/False; quartet/two/False; solo/two/False
+45,P3c_90df3e4aa9,A_90df3e4aa9,indene,C1=Cc2ccccc2C1,1,2,17,151,1.3,3.5,duo5/two-five/False; quartet/two-five/False
+46,P3c_ec04732406,B_ec04732406,naphthalene+SH,Sc1ccc2ccccc2c1,1,2,19,185,2.0,5.1,duo/two/False; quartet/two/False; solo/two/False
+47,P3c_69789470db,A_69789470db,2-methylnaphthalene,Cc1ccc2ccccc2c1,1,2,21,185,2.0,5.1,duo/two/False; quartet/two/False; solo/two/False
+48,P3c_359e3d88aa,B_359e3d88aa,naphthalene+F+F,Fc1ccc2c(F)cccc2c1,1,2,18,192,2.2,5.4,duo/two/False; solo/two/False; trio/two/False
+49,P3c_a41f4cff9d,B_a41f4cff9d,naphthalene+CN,N#Cc1ccc2ccccc2c1,1,2,19,194,2.2,5.5,duo/two/False; quartet/two/False; solo/two/False
+50,P3c_19f9c67f31,B_19f9c67f31,indole+COOH,O=C(O)c1ccc2cc[nH]c2c1,1,2,19,194,2.2,5.5,duo/two-five/True; duo5/two-five/True; solo/two-five/True
+51,P3c_0db85f369d,B_0db85f369d,isoquinoline+ethynyl,C#Cc1cccc2ccncc12,1,2,19,194,2.2,5.5,duo/two/True; solo/two/True; trio/two/True
+52,P3c_0ae7f78374,B_0ae7f78374,naphthalene+OH+F,Oc1cccc2cc(F)ccc12,1,2,19,194,2.2,5.5,duo/two/False; solo/two/False; trio/two/False
+53,P3c_06946e6013,B_06946e6013,isoquinoline+CHO,O=Cc1cccc2cnccc12,1,2,19,194,2.2,5.5,duo/two/True; solo/two/True; trio/two/True
+54,P3c_186fd72d6b,B_186fd72d6b,benzene+OH+NO2,O=[N+]([O-])c1cccc(O)c1,1,2,15,160,1.5,3.9,solo/one/False; trio/one/False
+55,P3c_159cf9b398,B_159cf9b398,naphthalene+NH2+F,Nc1ccc2cccc(F)c2c1,1,2,20,196,2.3,5.6,duo/two/False; solo/two/False; trio/two/False
+56,P3c_d295f2fa80,A_d295f2fa80,quinazoline,c1ccc2ncncc2c1,1,2,16,162,1.5,4.0,quartet/two/True; solo/two/True
+57,P3c_7aa232d4e9,A_7aa232d4e9,quinoxaline,c1ccc2nccnc2c1,1,2,16,162,1.5,4.0,duo/two/True; quartet/two/True
+58,P3c_172a24dc77,B_172a24dc77,indole+F,Fc1cccc2cc[nH]c12,1,2,16,162,1.5,4.0,duo5/two-five/True; trio/two-five/True
+59,P3c_0f37d67d6d,B_0f37d67d6d,naphthalene+OH+Cl,Oc1cccc2cc(Cl)ccc12,1,2,19,198,2.3,5.7,duo/two/False; solo/two/False; trio/two/False
+60,P3c_60d7e6f2f9,B_60d7e6f2f9,naphthalene+OH+NH2,Nc1ccc2c(O)cccc2c1,1,2,21,198,2.3,5.7,duo/two/False; solo/two/False; trio/two/False
+61,P3c_5d5f51a3ae,B_5d5f51a3ae,naphthalene+OH+NH2,Nc1cccc2cc(O)ccc12,1,2,21,198,2.3,5.7,duo/two/False; solo/two/False; trio/two/False
+62,P3c_57e6bfe76a,B_57e6bfe76a,naphthalene+OH+NH2,Nc1cccc2ccc(O)cc12,1,2,21,198,2.3,5.7,duo/two/False; solo/two/False; trio/two/False
+63,P3c_3db4fe6829,B_3db4fe6829,benzene+OH,Oc1ccccc1,1,2,13,117,0.8,2.3,quintet/one/False
+64,P3c_1889fc389d,B_1889fc389d,naphthalene+Cl+Cl,Clc1ccc2c(Cl)cccc2c1,1,2,18,200,2.4,5.8,duo/two/False; solo/two/False; trio/two/False
+65,P3c_190a33a33e,B_190a33a33e,styrene+ethynyl,C#Cc1cccc(C=C)c1,1,2,18,166,1.6,4.2,solo/one/False; trio/one/False
+66,P3c_1c343b5a2a,B_1c343b5a2a,naphthalene+Cl+SH,Sc1cccc2cc(Cl)ccc12,1,2,19,202,2.4,5.9,duo/two/False; solo/two/False; trio/two/False
+67,P3c_149d544a5c,B_149d544a5c,naphthalene+NH2+SH,Nc1ccc2cccc(S)c2c1,1,2,21,202,2.4,5.9,duo/two/False; solo/two/False; trio/two/False
+68,P3c_0e3176269f,B_0e3176269f,naphthalene+CH3+Cl,ClCc1ccc2ccccc2c1,1,2,21,202,2.4,5.9,duo/two/False; quartet/two/False; solo/two/False
+69,P3c_e8d50a50b5,B_e8d50a50b5,naphthalene+CH3+NH2,Cc1ccc2cccc(N)c2c1,1,2,23,202,2.4,5.9,duo/two/False; solo/two/False; trio/two/False
+70,P3c_1ed01fda1b,B_1ed01fda1b,benzene+Cl,Clc1ccccc1,1,2,12,119,0.8,2.3,quintet/one/False
+71,P3c_02e7e53a1d,B_02e7e53a1d,benzene+CONH2+SH,NC(=O)c1cccc(S)c1,1,2,17,168,1.6,4.3,solo/one/False; trio/one/False
+72,P3c_01dbe38ea1,B_01dbe38ea1,indole+CH3,Cc1cc2ccccc2[nH]1,1,2,19,168,1.6,4.3,quartet/two-five/True; solo5/two-five/True
+73,P3c_0040149ee1,B_0040149ee1,indole+CH3,Cc1cccc2[nH]ccc12,1,2,19,168,1.6,4.3,duo5/two-five/True; trio/two-five/True
+74,P3c_fae1c8f737,A2_fae1c8f737,acenaphthylene+F,Fc1ccc2cccc3c2c1C=C3,1,2,20,209,2.6,6.3,duo/three+-five/False; duo5/three+-five/False; trio/three+-five/False
+75,P3c_6ef0482dac,A2_6ef0482dac,acenaphthylene+F,Fc1cc2c3c(cccc3c1)C=C2,1,2,20,209,2.6,6.3,duo5/three+-five/False; solo/three+-five/False; trio/three+-five/False
+76,P3c_6bd9a95b88,A2_6bd9a95b88,acenaphthylene+F,Fc1ccc2c3c(cccc13)C=C2,1,2,20,209,2.6,6.3,duo/three+-five/False; duo5/three+-five/False; trio/three+-five/False
+77,P3c_abff7c9519,A2_abff7c9519,acenaphthylene+OH,Oc1ccc2c3c(cccc13)C=C2,1,2,21,211,2.6,6.4,duo/three+-five/False; duo5/three+-five/False; trio/three+-five/False
+78,P3c_8524d4dcc4,A2_8524d4dcc4,acenaphthylene+OH,Oc1ccc2cccc3c2c1C=C3,1,2,21,211,2.6,6.4,duo/three+-five/False; duo5/three+-five/False; trio/three+-five/False
+79,P3c_2ade2a9b93,A2_2ade2a9b93,biphenylene+OH,Oc1ccc2c(c1)-c1ccccc1-2,1,2,21,211,2.6,6.4,duo/three+/False; quartet/three+/False; solo/three+/False
+80,P3c_1c7ee11812,A2_1c7ee11812,acenaphthylene+OH,Oc1cc2c3c(cccc3c1)C=C2,1,2,21,211,2.6,6.4,duo5/three+-five/False; solo/three+-five/False; trio/three+-five/False
+81,P3c_06067133dc,A2_06067133dc,quinoxaline+F,Fc1cccc2nccnc12,1,2,16,175,1.8,4.6,duo/two/True; trio/two/True
+82,P3c_517852b0ae,A2_517852b0ae,acenaphthylene+Cl,Clc1cc2c3c(cccc3c1)C=C2,1,2,20,213,2.7,6.5,duo5/three+-five/False; solo/three+-five/False; trio/three+-five/False
+83,P3c_3dab2fb010,A2_3dab2fb010,acenaphthylene+Cl,Clc1ccc2cccc3c2c1C=C3,1,2,20,213,2.7,6.5,duo/three+-five/False; duo5/three+-five/False; trio/three+-five/False
+84,P3c_196b4cd166,A2_196b4cd166,acenaphthylene+Cl,Clc1ccc2c3c(cccc13)C=C2,1,2,20,213,2.7,6.5,duo/three+-five/False; duo5/three+-five/False; trio/three+-five/False
+85,P3c_fde3f05746,A2_fde3f05746,acenaphthylene+NH2,Nc1ccc2c3c(cccc13)C=C2,1,2,22,213,2.7,6.5,duo/three+-five/False; duo5/three+-five/False; trio/three+-five/False
+86,P3c_f6f90e416b,A2_f6f90e416b,acenaphthylene+NH2,Nc1ccc2cccc3c2c1C=C3,1,2,22,213,2.7,6.5,duo/three+-five/False; duo5/three+-five/False; trio/three+-five/False
+87,P3c_981a8056e6,A2_981a8056e6,acenaphthylene+NH2,Nc1cc2c3c(cccc3c1)C=C2,1,2,22,213,2.7,6.5,duo5/three+-five/False; solo/three+-five/False; trio/three+-five/False
+88,P3c_0a7c8c539f,B_0a7c8c539f,pyridine+F+F,Fc1cccc(F)n1,1,2,11,126,0.9,2.6,trio/one/True
+89,P3c_6f9e18a9ee,A2_6f9e18a9ee,acenaphthylene+SH,Sc1cc2c3c(cccc3c1)C=C2,1,2,21,215,2.7,6.6,duo5/three+-five/False; solo/three+-five/False; trio/three+-five/False
+90,P3c_6b54d33fe5,A2_6b54d33fe5,acenaphthylene+SH,Sc1ccc2cccc3c2c1C=C3,1,2,21,215,2.7,6.6,duo/three+-five/False; duo5/three+-five/False; trio/three+-five/False
+91,P3c_34decc4ca8,A2_34decc4ca8,acenaphthylene+SH,Sc1ccc2c3c(cccc13)C=C2,1,2,21,215,2.7,6.6,duo/three+-five/False; duo5/three+-five/False; trio/three+-five/False
+92,P3c_40b320240f,A2_40b320240f,acenaphthylene+CH3,Cc1cc2c3c(cccc3c1)C=C2,1,2,23,215,2.7,6.6,duo5/three+-five/False; solo/three+-five/False; trio/three+-five/False
+93,P3c_3a2982dd85,A2_3a2982dd85,biphenylene+CH3,Cc1ccc2c(c1)-c1ccccc1-2,1,2,23,215,2.7,6.6,duo/three+/False; quartet/three+/False; solo/three+/False
+94,P3c_0d3c79f4c4,B_0d3c79f4c4,isoquinoline+F,Fc1cncc2ccccc12,1,2,17,177,1.8,4.7,quartet/two/True; solo/two/True
+95,P3c_019964a9ed,A2_019964a9ed,quinoxaline+OH,Oc1ccc2nccnc2c1,1,2,17,177,1.8,4.7,duo/two/True; solo/two/True
+96,P3c_00eeb8e5ed,A2_00eeb8e5ed,quinoxaline+OH,Oc1cnc2ccccc2n1,1,2,17,177,1.8,4.7,quartet/two/True; solo/two/True
+97,P3c_2f5e215666,A2_2f5e215666,quinoxaline+Cl,Clc1cnc2ccccc2n1,1,2,16,179,1.9,4.8,quartet/two/True; solo/two/True
+98,P3c_aa22880426,A_aa22880426,quinoline-N-oxide,[O-][n+]1cccc2ccccc21,1,2,18,179,1.9,4.8,quartet/two/True; trio/two/True
+99,P3c_96f5f1990a,B_96f5f1990a,naphthalene+F,Fc1cccc2ccccc12,1,2,18,179,1.9,4.8,quartet/two/False; trio/two/False
+100,P3c_222ec4b9bc,B_222ec4b9bc,isoquinoline+OH,Oc1ccc2cnccc2c1,1,2,18,179,1.9,4.8,duo/two/True; solo/two/True
+101,P3c_15636fe333,B_15636fe333,benzene+OCH3+NO2,COc1cccc([N+](=O)[O-])c1,1,2,18,179,1.9,4.8,solo/one/False; trio/one/False
+102,P3c_0a158816bd,A2_0a158816bd,quinoxaline+NH2,Nc1cccc2nccnc12,1,2,18,179,1.9,4.8,duo/two/True; trio/two/True
+103,P3c_0399263529,B_0399263529,quinoline+OH,Oc1ccnc2ccccc12,1,2,18,179,1.9,4.8,duo/two/True; quartet/two/True
+104,P3c_3740d0ba57,A2_3740d0ba57,quinoxaline+SH,Sc1ccc2nccnc2c1,1,2,17,181,1.9,4.9,duo/two/True; solo/two/True
+105,P3c_466972291d,A_466972291d,1-naphthol,Oc1cccc2ccccc12,1,2,19,181,1.9,4.9,quartet/two/False; trio/two/False
+106,P3c_3100da3761,B_3100da3761,benzene+CN,N#Cc1ccccc1,1,2,13,130,1.0,2.7,quintet/one/False
+107,P3c_0e2d4297fa,B_0e2d4297fa,pyridine+NH2+F,Nc1ncccc1F,1,2,13,130,1.0,2.7,trio/one/True
+108,P3c_128cc76fc9,B_128cc76fc9,quinoline+CF3,FC(F)(F)c1ccc2cccnc2c1,1,2,20,222,2.9,7.0,duo/two/True; solo/two/True; trio/two/True
+109,P3c_1a05c94d86,B_1a05c94d86,quinoline+SH,Sc1cnc2ccccc2c1,1,2,18,183,2.0,5.0,quartet/two/True; solo/two/True
+110,P3c_00b4b3d757,B_00b4b3d757,isoquinoline+SH,Sc1cc2ccccc2cn1,1,2,18,183,2.0,5.0,quartet/two/True; solo/two/True
+111,P3c_89ae0e3368,B_89ae0e3368,naphthalene+NH2,Nc1cccc2ccccc12,1,2,20,183,2.0,5.0,quartet/two/False; trio/two/False
+112,P3c_16d039918d,B_16d039918d,indole+OCH3,COc1c[nH]c2ccccc12,1,2,20,183,2.0,5.0,quartet/two-five/True; solo5/two-five/True
+113,P3c_16a32cf21e,B_16a32cf21e,quinoline+CH3,Cc1ccnc2ccccc12,1,2,20,183,2.0,5.0,duo/two/True; quartet/two/True
+114,P3c_079e66d017,B_079e66d017,isoquinoline+CH3,Cc1cncc2ccccc12,1,2,20,183,2.0,5.0,quartet/two/True; solo/two/True
+115,P3c_bb2673f9a4,A2_bb2673f9a4,acenaphthylene+CN,N#Cc1cc2c3c(cccc3c1)C=C2,1,2,21,224,3.0,7.1,duo5/three+-five/False; solo/three+-five/False; trio/three+-five/False
+116,P3c_8aee63833a,A2_8aee63833a,acenaphthylene+CN,N#Cc1ccc2cccc3c2c1C=C3,1,2,21,224,3.0,7.1,duo/three+-five/False; duo5/three+-five/False; trio/three+-five/False
+117,P3c_82cfd45c7d,A2_82cfd45c7d,acenaphthylene+CN,N#Cc1ccc2c3c(cccc13)C=C2,1,2,21,224,3.0,7.1,duo/three+-five/False; duo5/three+-five/False; trio/three+-five/False
+118,P3c_02145d28ae,B_02145d28ae,pyridine+OH+Cl,Oc1cccnc1Cl,1,2,12,132,1.0,2.8,trio/one/True
+119,P3c_a848c04a21,A_a848c04a21,phenylacetylene,C#Cc1ccccc1,1,2,14,132,1.0,2.8,quintet/one/False
+120,P3c_0f29139258,B_0f29139258,pyridine+CH3+F,Cc1ncccc1F,1,2,14,132,1.0,2.8,trio/one/True
+121,P3c_b540cb34e9,B_b540cb34e9,naphthalene+SH,Sc1cccc2ccccc12,1,2,19,185,2.0,5.1,quartet/two/False; trio/two/False
+122,P3c_ea73419366,A_ea73419366,1-methylnaphthalene,Cc1cccc2ccccc12,1,2,21,185,2.0,5.1,quartet/two/False; trio/two/False
+123,P3c_e5484f2f60,A2_e5484f2f60,acenaphthylene+CHO,O=Cc1ccc2c3c(cccc13)C=C2,1,2,22,226,3.0,7.2,duo/three+-five/False; duo5/three+-five/False; trio/three+-five/False
+124,P3c_d9b9b25bc7,A2_d9b9b25bc7,acenaphthylene+ethynyl,C#Cc1cc2c3c(cccc3c1)C=C2,1,2,22,226,3.0,7.2,duo5/three+-five/False; solo/three+-five/False; trio/three+-five/False
+125,P3c_a3755207ed,A2_a3755207ed,carbazole+F,Fc1ccc2c(c1)[nH]c1ccccc12,1,2,22,226,3.0,7.2,duo/three+-five/True; quartet/three+-five/True; solo/three+-five/True
+126,P3c_76e115d204,A2_76e115d204,acenaphthylene+ethynyl,C#Cc1ccc2cccc3c2c1C=C3,1,2,22,226,3.0,7.2,duo/three+-five/False; duo5/three+-five/False; trio/three+-five/False
+127,P3c_6c3d4c88ad,A2_6c3d4c88ad,carbazole+F,Fc1ccc2[nH]c3ccccc3c2c1,1,2,22,226,3.0,7.2,duo/three+-five/True; quartet/three+-five/True; solo/three+-five/True
+128,P3c_3a4d58eb26,A2_3a4d58eb26,acenaphthylene+CHO,O=Cc1ccc2cccc3c2c1C=C3,1,2,22,226,3.0,7.2,duo/three+-five/False; duo5/three+-five/False; trio/three+-five/False
+129,P3c_0b93df3e1a,A2_0b93df3e1a,acenaphthylene+CHO,O=Cc1cc2c3c(cccc3c1)C=C2,1,2,22,226,3.0,7.2,duo5/three+-five/False; solo/three+-five/False; trio/three+-five/False
+130,P3c_1692bdc459,B_1692bdc459,pyridine+Cl+Cl,Clc1cccc(Cl)n1,1,2,11,134,1.0,2.9,trio/one/True
+131,P3c_0ef083c41e,B_0ef083c41e,pyridine+NH2+Cl,Nc1cccnc1Cl,1,2,13,134,1.0,2.9,trio/one/True
+132,P3c_0bd0e0a52e,B_0bd0e0a52e,pyridine+NH2+NH2,Nc1cccnc1N,1,2,15,134,1.0,2.9,trio/one/True
+133,P3c_0bcbeb9f8c,B_0bcbeb9f8c,benzene+OH+NH2,Nc1ccccc1O,1,2,15,134,1.0,2.9,quartet/one/False
+134,P3c_f0780d039a,A2_f0780d039a,carbazole+OH,Oc1ccc2c(c1)[nH]c1ccccc12,1,2,23,228,3.1,7.3,duo/three+-five/True; quartet/three+-five/True; solo/three+-five/True
+135,P3c_c0d747f921,A2_c0d747f921,carbazole+OH,Oc1ccc2[nH]c3ccccc3c2c1,1,2,23,228,3.1,7.3,duo/three+-five/True; quartet/three+-five/True; solo/three+-five/True
+136,P3c_210c322595,A2_210c322595,fluorene+F,Fc1ccc2c(c1)Cc1ccccc1-2,1,2,23,228,3.1,7.3,duo/three+-five/False; quartet/three+-five/False; solo/three+-five/False
+137,P3c_a59abce698,A2_a59abce698,carbazole+Cl,Clc1ccc2[nH]c3ccccc3c2c1,1,2,22,230,3.2,7.4,duo/three+-five/True; quartet/three+-five/True; solo/three+-five/True
+138,P3c_724c683611,A2_724c683611,carbazole+Cl,Clc1ccc2c(c1)[nH]c1ccccc12,1,2,22,230,3.2,7.4,duo/three+-five/True; quartet/three+-five/True; solo/three+-five/True
+139,P3c_79b80d1cf3,A2_79b80d1cf3,carbazole+NH2,Nc1ccc2[nH]c3ccccc3c2c1,1,2,24,230,3.2,7.4,duo/three+-five/True; quartet/three+-five/True; solo/three+-five/True
+140,P3c_68ba3fb0df,A2_68ba3fb0df,carbazole+NH2,Nc1ccc2c(c1)[nH]c1ccccc12,1,2,24,230,3.2,7.4,duo/three+-five/True; quartet/three+-five/True; solo/three+-five/True
+141,P3c_3802542cb6,A2_3802542cb6,acenaphthylene+vinyl,C=Cc1ccc2c3c(cccc13)C=C2,1,2,24,230,3.2,7.4,duo/three+-five/False; duo5/three+-five/False; trio/three+-five/False
+142,P3c_2ca281c2d5,A2_2ca281c2d5,quinoxaline+CN,N#Cc1cccc2nccnc12,1,2,17,190,2.1,5.3,duo/two/True; trio/two/True
+143,P3c_071969578d,B_071969578d,benzene+CF3+ethynyl,C#Cc1cccc(C(F)(F)F)c1,1,2,17,190,2.1,5.3,solo/one/False; trio/one/False
+144,P3c_8f6ed7c002,A_8f6ed7c002,styrene,C=Cc1ccccc1,1,2,16,136,1.1,2.9,quintet/one/False
+145,P3c_0ec10fe103,B_0ec10fe103,benzene+NH2+NH2,Nc1ccccc1N,1,2,16,136,1.1,2.9,quartet/one/False
+146,P3c_08267d7c1c,B_08267d7c1c,pyridine+CH3+NH2,Cc1cccc(N)n1,1,2,16,136,1.1,2.9,trio/one/True
+147,P3c_22d0e8105c,A2_22d0e8105c,carbazole+SH,Sc1ccc2[nH]c3ccccc3c2c1,1,2,23,232,3.2,7.5,duo/three+-five/True; quartet/three+-five/True; solo/three+-five/True
+148,P3c_1b389dc1d8,A2_1b389dc1d8,fluorene+Cl,Clc1ccc2c(c1)-c1ccccc1C2,1,2,23,232,3.2,7.5,duo/three+-five/False; quartet/three+-five/False; solo/three+-five/False
+149,P3c_13bafae8e0,A2_13bafae8e0,carbazole+SH,Sc1ccc2c(c1)[nH]c1ccccc12,1,2,23,232,3.2,7.5,duo/three+-five/True; quartet/three+-five/True; solo/three+-five/True
+150,P3c_1c2781e93a,A2_1c2781e93a,fluorene+NH2,Nc1ccc2c(c1)-c1ccccc1C2,1,2,25,232,3.2,7.5,duo/three+-five/False; quartet/three+-five/False; solo/three+-five/False
+151,P3c_05f5ff045c,A2_05f5ff045c,fluorene+NH2,Nc1ccc2c(c1)Cc1ccccc1-2,1,2,25,232,3.2,7.5,duo/three+-five/False; quartet/three+-five/False; solo/three+-five/False
+152,P3c_32861fe1de,A2_32861fe1de,quinoxaline+CHO,O=Cc1cnc2ccccc2n1,1,2,18,192,2.2,5.4,quartet/two/True; solo/two/True
+153,P3c_084ecc6342,B_084ecc6342,isoquinoline+CN,N#Cc1ccc2ccncc2c1,1,2,18,192,2.2,5.4,duo/two/True; solo/two/True
+154,P3c_3b6ae59b2d,A2_3b6ae59b2d,fluorene+SH,Sc1ccc2c(c1)Cc1ccccc1-2,1,2,24,234,3.3,7.7,duo/three+-five/False; quartet/three+-five/False; solo/three+-five/False
+155,P3c_27edf7297c,A2_27edf7297c,fluorene+CH3,Cc1ccc2c(c1)Cc1ccccc1-2,1,2,26,234,3.3,7.7,duo/three+-five/False; quartet/three+-five/False; solo/three+-five/False
+156,P3c_21b688db0c,A2_21b688db0c,fluorene+CH3,Cc1ccc2c(c1)-c1ccccc1C2,1,2,26,234,3.3,7.7,duo/three+-five/False; quartet/three+-five/False; solo/three+-five/False
+157,P3c_0550b7e251,B_0550b7e251,benzene+CH3+Cl,Cc1ccc(Cl)cc1,1,2,15,138,1.1,3.0,duo/one/False
+158,P3c_db3788caa6,B_db3788caa6,benzene+CH3+NH2,Cc1ccccc1N,1,2,17,138,1.1,3.0,quartet/one/False
+159,P3c_d62c8648e6,B_d62c8648e6,benzene+CH3+NH2,NCc1ccccc1,1,2,17,138,1.1,3.0,quintet/one/False
+160,P3c_c66f269f67,B_c66f269f67,benzene+CH3+NH2,Cc1ccc(N)cc1,1,2,17,138,1.1,3.0,duo/one/False
+161,P3c_6aa211768a,B_6aa211768a,naphthalene+CN,N#Cc1cccc2ccccc12,1,2,19,194,2.2,5.5,quartet/two/False; trio/two/False
+162,P3c_1eccc74737,B_1eccc74737,quinoline+ethynyl,C#Cc1ccc2ccccc2n1,1,2,19,194,2.2,5.5,duo/two/True; quartet/two/True
+163,P3c_0cc073823e,B_0cc073823e,indole+COOH,O=C(O)c1cc2ccccc2[nH]1,1,2,19,194,2.2,5.5,quartet/two-five/True; solo5/two-five/True
+164,P3c_b90527ca2d,A_b90527ca2d,2-phenylpyridine,c1ccc(-c2ccccn2)cc1,1,2,21,198,2.3,5.7,quartet/two/True; quintet/two/True
+165,P3c_0674939e7f,A_0674939e7f,4-phenylpyridine,c1ccc(-c2ccncc2)cc1,1,2,21,198,2.3,5.7,duo/two/True; quintet/two/True
+166,P3c_c7459d6e8f,A2_c7459d6e8f,carbazole+CN,N#Cc1ccc2c(c1)[nH]c1ccccc12,1,2,23,241,3.5,8.1,duo/three+-five/True; quartet/three+-five/True; solo/three+-five/True
+167,P3c_33d8ee2f2f,A2_33d8ee2f2f,carbazole+CN,N#Cc1ccc2[nH]c3ccccc3c2c1,1,2,23,241,3.5,8.1,duo/three+-five/True; quartet/three+-five/True; solo/three+-five/True
+168,P3c_2ce877d5e9,A2_2ce877d5e9,phenanthridine+F,Fc1ccc2c(cnc3ccccc32)c1,1,2,23,241,3.5,8.1,duo/three+/True; quartet/three+/True; solo/three+/True
+169,P3c_192cd5911c,A2_192cd5911c,phenazine+Cl,Clc1ccc2nc3ccccc3nc2c1,1,2,22,243,3.5,8.2,duo/three+/True; quartet/three+/True; solo/three+/True
+170,P3c_bef8fb3f46,A2_bef8fb3f46,carbazole+ethynyl,C#Cc1ccc2c(c1)[nH]c1ccccc12,1,2,24,243,3.5,8.2,duo/three+-five/True; quartet/three+-five/True; solo/three+-five/True
+171,P3c_8e278face1,A2_8e278face1,carbazole+ethynyl,C#Cc1ccc2[nH]c3ccccc3c2c1,1,2,24,243,3.5,8.2,duo/three+-five/True; quartet/three+-five/True; solo/three+-five/True
+172,P3c_647bd1dd1b,A2_647bd1dd1b,carbazole+CHO,O=Cc1ccc2c(c1)[nH]c1ccccc12,1,2,24,243,3.5,8.2,duo/three+-five/True; quartet/three+-five/True; solo/three+-five/True
+173,P3c_4241274de1,A2_4241274de1,carbazole+CHO,O=Cc1ccc2[nH]c3ccccc3c2c1,1,2,24,243,3.5,8.2,duo/three+-five/True; quartet/three+-five/True; solo/three+-five/True
+174,P3c_3077af0137,A2_3077af0137,phenanthrene+F,Fc1ccc2c(ccc3ccccc32)c1,1,2,24,243,3.5,8.2,duo/three+/False; quartet/three+/False; solo/three+/False
+175,P3c_303433ef20,A2_303433ef20,anthracene+F,Fc1cccc2cc3ccccc3cc12,1,2,24,243,3.5,8.2,quartet/three+/False; solo/three+/False; trio/three+/False
+176,P3c_11a9a9ada2,A2_11a9a9ada2,phenanthridine+OH,Oc1ccc2c(cnc3ccccc32)c1,1,2,24,243,3.5,8.2,duo/three+/True; quartet/three+/True; solo/three+/True
+177,P3c_15538ae5a4,B_15538ae5a4,pyridine+F+CHO,O=Cc1cccnc1F,1,2,13,143,1.2,3.2,trio/one/True
+178,P3c_2a43bd67da,A2_2a43bd67da,phenanthridine+Cl,Clc1cccc2cnc3ccccc3c12,1,2,23,245,3.6,8.3,quartet/three+/True; solo/three+/True; trio/three+/True
+179,P3c_233ec9a78f,A2_233ec9a78f,acridine+Cl,Clc1ccc2nc3ccccc3cc2c1,1,2,23,245,3.6,8.3,duo/three+/True; quartet/three+/True; solo/three+/True
+180,P3c_0bf85f35e5,A2_0bf85f35e5,phenanthridine+Cl,Clc1cccc2c1cnc1ccccc12,1,2,23,245,3.6,8.3,quartet/three+/True; solo/three+/True; trio/three+/True
+181,P3c_0beab28c4f,A2_0beab28c4f,phenanthridine+Cl,Clc1ccc2c(c1)ncc1ccccc12,1,2,23,245,3.6,8.3,duo/three+/True; quartet/three+/True; solo/three+/True
+182,P3c_34db2b4f50,A2_34db2b4f50,phenanthridine+NH2,Nc1ccc2c(c1)ncc1ccccc12,1,2,25,245,3.6,8.3,duo/three+/True; quartet/three+/True; solo/three+/True
+183,P3c_1b3089a9c8,A2_1b3089a9c8,acridine+NH2,Nc1ccc2cc3ccccc3nc2c1,1,2,25,245,3.6,8.3,duo/three+/True; quartet/three+/True; solo/three+/True
+184,P3c_89b6724a77,B_89b6724a77,naphthalene+CH3+NH2,NCc1cccc2ccccc12,1,2,23,202,2.4,5.9,quartet/two/False; trio/two/False
+185,P3c_077b344788,B_077b344788,pyridine+Cl+CN,N#Cc1cccnc1Cl,1,2,12,145,1.2,3.3,trio/one/True
+186,P3c_1c26b0b4f7,B_1c26b0b4f7,benzene+F+CHO,O=Cc1ccc(F)cc1,1,2,14,145,1.2,3.3,duo/one/False
+187,P3c_158b1b764e,B_158b1b764e,pyridine+NH2+CN,N#Cc1cccnc1N,1,2,14,145,1.2,3.3,trio/one/True
+188,P3c_3c2cf09504,A2_3c2cf09504,phenanthrene+Cl,Clc1cccc2ccc3ccccc3c12,1,2,24,247,3.7,8.4,duo/three+/False; quartet/three+/False; trio/three+/False
+189,P3c_198d828af1,A2_198d828af1,phenanthridine+SH,Sc1cccc2c1ncc1ccccc12,1,2,24,247,3.7,8.4,quartet/three+/True; solo/three+/True; trio/three+/True
+190,P3c_d551b360c3,A_d551b360c3,1-aminoanthracene,Nc1cccc2cc3ccccc3cc12,1,2,26,247,3.7,8.4,quartet/three+/False; solo/three+/False; trio/three+/False
+191,P3c_3e6f108b14,A2_3e6f108b14,phenanthridine+CH3,Cc1ccc2c(cnc3ccccc32)c1,1,2,26,247,3.7,8.4,duo/three+/True; quartet/three+/True; solo/three+/True
+192,P3c_35fb26a423,A2_35fb26a423,phenanthridine+CH3,Cc1cccc2ncc3ccccc3c12,1,2,26,247,3.7,8.4,quartet/three+/True; solo/three+/True; trio/three+/True
+193,P3c_3250fa71cc,A2_3250fa71cc,phenanthridine+CH3,Cc1cccc2c1cnc1ccccc12,1,2,26,247,3.7,8.4,quartet/three+/True; solo/three+/True; trio/three+/True
+194,P3c_2607024fdf,A2_2607024fdf,carbazole+vinyl,C=Cc1ccc2c(c1)[nH]c1ccccc12,1,2,26,247,3.7,8.4,duo/three+-five/True; quartet/three+-five/True; solo/three+-five/True
+195,P3c_1e5e1afa5c,A2_1e5e1afa5c,phenanthridine+CH3,Cc1ccc2c(c1)ncc1ccccc12,1,2,26,247,3.7,8.4,duo/three+/True; quartet/three+/True; solo/three+/True
+196,P3c_1c29b66c9d,A2_1c29b66c9d,phenanthridine+CH3,Cc1ccc2cnc3ccccc3c2c1,1,2,26,247,3.7,8.4,duo/three+/True; quartet/three+/True; solo/three+/True
+197,P3c_14dee3bc02,A2_14dee3bc02,phenanthridine+CH3,Cc1cccc2c1ncc1ccccc12,1,2,26,247,3.7,8.4,quartet/three+/True; solo/three+/True; trio/three+/True
+198,P3c_306152f5f9,A2_306152f5f9,phenanthrene+SH,Sc1cccc2c1ccc1ccccc12,1,2,25,249,3.7,8.5,duo/three+/False; quartet/three+/False; trio/three+/False
+199,P3c_27130c4c79,A2_27130c4c79,fluorene+vinyl,C=Cc1ccc2c(c1)-c1ccccc1C2,1,2,27,249,3.7,8.5,duo/three+-five/False; quartet/three+-five/False; solo/three+-five/False
+200,P3c_1d6c152813,A2_1d6c152813,anthracene+CH3,Cc1ccc2cc3ccccc3cc2c1,1,2,27,249,3.7,8.5,duo/three+/False; quartet/three+/False; solo/three+/False
+201,P3c_13eea56ee5,A2_13eea56ee5,phenanthrene+CH3,Cc1ccc2ccc3ccccc3c2c1,1,2,27,249,3.7,8.5,duo/three+/False; quartet/three+/False; solo/three+/False
+202,P3c_3020175511,A2_3020175511,quinoxaline+NO2,O=[N+]([O-])c1cccc2nccnc12,1,2,18,205,2.5,6.1,duo/two/True; trio/two/True
+203,P3c_05374d6f0e,B_05374d6f0e,pyridine+F+OCH3,COc1ncccc1F,1,2,15,147,1.3,3.4,trio/one/True
+204,P3c_00bd5ba845,B_00bd5ba845,benzene+OH+CHO,O=Cc1ccccc1O,1,2,15,147,1.3,3.4,quartet/one/False
+205,P3c_27a2fd4324,B_27a2fd4324,benzene+Cl+CHO,O=Cc1ccc(Cl)cc1,1,2,14,149,1.3,3.5,duo/one/False
+206,P3c_19a3f44ae4,B_19a3f44ae4,benzene+CN+SH,N#Cc1ccc(S)cc1,1,2,14,149,1.3,3.5,duo/one/False
+207,P3c_74e12973b2,B_74e12973b2,benzene+NH2+ethynyl,C#Cc1ccccc1N,1,2,16,149,1.3,3.5,quartet/one/False
+208,P3c_410ac0fb2f,B_410ac0fb2f,benzene+NH2+ethynyl,C#Cc1ccc(N)cc1,1,2,16,149,1.3,3.5,duo/one/False
+209,P3c_1c8899b178,B_1c8899b178,benzene+NH2+CHO,Nc1ccc(C=O)cc1,1,2,16,149,1.3,3.5,duo/one/False
+210,P3c_1b617b5ca4,B_1b617b5ca4,pyridine+OH+OCH3,COc1cccnc1O,1,2,16,149,1.3,3.5,trio/one/True
+211,P3c_1274d1530a,B_1274d1530a,pyridine+CH3+ethynyl,C#Cc1cccc(C)n1,1,2,16,149,1.3,3.5,trio/one/True
+212,P3c_0d77d0bfe1,B_0d77d0bfe1,pyridine+vinyl+OH,C=C(O)c1ccccn1,1,2,16,149,1.3,3.5,quartet/one/True
+213,P3c_1ff7551053,A2_1ff7551053,biphenylene+CF3,FC(F)(F)c1ccc2c(c1)-c1ccccc1-2,1,2,23,254,3.9,8.8,duo/three+/False; quartet/three+/False; solo/three+/False
+214,P3c_2354759bfb,A2_2354759bfb,quinoxaline+CONH2,NC(=O)c1ccc2nccnc2c1,1,2,20,209,2.6,6.3,duo/two/True; solo/two/True
+215,P3c_09cd76b64e,B_09cd76b64e,quinoline+COOH,O=C(O)c1cnc2ccccc2c1,1,2,20,209,2.6,6.3,quartet/two/True; solo/two/True
+216,P3c_75e1c7ea18,A2_75e1c7ea18,carbazole+NO2,O=[N+]([O-])c1ccc2c(c1)[nH]c1ccccc12,1,2,24,256,3.9,9.0,duo/three+-five/True; quartet/three+-five/True; solo/three+-five/True
+217,P3c_4e67457271,A2_4e67457271,carbazole+NO2,O=[N+]([O-])c1ccc2[nH]c3ccccc3c2c1,1,2,24,256,3.9,9.0,duo/three+-five/True; quartet/three+-five/True; solo/three+-five/True
+218,P3c_3468258fcf,A2_3468258fcf,phenanthridine+CN,N#Cc1ccc2cnc3ccccc3c2c1,1,2,24,256,3.9,9.0,duo/three+/True; quartet/three+/True; solo/three+/True
+219,P3c_1fa17eaaa2,A2_1fa17eaaa2,phenanthridine+CN,N#Cc1ccc2c(c1)ncc1ccccc12,1,2,24,256,3.9,9.0,duo/three+/True; quartet/three+/True; solo/three+/True
+220,P3c_1b0ef60572,A2_1b0ef60572,phenanthridine+CN,N#Cc1cccc2c1cnc1ccccc12,1,2,24,256,3.9,9.0,quartet/three+/True; solo/three+/True; trio/three+/True
+221,P3c_0ae8c5746d,A2_0ae8c5746d,acridine+CN,N#Cc1ccc2nc3ccccc3cc2c1,1,2,24,256,3.9,9.0,duo/three+/True; quartet/three+/True; solo/three+/True
+222,P3c_05e08111d2,A2_05e08111d2,phenazine+CHO,O=Cc1ccc2nc3ccccc3nc2c1,1,2,24,256,3.9,9.0,duo/three+/True; quartet/three+/True; solo/three+/True
+223,P3c_05a9e0e4c8,A2_05a9e0e4c8,phenanthridine+CN,N#Cc1ccc2c(cnc3ccccc32)c1,1,2,24,256,3.9,9.0,duo/three+/True; quartet/three+/True; solo/three+/True
+224,P3c_1863d5f90f,B_1863d5f90f,isoquinoline+CONH2,NC(=O)c1ccc2cnccc2c1,1,2,21,211,2.6,6.4,duo/two/True; solo/two/True
+225,P3c_ff62f88395,P3_ff62f88395,aza-fluoranthene-4,c1ccc2c(c1)-c1cccc3cncc-2c13,1,2,25,258,4.0,9.1,quartet/three+-five/True; solo/three+-five/True; trio/three+-five/True
+226,P3c_b36c153df2,P3_b36c153df2,aza-pyrene-3,c1cc2ccc3cccc4ncc(c1)c2c34,1,2,25,258,4.0,9.1,duo/three+/True; solo/three+/True; trio/three+/True
+227,P3c_97c2db1a08,P3_97c2db1a08,aza-pyrene-1,c1cc2ccc3cncc4ccc(c1)c2c34,1,2,25,258,4.0,9.1,duo/three+/True; solo/three+/True; trio/three+/True
+228,P3c_5592613777,P3_5592613777,aza-fluoranthene-1,c1cc2c3c(cccc3c1)-c1cnccc1-2,1,2,25,258,4.0,9.1,duo/three+-five/True; solo/three+-five/True; trio/three+-five/True
+229,P3c_3b49468c8c,A2_3b49468c8c,phenanthrene+CN,N#Cc1cccc2c1ccc1ccccc12,1,2,25,258,4.0,9.1,duo/three+/False; quartet/three+/False; trio/three+/False
+230,P3c_2e154f6054,A2_2e154f6054,fluorene+NO2,O=[N+]([O-])c1ccc2c(c1)-c1ccccc1C2,1,2,25,258,4.0,9.1,duo/three+-five/False; quartet/three+-five/False; solo/three+-five/False
+231,P3c_253cbb1c94,A2_253cbb1c94,carbazole+COOH,O=C(O)c1ccc2c(c1)[nH]c1ccccc12,1,2,25,258,4.0,9.1,duo/three+-five/True; quartet/three+-five/True; solo/three+-five/True
+232,P3c_1eeb0a54f6,A2_1eeb0a54f6,phenanthridine+CHO,O=Cc1ccc2c(cnc3ccccc32)c1,1,2,25,258,4.0,9.1,duo/three+/True; quartet/three+/True; solo/three+/True
+233,P3c_1e3ee2b3a8,A2_1e3ee2b3a8,carbazole+COOH,O=C(O)c1ccc2[nH]c3ccccc3c2c1,1,2,25,258,4.0,9.1,duo/three+-five/True; quartet/three+-five/True; solo/three+-five/True
+234,P3c_1e34c6eeef,P3_1e34c6eeef,aza-fluoranthene-5,c1ccc2c(c1)-c1cccc3nccc-2c13,1,2,25,258,4.0,9.1,duo/three+-five/True; quartet/three+-five/True; trio/three+-five/True
+235,P3c_1ba8fe779a,P3_1ba8fe779a,aza-fluoranthene-3,c1ccc2c(c1)-c1cccc3ccnc-2c13,1,2,25,258,4.0,9.1,duo/three+-five/True; quartet/three+-five/True; trio/three+-five/True
+236,P3c_1b2d1b7caf,A2_1b2d1b7caf,phenanthridine+CHO,O=Cc1cccc2c1ncc1ccccc12,1,2,25,258,4.0,9.1,quartet/three+/True; solo/three+/True; trio/three+/True
+237,P3c_1a3e9f41ee,A2_1a3e9f41ee,acridine+ethynyl,C#Cc1ccc2nc3ccccc3cc2c1,1,2,25,258,4.0,9.1,duo/three+/True; quartet/three+/True; solo/three+/True
+238,P3c_13a0f8f47e,A2_13a0f8f47e,phenanthridine+ethynyl,C#Cc1ccc2cnc3ccccc3c2c1,1,2,25,258,4.0,9.1,duo/three+/True; quartet/three+/True; solo/three+/True
+239,P3c_12deece5a3,A2_12deece5a3,phenanthridine+ethynyl,C#Cc1ccc2c(c1)ncc1ccccc12,1,2,25,258,4.0,9.1,duo/three+/True; quartet/three+/True; solo/three+/True
+240,P3c_101910c9ef,A2_101910c9ef,phenanthridine+CHO,O=Cc1ccc2cnc3ccccc3c2c1,1,2,25,258,4.0,9.1,duo/three+/True; quartet/three+/True; solo/three+/True
+241,P3c_0f86544b37,A2_0f86544b37,phenanthrene+CN,N#Cc1cccc2ccc3ccccc3c12,1,2,25,258,4.0,9.1,duo/three+/False; quartet/three+/False; trio/three+/False
+242,P3c_8e68ad97ce,B_8e68ad97ce,naphthalene+CONH2,NC(=O)c1cccc2ccccc12,1,2,22,213,2.7,6.5,quartet/two/False; trio/two/False
+243,P3c_2ef47ebcc1,A2_2ef47ebcc1,anthracene+ethynyl,C#Cc1ccc2cc3ccccc3cc2c1,1,2,26,260,4.1,9.2,duo/three+/False; quartet/three+/False; solo/three+/False
+244,P3c_0ed4bfb28a,A2_0ed4bfb28a,carbazole+CONH2,NC(=O)c1ccc2[nH]c3ccccc3c2c1,1,2,26,260,4.1,9.2,duo/three+-five/True; quartet/three+-five/True; solo/three+-five/True
+245,P3c_73ddb2ccf8,B_73ddb2ccf8,styrene+NH2,C=C(N)c1ccccc1,1,2,18,153,1.4,3.6,quintet/one/False
+246,P3c_13389872a4,B_13389872a4,benzene+NH2+OCH3,COc1ccc(N)cc1,1,2,18,153,1.4,3.6,duo/one/False
+247,P3c_0cd01dba4e,B_0cd01dba4e,pyridine+CH3+OCH3,COc1cccnc1C,1,2,18,153,1.4,3.6,trio/one/True
+248,P3c_2c692b5995,B_2c692b5995,biphenyl+OH,Oc1ccccc1-c1ccccc1,1,2,23,215,2.7,6.6,quartet/two/False; quintet/two/False
+249,P3c_1f674de40a,B_1f674de40a,benzene+CH3+OCH3,COCc1ccccc1,1,2,19,155,1.4,3.7,quintet/one/False
+250,P3c_25e55c7a83,A2_25e55c7a83,phenanthrene+vinyl,C=Cc1ccc2c(ccc3ccccc32)c1,1,2,28,264,4.2,9.5,duo/three+/False; quartet/three+/False; solo/three+/False
+251,P3c_0e479d2c02,B_0e479d2c02,benzene+CF3+CF3,FC(F)(F)c1cccc(C(F)(F)F)c1,1,2,18,218,2.8,6.8,solo/one/False; trio/one/False
+252,P3c_54841c6688,B_54841c6688,biphenyl+SH,Sc1ccccc1-c1ccccc1,1,2,23,219,2.9,6.8,quartet/two/False; quintet/two/False
+253,P3c_1e9434eced,B_1e9434eced,biphenyl+CH3,Cc1ccccc1-c1ccccc1,1,2,25,219,2.9,6.8,quartet/two/False; quintet/two/False
+254,P3c_1249219829,B_1249219829,pyridine+CN+ethynyl,C#Cc1cccnc1C#N,1,2,14,158,1.5,3.8,trio/one/True
+255,P3c_1160b8978d,B_1160b8978d,isoquinoline+CF3,FC(F)(F)c1cc2ccccc2cn1,1,2,20,222,2.9,7.0,quartet/two/True; solo/two/True
+256,P3c_0998455905,B_0998455905,isoquinoline+CF3,FC(F)(F)c1ccc2ccncc2c1,1,2,20,222,2.9,7.0,duo/two/True; solo/two/True
+257,P3c_446a207ce8,A2_446a207ce8,carbazole+CF3,FC(F)(F)c1ccc2c(c1)[nH]c1ccccc12,1,2,25,271,4.4,9.9,duo/three+-five/True; quartet/three+-five/True; solo/three+-five/True
+258,P3c_2cf97d4a75,A2_2cf97d4a75,carbazole+CF3,FC(F)(F)c1ccc2[nH]c3ccccc3c2c1,1,2,25,271,4.4,9.9,duo/three+-five/True; quartet/three+-five/True; solo/three+-five/True
+259,P3c_0ef0a3a61c,A2_0ef0a3a61c,biphenylene+CN,N#Cc1cccc2c1-c1ccccc1-2,1,2,21,224,3.0,7.1,quartet/three+/False; trio/three+/False
+260,P3c_545ba22a6a,A2_545ba22a6a,pyrene+F,Fc1cc2cccc3ccc4cccc1c4c32,1,2,26,273,4.5,10.0,duo/three+/False; solo/three+/False; trio/three+/False
+261,P3c_220d2c107b,A2_220d2c107b,phenanthrene+NO2,O=[N+]([O-])c1cccc2ccc3ccccc3c12,1,2,26,273,4.5,10.0,duo/three+/False; quartet/three+/False; trio/three+/False
+262,P3c_11c681aefb,A2_11c681aefb,fluorene+CF3,FC(F)(F)c1ccc2c(c1)-c1ccccc1C2,1,2,26,273,4.5,10.0,duo/three+-five/False; quartet/three+-five/False; solo/three+-five/False
+263,P3c_e4ae65b774,A2_e4ae65b774,carbazole+F,Fc1cccc2c1[nH]c1ccccc12,1,2,22,226,3.0,7.2,quartet/three+-five/True; trio/three+-five/True
+264,P3c_718fd3b85e,A2_718fd3b85e,carbazole+F,Fc1cccc2[nH]c3ccccc3c12,1,2,22,226,3.0,7.2,quartet/three+-five/True; trio/three+-five/True
+265,P3c_32e53836ea,A2_32e53836ea,biphenylene+CHO,O=Cc1cccc2c1-c1ccccc1-2,1,2,22,226,3.0,7.2,quartet/three+/False; trio/three+/False
+266,P3c_26664f6a75,A2_26664f6a75,biphenylene+ethynyl,C#Cc1cccc2c1-c1ccccc1-2,1,2,22,226,3.0,7.2,quartet/three+/False; trio/three+/False
+267,P3c_fe568a45a8,A2_fe568a45a8,pyrene+OH,Oc1cc2ccc3cccc4ccc(c1)c2c34,1,2,27,275,4.6,10.2,duo/three+/False; solo/three+/False; trio/three+/False
+268,P3c_02083cff69,B_02083cff69,pyridine+NO2+SH,O=[N+]([O-])c1ncccc1S,1,2,14,162,1.5,4.0,trio/one/True
+269,P3c_145ae84fff,B_145ae84fff,benzene+F+CONH2,NC(=O)c1ccc(F)cc1,1,2,16,162,1.5,4.0,duo/one/False
+270,P3c_060d1b49f7,B_060d1b49f7,benzene+OH+COOH,O=C(O)c1ccccc1O,1,2,16,162,1.5,4.0,quartet/one/False
+271,P3c_05ad14fc69,B_05ad14fc69,pyridine+OH+CONH2,NC(=O)c1ncccc1O,1,2,16,162,1.5,4.0,trio/one/True
+272,P3c_c8e297718b,A2_c8e297718b,pyrene+Cl,Clc1cc2cccc3ccc4cccc1c4c32,1,2,26,277,4.6,10.3,duo/three+/False; solo/three+/False; trio/three+/False
+273,P3c_93b01a9fe6,A2_93b01a9fe6,pyrene+Cl,Clc1cc2ccc3cccc4ccc(c1)c2c34,1,2,26,277,4.6,10.3,duo/three+/False; solo/three+/False; trio/three+/False
+274,P3c_1f9c62c3b1,P3_1f9c62c3b1,aza-fluoranthene-4+SH,Sc1ccc2c3c(cncc13)-c1ccccc1-2,1,2,26,277,4.6,10.3,duo/three+-five/True; quartet/three+-five/True; solo/three+-five/True
+275,P3c_a7c4ac38b3,A2_a7c4ac38b3,pyrene+NH2,Nc1cc2cccc3ccc4cccc1c4c32,1,2,28,277,4.6,10.3,duo/three+/False; solo/three+/False; trio/three+/False
+276,P3c_a446301566,A2_a446301566,pyrene+NH2,Nc1cc2ccc3cccc4ccc(c1)c2c34,1,2,28,277,4.6,10.3,duo/three+/False; solo/three+/False; trio/three+/False
+277,P3c_25794fedc5,P3_25794fedc5,aza-fluoranthene-1+CH3,Cc1cc2c3c(cccc3c1)-c1ccncc1-2,1,2,28,277,4.6,10.3,duo/three+-five/True; solo/three+-five/True; trio/three+-five/True
+278,P3c_889a6ca5bb,B_889a6ca5bb,biphenyl+CN,N#Cc1cccc(-c2ccccc2)c1,1,2,23,228,3.1,7.3,quintet/two/False; solo/two/False; trio/two/False
+279,P3c_1cd7193f23,B_1cd7193f23,pyridine+NH2+CONH2,NC(=O)c1ncccc1N,1,2,17,164,1.6,4.1,trio/one/True
+280,P3c_1b89c6ed91,B_1b89c6ed91,pyridine+vinyl+ethynyl,C#CC(=C)c1cccnc1,1,2,17,164,1.6,4.1,solo/one/True; trio/one/True
+281,P3c_1a89d2e805,B_1a89d2e805,pyridine+CHO+vinyl,C=Cc1ncccc1C=O,1,2,17,164,1.6,4.1,trio/one/True
+282,P3c_19305ef5e7,B_19305ef5e7,pyridine+OCH3+ethynyl,C#Cc1ncccc1OC,1,2,17,164,1.6,4.1,trio/one/True
+283,P3c_0ee42ff100,B_0ee42ff100,pyridine+vinyl+ethynyl,C#Cc1cccnc1C=C,1,2,17,164,1.6,4.1,trio/one/True
+284,P3c_0801dcb071,B_0801dcb071,pyridine+CHO+vinyl,C=Cc1cccnc1C=O,1,2,17,164,1.6,4.1,trio/one/True
+285,P3c_07f1917382,B_07f1917382,pyridine+CHO+vinyl,C=CC(=O)c1ccccn1,1,2,17,164,1.6,4.1,quartet/one/True
+286,P3c_030bfc8836,B_030bfc8836,pyridine+CHO+OCH3,COC(=O)c1cccnc1,1,2,17,164,1.6,4.1,solo/one/True; trio/one/True
+287,P3c_32a4ec61cd,B_32a4ec61cd,biphenyl+CHO,O=Cc1ccccc1-c1ccccc1,1,2,24,230,3.2,7.4,quartet/two/False; quintet/two/False
+288,P3c_2b5b5007ee,B_2b5b5007ee,biphenyl+CHO,O=Cc1cccc(-c2ccccc2)c1,1,2,24,230,3.2,7.4,quintet/two/False; solo/two/False; trio/two/False
+289,P3c_26a9174202,A2_26a9174202,biphenylene+OCH3,COc1cccc2c1-c1ccccc1-2,1,2,24,230,3.2,7.4,quartet/three+/False; trio/three+/False
+290,P3c_202963092d,A2_202963092d,acenaphthylene+OCH3,COc1cc2c3c(cccc3c1)C=C2,1,2,24,230,3.2,7.4,duo5/three+-five/False; solo/three+-five/False; trio/three+-five/False
+291,P3c_199b58057a,B_199b58057a,naphthalene+vinyl+CHO,C=C(C=O)c1cccc2ccccc12,1,2,24,230,3.2,7.4,quartet/two/False; trio/two/False
+292,P3c_17a2b8d8c5,B_17a2b8d8c5,naphthalene+CH3+COOH,O=C(O)Cc1cccc2ccccc12,1,2,24,230,3.2,7.4,quartet/two/False; trio/two/False
+293,P3c_1767c744aa,A2_1767c744aa,acenaphthylene+OCH3,COc1ccc2cccc3c2c1C=C3,1,2,24,230,3.2,7.4,duo/three+-five/False; duo5/three+-five/False; trio/three+-five/False
+294,P3c_11d7cdeab0,A2_11d7cdeab0,acenaphthylene+OCH3,COc1ccc2c3c(cccc13)C=C2,1,2,24,230,3.2,7.4,duo/three+-five/False; duo5/three+-five/False; trio/three+-five/False
+295,P3c_20d259a841,B_20d259a841,pyridine+CONH2+SH,NC(=O)c1cccnc1S,1,2,16,166,1.6,4.2,trio/one/True
+296,P3c_026a2accef,B_026a2accef,benzene+NH2+CONH2,NC(=O)c1ccc(N)cc1,1,2,18,166,1.6,4.2,duo/one/False
+297,P3c_c63c804e73,B_c63c804e73,biphenyl+OCH3,COc1ccccc1-c1ccccc1,1,2,26,234,3.3,7.7,quartet/two/False; quintet/two/False
+298,P3c_9d342d5ce6,B_9d342d5ce6,biphenyl+OCH3,COc1cccc(-c2ccccc2)c1,1,2,26,234,3.3,7.7,quintet/two/False; solo/two/False; trio/two/False
+299,P3c_26f4a2441f,B_26f4a2441f,biphenyl+vinyl,C=Cc1ccccc1-c1ccccc1,1,2,26,234,3.3,7.7,quartet/two/False; quintet/two/False
+300,P3c_0b42d1fb9e,B_0b42d1fb9e,benzene+CONH2+SH,NC(=O)c1ccccc1S,1,2,17,168,1.6,4.3,quartet/one/False
+301,P3c_0f946732f8,P3_0f946732f8,aza-fluoranthene-1+CN,N#Cc1cc2c3c(cccc3c1)-c1cnccc1-2,1,2,26,286,5.0,10.9,duo/three+-five/True; solo/three+-five/True; trio/three+-five/True
+302,P3c_05aa97d0f9,B_05aa97d0f9,styrene+OCH3,C=Cc1ccc(OC)cc1,1,2,20,170,1.7,4.4,duo/one/False
+303,P3c_8907ebc1b5,A2_8907ebc1b5,acenaphthylene+NO2,O=[N+]([O-])c1cc2c3c(cccc3c1)C=C2,1,2,22,239,3.4,7.9,duo5/three+-five/False; solo/three+-five/False; trio/three+-five/False
+304,P3c_6989149001,A2_6989149001,acenaphthylene+NO2,O=[N+]([O-])c1ccc2cccc3c2c1C=C3,1,2,22,239,3.4,7.9,duo/three+-five/False; duo5/three+-five/False; trio/three+-five/False
+305,P3c_3a06a80d61,A2_3a06a80d61,biphenylene+NO2,O=[N+]([O-])c1cccc2c1-c1ccccc1-2,1,2,22,239,3.4,7.9,quartet/three+/False; trio/three+/False
+306,P3c_177784139f,A2_177784139f,phenazine+OH,Oc1cccc2nc3ccccc3nc12,1,2,23,241,3.5,8.1,quartet/three+/True; trio/three+/True
+307,P3c_19778f77bd,B_19778f77bd,pyridine+NO2+ethynyl,C#Cc1cccnc1[N+](=O)[O-],1,2,15,173,1.8,4.5,trio/one/True
+308,P3c_00d49961e3,B_00d49961e3,benzene+F+CF3,Fc1ccccc1C(F)(F)F,1,2,15,173,1.8,4.5,quartet/one/False
+309,P3c_221bc30690,A2_221bc30690,phenazine+Cl,Clc1cccc2nc3ccccc3nc12,1,2,22,243,3.5,8.2,quartet/three+/True; trio/three+/True
+310,P3c_223abbbf04,B_223abbbf04,biphenyl+NO2,O=[N+]([O-])c1cccc(-c2ccccc2)c1,1,2,24,243,3.5,8.2,quintet/two/False; solo/two/False; trio/two/False
+311,P3c_203469b3b3,B_203469b3b3,benzene+NO2+ethynyl,C#Cc1ccccc1[N+](=O)[O-],1,2,16,175,1.8,4.6,quartet/one/False
+312,P3c_130c5d839d,B_130c5d839d,pyridine+NH2+CF3,Nc1ncccc1C(F)(F)F,1,2,16,175,1.8,4.6,trio/one/True
+313,P3c_0af11315e3,B_0af11315e3,pyridine+CHO+COOH,O=Cc1cccc(C(=O)O)n1,1,2,16,175,1.8,4.6,trio/one/True
+314,P3c_02b3315726,B_02b3315726,quinoline+OH,Oc1cccc2cccnc12,1,2,18,179,1.9,4.8,trio/two/True
+315,P3c_0038ff1d79,B_0038ff1d79,styrene+NO2,C=C(c1ccccc1)[N+](=O)[O-],1,2,18,179,1.9,4.8,quintet/one/False
+316,P3c_07d8ec57e7,B_07d8ec57e7,quinoline+SH,Sc1cccc2cccnc12,1,2,18,183,2.0,5.0,trio/two/True
+317,P3c_0bb6c41350,P3_0bb6c41350,aza-pyrene-2,c1cc2ccc3ccnc4ccc(c1)c2c34,1,2,25,258,4.0,9.1,duo/three+/True; trio/three+/True
+318,P3c_0a9abc7d70,B_0a9abc7d70,quinoline+CN,N#Cc1cccc2cccnc12,1,2,18,192,2.2,5.4,trio/two/True
+319,P3c_abcb2cfa5c,A2_abcb2cfa5c,fluoranthene+OH,Oc1cc2c3c(cccc3c1)-c1ccccc1-2,1,2,27,275,4.6,10.2,quartet/three+-five/False; solo/three+-five/False; trio/three+-five/False
+320,P3c_05bafac3c6,B_05bafac3c6,quinoline+OCH3,COc1cccc2ncccc12,1,2,21,198,2.3,5.7,trio/two/True
+321,P3c_8cb80a9eb5,A2_8cb80a9eb5,fluoranthene+Cl,Clc1cc2c3c(cccc3c1)-c1ccccc1-2,1,2,26,277,4.6,10.3,quartet/three+-five/False; solo/three+-five/False; trio/three+-five/False
+322,P3c_a44dc7e358,A2_a44dc7e358,fluoranthene+NH2,Nc1cc2c3c(cccc3c1)-c1ccccc1-2,1,2,28,277,4.6,10.3,quartet/three+-five/False; solo/three+-five/False; trio/three+-five/False
+323,P3c_f050f29a85,A2_f050f29a85,pyrene+SH,Sc1cc2ccc3cccc4ccc(c1)c2c34,1,2,27,279,4.7,10.4,duo/three+/False; solo/three+/False; trio/three+/False
+324,P3c_bd2f772579,A2_bd2f772579,fluoranthene+SH,Sc1cc2c3c(cccc3c1)-c1ccccc1-2,1,2,27,279,4.7,10.4,quartet/three+-five/False; solo/three+-five/False; trio/three+-five/False
+325,P3c_35abf04801,A2_35abf04801,pyrene+SH,Sc1cc2cccc3ccc4cccc1c4c32,1,2,27,279,4.7,10.4,duo/three+/False; solo/three+/False; trio/three+/False
+326,P3c_d132085db5,A2_d132085db5,pyrene+CH3,Cc1cc2cccc3ccc4cccc1c4c32,1,2,29,279,4.7,10.4,duo/three+/False; solo/three+/False; trio/three+/False
+327,P3c_2b693cf6e7,A2_2b693cf6e7,pyrene+CH3,Cc1cc2ccc3cccc4ccc(c1)c2c34,1,2,29,279,4.7,10.4,duo/three+/False; solo/three+/False; trio/three+/False
+328,P3c_fdc27f1bd1,A_fdc27f1bd1,biphenyl,c1ccc(-c2ccccc2)cc1,1,2,22,200,2.4,5.8,quintet/two/False
+329,P3c_0a4f4be63f,P3_0a4f4be63f,aza-pyrene-3+CHO,O=Cc1cc2ccc3cccc4ncc(c1)c2c34,1,2,27,288,5.0,11.0,duo/three+/True; solo/three+/True; trio/three+/True
+330,P3c_1885110895,B_1885110895,benzene+CF3+CONH2,NC(=O)c1ccc(C(F)(F)F)cc1,1,2,19,207,2.5,6.2,duo/one/False
+331,P3c_12d5ca3a87,B_12d5ca3a87,quinoline+NO2,O=[N+]([O-])c1cccc2ncccc12,1,2,19,207,2.5,6.2,trio/two/True
+332,P3c_60bf45f8a6,A2_60bf45f8a6,fluoranthene+ethynyl,C#Cc1cc2c3c(cccc3c1)-c1ccccc1-2,1,2,28,290,5.1,11.2,quartet/three+-five/False; solo/three+-five/False; trio/three+-five/False
+333,P3c_4063c67d28,P3_4063c67d28,aza-fluoranthene-1+OCH3,COc1cc2c(cn1)-c1cccc3cccc-2c13,1,2,29,292,5.2,11.3,solo/three+-five/True; trio/three+-five/True
+334,P3c_081c1afebd,P3_081c1afebd,aza-pyrene-3+OCH3,COc1cc2ccc3cccc4cnc(c1)c2c34,1,2,29,292,5.2,11.3,duo/three+/True; solo/three+/True; trio/three+/True
+335,P3c_4b72e440e6,A2_4b72e440e6,acenaphthylene+F,FC1=Cc2cccc3cccc1c23,1,2,20,209,2.6,6.3,solo5/three+-five/False; trio/three+-five/False
+336,P3c_7f8e85ab0f,A2_7f8e85ab0f,fluoranthene+OCH3,COc1cc2c3c(cccc3c1)-c1ccccc1-2,1,2,30,294,5.3,11.4,quartet/three+-five/False; solo/three+-five/False; trio/three+-five/False
+337,P3c_8df13117ed,A2_8df13117ed,acenaphthylene+OH,OC1=Cc2cccc3cccc1c23,1,2,21,211,2.6,6.4,solo5/three+-five/False; trio/three+-five/False
+338,P3c_40eadd8876,A2_40eadd8876,acenaphthylene+Cl,ClC1=Cc2cccc3cccc1c23,1,2,20,213,2.7,6.5,solo5/three+-five/False; trio/three+-five/False
+339,P3c_f95fa36347,A2_f95fa36347,acenaphthylene+NH2,NC1=Cc2cccc3cccc1c23,1,2,22,213,2.7,6.5,solo5/three+-five/False; trio/three+-five/False
+340,P3c_781fb48872,A2_781fb48872,acenaphthylene+SH,SC1=Cc2cccc3cccc1c23,1,2,21,215,2.7,6.6,solo5/three+-five/False; trio/three+-five/False
+341,P3c_e72997e726,A_e72997e726,fluorene,c1ccc2c(c1)Cc1ccccc1-2,1,2,23,215,2.7,6.6,quartet/three+-five/False
+342,P3c_5a75c6c39e,A_5a75c6c39e,diphenyl_ether,c1ccc(Oc2ccccc2)cc1,1,2,23,215,2.7,6.6,quintet/two/False
+343,P3c_51001be9f3,A2_51001be9f3,acenaphthylene+CH3,CC1=Cc2cccc3cccc1c23,1,2,23,215,2.7,6.6,solo5/three+-five/False; trio/three+-five/False
+344,P3c_0fc35c458d,B_0fc35c458d,biphenyl+OH,Oc1ccc(-c2ccccc2)cc1,1,2,23,215,2.7,6.6,duo/two/False; quintet/two/False
+345,P3c_2a36ca9ac1,B_2a36ca9ac1,biphenyl+SH,Sc1ccc(-c2ccccc2)cc1,1,2,23,219,2.9,6.8,duo/two/False; quintet/two/False
+346,P3c_b6d3f4c3a4,A2_b6d3f4c3a4,acenaphthylene+CN,N#CC1=Cc2cccc3cccc1c23,1,2,21,224,3.0,7.1,solo5/three+-five/False; trio/three+-five/False
+347,P3c_d08f7435be,A2_d08f7435be,acenaphthylene+ethynyl,C#CC1=Cc2cccc3cccc1c23,1,2,22,226,3.0,7.2,solo5/three+-five/False; trio/three+-five/False
+348,P3c_7cdd38fdf5,A2_7cdd38fdf5,acenaphthylene+CHO,O=CC1=Cc2cccc3cccc1c23,1,2,22,226,3.0,7.2,solo5/three+-five/False; trio/three+-five/False
+349,P3c_ac0d67ce8b,A2_ac0d67ce8b,carbazole+OH,Oc1cccc2[nH]c3ccccc3c12,1,2,23,228,3.1,7.3,quartet/three+-five/True; trio/three+-five/True
+350,P3c_5714da246b,A2_5714da246b,carbazole+OH,Oc1cccc2c1[nH]c1ccccc12,1,2,23,228,3.1,7.3,quartet/three+-five/True; trio/three+-five/True
+351,P3c_1bb2e3fbf1,A2_1bb2e3fbf1,fluorene+F,FC1c2ccccc2-c2ccccc21,1,2,23,228,3.1,7.3,quartet/three+-five/False
+352,P3c_bebd41726d,A2_bebd41726d,carbazole+Cl,Clc1cccc2c1[nH]c1ccccc12,1,2,22,230,3.2,7.4,quartet/three+-five/True; trio/three+-five/True
+353,P3c_7e40bff2a4,A2_7e40bff2a4,carbazole+Cl,Clc1cccc2[nH]c3ccccc3c12,1,2,22,230,3.2,7.4,quartet/three+-five/True; trio/three+-five/True
+354,P3c_fd2f7a085a,A2_fd2f7a085a,carbazole+NH2,Nc1cccc2[nH]c3ccccc3c12,1,2,24,230,3.2,7.4,quartet/three+-five/True; trio/three+-five/True
+355,P3c_af7ae92c22,A2_af7ae92c22,carbazole+NH2,Nc1cccc2c1[nH]c1ccccc12,1,2,24,230,3.2,7.4,quartet/three+-five/True; trio/three+-five/True
+356,P3c_5526e6db5d,B_5526e6db5d,biphenyl+CHO,O=Cc1ccc(-c2ccccc2)cc1,1,2,24,230,3.2,7.4,duo/two/False; quintet/two/False
+357,P3c_08dde334d8,A_08dde334d8,benzophenone,O=C(c1ccccc1)c1ccccc1,1,2,24,230,3.2,7.4,quintet/two/False
+358,P3c_014f8519af,A_014f8519af,diphenylacetylene,C(#Cc1ccccc1)c1ccccc1,1,2,24,230,3.2,7.4,quintet/two/False
+359,P3c_3058513f57,A2_3058513f57,fluorene+Cl,Clc1cccc2c1Cc1ccccc1-2,1,2,23,232,3.2,7.5,quartet/three+-five/False; trio/three+-five/False
+360,P3c_1fa81d01d6,A2_1fa81d01d6,carbazole+SH,Sc1cccc2[nH]c3ccccc3c12,1,2,23,232,3.2,7.5,quartet/three+-five/True; trio/three+-five/True
+361,P3c_13327d8d52,A2_13327d8d52,carbazole+SH,Sc1cccc2c1[nH]c1ccccc12,1,2,23,232,3.2,7.5,quartet/three+-five/True; trio/three+-five/True
+362,P3c_066237c4f5,A2_066237c4f5,fluorene+Cl,Clc1cccc2c1-c1ccccc1C2,1,2,23,232,3.2,7.5,quartet/three+-five/False; trio/three+-five/False
+363,P3c_678688dad1,A2_678688dad1,carbazole+CH3,Cc1cccc2c1[nH]c1ccccc12,1,2,25,232,3.2,7.5,quartet/three+-five/True; trio/three+-five/True
+364,P3c_06873ee7ad,A2_06873ee7ad,fluorene+NH2,Nc1cccc2c1-c1ccccc1C2,1,2,25,232,3.2,7.5,quartet/three+-five/False; trio/three+-five/False
+365,P3c_7a57a52879,A_7a57a52879,stilbene_E,C(=C\c1ccccc1)/c1ccccc1,1,2,26,234,3.3,7.7,quintet/two/False
+366,P3c_1f9cad6c8c,B_1f9cad6c8c,biphenyl+OCH3,COc1ccc(-c2ccccc2)cc1,1,2,26,234,3.3,7.7,duo/two/False; quintet/two/False
+367,P3c_0dc3aa4eb9,A2_0dc3aa4eb9,fluorene+CH3,Cc1cccc2c1-c1ccccc1C2,1,2,26,234,3.3,7.7,quartet/three+-five/False; trio/three+-five/False
+368,P3c_8640e33b6e,A2_8640e33b6e,acenaphthylene+NO2,O=[N+]([O-])C1=Cc2cccc3cccc1c23,1,2,22,239,3.4,7.9,solo5/three+-five/False; trio/three+-five/False
+369,P3c_d70ab74cc8,A2_d70ab74cc8,carbazole+CN,N#Cc1cccc2c1[nH]c1ccccc12,1,2,23,241,3.5,8.1,quartet/three+-five/True; trio/three+-five/True
+370,P3c_2bb0e5721b,A2_2bb0e5721b,acenaphthylene+COOH,O=C(O)C1=Cc2cccc3cccc1c23,1,2,23,241,3.5,8.1,solo5/three+-five/False; trio/three+-five/False
+371,P3c_1279063d3c,A2_1279063d3c,carbazole+CN,N#Cc1cccc2[nH]c3ccccc3c12,1,2,23,241,3.5,8.1,quartet/three+-five/True; trio/three+-five/True
+372,P3c_fbf66a07b6,A2_fbf66a07b6,carbazole+ethynyl,C#Cc1cccc2[nH]c3ccccc3c12,1,2,24,243,3.5,8.2,quartet/three+-five/True; trio/three+-five/True
+373,P3c_bd462d3214,A2_bd462d3214,carbazole+CHO,O=Cc1cccc2c1[nH]c1ccccc12,1,2,24,243,3.5,8.2,quartet/three+-five/True; trio/three+-five/True
+374,P3c_477b567fed,B_477b567fed,biphenyl+NO2,O=[N+]([O-])c1ccccc1-c1ccccc1,1,2,24,243,3.5,8.2,quartet/two/False; quintet/two/False
+375,P3c_3dbdebe18a,A2_3dbdebe18a,carbazole+ethynyl,C#Cc1cccc2c1[nH]c1ccccc12,1,2,24,243,3.5,8.2,quartet/three+-five/True; trio/three+-five/True
+376,P3c_3cf20db4ac,A2_3cf20db4ac,fluorene+CN,N#Cc1cccc2c1-c1ccccc1C2,1,2,24,243,3.5,8.2,quartet/three+-five/False; trio/three+-five/False
+377,P3c_2e2d3e4196,A2_2e2d3e4196,anthracene+F,Fc1c2ccccc2cc2ccccc12,1,2,24,243,3.5,8.2,quartet/three+/False; solo/three+/False
+378,P3c_21a2401f6c,A2_21a2401f6c,carbazole+CHO,O=Cc1cccc2[nH]c3ccccc3c12,1,2,24,243,3.5,8.2,quartet/three+-five/True; trio/three+-five/True
+379,P3c_d351592aa1,B_d351592aa1,biphenyl+COOH,O=C(O)c1ccccc1-c1ccccc1,1,2,25,245,3.6,8.3,quartet/two/False; quintet/two/False
+380,P3c_cf8ebc3ad0,B_cf8ebc3ad0,biphenyl+COOH,O=C(O)c1cccc(-c2ccccc2)c1,1,2,25,245,3.6,8.3,quintet/two/False; solo/two/False; trio/two/False
+381,P3c_b27d511b09,B_b27d511b09,biphenyl+COOH,O=C(O)c1ccc(-c2ccccc2)cc1,1,2,25,245,3.6,8.3,duo/two/False; quintet/two/False
+382,P3c_16521f2764,A2_16521f2764,fluorene+ethynyl,C#CC1c2ccccc2-c2ccccc21,1,2,25,245,3.6,8.3,quartet/three+-five/False
+383,P3c_576b525cf2,B_576b525cf2,biphenyl+CONH2,NC(=O)c1cccc(-c2ccccc2)c1,1,2,26,247,3.7,8.4,quintet/two/False; solo/two/False; trio/two/False
+384,P3c_5289caec1d,B_5289caec1d,biphenyl+CONH2,NC(=O)c1ccc(-c2ccccc2)cc1,1,2,26,247,3.7,8.4,duo/two/False; quintet/two/False
+385,P3c_23a7c9c6b2,B_23a7c9c6b2,biphenyl+CONH2,NC(=O)c1ccccc1-c1ccccc1,1,2,26,247,3.7,8.4,quartet/two/False; quintet/two/False
+386,P3c_197913eb9c,A2_197913eb9c,carbazole+vinyl,C=Cc1cccc2c1[nH]c1ccccc12,1,2,26,247,3.7,8.4,quartet/three+-five/True; trio/three+-five/True
+387,P3c_1543119d9d,A2_1543119d9d,fluorene+OCH3,COC1c2ccccc2-c2ccccc21,1,2,27,249,3.7,8.5,quartet/three+-five/False
+388,P3c_0cfc5b5bdb,A2_0cfc5b5bdb,acenaphthylene+CF3,FC(F)(F)C1=Cc2cccc3cccc1c23,1,2,23,254,3.9,8.8,solo5/three+-five/False; trio/three+-five/False
+389,P3c_908ab241c3,A2_908ab241c3,carbazole+NO2,O=[N+]([O-])c1cccc2c1[nH]c1ccccc12,1,2,24,256,3.9,9.0,quartet/three+-five/True; trio/three+-five/True
+390,P3c_4a8a8f6b6c,A2_4a8a8f6b6c,carbazole+NO2,O=[N+]([O-])c1cccc2[nH]c3ccccc3c12,1,2,24,256,3.9,9.0,quartet/three+-five/True; trio/three+-five/True
+391,P3c_2e1bd8f645,A2_2e1bd8f645,phenazine+ethynyl,C#Cc1cccc2nc3ccccc3nc12,1,2,24,256,3.9,9.0,quartet/three+/True; trio/three+/True
+392,P3c_0814eb7409,A2_0814eb7409,phenazine+CHO,O=Cc1cccc2nc3ccccc3nc12,1,2,24,256,3.9,9.0,quartet/three+/True; trio/three+/True
+393,P3c_d2345d9fcf,P3_d2345d9fcf,aza-fluoranthene-2,c1cnc2c(c1)-c1cccc3cccc-2c13,1,2,25,258,4.0,9.1,trio/three+-five/True
+394,P3c_7d64c78b23,A2_7d64c78b23,carbazole+COOH,O=C(O)c1cccc2c1[nH]c1ccccc12,1,2,25,258,4.0,9.1,quartet/three+-five/True; trio/three+-five/True
+395,P3c_2c22216564,A2_2c22216564,fluorene+NO2,O=[N+]([O-])C1c2ccccc2-c2ccccc21,1,2,25,258,4.0,9.1,quartet/three+-five/False
+396,P3c_07f1fa9135,A2_07f1fa9135,phenanthridine+CHO,O=Cc1ccc2ncc3ccccc3c2c1,1,2,25,258,4.0,9.1,duo/three+/True; quartet/three+/True; solo/three+/True
+397,P3c_330b4d6d8d,A2_330b4d6d8d,phenazine+vinyl,C=Cc1cccc2nc3ccccc3nc12,1,2,26,260,4.1,9.2,quartet/three+/True; trio/three+/True
+398,P3c_10d7d03408,A2_10d7d03408,fluorene+COOH,O=C(O)C1c2ccccc2-c2ccccc21,1,2,26,260,4.1,9.2,quartet/three+-five/False
+399,P3c_4282860cee,A2_4282860cee,phenanthridine+vinyl,C=Cc1cccc2cnc3ccccc3c12,1,2,27,262,4.1,9.3,quartet/three+/True; solo/three+/True; trio/three+/True
+400,P3c_30b024df67,A2_30b024df67,acridine+OCH3,COc1cccc2nc3ccccc3cc12,1,2,27,262,4.1,9.3,quartet/three+/True; solo/three+/True; trio/three+/True
+401,P3c_2be56a1e2f,A2_2be56a1e2f,phenanthridine+vinyl,C=Cc1ccc2c(c1)ncc1ccccc12,1,2,27,262,4.1,9.3,duo/three+/True; quartet/three+/True; solo/three+/True
+402,P3c_13a226a056,A2_13a226a056,acridine+OCH3,COc1cccc2cc3ccccc3nc12,1,2,27,262,4.1,9.3,quartet/three+/True; solo/three+/True; trio/three+/True
+403,P3c_11dec05d1b,A2_11dec05d1b,phenanthridine+vinyl,C=Cc1ccc2ncc3ccccc3c2c1,1,2,27,262,4.1,9.3,duo/three+/True; quartet/three+/True; solo/three+/True
+404,P3c_0a2685346d,A2_0a2685346d,acridine+vinyl,C=Cc1ccc2cc3ccccc3nc2c1,1,2,27,262,4.1,9.3,duo/three+/True; quartet/three+/True; solo/three+/True
+405,P3c_074ffaa9fa,A2_074ffaa9fa,phenanthridine+vinyl,C=Cc1ccc2c(cnc3ccccc32)c1,1,2,27,262,4.1,9.3,duo/three+/True; quartet/three+/True; solo/three+/True
+406,P3c_356c370f21,A2_356c370f21,phenanthridine+NO2,O=[N+]([O-])c1cccc2cnc3ccccc3c12,1,2,25,271,4.4,9.9,quartet/three+/True; solo/three+/True; trio/three+/True
+407,P3c_2a0b78bd2b,A2_2a0b78bd2b,carbazole+CF3,FC(F)(F)c1cccc2c1[nH]c1ccccc12,1,2,25,271,4.4,9.9,quartet/three+-five/True; trio/three+-five/True
+408,P3c_2743aef5e8,A2_2743aef5e8,phenanthridine+NO2,O=[N+]([O-])c1cccc2c1cnc1ccccc12,1,2,25,271,4.4,9.9,quartet/three+/True; solo/three+/True; trio/three+/True
+409,P3c_215e004a51,A2_215e004a51,phenazine+COOH,O=C(O)c1cccc2nc3ccccc3nc12,1,2,25,271,4.4,9.9,quartet/three+/True; trio/three+/True
+410,P3c_10374ec43c,A2_10374ec43c,acridine+NO2,O=[N+]([O-])c1cccc2nc3ccccc3cc12,1,2,25,271,4.4,9.9,quartet/three+/True; solo/three+/True; trio/three+/True
+411,P3c_04719edc88,A2_04719edc88,phenanthridine+COOH,O=C(O)c1cccc2c1cnc1ccccc12,1,2,26,273,4.5,10.0,quartet/three+/True; solo/three+/True; trio/three+/True
+412,P3c_2a88c6ce4f,A2_2a88c6ce4f,phenanthridine+CONH2,NC(=O)c1cccc2cnc3ccccc3c12,1,2,27,275,4.6,10.2,quartet/three+/True; solo/three+/True; trio/three+/True
+413,P3c_1a20326972,A2_1a20326972,acridine+CONH2,NC(=O)c1cccc2nc3ccccc3cc12,1,2,27,275,4.6,10.2,quartet/three+/True; solo/three+/True; trio/three+/True
+414,P3c_2176a9ba15,P3_2176a9ba15,aza-pyrene-3+SH,Sc1cc2cccc3ncc4cccc1c4c23,1,2,26,277,4.6,10.3,solo/three+/True; trio/three+/True
+415,P3c_0420908ebe,A2_0420908ebe,phenanthridine+CF3,FC(F)(F)c1cccc2ncc3ccccc3c12,1,2,26,286,5.0,10.9,quartet/three+/True; solo/three+/True; trio/three+/True

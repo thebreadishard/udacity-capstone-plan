@@ -152,15 +152,19 @@ HEIGHT_TOLERANCE_CM = 0.5      # 10 Oct 2026: heights only when the shape module
 
 
 def heights_for(shape: dict, listed: list[float]) -> list[float] | None:
-    """Heights (km/mol) in the order of the listed B3LYP positions, or None (no APT, or positions that do not match the listed ones)."""
+    """Heights (km/mol) in the order of the listed B3LYP positions, or None (no APT, or positions that do not match the listed ones). A listed
+    mode below the spectrum's vibrational threshold (stilbene's −4.66 cm⁻¹ torsion in the psi4 list) has no stick and gets no height."""
     if shape.get("kind") != "positions and heights":
         return None
     dev = shape.get("max_dev_from_listed_cm")
-    if dev is None or dev > HEIGHT_TOLERANCE_CM or len(shape["sticks"]) != len(listed):
+    w = np.asarray(listed, float)
+    vib = np.flatnonzero(np.abs(w) > shape["vib_min_cm"])
+    if dev is None or dev > HEIGHT_TOLERANCE_CM or len(shape["sticks"]) != len(vib):
         return None
-    order = np.argsort(np.asarray(listed, float), kind="stable")    # the sticks come sorted by position
-    out = np.empty(len(listed)); out[order] = [s["km_mol"] for s in shape["sticks"]]
-    return [round(float(v), 3) for v in out]
+    out: list[float | None] = [None] * len(listed)
+    for i, s in zip(vib[np.argsort(w[vib], kind="stable")], shape["sticks"], strict=True):    # the sticks come sorted by position
+        out[i] = round(float(s["km_mol"]), 3)
+    return out
 
 
 def build(repo, out, limit=None):
@@ -168,6 +172,8 @@ def build(repo, out, limit=None):
     sys.path.insert(0, os.path.join(plan, "modules", "08_industry_synthesis"))
     # TASKS 44: one implementation of the band heights for module 08's certificate and the Atlas
     from m08 import spectrum as shape_mod
+    from m08.accuracy import carried_accuracy
+    from m08.licence import state as licence_state
     manifest_p = os.path.join(corpus, "manifest.csv"); ledger_p = os.path.join(corpus, "ledger.csv")
     manifest = list(csv.DictReader(open(manifest_p, encoding="utf-8")))
     if limit:
@@ -280,9 +286,12 @@ def build(repo, out, limit=None):
     json.dump(catalog, open(os.path.join(out, "catalog.json"), "w", encoding="utf-8"), ensure_ascii=False)
     changelog = read_changelog(os.path.join(plan, "GoalGathering", "notes", "Mandate_2026-09-13_Affordable_Plan_Obstacle_Ledger.md"))
     json.dump(changelog, open(os.path.join(out, "changelog.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=0)
+    accuracy = carried_accuracy()                      # the carried ΔH network's evaluation records (decision 65)
+    licence = licence_state(accuracy)
     summary = dict(built_utc=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), n_molecules=len(catalog), rung_counts=counts, layer_counts=layer_counts, source_counts=source_counts,
                    rungs=RUNGS, sources=dict(manifest=sha256(manifest_p), ledger=sha256(ledger_p)), releases=sorted({n for v in releases.values() for n in v}),
-                   n_changelog=len(changelog), n_with_intensities=n_heights, n_anchor_spectra=n_anchor_spectra, shape_accuracy=shape_mod.measured_accuracy())
+                   n_changelog=len(changelog), n_with_intensities=n_heights, n_anchor_spectra=n_anchor_spectra, shape_accuracy=accuracy,
+                   licence={k: licence[k] for k in ("licensed_families", "statement", "rule_source")})
     json.dump(summary, open(os.path.join(out, "summary.json"), "w", encoding="utf-8"), indent=1)
     return summary
 

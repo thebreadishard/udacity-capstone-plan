@@ -1,6 +1,6 @@
 {
  "kind": "live certificate",
- "date": "2026-10-29 23:45",
+ "date": "2026-10-30 00:11",
  "pipeline_version": "0.1.dev",
  "molecule": {
   "name": "benzene",
@@ -56,7 +56,7 @@
   "higher_level": "ωB97X/6-31G* (the DFT proxy: the network's ΔH is trained on ωB97X − B3LYP Hessians)",
   "holdouts": {
    "a": {
-    "description": "hold-out (a): the parent PAHs of layer A held out on 19 Sep 2026, never trained",
+    "description": "hold-out (a): layer-A molecules held out on 19 Sep 2026 (benzene, phenanthrene, fluoranthene, benzonitrile, benzophenone, …), never trained",
     "n_molecules": 10,
     "readouts": {
      "ring-ip": {
@@ -822,7 +822,7 @@
   "result": "C:\\Users\\thebr\\Documents\\CapstonePlan\\plans\\05_delta-probed-ir-pipeline\\probes\\results_m1\\pipeline_benzene_certified_2026-10-29\\benzene",
   "run_commit": "6e64ce42ac07cc7c5c68431b7e05f215a597b910",
   "run_dirty": "yes",
-  "certificate_commit": "54fa017e",
+  "certificate_commit": "ec5c6bd0",
   "deck_sha16": "9e27bf8e934893f3",
   "low_level_software": {
    "pyscf": "2.14.0",

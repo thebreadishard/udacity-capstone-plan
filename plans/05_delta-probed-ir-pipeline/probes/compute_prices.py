@@ -16,12 +16,14 @@ Every price is a power law fitted to measured runs and names its source; what is
            laptop's analytic UKS runs ('(CA) <id> max RSS .. kB, wall .. s'), selected by anchor_plan's greedy cover
 
     python probes/compute_prices.py fill|mp2|cations      → out/anchor_plan/price_<action>.md and .json
+                                                          (cations also → out/anchor_plan/cation_candidates.csv, for review)
     python probes/compute_prices.py labels --ids out/chain41_s5.txt --ids out/chain41_s4N.txt
 """
 from __future__ import annotations
 
 import argparse
 import csv
+import io
 import json
 import math
 import re
@@ -240,8 +242,29 @@ def cation_candidates(rows: dict[str, dict], manifest: dict[str, dict], computed
             continue
         cc = sorted(ap.cells(r["smiles"], CATION_LAYER))
         if any(c in short for c in cc):
-            out[f"{CATION_LAYER}_{sha}"] = {"name": r["name"], "smiles": r["smiles"], "n_atoms": r["n_atoms"], "cells": [list(c) for c in cc]}
+            out[f"{CATION_LAYER}_{sha}"] = {"parent": i, "name": r["name"], "smiles": r["smiles"], "n_atoms": r["n_atoms"], "cells": [list(c) for c in cc]}
     return out
+
+
+CANDIDATE_COLUMNS = ("order", "id", "parent_id", "name", "parent_smiles", "charge", "multiplicity", "n_atoms", "functions_631gs",
+                     "laptop_hours", "peak_gb", "short_cells_filled")
+
+
+def candidate_rows(cands: dict[str, dict], chosen: list[str], short: dict[tuple, int]) -> list[dict]:
+    """The chosen cations in the selection's order, one row each: the radical cation of a computed neutral (charge +1, doublet)."""
+    return [{"order": k + 1, "id": i, "parent_id": cands[i]["parent"], "name": cands[i]["name"], "parent_smiles": cands[i]["smiles"],
+             "charge": 1, "multiplicity": 2, "n_atoms": cands[i]["n_atoms"], "functions_631gs": cands[i]["functions"],
+             "laptop_hours": round(cands[i]["hours"], 1), "peak_gb": round(cands[i]["peak_gb"], 1),
+             "short_cells_filled": "; ".join("/".join(str(x) for x in c[:3]) for c in cands[i]["cells"] if tuple(c) in short)}
+            for k, i in enumerate(chosen)]
+
+
+def csv_text(rows: list[dict], columns: tuple[str, ...]) -> str:
+    buf = io.StringIO()
+    w = csv.DictWriter(buf, fieldnames=columns, lineterminator="\n")
+    w.writeheader()
+    w.writerows(rows)
+    return buf.getvalue()
 
 
 def cation_price(src: Sources, target: int) -> tuple[dict, list[str]]:
@@ -264,7 +287,7 @@ def cation_price(src: Sources, target: int) -> tuple[dict, list[str]]:
     sizes = (f"{min(cands[i]['functions'] for i in chosen)}–{max(cands[i]['functions'] for i in chosen)} functions, largest peak by the "
              f"fit ≈ {max(cands[i]['peak_gb'] for i in chosen):.1f} GB") if chosen else "none chosen"
     out = {"target": target, "wall_model": wall, "peak_model": peak, "short_cells": len(short), "candidates": len(cands), "chosen": chosen,
-           "hours": hours, "still_short": [[list(c), k] for c, k in sorted(still.items())]}
+           "hours": hours, "still_short": [[list(c), k] for c, k in sorted(still.items())], "rows": candidate_rows(cands, chosen, short)}
     lines = [f"# Cation candidates for the cation cells short of {target}", "",
              f"Priced on {len(runs)} analytic UKS cation runs on the laptop (6 threads, {min(functions.values())}–{max(functions.values())} "
              f"6-31G* functions): wall s = e^{wall[0]:.2f} n^{wall[1]:.2f}, peak GB = e^{peak[0]:.2f} n^{peak[1]:.2f}.", "",
@@ -273,7 +296,8 @@ def cation_price(src: Sources, target: int) -> tuple[dict, list[str]]:
              "cell of the domain, also where no cation row exists yet (TASKS 102).", "",
              "| adjacency | ring context | aza | still short | candidates |", "|---|---|---|---|---|"]
     members = ap.cell_members(cands)
-    lines += [f"| {c[0]} | {c[1]} | {'yes' if c[2] else 'no'} | {k} | {len(members.get(c, []))} |" for c, k in sorted(still.items(), key=lambda x: -x[1])]
+    lines += [f"| {c[0]} | {c[1]} | {'yes' if c[2] else 'no'} | {k} | {len(members.get(c, []))} |"
+              for c, k in sorted(still.items(), key=lambda x: (-x[1], x[0]))]
     return out, lines
 
 
@@ -294,6 +318,8 @@ def main(argv: list[str] | None = None) -> int:
         out, lines = mp2_price(src)
     else:
         out, lines = cation_price(src, a.target)
+    if a.action == "cations":
+        ap.write_text(ap.OUT / "cation_candidates.csv", csv_text(out["rows"], CANDIDATE_COLUMNS))
     ap.write_text(ap.OUT / f"price_{a.action}.json", json.dumps(out, indent=1, default=str))
     ap.write_text(ap.OUT / f"price_{a.action}.md", "\n".join(lines) + "\n")
     print("\n".join(lines))

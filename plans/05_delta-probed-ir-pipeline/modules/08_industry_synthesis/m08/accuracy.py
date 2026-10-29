@@ -19,7 +19,7 @@ LICENCE_LINE_CM = T1_FAMILY_LINE        # decision 53's 3 cm⁻¹, every family'
 TARGETS = {**dict.fromkeys(FAMILIES, LICENCE_LINE_CM), RATIO: T1_RATIO_LINE}
 TARGET_SOURCE = ("3 cm⁻¹ per family — decision 53's line for ring-ip, CH-oop and 'other', every family's under decision 65 (the licence) — "
                  "and the coupling ratio ≤ 0.25 of chain 35's T1 line (probes/chain35_read.py)")
-HOLDOUTS = {"a": "hold-out (a): the parent PAHs of layer A held out on 19 Sep 2026, never trained",
+HOLDOUTS = {"a": "hold-out (a): layer-A molecules held out on 19 Sep 2026 (benzene, phenanthrene, fluoranthene, benzonitrile, benzophenone, …), never trained",
             "b": "hold-out (b): every substituted molecule of two scaffold cores, frozen on 8 Oct 2026 — scaffolds the network never saw"}
 HIGHER_LEVEL = "ωB97X/6-31G* (the DFT proxy: the network's ΔH is trained on ωB97X − B3LYP Hessians)"
 CC_NOTE = ("not measured for this network version: the coupled-cluster reads (T3) were made on chain 34, and tests on the 9–11 existing "

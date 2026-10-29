@@ -1,4 +1,4 @@
-# Certificate — benzene · pipeline 0.1.dev · 2026-10-29 23:45
+# Certificate — benzene · pipeline 0.1.dev · 2026-10-30 00:11
 
 benzene: the harmonic infrared spectrum of ΔH-network v1.3 (3 seeds) — B3LYP/6-31G* corrected toward ωB97X/6-31G* — with the error measured on molecules the network never saw; licensed for ring-ip, CH-stretch, CH-oop (decision 65), each band marked; at the coupled-cluster level not measured for this network version: the coupled-cluster reads (T3) were made on chain 34, and tests on the 9–11 existing anchors wait for the anchor decision of November 2026. The scaled B3LYP spectrum is shown as the baseline only.
 
@@ -61,7 +61,7 @@ Against ωB97X/6-31G* (the DFT proxy: the network's ΔH is trained on ωB97X −
 | overlap, uncorrected → corrected | 0.27 → 0.982 | 0.366 → 0.967 |
 | height error, uncorrected → corrected | 0.296 → 0.087 | 0.511 → 0.236 |
 
-*Hold-outs:* hold-out (a): the parent PAHs of layer A held out on 19 Sep 2026, never trained; hold-out (b): every substituted molecule of two scaffold cores, frozen on 8 Oct 2026 — scaffolds the network never saw. *Coupled cluster:* not measured for this network version: the coupled-cluster reads (T3) were made on chain 34, and tests on the 9–11 existing anchors wait for the anchor decision of November 2026.
+*Hold-outs:* hold-out (a): layer-A molecules held out on 19 Sep 2026 (benzene, phenanthrene, fluoranthene, benzonitrile, benzophenone, …), never trained; hold-out (b): every substituted molecule of two scaffold cores, frozen on 8 Oct 2026 — scaffolds the network never saw. *Coupled cluster:* not measured for this network version: the coupled-cluster reads (T3) were made on chain 34, and tests on the 9–11 existing anchors wait for the anchor decision of November 2026.
 *Sources:* E7_rungC_chain35_analytic_eval_frozenb_seed0.json; E7_rungC_chain35_analytic_eval_frozenb_seed1.json; E7_rungC_chain35_analytic_eval_frozenb_seed2.json.
 
 *Licence:* licensed at the DFT proxy: ring-ip (1.66 / 2.12), CH-stretch (1.15 / 2.5), CH-oop (1.99 / 2.7); not licensed: other (3.35 / 3.89) — seed-mean error on hold-outs (a) / (b) in cm⁻¹ against 3; no coupled-cluster licence (README.md, decision 65).
@@ -72,6 +72,6 @@ Against ωB97X/6-31G* (the DFT proxy: the network's ΔH is trained on ωB97X −
 
 ## Provenance
 
-- result C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\pipeline_benzene_certified_2026-10-29\benzene; run at commit 6e64ce42 (uncommitted changes: yes); certificate at 54fa017e
+- result C:\Users\thebr\Documents\CapstonePlan\plans\05_delta-probed-ir-pipeline\probes\results_m1\pipeline_benzene_certified_2026-10-29\benzene; run at commit 6e64ce42 (uncommitted changes: yes); certificate at ec5c6bd0
 - deck 9e27bf8e934893f3; low level {"pyscf": "2.14.0", "pyscf_git": null, "numpy": "2.5.2", "python": "3.12.14", "sha256": {"analytic_hessians.py": "37404740a7f9", "apt.py": "35bb49dfb46f"}}; host Asus18
 - models: E7_rungC_chain35_analytic_model_n750_seed0.pt (carried, sha16 f930db4af9268a00); E7_rungC_chain35_analytic_model_n750_seed1.pt (carried, sha16 87734859e866d6f7); E7_rungC_chain35_analytic_model_n750_seed2.pt (carried, sha16 023b8c142ad5fa52)

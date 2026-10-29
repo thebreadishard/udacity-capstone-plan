@@ -33,7 +33,8 @@ def test_heights_for_benzene_aligned_and_none_for_naphthalene(built):
     assert abs(pos[i] - 694.6) < 0.5 and 70 < h[i] < 85                  # benzene's C–H out-of-plane band (a2u)
     n = read("A_01f3186607.json")
     assert n["intensities_km_mol"] is None and n["shape"] is None
-    assert summary["n_with_intensities"] >= 1 and summary["shape_accuracy"]["proxy"]["corrected"]["spectrum_overlap"] > 0.9
+    assert summary["n_with_intensities"] >= 1 and summary["shape_accuracy"]["holdouts"]["a"]["shape"]["corrected"]["spectrum_overlap"] > 0.9
+    assert summary["licence"]["licensed_families"] == ["ring-ip", "CH-stretch", "CH-oop"]
 
 
 def test_anchor_pages_carry_the_anchor_spectrum(built):
@@ -55,9 +56,10 @@ def test_anchor_pages_carry_the_anchor_spectrum(built):
 
 
 def test_heights_refused_when_positions_differ():
-    sh = {"kind": "positions and heights", "sticks": [{"omega_cm": 100.0, "km_mol": 1.0}], "max_dev_from_listed_cm": 2.0}
+    sh = {"kind": "positions and heights", "sticks": [{"omega_cm": 100.0, "km_mol": 1.0}], "max_dev_from_listed_cm": 2.0, "vib_min_cm": 20.0}
     assert bc.heights_for(sh, [102.0]) is None
     assert bc.heights_for(dict(sh, max_dev_from_listed_cm=0.0), [100.0]) == [1.0]
+    assert bc.heights_for(dict(sh, max_dev_from_listed_cm=0.0), [100.0, -4.66]) == [1.0, None]   # stilbene: a listed mode below the threshold
     assert bc.heights_for({"kind": "positions only"}, [100.0]) is None
 
 

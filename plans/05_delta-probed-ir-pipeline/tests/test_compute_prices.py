@@ -157,3 +157,15 @@ def test_action_labels_refuses_an_id_the_manifest_lacks(tmp_path):
 def test_ids_go_with_the_labels_action_only(argv):
     with pytest.raises(SystemExit):
         cp.main(argv)
+
+
+def test_the_cation_candidates_are_listed_in_the_selections_order():
+    cands = {"P3c_b": {"parent": "A_b", "name": "naphthalene", "smiles": "c1ccc2ccccc2c1", "n_atoms": 18, "functions": 166, "hours": 2.04,
+                       "peak_gb": 4.06, "cells": [["quartet", "two", False, 1]]},
+             "P3c_a": {"parent": "A_a", "name": "benzene", "smiles": "c1ccccc1", "n_atoms": 12, "functions": 102, "hours": 0.71,
+                       "peak_gb": 1.66, "cells": [["sextet", "one", False, 1]]}}
+    rows = cp.candidate_rows(cands, ["P3c_a", "P3c_b"], {("sextet", "one", False, 1): 3})
+    assert [(r["order"], r["id"], r["parent_id"], r["charge"], r["multiplicity"]) for r in rows] == [(1, "P3c_a", "A_a", 1, 2), (2, "P3c_b", "A_b", 1, 2)]
+    assert rows[0]["short_cells_filled"] == "sextet/one/False" and rows[1]["short_cells_filled"] == "" and rows[1]["laptop_hours"] == 2.0
+    text = cp.csv_text(rows, cp.CANDIDATE_COLUMNS)
+    assert text.splitlines()[0] == ",".join(cp.CANDIDATE_COLUMNS) and text.count("\n") == 3

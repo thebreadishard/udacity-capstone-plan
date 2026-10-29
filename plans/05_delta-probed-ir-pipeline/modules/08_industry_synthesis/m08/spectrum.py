@@ -12,6 +12,7 @@ and the T3 transfer to CCSD(T)/cc-pVTZ on benzene (9 Oct), seed means over three
 from __future__ import annotations
 
 import importlib.util
+import inspect
 import json
 from pathlib import Path
 
@@ -77,6 +78,11 @@ def cheap_apt(d: Path) -> Path | None:
     return None
 
 
+def _vib_min_cm() -> float:
+    """The vibrational threshold of `rungC_intensities.mode_intensities` (its default), so the listed modes are cut where the spectrum is."""
+    return float(inspect.signature(_ri().mode_intensities).parameters["vib_min_cm"].default)
+
+
 def shape(mid: str, listed_cm: list[float] | None = None) -> dict:
     """The cheap rung's sticks (position, height) for one corpus molecule, or the reason there are none. `listed_cm` = the listed B3LYP positions:
     the largest difference to the positions computed here is recorded as a consistency check (same Hessian → ≈ 0)."""
@@ -87,9 +93,12 @@ def shape(mid: str, listed_cm: list[float] | None = None) -> dict:
     s = series(d / HESSIAN, np.asarray(_geometry(mid)["masses_amu"], float), apt)
     freq = np.array([x["omega_cm"] for x in s["sticks"]])
     check = None
-    if listed_cm is not None and len(listed_cm) == len(freq):
-        check = round(float(np.abs(np.sort(np.asarray(listed_cm, float)) - freq).max()), 2)
-    return dict(s, max_dev_from_listed_cm=check)
+    listed = None if listed_cm is None else np.sort(np.asarray(listed_cm, float))
+    if listed is not None:
+        listed = listed[np.abs(listed) > _vib_min_cm()]
+    if listed is not None and len(listed) == len(freq):
+        check = round(float(np.abs(listed - freq).max()), 2)
+    return dict(s, max_dev_from_listed_cm=check, vib_min_cm=_vib_min_cm())
 
 
 def carried_anchor(mid: str) -> dict | None:
