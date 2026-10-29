@@ -66,8 +66,12 @@ class LabelsRun:
     stamp: dict
     max_memory_mb: int = MAX_MEMORY_MB
     reuse_existing: bool = False
+    functionals: tuple[str, ...] = tuple(tag for tag, _xc in FUNCTIONALS)
 
     def __post_init__(self) -> None:
+        known = tuple(tag for tag, _xc in FUNCTIONALS)
+        if not self.functionals or len(set(self.functionals)) != len(self.functionals) or set(self.functionals) - set(known):
+            raise ValueError(f"functionals {self.functionals}: one or more of {known}, each once")
         if self.reuse_existing and self.compare_only:
             raise ValueError("--reuse-existing and --compare-only do not combine: --compare-only reads both Hessians already")
         if len(self.grid) != 2 or min(self.grid) < 1:
@@ -246,13 +250,13 @@ def check_entry(d: str, tag: str, Hc: np.ndarray, fr: np.ndarray, e: float, t0: 
 
 
 def process_molecule(d: str, run: LabelsRun, lib_log: TextIO) -> list[str]:
-    """Both functionals of one molecule folder; returns its APT errors (the Hessians are written whatever the APT does)."""
+    """The run's functionals on one molecule folder; returns its APT errors (the Hessians are written whatever the APT does)."""
     with open(d + "/geometry.json", encoding="utf-8") as fh:
         g = json.load(fh)
     x, masses = np.array(g["coords_bohr"]), np.array(g["masses_amu"])
     mol = labels_mol(g, lib_log, run.charge, run.spin, run.max_memory_mb)
     out, imaginary, apt_errors = {}, {}, []
-    for tag, xc in FUNCTIONALS:
+    for tag, xc in (f for f in FUNCTIONALS if f[0] in run.functionals):
         t0 = time.time()
         saved = f"{d}/hessian_{tag}_analytic.npz"
         load = run.compare_only or (run.reuse_existing and os.path.exists(saved))
@@ -297,6 +301,8 @@ def parse_args() -> argparse.Namespace:
                     help="read a functional's saved hessian_<tag>_analytic.npz instead of recomputing it (19 Oct 2026: a retry after a stop)")
     ap.add_argument("--no-apt", action="store_true",
                     help="skip the B3LYP APT from the Hessian's response (closed shell only; on by default since 11 Oct 2026)")
+    ap.add_argument("--functionals", default=",".join(tag for tag, _xc in FUNCTIONALS),
+                    help="comma-separated, of b3lyp and wb97x (29 Oct 2026, the pipeline: a new molecule needs the low level alone)")
     return ap.parse_args()
 
 
@@ -304,7 +310,7 @@ def main():
     a = parse_args()
     rad, ang = (int(v) for v in a.grid.split(","))
     run = LabelsRun(grid=(rad, ang), charge=a.charge, spin=a.spin, compare_only=a.compare_only, apt=not a.no_apt, stamp=software(),
-                    max_memory_mb=a.max_memory, reuse_existing=a.reuse_existing)
+                    max_memory_mb=a.max_memory, reuse_existing=a.reuse_existing, functionals=tuple(a.functionals.split(",")))
     lib.num_threads(a.threads)
     apt_errors = []
     for d in a.dirs:
