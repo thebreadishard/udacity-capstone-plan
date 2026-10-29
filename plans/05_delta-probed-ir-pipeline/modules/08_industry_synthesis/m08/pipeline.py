@@ -26,7 +26,7 @@ import subprocess
 import sys
 import time
 from dataclasses import dataclass
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 
 import numpy as np
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
@@ -256,11 +256,11 @@ def optimise(cfg: PipelineConfig, xyz: list[list], opt_options: dict | None) -> 
 
 
 def wsl_path(p: Path) -> str:
-    """A Windows path as WSL mounts it (C:\\x\\y → /mnt/c/x/y)."""
-    s = str(Path(p).resolve())
-    if len(s) < 3 or s[1:3] != ":\\":
-        raise ValueError(f"{s}: not an absolute Windows drive path")
-    return "/mnt/" + s[0].lower() + "/" + s[3:].replace("\\", "/")
+    """An absolute Windows path as WSL mounts it (C:\\x\\y → /mnt/c/x/y); the callers pass resolved paths."""
+    w = PureWindowsPath(p)
+    if not w.drive or not w.is_absolute():
+        raise ValueError(f"{p}: not an absolute Windows drive path")
+    return "/mnt/" + w.drive[0].lower() + "/" + "/".join(w.parts[1:])
 
 
 def low_level_command(cfg: PipelineConfig) -> list[str]:

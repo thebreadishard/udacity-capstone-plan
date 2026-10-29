@@ -133,6 +133,7 @@ def test_a_failed_optimisation_raises_with_psi4s_error(tmp_path, monkeypatch):
         P.optimise(cfg, [], None)
 
 
+@pytest.mark.skipif(sys.platform != "win32", reason="the WSL step's command names the laptop's Windows paths")
 def test_the_low_level_runs_b3lyp_alone_under_the_cap(tmp_path):
     cfg = config(tmp_path, wsl_cap_mb=8192, threads=6)
     argv = P.low_level_command(cfg)
@@ -146,6 +147,7 @@ def test_the_low_level_runs_b3lyp_alone_under_the_cap(tmp_path):
 def test_a_failed_low_level_raises_with_the_reason(tmp_path, monkeypatch, rc, match):
     cfg = config(tmp_path)
     cfg.folder.mkdir()
+    monkeypatch.setattr(P, "low_level_command", lambda cfg: ["wsl.exe"])
     monkeypatch.setattr(P, "_run", lambda argv, log, what: rc)
     with pytest.raises(RuntimeError, match=match):
         P.low_level(cfg)
@@ -156,13 +158,16 @@ def test_an_imaginary_mode_stops_the_spectrum(tmp_path, monkeypatch):
     cfg.folder.mkdir()
     (cfg.folder / P.RI.LOW_HESSIAN).write_bytes(b"")
     (cfg.folder / "result.json").write_text(json.dumps({"n_imaginary_b3lyp": 1}), encoding="utf-8")
+    monkeypatch.setattr(P, "low_level_command", lambda cfg: ["wsl.exe"])
     monkeypatch.setattr(P, "_run", lambda argv, log, what: 0)
     with pytest.raises(RuntimeError, match="not a minimum"):
         P.low_level(cfg)
 
 
 def test_wsl_paths():
-    assert P.wsl_path(Path("C:\\Users\\x\\a b")) == "/mnt/c/Users/x/a b"
+    assert P.wsl_path("C:\\Users\\x\\a b") == "/mnt/c/Users/x/a b"
+    with pytest.raises(ValueError, match="not an absolute Windows drive path"):
+        P.wsl_path("relative\\x")
 
 
 def test_the_baseline_scales_each_region_by_pahdbs_factor():
