@@ -50,27 +50,31 @@ def draws_for(k: int) -> int:
     return 1 if k == PC.ARMS["a"].reservoir else AP.DRAWS
 
 
+def step(out_rel: str, label: str, argv: list[str]) -> dict:
+    """One chain step, run from module 05, its log beside its outputs."""
+    return {"kind": "cmd", "label": label, "cwd": "modules/05_support_predictor", "log": f"modules/05_support_predictor/{out_rel}/{label}.log",
+            "argv": argv}
+
+
+def fine_tune_step(out_rel: str, label: str, model: str, k: int, modes: list[str], max_epochs: int = ES_MAX_EPOCHS) -> dict:
+    """One `proxy_transfer_check.py` run of `model` on the proxy check's reservoir and read set; `max_epochs` caps the early-stopped modes."""
+    px_rel = Path(os.path.relpath(PX_DIR, M05)).as_posix()
+    return step(out_rel, label, ["{python}", "m05/proxy_transfer_check.py", "corpus/molecules", model, f"{out_rel}/{label}",
+                                 "--reservoir", f"{px_rel}/a_reservoir.txt", "--read", f"{px_rel}/a_read.txt", "--k", str(k),
+                                 "--subsets", str(draws_for(k)), "--modes", ",".join(modes), "--es-max-epochs", str(max_epochs),
+                                 "--threads", PC.THREADS, "--allow-any-model"])
+
+
 def steps(out_rel: str, n_pool: int, flags: list[str], slopes: dict[str, float]) -> list[dict]:
     """The chain: base (a2), its registry entries, arm (c)'s R1/R2 fine-tunes, then arm (a2)'s R0/R1/R2 — each seed along k."""
-    def step(label: str, argv: list[str]) -> dict:
-        return {"kind": "cmd", "label": label, "cwd": "modules/05_support_predictor", "log": f"modules/05_support_predictor/{out_rel}/{label}.log",
-                "argv": argv}
-
     px_rel = Path(os.path.relpath(PX_DIR, M05)).as_posix()
     ap_rel = Path(os.path.relpath(AP_DIR, M05)).as_posix()
-
-    def fine_tune(label: str, model: str, k: int, modes: list[str]) -> dict:
-        return step(label, ["{python}", "m05/proxy_transfer_check.py", "corpus/molecules", model, f"{out_rel}/{label}",
-                            "--reservoir", f"{px_rel}/a_reservoir.txt", "--read", f"{px_rel}/a_read.txt", "--k", str(k),
-                            "--subsets", str(draws_for(k)), "--modes", ",".join(modes), "--es-max-epochs", str(ES_MAX_EPOCHS),
-                            "--threads", PC.THREADS, "--allow-any-model"])
-
-    out = [step("base_a2", ["{python}", "m05/rungC_train.py", "corpus/molecules", f"{out_rel}/base_a2", *flags,
-                            *PC.base_extra("a", px_rel, slopes)]),
-           step("register", ["{python}", "../../probes/anchor_recipe_plan.py", "register", out_rel])]
-    out += [fine_tune(f"rc_k{k}_seed{s}", AP.base_model(ap_rel, n_pool, s), k, [RECIPES["R1"], RECIPES["R2"]])
+    out = [step(out_rel, "base_a2", ["{python}", "m05/rungC_train.py", "corpus/molecules", f"{out_rel}/base_a2", *flags,
+                                     *PC.base_extra("a", px_rel, slopes)]),
+           step(out_rel, "register", ["{python}", "../../probes/anchor_recipe_plan.py", "register", out_rel])]
+    out += [fine_tune_step(out_rel, f"rc_k{k}_seed{s}", AP.base_model(ap_rel, n_pool, s), k, [RECIPES["R1"], RECIPES["R2"]])
             for s in PC.SEEDS for k in SIZES]
-    out += [fine_tune(f"ra2_k{k}_seed{s}", base_a2_model(out_rel, n_pool, s), k, list(RECIPES.values()))
+    out += [fine_tune_step(out_rel, f"ra2_k{k}_seed{s}", base_a2_model(out_rel, n_pool, s), k, list(RECIPES.values()))
             for s in PC.SEEDS for k in SIZES]
     return out
 
@@ -112,13 +116,13 @@ def entries(records: list[dict], mode: str) -> list[dict]:
     return [d["modes"][mode] for r in records for d in r["draws"]]
 
 
-def cell(records: list[dict], mode: str) -> dict:
+def cell(records: list[dict], mode: str, max_epochs: int = ES_MAX_EPOCHS) -> dict:
     """Per family the mean ± se of the read, the training loss's mean ± se and, for an early-stopped mode, the share of runs whose kept
-    epoch is within 10 % of the cap."""
+    epoch is within 10 % of the cap `max_epochs`."""
     es = entries(records, mode)
     out = {"family": AP.family_column(records, mode), "fit_loss": PC.mean_se([e["final_loss"] for e in es]), "n": len(es)}
     if "best_epoch" in es[0]:
-        out["at_cap"] = float(np.mean([e["best_epoch"] >= 0.9 * ES_MAX_EPOCHS for e in es]))
+        out["at_cap"] = float(np.mean([e["best_epoch"] >= 0.9 * max_epochs for e in es]))
         out["best_epoch"] = PC.mean_se([float(e["best_epoch"]) for e in es])
     return out
 

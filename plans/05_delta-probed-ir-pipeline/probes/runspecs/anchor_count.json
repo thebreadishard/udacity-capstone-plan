@@ -1,0 +1,11 @@
+{"name": "anchor_count", "purpose": "TASKS 82: the anchor count - arm (c)'s CH-oop curve under the early-stopped recipe R2 (body1_es, cap 120) at k 100/120/150/170/200, R1 and R0 beside it, arm (a2)'s R2 for the control G' read against each base's own start (probes/anchor_count_plan.py; registration GoalGathering/notes/PreRegistration_2026-10-29_Anchor_Count.md)",
+ "host": "laptop", "workdir": "probes/results_m1", "command": "python ../chain_runner.py probes/runs/anchor_count.json",
+ "sources": [{"local": "probes/chain_runner.py"}, {"local": "probes/runs/anchor_count.json"}, {"local": "probes/anchor_count_plan.py"},
+             {"local": "probes/anchor_recipe_plan.py"}, {"local": "probes/anchor_price_plan.py"}, {"local": "probes/proxy_check_plan.py"},
+             {"local": "modules/05_support_predictor/m05/proxy_transfer_check.py"}, {"local": "modules/05_support_predictor/m05/rungC_train.py"},
+             {"local": "modules/05_support_predictor/m05/rungC_config.py"}, {"local": "modules/05_support_predictor/m05/rungC_cc_transfer.py"},
+             {"local": "modules/05_support_predictor/m05/model_registry.py"}],
+ "progress": {"regex": "^=== \\(AC\\) progress: |^\\(AC\\) .* done ", "max_gap_minutes": 90, "start_regex": "^=== \\(AC\\) starting: "},
+ "marker_regex": "^=== \\(AC\\) (armed|starting|resuming|RUN FAILED|run done)",
+ "end_regex": "^=== \\(AC\\) run done", "dry_run_args": "--dry-run", "resumable": true,
+ "memory": {"peak_gb": 7.7, "basis": "the recipe follow-up's bound, the same jobs: proxy_transfer_check.py loads the corpus and ~550 molecules' tensors, below chain 41's measured PeakWorkingSet64 at n = 978 (7.7 GB, 19 Oct 2026). Nothing runs beside it"}}
