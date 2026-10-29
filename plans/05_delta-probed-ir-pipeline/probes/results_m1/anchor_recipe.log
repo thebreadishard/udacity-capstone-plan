@@ -1,0 +1,47 @@
+=== (AR) armed (pid 8216), 14 steps 2026-10-28 22:44:13
+=== (AR) starting: 14 steps 2026-10-28 22:44:13
+=== (AR) progress: base_a2 (1/14) running 10 min, its log +970 bytes 2026-10-28 22:54:13
+=== (AR) progress: base_a2 (1/14) running 20 min, its log +151 bytes 2026-10-28 23:04:13
+=== (AR) progress: base_a2 (1/14) running 30 min, its log +156 bytes 2026-10-28 23:14:13
+=== (AR) progress: base_a2 (1/14) running 40 min, its log +156 bytes 2026-10-28 23:24:13
+=== (AR) progress: base_a2 (1/14) running 50 min, its log +234 bytes 2026-10-28 23:34:13
+=== (AR) progress: base_a2 (1/14) running 60 min, its log +992 bytes 2026-10-28 23:44:13
+=== (AR) progress: base_a2 (1/14) running 70 min, its log +150 bytes 2026-10-28 23:54:13
+=== (AR) progress: base_a2 (1/14) running 80 min, its log +152 bytes 2026-10-29 00:04:13
+=== (AR) progress: base_a2 (1/14) running 90 min, its log +234 bytes 2026-10-29 00:14:13
+=== (AR) progress: base_a2 (1/14) running 100 min, its log +158 bytes 2026-10-29 00:24:13
+=== (AR) progress: base_a2 (1/14) running 110 min, its log +159 bytes 2026-10-29 00:34:13
+=== (AR) progress: base_a2 (1/14) running 120 min, its log +1069 bytes 2026-10-29 00:44:13
+=== (AR) progress: base_a2 (1/14) running 130 min, its log +154 bytes 2026-10-29 00:54:13
+=== (AR) progress: base_a2 (1/14) running 140 min, its log +156 bytes 2026-10-29 01:04:13
+=== (AR) progress: base_a2 (1/14) running 150 min, its log +156 bytes 2026-10-29 01:14:13
+=== (AR) progress: base_a2 (1/14) running 160 min, its log +236 bytes 2026-10-29 01:24:13
+=== (AR) progress: base_a2 (1/14) running 170 min, its log +155 bytes 2026-10-29 01:34:13
+=== (AR) progress: base_a2 (1/14) running 180 min, its log +156 bytes 2026-10-29 01:44:13
+=== (AR) progress: base_a2 (1/14) running 190 min, its log +158 bytes 2026-10-29 01:54:13
+(AR) base_a2 done 2026-10-29 02:03:32
+(AR) register done 2026-10-29 02:03:39
+=== (AR) progress: rc_k100_seed0 (3/14) running 10 min, its log +1732 bytes 2026-10-29 02:13:39
+(AR) rc_k100_seed0 done 2026-10-29 02:17:11
+=== (AR) progress: rc_k200_seed0 (4/14) running 10 min, its log +1078 bytes 2026-10-29 02:27:11
+(AR) rc_k200_seed0 done 2026-10-29 02:28:37
+=== (AR) progress: rc_k100_seed1 (5/14) running 10 min, its log +1673 bytes 2026-10-29 02:38:37
+(AR) rc_k100_seed1 done 2026-10-29 02:43:09
+=== (AR) progress: rc_k200_seed1 (6/14) running 10 min, its log +982 bytes 2026-10-29 02:53:09
+(AR) rc_k200_seed1 done 2026-10-29 02:55:43
+=== (AR) progress: rc_k100_seed2 (7/14) running 10 min, its log +1871 bytes 2026-10-29 03:05:43
+(AR) rc_k100_seed2 done 2026-10-29 03:07:46
+(AR) rc_k200_seed2 done 2026-10-29 03:17:15
+=== (AR) progress: ra2_k100_seed0 (9/14) running 10 min, its log +1492 bytes 2026-10-29 03:27:15
+(AR) ra2_k100_seed0 done 2026-10-29 03:32:08
+=== (AR) progress: ra2_k200_seed0 (10/14) running 10 min, its log +963 bytes 2026-10-29 03:42:08
+(AR) ra2_k200_seed0 done 2026-10-29 03:43:27
+=== (AR) progress: ra2_k100_seed1 (11/14) running 10 min, its log +1522 bytes 2026-10-29 03:53:27
+(AR) ra2_k100_seed1 done 2026-10-29 04:00:50
+=== (AR) progress: ra2_k200_seed1 (12/14) running 10 min, its log +1052 bytes 2026-10-29 04:10:50
+(AR) ra2_k200_seed1 done 2026-10-29 04:12:04
+=== (AR) progress: ra2_k100_seed2 (13/14) running 10 min, its log +1497 bytes 2026-10-29 04:22:04
+(AR) ra2_k100_seed2 done 2026-10-29 04:29:21
+=== (AR) progress: ra2_k200_seed2 (14/14) running 10 min, its log +964 bytes 2026-10-29 04:39:21
+(AR) ra2_k200_seed2 done 2026-10-29 04:40:51
+=== (AR) run done — 14 steps, 15 declared outputs present 2026-10-29 04:40:51
