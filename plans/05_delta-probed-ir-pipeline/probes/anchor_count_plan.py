@@ -1,10 +1,10 @@
 """The anchor count under the change the anchors measured (TASKS 82; the user, 29 Oct 2026: 'Doe de nieuwe proef met de betere check'):
-where does arm (c)'s CH-oop curve cross 3 cm⁻¹ between k = 100 and 200 under the early-stopped recipe, with a control that reads each
-fine-tune against its own base? Registration: `GoalGathering/notes/PreRegistration_2026-10-29_Anchor_Count.md`.
+where does arm (c)'s CH-oop curve cross 3 cm⁻¹ between k = 100 and 200 under the early-stopped recipe? Registration:
+`GoalGathering/notes/PreRegistration_2026-10-29_Anchor_Count.md` with its amendment 1.
 
-The recipe follow-up's CH-stretch control compared the two arms' fine-tuned models directly and so also counted the gap their bases
-already had; G′ compares each run's change from its own base. Arms (c) and (a2) are the follow-up's bases; `plan` refuses to write the
-chain unless their inputs differ only by the distortion.
+The count reads arm (c) alone; arm (a2) (one factor per family) is its reference. The arms' inputs are checked by the input gate —
+`plan` refuses to write the chain unless they differ only by the distortion — and the pipeline by the repeat control R: at k = 100 both
+arms repeat the recipe follow-up's R2 read within twice the combined se.
 
     python probes/anchor_count_plan.py plan <out_dir>   # the input gate, then the chain file probes/runs/anchor_count.json
     python probes/anchor_count_plan.py read <out_dir>   # the registered lines → anchor_count_read.json/.md
@@ -30,7 +30,7 @@ SIZES = (100, 120, 150, 170, 200)
 R0, R1, R2 = (AR.RECIPES[r] for r in ("R0", "R1", "R2"))
 C_MODES = (R2, R1, R0)             # R2 is read (the follow-up's validation rule); R1 and R0 are reported beside it
 ES_MAX_EPOCHS = 120                # decision 51: one of arm (c)'s R2 runs at k = 200 kept an epoch within 10 % of the follow-up's 60
-G_FAILS_ALLOWED = 1                # G′ holds when it fails at no more than one of the five k
+REPEAT_K = 100                     # control R: the follow-up's draws, seeds and bases at this k, every R2 run there stopped by patience
 LINE_CM = AP.LINE_CM
 LABELS = re.compile(r"analytic second-route Hessians substituted for (\d+) molecules")
 
@@ -112,21 +112,12 @@ def plan(out_dir: Path) -> Path:
 
 
 # ------------------------------------------------------------------------------------------------------------------------------- read
-def stretch_change(records: list[dict], mode: str) -> list[float]:
-    """Per (seed, draw): the fine-tuned CH-stretch minus that seed's base as it is (the record's 'none' read)."""
-    return [d["modes"][mode]["read"]["family_mean"]["CH-stretch"] - r["none"]["family_mean"]["CH-stretch"] for r in records
-            for d in r["draws"]]
-
-
-def control(c_by_k: dict[int, list[dict]], a2_by_k: dict[int, list[dict]]) -> dict:
-    """G′ per k: arm (c)'s change from its base above arm (a2)'s by twice the combined se is a failure; it holds with at most
-    G_FAILS_ALLOWED failures."""
-    per_k = {}
-    for k in SIZES:
-        dc, da2 = PC.mean_se(stretch_change(c_by_k[k], R2)), PC.mean_se(stretch_change(a2_by_k[k], R2))
-        per_k[k] = {"c": dc, "a2": da2, "fails": PC.lower(da2, dc)}
-    fails = sum(v["fails"] for v in per_k.values())
-    return {"per_k": per_k, "fails": fails, "holds": fails <= G_FAILS_ALLOWED}
+def repeat_control(now: dict[str, dict], before: dict[str, dict]) -> dict:
+    """R: per arm and family, this test's R2 cell at REPEAT_K against the follow-up's; a family whose means differ by more than twice
+    the combined se in either direction fails it."""
+    per = {arm: {f: PC.lower(now[arm]["family"][f], before[arm]["family"][f]) or PC.lower(before[arm]["family"][f], now[arm]["family"][f])
+                 for f in FAMILIES} for arm in now}
+    return {"per_arm": per, "holds": not any(v for fails in per.values() for v in fails.values())}
 
 
 def crossings(by_k: dict[int, dict]) -> dict[str, dict]:
@@ -140,8 +131,8 @@ def crossings(by_k: dict[int, dict]) -> dict[str, dict]:
     return out
 
 
-def outcome(ctrl: dict, cap_binds: bool, n: float | None) -> str:
-    if not ctrl["holds"]:
+def outcome(repeat: dict, cap_binds: bool, n: float | None) -> str:
+    if not repeat["holds"]:
         return "no reading"
     if cap_binds:
         return "undecided: the cap binds"
@@ -150,23 +141,30 @@ def outcome(ctrl: dict, cap_binds: bool, n: float | None) -> str:
     return f"count ≤ {SIZES[0]}" if n <= SIZES[0] else f"count {n:.0f}"
 
 
-def assess(c_by_k: dict[int, list[dict]], a2_by_k: dict[int, list[dict]]) -> dict:
-    """The table ({arm: {mode: {k: cell}}}, the bases as they are), G′, the cap, the crossings per mode and the outcome."""
+def assess(c_by_k: dict[int, list[dict]], a2_by_k: dict[int, list[dict]], before: dict[str, dict]) -> dict:
+    """The table ({arm: {mode: {k: cell}}}, the bases as they are), R against the follow-up's cells `before` ({arm: cell}), the cap,
+    the crossings (arm (c) per mode, arm (a2) under R2) and the outcome."""
     t = {"c": {m: {k: AR.cell(c_by_k[k], m, ES_MAX_EPOCHS) for k in SIZES} for m in C_MODES},
          "a2": {R2: {k: AR.cell(a2_by_k[k], R2, ES_MAX_EPOCHS) for k in SIZES}}}
     base = {arm: {f: PC.mean_se([r["none"]["family_mean"][f] for r in recs[SIZES[0]]]) for f in FAMILIES}
             for arm, recs in (("c", c_by_k), ("a2", a2_by_k))}
-    ctrl = control(c_by_k, a2_by_k)
+    repeat = repeat_control({arm: t[arm][R2][REPEAT_K] for arm in t}, before)
     cap = {k: t["c"][R2][k]["at_cap"] > AR.CAP_SHARE for k in SIZES}
-    cross = {m: crossings(t["c"][m]) for m in C_MODES}
-    return {"table": t, "base": base, "control": ctrl, "cap_binds": cap, "crossings": cross,
-            "outcome": outcome(ctrl, any(cap.values()), cross[R2]["CH-oop"]["k"])}
+    cross = {f"c {m}": crossings(t["c"][m]) for m in C_MODES} | {f"a2 {R2}": crossings(t["a2"][R2])}
+    return {"table": t, "base": base, "repeat": repeat, "cap_binds": cap, "crossings": cross,
+            "outcome": outcome(repeat, any(cap.values()), cross[f"c {R2}"]["CH-oop"]["k"])}
+
+
+def follow_up_cells() -> dict[str, dict]:
+    """The recipe follow-up's R2 cells at REPEAT_K, per arm (its records rc_* and ra2_*)."""
+    return {arm: AR.cell(AP.read_records(AR_DIR, [f"{prefix}_k{REPEAT_K}_seed{s}" for s in PC.SEEDS]), R2, AR.ES_MAX_EPOCHS)
+            for arm, prefix in (("c", "rc"), ("a2", "ra2"))}
 
 
 def read(out_dir: Path) -> dict:
     c_by_k = {k: AP.read_records(out_dir, [c_name(k, s) for s in PC.SEEDS]) for k in SIZES}
     a2_by_k = {k: AP.read_records(out_dir, [a2_name(k, s) for s in PC.SEEDS]) for k in SIZES}
-    res = assess(c_by_k, a2_by_k)
+    res = assess(c_by_k, a2_by_k, follow_up_cells())
     PC.write_text(out_dir / "anchor_count_read.json", json.dumps(res, indent=1, default=str))
     PC.write_text(out_dir / "anchor_count_read.md", "\n".join(report_lines(res)) + "\n")
     return res
@@ -179,13 +177,12 @@ def report_lines(res: dict) -> list[str]:
     def kk(x: float | None) -> str:
         return "> 200" if x is None else f"{x:.0f}"
 
+    failed = {arm: [f for f, v in fails.items() if v] for arm, fails in res["repeat"]["per_arm"].items()}
     out = ["# Anchor count — read", "", f"**Outcome: {res['outcome']}.**", "",
-           f"G′ (CH-stretch change from each base, arm (c) against arm (a2), {R2}): fails at {res['control']['fails']} of {len(SIZES)} k "
-           f"(holds: {res['control']['holds']}); the cap binds at {[k for k, v in res['cap_binds'].items() if v] or 'no k'}.", "",
-           "| k | change (c) | change (a2) | fails |", "|---|---|---|---|"]
-    out += [f"| {k} | {ms(v['c'])} | {ms(v['a2'])} | {v['fails']} |" for k, v in res["control"]["per_k"].items()]
-    out += ["", "Crossings of 3 cm⁻¹ (k on the mean curve; range from the mean ∓ se curves):", "",
-            "| mode | " + " | ".join(FAMILIES) + " |", "|---|" + "---|" * len(FAMILIES)]
+           f"R (k = {REPEAT_K} repeats the recipe follow-up's {R2} read): holds {res['repeat']['holds']}; families off by more than "
+           f"2 se: {failed}. The cap binds at {[k for k, v in res['cap_binds'].items() if v] or 'no k'}.", "",
+           "Crossings of 3 cm⁻¹ (k on the mean curve; range from the mean ∓ se curves):", "",
+           "| arm and mode | " + " | ".join(FAMILIES) + " |", "|---|" + "---|" * len(FAMILIES)]
     out += [f"| {m} | " + " | ".join(f"{kk(c[f]['k'])} ({kk(c[f]['low'])}–{kk(c[f]['high'])})" for f in FAMILIES) + " |"
             for m, c in res["crossings"].items()]
     out += ["", "| arm | mode | k | " + " | ".join(FAMILIES) + " | training loss | best epoch (at cap) |",

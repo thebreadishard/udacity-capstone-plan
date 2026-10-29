@@ -73,3 +73,28 @@ whole reservoir); seeds 0–2. Chain AC, 30 steps (two arms × five k × three s
 
 Laptop only; nothing runs beside it. By the follow-up's step times (corpus load ≈ 3 min per step; R1 + R2 ≈ 3.7 min per draw at
 k = 100, R0 ≈ 1.2 min) and per-epoch time growing with k: ≈ 7 h. Memory: the follow-up's bound, 7.7 GB. Read the day it ends.
+
+## Amendment 1 — 29 October 2026, 10:4x, before any run: G′ replaced by a repeat control
+
+**Why.** The reader's smoke on the recipe follow-up's records (format only, k = 100 and 200; `scratchpad/smoke_count_read.py`) showed
+that G′ cannot measure what it was written for. Each base as it is sits about 78 cm⁻¹ from the true CH-stretch correction (the
+follow-up's 'base as is' rows: arm (c) 77.44, 78.40, 77.71; arm (a2) 77.95, 78.18, 77.92), because CH-stretch's factor −0.79 leaves a
+fifth of its correction. A change from the base is therefore a change of about −75 cm⁻¹ in both arms, and the bases agree there to
+0.2 cm⁻¹ — so the follow-up's CH-stretch gap after fine-tuning (+0.36 to +0.65 at k = 100) is not in the bases. It arises in the
+fine-tune: arm (c)'s fine-tune must also undo the other families' larger, context-dependent distortion with the same shared parameters.
+That is the measured change's own cost, not a difference between the arms' inputs, and no read of the fine-tuned models can tell the
+two apart. The registration's reasoning in 'Why' (the gap 'already in the bases') is wrong on this evidence.
+
+**What replaces it.** The count reads arm (c) alone; arm (a2) is its reference, not its control. The arms' inputs are checked by the
+input gate (passed at 10:40: 862 analytic labels in both, CH-stretch factor −0.79 in both, the commands equal but for the distortion
+flags and the prefix). A difference in the pipeline itself is caught by:
+
+- **R — the repeat control:** at k = 100 each arm's R2 read repeats the follow-up's R2 read (the same draws, seeds and bases; the cap
+  60 → 120 touches no run there: every follow-up R2 run at k = 100 stopped by its patience, after at most 57 epochs): no family's mean differs from the
+  follow-up's by more than twice the combined se, in either arm.
+
+**Outcome** (replacing the original's): **no reading** (R fails); else **undecided: the cap binds**; else **count N** or **above 200**,
+as registered. Reported beside the count, not judged: arm (a2)'s crossing per family (what the measured change costs in anchors
+against one factor per family), the CH-stretch gap between the arms at every k, and both bases as they are.
+
+**Predictions** (G′'s removed, the rest unchanged): R holds; arm (a2)'s CH-oop crossing below arm (c)'s.
