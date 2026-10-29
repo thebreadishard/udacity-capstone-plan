@@ -67,3 +67,11 @@ def test_committed_windows_listing_names_the_probe_dependencies():
     body = FE.body_of((PLAN / "environments" / "windows-python314.txt").read_text(encoding="utf-8"))
     names = {ln.split("==")[0].lower() for ln in body}
     assert {"torch", "rdkit", "geometric", "numpy", "scipy"} <= names
+
+
+def test_the_windows_conda_environments_are_listed_by_conda():
+    """29 Oct 2026: psi4 1.11 (qc) and psi4 1.10.2 (vpt2) live in Windows conda envs that pip cannot list (psi4 is a conda package)."""
+    for name, env in (("windows-conda-qc", "qc"), ("windows-conda-vpt2", "vpt2")):
+        _what, cmd, pycmd = FE.ENVIRONMENTS[name]
+        assert cmd == [str(FE.WINDOWS_CONDA), "list", "-p", str(FE.WINDOWS_ENVS / env), "--export"]
+        assert pycmd == [str(FE.WINDOWS_ENVS / env / "python.exe"), "--version"]

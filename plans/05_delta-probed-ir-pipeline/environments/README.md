@@ -9,6 +9,8 @@ module 05's file lacked `geometric` and `rdkit` and that the compute environment
 | `windows-venv313.txt` | module 07 (LangGraph) | `pip freeze` in `.venv` |
 | `wsl-qc05.txt` | our pyscf branch, the E8 anchors, gate 1, the LNO probes | `pip freeze` in `~/qc05` (WSL) |
 | `wsl-vpt2.txt` | psi4 + pyVPT2 (route 2) | `conda list --export` (WSL miniforge) |
+| `windows-conda-qc.txt` | psi4 1.11: the corpus deck's engine on the laptop (73 molecules on Asus18), the pipeline's geometry step | `conda list --export` (Windows anaconda, `~/.conda/envs/qc`) |
+| `windows-conda-vpt2.txt` | psi4 1.10.2 + pyVPT2: the benzene VPT2 of 14 Sep | `conda list --export` (Windows anaconda, `~/.conda/envs/vpt2`) |
 | `server-*.txt` | the rented servers' `qc` / `qc05` environments | copied by hand from the full-fetch waiters' `environment_*.txt` (`probes/fetch_*_full_*.sh`), dated |
 
 Rules: regenerate after any install or environment rebuild (`python tools/freeze_environments.py`); `--check` says whether the committed listings

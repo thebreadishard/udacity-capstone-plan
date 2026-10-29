@@ -25,6 +25,8 @@ ENV_DIR = PLAN / "environments"
 M05_REQ = PLAN / "modules" / "05_support_predictor" / "requirements.txt"
 REPO = PLAN.parents[1]
 WSL = ["wsl", "-e", "bash", "-lc"]
+WINDOWS_CONDA = Path(r"C:\ProgramData\anaconda3\Scripts\conda.exe")   # the conda that created the envs below (their conda-meta/history)
+WINDOWS_ENVS = Path.home() / ".conda" / "envs"
 ENVIRONMENTS = {
     # name: (what runs there, listing command, python-version command)
     "windows-python314": ("modules 05/06 and the Windows probes (torch, rdkit, geometric)", [sys.executable, "-m", "pip", "freeze"], [sys.executable, "--version"]),
@@ -33,6 +35,11 @@ ENVIRONMENTS = {
                  [("pyscf source checkout (pip shows only 2.14.0; the package was built from this branch)",
                    [*WSL, "cd ~/pyscf-master && echo \"$(git rev-parse --abbrev-ref HEAD) $(git log -1 --format='%h %cs') dirty=$(git status --short | wc -l)\""])]),
     "wsl-vpt2": ("psi4 + pyVPT2 (route 2 of 22 Sep)", [*WSL, "~/miniforge3/bin/conda list -n vpt2 --export"], [*WSL, "~/miniforge3/envs/vpt2/bin/python --version"]),
+    "windows-conda-qc": ("psi4 1.11: the corpus deck's engine on the laptop and the pipeline's geometry step (TASKS 146)",
+                         [str(WINDOWS_CONDA), "list", "-p", str(WINDOWS_ENVS / "qc"), "--export"], [str(WINDOWS_ENVS / "qc" / "python.exe"), "--version"]),
+    "windows-conda-vpt2": ("psi4 1.10.2 + pyVPT2: the benzene VPT2 of 14 Sep (probes/vpt2_benzene.py)",
+                           [str(WINDOWS_CONDA), "list", "-p", str(WINDOWS_ENVS / "vpt2"), "--export"],
+                           [str(WINDOWS_ENVS / "vpt2" / "python.exe"), "--version"]),
 }
 M05_HEADER = ("# Module 05 — the Windows environment its notebook, trainer and probes run in (system Python 3.14, CPU-only torch). Frozen by\n"
               "# tools/freeze_environments.py from `pip freeze`; identical to environments/windows-python314.txt. Regenerate with that tool after any install.\n")
