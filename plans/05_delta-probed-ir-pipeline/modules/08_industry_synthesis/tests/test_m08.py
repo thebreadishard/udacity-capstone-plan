@@ -43,11 +43,17 @@ def test_the_licence_follows_the_carried_networks_error():
     assert "other (3.35 / 3.89)" in s["statement"] and "no coupled-cluster licence" in s["statement"]
 
 
+def rung_one_parent(cat) -> str:
+    """A layer-A molecule at rung 1 — the premise of the registered S2 and S2b, whose molecule (azulene) has since been anchored (rung 4)."""
+    return next(r["name"] for r in cat.rows if r["layer"] == "A" and int(r["rung"]) == 1)
+
+
 def test_scenarios_as_registered(cat):
     S = json.load(open(HERE / "scenarios" / "scenarios.json", encoding="utf-8"))["scenarios"]
     by = {s["id"]: s for s in S}
     d1 = decide(Request(**by["S1"]["request"]), cat); assert d1.kind == "certificate" and d1.rung_reached == 4
-    d2 = decide(Request(**by["S2"]["request"]), cat); assert d2.kind == "refusal" and "not licensed" in d2.gate_named and "R14" in d2.rule_ids
+    d2 = decide(Request(**(by["S2"]["request"] | {"molecule": rung_one_parent(cat)})), cat)
+    assert d2.kind == "refusal" and "not licensed" in d2.gate_named and "R14" in d2.rule_ids
     assert any(p["step"] == "anchor_e8_cc_hessian_naphthalene" for p in d2.price_lines)
     # coronene (10 Oct 2026): the earlier stand-in, a five-ring PAH, is now listed as a module-06 generator row (layer G) in the export
     outside = "c1cc2ccc3ccc4ccc5ccc6ccc1c1c2c3c4c5c61"; assert cat.find(outside) is None
@@ -65,7 +71,7 @@ def test_instruction_scanner_flags_commands_not_context():
 
 
 def test_run_order_needs_the_gate_and_the_worker_touches_no_machine(cat):
-    d = decide(Request(molecule="azulene", target_rung=4, budget_eur=100), cat)
+    d = decide(Request(molecule=rung_one_parent(cat), target_rung=4, budget_eur=100), cat)
     assert d.kind == "run_order" and d.gate["approved"] is False and d.gate["forced_action"]["action"] == "dry_run" and "R01" in d.rule_ids
     w = execute_run_order(d.model_dump(), cat)
     assert w["machine_touched"] is False and w["executed"] is False and w["queued"] is True

@@ -33,9 +33,10 @@ const overlaps = [test && `network, held-out test ${test.spectrum_overlap_mean.t
         {overlaps.length > 0 && <p slot="key" class="small key">Spectrum overlap with the anchor (1 = the same shape): {overlaps.join(' · ')}.</p>}
         <p class="muted">{rungNote} {aptNote} {cmpLine}{cheap ? ' The lower panel is the pipeline\'s input: the B3LYP Hessian with its own B3LYP dipole derivatives.' : ''}</p>
         {test && (
-          <p><strong>The network's prediction, shown as a test.</strong> The Atlas does not yet give the network's predictions as its answer (that is
-            rung 3, which waits until a mode family is licensed). This one is shown because this anchor was left out when the network was tuned to the
-            coupled-cluster anchors (T3, the carried model's three seeds), so the green band shows how the network does on a molecule it did not see at this level:
+          <p><strong>An earlier network's prediction, shown as a test.</strong> The Atlas does not give the network's predictions as its answer; the
+            pipeline does, at the DFT stand-in level. This one is shown because this anchor was left out when an earlier version of the network
+            (v1.1, now superseded) was tuned to the coupled-cluster anchors with a fixed number of steps (T3, three seeds), so the green band shows how
+            that version does on a molecule it did not see at this level:
             spectrum overlap with the anchor {test.spectrum_overlap_mean.toFixed(2)} ({test.spectrum_overlap_range[0].toFixed(2)}–{test.spectrum_overlap_range[1].toFixed(2)}
             over the seeds){comparison.spectrum_overlap != null ? `, against ${comparison.spectrum_overlap.toFixed(2)} for the cheap Hessian` : ''}.</p>
         )}

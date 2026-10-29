@@ -153,7 +153,8 @@ def test_prediction(mid: str, anchor: dict) -> dict | None:
         seeds.append(dict(file=_rel(f), mode=str(z["mode"]), low_level=str(z["low_level"]), sticks=s["sticks"],
                           spectrum_overlap=_overlap(s["sticks"], anchor["sticks"])))
     ov = [s["spectrum_overlap"] for s in seeds]
-    return dict(label="test of the network, not a served prediction: the anchor was left out of the fine-tune (T3, chain 34's carried models, "
+    return dict(label="test of the network, not a served prediction: the anchor was left out of the fine-tune (T3, chain 34's models — "
+                      "v1.1, superseded, a fixed-step fine-tune — "
                 "head-tuned with λ = 1), so this is how the network does on a molecule it did not see at this level",
                 seeds=seeds, spectrum_overlap_mean=round(float(np.mean(ov)), 3), spectrum_overlap_range=[min(ov), max(ov)])
 

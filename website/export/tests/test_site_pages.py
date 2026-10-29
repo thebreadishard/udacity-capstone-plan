@@ -3,6 +3,7 @@ dipole derivatives on benzene, the B3LYP ones said on benzonitrile, positions on
 cheap positions with the 'not computed' line. Design §10 (10 Oct 2026): under an anchor the cheap input is the lead card's lower panel, the
 reading notes sit behind a tap, and the long flag story behind a short chip. Runs against website/site/dist after `npm run build`; skipped when
 there is no build."""
+import json
 import os
 import re
 
@@ -10,6 +11,7 @@ import pytest
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DIST = os.path.abspath(os.path.join(HERE, "..", "..", "site", "dist", "molecule"))
+OUT = os.path.abspath(os.path.join(HERE, "..", "out"))
 pytestmark = pytest.mark.skipif(not os.path.isdir(DIST), reason="no site build (run npm run build in website/site)")
 
 
@@ -43,8 +45,21 @@ def test_naphthalene_anchor_is_positions_only():
     assert leads_with(h, "Infrared spectrum at the anchor level") and "not computed for this molecule yet" in h and 'class="irspec"' not in h
 
 
+def without_anchor_or_heights() -> str:
+    """A computed molecule with neither an anchor nor band heights in the export (azulene was the example until it was anchored)."""
+    with open(os.path.join(OUT, "catalog.json"), encoding="utf-8") as f:
+        rows = json.load(f)
+    for r in rows:
+        p = os.path.join(OUT, "molecules", r["id"] + ".json")
+        if int(r["rung"]) < 4 and os.path.exists(p):
+            with open(p, encoding="utf-8") as f:
+                if json.load(f).get("intensities_km_mol") is None:
+                    return r["id"]
+    pytest.fail("no molecule without an anchor and band heights in the export")
+
+
 def test_a_molecule_without_anchor_or_heights_leads_with_positions():
-    h = page("A_d9139359ab")                                                             # azulene
+    h = page(without_anchor_or_heights())
     assert leads_with(h, "Harmonic frequencies at the cheap level") and "Band heights are not computed for this molecule yet" in h
 
 
