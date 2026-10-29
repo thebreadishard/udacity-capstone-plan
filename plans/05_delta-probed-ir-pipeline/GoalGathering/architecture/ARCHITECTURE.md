@@ -461,8 +461,9 @@ flowchart LR
 ```mermaid
 %% Test and licence (level 3b): from the trained ΔH model and the test set come the licence table and the calibration that the spectrum pipeline uses alongside the trained model. The model's weights no longer change here.
 %% Rectangle = process step (operation + software); rounded ends = data object (the thing). Every step yields one data object. Dashed = not built yet.
-%% 7 October 2026: the test per family on the fixed hold-outs (analytic labels where they exist) and the promotion of a model against lines registered before
-%% its run are built; the licence table, the calibration and the score against laboratory spectra and opponents are not yet.
+%% Built: the test per family on the fixed hold-outs (analytic labels where they exist), the promotion of a model against lines registered before its
+%% run, and the licence (decision 65: a family is licensed where the carried model's error is within 3 cm⁻¹ on both hold-outs; neutral molecules).
+%% Not yet: the calibration of the ensemble spread and the score against laboratory spectra and opponents.
 flowchart LR
   linkStyle default stroke:#8a9bb0,stroke-width:2.2px
   classDef planned stroke-dasharray: 6 4,stroke:#b8860b,fill:#fff3c4,color:#111
@@ -477,8 +478,8 @@ flowchart LR
   TESTR(["Test errors per family and charge state, alongside the opponents"]):::data
   PROMO["Promotion against the registered lines and the learning curve (own software)"]
   STAT(["Model status: carried, candidate or superseded"]):::data
-  LIC["Licence determination (own software)"]:::planned
-  LICT(["Licence table per family and charge state"]):::data
+  LIC["Licence determination: within 3 cm⁻¹ on both hold-outs (own software)"]
+  LICT(["Licence table per family (neutral; charge states once cations are trained)"]):::data
   CAL["Uncertainty calibration (own software)"]:::planned
   CALR(["Calibration of the ensemble spread"]):::data
 
