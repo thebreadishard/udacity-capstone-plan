@@ -47,7 +47,7 @@ from scale_factor_baseline import PAHDB_FACTORS, pahdb_region  # noqa: E402
 
 from dpir.provenance import provenance  # noqa: E402
 
-PIPELINE_VERSION = "0.1.dev"           # v0.1 once it runs end to end (modules/PIPELINE.md)
+PIPELINE_VERSION = "0.1"               # modules/PIPELINE.md
 NETWORK = "ΔH-network"
 CORPUS = M05 / "corpus" / "molecules"
 PSI4_WORKER = M05 / "corpus" / "psi4_worker.py"
