@@ -22,6 +22,14 @@ most still-open cell places per euro, until every cell is full).
     python probes/anchor_plan.py select --per-cell 2   # the selection and its price → out/anchor_plan/selection_m2.json and .md
     python probes/anchor_plan.py select --per-cell 2 --max-atoms 26   # only what a full anchor can be; the cells left open are named
     python probes/anchor_plan.py fill --target 30      # the corpus side: DFT molecules missing per cell to 30, the cheapest pending ones
+    python probes/anchor_plan.py count --n 167         # N anchors with the anchor count's ring-context mix → out/anchor_plan/count_n167.*
+
+The count (TASKS 82; the anchor count of 29 Oct 2026, `PreRegistration_2026-10-29_Anchor_Count.md`): its N was read on random draws from
+the proxy check's reservoir, and a cell cover did not beat random draws (arm (c)'s C1), so N anchors are priced with the reservoir's mix
+of ring contexts (single, fused, five; `fusion_context`): per context its share of N, the cheapest neutral molecules of that context in
+the domain. Beside it, the price of N drawn as the count drew them: N times the reservoir's mean price. The cheapest selection is
+smaller than the reservoir's molecules, which the count did not measure; the two prices bracket the plan. Cations are left out (their
+route is TASKS 98), and molecules above 250 cc-pVDZ functions are counted because a CPX62's 32 GB does not hold them (TASKS 93).
 
 The fill list (decision 52: ~30 mixed children cover a scaffold family): 'computed' is a manifest row marked done or a molecule with a
 ωB97X Hessian in a fetched, not yet merged shard folder (corpus/shards_*); its price is the cheap deck on the laptop, a power law in the
@@ -60,6 +68,8 @@ SIZE_EXPONENT = 5               # the registered size rule of anchor set three
 EXTRA_GRADIENTS = 7             # the reference gradient and the CC APT's six
 EUR_PER_HOUR_CPX62 = MACHINES["CPX62"]["eur_per_hour"]
 CATION_LAYERS = {"P3c"}
+RESERVOIR = M05 / "out" / "proxy_check_2026-10-21" / "a_reservoir.txt"   # the anchor count's draws (PreRegistration_2026-10-29_Anchor_Count.md)
+CPX62_FUNCTION_LIMIT = 250                       # above it a CC/DZ anchor needs more than a CPX62's 32 GB (TASKS 93)
 OUT_OF_DOMAIN_LAYERS = {"C"}                     # QM9
 RING_ELEMENTS = {"C", "N"}
 
@@ -208,6 +218,77 @@ def select(rows: dict[str, dict], demand: dict[tuple, int], cost: str = "eur") -
     return chosen
 
 
+def reservoir_rows(reservoir: Path = RESERVOIR, manifest: Path = MANIFEST) -> dict[str, dict]:
+    """The reservoir's molecules with their ring context and anchor price (in the domain or not: the count drew from all of them)."""
+    ids = reservoir.read_text(encoding="utf-8").split()
+    with manifest.open(encoding="utf-8") as f:
+        smiles = {r["id"]: r["smiles"] for r in csv.DictReader(f)}
+    missing = [i for i in ids if not smiles.get(i)]
+    if missing:
+        raise ValueError(f"{len(missing)} reservoir ids without a SMILES in the manifest: {missing[:5]}")
+    out = {}
+    for i in ids:
+        mol = Chem.MolFromSmiles(smiles[i])
+        hours = anchor_hours(Chem.AddHs(mol).GetNumAtoms(), basis_functions(smiles[i]))
+        out[i] = {"context": fusion_context(mol), "hours": hours, "eur": hours * EUR_PER_HOUR_CPX62}
+    return out
+
+
+def quotas(n: int, counts: dict[str, int]) -> dict[str, int]:
+    """n split over the contexts in proportion to `counts` (largest remainder, ties by name), summing to n."""
+    total = sum(counts.values())
+    exact = {c: n * k / total for c, k in counts.items()}
+    q = {c: int(x) for c, x in exact.items()}
+    for c in sorted(exact, key=lambda c: (-(exact[c] - q[c]), c))[: n - sum(q.values())]:
+        q[c] += 1
+    return q
+
+
+def count_selection(rows: dict[str, dict], quota: dict[str, int]) -> dict[str, list[str]]:
+    """Per context, its quota of the cheapest neutral domain molecules (ties: fewer atoms, then the id); too few candidates is refused."""
+    out = {}
+    for ctx, k in quota.items():
+        pool = sorted((i for i, r in rows.items() if r["layer"] not in CATION_LAYERS and fusion_context(Chem.MolFromSmiles(r["smiles"])) == ctx),
+                      key=lambda i: (rows[i]["eur"], rows[i]["n_atoms"], i))
+        if len(pool) < k:
+            raise ValueError(f"context {ctx}: {k} anchors asked, {len(pool)} neutral candidates in the domain")
+        out[ctx] = pool[:k]
+    return out
+
+
+def count_report(rows: dict[str, dict], chosen: dict[str, list[str]], reservoir: dict[str, dict], n: int) -> list[str]:
+    ids = [i for v in chosen.values() for i in v]
+    eur, hours = sum(rows[i]["eur"] for i in ids), sum(rows[i]["hours"] for i in ids)
+    mean_eur = sum(r["eur"] for r in reservoir.values()) / len(reservoir)
+    big = [i for i in ids if rows[i]["basis_functions"] > CPX62_FUNCTION_LIMIT]
+    counts = Counter(r["context"] for r in reservoir.values())
+    lines = [f"# Anchor plan — {n} anchors with the anchor count's ring-context mix", "",
+             f"**The cheapest {n}: ≈ {hours:,.0f} CPX62 hours, ≈ €{eur:,.0f}** (the CC/DZ Hessian and the CC APT; the MP2 step not counted). "
+             f"**Drawn as the count drew them: ≈ €{n * mean_eur:,.0f}** ({n} × the reservoir's mean €{mean_eur:,.0f} over {len(reservoir)} molecules). "
+             "The cheapest selection is made of smaller molecules than the reservoir's, which the count did not measure; the two bracket the plan.", "",
+             f"Mix (the reservoir's {len(reservoir)}): " + ", ".join(f"{c} {counts[c]}" for c in sorted(counts)) + ". "
+             f"Neutral only (cations: TASKS 98). Already computed in the corpus (proxy labels exist): {sum(rows[i]['status'] == 'done' for i in ids)}. "
+             f"Above {CPX62_FUNCTION_LIMIT} cc-pVDZ functions (more than a CPX62's 32 GB, TASKS 93): {len(big)}.", "",
+             "| context | anchors | atoms | basis functions | h | € |", "|---|---|---|---|---|---|"]
+    for ctx, v in sorted(chosen.items()):
+        lines.append(f"| {ctx} | {len(v)} | {min(rows[i]['n_atoms'] for i in v)}–{max(rows[i]['n_atoms'] for i in v)} | "
+                     f"{min(rows[i]['basis_functions'] for i in v)}–{max(rows[i]['basis_functions'] for i in v)} | "
+                     f"{sum(rows[i]['hours'] for i in v):,.0f} | {sum(rows[i]['eur'] for i in v):,.0f} |")
+    return lines
+
+
+def count_action(rows: dict[str, dict], n: int) -> list[str]:
+    if n < 1:
+        raise SystemExit("--n must be at least 1")
+    reservoir = reservoir_rows()
+    quota = quotas(n, dict(Counter(r["context"] for r in reservoir.values())))
+    chosen = count_selection(rows, quota)
+    write_text(OUT / f"count_n{n}.json", json.dumps({"n": n, "quota": quota, "chosen": chosen, "reservoir": str(RESERVOIR.relative_to(PLAN))}, indent=1))
+    lines = count_report(rows, chosen, reservoir, n)
+    write_text(OUT / f"count_n{n}.md", "\n".join(lines) + "\n")
+    return lines
+
+
 def write_text(path: Path, text: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_name(path.name + ".tmp")
@@ -272,13 +353,18 @@ def fill_report(rows: dict[str, dict], per_cell: dict, chosen: list[str], target
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    ap.add_argument("action", choices=["cells", "select", "fill"])
+    ap.add_argument("action", choices=["cells", "select", "fill", "count"])
+    ap.add_argument("--n", type=int, default=None, help="count: the number of anchors to price (the anchor count read 167, 29 Oct 2026)")
     ap.add_argument("--target", type=int, default=30, help="fill: computed molecules per cell (decision 52: ~30 cover a family)")
     ap.add_argument("--per-cell", type=int, default=2)
     ap.add_argument("--max-atoms", type=int, default=None, help="select: only molecules up to this many atoms (a full anchor's reach)")
     a = ap.parse_args(argv)
     rows = corpus_cells()
-    if a.action == "fill":
+    if a.action == "count":
+        if a.n is None:
+            raise SystemExit("count needs --n")
+        lines = count_action(rows, a.n)
+    elif a.action == "fill":
         with MANIFEST.open(encoding="utf-8") as f:
             manifest = list(csv.DictReader(f))
         model = dft_cost_model({r["id"]: r["smiles"] for r in manifest if r["smiles"]})

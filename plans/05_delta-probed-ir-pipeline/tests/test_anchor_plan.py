@@ -88,3 +88,23 @@ def test_the_power_law_fit():
 def test_an_unreadable_smiles_is_refused():
     with pytest.raises(ValueError, match="unreadable"):
         A.cells("c1cc", "A")
+
+
+def test_the_count_quotas_keep_the_reservoirs_mix_and_sum_to_n():
+    """The reservoir of the anchor count holds 89 fused, 67 single and 44 five-ring molecules (anchor_price_plan.COVER_SIZES' note)."""
+    q = A.quotas(167, {"fused": 89, "single": 67, "five": 44})
+    assert q == {"fused": 74, "single": 56, "five": 37} and sum(q.values()) == 167
+    assert A.quotas(3, {"a": 1, "b": 1, "c": 1}) == {"a": 1, "b": 1, "c": 1} and sum(A.quotas(10, {"a": 1, "b": 2}).values()) == 10
+
+
+def row(smiles: str, eur: float, layer: str = "A") -> dict:
+    return {"smiles": smiles, "layer": layer, "eur": eur, "n_atoms": Chem.AddHs(Chem.MolFromSmiles(smiles)).GetNumAtoms()}
+
+
+def test_the_count_takes_the_cheapest_neutral_molecules_per_context():
+    rows = {"naph": row("c1ccc2ccccc2c1", 30.0), "quin": row("c1ccc2ncccc2c1", 20.0), "benz": row("c1ccccc1", 5.0),
+            "pyr": row("c1ccncc1", 4.0), "cat": row("c1ccccc1", 1.0, layer="P3c"), "azu": row("c1ccc2cccc2cc1", 25.0)}
+    chosen = A.count_selection(rows, {"fused": 1, "single": 2, "five": 1})
+    assert chosen == {"fused": ["quin"], "single": ["pyr", "benz"], "five": ["azu"]}
+    with pytest.raises(ValueError, match="context five: 2 anchors asked, 1 neutral candidates"):
+        A.count_selection(rows, {"five": 2})
