@@ -1,0 +1,6 @@
+WARN: HOMO -0.235889994330649 >= LUMO -0.235889994330648
+/root/cations_c/molecules/P3c_25fe240a5d b3lyp: 25534 s; |H_analytic − H_corpus| max 2.98e-03 rms 3.31e-04; max |Δfreq| 4 cm-1
+WARN: HOMO -0.203372718616037 >= LUMO -0.203372718616033
+/root/cations_c/molecules/P3c_25fe240a5d wb97x: WARNING <S^2> = 0.823, expected 0.750 (spin contamination)
+/root/cations_c/molecules/P3c_25fe240a5d wb97x: 28832 s; |H_analytic − H_corpus| max 2.97e-03 rms 2.83e-04; max |Δfreq| 8 cm-1
+(CX) P3c_25fe240a5d max RSS 19779416 kB, wall 54366.80 s

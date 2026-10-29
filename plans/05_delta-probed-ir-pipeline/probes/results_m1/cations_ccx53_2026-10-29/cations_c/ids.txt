@@ -1,0 +1,15 @@
+# The pool 3 cations left by phase 2 (probes/cation_order.py on shard a, 25 Oct 2026): id, 6-31G* basis functions, atoms; largest first for the CCX53's parallel lanes (TASKS 121)
+P3c_35c01ca552	303	28
+P3c_20747fd501	294	30
+P3c_25fe240a5d	294	30
+P3c_238c9ced38	288	27
+P3c_331729cd47	288	27
+P3c_2f079d63a1	279	29
+P3c_311e979a14	277	26
+P3c_29caedd47d	275	27
+P3c_2d6f59a2bf	275	27
+P3c_19eaf39036	273	26
+P3c_20e59f3897	273	26
+P3c_134d596518	267	23
+P3c_428228e5a5	260	26
+P3c_cce0ad25a5	260	26

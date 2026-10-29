@@ -1,0 +1,47 @@
+=== (CX) armed: 14 molecules (0 without a job file); 0 to optimise, 14 to label; 4 lanes × 8 threads, cap 26624 MB, label arguments '--charge 1 --spin 1 --max-memory 24000 --reuse-existing'; waiting for /LANE [0-3] DONE/ in 4 of /root/labels/lane_[0-3].log 2026-10-25 09:11:56
+=== (CX) start: the wait condition is met 2026-10-27 22:41:58
+=== (CX) optimisations 2026-10-27 22:41:58
+  P3c_35c01ca552 optimised already
+  P3c_20747fd501 optimised already
+  P3c_25fe240a5d optimised already
+  P3c_238c9ced38 optimised already
+  P3c_331729cd47 optimised already
+  P3c_2f079d63a1 optimised already
+  P3c_311e979a14 optimised already
+  P3c_29caedd47d optimised already
+  P3c_19eaf39036 optimised already
+  P3c_2d6f59a2bf optimised already
+  P3c_20e59f3897 optimised already
+  P3c_134d596518 optimised already
+  P3c_428228e5a5 optimised already
+  P3c_cce0ad25a5 optimised already
+=== (CX) labels 2026-10-27 22:41:58
+  P3c_35c01ca552 labels started 2026-10-27 22:41:58
+  P3c_20747fd501 labels started 2026-10-27 22:41:58
+  P3c_25fe240a5d labels started 2026-10-27 22:41:58
+  P3c_238c9ced38 labels started 2026-10-27 22:41:58
+  P3c_238c9ced38 labelled 43036 s - (CX) P3c_238c9ced38 max RSS 18436164 kB, wall 43036.15 s
+  P3c_331729cd47 labels started 2026-10-28 10:39:14
+  P3c_35c01ca552 labelled 52682 s - (CX) P3c_35c01ca552 max RSS 21841972 kB, wall 52681.48 s
+  P3c_2f079d63a1 labels started 2026-10-28 13:20:00
+  P3c_25fe240a5d labelled 54367 s - (CX) P3c_25fe240a5d max RSS 19779416 kB, wall 54366.80 s
+  P3c_311e979a14 labels started 2026-10-28 13:48:05
+  P3c_20747fd501 labelled 55412 s - (CX) P3c_20747fd501 max RSS 19810232 kB, wall 55411.78 s
+  P3c_29caedd47d labels started 2026-10-28 14:05:30
+  P3c_331729cd47 labelled 45661 s - (CX) P3c_331729cd47 max RSS 18427820 kB, wall 45660.40 s
+  P3c_2d6f59a2bf labels started 2026-10-28 23:20:15
+  P3c_311e979a14 labelled 39428 s - (CX) P3c_311e979a14 max RSS 16269644 kB, wall 39427.58 s
+  P3c_19eaf39036 labels started 2026-10-29 00:45:13
+  P3c_29caedd47d labelled 40495 s - (CX) P3c_29caedd47d max RSS 15956988 kB, wall 40495.17 s
+  P3c_20e59f3897 labels started 2026-10-29 01:20:25
+  P3c_2f079d63a1 labelled 47787 s - (CX) P3c_2f079d63a1 max RSS 16729560 kB, wall 47786.93 s
+  P3c_134d596518 labels started 2026-10-29 02:36:27
+  P3c_2d6f59a2bf labelled 40836 s - (CX) P3c_2d6f59a2bf max RSS 15934124 kB, wall 40836.15 s
+  P3c_428228e5a5 labels started 2026-10-29 10:40:51
+  P3c_134d596518 labelled 30006 s - (CX) P3c_134d596518 max RSS 14514360 kB, wall 30005.86 s
+  P3c_cce0ad25a5 labels started 2026-10-29 10:56:33
+  P3c_19eaf39036 labelled 38916 s - (CX) P3c_19eaf39036 max RSS 15600892 kB, wall 38916.63 s
+  P3c_20e59f3897 labelled 38035 s - (CX) P3c_20e59f3897 max RSS 15623492 kB, wall 38034.66 s
+  P3c_428228e5a5 labelled 12763 s - (CX) P3c_428228e5a5 max RSS 8590708 kB, wall 12762.59 s
+  P3c_cce0ad25a5 labelled 18913 s - (CX) P3c_cce0ad25a5 max RSS 13417124 kB, wall 18913.36 s
+=== (CX) all done: 0 failures or skips 2026-10-29 16:11:46

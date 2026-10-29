@@ -1,0 +1,6 @@
+/root/cations_c/molecules/P3c_428228e5a5 b3lyp: analytic Hessian reused from hessian_b3lyp_analytic.npz
+/root/cations_c/molecules/P3c_428228e5a5 b3lyp: 0 s; |H_analytic − H_corpus| max 3.11e-03 rms 3.58e-04; max |Δfreq| 3 cm-1
+WARN: HOMO -0.226470172852838 >= LUMO -0.226470172852835
+/root/cations_c/molecules/P3c_428228e5a5 wb97x: WARNING <S^2> = 0.821, expected 0.750 (spin contamination)
+/root/cations_c/molecules/P3c_428228e5a5 wb97x: 12762 s; |H_analytic − H_corpus| max 3.28e-03 rms 3.74e-04; max |Δfreq| 3 cm-1
+(CX) P3c_428228e5a5 max RSS 8590708 kB, wall 12762.59 s

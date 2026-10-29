@@ -1,0 +1,8 @@
+WARN: HOMO -0.255180253939514 >= LUMO -0.255180253939515
+WARN: beta  nocc = 58  HOMO -0.339282302871865 >= LUMO -0.338476347719072
+WARN: HOMO -0.339282302871865 >= LUMO -0.338476347719072
+/root/cations_c/molecules/P3c_331729cd47 b3lyp: 21530 s; |H_analytic − H_corpus| max 4.60e-03 rms 6.52e-04; max |Δfreq| 4 cm-1
+WARN: HOMO -0.226409125379353 >= LUMO -0.226409125379352
+/root/cations_c/molecules/P3c_331729cd47 wb97x: WARNING <S^2> = 0.835, expected 0.750 (spin contamination)
+/root/cations_c/molecules/P3c_331729cd47 wb97x: 24130 s; |H_analytic − H_corpus| max 8.77e-03 rms 6.80e-04; max |Δfreq| 6 cm-1
+(CX) P3c_331729cd47 max RSS 18427820 kB, wall 45660.40 s

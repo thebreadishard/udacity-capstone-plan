@@ -1,0 +1,2 @@
+=== (CX) armed: 14 molecules (0 without a job file); 0 to optimise, 14 to label; 4 lanes × 8 threads, cap 26624 MB, label arguments '--charge 1 --spin 1 --max-memory 24000 --reuse-existing'; waiting for /LANE [0-3] DONE/ in 4 of /root/labels/lane_[0-3].log 2026-10-25 09:11:55
+=== (CX) dry run: wait condition not met yet 2026-10-25 09:11:55

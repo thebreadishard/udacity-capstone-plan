@@ -1,0 +1,6 @@
+WARN: HOMO -0.261269988891273 >= LUMO -0.261269988891272
+WARN: HOMO -0.328796191309618 >= LUMO -0.328476348647906
+/root/cations_c/molecules/P3c_134d596518 b3lyp: 14274 s; |H_analytic − H_corpus| max 1.28e-03 rms 1.35e-04; max |Δfreq| 16 cm-1
+WARN: HOMO -0.234105313650668 >= LUMO -0.234105313650669
+/root/cations_c/molecules/P3c_134d596518 wb97x: 15731 s; |H_analytic − H_corpus| max 1.35e-03 rms 1.45e-04; max |Δfreq| 4 cm-1
+(CX) P3c_134d596518 max RSS 14514360 kB, wall 30005.86 s
