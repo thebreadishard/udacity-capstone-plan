@@ -1,0 +1,21 @@
+{
+ "result": "C:\\Users\\thebr\\Documents\\CapstonePlan\\plans\\05_delta-probed-ir-pipeline\\probes\\results_m1\\pipeline_benzene_2026-10-29\\benzene",
+ "corpus": "C:\\Users\\thebr\\Documents\\CapstonePlan\\plans\\05_delta-probed-ir-pipeline\\modules\\05_support_predictor\\corpus\\molecules\\A_8448043181",
+ "models": [
+  "E7_rungC_chain35_analytic_model_n750_seed0.pt",
+  "E7_rungC_chain35_analytic_model_n750_seed1.pt",
+  "E7_rungC_chain35_analytic_model_n750_seed2.pt"
+ ],
+ "geometry_max_abs_bohr": 1.571177135062385e-07,
+ "b3lyp_freq_max_abs_cm": 0.0001,
+ "network_spectrum": {
+  "n": 30,
+  "max_abs_omega_cm": 0.0,
+  "max_abs_km_mol": 0.07
+ },
+ "baseline_spectrum": {
+  "n": 30,
+  "max_abs_omega_cm": 0.0,
+  "max_abs_km_mol": 0.07
+ }
+}

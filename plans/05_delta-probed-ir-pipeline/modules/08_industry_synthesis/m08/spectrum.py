@@ -43,7 +43,9 @@ def _ri():
 
 
 def _rel(p: Path) -> str:
-    return str(Path(p).resolve().relative_to(PLAN)).replace("\\", "/")
+    """A source path relative to the plan; a pipeline result outside the plan keeps its absolute path."""
+    p = Path(p).resolve()
+    return str(p.relative_to(PLAN) if p.is_relative_to(PLAN) else p).replace("\\", "/")
 
 
 def _geometry(mid: str) -> dict:
