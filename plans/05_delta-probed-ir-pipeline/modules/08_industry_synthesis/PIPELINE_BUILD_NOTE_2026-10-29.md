@@ -30,7 +30,9 @@ Beside every spectrum, as the baseline only: the scaled B3LYP spectrum (PAHdb's 
    to the bit, for each of v1.3's seeds.
 2. **The B3LYP-only switch** in `analytic_hessians.py`, with a test that the B3LYP files are unchanged to the bit.
 3. **`m08/pipeline.py`**: one function per step, its settings one validated config object, refusals before any computation.
-4. **A live certificate** in `m08/certify.py`, with a test on a recorded molecule against its export certificate.
+4. **A live certificate** beside `m08/certify.py` (built 29 Oct as `m08/live_certificate.py`: it reads the result folder alone, the
+   network's ΔH included — `correction.npz` — and the measured error of the version that ran from its own evaluation records), with a
+   test on a recorded molecule against its export certificate.
 5. **`modules/PIPELINE.md`** (the version, below) and **`modules/08_industry_synthesis/PIPELINE_BACKLOG.md`**.
 6. **The demo runs**, timed: a hold-out molecule against its ωB97X truth and the baseline; benzene or naphthalene against its CC anchor and
    experiment; one molecule outside the corpus (module 06's fixed-seed candidate, if it passes step 1's checks). Large ones are computed

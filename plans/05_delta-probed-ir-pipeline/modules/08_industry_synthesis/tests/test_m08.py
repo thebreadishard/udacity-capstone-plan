@@ -132,3 +132,22 @@ def test_a_failed_apt_is_not_drawn(tmp_path):
     assert cheap_apt(tmp_path) == tmp_path / APT_FILES[1]
     np.savez(tmp_path / APT_FILES[0], apt=np.zeros((3, 9)), passed=True)
     assert cheap_apt(tmp_path) == tmp_path / APT_FILES[0]
+
+
+LIVE_BENZENE = HERE.parents[1] / "probes" / "results_m1" / "pipeline_benzene_certified_2026-10-29" / "benzene"
+
+
+def test_the_live_certificate_agrees_with_benzenes_export_certificate(cat):
+    """What the two certify of the same molecule agrees: its catalogue entry, the laboratory tolerance of every family the export lists, the
+    mode count, and the stated distance between the export's B3LYP positions and the pipeline's analytic ones (the export rounds to 0.1)."""
+    from m08 import live_certificate as LC
+    live, export = LC.certificate(LIVE_BENZENE, cat), certificate(cat.find("benzene"), cat)
+    m, e = live["molecule"], export["molecule"]
+    assert m["listed"]["id"] == e["id"] and m["listed"]["rung"] == export["rung"]["reached"] and (m["formula"], m["n_atoms"]) == (e["formula"], e["n_atoms"])
+    assert len(live["bands"]) == export["spectrum"]["b3lyp"]["n"]
+    assert all(live["tolerance"]["per_region"][fam]["u_band"] == b["u_band_lab"] for fam, b in export["per_band_budget"].items())
+    listed, ours = sorted(export["spectrum"]["b3lyp"]["values_cm"]), sorted(b["b3lyp_cm"] for b in live["bands"])
+    gap = max(abs(a - b) for a, b in zip(listed, ours, strict=True))
+    assert abs(gap - m["listed"]["b3lyp_max_abs_diff_cm"]) <= 0.15
+    page = LC.to_markdown(live)
+    assert "not measured for this network version" in page and "| other | 3.35 (" in page and live["licence"]["licensed_families"] == []

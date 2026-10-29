@@ -6,7 +6,8 @@ leaves this list; the pipeline version that carries it is named in `modules/PIPE
 
 | what | why | TASKS | when |
 |---|---|---|---|
-| The certificate's accuracy from v1.3's reads | `m08/spectrum.measured_accuracy` reads chain 34's evaluation records (`E7_rungC_chain34_eval_matched_2026-10-09_seed*.json`), while the pipeline runs v1.3 (chain 35); the live certificate (build step 4) states the accuracy of the network it runs | 146 | before |
+| The export certificate's accuracy from the carried network | the live certificate reads the error of the version that ran from its own evaluation records (29 Oct); the export's (`m08/certify.py` → `spectrum.measured_accuracy`, the Atlas's pages) still quotes chain 34's records (`E7_rungC_chain34_eval_matched_2026-10-09_seed*.json`) and its benzene CC read | 146 | before |
+| What licenses the served spectrum | the licence rule (`m08/licence.py`: the proof-of-learning verdict at 1,200 layer-B molecules, 25 Sep) was written for layer B and licenses no family; the pipeline serves v1.3's spectrum (decision 64) with its measured error and that line beside it — the rule for the ΔH network is the user's decision ('Waiting') | 146 | before |
 | Anharmonic shifts on the positions | the positions are harmonic; S1/S2 measure the anharmonic step | 53 | after |
 | Cations and other open-shell molecules | refused today (charge, multiplicity); the 60 pool-3 cations have analytic UKS labels, the network has no carried cation rung | 98, 121 | after |
 | The geometry without psi4 (pyscf + geomeTRIC) | one engine instead of two; only after a check that it gives the same Hessian and network read | 73 | after |

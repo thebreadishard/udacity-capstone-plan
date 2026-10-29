@@ -31,7 +31,7 @@ from pathlib import Path, PureWindowsPath
 import numpy as np
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
-from .catalog import PLAN
+from .catalog import PLAN, Catalog
 from .spectrum import cheap_apt, series
 
 M05 = PLAN / "modules" / "05_support_predictor"
@@ -57,6 +57,7 @@ WSL_PYSCF = "~/qc05/bin/python"
 PYSCF_HEADROOM_MB = 584                # pyscf's max_memory below the cap: probes/cation_analytic_all.sh's measured margin (19 Oct 2026)
 KILLED_AT_CAP = (137, 143)             # wsl_capped.sh's kill, and the systemd scope's (probes/cation_oom_check.sh)
 APT_FAILED = 3                         # analytic_hessians.py: the Hessian is written, the APT failed its checks
+CORRECTION = "correction.npz"
 HARMONIC_NOTE = "harmonic positions: the anharmonic shift is not in this version (backlog; TASKS 53)"
 
 
@@ -129,8 +130,11 @@ class PipelineConfig(BaseModel):
 
 @dataclass(frozen=True)
 class Admission:
-    """What the refusal checks read: the molecule's elements and size against the carried models' training set, and the models' registry entries."""
+    """What the refusal checks read — the molecule's elements and size against the carried models' training set, the models' registry
+    entries — and the canonical SMILES and formula the certificate names the molecule by."""
 
+    smiles: str
+    formula: str
     elements: tuple[str, ...]
     n_atoms: int
     training_elements: tuple[str, ...]
@@ -220,7 +224,11 @@ def admit(cfg: PipelineConfig) -> Admission:
         reasons.append(f"element(s) {', '.join(unseen)} outside the carried models' training set ({', '.join(training_elements)})")
     if reasons:
         raise Refused(reasons)
-    return Admission(elements, m.GetNumAtoms(), training_elements, training_atoms, tuple(entries))
+    from rdkit import Chem
+    from rdkit.Chem.rdMolDescriptors import CalcMolFormula
+
+    return Admission(Chem.MolToSmiles(Chem.RemoveHs(m)), CalcMolFormula(m), elements, m.GetNumAtoms(), training_elements, training_atoms,
+                     tuple(entries))
 
 
 def start_geometry(cfg: PipelineConfig) -> tuple[list[list], dict | None]:
@@ -298,6 +306,14 @@ def correction(models: tuple[Path, ...], d: Path) -> tuple[np.ndarray, list[np.n
     return np.mean(per_seed, axis=0), per_seed
 
 
+def save_correction(d: Path, dH: np.ndarray, dH_seeds: list[np.ndarray], models: tuple[Path, ...]) -> None:
+    """The network's output beside its inputs — the seed mean and each seed's ΔH with the models' file names — so that the certificate
+    reads the result instead of re-running the network."""
+    tmp = d / f"{CORRECTION}.tmp.npz"
+    np.savez(tmp, dH=dH, dH_seeds=np.stack(dH_seeds), models=np.array([m.name for m in models]))
+    os.replace(tmp, d / CORRECTION)
+
+
 def scaled_baseline(sticks: list[dict]) -> list[dict]:
     """The B3LYP sticks with PAHdb's factor of each stick's region: the baseline beside the network, never in its place."""
     w = np.array([s["omega_cm"] for s in sticks])
@@ -351,6 +367,7 @@ def run(cfg: PipelineConfig) -> dict:
     seconds["low_level"] = round(time.time() - t, 1)
     t = time.time()
     dH, dH_seeds = correction(cfg.models, d)
+    save_correction(d, dH, dH_seeds, cfg.models)
     out = spectra(d, dH, dH_seeds)
     seconds["correction_and_spectra"] = round(time.time() - t, 1)
     rec = {"pipeline_version": PIPELINE_VERSION, "name": cfg.name, "input": {"smiles": cfg.smiles, "xyz": cfg.xyz},
@@ -377,6 +394,8 @@ def parse_args(argv: list[str] | None) -> argparse.Namespace:
 
 
 def main(argv: list[str] | None = None) -> int:
+    from .live_certificate import certificate, write  # that module imports this one
+
     a = parse_args(argv)
     given = {k: v for k, v in dict(smiles=a.smiles, xyz=a.xyz, psi4_python=a.psi4_python).items() if v is not None}
     cfg = PipelineConfig(name=a.name, out_root=a.out, threads=a.threads, psi4_memory_gb=a.psi4_memory_gb, wsl_cap_mb=a.wsl_cap_mb, **given)
@@ -386,12 +405,15 @@ def main(argv: list[str] | None = None) -> int:
             print(f"[pipeline] admitted: {cfg.name}, {adm.n_atoms} atoms ({', '.join(adm.elements)}); models "
                   f"{', '.join(Path(m['path']).name for m in adm.models)}; training sizes {adm.training_atoms}", flush=True)
             return 0
+        catalog = Catalog()             # the certificate's catalogue and tolerances: read before any computation
         rec = run(cfg)
     except Refused as r:
         print("REFUSED: " + "\n  ".join(["", *r.reasons]), flush=True)
         return 2
     n = len(rec["spectra"]["network"]["sticks"])
     print(f"[pipeline] done: {n} bands, {cfg.folder / 'pipeline.json'} ({sum(rec['seconds'].values()):.0f} s)", flush=True)
+    _, md = write(certificate(cfg.folder, catalog), cfg.folder)
+    print(f"[pipeline] certificate: {md}", flush=True)
     return 0
 
 

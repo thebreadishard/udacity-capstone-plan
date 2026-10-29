@@ -181,25 +181,38 @@ def _mean(xs: list[float]) -> float:
     return round(float(np.mean(xs)), 3)
 
 
+SHAPE_KEYS = ("spectrum_overlap", "spectrum_overlap_zero_rule", "intensity_rel_rms_matched", "intensity_rel_rms_zero_rule_matched")
+
+
+def shape_accuracy(records: list[dict], hold: str = "a") -> dict:
+    """Seed means over one hold-out's molecules with an APT, from `rungC_eval_saved.py` records: 'cheap' = no correction (the zero rule:
+    the cheap rung's own spectrum against the higher level), 'corrected' = the network's correction."""
+    per_seed = []
+    for r in records:
+        pm = {i: v for i, v in r[hold]["per_molecule"].items() if v.get("spectrum_overlap") is not None}
+        per_seed.append({k: float(np.mean([v[k] for v in pm.values()])) for k in SHAPE_KEYS} | dict(n=len(pm)))
+    return dict(n_molecules=per_seed[0]["n"],
+                cheap=dict(spectrum_overlap=_mean([s["spectrum_overlap_zero_rule"] for s in per_seed]),
+                           intensity_error=_mean([s["intensity_rel_rms_zero_rule_matched"] for s in per_seed])),
+                corrected=dict(spectrum_overlap=_mean([s["spectrum_overlap"] for s in per_seed]),
+                               intensity_error=_mean([s["intensity_rel_rms_matched"] for s in per_seed])))
+
+
+def _record(rel: str) -> dict:
+    with open(PLAN / rel, encoding="utf-8") as f:
+        return json.load(f)
+
+
 def measured_accuracy() -> dict:
     """Seed means from the records. 'cheap' = no correction (the zero rule: the cheap rung's own spectrum against the higher level), 'corrected' =
     the network's correction, which is not served (no family licensed) and is reported as what the next rungs would bring."""
-    proxy = [json.load(open(PLAN / p, encoding="utf-8")) for p in PROXY_RECORDS]
-    cc = [json.load(open(PLAN / p, encoding="utf-8")) for p in CC_RECORDS]
-    keys = ("spectrum_overlap", "spectrum_overlap_zero_rule", "intensity_rel_rms_matched", "intensity_rel_rms_zero_rule_matched")
-    per_seed = []
-    for r in proxy:
-        pm = {i: v for i, v in r["a"]["per_molecule"].items() if v.get("spectrum_overlap") is not None}
-        per_seed.append({k: float(np.mean([v[k] for v in pm.values()])) for k in keys} | dict(n=len(pm)))
+    proxy = shape_accuracy([_record(p) for p in PROXY_RECORDS])
+    cc = [_record(p) for p in CC_RECORDS]
     head = [r["folds"][BENZENE][CC_COLUMN]["intensity"] for r in cc]
     zero = [r["folds"][BENZENE]["zero_rule"]["intensity"] for r in cc]
     return dict(
         proxy=dict(level="DFT proxy (ωB97X as the higher level), 10 unseen molecules of hold-out (a), chain 34 (carried model), seed mean of 3",
-                   n_molecules=per_seed[0]["n"], sources=PROXY_RECORDS,
-                   cheap=dict(spectrum_overlap=_mean([s["spectrum_overlap_zero_rule"] for s in per_seed]),
-                              intensity_error=_mean([s["intensity_rel_rms_zero_rule_matched"] for s in per_seed])),
-                   corrected=dict(spectrum_overlap=_mean([s["spectrum_overlap"] for s in per_seed]),
-                                  intensity_error=_mean([s["intensity_rel_rms_matched"] for s in per_seed]))),
+                   n_molecules=proxy["n_molecules"], sources=PROXY_RECORDS, cheap=proxy["cheap"], corrected=proxy["corrected"]),
         cc=dict(level="CCSD(T)/cc-pVTZ with its own CC APT, benzene (leave-one-anchor-out, head-tuned with λ = 1), seed mean of 3",
                 sources=CC_RECORDS, column=CC_COLUMN,
                 cheap=dict(spectrum_overlap=_mean([z["spectrum_overlap"] for z in zero]), intensity_error=_mean([z["intensity_rel_rms_matched"] for z in zero])),

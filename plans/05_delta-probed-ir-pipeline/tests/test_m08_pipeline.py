@@ -86,6 +86,7 @@ def test_a_used_output_folder_is_refused_and_nothing_runs(tmp_path, pin_registry
 def test_benzene_is_admitted_with_its_size_against_the_training_range(tmp_path, pin_registry):
     adm = P.admit(config(tmp_path))
     assert adm.elements == ("C", "H") and adm.n_atoms == 12 and adm.inside_training_sizes
+    assert adm.smiles == "c1ccccc1" and adm.formula == "C6H6"
 
 
 def test_the_xyz_input_is_read_as_given(tmp_path, pin_registry):
