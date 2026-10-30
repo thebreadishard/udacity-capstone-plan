@@ -723,4 +723,9 @@ have no candidate that small (quintet on three-ring systems — a phenyl on a la
 155. **[DELIVERABLE][Pipeline][Now] The certificate says whether the molecule was in the network's training set** (30 Oct 14:2x; the user's demo plan: the pipeline's architecture, then the supervisor picks a molecule the network has not seen that computes in at most half an hour, the project explained while it runs, the result read at the end of the hour); split from TASKS 150. A molecule the network trained on gets a line that the hold-out error is not its measure, and where the corpus holds its ωB97X truth the certificate shows the truth beside it; for computed runs and reused ones alike. *Next:* Done 30 Oct 15:4x: pipeline 0.5, `m08/seen.py` (ledger); it found the hold-out (a) leak (TASKS 157). *Next:* none; archived. | `m08/live_certificate.py`, `m08/pipeline.py` |
    → archived 2026-10-30 15:4x: pipeline 0.5: the certificate says whether the network has seen the molecule (m08/seen.py, ledger 30 Oct 15:4x); the leak it found is TASKS 157
 
+## Archived 2026-10-30 15:5x
+
+151. **[DELIVERABLE][Pipeline][Now] The run time known before a live run: which molecules fit half an hour** (30 Oct 14:2x; the user's demo plan: the pipeline's architecture, then the supervisor picks a molecule the network has not seen that computes in at most half an hour, the project explained while it runs, the result read at the end of the hour). Measured on the laptop: benzene 12 atoms 356 s, phenanthrene 24 atoms ≈ 77 min, module 06's candidate 30 atoms 3.7 h, the analytic B3LYP Hessian and APT nearly all of it. Done 30 Oct 16:0x: `m08/runtime.py`, half an hour ≈ 170 basis functions (ledger). *Next:* none; archived. | `m08/pipeline.py`, `probes/compute_prices.py` |
+   → archived 2026-10-30 15:5x: m08/runtime.py: the laptop time printed before a run; half an hour ≈ 170 basis functions (ledger 30 Oct 16:0x)
+
 <!-- tasks_board.py archive: new entries go above this line -->

@@ -425,6 +425,7 @@ def parse_args(argv: list[str] | None) -> argparse.Namespace:
 
 def main(argv: list[str] | None = None) -> int:
     from .live_certificate import certificate, write  # that module imports this one
+    from .runtime import announce
 
     a = parse_args(argv)
     given = {k: v for k, v in dict(smiles=a.smiles, xyz=a.xyz, psi4_python=a.psi4_python).items() if v is not None}
@@ -434,8 +435,10 @@ def main(argv: list[str] | None = None) -> int:
             adm = admit(cfg)
             print(f"[pipeline] admitted: {cfg.name}, {adm.n_atoms} atoms ({', '.join(adm.elements)}); models "
                   f"{', '.join(Path(m['path']).name for m in adm.models)}; training sizes {adm.training_atoms}", flush=True)
+            print(f"[pipeline] {announce(adm.smiles, cfg.threads)}", flush=True)
             return 0
         catalog = Catalog()             # the certificate's catalogue and tolerances: read before any computation
+        print(f"[pipeline] {announce(cfg.smiles, cfg.threads)}", flush=True)
         rec = run(cfg)
     except Refused as r:
         print("REFUSED: " + "\n  ".join(["", *r.reasons]), flush=True)
